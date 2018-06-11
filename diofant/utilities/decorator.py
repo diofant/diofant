@@ -26,8 +26,6 @@ def conserve_mpmath_dps(func):
 class no_attrs_in_subclass:
     """Don't 'inherit' certain attributes from a base class
 
-    >>> from diofant.utilities.decorator import no_attrs_in_subclass
-
     >>> class A:
     ...     x = 'test'
 
@@ -87,8 +85,6 @@ def public(obj):
 
     Examples
     ========
-
-    >>> from diofant.utilities.decorator import public
 
     >>> __all__
     Traceback (most recent call last):

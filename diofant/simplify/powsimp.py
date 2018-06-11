@@ -9,7 +9,7 @@ from ..core.mul import _keep_coeff
 from ..core.rules import Transform
 from ..functions import exp, exp_polar, log, polarify, root, unpolarify
 from ..ntheory import multiplicity
-from ..polys import gcd, lcm
+from ..polys import gcd, lcm_list
 
 
 @cacheit
@@ -52,8 +52,6 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
     Examples
     ========
 
-    >>> from diofant import powsimp, exp, log, symbols
-    >>> from diofant.abc import x, y, z, n
     >>> powsimp(x**y*x**z*y**z, combine='all')
     x**(y + z)*y**z
     >>> powsimp(x**y*x**z*y**z, combine='exp')
@@ -76,12 +74,11 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
 
     Radicals with Mul bases will be combined if combine='exp'
 
-    >>> from diofant import sqrt, Mul
     >>> x, y = symbols('x y')
 
     Two radicals are automatically joined through Mul:
 
-    >>> a=sqrt(x*sqrt(y))
+    >>> a = sqrt(x*sqrt(y))
     >>> a*a**3 == a**4
     True
 
@@ -329,7 +326,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                 # e.g. if base were x**(1/2)*y**(1/3) then we should
                 # exponentiate by 6 and look for powers of x and y in the ratio
                 # of 2 to 3
-                qlcm = lcm([ratq(bi) for bi in Mul.make_args(bstart)])
+                qlcm = lcm_list([ratq(bi) for bi in Mul.make_args(bstart)])
                 if qlcm == 1:
                     break  # we are done
                 b = bstart**qlcm
@@ -519,8 +516,7 @@ def powdenest(eq, force=False, polar=False):
     Examples
     ========
 
-    >>> from diofant.abc import a, b, x, y, z
-    >>> from diofant import Symbol, exp, log, sqrt, symbols, powdenest
+    >>> from diofant.abc import a, b
 
     >>> powdenest((x**(2*a/3))**(3*x))
     (x**(2*a/3))**(3*x)
@@ -538,7 +534,7 @@ def powdenest(eq, force=False, polar=False):
 
     No other expansion is done.
 
-    >>> i, j = symbols('i,j', integer=True)
+    >>> i, j = symbols('i j', integer=True)
     >>> powdenest((x**x)**(i + j))  # -X-> (x**x)**i*(x**x)**j
     x**(x*(i + j))
 

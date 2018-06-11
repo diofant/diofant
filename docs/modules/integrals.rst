@@ -1,5 +1,5 @@
-Symbolic Integrals
-==================
+Integrals
+=========
 
 .. module:: diofant.integrals
 
@@ -14,7 +14,6 @@ Examples
 --------
 Diofant can integrate a vast array of functions. It can integrate polynomial functions::
 
-    >>> from diofant import *
     >>> init_printing(pretty_print=True, use_unicode=False, wrap_line=False, no_global=True)
     >>> x = Symbol('x')
     >>> integrate(x**2 + x + 1, x)
@@ -145,7 +144,7 @@ The class `Integral` represents an unevaluated integral and has some methods tha
    :members:
 
 Numeric Integrals
-=================
+-----------------
 
 Diofant has functions to calculate points and weights for Gaussian quadrature of
 any order and any precision:

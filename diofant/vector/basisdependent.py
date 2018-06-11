@@ -40,17 +40,13 @@ class BasisDependent(Expr):
     def __truediv__(self, other):
         return self._div_helper(other)
 
-    def evalf(self, prec=None, **options):
+    def evalf(self, dps=15, **options):
         """
         Implements the Diofant evalf routine for this quantity.
-
-        evalf's documentation
-        =====================
-
         """
         vec = self.zero
         for k, v in self.components.items():
-            vec += v.evalf(prec, **options) * k
+            vec += v.evalf(dps, **options) * k
         return vec
     evalf.__doc__ += Expr.evalf.__doc__
 

@@ -52,9 +52,9 @@ shifted by 3099.  I.e. ``issue 123`` in the history - does mean issue
 Versioning and Release Procedure
 ================================
 
-We use standard `Semantic Versioning`_ MAJOR.MINOR.MAINTENANCE
-numbering scheme, but adopt `PEP 440`_ for alpha ("aN" suffix), beta
-("bN"), release candidates ("rcN") and development (".devN").
+We use standard `Semantic Versioning`_ numbering scheme, but adopt
+`PEP 440`_ for alpha ("aN" suffix), beta ("bN") and development
+(".devN") releases.
 
 Releasing a new version is done as follows:
 
@@ -72,9 +72,36 @@ Releasing a new version is done as follows:
     $ git tag -s vX.Y.Z
     $ git push origin vX.Y.Z
 
-.. _Semantic Versioning: http://semver.org/
+.. _Semantic Versioning: https://semver.org/
 .. _PEP 440: https://www.python.org/dev/peps/pep-0440/
 
 .. XXX adopt http://www.contribution-guide.org
 
-.. include:: README.rst
+Labeling Issues and Pull Requests
+=================================
+
+Following table lists meanings of labels, including
+`provided by Github
+<https://help.github.com/articles/about-labels/#using-default-labels>`_:
+
++------------------+----------------------------------------------------+
+| Label            | Description                                        |
++==================+====================================================+
+| bug              | an unexpected problem or unintended behavior       |
++------------------+----------------------------------------------------+
+| wrong answer     | if mathematically wrong result was obtained        |
++------------------+----------------------------------------------------+
+| duplicate        | indicates similar issues or pull requests          |
++------------------+----------------------------------------------------+
+| enhancement      | new feature requests (or implementation)           |
++------------------+----------------------------------------------------+
+| good first issue | indicates a good issue for first-time contributors |
++------------------+----------------------------------------------------+
+| help wanted      | indicates that a maintainer wants help here        |
++------------------+----------------------------------------------------+
+| invalid          | mark that a problem is no longer relevant          |
++------------------+----------------------------------------------------+
+| question         | mark support request                               |
++------------------+----------------------------------------------------+
+| wontfix          | indicates that work won't continue on this issue   |
++------------------+----------------------------------------------------+

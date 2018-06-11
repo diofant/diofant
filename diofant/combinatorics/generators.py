@@ -12,9 +12,7 @@ def symmetric(n):
     Examples
     ========
 
-    >>> from diofant.combinatorics.permutations import Permutation
     >>> Permutation.print_cyclic = True
-    >>> from diofant.combinatorics.generators import symmetric
     >>> list(symmetric(3))
     [Permutation(2), Permutation(1, 2), Permutation(2)(0, 1),
      Permutation(0, 1, 2), Permutation(0, 2, 1), Permutation(0, 2)]
@@ -30,9 +28,7 @@ def cyclic(n):
     Examples
     ========
 
-    >>> from diofant.combinatorics.permutations import Permutation
     >>> Permutation.print_cyclic = True
-    >>> from diofant.combinatorics.generators import cyclic
     >>> list(cyclic(5))
     [Permutation(4), Permutation(0, 1, 2, 3, 4), Permutation(0, 2, 4, 1, 3),
      Permutation(0, 3, 1, 4, 2), Permutation(0, 4, 3, 2, 1)]
@@ -54,9 +50,7 @@ def alternating(n):
     Examples
     ========
 
-    >>> from diofant.combinatorics.permutations import Permutation
     >>> Permutation.print_cyclic = True
-    >>> from diofant.combinatorics.generators import alternating
     >>> list(alternating(3))
     [Permutation(2), Permutation(0, 1, 2), Permutation(0, 2, 1)]
     """
@@ -77,9 +71,7 @@ def dihedral(n):
     Examples
     ========
 
-    >>> from diofant.combinatorics.permutations import Permutation
     >>> Permutation.print_cyclic = True
-    >>> from diofant.combinatorics.generators import dihedral
     >>> list(dihedral(3))
     [Permutation(2), Permutation(0, 2), Permutation(0, 1, 2),
      Permutation(1, 2), Permutation(0, 2, 1), Permutation(2)(0, 1)]

@@ -18,7 +18,7 @@ def moment(X, n, c=0, condition=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import Die, moment, E
+    >>> from diofant.stats import Die, E
     >>> X = Die('X', 6)
     >>> moment(X, 1, 6)
     -5/2
@@ -39,8 +39,7 @@ def variance(X, condition=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import Die, E, Bernoulli, variance
-    >>> from diofant import simplify, Symbol
+    >>> from diofant.stats import Die, Bernoulli
 
     >>> X = Die('X', 6)
     >>> p = Symbol('p')
@@ -64,8 +63,7 @@ def standard_deviation(X, condition=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import Bernoulli, std
-    >>> from diofant import Symbol, simplify
+    >>> from diofant.stats import Bernoulli
 
     >>> p = Symbol('p')
     >>> B = Bernoulli('B', p, 1, 0)
@@ -90,8 +88,7 @@ def covariance(X, Y, condition=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import Exponential, covariance
-    >>> from diofant import Symbol
+    >>> from diofant.stats import Exponential
 
     >>> rate = Symbol('lambda', positive=True, real=True)
     >>> X = Exponential('X', rate)
@@ -123,8 +120,7 @@ def correlation(X, Y, condition=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import Exponential, correlation
-    >>> from diofant import Symbol
+    >>> from diofant.stats import Exponential
 
     >>> rate = Symbol('lambda', positive=True, real=True)
     >>> X = Exponential('X', rate)
@@ -149,7 +145,7 @@ def cmoment(X, n, condition=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import Die, cmoment, variance
+    >>> from diofant.stats import Die
     >>> X = Die('X', 6)
     >>> cmoment(X, 3)
     0
@@ -170,8 +166,7 @@ def smoment(X, n, condition=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import skewness, Exponential, smoment
-    >>> from diofant import Symbol
+    >>> from diofant.stats import Exponential
     >>> rate = Symbol('lambda', positive=True, real=True)
     >>> Y = Exponential('Y', rate)
     >>> smoment(Y, 4)
@@ -197,8 +192,7 @@ def skewness(X, condition=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import skewness, Exponential, Normal
-    >>> from diofant import Symbol
+    >>> from diofant.stats import Exponential, Normal
     >>> X = Normal('X', 0, 1)
     >>> skewness(X)
     0

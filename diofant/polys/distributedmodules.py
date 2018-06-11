@@ -26,8 +26,8 @@ The main reference for this file is [SCA],
 "A Singular Introduction to Commutative Algebra".
 """
 
-from collections import defaultdict
-from itertools import permutations
+import collections
+import itertools
 
 from ..core import S, sympify
 from .monomials import monomial_deg, monomial_div, monomial_lcm, monomial_mul
@@ -157,9 +157,6 @@ def sdm_from_dict(d, O):
 
     Here ``O`` is the monomial order to use.
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import lex
-
     >>> dic = {(1, 1, 0): QQ(1), (1, 0, 0): QQ(2), (0, 1, 0): QQ(0)}
     >>> sdm_from_dict(dic, lex)
     [((1, 1, 0), 1), ((1, 0, 0), 2)]
@@ -190,9 +187,6 @@ def sdm_add(f, g, O, K):
     All examples use lexicographic order.
 
     `(xy f_1) + (f_2) = f_2 + xy f_1`
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import lex
 
     >>> sdm_add([((1, 1, 1), QQ(1))], [((2, 0, 0), QQ(1))], lex, QQ)
     [((2, 0, 0), 1), ((1, 1, 1), 1)]
@@ -237,9 +231,6 @@ def sdm_LM(f):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import lex
-
     >>> dic = {(1, 2, 3): QQ(1), (4, 0, 0): QQ(1), (4, 0, 1): QQ(1)}
     >>> sdm_LM(sdm_from_dict(dic, lex))
     (4, 0, 1)
@@ -255,9 +246,6 @@ def sdm_LT(f):
 
     Examples
     ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import lex
 
     >>> dic = {(1, 2, 3): QQ(1), (4, 0, 0): QQ(2), (4, 0, 1): QQ(3)}
     >>> sdm_LT(sdm_from_dict(dic, lex))
@@ -277,9 +265,6 @@ def sdm_mul_term(f, term, O, K):
     ========
 
     `0 f_1 = 0`
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import lex
 
     >>> sdm_mul_term([((1, 0, 0), QQ(1))], ((0, 0), QQ(0)), lex, QQ)
     []
@@ -305,10 +290,10 @@ def sdm_mul_term(f, term, O, K):
     if not f or not c:
         return []
     else:
-        if K.is_one(c):
-            return [ (sdm_monomial_mul(f_M, X), f_c) for f_M, f_c in f ]
+        if c == K.one:
+            return [(sdm_monomial_mul(f_M, X), f_c) for f_M, f_c in f]
         else:
-            return [ (sdm_monomial_mul(f_M, X), f_c * c) for f_M, f_c in f ]
+            return [(sdm_monomial_mul(f_M, X), f_c * c) for f_M, f_c in f]
 
 
 def sdm_zero():
@@ -345,10 +330,6 @@ def sdm_from_vector(vec, O, K, **opts):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import lex
-    >>> from diofant.abc import x, y, z
-
     >>> sdm_from_vector([x**2+y**2, 2*z], lex, QQ)
     [((1, 0, 0, 1), 2), ((0, 2, 0, 0), 1), ((0, 0, 2, 0), 1)]
     """
@@ -371,14 +352,12 @@ def sdm_to_vector(f, gens, K, n=None):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.abc import x, y, z
     >>> f = [((1, 0, 0, 1), QQ(2)), ((0, 2, 0, 0), QQ(1)), ((0, 0, 2, 0), QQ(1))]
     >>> sdm_to_vector(f, [x, y, z], QQ)
     [x**2 + y**2, 2*z]
     """
     dic = sdm_to_dict(f)
-    dics = defaultdict(list)
+    dics = collections.defaultdict(list)
     for k, v in dic.items():
         dics[k[0]].append((k[1:], v))
     n = n or len(dics)
@@ -413,9 +392,6 @@ def sdm_spoly(f, g, O, K, phantom=None):
 
     Examples
     ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import lex
 
     >>> f = [((2, 1, 1), QQ(1)), ((1, 0, 1), QQ(1))]
     >>> g = [((2, 3, 0), QQ(1))]
@@ -717,7 +693,7 @@ def sdm_groebner(G, NF, O, K, extended=False):
     # Finally interreduce the standard basis.
     # (TODO again, better data structures)
     S = {(tuple(f), i) for i, f in enumerate(S)}
-    for (a, ai), (b, bi) in permutations(S, 2):
+    for (a, ai), (b, bi) in itertools.permutations(S, 2):
         A = sdm_LM(a)
         B = sdm_LM(b)
         if sdm_monomial_divides(A, B) and (b, bi) in S and (a, ai) in S:

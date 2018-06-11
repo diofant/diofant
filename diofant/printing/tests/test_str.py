@@ -1,10 +1,10 @@
 import pytest
 
-from diofant import (Abs, Add, And, Catalan, Complement, Derivative, Dict,
-                     Dummy, E, Equivalent, EulerGamma, FiniteSet, Float,
-                     Function, GoldenRatio, I, Integer, Integral, Interval,
-                     Lambda, Limit, Matrix, MatrixSymbol, Mul, O, Pow,
-                     Rational, Rel, S, SparseMatrix, Sum, Symbol,
+from diofant import (Abs, Add, AlgebraicNumber, And, Catalan, Complement,
+                     Derivative, Dict, Dummy, E, Equivalent, EulerGamma,
+                     FiniteSet, Float, Function, GoldenRatio, I, Integer,
+                     Integral, Interval, Lambda, Limit, Matrix, MatrixSymbol,
+                     Mul, O, Pow, Rational, Rel, S, SparseMatrix, Sum, Symbol,
                      SymmetricDifference, Tuple, Wild, WildFunction, Xor, cbrt,
                      cos, exp, factor, factorial, factorial2, false, nan, oo,
                      pi, root, sin, sqrt, subfactorial, summation, symbols,
@@ -15,8 +15,7 @@ from diofant.core import Expr
 from diofant.core.trace import Tr
 from diofant.domains import QQ, ZZ
 from diofant.geometry import Circle, Point
-from diofant.polys import (Poly, RootOf, RootSum, field, grlex, groebner, lex,
-                           ring)
+from diofant.polys import Poly, RootOf, RootSum, field, grlex, groebner, ring
 from diofant.printing import StrPrinter, sstr, sstrrepr
 from diofant.stats import Die, Exponential, Normal, pspace, where
 
@@ -337,8 +336,8 @@ def test_Poly():
     assert str(
         Poly(x**2 - 1 + y, x)) == "Poly(x**2 + y - 1, x, domain='ZZ[y]')"
 
-    assert str(Poly(x**2 + I*x, x)) == "Poly(x**2 + I*x, x, domain='EX')"
-    assert str(Poly(x**2 - I*x, x)) == "Poly(x**2 - I*x, x, domain='EX')"
+    assert str(Poly(x**2 + I*x, x)) == "Poly(x**2 + I*x, x, domain='QQ<I>')"
+    assert str(Poly(x**2 - I*x, x)) == "Poly(x**2 - I*x, x, domain='QQ<I>')"
 
     assert str(Poly(-x*y*z + x*y - 1, x, y, z)
                ) == "Poly(-x*y*z + x*y - 1, x, y, z, domain='ZZ')"
@@ -355,16 +354,16 @@ def test_Poly():
         "Poly(y*x*sqrt(3), x, sqrt(3), domain='ZZ[y]')"
 
 
-def test_PolyRing():
-    assert str(ring("x", ZZ, lex)[0]) == "Polynomial ring in x over ZZ with lex order"
-    assert str(ring("x,y", QQ, grlex)[0]) == "Polynomial ring in x, y over QQ with grlex order"
-    assert str(ring("x,y,z", ZZ["t"], lex)[0]) == "Polynomial ring in x, y, z over ZZ[t] with lex order"
+def test_PolynomialRing():
+    assert str(ZZ.poly_ring("x")) == "ZZ[x]"
+    assert str(QQ.poly_ring("x", "y", order=grlex)) == "QQ[x,y]"
+    assert str(ZZ.poly_ring("t").poly_ring("x", "y", "z")) == "ZZ[t][x,y,z]"
 
 
-def test_FracField():
-    assert str(field("x", ZZ, lex)[0]) == "Rational function field in x over ZZ with lex order"
-    assert str(field("x,y", QQ, grlex)[0]) == "Rational function field in x, y over QQ with grlex order"
-    assert str(field("x,y,z", ZZ["t"], lex)[0]) == "Rational function field in x, y, z over ZZ[t] with lex order"
+def test_FractionField():
+    assert str(ZZ.frac_field("x")) == "ZZ(x)"
+    assert str(QQ.frac_field("x", "y", order=grlex)) == "QQ(x,y)"
+    assert str(ZZ.poly_ring("t").frac_field("x", "y", "z")) == "ZZ[t](x,y,z)"
 
 
 def test_PolyElement():
@@ -502,7 +501,8 @@ def test_Relational():
 
 
 def test_RootOf():
-    assert str(RootOf(x**5 + 2*x - 1, 0)) == "RootOf(x**5 + 2*x - 1, x, 0)"
+    assert str(RootOf(x**5 + 2*x - 1, 0)) == "RootOf(x**5 + 2*x - 1, 0)"
+    assert str(RootOf(x**3 + y*x + 1, x, 0)) == "RootOf(x**3 + x*y + 1, x, 0)"
 
 
 def test_RootSum():
@@ -668,7 +668,7 @@ def test_FiniteSet():
 
 def test_PrettyPoly():
     F = QQ.frac_field(x, y)
-    R = QQ[x, y]
+    R = QQ.poly_ring(x, y)
     assert sstr(F.convert(x/(x + y))) == sstr(x/(x + y))
     assert sstr(R.convert(x + y)) == sstr(x + y)
 
@@ -717,3 +717,7 @@ def test_Complement():
 def test_SymmetricDifference():
     assert str(SymmetricDifference(Interval(2, 3), Interval(3, 4), evaluate=False)) == \
         'SymmetricDifference([2, 3], [3, 4])'
+
+
+def test_AlgebraicNumber():
+    assert str(AlgebraicNumber(sqrt(2))) == 'sqrt(2)'

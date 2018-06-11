@@ -1,5 +1,5 @@
 Number Theory
-====================
+=============
 
 .. module:: diofant.ntheory.generate
 
@@ -82,6 +82,8 @@ Ntheory Functions Reference
 .. autofunction:: npartitions
 
 .. module:: diofant.ntheory.primetest
+
+.. autofunction:: is_square
 
 .. autofunction:: mr
 

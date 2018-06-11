@@ -34,8 +34,6 @@ def bspline_basis(d, knots, n, x, close=True):
 
     The 0th degree splines have a value of one on a single interval:
 
-        >>> from diofant import bspline_basis
-        >>> from diofant.abc import x
         >>> d = 0
         >>> knots = range(5)
         >>> bspline_basis(d, knots, 0, x)
@@ -57,7 +55,7 @@ def bspline_basis(d, knots, n, x, close=True):
     B-splines and their derivatives:
 
         >>> d = 1
-        >>> knots = [0,0,2,3,4]
+        >>> knots = [0, 0, 2, 3, 4]
         >>> bspline_basis(d, knots, 0, x)
         Piecewise((-x/2 + 1, And(x <= 2, x >= 0)), (0, true))
 
@@ -65,7 +63,6 @@ def bspline_basis(d, knots, n, x, close=True):
     need to evaluate a B-splines many times, it is best to lambdify them
     first:
 
-        >>> from diofant import lambdify
         >>> d = 3
         >>> knots = range(10)
         >>> b0 = bspline_basis(d, knots, 0, x)
@@ -128,8 +125,6 @@ def bspline_basis_set(d, knots, x):
     Examples
     ========
 
-    >>> from diofant import bspline_basis_set
-    >>> from diofant.abc import x
     >>> d = 2
     >>> knots = range(5)
     >>> splines = bspline_basis_set(d, knots, x)

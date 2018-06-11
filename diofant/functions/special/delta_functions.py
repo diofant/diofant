@@ -76,9 +76,6 @@ class DiracDelta(Function):
         Examples
         ========
 
-        >>> from diofant import DiracDelta
-        >>> from diofant.abc import x, y
-
         >>> DiracDelta(x*y).simplify(x)
         DiracDelta(x)/Abs(y)
         >>> DiracDelta(x*y).simplify(y)
@@ -129,9 +126,6 @@ class DiracDelta(Function):
 
         Examples
         ========
-
-        >>> from diofant import DiracDelta, cos
-        >>> from diofant.abc import x, y
 
         >>> DiracDelta(x*y).is_simple(x)
         True

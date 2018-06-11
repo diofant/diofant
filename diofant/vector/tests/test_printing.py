@@ -1,7 +1,7 @@
 import pytest
 
-from diofant import pretty as xpretty
 from diofant import Function, Integral, latex
+from diofant import pretty as xpretty
 from diofant.abc import a, b, c
 from diofant.vector import CoordSysCartesian, Vector, express
 
@@ -87,13 +87,13 @@ pretty_s = \
 # This is the pretty form for ((a**2 + b)*N.i + 3*(C.y - c)*N.k) | N.k
 upretty_d_7 = \
     """\
-⎛ 2    ⎞ (N_i|N_k) + (3⋅C_y - 3⋅c) (N_k|N_k)\n\
-⎝a  + b⎠                                    \
+⎛ 2    ⎞ (N_i|N_k) + (-3⋅c + 3⋅C_y) (N_k|N_k)\n\
+⎝a  + b⎠                                     \
 """
 pretty_d_7 = \
     """\
-/ 2    \\ (N_i|N_k) + (3*C_y - 3*c) (N_k|N_k)\n\
-\\a  + b/                                    \
+/ 2    \\ (N_i|N_k) + (-3*c + 3*C_y) (N_k|N_k)\n\
+\\a  + b/                                     \
 """
 
 
@@ -132,6 +132,8 @@ def test_pretty_print_unicode():
     assert upretty(v[0]) == '0'
     assert upretty(v[1]) == 'N_i'
     assert upretty(v[5]) == '(a) N_i + (-b) N_j'
+    # Make sure the printing works in other objects
+    assert upretty(v[5].args) == '((a) N_i, (-b) N_j)'
     assert upretty(v[8]) == upretty_v_8
     assert upretty(v[2]) == '(-1) N_i'
     assert upretty(v[11]) == upretty_v_11
@@ -146,23 +148,23 @@ def test_latex_printing():
     assert latex(v[0]) == '\\mathbf{\\hat{0}}'
     assert latex(v[1]) == '\\mathbf{\\hat{i}_{N}}'
     assert latex(v[2]) == '- \\mathbf{\\hat{i}_{N}}'
-    assert latex(v[5]) == ('(a)\\mathbf{\\hat{i}_{N}} + ' +
+    assert latex(v[5]) == ('(a)\\mathbf{\\hat{i}_{N}} + '
                            '(- b)\\mathbf{\\hat{j}_{N}}')
-    assert latex(v[6]) == ('(\\mathbf{{x}_{N}} + a^{2})\\mathbf{\\' +
-                           'hat{i}_{N}} + \\mathbf{\\hat{k}_{N}}')
-    assert latex(v[8]) == ('\\mathbf{\\hat{j}_{N}} + (\\mathbf{{x}_' +
-                           '{C}}^{2} - \\int f{\\left (b \\right )}\\,' +
+    assert latex(v[6]) == ('(a^{2} + \\mathbf{{x}_{N}})\\mathbf{\\hat{i}_{N}} + '
+                           '\\mathbf{\\hat{k}_{N}}')
+    assert latex(v[8]) == ('\\mathbf{\\hat{j}_{N}} + (\\mathbf{{x}_'
+                           '{C}}^{2} - \\int f{\\left (b \\right )}\\,'
                            ' db)\\mathbf{\\hat{k}_{N}}')
     assert latex(s) == '3 \\mathbf{{y}_{C}} \\mathbf{{x}_{N}}^{2}'
     assert latex(d[0]) == '(\\mathbf{\\hat{0}}|\\mathbf{\\hat{0}})'
-    assert latex(d[4]) == ('(a)(\\mathbf{\\hat{i}_{N}}{|}\\mathbf' +
+    assert latex(d[4]) == ('(a)(\\mathbf{\\hat{i}_{N}}{|}\\mathbf'
                            '{\\hat{k}_{N}})')
-    assert latex(d[9]) == ('(\\mathbf{\\hat{k}_{C}}{|}\\mathbf{\\' +
-                           'hat{k}_{N}}) + (\\mathbf{\\hat{i}_{N}}{|' +
+    assert latex(d[9]) == ('(\\mathbf{\\hat{k}_{C}}{|}\\mathbf{\\'
+                           'hat{k}_{N}}) + (\\mathbf{\\hat{i}_{N}}{|'
                            '}\\mathbf{\\hat{k}_{N}})')
-    assert latex(d[11]) == ('(a^{2} + b)(\\mathbf{\\hat{i}_{N}}{|}\\' +
-                            'mathbf{\\hat{k}_{N}}) + (\\int f{\\left (' +
-                            'b \\right )}\\, db)(\\mathbf{\\hat{k}_{N}' +
+    assert latex(d[11]) == ('(a^{2} + b)(\\mathbf{\\hat{i}_{N}}{|}\\'
+                            'mathbf{\\hat{k}_{N}}) + (\\int f{\\left ('
+                            'b \\right )}\\, db)(\\mathbf{\\hat{k}_{N}'
                             '}{|}\\mathbf{\\hat{k}_{N}})')
 
 

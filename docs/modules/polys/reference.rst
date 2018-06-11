@@ -31,8 +31,6 @@ Basic polynomial manipulation functions
 .. autofunction:: subresultants
 .. autofunction:: resultant
 .. autofunction:: discriminant
-.. autofunction:: diofant.polys.dispersion.dispersion
-.. autofunction:: diofant.polys.dispersion.dispersionset
 .. autofunction:: terms_gcd
 .. autofunction:: cofactors
 .. autofunction:: gcd
@@ -64,7 +62,6 @@ Basic polynomial manipulation functions
 .. autofunction:: cancel
 .. autofunction:: reduced
 .. autofunction:: groebner
-.. autofunction:: is_zero_dimensional
 
 .. autoclass:: Poly
    :members:
@@ -107,8 +104,6 @@ Algebraic number fields
 
 .. autofunction:: primitive_element
 .. autofunction:: field_isomorphism
-.. autofunction:: to_number_field
-.. autofunction:: isolate
 
 Monomials encoded as tuples
 ===========================
@@ -134,7 +129,10 @@ Formal manipulation of roots of polynomials
 .. currentmodule:: diofant.polys.rootoftools
 
 .. autoclass:: RootOf
+    :members:
+
 .. autoclass:: RootSum
+    :members:
 
 Symbolic root-finding algorithms
 ================================

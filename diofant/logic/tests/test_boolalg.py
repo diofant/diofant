@@ -3,7 +3,7 @@ import itertools
 import pytest
 
 from diofant import (Dummy, EmptySet, Eq, Equality, Integer, Interval, S,
-                     Unequality, Union, oo, simplify, symbols)
+                     Unequality, Union, oo, simplify, sqrt, symbols)
 from diofant.abc import A, B, C, D, a, b, c, w, x, y, z
 from diofant.logic.boolalg import (ITE, And, Boolean, BooleanAtom,
                                    BooleanFunction, Equivalent, Implies, Nand,
@@ -497,13 +497,13 @@ def test_ITE():
     assert ITE(False, False, True) is true
     assert isinstance(ITE(A, B, C), ITE)
 
-    A = True
-    assert ITE(A, B, C) == B
-    A = False
-    assert ITE(A, B, C) == C
-    B = True
-    assert ITE(And(A, B), B, C) == C
-    assert ITE(Or(A, False), And(B, True), False) is false
+    assert ITE(True, B, C) == B
+    assert ITE(False, B, C) == C
+
+    assert ITE(A, B, B) == B
+
+    assert ITE(C, False, True) == Not(C)
+    assert ITE(C, True, False) == C
 
 
 def test_ITE_diff():
@@ -726,3 +726,8 @@ def test_sympyissue_12522():
     assert Eq(1, 1).simplify() is true
     assert true.simplify() is true
     assert false.simplify() is false
+
+
+def test_sympyissue_10641():
+    assert str(Or(x < sqrt(3), x).n(2)) == 'Or(x, x < 1.7)'
+    assert str(And(x < sqrt(3), x).n(2)) == 'And(x, x < 1.7)'

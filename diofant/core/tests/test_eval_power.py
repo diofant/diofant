@@ -352,3 +352,7 @@ def test_sympyissue_12578():
                                  17318*x**16 + O(x**17))
     d10 = s.diff(x, 10)
     assert d10.limit(x, 0) == -551577600
+
+
+def test_sympyissue_13914():
+    assert x**zoo is nan

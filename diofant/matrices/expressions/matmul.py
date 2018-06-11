@@ -17,7 +17,6 @@ class MatMul(MatrixExpr):
     Examples
     ========
 
-    >>> from diofant import MatMul, MatrixSymbol
     >>> A = MatrixSymbol('A', 5, 4)
     >>> B = MatrixSymbol('B', 4, 3)
     >>> C = MatrixSymbol('C', 3, 6)
@@ -143,8 +142,6 @@ def any_zeros(mul):
 def merge_explicit(matmul):
     """ Merge explicit MatrixBase arguments
 
-    >>> from diofant import MatrixSymbol, eye, Matrix, MatMul, pprint
-    >>> from diofant.matrices.expressions.matmul import merge_explicit
     >>> A = MatrixSymbol('A', 2, 2)
     >>> B = Matrix([[1, 1], [1, 1]])
     >>> C = Matrix([[1, 2], [3, 4]])
@@ -184,7 +181,7 @@ def merge_explicit(matmul):
 
 
 def xxinv(mul):
-    """ X * X.I -> I """
+    """ X * X.inverse() -> Identity """
     factor, matrices = mul.as_coeff_matrices()
     for i, (X, Y) in enumerate(zip(matrices[:-1], matrices[1:])):
         try:

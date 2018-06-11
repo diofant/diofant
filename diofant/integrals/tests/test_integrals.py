@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (Abs, Add, And, Ci, Derivative, DiracDelta, E, Eq,
-                     EulerGamma, Function, I, Integral, Interval, Lambda,
+                     EulerGamma, Expr, Function, I, Integral, Interval, Lambda,
                      LambertW, Matrix, Max, Min, Ne, O, Piecewise, Poly,
                      Rational, Si, Sum, Symbol, Tuple, acos, acosh, asin,
                      asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
@@ -101,6 +101,19 @@ def test_basics():
     assert Integral(x).is_commutative
     n = Symbol('n', commutative=False)
     assert Integral(n + x, x).is_commutative is False
+
+
+def test_diff_wrt():
+    class Test(Expr):
+        _diff_wrt = True
+        is_commutative = True
+
+    t = Test()
+    assert integrate(t + 1, t) == t**2/2 + t
+    assert integrate(t + 1, (t, 0, 1)) == Rational(3, 2)
+
+    pytest.raises(ValueError, lambda: integrate(x + 1, x + 1))
+    pytest.raises(ValueError, lambda: integrate(x + 1, (x + 1, 0, 1)))
 
 
 def test_basics_multiple():
@@ -357,8 +370,20 @@ def NS(e, n=15, **options):
     return sstr(sympify(e).evalf(n, **options), full_prec=True)
 
 
-@pytest.mark.slow
 def test_evalf_integrals():
+    assert NS(Integral(cos(x)/x, (x, 1, oo)), quad='osc') == '-0.337403922900968'
+
+    pytest.raises(ValueError,
+                  lambda: NS(Integral(acos(x)/x, (x, 1, oo)), quad='osc'))
+
+    assert NS(Integral(sin(x + I), (x, 0, pi/2))) == '1.54308063481524 + 1.17520119364380*I'
+
+    assert Integral(pi, (x, y, z)).evalf() == Integral(pi, (x, y, z))
+    assert Integral(pi, (x, y, y + z)).evalf() == Integral(pi, (x, y, y + z))
+
+
+@pytest.mark.slow
+def test_evalf_integrals_slow():
     assert NS(Integral(x, (x, 2, 5)), 15) == '10.5000000000000'
     gauss = Integral(exp(-x**2), (x, -oo, oo))
     assert NS(gauss, 15) == '1.77245385090552'
@@ -845,8 +870,10 @@ def test_sympyissue_4527():
 def test_sympyissue_4199():
     ypos = Symbol('y', positive=True)
     # TODO: Remove conds='none' below, let the assumption take care of it.
-    assert integrate(exp(-I*2*pi*ypos*x)*x, (x, -oo, oo), conds='none') == \
-        Integral(exp(-I*2*pi*ypos*x)*x, (x, -oo, oo))
+    assert (integrate(exp(-I*2*pi*ypos*x)*x, (x, -oo, oo), conds='none') ==
+            Integral(exp(-I*2*pi*ypos*x)*x, (x, -oo, oo)))
+    assert (integrate(exp(-I*2*pi*ypos*x)*x, (x, 0, oo), conds='none') ==
+            Integral(exp(-2*I*pi*x*ypos)*x, (x, 0, oo)))
 
 
 @pytest.mark.slow
@@ -1062,6 +1089,11 @@ def test_sympyissue_2708():
     integral_f = NonElementaryIntegral(f, (z, 2, 3))
     assert Integral(f, (z, 2, 3)).doit() == integral_f
     assert integrate(f + exp(z), (z, 2, 3)) == integral_f - exp(2) + exp(3)
+
+    assert integrate(2*f + exp(z), (z, 2, 3)) == 2*integral_f - exp(2) + exp(3)
+    assert (integrate(exp(1.2*n*s*z*(-t + z)/t), (z, 0, x)) ==
+            1.0*NonElementaryIntegral(exp(-1.2*n*s*z)*exp(1.2*n*s*z**2/t),
+                                      (z, 0, x)))
 
 
 def test_sympyissue_8368():

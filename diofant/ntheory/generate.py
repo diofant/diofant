@@ -24,7 +24,6 @@ class Sieve:
     an odd number that has not been sieved, the sieve is automatically
     extended up to that number.
 
-    >>> from diofant import sieve
     >>> from array import array # this line and next for doctest only
     >>> sieve._list = array('l', [2, 3, 5, 7, 11, 13])
 
@@ -47,7 +46,6 @@ class Sieve:
         Examples
         ========
 
-        >>> from diofant import sieve
         >>> from array import array # this line and next for doctest only
         >>> sieve._list = array('l', [2, 3, 5, 7, 11, 13])
 
@@ -91,7 +89,6 @@ class Sieve:
         Examples
         ========
 
-        >>> from diofant import sieve
         >>> from array import array # this line and next for doctest only
         >>> sieve._list = array('l', [2, 3, 5, 7, 11, 13])
 
@@ -109,7 +106,6 @@ class Sieve:
         Examples
         ========
 
-        >>> from diofant import sieve
         >>> print([i for i in sieve.primerange(7, 18)])
         [7, 11, 13, 17]
         """
@@ -143,7 +139,6 @@ class Sieve:
         Examples
         ========
 
-        >>> from diofant import sieve
         >>> sieve.search(25)
         (9, 10)
         >>> sieve.search(23)
@@ -204,7 +199,6 @@ def prime(nth):
     Examples
     ========
 
-    >>> from diofant import prime
     >>> prime(10)
     29
     >>> prime(1)
@@ -230,7 +224,6 @@ def primepi(n):
     Examples
     ========
 
-    >>> from diofant import primepi
     >>> primepi(25)
     9
 
@@ -259,7 +252,6 @@ def nextprime(n, ith=1):
     Potential primes are located at 6*j +/- 1. This
     property is used during searching.
 
-    >>> from diofant import nextprime
     >>> [(i, nextprime(i)) for i in range(10, 15)]
     [(10, 11), (11, 13), (12, 13), (13, 17), (14, 17)]
     >>> nextprime(2, ith=2)  # the 2nd prime after 2
@@ -318,7 +310,6 @@ def prevprime(n):
     Potential primes are located at 6*j +/- 1. This
     property is used during searching.
 
-    >>> from diofant import prevprime
     >>> [(i, prevprime(i)) for i in range(10, 15)]
     [(10, 7), (11, 7), (12, 11), (13, 11), (14, 13)]
 
@@ -390,7 +381,6 @@ def primerange(a, b):
     Examples
     ========
 
-    >>> from diofant import primerange, sieve
     >>> print([i for i in primerange(1, 30)])
     [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
 
@@ -447,7 +437,6 @@ def randprime(a, b):
     Examples
     ========
 
-    >>> from diofant import randprime, isprime
     >>> randprime(1, 30) #doctest: +SKIP
     13
     >>> isprime(randprime(1, 30))
@@ -474,8 +463,6 @@ def primorial(n, nth=True):
     """Returns the product of the first n primes (default) or
     the primes less than or equal to n (when ``nth=False``).
 
-    >>> from diofant.ntheory.generate import primorial, randprime, primerange
-    >>> from diofant import factorint, Mul, primefactors, sqrt
     >>> primorial(4) # the first 4 primes are 2, 3, 5, 7
     210
     >>> primorial(4, nth=False) # primes <= 4 are 2 and 3
@@ -542,8 +529,6 @@ def cycle_length(f, x0, nmax=None, values=False):
     is the cost of cycle detection with Brent's method; there are, however,
     generally less terms calculated than would have been calculated if the
     proper ending point were determined, e.g. by using Floyd's method.
-
-    >>> from diofant.ntheory.generate import cycle_length
 
     This will yield successive values of i <-- func(i):
 

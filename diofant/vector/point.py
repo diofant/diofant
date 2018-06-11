@@ -13,10 +13,10 @@ class Point(Basic):
         name = str(name)
         # Check the args first
         if not isinstance(position, Vector):
-            raise TypeError("position should be a Vector instance")
+            raise TypeError("position should be an instance of Vector, not %s" % type(position))
         if (not isinstance(parent_point, Point)
                 and parent_point is not None):
-            raise TypeError("parent_point should be a Point instance")
+            raise TypeError("parent_point should be an instance of Point, not %s" % type(parent_point))
         # Super class construction
         if parent_point is None:
             obj = super(Point, cls).__new__(cls, Symbol(name), position)
@@ -52,7 +52,7 @@ class Point(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import Point, CoordSysCartesian
+        >>> from diofant.vector import CoordSysCartesian
         >>> N = CoordSysCartesian('N')
         >>> p1 = N.origin.locate_new('p1', 10 * N.i)
         >>> N.origin.position_wrt(p1)
@@ -104,7 +104,7 @@ class Point(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import Point, CoordSysCartesian
+        >>> from diofant.vector import CoordSysCartesian
         >>> N = CoordSysCartesian('N')
         >>> p1 = N.origin.locate_new('p1', 10 * N.i)
         >>> p1.position_wrt(N.origin)
@@ -128,7 +128,7 @@ class Point(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import Point, CoordSysCartesian
+        >>> from diofant.vector import CoordSysCartesian
         >>> N = CoordSysCartesian('N')
         >>> p1 = N.origin.locate_new('p1', 10 * N.i)
         >>> p2 = p1.locate_new('p2', 5 * N.j)

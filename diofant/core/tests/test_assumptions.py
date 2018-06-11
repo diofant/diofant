@@ -433,15 +433,19 @@ def test_symbol_falsenonnegative():
     assert x.is_nonzero is True
 
 
-@pytest.mark.xfail
 def test_neg_symbol_falsenonnegative():
     x = -Symbol('x', nonnegative=False)
     assert x.is_positive is None
-    assert x.is_nonpositive is False  # this currently returns None
-    assert x.is_negative is False  # this currently returns None
+    assert x.is_negative is False
     assert x.is_nonnegative is None
-    assert x.is_zero is False  # this currently returns None
-    assert x.is_nonzero is True  # this currently returns None
+    assert x.is_zero is False
+    assert x.is_nonzero is True
+
+
+@pytest.mark.xfail
+def test_neg_symbol_falsenonnegative_xfail():
+    x = -Symbol('x', nonnegative=False)
+    assert x.is_nonpositive is False
 
 
 def test_symbol_falsenonnegative_real():
@@ -829,7 +833,7 @@ def test_inconsistent():
 
 
 def test_sympyissue_6631():
-    assert ((-1)**(I)).is_extended_real is True
+    assert ((-1)**I).is_extended_real is True
     assert ((-1)**(I*2)).is_extended_real is True
     assert ((-1)**(I/2)).is_extended_real is True
     assert ((-1)**(I*pi)).is_extended_real is True

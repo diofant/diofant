@@ -31,9 +31,6 @@ has solution `b(n) = B_m + C`.
 
 Then ``L = [-1, 1]`` and `f(n) = m n^(m-1)` and finally for `m=4`:
 
->>> from diofant import Symbol, bernoulli, rsolve_poly
->>> n = Symbol('n', integer=True)
-
 >>> rsolve_poly([-1, 1], 4*n**3, n)
 C0 + n**4 - 2*n**3 + n**2
 
@@ -92,9 +89,6 @@ def rsolve_poly(coeffs, f, n, **hints):
     Lets say that we would like to compute `m`-th Bernoulli polynomial
     up to a constant. For this we can use `b(n+1) - b(n) = m n^{m-1}`
     recurrence, which has solution `b(n) = B_m + C`. For example:
-
-    >>> from diofant import Symbol, rsolve_poly
-    >>> n = Symbol('n', integer=True)
 
     >>> rsolve_poly([-1, 1], 4*n**3, n)
     C0 + n**4 - 2*n**3 + n**2
@@ -312,17 +306,7 @@ def rsolve_poly(coeffs, f, n, **hints):
 
         if E != []:
             solutions = solve(E, *C)
-
-            if not solutions:
-                if homogeneous:
-                    if hints.get('symbols', False):
-                        return S.Zero, []
-                    else:
-                        return S.Zero
-                else:
-                    return
-            else:
-                solutions = solutions[0]
+            solutions = solutions[0]
         else:
             solutions = {}
 
@@ -380,8 +364,6 @@ def rsolve_ratio(coeffs, f, n, **hints):
     Examples
     ========
 
-    >>> from diofant.abc import x
-    >>> from diofant.solvers.recurr import rsolve_ratio
     >>> rsolve_ratio([-2*x**3 + x**2 + 2*x - 1, 2*x**3 + x**2 - 6*x,
     ... - 2*x**3 - 11*x**2 - 18*x - 9, 2*x**3 + 13*x**2 + 22*x + 8], 0, x)
     C2*(2*x - 3)/(2*(x**2 - 1))
@@ -414,10 +396,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
     h = Dummy('h')
 
     res = resultant(A, B.subs(n, n + h), n)
-
-    if not res.is_polynomial(h):
-        p, q = res.as_numer_denom()
-        res = quo(p, q, h)
+    assert res.is_polynomial(n)
 
     nni_roots = list(roots(res, h, filter='Z',
                            predicate=lambda r: r >= 0))
@@ -453,8 +432,6 @@ def rsolve_ratio(coeffs, f, n, **hints):
                 return simplify(result[0] / C), result[1]
             else:
                 return simplify(result / C)
-        else:
-            return
 
 
 def rsolve_hyper(coeffs, f, n, **hints):
@@ -493,9 +470,6 @@ def rsolve_hyper(coeffs, f, n, **hints):
 
     Examples
     ========
-
-    >>> from diofant.solvers import rsolve_hyper
-    >>> from diofant.abc import x
 
     >>> rsolve_hyper([-1, -1, 1], 0, x)
     C0*(1/2 + sqrt(5)/2)**x + C1*(-sqrt(5)/2 + 1/2)**x
@@ -689,8 +663,6 @@ def rsolve(f, y, init=None):
     .. math:: (n - 1) y(n + 2) - (n^2 + 3 n - 2) y(n + 1) +
               2 n (n + 1) y(n) = 0
 
-    >>> from diofant import Function, rsolve
-    >>> from diofant.abc import n
     >>> y = Function('y')
 
     >>> f = (n - 1)*y(n + 2) - (n**2 + 3*n - 2)*y(n + 1) + 2*n*(n + 1)*y(n)
@@ -698,7 +670,7 @@ def rsolve(f, y, init=None):
     >>> rsolve(f, y(n))
     2**n*C0 + C1*factorial(n)
 
-    >>> rsolve(f, y(n), { y(0):0, y(1):3 })
+    >>> rsolve(f, y(n), {y(0): 0, y(1): 3})
     3*2**n - 3*factorial(n)
 
     See Also

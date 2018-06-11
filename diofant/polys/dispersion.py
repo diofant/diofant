@@ -18,9 +18,6 @@ def dispersionset(p, q=None, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import poly
-    >>> from diofant.abc import x
-
     Dispersion set and dispersion of a simple polynomial:
 
     >>> fp = poly((x - 3)*(x + 3), x)
@@ -44,7 +41,6 @@ def dispersionset(p, q=None, *gens, **args):
 
     Computing the dispersion also works over field extensions:
 
-    >>> from diofant import sqrt
     >>> fp = poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
     >>> gp = poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
     >>> sorted(dispersionset(fp, gp))
@@ -143,9 +139,6 @@ def dispersion(p, q=None, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import poly
-    >>> from diofant.abc import x
-
     Dispersion set and dispersion of a simple polynomial:
 
     >>> fp = poly((x - 3)*(x + 3), x)
@@ -172,7 +165,6 @@ def dispersion(p, q=None, *gens, **args):
 
     Computing the dispersion also works over field extensions:
 
-    >>> from diofant import sqrt
     >>> fp = poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
     >>> gp = poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
     >>> sorted(dispersionset(fp, gp))

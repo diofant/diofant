@@ -93,7 +93,7 @@ def test_diofant_lambda():
     prec = 1e-15
     assert -prec < f(Rational(1, 5)).evalf() - Float(str(sin02)) < prec
     # arctan is in numpy module and should not be available
-    pytest.raises(NameError, lambda: lambdify(x, arctan(x), "diofant"))
+    pytest.raises(NameError, lambda: lambdify(x, arctan(x), "diofant"))  # noqa: F821
 
 
 @conserve_mpmath_dps
@@ -213,7 +213,7 @@ def test_sqrt():
 
 
 def test_trig():
-    f = lambdify([x], [cos(x), sin(x)])
+    f = lambdify([x], [cos(x), sin(x)], 'math')
     d = f(pi)
     prec = 1e-11
     assert -prec < d[0] + 1 < prec
@@ -243,7 +243,7 @@ def test_vector_discontinuous():
 
 
 def test_trig_symbolic():
-    f = lambdify([x], [cos(x), sin(x)])
+    f = lambdify([x], [cos(x), sin(x)], 'math')
     d = f(pi)
     assert abs(d[0] + 1) < 0.0001
     assert abs(d[1] - 0) < 0.0001
@@ -307,14 +307,14 @@ def test_numpy_matrix():
 @pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_transpose():
     A = Matrix([[1, x], [0, 1]])
-    f = lambdify((x), A.T, modules="numpy")
+    f = lambdify(x, A.T, modules="numpy")
     numpy.testing.assert_array_equal(f(2), numpy.array([[1, 0], [2, 1]]))
 
 
 @pytest.mark.skipif(numpy is None, reason="no numpy")
 def test_numpy_inverse():
     A = Matrix([[1, x], [0, 1]])
-    f = lambdify((x), A**-1, modules="numpy")
+    f = lambdify(x, A**-1, modules="numpy")
     numpy.testing.assert_array_equal(f(2), numpy.array([[1, -2], [0,  1]]))
 
 
@@ -325,6 +325,12 @@ def test_numpy_old_matrix():
     f = lambdify((x, y, z), A, [{'ImmutableMatrix': numpy.matrix}, 'numpy'])
     numpy.testing.assert_allclose(f(1, 2, 3), sol_arr)
     assert isinstance(f(1, 2, 3), numpy.matrix)
+
+
+@pytest.mark.skipif(numpy is None, reason="no numpy")
+def test_python_div_zero_sympyissue_11306():
+    p = Piecewise((1 / x, y < -1), (x, y <= 1), (1 / x, True))
+    lambdify([x, y], p, modules='numpy')(0, 1)
 
 
 @pytest.mark.skipif(numpy is None, reason="no numpy")
@@ -343,7 +349,7 @@ def test_numpy_piecewise():
 def test_numpy_logical_ops():
     and_func = lambdify((x, y), And(x, y), modules="numpy")
     or_func = lambdify((x, y), Or(x, y), modules="numpy")
-    not_func = lambdify((x), Not(x), modules="numpy")
+    not_func = lambdify(x, Not(x), modules="numpy")
     arr1 = numpy.array([True, True])
     arr2 = numpy.array([False, True])
     numpy.testing.assert_array_equal(and_func(arr1, arr2), numpy.array([False, True]))

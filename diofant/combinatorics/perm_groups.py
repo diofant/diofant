@@ -31,11 +31,7 @@ class PermutationGroup(Basic):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
     >>> Permutation.print_cyclic = True
-    >>> from diofant.combinatorics.permutations import Cycle
-    >>> from diofant.combinatorics.polyhedron import Polyhedron
-    >>> from diofant.combinatorics.perm_groups import PermutationGroup
 
     The permutations corresponding to motion of the front, right and
     bottom face of a 2x2 Rubik's cube are defined:
@@ -172,7 +168,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation, PermutationGroup
         >>> p = Permutation(1, 2, 3)
         >>> Permutation(3) in PermutationGroup(p)
         True
@@ -193,8 +188,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> p = Permutation(0, 1, 2, 3, 4, 5)
         >>> G = PermutationGroup([p, p**2])
         >>> H = PermutationGroup([p**2, p])
@@ -241,8 +234,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
-        >>> from diofant.combinatorics.named_groups import CyclicGroup
         >>> G = CyclicGroup(5)
         >>> H = G*G
         >>> H
@@ -427,7 +418,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation, PermutationGroup
         >>> G = PermutationGroup([Permutation(0, 1, 3)(2, 4)])
         >>> G.base
         [0, 2]
@@ -480,9 +470,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.named_groups import SymmetricGroup
         >>> from diofant.combinatorics.testutil import _verify_bsgs
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> S = SymmetricGroup(4)
         >>> S.schreier_sims()
         >>> S.base
@@ -587,7 +575,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.named_groups import SymmetricGroup
         >>> S = SymmetricGroup(4)
         >>> S.basic_orbits
         [[0, 1, 2, 3], [1, 2, 3], [2, 3]]
@@ -615,7 +602,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.named_groups import AlternatingGroup
         >>> A = AlternatingGroup(4)
         >>> A.schreier_sims()
         >>> A.base
@@ -660,7 +646,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.named_groups import AlternatingGroup
         >>> A = AlternatingGroup(4)
         >>> A.basic_transversals
         [{0: Permutation(3),
@@ -695,8 +680,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
-        >>> from diofant.combinatorics.named_groups import DihedralGroup
         >>> D = DihedralGroup(4)
         >>> G = D.center()
         >>> G.order()
@@ -744,8 +727,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.named_groups import (SymmetricGroup,
-        ... CyclicGroup)
         >>> S = SymmetricGroup(6)
         >>> C = CyclicGroup(6)
         >>> H = S.centralizer(C)
@@ -847,8 +828,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.named_groups import (SymmetricGroup,
-        ... AlternatingGroup)
         >>> S = SymmetricGroup(5)
         >>> A = AlternatingGroup(5)
         >>> G = S.commutator(S, A)
@@ -897,7 +876,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation, PermutationGroup
         >>> Permutation.print_cyclic = True
         >>> a = Permutation(0, 1, 3, 7, 6, 4)(2, 5)
         >>> b = Permutation(0, 1, 3, 2)(4, 5, 7, 6)
@@ -977,9 +955,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> a = Permutation(0, 1, 3, 7, 6, 4)(2, 5)
         >>> b = Permutation(0, 1, 3, 2)(4, 5, 7, 6)
         >>> G = PermutationGroup([a, b])
@@ -1045,9 +1021,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> a = Permutation([1, 0, 2])
         >>> G = PermutationGroup([a])
         >>> G.degree
@@ -1074,7 +1048,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         """
         return set(list(islice(self.generate(), None)))
 
@@ -1096,8 +1069,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.named_groups import (SymmetricGroup,
-        ... AlternatingGroup, DihedralGroup)
         >>> A = AlternatingGroup(5)
         >>> len(A.derived_series())
         1
@@ -1135,9 +1106,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> a = Permutation([1, 0, 2, 4, 3])
         >>> b = Permutation([0, 1, 3, 2, 4])
         >>> G = PermutationGroup([a, b])
@@ -1183,10 +1152,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
-        >>> from diofant.combinatorics import PermutationGroup
-        >>> from diofant.combinatorics.polyhedron import tetrahedron
 
         The permutation group given in the tetrahedron object is also
         true groups:
@@ -1237,9 +1203,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> a = Permutation([0, 2, 1, 3])
         >>> b = Permutation([0, 2, 3, 1])
         >>> g = PermutationGroup([a, b])
@@ -1292,9 +1256,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> a = Permutation([0, 2, 1, 3])
         >>> b = Permutation([0, 2, 3, 1])
         >>> g = PermutationGroup([a, b])
@@ -1362,9 +1324,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> a = Permutation([0, 2, 1])
         >>> b = Permutation([1, 0, 2])
         >>> G = PermutationGroup([a, b])
@@ -1388,9 +1348,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
 
         >>> a = Permutation(1, 2)
         >>> b = Permutation(2, 3, 1)
@@ -1442,9 +1400,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> a = Permutation([0, 2, 1])
         >>> b = Permutation([1, 0, 2])
         >>> G = PermutationGroup([a, b])
@@ -1495,8 +1451,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
-        >>> from diofant.combinatorics.named_groups import DihedralGroup
         >>> D = DihedralGroup(10)
         >>> D.is_alt_sym()
         False
@@ -1543,8 +1497,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.named_groups import (SymmetricGroup,
-        ... CyclicGroup)
         >>> C = CyclicGroup(6)
         >>> C.is_nilpotent
         True
@@ -1585,9 +1537,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> a = Permutation([1, 2, 0])
         >>> b = Permutation([1, 0, 2])
         >>> G = PermutationGroup([a, b])
@@ -1639,8 +1589,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
-        >>> from diofant.combinatorics.named_groups import DihedralGroup
         >>> D = DihedralGroup(10)
         >>> D.is_primitive()
         False
@@ -1680,7 +1628,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.named_groups import SymmetricGroup
         >>> S = SymmetricGroup(3)
         >>> S.is_solvable
         True
@@ -1714,10 +1661,6 @@ class PermutationGroup(Basic):
 
         Examples
         ========
-
-        >>> from diofant.combinatorics import Permutation, PermutationGroup
-        >>> from diofant.combinatorics.named_groups import (SymmetricGroup,
-        ...    CyclicGroup)
 
         Testing is strict by default: the degree of each group must be the
         same:
@@ -1773,8 +1716,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> a = Permutation([0, 2, 1, 3])
         >>> b = Permutation([2, 0, 1, 3])
         >>> G1 = PermutationGroup([a, b])
@@ -1819,8 +1760,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> G = PermutationGroup([Permutation([0, 1, 2])])
         >>> G.is_trivial
         True
@@ -1847,8 +1786,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.named_groups import (AlternatingGroup,
-        ... DihedralGroup)
         >>> A = AlternatingGroup(4)
         >>> len(A.lower_central_series())
         2
@@ -1886,8 +1823,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> G = PermutationGroup([Permutation([0, 2, 1, 3])])
         >>> G.max_div
         2
@@ -1941,8 +1876,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
-        >>> from diofant.combinatorics.named_groups import DihedralGroup
         >>> D = DihedralGroup(10)
         >>> D.minimal_block([0, 5])
         [0, 6, 2, 8, 4, 0, 6, 2, 8, 4]
@@ -2016,8 +1949,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.named_groups import (SymmetricGroup,
-        ... CyclicGroup, AlternatingGroup)
         >>> S = SymmetricGroup(5)
         >>> C = CyclicGroup(5)
         >>> G = S.normal_closure(C)
@@ -2110,8 +2041,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> a = Permutation([1, 2, 0, 4, 5, 6, 3])
         >>> G = PermutationGroup([a])
         >>> G.orbit(0)
@@ -2137,10 +2066,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
-        >>> from diofant.combinatorics.named_groups import AlternatingGroup
         >>> G = AlternatingGroup(5)
         >>> G.orbit_rep(0, 4)
         Permutation(0, 4, 1, 2, 3)
@@ -2180,10 +2106,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
-        >>> from diofant.combinatorics.named_groups import DihedralGroup
         >>> G = DihedralGroup(6)
         >>> G.orbit_transversal(0)
         [Permutation(5),
@@ -2208,8 +2131,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> a = Permutation(1, 5)(2, 3)(4, 0, 6)
         >>> b = Permutation(1, 5)(3, 4)(2, 6, 0)
         >>> G = PermutationGroup([a, b])
@@ -2228,9 +2149,6 @@ class PermutationGroup(Basic):
 
         Examples
         ========
-
-        >>> from diofant.combinatorics.permutations import Permutation
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
 
         >>> a = Permutation([1, 0, 2])
         >>> G = PermutationGroup([a])
@@ -2285,7 +2203,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.named_groups import SymmetricGroup
         >>> S = SymmetricGroup(7)
         >>> Stab = S.pointwise_stabilizer([2, 3, 5])
         >>> Stab.is_subgroup(S.stabilizer(2).stabilizer(3).stabilizer(5))
@@ -2339,9 +2256,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> a, b = [Permutation([1, 0, 3, 2]), Permutation([1, 3, 0, 2])]
         >>> G = PermutationGroup([a, b])
         >>> G.make_perm(1, [0])
@@ -2461,8 +2376,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> a = Permutation([0, 2, 1])
         >>> b = Permutation([1, 0, 2])
         >>> G = PermutationGroup([a, b])
@@ -2513,8 +2426,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.named_groups import AlternatingGroup
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> from diofant.combinatorics.testutil import _verify_bsgs
         >>> A = AlternatingGroup(7)
         >>> base = [2, 3]
@@ -2666,9 +2577,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> from diofant.combinatorics.testutil import _verify_bsgs
-        >>> from diofant.combinatorics.named_groups import SymmetricGroup
         >>> S = SymmetricGroup(5)
         >>> base, strong_gens = S.schreier_sims_random(consec_succ=5)
         >>> _verify_bsgs(S, base, strong_gens)  # doctest: +SKIP
@@ -2780,8 +2689,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> a = Permutation([2, 4, 6, 3, 1, 5, 0])
         >>> b = Permutation([0, 1, 3, 5, 4, 6, 2])
         >>> G = PermutationGroup([a, b])
@@ -2821,10 +2728,7 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
-        >>> from diofant.combinatorics.named_groups import DihedralGroup
         >>> G = DihedralGroup(6)
         >>> G.stabilizer(5)
         PermutationGroup([
@@ -2855,7 +2759,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.named_groups import DihedralGroup
         >>> D = DihedralGroup(4)
         >>> D.strong_gens
         [Permutation(0, 1, 2, 3), Permutation(0, 3)(1, 2), Permutation(1, 3)]
@@ -2912,9 +2815,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.named_groups import (SymmetricGroup,
-        ... AlternatingGroup)
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
         >>> from diofant.combinatorics.testutil import _verify_bsgs
         >>> S = SymmetricGroup(7)
         >>> prop_even = lambda x: x.is_even
@@ -3139,8 +3039,6 @@ class PermutationGroup(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.perm_groups import PermutationGroup
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> a = Permutation([1, 2, 0])
         >>> b = Permutation([1, 0, 2])
         >>> G = PermutationGroup([a, b])
@@ -3162,7 +3060,7 @@ class PermutationGroup(Basic):
             # if G_k is transitive on the subset excluding b_0,...,b_(k-1)
             # then G is (k+1)-transitive
             for i in range(n):
-                orb = G.orbit((i))
+                orb = G.orbit(i)
                 if len(orb) != n - i:
                     self._transitivity_degree = i
                     return i
@@ -3192,8 +3090,6 @@ def _orbit(degree, generators, alpha, action='tuples'):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
-    >>> from diofant.combinatorics.perm_groups import PermutationGroup, _orbit
     >>> a = Permutation([1, 2, 0, 4, 5, 6, 3])
     >>> G = PermutationGroup([a])
     >>> _orbit(G.degree, G.generators, 0)
@@ -3256,8 +3152,6 @@ def _orbits(degree, generators):
     Examples
     ========
 
-    >>> from diofant.combinatorics.permutations import Permutation
-    >>> from diofant.combinatorics.perm_groups import PermutationGroup, _orbits
     >>> a = Permutation([0, 2, 1])
     >>> b = Permutation([1, 0, 2])
     >>> _orbits(a.size, [a, b])
@@ -3294,10 +3188,7 @@ def _orbit_transversal(degree, generators, alpha, pairs, af=False):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
     >>> Permutation.print_cyclic = True
-    >>> from diofant.combinatorics.named_groups import DihedralGroup
-    >>> from diofant.combinatorics.perm_groups import _orbit_transversal
     >>> G = DihedralGroup(6)
     >>> _orbit_transversal(G.degree, G.generators, 0, False)
         [Permutation(5),
@@ -3342,10 +3233,7 @@ def _stabilizer(degree, generators, alpha):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
     >>> Permutation.print_cyclic = True
-    >>> from diofant.combinatorics.perm_groups import _stabilizer
-    >>> from diofant.combinatorics.named_groups import DihedralGroup
     >>> G = DihedralGroup(6)
     >>> _stabilizer(G.degree, G.generators, 5)
     [Permutation(5)(0, 4)(1, 3), Permutation(5)]

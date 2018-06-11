@@ -1,20 +1,15 @@
 """Solvers of systems of polynomial equations. """
 
 from ..matrices import Matrix
-from ..polys import groebner, sring
-from ..polys.polyerrors import (CoercionFailed, ComputationFailed,
-                                PolificationFailed)
+from ..polys import groebner, poly, sring
+from ..polys.polyerrors import ComputationFailed, PolificationFailed
 from ..polys.polytools import parallel_poly_from_expr
 from ..polys.solvers import solve_lin_sys
 from ..simplify import simplify
-from ..utilities import default_sort_key, subsets
+from ..utilities import default_sort_key
 
 
 __all__ = ('solve_linear_system', 'solve_poly_system')
-
-
-class SolveFailed(Exception):
-    """Raised when solver's conditions weren't met. """
 
 
 def solve_linear_system(system, *symbols, **flags):
@@ -45,20 +40,18 @@ def solve_linear_system(system, *symbols, **flags):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
-
     Solve the following system::
 
            x + 4 y ==  2
         -2 x +   y == 14
 
-    >>> system = Matrix(( (1, 4, 2), (-2, 1, 14)))
+    >>> system = Matrix(((1, 4, 2), (-2, 1, 14)))
     >>> solve_linear_system(system, x, y)
     {x: -6, y: 2}
 
     A degenerate system returns an empty dictionary.
 
-    >>> system = Matrix(( (0,0,0), (0,0,0) ))
+    >>> system = Matrix(((0, 0, 0), (0, 0, 0)))
     >>> solve_linear_system(system, x, y)
     {}
 
@@ -85,131 +78,94 @@ def solve_linear_system(system, *symbols, **flags):
     return res
 
 
-def solve_poly_system(seq, *gens, **args):
+def solve_poly_system(eqs, *gens, **args):
     """
     Solve a system of polynomial equations.
 
-    Examples
-    ========
-
-    >>> from diofant.abc import x, y
-
-    >>> solve_poly_system([x*y - 2*y, 2*y**2 - x**2], x, y)
-    [{x: 0, y: 0}, {x: 2, y: -sqrt(2)}, {x: 2, y: sqrt(2)}]
-    """
-    try:
-        polys, opt = parallel_poly_from_expr(seq, *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('solve_poly_system', len(seq), exc)
-
-    return solve_generic(polys, opt)
-
-
-def solve_generic(polys, opt):
-    """
-    Solve a generic system of polynomial equations.
-
-    Returns all possible solutions over C[x_1, x_2, ..., x_m] of a
-    set F = { f_1, f_2, ..., f_n } of polynomial equations,  using
-    Gröbner basis approach. For now only zero-dimensional systems
-    are supported, which means F can have at most a finite number
-    of solutions.
-
-    The algorithm works by the fact that, supposing G is the basis
-    of F with respect to an elimination order  (here lexicographic
-    order is used), G and F generate the same ideal, they have the
-    same set of solutions. By the elimination property,  if G is a
-    reduced, zero-dimensional Gröbner basis, then there exists an
-    univariate polynomial in G (in its last variable). This can be
-    solved by computing its roots. Substituting all computed roots
-    for the last (eliminated) variable in other elements of G, new
-    polynomial system is generated. Applying the above procedure
-    recursively, a finite number of solutions can be found.
+    Polynomial system may have finite number of solutions or
+    infinitely many (positive-dimensional systems).
 
     References
     ==========
 
-    .. [Buchberger01] B. Buchberger, Gröbner Bases: A Short
-    Introduction for Systems Theorists, In: R. Moreno-Diaz,
-    B. Buchberger, J.L. Freire, Proceedings of EUROCAST'01,
-    February, 2001
-
-    .. [Cox97] D. Cox, J. Little, D. O'Shea, Ideals, Varieties
-    and Algorithms, Springer, Second Edition, 1997, pp. 112
+    .. [Cox97] D. Cox, J. Little, D. O'Shea, Ideals, Varieties and
+               Algorithms, Springer, Second Edition, 1997, pp. 112.
 
     Examples
     ========
 
-    >>> from diofant.polys import Poly, Options
-    >>> from diofant.abc import x, y
-    >>> NewOption = Options((x, y), {'domain': 'ZZ'})
+    >>> solve_poly_system([x*y - 2*y, 2*y**2 - x**2], x, y)
+    [{x: 0, y: 0}, {x: 2, y: -sqrt(2)}, {x: 2, y: sqrt(2)}]
 
-    >>> a = Poly(x - y + 5, x, y, domain='ZZ')
-    >>> b = Poly(x + y - 3, x, y, domain='ZZ')
-    >>> solve_generic([a, b], NewOption)
-    [{x: -1, y: 4}]
-
-    >>> a = Poly(x - 2*y + 5, x, y, domain='ZZ')
-    >>> b = Poly(2*x - y - 3, x, y, domain='ZZ')
-    >>> solve_generic([a, b], NewOption)
-    [{x: 11/3, y: 13/3}]
-
-    >>> a = Poly(x**2 + y, x, y, domain='ZZ')
-    >>> b = Poly(x + y*4, x, y, domain='ZZ')
-    >>> solve_generic([a, b], NewOption)
-    [{x: 0, y: 0}, {x: 1/4, y: -1/16}]
+    >>> solve_poly_system([x*y], x, y)
+    [{x: 0}, {y: 0}]
     """
+    try:
+        polys, opt = parallel_poly_from_expr(eqs, *gens, **args)
+    except PolificationFailed as exc:
+        raise ComputationFailed('solve_poly_system', len(eqs), exc)
 
     def _solve_reduced_system(system, gens):
         """Recursively solves reduced polynomial systems. """
 
         basis = groebner(system, gens, polys=True)
-
-        if len(basis) == 1 and basis[0].is_ground:
-            return []
-
-        if not basis.is_zero_dimensional:
-            solutions = []
-            solved_syms = set()
-            for syms in subsets(gens, min(len(system), len(basis))):
-                res = _solve_reduced_system(system, syms)
-                for r in res:
-                    if not any(solved_syms & v.free_symbols
-                               for v in r.values()):
-                        solved_syms.update(syms)
-                        solutions.append(r)
-            return solutions
-
-        f = basis[-1]
-        gens = f.gens
-        gen = gens[-1]
-
-        zeros = {k.doit() for k in f.ltrim(gen).all_roots()}
-
-        if len(basis) == 1:
-            return [{gen: zero} for zero in zeros]
-
+        dim = basis.dimension
         solutions = []
 
-        for zero in zeros:
-            new_system = []
-            new_gens = gens[:-1]
+        if dim is None:
+            return []
 
-            for b in basis[:-1]:
-                eq = b.eval(gen, zero)
+        elif dim > 0:
+            max_iset = max(basis.independent_sets, key=len)
+            new_gens = [g for g in gens if g not in max_iset]
 
-                if not eq.is_zero:
-                    new_system.append(eq)
+            # After removing variables from the maximal set of independent
+            # variables for the given ideal - the new ideal is of dimension
+            # zero with the independent variables as parameters in the
+            # coefficient domain.
+            solutions.extend(_solve_reduced_system(system, new_gens))
 
-            for solution in _solve_reduced_system(new_system, new_gens):
-                solution[gen] = zero
-                solutions.append(solution)
+            # Now we should examine cases when leading coefficient of
+            # some polynomial in the system is zero.
+            for p in basis.polys:
+                lc = poly(p, *new_gens).LC(order=basis.order)
+                for special in _solve_reduced_system(system + [lc], gens):
+                    # This heuristics wipe out some redundant special
+                    # solutions, which already there in solutions after
+                    # solving the system with new set of generators.
+                    if all(any((_.subs(s) - _).subs(special).simplify()
+                               for _ in gens) for s in solutions):
+                        solutions.insert(0, special)
+
+        else:
+            # By the elimination property, the last polynomial should
+            # be univariate in the last variable.
+            f = basis[-1]
+            gen = gens[-1]
+
+            zeros = {k.doit() for k in f.ltrim(gen).all_roots()}
+
+            if len(basis) == 1:
+                return [{gen: zero} for zero in zeros]
+
+            # Now substitute zeros for the last variable and
+            # solve recursively new obtained zero-dimensional systems.
+            for zero in zeros:
+                new_system = []
+                new_gens = gens[:-1]
+
+                for b in basis[:-1]:
+                    eq = b.eval(gen, zero)
+
+                    if not eq.is_zero:
+                        new_system.append(eq)
+
+                for solution in _solve_reduced_system(new_system, new_gens):
+                    solution[gen] = zero
+                    solutions.append(solution)
 
         return solutions
 
-    try:
-        result = _solve_reduced_system(polys, opt.gens)
-    except CoercionFailed:  # pragma: no cover
-        raise NotImplementedError
+    result = _solve_reduced_system(polys, opt.gens)
 
     return sorted(result, key=default_sort_key)

@@ -29,7 +29,6 @@ def continued_fraction_periodic(p, q, d=0):
     Examples
     ========
 
-    >>> from diofant.ntheory.continued_fraction import continued_fraction_periodic
     >>> continued_fraction_periodic(3, 2, 7)
     [2, [1, 4, 1, 1]]
 
@@ -114,7 +113,6 @@ def continued_fraction_reduce(cf):
     Examples
     ========
 
-    >>> from diofant.ntheory.continued_fraction import continued_fraction_reduce
     >>> continued_fraction_reduce([1, 2, 3, 4, 5])
     225/157
     >>> continued_fraction_reduce([-2, 1, 9, 7, 1, 2])
@@ -125,7 +123,6 @@ def continued_fraction_reduce(cf):
     (sqrt(21) + 287)/238
     >>> continued_fraction_reduce([[1]])
     1/2 + sqrt(5)/2
-    >>> from diofant.ntheory.continued_fraction import continued_fraction_periodic
     >>> continued_fraction_reduce(continued_fraction_periodic(8, 5, 13))
     (sqrt(13) + 8)/5
 
@@ -168,9 +165,6 @@ def continued_fraction_iterator(x):
 
     Examples
     ========
-
-    >>> from diofant.core import Rational, pi
-    >>> from diofant.ntheory.continued_fraction import continued_fraction_iterator
 
     >>> list(continued_fraction_iterator(Rational(3, 8)))
     [0, 2, 1, 2]
@@ -218,11 +212,6 @@ def continued_fraction_convergents(cf):
 
     Examples
     ========
-
-    >>> from diofant.core import Rational, pi
-    >>> from diofant import S
-    >>> from diofant.ntheory.continued_fraction import (
-    ...     continued_fraction_convergents, continued_fraction_iterator)
 
     >>> list(continued_fraction_convergents([0, 2, 1, 2]))
     [0, 1/2, 1/3, 3/8]

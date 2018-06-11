@@ -33,9 +33,6 @@ class erf(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, erf
-    >>> from diofant.abc import z
-
     Several special values are known:
 
     >>> erf(0)
@@ -56,13 +53,11 @@ class erf(Function):
 
     The error function obeys the mirror symmetry:
 
-    >>> from diofant import conjugate
     >>> conjugate(erf(z))
     erf(conjugate(z))
 
     Differentiation with respect to z is supported:
 
-    >>> from diofant import diff
     >>> diff(erf(z), z)
     2*E**(-z**2)/sqrt(pi)
 
@@ -89,7 +84,7 @@ class erf(Function):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Error_function
-    .. [2] http://dlmf.nist.gov/7
+    .. [2] https://dlmf.nist.gov/7
     .. [3] http://mathworld.wolfram.com/Erf.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/Erf
     """
@@ -227,9 +222,6 @@ class erfc(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, erfc
-    >>> from diofant.abc import z
-
     Several special values are known:
 
     >>> erfc(0)
@@ -245,13 +237,11 @@ class erfc(Function):
 
     The error function obeys the mirror symmetry:
 
-    >>> from diofant import conjugate
     >>> conjugate(erfc(z))
     erfc(conjugate(z))
 
     Differentiation with respect to z is supported:
 
-    >>> from diofant import diff
     >>> diff(erfc(z), z)
     -2*E**(-z**2)/sqrt(pi)
 
@@ -283,7 +273,7 @@ class erfc(Function):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Error_function
-    .. [2] http://dlmf.nist.gov/7
+    .. [2] https://dlmf.nist.gov/7
     .. [3] http://mathworld.wolfram.com/Erfc.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/Erfc
     """
@@ -421,9 +411,6 @@ class erfi(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, erfi
-    >>> from diofant.abc import z
-
     Several special values are known:
 
     >>> erfi(0)
@@ -442,13 +429,11 @@ class erfi(Function):
     >>> erfi(-z)
     -erfi(z)
 
-    >>> from diofant import conjugate
     >>> conjugate(erfi(z))
     erfi(conjugate(z))
 
     Differentiation with respect to z is supported:
 
-    >>> from diofant import diff
     >>> diff(erfi(z), z)
     2*E**(z**2)/sqrt(pi)
 
@@ -595,9 +580,6 @@ class erf2(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, erf2
-    >>> from diofant.abc import x, y
-
     Several special values are known:
 
     >>> erf2(0, 0)
@@ -620,13 +602,11 @@ class erf2(Function):
 
     The error function obeys the mirror symmetry:
 
-    >>> from diofant import conjugate
     >>> conjugate(erf2(x, y))
     erf2(conjugate(x), conjugate(y))
 
     Differentiation with respect to x, y is supported:
 
-    >>> from diofant import diff
     >>> diff(erf2(x, y), x)
     -2*E**(-x**2)/sqrt(pi)
     >>> diff(erf2(x, y), y)
@@ -729,9 +709,6 @@ class erfinv(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, erfinv
-    >>> from diofant.abc import x
-
     Several special values are known:
 
     >>> erfinv(0)
@@ -741,7 +718,6 @@ class erfinv(Function):
 
     Differentiation with respect to x is supported:
 
-    >>> from diofant import diff
     >>> diff(erfinv(x), x)
     E**(erfinv(x)**2)*sqrt(pi)/2
 
@@ -811,9 +787,6 @@ class erfcinv (Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, erfcinv
-    >>> from diofant.abc import x
-
     Several special values are known:
 
     >>> erfcinv(1)
@@ -823,7 +796,6 @@ class erfcinv (Function):
 
     Differentiation with respect to x is supported:
 
-    >>> from diofant import diff
     >>> diff(erfcinv(x), x)
     -E**(erfcinv(x)**2)*sqrt(pi)/2
 
@@ -879,9 +851,6 @@ class erf2inv(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, erf2inv, erfinv, erfcinv
-    >>> from diofant.abc import x, y
-
     Several special values are known:
 
     >>> erf2inv(0, 0)
@@ -897,7 +866,6 @@ class erf2inv(Function):
 
     Differentiation with respect to x and y is supported:
 
-    >>> from diofant import diff
     >>> diff(erf2inv(x, y), x)
     E**(-x**2 + erf2inv(x, y)**2)
     >>> diff(erf2inv(x, y), y)
@@ -992,9 +960,6 @@ class Ei(Function):
     Examples
     ========
 
-    >>> from diofant import Ei, polar_lift, exp_polar, I, pi
-    >>> from diofant.abc import x
-
     The exponential integral in Diofant is strictly undefined for negative values
     of the argument. For convenience, exponential integrals with negative
     arguments are immediately converted into an expression that agrees with
@@ -1026,7 +991,6 @@ class Ei(Function):
     The exponential integral is related to many other special functions.
     For example:
 
-    >>> from diofant import uppergamma, expint, Shi
     >>> Ei(x).rewrite(expint)
     -expint(1, x*exp_polar(I*pi)) - I*pi
     >>> Ei(x).rewrite(Shi)
@@ -1048,7 +1012,7 @@ class Ei(Function):
     References
     ==========
 
-    .. [1] http://dlmf.nist.gov/6.6
+    .. [1] https://dlmf.nist.gov/6.6
     .. [2] https//en.wikipedia.org/wiki/Exponential_integral
     .. [3] Abramowitz & Stegun, section 5: http://people.math.sfu.ca/~cbm/aands/page_228.htm
 
@@ -1056,6 +1020,13 @@ class Ei(Function):
 
     @classmethod
     def eval(cls, z):
+        if z is S.Zero:
+            return -oo
+        elif z is oo:
+            return oo
+        elif z is -oo:
+            return S.Zero
+
         if not z.is_polar and z.is_negative:
             # Note: is this a good idea?
             return Ei(polar_lift(z)) - pi*I
@@ -1140,8 +1111,7 @@ class expint(Function):
     Examples
     ========
 
-    >>> from diofant import expint, Rational
-    >>> from diofant.abc import nu, z
+    >>> from diofant.abc import nu
 
     Differentiation is supported. Differentiation with respect to z explains
     further the name: for integral orders, the exponential integral is an
@@ -1171,20 +1141,17 @@ class expint(Function):
     At positive integer orders it can be rewritten in terms of exponentials
     and expint(1, z). Use expand_func() to do this:
 
-    >>> from diofant import expand_func
     >>> expand_func(expint(5, z))
     z**4*expint(1, z)/24 + E**(-z)*(-z**3 + z**2 - 2*z + 6)/24
 
     The generalized exponential integral is essentially equivalent to the
     incomplete gamma function:
 
-    >>> from diofant import uppergamma
     >>> expint(nu, z).rewrite(uppergamma)
     z**(nu - 1)*uppergamma(-nu + 1, z)
 
     As such it is branched at the origin:
 
-    >>> from diofant import exp_polar, pi, I
     >>> expint(4, z*exp_polar(2*pi*I))
     I*pi*z**3/3 + expint(4, z)
     >>> expint(nu, z*exp_polar(2*pi*I))
@@ -1206,7 +1173,7 @@ class expint(Function):
     References
     ==========
 
-    .. [1] http://dlmf.nist.gov/8.19
+    .. [1] https://dlmf.nist.gov/8.19
     .. [2] http://functions.wolfram.com/GammaBetaErf/ExpIntegralE/
     .. [3] https//en.wikipedia.org/wiki/Exponential_integral
     """
@@ -1311,9 +1278,6 @@ class li(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, li
-    >>> from diofant.abc import z
-
     Several special values are known:
 
     >>> li(0)
@@ -1325,7 +1289,6 @@ class li(Function):
 
     Differentiation with respect to z is supported:
 
-    >>> from diofant import diff
     >>> diff(li(z), z)
     1/log(z)
 
@@ -1334,7 +1297,6 @@ class li(Function):
 
     The logarithmic integral can also be defined in terms of Ei:
 
-    >>> from diofant import Ei
     >>> li(z).rewrite(Ei)
     Ei(log(z))
     >>> diff(li(z).rewrite(Ei), z)
@@ -1358,7 +1320,6 @@ class li(Function):
     Further transformations include rewriting `li` in terms of
     the trigonometric integrals `Si`, `Ci`, `Shi` and `Chi`:
 
-    >>> from diofant import Si, Ci, Shi, Chi
     >>> li(z).rewrite(Si)
     -log(I*log(z)) - log(1/log(z))/2 + log(log(z))/2 + Ci(I*log(z)) + Shi(log(z))
     >>> li(z).rewrite(Ci)
@@ -1385,7 +1346,7 @@ class li(Function):
 
     .. [1] https//en.wikipedia.org/wiki/Logarithmic_integral
     .. [2] http://mathworld.wolfram.com/LogarithmicIntegral.html
-    .. [3] http://dlmf.nist.gov/6
+    .. [3] https://dlmf.nist.gov/6
     .. [4] http://mathworld.wolfram.com/SoldnersConstant.html
     """
 
@@ -1456,9 +1417,6 @@ class Li(Function):
     Examples
     ========
 
-    >>> from diofant import I, oo, Li
-    >>> from diofant.abc import z
-
     The following special value is known:
 
     >>> Li(2)
@@ -1466,13 +1424,11 @@ class Li(Function):
 
     Differentiation with respect to z is supported:
 
-    >>> from diofant import diff
     >>> diff(Li(z), z)
     1/log(z)
 
     The shifted logarithmic integral can be written in terms of `li(z)`:
 
-    >>> from diofant import li
     >>> Li(z).rewrite(li)
     li(z) - li(2)
 
@@ -1502,7 +1458,7 @@ class Li(Function):
 
     .. [1] https//en.wikipedia.org/wiki/Logarithmic_integral
     .. [2] http://mathworld.wolfram.com/LogarithmicIntegral.html
-    .. [3] http://dlmf.nist.gov/6
+    .. [3] https://dlmf.nist.gov/6
     """
 
     @classmethod
@@ -1603,9 +1559,6 @@ class Si(TrigonometricIntegral):
     Examples
     ========
 
-    >>> from diofant import Si
-    >>> from diofant.abc import z
-
     The sine integral is an antiderivative of sin(z)/z:
 
     >>> Si(z).diff(z)
@@ -1613,7 +1566,6 @@ class Si(TrigonometricIntegral):
 
     It is unbranched:
 
-    >>> from diofant import exp_polar, I, pi
     >>> Si(z*exp_polar(2*I*pi))
     Si(z)
 
@@ -1627,7 +1579,6 @@ class Si(TrigonometricIntegral):
     It can also be expressed in terms of exponential integrals, but beware
     that the latter is branched:
 
-    >>> from diofant import expint
     >>> Si(z).rewrite(expint)
     -I*(-expint(1, z*exp_polar(-I*pi/2))/2 +
          expint(1, z*exp_polar(I*pi/2))/2) + pi/2
@@ -1704,9 +1655,6 @@ class Ci(TrigonometricIntegral):
     Examples
     ========
 
-    >>> from diofant import Ci
-    >>> from diofant.abc import z
-
     The cosine integral is a primitive of `\cos(z)/z`:
 
     >>> Ci(z).diff(z)
@@ -1714,13 +1662,11 @@ class Ci(TrigonometricIntegral):
 
     It has a logarithmic branch point at the origin:
 
-    >>> from diofant import exp_polar, I, pi
     >>> Ci(z*exp_polar(2*I*pi))
     Ci(z) + 2*I*pi
 
     The cosine integral behaves somewhat like ordinary `\cos` under multiplication by `i`:
 
-    >>> from diofant import polar_lift
     >>> Ci(polar_lift(I)*z)
     Chi(z) + I*pi/2
     >>> Ci(polar_lift(-1)*z)
@@ -1728,7 +1674,6 @@ class Ci(TrigonometricIntegral):
 
     It can also be expressed in terms of exponential integrals:
 
-    >>> from diofant import expint
     >>> Ci(z).rewrite(expint)
     -expint(1, z*exp_polar(-I*pi/2))/2 - expint(1, z*exp_polar(I*pi/2))/2
 
@@ -1787,9 +1732,6 @@ class Shi(TrigonometricIntegral):
     Examples
     ========
 
-    >>> from diofant import Shi
-    >>> from diofant.abc import z
-
     The Sinh integral is a primitive of `\sinh(z)/z`:
 
     >>> Shi(z).diff(z)
@@ -1797,7 +1739,6 @@ class Shi(TrigonometricIntegral):
 
     It is unbranched:
 
-    >>> from diofant import exp_polar, I, pi
     >>> Shi(z*exp_polar(2*I*pi))
     Shi(z)
 
@@ -1811,7 +1752,6 @@ class Shi(TrigonometricIntegral):
     It can also be expressed in terms of exponential integrals, but beware
     that the latter is branched:
 
-    >>> from diofant import expint
     >>> Shi(z).rewrite(expint)
     expint(1, z)/2 - expint(1, z*exp_polar(I*pi))/2 - I*pi/2
 
@@ -1883,9 +1823,6 @@ class Chi(TrigonometricIntegral):
     Examples
     ========
 
-    >>> from diofant import Chi
-    >>> from diofant.abc import z
-
     The `\cosh` integral is a primitive of `\cosh(z)/z`:
 
     >>> Chi(z).diff(z)
@@ -1893,13 +1830,11 @@ class Chi(TrigonometricIntegral):
 
     It has a logarithmic branch point at the origin:
 
-    >>> from diofant import exp_polar, I, pi
     >>> Chi(z*exp_polar(2*I*pi))
     Chi(z) + 2*I*pi
 
     The `\cosh` integral behaves somewhat like ordinary `\cosh` under multiplication by `i`:
 
-    >>> from diofant import polar_lift
     >>> Chi(polar_lift(I)*z)
     Ci(z) + I*pi/2
     >>> Chi(polar_lift(-1)*z)
@@ -1907,7 +1842,6 @@ class Chi(TrigonometricIntegral):
 
     It can also be expressed in terms of exponential integrals:
 
-    >>> from diofant import expint
     >>> Chi(z).rewrite(expint)
     -expint(1, z)/2 - expint(1, z*exp_polar(I*pi))/2 - I*pi/2
 
@@ -2060,9 +1994,6 @@ class fresnels(FresnelIntegral):
     Examples
     ========
 
-    >>> from diofant import I, oo, fresnels
-    >>> from diofant.abc import z
-
     Several special values are known:
 
     >>> fresnels(0)
@@ -2086,19 +2017,16 @@ class fresnels(FresnelIntegral):
     The Fresnel S integral obeys the mirror symmetry
     `\overline{S(z)} = S(\bar{z})`:
 
-    >>> from diofant import conjugate
     >>> conjugate(fresnels(z))
     fresnels(conjugate(z))
 
     Differentiation with respect to `z` is supported:
 
-    >>> from diofant import diff
     >>> diff(fresnels(z), z)
     sin(pi*z**2/2)
 
     Defining the Fresnel functions via an integral
 
-    >>> from diofant import integrate, pi, sin, gamma, expand_func
     >>> integrate(sin(pi*z**2/2), z)
     3*fresnels(z)*gamma(3/4)/(4*gamma(7/4))
     >>> expand_func(integrate(sin(pi*z**2/2), z))
@@ -2122,7 +2050,7 @@ class fresnels(FresnelIntegral):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Fresnel_integral
-    .. [2] http://dlmf.nist.gov/7
+    .. [2] https://dlmf.nist.gov/7
     .. [3] http://mathworld.wolfram.com/FresnelIntegrals.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/FresnelS
     .. [5] The converging factors for the fresnel integrals
@@ -2193,9 +2121,6 @@ class fresnelc(FresnelIntegral):
     Examples
     ========
 
-    >>> from diofant import I, oo, fresnelc
-    >>> from diofant.abc import z
-
     Several special values are known:
 
     >>> fresnelc(0)
@@ -2219,19 +2144,16 @@ class fresnelc(FresnelIntegral):
     The Fresnel C integral obeys the mirror symmetry
     `\overline{C(z)} = C(\bar{z})`:
 
-    >>> from diofant import conjugate
     >>> conjugate(fresnelc(z))
     fresnelc(conjugate(z))
 
     Differentiation with respect to `z` is supported:
 
-    >>> from diofant import diff
     >>> diff(fresnelc(z), z)
     cos(pi*z**2/2)
 
     Defining the Fresnel functions via an integral
 
-    >>> from diofant import integrate, pi, cos, gamma, expand_func
     >>> integrate(cos(pi*z**2/2), z)
     fresnelc(z)*gamma(1/4)/(4*gamma(5/4))
     >>> expand_func(integrate(cos(pi*z**2/2), z))
@@ -2255,7 +2177,7 @@ class fresnelc(FresnelIntegral):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Fresnel_integral
-    .. [2] http://dlmf.nist.gov/7
+    .. [2] https://dlmf.nist.gov/7
     .. [3] http://mathworld.wolfram.com/FresnelIntegrals.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/FresnelC
     .. [5] The converging factors for the fresnel integrals

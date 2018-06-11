@@ -35,7 +35,6 @@ class MatrixSlice(MatrixExpr):
     Examples
     ========
 
-    >>> from diofant import MatrixSlice, ImmutableMatrix
     >>> M = ImmutableMatrix(4, 4, range(16))
     >>> print(M)
     Matrix([
@@ -100,7 +99,6 @@ def slice_of_slice(s, t):
 def mat_slice_of_slice(parent, rowslice, colslice):
     """ Collapse nested matrix slices
 
-    >>> from diofant import MatrixSymbol
     >>> X = MatrixSymbol('X', 10, 10)
     >>> X[:, 1:5][5:8, :]
     X[5:8, 1:5]

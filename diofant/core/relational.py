@@ -34,8 +34,6 @@ class Relational(Boolean, Expr, EvalfMixin):
     Examples
     ========
 
-    >>> from diofant import Rel
-    >>> from diofant.abc import x, y
     >>> Rel(y, x+x**2, '==')
     Eq(y, x**2 + x)
 
@@ -75,8 +73,6 @@ class Relational(Boolean, Expr, EvalfMixin):
         Examples
         ========
 
-        >>> from diofant import Eq
-        >>> from diofant.abc import x
         >>> Eq(x, 1)
         Eq(x, 1)
         >>> _.reversed
@@ -206,9 +202,8 @@ class Relational(Boolean, Expr, EvalfMixin):
         Examples
         ========
 
-        >>> from diofant import Symbol, Eq
-        >>> x = Symbol('x', extended_real=True)
-        >>> (x>0).as_set()
+        >>> x = Symbol('x', real=True)
+        >>> (x > 0).as_set()
         (0, oo)
         >>> Eq(x, 0).as_set()
         {0}
@@ -245,8 +240,6 @@ class Equality(Relational):
     Examples
     ========
 
-    >>> from diofant import Eq, simplify, exp, cos
-    >>> from diofant.abc import x, y
     >>> Eq(y, x + x**2)
     Eq(y, x**2 + x)
     >>> Eq(2, 5)
@@ -330,8 +323,6 @@ class Unequality(Relational):
     Examples
     ========
 
-    >>> from diofant import Ne
-    >>> from diofant.abc import x, y
     >>> Ne(y, x+x**2)
     Ne(y, x**2 + x)
 
@@ -482,12 +473,6 @@ class GreaterThan(_Greater):
     direction will make more explicit the intent of a certain section of code,
     and will make it similarly more robust to client code changes:
 
-    >>> from diofant import GreaterThan, StrictGreaterThan
-    >>> from diofant import LessThan,    StrictLessThan
-    >>> from diofant import And, Ge, Gt, Le, Lt, Rel, S, Integer
-    >>> from diofant.abc import x, y, z
-    >>> from diofant.core.relational import Relational
-
     >>> e = GreaterThan(x, 1)
     >>> e
     x >= 1
@@ -500,11 +485,11 @@ class GreaterThan(_Greater):
     One generally does not instantiate these classes directly, but uses various
     convenience methods:
 
-    >>> e1 = Ge( x, 2 )      # Ge is a convenience wrapper
+    >>> e1 = Ge(x, 2)  # Ge is a convenience wrapper
     >>> print(e1)
     x >= 2
 
-    >>> rels = Ge( x, 2 ), Gt( x, 2 ), Le( x, 2 ), Lt( x, 2 )
+    >>> rels = Ge(x, 2), Gt(x, 2), Le(x, 2), Lt(x, 2)
     >>> print('%s\n%s\n%s\n%s' % rels)
     x >= 2
     x > 2
@@ -614,7 +599,7 @@ class GreaterThan(_Greater):
     And:
 
     >>> e = And(x < y, y < z)
-    >>> type( e )
+    >>> type(e)
     And
     >>> e
     And(x < y, y < z)
@@ -623,7 +608,7 @@ class GreaterThan(_Greater):
     parenthesis (this is currently an open bug in Diofant [2]_):
 
     >>> e = (x < y) < z
-    >>> type( e )
+    >>> type(e)
     <class 'diofant.core.relational.StrictLessThan'>
     >>> e
     (x < y) < z

@@ -3,7 +3,7 @@
 from ..core.function import _coeff_isneg
 
 
-# Default precedence values for some basic types
+#: Default precedence values for some basic types.
 PRECEDENCE = {
     "Lambda": 1,
     "Xor": 10,
@@ -14,13 +14,14 @@ PRECEDENCE = {
     "Mul": 50,
     "Mod": 50,
     "Pow": 60,
+    "Func": 70,
     "Not": 100,
     "Atom": 1000
 }
 
-# A dictionary assigning precedence values to certain classes. These values are
-# treated like they were inherited, so not every single class has to be named
-# here.
+#: A dictionary assigning precedence values to certain classes. These values
+#: are treated like they were inherited, so not every single class has to
+#: be named here.
 PRECEDENCE_VALUES = {
     "Equivalent": PRECEDENCE["Xor"],
     "Xor": PRECEDENCE["Xor"],
@@ -33,8 +34,9 @@ PRECEDENCE_VALUES = {
     "Relational": PRECEDENCE["Relational"],
     "Sub": PRECEDENCE["Add"],
     "Not": PRECEDENCE["Not"],
-    "factorial": PRECEDENCE["Pow"],
-    "factorial2": PRECEDENCE["Pow"],
+    "factorial": PRECEDENCE["Func"],
+    "factorial2": PRECEDENCE["Func"],
+    "Function": PRECEDENCE["Func"],
     "NegativeInfinity": PRECEDENCE["Add"],
     "MatAdd": PRECEDENCE["Add"],
     "MatMul": PRECEDENCE["Mul"],
@@ -91,6 +93,9 @@ def precedence_FracElement(item):
     return precedence_PolyElement(item.numer)
 
 
+#: Sometimes it's not enough to assign a fixed precedence value to a class. Then
+#: a function can be inserted in this dictionary that takes an instance of this
+#: class as argument and returns the appropriate precedence value.
 PRECEDENCE_FUNCTIONS = {
     "Integer": precedence_Integer,
     "Mul": precedence_Mul,

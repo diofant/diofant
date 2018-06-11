@@ -27,8 +27,6 @@ def _fuzzy_group(args, quick_exit=False):
     Examples
     ========
 
-    >>> from diofant.core.logic import _fuzzy_group
-
     By default, multiple Falses mean the group is broken:
 
     >>> _fuzzy_group([False, False, True])
@@ -76,9 +74,6 @@ def fuzzy_and(args):
     Examples
     ========
 
-    >>> from diofant.core.logic import fuzzy_and
-    >>> from diofant import Dummy
-
     If you had a list of objects to test the commutivity of
     and you want the fuzzy_and logic applied, passing an
     iterator will allow the commutativity to only be computed
@@ -115,7 +110,6 @@ def fuzzy_not(v):
     Examples
     ========
 
-    >>> from diofant.core.logic import fuzzy_not
     >>> fuzzy_not(True)
     False
     >>> fuzzy_not(None)
@@ -135,7 +129,6 @@ def fuzzy_or(args):
     Examples
     ========
 
-    >>> from diofant.core.logic import fuzzy_or
     >>> fuzzy_or([True, False])
     True
     >>> fuzzy_or([True, None])

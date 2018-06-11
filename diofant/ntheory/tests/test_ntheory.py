@@ -5,21 +5,21 @@ import hypothesis
 import pytest
 
 from diofant import GoldenRatio as Phi
-from diofant import factorial as fac
 from diofant import (Mul, Pow, Sieve, Symbol, binomial_coefficients,
-                     binomial_coefficients_list, multinomial_coefficients, pi,
-                     sieve, sqrt, summation)
+                     binomial_coefficients_list)
+from diofant import factorial as fac
+from diofant import multinomial_coefficients, pi, sieve, sqrt, summation
 from diofant.core.add import Add
 from diofant.core.numbers import Integer, Rational
 from diofant.domains import ZZ
 from diofant.ntheory import (divisor_count, divisor_sigma, divisors, factorint,
                              is_nthpow_residue, is_primitive_root,
-                             is_quad_residue, isprime, jacobi_symbol,
-                             legendre_symbol, mobius, multiplicity, n_order,
-                             nextprime, npartitions, nthroot_mod,
-                             perfect_power, pollard_pm1, pollard_rho,
-                             prevprime, prime, primefactors, primepi,
-                             primerange, primitive_root, primorial,
+                             is_quad_residue, is_square, isprime,
+                             jacobi_symbol, legendre_symbol, mobius,
+                             multiplicity, n_order, nextprime, npartitions,
+                             nthroot_mod, perfect_power, pollard_pm1,
+                             pollard_rho, prevprime, prime, primefactors,
+                             primepi, primerange, primitive_root, primorial,
                              quadratic_residues, randprime, sqrt_mod,
                              sqrt_mod_iter, totient, trailing)
 from diofant.ntheory.continued_fraction import \
@@ -263,7 +263,7 @@ def multiproduct(seq=(), start=1):
     times the value of the parameter ``start``. The input may be a
     sequence of (factor, exponent) pairs or a dict of such pairs.
 
-        >>> multiproduct({3:7, 2:5}, 4) # = 3**7 * 2**5 * 4
+        >>> multiproduct({3: 7, 2: 5}, 4)  # = 3**7 * 2**5 * 4
         279936
 
     """
@@ -609,8 +609,47 @@ def test_residue():
     assert list(sqrt_mod_iter(4, 919, ZZ)) == [2, 917]
     assert list(sqrt_mod_iter(6, 146, ZZ)) == [88, 58]
 
+    pytest.raises(ValueError, lambda: is_nthpow_residue(+2, +1, 0))
+    pytest.raises(ValueError, lambda: is_nthpow_residue(+2, -1, 5))
+    pytest.raises(ValueError, lambda: is_nthpow_residue(-2, +1, 5))
+
     assert is_nthpow_residue(2, 1, 5)
-    pytest.raises(NotImplementedError, lambda: is_nthpow_residue(676, 3, 5364))
+
+    assert is_nthpow_residue(1, 0, 1) is False
+    assert is_nthpow_residue(1, 0, 2) is True
+    assert is_nthpow_residue(3, 0, 2) is False
+    assert is_nthpow_residue(0, 1, 8) is True
+    assert is_nthpow_residue(2, 3, 2) is False
+    assert is_nthpow_residue(2, 3, 9) is False
+    assert is_nthpow_residue(3, 5, 30) is True
+    assert is_nthpow_residue(21, 11, 20) is True
+    assert is_nthpow_residue(7, 10, 20) is False
+    assert is_nthpow_residue(5, 10, 20) is True
+    assert is_nthpow_residue(3, 10, 48) is False
+    assert is_nthpow_residue(1, 10, 40) is True
+    assert is_nthpow_residue(3, 10, 24) is False
+    assert is_nthpow_residue(1, 10, 24) is True
+    assert is_nthpow_residue(3, 10, 24) is False
+    assert is_nthpow_residue(2, 10, 48) is False
+    assert is_nthpow_residue(81, 3, 972) is False
+    assert is_nthpow_residue(243, 5, 5103) is True
+    assert is_nthpow_residue(243, 3, 1240029) is False
+    assert {a for a in range(1024)
+            if is_nthpow_residue(a, 56, 1024)} == {pow(i, 56, 1024)
+                                                   for i in range(1024)}
+    assert {a for a in range(2048)
+            if is_nthpow_residue(a, 256, 2048)} == {pow(i, 256, 2048)
+                                                    for i in range(2048)}
+    x = {pow(i, 11, 324000) for i in range(1000)}
+    assert [is_nthpow_residue(a, 11, 324000) for a in x]
+    x = {pow(i, 17, 22217575536) for i in range(1000)}
+    assert [is_nthpow_residue(a, 17, 22217575536) for a in x]
+    assert is_nthpow_residue(676, 3, 5364)
+    assert is_nthpow_residue(9, 12, 36)
+    assert is_nthpow_residue(32, 10, 41)
+    assert is_nthpow_residue(4, 2, 64)
+    assert is_nthpow_residue(31, 4, 41)
+
     assert not is_nthpow_residue(2, 2, 5)
     assert is_nthpow_residue(8547, 12, 10007)
     assert nthroot_mod(1801, 11, 2663) == 44
@@ -621,6 +660,8 @@ def test_residue():
         assert pow(r, q, p) == a
     assert nthroot_mod(11, 3, 109) is None
     assert nthroot_mod(6, 12, 5) == 1
+    pytest.raises(NotImplementedError, lambda: nthroot_mod(16, 5, 36))
+    pytest.raises(NotImplementedError, lambda: nthroot_mod(9, 16, 36))
 
     for p in primerange(5, 100):
         qv = range(3, p, 4)
@@ -977,3 +1018,9 @@ def test_factorrat():
     assert str(factorrat(Rational(1, 1), visual=True)) == '1'
     assert str(factorrat(Rational(25, 14), visual=True)) == '5**2/(2*7)'
     assert str(factorrat(Rational(-25, 14)/9, visual=True)) == '-5**2/(2*3**2*7)'
+
+
+def test_is_square():
+    assert [i for i in range(25) if is_square(i)] == [0, 1, 4, 9, 16]
+    assert is_square(4, prep=False) is True
+    assert is_square(193) is False

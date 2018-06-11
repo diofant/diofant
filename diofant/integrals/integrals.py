@@ -1,6 +1,6 @@
 from ..concrete.expr_with_limits import AddWithLimits
-from ..core import (Add, Basic, Dummy, Eq, Expr, S, Symbol, Tuple, Wild, diff,
-                    nan, oo, sympify)
+from ..core import (Add, Basic, Dummy, Eq, Expr, Mul, S, Symbol, Tuple, Wild,
+                    diff, nan, oo, sympify)
 from ..core.compatibility import is_sequence
 from ..functions import Piecewise, log, piecewise_fold, sign, sqrt
 from ..matrices import MatrixBase
@@ -23,8 +23,6 @@ class Integral(AddWithLimits):
         expression, that symbol will be used, otherwise an error will be
         raised.
 
-        >>> from diofant import Integral
-        >>> from diofant.abc import x, y
         >>> Integral(x)
         Integral(x, x)
         >>> Integral(y)
@@ -73,8 +71,6 @@ class Integral(AddWithLimits):
         Examples
         ========
 
-        >>> from diofant import Integral
-        >>> from diofant.abc import x, y
         >>> Integral(x, (x, y, 1)).free_symbols
         {y}
 
@@ -175,8 +171,7 @@ class Integral(AddWithLimits):
         Examples
         ========
 
-        >>> from diofant.abc import a, b, c, d, x, u, y
-        >>> from diofant import Integral, S, cos, sqrt
+        >>> from diofant.abc import a, b, c, d, u
 
         >>> i = Integral(x*cos(x**2 - 1), (x, 0, 1))
 
@@ -355,8 +350,7 @@ class Integral(AddWithLimits):
         Examples
         ========
 
-        >>> from diofant import Integral
-        >>> from diofant.abc import x, i
+        >>> from diofant.abc import i
         >>> Integral(x**i, (i, 1, 3)).doit()
         Piecewise((2, Eq(log(x), 0)), (x**3/log(x) - x/log(x), true))
 
@@ -535,8 +529,34 @@ class Integral(AddWithLimits):
                         function = Add(*[i._eval_interval(x, a, b) for i in
                                          Add.make_args(antideriv)])
                     else:
+                        def is_indef_int(g, x):
+                            return (isinstance(g, Integral) and
+                                    any(i == (x,) for i in g.limits))
+
+                        def eval_factored(f, x, a, b):
+                            # _eval_interval for integrals with
+                            # (constant) factors
+                            # a single indefinite integral is assumed
+                            args = []
+                            for g in Mul.make_args(f):
+                                if is_indef_int(g, x):
+                                    args.append(g._eval_interval(x, a, b))
+                                else:
+                                    args.append(g)
+                            return Mul(*args)
+
+                        integrals, others = [], []
+                        for f in Add.make_args(antideriv):
+                            if any(is_indef_int(g, x)
+                                   for g in Mul.make_args(f)):
+                                integrals.append(f)
+                            else:
+                                others.append(f)
+                        uneval = Add(*[eval_factored(f, x, a, b)
+                                       for f in integrals])
                         try:
-                            function = antideriv._eval_interval(x, a, b)
+                            evalued = Add(*others)._eval_interval(x, a, b)
+                            function = uneval + evalued
                         except NotImplementedError:
                             # This can happen if _eval_interval depends in a
                             # complicated way on limits that cannot be computed
@@ -566,8 +586,6 @@ class Integral(AddWithLimits):
         Examples
         ========
 
-        >>> from diofant import Integral
-        >>> from diofant.abc import x, y
         >>> i = Integral(x + y, y, (y, 1, x))
         >>> i.diff(x)
         Integral(x + y, (y, x)) + Integral(1, y, (y, 1, x))
@@ -920,14 +938,14 @@ class Integral(AddWithLimits):
         is where the function value is taken in each interval to define the
         rectangle.
 
-        [1] https//en.wikipedia.org/wiki/Rectangle_method
+        References
+        ==========
+
+        .. [1] https//en.wikipedia.org/wiki/Rectangle_method
 
         Examples
         ========
 
-        >>> from diofant import sin, sqrt
-        >>> from diofant.abc import x
-        >>> from diofant.integrals import Integral
         >>> e = Integral(sin(x), (x, 3, 7))
         >>> e
         Integral(sin(x), (x, 3, 7))
@@ -1127,8 +1145,7 @@ def integrate(*args, **kwargs):
     Examples
     ========
 
-    >>> from diofant import integrate, log, exp, oo
-    >>> from diofant.abc import a, x, y
+    >>> from diofant.abc import a
 
     >>> integrate(x*y, x)
     x**2*y/2
@@ -1144,7 +1161,6 @@ def integrate(*args, **kwargs):
 
     Terms that are independent of x are dropped by indefinite integration:
 
-    >>> from diofant import sqrt
     >>> integrate(sqrt(1 + x), (x, 0, x))
     2*(x + 1)**(3/2)/3 - 2/3
     >>> integrate(sqrt(1 + x), x)
@@ -1194,8 +1210,7 @@ def line_integrate(field, curve, vars):
     Examples
     ========
 
-    >>> from diofant import Curve, line_integrate, E, ln
-    >>> from diofant.abc import x, y, t
+    >>> from diofant.abc import t
     >>> C = Curve([E**t + 1, E**t - 1], (t, 0, ln(2)))
     >>> line_integrate(x + y, C, [x, y])
     3*sqrt(2)

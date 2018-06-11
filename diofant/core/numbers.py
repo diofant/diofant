@@ -140,7 +140,6 @@ def igcd(*args):
     Examples
     ========
 
-    >>> from diofant.core.numbers import igcd
     >>> igcd(2, 4)
     2
     >>> igcd(5, 10, 15)
@@ -162,7 +161,6 @@ def ilcm(*args):
     Examples
     ========
 
-    >>> from diofant.core.numbers import ilcm
     >>> ilcm(5, 10)
     10
     >>> ilcm(7, 3)
@@ -182,7 +180,6 @@ def ilcm(*args):
 def igcdex(a, b):
     """Returns x, y, g such that g = x*a + y*b = gcd(a, b).
 
-    >>> from diofant.core.numbers import igcdex
     >>> igcdex(2, 3)
     (-1, 1, 1)
     >>> igcdex(10, 12)
@@ -229,8 +226,6 @@ def mod_inverse(a, m):
 
     Examples
     ========
-
-    >>> from diofant.core.numbers import mod_inverse, Integer
 
     Suppose we wish to find multiplicative inverse x of
     3 modulo 11. This is the same as finding x such
@@ -495,9 +490,11 @@ class Number(AtomicExpr):
             return S.One, self
         return (self, S.One) if self else (S.One, self)
 
-    def as_coeff_Add(self):
+    def as_coeff_Add(self, rational=False):
         """Efficiently extract the coefficient of a summation. """
-        return self, S.Zero
+        if not rational:
+            return self, S.Zero
+        return S.Zero, self
 
     def gcd(self, other):
         """Compute GCD of `self` and `other`. """
@@ -521,7 +518,6 @@ class Float(Number):
     Examples
     ========
 
-    >>> from diofant import Float
     >>> Float(3.5)
     3.50000000000000
     >>> Float(3)
@@ -1031,9 +1027,6 @@ class Float(Number):
 # Add sympify converters
 converter[float] = converter[decimal.Decimal] = Float
 
-# this is here to work nicely in Sage
-RealNumber = Float
-
 
 class Rational(Number):
     """Represents integers and rational numbers (p/q) of any size.
@@ -1041,7 +1034,6 @@ class Rational(Number):
     Examples
     ========
 
-    >>> from diofant import Rational, nsimplify, pi
     >>> Rational(3)
     3
     >>> Rational(1, 2)
@@ -1153,15 +1145,14 @@ class Rational(Number):
             return S.Half
 
         obj = Expr.__new__(cls)
-        obj.p = p
-        obj.q = q
+        obj.p = int(p)
+        obj.q = int(q)
 
         return obj
 
     def limit_denominator(self, max_denominator=1000000):
         """Closest Rational to self with denominator at most max_denominator.
 
-        >>> from diofant import Rational
         >>> Rational('3.141592653589793').limit_denominator(10)
         22/7
         >>> Rational('3.141592653589793').limit_denominator(100)
@@ -1183,6 +1174,9 @@ class Rational(Number):
     def _eval_is_zero(self):
         return self.p == 0
 
+    def __bool__(self):
+        return self.is_nonzero
+
     def __neg__(self):
         return Rational(-self.p, self.q)
 
@@ -1190,14 +1184,8 @@ class Rational(Number):
     def __add__(self, other):
         if isinstance(other, Rational):
             return Rational(self.p*other.q + self.q*other.p, self.q*other.q)
-        elif isinstance(other, Float):
+        elif isinstance(other, (Float, AlgebraicNumber)):
             return other + self
-        elif isinstance(other, AlgebraicNumber):
-            from ..polys.polyclasses import DMP
-            me = DMP.from_diofant_list((self,), 0,
-                                       other.minpoly.domain)
-            coeffs = other.rep + me
-            return AlgebraicNumber(other, coeffs.to_tuple(), other.alias)
         else:
             return Number.__add__(self, other)
 
@@ -1205,14 +1193,8 @@ class Rational(Number):
     def __sub__(self, other):
         if isinstance(other, Rational):
             return Rational(self.p*other.q - self.q*other.p, self.q*other.q)
-        elif isinstance(other, Float):
+        elif isinstance(other, (Float, AlgebraicNumber)):
             return -other + self
-        elif isinstance(other, AlgebraicNumber):
-            from ..polys.polyclasses import DMP
-            me = DMP.from_diofant_list((self,), 0,
-                                       other.minpoly.domain)
-            coeffs = me - other.rep
-            return AlgebraicNumber(other, coeffs.to_tuple(), other.alias)
         else:
             return Number.__sub__(self, other)
 
@@ -1220,14 +1202,8 @@ class Rational(Number):
     def __mul__(self, other):
         if isinstance(other, Rational):
             return Rational(self.p*other.p, self.q*other.q)
-        elif isinstance(other, Float):
+        elif isinstance(other, (Float, AlgebraicNumber)):
             return other*self
-        elif isinstance(other, AlgebraicNumber):
-            from ..polys.polyclasses import DMP
-            me = DMP.from_diofant_list((self,), 0,
-                                       other.minpoly.domain)
-            coeffs = me * other.rep
-            return AlgebraicNumber(other, coeffs.to_tuple(), other.alias)
         else:
             return Number.__mul__(self, other)
 
@@ -1407,7 +1383,7 @@ class Rational(Number):
 
         return factorrat(self, limit=limit, use_trial=use_trial,
                          use_rho=use_rho, use_pm1=use_pm1,
-                         verbose=verbose).copy()
+                         verbose=verbose, visual=visual).copy()
 
     @_sympifyit('other', NotImplemented)
     def gcd(self, other):
@@ -1444,7 +1420,6 @@ class Rational(Number):
         Examples
         ========
 
-        >>> from diofant import Rational
         >>> Rational(-3, 2).as_content_primitive()
         (3/2, -1)
 
@@ -1519,121 +1494,18 @@ class Integer(Rational):
     def __getnewargs__(self):
         return self.p,
 
-    # Arithmetic operations are here for efficiency
-    def __int__(self):
-        return self.p
-
-    def __neg__(self):
-        return Integer(-self.p)
-
-    def __abs__(self):
-        if self.p >= 0:
-            return self
-        else:
-            return Integer(-self.p)
-
-    def __divmod__(self, other):
-        from .containers import Tuple
-        if isinstance(other, Integer):
-            return Tuple(*(divmod(self.p, other.p)))
-        else:
-            return Number.__divmod__(self, other)
-
-    def __rdivmod__(self, other):
-        from .containers import Tuple
-        if isinstance(other, int):
-            return Tuple(*(divmod(other, self.p)))
-        else:
-            other = Number(other)
-            return Number.__divmod__(other, self)
-
-    # TODO make it decorator + bytecodehacks?
-    def __add__(self, other):
-        if isinstance(other, int):
-            return Integer(self.p + other)
-        elif isinstance(other, Integer):
-            return Integer(self.p + other.p)
-        return Rational.__add__(self, other)
-
-    def __radd__(self, other):
-        if isinstance(other, int):
-            return Integer(other + self.p)
-        return Rational.__add__(self, other)
-
-    def __sub__(self, other):
-        if isinstance(other, int):
-            return Integer(self.p - other)
-        elif isinstance(other, Integer):
-            return Integer(self.p - other.p)
-        return Rational.__sub__(self, other)
-
-    def __rsub__(self, other):
-        if isinstance(other, int):
-            return Integer(other - self.p)
-        return Rational.__rsub__(self, other)
-
-    def __mul__(self, other):
-        if isinstance(other, int):
-            return Integer(self.p*other)
-        elif isinstance(other, Integer):
-            return Integer(self.p*other.p)
-        return Rational.__mul__(self, other)
-
-    def __rmul__(self, other):
-        if isinstance(other, int):
-            return Integer(other*self.p)
-        return Rational.__mul__(self, other)
-
-    def __mod__(self, other):
-        if isinstance(other, int):
-            return Integer(self.p % other)
-        elif isinstance(other, Integer):
-            return Integer(self.p % other.p)
-        return Rational.__mod__(self, other)
-
-    def __rmod__(self, other):
-        if isinstance(other, int):
-            return Integer(other % self.p)
-        elif isinstance(other, Integer):
-            return Integer(other.p % self.p)
-        return Rational.__rmod__(self, other)
-
-    def __eq__(self, other):
-        if isinstance(other, int):
-            return (self.p == other)
-        elif isinstance(other, Integer):
-            return (self.p == other.p)
-        return Rational.__eq__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __gt__(self, other):
-        if isinstance(other, Integer):
-            return sympify(self.p > other.p, strict=True)
-        return Rational.__gt__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __lt__(self, other):
-        if isinstance(other, Integer):
-            return sympify(self.p < other.p, strict=True)
-        return Rational.__lt__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __ge__(self, other):
-        if isinstance(other, Integer):
-            return sympify(self.p >= other.p, strict=True)
-        return Rational.__ge__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __le__(self, other):
-        if isinstance(other, Integer):
-            return sympify(self.p <= other.p, strict=True)
-        return Rational.__le__(self, other)
-
     def __hash__(self):
         return hash(self.p)
 
     def __index__(self):
         return self.p
+
+    def __eq__(self, other):
+        if isinstance(other, int):
+            return self.p == other
+        elif isinstance(other, Integer):
+            return self.p == other.p
+        return Rational.__eq__(self, other)
 
     ########################################
 
@@ -1785,43 +1657,6 @@ class AlgebraicNumber(Expr):
         A tuple of rational coefficients `(c_n, c_{n-1},\dots,c_0)`.
         The default is ``(1, 0)``.
 
-    alias : Symbol, optional
-        Alias to denote the generator `\theta`.
-
-    Examples
-    ========
-
-    >>> from diofant import AlgebraicNumber, sqrt, RootOf
-    >>> from diofant.abc import x
-
-    >>> a = AlgebraicNumber(sqrt(3), alias='a')
-
-    Numbers in the same field are automatically combined by
-    arithmetic operations.
-
-    >>> a + 1
-    a + 1
-    >>> _ + a
-    2*a + 1
-
-    Powers with integer exponents also automatically evaluated and
-    the coefficient list reduced accordingly to the degree of the minimal
-    polynomial of `\theta`.
-
-    >>> _**3
-    30*a + 37
-    >>> 1/a
-    a/3
-
-    The generator `\theta` can be any algebraic number, represented in terms
-    of radicals or RootOf objects.
-
-    >>> b = AlgebraicNumber(RootOf(x**7 - x + 1, x, 1), (1, 2, -1), 'b')
-    >>> b
-    b**2 + 2*b - 1
-    >>> b**7
-    490*b**6 - 119*b**5 - 196*b**4 - 203*b**3 - 265*b**2 + 637*b - 198
-
     See Also
     ========
 
@@ -1832,12 +1667,11 @@ class AlgebraicNumber(Expr):
     is_algebraic = True
     is_number = True
 
-    def __new__(cls, expr, coeffs=(1, 0), alias=None, **args):
+    def __new__(cls, expr, coeffs=(1, 0), **kwargs):
         """Construct a new algebraic number. """
         from ..polys import Poly
-        from ..polys.polyclasses import ANP, DMP
+        from ..polys.polyclasses import DMP
         from ..polys.numberfields import minimal_polynomial
-        from .symbol import Symbol
 
         expr = sympify(expr)
 
@@ -1852,32 +1686,27 @@ class AlgebraicNumber(Expr):
             if expr.free_symbols:
                 raise ValueError("Not a number: %s" % expr)
 
-            minpoly, root = minimal_polynomial(
-                expr, args.get('gen'), polys=True), expr
+            minpoly, root = minimal_polynomial(expr), expr
+            if kwargs.get('gen'):
+                minpoly = minpoly.replace(kwargs.get('gen'))
 
-        dom = minpoly.domain
+        dom = minpoly.domain.field
 
-        if not isinstance(coeffs, ANP):
-            rep = DMP.from_diofant_list(sympify(coeffs), 0, dom)
+        if isinstance(coeffs, DMP):
+            rep = coeffs
         else:
-            rep = DMP.from_list(coeffs.to_list(), 0, dom)
+            rep = DMP.from_diofant_list(sympify(coeffs), 0, dom)
 
         if rep.degree() >= minpoly.degree():
             rep = rep.rem(minpoly.rep)
 
         coeffs = Tuple(*rep.all_coeffs())
-        sargs = (root, coeffs)
+        args = root, coeffs
 
-        if alias is not None:
-            if not isinstance(alias, Symbol):
-                alias = Symbol(alias)
-            sargs = sargs + (alias,)
-
-        obj = Expr.__new__(cls, *sargs)
+        obj = Expr.__new__(cls, *args)
 
         obj.rep = rep
         obj.root = root
-        obj.alias = alias
         obj.minpoly = minpoly
 
         return obj
@@ -1887,68 +1716,52 @@ class AlgebraicNumber(Expr):
         return set()
 
     def _eval_power(self, expt):
-        from ..polys.polyclasses import ANP
         if expt.is_Integer:
-            expt = int(expt)
-            if expt >= 0:
-                coeffs = self.rep**expt
-            else:
-                coeffs = ANP(self.rep.to_dict(), self.minpoly.rep,
-                             self.rep.domain)**expt
-            return self.func(self, coeffs.to_tuple(), self.alias)
+            A = self.rep.domain.algebraic_field(self.root)
+            r = A(self.rep.rep)**int(expt)
+            return self.func(self, r.rep)
 
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
-        if isinstance(other, Rational):
-            from ..polys.polyclasses import DMP
-            other = DMP.from_diofant_list((other,), 0,
-                                          self.minpoly.domain)
-            coeffs = self.rep + other
-            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
-        elif (isinstance(other, AlgebraicNumber) and
-              self.minpoly == other.minpoly and self.root == other.root):
-            coeffs = self.rep + other.rep
-            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        if other.is_Rational:
+            other = self.func(self, (other,))
+
+        if other.is_AlgebraicNumber:
+            if self.minpoly == other.minpoly and self.root == other.root:
+                return self.func(self, self.rep + other.rep)
+            else:
+                return Add(self, other, evaluate=False)
         else:
             return Number.__add__(self, other)
 
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
-        if isinstance(other, Rational):
-            from ..polys.polyclasses import DMP
-            other = DMP.from_diofant_list((other,), 0,
-                                          self.minpoly.domain)
-            coeffs = self.rep - other
-            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
-        elif (isinstance(other, AlgebraicNumber) and
-              self.minpoly == other.minpoly and self.root == other.root):
-            coeffs = self.rep - other.rep
-            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        if other.is_Rational:
+            other = self.func(self, (other,))
+
+        if other.is_AlgebraicNumber:
+            if self.minpoly == other.minpoly and self.root == other.root:
+                return self.func(self, self.rep - other.rep)
+            else:
+                return Add(self, -other, evaluate=False)
         else:
             return Number.__sub__(self, other)
 
     @_sympifyit('other', NotImplemented)
     def __mul__(self, other):
-        if isinstance(other, Rational):
-            from ..polys.polyclasses import DMP
-            other = DMP.from_diofant_list((other,), 0,
-                                          self.minpoly.domain)
-            coeffs = self.rep * other
-            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
-        elif (isinstance(other, AlgebraicNumber) and
-              self.minpoly == other.minpoly and self.root == other.root):
-            coeffs = self.rep * other.rep
-            return AlgebraicNumber(self, coeffs.to_tuple(), self.alias)
+        if other.is_Rational:
+            other = self.func(self, (other,))
+
+        if other.is_AlgebraicNumber:
+            if self.minpoly == other.minpoly and self.root == other.root:
+                return self.func(self, self.rep * other.rep)
+            else:
+                return Mul(self, other, evaluate=False)
         else:
             return Number.__mul__(self, other)
 
     def _eval_evalf(self, prec):
         return self.as_expr()._evalf(prec)
-
-    @property
-    def is_aliased(self):
-        """Returns ``True`` if ``alias`` was set. """
-        return self.alias is not None
 
     def as_poly(self, x=None):
         """Create a Poly instance from ``self``. """
@@ -1957,10 +1770,7 @@ class AlgebraicNumber(Expr):
         if x is not None:
             return Poly.new(self.rep, x)
         else:
-            if self.alias is not None:
-                return Poly.new(self.rep, self.alias)
-            else:
-                return PurePoly.new(self.rep, Dummy('x'))
+            return PurePoly.new(self.rep, Dummy('x'))
 
     def as_expr(self, x=None):
         """Create a Basic expression from ``self``. """
@@ -1968,7 +1778,7 @@ class AlgebraicNumber(Expr):
 
     def coeffs(self):
         """Returns all Diofant coefficients of an algebraic number. """
-        return [self.rep.domain.to_diofant(c) for c in self.rep.all_coeffs()]
+        return [self.rep.domain.to_expr(c) for c in self.rep.all_coeffs()]
 
     def native_coeffs(self):
         """Returns all native coefficients of an algebraic number. """
@@ -1991,10 +1801,11 @@ class AlgebraicNumber(Expr):
         return AlgebraicNumber((minpoly, root), self.coeffs())
 
     def _eval_simplify(self, ratio, measure):
-        from ..polys import RootOf, minpoly
+        from ..polys import RootOf, minimal_polynomial
+        from .symbol import Dummy
 
         for r in [r for r in self.minpoly.all_roots() if r.func != RootOf]:
-            if minpoly(self.root - r).is_Symbol:
+            if minimal_polynomial(self.root - r)(Dummy()).is_Symbol:
                 # use the matching root if it's simpler
                 if measure(r) < ratio*measure(self.root):
                     return AlgebraicNumber(r)
@@ -2027,7 +1838,6 @@ class Zero(IntegerConstant, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S, Integer, zoo
     >>> Integer(0) is S.Zero
     True
     >>> 1/S.Zero
@@ -2063,9 +1873,6 @@ class Zero(IntegerConstant, metaclass=Singleton):
         if coeff is not S.One:  # there is a Number to discard
             return self**terms
 
-    def __bool__(self):
-        return False
-
 
 class One(IntegerConstant, metaclass=Singleton):
     """The number one.
@@ -2075,7 +1882,6 @@ class One(IntegerConstant, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S, Integer
     >>> Integer(1) is S.One
     True
 
@@ -2090,13 +1896,6 @@ class One(IntegerConstant, metaclass=Singleton):
     p = 1
     q = 1
 
-    def factors(self, limit=None, use_trial=True, use_rho=False,
-                use_pm1=False, verbose=False, visual=False):
-        if visual:
-            return self
-        else:
-            return {}
-
 
 class NegativeOne(IntegerConstant, metaclass=Singleton):
     """The number negative one.
@@ -2106,7 +1905,6 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S, Integer
     >>> Integer(-1) is S.NegativeOne
     True
 
@@ -2162,7 +1960,6 @@ class Half(RationalConstant, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S, Rational
     >>> Rational(1, 2) is S.Half
     True
 
@@ -2196,7 +1993,6 @@ class Infinity(Number, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import oo, exp, limit, Symbol
     >>> 1 + oo
     oo
     >>> 42/oo
@@ -2327,8 +2123,6 @@ class Infinity(Number, metaclass=Singleton):
             return oo
         if expt.is_negative:
             return S.Zero
-        if expt is zoo:
-            return nan
         if expt.is_real is False and expt.is_number:
             expt_real = re(expt)
             if expt_real.is_positive:
@@ -2591,7 +2385,6 @@ class NaN(Number, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import nan, oo, Eq
     >>> nan is nan
     True
     >>> oo - oo
@@ -2674,7 +2467,6 @@ class ComplexInfinity(AtomicExpr, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import zoo, oo
     >>> zoo + 42
     zoo
     >>> 42/zoo
@@ -2709,9 +2501,7 @@ class ComplexInfinity(AtomicExpr, metaclass=Singleton):
         return self
 
     def _eval_power(self, expt):
-        if expt in (0, zoo):
-            return nan
-        elif expt.is_positive:
+        if expt.is_positive:
             return zoo
         elif expt.is_negative:
             return S.Zero
@@ -2796,7 +2586,6 @@ class Exp1(NumberSymbol, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import exp, log, E
     >>> E is exp(1)
     True
     >>> log(E)
@@ -2840,8 +2629,6 @@ class Exp1(NumberSymbol, metaclass=Singleton):
                 return oo
             elif arg is -oo:
                 return S.Zero
-        elif arg is zoo:
-            return nan
         elif isinstance(arg, log):
             return arg.args[0]
         elif arg.is_Mul:
@@ -2927,7 +2714,6 @@ class Pi(NumberSymbol, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import pi, oo, sin, exp, integrate, Symbol
     >>> pi > 3
     true
     >>> pi.is_irrational
@@ -2984,7 +2770,6 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import GoldenRatio
     >>> GoldenRatio > 1
     true
     >>> GoldenRatio.expand(func=True)
@@ -3040,7 +2825,6 @@ class EulerGamma(NumberSymbol, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import EulerGamma
     >>> EulerGamma.is_irrational
     >>> EulerGamma > 0
     true
@@ -3087,7 +2871,6 @@ class Catalan(NumberSymbol, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import Catalan
     >>> Catalan.is_irrational
     >>> Catalan > 0
     true
@@ -3129,7 +2912,6 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import I, sqrt
     >>> sqrt(-1)
     I
     >>> I*I
@@ -3186,7 +2968,7 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
                 if expt == 2:
                     return -S.One
                 return -I
-            return (S.NegativeOne)**(expt*S.Half)
+            return S.NegativeOne**(expt*S.Half)
         return
 
     def as_base_exp(self):

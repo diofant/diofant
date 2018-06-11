@@ -5,7 +5,7 @@ from functools import reduce
 from mpmath.libmp.libintmath import ifac
 
 from ..core import Basic, Tuple, sympify
-from ..core.compatibility import is_sequence
+from ..core.compatibility import as_int, is_sequence
 from ..matrices import zeros
 from ..polys import lcm
 from ..utilities import flatten, has_dups, has_variety
@@ -20,7 +20,6 @@ def _af_rmul(a, b):
     Examples
     ========
 
-    >>> from diofant.combinatorics.permutations import _af_rmul, Permutation
     >>> Permutation.print_cyclic = False
 
     >>> a, b = [1, 0, 2], [0, 2, 1]
@@ -53,7 +52,6 @@ def _af_rmuln(*abc):
     Examples
     ========
 
-    >>> from diofant.combinatorics.permutations import _af_rmul, Permutation
     >>> Permutation.print_cyclic = False
 
     >>> a, b = [1, 0, 2], [0, 2, 1]
@@ -117,7 +115,6 @@ def _af_parity(pi):
     Examples
     ========
 
-    >>> from diofant.combinatorics.permutations import _af_parity
     >>> _af_parity([0, 1, 2, 3])
     0
     >>> _af_parity([3, 2, 0, 1])
@@ -149,7 +146,6 @@ def _af_invert(a):
     Examples
     ========
 
-    >>> from diofant.combinatorics.permutations import _af_invert, _af_rmul
     >>> A = [1, 2, 0, 3]
     >>> _af_invert(A)
     [2, 0, 1, 3]
@@ -174,7 +170,6 @@ def _af_pow(a, n):
     Examples
     ========
 
-    >>> from diofant.combinatorics.permutations import Permutation, _af_pow
     >>> Permutation.print_cyclic = False
     >>> p = Permutation([2, 0, 3, 1])
     >>> p.order()
@@ -220,7 +215,6 @@ def _af_commutes_with(a, b):
     Examples
     ========
 
-    >>> from diofant.combinatorics.permutations import _af_commutes_with
     >>> _af_commutes_with([1, 2, 0], [0, 2, 1])
     False
 
@@ -240,8 +234,6 @@ class Cycle(dict):
     a permutation. The Cycle class is more flexible than Permutation in
     that 1) all elements need not be present in order to investigate how
     multiple cycles act in sequence and 2) it can contain singletons:
-
-    >>> from diofant.combinatorics.permutations import Perm, Cycle
 
     A Cycle will automatically parse a cycle given as a tuple on the rhs:
 
@@ -308,6 +300,7 @@ class Cycle(dict):
 
     def __missing__(self, arg):
         """Enter arg into dictionary and return arg."""
+        arg = as_int(arg)
         self[arg] = arg
         return arg
 
@@ -321,9 +314,7 @@ class Cycle(dict):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Cycle as C
-        >>> from diofant.combinatorics.permutations import Permutation as Perm
-        >>> C(1, 2)(2, 3)
+        >>> Cycle(1, 2)(2, 3)
         Cycle(1, 3, 2)
 
         An instance of a Cycle will automatically parse list-like
@@ -331,7 +322,7 @@ class Cycle(dict):
         flexible than the Permutation in that all elements need not
         be present:
 
-        >>> a = C(1, 2)
+        >>> a = Cycle(1, 2)
         >>> a(2, 3)
         Cycle(1, 3, 2)
         >>> a(2, 3)(4, 5)
@@ -354,8 +345,6 @@ class Cycle(dict):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Cycle
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
         >>> p = Cycle(2, 3)(4, 5)
         >>> p.list()
@@ -372,7 +361,7 @@ class Cycle(dict):
         if not self and size is None:
             raise ValueError('must give size for empty Cycle')
         if size is not None:
-            big = max(i for i in self.keys() if self[i] != i)
+            big = max([i for i in self.keys() if self[i] != i] + [0])
             size = max(size, big + 1)
         else:
             size = self.size
@@ -384,7 +373,6 @@ class Cycle(dict):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Cycle
         >>> Cycle(1, 2)
         Cycle(1, 2)
         >>> print(_)
@@ -407,7 +395,6 @@ class Cycle(dict):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Cycle
         >>> Cycle(1, 2, 6)
         Cycle(1, 2, 6)
         """
@@ -423,7 +410,9 @@ class Cycle(dict):
                 for k, v in args[0].items():
                     self[k] = v
                 return
-        args = [int(a) for a in args]
+        args = [as_int(a) for a in args]
+        if any(i < 0 for i in args):
+            raise ValueError('negative integers are not allowed in a cycle.')
         if has_dups(args):
             raise ValueError('All elements must be unique in a cycle.')
         for i in range(-len(args), 0):
@@ -431,6 +420,8 @@ class Cycle(dict):
 
     @property
     def size(self):
+        if not self:
+            return 0
         return max(self.keys()) + 1
 
     def copy(self):
@@ -449,7 +440,6 @@ class Permutation(Basic):
     to as 0 and the permutation uses the indices of the elements in the
     original ordering, not the elements (a, b, etc...) themselves.
 
-    >>> from diofant.combinatorics import Permutation
     >>> Permutation.print_cyclic = False
 
     Notes
@@ -510,7 +500,7 @@ class Permutation(Basic):
 
     Only the relative ordering of elements in a cycle matter:
 
-    >>> Permutation(1,2,3) == Permutation(2,3,1) == Permutation(3,1,2)
+    >>> Permutation(1, 2, 3) == Permutation(2, 3, 1) == Permutation(3, 1, 2)
     True
 
     The disjoint cycle notation is convenient when representing permutations
@@ -778,7 +768,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
 
         Permutations entered in array-form are left unaltered:
@@ -911,10 +900,9 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Perm
-        >>> Perm.print_cyclic = False
-        >>> a = [2,1,3,0]
-        >>> p = Perm._af_new(a)
+        >>> Permutation.print_cyclic = False
+        >>> a = [2, 1, 3, 0]
+        >>> p = Permutation._af_new(a)
         >>> p
         Permutation([2, 1, 3, 0])
 
@@ -936,7 +924,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
         >>> p = Permutation([[2, 0], [3, 1]])
         >>> p.array_form
@@ -959,7 +946,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
         >>> p = Permutation(2, 3)(4, 5)
         >>> p.list()
@@ -1000,7 +986,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
         >>> p = Permutation([0, 3, 1, 2])
         >>> p.cyclic_form
@@ -1042,7 +1027,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation([0, 2, 1]).full_cyclic_form
         [[0], [1, 2]]
         """
@@ -1060,7 +1044,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation([[3, 2], [0, 1]]).size
         4
 
@@ -1077,7 +1060,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> p = Permutation([[3, 2], [0, 1], [4]])
         >>> p.array_form
         [1, 0, 3, 2, 4]
@@ -1096,7 +1078,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
         >>> I = Permutation([0, 1, 2, 3])
         >>> a = Permutation([2, 1, 3, 0])
@@ -1135,7 +1116,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import _af_rmul, Permutation
         >>> Permutation.print_cyclic = False
 
         >>> a, b = [1, 0, 2], [0, 2, 1]
@@ -1199,7 +1179,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import _af_rmul, Permutation
         >>> Permutation.print_cyclic = False
 
         >>> a, b = [1, 0, 2], [0, 2, 1]
@@ -1237,7 +1216,6 @@ class Permutation(Basic):
         since coercion can only handle one argument to the left. To handle
         multiple cycles it is convenient to use Cycle instead of Permutation:
 
-        >>> from diofant.combinatorics.permutations import Cycle
         >>> Cycle(1, 2)(2, 3)
         Cycle(1, 3, 2)
         """
@@ -1258,7 +1236,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> a = Permutation([1, 4, 3, 0, 2, 5])
         >>> b = Permutation([0, 1, 2, 3, 4, 5])
         >>> a.commutes_with(b)
@@ -1278,9 +1255,8 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
-        >>> p = Permutation([2,0,3,1])
+        >>> p = Permutation([2, 0, 3, 1])
         >>> p.order()
         4
         >>> p**4
@@ -1298,7 +1274,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> p = Permutation(1, 2, 9)
         >>> 2^p == p(2) == 9
         True
@@ -1318,7 +1293,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = True
         >>> p = Permutation(1, 2, 9)
         >>> q = Permutation(6, 9, 8)
@@ -1397,7 +1371,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([[1, 2, 3], [0, 4, 5, 6, 7]])
         >>> t = p.transpositions()
         >>> t
@@ -1433,7 +1406,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
 
         >>> Permutation.from_sequence('SymPy')
@@ -1459,8 +1431,7 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
-        >>> p = Permutation([[2,0], [3,1]])
+        >>> p = Permutation([[2, 0], [3, 1]])
         >>> ~p
         Permutation([2, 3, 0, 1])
         >>> _ == p**-1
@@ -1476,7 +1447,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> list(Permutation(range(3)))
         [0, 1, 2]
         """
@@ -1490,7 +1460,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([[2, 0], [3, 1]])
         >>> p.array_form
         [2, 3, 0, 1]
@@ -1500,7 +1469,6 @@ class Permutation(Basic):
         If an array is given then the permutation selects the items
         from the array (i.e. the permutation is applied to the array):
 
-        >>> from diofant.abc import x
         >>> p([x, 1, 0, x**2])
         [0, x**2, x, 1]
         """
@@ -1529,7 +1497,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation([0, 1, 2, 3, 4, 5]).atoms()
         {0, 1, 2, 3, 4, 5}
         >>> Permutation([[0, 1], [2, 3], [4, 5]]).atoms()
@@ -1548,7 +1515,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([2, 3, 1, 0])
         >>> p = Permutation([2, 3, 1, 0]); p.rank()
         17
@@ -1589,7 +1555,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
         >>> Permutation.unrank_nonlex(4, 5)
         Permutation([2, 0, 3, 1])
@@ -1621,7 +1586,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([0, 1, 2, 3])
         >>> p.rank_nonlex()
         23
@@ -1656,7 +1620,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
         >>> p = Permutation([2, 0, 3, 1]); p.rank_nonlex()
         5
@@ -1682,7 +1645,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([0, 1, 2, 3])
         >>> p.rank()
         0
@@ -1720,7 +1682,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([0, 1, 2, 3])
         >>> p.cardinality
         24
@@ -1743,7 +1704,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([0, 1, 2, 3])
         >>> p.parity()
         0
@@ -1769,7 +1729,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([0, 1, 2, 3])
         >>> p.is_even
         True
@@ -1792,7 +1751,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([0, 1, 2, 3])
         >>> p.is_odd
         False
@@ -1816,7 +1774,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation([0]).is_Singleton
         True
         >>> Permutation([0, 1]).is_Singleton
@@ -1837,7 +1794,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation([]).is_Empty
         True
         >>> Permutation([0]).is_Empty
@@ -1858,7 +1814,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([])
         >>> p.is_Identity
         True
@@ -1888,7 +1843,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([4, 0, 1, 3, 2])
         >>> p.ascents()
         [1, 2]
@@ -1910,7 +1864,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([4, 0, 1, 3, 2])
         >>> p.descents()
         [0, 3]
@@ -1931,7 +1884,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([1, 0, 2, 3, 4])
         >>> p.max()
         1
@@ -1955,7 +1907,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([0, 1, 4, 3, 2])
         >>> p.min()
         2
@@ -1991,7 +1942,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([0, 1, 2, 3, 4, 5])
         >>> p.inversions()
         0
@@ -2037,7 +1987,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
         >>> p = Permutation([0, 2, 3, 1])
         >>> x = Permutation([2, 0, 3, 1])
@@ -2086,13 +2035,12 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([0, 1, 2])
         >>> p.inversions()
         0
         >>> p.signature()
         1
-        >>> q = Permutation([0,2,1])
+        >>> q = Permutation([0, 2, 1])
         >>> q.inversions()
         1
         >>> q.signature()
@@ -2117,7 +2065,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
         >>> p = Permutation([3, 1, 5, 2, 4, 0])
         >>> p.order()
@@ -2140,7 +2087,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation([0, 3, 2, 1]).length()
         2
         >>> Permutation([[0, 1], [2, 3]]).length()
@@ -2162,7 +2108,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.print_cyclic = True
         >>> Permutation(3).cycle_structure
         {1: 4}
@@ -2191,7 +2136,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation([0, 1, 2]).cycles
         3
         >>> Permutation([0, 1, 2]).full_cyclic_form
@@ -2215,7 +2159,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([3, 0, 2, 1, 4])
         >>> p.index()
         2
@@ -2234,11 +2177,10 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([2, 5, 7, 3, 6, 0, 1, 4, 8])
         >>> p.runs()
         [[2, 5, 7], [3, 6], [0, 1, 4, 8]]
-        >>> q = Permutation([1,3,2,0])
+        >>> q = Permutation([1, 3, 2, 0])
         >>> q.runs()
         [[1, 3], [2], [0]]
         """
@@ -2257,7 +2199,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([4, 8, 0, 7, 1, 5, 3, 6, 2])
         >>> p.inversion_vector()
         [4, 7, 0, 5, 0, 2, 1, 1]
@@ -2305,7 +2246,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([0, 1, 2, 3])
         >>> p.rank_trotterjohnson()
         0
@@ -2347,7 +2287,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.unrank_trotterjohnson(5, 10)
         Permutation([0, 3, 1, 2, 4])
 
@@ -2386,7 +2325,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
         >>> p = Permutation([3, 0, 2, 1])
         >>> p.rank_trotterjohnson()
@@ -2437,7 +2375,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation.josephus(3, 6, 1)
         >>> Permutation.print_cyclic = False
         >>> p
@@ -2474,7 +2411,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([2, 0, 4, 3, 1])
         >>> q = Permutation([3, 1, 2, 4, 0])
         >>> p.get_precedence_distance(q)
@@ -2512,7 +2448,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation.josephus(3, 6, 1)
         >>> p.get_adjacency_matrix()
         Matrix([
@@ -2556,7 +2491,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([0, 3, 1, 2, 4])
         >>> q = Permutation.josephus(4, 5, 2)
         >>> p.get_adjacency_distance(q)
@@ -2591,7 +2525,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> p = Permutation([0, 3, 1, 2, 4])
         >>> q = Permutation.josephus(4, 5, 2)
         >>> r = Permutation([3, 1, 4, 0, 2])
@@ -2637,7 +2570,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics import Permutation
         >>> Permutation.josephus(3, 6, 2).array_form
         [2, 5, 3, 1, 4, 0]
 
@@ -2667,7 +2599,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
         >>> Permutation.from_inversion_vector([3, 2, 1, 0, 0])
         Permutation([3, 2, 1, 0, 4, 5])
@@ -2696,7 +2627,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.random(2) in (Permutation([1, 0]), Permutation([0, 1]))
         True
 
@@ -2713,7 +2643,6 @@ class Permutation(Basic):
         Examples
         ========
 
-        >>> from diofant.combinatorics.permutations import Permutation
         >>> Permutation.print_cyclic = False
         >>> a = Permutation.unrank_lex(5, 10)
         >>> a.rank()

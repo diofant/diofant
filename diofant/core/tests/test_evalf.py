@@ -1,16 +1,16 @@
 import pytest
-from mpmath import inf, ninf
+from mpmath import inf, mpc, ninf
 from mpmath.libmp.libmpf import from_float
 
 from diofant import (Abs, Add, Dummy, E, Eq, Expr, Float, Function,
-                     GoldenRatio, I, Integral, Min, Mul, N, Pow, Product,
-                     Rational, Sum, Symbol, atan, cbrt, ceiling, cos, exp,
-                     factorial, fibonacci, floor, im, integrate, log, nan, oo,
-                     pi, polar_lift, product, re, root, sin, sqrt, sstr,
-                     symbols, sympify, zoo)
+                     GoldenRatio, I, Integral, Max, Min, Mul, N, Pow, Product,
+                     Rational, Sum, Symbol, atan, bernoulli, cbrt, ceiling,
+                     cos, exp, factorial, fibonacci, floor, im, integrate, log,
+                     nan, nfloat, oo, pi, polar_lift, product, re, root, sin,
+                     sqrt, sstr, symbols, sympify, zoo)
 from diofant.abc import H, n, x, y
-from diofant.core.evalf import (PrecisionExhausted, as_mpmath,
-                                complex_accuracy, scaled_zero)
+from diofant.core.evalf import (PrecisionExhausted, _create_evalf_table,
+                                as_mpmath, complex_accuracy, scaled_zero)
 from diofant.utilities.lambdify import implemented_function
 
 
@@ -29,6 +29,9 @@ def test_evalf_helpers():
     assert complex_accuracy((from_float(2.0), from_float(10.0), 100, 35)) == 35
     assert complex_accuracy(
         (from_float(2.0), from_float(1000.0), 100, 35)) == 35
+
+    _create_evalf_table()
+    assert as_mpmath(1 + I, 2, {}) == mpc(1.0, 1.0)
 
 
 def test_evalf_basic():
@@ -50,6 +53,10 @@ def test_evalf_powers():
                                      '95526746555473864642912223')
     assert NS('2**(1/10**50)', 15) == '1.00000000000000'
     assert NS('2**(1/10**50)-1', 15) == '6.93147180559945e-51'
+
+    assert Pow(2, 0, evaluate=False).evalf() == 1
+    assert Pow(I, 5, evaluate=False).evalf() == I.evalf()
+
 
 # Evaluation of Rump's ill-conditioned polynomial
 
@@ -289,6 +296,7 @@ def test_evalf_trig_zero_detection():
 
 def test_evalf_sum():
     assert Sum(n, (n, 1, 2)).evalf() == 3.
+    assert Sum(I*n, (n, 1, 2)).evalf() == 3.*I
     assert Sum(n, (n, 1, 2)).doit().evalf() == 3.
     # the next test should return instantly
     assert Sum(1/n, (n, 1, 2)).evalf() == 1.5
@@ -476,6 +484,7 @@ def test_evalf_integral():
     # test that workprec has to increase in order to get a result other than 0
     eps = Rational(1, 1000000)
     assert Integral(sin(x), (x, -pi, pi + eps)).n(2)._prec == 10
+    assert (Integral(sin(I*x), (x, -pi, pi + eps)).n(2)/I)._prec == 10
 
 
 def test_sympyissue_8821_highprec_from_str():
@@ -522,7 +531,7 @@ def test_AssocOp_Function():
     # the following should not raise a recursion error; it
     # should raise a value error because the first arg computes
     # a non-comparable (prec=1) imaginary part
-    pytest.raises(ValueError, lambda: e._eval_evalf(2))
+    pytest.raises(ValueError, lambda: e.evalf(2, strict=False))
 
 
 def test_diofantissue_514():
@@ -534,3 +543,21 @@ def test_diofantissue_499():
     e = -3000 + log(1 + E**3000)
     pytest.raises(PrecisionExhausted, lambda: e.evalf(2))
     assert e.n(2, maxn=2000) == Float('1.3074e-1303', dps=2)
+
+
+def test_sympyissue_10395():
+    eq = x*Max(0, y)
+    assert nfloat(eq) == eq
+    eq = x*Max(y, -1.1)
+    assert nfloat(eq) == eq
+    assert Max(y, 4).n() == Max(4.0, y)
+
+
+def test_evalf_bernoulli():
+    pytest.raises(ValueError, lambda: bernoulli(0.5, evaluate=False).evalf())
+
+    assert bernoulli(3, evaluate=False).evalf() == 0
+
+
+def test_evalf_abs():
+    assert Abs(0, evaluate=False).evalf() == 0

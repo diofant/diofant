@@ -22,8 +22,6 @@ The ``.subs(...).evalf()`` method can substitute a numeric value
 for a symbolic one and then evaluate the result within Diofant.
 
 
-    >>> from diofant import *
-    >>> from diofant.abc import x
     >>> expr = sin(x)/x
     >>> expr.evalf(subs={x: 3.14}, strict=False)
     0.000507214304613640
@@ -39,12 +37,10 @@ Lambdify
 The ``lambdify`` function translates Diofant expressions into Python functions,
 leveraging a variety of numerical libraries.  It is used as follows:
 
-    >>> from diofant import *
-    >>> from diofant.abc import x
     >>> expr = sin(x)/x
     >>> f = lambdify(x, expr)
     >>> f(3.14)
-    0.0005072143046136395
+    0.000507214304614
 
 Here lambdify makes a function that computes ``f(x) = sin(x)/x``.  By default
 lambdify relies on implementations in the ``math`` standard library. This
@@ -57,8 +53,6 @@ Lambdify can leverage a variety of numerical backends.  By default it uses the
 ``numpy``.  Using the ``numpy`` library gives the generated function access to
 powerful vectorized ufuncs that are backed by compiled C code.
 
-    >>> from diofant import *
-    >>> from diofant.abc import x
     >>> expr = sin(x)/x
     >>> f = lambdify(x, expr, "numpy")
 
@@ -118,8 +112,6 @@ compile and reconnect that code back up to Python. Fortunately this process is
 well automated and a Diofant user wishing to make use of this code generation
 should call the ``ufuncify`` function
 
-    >>> from diofant import *
-    >>> from diofant.abc import x
     >>> expr = sin(x)/x
 
     >>> from diofant.utilities.autowrap import ufuncify
@@ -139,8 +131,6 @@ Diofant has a strong connection with
 compiler.  Diofant expressions can be easily translated to Theano graphs and then
 compiled using the Theano compiler chain.
 
-    >>> from diofant import *
-    >>> from diofant.abc import x
     >>> expr = sin(x)/x
 
     >>> from diofant.printing.theanocode import theano_function  # doctest: +SKIP

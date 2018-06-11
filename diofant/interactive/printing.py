@@ -70,9 +70,7 @@ def init_printing(no_global=False, pretty_print=None, **settings):
     Examples
     ========
 
-    >>> from diofant.interactive import init_printing
-    >>> from diofant import Symbol, sqrt
-    >>> from diofant.abc import x, y, theta
+    >>> from diofant.abc import theta
     >>> sqrt(5)
     sqrt(5)
     >>> init_printing(pretty_print=True, no_global=True)

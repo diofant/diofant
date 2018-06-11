@@ -13,12 +13,10 @@ class Mod(Function):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
     >>> x**2 % y
     x**2%y
     >>> _.subs({x: 5, y: 6})
     1
-
     """
 
     @classmethod
@@ -43,7 +41,7 @@ class Mod(Function):
 
             if q.is_Number:
                 if p.is_Number:
-                    return (p % q)
+                    return p % q
                 if q == 2:
                     if p.is_even:
                         return S.Zero

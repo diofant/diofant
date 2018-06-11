@@ -15,6 +15,7 @@ from ..simplify import simplify
 from ..solvers import solve
 from .entity import GeometryEntity
 from .exceptions import GeometryError
+from .line import Undecidable
 from .point import Point3D
 from .util import _symbol
 
@@ -60,7 +61,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(5, 3, 1)
         >>> l = Line3D(p1, p2)
         >>> l.p1
@@ -81,7 +81,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(5, 3, 1)
         >>> l = Line3D(p1, p2)
         >>> l.p2
@@ -102,7 +101,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(5, 3, 1)
         >>> l = Line3D(p1, p2)
         >>> l.direction_ratio
@@ -123,7 +121,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(5, 3, 1)
         >>> l = Line3D(p1, p2)
         >>> l.direction_cosine
@@ -142,7 +139,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(3, 5, 1)
         >>> l1 = Line3D(p1, p2)
         >>> l1.length
@@ -167,7 +163,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(5, 11, 1)
         >>> l1 = Line3D(p1, p2)
         >>> l1.points
@@ -212,7 +207,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(3, 5, 2)
         >>> p3, p4 = Point3D(-2, -2, -2), Point3D(0, 2, 1)
         >>> l1, l2, l3 = Line3D(p1, p2), Line3D(p1, p3), Line3D(p1, p4)
@@ -262,7 +256,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(3, 4, 5)
         >>> p3, p4 = Point3D(2, 1, 1), Point3D(8, 9, 11)
         >>> l1, l2 = Line3D(p1, p2), Line3D(p3, p4)
@@ -314,7 +307,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2, p3 = Point3D(0, 0, 0), Point3D(1, 1, 1), Point3D(-1, 2, 0)
         >>> l1, l2 = Line3D(p1, p2), Line3D(p2, p3)
         >>> l1.is_perpendicular(l2)
@@ -362,7 +354,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2, p3 = Point3D(0, 0, 0), Point3D(1, 1, 1), Point3D(-1, 2, 0)
         >>> l1, l2 = Line3D(p1, p2), Line3D(p2, p3)
         >>> l1.angle_between(l2)
@@ -395,7 +386,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2, p3 = Point3D(0, 0, 0), Point3D(2, 3, 4), Point3D(-2, 2, 0)
         >>> l1 = Line3D(p1, p2)
         >>> l2 = l1.parallel_line(p3)
@@ -430,7 +420,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2, p3 = Point3D(0, 0, 0), Point3D(2, 3, 4), Point3D(-2, 2, 0)
         >>> l1 = Line3D(p1, p2)
         >>> l2 = l1.perpendicular_line(p3)
@@ -481,7 +470,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2, p3 = Point3D(0, 0, 0), Point3D(1, 1, 1), Point3D(0, 2, 0)
         >>> l1 = Line3D(p1, p2)
         >>> s1 = l1.perpendicular_segment(p3)
@@ -543,7 +531,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D, Segment3D, Rational
         >>> p1, p2, p3 = Point3D(0, 0, 1), Point3D(1, 1, 2), Point3D(2, 0, 1)
         >>> l1 = Line3D(p1, p2)
         >>> l1.projection(p3)
@@ -605,14 +592,13 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D, Segment3D
         >>> p1, p2, p3 = Point3D(0, 0, 0), Point3D(1, 1, 1), Point3D(7, 7, 7)
         >>> l1 = Line3D(p1, p2)
         >>> l1.intersection(p3)
         [Point3D(7, 7, 7)]
 
-        >>> l1 = Line3D(Point3D(4,19,12), Point3D(5,25,17))
-        >>> l2 = Line3D(Point3D(-3, -15, -19), direction_ratio=[2,8,8])
+        >>> l1 = Line3D(Point3D(4, 19, 12), Point3D(5, 25, 17))
+        >>> l2 = Line3D(Point3D(-3, -15, -19), direction_ratio=[2, 8, 8])
         >>> l1.intersection(l2)
         [Point3D(1, 1, -3)]
 
@@ -742,7 +728,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2 = Point3D(1, 0, 0), Point3D(5, 3, 1)
         >>> l1 = Line3D(p1, p2)
         >>> l1.arbitrary_point()
@@ -765,7 +750,6 @@ class LinearEntity3D(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2, p3 = Point3D(0, 0, 0), Point3D(1, 1, 1), Point3D(2, 2, 2)
         >>> l1 = Line3D(p1, p2)
         >>> l2 = Line3D(p1, p3)
@@ -821,10 +805,7 @@ class Line3D(LinearEntity3D):
     Examples
     ========
 
-    >>> import diofant
-    >>> from diofant import Point3D
     >>> from diofant.abc import L
-    >>> from diofant.geometry import Line3D, Segment3D
     >>> L = Line3D(Point3D(2, 3, 4), Point3D(3, 5, 1))
     >>> L
     Line3D(Point3D(2, 3, 4), Point3D(3, 5, 1))
@@ -868,7 +849,6 @@ class Line3D(LinearEntity3D):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(5, 3, 1)
         >>> l1 = Line3D(p1, p2)
         >>> l1.plot_interval()
@@ -899,7 +879,6 @@ class Line3D(LinearEntity3D):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2 = Point3D(1, 0, 0), Point3D(5, 3, 0)
         >>> l1 = Line3D(p1, p2)
         >>> l1.equation()
@@ -917,7 +896,6 @@ class Line3D(LinearEntity3D):
         Examples
         ========
 
-        >>> from diofant import Line3D
         >>> a = (0, 0, 0)
         >>> b = (1, 1, 1)
         >>> c = (2, 2, 2)
@@ -960,7 +938,6 @@ class Line3D(LinearEntity3D):
         Examples
         ========
 
-        >>> from diofant import Point3D, Line3D
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(1, 1, 1)
         >>> s = Line3D(p1, p2)
         >>> s.distance(Point3D(-1, 1, 1))
@@ -1013,10 +990,7 @@ class Ray3D(LinearEntity3D):
     Examples
     ========
 
-    >>> import diofant
-    >>> from diofant import Point3D, pi
     >>> from diofant.abc import r
-    >>> from diofant.geometry import Ray3D
     >>> r = Ray3D(Point3D(2, 3, 4), Point3D(3, 5, 0))
     >>> r
     Ray3D(Point3D(2, 3, 4), Point3D(3, 5, 0))
@@ -1061,7 +1035,6 @@ class Ray3D(LinearEntity3D):
         Examples
         ========
 
-        >>> from diofant import Point3D, Ray3D
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(4, 1, 5)
         >>> r1 = Ray3D(p1, p2)
         >>> r1.source
@@ -1086,7 +1059,6 @@ class Ray3D(LinearEntity3D):
         Examples
         ========
 
-        >>> from diofant import Point3D, Ray3D
         >>> p1, p2, p3 = Point3D(0, 0, 0), Point3D(1, 1, 1), Point3D(0, -1, 0)
         >>> r1, r2 = Ray3D(p1, p2), Ray3D(p1, p3)
         >>> r1.xdirection
@@ -1118,7 +1090,6 @@ class Ray3D(LinearEntity3D):
         Examples
         ========
 
-        >>> from diofant import Point3D, Ray3D
         >>> p1, p2, p3 = Point3D(0, 0, 0), Point3D(-1, -1, -1), Point3D(-1, 0, 0)
         >>> r1, r2 = Ray3D(p1, p2), Ray3D(p1, p3)
         >>> r1.ydirection
@@ -1150,7 +1121,6 @@ class Ray3D(LinearEntity3D):
         Examples
         ========
 
-        >>> from diofant import Point3D, Ray3D
         >>> p1, p2, p3 = Point3D(0, 0, 0), Point3D(-1, -1, -1), Point3D(-1, 0, 0)
         >>> r1, r2 = Ray3D(p1, p2), Ray3D(p1, p3)
         >>> r1.ydirection
@@ -1180,7 +1150,6 @@ class Ray3D(LinearEntity3D):
         Examples
         ========
 
-        >>> from diofant import Point3D, Ray3D
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(1, 1, 2)
         >>> s = Ray3D(p1, p2)
         >>> s.distance(Point3D(-1, -1, 2))
@@ -1221,7 +1190,6 @@ class Ray3D(LinearEntity3D):
         Examples
         ========
 
-        >>> from diofant import Point3D, Ray3D, pi
         >>> r = Ray3D(Point3D(0, 0, 0), Point3D(1, 1, 1))
         >>> r.plot_interval()
         [t, 0, 10]
@@ -1297,10 +1265,7 @@ class Segment3D(LinearEntity3D):
     Examples
     ========
 
-    >>> import diofant
-    >>> from diofant import Point3D
     >>> from diofant.abc import s
-    >>> from diofant.geometry import Segment3D
     >>> Segment3D((1, 0, 0), (1, 1, 1)) # tuples are interpreted as pts
     Segment3D(Point3D(1, 0, 0), Point3D(1, 1, 1))
     >>> s = Segment3D(Point3D(4, 3, 9), Point3D(1, 1, 7))
@@ -1348,7 +1313,6 @@ class Segment3D(LinearEntity3D):
         Examples
         ========
 
-        >>> from diofant import Point3D, Segment3D
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(5, 3, 0)
         >>> s1 = Segment3D(p1, p2)
         >>> s1.plot_interval()
@@ -1370,7 +1334,6 @@ class Segment3D(LinearEntity3D):
         Examples
         ========
 
-        >>> from diofant import Point3D, Segment3D
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(4, 3, 3)
         >>> s1 = Segment3D(p1, p2)
         >>> s1.length
@@ -1391,7 +1354,6 @@ class Segment3D(LinearEntity3D):
         Examples
         ========
 
-        >>> from diofant import Point3D, Segment3D
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(4, 3, 3)
         >>> s1 = Segment3D(p1, p2)
         >>> s1.midpoint
@@ -1412,7 +1374,6 @@ class Segment3D(LinearEntity3D):
         Examples
         ========
 
-        >>> from diofant import Point3D, Segment3D
         >>> p1, p2 = Point3D(0, 0, 3), Point3D(1, 1, 4)
         >>> s = Segment3D(p1, p2)
         >>> s.distance(Point3D(10, 15, 12))
@@ -1444,7 +1405,6 @@ class Segment3D(LinearEntity3D):
         Examples
         ========
 
-        >>> from diofant import Point3D, Segment3D
         >>> p1, p2 = Point3D(0, 1, 1), Point3D(3, 4, 5)
         >>> s = Segment3D(p1, p2)
         >>> s2 = Segment3D(p2, p1)

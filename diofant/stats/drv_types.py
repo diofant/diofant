@@ -49,8 +49,7 @@ def Poisson(name, lamda):
     Examples
     ========
 
-    >>> from diofant.stats import Poisson, density, E, variance
-    >>> from diofant import Symbol, simplify
+    >>> from diofant.stats import density, E, variance
 
     >>> rate = Symbol("lambda", positive=True)
     >>> z = Symbol("z")
@@ -109,8 +108,7 @@ def Geometric(name, p):
     Examples
     ========
 
-    >>> from diofant.stats import Geometric, density, E, variance
-    >>> from diofant import Symbol, S
+    >>> from diofant.stats import density, E, variance
 
     >>> p = S.One / 5
     >>> z = Symbol("z")

@@ -35,6 +35,9 @@ Abstract Domains
 .. autoclass:: diofant.domains.compositedomain.CompositeDomain
    :members:
 
+.. autoclass:: diofant.domains.characteristiczero.CharacteristicZero
+   :members:
+
 Concrete Domains
 ****************
 
@@ -44,21 +47,22 @@ Concrete Domains
 .. autoclass:: IntegerRing
    :members:
 
-.. autoclass:: PolynomialRing
-   :members:
-
 .. autoclass:: RationalField
    :members:
 
-.. currentmodule:: diofant.polys.polyclasses
-.. autoclass:: diofant.domains.AlgebraicField
+.. autoclass:: AlgebraicField
    :members:
-.. currentmodule:: diofant.domains
 
-.. autoclass:: FractionField
+.. autoclass:: diofant.polys.rings.PolynomialRing
+   :members:
+
+.. autoclass:: diofant.polys.fields.FractionField
    :members:
 
 .. autoclass:: RealField
+   :members:
+
+.. autoclass:: ComplexField
    :members:
 
 .. autoclass:: ExpressionDomain

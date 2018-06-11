@@ -3,12 +3,62 @@
 ========
 
 ..
-   >>> from diofant import *
-   >>> x, y, z = symbols('x y z')
    >>> init_printing(pretty_print=True, use_unicode=True)
 
-Here we discuss some of the most basic operations needed for
-expression manipulation in Diofant.
+Here we discuss some of the most basic aspects of expression
+manipulation in Diofant.
+
+Assumptions
+===========
+
+The assumptions system allows users to declare certain mathematical
+properties on symbols, such as being positive, imaginary or integer.
+
+By default, all symbols are complex valued.  This assumption makes it
+easier to treat mathematical problems in full generality.
+
+    >>> sqrt(x**2)
+       ____
+      ╱  2
+    ╲╱  x
+
+
+Yet obviously we can simplify above expression if some additional
+mathematical properties on ``x`` are assumed.  This is where
+assumptions system come into play.
+
+Assumptions are set on :class:`~diofant.core.symbol.Symbol` objects
+when they are created. For instance, we can create a symbol that is
+assumed to be positive.
+
+    >>> p = symbols('p', positive=True)
+
+And then, certain simplifications will be possible:
+
+    >>> sqrt(p**2)
+    p
+
+The assumptions system additionally has deductive capabilities.  You
+might check assumptions on any expression with ``is_assumption``
+attributes, like :attr:`~diofant.core.expr.Expr.is_positive`.
+
+    >>> p.is_positive
+    True
+    >>> (1 + p).is_positive
+    True
+    >>> (-p).is_positive
+    False
+
+.. note::
+
+   ``False`` is returned also if certain assumption doesn't make sense
+   for given object.
+
+In a three-valued logic, used by system, ``None`` represents the
+"unknown" case.
+
+    >>> (p - 1).is_positive is None
+    True
 
 Substitution
 ============

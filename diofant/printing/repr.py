@@ -146,9 +146,9 @@ class ReprPrinter(Printer):
     def _print_WildFunction(self, expr):
         return "%s('%s')" % (expr.__class__.__name__, expr.name)
 
-    def _print_PolyRing(self, ring):
+    def _print_PolynomialRing(self, ring):
         return "%s(%s, %s, %s)" % (ring.__class__.__name__,
-                                   self._print(ring.symbols), self._print(ring.domain), self._print(ring.order))
+                                   self._print(ring.domain), self._print(ring.symbols), self._print(ring.order))
 
     def _print_GMPYIntegerRing(self, expr):
         return "%s()" % expr.__class__.__name__
@@ -159,12 +159,9 @@ class ReprPrinter(Printer):
     _print_LexOrder = _print_GMPYIntegerRing
     _print_GradedLexOrder = _print_LexOrder
 
-    def _print_PolynomialRing(self, expr):
-        return "%s(%s)" % (expr.__class__.__name__, repr(expr.ring))
-
-    def _print_FracField(self, field):
+    def _print_FractionField(self, field):
         return "%s(%s, %s, %s)" % (field.__class__.__name__,
-                                   self._print(field.symbols), self._print(field.domain), self._print(field.order))
+                                   self._print(field.domain), self._print(field.symbols), self._print(field.order))
 
     def _print_PolyElement(self, poly):
         terms = list(poly.terms())
@@ -179,6 +176,10 @@ class ReprPrinter(Printer):
         numer = self._print(numer_terms)
         denom = self._print(denom_terms)
         return "%s(%s, %s, %s)" % (frac.__class__.__name__, self._print(frac.field), numer, denom)
+
+    def _print_AlgebraicField(self, expr):
+        return "AlgebraicField(%s, %s)" % (self._print(expr.domain),
+                                           self._print(expr.ext.as_expr()))
 
 
 def srepr(expr, **settings):

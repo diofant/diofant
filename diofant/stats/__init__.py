@@ -23,7 +23,6 @@ Examples
 ========
 
 >>> from diofant.stats import P, E, variance, Die, Normal
->>> from diofant import Eq, simplify
 >>> X, Y = Die('X', 6), Die('Y', 6) # Define two six sided dice
 >>> Z = Normal('Z', 0, 1) # Declare a Normal random variable with mean 0, std 1
 >>> P(X>3) # Probability X is greater than 3
@@ -36,22 +35,13 @@ Examples
 -erf(sqrt(2)/2)/2 + 1/2
 """
 
-__all__ = []
-
-from . import rv_interface
 from .rv_interface import (cdf, covariance, density, dependent, E, given,  # noqa: F401
                            independent, P, pspace, random_symbols, sample,
                            sample_iter, skewness, std, variance, where,
                            correlation, moment, cmoment, smoment,
                            sampling_density)
-__all__.extend(rv_interface.__all__)
-
-from . import frv_types
 from .frv_types import (Bernoulli, Binomial, Coin, Die, DiscreteUniform,  # noqa: F401
                         FiniteRV, Hypergeometric, Rademacher)
-__all__.extend(frv_types.__all__)
-
-from . import crv_types
 from .crv_types import (ContinuousRV, Arcsin, Benini, Beta, BetaPrime,  # noqa: F401
                         Cauchy, Chi, ChiNoncentral, ChiSquared,
                         Dagum, Erlang, Exponential, FDistribution, FisherZ,
@@ -60,8 +50,4 @@ from .crv_types import (ContinuousRV, Arcsin, Benini, Beta, BetaPrime,  # noqa: 
                         Pareto, QuadraticU, RaisedCosine, Rayleigh,
                         StudentT, Triangular, Uniform, UniformSum,
                         VonMises, Weibull, WignerSemicircle)
-__all__.extend(crv_types.__all__)
-
-from . import drv_types
 from .drv_types import Geometric, Poisson  # noqa: F401
-__all__.extend(drv_types.__all__)

@@ -9,8 +9,7 @@ __all__ = ('CharacteristicZero',)
 class CharacteristicZero(Domain):
     """Domain that has infinite number of elements. """
 
-    has_CharacteristicZero = True
-
+    @property
     def characteristic(self):
         """Return the characteristic of this domain. """
         return 0

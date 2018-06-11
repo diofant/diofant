@@ -26,9 +26,11 @@ from operator import mul
 
 from ..core import Dummy, oo
 from ..domains import ZZ
+from ..functions import im, re, sqrt
 from ..polys import Poly, cancel, gcd
 from .risch import (DecrementLevel, NonElementaryIntegralException, derivation,
-                    frac_in, gcdex_diophantine, splitfactor)
+                    frac_in, gcdex_diophantine, recognize_log_derivative,
+                    splitfactor)
 
 
 # TODO: Add messages to NonElementaryIntegralException errors
@@ -713,7 +715,7 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
 
             else:
                 raise NotImplementedError("Other Poly (P)RDE cancellation "
-                                          "cases are not yet implemented (%s)." % case)
+                                          "cases are not yet implemented (%s)." % DE.case)
 
         if parametric:
             raise NotImplementedError("Remaining cases for Poly PRDE not yet "

@@ -42,3 +42,11 @@ Diofant.egg-info/
 
 # IPython Notebook Checkpoints
 .ipynb_checkpoints/
+
+# Ignore files cached by Hypothesis
+.hypothesis/
+# except for the examples directory
+!.hypothesis/examples/
+
+# Pytest cache
+.pytest_cache/

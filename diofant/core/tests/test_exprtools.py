@@ -6,6 +6,7 @@ from diofant import (Add, Basic, Dict, Float, I, Integer, Integral, Interval,
                      Mul, O, Rational, Sum, Symbol, Tuple, cbrt, collect, cos,
                      exp, oo, root, simplify, sin, sqrt, symbols)
 from diofant.abc import a, b, t, x, y, z
+from diofant.core.coreerrors import NonCommutativeExpression
 from diofant.core.exprtools import (Factors, Term, _gcd_terms, decompose_power,
                                     factor_nc, factor_terms, gcd_terms)
 from diofant.core.function import _mexpand
@@ -48,8 +49,13 @@ def test_Factors():
     assert a.pow(3) == a**3 == Factors({x: 15, y: 9, z: 21})
     assert b.pow(3) == b**3 == Factors({y: 12, z: 9, t: 30})
 
+    pytest.raises(ValueError, lambda: a.pow(3.1))
+    pytest.raises(ValueError, lambda: a.pow(Factors(3.1)))
+
+    assert a.pow(0) == Factors()
+
     assert a.gcd(b) == Factors({y: 3, z: 3})
-    assert a.lcm(b) == Factors({x: 5, y: 4, z: 7, t: 10})
+    assert a.lcm(b) == a.lcm(b.as_expr()) == Factors({x: 5, y: 4, z: 7, t: 10})
 
     a = Factors({x: 4, y: 7, t: 7})
     b = Factors({z: 1, t: 3})
@@ -98,6 +104,7 @@ def test_Factors():
     assert Factors(x).div(x) == (Factors(), Factors())
     assert Factors({x: .2})/Factors({x: .2}) == Factors()
     assert Factors(x) != Factors()
+    assert Factors(x) == x
     assert Factors(Integer(0)).normal(x) == (Factors(Integer(0)), Factors())
     n, d = x**(2 + y), x**2
     f = Factors(n)
@@ -114,6 +121,8 @@ def test_Factors():
     f = Factors(n)
     assert f.div(d) == f.normal(d) == (Factors({Integer(2): x}), Factors({Integer(2): y}))
     assert f.gcd(d) == Factors()
+
+    assert f.div(f) == (Factors(), Factors())
 
     # extraction of constant only
     n = x**(x + 3)
@@ -134,6 +143,9 @@ def test_Factors():
     assert Factors(n).div(x**(y + 3)) == (Factors({x: x}), Factors({x: y}))
     assert Factors(n).div(x**(y + 4)) == \
         (Factors({x: x}), Factors({x: y + 1}))
+
+    assert Factors({I: I}).as_expr() == (-1)**(I/2)
+    assert Factors({-1: Rational(4, 3)}).as_expr() == -cbrt(-1)
 
 
 def test_Term():
@@ -174,6 +186,17 @@ def test_Term():
     assert Term((2*x + 2)**3) == Term(8, Factors({x + 1: 3}), Factors({}))
     assert Term((2*x + 2)*(3*x + 6)**2) == \
         Term(18, Factors({x + 1: 1, x + 2: 2}), Factors({}))
+
+    A = Symbol('A', commutative=False)
+    pytest.raises(NonCommutativeExpression, lambda: Term(A))
+
+    f1, f2 = Factors({x: 2}), Factors()
+    assert Term(2, numer=f1) == Term(2, f1, f2)
+    assert Term(2, denom=f1) == Term(2, f2, f1)
+
+    pytest.raises(TypeError, lambda: a*2)
+    pytest.raises(TypeError, lambda: a/3)
+    pytest.raises(TypeError, lambda: a**3.1)
 
 
 def test_gcd_terms():
@@ -229,7 +252,7 @@ def test_factor_terms():
     A = Symbol('A', commutative=False)
     assert factor_terms(9*(x + x*y + 1) + (3*x + 3)**(2 + 2*x)) == \
         9*x*y + 9*x + _keep_coeff(Integer(3), x + 1)**_keep_coeff(Integer(2), x + 1) + 9
-    assert factor_terms(9*(x + x*y + 1) + (3)**(2 + 2*x)) == \
+    assert factor_terms(9*(x + x*y + 1) + 3**(2 + 2*x)) == \
         _keep_coeff(Integer(9), 3**(2*x) + x*y + x + 1)
     assert factor_terms(3**(2 + 2*x) + a*3**(2 + 2*x)) == \
         9*3**(2*x)*(a + 1)
@@ -331,6 +354,9 @@ def test_factor_nc():
     assert factor_nc(m*(m*n + n*m*n**2)) == m*(m + n*m*n)*n
     eq = m*sin(n) - sin(n)*m
     assert factor_nc(eq) == eq
+
+    eq = (sin(n) + x)*(cos(n) + x)
+    assert factor_nc(eq.expand()) == eq
 
     # issue sympy/sympy#6534
     assert (2*n + 2*m).factor() == 2*(n + m)

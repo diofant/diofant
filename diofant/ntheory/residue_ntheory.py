@@ -4,7 +4,7 @@ from ..core import Function, S, igcd
 from ..core.compatibility import as_int
 from ..core.numbers import igcdex
 from ..utilities.iterables import cantor_product
-from .factor_ import factorint, totient, trailing
+from .factor_ import factorint, multiplicity, totient, trailing
 from .primetest import isprime
 
 
@@ -17,7 +17,6 @@ def n_order(a, n):
     Examples
     ========
 
-    >>> from diofant.ntheory import n_order
     >>> n_order(3, 7)
     6
     >>> n_order(4, 7)
@@ -62,7 +61,6 @@ def _primitive_root_prime_iter(p):
     Examples
     ========
 
-    >>> from diofant.ntheory.residue_ntheory import _primitive_root_prime_iter
     >>> list(_primitive_root_prime_iter(19))
     [2, 3, 10, 13, 14, 15]
     """
@@ -95,7 +93,6 @@ def primitive_root(p):
     Examples
     ========
 
-    >>> from diofant.ntheory.residue_ntheory import primitive_root
     >>> primitive_root(19)
     2
     """
@@ -153,7 +150,6 @@ def is_primitive_root(a, p):
     Examples
     ========
 
-    >>> from diofant.ntheory import is_primitive_root, n_order, totient
     >>> is_primitive_root(3, 10)
     True
     >>> is_primitive_root(9, 10)
@@ -224,7 +220,6 @@ def sqrt_mod(a, p, all_roots=False):
     Examples
     ========
 
-    >>> from diofant.ntheory import sqrt_mod
     >>> sqrt_mod(11, 43)
     21
     >>> sqrt_mod(17, 32, True)
@@ -265,7 +260,6 @@ def sqrt_mod_iter(a, p, domain=int):
     Examples
     ========
 
-    >>> from diofant.ntheory.residue_ntheory import sqrt_mod_iter
     >>> list(sqrt_mod_iter(11, 43))
     [21, 22]
     """
@@ -331,7 +325,6 @@ def _sqrt_mod_prime_power(a, p, k):
     Examples
     ========
 
-    >>> from diofant.ntheory.residue_ntheory import _sqrt_mod_prime_power
     >>> _sqrt_mod_prime_power(11, 43, 1)
     [21, 22]
     """
@@ -545,7 +538,6 @@ def is_quad_residue(a, p):
     i.e a % p in {i**2 % p for i in range(p)}. If ``p`` is an odd
     prime, an iterative method is used to make the determination:
 
-    >>> from diofant.ntheory import is_quad_residue
     >>> sorted({i**2 % 7 for i in range(7)})
     [0, 1, 2, 4]
     >>> [j for j in range(7) if is_quad_residue(j, 7)]
@@ -583,15 +575,59 @@ def is_nthpow_residue(a, n, m):
 
     .. [1] P. Hackman "Elementary Number Theory" (2009),  page 76
     """
-    if primitive_root(m) is None:
-        raise NotImplementedError("%s does not have any primitive root" % m)
+    a, n, m = [as_int(i) for i in (a, n, m)]
+    if m <= 0:
+        raise ValueError('m must be > 0')
+    if n < 0:
+        raise ValueError('n must be >= 0')
+    if a < 0:
+        raise ValueError('a must be >= 0')
+    if n == 0:
+        if m == 1:
+            return False
+        return a == 1
     if n == 1:
         return True
     if n == 2:
         return is_quad_residue(a, m)
+    return _is_nthpow_residue_bign(a, n, m)
+
+
+def _is_nthpow_residue_bign(a, n, m):
+    """Returns True if ``x**n == a (mod m)`` has solutions for n > 2."""
+    assert n > 2 and a >= 0 and m > 0
+    if primitive_root(m) is None:
+        assert m >= 8
+        for prime, power in factorint(m).items():
+            if not _is_nthpow_residue_bign_prime_power(a, n, prime, power):
+                return False
+        return True
     f = totient(m)
     k = f // igcd(f, n)
     return pow(a, k, m) == 1
+
+
+def _is_nthpow_residue_bign_prime_power(a, n, p, k):
+    """Returns True/False if a solution for ``x**n == a (mod(p**k))``
+    does/doesn't exist.
+    """
+    assert a >= 0 and n > 2 and isprime(p) and k > 0
+    if a % p:
+        if p != 2:
+            return _is_nthpow_residue_bign(a, n, pow(p, k))
+        if n & 1:
+            return True
+        c = trailing(n)
+        return a % pow(2, min(c + 2, k)) == 1
+    else:
+        a %= pow(p, k)
+        if not a:
+            return True
+        mu = multiplicity(p, a)
+        if mu % n:
+            return False
+        pm = pow(p, mu)
+        return _is_nthpow_residue_bign_prime_power(a//pm, n, p, k - mu)
 
 
 def _nthroot_mod2(s, q, p):
@@ -670,7 +706,6 @@ def nthroot_mod(a, n, p, all_roots=False):
     Examples
     ========
 
-    >>> from diofant.ntheory.residue_ntheory import nthroot_mod
     >>> nthroot_mod(11, 4, 19)
     8
     >>> nthroot_mod(11, 4, 19, True)
@@ -680,12 +715,11 @@ def nthroot_mod(a, n, p, all_roots=False):
     """
     if n == 2:
         return sqrt_mod(a, p, all_roots)
-    f = totient(p)
     # see Hackman "Elementary Number Theory" (2009), page 76
-    if pow(a, f // igcd(f, n), p) != 1:
+    if not is_nthpow_residue(a, n, p):
         return
-    if not isprime(p):
-        raise NotImplementedError  # pragma: no cover
+    if primitive_root(p) is None:
+        raise NotImplementedError("Not Implemented for m without primitive root")
 
     if (p - 1) % n == 0:
         return _nthroot_mod1(a, n, p, all_roots)
@@ -724,7 +758,6 @@ def quadratic_residues(p):
     Examples
     ========
 
-    >>> from diofant.ntheory.residue_ntheory import quadratic_residues
     >>> quadratic_residues(7)
     [0, 1, 2, 4]
     """
@@ -735,21 +768,27 @@ def quadratic_residues(p):
 
 
 def legendre_symbol(a, p):
-    """Legendre symbol function [1]_.
+    r"""Returns the Legendre symbol `(a / p)`.
 
-    Returns
-    =======
+    For an integer ``a`` and an odd prime ``p``, the Legendre symbol is
+    defined as
 
-    1. 0 if a is multiple of p
-    2. 1 if a is a quadratic residue of p
-    3. -1 otherwise
+    .. math ::
+        \genfrac(){}{}{a}{p} = \begin{cases}
+             0 & \text{if } p \text{ divides } a\\
+             1 & \text{if } a \text{ is a quadratic residue modulo } p\\
+            -1 & \text{if } a \text{ is a quadratic nonresidue modulo } p
+        \end{cases}
 
-    p should be an odd prime by definition
+    Parameters
+    ==========
+
+    a : integer
+    p : odd prime
 
     Examples
     ========
 
-    >>> from diofant.ntheory import legendre_symbol
     >>> [legendre_symbol(i, 7) for i in range(7)]
     [0, 1, 1, -1, 1, -1, -1]
     >>> sorted({i**2 % 7 for i in range(7)})
@@ -777,27 +816,47 @@ def legendre_symbol(a, p):
 
 
 def jacobi_symbol(m, n):
-    """Returns the product of the legendre_symbol(m, p)
-    for all the prime factors, p, of n.
+    r"""
+    Returns the Jacobi symbol `(m / n)`.
 
-    Returns
-    =======
+    For any integer ``m`` and any positive odd integer ``n`` the Jacobi symbol
+    is defined as the product of the Legendre symbols corresponding to the
+    prime factors of ``n``:
 
-    1. 0 if m cong 0 mod(n)
-    2. 1 if x**2 cong m mod(n) has a solution
-    3. -1 otherwise
+    .. math ::
+        \genfrac(){}{}{m}{n} =
+            \genfrac(){}{}{m}{p^{1}}^{\alpha_1}
+            \genfrac(){}{}{m}{p^{2}}^{\alpha_2}
+            ...
+            \genfrac(){}{}{m}{p^{k}}^{\alpha_k}
+            \text{ where } n =
+                p_1^{\alpha_1}
+                p_2^{\alpha_2}
+                ...
+                p_k^{\alpha_k}
+
+    Like the Legendre symbol, if the Jacobi symbol `\genfrac(){}{}{m}{n} = -1`
+    then ``m`` is a quadratic nonresidue modulo ``n``.
+
+    But, unlike the Legendre symbol, if the Jacobi symbol
+    `\genfrac(){}{}{m}{n} = 1` then ``m`` may or may not be a quadratic residue
+    modulo ``n``.
+
+    Parameters
+    ==========
+
+    m : integer
+    n : odd positive integer
 
     Examples
     ========
 
-    >>> from diofant.ntheory import jacobi_symbol, legendre_symbol
-    >>> from diofant import Mul, S, Integer
     >>> jacobi_symbol(45, 77)
     -1
     >>> jacobi_symbol(60, 121)
     1
 
-    The relationship between the jacobi_symbol and legendre_symbol can
+    The relationship between the ``jacobi_symbol`` and ``legendre_symbol`` can
     be demonstrated as follows:
 
     >>> L = legendre_symbol
@@ -862,7 +921,6 @@ class mobius(Function):
     Examples
     ========
 
-    >>> from diofant.ntheory import mobius
     >>> mobius(13*7)
     1
     >>> mobius(1)

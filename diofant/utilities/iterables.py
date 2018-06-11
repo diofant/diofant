@@ -15,8 +15,6 @@ def flatten(iterable, levels=None, cls=None):
     """
     Recursively denest iterable containers.
 
-    >>> from diofant.utilities.iterables import flatten
-
     >>> flatten([1, 2, 3])
     [1, 2, 3]
     >>> flatten([1, 2, [3]])
@@ -38,7 +36,6 @@ def flatten(iterable, levels=None, cls=None):
     If cls argument is specified, it will only flatten instances of that
     class, for example:
 
-    >>> from diofant.core import Basic
     >>> class MyOp(Basic):
     ...     pass
     ...
@@ -91,7 +88,6 @@ def reshape(seq, how):
     Examples
     ========
 
-    >>> from diofant.utilities import reshape
     >>> seq = list(range(1, 9))
 
     >>> reshape(seq, [4]) # lists of 4
@@ -151,8 +147,6 @@ def group(seq, multiple=True):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import group
-
     >>> group([1, 1, 1, 2, 2, 3])
     [[1, 1, 1], [2, 2], [3]]
     >>> group([1, 1, 1, 2, 2, 3], multiple=False)
@@ -194,7 +188,6 @@ def multiset(seq):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import multiset
     >>> multiset('mississippi')
     {'i': 4, 'm': 1, 'p': 2, 's': 4}
 
@@ -237,8 +230,7 @@ def postorder_traversal(node, keys=None):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import postorder_traversal
-    >>> from diofant.abc import w, x, y, z
+    >>> from diofant.abc import w
 
     The nodes are returned in the order that they are encountered unless key
     is given; simply passing key=True will guarantee that the traversal is
@@ -281,7 +273,6 @@ def ibin(n, bits=0, str=False):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import ibin
     >>> ibin(2)
     [1, 0]
     >>> ibin(2, 4)
@@ -336,7 +327,6 @@ def variations(seq, n, repetition=False):
     variations(seq, n) will return N! / (N - n)! permutations without
     repetition of seq's elements:
 
-        >>> from diofant.utilities.iterables import variations
         >>> list(variations([1, 2], 2))
         [(1, 2), (2, 1)]
 
@@ -379,11 +369,11 @@ def subsets(seq, k=None, repetition=False):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import subsets
-
     subsets(seq, k) will return the n!/k!/(n - k)! k-subsets (combinations)
     without repetition, i.e. once an item has been removed, it can no
     longer be "taken":
+
+    >>> from diofant.utilities.iterables import subsets
 
     >>> list(subsets([1, 2], 2))
     [(1, 2)]
@@ -489,9 +479,6 @@ def capture(func):
     `func` should be a function without arguments that produces output with
     print statements.
 
-    >>> from diofant.utilities.iterables import capture
-    >>> from diofant import pprint
-    >>> from diofant.abc import x
     >>> def foo():
     ...     print('hello world!')
     ...
@@ -523,9 +510,6 @@ def sift(seq, keyfunc):
     ========
 
     >>> from collections import defaultdict
-    >>> from diofant.utilities import sift
-    >>> from diofant.abc import x, y
-    >>> from diofant import sqrt, exp, E
 
     >>> sift(range(5), lambda x: x % 2) == defaultdict(int, {0: [0, 2, 4], 1: [1, 3]})
     True
@@ -579,7 +563,6 @@ def dict_merge(*dicts):
 def common_prefix(*seqs):
     """Return the subsequence that is a common start of sequences in ``seqs``.
 
-    >>> from diofant.utilities.iterables import common_prefix
     >>> common_prefix(list(range(3)))
     [0, 1, 2]
     >>> common_prefix(list(range(3)), list(range(4)))
@@ -605,7 +588,6 @@ def common_prefix(*seqs):
 def common_suffix(*seqs):
     """Return the subsequence that is a common ending of sequences in ``seqs``.
 
-    >>> from diofant.utilities.iterables import common_suffix
     >>> common_suffix(list(range(3)))
     [0, 1, 2]
     >>> common_suffix(list(range(3)), list(range(4)))
@@ -639,8 +621,6 @@ def prefixes(seq):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import prefixes
-
     >>> list(prefixes([1,2,3,4]))
     [[1], [1, 2], [1, 2, 3], [1, 2, 3, 4]]
 
@@ -657,8 +637,6 @@ def postfixes(seq):
 
     Examples
     ========
-
-    >>> from diofant.utilities.iterables import postfixes
 
     >>> list(postfixes([1,2,3,4]))
     [[4], [3, 4], [2, 3, 4], [1, 2, 3, 4]]
@@ -717,8 +695,6 @@ def topological_sort(graph, key=None):
 
     To compute a topological sort for graph ``(V, E)`` issue::
 
-        >>> from diofant.utilities.iterables import topological_sort
-
         >>> topological_sort((V, E))
         [3, 5, 7, 8, 11, 2, 9, 10]
 
@@ -735,8 +711,10 @@ def topological_sort(graph, key=None):
         ...
         ValueError: cycle detected
 
-    .. seealso:: https//en.wikipedia.org/wiki/Topological_sorting
+    References
+    ==========
 
+    .. [1] https//en.wikipedia.org/wiki/Topological_sorting
     """
     V, E = graph
 
@@ -790,7 +768,6 @@ def rotate_left(x, y):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import rotate_left
     >>> a = [0, 1, 2]
     >>> rotate_left(a, 1)
     [1, 2, 0]
@@ -809,7 +786,6 @@ def rotate_right(x, y):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import rotate_right
     >>> a = [0, 1, 2]
     >>> rotate_right(a, 1)
     [2, 0, 1]
@@ -827,7 +803,6 @@ def multiset_combinations(m, n, g=None):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import multiset_combinations
     >>> from itertools import combinations
     >>> [''.join(i) for i in  multiset_combinations('baby', 3)]
     ['abb', 'aby', 'bby']
@@ -883,8 +858,6 @@ def multiset_permutations(m, size=None, g=None):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import multiset_permutations
-    >>> from diofant import factorial
     >>> [''.join(i) for i in multiset_permutations('aab')]
     ['aab', 'aba', 'baa']
     >>> factorial(len('banana'))
@@ -932,7 +905,6 @@ def _partition(seq, vector, m=None):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import _partition
     >>> _partition('abcde', [1, 0, 1, 2, 0])
     [['b', 'e'], ['a', 'c'], ['d']]
 
@@ -973,7 +945,6 @@ def _set_partitions(n):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import _set_partitions, _partition
     >>> for m, q in _set_partitions(3):
     ...     print('%s %s %s' % (m, q, _partition('abc', q, m)))
     1 [0, 0, 0] [['a', 'b', 'c']]
@@ -1053,7 +1024,6 @@ def multiset_partitions(multiset, m=None):
 
     The number of partitions of a set is given by the bell number:
 
-    >>> from diofant import bell
     >>> len(list(multiset_partitions(5))) == bell(5) == 52
     True
 
@@ -1076,7 +1046,6 @@ def multiset_partitions(multiset, m=None):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import multiset_partitions
     >>> list(multiset_partitions([1, 2, 3, 4], 2))
     [[[1, 2, 3], [4]], [[1, 2, 4], [3]], [[1, 2], [3, 4]],
     [[1, 3, 4], [2]], [[1, 3], [2, 4]], [[1, 4], [2, 3]],
@@ -1204,13 +1173,14 @@ def multiset_partitions(multiset, m=None):
 
 
 def partitions(n, m=None, k=None, size=False):
-    """Generate all partitions of integer n (>= 0).
+    """Generate all partitions of positive integer, n.
 
     Parameters
     ==========
 
     ``m`` : integer (default gives partitions of all sizes)
-        limits number of parts in partition (mnemonic: m, maximum parts)
+        limits number of parts in partition (mnemonic: m, maximum parts).
+        Default value, None, gives partitions from 1 through n.
     ``k`` : integer (default gives partitions number from 1 through n)
         limits the numbers that are kept in the partition (mnemonic: k, keys)
     ``size`` : bool (default False, only partition is returned)
@@ -1224,10 +1194,10 @@ def partitions(n, m=None, k=None, size=False):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import partitions
-
     The numbers appearing in the partition (the key of the returned dict)
     are limited with k:
+
+    >>> from diofant.utilities.iterables import partitions
 
     >>> for p in partitions(6, k=2):  # doctest: +SKIP
     ...     print(p)
@@ -1279,19 +1249,23 @@ def partitions(n, m=None, k=None, size=False):
     diofant.combinatorics.partitions.IntegerPartition
 
     """
-    if n < 0:
-        raise ValueError("n must be >= 0")
-    if m == 0:
-        raise ValueError("m must be > 0")
-    m = min(m or n, n)
-    if m < 1:
-        raise ValueError("maximum numbers in partition, m, must be > 0")
-    k = min(k or n, n)
-    if k < 1:
-        raise ValueError("maximum value in partition, k, must be > 0")
-
-    if m*k < n:
+    if (n <= 0 or m is not None and m < 1 or
+            k is not None and k < 1 or m and k and m*k < n):
+        # the empty set is the only way to handle these inputs
+        # and returning {} to represent it is consistent with
+        # the counting convention, e.g. nT(0) == 1.
+        if size:
+            yield 0, {}
+        else:
+            yield {}
         return
+
+    if m is None:
+        m = n
+    else:
+        m = min(m, n)
+
+    k = min(k or n, n)
 
     n, m, k = as_int(n), as_int(m), as_int(k)
     q, r = divmod(n, k)
@@ -1347,6 +1321,140 @@ def partitions(n, m=None, k=None, size=False):
             yield ms
 
 
+def ordered_partitions(n, m=None, sort=True):
+    """Generates ordered partitions of integer ``n``.
+
+    Parameters
+    ==========
+
+    ``m`` : int or None, optional
+        By default (None) gives partitions of all sizes, else only
+        those with size m. In addition, if ``m`` is not None then
+        partitions are generated *in place* (see examples).
+    ``sort`` : bool, optional
+        Controls whether partitions are
+        returned in sorted order (default) when ``m`` is not None; when False,
+        the partitions are returned as fast as possible with elements
+        sorted, but when m|n the partitions will not be in
+        ascending lexicographical order.
+
+    Examples
+    ========
+
+    All partitions of 5 in ascending lexicographical:
+
+    >>> for p in ordered_partitions(5):
+    ...     print(p)
+    [1, 1, 1, 1, 1]
+    [1, 1, 1, 2]
+    [1, 1, 3]
+    [1, 2, 2]
+    [1, 4]
+    [2, 3]
+    [5]
+
+    Only partitions of 5 with two parts:
+
+    >>> for p in ordered_partitions(5, 2):
+    ...     print(p)
+    [1, 4]
+    [2, 3]
+
+    When ``m`` is given, a given list objects will be used more than
+    once for speed reasons so you will not see the correct partitions
+    unless you make a copy of each as it is generated:
+
+    >>> [p for p in ordered_partitions(7, 3)]
+    [[1, 1, 1], [1, 1, 1], [1, 1, 1], [2, 2, 2]]
+    >>> [list(p) for p in ordered_partitions(7, 3)]
+    [[1, 1, 5], [1, 2, 4], [1, 3, 3], [2, 2, 3]]
+
+    When ``n`` is a multiple of ``m``, the elements are still sorted
+    but the partitions themselves will be *unordered* if sort is False;
+    the default is to return them in ascending lexicographical order.
+
+    >>> for p in ordered_partitions(6, 2):
+    ...     print(p)
+    [1, 5]
+    [2, 4]
+    [3, 3]
+
+    But if speed is more important than ordering, sort can be set to
+    False:
+
+    >>> for p in ordered_partitions(6, 2, sort=False):
+    ...     print(p)
+    [1, 5]
+    [3, 3]
+    [2, 4]
+
+    References
+    ==========
+
+    .. [1] Generating Integer Partitions, [online],
+           Available: http://jeromekelleher.net/generating-integer-partitions.html
+    .. [2] Jerome Kelleher and Barry O'Sullivan, "Generating All
+           Partitions: A Comparison Of Two Encodings", [online],
+           Available: https://arxiv.org/pdf/0909.2331v2.pdf
+    """
+    if n < 1 or m is not None and m < 1:
+        # the empty set is the only way to handle these inputs
+        # and returning {} to represent it is consistent with
+        # the counting convention, e.g. nT(0) == 1.
+        yield []
+        return
+
+    if m is None:
+        # The list `a`'s leading elements contain the partition in which
+        # y is the biggest element and x is either the same as y or the
+        # 2nd largest element; v and w are adjacent element indices
+        # to which x and y are being assigned, respectively.
+        a = [1]*n
+        y = -1
+        v = n
+        while v > 0:
+            v -= 1
+            x = a[v] + 1
+            while y >= 2 * x:
+                a[v] = x
+                y -= x
+                v += 1
+            w = v + 1
+            while x <= y:
+                a[v] = x
+                a[w] = y
+                yield a[:w + 1]
+                x += 1
+                y -= 1
+            a[v] = x + y
+            y = a[v] - 1
+            yield a[:w]
+    elif m == 1:
+        yield [n]
+    elif n == m:
+        yield [1]*n
+    else:
+        # recursively generate partitions of size m
+        for b in range(1, n//m + 1):
+            a = [b]*m
+            x = n - b*m
+            if not x:
+                if sort:
+                    yield a
+            elif not sort and x <= m:
+                for ax in ordered_partitions(x, sort=False):
+                    mi = len(ax)
+                    a[-mi:] = [i + b for i in ax]
+                    yield a
+                    a[-mi:] = [b]*mi
+            else:
+                for mi in range(1, m):
+                    for ax in ordered_partitions(x, mi, sort=True):
+                        a[-mi:] = [i + b for i in ax]
+                        yield a
+                        a[-mi:] = [b]*mi
+
+
 def binary_partitions(n):
     """
     Generates the binary partition of n.
@@ -1363,7 +1471,6 @@ def binary_partitions(n):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import binary_partitions
     >>> for i in binary_partitions(5):
     ...     print(i)
     ...
@@ -1410,9 +1517,6 @@ def has_dups(seq):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import has_dups
-    >>> from diofant import Dict, Set
-
     >>> has_dups((1, 2, 1))
     True
     >>> has_dups(range(3))
@@ -1433,8 +1537,6 @@ def has_variety(seq):
 
     Examples
     ========
-
-    >>> from diofant.utilities.iterables import has_variety
 
     >>> has_variety((1, 2, 1))
     True
@@ -1459,7 +1561,6 @@ def uniq(seq, result=None):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import uniq
     >>> dat = [1, 4, 1, 5, 4, 2, 1, 2]
     >>> type(uniq(dat)) in (list, tuple)
     False
@@ -1501,8 +1602,6 @@ def generate_bell(n):
     ========
 
     >>> from itertools import permutations
-    >>> from diofant.utilities.iterables import generate_bell
-    >>> from diofant import zeros, Matrix
 
     This is the sort of permutation used in the ringing of physical bells,
     and does not produce permutations in lexicographical order. Rather, the
@@ -1614,7 +1713,6 @@ def generate_involutions(n):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import generate_involutions
     >>> list(generate_involutions(3))
     [(0, 1, 2), (0, 2, 1), (1, 0, 2), (2, 1, 0)]
     >>> len(list(generate_involutions(4)))
@@ -1640,7 +1738,6 @@ def generate_derangements(perm):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import generate_derangements
     >>> list(generate_derangements([0, 1, 2]))
     [[1, 2, 0], [2, 0, 1]]
     >>> list(generate_derangements([0, 1, 2, 3]))
@@ -1673,7 +1770,6 @@ def necklaces(n, k, free=False):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import necklaces, bracelets
     >>> def show(s, i):
     ...     return ''.join(s[j] for j in i)
 
@@ -1732,7 +1828,6 @@ def generate_oriented_forest(n):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import generate_oriented_forest
     >>> list(generate_oriented_forest(4))
     [[0, 1, 2, 3], [0, 1, 2, 2], [0, 1, 2, 1], [0, 1, 2, 0],
      [0, 1, 1, 1], [0, 1, 1, 0], [0, 1, 0, 1], [0, 1, 0, 0], [0, 0, 0, 0]]
@@ -1772,7 +1867,6 @@ def minlex(seq, directed=True, is_set=False, small=None):
     Examples
     ========
 
-    >>> from diofant.combinatorics.polyhedron import minlex
     >>> minlex((1, 2, 0))
     (0, 1, 2)
     >>> minlex((1, 0, 2))
@@ -1840,7 +1934,6 @@ def runs(seq, op=gt):
     Examples
     ========
 
-    >>> from diofant.utilities.iterables import runs
     >>> from operator import ge
     >>> runs([0, 1, 2, 2, 1, 4, 3, 2, 2])
     [[0, 1, 2], [2], [1, 4], [3], [2], [2]]
@@ -1875,8 +1968,6 @@ def kbins(l, k, ordered=None):
 
     Examples
     ========
-
-    >>> from diofant.utilities.iterables import kbins
 
     The default is to give the items in the same order, but grouped
     into k partitions without any reordering:
@@ -2030,3 +2121,36 @@ def cantor_product(*args):
                 for result in product(*(argslist[:n] + [argslist[n][-1:]] +
                                         argslist[n + 1:])):
                     yield result
+
+
+def permute_signs(t):
+    """Return iterator in which the signs of non-zero elements
+    of t are permuted.
+
+    Examples
+    ========
+
+    >>> list(permute_signs((0, 1, 2)))
+    [(0, 1, 2), (0, -1, 2), (0, 1, -2), (0, -1, -2)]
+    """
+    for signs in product(*[(1, -1)]*(len(t) - t.count(0))):
+        signs = list(signs)
+        yield type(t)([i*signs.pop() if i else i for i in t])
+
+
+def signed_permutations(t):
+    """Return iterator in which the signs of non-zero elements
+    of t and the order of the elements are permuted.
+
+    Examples
+    ========
+
+    >>> list(signed_permutations((0, 1, 2)))
+    [(0, 1, 2), (0, -1, 2), (0, 1, -2), (0, -1, -2), (0, 2, 1),
+     (0, -2, 1), (0, 2, -1), (0, -2, -1), (1, 0, 2), (-1, 0, 2),
+     (1, 0, -2), (-1, 0, -2), (1, 2, 0), (-1, 2, 0), (1, -2, 0),
+     (-1, -2, 0), (2, 0, 1), (-2, 0, 1), (2, 0, -1), (-2, 0, -1),
+     (2, 1, 0), (-2, 1, 0), (2, -1, 0), (-2, -1, 0)]
+    """
+    return (type(t)(i) for j in permutations(t)
+            for i in permute_signs(j))

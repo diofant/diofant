@@ -5,11 +5,10 @@ Matrix Expressions
 
 The Matrix expression module allows users to write down statements like
 
-    >>> from diofant import MatrixSymbol, Matrix
     >>> X = MatrixSymbol('X', 3, 3)
     >>> Y = MatrixSymbol('Y', 3, 3)
-    >>> (X.T*X).I*Y
-    X^-1*X'^-1*Y
+    >>> (X.T*X).inverse()*Y
+    X^-1*X.T^-1*Y
 
     >>> Matrix(X)
     Matrix([

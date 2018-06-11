@@ -325,8 +325,8 @@ def test_log_expand():
                                                 log((log(y) + log(z))*log(x)) + log(2)]
     assert log(x**log(x**2)).expand(deep=False) == log(x)*log(x**2)
     assert log(x**log(x**2)).expand() == 2*log(x)**2
-    assert (log(x*(y + z))*(x + y)), expand(mul=True, log=True) == y*log(
-        x) + y*log(y + z) + z*log(x) + z*log(y + z)
+    assert ((log(x*(y + z))*(x + y)).expand(mul=True, log=True) ==
+            y*log(x) + y*log(y + z) + x*log(x) + x*log(y + z))
     x, y = symbols('x,y')
     assert log(x*y).expand(force=True) == log(x) + log(y)
     assert log(x**y).expand(force=True) == y*log(x)
@@ -439,7 +439,7 @@ def test_polar():
     assert exp_polar(3).exp == 3
 
     # Compare exp(1.0*pi*I).
-    assert (exp_polar(1.0*pi*I).n(n=5)).as_real_imag()[1] >= 0
+    assert (exp_polar(1.0*pi*I).n(5)).as_real_imag()[1] >= 0
 
     assert exp_polar(0).is_rational is True  # issue sympy/sympy#8008
 

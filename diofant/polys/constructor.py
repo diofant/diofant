@@ -3,10 +3,12 @@
 from ..core import sympify
 from ..domains import EX, QQ, RR, ZZ
 from ..domains.realfield import RealField
-from ..utilities import public
 from .polyerrors import GeneratorsNeeded
 from .polyoptions import build_options
 from .polyutils import parallel_dict_from_basic
+
+
+__all__ = ('construct_domain',)
 
 
 def _construct_simple(coeffs, opt):
@@ -18,9 +20,8 @@ def _construct_simple(coeffs, opt):
             return coeff.is_number and coeff.is_algebraic
     else:
         def is_algebraic(coeff):
-            return False
+            return all(_.is_Rational for _ in coeff.as_real_imag())
 
-    # XXX: add support for a + b*I coefficients
     for coeff in coeffs:
         if coeff.is_Rational:
             if not coeff.is_Integer:
@@ -58,7 +59,7 @@ def _construct_simple(coeffs, opt):
         result = []
 
         for coeff in coeffs:
-            result.append(domain.from_diofant(coeff))
+            result.append(domain.convert(coeff))
 
     return domain, result
 
@@ -71,7 +72,7 @@ def _construct_algebraic(coeffs, opt):
 
     for coeff in coeffs:
         if coeff.is_Rational:
-            coeff = (None, 0, QQ.from_diofant(coeff))
+            coeff = (None, 0, QQ.convert(coeff))
         else:
             a = coeff.as_coeff_add()[0]
             coeff -= a
@@ -81,8 +82,8 @@ def _construct_algebraic(coeffs, opt):
 
             exts.add(coeff)
 
-            a = QQ.from_diofant(a)
-            b = QQ.from_diofant(b)
+            a = QQ.convert(a)
+            b = QQ.convert(b)
 
             coeff = (coeff, b, a)
 
@@ -90,16 +91,16 @@ def _construct_algebraic(coeffs, opt):
 
     exts = list(exts)
 
-    g, span, H = primitive_element(exts, ex=True, polys=True)
+    g, span, H = primitive_element(exts)
     root = sum(s*ext for s, ext in zip(span, exts))
 
-    domain, g = QQ.algebraic_field((g, root)), g.rep.rep
+    domain, g = QQ.algebraic_field(root), g.rep.rep
 
     for i, (coeff, a, b) in enumerate(result):
         if coeff is not None:
-            coeff = a*domain.dtype.from_list(H[exts.index(coeff)], g, QQ) + b
+            coeff = a*domain.dtype.from_list(H[exts.index(coeff)]) + b
         else:
-            coeff = domain.dtype.from_list([b], g, QQ)
+            coeff = domain.dtype.from_list([b])
 
         result[i] = coeff
 
@@ -192,7 +193,7 @@ def _construct_composite(coeffs, opt):
 
         for numer in numers:
             for monom, coeff in numer.items():
-                numer[monom] = ground.from_diofant(coeff)
+                numer[monom] = ground.convert(coeff)
 
             result.append(domain(numer))
     else:
@@ -200,10 +201,10 @@ def _construct_composite(coeffs, opt):
 
         for numer, denom in zip(numers, denoms):
             for monom, coeff in numer.items():
-                numer[monom] = ground.from_diofant(coeff)
+                numer[monom] = ground.convert(coeff)
 
             for monom, coeff in denom.items():
-                denom[monom] = ground.from_diofant(coeff)
+                denom[monom] = ground.convert(coeff)
 
             result.append(domain((numer, denom)))
 
@@ -215,12 +216,11 @@ def _construct_expression(coeffs, opt):
     domain, result = EX, []
 
     for coeff in coeffs:
-        result.append(domain.from_diofant(coeff))
+        result.append(domain.convert(coeff))
 
     return domain, result
 
 
-@public
 def construct_domain(obj, **args):
     """Construct a minimal domain for the list of coefficients. """
     opt = build_options(args)

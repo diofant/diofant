@@ -15,7 +15,6 @@ class Inverse(MatPow):
     Examples
     ========
 
-    >>> from diofant import MatrixSymbol, Inverse
     >>> A = MatrixSymbol('A', 3, 3)
     >>> B = MatrixSymbol('B', 3, 3)
     >>> Inverse(A)

@@ -52,9 +52,6 @@ def cacheit(f):
     Examples
     ========
 
-    >>> from diofant.core.cache import cacheit
-    >>> from diofant.abc import x, y
-
     >>> @cacheit
     ... def f(a, b):
     ...    print(a, b)

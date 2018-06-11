@@ -14,12 +14,12 @@ def _process_limits(*symbols):
     limits = []
     orientation = 1
     for V in symbols:
-        if isinstance(V, (Dummy, Symbol)):
+        if isinstance(V, (Dummy, Symbol)) or getattr(V, '_diff_wrt', False):
             limits.append(Tuple(V))
             continue
         elif is_sequence(V, Tuple):
             V = sympify(flatten(V))
-            if V[0].is_Symbol:
+            if V[0].is_Symbol or getattr(V[0], '_diff_wrt', False):
                 newsymbol = V[0]
                 if len(V) == 2 and isinstance(V[1], Interval):
                     V[1:] = [V[1].start, V[1].end]
@@ -99,9 +99,7 @@ class ExprWithLimits(Expr):
         Examples
         ========
 
-        >>> from diofant import Integral
-        >>> from diofant.abc import x
-        >>> Integral(x**2, (x,)).function
+        >>> Integral(x**2, x).function
         x**2
 
         See Also
@@ -120,8 +118,7 @@ class ExprWithLimits(Expr):
         Examples
         ========
 
-        >>> from diofant import Integral
-        >>> from diofant.abc import x, i
+        >>> from diofant.abc import i
         >>> Integral(x**i, (i, 1, 3)).limits
         ((i, 1, 3),)
 
@@ -138,8 +135,7 @@ class ExprWithLimits(Expr):
     def variables(self):
         """Return a list of the dummy variables
 
-        >>> from diofant import Sum
-        >>> from diofant.abc import x, i
+        >>> from diofant.abc import i
         >>> Sum(x**i, (i, 1, 3)).variables
         [i]
 
@@ -162,8 +158,6 @@ class ExprWithLimits(Expr):
         Examples
         ========
 
-        >>> from diofant import Sum
-        >>> from diofant.abc import x, y
         >>> Sum(x, (x, y, 1)).free_symbols
         {y}
         """
@@ -198,8 +192,6 @@ class ExprWithLimits(Expr):
         Examples
         ========
 
-        >>> from diofant import Integral
-        >>> from diofant.abc import x, y
         >>> Integral(x, (x, x, y), (y, x, y)).as_dummy()
         Integral(_x, (_x, x, _y), (_y, x, y))
 
@@ -251,13 +243,11 @@ class ExprWithLimits(Expr):
         Examples
         ========
 
-        >>> from diofant import Sum, oo
-        >>> from diofant.abc import s, n
+        >>> from diofant.abc import s
         >>> Sum(1/n**s, (n, 1, oo)).subs(s, 2)
         Sum(n**(-2), (n, 1, oo))
 
-        >>> from diofant import Integral
-        >>> from diofant.abc import x, a
+        >>> from diofant.abc import a
         >>> Integral(a*x**2, x).subs(x, 4)
         Integral(a*x**2, (x, 4))
 

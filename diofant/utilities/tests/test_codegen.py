@@ -71,7 +71,7 @@ def test_empty_c_code_with_comment():
     assert source[:82] == (
         "/******************************************************************************\n *"
     )
-    #   "                    Code generated with diofant 0.7.2-git                    "
+    #   "                    Code generated with diofant x.y.z                    "
     assert source[158:] == (                                                              "*\n"
                                                                                           " *                                                                            *\n"
                                                                                           " *         See https://diofant.readthedocs.io/ for more information.          *\n"
@@ -552,7 +552,7 @@ def test_empty_f_code_with_header():
     assert source[:82] == (
         "!******************************************************************************\n!*"
     )
-    #   "                    Code generated with diofant 0.7.2-git                    "
+    #   "                    Code generated with diofant x.y.z                    "
     assert source[158:] == (                                                              "*\n"
                                                                                           "!*                                                                            *\n"
                                                                                           "!*         See https://diofant.readthedocs.io/ for more information.          *\n"

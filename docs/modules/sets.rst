@@ -1,5 +1,5 @@
 Sets
-===========
+====
 
 .. automodule:: diofant.sets.sets
 

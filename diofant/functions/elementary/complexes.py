@@ -1,5 +1,6 @@
 from ...core import (Add, Derivative, Dummy, E, Eq, Expr, Function, I, Mul,
-                     Rational, S, Symbol, Tuple, factor_terms, oo, pi, sympify)
+                     Rational, S, Symbol, Tuple, factor_terms, nan, oo, pi,
+                     sympify, zoo)
 from ...core.function import AppliedUndef, ArgumentIndexError
 from ...logic.boolalg import BooleanAtom
 from .exponential import exp, exp_polar, log
@@ -24,8 +25,6 @@ class re(Function):
     Examples
     ========
 
-    >>> from diofant import re, im, I, E
-    >>> from diofant.abc import x, y
     >>> re(2*E)
     2*E
     >>> re(2*I + 17)
@@ -46,7 +45,9 @@ class re(Function):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_extended_real:
+        if arg is zoo:
+            return nan
+        elif arg.is_extended_real:
             return arg
         elif arg.is_imaginary or (I*arg).is_extended_real:
             return S.Zero
@@ -92,7 +93,7 @@ class re(Function):
             return -I*im(Derivative(self.args[0], x, evaluate=True))
 
     def _eval_rewrite_as_im(self, arg):
-        return self.args[0] - im(self.args[0])
+        return self.args[0] - I*im(self.args[0])
 
     def _eval_is_algebraic(self):
         return self.args[0].is_algebraic
@@ -109,8 +110,6 @@ class im(Function):
     Examples
     ========
 
-    >>> from diofant import re, im, E, I
-    >>> from diofant.abc import x, y
     >>> im(2*E)
     0
     >>> re(2*I + 17)
@@ -131,7 +130,9 @@ class im(Function):
 
     @classmethod
     def eval(cls, arg):
-        if arg.is_extended_real:
+        if arg is zoo:
+            return nan
+        elif arg.is_extended_real:
             return S.Zero
         elif arg.is_imaginary or (I*arg).is_extended_real:
             return -I * arg
@@ -170,8 +171,6 @@ class im(Function):
         Examples
         ========
 
-        >>> from diofant.functions import im
-        >>> from diofant import I
         >>> im(2 + 3*I).as_real_imag()
         (3, 0)
         """
@@ -184,7 +183,7 @@ class im(Function):
             return -I*re(Derivative(self.args[0], x, evaluate=True))
 
     def _eval_rewrite_as_re(self, arg):
-        return self.args[0] - re(self.args[0])
+        return -I*(self.args[0] - re(self.args[0]))
 
     def _eval_is_algebraic(self):
         return self.args[0].is_algebraic
@@ -213,9 +212,6 @@ class sign(Function):
 
     Examples
     ========
-
-    >>> from diofant.functions import sign
-    >>> from diofant.core.numbers import I
 
     >>> sign(-1)
     -1
@@ -352,10 +348,9 @@ class Abs(Function):
     Examples
     ========
 
-    >>> from diofant import Abs, Symbol, S
     >>> Abs(-1)
     1
-    >>> x = Symbol('x', extended_real=True)
+    >>> x = Symbol('x', real=True)
     >>> Abs(-x)
     Abs(x)
     >>> Abs(x**2)
@@ -391,8 +386,6 @@ class Abs(Function):
         Examples
         ========
 
-        >>> from diofant.abc import x
-        >>> from diofant.functions import Abs
         >>> Abs(-x).fdiff()
         sign(x)
         """
@@ -537,8 +530,6 @@ class arg(Function):
     Examples
     ========
 
-    >>> from diofant.functions import arg
-    >>> from diofant import I, sqrt
     >>> arg(2.0)
     0
     >>> arg(I)
@@ -590,7 +581,6 @@ class conjugate(Function):
     Examples
     ========
 
-    >>> from diofant import conjugate, I
     >>> conjugate(2)
     2
     >>> conjugate(I)
@@ -690,9 +680,7 @@ class polar_lift(Function):
     Lift argument to the Riemann surface of the logarithm, using the
     standard branch.
 
-    >>> from diofant import Symbol, polar_lift, I
     >>> p = Symbol('p', polar=True)
-    >>> x = Symbol('x')
     >>> polar_lift(4)
     4*exp_polar(0)
     >>> polar_lift(-4)
@@ -766,8 +754,6 @@ class periodic_argument(Function):
     logarithm. That is, given a period P, always return a value in
     (-P/2, P/2], by using exp(P*I) == 1.
 
-    >>> from diofant import exp, exp_polar, periodic_argument, unbranched_argument
-    >>> from diofant import I, pi
     >>> unbranched_argument(exp(5*I*pi))
     pi
     >>> unbranched_argument(exp_polar(5*I*pi))
@@ -857,8 +843,6 @@ class principal_branch(Function):
     number `z`, and the second one a positive real number of infinity, `p`.
     The result is "z mod exp_polar(I*p)".
 
-    >>> from diofant import exp_polar, principal_branch, oo, I, pi
-    >>> from diofant.abc import z
     >>> principal_branch(z, oo)
     z
     >>> principal_branch(exp_polar(2*pi*I)*3, 2*pi)
@@ -990,8 +974,6 @@ def polarify(eq, subs=True, lift=False):
     changed to their polar_lift()ed versions.
     Note that lift=True implies subs=False.
 
-    >>> from diofant import polarify, sin, I, default_sort_key
-    >>> from diofant.abc import x, y
     >>> expr = (-x)**y
     >>> expr.expand()
     (-x)**y
@@ -1063,7 +1045,6 @@ def unpolarify(eq, subs={}, exponents_only=False):
     Also apply the substitution subs in the end. (This is a convenience, since
     ``unpolarify``, in a certain sense, undoes polarify.)
 
-    >>> from diofant import unpolarify, polar_lift, sin, I
     >>> unpolarify(polar_lift(I + 2))
     2 + I
     >>> unpolarify(sin(polar_lift(I + 7)))

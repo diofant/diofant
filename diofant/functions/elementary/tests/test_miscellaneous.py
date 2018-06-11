@@ -1,7 +1,8 @@
 import pytest
 
 from diofant.abc import x, y, z
-from diofant.core import Eq, Function, I, Rational, Symbol, oo, symbols, zoo
+from diofant.core import (Eq, Function, I, Pow, Rational, Symbol, oo, symbols,
+                          zoo)
 from diofant.core.function import ArgumentIndexError
 from diofant.functions import (Heaviside, Max, Min, Piecewise, cbrt, ceiling,
                                cos, floor, real_root, root, sin, sqrt)
@@ -190,6 +191,9 @@ def test_root():
     assert root(2, 3) == cbrt(2)
     assert root(2, -5) == 2**Rational(4, 5)/2
 
+    assert root(4, 2, evaluate=False) == Pow(4, Rational(1, 2), evaluate=False)
+    assert root(4, 2, 1, evaluate=False) == -Pow(4, Rational(1, 2), evaluate=False)
+
     assert root(-2, 1) == -2
 
     assert root(-2, 2) == sqrt(2)*I
@@ -252,3 +256,9 @@ def test_rewrite_as_Piecewise():
     assert (Max(x, y).rewrite(Piecewise) ==
             x*Piecewise((1, x - y > 0), (Rational(1, 2), Eq(x - y, 0)), (0, true)) +
             y*Piecewise((1, -x + y > 0), (Rational(1, 2), Eq(-x + y, 0)), (0, true)))
+
+
+def test_sympyissue_11099():
+    e = Min(x, y)
+    s = {x: -2, y: 3}
+    assert e.evalf(subs=s) == e.subs(s).evalf()

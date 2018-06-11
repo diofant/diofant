@@ -50,12 +50,6 @@ Level One
 .. autoclass:: DMP
    :members:
 
-.. autoclass:: DMF
-   :members:
-
-.. autoclass:: ANP
-   :members:
-
 Level Zero
 ==========
 
@@ -176,13 +170,9 @@ may be slightly more efficient.)
 .. autofunction:: dmp_diff_eval_in
 .. autofunction:: dmp_trunc
 .. autofunction:: dmp_ground_trunc
-.. autofunction:: dup_monic
 .. autofunction:: dmp_ground_monic
-.. autofunction:: dup_content
 .. autofunction:: dmp_ground_content
-.. autofunction:: dup_primitive
 .. autofunction:: dmp_ground_primitive
-.. autofunction:: dup_extract
 .. autofunction:: dmp_ground_extract
 .. autofunction:: dup_real_imag
 .. autofunction:: dup_mirror
@@ -194,7 +184,6 @@ may be slightly more efficient.)
 .. autofunction:: dmp_lift
 .. autofunction:: dup_sign_variations
 .. autofunction:: dmp_clear_denoms
-.. autofunction:: dmp_revert
 
 .. currentmodule:: diofant.polys.rootisolation
 
@@ -215,12 +204,7 @@ fields.
 .. autofunction:: gf_crt1
 .. autofunction:: gf_crt2
 .. autofunction:: gf_int
-.. autofunction:: gf_degree
-.. autofunction:: gf_LC
-.. autofunction:: gf_TC
-.. autofunction:: gf_strip
 .. autofunction:: gf_trunc
-.. autofunction:: gf_normal
 .. autofunction:: gf_from_dict
 .. autofunction:: gf_to_dict
 .. autofunction:: gf_from_int_poly
@@ -282,8 +266,6 @@ Dense representations quickly require infeasible amounts of storage and
 computation time if the number of variables increases. For this reason,
 there is code to manipulate polynomials in a *sparse* representation.
 
-
-
 .. currentmodule:: diofant.polys.rings
 
 Sparse polynomials are represented as dictionaries.
@@ -291,9 +273,6 @@ Sparse polynomials are represented as dictionaries.
 .. autofunction:: ring
 .. autofunction:: vring
 .. autofunction:: sring
-
-.. autoclass:: PolyRing
-   :members:
 
 .. autoclass:: PolyElement
    :members:
@@ -392,10 +371,8 @@ analogous to `Bézout's identity
 <https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity>`_
 in the case of integers.
 
-.. autofunction:: dmp_half_gcdex
-.. autofunction:: dmp_gcdex
-.. autofunction:: dmp_invert
-.. autofunction:: dmp_euclidean_prs
+.. autofunction:: dup_half_gcdex
+.. autofunction:: dup_gcdex
 
 Simplified remainder sequences
 ------------------------------
@@ -431,7 +408,7 @@ It is an example of *general polynomial remainder sequences* where
 the computed remainders are modified by constant multipliers (or divisors)
 in order to simplify the results.
 
-.. autofunction:: dmp_primitive_prs
+.. autofunction:: dup_primitive_prs
 
 Subresultant sequence
 ---------------------

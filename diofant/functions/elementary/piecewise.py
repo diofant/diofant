@@ -57,14 +57,12 @@ class Piecewise(Function):
     Examples
     ========
 
-      >>> from diofant import Piecewise, log
-      >>> from diofant.abc import x
       >>> f = x**2
       >>> g = log(x)
-      >>> p = Piecewise( (0, x<-1), (f, x<=1), (g, True))
-      >>> p.subs(x,1)
+      >>> p = Piecewise((0, x<-1), (f, x<=1), (g, True))
+      >>> p.subs(x, 1)
       1
-      >>> p.subs(x,5)
+      >>> p.subs(x, 5)
       log(5)
 
     See Also
@@ -539,11 +537,9 @@ def piecewise_fold(expr):
     Examples
     ========
 
-    >>> from diofant import Piecewise, piecewise_fold, Integer
-    >>> from diofant.abc import x
-    >>> p = Piecewise((x, x < 1), (1, Integer(1) <= x))
+    >>> p = Piecewise((x, x < 1), (1, x >= 1))
     >>> piecewise_fold(x*p)
-    Piecewise((x**2, x < 1), (x, 1 <= x))
+    Piecewise((x**2, x < 1), (x, x >= 1))
 
     See Also
     ========

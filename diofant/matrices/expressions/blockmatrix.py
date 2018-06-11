@@ -21,13 +21,11 @@ class BlockMatrix(MatrixExpr):
     The submatrices are stored in a Diofant Matrix object but accessed as part of
     a Matrix Expression
 
-    >>> from diofant import (MatrixSymbol, BlockMatrix, symbols,
-    ...     Identity, ZeroMatrix, block_collapse)
-    >>> n,m,l = symbols('n m l')
+    >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
-    >>> Y = MatrixSymbol('Y', m ,m)
+    >>> Y = MatrixSymbol('Y', m, m)
     >>> Z = MatrixSymbol('Z', n, m)
-    >>> B = BlockMatrix([[X, Z], [ZeroMatrix(m,n), Y]])
+    >>> B = BlockMatrix([[X, Z], [ZeroMatrix(m, n), Y]])
     >>> B
     Matrix([
     [X, Z],
@@ -122,16 +120,15 @@ class BlockMatrix(MatrixExpr):
         Examples
         ========
 
-        >>> from diofant import MatrixSymbol, BlockMatrix, ZeroMatrix
-        >>> from diofant.abc import l, m, n
+        >>> from diofant.abc import l
         >>> X = MatrixSymbol('X', n, n)
-        >>> Y = MatrixSymbol('Y', m ,m)
+        >>> Y = MatrixSymbol('Y', m, m)
         >>> Z = MatrixSymbol('Z', n, m)
-        >>> B = BlockMatrix([[X, Z], [ZeroMatrix(m,n), Y]])
+        >>> B = BlockMatrix([[X, Z], [ZeroMatrix(m, n), Y]])
         >>> B.transpose()
         Matrix([
-        [X',  0],
-        [Z', Y']])
+        [X.T,  0],
+        [Z.T, Y.T]])
         >>> _.transpose()
         Matrix([
         [X, Z],
@@ -181,10 +178,9 @@ class BlockDiagMatrix(BlockMatrix):
     """
     A BlockDiagMatrix is a BlockMatrix with matrices only along the diagonal
 
-    >>> from diofant import MatrixSymbol, BlockDiagMatrix, symbols, Identity
-    >>> n,m,l = symbols('n m l')
+    >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
-    >>> Y = MatrixSymbol('Y', m ,m)
+    >>> Y = MatrixSymbol('Y', m, m)
     >>> BlockDiagMatrix(X, Y)
     Matrix([
     [X, 0],
@@ -248,11 +244,9 @@ class BlockDiagMatrix(BlockMatrix):
 def block_collapse(expr):
     """Evaluates a block matrix expression
 
-    >>> from diofant import (MatrixSymbol, BlockMatrix, symbols,
-    ...                      Identity, Matrix, ZeroMatrix, block_collapse)
-    >>> n,m,l = symbols('n m l')
+    >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
-    >>> Y = MatrixSymbol('Y', m ,m)
+    >>> Y = MatrixSymbol('Y', m, m)
     >>> Z = MatrixSymbol('Z', n, m)
     >>> B = BlockMatrix([[X, Z], [ZeroMatrix(m, n), Y]])
     >>> B
@@ -360,8 +354,8 @@ def blockinverse_2x2(expr):
     [[A, B],
      [C, D]] = expr.arg.blocks.tolist()
 
-    return BlockMatrix([[ (A - B*D.I*C).I,  (-A).I*B*(D - C*A.I*B).I],
-                        [-(D - C*A.I*B).I*C*A.I,     (D - C*A.I*B).I]])
+    return BlockMatrix([[ (A - B*D.inverse()*C).inverse(),  (-A).inverse()*B*(D - C*A.inverse()*B).inverse()],
+                        [-(D - C*A.inverse()*B).inverse()*C*A.inverse(),     (D - C*A.inverse()*B).inverse()]])
 
 
 def deblock(B):
@@ -398,7 +392,6 @@ def reblock_2x2(B):
 def bounds(sizes):
     """ Convert sequence of numbers into pairs of low-high pairs
 
-    >>> from diofant.matrices.expressions.blockmatrix import bounds
     >>> bounds((1, 10, 50))
     [(0, 1), (1, 11), (11, 61)]
     """
@@ -413,7 +406,6 @@ def bounds(sizes):
 def blockcut(expr, rowsizes, colsizes):
     """ Cut a matrix expression into Blocks
 
-    >>> from diofant import ImmutableMatrix, blockcut
     >>> M = ImmutableMatrix(4, 4, range(16))
     >>> B = blockcut(M, (1, 3), (1, 3))
     >>> type(B).__name__

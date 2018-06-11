@@ -1,6 +1,8 @@
 """Implementation of :class:`Domain` class. """
 
-from ..core import Basic
+import abc
+
+from ..core import Expr
 from ..core.compatibility import HAS_GMPY
 from ..polys.orderings import lex
 from ..polys.polyerrors import CoercionFailed, UnificationFailed
@@ -12,7 +14,7 @@ from .domainelement import DomainElement
 __all__ = ('Domain',)
 
 
-class Domain(DefaultPrinting):
+class Domain(DefaultPrinting, abc.ABC):
     """Represents an abstract domain. """
 
     dtype = None
@@ -41,23 +43,13 @@ class Domain(DefaultPrinting):
     is_Simple = False
     is_Composite = False
 
-    has_CharacteristicZero = False
-
     rep = None
-    alias = None
-
-    def __str__(self):
-        return self.rep
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype))
 
     def new(self, *args):
         return self.dtype(*args)
-
-    @property
-    def tp(self):
-        return self.dtype
 
     def __call__(self, *args):
         """Construct an element of ``self`` domain from ``args``. """
@@ -66,18 +58,27 @@ class Domain(DefaultPrinting):
     def normal(self, *args):
         return self.dtype(*args)
 
+    @abc.abstractmethod
+    def from_expr(self, element):
+        """Convert Diofant's expression to ``dtype``. """
+        raise NotImplementedError  # pragma: no cover
+
+    @abc.abstractmethod
+    def to_expr(self, element):
+        """Convert ``element`` to Diofant expression. """
+        raise NotImplementedError  # pragma: no cover
+
     def convert_from(self, element, base):
         """Convert ``element`` to ``self.dtype`` given the base domain. """
-        if base.alias is not None:
-            method = "from_" + base.alias
-        else:
-            method = "from_" + base.__class__.__name__
+        method = "_from_" + base.__class__.__name__
 
-        _convert = getattr(self, method)
-        result = _convert(element, base)
+        convert = getattr(self, method, None)
 
-        if result is not None:
-            return result
+        if convert:
+            result = convert(element, base)
+
+            if result is not None:
+                return result
 
         raise CoercionFailed("can't convert %s of type %s from %s to %s" % (element, type(element), base, self))
 
@@ -86,7 +87,7 @@ class Domain(DefaultPrinting):
         if base is not None:
             return self.convert_from(element, base)
 
-        if self.of_type(element):
+        if isinstance(element, self.dtype):
             return element
 
         from . import (PythonIntegerRing, GMPYIntegerRing, GMPYRationalField,
@@ -101,11 +102,11 @@ class Domain(DefaultPrinting):
 
         if HAS_GMPY:
             integers = GMPYIntegerRing()
-            if isinstance(element, integers.tp):
+            if isinstance(element, integers.dtype):
                 return self.convert_from(element, integers)
 
             rationals = GMPYRationalField()
-            if isinstance(element, rationals.tp):
+            if isinstance(element, rationals.dtype):
                 return self.convert_from(element, rationals)
 
         if isinstance(element, float):
@@ -117,53 +118,29 @@ class Domain(DefaultPrinting):
             return self.convert_from(parent(element), parent)
 
         if isinstance(element, DomainElement):
-            return self.convert_from(element, element.parent())
+            return self.convert_from(element, element.parent)
 
-        if isinstance(element, Basic):
+        if isinstance(element, Expr):
             try:
-                return self.from_diofant(element)
+                return self.from_expr(element)
             except (TypeError, ValueError):
                 pass
 
         raise CoercionFailed("can't convert %s of type %s to %s" % (element, type(element), self))
 
-    def of_type(self, element):
-        """Check if ``a`` is of type ``dtype``. """
-        return isinstance(element, self.tp)  # XXX: this isn't correct, e.g. PolyElement
-
     def __contains__(self, a):
         """Check if ``a`` belongs to this domain. """
         try:
             self.convert(a)
+            return True
         except CoercionFailed:
             return False
 
-        return True
-
-    def from_FF_python(self, a, K0):
-        """Convert ``ModularInteger(int)`` to ``dtype``. """
-        return
-
-    def from_FF_gmpy(self, a, K0):
-        """Convert ``ModularInteger(mpz)`` to ``dtype``. """
-        return
-
-    def from_PolynomialRing(self, a, K0):
-        """Convert a polynomial to ``dtype``. """
+    def _from_PolynomialRing(self, a, K0):
         if a.is_ground:
             return self.convert(a.LC, K0.domain)
 
-    def from_FractionField(self, a, K0):
-        """Convert a rational function to ``dtype``. """
-        return
-
-    def unify_with_symbols(self, K1, symbols):
-        if (self.is_Composite and (set(self.symbols) & set(symbols))) or (K1.is_Composite and (set(K1.symbols) & set(symbols))):
-            raise UnificationFailed("can't unify %s with %s, given %s generators" % (self, K1, tuple(symbols)))
-
-        return self.unify(K1)
-
-    def unify(self, K1, symbols=None):
+    def unify(self, K1, symbols=()):
         """
         Construct a minimal domain that contains elements of ``self`` and ``K1``.
 
@@ -179,15 +156,20 @@ class Domain(DefaultPrinting):
         - ``K(x, y, z)``
         - ``EX``
         """
-        if symbols is not None:
-            return self.unify_with_symbols(K1, symbols)
+        if symbols:
+            if any(d.is_Composite and (set(d.symbols) & set(symbols))
+                   for d in [self, K1]):
+                raise UnificationFailed("Can't unify %s with %s, given %s"
+                                        " generators" % (self, K1, tuple(symbols)))
+
+            return self.unify(K1)
 
         if self == K1:
             return self
 
-        if self.is_EX:
+        if self.is_SymbolicDomain:
             return self
-        if K1.is_EX:
+        if K1.is_SymbolicDomain:
             return K1
 
         if self.is_Composite or K1.is_Composite:
@@ -204,7 +186,7 @@ class Domain(DefaultPrinting):
             if ((self.is_FractionField and K1.is_PolynomialRing or
                  K1.is_FractionField and self.is_PolynomialRing) and
                     (not self_ground.has_Field or not K1_ground.has_Field) and domain.has_Field):
-                domain = domain.get_ring()
+                domain = domain.ring
 
             if self.is_Composite and (not K1.is_Composite or self.is_FractionField or K1.is_PolynomialRing):
                 cls = self.__class__
@@ -254,10 +236,6 @@ class Domain(DefaultPrinting):
         """Returns ``True`` if two domains are equivalent. """
         return isinstance(other, Domain) and self.dtype == other.dtype
 
-    def __ne__(self, other):
-        """Returns ``False`` if two domains are equivalent. """
-        return not self.__eq__(other)
-
     def map(self, seq):
         """Rersively apply ``self`` to all elements of ``seq``. """
         result = []
@@ -274,26 +252,15 @@ class Domain(DefaultPrinting):
         """Returns an exact domain associated with ``self``. """
         return self
 
-    def __getitem__(self, symbols):
-        """The mathematical way to make a polynomial ring. """
-        if hasattr(symbols, '__iter__'):
-            return self.poly_ring(*symbols)
-        else:
-            return self.poly_ring(symbols)
-
     def poly_ring(self, *symbols, **kwargs):
         """Returns a polynomial ring, i.e. `K[X]`. """
-        from .polynomialring import PolynomialRing
+        from ..polys import PolynomialRing
         return PolynomialRing(self, symbols, kwargs.get("order", lex))
 
     def frac_field(self, *symbols, **kwargs):
         """Returns a fraction field, i.e. `K(X)`. """
-        from .fractionfield import FractionField
+        from ..polys import FractionField
         return FractionField(self, symbols, kwargs.get("order", lex))
-
-    def is_one(self, a):
-        """Returns True if ``a`` is one. """
-        return a == self.one
 
     def is_positive(self, a):
         """Returns True if ``a`` is positive. """
@@ -310,10 +277,6 @@ class Domain(DefaultPrinting):
     def is_nonnegative(self, a):
         """Returns True if ``a`` is non-negative. """
         return a >= 0
-
-    def abs(self, a):
-        """Absolute value of ``a``, implies ``__abs__``. """
-        return abs(a)
 
     def half_gcdex(self, a, b):
         """Half extended GCD of ``a`` and ``b``. """

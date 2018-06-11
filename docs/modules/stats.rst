@@ -1,5 +1,5 @@
 Stats
-===========
+=====
 
 .. automodule:: diofant.stats
 
@@ -177,8 +177,6 @@ internally.
 
 .. autofunction:: diofant.stats.rv.sampling_P
 .. autofunction:: diofant.stats.rv.sampling_E
-.. autofunction:: diofant.stats.rv.sample_iter_lambdify
-.. autofunction:: diofant.stats.rv.sample_iter_subs
 .. autofunction:: diofant.stats.rv.sampling_density
 .. autofunction:: diofant.stats.rv.independent
 .. autofunction:: diofant.stats.rv.dependent

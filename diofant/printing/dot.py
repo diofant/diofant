@@ -10,8 +10,6 @@ default_styles = [(Basic, {'color': 'blue', 'shape': 'ellipse'}),
 def styleof(expr, styles=default_styles):
     """ Merge style dictionaries in order
 
-    >>> from diofant import Symbol, Basic, Expr
-    >>> from diofant.printing.dot import styleof
     >>> styles = [(Basic, {'color': 'blue', 'shape': 'ellipse'}),
     ...           (Expr,  {'color': 'black'})]
 
@@ -32,7 +30,6 @@ def styleof(expr, styles=default_styles):
 def attrprint(d, delimiter=', '):
     """ Print a dictionary of attributes
 
-    >>> from diofant.printing.dot import attrprint
     >>> print(attrprint({'color': 'blue', 'shape': 'ellipse'}))
     "color"="blue", "shape"="ellipse"
     """
@@ -42,8 +39,6 @@ def attrprint(d, delimiter=', '):
 def dotnode(expr, styles=default_styles, labelfunc=str, pos=(), repeat=True):
     """ String defining a node
 
-    >>> from diofant.printing.dot import dotnode
-    >>> from diofant.abc import x
     >>> print(dotnode(x))
     "Symbol('x')_()" ["color"="black", "label"="x", "shape"="ellipse"];
     """
@@ -63,8 +58,6 @@ def dotnode(expr, styles=default_styles, labelfunc=str, pos=(), repeat=True):
 def dotedges(expr, atom=lambda x: not isinstance(x, Basic), pos=(), repeat=True):
     """ List of strings for all expr->expr.arg pairs
 
-    >>> from diofant.printing.dot import dotedges
-    >>> from diofant.abc import x
     >>> for e in dotedges(x+2):
     ...     print(e)
     "Add(Symbol('x'), Integer(2))_()" -> "Integer(2)_(0,)";
@@ -145,8 +138,6 @@ def dotprint(expr, styles=default_styles,
     Examples
     ========
 
-    >>> from diofant.printing.dot import dotprint
-    >>> from diofant.abc import x
     >>> print(dotprint(x + 2)) # doctest: +NORMALIZE_WHITESPACE
     digraph{
     <BLANKLINE>

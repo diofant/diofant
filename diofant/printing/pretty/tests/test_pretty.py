@@ -6,13 +6,14 @@ import pytest
 
 from diofant import (FF, QQ, RR, ZZ, Add, AlgebraicNumber, And, Basic,
                      Complement, Contains, Derivative, Dict, Eq, Equivalent,
-                     FiniteSet, Float, Function, Ge, Gt, I, Implies, Integer,
-                     Integral, Intersection, Interval, Lambda, Le, Limit, Lt,
-                     Matrix, MatrixSymbol, Mul, Nand, Ne, Nor, Not, O, Or, Pow,
-                     Product, Range, Rational, Ray, RealField, RootOf, RootSum,
-                     S, Segment, Subs, Sum, Symbol, SymmetricDifference, Trace,
-                     Tuple, Union, Xor, cbrt, conjugate, grlex, groebner, ilex,
-                     oo, pi, root, symbols)
+                     EulerGamma, FiniteSet, Float, Function, Ge, GoldenRatio,
+                     Gt, I, Implies, Integer, Integral, Intersection, Interval,
+                     Lambda, Le, Limit, Lt, Matrix, MatrixSymbol, Mod, Mul,
+                     Nand, Ne, Nor, Not, O, Or, Pow, Product, Range, Rational,
+                     Ray, RealField, RootOf, RootSum, S, Segment, Subs, Sum,
+                     Symbol, SymmetricDifference, Trace, Tuple, Union, Xor,
+                     cbrt, conjugate, grlex, groebner, ilex, oo, pi, root,
+                     symbols)
 from diofant.abc import a, b, c, d, e, f, k, l, lamda, m, n, t, w, x, y, z
 from diofant.core.trace import Tr
 from diofant.diffgeom import BaseVectorField
@@ -25,8 +26,8 @@ from diofant.functions import (Abs, Chi, Ci, DiracDelta, Ei, KroneckerDelta,
                                lowergamma, meijerg, sin, sqrt, subfactorial,
                                tan, uppergamma)
 from diofant.matrices import Adjoint, Inverse, Transpose
-from diofant.printing.pretty import pretty as xpretty
 from diofant.printing.pretty import pprint
+from diofant.printing.pretty import pretty as xpretty
 from diofant.printing.pretty.pretty_symbology import U, xobj
 from diofant.stats import Die, Exponential, Normal, pspace, where
 
@@ -968,6 +969,16 @@ x - ── + ─── + O⎝x ⎠\n\
 
     assert pretty(expr, order='rev-lex') == ascii_str
     assert upretty(expr, order='rev-lex') == ucode_str
+
+
+def test_EulerGamma():
+    assert pretty(EulerGamma) == str(EulerGamma) == "EulerGamma"
+    assert upretty(EulerGamma) == "γ"
+
+
+def test_GoldenRatio():
+    assert pretty(GoldenRatio) == str(GoldenRatio) == "GoldenRatio"
+    assert upretty(GoldenRatio) == "φ"
 
 
 def test_pretty_relational():
@@ -2629,6 +2640,27 @@ tr⎜⎢    ⎥⎟ + tr⎜⎢    ⎥⎟
     assert upretty(Trace(X) + Trace(Y)) == ucode_str_2
 
 
+def test_MatrixExpressions():
+    n = Symbol('n', integer=True)
+    X = MatrixSymbol('X', n, n)
+
+    assert pretty(X) == upretty(X) == "X"
+
+    Y = X[1:2:3, 4:5:6]
+
+    ascii_str = ucode_str = "X[1:3, 4:6]"
+
+    assert pretty(Y) == ascii_str
+    assert upretty(Y) == ucode_str
+
+    Z = X[1:10:2]
+
+    ascii_str = ucode_str = "X[1:10:2, :n]"
+
+    assert pretty(Z) == ascii_str
+    assert upretty(Z) == ucode_str
+
+
 def test_pretty_piecewise():
     expr = Piecewise((x, x < 1), (x**2, True))
     ascii_str = \
@@ -3298,13 +3330,28 @@ def test_pretty_RootOf():
     expr = RootOf(x**5 + 11*x - 2, 0)
     ascii_str = \
         """\
-      / 5                 \\\n\
-RootOf\\x  + 11*x - 2, x, 0/\
+      / 5              \\\n\
+RootOf\\x  + 11*x - 2, 0/\
 """
     ucode_str = \
         """\
-      ⎛ 5                 ⎞\n\
-RootOf⎝x  + 11⋅x - 2, x, 0⎠\
+      ⎛ 5              ⎞\n\
+RootOf⎝x  + 11⋅x - 2, 0⎠\
+"""
+
+    assert pretty(expr) == ascii_str
+    assert upretty(expr) == ucode_str
+
+    expr = RootOf(x**5 + y*x - 2, x, 0)
+    ascii_str = \
+        """\
+      / 5                \\\n\
+RootOf\\x  + x*y - 2, x, 0/\
+"""
+    ucode_str = \
+        """\
+      ⎛ 5                ⎞\n\
+RootOf⎝x  + x⋅y - 2, x, 0⎠\
 """
 
     assert pretty(expr) == ascii_str
@@ -3487,12 +3534,12 @@ def test_pretty_Domain():
 
     assert upretty(RealField(prec=100)) == "ℝ₁₀₀"
 
-    expr = QQ[x]
+    expr = QQ.poly_ring(x)
 
     assert pretty(expr) == "QQ[x]"
     assert upretty(expr) == "ℚ[x]"
 
-    expr = QQ[x, y]
+    expr = QQ.poly_ring(x, y)
 
     assert pretty(expr) == "QQ[x, y]"
     assert upretty(expr) == "ℚ[x, y]"
@@ -4972,14 +5019,18 @@ def test_MatrixElement():
 
 def test_AlgebraicNumber():
     a = AlgebraicNumber(sqrt(2), (1, 1))
-    b = AlgebraicNumber(sqrt(2), (1, 1), alias="theta")
     ucode_str = \
         """\
       ___\n\
 1 + ╲╱ 2 \
 """
     assert upretty(a) == ucode_str
-    assert upretty(b) == "θ + 1"
+
+    ucode_str = \
+        """\
+x - 1 + ⅈ\
+"""
+    assert upretty(AlgebraicNumber(I, (-1, 1)) + x) == ucode_str
 
 
 def test_sympyissue_11801():
@@ -4989,3 +5040,32 @@ def test_sympyissue_11801():
 
 def test_Order():
     assert upretty(O(1)) == "O(1)"
+
+
+def test_pretty_Mod():
+    ascii_str1 = "x mod 7"
+    ucode_str1 = "x mod 7"
+
+    ascii_str2 = "(x + 1) mod 7"
+    ucode_str2 = "(x + 1) mod 7"
+
+    ascii_str3 = "2*x mod 7"
+    ucode_str3 = "2⋅x mod 7"
+
+    ascii_str4 = "(x mod 7) + 1"
+    ucode_str4 = "(x mod 7) + 1"
+
+    ascii_str5 = "2*(x mod 7)"
+    ucode_str5 = "2⋅(x mod 7)"
+
+    x = symbols('x', integer=True)
+    assert pretty(Mod(x, 7)) == ascii_str1
+    assert upretty(Mod(x, 7)) == ucode_str1
+    assert pretty(Mod(x + 1, 7)) == ascii_str2
+    assert upretty(Mod(x + 1, 7)) == ucode_str2
+    assert pretty(Mod(2 * x, 7)) == ascii_str3
+    assert upretty(Mod(2 * x, 7)) == ucode_str3
+    assert pretty(Mod(x, 7) + 1) == ascii_str4
+    assert upretty(Mod(x, 7) + 1) == ucode_str4
+    assert pretty(2 * Mod(x, 7)) == ascii_str5
+    assert upretty(2 * Mod(x, 7)) == ucode_str5

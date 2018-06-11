@@ -74,14 +74,16 @@ def test_re():
 
     assert re((1 + sqrt(a + b*I))/2) == root(a**2 + b**2, 4)*cos(arg(a + I*b)/2)/2 + Rational(1, 2)
 
-    assert re(x).rewrite(im) == x - im(x)
-    assert (x + re(y)).rewrite(re, im) == x + y - im(y)
+    assert re(x).rewrite(im) == x - I*im(x)  # issue sympy/sympy#10897
+    assert (x + re(y)).rewrite(re, im) == x + y - I*im(y)
 
     a = Symbol('a', algebraic=True)
     t = Symbol('t', transcendental=True)
     assert re(a).is_algebraic
     assert re(x).is_algebraic is None
     assert re(t).is_algebraic is False
+
+    assert re(zoo) == nan
 
 
 def test_im():
@@ -139,14 +141,16 @@ def test_im():
 
     assert im((1 + sqrt(a + b*I))/2) == root(a**2 + b**2, 4)*sin(arg(a + I*b)/2)/2
 
-    assert im(x).rewrite(re) == x - re(x)
-    assert (x + im(y)).rewrite(im, re) == x + y - re(y)
+    assert im(x).rewrite(re) == -I*(x - re(x))  # sympy/sympy#10897
+    assert (x + im(y)).rewrite(im, re) == x - I*(y - re(y))
 
     a = Symbol('a', algebraic=True)
     t = Symbol('t', transcendental=True)
     assert re(a).is_algebraic
     assert re(x).is_algebraic is None
     assert re(t).is_algebraic is False
+
+    assert re(zoo) == nan
 
 
 def test_sign():

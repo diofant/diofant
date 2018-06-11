@@ -17,9 +17,7 @@ def AbelianGroup(*cyclic_orders):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
     >>> Permutation.print_cyclic = True
-    >>> from diofant.combinatorics.named_groups import AbelianGroup
     >>> AbelianGroup(3, 4)
     PermutationGroup([
             Permutation(6)(0, 1, 2),
@@ -65,7 +63,6 @@ def AlternatingGroup(n):
     Examples
     ========
 
-    >>> from diofant.combinatorics.named_groups import AlternatingGroup
     >>> G = AlternatingGroup(4)
     >>> G.is_group
     True
@@ -134,7 +131,6 @@ def CyclicGroup(n):
     Examples
     ========
 
-    >>> from diofant.combinatorics.named_groups import CyclicGroup
     >>> G = CyclicGroup(6)
     >>> G.is_group
     True
@@ -179,7 +175,6 @@ def DihedralGroup(n):
     Examples
     ========
 
-    >>> from diofant.combinatorics.named_groups import DihedralGroup
     >>> G = DihedralGroup(5)
     >>> G.is_group
     True
@@ -240,7 +235,6 @@ def SymmetricGroup(n):
     Examples
     ========
 
-    >>> from diofant.combinatorics.named_groups import SymmetricGroup
     >>> G = SymmetricGroup(4)
     >>> G.is_group
     True
@@ -295,7 +289,6 @@ def SymmetricGroup(n):
 def RubikGroup(n):
     """Return a group of Rubik's cube generators.
 
-    >>> from diofant.combinatorics.named_groups import RubikGroup
     >>> RubikGroup(2).is_group
     True
     """

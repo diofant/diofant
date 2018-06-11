@@ -20,8 +20,17 @@ class RealElement(_mpf, DomainElement):
 
     _mpf_ = property(lambda self: self.__mpf__, _set_mpf)
 
+    @property
     def parent(self):
         return self.context._parent
+
+    @property
+    def numerator(self):
+        return self
+
+    @property
+    def denominator(self):
+        return self.parent.one
 
 
 class ComplexElement(_mpc, DomainElement):
@@ -32,8 +41,17 @@ class ComplexElement(_mpc, DomainElement):
 
     _mpc_ = property(lambda self: self.__mpc__, _set_mpc)
 
+    @property
     def parent(self):
         return self.context._parent
+
+    @property
+    def numerator(self):
+        return self
+
+    @property
+    def denominator(self):
+        return self.parent.one
 
 
 new = object.__new__

@@ -8,7 +8,7 @@ from ..core import (Add, Basic, Dummy, E, Expr, Float, I, Integer, Mul, Pow,
                     sympify)
 from ..core.compatibility import as_int, iterable, ordered
 from ..core.evaluate import global_evaluate
-from ..core.function import _mexpand
+from ..core.function import _coeff_isneg, _mexpand
 from ..core.rules import Transform
 from ..functions import (besseli, besselj, besselk, bessely, ceiling, exp,
                          exp_polar, gamma, jn, log, piecewise_fold, root, sqrt,
@@ -57,8 +57,7 @@ def separatevars(expr, symbols=[], dict=False, force=False):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z, alpha
-    >>> from diofant import separatevars, sin
+    >>> from diofant.abc import alpha
     >>> separatevars((x*y)**y)
     (x*y)**y
     >>> separatevars((x*y)**y, force=True)
@@ -237,8 +236,6 @@ def nthroot(expr, n, max_len=4, prec=15):
     Examples
     ========
 
-    >>> from diofant.simplify.simplify import nthroot
-    >>> from diofant import sqrt
     >>> nthroot(90 + 34*sqrt(7), 3)
     sqrt(7) + 3
     """
@@ -288,8 +285,6 @@ def posify(eq):
     A dictionary that can be sent to subs to restore eq to its original
     symbols is also returned.
 
-    >>> from diofant import posify, Symbol, log, solve
-    >>> from diofant.abc import x
     >>> posify(x + Symbol('p', positive=True) + Symbol('n', negative=True))
     (n + p + _x, {_x: x})
 
@@ -410,8 +405,6 @@ def signsimp(expr, evaluate=None):
     Examples
     ========
 
-    >>> from diofant import signsimp, exp, symbols
-    >>> from diofant.abc import x, y
     >>> i = symbols('i', odd=True)
     >>> n = -1 + 1/x
     >>> n/x/(-n)**2 - 1/n/x
@@ -480,8 +473,6 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     intelligent heuristics to make the input expression "simpler".  For
     example:
 
-    >>> from diofant import simplify, cos, sin
-    >>> from diofant.abc import x, y
     >>> a = (x + x**2)/(x*sin(y)**2 + x*cos(y)**2)
     >>> a
     (x**2 + x)/(x*sin(y)**2 + x*cos(y)**2)
@@ -491,7 +482,6 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     Note that we could have obtained the same result by using specific
     simplification functions:
 
-    >>> from diofant import trigsimp, cancel
     >>> trigsimp(a)
     (x**2 + x)/x
     >>> cancel(_)
@@ -513,7 +503,6 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     ::
 
-        >>> from diofant import sqrt, simplify, count_ops, oo
         >>> root = 1/(sqrt(2)+3)
 
     Since ``simplify(root)`` would result in a slightly longer expression,
@@ -542,7 +531,6 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     For example:
 
-    >>> from diofant import symbols, log
     >>> a, b = symbols('a b', positive=True)
     >>> g = log(a) + log(b) + log(a)*log(1/b)
     >>> h = simplify(g)
@@ -564,7 +552,6 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     >>> print(count_ops(h, visual=True))
     2*LOG + MUL + POW + SUB
 
-    >>> from diofant import Symbol, S
     >>> def my_measure(expr):
     ...     POW = Symbol('POW')
     ...     # Discourage powers by giving POW a weight of 10
@@ -695,9 +682,6 @@ def _real_to_rational(expr, tolerance=None):
     """
     Replace all reals in expr with rationals.
 
-    >>> from diofant import nsimplify
-    >>> from diofant.abc import x
-
     >>> nsimplify(.76 + .1*x**.5, rational=True)
     sqrt(x)/10 + 19/25
 
@@ -758,7 +742,6 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
     Examples
     ========
 
-    >>> from diofant import nsimplify, sqrt, GoldenRatio, exp, I, exp, pi
     >>> nsimplify(4/(1+sqrt(5)), [GoldenRatio])
     -2 + 2*GoldenRatio
     >>> nsimplify((1/(exp(3*pi*I/5)+1)))
@@ -873,14 +856,13 @@ def logcombine(expr, force=False):
     Examples
     ========
 
-    >>> from diofant import Symbol, symbols, log, logcombine, I
-    >>> from diofant.abc import a, x, y, z
+    >>> from diofant.abc import a
     >>> logcombine(a*log(x) + log(y) - log(z))
     a*log(x) + log(y) - log(z)
     >>> logcombine(a*log(x) + log(y) - log(z), force=True)
     log(x**a*y/z)
-    >>> x,y,z = symbols('x,y,z', positive=True)
-    >>> a = Symbol('a', extended_real=True)
+    >>> x, y, z = symbols('x y z', positive=True)
+    >>> a = Symbol('a', real=True)
     >>> logcombine(a*log(x) + log(y) - log(z))
     log(x**a*y/z)
 
@@ -1026,8 +1008,7 @@ def besselsimp(expr):
     of low order.  Finally, if the expression was changed, compute
     factorization of the result with factor().
 
-    >>> from diofant import besselj, besseli, besselsimp, polar_lift, I, Rational
-    >>> from diofant.abc import z, nu
+    >>> from diofant.abc import nu
     >>> besselsimp(besselj(nu, z*polar_lift(-1)))
     E**(I*pi*nu)*besselj(nu, z)
     >>> besselsimp(besseli(nu, z*polar_lift(-I)))
@@ -1243,3 +1224,45 @@ def product_mul(self, other, method=0):
                             return Product(self.function, (i, x2, y1))
 
     return Mul(self, other)
+
+
+def clear_coefficients(expr, rhs=Integer(0)):
+    """Return `p, r` where `p` is the expression obtained when Rational
+    additive and multiplicative coefficients of `expr` have been stripped
+    away in a naive fashion (i.e. without simplification). The operations
+    needed to remove the coefficients will be applied to `rhs` and returned
+    as `r`.
+
+    Examples
+    ========
+
+    >>> expr = 4*y*(6*x + 3)
+    >>> clear_coefficients(expr - 2)
+    (y*(2*x + 1), 1/6)
+
+    When solving 2 or more expressions like `expr = a`,
+    `expr = b`, etc..., it is advantageous to provide a Dummy symbol
+    for `rhs` and  simply replace it with `a`, `b`, etc... in `r`.
+
+    >>> rhs = Dummy('rhs')
+    >>> clear_coefficients(expr, rhs)
+    (y*(2*x + 1), _rhs/12)
+    >>> _[1].subs(rhs, 2)
+    1/6
+    """
+    was = None
+    free = expr.free_symbols
+    if expr.is_Rational:
+        return Integer(0), rhs - expr
+    while expr and was != expr:
+        was = expr
+        m, expr = (expr.as_content_primitive() if free else
+                   factor_terms(expr).as_coeff_Mul(rational=True))
+        rhs /= m
+        c, expr = expr.as_coeff_Add(rational=True)
+        rhs -= c
+    expr = signsimp(expr, evaluate=False)
+    if _coeff_isneg(expr):
+        expr = -expr
+        rhs = -rhs
+    return expr, rhs

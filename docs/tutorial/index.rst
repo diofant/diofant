@@ -47,12 +47,12 @@ feature and option of each function.
    :name: tutortoc
    :maxdepth: 2
 
-   intro.rst
-   basics.rst
-   gotchas.rst
-   printing.rst
-   simplification.rst
-   calculus.rst
-   solvers.rst
-   matrices.rst
-   manipulation.rst
+   intro
+   basics
+   gotchas
+   printing
+   simplification
+   calculus
+   solvers
+   matrices
+   manipulation

@@ -1,11 +1,11 @@
 """Dense univariate polynomials with coefficients in Galois fields. """
 
-from math import ceil as _ceil
-from math import sqrt as _sqrt
-from random import uniform
+import math
+import random
 
 from ..core import prod
 from ..ntheory import factorint
+from .densebasic import dmp_degree, dmp_LC, dmp_strip
 from .polyconfig import query
 from .polyerrors import ExactQuotientFailed
 from .polyutils import _sort_factors
@@ -22,7 +22,6 @@ def gf_crt(U, M, K=None):
     As an example consider a set of residues ``U = [49, 76, 65]``
     and a set of moduli ``M = [99, 97, 95]``. Then we have::
 
-       >>> from diofant.domains import ZZ
        >>> from diofant.ntheory.modular import solve_congruence
 
        >>> gf_crt([49, 76, 65], [99, 97, 95], ZZ)
@@ -59,8 +58,6 @@ def gf_crt1(M, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_crt1([99, 97, 95], ZZ)
     (912285, [9215, 9405, 9603], [62, 24, 12])
     """
@@ -80,8 +77,6 @@ def gf_crt2(U, M, p, E, S, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> U = [49, 76, 65]
     >>> M = [99, 97, 95]
@@ -119,83 +114,6 @@ def gf_int(a, p):
         return a - p
 
 
-def gf_degree(f):
-    """
-    Return the leading degree of ``f``.
-
-    Examples
-    ========
-
-    >>> gf_degree([1, 1, 2, 0])
-    3
-    >>> gf_degree([])
-    -1
-    """
-    return len(f) - 1
-
-
-def gf_LC(f, K):
-    """
-    Return the leading coefficient of ``f``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> gf_LC([3, 0, 1], ZZ)
-    3
-    """
-    if not f:
-        return K.zero
-    else:
-        return f[0]
-
-
-def gf_TC(f, K):
-    """
-    Return the trailing coefficient of ``f``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> gf_TC([3, 0, 1], ZZ)
-    1
-
-    """
-    if not f:
-        return K.zero
-    else:
-        return f[-1]
-
-
-def gf_strip(f):
-    """
-    Remove leading zeros from ``f``.
-
-
-    Examples
-    ========
-
-    >>> gf_strip([0, 0, 0, 3, 0, 1])
-    [3, 0, 1]
-    """
-    if not f or f[0]:
-        return f
-
-    k = 0
-
-    for coeff in f:
-        if coeff:
-            break
-        else:
-            k += 1
-
-    return f[k:]
-
-
 def gf_trunc(f, p):
     """
     Reduce all coefficients modulo ``p``.
@@ -207,22 +125,7 @@ def gf_trunc(f, p):
     [2, 3, 3]
 
     """
-    return gf_strip([ a % p for a in f ])
-
-
-def gf_normal(f, p, K):
-    """
-    Normalize all coefficients in ``K``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> gf_normal([5, 10, 21, -3], 5, ZZ)
-    [1, 2]
-    """
-    return gf_trunc(list(map(K, f)), p)
+    return dmp_strip([a % p for a in f], 0)
 
 
 def gf_from_dict(f, p, K):
@@ -231,8 +134,6 @@ def gf_from_dict(f, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_from_dict({10: ZZ(4), 4: ZZ(33), 0: ZZ(-1)}, 5, ZZ)
     [4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4]
@@ -257,7 +158,7 @@ def gf_to_dict(f, p, symmetric=True):
     >>> gf_to_dict([4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4], 5, symmetric=False)
     {0: 4, 4: 3, 10: 4}
     """
-    n, result = gf_degree(f), {}
+    n, result = dmp_degree(f, 0), {}
 
     for k in range(n + 1):
         if symmetric:
@@ -277,8 +178,6 @@ def gf_from_int_poly(f, p):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_from_int_poly([7, -2, 3], 5)
     [2, 3, 3]
@@ -312,8 +211,6 @@ def gf_neg(f, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_neg([3, 2, 1, 0], 5, ZZ)
     [2, 3, 4, 0]
     """
@@ -326,8 +223,6 @@ def gf_add_ground(f, a, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_add_ground([3, 2, 4], 2, 5, ZZ)
     [3, 2, 1]
@@ -353,8 +248,6 @@ def gf_sub_ground(f, a, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_sub_ground([3, 2, 4], 2, 5, ZZ)
     [3, 2, 2]
     """
@@ -379,8 +272,6 @@ def gf_mul_ground(f, a, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_mul_ground([3, 2, 4], 2, 5, ZZ)
     [1, 4, 3]
     """
@@ -397,8 +288,6 @@ def gf_quo_ground(f, a, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_quo_ground(ZZ.map([3, 2, 4]), ZZ(2), 5, ZZ)
     [4, 1, 2]
     """
@@ -412,8 +301,6 @@ def gf_add(f, g, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_add([3, 2, 4], [2, 2, 2], 5, ZZ)
     [4, 1]
     """
@@ -422,11 +309,11 @@ def gf_add(f, g, p, K):
     if not g:
         return f
 
-    df = gf_degree(f)
-    dg = gf_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     if df == dg:
-        return gf_strip([ (a + b) % p for a, b in zip(f, g) ])
+        return dmp_strip([(a + b) % p for a, b in zip(f, g)], 0)
     else:
         k = abs(df - dg)
 
@@ -445,8 +332,6 @@ def gf_sub(f, g, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_sub([3, 2, 4], [2, 2, 2], 5, ZZ)
     [1, 0, 2]
     """
@@ -455,11 +340,11 @@ def gf_sub(f, g, p, K):
     if not f:
         return gf_neg(g, p, K)
 
-    df = gf_degree(f)
-    dg = gf_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     if df == dg:
-        return gf_strip([ (a - b) % p for a, b in zip(f, g) ])
+        return dmp_strip([(a - b) % p for a, b in zip(f, g)], 0)
     else:
         k = abs(df - dg)
 
@@ -478,15 +363,16 @@ def gf_mul(f, g, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_mul([3, 2, 4], [2, 2, 2], 5, ZZ)
     [1, 0, 3, 2, 3]
     """
-    df = gf_degree(f)
-    dg = gf_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     dh = df + dg
+    if dh < 0:
+        return []
+
     h = [0]*(dh + 1)
 
     for i in range(dh + 1):
@@ -497,7 +383,7 @@ def gf_mul(f, g, p, K):
 
         h[i] = coeff % p
 
-    return gf_strip(h)
+    return dmp_strip(h, 0)
 
 
 def gf_sqr(f, p, K):
@@ -507,12 +393,12 @@ def gf_sqr(f, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_sqr([3, 2, 4], 5, ZZ)
     [4, 2, 3, 1, 1]
     """
-    df = gf_degree(f)
+    df = dmp_degree(f, 0)
+    if df < 0:
+        return []
 
     dh = 2*df
     h = [0]*(dh + 1)
@@ -538,7 +424,7 @@ def gf_sqr(f, p, K):
 
         h[i] = coeff % p
 
-    return gf_strip(h)
+    return dmp_strip(h, 0)
 
 
 def gf_add_mul(f, g, h, p, K):
@@ -547,8 +433,6 @@ def gf_add_mul(f, g, h, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_add_mul([3, 2, 4], [2, 2, 2], [1, 4], 5, ZZ)
     [2, 3, 2, 2]
@@ -563,8 +447,6 @@ def gf_sub_mul(f, g, h, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_sub_mul([3, 2, 4], [2, 2, 2], [1, 4], 5, ZZ)
     [3, 3, 2, 1]
     """
@@ -577,8 +459,6 @@ def gf_expand(F, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_expand([([3, 2, 4], 1), ([2, 2], 2), ([3, 1], 3)], 5, ZZ)
     [4, 3, 0, 3, 0, 1, 4, 1]
@@ -607,8 +487,6 @@ def gf_div(f, g, p, K):
 
     Consider polynomials ``x**3 + x + 1`` and ``x**2 + x`` in GF(2)::
 
-       >>> from diofant.domains import ZZ
-
        >>> gf_div(ZZ.map([1, 0, 1, 1]), ZZ.map([1, 1, 0]), 2, ZZ)
        ([1, 1], [1])
 
@@ -623,8 +501,8 @@ def gf_div(f, g, p, K):
     .. [1] [Monagan93]_
     .. [2] [Gathen99]_
     """
-    df = gf_degree(f)
-    dg = gf_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     if not g:
         raise ZeroDivisionError("polynomial division")
@@ -646,7 +524,7 @@ def gf_div(f, g, p, K):
 
         h[i] = coeff % p
 
-    return h[:dq + 1], gf_strip(h[dq + 1:])
+    return h[:dq + 1], dmp_strip(h[dq + 1:], 0)
 
 
 def gf_rem(f, g, p, K):
@@ -655,8 +533,6 @@ def gf_rem(f, g, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_rem(ZZ.map([1, 0, 1, 1]), ZZ.map([1, 1, 0]), 2, ZZ)
     [1]
@@ -671,15 +547,13 @@ def gf_quo(f, g, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_quo(ZZ.map([1, 0, 1, 1]), ZZ.map([1, 1, 0]), 2, ZZ)
     [1, 1]
     >>> gf_quo(ZZ.map([1, 0, 3, 2, 3]), ZZ.map([2, 2, 2]), 5, ZZ)
     [3, 2, 4]
     """
-    df = gf_degree(f)
-    dg = gf_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     if not g:
         raise ZeroDivisionError("polynomial division")
@@ -708,8 +582,6 @@ def gf_exquo(f, g, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_exquo(ZZ.map([1, 0, 3, 2, 3]), ZZ.map([2, 2, 2]), 5, ZZ)
     [3, 2, 4]
 
@@ -733,8 +605,6 @@ def gf_lshift(f, n, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_lshift([3, 2, 4], 4, ZZ)
     [3, 2, 4, 0, 0, 0, 0]
     """
@@ -750,8 +620,6 @@ def gf_rshift(f, n, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_rshift([1, 2, 3, 4, 0], 3, ZZ)
     ([1, 2], [3, 4, 0])
@@ -769,8 +637,6 @@ def gf_pow(f, n, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_pow([3, 2, 4], 3, 5, ZZ)
     [2, 4, 4, 2, 2, 1, 4]
@@ -802,18 +668,16 @@ def gf_pow(f, n, p, K):
 def gf_frobenius_monomial_base(g, p, K):
     """
     return the list of ``x**(i*p) mod g in Z_p`` for ``i = 0, .., n - 1``
-    where ``n = gf_degree(g)``
+    where ``n = dmp_degree(g, 0)``
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> g = ZZ.map([1, 0, 2, 1])
     >>> gf_frobenius_monomial_base(g, 5, ZZ)
     [[1], [4, 4, 2], [1, 2]]
     """
-    n = gf_degree(g)
+    n = dmp_degree(g, 0)
     if n == 0:
         return []
     b = [0]*n
@@ -846,8 +710,6 @@ def gf_frobenius_map(f, g, b, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> f = ZZ.map([2, 1 , 0, 1])
     >>> g = ZZ.map([1, 0, 2, 1])
     >>> p = 5
@@ -856,12 +718,12 @@ def gf_frobenius_map(f, g, b, p, K):
     >>> gf_frobenius_map(f, g, b, p, ZZ)
     [4, 0, 3]
     """
-    m = gf_degree(g)
-    if gf_degree(f) >= m:
+    m = dmp_degree(g, 0)
+    if dmp_degree(f, 0) >= m:
         f = gf_rem(f, g, p, K)
     if not f:
         return []
-    n = gf_degree(f)
+    n = dmp_degree(f, 0)
     sf = [f[-1]]
     for i in range(1, n + 1):
         v = gf_mul_ground(b[i], f[n - i], p, K)
@@ -897,8 +759,6 @@ def gf_pow_mod(f, n, g, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_pow_mod(ZZ.map([3, 2, 4]), 3, ZZ.map([1, 1]), 5, ZZ)
     []
@@ -941,8 +801,6 @@ def gf_gcd(f, g, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_gcd(ZZ.map([3, 2, 4]), ZZ.map([2, 2, 3]), 5, ZZ)
     [1, 3]
     """
@@ -958,8 +816,6 @@ def gf_lcm(f, g, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_lcm(ZZ.map([3, 2, 4]), ZZ.map([2, 2, 3]), 5, ZZ)
     [1, 2, 0, 4]
@@ -979,8 +835,6 @@ def gf_cofactors(f, g, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_cofactors(ZZ.map([3, 2, 4]), ZZ.map([2, 2, 3]), 5, ZZ)
     ([1, 3], [3, 3], [2, 1])
@@ -1004,8 +858,6 @@ def gf_gcdex(f, g, p, K):
 
     Consider polynomials ``f = (x + 7) (x + 1)``, ``g = (x + 7) (x**2 + 1)``
     in ``GF(11)[x]``. Application of Extended Euclidean Algorithm gives::
-
-       >>> from diofant.domains import ZZ
 
        >>> s, t, g = gf_gcdex(ZZ.map([1, 8, 7]), ZZ.map([1, 7, 1, 7]), 11, ZZ)
        >>> (s, t, g)
@@ -1065,8 +917,6 @@ def gf_monic(f, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_monic(ZZ.map([3, 2, 4]), 5, ZZ)
     (3, [1, 4, 3])
     """
@@ -1075,7 +925,7 @@ def gf_monic(f, p, K):
     else:
         lc = f[0]
 
-        if K.is_one(lc):
+        if lc == K.one:
             return lc, list(f)
         else:
             return lc, gf_quo_ground(f, lc, p, K)
@@ -1088,12 +938,12 @@ def gf_diff(f, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_diff([3, 2, 4], 5, ZZ)
     [1, 2]
     """
-    df = gf_degree(f)
+    df = dmp_degree(f, 0)
+    if df < 0:
+        return []
 
     h, n = [K.zero]*df, df
 
@@ -1106,7 +956,7 @@ def gf_diff(f, p, K):
 
         n -= 1
 
-    return gf_strip(h)
+    return dmp_strip(h, 0)
 
 
 def gf_eval(f, a, p, K):
@@ -1115,8 +965,6 @@ def gf_eval(f, a, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_eval([3, 2, 4], 2, 5, ZZ)
     0
@@ -1138,8 +986,6 @@ def gf_multi_eval(f, A, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_multi_eval([3, 2, 4], [0, 1, 2, 3, 4], 5, ZZ)
     [4, 4, 0, 2, 0]
     """
@@ -1153,13 +999,11 @@ def gf_compose(f, g, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_compose([3, 2, 4], [2, 2, 2], 5, ZZ)
     [2, 4, 0, 3, 0]
     """
     if len(g) <= 1:
-        return gf_strip([gf_eval(f, gf_LC(g, K), p, K)])
+        return dmp_strip([gf_eval(f, dmp_LC(g, K), p, K)], 0)
 
     if not f:
         return []
@@ -1179,8 +1023,6 @@ def gf_compose_mod(g, h, f, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_compose_mod(ZZ.map([3, 2, 4]), ZZ.map([2, 2, 2]), ZZ.map([4, 3]), 5, ZZ)
     [4]
@@ -1216,8 +1058,6 @@ def gf_trace_map(a, b, c, n, f, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_trace_map([1, 2], [4, 4], [1, 1], 4, [3, 2, 4], 5, ZZ)
     ([1, 3], [1, 3])
@@ -1273,12 +1113,10 @@ def gf_random(n, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_random(10, 5, ZZ) #doctest: +SKIP
     [1, 2, 3, 2, 1, 1, 1, 2, 0, 4, 2]
     """
-    return [K.one] + [ K(int(uniform(0, p))) for i in range(n) ]
+    return [K.one] + [ K(int(random.uniform(0, p))) for i in range(n) ]
 
 
 def gf_irreducible(n, p, K):
@@ -1287,8 +1125,6 @@ def gf_irreducible(n, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_irreducible(10, 5, ZZ) #doctest: +SKIP
     [1, 4, 2, 2, 3, 2, 4, 1, 4, 0, 4]
@@ -1306,8 +1142,6 @@ def gf_irred_p_ben_or(f, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_irred_p_ben_or(ZZ.map([1, 4, 2, 2, 3, 2, 4, 1, 4, 0, 4]), 5, ZZ)
     True
     >>> gf_irred_p_ben_or(ZZ.map([3, 2, 4]), 5, ZZ)
@@ -1318,7 +1152,7 @@ def gf_irred_p_ben_or(f, p, K):
 
     .. [1] [BenOr81]_
     """
-    n = gf_degree(f)
+    n = dmp_degree(f, 0)
 
     if n <= 1:
         return True
@@ -1354,14 +1188,12 @@ def gf_irred_p_rabin(f, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_irred_p_rabin(ZZ.map([1, 4, 2, 2, 3, 2, 4, 1, 4, 0, 4]), 5, ZZ)
     True
     >>> gf_irred_p_rabin(ZZ.map([3, 2, 4]), 5, ZZ)
     False
     """
-    n = gf_degree(f)
+    n = dmp_degree(f, 0)
 
     if n <= 1:
         return True
@@ -1400,8 +1232,6 @@ def gf_irreducible_p(f, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_irreducible_p(ZZ.map([1, 4, 2, 2, 3, 2, 4, 1, 4, 0, 4]), 5, ZZ)
     True
     >>> gf_irreducible_p(ZZ.map([3, 2, 4]), 5, ZZ)
@@ -1418,8 +1248,6 @@ def gf_sqf_p(f, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_sqf_p(ZZ.map([3, 2, 4]), 5, ZZ)
     True
@@ -1440,8 +1268,6 @@ def gf_sqf_part(f, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_sqf_part(ZZ.map([1, 1, 3, 0, 1, 0, 2, 2, 1]), 5, ZZ)
     [1, 4, 3]
@@ -1467,8 +1293,6 @@ def gf_sqf_list(f, p, K, all=False):
     terms (i.e. ``f_i = 1``) aren't included in the output.
 
     Consider polynomial ``f = x**11 + 1`` over ``GF(11)[x]``::
-
-       >>> from diofant.domains import ZZ
 
        >>> f = gf_from_dict({11: ZZ(1), 0: ZZ(1)}, 11, ZZ)
 
@@ -1497,7 +1321,7 @@ def gf_sqf_list(f, p, K, all=False):
 
     lc, f = gf_monic(f, p, K)
 
-    if gf_degree(f) < 1:
+    if dmp_degree(f, 0) < 1:
         return lc, []
 
     while True:
@@ -1513,7 +1337,7 @@ def gf_sqf_list(f, p, K, all=False):
                 G = gf_gcd(g, h, p, K)
                 H = gf_quo(h, G, p, K)
 
-                if gf_degree(H) > 0:
+                if dmp_degree(H, 0) > 0:
                     factors.append((H, i*n))
 
                 g, h, i = gf_quo(g, G, p, K), G, i + 1
@@ -1524,7 +1348,7 @@ def gf_sqf_list(f, p, K, all=False):
                 f = g
 
         if not sqf:
-            d = gf_degree(f) // r
+            d = dmp_degree(f, 0) // r
 
             for i in range(d + 1):
                 f[i] = f[i*r]
@@ -1546,8 +1370,6 @@ def gf_Qmatrix(f, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_Qmatrix([3, 2, 4], 5, ZZ)
     [[1, 0],
      [3, 4]]
@@ -1558,7 +1380,7 @@ def gf_Qmatrix(f, p, K):
      [0, 0, 1, 0],
      [0, 0, 0, 4]]
     """
-    n, r = gf_degree(f), int(p)
+    n, r = dmp_degree(f, 0), int(p)
 
     q = [K.one] + [K.zero]*(n - 1)
     Q = [list(q)] + [[]]*(n - 1)
@@ -1583,8 +1405,6 @@ def gf_Qbasis(Q, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_Qbasis(gf_Qmatrix([1, 0, 0, 0, 1], 5, ZZ), 5, ZZ)
     [[1, 0, 0, 0], [0, 0, 1, 0]]
@@ -1644,8 +1464,6 @@ def gf_berlekamp(f, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_berlekamp([1, 0, 0, 0, 1], 5, ZZ)
     [[1, 0, 2], [1, 0, 3]]
     """
@@ -1653,7 +1471,7 @@ def gf_berlekamp(f, p, K):
     V = gf_Qbasis(Q, p, K)
 
     for i, v in enumerate(V):
-        V[i] = gf_strip(list(reversed(v)))
+        V[i] = dmp_strip(list(reversed(v)), 0)
 
     factors = [f]
 
@@ -1691,8 +1509,6 @@ def gf_ddf_zassenhaus(f, p, K):
 
     Consider the polynomial ``x**15 - 1`` in ``GF(11)[x]``::
 
-       >>> from diofant.domains import ZZ
-
        >>> f = gf_from_dict({15: ZZ(1), 0: ZZ(-1)}, 11, ZZ)
 
     Distinct degree factorization gives::
@@ -1713,7 +1529,7 @@ def gf_ddf_zassenhaus(f, p, K):
     i, g, factors = 1, [K.one, K.zero], []
 
     b = gf_frobenius_monomial_base(f, p, K)
-    while 2*i <= gf_degree(f):
+    while 2*i <= dmp_degree(f, 0):
         g = gf_frobenius_map(g, f, b, p, K)
         h = gf_gcd(f, gf_sub(g, [K.one, K.zero], p, K), p, K)
 
@@ -1727,7 +1543,7 @@ def gf_ddf_zassenhaus(f, p, K):
         i += 1
 
     if f != [K.one]:
-        return factors + [(f, gf_degree(f))]
+        return factors + [(f, dmp_degree(f, 0))]
     else:
         return factors
 
@@ -1744,9 +1560,7 @@ def gf_edf_zassenhaus(f, n, p, K):
     Consider the square-free polynomial ``f = x**3 + x**2 + x + 1`` in
     ``GF(5)[x]``. Let's compute its irreducible factors of degree one::
 
-       >>> from diofant.domains import ZZ
-
-       >>> gf_edf_zassenhaus([1,1,1,1], 1, 5, ZZ)
+       >>> gf_edf_zassenhaus([1, 1, 1, 1], 1, 5, ZZ)
        [[1, 1], [1, 2], [1, 3]]
 
     References
@@ -1757,10 +1571,10 @@ def gf_edf_zassenhaus(f, n, p, K):
     """
     factors = [f]
 
-    if gf_degree(f) <= n:
+    if dmp_degree(f, 0) <= n:
         return factors
 
-    N = gf_degree(f) // n
+    N = dmp_degree(f, 0) // n
     if p != 2:
         b = gf_frobenius_monomial_base(f, p, K)
 
@@ -1802,8 +1616,6 @@ def gf_ddf_shoup(f, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> f = gf_from_dict({6: ZZ(1), 5: ZZ(-1), 4: ZZ(1), 3: ZZ(1), 1: ZZ(-1)}, 3, ZZ)
 
     >>> gf_ddf_shoup(f, 3, ZZ)
@@ -1816,8 +1628,8 @@ def gf_ddf_shoup(f, p, K):
     .. [2] [Shoup95]_
     .. [3] [Gathen92]_
     """
-    n = gf_degree(f)
-    k = int(_ceil(_sqrt(n//2)))
+    n = dmp_degree(f, 0)
+    k = int(math.ceil(math.sqrt(n//2)))
     b = gf_frobenius_monomial_base(f, p, K)
     h = gf_frobenius_map([K.one, K.zero], f, b, p, K)
     # U[i] = x**(p**i)
@@ -1856,7 +1668,7 @@ def gf_ddf_shoup(f, p, K):
             g, j = gf_quo(g, F, p, K), j - 1
 
     if f != [K.one]:
-        factors.append((f, gf_degree(f)))
+        factors.append((f, dmp_degree(f, 0)))
 
     return factors
 
@@ -1876,8 +1688,6 @@ def gf_edf_shoup(f, n, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_edf_shoup(ZZ.map([1, 2837, 2277]), 1, 2917, ZZ)
     [[1, 852], [1, 1985]]
 
@@ -1887,7 +1697,7 @@ def gf_edf_shoup(f, n, p, K):
     .. [1] [Shoup91]_
     .. [2] [Gathen92]_
     """
-    N, q = gf_degree(f), int(p)
+    N, q = dmp_degree(f, 0), int(p)
 
     if not N:
         return []
@@ -1929,8 +1739,6 @@ def gf_zassenhaus(f, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_zassenhaus(ZZ.map([1, 4, 3]), 5, ZZ)
     [[1, 1], [1, 3]]
 
@@ -1949,8 +1757,6 @@ def gf_shoup(f, p, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> gf_shoup(ZZ.map([1, 4, 3]), 5, ZZ)
     [[1, 1], [1, 3]]
@@ -1978,14 +1784,12 @@ def gf_factor_sqf(f, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> gf_factor_sqf(ZZ.map([3, 2, 4]), 5, ZZ)
     (3, [[1, 1], [1, 3]])
     """
     lc, f = gf_monic(f, p, K)
 
-    if gf_degree(f) < 1:
+    if dmp_degree(f, 0) < 1:
         return lc, []
 
     method = query('GF_FACTOR_METHOD')
@@ -2012,8 +1816,6 @@ def gf_factor(f, p, K):
 
     Consider a non square-free polynomial ``f = (7*x + 1) (x + 2)**2`` in
     ``GF(11)[x]``. We obtain its factorization into irreducibles as follows::
-
-       >>> from diofant.domains import ZZ
 
        >>> gf_factor(ZZ.map([5, 2, 7, 2]), 11, ZZ)
        (5, [([1, 2], 1), ([1, 8], 2)])
@@ -2043,7 +1845,7 @@ def gf_factor(f, p, K):
     """
     lc, f = gf_monic(f, p, K)
 
-    if gf_degree(f) < 1:
+    if dmp_degree(f, 0) < 1:
         return lc, []
 
     factors = []
@@ -2118,7 +1920,7 @@ def _raise_mod_power(x, s, p, f):
     >>> f = [1, 1, 7]
     >>> csolve_prime(f, 3)
     [1]
-    >>> [ i for i in range(3) if not (i**2 + i + 7) % 3]
+    >>> [i for i in range(3) if not (i**2 + i + 7) % 3]
     [1]
 
     The solutions of f(x) cong 0 mod(9) are constructed from the
@@ -2131,7 +1933,7 @@ def _raise_mod_power(x, s, p, f):
 
     And these are confirmed with the following:
 
-    >>> [ i for i in range(3**2) if not (i**2 + i + 7) % 3**2]
+    >>> [i for i in range(3**2) if not (i**2 + i + 7) % 3**2]
     [1, 4, 7]
 
     """

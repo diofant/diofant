@@ -1,7 +1,7 @@
 """High-level polynomials manipulation functions. """
 
 from ..core import Add, Mul, S
-from ..utilities import numbered_symbols, public, take
+from ..utilities import numbered_symbols, take
 from .polyerrors import (ComputationFailed, MultivariatePolynomialError,
                          PolificationFailed)
 from .polyoptions import allowed_flags
@@ -9,7 +9,9 @@ from .polytools import Poly, parallel_poly_from_expr, poly_from_expr
 from .specialpolys import interpolating_poly, symmetric_poly
 
 
-@public
+__all__ = ('symmetrize', 'horner', 'interpolate', 'viete')
+
+
 def symmetrize(F, *gens, **args):
     """
     Rewrite a polynomial in terms of elementary symmetric polynomials.
@@ -25,8 +27,6 @@ def symmetrize(F, *gens, **args):
 
     Examples
     ========
-
-    >>> from diofant.abc import x, y
 
     >>> symmetrize(x**2 + y**2)
     (-2*x*y + (x + y)**2, 0)
@@ -139,7 +139,6 @@ def symmetrize(F, *gens, **args):
             return result + (polys,)
 
 
-@public
 def horner(f, *gens, **args):
     """
     Rewrite a polynomial in Horner form.
@@ -150,7 +149,7 @@ def horner(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, a, b, c, d, e
+    >>> from diofant.abc import a, b, c, d, e
 
     >>> horner(9*x**4 + 8*x**3 + 7*x**2 + 6*x + 5)
     x*(x*(x*(9*x + 8) + 7) + 6) + 5
@@ -192,15 +191,12 @@ def horner(f, *gens, **args):
     return form
 
 
-@public
 def interpolate(data, x):
     """
     Construct an interpolating polynomial for the data points.
 
     Examples
     ========
-
-    >>> from diofant.abc import x
 
     A list is interpreted as though it were paired with a range starting
     from 1:
@@ -238,7 +234,6 @@ def interpolate(data, x):
     return poly.expand()
 
 
-@public
 def viete(f, roots=None, *gens, **args):
     """
     Generate Viete's formulas for ``f``.
@@ -246,9 +241,7 @@ def viete(f, roots=None, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import symbols
-
-    >>> x, a, b, c, r1, r2 = symbols('x,a:c,r1:3')
+    >>> x, a, b, c, r1, r2 = symbols('x a:c r1:3')
 
     >>> viete(a*x**2 + b*x + c, [r1, r2], x)
     [(r1 + r2, -b/a), (r1*r2, c/a)]

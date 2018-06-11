@@ -1,6 +1,7 @@
 from ..core import Basic, Derivative, Integer
 from .coordsysrect import CoordSysCartesian
 from .functions import express
+from .scalar import BaseScalar
 from .vector import Vector
 
 
@@ -43,7 +44,6 @@ class Del(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> C = CoordSysCartesian('C')
         >>> C.delop.gradient(9)
         (Derivative(9, C.x))*C.i + (Derivative(9, C.y))*C.j + (Derivative(9, C.z))*C.k
@@ -84,7 +84,6 @@ class Del(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> C = CoordSysCartesian('C')
         >>> C.delop.dot(C.x*C.i)
         Derivative(C.x, C.x)
@@ -124,7 +123,6 @@ class Del(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import CoordSysCartesian
         >>> C = CoordSysCartesian('C')
         >>> v = C.x*C.y*C.z * (C.i + C.j + C.k)
         >>> C.delop.cross(v, doit = True)
@@ -162,6 +160,6 @@ def _diff_conditional(expr, base_scalar):
     """
 
     new_expr = express(expr, base_scalar.system, variables=True)
-    if base_scalar in new_expr.atoms():
+    if base_scalar in new_expr.atoms(BaseScalar):
         return Derivative(new_expr, base_scalar)
     return Integer(0)

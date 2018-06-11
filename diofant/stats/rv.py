@@ -17,7 +17,6 @@ from ..core import (Add, Eq, Equality, Expr, Integer, Lambda, S, Symbol, Tuple,
                     oo, sympify)
 from ..core.relational import Relational
 from ..functions import DiracDelta
-from ..logic import And
 from ..logic.boolalg import Boolean
 from ..sets import FiniteSet, ProductSet
 from ..solvers import solve
@@ -41,10 +40,6 @@ class RandomDomain(Expr):
     def __new__(cls, symbols, *args):
         symbols = FiniteSet(*symbols)
         return Expr.__new__(cls, symbols, *args)
-
-    @property
-    def symbols(self):
-        return self.args[0]
 
     @property
     def set(self):
@@ -80,12 +75,6 @@ class SingleDomain(RandomDomain):
     def symbols(self):
         return FiniteSet(self.symbol)
 
-    def __contains__(self, other):
-        if len(other) != 1:
-            return False
-        sym, val = tuple(other)[0]
-        return self.symbol == sym and val in self.set
-
 
 class ConditionalDomain(RandomDomain):
     """
@@ -119,9 +108,6 @@ class ConditionalDomain(RandomDomain):
     def set(self):  # pragma: no cover
         raise NotImplementedError("Set of Conditional Domain not Implemented")
 
-    def as_boolean(self):
-        return And(self.fulldomain.as_boolean(), self.condition)
-
 
 class PSpace(Expr):
     """
@@ -139,14 +125,6 @@ class PSpace(Expr):
 
     is_Finite = None
     is_Continuous = None
-
-    @property
-    def domain(self):
-        return self.args[0]
-
-    @property
-    def density(self):
-        return self.args[1]
 
     @property
     def values(self):
@@ -196,10 +174,6 @@ class SinglePSpace(PSpace):
     @property
     def distribution(self):
         return self.args[1]
-
-    @property
-    def pdf(self):
-        return self.distribution.pdf(self.symbol)
 
 
 class RandomSymbol(Expr):
@@ -369,11 +343,6 @@ class ProductDomain(RandomDomain):
         return Expr.__new__(cls, *domains2)
 
     @property
-    def sym_domain_dict(self):
-        return {symbol: domain for domain in self.domains
-                for symbol in domain.symbols}
-
-    @property
     def symbols(self):
         return FiniteSet(*[sym for domain in self.domains
                            for sym in domain.symbols])
@@ -398,9 +367,6 @@ class ProductDomain(RandomDomain):
         # All subevents passed
         return True
 
-    def as_boolean(self):
-        return And(*[domain.as_boolean() for domain in self.domains])
-
 
 def random_symbols(expr):
     """
@@ -421,8 +387,7 @@ def pspace(expr):
     Examples
     ========
 
-    >>> from diofant.stats import pspace, Normal
-    >>> from diofant.stats.rv import ProductPSpace
+    >>> from diofant.stats import Normal
     >>> X = Normal('X', 0, 1)
     >>> pspace(2*X + 1) == X.pspace
     True
@@ -431,7 +396,7 @@ def pspace(expr):
     expr = sympify(expr)
     rvs = random_symbols(expr)
     if not rvs:
-        raise ValueError("Expression containing Random Variable expected, not %s" % (expr))
+        raise ValueError("Expression containing Random Variable expected, not %s" % expr)
     # If only one space present
     if all(rv.pspace == rvs[0].pspace for rv in rvs):
         return rvs[0].pspace
@@ -474,7 +439,7 @@ def given(expr, condition=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import given, density, Die
+    >>> from diofant.stats import Die
     >>> X = Die('X', 6)
     >>> Y = given(X, X > 3)
     >>> density(Y).dict
@@ -484,8 +449,6 @@ def given(expr, condition=None, **kwargs):
     is considered fixed.
 
     >>> from diofant.stats import Normal
-    >>> from diofant import pprint
-    >>> from diofant.abc import z
 
     >>> X = Normal('X', 0, 1)
     >>> Y = Normal('Y', 0, 1)
@@ -560,7 +523,7 @@ def expectation(expr, condition=None, numsamples=None, evaluate=True, **kwargs):
     if not random_symbols(expr):  # expr isn't random?
         return expr
     if numsamples:  # Computing by monte carlo sampling?
-        return sampling_E(expr, condition, numsamples=numsamples)
+        return sampling_E(expr, condition, numsamples=numsamples, **kwargs)
 
     # Create new expr and recompute E
     if condition is not None:  # If there is a condition
@@ -602,7 +565,6 @@ def probability(condition, given_condition=None, numsamples=None,
     ========
 
     >>> from diofant.stats import P, Die
-    >>> from diofant import Eq
     >>> X, Y = Die('X', 6), Die('Y', 6)
     >>> P(X > 3)
     1/2
@@ -623,7 +585,7 @@ def probability(condition, given_condition=None, numsamples=None,
         return S.Zero
     if not isinstance(condition, (Relational, Boolean)):
         raise ValueError("%s is not a relational or combination of relationals"
-                         % (condition))
+                         % condition)
     if condition is S.true:
         return S.One
     if condition is S.false:
@@ -698,8 +660,7 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import density, Die, Normal
-    >>> from diofant import Symbol
+    >>> from diofant.stats import Die, Normal
 
     >>> x = Symbol('x')
     >>> D = Die('D', 6)
@@ -736,7 +697,7 @@ def cdf(expr, condition=None, evaluate=True, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import density, Die, Normal, cdf
+    >>> from diofant.stats import Die, Normal
 
     >>> D = Die('D', 6)
     >>> X = Normal('X', 0, 1)
@@ -771,8 +732,7 @@ def where(condition, given_condition=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import where, Die, Normal
-    >>> from diofant import symbols, And
+    >>> from diofant.stats import Die, Normal
 
     >>> D1, D2 = Die('a', 6), Die('b', 6)
     >>> a, b = D1.symbol, D2.symbol
@@ -802,7 +762,7 @@ def sample(expr, condition=None, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import Die, sample
+    >>> from diofant.stats import Die
     >>> X, Y, Z = Die('X', 6), Die('Y', 6), Die('Z', 6)
 
     >>> die_roll = sample(X + Y + Z) # A random realization of three dice
@@ -821,7 +781,7 @@ def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
     Examples
     ========
 
-    >>> from diofant.stats import Normal, sample_iter
+    >>> from diofant.stats import Normal
     >>> X = Normal('X', 0, 1)
     >>> expr = X*X + 3
     >>> iterator = sample_iter(expr, numsamples=3)
@@ -834,31 +794,15 @@ def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
     diofant.stats.sample
     diofant.stats.rv.sampling_P
     diofant.stats.rv.sampling_E
-    diofant.stats.rv.sample_iter_lambdify
-    diofant.stats.rv.sample_iter_subs
     """
-    # lambdify is much faster but not as robust
-    try:
-        return sample_iter_lambdify(expr, condition, numsamples, **kwargs)
-    # use subs when lambdify fails
-    except TypeError:
-        return sample_iter_subs(expr, condition, numsamples, **kwargs)
-
-
-def sample_iter_lambdify(expr, condition=None, numsamples=oo, **kwargs):
-    """
-    See sample_iter
-
-    Uses lambdify for computation. This is fast but does not always work.
-    """
-    if condition:
+    if condition is not None:
         ps = pspace(Tuple(expr, condition))
     else:
         ps = pspace(expr)
 
     rvs = list(ps.values)
     fn = lambdify(rvs, expr, **kwargs)
-    if condition:
+    if condition is not None:
         given_fn = lambdify(rvs, condition, **kwargs)
 
     # Check that lambdify can handle the expression
@@ -867,7 +811,7 @@ def sample_iter_lambdify(expr, condition=None, numsamples=oo, **kwargs):
         d = ps.sample()  # a dictionary that maps RVs to values
         args = [d[rv] for rv in rvs]
         fn(*args)
-        if condition:
+        if condition is not None:
             given_fn(*args)
     except Exception:
         raise TypeError("Expr/condition too complex for lambdify")
@@ -878,7 +822,7 @@ def sample_iter_lambdify(expr, condition=None, numsamples=oo, **kwargs):
             d = ps.sample()  # a dictionary that maps RVs to values
             args = [d[rv] for rv in rvs]
 
-            if condition:  # Check that these values satisfy the condition
+            if condition is not None:  # Check that these values satisfy the condition
                 gd = given_fn(*args)
                 if gd not in (True, False):
                     raise ValueError(
@@ -889,32 +833,6 @@ def sample_iter_lambdify(expr, condition=None, numsamples=oo, **kwargs):
             yield fn(*args)
             count += 1
     return return_generator()
-
-
-def sample_iter_subs(expr, condition=None, numsamples=oo, **kwargs):
-    """
-    See sample_iter
-
-    Uses subs for computation. This is slow but almost always works.
-    """
-    if condition is not None:
-        ps = pspace(Tuple(expr, condition))
-    else:
-        ps = pspace(expr)
-
-    count = 0
-    while count < numsamples:
-        d = ps.sample()  # a dictionary that maps RVs to values
-
-        if condition is not None:  # Check that these values satisfy the condition
-            gd = condition.xreplace(d)
-            if gd not in (True, False):
-                raise ValueError("Conditions must not contain free symbols")
-            if not gd:  # If the values don't satisfy then try again
-                continue
-
-        yield expr.xreplace(d)
-        count += 1
 
 
 def sampling_P(condition, given_condition=None, numsamples=1,
@@ -936,19 +854,13 @@ def sampling_P(condition, given_condition=None, numsamples=1,
                           numsamples=numsamples, **kwargs)
 
     for x in samples:
-        if x not in (True, False):
-            raise ValueError("Conditions must not contain free symbols")
-
         if x:
             count_true += 1
         else:
             count_false += 1
 
     result = Integer(count_true) / numsamples
-    if evalf:
-        return result.evalf()
-    else:
-        return result
+    return result.evalf()
 
 
 def sampling_E(expr, given_condition=None, numsamples=1,
@@ -967,10 +879,7 @@ def sampling_E(expr, given_condition=None, numsamples=1,
                           numsamples=numsamples, **kwargs)
 
     result = Add(*list(samples)) / numsamples
-    if evalf:
-        return result.evalf(strict=False)
-    else:
-        return result
+    return result.evalf(strict=False)
 
 
 def sampling_density(expr, given_condition=None, numsamples=1, **kwargs):
@@ -1001,8 +910,7 @@ def dependent(a, b):
     Examples
     ========
 
-    >>> from diofant.stats import Normal, dependent, given
-    >>> from diofant import Tuple, Eq
+    >>> from diofant.stats import Normal
 
     >>> X, Y = Normal('X', 0, 1), Normal('Y', 0, 1)
     >>> dependent(X, Y)
@@ -1037,8 +945,7 @@ def independent(a, b):
     Examples
     ========
 
-    >>> from diofant.stats import Normal, independent, given
-    >>> from diofant import Tuple, Eq
+    >>> from diofant.stats import Normal
 
     >>> X, Y = Normal('X', 0, 1), Normal('Y', 0, 1)
     >>> independent(X, Y)
@@ -1076,14 +983,11 @@ def pspace_independent(a, b):
     return
 
 
-def rv_subs(expr, symbols=None):
+def rv_subs(expr):
     """
     Given a random expression replace all random variables with their symbols.
-
-    If symbols keyword is given restrict the swap to only the symbols listed.
     """
-    if symbols is None:
-        symbols = random_symbols(expr)
+    symbols = random_symbols(expr)
     if not symbols:
         return expr
     swapdict = {rv: rv.symbol for rv in symbols}

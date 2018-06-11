@@ -3,11 +3,9 @@
 Examples
 ========
 
->>> from diofant import integrate, sin
->>> from diofant.abc import x
->>> integrate(1/x,x)
+>>> integrate(1/x, x)
 log(x)
->>> integrate(sin(x),x)
+>>> integrate(sin(x), x)
 -cos(x)
 """
 

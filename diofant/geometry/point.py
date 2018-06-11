@@ -49,8 +49,6 @@ class Point(GeometryEntity):
     Examples
     ========
 
-    >>> from diofant.geometry import Point
-    >>> from diofant.abc import x
     >>> Point(1, 2, 3)
     Point3D(1, 2, 3)
     >>> Point([1, 2])
@@ -151,8 +149,6 @@ class Point(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point
-        >>> from diofant.abc import x
         >>> p1, p2 = Point(0, 0), Point(1, 1)
         >>> p3, p4, p5 = Point(2, 2), Point(x, x), Point(1, 2)
         >>> Point.is_collinear(p1, p2, p3, p4)
@@ -196,7 +192,6 @@ class Point(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> p = Point(0, 1)
         >>> p.length
         0
@@ -244,12 +239,10 @@ class Point(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant.geometry import Point
         >>> p1, p2 = Point(1, 1), Point(4, 5)
         >>> p1.distance(p2)
         5
 
-        >>> from diofant.abc import x, y
         >>> p3 = Point(x, y)
         >>> p3.distance(Point(0, 0))
         sqrt(x**2 + y**2)
@@ -281,7 +274,6 @@ class Point(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant.geometry import Point
         >>> p1, p2 = Point(1, 1), Point(13, 5)
         >>> p1.midpoint(p2)
         Point2D(7, 3)
@@ -289,12 +281,12 @@ class Point(GeometryEntity):
         """
         return Point([simplify((a + b)*S.Half) for a, b in zip(self.args, p.args)])
 
-    def evalf(self, prec=None, **options):
+    def evalf(self, dps=15, **options):
         """Evaluate the coordinates of the point.
 
         This method will, where possible, create and return a new Point
         where the coordinates are evaluated as floating point numbers to
-        the precision indicated (default=15).
+        the decimal precision dps.
 
         Returns
         =======
@@ -304,14 +296,13 @@ class Point(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point, Rational
         >>> p1 = Point(Rational(1, 2), Rational(3, 2))
         >>> p1
         Point2D(1/2, 3/2)
         >>> print(p1.evalf())
         Point2D(0.5, 1.5)
         """
-        coords = [x.evalf(prec, **options) for x in self.args]
+        coords = [x.evalf(dps, **options) for x in self.args]
         return Point(*coords, evaluate=False)
 
     n = evalf
@@ -338,7 +329,6 @@ class Point(GeometryEntity):
         Examples
         ========
 
-        >>> from diofant import Point
         >>> p1, p2, p3 = Point(0, 0), Point(1, 1), Point(0, 0)
         >>> p1.intersection(p2)
         []
@@ -448,8 +438,6 @@ class Point2D(Point):
     Examples
     ========
 
-    >>> from diofant.geometry import Point2D
-    >>> from diofant.abc import x
     >>> Point2D(1, 2)
     Point2D(1, 2)
     >>> Point2D([1, 2])
@@ -500,7 +488,6 @@ class Point2D(Point):
         Examples
         ========
 
-        >>> from diofant import Point2D
         >>> p = Point2D(0, 1)
         >>> p.x
         0
@@ -515,7 +502,6 @@ class Point2D(Point):
         Examples
         ========
 
-        >>> from diofant import Point2D
         >>> p = Point2D(0, 1)
         >>> p.y
         1
@@ -569,7 +555,6 @@ class Point2D(Point):
         Examples
         ========
 
-        >>> from diofant.geometry import Point
         >>> p1, p2 = Point(-1, 0), Point(1, 0)
         >>> p3, p4 = Point(0, 1), Point(-1, 2)
         >>> Point.is_concyclic(p1, p2, p3)
@@ -584,7 +569,7 @@ class Point2D(Point):
             return True
         points = [Point(p) for p in points]
         if len(points) == 3:
-            return (not Point.is_collinear(*points))
+            return not Point.is_collinear(*points)
 
         try:
             from .ellipse import Circle
@@ -609,7 +594,6 @@ class Point2D(Point):
         Examples
         ========
 
-        >>> from diofant import Point2D, pi
         >>> t = Point2D(1, 0)
         >>> t.rotate(pi/2)
         Point2D(0, 1)
@@ -645,7 +629,6 @@ class Point2D(Point):
         Examples
         ========
 
-        >>> from diofant import Point2D
         >>> t = Point2D(1, 1)
         >>> t.scale(2)
         Point2D(2, 1)
@@ -669,7 +652,6 @@ class Point2D(Point):
         Examples
         ========
 
-        >>> from diofant import Point2D
         >>> t = Point2D(0, 1)
         >>> t.translate(2)
         Point2D(2, 1)
@@ -736,8 +718,6 @@ class Point3D(Point):
     Examples
     ========
 
-    >>> from diofant import Point3D
-    >>> from diofant.abc import x
     >>> Point3D(1, 2, 3)
     Point3D(1, 2, 3)
     >>> Point3D([1, 2, 3])
@@ -785,7 +765,6 @@ class Point3D(Point):
         Examples
         ========
 
-        >>> from diofant import Point3D
         >>> p = Point3D(0, 1, 3)
         >>> p.x
         0
@@ -800,7 +779,6 @@ class Point3D(Point):
         Examples
         ========
 
-        >>> from diofant import Point3D
         >>> p = Point3D(0, 1, 2)
         >>> p.y
         1
@@ -815,7 +793,6 @@ class Point3D(Point):
         Examples
         ========
 
-        >>> from diofant import Point3D
         >>> p = Point3D(0, 1, 1)
         >>> p.z
         1
@@ -839,7 +816,6 @@ class Point3D(Point):
         Examples
         ========
 
-        >>> from diofant import Point3D
         >>> p1 = Point3D(1, 2, 3)
         >>> p1.direction_ratio(Point3D(2, 3, 5))
         [1, 1, 2]
@@ -863,7 +839,6 @@ class Point3D(Point):
         Examples
         ========
 
-        >>> from diofant import Point3D
         >>> p1 = Point3D(1, 2, 3)
         >>> p1.direction_cosine(Point3D(2, 3, 5))
         [sqrt(6)/6, sqrt(6)/6, sqrt(6)/3]
@@ -898,8 +873,6 @@ class Point3D(Point):
         Examples
         ========
 
-        >>> from diofant import Point3D, Matrix
-        >>> from diofant.abc import x
         >>> p1, p2 = Point3D(0, 0, 0), Point3D(1, 1, 1)
         >>> p3, p4, p5 = Point3D(2, 2, 2), Point3D(x, x, x), Point3D(1, 2, 6)
         >>> Point3D.are_collinear(p1, p2, p3, p4)
@@ -931,7 +904,6 @@ class Point3D(Point):
         Examples
         ========
 
-        >>> from diofant import Point3D
         >>> p1 = Point3D(1, 2, 2)
         >>> p2 = Point3D(2, 7, 2)
         >>> p3 = Point3D(0, 0, 2)
@@ -979,7 +951,6 @@ class Point3D(Point):
         Examples
         ========
 
-        >>> from diofant import Point3D
         >>> p1, p2, p3 = Point3D(0, 0, 0), Point3D(1, 1, 1), Point3D(0, 0, 0)
         >>> p1.intersection(p2)
         []
@@ -1008,7 +979,6 @@ class Point3D(Point):
         Examples
         ========
 
-        >>> from diofant import Point3D
         >>> t = Point3D(1, 1, 1)
         >>> t.scale(2)
         Point3D(2, 1, 1)
@@ -1033,7 +1003,6 @@ class Point3D(Point):
         Examples
         ========
 
-        >>> from diofant import Point3D
         >>> t = Point3D(0, 1, 1)
         >>> t.translate(2)
         Point3D(2, 1, 1)

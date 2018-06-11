@@ -12,7 +12,7 @@ from ..core.mul import _keep_coeff
 from ..core.relational import Relational
 from ..domains import FF, QQ, ZZ
 from ..logic.boolalg import BooleanAtom
-from ..utilities import group, public, sift
+from ..utilities import group, sift
 from .constructor import construct_domain
 from .fglmtools import matrix_fglm
 from .groebnertools import groebner as _groebner
@@ -28,10 +28,22 @@ from .polyutils import (_dict_from_expr, _dict_reorder,
                         _parallel_dict_from_expr, _sort_gens, _unify_gens,
                         basic_from_dict)
 from .rationaltools import together
+from .rings import PolynomialRing, ring
 from .rootisolation import dup_isolate_real_roots_list
 
 
-@public
+__all__ = ('Poly', 'PurePoly', 'poly_from_expr', 'parallel_poly_from_expr',
+           'degree', 'degree_list', 'LC', 'LM', 'LT', 'pdiv', 'prem', 'pquo',
+           'pexquo', 'div', 'rem', 'quo', 'exquo', 'half_gcdex', 'gcdex',
+           'invert', 'subresultants', 'resultant', 'discriminant', 'cofactors',
+           'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
+           'monic', 'content', 'primitive', 'compose', 'decompose', 'sturm',
+           'gff_list', 'gff', 'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
+           'factor_list', 'factor', 'intervals', 'refine_root', 'count_roots',
+           'real_roots', 'nroots', 'ground_roots', 'nth_power_roots_poly',
+           'cancel', 'reduced', 'groebner', 'GroebnerBasis', 'poly')
+
+
 class Poly(Expr):
     """Generic class for representing polynomial expressions. """
 
@@ -176,7 +188,7 @@ class Poly(Expr):
         return self.rep, self.gens
 
     def __hash__(self):
-        return super(Poly, self).__hash__()
+        return super().__hash__()
 
     @property
     def free_symbols(self):
@@ -185,9 +197,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + 1).free_symbols
         {x}
@@ -211,9 +220,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> Poly(x**2 + 1).free_symbols_in_domain
         set()
         >>> Poly(x**2 + y).free_symbols_in_domain
@@ -226,7 +232,7 @@ class Poly(Expr):
         if domain.is_Composite:
             for gen in domain.symbols:
                 symbols |= gen.free_symbols
-        elif domain.is_EX:
+        elif domain.is_SymbolicDomain:
             for coeff in self.coeffs():
                 symbols |= coeff.free_symbols
 
@@ -239,9 +245,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).args
         (x**2 + 1, x)
@@ -260,9 +263,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).gen
         x
@@ -297,9 +297,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> f, g = Poly(x/2 + 1), Poly(2*x + 1)
 
         >>> f
@@ -324,38 +321,35 @@ class Poly(Expr):
         if not other.is_Poly:
             try:
                 return (self.rep.domain, self.per, self.rep,
-                        self.rep.per(self.rep.domain.from_diofant(other)))
+                        self.rep.per(self.rep.domain.convert(other)))
             except CoercionFailed:
                 raise UnificationFailed("can't unify %s with %s" % (self, other))
 
-        if isinstance(self.rep, DMP) and isinstance(other.rep, DMP):
-            gens = _unify_gens(self.gens, other.gens)
+        gens = _unify_gens(self.gens, other.gens)
 
-            dom, lev = self.rep.domain.unify(other.rep.domain, gens), len(gens) - 1
+        dom, lev = self.rep.domain.unify(other.rep.domain, gens), len(gens) - 1
 
-            if self.gens != gens:
-                self_monoms, self_coeffs = _dict_reorder(self.rep.to_dict(),
-                                                         self.gens, gens)
+        if self.gens != gens:
+            self_monoms, self_coeffs = _dict_reorder(self.rep.to_dict(),
+                                                     self.gens, gens)
 
-                if self.rep.domain != dom:
-                    self_coeffs = [dom.convert(c, self.rep.domain) for c in self_coeffs]
+            if self.rep.domain != dom:
+                self_coeffs = [dom.convert(c, self.rep.domain) for c in self_coeffs]
 
-                F = DMP(dict(zip(self_monoms, self_coeffs)), dom, lev)
-            else:
-                F = self.rep.convert(dom)
-
-            if other.gens != gens:
-                other_monoms, other_coeffs = _dict_reorder(other.rep.to_dict(),
-                                                           other.gens, gens)
-
-                if other.rep.domain != dom:
-                    other_coeffs = [dom.convert(c, other.rep.domain) for c in other_coeffs]
-
-                G = DMP(dict(zip(other_monoms, other_coeffs)), dom, lev)
-            else:
-                G = other.rep.convert(dom)
+            F = DMP(dict(zip(self_monoms, self_coeffs)), dom, lev)
         else:
-            raise UnificationFailed("can't unify %s with %s" % (self, other))
+            F = self.rep.convert(dom)
+
+        if other.gens != gens:
+            other_monoms, other_coeffs = _dict_reorder(other.rep.to_dict(),
+                                                       other.gens, gens)
+
+            if other.rep.domain != dom:
+                other_coeffs = [dom.convert(c, other.rep.domain) for c in other_coeffs]
+
+            G = DMP(dict(zip(other_monoms, other_coeffs)), dom, lev)
+        else:
+            G = other.rep.convert(dom)
 
         cls = self.__class__
 
@@ -364,7 +358,7 @@ class Poly(Expr):
                 gens = gens[:remove] + gens[remove + 1:]
 
                 if not gens:
-                    return dom.to_diofant(rep)
+                    return dom.to_expr(rep)
 
             return cls.new(rep, *gens)
 
@@ -376,9 +370,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly, ZZ
-        >>> from diofant.abc import x, y
 
         >>> from diofant.polys.polyclasses import DMP
 
@@ -395,7 +386,7 @@ class Poly(Expr):
             gens = gens[:remove] + gens[remove + 1:]
 
             if not gens:
-                return self.rep.domain.to_diofant(rep)
+                return self.rep.domain.to_expr(rep)
 
         return self.__class__.new(rep, *gens)
 
@@ -411,9 +402,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(5*x**2 + 2*x - 1, x).set_modulus(2)
         Poly(x**2 + 1, x, modulus=2)
 
@@ -428,9 +416,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 + 1, modulus=2).get_modulus()
         2
 
@@ -438,7 +423,7 @@ class Poly(Expr):
         domain = self.domain
 
         if domain.is_FiniteField:
-            return Integer(domain.characteristic())
+            return Integer(domain.characteristic)
         else:
             raise PolynomialError("not a polynomial over a Galois field")
 
@@ -462,8 +447,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import a, b, c, d, x
+        >>> from diofant.abc import a, b, c, d
 
         >>> Poly(a + x, a, b, c, d, x).exclude()
         Poly(a + x, a, x, domain='ZZ')
@@ -484,9 +468,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + 1, x).replace(x, y)
         Poly(y**2 + 1, y, domain='ZZ')
@@ -519,9 +500,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> Poly(x**2 + x*y**2, x, y).reorder(y, x)
         Poly(y**2*x + x**2, y, x, domain='ZZ')
         """
@@ -543,9 +521,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y, z
 
         >>> Poly(y**2 + y*z**2, x, y, z).ltrim(y)
         Poly(y**2 + y*z**2, y, z, domain='ZZ')
@@ -572,9 +547,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y, z
 
         >>> Poly(x*y + 1, x, y, z).has_only_gens(x, y)
         True
@@ -606,9 +578,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, QQ
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 + 1, domain=QQ).to_ring()
         Poly(x**2 + 1, x, domain='ZZ')
         """
@@ -625,9 +594,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly, ZZ
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x, domain=ZZ).to_field()
         Poly(x**2 + 1, x, domain='QQ')
@@ -646,9 +612,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, RR
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 + 1.0, x, domain=RR).to_exact()
         Poly(x**2 + 1, x, domain='QQ')
         """
@@ -659,15 +622,12 @@ class Poly(Expr):
 
         return self.per(result)
 
-    def retract(self, field=None):
+    def retract(self, field=None, extension=None):
         """
         Recalculate the ground domain of a polynomial.
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> f = Poly(x**2 + 1, x, domain='QQ[y]')
         >>> f
@@ -679,7 +639,7 @@ class Poly(Expr):
         Poly(x**2 + 1, x, domain='QQ')
         """
         dom, rep = construct_domain(self.as_dict(zero=True),
-                                    field=field,
+                                    field=field, extension=extension,
                                     composite=self.domain.is_Composite or None)
         return self.from_dict(rep, self.gens, domain=dom)
 
@@ -706,9 +666,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**3 + 2*x + 3, x).coeffs()
         [1, 2, 3]
 
@@ -719,7 +676,7 @@ class Poly(Expr):
         coeff_monomial
         nth
         """
-        return [self.rep.domain.to_diofant(c) for c in self.rep.coeffs(order=order)]
+        return [self.rep.domain.to_expr(c) for c in self.rep.coeffs(order=order)]
 
     def monoms(self, order=None):
         """
@@ -727,9 +684,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + 2*x*y**2 + x*y + 3*y, x, y).monoms()
         [(2, 0), (1, 2), (1, 1), (0, 1)]
@@ -748,9 +702,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> Poly(x**2 + 2*x*y**2 + x*y + 3*y, x, y).terms()
         [((2, 0), 1), ((1, 2), 2), ((1, 1), 1), ((0, 1), 3)]
 
@@ -759,7 +710,7 @@ class Poly(Expr):
 
         all_terms
         """
-        return [(m, self.rep.domain.to_diofant(c)) for m, c in self.rep.terms(order=order)]
+        return [(m, self.rep.domain.to_expr(c)) for m, c in self.rep.terms(order=order)]
 
     def all_coeffs(self):
         """
@@ -768,13 +719,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**3 + 2*x - 1, x).all_coeffs()
         [1, 0, 2, -1]
         """
-        return [self.rep.domain.to_diofant(c) for c in self.rep.all_coeffs()]
+        return [self.rep.domain.to_expr(c) for c in self.rep.all_coeffs()]
 
     def all_monoms(self):
         """
@@ -782,9 +730,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**3 + 2*x - 1, x).all_monoms()
         [(3,), (2,), (1,), (0,)]
@@ -803,13 +748,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**3 + 2*x - 1, x).all_terms()
         [((3,), 1), ((2,), 0), ((1,), 2), ((0,), -1)]
         """
-        return [(m, self.rep.domain.to_diofant(c)) for m, c in self.rep.all_terms()]
+        return [(m, self.rep.domain.to_expr(c)) for m, c in self.rep.all_terms()]
 
     def termwise(self, func, *gens, **args):
         """
@@ -817,9 +759,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> def func(k, coeff):
         ...     k = k[0]
@@ -842,8 +781,8 @@ class Poly(Expr):
                 if monom not in terms:
                     terms[monom] = coeff
                 else:
-                    raise PolynomialError(
-                        "%s monomial was generated twice" % monom)
+                    raise PolynomialError("%s monomial was generated"
+                                          " twice" % monom)
 
         return self.from_dict(terms, *(gens or self.gens), **args)
 
@@ -853,9 +792,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 + 2*x - 1).length()
         3
@@ -869,9 +805,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> Poly(x**2 + 2*x*y**2 - y, x, y).as_dict()
         {(0, 1): -1, (1, 2): 2, (2, 0): 1}
         """
@@ -880,22 +813,12 @@ class Poly(Expr):
         else:
             return self.rep.to_diofant_dict(zero=zero)
 
-    def as_list(self, native=False):
-        """Switch to a ``list`` representation. """
-        if native:
-            return self.rep.to_list()
-        else:
-            return self.rep.to_diofant_list()
-
     def as_expr(self, *gens):
         """
         Convert a Poly instance to an Expr instance.
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
 
         >>> f = Poly(x**2 + 2*x*y**2 - y, x, y)
 
@@ -930,9 +853,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, I
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 + I*x + 1, x, extension=I).lift()
         Poly(x**4 + 3*x**2 + 1, x, domain='QQ')
         """
@@ -949,9 +869,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
 
         >>> Poly(x**6*y**2 + x**3 + 1, x, y).deflate()
         ((3, 2), Poly(x**2*y + x + 1, x, y, domain='ZZ'))
@@ -970,9 +887,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> f = Poly(x**2*y + x*y**3 + x*y + 1, x)
 
         >>> f.inject()
@@ -984,8 +898,6 @@ class Poly(Expr):
 
         if dom.is_Numerical:
             return self
-        elif not dom.is_Poly:
-            raise DomainError("can't inject generators over %s" % dom)
 
         if hasattr(self.rep, 'inject'):
             result = self.rep.inject(front=front)
@@ -1005,9 +917,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
 
         >>> f = Poly(x**2*y + x*y**3 + x*y + 1, x, y)
 
@@ -1047,9 +956,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> Poly(x**6*y**2 + x**3*y, x, y).terms_gcd()
         ((3, 1), Poly(x**3*y + 1, x, y, domain='ZZ'))
         """
@@ -1066,9 +972,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x + 1).add_ground(2)
         Poly(x + 3, x, domain='ZZ')
@@ -1087,9 +990,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x + 1).sub_ground(2)
         Poly(x - 1, x, domain='ZZ')
         """
@@ -1107,9 +1007,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x + 1).mul_ground(2)
         Poly(2*x + 2, x, domain='ZZ')
         """
@@ -1126,9 +1023,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(2*x + 4).quo_ground(2)
         Poly(x + 2, x, domain='ZZ')
@@ -1149,9 +1043,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(2*x + 4).exquo_ground(2)
         Poly(x + 2, x, domain='ZZ')
@@ -1175,9 +1066,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 - 1, x).abs()
         Poly(x**2 + 1, x, domain='ZZ')
         """
@@ -1194,9 +1082,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 - 1, x).neg()
         Poly(-x**2 + 1, x, domain='ZZ')
@@ -1217,9 +1102,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).add(Poly(x - 2, x))
         Poly(x**2 + x - 1, x, domain='ZZ')
@@ -1248,9 +1130,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 + 1, x).sub(Poly(x - 2, x))
         Poly(x**2 - x + 3, x, domain='ZZ')
 
@@ -1277,9 +1156,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).mul(Poly(x - 2, x))
         Poly(x**3 - 2*x**2 + x - 2, x, domain='ZZ')
@@ -1308,9 +1184,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x - 2, x).sqr()
         Poly(x**2 - 4*x + 4, x, domain='ZZ')
 
@@ -1330,9 +1203,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x - 2, x).pow(3)
         Poly(x**3 - 6*x**2 + 12*x - 8, x, domain='ZZ')
@@ -1356,9 +1226,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 + 1, x).pdiv(Poly(2*x - 4, x))
         (Poly(2*x + 4, x, domain='ZZ'), Poly(20, x, domain='ZZ'))
         """
@@ -1378,9 +1245,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 + 1, x).prem(Poly(2*x - 4, x))
         Poly(20, x, domain='ZZ')
         """
@@ -1399,9 +1263,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).pquo(Poly(2*x - 4, x))
         Poly(2*x + 4, x, domain='ZZ')
@@ -1424,9 +1285,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 - 1, x).pexquo(Poly(2*x - 2, x))
         Poly(2*x + 2, x, domain='ZZ')
@@ -1454,9 +1312,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 + 1, x).div(Poly(2*x - 4, x))
         (Poly(1/2*x + 1, x, domain='QQ'), Poly(5, x, domain='QQ'))
@@ -1493,9 +1348,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 + 1, x).rem(Poly(2*x - 4, x))
         Poly(5, x, domain='ZZ')
 
@@ -1529,9 +1381,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 + 1, x).quo(Poly(2*x - 4, x))
         Poly(1/2*x + 1, x, domain='QQ')
 
@@ -1564,9 +1413,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 - 1, x).exquo(Poly(x - 1, x))
         Poly(x + 1, x, domain='ZZ')
@@ -1628,9 +1474,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> Poly(x**2 + y*x + 1, x, y).degree()
         2
         >>> Poly(x**2 + y*x + y, x, y).degree(y)
@@ -1652,9 +1495,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> Poly(x**2 + y*x + 1, x, y).degree_list()
         (2, 1)
         """
@@ -1669,9 +1509,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + y*x + 1, x, y).total_degree()
         2
@@ -1697,9 +1534,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y, z
-
         >>> f = Poly(x**5 + 2*x**2*y**2 + 9*x*y**3)
         >>> f.homogenize(z)
         Poly(x**5 + 2*x**2*y**2*z + 9*x*y**3*z, x, y, z, domain='ZZ')
@@ -1714,7 +1548,8 @@ class Poly(Expr):
             gens = self.gens + (s,)
         if hasattr(self.rep, 'homogenize'):
             return self.per(self.rep.homogenize(i), gens=gens)
-        raise OperationNotSupported(self, 'homogeneous_order')
+        else:  # pragma: no cover
+            raise OperationNotSupported(self, 'homogeneous_order')
 
     def homogeneous_order(self):
         """
@@ -1727,9 +1562,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
 
         >>> f = Poly(x**5 + 2*x**3*y**2 + 9*x*y**4)
         >>> f.homogeneous_order()
@@ -1747,9 +1579,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(4*x**3 + 2*x**2 + 3*x, x).LC()
         4
         """
@@ -1761,7 +1590,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'LC')
 
-        return self.rep.domain.to_diofant(result)
+        return self.rep.domain.to_expr(result)
 
     def TC(self):
         """
@@ -1769,9 +1598,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**3 + 2*x**2 + 3*x, x).TC()
         0
@@ -1781,7 +1607,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(f, 'TC')
 
-        return self.rep.domain.to_diofant(result)
+        return self.rep.domain.to_expr(result)
 
     def EC(self, order=None):
         """
@@ -1789,9 +1615,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**3 + 2*x**2 + 3*x, x).EC()
         3
@@ -1807,9 +1630,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly, exp
-        >>> from diofant.abc import x, y
 
         >>> p = Poly(24*x*y*exp(8) + 23*x, x, y)
 
@@ -1846,9 +1666,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly, sqrt
-        >>> from diofant.abc import x, y
-
         >>> Poly(x**3 + 2*x**2 + 3*x, x).nth(2)
         2
         >>> Poly(x**3 + 2*x*y**2 + y**2, x, y).nth(1, 2)
@@ -1870,7 +1687,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'nth')
 
-        return self.rep.domain.to_diofant(result)
+        return self.rep.domain.to_expr(result)
 
     def coeff(self, x, n=1, right=False):
         # the semantics of coeff_monomial and Expr.coeff are different;
@@ -1894,9 +1711,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LM()
         x**2*y**0
         """
@@ -1908,9 +1722,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
 
         >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).EM()
         x**0*y**1
@@ -1927,9 +1738,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).LT()
         (x**2*y**0, 4)
         """
@@ -1942,9 +1750,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
 
         >>> Poly(4*x**2 + 2*x*y**2 + x*y + 3*y, x, y).ET()
         (x**0*y**1, 3)
@@ -1959,9 +1764,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(-x**2 + 2*x - 3, x).max_norm()
         3
         """
@@ -1970,7 +1772,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'max_norm')
 
-        return self.rep.domain.to_diofant(result)
+        return self.rep.domain.to_expr(result)
 
     def l1_norm(self):
         """
@@ -1978,9 +1780,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(-x**2 + 2*x - 3, x).l1_norm()
         6
@@ -1990,7 +1789,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'l1_norm')
 
-        return self.rep.domain.to_diofant(result)
+        return self.rep.domain.to_expr(result)
 
     def clear_denoms(self, convert=False):
         """
@@ -1998,9 +1797,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly, Rational, QQ
-        >>> from diofant.abc import x
 
         >>> f = Poly(x/2 + Rational(1, 3), x, domain=QQ)
 
@@ -2016,14 +1812,14 @@ class Poly(Expr):
 
         dom = f.domain
         if dom.has_assoc_Ring:
-            dom = f.rep.domain.get_ring()
+            dom = f.rep.domain.ring
 
         if hasattr(f.rep, 'clear_denoms'):
             coeff, result = f.rep.clear_denoms()
         else:  # pragma: no cover
             raise OperationNotSupported(f, 'clear_denoms')
 
-        coeff, f = dom.to_diofant(coeff), f.per(result)
+        coeff, f = dom.to_expr(coeff), f.per(result)
 
         if not convert or not dom.has_assoc_Ring:
             return coeff, f
@@ -2036,9 +1832,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
 
         >>> f = Poly(x**2/y + 1, x)
         >>> g = Poly(x**3 + y, x)
@@ -2074,9 +1867,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + 2*x + 1, x).integrate()
         Poly(1/3*x**3 + x**2 + x, x, domain='QQ')
@@ -2114,9 +1904,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> Poly(x**2 + 2*x + 1, x).diff()
         Poly(2*x + 2, x, domain='ZZ')
 
@@ -2152,9 +1939,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y, z
 
         >>> Poly(x**2 + 2*x + 3, x).eval(2)
         11
@@ -2211,7 +1995,7 @@ class Poly(Expr):
                 raise DomainError("can't evaluate at %s in %s" % (a, f.rep.domain))
             else:
                 a_domain, [a] = construct_domain([a])
-                new_domain = f.domain.unify_with_symbols(a_domain, f.gens)
+                new_domain = f.domain.unify(a_domain, f.gens)
 
                 f = f.set_domain(new_domain)
                 a = new_domain.convert(a, a_domain)
@@ -2226,9 +2010,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y, z
 
         >>> f = Poly(2*x*y + 3*x + y + 2*z, x, y, z)
 
@@ -2249,9 +2030,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
         >>> g = x**3 + x**2 - 4*x - 4
@@ -2280,9 +2058,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
         >>> g = x**3 + x**2 - 4*x - 4
 
@@ -2310,9 +2085,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 - 1, x).invert(Poly(2*x - 1, x))
         Poly(-4/3, x, domain='QQ')
 
@@ -2339,9 +2111,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(1, x).revert(2)
         Poly(1, x, domain='ZZ')
@@ -2373,9 +2142,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 + 1, x).subresultants(Poly(x**2 - 1, x))
         [Poly(x**2 + 1, x, domain='ZZ'),
          Poly(x**2 - 1, x, domain='ZZ'),
@@ -2400,9 +2166,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> f = Poly(x**2 + 1, x)
 
@@ -2433,9 +2196,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 + 2*x + 3, x).discriminant()
         -8
         """
@@ -2462,13 +2222,11 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import poly
         >>> from diofant.polys.dispersion import dispersion, dispersionset
-        >>> from diofant.abc import x
 
         Dispersion set and dispersion of a simple polynomial:
 
-        >>> fp = poly((x - 3)*(x + 3), x)
+        >>> fp = Poly((x - 3)*(x + 3), x)
         >>> sorted(dispersionset(fp))
         [0, 6]
         >>> dispersion(fp)
@@ -2476,7 +2234,7 @@ class Poly(Expr):
 
         Note that the definition of the dispersion is not symmetric:
 
-        >>> fp = poly(x**4 - 3*x**2 + 1, x)
+        >>> fp = Poly(x**4 - 3*x**2 + 1, x)
         >>> gp = fp.shift(-3)
         >>> sorted(dispersionset(fp, gp))
         [2, 3, 4]
@@ -2489,9 +2247,8 @@ class Poly(Expr):
 
         Computing the dispersion also works over field extensions:
 
-        >>> from diofant import sqrt
-        >>> fp = poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
-        >>> gp = poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
+        >>> fp = Poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
+        >>> gp = Poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
         >>> sorted(dispersionset(fp, gp))
         [2]
         >>> sorted(dispersionset(gp, fp))
@@ -2501,7 +2258,7 @@ class Poly(Expr):
         having symbolic coefficients:
 
         >>> from diofant.abc import a
-        >>> fp = poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
+        >>> fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
         >>> sorted(dispersionset(fp))
         [0, 1]
 
@@ -2537,13 +2294,11 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import poly
         >>> from diofant.polys.dispersion import dispersion, dispersionset
-        >>> from diofant.abc import x
 
         Dispersion set and dispersion of a simple polynomial:
 
-        >>> fp = poly((x - 3)*(x + 3), x)
+        >>> fp = Poly((x - 3)*(x + 3), x)
         >>> sorted(dispersionset(fp))
         [0, 6]
         >>> dispersion(fp)
@@ -2551,7 +2306,7 @@ class Poly(Expr):
 
         Note that the definition of the dispersion is not symmetric:
 
-        >>> fp = poly(x**4 - 3*x**2 + 1, x)
+        >>> fp = Poly(x**4 - 3*x**2 + 1, x)
         >>> gp = fp.shift(-3)
         >>> sorted(dispersionset(fp, gp))
         [2, 3, 4]
@@ -2564,9 +2319,8 @@ class Poly(Expr):
 
         Computing the dispersion also works over field extensions:
 
-        >>> from diofant import sqrt
-        >>> fp = poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
-        >>> gp = poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
+        >>> fp = Poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
+        >>> gp = Poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
         >>> sorted(dispersionset(fp, gp))
         [2]
         >>> sorted(dispersionset(gp, fp))
@@ -2576,7 +2330,7 @@ class Poly(Expr):
         having symbolic coefficients:
 
         >>> from diofant.abc import a
-        >>> fp = poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
+        >>> fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
         >>> sorted(dispersionset(fp))
         [0, 1]
 
@@ -2607,9 +2361,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 - 1, x).cofactors(Poly(x**2 - 3*x + 2, x))
         (Poly(x - 1, x, domain='ZZ'),
          Poly(x + 1, x, domain='ZZ'),
@@ -2631,9 +2382,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 - 1, x).gcd(Poly(x**2 - 3*x + 2, x))
         Poly(x - 1, x, domain='ZZ')
         """
@@ -2652,9 +2400,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 - 1, x).lcm(Poly(x**2 - 3*x + 2, x))
         Poly(x**3 - 2*x**2 - x + 2, x, domain='ZZ')
@@ -2675,9 +2420,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(2*x**3 + 3*x**2 + 5*x + 7, x).trunc(3)
         Poly(-x**3 - x + 1, x, domain='ZZ')
 
@@ -2697,9 +2439,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly, ZZ
-        >>> from diofant.abc import x
 
         >>> Poly(3*x**2 + 6*x + 9, x, domain=ZZ).monic()
         Poly(x**2 + 2*x + 3, x, domain='QQ')
@@ -2727,9 +2466,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(6*x**2 + 8*x + 12, x).content()
         2
         """
@@ -2738,7 +2474,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'content')
 
-        return self.rep.domain.to_diofant(result)
+        return self.rep.domain.to_expr(result)
 
     def primitive(self):
         """
@@ -2746,9 +2482,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(2*x**2 + 8*x + 12, x).primitive()
         (2, Poly(x**2 + 4*x + 6, x, domain='ZZ'))
@@ -2758,7 +2491,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'primitive')
 
-        return self.rep.domain.to_diofant(cont), self.per(result)
+        return self.rep.domain.to_expr(cont), self.per(result)
 
     def compose(self, other):
         """
@@ -2766,9 +2499,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 + x, x).compose(Poly(x - 1, x))
         Poly(x**2 - x, x, domain='ZZ')
@@ -2789,9 +2519,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**4 + 2*x**3 - x - 1, x, domain='ZZ').decompose()
         [Poly(x**2 - x - 1, x, domain='ZZ'), Poly(x**2 + x, x, domain='ZZ')]
         """
@@ -2809,9 +2536,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 - 2*x + 1, x).shift(2)
         Poly(x**2 + 2*x + 1, x, domain='ZZ')
         """
@@ -2828,9 +2552,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**3 - 2*x**2 + x - 3, x).sturm()
         [Poly(x**3 - 2*x**2 + x - 3, x, domain='QQ'),
@@ -2857,9 +2578,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> f = x**5 + 2*x**4 - x**3 - 2*x**2
 
         >>> Poly(f).gff_list()
@@ -2882,9 +2600,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly, sqrt
-        >>> from diofant.abc import x
 
         >>> s, f, r = Poly(x**2 + 1, x, extension=[sqrt(3)]).sqf_norm()
 
@@ -2909,9 +2624,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**3 - 3*x - 2, x).sqf_part()
         Poly(x**2 - x - 2, x, domain='ZZ')
         """
@@ -2929,9 +2641,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> f = 2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16
 
         >>> Poly(f).sqf_list()
@@ -2948,7 +2657,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'sqf_list')
 
-        return (self.rep.domain.to_diofant(coeff),
+        return (self.rep.domain.to_expr(coeff),
                 [(self.per(g), k) for g, k in factors])
 
     def sqf_list_include(self, all=False):
@@ -2957,9 +2666,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly, expand
-        >>> from diofant.abc import x
 
         >>> f = expand(2*(x + 1)**3*x**4)
         >>> f
@@ -2990,9 +2696,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> f = 2*x**5 + 2*x**4*y + 4*x**3 + 4*x**2*y + 2*x + 2*y
 
         >>> Poly(f).factor_list()
@@ -3007,7 +2710,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'factor_list')
 
-        return (self.rep.domain.to_diofant(coeff),
+        return (self.rep.domain.to_expr(coeff),
                 [(self.per(g), k) for g, k in factors])
 
     def factor_list_include(self):
@@ -3016,9 +2719,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
 
         >>> f = 2*x**5 + 2*x**4*y + 4*x**3 + 4*x**2*y + 2*x + 2*y
 
@@ -3058,9 +2758,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 - 3, x).intervals()
         [((-2, -1), 1), ((1, 2), 1)]
         >>> Poly(x**2 - 3, x).intervals(eps=1e-2)
@@ -3086,15 +2783,15 @@ class Poly(Expr):
         if sqf:
             def _real(interval):
                 s, t = interval
-                return QQ.to_diofant(s), QQ.to_diofant(t)
+                return QQ.to_expr(s), QQ.to_expr(t)
 
             if not all:
                 return list(map(_real, result))
 
             def _complex(rectangle):
                 (u, v), (s, t) = rectangle
-                return (QQ.to_diofant(u) + I*QQ.to_diofant(v),
-                        QQ.to_diofant(s) + I*QQ.to_diofant(t))
+                return (QQ.to_expr(u) + I*QQ.to_expr(v),
+                        QQ.to_expr(s) + I*QQ.to_expr(t))
 
             real_part, complex_part = result
 
@@ -3102,15 +2799,15 @@ class Poly(Expr):
         else:
             def _real(interval):
                 (s, t), k = interval
-                return (QQ.to_diofant(s), QQ.to_diofant(t)), k
+                return (QQ.to_expr(s), QQ.to_expr(t)), k
 
             if not all:
                 return list(map(_real, result))
 
             def _complex(rectangle):
                 ((u, v), (s, t)), k = rectangle
-                return ((QQ.to_diofant(u) + I*QQ.to_diofant(v),
-                         QQ.to_diofant(s) + I*QQ.to_diofant(t)), k)
+                return ((QQ.to_expr(u) + I*QQ.to_expr(v),
+                         QQ.to_expr(s) + I*QQ.to_expr(t)), k)
 
             real_part, complex_part = result
 
@@ -3122,9 +2819,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 - 3, x).refine_root(1, 2, eps=1e-2)
         (19/11, 26/15)
@@ -3150,7 +2844,7 @@ class Poly(Expr):
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'refine_root')
 
-        return QQ.to_diofant(S), QQ.to_diofant(T)
+        return QQ.to_expr(S), QQ.to_expr(T)
 
     def count_roots(self, inf=None, sup=None):
         """
@@ -3158,9 +2852,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly, I
-        >>> from diofant.abc import x
 
         >>> Poly(x**4 - 4, x).count_roots(-3, 3)
         2
@@ -3180,7 +2871,7 @@ class Poly(Expr):
                 if not im:
                     inf = QQ.convert(inf)
                 else:
-                    inf, inf_real = list(map(QQ.convert, (re, im))), False
+                    inf, inf_real = tuple(map(QQ.convert, (re, im))), False
 
         if sup is not None:
             sup = sympify(sup)
@@ -3193,7 +2884,7 @@ class Poly(Expr):
                 if not im:
                     sup = QQ.convert(sup)
                 else:
-                    sup, sup_real = list(map(QQ.convert, (re, im))), False
+                    sup, sup_real = tuple(map(QQ.convert, (re, im))), False
 
         if inf_real and sup_real:
             if hasattr(self.rep, 'count_real_roots'):
@@ -3221,9 +2912,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> f = Poly(2*x**3 - 7*x**2 + 4*x + 4)
 
         >>> f.root(0)
@@ -3238,7 +2926,7 @@ class Poly(Expr):
         IndexError: root index out of [-3, 2] range, got 3
 
         >>> Poly(x**5 + x + 1).root(0)
-        RootOf(x**3 - x**2 + 1, x, 0)
+        RootOf(x**3 - x**2 + 1, 0)
         """
         from .rootoftools import RootOf
         return RootOf(self, index, radicals=radicals)
@@ -3250,13 +2938,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(2*x**3 - 7*x**2 + 4*x + 4).real_roots()
         [-1/2, 2, 2]
         >>> Poly(x**3 + x + 1).real_roots()
-        [RootOf(x**3 + x + 1, x, 0)]
+        [RootOf(x**3 + x + 1, 0)]
         """
         from .rootoftools import RootOf
         reals = RootOf.real_roots(self, radicals=radicals)
@@ -3273,15 +2958,11 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(2*x**3 - 7*x**2 + 4*x + 4).all_roots()
         [-1/2, 2, 2]
         >>> Poly(x**3 + x + 1).all_roots()
-        [RootOf(x**3 + x + 1, x, 0),
-         RootOf(x**3 + x + 1, x, 1),
-         RootOf(x**3 + x + 1, x, 2)]
+        [RootOf(x**3 + x + 1, 0), RootOf(x**3 + x + 1, 1),
+         RootOf(x**3 + x + 1, 2)]
         """
         from .rootoftools import RootOf
         roots = RootOf.all_roots(self, radicals=radicals)
@@ -3307,9 +2988,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**2 - 3).nroots(n=15)
         [-1.73205080756888, 1.73205080756888]
         >>> Poly(x**2 - 3).nroots(n=30)
@@ -3333,7 +3011,7 @@ class Poly(Expr):
             fac = ilcm(*denoms)
             coeffs = [int(coeff*fac) for coeff in self.all_coeffs()]
         else:
-            coeffs = [coeff.evalf(n=n, strict=False).as_real_imag()
+            coeffs = [coeff.evalf(n, strict=False).as_real_imag()
                       for coeff in self.all_coeffs()]
             try:
                 coeffs = [mpmath.mpc(*coeff) for coeff in coeffs]
@@ -3371,9 +3049,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x**6 - 4*x**4 + 4*x**3 - x**2).ground_roots()
         {0: 2, 1: 2}
         """
@@ -3396,9 +3071,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> f = Poly(x**4 - x**2 + 1)
 
@@ -3435,9 +3107,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(2*x**2 - 2, x).cancel(Poly(x**2 - 2*x + 1, x))
         (1, Poly(2*x + 2, x, domain='ZZ'), Poly(x - 1, x, domain='ZZ'))
 
@@ -3453,12 +3122,12 @@ class Poly(Expr):
 
         if not include:
             if dom.has_assoc_Ring:
-                dom = dom.get_ring()
+                dom = dom.ring
 
             cp, cq, p, q = result
 
-            cp = dom.to_diofant(cp)
-            cq = dom.to_diofant(cq)
+            cp = dom.to_expr(cp)
+            cq = dom.to_expr(cq)
 
             return cp/cq, per(p), per(q)
         else:
@@ -3471,9 +3140,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(0, x).is_zero
         True
@@ -3490,9 +3156,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(0, x).is_one
         False
         >>> Poly(1, x).is_one
@@ -3507,9 +3170,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 - 2*x + 1, x).is_sqf
         False
@@ -3526,9 +3186,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(x + 2, x).is_monic
         True
         >>> Poly(2*x + 2, x).is_monic
@@ -3544,9 +3201,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
-
         >>> Poly(2*x**2 + 6*x + 12, x).is_primitive
         False
         >>> Poly(x**2 + 3*x + 6, x).is_primitive
@@ -3561,9 +3215,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
 
         >>> Poly(x, x).is_ground
         False
@@ -3582,9 +3233,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> Poly(x + y + 2, x, y).is_linear
         True
         >>> Poly(x*y + 2, x, y).is_linear
@@ -3600,9 +3248,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> Poly(x*y + 2, x, y).is_quadratic
         True
         >>> Poly(x*y**2 + 2, x, y).is_quadratic
@@ -3617,9 +3262,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(3*x**2, x).is_monomial
         True
@@ -3641,9 +3283,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> Poly(x**2 + x*y, x, y).is_homogeneous
         True
         >>> Poly(x**3 + x*y, x, y).is_homogeneous
@@ -3658,9 +3297,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> Poly(x**2 + x + 1, x, modulus=2).is_irreducible
         True
@@ -3677,9 +3313,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
 
         >>> Poly(x**2 + x + 1, x).is_univariate
         True
@@ -3700,9 +3333,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant import Poly
-        >>> from diofant.abc import x, y
-
         >>> Poly(x**2 + x + 1, x).is_multivariate
         False
         >>> Poly(x*y**2 + x*y + 1, x, y).is_multivariate
@@ -3721,9 +3351,6 @@ class Poly(Expr):
 
         Examples
         ========
-
-        >>> from diofant import Poly
-        >>> from diofant.abc import x
 
         >>> f = x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1
         >>> Poly(f).is_cyclotomic
@@ -3753,11 +3380,10 @@ class Poly(Expr):
 
     @_sympifyit('other', NotImplemented)
     def __radd__(self, other):
-        if not other.is_Poly:
-            try:
-                other = self.__class__(other, *self.gens)
-            except PolynomialError:
-                return other + self.as_expr()
+        try:
+            other = self.__class__(other, *self.gens)
+        except PolynomialError:
+            return other + self.as_expr()
 
         return other.add(self)
 
@@ -3773,11 +3399,10 @@ class Poly(Expr):
 
     @_sympifyit('other', NotImplemented)
     def __rsub__(self, other):
-        if not other.is_Poly:
-            try:
-                other = self.__class__(other, *self.gens)
-            except PolynomialError:
-                return other - self.as_expr()
+        try:
+            other = self.__class__(other, *self.gens)
+        except PolynomialError:
+            return other - self.as_expr()
 
         return other.sub(self)
 
@@ -3793,11 +3418,10 @@ class Poly(Expr):
 
     @_sympifyit('other', NotImplemented)
     def __rmul__(self, other):
-        if not other.is_Poly:
-            try:
-                other = self.__class__(other, *self.gens)
-            except PolynomialError:
-                return other*self.as_expr()
+        try:
+            other = self.__class__(other, *self.gens)
+        except PolynomialError:
+            return other*self.as_expr()
 
         return other.mul(self)
 
@@ -3817,8 +3441,7 @@ class Poly(Expr):
 
     @_sympifyit('other', NotImplemented)
     def __rdivmod__(self, other):
-        if not other.is_Poly:
-            other = self.__class__(other, *self.gens)
+        other = self.__class__(other, *self.gens)
 
         return other.div(self)
 
@@ -3831,8 +3454,7 @@ class Poly(Expr):
 
     @_sympifyit('other', NotImplemented)
     def __rmod__(self, other):
-        if not other.is_Poly:
-            other = self.__class__(other, *self.gens)
+        other = self.__class__(other, *self.gens)
 
         return other.rem(self)
 
@@ -3845,18 +3467,13 @@ class Poly(Expr):
 
     @_sympifyit('other', NotImplemented)
     def __rfloordiv__(self, other):
-        if not other.is_Poly:
-            other = self.__class__(other, *self.gens)
+        other = self.__class__(other, *self.gens)
 
         return other.quo(self)
 
     @_sympifyit('other', NotImplemented)
     def __truediv__(self, other):
         return self.as_expr()/other.as_expr()
-
-    @_sympifyit('other', NotImplemented)
-    def __rtruediv__(self, other):
-        return other.as_expr()/self.as_expr()
 
     @_sympifyit('other', NotImplemented)
     def __eq__(self, other):
@@ -3874,17 +3491,13 @@ class Poly(Expr):
         if f.rep.domain != g.rep.domain:
             try:
                 dom = f.rep.domain.unify(g.rep.domain, f.gens)
-            except UnificationFailed:
-                return False
+            except UnificationFailed:  # pragma: no cover
+                return NotImplemented
 
             f = f.set_domain(dom)
             g = g.set_domain(dom)
 
         return f.rep == g.rep
-
-    @_sympifyit('other', NotImplemented)
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     def __bool__(self):
         return not self.is_zero
@@ -3903,7 +3516,6 @@ class Poly(Expr):
                 self.gens == other.gens and self.rep.eq(other.rep, strict=True))
 
 
-@public
 class PurePoly(Poly):
     """Class for representing pure polynomials. """
 
@@ -3912,7 +3524,7 @@ class PurePoly(Poly):
         return self.rep,
 
     def __hash__(self):
-        return super(PurePoly, self).__hash__()
+        return super().__hash__()
 
     @property
     def free_symbols(self):
@@ -3921,9 +3533,6 @@ class PurePoly(Poly):
 
         Examples
         ========
-
-        >>> from diofant import PurePoly
-        >>> from diofant.abc import x, y
 
         >>> PurePoly(x**2 + 1).free_symbols
         set()
@@ -3950,8 +3559,8 @@ class PurePoly(Poly):
         if f.rep.domain != g.rep.domain:
             try:
                 dom = f.rep.domain.unify(g.rep.domain, f.gens)
-            except UnificationFailed:
-                return False
+            except UnificationFailed:  # pragma: no cover
+                return NotImplemented
 
             f = f.set_domain(dom)
             g = g.set_domain(dom)
@@ -3968,14 +3577,11 @@ class PurePoly(Poly):
         if not other.is_Poly:
             try:
                 return (self.rep.domain, self.per, self.rep,
-                        self.rep.per(self.rep.domain.from_diofant(other)))
+                        self.rep.per(self.rep.domain.convert(other)))
             except CoercionFailed:
                 raise UnificationFailed("can't unify %s with %s" % (self, other))
 
         if len(self.gens) != len(other.gens):
-            raise UnificationFailed("can't unify %s with %s" % (self, other))
-
-        if not (isinstance(self.rep, DMP) and isinstance(other.rep, DMP)):
             raise UnificationFailed("can't unify %s with %s" % (self, other))
 
         cls = self.__class__
@@ -3991,14 +3597,13 @@ class PurePoly(Poly):
                 gens = gens[:remove] + gens[remove + 1:]
 
                 if not gens:
-                    return dom.to_diofant(rep)
+                    return dom.to_expr(rep)
 
             return cls.new(rep, *gens)
 
         return dom, per, F, G
 
 
-@public
 def poly_from_expr(expr, *gens, **args):
     """Construct a polynomial from an expression. """
     opt = options.build_options(gens, args)
@@ -4035,7 +3640,7 @@ def _poly_from_expr(expr, opt):
     if domain is None:
         opt.domain, coeffs = construct_domain(coeffs, opt=opt)
     else:
-        coeffs = list(map(domain.from_diofant, coeffs))
+        coeffs = list(map(domain.convert, coeffs))
 
     rep = dict(zip(monoms, coeffs))
     poly = Poly._from_dict(rep, opt)
@@ -4046,7 +3651,6 @@ def _poly_from_expr(expr, opt):
     return poly, opt
 
 
-@public
 def parallel_poly_from_expr(exprs, *gens, **args):
     """Construct polynomials from expressions. """
     opt = options.build_options(gens, args)
@@ -4130,7 +3734,7 @@ def _parallel_poly_from_expr(exprs, opt):
     if domain is None:
         opt.domain, coeffs_list = construct_domain(coeffs_list, opt=opt)
     else:
-        coeffs_list = list(map(domain.from_diofant, coeffs_list))
+        coeffs_list = list(map(domain.convert, coeffs_list))
 
     for k in lengths:
         all_coeffs.append(coeffs_list[:k])
@@ -4149,17 +3753,6 @@ def _parallel_poly_from_expr(exprs, opt):
     return polys, opt
 
 
-def _update_args(args, key, value):
-    """Add a new ``(key, value)`` pair to arguments ``dict``. """
-    args = dict(args)
-
-    if key not in args:
-        args[key] = value
-
-    return args
-
-
-@public
 def degree(f, *gens, **args):
     """
     Return the degree of ``f`` in the given variable.
@@ -4168,9 +3761,6 @@ def degree(f, *gens, **args):
 
     Examples
     ========
-
-    >>> from diofant import degree
-    >>> from diofant.abc import x, y
 
     >>> degree(x**2 + y*x + 1, gen=x)
     2
@@ -4190,16 +3780,12 @@ def degree(f, *gens, **args):
     return sympify(F.degree(opt.gen))
 
 
-@public
 def degree_list(f, *gens, **args):
     """
     Return a list of degrees of ``f`` in all variables.
 
     Examples
     ========
-
-    >>> from diofant import degree_list
-    >>> from diofant.abc import x, y
 
     >>> degree_list(x**2 + y*x + 1)
     (2, 1)
@@ -4217,16 +3803,12 @@ def degree_list(f, *gens, **args):
     return tuple(map(Integer, degrees))
 
 
-@public
 def LC(f, *gens, **args):
     """
     Return the leading coefficient of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import LC
-    >>> from diofant.abc import x, y
 
     >>> LC(4*x**2 + 2*x*y**2 + x*y + 3*y)
     4
@@ -4242,16 +3824,12 @@ def LC(f, *gens, **args):
     return F.LC(order=opt.order)
 
 
-@public
 def LM(f, *gens, **args):
     """
     Return the leading monomial of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import LM
-    >>> from diofant.abc import x, y
 
     >>> LM(4*x**2 + 2*x*y**2 + x*y + 3*y)
     x**2
@@ -4268,16 +3846,12 @@ def LM(f, *gens, **args):
     return monom.as_expr()
 
 
-@public
 def LT(f, *gens, **args):
     """
     Return the leading term of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import LT
-    >>> from diofant.abc import x, y
 
     >>> LT(4*x**2 + 2*x*y**2 + x*y + 3*y)
     4*x**2
@@ -4294,16 +3868,12 @@ def LT(f, *gens, **args):
     return coeff*monom.as_expr()
 
 
-@public
 def pdiv(f, g, *gens, **args):
     """
     Compute polynomial pseudo-division of ``f`` and ``g``.
 
     Examples
     ========
-
-    >>> from diofant import pdiv
-    >>> from diofant.abc import x
 
     >>> pdiv(x**2 + 1, 2*x - 4)
     (2*x + 4, 20)
@@ -4324,16 +3894,12 @@ def pdiv(f, g, *gens, **args):
         return q, r
 
 
-@public
 def prem(f, g, *gens, **args):
     """
     Compute polynomial pseudo-remainder of ``f`` and ``g``.
 
     Examples
     ========
-
-    >>> from diofant import prem
-    >>> from diofant.abc import x
 
     >>> prem(x**2 + 1, 2*x - 4)
     20
@@ -4354,16 +3920,12 @@ def prem(f, g, *gens, **args):
         return r
 
 
-@public
 def pquo(f, g, *gens, **args):
     """
     Compute polynomial pseudo-quotient of ``f`` and ``g``.
 
     Examples
     ========
-
-    >>> from diofant import pquo
-    >>> from diofant.abc import x
 
     >>> pquo(x**2 + 1, 2*x - 4)
     2*x + 4
@@ -4378,10 +3940,7 @@ def pquo(f, g, *gens, **args):
     except PolificationFailed as exc:
         raise ComputationFailed('pquo', 2, exc)
 
-    try:
-        q = F.pquo(G)
-    except ExactQuotientFailed:
-        raise ExactQuotientFailed(f, g)
+    q = F.pquo(G)
 
     if not opt.polys:
         return q.as_expr()
@@ -4389,16 +3948,12 @@ def pquo(f, g, *gens, **args):
         return q
 
 
-@public
 def pexquo(f, g, *gens, **args):
     """
     Compute polynomial exact pseudo-quotient of ``f`` and ``g``.
 
     Examples
     ========
-
-    >>> from diofant import pexquo
-    >>> from diofant.abc import x
 
     >>> pexquo(x**2 - 1, 2*x - 2)
     2*x + 2
@@ -4424,16 +3979,12 @@ def pexquo(f, g, *gens, **args):
         return q
 
 
-@public
 def div(f, g, *gens, **args):
     """
     Compute polynomial division of ``f`` and ``g``.
 
     Examples
     ========
-
-    >>> from diofant import div, ZZ, QQ
-    >>> from diofant.abc import x
 
     >>> div(x**2 + 1, 2*x - 4, domain=ZZ)
     (0, x**2 + 1)
@@ -4456,16 +4007,12 @@ def div(f, g, *gens, **args):
         return q, r
 
 
-@public
 def rem(f, g, *gens, **args):
     """
     Compute polynomial remainder of ``f`` and ``g``.
 
     Examples
     ========
-
-    >>> from diofant import rem, ZZ, QQ
-    >>> from diofant.abc import x
 
     >>> rem(x**2 + 1, 2*x - 4, domain=ZZ)
     x**2 + 1
@@ -4488,16 +4035,12 @@ def rem(f, g, *gens, **args):
         return r
 
 
-@public
 def quo(f, g, *gens, **args):
     """
     Compute polynomial quotient of ``f`` and ``g``.
 
     Examples
     ========
-
-    >>> from diofant import quo
-    >>> from diofant.abc import x
 
     >>> quo(x**2 + 1, 2*x - 4)
     x/2 + 1
@@ -4520,16 +4063,12 @@ def quo(f, g, *gens, **args):
         return q
 
 
-@public
 def exquo(f, g, *gens, **args):
     """
     Compute polynomial exact quotient of ``f`` and ``g``.
 
     Examples
     ========
-
-    >>> from diofant import exquo
-    >>> from diofant.abc import x
 
     >>> exquo(x**2 - 1, x - 1)
     x + 1
@@ -4555,7 +4094,6 @@ def exquo(f, g, *gens, **args):
         return q
 
 
-@public
 def half_gcdex(f, g, *gens, **args):
     """
     Half extended Euclidean algorithm of ``f`` and ``g``.
@@ -4564,9 +4102,6 @@ def half_gcdex(f, g, *gens, **args):
 
     Examples
     ========
-
-    >>> from diofant import half_gcdex
-    >>> from diofant.abc import x
 
     >>> half_gcdex(x**4 - 2*x**3 - 6*x**2 + 12*x + 15, x**3 + x**2 - 4*x - 4)
     (-x/5 + 3/5, x + 1)
@@ -4579,12 +4114,8 @@ def half_gcdex(f, g, *gens, **args):
     except PolificationFailed as exc:
         domain, (a, b) = construct_domain(exc.exprs)
 
-        try:
-            s, h = domain.half_gcdex(a, b)
-        except NotImplementedError:
-            raise ComputationFailed('half_gcdex', 2, exc)
-        else:
-            return domain.to_diofant(s), domain.to_diofant(h)
+        s, h = domain.half_gcdex(a, b)
+        return domain.to_expr(s), domain.to_expr(h)
 
     s, h = F.half_gcdex(G, auto=opt.auto)
 
@@ -4594,7 +4125,6 @@ def half_gcdex(f, g, *gens, **args):
         return s, h
 
 
-@public
 def gcdex(f, g, *gens, **args):
     """
     Extended Euclidean algorithm of ``f`` and ``g``.
@@ -4603,9 +4133,6 @@ def gcdex(f, g, *gens, **args):
 
     Examples
     ========
-
-    >>> from diofant import gcdex
-    >>> from diofant.abc import x
 
     >>> gcdex(x**4 - 2*x**3 - 6*x**2 + 12*x + 15, x**3 + x**2 - 4*x - 4)
     (-x/5 + 3/5, x**2/5 - 6*x/5 + 2, x + 1)
@@ -4618,12 +4145,8 @@ def gcdex(f, g, *gens, **args):
     except PolificationFailed as exc:
         domain, (a, b) = construct_domain(exc.exprs)
 
-        try:
-            s, t, h = domain.gcdex(a, b)
-        except NotImplementedError:
-            raise ComputationFailed('gcdex', 2, exc)
-        else:
-            return domain.to_diofant(s), domain.to_diofant(t), domain.to_diofant(h)
+        s, t, h = domain.gcdex(a, b)
+        return domain.to_expr(s), domain.to_expr(t), domain.to_expr(h)
 
     s, t, h = F.gcdex(G, auto=opt.auto)
 
@@ -4633,17 +4156,12 @@ def gcdex(f, g, *gens, **args):
         return s, t, h
 
 
-@public
 def invert(f, g, *gens, **args):
     """
     Invert ``f`` modulo ``g`` when possible.
 
     Examples
     ========
-
-    >>> from diofant import invert
-    >>> from diofant.core.numbers import mod_inverse, Integer
-    >>> from diofant.abc import x
 
     >>> invert(x**2 - 1, 2*x - 1)
     -4/3
@@ -4673,10 +4191,7 @@ def invert(f, g, *gens, **args):
     except PolificationFailed as exc:
         domain, (a, b) = construct_domain(exc.exprs)
 
-        try:
-            return domain.to_diofant(domain.invert(a, b))
-        except NotImplementedError:
-            raise ComputationFailed('invert', 2, exc)
+        return domain.to_expr(domain.invert(a, b))
 
     h = F.invert(G, auto=opt.auto)
 
@@ -4686,16 +4201,12 @@ def invert(f, g, *gens, **args):
         return h
 
 
-@public
 def subresultants(f, g, *gens, **args):
     """
     Compute subresultant PRS of ``f`` and ``g``.
 
     Examples
     ========
-
-    >>> from diofant import subresultants
-    >>> from diofant.abc import x
 
     >>> subresultants(x**2 + 1, x**2 - 1)
     [x**2 + 1, x**2 - 1, -2]
@@ -4716,16 +4227,12 @@ def subresultants(f, g, *gens, **args):
         return result
 
 
-@public
 def resultant(f, g, *gens, **args):
     """
     Compute resultant of ``f`` and ``g``.
 
     Examples
     ========
-
-    >>> from diofant import resultant
-    >>> from diofant.abc import x
 
     >>> resultant(x**2 + 1, x**2 - 1)
     4
@@ -4754,16 +4261,12 @@ def resultant(f, g, *gens, **args):
         return result
 
 
-@public
 def discriminant(f, *gens, **args):
     """
     Compute discriminant of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import discriminant
-    >>> from diofant.abc import x
 
     >>> discriminant(x**2 + 2*x + 3)
     -8
@@ -4784,7 +4287,6 @@ def discriminant(f, *gens, **args):
         return result
 
 
-@public
 def cofactors(f, g, *gens, **args):
     """
     Compute GCD and cofactors of ``f`` and ``g``.
@@ -4795,9 +4297,6 @@ def cofactors(f, g, *gens, **args):
 
     Examples
     ========
-
-    >>> from diofant import cofactors
-    >>> from diofant.abc import x
 
     >>> cofactors(x**2 - 1, x**2 - 3*x + 2)
     (x - 1, x + 1, x - 2)
@@ -4810,12 +4309,8 @@ def cofactors(f, g, *gens, **args):
     except PolificationFailed as exc:
         domain, (a, b) = construct_domain(exc.exprs)
 
-        try:
-            h, cff, cfg = domain.cofactors(a, b)
-        except NotImplementedError:
-            raise ComputationFailed('cofactors', 2, exc)
-        else:
-            return domain.to_diofant(h), domain.to_diofant(cff), domain.to_diofant(cfg)
+        h, cff, cfg = domain.cofactors(a, b)
+        return tuple(map(domain.to_expr, (h, cff, cfg)))
 
     h, cff, cfg = F.cofactors(G)
 
@@ -4825,16 +4320,12 @@ def cofactors(f, g, *gens, **args):
         return h, cff, cfg
 
 
-@public
 def gcd_list(seq, *gens, **args):
     """
     Compute GCD of a list of polynomials.
 
     Examples
     ========
-
-    >>> from diofant import gcd_list
-    >>> from diofant.abc import x
 
     >>> gcd_list([x**3 - 1, x**2 - 1, x**2 - 3*x + 2])
     x - 1
@@ -4854,10 +4345,10 @@ def gcd_list(seq, *gens, **args):
                 for number in numbers:
                     result = domain.gcd(result, number)
 
-                    if domain.is_one(result):
+                    if result == domain.one:
                         break
 
-                return domain.to_diofant(result)
+                return domain.to_expr(result)
 
         return
 
@@ -4898,40 +4389,24 @@ def gcd_list(seq, *gens, **args):
         return result
 
 
-@public
-def gcd(f, g=None, *gens, **args):
+def gcd(f, g, *gens, **args):
     """
     Compute GCD of ``f`` and ``g``.
 
     Examples
     ========
 
-    >>> from diofant import gcd
-    >>> from diofant.abc import x
-
     >>> gcd(x**2 - 1, x**2 - 3*x + 2)
     x - 1
 
     """
-    if hasattr(f, '__iter__'):
-        if g is not None:
-            gens = (g,) + gens
-
-        return gcd_list(f, *gens, **args)
-    elif g is None:
-        raise TypeError("gcd() takes 2 arguments or a sequence of arguments")
-
     options.allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
     except PolificationFailed as exc:
         domain, (a, b) = construct_domain(exc.exprs)
-
-        try:
-            return domain.to_diofant(domain.gcd(a, b))
-        except NotImplementedError:
-            raise ComputationFailed('gcd', 2, exc)
+        return domain.to_expr(domain.gcd(a, b))
 
     result = F.gcd(G)
 
@@ -4941,16 +4416,12 @@ def gcd(f, g=None, *gens, **args):
         return result
 
 
-@public
 def lcm_list(seq, *gens, **args):
     """
     Compute LCM of a list of polynomials.
 
     Examples
     ========
-
-    >>> from diofant import lcm_list
-    >>> from diofant.abc import x
 
     >>> lcm_list([x**3 - 1, x**2 - 1, x**2 - 3*x + 2])
     x**5 - x**4 - 2*x**3 - x**2 + x + 2
@@ -4970,7 +4441,7 @@ def lcm_list(seq, *gens, **args):
                 for number in numbers:
                     result = domain.lcm(result, number)
 
-                return domain.to_diofant(result)
+                return domain.to_expr(result)
 
         return
 
@@ -5008,40 +4479,24 @@ def lcm_list(seq, *gens, **args):
         return result
 
 
-@public
-def lcm(f, g=None, *gens, **args):
+def lcm(f, g, *gens, **args):
     """
     Compute LCM of ``f`` and ``g``.
 
     Examples
     ========
 
-    >>> from diofant import lcm
-    >>> from diofant.abc import x
-
     >>> lcm(x**2 - 1, x**2 - 3*x + 2)
     x**3 - 2*x**2 - x + 2
 
     """
-    if hasattr(f, '__iter__'):
-        if g is not None:
-            gens = (g,) + gens
-
-        return lcm_list(f, *gens, **args)
-    elif g is None:
-        raise TypeError("lcm() takes 2 arguments or a sequence of arguments")
-
     options.allowed_flags(args, ['polys'])
 
     try:
         (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
     except PolificationFailed as exc:
         domain, (a, b) = construct_domain(exc.exprs)
-
-        try:
-            return domain.to_diofant(domain.lcm(a, b))
-        except NotImplementedError:
-            raise ComputationFailed('lcm', 2, exc)
+        return domain.to_expr(domain.lcm(a, b))
 
     result = F.lcm(G)
 
@@ -5051,7 +4506,6 @@ def lcm(f, g=None, *gens, **args):
         return result
 
 
-@public
 def terms_gcd(f, *gens, **args):
     """
     Remove GCD of terms from ``f``.
@@ -5067,8 +4521,6 @@ def terms_gcd(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import terms_gcd, cos
-    >>> from diofant.abc import x, y
     >>> terms_gcd(x**6*y**2 + x**3*y, x, y)
     x**3*y*(x**3*y + 1)
 
@@ -5135,23 +4587,17 @@ def terms_gcd(f, *gens, **args):
     clear = args.pop('clear', True)
     options.allowed_flags(args, ['polys'])
 
-    try:
-        F, opt = poly_from_expr(f, *gens, **args)
-    except PolificationFailed as exc:
-        return exc.expr
+    F, opt = poly_from_expr(f, *gens, **args)
 
     J, f = F.terms_gcd()
 
-    if opt.domain.has_Ring:
-        if opt.domain.has_Field:
-            denom, f = f.clear_denoms(convert=True)
+    if opt.domain.has_Field:
+        denom, f = f.clear_denoms(convert=True)
 
-        coeff, f = f.primitive()
+    coeff, f = f.primitive()
 
-        if opt.domain.has_Field:
-            coeff /= denom
-    else:
-        coeff = S.One
+    if opt.domain.has_Field:
+        coeff /= denom
 
     term = Mul(*[x**j for x, j in zip(f.gens, J)])
     if coeff == 1:
@@ -5167,16 +4613,12 @@ def terms_gcd(f, *gens, **args):
     return _keep_coeff(coeff, term*f, clear=False)
 
 
-@public
 def trunc(f, p, *gens, **args):
     """
     Reduce ``f`` modulo a constant ``p``.
 
     Examples
     ========
-
-    >>> from diofant import trunc
-    >>> from diofant.abc import x
 
     >>> trunc(2*x**3 + 3*x**2 + 5*x + 7, 3)
     -x**3 - x + 1
@@ -5197,16 +4639,12 @@ def trunc(f, p, *gens, **args):
         return result
 
 
-@public
 def monic(f, *gens, **args):
     """
     Divide all coefficients of ``f`` by ``LC(f)``.
 
     Examples
     ========
-
-    >>> from diofant import monic
-    >>> from diofant.abc import x
 
     >>> monic(3*x**2 + 4*x + 2)
     x**2 + 4*x/3 + 2/3
@@ -5227,16 +4665,12 @@ def monic(f, *gens, **args):
         return result
 
 
-@public
 def content(f, *gens, **args):
     """
     Compute GCD of coefficients of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import content
-    >>> from diofant.abc import x
 
     >>> content(6*x**2 + 8*x + 12)
     2
@@ -5252,16 +4686,12 @@ def content(f, *gens, **args):
     return F.content()
 
 
-@public
 def primitive(f, *gens, **args):
     """
     Compute content and the primitive form of ``f``.
 
     Examples
     ========
-
-    >>> from diofant.polys.polytools import primitive
-    >>> from diofant.abc import x
 
     >>> primitive(6*x**2 + 8*x + 12)
     (2, 3*x**2 + 4*x + 6)
@@ -5298,16 +4728,12 @@ def primitive(f, *gens, **args):
         return cont, result
 
 
-@public
 def compose(f, g, *gens, **args):
     """
     Compute functional composition ``f(g)``.
 
     Examples
     ========
-
-    >>> from diofant import compose
-    >>> from diofant.abc import x
 
     >>> compose(x**2 + x, x - 1)
     x**2 - x
@@ -5328,16 +4754,12 @@ def compose(f, g, *gens, **args):
         return result
 
 
-@public
 def decompose(f, *gens, **args):
     """
     Compute functional decomposition of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import decompose
-    >>> from diofant.abc import x
 
     >>> decompose(x**4 + 2*x**3 - x - 1)
     [x**2 - x - 1, x**2 + x]
@@ -5358,16 +4780,12 @@ def decompose(f, *gens, **args):
         return result
 
 
-@public
 def sturm(f, *gens, **args):
     """
     Compute Sturm sequence of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import sturm
-    >>> from diofant.abc import x
 
     >>> sturm(x**3 - 2*x**2 + x - 3)
     [x**3 - 2*x**2 + x - 3, 3*x**2 - 4*x + 1, 2*x/9 + 25/9, -2079/4]
@@ -5388,16 +4806,12 @@ def sturm(f, *gens, **args):
         return result
 
 
-@public
 def gff_list(f, *gens, **args):
     """
     Compute a list of greatest factorial factors of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import gff_list, ff
-    >>> from diofant.abc import x
 
     >>> f = x**5 + 2*x**4 - x**3 - 2*x**2
 
@@ -5423,13 +4837,11 @@ def gff_list(f, *gens, **args):
         return factors
 
 
-@public
 def gff(f, *gens, **args):
     """Compute greatest factorial factorization of ``f``. """
     raise NotImplementedError('symbolic falling factorial')
 
 
-@public
 def sqf_norm(f, *gens, **args):
     """
     Compute square-free norm of ``f``.
@@ -5440,9 +4852,6 @@ def sqf_norm(f, *gens, **args):
 
     Examples
     ========
-
-    >>> from diofant import sqf_norm, sqrt
-    >>> from diofant.abc import x
 
     >>> sqf_norm(x**2 + 1, extension=[sqrt(3)])
     (1, x**2 - 2*sqrt(3)*x + 4, x**4 - 4*x**2 + 16)
@@ -5463,16 +4872,12 @@ def sqf_norm(f, *gens, **args):
         return Integer(s), g, r
 
 
-@public
 def sqf_part(f, *gens, **args):
     """
     Compute square-free part of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import sqf_part
-    >>> from diofant.abc import x
 
     >>> sqf_part(x**3 - 3*x - 2)
     x**2 - x - 2
@@ -5499,12 +4904,12 @@ def _sorted_factors(factors, method):
         def key(obj):
             poly, exp = obj
             rep = poly.rep.rep
-            return exp, len(rep), rep
+            return exp, len(rep), len(poly.gens), rep
     else:
         def key(obj):
             poly, exp = obj
             rep = poly.rep.rep
-            return len(rep), exp, rep
+            return len(rep), len(poly.gens), exp, rep
 
     return sorted(factors, key=key)
 
@@ -5580,8 +4985,8 @@ def _symbolic_factor(expr, opt, method):
         return expr.func(*[_symbolic_factor(arg, opt, method) for arg in expr.args])
     elif hasattr(expr, '__iter__'):
         return expr.__class__([_symbolic_factor(arg, opt, method) for arg in expr])
-    else:
-        return expr
+    else:  # pragma: no cover
+        raise NotImplementedError
 
 
 def _generic_factor_list(expr, gens, args, method):
@@ -5601,6 +5006,9 @@ def _generic_factor_list(expr, gens, args, method):
             raise PolynomialError("a polynomial expected, got %s" % expr)
 
         _opt = opt.clone({'expand': True})
+        if not _opt.get('gens'):
+            _opt['gens'] = set().union(*[set(f.gens)
+                                         for f, _ in fp + fq if f.is_Poly])
 
         for factors in (fp, fq):
             for i, (f, k) in enumerate(factors):
@@ -5656,17 +5064,14 @@ def to_rational_coeffs(f):
     Examples
     ========
 
-    >>> from diofant import sqrt, Poly, simplify
-    >>> from diofant.polys.polytools import to_rational_coeffs
-    >>> from diofant.abc import x
-    >>> p = Poly(((x**2-1)*(x-2)).subs({x:x*(1 + sqrt(2))}), x, domain='EX')
+    >>> p = Poly(((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))}), x, domain='EX')
     >>> lc, r, _, g = to_rational_coeffs(p)
     >>> lc, r
     (7 + 5*sqrt(2), -2*sqrt(2) + 2)
     >>> g
     Poly(x**3 + x**2 - 1/4*x - 1/4, x, domain='QQ')
     >>> r1 = simplify(1/r)
-    >>> Poly(lc*r**3*(g.as_expr()).subs({x:x*r1}), x, domain='EX') == p
+    >>> Poly(lc*r**3*(g.as_expr()).subs({x: x*r1}), x, domain='EX') == p
     True
 
     """
@@ -5682,7 +5087,7 @@ def to_rational_coeffs(f):
         """
         from ..core import Add
         if not len(f.gens) == 1 or not (f.gens[0]).is_Atom:
-            return None, f
+            return
         n = f.degree()
         lc = f.LC()
         f1 = f1 or f1.monic()
@@ -5705,7 +5110,6 @@ def to_rational_coeffs(f):
                 f = Add(*v)
                 f = Poly(f)
                 return lc, rescale_x, f
-        return
 
     def _try_translate(f, f1=None):
         """
@@ -5717,7 +5121,7 @@ def to_rational_coeffs(f):
         """
         from ..core import Add
         if not len(f.gens) == 1 or not (f.gens[0]).is_Atom:
-            return None, f
+            return
         n = f.degree()
         f1 = f1 or f1.monic()
         coeffs = f1.all_coeffs()[1:]
@@ -5734,7 +5138,6 @@ def to_rational_coeffs(f):
             alpha = -func(*c2)/n
             f2 = f1.shift(alpha)
             return alpha, f2
-        return
 
     def _has_square_roots(p):
         """
@@ -5756,7 +5159,7 @@ def to_rational_coeffs(f):
                     return False
         return has_sq
 
-    if f.domain.is_EX and _has_square_roots(f):
+    if f.domain.is_SymbolicDomain and _has_square_roots(f):
         f1 = f.monic()
         r = _try_rescale(f, f1)
         if r:
@@ -5765,7 +5168,6 @@ def to_rational_coeffs(f):
             r = _try_translate(f, f1)
             if r:
                 return None, None, r[0], r[1]
-    return
 
 
 def _torational_factor_list(p, x):
@@ -5775,15 +5177,12 @@ def _torational_factor_list(p, x):
     Examples
     ========
 
-    >>> from diofant.polys.polytools import _torational_factor_list
-    >>> from diofant.abc import x
-    >>> from diofant import sqrt, expand, Mul
-    >>> p = expand(((x**2-1)*(x-2)).subs({x:x*(1 + sqrt(2))}))
+    >>> p = expand(((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))}))
     >>> factors = _torational_factor_list(p, x); factors
     (-2, [(-x*(1 + sqrt(2))/2 + 1, 1), (-x*(1 + sqrt(2)) - 1, 1), (-x*(1 + sqrt(2)) + 1, 1)])
     >>> expand(factors[0]*Mul(*[z[0] for z in factors[1]])) == p
     True
-    >>> p = expand(((x**2-1)*(x-2)).subs({x:x + sqrt(2)}))
+    >>> p = expand(((x**2-1)*(x-2)).subs({x: x + sqrt(2)}))
     >>> factors = _torational_factor_list(p, x); factors
     (1, [(x - 2 + sqrt(2), 1), (x - 1 + sqrt(2), 1), (x + 1 + sqrt(2), 1)])
     >>> expand(factors[0]*Mul(*[z[0] for z in factors[1]])) == p
@@ -5812,16 +5211,12 @@ def _torational_factor_list(p, x):
     return c, a
 
 
-@public
 def sqf_list(f, *gens, **args):
     """
     Compute a list of square-free factors of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import sqf_list
-    >>> from diofant.abc import x
 
     >>> sqf_list(2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16)
     (2, [(x + 1, 2), (x + 2, 3)])
@@ -5830,16 +5225,12 @@ def sqf_list(f, *gens, **args):
     return _generic_factor_list(f, gens, args, method='sqf')
 
 
-@public
 def sqf(f, *gens, **args):
     """
     Compute square-free factorization of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import sqf
-    >>> from diofant.abc import x
 
     >>> sqf(2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16)
     2*(x + 1)**2*(x + 2)**3
@@ -5848,16 +5239,12 @@ def sqf(f, *gens, **args):
     return _generic_factor(f, gens, args, method='sqf')
 
 
-@public
 def factor_list(f, *gens, **args):
     """
     Compute a list of irreducible factors of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import factor_list
-    >>> from diofant.abc import x, y
 
     >>> factor_list(2*x**5 + 2*x**4*y + 4*x**3 + 4*x**2*y + 2*x + 2*y)
     (2, [(x + y, 1), (x**2 + 1, 2)])
@@ -5866,7 +5253,6 @@ def factor_list(f, *gens, **args):
     return _generic_factor_list(f, gens, args, method='factor')
 
 
-@public
 def factor(f, *gens, **args):
     """
     Compute the factorization of expression, ``f``, into irreducibles. (To
@@ -5887,9 +5273,6 @@ def factor(f, *gens, **args):
 
     Examples
     ========
-
-    >>> from diofant import factor, sqrt
-    >>> from diofant.abc import x, y
 
     >>> factor(2*x**5 + 2*x**4*y + 4*x**3 + 4*x**2*y + 2*x + 2*y)
     2*(x + y)*(x**2 + 1)**2
@@ -5946,16 +5329,12 @@ def factor(f, *gens, **args):
             raise PolynomialError(msg)
 
 
-@public
 def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, fast=False, sqf=False):
     """
     Compute isolating intervals for roots of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import intervals
-    >>> from diofant.abc import x
 
     >>> intervals(x**2 - 3)
     [((-2, -1), 1), ((1, 2), 1)]
@@ -5996,22 +5375,18 @@ def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, fast=Fal
         result = []
 
         for (s, t), indices in intervals:
-            s, t = opt.domain.to_diofant(s), opt.domain.to_diofant(t)
+            s, t = opt.domain.to_expr(s), opt.domain.to_expr(t)
             result.append(((s, t), indices))
 
         return result
 
 
-@public
 def refine_root(f, s, t, eps=None, steps=None, fast=False, check_sqf=False):
     """
     Refine an isolating interval of a root to the given precision.
 
     Examples
     ========
-
-    >>> from diofant import refine_root
-    >>> from diofant.abc import x
 
     >>> refine_root(x**2 - 3, 1, 2, eps=1e-2)
     (19/11, 26/15)
@@ -6026,7 +5401,6 @@ def refine_root(f, s, t, eps=None, steps=None, fast=False, check_sqf=False):
     return F.refine_root(s, t, eps=eps, steps=steps, fast=fast, check_sqf=check_sqf)
 
 
-@public
 def count_roots(f, inf=None, sup=None):
     """
     Return the number of roots of ``f`` in ``[inf, sup]`` interval.
@@ -6036,9 +5410,6 @@ def count_roots(f, inf=None, sup=None):
 
     Examples
     ========
-
-    >>> from diofant import count_roots, I
-    >>> from diofant.abc import x
 
     >>> count_roots(x**4 - 4, -3, 3)
     2
@@ -6054,16 +5425,12 @@ def count_roots(f, inf=None, sup=None):
     return F.count_roots(inf=inf, sup=sup)
 
 
-@public
 def real_roots(f, multiple=True):
     """
     Return a list of real roots with multiplicities of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import real_roots
-    >>> from diofant.abc import x
 
     >>> real_roots(2*x**3 - 7*x**2 + 4*x + 4)
     [-1/2, 2, 2]
@@ -6072,22 +5439,18 @@ def real_roots(f, multiple=True):
     try:
         F = Poly(f, greedy=False)
     except GeneratorsNeeded:
-        raise PolynomialError(
-            "can't compute real roots of %s, not a polynomial" % f)
+        raise PolynomialError("can't compute real roots of %s, "
+                              "not a polynomial" % f)
 
     return F.real_roots(multiple=multiple)
 
 
-@public
 def nroots(f, n=15, maxsteps=50, cleanup=True):
     """
     Compute numerical approximations of roots of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import nroots
-    >>> from diofant.abc import x
 
     >>> nroots(x**2 - 3, n=15)
     [-1.73205080756888, 1.73205080756888]
@@ -6104,16 +5467,12 @@ def nroots(f, n=15, maxsteps=50, cleanup=True):
     return F.nroots(n=n, maxsteps=maxsteps, cleanup=cleanup)
 
 
-@public
 def ground_roots(f, *gens, **args):
     """
     Compute roots of ``f`` by factorization in the ground domain.
 
     Examples
     ========
-
-    >>> from diofant import ground_roots
-    >>> from diofant.abc import x
 
     >>> ground_roots(x**6 - 4*x**4 + 4*x**3 - x**2)
     {0: 2, 1: 2}
@@ -6129,16 +5488,12 @@ def ground_roots(f, *gens, **args):
     return F.ground_roots()
 
 
-@public
 def nth_power_roots_poly(f, n, *gens, **args):
     """
     Construct a polynomial with n-th powers of roots of ``f``.
 
     Examples
     ========
-
-    >>> from diofant import nth_power_roots_poly, factor, roots
-    >>> from diofant.abc import x
 
     >>> f = x**4 - x**2 + 1
     >>> g = factor(nth_power_roots_poly(f, 2))
@@ -6153,7 +5508,7 @@ def nth_power_roots_poly(f, n, *gens, **args):
     True
 
     """
-    options.allowed_flags(args, [])
+    options.allowed_flags(args, ['polys'])
 
     try:
         F, opt = poly_from_expr(f, *gens, **args)
@@ -6168,7 +5523,6 @@ def nth_power_roots_poly(f, n, *gens, **args):
         return result
 
 
-@public
 def cancel(f, *gens, **args):
     """
     Cancel common factors in a rational function ``f``.
@@ -6176,8 +5530,6 @@ def cancel(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant import cancel, sqrt, Symbol
-    >>> from diofant.abc import x
     >>> A = Symbol('A', commutative=False)
 
     >>> cancel((2*x**2 - 2)/(x**2 - 2*x + 1))
@@ -6191,7 +5543,7 @@ def cancel(f, *gens, **args):
 
     f = sympify(f)
 
-    if not isinstance(f, (tuple, Tuple)):
+    if not isinstance(f, Tuple):
         if f.is_Atom or isinstance(f, Relational) or not isinstance(f, Expr):
             return f
         f = factor_terms(f, radical=True)
@@ -6199,10 +5551,8 @@ def cancel(f, *gens, **args):
 
     elif len(f) == 2:
         p, q = f
-    elif isinstance(f, Tuple):
-        return factor_terms(f)
     else:
-        raise ValueError('unexpected argument: %s' % f)
+        return factor_terms(f)
 
     try:
         (F, G), opt = parallel_poly_from_expr((p, q), *gens, **args)
@@ -6212,8 +5562,7 @@ def cancel(f, *gens, **args):
         else:
             return S.One, p, q
     except PolynomialError as msg:
-        if f.is_commutative and not f.has(Piecewise):
-            raise PolynomialError(msg)
+        assert not f.is_commutative or f.has(Piecewise)
         # Handling of noncommutative and/or piecewise expressions
         if f.is_Add or f.is_Mul:
             sifted = sift(f.args, lambda x: x.is_commutative is True and not x.has(Piecewise))
@@ -6228,11 +5577,8 @@ def cancel(f, *gens, **args):
                 # XXX: This should really skip anything that's not Expr.
                 if isinstance(e, (tuple, Tuple, BooleanAtom)):
                     continue
-                try:
-                    reps.append((e, cancel(e)))
-                    pot.skip()  # this was handled successfully
-                except NotImplementedError:
-                    pass
+                reps.append((e, cancel(e)))
+                pot.skip()  # this was handled successfully
             return f.xreplace(dict(reps))
 
     c, P, Q = F.cancel(G)
@@ -6246,7 +5592,6 @@ def cancel(f, *gens, **args):
             return c, P, Q
 
 
-@public
 def reduced(f, G, *gens, **args):
     """
     Reduces a polynomial ``f`` modulo a set of polynomials ``G``.
@@ -6258,9 +5603,6 @@ def reduced(f, G, *gens, **args):
 
     Examples
     ========
-
-    >>> from diofant import reduced
-    >>> from diofant.abc import x, y
 
     >>> reduced(2*x**4 + y**2 - x**2 + y**3, [x**3 - x, y**3 - y])
     ([2*x, 1], x**2 + y**2 + y)
@@ -6277,10 +5619,9 @@ def reduced(f, G, *gens, **args):
     retract = False
 
     if opt.auto and domain.has_Ring and not domain.has_Field:
-        opt = opt.clone({'domain': domain.get_field()})
+        opt = opt.clone({'domain': domain.field})
         retract = True
 
-    from .rings import ring
     _ring, *_ = ring(opt.gens, opt.domain, opt.order)
 
     for i, poly in enumerate(polys):
@@ -6306,7 +5647,6 @@ def reduced(f, G, *gens, **args):
         return Q, r
 
 
-@public
 def groebner(F, *gens, **args):
     """
     Computes the reduced Gröbner basis for a set of polynomials.
@@ -6319,9 +5659,6 @@ def groebner(F, *gens, **args):
     ========
 
     Example taken from [1].
-
-    >>> from diofant import groebner
-    >>> from diofant.abc import x, y
 
     >>> F = [x*y - 2*y, 2*y**2 - x**2]
 
@@ -6361,24 +5698,6 @@ def groebner(F, *gens, **args):
     return GroebnerBasis(F, *gens, **args)
 
 
-@public
-def is_zero_dimensional(F, *gens, **args):
-    """
-    Checks if the ideal generated by a Gröbner basis is zero-dimensional.
-
-    The algorithm checks if the set of monomials not divisible by the
-    leading monomial of any element of ``F`` is bounded.
-
-    References
-    ==========
-
-    .. [1] David A. Cox, John B. Little, Donal O'Shea. Ideals,
-           Varieties and Algorithms, 3rd edition, p. 230.
-    """
-    return GroebnerBasis(F, *gens, **args).is_zero_dimensional
-
-
-@public
 class GroebnerBasis(Basic):
     """Represents a reduced Gröbner basis. """
 
@@ -6391,8 +5710,7 @@ class GroebnerBasis(Basic):
         except PolificationFailed as exc:
             raise ComputationFailed('groebner', len(F), exc)
 
-        from .rings import PolyRing
-        ring = PolyRing(opt.gens, opt.domain, opt.order)
+        ring = PolynomialRing(opt.domain, opt.gens, opt.order)
 
         if not ring.domain.is_Exact:
             raise ValueError('Domain must be exact, got %s' % ring.domain)
@@ -6416,8 +5734,7 @@ class GroebnerBasis(Basic):
 
     @property
     def args(self):
-        return (Tuple(*[_.as_expr() for _ in self._basis]),
-                Tuple(*self._options.gens))
+        return Tuple(*self.exprs), Tuple(*self.gens)
 
     @property
     def exprs(self):
@@ -6457,7 +5774,7 @@ class GroebnerBasis(Basic):
         return basis[item]
 
     def __hash__(self):
-        return hash((self._basis, tuple(self._options.items())))
+        return hash((self._basis, tuple(sorted(self._options.items()))))
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
@@ -6467,39 +5784,46 @@ class GroebnerBasis(Basic):
         else:
             return False
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
+    @property
+    def dimension(self):
+        """Dimension of the ideal, generated by a Gröbner basis."""
+        sets = self.independent_sets
+        if sets is not None:
+            return max(len(s) for s in sets)
 
     @property
-    def is_zero_dimensional(self):
-        """
-        Checks if the ideal generated by a Gröbner basis is zero-dimensional.
-
-        The algorithm checks if the set of monomials not divisible by the
-        leading monomial of any element of ``F`` is bounded.
+    def independent_sets(self):
+        """Compute independent sets for ideal, generated by a Gröbner basis.
 
         References
         ==========
 
-        .. [1] David A. Cox, John B. Little, Donal O'Shea. Ideals,
-               Varieties and Algorithms, 3rd edition, p. 230.
+        .. [1] H. Kredel and V. Weispfennig. Computing dimension and
+               independent sets for polynomial ideals. J. Symbolic
+               Computation, 6(1):231–247, November 1988.
         """
-        def single_var(monomial):
-            return sum(map(bool, monomial)) == 1
+        if self.contains(Integer(1)):
+            return
 
-        exponents = Monomial([0]*len(self.gens))
-        order = self._options.order
+        HTG = [_.LM(order=self.order) for _ in self.polys]
 
-        for poly in self.polys:
-            monomial = poly.LM(order=order)
+        def dimrec(S, U, M):
+            U1 = U.copy()
+            while U1:
+                x = U1.pop(0)
+                S1 = S + [x]
+                t = Monomial(Mul(*S1), self.gens)
+                for ht in HTG:
+                    if all(a and b or not a for a, b in zip(ht, t)):
+                        break
+                else:
+                    M = dimrec(S1, U1, M)
+            if any(all(_ in m for _ in S) for m in M):
+                return M
+            else:
+                return [S] + M
 
-            if single_var(monomial):
-                exponents *= monomial
-
-        # If any element of the exponents vector is zero, then there's
-        # a variable for which there's no degree bound and the ideal
-        # generated by this Gröbner basis isn't zero-dimensional.
-        return all(exponents)
+        return dimrec([], list(self.gens), [])
 
     def fglm(self, order):
         """
@@ -6512,9 +5836,6 @@ class GroebnerBasis(Basic):
 
         Examples
         ========
-
-        >>> from diofant.abc import x, y
-        >>> from diofant import groebner
 
         >>> F = [x**2 - 3*y - x + 1, y**2 - 2*x + y - 1]
         >>> G = groebner(F, x, y, order='grlex')
@@ -6531,23 +5852,22 @@ class GroebnerBasis(Basic):
                Efficient Computation of Zero-dimensional Gröbner
                Bases by Change of Ordering.
         """
-        opt = self._options
-
-        src_order = opt.order
+        src_order = self.order
         dst_order = monomial_key(order)
 
         if src_order == dst_order:
             return self
 
-        if not self.is_zero_dimensional:
-            raise NotImplementedError("can't convert Gröbner bases of ideals with positive dimension")
+        if self.dimension != 0:
+            raise NotImplementedError("can't convert Gröbner bases of "
+                                      "ideals with positive dimension")
 
-        polys = list(self._basis)
-        domain = opt.domain
+        polys = self.polys
+        domain = self.domain
 
-        opt = opt.clone({'domain': domain.get_field(), 'order': dst_order})
+        opt = self._options.clone({'domain': domain.field,
+                                   'order': dst_order})
 
-        from .rings import ring
         _ring, *_ = ring(opt.gens, opt.domain, src_order)
 
         for i, poly in enumerate(polys):
@@ -6575,9 +5895,6 @@ class GroebnerBasis(Basic):
         Examples
         ========
 
-        >>> from diofant import groebner, expand
-        >>> from diofant.abc import x, y
-
         >>> f = 2*x**4 - x**2 + y**3 + y**2
         >>> G = groebner([x**3 - x, y**3 - y])
 
@@ -6595,15 +5912,14 @@ class GroebnerBasis(Basic):
         polys = [poly] + list(self._basis)
 
         opt = self._options
-        domain = opt.domain
+        domain = self.domain
 
         retract = False
 
         if auto and domain.has_Ring and not domain.has_Field:
-            opt = opt.clone({'domain': domain.get_field()})
+            opt = self._options.clone({'domain': domain.field})
             retract = True
 
-        from .rings import ring
         _ring, *_ = ring(opt.gens, opt.domain, opt.order)
 
         for i, poly in enumerate(polys):
@@ -6635,9 +5951,6 @@ class GroebnerBasis(Basic):
         Examples
         ========
 
-        >>> from diofant import groebner
-        >>> from diofant.abc import x, y
-
         >>> f = 2*x**3 + y**3 + 3*y
         >>> G = groebner([x**2 + y**2 - 1, x*y - 2])
 
@@ -6650,16 +5963,12 @@ class GroebnerBasis(Basic):
         return self.reduce(poly)[1] == 0
 
 
-@public
 def poly(expr, *gens, **args):
     """
     Efficiently transform an expression into a polynomial.
 
     Examples
     ========
-
-    >>> from diofant import poly
-    >>> from diofant.abc import x
 
     >>> poly(x*(x**2 + x - 1)**2)
     Poly(x**5 + 2*x**4 - x**3 - 2*x**2 + x, x, domain='ZZ')

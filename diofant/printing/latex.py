@@ -7,7 +7,7 @@ import re
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from ..core import Add, S, Symbol, oo
+from ..core import Add, Mod, S, Symbol, oo
 from ..core.alphabets import greeks
 from ..core.compatibility import default_sort_key
 from ..core.function import _coeff_isneg
@@ -164,17 +164,6 @@ class LatexPrinter(Printer):
             env_str = self._settings['mode']
             return r"\begin{%s}%s\end{%s}" % (env_str, tex, env_str)
 
-    def _needs_brackets(self, expr):
-        """
-        Returns True if the expression needs to be wrapped in brackets when
-        printed, False otherwise. For example: a + b => True; a => False;
-        10 => False; -10 => True.
-        """
-        return not ((expr.is_Integer and expr.is_nonnegative)
-                    or (expr.is_Atom and (expr is not S.NegativeOne
-                                          and expr.is_Rational is False
-                                          and not expr.is_Float)))
-
     def _needs_mul_brackets(self, expr, first=False, last=False):
         """
         Returns True if the expression needs to be wrapped in brackets when
@@ -196,6 +185,9 @@ class LatexPrinter(Printer):
             if not first and _coeff_isneg(expr):
                 return True
 
+        if expr.has(Mod):
+            return True
+
         if (not last and any(expr.has(x) for
                              x in (Integral, Piecewise, Product, Sum))):
             return True
@@ -209,6 +201,8 @@ class LatexPrinter(Printer):
         things.
         """
         if expr.is_Relational:
+            return True
+        if expr.has(Mod):
             return True
         return False
 
@@ -291,9 +285,13 @@ class LatexPrinter(Printer):
             return str_real
 
     def _print_Mul(self, expr):
+        include_parens = False
         if _coeff_isneg(expr):
             expr = -expr
             tex = "- "
+            if expr.is_Add:
+                tex += "("
+                include_parens = True
         else:
             tex = ""
 
@@ -374,9 +372,14 @@ class LatexPrinter(Printer):
             else:
                 tex += r"\frac{%s}{%s}" % (snumer, sdenom)
 
+        if include_parens:
+            tex += ")"
+
         return tex
 
     def _print_Pow(self, expr):
+        from ..integrals import Integral
+
         # Treat root(x, n) as special case
         if expr.exp.is_Rational and abs(expr.exp.p) == 1 and expr.exp.q != 1:
             base = self._print(expr.base)
@@ -396,11 +399,9 @@ class LatexPrinter(Printer):
         elif self._settings['fold_frac_powers'] \
             and expr.exp.is_Rational \
                 and expr.exp.q != 1:
-            base, p, q = self._print(expr.base), expr.exp.p, expr.exp.q
+            base, p, q = self.parenthesize(expr.base, PRECEDENCE['Pow']), expr.exp.p, expr.exp.q
             if expr.base.is_Function:
                 return self._print(expr.base, "%s/%s" % (p, q))
-            if self._needs_brackets(expr.base):
-                return r"\left(%s\right)^{%s/%s}" % (base, p, q)
             return r"%s^{%s/%s}" % (base, p, q)
         elif expr.exp.is_Rational and expr.exp.is_negative and expr.base.is_commutative:
             # Things like 1/x
@@ -409,12 +410,11 @@ class LatexPrinter(Printer):
             if expr.base.is_Function:
                 return self._print(expr.base, self._print(expr.exp))
             else:
-                if self._needs_brackets(expr.base):
+                tex = r"%s^{%s}"
+                if expr.base.is_Float or isinstance(expr.base, Integral):
                     tex = r"\left(%s\right)^{%s}"
-                else:
-                    tex = r"%s^{%s}"
 
-                return tex % (self._print(expr.base),
+                return tex % (self.parenthesize(expr.base, PRECEDENCE['Pow']),
                               self._print(expr.exp))
 
     def _print_Sum(self, expr):
@@ -731,19 +731,11 @@ class LatexPrinter(Printer):
     _print_Determinant = _print_Abs
 
     def _print_re(self, expr, exp=None):
-        if self._needs_brackets(expr.args[0]):
-            tex = r"\Re {\left (%s \right )}" % self._print(expr.args[0])
-        else:
-            tex = r"\Re{%s}" % self._print(expr.args[0])
-
+        tex = r"\Re{%s}" % self.parenthesize(expr.args[0], PRECEDENCE['Func'])
         return self._do_exponent(tex, exp)
 
     def _print_im(self, expr, exp=None):
-        if self._needs_brackets(expr.args[0]):
-            tex = r"\Im {\left ( %s \right )}" % self._print(expr.args[0])
-        else:
-            tex = r"\Im{%s}" % self._print(expr.args[0])
-
+        tex = r"\Im{%s}" % self.parenthesize(expr.args[0], PRECEDENCE['Func'])
         return self._do_exponent(tex, exp)
 
     def _print_Not(self, e):
@@ -891,11 +883,7 @@ class LatexPrinter(Printer):
             return r"C%s" % tex
 
     def _print_subfactorial(self, expr, exp=None):
-        x = expr.args[0]
-        if self._needs_brackets(x):
-            tex = r"!\left(%s\right)" % self._print(x)
-        else:
-            tex = "!" + self._print(x)
+        tex = r"!%s" % self.parenthesize(expr.args[0], PRECEDENCE["Func"])
 
         if exp is not None:
             return r"%s^{%s}" % (tex, exp)
@@ -903,11 +891,7 @@ class LatexPrinter(Printer):
             return tex
 
     def _print_factorial(self, expr, exp=None):
-        x = expr.args[0]
-        if self._needs_brackets(x):
-            tex = r"\left(%s\right)!" % self._print(x)
-        else:
-            tex = self._print(x) + "!"
+        tex = r"%s!" % self.parenthesize(expr.args[0], PRECEDENCE["Func"])
 
         if exp is not None:
             return r"%s^{%s}" % (tex, exp)
@@ -915,11 +899,7 @@ class LatexPrinter(Printer):
             return tex
 
     def _print_factorial2(self, expr, exp=None):
-        x = expr.args[0]
-        if self._needs_brackets(x):
-            tex = r"\left(%s\right)!!" % self._print(x)
-        else:
-            tex = self._print(x) + "!!"
+        tex = r"%s!!" % self.parenthesize(expr.args[0], PRECEDENCE["Func"])
 
         if exp is not None:
             return r"%s^{%s}" % (tex, exp)
@@ -937,10 +917,7 @@ class LatexPrinter(Printer):
 
     def _print_RisingFactorial(self, expr, exp=None):
         n, k = expr.args
-        if self._needs_brackets(n):
-            base = r"\left(%s\right)" % self._print(n)
-        else:
-            base = self._print(n)
+        base = r"%s" % self.parenthesize(n, PRECEDENCE['Func'])
 
         tex = r"{%s}^{\left(%s\right)}" % (base, self._print(k))
 
@@ -948,17 +925,14 @@ class LatexPrinter(Printer):
 
     def _print_FallingFactorial(self, expr, exp=None):
         n, k = expr.args
-        if self._needs_brackets(k):
-            sub = r"\left(%s\right)" % self._print(k)
-        else:
-            sub = self._print(k)
+        sub = r"%s" % self.parenthesize(k, PRECEDENCE['Func'])
 
         tex = r"{\left(%s\right)}_{%s}" % (self._print(n), sub)
 
         return self._do_exponent(tex, exp)
 
     def _hprint_BesselBase(self, expr, exp, sym):
-        tex = r"%s" % (sym)
+        tex = r"%s" % sym
 
         need_exp = False
         if exp is not None:
@@ -1171,7 +1145,10 @@ class LatexPrinter(Printer):
             if expr.p < 0:
                 sign = "- "
                 p = -p
-            return r"%s\frac{%d}{%d}" % (sign, p, expr.q)
+            if self._settings['fold_short_frac']:
+                return r"%s%d / %d" % (sign, p, expr.q)
+            else:
+                return r"%s\frac{%d}{%d}" % (sign, p, expr.q)
         else:
             return self._print(expr.p)
 
@@ -1339,6 +1316,15 @@ class LatexPrinter(Printer):
             return self._print(x)
         return ' '.join(map(parens, expr.args))
 
+    def _print_Mod(self, expr, exp=None):
+        if exp is not None:
+            return r'\left(%s\bmod{%s}\right)^{%s}' % (self.parenthesize(expr.args[0],
+                                                                         PRECEDENCE['Mul']),
+                                                       self._print(expr.args[1]), self._print(exp))
+        return r'%s\bmod{%s}' % (self.parenthesize(expr.args[0],
+                                                   PRECEDENCE['Mul']),
+                                 self._print(expr.args[1]))
+
     def _print_HadamardProduct(self, expr):
         from ..core import Add
         from ..matrices import MatAdd, MatMul
@@ -1488,7 +1474,7 @@ class LatexPrinter(Printer):
         return r"\mathbb{N}"
 
     def _print_Naturals0(self, n):
-        return r"\mathbb{N_0}"
+        return r"\mathbb{N}_0"
 
     def _print_Integers(self, i):
         return r"\mathbb{Z}"
@@ -1544,8 +1530,10 @@ class LatexPrinter(Printer):
     def _print_RootOf(self, root):
         cls = root.__class__.__name__
         expr = self._print(root.expr)
-        index = root.index
-        return r"\operatorname{%s} {\left(%s, %d\right)}" % (cls, expr, index)
+        if root.free_symbols:
+            return r"\operatorname{%s} {\left(%s, %s, %d\right)}" % (cls, expr, *root.args[1:])
+        else:
+            return r"\operatorname{%s} {\left(%s, %d\right)}" % (cls, expr, root.index)
 
     def _print_RootSum(self, expr):
         cls = expr.__class__.__name__
@@ -1620,10 +1608,13 @@ class LatexPrinter(Printer):
     def _print_Tr(self, p):
         # Todo: Handle indices
         contents = self._print(p.args[0])
-        return r'\mbox{Tr}\left(%s\right)' % (contents)
+        return r'\mbox{Tr}\left(%s\right)' % contents
 
-    def _print_totient(self, expr):
-        return r'\phi\left( %s \right)' % self._print(expr.args[0])
+    def _print_totient(self, expr, exp=None):
+        if exp is not None:
+            return r'\left(\phi\left(%s\right)\right)^{%s}' % (self._print(expr.args[0]),
+                                                               self._print(exp))
+        return r'\phi\left(%s\right)' % self._print(expr.args[0])
 
     def _print_divisor_sigma(self, expr, exp=None):
         if len(expr.args) == 2:
@@ -1646,7 +1637,6 @@ def translate(s):
 
     Let everything else pass as given.
 
-    >>> from diofant.printing.latex import translate
     >>> translate('alphahatdotprime')
     "{\\dot{\\hat{\\alpha}}}'"
     """
@@ -1668,16 +1658,15 @@ def latex(expr, **settings):
     r"""
     Convert the given expression to LaTeX representation.
 
-    >>> from diofant import latex, pi, sin, asin, Integral, Matrix, Rational
-    >>> from diofant.abc import x, y, mu, r, tau
+    >>> from diofant.abc import mu, r, tau
 
-    >>> print(latex((2*tau)**Rational(7,2)))
+    >>> print(latex((2*tau)**Rational(7, 2)))
     8 \sqrt{2} \tau^{\frac{7}{2}}
 
     Not using a print statement for printing, results in double backslashes for
     latex commands since that's the way Python escapes backslashes in strings.
 
-    >>> latex((2*tau)**Rational(7,2))
+    >>> latex((2*tau)**Rational(7, 2))
     '8 \\sqrt{2} \\tau^{\\frac{7}{2}}'
 
     order: Any of the supported monomial orderings (currently "lex", "grlex", or
@@ -1694,34 +1683,34 @@ def latex(expr, **settings):
     'amsmath' for 'equation*'), unless the 'itex' option is set. In the latter
     case, the ``$$ $$`` syntax is used.
 
-    >>> print(latex((2*mu)**Rational(7,2), mode='plain'))
+    >>> print(latex((2*mu)**Rational(7, 2), mode='plain'))
     8 \sqrt{2} \mu^{\frac{7}{2}}
 
-    >>> print(latex((2*tau)**Rational(7,2), mode='inline'))
-    $8 \sqrt{2} \tau^{\frac{7}{2}}$
+    >>> print(latex((2*tau)**Rational(7, 2), mode='inline'))
+    $8 \sqrt{2} \tau^{7 / 2}$
 
-    >>> print(latex((2*mu)**Rational(7,2), mode='equation*'))
+    >>> print(latex((2*mu)**Rational(7, 2), mode='equation*'))
     \begin{equation*}8 \sqrt{2} \mu^{\frac{7}{2}}\end{equation*}
 
-    >>> print(latex((2*mu)**Rational(7,2), mode='equation'))
+    >>> print(latex((2*mu)**Rational(7, 2), mode='equation'))
     \begin{equation}8 \sqrt{2} \mu^{\frac{7}{2}}\end{equation}
 
     itex: Specifies if itex-specific syntax is used, including emitting ``$$ $$``.
 
-    >>> print(latex((2*mu)**Rational(7,2), mode='equation', itex=True))
+    >>> print(latex((2*mu)**Rational(7, 2), mode='equation', itex=True))
     $$8 \sqrt{2} \mu^{\frac{7}{2}}$$
 
     fold_frac_powers: Emit "^{p/q}" instead of "^{\frac{p}{q}}" for fractional
     powers.
 
-    >>> print(latex((2*tau)**Rational(7,2), fold_frac_powers=True))
+    >>> print(latex((2*tau)**Rational(7, 2), fold_frac_powers=True))
     8 \sqrt{2} \tau^{7/2}
 
     fold_func_brackets: Fold function brackets where applicable.
 
-    >>> print(latex((2*tau)**sin(Rational(7,2))))
+    >>> print(latex((2*tau)**sin(Rational(7, 2))))
     \left(2 \tau\right)^{\sin{\left (\frac{7}{2} \right )}}
-    >>> print(latex((2*tau)**sin(Rational(7,2)), fold_func_brackets = True))
+    >>> print(latex((2*tau)**sin(Rational(7, 2)), fold_func_brackets = True))
     \left(2 \tau\right)^{\sin {\frac{7}{2}}}
 
     fold_short_frac: Emit "p / q" instead of "\frac{p}{q}" when the
@@ -1745,17 +1734,17 @@ def latex(expr, **settings):
     mul_symbol: The symbol to use for multiplication. Can be one of None,
     "ldot", "dot", or "times".
 
-    >>> print(latex((2*tau)**sin(Rational(7,2)), mul_symbol="times"))
+    >>> print(latex((2*tau)**sin(Rational(7, 2)), mul_symbol="times"))
     \left(2 \times \tau\right)^{\sin{\left (\frac{7}{2} \right )}}
 
     inv_trig_style: How inverse trig functions should be displayed. Can be one
     of "abbreviated", "full", or "power". Defaults to "abbreviated".
 
-    >>> print(latex(asin(Rational(7,2))))
+    >>> print(latex(asin(Rational(7, 2))))
     \operatorname{asin}{\left (\frac{7}{2} \right )}
-    >>> print(latex(asin(Rational(7,2)), inv_trig_style="full"))
+    >>> print(latex(asin(Rational(7, 2)), inv_trig_style="full"))
     \arcsin{\left (\frac{7}{2} \right )}
-    >>> print(latex(asin(Rational(7,2)), inv_trig_style="power"))
+    >>> print(latex(asin(Rational(7, 2)), inv_trig_style="power"))
     \sin^{-1}{\left (\frac{7}{2} \right )}
 
     mat_str: Which matrix environment string to emit. "smallmatrix", "matrix",
@@ -1765,7 +1754,7 @@ def latex(expr, **settings):
     >>> print(latex(Matrix(2, 1, [x, y])))
     \left[\begin{matrix}x\\y\end{matrix}\right]
 
-    >>> print(latex(Matrix(2, 1, [x, y]), mat_str = "array"))
+    >>> print(latex(Matrix(2, 1, [x, y]), mat_str="array"))
     \left[\begin{array}{c}x\\y\end{array}\right]
 
     mat_delim: The delimiter to wrap around matrices. Can be one of "[", "(",
@@ -1777,7 +1766,7 @@ def latex(expr, **settings):
     symbol_names: Dictionary of symbols and the custom strings they should be
     emitted as.
 
-    >>> print(latex(x**2, symbol_names={x:'x_i'}))
+    >>> print(latex(x**2, symbol_names={x: 'x_i'}))
     x_i^{2}
 
     ``latex`` also supports the builtin container types list, tuple, and

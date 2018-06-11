@@ -79,8 +79,6 @@ class Add(AssocOp):
                     if coeff is nan:
                         # we know for sure the result will be nan
                         return [nan], [], None
-                elif coeff.is_AlgebraicNumber:
-                    coeff += o
                 o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 continue
 
@@ -233,13 +231,12 @@ class Add(AssocOp):
         Examples
         ========
 
-        >>> from diofant.abc import a, x
-        >>> (3*x + a*x + 4).as_coefficients_dict()
-        {1: 4, x: 3, a*x: 1}
-        >>> _[a]
+        >>> (3*x + x*y + 4).as_coefficients_dict()
+        {1: 4, x: 3, x*y: 1}
+        >>> _[y]
         0
-        >>> (3*a*x).as_coefficients_dict()
-        {a*x: 3}
+        >>> (3*y*x).as_coefficients_dict()
+        {x*y: 3}
         """
 
         d = defaultdict(list)
@@ -264,7 +261,6 @@ class Add(AssocOp):
         Examples
         ========
 
-        >>> from diofant.abc import x
         >>> (7 + 3*x).as_coeff_add()
         (7, (3*x,))
         >>> (7*x).as_coeff_add()
@@ -284,17 +280,13 @@ class Add(AssocOp):
             return coeff, notrat + self.args[1:]
         return S.Zero, self.args
 
-    def as_coeff_Add(self):
+    def as_coeff_Add(self, rational=False):
         """Efficiently extract the coefficient of a summation. """
         coeff, args = self.args[0], self.args[1:]
 
-        if coeff.is_Number:
-            if len(args) == 1:
-                return coeff, args[0]
-            else:
-                return coeff, self._new_rawargs(*args)
-        else:
-            return S.Zero, self
+        if coeff.is_Number and not rational or coeff.is_Rational:
+            return coeff, self._new_rawargs(*args)
+        return S.Zero, self
 
     # Note, we intentionally do not implement Add.as_coeff_mul().  Rather, we
     # let Expr.as_coeff_mul() just always return (S.One, self) for an Add.  See
@@ -351,7 +343,6 @@ class Add(AssocOp):
         - if you want the coefficient when self is treated as a Mul
           then use self.as_coeff_mul()[0]
 
-        >>> from diofant.abc import x, y
         >>> (3*x*y).as_two_terms()
         (3, x*y)
         """
@@ -585,7 +576,6 @@ class Add(AssocOp):
         Examples
         ========
 
-        >>> from diofant.abc import x
         >>> (x + 1 + 1/x**5).extract_leading_order(x)
         ((x**(-5), O(x**(-5))),)
         >>> (1 + x).extract_leading_order(x)
@@ -620,7 +610,6 @@ class Add(AssocOp):
         Examples
         ========
 
-        >>> from diofant import I
         >>> (7 + 9*I).as_real_imag()
         (7, 9)
         >>> ((1 + I)/(1 - I)).as_real_imag()
@@ -678,8 +667,6 @@ class Add(AssocOp):
 
         Examples
         ========
-
-        >>> from diofant.abc import x, y
 
         >>> (2*x + 4*y).primitive()
         (2, x + 2*y)
@@ -756,7 +743,6 @@ class Add(AssocOp):
         Examples
         ========
 
-        >>> from diofant import sqrt
         >>> (3 + 3*sqrt(2)).as_content_primitive()
         (3, 1 + sqrt(2))
 

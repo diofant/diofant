@@ -24,7 +24,6 @@ Array construction can detect the shape of nested lists and tuples:
 (3, 2)
 >>> a1.rank()
 2
->>> from diofant.abc import x, y, z
 >>> a2 = Array([[[x, y], [z, x*z]], [[1, x*y], [1/x, x/y]]])
 >>> a2
 [[[x, y], [z, x*z]], [[1, x*y], [1/x, x/y]]]
@@ -41,7 +40,7 @@ Otherwise one could pass a 1-dim array followed by a shape tuple:
 >>> m2 = Array(range(12), (3, 2, 2))
 >>> m2
 [[[0, 1], [2, 3]], [[4, 5], [6, 7]], [[8, 9], [10, 11]]]
->>> m2[1,1,1]
+>>> m2[1, 1, 1]
 7
 >>> m2.reshape(4, 3)
 [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9, 10, 11]]
@@ -53,7 +52,6 @@ Slice support:
 
 Elementwise derivative:
 
->>> from diofant.abc import x, y, z
 >>> m3 = Array([x**3, x*y, z])
 >>> m3.diff(x)
 [3*x**2, y, 0]
@@ -97,7 +95,7 @@ creates the combined array `P = A \otimes B` defined as
 It is available through ``tensorproduct(...)``:
 
 >>> from diofant.tensor.array import Array, tensorproduct
->>> from diofant.abc import x,y,z,t
+>>> from diofant.abc import t
 >>> A = Array([x, y, z, t])
 >>> B = Array([1, 2, 3, 4])
 >>> tensorproduct(A, B)
@@ -106,7 +104,6 @@ It is available through ``tensorproduct(...)``:
 
 Tensor product between a rank-1 array and a matrix creates a rank-3 array:
 
->>> from diofant import eye
 >>> p1 = tensorproduct(A, eye(4))
 >>> p1
 [[[x, 0, 0, 0], [0, x, 0, 0], [0, 0, x, 0], [0, 0, 0, x]],
@@ -116,7 +113,7 @@ Tensor product between a rank-1 array and a matrix creates a rank-3 array:
 
 Now, to get back `A_0 \otimes \mathbf{1}` one can access `p_{0,m,n}` by slicing:
 
->>> p1[0,:,:]
+>>> p1[0, :, :]
 [[x, 0, 0, 0], [0, x, 0, 0], [0, 0, x, 0], [0, 0, 0, x]]
 
 Tensor contraction sums over the specified axes, for example contracting
@@ -151,7 +148,6 @@ axes number 1, 2).
 
 One may verify that the matrix product is equivalent:
 
->>> from diofant import Matrix
 >>> Matrix([[x, y], [z, t]])*Matrix([[2, 1], [0, -1]])
 Matrix([
 [2*x,  x - y],
@@ -163,11 +159,52 @@ or equivalently
 Matrix([
 [2*x,  x - y],
 [2*z, -t + z]])
+
+
+Derivatives by array
+--------------------
+
+The usual derivative operation may be extended to support derivation with
+respect to arrays, provided that all elements in the that array are symbols or
+expressions suitable for derivations.
+
+The definition of a derivative by an array is as follows: given the array
+`A_{i_1, \ldots, i_N}` and the array `X_{j_1, \ldots, j_M}`
+the derivative of arrays will return a new array `B` defined by
+
+`B_{j_1,\ldots,j_M,i_1,\ldots,i_N} := \frac{\partial A_{i_1,\ldots,i_N}}{\partial X_{j_1,\ldots,j_M}}`
+
+The function ``derive_by_array`` performs such an operation:
+
+>>> from diofant.tensor.array import Array, tensorcontraction, derive_by_array
+>>> from diofant.abc import t
+
+With scalars, it behaves exactly as the ordinary derivative:
+
+>>> derive_by_array(sin(x*y), x)
+y*cos(x*y)
+
+Scalar derived by an array basis:
+
+>>> derive_by_array(sin(x*y), [x, y, z])
+[y*cos(x*y), x*cos(x*y), 0]
+
+Deriving array by an array basis: `B^{nm} := \frac{\partial A^m}{\partial x^n}`
+
+>>> basis = [x, y, z]
+>>> ax = derive_by_array([exp(x), sin(y*z), t], basis)
+>>> ax
+[[E**x, 0, 0], [0, z*cos(y*z), 0], [0, y*cos(y*z), 0]]
+
+Contraction of the resulting array: `\sum_m \frac{\partial A^m}{\partial x^m}`
+
+>>> tensorcontraction(ax, (0, 1))
+E**x + z*cos(y*z)
 """
 
 from .dense_ndim_array import MutableDenseNDimArray, ImmutableDenseNDimArray  # noqa: F401
 from .sparse_ndim_array import MutableSparseNDimArray, ImmutableSparseNDimArray  # noqa: F401
-from .arrayop import tensorproduct, tensorcontraction  # noqa: F401
+from .arrayop import derive_by_array, permutedims, tensorproduct, tensorcontraction  # noqa: F401
 
 Array = ImmutableDenseNDimArray
 NDimArray = ImmutableDenseNDimArray

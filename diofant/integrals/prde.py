@@ -21,9 +21,7 @@ from ..core import Add, Dummy, Integer, Mul, Pow, ilcm
 from ..matrices import Matrix, eye, zeros
 from ..polys import Poly, cancel, lcm, sqf_list
 from ..solvers import solve
-from ..utilities.misc import debug
-from .rde import (bound_degree, order_at, order_at_oo, solve_poly_rde, spde,
-                  weak_normalizer)
+from .rde import order_at, order_at_oo, solve_poly_rde, spde
 from .risch import (DecrementLevel, NonElementaryIntegralException, derivation,
                     frac_in, gcdex_diophantine, recognize_log_derivative,
                     residue_reduce, residue_reduce_derivation, splitfactor)
@@ -181,7 +179,7 @@ def prde_linear_constraints(a, b, G, DE):
     Gns, Gds = list(zip(*G))
     d = reduce(lambda i, j: i.lcm(j), Gds)
     d = Poly(d, field=True)
-    Q = [(ga*(d).quo(gd)).div(d) for ga, gd in G]
+    Q = [(ga*d.quo(gd)).div(d) for ga, gd in G]
 
     if not all(ri.is_zero for _, ri in Q):
         N = max(ri.degree(DE.t) for _, ri in Q)
@@ -361,32 +359,6 @@ def prde_no_cancel_b_small(b, Q, n, DE):
     else:
         # TODO: implement this (requires recursive param_rischDE() call)
         raise NotImplementedError
-
-
-def param_rischDE(fa, fd, G, DE):
-    """
-    Solve a Parametric Risch Differential Equation: Dy + f*y == Sum(ci*Gi, (i, 1, m)).
-    """
-    _, (fa, fd) = weak_normalizer(fa, fd, DE)
-    a, (ba, bd), G, hn = prde_normal_denom(ga, gd, G, DE)
-    A, B, G, hs = prde_special_denom(a, ba, bd, G, DE)
-    g = gcd(A, B)
-    A, B, G = A.quo(g), B.quo(g), [gia.cancel(gid*g, include=True) for
-                                   gia, gid in G]
-    Q, M = prde_linear_constraints(A, B, G, DE)
-    M, _ = constant_system(M, zeros(M.rows, 1), DE)
-    # Reduce number of constants at this point
-    try:
-        # Similar to rischDE(), we try oo, even though it might lead to
-        # non-termination when there is no solution.  At least for prde_spde,
-        # it will always terminate no matter what n is.
-        n = bound_degree(A, B, G, DE, parametric=True)
-    except NotImplementedError:
-        debug("param_rischDE: Proceeding with n = oo; may cause "
-              "non-termination.")
-        n = oo
-
-    A, B, Q, R, n1 = prde_spde(A, B, Q, n, DE)
 
 
 def limited_integrate_reduce(fa, fd, G, DE):

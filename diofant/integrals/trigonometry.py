@@ -33,10 +33,6 @@ _u = Dummy('u')
 def trigintegrate(f, x, conds='piecewise'):
     """Integrate f = Mul(trig) over x
 
-       >>> from diofant import Symbol, sin, cos, tan, sec, csc, cot
-       >>> from diofant.integrals.trigonometry import trigintegrate
-       >>> from diofant.abc import x
-
        >>> trigintegrate(sin(x)*cos(x), x)
        sin(x)**2/2
 
@@ -49,7 +45,10 @@ def trigintegrate(f, x, conds='piecewise'):
        >>> trigintegrate(sin(x)*tan(x), x)
        -log(sin(x) - 1)/2 + log(sin(x) + 1)/2 - sin(x)
 
-       https//en.wikibooks.org/wiki/Calculus/Integration_techniques
+    References
+    ==========
+
+    .. [1] https//en.wikibooks.org/wiki/Calculus/Integration_techniques
 
     See Also
     ========

@@ -117,7 +117,7 @@ class sinh(HyperbolicFunction):
                 p = previous_terms[-2]
                 return p * x**2 / (n*(n - 1))
             else:
-                return x**(n) / factorial(n)
+                return x**n / factorial(n)
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -263,7 +263,7 @@ class cosh(HyperbolicFunction):
                 p = previous_terms[-2]
                 return p * x**2 / (n*(n - 1))
             else:
-                return x**(n)/factorial(n)
+                return x**n/factorial(n)
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -745,7 +745,7 @@ class sech(ReciprocalHyperbolicFunction):
             return S.Zero
         else:
             x = sympify(x)
-            return euler(n) / factorial(n) * x**(n)
+            return euler(n) / factorial(n) * x**n
 
     def _eval_rewrite_as_sinh(self, arg):
         return I / sinh(arg + I * pi / 2)

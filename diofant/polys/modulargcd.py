@@ -3,12 +3,15 @@ import random
 from mpmath import sqrt
 
 from ..core import Dummy
-from ..domains import PolynomialRing
 from ..ntheory import nextprime
 from ..ntheory.modular import crt
-from ..utilities import public
 from .galoistools import gf_div, gf_from_dict, gf_gcd, gf_gcdex, gf_lcm
 from .polyerrors import ModularGCDFailed
+from .rings import PolynomialRing
+
+
+__all__ = ('modgcd_univariate', 'modgcd_bivariate', 'modgcd_multivariate',
+           'func_field_modgcd')
 
 
 def _trivial_gcd(f, g):
@@ -123,9 +126,6 @@ def _chinese_remainder_reconstruction_univariate(hp, hq, p, q):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-
     >>> R, x = ring("x", ZZ)
     >>> p = 3
     >>> q = 5
@@ -154,7 +154,6 @@ def _chinese_remainder_reconstruction_univariate(hp, hq, p, q):
     return hpq
 
 
-@public
 def modgcd_univariate(f, g):
     r"""
     Computes the GCD of two polynomials in `\mathbb{Z}[x]` using a modular
@@ -187,9 +186,6 @@ def modgcd_univariate(f, g):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-
     >>> R, x = ring("x", ZZ)
 
     >>> f = x**5 - 1
@@ -221,7 +217,7 @@ def modgcd_univariate(f, g):
 
     .. [1] [Monagan00]_
     """
-    assert f.ring == g.ring and f.ring.domain.is_ZZ
+    assert f.ring == g.ring and f.ring.domain.is_IntegerRing
 
     result = _trivial_gcd(f, g)
     if result is not None:
@@ -307,9 +303,6 @@ def _primitive(f, p):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-
     >>> R, x, y = ring("x, y", ZZ)
     >>> p = 3
 
@@ -364,9 +357,6 @@ def _deg(f):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-
     >>> R, x, y = ring("x, y", ZZ)
 
     >>> f = x**2*y**2 + x**2*y - 1
@@ -411,9 +401,6 @@ def _LC(f):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x, y", ZZ)
 
@@ -567,9 +554,6 @@ def _chinese_remainder_reconstruction_multivariate(hp, hq, p, q):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-
     >>> R, x, y = ring("x, y", ZZ)
     >>> p = 3
     >>> q = 5
@@ -650,7 +634,7 @@ def _interpolate_multivariate(evalpoints, hpeval, ring, i, p, ground=False):
         list of polynomials in (resp. over)
         `\mathbb{Z}_p[x_0, \ldots, x_{i-1}, x_{i+1}, \ldots, x_{k-1}]`,
         images of `h_p` evaluated in the variable `x_i`
-    ring : PolyRing
+    ring : PolynomialRing
         `h_p` will be an element of this ring
     i : Integer
         index of the variable which has to be reconstructed
@@ -694,7 +678,6 @@ def _interpolate_multivariate(evalpoints, hpeval, ring, i, p, ground=False):
     return hp.trunc_ground(p)
 
 
-@public
 def modgcd_bivariate(f, g):
     r"""
     Computes the GCD of two polynomials in `\mathbb{Z}[x, y]` using a
@@ -733,9 +716,6 @@ def modgcd_bivariate(f, g):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-
     >>> R, x, y = ring("x, y", ZZ)
 
     >>> f = x**2 - y**2
@@ -767,7 +747,7 @@ def modgcd_bivariate(f, g):
 
     .. [1] [Monagan00]_
     """
-    assert f.ring == g.ring and f.ring.domain.is_ZZ
+    assert f.ring == g.ring and f.ring.domain.is_IntegerRing
 
     result = _trivial_gcd(f, g)
     if result is not None:
@@ -1058,7 +1038,6 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
     return
 
 
-@public
 def modgcd_multivariate(f, g):
     r"""
     Compute the GCD of two polynomials in `\mathbb{Z}[x_0, \ldots, x_{k-1}]`
@@ -1093,9 +1072,6 @@ def modgcd_multivariate(f, g):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
 
     >>> R, x, y = ring("x, y", ZZ)
 
@@ -1137,7 +1113,7 @@ def modgcd_multivariate(f, g):
     _modgcd_multivariate_p
 
     """
-    assert f.ring == g.ring and f.ring.domain.is_ZZ
+    assert f.ring == g.ring and f.ring.domain.is_IntegerRing
 
     result = _trivial_gcd(f, g)
     if result is not None:
@@ -1308,7 +1284,7 @@ def _rational_reconstruction_func_coeffs(hm, p, m, ring, k):
         prime number, modulus of `\mathbb Z_p`
     m : PolyElement
         modulus, polynomial in `\mathbb Z[t]`, not necessarily irreducible
-    ring : PolyRing
+    ring : PolynomialRing
         `\mathbb Z(t_k)[t_1, \ldots, t_{k-1}][x, z]`, `h` will be an
         element of this ring
     k : Integer
@@ -1432,7 +1408,7 @@ def _euclidean_algorithm(f, g, minpoly, p):
     while g:
         rem = f
         deg = g.degree(0)  # degree in x
-        lcinv, _, gcd = _gf_gcdex(ring.dmp_LC(g), minpoly, p)
+        lcinv, _, gcd = _gf_gcdex(g.drop_to_ground(-1).LC, minpoly, p)
 
         if not gcd == 1:
             return
@@ -1441,13 +1417,13 @@ def _euclidean_algorithm(f, g, minpoly, p):
             degrem = rem.degree(0)  # degree in x
             if degrem < deg:
                 break
-            quo = (lcinv * ring.dmp_LC(rem)).set_ring(ring)
+            quo = (lcinv * rem.drop_to_ground(-1).LC).set_ring(ring)
             rem = _trunc(rem - g.mul_monom((degrem - deg, 0))*quo, minpoly, p)
 
         f = g
         g = rem
 
-    lcfinv = _gf_gcdex(ring.dmp_LC(f), minpoly, p)[0].set_ring(ring)
+    lcfinv = _gf_gcdex(f.drop_to_ground(-1).LC, minpoly, p)[0].set_ring(ring)
 
     return _trunc(f * lcfinv, minpoly, p)
 
@@ -1592,7 +1568,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     d = 1
 
     # polynomial in Z_p[t_1, ..., t_k][z]
-    gamma = ring.dmp_LC(f) * ring.dmp_LC(g)
+    gamma = f.drop_to_ground(-1).LC * g.drop_to_ground(-1).LC
     # polynomial in Z_p[t_1, ..., t_k]
     delta = minpoly.LC
 
@@ -1643,9 +1619,9 @@ def _func_field_modgcd_p(f, g, minpoly, p):
         evalpoints_a = [a]
         heval_a = [ha]
         if k == 1:
-            m = qring.domain.get_ring().one
+            m = qring.domain.ring.one
         else:
-            m = qring.domain.domain.get_ring().one
+            m = qring.domain.domain.ring.one
 
         t = m.ring.gens[0]
 
@@ -1754,7 +1730,7 @@ def integer_rational_reconstruction(c, m, domain):
     else:
         return
 
-    field = domain.get_field()
+    field = domain.field
 
     return field(a) / field(b)
 
@@ -1783,7 +1759,7 @@ def _rational_reconstruction_int_coeffs(hm, m, ring):
         polynomial in `\mathbb Z[t_1, \ldots, t_k][x, z]`
     m : Integer
         modulus, not necessarily prime
-    ring : PolyRing
+    ring : PolynomialRing
         `\mathbb Q[t_1, \ldots, t_k][x, z]`, `h` will be an element of this
         ring
 
@@ -1855,9 +1831,6 @@ def _func_field_modgcd_m(f, g, minpoly):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-
     >>> R, x, z = ring('x, z', ZZ)
     >>> minpoly = (z**2 - 2).drop(0)
 
@@ -1891,17 +1864,17 @@ def _func_field_modgcd_m(f, g, minpoly):
 
     if isinstance(domain, PolynomialRing):
         k = domain.ngens
-        QQdomain = domain.ring.clone(domain=domain.domain.get_field())
+        QQdomain = domain.ring.clone(domain=domain.domain.field)
         QQring = ring.clone(domain=QQdomain)
     else:
         k = 0
-        QQring = ring.clone(domain=ring.domain.get_field())
+        QQring = ring.clone(domain=ring.domain.field)
 
     cf, f = f.primitive()
     cg, g = g.primitive()
 
     # polynomial in Z[t_1, ..., t_k][z]
-    gamma = ring.dmp_LC(f) * ring.dmp_LC(g)
+    gamma = f.drop_to_ground(-1).LC * g.drop_to_ground(-1).LC
     # polynomial in Z[t_1, ..., t_k]
     delta = minpoly.LC
 
@@ -1990,7 +1963,7 @@ def _to_ZZ_poly(f, ring):
 
     f : PolyElement
         polynomial in `\mathbb Q(\alpha)[x_0, \ldots, x_{n-1}]`
-    ring : PolyRing
+    ring : PolynomialRing
         `\mathbb Z[x_1, \ldots, x_{n-1}][x_0, z]`
 
     Returns
@@ -2048,7 +2021,7 @@ def _to_ANP_poly(f, ring):
 
     f : PolyElement
         polynomial in `\mathbb Z[x_1, \ldots, x_{n-1}][x_0, z]`
-    ring : PolyRing
+    ring : PolynomialRing
         `\mathbb Q(\alpha)[x_0, \ldots, x_{n-1}]`
 
     Returns
@@ -2119,7 +2092,6 @@ def _primitive_in_x0(f):
 
 
 # TODO: add support for algebraic function fields
-@public
 def func_field_modgcd(f, g):
     r"""
     Compute the GCD of two polynomials `f` and `g` in
@@ -2172,10 +2144,6 @@ def func_field_modgcd(f, g):
 
     Examples
     ========
-
-    >>> from diofant.domains import AlgebraicField, QQ
-    >>> from diofant.polys import ring
-    >>> from diofant import sqrt
 
     >>> A = AlgebraicField(QQ, sqrt(2))
     >>> R, x = ring('x', A)
@@ -2235,7 +2203,7 @@ def func_field_modgcd(f, g):
 
     z = Dummy('z')
 
-    ZZring = ring.clone(symbols=ring.symbols + (z,), domain=domain.domain.get_ring())
+    ZZring = ring.clone(symbols=ring.symbols + (z,), domain=domain.domain.ring)
 
     if n == 1:
         f_ = _to_ZZ_poly(f, ZZring)

@@ -42,8 +42,7 @@ class LeviCivita(Function):
     Examples
     ========
 
-    >>> from diofant import LeviCivita
-    >>> from diofant.abc import i, j, k
+    >>> from diofant.abc import i, j
     >>> LeviCivita(1, 2, 3)
     1
     >>> LeviCivita(1, 3, 2)
@@ -94,7 +93,6 @@ class KroneckerDelta(Function):
 
     A simple example with integer indices::
 
-        >>> from diofant.functions.special.tensor_functions import KroneckerDelta
         >>> KroneckerDelta(1, 2)
         0
         >>> KroneckerDelta(3, 3)
@@ -102,7 +100,7 @@ class KroneckerDelta(Function):
 
     Symbolic indices::
 
-        >>> from diofant.abc import i, j, k
+        >>> from diofant.abc import i, j
         >>> KroneckerDelta(i, j)
         KroneckerDelta(i, j)
         >>> KroneckerDelta(i, i)
@@ -134,8 +132,7 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant.functions.special.tensor_functions import KroneckerDelta
-        >>> from diofant.abc import i, j, k
+        >>> from diofant.abc import i, j
 
         >>> KroneckerDelta(i, j)
         KroneckerDelta(i, j)
@@ -178,8 +175,6 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant.functions.special.tensor_functions import KroneckerDelta
-        >>> from diofant import Symbol
         >>> a = Symbol('a', above_fermi=True)
         >>> i = Symbol('i', below_fermi=True)
         >>> p = Symbol('p')
@@ -212,8 +207,6 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant.functions.special.tensor_functions import KroneckerDelta
-        >>> from diofant import Symbol
         >>> a = Symbol('a', above_fermi=True)
         >>> i = Symbol('i', below_fermi=True)
         >>> p = Symbol('p')
@@ -246,8 +239,6 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant.functions.special.tensor_functions import KroneckerDelta
-        >>> from diofant import Symbol
         >>> a = Symbol('a', above_fermi=True)
         >>> i = Symbol('i', below_fermi=True)
         >>> p = Symbol('p')
@@ -277,8 +268,6 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant.functions.special.tensor_functions import KroneckerDelta
-        >>> from diofant import Symbol
         >>> a = Symbol('a', above_fermi=True)
         >>> i = Symbol('i', below_fermi=True)
         >>> p = Symbol('p')
@@ -308,8 +297,6 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant.functions.special.tensor_functions import KroneckerDelta
-        >>> from diofant import Symbol
         >>> a = Symbol('a', above_fermi=True)
         >>> i = Symbol('i', below_fermi=True)
         >>> p = Symbol('p')
@@ -344,8 +331,6 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant.functions.special.tensor_functions import KroneckerDelta
-        >>> from diofant import Symbol
         >>> a = Symbol('a', above_fermi=True)
         >>> i = Symbol('i', below_fermi=True)
         >>> j = Symbol('j', below_fermi=True)
@@ -381,8 +366,6 @@ class KroneckerDelta(Function):
         Examples
         ========
 
-        >>> from diofant.functions.special.tensor_functions import KroneckerDelta
-        >>> from diofant import Symbol
         >>> a = Symbol('a', above_fermi=True)
         >>> i = Symbol('i', below_fermi=True)
         >>> j = Symbol('j', below_fermi=True)

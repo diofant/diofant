@@ -222,8 +222,8 @@ def test_line_geom():
     pt2 = Point(Rational(3)/2, Rational(3)/2)
     assert s1.distance(pt1) == 0
     assert s1.distance((0, 0)) == 0
-    assert s2.distance(pt1) == 2**(half)/2
-    assert s2.distance(pt2) == 2**(half)
+    assert s2.distance(pt1) == 2**half/2
+    assert s2.distance(pt2) == 2**half
     # Line to point
     p1, p2 = Point(0, 0), Point(1, 1)
     s = Line(p1, p2)

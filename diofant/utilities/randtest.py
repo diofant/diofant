@@ -33,10 +33,7 @@ def verify_numerically(f, g, z=None, tol=1.0e-6, a=2, b=-1, c=3, d=1):
     Examples
     ========
 
-    >>> from diofant import sin, cos
-    >>> from diofant.abc import x
-    >>> from diofant.utilities.randtest import verify_numerically as tn
-    >>> tn(sin(x)**2 + cos(x)**2, 1, x)
+    >>> verify_numerically(sin(x)**2 + cos(x)**2, 1, x)
     true
     """
     f, g, z = Tuple(f, g, z)
@@ -59,10 +56,7 @@ def verify_derivative_numerically(f, z, tol=1.0e-6, a=2, b=-1, c=3, d=1):
     Examples
     ========
 
-    >>> from diofant import sin
-    >>> from diofant.abc import x
-    >>> from diofant.utilities.randtest import verify_derivative_numerically as td
-    >>> td(sin(x), x)
+    >>> verify_derivative_numerically(sin(x), x)
     true
     """
     from ..core import Derivative
@@ -82,7 +76,6 @@ def _randrange(seed=None):
     Examples
     ========
 
-    >>> from diofant.utilities.randtest import _randrange
     >>> rr = _randrange()
     >>> rr(1000) # doctest: +SKIP
     999
@@ -133,7 +126,6 @@ def _randint(seed=None):
     Examples
     ========
 
-    >>> from diofant.utilities.randtest import _randint
     >>> ri = _randint()
     >>> ri(1, 1000) # doctest: +SKIP
     999

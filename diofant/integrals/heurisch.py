@@ -11,7 +11,6 @@ from ..polys import PolynomialError, cancel, factor, gcd, lcm, quo
 from ..polys.constructor import construct_domain
 from ..polys.monomials import itermonomials
 from ..polys.polyroots import root_factors
-from ..polys.rings import PolyRing
 from ..polys.solvers import solve_lin_sys
 from ..utilities.iterables import uniq
 
@@ -22,10 +21,6 @@ def components(f, x):
     which includes symbols, function applications and compositions and
     non-integer powers. Fractional powers are collected with with
     minimal, positive exponents.
-
-    >>> from diofant import cos, sin
-    >>> from diofant.abc import x, y
-    >>> from diofant.integrals.heurisch import components
 
     >>> components(sin(x)*cos(x)**2, x)
     {x, sin(x), cos(x)}
@@ -91,10 +86,6 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     Examples
     ========
 
-    >>> from diofant.core import symbols
-    >>> from diofant.functions import cos
-    >>> from diofant.integrals.heurisch import heurisch, heurisch_wrapper
-    >>> n, x = symbols('n x')
     >>> heurisch(cos(n*x), x)
     sin(n*x)/n
     >>> heurisch_wrapper(cos(n*x), x)
@@ -184,8 +175,6 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     Parameters
     ==========
 
-    heurisch(f, x, rewrite=False, hints=None)
-
     f : Expr
         expression
     x : Symbol
@@ -200,10 +189,6 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     Examples
     ========
-
-    >>> from diofant import tan
-    >>> from diofant.integrals.heurisch import heurisch
-    >>> from diofant.abc import x, y
 
     >>> heurisch(y*tan(x), x)
     y*log(tan(x)**2 + 1)/2
@@ -534,8 +519,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         else:
             ground, _ = construct_domain(non_syms, field=True, extension=True)
 
-        coeff_ring = PolyRing(poly_coeffs, ground)
-        ring = PolyRing(V, coeff_ring)
+        coeff_ring = ground.poly_ring(*poly_coeffs)
+        ring = coeff_ring.poly_ring(*V)
 
         try:
             numer = ring.from_expr(raw_numer)

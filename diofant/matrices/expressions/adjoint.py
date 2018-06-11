@@ -15,8 +15,6 @@ class Adjoint(MatrixExpr):
     Examples
     ========
 
-    >>> from diofant.matrices import MatrixSymbol, Adjoint
-    >>> from diofant.functions import adjoint
     >>> A = MatrixSymbol('A', 3, 5)
     >>> B = MatrixSymbol('B', 5, 3)
     >>> Adjoint(A*B)

@@ -109,8 +109,6 @@ class besselj(BesselBase):
 
     Create a Bessel function object:
 
-    >>> from diofant import besselj, jn
-    >>> from diofant.abc import z, n
     >>> b = besselj(n, z)
 
     Differentiate it:
@@ -165,7 +163,7 @@ class besselj(BesselBase):
             return S.Zero
 
         if z.could_extract_minus_sign():
-            return (z)**nu*(-z)**(-nu)*besselj(nu, -z)
+            return z**nu*(-z)**(-nu)*besselj(nu, -z)
         if nu.is_integer:
             if nu.could_extract_minus_sign():
                 return Integer(-1)**(-nu)*besselj(-nu, z)
@@ -222,8 +220,6 @@ class bessely(BesselBase):
     Examples
     ========
 
-    >>> from diofant import bessely, yn
-    >>> from diofant.abc import z, n
     >>> b = bessely(n, z)
     >>> b.diff(z)
     bessely(n - 1, z)/2 - bessely(n + 1, z)/2
@@ -299,8 +295,6 @@ class besseli(BesselBase):
     Examples
     ========
 
-    >>> from diofant import besseli
-    >>> from diofant.abc import z, n
     >>> besseli(n, z).diff(z)
     besseli(n - 1, z)/2 + besseli(n + 1, z)/2
 
@@ -334,7 +328,7 @@ class besseli(BesselBase):
             return S.Zero
 
         if z.could_extract_minus_sign():
-            return (z)**nu*(-z)**(-nu)*besseli(nu, -z)
+            return z**nu*(-z)**(-nu)*besseli(nu, -z)
         if nu.is_integer:
             if nu.could_extract_minus_sign():
                 return besseli(-nu, z)
@@ -391,8 +385,6 @@ class besselk(BesselBase):
     Examples
     ========
 
-    >>> from diofant import besselk
-    >>> from diofant.abc import z, n
     >>> besselk(n, z).diff(z)
     -besselk(n - 1, z)/2 - besselk(n + 1, z)/2
 
@@ -464,8 +456,6 @@ class hankel1(BesselBase):
     Examples
     ========
 
-    >>> from diofant import hankel1
-    >>> from diofant.abc import z, n
     >>> hankel1(n, z).diff(z)
     hankel1(n - 1, z)/2 - hankel1(n + 1, z)/2
 
@@ -508,8 +498,6 @@ class hankel2(BesselBase):
     Examples
     ========
 
-    >>> from diofant import hankel2
-    >>> from diofant.abc import z, n
     >>> hankel2(n, z).diff(z)
     hankel2(n - 1, z)/2 - hankel2(n + 1, z)/2
 
@@ -589,8 +577,6 @@ class jn(SphericalBesselBase):
     Examples
     ========
 
-    >>> from diofant import Symbol, jn, sin, cos, expand_func
-    >>> z = Symbol("z")
     >>> print(jn(0, z).expand(func=True))
     sin(z)/z
     >>> jn(1, z).expand(func=True) == sin(z)/z**2 - cos(z)/z
@@ -640,9 +626,7 @@ class yn(SphericalBesselBase):
     Examples
     ========
 
-    >>> from diofant import Symbol, yn, sin, cos, expand_func
-    >>> z = Symbol("z")
-    >>> print(expand_func(yn(0, z)))
+    >>> expand_func(yn(0, z))
     -cos(z)/z
     >>> expand_func(yn(1, z)) == -cos(z)/z**2-sin(z)/z
     True
@@ -689,7 +673,6 @@ def jn_zeros(n, k, method="diofant", dps=15):
     Examples
     ========
 
-    >>> from diofant import jn_zeros
     >>> jn_zeros(2, 4, dps=5)
     [5.7635, 9.095, 12.323, 15.515]
 
@@ -792,9 +775,6 @@ class airyai(AiryBase):
 
     Create an Airy function object:
 
-    >>> from diofant import airyai
-    >>> from diofant.abc import z
-
     >>> airyai(z)
     airyai(z)
 
@@ -802,7 +782,6 @@ class airyai(AiryBase):
 
     >>> airyai(0)
     3**(1/3)/(3*gamma(2/3))
-    >>> from diofant import oo
     >>> airyai(oo)
     0
     >>> airyai(-oo)
@@ -810,13 +789,11 @@ class airyai(AiryBase):
 
     The Airy function obeys the mirror symmetry:
 
-    >>> from diofant import conjugate
     >>> conjugate(airyai(z))
     airyai(conjugate(z))
 
     Differentiation with respect to z is supported:
 
-    >>> from diofant import diff
     >>> diff(airyai(z), z)
     airyaiprime(z)
     >>> diff(airyai(z), z, 2)
@@ -824,7 +801,6 @@ class airyai(AiryBase):
 
     Series expansion is also supported:
 
-    >>> from diofant import series
     >>> series(airyai(z), z, 0, 3)
     3**(5/6)*gamma(1/3)/(6*pi) - 3**(1/6)*z*gamma(2/3)/(2*pi) + O(z**3)
 
@@ -836,7 +812,6 @@ class airyai(AiryBase):
 
     Rewrite Ai(z) in terms of hypergeometric functions:
 
-    >>> from diofant import hyper
     >>> airyai(z).rewrite(hyper)
     -3**(2/3)*z*hyper((), (4/3,), z**3/9)/(3*gamma(1/3)) + 3**(1/3)*hyper((), (2/3,), z**3/9)/(3*gamma(2/3))
 
@@ -851,7 +826,7 @@ class airyai(AiryBase):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Airy_function
-    .. [2] http://dlmf.nist.gov/9
+    .. [2] https://dlmf.nist.gov/9
     .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
@@ -955,9 +930,6 @@ class airybi(AiryBase):
 
     Create an Airy function object:
 
-    >>> from diofant import airybi
-    >>> from diofant.abc import z
-
     >>> airybi(z)
     airybi(z)
 
@@ -965,7 +937,6 @@ class airybi(AiryBase):
 
     >>> airybi(0)
     3**(5/6)/(3*gamma(2/3))
-    >>> from diofant import oo
     >>> airybi(oo)
     oo
     >>> airybi(-oo)
@@ -973,13 +944,11 @@ class airybi(AiryBase):
 
     The Airy function obeys the mirror symmetry:
 
-    >>> from diofant import conjugate
     >>> conjugate(airybi(z))
     airybi(conjugate(z))
 
     Differentiation with respect to z is supported:
 
-    >>> from diofant import diff
     >>> diff(airybi(z), z)
     airybiprime(z)
     >>> diff(airybi(z), z, 2)
@@ -987,7 +956,6 @@ class airybi(AiryBase):
 
     Series expansion is also supported:
 
-    >>> from diofant import series
     >>> series(airybi(z), z, 0, 3)
     3**(1/3)*gamma(1/3)/(2*pi) + 3**(2/3)*z*gamma(2/3)/(2*pi) + O(z**3)
 
@@ -999,7 +967,6 @@ class airybi(AiryBase):
 
     Rewrite Bi(z) in terms of hypergeometric functions:
 
-    >>> from diofant import hyper
     >>> airybi(z).rewrite(hyper)
     3**(1/6)*z*hyper((), (4/3,), z**3/9)/gamma(1/3) + 3**(5/6)*hyper((), (2/3,), z**3/9)/(3*gamma(2/3))
 
@@ -1014,7 +981,7 @@ class airybi(AiryBase):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Airy_function
-    .. [2] http://dlmf.nist.gov/9
+    .. [2] https://dlmf.nist.gov/9
     .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
@@ -1113,7 +1080,7 @@ class _airyais(Function):
                                      z**Rational(3*k + 1, 2)) for k in range(n)]
             l = [combsimp(t) for t in l]
             o = Order(1/z**Rational(3*n + 1, 2), x)
-            return (Add(*l))._eval_nseries(x, n, logx) + o
+            return Add(*l)._eval_nseries(x, n, logx) + o
 
         # All other points are not handled
         return super(_airyais, self)._eval_aseries(n, args0, x, logx)
@@ -1142,7 +1109,7 @@ class _airybis(Function):
                                     z**Rational(3*k + 1, 2)) for k in range(n)]
             l = [combsimp(t) for t in l]
             o = Order(1/z**Rational(3*n + 1, 2), x)
-            return (Add(*l))._eval_nseries(x, n, logx) + o
+            return Add(*l)._eval_nseries(x, n, logx) + o
 
         # All other points are not handled
         return super(_airybis, self)._eval_aseries(n, args0, x, logx)
@@ -1169,9 +1136,6 @@ class airyaiprime(AiryBase):
 
     Create an Airy function object:
 
-    >>> from diofant import airyaiprime
-    >>> from diofant.abc import z
-
     >>> airyaiprime(z)
     airyaiprime(z)
 
@@ -1179,19 +1143,16 @@ class airyaiprime(AiryBase):
 
     >>> airyaiprime(0)
     -3**(2/3)/(3*gamma(1/3))
-    >>> from diofant import oo
     >>> airyaiprime(oo)
     0
 
     The Airy function obeys the mirror symmetry:
 
-    >>> from diofant import conjugate
     >>> conjugate(airyaiprime(z))
     airyaiprime(conjugate(z))
 
     Differentiation with respect to z is supported:
 
-    >>> from diofant import diff
     >>> diff(airyaiprime(z), z)
     z*airyai(z)
     >>> diff(airyaiprime(z), z, 2)
@@ -1199,7 +1160,6 @@ class airyaiprime(AiryBase):
 
     Series expansion is also supported:
 
-    >>> from diofant import series
     >>> series(airyaiprime(z), z, 0, 3)
     -3**(2/3)/(3*gamma(1/3)) + 3**(1/3)*z**2/(6*gamma(2/3)) + O(z**3)
 
@@ -1211,7 +1171,6 @@ class airyaiprime(AiryBase):
 
     Rewrite Ai'(z) in terms of hypergeometric functions:
 
-    >>> from diofant import hyper
     >>> airyaiprime(z).rewrite(hyper)
     3**(1/3)*z**2*hyper((), (5/3,), z**3/9)/(6*gamma(2/3)) - 3**(2/3)*hyper((), (1/3,), z**3/9)/(3*gamma(1/3))
 
@@ -1226,7 +1185,7 @@ class airyaiprime(AiryBase):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Airy_function
-    .. [2] http://dlmf.nist.gov/9
+    .. [2] https://dlmf.nist.gov/9
     .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """
@@ -1317,9 +1276,6 @@ class airybiprime(AiryBase):
 
     Create an Airy function object:
 
-    >>> from diofant import airybiprime
-    >>> from diofant.abc import z
-
     >>> airybiprime(z)
     airybiprime(z)
 
@@ -1327,7 +1283,6 @@ class airybiprime(AiryBase):
 
     >>> airybiprime(0)
     3**(1/6)/gamma(1/3)
-    >>> from diofant import oo
     >>> airybiprime(oo)
     oo
     >>> airybiprime(-oo)
@@ -1335,13 +1290,11 @@ class airybiprime(AiryBase):
 
     The Airy function obeys the mirror symmetry:
 
-    >>> from diofant import conjugate
     >>> conjugate(airybiprime(z))
     airybiprime(conjugate(z))
 
     Differentiation with respect to z is supported:
 
-    >>> from diofant import diff
     >>> diff(airybiprime(z), z)
     z*airybi(z)
     >>> diff(airybiprime(z), z, 2)
@@ -1349,7 +1302,6 @@ class airybiprime(AiryBase):
 
     Series expansion is also supported:
 
-    >>> from diofant import series
     >>> series(airybiprime(z), z, 0, 3)
     3**(1/6)/gamma(1/3) + 3**(5/6)*z**2/(6*gamma(2/3)) + O(z**3)
 
@@ -1361,7 +1313,6 @@ class airybiprime(AiryBase):
 
     Rewrite Bi'(z) in terms of hypergeometric functions:
 
-    >>> from diofant import hyper
     >>> airybiprime(z).rewrite(hyper)
     3**(5/6)*z**2*hyper((), (5/3,), z**3/9)/(6*gamma(2/3)) + 3**(1/6)*hyper((), (1/3,), z**3/9)/gamma(1/3)
 
@@ -1376,7 +1327,7 @@ class airybiprime(AiryBase):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Airy_function
-    .. [2] http://dlmf.nist.gov/9
+    .. [2] https://dlmf.nist.gov/9
     .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
     .. [4] http://mathworld.wolfram.com/AiryFunctions.html
     """

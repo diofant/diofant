@@ -13,7 +13,6 @@ def hadamard_product(*matrices):
     Examples
     ========
 
-    >>> from diofant.matrices import hadamard_product, MatrixSymbol
     >>> A = MatrixSymbol('A', 2, 3)
     >>> B = MatrixSymbol('B', 2, 3)
     >>> hadamard_product(A)
@@ -40,7 +39,6 @@ class HadamardProduct(MatrixExpr):
     evaluating it. To actually compute the product, use the function
     ``hadamard_product()``.
 
-    >>> from diofant.matrices import hadamard_product, HadamardProduct, MatrixSymbol
     >>> A = MatrixSymbol('A', 5, 5)
     >>> B = MatrixSymbol('B', 5, 5)
     >>> isinstance(hadamard_product(A, B), HadamardProduct)

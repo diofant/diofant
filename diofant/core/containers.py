@@ -22,14 +22,11 @@ class Tuple(Basic):
     Diofant framework.  The wrapped tuple is available as self.args, but
     you can also access elements or slices with [:] syntax.
 
-    >>> from diofant import symbols
-    >>> from diofant.core.containers import Tuple
     >>> a, b, c, d = symbols('a b c d')
     >>> Tuple(a, b, c)[1:]
     (b, c)
     >>> Tuple(a, b, c).subs(a, d)
     (d, b, c)
-
     """
 
     def __new__(cls, *args):
@@ -116,7 +113,7 @@ class Tuple(Basic):
         #
         # here. Any trouble with that? Yes:
         #
-        # >>> (1,).index(1, None, None)
+        # >>> [1].index(1, None, None)
         # Traceback (most recent call last):
         #   File "<stdin>", line 1, in <module>
         # TypeError: slice indices must be integers or None or have an __index__ method
@@ -142,7 +139,6 @@ def tuple_wrapper(method):
     call a function with regular tuples in the argument, and the wrapper will
     convert them to Tuples before handing them to the function.
 
-    >>> from diofant.core.containers import tuple_wrapper
     >>> def f(*args):
     ...    return args
     >>> g = tuple_wrapper(f)
@@ -151,7 +147,6 @@ def tuple_wrapper(method):
 
     >>> g(0, (1, 2), 3)
     (0, (1, 2), 3)
-
     """
     def wrap_tuples(*args, **kw_args):
         newargs = []
@@ -173,8 +168,6 @@ class Dict(Basic):
     in sets, but its values must all be given at instantiation and
     cannot be changed afterwards.  Otherwise it behaves identically
     to the Python dict.
-
-    >>> from diofant.core.containers import Dict
 
     >>> D = Dict({1: 'one', 2: 'two'})
     >>> for key in D:

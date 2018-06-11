@@ -1,21 +1,23 @@
 """Algorithms for computing symbolic roots of polynomials. """
 
+import functools
 import math
-from functools import reduce
 
-from ..core import (Dummy, Eq, Float, I, Integer, Mul, Rational, S, Symbol,
-                    comp, factor_terms, igcd, pi, symbols, sympify)
+from ..core import (Dummy, Eq, Float, I, Integer, Rational, S, Symbol, comp,
+                    factor_terms, igcd, pi, symbols, sympify)
 from ..core.compatibility import ordered
 from ..core.mul import expand_2arg
 from ..functions import Piecewise, acos, cos, exp, im, root, sqrt
 from ..ntheory import divisors, isprime, nextprime
 from ..simplify import powsimp, simplify
-from ..utilities import public
-from .polyerrors import DomainError, GeneratorsNeeded, PolynomialError
+from .polyerrors import GeneratorsNeeded, PolynomialError
 from .polyquinticconst import PolyQuintic
 from .polytools import Poly, cancel, discriminant, factor, gcd_list
 from .rationaltools import together
 from .specialpolys import cyclotomic_poly
+
+
+__all__ = ('roots',)
 
 
 def roots_linear(f):
@@ -117,14 +119,10 @@ def roots_cubic(f, trig=False):
     if p is S.Zero:
         if q is S.Zero:
             return [-aon3]*3
-        if q.is_extended_real:
-            if q.is_positive:
-                u1 = -root(q, 3)
-            elif q.is_negative:
-                u1 = root(-q, 3)
-    elif q is S.Zero:
-        y1, y2 = roots([1, 0, p], multiple=True)
-        return [tmp - aon3 for tmp in [y1, 0, y2]]
+        elif q.is_positive:
+            u1 = -root(q, 3)
+        elif q.is_negative:
+            u1 = root(-q, 3)
     elif q.is_extended_real and q.is_negative:
         u1 = -root(-q/2 + sqrt(q**2/4 + pon3**3), 3)
 
@@ -188,8 +186,6 @@ def _roots_quartic_euler(p, q, r, a):
     Examples
     ========
 
-    >>> from diofant import Rational, Integer
-
     >>> p, q, r = -Rational(64, 5), -Rational(512, 125), -Rational(1024, 3125)
     >>> _roots_quartic_euler(p, q, r, Integer(0))[0]
     -sqrt(32*sqrt(5)/125 + 16/5) + 4*sqrt(5)/5
@@ -237,12 +233,10 @@ def roots_quartic(f):
     Examples
     ========
 
-        >>> from diofant import Poly, symbols, I
-
         >>> r = roots_quartic(Poly('x**4-6*x**3+17*x**2-26*x+20'))
 
         >>> # 4 complex roots: 1+-I*sqrt(3), 2+-I
-        >>> sorted(str(tmp.evalf(n=2)) for tmp in r)
+        >>> sorted(str(tmp.evalf(2)) for tmp in r)
         ['1.0 + 1.7*I', '1.0 - 1.7*I', '2.0 + 1.0*I', '2.0 - 1.0*I']
 
     References
@@ -490,10 +484,9 @@ def roots_quintic(f):
         return result
 
     # Now, we know that f is solvable
-    for _factor in f20.factor_list()[1]:
-        if _factor[0].is_linear:
-            theta = _factor[0].root(0)
-            break
+    _factors = f20.factor_list()[1]
+    assert _factors[0][0].is_linear
+    theta = _factors[0][0].root(0)
     d = discriminant(f)
     delta = sqrt(d)
     # zeta = a fifth root of unity
@@ -563,7 +556,7 @@ def roots_quintic(f):
     r1 = Res[1][0]
     r1_n = Res_n[1][0]
 
-    for i in range(5):
+    for i in range(5):  # pragma: no branch
         if comp(im(r1_n*Res_n[4][i]), 0, tol):
             r4 = Res[4][i]
             break
@@ -581,7 +574,7 @@ def roots_quintic(f):
     r4_n = r4.n()
     r2 = r3 = None
 
-    for i in range(5):
+    for i in range(5):  # pragma: no branch
         r2temp_n = Res_n[2][i]
         for j in range(5):
             # Again storing away the exact number and using
@@ -602,19 +595,7 @@ def roots_quintic(f):
     x3 = (r1*zeta3 + r2*zeta1 + r3*zeta4 + r4*zeta2)/5
     x4 = (r1*zeta2 + r2*zeta4 + r3*zeta1 + r4*zeta3)/5
     x5 = (r1*zeta1 + r2*zeta2 + r3*zeta3 + r4*zeta4)/5
-    result = [x1, x2, x3, x4, x5]
-
-    # Now check if solutions are distinct
-
-    saw = set()
-    for r in result:
-        r = r.n(2)
-        if r in saw:
-            # Roots were identical. Abort, return []
-            # and fall back to usual solve
-            return []
-        saw.add(r)
-    return result
+    return [x1, x2, x3, x4, x5]
 
 
 def _quintic_simplify(expr):
@@ -637,9 +618,6 @@ def _integer_basis(poly):
 
     Examples
     ========
-
-    >>> from diofant.polys import Poly
-    >>> from diofant.abc import x
 
     >>> p = Poly(x**5 + 512*x + 1024, x, domain='ZZ')
     >>> _integer_basis(p)
@@ -680,17 +658,14 @@ def _integer_basis(poly):
             return div
 
 
-def preprocess_roots(poly):
+def preprocess_roots(poly, extension=None):
     """Try to get rid of symbolic coefficients from ``poly``. """
     coeff = S.One
 
-    try:
-        _, poly = poly.clear_denoms(convert=True)
-    except DomainError:
-        return coeff, poly
+    _, poly = poly.clear_denoms(convert=True)
 
     poly = poly.primitive()[1]
-    poly = poly.retract()
+    poly = poly.retract(extension=extension)
 
     # TODO: This is fragile. Figure out how to make this independent of construct_domain().
     if poly.domain.is_Poly and all(c.is_term for c in poly.rep.coeffs()):
@@ -735,7 +710,7 @@ def preprocess_roots(poly):
         if gens:
             poly = poly.eject(*gens)
 
-    if poly.is_univariate and poly.domain.is_ZZ:
+    if poly.is_univariate and poly.domain.is_IntegerRing:
         basis = _integer_basis(poly)
 
         if basis is not None:
@@ -750,7 +725,6 @@ def preprocess_roots(poly):
     return coeff, poly
 
 
-@public
 def roots(f, *gens, **flags):
     """
     Computes symbolic roots of a univariate polynomial.
@@ -782,9 +756,6 @@ def roots(f, *gens, **flags):
 
     Examples
     ========
-
-    >>> from diofant import Poly, roots, sqrt
-    >>> from diofant.abc import x, y
 
     >>> roots(x**2 - 1, x)
     {-1: 1, 1: 1}
@@ -836,27 +807,6 @@ def roots(f, *gens, **flags):
     else:
         try:
             f = Poly(f, *gens, **flags)
-            if f.length == 2 and f.degree() != 1:
-                # check for foo**n factors in the constant
-                n = f.degree()
-                npow_bases = []
-                expr = f.as_expr()
-                con = expr.as_independent(*gens)[0]
-                for p in Mul.make_args(con):
-                    if p.is_Pow and not p.exp % n:
-                        npow_bases.append(p.base**(p.exp/n))
-                    else:
-                        other.append(p)
-                    if npow_bases:
-                        b = Mul(*npow_bases)
-                        B = Dummy()
-                        d = roots(Poly(expr - con + B**n*Mul(*others), *gens,
-                                       **flags), *gens, **flags)
-                        rv = {}
-                        for k, v in d.items():
-                            rv[k.subs(B, b)] = v
-                        return rv
-
         except GeneratorsNeeded:
             if multiple:
                 return []
@@ -894,8 +844,6 @@ def roots(f, *gens, **flags):
         """Find roots using formulas and some tricks. """
         if f.is_ground:
             return []
-        if f.is_monomial:
-            return [Integer(0)]*f.degree()
 
         if f.length() == 2:
             if f.degree() == 1:
@@ -905,17 +853,9 @@ def roots(f, *gens, **flags):
 
         result = []
 
-        for i in [-1, 1]:
-            if not f.eval(i):
-                f = f.quo(Poly(f.gen - i, f.gen))
-                result.append(i)
-                break
-
         n = f.degree()
 
-        if n == 1:
-            result += list(map(cancel, roots_linear(f)))
-        elif n == 2:
+        if n == 2:
             result += list(map(cancel, roots_quadratic(f)))
         elif f.is_cyclotomic:
             result += roots_cyclotomic(f)
@@ -962,7 +902,7 @@ def roots(f, *gens, **flags):
                     _update_dict(result, r, 1)
             else:
                 if len(factors) == 1 and factors[0][1] == 1:
-                    if f.domain.is_EX:
+                    if f.domain.is_SymbolicDomain:
                         res = to_rational_coeffs(f)
                         if res:
                             if res[0] is None:
@@ -970,9 +910,6 @@ def roots(f, *gens, **flags):
                             else:
                                 rescale_x, f = res[1], res[-1]
                             result = roots(f)
-                            if not result:
-                                for root in _try_decompose(f):
-                                    _update_dict(result, root, 1)
                     else:
                         for root in _try_decompose(f):
                             _update_dict(result, root, 1)
@@ -1039,8 +976,6 @@ def root_factors(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant.abc import x, y
-
     >>> root_factors(x**2 - y, x)
     [x - sqrt(y), x + sqrt(y)]
     """
@@ -1048,9 +983,6 @@ def root_factors(f, *gens, **args):
     filter = args.pop('filter', None)
 
     F = Poly(f, *gens, **args)
-
-    if not F.is_Poly:
-        return [f]
 
     if F.is_multivariate:
         raise ValueError('multivariate polynomials are not supported')
@@ -1068,7 +1000,7 @@ def root_factors(f, *gens, **args):
             factors, N = factors + [Poly(x - r, x)]*n, N + n
 
         if N < F.degree():
-            G = reduce(lambda p, q: p*q, factors)
+            G = functools.reduce(lambda p, q: p*q, factors)
             factors.append(F.quo(G))
 
     if not isinstance(f, Poly):

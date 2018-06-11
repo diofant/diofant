@@ -529,8 +529,6 @@ class Hyper_Function(Expr):
         If the index pair contains parameters, then this is not truly an
         invariant, since the parameters cannot be sorted uniquely mod1.
 
-        >>> from diofant.simplify.hyperexpand import Hyper_Function
-        >>> from diofant import S
         >>> ap = (Rational(1, 2), Rational(1, 3), Rational(-1, 2), -2)
         >>> bq = (1, 2)
 
@@ -637,10 +635,6 @@ class G_Function(Expr):
         Examples
         ========
 
-        >>> from diofant.simplify.hyperexpand import G_Function
-        >>> from diofant.abc import y
-        >>> from diofant import symbols, Rational
-
         >>> a, b = [1, 3, 2, Rational(3, 2)], [1 + y, y, 2, y + 3]
         >>> G_Function(a, b, [2], [y]).compute_buckets()
         ({0: [3, 2, 1], 1/2: [3/2]}, {0: [2], y: [y, y + 1, y + 3]},
@@ -679,8 +673,7 @@ class Formula:
     - func, the function
     - B, C, M (see _compute_basis)
 
-    >>> from diofant.abc import a, b, z
-    >>> from diofant.simplify.hyperexpand import Formula, Hyper_Function
+    >>> from diofant.abc import a, b
     >>> func = Hyper_Function((a/2, a/3 + b, (1+a)/2), (a, b, (a+b)/7))
     >>> f = Formula(func, z, None, [a, b])
 
@@ -824,15 +817,12 @@ class FormulaCollection:
         Given the suitable target ``func``, try to find an origin in our
         knowledge base.
 
-        >>> from diofant.simplify.hyperexpand import (FormulaCollection,
-        ...     Hyper_Function)
         >>> f = FormulaCollection()
         >>> f.lookup_origin(Hyper_Function((), ())).closed_form
         E**_z
         >>> f.lookup_origin(Hyper_Function([1], ())).closed_form
         HyperRep_power1(-1, _z)
 
-        >>> from diofant import S
         >>> i = Hyper_Function([Rational(1, 4), Rational(3, 4) + 4], [S.Half])
         >>> f.lookup_origin(i).closed_form
         HyperRep_sqrts1(-1/4, _z)
@@ -962,9 +952,6 @@ class Operator:
         """
         Apply ``self`` to the object ``obj``, where the generator is ``op``.
 
-        >>> from diofant.simplify.hyperexpand import Operator
-        >>> from diofant.polys.polytools import Poly
-        >>> from diofant.abc import x, y, z
         >>> op = Operator()
         >>> op._poly = Poly(x**2 + z*x + y, x)
         >>> op.apply(z**7, lambda f: f.diff(z))
@@ -1438,10 +1425,9 @@ def reduce_order(func):
     Examples
     ========
 
-    >>> from diofant.simplify.hyperexpand import reduce_order, Hyper_Function
     >>> reduce_order(Hyper_Function((1, 2), (3, 4)))
     (Hyper_Function((1, 2), (3, 4)), [])
-    >>> r = reduce_order(Hyper_Function((1,), (1,)))
+    >>> r = reduce_order(Hyper_Function([1], [1]))
     >>> r[0]
     Hyper_Function((), ())
     >>> for i in r[1]:
@@ -1469,8 +1455,6 @@ def reduce_order_meijer(func):
     Examples
     ========
 
-    >>> from diofant.simplify.hyperexpand import (reduce_order_meijer,
-    ...                                         G_Function)
     >>> reduce_order_meijer(G_Function([3, 4], [5, 6], [3, 4], [1, 2]))[0]
     G_Function((4, 3), (5, 6), (3, 4), (2, 1))
     >>> reduce_order_meijer(G_Function([3, 4], [5, 6], [3, 4], [1, 8]))[0]
@@ -1515,9 +1499,6 @@ def devise_plan(target, origin, z):
     to the hypergeometric function ``target`` to yield ``origin``.
     Returns a list of operators.
 
-    >>> from diofant.simplify.hyperexpand import devise_plan, Hyper_Function
-    >>> from diofant.abc import z
-
     Nothing to do:
 
     >>> devise_plan(Hyper_Function((1, 2), ()), Hyper_Function((1, 2), ()), z)
@@ -1527,16 +1508,15 @@ def devise_plan(target, origin, z):
 
     Very simple plans:
 
-    >>> for i in devise_plan(Hyper_Function((2,), ()), Hyper_Function((1,), ()), z):
+    >>> for i in devise_plan(Hyper_Function([2], []), Hyper_Function([1], []), z):
     ...     i
     <Increment upper 1.>
-    >>> for i in devise_plan(Hyper_Function((), (2,)), Hyper_Function((), (1,)), z):
+    >>> for i in devise_plan(Hyper_Function([], [2]), Hyper_Function([], [1]), z):
     ...     i
     <Increment lower index #0 of [], [1].>
 
     Several buckets:
 
-    >>> from diofant import S
     >>> for i in devise_plan(Hyper_Function((1, S.Half), ()),
     ...             Hyper_Function((2, Rational(3, 2)), ()), z):
     ...     i
@@ -1552,7 +1532,7 @@ def devise_plan(target, origin, z):
 
     Another more complicated plan: (note that the ap have to be shifted first!)
 
-    >>> for i in devise_plan(Hyper_Function((1, -1), (2,)), Hyper_Function((3, -2), (4,)), z):
+    >>> for i in devise_plan(Hyper_Function([1, -1], [2]), Hyper_Function([3, -2], [4]), z):
     ...     i
     <Decrement lower 3.>
     <Decrement lower 4.>
@@ -2082,10 +2062,6 @@ def devise_plan_meijer(fro, to, z):
     determines is the order of shifts to apply, nothing clever will be tried.
     It is also assumed that fro is suitable.
 
-    >>> from diofant.simplify.hyperexpand import (devise_plan_meijer,
-    ...                                         G_Function)
-    >>> from diofant.abc import z
-
     Empty plan:
 
     >>> devise_plan_meijer(G_Function([1], [2], [3], [4]),
@@ -2466,9 +2442,6 @@ def hyperexpand(f, allow_hyper=False, rewrite='default'):
     Examples
     ========
 
-    >>> from diofant.simplify.hyperexpand import hyperexpand
-    >>> from diofant.functions import hyper
-    >>> from diofant.abc import z
     >>> hyperexpand(hyper([], [], z))
     E**z
 

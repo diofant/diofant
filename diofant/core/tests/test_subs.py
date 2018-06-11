@@ -59,6 +59,10 @@ def test_powers():
     assert (x**(4.0*y)).subs(x**(2.0*y), n) == n**2.0
     assert (2**(x + 2)).subs(2, 3) == 3**(x + 3)
 
+    # issue sympy/sympy#10829
+    assert (4**x).subs(2**x, y) == y**2
+    assert (9**x).subs(3**x, y) == y**2
+
 
 def test_logexppow():   # no eval()
     x = Symbol('x', extended_real=True)
@@ -386,7 +390,7 @@ def test_add():
     assert (0.1 + a).subs(0.1, Rational(1, 10)) == Rational(1, 10) + a
 
     e = (-x*(-y + 1) - y*(y - 1))
-    ans = (-x*(x) - y*(-x)).expand()
+    ans = (-x*x - y*(-x)).expand()
     assert e.subs(-y + 1, x) == ans
 
 
@@ -419,17 +423,23 @@ def test_derivative_subs():
 
 
 def test_derivative_subs2():
-    f, g = symbols('f g', cls=Function)
+    f_func, g_func = symbols('f g', cls=Function)
+    f, g = f_func(x, y, z), g_func(x, y, z)
     assert Derivative(f, x, y).subs(Derivative(f, x, y), g) == g
     assert Derivative(f, y, x).subs(Derivative(f, x, y), g) == g
     assert Derivative(f, x, y).subs(Derivative(f, x), g) == Derivative(g, y)
     assert Derivative(f, x, y).subs(Derivative(f, y), g) == Derivative(g, x)
-    assert (Derivative(f(x, y, z), x, y, z).subs(
-        Derivative(f(x, y, z), x, z), g) == Derivative(g, y))
-    assert (Derivative(f(x, y, z), x, y, z).subs(
-        Derivative(f(x, y, z), z, y), g) == Derivative(g, x))
-    assert (Derivative(f(x, y, z), x, y, z).subs(
-        Derivative(f(x, y, z), z, y, x), g) == g)
+    assert (Derivative(f, x, y, z).subs(Derivative(f, x, z), g) == Derivative(g, y))
+    assert (Derivative(f, x, y, z).subs(Derivative(f, z, y), g) == Derivative(g, x))
+    assert (Derivative(f, x, y, z).subs(Derivative(f, z, y, x), g) == g)
+    assert (Derivative(sin(x), x, 2).subs(Derivative(sin(x), f_func(x)), g_func) ==
+            Derivative(sin(x), x, 2))
+
+    # issue sympy/sympy#9135
+    assert (Derivative(f, x, x, y).subs(Derivative(f, y, y), g) == Derivative(f, x, x, y))
+    assert (Derivative(f, x, y, y, z).subs(Derivative(f, x, y, y, y), g) == Derivative(f, x, y, y, z))
+
+    assert Derivative(f, x, y).subs(Derivative(f_func(x), x, y), g) == Derivative(f, x, y)
 
 
 def test_derivative_subs3():
@@ -684,3 +694,9 @@ def test_aresame_ordering():
     e = Min(3, z)
     s = (Min(z, 3), 3)
     assert e.subs(*s) == 3
+
+
+def test_underscores():
+    _0, _1 = symbols('_0 _1')
+    e = Subs(_0 + _1, (_0, _1), (1, 0))
+    assert e._expr == Symbol('__0') + Symbol('__1')

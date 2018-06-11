@@ -158,9 +158,7 @@ class EPath:
         Examples
         ========
 
-        >>> from diofant.simplify.epathtools import EPath
-        >>> from diofant import sin, cos, E
-        >>> from diofant.abc import x, y, z, t
+        >>> from diofant.abc import t
 
         >>> path = EPath("/*/[0]/Symbol")
         >>> expr = [((x, 1), 2), ((3, y), z)]
@@ -230,9 +228,7 @@ class EPath:
         Examples
         ========
 
-        >>> from diofant.simplify.epathtools import EPath
-        >>> from diofant import sin, cos, E
-        >>> from diofant.abc import x, y, z, t
+        >>> from diofant.abc import t
 
         >>> path = EPath("/*/[0]/Symbol")
         >>> expr = [((x, 1), 2), ((3, y), z)]
@@ -324,9 +320,7 @@ def epath(path, expr=None, func=None, args=None, kwargs=None):
     Examples
     ========
 
-    >>> from diofant.simplify.epathtools import epath
-    >>> from diofant import sin, cos, E
-    >>> from diofant.abc import x, y, z, t
+    >>> from diofant.abc import t
 
     >>> path = "/*/[0]/Symbol"
     >>> expr = [((x, 1), 2), ((3, y), z)]

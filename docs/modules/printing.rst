@@ -1,5 +1,7 @@
-Printing System
-===============
+Printing
+========
+
+.. module:: diofant.printing
 
 See the :ref:`tutorial-printing` section in Tutorial for introduction into
 printing.
@@ -52,9 +54,6 @@ to strings of C code).
 
 Usage::
 
-    >>> from diofant.printing import print_ccode
-    >>> from diofant.functions import sin, cos, Abs
-    >>> from diofant.abc import x
     >>> print_ccode(sin(x)**2 + cos(x)**2)
     pow(sin(x), 2) + pow(cos(x), 2)
     >>> print_ccode(2*x + cos(x), assign_to="result")
@@ -94,8 +93,6 @@ that manual changes in the result are no longer needed.
 
 Two basic examples:
 
-    >>> from diofant import *
-    >>> x = symbols("x")
     >>> fcode(sqrt(1-x**2))
     '      sqrt(-x**2 + 1)'
     >>> fcode((3 + 4*I)/(1 - conjugate(x)))
@@ -103,7 +100,7 @@ Two basic examples:
 
 An example where line wrapping is required:
 
-    >>> expr = sqrt(1-x**2).series(x,n=20).removeO()
+    >>> expr = sqrt(1 - x**2).series(x, n=20).removeO()
     >>> print(fcode(expr))
           -715.0d0/65536.0d0*x**18 - 429.0d0/32768.0d0*x**16 - 33.0d0/
          @ 2048.0d0*x**14 - 21.0d0/1024.0d0*x**12 - 7.0d0/256.0d0*x**10 -
@@ -121,7 +118,7 @@ are wrapped properly when the assignment part is added.
 
 For piecewise functions, the ``assign_to`` option is mandatory:
 
-    >>> print(fcode(Piecewise((x,x<1),(x**2,True)), assign_to="var"))
+    >>> print(fcode(Piecewise((x, x<1), (x**2, True)), assign_to="var"))
           if (x < 1) then
             var = x
           else
@@ -133,7 +130,7 @@ the lack of a conditional operator in Fortran 77. Inline conditionals can be
 supported using the ``merge`` function introduced in Fortran 95 by setting of
 the kwarg ``standard=95``:
 
-    >>> print(fcode(Piecewise((x,x<1),(x**2,True)), standard=95))
+    >>> print(fcode(Piecewise((x, x<1), (x**2, True)), standard=95))
           merge(x, x**2, x < 1)
 
 Loops are generated if there are Indexed objects in the expression. This
@@ -271,9 +268,6 @@ PythonPrinter
 
 This class implements Python printing. Usage::
 
-    >>> from diofant import print_python, sin
-    >>> from diofant.abc import x
-
     >>> print_python(5*x**3 + sin(x))
     x = Symbol('x')
     e = 5*x**3 + sin(x)
@@ -350,26 +344,7 @@ easily translated to C or Fortran.
 Precedence
 ++++++++++
 
-.. module:: diofant.printing.precedence
-
-.. autodata:: PRECEDENCE
-
-   Default precedence values for some basic types.
-
-.. autodata:: PRECEDENCE_VALUES
-
-   A dictionary assigning precedence values to certain classes. These values
-   are treated like they were inherited, so not every single class has to be
-   named here.
-
-.. autodata:: PRECEDENCE_FUNCTIONS
-
-   Sometimes it's not enough to assign a fixed precedence value to a
-   class. Then a function can be inserted in this dictionary that takes an
-   instance of this class as argument and returns the appropriate precedence
-   value.
-
-.. autofunction:: precedence
+.. automodule:: diofant.printing.precedence
 
 Pretty-Printing Implementation Helpers
 --------------------------------------
@@ -378,7 +353,6 @@ Pretty-Printing Implementation Helpers
 
 .. autofunction:: U
 .. autofunction:: pretty_use_unicode
-.. autofunction:: pretty_try_use_unicode
 
 The following two functions return the Unicode version of the inputted Greek
 letter.

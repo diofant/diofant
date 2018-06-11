@@ -2,18 +2,18 @@ import pytest
 
 from diofant import (Abs, Add, Basic, E, Eq, Float, Function, GoldenRatio, I,
                      Integer, Integral, Lt, Matrix, MatrixSymbol, Mul, Number,
-                     Piecewise, Rational, Sum, Symbol, acos, atan, besseli,
-                     besselj, besselsimp, binomial, cancel, cbrt, combsimp,
-                     cos, cosh, cosine_transform, count_ops, diff, erf, exp,
-                     exp_polar, expand, expand_multinomial, factor, factorial,
-                     gamma, hyper, hypersimp, integrate, log, logcombine,
-                     nsimplify, oo, pi, posify, rad, root, separatevars, sign,
-                     signsimp, simplify, sin, sinh, solve, sqrt, sqrtdenest,
-                     sstr, symbols, tan, true, zoo)
+                     Piecewise, Rational, Sum, Symbol, acos, asin, atan,
+                     besseli, besselj, besselsimp, binomial, cancel, cbrt,
+                     combsimp, cos, cosh, cosine_transform, count_ops, diff,
+                     erf, exp, exp_polar, expand, expand_multinomial, factor,
+                     factorial, gamma, hyper, hypersimp, integrate, log,
+                     logcombine, nsimplify, oo, pi, posify, rad, root,
+                     separatevars, sign, signsimp, simplify, sin, sinh, solve,
+                     sqrt, sqrtdenest, sstr, symbols, tan, true, zoo)
 from diofant.abc import (R, a, b, c, d, e, f, g, h, i, k, m, n, r, s, t, w, x,
                          y, z)
 from diofant.core.mul import _keep_coeff
-from diofant.simplify.simplify import nthroot
+from diofant.simplify.simplify import clear_coefficients, nthroot
 
 
 __all__ = ()
@@ -616,3 +616,85 @@ def test_sympyissue_6249():
 
     M = MatrixSymbol('M', 2, 1)
     assert simplify(M[0]/2) == M[0]/2
+
+
+def test_clear_coefficients():
+    assert clear_coefficients(4*y*(6*x + 3)) == (y*(2*x + 1), 0)
+    assert clear_coefficients(4*y*(6*x + 3) - 2) == (y*(2*x + 1), Rational(1, 6))
+    assert clear_coefficients(4*y*(6*x + 3) - 2, x) == (y*(2*x + 1), x/12 + Rational(1, 6))
+    assert clear_coefficients(sqrt(2) - 2) == (sqrt(2), 2)
+    assert clear_coefficients(4*sqrt(2) - 2) == (sqrt(2), Rational(1, 2))
+    assert clear_coefficients(Integer(3), x) == (0, x - 3)
+    assert clear_coefficients(oo, x) == (oo, x)
+    assert clear_coefficients(-pi, x) == (pi, -x)
+    assert clear_coefficients(2 - pi/3, x) == (pi, -3*x + 6)
+
+
+def test_sympyissue_9296():
+    q = symbols('q_1:5')
+    dq = symbols('dq_1:5')
+    a = (dq[0]*(0.1*(0.01*sin(q[2]) + 0.01*sin(q[1] + q[2]))*cos(q[1] + q[2]) +
+                0.01*(0.1*sin(q[2]) + 0.1*sin(q[1] + q[2]))*cos(q[1] + q[2]) +
+                0.05*(-0.05*cos(q[1]) - 0.025)*sin(q[1]) +
+                0.01*(-0.1*cos(q[2]) - 0.1*cos(q[1] + q[2]))*sin(q[1] + q[2]) +
+                0.1*(-0.01*cos(q[2]) - 0.01*cos(q[1] + q[2]))*sin(q[1] + q[2]) +
+                0.0025*sin(q[1])*cos(q[1]) - 0.00125*sin(q[1])))
+    b = dq[1]*(-0.0025*sin(q[1]) + 0.002*sin(q[2])*cos(q[1] + q[2]) -
+               0.002*sin(q[1] + q[2])*cos(q[2]))
+    r = simplify(a + b).replace(lambda x: x.is_Float and abs(x) < 1e-15,
+                                lambda x: 0)
+    assert r == (-Float('0.0045000000000000005', dps=15)*dq[0]*sin(q[1]) -
+                 Float('0.0045000000000000005', dps=15)*dq[1]*sin(q[1]))
+
+
+def test_sympyissue_9630():
+    psi = (-0.999999972295856*sin(13.3579685223169*x/y) + 1.0*cos(13.3579685223169*x/y) +
+           0.999999972295856*sinh(13.3579685223169*x/y) - 1.0*cosh(13.3579685223169*x/y))
+    assert simplify(psi) == psi
+
+
+def test_sympyissue_12792():
+    expr = (0.25*y*sin(x)/(0.25*cos(x)**2 - 1.0*cos(x) + 1)
+            + (z - 0.5)*(-0.25*y*sin(x)*cos(x)**2
+                         / (0.0625*cos(x)**4 - 0.5*cos(x)**3 + 1.5*cos(x)**2 - 2.0*cos(x) + 1)
+                         + 0.5*y*sin(x)*cos(x)/(0.0625*cos(x)**4 - 0.5*cos(x)**3 + 1.5*cos(x)**2
+                                                - 2.0*cos(x) + 1) + 0.25*cos(x)**3
+                         / (0.0625*cos(x)**4 - 0.5*cos(x)**3 + 1.5*cos(x)**2 - 2.0*cos(x) + 1)
+                         - 1.0*cos(x)**2/(0.0625*cos(x)**4 - 0.5*cos(x)**3 + 1.5*cos(x)**2 - 2.0*cos(x) + 1)
+                         + 1.0*cos(x)/(0.0625*cos(x)**4 - 0.5*cos(x)**3 + 1.5*cos(x)**2 - 2.0*cos(x) + 1)
+                         - 1/(0.25*cos(x)**2 - 1.0*cos(x) + 1)) - 0.25*cos(x)
+            / (0.25*cos(x)**2 - 1.0*cos(x) + 1) + 0.5/(0.25*cos(x)**2 - 1.0*cos(x) + 1))
+
+    expr_simp = simplify(expr)
+    assert expr_simp.equals(expr)
+
+
+def test_sympyissue_12506():
+    expr = 1.0 * cos(x) + 2.0 * cos(asin(0.5 * sin(x)))
+    expr = expr.diff(x, 2)
+    expr_simp = expr.simplify()
+    assert expr_simp.equals(expr)
+
+
+def test_sympyissue_13115():
+    q_1, q_2, q_3 = symbols('q_1:4')
+    Mq = Matrix([[(1.0*cos(q_2) + 0.5*cos(q_2 + q_3))**2*sin(q_1)**2 +
+                  (1.0*cos(q_2) + 0.5*cos(q_2 + q_3))**2*cos(q_1)**2 +
+                  0.25*sin(q_1)**2*cos(q_2)**2 + 0.25*cos(q_1)**2*cos(q_2)**2, 0, 0],
+                 [0, (-1.0*sin(q_2) - 0.5*sin(q_2 + q_3))**2*sin(q_1)**2 +
+                  (-1.0*sin(q_2) - 0.5*sin(q_2 + q_3))**2*cos(q_1)**2 +
+                  (-1.0*cos(q_2) - 0.5*cos(q_2 + q_3))**2 +
+                  0.25*sin(q_1)**2*sin(q_2)**2 + 0.25*sin(q_2)**2*cos(q_1)**2 +
+                  0.25*cos(q_2)**2, -0.5*(-1.0*sin(q_2) - 0.5*sin(q_2 + q_3))*sin(q_1)**2*sin(q_2 + q_3) -
+                  0.5*(-1.0*sin(q_2) - 0.5*sin(q_2 + q_3))*sin(q_2 + q_3)*cos(q_1)**2 -
+                  0.5*(-1.0*cos(q_2) - 0.5*cos(q_2 + q_3))*cos(q_2 + q_3)],
+                 [0, -0.5*(-1.0*sin(q_2) - 0.5*sin(q_2 + q_3))*sin(q_1)**2*sin(q_2 + q_3) -
+                  0.5*(-1.0*sin(q_2) - 0.5*sin(q_2 + q_3))*sin(q_2 + q_3)*cos(q_1)**2 -
+                  0.5*(-1.0*cos(q_2) - 0.5*cos(q_2 + q_3))*cos(q_2 + q_3),
+                  0.25*sin(q_1)**2*sin(q_2 + q_3)**2 + 0.25*sin(q_2 + q_3)**2*cos(q_1)**2 +
+                  0.25*cos(q_2 + q_3)**2]])
+
+    Mqs = simplify(Mq)
+    assert Mqs.subs({q_1: 0, q_2: 0, q_3: 0}) == Matrix([[2.5, 0, 0],
+                                                         [0, 2.5, 0.75],
+                                                         [0, 0.75, 0.25]])

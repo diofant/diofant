@@ -15,9 +15,6 @@ def _filtered_gens(poly, symbol):
     Examples
     ========
 
-    >>> from diofant.solvers.bivariate import _filtered_gens
-    >>> from diofant import Poly, exp
-    >>> from diofant.abc import x
     >>> _filtered_gens(Poly(x + 1/x + exp(x)), x)
     {E**x, x}
     """
@@ -41,9 +38,6 @@ def _mostfunc(lhs, func, X=None):
     Examples
     ========
 
-    >>> from diofant.solvers.bivariate import _mostfunc
-    >>> from diofant.functions.elementary.exponential import exp
-    >>> from diofant.abc import x, y
     >>> _mostfunc(exp(x) + exp(exp(x) + 2), Pow)
     E**(E**x + 2)
     >>> _mostfunc(exp(x) + exp(exp(y) + 2), Pow, x)
@@ -73,10 +67,6 @@ def _linab(arg, symbol):
     Examples
     ========
 
-    >>> from diofant.functions.elementary.exponential import exp
-    >>> from diofant.solvers.bivariate import _linab
-    >>> from diofant.abc import x, y
-    >>> from diofant import Integer
     >>> _linab(Integer(2), x)
     (2, 0, 1)
     >>> _linab(2*x, x)
@@ -276,9 +266,6 @@ def bivariate_type(f, x, y, **kwargs):
     Examples
     ========
 
-    >>> from diofant.solvers.solvers import solve
-    >>> from diofant.solvers.bivariate import bivariate_type
-    >>> from diofant.abc import x, y
     >>> eq = (x**2 - 3).subs(x, x + y)
     >>> bivariate_type(eq, x, y)
     (x + y, _u**2 - 3, _u)

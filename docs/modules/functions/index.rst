@@ -18,6 +18,6 @@ All functions support the methods documented below, inherited from
    :caption: Contents
    :maxdepth: 2
 
-   elementary.rst
-   combinatorial.rst
-   special.rst
+   elementary
+   combinatorial
+   special

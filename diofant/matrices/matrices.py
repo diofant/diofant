@@ -11,8 +11,8 @@ from ..functions import Max, Min, exp, factorial, sqrt
 from ..polys import PurePoly, cancel, gcd, roots
 from ..printing import sstr
 from ..printing.defaults import DefaultPrinting
-from ..simplify import simplify as _simplify
 from ..simplify import nsimplify, signsimp
+from ..simplify import simplify as _simplify
 from ..utilities import flatten
 
 
@@ -44,13 +44,12 @@ class DeferredVector(Symbol, NotIterable):
     Examples
     ========
 
-    >>> from diofant import DeferredVector, lambdify
-    >>> X = DeferredVector( 'X' )
+    >>> X = DeferredVector('X')
     >>> print(X)
     X
     >>> expr = (X[0] + 2, X[2] + 3)
-    >>> func = lambdify( X, expr)
-    >>> func( [1, 2, 3] )
+    >>> func = lambdify(X, expr)
+    >>> func([1, 2, 3])
     (3, 6)
     """
 
@@ -88,27 +87,25 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix, I
-
         Matrix can be constructed as follows:
 
         * from a nested list of iterables
 
-        >>> Matrix( ((1, 2+I), (3, 4)) )
+        >>> Matrix(((1, 2 + I), (3, 4)))
         Matrix([
         [1, 2 + I],
         [3,     4]])
 
         * from un-nested iterable (interpreted as a column)
 
-        >>> Matrix( [1, 2] )
+        >>> Matrix([1, 2])
         Matrix([
         [1],
         [2]])
 
         * from un-nested iterable with dimensions
 
-        >>> Matrix(1, 2, [1, 2] )
+        >>> Matrix(1, 2, [1, 2])
         Matrix([[1, 2]])
 
         * from no arguments (a 0 x 0 matrix)
@@ -118,7 +115,7 @@ class MatrixBase(DefaultPrinting):
 
         * from a rule
 
-        >>> Matrix(2, 2, lambda i, j: i/(j + 1) )
+        >>> Matrix(2, 2, lambda i, j: i/(j + 1))
         Matrix([
         [0,   0],
         [1, 1/2]])
@@ -229,7 +226,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix, I, zeros, ones
         >>> m = Matrix(((1, 2+I), (3, 4)))
         >>> m
         Matrix([
@@ -290,15 +286,39 @@ class MatrixBase(DefaultPrinting):
             return
 
     def copy(self):
+        """Returns the copy of a matrix."""
         return self._new(self.rows, self.cols, self._mat)
 
     def trace(self):
+        """Returns the trace of a matrix."""
         if not self.is_square:
             raise NonSquareMatrixError()
         return self._eval_trace()
 
     def inv(self, method=None, **kwargs):
-        r"""Returns the inverse of the matrix"""
+        r"""Returns the inverse of the matrix.
+
+        Parameters
+        ==========
+
+        method : {'GE', 'LU', 'ADJ', 'CH', 'LDL'} or None
+            Selects algorithm for inversion.  For dense matrices
+            available {'GE', 'LU', 'ADJ'}, default is 'GE'.  For
+            sparse: {'CH', 'LDL'}, default is 'LDL'.
+
+        Raises
+        ======
+
+        ValueError
+            If the determinant of the matrix is zero.
+
+        See Also
+        ========
+
+        inverse_LU
+        inverse_GE
+        inverse_ADJ
+        """
         if not self.is_square:
             raise NonSquareMatrixError()
         if method is not None:
@@ -320,7 +340,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> A = Matrix(2, 2, [1, 2, 3, 4])
         >>> A.inv_mod(5)
         Matrix([
@@ -368,7 +387,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix, I
         >>> m = Matrix((0, 1 + I, 2, 3))
         >>> m
         Matrix([
@@ -394,7 +412,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix, I, eye
         >>> m = Matrix((0, 1 + I, 2, 3))
         >>> m.D
         Matrix([[0, 1 - I, -2, -3]])
@@ -447,7 +464,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import zeros
         >>> M = zeros(2, 3)
         >>> M.shape
         (2, 3)
@@ -471,7 +487,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix
         >>> A = Matrix([[1, 2, 3], [4, 5, 6]])
         >>> 2*A == A*2 == Matrix([[2, 4, 6], [8, 10, 12]])
         True
@@ -498,7 +513,10 @@ class MatrixBase(DefaultPrinting):
                 raise ShapeError("Matrices size mismatch.")
             if A.cols == 0:
                 return classof(A, B)._new(A.rows, B.cols, lambda i, j: 0)
-            blst = B.T.tolist()
+            try:
+                blst = B.T.tolist()
+            except AttributeError:
+                return NotImplemented
             alst = A.tolist()
             return classof(A, B)._new(A.rows, B.cols, lambda i, j:
                                       reduce(lambda k, l: k + l,
@@ -623,7 +641,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> from diofant.printing.str import StrPrinter
         >>> M = Matrix([[1, 2], [-33, 4]])
         >>> printer = StrPrinter()
@@ -701,7 +718,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix
         >>> A = Matrix(((25, 15, -5), (15, 18, 0), (-5, 0, 11)))
         >>> A.cholesky()
         Matrix([
@@ -739,7 +755,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix, eye
         >>> A = Matrix(((25, 15, -5), (15, 18, 0), (-5, 0, 11)))
         >>> L, D = A.LDLdecomposition()
         >>> L
@@ -847,7 +862,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix, eye
         >>> A = eye(2)*2
         >>> B = Matrix([[1, 2], [3, 4]])
         >>> A.diagonal_solve(B) == B/2
@@ -880,7 +894,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix, eye
         >>> A = eye(2)*2
         >>> B = Matrix([[1, 2], [3, 4]])
         >>> A.LDLsolve(B) == B/2
@@ -918,7 +931,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix, ones
         >>> A = Matrix([1, 2, 3])
         >>> B = Matrix([2, 3, 4])
         >>> S = Matrix(A.row_join(B))
@@ -979,7 +991,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> m = Matrix(4, 3, range(12))
         >>> m
         Matrix([
@@ -1062,9 +1073,9 @@ class MatrixBase(DefaultPrinting):
         else:
             return divmod(a2idx(key, len(self)), self.cols)
 
-    def evalf(self, prec=None, **options):
+    def evalf(self, dps=15, **options):
         """Apply evalf() to each element of self."""
-        return self.applyfunc(lambda i: i.evalf(prec, **options))
+        return self.applyfunc(lambda i: i.evalf(dps, **options))
 
     n = evalf
 
@@ -1074,8 +1085,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.abc import x, y
-        >>> from diofant.matrices import Matrix
         >>> Matrix([[x]])
         Matrix([[x]])
         >>> _.atoms()
@@ -1098,8 +1107,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.abc import x
-        >>> from diofant.matrices import Matrix
         >>> Matrix([[x], [1]]).free_symbols
         {x}
         """
@@ -1112,8 +1119,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.abc import x, y
-        >>> from diofant.matrices import SparseMatrix, Matrix
         >>> SparseMatrix(1, 1, [x])
         Matrix([[x]])
         >>> _.subs(x, y)
@@ -1129,8 +1134,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.abc import x, y
-        >>> from diofant.matrices import SparseMatrix, Matrix
         >>> SparseMatrix(1, 1, [x])
         Matrix([[x]])
         >>> _.xreplace({x: y})
@@ -1147,8 +1150,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.abc import x
-        >>> from diofant.matrices import Matrix
         >>> Matrix(1, 1, [x*(x+1)])
         Matrix([[x*(x + 1)]])
         >>> _.expand()
@@ -1165,9 +1166,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.abc import x, y
-        >>> from diofant import sin, cos
-        >>> from diofant.matrices import SparseMatrix
         >>> SparseMatrix(1, 1, [x*sin(y)**2 + x*cos(y)**2])
         Matrix([[x*sin(y)**2 + x*cos(y)**2]])
         >>> _.simplify()
@@ -1182,7 +1180,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix, eye
         >>> m = Matrix(2, 3, lambda i, j: i*3+j)
         >>> m
         Matrix([
@@ -1254,7 +1251,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> a = Matrix([[4, 3], [6, 3]])
         >>> L, U, _ = a.LUdecomposition()
         >>> L
@@ -1456,7 +1452,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import sin, cos, Matrix
         >>> from diofant.abc import rho, phi
         >>> X = Matrix([rho*cos(phi), rho*sin(phi), rho**2])
         >>> Y = Matrix([rho, phi])
@@ -1506,7 +1501,6 @@ class MatrixBase(DefaultPrinting):
 
         This is the example from wikipedia:
 
-        >>> from diofant import Matrix
         >>> A = Matrix([[12, -51, 4], [6, 167, -68], [-4, 24, -41]])
         >>> Q, R = A.QRdecomposition()
         >>> Q
@@ -1657,7 +1651,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> M = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
         >>> v = [1, 1, 1]
         >>> M.row(0).dot(v)
@@ -1707,7 +1700,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix
         >>> A = Matrix([[0, 1, 2], [3, 4, 5]])
         >>> B = Matrix([[1, 10, 100], [100, 10, 1]])
         >>> A.multiply_elementwise(B)
@@ -1753,7 +1745,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix, Symbol, trigsimp, cos, sin, oo
         >>> x = Symbol('x', real=True)
         >>> v = Matrix([cos(x), sin(x)])
         >>> trigsimp(v.norm())
@@ -1834,7 +1825,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix, S, sqrt
         >>> V = Matrix([sqrt(3)/2, S.Half])
         >>> x = Matrix([[1, 0]])
         >>> V.project(x)
@@ -1850,7 +1840,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import eye
         >>> M = eye(3)
         >>> M.permuteBkwd([[0, 1], [0, 2]])
         Matrix([
@@ -1874,7 +1863,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import eye
         >>> M = eye(3)
         >>> M.permuteFwd([[0, 1], [0, 2]])
         Matrix([
@@ -1937,7 +1925,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> a = Matrix([[1, 2, 3], [4, 5, 6]])
         >>> b = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
         >>> c = Matrix([])
@@ -1962,8 +1949,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix, zeros
-        >>> from diofant.abc import x
         >>> a = Matrix([[0, 0], [0, 0]])
         >>> b = zeros(3, 4)
         >>> c = Matrix([[0, 1], [0, 0]])
@@ -1994,7 +1979,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> a = Matrix([[0, 0, 0], [1, 0, 0], [1, 1, 0]])
         >>> a.is_nilpotent()
         True
@@ -2021,7 +2005,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> m = Matrix(2, 2, [1, 0, 0, 1])
         >>> m
         Matrix([
@@ -2067,7 +2050,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> m = Matrix(2, 2, [1, 0, 0, 1])
         >>> m
         Matrix([
@@ -2086,7 +2068,6 @@ class MatrixBase(DefaultPrinting):
         >>> m.is_lower
         True
 
-        >>> from diofant.abc import x, y
         >>> m = Matrix(2, 2, [x**2 + y, y**2 + x, 0, x + y])
         >>> m
         Matrix([
@@ -2116,9 +2097,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix
-        >>> from diofant import I
-        >>> from diofant.abc import x
         >>> a = Matrix([[1, I], [-I, 1]])
         >>> a
         Matrix([
@@ -2155,7 +2133,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix
         >>> a = Matrix([[1, 4, 2, 3], [3, 4, 1, 7], [0, 2, 3, 4], [0, 0, 1, 3]])
         >>> a
         Matrix([
@@ -2186,7 +2163,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix
         >>> a = Matrix([[1, 2, 0, 0], [5, 2, 3, 0], [3, 4, 3, 7], [5, 6, 1, 1]])
         >>> a
         Matrix([
@@ -2213,8 +2189,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix
-        >>> from diofant.abc import x, y
         >>> M = Matrix([[x, y], [1, 0]])
         >>> M.is_symbolic()
         True
@@ -2233,7 +2207,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> m = Matrix(2, 2, [0, 1, 1, 2])
         >>> m
         Matrix([
@@ -2258,7 +2231,6 @@ class MatrixBase(DefaultPrinting):
         >>> m.is_symmetric()
         False
 
-        >>> from diofant.abc import x, y
         >>> m = Matrix(3, 3, [1, x**2 + 2*x + 1, y, (x + 1)**2 , 2, 0, y, 0, 3])
         >>> m
         Matrix([
@@ -2301,7 +2273,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix, symbols
         >>> m = Matrix(2, 2, [0, 1, -1, 0])
         >>> m
         Matrix([
@@ -2318,7 +2289,6 @@ class MatrixBase(DefaultPrinting):
         >>> m.is_anti_symmetric()
         False
 
-        >>> from diofant.abc import x, y
         >>> m = Matrix(3, 3, [0, x**2 + 2*x + 1, y,
         ...                   -(x + 1)**2 , 0, x*y,
         ...                   -y, -x*y, 0])
@@ -2380,7 +2350,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix, diag
         >>> m = Matrix(2, 2, [1, 0, 0, 2])
         >>> m
         Matrix([
@@ -2464,8 +2433,7 @@ class MatrixBase(DefaultPrinting):
         Hong R. Lee, B.David Saunders, Fraction Free Gaussian Elimination
         for Sparse Matrices, In Journal of Symbolic Computation, Volume 19,
         Issue 5, 1995, Pages 393-402, ISSN 0747-7171,
-        https://doi.org/10.1006/jsco.1995.1022.
-        (http://www.sciencedirect.com/science/article/pii/S074771718571022X)
+        https://www.sciencedirect.com/science/article/pii/S074771718571022X.
 
         See Also
         ========
@@ -2531,8 +2499,7 @@ class MatrixBase(DefaultPrinting):
         Hong R. Lee, B.David Saunders, Fraction Free Gaussian Elimination
         for Sparse Matrices, In Journal of Symbolic Computation, Volume 19,
         Issue 5, 1995, Pages 393-402, ISSN 0747-7171,
-        https://doi.org/10.1006/jsco.1995.1022.
-        (http://www.sciencedirect.com/science/article/pii/S074771718571022X)
+        https://www.sciencedirect.com/science/article/pii/S074771718571022X.
 
         See Also
         ========
@@ -2645,8 +2612,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
-        >>> from diofant.abc import x
         >>> m = Matrix([[1, 2], [x, 1 - 1/x]])
         >>> m.rref()
         (Matrix([
@@ -2688,8 +2653,6 @@ class MatrixBase(DefaultPrinting):
         """
         Returns the rank of a matrix
 
-        >>> from diofant import Matrix
-        >>> from diofant.abc import x
         >>> m = Matrix([[1, 2], [x, 1 - 1/x]])
         >>> m.rank()
         2
@@ -2759,9 +2722,6 @@ class MatrixBase(DefaultPrinting):
 
            As a consequence, all polynomials generated by Berkowitz
            algorithm are monic.
-
-           >>> from diofant import Matrix
-           >>> from diofant.abc import x, y, z
 
            >>> M = Matrix([[x, y, z], [1, 0, 0], [y, z, x]])
 
@@ -2872,8 +2832,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
-        >>> from diofant.abc import x, y
         >>> A = Matrix([[1, 3], [2, 0]])
         >>> A.berkowitz_charpoly(x) == A.berkowitz_charpoly(y)
         True
@@ -3004,8 +2962,7 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix, Symbol
-        >>> x = Symbol('x', extended_real=True)
+        >>> x = Symbol('x', real=True)
         >>> A = Matrix([[0, 1, 0], [0, x, 0], [-1, 0, 0]])
         >>> A.singular_values()
         [sqrt(x**2 + 1), 1, 0]
@@ -3036,7 +2993,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix, S
         >>> A = Matrix([[1, 0, 0], [0, 10, 0], [0, 0, S.One/10]])
         >>> A.condition_number()
         100
@@ -3058,10 +3014,8 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix
-        >>> from diofant.abc import x, y
         >>> M = Matrix([[x, y], [1, 0]])
-        >>> M.integrate((x, ))
+        >>> M.integrate(x)
         Matrix([
         [x**2/2, x*y],
         [     x,   0]])
@@ -3085,8 +3039,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix
-        >>> from diofant.abc import x, y
         >>> M = Matrix([[x, y], [1, 0]])
         >>> M.limit(x, 2)
         Matrix([
@@ -3108,8 +3060,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix
-        >>> from diofant.abc import x, y
         >>> M = Matrix([[x, y], [1, 0]])
         >>> M.diff(x)
         Matrix([
@@ -3131,8 +3081,7 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
-        >>> m=Matrix([[1, 3], [2, 4]])
+        >>> m = Matrix([[1, 3], [2, 4]])
         >>> m
         Matrix([
         [1, 3],
@@ -3162,8 +3111,7 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
-        >>> m=Matrix([[1, 2], [2, 3]])
+        >>> m = Matrix([[1, 2], [2, 3]])
         >>> m
         Matrix([
         [1, 2],
@@ -3215,8 +3163,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
-        >>> from diofant.abc import x, y, z
         >>> A = Matrix([[1, 3, 0, 0], [y, z*z, 0, 0], [0, 0, x, 0], [0, 0, 0, 0]])
         >>> a1, a2, a3 = A.get_diag_blocks()
         >>> a1
@@ -3259,7 +3205,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> m = Matrix(3, 3, [1, 2, 0, 0, 3, 0, 2, -4, 2])
         >>> m
         Matrix([
@@ -3326,7 +3271,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> m = Matrix(3, 3, [1, 2, 0, 0, 3, 0, 2, -4, 2])
         >>> m
         Matrix([
@@ -3581,7 +3525,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> m = Matrix([
         ...        [ 6,  5, -2, -3],
         ...        [-3, -1,  3,  3],
@@ -3623,7 +3566,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> m = Matrix(4, 4, [
         ...  6,  5, -2, -3,
         ... -3, -1,  3,  3,
@@ -3678,8 +3620,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix, Float
-        >>> from diofant.abc import x, y
         >>> A = Matrix(((1, x), (0.2, 3)))
         >>> A.has(x)
         True
@@ -3737,7 +3677,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix, eye
         >>> Matrix.hstack(eye(2), 2*eye(2))
         Matrix([
         [1, 0, 2, 0],
@@ -3753,7 +3692,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant.matrices import Matrix, eye
         >>> Matrix.vstack(eye(2), 2*eye(2))
         Matrix([
         [1, 0],
@@ -3769,7 +3707,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import zeros, ones
         >>> M = zeros(3)
         >>> V = ones(3, 1)
         >>> M.row_join(V)
@@ -3804,7 +3741,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import zeros, ones
         >>> M = zeros(3)
         >>> V = ones(1, 3)
         >>> M.col_join(V)
@@ -3840,7 +3776,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import zeros, ones
         >>> M = zeros(3)
         >>> V = ones(1, 3)
         >>> M.row_insert(1, V)
@@ -3886,7 +3821,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import zeros, ones
         >>> M = zeros(3)
         >>> V = ones(3, 1)
         >>> M.col_insert(1, V)
@@ -3932,13 +3866,12 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import symbols, Function, Matrix
         >>> F, G = symbols('F, G', cls=Function)
         >>> M = Matrix(2, 2, lambda i, j: F(i+j)) ; M
         Matrix([
         [F(0), F(1)],
         [F(1), F(2)]])
-        >>> N = M.replace(F,G)
+        >>> N = M.replace(F, G)
         >>> N
         Matrix([
         [G(0), G(1)],
@@ -3958,7 +3891,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> Matrix([[1, 2, 3], [4, 5, 6]]).pinv()
         Matrix([
         [-17/18,  4/9],
@@ -4021,7 +3953,6 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> from diofant import Matrix
         >>> A = Matrix([[1, 2, 3], [4, 5, 6]])
         >>> B = Matrix([7, 8])
         >>> A.pinv_solve(B)
@@ -4082,8 +4013,6 @@ def classof(A, B):
     Examples
     ========
 
-    >>> from diofant import Matrix, ImmutableMatrix
-    >>> from diofant.matrices.matrices import classof
     >>> M = Matrix([[1, 2], [3, 4]])  # a Mutable Matrix
     >>> IM = ImmutableMatrix([[1, 2], [3, 4]])
     >>> classof(M, IM)

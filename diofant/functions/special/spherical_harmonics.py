@@ -29,8 +29,6 @@ class Ynm(Function):
     Examples
     ========
 
-    >>> from diofant import Ynm, Symbol
-    >>> from diofant.abc import n,m
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
 
@@ -39,8 +37,6 @@ class Ynm(Function):
 
     Several symmetries are known, for the order
 
-    >>> from diofant import Ynm, Symbol
-    >>> from diofant.abc import n,m
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
 
@@ -49,8 +45,6 @@ class Ynm(Function):
 
     as well as for the angles
 
-    >>> from diofant import Ynm, Symbol, simplify
-    >>> from diofant.abc import n,m
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
 
@@ -93,8 +87,6 @@ class Ynm(Function):
     We can differentiate the functions with respect
     to both angles
 
-    >>> from diofant import Ynm, Symbol, diff
-    >>> from diofant.abc import n,m
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
 
@@ -106,10 +98,9 @@ class Ynm(Function):
 
     Further we can compute the complex conjugation
 
-    >>> from diofant import Ynm, Symbol, conjugate
-    >>> from diofant.abc import n,m
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
+    >>> m = Symbol('m')
 
     >>> conjugate(Ynm(n, m, theta, phi))
     (-1)**(2*m)*E**(-2*I*m*phi)*Ynm(n, m, theta, phi)
@@ -117,8 +108,6 @@ class Ynm(Function):
     To get back the well known expressions in spherical
     coordinates we use full expansion
 
-    >>> from diofant import Ynm, Symbol, expand_func
-    >>> from diofant.abc import n,m
     >>> theta = Symbol("theta")
     >>> phi = Symbol("phi")
 
@@ -137,7 +126,7 @@ class Ynm(Function):
     .. [1] https//en.wikipedia.org/wiki/Spherical_harmonics
     .. [2] http://mathworld.wolfram.com/SphericalHarmonic.html
     .. [3] http://functions.wolfram.com/Polynomials/SphericalHarmonicY/
-    .. [4] http://dlmf.nist.gov/14.30
+    .. [4] https://dlmf.nist.gov/14.30
     """
 
     @classmethod

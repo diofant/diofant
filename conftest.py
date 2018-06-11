@@ -5,9 +5,12 @@ import warnings
 import hypothesis
 import pytest
 
+import diofant
 from diofant.core.cache import USE_CACHE, clear_cache
 from diofant.core.compatibility import GROUND_TYPES
 
+
+collect_ignore = ["setup.py"]
 
 sp = re.compile(r'([0-9]+)/([1-9][0-9]*)')
 
@@ -68,3 +71,23 @@ def set_displayhook():
 @pytest.fixture(autouse=True, scope='session')
 def enable_deprecationwarnings():
     warnings.simplefilter('error', DeprecationWarning)
+
+
+@pytest.fixture(autouse=True, scope='session')
+def enable_mpl_agg_backend():
+    try:
+        import matplotlib as mpl
+        mpl.use('Agg')
+        del mpl
+    except ImportError:
+        pass
+
+
+@pytest.fixture(autouse=True)
+def add_np(doctest_namespace):
+    for sym in (diofant.symbols('x y z t') +
+                diofant.symbols('k m n', integer=True) +
+                diofant.symbols('f g h', cls=diofant.Function)):
+        doctest_namespace[str(sym)] = sym
+    for name in dir(diofant):
+        doctest_namespace[name] = getattr(diofant, name)

@@ -39,8 +39,6 @@ Example Usage
 The following Python session gives one an idea of how to work with some of the
 geometry module.
 
-    >>> from diofant import *
-    >>> from diofant.geometry import *
     >>> x = Point(0, 0)
     >>> y = Point(1, 1)
     >>> z = Point(2, 2)
@@ -73,10 +71,7 @@ Intersection of medians
 -----------------------
 ::
 
-    >>> from diofant import symbols
-    >>> from diofant.geometry import Point, Triangle, intersection
-
-    >>> a, b = symbols("a,b", positive=True)
+    >>> a, b = symbols("a b", positive=True)
 
     >>> x = Point(0, 0)
     >>> y = Point(a, 0)
@@ -103,9 +98,6 @@ From Wikipedia ([WikiPappus]_):
 
 ::
 
-    >>> from diofant import *
-    >>> from diofant.geometry import *
-    >>>
     >>> l1 = Line(Point(0, 0), Point(5, 6))
     >>> l2 = Line(Point(0, 0), Point(2, -2))
     >>>
@@ -169,10 +161,8 @@ Truth Setting Expressions
 When one deals with symbolic entities, it often happens that an assertion
 cannot be guaranteed. For example, consider the following code:
 
-    >>> from diofant import *
-    >>> from diofant.geometry import *
-    >>> x,y,z = map(Symbol, 'xyz')
-    >>> p1,p2,p3 = Point(x, y), Point(y, z), Point(2*x*y, y)
+    >>> x, y, z = symbols('x y z')
+    >>> p1, p2, p3 = Point(x, y), Point(y, z), Point(2*x*y, y)
     >>> Point.is_collinear(p1, p2, p3)
     False
 
@@ -198,12 +188,12 @@ Submodules
 .. toctree::
     :maxdepth: 3
 
-    entities.rst
-    utils.rst
-    points.rst
-    lines.rst
-    line3d.rst
-    curves.rst
-    ellipses.rst
-    polygons.rst
-    plane.rst
+    entities
+    utils
+    points
+    lines
+    line3d
+    curves
+    ellipses
+    polygons
+    plane

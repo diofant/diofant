@@ -1,7 +1,7 @@
 """Useful utilities for higher level polynomial classes. """
 
+import collections
 import re
-from collections import defaultdict
 
 from ..core import Add, Mul, Pow, S, nan, oo, zoo
 from ..core.exprtools import decompose_power
@@ -157,7 +157,7 @@ def _analyze_gens(gens):
 def _sort_factors(factors, **args):
     """Sort low-level factors in increasing 'complexity' order. """
     def order_if_multiple_key(factor):
-        (f, n) = factor
+        f, n = factor
         return len(f), n, f
 
     def order_no_multiple_key(f):
@@ -251,7 +251,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
             raise PolynomialError('non-commutative expressions are not supported')
 
         for term in Add.make_args(expr):
-            coeff, elements = [], defaultdict(int)
+            coeff, elements = [], collections.defaultdict(int)
 
             for factor in Mul.make_args(term):
                 if not _not_a_coeff(factor) and (factor.is_Number or _is_coeff(factor)):

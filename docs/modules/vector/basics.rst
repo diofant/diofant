@@ -133,7 +133,6 @@ In essence, the methods work on the measure numbers(The coefficients
 of the basis vectors) present in the provided vectorial expression.
 
   >>> from diofant.abc import a, b, c
-  >>> from diofant import sin, cos, trigsimp, diff
   >>> v = (a*b + a*c + b**2 + b*c)*N.i + N.j
   >>> v.factor()
   ((a + b)*(b + c))*N.i + N.j
@@ -144,14 +143,12 @@ of the basis vectors) present in the provided vectorial expression.
   N.i + (-cos(2*b))*N.k
   >>> diff(v, b)
   (4*sin(b)*cos(b))*N.k
-  >>> from diofant import Derivative
   >>> Derivative(v, b).doit()
   (4*sin(b)*cos(b))*N.k
 
 ``Integral`` also works with ``Vector`` instances, similar to
 ``Derivative``.
 
-  >>> from diofant import Integral
   >>> v1 = a*N.i + sin(a)*N.j - N.k
   >>> Integral(v1, a)
   (Integral(a, a))*N.i + (Integral(sin(a), a))*N.j + (Integral(-1, a))*N.k

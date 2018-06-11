@@ -19,8 +19,6 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
     Examples
     ========
 
-    >>> from diofant import eye
-    >>> from diofant.matrices import ImmutableMatrix
     >>> ImmutableMatrix(eye(3))
     Matrix([
     [1, 0, 0],
@@ -83,7 +81,7 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
 
     adjoint = MatrixBase.adjoint
     conjugate = MatrixBase.conjugate
-    # C and T are defined in MatrixExpr...I don't know why C alone
+    # C and T are defined in MatrixExpr.  I don't know why C alone
     # needs to be defined here
     C = MatrixBase.C
 
@@ -117,7 +115,6 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
 ImmutableMatrix.is_zero = DenseMatrix.is_zero
 
 
-#:
 ImmutableDenseMatrix = ImmutableMatrix
 
 
@@ -127,8 +124,6 @@ class ImmutableSparseMatrix(Basic, SparseMatrixBase):
     Examples
     ========
 
-    >>> from diofant import eye
-    >>> from diofant.matrices.immutable import ImmutableSparseMatrix
     >>> ImmutableSparseMatrix(1, 1, {})
     Matrix([[0]])
     >>> ImmutableSparseMatrix(eye(3))

@@ -1,6 +1,6 @@
 """Implementation of :class:`Field` class. """
 
-from ..polys.polyerrors import DomainError, NotReversible
+from ..polys.polyerrors import NotReversible
 from .ring import Ring
 
 
@@ -12,11 +12,13 @@ class Field(Ring):
 
     has_Field = True
 
-    def get_ring(self):
+    @property
+    def ring(self):
         """Returns a ring associated with ``self``. """
-        raise DomainError('there is no ring associated with %s' % self)
+        raise AttributeError('there is no ring associated with %s' % self)
 
-    def get_field(self):
+    @property
+    def field(self):
         """Returns a field associated with ``self``. """
         return self
 
@@ -43,10 +45,6 @@ class Field(Ring):
         This definition of GCD over fields allows to clear denominators
         in `primitive()`.
 
-        >>> from diofant.domains import QQ
-        >>> from diofant import Rational, gcd, primitive
-        >>> from diofant.abc import x
-
         >>> QQ.gcd(QQ(2, 3), QQ(4, 9))
         2/9
         >>> gcd(Rational(2, 3), Rational(4, 9))
@@ -55,21 +53,18 @@ class Field(Ring):
         (2/9, 3*x + 2)
         """
         try:
-            ring = self.get_ring()
-        except DomainError:
+            ring = self.ring
+        except AttributeError:
             return self.one
 
-        p = ring.gcd(self.numer(a), self.numer(b))
-        q = ring.lcm(self.denom(a), self.denom(b))
+        p = ring.gcd(a.numerator, b.numerator)
+        q = ring.lcm(a.denominator, b.denominator)
 
         return self.convert(p, ring)/q
 
     def lcm(self, a, b):
         """
         Returns LCM of ``a`` and ``b``.
-
-        >>> from diofant.domains import QQ
-        >>> from diofant import Rational, lcm
 
         >>> QQ.lcm(QQ(2, 3), QQ(4, 9))
         4/3
@@ -78,12 +73,12 @@ class Field(Ring):
         """
 
         try:
-            ring = self.get_ring()
-        except DomainError:
+            ring = self.ring
+        except AttributeError:
             return a*b
 
-        p = ring.lcm(self.numer(a), self.numer(b))
-        q = ring.gcd(self.denom(a), self.denom(b))
+        p = ring.lcm(a.numerator, b.numerator)
+        q = ring.gcd(a.denominator, b.denominator)
 
         return self.convert(p, ring)/q
 

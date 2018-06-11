@@ -14,8 +14,6 @@ class exp_polar(Function):
     `z = a + bi` to the polar number `r = exp(a), \theta = b`. It is one of
     the main functions to construct polar numbers.
 
-    >>> from diofant import exp_polar, pi, I, exp
-
     The main difference is that polar numbers don't "wrap around" at `2 \pi`:
 
     >>> exp(2*pi*I)
@@ -49,8 +47,6 @@ class exp_polar(Function):
         Examples
         ========
 
-        >>> from diofant.functions import exp
-        >>> from diofant.abc import x
         >>> exp(-x).as_numer_denom()
         (1, E**x)
         >>> exp(x).as_numer_denom()
@@ -316,9 +312,6 @@ class log(Function):
         Examples
         ========
 
-        >>> from diofant import I
-        >>> from diofant.abc import x
-        >>> from diofant.functions import log
         >>> log(x).as_real_imag()
         (log(Abs(x)), arg(x))
         >>> log(I).as_real_imag()
@@ -435,12 +428,11 @@ class LambertW(Function):
     Examples
     ========
 
-    >>> from diofant import LambertW
     >>> LambertW(1.2)
     0.635564016364870
     >>> LambertW(1.2, -1).n()
     -1.34747534407696 - 4.41624341514535*I
-    >>> LambertW(-1).is_extended_real
+    >>> LambertW(-1).is_real
     False
 
     References

@@ -24,8 +24,6 @@ def egyptian_fraction(r, algorithm="Greedy"):
     Examples
     ========
 
-    >>> from diofant import Rational
-    >>> from diofant.ntheory.egyptian_fraction import egyptian_fraction
     >>> egyptian_fraction(Rational(3, 7))
     [3, 11, 231]
     >>> egyptian_fraction(Rational(3, 7), "Graham Jewett")
@@ -129,7 +127,7 @@ def egypt_greedy(x, y):
     if x == 1:
         return [y]
     else:
-        a = (-y) % (x)
+        a = (-y) % x
         b = y*(y//x + 1)
         c = math.gcd(a, b)
         if c > 1:

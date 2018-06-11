@@ -14,3 +14,4 @@ development work they do here in a user friendly format.
 
    sympy
    notes-0.[89]*
+   Diofant 0.10 (Not Released Yet) <notes-0.10>

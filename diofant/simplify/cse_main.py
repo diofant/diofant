@@ -40,9 +40,6 @@ def reps_toposort(r):
     Examples
     ========
 
-    >>> from diofant.simplify.cse_main import reps_toposort
-    >>> from diofant.abc import x, y
-    >>> from diofant import Eq
     >>> for l, r in reps_toposort([(x, y + 1), (y, 2)]):
     ...     print(Eq(l, r))
     ...
@@ -66,9 +63,6 @@ def cse_separate(r, e):
     Examples
     ========
 
-    >>> from diofant.simplify.cse_main import cse_separate
-    >>> from diofant.abc import x, y, z
-    >>> from diofant import cos, exp, cse, Eq, symbols
     >>> x0, x1 = symbols('x:2')
     >>> eq = (x + 1 + exp((x + 1)/(y + 1)) + cos(y + 1))
     >>> cse([eq, Eq(x, z + 1), z - 2], postprocess=cse_separate) in [
@@ -153,8 +147,6 @@ def opt_cse(exprs, order='canonical'):
     Examples
     --------
 
-    >>> from diofant.simplify.cse_main import opt_cse
-    >>> from diofant.abc import x
     >>> opt_subs = opt_cse([x**-2])
     >>> opt_subs
     {x**(-2): 1/(x**2)}
@@ -412,8 +404,7 @@ def cse(exprs, symbols=None, optimizations=None, postprocess=None,
     Examples
     ========
 
-    >>> from diofant import cse, SparseMatrix
-    >>> from diofant.abc import x, y, z, w
+    >>> from diofant.abc import w
     >>> cse(((w + x + y + z)*(w + y + z))/(w + x)**3)
     ([(x0, y + z), (x1, w + x)], [(w + x0)*(x0 + x1)/x1**3])
 

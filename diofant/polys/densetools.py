@@ -1,20 +1,17 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
-from math import ceil as _ceil
-from math import log as _log
+import math
 
+from ..core import I
 from ..utilities import variations
-from .densearith import (dmp_add, dmp_add_term, dmp_expand, dmp_exquo_ground,
-                         dmp_mul, dmp_mul_ground, dmp_quo_ground, dmp_rem,
-                         dmp_sub, dup_add, dup_add_term, dup_div,
-                         dup_exquo_ground, dup_lshift, dup_mul, dup_mul_ground,
-                         dup_quo_ground, dup_rem, dup_sqr, dup_sub)
+from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
+                         dmp_exquo_ground, dmp_mul, dmp_mul_ground, dmp_neg,
+                         dmp_quo_ground, dmp_rem, dmp_sub, dup_add, dup_lshift,
+                         dup_mul, dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
-                         dmp_zero, dmp_zero_p, dmp_zeros, dup_convert,
-                         dup_degree, dup_from_raw_dict, dup_LC, dup_strip,
-                         dup_TC, dup_to_raw_dict)
-from .polyerrors import DomainError, MultivariatePolynomialError
+                         dmp_zero, dmp_zero_p, dmp_zeros, dup_from_dict)
+from .polyerrors import DomainError
 
 
 def dup_integrate(f, m, K):
@@ -24,8 +21,6 @@ def dup_integrate(f, m, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", QQ)
 
     >>> R.dup_integrate(x**2 + 2*x, 1)
@@ -56,9 +51,7 @@ def dmp_integrate(f, m, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
 
     >>> R.dmp_integrate(x + 2*y, 1)
     1/2*x**2 + 2*x*y
@@ -84,16 +77,6 @@ def dmp_integrate(f, m, u, K):
     return g
 
 
-def _rec_integrate_in(g, m, v, i, j, K):
-    """Recursive helper for :func:`dmp_integrate_in`."""
-    if i == j:
-        return dmp_integrate(g, m, v, K)
-
-    w, i = v - 1, i + 1
-
-    return dmp_strip([ _rec_integrate_in(c, m, w, i, j, K) for c in g ], v)
-
-
 def dmp_integrate_in(f, m, j, u, K):
     """
     Computes the indefinite integral of ``f`` in ``x_j`` in ``K[X]``.
@@ -101,9 +84,7 @@ def dmp_integrate_in(f, m, j, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
 
     >>> R.dmp_integrate_in(x + 2*y, 1, 0)
     1/2*x**2 + 2*x*y
@@ -113,7 +94,15 @@ def dmp_integrate_in(f, m, j, u, K):
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
 
-    return _rec_integrate_in(f, m, u, 0, j, K)
+    def integrate_in(g, m, v, i, j, K):
+        if i == j:
+            return dmp_integrate(g, m, v, K)
+
+        w, i = v - 1, i + 1
+
+        return dmp_strip([integrate_in(c, m, w, i, j, K) for c in g], v)
+
+    return integrate_in(f, m, u, 0, j, K)
 
 
 def dup_diff(f, m, K):
@@ -123,8 +112,6 @@ def dup_diff(f, m, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_diff(x**3 + 2*x**2 + 3*x + 4, 1)
@@ -135,7 +122,7 @@ def dup_diff(f, m, K):
     if m <= 0:
         return f
 
-    n = dup_degree(f)
+    n = dmp_degree(f, 0)
 
     if n < m:
         return []
@@ -156,7 +143,7 @@ def dup_diff(f, m, K):
             deriv.append(K(k)*coeff)
             n -= 1
 
-    return dup_strip(deriv)
+    return dmp_strip(deriv, 0)
 
 
 def dmp_diff(f, m, u, K):
@@ -166,9 +153,7 @@ def dmp_diff(f, m, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
 
@@ -206,16 +191,6 @@ def dmp_diff(f, m, u, K):
     return dmp_strip(deriv, u)
 
 
-def _rec_diff_in(g, m, v, i, j, K):
-    """Recursive helper for :func:`dmp_diff_in`."""
-    if i == j:
-        return dmp_diff(g, m, v, K)
-
-    w, i = v - 1, i + 1
-
-    return dmp_strip([ _rec_diff_in(c, m, w, i, j, K) for c in g ], v)
-
-
 def dmp_diff_in(f, m, j, u, K):
     """
     ``m``-th order derivative in ``x_j`` of a polynomial in ``K[X]``.
@@ -223,9 +198,7 @@ def dmp_diff_in(f, m, j, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
 
@@ -237,7 +210,15 @@ def dmp_diff_in(f, m, j, u, K):
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
 
-    return _rec_diff_in(f, m, u, 0, j, K)
+    def diff_in(g, m, v, i, j, K):
+        if i == j:
+            return dmp_diff(g, m, v, K)
+
+        w, i = v - 1, i + 1
+
+        return dmp_strip([diff_in(c, m, w, i, j, K) for c in g], v)
+
+    return diff_in(f, m, u, 0, j, K)
 
 
 def dup_eval(f, a, K):
@@ -247,15 +228,13 @@ def dup_eval(f, a, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_eval(x**2 + 2*x + 3, 2)
     11
     """
     if not a:
-        return dup_TC(f, K)
+        return dmp_TC(f, K)
 
     result = K.zero
 
@@ -273,9 +252,7 @@ def dmp_eval(f, a, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_eval(2*x*y + 3*x + y + 2, 2)
     5*y + 8
@@ -295,16 +272,6 @@ def dmp_eval(f, a, u, K):
     return result
 
 
-def _rec_eval_in(g, a, v, i, j, K):
-    """Recursive helper for :func:`dmp_eval_in`."""
-    if i == j:
-        return dmp_eval(g, a, v, K)
-
-    v, i = v - 1, i + 1
-
-    return dmp_strip([ _rec_eval_in(c, a, v, i, j, K) for c in g ], v)
-
-
 def dmp_eval_in(f, a, j, u, K):
     """
     Evaluate a polynomial at ``x_j = a`` in ``K[X]`` using the Horner scheme.
@@ -312,9 +279,7 @@ def dmp_eval_in(f, a, j, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = 2*x*y + 3*x + y + 2
 
@@ -326,20 +291,15 @@ def dmp_eval_in(f, a, j, u, K):
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
 
-    return _rec_eval_in(f, a, u, 0, j, K)
+    def eval_in(g, a, v, i, j, K):
+        if i == j:
+            return dmp_eval(g, a, v, K)
 
+        v, i = v - 1, i + 1
 
-def _rec_eval_tail(g, i, A, u, K):
-    """Recursive helper for :func:`dmp_eval_tail`."""
-    if i == u:
-        return dup_eval(g, A[-1], K)
-    else:
-        h = [ _rec_eval_tail(c, i + 1, A, u, K) for c in g ]
+        return dmp_strip([eval_in(c, a, v, i, j, K) for c in g], v)
 
-        if i < u - len(A) + 1:
-            return h
-        else:
-            return dup_eval(h, A[-u + i - 1], K)
+    return eval_in(f, a, u, 0, j, K)
 
 
 def dmp_eval_tail(f, A, u, K):
@@ -349,9 +309,7 @@ def dmp_eval_tail(f, A, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = 2*x*y + 3*x + y + 2
 
@@ -366,22 +324,23 @@ def dmp_eval_tail(f, A, u, K):
     if dmp_zero_p(f, u):
         return dmp_zero(u - len(A))
 
-    e = _rec_eval_tail(f, 0, A, u, K)
+    def eval_tail(g, i, A, u, K):
+        if i == u:
+            return dup_eval(g, A[-1], K)
+        else:
+            h = [eval_tail(c, i + 1, A, u, K) for c in g]
+
+            if i < u - len(A) + 1:
+                return h
+            else:
+                return dup_eval(h, A[-u + i - 1], K)
+
+    e = eval_tail(f, 0, A, u, K)
 
     if u == len(A) - 1:
         return e
     else:
         return dmp_strip(e, u - len(A))
-
-
-def _rec_diff_eval(g, m, a, v, i, j, K):
-    """Recursive helper for :func:`dmp_diff_eval`."""
-    if i == j:
-        return dmp_eval(dmp_diff(g, m, v, K), a, v, K)
-
-    v, i = v - 1, i + 1
-
-    return dmp_strip([ _rec_diff_eval(c, m, a, v, i, j, K) for c in g ], v)
 
 
 def dmp_diff_eval_in(f, m, a, j, u, K):
@@ -391,9 +350,7 @@ def dmp_diff_eval_in(f, m, a, j, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
 
@@ -407,7 +364,15 @@ def dmp_diff_eval_in(f, m, a, j, u, K):
     if not j:
         return dmp_eval(dmp_diff(f, m, u, K), a, u, K)
 
-    return _rec_diff_eval(f, m, a, u, 0, j, K)
+    def diff_eval(g, m, a, v, i, j, K):
+        if i == j:
+            return dmp_eval(dmp_diff(g, m, v, K), a, v, K)
+
+        v, i = v - 1, i + 1
+
+        return dmp_strip([diff_eval(c, m, a, v, i, j, K) for c in g], v)
+
+    return diff_eval(f, m, a, u, 0, j, K)
 
 
 def dup_trunc(f, p, K):
@@ -417,14 +382,12 @@ def dup_trunc(f, p, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_trunc(2*x**3 + 3*x**2 + 5*x + 7, ZZ(3))
     -x**3 - x + 1
     """
-    if K.is_ZZ:
+    if K.is_IntegerRing:
         g = []
 
         for c in f:
@@ -437,7 +400,7 @@ def dup_trunc(f, p, K):
     else:
         g = [ c % p for c in f ]
 
-    return dup_strip(g)
+    return dmp_strip(g, 0)
 
 
 def dmp_trunc(f, p, u, K):
@@ -447,9 +410,7 @@ def dmp_trunc(f, p, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
     >>> g = (y - 1).drop(x)
@@ -467,9 +428,7 @@ def dmp_ground_trunc(f, p, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
 
@@ -484,35 +443,6 @@ def dmp_ground_trunc(f, p, u, K):
     return dmp_strip([ dmp_ground_trunc(c, p, v, K) for c in f ], u)
 
 
-def dup_monic(f, K):
-    """
-    Divide all coefficients by ``LC(f)`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x = ring("x", ZZ)
-    >>> R.dup_monic(3*x**2 + 6*x + 9)
-    x**2 + 2*x + 3
-
-    >>> R, x = ring("x", QQ)
-    >>> R.dup_monic(3*x**2 + 4*x + 2)
-    x**2 + 4/3*x + 2/3
-    """
-    if not f:
-        return f
-
-    lc = dup_LC(f, K)
-
-    if K.is_one(lc):
-        return f
-    else:
-        return dup_exquo_ground(f, lc, K)
-
-
 def dmp_ground_monic(f, u, K):
     """
     Divide all coefficients by ``LC(f)`` in ``K[X]``.
@@ -520,75 +450,27 @@ def dmp_ground_monic(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
     >>> f = 3*x**2*y + 6*x**2 + 3*x*y + 9*y + 3
 
     >>> R.dmp_ground_monic(f)
     x**2*y + 2*x**2 + x*y + 3*y + 1
 
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
     >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
 
     >>> R.dmp_ground_monic(f)
     x**2*y + 8/3*x**2 + 5/3*x*y + 2*x + 2/3*y + 1
     """
-    if not u:
-        return dup_monic(f, K)
-
     if dmp_zero_p(f, u):
         return f
 
     lc = dmp_ground_LC(f, u, K)
 
-    if K.is_one(lc):
+    if lc == K.one:
         return f
     else:
         return dmp_exquo_ground(f, lc, u, K)
-
-
-def dup_content(f, K):
-    """
-    Compute the GCD of coefficients of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x = ring("x", ZZ)
-    >>> f = 6*x**2 + 8*x + 12
-
-    >>> R.dup_content(f)
-    2
-
-    >>> R, x = ring("x", QQ)
-    >>> f = 6*x**2 + 8*x + 12
-
-    >>> R.dup_content(f)
-    2
-    """
-    from ..domains import QQ
-
-    if not f:
-        return K.zero
-
-    cont = K.zero
-
-    if K == QQ:
-        for c in f:
-            cont = K.gcd(cont, c)
-    else:
-        for c in f:
-            cont = K.gcd(cont, c)
-
-            if K.is_one(cont):
-                break
-
-    return cont
 
 
 def dmp_ground_content(f, u, K):
@@ -598,75 +480,37 @@ def dmp_ground_content(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
     >>> R.dmp_ground_content(f)
     2
 
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
     >>> R.dmp_ground_content(f)
     2
     """
-    from ..domains import QQ
-
-    if not u:
-        return dup_content(f, K)
+    if u < 0:
+        return f
 
     if dmp_zero_p(f, u):
         return K.zero
 
     cont, v = K.zero, u - 1
 
-    if K == QQ:
+    if K.is_RationalField:
         for c in f:
             cont = K.gcd(cont, dmp_ground_content(c, v, K))
     else:
         for c in f:
             cont = K.gcd(cont, dmp_ground_content(c, v, K))
 
-            if K.is_one(cont):
+            if cont == K.one:
                 break
 
     return cont
-
-
-def dup_primitive(f, K):
-    """
-    Compute content and the primitive form of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x = ring("x", ZZ)
-    >>> f = 6*x**2 + 8*x + 12
-
-    >>> R.dup_primitive(f)
-    (2, 3*x**2 + 4*x + 6)
-
-    >>> R, x = ring("x", QQ)
-    >>> f = 6*x**2 + 8*x + 12
-
-    >>> R.dup_primitive(f)
-    (2, 3*x**2 + 4*x + 6)
-    """
-    if not f:
-        return K.zero, f
-
-    cont = dup_content(f, K)
-
-    if K.is_one(cont):
-        return cont, f
-    else:
-        return cont, dup_quo_ground(f, cont, K)
 
 
 def dmp_ground_primitive(f, u, K):
@@ -676,59 +520,27 @@ def dmp_ground_primitive(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
     >>> R.dmp_ground_primitive(f)
     (2, x*y + 3*x + 2*y + 6)
 
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
     >>> R.dmp_ground_primitive(f)
     (2, x*y + 3*x + 2*y + 6)
     """
-    if not u:
-        return dup_primitive(f, K)
-
     if dmp_zero_p(f, u):
         return K.zero, f
 
     cont = dmp_ground_content(f, u, K)
 
-    if K.is_one(cont):
+    if cont == K.one:
         return cont, f
     else:
         return cont, dmp_quo_ground(f, cont, u, K)
-
-
-def dup_extract(f, g, K):
-    """
-    Extract common content from a pair of polynomials in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_extract(6*x**2 + 12*x + 18, 4*x**2 + 8*x + 12)
-    (2, 3*x**2 + 6*x + 9, 2*x**2 + 4*x + 6)
-    """
-    fc = dup_content(f, K)
-    gc = dup_content(g, K)
-
-    gcd = K.gcd(fc, gc)
-
-    if not K.is_one(gcd):
-        f = dup_quo_ground(f, gcd, K)
-        g = dup_quo_ground(g, gcd, K)
-
-    return gcd, f, g
 
 
 def dmp_ground_extract(f, g, u, K):
@@ -738,9 +550,7 @@ def dmp_ground_extract(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_ground_extract(6*x*y + 12*x + 18, 4*x*y + 8*x + 12)
     (2, 3*x*y + 6*x + 9, 2*x*y + 4*x + 6)
@@ -750,7 +560,7 @@ def dmp_ground_extract(f, g, u, K):
 
     gcd = K.gcd(fc, gc)
 
-    if not K.is_one(gcd):
+    if gcd != K.one:
         f = dmp_quo_ground(f, gcd, u, K)
         g = dmp_quo_ground(g, gcd, u, K)
 
@@ -764,14 +574,17 @@ def dup_real_imag(f, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dup_real_imag(x**3 + x**2 + x + 1)
     (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1, 3*x**2*y + 2*x*y - y**3 + y)
     """
-    if not K.is_ZZ and not K.is_QQ:
+    if K.is_Algebraic and K.ext.as_expr() == I:
+        K0 = K.domain
+        r1, i1 = dup_real_imag([_.to_dict().get((0,), K0.zero) for _ in f], K0)
+        r2, i2 = dup_real_imag([_.to_dict().get((1,), K0.zero) for _ in f], K0)
+        return dmp_add(r1, dmp_neg(i2, 1, K0), 1, K0), dmp_add(r2, i1, 1, K0)
+    elif not K.is_IntegerRing and not K.is_RationalField:
         raise DomainError("computing real and imaginary parts is not supported over %s" % K)
 
     f1 = dmp_zero(1)
@@ -787,9 +600,9 @@ def dup_real_imag(f, K):
         h = dmp_mul(h, g, 2, K)
         h = dmp_add_term(h, dmp_ground(c, 1), 0, 2, K)
 
-    H = dup_to_raw_dict(h)
+    H = dmp_to_dict(h, 0)
 
-    for k, h in H.items():
+    for (k,), h in H.items():
         m = k % 4
 
         if not m:
@@ -811,8 +624,6 @@ def dup_mirror(f, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_mirror(x**3 + 2*x**2 - 4*x + 2)
@@ -833,8 +644,6 @@ def dup_scale(f, a, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_scale(x**2 - 2*x + 1, ZZ(2))
@@ -855,8 +664,6 @@ def dup_shift(f, a, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_shift(x**2 - 2*x + 1, ZZ(2))
@@ -878,8 +685,6 @@ def dup_transform(f, p, q, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_transform(x**2 - 2*x + 1, x**2 + 1, x - 1)
@@ -896,37 +701,8 @@ def dup_transform(f, p, q, K):
 
     for c, q in zip(f[1:], Q[1:]):
         h = dup_mul(h, p, K)
-        q = dup_mul_ground(q, c, K)
+        q = dmp_mul_ground(q, c, 0, K)
         h = dup_add(h, q, K)
-
-    return h
-
-
-def dup_compose(f, g, K):
-    """
-    Evaluate functional composition ``f(g)`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_compose(x**2 + x, x - 1)
-    x**2 - x
-    """
-    if len(g) <= 1:
-        return dup_strip([dup_eval(f, dup_LC(g, K), K)])
-
-    if not f:
-        return []
-
-    h = [f[0]]
-
-    for c in f[1:]:
-        h = dup_mul(h, g, K)
-        h = dup_add_term(h, c, 0, K)
 
     return h
 
@@ -938,16 +714,11 @@ def dmp_compose(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_compose(x*y + 2*x + y, y)
     y**2 + 3*y
     """
-    if not u:
-        return dup_compose(f, g, K)
-
     if dmp_zero_p(f, u):
         return f
 
@@ -963,10 +734,10 @@ def dmp_compose(f, g, u, K):
 def _dup_right_decompose(f, s, K):
     """Helper function for :func:`_dup_decompose`."""
     n = len(f) - 1
-    lc = dup_LC(f, K)
+    lc = dmp_LC(f, K)
 
-    f = dup_to_raw_dict(f)
-    g = { s: K.one }
+    f = dmp_to_dict(f, 0)
+    g = {(s,): K.one}
 
     r = n // s
 
@@ -974,17 +745,17 @@ def _dup_right_decompose(f, s, K):
         coeff = K.zero
 
         for j in range(i):
-            if not n + j - i in f:
+            if not (n + j - i,) in f:
                 continue
 
-            assert s - j in g
+            assert (s - j,) in g
 
-            fc, gc = f[n + j - i], g[s - j]
+            fc, gc = f[(n + j - i,)], g[(s - j,)]
             coeff += (i - r*j)*fc*gc
 
-        g[s - i] = K.quo(coeff, i*r*lc)
+        g[(s - i,)] = K.quo(coeff, i*r*lc)
 
-    return dup_from_raw_dict(g, K)
+    return dup_from_dict(g, K)
 
 
 def _dup_left_decompose(f, h, K):
@@ -992,15 +763,15 @@ def _dup_left_decompose(f, h, K):
     g, i = {}, 0
 
     while f:
-        q, r = dup_div(f, h, K)
+        q, r = dmp_div(f, h, 0, K)
 
-        if dup_degree(r) > 0:
+        if dmp_degree(r, 0) > 0:
             return
         else:
-            g[i] = dup_LC(r, K)
+            g[(i,)] = dmp_LC(r, K)
             f, i = q, i + 1
 
-    return dup_from_raw_dict(g, K)
+    return dup_from_dict(g, K)
 
 
 def _dup_decompose(f, K):
@@ -1044,8 +815,6 @@ def dup_decompose(f, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_decompose(x**4 - 2*x**3 + x**2)
@@ -1077,14 +846,10 @@ def dmp_lift(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
-    >>> from diofant.core import I
-
     >>> K = QQ.algebraic_field(I)
     >>> R, x = ring("x", K)
 
-    >>> f = x**2 + K([QQ(1), QQ(0)])*x + K([QQ(2), QQ(0)])
+    >>> f = x**2 + I*x + 2*I
 
     >>> R.dmp_lift(f)
     x**8 + 2*x**6 + 9*x**4 - 8*x**2 + 16
@@ -1120,8 +885,6 @@ def dup_sign_variations(f, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_sign_variations(x**4 - x**2 - x + 1)
@@ -1146,11 +909,9 @@ def dup_clear_denoms(f, K0, K1=None, convert=False):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", QQ)
 
-    >>> f = QQ(1,2)*x + QQ(1,3)
+    >>> f = x/2 + QQ(1, 3)
 
     >>> R.dup_clear_denoms(f, convert=False)
     (6, 3*x + 2)
@@ -1159,38 +920,22 @@ def dup_clear_denoms(f, K0, K1=None, convert=False):
     """
     if K1 is None:
         if K0.has_assoc_Ring:
-            K1 = K0.get_ring()
+            K1 = K0.ring
         else:
             K1 = K0
 
     common = K1.one
 
     for c in f:
-        common = K1.lcm(common, K0.denom(c))
+        common = K1.lcm(common, c.denominator)
 
-    if not K1.is_one(common):
-        f = dup_mul_ground(f, common, K0)
+    if common != K1.one:
+        f = dmp_mul_ground(f, common, 0, K0)
 
     if not convert:
         return common, f
     else:
-        return common, dup_convert(f, K0, K1)
-
-
-def _rec_clear_denoms(g, v, K0, K1):
-    """Recursive helper for :func:`dmp_clear_denoms`."""
-    common = K1.one
-
-    if not v:
-        for c in g:
-            common = K1.lcm(common, K0.denom(c))
-    else:
-        w = v - 1
-
-        for c in g:
-            common = K1.lcm(common, _rec_clear_denoms(c, w, K0, K1))
-
-    return common
+        return common, dmp_convert(f, 0, K0, K1)
 
 
 def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
@@ -1200,11 +945,9 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
 
-    >>> f = QQ(1,2)*x + QQ(1,3)*y + 1
+    >>> f = x/2 + y/3 + 1
 
     >>> R.dmp_clear_denoms(f, convert=False)
     (6, 3*x + 2*y + 6)
@@ -1216,13 +959,27 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
 
     if K1 is None:
         if K0.has_assoc_Ring:
-            K1 = K0.get_ring()
+            K1 = K0.ring
         else:
             K1 = K0
 
-    common = _rec_clear_denoms(f, u, K0, K1)
+    def clear_denoms(g, v, K0, K1):
+        common = K1.one
 
-    if not K1.is_one(common):
+        if not v:
+            for c in g:
+                common = K1.lcm(common, c.denominator)
+        else:
+            w = v - 1
+
+            for c in g:
+                common = K1.lcm(common, clear_denoms(c, w, K0, K1))
+
+        return common
+
+    common = clear_denoms(f, u, K0, K1)
+
+    if common != K1.one:
         f = dmp_mul_ground(f, common, u, K0)
 
     if not convert:
@@ -1242,41 +999,22 @@ def dup_revert(f, n, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", QQ)
 
-    >>> f = -QQ(1,720)*x**6 + QQ(1,24)*x**4 - QQ(1,2)*x**2 + 1
+    >>> f = -x**6/720 + x**4/24 - x**2/2 + 1
 
     >>> R.dup_revert(f, 8)
     61/720*x**6 + 5/24*x**4 + 1/2*x**2 + 1
     """
-    g = [K.revert(dup_TC(f, K))]
+    g = [K.revert(dmp_TC(f, K))]
     h = [K.one, K.zero, K.zero]
 
-    N = int(_ceil(_log(n, 2)))
+    N = int(math.ceil(math.log(n, 2)))
 
     for i in range(1, N + 1):
-        a = dup_mul_ground(g, K(2), K)
+        a = dmp_mul_ground(g, K(2), 0, K)
         b = dup_mul(f, dup_sqr(g, K), K)
-        g = dup_rem(dup_sub(a, b, K), h, K)
-        h = dup_lshift(h, dup_degree(h), K)
+        g = dmp_rem(dup_sub(a, b, K), h, 0, K)
+        h = dup_lshift(h, dmp_degree(h, 0), K)
 
     return g
-
-
-def dmp_revert(f, g, u, K):
-    """
-    Compute ``f**(-1)`` mod ``x**n`` using Newton iteration.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", QQ)
-    """
-    if not u:
-        return dup_revert(f, g, K)
-    else:
-        raise MultivariatePolynomialError(f, g)

@@ -104,7 +104,7 @@ def _create_lookup_table(table):
     add((b + t)**(-a), [1 - a], [], [0], [], t/b, b**(-a)/gamma(a),
         hint=Not(IsNonPositiveInteger(a)))
     add(abs(b - t)**(-a), [1 - a], [(1 - a)/2], [0], [(1 - a)/2], t/b,
-        pi/(gamma(a)*cos(pi*a/2))*abs(b)**(-a), re(a) < 1)
+        2*sin(pi*a/2)*gamma(1 - a)*abs(b)**(-a), re(a) < 1)
     add((t**a - b**a)/(t - b), [0, a], [], [0, a], [], t/b,
         b**(a - 1)*sin(a*pi)/pi)
 
@@ -304,8 +304,7 @@ def _get_coeff_exp(expr, x):
     When expr is known to be of the form c*x**b, with c and/or b possibly 1,
     return c, b.
 
-    >>> from diofant.abc import x, a, b
-    >>> from diofant.integrals.meijerint import _get_coeff_exp
+    >>> from diofant.abc import a, b
     >>> _get_coeff_exp(a*x**b, x)
     (a, b)
     >>> _get_coeff_exp(x, x)
@@ -334,9 +333,6 @@ def _exponents(expr, x):
     """
     Find the exponents of ``x`` (not including zero) in ``expr``.
 
-    >>> from diofant.integrals.meijerint import _exponents
-    >>> from diofant.abc import x, y
-    >>> from diofant import sin
     >>> _exponents(x, x)
     {1}
     >>> _exponents(x**2, x)
@@ -371,14 +367,12 @@ def _find_splitting_points(expr, x):
     Find numbers a such that a linear substitution x -> x + a would
     (hopefully) simplify expr.
 
-    >>> from diofant.integrals.meijerint import _find_splitting_points as fsp
-    >>> from diofant import sin
-    >>> from diofant.abc import a, x
-    >>> fsp(x, x)
+    >>> from diofant.abc import a
+    >>> _find_splitting_points(x, x)
     {0}
-    >>> fsp((x-1)**3, x)
+    >>> _find_splitting_points((x-1)**3, x)
     {1}
-    >>> fsp(sin(x+3)*x, x)
+    >>> _find_splitting_points(sin(x+3)*x, x)
     {-3, 0}
     """
     p, q = [Wild(n, exclude=[x]) for n in 'pq']
@@ -404,9 +398,7 @@ def _split_mul(f, x):
     Split expression ``f`` into fac, po, g, where fac is a constant factor,
     po = x**s for some s independent of s, and g is "the rest".
 
-    >>> from diofant.integrals.meijerint import _split_mul
-    >>> from diofant import sin
-    >>> from diofant.abc import s, x
+    >>> from diofant.abc import s
     >>> _split_mul((3*x)**s*sin(x**2)*x, x)
     (3**s, x*x**s, sin(x**2))
     """
@@ -469,9 +461,6 @@ def _mul_as_two_parts(f):
     if the case of len(gs) == 2 is removed and multiset is allowed to
     sort the terms, some tests fail.
 
-    >>> from diofant.integrals.meijerint import _mul_as_two_parts
-    >>> from diofant import sin, exp, ordered
-    >>> from diofant.abc import x
     >>> list(ordered(_mul_as_two_parts(x*sin(x)*exp(x))))
     [(x, E**x*sin(x)), (E**x*x, sin(x)), (x*sin(x), E**x)]
     """
@@ -585,12 +574,9 @@ def _condsimp(cond):
     Note that this routine is completely ad-hoc, simplification rules being
     added as need arises rather than following any logical pattern.
 
-    >>> from diofant.integrals.meijerint import _condsimp as simp
-    >>> from diofant import Or, Eq, unbranched_argument as arg, And
-    >>> from diofant.abc import x, y, z
-    >>> simp(Or(x < y, z, Eq(x, y)))
+    >>> _condsimp(Or(x < y, z, Eq(x, y)))
     Or(x <= y, z)
-    >>> simp(Or(x <= y, And(x < y, z)))
+    >>> _condsimp(Or(x <= y, And(x < y, z)))
     x <= y
     """
     from ..functions import (unbranched_argument, exp_polar,
@@ -664,9 +650,9 @@ def _condsimp(cond):
         if not m:
             if isinstance(expr, periodic_argument) and not expr.args[0].is_polar \
                     and expr.args[1] == oo:
-                return (expr.args[0] > 0)
+                return expr.args[0] > 0
             return orig
-        return (m[p] > 0)
+        return m[p] > 0
     return cond.replace(
         lambda expr: expr.is_Relational and expr.rel_op == '==',
         repl_eq)
@@ -840,9 +826,7 @@ def _int0oo_1(g, x):
     Evaluate int_0^\infty g dx using G functions,
     assuming the necessary conditions are fulfilled.
 
-    >>> from diofant.abc import a, b, c, d, x, y
-    >>> from diofant import meijerg
-    >>> from diofant.integrals.meijerint import _int0oo_1
+    >>> from diofant.abc import a, b, c, d
     >>> _int0oo_1(meijerg([a], [b], [c], [d], x*y), x)
     gamma(-a)*gamma(c + 1)/(y*gamma(-d)*gamma(b + 1))
     """
@@ -870,9 +854,7 @@ def _rewrite_saxena(fac, po, g1, g2, x, full_pb=False):
     Return C, f1, f2 such that integral C f1 f2 from 0 to infinity equals
     integral fac po g1 g2 from 0 to infinity.
 
-    >>> from diofant.integrals.meijerint import _rewrite_saxena
-    >>> from diofant.abc import s, t, m
-    >>> from diofant import meijerg
+    >>> from diofant.abc import s, t
     >>> g1 = meijerg([], [], [0], [], s*t)
     >>> g2 = meijerg([], [], [m/2], [-m/2], t**2/4)
     >>> r = _rewrite_saxena(1, t**0, g1, g2, t)
@@ -1238,9 +1220,7 @@ def _int0oo(g1, g2, x):
     Express integral from zero to infinity g1*g2 using a G function,
     assuming the necessary conditions are fulfilled.
 
-    >>> from diofant.integrals.meijerint import _int0oo
-    >>> from diofant.abc import s, t, m
-    >>> from diofant import meijerg, S
+    >>> from diofant.abc import s, t
     >>> g1 = meijerg([], [], [-Rational(1, 2), 0], [], s**2*t/4)
     >>> g2 = meijerg([], [], [m/2], [-m/2], t/4)
     >>> _int0oo(g1, g2, t)
@@ -1605,9 +1585,6 @@ def meijerint_indefinite(f, x):
     Examples
     ========
 
-    >>> from diofant.integrals.meijerint import meijerint_indefinite
-    >>> from diofant import sin
-    >>> from diofant.abc import x
     >>> meijerint_indefinite(sin(x), x)
     -cos(x)
     """
@@ -1695,8 +1672,6 @@ def _meijerint_indefinite_1(f, x):
         with simple expansion. Such a situation was identified in issue sympy/sympy#6369:
 
 
-        >>> from diofant import sqrt, cancel
-        >>> from diofant.abc import x
         >>> a = sqrt(2*x + 1)
         >>> bad = (3*x*a**5 + 2*x - a**5 + 1)/a**2
         >>> bad.expand().as_independent(x)[0]
@@ -1730,9 +1705,6 @@ def meijerint_definite(f, x, a, b):
     Examples
     ========
 
-    >>> from diofant.integrals.meijerint import meijerint_definite
-    >>> from diofant import exp, oo
-    >>> from diofant.abc import x
     >>> meijerint_definite(exp(-x**2), x, -oo, oo)
     (sqrt(pi), true)
 
@@ -2020,8 +1992,7 @@ def meijerint_inversion(f, x, t):
     Examples
     ========
 
-    >>> from diofant.abc import x, t
-    >>> from diofant.integrals.meijerint import meijerint_inversion
+    >>> from diofant.abc import t
     >>> meijerint_inversion(1/x, x, t)
     Heaviside(t)
     """

@@ -1,9 +1,9 @@
 import pytest
 
 from diofant import (Derivative, E, I, O, PoleError, Rational, Symbol, acosh,
-                     acoth, asin, asinh, atanh, cbrt, ceiling, cos, cosh, cot,
-                     coth, exp, floor, limit, ln, log, pi, sign, sin, sinh,
-                     sqrt, tan, tanh)
+                     acoth, asin, asinh, atanh, besselk, cbrt, ceiling, cos,
+                     cosh, cot, coth, exp, floor, limit, ln, log, pi, sign,
+                     sin, sinh, sqrt, tan, tanh)
 from diofant.abc import a, b, l, w, x, y, z
 
 
@@ -388,6 +388,7 @@ def test_pole():
     pytest.raises(PoleError, lambda: sin(1/x).series(x, 0, 5))
     pytest.raises(PoleError, lambda: sin(1 + 1/x).series(x, 0, 5))
     pytest.raises(PoleError, lambda: (x*sin(1/x)).series(x, 0, 5))
+    pytest.raises(PoleError, lambda: besselk(0, x).series(x, 0, 2))
 
 
 def test_expsinbug():

@@ -1,17 +1,12 @@
 """Module for compiling codegen output, and wrap the binary for use in
 python.
 
-.. note:: To use the autowrap module it must first be imported
-
-   >>> from diofant.utilities.autowrap import autowrap
-
 This module provides a common interface for different external backends, such
 as f2py, fwrap, Cython, SWIG(?) etc. (Currently only f2py and Cython are
 implemented) The goal is to provide access to compiled binaries of acceptable
 performance with a one-button user interface, i.e.
 
-    >>> from diofant.abc import x,y
-    >>> expr = ((x - y)**(25)).expand()
+    >>> expr = ((x - y)**25).expand()
     >>> binary_callable = autowrap(expr)
     >>> binary_callable(1, 2)
     -1.0
@@ -23,12 +18,11 @@ Function object.  The binary callable is attached as the _imp_ attribute and
 invoked when a numerical evaluation is requested with evalf(), or with
 lambdify().
 
-    >>> from diofant.utilities.autowrap import binary_function
     >>> f = binary_function('f', expr)
     >>> 2*f(x, y) + y
     y + 2*f(x, y)
-    >>> (2*f(x, y) + y).evalf(2, subs={x: 1, y:2})
-    0.e-110
+    >>> (2*f(x, y) + y).evalf(2, subs={x: 1, y:2}, strict=False)
+    0.e-190
 
 The idea is that a Diofant user will primarily be interested in working with
 mathematical expressions, and should not have to learn details about wrapping
@@ -75,6 +69,7 @@ from string import Template
 from subprocess import STDOUT, CalledProcessError, check_output
 
 from ..core import Dummy, Eq, Lambda, Symbol, cacheit
+from ..core.compatibility import iterable
 from ..tensor import Idx, IndexedBase
 from .codegen import (CCodeGen, CodeGenArgumentListError, InOutArgument,
                       InputArgument, OutputArgument, Result, ResultBase,
@@ -210,8 +205,8 @@ class CythonCodeWrapper(CodeWrapper):
     """Wrapper that uses Cython"""
 
     setup_template = (
-        "from distutils.core import setup\n"
-        "from distutils.extension import Extension\n"
+        "from setuptools import setup\n"
+        "from setuptools.extension import Extension\n"
         "from Cython.Distutils import build_ext\n"
         "{np_import}"
         "\n"
@@ -469,7 +464,8 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
         the generated code and the wrapper input files are left intact in the
         specified path.
     args : iterable, optional
-        An iterable of symbols. Specifies the argument sequence for the function.
+        An ordered iterable of symbols. Specifies the argument sequence for the
+        function.
     flags : iterable, optional
         Additional option flags that will be passed to the backend.
     verbose : bool, optional
@@ -486,14 +482,11 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
     Examples
     --------
 
-    >>> from diofant.abc import x, y, z
-    >>> from diofant.utilities.autowrap import autowrap
-    >>> expr = ((x - y + z)**(13)).expand()
+    >>> expr = ((x - y + z)**13).expand()
     >>> binary_func = autowrap(expr)
     >>> binary_func(1, 4, 2)
     -1.0
     """
-
     if language:
         _validate_backend_language(backend, language)
     else:
@@ -501,6 +494,7 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
 
     helpers = [helpers] if helpers else ()
     flags = flags if flags else ()
+    args = list(args) if iterable(args, exclude=set) else args
 
     code_generator = get_code_generator(language, "autowrap")
     CodeWrapperClass = _get_code_wrapper_class(backend)
@@ -538,9 +532,7 @@ def binary_function(symfunc, expr, **kwargs):
     autowrap the Diofant expression and attaching it to a Function object
     with implemented_function().
 
-    >>> from diofant.abc import x, y
-    >>> from diofant.utilities.autowrap import binary_function
-    >>> expr = ((x - y)**(25)).expand()
+    >>> expr = ((x - y)**25).expand()
     >>> f = binary_function('f', expr)
     >>> type(f)
     <class 'diofant.core.function.UndefinedFunction'>
@@ -841,16 +833,14 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     Examples
     --------
 
-    >>> from diofant.utilities.autowrap import ufuncify
-    >>> from diofant.abc import x, y
     >>> import numpy as np
     >>> f = ufuncify((x, y), y + x**2)
     >>> type(f) is np.ufunc
     True
     >>> f([1, 2, 3], 2)
-    array([ 3.,  6.,  11.])
+    [  3.   6.  11.]
     >>> f(np.arange(5), 3)
-    array([ 3.,  4.,  7.,  12.,  19.])
+    [  3.   4.   7.  12.  19.]
 
     For the F2Py and Cython backends, inputs are required to be equal length
     1-dimensional arrays. The F2Py backend will perform type conversion, but
@@ -858,16 +848,9 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
 
     >>> f_fortran = ufuncify((x, y), y + x**2, backend='F2Py')
     >>> f_fortran(1, 2)
-    3
-    >>> f_fortran(numpy.array([1, 2, 3]), numpy.array([1.0, 2.0, 3.0]))
-    array([2.,  6.,  12.])
-    >>> f_cython = ufuncify((x, y), y + x**2, backend='Cython')
-    >>> f_cython(1, 2)
-    Traceback (most recent call last):
-    ...
-    TypeError: Argument '_x' has incorrect type (expected numpy.ndarray, got int)
-    >>> f_cython(numpy.array([1.0]), numpy.array([2.0]))
-    array([ 3.])
+    [ 3.]
+    >>> f_fortran(np.array([1, 2, 3]), np.array([1.0, 2.0, 3.0]))
+    [  2.   6.  12.]
     """
 
     if isinstance(args, (Dummy, Symbol)):

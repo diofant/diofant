@@ -44,10 +44,8 @@ class BaseSymbol(AtomicExpr, Boolean):
     We illustrate the "flipping" problem, by using here
     BaseSymbol in place of ordinary Symbol:
 
-    >>> from diofant.core.symbol import Wild, BaseSymbol as Symbol
-
     >>> p = Wild('p')
-    >>> x = Symbol('x')
+    >>> x = BaseSymbol('x')
     >>> x < p
     p_ > x
 
@@ -75,7 +73,6 @@ class BaseSymbol(AtomicExpr, Boolean):
         Examples
         ========
 
-            >>> from diofant import Symbol
             >>> x = Symbol('x')
             >>> x._diff_wrt
             True
@@ -105,10 +102,9 @@ class BaseSymbol(AtomicExpr, Boolean):
     def __new__(cls, name, **assumptions):
         """Symbols are identified by name and assumptions::
 
-        >>> from diofant import Symbol
         >>> Symbol("x") == Symbol("x")
         True
-        >>> Symbol("x", extended_real=True) == Symbol("x", extended_real=False)
+        >>> Symbol("x", real=True) == Symbol("x", real=False)
         False
 
         """
@@ -211,14 +207,13 @@ class Symbol(BaseSymbol):
     Examples
     ========
 
-    >>> from diofant import symbols
-    >>> a, b = symbols('a,b')
+    >>> a, b = symbols('a b')
     >>> bool(a*b == b*a)
     True
 
     You can override default assumptions:
 
-    >>> A, B = symbols('A,B', commutative = False)
+    >>> A, B = symbols('A B', commutative = False)
     >>> bool(A*B != B*A)
     True
     >>> bool(A*B*2 == 2*A*B) == True # multiplication by scalars is commutative
@@ -238,7 +233,6 @@ class Symbol(BaseSymbol):
 class Dummy(BaseSymbol):
     """Dummy symbols are each unique, identified by an internal count index:
 
-    >>> from diofant import Dummy
     >>> bool(Dummy("x") == Dummy("x")) == True
     False
 
@@ -294,8 +288,6 @@ class Wild(BaseSymbol):
     Examples
     ========
 
-    >>> from diofant import Wild, WildFunction, cos, pi
-    >>> from diofant.abc import x, y, z
     >>> a = Wild('a')
     >>> x.match(a)
     {a_: x}
@@ -323,7 +315,6 @@ class Wild(BaseSymbol):
     wanted. For example, using the above without
     exclude:
 
-    >>> from diofant import symbols
     >>> a, b = symbols('a b', cls=Wild)
     >>> (2 + 3*y).match(a*x + b*y)
     {a_: 2/x, b_: 3}
@@ -410,9 +401,6 @@ def symbols(names, **args):
     from ``names`` argument, which can be a comma or whitespace delimited
     string, or a sequence of strings::
 
-        >>> from diofant import symbols, Function
-
-        >>> x, y, z = symbols('x,y,z')
         >>> a, b, c = symbols('a b c')
 
     The type of output is dependent on the properties of input arguments::
@@ -452,7 +440,7 @@ def symbols(names, **args):
         >>> symbols('x5(:2)')
         (x50, x51)
 
-        >>> symbols('x5:10,y:5')
+        >>> symbols('x5:10 y:5')
         (x5, x6, x7, x8, x9, y0, y1, y2, y3, y4)
 
         >>> symbols(('x5:10', 'y:5'))
@@ -503,15 +491,15 @@ def symbols(names, **args):
         >>> a.is_integer
         True
 
-        >>> x, y, z = symbols('x,y,z', extended_real=True)
-        >>> x.is_extended_real and y.is_extended_real and z.is_extended_real
+        >>> x, y, z = symbols('x y z', real=True)
+        >>> x.is_real and y.is_real and z.is_real
         True
 
     Despite its name, :func:`symbols` can create symbol-like objects like
     instances of Function or Wild classes. To achieve this, set ``cls``
     keyword argument to the desired type::
 
-        >>> symbols('f,g,h', cls=Function)
+        >>> symbols('f g h', cls=Function)
         (f, g, h)
 
         >>> type(_[0])
@@ -620,21 +608,19 @@ def var(names, **args):
     Examples
     ========
 
-    >>> from diofant import var
-
     >>> var('x')
     x
     >>> x
     x
 
-    >>> var('a,ab,abc')
+    >>> var('a ab abc')
     (a, ab, abc)
     >>> abc
     abc
 
-    >>> var('x,y', extended_real=True)
+    >>> var('x y', real=True)
     (x, y)
-    >>> x.is_extended_real and y.is_extended_real
+    >>> x.is_real and y.is_real
     True
 
     See Also

@@ -59,8 +59,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     Examples
     ========
 
-    >>> from diofant.abc import i, k, m, n, x
-    >>> from diofant import factorial, oo, IndexedBase, Function
+    >>> from diofant.abc import i
 
     >>> Sum(k, (k, 1, m))
     Sum(k, (k, 1, m))
@@ -226,14 +225,13 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         and e is the estimated error (taken to be the magnitude of
         the first omitted term in the tail):
 
-            >>> from diofant.abc import k, a, b
+            >>> from diofant.abc import a, b
 
             >>> Sum(1/k, (k, 2, 5)).doit().evalf()
             1.28333333333333
             >>> s, e = Sum(1/k, (k, 2, 5)).euler_maclaurin()
             >>> s
             -log(2) + 7/20 + log(5)
-            >>> from diofant import sstr
             >>> print(sstr((s.evalf(), e.evalf()), full_prec=True))
             (1.26629073187415, 0.0175000000000000)
 
@@ -330,7 +328,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         Examples
         ========
 
-        >>> from diofant.abc import x, y, a, b, c, d
+        >>> from diofant.abc import a, b, c, d
 
         >>> Sum(x, (x, 0, 3)).reverse_order(x)
         Sum(-x, (x, 4, -1))
@@ -406,9 +404,6 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         Examples
         ========
 
-        >>> from diofant import symbols, factorial, oo
-
-        >>> n, k = symbols('n, k', integer=True)
         >>> s = Sum(factorial(n)/(factorial(k)*factorial(n - k)), (k, 0, oo))
         >>> s.findrecur()
         -F(n, k) + F(n - 1, k) + F(n - 1, k - 1)
@@ -498,9 +493,7 @@ def summation(f, *symbols, **kwargs):
     If it cannot compute the sum, it returns an unevaluated Sum object.
     Repeated sums can be computed by introducing additional symbols tuples::
 
-    >>> from diofant import oo, symbols, log
-
-    >>> i, n, m = symbols('i n m', integer=True)
+    >>> i = symbols('i', integer=True)
 
     >>> summation(2*i - 1, (i, 1, n))
     n**2
@@ -510,9 +503,6 @@ def summation(f, *symbols, **kwargs):
     Sum(log(n)**(-n), (n, 2, oo))
     >>> summation(i, (i, 0, n), (n, 0, m))
     m**3/6 + m**2/2 + m/3
-
-    >>> from diofant.abc import x
-    >>> from diofant import factorial
 
     >>> summation(x**n/factorial(n), (n, 0, oo))
     E**x
@@ -536,8 +526,7 @@ def telescopic_direct(L, R, n, limits):
 
     For example:
 
-    >>> from diofant.concrete.summations import telescopic_direct
-    >>> from diofant.abc import k, a, b
+    >>> from diofant.abc import a, b
     >>> telescopic_direct(1/k, -1/(k+2), 2, (k, a, b))
     -1/(b + 2) - 1/(b + 1) + 1/(a + 1) + 1/a
 

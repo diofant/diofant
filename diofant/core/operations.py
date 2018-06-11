@@ -56,8 +56,6 @@ class AssocOp(Expr):
 
            This is handy when we want to optimize things, e.g.
 
-               >>> from diofant import Mul, S
-               >>> from diofant.abc import x, y
                >>> e = Mul(3, x, y)
                >>> e.args
                (3, x, y)
@@ -121,7 +119,6 @@ class AssocOp(Expr):
 
         For instance:
 
-        >>> from diofant import symbols, Wild, sin
         >>> a = Wild("a")
         >>> b = Wild("b")
         >>> c = Wild("c")
@@ -290,33 +287,35 @@ class AssocOp(Expr):
         walks the args of the non-number part recursively (doing the same
         thing).
         """
+        from .add import Add
+        from .mul import Mul
         from .symbol import Symbol
         from .function import AppliedUndef
 
-        x, tail = self.as_independent(Symbol, AppliedUndef)
-
-        # if x is an AssocOp Function then the _evalf below will
-        # call _eval_evalf (here) so we must break the recursion
-        if not (tail is self.identity or
-                isinstance(x, AssocOp) and x.is_Function):
-            # here, we have a number so we just call to _evalf with prec;
-            # prec is not the same as n, it is the binary precision so
-            # that's why we don't call to evalf.
-            x = x._evalf(prec) if x is not self.identity else self.identity
-            args = []
-            for a in self.func.make_args(tail):
-                # here we call to _eval_evalf since we don't know what we
-                # are dealing with and all other _eval_evalf routines should
-                # be doing the same thing (i.e. taking binary prec and
-                # finding the evalf-able args)
-                newa = a._eval_evalf(prec)
-                if newa is None:
-                    args.append(a)
-                else:
-                    args.append(newa)
-            if not _aresame(tuple(args), self.func.make_args(tail)):
-                tail = self.func(*args)
-            return self.func(x, tail)
+        if isinstance(self, (Mul, Add)):
+            x, tail = self.as_independent(Symbol, AppliedUndef)
+            # if x is an AssocOp Function then the _evalf below will
+            # call _eval_evalf (here) so we must break the recursion
+            if not (tail is self.identity or
+                    isinstance(x, AssocOp) and x.is_Function):
+                # here, we have a number so we just call to _evalf with prec;
+                # prec is not the same as n, it is the binary precision so
+                # that's why we don't call to evalf.
+                x = x._evalf(prec) if x is not self.identity else self.identity
+                args = []
+                for a in self.func.make_args(tail):
+                    # here we call to _eval_evalf since we don't know what we
+                    # are dealing with and all other _eval_evalf routines should
+                    # be doing the same thing (i.e. taking binary prec and
+                    # finding the evalf-able args)
+                    newa = a._eval_evalf(prec)
+                    if newa is None:
+                        args.append(a)
+                    else:
+                        args.append(newa)
+                if not _aresame(tuple(args), self.func.make_args(tail)):
+                    tail = self.func(*args)
+                return self.func(x, tail)
 
         # this is the same as above, but there were no pure-number args to
         # deal with
@@ -332,9 +331,6 @@ class AssocOp(Expr):
     def make_args(cls, expr):
         """
         Return a sequence of elements `args` such that cls(*args) == expr
-
-        >>> from diofant import Symbol, Mul, Add
-        >>> x, y = map(Symbol, 'xy')
 
         >>> Mul.make_args(x*y)
         (x, y)
@@ -366,8 +362,6 @@ class LatticeOp(AssocOp):
     This is an abstract base class, concrete derived classes must declare
     attributes zero and identity. All defining properties are then respected.
 
-    >>> from diofant import Integer
-    >>> from diofant.core.operations import LatticeOp
     >>> class my_join(LatticeOp):
     ...     zero = Integer(0)
     ...     identity = Integer(1)
@@ -426,9 +420,6 @@ class LatticeOp(AssocOp):
     def make_args(cls, expr):
         """
         Return a sequence of elements `args` such that cls(*args) == expr
-
-        >>> from diofant import Symbol, Mul, Add
-        >>> x, y = map(Symbol, 'xy')
 
         >>> Mul.make_args(x*y)
         (x, y)

@@ -305,7 +305,6 @@ class StrPrinter(Printer):
         during doctests, the dict's __repr__ form is used. Defining this _print
         function solves that problem.
 
-        >>> from diofant.combinatorics import Cycle
         >>> Cycle(1, 2) # will print as a dict without this method
         Cycle(1, 2)
         """
@@ -356,14 +355,6 @@ class StrPrinter(Printer):
 
     def _print_Pi(self, expr):
         return 'pi'
-
-    def _print_PolyRing(self, ring):
-        return "Polynomial ring in %s over %s with %s order" % \
-            (", ".join(map(self._print, ring.symbols)), ring.domain, ring.order)
-
-    def _print_FracField(self, field):
-        return "Rational function field in %s over %s with %s order" % \
-            (", ".join(map(self._print, field.symbols)), field.domain, field.order)
 
     def _print_PolyElement(self, poly):
         return poly.str(self, PRECEDENCE, "%s**%d", "*")
@@ -441,10 +432,7 @@ class StrPrinter(Printer):
         return ' x '.join(self._print(set) for set in p.sets)
 
     def _print_AlgebraicNumber(self, expr):
-        if expr.is_aliased:
-            return self._print(expr.as_poly().as_expr())
-        else:
-            return self._print(expr.as_expr())
+        return self._print(expr.as_expr())
 
     def _print_Pow(self, expr, rational=False):
         PREC = precedence(expr)
@@ -547,10 +535,11 @@ class StrPrinter(Printer):
                              self.parenthesize(expr.rhs, precedence(expr)))
 
     def _print_RootOf(self, expr):
-        return "RootOf(%s, %s, %d)" % (self._print_Add(expr.expr,
-                                                       order='lex'),
-                                       expr.poly.gen,
-                                       expr.index)
+        p = self._print_Add(expr.expr, order='lex')
+        if expr.free_symbols:
+            return "RootOf(%s, %s, %d)" % (p, expr.poly.gen, expr.index)
+        else:
+            return "RootOf(%s, %d)" % (p, expr.index)
 
     def _print_RootSum(self, expr):
         args = [self._print_Add(expr.expr, order='lex')]
@@ -619,7 +608,7 @@ class StrPrinter(Printer):
         return self._print_tuple(expr)
 
     def _print_Transpose(self, T):
-        return "%s'" % self.parenthesize(T.arg, PRECEDENCE["Pow"])
+        return "%s.T" % self.parenthesize(T.arg, PRECEDENCE["Pow"])
 
     def _print_Union(self, expr):
         return ' U '.join(self._print(set) for set in expr.args)
@@ -640,9 +629,8 @@ class StrPrinter(Printer):
         cls = p.__class__.__name__
         rep = self._print(p.rep)
         dom = self._print(p.domain)
-        ring = self._print(p.ring)
 
-        return "%s(%s, %s, %s)" % (cls, rep, dom, ring)
+        return "%s(%s, %s)" % (cls, rep, dom)
 
     def _print_BaseScalarField(self, field):
         return field._coord_sys._names[field._index]
@@ -661,6 +649,9 @@ class StrPrinter(Printer):
         # TODO : Handle indices
         return "%s(%s)" % ("Tr", self._print(expr.args[0]))
 
+    def _print_Domain(self, expr):
+        return expr.rep
+
 
 def sstr(expr, **settings):
     """Returns the expression as a string.
@@ -671,7 +662,6 @@ def sstr(expr, **settings):
     Examples
     ========
 
-    >>> from diofant import symbols, Eq, sstr
     >>> a, b = symbols('a b')
     >>> sstr(Eq(a + b, 0))
     'Eq(a + b, 0)'

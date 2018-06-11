@@ -1,4 +1,5 @@
 from math import log as _log
+from math import sqrt as _sqrt
 
 from mpmath.libmp import sqrtrem as mpmath_sqrtrem
 
@@ -13,10 +14,17 @@ from .function import (_coeff_isneg, expand_complex, expand_mul,
                        expand_multinomial)
 from .logic import fuzzy_or
 from .mul import Mul, _keep_coeff
-from .numbers import E, I, Integer, nan, oo, pi
+from .numbers import E, I, Integer, nan, oo, pi, zoo
 from .singleton import S
 from .symbol import Dummy, symbols
 from .sympify import sympify
+
+
+def isqrt(n):
+    """Return the largest integer less than or equal to sqrt(n)."""
+    if n < 17984395633462800708566937239552:
+        return int(_sqrt(n))
+    return integer_nthroot(int(n), 2)[0]
 
 
 def integer_nthroot(y, n):
@@ -25,10 +33,9 @@ def integer_nthroot(y, n):
     and a boolean indicating whether the result is exact (that is,
     whether x**n == y).
 
-    >>> from diofant import integer_nthroot
-    >>> integer_nthroot(16,2)
+    >>> integer_nthroot(16, 2)
     (4, True)
-    >>> integer_nthroot(26,2)
+    >>> integer_nthroot(26, 2)
     (5, False)
 
     """
@@ -117,7 +124,9 @@ class Pow(Expr):
     +--------------+---------+-----------------------------------------------+
     | 1**oo        | nan     | Because there are various cases where         |
     | 1**-oo       |         | lim(x(t),t)=1, lim(y(t),t)=oo (or -oo),       |
-    | 1**zoo       |         | but lim( x(t)**y(t), t) != 1.  See [3].       |
+    |              |         | but lim(x(t)**y(t), t) != 1.  See [3].        |
+    +--------------+---------+-----------------------------------------------+
+    | z**zoo       | nan     | No limit for z**t for t -> zoo.               |
     +--------------+---------+-----------------------------------------------+
     | (-1)**oo     | nan     | Because of oscillations in the limit.         |
     | (-1)**(-oo)  |         |                                               |
@@ -177,6 +186,8 @@ class Pow(Expr):
                 return S.One
             elif e is S.One:
                 return b
+            elif e is zoo:
+                return nan
             elif e.is_integer and _coeff_isneg(b):
                 if e.is_even:
                     b = -b
@@ -544,6 +555,11 @@ class Pow(Expr):
         if old == self.base:
             return new**self.exp._subs(old, new)
 
+        if old.func is self.func and self.exp == old.exp:
+            l = log(self.base, old.base)
+            if l.is_Number:
+                return Pow(new, l)
+
         if isinstance(old, self.func) and self.base == old.base:
             if self.exp.is_Add is False:
                 ct2 = old.exp.as_independent(Symbol, as_Add=False)
@@ -588,7 +604,6 @@ class Pow(Expr):
         Examples
         ========
 
-        >>> from diofant import Pow, S
         >>> p = Pow(S.Half, 2, evaluate=False)
         >>> p.as_base_exp()
         (2, -2)
@@ -1225,14 +1240,10 @@ class Pow(Expr):
         Examples
         ========
 
-        >>> from diofant import sqrt
         >>> sqrt(4 + 4*sqrt(2)).as_content_primitive()
         (2, sqrt(1 + sqrt(2)))
         >>> sqrt(3 + 3*sqrt(2)).as_content_primitive()
         (1, sqrt(3)*sqrt(1 + sqrt(2)))
-
-        >>> from diofant import expand_power_base, powsimp, Mul
-        >>> from diofant.abc import x, y
 
         >>> ((2*x + 2)**2).as_content_primitive()
         (4, (x + 1)**2)
@@ -1276,8 +1287,8 @@ class Pow(Expr):
             # = b**(ce*h)*b**(ce*t)
             # = b**(cehp/cehq)*b**(ce*t)
             # = b**(iceh+r/cehq)*b**(ce*t)
-            # = b**(iceh)*b**(r/cehq)*b**(ce*t)
-            # = b**(iceh)*b**(ce*t + r/cehq)
+            # = b**iceh*b**(r/cehq)*b**(ce*t)
+            # = b**iceh*b**(ce*t + r/cehq)
             h, t = pe.as_coeff_Add()
             if h.is_Rational:
                 ceh = ce*h

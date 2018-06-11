@@ -43,6 +43,12 @@ def test_ccode_Pow():
     assert ccode(x**3, user_functions={'Pow': _cond_cfunc}) == 'dpowi(x, 3)'
     assert ccode(x**3.2, user_functions={'Pow': _cond_cfunc}) == 'pow(x, 3.2)'
 
+    _cond_cfunc2 = [(lambda base, exp: base == 2, lambda base, exp: 'exp2(%s)' % exp),
+                    (lambda base, exp: base != 2, 'pow')]
+    # Related to sympy/sympy#11353
+    assert ccode(2**x, user_functions={'Pow': _cond_cfunc2}) == 'exp2(x)'
+    assert ccode(x**2, user_functions={'Pow': _cond_cfunc2}) == 'pow(x, 2)'
+
 
 def test_ccode_constants_mathh():
     assert ccode(exp(1)) == "M_E"

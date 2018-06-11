@@ -94,7 +94,6 @@ class floor(RoundFunction):
     Examples
     ========
 
-    >>> from diofant import floor, E, I, Float, Rational
     >>> floor(17)
     17
     >>> floor(Rational(23, 10))
@@ -129,6 +128,8 @@ class floor(RoundFunction):
                 return Integer(int(arg.floor()))
             else:
                 return arg
+        elif isinstance(arg, (floor, ceiling)):
+            return arg
         if arg.is_NumberSymbol:
             return arg.approximation_interval(Integer)[0]
 
@@ -168,7 +169,6 @@ class ceiling(RoundFunction):
     Examples
     ========
 
-    >>> from diofant import ceiling, E, I, Float, Rational
     >>> ceiling(17)
     17
     >>> ceiling(Rational(23, 10))
@@ -203,6 +203,8 @@ class ceiling(RoundFunction):
                 return Integer(int(arg.ceiling()))
             else:
                 return arg
+        elif isinstance(arg, (ceiling, floor)):
+            return arg
         if arg.is_NumberSymbol:
             return arg.approximation_interval(Integer)[1]
 

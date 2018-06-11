@@ -3,13 +3,15 @@
 from . import Poly, RootSum, cancel, factor
 from ..core import (Add, Dummy, Function, Integer, Lambda, S,
                     preorder_traversal, sympify)
-from ..utilities import numbered_symbols, public, take
+from ..utilities import numbered_symbols, take
 from .polyerrors import PolynomialError
 from .polyoptions import allowed_flags, set_defaults
 from .polytools import parallel_poly_from_expr
 
 
-@public
+__all__ = ('apart', 'apart_list', 'assemble_partfrac_list')
+
+
 def apart(f, x=None, full=False, **options):
     """
     Compute partial fraction decomposition of a rational function.
@@ -32,8 +34,6 @@ def apart(f, x=None, full=False, **options):
 
     Examples
     ========
-
-    >>> from diofant.abc import x, y
 
     By default, using the undetermined coefficients method:
 
@@ -197,7 +197,6 @@ def apart_full_decomposition(P, Q):
     return assemble_partfrac_list(apart_list(P/Q, P.gens[0]))
 
 
-@public
 def apart_list(f, x=None, dummies=None, **options):
     """
     Compute partial fraction decomposition of a rational function
@@ -238,7 +237,7 @@ def apart_list(f, x=None, dummies=None, **options):
 
     A first example:
 
-    >>> from diofant.abc import x, t
+    >>> from diofant.abc import t
 
     >>> f = (2*x**3 - 2*x) / (x**2 - 2*x + 1)
     >>> pfd = apart_list(f)
@@ -400,7 +399,6 @@ def apart_list_full_decomposition(P, Q, dummygen):
     return partial
 
 
-@public
 def assemble_partfrac_list(partial_list):
     r"""Reassemble a full partial fraction decomposition
     from a structured result obtained by the function ``apart_list``.
@@ -409,8 +407,6 @@ def assemble_partfrac_list(partial_list):
     ========
 
     This example is taken from Bronstein's original paper:
-
-    >>> from diofant.abc import x, y
 
     >>> f = 36 / (x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2)
     >>> pfd = apart_list(f)
@@ -441,9 +437,8 @@ def assemble_partfrac_list(partial_list):
     >>> pfda.doit()
     -sqrt(2)/(2*(x + sqrt(2))) + sqrt(2)/(2*(x - sqrt(2)))
 
-    >>> from diofant import Dummy, Poly, Lambda, sqrt
     >>> a = Dummy("a")
-    >>> pfd = (1, Poly(0, x, domain='ZZ'), [([sqrt(2),-sqrt(2)], Lambda(a, a/2), Lambda(a, -a + x), 1)])
+    >>> pfd = (1, Poly(0, x, domain='ZZ'), [([sqrt(2), -sqrt(2)], Lambda(a, a/2), Lambda(a, -a + x), 1)])
 
     >>> assemble_partfrac_list(pfd)
     -sqrt(2)/(2*(x + sqrt(2))) + sqrt(2)/(2*(x - sqrt(2)))

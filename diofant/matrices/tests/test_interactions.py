@@ -51,6 +51,18 @@ def test_matrix_symbol_MM():
     assert Y[1, 1] == 1 + X[1, 1]
 
 
+def test_matrix_symbol_vector_matrix_multiplication():
+    # issue sympy/sympy#11090
+    SV = MatrixSymbol('V', 3, 1)
+    A = MM * SV
+    B = IM * SV
+    assert A == B
+    C = (SV.T * MM.T).T
+    assert B == C
+    D = (SV.T * IM.T).T
+    assert C == D
+
+
 def test_indexing_interactions():
     assert (a * IM)[1, 1] == 5*a
     assert (SM + IM)[1, 1] == SM[1, 1] + IM[1, 1]

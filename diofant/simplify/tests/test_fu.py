@@ -3,12 +3,12 @@ from diofant import (Add, Dummy, I, Mul, Rational, Symbol, cos, cosh, cot,
                      tanh)
 from diofant.abc import a, b, c, x, y, z
 from diofant.simplify.fu import _TR56 as T
-from diofant.simplify.fu import _osborne as o
-from diofant.simplify.fu import _osbornei as i
 from diofant.simplify.fu import (TR1, TR2, TR3, TR5, TR6, TR7, TR8, TR9, TR10,
                                  TR11, TR12, TR13, TR14, TR15, TR16, TR111, L,
-                                 TR2i, TR10i, TR12i, TRmorrie, as_f_sign_1,
-                                 csc, fu, hyper_as_trig,
+                                 TR2i, TR10i, TR12i, TRmorrie)
+from diofant.simplify.fu import _osborne as o
+from diofant.simplify.fu import _osbornei as i
+from diofant.simplify.fu import (as_f_sign_1, csc, fu, hyper_as_trig,
                                  process_common_addends, sec, trig_split)
 from diofant.utilities.randtest import verify_numerically
 

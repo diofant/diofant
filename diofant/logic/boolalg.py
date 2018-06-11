@@ -11,8 +11,8 @@ from ..core.expr import Expr
 from ..core.function import Application, Derivative
 from ..core.numbers import Number
 from ..core.operations import LatticeOp
-from ..core.singleton import SingletonWithManagedProperties as Singleton
 from ..core.singleton import S
+from ..core.singleton import SingletonWithManagedProperties as Singleton
 from ..core.sympify import converter, sympify
 
 
@@ -60,7 +60,6 @@ class Boolean(Expr):
         ========
 
         >>> from diofant.abc import A, B, C
-        >>> from diofant.logic.boolalg import And, Or, Not
         >>> (A >> B).equals(~B >> ~A)
         True
         >>> Not(And(A, B, C)).equals(And(Not(A), Not(B), Not(C)))
@@ -150,7 +149,6 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import sympify, true, Or
     >>> sympify(True)
     true
     >>> ~true
@@ -179,7 +177,6 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
         Examples
         ========
 
-        >>> from diofant import true
         >>> true.as_set()
         UniversalSet()
         """
@@ -203,7 +200,6 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import sympify, false, Or, true
     >>> sympify(False)
     false
     >>> false >> false
@@ -232,7 +228,6 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
         Examples
         ========
 
-        >>> from diofant import false
         >>> false.as_set()
         EmptySet()
         """
@@ -297,9 +292,6 @@ class And(LatticeOp, BooleanFunction):
     Examples
     ========
 
-    >>> from diofant.core import symbols
-    >>> from diofant.abc import x, y
-    >>> from diofant.logic.boolalg import And
     >>> x & y
     And(x, y)
 
@@ -346,8 +338,7 @@ class And(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> from diofant import And, Symbol
-        >>> x = Symbol('x', extended_real=True)
+        >>> x = Symbol('x', real=True)
         >>> And(x<2, x>-2).as_set()
         (-2, 2)
         """
@@ -370,9 +361,6 @@ class Or(LatticeOp, BooleanFunction):
     Examples
     ========
 
-    >>> from diofant.core import symbols
-    >>> from diofant.abc import x, y
-    >>> from diofant.logic.boolalg import Or
     >>> x | y
     Or(x, y)
 
@@ -417,8 +405,7 @@ class Or(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> from diofant import Or, Symbol
-        >>> x = Symbol('x', extended_real=True)
+        >>> x = Symbol('x', real=True)
         >>> Or(x>2, x<-2).as_set()
         (-oo, -2) U (2, oo)
         """
@@ -441,8 +428,7 @@ class Not(BooleanFunction):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import Not, And, Or
-    >>> from diofant.abc import x, A, B
+    >>> from diofant.abc import A, B
     >>> Not(True)
     false
     >>> Not(False)
@@ -469,7 +455,6 @@ class Not(BooleanFunction):
     value of True.  To avoid this issue, use the Diofant boolean types
     ``true`` and ``false``.
 
-    >>> from diofant import true
     >>> ~True
     -2
     >>> ~true
@@ -507,8 +492,7 @@ class Not(BooleanFunction):
         Examples
         ========
 
-        >>> from diofant import Not, Symbol
-        >>> x = Symbol('x', extended_real=True)
+        >>> x = Symbol('x', real=True)
         >>> Not(x>0, evaluate=False).as_set()
         (-oo, 0]
         """
@@ -568,9 +552,6 @@ class Xor(BooleanFunction):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import Xor
-    >>> from diofant import symbols
-    >>> x, y = symbols('x y')
     >>> Xor(True, False)
     true
     >>> Xor(True, True)
@@ -668,9 +649,6 @@ class Nand(BooleanFunction):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import Nand
-    >>> from diofant import symbols
-    >>> x, y = symbols('x y')
     >>> Nand(False, True)
     true
     >>> Nand(True, True)
@@ -696,10 +674,6 @@ class Nor(BooleanFunction):
 
     Examples
     ========
-
-    >>> from diofant.logic.boolalg import Nor
-    >>> from diofant import symbols
-    >>> x, y = symbols('x y')
 
     >>> Nor(True, False)
     false
@@ -731,10 +705,6 @@ class Implies(BooleanFunction):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import Implies
-    >>> from diofant import symbols
-    >>> x, y = symbols('x y')
-
     >>> Implies(True, False)
     false
     >>> Implies(False, False)
@@ -759,7 +729,6 @@ class Implies(BooleanFunction):
     the same as ``1 >> 1``, i.e., 0, which has a truth value of False.  To
     avoid this issue, use the Diofant objects ``true`` and ``false``.
 
-    >>> from diofant import true, false
     >>> True >> False
     1
     >>> true >> false
@@ -809,8 +778,6 @@ class Equivalent(BooleanFunction):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import Equivalent, And
-    >>> from diofant.abc import x, y
     >>> Equivalent(False, False, False)
     true
     >>> Equivalent(True, False, False)
@@ -881,8 +848,6 @@ class ITE(BooleanFunction):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import ITE, And, Xor, Or
-    >>> from diofant.abc import x, y, z
     >>> ITE(True, False, True)
     false
     >>> ITE(Or(True, False), And(True, True), Xor(True, True))
@@ -905,10 +870,14 @@ class ITE(BooleanFunction):
             raise ValueError("ITE expects exactly 3 arguments")
         if a == S.true:
             return b
-        if a == S.false:
+        elif a == S.false:
             return c
-        if b == c:
+        elif b == c:
             return b
+        elif b == S.true and c == S.false:
+            return a
+        elif b == S.false and c == S.true:
+            return Not(a)
 
     def to_nnf(self, simplify=True):
         a, b, c = self.args
@@ -933,7 +902,6 @@ def conjuncts(expr):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import conjuncts, Or
     >>> from diofant.abc import A, B
     >>> conjuncts(A & B) == frozenset([A, B])
     True
@@ -949,7 +917,6 @@ def disjuncts(expr):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import disjuncts, And
     >>> from diofant.abc import A, B
     >>> disjuncts(A | B) == frozenset([A, B])
     True
@@ -967,7 +934,6 @@ def distribute_and_over_or(expr):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import distribute_and_over_or, And, Or, Not
     >>> from diofant.abc import A, B, C
     >>> distribute_and_over_or(Or(A, And(Not(B), Not(C))))
     And(Or(A, Not(B)), Or(A, Not(C)))
@@ -985,7 +951,6 @@ def distribute_or_over_and(expr):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import distribute_or_over_and, And, Or, Not
     >>> from diofant.abc import A, B, C
     >>> distribute_or_over_and(And(Or(Not(A), B), C))
     Or(And(B, C), And(C, Not(A)))
@@ -1025,7 +990,6 @@ def to_nnf(expr, simplify=True):
     ========
 
     >>> from diofant.abc import A, B, C, D
-    >>> from diofant.logic.boolalg import Not, Equivalent, to_nnf
     >>> to_nnf(Not((~A & ~B) | (C & D)))
     And(Or(A, B), Or(Not(C), Not(D)))
     >>> to_nnf(Equivalent(A >> B, B >> A))
@@ -1045,7 +1009,6 @@ def to_cnf(expr, simplify=False):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import to_cnf
     >>> from diofant.abc import A, B, D
     >>> to_cnf(~(A | B) | D)
     And(Or(D, Not(A)), Or(D, Not(B)))
@@ -1076,7 +1039,6 @@ def to_dnf(expr, simplify=False):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import to_dnf
     >>> from diofant.abc import A, B, C
     >>> to_dnf(B & (A | C))
     Or(And(A, B), And(B, C))
@@ -1109,7 +1071,6 @@ def is_nnf(expr, simplified=True):
     ========
 
     >>> from diofant.abc import A, B, C
-    >>> from diofant.logic.boolalg import Not, is_nnf
     >>> is_nnf(A & B | ~C)
     True
     >>> is_nnf((A | ~A) & (B | C))
@@ -1151,7 +1112,6 @@ def is_cnf(expr):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import is_cnf
     >>> from diofant.abc import A, B, C
     >>> is_cnf(A | B | C)
     True
@@ -1170,7 +1130,6 @@ def is_dnf(expr):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import is_dnf
     >>> from diofant.abc import A, B, C
     >>> is_dnf(A | B | C)
     True
@@ -1241,8 +1200,6 @@ def eliminate_implications(expr):
     Examples
     ========
 
-    >>> from diofant.logic.boolalg import (Implies, Equivalent,
-    ...                                    eliminate_implications)
     >>> from diofant.abc import A, B, C
     >>> eliminate_implications(Implies(A, B))
     Or(B, Not(A))
@@ -1261,9 +1218,7 @@ def is_literal(expr):
     Examples
     ========
 
-    >>> from diofant import Or
     >>> from diofant.abc import A, B
-    >>> from diofant.logic.boolalg import is_literal
     >>> is_literal(A)
     True
     >>> is_literal(~A)
@@ -1285,8 +1240,6 @@ def to_int_repr(clauses, symbols):
 
     Examples
     ========
-
-    >>> from diofant.abc import x, y
 
     >>> to_int_repr([x | y, y], [x, y])
     [{1, 2}, {2}]
@@ -1426,9 +1379,7 @@ def SOPform(variables, minterms, dontcares=None):
     Examples
     ========
 
-    >>> from diofant.logic import SOPform
-    >>> from diofant import symbols
-    >>> w, x, y, z = symbols('w x y z')
+    >>> w = Symbol('w')
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1],
     ...             [0, 1, 1, 1], [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
@@ -1477,9 +1428,7 @@ def POSform(variables, minterms, dontcares=None):
     Examples
     ========
 
-    >>> from diofant.logic import POSform
-    >>> from diofant import symbols
-    >>> w, x, y, z = symbols('w x y z')
+    >>> w = Symbol('w')
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1],
     ...             [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
@@ -1546,10 +1495,7 @@ def simplify_logic(expr, form=None, deep=True):
     Examples
     ========
 
-    >>> from diofant.logic import simplify_logic
-    >>> from diofant.abc import x, y, z
-    >>> from diofant import sympify
-    >>> b = (~x & ~y & ~z) | ( ~x & ~y & z)
+    >>> b = (~x & ~y & ~z) | (~x & ~y & z)
     >>> simplify_logic(b)
     And(Not(x), Not(y))
 
@@ -1593,11 +1539,9 @@ def _finger(eq):
     counting Symbol as 1 and Not(Symbol) as 2
     ]
 
-    >>> from diofant.logic.boolalg import _finger as finger
-    >>> from diofant import And, Or, Not
-    >>> from diofant.abc import a, b, x, y
+    >>> from diofant.abc import a, b
     >>> eq = Or(And(Not(y), a), And(Not(y), b), And(x, y))
-    >>> dict(finger(eq))
+    >>> dict(_finger(eq))
     {(0, 0, 1, 0, 2): [x],
      (0, 0, 1, 0, 3): [a, b],
      (0, 0, 1, 2, 8): [y]}
@@ -1641,10 +1585,9 @@ def bool_map(bool1, bool2):
     Examples
     ========
 
-    >>> from diofant import SOPform, bool_map, Or, And, Not, Xor
-    >>> from diofant.abc import w, x, y, z, a, b, c, d
-    >>> function1 = SOPform([x, z, y],[[1, 0, 1], [0, 0, 1]])
-    >>> function2 = SOPform([a, b, c],[[1, 0, 1], [1, 0, 0]])
+    >>> from diofant.abc import w, a, b, c, d
+    >>> function1 = SOPform([x, z, y], [[1, 0, 1], [0, 0, 1]])
+    >>> function2 = SOPform([a, b, c], [[1, 0, 1], [1, 0, 0]])
     >>> bool_map(function1, function2)
     (And(Not(z), y), {y: a, z: b})
 
@@ -1656,7 +1599,7 @@ def bool_map(bool1, bool2):
     >>> bool_map(eq, eq2)
     (Or(And(Not(y), w), And(Not(y), z),
      And(x, y)), {w: a, x: b, y: c, z: d})
-    >>> eq = And(Xor(a, b), c, And(c,d))
+    >>> eq = And(Xor(a, b), c, And(c, d))
     >>> bool_map(eq, eq.subs(c, x))
     (And(Or(Not(a), Not(b)),
      Or(a, b), c, d),

@@ -333,6 +333,8 @@ def test_evalf_fast_series():
     assert NS(Sum((-1)**n * (205*n**2 + 250*n + 77)/64 * fac(n)**10 /
                   fac(2*n + 1)**5, (n, 0, oo)), 100, strict=False) == astr
 
+    pytest.raises(ValueError, lambda: Sum(factorial(n), (n, 0, oo)).evalf())
+
 
 def test_evalf_fast_series_sympyissue_4021():
     # Catalan's constant

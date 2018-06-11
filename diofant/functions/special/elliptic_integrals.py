@@ -25,8 +25,6 @@ class elliptic_k(Function):
     Examples
     ========
 
-    >>> from diofant.abc import z
-
     >>> elliptic_k(0)
     pi/2
     >>> elliptic_k(1.0 + I)
@@ -97,8 +95,6 @@ class elliptic_f(Function):
     Examples
     ========
 
-    >>> from diofant.abc import z, m
-
     >>> elliptic_f(z, m).series(z)
     z + z**5*(3*m**2/40 - m/30) + m*z**3/6 + O(z**6)
     >>> elliptic_f(3.0 + I/2, 1.0 + I)
@@ -164,8 +160,6 @@ class elliptic_e(Function):
 
     Examples
     ========
-
-    >>> from diofant.abc import z, m
 
     >>> elliptic_e(z, m).series(z)
     z + z**5*(-m**2/40 + m/30) - m*z**3/6 + O(z**6)
@@ -272,8 +266,6 @@ class elliptic_pi(Function):
 
     Examples
     ========
-
-    >>> from diofant.abc import z, n, m
 
     >>> elliptic_pi(n, z, m).series(z, n=4)
     z + z**3*(m/6 + n/3) + O(z**4)

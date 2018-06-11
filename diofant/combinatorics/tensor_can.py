@@ -43,7 +43,6 @@ def dummy_sgs(dummies, sym, n):
     Examples
     ========
 
-    >>> from diofant.combinatorics.tensor_can import dummy_sgs
     >>> dummy_sgs(list(range(2, 8)), 0, 8)
     [[0, 1, 3, 2, 4, 5, 6, 7, 8, 9], [0, 1, 2, 3, 5, 4, 6, 7, 8, 9],
      [0, 1, 2, 3, 4, 5, 7, 6, 8, 9], [0, 1, 4, 5, 2, 3, 6, 7, 8, 9],
@@ -78,7 +77,6 @@ def _min_dummies(dummies, sym, indices):
     Examples
     ========
 
-    >>> from diofant.combinatorics.tensor_can import _min_dummies
     >>> _min_dummies([list(range(2, 8))], [0], list(range(10)))
     [0, 1, 2, 2, 2, 2, 2, 2, 8, 9]
     """
@@ -372,9 +370,6 @@ def double_coset_can_rep(dummies, sym, b_S, sgens, S_transversals, g):
     Examples
     ========
 
-    >>> from diofant.combinatorics.permutations import Permutation
-    >>> from diofant.combinatorics.perm_groups import PermutationGroup
-    >>> from diofant.combinatorics.tensor_can import double_coset_can_rep, get_transversals
     >>> gens = [Permutation(x) for x in [[2, 1, 0, 3, 4, 5, 7, 6], [4, 1, 2, 3, 0, 5, 7, 6]]]
     >>> base = [0, 2]
     >>> g = Permutation([4, 2, 0, 1, 3, 5, 6, 7])
@@ -539,9 +534,7 @@ def canonical_free(base, gens, g, num_free):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
-    >>> from diofant.combinatorics.tensor_can import canonical_free
-    >>> gens = [[1, 0, 2, 3, 5, 4], [2, 3, 0, 1, 4, 5],[0, 1, 3, 2, 5, 4]]
+    >>> gens = [[1, 0, 2, 3, 5, 4], [2, 3, 0, 1, 4, 5], [0, 1, 3, 2, 5, 4]]
     >>> gens = [Permutation(h) for h in gens]
     >>> base = [0, 2]
     >>> g = Permutation([2, 1, 0, 3, 4, 5])
@@ -560,7 +553,6 @@ def canonical_free(base, gens, g, num_free):
     ``-R^{a}_{d0}^{d1,d2}*R^{b,d0}_{d2,d1}`` corresponding to
     ``[0, 3, 4, 6, 1, 2, 7, 5, 9, 8]``
 
-    >>> from diofant.combinatorics.tensor_can import riemann_bsgs, tensor_gens
     >>> base, gens = riemann_bsgs
     >>> size, sbase, sgens = tensor_gens(base, gens, [[], []], 0)
     >>> g = Permutation([0, 3, 4, 6, 7, 5, 2, 1, 8, 9])
@@ -696,8 +688,6 @@ def canonicalize(g, dummies, msym, *v):
 
     `T_c = 0`
 
-    >>> from diofant.combinatorics.tensor_can import get_symmetric_group_sgs, canonicalize, bsgs_direct_product
-    >>> from diofant.combinatorics import Permutation
     >>> base2a, gens2a = get_symmetric_group_sgs(2, 1)
     >>> t0 = (base2a, gens2a, 1, 0)
     >>> t1 = (base2a, gens2a, 2, 0)
@@ -851,7 +841,6 @@ def perm_af_direct_product(gens1, gens2, signed=True):
     Examples
     ========
 
-    >>> from diofant.combinatorics.tensor_can import perm_af_direct_product
     >>> gens1 = [[1, 0, 2, 3], [0, 1, 3, 2]]
     >>> gens2 = [[1, 0]]
     >>> perm_af_direct_product(gens1, gens2, False)
@@ -896,8 +885,6 @@ def bsgs_direct_product(base1, gens1, base2, gens2, signed=True):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
-    >>> from diofant.combinatorics.tensor_can import (get_symmetric_group_sgs, bsgs_direct_product)
     >>> Permutation.print_cyclic = True
     >>> base1, gens1 = get_symmetric_group_sgs(1)
     >>> base2, gens2 = get_symmetric_group_sgs(2)
@@ -931,8 +918,6 @@ def get_symmetric_group_sgs(n, antisym=False):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
-    >>> from diofant.combinatorics.tensor_can import get_symmetric_group_sgs
     >>> Permutation.print_cyclic = True
     >>> get_symmetric_group_sgs(3)
     ([0, 1], [Permutation(4)(0, 1), Permutation(4)(1, 2)])
@@ -974,8 +959,6 @@ def _is_minimal_bsgs(base, gens):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
-    >>> from diofant.combinatorics.tensor_can import riemann_bsgs, _is_minimal_bsgs
     >>> _is_minimal_bsgs(*riemann_bsgs)
     True
     >>> riemann_bsgs1 = ([2, 0], ([Permutation(5)(0, 1)(4, 5), Permutation(5)(0, 2)(1, 3)]))
@@ -1007,8 +990,6 @@ def get_minimal_bsgs(base, gens):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
-    >>> from diofant.combinatorics.tensor_can import get_minimal_bsgs
     >>> Permutation.print_cyclic = True
     >>> riemann_bsgs1 = ([2, 0], ([Permutation(5)(0, 1)(4, 5), Permutation(5)(0, 2)(1, 3)]))
     >>> get_minimal_bsgs(*riemann_bsgs1)
@@ -1037,8 +1018,6 @@ def tensor_gens(base, gens, list_free_indices, sym=0):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
-    >>> from diofant.combinatorics.tensor_can import tensor_gens, get_symmetric_group_sgs
     >>> Permutation.print_cyclic = True
 
     two symmetric tensors with 3 indices without free indices
@@ -1154,8 +1133,6 @@ def gens_products(*v):
     Examples
     ========
 
-    >>> from diofant.combinatorics import Permutation
-    >>> from diofant.combinatorics.tensor_can import get_symmetric_group_sgs, gens_products
     >>> Permutation.print_cyclic = True
     >>> base, gens = get_symmetric_group_sgs(2)
     >>> gens_products((base, gens, [[], []], 0))

@@ -12,19 +12,13 @@ from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dmp_pquo, dmp_prem, dmp_quo,
                                       dmp_quo_ground, dmp_rem, dmp_rr_div,
                                       dmp_sqr, dmp_sub, dmp_sub_ground,
-                                      dmp_sub_mul, dmp_sub_term, dup_abs,
-                                      dup_add, dup_add_ground, dup_add_mul,
-                                      dup_add_term, dup_div, dup_expand,
-                                      dup_exquo, dup_exquo_ground, dup_ff_div,
-                                      dup_l1_norm, dup_lshift, dup_max_norm,
-                                      dup_mul, dup_mul_ground, dup_mul_term,
-                                      dup_neg, dup_pdiv, dup_pexquo, dup_pow,
-                                      dup_pquo, dup_prem, dup_quo,
-                                      dup_quo_ground, dup_rem, dup_rr_div,
-                                      dup_rshift, dup_sqr, dup_sub,
-                                      dup_sub_ground, dup_sub_mul,
+                                      dmp_sub_mul, dmp_sub_term, dup_add,
+                                      dup_add_term, dup_ff_div, dup_lshift,
+                                      dup_mul, dup_mul_term, dup_pdiv,
+                                      dup_pexquo, dup_pquo, dup_prem,
+                                      dup_rr_div, dup_rshift, dup_sqr, dup_sub,
                                       dup_sub_term)
-from diofant.polys.densebasic import dmp_normal, dup_normal
+from diofant.polys.densebasic import dmp_normal
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.specialpolys import f_polys
 
@@ -36,27 +30,26 @@ F_0 = dmp_mul_ground(dmp_normal(f_0, 2, QQ), QQ(1, 7), 2, QQ)
 
 
 def test_dup_add_term():
-    f = dup_normal([], ZZ)
+    f = dmp_normal([], 0, ZZ)
 
-    assert dup_add_term(f, ZZ(0), 0, ZZ) == dup_normal([], ZZ)
+    assert dup_add_term(f, ZZ(0), 0, ZZ) == dmp_normal([], 0, ZZ)
 
-    assert dup_add_term(f, ZZ(1), 0, ZZ) == dup_normal([1], ZZ)
-    assert dup_add_term(f, ZZ(1), 1, ZZ) == dup_normal([1, 0], ZZ)
-    assert dup_add_term(f, ZZ(1), 2, ZZ) == dup_normal([1, 0, 0], ZZ)
+    assert dup_add_term(f, ZZ(1), 0, ZZ) == dmp_normal([1], 0, ZZ)
+    assert dup_add_term(f, ZZ(1), 1, ZZ) == dmp_normal([1, 0], 0, ZZ)
+    assert dup_add_term(f, ZZ(1), 2, ZZ) == dmp_normal([1, 0, 0], 0, ZZ)
 
-    f = dup_normal([1, 1, 1], ZZ)
+    f = dmp_normal([1, 1, 1], 0, ZZ)
 
-    assert dup_add_term(f, ZZ(1), 0, ZZ) == dup_normal([1, 1, 2], ZZ)
-    assert dup_add_term(f, ZZ(1), 1, ZZ) == dup_normal([1, 2, 1], ZZ)
-    assert dup_add_term(f, ZZ(1), 2, ZZ) == dup_normal([2, 1, 1], ZZ)
+    assert dup_add_term(f, ZZ(1), 0, ZZ) == dmp_normal([1, 1, 2], 0, ZZ)
+    assert dup_add_term(f, ZZ(1), 1, ZZ) == dmp_normal([1, 2, 1], 0, ZZ)
+    assert dup_add_term(f, ZZ(1), 2, ZZ) == dmp_normal([2, 1, 1], 0, ZZ)
 
-    assert dup_add_term(f, ZZ(1), 3, ZZ) == dup_normal([1, 1, 1, 1], ZZ)
-    assert dup_add_term(f, ZZ(1), 4, ZZ) == dup_normal([1, 0, 1, 1, 1], ZZ)
-    assert dup_add_term(f, ZZ(1), 5, ZZ) == dup_normal([1, 0, 0, 1, 1, 1], ZZ)
-    assert dup_add_term(
-        f, ZZ(1), 6, ZZ) == dup_normal([1, 0, 0, 0, 1, 1, 1], ZZ)
+    assert dup_add_term(f, ZZ(1), 3, ZZ) == dmp_normal([1, 1, 1, 1], 0, ZZ)
+    assert dup_add_term(f, ZZ(1), 4, ZZ) == dmp_normal([1, 0, 1, 1, 1], 0, ZZ)
+    assert dup_add_term(f, ZZ(1), 5, ZZ) == dmp_normal([1, 0, 0, 1, 1, 1], 0, ZZ)
+    assert dup_add_term(f, ZZ(1), 6, ZZ) == dmp_normal([1, 0, 0, 0, 1, 1, 1], 0, ZZ)
 
-    assert dup_add_term(f, ZZ(-1), 2, ZZ) == dup_normal([1, 1], ZZ)
+    assert dup_add_term(f, ZZ(-1), 2, ZZ) == dmp_normal([1, 1], 0, ZZ)
 
 
 def test_dmp_add_term():
@@ -67,27 +60,26 @@ def test_dmp_add_term():
 
 
 def test_dup_sub_term():
-    f = dup_normal([], ZZ)
+    f = dmp_normal([], 0, ZZ)
 
-    assert dup_sub_term(f, ZZ(0), 0, ZZ) == dup_normal([], ZZ)
+    assert dup_sub_term(f, ZZ(0), 0, ZZ) == dmp_normal([], 0, ZZ)
 
-    assert dup_sub_term(f, ZZ(1), 0, ZZ) == dup_normal([-1], ZZ)
-    assert dup_sub_term(f, ZZ(1), 1, ZZ) == dup_normal([-1, 0], ZZ)
-    assert dup_sub_term(f, ZZ(1), 2, ZZ) == dup_normal([-1, 0, 0], ZZ)
+    assert dup_sub_term(f, ZZ(1), 0, ZZ) == dmp_normal([-1], 0, ZZ)
+    assert dup_sub_term(f, ZZ(1), 1, ZZ) == dmp_normal([-1, 0], 0, ZZ)
+    assert dup_sub_term(f, ZZ(1), 2, ZZ) == dmp_normal([-1, 0, 0], 0, ZZ)
 
-    f = dup_normal([1, 1, 1], ZZ)
+    f = dmp_normal([1, 1, 1], 0, ZZ)
 
-    assert dup_sub_term(f, ZZ(2), 0, ZZ) == dup_normal([ 1, 1, -1], ZZ)
-    assert dup_sub_term(f, ZZ(2), 1, ZZ) == dup_normal([ 1, -1, 1], ZZ)
-    assert dup_sub_term(f, ZZ(2), 2, ZZ) == dup_normal([-1, 1, 1], ZZ)
+    assert dup_sub_term(f, ZZ(2), 0, ZZ) == dmp_normal([ 1, 1, -1], 0, ZZ)
+    assert dup_sub_term(f, ZZ(2), 1, ZZ) == dmp_normal([ 1, -1, 1], 0, ZZ)
+    assert dup_sub_term(f, ZZ(2), 2, ZZ) == dmp_normal([-1, 1, 1], 0, ZZ)
 
-    assert dup_sub_term(f, ZZ(1), 3, ZZ) == dup_normal([-1, 1, 1, 1], ZZ)
-    assert dup_sub_term(f, ZZ(1), 4, ZZ) == dup_normal([-1, 0, 1, 1, 1], ZZ)
-    assert dup_sub_term(f, ZZ(1), 5, ZZ) == dup_normal([-1, 0, 0, 1, 1, 1], ZZ)
-    assert dup_sub_term(
-        f, ZZ(1), 6, ZZ) == dup_normal([-1, 0, 0, 0, 1, 1, 1], ZZ)
+    assert dup_sub_term(f, ZZ(1), 3, ZZ) == dmp_normal([-1, 1, 1, 1], 0, ZZ)
+    assert dup_sub_term(f, ZZ(1), 4, ZZ) == dmp_normal([-1, 0, 1, 1, 1], 0, ZZ)
+    assert dup_sub_term(f, ZZ(1), 5, ZZ) == dmp_normal([-1, 0, 0, 1, 1, 1], 0, ZZ)
+    assert dup_sub_term(f, ZZ(1), 6, ZZ) == dmp_normal([-1, 0, 0, 0, 1, 1, 1], 0, ZZ)
 
-    assert dup_sub_term(f, ZZ(1), 2, ZZ) == dup_normal([1, 1], ZZ)
+    assert dup_sub_term(f, ZZ(1), 2, ZZ) == dmp_normal([1, 1], 0, ZZ)
 
 
 def test_dmp_sub_term():
@@ -101,20 +93,20 @@ def test_dmp_sub_term():
 
 
 def test_dup_mul_term():
-    f = dup_normal([], ZZ)
+    f = dmp_normal([], 0, ZZ)
 
-    assert dup_mul_term(f, ZZ(2), 3, ZZ) == dup_normal([], ZZ)
+    assert dup_mul_term(f, ZZ(2), 3, ZZ) == dmp_normal([], 0, ZZ)
 
-    f = dup_normal([1, 1], ZZ)
+    f = dmp_normal([1, 1], 0, ZZ)
 
-    assert dup_mul_term(f, ZZ(0), 3, ZZ) == dup_normal([], ZZ)
+    assert dup_mul_term(f, ZZ(0), 3, ZZ) == dmp_normal([], 0, ZZ)
 
-    f = dup_normal([1, 2, 3], ZZ)
+    f = dmp_normal([1, 2, 3], 0, ZZ)
 
-    assert dup_mul_term(f, ZZ(2), 0, ZZ) == dup_normal([2, 4, 6], ZZ)
-    assert dup_mul_term(f, ZZ(2), 1, ZZ) == dup_normal([2, 4, 6, 0], ZZ)
-    assert dup_mul_term(f, ZZ(2), 2, ZZ) == dup_normal([2, 4, 6, 0, 0], ZZ)
-    assert dup_mul_term(f, ZZ(2), 3, ZZ) == dup_normal([2, 4, 6, 0, 0, 0], ZZ)
+    assert dup_mul_term(f, ZZ(2), 0, ZZ) == dmp_normal([2, 4, 6], 0, ZZ)
+    assert dup_mul_term(f, ZZ(2), 1, ZZ) == dmp_normal([2, 4, 6, 0], 0, ZZ)
+    assert dup_mul_term(f, ZZ(2), 2, ZZ) == dmp_normal([2, 4, 6, 0, 0], 0, ZZ)
+    assert dup_mul_term(f, ZZ(2), 3, ZZ) == dmp_normal([2, 4, 6, 0, 0, 0], 0, ZZ)
 
 
 def test_dmp_mul_term():
@@ -134,46 +126,44 @@ def test_dmp_mul_term():
         [[QQ(2, 15), QQ(4, 15)], [QQ(6, 15)], [], []]
 
 
-def test_dup_add_ground():
+def test_dmp_add_ground():
     f = ZZ.map([1, 2, 3, 4])
     g = ZZ.map([1, 2, 3, 8])
 
-    assert dup_add_ground(f, ZZ(4), ZZ) == g
+    assert dmp_add_ground(f, ZZ(4), 0, ZZ) == g
 
-
-def test_dmp_add_ground():
     f = ZZ.map([[1], [2], [3], [4]])
     g = ZZ.map([[1], [2], [3], [8]])
 
     assert dmp_add_ground(f, ZZ(4), 1, ZZ) == g
 
 
-def test_dup_sub_ground():
+def test_dmp_sub_ground():
     f = ZZ.map([1, 2, 3, 4])
     g = ZZ.map([1, 2, 3, 0])
 
-    assert dup_sub_ground(f, ZZ(4), ZZ) == g
+    assert dmp_sub_ground(f, ZZ(4), 0, ZZ) == g
 
-
-def test_dmp_sub_ground():
     f = ZZ.map([[1], [2], [3], [4]])
     g = ZZ.map([[1], [2], [3], []])
 
     assert dmp_sub_ground(f, ZZ(4), 1, ZZ) == g
 
 
-def test_dup_mul_ground():
-    f = dup_normal([], ZZ)
-
-    assert dup_mul_ground(f, ZZ(2), ZZ) == dup_normal([], ZZ)
-
-    f = dup_normal([1, 2, 3], ZZ)
-
-    assert dup_mul_ground(f, ZZ(0), ZZ) == dup_normal([], ZZ)
-    assert dup_mul_ground(f, ZZ(2), ZZ) == dup_normal([2, 4, 6], ZZ)
-
-
 def test_dmp_mul_ground():
+    f = dmp_normal([], 0, ZZ)
+
+    assert dmp_mul_ground(f, ZZ(2), 0, ZZ) == dmp_normal([], 0, ZZ)
+
+    f = dmp_normal([1, 2, -1], 0, ZZ)
+
+    assert dmp_mul_ground(f, ZZ(3), 0, ZZ) == dmp_normal([3, 6, -3], 0, ZZ)
+
+    f = dmp_normal([1, 2, 3], 0, ZZ)
+
+    assert dmp_mul_ground(f, ZZ(0), 0, ZZ) == dmp_normal([], 0, ZZ)
+    assert dmp_mul_ground(f, ZZ(2), 0, ZZ) == dmp_normal([2, 4, 6], 0, ZZ)
+
     assert dmp_mul_ground(f_0, ZZ(2), 2, ZZ) == [
         [[ZZ(2), ZZ(4), ZZ(6)], [ZZ(4)]],
         [[ZZ(6)]],
@@ -188,51 +178,35 @@ def test_dmp_mul_ground():
     ]
 
 
-def test_dup_quo_ground():
-    pytest.raises(ZeroDivisionError, lambda: dup_quo_ground(dup_normal([1, 2,
-                                                                        3], ZZ), ZZ(0), ZZ))
-
-    f = dup_normal([], ZZ)
-
-    assert dup_quo_ground(f, ZZ(3), ZZ) == dup_normal([], ZZ)
-
-    f = dup_normal([6, 2, 8], ZZ)
-
-    assert dup_quo_ground(f, ZZ(1), ZZ) == f
-    assert dup_quo_ground(f, ZZ(2), ZZ) == dup_normal([3, 1, 4], ZZ)
-
-    assert dup_quo_ground(f, ZZ(3), ZZ) == dup_normal([2, 0, 2], ZZ)
-
-    f = dup_normal([6, 2, 8], QQ)
-
-    assert dup_quo_ground(f, QQ(1), QQ) == f
-    assert dup_quo_ground(f, QQ(2), QQ) == [QQ(3), QQ(1), QQ(4)]
-    assert dup_quo_ground(f, QQ(7), QQ) == [QQ(6, 7), QQ(2, 7), QQ(8, 7)]
-
-
-def test_dup_exquo_ground():
-    pytest.raises(ZeroDivisionError, lambda: dup_exquo_ground(dup_normal([1,
-                                                                          2, 3], ZZ), ZZ(0), ZZ))
-    pytest.raises(ExactQuotientFailed, lambda: dup_exquo_ground(dup_normal([1,
-                                                                            2, 3], ZZ), ZZ(3), ZZ))
-
-    f = dup_normal([], ZZ)
-
-    assert dup_exquo_ground(f, ZZ(3), ZZ) == dup_normal([], ZZ)
-
-    f = dup_normal([6, 2, 8], ZZ)
-
-    assert dup_exquo_ground(f, ZZ(1), ZZ) == f
-    assert dup_exquo_ground(f, ZZ(2), ZZ) == dup_normal([3, 1, 4], ZZ)
-
-    f = dup_normal([6, 2, 8], QQ)
-
-    assert dup_exquo_ground(f, QQ(1), QQ) == f
-    assert dup_exquo_ground(f, QQ(2), QQ) == [QQ(3), QQ(1), QQ(4)]
-    assert dup_exquo_ground(f, QQ(7), QQ) == [QQ(6, 7), QQ(2, 7), QQ(8, 7)]
-
-
 def test_dmp_quo_ground():
+    pytest.raises(ZeroDivisionError,
+                  lambda: dmp_quo_ground(dmp_normal([1, 2, 3], 0, ZZ), ZZ(0), 0, ZZ))
+
+    f = dmp_normal([3, 0, 2], 0, ZZ)
+
+    assert dmp_quo_ground(f, ZZ(2), 0, ZZ) == dmp_normal([1, 0, 1], 0, ZZ)
+
+    f = dmp_normal([3, 0, 2], 0, QQ)
+
+    assert dmp_quo_ground(f, QQ(2), 0, QQ) == dmp_normal([QQ(3, 2), 0, 1], 0, QQ)
+
+    f = dmp_normal([], 0, ZZ)
+
+    assert dmp_quo_ground(f, ZZ(3), 0, ZZ) == dmp_normal([], 0, ZZ)
+
+    f = dmp_normal([6, 2, 8], 0, ZZ)
+
+    assert dmp_quo_ground(f, ZZ(1), 0, ZZ) == f
+    assert dmp_quo_ground(f, ZZ(2), 0, ZZ) == dmp_normal([3, 1, 4], 0, ZZ)
+
+    assert dmp_quo_ground(f, ZZ(3), 0, ZZ) == dmp_normal([2, 0, 2], 0, ZZ)
+
+    f = dmp_normal([6, 2, 8], 0, QQ)
+
+    assert dmp_quo_ground(f, QQ(1), 0, QQ) == f
+    assert dmp_quo_ground(f, QQ(2), 0, QQ) == [QQ(3), QQ(1), QQ(4)]
+    assert dmp_quo_ground(f, QQ(7), 0, QQ) == [QQ(6, 7), QQ(2, 7), QQ(8, 7)]
+
     f = dmp_normal([[6], [2], [8]], 1, ZZ)
 
     assert dmp_quo_ground(f, ZZ(1), 1, ZZ) == f
@@ -244,6 +218,30 @@ def test_dmp_quo_ground():
 
 
 def test_dmp_exquo_ground():
+    pytest.raises(ZeroDivisionError,
+                  lambda: dmp_exquo_ground(dmp_normal([1, 2, 3], 0, ZZ), ZZ(0), 0, ZZ))
+    pytest.raises(ExactQuotientFailed,
+                  lambda: dmp_exquo_ground(dmp_normal([1, 2, 3], 0, ZZ), ZZ(3), 0, ZZ))
+
+    f = dmp_normal([1, 0, 2], 0, QQ)
+
+    assert dmp_exquo_ground(f, QQ(2), 0, QQ) == dmp_normal([QQ(1, 2), 0, 1], 0, QQ)
+
+    f = dmp_normal([], 0, ZZ)
+
+    assert dmp_exquo_ground(f, ZZ(3), 0, ZZ) == dmp_normal([], 0, ZZ)
+
+    f = dmp_normal([6, 2, 8], 0, ZZ)
+
+    assert dmp_exquo_ground(f, ZZ(1), 0, ZZ) == f
+    assert dmp_exquo_ground(f, ZZ(2), 0, ZZ) == dmp_normal([3, 1, 4], 0, ZZ)
+
+    f = dmp_normal([6, 2, 8], 0, QQ)
+
+    assert dmp_exquo_ground(f, QQ(1), 0, QQ) == f
+    assert dmp_exquo_ground(f, QQ(2), 0, QQ) == [QQ(3), QQ(1), QQ(4)]
+    assert dmp_exquo_ground(f, QQ(7), 0, QQ) == [QQ(6, 7), QQ(2, 7), QQ(8, 7)]
+
     f = dmp_normal([[6], [2], [8]], 1, ZZ)
 
     assert dmp_exquo_ground(f, ZZ(1), 1, ZZ) == f
@@ -261,20 +259,18 @@ def test_dup_rshift():
     assert dup_rshift([1, 0, 0, 0], 3, ZZ) == [1]
 
 
-def test_dup_abs():
-    assert dup_abs([], ZZ) == []
-    assert dup_abs([ZZ( 1)], ZZ) == [ZZ(1)]
-    assert dup_abs([ZZ(-7)], ZZ) == [ZZ(7)]
-    assert dup_abs([ZZ(-1), ZZ(2), ZZ(3)], ZZ) == [ZZ(1), ZZ(2), ZZ(3)]
-
-    assert dup_abs([], QQ) == []
-    assert dup_abs([QQ( 1, 2)], QQ) == [QQ(1, 2)]
-    assert dup_abs([QQ(-7, 3)], QQ) == [QQ(7, 3)]
-    assert dup_abs(
-        [QQ(-1, 7), QQ(2, 7), QQ(3, 7)], QQ) == [QQ(1, 7), QQ(2, 7), QQ(3, 7)]
-
-
 def test_dmp_abs():
+    assert dmp_abs([], 0, ZZ) == []
+    assert dmp_abs([ZZ(1), 0, ZZ(-1)], 0, ZZ) == [ZZ(1), 0, ZZ(1)]
+    assert dmp_abs([ZZ( 1)], 0, ZZ) == [ZZ(1)]
+    assert dmp_abs([ZZ(-7)], 0, ZZ) == [ZZ(7)]
+    assert dmp_abs([ZZ(-1), ZZ(2), ZZ(3)], 0, ZZ) == [ZZ(1), ZZ(2), ZZ(3)]
+
+    assert dmp_abs([], 0, QQ) == []
+    assert dmp_abs([QQ(+1, 2)], 0, QQ) == [QQ(1, 2)]
+    assert dmp_abs([QQ(-7, 3)], 0, QQ) == [QQ(7, 3)]
+    assert dmp_abs([QQ(-1, 7), QQ(2, 7), QQ(3, 7)], 0, QQ) == [QQ(1, 7), QQ(2, 7), QQ(3, 7)]
+
     assert dmp_abs([ZZ(-1)], 0, ZZ) == [ZZ(1)]
     assert dmp_abs([QQ(-1, 2)], 0, QQ) == [QQ(1, 2)]
 
@@ -287,20 +283,18 @@ def test_dmp_abs():
     assert dmp_abs([[[QQ(-7, 9)]]], 2, QQ) == [[[QQ(7, 9)]]]
 
 
-def test_dup_neg():
-    assert dup_neg([], ZZ) == []
-    assert dup_neg([ZZ(1)], ZZ) == [ZZ(-1)]
-    assert dup_neg([ZZ(-7)], ZZ) == [ZZ(7)]
-    assert dup_neg([ZZ(-1), ZZ(2), ZZ(3)], ZZ) == [ZZ(1), ZZ(-2), ZZ(-3)]
-
-    assert dup_neg([], QQ) == []
-    assert dup_neg([QQ(1, 2)], QQ) == [QQ(-1, 2)]
-    assert dup_neg([QQ(-7, 9)], QQ) == [QQ(7, 9)]
-    assert dup_neg([QQ(
-        -1, 7), QQ(2, 7), QQ(3, 7)], QQ) == [QQ(1, 7), QQ(-2, 7), QQ(-3, 7)]
-
-
 def test_dmp_neg():
+    assert dmp_neg([], 0, ZZ) == []
+    assert dmp_neg([ZZ(1), 0, ZZ(-1)], 0, ZZ) == [ZZ(-1), 0, ZZ(1)]
+    assert dmp_neg([ZZ(1)], 0, ZZ) == [ZZ(-1)]
+    assert dmp_neg([ZZ(-7)], 0, ZZ) == [ZZ(7)]
+    assert dmp_neg([ZZ(-1), ZZ(2), ZZ(3)], 0, ZZ) == [ZZ(1), ZZ(-2), ZZ(-3)]
+
+    assert dmp_neg([], 0, QQ) == []
+    assert dmp_neg([QQ(1, 2)], 0, QQ) == [QQ(-1, 2)]
+    assert dmp_neg([QQ(-7, 9)], 0, QQ) == [QQ(7, 9)]
+    assert dmp_neg([QQ(-1, 7), QQ(2, 7), QQ(3, 7)], 0, QQ) == [QQ(1, 7), QQ(-2, 7), QQ(-3, 7)]
+
     assert dmp_neg([ZZ(-1)], 0, ZZ) == [ZZ(1)]
     assert dmp_neg([QQ(-1, 2)], 0, QQ) == [QQ(1, 2)]
 
@@ -403,18 +397,22 @@ def test_dmp_sub():
     assert dmp_sub([[[QQ(1, 7)]]], [[[QQ(2, 7)]]], 2, QQ) == [[[QQ(-1, 7)]]]
 
 
-def test_dup_add_mul():
-    assert dup_add_mul([ZZ(1), ZZ(2), ZZ(3)], [ZZ(3), ZZ(2), ZZ(1)],
-                       [ZZ(1), ZZ(2)], ZZ) == [ZZ(3), ZZ(9), ZZ(7), ZZ(5)]
+def test_dmp_add_mul():
+    assert dmp_add_mul([ZZ(1), ZZ(2), ZZ(3)], [ZZ(3), ZZ(2), ZZ(1)],
+                       [ZZ(1), ZZ(2)], 0, ZZ) == [ZZ(3), ZZ(9), ZZ(7), ZZ(5)]
     assert dmp_add_mul([[ZZ(1), ZZ(2)], [ZZ(3)]], [[ZZ(3)], [ZZ(2), ZZ(1)]],
                        [[ZZ(1)], [ZZ(2)]], 1, ZZ) == [[ZZ(3)], [ZZ(3), ZZ(9)], [ZZ(4), ZZ(5)]]
+    assert dmp_add_mul([ZZ(1), 0, ZZ(-1)], [ZZ(1), ZZ(-2)],
+                       [ZZ(1), ZZ(2)], 0, ZZ) == [ZZ(2), 0, ZZ(-5)]
 
 
-def test_dup_sub_mul():
-    assert dup_sub_mul([ZZ(1), ZZ(2), ZZ(3)], [ZZ(3), ZZ(2), ZZ(1)],
-                       [ZZ(1), ZZ(2)], ZZ) == [ZZ(-3), ZZ(-7), ZZ(-3), ZZ(1)]
+def test_dmp_sub_mul():
+    assert dmp_sub_mul([ZZ(1), ZZ(2), ZZ(3)], [ZZ(3), ZZ(2), ZZ(1)],
+                       [ZZ(1), ZZ(2)], 0, ZZ) == [ZZ(-3), ZZ(-7), ZZ(-3), ZZ(1)]
     assert dmp_sub_mul([[ZZ(1), ZZ(2)], [ZZ(3)]], [[ZZ(3)], [ZZ(2), ZZ(1)]],
                        [[ZZ(1)], [ZZ(2)]], 1, ZZ) == [[ZZ(-3)], [ZZ(-1), ZZ(-5)], [ZZ(-4), ZZ(1)]]
+    assert dmp_sub_mul([ZZ(1), 0, ZZ(-1)], [ZZ(1), ZZ(-2)],
+                       [ZZ(1), ZZ(2)], 0, ZZ) == [ZZ(3)]
 
 
 def test_dup_mul():
@@ -430,23 +428,23 @@ def test_dup_mul():
     assert dup_mul([QQ(1, 2)], [QQ(4, 7)], QQ) == [QQ(2, 7)]
     assert dup_mul([QQ(5, 7)], [QQ(3, 7)], QQ) == [QQ(15, 49)]
 
-    f = dup_normal([3, 0, 0, 6, 1, 2], ZZ)
-    g = dup_normal([4, 0, 1, 0], ZZ)
-    h = dup_normal([12, 0, 3, 24, 4, 14, 1, 2, 0], ZZ)
+    f = dmp_normal([3, 0, 0, 6, 1, 2], 0, ZZ)
+    g = dmp_normal([4, 0, 1, 0], 0, ZZ)
+    h = dmp_normal([12, 0, 3, 24, 4, 14, 1, 2, 0], 0, ZZ)
 
     assert dup_mul(f, g, ZZ) == h
     assert dup_mul(g, f, ZZ) == h
 
-    f = dup_normal([2, 0, 0, 1, 7], ZZ)
-    h = dup_normal([4, 0, 0, 4, 28, 0, 1, 14, 49], ZZ)
+    f = dmp_normal([2, 0, 0, 1, 7], 0, ZZ)
+    h = dmp_normal([4, 0, 0, 4, 28, 0, 1, 14, 49], 0, ZZ)
 
     assert dup_mul(f, f, ZZ) == h
 
-    K = FF(6)
+    K = FF(7)
 
-    assert dup_mul([K(2), K(1)], [K(3), K(4)], K) == [K(5), K(4)]
+    assert dup_mul([K(2), K(1)], [K(3), K(4)], K) == [K(6), K(4), K(4)]
 
-    p1 = dup_normal([79, -1, 78, -94, -10, 11, 32, -19, 78, 2, -89, 30, 73, 42,
+    p1 = dmp_normal([79, -1, 78, -94, -10, 11, 32, -19, 78, 2, -89, 30, 73, 42,
                      85, 77, 83, -30, -34, -2, 95, -81, 37, -49, -46, -58, -16, 37, 35, -11,
                      -57, -15, -31, 67, -20, 27, 76, 2, 70, 67, -65, 65, -26, -93, -44, -12,
                      -92, 57, -90, -57, -11, -67, -98, -69, 97, -41, 89, 33, 89, -50, 81,
@@ -460,8 +458,8 @@ def test_dup_mul():
                      -95, -72, 63, -90, 76, 6, -43, -100, -59, 76, 3, 3, 46, -85, 75, 62,
                      -71, -76, 88, 97, -72, -1, 30, -64, 72, -48, 14, -78, 58, 63, -91, 24,
                      -87, -27, -80, -100, -44, 98, 70, 100, -29, -38, 11, 77, 100, 52, 86,
-                     65, -5, -42, -81, -38, -42, 43, -2, -70, -63, -52], ZZ)
-    p2 = dup_normal([65, -19, -47, 1, 90, 81, -15, -34, 25, -75, 9, -83, 50, -5,
+                     65, -5, -42, -81, -38, -42, 43, -2, -70, -63, -52], 0, ZZ)
+    p2 = dmp_normal([65, -19, -47, 1, 90, 81, -15, -34, 25, -75, 9, -83, 50, -5,
                      -44, 31, 1, 70, -7, 78, 74, 80, 85, 65, 21, 41, 66, 19, -40, 63, -21,
                      -27, 32, 69, 83, 34, -35, 14, 81, 57, -75, 32, -67, -89, -100, -61, 46,
                      84, -78, -29, -50, -94, -24, -32, -68, -16, 100, -7, -72, -89, 35, 82,
@@ -482,8 +480,8 @@ def test_dup_mul():
                      44, -90, 19, 19, 5, -20, 97, -13, -66, -5, 5, -69, 64, -30, 41, 51, 36,
                      13, -99, -61, 94, -12, 74, 98, 68, 24, 46, -97, -87, -6, -27, 82, 62,
                      -11, -77, 86, 66, -47, -49, -50, 13, 18, 89, -89, 46, -80, 13, 98, -35,
-                     -36, -25, 12, 20, 26, -52, 79, 27, 79, 100, 8, 62, -58, -28, 37], ZZ)
-    res = dup_normal([5135, -1566, 1376, -7466, 4579, 11710, 8001, -7183,
+                     -36, -25, 12, 20, 26, -52, 79, 27, 79, 100, 8, 62, -58, -28, 37], 0, ZZ)
+    res = dmp_normal([5135, -1566, 1376, -7466, 4579, 11710, 8001, -7183,
                       -3737, -7439, 345, -10084, 24522, -1201, 1070, -10245, 9582, 9264,
                       1903, 23312, 18953, 10037, -15268, -5450, 6442, -6243, -3777, 5110,
                       10936, -16649, -6022, 16255, 31300, 24818, 31922, 32760, 7854, 27080,
@@ -544,11 +542,11 @@ def test_dup_mul():
                       -7184, 5101, -23552, -17115, -31401, -6104, 21906, 25708, 8406, 6317,
                       -7525, 5014, 20750, 20179, 22724, 11692, 13297, 2493, -253, -16841, -17339,
                       -6753, -4808, 2976, -10881, -10228, -13816, -12686, 1385, 2316, 2190, -875,
-                      -1924], ZZ)
+                      -1924], 0, ZZ)
 
     assert dup_mul(p1, p2, ZZ) == res
 
-    p1 = dup_normal([83, -61, -86, -24, 12, 43, -88, -9, 42, 55, -66, 74, 95,
+    p1 = dmp_normal([83, -61, -86, -24, 12, 43, -88, -9, 42, 55, -66, 74, 95,
                      -25, -12, 68, -99, 4, 45, 6, -15, -19, 78, 65, -55, 47, -13, 17, 86,
                      81, -58, -27, 50, -40, -24, 39, -41, -92, 75, 90, -1, 40, -15, -27,
                      -35, 68, 70, -64, -40, 78, -88, -58, -39, 69, 46, 12, 28, -94, -37,
@@ -563,8 +561,8 @@ def test_dup_mul():
                      -96, -97, -45, 72, 35, 30, -61, -92, -93, -60, -61, 4, -4, -81, -73,
                      46, 53, -11, 26, 94, 45, 14, -78, 55, 84, -68, 98, 60, 23, 100, -63,
                      68, 96, -16, 3, 56, 21, -58, 62, -67, 66, 85, 41, -79, -22, 97, -67,
-                     82, 82, -96, -20, -7, 48, -67, 48, -9, -39, 78], ZZ)
-    p2 = dup_normal([52, 88, 76, 66, 9, -64, 46, -20, -28, 69, 60, 96, -36,
+                     82, 82, -96, -20, -7, 48, -67, 48, -9, -39, 78], 0, ZZ)
+    p2 = dmp_normal([52, 88, 76, 66, 9, -64, 46, -20, -28, 69, 60, 96, -36,
                      -92, -30, -11, -35, 35, 55, 63, -92, -7, 25, -58, 74, 55, -6, 4, 47,
                      -92, -65, 67, -45, 74, -76, 59, -6, 69, 39, 24, -71, -7, 39, -45, 60,
                      -68, 98, 97, -79, 17, 4, 94, -64, 68, -100, -96, -2, 3, 22, 96, 54,
@@ -582,8 +580,8 @@ def test_dup_mul():
                      1, 84, -99, -52, 76, 48, 90, -76, 44, -19, 54, -36, -9, -73, -100, -69,
                      31, 42, 25, -39, 76, -26, -8, -14, 51, 3, 37, 45, 2, -54, 13, -34, -92,
                      17, -25, -65, 53, -63, 30, 4, -70, -67, 90, 52, 51, 18, -3, 31, -45,
-                     -9, 59, 63, -87, 22, -32, 29, -38, 21, 36, -82, 27, -11], ZZ)
-    res = dup_normal([4316, 4132, -3532, -7974, -11303, -10069, 5484, -3330,
+                     -9, 59, 63, -87, 22, -32, 29, -38, 21, 36, -82, 27, -11], 0, ZZ)
+    res = dmp_normal([4316, 4132, -3532, -7974, -11303, -10069, 5484, -3330,
                       -5874, 7734, 4673, 11327, -9884, -8031, 17343, 21035, -10570, -9285,
                       15893, 3780, -14083, 8819, 17592, 10159, 7174, -11587, 8598, -16479,
                       3602, 25596, 9781, 12163, 150, 18749, -21782, -12307, 27578, -2757,
@@ -639,7 +637,7 @@ def test_dup_mul():
                       9804, -7422, 2677, 28635, -8280, -4906, 2908, -22558, 5604, 12459, 8756,
                       -3980, -4745, -18525, 7913, 5970, -16457, 20230, -6247, -13812, 2505,
                       11899, 1409, -15094, 22540, -18863, 137, 11123, -4516, 2290, -8594, 12150,
-                      -10380, 3005, 5235, -7350, 2535, -858], ZZ)
+                      -10380, 3005, 5235, -7350, 2535, -858], 0, ZZ)
 
     assert dup_mul(p1, p2, ZZ) == res
 
@@ -662,10 +660,9 @@ def test_dmp_mul():
     assert dmp_mul([[[QQ(2, 7)]]], [[[QQ(1, 3)]]], 2, QQ) == [[[QQ(2, 21)]]]
     assert dmp_mul([[[QQ(1, 7)]]], [[[QQ(2, 3)]]], 2, QQ) == [[[QQ(2, 21)]]]
 
-    K = FF(6)
+    K = FF(5)
 
-    assert dmp_mul(
-        [[K(2)], [K(1)]], [[K(3)], [K(4)]], 1, K) == [[K(5)], [K(4)]]
+    assert dmp_mul([[K(2)], [K(1)]], [[K(3)], [K(4)]], 1, K) == [[K(1)], [K(1)], [K(4)]]
 
 
 def test_dup_sqr():
@@ -677,13 +674,13 @@ def test_dup_sqr():
     assert dup_sqr([QQ(2, 3)], QQ) == [QQ(4, 9)]
     assert dup_sqr([QQ(1, 3), QQ(2, 3)], QQ) == [QQ(1, 9), QQ(4, 9), QQ(4, 9)]
 
-    f = dup_normal([2, 0, 0, 1, 7], ZZ)
+    f = dmp_normal([2, 0, 0, 1, 7], 0, ZZ)
 
-    assert dup_sqr(f, ZZ) == dup_normal([4, 0, 0, 4, 28, 0, 1, 14, 49], ZZ)
+    assert dup_sqr(f, ZZ) == dmp_normal([4, 0, 0, 4, 28, 0, 1, 14, 49], 0, ZZ)
 
-    K = FF(9)
+    K = FF(7)
 
-    assert dup_sqr([K(3), K(4)], K) == [K(6), K(7)]
+    assert dup_sqr([K(3), K(4)], K) == [K(2), K(3), K(2)]
 
 
 def test_dmp_sqr():
@@ -696,46 +693,44 @@ def test_dmp_sqr():
     assert dmp_sqr([[[]]], 2, QQ) == [[[]]]
     assert dmp_sqr([[[QQ(2, 3)]]], 2, QQ) == [[[QQ(4, 9)]]]
 
-    K = FF(9)
+    K = FF(7)
 
-    assert dmp_sqr([[K(3)], [K(4)]], 1, K) == [[K(6)], [K(7)]]
-
-
-def test_dup_pow():
-    assert dup_pow([], 0, ZZ) == [ZZ(1)]
-    assert dup_pow([], 0, QQ) == [QQ(1)]
-
-    assert dup_pow([], 1, ZZ) == []
-    assert dup_pow([], 7, ZZ) == []
-
-    pytest.raises(ValueError, lambda: dup_pow([ZZ(1)], -1, ZZ))
-
-    assert dup_pow([ZZ(1)], 0, ZZ) == [ZZ(1)]
-    assert dup_pow([ZZ(1)], 1, ZZ) == [ZZ(1)]
-    assert dup_pow([ZZ(1)], 7, ZZ) == [ZZ(1)]
-
-    assert dup_pow([ZZ(3)], 0, ZZ) == [ZZ(1)]
-    assert dup_pow([ZZ(3)], 1, ZZ) == [ZZ(3)]
-    assert dup_pow([ZZ(3)], 7, ZZ) == [ZZ(2187)]
-
-    assert dup_pow([QQ(1, 1)], 0, QQ) == [QQ(1, 1)]
-    assert dup_pow([QQ(1, 1)], 1, QQ) == [QQ(1, 1)]
-    assert dup_pow([QQ(1, 1)], 7, QQ) == [QQ(1, 1)]
-
-    assert dup_pow([QQ(3, 7)], 0, QQ) == [QQ(1, 1)]
-    assert dup_pow([QQ(3, 7)], 1, QQ) == [QQ(3, 7)]
-    assert dup_pow([QQ(3, 7)], 7, QQ) == [QQ(2187, 823543)]
-
-    f = dup_normal([2, 0, 0, 1, 7], ZZ)
-
-    assert dup_pow(f, 0, ZZ) == dup_normal([1], ZZ)
-    assert dup_pow(f, 1, ZZ) == dup_normal([2, 0, 0, 1, 7], ZZ)
-    assert dup_pow(f, 2, ZZ) == dup_normal([4, 0, 0, 4, 28, 0, 1, 14, 49], ZZ)
-    assert dup_pow(f, 3, ZZ) == dup_normal(
-        [8, 0, 0, 12, 84, 0, 6, 84, 294, 1, 21, 147, 343], ZZ)
+    assert dmp_sqr([[K(3)], [K(4)]], 1, K) == [[K(2)], [K(3)], [K(2)]]
 
 
 def test_dmp_pow():
+    assert dmp_pow([], 0, 0, ZZ) == [ZZ(1)]
+    assert dmp_pow([], 0, 0, QQ) == [QQ(1)]
+
+    assert dmp_pow([], 1, 0, ZZ) == []
+    assert dmp_pow([], 7, 0, ZZ) == []
+
+    pytest.raises(ValueError, lambda: dmp_pow([ZZ(1)], -1, 0, ZZ))
+
+    assert dmp_pow([ZZ(1)], 0, 0, ZZ) == [ZZ(1)]
+    assert dmp_pow([ZZ(1)], 1, 0, ZZ) == [ZZ(1)]
+    assert dmp_pow([ZZ(1)], 7, 0, ZZ) == [ZZ(1)]
+
+    assert dmp_pow([ZZ(3)], 0, 0, ZZ) == [ZZ(1)]
+    assert dmp_pow([ZZ(3)], 1, 0, ZZ) == [ZZ(3)]
+    assert dmp_pow([ZZ(3)], 7, 0, ZZ) == [ZZ(2187)]
+
+    assert dmp_pow([QQ(1, 1)], 0, 0, QQ) == [QQ(1, 1)]
+    assert dmp_pow([QQ(1, 1)], 1, 0, QQ) == [QQ(1, 1)]
+    assert dmp_pow([QQ(1, 1)], 7, 0, QQ) == [QQ(1, 1)]
+
+    assert dmp_pow([QQ(3, 7)], 0, 0, QQ) == [QQ(1, 1)]
+    assert dmp_pow([QQ(3, 7)], 1, 0, QQ) == [QQ(3, 7)]
+    assert dmp_pow([QQ(3, 7)], 7, 0, QQ) == [QQ(2187, 823543)]
+
+    f = dmp_normal([2, 0, 0, 1, 7], 0, ZZ)
+
+    assert dmp_pow(f, 0, 0, ZZ) == dmp_normal([1], 0, ZZ)
+    assert dmp_pow(f, 1, 0, ZZ) == dmp_normal([2, 0, 0, 1, 7], 0, ZZ)
+    assert dmp_pow(f, 2, 0, ZZ) == dmp_normal([4, 0, 0, 4, 28, 0, 1, 14, 49], 0, ZZ)
+    assert dmp_pow(f, 3, 0, ZZ) == dmp_normal([8, 0, 0, 12, 84, 0, 6, 84,
+                                               294, 1, 21, 147, 343], 0, ZZ)
+
     assert dmp_pow([[]], 0, 1, ZZ) == [[ZZ(1)]]
     assert dmp_pow([[]], 0, 1, QQ) == [[QQ(1)]]
 
@@ -752,17 +747,19 @@ def test_dmp_pow():
     assert dmp_pow([[QQ(3, 7)]], 1, 1, QQ) == [[QQ(3, 7)]]
     assert dmp_pow([[QQ(3, 7)]], 7, 1, QQ) == [[QQ(2187, 823543)]]
 
-    f = dup_normal([2, 0, 0, 1, 7], ZZ)
+    f = dmp_normal([2, 0, 0, 1, 7], 0, ZZ)
 
-    assert dmp_pow(f, 2, 0, ZZ) == dup_pow(f, 2, ZZ)
+    assert dmp_pow(f, 2, 0, ZZ) == [4, 0, 0, 4, 28, 0, 1, 14, 49]
+
+    assert dmp_pow([1, -2], 3, 0, ZZ) == [1, -6, 12, -8]
 
 
 def test_dup_pdiv():
-    f = dup_normal([3, 1, 1, 5], ZZ)
-    g = dup_normal([5, -3, 1], ZZ)
+    f = dmp_normal([3, 1, 1, 5], 0, ZZ)
+    g = dmp_normal([5, -3, 1], 0, ZZ)
 
-    q = dup_normal([15, 14], ZZ)
-    r = dup_normal([52, 111], ZZ)
+    q = dmp_normal([15, 14], 0, ZZ)
+    r = dmp_normal([52, 111], 0, ZZ)
 
     assert dup_pdiv(f, g, ZZ) == (q, r)
     assert dup_pquo(f, g, ZZ) == q
@@ -772,11 +769,11 @@ def test_dup_pdiv():
     pytest.raises(ZeroDivisionError, lambda: dup_pdiv(f, [], ZZ))
     pytest.raises(ZeroDivisionError, lambda: dup_prem(f, [], ZZ))
 
-    f = dup_normal([3, 1, 1, 5], QQ)
-    g = dup_normal([5, -3, 1], QQ)
+    f = dmp_normal([3, 1, 1, 5], 0, QQ)
+    g = dmp_normal([5, -3, 1], 0, QQ)
 
-    q = dup_normal([15, 14], QQ)
-    r = dup_normal([52, 111], QQ)
+    q = dmp_normal([15, 14], 0, QQ)
+    r = dmp_normal([52, 111], 0, QQ)
 
     assert dup_pdiv(f, g, QQ) == (q, r)
     assert dup_pdiv(g, f, QQ) == ([], [QQ(5, 1), QQ(-3, 1), QQ(1, 1)])
@@ -820,8 +817,8 @@ def test_dmp_pdiv():
 def test_dup_rr_div():
     pytest.raises(ZeroDivisionError, lambda: dup_rr_div([1, 2, 3], [], ZZ))
 
-    f = dup_normal([3, 1, 1, 5], ZZ)
-    g = dup_normal([5, -3, 1], ZZ)
+    f = dmp_normal([3, 1, 1, 5], 0, ZZ)
+    g = dmp_normal([5, -3, 1], 0, ZZ)
 
     q, r = [], f
 
@@ -858,8 +855,8 @@ def test_dmp_rr_div():
 def test_dup_ff_div():
     pytest.raises(ZeroDivisionError, lambda: dup_ff_div([1, 2, 3], [], QQ))
 
-    f = dup_normal([3, 1, 1, 5], QQ)
-    g = dup_normal([5, -3, 1], QQ)
+    f = dmp_normal([3, 1, 1, 5], 0, QQ)
+    g = dmp_normal([5, -3, 1], 0, QQ)
 
     q = [QQ(3, 5), QQ(14, 25)]
     r = [QQ(52, 25), QQ(111, 25)]
@@ -895,25 +892,35 @@ def test_dmp_ff_div():
     assert dmp_ff_div(f, g, 1, QQ) == (q, r)
 
 
-def test_dup_div():
+def test_dmp_div():
+    f, g, q, r = [1, 0, 1], [2, -4], [], [1, 0, 1]
+
+    assert dmp_div(f, g, 0, ZZ) == (q, r)
+    assert dmp_quo(f, g, 0, ZZ) == q
+    assert dmp_rem(f, g, 0, ZZ) == r
+
+    f, g, q, r = [1, 0, 1], [2, -4], [QQ(1, 2), 1], [5]
+
+    assert dmp_div(f, g, 0, QQ) == (q, r)
+    assert dmp_quo(f, g, 0, QQ) == q
+    assert dmp_rem(f, g, 0, QQ) == r
+
     f, g, q, r = [5, 4, 3, 2, 1], [1, 2, 3], [5, -6, 0], [20, 1]
 
-    assert dup_div(f, g, ZZ) == (q, r)
-    assert dup_quo(f, g, ZZ) == q
-    assert dup_rem(f, g, ZZ) == r
+    assert dmp_div(f, g, 0, ZZ) == (q, r)
+    assert dmp_quo(f, g, 0, ZZ) == q
+    assert dmp_rem(f, g, 0, ZZ) == r
 
-    pytest.raises(ExactQuotientFailed, lambda: dup_exquo(f, g, ZZ))
+    pytest.raises(ExactQuotientFailed, lambda: dmp_exquo(f, g, 0, ZZ))
 
     f, g, q, r = [5, 4, 3, 2, 1, 0], [1, 2, 0, 0, 9], [5, -6], [15, 2, -44, 54]
 
-    assert dup_div(f, g, ZZ) == (q, r)
-    assert dup_quo(f, g, ZZ) == q
-    assert dup_rem(f, g, ZZ) == r
+    assert dmp_div(f, g, 0, ZZ) == (q, r)
+    assert dmp_quo(f, g, 0, ZZ) == q
+    assert dmp_rem(f, g, 0, ZZ) == r
 
-    pytest.raises(ExactQuotientFailed, lambda: dup_exquo(f, g, ZZ))
+    pytest.raises(ExactQuotientFailed, lambda: dmp_exquo(f, g, 0, ZZ))
 
-
-def test_dmp_div():
     f, g, q, r = [5, 4, 3, 2, 1], [1, 2, 3], [5, -6, 0], [20, 1]
 
     assert dmp_div(f, g, 0, ZZ) == (q, r)
@@ -930,41 +937,46 @@ def test_dmp_div():
 
     pytest.raises(ExactQuotientFailed, lambda: dmp_exquo(f, g, 2, ZZ))
 
+    f, g, e = [1, 0, -1], [1, -1], [1, 1]
 
-def test_dup_max_norm():
-    assert dup_max_norm([], ZZ) == 0
-    assert dup_max_norm([1], ZZ) == 1
+    assert dmp_exquo(f, g, 0, ZZ) == e
 
-    assert dup_max_norm([1, 4, 2, 3], ZZ) == 4
+    f, g = [1, 0, 1], [2, -4]
+
+    pytest.raises(ExactQuotientFailed, lambda: dmp_exquo(f, g, 0, ZZ))
 
 
 def test_dmp_max_norm():
+    assert dmp_max_norm([], 0, ZZ) == 0
+    assert dmp_max_norm([1], 0, ZZ) == 1
+    assert dmp_max_norm([-1, 2, -3], 0, ZZ) == 3
+
+    assert dmp_max_norm([1, 4, 2, 3], 0, ZZ) == 4
+
     assert dmp_max_norm([[[]]], 2, ZZ) == 0
     assert dmp_max_norm([[[1]]], 2, ZZ) == 1
 
     assert dmp_max_norm(f_0, 2, ZZ) == 6
 
 
-def test_dup_l1_norm():
-    assert dup_l1_norm([], ZZ) == 0
-    assert dup_l1_norm([1], ZZ) == 1
-    assert dup_l1_norm([1, 4, 2, 3], ZZ) == 10
-
-
 def test_dmp_l1_norm():
+    assert dmp_l1_norm([], 0, ZZ) == 0
+    assert dmp_l1_norm([1], 0, ZZ) == 1
+    assert dmp_l1_norm([2, -3, 0, 1], 0, ZZ) == 6
+    assert dmp_l1_norm([1, 4, 2, 3], 0, ZZ) == 10
+
     assert dmp_l1_norm([[[]]], 2, ZZ) == 0
     assert dmp_l1_norm([[[1]]], 2, ZZ) == 1
 
     assert dmp_l1_norm(f_0, 2, ZZ) == 31
 
 
-def test_dup_expand():
-    assert dup_expand((), ZZ) == [1]
-    assert dup_expand(([1, 2, 3], [1, 2], [7, 5, 4, 3]), ZZ) == \
-        dup_mul([1, 2, 3], dup_mul([1, 2], [7, 5, 4, 3], ZZ), ZZ)
-
-
 def test_dmp_expand():
+    assert dmp_expand((), 0, ZZ) == [1]
+    assert dmp_expand(([1, 0, -1], [1, 0], [2]), 0, ZZ) == [2, 0, -2, 0]
+    assert (dmp_expand(([1, 2, 3], [1, 2], [7, 5, 4, 3]), 0, ZZ) ==
+            dup_mul([1, 2, 3], dup_mul([1, 2], [7, 5, 4, 3], ZZ), ZZ))
+
     assert dmp_expand((), 1, ZZ) == [[1]]
     assert dmp_expand(([[1], [2], [3]], [[1], [2]], [[7], [5], [4], [3]]), 1, ZZ) == \
         dmp_mul([[1], [2], [3]], dmp_mul([[1], [2]], [[7], [5], [

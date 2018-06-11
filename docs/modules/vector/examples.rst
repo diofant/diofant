@@ -33,7 +33,6 @@ loss of generality
 
 Define point A with respect to O
 
-  >>> from diofant import symbols
   >>> a1, a2, a3 = symbols('a1 a2 a3')
   >>> A = O.locate_new('A', a1*Sys.i + a2*Sys.j + a3*Sys.k)
 
@@ -91,7 +90,6 @@ The scalar field `f` and the measure numbers of the vector field
 coordinate system in general.
 Hence, define Diofant functions that way.
 
-  >>> from diofant import symbols, Function
   >>> v1, v2, v3, f = symbols('v1 v2 v3 f', cls=Function)
 
 ``v1``, ``v2`` and ``v3`` are the `X`, `Y` and `Z`
@@ -113,7 +111,7 @@ Similarly, the RHS would be defined.
 Now, to prove the product rule, we would just need to equate the expanded and
 simplified versions of the lhs and the rhs, so that the Diofant expressions match.
 
-  >>> lhs.expand().simplify() == rhs.expand().simplify()
+  >>> lhs.expand().simplify() == rhs.expand().doit().simplify()
   True
 
 Thus, the general form of the third product rule mentioned above can be proven

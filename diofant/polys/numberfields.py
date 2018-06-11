@@ -1,31 +1,35 @@
 """Computational algebraic field theory. """
 
-from functools import reduce
+import functools
+import operator
 
-from mpmath import mp, pslq
+import mpmath
 
 from ..core import (Add, AlgebraicNumber, Dummy, E, GoldenRatio, I, Integer,
-                    Mul, Rational, S, expand_mul, pi, sympify)
+                    Mul, Rational, S, pi, prod, sympify)
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
-from ..domains import QQ, ZZ
-from ..functions import cos, root, sin, sqrt
-from ..ntheory import divisors, sieve
-from ..printing.lambdarepr import LambdaPrinter
+from ..domains import QQ, ZZ, AlgebraicField
+from ..functions import ceiling, cos, exp_polar, root, sin, sqrt
+from ..ntheory import divisors, factorint, multiplicity, sieve
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
-from ..utilities import lambdify, numbered_symbols, public, sift, variations
+from ..utilities import lambdify, numbered_symbols, sift
+from ..utilities.iterables import uniq
 from .orthopolys import dup_chebyshevt
-from .polyerrors import (CoercionFailed, GeneratorsError, IsomorphismFailed,
-                         NotAlgebraic)
+from .polyconfig import query
+from .polyerrors import NotAlgebraic
 from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
-                        parallel_poly_from_expr, poly_from_expr, resultant,
-                        sqf_norm)
+                        parallel_poly_from_expr, poly_from_expr, resultant)
 from .polyutils import dict_from_expr, expr_from_dict
 from .ring_series import rs_compose_add
 from .rings import ring
 from .rootoftools import RootOf
 from .specialpolys import cyclotomic_poly
+
+
+__all__ = ('minimal_polynomial', 'minpoly', 'primitive_element',
+           'field_isomorphism')
 
 
 def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
@@ -62,8 +66,8 @@ def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
             if prec1 > prec:
                 break
             prec1 *= 2
-
-    raise NotImplementedError("multiple candidates for the minimal polynomial of %s" % v)
+    else:  # pragma: no cover
+        raise NotImplementedError("multiple candidates for the minimal polynomial of %s" % v)
 
 
 def _separate_sq(p):
@@ -80,10 +84,7 @@ def _separate_sq(p):
     Examples
     ========
 
-    >>> from diofant import sqrt
-    >>> from diofant.abc import x
-
-    >>> p= -x + sqrt(2) + sqrt(3) + sqrt(7)
+    >>> p = -x + sqrt(2) + sqrt(3) + sqrt(7)
     >>> p = _separate_sq(p); p
     -x**2 + 2*sqrt(3)*x + 2*sqrt(7)*x - 2*sqrt(21) - 8
     >>> p = _separate_sq(p); p
@@ -92,8 +93,6 @@ def _separate_sq(p):
     -x**8 + 48*x**6 - 536*x**4 + 1728*x**2 - 400
 
     """
-    from ..utilities import sift
-
     def is_sqrt(expr):
         return expr.is_Pow and expr.exp is S.Half
 
@@ -105,8 +104,6 @@ def _separate_sq(p):
                 a.append((S.One, y**2))
             elif y.is_Atom:
                 a.append((y, S.One))
-            elif y.is_Pow and y.exp.is_integer:
-                a.append((y, S.One))
             else:  # pragma: no cover
                 raise NotImplementedError
         else:
@@ -117,7 +114,7 @@ def _separate_sq(p):
         # there are no surds
         return p
     surds = [z for y, z in a]
-    for i in range(len(surds)):
+    for i in range(len(surds)):  # pragma: no branch
         if surds[i] != 1:
             break
     g, b1, b2 = _split_gcd(*surds[i:])
@@ -130,8 +127,7 @@ def _separate_sq(p):
             a2.append(y*z**S.Half)
     p1 = Add(*a1)
     p2 = Add(*a2)
-    p = _mexpand(p1**2) - _mexpand(p2**2)
-    return p
+    return _mexpand(p1**2) - _mexpand(p2**2)
 
 
 def _minimal_polynomial_sq(p, n, x):
@@ -149,17 +145,13 @@ def _minimal_polynomial_sq(p, n, x):
     Examples
     ========
 
-    >>> from diofant import sqrt
-    >>> from diofant.abc import x
-
     >>> q = 1 + sqrt(2) + sqrt(3)
     >>> _minimal_polynomial_sq(q, 3, x)
     x**12 - 4*x**9 - 4*x**6 + 16*x**3 - 8
     """
     p = sympify(p)
     n = sympify(n)
-    if not n.is_Integer or not n > 0 or not _is_sum_surds(p):
-        return
+    assert n.is_Integer and n > 1 and _is_sum_surds(p)
     pn = root(p, n)
     # eliminate the square roots
     p -= x
@@ -171,21 +163,11 @@ def _minimal_polynomial_sq(p, n, x):
         else:
             p = p1
 
-    # _separate_sq eliminates field extensions in a minimal way, so that
-    # if n = 1 then `p = constant*(minimal_polynomial(p))`
-    # if n > 1 it contains the minimal polynomial as a factor.
-    if n == 1:
-        p1 = Poly(p)
-        if p.coeff(x**p1.degree(x)) < 0:
-            p = -p
-        p = p.primitive()[1]
-        return p
     # by construction `p` has root `pn`
     # the minimal polynomial is the factor vanishing in x = pn
     factors = factor_list(p)[1]
 
-    result = _choose_factor(factors, x, pn)
-    return result
+    return _choose_factor(factors, x, pn)
 
 
 def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
@@ -203,9 +185,6 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
 
     Examples
     ========
-
-    >>> from diofant import sqrt, Add, Mul, QQ
-    >>> from diofant.abc import x, y
 
     >>> p1 = sqrt(sqrt(2) + 1)
     >>> p2 = sqrt(sqrt(2) - 1)
@@ -288,9 +267,9 @@ def _muly(p, x, y):
     return Add(*a)
 
 
-def _minpoly_pow(ex, pw, x, dom, mp=None):
+def _minpoly_pow(ex, pw, x, dom):
     """
-    Returns ``minpoly(ex**pw, x)``
+    Returns ``minimal_polynomial(ex**pw)``
 
     Parameters
     ==========
@@ -299,27 +278,22 @@ def _minpoly_pow(ex, pw, x, dom, mp=None):
     pw : rational number
     x : indeterminate of the polynomial
     dom: ground domain
-    mp : minimal polynomial of ``p``
 
     Examples
     ========
 
-    >>> from diofant import cbrt, sqrt, QQ, Rational
-    >>> from diofant.abc import x, y
-
     >>> p = sqrt(1 + sqrt(2))
     >>> _minpoly_pow(p, 2, x, QQ)
     x**2 - 2*x - 1
-    >>> minpoly(p**2, x)
+    >>> minimal_polynomial(p**2)(x)
     x**2 - 2*x - 1
     >>> _minpoly_pow(y, Rational(1, 3), x, QQ.frac_field(y))
     x**3 - y
-    >>> minpoly(cbrt(y), x)
+    >>> minimal_polynomial(cbrt(y))(x)
     x**3 - y
     """
     pw = sympify(pw)
-    if not mp:
-        mp = _minpoly_compose(ex, x, dom)
+    mp = _minpoly_compose(ex, x, dom)
     if not pw.is_rational:
         raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
     if pw < 0:
@@ -342,7 +316,7 @@ def _minpoly_pow(ex, pw, x, dom, mp=None):
 
 def _minpoly_add(x, dom, *a):
     """
-    returns ``minpoly(Add(*a), dom, x)``
+    returns ``minimal_polynomial(Add(*a), dom)``
     """
     mp = _minpoly_op_algebraic_element(Add, a[0], a[1], x, dom)
     p = a[0] + a[1]
@@ -354,7 +328,7 @@ def _minpoly_add(x, dom, *a):
 
 def _minpoly_mul(x, dom, *a):
     """
-    returns ``minpoly(Mul(*a), dom, x)``
+    returns ``minimal_polynomial(Mul(*a), dom)``
     """
     mp = _minpoly_op_algebraic_element(Mul, a[0], a[1], x, dom)
     p = a[0] * a[1]
@@ -371,33 +345,31 @@ def _minpoly_sin(ex, x):
     """
     c, a = ex.args[0].as_coeff_Mul()
     if a is pi:
-        if c.is_rational:
-            n = c.q
-            q = sympify(n)
-            if q.is_prime:
-                # for a = pi*p/q with q odd prime, using chebyshevt
-                # write sin(q*a) = mp(sin(a))*sin(a);
-                # the roots of mp(x) are sin(pi*p/q) for p = 1,..., q - 1
-                a = dup_chebyshevt(n, ZZ)
-                return Add(*[x**(n - i - 1)*a[i] for i in range(n)])
-            if c.p == 1:
-                if q == 9:
-                    return 64*x**6 - 96*x**4 + 36*x**2 - 3
+        n = c.q
+        q = sympify(n)
+        if q.is_prime:
+            # for a = pi*p/q with q odd prime, using chebyshevt
+            # write sin(q*a) = mp(sin(a))*sin(a);
+            # the roots of mp(x) are sin(pi*p/q) for p = 1,..., q - 1
+            a = dup_chebyshevt(n, ZZ)
+            return Add(*[x**(n - i - 1)*a[i] for i in range(n)])
+        if c.p == 1:
+            if q == 9:
+                return 64*x**6 - 96*x**4 + 36*x**2 - 3
 
-            if n % 2 == 1:
-                # for a = pi*p/q with q odd, use
-                # sin(q*a) = 0 to see that the minimal polynomial must be
-                # a factor of dup_chebyshevt(n, ZZ)
-                a = dup_chebyshevt(n, ZZ)
-                a = [x**(n - i)*a[i] for i in range(n + 1)]
-                r = Add(*a)
-                _, factors = factor_list(r)
-                res = _choose_factor(factors, x, ex)
-                return res
-
-            expr = ((1 - cos(2*c*pi))/2)**S.Half
-            res = _minpoly_compose(expr, x, QQ)
+        if n % 2 == 1:
+            # for a = pi*p/q with q odd, use
+            # sin(q*a) = 0 to see that the minimal polynomial must be
+            # a factor of dup_chebyshevt(n, ZZ)
+            a = dup_chebyshevt(n, ZZ)
+            a = [x**(n - i)*a[i] for i in range(n + 1)]
+            r = Add(*a)
+            _, factors = factor_list(r)
+            res = _choose_factor(factors, x, ex)
             return res
+
+        expr = ((1 - cos(2*c*pi))/2)**S.Half
+        return _minpoly_compose(expr, x, QQ)
 
     raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
 
@@ -409,26 +381,24 @@ def _minpoly_cos(ex, x):
     """
     c, a = ex.args[0].as_coeff_Mul()
     if a is pi:
-        if c.is_rational:
-            if c.p == 1:
-                if c.q == 7:
-                    return 8*x**3 - 4*x**2 - 4*x + 1
-                if c.q == 9:
-                    return 8*x**3 - 6*x - 1
-            elif c.p == 2:
-                q = sympify(c.q)
-                if q.is_prime:
-                    s = _minpoly_sin(ex, x)
-                    return _mexpand(s.subs({x: sqrt((1 - x)/2)}))
+        if c.p == 1:
+            if c.q == 7:
+                return 8*x**3 - 4*x**2 - 4*x + 1
+            elif c.q == 9:
+                return 8*x**3 - 6*x - 1
+        elif c.p == 2:
+            q = sympify(c.q)
+            if q.is_prime:
+                s = _minpoly_sin(ex, x)
+                return _mexpand(s.subs({x: sqrt((1 - x)/2)}))
 
-            # for a = pi*p/q, cos(q*a) =T_q(cos(a)) = (-1)**p
-            n = int(c.q)
-            a = dup_chebyshevt(n, ZZ)
-            a = [x**(n - i)*a[i] for i in range(n + 1)]
-            r = Add(*a) - (-1)**c.p
-            _, factors = factor_list(r)
-            res = _choose_factor(factors, x, ex)
-            return res
+        # for a = pi*p/q, cos(q*a) =T_q(cos(a)) = (-1)**p
+        n = int(c.q)
+        a = dup_chebyshevt(n, ZZ)
+        a = [x**(n - i)*a[i] for i in range(n + 1)]
+        r = Add(*a) - (-1)**c.p
+        _, factors = factor_list(r)
+        return _choose_factor(factors, x, ex)
 
     raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
 
@@ -440,32 +410,28 @@ def _minpoly_exp(ex, x):
     c, a = ex.exp.as_coeff_Mul()
     q = sympify(c.q)
     if a == I*pi:
-        if c.is_rational:
-            if c.p == 1 or c.p == -1:
-                if q == 3:
-                    return x**2 - x + 1
-                if q == 4:
-                    return x**4 + 1
-                if q == 6:
-                    return x**4 - x**2 + 1
-                if q == 8:
-                    return x**8 + 1
-                if q == 9:
-                    return x**6 - x**3 + 1
-                if q == 10:
-                    return x**8 - x**6 + x**4 - x**2 + 1
-                if q.is_prime:
-                    s = 0
-                    for i in range(q):
-                        s += (-x)**i
-                    return s
+        if c.p == 1 or c.p == -1:
+            if q == 3:
+                return x**2 - x + 1
+            if q == 4:
+                return x**4 + 1
+            if q == 6:
+                return x**4 - x**2 + 1
+            if q == 8:
+                return x**8 + 1
+            if q == 9:
+                return x**6 - x**3 + 1
+            if q == 10:
+                return x**8 - x**6 + x**4 - x**2 + 1
+            if q.is_prime:
+                s = 0
+                for i in range(q):
+                    s += (-x)**i
+                return s
 
-            # x**(2*q) = product(factors)
-            factors = [cyclotomic_poly(i, x) for i in divisors(2*q)]
-            mp = _choose_factor(factors, x, ex)
-            return mp
-        else:
-            raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
+        # x**(2*q) = product(factors)
+        factors = [cyclotomic_poly(i, x) for i in divisors(2*q)]
+        return _choose_factor(factors, x, ex)
     raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
 
 
@@ -476,8 +442,7 @@ def _minpoly_rootof(ex, x):
     p = ex.expr
     p = p.subs({ex.poly.gens[0]: x})
     _, factors = factor_list(p, x)
-    result = _choose_factor(factors, x, ex)
-    return result
+    return _choose_factor(factors, x, ex)
 
 
 def _minpoly_compose(ex, x, dom):
@@ -488,11 +453,9 @@ def _minpoly_compose(ex, x, dom):
     Examples
     ========
 
-    >>> from diofant import minimal_polynomial, sqrt, Rational
-    >>> from diofant.abc import x, y
-    >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), x, compose=True)
+    >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), method='compose')(x)
     x**2 - 2*x - 1
-    >>> minimal_polynomial(sqrt(y) + 1/y, x, compose=True)
+    >>> minimal_polynomial(sqrt(y) + 1/y, method='compose')(x)
     x**2*y**2 - 2*x*y - y**3 + 1
 
     """
@@ -502,10 +465,12 @@ def _minpoly_compose(ex, x, dom):
         return x**2 + 1
     if ex is GoldenRatio:
         return x**2 - x - 1
+    if ex == exp_polar(0):
+        return x - 1
     if hasattr(dom, 'symbols') and ex in dom.symbols:
         return x - ex
 
-    if dom.is_QQ and _is_sum_surds(ex):
+    if dom.is_RationalField and _is_sum_surds(ex):
         # eliminate the square roots
         ex -= x
         while 1:
@@ -524,10 +489,10 @@ def _minpoly_compose(ex, x, dom):
             ex1 = Mul(*[bx**ex for bx, ex in r[False] + r[None]])
             r1 = r[True]
             dens = [y.q for _, y in r1]
-            lcmdens = reduce(lcm, dens, 1)
+            lcmdens = functools.reduce(lcm, dens, 1)
             nums = [base**(y.p*lcmdens // y.q) for base, y in r1]
             ex2 = Mul(*nums)
-            mp1 = minimal_polynomial(ex1, x)
+            mp1 = minimal_polynomial(ex1)(x)
             # use the fact that in Diofant canonicalization products of integers
             # raised to rational powers are organized in relatively prime
             # bases, and that in ``base**(n/d)`` a perfect power is
@@ -548,13 +513,14 @@ def _minpoly_compose(ex, x, dom):
         res = _minpoly_cos(ex, x)
     elif ex.__class__ is RootOf:
         res = _minpoly_rootof(ex, x)
+    elif ex.__class__ is AlgebraicNumber:
+        res = minpoly_groebner(ex, x, dom)
     else:
         raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
     return res
 
 
-@public
-def minimal_polynomial(ex, x=None, **args):
+def minimal_polynomial(ex, method=None, **args):
     """
     Computes the minimal polynomial of an algebraic element.
 
@@ -562,15 +528,12 @@ def minimal_polynomial(ex, x=None, **args):
     ==========
 
     ex : algebraic element expression
-    x : independent variable of the minimal polynomial
-    compose : boolean, optional
-        If ``True`` (default), the minimal polynomial of the subexpressions
+    method : str, optional
+        If ``compose``, the minimal polynomial of the subexpressions
         of ``ex`` are computed, then the arithmetic operations on them are
-        performed using the resultant and factorization.  Else a bottom-up
-        algorithm is used with ``groebner``.  The default algorithm
-        stalls less frequently.
-    polys : boolean, optional
-        if ``True`` returns a ``Poly`` object (the default is ``False``).
+        performed using the resultant and factorization.  If ``groebner``,
+        a bottom-up algorithm, using Gröbner bases is used.
+        Defaults are determined by :func:`~diofant.polys.polyconfig.setup`.
     domain : Domain, optional
         If no ground domain is given, it will be generated automatically
         from the expression.
@@ -578,62 +541,45 @@ def minimal_polynomial(ex, x=None, **args):
     Examples
     ========
 
-    >>> from diofant import minimal_polynomial, sqrt, solve, QQ
-    >>> from diofant.abc import x, y
-
-    >>> minimal_polynomial(sqrt(2), x)
+    >>> minimal_polynomial(sqrt(2))(x)
     x**2 - 2
-    >>> minimal_polynomial(sqrt(2), x, domain=QQ.algebraic_field(sqrt(2)))
+    >>> minimal_polynomial(sqrt(2), domain=QQ.algebraic_field(sqrt(2)))(x)
     x - sqrt(2)
-    >>> minimal_polynomial(sqrt(2) + sqrt(3), x)
+    >>> minimal_polynomial(sqrt(2) + sqrt(3))(x)
     x**4 - 10*x**2 + 1
-    >>> minimal_polynomial(solve(x**3 + x + 3)[0][x], x)
+    >>> minimal_polynomial(solve(x**3 + x + 3)[0][x])(x)
     x**3 + x + 3
-    >>> minimal_polynomial(sqrt(y), x)
+    >>> minimal_polynomial(sqrt(y))(x)
     x**2 - y
-
     """
-    from .polytools import degree
-    from ..domains import FractionField
-    from ..core import preorder_traversal
 
-    compose = args.get('compose', True)
-    polys = args.get('polys', False)
-    dom = args.get('domain', None)
+    if method is None:
+        method = query('minpoly_method')
+    _minpoly_methods = {'compose': _minpoly_compose, 'groebner': minpoly_groebner}
+    try:
+        _minpoly = _minpoly_methods[method]
+    except KeyError:
+        raise ValueError("'%s' is not a valid algorithm for computing minimal "
+                         " polynomial" % method)
 
     ex = sympify(ex)
     if ex.is_number:
         # not sure if it's always needed but try it for numbers (issue sympy/sympy#8354)
         ex = _mexpand(ex, recursive=True)
-    if any(e.is_AlgebraicNumber for e in preorder_traversal(ex)):
-        compose = False
 
-    if x is not None:
-        x, cls = sympify(x), Poly
-    else:
-        x, cls = Dummy('x'), PurePoly
+    x = Dummy('x')
+    domain = args.get('domain',
+                      QQ.frac_field(*ex.free_symbols) if ex.free_symbols else QQ)
 
-    if not dom:
-        dom = FractionField(QQ, list(ex.free_symbols)) if ex.free_symbols else QQ
-    if hasattr(dom, 'symbols') and x in dom.symbols:
-        raise GeneratorsError("the variable %s is an element of the ground domain %s" % (x, dom))
+    result = _minpoly(ex, x, domain)
+    _, factors = factor_list(result, x, domain=domain)
+    result = _choose_factor(factors, x, ex)
+    result = result.primitive()[1]
 
-    if compose:
-        result = _minpoly_compose(ex, x, dom)
-        result = result.primitive()[1]
-        c = result.coeff(x**degree(result, x))
-        if c.is_negative:
-            result = expand_mul(-result)
-        return cls(result, x, field=True) if polys else result.collect(x)
-
-    if not dom.is_QQ:
-        raise NotImplementedError("groebner method only works for QQ")
-
-    result = minpoly_groebner(ex, x)
-    return cls(result, x, field=True) if polys else result.collect(x)
+    return PurePoly(result, x, field=True)
 
 
-def minpoly_groebner(ex, x):
+def minpoly_groebner(ex, x, domain):
     """
     Computes the minimal polynomial of an algebraic number
     using Gröbner bases
@@ -641,9 +587,7 @@ def minpoly_groebner(ex, x):
     Examples
     ========
 
-    >>> from diofant import minimal_polynomial, sqrt, Rational
-    >>> from diofant.abc import x
-    >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), x, compose=False)
+    >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), method='groebner')(x)
     x**2 - 2*x - 1
 
     References
@@ -675,6 +619,8 @@ def minpoly_groebner(ex, x):
                 return update_mapping(ex, 2, 1)
             elif ex.is_Rational:
                 return ex
+            elif ex.is_Symbol:
+                return ex
         elif ex.is_Add or ex.is_Mul:
             return ex.func(*[bottom_up_scan(g) for g in ex.args])
         elif ex.is_Pow:
@@ -685,7 +631,7 @@ def minpoly_groebner(ex, x):
                         base, exp = base**exp.p, Rational(1, exp.q)
                     base = bottom_up_scan(base)
                 else:
-                    bmp = PurePoly(minpoly_groebner(1/base, x), x)
+                    bmp = PurePoly(minpoly_groebner(1/base, x, domain=domain), x)
                     base, exp = update_mapping(1/base, bmp), -exp
                 return update_mapping(ex, exp.q, -base**exp.p)
         elif ex.is_AlgebraicNumber:
@@ -698,7 +644,7 @@ def minpoly_groebner(ex, x):
                 else:
                     res += coeff
             return res
-        elif isinstance(ex, RootOf) and ex.poly.domain.is_ZZ:
+        elif isinstance(ex, RootOf) and ex.poly.domain.is_IntegerRing:
             return update_mapping(ex, ex.poly)
 
         raise NotAlgebraic("%s doesn't seem to be an algebraic number" % ex)
@@ -709,89 +655,75 @@ def minpoly_groebner(ex, x):
         n, d = bottom_up_scan(ex), S.One
 
     F = [d*x - n] + list(mapping.values())
-    G = groebner(F, list(symbols.values()) + [x], order='lex')
+    G = groebner(F, list(symbols.values()) + [x], order='lex', domain=domain)
 
-    _, factors = factor_list(G[-1])  # by construction G[-1] has root `ex`
-    return _choose_factor(factors, x, ex)
+    return G[-1]  # by construction G[-1] has root `ex`
 
 
 minpoly = minimal_polynomial
-__all__.append('minpoly')
 
 
-def _coeffs_generator(n):
-    """Generate coefficients for `primitive_element()`. """
-    for coeffs in variations([1, -1], n, repetition=True):
-        yield list(coeffs)
+def primitive_element(extension, **args):
+    """Construct a common number field for all extensions.
 
+    References
+    ==========
 
-@public
-def primitive_element(extension, x=None, **args):
-    """Construct a common number field for all extensions. """
+    .. [1] Kazuhiro Yokoyama, Masayuki Noro, Taku Takeshima, Computing
+           primitive elements of extension fields, Journal of Symbolic
+           Computation, Volume 8, Issue 6, 1989, pp. 553-580,
+           https://linkinghub.elsevier.com/retrieve/pii/S0747717189800616.
+    .. [2] Steven Arno, M.L. Robinson, Ferell S. Wheeler, On Denominators
+           of Algebraic Numbers and Integer Polynomials, Journal of Number
+           Theory, Volume 57, Issue 2, 1996, pp. 292-302,
+           https://doi.org/10.1006/jnth.1996.0049.
+    """
     if not extension:
         raise ValueError("can't compute primitive element for empty extension")
 
-    if x is not None:
-        x, cls = sympify(x), Poly
-    else:
-        x, cls = Dummy('x'), PurePoly
-    if not args.get('ex', False):
-        extension = [ AlgebraicNumber(ext, gen=x) for ext in extension ]
+    extension = list(uniq(extension))
 
-        g, coeffs = extension[0].minpoly.replace(x), [1]
+    x = Dummy('x')
+    F, Y = zip(*[(minimal_polynomial(e).replace(y), y)
+                 for e, y in zip(extension, numbered_symbols('y', cls=Dummy))])
 
-        for ext in extension[1:]:
-            s, _, g = sqf_norm(g, x, extension=ext)
-            coeffs = [ s*c for c in coeffs ] + [1]
-
-        if not args.get('polys', False):
-            return g.as_expr(), coeffs
-        else:
-            return cls(g), coeffs
-
-    generator = numbered_symbols('y', cls=Dummy)
-
-    F, Y = [], []
-
-    for ext in extension:
-        y = next(generator)
-
-        if ext.is_Poly:
-            if ext.is_univariate:
-                f = ext.as_expr(y)
-            else:
-                raise ValueError("expected minimal polynomial, got %s" % ext)
-        else:
-            f = minpoly(ext, y)
-
-        F.append(f)
-        Y.append(y)
-
-    coeffs_generator = args.get('coeffs', _coeffs_generator)
-
-    for coeffs in coeffs_generator(len(Y)):
+    for u in range(1, (len(F) - 1)*prod(f.degree() for f in F) + 1):
+        coeffs = [u**n for n in range(len(Y))]
         f = x - sum(c*y for c, y in zip(coeffs, Y))
-        G = groebner(F + [f], Y + [x], order='lex', field=True)
 
-        H, g = G[:-1], cls(G[-1], x, domain='QQ')
+        *H, g = groebner(F + (f,), Y + (x,), field=True, polys=True)
 
         for i, (h, y) in enumerate(zip(H, Y)):
-            try:
-                H[i] = Poly(y - h, x,
-                            domain='QQ').all_coeffs()  # XXX: composite=False
-            except CoercionFailed:  # pragma: no cover
+            H[i] = (y - h).eject(*Y).retract(field=True)
+            if not H[i].domain.is_RationalField:
                 break  # G is not a triangular set
         else:
+            g = g.eject(*Y).retract()
             break
-    else:  # pragma: no cover
-        raise RuntimeError("run out of coefficient configurations")
-
-    _, g = g.clear_denoms()
-
-    if not args.get('polys', False):
-        return g.as_expr(), coeffs, H
     else:
-        return g, coeffs, H
+        if len(F) == 1:
+            g, coeffs, H = F[0].replace(x), [S.One], [Poly(x)]
+        else:  # pragma: no cover
+            raise RuntimeError("run out of coefficient configurations")
+
+    _, factors = factor_list(g)
+    t = sum(c*e for c, e in zip(coeffs, extension))
+    g = _choose_factor(factors, x, t)
+
+    H = [h.rem(g).all_coeffs() for y, h in zip(Y, H)]
+
+    _, g = PurePoly(g).clear_denoms(convert=True)
+
+    if g.LC() != 1:
+        d = functools.reduce(operator.mul,
+                             (p**max(ceiling((multiplicity(p, g.LC()) - multiplicity(p, a))/j)
+                                     for j, a in enumerate(g.all_coeffs()[1:], 1) if a)
+                              for p in factorint(g.LC())))
+        H = [list(reversed([c/d**n for n, c in enumerate(reversed(h))])) for h in H]
+        coeffs = [c*d for c in coeffs]
+        g = (g.compose(Poly(g.gen/d))*d**g.degree()//g.LC()).retract()
+
+    return g, list(coeffs), H
 
 
 def is_isomorphism_possible(a, b):
@@ -827,61 +759,37 @@ def is_isomorphism_possible(a, b):
 
 def field_isomorphism_pslq(a, b):
     """Construct field isomorphism using PSLQ algorithm. """
-    if not a.root.is_extended_real or not b.root.is_extended_real:
+    if not all(_.ext.is_real for _ in (a, b)):
         raise NotImplementedError("PSLQ doesn't support complex coefficients")
 
     f = a.minpoly
     g = b.minpoly.replace(f.gen)
+    m = b.minpoly.degree()
 
-    n, m, prev = 100, b.minpoly.degree(), None
-
-    for i in range(1, 5):
-        A = a.root.evalf(n)
-        B = b.root.evalf(n)
-
-        basis = [1, B] + [ B**i for i in range(2, m) ] + [A]
-
-        dps, mp.dps = mp.dps, n
-        coeffs = pslq(basis, maxcoeff=int(1e10), maxsteps=1000)
-        mp.dps = dps
+    for n in mpmath.libmp.libintmath.giant_steps(32, 256):  # pragma: no branch
+        with mpmath.workdps(n):
+            A = lambdify((), a.ext, "mpmath")()
+            B = lambdify((), b.ext, "mpmath")()
+            basis = [B**i for i in range(m)] + [A]
+            coeffs = mpmath.pslq(basis, maxcoeff=int(1e10), maxsteps=1000)
 
         if coeffs is None:
             break
 
-        if coeffs != prev:
-            prev = coeffs
-        else:
-            break
-
-        coeffs = [sympify(c)/coeffs[-1] for c in coeffs[:-1]]
-
+        coeffs = [QQ(c, coeffs[-1]) for c in coeffs[:-1]]
         while not coeffs[-1]:
             coeffs.pop()
+        coeffs.reverse()
 
-        coeffs = list(reversed(coeffs))
         h = Poly(coeffs, f.gen, domain='QQ')
 
-        if f.compose(h).rem(g).is_zero:
-            d, approx = len(coeffs) - 1, 0
-
-            for i, coeff in enumerate(coeffs):
-                approx += coeff*B**(d - i)
-
-            if A*approx < 0:
-                return [ -c for c in coeffs ]
-            else:
-                return coeffs
-        elif f.compose(-h).rem(g).is_zero:
-            return [ -c for c in coeffs ]
-        else:
-            n *= 2
-
-    return
+        if f.compose(h).rem(g).is_zero or f.compose(-h).rem(g).is_zero:
+            return [-c for c in coeffs]
 
 
 def field_isomorphism_factor(a, b):
     """Construct field isomorphism via factorization. """
-    _, factors = factor_list(a.minpoly, extension=b)
+    _, factors = factor_list(a.minpoly, domain=b)
 
     for f, _ in factors:
         if f.degree() == 1:
@@ -889,38 +797,31 @@ def field_isomorphism_factor(a, b):
             d, terms = len(coeffs) - 1, []
 
             for i, coeff in enumerate(coeffs):
-                terms.append(coeff*b.root**(d - i))
+                terms.append(coeff*b.ext**(d - i))
 
             root = Add(*terms)
 
-            if (a.root - root).evalf(chop=True) == 0:
+            if (a.ext - root).evalf(chop=True) == 0:
                 return coeffs
 
-            if (a.root + root).evalf(chop=True) == 0:
-                return [ -c for c in coeffs ]
-    else:
-        return
+            if (a.ext + root).evalf(chop=True) == 0:
+                return [-c for c in coeffs]
 
 
-@public
 def field_isomorphism(a, b, **args):
     """Construct an isomorphism between two number fields. """
-    a, b = sympify(a), sympify(b)
-
-    if not a.is_AlgebraicNumber:
-        a = AlgebraicNumber(a)
-
-    if not b.is_AlgebraicNumber:
-        b = AlgebraicNumber(b)
+    if not all(isinstance(_, AlgebraicField) for _ in (a, b)):
+        raise ValueError("Arguments should be algebraic fields, "
+                         "got %s and %s" % (a, b))
 
     if a == b:
-        return a.coeffs()
+        return a.unit.rep
 
     n = a.minpoly.degree()
     m = b.minpoly.degree()
 
     if n == 1:
-        return [a.root]
+        return a.unit.rep
 
     if m % n != 0:
         return
@@ -935,86 +836,3 @@ def field_isomorphism(a, b, **args):
             pass
 
     return field_isomorphism_factor(a, b)
-
-
-@public
-def to_number_field(extension, theta=None, **args):
-    """Express `extension` in the field generated by `theta`. """
-    gen = args.get('gen')
-
-    if hasattr(extension, '__iter__'):
-        extension = list(extension)
-    else:
-        extension = [extension]
-
-    if len(extension) == 1 and type(extension[0]) is tuple:
-        return AlgebraicNumber(extension[0])
-
-    minpoly, coeffs = primitive_element(extension, gen, polys=True)
-    root = sum(coeff*ext for coeff, ext in zip(coeffs, extension))
-
-    if theta is None:
-        return AlgebraicNumber((minpoly, root))
-    else:
-        theta = sympify(theta)
-
-        if not theta.is_AlgebraicNumber:
-            theta = AlgebraicNumber(theta, gen=gen)
-
-        coeffs = field_isomorphism(root, theta)
-
-        if coeffs is not None:
-            return AlgebraicNumber(theta, coeffs)
-        else:
-            raise IsomorphismFailed(
-                "%s is not in a subfield of %s" % (root, theta.root))
-
-
-class IntervalPrinter(LambdaPrinter):
-    """Use ``lambda`` printer but print numbers as ``mpi`` intervals. """
-
-    def _print_Integer(self, expr):
-        return "mpi('%s')" % super(IntervalPrinter, self)._print_Integer(expr)
-
-    def _print_Rational(self, expr):
-        return "mpi('%s')" % super(IntervalPrinter, self)._print_Rational(expr)
-
-    def _print_Pow(self, expr):
-        return super(IntervalPrinter, self)._print_Pow(expr, rational=True)
-
-
-@public
-def isolate(alg, eps=None, fast=False):
-    """Give a rational isolating interval for an algebraic number. """
-    alg = sympify(alg)
-
-    if alg.is_Rational:
-        return alg, alg
-    elif not alg.is_extended_real:
-        raise NotImplementedError(
-            "complex algebraic numbers are not supported")
-
-    func = lambdify((), alg, modules="mpmath", printer=IntervalPrinter())
-
-    poly = minpoly(alg, polys=True)
-    intervals = poly.intervals(sqf=True)
-
-    dps, done = mp.dps, False
-
-    try:
-        while not done:
-            alg = func()
-
-            for a, b in intervals:
-                if a <= alg.a and alg.b <= b:
-                    done = True
-                    break
-            else:
-                mp.dps *= 2
-    finally:
-        mp.dps = dps
-
-    if eps is not None:
-        a, b = poly.refine_root(a, b, eps=eps, fast=fast)
-
-    return a, b

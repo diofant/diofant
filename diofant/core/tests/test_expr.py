@@ -578,6 +578,8 @@ def test_as_independent():
     assert (x + Integral(x, (x, 1, 2))).as_independent(x, strict=True) == \
            (Integral(x, (x, 1, 2)), x)
 
+    assert (x*y).as_independent(z, as_Add=True) == (x*y, 0)
+
 
 @pytest.mark.xfail
 def test_call_2():
@@ -916,6 +918,7 @@ def test_as_coeff_exponent():
 
 
 def test_extractions():
+    assert ((x*y)**3).extract_multiplicatively(1) == (x*y)**3
     assert ((x*y)**3).extract_multiplicatively(x**2 * y) == x*y**2
     assert ((x*y)**3).extract_multiplicatively(x**4 * y) is None
     assert (2*x).extract_multiplicatively(2) == x
@@ -925,6 +928,11 @@ def test_extractions():
     assert (sqrt(x)).extract_multiplicatively(x) is None
     assert (sqrt(x)).extract_multiplicatively(1/x) is None
     assert x.extract_multiplicatively(-x) is None
+    assert oo.extract_multiplicatively(2) is oo
+    assert oo.extract_multiplicatively(-1) is None
+    assert (-oo).extract_multiplicatively(2) is -oo
+    assert (-oo).extract_multiplicatively(-2) is oo
+    assert (-oo).extract_multiplicatively(0) is None
 
     assert ((x*y)**3).extract_additively(1) is None
     assert (x + 1).extract_additively(x) == 1
@@ -1061,6 +1069,8 @@ def test_coeff():
     assert (n*m + o*m*n).coeff(m*n, right=1) == 1
     assert (n*m + n*m*n).coeff(n*m, right=1) == 1 + n  # = n*m*(n + 1)
 
+    assert (x*y).coeff(z, 0) == x*y
+
 
 def test_coeff2():
     psi = Function("psi")
@@ -1111,8 +1121,11 @@ def test_action_verbs():
     assert ratsimp(1/x + 1/y) == (1/x + 1/y).ratsimp()
     assert trigsimp(log(x), deep=True) == (log(x)).trigsimp(deep=True)
     assert radsimp(1/(2 + sqrt(2))) == (1/(2 + sqrt(2))).radsimp()
+    assert radsimp(1/(a + b*sqrt(c)), symbolic=False) == \
+        (1/(a + b*sqrt(c))).radsimp(symbolic=False)
     assert powsimp(x**y*x**z*y**z, combine='all') == \
         (x**y*x**z*y**z).powsimp(combine='all')
+    assert (x**t*y**t).powsimp(force=True) == (x*y)**t
     assert simplify(x**y*x**z*y**z) == (x**y*x**z*y**z).simplify()
     assert together(1/x + 1/y) == (1/x + 1/y).together()
     assert collect(a*x**2 + b*x**2 + a*x - b*x + c, x) == \
@@ -1192,7 +1205,7 @@ def test_sympyissue_5226():
 def test_free_symbols():
     # free_symbols should return the free symbols of an object
     assert Integer(1).free_symbols == set()
-    assert (x).free_symbols == {x}
+    assert x.free_symbols == {x}
     assert Integral(x, (x, 1, y)).free_symbols == {y}
     assert (-Integral(x, (x, 1, y))).free_symbols == {y}
 
@@ -1413,6 +1426,10 @@ def test_is_constant():
     e = factorial(x) % x
     assert e.subs({x: x - 1}).is_constant() is False
 
+    e = a*sin(x)**2 + a*cos(x)**2
+    assert e.is_constant(x) is True
+    assert e.is_constant(a) is False
+
 
 def test_equals():
     assert (-3 - sqrt(5) + (-sqrt(10)/2 - sqrt(2)/2)**2).equals(0)
@@ -1616,6 +1633,33 @@ def test_sympyissue_7426():
     assert f1.equals(f2) is False
 
 
+def test_sympyissue_11122():
+    p = Symbol('p', positive=False)
+    assert (p > 0) is false
+
+
 def test_pow_rewrite():
     assert (2**x).rewrite(sin) == 2**x
     assert (2**x).rewrite(tanh) == 2**x
+
+
+def test_sympyissue_13645():
+    r, r_m = symbols('r r_m', positive=True)
+    th = symbols('th', extended_real=True)
+    a, M = symbols('a M', extended_real=True)
+    kappa, gamma = symbols('kappa gamma', extended_real=True)
+
+    l = sqrt(M/r_m**3)*(r_m**4 + r_m**2*a**2 - 2*M*r_m*a**2 -
+                        a*sqrt(M*r_m)*(r_m**2-a**2))
+    l /= r_m**2 - 3*M*r_m + 2*a*sqrt(M*r_m)
+
+    Delta = r**2 - 2*M*r + a**2
+    Sigma = r**2 + a**2*cos(th)**2
+    A = (r**2 + a**2)**2 - Delta*a**2*sin(th)**2
+
+    tmp3 = sqrt(1 + l**2*Sigma**2*Delta/(sin(th))**2)
+    ln_h = log((1 + tmp3) / (Sigma*Delta/A)) - tmp3
+    hm1 = exp(ln_h) - 1
+
+    # not hangs
+    (hm1*(gamma-1)/(kappa*gamma))**(1/(gamma - 1))

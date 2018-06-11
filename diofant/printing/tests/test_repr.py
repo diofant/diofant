@@ -3,27 +3,23 @@ import pytest
 from diofant import (Abs, AlgebraicNumber, Catalan, Dummy, E, EulerGamma,
                      Float, Function, GoldenRatio, I, ImmutableMatrix, Integer,
                      Matrix, Rational, Symbol, Wild, WildFunction, false, nan,
-                     ones, oo, pi, root, sin, sqrt, symbols, true, zoo)
+                     ones, oo, pi, root, sin, sqrt, true, zoo)
+from diofant.abc import x, y
 from diofant.domains import QQ, ZZ
 from diofant.geometry import Ellipse, Point
-from diofant.polys import field, grlex, lex, ring
+from diofant.polys import field, grlex, ring
 from diofant.printing.repr import srepr
 
 
 __all__ = ()
 
-x, y = symbols('x,y')
 
 # eval(repr(expr)) == expr has to succeed in the right environment. The right
 # environment is the scope of "from diofant import *" for most cases.
 ENV = {}
-imports = """
-from diofant import *
-from diofant.polys.rings import PolyRing
-from diofant.polys.fields import FracField
-from diofant.polys.orderings import LexOrder, GradedLexOrder
-"""
-exec(imports, ENV)
+imports = ["from diofant import *",
+           "from diofant.polys.orderings import GradedLexOrder, LexOrder"]
+exec("\n".join(imports), ENV)
 
 
 def sT(expr, string):
@@ -115,8 +111,6 @@ def test_Rational():
 def test_AlgebraicNumber():
     a = AlgebraicNumber(sqrt(2))
     sT(a, "AlgebraicNumber(Pow(Integer(2), Rational(1, 2)), Tuple(Integer(1), Integer(0)))")
-    a = AlgebraicNumber(sqrt(2), alias='a')
-    sT(a, "AlgebraicNumber(Pow(Integer(2), Rational(1, 2)), Tuple(Integer(1), Integer(0)), Symbol('a'))")
     a = AlgebraicNumber(root(-2, 3))
     sT(a, "AlgebraicNumber(Pow(Integer(-2), Rational(1, 3)), Tuple(Integer(1), Integer(0)))")
 
@@ -187,33 +181,34 @@ def test_Mul():
     sT(3*x**3*y, "Mul(Integer(3), Pow(Symbol('x'), Integer(3)), Symbol('y'))")
 
 
-def test_PolyRing():
-    sT(ring("x", ZZ, lex)[0], "PolyRing((Symbol('x'),), "
-                              "%s, LexOrder())" % repr(ZZ))
-    sT(ring("x,y", QQ, grlex)[0], "PolyRing((Symbol('x'), Symbol('y')), "
-                                  "%s, GradedLexOrder())" % repr(QQ))
-    sT(ring("x,y,z", ZZ["t"], lex)[0],
-       "PolyRing((Symbol('x'), Symbol('y'), Symbol('z')), "
-       "PolynomialRing(PolyRing((Symbol('t'),), "
-       "%s, LexOrder())), LexOrder())" % repr(ZZ))
+def test_PolynomialRing():
+    sT(ZZ.poly_ring("x"), "PolynomialRing(%s, (Symbol('x'),), "
+                          "LexOrder())" % repr(ZZ))
+    sT(QQ.poly_ring("x", "y", order=grlex),
+       "PolynomialRing(%s, (Symbol('x'), Symbol('y')), "
+       "GradedLexOrder())" % repr(QQ))
+    sT(ZZ.poly_ring("t").poly_ring("x", "y", "z"),
+       "PolynomialRing(PolynomialRing(%s, (Symbol('t'),), "
+       "LexOrder()), (Symbol('x'), Symbol('y'), Symbol('z')), "
+       "LexOrder())" % repr(ZZ))
 
 
-def test_FracField():
-    sT(field("x", ZZ, lex)[0], "FracField((Symbol('x'),), "
-                               "%s, LexOrder())" % repr(ZZ))
-    sT(field("x,y", QQ, grlex)[0], "FracField((Symbol('x'), Symbol('y')), "
-                                   "%s, GradedLexOrder())" % repr(QQ))
-    sT(field("x,y,z", ZZ["t"], lex)[0],
-       "FracField((Symbol('x'), Symbol('y'), Symbol('z')), "
-       "PolynomialRing(PolyRing((Symbol('t'),), %s, "
-       "LexOrder())), LexOrder())" % repr(ZZ))
+def test_FractionField():
+    sT(ZZ.frac_field("x"), "FractionField(%s, (Symbol('x'),), "
+                           "LexOrder())" % repr(ZZ))
+    sT(QQ.frac_field("x", "y", order=grlex),
+       "FractionField(%s, (Symbol('x'), Symbol('y')), "
+       "GradedLexOrder())" % repr(QQ))
+    sT(ZZ.poly_ring("t").frac_field("x", "y", "z"),
+       "FractionField(PolynomialRing(%s, (Symbol('t'),), LexOrder()), "
+       "(Symbol('x'), Symbol('y'), Symbol('z')), LexOrder())" % repr(ZZ))
 
 
 def test_PolyElement():
     R, x, y = ring("x,y", ZZ)
     g = R.domain.dtype
-    assert repr(3*x**2*y + 1) == ("PolyElement(PolyRing((Symbol('x'), "
-                                  "Symbol('y')), %s, LexOrder()), [((2, 1), "
+    assert repr(3*x**2*y + 1) == ("PolyElement(PolynomialRing(%s, (Symbol('x'), "
+                                  "Symbol('y')), LexOrder()), [((2, 1), "
                                   "%s), ((0, 0), %s)])" % (repr(ZZ),
                                                            repr(g(3)),
                                                            repr(g(1))))
@@ -222,8 +217,8 @@ def test_PolyElement():
 def test_FracElement():
     F, x, y = field("x,y", ZZ)
     g = F.domain.dtype
-    assert repr((3*x**2*y + 1)/(x - y**2)) == ("FracElement(FracField((Symbol('x'), "
-                                               "Symbol('y')), %s, LexOrder()), [((2, 1), %s), "
+    assert repr((3*x**2*y + 1)/(x - y**2)) == ("FracElement(FractionField(%s, (Symbol('x'), "
+                                               "Symbol('y')), LexOrder()), [((2, 1), %s), "
                                                "((0, 0), %s)], [((1, 0), %s), "
                                                "((0, 2), %s)])" % (repr(ZZ),
                                                                    repr(g(3)),
@@ -235,3 +230,8 @@ def test_FracElement():
 def test_BooleanAtom():
     assert repr(true) == "true"
     assert repr(false) == "false"
+
+
+def test_AlgebraicField():
+    sT(QQ.algebraic_field(sqrt(2)),
+       "AlgebraicField(%s, Pow(Integer(2), Rational(1, 2)))" % repr(QQ))

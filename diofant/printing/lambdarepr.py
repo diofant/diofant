@@ -228,6 +228,29 @@ class NumExprPrinter(LambdaPrinter):
         return "evaluate('%s')" % lstr
 
 
+class MpmathPrinter(LambdaPrinter):
+    def _print_RootOf(self, expr):
+        if expr.is_real:
+            return ("findroot(lambda %s: %s, %s, "
+                    "method='bisection')" % (self._print(expr.poly.gen),
+                                             self._print(expr.expr),
+                                             self._print(expr.interval.as_tuple())))
+        else:  # pragma: no cover
+            raise NotImplementedError
+
+    def _print_mpq(self, expr):
+        return "mp.mpq(%s, %s)" % (self._print(expr.numerator),
+                                   self._print(expr.denominator))
+
+    def _print_Sum(self, expr):
+        return "nsum(lambda %s: %s, %s)" % (",".join([self._print(v) for v in expr.variables]),
+                                            self._print(expr.function),
+                                            ",".join([self._print(v[1:]) for v in expr.limits]))
+
+    def _print_Infinity(self, expr):
+        return "inf"
+
+
 def lambdarepr(expr, **settings):
     """
     Returns a string usable for lambdifying.

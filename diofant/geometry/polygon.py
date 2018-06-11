@@ -67,7 +67,6 @@ class Polygon(GeometrySet):
     Examples
     ========
 
-    >>> from diofant import Point, Polygon, pi
     >>> p1, p2, p3, p4, p5 = [(0, 0), (1, 0), (5, 1), (0, 1), (3, 0)]
     >>> Polygon(p1, p2, p3, p4)
     Polygon(Point2D(0, 0), Point2D(1, 0), Point2D(5, 1), Point2D(0, 1))
@@ -94,7 +93,7 @@ class Polygon(GeometrySet):
     circle that circumscribes the RegularPolygon. Its method `spin` can be
     used to increment that angle.
 
-    >>> p = Polygon((0,0), 1, n=3)
+    >>> p = Polygon((0, 0), 1, n=3)
     >>> p
     RegularPolygon(Point2D(0, 0), 1, 3, 0)
     >>> p.vertices[0]
@@ -213,7 +212,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Polygon
         >>> p1, p2, p3, p4 = map(Point, [(0, 0), (1, 0), (5, 1), (0, 1)])
         >>> poly = Polygon(p1, p2, p3, p4)
         >>> poly.area
@@ -258,7 +256,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Polygon
         >>> p1, p2, p3, p4 = map(Point, [(0, 0), (1, 0), (5, 1), (0, 1)])
         >>> poly = Polygon(p1, p2, p3, p4)
         >>> poly.angles[p1]
@@ -299,7 +296,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Polygon
         >>> p1, p2, p3, p4 = map(Point, [(0, 0), (1, 0), (5, 1), (0, 1)])
         >>> poly = Polygon(p1, p2, p3, p4)
         >>> poly.perimeter
@@ -336,7 +332,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Polygon
         >>> p1, p2, p3, p4 = map(Point, [(0, 0), (1, 0), (5, 1), (0, 1)])
         >>> poly = Polygon(p1, p2, p3, p4)
         >>> poly.vertices
@@ -364,7 +359,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Polygon
         >>> p1, p2, p3, p4 = map(Point, [(0, 0), (1, 0), (5, 1), (0, 1)])
         >>> poly = Polygon(p1, p2, p3, p4)
         >>> poly.centroid
@@ -407,7 +401,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Polygon
         >>> p1, p2, p3, p4 = map(Point, [(0, 0), (1, 0), (5, 1), (0, 1)])
         >>> poly = Polygon(p1, p2, p3, p4)
         >>> poly.sides
@@ -442,7 +435,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Polygon
         >>> p1, p2, p3, p4 = map(Point, [(0, 0), (1, 0), (5, 1), (0, 1)])
         >>> poly = Polygon(p1, p2, p3, p4)
         >>> poly.is_convex()
@@ -486,7 +478,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Polygon, Point
         >>> from diofant.abc import t
         >>> p = Polygon((0, 0), (4, 0), (4, 4))
         >>> p.encloses_point(Point(2, 1))
@@ -580,7 +571,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Polygon, S, Symbol
         >>> t = Symbol('t', extended_real=True)
         >>> tri = Polygon((0, 0), (1, 0), (1, 1))
         >>> p = tri.arbitrary_point('t')
@@ -624,7 +614,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Polygon
         >>> p = Polygon((0, 0), (1, 0), (1, 1))
         >>> p.plot_interval()
         [t, 0, 1]
@@ -658,7 +647,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Polygon
         >>> p1, p2, p3, p4 = map(Point, [(0, 0), (1, 0), (5, 1), (0, 1)])
         >>> poly1 = Polygon(p1, p2, p3, p4)
         >>> p5, p6, p7 = map(Point, [(3, 2), (1, -1), (0, 2)])
@@ -684,7 +672,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Point, Polygon, RegularPolygon
         >>> p1, p2 = map(Point, [(0, 0), (7, 5)])
         >>> poly = Polygon(*RegularPolygon(p1, 1, 3).vertices)
         >>> poly.distance(p2)
@@ -724,7 +711,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.geometry import Point, Polygon
         >>> square = Polygon(Point(0, 0), Point(0, 1), Point(1, 1), Point(1, 0))
         >>> triangle = Polygon(Point(1, 2), Point(2, 2), Point(2, 1))
         >>> square._do_poly_distance(triangle)
@@ -946,7 +932,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant import Line, Segment, Point
         >>> p = Point(0, 0)
         >>> q = Point(1, 1)
         >>> s = Segment(p, q*2)
@@ -1029,7 +1014,6 @@ class RegularPolygon(Polygon):
     Examples
     ========
 
-    >>> from diofant.geometry import RegularPolygon, Point
     >>> r = RegularPolygon(Point(0, 0), 5, 3)
     >>> r
     RegularPolygon(Point2D(0, 0), 5, 3, 0)
@@ -1064,7 +1048,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant import RegularPolygon, Point
         >>> r = RegularPolygon(Point(0, 0), 5, 3)
         >>> r.args
         (Point2D(0, 0), 5, 3, 0)
@@ -1084,7 +1067,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import RegularPolygon
         >>> square = RegularPolygon((0, 0), 1, 4)
         >>> square.area
         2
@@ -1105,8 +1087,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import RegularPolygon
-        >>> from diofant import sqrt
         >>> s = square_in_unit_circle = RegularPolygon((0, 0), 1, 4)
         >>> s.length
         sqrt(2)
@@ -1135,7 +1115,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import RegularPolygon, Point
         >>> rp = RegularPolygon(Point(0, 0), 5, 4)
         >>> rp.center
         Point2D(0, 0)
@@ -1152,7 +1131,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import RegularPolygon, Point
         >>> rp = RegularPolygon(Point(0, 0), 5, 4)
         >>> rp.circumcenter
         Point2D(0, 0)
@@ -1178,8 +1156,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant import Symbol
-        >>> from diofant.geometry import RegularPolygon, Point
         >>> radius = Symbol('r')
         >>> rp = RegularPolygon(Point(0, 0), radius, 4)
         >>> rp.radius
@@ -1196,8 +1172,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant import Symbol
-        >>> from diofant.geometry import RegularPolygon, Point
         >>> radius = Symbol('r')
         >>> rp = RegularPolygon(Point(0, 0), radius, 4)
         >>> rp.circumradius
@@ -1217,8 +1191,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant import pi
-        >>> from diofant.geometry import RegularPolygon, Point
         >>> RegularPolygon(Point(0, 0), 3, 4, pi).rotation
         pi
 
@@ -1244,8 +1216,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant import Symbol
-        >>> from diofant.geometry import RegularPolygon, Point
         >>> radius = Symbol('r')
         >>> rp = RegularPolygon(Point(0, 0), radius, 4)
         >>> rp.apothem
@@ -1262,8 +1232,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant import Symbol
-        >>> from diofant.geometry import RegularPolygon, Point
         >>> radius = Symbol('r')
         >>> rp = RegularPolygon(Point(0, 0), radius, 4)
         >>> rp.inradius
@@ -1288,7 +1256,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import RegularPolygon, Point
         >>> rp = RegularPolygon(Point(0, 0), 4, 8)
         >>> rp.interior_angle
         3*pi/4
@@ -1313,7 +1280,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import RegularPolygon, Point
         >>> rp = RegularPolygon(Point(0, 0), 4, 8)
         >>> rp.exterior_angle
         pi/4
@@ -1338,7 +1304,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import RegularPolygon, Point
         >>> rp = RegularPolygon(Point(0, 0), 4, 8)
         >>> rp.circumcircle
         Circle(Point2D(0, 0), 4)
@@ -1363,7 +1328,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import RegularPolygon, Point
         >>> rp = RegularPolygon(Point(0, 0), 4, 7)
         >>> rp.incircle
         Circle(Point2D(0, 0), 4*cos(pi/7))
@@ -1380,7 +1344,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant import RegularPolygon, Point2D, sqrt, pi
         >>> r = RegularPolygon(Point2D(0, 0), 5, 3)
         >>> r.angles
         {Point2D(-5/2, -5*sqrt(3)/2): pi/3,
@@ -1424,7 +1387,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant import RegularPolygon, S, Point, Symbol
         >>> p = RegularPolygon((0, 0), 3, 4)
         >>> p.encloses_point(Point(0, 0))
         True
@@ -1456,8 +1418,7 @@ class RegularPolygon(Polygon):
 
         See also: rotate method which moves the center.
 
-        >>> from diofant import Polygon, Point, pi
-        >>> r = Polygon(Point(0,0), 1, n=3)
+        >>> r = Polygon(Point(0, 0), 1, n=3)
         >>> r.vertices[0]
         Point2D(1, 0)
         >>> r.spin(pi/6)
@@ -1477,7 +1438,6 @@ class RegularPolygon(Polygon):
         """Override GeometryEntity.rotate to first rotate the RegularPolygon
         about its center.
 
-        >>> from diofant import Point, RegularPolygon, Polygon, pi
         >>> t = RegularPolygon(Point(1, 0), 1, 3)
         >>> t.vertices[0] # vertex on x-axis
         Point2D(2, 0)
@@ -1499,8 +1459,6 @@ class RegularPolygon(Polygon):
     def scale(self, x=1, y=1, pt=None):
         """Override GeometryEntity.scale since it is the radius that must be
         scaled (if x == y) or else a new Polygon must be returned.
-
-        >>> from diofant import RegularPolygon
 
         Symmetric scaling returns a RegularPolygon:
 
@@ -1525,8 +1483,6 @@ class RegularPolygon(Polygon):
     def reflect(self, line):
         """Override GeometryEntity.reflect since this is not made of only
         points.
-
-        >>> from diofant import RegularPolygon, Line
 
         >>> RegularPolygon((0, 0), 1, 4).reflect(Line((0, 1), slope=-2))
         RegularPolygon(Point2D(4/5, 2/5), -1, 4, acos(3/5))
@@ -1559,7 +1515,6 @@ class RegularPolygon(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import RegularPolygon, Point
         >>> rp = RegularPolygon(Point(0, 0), 5, 4)
         >>> rp.vertices
         [Point2D(5, 0), Point2D(0, 5), Point2D(-5, 0), Point2D(0, -5)]
@@ -1623,7 +1578,6 @@ class Triangle(Polygon):
     Examples
     ========
 
-    >>> from diofant.geometry import Triangle, Point
     >>> Triangle(Point(0, 0), Point(4, 0), Point(4, 3))
     Triangle(Point2D(0, 0), Point2D(4, 0), Point2D(4, 3))
 
@@ -1700,7 +1654,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Triangle, Point
         >>> t = Triangle(Point(0, 0), Point(4, 0), Point(4, 3))
         >>> t.vertices
         (Point2D(0, 0), Point2D(4, 0), Point2D(4, 3))
@@ -1731,7 +1684,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Triangle, Point
         >>> t1 = Triangle(Point(0, 0), Point(4, 0), Point(4, 3))
         >>> t2 = Triangle(Point(0, 0), Point(-4, 0), Point(-4, -3))
         >>> t1.is_similar(t2)
@@ -1779,12 +1731,10 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Triangle, Point
         >>> t1 = Triangle(Point(0, 0), Point(4, 0), Point(4, 3))
         >>> t1.is_equilateral()
         False
 
-        >>> from diofant import sqrt
         >>> t2 = Triangle(Point(0, 0), Point(10, 0), Point(5, 5*sqrt(3)))
         >>> t2.is_equilateral()
         True
@@ -1808,7 +1758,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Triangle, Point
         >>> t1 = Triangle(Point(0, 0), Point(4, 0), Point(2, 4))
         >>> t1.is_isosceles()
         True
@@ -1832,7 +1781,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Triangle, Point
         >>> t1 = Triangle(Point(0, 0), Point(4, 0), Point(1, 4))
         >>> t1.is_scalene()
         True
@@ -1857,7 +1805,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Triangle, Point
         >>> t1 = Triangle(Point(0, 0), Point(4, 0), Point(4, 3))
         >>> t1.is_right()
         True
@@ -1891,7 +1838,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Point, Triangle
         >>> p1, p2, p3 = Point(0, 0), Point(1, 0), Point(0, 1)
         >>> t = Triangle(p1, p2, p3)
         >>> t.altitudes[p1]
@@ -1924,7 +1870,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Point, Triangle
         >>> p1, p2, p3 = Point(0, 0), Point(1, 0), Point(0, 1)
         >>> t = Triangle(p1, p2, p3)
         >>> t.orthocenter
@@ -1954,7 +1899,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Point, Triangle
         >>> p1, p2, p3 = Point(0, 0), Point(1, 0), Point(0, 1)
         >>> t = Triangle(p1, p2, p3)
         >>> t.circumcenter
@@ -1980,8 +1924,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant import Symbol
-        >>> from diofant.geometry import Point, Triangle
         >>> a = Symbol('a')
         >>> p1, p2, p3 = Point(0, 0), Point(1, 0), Point(0, a)
         >>> t = Triangle(p1, p2, p3)
@@ -2007,7 +1949,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Point, Triangle
         >>> p1, p2, p3 = Point(0, 0), Point(1, 0), Point(0, 1)
         >>> t = Triangle(p1, p2, p3)
         >>> t.circumcircle
@@ -2037,10 +1978,8 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Point, Triangle, Segment
         >>> p1, p2, p3 = Point(0, 0), Point(1, 0), Point(0, 1)
         >>> t = Triangle(p1, p2, p3)
-        >>> from diofant import sqrt
         >>> t.bisectors()[p2] == Segment(Point(0, sqrt(2) - 1), Point(1, 0))
         True
 
@@ -2073,7 +2012,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Point, Triangle
         >>> p1, p2, p3 = Point(0, 0), Point(1, 0), Point(0, 1)
         >>> t = Triangle(p1, p2, p3)
         >>> t.incenter
@@ -2105,7 +2043,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Point, Triangle
         >>> p1, p2, p3 = Point(0, 0), Point(4, 0), Point(0, 3)
         >>> t = Triangle(p1, p2, p3)
         >>> t.inradius
@@ -2134,7 +2071,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Point, Triangle
         >>> p1, p2, p3 = Point(0, 0), Point(2, 0), Point(0, 2)
         >>> t = Triangle(p1, p2, p3)
         >>> t.incircle
@@ -2166,7 +2102,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Point, Triangle
         >>> p1, p2, p3 = Point(0, 0), Point(1, 0), Point(0, 1)
         >>> t = Triangle(p1, p2, p3)
         >>> t.medians[p1]
@@ -2198,7 +2133,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> from diofant.geometry import Point, Triangle
         >>> p1, p2, p3 = Point(0, 0), Point(1, 0), Point(0, 1)
         >>> t = Triangle(p1, p2, p3)
         >>> t.medial

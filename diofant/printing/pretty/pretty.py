@@ -5,14 +5,13 @@ from ..conventions import requires_partial
 from ..printer import Printer
 from ..str import sstr
 from .pretty_symbology import (annotated, greek_unicode, hobj, pretty_atom,
-                               pretty_symbol, pretty_try_use_unicode,
-                               pretty_use_unicode, vobj, xobj, xsym)
+                               pretty_symbol, pretty_use_unicode, vobj, xobj,
+                               xsym)
 from .stringpict import prettyForm, stringPict
 
 
 # rename for usage from outside
 pprint_use_unicode = pretty_use_unicode
-pprint_try_use_unicode = pretty_try_use_unicode
 
 
 class PrettyPrinter(Printer):
@@ -417,12 +416,12 @@ class PrettyPrinter(Printer):
 
             lines = []
             if use_ascii:
-                lines.append("_"*(w) + ' ')
+                lines.append("_"*w + ' ')
                 lines.append("\%s`" % (' '*(w - 1)))
                 for i in range(1, d):
                     lines.append('%s\\%s' % (' '*i, ' '*(w - i)))
                 if more:
-                    lines.append('%s)%s' % (' '*(d), ' '*(w - d)))
+                    lines.append('%s)%s' % (' '*d, ' '*(w - d)))
                 for i in reversed(range(1, d)):
                     lines.append('%s/%s' % (' '*i, ' '*(w - i)))
                 lines.append("/" + "_"*(w - 1) + ',')
@@ -431,12 +430,12 @@ class PrettyPrinter(Printer):
                 w = w + more
                 d = d + more
                 vsum = vobj('sum', 4)
-                lines.append("_"*(w))
+                lines.append("_"*w)
                 for i in range(d):
                     lines.append('%s%s%s' % (' '*i, vsum[2], ' '*(w - i - 1)))
                 for i in reversed(range(d)):
                     lines.append('%s%s%s' % (' '*i, vsum[4], ' '*(w - i - 1)))
-                lines.append(vsum[8]*(w))
+                lines.append(vsum[8]*w)
                 return d, h + 2*more, lines, more
 
         f = expr.function
@@ -598,7 +597,7 @@ class PrettyPrinter(Printer):
         D = self._print(e.arg)
         D = prettyForm(*D.parens('(', ')'))
         D.baseline = D.height()//2
-        D = prettyForm(*D.left('\n'*(0) + 'tr'))
+        D = prettyForm(*D.left('\n'*0 + 'tr'))
         return D
 
     def _print_MatrixElement(self, expr):
@@ -672,78 +671,66 @@ class PrettyPrinter(Printer):
         if not self._use_unicode:  # pragma: no cover
             raise NotImplementedError("ASCII pretty printing of BasisDependent is not implemented")
 
-        orig_self = self
+        if expr == expr.zero:
+            return prettyForm(expr.zero._pretty_form)
+        o1 = []
+        vectstrs = []
+        if isinstance(expr, Vector):
+            items = expr.separate().items()
+        else:
+            items = [(0, expr)]
+        for system, vect in items:
+            inneritems = list(vect.components.items())
+            inneritems.sort(key=lambda x: x[0].__str__())
+            for k, v in inneritems:
+                # If the coef of the basis vector is 1 - we skip the 1
+                if v == 1:
+                    o1.append("" + k._pretty_form)
 
-        class Fake:
-            baseline = 0
+                # Same for -1
+                elif v == -1:
+                    o1.append("(-1) " + k._pretty_form)
 
-            def render(self, *args, **kwargs):
-                if expr == expr.zero:
-                    return expr.zero._pretty_form
-                o1 = []
-                vectstrs = []
-                if isinstance(expr, Vector):
-                    items = expr.separate().items()
                 else:
-                    items = [(0, expr)]
-                for system, vect in items:
-                    inneritems = list(vect.components.items())
-                    inneritems.sort(key=lambda x: x[0].__str__())
-                    for k, v in inneritems:
-                        # if the coef of the basis vector is 1
-                        # we skip the 1
-                        if v == 1:
-                            o1.append("" +
-                                      k._pretty_form)
-                        # Same for -1
-                        elif v == -1:
-                            o1.append("(-1) " +
-                                      k._pretty_form)
-                        # For a general expr
-                        else:
-                            # We always wrap the measure numbers in
-                            # parentheses
-                            arg_str = orig_self._print(v).parens()[0]
+                    # We always wrap the measure numbers in #parentheses
+                    arg_str = self._print(v).parens()[0]
 
-                            o1.append(arg_str + ' ' + k._pretty_form)
-                        vectstrs.append(k._pretty_form)
+                    o1.append(arg_str + ' ' + k._pretty_form)
+                vectstrs.append(k._pretty_form)
 
-                # Fixing the newlines
-                lengths = []
-                strs = ['']
-                for i, partstr in enumerate(o1):
-                    # XXX: What is this hack?
-                    if '\n' in partstr:
-                        tempstr = partstr
-                        tempstr = tempstr.replace(vectstrs[i], '')
-                        tempstr = tempstr.replace('\N{RIGHT PARENTHESIS UPPER HOOK}',
-                                                  '\N{RIGHT PARENTHESIS UPPER HOOK}'
-                                                  + ' ' + vectstrs[i])
-                        o1[i] = tempstr
-                o1 = [x.split('\n') for x in o1]
-                n_newlines = max(len(x) for x in o1)
-                for parts in o1:
-                    lengths.append(len(parts[0]))
-                    for j in range(n_newlines):
-                        if j+1 <= len(parts):
-                            if j >= len(strs):
-                                strs.append(' ' * (sum(lengths[:-1]) +
-                                                   3*(len(lengths)-1)))
-                            if j == 0:
-                                strs[0] += parts[0] + ' + '
-                            else:
-                                strs[j] += parts[j] + ' '*(lengths[-1] -
-                                                           len(parts[j]) +
-                                                           3)
-                        else:
-                            if j >= len(strs):
-                                strs.append(' ' * (sum(lengths[:-1]) +
-                                                   3*(len(lengths)-1)))
-                            strs[j] += ' '*(lengths[-1]+3)
+        # Fixing the newlines
+        lengths = []
+        strs = ['']
+        for i, partstr in enumerate(o1):
+            # XXX: What is this hack?
+            if '\n' in partstr:
+                tempstr = partstr
+                tempstr = tempstr.replace(vectstrs[i], '')
+                tempstr = tempstr.replace('\N{RIGHT PARENTHESIS UPPER HOOK}',
+                                          '\N{RIGHT PARENTHESIS UPPER HOOK}'
+                                          + ' ' + vectstrs[i])
+                o1[i] = tempstr
+        o1 = [x.split('\n') for x in o1]
+        n_newlines = max(len(x) for x in o1)
+        for parts in o1:
+            lengths.append(len(parts[0]))
+            for j in range(n_newlines):
+                if j+1 <= len(parts):
+                    if j >= len(strs):
+                        strs.append(' ' * (sum(lengths[:-1]) +
+                                           3*(len(lengths) - 1)))
+                    if j == 0:
+                        strs[0] += parts[0] + ' + '
+                    else:
+                        strs[j] += parts[j] + ' ' * (lengths[-1] -
+                                                     len(parts[j]) + 3)
+                else:
+                    if j >= len(strs):
+                        strs.append(' ' * (sum(lengths[:-1]) +
+                                           3*(len(lengths) - 1)))
+                    strs[j] += ' '*(lengths[-1]+3)
 
-                return '\n'.join([s[:-3] for s in strs])
-
-        return Fake()
+        return prettyForm('\n'.join([s[:-3] for s in strs]))
 
     def _print_Piecewise(self, pexpr):
 
@@ -1114,6 +1101,25 @@ class PrettyPrinter(Printer):
         pform = prettyForm(*pform.left(name))
         return pform
 
+    def _print_Mod(self, expr):
+        pform = self._print(expr.args[0])
+        if pform.binding > prettyForm.MUL:
+            pform = prettyForm(*pform.parens())
+        pform = prettyForm(*pform.right(' mod '))
+        pform = prettyForm(*pform.right(self._print(expr.args[1])))
+        pform.binding = prettyForm.OPEN
+        return pform
+
+    def _print_GoldenRatio(self, expr):
+        if self._use_unicode:
+            return prettyForm(pretty_symbol('phi'))
+        return self._print(Symbol("GoldenRatio"))
+
+    def _print_EulerGamma(self, expr):
+        if self._use_unicode:
+            return prettyForm(pretty_symbol('gamma'))
+        return self._print(Symbol("EulerGamma"))
+
     def _print_Add(self, expr, order=None):
         if self.order == 'none':
             terms = list(expr.args)
@@ -1155,7 +1161,7 @@ class PrettyPrinter(Printer):
             elif term.is_AlgebraicNumber and term.coeffs()[0] < 0:
                 new_coeffs = term.coeffs()
                 new_coeffs[0] = -new_coeffs[0]
-                pform = self._print(term.func(term.root, new_coeffs, term.alias))
+                pform = self._print(term.func(term.root, new_coeffs))
                 pforms.append(pretty_negative(pform, i))
             elif term.is_Relational:
                 pforms.append(prettyForm(*self._print(term).parens()))
@@ -1493,13 +1499,14 @@ class PrettyPrinter(Printer):
         return prettyForm(sstr(frac))
 
     def _print_AlgebraicNumber(self, expr):
-        if expr.is_aliased:
-            return self._print(expr.as_poly().as_expr())
-        else:
-            return self._print(expr.as_expr())
+        return self._print(expr.as_expr())
 
     def _print_RootOf(self, expr):
-        args = (self._print_Add(expr.expr, order='lex'),) + expr.args[1:]
+        args = [self._print_Add(expr.expr, order='lex')]
+        if expr.free_symbols:
+            args += expr.args[1:]
+        else:
+            args += [expr.index]
         pform = prettyForm(*self._print_seq(args).parens())
         pform = prettyForm(*pform.left('RootOf'))
         return pform

@@ -8,7 +8,6 @@ from ..core import Rational
 from ..core.compatibility import as_int
 from ..domains import QQ
 from .monomials import monomial_min, monomial_mul
-from .rings import PolyElement
 
 
 def _invert_monoms(p1):
@@ -17,9 +16,6 @@ def _invert_monoms(p1):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys.rings import ring
 
     >>> R, x = ring('x', ZZ)
     >>> p = x**2 + 2*x + 3
@@ -61,9 +57,6 @@ def rs_trunc(p1, x, prec):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x = ring('x', QQ)
     >>> p = x**10 + x**5 + x + 1
     >>> rs_trunc(p, x, 12)
@@ -91,9 +84,6 @@ def rs_mul(p1, p2, x, prec):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x = ring('x', QQ)
     >>> p1 = x**2 + 2*x + 1
     >>> p2 = x + 1
@@ -106,30 +96,27 @@ def rs_mul(p1, p2, x, prec):
     if ring.__class__ != p2.ring.__class__ or ring != p2.ring:
         raise ValueError('p1 and p2 must have the same ring')
     iv = ring.gens.index(x)
-    if not isinstance(p2, PolyElement):
-        raise ValueError('p1 and p2 must have the same ring')
-    if ring == p2.ring:
-        get = p.get
-        items2 = list(p2.items())
-        items2.sort(key=lambda e: e[0][iv])
-        if ring.ngens == 1:
-            for exp1, v1 in p1.items():
-                for exp2, v2 in items2:
-                    exp = exp1[0] + exp2[0]
-                    if exp < prec:
-                        exp = (exp, )
-                        p[exp] = get(exp, 0) + v1*v2
-                    else:
-                        break
-        else:
-            monomial_mul = ring.monomial_mul
-            for exp1, v1 in p1.items():
-                for exp2, v2 in items2:
-                    if exp1[iv] + exp2[iv] < prec:
-                        exp = monomial_mul(exp1, exp2)
-                        p[exp] = get(exp, 0) + v1*v2
-                    else:
-                        break
+
+    get = p.get
+    items2 = list(p2.items())
+    items2.sort(key=lambda e: e[0][iv])
+    if ring.ngens == 1:
+        for exp1, v1 in p1.items():
+            for exp2, v2 in items2:
+                exp = exp1[0] + exp2[0]
+                if exp < prec:
+                    exp = (exp, )
+                    p[exp] = get(exp, 0) + v1*v2
+                else:
+                    break
+    else:
+        for exp1, v1 in p1.items():
+            for exp2, v2 in items2:
+                if exp1[iv] + exp2[iv] < prec:
+                    exp = monomial_mul(exp1, exp2)
+                    p[exp] = get(exp, 0) + v1*v2
+                else:
+                    break
 
     p.strip_zero()
     return p
@@ -142,9 +129,6 @@ def rs_square(p1, x, prec):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x = ring('x', QQ)
     >>> p = x**2 + 2*x + 1
     >>> rs_square(p, x, 3)
@@ -156,7 +140,6 @@ def rs_square(p1, x, prec):
     get = p.get
     items = list(p1.items())
     items.sort(key=lambda e: e[0][iv])
-    monomial_mul = ring.monomial_mul
     for i in range(len(items)):
         exp1, v1 = items[i]
         for j in range(i):
@@ -183,9 +166,6 @@ def rs_pow(p1, n, x, prec):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x = ring('x', QQ)
     >>> p = x + 1
     >>> rs_pow(p, 4, x, 3)
@@ -193,8 +173,8 @@ def rs_pow(p1, n, x, prec):
     """
     R = p1.ring
     p = R.zero
-    if isinstance(n, Rational):
-        raise NotImplementedError('to be implemented')
+    if isinstance(n, Rational):  # pragma: no cover
+        raise NotImplementedError
 
     n = as_int(n)
     if n == 0:
@@ -231,9 +211,6 @@ def _has_constant_term(p, x):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x = ring('x', QQ)
     >>> p = x**2 + x + 1
     >>> _has_constant_term(p, x)
@@ -260,9 +237,6 @@ def _series_inversion1(p, x, prec):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x = ring('x', QQ)
     >>> p = x + 1
     >>> _series_inversion1(p, x, 4)
@@ -270,10 +244,7 @@ def _series_inversion1(p, x, prec):
     """
     ring = p.ring
     zm = ring.zero_monom
-    if zm not in p:
-        raise ValueError('no constant term in series')
-    if _has_constant_term(p - p[zm], x):
-        raise ValueError('p cannot contain a constant term depending on parameters')
+    assert zm in p and not _has_constant_term(p - p[zm], x)
     if p[zm] != ring(1):
         # TODO add check that it is a unit
         p1 = ring(1)/p[zm]
@@ -293,9 +264,6 @@ def rs_series_inversion(p, x, prec):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x, y = ring('x, y', QQ)
     >>> rs_series_inversion(1 + x*y**2, x, 4)
     -x**3*y**6 + x**2*y**4 - x*y**2 + 1
@@ -306,9 +274,9 @@ def rs_series_inversion(p, x, prec):
     zm = ring.zero_monom
     ii = ring.gens.index(x)
     m = min(p, key=lambda k: k[ii])[ii]
-    if m:
+    if m:  # pragma: no cover
         raise NotImplementedError('no constant term in series')
-    if zm not in p:
+    if zm not in p:  # pragma: no cover
         raise NotImplementedError('no constant term in series')
     if _has_constant_term(p - p[zm], x):
         raise NotImplementedError('p - p[0] must not have a constant term in the series variables')
@@ -326,9 +294,6 @@ def rs_series_from_list(p, c, x, prec, concur=1):
 
     Examples
     ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
 
     >>> R, x = ring('x', QQ)
     >>> p = x**2 + x + 1
@@ -390,14 +355,14 @@ def rs_series_from_list(p, c, x, prec, concur=1):
             break
     k = K - 1
     r = J*k
-    if r < n:
-        s1 = c[r]*ring(1)
-        for j in range(1, J):
-            if r + j >= n:
-                break
-            s1 += c[r + j]*ax[j]
-        s1 = rs_mul(s1, b, x, prec)
-        s += s1
+    assert r < n
+    s1 = c[r]*ring(1)
+    for j in range(1, J):
+        if r + j >= n:
+            break
+        s1 += c[r + j]*ax[j]
+    s1 = rs_mul(s1, b, x, prec)
+    s += s1
     return s
 
 
@@ -407,9 +372,6 @@ def rs_integrate(self, x):
 
     Examples
     ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
 
     >>> R, x, y = ring('x, y', QQ)
     >>> p = x + x**2*y**3
@@ -441,9 +403,6 @@ def rs_log(p, x, prec):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x = ring('x', QQ)
     >>> rs_log(1 + x, x, 8)
     1/7*x**7 - 1/6*x**6 + 1/5*x**5 - 1/4*x**4 + 1/3*x**3 - 1/2*x**2 + x
@@ -451,7 +410,7 @@ def rs_log(p, x, prec):
     ring = p.ring
     if p == 1:
         return ring.zero
-    if _has_constant_term(p - 1, x):
+    if _has_constant_term(p - 1, x):  # pragma: no cover
         raise NotImplementedError('p - 1 must not have a constant term in the series variables')
     dlog = p.diff(x)
     dlog = rs_mul(dlog, _series_inversion1(p, x, prec), x, prec - 1)
@@ -478,15 +437,12 @@ def rs_exp(p, x, prec):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x = ring('x', QQ)
     >>> rs_exp(x**2, x, 7)
     1/6*x**6 + 1/2*x**4 + x**2 + 1
     """
     ring = p.ring
-    if _has_constant_term(p, x):
+    if _has_constant_term(p, x):  # pragma: no cover
         raise NotImplementedError
     if len(p) > 20:
         return _exp1(p, x, prec)
@@ -509,9 +465,6 @@ def rs_newton(p, x, prec):
 
     Examples
     ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
 
     >>> R, x = ring('x', QQ)
     >>> p = x**2 - 2
@@ -536,16 +489,13 @@ def rs_hadamard_exp(p1, inverse=False):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
-
     >>> R, x = ring('x', QQ)
     >>> p = 1 + x + x**2 + x**3
     >>> rs_hadamard_exp(p)
     1/6*x**3 + 1/2*x**2 + x + 1
     """
     R = p1.ring
-    if R.domain != QQ:
+    if R.domain != QQ:  # pragma: no cover
         raise NotImplementedError
     p = R.zero
     if not inverse:
@@ -563,9 +513,6 @@ def rs_compose_add(p1, p2):
 
     Examples
     ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys.rings import ring
 
     >>> R, x = ring('x', QQ)
     >>> f = x**2 - 2

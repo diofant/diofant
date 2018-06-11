@@ -38,16 +38,13 @@ def express(expr, system, system2=None, variables=False):
     Examples
     ========
 
-    >>> from diofant.vector import CoordSysCartesian
-    >>> from diofant import Symbol, cos, sin
     >>> N = CoordSysCartesian('N')
     >>> q = Symbol('q')
     >>> B = N.orient_new_axis('B', q, N.k)
-    >>> from diofant.vector import express
     >>> express(B.i, N)
     (cos(q))*N.i + (sin(q))*N.j
     >>> express(N.x, B, variables=True)
-    B.x*cos(q) - B.y*sin(q)
+    -sin(q)*B.y + cos(q)*B.x
     >>> d = N.i.outer(N.i)
     >>> express(d, B, N)
     (cos(q))*(B.i|N.i) + (-sin(q))*(B.j|N.i)
@@ -67,9 +64,8 @@ def express(expr, system, system2=None, variables=False):
             # If variables attribute is True, substitute
             # the coordinate variables in the Vector
             system_list = []
-            for x in expr.atoms():
-                if (isinstance(x, (BaseScalar, BaseVector))
-                        and x.system != system):
+            for x in expr.atoms(BaseScalar, BaseVector):
+                if x.system != system:
                     system_list.append(x.system)
             system_list = set(system_list)
             subs_dict = {}
@@ -109,8 +105,8 @@ def express(expr, system, system2=None, variables=False):
             system_set = set()
             expr = sympify(expr)
             # Subsitute all the coordinate variables
-            for x in expr.atoms():
-                if isinstance(x, BaseScalar)and x.system != system:
+            for x in expr.atoms(BaseScalar):
+                if x.system != system:
                     system_set.add(x.system)
             subs_dict = {}
             for f in system_set:
@@ -136,7 +132,6 @@ def curl(vect, coord_sys):
     Examples
     ========
 
-    >>> from diofant.vector import CoordSysCartesian, curl
     >>> R = CoordSysCartesian('R')
     >>> v1 = R.y*R.z*R.i + R.x*R.z*R.j + R.x*R.y*R.k
     >>> curl(v1, R)
@@ -167,7 +162,6 @@ def divergence(vect, coord_sys):
     Examples
     ========
 
-    >>> from diofant.vector import CoordSysCartesian, divergence
     >>> R = CoordSysCartesian('R')
     >>> v1 = R.x*R.y*R.z * (R.i+R.j+R.k)
     >>> divergence(v1, R)
@@ -198,7 +192,6 @@ def gradient(scalar, coord_sys):
     Examples
     ========
 
-    >>> from diofant.vector import CoordSysCartesian, gradient
     >>> R = CoordSysCartesian('R')
     >>> s1 = R.x*R.y*R.z
     >>> gradient(s1, R)
@@ -225,8 +218,6 @@ def is_conservative(field):
     Examples
     ========
 
-    >>> from diofant.vector import CoordSysCartesian
-    >>> from diofant.vector import is_conservative
     >>> R = CoordSysCartesian('R')
     >>> is_conservative(R.y*R.z*R.i + R.x*R.z*R.j + R.x*R.y*R.k)
     True
@@ -259,8 +250,6 @@ def is_solenoidal(field):
     Examples
     ========
 
-    >>> from diofant.vector import CoordSysCartesian
-    >>> from diofant.vector import is_solenoidal
     >>> R = CoordSysCartesian('R')
     >>> is_solenoidal(R.y*R.z*R.i + R.x*R.z*R.j + R.x*R.y*R.k)
     True
@@ -298,8 +287,6 @@ def scalar_potential(field, coord_sys):
     Examples
     ========
 
-    >>> from diofant.vector import CoordSysCartesian
-    >>> from diofant.vector import scalar_potential, gradient
     >>> R = CoordSysCartesian('R')
     >>> scalar_potential(R.k, R) == R.z
     True
@@ -363,8 +350,7 @@ def scalar_potential_difference(field, coord_sys, point1, point2):
     Examples
     ========
 
-    >>> from diofant.vector import CoordSysCartesian, Point
-    >>> from diofant.vector import scalar_potential_difference
+    >>> from diofant.vector import Point
     >>> R = CoordSysCartesian('R')
     >>> P = R.origin.locate_new('P', R.x*R.i + R.y*R.j + R.z*R.k)
     >>> vectfield = 4*R.x*R.y*R.i + 2*R.x**2*R.j
@@ -420,9 +406,7 @@ def matrix_to_vector(matrix, system):
     Examples
     ========
 
-    >>> from diofant import ImmutableMatrix as Matrix
     >>> m = Matrix([1, 2, 3])
-    >>> from diofant.vector import CoordSysCartesian, matrix_to_vector
     >>> C = CoordSysCartesian('C')
     >>> v = matrix_to_vector(m, C)
     >>> v

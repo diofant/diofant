@@ -17,7 +17,6 @@ class IdentityFunction(Lambda, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import Id, Symbol
     >>> x = Symbol('x')
     >>> Id(x)
     x
@@ -48,9 +47,6 @@ def sqrt(arg, **kwargs):
     Examples
     ========
 
-    >>> from diofant import sqrt, Symbol
-    >>> x = Symbol('x')
-
     >>> sqrt(x)
     sqrt(x)
 
@@ -65,7 +61,6 @@ def sqrt(arg, **kwargs):
     This is because the two are not equal to each other in general.
     For example, consider x == -1:
 
-    >>> from diofant import Eq
     >>> Eq(sqrt(x**2), x).subs(x, -1)
     false
 
@@ -80,7 +75,6 @@ def sqrt(arg, **kwargs):
     You can force this simplification by using the powdenest() function with
     the force option set to True:
 
-    >>> from diofant import powdenest
     >>> sqrt(x**2)
     sqrt(x**2)
     >>> powdenest(sqrt(x**2), force=True)
@@ -88,9 +82,7 @@ def sqrt(arg, **kwargs):
 
     To get both branches of the square root you can use the RootOf function:
 
-    >>> from diofant import RootOf
-
-    >>> [ RootOf(x**2-3,i) for i in (0,1) ]
+    >>> [RootOf(x**2 - 3, i) for i in (0, 1)]
     [-sqrt(3), sqrt(3)]
 
     See Also
@@ -117,9 +109,6 @@ def cbrt(arg, **kwargs):
     Examples
     ========
 
-    >>> from diofant import cbrt, Symbol
-    >>> x = Symbol('x')
-
     >>> cbrt(x)
     x**(1/3)
 
@@ -134,7 +123,6 @@ def cbrt(arg, **kwargs):
     This is because the two are not equal to each other in general.
     For example, consider `x == -1`:
 
-    >>> from diofant import Eq
     >>> Eq(cbrt(x**3), x).subs(x, -1)
     false
 
@@ -162,16 +150,13 @@ def cbrt(arg, **kwargs):
     return Pow(arg, Rational(1, 3), **kwargs)
 
 
-def root(arg, n, k=0):
+def root(arg, n, k=0, **kwargs):
     """root(x, n, k) -> Returns the k-th n-th root of x, defaulting to the
     principle root (k=0).
 
 
     Examples
     ========
-
-    >>> from diofant import root, Rational
-    >>> from diofant.abc import x, n
 
     >>> root(x, 2)
     sqrt(x)
@@ -194,15 +179,13 @@ def root(arg, n, k=0):
     The following examples show the roots of unity for n
     equal 2, 3 and 4:
 
-    >>> from diofant import RootOf, I
-
-    >>> [ RootOf(x**2 - 1, i) for i in range(2) ]
+    >>> [RootOf(x**2 - 1, i) for i in range(2)]
     [-1, 1]
 
-    >>> [ RootOf(x**3 - 1,i) for i in range(3) ]
+    >>> [RootOf(x**3 - 1, i) for i in range(3)]
     [1, -1/2 - sqrt(3)*I/2, -1/2 + sqrt(3)*I/2]
 
-    >>> [ RootOf(x**4 - 1,i) for i in range(4) ]
+    >>> [RootOf(x**4 - 1, i) for i in range(4)]
     [-1, 1, -I, I]
 
     Diofant, like other symbolic algebra systems, returns the
@@ -217,7 +200,6 @@ def root(arg, n, k=0):
     The real_root function can be used to either make the principle
     result real (or simply to return the real root directly):
 
-    >>> from diofant import real_root
     >>> real_root(_)
     -2
     >>> real_root(-32, 5)
@@ -249,8 +231,8 @@ def root(arg, n, k=0):
     """
     n = sympify(n)
     if k:
-        return Pow(arg, S.One/n)*S.NegativeOne**(2*k/n)
-    return Pow(arg, 1/n)
+        return Pow(arg, S.One/n, **kwargs)*S.NegativeOne**(2*k/n)
+    return Pow(arg, 1/n, **kwargs)
 
 
 def real_root(arg, n=None):
@@ -261,9 +243,6 @@ def real_root(arg, n=None):
 
     Examples
     ========
-
-    >>> from diofant import root, real_root, Rational
-    >>> from diofant.abc import x, n
 
     >>> real_root(-8, 3)
     -2
@@ -433,8 +412,8 @@ class MinMaxBase(LatticeOp):
             l.append(df * da)
         return Add(*l)
 
-    def evalf(self, prec=None, **options):
-        return self.func(*[a.evalf(prec, **options) for a in self.args])
+    def evalf(self, dps=15, **options):
+        return self.func(*[a.evalf(dps, **options) for a in self.args])
     n = evalf
 
     @property
@@ -472,9 +451,6 @@ class Max(MinMaxBase, Application):
     Examples
     ========
 
-    >>> from diofant import Max, Symbol, oo
-
-    >>> from diofant.abc import x, y, z
     >>> p = Symbol('p', positive=True)
     >>> n = Symbol('n', negative=True)
 
@@ -562,9 +538,6 @@ class Min(MinMaxBase, Application):
     Examples
     ========
 
-    >>> from diofant import Min, Symbol, oo
-
-    >>> from diofant.abc import x, y
     >>> p = Symbol('p', positive=True)
     >>> n = Symbol('n', negative=True)
 

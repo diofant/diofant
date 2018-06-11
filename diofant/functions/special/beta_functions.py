@@ -32,36 +32,26 @@ class beta(Function):
     Examples
     ========
 
-    >>> from diofant import I, pi
-    >>> from diofant.abc import x,y
-
     The Beta function obeys the mirror symmetry:
 
-    >>> from diofant import beta
-    >>> from diofant import conjugate
-    >>> conjugate(beta(x,y))
+    >>> conjugate(beta(x, y))
     beta(conjugate(x), conjugate(y))
 
     Differentiation with respect to both x and y is supported:
 
-    >>> from diofant import beta
-    >>> from diofant import diff
-    >>> diff(beta(x,y), x)
+    >>> diff(beta(x, y), x)
     (polygamma(0, x) - polygamma(0, x + y))*beta(x, y)
 
-    >>> from diofant import beta
-    >>> from diofant import diff
-    >>> diff(beta(x,y), y)
+    >>> diff(beta(x, y), y)
     (polygamma(0, y) - polygamma(0, x + y))*beta(x, y)
 
     We can numerically evaluate the gamma function to arbitrary precision
     on the whole complex plane:
 
-    >>> from diofant import beta
-    >>> beta(pi,pi).evalf(40)
+    >>> beta(pi, pi).evalf(40)
     0.02671848900111377452242355235388489324562
 
-    >>> beta(1+I,1+I).evalf(20)
+    >>> beta(1 + I, 1 + I).evalf(20)
     -0.2112723729365330143 - 0.7655283165378005676*I
 
     See Also
@@ -80,7 +70,7 @@ class beta(Function):
 
     .. [1] https//en.wikipedia.org/wiki/Beta_function
     .. [2] http://mathworld.wolfram.com/BetaFunction.html
-    .. [3] http://dlmf.nist.gov/5.12
+    .. [3] https://dlmf.nist.gov/5.12
     """
 
     unbranched = True

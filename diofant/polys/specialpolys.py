@@ -4,10 +4,10 @@ from ..core import Add, Dummy, Mul, S, Symbol, symbols, sympify
 from ..domains import ZZ
 from ..functions import sqrt
 from ..ntheory import nextprime
-from ..utilities import public, subsets
+from ..utilities import subsets
 from .densearith import dmp_add_term, dmp_mul, dmp_neg, dmp_sqr
 from .densebasic import (dmp_ground, dmp_one, dmp_raise, dmp_zero,
-                         dup_from_raw_dict, dup_random)
+                         dup_from_dict, dup_random)
 from .factortools import dup_zz_cyclotomic_poly
 from .polyclasses import DMP
 from .polytools import Poly, PurePoly
@@ -15,7 +15,10 @@ from .polyutils import _analyze_gens
 from .rings import ring
 
 
-@public
+__all__ = ('swinnerton_dyer_poly', 'cyclotomic_poly', 'symmetric_poly',
+           'random_poly', 'interpolating_poly')
+
+
 def swinnerton_dyer_poly(n, x=None, **args):
     """Generates n-th Swinnerton-Dyer polynomial in `x`.  """
     from .numberfields import minimal_polynomial
@@ -40,7 +43,7 @@ def swinnerton_dyer_poly(n, x=None, **args):
         for i in range(2, n + 1):
             p = nextprime(p)
             a.append(sqrt(p))
-        return minimal_polynomial(Add(*a), x, polys=args.get('polys', False))
+        ex = minimal_polynomial(Add(*a))(x)
 
     if not args.get('polys', False):
         return ex
@@ -48,7 +51,6 @@ def swinnerton_dyer_poly(n, x=None, **args):
         return PurePoly(ex, x)
 
 
-@public
 def cyclotomic_poly(n, x=None, **args):
     """Generates cyclotomic polynomial of order `n` in `x`. """
     if n <= 0:
@@ -68,7 +70,6 @@ def cyclotomic_poly(n, x=None, **args):
         return poly
 
 
-@public
 def symmetric_poly(n, *gens, **args):
     """Generates symmetric polynomial of order `n`. """
     gens = _analyze_gens(gens)
@@ -86,10 +87,9 @@ def symmetric_poly(n, *gens, **args):
         return Poly(poly, *gens)
 
 
-@public
-def random_poly(x, n, inf, sup, domain=ZZ, polys=False):
+def random_poly(x, n, inf, sup, domain=ZZ, polys=False, percent=None):
     """Return a polynomial of degree ``n`` with coefficients in ``[inf, sup]``. """
-    poly = Poly(dup_random(n, inf, sup, domain), x, domain=domain)
+    poly = Poly(dup_random(n, inf, sup, domain, percent), x, domain=domain)
 
     if not polys:
         return poly.as_expr()
@@ -97,7 +97,6 @@ def random_poly(x, n, inf, sup, domain=ZZ, polys=False):
         return poly
 
 
-@public
 def interpolating_poly(n, x, X='x', Y='y'):
     """Construct Lagrange interpolating polynomial for ``n`` data points. """
     if isinstance(X, str):
@@ -229,7 +228,7 @@ def fateman_poly_F_3(n):
 
 def dmp_fateman_poly_F_3(n, K):
     """Fateman's GCD benchmark: sparse inputs (deg f ~ vars f) """
-    u = dup_from_raw_dict({n + 1: K.one}, K)
+    u = dup_from_dict({(n + 1,): K.one}, K)
 
     for i in range(n - 1):
         u = dmp_add_term([u], dmp_one(i, K), n + 1, i + 1, K)

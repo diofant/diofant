@@ -53,8 +53,7 @@ class jacobi(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import jacobi, conjugate, diff, Rational
-    >>> from diofant.abc import n,a,b,x
+    >>> from diofant.abc import a, b
 
     >>> jacobi(0, a, b, x)
     1
@@ -88,7 +87,7 @@ class jacobi(OrthogonalPolynomial):
     >>> conjugate(jacobi(n, a, b, x))
     jacobi(n, conjugate(a), conjugate(b), conjugate(x))
 
-    >>> diff(jacobi(n,a,b,x), x)
+    >>> diff(jacobi(n, a, b, x), x)
     (a/2 + b/2 + n/2 + 1/2)*jacobi(n - 1, a + 1, b + 1, x)
 
     See Also
@@ -209,8 +208,7 @@ def jacobi_normalized(n, a, b, x):
     Examples
     ========
 
-    >>> from diofant import jacobi_normalized
-    >>> from diofant.abc import n,a,b,x
+    >>> from diofant.abc import a, b
 
     >>> jacobi_normalized(n, a, b, x)
     jacobi(n, a, b, x)/sqrt(2**(a + b + 1)*gamma(a + n + 1)*gamma(b + n + 1)/((a + b + 2*n + 1)*factorial(n)*gamma(a + b + n + 1)))
@@ -262,8 +260,7 @@ class gegenbauer(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import gegenbauer, conjugate, diff
-    >>> from diofant.abc import n,a,x
+    >>> from diofant.abc import a
     >>> gegenbauer(0, a, x)
     1
     >>> gegenbauer(1, a, x)
@@ -397,8 +394,6 @@ class chebyshevt(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import chebyshevt, chebyshevu, diff
-    >>> from diofant.abc import n,x
     >>> chebyshevt(0, x)
     1
     >>> chebyshevt(1, x)
@@ -496,8 +491,6 @@ class chebyshevu(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import chebyshevt, chebyshevu, diff
-    >>> from diofant.abc import n,x
     >>> chebyshevu(0, x)
     1
     >>> chebyshevu(1, x)
@@ -594,7 +587,6 @@ class chebyshevt_root(Function):
     Examples
     ========
 
-    >>> from diofant import chebyshevt, chebyshevt_root
     >>> chebyshevt_root(3, 2)
     -sqrt(3)/2
     >>> chebyshevt(3, chebyshevt_root(3, 2))
@@ -634,7 +626,6 @@ class chebyshevu_root(Function):
     Examples
     ========
 
-    >>> from diofant import chebyshevu, chebyshevu_root
     >>> chebyshevu_root(3, 2)
     -sqrt(2)/2
     >>> chebyshevu(3, chebyshevu_root(3, 2))
@@ -679,8 +670,6 @@ class legendre(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import legendre, diff
-    >>> from diofant.abc import x, n
     >>> legendre(0, x)
     1
     >>> legendre(1, x)
@@ -689,7 +678,7 @@ class legendre(OrthogonalPolynomial):
     3*x**2/2 - 1/2
     >>> legendre(n, x)
     legendre(n, x)
-    >>> diff(legendre(n,x), x)
+    >>> diff(legendre(n, x), x)
     n*(x*legendre(n, x) - legendre(n - 1, x))/(x**2 - 1)
 
     See Also
@@ -772,15 +761,13 @@ class assoc_legendre(Function):
     Examples
     ========
 
-    >>> from diofant import assoc_legendre
-    >>> from diofant.abc import x, m, n
-    >>> assoc_legendre(0,0, x)
+    >>> assoc_legendre(0, 0, x)
     1
-    >>> assoc_legendre(1,0, x)
+    >>> assoc_legendre(1, 0, x)
     x
-    >>> assoc_legendre(1,1, x)
+    >>> assoc_legendre(1, 1, x)
     -sqrt(-x**2 + 1)
-    >>> assoc_legendre(n,m,x)
+    >>> assoc_legendre(n, m, x)
     assoc_legendre(n, m, x)
 
     See Also
@@ -858,8 +845,6 @@ class hermite(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import hermite, diff
-    >>> from diofant.abc import x, n
     >>> hermite(0, x)
     1
     >>> hermite(1, x)
@@ -868,7 +853,7 @@ class hermite(OrthogonalPolynomial):
     4*x**2 - 2
     >>> hermite(n, x)
     hermite(n, x)
-    >>> diff(hermite(n,x), x)
+    >>> diff(hermite(n, x), x)
     2*n*hermite(n - 1, x)
     >>> hermite(n, -x)
     (-1)**n*hermite(n, x)
@@ -944,8 +929,6 @@ class laguerre(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import laguerre, diff
-    >>> from diofant.abc import x, n
     >>> laguerre(0, x)
     1
     >>> laguerre(1, x)
@@ -1037,8 +1020,7 @@ class assoc_laguerre(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant import laguerre, assoc_laguerre, diff
-    >>> from diofant.abc import x, n, a
+    >>> from diofant.abc import a
     >>> assoc_laguerre(0, a, x)
     1
     >>> assoc_laguerre(1, a, x)

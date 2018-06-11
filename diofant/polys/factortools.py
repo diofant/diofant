@@ -1,28 +1,25 @@
 """Polynomial factorization routines in characteristic zero. """
 
-from math import ceil as _ceil
-from math import log as _log
+import math
 
 from ..ntheory import factorint, isprime, nextprime
 from ..utilities import subsets
 from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
-                         dmp_max_norm, dmp_mul, dmp_mul_ground, dmp_neg,
-                         dmp_pow, dmp_quo, dmp_quo_ground, dmp_sub,
-                         dmp_sub_mul, dup_add, dup_div, dup_l1_norm,
-                         dup_lshift, dup_max_norm, dup_mul, dup_mul_ground,
-                         dup_neg, dup_quo, dup_quo_ground, dup_sqr, dup_sub,
-                         dup_sub_mul)
+                         dmp_l1_norm, dmp_max_norm, dmp_mul, dmp_mul_ground,
+                         dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_sub,
+                         dmp_sub_mul, dup_add, dup_lshift, dup_mul, dup_sqr,
+                         dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
                          dmp_inject, dmp_LC, dmp_nest, dmp_one, dmp_raise,
-                         dmp_terms_gcd, dmp_zero_p, dup_convert, dup_degree,
-                         dup_inflate, dup_LC, dup_strip, dup_TC, dup_terms_gcd)
+                         dmp_strip, dmp_TC, dmp_terms_gcd, dmp_zero_p,
+                         dup_inflate)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
-                         dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
-                         dmp_ground_primitive, dmp_ground_trunc,
-                         dup_clear_denoms, dup_content, dup_mirror, dup_monic,
-                         dup_primitive, dup_shift, dup_trunc)
+                         dmp_eval_in, dmp_eval_tail, dmp_ground_content,
+                         dmp_ground_monic, dmp_ground_primitive,
+                         dmp_ground_trunc, dup_clear_denoms, dup_mirror,
+                         dup_shift, dup_trunc)
 from .euclidtools import dmp_inner_gcd, dmp_primitive, dup_inner_gcd
 from .galoistools import (gf_add_mul, gf_div, gf_factor, gf_factor_sqf,
                           gf_from_int_poly, gf_gcdex, gf_lshift, gf_mul,
@@ -31,8 +28,7 @@ from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-from .sqfreetools import (dmp_sqf_norm, dmp_sqf_part, dup_sqf_norm, dup_sqf_p,
-                          dup_sqf_part)
+from .sqfreetools import dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
 
 
 def dup_trial_division(f, factors, K):
@@ -43,7 +39,7 @@ def dup_trial_division(f, factors, K):
         k = 0
 
         while True:
-            q, r = dup_div(f, factor, K)
+            q, r = dmp_div(f, factor, 0, K)
 
             if not r:
                 f, k = q, k + 1
@@ -77,9 +73,9 @@ def dmp_trial_division(f, factors, u, K):
 
 def dup_zz_mignotte_bound(f, K):
     """Mignotte bound for univariate polynomials in `K[x]`. """
-    a = dup_max_norm(f, K)
-    b = abs(dup_LC(f, K))
-    n = dup_degree(f)
+    a = dmp_max_norm(f, 0, K)
+    b = abs(dmp_LC(f, K))
+    n = dmp_degree(f, 0)
 
     return K.sqrt(K(n + 1))*2**n*a*b
 
@@ -122,10 +118,10 @@ def dup_zz_hensel_step(m, f, g, h, s, t, K):
     """
     M = m**2
 
-    e = dup_sub_mul(f, g, h, K)
+    e = dmp_sub_mul(f, g, h, 0, K)
     e = dup_trunc(e, M, K)
 
-    q, r = dup_div(dup_mul(s, e, K), h, K)
+    q, r = dmp_div(dup_mul(s, e, K), h, 0, K)
 
     q = dup_trunc(q, M, K)
     r = dup_trunc(r, M, K)
@@ -137,7 +133,7 @@ def dup_zz_hensel_step(m, f, g, h, s, t, K):
     u = dup_add(dup_mul(s, G, K), dup_mul(t, H, K), K)
     b = dup_trunc(dup_sub(u, [K.one], K), M, K)
 
-    c, d = dup_div(dup_mul(s, b, K), H, K)
+    c, d = dmp_div(dup_mul(s, b, K), H, 0, K)
 
     c = dup_trunc(c, M, K)
     d = dup_trunc(d, M, K)
@@ -172,15 +168,15 @@ def dup_zz_hensel_lift(p, f, f_list, l, K):
     .. [1] [Gathen99]_
     """
     r = len(f_list)
-    lc = dup_LC(f, K)
+    lc = dmp_LC(f, K)
 
     if r == 1:
-        F = dup_mul_ground(f, K.gcdex(lc, p**l)[0], K)
+        F = dmp_mul_ground(f, K.gcdex(lc, p**l)[0], 0, K)
         return [ dup_trunc(F, p**l, K) ]
 
     m = p
     k = r // 2
-    d = int(_ceil(_log(l, 2)))
+    d = int(math.ceil(math.log(l, 2)))
 
     g = gf_from_int_poly([lc], p)
 
@@ -216,23 +212,23 @@ def _test_pl(fc, q, pl):
 
 def dup_zz_zassenhaus(f, K):
     """Factor primitive square-free polynomials in `Z[x]`. """
-    n = dup_degree(f)
+    n = dmp_degree(f, 0)
 
     if n == 1:
         return [f]
 
     fc = f[-1]
-    A = dup_max_norm(f, K)
-    b = dup_LC(f, K)
+    A = dmp_max_norm(f, 0, K)
+    b = dmp_LC(f, K)
     B = int(abs(K.sqrt(K(n + 1))*2**n*A*b))
     C = int((n + 1)**(2*n)*A**(2*n - 1))
-    gamma = int(_ceil(2*_log(C, 2)))
-    bound = int(2*gamma*_log(gamma))
+    gamma = int(math.ceil(2*math.log(C, 2)))
+    bound = int(2*gamma*math.log(gamma))
     a = []
     # choose a prime number `p` such that `f` be square free in Z_p
     # if there are many factors in Z_p, choose among a few different `p`
     # the one with fewer factors
-    for px in range(3, bound + 1):
+    for px in range(3, bound + 1):  # pragma: no branch
         if not isprime(px) or b % px == 0:
             continue
 
@@ -248,7 +244,7 @@ def dup_zz_zassenhaus(f, K):
             break
     p, fsqf = min(a, key=lambda x: len(x[1]))
 
-    l = int(_ceil(_log(2*B + 1, p)))
+    l = int(math.ceil(math.log(2*B + 1, p)))
 
     modular = [gf_to_int_poly(ff, p) for ff in fsqf]
 
@@ -277,7 +273,7 @@ def dup_zz_zassenhaus(f, K):
                 for i in S:
                     G = dup_mul(G, g[i], K)
                 G = dup_trunc(G, pl, K)
-                G = dup_primitive(G, K)[1]
+                G = dmp_ground_primitive(G, 0, K)[1]
                 q = G[-1]
                 if q and fc % q != 0:
                     continue
@@ -297,18 +293,18 @@ def dup_zz_zassenhaus(f, K):
 
             H = dup_trunc(H, pl, K)
 
-            G_norm = dup_l1_norm(G, K)
-            H_norm = dup_l1_norm(H, K)
+            G_norm = dmp_l1_norm(G, 0, K)
+            H_norm = dmp_l1_norm(H, 0, K)
 
             if G_norm*H_norm <= B:
                 T = T_S
                 sorted_T = [i for i in sorted_T if i not in S]
 
-                G = dup_primitive(G, K)[1]
-                f = dup_primitive(H, K)[1]
+                G = dmp_ground_primitive(G, 0, K)[1]
+                f = dmp_ground_primitive(H, 0, K)[1]
 
                 factors.append(G)
-                b = dup_LC(f, K)
+                b = dmp_LC(f, K)
 
                 break
         else:
@@ -319,10 +315,10 @@ def dup_zz_zassenhaus(f, K):
 
 def dup_zz_irreducible_p(f, K):
     """Test irreducibility using Eisenstein's criterion. """
-    lc = dup_LC(f, K)
-    tc = dup_TC(f, K)
+    lc = dmp_LC(f, K)
+    tc = dmp_TC(f, K)
 
-    e_fc = dup_content(f[1:], K)
+    e_fc = dmp_ground_content(f[1:], 0, K)
 
     if e_fc:
         e_ff = factorint(int(e_fc))
@@ -339,8 +335,6 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> f = x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1
@@ -351,17 +345,17 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     >>> R.dup_cyclotomic_p(g)
     True
     """
-    if K.is_QQ:
+    if K.is_RationalField:
         try:
-            K0, K = K, K.get_ring()
-            f = dup_convert(f, K0, K)
+            K0, K = K, K.ring
+            f = dmp_convert(f, 0, K0, K)
         except CoercionFailed:
             return False
-    elif not K.is_ZZ:
+    elif not K.is_IntegerRing:
         return False
 
-    lc = dup_LC(f, K)
-    tc = dup_TC(f, K)
+    lc = dmp_LC(f, K)
+    tc = dmp_TC(f, K)
 
     if lc != 1 or (tc != -1 and tc != 1):
         return False
@@ -372,7 +366,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
         if coeff != K.one or factors != [(f, 1)]:
             return False
 
-    n = dup_degree(f)
+    n = dmp_degree(f, 0)
     g, h = [], []
 
     for i in range(n, -1, -2):
@@ -381,26 +375,26 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     for i in range(n - 1, -1, -2):
         h.insert(0, f[i])
 
-    g = dup_sqr(dup_strip(g), K)
-    h = dup_sqr(dup_strip(h), K)
+    g = dup_sqr(dmp_strip(g, 0), K)
+    h = dup_sqr(dmp_strip(h, 0), K)
 
     F = dup_sub(g, dup_lshift(h, 1, K), K)
 
-    if K.is_negative(dup_LC(F, K)):
-        F = dup_neg(F, K)
+    if K.is_negative(dmp_LC(F, K)):
+        F = dmp_neg(F, 0, K)
 
     if F == f:
         return True
 
     g = dup_mirror(f, K)
 
-    if K.is_negative(dup_LC(g, K)):
-        g = dup_neg(g, K)
+    if K.is_negative(dmp_LC(g, K)):
+        g = dmp_neg(g, 0, K)
 
     if F == g and dup_cyclotomic_p(g, K):
         return True
 
-    G = dup_sqf_part(F, K)
+    G = dmp_sqf_part(F, 0, K)
 
     if dup_sqr(G, K) == F and dup_cyclotomic_p(G, K):
         return True
@@ -413,7 +407,7 @@ def dup_zz_cyclotomic_poly(n, K):
     h = [K.one, -K.one]
 
     for p, k in factorint(n).items():
-        h = dup_quo(dup_inflate(h, p, K), h, K)
+        h = dmp_quo(dup_inflate(h, p, K), h, 0, K)
         h = dup_inflate(h, p**(k - 1), K)
 
     return h
@@ -423,7 +417,7 @@ def _dup_cyclotomic_decompose(n, K):
     H = [[K.one, -K.one]]
 
     for p, k in factorint(n).items():
-        Q = [ dup_quo(dup_inflate(h, p, K), h, K) for h in H ]
+        Q = [dmp_quo(dup_inflate(h, p, K), h, 0, K) for h in H]
         H.extend(Q)
 
         for i in range(1, k):
@@ -450,9 +444,9 @@ def dup_zz_cyclotomic_factor(f, K):
 
     .. [1] [Weisstein09]_
     """
-    lc_f, tc_f = dup_LC(f, K), dup_TC(f, K)
+    lc_f, tc_f = dmp_LC(f, K), dmp_TC(f, K)
 
-    if dup_degree(f) <= 0:
+    if dmp_degree(f, 0) <= 0:
         return
 
     if lc_f != 1 or tc_f not in [-1, 1]:
@@ -461,10 +455,10 @@ def dup_zz_cyclotomic_factor(f, K):
     if any(bool(cf) for cf in f[1:-1]):
         return
 
-    n = dup_degree(f)
+    n = dmp_degree(f, 0)
     F = _dup_cyclotomic_decompose(n, K)
 
-    if not K.is_one(tc_f):
+    if tc_f != K.one:
         return F
     else:
         H = []
@@ -478,12 +472,12 @@ def dup_zz_cyclotomic_factor(f, K):
 
 def dup_zz_factor_sqf(f, K):
     """Factor square-free (non-primitive) polynomials in `Z[x]`. """
-    cont, g = dup_primitive(f, K)
+    cont, g = dmp_ground_primitive(f, 0, K)
 
-    n = dup_degree(g)
+    n = dmp_degree(g, 0)
 
-    if dup_LC(g, K) < 0:
-        cont, g = -cont, dup_neg(g, K)
+    if dmp_LC(g, K) < 0:
+        cont, g = -cont, dmp_neg(g, 0, K)
 
     if n <= 0:
         return cont, []
@@ -523,19 +517,13 @@ def dup_zz_factor(f, K):
 
               (content(f), [(f_1, k_1), ..., (f_n, k_n))
 
-    Consider polynomial `f = 2*x**4 - 2`::
+    Examples
+    ========
 
-        >>> from diofant.domains import ZZ
-        >>> from diofant.polys import ring
+    >>> R, x = ring("x", ZZ)
 
-        >>> R, x = ring("x", ZZ)
-
-        >>> R.dup_zz_factor(2*x**4 - 2)
-        (2, [(x - 1, 1), (x + 1, 1), (x**2 + 1, 1)])
-
-    In result we got the following factorization::
-
-                 f = 2 (x - 1) (x + 1) (x**2 + 1)
+    >>> R.dup_zz_factor(2*x**4 - 2)
+    (2, [(x - 1, 1), (x + 1, 1), (x**2 + 1, 1)])
 
     Note that this is a complete factorization over integers,
     however over Gaussian integers we can factor the last term.
@@ -549,12 +537,12 @@ def dup_zz_factor(f, K):
 
     .. [1] [Gathen99]_
     """
-    cont, g = dup_primitive(f, K)
+    cont, g = dmp_ground_primitive(f, 0, K)
 
-    n = dup_degree(g)
+    n = dmp_degree(g, 0)
 
-    if dup_LC(g, K) < 0:
-        cont, g = -cont, dup_neg(g, K)
+    if dmp_LC(g, K) < 0:
+        cont, g = -cont, dmp_neg(g, 0, K)
 
     if n <= 0:
         return cont, []
@@ -565,7 +553,7 @@ def dup_zz_factor(f, K):
         if dup_zz_irreducible_p(g, K):
             return cont, [(g, 1)]
 
-    g = dup_sqf_part(g, K)
+    g = dmp_sqf_part(g, 0, K)
     H = None
 
     if query('USE_CYCLOTOMIC_FACTOR'):
@@ -590,7 +578,7 @@ def dmp_zz_wang_non_divisors(E, cs, ct, K):
                 r = K.gcd(r, q)
                 q = q // r
 
-            if K.is_one(q):
+            if q == K.one:
                 return
 
         result.append(q)
@@ -605,13 +593,13 @@ def dmp_zz_wang_test_points(f, T, ct, A, u, K):
 
     g = dmp_eval_tail(f, A, u, K)
 
-    if not dup_sqf_p(g, K):
+    if not dmp_sqf_p(g, 0, K):
         raise EvaluationFailed('no luck')
 
-    c, h = dup_primitive(g, K)
+    c, h = dmp_ground_primitive(g, 0, K)
 
-    if K.is_negative(dup_LC(h, K)):
-        c, h = -c, dup_neg(h, K)
+    if K.is_negative(dmp_LC(h, K)):
+        c, h = -c, dmp_neg(h, 0, K)
 
     v = u - 1
 
@@ -630,7 +618,7 @@ def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
 
     for h in H:
         c = dmp_one(v, K)
-        d = dup_LC(h, K)*cs
+        d = dmp_LC(h, K)*cs
 
         for i in reversed(range(len(E))):
             k, e, t = 0, E[i], T[i][0]
@@ -643,28 +631,28 @@ def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
 
         C.append(c)
 
-    if any(not j for j in J):
-        raise ExtraneousFactors  # pragma: no cover
+    if any(not j for j in J):  # pragma: no cover
+        raise ExtraneousFactors
 
     CC, HH = [], []
 
     for c, h in zip(C, H):
         d = dmp_eval_tail(c, A, v, K)
-        lc = dup_LC(h, K)
+        lc = dmp_LC(h, K)
 
-        if K.is_one(cs):
+        if cs == K.one:
             cc = lc//d
         else:
             g = K.gcd(lc, d)
             d, cc = d//g, lc//g
-            h, cs = dup_mul_ground(h, d, K), cs//d
+            h, cs = dmp_mul_ground(h, d, 0, K), cs//d
 
         c = dmp_mul_ground(c, cc, v, K)
 
         CC.append(c)
         HH.append(h)
 
-    if K.is_one(cs):
+    if cs == K.one:
         return f, HH, CC
 
     CCC, HHH = [], []
@@ -730,7 +718,7 @@ def dmp_zz_diophantine(F, c, A, d, p, u, K):
     """Wang/EEZ: Solve multivariate Diophantine equations. """
     if not A:
         S = [ [] for _ in F ]
-        n = dup_degree(c)
+        n = dmp_degree(c, 0)
 
         for i, coeff in enumerate(c):
             if not coeff:
@@ -739,7 +727,7 @@ def dmp_zz_diophantine(F, c, A, d, p, u, K):
             T = dup_zz_diophantine(F, n - i, p, K)
 
             for j, (s, t) in enumerate(zip(S, T)):
-                t = dup_mul_ground(t, coeff, K)
+                t = dmp_mul_ground(t, coeff, 0, K)
                 S[j] = dup_trunc(dup_add(s, t, K), p, K)
     else:
         n = len(A)
@@ -914,10 +902,10 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
         for _ in range(eez_num_tries):
             A = [ K(randint(-mod, mod)) for _ in range(u) ]
 
-            if tuple(A) not in history:
-                history.add(tuple(A))
-            else:
+            if tuple(A) in history:
                 continue
+            else:
+                history.add(tuple(A))
 
             try:
                 cs, s, E = dmp_zz_wang_test_points(f, T, ct, A, u, K)
@@ -950,7 +938,7 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
     s_norm, s_arg, i = None, 0, 0
 
     for s, _, _, _, _ in configs:
-        _s_norm = dup_max_norm(s, K)
+        _s_norm = dmp_max_norm(s, 0, K)
 
         if s_norm is not None:
             if _s_norm < s_norm:
@@ -1005,19 +993,13 @@ def dmp_zz_factor(f, u, K):
 
              (content(f), [(f_1, k_1), ..., (f_n, k_n))
 
-    Consider polynomial `f = 2*(x**2 - y**2)`::
+    Examples
+    ========
 
-        >>> from diofant.domains import ZZ
-        >>> from diofant.polys import ring
+    >>> R, x, y = ring("x y", ZZ)
 
-        >>> R, x,y = ring("x,y", ZZ)
-
-        >>> R.dmp_zz_factor(2*x**2 - 2*y**2)
-        (2, [(x - y, 1), (x + y, 1)])
-
-    In result we got the following factorization::
-
-                    f = 2 (x - y) (x + y)
+    >>> R.dmp_zz_factor(2*x**2 - 2*y**2)
+    (2, [(x - y, 1), (x + y, 1)])
 
     References
     ==========
@@ -1055,27 +1037,27 @@ def dmp_zz_factor(f, u, K):
 
 def dup_ext_factor(f, K):
     """Factor univariate polynomials over algebraic number fields. """
-    n, lc = dup_degree(f), dup_LC(f, K)
+    n, lc = dmp_degree(f, 0), dmp_LC(f, K)
 
-    f = dup_monic(f, K)
+    f = dmp_ground_monic(f, 0, K)
 
     if n <= 0:
         return lc, []
     if n == 1:
         return lc, [(f, 1)]
 
-    f, F = dup_sqf_part(f, K), f
-    s, g, r = dup_sqf_norm(f, K)
+    f, F = dmp_sqf_part(f, 0, K), f
+    s, g, r = dmp_sqf_norm(f, 0, K)
 
     factors = dup_factor_list_include(r, K.domain)
 
     if len(factors) == 1:
-        return lc, [(f, n//dup_degree(f))]
+        return lc, [(f, n//dmp_degree(f, 0))]
 
     H = s*K.unit
 
     for i, (factor, _) in enumerate(factors):
-        h = dup_convert(factor, K.domain, K)
+        h = dmp_convert(factor, 0, K.domain, K)
         h, _, g = dup_inner_gcd(h, g, K)
         h = dup_shift(h, H, K)
         factors[i] = h
@@ -1116,12 +1098,12 @@ def dmp_ext_factor(f, u, K):
 
 def dup_gf_factor(f, K):
     """Factor univariate polynomials over finite fields. """
-    f = dup_convert(f, K, K.domain)
+    f = dmp_convert(f, 0, K, K.domain)
 
     coeff, factors = gf_factor(f, K.mod, K.domain)
 
     for i, (f, k) in enumerate(factors):
-        factors[i] = (dup_convert(f, K.domain, K), k)
+        factors[i] = (dmp_convert(f, 0, K.domain, K), k)
 
     return K.convert(coeff, K.domain), factors
 
@@ -1133,8 +1115,8 @@ def dmp_gf_factor(f, u, K):
 
 def dup_factor_list(f, K0):
     """Factor polynomials into irreducibles in `K[x]`. """
-    j, f = dup_terms_gcd(f, K0)
-    cont, f = dup_primitive(f, K0)
+    (j,), f = dmp_terms_gcd(f, 0, K0)
+    cont, f = dmp_ground_primitive(f, 0, K0)
 
     if K0.is_FiniteField:
         coeff, factors = dup_gf_factor(f, K0)
@@ -1143,19 +1125,19 @@ def dup_factor_list(f, K0):
     else:
         if not K0.is_Exact:
             K0_inexact, K0 = K0, K0.get_exact()
-            f = dup_convert(f, K0_inexact, K0)
+            f = dmp_convert(f, 0, K0_inexact, K0)
         else:
             K0_inexact = None
 
         if K0.has_Field:
-            K = K0.get_ring()
+            K = K0.ring
 
             denom, f = dup_clear_denoms(f, K0, K)
-            f = dup_convert(f, K0, K)
+            f = dmp_convert(f, 0, K0, K)
         else:
             K = K0
 
-        if K.is_ZZ:
+        if K.is_IntegerRing:
             coeff, factors = dup_zz_factor(f, K)
         elif K.is_Poly:
             f, u = dmp_inject(f, 0, K)
@@ -1171,19 +1153,19 @@ def dup_factor_list(f, K0):
 
         if K0.has_Field:
             for i, (f, k) in enumerate(factors):
-                factors[i] = (dup_convert(f, K, K0), k)
+                factors[i] = (dmp_convert(f, 0, K, K0), k)
 
             coeff = K0.convert(coeff, K)
+            coeff = K0.quo(coeff, denom)
 
-            if K0_inexact is None:
-                coeff = coeff/denom
-            else:
+            if K0_inexact:
                 for i, (f, k) in enumerate(factors):
-                    f = dup_quo_ground(f, denom, K0)
-                    f = dup_convert(f, K0, K0_inexact)
+                    f = dmp_quo_ground(f, denom, 0, K0)
+                    f = dmp_convert(f, 0, K0, K0_inexact)
                     factors[i] = (f, k)
+                    coeff *= denom**k
 
-                coeff = K0_inexact.convert(coeff*denom**i, K0)
+                coeff = K0_inexact.convert(coeff, K0)
                 K0 = K0_inexact
 
     if j:
@@ -1197,9 +1179,9 @@ def dup_factor_list_include(f, K):
     coeff, factors = dup_factor_list(f, K)
 
     if not factors:
-        return [(dup_strip([coeff]), 1)]
+        return [(dmp_strip([coeff], 0), 1)]
     else:
-        g = dup_mul_ground(factors[0][0], coeff, K)
+        g = dmp_mul_ground(factors[0][0], coeff, 0, K)
         return [(g, factors[0][1])] + factors[1:]
 
 
@@ -1223,14 +1205,14 @@ def dmp_factor_list(f, u, K0):
             K0_inexact = None
 
         if K0.has_Field:
-            K = K0.get_ring()
+            K = K0.ring
 
             denom, f = dmp_clear_denoms(f, u, K0, K)
             f = dmp_convert(f, u, K0, K)
         else:
             K = K0
 
-        if K.is_ZZ:
+        if K.is_IntegerRing:
             levels, f, v = dmp_exclude(f, u, K)
             coeff, factors = dmp_zz_factor(f, v, K)
 
@@ -1253,16 +1235,16 @@ def dmp_factor_list(f, u, K0):
                 factors[i] = (dmp_convert(f, u, K, K0), k)
 
             coeff = K0.convert(coeff, K)
+            coeff = K0.quo(coeff, denom)
 
-            if K0_inexact is None:
-                coeff = coeff/denom
-            else:
+            if K0_inexact:
                 for i, (f, k) in enumerate(factors):
                     f = dmp_quo_ground(f, denom, u, K0)
                     f = dmp_convert(f, u, K0, K0_inexact)
                     factors[i] = (f, k)
+                    coeff *= denom**k
 
-                coeff = K0_inexact.convert(coeff*denom**i, K0)
+                coeff = K0_inexact.convert(coeff, K0)
                 K0 = K0_inexact
 
     for i, j in enumerate(reversed(J)):
@@ -1287,11 +1269,6 @@ def dmp_factor_list_include(f, u, K):
     else:
         g = dmp_mul_ground(factors[0][0], coeff, u, K)
         return [(g, factors[0][1])] + factors[1:]
-
-
-def dup_irreducible_p(f, K):
-    """Returns ``True`` if ``f`` has no factors over its domain. """
-    return dmp_irreducible_p(f, 0, K)
 
 
 def dmp_irreducible_p(f, u, K):

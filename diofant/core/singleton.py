@@ -14,7 +14,6 @@ class SingletonRegistry:
     instance, every time you create ``Integer(0)``, this will return
     the same instance, :class:`diofant.core.numbers.Zero`.
 
-    >>> from diofant import S, Integer
     >>> a = Integer(0)
     >>> a is S.Zero
     True
@@ -97,8 +96,6 @@ class Singleton(type):
     Examples
     ========
 
-    >>> from diofant import S, Basic
-    >>> from diofant.core.singleton import Singleton
     >>> class MySingleton(Basic, metaclass=Singleton):
     ...     pass
     >>> Basic() is Basic()
@@ -127,14 +124,14 @@ class Singleton(type):
         S.register(result)
         return result
 
-    def __call__(self, *args, **kwargs):
+    def __call__(cls, *args, **kwargs):
         # Called when application code says SomeClass(), where SomeClass is a
         # class of which Singleton is the metaclass.
         # __call__ is invoked first, before __new__() and __init__().
-        if self not in self.__class__._instances:
+        if cls not in cls.__class__._instances:
             # Invokes the standard constructor of SomeClass.
-            self.__class__._instances[self] = super().__call__(*args, **kwargs)
-        return self.__class__._instances[self]
+            cls.__class__._instances[cls] = super().__call__(*args, **kwargs)
+        return cls.__class__._instances[cls]
 
 
 class SingletonWithManagedProperties(Singleton, ManagedProperties):

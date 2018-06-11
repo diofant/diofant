@@ -1,12 +1,10 @@
-import os
-
 import pytest
 
 from diofant import (Abs, Derivative, Dummy, E, Ei, Eq, Function, I, Integer,
-                     Integral, LambertW, O, Piecewise, Poly, Pow, Rational,
-                     RootOf, Subs, Symbol, acos, acosh, asin, asinh, atan,
-                     cbrt, cos, diff, dsolve, erf, erfi, exp, log, pi, root,
-                     simplify, sin, sinh, sqrt, sstr, symbols, tan)
+                     Integral, LambertW, Mul, O, Piecewise, Poly, Pow,
+                     Rational, RootOf, Subs, Symbol, acos, acosh, asin, asinh,
+                     atan, cbrt, cos, diff, dsolve, erf, erfi, exp, log, pi,
+                     root, simplify, sin, sinh, sqrt, sstr, symbols, tan)
 from diofant.abc import A
 from diofant.solvers.deutils import ode_order
 from diofant.solvers.ode import (_linear_coeff_match,
@@ -1171,33 +1169,6 @@ def test_1st_exact1():
     assert checkodesol(eq5, sol5, order=1, solve_for_func=False)[0]
 
 
-@pytest.mark.slow
-@pytest.mark.xfail
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
-def test_1st_exact2():
-    """
-    This is an exact equation that fails under the exact engine. It is caught
-    by first order homogeneous albeit with a much contorted solution.  The
-    exact engine fails because of a poorly simplified integral of q(0,y)dy,
-    where q is the function multiplying f'.  The solutions should be
-    Eq(sqrt(x**2+f(x)**2)**3+y**3, C1).  The equation below is
-    equivalent, but it is so complex that checkodesol fails, and takes a long
-    time to do so.
-    """
-    eq = (x*sqrt(x**2 + f(x)**2) - (x**2*f(x)/(f(x) -
-                                               sqrt(x**2 + f(x)**2)))*f(x).diff(x))
-    sol = dsolve(eq)
-    assert sol == Eq(log(x),
-                     C1 - 9*sqrt(1 + f(x)**2/x**2)*asinh(f(x)/x)/(-27*f(x)/x +
-                                                                  27*sqrt(1 + f(x)**2/x**2)) - 9*sqrt(1 + f(x)**2/x**2) *
-                     log(1 - sqrt(1 + f(x)**2/x**2)*f(x)/x + 2*f(x)**2/x**2) /
-                     (-27*f(x)/x + 27*sqrt(1 + f(x)**2/x**2)) +
-                     9*asinh(f(x)/x)*f(x)/(x*(-27*f(x)/x + 27*sqrt(1 + f(x)**2/x**2))) +
-                     9*f(x)*log(1 - sqrt(1 + f(x)**2/x**2)*f(x)/x + 2*f(x)**2/x**2) /
-                     (x*(-27*f(x)/x + 27*sqrt(1 + f(x)**2/x**2))))
-    assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]
-
-
 def test_separable1():
     # test_separable1-5 are from Ordinary Differential Equations, Tenenbaum and
     # Pollard, pg. 55
@@ -1673,7 +1644,6 @@ def test_nth_linear_constant_coeff_homogeneous_RootOf():
 
 @pytest.mark.slow
 @pytest.mark.xfail
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
 def test_nth_linear_constant_coeff_homogeneous_RootOf_sol():
     eq = f(x).diff(x, 5) + 11*f(x).diff(x) - 2*f(x)
     sol = Eq(f(x),
@@ -2474,7 +2444,7 @@ def test_linear_coeff_match():
 
 def test_linear_coefficients():
     f = Function('f')
-    sol = Eq(f(x), C1/(x**2 + 6*x + 9) - Rational(3, 2))
+    sol = Eq(f(x), (C1 - 3*x**2 - 18*x)/Mul(2, x**2 + 6*x + 9, evaluate=False))
     eq = f(x).diff(x) + (3 + 2*f(x))/(x + 3)
     assert dsolve(eq, hint='linear_coefficients') == sol
     assert checkodesol(eq, sol, order=1, solve_for_func=False)[0]

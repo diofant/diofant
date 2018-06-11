@@ -6,8 +6,8 @@ import pytest
 from diofant import (Derivative, Dummy, E, Eq, Expr, Float, Function, I,
                      Integer, Lambda, O, Rational, RootOf, S, Subs, Sum,
                      Symbol, Tuple, acos, cbrt, cos, diff, exp, expand, expint,
-                     floor, im, log, loggamma, nfloat, pi, polygamma, re, sin,
-                     sqrt, symbols)
+                     floor, im, log, loggamma, nan, nfloat, oo, pi, polygamma,
+                     re, sin, sqrt, symbols, zoo)
 from diofant.abc import a, b, t, w, x, y, z
 from diofant.core.basic import _aresame
 from diofant.core.cache import clear_cache
@@ -253,8 +253,9 @@ def test_Subs():
     assert e1 + e2 == 2*e1
     assert e1.__hash__() == e2.__hash__()
     assert Subs(z*f(x + 1), x, 1) not in [ e1, e2 ]
-    assert Derivative(
-        f(x), x).subs(x, g(x)) == Subs(Derivative(f(x), x), (x,), (g(x),))
+    assert Derivative(f(x), x).subs(x, g(x)) == Derivative(f(g(x)), g(x))
+    assert Derivative(f(x), x).subs(x, x + y) == Subs(Derivative(f(x), x),
+                                                      (x,), (x + y))
     assert Subs(f(x)*cos(y) + z, (x, y), (0, pi/3)).n(2, strict=False) == \
         Subs(f(x)*cos(y) + z, (x, y), (0, pi/3)).evalf(2, strict=False) == \
         z + Rational('1/2').n(2)*f(0)
@@ -289,9 +290,8 @@ def test_function_comparable():
     assert cos(Rational(1, 3)).is_comparable is True
 
 
-@pytest.mark.xfail
 def test_function_comparable_infinities():
-    assert sin(oo).is_comparable is False
+    assert sin(+oo).is_comparable is False
     assert sin(-oo).is_comparable is False
     assert sin(zoo).is_comparable is False
     assert sin(nan).is_comparable is False

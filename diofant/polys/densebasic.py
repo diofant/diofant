@@ -7,18 +7,16 @@ from .monomials import monomial_div, monomial_min
 from .orderings import monomial_key
 
 
-def poly_LC(f, K):
+def dmp_LC(f, K):
     """
     Return leading coefficient of ``f``.
 
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
-    >>> poly_LC([], ZZ)
+    >>> dmp_LC([], ZZ)
     0
-    >>> poly_LC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
+    >>> dmp_LC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
     1
     """
     if not f:
@@ -27,18 +25,16 @@ def poly_LC(f, K):
         return f[0]
 
 
-def poly_TC(f, K):
+def dmp_TC(f, K):
     """
     Return trailing coefficient of ``f``.
 
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
-    >>> poly_TC([], ZZ)
+    >>> dmp_TC([], ZZ)
     0
-    >>> poly_TC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
+    >>> dmp_TC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
     3
     """
     if not f:
@@ -47,18 +43,12 @@ def poly_TC(f, K):
         return f[-1]
 
 
-dup_LC = dmp_LC = poly_LC
-dup_TC = dmp_TC = poly_TC
-
-
 def dmp_ground_LC(f, u, K):
     """
     Return the ground leading coefficient.
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[[1], [2, 3]]])
 
@@ -69,7 +59,7 @@ def dmp_ground_LC(f, u, K):
         f = dmp_LC(f, K)
         u -= 1
 
-    return dup_LC(f, K)
+    return dmp_LC(f, K)
 
 
 def dmp_ground_TC(f, u, K):
@@ -78,8 +68,6 @@ def dmp_ground_TC(f, u, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[[1], [2, 3]]])
 
@@ -90,7 +78,7 @@ def dmp_ground_TC(f, u, K):
         f = dmp_TC(f, K)
         u -= 1
 
-    return dup_TC(f, K)
+    return dmp_TC(f, K)
 
 
 def dmp_true_LT(f, u, K):
@@ -99,8 +87,6 @@ def dmp_true_LT(f, u, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[4], [2, 0], [3, 0, 0]])
 
@@ -118,28 +104,7 @@ def dmp_true_LT(f, u, K):
     else:
         monom.append(len(f) - 1)
 
-    return tuple(monom), dup_LC(f, K)
-
-
-def dup_degree(f):
-    """
-    Return the leading degree of ``f`` in ``K[x]``.
-
-    Note that the degree of 0 is negative infinity (the Diofant object -oo).
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 2, 0, 3])
-
-    >>> dup_degree(f)
-    3
-    """
-    if not f:
-        return -oo
-    return len(f) - 1
+    return tuple(monom), dmp_LC(f, K)
 
 
 def dmp_degree(f, u):
@@ -151,8 +116,6 @@ def dmp_degree(f, u):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> dmp_degree([[[]]], 2)
     -oo
 
@@ -161,20 +124,7 @@ def dmp_degree(f, u):
     >>> dmp_degree(f, 1)
     1
     """
-    if dmp_zero_p(f, u):
-        return -oo
-    else:
-        return len(f) - 1
-
-
-def _rec_degree_in(g, v, i, j):
-    """Recursive helper function for :func:`dmp_degree_in`."""
-    if i == j:
-        return dmp_degree(g, v)
-
-    v, i = v - 1, i + 1
-
-    return max(_rec_degree_in(c, v, i, j) for c in g)
+    return -oo if dmp_zero_p(f, u) else len(f) - 1
 
 
 def dmp_degree_in(f, j, u):
@@ -183,8 +133,6 @@ def dmp_degree_in(f, j, u):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[2], [1, 2, 3]])
 
@@ -198,18 +146,15 @@ def dmp_degree_in(f, j, u):
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
 
-    return _rec_degree_in(f, u, 0, j)
+    def degree_in(g, v, i, j):
+        if i == j:
+            return dmp_degree(g, v)
 
-
-def _rec_degree_list(g, v, i, degs):
-    """Recursive helper for :func:`dmp_degree_list`."""
-    degs[i] = max(degs[i], dmp_degree(g, v))
-
-    if v > 0:
         v, i = v - 1, i + 1
 
-        for c in g:
-            _rec_degree_list(c, v, i, degs)
+        return max(degree_in(c, v, i, j) for c in g)
+
+    return degree_in(f, u, 0, j)
 
 
 def dmp_degree_list(f, u):
@@ -219,39 +164,23 @@ def dmp_degree_list(f, u):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> f = ZZ.map([[1], [1, 2, 3]])
     >>> dmp_degree_list(f, 1)
     (1, 2)
     """
     degs = [-oo]*(u + 1)
-    _rec_degree_list(f, u, 0, degs)
+
+    def degree_list(g, v, i, degs):
+        degs[i] = max(degs[i], dmp_degree(g, v))
+
+        if v > 0:
+            v, i = v - 1, i + 1
+
+            for c in g:
+                degree_list(c, v, i, degs)
+
+    degree_list(f, u, 0, degs)
     return tuple(degs)
-
-
-def dup_strip(f):
-    """
-    Remove leading zeros from ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> dup_strip([0, 0, 1, 2, 3, 0])
-    [1, 2, 3, 0]
-    """
-    if not f or f[0]:
-        return f
-
-    i = 0
-
-    for cf in f:
-        if cf:
-            break
-        else:
-            i += 1
-
-    return f[i:]
 
 
 def dmp_strip(f, u):
@@ -265,51 +194,19 @@ def dmp_strip(f, u):
     [[0, 1, 2], [1]]
     """
     if not u:
-        return dup_strip(f)
-
-    if dmp_zero_p(f, u):
-        return f
-
-    i, v = 0, u - 1
-
-    for c in f:
-        if not dmp_zero_p(c, v):
-            break
+        for i, c in enumerate(f):
+            if c:
+                return f[i:]
         else:
-            i += 1
+            return dmp_zero(u)
 
-    if i == len(f):
+    v = u - 1
+
+    for i, c in enumerate(f):
+        if not dmp_zero_p(c, v):
+            return f[i:]
+    else:
         return dmp_zero(u)
-    else:
-        return f[i:]
-
-
-def _rec_validate(f, g, i, K):
-    """Recursive helper for :func:`dmp_validate`."""
-    if type(g) is not list:
-        if K is not None and not K.of_type(g):
-            raise TypeError("%s in %s in not of type %s" % (g, f, K.dtype))
-
-        return {i - 1}
-    elif not g:
-        return {i}
-    else:
-        levels = set()
-
-        for c in g:
-            levels |= _rec_validate(f, c, i + 1, K)
-
-        return levels
-
-
-def _rec_strip(g, v):
-    """Recursive helper for :func:`_rec_strip`."""
-    if not v:
-        return dup_strip(g)
-
-    w = v - 1
-
-    return dmp_strip([ _rec_strip(c, w) for c in g ], v)
 
 
 def dmp_validate(f, K=None):
@@ -327,12 +224,36 @@ def dmp_validate(f, K=None):
     ...
     ValueError: invalid data structure for a multivariate polynomial
     """
-    levels = _rec_validate(f, f, 0, K)
+    def validate(f, g, i, K):
+        if type(g) is not list:
+            if K is not None and not isinstance(g, K.dtype):
+                raise TypeError("%s in %s in not of type %s" % (g, f, K.dtype))
+
+            return {i - 1}
+        elif not g:
+            return {i}
+        else:
+            levels = set()
+
+            for c in g:
+                levels |= validate(f, c, i + 1, K)
+
+            return levels
+
+    levels = validate(f, f, 0, K)
 
     u = levels.pop()
 
+    def strip(g, v):
+        if not v:
+            return dmp_strip(g, 0)
+
+        w = v - 1
+
+        return dmp_strip([strip(c, w) for c in g], v)
+
     if not levels:
-        return _rec_strip(f, u), u
+        return strip(f, u), u
     else:
         raise ValueError(
             "invalid data structure for a multivariate polynomial")
@@ -345,29 +266,11 @@ def dup_reverse(f):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> f = ZZ.map([1, 2, 3, 0])
     >>> dup_reverse(f)
     [3, 2, 1]
     """
-    return dup_strip(list(reversed(f)))
-
-
-def dup_copy(f):
-    """
-    Create a new copy of a polynomial ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 2, 3, 0])
-    >>> dup_copy([1, 2, 3, 0])
-    [1, 2, 3, 0]
-    """
-    return list(f)
+    return dmp_strip(list(reversed(f)), 0)
 
 
 def dmp_copy(f, u):
@@ -377,8 +280,6 @@ def dmp_copy(f, u):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> f = ZZ.map([[1], [1, 2]])
     >>> dmp_copy(f, 1)
     [[1], [1, 2]]
@@ -387,26 +288,7 @@ def dmp_copy(f, u):
         return list(f)
 
     v = u - 1
-
-    return [ dmp_copy(c, v) for c in f ]
-
-
-def dup_to_tuple(f):
-    """
-    Convert `f` into a tuple.
-
-    This is needed for hashing. This is similar to dup_copy().
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 2, 3, 0])
-    >>> dup_copy([1, 2, 3, 0])
-    [1, 2, 3, 0]
-    """
-    return tuple(f)
+    return [dmp_copy(c, v) for c in f]
 
 
 def dmp_to_tuple(f, u):
@@ -418,32 +300,19 @@ def dmp_to_tuple(f, u):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
+    >>> f = ZZ.map([1, 2, 3, 0])
+    >>> dmp_to_tuple(f, 0)
+    (1, 2, 3, 0)
 
     >>> f = ZZ.map([[1], [1, 2]])
     >>> dmp_to_tuple(f, 1)
     ((1,), (1, 2))
     """
     if not u:
-        return dup_to_tuple(f)
+        return tuple(f)
+
     v = u - 1
-
     return tuple(dmp_to_tuple(c, v) for c in f)
-
-
-def dup_normal(f, K):
-    """
-    Normalize univariate polynomial in the given domain.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> dup_normal([0, 1.5, 2, 3], ZZ)
-    [1, 2, 3]
-    """
-    return dup_strip([ K.normal(c) for c in f ])
 
 
 def dmp_normal(f, u, K):
@@ -453,40 +322,16 @@ def dmp_normal(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> dmp_normal([[], [0, 1.5, 2]], 1, ZZ)
     [[1, 2]]
     """
     if not u:
-        return dup_normal(f, K)
-
-    v = u - 1
-
-    return dmp_strip([ dmp_normal(c, v, K) for c in f ], u)
-
-
-def dup_convert(f, K0, K1):
-    """
-    Convert the ground domain of ``f`` from ``K0`` to ``K1``.
-
-    Examples
-    ========
-
-    >>> from diofant.polys.rings import ring
-    >>> from diofant.domains import ZZ
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> dup_convert([R(1), R(2)], R.to_domain(), ZZ)
-    [1, 2]
-    >>> dup_convert([ZZ(1), ZZ(2)], ZZ, R.to_domain())
-    [1, 2]
-    """
-    if K0 is not None and K0 == K1:
-        return f
+        r = [K.normal(c) for c in f]
     else:
-        return dup_strip([ K1.convert(c, K0) for c in f ])
+        v = u - 1
+        r = [dmp_normal(c, v, K) for c in f]
+
+    return dmp_strip(r, u)
 
 
 def dmp_convert(f, u, K0, K1):
@@ -496,40 +341,23 @@ def dmp_convert(f, u, K0, K1):
     Examples
     ========
 
-    >>> from diofant.polys.rings import ring
-    >>> from diofant.domains import ZZ
-
     >>> R, x = ring("x", ZZ)
 
-    >>> dmp_convert([[R(1)], [R(2)]], 1, R.to_domain(), ZZ)
+    >>> dmp_convert([[R(1)], [R(2)]], 1, R, ZZ)
     [[1], [2]]
-    >>> dmp_convert([[ZZ(1)], [ZZ(2)]], 1, ZZ, R.to_domain())
+    >>> dmp_convert([[ZZ(1)], [ZZ(2)]], 1, ZZ, R)
     [[1], [2]]
     """
-    if not u:
-        return dup_convert(f, K0, K1)
     if K0 is not None and K0 == K1:
         return f
 
-    v = u - 1
+    if not u:
+        r = [K1.convert(c, K0) for c in f]
+    else:
+        v = u - 1
+        r = [dmp_convert(c, v, K0, K1) for c in f]
 
-    return dmp_strip([ dmp_convert(c, v, K0, K1) for c in f ], u)
-
-
-def dup_from_diofant(f, K):
-    """
-    Convert the ground domain of ``f`` from Diofant to ``K``.
-
-    Examples
-    ========
-
-    >>> from diofant import Integer
-    >>> from diofant.domains import ZZ
-
-    >>> dup_from_diofant([Integer(1), Integer(2)], ZZ)
-    [1, 2]
-    """
-    return dup_strip([ K.from_diofant(c) for c in f ])
+    return dmp_strip(r, u)
 
 
 def dmp_from_diofant(f, u, K):
@@ -539,51 +367,23 @@ def dmp_from_diofant(f, u, K):
     Examples
     ========
 
-    >>> from diofant import Integer
-    >>> from diofant.domains import ZZ
-
     >>> dmp_from_diofant([[Integer(1)], [Integer(2)]], 1, ZZ)
     [[1], [2]]
     """
     if not u:
-        return dup_from_diofant(f, K)
-
-    v = u - 1
-
-    return dmp_strip([ dmp_from_diofant(c, v, K) for c in f ], u)
-
-
-def dup_nth(f, n, K):
-    """
-    Return the ``n``-th coefficient of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 2, 3])
-    >>> dup_nth(f, 0, ZZ)
-    3
-    >>> dup_nth(f, 4, ZZ)
-    0
-    """
-    if n < 0:
-        raise IndexError("'n' must be non-negative, got %i" % n)
-    elif n >= len(f):
-        return K.zero
+        r = [K.convert(c) for c in f]
     else:
-        return f[dup_degree(f) - n]
+        v = u - 1
+        r = [dmp_from_diofant(c, v, K) for c in f]
+    return dmp_strip(r, u)
 
 
 def dmp_nth(f, n, u, K):
     """
-    Return the ``n``-th coefficient of ``f`` in ``K[x]``.
+    Return the ``n``-th coefficient of ``f`` in ``x_0`` in ``K[X]``.
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1], [2], [3]])
     >>> dmp_nth(f, 0, 1, ZZ)
@@ -594,7 +394,7 @@ def dmp_nth(f, n, u, K):
     if n < 0:
         raise IndexError("'n' must be non-negative, got %i" % n)
     elif n >= len(f):
-        return dmp_zero(u - 1)
+        return dmp_zero(u - 1) if u else K.zero
     else:
         return f[dmp_degree(f, u) - n]
 
@@ -605,8 +405,6 @@ def dmp_ground_nth(f, N, u, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1], [2, 3]])
     >>> dmp_ground_nth(f, (0, 1), 1, ZZ)
@@ -675,8 +473,6 @@ def dmp_one_p(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> dmp_one_p([[[ZZ(1)]]], 2, ZZ)
     True
     """
@@ -689,8 +485,6 @@ def dmp_one(u, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> dmp_one(2, ZZ)
     [[[1]]]
@@ -753,8 +547,6 @@ def dmp_zeros(n, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> dmp_zeros(3, 2, ZZ)
     [[[[]]], [[[]]], [[[]]]]
     >>> dmp_zeros(3, -1, ZZ)
@@ -775,8 +567,6 @@ def dmp_grounds(c, n, u):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> dmp_grounds(ZZ(4), 3, 2)
     [[[[4]]], [[[4]]], [[[4]]]]
@@ -799,8 +589,6 @@ def dmp_negative_p(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> dmp_negative_p([[ZZ(1)], [-ZZ(1)]], 1, ZZ)
     False
     >>> dmp_negative_p([[-ZZ(1)], [ZZ(1)]], 1, ZZ)
@@ -815,8 +603,6 @@ def dmp_positive_p(f, u, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> dmp_positive_p([[ZZ(1)], [-ZZ(1)]], 1, ZZ)
     True
@@ -833,8 +619,6 @@ def dup_from_dict(f, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> dup_from_dict({(0,): ZZ(7), (2,): ZZ(5), (4,): ZZ(1)}, ZZ)
     [1, 0, 5, 0, 7]
     >>> dup_from_dict({}, ZZ)
@@ -849,35 +633,12 @@ def dup_from_dict(f, K):
         for k in range(n, -1, -1):
             h.append(f.get(k, K.zero))
     else:
-        (n,) = n
+        n, = n
 
         for k in range(n, -1, -1):
             h.append(f.get((k,), K.zero))
 
-    return dup_strip(h)
-
-
-def dup_from_raw_dict(f, K):
-    """
-    Create a ``K[x]`` polynomial from a raw ``dict``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> dup_from_raw_dict({0: ZZ(7), 2: ZZ(5), 4: ZZ(1)}, ZZ)
-    [1, 0, 5, 0, 7]
-    """
-    if not f:
-        return []
-
-    n, h = max(f), []
-
-    for k in range(n, -1, -1):
-        h.append(f.get(k, K.zero))
-
-    return dup_strip(h)
+    return dmp_strip(h, 0)
 
 
 def dmp_from_dict(f, u, K):
@@ -886,8 +647,6 @@ def dmp_from_dict(f, u, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> dmp_from_dict({(0, 0): ZZ(3), (0, 1): ZZ(2), (2, 1): ZZ(1)}, 1, ZZ)
     [[1, 0], [], [2, 3]]
@@ -922,52 +681,6 @@ def dmp_from_dict(f, u, K):
     return dmp_strip(h, u)
 
 
-def dup_to_dict(f, K=None, zero=False):
-    """
-    Convert ``K[x]`` polynomial to a ``dict``.
-
-    Examples
-    ========
-
-    >>> dup_to_dict([1, 0, 5, 0, 7])
-    {(0,): 7, (2,): 5, (4,): 1}
-    >>> dup_to_dict([])
-    {}
-    """
-    if not f and zero:
-        return {(0,): K.zero}
-
-    n, result = len(f) - 1, {}
-
-    for k in range(n + 1):
-        if f[n - k]:
-            result[(k,)] = f[n - k]
-
-    return result
-
-
-def dup_to_raw_dict(f, K=None, zero=False):
-    """
-    Convert a ``K[x]`` polynomial to a raw ``dict``.
-
-    Examples
-    ========
-
-    >>> dup_to_raw_dict([1, 0, 5, 0, 7])
-    {0: 7, 2: 5, 4: 1}
-    """
-    if not f and zero:
-        return {0: K.zero}
-
-    n, result = len(f) - 1, {}
-
-    for k in range(n + 1):
-        if f[n - k]:
-            result[k] = f[n - k]
-
-    return result
-
-
 def dmp_to_dict(f, u, K=None, zero=False):
     """
     Convert a ``K[X]`` polynomial to a ``dict````.
@@ -977,12 +690,7 @@ def dmp_to_dict(f, u, K=None, zero=False):
 
     >>> dmp_to_dict([[1, 0], [], [2, 3]], 1)
     {(0, 0): 3, (0, 1): 2, (2, 1): 1}
-    >>> dmp_to_dict([], 0)
-    {}
     """
-    if not u:
-        return dup_to_dict(f, K, zero=zero)
-
     if dmp_zero_p(f, u) and zero:
         return {(0,)*(u + 1): K.zero}
 
@@ -992,10 +700,13 @@ def dmp_to_dict(f, u, K=None, zero=False):
         n = -1
 
     for k in range(n + 1):
-        h = dmp_to_dict(f[n - k], v)
-
-        for exp, coeff in h.items():
-            result[(k,) + exp] = coeff
+        if f[n - k]:
+            if u:
+                h = dmp_to_dict(f[n - k], v)
+                for exp, coeff in h.items():
+                    result[(k,) + exp] = coeff
+            else:
+                result[(k,)] = f[n - k]
 
     return result
 
@@ -1006,8 +717,6 @@ def dmp_swap(f, i, j, u, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[[2], [1, 0]], []])
 
@@ -1040,8 +749,6 @@ def dmp_permute(f, P, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> f = ZZ.map([[[2], [1, 0]], []])
 
     >>> dmp_permute(f, [1, 0, 2], 2, ZZ)
@@ -1069,8 +776,6 @@ def dmp_nest(f, l, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> dmp_nest([[ZZ(1)]], 2, ZZ)
     [[[[1]]]]
     """
@@ -1089,8 +794,6 @@ def dmp_raise(f, l, u, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[], [1, 2]])
 
@@ -1113,45 +816,12 @@ def dmp_raise(f, l, u, K):
     return [ dmp_raise(c, l, v, K) for c in f ]
 
 
-def dup_deflate(f, K):
-    """
-    Map ``x**m`` to ``y`` in a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 0, 0, 1, 0, 0, 1])
-
-    >>> dup_deflate(f, ZZ)
-    (3, [1, 1, 1])
-    """
-    if dup_degree(f) <= 0:
-        return 1, f
-
-    g = 0
-
-    for i in range(len(f)):
-        if not f[-i - 1]:
-            continue
-
-        g = igcd(g, i)
-
-        if g == 1:
-            return 1, f
-
-    return g, f[::g]
-
-
 def dmp_deflate(f, u, K):
     """
     Map ``x_i**m_i`` to ``y_i`` in a polynomial in ``K[X]``.
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1, 0, 0, 2], [], [3, 0, 0, 4]])
 
@@ -1180,47 +850,10 @@ def dmp_deflate(f, u, K):
     H = {}
 
     for A, coeff in F.items():
-        N = [ a // b for a, b in zip(A, B) ]
+        N = [a // b for a, b in zip(A, B)]
         H[tuple(N)] = coeff
 
     return B, dmp_from_dict(H, u, K)
-
-
-def dup_multi_deflate(polys, K):
-    """
-    Map ``x**m`` to ``y`` in a set of polynomials in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 0, 2, 0, 3])
-    >>> g = ZZ.map([4, 0, 0])
-
-    >>> dup_multi_deflate((f, g), ZZ)
-    (2, ([1, 2, 3], [4, 0]))
-    """
-    G = 0
-
-    for p in polys:
-        if dup_degree(p) <= 0:
-            return 1, polys
-
-        g = 0
-
-        for i in range(len(p)):
-            if not p[-i - 1]:
-                continue
-
-            g = igcd(g, i)
-
-            if g == 1:
-                return 1, polys
-
-        G = igcd(G, g)
-
-    return G, tuple(p[::G] for p in polys)
 
 
 def dmp_multi_deflate(polys, u, K):
@@ -1230,18 +863,12 @@ def dmp_multi_deflate(polys, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> f = ZZ.map([[1, 0, 0, 2], [], [3, 0, 0, 4]])
     >>> g = ZZ.map([[1, 0, 2], [], [3, 0, 4]])
 
     >>> dmp_multi_deflate((f, g), 1, ZZ)
     ((2, 1), ([[1, 0, 0, 2], [3, 0, 0, 4]], [[1, 0, 2], [3, 0, 4]]))
     """
-    if not u:
-        M, H = dup_multi_deflate(polys, K)
-        return (M,), H
-
     F, B = [], [0]*(u + 1)
 
     for p in polys:
@@ -1284,8 +911,6 @@ def dup_inflate(f, m, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> f = ZZ.map([1, 1, 1])
 
     >>> dup_inflate(f, 3, ZZ)
@@ -1305,36 +930,12 @@ def dup_inflate(f, m, K):
     return result
 
 
-def _rec_inflate(g, M, v, i, K):
-    """Recursive helper for :func:`dmp_inflate`."""
-    if not v:
-        return dup_inflate(g, M[i], K)
-    if M[i] <= 0:
-        raise IndexError("all M[i] must be positive, got %s" % M[i])
-
-    w, j = v - 1, i + 1
-
-    g = [ _rec_inflate(c, M, w, j, K) for c in g ]
-
-    result = [g[0]]
-
-    for coeff in g[1:]:
-        for _ in range(1, M[i]):
-            result.append(dmp_zero(w))
-
-        result.append(coeff)
-
-    return result
-
-
 def dmp_inflate(f, M, u, K):
     """
     Map ``y_i`` to ``x_i**k_i`` in a polynomial in ``K[X]``.
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1, 2], [3, 4]])
 
@@ -1344,10 +945,30 @@ def dmp_inflate(f, M, u, K):
     if not u:
         return dup_inflate(f, M[0], K)
 
+    def inflate(g, M, v, i, K):
+        if not v:
+            return dup_inflate(g, M[i], K)
+        if M[i] <= 0:
+            raise IndexError("all M[i] must be positive, got %s" % M[i])
+
+        w, j = v - 1, i + 1
+
+        g = [inflate(c, M, w, j, K) for c in g]
+
+        result = [g[0]]
+
+        for coeff in g[1:]:
+            for _ in range(1, M[i]):
+                result.append(dmp_zero(w))
+
+            result.append(coeff)
+
+        return result
+
     if all(m == 1 for m in M):
         return f
     else:
-        return _rec_inflate(f, M, u, 0, K)
+        return inflate(f, M, u, 0, K)
 
 
 def dmp_exclude(f, u, K):
@@ -1358,8 +979,6 @@ def dmp_exclude(f, u, K):
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[[1]], [[1], [2]]])
 
@@ -1403,8 +1022,6 @@ def dmp_include(f, J, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> f = ZZ.map([[1], [1, 2]])
 
     >>> dmp_include(f, [2], 1, ZZ)
@@ -1435,14 +1052,11 @@ def dmp_inject(f, u, K, front=False):
     Examples
     ========
 
-    >>> from diofant.polys.rings import ring
-    >>> from diofant.domains import ZZ
+    >>> R, x, y = ring("x y", ZZ)
 
-    >>> R, x,y = ring("x,y", ZZ)
-
-    >>> dmp_inject([R(1), x + 2], 0, R.to_domain())
+    >>> dmp_inject([R(1), x + 2], 0, R)
     ([[[1]], [[1], [2]]], 2)
-    >>> dmp_inject([R(1), x + 2], 0, R.to_domain(), front=True)
+    >>> dmp_inject([R(1), x + 2], 0, R, front=True)
     ([[[1]], [[1, 2]]], 2)
     """
     f, h = dmp_to_dict(f, u), {}
@@ -1470,9 +1084,7 @@ def dmp_eject(f, u, K, front=False):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
-    >>> dmp_eject([[[1]], [[1], [2]]], 2, ZZ['x', 'y'])
+    >>> dmp_eject([[[1]], [[1], [2]]], 2, ZZ.poly_ring('x', 'y'))
     [1, x + 2]
     """
     f, h = dmp_to_dict(f, u), {}
@@ -1497,42 +1109,12 @@ def dmp_eject(f, u, K, front=False):
     return dmp_from_dict(h, v - 1, K)
 
 
-def dup_terms_gcd(f, K):
-    """
-    Remove GCD of terms from ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-
-    >>> f = ZZ.map([1, 0, 1, 0, 0])
-
-    >>> dup_terms_gcd(f, ZZ)
-    (2, [1, 0, 1])
-    """
-    if dup_TC(f, K) or not f:
-        return 0, f
-
-    i = 0
-
-    for c in reversed(f):  # pragma: no branch
-        if not c:
-            i += 1
-        else:
-            break
-
-    return i, f[:-i]
-
-
 def dmp_terms_gcd(f, u, K):
     """
     Remove GCD of terms from ``f`` in ``K[X]``.
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1, 0], [1, 0, 0], [], []])
 
@@ -1556,33 +1138,12 @@ def dmp_terms_gcd(f, u, K):
     return G, dmp_from_dict(f, u, K)
 
 
-def _rec_list_terms(g, v, monom):
-    """Recursive helper for :func:`dmp_list_terms`."""
-    d, terms = dmp_degree(g, v), []
-
-    if not v:
-        for i, c in enumerate(g):
-            if not c:
-                continue
-
-            terms.append((monom + (d - i,), c))
-    else:
-        w = v - 1
-
-        for i, c in enumerate(g):
-            terms.extend(_rec_list_terms(c, w, monom + (d - i,)))
-
-    return terms
-
-
 def dmp_list_terms(f, u, K, order=None):
     """
     List all non-zero terms from ``f`` in the given order ``order``.
 
     Examples
     ========
-
-    >>> from diofant.domains import ZZ
 
     >>> f = ZZ.map([[1, 1], [2, 3]])
 
@@ -1594,7 +1155,24 @@ def dmp_list_terms(f, u, K, order=None):
     def sort(terms, O):
         return sorted(terms, key=lambda term: O(term[0]), reverse=True)
 
-    terms = _rec_list_terms(f, u, ())
+    def list_terms(g, v, monom):
+        d, terms = dmp_degree(g, v), []
+
+        if not v:
+            for i, c in enumerate(g):
+                if not c:
+                    continue
+
+                terms.append((monom + (d - i,), c))
+        else:
+            w = v - 1
+
+            for i, c in enumerate(g):
+                terms.extend(list_terms(c, w, monom + (d - i,)))
+
+        return terms
+
+    terms = list_terms(f, u, ())
 
     if not terms:
         return [((0,)*(u + 1), K.zero)]
@@ -1612,11 +1190,9 @@ def dup_apply_pairs(f, g, h, args, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> h = lambda x, y, z: 2*x + y - z
 
-    >>> dup_apply_pairs([1, 2, 3], [3, 2, 1], h, (1,), ZZ)
+    >>> dup_apply_pairs([1, 2, 3], [3, 2, 1], h, [1], ZZ)
     [4, 5, 6]
     """
     n, m = len(f), len(g)
@@ -1632,7 +1208,7 @@ def dup_apply_pairs(f, g, h, args, K):
     for a, b in zip(f, g):
         result.append(h(a, b, *args))
 
-    return dup_strip(result)
+    return dmp_strip(result, 0)
 
 
 def dmp_apply_pairs(f, g, h, args, u, K):
@@ -1642,11 +1218,9 @@ def dmp_apply_pairs(f, g, h, args, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> h = lambda x, y, z: 2*x + y - z
 
-    >>> dmp_apply_pairs([[1], [2, 3]], [[3], [2, 1]], h, (1,), 1, ZZ)
+    >>> dmp_apply_pairs([[1], [2, 3]], [[3], [2, 1]], h, [1], 1, ZZ)
     [[4], [5, 6]]
     """
     if not u:
@@ -1718,21 +1292,41 @@ def dmp_slice_in(f, m, n, j, u, K):
     return dmp_from_dict(g, u, K)
 
 
-def dup_random(n, a, b, K):
+def dup_random(n, a, b, K, percent=None):
     """
     Return a polynomial of degree ``n`` with coefficients in ``[a, b]``.
+
+    If ``percent`` is a natural number less than 100 then only approximately
+    the given percentage of elements will be non-zero.
 
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-
     >>> dup_random(3, -10, 10, ZZ) #doctest: +SKIP
     [-2, -8, 9, -4]
     """
-    f = [K.convert(random.randint(a, b)) for _ in range(n + 1)]
+    if percent is None:
+        percent = 100//(b - a)
+    percent = min(max(0, percent), 100)
+    nz = ((n + 1)*percent)//100
 
-    while not f[0]:
-        f[0] = K.convert(random.randint(a, b))
+    f = []
+    while len(f) < n + 1:
+        v = K.convert(random.randint(a, b))
+        if v:
+            f.append(v)
+
+    if nz:
+        f[-nz:] = [K.zero]*nz
+        lt = f.pop(0)
+        random.shuffle(f)
+        f.insert(0, lt)
 
     return f
+
+
+def dmp_cache_key(*args, **kwargs):
+    """Return a cache key, assuming dense recursive polynomials in some arguments. """
+    new_args = [dmp_to_tuple(p, dmp_validate(p)[1]) if isinstance(p, list) else p
+                for p in args]
+    return tuple(new_args + [(str(x), kwargs[x]) for x in sorted(kwargs)])

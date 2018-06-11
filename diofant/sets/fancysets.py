@@ -16,7 +16,6 @@ class Naturals(Set, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S, Interval, pprint
     >>> 5 in S.Naturals
     True
     >>> iterable = iter(S.Naturals)
@@ -93,7 +92,6 @@ class Integers(Set, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S, Interval, pprint
     >>> 5 in S.Naturals
     True
     >>> iterable = iter(S.Integers)
@@ -216,9 +214,6 @@ class ImageSet(Set):
     Examples
     ========
 
-    >>> from diofant import Symbol, S, ImageSet, FiniteSet, Lambda
-
-    >>> x = Symbol('x')
     >>> N = S.Naturals
     >>> squares = ImageSet(Lambda(x, x**2), N) # {x**2 for x in N}
     >>> 4 in squares
@@ -236,6 +231,14 @@ class ImageSet(Set):
     4
     9
     16
+
+    If you want to get value for `x` = 2, 1/2 etc. (Please check whether the
+    `x` value is in `base_set` or not before passing it as args)
+
+    >>> squares.lamda(2)
+    4
+    >>> squares.lamda(S.One/2)
+    1/4
     """
 
     def __new__(cls, lamda, base_set):
@@ -332,7 +335,6 @@ class Range(Set):
     Examples
     ========
 
-    >>> from diofant import Range
     >>> list(Range(5)) # 0 to 5
     [0, 1, 2, 3, 4]
     >>> list(Range(10, 15)) # 10 to 15

@@ -4,7 +4,7 @@ Number theory module (primes, etc)
 
 from .generate import (nextprime, prevprime, prime, primepi, primerange,  # noqa: F401
                        randprime, Sieve, sieve, primorial, cycle_length)
-from .primetest import isprime  # noqa: F401
+from .primetest import isprime, is_square  # noqa: F401
 from .factor_ import (divisors, factorint, multiplicity, perfect_power,  # noqa: F401
                       pollard_pm1, pollard_rho, primefactors, totient,
                       trailing, divisor_count, divisor_sigma, factorrat)

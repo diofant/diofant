@@ -23,11 +23,22 @@ def _do_test_groebner():
     f = x**2 + 2*x*y**2
     g = x*y + 2*y**3 - 1
 
-    assert not is_groebner([f, g], R)
+    assert not is_groebner([f, g])
     ans = [x, y**3 - QQ(1, 2)]
     assert groebner([f, g], R) == ans
-    assert is_groebner(ans, R)
+    assert is_groebner(ans)
     assert is_minimal(ans, R)
+
+    R, x, y = ring("x,y", ZZ)
+    f = x**2*y + y**6 + 1
+    g = x**2 - 2*x*y
+
+    assert not is_groebner([f, g])
+    ans = [2*x - y**10 - 4*y**7 - y**4 - 4*y,
+           y**12 + 4*y**9 + 2*y**6 + 4*y**3 + 1]
+    assert groebner([f, g], R) == ans
+    assert is_groebner(ans)
+    assert is_minimal(ans, R) is False
 
     R,  y, x = ring("y,x", QQ, lex)
     f = 2*x**2*y + y**2
@@ -45,7 +56,7 @@ def _do_test_groebner():
     f = x**3 - 2*x*y
     g = x**2*y + x - 2*y**2
 
-    assert groebner([f, g], R) == [x**2, x*y, -QQ(1, 2)*x + y**2]
+    assert groebner([f, g], R) == [x**2, x*y, -x/2 + y**2]
 
     R,  x, y, z = ring("x,y,z", QQ, lex)
     f = -x**2 + y
@@ -125,11 +136,11 @@ def _do_test_groebner():
 
     assert groebner([f, g], R) == [
         x - 4*y**7 + 8*y**5 - 7*y**3 + 3*y,
-        y**8 - 2*y**6 + QQ(3, 2)*y**4 - QQ(1, 2)*y**2 + QQ(1, 16),
+        y**8 - 2*y**6 + 3*y**4/2 - y**2/2 + QQ(1, 16),
     ]
 
     b = [y**2 + x*y + x**2, y + x, y, x**2, x]
-    assert is_groebner(b, R)
+    assert is_groebner(b)
     assert not is_minimal(b, R)
 
 
@@ -143,25 +154,25 @@ def test_groebner_f5b():
         _do_test_groebner()
 
 
-def _do_test_benchmark_minpoly():
+def _do_test_benchmark_minimal_polynomial():
     R,  x, y, z = ring("x,y,z", QQ, lex)
 
     F = [x**3 + x + 1, y**2 + y + 1, (x + y) * z - (x**2 + y)]
-    G = [x + QQ(155, 2067)*z**5 - QQ(355, 689)*z**4 + QQ(6062, 2067)*z**3 - QQ(3687, 689)*z**2 + QQ(6878, 2067)*z - QQ(25, 53),
-         y + QQ(4, 53)*z**5 - QQ(91, 159)*z**4 + QQ(523, 159)*z**3 - QQ(387, 53)*z**2 + QQ(1043, 159)*z - QQ(308, 159),
+    G = [x + 155*z**5/2067 - 355*z**4/689 + 6062*z**3/2067 - 3687*z**2/689 + 6878*z/2067 - QQ(25, 53),
+         y + 4*z**5/53 - 91*z**4/159 + 523*z**3/159 - 387*z**2/53 + 1043*z/159 - QQ(308, 159),
          z**6 - 7*z**5 + 41*z**4 - 82*z**3 + 89*z**2 - 46*z + 13]
 
     assert groebner(F, R) == G
 
 
-def test_benchmark_minpoly_buchberger():
+def test_benchmark_minimal_polynomial_buchberger():
     with config.using(groebner='buchberger'):
-        _do_test_benchmark_minpoly()
+        _do_test_benchmark_minimal_polynomial()
 
 
-def test_benchmark_minpoly_f5b():
+def test_benchmark_minimal_polynomial_f5b():
     with config.using(groebner='f5b'):
-        _do_test_benchmark_minpoly()
+        _do_test_benchmark_minimal_polynomial()
 
 
 @pytest.mark.slow
@@ -426,12 +437,12 @@ def test_critical_pair():
     q2 = (((0, 0, 2, 2), 2), y*z + z*t**5 + z*t + t**6, 13)
 
     assert critical_pair(p1, q1, R) == (
-        ((0, 0, 1, 2), 2), ((0, 0, 1, 2), QQ(-1, 1)), (((0, 0, 0, 0), 2), -y**2 - y*t - z*t - t**2, 2),
-        ((0, 1, 0, 0), 4), ((0, 1, 0, 0), QQ(1, 1)), (((0, 0, 0, 0), 4), y*z*t**2 + z**2*t**2 - t**4 - 1, 4)
+        ((0, 0, 1, 2), 2), ((0, 0, 1, 2), -1), (((0, 0, 0, 0), 2), -y**2 - y*t - z*t - t**2, 2),
+        ((0, 1, 0, 0), 4), ((0, 1, 0, 0), 1), (((0, 0, 0, 0), 4), y*z*t**2 + z**2*t**2 - t**4 - 1, 4)
     )
     assert critical_pair(p2, q2, R) == (
-        ((0, 0, 4, 2), 2), ((0, 0, 2, 0), QQ(1, 1)), (((0, 0, 2, 2), 2), y*z + z*t**5 + z*t + t**6, 13),
-        ((0, 0, 0, 5), 3), ((0, 0, 0, 3), QQ(1, 1)), (((0, 0, 0, 2), 3), z**3*t**2 + z**2*t**3 - z - t, 5)
+        ((0, 0, 4, 2), 2), ((0, 0, 2, 0), 1), (((0, 0, 2, 2), 2), y*z + z*t**5 + z*t + t**6, 13),
+        ((0, 0, 0, 5), 3), ((0, 0, 0, 3), 1), (((0, 0, 0, 2), 3), z**3*t**2 + z**2*t**3 - z - t, 5)
     )
 
 
@@ -461,13 +472,13 @@ def test_is_rewritable_or_comparable():
     R,  x, y, z, t = ring("x,y,z,t", QQ, grlex)
 
     p = lbp(sig((0, 0, 2, 1), 2), R.zero, 2)
-    B = [lbp(sig((0, 0, 0, 1), 2), QQ(2, 45)*y**2 + QQ(1, 5)*y*z + QQ(5, 63)*y*t + z**2*t + QQ(4, 45)*z**2 + QQ(76, 35)*z*t**2 - QQ(32, 105)*z*t + QQ(13, 7)*t**3 - QQ(13, 21)*t**2, 6)]
+    B = [lbp(sig((0, 0, 0, 1), 2), 2*y**2/45 + y*z/5 + 5*y*t/63 + z**2*t + 4*z**2/45 + 76*z*t**2/35 - 32*z*t/105 + 13*t**3/7 - 13*t**2/21, 6)]
 
     # rewritable:
     assert is_rewritable_or_comparable(Sign(p), Num(p), B) is True
 
     p = lbp(sig((0, 1, 1, 0), 2), R.zero, 7)
-    B = [lbp(sig((0, 0, 0, 0), 3), QQ(10, 3)*y*z + QQ(4, 3)*y*t - QQ(1, 3)*y + 4*z**2 + QQ(22, 3)*z*t - QQ(4, 3)*z + 4*t**2 - QQ(4, 3)*t, 3)]
+    B = [lbp(sig((0, 0, 0, 0), 3), 10*y*z/3 + 4*y*t/3 - y/3 + 4*z**2 + 22*z*t/3 - 4*z/3 + 4*t**2 - 4*t/3, 3)]
 
     # comparable:
     assert is_rewritable_or_comparable(Sign(p), Num(p), B) is True
@@ -479,9 +490,9 @@ def test_f5_reduce():
 
     F = [(((0, 0, 0), 1), x + 2*y + 2*z - 1, 1),
          (((0, 0, 0), 2), 6*y**2 + 8*y*z - 2*y + 6*z**2 - 2*z, 2),
-         (((0, 0, 0), 3), QQ(10, 3)*y*z - QQ(1, 3)*y + 4*z**2 - QQ(4, 3)*z, 3),
-         (((0, 0, 1), 2), y + 30*z**3 - QQ(79, 7)*z**2 + QQ(3, 7)*z, 4),
-         (((0, 0, 2), 2), z**4 - QQ(10, 21)*z**3 + QQ(1, 84)*z**2 + QQ(1, 84)*z, 5)]
+         (((0, 0, 0), 3), 10*y*z/3 - y/3 + 4*z**2 - 4*z/3, 3),
+         (((0, 0, 1), 2), y + 30*z**3 - 79*z**2/7 + 3*z/7, 4),
+         (((0, 0, 2), 2), z**4 - 10*z**3/21 + z**2/84 + z/84, 5)]
 
     cp = critical_pair(F[0], F[1], R)
     s = s_poly(cp)
@@ -511,6 +522,9 @@ def test_representing_matrices():
 
 def test_groebner_lcm():
     R,  x, y, z = ring("x,y,z", ZZ)
+
+    assert groebner_lcm(x**2 - y**2, R.zero) == 0
+    assert groebner_lcm(R.zero, x - y) == 0
 
     assert groebner_lcm(x**2 - y**2, x - y) == x**2 - y**2
     assert groebner_lcm(2*x**2 - 2*y**2, 2*x - 2*y) == 2*x**2 - 2*y**2

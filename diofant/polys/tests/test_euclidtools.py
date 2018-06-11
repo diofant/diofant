@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant.domains import QQ, RR, ZZ
+from diofant.domains import CC, QQ, RR, ZZ
 from diofant.polys.polyconfig import using
 from diofant.polys.polyerrors import HeuristicGCDFailed
 from diofant.polys.rings import ring
@@ -22,8 +22,8 @@ def test_dup_gcdex():
     f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
     g = x**3 + x**2 - 4*x - 4
 
-    s = -QQ(1, 5)*x + QQ(3, 5)
-    t = QQ(1, 5)*x**2 - QQ(6, 5)*x + 2
+    s = -x/5 + QQ(3, 5)
+    t = x**2/5 - 6*x/5 + 2
     h = x + 1
 
     assert R.dup_half_gcdex(f, g) == (s, h)
@@ -43,7 +43,7 @@ def test_dup_gcdex():
     f = 2*x
     g = x**2 - 16
 
-    s = QQ(1, 32)*x
+    s = x/32
     t = -QQ(1, 16)
     h = 1
 
@@ -53,7 +53,7 @@ def test_dup_gcdex():
 
 def test_dup_invert():
     R, x = ring("x", QQ)
-    assert R.dup_invert(2*x, x**2 - 16) == QQ(1, 32)*x
+    assert R.dup_invert(2*x, x**2 - 16) == x/32
 
 
 def test_dup_euclidean_prs():
@@ -65,9 +65,9 @@ def test_dup_euclidean_prs():
     assert R.dup_euclidean_prs(f, g) == [
         f,
         g,
-        -QQ(5, 9)*x**4 + QQ(1, 9)*x**2 - QQ(1, 3),
-        -QQ(117, 25)*x**2 - 9*x + QQ(441, 25),
-        QQ(233150, 19773)*x - QQ(102500, 6591),
+        -5*x**4/9 + x**2/9 - QQ(1, 3),
+        -117*x**2/25 - 9*x + QQ(441, 25),
+        233150*x/19773 - QQ(102500, 6591),
         -QQ(1288744821, 543589225)]
 
 
@@ -103,7 +103,7 @@ def test_dup_subresultants():
     d = 260708
 
     assert R.dup_subresultants(f, g) == [f, g, a, b, c, d]
-    assert R.dup_resultant(f, g) == R.dup_LC(d)
+    assert R.dup_resultant(f, g) == R.dmp_LC(d)
 
     f = x**2 - 2*x + 1
     g = x**2 - 1
@@ -156,6 +156,9 @@ def test_dup_subresultants():
 
     assert R.dup_resultant(f, g) == -1
 
+    assert R.dup_inner_subresultants(0, 0) == ([], [])
+    assert R.dup_inner_subresultants(0, 1) == ([1], [1])
+
 
 def test_dmp_subresultants():
     R, x, y = ring("x,y", ZZ)
@@ -174,6 +177,9 @@ def test_dmp_subresultants():
     assert R.dmp_zz_collins_resultant(0, 1) == 0
     assert R.dmp_qq_collins_resultant(0, 1) == 0
 
+    assert R.dmp_inner_subresultants(0, 0) == ([], [])
+    assert R.dmp_inner_subresultants(0, 1) == ([R.one], [[1]])
+
     f = 3*x**2*y - y**3 - 4
     g = x**2 + x*y**3 - 9
 
@@ -181,10 +187,15 @@ def test_dmp_subresultants():
     b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
 
     r = R.dmp_LC(b)
+    rr = ([-3, 0, 0, -12, 1, 0, -54, 8, 729, -216, 16],
+          [[[3, 0], [], [-1, 0, 0, -4]], [[1], [1, 0, 0, 0], [-9]],
+           [[3, 0, 0, 0, 0], [1, 0, -27, 4]],
+           [[-3, 0, 0, -12, 1, 0, -54, 8, 729, -216, 16]]])
 
     assert R.dmp_subresultants(f, g) == [f, g, a, b]
 
     assert R.dmp_resultant(f, g) == r
+    assert R.dmp_resultant(f, g, includePRS=True) == rr
     assert R.dmp_prs_resultant(f, g)[0] == r
     assert R.dmp_zz_collins_resultant(f, g) == r
     assert R.dmp_qq_collins_resultant(f, g) == r
@@ -216,13 +227,13 @@ def test_dmp_subresultants():
 
     R,  x, y, z, u, v = ring("x,y,z,u,v", QQ)
 
-    f = x**2 - QQ(1, 2)*x*y - QQ(1, 3)*x*z + QQ(1, 6)*y*z
+    f = x**2 - x*y/2 - x*z/3 + y*z/6
     g = x**2 - x*u - x*v + u*v
 
-    r = QQ(1, 36)*y**2*z**2 - QQ(1, 12)*y**2*z*u - QQ(1, 12)*y**2*z*v + QQ(1, 4)*y**2*u*v \
-        - QQ(1, 18)*y*z**2*u - QQ(1, 18)*y*z**2*v + QQ(1, 6)*y*z*u**2 + QQ(1, 3)*y*z*u*v \
-        + QQ(1, 6)*y*z*v**2 - QQ(1, 2)*y*u**2*v - QQ(1, 2)*y*u*v**2 + QQ(1, 9)*z**2*u*v \
-        - QQ(1, 3)*z*u**2*v - QQ(1, 3)*z*u*v**2 + u**2*v**2
+    r = y**2*z**2/36 - y**2*z*u/12 - y**2*z*v/12 + y**2*u*v/4 \
+        - y*z**2*u/18 - y*z**2*v/18 + y*z*u**2/6 + y*z*u*v/3 \
+        + y*z*v**2/6 - y*u**2*v/2 - y*u*v**2/2 + z**2*u*v/9 \
+        - z*u**2*v/3 - z*u*v**2/3 + u**2*v**2
 
     assert R.dmp_qq_collins_resultant(f, g) == r.drop(x)
 
@@ -233,6 +244,27 @@ def test_dmp_subresultants():
     g = -6*t*x**5 + x**4 + 20*t*x**3 - 3*x**2 - 10*t*x + 6
 
     assert Rx.dup_resultant(f, g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
+
+    assert Rx.dmp_prs_resultant(x - 1, x + 1) == (2, [x - 1, x + 1, 2])
+
+    R, x, y = ring("x,y", ZZ)
+
+    f = x + y
+    g = x**2 - x*y + 1
+
+    assert R.dmp_resultant(f, g) == (1 + 2*y**2).drop(x)
+
+    g += 1
+    with using(use_collins_resultant=True):
+        assert R.dmp_resultant(f, g) == (2 + 2*y**2).drop(x)
+
+    R, x, y = ring("x,y", QQ)
+
+    f = x + y
+    g = x**2 - x*y + 1
+
+    with using(use_collins_resultant=True):
+        assert R.dmp_resultant(f, g) == (1 + 2*y**2).drop(x)
 
 
 def test_dup_discriminant():
@@ -376,6 +408,8 @@ def test_dup_gcd():
     assert R.dup_qq_heu_gcd(f, g) == (h, cff, cfg)
     assert R.dup_ff_prs_gcd(f, g) == (h, cff, cfg)
 
+    assert R.dup_ff_prs_gcd(R.zero, R.zero) == ([], [], [])
+
     R, x = ring("x", ZZ)
 
     f = - 352518131239247345597970242177235495263669787845475025293906825864749649589178600387510272*x**49 \
@@ -397,8 +431,8 @@ def test_dup_gcd():
 
     R, x = ring("x", QQ)
 
-    f = QQ(1, 2)*x**2 + x + QQ(1, 2)
-    g = QQ(1, 2)*x + QQ(1, 2)
+    f = x**2/2 + x + QQ(1, 2)
+    g = x/2 + QQ(1, 2)
 
     h = x + 1
 
@@ -418,6 +452,14 @@ def test_dup_gcd():
 
     with using(heu_gcd_max=0):
         pytest.raises(HeuristicGCDFailed, lambda: R.dup_zz_heu_gcd(f, g))
+
+    R, x = ring("x", CC)
+    f, g = (x**2 - 1, x**3 - 3*x + 2)
+    assert R.dup_inner_gcd(f, g) == (1, f, g)
+
+    R, x, y = ring("x,y", CC)
+    f, g = (x**2 - y, x**3 - y*x + 2)
+    assert R.dmp_inner_gcd(f, g) == (1, f, g)
 
 
 def test_dmp_gcd():
@@ -458,6 +500,8 @@ def test_dmp_gcd():
 
     f, g = x**2 + 2*x + 1, 2
     assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (1, x**2 + 2*x + 1, 2)
+    with using(use_simplify_gcd=0):
+        assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (1, x**2 + 2*x + 1, 2)
 
     f, g = 2*x**2 + 4*x + 2, 2
     assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (2, x**2 + 2*x + 1, 1)
@@ -559,13 +603,21 @@ def test_dmp_gcd():
 
     R, x, y = ring("x,y", QQ)
 
-    f = QQ(1, 2)*x**2 + x + QQ(1, 2)
-    g = QQ(1, 2)*x + QQ(1, 2)
+    f = x**2/2 + x + QQ(1, 2)
+    g = x/2 + QQ(1, 2)
 
     h = x + 1
 
     assert R.dmp_qq_heu_gcd(f, g) == (h, g, QQ(1, 2))
     assert R.dmp_ff_prs_gcd(f, g) == (h, g, QQ(1, 2))
+    with using(use_simplify_gcd=0):
+        assert R.dmp_qq_heu_gcd(f, g) == (h, g, QQ(1, 2))
+        assert R.dmp_ff_prs_gcd(f, g) == (h, g, QQ(1, 2))
+
+    assert R.dmp_ff_prs_gcd(R.zero, R.zero) == (0, 0, 0)
+    assert R.dmp_qq_heu_gcd(R.zero, R.zero) == (0, 0, 0)
+    assert R.dmp_ff_prs_gcd(R.zero, g) == (x + 1, R.zero, QQ(1, 2))
+    assert R.dmp_qq_heu_gcd(R.zero, g) == (x + 1, R.zero, QQ(1, 2))
 
     R, x, y = ring("x,y", RR)
 
@@ -574,6 +626,29 @@ def test_dmp_gcd():
 
     assert R.dmp_ff_prs_gcd(f, g) == \
         (1.0*x, 2.1*y**2 - 2.2*y + 2.1, 1.0*x**2)
+
+    R, x, y = ring("x,y", ZZ)
+
+    f = (-17434367009167300000000000000000000000000000000000000000000000000000000*x**4*y -
+         250501827896299135568887342575961783764139560000000000000000000000000000000000000000000*x**3*y -
+         2440935909299672540738135183426056447877858000000000000000000000000000000*x**3 -
+         1349729941723537919695626818065131519270095220127010623905326719279566297660000000000000000000000000000*x**2*y -
+         26304033868956978374552886858060487282904504027042515077682955951658838800000000000000000*x**2 -
+         3232215785736369696036755035364398565076440134133908303058376297547504030528179314849416971379040931276000000000000000*x*y -
+         94485916261760032526508027937078714464844205539023800247528621905831259414691631156161537919255129011800*x -
+         2902585888465621357542575571971656665554321652262249362701116665830760628936600958940851960635161420991047110815678789984677193092993*y -
+         113133324167442997472440652189550843502029192913459268196939183295294085146407870078840385860571627108778756267503630290)
+
+    g = (10000000000000000000000000000*x**2 + 71841388839807267676152024786000000000000000*x +
+         129029628760809605749020969023932901278290735413660734705971)
+
+    assert (R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) ==
+            (g,
+             -1743436700916730000000000000000000000000000*x**2*y -
+             12525091394814956778444367128798089188206978000000000000000*x*y -
+             244093590929967254073813518342605644787785800*x -
+             22495499028725631994927113634418779135935898997901327211111875586270479483*y -
+             876801128965234839118530545935732755107147297241756982389990, 1))
 
 
 def test_dup_lcm():
@@ -611,6 +686,15 @@ def test_dmp_lcm():
     f = x**3 - 3*x**2*y - 9*x*y**2 - 5*y**3
     g = x**4 + 6*x**3*y + 12*x**2*y**2 + 10*x*y**3 + 3*y**4
     h = x**5 + x**4*y - 18*x**3*y**2 - 50*x**2*y**3 - 47*x*y**4 - 15*y**5
+
+    assert R.dmp_lcm(f, g) == h
+
+    R,  x, y = ring("x,y", QQ)
+
+    f = 2*x*y - x**2/2 + QQ(1, 3)
+    g = 3*x**3 - x*y**2 - QQ(1, 2)
+    h = (x**5 - 4*x**4*y - x**3*y**2/3 - 2*x**3/3 + 4*x**2*y**3/3 -
+         x**2/6 + 2*x*y**2/9 + 2*x*y/3 + QQ(1, 9))
 
     assert R.dmp_lcm(f, g) == h
 

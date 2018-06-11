@@ -8,9 +8,9 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, BlockMatrix, Chi, Ci,
                      InverseCosineTransform, InverseFourierTransform,
                      InverseLaplaceTransform, InverseMellinTransform,
                      InverseSineTransform, Lambda, LaplaceTransform, Limit,
-                     Matrix, MatrixSymbol, Max, MellinTransform, Min, Mul, Not,
-                     Order, Piecewise, Poly, Pow, Product, Range, Rational,
-                     RisingFactorial, RootOf, RootSum, S, Shi, Si,
+                     Matrix, MatrixSymbol, Max, MellinTransform, Min, Mod, Mul,
+                     Not, Order, Piecewise, Poly, Pow, Product, Range,
+                     Rational, RisingFactorial, RootOf, RootSum, S, Shi, Si,
                      SineTransform, Subs, Sum, Symbol, SymmetricDifference,
                      Tuple, Union, Wild, Ynm, Znm, acot, airyai, airyaiprime,
                      airybi, airybiprime, arg, asin, assoc_laguerre,
@@ -71,6 +71,8 @@ def test_latex_basic():
 
     assert latex(1/x) == r"\frac{1}{x}"
     assert latex(1/x, fold_short_frac=True) == "1 / x"
+    assert latex(-Rational(3, 2)) == r"- \frac{3}{2}"
+    assert latex(-Rational(3, 2), fold_short_frac=True) == r"- 3 / 2"
     assert latex(1/x**2) == r"\frac{1}{x^{2}}"
     assert latex(x/2) == r"\frac{x}{2}"
     assert latex(x/2, fold_short_frac=True) == "x / 2"
@@ -293,10 +295,10 @@ def test_latex_functions():
     assert latex(re(x)) == r"\Re{x}"
     assert latex(re(x)**3) == r"\left(\Re{x}\right)^{3}"
     assert latex(re(x + y)) == r"\Re{x} + \Re{y}"
-    assert latex(re(1/x, evaluate=False)) == r'\Re {\left (\frac{1}{x} \right )}'
+    assert latex(re(1/x, evaluate=False)) == r'\Re{\left(\frac{1}{x}\right)}'
     assert latex(im(x)) == r"\Im{x}"
     assert latex(im(x)**3) == r"\left(\Im{x}\right)^{3}"
-    assert latex(im(1/x, evaluate=False)) == r'\Im {\left ( \frac{1}{x} \right )}'
+    assert latex(im(1/x, evaluate=False)) == r'\Im{\left(\frac{1}{x}\right)}'
     assert latex(conjugate(x)) == r"\overline{x}"
     assert latex(conjugate(x)**3) == r'\overline{x}^{3}'
     assert latex(gamma(x)) == r"\Gamma{\left(x \right)}"
@@ -396,12 +398,21 @@ def test_latex_functions():
     assert (latex(polar_lift(0, evaluate=False)**3) ==
             r"\operatorname{polar\_lift}^{3}{\left (0 \right )}")
 
-    assert latex(totient(n)) == r'\phi\left( n \right)'
+    assert latex(totient(n)) == r'\phi\left(n\right)'
+    assert latex(totient(n)) == r'\phi\left(n\right)'
+    assert latex(totient(n)**2) == r'\left(\phi\left(n\right)\right)^{2}'
 
     assert latex(divisor_sigma(x)) == r"\sigma\left(x\right)"
     assert latex(divisor_sigma(x)**2) == r"\sigma^{2}\left(x\right)"
     assert latex(divisor_sigma(x, y)) == r"\sigma_y\left(x\right)"
     assert latex(divisor_sigma(x, y)**2) == r"\sigma^{2}_y\left(x\right)"
+
+    assert latex(Mod(x, 7)) == r'x\bmod{7}'
+    assert latex(Mod(x + 1, 7)) == r'\left(x + 1\right)\bmod{7}'
+    assert latex(Mod(2 * x, 7)) == r'\left(2 x\right)\bmod{7}'
+    assert latex(Mod(x, 7) + 1) == r'\left(x\bmod{7}\right) + 1'
+    assert latex(2 * Mod(x, 7)) == r'2 \left(x\bmod{7}\right)'
+    assert latex(Mod(x, 7)**2) == r'\left(x\bmod{7}\right)^{2}'
 
     # some unknown function name should get rendered with \operatorname
     fjlkd = Function('fjlkd')
@@ -611,7 +622,7 @@ def test_latex_Naturals():
 
 
 def test_latex_Naturals0():
-    assert latex(S.Naturals0) == r"\mathbb{N_0}"
+    assert latex(S.Naturals0) == r"\mathbb{N}_0"
 
 
 def test_latex_Integers():
@@ -956,6 +967,8 @@ def test_latex_domains():
 def test_latex_RootOf():
     assert latex(RootOf(x**5 + x + 3, 0)) == \
         r"\operatorname{RootOf} {\left(x^{5} + x + 3, 0\right)}"
+    assert latex(RootOf(x**5 + x + y, x, 0)) == \
+        r"\operatorname{RootOf} {\left(x^{5} + x + y, x, 0\right)}"
 
 
 def test_latex_RootSum():
@@ -1035,7 +1048,7 @@ def test_latex_RandomDomain():
 
 def test_PrettyPoly():
     F = QQ.frac_field(x, y)
-    R = QQ[x, y]
+    R = QQ.poly_ring(x, y)
 
     assert latex(F.convert(x/(x + y))) == latex(x/(x + y))
     assert latex(R.convert(x + y)) == latex(x + y)
@@ -1409,3 +1422,9 @@ def test_sympyissue_10489():
     s = Symbol(latexSymbolWithBrace)
     assert latex(s) == latexSymbolWithBrace
     assert latex(cos(s)) == r'\cos{\left (C_{x_{0}} \right )}'
+
+
+def test_sympyissue_10889():
+    A, B = symbols('A B', commutative=False)
+    e = Mul(-1, A*B - B*A)
+    assert latex(e) == "- (A B - B A)"

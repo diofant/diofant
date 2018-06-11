@@ -124,6 +124,11 @@ def test_IndexedBase_shape():
     pytest.raises(IndexException, lambda: b[i])
     pytest.raises(IndexException, lambda: b[i, i, j])
 
+    F = IndexedBase("F", shape=m)
+    assert F.shape == Tuple(m)
+    assert F[i].subs(i, j) == F[j]
+    pytest.raises(IndexException, lambda: F[i, j])
+
 
 def test_Indexed_constructor():
     i, j = symbols('i j', integer=True)

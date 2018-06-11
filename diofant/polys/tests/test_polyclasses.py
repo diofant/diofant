@@ -3,14 +3,14 @@
 import pytest
 
 from diofant.domains import QQ, ZZ
-from diofant.polys.polyclasses import ANP, DMF, DMP
+from diofant.polys.polyclasses import DMP
 from diofant.polys.polyerrors import ExactQuotientFailed, PolynomialError
 from diofant.polys.specialpolys import f_polys
 
 
 __all__ = ()
 
-f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
+f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [f.to_dense() for f in f_polys()]
 
 
 def test_DMP___init__():
@@ -61,8 +61,8 @@ def test_DMP_to_dict():
     assert f.to_dict() == \
         {(4, 0): 3, (2, 0): 2, (0, 0): 8}
     assert f.to_diofant_dict() == \
-        {(4, 0): ZZ.to_diofant(3), (2, 0): ZZ.to_diofant(2), (0, 0):
-         ZZ.to_diofant(8)}
+        {(4, 0): ZZ.to_expr(3), (2, 0): ZZ.to_expr(2), (0, 0):
+         ZZ.to_expr(8)}
 
 
 def test_DMP_properties():
@@ -162,6 +162,12 @@ def test_DMP_arithmetics():
     assert f % g == r
 
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
+
+    f = DMP([[-5]], ZZ)
+    g = DMP([[5]], QQ)
+    h = DMP([[]], QQ)
+
+    assert f + g == g + f == h
 
 
 def test_DMP_functionality():
@@ -278,6 +284,17 @@ def test_DMP_functionality():
     pytest.raises(TypeError, lambda: f.integrate(m="spam"))
     pytest.raises(TypeError, lambda: f.integrate(j="spam"))
 
+    f = DMP([[-1], [], [], [5]], ZZ)
+    g = DMP([[3, 1], [], []], QQ)
+
+    r = DMP([675, 675, 225, 25], QQ)
+
+    assert f.resultant(g) == r
+
+    assert DMP([1, 2], QQ).resultant(DMP([3], ZZ)) == 3
+
+    assert f.is_cyclotomic is False
+
 
 def test_DMP_exclude():
     f = [[[[[[[[[[[[[[[[[[[[[[[[[[1]], [[]]]]]]]]]]]]]]]]]]]]]]]]]]
@@ -288,285 +305,7 @@ def test_DMP_exclude():
     assert DMP([[1], [1, 0]], ZZ).exclude() == ([], DMP([[1], [1, 0]], ZZ))
 
 
-def test_DMF__init__():
-    f = DMF(([[0], [], [0, 1, 2], [3]], [[1, 2, 3]]), ZZ)
-
-    assert f.num == [[1, 2], [3]]
-    assert f.den == [[1, 2, 3]]
-    assert f.lev == 1
-    assert f.domain == ZZ
-
-    f = DMF(([[1, 2], [3]], [[1, 2, 3]]), ZZ, 1)
-
-    assert f.num == [[1, 2], [3]]
-    assert f.den == [[1, 2, 3]]
-    assert f.lev == 1
-    assert f.domain == ZZ
-
-    f = DMF(([[-1], [-2]], [[3], [-4]]), ZZ)
-
-    assert f.num == [[-1], [-2]]
-    assert f.den == [[3], [-4]]
-    assert f.lev == 1
-    assert f.domain == ZZ
-
-    f = DMF(([[1], [2]], [[-3], [4]]), ZZ)
-
-    assert f.num == [[-1], [-2]]
-    assert f.den == [[3], [-4]]
-    assert f.lev == 1
-    assert f.domain == ZZ
-
-    f = DMF(([[1], [2]], [[-3], [4]]), ZZ)
-
-    assert f.num == [[-1], [-2]]
-    assert f.den == [[3], [-4]]
-    assert f.lev == 1
-    assert f.domain == ZZ
-
-    f = DMF(([[]], [[-3], [4]]), ZZ)
-
-    assert f.num == [[]]
-    assert f.den == [[1]]
-    assert f.lev == 1
-    assert f.domain == ZZ
-
-    f = DMF(17, ZZ, 1)
-
-    assert f.num == [[17]]
-    assert f.den == [[1]]
-    assert f.lev == 1
-    assert f.domain == ZZ
-
-    f = DMF(([[1], [2]]), ZZ)
-
-    assert f.num == [[1], [2]]
-    assert f.den == [[1]]
-    assert f.lev == 1
-    assert f.domain == ZZ
-
-    f = DMF([[0], [], [0, 1, 2], [3]], ZZ)
-
-    assert f.num == [[1, 2], [3]]
-    assert f.den == [[1]]
-    assert f.lev == 1
-    assert f.domain == ZZ
-
-    f = DMF({(1, 1): 1, (0, 0): 2}, ZZ, 1)
-
-    assert f.num == [[1, 0], [2]]
-    assert f.den == [[1]]
-    assert f.lev == 1
-    assert f.domain == ZZ
-
-    f = DMF(([[QQ(1)], [QQ(2)]], [[-QQ(3)], [QQ(4)]]), QQ)
-
-    assert f.num == [[-QQ(1)], [-QQ(2)]]
-    assert f.den == [[QQ(3)], [-QQ(4)]]
-    assert f.lev == 1
-    assert f.domain == QQ
-
-    f = DMF(([[QQ(1, 5)], [QQ(2, 5)]], [[-QQ(3, 7)], [QQ(4, 7)]]), QQ)
-
-    assert f.num == [[-QQ(7)], [-QQ(14)]]
-    assert f.den == [[QQ(15)], [-QQ(20)]]
-    assert f.lev == 1
-    assert f.domain == QQ
-
-    pytest.raises(ValueError, lambda: DMF(([1], [[1]]), ZZ))
-    pytest.raises(ZeroDivisionError, lambda: DMF(([1], []), ZZ))
-
-
-def test_DMF__bool__():
-    assert bool(DMF([[]], ZZ)) is False
-    assert bool(DMF([[1]], ZZ)) is True
-
-
-def test_DMF_properties():
-    assert DMF([[]], ZZ).is_zero is True
-    assert DMF([[]], ZZ).is_one is False
-
-    assert DMF([[1]], ZZ).is_zero is False
-    assert DMF([[1]], ZZ).is_one is True
-
-    assert DMF(([[1]], [[2]]), ZZ).is_one is False
-
-    assert DMF.zero(0, ZZ) == DMF(0, ZZ, 0)
-    assert DMF.one(0, ZZ) == DMF(1, ZZ, 0)
-
-    f = DMF(([[1], [1, 0]], [[1, 0], []]), ZZ)
-    assert f.numer() == DMP([[1], [1, 0]], ZZ)
-    assert f.denom() == DMP([[1, 0], []], ZZ)
-
-
-def test_DMF_arithmetics():
-    f = DMF([[7], [-9]], ZZ)
-    g = DMF([[-7], [9]], ZZ)
-
-    assert f.neg() == -f == g
-
-    f = DMF(([[1]], [[1], []]), ZZ)
-    g = DMF(([[1]], [[1, 0]]), ZZ)
-
-    h = DMF(([[1], [1, 0]], [[1, 0], []]), ZZ)
-
-    assert f.add(g) == f + g == h
-    assert g.add(f) == g + f == h
-
-    h = DMF(([[-1], [1, 0]], [[1, 0], []]), ZZ)
-
-    assert f.sub(g) == f - g == h
-
-    h = DMF(([[1]], [[1, 0], []]), ZZ)
-
-    assert f.mul(g) == f*g == h
-    assert g.mul(f) == g*f == h
-
-    h = DMF(([[1, 0]], [[1], []]), ZZ)
-
-    assert f.quo(g) == f/g == h
-
-    h = DMF(([[1]], [[1], [], [], []]), ZZ)
-
-    assert f.pow(3) == f**3 == h
-
-    h = DMF(([[1]], [[1, 0, 0, 0]]), ZZ)
-
-    assert g.pow(3) == g**3 == h
-
-
-def test_ANP___init__():
-    rep = [QQ(1), QQ(1)]
-    mod = [QQ(1), QQ(0), QQ(1)]
-
-    f = ANP(rep, mod, QQ)
-
-    assert f.rep == [QQ(1), QQ(1)]
-    assert f.mod == [QQ(1), QQ(0), QQ(1)]
-    assert f.domain == QQ
-
-    rep = {1: QQ(1), 0: QQ(1)}
-    mod = {2: QQ(1), 0: QQ(1)}
-
-    f = ANP(rep, mod, QQ)
-
-    assert f.rep == [QQ(1), QQ(1)]
-    assert f.mod == [QQ(1), QQ(0), QQ(1)]
-    assert f.domain == QQ
-
-    f = ANP(1, mod, QQ)
-
-    assert f.rep == [QQ(1)]
-    assert f.mod == [QQ(1), QQ(0), QQ(1)]
-    assert f.domain == QQ
-
-
-def test_ANP___eq__():
-    a = ANP([QQ(1), QQ(1)], [QQ(1), QQ(0), QQ(1)], QQ)
-    b = ANP([QQ(1), QQ(1)], [QQ(1), QQ(0), QQ(2)], QQ)
-
-    assert (a == a) is True
-    assert (a != a) is False
-
-    assert (a == b) is False
-    assert (a != b) is True
-
-    b = ANP([QQ(1), QQ(2)], [QQ(1), QQ(0), QQ(1)], QQ)
-
-    assert (a == b) is False
-    assert (a != b) is True
-
-
-def test_ANP_to_dict():
-    mod = [QQ(1), QQ(0), QQ(1)]
-
-    a = ANP([QQ(1), QQ(1)], mod, QQ)
-    assert a.to_dict() == {(0,): QQ(1), (1,): QQ(1)}
-    assert a.to_diofant_dict() == {(0,): 1, (1,): 1}
-
-
-def test_ANP___bool__():
-    assert bool(ANP([], [QQ(1), QQ(0), QQ(1)], QQ)) is False
-    assert bool(ANP([QQ(1)], [QQ(1), QQ(0), QQ(1)], QQ)) is True
-
-
-def test_ANP_properties():
-    mod = [QQ(1), QQ(0), QQ(1)]
-
-    assert ANP([QQ(0)], mod, QQ).is_zero is True
-    assert ANP([QQ(1)], mod, QQ).is_zero is False
-
-    assert ANP([QQ(1)], mod, QQ).is_one is True
-    assert ANP([QQ(2)], mod, QQ).is_one is False
-
-    a = ANP([QQ(1), -QQ(1), QQ(2)], mod, QQ)
-    assert a.LC() == 1
-    assert a.TC() == 2
-
-
-def test_ANP_arithmetics():
-    mod = [QQ(1), QQ(0), QQ(0), QQ(-2)]
-
-    a = ANP([QQ(2), QQ(-1), QQ(1)], mod, QQ)
-    b = ANP([QQ(1), QQ(2)], mod, QQ)
-
-    c = ANP([QQ(-2), QQ(1), QQ(-1)], mod, QQ)
-
-    assert a.neg() == -a == c
-
-    c = ANP([QQ(2), QQ(0), QQ(3)], mod, QQ)
-
-    assert a.add(b) == a + b == c
-    assert b.add(a) == b + a == c
-
-    c = ANP([QQ(2), QQ(-2), QQ(-1)], mod, QQ)
-
-    assert a.sub(b) == a - b == c
-
-    c = ANP([QQ(-2), QQ(2), QQ(1)], mod, QQ)
-
-    assert b.sub(a) == b - a == c
-
-    c = ANP([QQ(3), QQ(-1), QQ(6)], mod, QQ)
-
-    assert a.mul(b) == a*b == c
-    assert b.mul(a) == b*a == c
-
-    c = ANP([QQ(11, 10), -QQ(1, 5), -QQ(3, 5)], mod, QQ)
-    d = ANP([], mod, QQ)
-    assert a.div(b) == divmod(a, b) == (c, d)
-    assert a.rem(b) == a % b == d
-
-    c = ANP([QQ(-1, 43), QQ(9, 43), QQ(5, 43)], mod, QQ)
-
-    assert a.pow(0) == a**(0) == ANP(1, mod, QQ)
-    assert a.pow(1) == a**(1) == a
-    assert a.pow(-1) == a**(-1) == c
-    pytest.raises(TypeError, lambda: a.pow(QQ(1, 2)))
-
-    assert a.quo(a) == a.mul(a.pow(-1)) == a*a**(-1) == ANP(1, mod, QQ)
-
-
-def test_ANP_unify():
-    mod = [QQ(1), QQ(0), QQ(-2)]
-
-    a = ANP([QQ(1)], mod, QQ)
-    b = ANP([ZZ(1)], mod, ZZ)
-
-    assert a.unify(b)[0] == QQ
-    assert b.unify(a)[0] == QQ
-    assert a.unify(a)[0] == QQ
-    assert b.unify(b)[0] == ZZ
-
-
 def test___hash__():
     # issue sympy/sympy#5571
     assert DMP([[1, 2], [3]], ZZ) == DMP([[int(1), int(2)], [int(3)]], ZZ)
     assert hash(DMP([[1, 2], [3]], ZZ)) == hash(DMP([[int(1), int(2)], [int(3)]], ZZ))
-    assert DMF(
-        ([[1, 2], [3]], [[1]]), ZZ) == DMF(([[int(1), int(2)], [int(3)]], [[int(1)]]), ZZ)
-    assert hash(DMF(([[1, 2], [3]], [[1]]), ZZ)) == hash(DMF(([[int(1),
-                                                                int(2)], [int(3)]], [[int(1)]]), ZZ))
-    assert ANP([1, 1], [1, 0, 1], ZZ) == ANP([int(1), int(1)], [int(1), int(0), int(1)], ZZ)
-    assert hash(
-        ANP([1, 1], [1, 0, 1], ZZ)) == hash(ANP([int(1), int(1)], [int(1), int(0), int(1)], ZZ))

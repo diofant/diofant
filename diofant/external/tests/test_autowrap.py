@@ -91,7 +91,7 @@ def runtest_ufuncify(language, backend):
 
 
 def runtest_sympyissue_10274(language, backend):
-    expr = (a - b + c)**(13)
+    expr = (a - b + c)**13
     tmp = tempfile.mkdtemp()
     f = autowrap(expr, language, backend, tempdir=tmp, helpers=('helper', a - b + c, (a, b, c)))
     assert f(1, 1, 1) == 1
@@ -100,9 +100,9 @@ def runtest_sympyissue_10274(language, backend):
         if file.startswith("wrapped_code_") and file.endswith(".c"):
             fil = open(tmp + '/' + file)
             assert fil.read() == ("/******************************************************************************\n"
-                                  " *                    Code generated with diofant " + diofant.__version__+"                     *\n"
+                                  " *                  Code generated with diofant " + diofant.__version__+"                   *\n"
                                   " *                                                                            *\n"
-                                  " *              See https://diofant.readthedocs.io/ for more information.               *\n"
+                                  " *         See https://diofant.readthedocs.io/ for more information.          *\n"
                                   " *                                                                            *\n"
                                   " *                      This file is part of 'autowrap'                       *\n"
                                   " ******************************************************************************/\n"
@@ -186,7 +186,6 @@ def test_ufuncify_C_Cython():
 
 @pytest.mark.skipif(Cython is None, reason="Couldn't import Cython.")
 def test_sympyissue_10274_C_cython():
-    has_module('Cython')
     runtest_sympyissue_10274('C', 'cython')
 
 

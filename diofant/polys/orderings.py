@@ -1,9 +1,10 @@
 """Definitions of monomial orderings. """
 
-__all__ = ("lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex")
-
 from ..core import Symbol, Tuple
 from ..core.compatibility import iterable
+
+
+__all__ = ("lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex")
 
 
 class MonomialOrder:
@@ -143,7 +144,7 @@ class InverseOrder(MonomialOrder):
     high powers of `x` count as small:
 
     >>> ilex = InverseOrder(lex)
-    >>> ilex((5,)) < ilex((0,))
+    >>> ilex([5]) < ilex([0])
     True
     """
 
@@ -261,7 +262,7 @@ def build_product_order(arg, gens):
 
     For example, build a product of two grlex orders:
 
-    >>> from diofant.abc import x, y, z, t
+    >>> from diofant.abc import t
 
     >>> O = build_product_order((("grlex", x, y), ("grlex", z, t)), [x, y, z, t])
     >>> O((1, 2, 3, 4))

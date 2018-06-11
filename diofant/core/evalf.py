@@ -61,7 +61,6 @@ representing a floating-point number: [1, -1][sign]*man*2**exp where
 sign is 0 or 1 and bc should correspond to the number of bits used to
 represent the mantissa (man) in binary notation, e.g.
 
->>> from diofant.core.evalf import bitcount
 >>> sign, man, exp, bc = 0, 5, 1, 3
 >>> n = [1, -1][sign]*man*2**exp
 >>> n, bitcount(man)
@@ -97,8 +96,6 @@ def fastlog(x):
     Examples
     ========
 
-    >>> from diofant import log
-    >>> from diofant.core.evalf import fastlog, bitcount
     >>> s, m, e = 0, 5, 1
     >>> bc = bitcount(m)
     >>> n = [1, -1][s]*m*2**e
@@ -115,8 +112,6 @@ def pure_complex(v):
     """Return a and b if v matches a + I*b where b is not zero and
     a and b are Numbers, else None.
 
-    >>> from diofant.core.evalf import pure_complex
-    >>> from diofant import Tuple, I
     >>> a, b = Tuple(2, 3)
     >>> pure_complex(a)
     >>> pure_complex(a + b*I)
@@ -140,8 +135,6 @@ def scaled_zero(mag, sign=1):
     Examples
     ========
 
-    >>> from diofant.core.evalf import scaled_zero
-    >>> from diofant import Float
     >>> z, p = scaled_zero(100)
     >>> z, p
     (([0], 1, 100, 1), -1)
@@ -240,9 +233,9 @@ def evalf_im(expr, prec, options):
 
 
 def finalize_complex(re, im, prec):
-    if re == fzero and im == fzero:
-        raise ValueError("got complex zero with unknown accuracy")
-    elif re == fzero:
+    assert re != fzero or im != fzero
+
+    if re == fzero:
         return None, im, None, prec
     elif im == fzero:
         return re, None, prec, None
@@ -263,18 +256,11 @@ def chop_parts(value, prec):
     Chop off tiny real or complex parts.
     """
     re, im, re_acc, im_acc = value
-    # Method 1: chop based on absolute value
+    # chop based on absolute value
     if re and re not in _infs_nan and (fastlog(re) < -prec + 4):
         re, re_acc = None, None
     if im and im not in _infs_nan and (fastlog(im) < -prec + 4):
         im, im_acc = None, None
-    # Method 2: chop if inaccurate and relatively small
-    if re and im:
-        delta = fastlog(re) - fastlog(im)
-        if re_acc < 2 and (delta - re_acc <= -prec + 4):
-            re, re_acc = None, None
-        if im_acc < 2 and (delta - im_acc >= prec - 4):
-            im, im_acc = None, None
     return re, im, re_acc, im_acc
 
 
@@ -283,7 +269,7 @@ def check_target(expr, result, prec):
     if a < prec:
         raise PrecisionExhausted("Failed to distinguish the expression: \n\n%s\n\n"
                                  "from zero. Try simplifying the input, using chop=True, or providing "
-                                 "a higher maxn for evalf" % (expr))
+                                 "a higher maxn for evalf" % expr)
 
 
 ############################################################################
@@ -559,11 +545,11 @@ def evalf_pow(v, prec, options):
             case = p % 4
             if case == 0:
                 return z, None, target_prec, None
-            if case == 1:
+            elif case == 1:
                 return None, z, None, target_prec
-            if case == 2:
+            elif case == 2:
                 return mpf_neg(z), None, target_prec, None
-            if case == 3:
+            else:
                 return None, mpf_neg(z), None, target_prec
         # Zero raised to an integer power
         if not re:
@@ -760,17 +746,11 @@ def evalf_subs(prec, subs):
 
 
 def evalf_piecewise(expr, prec, options):
-    from .numbers import Float, Integer
     if 'subs' in options:
         expr = expr.subs(evalf_subs(prec, options['subs']))
         newopts = options.copy()
         del newopts['subs']
-        if hasattr(expr, 'func'):
-            return evalf(expr, prec, newopts)
-        if type(expr) == float:
-            return evalf(Float(expr), prec, newopts)
-        if type(expr) == int:
-            return evalf(Integer(expr), prec, newopts)
+        return evalf(expr, prec, newopts)
 
     # We still have undefined symbols
     raise NotImplementedError
@@ -909,7 +889,7 @@ def do_integral(expr, prec, options):
 def evalf_integral(expr, prec, options):
     limits = expr.limits
     if len(limits) != 1 or len(limits[0]) != 3:
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
     workprec = prec
     i = 0
     maxprec = options.get('maxprec', INF)
@@ -1080,14 +1060,12 @@ def evalf_sum(expr, prec, options):
         return v, None, min(prec, delta), None
     except NotImplementedError:
         # Euler-Maclaurin summation for general series
-        eps = Float(2.0)**(-prec)
-        for i in range(1, 5):
-            m = n = 2**i * prec
-            s, err = expr.euler_maclaurin(m=m, n=n, eps=eps,
+        m, err, eps = prec, oo, Float(2.0)**(-prec)
+        while err > eps:
+            m <<= 1
+            s, err = expr.euler_maclaurin(m=m, n=m, eps=eps,
                                           eval_integral=False)
             err = err.evalf(strict=False)
-            if err <= eps:
-                break
         err = fastlog(evalf(abs(err), 20, options)[0])
         re, im, re_acc, im_acc = evalf(s, prec2, options)
         if re_acc is None:
@@ -1198,13 +1176,13 @@ def evalf(x, prec, options):
                 re = None
                 reprec = None
             else:
-                re = re._to_mpmath(prec, allow_ints=False)._mpf_
+                re = re._to_mpmath(prec)._mpf_
                 reprec = prec
             if im == 0:
                 im = None
                 imprec = None
             else:
-                im = im._to_mpmath(prec, allow_ints=False)._mpf_
+                im = im._to_mpmath(prec)._mpf_
                 imprec = prec
             r = re, im, reprec, imprec
         except AttributeError:
@@ -1222,8 +1200,6 @@ def evalf(x, prec, options):
             # the formula here will will make 1e-i rounds to 0 for
             # i in the range +/-27 while 2e-i will not be chopped
             chop_prec = int(round(-3.321*math.log10(chop) + 2.5))
-            if chop_prec == 3:
-                chop_prec -= 1
         r = chop_parts(r, chop_prec)
     if options.get("strict"):
         check_target(x, r, prec)
@@ -1233,9 +1209,9 @@ def evalf(x, prec, options):
 class EvalfMixin:
     """Mixin class adding evalf capability."""
 
-    def evalf(self, n=15, subs=None, maxn=110, chop=False, strict=True, quad=None):
+    def evalf(self, dps=15, subs=None, maxn=110, chop=False, strict=True, quad=None):
         """
-        Evaluate the given formula to an accuracy of n digits.
+        Evaluate the given formula to an accuracy of dps decimal digits.
         Optional keyword arguments:
 
             subs=<dict>
@@ -1262,14 +1238,13 @@ class EvalfMixin:
                 integrals on an infinite interval, try quad='osc'.
         """
         from .numbers import Float, I
-        n = n if n is not None else 15
 
         if subs and is_sequence(subs):
             raise TypeError('subs must be given as a dictionary')
 
         if not evalf_table:
             _create_evalf_table()
-        prec = dps_to_prec(n)
+        prec = dps_to_prec(dps)
         options = {'maxprec': max(prec, int(maxn*LG10)), 'chop': chop,
                    'strict': strict}
         if subs is not None:
@@ -1278,6 +1253,11 @@ class EvalfMixin:
             options['quad'] = quad
         try:
             result = evalf(self, prec + 4, options)
+        except PrecisionExhausted:
+            if self.is_Float and self._prec >= prec:
+                return Float._new(self._mpf_, prec)
+            else:
+                raise
         except NotImplementedError:
             # Fall back to the ordinary evalf
             v = self._eval_evalf(prec)
@@ -1286,12 +1266,10 @@ class EvalfMixin:
                     raise PrecisionExhausted
                 else:
                     return self
-            try:
-                # If the result is numerical, normalize it
-                result = evalf(v, prec, options)
-            except NotImplementedError:
-                # Probably contains symbols or unknown functions
-                return v
+            else:
+                # Normalize result
+                return v.subs({_: _.evalf(dps, strict=strict)
+                               for _ in v.atoms(Float)})
         re, im, re_acc, im_acc = result
         if re:
             p = max(min(prec, re_acc), 1)
@@ -1317,11 +1295,9 @@ class EvalfMixin:
     def _eval_evalf(self, prec):
         return
 
-    def _to_mpmath(self, prec, allow_ints=True):
+    def _to_mpmath(self, prec):
         # mpmath functions accept ints as input
         errmsg = "cannot convert to mpmath number"
-        if allow_ints and self.is_Integer:
-            return self.p
         if hasattr(self, '_as_mpf_val'):
             return make_mpf(self._as_mpf_val(prec))
         try:
@@ -1338,34 +1314,25 @@ class EvalfMixin:
             v = self._eval_evalf(prec)
             if v is None:
                 raise ValueError(errmsg)
-            if v.is_Float:
-                return make_mpf(v._mpf_)
-            # Number + Number*I is also fine
             re, im = v.as_real_imag()
-            if allow_ints and re.is_Integer:
-                re = from_int(re.p)
-            elif re.is_Float:
+            if re.is_Float:
                 re = re._mpf_
             else:
                 raise ValueError(errmsg)
-            if allow_ints and im.is_Integer:
-                im = from_int(im.p)
-            elif im.is_Float:
+            if im.is_Float:
                 im = im._mpf_
             else:
                 raise ValueError(errmsg)
             return make_mpc((re, im))
 
 
-def N(x, n=15, **options):
+def N(x, dps=15, **options):
     r"""
-    Calls x.evalf(n, \*\*options).
+    Calls x.evalf(dps, \*\*options).
 
     Examples
     ========
 
-    >>> from diofant import Sum, oo, N
-    >>> from diofant.abc import k
     >>> Sum(1/k**k, (k, 1, oo))
     Sum(k**(-k), (k, 1, oo))
     >>> N(_, 4)
@@ -1376,4 +1343,4 @@ def N(x, n=15, **options):
 
     diofant.core.evalf.EvalfMixin.evalf
     """
-    return sympify(x).evalf(n, **options)
+    return sympify(x).evalf(dps, **options)

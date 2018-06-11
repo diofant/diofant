@@ -1,5 +1,6 @@
 import decimal
 import fractions
+from math import sqrt as _sqrt
 
 import mpmath
 import mpmath.libmp as mlib
@@ -15,7 +16,7 @@ from diofant import (AlgebraicNumber, Catalan, E, EulerGamma, Float, Ge,
 from diofant.core.cache import clear_cache
 from diofant.core.numbers import (comp, igcd, igcdex, ilcm, mod_inverse,
                                   mpf_norm, seterr)
-from diofant.core.power import integer_nthroot
+from diofant.core.power import integer_nthroot, isqrt
 
 
 __all__ = ()
@@ -352,7 +353,7 @@ def test_Rational_cmp():
 def test_Float():
     def eq(a, b):
         t = Float("1.0E-15")
-        return (-t < a - b < t)
+        return -t < a - b < t
 
     a = Float(2) ** Float(3)
     assert eq(a, Float(8))
@@ -864,10 +865,21 @@ def test_powers():
     pytest.raises(ValueError, lambda: integer_nthroot(-1, 2))
     pytest.raises(ValueError, lambda: integer_nthroot(2, 0))
 
+    # output should be int if possible
+    assert type(integer_nthroot(2**61, 2)[0]) is int
+
 
 def test_integer_nthroot_overflow():
     assert integer_nthroot(10**(50*50), 50) == (10**50, True)
     assert integer_nthroot(10**100000, 10000) == (10**10, True)
+
+
+def test_isqrt():
+    limit = 17984395633462800708566937239551
+    assert int(_sqrt(limit)) == integer_nthroot(limit, 2)[0]
+    assert int(_sqrt(limit + 1)) != integer_nthroot(limit + 1, 2)[0]
+    assert isqrt(limit + 1) == integer_nthroot(limit + 1, 2)[0]
+    assert isqrt(limit + 1 + Rational(1, 2)) == integer_nthroot(limit + 1, 2)[0]
 
 
 def test_powers_Integer():
@@ -891,7 +903,7 @@ def test_powers_Integer():
     assert root(-16, 4) == 2 * root(-1, 4)
     assert 9 ** Rational(3, 2) == 27
     assert (-9) ** Rational(3, 2) == -27*I
-    assert (27) ** Rational(2, 3) == 9
+    assert 27 ** Rational(2, 3) == 9
     assert (-27) ** Rational(2, 3) == 9 * ((-1) ** Rational(2, 3))
     assert (-2) ** Rational(-2, 1) == Rational(1, 4)
 

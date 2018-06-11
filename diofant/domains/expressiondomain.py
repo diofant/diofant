@@ -32,10 +32,12 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         def as_expr(self):
             return self.ex
 
-        def numer(self):
+        @property
+        def numerator(self):
             return self.__class__(self.ex.as_numer_denom()[0])
 
-        def denom(self):
+        @property
+        def denominator(self):
             return self.__class__(self.ex.as_numer_denom()[1])
 
         def simplify(self, ex):
@@ -108,9 +110,6 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         def __eq__(self, other):
             return self.ex == self.__class__(other).ex
 
-        def __ne__(self, other):
-            return not self.__eq__(other)
-
         def __bool__(self):
             return self.ex != 0
 
@@ -135,58 +134,45 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
     def __init__(self):
         pass
 
-    def to_diofant(self, a):
+    def to_expr(self, a):
         """Convert ``a`` to a Diofant object. """
         return a.as_expr()
 
-    def from_diofant(self, a):
+    def from_expr(self, a):
         """Convert Diofant's expression to ``dtype``. """
         return self.dtype(a)
 
-    def from_ZZ_python(self, a, K0):
-        """Convert a Python ``int`` object to ``dtype``. """
-        return self(K0.to_diofant(a))
+    def _from_PythonIntegerRing(self, a, K0):
+        return self(K0.to_expr(a))
 
-    def from_QQ_python(self, a, K0):
-        """Convert a Python ``Fraction`` object to ``dtype``. """
-        return self(K0.to_diofant(a))
+    def _from_PythonRationalField(self, a, K0):
+        return self(K0.to_expr(a))
 
-    def from_ZZ_gmpy(self, a, K0):
-        """Convert a GMPY ``mpz`` object to ``dtype``. """
-        return self(K0.to_diofant(a))
+    def _from_GMPYIntegerRing(self, a, K0):
+        return self(K0.to_expr(a))
 
-    def from_QQ_gmpy(self, a, K0):
-        """Convert a GMPY ``mpq`` object to ``dtype``. """
-        return self(K0.to_diofant(a))
+    def _from_GMPYRationalField(self, a, K0):
+        return self(K0.to_expr(a))
 
-    def from_RealField(self, a, K0):
-        """Convert a mpmath ``mpf`` object to ``dtype``. """
-        return self(K0.to_diofant(a))
+    def _from_RealField(self, a, K0):
+        return self(K0.to_expr(a))
 
-    def from_PolynomialRing(self, a, K0):
-        """Convert a ``DMP`` object to ``dtype``. """
-        return self(K0.to_diofant(a))
+    def _from_PolynomialRing(self, a, K0):
+        return self(K0.to_expr(a))
 
-    def from_FractionField(self, a, K0):
-        """Convert a ``DMF`` object to ``dtype``. """
-        return self(K0.to_diofant(a))
+    def _from_FractionField(self, a, K0):
+        return self(K0.to_expr(a))
 
-    def from_ExpressionDomain(self, a, K0):
-        """Convert a ``EX`` object to ``dtype``. """
+    def _from_ExpressionDomain(self, a, K0):
         return a
 
-    def from_AlgebraicField(self, a, K0):
-        """Convert a ``ANP`` object to ``dtype``. """
-        from ..core.numbers import AlgebraicNumber
-        return self(AlgebraicNumber(K0.ext, a).as_expr())
+    def _from_AlgebraicField(self, a, K0):
+        return self(K0.to_expr(a))
 
-    def get_ring(self):
+    @property
+    def ring(self):
         """Returns a ring associated with ``self``. """
         return self  # XXX: EX is not a ring but we don't have much choice here.
-
-    def get_field(self):
-        """Returns a field associated with ``self``. """
-        return self
 
     def is_positive(self, a):
         """Returns True if ``a`` is positive. """
@@ -203,14 +189,6 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
     def is_nonnegative(self, a):
         """Returns True if ``a`` is non-negative. """
         return a.ex.as_coeff_mul()[0].is_nonnegative
-
-    def numer(self, a):
-        """Returns numerator of ``a``. """
-        return a.numer()
-
-    def denom(self, a):
-        """Returns denominator of ``a``. """
-        return a.denom()
 
     def gcd(self, a, b):
         return a.gcd(b)

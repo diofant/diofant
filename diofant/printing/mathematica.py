@@ -201,9 +201,7 @@ def mathematica_code(expr, **settings):
     Examples
     ========
 
-    >>> from diofant import mathematica_code as mcode, symbols, sin
-    >>> x = symbols('x')
-    >>> mcode(sin(x).series(x).removeO())
+    >>> mathematica_code(sin(x).series(x).removeO())
     '(1/120)*x^5 - 1/6*x^3 + x'
     """
     return MCodePrinter(settings).doprint(expr)

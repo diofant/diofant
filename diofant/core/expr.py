@@ -53,7 +53,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import Expr
         >>> e = Expr()
         >>> e._diff_wrt
         False
@@ -186,39 +185,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return Mod(other, self)
 
     def __int__(self):
-        # Although we only need to round to the units position, we'll
-        # get one more digit so the extra testing below can be avoided
-        # unless the rounded value rounded to an integer, e.g. if an
-        # expression were equal to 1.9 and we rounded to the unit position
-        # we would get a 2 and would not know if this rounded up or not
-        # without doing a test (as done below). But if we keep an extra
-        # digit we know that 1.9 is not the same as 1 and there is no
-        # need for further testing: our int value is correct. If the value
-        # were 1.99, however, this would round to 2.0 and our int value is
-        # off by one. So...if our round value is the same as the int value
-        # (regardless of how much extra work we do to calculate extra decimal
-        # places) we need to test whether we are off by one.
-        from .symbol import Dummy
         r = self.round(2)
         if not r.is_Number:
             raise TypeError("can't convert complex to int")
         if r in (nan, oo, -oo):
             raise TypeError("can't convert %s to int" % r)
-        i = int(r)
-        if not i:
-            return 0
-        # off-by-one check
-        if i == r and not (self - i).equals(0):
-            isign = 1 if i > 0 else -1
-            x = Dummy()
-            # in the following (self - i).evalf(2, strict=False) will not always work while
-            # (self - r).evalf(2, strict=False) and the use of subs does; if the test that
-            # was added when this comment was added passes, it might be safe
-            # to simply use sign to compute this rather than doing this by hand:
-            diff_sign = 1 if (self - x).evalf(2, strict=False, subs={x: i}) > 0 else -1
-            if diff_sign != isign:
-                i -= isign
-        return i
+        return int(r)
 
     def __float__(self):
         # Don't bother testing if it's a number; if it's not this is going
@@ -244,7 +216,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is nan:
                 raise TypeError("Invalid NaN comparison")
-        if self.is_extended_real and other.is_extended_real:
+        if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_nonnegative is not None and \
                     dif.is_nonnegative is not dif.is_negative:
@@ -259,7 +231,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is nan:
                 raise TypeError("Invalid NaN comparison")
-        if self.is_extended_real and other.is_extended_real:
+        if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_nonpositive is not None and \
                     dif.is_nonpositive is not dif.is_positive:
@@ -274,7 +246,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is nan:
                 raise TypeError("Invalid NaN comparison")
-        if self.is_extended_real and other.is_extended_real:
+        if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_positive is not None and \
                     dif.is_positive is not dif.is_nonpositive:
@@ -289,7 +261,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise TypeError("Invalid comparison of complex %s" % me)
             if me is nan:
                 raise TypeError("Invalid NaN comparison")
-        if self.is_extended_real and other.is_extended_real:
+        if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_negative is not None and \
                     dif.is_negative is not dif.is_nonnegative:
@@ -318,9 +290,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         Examples
         ========
-
-        >>> from diofant import log, Integral
-        >>> from diofant.abc import x
 
         >>> x.is_number
         False
@@ -351,8 +320,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import sqrt
-        >>> from diofant.abc import x, y
         >>> x._random()                         # doctest: +SKIP
         0.0392918155679172 + 0.916050214307199*I
         >>> x._random(2)                        # doctest: +SKIP
@@ -392,26 +359,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             # e.g. exp_polar(2*I*pi) doesn't evaluate but is_number is True
             return
 
-        if nmag._prec == 1:
-            # increase the precision up to the default maximum
-            # precision to see if we can get any significance
-
-            from mpmath.libmp.libintmath import giant_steps
-            from .evalf import DEFAULT_MAXPREC as TARGET
-
-            # evaluate
-            for prec in giant_steps(2, TARGET):
-                nmag = abs(self.evalf(prec, strict=False, subs=reps))
-                if nmag._prec != 1:
-                    break
-
         if nmag._prec != 1:
             if n is None:
                 n = max(prec, 15)
             return self.evalf(n, strict=False, subs=reps)
-
-        # never got any significance
-        return
 
     def is_constant(self, *wrt, **flags):
         """Return True if self is constant, False if not, or None if
@@ -446,8 +397,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import cos, sin, Sum, S, pi
-        >>> from diofant.abc import a, n, x, y
+        >>> from diofant.abc import a
+
         >>> x.is_constant()
         False
         >>> Integer(2).is_constant()
@@ -522,7 +473,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             # try 0 (for a) and 1 (for b)
             try:
                 a = expr.subs(list(zip(free, [0]*len(free))),
-                              simultaneous=True).evalf(n=15, strict=False)
+                              simultaneous=True).evalf(15, strict=False)
                 if a is nan:
                     # evaluation may succeed when substitution fails
                     a = expr._random(None, 0, 0, 0, 0)
@@ -534,7 +485,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if a is not None and a is not nan:
                 try:
                     b = expr.subs(list(zip(free, [1]*len(free))),
-                                  simultaneous=True).evalf(n=15, strict=False)
+                                  simultaneous=True).evalf(15, strict=False)
                     if b is nan:
                         # evaluation may succeed when substitution fails
                         b = expr._random(None, 1, 0, 1, 0)
@@ -611,16 +562,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if constant is False:
             return False
 
-        if constant is None and (diff.free_symbols or not diff.is_number):
+        if constant is None:
             # e.g. unless the right simplification is done, a symbolic
             # zero is possible (see expression of issue sympy/sympy#6829: without
             # simplification constant will be None).
             return
 
-        if constant is True:
-            ndiff = diff._random()
-            if ndiff:
-                return False
+        ndiff = diff._random()
+        if ndiff:
+            return False
 
         # sometimes we can use a simplified result to give a clue as to
         # what the expression should be; if the expression is *not* zero
@@ -642,30 +592,22 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                         # to see if we are in the right ballpark or not and if so
                         # *then* the simplification will be attempted.
                         sol = solve(diff, s, check=False, simplify=False)
-                        if sol:
-                            if any(s in list(_.values()) for _ in sol):
-                                return True
-                            if s.is_real and any(nsimplify(si[s], [s]) == s
-                                                 and simplify(si[s]) == s
-                                                 for si in sol):
-                                return True
+                        if any(s in list(_.values()) for _ in sol):
+                            return True
+                        if s.is_real and any(nsimplify(si[s], [s]) == s
+                                             and simplify(si[s]) == s
+                                             for si in sol):
+                            return True
                     except NotImplementedError:  # pragma: no cover
                         pass
 
-        # diff has not simplified to zero; constant is either None, True
-        # or the number with significance (prec != 1) that was randomly
-        # calculated twice as the same value.
-        if constant not in (True, None) and constant != 0:
-            return False
-
         if failing_expression:
             return diff
-        return
 
     def _eval_is_zero(self):
         from ..polys.numberfields import minimal_polynomial
-        from ..polys.polyerrors import NotAlgebraic
         from .function import count_ops
+        from .symbol import Dummy
 
         if self.is_number:
             try:
@@ -734,8 +676,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             A = self.subs(x, a)
             if A.has(nan, oo, -oo, zoo):
                 A = limit(self, x, a)
-                if A is nan:
-                    return A
                 if isinstance(A, Limit):
                     raise NotImplementedError("Could not compute limit")
 
@@ -863,9 +803,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import sin, cos
-        >>> from diofant.abc import x
-
         >>> (sin(x)**2*cos(x) + sin(x)**2 + 1).as_ordered_terms()
         [sin(x)**2*cos(x), sin(x)**2, 1]
         """
@@ -962,8 +899,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import O
-        >>> from diofant.abc import x
         >>> (1 + x + O(x**2)).getn()
         2
         >>> (1 + x).getn()
@@ -976,15 +911,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             o = o.expr
             if o is S.One:
                 return S.Zero
-            if o.is_Symbol:
+            elif o.is_Symbol:
                 return S.One
-            if o.is_Pow:
+            elif o.is_Pow:
                 return o.args[1]
-            if o.is_Mul:  # x**n*log(x)**n or x**n/log(x)**n
+            elif o.is_Mul:  # x**n*log(x)**n or x**n/log(x)**n
                 for oi in o.args:
                     if oi.is_Symbol:
                         return S.One
-                    if oi.is_Pow:
+                    elif oi.is_Pow:
                         syms = oi.atoms(Dummy, Symbol)
                         if len(syms) == 1:
                             x = syms.pop()
@@ -1010,7 +945,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         Note: -1 is always separated from a Number unless split_1 is False.
 
-        >>> from diofant import symbols, oo
         >>> A, B = symbols('A B', commutative=0)
         >>> x, y = symbols('x y')
         >>> (-2*x*y).args_cnc()
@@ -1069,18 +1003,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         See Also
         ========
 
-        as_coefficient: separate the expression into a coefficient and factor
-        as_coeff_Add: separate the additive constant from an expression
-        as_coeff_Mul: separate the multiplicative constant from an expression
-        as_independent: separate x-dependent terms/factors from others
-        diofant.polys.polytools.Poly.coeff_monomial: efficiently find the single coefficient of a monomial in Poly
-        diofant.polys.polytools.Poly.nth: like coeff_monomial but powers of monomial terms are used
+        diofant.core.expr.Expr.as_coefficient
+        diofant.core.expr.Expr.as_coeff_Add
+        diofant.core.expr.Expr.as_coeff_Mul
+        diofant.core.expr.Expr.as_independent
+        diofant.polys.polytools.Poly.coeff_monomial
+        diofant.polys.polytools.Poly.nth
 
         Examples
         ========
-
-        >>> from diofant import symbols
-        >>> from diofant.abc import x, y, z
 
         You can select terms that have an explicit negative in front of them:
 
@@ -1115,7 +1046,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> (-x - 2*y).coeff(2)
         -y
-        >>> from diofant import sqrt
         >>> (x + sqrt(2)*x).coeff(sqrt(2))
         x
 
@@ -1140,7 +1070,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         If such factoring is desired, factor_terms can be used first:
 
-        >>> from diofant import factor_terms
         >>> factor_terms(x + z*(x + x*y)).coeff(x)
         z*(y + 1) + 1
 
@@ -1248,7 +1177,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     co.append(Mul(*resid))
             if co == []:
                 return S.Zero
-            elif co:
+            else:
                 return Add(*co)
         elif x_c:
             xargs = x.args_cnc(cset=True, warn=False)[0]
@@ -1261,7 +1190,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     co.append(Mul(*(list(resid) + nc)))
             if co == []:
                 return S.Zero
-            elif co:
+            else:
                 return Add(*co)
         else:  # both nc
             xargs, nx = x.args_cnc(cset=True)
@@ -1331,9 +1260,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import sin
-        >>> from diofant.abc import x, y
-
         >>> f = (x**2 + x*y).as_poly(x, y)
         >>> f.as_expr()
         x**2 + x*y
@@ -1348,9 +1274,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         Examples
         ========
-
-        >>> from diofant import sin
-        >>> from diofant.abc import x, y
 
         >>> (x**2 + x*y).as_poly()
         Poly(x**2 + x*y, x, y, domain='ZZ')
@@ -1377,9 +1300,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         Examples
         ========
-
-        >>> from diofant import E, pi, sin, I, Poly
-        >>> from diofant.abc import x
 
         >>> E.as_coefficient(E)
         1
@@ -1462,9 +1382,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         -- self is an Add
 
-        >>> from diofant import sin, cos, exp
-        >>> from diofant.abc import x, y, z
-
         >>> (x + x*y).as_independent(x)
         (0, x*y + x)
         >>> (x + x*y).as_independent(y)
@@ -1481,7 +1398,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         non-commutative terms cannot always be separated out when self is a Mul
 
-        >>> from diofant import symbols
         >>> n1, n2, n3 = symbols('n1 n2 n3', commutative=False)
         >>> (n1 + n1*n2).as_independent(n2)
         (n1, n1*n2)
@@ -1525,7 +1441,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
            of .has(). The former considers only symbols in the free
            symbols while the latter considers all symbols
 
-        >>> from diofant import Integral
         >>> I = Integral(x, (x, 1, 2))
         >>> I.has(x)
         True
@@ -1541,7 +1456,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         track of what you send to this routine so you know how to interpret
         the returned values
 
-        >>> from diofant import separatevars, log
         >>> separatevars(exp(x+y)).as_independent(x)
         (E**y, E**x)
         >>> (x + x*y).as_independent(y)
@@ -1628,17 +1542,13 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         functions and get exactly the same results as with
         a single call to this function.
 
-        >>> from diofant import symbols, I
-
-        >>> x, y = symbols('x,y', extended_real=True)
+        >>> x, y = symbols('x y', real=True)
 
         >>> (x + y*I).as_real_imag()
         (x, y)
 
-        >>> from diofant.abc import z, w
-
-        >>> (z + w*I).as_real_imag()
-        (re(z) - im(w), re(w) + im(z))
+        >>> (z + t*I).as_real_imag()
+        (re(z) - im(t), re(t) + im(z))
         """
         from ..functions import im, re
         if hints.get('ignore') == self:
@@ -1668,7 +1578,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant.abc import a, x
+        >>> from diofant.abc import a
         >>> (3*x + a*x + 4).as_coefficients_dict()
         {1: 4, x: 3, a*x: 1}
         >>> _[a]
@@ -1713,8 +1623,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         - if you want to split self into an independent and dependent parts
           use ``self.as_independent(*deps)``
 
-        >>> from diofant import S
-        >>> from diofant.abc import x, y
         >>> (Integer(3)).as_coeff_mul()
         (3, ())
         >>> (3*x*y).as_coeff_mul()
@@ -1748,8 +1656,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         - if you want to split self into an independent and dependent parts
           use ``self.as_independent(*deps)``
 
-        >>> from diofant import S
-        >>> from diofant.abc import x, y
         >>> (Integer(3)).as_coeff_add()
         (3, ())
         >>> (3 + x).as_coeff_add()
@@ -1773,7 +1679,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant.abc import x
         >>> (3*(x + 1)**2).primitive()
         (3, (x + 1)**2)
         >>> a = (6*x + 2); a.primitive()
@@ -1800,9 +1705,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         Examples
         ========
-
-        >>> from diofant import sqrt
-        >>> from diofant.abc import x, y, z
 
         >>> eq = 2 + 2*x + 2*y*(3 + 3*y)
 
@@ -1867,9 +1769,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         c * something in a nice way, i.e. preserving the properties
         of arguments of self.
 
-        >>> from diofant import symbols, Rational
-
-        >>> x, y = symbols('x,y', extended_real=True)
+        >>> x, y = symbols('x y', real=True)
 
         >>> ((x*y)**3).extract_multiplicatively(x**2 * y)
         x*y**2
@@ -1910,9 +1810,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     return oo
                 elif c.is_positive:
                     return -oo
-            elif self is zoo:
-                if not c.is_zero:
-                    return zoo
             elif self.is_Integer:
                 if not quotient.is_Integer:
                     return
@@ -1934,12 +1831,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     return
                 else:
                     return quotient
-        elif self.is_NumberSymbol or self.is_Symbol or self is I:
-            if quotient.is_Mul and len(quotient.args) == 2:
-                if quotient.args[0].is_Integer and quotient.args[0].is_positive and quotient.args[1] == self:
-                    return quotient
-            elif quotient.is_Integer and c.is_Number:
-                return quotient
+            else:  # pragma: no cover
+                raise NotImplementedError
         elif self.is_Add:
             cs, ps = self.primitive()
             if cs is not S.One:
@@ -1976,7 +1869,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant.abc import x, y
         >>> e = 2*x + 3
         >>> e.extract_additively(x + 1)
         x + 2
@@ -1989,7 +1881,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Sometimes auto-expansion will return a less simplified result
         than desired; gcd_terms might be used in such cases:
 
-        >>> from diofant import gcd_terms
         >>> (4*x*(y + 1) + y).extract_additively(x)
         4*x*(y + 1) + x*(4*y + 3) - x*(4*y + 4) + y
         >>> gcd_terms(_)
@@ -2083,7 +1974,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         For any expression, the set ``{e.could_extract_minus_sign(),
         (-e).could_extract_minus_sign()}`` must be ``{True, False}``.
 
-        >>> from diofant.abc import x, y
         >>> (x-y).could_extract_minus_sign() != (y-x).could_extract_minus_sign()
         True
         """
@@ -2118,8 +2008,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """Try to write self as ``exp_polar(2*pi*I*n)*z`` in a nice way.
         Return (z, n).
 
-        >>> from diofant import exp_polar, I, pi
-        >>> from diofant.abc import x, y
         >>> exp_polar(I*pi).extract_branch_factor()
         (exp_polar(I*pi), 0)
         >>> exp_polar(2*I*pi).extract_branch_factor()
@@ -2210,8 +2098,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import Symbol
-        >>> x = Symbol('x')
         >>> ((x**2 + 1)**4).is_polynomial(x)
         True
         >>> ((x**2 + 1)**4).is_polynomial()
@@ -2228,7 +2114,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         result in an expression that does not appear to be a polynomial to
         become one.
 
-        >>> from diofant import sqrt, factor, cancel
         >>> y = Symbol('y', positive=True)
         >>> a = sqrt(y**2 + 2*y + 1)
         >>> a.is_polynomial(y)
@@ -2284,9 +2169,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import Symbol, sin
-        >>> from diofant.abc import x, y
-
         >>> (x/y).is_rational_function()
         True
 
@@ -2304,7 +2186,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         result in an expression that does not appear to be a rational function
         to become one.
 
-        >>> from diofant import sqrt, factor
         >>> y = Symbol('y', positive=True)
         >>> a = sqrt(y**2 + 2*y + 1)/y
         >>> a.is_rational_function(y)
@@ -2351,8 +2232,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import Symbol, sqrt
-        >>> x = Symbol('x', extended_real=True)
+        >>> x = Symbol('x', real=True)
         >>> sqrt(1 + x).is_rational_function()
         False
         >>> sqrt(1 + x).is_algebraic_expr()
@@ -2362,7 +2242,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         result in an expression that does not appear to be an algebraic
         expression to become one.
 
-        >>> from diofant import exp, factor
         >>> a = sqrt(exp(x)**2 + 2*exp(x) + 1)/(exp(x) + 1)
         >>> a.is_algebraic_expr(x)
         False
@@ -2409,7 +2288,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import exp_polar, pi, I
         >>> (I*exp_polar(I*pi/2)).is_comparable
         True
         >>> (I*exp_polar(I*pi*2)).is_comparable
@@ -2441,8 +2319,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         If ``x=None`` and ``self`` is univariate, the univariate symbol will
         be supplied, otherwise an error will be raised.
 
-        >>> from diofant import cos, exp
-        >>> from diofant.abc import x, y
         >>> cos(x).series()
         1 - x**2/2 + x**4/24 + O(x**6)
         >>> cos(x).series(n=4)
@@ -2457,7 +2333,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         If ``n=None`` then a generator of the series terms will be returned.
 
-        >>> term=cos(x).series(n=None)
+        >>> term = cos(x).series(n=None)
         >>> [next(term) for i in range(2)]
         [1, -x**2/2]
 
@@ -2518,7 +2394,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 rep2b = -x0
             s = self.subs(x, rep).series(x, x0=0, n=n, dir='+', logx=logx)
             if n is None:  # lseries...
-                return (si.subs(x, rep2 + rep2b) for si in s)
+                return (si.subs(x, rep2 + rep2b) for si in s)  # pragma: no branch
             return s.subs(x, rep2 + rep2b)
 
         # from here on it's x0=0 and dir='+' handling
@@ -2563,12 +2439,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     # terms have been returned
                     yielded = 0
                     o = Order(si, x)*x
+                    if expand_mul(o.expr).is_Add:
+                        raise NotImplementedError
                     ndid = 0
                     ndo = len(si.args)
                     while 1:
                         do = (si - yielded + o).removeO()
                         o *= x
                         if not do or do.is_Order:
+                            o  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                             continue
                         if do.is_Add:
                             ndid += len(do.args)
@@ -2678,8 +2557,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import sin, log, Symbol
-        >>> from diofant.abc import x
         >>> sin(x).nseries(x)
         x - x**3/6 + x**5/120 + O(x**7)
         >>> log(x + 1).nseries(x, 5)
@@ -2746,8 +2623,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import sin, exp
-        >>> from diofant.abc import x, y
         >>> e = sin(1/x + exp(-x)) - sin(1/x)
         >>> e.aseries(x)
         E**(-x)*(1/(24*x**4) - 1/(2*x**2) + 1 + O(x**(-6), (x, oo)))
@@ -2874,7 +2749,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant.abc import x
         >>> (1 + x + x**2).as_leading_term(x)
         1
         >>> (1/x**2 + x + x**2).as_leading_term(x)
@@ -2911,13 +2785,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             b, e = p[0].as_base_exp()
             if b == x:
                 return c, e
+        if s.has(x):
+            s = s.simplify()
         return s, S.Zero
 
     def as_coeff_Mul(self, rational=False):
         """Efficiently extract the coefficient of a product."""
         return S.One, self
 
-    def as_coeff_Add(self):
+    def as_coeff_Add(self, rational=False):
         """Efficiently extract the coefficient of a summation."""
         return S.Zero, self
 
@@ -2932,8 +2808,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import Lambda
-        >>> from diofant.abc import x
         >>> Lambda(x, 2*x).canonical_variables
         {x: 0_}
         """
@@ -2943,7 +2817,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         except AttributeError:
             return {}
         u = "_"
-        while any(s.name.endswith(u) for s in V):
+        while any(str(s).endswith(u) for s in V):
             u += "_"
         name = '%%i%s' % u
         return {v: Symbol(name % i, **v._assumptions) for i, v in enumerate(V)}
@@ -3133,15 +3007,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from ..simplify import trigsimp
         return trigsimp(self, **args)
 
-    def radsimp(self):
+    def radsimp(self, **kwargs):
         """See the radsimp function in diofant.simplify"""
         from ..simplify import radsimp
-        return radsimp(self)
+        return radsimp(self, **kwargs)
 
-    def powsimp(self, deep=False, combine='all'):
+    def powsimp(self, **args):
         """See the powsimp function in diofant.simplify"""
         from ..simplify import powsimp
-        return powsimp(self, deep, combine)
+        return powsimp(self, **args)
 
     def combsimp(self):
         """See the combsimp function in diofant.simplify"""
@@ -3183,7 +3057,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant import pi, E, I, Add, Mul, Number, Float
         >>> Float(10.5).round()
         11.
         >>> pi.round()
@@ -3298,8 +3171,6 @@ def _mag(x):
     Examples
     ========
 
-    >>> from diofant.core.expr import _mag
-    >>> from diofant import Float
     >>> _mag(Float(.1))
     0
     >>> _mag(Float(.01))
@@ -3326,7 +3197,7 @@ def _mag(x):
 from .mul import Mul
 from .add import Add
 from .power import Pow
-from .function import Function
+from .function import Function, expand_mul
 from .mod import Mod
 from .exprtools import factor_terms
 from .numbers import I, Integer, Rational, nan, oo, zoo

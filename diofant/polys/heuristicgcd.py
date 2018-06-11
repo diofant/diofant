@@ -29,10 +29,7 @@ def heugcd(f, g):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-
-    >>> R, x,y, = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -51,7 +48,7 @@ def heugcd(f, g):
 
     .. [1] [Liao95]_
     """
-    assert f.ring == g.ring and f.ring.domain.is_ZZ
+    assert f.ring == g.ring and f.ring.domain.is_IntegerRing
 
     ring = f.ring
     x0 = ring.gens[0]

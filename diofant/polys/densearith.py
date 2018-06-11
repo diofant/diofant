@@ -1,8 +1,7 @@
 """Arithmetics for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
 from .densebasic import (dmp_degree, dmp_ground, dmp_LC, dmp_one, dmp_one_p,
-                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros,
-                         dup_degree, dup_LC, dup_slice, dup_strip)
+                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros, dup_slice)
 from .polyerrors import ExactQuotientFailed, PolynomialDivisionFailed
 
 
@@ -13,8 +12,6 @@ def dup_add_term(f, c, i, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_add_term(x**2 - 1, ZZ(2), 4)
@@ -27,7 +24,7 @@ def dup_add_term(f, c, i, K):
     m = n - i - 1
 
     if i == n - 1:
-        return dup_strip([f[0] + c] + f[1:])
+        return dmp_strip([f[0] + c] + f[1:], 0)
     else:
         if i >= n:
             return [c] + [K.zero]*(i - n) + f
@@ -42,9 +39,7 @@ def dmp_add_term(f, c, i, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_add_term(x*y + 1, 2, 2)
     2*x**2 + x*y + 1
@@ -76,8 +71,6 @@ def dup_sub_term(f, c, i, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_sub_term(2*x**4 + x**2 - 1, ZZ(2), 4)
@@ -90,7 +83,7 @@ def dup_sub_term(f, c, i, K):
     m = n - i - 1
 
     if i == n - 1:
-        return dup_strip([f[0] - c] + f[1:])
+        return dmp_strip([f[0] - c] + f[1:], 0)
     else:
         if i >= n:
             return [-c] + [K.zero]*(i - n) + f
@@ -105,9 +98,7 @@ def dmp_sub_term(f, c, i, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_sub_term(2*x**2 + x*y + 1, 2, 2)
     x*y + 1
@@ -139,8 +130,6 @@ def dup_mul_term(f, c, i, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_mul_term(x**2 - 1, ZZ(3), 2)
@@ -159,9 +148,7 @@ def dmp_mul_term(f, c, i, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_mul_term(x**2*y + x, 3*y, 2)
     3*x**4*y**2 + 3*x**3*y
@@ -179,23 +166,6 @@ def dmp_mul_term(f, c, i, u, K):
         return [ dmp_mul(cf, c, v, K) for cf in f ] + dmp_zeros(i, v, K)
 
 
-def dup_add_ground(f, c, K):
-    """
-    Add an element of the ground domain to ``f``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_add_ground(x**3 + 2*x**2 + 3*x + 4, ZZ(4))
-    x**3 + 2*x**2 + 3*x + 8
-    """
-    return dup_add_term(f, c, 0, K)
-
-
 def dmp_add_ground(f, c, u, K):
     """
     Add an element of the ground domain to ``f``.
@@ -203,31 +173,12 @@ def dmp_add_ground(f, c, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_add_ground(x**3 + 2*x**2 + 3*x + 4, ZZ(4))
     x**3 + 2*x**2 + 3*x + 8
     """
     return dmp_add_term(f, dmp_ground(c, u - 1), 0, u, K)
-
-
-def dup_sub_ground(f, c, K):
-    """
-    Subtract an element of the ground domain from ``f``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_sub_ground(x**3 + 2*x**2 + 3*x + 4, ZZ(4))
-    x**3 + 2*x**2 + 3*x
-    """
-    return dup_sub_term(f, c, 0, K)
 
 
 def dmp_sub_ground(f, c, u, K):
@@ -237,35 +188,12 @@ def dmp_sub_ground(f, c, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_sub_ground(x**3 + 2*x**2 + 3*x + 4, ZZ(4))
     x**3 + 2*x**2 + 3*x
-
     """
     return dmp_sub_term(f, dmp_ground(c, u - 1), 0, u, K)
-
-
-def dup_mul_ground(f, c, K):
-    """
-    Multiply ``f`` by a constant value in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_mul_ground(x**2 + 2*x - 1, ZZ(3))
-    3*x**2 + 6*x - 3
-    """
-    if not c or not f:
-        return []
-    else:
-        return [ cf * c for cf in f ]
 
 
 def dmp_mul_ground(f, c, u, K):
@@ -275,48 +203,16 @@ def dmp_mul_ground(f, c, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_mul_ground(2*x + 2*y, ZZ(3))
     6*x + 6*y
     """
     if not u:
-        return dup_mul_ground(f, c, K)
-
-    v = u - 1
-
-    return [ dmp_mul_ground(cf, c, v, K) for cf in f ]
-
-
-def dup_quo_ground(f, c, K):
-    """
-    Quotient by a constant in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x = ring("x", ZZ)
-    >>> R.dup_quo_ground(3*x**2 + 2, ZZ(2))
-    x**2 + 1
-
-    >>> R, x = ring("x", QQ)
-    >>> R.dup_quo_ground(3*x**2 + 2, QQ(2))
-    3/2*x**2 + 1
-    """
-    if not c:
-        raise ZeroDivisionError('polynomial division')
-    if not f:
-        return f
-
-    if K.has_Field:
-        return [ K.quo(cf, c) for cf in f ]
+        return dmp_strip([coeff * c for coeff in f], u)
     else:
-        return [ cf // c for cf in f ]
+        v = u - 1
+        return [dmp_mul_ground(coeff, c, v, K) for coeff in f]
 
 
 def dmp_quo_ground(f, c, u, K):
@@ -326,45 +222,28 @@ def dmp_quo_ground(f, c, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
 
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
     >>> R.dmp_quo_ground(2*x**2*y + 3*x, ZZ(2))
     x**2*y + x
 
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
     >>> R.dmp_quo_ground(2*x**2*y + 3*x, QQ(2))
     x**2*y + 3/2*x
     """
     if not u:
-        return dup_quo_ground(f, c, K)
+        if not c:
+            raise ZeroDivisionError('polynomial division')
+        if not f:
+            return f
+
+        if K.has_Field:
+            return [K.quo(coeff, c) for coeff in f]
+        else:
+            return [coeff // c for coeff in f]
 
     v = u - 1
-
-    return [ dmp_quo_ground(cf, c, v, K) for cf in f ]
-
-
-def dup_exquo_ground(f, c, K):
-    """
-    Exact quotient by a constant in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", QQ)
-
-    >>> R.dup_exquo_ground(x**2 + 2, QQ(2))
-    1/2*x**2 + 1
-    """
-    if not c:
-        raise ZeroDivisionError('polynomial division')
-    if not f:
-        return f
-
-    return [ K.exquo(cf, c) for cf in f ]
+    return [dmp_quo_ground(coeff, c, v, K) for coeff in f]
 
 
 def dmp_exquo_ground(f, c, u, K):
@@ -374,19 +253,21 @@ def dmp_exquo_ground(f, c, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
 
     >>> R.dmp_exquo_ground(x**2*y + 2*x, QQ(2))
     1/2*x**2*y + x
     """
     if not u:
-        return dup_exquo_ground(f, c, K)
+        if not c:
+            raise ZeroDivisionError('polynomial division')
+        if not f:
+            return f
+
+        return [K.exquo(coeff, c) for coeff in f]
 
     v = u - 1
-
-    return [ dmp_exquo_ground(cf, c, v, K) for cf in f ]
+    return [dmp_exquo_ground(coeff, c, v, K) for coeff in f]
 
 
 def dup_lshift(f, n, K):
@@ -396,8 +277,6 @@ def dup_lshift(f, n, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_lshift(x**2 + 1, 2)
@@ -416,8 +295,6 @@ def dup_rshift(f, n, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_rshift(x**4 + x**2, 2)
@@ -428,23 +305,6 @@ def dup_rshift(f, n, K):
     return f[:-n]
 
 
-def dup_abs(f, K):
-    """
-    Make all coefficients positive in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_abs(x**2 - 1)
-    x**2 + 1
-    """
-    return [ K.abs(coeff) for coeff in f ]
-
-
 def dmp_abs(f, u, K):
     """
     Make all coefficients positive in ``K[X]``.
@@ -452,36 +312,16 @@ def dmp_abs(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_abs(x**2*y - x)
     x**2*y + x
     """
     if not u:
-        return dup_abs(f, K)
-
-    v = u - 1
-
-    return [ dmp_abs(cf, v, K) for cf in f ]
-
-
-def dup_neg(f, K):
-    """
-    Negate a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_neg(x**2 - 1)
-    -x**2 + 1
-    """
-    return [ -coeff for coeff in f ]
+        return [abs(coeff) for coeff in f]
+    else:
+        v = u - 1
+        return [dmp_abs(coeff, v, K) for coeff in f]
 
 
 def dmp_neg(f, u, K):
@@ -491,19 +331,16 @@ def dmp_neg(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_neg(x**2*y - x)
     -x**2*y + x
     """
     if not u:
-        return dup_neg(f, K)
-
-    v = u - 1
-
-    return [ dmp_neg(cf, v, K) for cf in f ]
+        return [-coeff for coeff in f]
+    else:
+        v = u - 1
+        return [dmp_neg(coeff, v, K) for coeff in f]
 
 
 def dup_add(f, g, K):
@@ -513,8 +350,6 @@ def dup_add(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_add(x**2 - 1, x - 2)
@@ -525,11 +360,11 @@ def dup_add(f, g, K):
     if not g:
         return f
 
-    df = dup_degree(f)
-    dg = dup_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     if df == dg:
-        return dup_strip([ a + b for a, b in zip(f, g) ])
+        return dmp_strip([a + b for a, b in zip(f, g)], 0)
     else:
         k = abs(df - dg)
 
@@ -548,9 +383,7 @@ def dmp_add(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_add(x**2 + y, x**2*y + x)
     x**2*y + x**2 + x + y
@@ -590,30 +423,28 @@ def dup_sub(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_sub(x**2 - 1, x - 2)
     x**2 - x + 1
     """
     if not f:
-        return dup_neg(g, K)
+        return dmp_neg(g, 0, K)
     if not g:
         return f
 
-    df = dup_degree(f)
-    dg = dup_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     if df == dg:
-        return dup_strip([ a - b for a, b in zip(f, g) ])
+        return dmp_strip([a - b for a, b in zip(f, g)], 0)
     else:
         k = abs(df - dg)
 
         if df > dg:
             h, f = f[:k], f[k:]
         else:
-            h, g = dup_neg(g[:k], K), g[k:]
+            h, g = dmp_neg(g[:k], 0, K), g[k:]
 
         return h + [ a - b for a, b in zip(f, g) ]
 
@@ -625,9 +456,7 @@ def dmp_sub(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_sub(x**2 + y, x**2*y + x)
     -x**2*y + x**2 - x + y
@@ -660,23 +489,6 @@ def dmp_sub(f, g, u, K):
         return h + [ dmp_sub(a, b, v, K) for a, b in zip(f, g) ]
 
 
-def dup_add_mul(f, g, h, K):
-    """
-    Returns ``f + g*h`` where ``f, g, h`` are in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_add_mul(x**2 - 1, x - 2, x + 2)
-    2*x**2 - 5
-    """
-    return dup_add(f, dup_mul(g, h, K), K)
-
-
 def dmp_add_mul(f, g, h, u, K):
     """
     Returns ``f + g*h`` where ``f, g, h`` are in ``K[X]``.
@@ -684,32 +496,13 @@ def dmp_add_mul(f, g, h, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_add_mul(x**2 + y, x, x + 2)
     2*x**2 + 2*x + y
 
     """
     return dmp_add(f, dmp_mul(g, h, u, K), u, K)
-
-
-def dup_sub_mul(f, g, h, K):
-    """
-    Returns ``f - g*h`` where ``f, g, h`` are in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_sub_mul(x**2 - 1, x - 2, x + 2)
-    3
-    """
-    return dup_sub(f, dup_mul(g, h, K), K)
 
 
 def dmp_sub_mul(f, g, h, u, K):
@@ -719,9 +512,7 @@ def dmp_sub_mul(f, g, h, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_sub_mul(x**2 + y, x, x + 2)
     -2*x + y
@@ -736,8 +527,6 @@ def dup_mul(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_mul(x - 2, x + 2)
@@ -749,8 +538,8 @@ def dup_mul(f, g, K):
     if not (f and g):
         return []
 
-    df = dup_degree(f)
-    dg = dup_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     n = max(df, dg) + 1
 
@@ -765,7 +554,7 @@ def dup_mul(f, g, K):
 
             h.append(coeff)
 
-        return dup_strip(h)
+        return dmp_strip(h, 0)
     else:
         # Use Karatsuba's algorithm (divide and conquer), see e.g.:
         # Joris van der Hoeven, Relax But Don't Be Too Lazy,
@@ -793,9 +582,7 @@ def dmp_mul(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_mul(x*y + 1, x)
     x**2*y + x
@@ -836,8 +623,6 @@ def dup_sqr(f, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_sqr(x**2 + 1)
@@ -866,7 +651,7 @@ def dup_sqr(f, K):
 
         h.append(c)
 
-    return dup_strip(h)
+    return dmp_strip(h, 0)
 
 
 def dmp_sqr(f, u, K):
@@ -876,9 +661,7 @@ def dmp_sqr(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_sqr(x**2 + x*y + y**2)
     x**4 + 2*x**3*y + 3*x**2*y**2 + 2*x*y**3 + y**4
@@ -917,43 +700,6 @@ def dmp_sqr(f, u, K):
     return dmp_strip(h, u)
 
 
-def dup_pow(f, n, K):
-    """
-    Raise ``f`` to the ``n``-th power in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_pow(x - 2, 3)
-    x**3 - 6*x**2 + 12*x - 8
-    """
-    if not n:
-        return [K.one]
-    if n < 0:
-        raise ValueError("can't raise polynomial to a negative power")
-    if n == 1 or not f or f == [K.one]:
-        return f
-
-    g = [K.one]
-
-    while True:
-        n, m = n//2, n
-
-        if m % 2:
-            g = dup_mul(g, f, K)
-
-            if not n:
-                break
-
-        f = dup_sqr(f, K)
-
-    return g
-
-
 def dmp_pow(f, n, u, K):
     """
     Raise ``f`` to the ``n``-th power in ``K[X]``.
@@ -961,16 +707,11 @@ def dmp_pow(f, n, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_pow(x*y + 1, 3)
     x**3*y**3 + 3*x**2*y**2 + 3*x*y + 1
     """
-    if not u:
-        return dup_pow(f, n, K)
-
     if not n:
         return dmp_one(u, K)
     if n < 0:
@@ -1001,15 +742,13 @@ def dup_pdiv(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_pdiv(x**2 + 1, 2*x - 4)
     (2*x + 4, 20)
     """
-    df = dup_degree(f)
-    dg = dup_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     q, r, dr = [], f, df
 
@@ -1019,20 +758,20 @@ def dup_pdiv(f, g, K):
         return q, r
 
     N = df - dg + 1
-    lc_g = dup_LC(g, K)
+    lc_g = dmp_LC(g, K)
 
     while True:
-        lc_r = dup_LC(r, K)
+        lc_r = dmp_LC(r, K)
         j, N = dr - dg, N - 1
 
-        Q = dup_mul_ground(q, lc_g, K)
+        Q = dmp_mul_ground(q, lc_g, 0, K)
         q = dup_add_term(Q, lc_r, j, K)
 
-        R = dup_mul_ground(r, lc_g, K)
+        R = dmp_mul_ground(r, lc_g, 0, K)
         G = dup_mul_term(g, lc_r, j, K)
         r = dup_sub(R, G, K)
 
-        _dr, dr = dr, dup_degree(r)
+        _dr, dr = dr, dmp_degree(r, 0)
 
         if dr < dg:
             break
@@ -1041,8 +780,8 @@ def dup_pdiv(f, g, K):
 
     c = lc_g**N
 
-    q = dup_mul_ground(q, c, K)
-    r = dup_mul_ground(r, c, K)
+    q = dmp_mul_ground(q, c, 0, K)
+    r = dmp_mul_ground(r, c, 0, K)
 
     return q, r
 
@@ -1054,15 +793,13 @@ def dup_prem(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_prem(x**2 + 1, 2*x - 4)
     20
     """
-    df = dup_degree(f)
-    dg = dup_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     r, dr = f, df
 
@@ -1072,24 +809,24 @@ def dup_prem(f, g, K):
         return r
 
     N = df - dg + 1
-    lc_g = dup_LC(g, K)
+    lc_g = dmp_LC(g, K)
 
     while True:
-        lc_r = dup_LC(r, K)
+        lc_r = dmp_LC(r, K)
         j, N = dr - dg, N - 1
 
-        R = dup_mul_ground(r, lc_g, K)
+        R = dmp_mul_ground(r, lc_g, 0, K)
         G = dup_mul_term(g, lc_r, j, K)
         r = dup_sub(R, G, K)
 
-        _dr, dr = dr, dup_degree(r)
+        _dr, dr = dr, dmp_degree(r, 0)
 
         if dr < dg:
             break
         elif not (dr < _dr):
             raise PolynomialDivisionFailed(f, g, K)
 
-    return dup_mul_ground(r, lc_g**N, K)
+    return dmp_mul_ground(r, lc_g**N, 0, K)
 
 
 def dup_pquo(f, g, K):
@@ -1099,8 +836,6 @@ def dup_pquo(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_pquo(x**2 - 1, 2*x - 2)
@@ -1119,8 +854,6 @@ def dup_pexquo(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_pexquo(x**2 - 1, 2*x - 2)
@@ -1146,9 +879,7 @@ def dmp_pdiv(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_pdiv(x**2 + x*y, 2*x + 2)
     (2*x + 2*y - 2, -4*y + 4)
@@ -1203,9 +934,7 @@ def dmp_prem(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_prem(x**2 + x*y, 2*x + 2)
     -4*y + 4
@@ -1254,9 +983,7 @@ def dmp_pquo(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**2 + x*y
     >>> g = 2*x + 2*y
@@ -1278,9 +1005,7 @@ def dmp_pexquo(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**2 + x*y
     >>> g = 2*x + 2*y
@@ -1309,15 +1034,13 @@ def dup_rr_div(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", ZZ)
 
     >>> R.dup_rr_div(x**2 + 1, 2*x - 4)
     (0, x**2 + 1)
     """
-    df = dup_degree(f)
-    dg = dup_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     q, r, dr = [], f, df
 
@@ -1326,10 +1049,10 @@ def dup_rr_div(f, g, K):
     elif df < dg:
         return q, r
 
-    lc_g = dup_LC(g, K)
+    lc_g = dmp_LC(g, K)
 
     while True:
-        lc_r = dup_LC(r, K)
+        lc_r = dmp_LC(r, K)
 
         if lc_r % lc_g:
             break
@@ -1341,7 +1064,7 @@ def dup_rr_div(f, g, K):
         h = dup_mul_term(g, c, j, K)
         r = dup_sub(r, h, K)
 
-        _dr, dr = dr, dup_degree(r)
+        _dr, dr = dr, dmp_degree(r, 0)
 
         if dr < dg:
             break
@@ -1358,9 +1081,7 @@ def dmp_rr_div(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_rr_div(x**2 + x*y, 2*x + 2)
     (0, x**2 + x*y)
@@ -1411,15 +1132,13 @@ def dup_ff_div(f, g, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
     >>> R, x = ring("x", QQ)
 
     >>> R.dup_ff_div(x**2 + 1, 2*x - 4)
     (1/2*x + 1, 5)
     """
-    df = dup_degree(f)
-    dg = dup_degree(g)
+    df = dmp_degree(f, 0)
+    dg = dmp_degree(g, 0)
 
     q, r, dr = [], f, df
 
@@ -1428,10 +1147,10 @@ def dup_ff_div(f, g, K):
     elif df < dg:
         return q, r
 
-    lc_g = dup_LC(g, K)
+    lc_g = dmp_LC(g, K)
 
     while True:
-        lc_r = dup_LC(r, K)
+        lc_r = dmp_LC(r, K)
 
         c = K.exquo(lc_r, lc_g)
         j = dr - dg
@@ -1440,7 +1159,7 @@ def dup_ff_div(f, g, K):
         h = dup_mul_term(g, c, j, K)
         r = dup_sub(r, h, K)
 
-        _dr, dr = dr, dup_degree(r)
+        _dr, dr = dr, dmp_degree(r, 0)
 
         if dr < dg:
             break
@@ -1457,9 +1176,7 @@ def dmp_ff_div(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
 
     >>> R.dmp_ff_div(x**2 + x*y, 2*x + 2)
     (1/2*x + 1/2*y - 1/2, -y + 1)
@@ -1503,99 +1220,6 @@ def dmp_ff_div(f, g, u, K):
     return q, r
 
 
-def dup_div(f, g, K):
-    """
-    Polynomial division with remainder in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x = ring("x", ZZ)
-    >>> R.dup_div(x**2 + 1, 2*x - 4)
-    (0, x**2 + 1)
-
-    >>> R, x = ring("x", QQ)
-    >>> R.dup_div(x**2 + 1, 2*x - 4)
-    (1/2*x + 1, 5)
-    """
-    if K.has_Field:
-        return dup_ff_div(f, g, K)
-    else:
-        return dup_rr_div(f, g, K)
-
-
-def dup_rem(f, g, K):
-    """
-    Returns polynomial remainder in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x = ring("x", ZZ)
-    >>> R.dup_rem(x**2 + 1, 2*x - 4)
-    x**2 + 1
-
-    >>> R, x = ring("x", QQ)
-    >>> R.dup_rem(x**2 + 1, 2*x - 4)
-    5
-    """
-    return dup_div(f, g, K)[1]
-
-
-def dup_quo(f, g, K):
-    """
-    Returns exact polynomial quotient in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x = ring("x", ZZ)
-    >>> R.dup_quo(x**2 + 1, 2*x - 4)
-    0
-
-    >>> R, x = ring("x", QQ)
-    >>> R.dup_quo(x**2 + 1, 2*x - 4)
-    1/2*x + 1
-    """
-    return dup_div(f, g, K)[0]
-
-
-def dup_exquo(f, g, K):
-    """
-    Returns polynomial quotient in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_exquo(x**2 - 1, x - 1)
-    x + 1
-
-    >>> R.dup_exquo(x**2 + 1, 2*x - 4)
-    Traceback (most recent call last):
-    ...
-    ExactQuotientFailed: [2, -4] does not divide [1, 0, 1]
-    """
-    q, r = dup_div(f, g, K)
-
-    if not r:
-        return q
-    else:
-        raise ExactQuotientFailed(f, g)
-
-
 def dmp_div(f, g, u, K):
     """
     Polynomial division with remainder in ``K[X]``.
@@ -1603,14 +1227,11 @@ def dmp_div(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
     >>> R.dmp_div(x**2 + x*y, 2*x + 2)
     (0, x**2 + x*y)
 
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
     >>> R.dmp_div(x**2 + x*y, 2*x + 2)
     (1/2*x + 1/2*y - 1/2, -y + 1)
     """
@@ -1627,14 +1248,11 @@ def dmp_rem(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
     >>> R.dmp_rem(x**2 + x*y, 2*x + 2)
     x**2 + x*y
 
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
     >>> R.dmp_rem(x**2 + x*y, 2*x + 2)
     -y + 1
     """
@@ -1648,14 +1266,11 @@ def dmp_quo(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ, QQ
-    >>> from diofant.polys import ring
-
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
     >>> R.dmp_quo(x**2 + x*y, 2*x + 2)
     0
 
-    >>> R, x,y = ring("x,y", QQ)
+    >>> R, x, y = ring("x y", QQ)
     >>> R.dmp_quo(x**2 + x*y, 2*x + 2)
     1/2*x + 1/2*y - 1/2
     """
@@ -1669,9 +1284,7 @@ def dmp_exquo(f, g, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> f = x**2 + x*y
     >>> g = x + y
@@ -1693,26 +1306,6 @@ def dmp_exquo(f, g, u, K):
         raise ExactQuotientFailed(f, g)
 
 
-def dup_max_norm(f, K):
-    """
-    Returns maximum norm of a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_max_norm(-x**2 + 2*x - 3)
-    3
-    """
-    if not f:
-        return K.zero
-    else:
-        return max(dup_abs(f, K))
-
-
 def dmp_max_norm(f, u, K):
     """
     Returns maximum norm of a polynomial in ``K[X]``.
@@ -1720,39 +1313,16 @@ def dmp_max_norm(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_max_norm(2*x*y - x - 3)
     3
     """
     if not u:
-        return dup_max_norm(f, K)
+        return max(dmp_abs(f, 0, K), default=K.zero)
 
     v = u - 1
-
     return max(dmp_max_norm(c, v, K) for c in f)
-
-
-def dup_l1_norm(f, K):
-    """
-    Returns l1 norm of a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_l1_norm(2*x**3 - 3*x**2 + 1)
-    6
-    """
-    if not f:
-        return K.zero
-    else:
-        return sum(dup_abs(f, K))
 
 
 def dmp_l1_norm(f, u, K):
@@ -1762,44 +1332,16 @@ def dmp_l1_norm(f, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_l1_norm(2*x*y - x - 3)
     6
     """
     if not u:
-        return dup_l1_norm(f, K)
+        return sum(dmp_abs(f, u, K), K.zero)
 
     v = u - 1
-
     return sum(dmp_l1_norm(c, v, K) for c in f)
-
-
-def dup_expand(polys, K):
-    """
-    Multiply together several polynomials in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_expand([x**2 - 1, x, 2])
-    2*x**3 - 2*x
-    """
-    if not polys:
-        return [K.one]
-
-    f = polys[0]
-
-    for g in polys[1:]:
-        f = dup_mul(f, g, K)
-
-    return f
 
 
 def dmp_expand(polys, u, K):
@@ -1809,9 +1351,7 @@ def dmp_expand(polys, u, K):
     Examples
     ========
 
-    >>> from diofant.domains import ZZ
-    >>> from diofant.polys import ring
-    >>> R, x,y = ring("x,y", ZZ)
+    >>> R, x, y = ring("x y", ZZ)
 
     >>> R.dmp_expand([x**2 + y**2, x + 1])
     x**3 + x**2 + x*y**2 + y**2

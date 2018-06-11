@@ -3,8 +3,6 @@
 =========
 
 ..
-    >>> from diofant import *
-    >>> x, y, z = symbols('x y z')
     >>> init_printing(pretty_print=True, use_unicode=True)
 
 Lets recall again, that Diofant is nothing more than a Python library,

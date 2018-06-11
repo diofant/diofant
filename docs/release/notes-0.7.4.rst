@@ -136,7 +136,7 @@ Major changes
   - Arbitrary comparisons between complex *numbers* (for example,
     ``I > 1``) now raise ``TypeError`` as well (see :sympypull:`2510`).
 
-  - ``minpoly`` now works with algebraic functions, like ``minpoly(sqrt(x) + sqrt(x + 1), y)``.
+  - ``minimal_polynomial`` now works with algebraic functions, like ``minimal_polynomial(sqrt(x) + sqrt(x + 1), y)``.
 
   - ``exp`` can now act on any matrix, even those which are not diagonalizable. It
     is also more comfortable to call it, ``exp(m)`` instead of just ``m.exp()``, as

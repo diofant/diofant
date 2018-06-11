@@ -11,7 +11,6 @@ from .primetest import isprime
 def symmetric_residue(a, m):
     """Return the residual mod m such that it is within half of the modulus.
 
-    >>> from diofant.ntheory.modular import symmetric_residue
     >>> symmetric_residue(1, 6)
     1
     >>> symmetric_residue(4, 6)
@@ -40,8 +39,6 @@ def crt(m, v, symmetric=False, check=True):
 
     As an example consider a set of residues ``U = [49, 76, 65]``
     and a set of moduli ``M = [99, 97, 95]``. Then we have::
-
-       >>> from diofant.ntheory.modular import crt, solve_congruence
 
        >>> crt([99, 97, 95], [49, 76, 65])
        (639985, 912285)
@@ -103,7 +100,6 @@ def crt1(m):
     Examples
     ========
 
-    >>> from diofant.ntheory.modular import crt1
     >>> crt1([18, 42, 6])
     (4536, [252, 108, 756], [0, 2, 0])
     """
@@ -117,7 +113,6 @@ def crt2(m, v, mm, e, s, symmetric=False):
     Examples
     ========
 
-    >>> from diofant.ntheory.modular import crt1, crt2
     >>> mm, e, s = crt1([18, 42, 6])
     >>> crt2([18, 42, 6], [0, 0, 0], mm, e, s)
     (0, 4536)
@@ -146,8 +141,6 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
 
     Examples
     ========
-
-    >>> from diofant.ntheory.modular import solve_congruence
 
     What number is 2 mod 3, 3 mod 5 and 2 mod 7?
 

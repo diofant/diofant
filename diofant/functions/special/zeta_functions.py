@@ -66,7 +66,7 @@ class lerchphi(Function):
 
     .. [1] Bateman, H.; Erdélyi, A. (1953), Higher Transcendental Functions,
            Vol. I, New York: McGraw-Hill. Section 1.11.
-    .. [2] http://dlmf.nist.gov/25.14
+    .. [2] https://dlmf.nist.gov/25.14
     .. [3] https//en.wikipedia.org/wiki/Lerch_transcendent
 
     Examples
@@ -78,8 +78,7 @@ class lerchphi(Function):
 
     If `z=1`, the Lerch transcendent reduces to the Hurwitz zeta function:
 
-    >>> from diofant import lerchphi, expand_func
-    >>> from diofant.abc import z, s, a
+    >>> from diofant.abc import s, a
     >>> expand_func(lerchphi(1, s, a))
     zeta(s, a)
 
@@ -97,7 +96,6 @@ class lerchphi(Function):
     More generally, if `a` is rational, the Lerch transcendent reduces
     to a sum of polylogarithms:
 
-    >>> from diofant import Rational
     >>> expand_func(lerchphi(z, s, Rational(1, 2)))
     2**(s - 1)*(polylog(s, sqrt(z))/sqrt(z) -
                 polylog(s, sqrt(z)*exp_polar(I*pi))/sqrt(z))
@@ -235,7 +233,6 @@ class polylog(Function):
     For `z \in \{0, 1, -1\}`, the polylogarithm is automatically expressed
     using other functions:
 
-    >>> from diofant import polylog
     >>> from diofant.abc import s
     >>> polylog(s, 0)
     0
@@ -248,10 +245,8 @@ class polylog(Function):
     polylogarithm can be expressed using elementary functions. This can be
     done using expand_func():
 
-    >>> from diofant import expand_func
-    >>> from diofant.abc import z
     >>> expand_func(polylog(1, z))
-    -log(z*exp_polar(-I*pi) + 1)
+    -log(-z + 1)
     >>> expand_func(polylog(0, z))
     z/(-z + 1)
 
@@ -262,7 +257,6 @@ class polylog(Function):
 
     The polylogarithm can be expressed in terms of the lerch transcendent:
 
-    >>> from diofant import lerchphi
     >>> polylog(s, z).rewrite(lerchphi)
     z*lerchphi(z, s, 1)
 
@@ -301,7 +295,7 @@ class polylog(Function):
     def _eval_expand_func(self, **hints):
         s, z = self.args
         if s == 1:
-            return -log(1 + exp_polar(-I*pi)*z)
+            return -log(1 - z)
         if s.is_Integer and s <= 0:
             u = Dummy('u')
             start = u/(1 - u)
@@ -350,7 +344,7 @@ class zeta(Function):
     References
     ==========
 
-    .. [1] http://dlmf.nist.gov/25.11
+    .. [1] https://dlmf.nist.gov/25.11
     .. [2] https//en.wikipedia.org/wiki/Hurwitz_zeta_function
 
     Examples
@@ -361,7 +355,6 @@ class zeta(Function):
 
     .. math:: \zeta(s, 1) = \zeta(s) = \sum_{n=1}^\infty \frac{1}{n^s}.
 
-    >>> from diofant import zeta
     >>> from diofant.abc import s
     >>> zeta(s, 1)
     zeta(s)
@@ -371,7 +364,6 @@ class zeta(Function):
     The Riemann zeta function can also be expressed using the Dirichlet eta
     function:
 
-    >>> from diofant import dirichlet_eta
     >>> zeta(s).rewrite(dirichlet_eta)
     dirichlet_eta(s)/(-2**(-s + 1) + 1)
 
@@ -417,7 +409,6 @@ class zeta(Function):
     The Hurwitz zeta function can be expressed in terms of the Lerch transcendent,
     :class:`diofant.functions.special.zeta_functions.lerchphi`:
 
-    >>> from diofant import lerchphi
     >>> zeta(s, a).rewrite(lerchphi)
     lerchphi(1, s, a)
 
@@ -529,7 +520,6 @@ class dirichlet_eta(Function):
 
     The Dirichlet eta function is closely related to the Riemann zeta function:
 
-    >>> from diofant import dirichlet_eta, zeta
     >>> from diofant.abc import s
     >>> dirichlet_eta(s).rewrite(zeta)
     (-2**(-s + 1) + 1)*zeta(s)

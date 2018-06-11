@@ -22,9 +22,6 @@ def change_mul(node, x):
     Examples
     ========
 
-    >>> from diofant import DiracDelta, cos
-    >>> from diofant.integrals.deltafunctions import change_mul
-    >>> from diofant.abc import x, y
     >>> change_mul(x*y*DiracDelta(x)*cos(x), x)
     (DiracDelta(x), x*y*cos(x))
     >>> change_mul(x*y*DiracDelta(x**2 - 1)*cos(x), x)
@@ -115,9 +112,6 @@ def deltaintegrate(f, x):
     Examples
     ========
 
-        >>> from diofant.abc import x, y, z
-        >>> from diofant.integrals.deltafunctions import deltaintegrate
-        >>> from diofant import sin, cos, DiracDelta, Heaviside
         >>> deltaintegrate(x*sin(x)*cos(x)*DiracDelta(x - 1), x)
         sin(1)*cos(1)*Heaviside(x - 1)
         >>> deltaintegrate(y**2*DiracDelta(x - z)*DiracDelta(y - z), y)

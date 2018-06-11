@@ -5,6 +5,9 @@ N-dim array
 
 .. automodule:: diofant.tensor.array
 
+Classes
+-------
+
 .. autoclass:: ImmutableDenseNDimArray
    :members:
 
@@ -16,3 +19,15 @@ N-dim array
 
 .. autoclass:: MutableSparseNDimArray
    :members:
+
+
+Functions
+---------
+
+.. autofunction:: derive_by_array
+
+.. autofunction:: permutedims
+
+.. autofunction:: tensorcontraction
+
+.. autofunction:: tensorproduct

@@ -159,10 +159,12 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     """
     Returns a lambda function for fast calculation of numerical values.
 
-    If not specified differently by the user, Diofant functions are replaced as
-    far as possible by either python-math, numpy (if available) or mpmath
-    functions - exactly in this order. To change this behavior, the "modules"
-    argument can be used. It accepts:
+    If not specified differently by the user, ``modules`` defaults to
+    ``["numpy"]`` if NumPy is installed, and ``["math", "mpmath", "sympy"]``
+    if it isn't, that is, Diofant functions are replaced as far as possible by
+    either ``numpy`` functions if available, and Python's standard library
+    ``math``, or ``mpmath`` functions otherwise. To change this behavior, the
+    "modules" argument can be used. It accepts:
 
      - the strings "math", "mpmath", "numpy", "numexpr", "diofant"
      - any modules (e.g. math)
@@ -190,8 +192,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     To get the old default behavior you must pass in ``[{'ImmutableMatrix':
     numpy.matrix}, 'numpy']`` to the ``modules`` kwarg.
 
-    >>> from diofant import lambdify, Matrix
-    >>> from diofant.abc import x, y
     >>> import numpy
     >>> array2mat = [{'ImmutableMatrix': numpy.matrix}, 'numpy']
     >>> f = lambdify((x, y), Matrix([x, y]), modules=array2mat)
@@ -201,9 +201,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
     (1) Use one of the provided modules:
 
-        >>> from diofant import sin, tan, gamma
-        >>> from diofant.utilities.lambdify import lambdastr
-        >>> from diofant.abc import x, y
         >>> f = lambdify(x, sin(x), "math")
 
         Attention: Functions that are not in the math module will throw a name
@@ -215,14 +212,14 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     (2) Use some other module:
 
         >>> import numpy
-        >>> f = lambdify((x,y), tan(x*y), numpy)
+        >>> f = lambdify((x, y), tan(x*y), numpy)
 
         Attention: There are naming differences between numpy and diofant. So if
                    you simply take the numpy module, e.g. diofant.atan will not be
                    translated to numpy.arctan. Use the modified module instead
                    by passing the string "numpy":
 
-        >>> f = lambdify((x,y), tan(x*y), "numpy")
+        >>> f = lambdify((x, y), tan(x*y), "numpy")
         >>> f(1, 2)
         -2.18503986326
         >>> from numpy import array
@@ -239,16 +236,13 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     Examples
     ========
 
-    >>> from diofant.utilities.lambdify import implemented_function
-    >>> from diofant import sqrt, sin, Matrix
-    >>> from diofant import Function
-    >>> from diofant.abc import w, x, y, z
+    >>> from diofant.abc import w
 
     >>> f = lambdify(x, x**2)
     >>> f(2)
     4
     >>> f = lambdify((x, y, z), [z, y, x])
-    >>> f(1,2,3)
+    >>> f(1, 2, 3)
     [3, 2, 1]
     >>> f = lambdify(x, sqrt(x))
     >>> f(4)
@@ -271,7 +265,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     A more robust way of handling this is to always work with flattened
     arguments:
 
-    >>> from diofant.utilities.iterables import flatten
     >>> args = w, (x, (y, z))
     >>> vals = 1, (2, (3, 4))
     >>> f = lambdify(flatten(args), w + x + y + z)
@@ -294,20 +287,21 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     from ..core import Symbol
     from .iterables import flatten
 
+    module_provided = True
+
     # If the user hasn't specified any modules, use what is available.
     if modules is None:
-        # Use either numpy (if available) or python.math where possible.
-        # XXX: This leads to different behaviour on different systems and
-        #      might be the reason for irreproducible errors.
-        modules = ["math", "mpmath", "diofant"]
+        module_provided = False
 
-        # Attempt to import numpy
         try:
             _import("numpy")
         except ImportError:
-            pass
+            # Use either numpy (if available) or python.math where possible.
+            # XXX: This leads to different behaviour on different systems and
+            #      might be the reason for irreproducible errors.
+            modules = ["math", "mpmath", "diofant"]
         else:
-            modules.insert(1, "numpy")
+            modules = ["numpy"]
 
     # Get the needed namespaces.
     namespaces = []
@@ -343,6 +337,9 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
         # XXX: This has to be done here because of circular imports
         from ..printing.lambdarepr import NumExprPrinter as printer  # noqa: N813
 
+    if _module_present('mpmath', namespaces) and printer is None:
+        from ..printing.lambdarepr import MpmathPrinter as printer  # noqa: N813
+
     # Get the names of the args, for creating a docstring
     if not iterable(args):
         args = (args,)
@@ -369,6 +366,13 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     if flat in lstr:
         namespace.update({flat: flatten})
     func = eval(lstr, namespace)
+    # For numpy lambdify, wrap all input arguments in arrays.
+    if module_provided and _module_present('numpy', namespaces):
+        def array_wrap(funcarg):
+            def wrapper(*argsx, **kwargsx):
+                return funcarg(*[namespace['asarray'](i) for i in argsx], **kwargsx)
+            return wrapper
+        func = array_wrap(func)
     # Apply the docstring
     sig = "func({0})".format(", ".join(str(i) for i in names))
     sig = textwrap.fill(sig, subsequent_indent=' '*8)
@@ -411,11 +415,9 @@ def lambdastr(args, expr, printer=None, dummify=False):
     Examples
     ========
 
-    >>> from diofant.abc import x, y, z
-    >>> from diofant.utilities.lambdify import lambdastr
     >>> lambdastr(x, x**2)
     'lambda x: (x**2)'
-    >>> lambdastr((x,y,z), [z,y,x])
+    >>> lambdastr((x, y, z), [z, y, x])
     'lambda x,y,z: ([z, y, x])'
 
     Although tuples may not appear as arguments to lambda in Python 3,
@@ -540,9 +542,6 @@ def _imp_namespace(expr, namespace=None):
     Examples
     --------
 
-    >>> from diofant.abc import x
-    >>> from diofant.utilities.lambdify import implemented_function, _imp_namespace
-    >>> from diofant import Function
     >>> f = implemented_function(Function('f'), lambda x: x+1)
     >>> g = implemented_function(Function('g'), lambda x: x*10)
     >>> namespace = _imp_namespace(f(g(x)))
@@ -610,9 +609,6 @@ def implemented_function(symfunc, implementation):
     Examples
     --------
 
-    >>> from diofant.abc import x
-    >>> from diofant.utilities.lambdify import lambdify, implemented_function
-    >>> from diofant import Function
     >>> f = implemented_function(Function('f'), lambda x: x+1)
     >>> lam_f = lambdify(x, f(x))
     >>> lam_f(4)

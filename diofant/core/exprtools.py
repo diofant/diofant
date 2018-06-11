@@ -34,9 +34,6 @@ def decompose_power(expr):
     Examples
     ========
 
-    >>> from diofant.core.exprtools import decompose_power
-    >>> from diofant.abc import x, y
-
     >>> decompose_power(x)
     (x, 1)
     >>> decompose_power(x**2)
@@ -74,15 +71,12 @@ def decompose_power(expr):
 class Factors:
     """Efficient representation of ``f_1*f_2*...*f_n``."""
 
-    def __init__(self, factors=None):  # Factors
+    def __init__(self, factors=None):
         """Initialize Factors from dict or expr.
 
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
-        >>> from diofant.abc import x
-        >>> from diofant import I
         >>> e = 2*x**3
         >>> Factors(e)
         Factors({2: 1, x: 3})
@@ -151,7 +145,7 @@ class Factors:
 
             handle = []
             for k in factors:
-                if k is I or k in (-1, 1):
+                if k in (I, -1, 1):
                     handle.append(k)
             if handle:
                 i1 = S.One
@@ -174,25 +168,24 @@ class Factors:
                         elif a == -1:
                             factors[-a] = S.One
                             factors[S.NegativeOne] = S.One
-                        else:
-                            raise ValueError('unexpected factor in i1: %s' % a)
+                        else:  # pragma: no cover
+                            raise RuntimeError('unexpected factor in i1: %s' % a)
 
         self.factors = factors
         self.gens = frozenset(factors)
 
-    def __hash__(self):  # Factors
+    def __hash__(self):
         keys = tuple(ordered(self.factors))
         values = tuple(self.factors[k] for k in keys)
         return hash((keys, values))
 
-    def __repr__(self):  # Factors
+    def __repr__(self):
         return "Factors({%s})" % ', '.join(
             ['%s: %s' % (k, v) for k, v in ordered(self.factors.items())])
 
     @property
-    def is_zero(self):  # Factors
+    def is_zero(self):
         """
-        >>> from diofant.core.exprtools import Factors
         >>> Factors(0).is_zero
         True
         """
@@ -200,22 +193,19 @@ class Factors:
         return len(f) == 1 and 0 in f
 
     @property
-    def is_one(self):  # Factors
+    def is_one(self):
         """
-        >>> from diofant.core.exprtools import Factors
         >>> Factors(1).is_one
         True
         """
         return not self.factors
 
-    def as_expr(self):  # Factors
+    def as_expr(self):
         """Return the underlying expression.
 
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
-        >>> from diofant.abc import x, y
         >>> Factors((x*y**2).as_powers_dict()).as_expr()
         x*y**2
 
@@ -236,14 +226,12 @@ class Factors:
                 args.append(factor)
         return Mul(*args)
 
-    def mul(self, other):  # Factors
+    def mul(self, other):
         """Return Factors of ``self * other``.
 
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
-        >>> from diofant.abc import x, y, z
         >>> a = Factors((x*y**2).as_powers_dict())
         >>> b = Factors((x*y/z).as_powers_dict())
         >>> a.mul(b)
@@ -311,12 +299,9 @@ class Factors:
             else:
                 r = self_exp.extract_additively(other_exp)
                 if r is not None:
-                    if r:
-                        self_factors[factor] = r
-                        del other_factors[factor]
-                    else:  # should be handled already
-                        del self_factors[factor]
-                        del other_factors[factor]
+                    assert r
+                    self_factors[factor] = r
+                    del other_factors[factor]
                 else:
                     sc, sa = self_exp.as_coeff_Add()
                     if sc:
@@ -339,16 +324,12 @@ class Factors:
 
         return Factors(self_factors), Factors(other_factors)
 
-    def div(self, other):  # Factors
+    def div(self, other):
         """Return ``self`` and ``other`` with ``gcd`` removed from each.
         This is optimized for the case when there are many factors in common.
 
         Examples
         ========
-
-        >>> from diofant.core.exprtools import Factors
-        >>> from diofant.abc import x, y, z
-        >>> from diofant import S
 
         >>> a = Factors((x*y**2).as_powers_dict())
         >>> a.div(a)
@@ -377,7 +358,6 @@ class Factors:
 
         factor_terms can clean up such Rational-bases powers:
 
-        >>> from diofant.core.exprtools import factor_terms
         >>> n, d = Factors(2**(2*x + 2)).div(Integer(8))
         >>> n.as_expr()/d.as_expr()
         2**(2*x + 2)/8
@@ -404,18 +384,14 @@ class Factors:
                     if d >= 0:
                         if d:
                             quo[factor] = d
-
-                        continue
-
-                    exp = -d
-
+                    else:
+                        exp = -d
+                        rem[factor] = exp
                 else:
                     r = quo[factor].extract_additively(exp)
                     if r is not None:
-                        if r:
-                            quo[factor] = r
-                        else:  # should be handled already
-                            del quo[factor]
+                        assert r
+                        quo[factor] = r
                     else:
                         other_exp = exp
                         sc, sa = quo[factor].as_coeff_Add()
@@ -435,20 +411,17 @@ class Factors:
                             rem[factor] = other_exp
                         else:
                             assert factor not in rem
-                    continue
-
-            rem[factor] = exp
+            else:
+                rem[factor] = exp
 
         return Factors(quo), Factors(rem)
 
-    def quo(self, other):  # Factors
+    def quo(self, other):
         """Return numerator Factor of ``self / other``.
 
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
-        >>> from diofant.abc import x, y, z
         >>> a = Factors((x*y**2).as_powers_dict())
         >>> b = Factors((x*y/z).as_powers_dict())
         >>> a.quo(b)  # same as a/b
@@ -456,14 +429,12 @@ class Factors:
         """
         return self.div(other)[0]
 
-    def rem(self, other):  # Factors
+    def rem(self, other):
         """Return denominator Factors of ``self / other``.
 
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
-        >>> from diofant.abc import x, y, z
         >>> a = Factors((x*y**2).as_powers_dict())
         >>> b = Factors((x*y/z).as_powers_dict())
         >>> a.rem(b)
@@ -473,14 +444,12 @@ class Factors:
         """
         return self.div(other)[1]
 
-    def pow(self, other):  # Factors
+    def pow(self, other):
         """Return self raised to a non-negative integer power.
 
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
-        >>> from diofant.abc import x, y
         >>> a = Factors((x*y**2).as_powers_dict())
         >>> a**2
         Factors({x: 2, y: 4})
@@ -501,7 +470,7 @@ class Factors:
         else:
             raise ValueError("expected non-negative integer, got %s" % other)
 
-    def gcd(self, other):  # Factors
+    def gcd(self, other):
         """Return Factors of ``gcd(self, other)``. The keys are
         the intersection of factors with the minimum exponent for
         each factor.
@@ -509,8 +478,6 @@ class Factors:
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
-        >>> from diofant.abc import x, y, z
         >>> a = Factors((x*y**2).as_powers_dict())
         >>> b = Factors((x*y/z).as_powers_dict())
         >>> a.gcd(b)
@@ -534,7 +501,7 @@ class Factors:
 
         return Factors(factors)
 
-    def lcm(self, other):  # Factors
+    def lcm(self, other):
         """Return Factors of ``lcm(self, other)`` which are
         the union of factors with the maximum exponent for
         each factor.
@@ -542,8 +509,6 @@ class Factors:
         Examples
         ========
 
-        >>> from diofant.core.exprtools import Factors
-        >>> from diofant.abc import x, y, z
         >>> a = Factors((x*y**2).as_powers_dict())
         >>> b = Factors((x*y/z).as_powers_dict())
         >>> a.lcm(b)
@@ -564,22 +529,22 @@ class Factors:
 
         return Factors(factors)
 
-    def __mul__(self, other):  # Factors
+    def __mul__(self, other):
         return self.mul(other)
 
-    def __divmod__(self, other):  # Factors
+    def __divmod__(self, other):
         return self.div(other)
 
-    def __truediv__(self, other):  # Factors
+    def __truediv__(self, other):
         return self.quo(other)
 
-    def __mod__(self, other):  # Factors
+    def __mod__(self, other):
         return self.rem(other)
 
-    def __pow__(self, other):  # Factors
+    def __pow__(self, other):
         return self.pow(other)
 
-    def __eq__(self, other):  # Factors
+    def __eq__(self, other):
         if not isinstance(other, Factors):
             other = Factors(other)
         return self.factors == other.factors
@@ -588,7 +553,7 @@ class Factors:
 class Term:
     """Efficient representation of ``coeff*(numer/denom)``. """
 
-    def __init__(self, term, numer=None, denom=None):  # Term
+    def __init__(self, term, numer=None, denom=None):
         if numer is None and denom is None:
             if not term.is_commutative:
                 raise NonCommutativeExpression(
@@ -624,16 +589,10 @@ class Term:
         self.numer = numer
         self.denom = denom
 
-    def __hash__(self):  # Term
-        return hash((self.coeff, self.numer, self.denom))
-
-    def __repr__(self):  # Term
-        return "Term(%s, %s, %s)" % (self.coeff, self.numer, self.denom)
-
-    def as_expr(self):  # Term
+    def as_expr(self):
         return self.coeff*(self.numer.as_expr()/self.denom.as_expr())
 
-    def mul(self, other):  # Term
+    def mul(self, other):
         coeff = self.coeff*other.coeff
         numer = self.numer.mul(other.numer)
         denom = self.denom.mul(other.denom)
@@ -642,13 +601,13 @@ class Term:
 
         return Term(coeff, numer, denom)
 
-    def inv(self):  # Term
+    def inv(self):
         return Term(1/self.coeff, self.denom, self.numer)
 
-    def quo(self, other):  # Term
+    def quo(self, other):
         return self.mul(other.inv())
 
-    def pow(self, other):  # Term
+    def pow(self, other):
         if other < 0:
             return self.inv().pow(-other)
         else:
@@ -656,35 +615,35 @@ class Term:
                         self.numer.pow(other),
                         self.denom.pow(other))
 
-    def gcd(self, other):  # Term
+    def gcd(self, other):
         return Term(self.coeff.gcd(other.coeff),
                     self.numer.gcd(other.numer),
                     self.denom.gcd(other.denom))
 
-    def lcm(self, other):  # Term
+    def lcm(self, other):
         return Term(self.coeff.lcm(other.coeff),
                     self.numer.lcm(other.numer),
                     self.denom.lcm(other.denom))
 
-    def __mul__(self, other):  # Term
+    def __mul__(self, other):
         if isinstance(other, Term):
             return self.mul(other)
         else:
             return NotImplemented
 
-    def __truediv__(self, other):  # Term
+    def __truediv__(self, other):
         if isinstance(other, Term):
             return self.quo(other)
         else:
             return NotImplemented
 
-    def __pow__(self, other):  # Term
+    def __pow__(self, other):
         if isinstance(other, DIOFANT_INTS):
             return self.pow(other)
         else:
             return NotImplemented
 
-    def __eq__(self, other):  # Term
+    def __eq__(self, other):
         return (self.coeff == other.coeff and
                 self.numer == other.numer and
                 self.denom == other.denom)
@@ -770,9 +729,6 @@ def gcd_terms(terms, isprimitive=False, clear=True, fraction=True):
     Examples
     ========
 
-    >>> from diofant.core import gcd_terms
-    >>> from diofant.abc import x, y
-
     >>> gcd_terms((x + 1)**2*y + (x + 1)*y**2)
     y*(x + 1)*(x + y + 1)
     >>> gcd_terms(x/2 + 1)
@@ -848,9 +804,7 @@ def gcd_terms(terms, isprimitive=False, clear=True, fraction=True):
     def handle(a):
         # don't treat internal args like terms of an Add
         if not isinstance(a, Expr):
-            if isinstance(a, Basic):
-                return a.func(*[handle(i) for i in a.args])
-            return type(a)([handle(i) for i in a])
+            return a.func(*[handle(i) for i in a.args])
         return gcd_terms(a, isprimitive, clear, fraction)
 
     if isinstance(terms, Dict):
@@ -879,8 +833,6 @@ def factor_terms(expr, radical=False, clear=False, fraction=False, sign=True):
     Examples
     ========
 
-    >>> from diofant import factor_terms, Symbol
-    >>> from diofant.abc import x, y
     >>> factor_terms(x + x*(2 + 4*y)**3)
     x*(8*(2*y + 1)**3 + 1)
     >>> A = Symbol('A', commutative=False)
@@ -993,10 +945,7 @@ def _mask_nc(eq, name=None):
     Examples
     ========
 
-    >>> from diofant import symbols, Mul
-    >>> from diofant.core.exprtools import _mask_nc
-    >>> from diofant.abc import x, y
-    >>> A, B, C = symbols('A,B,C', commutative=False)
+    >>> A, B, C = symbols('A B C', commutative=False)
 
     One nc-symbol:
 
@@ -1017,7 +966,6 @@ def _mask_nc(eq, name=None):
     then it will give False (or None?) for the is_commutative test. Such
     objects are also removed by this routine:
 
-    >>> from diofant import Expr
     >>> eq = (1 + Mul(Expr(), Expr(), evaluate=False))
     >>> eq.is_commutative is None
     True
@@ -1061,11 +1009,9 @@ def _mask_nc(eq, name=None):
                     nc_obj.add(a)
                 pot.skip()
 
-    # If there is only one nc symbol or object, it can be factored regularly
+    # If there is only one nc symbol, it can be factored regularly
     # but polys is going to complain, so replace it with a Dummy.
-    if len(nc_obj) == 1 and not nc_syms:
-        rep.append((nc_obj.pop(), Dummy()))
-    elif len(nc_syms) == 1 and not nc_obj:
+    if len(nc_syms) == 1 and not nc_obj:
         rep.append((nc_syms.pop(), Dummy()))
 
     # Any remaining nc-objects will be replaced with an nc-Dummy and
@@ -1089,9 +1035,6 @@ def factor_nc(expr):
     Examples
     ========
 
-    >>> from diofant.core.exprtools import factor_nc
-    >>> from diofant import Symbol
-    >>> from diofant.abc import x
     >>> A = Symbol('A', commutative=False)
     >>> B = Symbol('B', commutative=False)
     >>> factor_nc((x**2 + 2*A*x + A**2).expand())
@@ -1168,8 +1111,7 @@ def factor_nc(expr):
                         for i, a in enumerate(args):
                             args[i][1][0] = il*args[i][1][0]
                         break
-                if not ok:
-                    break
+                break
         else:
             hit = True
             lenn = len(n)
@@ -1204,8 +1146,7 @@ def factor_nc(expr):
                         for i, a in enumerate(args):
                             args[i][1][-1] = args[i][1][-1]*il
                         break
-                if not ok:
-                    break
+                break
         else:
             hit = True
             lenn = len(n)

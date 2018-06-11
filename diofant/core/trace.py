@@ -86,13 +86,11 @@ class Tr(Expr):
     a) Trace(A+B) = Tr(A) + Tr(B)
     b) Trace(scalar*Operator) = scalar*Trace(Operator)
 
-    >>> from diofant.core.trace import Tr
-    >>> from diofant import symbols, Matrix
     >>> a, b = symbols('a b', commutative=True)
     >>> A, B = symbols('A B', commutative=False)
-    >>> Tr(a*A,[2])
+    >>> Tr(a*A, [2])
     a*Tr(A)
-    >>> m = Matrix([[1,2],[1,1]])
+    >>> m = Matrix([[1, 2], [1, 1]])
     >>> Tr(m)
     2
     """
@@ -167,8 +165,6 @@ class Tr(Expr):
         Examples
         ========
 
-        >>> from diofant.core.trace import Tr
-        >>> from diofant import symbols
         >>> A, B, C, D = symbols('A B C D', commutative=False)
         >>> t = Tr(A*B*C*D)
         >>> t.permute(2)
@@ -184,7 +180,7 @@ class Tr(Expr):
 
         args = list(self.args[0].args[-pos:] + self.args[0].args[0:-pos])
 
-        return Tr(Mul(*(args)))
+        return Tr(Mul(*args))
 
     def _hashable_content(self):
         if isinstance(self.args[0], Mul):

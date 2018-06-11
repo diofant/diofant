@@ -5,7 +5,7 @@ import pytest
 from diofant import I, nextprime, sin, sqrt
 from diofant.domains import EX, FF, QQ, RR, ZZ
 from diofant.polys import polyconfig as config
-from diofant.polys.polyclasses import ANP
+from diofant.polys.factortools import dmp_irreducible_p, dmp_zz_diophantine
 from diofant.polys.polyerrors import DomainError
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys, w_polys
@@ -67,6 +67,8 @@ def test_dup_zz_hensel_lift():
 def test_dup_zz_irreducible_p():
     R, x = ring("x", ZZ)
 
+    assert R.dup_zz_irreducible_p(x) is None
+
     assert R.dup_zz_irreducible_p(3*x**4 + 2*x**3 + 6*x**2 + 8*x + 7) is None
     assert R.dup_zz_irreducible_p(3*x**4 + 2*x**3 + 6*x**2 + 8*x + 4) is None
 
@@ -81,6 +83,7 @@ def test_dup_cyclotomic_p():
     assert R.dup_cyclotomic_p(x + 1) is True
     assert R.dup_cyclotomic_p(x**2 + x + 1) is True
     assert R.dup_cyclotomic_p(x**2 + 1) is True
+    assert R.dup_cyclotomic_p(x**2 + 1, irreducible=True) is True
     assert R.dup_cyclotomic_p(x**4 + x**3 + x**2 + x + 1) is True
     assert R.dup_cyclotomic_p(x**2 - x + 1) is True
     assert R.dup_cyclotomic_p(x**6 + x**5 + x**4 + x**3 + x**2 + x + 1) is True
@@ -102,9 +105,9 @@ def test_dup_cyclotomic_p():
 
     R, x = ring("x", QQ)
     assert R.dup_cyclotomic_p(x**2 + x + 1) is True
-    assert R.dup_cyclotomic_p(QQ(1, 2)*x**2 + x + 1) is False
+    assert R.dup_cyclotomic_p(x**2/2 + x + 1) is False
 
-    R, x = ring("x", ZZ["y"])
+    R, x = ring("x", ZZ.poly_ring("y"))
     assert R.dup_cyclotomic_p(x**2 + x + 1) is False
 
 
@@ -163,19 +166,32 @@ def test_dup_zz_factor():
     for i in range(20):
         assert R.dup_zz_factor(f) == (1, [(f, 1)])
 
-    assert R.dup_zz_factor(x**2 + 2*x + 2) == \
-        (1, [(x**2 + 2*x + 2, 1)])
+    assert R.dup_zz_factor(x**2 + 2*x + 2) == (1, [(x**2 + 2*x + 2, 1)])
 
-    assert R.dup_zz_factor(18*x**2 + 12*x + 2) == \
-        (2, [(3*x + 1, 2)])
+    with config.using(use_irreducible_in_factor=True):
+        assert R.dup_zz_factor(x**2 + 2*x + 2) == (1, [(x**2 + 2*x + 2, 1)])
+
+    assert R.dup_zz_factor(18*x**2 + 12*x + 2) == (2, [(3*x + 1, 2)])
+
+    with config.using(use_irreducible_in_factor=True):
+        assert R.dup_zz_factor(18*x**2 + 12*x + 2) == (2, [(3*x + 1, 2)])
 
     assert R.dup_zz_factor(-9*x**2 + 1) == \
         (-1, [(3*x - 1, 1),
               (3*x + 1, 1)])
 
-    assert R.dup_zz_factor_sqf(-9*x**2 + 1) == \
-        (-1, [3*x - 1,
-              3*x + 1])
+    with config.using(use_irreducible_in_factor=True):
+        assert R.dup_zz_factor_sqf(3*x**4 + 2*x**3 +
+                                   6*x**2 + 8*x + 10) == (1, [3*x**4 + 2*x**3 +
+                                                              6*x**2 + 8*x + 10])
+
+    assert R.dup_zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
+
+    with config.using(use_irreducible_in_factor=True):
+        assert R.dup_zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
+
+    with config.using(use_cyclotomic_factor=False):
+        assert R.dup_zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
 
     assert R.dup_zz_factor(x**3 - 6*x**2 + 11*x - 6) == \
         (1, [(x - 3, 1),
@@ -273,13 +289,13 @@ def test_dmp_zz_wang():
     A = [ZZ(-14), ZZ(3)]
 
     S = R.dmp_eval_tail(w_1, A)
-    cs, s = UV.dup_primitive(S)
+    cs, s = UV.dmp_ground_primitive(S)
 
     assert cs == 1 and s == S == \
         1036728*_x**6 + 915552*_x**5 + 55748*_x**4 + 105621*_x**3 - 17304*_x**2 - 26841*_x - 644
 
     assert R.dmp_zz_wang_non_divisors(E, cs, ZZ(4)) == [7, 3, 11, 17]
-    assert UV.dup_sqf_p(s) and UV.dup_degree(s) == R.dmp_degree(w_1)
+    assert s.is_squarefree and UV.dmp_degree(s) == R.dmp_degree(w_1)
 
     _, H = UV.dup_zz_factor_sqf(s)
 
@@ -308,6 +324,21 @@ def test_dmp_zz_wang():
 
     factors = R.dmp_zz_wang_hensel_lifting(w_1, H, LC, A, p)
     assert R.dmp_expand(factors) == w_1
+
+
+def test_dmp_zz_diophantine():
+    F = [[[[47], []], [[9, 0, 0, -9]]],
+         [[[45]], [[]], [[]], [[-9], [-1], [], [3, 0, -6, 0]]]]
+    c = [[[-270, 0, 0, 270]], [[]], [[94, 0], []],
+         [[54, 0, 0, -54], [6, 0, 0, -6], [], [-18, 0, 54, 18, 0, -54, 0]]]
+    A = [-2, 0]
+    d = 6
+    p = 2345258188817
+    u = 2
+    K = ZZ
+
+    r = dmp_zz_diophantine(F, c, A, d, p, u, K)
+    assert r == [[[[-6, 0, 0, 6]]], [[[2, 0]]]]
 
 
 def test_sympyissue_6355():
@@ -400,111 +431,84 @@ def test_dmp_zz_factor():
 def test_dup_ext_factor():
     R, x = ring("x", QQ.algebraic_field(I))
 
-    def anp(element):
-        return ANP(element, [QQ(1), QQ(0), QQ(1)], QQ)
+    assert R.dup_ext_factor(0) == (R.domain(0), [])
 
-    assert R.dup_ext_factor(0) == (anp([]), [])
+    f = x + 1
 
-    f = anp([QQ(1)])*x + anp([QQ(1)])
+    assert R.dup_ext_factor(f) == (R.domain(1), [(f, 1)])
 
-    assert R.dup_ext_factor(f) == (anp([QQ(1)]), [(f, 1)])
+    g = 2*x + 2
 
-    g = anp([QQ(2)])*x + anp([QQ(2)])
+    assert R.dup_ext_factor(g) == (R.domain(2), [(f, 1)])
 
-    assert R.dup_ext_factor(g) == (anp([QQ(2)]), [(f, 1)])
+    f = 7*x**4 + 1
+    g = x**4 + QQ(1, 7)
 
-    f = anp([QQ(7)])*x**4 + anp([QQ(1, 1)])
-    g = anp([QQ(1)])*x**4 + anp([QQ(1, 7)])
+    assert R.dup_ext_factor(f) == (R.domain(7), [(g, 1)])
 
-    assert R.dup_ext_factor(f) == (anp([QQ(7)]), [(g, 1)])
+    f = x**4 + 1
 
-    f = anp([QQ(1)])*x**4 + anp([QQ(1)])
+    assert R.dup_ext_factor(f) == (R.domain(1), [(x**2 - I, 1), (x**2 + I, 1)])
 
-    assert R.dup_ext_factor(f) == \
-        (anp([QQ(1, 1)]), [(anp([QQ(1)])*x**2 + anp([QQ(-1), QQ(0)]), 1),
-                           (anp([QQ(1)])*x**2 + anp([QQ( 1), QQ(0)]), 1)])
+    f = 4*x**2 + 9
 
-    f = anp([QQ(4, 1)])*x**2 + anp([QQ(9, 1)])
+    assert R.dup_ext_factor(f) == (R.domain(4), [(x - 3*I/2, 1), (x + 3*I/2, 1)])
 
-    assert R.dup_ext_factor(f) == \
-        (anp([QQ(4, 1)]), [(anp([QQ(1, 1)])*x + anp([-QQ(3, 2), QQ(0, 1)]), 1),
-                           (anp([QQ(1, 1)])*x + anp([ QQ(3, 2), QQ(0, 1)]), 1)])
+    f = 4*x**4 + 8*x**3 + 77*x**2 + 18*x + 153
 
-    f = anp([QQ(4, 1)])*x**4 + anp([QQ(8, 1)])*x**3 + anp([QQ(77, 1)])*x**2 + anp([QQ(18, 1)])*x + anp([QQ(153, 1)])
-
-    assert R.dup_ext_factor(f) == \
-        (anp([QQ(4, 1)]), [(anp([QQ(1, 1)])*x + anp([-QQ(4, 1), QQ(1, 1)]), 1),
-                           (anp([QQ(1, 1)])*x + anp([-QQ(3, 2), QQ(0, 1)]), 1),
-                           (anp([QQ(1, 1)])*x + anp([ QQ(3, 2), QQ(0, 1)]), 1),
-                           (anp([QQ(1, 1)])*x + anp([ QQ(4, 1), QQ(1, 1)]), 1)])
+    assert R.dup_ext_factor(f) == (R.domain(4), [(x + 1 - 4*I, 1), (x - 3*I/2, 1),
+                                                 (x + 3*I/2, 1), (x + 1 + 4*I, 1)])
 
     R, x = ring("x", QQ.algebraic_field(sqrt(2)))
 
-    def anp(element):
-        return ANP(element, [QQ(1), QQ(0), QQ(-2)], QQ)
+    f = x**4 + 1
 
-    f = anp([QQ(1)])*x**4 + anp([QQ(1, 1)])
+    assert R.dup_ext_factor(f) == (R.domain(1), [(x**2 - sqrt(2)*x + 1, 1),
+                                                 (x**2 + sqrt(2)*x + 1, 1)])
 
-    assert R.dup_ext_factor(f) == \
-        (anp([QQ(1)]), [(anp([QQ(1)])*x**2 + anp([QQ(-1), QQ(0)])*x + anp([QQ(1)]), 1),
-                        (anp([QQ(1)])*x**2 + anp([QQ( 1), QQ(0)])*x + anp([QQ(1)]), 1)])
+    f = x**2 + 2*sqrt(2)*x + 2
 
-    f = anp([QQ(1, 1)])*x**2 + anp([QQ(2), QQ(0)])*x + anp([QQ(2, 1)])
+    assert R.dup_ext_factor(f) == (R.domain(1), [(x + sqrt(2), 2)])
+    assert R.dup_ext_factor(f**3) == (R.domain(1), [(x + sqrt(2), 6)])
 
-    assert R.dup_ext_factor(f) == \
-        (anp([QQ(1, 1)]), [(anp([1])*x + anp([1, 0]), 2)])
+    f *= 2
 
-    assert R.dup_ext_factor(f**3) == \
-        (anp([QQ(1, 1)]), [(anp([1])*x + anp([1, 0]), 6)])
-
-    f *= anp([QQ(2, 1)])
-
-    assert R.dup_ext_factor(f) == \
-        (anp([QQ(2, 1)]), [(anp([1])*x + anp([1, 0]), 2)])
-
-    assert R.dup_ext_factor(f**3) == \
-        (anp([QQ(8, 1)]), [(anp([1])*x + anp([1, 0]), 6)])
+    assert R.dup_ext_factor(f) == (R.domain(2), [(x + sqrt(2), 2)])
+    assert R.dup_ext_factor(f**3) == (R.domain(8), [(x + sqrt(2), 6)])
 
 
 def test_dmp_ext_factor():
     R,  x, y = ring("x,y", QQ.algebraic_field(sqrt(2)))
 
-    def anp(x):
-        return ANP(x, [QQ(1), QQ(0), QQ(-2)], QQ)
+    assert R.dmp_ext_factor(0) == (R.domain(0), [])
 
-    assert R.dmp_ext_factor(0) == (anp([]), [])
+    f = x + 1
 
-    f = anp([QQ(1)])*x + anp([QQ(1)])
+    assert R.dmp_ext_factor(f) == (R.domain(1), [(f, 1)])
 
-    assert R.dmp_ext_factor(f) == (anp([QQ(1)]), [(f, 1)])
+    g = 2*x + 2
 
-    g = anp([QQ(2)])*x + anp([QQ(2)])
+    assert R.dmp_ext_factor(g) == (R.domain(2), [(f, 1)])
 
-    assert R.dmp_ext_factor(g) == (anp([QQ(2)]), [(f, 1)])
+    f = x**2 - 2*y**2
 
-    f = anp([QQ(1)])*x**2 + anp([QQ(-2)])*y**2
+    assert R.dmp_ext_factor(f) == (R.domain(1), [(x - sqrt(2)*y, 1),
+                                                 (x + sqrt(2)*y, 1)])
 
-    assert R.dmp_ext_factor(f) == \
-        (anp([QQ(1)]), [(anp([QQ(1)])*x + anp([QQ(-1), QQ(0)])*y, 1),
-                        (anp([QQ(1)])*x + anp([QQ( 1), QQ(0)])*y, 1)])
+    f = 2*x**2 - 4*y**2
 
-    f = anp([QQ(2)])*x**2 + anp([QQ(-4)])*y**2
-
-    assert R.dmp_ext_factor(f) == \
-        (anp([QQ(2)]), [(anp([QQ(1)])*x + anp([QQ(-1), QQ(0)])*y, 1),
-                        (anp([QQ(1)])*x + anp([QQ( 1), QQ(0)])*y, 1)])
+    assert R.dmp_ext_factor(f) == (R.domain(2), [(x - sqrt(2)*y, 1),
+                                                 (x + sqrt(2)*y, 1)])
 
     # issue sympy/sympy#5786
     R,  x, y, z, t = ring("x, y, z, t", QQ.algebraic_field(I))
 
-    def anp(x):
-        return ANP(x, [QQ(1), QQ(0), QQ(1)], QQ)
+    f = -I*t*x - t*y + x*z - I*y*z
+    assert (R.dmp_ext_factor(f) == (R.domain(1), [(z - I*t, 1), (x - I*y, 1)]))
 
-    f = (anp([-QQ(1), QQ(0)])*t*x + anp([-QQ(1)])*t*y +
-         anp([QQ(1)])*x*z + anp([-QQ(1), QQ(0)])*y*z)
-    assert (R.dmp_ext_factor(f) ==
-            (anp([QQ(1)]), [(anp([QQ(1)])*z + anp([-QQ(1), QQ(0)])*t, 1),
-                            (anp([QQ(1)])*x + anp([-QQ(1), QQ(0)])*y, 1)]))
+    R,  x = ring("x", QQ.algebraic_field(I))
+    f = x**2 + 1
+    assert R.dmp_ext_factor(f) == (R.domain(1), [(x - I, 1), (x + I, 1)])
 
 
 def test_dup_factor_list():
@@ -516,11 +520,11 @@ def test_dup_factor_list():
     assert R.dup_factor_list(0) == (0, [])
     assert R.dup_factor_list(QQ(1, 7)) == (QQ(1, 7), [])
 
-    R, x = ring("x", ZZ['t'])
+    R, x = ring("x", ZZ.poly_ring('t'))
     assert R.dup_factor_list(0) == (0, [])
     assert R.dup_factor_list(7) == (7, [])
 
-    R, x = ring("x", QQ['t'])
+    R, x = ring("x", QQ.poly_ring('t'))
     assert R.dup_factor_list(0) == (0, [])
     assert R.dup_factor_list(QQ(1, 7)) == (QQ(1, 7), [])
 
@@ -534,7 +538,7 @@ def test_dup_factor_list():
     assert R.dup_factor_list(6*x**2 - 5*x - 6) == (1, [(2*x - 3, 1), (3*x + 2, 1)])
 
     R, x = ring("x", QQ)
-    assert R.dup_factor_list(QQ(1, 2)*x**2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
+    assert R.dup_factor_list(x**2/2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
 
     R, x = ring("x", FF(2))
     assert R.dup_factor_list(x**2 + 1) == (1, [(x + 1, 2)])
@@ -550,6 +554,8 @@ def test_dup_factor_list():
     # issue diofant/diofant#238
     f = 0.1*x**2 + 1.1*x + 1.0
     assert R.dup_factor_list(f) == (10.0, [(0.1*x + 0.1, 1), (0.1*x + 1.0, 1)])
+    f = 0.25 + 1.0*x + 1.0*x**2
+    assert R.dup_factor_list(f) == (4.0, [(0.25 + 0.5*x, 2)])
 
     Rt, t = ring("t", ZZ)
     R, x = ring("x", Rt)
@@ -563,22 +569,15 @@ def test_dup_factor_list():
     Rt, t = ring("t", QQ)
     R, x = ring("x", Rt)
 
-    f = QQ(1, 2)*t*x**2 + QQ(1, 2)*t**2*x
+    f = t*x**2/2 + t**2*x/2
 
-    assert R.dup_factor_list(f) == \
-        (QQ(1, 2)*t, [(x, 1),
-                      (x + t, 1)])
+    assert R.dup_factor_list(f) == (t/2, [(x, 1), (x + t, 1)])
 
     R, x = ring("x", QQ.algebraic_field(I))
 
-    def anp(element):
-        return ANP(element, [QQ(1), QQ(0), QQ(1)], QQ)
+    f = x**4 + 2*x**2
 
-    f = anp([QQ(1, 1)])*x**4 + anp([QQ(2, 1)])*x**2
-
-    assert R.dup_factor_list(f) == \
-        (anp([QQ(1, 1)]), [(anp([QQ(1, 1)])*x, 2),
-                           (anp([QQ(1, 1)])*x**2 + anp([])*x + anp([QQ(2, 1)]), 1)])
+    assert R.dup_factor_list(f) == (R.domain(1), [(x, 2), (x**2 + 2, 1)])
 
     R, x = ring("x", EX)
     pytest.raises(DomainError, lambda: R.dup_factor_list(EX(sin(1))))
@@ -618,12 +617,12 @@ def test_dmp_factor_list():
     R, x = ring("x", ZZ)
     assert R.dmp_factor_list(x**2 + 2*x + 1) == (1, [(x + 1, 2)])
     R, x = ring("x", QQ)
-    assert R.dmp_factor_list(QQ(1, 2)*x**2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
+    assert R.dmp_factor_list(x**2/2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
 
     R, x, y = ring("x,y", ZZ)
     assert R.dmp_factor_list(x**2 + 2*x + 1) == (1, [(x + 1, 2)])
     R, x, y = ring("x,y", QQ)
-    assert R.dmp_factor_list(QQ(1, 2)*x**2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
+    assert R.dmp_factor_list(x**2/2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
 
     R, x, y = ring("x,y", ZZ)
     f = 4*x**2*y + 4*x*y**2
@@ -639,7 +638,7 @@ def test_dmp_factor_list():
          (x + y, 1)]
 
     R,  x, y = ring("x,y", QQ)
-    f = QQ(1, 2)*x**2*y + QQ(1, 2)*x*y**2
+    f = x**2*y/2 + x*y**2/2
 
     assert R.dmp_factor_list(f) == \
         (QQ(1, 2), [(y, 1),
@@ -661,6 +660,8 @@ def test_dmp_factor_list():
     R,  x, y, z = ring("x,y,z", RR)
     f = x*y + x*z + 0.1*y + 0.1*z
     assert R.dmp_factor_list(f) == (10.0, [(0.1*y + 0.1*z, 1), (x + 0.1, 1)])
+    f = 0.25*x**2 + 1.0*x*y*z + 1.0*y**2*z**2
+    assert R.dmp_factor_list(f) == (4.0, [(0.25*x + 0.5*y*z, 2)])
 
     Rt, t = ring("t", ZZ)
     R, x, y = ring("x,y", Rt)
@@ -672,11 +673,9 @@ def test_dmp_factor_list():
 
     Rt, t = ring("t", QQ)
     R, x, y = ring("x,y", Rt)
-    f = QQ(1, 2)*t*x**2 + QQ(1, 2)*t**2*x
+    f = t*x**2/2 + t**2*x/2
 
-    assert R.dmp_factor_list(f) == \
-        (QQ(1, 2)*t, [(x, 1),
-                      (x + t, 1)])
+    assert R.dmp_factor_list(f) == (t/2, [(x, 1), (x + t, 1)])
 
     R, x, y = ring("x,y", FF(2))
     pytest.raises(NotImplementedError, lambda: R.dmp_factor_list(x**2 + y**2))
@@ -685,13 +684,23 @@ def test_dmp_factor_list():
     pytest.raises(DomainError, lambda: R.dmp_factor_list(EX(sin(1))))
 
 
-def test_dup_irreducible_p():
-    R, x = ring("x", ZZ)
-    assert R.dup_irreducible_p(x**2 + x + 1) is True
-    assert R.dup_irreducible_p(x**2 + 2*x + 1) is False
-
-
 def test_dmp_irreducible_p():
+    R, x = ring("x", ZZ)
+
+    assert dmp_irreducible_p((x**2 + x + 1).to_dense(), 0, ZZ) is True
+    assert dmp_irreducible_p((x**2 + 2*x + 1).to_dense(), 0, ZZ) is False
+
+    assert (x**2 + x + 1).is_irreducible is True
+    assert (x**2 + 2*x + 1).is_irreducible is False
+
     R, x, y = ring("x,y", ZZ)
-    assert R.dmp_irreducible_p(x**2 + x + 1) is True
-    assert R.dmp_irreducible_p(x**2 + 2*x + 1) is False
+
+    assert dmp_irreducible_p(R(2).to_dense(), 1, ZZ) is True
+    assert dmp_irreducible_p((x**2 + x + 1).to_dense(), 1, ZZ) is True
+    assert dmp_irreducible_p((x**2 + 2*x + 1).to_dense(), 1, ZZ) is False
+
+    assert R(2).is_irreducible is True
+    assert (x**2 + x + 1).is_irreducible is True
+    assert (x**2 + 2*x + 1).is_irreducible is False
+    assert ((x - 2*y)*(x + y)).is_irreducible is False
+    assert (x**2 + y**2).is_irreducible is True

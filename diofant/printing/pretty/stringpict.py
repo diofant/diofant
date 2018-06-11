@@ -91,9 +91,8 @@ class stringPict:
         ========
 
         >>> from diofant.printing.pretty.pretty_symbology import pretty_use_unicode
-        >>> from diofant.printing.pretty.stringpict import stringPict
         >>> f = pretty_use_unicode(flag=False)
-        >>> print(stringPict("10").right(" + ",stringPict("1\r-\r2",1))[0])
+        >>> print(stringPict("10").right(" + ", stringPict("1\r-\r2", 1))[0])
              1
         10 + -
              2
@@ -155,7 +154,6 @@ class stringPict:
         ========
 
         >>> from diofant.printing.pretty.pretty_symbology import pretty_use_unicode
-        >>> from diofant.printing.pretty.stringpict import stringPict
         >>> f = pretty_use_unicode(flag=False)
         >>> print(stringPict("x+3").below(
         ...       stringPict.LINE, '3')[0])  #doctest: +NORMALIZE_WHITESPACE
@@ -317,6 +315,8 @@ class prettyForm(stringPict):
         Addition of negative numbers is simplified.
         """
         arg = self
+        if arg.binding > prettyForm.NEG:
+            arg = stringPict(*arg.parens())
         result = [arg]
         for arg in others:
             # add parentheses for weak binders

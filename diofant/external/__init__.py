@@ -5,7 +5,6 @@ You should import all external modules using the import_module() function.
 
 For example
 
->>> from diofant.external import import_module
 >>> numpy = import_module('numpy')
 
 If the resulting library is not installed, or if the installed version

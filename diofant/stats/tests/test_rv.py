@@ -1,12 +1,14 @@
 import pytest
 
-from diofant import (And, Basic, DiracDelta, Eq, Interval, Sum, Symbol, Tuple,
-                     cos, integrate, oo, sin, symbols)
-from diofant.abc import x
+from diofant import (And, Basic, Dict, DiracDelta, Eq, Interval, Rational, Sum,
+                     Symbol, Tuple, cos, integrate, oo, sin, symbols)
+from diofant.abc import x, z
 from diofant.stats import (Die, E, Exponential, Normal, P, density, dependent,
                            given, independent, pspace, random_symbols, sample,
                            variance, where)
-from diofant.stats.rv import Density, NamedArgsMixin, ProductPSpace, rs_swap
+from diofant.stats.rv import (Density, NamedArgsMixin, ProductDomain,
+                              ProductPSpace, RandomSymbol, rs_swap,
+                              sample_iter)
 
 
 __all__ = ()
@@ -69,6 +71,8 @@ def test_rs_swap():
 
 
 def test_RandomSymbol():
+    pytest.raises(TypeError, lambda: RandomSymbol(0, 1))
+    pytest.raises(TypeError, lambda: RandomSymbol(0, Symbol('x')))
 
     X = Normal('x', 0, 1)
     Y = Normal('x', 0, 2)
@@ -79,6 +83,8 @@ def test_RandomSymbol():
 
     X = Normal('lambda', 0, 1)  # make sure we can use protected terms
     X = Normal('Lambda', 0, 1)  # make sure we can use Diofant terms
+
+    pytest.raises(TypeError, lambda: Normal(1, 0, 1))
 
 
 def test_RandomSymbol_diff():
@@ -101,6 +107,22 @@ def test_ProductPSpace():
     assert pspace(X + Y) == ProductPSpace(px, py)
     assert pspace(X + Y) == ProductPSpace(py, px)
 
+    X = Die("X", 2)
+    Y = Die("Y", 2)
+
+    assert (pspace(X + Y).density ==
+            Dict((frozenset({('X', 1), ('Y', 2)}), Rational(1, 4)),
+                 (frozenset({('X', 1), ('Y', 1)}), Rational(1, 4)),
+                 (frozenset({('X', 2), ('Y', 1)}), Rational(1, 4)),
+                 (frozenset({('X', 2), ('Y', 2)}), Rational(1, 4))))
+    d = pspace(X + Y).domain
+    assert ((X.symbol, 1), (Y.symbol, 2)) in d
+    assert ((X.symbol, 0), (Y.symbol, 2)) not in d
+
+    Z = Die("Z", 2)
+    d1 = pspace(X + Y).domain
+    assert ProductDomain(d1, Z.pspace.domain) == pspace(X + Y + Z).domain
+
 
 def test_E():
     assert E(5) == 5
@@ -109,25 +131,26 @@ def test_E():
 def test_Sample():
     X = Die('X', 6)
     Y = Normal('Y', 0, 1)
-    z = Symbol('z')
 
     assert sample(X) in [1, 2, 3, 4, 5, 6]
     assert sample(X + Y).is_Float
 
-    P(X + Y > 0, Y < 0, numsamples=10).is_number
+    assert P(X + Y > 0, Y < 0, numsamples=10).is_number
+    assert P(X > 10, numsamples=10).is_number
     assert E(X + Y, numsamples=10).is_number
     assert variance(X + Y, numsamples=10).is_number
 
-    pytest.raises(ValueError, lambda: P(Y > z, numsamples=5))
+    pytest.raises(TypeError, lambda: P(Y > z, numsamples=5))
 
-    assert P(sin(Y) <= 1, numsamples=10) == 1
-    assert P(sin(Y) <= 1, cos(Y) < 1, numsamples=10) == 1
-
-    # Make sure this doesn't raise an error
-    E(Sum(1/z**Y, (z, 1, oo)), Y > 2, numsamples=3)
+    assert P(sin(Y) <= 1, numsamples=10, modules=["math"]) == 1
+    assert P(sin(Y) <= 1, cos(Y) < 1, numsamples=10, modules=["math"]) == 1
 
     assert all(i in range(1, 7) for i in density(X, numsamples=10))
     assert all(i in range(4, 7) for i in density(X, X > 3, numsamples=10))
+
+    # Make sure this doesn't raise an error
+    Y = Normal('Y', 0, 1)
+    E(Sum(1/z**Y, (z, 1, oo)), Y > 2, numsamples=3, modules="mpmath")
 
 
 def test_given():
@@ -215,3 +238,12 @@ def test_sympyissue_10052():
     assert P(X < 3, X == 2) == 0
     pytest.raises(ValueError, lambda: P(1))
     pytest.raises(ValueError, lambda: P(X < 1, 2))
+
+
+def test_sample_iter():
+    X = Normal('X', 0, 1)
+    expr = X*X + 3
+    assert all(_ > 3 for _ in sample_iter(expr, numsamples=3))
+    assert all(_ > 5 for _ in sample_iter(expr, numsamples=3, condition=X > 2))
+    pytest.raises(ValueError, lambda: tuple(sample_iter(expr, numsamples=3,
+                                                        condition=X)))

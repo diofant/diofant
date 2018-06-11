@@ -1,5 +1,4 @@
 import itertools
-import os
 
 import pytest
 
@@ -329,13 +328,6 @@ def test_sympyissue_5955():
     assert limit((x**100/((x + 1)**100 + exp(-x))), x, oo) == 1
 
 
-@pytest.mark.slow
-@pytest.mark.xfail
-@pytest.mark.skipif(os.getenv('TRAVIS_BUILD_NUMBER'), reason="Too slow for travis.")
-def test_sympyissue_5955_slow():
-    assert limit((x**1000/((x + 1)**1000 + exp(-x))), x, oo) == 1
-
-
 def test_newissue():
     assert limit(exp(1/sin(x))/exp(cot(x)), x, 0) == 1
 
@@ -606,3 +598,21 @@ def test_sympyissue_13462():
 def test_sympyissue_13575():
     assert limit(acos(erfi(x)), x, 1) == pi/2 + I*log(sqrt(erf(I)**2 + 1) +
                                                       erf(I))
+
+
+def test_diofantissue_558():
+    n = Symbol('n')
+    r = Symbol('r', positive=True)
+    c = Symbol('c')
+    expr = ((2*n*(n - r + 1)/(n + r*(n - r + 1)))**c +
+            (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
+    expr = expr.subs(c, c + 1)
+    assert limit(expr, n, oo) == Limit(expr, n, oo)
+
+
+def test_sympyissue_14393():
+    assert limit((x**b - y**b)/(x**a - y**a), x, y) == b*y**b/y**a/a
+
+
+def test_sympyissue_14590():
+    assert limit((n**3*((n + 1)/n)**n)/((n + 1)*(n + 2)*(n + 3)), n, oo) == E

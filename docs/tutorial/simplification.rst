@@ -3,8 +3,6 @@
 ================
 
 ..
-    >>> from diofant import *
-    >>> x, y, z = symbols('x y z')
     >>> init_printing(pretty_print=True, use_unicode=True)
 
 The generic way to do *nontrivial* simplifications of expressions is
@@ -238,62 +236,14 @@ function.
          2
     - tan (x) + 1
 
-Assumptions
-===========
-
-By default, Diofant performs all calculations assuming that symbols
-are commutative with respect to the multiplication.  This assumption
-makes it easier to treat mathematical problems in full generality.
-
-    >>> sqrt(x**2)
-       ____
-      ╱  2
-    ╲╱  x
-
-Yet obviously we can simplify above expression if some additional
-mathematical properties on ``x`` are assumed.  This is where
-assumptions system come into play.
-
-Assumptions are set on :class:`~diofant.core.symbol.Symbol` objects
-when they are created. For instance, we can create a symbol that is
-assumed to be positive.
-
-    >>> p = symbols('p', positive=True)
-
-And then, certain simplifications will be possible:
-
-    >>> sqrt(p**2)
-    p
-
-The assumptions system additionally has deductive capabilities.  You
-might check assumptions on any expression with ``is_assumption``
-attributes, like :attr:`~diofant.core.expr.Expr.is_positive`.
-
-    >>> p.is_positive
-    True
-    >>> (1 + p).is_positive
-    True
-    >>> (-p).is_positive
-    False
-
-.. note::
-
-   ``False`` is returned also if certain assumption doesn't make sense
-   for given object.
-
-In a three-valued logic, used by system, ``None`` represents the
-"unknown" case.
-
-    >>> (p - 1).is_positive is None
-    True
-
 Powers and Logarithms
 =====================
 
 :func:`~diofant.simplify.powsimp.powdenest` function applies identity
 `(x^a)^b = x^{a b}`, from left to right, if assumptions allow.
 
-    >>> a, b = symbols('a b', extended_real=True)
+    >>> a, b = symbols('a b', real=True)
+    >>> p = symbols('p', positive=True)
     >>> powdenest((p**a)**b)
      a⋅b
     p
@@ -391,7 +341,7 @@ of more standard functions.
     -log(-z + 1)
     ─────────────
          z
-    >>> meijerg([[1],[1]], [[1],[]], -z)
+    >>> meijerg([[1], [1]], [[1], []], -z)
     ╭─╮1, 1 ⎛1  1 │   ⎞
     │╶┐     ⎜     │ -z⎟
     ╰─╯2, 1 ⎝1    │   ⎠

@@ -19,18 +19,29 @@ from .precedence import precedence
 
 # List of known functions.  First, those that have the same name in
 # Diofant and Octave.   This is almost certainly incomplete!
-known_fcns_src1 = ["sin", "cos", "tan", "asin", "acos", "atan", "atan2",
-                   "sinh", "cosh", "tanh", "asinh", "acosh", "atanh",
-                   "log", "exp", "erf", "gamma", "sign", "floor", "csc",
-                   "sec", "cot", "coth", "acot", "acoth", "erfc",
-                   "besselj", "bessely", "besseli", "besselk",
-                   "erfinv", "erfcinv", "factorial" ]
+known_fcns_src1 = ["sin", "cos", "tan", "cot", "sec", "csc",
+                   "asin", "acos", "acot", "atan", "atan2", "asec", "acsc",
+                   "sinh", "cosh", "tanh", "coth", "csch", "sech",
+                   "asinh", "acosh", "atanh", "acoth", "asech", "acsch",
+                   "erfc", "erfi", "erf", "erfinv", "erfcinv",
+                   "besseli", "besselj", "besselk", "bessely",
+                   "exp", "factorial", "floor", "fresnelc", "fresnels",
+                   "gamma", "log", "polylog", "sign", "zeta"]
+
 # These functions have different names ("Diofant": "Octave"), more
 # generally a mapping to (argument_conditions, octave_function).
 known_fcns_src2 = {
     "Abs": "abs",
     "ceiling": "ceil",
+    "Chi": "coshint",
+    "Ci": "cosint",
     "conjugate": "conj",
+    "laguerre": "laguerreL",
+    "li": "logint",
+    "loggamma": "gammaln",
+    "polygamma": "psi",
+    "Shi": "sinhint",
+    "Si": "sinint",
 }
 
 
@@ -327,6 +338,14 @@ class OctaveCodePrinter(CodePrinter):
     def _print_Identity(self, expr):
         return "eye(%s)" % self._print(expr.shape[0])
 
+    def _print_uppergamma(self, expr):
+        return "gammainc(%s, %s, 'upper')" % (self._print(expr.args[1]),
+                                              self._print(expr.args[0]))
+
+    def _print_lowergamma(self, expr):
+        return "gammainc(%s, %s, 'lower')" % (self._print(expr.args[1]),
+                                              self._print(expr.args[0]))
+
     def _print_hankel1(self, expr):
         return "besselh(%s, 1, %s)" % (self._print(expr.order),
                                        self._print(expr.argument))
@@ -359,6 +378,11 @@ class OctaveCodePrinter(CodePrinter):
 
     def _print_airybiprime(self, expr):
         return "airy(3, %s)" % self._print(expr.args[0])
+
+    def _print_LambertW(self, expr):
+        # argument order is reversed
+        args = ", ".join([self._print(x) for x in reversed(expr.args)])
+        return "lambertw(" + args + ")"
 
     def _print_Piecewise(self, expr):
         if expr.args[-1].cond != S.true:
@@ -465,13 +489,10 @@ def octave_code(expr, assign_to=None, **settings):
     Examples
     ========
 
-    >>> from diofant import octave_code, symbols, sin, pi
-    >>> x = symbols('x')
     >>> octave_code(sin(x).series(x).removeO())
     'x.^5/120 - x.^3/6 + x'
 
-    >>> from diofant import Rational, ceiling, Abs
-    >>> x, y, tau = symbols("x, y, tau")
+    >>> tau = symbols("tau")
     >>> octave_code((2*tau)**Rational(7, 2))
     '8*sqrt(2)*tau.^(7/2)'
 
@@ -485,7 +506,6 @@ def octave_code(expr, assign_to=None, **settings):
     If you need a matrix product "*" or matrix power "^", you can specify the
     symbol as a ``MatrixSymbol``.
 
-    >>> from diofant import Symbol, MatrixSymbol
     >>> n = Symbol('n', integer=True, positive=True)
     >>> A = MatrixSymbol('A', n, n)
     >>> octave_code(3*pi*A**3)
@@ -506,7 +526,6 @@ def octave_code(expr, assign_to=None, **settings):
     ``assign_to`` with matrices, the name can be specified either as a string
     or as a ``MatrixSymbol``.  The dimenions must align in the latter case.
 
-    >>> from diofant import Matrix, MatrixSymbol
     >>> mat = Matrix([[x**2, sin(x), ceiling(x)]])
     >>> octave_code(mat, assign_to='A')
     'A = [x.^2 sin(x) ceil(x)];'
@@ -517,7 +536,6 @@ def octave_code(expr, assign_to=None, **settings):
     ``(expr, True)`` then an error will be thrown.  This is to prevent
     generating an expression that may not evaluate to anything.
 
-    >>> from diofant import Piecewise
     >>> pw = Piecewise((x + 1, x > 0), (x, True))
     >>> octave_code(pw, assign_to=tau)
     'tau = ((x > 0).*(x + 1) + (~(x > 0)).*(x));'
@@ -534,9 +552,6 @@ def octave_code(expr, assign_to=None, **settings):
     dictionary value can be a list of tuples i.e., [(argument_test,
     cfunction_string)].  This can be used to call a custom Octave function.
 
-    >>> from diofant import Function
-    >>> f = Function('f')
-    >>> g = Function('g')
     >>> custom_functions = {
     ...   "f": "existing_octave_fcn",
     ...   "g": [(lambda x: x.is_Matrix, "my_mat_fcn"),
@@ -551,11 +566,10 @@ def octave_code(expr, assign_to=None, **settings):
     ``contract=False`` will just print the assignment expression that should be
     looped over:
 
-    >>> from diofant import Eq, IndexedBase, Idx, ccode
     >>> len_y = 5
-    >>> y = IndexedBase('y', shape=(len_y,))
-    >>> t = IndexedBase('t', shape=(len_y,))
-    >>> Dy = IndexedBase('Dy', shape=(len_y-1,))
+    >>> y = IndexedBase('y', shape=[len_y])
+    >>> t = IndexedBase('t', shape=[len_y])
+    >>> Dy = IndexedBase('Dy', shape=[len_y - 1])
     >>> i = Idx('i', len_y-1)
     >>> e = Eq(Dy[i], (y[i+1]-y[i])/(t[i+1]-t[i]))
     >>> octave_code(e.rhs, assign_to=e.lhs, contract=False)

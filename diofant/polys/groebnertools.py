@@ -1,7 +1,8 @@
 """Gröbner bases algorithms. """
 
 from ..core import Dummy
-from .monomials import monomial_divides, monomial_lcm, monomial_mul, term_div
+from .monomials import (monomial_div, monomial_divides, monomial_lcm,
+                        monomial_mul, term_div)
 from .orderings import lex
 from .polyconfig import query
 
@@ -32,7 +33,7 @@ def groebner(seq, ring, method=None):
     domain, orig = ring.domain, None
 
     if not domain.has_Field or not domain.has_assoc_Field:
-        orig, ring = ring, ring.clone(domain=domain.get_field())
+        orig, ring = ring, ring.clone(domain=domain.field)
         seq = [s.set_ring(ring) for s in seq]
 
     G = _groebner(seq, ring)
@@ -83,10 +84,6 @@ def buchberger(f, ring):
     as presented in [5]_.
     """
     order = ring.order
-
-    monomial_mul = ring.monomial_mul
-    monomial_div = ring.monomial_div
-    monomial_lcm = ring.monomial_lcm
 
     def select(P):
         # normal selection strategy
@@ -226,7 +223,7 @@ def buchberger(f, ring):
         ig1, ig2 = select(CP)
         CP.remove((ig1, ig2))
 
-        h = spoly(f[ig1], f[ig2], ring)
+        h = spoly(f[ig1], f[ig2])
         # ordering divisors is on average more efficient [Cox] page 111
         G1 = sorted(G, key=lambda g: order(f[g].LM))
         ht = normal(h, G1)
@@ -254,7 +251,7 @@ def buchberger(f, ring):
     return Gr
 
 
-def spoly(p1, p2, ring):
+def spoly(p1, p2):
     """
     Compute LCM(LM(p1), LM(p2))/LM(p1)*p1 - LCM(LM(p1), LM(p2))/LM(p2)*p2.
 
@@ -262,9 +259,9 @@ def spoly(p1, p2, ring):
     """
     LM1 = p1.LM
     LM2 = p2.LM
-    LCM12 = ring.monomial_lcm(LM1, LM2)
-    m1 = ring.monomial_div(LCM12, LM1)
-    m2 = ring.monomial_div(LCM12, LM2)
+    LCM12 = monomial_lcm(LM1, LM2)
+    m1 = monomial_div(LCM12, LM1)
+    m2 = monomial_div(LCM12, LM2)
     s1 = p1.mul_monom(m1)
     s2 = p2.mul_monom(m2)
     s = s1 - s2
@@ -382,11 +379,8 @@ def lbp_cmp(f, g):
     """
     if sig_cmp(Sign(f), Sign(g), Polyn(f).ring.order) == -1:
         return -1
-    if Sign(f) == Sign(g):
-        if Num(f) > Num(g):
-            return -1
-        # if Num(f) == Num(g):
-        #    return 0
+    if Sign(f) == Sign(g) and Num(f) > Num(g):
+        return -1
     return 1
 
 
@@ -490,10 +484,7 @@ def f5_reduce(f, B):
     A polynomial that is reducible in the usual sense need not be
     F5-reducible, e.g.:
 
-    >>> from diofant.domains import QQ
-    >>> from diofant.polys import ring, lex
-
-    >>> R, x,y,z = ring("x,y,z", QQ, lex)
+    >>> R, x, y, z = ring("x y z", QQ, lex)
 
     >>> f = lbp(sig((1, 1, 1), 4), x, 3)
     >>> g = lbp(sig((0, 0, 0), 2), x, 2)
@@ -514,15 +505,14 @@ def f5_reduce(f, B):
         g = f
 
         for h in B:
-            if Polyn(h):
-                if monomial_divides(Polyn(h).LM, Polyn(f).LM):
-                    t = term_div(Polyn(f).LT, Polyn(h).LT, domain)
-                    if sig_cmp(sig_mult(Sign(h), t[0]), Sign(f), order) < 0:
-                        # The following check need not be done and is in general slower than without.
-                        # if not is_rewritable_or_comparable(Sign(gp), Num(gp), B):
-                        hp = lbp_mul_term(h, t)
-                        f = lbp_sub(f, hp)
-                        break
+            if Polyn(h) and monomial_divides(Polyn(h).LM, Polyn(f).LM):
+                t = term_div(Polyn(f).LT, Polyn(h).LT, domain)
+                if sig_cmp(sig_mult(Sign(h), t[0]), Sign(f), order) < 0:
+                    # The following check need not be done and is in general slower than without.
+                    # if not is_rewritable_or_comparable(Sign(gp), Num(gp), B):
+                    hp = lbp_mul_term(h, t)
+                    f = lbp_sub(f, hp)
+                    break
 
         if g == f or not Polyn(f):
             return f
@@ -636,7 +626,7 @@ def f5b(F, ring):
             if order(m) <= order(Polyn(B[-1]).LM):
                 B.append(p)
             else:
-                for i, q in enumerate(B):
+                for i, q in enumerate(B):  # pragma: no branch
                     if order(m) > order(Polyn(q).LM):
                         B.insert(i, p)
                         break
@@ -691,13 +681,13 @@ def red_groebner(G, ring):
     return reduction(H)
 
 
-def is_groebner(G, ring):
+def is_groebner(G):
     """
     Check if G is a Gröbner basis.
     """
     for i in range(len(G)):
         for j in range(i + 1, len(G)):
-            s = spoly(G[i], G[j], ring)
+            s = spoly(G[i], G[j])
             s = s.rem(G)
             if s:
                 return False

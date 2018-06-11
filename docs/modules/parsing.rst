@@ -1,5 +1,7 @@
-Parsing input
-=============
+Parsing
+=======
+
+.. module:: diofant.parsing
 
 Parsing Functions Reference
 ---------------------------

@@ -196,8 +196,17 @@ def test_MatrixSlice():
 
     Y = X[1:2:3, 4:5:6]
     Yt = theano_code(Y)
-    # assert tuple(Yt.owner.op.idx_list) == (slice(1,2,3), slice(4,5,6))
+
+    s = ts.Scalar('int64')
+    assert tuple(Yt.owner.op.idx_list) == (slice(s, s, s), slice(s, s, s))
+
     assert Yt.owner.inputs[0] == theano_code(X)
+
+    # Doesn't work in theano like it does in Diofant. You have to use equals.
+    assert [i.equals(j) for i, j in zip(Yt.owner.inputs[1:],
+                                        [tt.Constant(s, 1), tt.Constant(s, 2),
+                                         tt.Constant(s, 3), tt.Constant(s, 4),
+                                         tt.Constant(s, 5), tt.Constant(s, 6)])]
 
 
 @pytest.mark.xfail
@@ -244,7 +253,7 @@ def test_BlockMatrix_Inverse_execution():
     A = diofant.MatrixSymbol('A', n, k)
     B = diofant.MatrixSymbol('B', n, n)
     inputs = A, B
-    output = B.I*A
+    output = B.inverse()*A
 
     cutsizes = {A: [(n//2, n//2), (k//2, k//2)],
                 B: [(n//2, n//2), (n//2, n//2)]}

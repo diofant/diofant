@@ -1,5 +1,5 @@
-Diofant Core
-============
+Core
+====
 
 sympify
 -------
@@ -116,11 +116,6 @@ AlgebraicNumber
 NumberSymbol
 ^^^^^^^^^^^^
 .. autoclass:: NumberSymbol
-   :members:
-
-RealNumber
-^^^^^^^^^^
-.. autoclass:: RealNumber
    :members:
 
 igcd
@@ -389,8 +384,6 @@ Function
    allows the user to create generic functions which act as argument
    holders. Such functions are created just like symbols:
 
-   >>> from diofant import Function, cos
-   >>> from diofant.abc import x
    >>> f = Function('f')
    >>> f(2) + f(x)
    f(2) + f(x)

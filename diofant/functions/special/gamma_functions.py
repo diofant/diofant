@@ -31,9 +31,6 @@ class gamma(Function):
     Examples
     ========
 
-    >>> from diofant import I, pi, oo, gamma, Rational
-    >>> from diofant.abc import x
-
     Several special values are known:
 
     >>> gamma(1)
@@ -45,19 +42,16 @@ class gamma(Function):
 
     The Gamma function obeys the mirror symmetry:
 
-    >>> from diofant import conjugate
     >>> conjugate(gamma(x))
     gamma(conjugate(x))
 
     Differentiation with respect to x is supported:
 
-    >>> from diofant import diff
     >>> diff(gamma(x), x)
     gamma(x)*polygamma(0, x)
 
     Series expansion is also supported:
 
-    >>> from diofant import series
     >>> series(gamma(x), x, 0, 3)
     1/x - EulerGamma + x*(EulerGamma**2/2 + pi**2/12) + x**2*(-EulerGamma*pi**2/12 + polygamma(2, 1)/6 - EulerGamma**3/6) + O(x**3)
 
@@ -84,7 +78,7 @@ class gamma(Function):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Gamma_function
-    .. [2] http://dlmf.nist.gov/5
+    .. [2] https://dlmf.nist.gov/5
     .. [3] http://mathworld.wolfram.com/GammaFunction.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/Gamma/
     """
@@ -93,7 +87,7 @@ class gamma(Function):
 
     def fdiff(self, argindex=1):
         if argindex == 1:
-            return gamma(self.args[0])*polygamma(0, self.args[0])
+            return self.func(self.args[0])*polygamma(0, self.args[0])
         else:
             raise ArgumentIndexError(self, argindex)
 
@@ -139,7 +133,7 @@ class gamma(Function):
                 x = Dummy('x')
                 n = arg.p // arg.q
                 p = arg.p - n*arg.q
-                return gamma(x + n)._eval_expand_func().subs(x, Rational(p, arg.q))
+                return self.func(x + n)._eval_expand_func().subs(x, Rational(p, arg.q))
 
         if arg.is_Add:
             coeff, tail = arg.as_coeff_add()
@@ -148,7 +142,7 @@ class gamma(Function):
                 tail = (coeff - intpart,) + tail
                 coeff = intpart
             tail = arg._new_rawargs(*tail, reeval=False)
-            return gamma(tail)*RisingFactorial(tail, coeff)
+            return self.func(tail)*RisingFactorial(tail, coeff)
 
         return self.func(*self.args)
 
@@ -178,7 +172,7 @@ class gamma(Function):
         if not (x0.is_Integer and x0 <= 0):
             return super(gamma, self)._eval_nseries(x, n, logx)
         t = self.args[0] - x0
-        return (gamma(t + 1)/rf(self.args[0], -x0 + 1))._eval_nseries(x, n, logx)
+        return (self.func(t + 1)/rf(self.args[0], -x0 + 1))._eval_nseries(x, n, logx)
 
     def _latex(self, printer, exp=None):
         aa = printer._print(self.args[0])
@@ -215,8 +209,7 @@ class lowergamma(Function):
     Examples
     ========
 
-    >>> from diofant import lowergamma, Rational
-    >>> from diofant.abc import s, x
+    >>> from diofant.abc import s
     >>> lowergamma(s, x)
     lowergamma(s, x)
     >>> lowergamma(3, x)
@@ -241,7 +234,7 @@ class lowergamma(Function):
     .. [1] https//en.wikipedia.org/wiki/Incomplete_gamma_function#Lower_incomplete_Gamma_function
     .. [2] Abramowitz, Milton; Stegun, Irene A., eds. (1965), Chapter 6, Section 5,
            Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables
-    .. [3] http://dlmf.nist.gov/8
+    .. [3] https://dlmf.nist.gov/8
     .. [4] http://functions.wolfram.com/GammaBetaErf/Gamma2/
     .. [5] http://functions.wolfram.com/GammaBetaErf/Gamma3/
     """
@@ -359,8 +352,7 @@ class uppergamma(Function):
     Examples
     ========
 
-    >>> from diofant import uppergamma, Rational
-    >>> from diofant.abc import s, x
+    >>> from diofant.abc import s
     >>> uppergamma(s, x)
     uppergamma(s, x)
     >>> uppergamma(3, x)
@@ -387,7 +379,7 @@ class uppergamma(Function):
     .. [1] https//en.wikipedia.org/wiki/Incomplete_gamma_function#Upper_incomplete_Gamma_function
     .. [2] Abramowitz, Milton; Stegun, Irene A., eds. (1965), Chapter 6, Section 5,
            Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables
-    .. [3] http://dlmf.nist.gov/8
+    .. [3] https://dlmf.nist.gov/8
     .. [4] http://functions.wolfram.com/GammaBetaErf/Gamma2/
     .. [5] http://functions.wolfram.com/GammaBetaErf/Gamma3/
     .. [6] https//en.wikipedia.org/wiki/Exponential_integral#Relation_with_other_functions
@@ -486,7 +478,6 @@ class polygamma(Function):
 
     Several special values are known:
 
-    >>> from diofant import S, polygamma, Integer
     >>> polygamma(0, 1)
     -EulerGamma
     >>> polygamma(0, 1/Integer(2))
@@ -500,7 +491,6 @@ class polygamma(Function):
     >>> polygamma(0, 23)
     -EulerGamma + 19093197/5173168
 
-    >>> from diofant import oo, I
     >>> polygamma(0, oo)
     oo
     >>> polygamma(0, -oo)
@@ -512,8 +502,6 @@ class polygamma(Function):
 
     Differentiation with respect to x is supported:
 
-    >>> from diofant import Symbol, diff
-    >>> x = Symbol("x")
     >>> diff(polygamma(0, x), x)
     polygamma(1, x)
     >>> diff(polygamma(0, x), x, 2)
@@ -529,7 +517,6 @@ class polygamma(Function):
     >>> diff(polygamma(2, x), x, 2)
     polygamma(4, x)
 
-    >>> n = Symbol("n")
     >>> diff(polygamma(n, x), x)
     polygamma(n + 1, x)
     >>> diff(polygamma(n, x), x, 2)
@@ -537,7 +524,6 @@ class polygamma(Function):
 
     We can rewrite polygamma functions in terms of harmonic numbers:
 
-    >>> from diofant import harmonic
     >>> polygamma(0, x).rewrite(harmonic)
     harmonic(x - 1) - EulerGamma
     >>> polygamma(2, x).rewrite(harmonic)
@@ -739,7 +725,6 @@ class loggamma(Function):
     Several special values are known. For numerical integral
     arguments we have:
 
-    >>> from diofant import loggamma
     >>> loggamma(-2)
     oo
     >>> loggamma(0)
@@ -753,7 +738,6 @@ class loggamma(Function):
 
     and for symbolic values:
 
-    >>> from diofant import Symbol
     >>> n = Symbol("n", integer=True, positive=True)
     >>> loggamma(n)
     log(gamma(n))
@@ -762,7 +746,6 @@ class loggamma(Function):
 
     for half-integral values:
 
-    >>> from diofant import pi, Rational
     >>> loggamma(Rational(5, 2))
     log(3*sqrt(pi)/4)
     >>> loggamma(n/2)
@@ -770,7 +753,6 @@ class loggamma(Function):
 
     and general rational arguments:
 
-    >>> from diofant import expand_func
     >>> L = loggamma(Rational(16, 3))
     >>> expand_func(L).doit()
     -5*log(3) + loggamma(1/3) + log(4) + log(7) + log(10) + log(13)
@@ -783,7 +765,6 @@ class loggamma(Function):
 
     The loggamma function has the following limits towards infinity:
 
-    >>> from diofant import oo
     >>> loggamma(oo)
     oo
     >>> loggamma(-oo)
@@ -792,28 +773,23 @@ class loggamma(Function):
     The loggamma function obeys the mirror symmetry
     if `x \in \mathbb{C} \setminus \{-\infty, 0\}`:
 
-    >>> from diofant import conjugate
-    >>> c = Symbol('c', complex=True, extended_real=False)
+    >>> c = Symbol('c', complex=True, real=False)
     >>> conjugate(loggamma(c))
     loggamma(conjugate(c))
 
     Differentiation with respect to x is supported:
 
-    >>> from diofant import diff
-    >>> from diofant.abc import x
     >>> diff(loggamma(x), x)
     polygamma(0, x)
 
     Series expansion is also supported:
 
-    >>> from diofant import series
     >>> series(loggamma(x), x, 0, 4)
     -log(x) - EulerGamma*x + pi**2*x**2/12 + x**3*polygamma(2, 1)/6 + O(x**4)
 
     We can numerically evaluate the gamma function to arbitrary precision
     on the whole complex plane:
 
-    >>> from diofant import I
     >>> loggamma(5).evalf(30)
     3.17805383034794561964694160130
     >>> loggamma(I).evalf(20)
@@ -834,7 +810,7 @@ class loggamma(Function):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Gamma_function
-    .. [2] http://dlmf.nist.gov/5
+    .. [2] https://dlmf.nist.gov/5
     .. [3] http://mathworld.wolfram.com/LogGammaFunction.html
     .. [4] http://functions.wolfram.com/GammaBetaErf/LogGamma/
     """

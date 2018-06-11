@@ -35,8 +35,7 @@ class NDimArray:
 
     Create an N-dim array from a matrix:
 
-    >>> from diofant import Matrix
-    >>> a = Matrix([[1,2],[3,4]])
+    >>> a = Matrix([[1, 2], [3, 4]])
     >>> a
     Matrix([
     [1, 2],
@@ -179,7 +178,7 @@ class NDimArray:
         ========
 
         >>> from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
-        >>> a = MutableDenseNDimArray.zeros(3,4,5,6,3)
+        >>> a = MutableDenseNDimArray.zeros(3, 4, 5, 6, 3)
         >>> a.rank()
         5
 
@@ -194,7 +193,6 @@ class NDimArray:
         ========
 
         >>> from diofant.tensor.array import ImmutableDenseNDimArray
-        >>> from diofant.abc import x, y
         >>> M = ImmutableDenseNDimArray([[x, y], [1, x*y]])
         >>> M.diff(x)
         [[1, 0], [0, y]]
@@ -325,8 +323,8 @@ class NDimArray:
         >>> c = a.reshape(3, 2)
         >>> c == b
         False
-        >>> a[0,0] = 1
-        >>> b[0,0] = 2
+        >>> a[0, 0] = 1
+        >>> b[0, 0] = 2
         >>> a == b
         False
         """
@@ -334,8 +332,26 @@ class NDimArray:
             return False
         return (self.shape == other.shape) and (list(self) == list(other))
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
+    def _eval_transpose(self):
+        from .arrayop import permutedims
+        if self.rank() != 2:
+            raise ValueError("array rank not 2")
+        return permutedims(self, (1, 0))
+
+    def transpose(self):
+        return self._eval_transpose()
+
+    def _eval_conjugate(self):
+        return self.func([i.conjugate() for i in self], self.shape)
+
+    def conjugate(self):
+        return self._eval_conjugate()
+
+    def _eval_adjoint(self):
+        return self.transpose().conjugate()
+
+    def adjoint(self):
+        return self._eval_adjoint()
 
 
 class ImmutableNDimArray(NDimArray, Expr):

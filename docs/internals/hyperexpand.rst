@@ -492,10 +492,7 @@ from above:
 Next we compute `z\frac{\mathrm{d}}{\mathrm{d}z} B_0`. For this we can
 directly use Diofant!
 
-   >>> from diofant import Symbol, sqrt, exp, I, pi, fresnelc, root, diff, expand
-   >>> z = Symbol("z")
-   >>> B0 = sqrt(pi)*exp(-I*pi/4)*fresnelc(2*root(z,4)*exp(I*pi/4)/sqrt(pi))/\
-   ...          (2*root(z,4))
+   >>> B0 = sqrt(pi)*exp(-I*pi/4)*fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))/(2*root(z, 4))
    >>> z * diff(B0, z)
    z*(cosh(2*sqrt(z))/(4*z) - E**(-I*pi/4)*sqrt(pi)*fresnelc(2*E**(I*pi/4)*z**(1/4)/sqrt(pi))/(8*z**(5/4)))
    >>> expand(_)
@@ -515,9 +512,6 @@ Formatting this result nicely we obtain
 
 Computing the second derivative we find
 
-   >>> from diofant import (Symbol, cosh, sqrt, pi, exp, I, fresnelc, root,
-   ...                    diff, expand)
-   >>> z = Symbol("z")
    >>> B1prime = cosh(2*sqrt(z))/4 - sqrt(pi)*exp(-I*pi/4)*\
    ...           fresnelc(2*root(z,4)*exp(I*pi/4)/sqrt(pi))/(8*root(z,4))
    >>> z * diff(B1prime, z)
@@ -574,16 +568,12 @@ such that `z\frac{\mathrm{d}}{\mathrm{d}z} B = M B` holds. This is easy.
 We already computed the first part `z\frac{\mathrm{d}}{\mathrm{d}z} B_0`
 above. This gives us the first row of `M`. For the second row we have:
 
-   >>> from diofant import Symbol, cosh, sqrt, diff
-   >>> z = Symbol("z")
    >>> B1 = cosh(2*sqrt(z))
    >>> z * diff(B1, z)
    sqrt(z)*sinh(2*sqrt(z))
 
 and for the third one
 
-   >>> from diofant import Symbol, sinh, sqrt, expand, diff
-   >>> z = Symbol("z")
    >>> B2 = sinh(2*sqrt(z))*sqrt(z)
    >>> expand(z * diff(B2, z))
    sqrt(z)*sinh(2*sqrt(z))/2 + z*cosh(2*sqrt(z))

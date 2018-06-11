@@ -63,7 +63,6 @@ def gauss_legendre(n, n_digits):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Gaussian_quadrature
-    .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/legendre_rule/legendre_rule.html
     """
     x = Dummy("x")
     p = legendre_poly(n, x, polys=True)
@@ -137,7 +136,6 @@ def gauss_laguerre(n, n_digits):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
-    .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/laguerre_rule/laguerre_rule.html
     """
     x = Dummy("x")
     p = laguerre_poly(n, x, polys=True)
@@ -210,8 +208,6 @@ def gauss_hermite(n, n_digits):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Gauss-Hermite_Quadrature
-    .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/hermite_rule/hermite_rule.html
-    .. [3] http://people.sc.fsu.edu/~jburkardt/cpp_src/gen_hermite_rule/gen_hermite_rule.html
     """
     x = Dummy("x")
     p = hermite_poly(n, x, polys=True)
@@ -260,14 +256,13 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     Examples
     ========
 
-    >>> from diofant import S
-    >>> x, w = gauss_gen_laguerre(3, -S.Half, 5)
+    >>> x, w = gauss_gen_laguerre(3, -0.5, 5)
     >>> x
     [0.19016, 1.7845, 5.5253]
     >>> w
     [1.4493, 0.31413, 0.00906]
 
-    >>> x, w = gauss_gen_laguerre(4, 3*S.Half, 5)
+    >>> x, w = gauss_gen_laguerre(4, 1.5, 5)
     >>> x
     [0.97851, 2.9904, 6.3193, 11.712]
     >>> w
@@ -287,7 +282,6 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
-    .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/gen_laguerre_rule/gen_laguerre_rule.html
     """
     x = Dummy("x")
     p = laguerre_poly(n, x, alpha=alpha, polys=True)
@@ -336,7 +330,6 @@ def gauss_chebyshev_t(n, n_digits):
     Examples
     ========
 
-    >>> from diofant import S
     >>> x, w = gauss_chebyshev_t(3, 5)
     >>> x
     [0.86602, 0, -0.86602]
@@ -363,7 +356,6 @@ def gauss_chebyshev_t(n, n_digits):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
-    .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/chebyshev1_rule/chebyshev1_rule.html
     """
     xi = []
     w = []
@@ -406,7 +398,6 @@ def gauss_chebyshev_u(n, n_digits):
     Examples
     ========
 
-    >>> from diofant import S
     >>> x, w = gauss_chebyshev_u(3, 5)
     >>> x
     [0.70711, 0, -0.70711]
@@ -433,7 +424,6 @@ def gauss_chebyshev_u(n, n_digits):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
-    .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/chebyshev2_rule/chebyshev2_rule.html
     """
     xi = []
     w = []
@@ -481,8 +471,7 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     Examples
     ========
 
-    >>> from diofant import S
-    >>> x, w = gauss_jacobi(3, S.Half, -S.Half, 5)
+    >>> x, w = gauss_jacobi(3, 0.5, -0.5, 5)
     >>> x
     [-0.90097, -0.22252, 0.62349]
     >>> w
@@ -508,8 +497,6 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Gauss%E2%80%93Jacobi_quadrature
-    .. [2] http://people.sc.fsu.edu/~jburkardt/cpp_src/jacobi_rule/jacobi_rule.html
-    .. [3] http://people.sc.fsu.edu/~jburkardt/cpp_src/gegenbauer_rule/gegenbauer_rule.html
     """
     x = Dummy("x")
     p = jacobi_poly(n, alpha, beta, x, polys=True)

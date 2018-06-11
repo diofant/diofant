@@ -1,15 +1,14 @@
 """Tools and arithmetics for monomials of distributed polynomials. """
 
-from textwrap import dedent
-
 from ..core import Mul, S, Tuple, sympify
 from ..core.compatibility import iterable
-from ..utilities import public
 from .polyerrors import ExactQuotientFailed
 from .polyutils import dict_from_expr
 
 
-@public
+__all__ = ('Monomial', 'itermonomials')
+
+
 def itermonomials(variables, degree):
     r"""
     Generate a set of monomials of the given total degree or less.
@@ -34,7 +33,6 @@ def itermonomials(variables, degree):
     Consider monomials in variables `x` and `y`::
 
         >>> from diofant.polys.orderings import monomial_key
-        >>> from diofant.abc import x, y
 
         >>> sorted(itermonomials([x, y], 2), key=monomial_key('grlex', [y, x]))
         [1, x, y, x**2, x*y, y**2]
@@ -72,7 +70,6 @@ def monomial_count(V, N):
     ========
 
     >>> from diofant.polys.orderings import monomial_key
-    >>> from diofant.abc import x, y
 
     >>> monomial_count(2, 2)
     6
@@ -204,7 +201,7 @@ def monomial_max(*monoms):
     We wish to find out what is the maximal degree for each of `x`, `y`
     and `z` variables::
 
-        >>> monomial_max((3,4,5), (0,5,1), (6,3,9))
+        >>> monomial_max((3, 4, 5), (0, 5, 1), (6, 3, 9))
         (6, 5, 9)
 
     """
@@ -225,7 +222,7 @@ def monomial_min(*monoms):
     We wish to find out what is the minimal degree for each of `x`, `y`
     and `z` variables::
 
-        >>> monomial_min((3,4,5), (0,5,1), (6,3,9))
+        >>> monomial_min((3, 4, 5), (0, 5, 1), (6, 3, 9))
         (0, 3, 1)
 
     """
@@ -265,127 +262,6 @@ def term_div(a, b, domain):
             return monom, domain.quo(a_lc, b_lc)
 
 
-class MonomialOps:
-    """Code generator of fast monomial arithmetic functions. """
-
-    def __init__(self, ngens):
-        self.ngens = ngens
-
-    def _build(self, code, name):
-        ns = {}
-        exec(code, ns)
-        return ns[name]
-
-    def _vars(self, name):
-        return [ "%s%s" % (name, i) for i in range(self.ngens) ]
-
-    def mul(self):
-        name = "monomial_mul"
-        template = dedent("""\
-        def %(name)s(A, B):
-            (%(A)s,) = A
-            (%(B)s,) = B
-            return %(AB)s,
-        """)
-        A = self._vars("a")
-        B = self._vars("b")
-        AB = [ "%s + %s" % (a, b) for a, b in zip(A, B) ]
-        code = template % {'name': name, 'A': ", ".join(A),
-                           'B': ", ".join(B), 'AB': ", ".join(AB)}
-        return self._build(code, name)
-
-    def pow(self):
-        name = "monomial_pow"
-        template = dedent("""\
-        def %(name)s(A, k):
-            (%(A)s,) = A
-            return %(Ak)s,
-        """)
-        A = self._vars("a")
-        Ak = [ "%s*k" % a for a in A ]
-        code = template % {'name': name, 'A': ", ".join(A),
-                           'Ak': ", ".join(Ak)}
-        return self._build(code, name)
-
-    def mulpow(self):
-        name = "monomial_mulpow"
-        template = dedent("""\
-        def %(name)s(A, B, k):
-            (%(A)s,) = A
-            (%(B)s,) = B
-            return %(ABk)s,
-        """)
-        A = self._vars("a")
-        B = self._vars("b")
-        ABk = [ "%s + %s*k" % (a, b) for a, b in zip(A, B) ]
-        code = template % {'name': name, 'A': ", ".join(A),
-                           'B': ", ".join(B), 'ABk': ", ".join(ABk)}
-        return self._build(code, name)
-
-    def ldiv(self):
-        name = "monomial_ldiv"
-        template = dedent("""\
-        def %(name)s(A, B):
-            (%(A)s,) = A
-            (%(B)s,) = B
-            return %(AB)s,
-        """)
-        A = self._vars("a")
-        B = self._vars("b")
-        AB = [ "%s - %s" % (a, b) for a, b in zip(A, B) ]
-        code = template % {'name': name, 'A': ", ".join(A),
-                           'B': ", ".join(B), 'AB': ", ".join(AB)}
-        return self._build(code, name)
-
-    def div(self):
-        name = "monomial_div"
-        template = dedent("""\
-        def %(name)s(A, B):
-            (%(A)s,) = A
-            (%(B)s,) = B
-            %(RAB)s
-            return %(R)s,
-        """)
-        A = self._vars("a")
-        B = self._vars("b")
-        RAB = [ "r%(i)s = a%(i)s - b%(i)s\n    if r%(i)s < 0: return None" % {'i': i} for i in range(self.ngens) ]
-        R = self._vars("r")
-        code = template % {'name': name, 'A': ", ".join(A), 'B': ", ".join(B),
-                           'RAB': "\n    ".join(RAB), 'R': ", ".join(R)}
-        return self._build(code, name)
-
-    def lcm(self):
-        name = "monomial_lcm"
-        template = dedent("""\
-        def %(name)s(A, B):
-            (%(A)s,) = A
-            (%(B)s,) = B
-            return %(AB)s,
-        """)
-        A = self._vars("a")
-        B = self._vars("b")
-        AB = [ "%s if %s >= %s else %s" % (a, a, b, b) for a, b in zip(A, B) ]
-        code = template % {'name': name, 'A': ", ".join(A),
-                           'B': ", ".join(B), 'AB': ", ".join(AB)}
-        return self._build(code, name)
-
-    def gcd(self):
-        name = "monomial_gcd"
-        template = dedent("""\
-        def %(name)s(A, B):
-            (%(A)s,) = A
-            (%(B)s,) = B
-            return %(AB)s,
-        """)
-        A = self._vars("a")
-        B = self._vars("b")
-        AB = [ "%s if %s <= %s else %s" % (a, a, b, b) for a, b in zip(A, B) ]
-        code = template % {'name': name, 'A': ", ".join(A),
-                           'B': ", ".join(B), 'AB': ", ".join(AB)}
-        return self._build(code, name)
-
-
-@public
 class Monomial:
     """Class representing a monomial, i.e. a product of powers. """
 
@@ -440,9 +316,6 @@ class Monomial:
             return False
 
         return self.exponents == exponents
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     def __mul__(self, other):
         if isinstance(other, Monomial):

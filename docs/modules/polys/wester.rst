@@ -20,11 +20,9 @@ All examples in this tutorial are computable, so one can just copy and
 paste them into a Python shell and do something useful with them. All
 computations were done using the following setup::
 
-    >>> from diofant import *
-
     >>> init_printing(pretty_print=True, use_unicode=True, wrap_line=False, no_global=True)
 
-    >>> var('x,y,z,s,c,n')
+    >>> var('x, y, z, s, c, n')
     (x, y, z, s, c, n)
 
 Simple univariate polynomial factorization
@@ -283,10 +281,13 @@ domains, which includes:
 
 * algebraic numbers::
 
-    >>> alg = AlgebraicNumber((sqrt(5) - 1)/2, alias='alpha')
+    >>> phi = (sqrt(5) - 1)/2
 
-    >>> factor(f, extension=alg)
-    (x - α - 1)⋅(x - α)⋅(x + α)⋅(x + α + 1)
+    >>> factor(f, extension=phi)
+    ⎛          ___⎞ ⎛          ___⎞ ⎛      ___    ⎞ ⎛      ___    ⎞
+    ⎜    1   ╲╱ 5 ⎟ ⎜    1   ╲╱ 5 ⎟ ⎜    ╲╱ 5    1⎟ ⎜    ╲╱ 5    1⎟
+    ⎜x - ─ + ─────⎟⋅⎜x + ─ + ─────⎟⋅⎜x - ───── - ─⎟⋅⎜x - ───── + ─⎟
+    ⎝    2     2  ⎠ ⎝    2     2  ⎠ ⎝      2     2⎠ ⎝      2     2⎠
 
 Factoring polynomials into linear factors
 -----------------------------------------

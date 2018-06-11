@@ -60,7 +60,6 @@ class Set(Basic):
 
         As a shortcut it is possible to use the '+' operator:
 
-        >>> from diofant import Interval, FiniteSet
         >>> Interval(0, 1).union(Interval(2, 3))
         [0, 1] U [2, 3]
         >>> Interval(0, 1) + Interval(2, 3)
@@ -81,7 +80,6 @@ class Set(Basic):
         """
         Returns the intersection of 'self' and 'other'.
 
-        >>> from diofant import Interval
 
         >>> Interval(1, 3).intersection(Interval(1, 2))
         [1, 2]
@@ -109,7 +107,6 @@ class Set(Basic):
         Examples
         ========
 
-        >>> from diofant import Interval
         >>> Interval(0, 2).is_disjoint(Interval(1, 2))
         False
         >>> Interval(0, 2).is_disjoint(Interval(3, 4))
@@ -149,7 +146,6 @@ class Set(Basic):
         Examples
         ========
 
-        >>> from diofant import Interval, S
         >>> Interval(0, 1).complement(S.Reals)
         (-oo, 0) U (1, oo)
 
@@ -160,7 +156,9 @@ class Set(Basic):
 
     def _complement(self, other):
         # this behaves as other - self
-        if isinstance(other, ProductSet):
+        if other.is_subset(self):
+            return S.EmptySet
+        elif isinstance(other, ProductSet):
             # For each set consider it or it's complement
             # We need at least one of the sets to be complemented
             # Consider all 2^n combinations.
@@ -186,9 +184,6 @@ class Set(Basic):
         elif isinstance(other, Complement):
             return Complement(other.args[0], Union(other.args[1], self), evaluate=False)
 
-        elif isinstance(other, EmptySet):
-            return S.EmptySet
-
         elif isinstance(other, FiniteSet):
             unks = FiniteSet(*[el for el in other
                                if self.contains(el) not in [S.true, S.false]])
@@ -213,7 +208,6 @@ class Set(Basic):
         Examples
         ========
 
-        >>> from diofant import Interval, Union
         >>> Interval(0, 1).inf
         0
         >>> Union(Interval(0, 1), Interval(2, 3)).inf
@@ -233,7 +227,6 @@ class Set(Basic):
         Examples
         ========
 
-        >>> from diofant import Interval, Union
         >>> Interval(0, 1).sup
         1
         >>> Union(Interval(0, 1), Interval(2, 3)).sup
@@ -254,7 +247,6 @@ class Set(Basic):
         Examples
         ========
 
-        >>> from diofant import Interval
         >>> Interval(0, 1).contains(0.5)
         true
         >>> 0.5 in Interval(0, 1)
@@ -276,7 +268,6 @@ class Set(Basic):
         Examples
         ========
 
-        >>> from diofant import Interval
         >>> Interval(0, 0.5).is_subset(Interval(0, 1))
         True
         >>> Interval(0, 1).is_subset(Interval(0, 1, left_open=True))
@@ -300,7 +291,6 @@ class Set(Basic):
         Examples
         ========
 
-        >>> from diofant import Interval
         >>> Interval(0, 0.5).is_proper_subset(Interval(0, 1))
         True
         >>> Interval(0, 1).is_proper_subset(Interval(0, 1))
@@ -318,7 +308,6 @@ class Set(Basic):
         Examples
         ========
 
-        >>> from diofant import Interval
         >>> Interval(0, 0.5).is_superset(Interval(0, 1))
         False
         >>> Interval(0, 1).is_superset(Interval(0, 1, left_open=True))
@@ -342,7 +331,6 @@ class Set(Basic):
         Examples
         ========
 
-        >>> from diofant import Interval
         >>> Interval(0, 1).is_proper_superset(Interval(0, 0.5))
         True
         >>> Interval(0, 1).is_proper_superset(Interval(0, 1))
@@ -363,7 +351,6 @@ class Set(Basic):
         Examples
         ========
 
-        >>> from diofant import FiniteSet, EmptySet
         >>> A = EmptySet()
         >>> A.powerset()
         {EmptySet()}
@@ -387,7 +374,6 @@ class Set(Basic):
         Examples
         ========
 
-        >>> from diofant import Interval, Union
         >>> Interval(0, 1).measure
         1
         >>> Union(Interval(0, 1), Interval(2, 3)).measure
@@ -417,7 +403,6 @@ class Set(Basic):
         Examples
         ========
 
-        >>> from diofant import Interval
         >>> Interval(0, 1).boundary
         {0, 1}
         >>> Interval(0, 1, True, False).boundary
@@ -435,7 +420,6 @@ class Set(Basic):
         Examples
         ========
 
-        >>> from diofant import S
         >>> S.Reals.is_open
         True
 
@@ -513,7 +497,6 @@ class ProductSet(Set):
     Examples
     ========
 
-    >>> from diofant import Interval, FiniteSet, ProductSet, Symbol
     >>> I = Interval(0, 5); S = FiniteSet(1, 2, 3)
     >>> ProductSet(I, S)
     [0, 5] x {1, 2, 3}
@@ -579,7 +562,6 @@ class ProductSet(Set):
         Examples
         ========
 
-        >>> from diofant import Interval
         >>> (2, 3) in Interval(0, 5) * Interval(0, 5)
         True
 
@@ -664,7 +646,6 @@ class Interval(Set, EvalfMixin):
     Examples
     ========
 
-    >>> from diofant import Symbol, Interval
     >>> Interval(0, 1)
     [0, 1]
     >>> Interval(0, 1, False, True)
@@ -676,7 +657,7 @@ class Interval(Set, EvalfMixin):
     >>> Interval.open(0, 1)
     (0, 1)
 
-    >>> a = Symbol('a', extended_real=True)
+    >>> a = Symbol('a', real=True)
     >>> Interval(0, a)
     [0, a]
 
@@ -734,7 +715,6 @@ class Interval(Set, EvalfMixin):
         Examples
         ========
 
-        >>> from diofant import Interval
         >>> Interval(0, 1).start
         0
         """
@@ -767,7 +747,6 @@ class Interval(Set, EvalfMixin):
         Examples
         ========
 
-        >>> from diofant import Interval
         >>> Interval(0, 1).end
         1
         """
@@ -783,7 +762,6 @@ class Interval(Set, EvalfMixin):
         Examples
         ========
 
-        >>> from diofant import Interval
         >>> Interval(0, 1, left_open=True).left_open
         true
         >>> Interval(0, 1, left_open=False).left_open
@@ -799,7 +777,6 @@ class Interval(Set, EvalfMixin):
         Examples
         ========
 
-        >>> from diofant import Interval
         >>> Interval(0, 1, right_open=True).right_open
         true
         >>> Interval(0, 1, right_open=False).right_open
@@ -874,6 +851,8 @@ class Interval(Set, EvalfMixin):
 
         See Set._union for docstring
         """
+        if other.is_UniversalSet:
+            return S.UniversalSet
         if other.is_Interval and self._is_comparable(other):
             from ..functions import Min, Max
             # Non-overlapping intervals
@@ -1073,7 +1052,6 @@ class Union(Set, EvalfMixin):
     Examples
     ========
 
-    >>> from diofant import Union, Interval
     >>> Union(Interval(1, 2), Interval(3, 4))
     [1, 2] U [3, 4]
 
@@ -1283,13 +1261,12 @@ class Intersection(Set):
     Examples
     ========
 
-    >>> from diofant import Intersection, Interval
     >>> Intersection(Interval(1, 3), Interval(2, 4))
     [2, 3]
 
     We often use the .intersect method
 
-    >>> Interval(1,3).intersection(Interval(2,4))
+    >>> Interval(1, 3).intersection(Interval(2, 4))
     [2, 3]
 
     See Also
@@ -1437,7 +1414,6 @@ class Complement(Set, EvalfMixin):
     Examples
     ========
 
-    >>> from diofant import Complement, FiniteSet
     >>> Complement(FiniteSet(0, 1, 2), FiniteSet(1))
     {0, 2}
 
@@ -1488,7 +1464,6 @@ class EmptySet(Set, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S, Interval
     >>> S.EmptySet
     EmptySet()
 
@@ -1554,7 +1529,6 @@ class UniversalSet(Set, metaclass=Singleton):
     Examples
     ========
 
-    >>> from diofant import S, Interval
     >>> S.UniversalSet
     UniversalSet()
 
@@ -1593,9 +1567,6 @@ class UniversalSet(Set, metaclass=Singleton):
     def as_relational(self, symbol):
         return true
 
-    def _union(self, other):
-        return self
-
     @property
     def _boundary(self):
         return EmptySet()
@@ -1608,7 +1579,6 @@ class FiniteSet(Set, EvalfMixin):
     Examples
     ========
 
-    >>> from diofant import FiniteSet
     >>> FiniteSet(1, 2, 3, 4)
     {1, 2, 3, 4}
     >>> 3 in FiniteSet(1, 2, 3, 4)
@@ -1714,7 +1684,6 @@ class FiniteSet(Set, EvalfMixin):
         Examples
         ========
 
-        >>> from diofant import FiniteSet
         >>> 1 in FiniteSet(1, 2)
         True
         >>> 5 in FiniteSet(1, 2)
@@ -1803,7 +1772,6 @@ class SymmetricDifference(Set):
     Examples
     ========
 
-    >>> from diofant import SymmetricDifference, FiniteSet
     >>> SymmetricDifference(FiniteSet(1, 2, 3), FiniteSet(3, 4, 5))
     {1, 2, 4, 5}
 
@@ -1847,9 +1815,6 @@ def imageset(*args):
 
     Examples
     ========
-
-    >>> from diofant import Interval, Symbol, imageset, sin, Lambda
-    >>> x = Symbol('x')
 
     >>> imageset(x, 2*x, Interval(0, 2))
     [0, 4]

@@ -4,6 +4,8 @@ sudo: false
 cache: pip
 python:
   - 3.6
+  - 3.7-dev
+  - pypy3.5
 env:
   global:
     - PYTHONHASHSEED=0
@@ -29,30 +31,31 @@ stages:
 matrix:
   include:
     - python: 3.5
-      env: COVERAGE='on' SPLIT='1/3'
+      env: SPLIT='1/4' COVERAGE='on'
     - python: 3.5
-      env: COVERAGE='on' SPLIT='2/3'
+      env: SPLIT='2/4' COVERAGE='on'
     - python: 3.5
-      env: COVERAGE='on' SPLIT='3/3'
+      env: SPLIT='3/4' COVERAGE='on'
+    - python: 3.5
+      env: SPLIT='4/4' COVERAGE='on'
     - stage: quality
       python: 3.5
-      env: COVERAGE='on' EXTRA='on'
+      env: COVERAGE='on'
       install:
         - travis_wait pip install .[exports,plot,interactive,develop,docs]
       script:
         - python setup.py flake8
-        - sphinx-build -W -b html docs build/sphinx/html
-        - sphinx-build -W -b linkcheck docs build/sphinx/linkcheck
-        - cat build/sphinx/linkcheck/output.txt
-        - py.test --numprocesses 2 --cov diofant diofant/polys
-    - stage: test
-      python: 3.5
-      env: COVERAGE='on' EXTRA='on' DIOFANT_GROUND_TYPES='gmpy'
-      install:
-        - travis_wait pip install .[exports,develop]
-      script:
-        - py.test --numprocesses 2 --cov diofant diofant/domains
+        - python setup.py build_sphinx -W -b html
+        - |
+          if [ "${TRAVIS_EVENT_TYPE}" = "cron" ]; then
+            rm -rf build/
+            python setup.py build_sphinx -W -b linkcheck
+          fi
+        - DIOFANT_GROUND_TYPES='gmpy' py.test --numprocesses 2 --cov diofant diofant/domains
+        - travis_wait py.test --numprocesses 2 --cov diofant --cov-append diofant/polys
     - stage: deploy
+      env:
+        -
       script: skip
       deploy:
         provider: pypi
@@ -62,13 +65,13 @@ matrix:
         distributions: "sdist bdist_wheel"
         on:
           tags: true
+  allow_failures:
+    - python: pypy3.5
 before_install:
   - pip install --upgrade pip setuptools pytest codecov
 install:
-  - travis_wait pip install .[exports,plot,interactive,gmpy]
-before_script:
-  - sh -e /etc/init.d/xvfb start
-  - export DISPLAY=:99.0
+  - pip install --pre -U 'gmpy2;platform_python_implementation!="PyPy"'
+  - travis_wait pip install .[exports,plot,interactive,docs]
 script:
   - |
     if [ -n "${COVERAGE}" ]; then

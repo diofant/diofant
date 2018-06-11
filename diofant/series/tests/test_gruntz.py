@@ -13,9 +13,10 @@ from diofant import (Add, E, Ei, EulerGamma, GoldenRatio, I, Integer, Li,
                      airybi, atan, binomial, cbrt, cos, cosh, coth, digamma,
                      erf, exp, factorial, fibonacci, gamma, li, log, loggamma,
                      oo, pi, root, sign, sin, sinh, sqrt, tan, tanh, zeta)
+from diofant.series.gruntz import compare
 from diofant.series.gruntz import limitinf as gruntz
+from diofant.series.gruntz import mrv, mrv_leadterm, rewrite
 from diofant.series.gruntz import sign as mrv_sign
-from diofant.series.gruntz import compare, mrv, mrv_leadterm, rewrite
 
 
 __all__ = ()
@@ -88,7 +89,6 @@ def test_gruntz_evaluation():
     assert gruntz(exp(exp(exp(x + exp(-x)))) / exp(exp(x)), x) == oo
 
 
-@pytest.mark.slow
 def test_gruntz_eval_special():
     # Gruntz, p. 126
     assert gruntz(exp(x)*(sin(1/x + exp(-x)) - sin(1/x + exp(-x**2))), x) == 1
@@ -106,6 +106,10 @@ def test_gruntz_eval_special():
     assert gruntz(x * (gamma(x - 1/gamma(x)) - gamma(x) + log(x)), x) \
         == Rational(1, 2)
     assert gruntz((gamma(x + 1/gamma(x)) - gamma(x)) / log(x), x) == 1
+
+
+@pytest.mark.slow
+def test_gruntz_eval_special_slow():
     assert gruntz(gamma(x + 1)/sqrt(2*pi)
                   - exp(-x)*(x**(x + Rational(1, 2)) + x**(x - Rational(1, 2))/12), x) == oo
     assert gruntz(exp(exp(exp(digamma(digamma(digamma(x))))))/x, x) == 0

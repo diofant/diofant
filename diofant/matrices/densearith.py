@@ -12,7 +12,7 @@ def add(matlist1, matlist2, K):
     ========
 
     >>> from diofant.matrices.densearith import add
-    >>> from diofant import ZZ
+
     >>> e = [
     ... [ZZ(12), ZZ(78)],
     ... [ZZ(56), ZZ(79)]]
@@ -42,8 +42,6 @@ def addrow(row1, row2, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densearith import addrow
-    >>> from diofant import ZZ
 
     >>> a = [ZZ(12), ZZ(34), ZZ(56)]
     >>> b = [ZZ(14), ZZ(56), ZZ(63)]
@@ -66,8 +64,6 @@ def sub(matlist1, matlist2, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densearith import sub
-    >>> from diofant import ZZ
     >>> e = [
     ... [ZZ(12), ZZ(78)],
     ... [ZZ(56), ZZ(79)]]
@@ -98,8 +94,6 @@ def negate(matlist, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densearith import negate
-    >>> from diofant import ZZ
     >>> a = [
     ... [ZZ(2), ZZ(3)],
     ... [ZZ(4), ZZ(5)]]
@@ -126,8 +120,6 @@ def negaterow(row, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densearith import negaterow
-    >>> from diofant import ZZ
     >>> a = [ZZ(2), ZZ(3), ZZ(4)]
     >>> b = [ZZ(0), ZZ(0), ZZ(0)]
     >>> negaterow(a, ZZ)
@@ -150,8 +142,6 @@ def mulmatmat(matlist1, matlist2, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densearith import mulmatmat
-    >>> from diofant import ZZ
     >>> from diofant.matrices.densetools import eye
     >>> a = [
     ... [ZZ(3), ZZ(4)],
@@ -185,8 +175,6 @@ def mulmatscaler(matlist, scaler, K):
     Examples
     ========
 
-    >>> from diofant import ZZ
-    >>> from diofant.matrices.densearith import mulmatscaler
     >>> a = [
     ... [ZZ(3), ZZ(7), ZZ(4)],
     ... [ZZ(2), ZZ(4), ZZ(5)],
@@ -209,8 +197,6 @@ def mulrowscaler(row, scaler, K):
     Examples
     ========
 
-    >>> from diofant import ZZ
-    >>> from diofant.matrices.densearith import mulrowscaler
     >>> a = [ZZ(3), ZZ(4), ZZ(5)]
     >>> mulrowscaler(a, 2, ZZ)
     [6, 8, 10]
@@ -232,13 +218,9 @@ def mulrowcol(row, col, K):
     Examples
     ========
 
-    >>> from diofant.matrices.densearith import mulrowcol
-    >>> from diofant import ZZ
-
     >>> a = [ZZ(2), ZZ(4), ZZ(6)]
     >>> mulrowcol(a, a, ZZ)
     56
-
     """
     result = K.zero
     for i in range(len(row)):

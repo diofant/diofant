@@ -1,8 +1,8 @@
 .. _polys-docs:
 
-========================
-Polynomials Manipulation
-========================
+===========
+Polynomials
+===========
 
 Computations with polynomials are at the core of computer algebra and
 having a fast and robust polynomials manipulation module is a key for
@@ -19,7 +19,7 @@ and multivariate factorization over algebraic number domains.
     :name: polytoc
     :maxdepth: 3
 
-    basics.rst
-    wester.rst
-    reference.rst
-    literature.rst
+    basics
+    wester
+    reference
+    literature

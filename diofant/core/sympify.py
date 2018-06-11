@@ -35,8 +35,6 @@ class CantSympify:
     Examples
     ========
 
-    >>> from diofant.core.sympify import sympify, CantSympify
-
     >>> class Something(dict):
     ...     pass
     ...
@@ -75,18 +73,16 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     nothing but return that value. This can be used at the beginning of a
     function to ensure you are working with the correct type.
 
-    >>> from diofant import sympify
-
     >>> sympify(2).is_integer
     True
-    >>> sympify(2).is_extended_real
+    >>> sympify(2).is_real
     True
 
-    >>> sympify(2.0).is_extended_real
+    >>> sympify(2.0).is_real
     True
-    >>> sympify("2.0").is_extended_real
+    >>> sympify("2.0").is_real
     True
-    >>> sympify("2e-45").is_extended_real
+    >>> sympify("2e-45").is_real
     True
 
     If the expression could not be converted, a SympifyError is raised.
@@ -127,7 +123,6 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     in the namespace dictionary. This can be done in a variety of ways; all
     three of the following are possibilities:
 
-    >>> from diofant import Symbol
     >>> ns["O"] = Symbol("O")  # method 1
     >>> exec('from diofant.abc import O', ns)  # method 2
     >>> ns.update(dict(O=Symbol("O")))  # method 3
@@ -178,7 +173,6 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     can see how an expression reduces to -1 by autosimplification, but does
     not do so when ``evaluate`` option is used.
 
-    >>> from diofant.abc import x
     >>> -2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) - 1
     -1
     >>> s = '-2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) - 1'
@@ -193,7 +187,6 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     just define a ``_diofant_`` method to your class. You can do that even to
     classes that you do not own by subclassing or adding the method at runtime.
 
-    >>> from diofant import Matrix
     >>> class MyList1:
     ...     def __iter__(self):
     ...         yield 1
@@ -217,7 +210,6 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     ...         yield 2
     ...         return
     ...     def __getitem__(self, i): return list(self)[i]
-    >>> from diofant.core.sympify import converter
     >>> converter[MyList2] = lambda x: Matrix(x)
     >>> sympify(MyList2())
     Matrix([

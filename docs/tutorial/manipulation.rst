@@ -3,17 +3,14 @@
 ==================
 
 ..
-   >>> from diofant import *
-   >>> x, y, z = symbols('x y z')
    >>> init_printing(pretty_print=True, use_unicode=True)
 
 In this section, we discuss some ways that we can perform advanced
 manipulation of expressions.
 
-Before we can do this, we need to understand how expressions are
-represented in Diofant.  A mathematical expression is represented as a
-tree.  Let us take the expression `x y + x^2`.  We can see what this
-expression looks like internally by using :func:`repr`
+Most generic interface to represent a mathematical expression in Diofant is a
+tree.  Let us take the expression `x y + x^2`.  We can see what this expression
+looks like internally by using :func:`repr`
 
     >>> repr(x*y + x**2)
     "Add(Pow(Symbol('x'), Integer(2)), Mul(Symbol('x'), Symbol('y')))"
@@ -102,12 +99,12 @@ this object, we could use
 
    You may have noticed that the order we entered our expression and
    the order that it came out from printers like :func:`repr` or in
-   the graph were different.  This because in Diofant, the arguments
+   the graph were different.  This because the arguments
    of :class:`~diofant.core.add.Add` and the commutative arguments of
    :class:`~diofant.core.mul.Mul` are stored in an arbitrary (but
    consistent!) order, which is independent of the order inputted.
 
-There is no subtraction class in Diofant.  ``x - y`` is represented as
+There is no subtraction class.  ``x - y`` is represented as
 ``x + (-1)*y``
 
     >>> repr(x - y)
@@ -242,13 +239,13 @@ its :attr:`~diofant.core.basic.Basic.func` and its
 
 .. note::
 
-   Every well-formed Diofant expression must either have empty
+   Every well-formed expression must either have empty
    :attr:`~diofant.core.basic.Basic.args` or satisfy invariant
 
        >>> expr == expr.func(*expr.args)
        True
 
-In Diofant, empty :attr:`~diofant.core.basic.Basic.args` signal that
+Empty :attr:`~diofant.core.basic.Basic.args` signal that
 we have hit a leaf of the expression tree.
 
     >>> x.args
@@ -256,41 +253,13 @@ we have hit a leaf of the expression tree.
     >>> Integer(2).args
     ()
 
-This interface allows us to write simple algorithms that walk
-expression trees.
+This interface allows us to write recursive generators that walk expression
+trees either in post-order or pre-order fashion.
 
-    >>> def pre(expr):
-    ...     yield expr
-    ...     for arg in expr.args:
-    ...         for subtree in pre(arg):
-    ...             yield subtree
-
-See how nice it is that empty :class:`tuple` signals leaves in the
-expression tree.  We don't even have to write a base case for our
-recursion --- it is handled automatically by the for loop.
-
-Let's test this by printing all nodes of the expression at each level.
 
     >>> expr = x*y + 2
-    >>> for term in pre(expr):
+    >>> for term in preorder_traversal(expr):
     ...     print(term)
-    x*y + 2
-    2
-    x*y
-    x
-    y
-
-Can you guess why we called our function ``pre``?  We just wrote a
-pre-order traversal function for our expression tree.  See if you can
-write a post-order traversal function.
-
-Such traversals are so common in Diofant that the generator functions
-:func:`~diofant.core.basic.preorder_traversal` and
-:func:`~diofant.utilities.iterables.postorder_traversal` are provided
-to make such traversals easy.  We could have also written our test as
-
-    >>> for arg in preorder_traversal(expr):
-    ...     print(arg)
     x*y + 2
     2
     x*y

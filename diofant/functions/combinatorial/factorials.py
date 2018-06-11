@@ -44,9 +44,6 @@ class factorial(CombinatorialFunction):
     Examples
     ========
 
-    >>> from diofant import Symbol, factorial, Rational
-    >>> n = Symbol('n', integer=True)
-
     >>> factorial(0)
     1
 
@@ -230,8 +227,6 @@ class subfactorial(CombinatorialFunction):
     Examples
     ========
 
-    >>> from diofant import subfactorial
-    >>> from diofant.abc import n
     >>> subfactorial(n + 1)
     subfactorial(n + 1)
     >>> subfactorial(5)
@@ -307,9 +302,6 @@ class factorial2(CombinatorialFunction):
 
     Examples
     ========
-
-    >>> from diofant import factorial2
-    >>> from diofant.abc import n
 
     >>> factorial2(n + 1)
     factorial2(n + 1)
@@ -396,9 +388,6 @@ class RisingFactorial(CombinatorialFunction):
     Examples
     ========
 
-    >>> from diofant import rf
-    >>> from diofant.abc import x
-
     >>> rf(x, 0)
     1
 
@@ -471,9 +460,6 @@ class FallingFactorial(CombinatorialFunction):
     where 'x' can be arbitrary expression and 'k' is an integer. For
     more information check "Concrete mathematics" by Graham, pp. 66
     or visit http://mathworld.wolfram.com/FallingFactorial.html page.
-
-    >>> from diofant import ff
-    >>> from diofant.abc import x
 
     >>> ff(x, 0)
     1
@@ -565,7 +551,6 @@ class binomial(CombinatorialFunction):
     Examples
     ========
 
-    >>> from diofant import Symbol, Rational, binomial, expand_func
     >>> n = Symbol('n', integer=True, positive=True)
 
     >>> binomial(15, 8)
@@ -591,7 +576,7 @@ class binomial(CombinatorialFunction):
     As can a given diagonal, e.g. the 4th diagonal:
 
     >>> N = -4
-    >>> [ binomial(N, i) for i in range(1 - N)]
+    >>> [binomial(N, i) for i in range(1 - N)]
     [1, -4, 10, -20, 35]
 
     >>> binomial(Rational(5, 4), 3)

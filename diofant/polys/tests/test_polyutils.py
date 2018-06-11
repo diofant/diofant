@@ -2,9 +2,9 @@
 
 import pytest
 
+from diofant import Abs, Eq, I, Integer, Integral, Mul
 from diofant import Rational as Q  # noqa: N814
-from diofant import (Abs, Eq, I, Integer, Integral, Mul, cos, erf, exp,
-                     integrate, pi, sin, sqrt, symbols)
+from diofant import cos, erf, exp, integrate, pi, sin, sqrt, symbols
 from diofant.domains import ZZ
 from diofant.polys import factor
 from diofant.polys.polyerrors import GeneratorsNeeded, PolynomialError
@@ -246,14 +246,11 @@ def test__dict_from_expr_no_gens():
     assert dict_from_expr(sqrt(2)) == ({(1,): 1}, (sqrt(2),))
     pytest.raises(GeneratorsNeeded, lambda: dict_from_expr(sqrt(2), greedy=False))
 
-    assert dict_from_expr(x*y, domain=ZZ[x]) == ({(1,): x}, (y,))
-    assert dict_from_expr(x*y, domain=ZZ[y]) == ({(1,): y}, (x,))
+    assert dict_from_expr(x*y, domain=ZZ.poly_ring(x)) == ({(1,): x}, (y,))
+    assert dict_from_expr(x*y, domain=ZZ.poly_ring(y)) == ({(1,): y}, (x,))
 
     assert dict_from_expr(3*sqrt(
         2)*pi*x*y, extension=None) == ({(1, 1, 1, 1): 3}, (x, y, pi, sqrt(2)))
-    assert dict_from_expr(3*sqrt(
-        2)*pi*x*y, extension=True) == ({(1, 1, 1): 3*sqrt(2)}, (x, y, pi))
-
     assert dict_from_expr(3*sqrt(
         2)*pi*x*y, extension=True) == ({(1, 1, 1): 3*sqrt(2)}, (x, y, pi))
 
