@@ -663,6 +663,8 @@ def test_dmp_apply_pairs():
     assert dmp_apply_pairs(f, g, h2, (1,), 1, ZZ) == [[1], [3, 5, 10], [1, 10]]
     assert dmp_apply_pairs(g, f, h2, (1,), 1, ZZ) == [[1, 2, 9], [3, 6]]
 
+    assert dmp_apply_pairs([1, 2, 3], [3, 2, 1], h2, [1], 0, ZZ) == [4, 5, 6]
+
 
 def test_dup_slice():
     f = [1, 2, 3, 4]

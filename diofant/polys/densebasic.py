@@ -1183,34 +1183,6 @@ def dmp_list_terms(f, u, K, order=None):
         return sort(terms, monomial_key(order))
 
 
-def dup_apply_pairs(f, g, h, args, K):
-    """
-    Apply ``h`` to pairs of coefficients of ``f`` and ``g``.
-
-    Examples
-    ========
-
-    >>> h = lambda x, y, z: 2*x + y - z
-
-    >>> dup_apply_pairs([1, 2, 3], [3, 2, 1], h, [1], ZZ)
-    [4, 5, 6]
-    """
-    n, m = len(f), len(g)
-
-    if n != m:
-        if n > m:
-            g = [K.zero]*(n - m) + g
-        else:
-            f = [K.zero]*(m - n) + f
-
-    result = []
-
-    for a, b in zip(f, g):
-        result.append(h(a, b, *args))
-
-    return dmp_strip(result, 0)
-
-
 def dmp_apply_pairs(f, g, h, args, u, K):
     """
     Apply ``h`` to pairs of coefficients of ``f`` and ``g``.
@@ -1223,16 +1195,15 @@ def dmp_apply_pairs(f, g, h, args, u, K):
     >>> dmp_apply_pairs([[1], [2, 3]], [[3], [2, 1]], h, [1], 1, ZZ)
     [[4], [5, 6]]
     """
-    if not u:
-        return dup_apply_pairs(f, g, h, args, K)
+    if u < 0:
+        return h(f, g, *args)
 
     n, m, v = len(f), len(g), u - 1
 
-    if n != m:
-        if n > m:
-            g = dmp_zeros(n - m, v, K) + g
-        else:
-            f = dmp_zeros(m - n, v, K) + f
+    if n > m:
+        g = dmp_zeros(n - m, v, K) + g
+    elif n < m:
+        f = dmp_zeros(m - n, v, K) + f
 
     result = []
 
