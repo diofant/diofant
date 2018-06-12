@@ -1183,34 +1183,6 @@ def dmp_list_terms(f, u, K, order=None):
         return sort(terms, monomial_key(order))
 
 
-def dup_apply_pairs(f, g, h, args, K):
-    """
-    Apply ``h`` to pairs of coefficients of ``f`` and ``g``.
-
-    Examples
-    ========
-
-    >>> h = lambda x, y, z: 2*x + y - z
-
-    >>> dup_apply_pairs([1, 2, 3], [3, 2, 1], h, [1], ZZ)
-    [4, 5, 6]
-    """
-    n, m = len(f), len(g)
-
-    if n != m:
-        if n > m:
-            g = [K.zero]*(n - m) + g
-        else:
-            f = [K.zero]*(m - n) + f
-
-    result = []
-
-    for a, b in zip(f, g):
-        result.append(h(a, b, *args))
-
-    return dmp_strip(result, 0)
-
-
 def dmp_apply_pairs(f, g, h, args, u, K):
     """
     Apply ``h`` to pairs of coefficients of ``f`` and ``g``.
@@ -1223,16 +1195,15 @@ def dmp_apply_pairs(f, g, h, args, u, K):
     >>> dmp_apply_pairs([[1], [2, 3]], [[3], [2, 1]], h, [1], 1, ZZ)
     [[4], [5, 6]]
     """
-    if not u:
-        return dup_apply_pairs(f, g, h, args, K)
+    if u < 0:
+        return h(f, g, *args)
 
     n, m, v = len(f), len(g), u - 1
 
-    if n != m:
-        if n > m:
-            g = dmp_zeros(n - m, v, K) + g
-        else:
-            f = dmp_zeros(m - n, v, K) + f
+    if n > m:
+        g = dmp_zeros(n - m, v, K) + g
+    elif n < m:
+        f = dmp_zeros(m - n, v, K) + f
 
     result = []
 
@@ -1240,27 +1211,6 @@ def dmp_apply_pairs(f, g, h, args, u, K):
         result.append(dmp_apply_pairs(a, b, h, args, v, K))
 
     return dmp_strip(result, u)
-
-
-def dup_slice(f, m, n, K):
-    """Take a continuous subsequence of terms of ``f`` in ``K[x]``. """
-    k = len(f)
-
-    if k >= m:
-        M = k - m
-    else:
-        M = 0
-    if k >= n:
-        N = k - n
-    else:
-        N = 0
-
-    f = f[N:M]
-
-    if not f:
-        return []
-    else:
-        return f + [K.zero]*m
 
 
 def dmp_slice(f, m, n, u, K):
@@ -1274,7 +1224,11 @@ def dmp_slice_in(f, m, n, j, u, K):
         raise IndexError("-%s <= j < %s expected, got %s" % (u, u, j))
 
     if not u:
-        return dup_slice(f, m, n, K)
+        k = len(f)
+        M = k - m if k >= m else 0
+        N = k - n if k >= n else 0
+        f = f[N:M]
+        return f + [K.zero]*m if f else []
 
     f, g = dmp_to_dict(f, u), {}
 
