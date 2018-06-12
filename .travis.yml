@@ -67,6 +67,7 @@ matrix:
           tags: true
   allow_failures:
     - python: pypy3.5
+      env: SPLIT=3/3
 before_install:
   - pip install --upgrade pip setuptools pytest codecov
 install:
