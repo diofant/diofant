@@ -151,7 +151,7 @@ class AlgebraicElement(DomainElement, CantSympify):
         else:
             rep = [dom.convert(_) for _ in rep]
 
-        self.rep = dmp_strip(rep, 0)
+        self.rep = dmp_rem(dmp_strip(rep, 0), self.mod, 0, self.domain)
 
     @property
     def parent(self):

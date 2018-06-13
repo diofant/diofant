@@ -497,10 +497,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 b = expr._random(None, -1, 0, 1, 0)
                 if b is not None and b is not nan and b.equals(a) is False:
                     return False
-                # try random complex
-                b = expr._random()
-                if b is not None and b is not nan and b.equals(a) is False:
-                    return False
                 failing_number = a if a.is_number else b
 
         # now we will test each wrt symbol (or all free symbols) to see if the

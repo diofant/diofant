@@ -1,3 +1,4 @@
+import gc
 import sys
 import weakref
 
@@ -116,4 +117,5 @@ def test_sympyissue_8825():
     assert sstr(list(ordered(d.items()))) == '[(a, 1), (b, 2)]'
     del a
     clear_cache()
+    gc.collect()
     assert sstr(list(ordered(d.items()))) == '[(b, 2)]'

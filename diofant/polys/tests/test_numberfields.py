@@ -365,7 +365,7 @@ def test_field_isomorphism():
 
     assert field_isomorphism(f, e) == [QQ(3, 80), 0, -QQ(139, 80), 0, QQ(347, 20), 0, -QQ(761, 20), -5]
 
-    assert field_isomorphism(QQ.algebraic_field(3), QQ.algebraic_field(sqrt(2))) == [1, 0]
+    assert field_isomorphism(QQ.algebraic_field(3), QQ.algebraic_field(sqrt(2))) == [3]
 
     assert field_isomorphism(QQ.algebraic_field(+I*sqrt(3)), QQ.algebraic_field(I*sqrt(3)/2)) == [+1, 0]
     assert field_isomorphism(QQ.algebraic_field(-I*sqrt(3)), QQ.algebraic_field(I*sqrt(3)/2)) == [-1, 0]

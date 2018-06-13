@@ -775,6 +775,12 @@ def test_AlgebraicElement():
     assert f.mod == mod
     assert f.domain == QQ
 
+    f = A([QQ(3, 2)])
+
+    assert f.rep == [QQ(3, 2)]
+    assert f.mod == mod
+    assert f.domain == QQ
+
     B = QQ.algebraic_field(I*sqrt(2))
 
     a = A([QQ(1), QQ(1)])
@@ -800,7 +806,8 @@ def test_AlgebraicElement():
     assert bool(A([QQ(1)])) is True
 
     a = A([QQ(1), -QQ(1), QQ(2)])
-    assert a.LC() == 1
+    assert a.LC() == -1
+    assert a.rep == [-1, 1]
 
     A = QQ.algebraic_field(root(2, 3))
 
