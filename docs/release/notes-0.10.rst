@@ -52,6 +52,8 @@ Minor changes
 Developer changes
 =================
 
+* Removed cachetools dependence, see :pull:`647`.
+
 Issues closed
 =============
 

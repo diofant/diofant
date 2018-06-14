@@ -3,7 +3,8 @@
 from ..core import I
 from .densearith import dmp_neg, dmp_rem, dup_rshift
 from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_permute,
-                         dmp_strip, dmp_TC, dmp_terms_gcd, dup_reverse)
+                         dmp_strip, dmp_TC, dmp_terms_gcd, dmp_to_tuple,
+                         dup_reverse)
 from .densetools import (dmp_compose, dmp_eval_in, dup_clear_denoms, dup_diff,
                          dup_eval, dup_mirror, dup_real_imag, dup_scale,
                          dup_shift, dup_sign_variations, dup_transform)
@@ -1857,6 +1858,7 @@ class ComplexInterval:
         for i in (self, other):
             re = dmp_permute(i.f1, [1, 0], 1, i.domain)
             im = dmp_permute(i.f2, [1, 0], 1, i.domain)
+            re, im = map(lambda x: dmp_to_tuple(x, 1), [re, im])
             resultants.append(dmp_resultant(re, im, 1, i.domain))
         dom = self.domain.unify(other.domain)
         gcd = dmp_gcd(*resultants, 0, dom)
