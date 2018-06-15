@@ -10,6 +10,7 @@ from ..polys.densebasic import dmp_LC, dmp_strip, dmp_to_dict, dmp_to_tuple
 from ..polys.densetools import dmp_compose
 from ..polys.euclidtools import dup_invert
 from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
+from ..printing.defaults import DefaultPrinting
 from .characteristiczero import CharacteristicZero
 from .domainelement import DomainElement
 from .field import Field
@@ -140,7 +141,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         return self.domain.is_nonnegative(a.LC())
 
 
-class AlgebraicElement(DomainElement, CantSympify):
+class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
     """Dense Algebraic Number Polynomials over a field. """
 
     def __init__(self, rep):

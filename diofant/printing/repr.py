@@ -181,6 +181,10 @@ class ReprPrinter(Printer):
         return "AlgebraicField(%s, %s)" % (self._print(expr.domain),
                                            self._print(expr.ext.as_expr()))
 
+    def _print_AlgebraicElement(self, expr):
+        return "%s(%s)" % (self._print(expr.parent),
+                           self._print(list(map(expr.domain.to_expr, expr.rep))))
+
 
 def srepr(expr, **settings):
     """return expr in repr form"""

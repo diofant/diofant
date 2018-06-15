@@ -7,10 +7,11 @@ Not Released Yet
 New features
 ============
 
+* New representation for elements of :class:`~diofant.domains.AlgebraicField`, see :pull:`619` and :pull:`631`.
+
 Major changes
 =============
 
-* New representation for elements of :class:`~diofant.domains.AlgebraicField`, see :pull:`619`.
 * Stable enumeration of polynomial roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`633`.
 
 Compatibility breaks
@@ -24,7 +25,6 @@ Compatibility breaks
 * Removed ``PolyRing`` class, see :pull:`621`.
 * ``get_ring()`` method for domains, derived from :class:`~diofant.domains.ring.Ring`, now is a property, e.g. :attr:`~diofant.domains.ring.Ring.ring`, see :pull:`621`.
 * Removed ``compose`` option for :func:`~diofant.polys.numberfields.minimal_polynomial`, use ``method`` instead, see :pull:`624`.
-* Removed ``alias`` option for :class:`~diofant.core.numbers.AlgebraicNumber`, see :pull:`626`.
 * :func:`~diofant.polys.numberfields.field_isomorphism` take fields as arguments, see :pull:`627`.
 * Functions :func:`~diofant.polys.numberfields.minimal_polynomial` and :func:`~diofant.polys.numberfields.primitive_element` return :class:`~diofant.polys.polytools.PurePoly` instances, see :pull:`628`.
 * Removed ``ANP`` class, see :pull:`619`.
@@ -37,6 +37,7 @@ Compatibility breaks
 * ``from_<Foo>()`` methods of :class:`~diofant.domains.domain.Domain` now are private, see :pull:`637`.
 * Method :meth:`~diofant.domains.domain.Domain.from_expr` was renamed from ``from_diofant()``, see :pull:`637`.
 * Method :meth:`~diofant.domains.domain.Domain.to_expr` was renamed from ``to_diofant()``, see :pull:`637`.
+* Removed ``AlgebraicNumber`` class, see :pull:`631`.
 
 Minor changes
 =============

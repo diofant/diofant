@@ -2,16 +2,14 @@
 
 import pytest
 
-from diofant import (Add, GoldenRatio, I, Integer, Mul, Poly, PurePoly,
-                     Rational, Tuple, cbrt, cos, exp, exp_polar, expand,
-                     expand_multinomial, nsimplify, oo, pi, root, sin, solve,
-                     sqrt)
+from diofant import (Add, GoldenRatio, I, Integer, PurePoly, Rational, cbrt,
+                     cos, exp, exp_polar, expand, expand_multinomial,
+                     nsimplify, oo, pi, root, sin, solve, sqrt)
 from diofant.abc import x, y, z
 from diofant.domains import QQ
-from diofant.polys.numberfields import (AlgebraicNumber, field_isomorphism,
+from diofant.polys.numberfields import (field_isomorphism,
                                         is_isomorphism_possible,
                                         minimal_polynomial, primitive_element)
-from diofant.polys.polyclasses import DMP
 from diofant.polys.polyerrors import CoercionFailed, NotAlgebraic
 from diofant.polys.polytools import degree
 from diofant.polys.rootoftools import RootOf
@@ -81,10 +79,9 @@ def test_minimal_polynomial():
     assert minimal_polynomial(sqrt(2)) == PurePoly(x**2 - 2)
     assert minimal_polynomial(sqrt(2), method='groebner') == PurePoly(x**2 - 2)
 
-    a = AlgebraicNumber(sqrt(2))
-    b = AlgebraicNumber(sqrt(3))
+    a = sqrt(2)
+    b = sqrt(3)
 
-    assert minimal_polynomial(a)(x) == x**2 - 2
     assert minimal_polynomial(b)(x) == x**2 - 3
 
     assert minimal_polynomial(a) == PurePoly(x**2 - 2)
@@ -96,15 +93,18 @@ def test_minimal_polynomial():
     assert minimal_polynomial(sqrt(b/2 + 17))(x) == 4*x**4 - 136*x**2 + 1153
 
     # issue diofant/diofant#431
-    theta = AlgebraicNumber(sqrt(2), (Rational(1, 2), 17))
+    K = QQ.algebraic_field(sqrt(2))
+    theta = K.to_expr(K([Rational(1, 2), 17]))
     assert minimal_polynomial(theta)(x) == 2*x**2 - 68*x + 577
 
-    theta = AlgebraicNumber(RootOf(x**7 + x - 1, 3), (1, 2, 0, 0, 1))
+    K = QQ.algebraic_field(RootOf(x**7 + x - 1, 3))
+    theta = K.to_expr(K([1, 2, 0, 0, 1]))
     ans = minimal_polynomial(theta)(x)
     assert ans == (x**7 - 7*x**6 + 19*x**5 - 27*x**4 + 63*x**3 -
                    115*x**2 + 82*x - 147)
-    assert minimal_polynomial(theta.as_expr(), method='groebner')(x) == ans
-    theta = AlgebraicNumber(RootOf(x**5 + 5*x - 1, 2), (1, -1, 1))
+    assert minimal_polynomial(theta, method='groebner')(x) == ans
+    K = QQ.algebraic_field(RootOf(x**5 + 5*x - 1, 2))
+    theta = K.to_expr(K([1, -1, 1]))
     ans = (x**30 - 15*x**28 - 10*x**27 + 135*x**26 + 330*x**25 - 705*x**24 -
            150*x**23 + 3165*x**22 - 6850*x**21 + 7182*x**20 + 3900*x**19 +
            4435*x**18 + 11970*x**17 - 259725*x**16 - 18002*x**15 +
@@ -113,11 +113,10 @@ def test_minimal_polynomial():
            5302000*x**6 - 2405376*x**5 + 1016640*x**4 - 804480*x**3 +
            257280*x**2 - 53760*x + 1280)
     assert minimal_polynomial(sqrt(theta) + root(theta, 3))(x) == ans
-    theta = sqrt(1 + 1/(AlgebraicNumber(RootOf(x**3 + 4*x - 15, 1),
-                                        (1, 0, 1)) +
-                        1/(sqrt(3) +
-                           AlgebraicNumber(RootOf(x**3 - x + 1, 0),
-                                           (1, 2, -1)))))
+    K1 = QQ.algebraic_field(RootOf(x**3 + 4*x - 15, 1))
+    K2 = QQ.algebraic_field(RootOf(x**3 - x + 1, 0))
+    theta = sqrt(1 + 1/(K1.to_expr(K([1, 0, 1])) +
+                        1/(sqrt(3) + K2.to_expr(K2([1, 2, -1])))))
     ans = (2262264837876687263*x**36 - 38939909597855051866*x**34 +
            315720420314462950715*x**32 - 1601958657418182606114*x**30 +
            5699493671077371036494*x**28 - 15096777696140985506150*x**26 +
@@ -130,17 +129,16 @@ def test_minimal_polynomial():
            551322649782053543)
     assert minimal_polynomial(theta)(x) == ans
 
-    a, b = sqrt(2)/3 + 7, AlgebraicNumber(sqrt(2)/3 + 7)
-
+    a = sqrt(2)/3 + 7
     f = 81*x**8 - 2268*x**6 - 4536*x**5 + 22644*x**4 + 63216*x**3 - \
         31608*x**2 - 189648*x + 141358
 
     assert minimal_polynomial(sqrt(a) + sqrt(sqrt(a)))(x) == f
-    assert minimal_polynomial(sqrt(b) + sqrt(sqrt(b)))(x) == f
 
     assert minimal_polynomial(a**Rational(3, 2))(x) == 729*x**4 - 506898*x**2 + 84604519
 
-    a = AlgebraicNumber(RootOf(x**3 + x - 1, 0))
+    K = QQ.algebraic_field(RootOf(x**3 + x - 1, 0))
+    a = K.to_expr(K([1, 0]))
     assert minimal_polynomial(1/a**2)(x) == x**3 - x**2 - 2*x - 1
 
     # issue sympy/sympy#5994
@@ -534,217 +532,19 @@ def test_to_number_field():
     B = A.algebraic_field(sqrt(3))
     assert B.convert(sqrt(2) + sqrt(3)) == B([1, 0])
 
-    a = AlgebraicNumber(sqrt(2) + sqrt(3), [Rational(1, 2), Integer(0), -Rational(9, 2), Integer(0)])
+    K = QQ.algebraic_field(sqrt(2) + sqrt(3))
+    a = K([Rational(1, 2), Integer(0), -Rational(9, 2), Integer(0)])
 
-    assert B.convert(sqrt(2)) == B(a.coeffs())
+    assert B.from_expr(sqrt(2)) == a
 
     pytest.raises(CoercionFailed, lambda: QQ.algebraic_field(sqrt(3)).convert(sqrt(2)))
 
-    # issue sympy/sympy#5649
-    assert AlgebraicNumber(1).rep.rep == QQ.algebraic_field(1).convert(1).rep
-    assert AlgebraicNumber(sqrt(2)).rep.rep == A.convert(sqrt(2)).rep
-
     p = x**6 - 6*x**4 - 6*x**3 + 12*x**2 - 36*x + 1
     r0, r1 = p.as_poly(x).all_roots()[:2]
-    a = AlgebraicNumber(r0, [Rational(-96, 755), Rational(-54, 755),
-                             Rational(128, 151), Rational(936, 755),
-                             Rational(-1003, 755), Rational(2184, 755)])
     A = QQ.algebraic_field(r0)
-    assert A.convert(r1) == A(a.coeffs())
-
-
-def test_AlgebraicNumber():
-    minpoly, root = x**2 - 2, sqrt(2)
-
-    a = AlgebraicNumber(root, gen=x)
-
-    assert a.rep == DMP([QQ(1), QQ(0)], QQ)
-    assert a.root == root
-    assert a.minpoly == minpoly
-    assert a.is_number
-
-    assert a.coeffs() == [Integer(1), Integer(0)]
-    assert a.native_coeffs() == [QQ(1), QQ(0)]
-
-    a = AlgebraicNumber(root, gen=x)
-
-    assert a.rep == DMP([QQ(1), QQ(0)], QQ)
-    assert a.root == root
-    assert a.minpoly == minpoly
-    assert a.is_number
-
-    a = AlgebraicNumber(root, gen=x)
-
-    assert a.rep == DMP([QQ(1), QQ(0)], QQ)
-    assert a.root == root
-    assert a.minpoly == minpoly
-    assert a.is_number
-
-    assert AlgebraicNumber(sqrt(2), []).rep == DMP([], QQ)
-
-    assert AlgebraicNumber(sqrt(2), [8]).rep == DMP([QQ(8)], QQ)
-    assert AlgebraicNumber(sqrt(2), [Rational(8, 3)]).rep == DMP([QQ(8, 3)], QQ)
-
-    assert AlgebraicNumber(sqrt(2), [7, 3]).rep == DMP([QQ(7), QQ(3)], QQ)
-    assert AlgebraicNumber(
-        sqrt(2), [Rational(7, 9), Rational(3, 2)]).rep == DMP([QQ(7, 9), QQ(3, 2)], QQ)
-
-    assert AlgebraicNumber(sqrt(2), [1, 2, 3]).rep == DMP([QQ(2), QQ(5)], QQ)
-
-    a = AlgebraicNumber(AlgebraicNumber(root, gen=x), [1, 2])
-
-    assert a.rep == DMP([QQ(1), QQ(2)], QQ)
-    assert a.root == root
-    assert a.minpoly == minpoly
-    assert a.is_number
-
-    assert a.coeffs() == [Integer(1), Integer(2)]
-    assert a.native_coeffs() == [QQ(1), QQ(2)]
-
-    a = AlgebraicNumber((minpoly, root), [1, 2])
-
-    assert a.rep == DMP([QQ(1), QQ(2)], QQ)
-    assert a.root == root
-    assert a.minpoly == minpoly
-    assert a.is_number
-
-    a = AlgebraicNumber((Poly(minpoly), root), [1, 2])
-
-    assert a.rep == DMP([QQ(1), QQ(2)], QQ)
-    assert a.root == root
-    assert a.minpoly == minpoly
-    assert a.is_number
-
-    assert AlgebraicNumber( sqrt(3)).rep == DMP([ QQ(1), QQ(0)], QQ)
-    assert AlgebraicNumber(-sqrt(3)).rep == DMP([ QQ(1), QQ(0)], QQ)
-
-    a = AlgebraicNumber(sqrt(2))
-    b = AlgebraicNumber(sqrt(2))
-
-    assert a == b
-
-    c = AlgebraicNumber(sqrt(2), gen=x)
-
-    assert a == b
-    assert a == c
-
-    a = AlgebraicNumber(sqrt(2), [1, 2])
-    b = AlgebraicNumber(sqrt(2), [1, 3])
-
-    assert a != b and a != sqrt(2) + 3
-
-    assert (a == x) is False and (a != x) is True
-
-    a = AlgebraicNumber(sqrt(2), [1, 0])
-
-    assert a.as_poly(x) == Poly(x)
-
-    assert a.as_expr() == sqrt(2)
-    assert a.as_expr(x) == x
-
-    a = AlgebraicNumber(sqrt(2), [2, 3])
-
-    p = a.as_poly()
-
-    assert p == Poly(2*p.gen + 3)
-
-    assert a.as_poly(x) == Poly(2*x + 3)
-
-    assert a.as_expr() == 2*sqrt(2) + 3
-    assert a.as_expr(x) == 2*x + 3
-
-    A = QQ.algebraic_field(AlgebraicNumber(sqrt(2)))
-    a = A([1, 0])
-    b = A.convert(sqrt(2))
-    assert a == b
-
-    a = AlgebraicNumber(sqrt(2), [1, 2, 3])
-    assert a.args == (sqrt(2), Tuple(2, 5))
-
-    pytest.raises(ValueError, lambda: AlgebraicNumber(RootOf(x**3 + y*x + 1,
-                                                             x, 0)))
-
-    a = AlgebraicNumber(RootOf(x**3 + 2*x - 1, 1))
-    assert a.free_symbols == set()
-
-    # integer powers:
-    assert a**0 == 1
-    assert a**2 == AlgebraicNumber(a, (1, 0, 0))
-    assert a**5 == AlgebraicNumber(a, (1, 0, 0, 0, 0, 0))
-    assert a**110 == AlgebraicNumber(a, ([1] + [0]*110))
-    assert (a**pi).is_Pow
-
-    b = AlgebraicNumber(sqrt(3))
-    assert b + 1 == AlgebraicNumber(sqrt(3), (1, 1))
-    assert (b + 1) + b == AlgebraicNumber(sqrt(3), (2, 1))
-
-    assert (2*b + 1)**3 == 30*b + 37
-    assert 1/b == b/3
-
-    b = AlgebraicNumber(RootOf(x**7 - x + 1, 1), (1, 2, -1))
-    t = AlgebraicNumber(b.root)
-    assert b**7 == 490*t**6 - 119*t**5 - 196*t**4 - 203*t**3 - 265*t**2 + 637*t - 198
-
-    b = AlgebraicNumber(sqrt(2), (1, 0))
-    c = b + 1
-    assert c**2 == 2*b + 3
-    assert c**5 == 29*b + 41
-    assert c**-2 == 3 - 2*b
-    assert c**-11 == 5741*b - 8119
-
-    # arithmetics
-    assert a**3 == -2*a + 1 == a*(-2) + 1 == 1 + (-2)*a == 1 - 2*a
-    assert a**5 == a**2 + 4*a - 2
-    assert a**4 == -2*a**2 + a == a - 2*a**2
-    assert a**110 == (-2489094528619081871*a**2 + 3737645722703173544*a -
-                      1182958048412500088)
-
-    assert a + a == 2*a
-    assert 2*a - a == a
-    assert Integer(1) - a == (-a) + 1
-
-    assert (a + pi).is_Add
-    assert (pi + a).is_Add
-    assert (a - pi).is_Add
-    assert (pi - a).is_Add
-    assert (a*pi).is_Mul
-    assert (pi*a).is_Mul
-
-    a = AlgebraicNumber(sqrt(2), (5, 7))
-    b = AlgebraicNumber(sqrt(2), (-4, -6))
-    assert a*b == AlgebraicNumber(sqrt(2), (-58, -82))
-
-    # different extensions
-    a = AlgebraicNumber(sqrt(2))
-    b = AlgebraicNumber(sqrt(3))
-    assert a + b == Add(a, +b, evaluate=False)
-    assert a * b == Mul(a, +b, evaluate=False)
-    assert a - b == Add(a, -b, evaluate=False)
-
-
-def test_to_algebraic_integer():
-    a = AlgebraicNumber(sqrt(3), gen=x).to_algebraic_integer()
-
-    assert a.minpoly == x**2 - 3
-    assert a.root == sqrt(3)
-    assert a.rep == DMP([QQ(1), QQ(0)], QQ)
-
-    a = AlgebraicNumber(2*sqrt(3), gen=x).to_algebraic_integer()
-    assert a.minpoly == x**2 - 12
-    assert a.root == 2*sqrt(3)
-    assert a.rep == DMP([QQ(1), QQ(0)], QQ)
-
-    a = AlgebraicNumber(sqrt(3)/2, gen=x).to_algebraic_integer()
-
-    assert a.minpoly == x**2 - 12
-    assert a.root == 2*sqrt(3)
-    assert a.rep == DMP([QQ(1), QQ(0)], QQ)
-
-    a = AlgebraicNumber(sqrt(3)/2, [Rational(7, 19), 3], gen=x).to_algebraic_integer()
-
-    assert a.minpoly == x**2 - 12
-    assert a.root == 2*sqrt(3)
-    assert a.rep == DMP([QQ(7, 19), QQ(3)], QQ)
+    a = A([Rational(-96, 755), Rational(-54, 755), Rational(128, 151), Rational(936, 755),
+           Rational(-1003, 755), Rational(2184, 755)])
+    assert A.from_expr(r1) == a
 
 
 def test_minpoly_fraction_field():

@@ -431,8 +431,8 @@ class StrPrinter(Printer):
     def _print_ProductSet(self, p):
         return ' x '.join(self._print(set) for set in p.sets)
 
-    def _print_AlgebraicNumber(self, expr):
-        return self._print(expr.as_expr())
+    def _print_AlgebraicElement(self, expr):
+        return self._print(expr.parent.to_expr(expr))
 
     def _print_Pow(self, expr, rational=False):
         PREC = precedence(expr)

@@ -1158,11 +1158,6 @@ class PrettyPrinter(Printer):
             elif term.is_Number and term < 0:
                 pform = self._print(-term)
                 pforms.append(pretty_negative(pform, i))
-            elif term.is_AlgebraicNumber and term.coeffs()[0] < 0:
-                new_coeffs = term.coeffs()
-                new_coeffs[0] = -new_coeffs[0]
-                pform = self._print(term.func(term.root, new_coeffs))
-                pforms.append(pretty_negative(pform, i))
             elif term.is_Relational:
                 pforms.append(prettyForm(*self._print(term).parens()))
             else:
@@ -1498,8 +1493,8 @@ class PrettyPrinter(Printer):
     def _print_FracElement(self, frac):
         return prettyForm(sstr(frac))
 
-    def _print_AlgebraicNumber(self, expr):
-        return self._print(expr.as_expr())
+    def _print_AlgebraicElement(self, expr):
+        return self._print(expr.parent.to_expr(expr))
 
     def _print_RootOf(self, expr):
         args = [self._print_Add(expr.expr, order='lex')]

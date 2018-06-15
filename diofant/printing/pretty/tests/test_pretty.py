@@ -4,16 +4,15 @@ from io import StringIO
 
 import pytest
 
-from diofant import (FF, QQ, RR, ZZ, Add, AlgebraicNumber, And, Basic,
-                     Complement, Contains, Derivative, Dict, Eq, Equivalent,
-                     EulerGamma, FiniteSet, Float, Function, Ge, GoldenRatio,
-                     Gt, I, Implies, Integer, Integral, Intersection, Interval,
-                     Lambda, Le, Limit, Lt, Matrix, MatrixSymbol, Mod, Mul,
-                     Nand, Ne, Nor, Not, O, Or, Pow, Product, Range, Rational,
-                     Ray, RealField, RootOf, RootSum, S, Segment, Subs, Sum,
-                     Symbol, SymmetricDifference, Trace, Tuple, Union, Xor,
-                     cbrt, conjugate, grlex, groebner, ilex, oo, pi, root,
-                     symbols)
+from diofant import (FF, QQ, RR, ZZ, Add, And, Basic, Complement, Contains,
+                     Derivative, Dict, Eq, Equivalent, EulerGamma, FiniteSet,
+                     Float, Function, Ge, GoldenRatio, Gt, I, Implies, Integer,
+                     Integral, Intersection, Interval, Lambda, Le, Limit, Lt,
+                     Matrix, MatrixSymbol, Mod, Mul, Nand, Ne, Nor, Not, O, Or,
+                     Pow, Product, Range, Rational, Ray, RealField, RootOf,
+                     RootSum, S, Segment, Subs, Sum, Symbol,
+                     SymmetricDifference, Trace, Tuple, Union, Xor, cbrt,
+                     conjugate, grlex, groebner, ilex, oo, pi, root, symbols)
 from diofant.abc import a, b, c, d, e, f, k, l, lamda, m, n, t, w, x, y, z
 from diofant.core.trace import Tr
 from diofant.diffgeom import BaseVectorField
@@ -5017,20 +5016,15 @@ def test_MatrixElement():
     assert upretty(Matrix([[X[0, 0], 1], [2, 3]])) == ucode_str
 
 
-def test_AlgebraicNumber():
-    a = AlgebraicNumber(sqrt(2), (1, 1))
+def test_AlgebraicElement():
+    K = QQ.algebraic_field(sqrt(2))
+    a = K([1, 1])
     ucode_str = \
         """\
       ___\n\
 1 + ╲╱ 2 \
 """
     assert upretty(a) == ucode_str
-
-    ucode_str = \
-        """\
-x - 1 + ⅈ\
-"""
-    assert upretty(AlgebraicNumber(I, (-1, 1)) + x) == ucode_str
 
 
 def test_sympyissue_11801():
