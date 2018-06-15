@@ -277,31 +277,6 @@ Sparse polynomials are represented as dictionaries.
 .. autoclass:: PolyElement
    :members:
 
-In commutative algebra, one often studies not only polynomials, but also
-*modules* over polynomial rings. The polynomial manipulation module provides
-rudimentary low-level support for finitely generated free modules. This is
-mainly used for Gröbner basis computations (see there), so manipulation
-functions are only provided to the extend needed. They carry the prefix
-``sdm_``. Note that in examples, the generators of the free module are called
-`f_1, f_2, \ldots`.
-
-.. currentmodule:: diofant.polys.distributedmodules
-
-.. autofunction:: sdm_monomial_mul
-.. autofunction:: sdm_monomial_deg
-.. autofunction:: sdm_monomial_divides
-.. autofunction:: sdm_LC
-.. autofunction:: sdm_to_dict
-.. autofunction:: sdm_from_dict
-.. autofunction:: sdm_add
-.. autofunction:: sdm_LM
-.. autofunction:: sdm_LT
-.. autofunction:: sdm_mul_term
-.. autofunction:: sdm_zero
-.. autofunction:: sdm_deg
-.. autofunction:: sdm_from_vector
-.. autofunction:: sdm_to_vector
-
 Polynomial factorization algorithms
 ***********************************
 
@@ -603,15 +578,6 @@ manual for usage.
 .. currentmodule:: diofant.polys.fglmtools
 
 .. autofunction:: matrix_fglm
-
-Gröbner basis algorithms for modules are also provided:
-
-.. currentmodule:: diofant.polys.distributedmodules
-
-.. autofunction:: sdm_spoly
-.. autofunction:: sdm_ecart
-.. autofunction:: sdm_nf_mora
-.. autofunction:: sdm_groebner
 
 Exceptions
 ==========
