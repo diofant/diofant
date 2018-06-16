@@ -265,17 +265,12 @@ def test_solve_sympyissue_6785():
     assert roots == [{x: 0, y: Rational(1, 2) + 15*sqrt(1111)},
                      {x: 0, y: Rational(1, 2) - 15*sqrt(1111)}]
 
-
-@pytest.mark.xfail
-def test_solve_sympyissue_6785_RR():
     roots = solve_poly_system([((x - 5)**2/250000 +
                                 (y - 5.0/10)**2/250000) - 1, x], x, y)
-    # TODO: does this really have to be so complicated?!
     assert len(roots) == 2
-    assert roots[0][x] == 0
+    assert roots[0][x] == roots[1][x] == 0
     assert roots[0][y].epsilon_eq(-499.474999374969, 1e12)
-    assert roots[1][x] == 0
-    assert roots[1][y].epsilon_eq(500.474999374969, 1e12)
+    assert roots[1][y].epsilon_eq(+500.474999374969, 1e12)
 
 
 def test_sympyissue_12345():

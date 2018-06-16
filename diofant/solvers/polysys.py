@@ -102,6 +102,7 @@ def solve_poly_system(eqs, *gens, **args):
     """
     try:
         polys, opt = parallel_poly_from_expr(eqs, *gens, **args)
+        polys = [p.to_exact() for p in polys]
     except PolificationFailed as exc:
         raise ComputationFailed('solve_poly_system', len(eqs), exc)
 
@@ -167,5 +168,8 @@ def solve_poly_system(eqs, *gens, **args):
         return solutions
 
     result = _solve_reduced_system(polys, opt.gens)
+
+    if not opt.domain.is_Exact:
+        result = [{k: r[k].evalf(opt.domain.dps) for k in r} for r in result]
 
     return sorted(result, key=default_sort_key)
