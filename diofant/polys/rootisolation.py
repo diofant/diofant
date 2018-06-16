@@ -290,105 +290,98 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
            Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
     """
     a, b, c, d = K.one, K.zero, K.zero, K.one
-
     k = dup_sign_variations(f, K)
 
-    if k == 0:
-        return []
-    if k == 1:
-        roots = [dup_inner_refine_real_root(
-            f, (a, b, c, d), K, eps=eps, fast=fast, mobius=True)]
-    else:
-        roots, stack = [], [(a, b, c, d, f, k)]
+    roots, stack = [], [(a, b, c, d, f, k)]
 
-        while stack:
-            a, b, c, d, f, k = stack.pop()
+    while stack:
+        a, b, c, d, f, k = stack.pop()
 
-            A = dup_root_lower_bound(f, K)
+        A = dup_root_lower_bound(f, K)
 
-            if A is not None:
-                A = K(int(A))
-            else:
-                A = K.zero
+        if A is not None:
+            A = K(int(A))
+        else:
+            A = K.zero
 
-            if fast and A > 16:
-                f = dup_scale(f, A, K)
-                a, c, A = A*a, A*c, K.one
+        if fast and A > 16:
+            f = dup_scale(f, A, K)
+            a, c, A = A*a, A*c, K.one
 
-            if A >= K.one:
-                f = dup_shift(f, A, K)
-                b, d = A*a + b, A*c + d
+        if A >= K.one:
+            f = dup_shift(f, A, K)
+            b, d = A*a + b, A*c + d
 
-                if not dmp_TC(f, K):
-                    roots.append((f, (b, b, d, d)))
-                    f = dup_rshift(f, 1, K)
+            if not dmp_TC(f, K):
+                roots.append((f, (b, b, d, d)))
+                f = dup_rshift(f, 1, K)
 
-                k = dup_sign_variations(f, K)
+            k = dup_sign_variations(f, K)
 
-                if k == 0:
-                    continue
-                if k == 1:
-                    roots.append(dup_inner_refine_real_root(
-                        f, (a, b, c, d), K, eps=eps, fast=fast, mobius=True))
-                    continue
+            if k == 0:
+                continue
+            if k == 1:
+                roots.append(dup_inner_refine_real_root(
+                    f, (a, b, c, d), K, eps=eps, fast=fast, mobius=True))
+                continue
 
-            f1 = dup_shift(f, K.one, K)
+        f1 = dup_shift(f, K.one, K)
 
-            a1, b1, c1, d1, r = a, a + b, c, c + d, 0
+        a1, b1, c1, d1, r = a, a + b, c, c + d, 0
+
+        if not dmp_TC(f1, K):
+            roots.append((f1, (b1, b1, d1, d1)))
+            f1, r = dup_rshift(f1, 1, K), 1
+
+        k1 = dup_sign_variations(f1, K)
+        k2 = k - k1 - r
+
+        a2, b2, c2, d2 = b, a + b, d, c + d
+
+        if k2 > 1:
+            f2 = dup_shift(dup_reverse(f), K.one, K)
+
+            if not dmp_TC(f2, K):
+                f2 = dup_rshift(f2, 1, K)
+
+            k2 = dup_sign_variations(f2, K)
+        else:
+            f2 = None
+
+        if k1 < k2:
+            a1, a2, b1, b2 = a2, a1, b2, b1
+            c1, c2, d1, d2 = c2, c1, d2, d1
+            f1, f2, k1, k2 = f2, f1, k2, k1
+
+        if not k1:
+            continue
+
+        if f1 is None:
+            f1 = dup_shift(dup_reverse(f), K.one, K)
 
             if not dmp_TC(f1, K):
-                roots.append((f1, (b1, b1, d1, d1)))
-                f1, r = dup_rshift(f1, 1, K), 1
+                f1 = dup_rshift(f1, 1, K)
 
-            k1 = dup_sign_variations(f1, K)
-            k2 = k - k1 - r
+        if k1 == 1:
+            roots.append(dup_inner_refine_real_root(
+                f1, (a1, b1, c1, d1), K, eps=eps, fast=fast, mobius=True))
+        else:
+            stack.append((a1, b1, c1, d1, f1, k1))
 
-            a2, b2, c2, d2 = b, a + b, d, c + d
+        if not k2:
+            continue
 
-            if k2 > 1:
-                f2 = dup_shift(dup_reverse(f), K.one, K)
+        if f2 is None:
+            f2 = dup_shift(dup_reverse(f), K.one, K)
 
-                if not dmp_TC(f2, K):
-                    f2 = dup_rshift(f2, 1, K)
+            if not dmp_TC(f2, K):
+                f2 = dup_rshift(f2, 1, K)
 
-                k2 = dup_sign_variations(f2, K)
-            else:
-                f2 = None
-
-            if k1 < k2:
-                a1, a2, b1, b2 = a2, a1, b2, b1
-                c1, c2, d1, d2 = c2, c1, d2, d1
-                f1, f2, k1, k2 = f2, f1, k2, k1
-
-            if not k1:
-                continue
-
-            if f1 is None:
-                f1 = dup_shift(dup_reverse(f), K.one, K)
-
-                if not dmp_TC(f1, K):
-                    f1 = dup_rshift(f1, 1, K)
-
-            if k1 == 1:
-                roots.append(dup_inner_refine_real_root(
-                    f1, (a1, b1, c1, d1), K, eps=eps, fast=fast, mobius=True))
-            else:
-                stack.append((a1, b1, c1, d1, f1, k1))
-
-            if not k2:
-                continue
-
-            if f2 is None:
-                f2 = dup_shift(dup_reverse(f), K.one, K)
-
-                if not dmp_TC(f2, K):
-                    f2 = dup_rshift(f2, 1, K)
-
-            if k2 == 1:
-                roots.append(dup_inner_refine_real_root(
-                    f2, (a2, b2, c2, d2), K, eps=eps, fast=fast, mobius=True))
-            else:
-                stack.append((a2, b2, c2, d2, f2, k2))
+        if k2 == 1:
+            roots.append(dup_inner_refine_real_root(
+                f2, (a2, b2, c2, d2), K, eps=eps, fast=fast, mobius=True))
+        else:
+            stack.append((a2, b2, c2, d2, f2, k2))
 
     return roots
 
@@ -965,6 +958,8 @@ _values = {
 
 def _classify_point(re, im):
     """Return the half-axis (or origin) on which (re, im) point is located. """
+    assert not re or not im
+
     if not re and not im:
         return OO
 
@@ -973,7 +968,7 @@ def _classify_point(re, im):
             return A2
         else:
             return A4
-    elif not im:
+    else:
         if re > 0:
             return A1
         else:
@@ -1018,8 +1013,8 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t, F):
         for (a, _), indices, _ in intervals:
             Q.append(OO)
 
-            if indices[1] % 2 == 1:
-                f2_sgn = -f2_sgn
+            assert indices[1] % 2 == 1
+            f2_sgn = -f2_sgn
 
             if a != t:
                 if f2_sgn > 0:
@@ -1060,8 +1055,8 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t, F):
         for (a, _), indices, _ in intervals:
             Q.append(OO)
 
-            if indices[0] % 2 == 1:
-                f1_sgn = -f1_sgn
+            assert indices[0] % 2 == 1
+            f1_sgn = -f1_sgn
 
             if a != t:
                 if f1_sgn > 0:
@@ -1112,10 +1107,7 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t, F):
             re = dup_eval(f1, a, F)
             im = dup_eval(f2, a, F)
 
-            cls = _classify_point(re, im)
-
-            if cls is not None:
-                Q.append(cls)
+            Q.append(_classify_point(re, im))
 
         if 0 in indices:
             if indices[0] % 2 == 1:
