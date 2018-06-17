@@ -1,6 +1,7 @@
 """Real and complex root isolation and refinement algorithms. """
 
 from ..core import I
+from ..domains import QQ, ZZ
 from .densearith import dmp_neg, dmp_rem, dup_rshift
 from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_permute,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dup_reverse)
@@ -63,7 +64,7 @@ def dup_root_upper_bound(f, K):
            of Universal Computer Science, Vol. 15, No. 3, 523-537, 2009.
     """
     n, P = len(f), []
-    t = n * [K.one]
+    t = n * [ZZ.one]
     if dmp_LC(f, K) < 0:
         f = dmp_neg(f, 0, K)
     f = list(reversed(f))
@@ -72,14 +73,14 @@ def dup_root_upper_bound(f, K):
         if f[i] >= 0:
             continue
 
-        a, QL = K.log(-f[i], 2), []
+        a, QL = ZZ.log(-f[i], 2), []
 
         for j in range(i + 1, n):
 
             if f[j] <= 0:
                 continue
 
-            q = t[j] + a - K.log(f[j], 2)
+            q = t[j] + a - ZZ.log(f[j], 2)
             QL.append([q // (j - i), j])
 
         q = min(QL)
@@ -91,7 +92,7 @@ def dup_root_upper_bound(f, K):
     if not P:
         return
     else:
-        return K.field(2)**(max(P) + 1)
+        return QQ(2)**(max(P) + 1)
 
 
 def dup_root_lower_bound(f, K):
@@ -114,7 +115,7 @@ def dup_root_lower_bound(f, K):
         return
 
 
-def _mobius_from_interval(I, field):
+def _mobius_from_interval(I):
     """Convert an open interval to a Mobius transform. """
     s, t = I
 
@@ -124,11 +125,11 @@ def _mobius_from_interval(I, field):
     return a, b, c, d
 
 
-def _mobius_to_interval(M, field):
+def _mobius_to_interval(M):
     """Convert a Mobius transform to an open interval. """
     a, b, c, d = M
 
-    s, t = field(a, c), field(b, d)
+    s, t = QQ(a, c), QQ(b, d)
 
     if s <= t:
         return s, t
@@ -146,16 +147,16 @@ def dup_step_refine_real_root(f, M, K, fast=False):
     A = dup_root_lower_bound(f, K)
 
     if A is not None:
-        A = K(int(A))
+        A = ZZ.convert(int(A))
     else:
-        A = K.zero
+        A = ZZ.zero
 
     if fast and A > 16:
-        f = dup_scale(f, A, K)
-        a, c, A = A*a, A*c, K.one
+        f = dup_scale(f, K.convert(A), K)
+        a, c, A = A*a, A*c, ZZ.one
 
-    if A >= K.one:
-        f = dup_shift(f, A, K)
+    if A >= 1:
+        f = dup_shift(f, K.convert(A), K)
         b, d = A*a + b, A*c + d
 
         if not dup_eval(f, K.zero, K):
@@ -185,10 +186,8 @@ def dup_step_refine_real_root(f, M, K, fast=False):
 
 def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fast=False, mobius=False):
     """Refine a positive root of `f` given a Mobius transform or an interval. """
-    F = K.field
-
     if len(M) == 2:
-        a, b, c, d = _mobius_from_interval(M, F)
+        a, b, c, d = _mobius_from_interval(M)
     else:
         a, b, c, d = M
 
@@ -198,13 +197,13 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fas
 
     if eps is not None and steps is not None:
         for i in range(steps):
-            if abs(F(a, c) - F(b, d)) >= eps:
+            if abs(QQ(a, c) - QQ(b, d)) >= eps:
                 f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K, fast=fast)
             else:
                 break
     else:
         if eps is not None:
-            while abs(F(a, c) - F(b, d)) >= eps:
+            while abs(QQ(a, c) - QQ(b, d)) >= eps:
                 f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K, fast=fast)
 
         if steps is not None:
@@ -213,7 +212,7 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fas
 
     if disjoint is not None:
         while True:
-            u, v = _mobius_to_interval((a, b, c, d), F)
+            u, v = _mobius_to_interval((a, b, c, d))
 
             if v <= disjoint or disjoint <= u:
                 break
@@ -221,14 +220,14 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fas
                 f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K, fast=fast)
 
     if not mobius:
-        return _mobius_to_interval((a, b, c, d), F)
+        return _mobius_to_interval((a, b, c, d))
     else:
         return f, (a, b, c, d)
 
 
 def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=False):
     """Refine a positive root of `f` given an interval `(s, t)`. """
-    a, b, c, d = _mobius_from_interval((s, t), K.field)
+    a, b, c, d = _mobius_from_interval((s, t))
 
     f = dup_transform(f, dmp_strip([a, b], 0), dmp_strip([c, d], 0), K)
 
@@ -288,7 +287,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
            Fractions Method Using new Bounds of Positive Roots. Nonlinear
            Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
     """
-    a, b, c, d = K.one, K.zero, K.zero, K.one
+    a, b, c, d = ZZ.one, ZZ.zero, ZZ.zero, ZZ.one
     k = dup_sign_variations(f, K)
 
     roots, stack = [], [(a, b, c, d, f, k)]
@@ -299,16 +298,16 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
         A = dup_root_lower_bound(f, K)
 
         if A is not None:
-            A = K(int(A))
+            A = ZZ.convert(int(A))
         else:
-            A = K.zero
+            A = ZZ.zero
 
         if fast and A > 16:
-            f = dup_scale(f, A, K)
-            a, c, A = A*a, A*c, K.one
+            f = dup_scale(f, K.convert(A), K)
+            a, c, A = A*a, A*c, ZZ.one
 
-        if A >= K.one:
-            f = dup_shift(f, A, K)
+        if A >= 1:
+            f = dup_shift(f, K.convert(A), K)
             b, d = A*a + b, A*c + d
 
             if not dmp_TC(f, K):
@@ -387,10 +386,8 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
 
 def _discard_if_outside_interval(f, M, inf, sup, K, negative, fast, mobius):
     """Discard an isolating interval if outside ``(inf, sup)``. """
-    F = K.field
-
     while True:
-        u, v = _mobius_to_interval(M, F)
+        u, v = _mobius_to_interval(M)
 
         if negative:
             u, v = -v, -u
@@ -413,7 +410,7 @@ def dup_inner_isolate_positive_roots(f, K, eps=None, inf=None, sup=None, fast=Fa
 
     roots = dup_inner_isolate_real_roots(f, K, eps=eps, fast=fast)
 
-    F, results = K.field, []
+    results = []
 
     if inf is not None or sup is not None:
         for f, M in roots:
@@ -423,7 +420,7 @@ def dup_inner_isolate_positive_roots(f, K, eps=None, inf=None, sup=None, fast=Fa
                 results.append(result)
     elif not mobius:
         for f, M in roots:
-            u, v = _mobius_to_interval(M, F)
+            u, v = _mobius_to_interval(M)
             results.append((u, v))
     else:
         results = roots
@@ -438,7 +435,7 @@ def dup_inner_isolate_negative_roots(f, K, inf=None, sup=None, eps=None, fast=Fa
 
     roots = dup_inner_isolate_real_roots(dup_mirror(f, K), K, eps=eps, fast=fast)
 
-    F, results = K.field, []
+    results = []
 
     if inf is not None or sup is not None:
         for f, M in roots:
@@ -448,7 +445,7 @@ def dup_inner_isolate_negative_roots(f, K, inf=None, sup=None, eps=None, fast=Fa
                 results.append(result)
     elif not mobius:
         for f, M in roots:
-            u, v = _mobius_to_interval(M, F)
+            u, v = _mobius_to_interval(M)
             results.append((-v, -u))
     else:
         results = roots
@@ -461,13 +458,11 @@ def _isolate_zero(f, K, inf, sup, sqf=False):
     (j,), f = dmp_terms_gcd(f, 0, K)
 
     if j > 0:
-        F = K.field
-
         if (inf is None or inf <= 0) and (sup is None or 0 <= sup):
             if not sqf:
-                return [((F.zero, F.zero), j)], f
+                return [((QQ.zero, QQ.zero), j)], f
             else:
-                return [(F.zero, F.zero)], f
+                return [(QQ.zero, QQ.zero)], f
 
     return [], f
 
@@ -599,15 +594,13 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
     I_neg, I_pos = _real_isolate_and_disjoin(factors_list, K, eps=eps,
                                              inf=inf, sup=sup, strict=strict, basis=basis, fast=fast)
 
-    F = K.field
-
     if not zeros or not zero_indices:
         I_zero = []
     else:
         if not basis:
-            I_zero = [((F.zero, F.zero), zero_indices)]
+            I_zero = [((QQ.zero, QQ.zero), zero_indices)]
         else:
-            I_zero = [((F.zero, F.zero), zero_indices, [K.one, K.zero])]
+            I_zero = [((QQ.zero, QQ.zero), zero_indices, [ZZ.one, ZZ.zero])]
 
     return sorted(I_neg + I_zero + I_pos)
 
@@ -683,10 +676,8 @@ def _real_isolate_and_disjoin(factors, K, eps=None, inf=None, sup=None, strict=F
                 I_pos[j] = g, N, m, G
                 break
 
-    field = K.field
-
-    I_neg = [(_mobius_to_interval(M, field), k, f) for (_, M, k, f) in I_neg]
-    I_pos = [(_mobius_to_interval(M, field), k, f) for (_, M, k, f) in I_pos]
+    I_neg = [(_mobius_to_interval(M), k, f) for (_, M, k, f) in I_neg]
+    I_pos = [(_mobius_to_interval(M), k, f) for (_, M, k, f) in I_pos]
 
     if not basis:
         I_neg = [((-v, -u), k) for ((u, v), k, _) in I_neg]
@@ -1708,7 +1699,7 @@ class RealInterval:
                 else:
                     raise ValueError("can't refine a real root in (%s, %s)" % (s, t))
 
-            a, b, c, d = _mobius_from_interval((s, t), dom.field)
+            a, b, c, d = _mobius_from_interval((s, t))
 
             f = dup_transform(f, dmp_strip([a, b], 0), dmp_strip([c, d], 0), dom)
 
@@ -1722,17 +1713,16 @@ class RealInterval:
     @property
     def a(self):
         """Return the position of the left end. """
-        field = self.domain.field
         a, b, c, d = self.mobius
 
         if not self.neg:
             if a*d < b*c:
-                return field(a, c)
-            return field(b, d)
+                return QQ(a, c)
+            return QQ(b, d)
         else:
             if a*d > b*c:
-                return -field(a, c)
-            return -field(b, d)
+                return -QQ(a, c)
+            return -QQ(b, d)
 
     @property
     def b(self):
