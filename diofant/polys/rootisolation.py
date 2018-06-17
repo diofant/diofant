@@ -89,9 +89,7 @@ def dup_root_upper_bound(f, K):
 
         P.append(q[0])
 
-    if not P:
-        return
-    else:
+    if P:
         return K.field(2)**(max(P) + 1)
 
 
@@ -111,8 +109,6 @@ def dup_root_lower_bound(f, K):
 
     if bound is not None:
         return 1/bound
-    else:
-        return
 
 
 def _mobius_from_interval(I, field):
@@ -131,10 +127,7 @@ def _mobius_to_interval(M, field):
 
     s, t = field(a, c), field(b, d)
 
-    if s <= t:
-        return s, t
-    else:
-        return t, s
+    return (s, t) if s <= t else (t, s)
 
 
 def dup_step_refine_real_root(f, M, K, fast=False):
@@ -155,7 +148,7 @@ def dup_step_refine_real_root(f, M, K, fast=False):
         f = dup_scale(f, A, K)
         a, c, A = A*a, A*c, K.one
 
-    if A >= K.one:
+    if A >= 1:
         f = dup_shift(f, A, K)
         b, d = A*a + b, A*c + d
 
@@ -188,10 +181,7 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fas
     """Refine a positive root of `f` given a Mobius transform or an interval. """
     F = K.field
 
-    if len(M) == 2:
-        a, b, c, d = _mobius_from_interval(M, F)
-    else:
-        a, b, c, d = M
+    a, b, c, d = M
 
     while not c:
         f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c,
@@ -216,15 +206,12 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fas
         while True:
             u, v = _mobius_to_interval((a, b, c, d), F)
 
-            if v <= disjoint or disjoint <= u:
-                break
-            else:
+            if u < disjoint < v:
                 f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K, fast=fast)
+            else:
+                break
 
-    if not mobius:
-        return _mobius_to_interval((a, b, c, d), F)
-    else:
-        return f, (a, b, c, d)
+    return (f, (a, b, c, d)) if mobius else _mobius_to_interval((a, b, c, d), F)
 
 
 def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=False):
@@ -266,13 +253,9 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=F
         else:
             disjoint = None
 
-    s, t = dup_outer_refine_real_root(
-        f, s, t, K, eps=eps, steps=steps, disjoint=disjoint, fast=fast)
+    s, t = dup_outer_refine_real_root(f, s, t, K, eps=eps, steps=steps, disjoint=disjoint, fast=fast)
 
-    if negative:
-        return -t, -s
-    else:
-        return s, t
+    return (-t, -s) if negative else (s, t)
 
 
 def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
@@ -308,7 +291,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
             f = dup_scale(f, A, K)
             a, c, A = A*a, A*c, K.one
 
-        if A >= K.one:
+        if A >= 1:
             f = dup_shift(f, A, K)
             b, d = A*a + b, A*c + d
 
@@ -511,11 +494,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
     I_pos = dup_inner_isolate_positive_roots(f, K, eps=eps, inf=inf, sup=sup, fast=fast)
 
     roots = sorted(I_neg + I_zero + I_pos)
-
-    if not blackbox:
-        return roots
-    else:
-        return [RealInterval((a, b), f, K) for (a, b) in roots]
+    return [RealInterval((a, b), f, K) for (a, b) in roots] if blackbox else roots
 
 
 def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):

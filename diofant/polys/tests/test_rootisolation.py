@@ -45,7 +45,6 @@ def test_dup_inner_refine_real_root():
     f = [-1, 0, 2]
     r = (1, QQ(3, 2))
     assert dup_inner_refine_real_root(f, (1, 2, 1, 1), ZZ, steps=1) == r
-    assert dup_inner_refine_real_root(f, (1, 2), ZZ, steps=1) == r
 
 
 def test_dup_refine_real_root():
