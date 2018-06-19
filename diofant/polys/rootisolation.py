@@ -89,9 +89,7 @@ def dup_root_upper_bound(f, K):
 
         P.append(q[0])
 
-    if not P:
-        return
-    else:
+    if P:
         return K.field(2)**(max(P) + 1)
 
 
@@ -111,8 +109,6 @@ def dup_root_lower_bound(f, K):
 
     if bound is not None:
         return 1/bound
-    else:
-        return
 
 
 def _mobius_from_interval(I, field):
@@ -131,10 +127,7 @@ def _mobius_to_interval(M, field):
 
     s, t = field(a, c), field(b, d)
 
-    if s <= t:
-        return s, t
-    else:
-        return t, s
+    return (s, t) if s <= t else (t, s)
 
 
 def dup_step_refine_real_root(f, M, K, fast=False):
@@ -155,7 +148,7 @@ def dup_step_refine_real_root(f, M, K, fast=False):
         f = dup_scale(f, A, K)
         a, c, A = A*a, A*c, K.one
 
-    if A >= K.one:
+    if A >= 1:
         f = dup_shift(f, A, K)
         b, d = A*a + b, A*c + d
 
@@ -188,10 +181,7 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fas
     """Refine a positive root of `f` given a Mobius transform or an interval. """
     F = K.field
 
-    if len(M) == 2:
-        a, b, c, d = _mobius_from_interval(M, F)
-    else:
-        a, b, c, d = M
+    a, b, c, d = M
 
     while not c:
         f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c,
@@ -216,15 +206,12 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fas
         while True:
             u, v = _mobius_to_interval((a, b, c, d), F)
 
-            if v <= disjoint or disjoint <= u:
-                break
-            else:
+            if u < disjoint < v:
                 f, (a, b, c, d) = dup_step_refine_real_root(f, (a, b, c, d), K, fast=fast)
+            else:
+                break
 
-    if not mobius:
-        return _mobius_to_interval((a, b, c, d), F)
-    else:
-        return f, (a, b, c, d)
+    return (f, (a, b, c, d)) if mobius else _mobius_to_interval((a, b, c, d), F)
 
 
 def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=False):
@@ -266,13 +253,9 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=F
         else:
             disjoint = None
 
-    s, t = dup_outer_refine_real_root(
-        f, s, t, K, eps=eps, steps=steps, disjoint=disjoint, fast=fast)
+    s, t = dup_outer_refine_real_root(f, s, t, K, eps=eps, steps=steps, disjoint=disjoint, fast=fast)
 
-    if negative:
-        return -t, -s
-    else:
-        return s, t
+    return (-t, -s) if negative else (s, t)
 
 
 def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
@@ -290,105 +273,98 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
            Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
     """
     a, b, c, d = K.one, K.zero, K.zero, K.one
-
     k = dup_sign_variations(f, K)
 
-    if k == 0:
-        return []
-    if k == 1:
-        roots = [dup_inner_refine_real_root(
-            f, (a, b, c, d), K, eps=eps, fast=fast, mobius=True)]
-    else:
-        roots, stack = [], [(a, b, c, d, f, k)]
+    roots, stack = [], [(a, b, c, d, f, k)]
 
-        while stack:
-            a, b, c, d, f, k = stack.pop()
+    while stack:
+        a, b, c, d, f, k = stack.pop()
 
-            A = dup_root_lower_bound(f, K)
+        A = dup_root_lower_bound(f, K)
 
-            if A is not None:
-                A = K(int(A))
-            else:
-                A = K.zero
+        if A is not None:
+            A = K(int(A))
+        else:
+            A = K.zero
 
-            if fast and A > 16:
-                f = dup_scale(f, A, K)
-                a, c, A = A*a, A*c, K.one
+        if fast and A > 16:
+            f = dup_scale(f, A, K)
+            a, c, A = A*a, A*c, K.one
 
-            if A >= K.one:
-                f = dup_shift(f, A, K)
-                b, d = A*a + b, A*c + d
+        if A >= 1:
+            f = dup_shift(f, A, K)
+            b, d = A*a + b, A*c + d
 
-                if not dmp_TC(f, K):
-                    roots.append((f, (b, b, d, d)))
-                    f = dup_rshift(f, 1, K)
+            if not dmp_TC(f, K):
+                roots.append((f, (b, b, d, d)))
+                f = dup_rshift(f, 1, K)
 
-                k = dup_sign_variations(f, K)
+            k = dup_sign_variations(f, K)
 
-                if k == 0:
-                    continue
-                if k == 1:
-                    roots.append(dup_inner_refine_real_root(
-                        f, (a, b, c, d), K, eps=eps, fast=fast, mobius=True))
-                    continue
+            if k == 0:
+                continue
+            if k == 1:
+                roots.append(dup_inner_refine_real_root(
+                    f, (a, b, c, d), K, eps=eps, fast=fast, mobius=True))
+                continue
 
-            f1 = dup_shift(f, K.one, K)
+        f1 = dup_shift(f, K.one, K)
 
-            a1, b1, c1, d1, r = a, a + b, c, c + d, 0
+        a1, b1, c1, d1, r = a, a + b, c, c + d, 0
+
+        if not dmp_TC(f1, K):
+            roots.append((f1, (b1, b1, d1, d1)))
+            f1, r = dup_rshift(f1, 1, K), 1
+
+        k1 = dup_sign_variations(f1, K)
+        k2 = k - k1 - r
+
+        a2, b2, c2, d2 = b, a + b, d, c + d
+
+        if k2 > 1:
+            f2 = dup_shift(dup_reverse(f), K.one, K)
+
+            if not dmp_TC(f2, K):
+                f2 = dup_rshift(f2, 1, K)
+
+            k2 = dup_sign_variations(f2, K)
+        else:
+            f2 = None
+
+        if k1 < k2:
+            a1, a2, b1, b2 = a2, a1, b2, b1
+            c1, c2, d1, d2 = c2, c1, d2, d1
+            f1, f2, k1, k2 = f2, f1, k2, k1
+
+        if not k1:
+            continue
+
+        if f1 is None:
+            f1 = dup_shift(dup_reverse(f), K.one, K)
 
             if not dmp_TC(f1, K):
-                roots.append((f1, (b1, b1, d1, d1)))
-                f1, r = dup_rshift(f1, 1, K), 1
+                f1 = dup_rshift(f1, 1, K)
 
-            k1 = dup_sign_variations(f1, K)
-            k2 = k - k1 - r
+        if k1 == 1:
+            roots.append(dup_inner_refine_real_root(
+                f1, (a1, b1, c1, d1), K, eps=eps, fast=fast, mobius=True))
+        else:
+            stack.append((a1, b1, c1, d1, f1, k1))
 
-            a2, b2, c2, d2 = b, a + b, d, c + d
+        if not k2:
+            continue
 
-            if k2 > 1:
-                f2 = dup_shift(dup_reverse(f), K.one, K)
+        if f2 is None:
+            f2 = dup_shift(dup_reverse(f), K.one, K)
 
-                if not dmp_TC(f2, K):
-                    f2 = dup_rshift(f2, 1, K)
+            if not dmp_TC(f2, K):
+                f2 = dup_rshift(f2, 1, K)
 
-                k2 = dup_sign_variations(f2, K)
-            else:
-                f2 = None
-
-            if k1 < k2:
-                a1, a2, b1, b2 = a2, a1, b2, b1
-                c1, c2, d1, d2 = c2, c1, d2, d1
-                f1, f2, k1, k2 = f2, f1, k2, k1
-
-            if not k1:
-                continue
-
-            if f1 is None:
-                f1 = dup_shift(dup_reverse(f), K.one, K)
-
-                if not dmp_TC(f1, K):
-                    f1 = dup_rshift(f1, 1, K)
-
-            if k1 == 1:
-                roots.append(dup_inner_refine_real_root(
-                    f1, (a1, b1, c1, d1), K, eps=eps, fast=fast, mobius=True))
-            else:
-                stack.append((a1, b1, c1, d1, f1, k1))
-
-            if not k2:
-                continue
-
-            if f2 is None:
-                f2 = dup_shift(dup_reverse(f), K.one, K)
-
-                if not dmp_TC(f2, K):
-                    f2 = dup_rshift(f2, 1, K)
-
-            if k2 == 1:
-                roots.append(dup_inner_refine_real_root(
-                    f2, (a2, b2, c2, d2), K, eps=eps, fast=fast, mobius=True))
-            else:
-                stack.append((a2, b2, c2, d2, f2, k2))
+        if k2 == 1:
+            roots.append(dup_inner_refine_real_root(
+                f2, (a2, b2, c2, d2), K, eps=eps, fast=fast, mobius=True))
+        else:
+            stack.append((a2, b2, c2, d2, f2, k2))
 
     return roots
 
@@ -518,11 +494,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
     I_pos = dup_inner_isolate_positive_roots(f, K, eps=eps, inf=inf, sup=sup, fast=fast)
 
     roots = sorted(I_neg + I_zero + I_pos)
-
-    if not blackbox:
-        return roots
-    else:
-        return [RealInterval((a, b), f, K) for (a, b) in roots]
+    return [RealInterval((a, b), f, K) for (a, b) in roots] if blackbox else roots
 
 
 def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):
@@ -965,6 +937,8 @@ _values = {
 
 def _classify_point(re, im):
     """Return the half-axis (or origin) on which (re, im) point is located. """
+    assert not re or not im
+
     if not re and not im:
         return OO
 
@@ -973,7 +947,7 @@ def _classify_point(re, im):
             return A2
         else:
             return A4
-    elif not im:
+    else:
         if re > 0:
             return A1
         else:
@@ -1018,8 +992,8 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t, F):
         for (a, _), indices, _ in intervals:
             Q.append(OO)
 
-            if indices[1] % 2 == 1:
-                f2_sgn = -f2_sgn
+            assert indices[1] % 2 == 1
+            f2_sgn = -f2_sgn
 
             if a != t:
                 if f2_sgn > 0:
@@ -1060,8 +1034,8 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t, F):
         for (a, _), indices, _ in intervals:
             Q.append(OO)
 
-            if indices[0] % 2 == 1:
-                f1_sgn = -f1_sgn
+            assert indices[0] % 2 == 1
+            f1_sgn = -f1_sgn
 
             if a != t:
                 if f1_sgn > 0:
@@ -1112,10 +1086,7 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t, F):
             re = dup_eval(f1, a, F)
             im = dup_eval(f2, a, F)
 
-            cls = _classify_point(re, im)
-
-            if cls is not None:
-                Q.append(cls)
+            Q.append(_classify_point(re, im))
 
         if 0 in indices:
             if indices[0] % 2 == 1:

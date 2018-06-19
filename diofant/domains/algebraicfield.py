@@ -194,6 +194,9 @@ class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
         """Returns ``True`` if ``self`` is an element of the ground domain. """
         return len(self.rep) <= 1
 
+    def __pos__(self):
+        return self
+
     def __neg__(self):
         return self.per(dmp_neg(self.rep, 0, self.domain))
 
