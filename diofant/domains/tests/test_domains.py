@@ -816,6 +816,7 @@ def test_AlgebraicElement():
 
     c = A([QQ(-2), QQ(1), QQ(-1)])
 
+    assert +a == a
     assert -a == c
 
     c = A([QQ(2), QQ(0), QQ(3)])
