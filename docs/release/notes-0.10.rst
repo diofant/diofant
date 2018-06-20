@@ -84,3 +84,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14782` integrate(sqrt(-x**2 + 1)*(-x**2 + x), [x, -1, 1]) is incorrect
 * :sympyissue:`14791` No solution is returned for solve(exp(log(5)*x) - exp(log(2)*x), x)
 * :sympyissue:`14793` Limit involving log(factorial(x)) incorrect
+* :sympyissue:`14811` Exception during evaluation of limit (only locally, not in the live version)
