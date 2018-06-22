@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import (E, EulerGamma, O, Product, Rational, Symbol, binomial,
-                     exp, expand_func, factorial, factorial2, ff, gamma,
-                     loggamma, nan, oo, pi, polygamma, rf, simplify, symbols,
-                     zoo)
+from diofant import (E, EulerGamma, Float, O, Product, Rational, Symbol,
+                     binomial, exp, expand_func, factorial, factorial2, ff,
+                     gamma, loggamma, nan, oo, pi, polygamma, rf, simplify,
+                     symbols, zoo)
 from diofant.abc import x
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.combinatorial.factorials import subfactorial
@@ -377,3 +377,8 @@ def test_subfactorial():
     assert subfactorial(tt).is_odd is None
     assert subfactorial(te).is_odd is True
     assert subfactorial(to).is_even is True
+
+
+def test_sympyissue_14822():
+    assert rf(Rational(2, 3), 32).evalf() == Float('+6.0994868747569084e+34', dps=15)
+    assert ff(Rational(2, 3), 32).evalf() == Float('-2.066175896913914e+32', dps=15)
