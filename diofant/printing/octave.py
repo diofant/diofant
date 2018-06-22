@@ -42,6 +42,7 @@ known_fcns_src2 = {
     "polygamma": "psi",
     "Shi": "sinhint",
     "Si": "sinint",
+    "LambertW": "lambertw"
 }
 
 
@@ -379,10 +380,11 @@ class OctaveCodePrinter(CodePrinter):
     def _print_airybiprime(self, expr):
         return "airy(3, %s)" % self._print(expr.args[0])
 
-    def _print_LambertW(self, expr):
-        # argument order is reversed
+    def _print_with_reversed_args(self, expr):
         args = ", ".join([self._print(x) for x in reversed(expr.args)])
-        return "lambertw(" + args + ")"
+        return self.known_functions[expr.func.__name__] + "(" + args + ")"
+
+    _print_LambertW = _print_zeta = _print_with_reversed_args
 
     def _print_Piecewise(self, expr):
         if expr.args[-1].cond != S.true:

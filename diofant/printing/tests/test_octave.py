@@ -10,7 +10,7 @@ from diofant.functions import (Chi, Ci, LambertW, Piecewise, Shi, Si, airyai,
                                besselj, besselk, bessely, ceiling, cos, exp,
                                hankel1, hankel2, jn, laguerre, li, loggamma,
                                lowergamma, polygamma, sin, sqrt, uppergamma,
-                               yn)
+                               yn, zeta)
 from diofant.logic import false, true
 from diofant.matrices import (HadamardProduct, Identity, Matrix, MatrixSymbol,
                               SparseMatrix, eye)
@@ -381,3 +381,5 @@ def test_specfun():
     assert mcode(Si(x)) == 'sinint(x)'
     assert mcode(LambertW(x)) == 'lambertw(x)'
     assert mcode(LambertW(x, n)) == 'lambertw(n, x)'
+    assert mcode(zeta(x)) == 'zeta(x)'
+    assert mcode(zeta(x, n)) == 'zeta(n, x)'
