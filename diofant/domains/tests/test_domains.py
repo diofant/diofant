@@ -562,6 +562,9 @@ def test_Domain_convert():
     assert RR.convert(complex(2 + 0j)) == RR(2)
     pytest.raises(CoercionFailed, lambda: RR.convert(complex(2 + 3j)))
 
+    assert ALG.convert(EX(sqrt(2)), EX) == ALG.from_expr(sqrt(2))
+    pytest.raises(CoercionFailed, lambda: ALG.convert(EX(sqrt(5)), EX))
+
 
 def test_arithmetics():
     assert ZZ.rem(ZZ(2), ZZ(3)) == 2

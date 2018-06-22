@@ -119,6 +119,10 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         else:
             raise CoercionFailed("%s is not in a subfield of %s" % (K0, self))
 
+    def _from_ExpressionDomain(self, a, K0):
+        expr = K0.to_expr(a)
+        return self.from_expr(expr)
+
     @property
     def ring(self):
         """Returns a ring associated with ``self``. """
