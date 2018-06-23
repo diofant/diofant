@@ -2,7 +2,7 @@ import itertools
 
 from mpmath import mpf, mpi
 
-from ..core import Basic, Eq, Expr, Float, Mul, S, nan, oo, sympify, zoo
+from ..core import Basic, Eq, Expr, Mul, S, nan, oo, sympify, zoo
 from ..core.compatibility import iterable, ordered
 from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
@@ -1011,12 +1011,12 @@ class Interval(Set, EvalfMixin):
     @property
     def is_left_unbounded(self):
         """Return ``True`` if the left endpoint is negative infinity. """
-        return self.left is -oo or self.left == Float("-inf")
+        return self.left == -oo
 
     @property
     def is_right_unbounded(self):
         """Return ``True`` if the right endpoint is positive infinity. """
-        return self.right is oo or self.right == Float("+inf")
+        return self.right == oo
 
     def as_relational(self, x):
         """Rewrite an interval in terms of inequalities and logic operators."""

@@ -210,9 +210,7 @@ class log(Function):
                 return zoo
             elif arg is S.One:
                 return S.Zero
-            elif arg is oo:
-                return oo
-            elif arg is -oo:
+            elif arg in (oo, -oo):
                 return oo
             elif arg.is_Rational:
                 if arg.q != 1:
@@ -236,9 +234,7 @@ class log(Function):
             coeff = arg.as_coefficient(I)
 
             if coeff is not None:
-                if coeff is oo:
-                    return oo
-                elif coeff is -oo:
+                if coeff in (oo, -oo):
                     return oo
                 elif coeff.is_Rational:
                     if coeff.is_nonnegative:

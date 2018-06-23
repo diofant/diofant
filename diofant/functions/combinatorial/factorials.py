@@ -419,7 +419,7 @@ class RisingFactorial(CombinatorialFunction):
                 if k.is_positive:
                     if x is oo:
                         return oo
-                    elif x is -oo:
+                    elif x == -oo:
                         if k.is_odd:
                             return -oo
                         else:
@@ -427,9 +427,7 @@ class RisingFactorial(CombinatorialFunction):
                     else:
                         return reduce(lambda r, i: r*(x + i), range(int(k)), 1)
                 else:
-                    if x is oo:
-                        return oo
-                    elif x is -oo:
+                    if x in (oo, -oo):
                         return oo
                     else:
                         return 1/reduce(lambda r, i: r*(x - i), range(1, abs(int(k)) + 1), 1)
@@ -490,7 +488,7 @@ class FallingFactorial(CombinatorialFunction):
                 if k.is_positive:
                     if x is oo:
                         return oo
-                    elif x is -oo:
+                    elif x == -oo:
                         if k.is_odd:
                             return -oo
                         else:
@@ -498,9 +496,7 @@ class FallingFactorial(CombinatorialFunction):
                     else:
                         return reduce(lambda r, i: r*(x - i), range(int(k)), 1)
                 else:
-                    if x is oo:
-                        return oo
-                    elif x is -oo:
+                    if x in (oo, -oo):
                         return oo
                     else:
                         return 1/reduce(lambda r, i: r*(x + i), range(1, abs(int(k)) + 1), 1)

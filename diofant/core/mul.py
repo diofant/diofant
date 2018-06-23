@@ -510,7 +510,7 @@ class Mul(AssocOp):
         c_part.extend([Pow(b, e) for e, b in pnew.items()])
 
         # oo, -oo
-        if (coeff is oo) or (coeff is -oo):
+        if coeff in (oo, -oo):
             def _handle_for_oo(c_part, coeff_sign):
                 new_c_part = []
                 for t in c_part:

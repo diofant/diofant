@@ -1780,7 +1780,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if self is oo:
                 if c.is_positive:
                     return oo
-            elif self is -oo:
+            elif self == -oo:
                 if c.is_negative:
                     return oo
                 elif c.is_positive:
@@ -2356,7 +2356,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         if x0 in [oo, -oo]:
             s = self.aseries(x, n)
-            if x0 is -oo:
+            if x0 == -oo:
                 return s.subs(x, -x)
             return s
 

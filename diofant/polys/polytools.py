@@ -2863,7 +2863,7 @@ class Poly(Expr):
         if inf is not None:
             inf = sympify(inf)
 
-            if inf is -oo:
+            if inf == -oo:
                 inf = None
             else:
                 re, im = inf.as_real_imag()

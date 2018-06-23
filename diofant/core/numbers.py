@@ -391,10 +391,8 @@ class Number(AtomicExpr):
             return other
         if other is nan:
             return nan
-        elif other is oo:
-            return oo
-        elif other is -oo:
-            return -oo
+        elif other in (oo, -oo):
+            return other
         else:
             return AtomicExpr.__add__(self, other)
 
@@ -402,10 +400,8 @@ class Number(AtomicExpr):
     def __sub__(self, other):
         if other is nan:
             return nan
-        elif other is oo:
-            return -oo
-        elif other is -oo:
-            return oo
+        elif other in (oo, -oo):
+            return -other
         else:
             return AtomicExpr.__sub__(self, other)
 
@@ -415,20 +411,13 @@ class Number(AtomicExpr):
             return other
         if other is nan:
             return nan
-        elif other is oo:
+        elif other in (oo, -oo):
             if self.is_zero:
                 return nan
             elif self.is_positive:
-                return oo
+                return other
             else:
-                return -oo
-        elif other is -oo:
-            if self.is_zero:
-                return nan
-            elif self.is_positive:
-                return -oo
-            else:
-                return oo
+                return -other
         elif isinstance(other, Tuple):
             return NotImplemented
         else:
@@ -686,7 +675,7 @@ class Float(Number):
             num = str(num)  # faster than mlib.from_int
         elif num is oo:
             num = '+inf'
-        elif num is -oo:
+        elif num == -oo:
             num = '-inf'
         elif isinstance(num, mpmath.mpf):
             num = num._mpf_
@@ -1537,7 +1526,7 @@ class Integer(Rational):
                 return oo
             # cases -1, 0, 1 are done in their respective classes
             return oo + I*oo
-        if expt is -oo:
+        if expt == -oo:
             return Rational(1, self)**oo
         if isinstance(expt, Float):
             # Rational knows how to exponentiate by a Float
@@ -1853,13 +1842,10 @@ class Infinity(Number, metaclass=Singleton):
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
         if isinstance(other, Number):
-            if other is -oo or other is nan:
+            if other in (-oo, nan):
                 return nan
             elif other.is_Float:
-                if other == Float('-inf'):
-                    return nan
-                else:
-                    return Float('inf')
+                return Float('inf')
             else:
                 return oo
         return NotImplemented
@@ -1902,13 +1888,10 @@ class Infinity(Number, metaclass=Singleton):
     @_sympifyit('other', NotImplemented)
     def __truediv__(self, other):
         if isinstance(other, Number):
-            if other is oo or other is -oo or other is nan:
+            if other in (oo, -oo, nan):
                 return nan
             elif other.is_Float:
-                if other == Float('-inf') or \
-                        other == Float('inf'):
-                    return nan
-                elif other.is_nonnegative:
+                if other.is_nonnegative:
                     return Float('inf')
                 else:
                     return Float('-inf')
@@ -1976,7 +1959,7 @@ class Infinity(Number, metaclass=Singleton):
     @_sympifyit('other', NotImplemented)
     def __le__(self, other):
         if other.is_extended_real:
-            if other.is_finite or other is -oo:
+            if other.is_finite or other == -oo:
                 return S.false
             elif other.is_nonpositive:
                 return S.false
@@ -1987,7 +1970,7 @@ class Infinity(Number, metaclass=Singleton):
     @_sympifyit('other', NotImplemented)
     def __gt__(self, other):
         if other.is_extended_real:
-            if other.is_finite or other is -oo:
+            if other.is_finite or other == -oo:
                 return S.true
             elif other.is_nonpositive:
                 return S.true
@@ -2050,13 +2033,10 @@ class NegativeInfinity(Number, metaclass=Singleton):
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
         if isinstance(other, Number):
-            if other is -oo or other is nan:
+            if other in (-oo, nan):
                 return nan
             elif other.is_Float:
-                if other == Float('-inf'):
-                    return Float('nan')
-                else:
-                    return Float('-inf')
+                return Float('-inf')
             else:
                 return -oo
         return NotImplemented
@@ -2084,14 +2064,10 @@ class NegativeInfinity(Number, metaclass=Singleton):
     @_sympifyit('other', NotImplemented)
     def __truediv__(self, other):
         if isinstance(other, Number):
-            if other is oo or other is -oo or other is nan:
+            if other in (oo, -oo, nan):
                 return nan
             elif other.is_Float:
-                if other == Float('-inf') or \
-                    other == Float('inf') or \
-                        other is nan:
-                    return nan
-                elif other.is_nonnegative:
+                if other.is_nonnegative:
                     return Float('-inf')
                 else:
                     return Float('inf')
@@ -2152,7 +2128,7 @@ class NegativeInfinity(Number, metaclass=Singleton):
                 return S.true
             elif other.is_nonnegative:
                 return S.true
-            elif other is -oo:
+            elif other == -oo:
                 return S.false
         return Expr.__lt__(self, other)
 
@@ -2175,7 +2151,7 @@ class NegativeInfinity(Number, metaclass=Singleton):
                 return S.false
             elif other.is_nonnegative:
                 return S.false
-            elif other is -oo:
+            elif other == -oo:
                 return S.true
         return Expr.__ge__(self, other)
 
@@ -2451,7 +2427,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
         if arg.is_Number:
             if arg is oo:
                 return oo
-            elif arg is -oo:
+            elif arg == -oo:
                 return S.Zero
         elif isinstance(arg, log):
             return arg.args[0]

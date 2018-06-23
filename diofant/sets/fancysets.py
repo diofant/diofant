@@ -427,7 +427,7 @@ class Range(Set):
             return S.false
 
     def __iter__(self):
-        if self.start is -oo:
+        if self.start == -oo:
             i = self.stop - self.step
             step = -self.step
         else:
@@ -451,7 +451,7 @@ class Range(Set):
     def _last_element(self):
         if self.stop is oo:
             return oo
-        elif self.start is -oo:
+        elif self.start == -oo:
             return self.stop - self.step
         else:
             return self._ith_element(len(self) - 1)

@@ -201,7 +201,7 @@ class elliptic_e(Function):
                 return S.One
             elif z is oo:
                 return I*oo
-            elif z is -oo:
+            elif z == -oo:
                 return oo
             elif z is zoo:
                 return zoo

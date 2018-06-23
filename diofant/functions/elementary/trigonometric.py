@@ -201,7 +201,7 @@ class sin(TrigonometricFunction):
         if arg.is_Number:
             if arg is S.Zero:
                 return S.Zero
-            elif arg is oo or arg is -oo:
+            elif arg in (oo, -oo):
                 return
 
         if arg.could_extract_minus_sign():
@@ -445,7 +445,7 @@ class cos(TrigonometricFunction):
         if arg.is_Number:
             if arg is S.Zero:
                 return S.One
-            elif arg is oo or arg is -oo:
+            elif arg in (oo, -oo):
                 # In this cases, it is unclear if we should
                 # return nan or leave un-evaluated.  One
                 # useful test case is how "limit(sin(x)/x,x,oo)"
@@ -1479,10 +1479,8 @@ class asin(InverseTrigonometricFunction):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is oo:
-                return -oo * I
-            elif arg is -oo:
-                return oo * I
+            if arg in (oo, -oo):
+                return -arg * I
             elif arg is S.Zero:
                 return S.Zero
             elif arg is S.One:
@@ -1654,10 +1652,8 @@ class acos(InverseTrigonometricFunction):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is oo:
-                return oo * I
-            elif arg is -oo:
-                return -oo * I
+            if arg in (oo, -oo):
+                return arg * I
             elif arg is S.Zero:
                 return pi / 2
             elif arg is S.One:
@@ -1822,7 +1818,7 @@ class atan(InverseTrigonometricFunction):
         if arg.is_Number:
             if arg is oo:
                 return pi / 2
-            elif arg is -oo:
+            elif arg == -oo:
                 return -pi / 2
             elif arg is S.Zero:
                 return S.Zero
@@ -1965,9 +1961,7 @@ class acot(InverseTrigonometricFunction):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is oo:
-                return S.Zero
-            elif arg is -oo:
+            if arg in (oo, -oo):
                 return S.Zero
             elif arg is S.Zero:
                 return pi / 2
@@ -2383,7 +2377,7 @@ class atan2(InverseTrigonometricFunction):
     def eval(cls, y, x):
         from .. import Heaviside
         from .complexes import im, re
-        if x is -oo:
+        if x == -oo:
             if y.is_zero:
                 # Special case y = 0 because we define Heaviside(0) = 1/2
                 return pi

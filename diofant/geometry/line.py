@@ -1464,7 +1464,7 @@ class Ray(LinearEntity):
             if Point.is_collinear(self.p1, self.p2, o):
                 if self.xdirection is oo:
                     rv = o.x >= self.source.x
-                elif self.xdirection is -oo:
+                elif self.xdirection == -oo:
                     rv = o.x <= self.source.x
                 elif self.ydirection is oo:
                     rv = o.y >= self.source.y
