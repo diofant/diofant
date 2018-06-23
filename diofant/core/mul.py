@@ -423,13 +423,13 @@ class Mul(AssocOp):
         num_rat = []
         for e, b in comb_e.items():
             b = cls(*b)
-            if e.q == 1:
+            if e.denominator == 1:
                 coeff *= Pow(b, e)
                 continue
-            if e.p > e.q:
-                e_i, ep = divmod(e.p, e.q)
+            if e.numerator > e.denominator:
+                e_i, ep = divmod(e.numerator, e.denominator)
                 coeff *= Pow(b, e_i)
-                e = Rational(ep, e.q)
+                e = Rational(ep, e.denominator)
             num_rat.append((b, e))
         del comb_e
 
@@ -447,13 +447,13 @@ class Mul(AssocOp):
                     # 4**r1*6**r2 -> 2**(r1+r2)  *  2**r1 *  3**r2
                     # this might have a gcd with something else
                     e = ei + ej
-                    if e.q == 1:
+                    if e.denominator == 1:
                         coeff *= Pow(g, e)
                     else:
-                        if e.p > e.q:
-                            e_i, ep = divmod(e.p, e.q)  # change e in place
+                        if e.numerator > e.denominator:
+                            e_i, ep = divmod(e.numerator, e.denominator)  # change e in place
                             coeff *= Pow(g, e_i)
-                            e = Rational(ep, e.q)
+                            e = Rational(ep, e.denominator)
                         grow.append((g, e))
                     # update the jth item
                     num_rat[j] = (bj/g, ej)
@@ -1202,7 +1202,7 @@ class Mul(AssocOp):
             but not vice versa, and 2/5 does not divide 1/3) then return
             the integer number of times it divides, else return 0.
             """
-            if not b.q % a.q or not a.q % b.q:
+            if not b.denominator % a.denominator or not a.denominator % b.denominator:
                 return int(a/b)
             return 0
 
@@ -1527,8 +1527,8 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
     elif coeff is S.NegativeOne and not sign:
         return -factors
     elif factors.is_Add:
-        if not clear and coeff.is_Rational and coeff.q != 1:
-            q = Integer(coeff.q)
+        if not clear and coeff.is_Rational and coeff.denominator != 1:
+            q = Integer(coeff.denominator)
             for i in factors.args:
                 c, t = i.as_coeff_Mul()
                 r = c/q

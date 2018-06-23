@@ -489,8 +489,8 @@ class cos(TrigonometricFunction):
                 cst_table_some = {3: S.Half,
                                   5: (sqrt(5) + 1)/4}
 
-                q = pi_coeff.q
-                p = pi_coeff.p % (2*q)
+                q = pi_coeff.denominator
+                p = pi_coeff.numerator % (2*q)
                 if p > q:
                     narg = (pi_coeff - 1)*pi
                     return -cls(narg)
@@ -522,8 +522,8 @@ class cos(TrigonometricFunction):
                     return
 
                 if q in cst_table_some:
-                    cts = cst_table_some[pi_coeff.q]
-                    return chebyshevt(pi_coeff.p, cts).expand()
+                    cts = cst_table_some[pi_coeff.denominator]
+                    return chebyshevt(pi_coeff.numerator, cts).expand()
 
                 if 0 == q % 2:
                     narg = (pi_coeff*2)*pi
@@ -614,16 +614,16 @@ class cos(TrigonometricFunction):
         def ipartfrac(r, factors=None):
             from ...ntheory import factorint
             assert isinstance(r, Rational)
-            n = r.q
-            assert 2 < r.q*r.q
+            n = r.denominator
+            assert 2 < r.denominator*r.denominator
             if factors is None:
-                a = [n//x**y for x, y in factorint(r.q).items()]
+                a = [n//x**y for x, y in factorint(r.denominator).items()]
             else:
                 a = [n//x for x in factors]
             if len(a) == 1:
                 return [ r ]
             h = migcdex(a)
-            ans = [ r.p*Rational(i*j, r.q) for i, j in zip(h[:-1], a) ]
+            ans = [r.numerator*Rational(i*j, r.denominator) for i, j in zip(h[:-1], a)]
             assert r == sum(ans)
             return ans
         pi_coeff = _pi_coeff(arg)
@@ -659,10 +659,10 @@ class cos(TrigonometricFunction):
                 return False
             return tuple(p for p in primes if primes[p] == 1)
 
-        if pi_coeff.q in cst_table_some:
-            return chebyshevt(pi_coeff.p, cst_table_some[pi_coeff.q]).expand()
+        if pi_coeff.denominator in cst_table_some:
+            return chebyshevt(pi_coeff.numerator, cst_table_some[pi_coeff.denominator]).expand()
 
-        if 0 == pi_coeff.q % 2:  # recursively remove powers of 2
+        if 0 == pi_coeff.denominator % 2:  # recursively remove powers of 2
             narg = (pi_coeff*2)*pi
             nval = cos(narg)
             assert nval is not None
@@ -671,7 +671,7 @@ class cos(TrigonometricFunction):
             sign_cos = (-1)**((-1 if x < 0 else 1)*int(abs(x)))
             return sign_cos*sqrt( (1 + nval)/2 )
 
-        FC = fermatCoords(pi_coeff.q)
+        FC = fermatCoords(pi_coeff.denominator)
         if FC:
             decomp = ipartfrac(pi_coeff, FC)
             X = [(x[1], x[0]*pi) for x in zip(decomp, numbered_symbols('z'))]
@@ -834,7 +834,7 @@ class tan(TrigonometricFunction):
                 return
 
             else:
-                if not pi_coeff.q % 2:
+                if not pi_coeff.denominator % 2:
                     narg = pi_coeff*pi*2
                     cresult, sresult = cos(narg), cos(narg - pi/2)
                     if not isinstance(cresult, cos) \
@@ -852,8 +852,8 @@ class tan(TrigonometricFunction):
                     60: (20, 30),
                     120: (40, 60)
                 }
-                q = pi_coeff.q
-                p = pi_coeff.p % q
+                q = pi_coeff.denominator
+                p = pi_coeff.numerator % q
                 if q in table2:
                     nvala, nvalb = cls(p*pi/table2[q][0]), cls(p*pi/table2[q][1])
                     assert None not in (nvala, nvalb)

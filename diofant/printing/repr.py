@@ -62,7 +62,7 @@ class ReprPrinter(Printer):
             return expr.__name__
 
     def _print_RationalConstant(self, expr):
-        return 'Rational(%s, %s)' % (expr.p, expr.q)
+        return 'Rational(%s, %s)' % (expr.numerator, expr.denominator)
 
     def _print_AtomicExpr(self, expr):
         return str(expr)
@@ -71,7 +71,7 @@ class ReprPrinter(Printer):
         return str(expr)
 
     def _print_Integer(self, expr):
-        return 'Integer(%i)' % expr.p
+        return 'Integer(%i)' % expr.numerator
 
     def _print_list(self, expr):
         return "[%s]" % self.reprify(expr, ", ")
@@ -116,7 +116,7 @@ class ReprPrinter(Printer):
         return "Mul(%s)" % ", ".join(args)
 
     def _print_Rational(self, expr):
-        return 'Rational(%s, %s)' % (self._print(expr.p), self._print(expr.q))
+        return 'Rational(%s, %s)' % (self._print(expr.numerator), self._print(expr.denominator))
 
     def _print_Float(self, expr):
         dps = prec_to_dps(expr._prec)

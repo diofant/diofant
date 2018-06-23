@@ -295,8 +295,8 @@ def combsimp(expr):
             for i in range(len(u)):
                 dj = ([((u[j] - u[i]) % 1, j) for j in range(i + 1, len(u))])
                 for one, j in dj:
-                    if one.p == 1 and one.q != 1:
-                        n = one.q
+                    if one.numerator == 1 and one.denominator != 1:
+                        n = one.denominator
                         got = [i]
                         get = list(range(1, n))
                         for d, j in dj:
@@ -312,7 +312,7 @@ def combsimp(expr):
                             c = u[j]
                             coeffs.remove(c)
                             got[i] = c
-                        return one.q, got[0], got[1:]
+                        return one.denominator, got[0], got[1:]
 
         def _mult_thm(gammas, numer, denom):
             # pull off and analyze the leading coefficient from each gamma arg

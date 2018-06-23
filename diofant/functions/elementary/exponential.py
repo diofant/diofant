@@ -213,8 +213,8 @@ class log(Function):
             elif arg in (oo, -oo):
                 return oo
             elif arg.is_Rational:
-                if arg.q != 1:
-                    return cls(arg.p) - cls(arg.q)
+                if arg.denominator != 1:
+                    return cls(arg.numerator) - cls(arg.denominator)
 
         if arg.is_Pow and arg.base is E and arg.exp.is_extended_real:
             return arg.exp

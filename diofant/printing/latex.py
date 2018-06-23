@@ -381,9 +381,9 @@ class LatexPrinter(Printer):
         from ..integrals import Integral
 
         # Treat root(x, n) as special case
-        if expr.exp.is_Rational and abs(expr.exp.p) == 1 and expr.exp.q != 1:
+        if expr.exp.is_Rational and abs(expr.exp.numerator) == 1 and expr.exp.denominator != 1:
             base = self._print(expr.base)
-            expq = expr.exp.q
+            expq = expr.exp.denominator
 
             if expq == 2:
                 tex = r"\sqrt{%s}" % base
@@ -398,8 +398,8 @@ class LatexPrinter(Printer):
                 return tex
         elif self._settings['fold_frac_powers'] \
             and expr.exp.is_Rational \
-                and expr.exp.q != 1:
-            base, p, q = self.parenthesize(expr.base, PRECEDENCE['Pow']), expr.exp.p, expr.exp.q
+                and expr.exp.denominator != 1:
+            base, p, q = self.parenthesize(expr.base, PRECEDENCE['Pow']), expr.exp.numerator, expr.exp.denominator
             if expr.base.is_Function:
                 return self._print(expr.base, "%s/%s" % (p, q))
             return r"%s^{%s/%s}" % (base, p, q)
@@ -1139,18 +1139,18 @@ class LatexPrinter(Printer):
         return tex
 
     def _print_Rational(self, expr):
-        if expr.q != 1:
+        if expr.denominator != 1:
             sign = ""
-            p = expr.p
-            if expr.p < 0:
+            p = expr.numerator
+            if expr.numerator < 0:
                 sign = "- "
                 p = -p
             if self._settings['fold_short_frac']:
-                return r"%s%d / %d" % (sign, p, expr.q)
+                return r"%s%d / %d" % (sign, p, expr.denominator)
             else:
-                return r"%s\frac{%d}{%d}" % (sign, p, expr.q)
+                return r"%s\frac{%d}{%d}" % (sign, p, expr.denominator)
         else:
-            return self._print(expr.p)
+            return self._print(expr.numerator)
 
     def _print_Order(self, expr):
         s = self._print(expr.expr)

@@ -345,7 +345,7 @@ def _minpoly_sin(ex, x):
     """
     c, a = ex.args[0].as_coeff_Mul()
     if a is pi:
-        n = c.q
+        n = c.denominator
         q = sympify(n)
         if q.is_prime:
             # for a = pi*p/q with q odd prime, using chebyshevt
@@ -353,7 +353,7 @@ def _minpoly_sin(ex, x):
             # the roots of mp(x) are sin(pi*p/q) for p = 1,..., q - 1
             a = dup_chebyshevt(n, ZZ)
             return Add(*[x**(n - i - 1)*a[i] for i in range(n)])
-        if c.p == 1:
+        if c.numerator == 1:
             if q == 9:
                 return 64*x**6 - 96*x**4 + 36*x**2 - 3
 
@@ -381,22 +381,22 @@ def _minpoly_cos(ex, x):
     """
     c, a = ex.args[0].as_coeff_Mul()
     if a is pi:
-        if c.p == 1:
-            if c.q == 7:
+        if c.numerator == 1:
+            if c.denominator == 7:
                 return 8*x**3 - 4*x**2 - 4*x + 1
-            elif c.q == 9:
+            elif c.denominator == 9:
                 return 8*x**3 - 6*x - 1
-        elif c.p == 2:
-            q = sympify(c.q)
+        elif c.numerator == 2:
+            q = sympify(c.denominator)
             if q.is_prime:
                 s = _minpoly_sin(ex, x)
                 return _mexpand(s.subs({x: sqrt((1 - x)/2)}))
 
         # for a = pi*p/q, cos(q*a) =T_q(cos(a)) = (-1)**p
-        n = int(c.q)
+        n = int(c.denominator)
         a = dup_chebyshevt(n, ZZ)
         a = [x**(n - i)*a[i] for i in range(n + 1)]
-        r = Add(*a) - (-1)**c.p
+        r = Add(*a) - (-1)**c.numerator
         _, factors = factor_list(r)
         return _choose_factor(factors, x, ex)
 
@@ -408,9 +408,9 @@ def _minpoly_exp(ex, x):
     Returns the minimal polynomial of ``exp(ex)``
     """
     c, a = ex.exp.as_coeff_Mul()
-    q = sympify(c.q)
+    q = sympify(c.denominator)
     if a == I*pi:
-        if c.p == 1 or c.p == -1:
+        if c.numerator == 1 or c.numerator == -1:
             if q == 3:
                 return x**2 - x + 1
             if q == 4:
@@ -460,7 +460,7 @@ def _minpoly_compose(ex, x, dom):
 
     """
     if ex.is_Rational:
-        return ex.q*x - ex.p
+        return ex.denominator*x - ex.numerator
     if ex is I:
         return x**2 + 1
     if ex is GoldenRatio:
@@ -488,16 +488,16 @@ def _minpoly_compose(ex, x, dom):
         if r[True] and dom == QQ:
             ex1 = Mul(*[bx**ex for bx, ex in r[False] + r[None]])
             r1 = r[True]
-            dens = [y.q for _, y in r1]
+            dens = [y.denominator for _, y in r1]
             lcmdens = functools.reduce(lcm, dens, 1)
-            nums = [base**(y.p*lcmdens // y.q) for base, y in r1]
+            nums = [base**(y.numerator*lcmdens // y.denominator) for base, y in r1]
             ex2 = Mul(*nums)
             mp1 = minimal_polynomial(ex1)(x)
             # use the fact that in Diofant canonicalization products of integers
             # raised to rational powers are organized in relatively prime
             # bases, and that in ``base**(n/d)`` a perfect power is
             # simplified with the root
-            mp2 = ex2.q*x**lcmdens - ex2.p
+            mp2 = ex2.denominator*x**lcmdens - ex2.numerator
             ex2 = root(ex2, lcmdens)
             res = _minpoly_op_algebraic_element(Mul, ex1, ex2, x, dom, mp1=mp1, mp2=mp2)
         else:
@@ -626,12 +626,12 @@ def minpoly_groebner(ex, x, domain):
                 base, exp = ex.base, ex.exp
                 if exp.is_nonnegative:
                     if exp.is_noninteger:
-                        base, exp = base**exp.p, Rational(1, exp.q)
+                        base, exp = base**exp.numerator, Rational(1, exp.denominator)
                     base = bottom_up_scan(base)
                 else:
                     bmp = PurePoly(minpoly_groebner(1/base, x, domain=domain), x)
                     base, exp = update_mapping(1/base, bmp), -exp
-                return update_mapping(ex, exp.q, -base**exp.p)
+                return update_mapping(ex, exp.denominator, -base**exp.numerator)
         elif isinstance(ex, RootOf) and ex.poly.domain.is_IntegerRing:
             return update_mapping(ex, ex.poly)
 

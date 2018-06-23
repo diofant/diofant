@@ -102,8 +102,8 @@ class gamma(Function):
                 else:
                     return zoo
             elif arg.is_Rational:
-                if arg.q == 2:
-                    n = abs(arg.p) // arg.q
+                if arg.denominator == 2:
+                    n = abs(arg.numerator) // arg.denominator
 
                     if arg.is_positive:
                         k, coeff = n, S.One
@@ -129,15 +129,15 @@ class gamma(Function):
     def _eval_expand_func(self, **hints):
         arg = self.args[0]
         if arg.is_Rational:
-            if abs(arg.p) > arg.q:
+            if abs(arg.numerator) > arg.denominator:
                 x = Dummy('x')
-                n = arg.p // arg.q
-                p = arg.p - n*arg.q
-                return self.func(x + n)._eval_expand_func().subs(x, Rational(p, arg.q))
+                n = arg.numerator // arg.denominator
+                p = arg.numerator - n*arg.denominator
+                return self.func(x + n)._eval_expand_func().subs(x, Rational(p, arg.denominator))
 
         if arg.is_Add:
             coeff, tail = arg.as_coeff_add()
-            if coeff and coeff.q != 1:
+            if coeff and coeff.denominator != 1:
                 intpart = floor(coeff)
                 tail = (coeff - intpart,) + tail
                 coeff = intpart

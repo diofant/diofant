@@ -511,14 +511,14 @@ def _rewrite_gamma(f, s, a, b):
     if (any(not x.is_Rational for x in s_multipliers) or
             not common_coefficient.is_extended_real):
         raise IntegralTransformError("Gamma", None, "Nonrational multiplier")
-    s_multiplier = common_coefficient/reduce(ilcm, [Integer(x.q)
+    s_multiplier = common_coefficient/reduce(ilcm, [Integer(x.denominator)
                                                     for x in s_multipliers], Integer(1))
     if s_multiplier == common_coefficient:
         if len(s_multipliers) == 0:
             s_multiplier = common_coefficient
         else:
             s_multiplier = common_coefficient \
-                * reduce(igcd, [Integer(x.p) for x in s_multipliers])
+                * reduce(igcd, [Integer(x.numerator) for x in s_multipliers])
 
     exponent = Integer(1)
     fac = Integer(1)

@@ -41,7 +41,7 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
     def from_expr(self, a):
         """Convert Diofant's Integer to ``dtype``. """
         if a.is_Integer:
-            return self.dtype(a.p)
+            return self.dtype(a.numerator)
         elif a.is_Float and int(a) == a:
             return self.dtype(int(a))
         else:

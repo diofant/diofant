@@ -252,10 +252,10 @@ class StrPrinter(Printer):
                 else:
                     b.append(Pow(item.base, -item.exp))
             elif item.is_Rational and item is not oo:
-                if item.p != 1 or multiple_ones:
-                    a.append(Rational(item.p))
-                if item.q != 1:
-                    b.append(Rational(item.q))
+                if item.numerator != 1 or multiple_ones:
+                    a.append(Rational(item.numerator))
+                if item.denominator != 1:
+                    b.append(Rational(item.denominator))
             else:
                 a.append(item)
 
@@ -475,7 +475,7 @@ class StrPrinter(Printer):
     _print_ImmutableSparseNDimArray = _print_ImmutableDenseNDimArray
 
     def _print_Integer(self, expr):
-        return str(expr.p)
+        return str(expr.numerator)
 
     def _print_int(self, expr):
         return str(expr)
@@ -484,7 +484,7 @@ class StrPrinter(Printer):
         return str(expr)
 
     def _print_Rational(self, expr):
-        return "%s/%s" % (expr.p, expr.q)
+        return "%s/%s" % (expr.numerator, expr.denominator)
 
     def _print_Fraction(self, expr):
         if expr.denominator == 1:

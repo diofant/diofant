@@ -338,7 +338,7 @@ class Number(AtomicExpr):
         if not other:
             raise ZeroDivisionError('modulo by zero')
         if self.is_Integer and other.is_Integer:
-            return Tuple(*divmod(self.p, other.p))
+            return Tuple(*divmod(self.numerator, other.numerator))
         else:
             rat = self/other
         w = sign(rat)*int(abs(rat))  # = rat.floor()
@@ -731,7 +731,7 @@ class Float(Number):
                 else:
                     _mpf_ = _mpf_ninf
         elif isinstance(num, Rational):
-            _mpf_ = mlib.from_rational(num.p, num.q, prec, rnd)
+            _mpf_ = mlib.from_rational(num.numerator, num.denominator, prec, rnd)
         elif isinstance(num, tuple) and len(num) in (3, 4):
             if type(num[1]) is str:
                 # it's a hexadecimal (coming from a pickled object)
@@ -874,7 +874,7 @@ class Float(Number):
 
     @_sympifyit('other', NotImplemented)
     def __mod__(self, other):
-        if isinstance(other, Rational) and other.q != 1:
+        if isinstance(other, Rational) and other.denominator != 1:
             # calculate mod with Rationals, *then* round the result
             return Float(Rational.__mod__(Rational(self), other),
                          prec_to_dps(self._prec))
@@ -904,9 +904,9 @@ class Float(Number):
             if isinstance(expt, Integer):
                 prec = self._prec
                 return Float._new(
-                    mlib.mpf_pow_int(self._mpf_, expt.p, prec, rnd), prec)
+                    mlib.mpf_pow_int(self._mpf_, expt.numerator, prec, rnd), prec)
             elif isinstance(expt, Rational) and \
-                    expt.p == 1 and expt.q % 2 and self.is_negative:
+                    expt.numerator == 1 and expt.denominator % 2 and self.is_negative:
                 return Pow(S.NegativeOne, expt, evaluate=False)*(
                     -self)._eval_power(expt)
             expt, prec = expt._as_mpf_op(self._prec)
@@ -1071,20 +1071,20 @@ class Rational(Number):
     TypeError: invalid input: pi
 
 
-    Low-level access numerator and denominator as .p and .q:
+    Low-level access numerator and denominator:
 
     >>> r = Rational(3, 4)
     >>> r
     3/4
-    >>> r.p
+    >>> r.numerator
     3
-    >>> r.q
+    >>> r.denominator
     4
 
-    Note that p and q return integers (not Diofant Integers) so some care
+    Note that these properties return integers (not Diofant Integers) so some care
     is needed when using them in expressions:
 
-    >>> r.p/r.q
+    >>> r.numerator/r.denominator
     0.75
 
     See Also
@@ -1110,9 +1110,9 @@ class Rational(Number):
                 p, q = float(p).as_integer_ratio()
 
         if isinstance(p, Rational):
-            p = fractions.Fraction(p.p, p.q)
+            p = fractions.Fraction(p.numerator, p.denominator)
         if isinstance(q, Rational):
-            q = fractions.Fraction(q.p, q.q)
+            q = fractions.Fraction(q.numerator, q.denominator)
 
         try:
             f = fractions.Fraction(p)/fractions.Fraction(q)
@@ -1134,8 +1134,8 @@ class Rational(Number):
             return S.Half
 
         obj = Expr.__new__(cls)
-        obj.p = int(p)
-        obj.q = int(q)
+        obj._numerator = int(p)
+        obj._denominator = int(q)
 
         return obj
 
@@ -1148,31 +1148,31 @@ class Rational(Number):
         311/99
 
         """
-        f = fractions.Fraction(self.p, self.q)
+        f = fractions.Fraction(self.numerator, self.denominator)
         return Rational(f.limit_denominator(fractions.Fraction(int(max_denominator))))
 
     def __getnewargs__(self):
-        return self.p, self.q
+        return self.numerator, self.denominator
 
     def _hashable_content(self):
-        return self.p, self.q
+        return self.numerator, self.denominator
 
     def _eval_is_positive(self):
-        return self.p > 0
+        return self.numerator > 0
 
     def _eval_is_zero(self):
-        return self.p == 0
+        return self.numerator == 0
 
     def __bool__(self):
         return self.is_nonzero
 
     def __neg__(self):
-        return Rational(-self.p, self.q)
+        return Rational(-self.numerator, self.denominator)
 
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
         if isinstance(other, Rational):
-            return Rational(self.p*other.q + self.q*other.p, self.q*other.q)
+            return Rational(self.numerator*other.denominator + self.denominator*other.numerator, self.denominator*other.denominator)
         elif isinstance(other, Float):
             return other + self
         else:
@@ -1181,7 +1181,7 @@ class Rational(Number):
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
         if isinstance(other, Rational):
-            return Rational(self.p*other.q - self.q*other.p, self.q*other.q)
+            return Rational(self.numerator*other.denominator - self.denominator*other.numerator, self.denominator*other.denominator)
         elif isinstance(other, Float):
             return -other + self
         else:
@@ -1190,7 +1190,7 @@ class Rational(Number):
     @_sympifyit('other', NotImplemented)
     def __mul__(self, other):
         if isinstance(other, Rational):
-            return Rational(self.p*other.p, self.q*other.q)
+            return Rational(self.numerator*other.numerator, self.denominator*other.denominator)
         elif isinstance(other, Float):
             return other*self
         else:
@@ -1199,10 +1199,10 @@ class Rational(Number):
     @_sympifyit('other', NotImplemented)
     def __truediv__(self, other):
         if isinstance(other, Rational):
-            if self.p and other.p == 0:
+            if self.numerator and other.numerator == 0:
                 return zoo
             else:
-                return Rational(self.p*other.q, self.q*other.p)
+                return Rational(self.numerator*other.denominator, self.denominator*other.numerator)
         elif isinstance(other, Float):
             return self*(1/other)
         else:
@@ -1211,8 +1211,8 @@ class Rational(Number):
     @_sympifyit('other', NotImplemented)
     def __mod__(self, other):
         if isinstance(other, Rational):
-            n = (self.p*other.q) // (other.p*self.q)
-            return Rational(self.p*other.q - n*other.p*self.q, self.q*other.q)
+            n = (self.numerator*other.denominator) // (other.numerator*self.denominator)
+            return Rational(self.numerator*other.denominator - n*other.numerator*self.denominator, self.denominator*other.denominator)
         elif isinstance(other, Float):
             # calculate mod with Rationals, *then* round the answer
             return Float(self.__mod__(Rational(other)),
@@ -1232,18 +1232,18 @@ class Rational(Number):
                 # (3/4)**-2 -> (4/3)**2
                 ne = -expt
                 if (ne is S.One):
-                    return Rational(self.q, self.p)
+                    return Rational(self.denominator, self.numerator)
                 if self.is_negative:
-                    return -((S.NegativeOne)**((expt.p % expt.q) /
-                                               Integer(expt.q)) *
-                             Rational(self.q, -self.p)**ne)
+                    return -((S.NegativeOne)**((expt.numerator % expt.denominator) /
+                                               Integer(expt.denominator)) *
+                             Rational(self.denominator, -self.numerator)**ne)
                 else:
-                    return Rational(self.q, self.p)**ne
+                    return Rational(self.denominator, self.numerator)**ne
             if expt is oo:  # -oo already caught by test for negative
-                if self.p > self.q:
+                if self.numerator > self.denominator:
                     # (3/2)**oo -> oo
                     return oo
-                if self.p < -self.q:
+                if self.numerator < -self.denominator:
                     # (-3/2)**oo -> oo + I*oo
                     return oo + oo*I
                 return S.Zero
@@ -1251,27 +1251,27 @@ class Rational(Number):
                 return self._eval_evalf(expt._prec)**expt
             elif isinstance(expt, Integer):
                 # (4/3)**2 -> 4**2 / 3**2
-                return Rational(self.p**expt.p, self.q**expt.p)
+                return Rational(self.numerator**expt.numerator, self.denominator**expt.numerator)
             else:  # Rational
-                if self.p != 1:
+                if self.numerator != 1:
                     # (4/3)**(5/6) -> 4**(5/6)*3**(-5/6)
-                    return Integer(self.p)**expt*Integer(self.q)**(-expt)
-                # as the above caught negative self.p, now self is positive
-                return Integer(self.q)**Rational(
-                    expt.p*(expt.q - 1), expt.q) / \
-                    Integer(self.q)**Integer(expt.p)
+                    return Integer(self.numerator)**expt*Integer(self.denominator)**(-expt)
+                # as the above caught negative self.numerator, now self is positive
+                return Integer(self.denominator)**Rational(
+                    expt.numerator*(expt.denominator - 1), expt.denominator) / \
+                    Integer(self.denominator)**Integer(expt.numerator)
 
     def _as_mpf_val(self, prec):
-        return mlib.from_rational(self.p, self.q, prec, rnd)
+        return mlib.from_rational(self.numerator, self.denominator, prec, rnd)
 
     def _mpmath_(self, prec, rnd):
-        return mpmath.make_mpf(mlib.from_rational(self.p, self.q, prec, rnd))
+        return mpmath.make_mpf(mlib.from_rational(self.numerator, self.denominator, prec, rnd))
 
     def __abs__(self):
-        return Rational(abs(self.p), self.q)
+        return Rational(abs(self.numerator), self.denominator)
 
     def __int__(self):
-        p, q = self.p, self.q
+        p, q = self.numerator, self.denominator
         if p < 0:
             return -(-p//q)
         return p//q
@@ -1286,7 +1286,7 @@ class Rational(Number):
             if isinstance(other, Rational):
                 # a Rational is always in reduced form so will never be 2/4
                 # so we can just check equivalence of args
-                return self.p == other.p and self.q == other.q
+                return self.numerator == other.numerator and self.denominator == other.denominator
             if isinstance(other, Float):
                 return mlib.mpf_eq(self._as_mpf_val(other._prec), other._mpf_)
         return False
@@ -1298,14 +1298,14 @@ class Rational(Number):
         expr = self
         if isinstance(other, Number):
             if isinstance(other, Rational):
-                return sympify(bool(self.p*other.q > self.q*other.p),
+                return sympify(bool(self.numerator*other.denominator > self.denominator*other.numerator),
                                strict=True)
             if isinstance(other, Float):
                 return sympify(bool(mlib.mpf_gt(self._as_mpf_val(other._prec),
                                                 other._mpf_)),
                                strict=True)
         elif other.is_number and other.is_extended_real:
-            expr, other = Integer(self.p), self.q*other
+            expr, other = Integer(self.numerator), self.denominator*other
         return Expr.__gt__(expr, other)
 
     @_sympifyit('other', NotImplemented)
@@ -1315,14 +1315,14 @@ class Rational(Number):
         expr = self
         if isinstance(other, Number):
             if isinstance(other, Rational):
-                return sympify(bool(self.p*other.q >= self.q*other.p),
+                return sympify(bool(self.numerator*other.denominator >= self.denominator*other.numerator),
                                strict=True)
             if isinstance(other, Float):
                 return sympify(bool(mlib.mpf_ge(self._as_mpf_val(other._prec),
                                                 other._mpf_)),
                                strict=True)
         elif other.is_number and other.is_extended_real:
-            expr, other = Integer(self.p), self.q*other
+            expr, other = Integer(self.numerator), self.denominator*other
         return Expr.__ge__(expr, other)
 
     @_sympifyit('other', NotImplemented)
@@ -1332,14 +1332,14 @@ class Rational(Number):
         expr = self
         if isinstance(other, Number):
             if isinstance(other, Rational):
-                return sympify(bool(self.p*other.q < self.q*other.p),
+                return sympify(bool(self.numerator*other.denominator < self.denominator*other.numerator),
                                strict=True)
             if isinstance(other, Float):
                 return sympify(bool(mlib.mpf_lt(self._as_mpf_val(other._prec),
                                                 other._mpf_)),
                                strict=True)
         elif other.is_number and other.is_extended_real:
-            expr, other = Integer(self.p), self.q*other
+            expr, other = Integer(self.numerator), self.denominator*other
         return Expr.__lt__(expr, other)
 
     @_sympifyit('other', NotImplemented)
@@ -1349,14 +1349,14 @@ class Rational(Number):
             return other.__ge__(self)
         elif isinstance(other, Number):
             if isinstance(other, Rational):
-                return sympify(bool(self.p*other.q <= self.q*other.p),
+                return sympify(bool(self.numerator*other.denominator <= self.denominator*other.numerator),
                                strict=True)
             if isinstance(other, Float):
                 return sympify(bool(mlib.mpf_le(self._as_mpf_val(other._prec),
                                                 other._mpf_)),
                                strict=True)
         elif other.is_number and other.is_extended_real:
-            expr, other = Integer(self.p), self.q*other
+            expr, other = Integer(self.numerator), self.denominator*other
         return Expr.__le__(expr, other)
 
     def __hash__(self):
@@ -1379,8 +1379,8 @@ class Rational(Number):
         """Compute GCD of `self` and `other`. """
         if isinstance(other, Rational):
             return Rational(
-                Integer(igcd(self.p, other.p)),
-                Integer(ilcm(self.q, other.q)))
+                Integer(igcd(self.numerator, other.numerator)),
+                Integer(ilcm(self.denominator, other.denominator)))
         return Number.gcd(self, other)
 
     @_sympifyit('other', NotImplemented)
@@ -1388,8 +1388,8 @@ class Rational(Number):
         """Compute LCM of `self` and `other`. """
         if isinstance(other, Rational):
             return Rational(
-                self.p*other.p//igcd(self.p, other.p),
-                igcd(self.q, other.q))
+                self.numerator*other.numerator//igcd(self.numerator, other.numerator),
+                igcd(self.denominator, other.denominator))
         return Number.lcm(self, other)
 
     def _eval_as_numer_denom(self):
@@ -1400,7 +1400,7 @@ class Rational(Number):
 
         diofant.core.expr.Expr.as_numer_denom
         """
-        return Integer(self.p), Integer(self.q)
+        return Integer(self.numerator), Integer(self.denominator)
 
     def as_content_primitive(self, radical=False):
         """Return the tuple (R, self/R) where R is the positive Rational
@@ -1426,11 +1426,11 @@ class Rational(Number):
 
     @property
     def numerator(self):
-        return self.p
+        return self._numerator
 
     @property
     def denominator(self):
-        return self.q
+        return self._denominator
 
 
 numbers.Rational.register(Rational)
@@ -1438,14 +1438,14 @@ numbers.Rational.register(Rational)
 
 class Integer(Rational):
 
-    q = 1
+    _denominator = 1
     is_integer = True
     is_number = True
 
     is_Integer = True
 
     def _as_mpf_val(self, prec):
-        return mlib.from_int(self.p, prec)
+        return mlib.from_int(self.numerator, prec)
 
     def _mpmath_(self, prec, rnd):
         return mpmath.make_mpf(self._as_mpf_val(prec))
@@ -1476,30 +1476,30 @@ class Integer(Rational):
             obj = S.NegativeOne
         else:
             obj = Expr.__new__(cls)
-            obj.p = ival
+            obj._numerator = ival
 
         return obj
 
     def __getnewargs__(self):
-        return self.p,
+        return self.numerator,
 
     def __hash__(self):
-        return hash(self.p)
+        return hash(self.numerator)
 
     def __index__(self):
-        return self.p
+        return self.numerator
 
     def __eq__(self, other):
         if isinstance(other, int):
-            return self.p == other
+            return self.numerator == other
         elif isinstance(other, Integer):
-            return self.p == other.p
+            return self.numerator == other.numerator
         return Rational.__eq__(self, other)
 
     ########################################
 
     def _eval_is_odd(self):
-        return bool(self.p % 2)
+        return bool(self.numerator % 2)
 
     def _eval_power(self, expt):
         """
@@ -1522,7 +1522,7 @@ class Integer(Rational):
         from ..ntheory import perfect_power
 
         if expt is oo:
-            if self.p > S.One:
+            if self.numerator > S.One:
                 return oo
             # cases -1, 0, 1 are done in their respective classes
             return oo + I*oo
@@ -1540,15 +1540,15 @@ class Integer(Rational):
             # invert base and change sign on exponent
             ne = -expt
             if self.is_negative:
-                return -((S.NegativeOne)**((expt.p % expt.q) /
-                                           Integer(expt.q))*Rational(1, -self)**ne)
+                return -((S.NegativeOne)**((expt.numerator % expt.denominator) /
+                                           Integer(expt.denominator))*Rational(1, -self)**ne)
             else:
-                return Rational(1, self.p)**ne
+                return Rational(1, self.numerator)**ne
         # see if base is a perfect root, sqrt(4) --> 2
-        x, xexact = integer_nthroot(abs(self.p), expt.q)
+        x, xexact = integer_nthroot(abs(self.numerator), expt.denominator)
         if xexact:
             # if it's a perfect root we've finished
-            result = Integer(x**abs(expt.p))
+            result = Integer(x**abs(expt.numerator))
             if self.is_negative:
                 result *= S.NegativeOne**expt
             return result
@@ -1557,7 +1557,7 @@ class Integer(Rational):
         # from the factors of base.
 
         # if it's not an nth root, it still might be a perfect power
-        b_pos = int(abs(self.p))
+        b_pos = int(abs(self.numerator))
         p = perfect_power(b_pos)
         if p is not False:
             dict = {p[0]: p[1]}
@@ -1573,17 +1573,17 @@ class Integer(Rational):
         sqr_gcd = 0
         sqr_dict = {}
         for prime, exponent in dict.items():
-            exponent *= expt.p
-            # remove multiples of expt.q: (2**12)**(1/10) -> 2*(2**2)**(1/10)
-            div_e, div_m = divmod(exponent, expt.q)
+            exponent *= expt.numerator
+            # remove multiples of expt.denominator: (2**12)**(1/10) -> 2*(2**2)**(1/10)
+            div_e, div_m = divmod(exponent, expt.denominator)
             if div_e > 0:
                 out_int *= prime**div_e
             if div_m > 0:
-                # see if the reduced exponent shares a gcd with e.q
+                # see if the reduced exponent shares a gcd with e.denominator
                 # (2**2)**(1/10) -> 2**(1/5)
-                g = igcd(div_m, expt.q)
+                g = igcd(div_m, expt.denominator)
                 if g != 1:
-                    out_rad *= Pow(prime, Rational(div_m//g, expt.q//g))
+                    out_rad *= Pow(prime, Rational(div_m//g, expt.denominator//g))
                 else:
                     sqr_dict[prime] = div_m
         # identify gcd of remaining powers
@@ -1599,7 +1599,7 @@ class Integer(Rational):
         if sqr_int == self and out_int == 1 and out_rad == 1:
             result = None
         else:
-            result = out_int*out_rad*Pow(sqr_int, Rational(sqr_gcd, expt.q))
+            result = out_int*out_rad*Pow(sqr_int, Rational(sqr_gcd, expt.denominator))
         return result
 
     def _eval_is_prime(self):
@@ -1614,10 +1614,10 @@ class Integer(Rational):
             return False
 
     def __floordiv__(self, other):
-        return Integer(self.p // Integer(other).p)
+        return Integer(self.numerator // Integer(other).numerator)
 
     def __rfloordiv__(self, other):
-        return Integer(Integer(other).p // self.p)
+        return Integer(Integer(other).numerator // self.numerator)
 
 
 numbers.Integral.register(Integer)
@@ -1664,8 +1664,9 @@ class Zero(IntegerConstant, metaclass=Singleton):
     .. [1] https//en.wikipedia.org/wiki/Zero
     """
 
-    p = 0
-    q = 1
+    _numerator = 0
+    _denominator = 1
+
     is_positive = False
     is_negative = False
     is_zero = True
@@ -1708,8 +1709,8 @@ class One(IntegerConstant, metaclass=Singleton):
 
     is_number = True
 
-    p = 1
-    q = 1
+    _numerator = 1
+    _denominator = 1
 
 
 class NegativeOne(IntegerConstant, metaclass=Singleton):
@@ -1736,8 +1737,8 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
 
     is_number = True
 
-    p = -1
-    q = 1
+    _numerator = -1
+    _denominator = 1
 
     def _eval_power(self, expt):
         if isinstance(expt, Number):
@@ -1749,11 +1750,11 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
                 return I
             else:
                 assert isinstance(expt, Rational)
-                if expt.q == 2:
-                    return I**Integer(expt.p)
-                i, r = divmod(expt.p, expt.q)
+                if expt.denominator == 2:
+                    return I**Integer(expt.numerator)
+                i, r = divmod(expt.numerator, expt.denominator)
                 if i:
-                    return self**i*self**Rational(r, expt.q)
+                    return self**i*self**Rational(r, expt.denominator)
         if isinstance(expt, Add):
             # Handle (-1)**((-1)**n/2 + m/2)
             e2 = 2*expt
@@ -1786,8 +1787,8 @@ class Half(RationalConstant, metaclass=Singleton):
 
     is_number = True
 
-    p = 1
-    q = 2
+    _numerator = 1
+    _denominator = 2
 
 
 class Infinity(Number, metaclass=Singleton):
@@ -2760,7 +2761,7 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
 
         if isinstance(expt, Number):
             if isinstance(expt, Integer):
-                expt = expt.p % 4
+                expt = expt.numerator % 4
                 if expt == 0:
                     return S.One
                 if expt == 1:

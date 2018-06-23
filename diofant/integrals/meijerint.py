@@ -520,8 +520,8 @@ def _inflate_fox_h(g, a):
     """
     if a < 0:
         return _inflate_fox_h(_flip_g(g), -a)
-    p = Integer(a.p)
-    q = Integer(a.q)
+    p = Integer(a.numerator)
+    q = Integer(a.denominator)
     # We use the substitution s->qs, i.e. inflate g by q. We are left with an
     # extra factor of Gamma(p*s), for which we use Gauss' multiplication
     # theorem.
@@ -884,8 +884,8 @@ def _rewrite_saxena(fac, po, g1, g2, x, full_pb=False):
         g2 = _flip_g(g2)
     if not b1.is_Rational or not b2.is_Rational:
         return
-    m1, n1 = b1.p, b1.q
-    m2, n2 = b2.p, b2.q
+    m1, n1 = b1.numerator, b1.denominator
+    m2, n2 = b2.numerator, b2.denominator
     tau = ilcm(m1*n2, m2*n1)
     r1 = tau//(m1*n2)
     r2 = tau//(m2*n1)

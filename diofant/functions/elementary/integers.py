@@ -123,7 +123,7 @@ class floor(RoundFunction):
     def _eval_number(cls, arg):
         if arg.is_Number:
             if arg.is_Rational:
-                return Integer(arg.p // arg.q)
+                return Integer(arg.numerator // arg.denominator)
             elif arg.is_Float:
                 return Integer(int(arg.floor()))
             else:
@@ -198,7 +198,7 @@ class ceiling(RoundFunction):
     def _eval_number(cls, arg):
         if arg.is_Number:
             if arg.is_Rational:
-                return -Integer(-arg.p // arg.q)
+                return -Integer(-arg.numerator // arg.denominator)
             elif arg.is_Float:
                 return Integer(int(arg.ceiling()))
             else:

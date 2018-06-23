@@ -150,7 +150,7 @@ class lerchphi(Function):
                 mul = z**n
                 add = Add(*[z**(n - 1 - k)/(a - k - 1)**s for k in range(n)])
 
-            m, n = Integer(a.p), Integer(a.q)
+            m, n = Integer(a.numerator), Integer(a.denominator)
             zet = exp_polar(2*pi*I/n)
             root = z**(1/n)
             return add + mul*n**(s - 1)*Add(
@@ -168,7 +168,7 @@ class lerchphi(Function):
                 p, q = Integer(-1), Integer(4)
             else:
                 arg = z.exp/(2*pi*I)
-                p, q = Integer(arg.p), Integer(arg.q)
+                p, q = Integer(arg.numerator), Integer(arg.denominator)
             return Add(*[exp(2*pi*I*k*p/q)/q**s*zeta(s, (k + a)/q)
                          for k in range(q)])
 

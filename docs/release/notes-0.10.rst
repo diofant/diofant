@@ -39,6 +39,7 @@ Compatibility breaks
 * Method :meth:`~diofant.domains.domain.Domain.to_expr` was renamed from ``to_diofant()``, see :pull:`637`.
 * Removed ``AlgebraicNumber`` class, see :pull:`631`.
 * Removed ``polys.distributedmodules`` module, see :pull:`648`.
+* Removed ``p`` and ``q`` properties of :class:`~diofant.core.numbers.Rational`, see :pull:`654`.
 
 Minor changes
 =============

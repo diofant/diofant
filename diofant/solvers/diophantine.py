@@ -897,7 +897,7 @@ def _diop_quadratic(var, coeff, t):
                     sol.add(tuple(s))
 
             else:
-                L = ilcm(*[_.q for _ in P[:4] + Q[:2]])
+                L = ilcm(*[_.denominator for _ in P[:4] + Q[:2]])
 
                 k = 1
 
@@ -1607,7 +1607,7 @@ def check_param(x, y, a, t):
 
     m, n = symbols("m, n", integer=True)
     c, p = (m*x + n*y).as_content_primitive()
-    if a % c.q:
+    if a % c.denominator:
         return None, None
 
     # clear_coefficients(mx + b, R)[1] -> (R - b)/m

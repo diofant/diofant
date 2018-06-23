@@ -1229,15 +1229,15 @@ class Ray(LinearEntity):
             p2 = None
             if c is not None:
                 if c.is_Rational:
-                    if c.q == 2:
-                        if c.p == 1:
+                    if c.denominator == 2:
+                        if c.numerator == 1:
                             p2 = p1 + Point(0, 1)
-                        elif c.p == 3:
+                        elif c.numerator == 3:
                             p2 = p1 + Point(0, -1)
-                    elif c.q == 1:
-                        if c.p == 0:
+                    elif c.denominator == 1:
+                        if c.numerator == 0:
                             p2 = p1 + Point(1, 0)
-                        elif c.p == 1:
+                        elif c.numerator == 1:
                             p2 = p1 + Point(-1, 0)
                 if p2 is None:
                     c *= pi

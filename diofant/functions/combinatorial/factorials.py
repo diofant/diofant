@@ -139,7 +139,7 @@ class factorial(CombinatorialFunction):
                 if n.is_negative:
                     return zoo
                 else:
-                    n, result = n.p, 1
+                    n, result = n.numerator, 1
 
                     if n < 20:
                         for i in range(2, n + 1):
