@@ -571,10 +571,10 @@ def minimal_polynomial(ex, method=None, **args):
 
     result = _minpoly(ex, x, domain)
     _, factors = factor_list(result, x, domain=domain)
-    result = _choose_factor(factors, x, ex)
+    result = _choose_factor(factors, x, ex, dom=domain)
     result = result.primitive()[1]
 
-    return PurePoly(result, x, field=True)
+    return PurePoly(result, x, domain=domain)
 
 
 def minpoly_groebner(ex, x, domain):
