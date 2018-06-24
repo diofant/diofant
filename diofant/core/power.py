@@ -255,7 +255,7 @@ class Pow(Expr):
                 """Return True if the exponent has a literal 2 as the
                 denominator, else None.
                 """
-                if getattr(e, 'q', None) == 2:
+                if getattr(e, 'denominator', None) == 2:
                     return True
                 n, d = e.as_numer_denom()
                 if n.is_integer and d == 2:
@@ -613,8 +613,8 @@ class Pow(Expr):
         """
 
         b, e = self.args
-        if b.is_Rational and b.p == 1 and b.q != 1:
-            return Integer(b.q), -e
+        if b.is_Rational and b.numerator == 1 and b.denominator != 1:
+            return Integer(b.denominator), -e
         return b, e
 
     def _eval_adjoint(self):
@@ -777,9 +777,9 @@ class Pow(Expr):
         base, exp = self.args
         result = self
 
-        if exp.is_Rational and exp.p > 0 and base.is_Add:
+        if exp.is_Rational and exp.numerator > 0 and base.is_Add:
             if not exp.is_Integer:
-                n = Integer(exp.p // exp.q)
+                n = Integer(exp.numerator // exp.denominator)
 
                 if not n:
                     return result
@@ -825,14 +825,14 @@ class Pow(Expr):
                     if a.is_Rational and b.is_Rational:
                         if not a.is_Integer:
                             if not b.is_Integer:
-                                k = self.func(a.q * b.q, n)
-                                a, b = a.p*b.q, a.q*b.p
+                                k = self.func(a.denominator * b.denominator, n)
+                                a, b = a.numerator*b.denominator, a.denominator*b.numerator
                             else:
-                                k = self.func(a.q, n)
-                                a, b = a.p, a.q*b
+                                k = self.func(a.denominator, n)
+                                a, b = a.numerator, a.denominator*b
                         elif not b.is_Integer:
-                            k = self.func(b.q, n)
-                            a, b = a*b.q, b.p
+                            k = self.func(b.denominator, n)
+                            a, b = a*b.denominator, b.numerator
                         else:
                             k = 1
 
@@ -869,8 +869,8 @@ class Pow(Expr):
                     multi = (base**(n - 1))._eval_expand_multinomial()
                     assert multi.is_Add
                     return Add(*[f*g for f in base.args for g in multi.args])
-        elif (exp.is_Rational and exp.p < 0 and base.is_Add and
-                abs(exp.p) > exp.q):
+        elif (exp.is_Rational and exp.numerator < 0 and base.is_Add and
+                abs(exp.numerator) > exp.denominator):
             return 1 / self.func(base, -exp)._eval_expand_multinomial()
         elif exp.is_Add and base.is_Number:
             #  a + b      a  b
@@ -1295,9 +1295,9 @@ class Pow(Expr):
                 c = self.func(b, ceh)
                 r = S.Zero
                 if not c.is_Rational:
-                    iceh, r = divmod(ceh.p, ceh.q)
+                    iceh, r = divmod(ceh.numerator, ceh.denominator)
                     c = self.func(b, iceh)
-                return c, self.func(b, _keep_coeff(ce, t + r/ce/ceh.q))
+                return c, self.func(b, _keep_coeff(ce, t + r/ce/ceh.denominator))
         e = _keep_coeff(ce, pe)
         # b**e = (h*t)**e = h**e*t**e = c*m*t**e
         if e.is_Rational and b.is_Mul:

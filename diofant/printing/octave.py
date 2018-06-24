@@ -140,10 +140,10 @@ class OctaveCodePrinter(CodePrinter):
                 else:
                     b.append(Pow(item.base, -item.exp))
             elif item.is_Rational and item is not oo:
-                if item.p != 1:
-                    a.append(Rational(item.p))
-                if item.q != 1:
-                    b.append(Rational(item.q))
+                if item.numerator != 1:
+                    a.append(Rational(item.numerator))
+                if item.denominator != 1:
+                    b.append(Rational(item.denominator))
             else:
                 a.append(item)
 

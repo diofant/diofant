@@ -930,7 +930,7 @@ def test_extractions():
     assert x.extract_multiplicatively(-x) is None
     assert oo.extract_multiplicatively(2) is oo
     assert oo.extract_multiplicatively(-1) is None
-    assert (-oo).extract_multiplicatively(2) is -oo
+    assert (-oo).extract_multiplicatively(2) == -oo
     assert (-oo).extract_multiplicatively(-2) is oo
     assert (-oo).extract_multiplicatively(0) is None
 

@@ -90,7 +90,7 @@ class Limit(Expr):
 
         if z0 is oo:
             dir = "-"
-        elif z0 is -oo:
+        elif z0 == -oo:
             dir = "+"
 
         if isinstance(dir, str):

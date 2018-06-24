@@ -36,7 +36,7 @@ class RationalField(Field, CharacteristicZero, SimpleDomain):
     def from_expr(self, a):
         """Convert Diofant's Integer to ``dtype``. """
         if a.is_Rational:
-            return self.dtype(a.p, a.q)
+            return self.dtype(a.numerator, a.denominator)
         elif a.is_Float:
             from . import RR
             return self.dtype(*RR.to_rational(a))

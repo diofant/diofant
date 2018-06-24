@@ -951,8 +951,8 @@ def TR11(rv, base=None):
             # make a change if the leading coefficient's numerator is
             # divisible by 2
             c, m = rv.args[0].as_coeff_Mul(rational=True)
-            if c.p % 2 == 0:
-                arg = c.p//2*m/c.q
+            if c.numerator % 2 == 0:
+                arg = c.numerator//2*m/c.denominator
                 c = TR11(cos(arg))
                 s = TR11(sin(arg))
                 if rv.func == sin:

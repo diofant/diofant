@@ -2863,7 +2863,7 @@ class Poly(Expr):
         if inf is not None:
             inf = sympify(inf)
 
-            if inf is -oo:
+            if inf == -oo:
                 inf = None
             else:
                 re, im = inf.as_real_imag()
@@ -3006,7 +3006,7 @@ class Poly(Expr):
         if self.rep.domain is ZZ:
             coeffs = [int(coeff) for coeff in self.all_coeffs()]
         elif self.rep.domain is QQ:
-            denoms = [coeff.q for coeff in self.all_coeffs()]
+            denoms = [coeff.denominator for coeff in self.all_coeffs()]
             from ..core import ilcm
             fac = ilcm(*denoms)
             coeffs = [int(coeff*fac) for coeff in self.all_coeffs()]
@@ -5149,8 +5149,8 @@ def to_rational_coeffs(f):
         for y in coeffs:
             for x in Add.make_args(y):
                 f = Factors(x).factors
-                r = [wx.q for b, wx in f.items() if
-                     b.is_number and wx.is_Rational and wx.q >= 2]
+                r = [wx.denominator for b, wx in f.items() if
+                     b.is_number and wx.is_Rational and wx.denominator >= 2]
                 if not r:
                     continue
                 if min(r) == 2:

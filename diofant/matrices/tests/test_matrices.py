@@ -887,9 +887,9 @@ def test_eigen():
 
     M = Matrix(3, 3, [1, 2, 0, 0, 3, 0, 2, -4, 2])
     M._eigenvects = M.eigenvects(simplify=False)
-    assert max(i.q for i in M._eigenvects[0][2][0]) > 1
+    assert max(i.denominator for i in M._eigenvects[0][2][0]) > 1
     M._eigenvects = M.eigenvects(simplify=True)
-    assert max(i.q for i in M._eigenvects[0][2][0]) == 1
+    assert max(i.denominator for i in M._eigenvects[0][2][0]) == 1
     M = Matrix([[Rational(1, 4), 1], [1, 1]])
     assert M.eigenvects(simplify=True) == [
         (Rational(5, 8) + sqrt(73)/8, 1, [Matrix([[8/(3 + sqrt(73))], [1]])]),

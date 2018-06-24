@@ -210,4 +210,4 @@ def ratsimpmodprime(expr, G, *gens, **args):
     cf, c, d = cancel((c, d), opt.gens, order=opt.order)  # canonicalize signs
     r = cf*Rational(cn, dn)
 
-    return (c*r.q)/(d*r.p)
+    return (c*r.denominator)/(d*r.numerator)

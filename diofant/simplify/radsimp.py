@@ -462,7 +462,7 @@ def collect_sqrt(expr, evaluate=True):
     for a in Add.make_args(expr):
         for m in a.args_cnc()[0]:
             if m.is_number and (
-                    m.is_Pow and m.exp.is_Rational and m.exp.q == 2 or
+                    m.is_Pow and m.exp.is_Rational and m.exp.denominator == 2 or
                     m is I):
                 vars.add(m)
 
@@ -479,7 +479,7 @@ def collect_sqrt(expr, evaluate=True):
             c, nc = m.args_cnc()
             for ci in c:
                 # XXX should this be restricted to ci.is_number as above?
-                if ci.is_Pow and ci.exp.is_Rational and ci.exp.q == 2 or \
+                if ci.is_Pow and ci.exp.is_Rational and ci.exp.denominator == 2 or \
                         ci is I:
                     nrad += 1
                     break
@@ -701,12 +701,12 @@ def radsimp(expr, symbolic=True, max_terms=4):
         if not d.is_Pow:
             return False
         e = d.exp
-        if e.is_Rational and e.q == 2 or symbolic and fraction(e)[1] == 2:
+        if e.is_Rational and e.denominator == 2 or symbolic and fraction(e)[1] == 2:
             return True
         if log2:
             q = 1
             if e.is_Rational:
-                q = e.q
+                q = e.denominator
             elif symbolic:
                 d = fraction(e)[1]
                 if d.is_Integer:

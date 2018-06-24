@@ -62,7 +62,7 @@ These functions can be used to manipulate polynomials in `K[X_0, \ldots, X_u]`.
 Functions for manipulating multivariate polynomials in the dense representation
 have the prefix ``dmp_``. Functions which only apply to univariate polynomials
 (i.e. `u = 0`)
-have the prefix ``dup__``. The ground domain `K` has to be passed explicitly.
+have the prefix ``dup_``. The ground domain `K` has to be passed explicitly.
 For many multivariate polynomial manipulation functions also the level `u`,
 i.e. the number of generators minus one, has to be passed.
 (Note that, in many cases, ``dup_`` versions of functions are available, which

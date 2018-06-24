@@ -3534,7 +3534,7 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
 
     .. [1] http://tutorial.math.lamar.edu/Classes/DE/SeriesSolutions.aspx
     .. [2] George E. Simmons, "Differential Equations with Applications and
-           Historical Notes", p.p 176 - 184.
+           Historical Notes", pp 176 - 184.
     """
     x = func.args[0]
     f = func.func
@@ -3692,7 +3692,7 @@ def ode_2nd_power_series_regular(eq, func, order, match):
     References
     ==========
     - George E. Simmons, "Differential Equations with Applications and
-      Historical Notes", p.p 176 - 184
+      Historical Notes", pp 176 - 184
 
     """
     x = func.args[0]
@@ -4422,7 +4422,7 @@ def ode_1st_power_series(eq, func, order, match):
     ==========
 
     - Travis W. Walker, Analytic power series technique for solving first-order
-      differential equations, p.p 17, 18
+      differential equations, pp 17, 18
 
     """
     x = func.args[0]

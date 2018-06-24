@@ -148,7 +148,7 @@ class CCodePrinter(CodePrinter):
                                     self._print(expr.exp))
 
     def _print_Rational(self, expr):
-        p, q = int(expr.p), int(expr.q)
+        p, q = int(expr.numerator), int(expr.denominator)
         return '%d.0L/%d.0L' % (p, q)
 
     def _print_Indexed(self, expr):

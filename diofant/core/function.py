@@ -2179,9 +2179,9 @@ def count_ops(expr, visual=False):
             if a.is_Rational:
                 # -1/3 = NEG + DIV
                 if a is not S.One:
-                    if a.p < 0:
+                    if a.numerator < 0:
                         ops.append(NEG)
-                    if a.q != 1:
+                    if a.denominator != 1:
                         ops.append(DIV)
                     # XXX "peephole" optimization, http://bugs.python.org/issue2506
                     a

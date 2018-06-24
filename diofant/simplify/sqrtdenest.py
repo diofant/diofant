@@ -694,7 +694,7 @@ def unrad(eq, *syms, **flags):
         c = pow.as_base_exp()[1].as_coeff_Mul()[0]
         if not c.is_Rational:
             return S.One
-        return c.q
+        return c.denominator
 
     # define the _take method that will determine whether a term is of interest
     def _take(d, take_int_pow):

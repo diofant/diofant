@@ -128,7 +128,7 @@ def minimize_univariate(f, x, dom):
         for s in singularities(f, x):
             if s in dom:
                 m = Min(limit(f, x, s), limit(f, x, s, dir="-"))
-                if m is -oo:
+                if m == -oo:
                     return -oo, dict({x: s})
                 else:
                     extr[s] = m

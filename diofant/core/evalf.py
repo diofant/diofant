@@ -528,7 +528,7 @@ def evalf_pow(v, prec, options):
     # faster, because we avoid calling evalf on the exponent, and 2) it
     # allows better handling of real/imaginary parts that are exactly zero
     if exp.is_Integer:
-        p = exp.p
+        p = exp.numerator
         # Exact
         if not p:
             return fone, None, prec, None
@@ -985,7 +985,7 @@ def hypsum(expr, n, start, prec):
 
     # Direct summation if geometric or faster
     if h > 0 or (h == 0 and abs(g) > 1):
-        term = (MPZ(term.p) << prec) // term.q
+        term = (MPZ(term.numerator) << prec) // term.denominator
         s = term
         k = 1
         while abs(term) > 5:
@@ -1008,7 +1008,7 @@ def hypsum(expr, n, start, prec):
             # might occur in the extrapolation process; we check the answer to
             # make sure that the desired precision has been reached, too.
             prec2 = 4*prec
-            term0 = (MPZ(term.p) << prec2) // term.q
+            term0 = (MPZ(term.numerator) << prec2) // term.denominator
 
             def summand(k, _term=[term0]):
                 if k:
@@ -1123,9 +1123,9 @@ def _create_evalf_table():
         Symbol: evalf_symbol,
         Dummy: evalf_symbol,
         Float: lambda x, prec, options: (x._mpf_, None, prec if prec <= x._prec else x._prec, None),
-        Rational: lambda x, prec, options: (from_rational(x.p, x.q, prec),
+        Rational: lambda x, prec, options: (from_rational(x.numerator, x.denominator, prec),
                                             None, prec, None),
-        Integer: lambda x, prec, options: (from_int(x.p, prec),
+        Integer: lambda x, prec, options: (from_int(x.numerator, prec),
                                            None, prec, None),
         Zero: lambda x, prec, options: (None, None, prec, None),
         One: lambda x, prec, options: (fone, None, prec, None),

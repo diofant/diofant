@@ -2945,7 +2945,7 @@ class MatrixBase(DefaultPrinting):
                     c, p = signsimp(b).as_content_primitive()
                     if c is not S.One:
                         b = c*p
-                        l = ilcm(l, c.q)
+                        l = ilcm(l, c.denominator)
                     basis[0][i] = b
                 if l != 1:
                     basis[0] *= l

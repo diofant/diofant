@@ -163,7 +163,7 @@ class Add(AssocOp):
             newseq = [f for f in newseq if not
                       (f.is_nonnegative or f.is_extended_real and f.is_finite)]
 
-        elif coeff is -oo:
+        elif coeff == -oo:
             newseq = [f for f in newseq if not
                       (f.is_nonpositive or f.is_extended_real and f.is_finite)]
 
@@ -700,7 +700,7 @@ class Add(AssocOp):
                 c = S.One
                 m = a
             inf = inf or m is zoo
-            terms.append((c.p, c.q, m))
+            terms.append((c.numerator, c.denominator, m))
 
         if not inf:
             ngcd = reduce(igcd, [t[0] for t in terms], 0)
@@ -768,7 +768,7 @@ class Add(AssocOp):
                     if ai.is_Pow:
                         b, e = ai.as_base_exp()
                         if e.is_Rational and b.is_Integer:
-                            term_rads[e.q].append(abs(int(b))**e.p)
+                            term_rads[e.denominator].append(abs(int(b))**e.numerator)
                 if not term_rads:
                     break
                 if common_q is None:

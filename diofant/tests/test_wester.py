@@ -297,7 +297,7 @@ def test_G2():
 
 def test_G15():
     assert Rational(sqrt(3).evalf()).limit_denominator(15) == Rational(26, 15)
-    assert list(takewhile(lambda x: x.q <= 15, cf_c(cf_i(sqrt(3)))))[-1] == \
+    assert list(takewhile(lambda x: x.denominator <= 15, cf_c(cf_i(sqrt(3)))))[-1] == \
         Rational(26, 15)
 
 

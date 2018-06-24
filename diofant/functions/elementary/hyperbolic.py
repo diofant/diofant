@@ -68,12 +68,8 @@ class sinh(HyperbolicFunction):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is oo:
-                return oo
-            elif arg is -oo:
-                return -oo
-            elif arg is S.Zero:
-                return S.Zero
+            if arg in (oo, -oo, 0):
+                return arg
             elif arg.is_negative:
                 return -cls(-arg)
         else:
@@ -218,9 +214,7 @@ class cosh(HyperbolicFunction):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is oo:
-                return oo
-            elif arg is -oo:
+            if arg in (oo, -oo):
                 return oo
             elif arg is S.Zero:
                 return S.One
@@ -370,7 +364,7 @@ class tanh(HyperbolicFunction):
         if arg.is_Number:
             if arg is oo:
                 return S.One
-            elif arg is -oo:
+            elif arg == -oo:
                 return S.NegativeOne
             elif arg is S.Zero:
                 return S.Zero
@@ -500,7 +494,7 @@ class coth(HyperbolicFunction):
         if arg.is_Number:
             if arg is oo:
                 return S.One
-            elif arg is -oo:
+            elif arg == -oo:
                 return S.NegativeOne
             elif arg is S.Zero:
                 return zoo
@@ -781,12 +775,8 @@ class asinh(Function):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is oo:
-                return oo
-            elif arg is -oo:
-                return -oo
-            elif arg is S.Zero:
-                return S.Zero
+            if arg in (oo, -oo, 0):
+                return arg
             elif arg is S.One:
                 return log(sqrt(2) + 1)
             elif arg is S.NegativeOne:
@@ -865,9 +855,7 @@ class acosh(Function):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is oo:
-                return oo
-            elif arg is -oo:
+            if arg in (oo, -oo):
                 return oo
             elif arg is S.Zero:
                 return pi*I / 2
@@ -976,7 +964,7 @@ class atanh(Function):
                 return -oo
             elif arg is oo:
                 return -I * atan(arg)
-            elif arg is -oo:
+            elif arg == -oo:
                 return I * atan(-arg)
             elif arg.is_negative:
                 return -cls(-arg)
@@ -1036,9 +1024,7 @@ class acoth(Function):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is oo:
-                return S.Zero
-            elif arg is -oo:
+            if arg in (oo, -oo):
                 return S.Zero
             elif arg is S.Zero:
                 return pi*I / 2
