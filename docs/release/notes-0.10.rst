@@ -87,3 +87,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14793` Limit involving log(factorial(x)) incorrect
 * :sympyissue:`14811` Exception during evaluation of limit (only locally, not in the live version)
 * :sympyissue:`14822` RisingFactorial cannot do numerical (floating point) evaluations
+* :sympyissue:`14820` octave/matlab codegen wrong for two argument zeta

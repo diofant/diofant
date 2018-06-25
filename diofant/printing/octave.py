@@ -384,6 +384,12 @@ class OctaveCodePrinter(CodePrinter):
         args = ", ".join([self._print(x) for x in reversed(expr.args)])
         return "lambertw(" + args + ")"
 
+    def _print_zeta(self, expr):
+        if len(expr.args) == 1:
+            return "zeta(%s)" % expr.args[0]
+        else:
+            return self._print_not_supported(expr)
+
     def _print_Piecewise(self, expr):
         if expr.args[-1].cond != S.true:
             # We need the last conditional to be a True, otherwise the resulting
