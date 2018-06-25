@@ -669,7 +669,7 @@ def test_Domain__algebraic_field():
     assert alg.minpoly == Poly(x**2 - 2)
     assert alg.domain == QQ
 
-    alg = alg.algebraic_field(sqrt(3))
+    alg = QQ.algebraic_field(sqrt(2), sqrt(3))
     assert alg.minpoly == Poly(x**4 - 10*x**2 + 1)
     assert alg.domain == QQ
 
@@ -686,6 +686,9 @@ def test_Domain__algebraic_field():
 
     alg = QQ.algebraic_field(I)
     assert alg.algebraic_field(I) == alg
+
+    alg = QQ.algebraic_field(sqrt(2)).algebraic_field(sqrt(3))
+    assert alg.minpoly == Poly(x**2 - 3, x, domain=QQ.algebraic_field(sqrt(2)))
 
 
 def test_PolynomialRing_from_FractionField():
