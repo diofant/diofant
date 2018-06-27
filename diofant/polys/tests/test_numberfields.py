@@ -305,9 +305,22 @@ def test_minpoly_sympyissue_7574():
 
 def test_primitive_element():
     assert primitive_element([sqrt(2)]) == (PurePoly(x**2 - 2), [1], [[1, 0]])
+
     assert (primitive_element([sqrt(2), sqrt(3)]) ==
             (PurePoly(x**4 - 10*x**2 + 1), [1, 1], [[QQ(+1, 2), 0, -QQ(9, 2), 0],
                                                     [QQ(-1, 2), 0, QQ(11, 2), 0]]))
+    A = QQ.algebraic_field(sqrt(2))
+    assert (primitive_element([sqrt(2), sqrt(3)], domain=A) ==
+            (PurePoly(x**2 - 2*sqrt(2)*x - 1, x, domain=A), [1, 1],
+             [[A.unit], [1, -A.unit]]))
+    assert (primitive_element([sqrt(2), sqrt(2 + sqrt(2))], domain=A) ==
+            (PurePoly(x**2 - 2*sqrt(2)*x - sqrt(2), x, domain=A), [1, 1],
+             [[A.unit], [1, -A.unit]]))
+
+    A = QQ.algebraic_field(sqrt(2) + sqrt(3))
+    assert (primitive_element([sqrt(2), sqrt(3)], domain=A) ==
+            (PurePoly(x - sqrt(2) - sqrt(3), x, domain=A), [1, 1],
+             [[A([QQ(1, 2), 0, -QQ(9, 2), 0])], [A([-QQ(1, 2), 0, QQ(11, 2), 0])]]))
 
     pytest.raises(ValueError, lambda: primitive_element([]))
 
