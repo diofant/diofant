@@ -623,3 +623,8 @@ def test_minpoly_domain():
 def test_sympyissue_11553():
     eqs = (x + y + 1, x + GoldenRatio)
     assert solve(eqs, x, y) == [{x: -GoldenRatio, y: -1 + GoldenRatio}]
+
+
+def test_sympyissue_14831():
+    assert minimal_polynomial(-3*sqrt(12*sqrt(2) + 17) + 12*sqrt(2) +
+                              17 - 2*sqrt(2)*sqrt(12*sqrt(2) + 17))(x) == x

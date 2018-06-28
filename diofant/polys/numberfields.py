@@ -498,7 +498,7 @@ def _minpoly_compose(ex, x, dom):
             # bases, and that in ``base**(n/d)`` a perfect power is
             # simplified with the root
             mp2 = ex2.denominator*x**lcmdens - ex2.numerator
-            ex2 = root(ex2, lcmdens)
+            ex2 = Mul(*[bx**ex for bx, ex in r1])
             res = _minpoly_op_algebraic_element(Mul, ex1, ex2, x, dom, mp1=mp1, mp2=mp2)
         else:
             res = _minpoly_mul(x, dom, *ex.args)
