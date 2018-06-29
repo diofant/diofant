@@ -1120,7 +1120,7 @@ def dup_factor_list(f, K0):
 
     if K0.is_FiniteField:
         coeff, factors = dup_gf_factor(f, K0)
-    elif K0.is_Algebraic:
+    elif K0.is_AlgebraicField:
         coeff, factors = dup_ext_factor(f, K0)
     else:
         if not K0.is_Exact:
@@ -1195,7 +1195,7 @@ def dmp_factor_list(f, u, K0):
 
     if K0.is_FiniteField:  # pragma: no cover
         coeff, factors = dmp_gf_factor(f, u, K0)
-    elif K0.is_Algebraic:
+    elif K0.is_AlgebraicField:
         coeff, factors = dmp_ext_factor(f, u, K0)
     else:
         if not K0.is_Exact:

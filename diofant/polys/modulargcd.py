@@ -2195,7 +2195,7 @@ def func_field_modgcd(f, g):
     domain = ring.domain
     n = ring.ngens
 
-    assert ring == g.ring and domain.is_Algebraic
+    assert ring == g.ring and domain.is_AlgebraicField
 
     result = _trivial_gcd(f, g)
     if result is not None:

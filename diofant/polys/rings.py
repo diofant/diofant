@@ -354,7 +354,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             return self.clone(symbols=symbols)
 
     def to_ground(self):
-        if self.domain.is_Composite or self.domain.is_Algebraic:
+        if self.domain.is_Composite or self.domain.is_AlgebraicField:
             return self.clone(domain=self.domain.domain)
         else:
             raise ValueError("%s is not a composite or algebraic "

@@ -684,7 +684,7 @@ def primitive_element(extension, **args):
 
         for i, (h, y) in enumerate(zip(H, Y)):
             H[i] = (y - h).eject(*Y).retract(field=True, extension=True)
-            if not (H[i].domain.is_RationalField or H[i].domain.is_Algebraic):
+            if not (H[i].domain.is_RationalField or H[i].domain.is_AlgebraicField):
                 break  # G is not a triangular set
             else:
                 H[i] = H[i].set_domain(domain)

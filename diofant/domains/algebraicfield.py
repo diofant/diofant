@@ -33,7 +33,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     has_assoc_Field = True
 
     def __init__(self, dom, *ext):
-        if not (dom.is_RationalField or dom.is_Algebraic):
+        if not (dom.is_RationalField or dom.is_AlgebraicField):
             raise DomainError("ground domain must be a rational "
                               "or an algebraic field")
 

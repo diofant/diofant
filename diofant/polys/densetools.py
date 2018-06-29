@@ -579,7 +579,7 @@ def dup_real_imag(f, K):
     >>> R.dup_real_imag(x**3 + x**2 + x + 1)
     (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1, 3*x**2*y + 2*x*y - y**3 + y)
     """
-    if K.is_Algebraic and K.ext.as_expr() == I:
+    if K.is_AlgebraicField and K.ext.as_expr() == I:
         K0 = K.domain
         r1, i1 = dup_real_imag([_.to_dict().get((0,), K0.zero) for _ in f], K0)
         r2, i2 = dup_real_imag([_.to_dict().get((1,), K0.zero) for _ in f], K0)
@@ -854,7 +854,7 @@ def dmp_lift(f, u, K):
     >>> R.dmp_lift(f)
     x**8 + 2*x**6 + 9*x**4 - 8*x**2 + 16
     """
-    if not K.is_Algebraic:
+    if not K.is_AlgebraicField:
         raise DomainError(
             'computation can be done only in an algebraic domain')
 
