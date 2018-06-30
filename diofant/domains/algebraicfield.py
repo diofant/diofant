@@ -32,38 +32,45 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     has_assoc_Ring = False
     has_assoc_Field = True
 
-    def __init__(self, dom, *ext):
+    def __new__(cls, dom, *ext):
         if not (dom.is_RationalField or dom.is_AlgebraicField):
             raise DomainError("ground domain must be a rational "
                               "or an algebraic field")
 
         ext = [sympify(_).as_expr() for _ in ext]
+        ext = [_ for _ in ext if _ not in dom]
+
+        if not ext:
+            return dom
 
         from ..polys.numberfields import primitive_element
 
         minpoly, coeffs, H = primitive_element(ext, domain=dom)
 
-        self.ext = sum(c*e for c, e in zip(coeffs, ext))
-        self.minpoly = minpoly
-        self.mod = minpoly.rep
-        self.domain = dom
+        obj = super(AlgebraicField, cls).__new__(cls)
+        obj.ext = sum(c*e for c, e in zip(coeffs, ext))
+        obj.minpoly = minpoly
+        obj.mod = minpoly.rep
+        obj.domain = dom
 
-        self.ngens = 1
-        self.symbols = self.gens = (self.ext.as_expr(),)
+        obj.ngens = 1
+        obj.symbols = obj.gens = (obj.ext.as_expr(),)
 
         try:
-            self.dtype = _algebraic_numbers_cache[(self.domain, self.ext)]
+            obj.dtype = _algebraic_numbers_cache[(obj.domain, obj.ext)]
         except KeyError:
-            self.dtype = type("AlgebraicElement", (AlgebraicElement,), {"_parent": self})
-            _algebraic_numbers_cache[(self.domain, self.ext)] = self.dtype
+            obj.dtype = type("AlgebraicElement", (AlgebraicElement,), {"_parent": obj})
+            _algebraic_numbers_cache[(obj.domain, obj.ext)] = obj.dtype
 
-        self.root = sum(self.dtype(h) for h in H)
-        self.unit = self.dtype([dom(1), dom(0)])
+        obj.root = sum(obj.dtype(h) for h in H)
+        obj.unit = obj.dtype([dom(1), dom(0)])
 
-        self.zero = self.dtype([dom(0)])
-        self.one = self.dtype([dom(1)])
+        obj.zero = obj.dtype([dom(0)])
+        obj.one = obj.dtype([dom(1)])
 
-        self.rep = str(self.domain) + '<' + str(self.ext) + '>'
+        obj.rep = str(obj.domain) + '<' + str(obj.ext) + '>'
+
+        return obj
 
     def new(self, element):
         if isinstance(element, list):
@@ -92,7 +99,10 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
             K0 = self.domain.algebraic_field(a)
         except NotAlgebraic:
             raise CoercionFailed("%s is not a valid algebraic number in %s" % (a, self))
-        return self.convert(K0.root, K0)
+        if K0.is_AlgebraicField:
+            return self.convert(K0.root, K0)
+        else:
+            return self.new([a])
 
     def _from_PythonIntegerRing(self, a, K0):
         return self([self.domain.convert(a, K0)])

@@ -690,6 +690,9 @@ def test_Domain__algebraic_field():
     alg = QQ.algebraic_field(sqrt(2)).algebraic_field(sqrt(3))
     assert alg.minpoly == Poly(x**2 - 3, x, domain=QQ.algebraic_field(sqrt(2)))
 
+    # issue sympy/sympy#14476
+    assert QQ.algebraic_field(Rational(1, 7)) is QQ
+
 
 def test_PolynomialRing_from_FractionField():
     F,  x, y = field("x,y", ZZ)

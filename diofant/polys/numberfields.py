@@ -811,9 +811,6 @@ def field_isomorphism(a, b, **args):
     n = a.minpoly.degree()
     m = b.minpoly.degree()
 
-    if n == 1:
-        return a.unit.rep
-
     if m % n != 0:
         return
 

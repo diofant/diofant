@@ -90,3 +90,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14822` RisingFactorial cannot do numerical (floating point) evaluations
 * :sympyissue:`14820` octave/matlab codegen wrong for two argument zeta
 * :sympyissue:`14831` minpoly(-3*sqrt(12*sqrt(2) + 17) + 12*sqrt(2) + 17 -2*sqrt(2)*sqrt(12*sqrt(2) + 17), x) fails
+* :sympyissue:`14476` QQ.algebraic_field(Rational) should be just QQ
