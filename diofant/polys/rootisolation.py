@@ -155,8 +155,7 @@ def dup_step_refine_real_root(f, M, K, fast=False):
         f = dup_shift(f, A, K)
         b, d = A*a + b, A*c + d
 
-        if not dup_eval(f, K.zero, K):
-            return f, (b, b, d, d)
+        assert dmp_TC(f, K)
 
     f, g = dup_shift(f, K.one, K), f
 
@@ -172,8 +171,7 @@ def dup_step_refine_real_root(f, M, K, fast=False):
     else:
         f = dup_shift(dup_reverse(g), K.one, K)
 
-        if not dup_eval(f, K.zero, K):
-            f = dup_rshift(f, 1, K)
+        assert dmp_TC(f, K)
 
         a, b, c, d = b, a + b, d, c + d
 
@@ -298,9 +296,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
             f = dup_shift(f, A, K)
             b, d = A*a + b, A*c + d
 
-            if not dmp_TC(f, K):
-                roots.append((f, (b, b, d, d)))
-                f = dup_rshift(f, 1, K)
+            assert dmp_TC(f, K)
 
             k = dup_sign_variations(f, K)
 
