@@ -15,7 +15,7 @@ from ..solvers import solve
 from ..utilities import filldedent
 from .entity import GeometryEntity
 from .line import Line, Ray, Segment
-from .line3d import Line3D, LinearEntity3D, Ray3D, Segment3D
+from .line3d import Line3D, Ray3D, Segment3D
 from .point import Point, Point3D
 
 
@@ -197,7 +197,7 @@ class Plane(GeometryEntity):
         from .line import LinearEntity
         from .line3d import LinearEntity3D
         if not isinstance(line, (LinearEntity, LinearEntity3D)):
-            raise NotImplementedError('Enter a linear entity only')
+            raise NotImplementedError('Enter a linear entity only')  # pragma: no cover
         a, b = self.projection(line.p1), self.projection(line.p2)
         if a == b:
             # projection does not imply intersection so for
@@ -724,9 +724,7 @@ class Plane(GeometryEntity):
         if isinstance(o, Plane):
             x, y, z = map(Dummy, 'xyz')
             return not cancel(self.equation(x, y, z)/o.equation(x, y, z)).has(x, y, z)
-        if isinstance(o, Point3D):
+        elif isinstance(o, Point3D):
             return o in self
-        elif isinstance(o, LinearEntity3D):
-            return all(i in self for i in self)
-        elif isinstance(o, GeometryEntity):  # XXX should only be handling 2D objects now
-            return all(i == 0 for i in self.normal_vector[:2])
+        else:  # pragma: no cover
+            raise NotImplementedError
