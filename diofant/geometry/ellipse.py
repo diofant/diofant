@@ -110,7 +110,8 @@ class Ellipse(GeometrySet):
         if eccentricity is not None:
             if hradius is None:
                 hradius = vradius / sqrt(1 - eccentricity**2)
-            elif vradius is None:
+            else:
+                assert vradius is None
                 vradius = hradius * sqrt(1 - eccentricity**2)
 
         if hradius == vradius:
@@ -744,7 +745,7 @@ class Ellipse(GeometrySet):
                 inter = self._do_line_intersection(seg)
                 c += len([True for point in inter if point in seg])
             return c == 1
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError("Unknown argument type")
 
     def normal_lines(self, p, prec=None):
@@ -1151,7 +1152,7 @@ class Ellipse(GeometrySet):
         2**(2/3)*y**(2/3) + (3*x - 3)**(2/3) - 5**(2/3)
         """
         if len(self.args) != 3:
-            raise NotImplementedError('Evolute of arbitrary Ellipse is not supported.')
+            raise NotImplementedError('Evolute of arbitrary Ellipse is not supported.')  # pragma: no cover
         x = _symbol(x)
         y = _symbol(y)
         t1 = (self.hradius*(x - self.center.x))**Rational(2, 3)

@@ -6,9 +6,9 @@ from diofant import (Abs, Derivative, Dummy, Float, Rational, Symbol, Tuple,
                      cos, oo, pi, sqrt, symbols)
 from diofant.functions.elementary.trigonometric import tan
 from diofant.geometry import (Circle, Curve, Ellipse, GeometryError, Line,
-                              Point, Point2D, Polygon, Ray, RegularPolygon,
-                              Segment, Triangle, are_similar, centroid,
-                              convex_hull, intersection)
+                              Point, Point2D, Point3D, Polygon, Ray,
+                              RegularPolygon, Segment, Triangle, are_similar,
+                              centroid, convex_hull, intersection)
 from diofant.geometry.entity import rotate, scale, translate
 from diofant.geometry.polygon import deg, rad
 from diofant.geometry.util import idiff
@@ -95,6 +95,11 @@ def test_ellipse_geom():
     c1 = Circle(p1, 1)
     c2 = Circle(p2, 1)
     c3 = Circle(Point(sqrt(2), sqrt(2)), 1)
+
+    pytest.raises(ValueError, lambda: Ellipse(Point3D(0, 0, 0), 1, 1))
+    pytest.raises(ValueError, lambda: e3.arbitrary_point(y1))
+
+    assert e1.ambient_dimension == 2
 
     # Test creation with three points
     cen, rad = Point(3*half, 2), 5*half
