@@ -137,3 +137,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14312` Incorrect solution of 3 by 3 linear ODE systems
 * :sympyissue:`8859` wrong result: dsolve for systems with forcings
 * :sympyissue:`9204` dsolve fails
+* :sympyissue:`14779` Spurious solutions when solving equation involving Abs(x)/x

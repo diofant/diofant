@@ -342,9 +342,7 @@ def test_solve_radicals():
     assert solve(cbrt(x) + sqrt(x) + 1, x) == []
     assert solve(4*x*(1 - sqrt(x))) == [{x: 0}, {x: 1}]
 
-
-@pytest.mark.xfail
-def test_solve_radicals_xfail():
+    # issue diofant/diofant#925
     assert solve((sqrt(x) + 1)/(cbrt(x) + sqrt(x) + 1)) == []
 
 
@@ -1494,3 +1492,9 @@ def test_sympyissue_14721():
 
 def test_sympyissue_14791():
     assert solve(exp(log(5)*x) - exp(log(2)*x), x) == [{x: 0}]
+
+
+def test_sympyissue_14779():
+    x = symbols('x', real=True)
+    assert solve(sqrt(x**4 - 130*x**2 + 1089) +
+                 sqrt(x**4 - 130*x**2 + 3969) - 96*Abs(x)/x) == [{x: sqrt(130)}]
