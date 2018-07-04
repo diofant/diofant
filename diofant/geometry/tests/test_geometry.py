@@ -359,6 +359,8 @@ def test_ellipse_random_point():
 def test_polygon():
     a, b, c = Point(0, 0), Point(2, 0), Point(3, 3)
     t = Triangle(a, b, c)
+    assert Polygon(a) == a
+    assert Polygon(a, 1, 1, n=4) == RegularPolygon(a, 1, 4, 1)
     assert Polygon(a, Point(1, 0), b, c) == t
     assert Polygon(Point(1, 0), b, c, a) == t
     assert Polygon(b, c, a, Point(1, 0)) == t
