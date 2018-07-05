@@ -48,7 +48,7 @@ Minor changes
 * Support algebraic function fields in :func:`~diofant.polys.numberfields.minpoly_groebner`, see :pull:`623`.
 * Added argument ``method`` for :func:`~diofant.polys.numberfields.minimal_polynomial` and ``MINPOLY_METHOD`` configuration option to select default algorithm, see :pull:`624`.
 * Support derivatives of :class:`~diofant.polys.rootoftools.RootOf` instances, see :pull:`624`.
-* :func:`~diofant.polys.numberfields.primitive_element` now return an algebraic integer, see :pull:`643`.
+* :func:`~diofant.polys.numberfields.primitive_element` now return an algebraic integer and support algebraic fields, see :pull:`643` and :pull:`655`.
 
 Developer changes
 =================
@@ -86,5 +86,6 @@ These Sympy issues also were addressed:
 * :sympyissue:`14791` No solution is returned for solve(exp(log(5)*x) - exp(log(2)*x), x)
 * :sympyissue:`14793` Limit involving log(factorial(x)) incorrect
 * :sympyissue:`14811` Exception during evaluation of limit (only locally, not in the live version)
-* :sympyissue:`14820` octave/matlab codegen wrong for two argument zeta
 * :sympyissue:`14822` RisingFactorial cannot do numerical (floating point) evaluations
+* :sympyissue:`14820` octave/matlab codegen wrong for two argument zeta
+* :sympyissue:`14831` minpoly(-3*sqrt(12*sqrt(2) + 17) + 12*sqrt(2) + 17 -2*sqrt(2)*sqrt(12*sqrt(2) + 17), x) fails

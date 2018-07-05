@@ -498,7 +498,7 @@ def _minpoly_compose(ex, x, dom):
             # bases, and that in ``base**(n/d)`` a perfect power is
             # simplified with the root
             mp2 = ex2.denominator*x**lcmdens - ex2.numerator
-            ex2 = root(ex2, lcmdens)
+            ex2 = Mul(*[bx**ex for bx, ex in r1])
             res = _minpoly_op_algebraic_element(Mul, ex1, ex2, x, dom, mp1=mp1, mp2=mp2)
         else:
             res = _minpoly_mul(x, dom, *ex.args)
@@ -672,33 +672,36 @@ def primitive_element(extension, **args):
     extension = list(uniq(extension))
 
     x = Dummy('x')
-    F, Y = zip(*[(minimal_polynomial(e).replace(y), y)
+    domain = args.get('domain', QQ)
+    F, Y = zip(*[(minimal_polynomial(e, domain=domain).replace(y), y)
                  for e, y in zip(extension, numbered_symbols('y', cls=Dummy))])
 
     for u in range(1, (len(F) - 1)*prod(f.degree() for f in F) + 1):
         coeffs = [u**n for n in range(len(Y))]
         f = x - sum(c*y for c, y in zip(coeffs, Y))
 
-        *H, g = groebner(F + (f,), Y + (x,), field=True, polys=True)
+        *H, g = groebner(F + (f,), Y + (x,), domain=domain, polys=True)
 
         for i, (h, y) in enumerate(zip(H, Y)):
-            H[i] = (y - h).eject(*Y).retract(field=True)
-            if not H[i].domain.is_RationalField:
+            H[i] = (y - h).eject(*Y).retract(field=True, extension=True)
+            if not (H[i].domain.is_RationalField or H[i].domain.is_Algebraic):
                 break  # G is not a triangular set
+            else:
+                H[i] = H[i].set_domain(domain)
         else:
-            g = g.eject(*Y).retract()
+            g = g.eject(*Y).set_domain(domain)
             break
     else:
         if len(F) == 1:
-            g, coeffs, H = F[0].replace(x), [S.One], [Poly(x)]
+            g, coeffs, H = F[0].replace(x), [S.One], [Poly(x, domain=domain)]
         else:  # pragma: no cover
             raise RuntimeError("run out of coefficient configurations")
 
-    _, factors = factor_list(g)
+    _, factors = factor_list(g, domain=domain)
     t = sum(c*e for c, e in zip(coeffs, extension))
-    g = _choose_factor(factors, x, t)
+    g = _choose_factor(factors, x, t, dom=domain)
 
-    H = [h.rem(g).all_coeffs() for y, h in zip(Y, H)]
+    H = [h.rem(g).rep.all_coeffs() for y, h in zip(Y, H)]
 
     _, g = PurePoly(g).clear_denoms(convert=True)
 

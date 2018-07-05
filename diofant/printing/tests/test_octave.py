@@ -382,4 +382,4 @@ def test_specfun():
     assert mcode(LambertW(x)) == 'lambertw(x)'
     assert mcode(LambertW(x, n)) == 'lambertw(n, x)'
     assert mcode(zeta(x)) == 'zeta(x)'
-    assert mcode(zeta(x, n)) == 'zeta(n, x)'
+    assert mcode(zeta(x, y)) == '% Not supported in Octave:\n% zeta\nzeta(x, y)'
