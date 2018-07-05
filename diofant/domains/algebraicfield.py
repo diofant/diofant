@@ -295,6 +295,6 @@ class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
 
     @property
     def denominator(self):
-        return self.per(functools.reduce(self.domain.ring.lcm,
-                                         (_.denominator for _ in self.rep),
-                                         self.domain.ring.one))
+        from . import ZZ
+        return self.per(functools.reduce(ZZ.lcm, (ZZ.convert(_.denominator)
+                                                  for _ in self.rep), ZZ.one))
