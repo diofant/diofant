@@ -33,14 +33,15 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     has_assoc_Field = True
 
     def __init__(self, dom, *ext):
-        if not dom.is_RationalField:
-            raise DomainError("ground domain must be a rational field")
+        if not (dom.is_RationalField or dom.is_Algebraic):
+            raise DomainError("ground domain must be a rational "
+                              "or an algebraic field")
 
         ext = [sympify(_).as_expr() for _ in ext]
 
         from ..polys.numberfields import primitive_element
 
-        minpoly, coeffs, H = primitive_element(ext)
+        minpoly, coeffs, H = primitive_element(ext, domain=dom)
 
         self.ext = sum(c*e for c, e in zip(coeffs, ext))
         self.minpoly = minpoly
@@ -79,11 +80,11 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     def algebraic_field(self, *extension):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`. """
-        return self.domain.algebraic_field(*((self.ext.as_expr(),) + extension))
+        return AlgebraicField(self, *extension)
 
     def to_expr(self, a):
         """Convert ``a`` to a Diofant object. """
-        return sum(((c*self.ext**n).expand() for n, c in enumerate(reversed(a.rep))), Integer(0))
+        return sum(((a.domain.to_expr(c)*self.ext**n).expand() for n, c in enumerate(reversed(a.rep))), Integer(0))
 
     def from_expr(self, a):
         """Convert Diofant's expression to ``dtype``. """

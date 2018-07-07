@@ -542,7 +542,7 @@ def test_field_isomorphism():
 def test_to_number_field():
     A = QQ.algebraic_field(sqrt(2))
     assert A.convert(sqrt(2)) == A([1, 0])
-    B = A.algebraic_field(sqrt(3))
+    B = QQ.algebraic_field(sqrt(2), sqrt(3))
     assert B.convert(sqrt(2) + sqrt(3)) == B([1, 0])
 
     K = QQ.algebraic_field(sqrt(2) + sqrt(3))
