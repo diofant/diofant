@@ -155,8 +155,7 @@ def dup_step_refine_real_root(f, M, K, fast=False):
         f = dup_shift(f, A, K)
         b, d = A*a + b, A*c + d
 
-        if not dup_eval(f, K.zero, K):
-            return f, (b, b, d, d)
+        assert dmp_TC(f, K)
 
     f, g = dup_shift(f, K.one, K), f
 
@@ -172,8 +171,7 @@ def dup_step_refine_real_root(f, M, K, fast=False):
     else:
         f = dup_shift(dup_reverse(g), K.one, K)
 
-        if not dup_eval(f, K.zero, K):
-            f = dup_rshift(f, 1, K)
+        assert dmp_TC(f, K)
 
         a, b, c, d = b, a + b, d, c + d
 
@@ -298,9 +296,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
             f = dup_shift(f, A, K)
             b, d = A*a + b, A*c + d
 
-            if not dmp_TC(f, K):
-                roots.append((f, (b, b, d, d)))
-                f = dup_rshift(f, 1, K)
+            assert dmp_TC(f, K)
 
             k = dup_sign_variations(f, K)
 
@@ -473,7 +469,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
     f = dmp_convert(f, 0, R, K)
     f = dup_clear_denoms(f, K)[1]
 
-    if K.is_Algebraic:
+    if K.is_AlgebraicField:
         A, K = K, K.domain
         polys = [dmp_eval_in(_, K.zero, 1, 1, K) for _ in dup_real_imag(f, A)]
         if not polys[1]:
@@ -521,7 +517,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):
         (f, k), = factors
         return [(r, k) for r in dup_isolate_real_roots_sqf(f, K, eps, inf, sup, fast)]
     else:
-        if K.is_Algebraic:
+        if K.is_AlgebraicField:
             raise NotImplementedError  # pragma: no cover
 
         if not K.is_RationalField:
@@ -1176,7 +1172,7 @@ def _winding_number(T, field):
 def _roots_bound(f, F):
     lc = F.to_expr(dmp_LC(f, F))
     B = 2*max(abs(F.to_expr(c)/lc) for c in f)
-    if not F.is_Algebraic:
+    if not F.is_AlgebraicField:
         return F.convert(B)
     else:
         return F.domain(int(100*B) + 1)/F.domain(100)
@@ -1207,7 +1203,7 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
 
     f1, f2 = dup_real_imag(f, F)
 
-    if F.is_Algebraic:
+    if F.is_AlgebraicField:
         F = F.domain
 
     f1L1F = dmp_eval_in(f1, v, 1, 1, F)
@@ -1522,7 +1518,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
                     _roots.append(croot)
                 _roots.append(root)
             roots = _roots
-        elif F.is_Algebraic and F.ext.as_expr() == I:
+        elif F.is_AlgebraicField and F.ext.as_expr() == I:
             # Take conjugated polynomial to get solutions in the
             # bottom half-plane.
             f = [F([-_.to_dict().get((1,), F.domain.zero),
@@ -1539,7 +1535,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
 
     f1, f2 = dup_real_imag(f, F)
 
-    if F.is_Algebraic:
+    if F.is_AlgebraicField:
         F = K.domain
 
     f1L1 = dmp_eval_in(f1, v, 1, 1, F)

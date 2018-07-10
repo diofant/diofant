@@ -688,7 +688,8 @@ class Polygon(GeometrySet):
             return dist
         elif isinstance(o, Polygon) and self.is_convex() and o.is_convex():
             return self._do_poly_distance(o)
-        raise NotImplementedError()
+        else:  # pragma: no cover
+            raise NotImplementedError
 
     def _do_poly_distance(self, e2):
         """

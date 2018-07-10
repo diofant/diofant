@@ -213,3 +213,10 @@ def test_sympyissue_12747():
 
 def test_sympyissue_14384():
     assert (x**y).series(x) == x**y
+
+
+def test_sympyissue_14885():
+    assert ((x**Rational(-3, 2)*exp(x)).series(x) ==
+            (x**Rational(-3, 2) + 1/sqrt(x) + sqrt(x)/2 + x**Rational(3, 2)/6 +
+             x**Rational(5, 2)/24 + x**Rational(7, 2)/120 +
+             x**Rational(9, 2)/720 + x**Rational(11, 2)/5040 + O(x**6)))
