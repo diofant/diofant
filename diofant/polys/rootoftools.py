@@ -311,7 +311,7 @@ class RootOf(Expr):
         complexes = sorted(complexes,
                            key=lambda r: (max(_[0].ax for _ in complexes
                                               if not _[0].is_disjoint(r[0], re_disjoint=True)),
-                                          r[0].ay))
+                                          r[0].ay if r[0].conj else r[0].by))
 
         for root, factor, _ in complexes:
             if factor in cache:
