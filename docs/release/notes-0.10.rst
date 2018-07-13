@@ -13,7 +13,7 @@ New features
 Major changes
 =============
 
-* Stable enumeration of polynomial roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`633`.
+* Stable enumeration of polynomial roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`633` and :pull:`658`.
 
 Compatibility breaks
 ====================

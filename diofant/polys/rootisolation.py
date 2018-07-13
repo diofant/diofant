@@ -1,7 +1,7 @@
 """Real and complex root isolation and refinement algorithms. """
 
 from ..core import I
-from .densearith import dmp_neg, dmp_rem, dup_rshift
+from .densearith import dmp_add, dmp_mul_ground, dmp_neg, dmp_rem, dup_rshift
 from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_permute,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dmp_to_tuple,
                          dup_reverse)
@@ -704,7 +704,7 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
 def dup_isolate_imaginary_roots(f, K, eps=None, inf=None, sup=None, fast=False):
     """Isolate imaginary roots. """
     F = K.algebraic_field(I)
-    f = dmp_compose(dmp_convert(f, 0, K, F), [F([1, 0]), 0], 0, F)
+    f = dmp_compose(dmp_convert(f, 0, K, F), [F.unit, 0], 0, F)
     return dup_isolate_real_roots(f, F, eps=eps, inf=inf, sup=sup, fast=fast)
 
 
@@ -1178,33 +1178,8 @@ def _roots_bound(f, F):
         return F.domain(int(100*B) + 1)/F.domain(100)
 
 
-def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
-    """Count all roots in [u + v*I, s + t*I] rectangle using Collins-Krandick algorithm. """
-    F = K.field
-
-    f = dmp_convert(f, 0, K, F)
-
-    if not all(isinstance(_, tuple) for _ in (inf, sup)):
-        B = _roots_bound(f, F)
-
-    if isinstance(inf, tuple):
-        u, v = inf
-    elif inf is not None:
-        u, v = inf, -B
-    else:
-        u, v = -B, -B
-
-    if isinstance(sup, tuple):
-        s, t = sup
-    elif sup is not None:
-        s, t = sup, B
-    else:
-        s, t = B, B
-
-    f1, f2 = dup_real_imag(f, F)
-
-    if F.is_AlgebraicField:
-        F = F.domain
+def _count_roots(f1, f2, F, inf, sup, exclude=None):
+    (u, v), (s, t) = inf, sup
 
     f1L1F = dmp_eval_in(f1, v, 1, 1, F)
     f2L1F = dmp_eval_in(f2, v, 1, 1, F)
@@ -1239,6 +1214,37 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
     T = _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=exclude)
 
     return _winding_number(T, F)
+
+
+def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
+    """Count all roots in [u + v*I, s + t*I] rectangle using Collins-Krandick algorithm. """
+    F = K.field
+
+    f = dmp_convert(f, 0, K, F)
+
+    if not all(isinstance(_, tuple) for _ in (inf, sup)):
+        B = _roots_bound(f, F)
+
+    if isinstance(inf, tuple):
+        u, v = inf
+    elif inf is not None:
+        u, v = inf, -B
+    else:
+        u, v = -B, -B
+
+    if isinstance(sup, tuple):
+        s, t = sup
+    elif sup is not None:
+        s, t = sup, B
+    else:
+        s, t = B, B
+
+    f1, f2 = dup_real_imag(f, F)
+
+    if F.is_AlgebraicField:
+        F = F.domain
+
+    return _count_roots(f1, f2, F, (u, v), (s, t), exclude)
 
 
 def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
@@ -1593,13 +1599,13 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
 
             if N_L >= 1:
                 if N_L == 1 and _rectangle_small_p(a, b, eps):
-                    roots.append(ComplexInterval(a, b, I_L, Q_L, F1_L, F2_L, f1, f2, f, F))
+                    roots.append(ComplexInterval(a, b, I_L, Q_L, F1_L, F2_L, f1, f2, F))
                 else:
                     rectangles.append(D_L)
 
             if N_R >= 1:
                 if N_R == 1 and _rectangle_small_p(c, d, eps):
-                    roots.append(ComplexInterval(c, d, I_R, Q_R, F1_R, F2_R, f1, f2, f, F))
+                    roots.append(ComplexInterval(c, d, I_R, Q_R, F1_R, F2_R, f1, f2, F))
                 else:
                     rectangles.append(D_R)
         else:
@@ -1610,13 +1616,13 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
 
             if N_B >= 1:
                 if N_B == 1 and _rectangle_small_p(a, b, eps):
-                    roots.append(ComplexInterval(a, b, I_B, Q_B, F1_B, F2_B, f1, f2, f, F))
+                    roots.append(ComplexInterval(a, b, I_B, Q_B, F1_B, F2_B, f1, f2, F))
                 else:
                     rectangles.append(D_B)
 
             if N_U >= 1:
                 if N_U == 1 and _rectangle_small_p(c, d, eps):
-                    roots.append(ComplexInterval(c, d, I_U, Q_U, F1_U, F2_U, f1, f2, f, F))
+                    roots.append(ComplexInterval(c, d, I_U, Q_U, F1_U, F2_U, f1, f2, F))
                 else:
                     rectangles.append(D_U)
 
@@ -1728,12 +1734,11 @@ class ComplexInterval:
     coordinates of the interval's rectangle.
     """
 
-    def __init__(self, a, b, I, Q, F1, F2, f1, f2, f, dom, conj=False):
+    def __init__(self, a, b, I, Q, F1, F2, f1, f2, dom, conj=False):
         """Initialize new complex interval with complete information. """
         self.a, self.b = a, b  # the southwest and northeast corner: (x1, y1), (x2, y2)
         self.I, self.Q = I, Q
 
-        self.f = f
         self.f1, self.F1 = f1, F1
         self.f2, self.F2 = f2, F2
 
@@ -1779,7 +1784,7 @@ class ComplexInterval:
         """Return conjugated isolating interval. """
         return ComplexInterval(self.a, self.b, self.I, self.Q,
                                self.F1, self.F2, self.f1, self.f2,
-                               self.f, self.domain, not self.conj)
+                               self.domain, not self.conj)
 
     def is_disjoint(self, other, check_re_refinement=False, re_disjoint=False):
         """Return ``True`` if two isolation intervals are disjoint.
@@ -1794,8 +1799,6 @@ class ComplexInterval:
             If enabled, return ``True`` only if real projections of isolation
             intervals are disjoint.
         """
-        if self.conj != other.conj:
-            return True
         test_re = self.bx <= other.ax or other.bx <= self.ax
         if test_re or re_disjoint:
             return test_re
@@ -1822,11 +1825,24 @@ class ComplexInterval:
             # interval will be degenerate: a vertical line segment.  Make
             # sure we only count roots on the northern/western edges and
             # on the north-western corner of the original isolation rectangle.
-            return all(len([1 for _ in dup_isolate_imaginary_roots(dup_shift(i.f, r, 0), i.domain, inf=i.ay,
-                                                                   sup=i.by) if i.ay < _[0][0] and r < i.bx]) == 1
-                       for i in (self, other))
+            for i in (self, other):
+                dom = i.domain.algebraic_field(I)
+                f1 = dmp_convert(dmp_eval_in(i.f1, l, 0, 1, i.domain), 0, i.domain, dom)
+                f2 = dmp_convert(dmp_eval_in(i.f2, l, 0, 1, i.domain), 0, i.domain, dom)
+                f = dmp_add(f1, dmp_mul_ground(f2, dom.unit, 0, dom), 0, dom)
+                f = dmp_compose(f, [-dom.unit, 0], 0, dom)
+                if i.conj:
+                    f = [dom([-_.to_dict().get((1,), dom.domain.zero),
+                              +_.to_dict().get((0,), dom.domain.zero)]) for _ in f]
+                f = dmp_compose(f, [dom.unit, 0], 0, dom)
+                r = dup_isolate_real_roots(f, dom, inf=i.ay, sup=i.by)
+                if len([1 for _ in r if ((not i.conj and i.ay < _[0][0]) or
+                                         (i.conj and _[0][1] < i.by)) and l < i.bx]) != 1:
+                    return False
+            else:
+                return True
         else:
-            return all(dup_count_complex_roots(i.f, i.domain, (l, i.ay), (r, i.by)) == 1
+            return all(_count_roots(i.f1, i.f2, i.domain, (l, i.ay), (r, i.by)) == 1
                        for i in (self, other))
 
     def refine(self):
@@ -1855,4 +1871,4 @@ class ComplexInterval:
             else:
                 _, a, b, I, Q, F1, F2 = D_U
 
-        return ComplexInterval(a, b, I, Q, F1, F2, f1, f2, self.f, dom, self.conj)
+        return ComplexInterval(a, b, I, Q, F1, F2, f1, f2, dom, self.conj)
