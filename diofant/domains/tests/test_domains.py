@@ -684,6 +684,9 @@ def test_Domain__algebraic_field():
 
     assert alg.characteristic == 0
 
+    assert int(alg(2)) == 2
+    pytest.raises(TypeError, lambda: int(alg([1, 1])))
+
     alg = QQ.algebraic_field(I)
     assert alg.algebraic_field(I) == alg
 

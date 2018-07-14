@@ -289,6 +289,13 @@ class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
     def __bool__(self):
         return bool(self.rep)
 
+    def __int__(self):
+        try:
+            from . import ZZ
+            return int(ZZ.convert(self))
+        except CoercionFailed:
+            raise TypeError("Can't convert algebraic number to int")
+
     @property
     def numerator(self):
         return self*self.denominator
