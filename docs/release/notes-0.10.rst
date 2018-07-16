@@ -49,7 +49,7 @@ Minor changes
 * Support algebraic function fields in :func:`~diofant.polys.numberfields.minpoly_groebner`, see :pull:`623`.
 * Added argument ``method`` for :func:`~diofant.polys.numberfields.minimal_polynomial` and ``MINPOLY_METHOD`` configuration option to select default algorithm, see :pull:`624`.
 * Support derivatives of :class:`~diofant.polys.rootoftools.RootOf` instances, see :pull:`624`.
-* :func:`~diofant.polys.numberfields.primitive_element` now return an algebraic integer and support algebraic fields, see :pull:`643` and :pull:`655`.
+* :func:`~diofant.polys.numberfields.primitive_element` now return an algebraic integer and support algebraic fields, see :pull:`643`, :pull:`655` and :pull:`659`.
 
 Developer changes
 =================
