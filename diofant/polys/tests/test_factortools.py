@@ -388,8 +388,8 @@ def test_dmp_zz_factor():
     R, x, y, z = ring("x,y,z", ZZ)
     assert R.dmp_zz_factor(f_1) == \
         (1, [(x + y*z + 20, 1),
-             (x*y + z + 10, 1),
-             (x*z + y + 30, 1)])
+             (x*z + y + 30, 1),
+             (x*y + z + 10, 1)])
 
     assert R.dmp_zz_factor(f_2) == \
         (1, [(x**2*y**2 + x**2*z**2 + y + 90, 1),
@@ -414,10 +414,9 @@ def test_dmp_zz_factor():
              (45*x**3 - 9*y**3 - y**2 + 3*z**3 + 2*z*t, 1)])
 
     R, x, y, z = ring("x,y,z", ZZ)
-    assert R.dmp_zz_factor(w_1) == \
-        (1, [(x**2*y**2 - x**2*z**2 + y - z**2, 1),
-             (x**2*y*z**2 + 3*x*z + 2*y, 1),
-             (4*x**2*y + 4*x**2*z + x*y*z - 1, 1)])
+    assert R.dmp_zz_factor(w_1) == (1, [(4*x**2*y + 4*x**2*z + x*y*z - 1, 1),
+                                        (x**2*y*z**2 + 3*x*z + 2*y, 1),
+                                        (x**2*y**2 - x**2*z**2 + y - z**2, 1)])
 
     R, x, y = ring("x,y", ZZ)
     f = -12*x**16*y + 240*x**12*y**3 - 768*x**10*y**4 + 1080*x**8*y**5 - 768*x**6*y**6 + 240*x**4*y**7 - 12*y**9
@@ -456,8 +455,8 @@ def test_dup_ext_factor():
 
     f = 4*x**4 + 8*x**3 + 77*x**2 + 18*x + 153
 
-    assert R.dup_ext_factor(f) == (R.domain(4), [(x + 1 - 4*I, 1), (x - 3*I/2, 1),
-                                                 (x + 3*I/2, 1), (x + 1 + 4*I, 1)])
+    assert R.dup_ext_factor(f) == (4, [(x - 3*I/2, 1), (x + 1 + 4*I, 1),
+                                       (x + 1 - 4*I, 1), (x + 3*I/2, 1)])
 
     R, x = ring("x", QQ.algebraic_field(sqrt(2)))
 

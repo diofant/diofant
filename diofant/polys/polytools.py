@@ -6,7 +6,7 @@ from mpmath.libmp.libhyper import NoConvergence
 from . import polyoptions as options
 from ..core import (Add, Basic, Derivative, Dummy, E, Expr, I, Integer, Mul, S,
                     Symbol, Tuple, oo, preorder_traversal, sympify)
-from ..core.compatibility import iterable
+from ..core.compatibility import default_sort_key, iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
@@ -4904,12 +4904,12 @@ def _sorted_factors(factors, method):
         def key(obj):
             poly, exp = obj
             rep = poly.rep.rep
-            return exp, len(rep), len(poly.gens), rep
+            return exp, len(rep), len(poly.gens), default_sort_key(rep)
     else:
         def key(obj):
             poly, exp = obj
             rep = poly.rep.rep
-            return len(rep), len(poly.gens), exp, rep
+            return len(rep), len(poly.gens), exp, default_sort_key(rep)
 
     return sorted(factors, key=key)
 
