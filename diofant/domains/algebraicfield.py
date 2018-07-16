@@ -99,10 +99,10 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
             K0 = self.domain.algebraic_field(a)
         except NotAlgebraic:
             raise CoercionFailed("%s is not a valid algebraic number in %s" % (a, self))
-        if K0.is_AlgebraicField:
-            return self.convert(K0.root, K0)
-        else:
+        if a in self.domain:
             return self.new([a])
+        else:
+            return self.convert(K0.root, K0)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self([self.domain.convert(a, K0)])
@@ -120,13 +120,17 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         return self([self.domain.convert(a, K0)])
 
     def _from_AlgebraicField(self, a, K0):
+        if K0 == self.domain:
+            return self([a])
+        elif self == K0.domain and len(a.rep) <= 1:
+            return a.rep[0] if a else self.zero
+
         from ..polys import field_isomorphism
 
         coeffs = field_isomorphism(K0, self)
 
         if coeffs is not None:
-            a_coeffs = dmp_compose(a.rep, coeffs, 0, self.domain)
-            return self(a_coeffs)
+            return self(dmp_compose(a.rep, coeffs, 0, self.domain))
         else:
             raise CoercionFailed("%s is not in a subfield of %s" % (K0, self))
 

@@ -696,6 +696,11 @@ def test_Domain__algebraic_field():
     # issue sympy/sympy#14476
     assert QQ.algebraic_field(Rational(1, 7)) is QQ
 
+    alg = QQ.algebraic_field(sqrt(2)).algebraic_field(I)
+    assert alg.from_expr(2*sqrt(2) + I) == alg([alg.domain(1), alg.domain(2*sqrt(2))])
+    alg2 = QQ.algebraic_field(sqrt(2))
+    assert alg2.from_expr(sqrt(2)) == alg2.convert(alg.from_expr(sqrt(2)))
+
 
 def test_PolynomialRing_from_FractionField():
     F,  x, y = field("x,y", ZZ)

@@ -750,7 +750,7 @@ def is_isomorphism_possible(a, b):
 
 def field_isomorphism_pslq(a, b):
     """Construct field isomorphism using PSLQ algorithm. """
-    if not all(_.ext.is_real for _ in (a, b)):
+    if not all(_.domain.is_RationalField and _.ext.is_real for _ in (a, b)):
         raise NotImplementedError("PSLQ doesn't support complex coefficients")
 
     f = a.minpoly
@@ -780,7 +780,7 @@ def field_isomorphism_pslq(a, b):
 
 def field_isomorphism_factor(a, b):
     """Construct field isomorphism via factorization. """
-    _, factors = factor_list(a.minpoly, domain=b)
+    _, factors = a.minpoly.set_domain(b).factor_list()
 
     for f, _ in factors:
         if f.degree() == 1:
@@ -793,10 +793,10 @@ def field_isomorphism_factor(a, b):
             root = Add(*terms)
 
             if (a.ext - root).evalf(chop=True) == 0:
-                return coeffs
+                return [b(+c) for c in coeffs]
 
             if (a.ext + root).evalf(chop=True) == 0:
-                return [-c for c in coeffs]
+                return [b(-c) for c in coeffs]
 
 
 def field_isomorphism(a, b, **args):
@@ -811,7 +811,7 @@ def field_isomorphism(a, b, **args):
     n = a.minpoly.degree()
     m = b.minpoly.degree()
 
-    if m % n != 0:
+    if a.domain == b.domain and m % n != 0:
         return
 
     if args.get('fast', True):
