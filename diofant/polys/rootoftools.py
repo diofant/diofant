@@ -508,9 +508,9 @@ class RootOf(Expr):
             g = self.poly.gen
             if not g.is_Symbol:
                 d = Dummy('x')
-                func = lambdify(d, self.expr.subs(g, d))
+                func = lambdify(d, self.expr.subs(g, d), "mpmath")
             else:
-                func = lambdify(g, self.expr)
+                func = lambdify(g, self.expr, "mpmath")
 
             try:
                 interval = self.interval
