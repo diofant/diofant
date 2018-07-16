@@ -684,6 +684,9 @@ def test_Domain__algebraic_field():
 
     assert alg.characteristic == 0
 
+    assert int(alg(2)) == 2
+    pytest.raises(TypeError, lambda: int(alg([1, 1])))
+
     alg = QQ.algebraic_field(I)
     assert alg.algebraic_field(I) == alg
 
@@ -692,6 +695,12 @@ def test_Domain__algebraic_field():
 
     # issue sympy/sympy#14476
     assert QQ.algebraic_field(Rational(1, 7)) is QQ
+
+    alg = QQ.algebraic_field(sqrt(2)).algebraic_field(I)
+    assert alg.from_expr(2*sqrt(2) + I/3) == alg([alg.domain(1)/3,
+                                                  alg.domain(2*sqrt(2))])
+    alg2 = QQ.algebraic_field(sqrt(2))
+    assert alg2.from_expr(sqrt(2)) == alg2.convert(alg.from_expr(sqrt(2)))
 
 
 def test_PolynomialRing_from_FractionField():

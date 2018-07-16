@@ -2931,7 +2931,7 @@ class Poly(Expr):
         from .rootoftools import RootOf
         return RootOf(self, index, radicals=radicals)
 
-    def real_roots(self, multiple=True, radicals=True):
+    def real_roots(self, multiple=True, radicals=True, extension=None):
         """
         Return a list of real roots with multiplicities.
 
@@ -2944,14 +2944,14 @@ class Poly(Expr):
         [RootOf(x**3 + x + 1, 0)]
         """
         from .rootoftools import RootOf
-        reals = RootOf.real_roots(self, radicals=radicals)
+        reals = RootOf.real_roots(self, radicals=radicals, extension=extension)
 
         if multiple:
             return reals
         else:
             return group(reals, multiple=False)
 
-    def all_roots(self, multiple=True, radicals=True):
+    def all_roots(self, multiple=True, radicals=True, extension=None):
         """
         Return a list of real and complex roots with multiplicities.
 
@@ -2965,7 +2965,7 @@ class Poly(Expr):
          RootOf(x**3 + x + 1, 2)]
         """
         from .rootoftools import RootOf
-        roots = RootOf.all_roots(self, radicals=radicals)
+        roots = RootOf.all_roots(self, radicals=radicals, extension=extension)
 
         if multiple:
             return roots

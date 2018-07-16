@@ -1,7 +1,6 @@
 """Computational algebraic field theory. """
 
 import functools
-import operator
 
 import mpmath
 
@@ -10,8 +9,8 @@ from ..core import (Add, Dummy, E, GoldenRatio, I, Mul, Rational, S, pi, prod,
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..domains import QQ, ZZ, AlgebraicField
-from ..functions import ceiling, cos, exp_polar, root, sin, sqrt
-from ..ntheory import divisors, factorint, multiplicity, sieve
+from ..functions import cos, exp_polar, root, sin, sqrt
+from ..ntheory import divisors, sieve
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
 from ..utilities import lambdify, numbered_symbols, sift
@@ -701,18 +700,14 @@ def primitive_element(extension, **args):
     t = sum(c*e for c, e in zip(coeffs, extension))
     g = _choose_factor(factors, x, t, dom=domain)
 
-    H = [h.rem(g).rep.all_coeffs() for y, h in zip(Y, H)]
+    H = [h.rem(g).rep.all_coeffs() for h in H]
 
     _, g = PurePoly(g).clear_denoms(convert=True)
 
     if g.LC() != 1:
-        d = functools.reduce(operator.mul,
-                             (p**max(ceiling((multiplicity(p, g.LC()) - multiplicity(p, a))/j)
-                                     for j, a in enumerate(g.all_coeffs()[1:], 1) if a)
-                              for p in factorint(g.LC())))
-        H = [list(reversed([c/d**n for n, c in enumerate(reversed(h))])) for h in H]
-        coeffs = [c*d for c in coeffs]
-        g = (g.compose(Poly(g.gen/d))*d**g.degree()//g.LC()).retract()
+        H = [list(reversed([c/g.LC()**n for n, c in enumerate(reversed(h))])) for h in H]
+        coeffs = [c*g.LC() for c in coeffs]
+        g = (g.compose(Poly(g.gen/g.LC()))*g.LC()**g.degree()//g.LC()).retract()
 
     return g, list(coeffs), H
 
@@ -750,7 +745,7 @@ def is_isomorphism_possible(a, b):
 
 def field_isomorphism_pslq(a, b):
     """Construct field isomorphism using PSLQ algorithm. """
-    if not all(_.ext.is_real for _ in (a, b)):
+    if not all(_.domain.is_RationalField and _.ext.is_real for _ in (a, b)):
         raise NotImplementedError("PSLQ doesn't support complex coefficients")
 
     f = a.minpoly
@@ -780,7 +775,7 @@ def field_isomorphism_pslq(a, b):
 
 def field_isomorphism_factor(a, b):
     """Construct field isomorphism via factorization. """
-    _, factors = factor_list(a.minpoly, domain=b)
+    _, factors = a.minpoly.set_domain(b).factor_list()
 
     for f, _ in factors:
         if f.degree() == 1:
@@ -793,10 +788,10 @@ def field_isomorphism_factor(a, b):
             root = Add(*terms)
 
             if (a.ext - root).evalf(chop=True) == 0:
-                return coeffs
+                return [b(+c) for c in coeffs]
 
             if (a.ext + root).evalf(chop=True) == 0:
-                return [-c for c in coeffs]
+                return [b(-c) for c in coeffs]
 
 
 def field_isomorphism(a, b, **args):
@@ -811,7 +806,7 @@ def field_isomorphism(a, b, **args):
     n = a.minpoly.degree()
     m = b.minpoly.degree()
 
-    if m % n != 0:
+    if a.domain == b.domain and m % n != 0:
         return
 
     if args.get('fast', True):
