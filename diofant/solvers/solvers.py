@@ -294,10 +294,6 @@ def solve(f, *symbols, **flags):
     diofant.solvers.ode.dsolve : solving differential equations
     diofant.solvers.inequalities.reduce_inequalities : solving inequalities
     """
-    # keeping track of how f was passed since if it is a list
-    # a dictionary of results will be returned.
-    ###########################################################################
-
     def _sympified_list(w):
         return list(map(sympify, w if iterable(w) else [w]))
     bare_f = not iterable(f)
