@@ -3,8 +3,9 @@
 import pytest
 
 from diofant import (Add, GoldenRatio, I, Integer, PurePoly, Rational, cbrt,
-                     cos, exp, exp_polar, expand, expand_multinomial,
-                     nsimplify, oo, pi, root, sin, solve, sqrt)
+                     conjugate, cos, exp, exp_polar, expand,
+                     expand_multinomial, nsimplify, oo, pi, root, sin, solve,
+                     sqrt)
 from diofant.abc import x, y, z
 from diofant.domains import QQ
 from diofant.polys.numberfields import (field_isomorphism,
@@ -185,6 +186,18 @@ def test_minimal_polynomial_hi_prec():
     mp = minimal_polynomial(p)(x)
     # checked with Wolfram Alpha
     assert mp.coeff(x**6) == -1232000000000000000000000000001223999999999999999999999999999987999999999999999999999999999996000000000000000000000000000000
+
+
+def test_minimal_polynomial_conjugate():
+    e = sqrt(1 + sqrt(2 + I))
+    ec = conjugate(e)
+    for meth in ('compose', 'groebner'):
+        assert (minimal_polynomial(ec, method=meth)(x) ==
+                minimal_polynomial(e, method=meth)(x) ==
+                x**8 - 4*x**6 + 2*x**4 + 4*x**2 + 2)
+        assert (minimal_polynomial((e + ec)/2, method=meth)(x) ==
+                4096*x**16 - 16384*x**14 + 20480*x**12 - 12288*x**10 -
+                1152*x**8 + 3328*x**6 - 1600*x**4 + 64*x**2 + 1)
 
 
 def test_minimal_polynomial_sq():
