@@ -506,13 +506,13 @@ def _minpoly_compose(ex, x, dom):
             res = _minpoly_exp(ex, x)
         else:
             res = _minpoly_pow(ex.base, ex.exp, x, dom)
-    elif ex.__class__ is sin:
+    elif isinstance(ex, sin):
         res = _minpoly_sin(ex, x)
-    elif ex.__class__ is cos:
+    elif isinstance(ex, cos):
         res = _minpoly_cos(ex, x)
-    elif ex.__class__ is RootOf:
+    elif isinstance(ex, RootOf):
         res = _minpoly_rootof(ex, x)
-    elif ex.__class__ is conjugate:
+    elif isinstance(ex, conjugate):
         res = _minpoly_compose(ex.args[0], x, dom)
     else:
         raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
