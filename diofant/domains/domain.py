@@ -1,6 +1,7 @@
 """Implementation of :class:`Domain` class. """
 
 import abc
+import inspect
 
 from ..core import Expr
 from ..core.compatibility import HAS_GMPY
@@ -70,17 +71,19 @@ class Domain(DefaultPrinting, abc.ABC):
 
     def convert_from(self, element, base):
         """Convert ``element`` to ``self.dtype`` given the base domain. """
-        method = "_from_" + base.__class__.__name__
+        for superclass in inspect.getmro(base.__class__):
+            method = "_from_" + superclass.__name__
 
-        convert = getattr(self, method, None)
+            convert = getattr(self, method, None)
 
-        if convert:
-            result = convert(element, base)
+            if convert:
+                result = convert(element, base)
 
-            if result is not None:
-                return result
+                if result is not None:
+                    return result
 
-        raise CoercionFailed("can't convert %s of type %s from %s to %s" % (element, type(element), base, self))
+        raise CoercionFailed("can't convert %s of type %s from %s "
+                             "to %s" % (element, type(element), base, self))
 
     def convert(self, element, base=None):
         """Convert ``element`` to ``self.dtype``. """

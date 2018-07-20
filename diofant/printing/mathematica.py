@@ -30,6 +30,7 @@ known_functions = {
     "hyper": [(lambda *x: True, "HypergeometricPFQ")],
     "binomial": [(lambda n, k: True, "Binomial")],
     "erfc": [(lambda x: True, "Erfc")],
+    "conjugate": [(lambda x: True, "Conjugate")],
 }
 
 

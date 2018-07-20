@@ -9,7 +9,7 @@ from ..core import (Add, Dummy, E, GoldenRatio, I, Mul, Rational, S, pi, prod,
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
 from ..domains import QQ, ZZ, AlgebraicField
-from ..functions import cos, exp_polar, root, sin, sqrt
+from ..functions import conjugate, cos, exp_polar, root, sin, sqrt
 from ..ntheory import divisors, sieve
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
@@ -506,12 +506,14 @@ def _minpoly_compose(ex, x, dom):
             res = _minpoly_exp(ex, x)
         else:
             res = _minpoly_pow(ex.base, ex.exp, x, dom)
-    elif ex.__class__ is sin:
+    elif isinstance(ex, sin):
         res = _minpoly_sin(ex, x)
-    elif ex.__class__ is cos:
+    elif isinstance(ex, cos):
         res = _minpoly_cos(ex, x)
-    elif ex.__class__ is RootOf:
+    elif isinstance(ex, RootOf):
         res = _minpoly_rootof(ex, x)
+    elif isinstance(ex, conjugate):
+        res = _minpoly_compose(ex.args[0], x, dom)
     else:
         raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
     return res
@@ -633,6 +635,9 @@ def minpoly_groebner(ex, x, domain):
                 return update_mapping(ex, exp.denominator, -base**exp.numerator)
         elif isinstance(ex, RootOf) and ex.poly.domain.is_IntegerRing:
             return update_mapping(ex, ex.poly)
+        elif isinstance(ex, conjugate):
+            return update_mapping(ex, minimal_polynomial(ex.args[0], domain=domain,
+                                                         method='groebner'))
 
         raise NotAlgebraic("%s doesn't seem to be an algebraic number" % ex)
 
