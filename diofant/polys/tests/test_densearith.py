@@ -14,9 +14,9 @@ from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dmp_sqr, dmp_sub, dmp_sub_ground,
                                       dmp_sub_mul, dmp_sub_term, dup_add,
                                       dup_add_term, dup_ff_div, dup_lshift,
-                                      dup_mul, dup_mul_term, dup_pdiv,
-                                      dup_pexquo, dup_pquo, dup_prem,
-                                      dup_rr_div, dup_rshift, dup_sqr, dup_sub,
+                                      dup_mul, dup_mul_term, dup_pexquo,
+                                      dup_pquo, dup_prem, dup_rr_div,
+                                      dup_rshift, dup_sqr, dup_sub,
                                       dup_sub_term)
 from diofant.polys.densebasic import dmp_normal
 from diofant.polys.polyerrors import (ExactQuotientFailed,
@@ -755,19 +755,19 @@ def test_dmp_pow():
     assert dmp_pow([1, -2], 3, 0, ZZ) == [1, -6, 12, -8]
 
 
-def test_dup_pdiv():
+def test_dmp_pdiv():
     f = dmp_normal([3, 1, 1, 5], 0, ZZ)
     g = dmp_normal([5, -3, 1], 0, ZZ)
 
     q = dmp_normal([15, 14], 0, ZZ)
     r = dmp_normal([52, 111], 0, ZZ)
 
-    assert dup_pdiv(f, g, ZZ) == (q, r)
+    assert dmp_pdiv(f, g, 0, ZZ) == (q, r)
     assert dup_pquo(f, g, ZZ) == q
     assert dup_prem(f, g, ZZ) == r
 
     pytest.raises(ExactQuotientFailed, lambda: dup_pexquo(f, g, ZZ))
-    pytest.raises(ZeroDivisionError, lambda: dup_pdiv(f, [], ZZ))
+    pytest.raises(ZeroDivisionError, lambda: dmp_pdiv(f, [], 0, ZZ))
     pytest.raises(ZeroDivisionError, lambda: dup_prem(f, [], ZZ))
 
     f = dmp_normal([3, 1, 1, 5], 0, QQ)
@@ -776,16 +776,20 @@ def test_dup_pdiv():
     q = dmp_normal([15, 14], 0, QQ)
     r = dmp_normal([52, 111], 0, QQ)
 
-    assert dup_pdiv(f, g, QQ) == (q, r)
-    assert dup_pdiv(g, f, QQ) == ([], [QQ(5, 1), QQ(-3, 1), QQ(1, 1)])
+    assert dmp_pdiv(f, g, 0, QQ) == (q, r)
+    assert dmp_pdiv(g, f, 0, QQ) == ([], [QQ(5, 1), QQ(-3, 1), QQ(1, 1)])
     assert dup_prem(g, f, QQ) == [QQ(5, 1), QQ(-3, 1), QQ(1, 1)]
     assert dup_pquo(f, g, QQ) == q
     assert dup_prem(f, g, QQ) == r
 
     pytest.raises(ExactQuotientFailed, lambda: dup_pexquo(f, g, QQ))
 
+    f = dmp_normal([1, 0, 1], 0, ZZ)
+    g = dmp_normal([2, -4], 0, ZZ)
 
-def test_dmp_pdiv():
+    assert dmp_pdiv(f, g, 0, ZZ) == (dmp_normal([2, 4], 0, ZZ),
+                                     dmp_normal([20], 0, ZZ))
+
     f = dmp_normal([[1], [], [1, 0, 0]], 1, ZZ)
     g = dmp_normal([[1], [-1, 0]], 1, ZZ)
 
