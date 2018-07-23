@@ -15,9 +15,8 @@ from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dmp_sub_mul, dmp_sub_term, dup_add,
                                       dup_add_term, dup_ff_div, dup_lshift,
                                       dup_mul, dup_mul_term, dup_pexquo,
-                                      dup_pquo, dup_prem, dup_rr_div,
-                                      dup_rshift, dup_sqr, dup_sub,
-                                      dup_sub_term)
+                                      dup_pquo, dup_prem, dup_rshift, dup_sqr,
+                                      dup_sub, dup_sub_term)
 from diofant.polys.densebasic import dmp_normal
 from diofant.polys.polyerrors import (ExactQuotientFailed,
                                       PolynomialDivisionFailed)
@@ -819,18 +818,23 @@ def test_dmp_pdiv():
     pytest.raises(ExactQuotientFailed, lambda: dmp_pexquo(f, g, 1, ZZ))
 
 
-def test_dup_rr_div():
-    pytest.raises(ZeroDivisionError, lambda: dup_rr_div([1, 2, 3], [], ZZ))
+def test_dmp_rr_div():
+    pytest.raises(ZeroDivisionError, lambda: dmp_rr_div([1, 2, 3], [], 0, ZZ))
 
     f = dmp_normal([3, 1, 1, 5], 0, ZZ)
     g = dmp_normal([5, -3, 1], 0, ZZ)
 
     q, r = [], f
 
-    assert dup_rr_div(f, g, ZZ) == (q, r)
+    assert dmp_rr_div(f, g, 0, ZZ) == (q, r)
 
+    f = dmp_normal([1, 0, 1], 0, ZZ)
+    g = dmp_normal([2, -4], 0, ZZ)
 
-def test_dmp_rr_div():
+    q, r = [], f
+
+    assert dmp_rr_div(f, g, 0, ZZ) == (q, r)
+
     pytest.raises(ZeroDivisionError, lambda: dmp_rr_div([[1, 2], [3]], [[]], 1, ZZ))
 
     f = dmp_normal([[1], [], [1, 0, 0]], 1, ZZ)

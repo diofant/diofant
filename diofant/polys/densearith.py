@@ -976,53 +976,6 @@ def dmp_pexquo(f, g, u, K):
         raise ExactQuotientFailed(f, g)
 
 
-def dup_rr_div(f, g, K):
-    """
-    Univariate division with remainder over a ring.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_rr_div(x**2 + 1, 2*x - 4)
-    (0, x**2 + 1)
-    """
-    df = dmp_degree(f, 0)
-    dg = dmp_degree(g, 0)
-
-    q, r, dr = [], f, df
-
-    if not g:
-        raise ZeroDivisionError("polynomial division")
-    elif df < dg:
-        return q, r
-
-    lc_g = dmp_LC(g, K)
-
-    while True:
-        lc_r = dmp_LC(r, K)
-
-        if lc_r % lc_g:
-            break
-
-        c = K.exquo(lc_r, lc_g)
-        j = dr - dg
-
-        q = dup_add_term(q, c, j, K)
-        h = dup_mul_term(g, c, j, K)
-        r = dup_sub(r, h, K)
-
-        _dr, dr = dr, dmp_degree(r, 0)
-
-        if dr < dg:
-            break
-        elif not (dr < _dr):
-            raise PolynomialDivisionFailed(f, g, K)
-
-    return q, r
-
-
 def dmp_rr_div(f, g, u, K):
     """
     Multivariate division with remainder over a ring.
@@ -1035,9 +988,6 @@ def dmp_rr_div(f, g, u, K):
     >>> R.dmp_rr_div(x**2 + x*y, 2*x + 2)
     (0, x**2 + x*y)
     """
-    if not u:
-        return dup_rr_div(f, g, K)
-
     df = dmp_degree(f, u)
     dg = dmp_degree(g, u)
 
@@ -1053,10 +1003,15 @@ def dmp_rr_div(f, g, u, K):
 
     while True:
         lc_r = dmp_LC(r, K)
-        c, R = dmp_rr_div(lc_r, lc_g, v, K)
 
-        if not dmp_zero_p(R, v):
-            break
+        if v >= 0:
+            c, R = dmp_rr_div(lc_r, lc_g, v, K)
+            if not dmp_zero_p(R, v):
+                break
+        else:
+            if lc_r % lc_g:
+                break
+            c = K.exquo(lc_r, lc_g)
 
         j = dr - dg
 
