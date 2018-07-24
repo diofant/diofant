@@ -171,7 +171,7 @@ class BlockMatrix(MatrixExpr):
             return True
         if isinstance(other, BlockMatrix) and self.blocks == other.blocks:
             return True
-        return super(BlockMatrix, self).equals(other)
+        return super().equals(other)
 
 
 class BlockDiagMatrix(BlockMatrix):

@@ -200,8 +200,7 @@ class Piecewise(Function):
 
         if a is None or b is None:
             # In this case, it is just simple substitution
-            return piecewise_fold(
-                super(Piecewise, self)._eval_interval(sym, a, b))
+            return piecewise_fold(super()._eval_interval(sym, a, b))
 
         mul = 1
         if a == b:

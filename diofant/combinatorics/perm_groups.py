@@ -220,7 +220,7 @@ class PermutationGroup(Basic):
         return True
 
     def __hash__(self):
-        return super(PermutationGroup, self).__hash__()
+        return super().__hash__()
 
     def __mul__(self, other):
         """Return the direct product of two permutation groups as a permutation

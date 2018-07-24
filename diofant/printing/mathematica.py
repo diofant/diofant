@@ -79,7 +79,7 @@ class MCodePrinter(CodePrinter):
     def _print_Mul(self, expr):
         PREC = precedence(expr)
         c, nc = expr.args_cnc()
-        res = super(MCodePrinter, self)._print_Mul(expr.func(*c))
+        res = super()._print_Mul(expr.func(*c))
         if nc:
             res += '*'
             res += '**'.join(self.parenthesize(a, PREC) for a in nc)

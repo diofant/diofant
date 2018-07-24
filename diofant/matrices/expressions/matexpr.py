@@ -395,7 +395,7 @@ class Identity(MatrixExpr):
     is_Identity = True
 
     def __new__(cls, n):
-        return super(Identity, cls).__new__(cls, sympify(n))
+        return super().__new__(cls, sympify(n))
 
     @property
     def rows(self):
@@ -445,7 +445,7 @@ class ZeroMatrix(MatrixExpr):
     is_ZeroMatrix = True
 
     def __new__(cls, m, n):
-        return super(ZeroMatrix, cls).__new__(cls, m, n)
+        return super().__new__(cls, m, n)
 
     @property
     def shape(self):

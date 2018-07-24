@@ -47,7 +47,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
         minpoly, coeffs, H = primitive_element(ext, domain=dom)
 
-        obj = super(AlgebraicField, cls).__new__(cls)
+        obj = super().__new__(cls)
         obj.ext = sum(c*e for c, e in zip(coeffs, ext))
         obj.minpoly = minpoly
         obj.mod = minpoly.rep

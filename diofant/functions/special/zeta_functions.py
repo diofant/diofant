@@ -490,7 +490,7 @@ class _zetas(Function):
             return (Add(*l))._eval_nseries(x, n, logx) + o
 
         # All other points are not handled
-        return super(_zetas, self)._eval_aseries(n, args0, x, logx)
+        return super()._eval_aseries(n, args0, x, logx)
 
 
 class dirichlet_eta(Function):

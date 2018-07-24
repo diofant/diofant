@@ -232,7 +232,7 @@ class CythonCodeWrapper(CodeWrapper):
         "{body}")
 
     def __init__(self, *args, **kwargs):
-        super(CythonCodeWrapper, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._need_numpy = False
 
     @property

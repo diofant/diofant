@@ -569,10 +569,10 @@ def test_special_printers():
         """Use ``lambda`` printer but print numbers as ``mpi`` intervals. """
 
         def _print_Integer(self, expr):
-            return "mpi('%s')" % super(IntervalPrinter, self)._print_Integer(expr)
+            return "mpi('%s')" % super()._print_Integer(expr)
 
         def _print_Rational(self, expr):
-            return "mpi('%s')" % super(IntervalPrinter, self)._print_Rational(expr)
+            return "mpi('%s')" % super()._print_Rational(expr)
 
     def intervalrepr(expr):
         return IntervalPrinter().doprint(expr)

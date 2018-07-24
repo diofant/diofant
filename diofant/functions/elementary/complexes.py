@@ -335,7 +335,7 @@ class sign(Function):
         if direction.is_extended_real:
             return self.func(direction)
         else:
-            return super(sign, self)._eval_nseries(x, n, logx)
+            return super()._eval_nseries(x, n, logx)
 
 
 class Abs(Function):

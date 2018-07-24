@@ -73,7 +73,7 @@ class OctaveCodePrinter(CodePrinter):
     # for Octave.
 
     def __init__(self, settings={}):
-        super(OctaveCodePrinter, self).__init__(settings)
+        super().__init__(settings)
         self.known_functions = dict(zip(known_fcns_src1, known_fcns_src1))
         self.known_functions.update(dict(known_fcns_src2))
         userfuncs = settings.get('user_functions', {})
@@ -213,7 +213,7 @@ class OctaveCodePrinter(CodePrinter):
             return self._print(expr.evalf(self._settings["precision"]))
         else:
             # assign to a variable, perhaps more readable for longer program
-            return super(OctaveCodePrinter, self)._print_NumberSymbol(expr)
+            return super()._print_NumberSymbol(expr)
 
     def _print_Assignment(self, expr):
         from ..functions import Piecewise

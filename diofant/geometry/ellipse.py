@@ -493,7 +493,7 @@ class Ellipse(GeometrySet):
         if self.hradius == self.vradius:
             return self.func(self.center.rotate(angle, pt), self.hradius)
         if (angle/pi).is_integer:
-            return super(Ellipse, self).rotate(angle, pt)
+            return super().rotate(angle, pt)
         if (2*angle/pi).is_integer:
             return self.func(self.center.rotate(angle, pt), self.vradius, self.hradius)
         # XXX see https://github.com/sympy/sympy/issues/2815 for general ellipes
@@ -1166,7 +1166,7 @@ class Ellipse(GeometrySet):
                                                   self.vradius == o.vradius)
 
     def __hash__(self):
-        return super(Ellipse, self).__hash__()
+        return super().__hash__()
 
     def __contains__(self, o):
         if isinstance(o, Point):

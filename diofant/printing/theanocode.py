@@ -76,7 +76,7 @@ class TheanoPrinter(Printer):
 
     def __init__(self, *args, **kwargs):
         self.cache = kwargs.pop('cache', {})
-        super(TheanoPrinter, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def _print_Symbol(self, s, dtypes={}, broadcastables={}):
         dtype = dtypes.get(s, 'floatX')

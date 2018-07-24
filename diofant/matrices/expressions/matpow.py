@@ -13,7 +13,7 @@ class MatPow(MatrixExpr):
         if not base.is_Matrix:
             raise TypeError("Function parameter should be a matrix")
         exp = sympify(exp, strict=True)
-        return super(MatPow, cls).__new__(cls, base, exp)
+        return super().__new__(cls, base, exp)
 
     @property
     def base(self):
