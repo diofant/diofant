@@ -735,49 +735,6 @@ def dmp_pow(f, n, u, K):
     return g
 
 
-def dup_prem(f, g, K):
-    """
-    Polynomial pseudo-remainder in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_prem(x**2 + 1, 2*x - 4)
-    20
-    """
-    df = dmp_degree(f, 0)
-    dg = dmp_degree(g, 0)
-
-    r, dr = f, df
-
-    if not g:
-        raise ZeroDivisionError("polynomial division")
-    elif df < dg:
-        return r
-
-    N = df - dg + 1
-    lc_g = dmp_LC(g, K)
-
-    while True:
-        lc_r = dmp_LC(r, K)
-        j, N = dr - dg, N - 1
-
-        R = dmp_mul_ground(r, lc_g, 0, K)
-        G = dup_mul_term(g, lc_r, j, K)
-        r = dup_sub(R, G, K)
-
-        _dr, dr = dr, dmp_degree(r, 0)
-
-        if dr < dg:
-            break
-        elif not (dr < _dr):
-            raise PolynomialDivisionFailed(f, g, K)
-
-    return dmp_mul_ground(r, lc_g**N, 0, K)
-
-
 def dup_pquo(f, g, K):
     """
     Polynomial exact pseudo-quotient in ``K[X]``.
@@ -888,9 +845,6 @@ def dmp_prem(f, g, u, K):
     >>> R.dmp_prem(x**2 + x*y, 2*x + 2)
     -4*y + 4
     """
-    if not u:
-        return dup_prem(f, g, K)
-
     df = dmp_degree(f, u)
     dg = dmp_degree(g, u)
 
@@ -920,7 +874,10 @@ def dmp_prem(f, g, u, K):
         elif not (dr < _dr):
             raise PolynomialDivisionFailed(f, g, K)
 
-    c = dmp_pow(lc_g, N, u - 1, K)
+    if u:
+        c = dmp_pow(lc_g, N, u - 1, K)
+    else:
+        c = lc_g**N
 
     return dmp_mul_term(r, c, 0, u, K)
 
