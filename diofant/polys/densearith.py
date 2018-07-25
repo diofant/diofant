@@ -986,50 +986,6 @@ def dmp_rr_div(f, g, u, K):
     return q, r
 
 
-def dup_ff_div(f, g, K):
-    """
-    Polynomial division with remainder over a field.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", QQ)
-
-    >>> R.dup_ff_div(x**2 + 1, 2*x - 4)
-    (1/2*x + 1, 5)
-    """
-    df = dmp_degree(f, 0)
-    dg = dmp_degree(g, 0)
-
-    q, r, dr = [], f, df
-
-    if not g:
-        raise ZeroDivisionError("polynomial division")
-    elif df < dg:
-        return q, r
-
-    lc_g = dmp_LC(g, K)
-
-    while True:
-        lc_r = dmp_LC(r, K)
-
-        c = K.exquo(lc_r, lc_g)
-        j = dr - dg
-
-        q = dup_add_term(q, c, j, K)
-        h = dup_mul_term(g, c, j, K)
-        r = dup_sub(r, h, K)
-
-        _dr, dr = dr, dmp_degree(r, 0)
-
-        if dr < dg:
-            break
-        elif not (dr < _dr):
-            raise PolynomialDivisionFailed(f, g, K)
-
-    return q, r
-
-
 def dmp_ff_div(f, g, u, K):
     """
     Polynomial division with remainder over a field.
@@ -1042,9 +998,6 @@ def dmp_ff_div(f, g, u, K):
     >>> R.dmp_ff_div(x**2 + x*y, 2*x + 2)
     (1/2*x + 1/2*y - 1/2, -y + 1)
     """
-    if not u:
-        return dup_ff_div(f, g, K)
-
     df = dmp_degree(f, u)
     dg = dmp_degree(g, u)
 
@@ -1060,10 +1013,13 @@ def dmp_ff_div(f, g, u, K):
 
     while True:
         lc_r = dmp_LC(r, K)
-        c, R = dmp_ff_div(lc_r, lc_g, v, K)
 
-        if not dmp_zero_p(R, v):
-            break
+        if v >= 0:
+            c, R = dmp_ff_div(lc_r, lc_g, v, K)
+            if not dmp_zero_p(R, v):
+                break
+        else:
+            c = K.exquo(lc_r, lc_g)
 
         j = dr - dg
 

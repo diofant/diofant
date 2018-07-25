@@ -13,9 +13,9 @@ from diofant.polys.densearith import (dmp_abs, dmp_add, dmp_add_ground,
                                       dmp_quo_ground, dmp_rem, dmp_rr_div,
                                       dmp_sqr, dmp_sub, dmp_sub_ground,
                                       dmp_sub_mul, dmp_sub_term, dup_add,
-                                      dup_add_term, dup_ff_div, dup_lshift,
-                                      dup_mul, dup_mul_term, dup_pexquo,
-                                      dup_pquo, dup_rshift, dup_sqr, dup_sub,
+                                      dup_add_term, dup_lshift, dup_mul,
+                                      dup_mul_term, dup_pexquo, dup_pquo,
+                                      dup_rshift, dup_sqr, dup_sub,
                                       dup_sub_term)
 from diofant.polys.densebasic import dmp_normal
 from diofant.polys.polyerrors import (ExactQuotientFailed,
@@ -864,8 +864,8 @@ def test_dmp_rr_div():
     assert dmp_rr_div(f, g, 1, ZZ) == (q, r)
 
 
-def test_dup_ff_div():
-    pytest.raises(ZeroDivisionError, lambda: dup_ff_div([1, 2, 3], [], QQ))
+def test_dmp_ff_div():
+    pytest.raises(ZeroDivisionError, lambda: dmp_ff_div([1, 2, 3], [], 0, QQ))
 
     f = dmp_normal([3, 1, 1, 5], 0, QQ)
     g = dmp_normal([5, -3, 1], 0, QQ)
@@ -873,10 +873,16 @@ def test_dup_ff_div():
     q = [QQ(3, 5), QQ(14, 25)]
     r = [QQ(52, 25), QQ(111, 25)]
 
-    assert dup_ff_div(f, g, QQ) == (q, r)
+    assert dmp_ff_div(f, g, 0, QQ) == (q, r)
 
+    f = dmp_normal([1, 0, 1], 0, QQ)
+    g = dmp_normal([2, -4], 0, QQ)
 
-def test_dmp_ff_div():
+    q = [QQ(1, 2), QQ(1)]
+    r = [QQ(5)]
+
+    assert dmp_ff_div(f, g, 0, QQ) == (q, r)
+
     pytest.raises(ZeroDivisionError, lambda: dmp_ff_div([[1, 2], [3]], [[]], 1, QQ))
 
     f = dmp_normal([[1], [], [1, 0, 0]], 1, QQ)
