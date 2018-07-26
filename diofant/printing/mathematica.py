@@ -31,6 +31,8 @@ known_functions = {
     "binomial": [(lambda n, k: True, "Binomial")],
     "erfc": [(lambda x: True, "Erfc")],
     "conjugate": [(lambda x: True, "Conjugate")],
+    "re": [(lambda x: True, "Re")],
+    "im": [(lambda x: True, "Im")],
 }
 
 

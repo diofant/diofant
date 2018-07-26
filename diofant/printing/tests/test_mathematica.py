@@ -9,8 +9,8 @@ from diofant.core import (Catalan, Derivative, Dummy, E, Eq, EulerGamma,
                           Tuple, oo, pi, symbols)
 from diofant.functions import (Max, Min, Piecewise, acos, asin, atan, atanh,
                                binomial, conjugate, cos, cosh, cot, coth, csch,
-                               erfc, exp, hyper, log, meijerg, sech, sign, sin,
-                               sinh, tan, tanh)
+                               erfc, exp, hyper, im, log, meijerg, re, sech,
+                               sign, sin, sinh, tan, tanh)
 from diofant.integrals import Integral
 from diofant.logic import Or, false, true
 from diofant.matrices import Matrix
@@ -74,6 +74,8 @@ def test_Function():
     assert mcode(csch(x)) == "Csch[x]"
     assert mcode(erfc(x)) == "Erfc[x]"
     assert mcode(conjugate(x)) == "Conjugate[x]"
+    assert mcode(re(x)) == "Re[x]"
+    assert mcode(im(x)) == "Im[x]"
 
     class myfunc1(Function):
         @classmethod
