@@ -113,7 +113,8 @@ def test_minimal_polynomial():
            1999332*x**10 + 910120*x**9 + 2273040*x**8 - 5560320*x**7 +
            5302000*x**6 - 2405376*x**5 + 1016640*x**4 - 804480*x**3 +
            257280*x**2 - 53760*x + 1280)
-    assert minimal_polynomial(sqrt(theta) + root(theta, 3))(x) == ans
+    assert minimal_polynomial(sqrt(theta) + root(theta, 3),
+                              method='groebner')(x) == ans
     K1 = QQ.algebraic_field(RootOf(x**3 + 4*x - 15, 1))
     K2 = QQ.algebraic_field(RootOf(x**3 - x + 1, 0))
     theta = sqrt(1 + 1/(K1.to_expr(K([1, 0, 1])) +
