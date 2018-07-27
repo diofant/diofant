@@ -639,3 +639,11 @@ def test_sympyissue_11553():
 def test_sympyissue_14831():
     assert minimal_polynomial(-3*sqrt(12*sqrt(2) + 17) + 12*sqrt(2) +
                               17 - 2*sqrt(2)*sqrt(12*sqrt(2) + 17))(x) == x
+
+
+def test_diofantissue_224():
+    e = (root(root(2, 3) - 1, 3) - root(Rational(1, 9), 3) +
+         root(Rational(2, 9), 3) - root(Rational(4, 9), 3))
+    a, b, c, d = e.args
+    assert minimal_polynomial(Add(d, a, b, c, evaluate=False))(x) == x
+    assert minimal_polynomial(e)(x) == x

@@ -7,7 +7,7 @@ import mpmath
 from ..core import (Add, Dummy, E, GoldenRatio, I, Mul, Rational, S, pi, prod,
                     sympify)
 from ..core.exprtools import Factors
-from ..core.function import _mexpand
+from ..core.function import _mexpand, count_ops
 from ..domains import QQ, ZZ, AlgebraicField
 from ..functions import conjugate, cos, exp_polar, root, sin, sqrt
 from ..ntheory import divisors, sieve
@@ -480,7 +480,7 @@ def _minpoly_compose(ex, x, dom):
                 ex = ex1
 
     if ex.is_Add:
-        res = _minpoly_add(x, dom, *ex.args)
+        res = _minpoly_add(x, dom, *sorted(ex.args, key=count_ops, reverse=True))
     elif ex.is_Mul:
         f = Factors(ex).factors
         r = sift(f.items(), lambda itx: itx[0].is_Rational and itx[1].is_Rational)
@@ -500,7 +500,7 @@ def _minpoly_compose(ex, x, dom):
             ex2 = Mul(*[bx**ex for bx, ex in r1])
             res = _minpoly_op_algebraic_element(Mul, ex1, ex2, x, dom, mp1=mp1, mp2=mp2)
         else:
-            res = _minpoly_mul(x, dom, *ex.args)
+            res = _minpoly_mul(x, dom, *sorted(ex.args, key=count_ops, reverse=True))
     elif ex.is_Pow:
         if ex.base is E:
             res = _minpoly_exp(ex, x)
