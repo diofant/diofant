@@ -31,7 +31,7 @@ extra_reqs = {'exports': ['numpy>=1.12.1', 'scipy', 'Theano>=0.9.0', 'Cython'],
 extra_reqs['develop'] = ['pytest>=3.0', 'flake8>=2.5.5,!=3.1.0',
                          'flake8-docstrings>=1.2.0', 'pydocstyle', 'pep8-naming',
                          'flake8-comprehensions', 'flake8-isort', 'hypothesis',
-                         'pytest-xdist', 'pytest-cov', 'pytest-timeout',
+                         'pytest-xdist>=1.22.4', 'pytest-cov', 'pytest-timeout',
                          'coverage'] + setup_reqs
 
 setup(name='Diofant',

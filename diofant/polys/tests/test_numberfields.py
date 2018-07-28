@@ -113,7 +113,8 @@ def test_minimal_polynomial():
            1999332*x**10 + 910120*x**9 + 2273040*x**8 - 5560320*x**7 +
            5302000*x**6 - 2405376*x**5 + 1016640*x**4 - 804480*x**3 +
            257280*x**2 - 53760*x + 1280)
-    assert minimal_polynomial(sqrt(theta) + root(theta, 3))(x) == ans
+    assert minimal_polynomial(sqrt(theta) + root(theta, 3),
+                              method='groebner')(x) == ans
     K1 = QQ.algebraic_field(RootOf(x**3 + 4*x - 15, 1))
     K2 = QQ.algebraic_field(RootOf(x**3 - x + 1, 0))
     theta = sqrt(1 + 1/(K1.to_expr(K([1, 0, 1])) +
@@ -639,3 +640,11 @@ def test_sympyissue_11553():
 def test_sympyissue_14831():
     assert minimal_polynomial(-3*sqrt(12*sqrt(2) + 17) + 12*sqrt(2) +
                               17 - 2*sqrt(2)*sqrt(12*sqrt(2) + 17))(x) == x
+
+
+def test_diofantissue_224():
+    e = (root(root(2, 3) - 1, 3) - root(Rational(1, 9), 3) +
+         root(Rational(2, 9), 3) - root(Rational(4, 9), 3))
+    a, b, c, d = e.args
+    assert minimal_polynomial(Add(d, a, b, c, evaluate=False))(x) == x
+    assert minimal_polynomial(e)(x) == x
