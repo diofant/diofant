@@ -41,6 +41,5 @@ def test_ordered():
     assert list(ordered(l, warn=True)) == [[1], [1], [2]]
     pytest.raises(ValueError, lambda: list(ordered(['a', 'ab'],
                                                    keys=[lambda x: x[0]],
-                                                   default=False,
                                                    warn=True)))
-    pytest.raises(ValueError, lambda: list(ordered(['a', 'b'], default=False)))
+    pytest.raises(ValueError, lambda: list(ordered(['a', 'b'], keys=None)))

@@ -320,16 +320,10 @@ def _nodes(e):
         return 1
 
 
-def ordered(seq, keys=None, default=True, warn=False):
+def ordered(seq, keys=(_nodes, default_sort_key), warn=False):
     """Return an iterator of the seq where keys are used to break ties in
     a conservative fashion: if, after applying a key, there are no ties
     then no other keys will be computed.
-
-    Two default keys will be applied if 1) keys are not provided or 2) the
-    given keys don't resolve all ties (but only if `default` is True). The
-    two keys are `_nodes` (which places smaller expressions before large) and
-    `default_sort_key` which (if the `sort_key` for an object is defined
-    properly) should resolve any ties.
 
     If ``warn`` is True then an error will be raised if there were no
     keys remaining to break ties. This can be used if it was expected that
@@ -342,7 +336,7 @@ def ordered(seq, keys=None, default=True, warn=False):
     two items appear in their original order (i.e. the sorting is stable):
 
     >>> list(ordered([y + 2, x + 2, x**2 + y + 3],
-    ...              count_ops, default=False, warn=False))
+    ...              count_ops, warn=False))
     [y + 2, x + 2, x**2 + y + 3]
 
     The default_sort_key allows the tie to be broken:
@@ -354,13 +348,13 @@ def ordered(seq, keys=None, default=True, warn=False):
 
     >>> seq, keys = [[[1, 2, 1], [0, 3, 1], [1, 1, 3], [2], [1]],
     ...              [lambda x: len(x), lambda x: sum(x)]]
-    >>> list(ordered(seq, keys, default=False, warn=False))
+    >>> list(ordered(seq, keys, warn=False))
     [[1], [2], [1, 2, 1], [0, 3, 1], [1, 1, 3]]
 
     If ``warn`` is True, an error will be raised if there were not
     enough keys to break ties:
 
-    >>> list(ordered(seq, keys, default=False, warn=True))
+    >>> list(ordered(seq, keys, warn=True))
     Traceback (most recent call last):
     ...
     ValueError: not enough keys to break ties
@@ -399,17 +393,12 @@ def ordered(seq, keys=None, default=True, warn=False):
         for a in seq:
             d[f(a)].append(a)
     else:
-        if not default:
-            raise ValueError('if default=False then keys must be provided')
-        d[None].extend(seq)
+        raise ValueError('keys must be provided')
 
     for k in sorted(d):
         if len(d[k]) > 1:
             if keys:
-                d[k] = ordered(d[k], keys, default, warn)
-            elif default:
-                d[k] = ordered(d[k], (_nodes, default_sort_key,),
-                               default=False, warn=warn)
+                d[k] = ordered(d[k], keys, warn)
             elif warn:
                 from ..utilities.iterables import uniq
                 u = list(uniq(d[k]))
