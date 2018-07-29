@@ -41,6 +41,7 @@ Compatibility breaks
 * Removed ``AlgebraicNumber`` class, see :pull:`631`.
 * Removed ``polys.distributedmodules`` module, see :pull:`648`.
 * Removed ``p`` and ``q`` properties of :class:`~diofant.core.numbers.Rational`, see :pull:`654`.
+* Removed ``@public`` decorator, see :pull:`666`.
 
 Minor changes
 =============
