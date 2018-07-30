@@ -209,8 +209,14 @@ class Add(AssocOp):
         else:
             return newseq, [], None
 
+    @property
+    @cacheit
+    def _sorted_args(self):
+        return tuple(sorted(self._args, key=default_sort_key))
+
     def _hashable_content(self):
-        return frozenset(self.args),
+        from ..sets import Set
+        return Set(*self._args),
 
     @classmethod
     def class_key(cls):
