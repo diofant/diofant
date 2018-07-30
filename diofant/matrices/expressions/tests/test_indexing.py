@@ -38,7 +38,7 @@ def test_mul_index():
 
     result = (X*Y)[4, 2]
     expected = Sum(X[4, i]*Y[i, 2], (i, 0, m - 1))
-    assert result.args[0].dummy_eq(expected.args[0], i)
+    assert result.args[0].subs(result.limits[0][0], i) == expected.args[0]
     assert result.args[1][1:] == expected.args[1][1:]
 
 

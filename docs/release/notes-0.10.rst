@@ -42,6 +42,7 @@ Compatibility breaks
 * Removed ``polys.distributedmodules`` module, see :pull:`648`.
 * Removed ``p`` and ``q`` properties of :class:`~diofant.core.numbers.Rational`, see :pull:`654`.
 * Removed ``@public`` decorator, see :pull:`666`.
+* Removed ``dummy_eq()`` method from :class:`~diofant.core.basic.Basic`, see :pull:`666`.
 
 Minor changes
 =============

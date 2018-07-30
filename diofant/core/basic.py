@@ -142,50 +142,6 @@ class Basic(object):
 
         return self._hashable_content() == other._hashable_content()
 
-    def dummy_eq(self, other, symbol=None):
-        """
-        Compare two expressions and handle dummy symbols.
-
-        Examples
-        ========
-
-        >>> u = Dummy('u')
-
-        >>> (u**2 + 1).dummy_eq(x**2 + 1)
-        True
-        >>> (u**2 + 1) == (x**2 + 1)
-        False
-
-        >>> (u**2 + y).dummy_eq(x**2 + y, x)
-        True
-        >>> (u**2 + y).dummy_eq(x**2 + y, y)
-        False
-        """
-        other = sympify(other)
-        dummy_symbols = [s for s in self.free_symbols if s.is_Dummy]
-
-        if not dummy_symbols:
-            return self == other
-        elif len(dummy_symbols) == 1:
-            dummy = dummy_symbols.pop()
-        else:  # pragma: no cover
-            raise NotImplementedError(
-                "only one dummy symbol allowed on the left-hand side")
-
-        if symbol is None:
-            symbols = other.free_symbols
-
-            if not symbols:
-                return self == other
-            elif len(symbols) == 1:
-                symbol = symbols.pop()
-            else:  # pragma: no cover
-                raise NotImplementedError(
-                    "specify a symbol in which expressions should be compared")
-
-        tmp = dummy.__class__()
-        return self.subs(dummy, tmp) == other.subs(symbol, tmp)
-
     # Note, we always use the default ordering (lex) in __str__ and __repr__,
     # regardless of the global setting.  See issue sympy/sympy#5487.
     def __repr__(self):
