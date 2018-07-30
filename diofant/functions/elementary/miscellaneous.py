@@ -292,7 +292,7 @@ def real_root(arg, n=None):
                       x.is_Pow and
                       x.base.is_negative and
                       x.exp.is_Rational and
-                      x.exp.p == 1 and x.exp.q % 2)
+                      x.exp.numerator == 1 and x.exp.denominator % 2)
     return rv.xreplace(n1pow)
 
 ###############################################################################

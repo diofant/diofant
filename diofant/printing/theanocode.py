@@ -76,7 +76,7 @@ class TheanoPrinter(Printer):
 
     def __init__(self, *args, **kwargs):
         self.cache = kwargs.pop('cache', {})
-        super(TheanoPrinter, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def _print_Symbol(self, s, dtypes={}, broadcastables={}):
         dtype = dtypes.get(s, 'floatX')
@@ -161,11 +161,11 @@ class TheanoPrinter(Printer):
                          self._print(Piecewise(*expr.args[1:]), **kwargs))
 
     def _print_Rational(self, expr, **kwargs):
-        return tt.true_div(self._print(expr.p, **kwargs),
-                           self._print(expr.q, **kwargs))
+        return tt.true_div(self._print(expr.numerator, **kwargs),
+                           self._print(expr.denominator, **kwargs))
 
     def _print_Integer(self, expr, **kwargs):
-        return expr.p
+        return expr.numerator
 
     def _print_factorial(self, expr, **kwargs):
         return self._print(gamma(expr.args[0] + 1), **kwargs)

@@ -85,11 +85,9 @@ class CoordSysCartesian(Basic):
         # positioned/oriented wrt different parents, even though
         # they may actually be 'coincident' wrt the root system.
         if parent is not None:
-            obj = super(CoordSysCartesian, cls).__new__(
-                cls, Symbol(name), location, parent_orient, parent)
+            obj = super().__new__(cls, Symbol(name), location, parent_orient, parent)
         else:
-            obj = super(CoordSysCartesian, cls).__new__(
-                cls, Symbol(name), location, parent_orient)
+            obj = super().__new__(cls, Symbol(name), location, parent_orient)
         obj._name = name
 
         # Initialize the base vectors

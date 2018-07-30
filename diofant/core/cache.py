@@ -1,8 +1,7 @@
 """ Caching facility for Diofant """
 
+import functools
 import os
-
-from cachetools import cached
 
 from .evaluate import global_evaluate
 
@@ -14,37 +13,20 @@ CACHE = []
 def print_cache():
     """Print cache content"""
 
-    for item, cache in CACHE:
-        item = str(item)
-
-        if cache:
-            head = '='*len(item)
-            print(head)
-            print(item)
-            print(head)
-
-        for k, v in list(cache.items()):
-            print('  %s : %s' % (k, v))
+    for item in CACHE:
+        print(item.__qualname__, item.cache_info())
 
 
 def clear_cache():
     """Clear cache content"""
-    for item, cache in CACHE:
-        cache.clear()
-
-
-def cache_key(*args, **kwargs):
-    key = [(x, type(x)) for x in args]
-    if kwargs:
-        key.extend([(x, kwargs[x], type(kwargs[x])) for x in sorted(kwargs)])
-    key.extend([tuple(global_evaluate)])
-    return tuple(key)
+    for item in CACHE:
+        item.cache_clear()
 
 
 USE_CACHE = os.getenv('DIOFANT_USE_CACHE', 'True') == 'True'
 
 
-def cacheit(f):
+def cacheit(f, maxsize=None):
     """Caching decorator.
 
     The result of cached function must be *immutable*.
@@ -65,8 +47,21 @@ def cacheit(f):
     """
 
     if USE_CACHE:
-        f_cache_it_cache = {}
-        CACHE.append((f, f_cache_it_cache))
-        return cached(f_cache_it_cache, key=cache_key)(f)
+        cfunc = functools.lru_cache(maxsize=maxsize, typed=True)(f)
+
+        def wrapper(*args, **kwargs):
+            try:
+                if global_evaluate[0] and kwargs.get('evaluate', True):
+                    return cfunc(*args, **kwargs)
+            except TypeError:
+                pass
+            return f(*args, **kwargs)
+
+        wrapper.cache_info = cfunc.cache_info
+        wrapper.cache_clear = cfunc.cache_clear
+        functools.update_wrapper(wrapper, f)
+
+        CACHE.append(wrapper)
+        return wrapper
     else:
         return f

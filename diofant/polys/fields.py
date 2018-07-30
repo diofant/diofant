@@ -160,13 +160,10 @@ class FractionField(Field, CompositeDomain):
                 if c.is_Integer and c != 1:
                     return _rebuild(expr.base**a)**int(c)
 
-            try:
+            if not domain.has_Field and domain.has_assoc_Field:
+                return domain.field.convert(expr)
+            else:
                 return domain.convert(expr)
-            except CoercionFailed:
-                if not domain.has_Field and domain.has_assoc_Field:
-                    return domain.field.convert(expr)
-                else:  # pragma: no cover
-                    raise NotImplementedError
 
         return _rebuild(sympify(expr))
 

@@ -196,15 +196,15 @@ def multiplicity(p, n):
     except ValueError:
         if all(isinstance(i, (DIOFANT_INTS, Rational)) for i in (p, n)):
             p, n = Rational(p), Rational(n)
-            if p.q == 1:
-                if n.p == 1:
-                    return -multiplicity(p.p, n.q)
+            if p.denominator == 1:
+                if n.numerator == 1:
+                    return -multiplicity(p.numerator, n.denominator)
                 return S.Zero
-            elif p.p == 1:
-                return multiplicity(p.q, n.q)
+            elif p.numerator == 1:
+                return multiplicity(p.denominator, n.denominator)
             else:
-                like = min(multiplicity(p.p, n.p), multiplicity(p.q, n.q))
-                cross = min(multiplicity(p.q, n.p), multiplicity(p.p, n.q))
+                like = min(multiplicity(p.numerator, n.numerator), multiplicity(p.denominator, n.denominator))
+                cross = min(multiplicity(p.denominator, n.numerator), multiplicity(p.numerator, n.denominator))
                 return like - cross
         raise ValueError('expecting ints or fractions, got %s and %s' % (p, n))
 
@@ -1162,11 +1162,11 @@ def factorrat(rat, limit=None, use_trial=True, use_rho=True, use_pm1=True,
         - ``visual``: Toggle product form of output
     """
     from collections import defaultdict
-    f = factorint(rat.p, limit=limit, use_trial=use_trial,
+    f = factorint(rat.numerator, limit=limit, use_trial=use_trial,
                   use_rho=use_rho, use_pm1=use_pm1,
                   verbose=verbose).copy()
     f = defaultdict(int, f)
-    for p, e in factorint(rat.q, limit=limit,
+    for p, e in factorint(rat.denominator, limit=limit,
                           use_trial=use_trial,
                           use_rho=use_rho,
                           use_pm1=use_pm1,

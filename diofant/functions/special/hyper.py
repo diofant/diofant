@@ -584,7 +584,7 @@ class meijerg(TupleParametersBase):
                 for j in range(i + 1, len(l)):
                     if not Mod((b - l[j]).simplify(), 1):
                         return oo
-            return reduce(ilcm, (x.q for x in l), 1)
+            return reduce(ilcm, (x.denominator for x in l), 1)
         beta = compute(self.bm)
         alpha = compute(self.an)
         p, q = len(self.ap), len(self.bq)

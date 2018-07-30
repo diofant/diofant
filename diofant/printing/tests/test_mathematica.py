@@ -1,15 +1,16 @@
 import pytest
 
+from diofant import QQ
 from diofant import mathematica_code as mcode
 from diofant.abc import x, y, z
 from diofant.concrete import Sum
-from diofant.core import (AlgebraicNumber, Catalan, Derivative, Dummy, E, Eq,
-                          EulerGamma, Function, Gt, Integer, Lambda, Le, Ne,
-                          Rational, Tuple, oo, pi, symbols)
+from diofant.core import (Catalan, Derivative, Dummy, E, Eq, EulerGamma,
+                          Function, Gt, Integer, Lambda, Le, Ne, Rational,
+                          Tuple, oo, pi, symbols)
 from diofant.functions import (Max, Min, Piecewise, acos, asin, atan, atanh,
-                               binomial, cos, cosh, cot, coth, csch, erfc, exp,
-                               hyper, log, meijerg, sech, sign, sin, sinh, tan,
-                               tanh)
+                               binomial, conjugate, cos, cosh, cot, coth, csch,
+                               erfc, exp, hyper, im, log, meijerg, re, sech,
+                               sign, sin, sinh, tan, tanh)
 from diofant.integrals import Integral
 from diofant.logic import Or, false, true
 from diofant.matrices import Matrix
@@ -72,6 +73,9 @@ def test_Function():
     assert mcode(sech(x)) == "Sech[x]"
     assert mcode(csch(x)) == "Csch[x]"
     assert mcode(erfc(x)) == "Erfc[x]"
+    assert mcode(conjugate(x)) == "Conjugate[x]"
+    assert mcode(re(x)) == "Re[x]"
+    assert mcode(im(x)) == "Im[x]"
 
     class myfunc1(Function):
         @classmethod
@@ -194,9 +198,10 @@ def test_RootSum():
                         "Function[{y}, Log[y*z]]]")
 
 
-def test_AlgebraicNumber():
+def test_AlgebraicElement():
     r = RootOf(x**7 + 3*x - 1, 3)
-    a = AlgebraicNumber(r, (1, 2, 3, 0, 1))
+    K = QQ.algebraic_field(r)
+    a = K([1, 2, 3, 0, 1])
     assert mcode(a) == ('AlgebraicNumber[Root[#^7 + 3*# - 1 &, 4],'
                         ' {1, 0, 3, 2, 1}]')
 

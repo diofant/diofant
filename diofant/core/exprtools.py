@@ -49,9 +49,9 @@ def decompose_power(expr):
     if exp.is_Number:
         if exp.is_Rational:
             if not exp.is_Integer:
-                base = Pow(base, Rational(1, exp.q))
+                base = Pow(base, Rational(1, exp.denominator))
 
-            exp = exp.p
+            exp = exp.numerator
         else:
             base, exp = expr, 1
     else:
@@ -60,8 +60,8 @@ def decompose_power(expr):
         if exp is S.NegativeOne:
             base, exp = Pow(base, tail), -1
         elif exp is not S.One:
-            tail = _keep_coeff(Rational(1, exp.q), tail)
-            base, exp = Pow(base, tail), exp.p
+            tail = _keep_coeff(Rational(1, exp.denominator), tail)
+            base, exp = Pow(base, tail), exp.numerator
         else:
             base, exp = expr, 1
 
@@ -121,9 +121,9 @@ class Factors:
                     # since we're processing Numbers, the denominator is
                     # stored with a negative exponent; all other factors
                     # are left .
-                    if n.p != 1:
-                        factors[Integer(n.p)] = S.One
-                    factors[Integer(n.q)] = S.NegativeOne
+                    if n.numerator != 1:
+                        factors[Integer(n.numerator)] = S.One
+                    factors[Integer(n.denominator)] = S.NegativeOne
                 else:  # pragma: no cover
                     raise ValueError('Expected Float|Rational|Integer, not %s' % n)
         elif isinstance(factors, Basic) and not factors.args:

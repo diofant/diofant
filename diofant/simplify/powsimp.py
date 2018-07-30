@@ -220,7 +220,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
             return bkey(x)[0][1]
 
         def bkey(b, e=None):
-            """Return (b**s, c.q), c.p where e -> c*s. If e is not given then
+            """Return (b**s, c.denominator), c.numerator where e -> c*s. If e is not given then
             it will be taken by using as_base_exp() on the input b.
             e.g.
                 x**3/2 -> (x, 2), 3
@@ -233,11 +233,11 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                 if e.is_Integer:
                     return (b, S.One), e
                 elif e.is_Rational:
-                    return (b, Integer(e.q)), Integer(e.p)
+                    return (b, Integer(e.denominator)), Integer(e.numerator)
                 else:
                     c, m = e.as_coeff_Mul(rational=True)
                     if c is not S.One and b.is_positive:
-                        return (b**m, Integer(c.q)), Integer(c.p)
+                        return (b**m, Integer(c.denominator)), Integer(c.numerator)
                     else:
                         return (b**e, S.One), S.One
             else:
@@ -616,7 +616,7 @@ def _denest_pow(eq):
 
     _, be = b.as_base_exp()
     if be is S.One and not (b.is_Mul or
-                            b.is_Rational and b.q != 1 or
+                            b.is_Rational and b.denominator != 1 or
                             b.is_positive):
         return eq
 

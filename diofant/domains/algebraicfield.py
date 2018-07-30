@@ -10,6 +10,7 @@ from ..polys.densebasic import dmp_LC, dmp_strip, dmp_to_dict, dmp_to_tuple
 from ..polys.densetools import dmp_compose
 from ..polys.euclidtools import dup_invert
 from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
+from ..printing.defaults import DefaultPrinting
 from .characteristiczero import CharacteristicZero
 from .domainelement import DomainElement
 from .field import Field
@@ -31,37 +32,45 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     has_assoc_Ring = False
     has_assoc_Field = True
 
-    def __init__(self, dom, *ext):
-        if not dom.is_RationalField:
-            raise DomainError("ground domain must be a rational field")
+    def __new__(cls, dom, *ext):
+        if not (dom.is_RationalField or dom.is_AlgebraicField):
+            raise DomainError("ground domain must be a rational "
+                              "or an algebraic field")
 
         ext = [sympify(_).as_expr() for _ in ext]
+        ext = [_ for _ in ext if _ not in dom]
+
+        if not ext:
+            return dom
 
         from ..polys.numberfields import primitive_element
 
-        minpoly, coeffs, H = primitive_element(ext)
+        minpoly, coeffs, H = primitive_element(ext, domain=dom)
 
-        self.ext = sum(c*e for c, e in zip(coeffs, ext))
-        self.minpoly = minpoly
-        self.mod = minpoly.rep
-        self.domain = dom
+        obj = super().__new__(cls)
+        obj.ext = sum(c*e for c, e in zip(coeffs, ext))
+        obj.minpoly = minpoly
+        obj.mod = minpoly.rep
+        obj.domain = dom
 
-        self.ngens = 1
-        self.symbols = self.gens = (self.ext.as_expr(),)
+        obj.ngens = 1
+        obj.symbols = obj.gens = (obj.ext.as_expr(),)
 
         try:
-            self.dtype = _algebraic_numbers_cache[(self.domain, self.ext)]
+            obj.dtype = _algebraic_numbers_cache[(obj.domain, obj.ext)]
         except KeyError:
-            self.dtype = type("AlgebraicElement", (AlgebraicElement,), {"_parent": self})
-            _algebraic_numbers_cache[(self.domain, self.ext)] = self.dtype
+            obj.dtype = type("AlgebraicElement", (AlgebraicElement,), {"_parent": obj})
+            _algebraic_numbers_cache[(obj.domain, obj.ext)] = obj.dtype
 
-        self.root = sum(self.dtype(h) for h in H)
-        self.unit = self.dtype([dom(1), dom(0)])
+        obj.root = sum(obj.dtype(h) for h in H)
+        obj.unit = obj.dtype([dom(1), dom(0)])
 
-        self.zero = self.dtype([dom(0)])
-        self.one = self.dtype([dom(1)])
+        obj.zero = obj.dtype([dom(0)])
+        obj.one = obj.dtype([dom(1)])
 
-        self.rep = str(self.domain) + '<' + str(self.ext) + '>'
+        obj.rep = str(obj.domain) + '<' + str(obj.ext) + '>'
+
+        return obj
 
     def new(self, element):
         if isinstance(element, list):
@@ -78,11 +87,11 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     def algebraic_field(self, *extension):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`. """
-        return self.domain.algebraic_field(*((self.ext.as_expr(),) + extension))
+        return AlgebraicField(self, *extension)
 
     def to_expr(self, a):
         """Convert ``a`` to a Diofant object. """
-        return sum((c*self.ext**n for n, c in enumerate(reversed(a.rep))), Integer(0))
+        return sum(((a.domain.to_expr(c)*self.ext**n).expand() for n, c in enumerate(reversed(a.rep))), Integer(0))
 
     def from_expr(self, a):
         """Convert Diofant's expression to ``dtype``. """
@@ -90,7 +99,10 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
             K0 = self.domain.algebraic_field(a)
         except NotAlgebraic:
             raise CoercionFailed("%s is not a valid algebraic number in %s" % (a, self))
-        return self.convert(K0.root, K0)
+        if a in self.domain:
+            return self.new([a])
+        else:
+            return self.convert(K0.root, K0)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self([self.domain.convert(a, K0)])
@@ -108,15 +120,23 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         return self([self.domain.convert(a, K0)])
 
     def _from_AlgebraicField(self, a, K0):
+        if K0 == self.domain:
+            return self([a])
+        elif self == K0.domain and len(a.rep) <= 1:
+            return a.rep[0] if a else self.zero
+
         from ..polys import field_isomorphism
 
         coeffs = field_isomorphism(K0, self)
 
         if coeffs is not None:
-            a_coeffs = dmp_compose(a.rep, coeffs, 0, self.domain)
-            return self(a_coeffs)
+            return self(dmp_compose(a.rep, coeffs, 0, self.domain))
         else:
             raise CoercionFailed("%s is not in a subfield of %s" % (K0, self))
+
+    def _from_ExpressionDomain(self, a, K0):
+        expr = K0.to_expr(a)
+        return self.from_expr(expr)
 
     @property
     def ring(self):
@@ -140,7 +160,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         return self.domain.is_nonnegative(a.LC())
 
 
-class AlgebraicElement(DomainElement, CantSympify):
+class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
     """Dense Algebraic Number Polynomials over a field. """
 
     def __init__(self, rep):
@@ -151,7 +171,7 @@ class AlgebraicElement(DomainElement, CantSympify):
         else:
             rep = [dom.convert(_) for _ in rep]
 
-        self.rep = dmp_strip(rep, 0)
+        self.rep = dmp_rem(dmp_strip(rep, 0), self.mod, 0, self.domain)
 
     @property
     def parent(self):
@@ -192,6 +212,9 @@ class AlgebraicElement(DomainElement, CantSympify):
     def is_ground(self):
         """Returns ``True`` if ``self`` is an element of the ground domain. """
         return len(self.rep) <= 1
+
+    def __pos__(self):
+        return self
 
     def __neg__(self):
         return self.per(dmp_neg(self.rep, 0, self.domain))
@@ -270,12 +293,19 @@ class AlgebraicElement(DomainElement, CantSympify):
     def __bool__(self):
         return bool(self.rep)
 
+    def __int__(self):
+        try:
+            from . import ZZ
+            return int(ZZ.convert(self))
+        except CoercionFailed:
+            raise TypeError("Can't convert algebraic number to int")
+
     @property
     def numerator(self):
         return self*self.denominator
 
     @property
     def denominator(self):
-        return self.per(functools.reduce(self.domain.ring.lcm,
-                                         (_.denominator for _ in self.rep),
-                                         self.domain.ring.one))
+        from . import ZZ
+        return self.per(functools.reduce(ZZ.lcm, (ZZ.convert(_.denominator)
+                                                  for _ in self.rep), ZZ.one))

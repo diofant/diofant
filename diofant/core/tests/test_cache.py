@@ -1,12 +1,13 @@
+import gc
 import sys
 import weakref
 
 import pytest
 
 from diofant.abc import x
-from diofant.core.cache import CACHE, cacheit, clear_cache, print_cache
+from diofant.core.cache import cacheit, clear_cache, print_cache
 from diofant.core.compatibility import ordered
-from diofant.core.symbol import Symbol, symbols
+from diofant.core.symbol import symbols
 from diofant.printing.str import sstr
 
 
@@ -36,16 +37,11 @@ def test_cacheit():
 
 def test_print_cache(capfd):
     clear_cache()
-    wrapped = _identity.__wrapped__
     _identity(x)
-    item = str(wrapped)
-    head = '='*len(item)
-    res = (head + "\n" + item + "\n" + head + "\n" +
-           "  ((Symbol('x'), <class 'diofant.core.symbol.Symbol'>), (True,)) : x\n")
+    info = _identity.cache_info()
     print_cache()
     resout, _ = capfd.readouterr()
-    assert resout == res
-    assert dict(CACHE)[wrapped] == {((x, Symbol), (True,)): x}
+    assert resout.find('_identity ' + str(info)) >= 0
 
 
 @pytest.fixture(scope='function')
@@ -116,4 +112,5 @@ def test_sympyissue_8825():
     assert sstr(list(ordered(d.items()))) == '[(a, 1), (b, 2)]'
     del a
     clear_cache()
+    gc.collect()
     assert sstr(list(ordered(d.items()))) == '[(b, 2)]'

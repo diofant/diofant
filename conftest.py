@@ -6,8 +6,6 @@ import hypothesis
 import pytest
 
 import diofant
-from diofant.core.cache import USE_CACHE, clear_cache
-from diofant.core.compatibility import GROUND_TYPES
 
 
 collect_ignore = ["setup.py"]
@@ -41,7 +39,7 @@ def pytest_report_header(config):
     return """
 cache: %s
 ground types: %s
-""" % (USE_CACHE, GROUND_TYPES)
+""" % (diofant.core.cache.USE_CACHE, diofant.core.compatibility.GROUND_TYPES)
 
 
 def pytest_addoption(parser):
@@ -54,7 +52,7 @@ def pytest_collection_modifyitems(session, config, items):
 
 @pytest.fixture(autouse=True, scope='module')
 def file_clear_cache():
-    clear_cache()
+    diofant.core.cache.clear_cache()
 
 
 @pytest.fixture(autouse=True, scope='module')

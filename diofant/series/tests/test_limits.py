@@ -616,3 +616,13 @@ def test_sympyissue_14393():
 
 def test_sympyissue_14590():
     assert limit((n**3*((n + 1)/n)**n)/((n + 1)*(n + 2)*(n + 3)), n, oo) == E
+
+
+def test_sympyissue_14793():
+    e = ((x + Rational(1, 2))*log(x) - x +
+         log(2*pi)/2 - log(factorial(x)) + 1/(12*x))*x**3
+    assert limit(e, x, oo) == Rational(1, 360)
+
+
+def test_sympyissue_14811():
+    assert limit(((1 + Rational(2, 3)**(x + 1))**2**x)/(2**Rational(4, 3)**(x - 1)), x, oo) == oo

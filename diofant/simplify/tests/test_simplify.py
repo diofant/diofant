@@ -698,3 +698,9 @@ def test_sympyissue_13115():
     assert Mqs.subs({q_1: 0, q_2: 0, q_3: 0}) == Matrix([[2.5, 0, 0],
                                                          [0, 2.5, 0.75],
                                                          [0, 0.75, 0.25]])
+
+
+@pytest.mark.xfail
+def test_simplify_algebraic_numbers():
+    e = (3 + 4*I)**Rational(3, 2)
+    assert simplify(e) == 2 + 11*I  # issue sympy/sympy#4401

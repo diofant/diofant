@@ -24,14 +24,14 @@ setup_reqs = ['setuptools>=5.5.1', 'pip>=6.0', 'pytest-runner', 'isort']
 extra_reqs = {'exports': ['numpy>=1.12.1', 'scipy', 'Theano>=0.9.0', 'Cython'],
               'gmpy': ['gmpy2>=2.1.0;platform_python_implementation!="PyPy"'],
               'plot': ['pyparsing!=2.1.2', 'matplotlib!=2.1.1'],
-              'interactive': ['ipython>=2.3.0'],
+              'interactive': ['ipykernel'],
               'docs': ['docutils!=0.13.1', 'sphinx>=1.6.7', 'numpydoc',
                        'sphinx_rtd_theme>=0.2.4'],
               }
 extra_reqs['develop'] = ['pytest>=3.0', 'flake8>=2.5.5,!=3.1.0',
                          'flake8-docstrings>=1.2.0', 'pydocstyle', 'pep8-naming',
                          'flake8-comprehensions', 'flake8-isort', 'hypothesis',
-                         'pytest-xdist', 'pytest-cov', 'pytest-timeout',
+                         'pytest-xdist>=1.22.4', 'pytest-cov', 'pytest-timeout',
                          'coverage'] + setup_reqs
 
 setup(name='Diofant',
@@ -63,7 +63,7 @@ setup(name='Diofant',
       ],
       python_requires='>=3.5',
       tests_require=extra_reqs['develop'],
-      install_requires=['mpmath>=0.19', 'strategies>=0.2.3', 'cachetools'],
+      install_requires=['mpmath>=0.19', 'strategies>=0.2.3'],
       setup_requires=setup_reqs,
       extras_require=extra_reqs,
       zip_safe=True)

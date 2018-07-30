@@ -249,7 +249,7 @@ class FCodePrinter(CodePrinter):
             return CodePrinter._print_Pow(self, expr)
 
     def _print_Rational(self, expr):
-        p, q = int(expr.p), int(expr.q)
+        p, q = int(expr.numerator), int(expr.denominator)
         return "%d.0d0/%d.0d0" % (p, q)
 
     def _print_Float(self, expr):

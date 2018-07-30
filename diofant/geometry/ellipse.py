@@ -110,7 +110,8 @@ class Ellipse(GeometrySet):
         if eccentricity is not None:
             if hradius is None:
                 hradius = vradius / sqrt(1 - eccentricity**2)
-            elif vradius is None:
+            else:
+                assert vradius is None
                 vradius = hradius * sqrt(1 - eccentricity**2)
 
         if hradius == vradius:
@@ -492,7 +493,7 @@ class Ellipse(GeometrySet):
         if self.hradius == self.vradius:
             return self.func(self.center.rotate(angle, pt), self.hradius)
         if (angle/pi).is_integer:
-            return super(Ellipse, self).rotate(angle, pt)
+            return super().rotate(angle, pt)
         if (2*angle/pi).is_integer:
             return self.func(self.center.rotate(angle, pt), self.vradius, self.hradius)
         # XXX see https://github.com/sympy/sympy/issues/2815 for general ellipes
@@ -744,7 +745,7 @@ class Ellipse(GeometrySet):
                 inter = self._do_line_intersection(seg)
                 c += len([True for point in inter if point in seg])
             return c == 1
-        else:
+        else:  # pragma: no cover
             raise NotImplementedError("Unknown argument type")
 
     def normal_lines(self, p, prec=None):
@@ -1151,7 +1152,7 @@ class Ellipse(GeometrySet):
         2**(2/3)*y**(2/3) + (3*x - 3)**(2/3) - 5**(2/3)
         """
         if len(self.args) != 3:
-            raise NotImplementedError('Evolute of arbitrary Ellipse is not supported.')
+            raise NotImplementedError('Evolute of arbitrary Ellipse is not supported.')  # pragma: no cover
         x = _symbol(x)
         y = _symbol(y)
         t1 = (self.hradius*(x - self.center.x))**Rational(2, 3)
@@ -1165,7 +1166,7 @@ class Ellipse(GeometrySet):
                                                   self.vradius == o.vradius)
 
     def __hash__(self):
-        return super(Ellipse, self).__hash__()
+        return super().__hash__()
 
     def __contains__(self, o):
         if isinstance(o, Point):

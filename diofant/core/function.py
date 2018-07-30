@@ -106,7 +106,7 @@ class FunctionClass(ManagedProperties):
         # honor kwarg value or class-defined value before using
         # the number of arguments in the eval function (if present)
         nargs = kwargs.pop('nargs', self.__dict__.get('nargs', evalargs))
-        super(FunctionClass, self).__init__(args, kwargs)
+        super().__init__(args, kwargs)
 
         # Canonicalize nargs here; change to set in nargs.
         if is_sequence(nargs):
@@ -204,7 +204,7 @@ class Application(Expr, metaclass=FunctionClass):
             if evaluated is not None:
                 return evaluated
 
-        obj = super(Application, cls).__new__(cls, *args, **options)
+        obj = super().__new__(cls, *args, **options)
 
         # make nargs uniform here
         try:
@@ -349,7 +349,7 @@ class Function(Application, Expr):
                 'given': n})
 
         evaluate = options.get('evaluate', global_evaluate[0])
-        result = super(Function, cls).__new__(cls, *args, **options)
+        result = super().__new__(cls, *args, **options)
         if not evaluate or not isinstance(result, cls):
             return result
 
@@ -631,7 +631,7 @@ class AppliedUndef(Function):
 
     def __new__(cls, *args, **options):
         args = list(map(sympify, args))
-        obj = super(AppliedUndef, cls).__new__(cls, *args, **options)
+        obj = super().__new__(cls, *args, **options)
         return obj
 
     def _eval_as_leading_term(self, x):
@@ -1338,7 +1338,7 @@ class Lambda(Expr):
         return selfexpr == otherexpr
 
     def __hash__(self):
-        return super(Lambda, self).__hash__()
+        return super().__hash__()
 
     def _hashable_content(self):
         return self.expr.xreplace(self.canonical_variables),
@@ -1499,7 +1499,7 @@ class Subs(Expr):
         return self._expr == other._expr
 
     def __hash__(self):
-        return super(Subs, self).__hash__()
+        return super().__hash__()
 
     def _hashable_content(self):
         return self._expr.xreplace(self.canonical_variables),
@@ -2179,9 +2179,9 @@ def count_ops(expr, visual=False):
             if a.is_Rational:
                 # -1/3 = NEG + DIV
                 if a is not S.One:
-                    if a.p < 0:
+                    if a.numerator < 0:
                         ops.append(NEG)
-                    if a.q != 1:
+                    if a.denominator != 1:
                         ops.append(DIV)
                     # XXX "peephole" optimization, http://bugs.python.org/issue2506
                     a

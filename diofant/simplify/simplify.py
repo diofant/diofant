@@ -763,7 +763,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
     expr = sympify(expr)
     expr = sympify(expr).xreplace({Float('inf'): oo,
                                    Float('-inf'): -oo})
-    if expr is oo or expr is -oo:
+    if expr in (oo, -oo):
         return expr
     if rational or expr.free_symbols:
         return _real_to_rational(expr, tolerance)

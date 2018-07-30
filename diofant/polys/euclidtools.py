@@ -1,17 +1,15 @@
 """Euclidean algorithms, GCDs, LCMs and polynomial remainder sequences. """
 
-import cachetools
-
+from ..core import cacheit
 from ..ntheory import nextprime
 from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_prem, dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
-                         dmp_sub_mul, dup_mul, dup_prem)
-from .densebasic import (dmp_apply_pairs, dmp_cache_key, dmp_convert,
-                         dmp_degree, dmp_degree_in, dmp_ground, dmp_ground_LC,
-                         dmp_inflate, dmp_LC, dmp_multi_deflate, dmp_one,
-                         dmp_one_p, dmp_raise, dmp_strip, dmp_zero, dmp_zero_p,
-                         dmp_zeros)
+                         dmp_sub_mul, dup_mul)
+from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
+                         dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
+                         dmp_LC, dmp_multi_deflate, dmp_one, dmp_one_p,
+                         dmp_raise, dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
 from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval, dmp_eval_in,
                          dmp_ground_extract, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -179,12 +177,12 @@ def dup_primitive_prs(f, g, K):
 
     """
     prs = [f, g]
-    _, h = dmp_ground_primitive(dup_prem(f, g, K), 0, K)
+    _, h = dmp_ground_primitive(dmp_prem(f, g, 0, K), 0, K)
 
     while h:
         prs.append(h)
         f, g = g, h
-        _, h = dmp_ground_primitive(dup_prem(f, g, K), 0, K)
+        _, h = dmp_ground_primitive(dmp_prem(f, g, 0, K), 0, K)
 
     return prs
 
@@ -233,7 +231,7 @@ def dup_inner_subresultants(f, g, K):
 
     b = (-K.one)**(d + 1)
 
-    h = dup_prem(f, g, K)
+    h = dmp_prem(f, g, 0, K)
     h = dmp_mul_ground(h, b, 0, K)
 
     lc = dmp_LC(g, K)
@@ -251,7 +249,7 @@ def dup_inner_subresultants(f, g, K):
 
         b = -lc * c**d
 
-        h = dup_prem(f, g, K)
+        h = dmp_prem(f, g, 0, K)
         h = dmp_quo_ground(h, b, 0, K)
 
         lc = dmp_LC(g, K)
@@ -636,7 +634,7 @@ def dmp_qq_collins_resultant(f, g, u, K0):
     return dmp_quo_ground(r, c, u - 1, K0)
 
 
-@cachetools.cached({}, key=dmp_cache_key)
+@cacheit
 def dmp_resultant(f, g, u, K, includePRS=False):
     """
     Computes resultant of two polynomials in `K[X]`.

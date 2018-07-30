@@ -4,6 +4,7 @@ import collections
 import re
 
 from ..core import Add, Mul, Pow, S, nan, oo, zoo
+from ..core.compatibility import default_sort_key
 from ..core.exprtools import decompose_power
 from .polyerrors import GeneratorsError, GeneratorsNeeded, PolynomialError
 from .polyoptions import build_options
@@ -158,10 +159,10 @@ def _sort_factors(factors, **args):
     """Sort low-level factors in increasing 'complexity' order. """
     def order_if_multiple_key(factor):
         f, n = factor
-        return len(f), n, f
+        return len(f), n, default_sort_key(f)
 
     def order_no_multiple_key(f):
-        return len(f), f
+        return len(f), default_sort_key(f)
 
     if args.get('multiple', True):
         return sorted(factors, key=order_if_multiple_key)

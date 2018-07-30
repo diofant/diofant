@@ -1152,16 +1152,11 @@ class PrettyPrinter(Printer):
                 coeff, other = term.as_coeff_mul(rational=False)
                 pform = self._print(Mul(-coeff, *other, evaluate=False))
                 pforms.append(pretty_negative(pform, i))
-            elif term.is_Rational and term.q > 1:
+            elif term.is_Rational and term.denominator > 1:
                 pforms.append(None)
                 indices.append(i)
             elif term.is_Number and term < 0:
                 pform = self._print(-term)
-                pforms.append(pretty_negative(pform, i))
-            elif term.is_AlgebraicNumber and term.coeffs()[0] < 0:
-                new_coeffs = term.coeffs()
-                new_coeffs[0] = -new_coeffs[0]
-                pform = self._print(term.func(term.root, new_coeffs))
                 pforms.append(pretty_negative(pform, i))
             elif term.is_Relational:
                 pforms.append(prettyForm(*self._print(term).parens()))
@@ -1184,7 +1179,7 @@ class PrettyPrinter(Printer):
                     term, negative = -term, True
 
                 if large:
-                    pform = prettyForm(str(term.p))/prettyForm(str(term.q))
+                    pform = prettyForm(str(term.numerator))/prettyForm(str(term.denominator))
                 else:
                     pform = self._print(term)
 
@@ -1214,10 +1209,10 @@ class PrettyPrinter(Printer):
                 else:
                     b.append(Pow(item.base, -item.exp))
             elif item.is_Rational and item is not oo:
-                if item.p != 1 or multiple_ones:
-                    a.append(Rational(item.p))
-                if item.q != 1:
-                    b.append( Rational(item.q) )
+                if item.numerator != 1 or multiple_ones:
+                    a.append(Rational(item.numerator))
+                if item.denominator != 1:
+                    b.append(Rational(item.denominator))
             else:
                 a.append(item)
 
@@ -1260,7 +1255,7 @@ class PrettyPrinter(Printer):
         rootsign = xobj('\\', 1) + _zZ
         # Make exponent number to put above it
         if isinstance(expt, Rational):
-            exp = str(expt.q)
+            exp = str(expt.denominator)
             if exp == '2':
                 exp = ''
         else:
@@ -1327,7 +1322,7 @@ class PrettyPrinter(Printer):
             return
 
     def _print_Rational(self, expr):
-        result = self.__print_numer_denom(expr.p, expr.q)
+        result = self.__print_numer_denom(expr.numerator, expr.denominator)
 
         if result is not None:
             return result
@@ -1354,7 +1349,7 @@ class PrettyPrinter(Printer):
         else:
             dots = '...'
 
-        if s.start is -oo:
+        if s.start == -oo:
             it = iter(s)
             printset = s.start, dots, s._last_element - s.step, s._last_element
         elif s.stop is oo or len(s) > 4:
@@ -1498,8 +1493,8 @@ class PrettyPrinter(Printer):
     def _print_FracElement(self, frac):
         return prettyForm(sstr(frac))
 
-    def _print_AlgebraicNumber(self, expr):
-        return self._print(expr.as_expr())
+    def _print_AlgebraicElement(self, expr):
+        return self._print(expr.parent.to_expr(expr))
 
     def _print_RootOf(self, expr):
         args = [self._print_Add(expr.expr, order='lex')]

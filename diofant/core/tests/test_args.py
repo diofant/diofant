@@ -8,8 +8,8 @@ import os
 import re
 import warnings
 
-from diofant import (ITE, Add, Adjoint, AlgebraicNumber, And, Atom, AtomicExpr,
-                     Basic, BlockDiagMatrix, BlockMatrix, Complement, Contains,
+from diofant import (ITE, Add, Adjoint, And, Atom, AtomicExpr, Basic,
+                     BlockDiagMatrix, BlockMatrix, Complement, Contains,
                      DeferredVector, Derivative, Determinant, DiagonalMatrix,
                      DiagonalOf, Dict, Dummy, Equality, Equivalent, Expr,
                      FiniteSet, Float, FunctionMatrix, GrayCode, GreaterThan,
@@ -25,7 +25,7 @@ from diofant import (ITE, Add, Adjoint, AlgebraicNumber, And, Atom, AtomicExpr,
                      StrictLessThan, Subs, Subset, Sum, Symbol,
                      SymmetricDifference, Trace, Transpose, Tuple, Unequality,
                      Union, Wild, WildFunction, Xor, ZeroMatrix, divisor_sigma,
-                     false, mobius, oo, sin, sqrt, symbols, totient, true)
+                     false, mobius, oo, sin, symbols, totient, true)
 from diofant.abc import a, b, c, w, x, y, z
 from diofant.concrete.expr_with_intlimits import ExprWithIntLimits
 from diofant.concrete.expr_with_limits import AddWithLimits, ExprWithLimits
@@ -1847,10 +1847,6 @@ def test_diofant__matrices__expressions__factorizations__SofSVD():
 
 def test_diofant__matrices__expressions__factorizations__Factorization():
     pass
-
-
-def test_diofant__core__numbers__AlgebraicNumber():
-    assert _test_args(AlgebraicNumber(sqrt(2), [1, 2, 3]))
 
 
 def test_diofant__polys__polytools__GroebnerBasis():

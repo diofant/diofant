@@ -73,7 +73,7 @@ class OctaveCodePrinter(CodePrinter):
     # for Octave.
 
     def __init__(self, settings={}):
-        super(OctaveCodePrinter, self).__init__(settings)
+        super().__init__(settings)
         self.known_functions = dict(zip(known_fcns_src1, known_fcns_src1))
         self.known_functions.update(dict(known_fcns_src2))
         userfuncs = settings.get('user_functions', {})
@@ -139,10 +139,10 @@ class OctaveCodePrinter(CodePrinter):
                 else:
                     b.append(Pow(item.base, -item.exp))
             elif item.is_Rational and item is not oo:
-                if item.p != 1:
-                    a.append(Rational(item.p))
-                if item.q != 1:
-                    b.append(Rational(item.q))
+                if item.numerator != 1:
+                    a.append(Rational(item.numerator))
+                if item.denominator != 1:
+                    b.append(Rational(item.denominator))
             else:
                 a.append(item)
 
@@ -213,7 +213,7 @@ class OctaveCodePrinter(CodePrinter):
             return self._print(expr.evalf(self._settings["precision"]))
         else:
             # assign to a variable, perhaps more readable for longer program
-            return super(OctaveCodePrinter, self)._print_NumberSymbol(expr)
+            return super()._print_NumberSymbol(expr)
 
     def _print_Assignment(self, expr):
         from ..functions import Piecewise
@@ -383,6 +383,12 @@ class OctaveCodePrinter(CodePrinter):
         # argument order is reversed
         args = ", ".join([self._print(x) for x in reversed(expr.args)])
         return "lambertw(" + args + ")"
+
+    def _print_zeta(self, expr):
+        if len(expr.args) == 1:
+            return "zeta(%s)" % expr.args[0]
+        else:
+            return self._print_not_supported(expr)
 
     def _print_Piecewise(self, expr):
         if expr.args[-1].cond != S.true:

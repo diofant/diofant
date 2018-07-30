@@ -44,8 +44,8 @@ def test_bernoulli():
 
     # Should be fast; computed with mpmath
     b = bernoulli(1000)
-    assert b.p % 10**10 == 7950421099
-    assert b.q == 342999030
+    assert b.numerator % 10**10 == 7950421099
+    assert b.denominator == 342999030
 
     b = bernoulli(10**6, evaluate=False).evalf()
     assert str(b) == '-2.23799235765713e+4767529'

@@ -108,7 +108,7 @@ class erf(Function):
         if arg.is_Number:
             if arg is oo:
                 return S.One
-            elif arg is -oo:
+            elif arg == -oo:
                 return S.NegativeOne
             elif arg is S.Zero:
                 return S.Zero
@@ -121,7 +121,7 @@ class erf(Function):
 
         # Try to pull out factors of I
         t = arg.extract_multiplicatively(I)
-        if t is oo or t is -oo:
+        if t in (oo, -oo):
             return arg
 
         # Try to pull out factors of -1
@@ -308,7 +308,7 @@ class erfc(Function):
 
         # Try to pull out factors of I
         t = arg.extract_multiplicatively(I)
-        if t is oo or t is -oo:
+        if t in (oo, -oo):
             return -arg
 
         # Try to pull out factors of -1
@@ -1024,7 +1024,7 @@ class Ei(Function):
             return -oo
         elif z is oo:
             return oo
-        elif z is -oo:
+        elif z == -oo:
             return S.Zero
 
         if not z.is_polar and z.is_negative:
@@ -1080,7 +1080,7 @@ class Ei(Function):
         if x0 is S.Zero:
             f = self._eval_rewrite_as_Si(*self.args)
             return f._eval_nseries(x, n, logx)
-        return super(Ei, self)._eval_nseries(x, n, logx)
+        return super()._eval_nseries(x, n, logx)
 
 
 class expint(Function):
@@ -1243,7 +1243,7 @@ class expint(Function):
         if not nu.has(x) and nu.is_Integer and nu.is_positive:
             f = self._eval_rewrite_as_Ei(*self.args)
             return f._eval_nseries(x, n, logx)
-        return super(expint, self)._eval_nseries(x, n, logx)
+        return super()._eval_nseries(x, n, logx)
 
 
 def E1(z):
@@ -1498,7 +1498,7 @@ class TrigonometricIntegral(Function):
             return cls._atzero
         elif z is oo:
             return cls._atinf()
-        elif z is -oo:
+        elif z == -oo:
             return cls._atneginf()
 
         nz = z.extract_multiplicatively(polar_lift(I))
@@ -1536,7 +1536,7 @@ class TrigonometricIntegral(Function):
         # NOTE this is fairly inefficient
         n += 1
         if self.args[0].subs(x, 0) != 0:
-            return super(TrigonometricIntegral, self)._eval_nseries(x, n, logx)
+            return super()._eval_nseries(x, n, logx)
         baseseries = self._trigfunc(x)._eval_nseries(x, n, logx)
         if self._trigfunc(0) != 0:
             baseseries -= 1
@@ -2105,7 +2105,7 @@ class fresnels(FresnelIntegral):
             return S.Half + (sin(z**2)*Add(*p) + cos(z**2)*Add(*q)).subs(x, sqrt(2/pi)*x)
 
         # All other points are not handled
-        return super(fresnels, self)._eval_aseries(n, args0, x, logx)
+        return super()._eval_aseries(n, args0, x, logx)
 
 
 class fresnelc(FresnelIntegral):
@@ -2232,7 +2232,7 @@ class fresnelc(FresnelIntegral):
             return S.Half + (cos(z**2)*Add(*p) + sin(z**2)*Add(*q)).subs(x, sqrt(2/pi)*x)
 
         # All other points are not handled
-        return super(fresnelc, self)._eval_aseries(n, args0, x, logx)
+        return super()._eval_aseries(n, args0, x, logx)
 
 
 ###############################################################################
@@ -2277,7 +2277,7 @@ class _erfs(Function):
             return (Add(*l))._eval_nseries(x, n, logx) + o
 
         # All other points are not handled
-        return super(_erfs, self)._eval_aseries(n, args0, x, logx)
+        return super()._eval_aseries(n, args0, x, logx)
 
     def fdiff(self, argindex=1):
         if argindex == 1:
@@ -2299,7 +2299,7 @@ class _eis(Function):
     def _eval_aseries(self, n, args0, x, logx):
         from ...series import Order
         if args0[0] != oo:
-            return super(_eis, self)._eval_aseries(n, args0, x, logx)
+            return super()._eval_aseries(n, args0, x, logx)
 
         z = self.args[0]
         l = [ factorial(k) * (1/z)**(k + 1) for k in range(n) ]
@@ -2322,7 +2322,7 @@ class _eis(Function):
         if x0 is S.Zero:
             f = self._eval_rewrite_as_intractable(*self.args)
             return f._eval_nseries(x, n, logx)
-        return super(_eis, self)._eval_nseries(x, n, logx)
+        return super()._eval_nseries(x, n, logx)
 
     def _eval_evalf(self, prec):
         return self.rewrite('intractable').evalf(prec)

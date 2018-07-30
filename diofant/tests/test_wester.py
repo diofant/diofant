@@ -11,13 +11,12 @@ import mpmath
 import pytest
 from mpmath import mpc, mpi
 
-from diofant import (ZZ, AlgebraicNumber, And, Complement, Derivative,
-                     DiracDelta, E, EulerGamma, FiniteSet, Function,
-                     GoldenRatio, I, Lambda, LambertW, Le, Lt, Max, Mul, N, O,
-                     Or, Piecewise, Poly, Rational, Subs, Symbol, acos, acot,
-                     apart, asin, asinh, assoc_legendre, atan, bernoulli,
-                     besselj, binomial, cbrt, ceiling, chebyshevt, combsimp,
-                     conjugate)
+from diofant import (ZZ, And, Complement, Derivative, DiracDelta, E,
+                     EulerGamma, FiniteSet, Function, GoldenRatio, I, Lambda,
+                     LambertW, Le, Lt, Max, Mul, N, O, Or, Piecewise, Poly,
+                     Rational, Subs, Symbol, acos, acot, apart, asin, asinh,
+                     assoc_legendre, atan, bernoulli, besselj, binomial, cbrt,
+                     ceiling, chebyshevt, combsimp, conjugate)
 from diofant import continued_fraction_convergents as cf_c
 from diofant import continued_fraction_iterator as cf_i
 from diofant import continued_fraction_periodic as cf_p
@@ -184,18 +183,19 @@ def test_C18():
 
 @pytest.mark.xfail
 def test_C19():
-    assert radsimp(simplify((90 + 34*sqrt(7)) ** R(1, 3))) == 3 + sqrt(7)
+    assert simplify(root(90 + 34*sqrt(7), 3)) == 3 + sqrt(7)
 
 
+@pytest.mark.xfail
 def test_C20():
-    inside = (135 + 78*sqrt(3))
-    test = AlgebraicNumber((inside**R(2, 3) + 3) * sqrt(3) / inside**R(1, 3))
-    assert simplify(test) == AlgebraicNumber(12)
+    inside = 135 + 78*sqrt(3)
+    test = (inside**Rational(2, 3) + 3)*sqrt(3)/root(inside, 3)
+    assert simplify(test) == 12
 
 
+@pytest.mark.xfail
 def test_C21():
-    assert simplify(AlgebraicNumber((41 + 29*sqrt(2)) ** R(1, 5))) == \
-        AlgebraicNumber(1 + sqrt(2))
+    assert simplify(root(41 + 29*sqrt(2), 5)) == 1 + sqrt(2)
 
 
 @pytest.mark.xfail
@@ -297,7 +297,7 @@ def test_G2():
 
 def test_G15():
     assert Rational(sqrt(3).evalf()).limit_denominator(15) == Rational(26, 15)
-    assert list(takewhile(lambda x: x.q <= 15, cf_c(cf_i(sqrt(3)))))[-1] == \
+    assert list(takewhile(lambda x: x.denominator <= 15, cf_c(cf_i(sqrt(3)))))[-1] == \
         Rational(26, 15)
 
 

@@ -887,9 +887,9 @@ def test_eigen():
 
     M = Matrix(3, 3, [1, 2, 0, 0, 3, 0, 2, -4, 2])
     M._eigenvects = M.eigenvects(simplify=False)
-    assert max(i.q for i in M._eigenvects[0][2][0]) > 1
+    assert max(i.denominator for i in M._eigenvects[0][2][0]) > 1
     M._eigenvects = M.eigenvects(simplify=True)
-    assert max(i.q for i in M._eigenvects[0][2][0]) == 1
+    assert max(i.denominator for i in M._eigenvects[0][2][0]) == 1
     M = Matrix([[Rational(1, 4), 1], [1, 1]])
     assert M.eigenvects(simplify=True) == [
         (Rational(5, 8) + sqrt(73)/8, 1, [Matrix([[8/(3 + sqrt(73))], [1]])]),
@@ -1974,7 +1974,7 @@ def test_matrix_norm():
     L = [a, b, c, d, e]
     alpha = Symbol('alpha', extended_real=True)
 
-    for order in [1, 2, -1, -2, oo, -oo, pi]:
+    for order in [1, 2, -1, -2, oo, -oo]:
         # Zero Check
         if order > 0:
             assert Matrix([0, 0, 0]).norm(order) == Integer(0)
@@ -1985,13 +1985,28 @@ def test_matrix_norm():
                     assert simplify(v.norm(order) + w.norm(order) >=
                                     (v + w).norm(order))
         # Linear to scalar multiplication
-        if order in [1, 2, -1, -2, oo, -oo]:
-            for vec in L:
-                try:
-                    assert simplify((alpha*v).norm(order) -
-                                    (abs(alpha) * v.norm(order))) == 0
-                except NotImplementedError:
-                    pass  # Some Norms fail on symbolics due to Max issue
+        for vec in L:
+            try:
+                assert simplify((alpha*v).norm(order) -
+                                (abs(alpha) * v.norm(order))) == 0
+            except NotImplementedError:
+                pass  # Some Norms fail on symbolics due to Max issue
+
+
+@pytest.mark.xfail
+def test_matrix_norm_xfail():
+    a = Matrix([1, 1 - 1*I, -3])
+    b = Matrix([Rational(1, 2), 1*I, 1])
+    c = Matrix([-1, -1, -1])
+    d = Matrix([3, 2, I])
+    e = Matrix([Integer(1e2), Rational(1, 1e2), 1])
+    L = [a, b, c, d, e]
+
+    assert Matrix([0, 0, 0]).norm(pi) == Integer(0)
+    # Triangle inequality on all pairs
+    for v in L:
+        for w in L:
+            assert simplify(v.norm(pi) + w.norm(pi) >= (v + w).norm(pi))
 
 
 def test_singular_values():

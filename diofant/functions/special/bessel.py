@@ -159,7 +159,7 @@ class besselj(BesselBase):
                 return zoo
             elif nu.is_imaginary:
                 return nan
-        if z is oo or (z is -oo):
+        if z in (oo, -oo):
             return S.Zero
 
         if z.could_extract_minus_sign():
@@ -250,7 +250,7 @@ class bessely(BesselBase):
                 return zoo
             elif re(nu).is_zero:
                 return nan
-        if z is oo or z is -oo:
+        if z in (oo, -oo):
             return S.Zero
 
         if nu.is_integer:
@@ -324,7 +324,7 @@ class besseli(BesselBase):
                 return zoo
             elif nu.is_imaginary:
                 return nan
-        if im(z) is oo or im(z) is -oo:
+        if im(z) in (oo, -oo):
             return S.Zero
 
         if z.could_extract_minus_sign():
@@ -412,7 +412,7 @@ class besselk(BesselBase):
                 return zoo
             elif re(nu).is_zero:
                 return nan
-        if im(z) is oo or im(z) is -oo:
+        if im(z) in (oo, -oo):
             return S.Zero
 
         if nu.is_integer:
@@ -836,9 +836,7 @@ class airyai(AiryBase):
     @classmethod
     def eval(cls, arg):
         if arg.is_Number:
-            if arg is oo:
-                return S.Zero
-            elif arg is -oo:
+            if arg in (oo, -oo):
                 return S.Zero
             elif arg is S.Zero:
                 return S.One / (3**Rational(2, 3) * gamma(Rational(2, 3)))
@@ -993,7 +991,7 @@ class airybi(AiryBase):
         if arg.is_Number:
             if arg is oo:
                 return oo
-            elif arg is -oo:
+            elif arg == -oo:
                 return S.Zero
             elif arg is S.Zero:
                 return 1/(root(3, 6)*gamma(Rational(2, 3)))
@@ -1083,14 +1081,14 @@ class _airyais(Function):
             return Add(*l)._eval_nseries(x, n, logx) + o
 
         # All other points are not handled
-        return super(_airyais, self)._eval_aseries(n, args0, x, logx)
+        return super()._eval_aseries(n, args0, x, logx)
 
     def _eval_nseries(self, x, n, logx):
         x0 = self.args[0].limit(x, 0)
         if x0 is S.Zero:
             return self.rewrite('intractable')._eval_nseries(x, n, logx)
         else:
-            return super(_airyais, self)._eval_nseries(x, n, logx)
+            return super()._eval_nseries(x, n, logx)
 
 
 class _airybis(Function):
@@ -1112,14 +1110,14 @@ class _airybis(Function):
             return Add(*l)._eval_nseries(x, n, logx) + o
 
         # All other points are not handled
-        return super(_airybis, self)._eval_aseries(n, args0, x, logx)
+        return super()._eval_aseries(n, args0, x, logx)
 
     def _eval_nseries(self, x, n, logx):
         x0 = self.args[0].limit(x, 0)
         if x0 is S.Zero:
             return self.rewrite('intractable')._eval_nseries(x, n, logx)
         else:
-            return super(_airybis, self)._eval_nseries(x, n, logx)
+            return super()._eval_nseries(x, n, logx)
 
 
 class airyaiprime(AiryBase):
@@ -1339,7 +1337,7 @@ class airybiprime(AiryBase):
         if arg.is_Number:
             if arg is oo:
                 return oo
-            elif arg is -oo:
+            elif arg == -oo:
                 return S.Zero
             elif arg is S.Zero:
                 return root(3, 6)/gamma(Rational(1, 3))

@@ -6,7 +6,7 @@ from mpmath.libmp.libhyper import NoConvergence
 from . import polyoptions as options
 from ..core import (Add, Basic, Derivative, Dummy, E, Expr, I, Integer, Mul, S,
                     Symbol, Tuple, oo, preorder_traversal, sympify)
-from ..core.compatibility import iterable
+from ..core.compatibility import default_sort_key, iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
@@ -2863,7 +2863,7 @@ class Poly(Expr):
         if inf is not None:
             inf = sympify(inf)
 
-            if inf is -oo:
+            if inf == -oo:
                 inf = None
             else:
                 re, im = inf.as_real_imag()
@@ -2931,7 +2931,7 @@ class Poly(Expr):
         from .rootoftools import RootOf
         return RootOf(self, index, radicals=radicals)
 
-    def real_roots(self, multiple=True, radicals=True):
+    def real_roots(self, multiple=True, radicals=True, extension=None):
         """
         Return a list of real roots with multiplicities.
 
@@ -2944,14 +2944,14 @@ class Poly(Expr):
         [RootOf(x**3 + x + 1, 0)]
         """
         from .rootoftools import RootOf
-        reals = RootOf.real_roots(self, radicals=radicals)
+        reals = RootOf.real_roots(self, radicals=radicals, extension=extension)
 
         if multiple:
             return reals
         else:
             return group(reals, multiple=False)
 
-    def all_roots(self, multiple=True, radicals=True):
+    def all_roots(self, multiple=True, radicals=True, extension=None):
         """
         Return a list of real and complex roots with multiplicities.
 
@@ -2965,7 +2965,7 @@ class Poly(Expr):
          RootOf(x**3 + x + 1, 2)]
         """
         from .rootoftools import RootOf
-        roots = RootOf.all_roots(self, radicals=radicals)
+        roots = RootOf.all_roots(self, radicals=radicals, extension=extension)
 
         if multiple:
             return roots
@@ -3006,7 +3006,7 @@ class Poly(Expr):
         if self.rep.domain is ZZ:
             coeffs = [int(coeff) for coeff in self.all_coeffs()]
         elif self.rep.domain is QQ:
-            denoms = [coeff.q for coeff in self.all_coeffs()]
+            denoms = [coeff.denominator for coeff in self.all_coeffs()]
             from ..core import ilcm
             fac = ilcm(*denoms)
             coeffs = [int(coeff*fac) for coeff in self.all_coeffs()]
@@ -4904,12 +4904,12 @@ def _sorted_factors(factors, method):
         def key(obj):
             poly, exp = obj
             rep = poly.rep.rep
-            return exp, len(rep), len(poly.gens), rep
+            return exp, len(rep), len(poly.gens), default_sort_key(rep)
     else:
         def key(obj):
             poly, exp = obj
             rep = poly.rep.rep
-            return len(rep), len(poly.gens), exp, rep
+            return len(rep), len(poly.gens), exp, default_sort_key(rep)
 
     return sorted(factors, key=key)
 
@@ -5149,8 +5149,8 @@ def to_rational_coeffs(f):
         for y in coeffs:
             for x in Add.make_args(y):
                 f = Factors(x).factors
-                r = [wx.q for b, wx in f.items() if
-                     b.is_number and wx.is_Rational and wx.q >= 2]
+                r = [wx.denominator for b, wx in f.items() if
+                     b.is_number and wx.is_Rational and wx.denominator >= 2]
                 if not r:
                     continue
                 if min(r) == 2:

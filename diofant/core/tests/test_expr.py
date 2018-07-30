@@ -930,7 +930,7 @@ def test_extractions():
     assert x.extract_multiplicatively(-x) is None
     assert oo.extract_multiplicatively(2) is oo
     assert oo.extract_multiplicatively(-1) is None
-    assert (-oo).extract_multiplicatively(2) is -oo
+    assert (-oo).extract_multiplicatively(2) == -oo
     assert (-oo).extract_multiplicatively(-2) is oo
     assert (-oo).extract_multiplicatively(0) is None
 
@@ -1025,6 +1025,7 @@ def test_coeff():
     assert (n1*n2 + n2*n1).coeff(n1) == 0
     assert (2*(n1 + n2)*n2).coeff(n1 + n2, right=1) == n2
     assert (2*(n1 + n2)*n2).coeff(n1 + n2, right=0) == 2
+    assert (3*n1*n2 + 3*x*n1).coeff(n1) == 3
 
     f = Function('f')
     assert (2*f(x) + 3*f(x).diff(x)).coeff(f(x)) == 2

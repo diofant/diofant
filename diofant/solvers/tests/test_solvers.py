@@ -1504,3 +1504,7 @@ def test_sympyissue_14721():
                   -1 + (-k + 1)**2/b**2 + (-h + 1)**2/a**2, k + 2],
                  h, k, a, b) == [{a: -sqrt(b**2/(b**2 - 9)), h: 0, k: -2},
                                  {a: sqrt(b**2/(b**2 - 9)), h: 0, k: -2}]
+
+
+def test_sympyissue_14791():
+    assert solve(exp(log(5)*x) - exp(log(2)*x), x) == [{x: 0}]

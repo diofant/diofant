@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import (Abs, AlgebraicNumber, Catalan, Dummy, E, EulerGamma,
-                     Float, Function, GoldenRatio, I, ImmutableMatrix, Integer,
-                     Matrix, Rational, Symbol, Wild, WildFunction, false, nan,
-                     ones, oo, pi, root, sin, sqrt, true, zoo)
+from diofant import (Abs, Catalan, Dummy, E, EulerGamma, Float, Function,
+                     GoldenRatio, I, ImmutableMatrix, Integer, Matrix,
+                     Rational, Symbol, Wild, WildFunction, false, nan, ones,
+                     oo, pi, root, sin, sqrt, true, zoo)
 from diofant.abc import x, y
 from diofant.domains import QQ, ZZ
 from diofant.geometry import Ellipse, Point
@@ -108,11 +108,13 @@ def test_Rational():
     sT(Rational(-1, 3), "Rational(-1, 3)")
 
 
-def test_AlgebraicNumber():
-    a = AlgebraicNumber(sqrt(2))
-    sT(a, "AlgebraicNumber(Pow(Integer(2), Rational(1, 2)), Tuple(Integer(1), Integer(0)))")
-    a = AlgebraicNumber(root(-2, 3))
-    sT(a, "AlgebraicNumber(Pow(Integer(-2), Rational(1, 3)), Tuple(Integer(1), Integer(0)))")
+def test_AlgebraicElement():
+    K = QQ.algebraic_field(sqrt(2))
+    a = K.root
+    sT(a, "AlgebraicField(%s, Pow(Integer(2), Rational(1, 2)))([Integer(1), Integer(0)])" % repr(QQ))
+    K = QQ.algebraic_field(root(-2, 3))
+    a = K.root
+    sT(a, "AlgebraicField(%s, Pow(Integer(-2), Rational(1, 3)))([Integer(1), Integer(0)])" % repr(QQ))
 
 
 def test_Float():

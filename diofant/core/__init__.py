@@ -9,7 +9,7 @@ from .expr import Expr, AtomicExpr  # noqa: F401
 from .symbol import Symbol, Wild, Dummy, symbols, var  # noqa: F401
 from .numbers import (Number, Float, Rational, Integer,  # noqa: F401
                       NumberSymbol, igcd, ilcm, seterr, E, I, nan, oo,
-                      pi, zoo, AlgebraicNumber, comp, mod_inverse)
+                      pi, zoo, comp, mod_inverse)
 from .power import Pow, integer_nthroot  # noqa: F401
 from .mul import Mul, prod  # noqa: F401
 from .add import Add  # noqa: F401

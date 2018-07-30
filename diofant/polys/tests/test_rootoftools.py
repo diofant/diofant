@@ -533,12 +533,9 @@ def test_rewrite():
 def test_RootOf_algebraic_domain():
     assert RootOf(x**3 + I*x + 2, 0,
                   extension=True) == RootOf(x**6 + 4*x**3 + x**2 + 4, 1)
+    assert RootOf(x**3 + I*x + 2, 1,
+                  extension=True) == RootOf(x**6 + 4*x**3 + x**2 + 4, 3)
 
     e = RootOf(x**4 + sqrt(2)*x**3 - I*x + 1, 0, extension=True)
     assert e == RootOf(x**16 - 4*x**14 + 8*x**12 - 6*x**10 +
                        10*x**8 + 5*x**4 + 2*x**2 + 1, 1)
-
-    t = RootOf(x**5 + 4*x + 2, 0)
-    e = RootOf(x**4 + t*x + 1, 1, extension=True)
-    assert e == RootOf(x**20 + 5*x**16 + 10*x**12 + 14*x**8 -
-                       2*x**5 + 9*x**4 + 1, 5)

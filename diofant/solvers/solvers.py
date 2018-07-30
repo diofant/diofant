@@ -294,10 +294,6 @@ def solve(f, *symbols, **flags):
     diofant.solvers.ode.dsolve : solving differential equations
     diofant.solvers.inequalities.reduce_inequalities : solving inequalities
     """
-    # keeping track of how f was passed since if it is a list
-    # a dictionary of results will be returned.
-    ###########################################################################
-
     def _sympified_list(w):
         return list(map(sympify, w if iterable(w) else [w]))
     bare_f = not iterable(f)
@@ -644,12 +640,12 @@ def _solve(f, symbol, **flags):
             """
             b, e = x.as_base_exp()
             if e.is_Rational:
-                return b, e.q
+                return b, e.denominator
             if not e.is_Mul:
                 return x, 1
             c, ee = e.as_coeff_Mul()
             if c.is_Rational and c is not S.One:  # c could be a Float
-                return b**ee, c.q
+                return b**ee, c.denominator
             return x, 1
 
         if len(gens) > 1:

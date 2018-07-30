@@ -15,10 +15,8 @@ class BaseScalar(Expr):
         from .coordsysrect import CoordSysCartesian
         index = sympify(index, strict=True)
         system = sympify(system, strict=True)
-        obj = super(BaseScalar, cls).__new__(cls, Symbol(str(name)),
-                                             index, system,
-                                             Symbol(str(pretty_str)),
-                                             Symbol(str(latex_str)))
+        obj = super().__new__(cls, Symbol(str(name)), index, system,
+                              Symbol(str(pretty_str)), Symbol(str(latex_str)))
 
         if not isinstance(system, CoordSysCartesian):
             raise TypeError("system should be a CoordSysCartesian")

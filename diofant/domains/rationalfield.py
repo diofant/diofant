@@ -1,5 +1,7 @@
 """Implementation of :class:`RationalField` class. """
 
+import math
+
 from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
 from .field import Field
@@ -34,7 +36,7 @@ class RationalField(Field, CharacteristicZero, SimpleDomain):
     def from_expr(self, a):
         """Convert Diofant's Integer to ``dtype``. """
         if a.is_Rational:
-            return self.dtype(a.p, a.q)
+            return self.dtype(a.numerator, a.denominator)
         elif a.is_Float:
             from . import RR
             return self.dtype(*RR.to_rational(a))
@@ -59,6 +61,10 @@ class RationalField(Field, CharacteristicZero, SimpleDomain):
     def _from_AlgebraicField(self, a, K0):
         if a.is_ground:
             return self.convert(a.LC(), K0.domain)
+
+    def log(self, a, b):
+        """Returns b-base logarithm of ``a``. """
+        return self.dtype(int(math.log(int(a), b)))
 
 
 class PythonRationalField(RationalField):

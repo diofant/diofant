@@ -8,11 +8,10 @@ import pytest
 from mpmath import mpf
 from mpmath.libmp.libmpf import _normalize, finf, fnan, fninf
 
-from diofant import (AlgebraicNumber, Catalan, E, EulerGamma, Float, Ge,
-                     GoldenRatio, Gt, I, Integer, Le, Lt, Mul, Number, Pow,
-                     Rational, Symbol, cbrt, cos, exp, factorial, false, latex,
-                     log, nan, nextprime, oo, pi, root, simplify, sin, sqrt,
-                     true, zoo)
+from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
+                     Integer, Le, Lt, Mul, Number, Pow, Rational, Symbol, cbrt,
+                     cos, exp, factorial, false, latex, log, nan, nextprime,
+                     oo, pi, root, sin, sqrt, true, zoo)
 from diofant.core.cache import clear_cache
 from diofant.core.numbers import (comp, igcd, igcdex, ilcm, mod_inverse,
                                   mpf_norm, seterr)
@@ -227,8 +226,8 @@ def test_igcdex():
 
 
 def _strictly_equal(a, b):
-    return (a.p, a.q, type(a.p), type(a.q)) == \
-           (b.p, b.q, type(b.p), type(b.q))
+    return (a.numerator, a.denominator, type(a.numerator), type(a.denominator)) == \
+           (b.numerator, b.denominator, type(b.numerator), type(b.denominator))
 
 
 def _test_rational_new(cls):
@@ -1493,19 +1492,6 @@ def test_latex():
 
 def test_sympyissue_7742():
     assert -oo % 1 == nan
-
-
-def test_simplify_AlgebraicNumber():
-    A = AlgebraicNumber
-    e = root(3, 6)*(3 + (135 + 78*sqrt(3))**Rational(2, 3))/cbrt(45 + 26*sqrt(3))
-    assert simplify(A(e)) == A(12)  # wester test_C20
-    assert simplify(A(12)) == A(12)
-
-    e = root(41 + 29*sqrt(2), 5)
-    assert simplify(A(e)) == A(1 + sqrt(2))  # wester test_C21
-
-    e = (3 + 4*I)**Rational(3, 2)
-    assert simplify(A(e)) == A(2 + 11*I)  # issue sympy/sympy#4401
 
 
 def test_Float_idempotence():

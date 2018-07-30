@@ -60,13 +60,13 @@ def precedence_Mul(item):
 
 
 def precedence_Rational(item):
-    if item.p < 0:
+    if item.numerator < 0:
         return PRECEDENCE["Add"]
     return PRECEDENCE["Mul"]
 
 
 def precedence_Integer(item):
-    if item.p < 0:
+    if item.numerator < 0:
         return PRECEDENCE["Add"]
     return PRECEDENCE["Atom"]
 

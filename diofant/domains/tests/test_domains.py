@@ -562,6 +562,9 @@ def test_Domain_convert():
     assert RR.convert(complex(2 + 0j)) == RR(2)
     pytest.raises(CoercionFailed, lambda: RR.convert(complex(2 + 3j)))
 
+    assert ALG.convert(EX(sqrt(2)), EX) == ALG.from_expr(sqrt(2))
+    pytest.raises(CoercionFailed, lambda: ALG.convert(EX(sqrt(5)), EX))
+
 
 def test_arithmetics():
     assert ZZ.rem(ZZ(2), ZZ(3)) == 2
@@ -666,7 +669,7 @@ def test_Domain__algebraic_field():
     assert alg.minpoly == Poly(x**2 - 2)
     assert alg.domain == QQ
 
-    alg = alg.algebraic_field(sqrt(3))
+    alg = QQ.algebraic_field(sqrt(2), sqrt(3))
     assert alg.minpoly == Poly(x**4 - 10*x**2 + 1)
     assert alg.domain == QQ
 
@@ -681,8 +684,23 @@ def test_Domain__algebraic_field():
 
     assert alg.characteristic == 0
 
+    assert int(alg(2)) == 2
+    pytest.raises(TypeError, lambda: int(alg([1, 1])))
+
     alg = QQ.algebraic_field(I)
     assert alg.algebraic_field(I) == alg
+
+    alg = QQ.algebraic_field(sqrt(2)).algebraic_field(sqrt(3))
+    assert alg.minpoly == Poly(x**2 - 3, x, domain=QQ.algebraic_field(sqrt(2)))
+
+    # issue sympy/sympy#14476
+    assert QQ.algebraic_field(Rational(1, 7)) is QQ
+
+    alg = QQ.algebraic_field(sqrt(2)).algebraic_field(I)
+    assert alg.from_expr(2*sqrt(2) + I/3) == alg([alg.domain(1)/3,
+                                                  alg.domain(2*sqrt(2))])
+    alg2 = QQ.algebraic_field(sqrt(2))
+    assert alg2.from_expr(sqrt(2)) == alg2.convert(alg.from_expr(sqrt(2)))
 
 
 def test_PolynomialRing_from_FractionField():
@@ -775,6 +793,12 @@ def test_AlgebraicElement():
     assert f.mod == mod
     assert f.domain == QQ
 
+    f = A([QQ(3, 2)])
+
+    assert f.rep == [QQ(3, 2)]
+    assert f.mod == mod
+    assert f.domain == QQ
+
     B = QQ.algebraic_field(I*sqrt(2))
 
     a = A([QQ(1), QQ(1)])
@@ -800,7 +824,8 @@ def test_AlgebraicElement():
     assert bool(A([QQ(1)])) is True
 
     a = A([QQ(1), -QQ(1), QQ(2)])
-    assert a.LC() == 1
+    assert a.LC() == -1
+    assert a.rep == [-1, 1]
 
     A = QQ.algebraic_field(root(2, 3))
 
@@ -809,6 +834,7 @@ def test_AlgebraicElement():
 
     c = A([QQ(-2), QQ(1), QQ(-1)])
 
+    assert +a == a
     assert -a == c
 
     c = A([QQ(2), QQ(0), QQ(3)])

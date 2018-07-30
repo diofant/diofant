@@ -7,11 +7,13 @@ Not Released Yet
 New features
 ============
 
+* New representation for elements of :class:`~diofant.domains.AlgebraicField`, see :pull:`619` and :pull:`631`.
+* Ground domains for :class:`~diofant.domains.AlgebraicField` can be also instances of :class:`~diofant.domains.AlgebraicField`, see :pull:`653`.
+
 Major changes
 =============
 
-* New representation for elements of :class:`~diofant.domains.AlgebraicField`, see :pull:`619`.
-* Stable enumeration of polynomial roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`633`.
+* Stable enumeration of polynomial roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`633` and :pull:`658`.
 
 Compatibility breaks
 ====================
@@ -24,7 +26,6 @@ Compatibility breaks
 * Removed ``PolyRing`` class, see :pull:`621`.
 * ``get_ring()`` method for domains, derived from :class:`~diofant.domains.ring.Ring`, now is a property, e.g. :attr:`~diofant.domains.ring.Ring.ring`, see :pull:`621`.
 * Removed ``compose`` option for :func:`~diofant.polys.numberfields.minimal_polynomial`, use ``method`` instead, see :pull:`624`.
-* Removed ``alias`` option for :class:`~diofant.core.numbers.AlgebraicNumber`, see :pull:`626`.
 * :func:`~diofant.polys.numberfields.field_isomorphism` take fields as arguments, see :pull:`627`.
 * Functions :func:`~diofant.polys.numberfields.minimal_polynomial` and :func:`~diofant.polys.numberfields.primitive_element` return :class:`~diofant.polys.polytools.PurePoly` instances, see :pull:`628`.
 * Removed ``ANP`` class, see :pull:`619`.
@@ -37,6 +38,9 @@ Compatibility breaks
 * ``from_<Foo>()`` methods of :class:`~diofant.domains.domain.Domain` now are private, see :pull:`637`.
 * Method :meth:`~diofant.domains.domain.Domain.from_expr` was renamed from ``from_diofant()``, see :pull:`637`.
 * Method :meth:`~diofant.domains.domain.Domain.to_expr` was renamed from ``to_diofant()``, see :pull:`637`.
+* Removed ``AlgebraicNumber`` class, see :pull:`631`.
+* Removed ``polys.distributedmodules`` module, see :pull:`648`.
+* Removed ``p`` and ``q`` properties of :class:`~diofant.core.numbers.Rational`, see :pull:`654`.
 
 Minor changes
 =============
@@ -45,10 +49,13 @@ Minor changes
 * Support algebraic function fields in :func:`~diofant.polys.numberfields.minpoly_groebner`, see :pull:`623`.
 * Added argument ``method`` for :func:`~diofant.polys.numberfields.minimal_polynomial` and ``MINPOLY_METHOD`` configuration option to select default algorithm, see :pull:`624`.
 * Support derivatives of :class:`~diofant.polys.rootoftools.RootOf` instances, see :pull:`624`.
-* :func:`~diofant.polys.numberfields.primitive_element` now return an algebraic integer, see :pull:`643`.
+* :func:`~diofant.polys.numberfields.primitive_element` now return an algebraic integer and support algebraic fields, see :pull:`643`, :pull:`655` and :pull:`659`.
+* Support :class:`~diofant.functions.elementary.complexes.conjugate` in :func:`~diofant.polys.numberfields.minimal_polynomial`, see :pull:`661`.
 
 Developer changes
 =================
+
+* Removed cachetools dependence, see :pull:`647`.
 
 Issues closed
 =============
@@ -77,3 +84,12 @@ These Sympy issues also were addressed:
 * :sympyissue:`14442` Should AlgebraicField be a Composite domain?
 * :sympyissue:`14759` dup_isolate_real_roots_list() docstring is wrong
 * :sympyissue:`14738` dup_count_complex_roots() can't handle degenerate cases
+* :sympyissue:`14782` integrate(sqrt(-x**2 + 1)*(-x**2 + x), [x, -1, 1]) is incorrect
+* :sympyissue:`14791` No solution is returned for solve(exp(log(5)*x) - exp(log(2)*x), x)
+* :sympyissue:`14793` Limit involving log(factorial(x)) incorrect
+* :sympyissue:`14811` Exception during evaluation of limit (only locally, not in the live version)
+* :sympyissue:`14822` RisingFactorial cannot do numerical (floating point) evaluations
+* :sympyissue:`14820` octave/matlab codegen wrong for two argument zeta
+* :sympyissue:`14831` minpoly(-3*sqrt(12*sqrt(2) + 17) + 12*sqrt(2) + 17 -2*sqrt(2)*sqrt(12*sqrt(2) + 17), x) fails
+* :sympyissue:`14476` QQ.algebraic_field(Rational) should be just QQ
+* :sympyissue:`14885` Sympy series gives TypeError on x^(-3/2) * exp(x) at x = 0

@@ -149,19 +149,19 @@ class MathMLPrinter(Printer):
         return x
 
     def _print_Rational(self, e):
-        if e.q == 1:
+        if e.denominator == 1:
             # don't divide
             x = self.dom.createElement('cn')
-            x.appendChild(self.dom.createTextNode(str(e.p)))
+            x.appendChild(self.dom.createTextNode(str(e.numerator)))
             return x
         x = self.dom.createElement('apply')
         x.appendChild(self.dom.createElement('divide'))
         # numerator
         xnum = self.dom.createElement('cn')
-        xnum.appendChild(self.dom.createTextNode(str(e.p)))
-        # denomenator
+        xnum.appendChild(self.dom.createTextNode(str(e.numerator)))
+        # denominator
         xdenom = self.dom.createElement('cn')
-        xdenom.appendChild(self.dom.createTextNode(str(e.q)))
+        xdenom.appendChild(self.dom.createTextNode(str(e.denominator)))
         x.appendChild(xnum)
         x.appendChild(xdenom)
         return x
@@ -300,13 +300,13 @@ class MathMLPrinter(Printer):
 
     def _print_Pow(self, e):
         # Here we use root instead of power if the exponent is the reciprocal of an integer
-        if e.exp.is_Rational and e.exp.p == 1:
+        if e.exp.is_Rational and e.exp.numerator == 1:
             x = self.dom.createElement('apply')
             x.appendChild(self.dom.createElement('root'))
-            if e.exp.q != 2:
+            if e.exp.denominator != 2:
                 xmldeg = self.dom.createElement('degree')
                 xmlci = self.dom.createElement('ci')
-                xmlci.appendChild(self.dom.createTextNode(str(e.exp.q)))
+                xmlci.appendChild(self.dom.createTextNode(str(e.exp.denominator)))
                 xmldeg.appendChild(xmlci)
                 x.appendChild(xmldeg)
             x.appendChild(self._print(e.base))

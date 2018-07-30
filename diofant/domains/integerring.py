@@ -1,7 +1,5 @@
 """Implementation of :class:`IntegerRing` class. """
 
-import math
-
 from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
 from .groundtypes import (DiofantInteger, GMPYInteger, PythonInteger,
@@ -43,7 +41,7 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
     def from_expr(self, a):
         """Convert Diofant's Integer to ``dtype``. """
         if a.is_Integer:
-            return self.dtype(a.p)
+            return self.dtype(a.numerator)
         elif a.is_Float and int(a) == a:
             return self.dtype(int(a))
         else:
@@ -78,10 +76,6 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
     def _from_AlgebraicField(self, a, K0):
         if a.is_ground:
             return self.convert(a.LC(), K0.domain)
-
-    def log(self, a, b):
-        """Returns b-base logarithm of ``a``. """
-        return self.dtype(math.log(int(a), b))
 
 
 class PythonIntegerRing(IntegerRing):

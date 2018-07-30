@@ -45,7 +45,7 @@ def components(f, x):
 
             if not f.exp.is_Integer:
                 if f.exp.is_Rational:
-                    result.add(root(f.base, f.exp.q))
+                    result.add(root(f.base, f.exp.denominator))
                 else:
                     result |= components(f.exp, x) | {f}
         else:
@@ -288,7 +288,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                             if M[a].is_negative:
                                 terms.add(erf(sqrt(-M[a])*log(x) - 1/(2*sqrt(-M[a]))))
 
-                    elif g.exp.is_Rational and g.exp.q == 2:
+                    elif g.exp.is_Rational and g.exp.denominator == 2:
                         M = g.base.match(a*x**2 + b)
 
                         if M is not None and M[b].is_positive:
@@ -421,11 +421,11 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     def _exponent(g):
         if g.is_Pow:
-            if g.exp.is_Rational and g.exp.q != 1:
-                if g.exp.p > 0:
-                    return g.exp.p + g.exp.q - 1
+            if g.exp.is_Rational and g.exp.denominator != 1:
+                if g.exp.numerator > 0:
+                    return g.exp.numerator + g.exp.denominator - 1
                 else:
-                    return abs(g.exp.p + g.exp.q)
+                    return abs(g.exp.numerator + g.exp.denominator)
             else:
                 return 1
         elif not g.is_Atom and g.args:

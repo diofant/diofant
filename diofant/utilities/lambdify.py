@@ -63,6 +63,8 @@ MPMATH_TRANSLATIONS = {
     "Ci": "ci",
     "ceiling": "ceil",
     "Ynm": "spherharm",
+    "RisingFactorial": "rf",
+    "FallingFactorial": "ff",
 }
 
 NUMPY_TRANSLATIONS = {

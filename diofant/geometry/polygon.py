@@ -688,7 +688,8 @@ class Polygon(GeometrySet):
             return dist
         elif isinstance(o, Polygon) and self.is_convex() and o.is_convex():
             return self._do_poly_distance(o)
-        raise NotImplementedError()
+        else:  # pragma: no cover
+            raise NotImplementedError
 
     def _do_poly_distance(self, e2):
         """
@@ -907,7 +908,7 @@ class Polygon(GeometrySet):
         return False
 
     def __hash__(self):
-        return super(Polygon, self).__hash__()
+        return super().__hash__()
 
     def __contains__(self, o):
         """
@@ -1536,7 +1537,7 @@ class RegularPolygon(Polygon):
         return self.args == o.args
 
     def __hash__(self):
-        return super(RegularPolygon, self).__hash__()
+        return super().__hash__()
 
 
 class Triangle(Polygon):

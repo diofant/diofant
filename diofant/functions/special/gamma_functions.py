@@ -102,8 +102,8 @@ class gamma(Function):
                 else:
                     return zoo
             elif arg.is_Rational:
-                if arg.q == 2:
-                    n = abs(arg.p) // arg.q
+                if arg.denominator == 2:
+                    n = abs(arg.numerator) // arg.denominator
 
                     if arg.is_positive:
                         k, coeff = n, S.One
@@ -129,15 +129,15 @@ class gamma(Function):
     def _eval_expand_func(self, **hints):
         arg = self.args[0]
         if arg.is_Rational:
-            if abs(arg.p) > arg.q:
+            if abs(arg.numerator) > arg.denominator:
                 x = Dummy('x')
-                n = arg.p // arg.q
-                p = arg.p - n*arg.q
-                return self.func(x + n)._eval_expand_func().subs(x, Rational(p, arg.q))
+                n = arg.numerator // arg.denominator
+                p = arg.numerator - n*arg.denominator
+                return self.func(x + n)._eval_expand_func().subs(x, Rational(p, arg.denominator))
 
         if arg.is_Add:
             coeff, tail = arg.as_coeff_add()
-            if coeff and coeff.q != 1:
+            if coeff and coeff.denominator != 1:
                 intpart = floor(coeff)
                 tail = (coeff - intpart,) + tail
                 coeff = intpart
@@ -170,7 +170,7 @@ class gamma(Function):
     def _eval_nseries(self, x, n, logx):
         x0 = self.args[0].limit(x, 0)
         if not (x0.is_Integer and x0 <= 0):
-            return super(gamma, self)._eval_nseries(x, n, logx)
+            return super()._eval_nseries(x, n, logx)
         t = self.args[0] - x0
         return (self.func(t + 1)/rf(self.args[0], -x0 + 1))._eval_nseries(x, n, logx)
 
@@ -568,7 +568,7 @@ class polygamma(Function):
         from ...series import Order
         if args0[1] != oo or not \
                 (self.args[0].is_Integer and self.args[0].is_nonnegative):
-            return super(polygamma, self)._eval_aseries(n, args0, x, logx)
+            return super()._eval_aseries(n, args0, x, logx)
         z = self.args[1]
         N = self.args[0]
 
@@ -859,12 +859,12 @@ class loggamma(Function):
         if x0 is S.Zero:
             f = self._eval_rewrite_as_intractable(*self.args)
             return f._eval_nseries(x, n, logx)
-        return super(loggamma, self)._eval_nseries(x, n, logx)
+        return super()._eval_nseries(x, n, logx)
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...series import Order
         if args0[0] != oo:
-            return super(loggamma, self)._eval_aseries(n, args0, x, logx)
+            return super()._eval_aseries(n, args0, x, logx)
         z = self.args[0]
         m = min(n, ceiling((n + Integer(1))/2))
         r = log(z)*(z - Rational(1, 2)) - z + log(2*pi)/2

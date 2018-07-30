@@ -370,7 +370,7 @@ class Wild(BaseSymbol):
         return obj
 
     def _hashable_content(self):
-        return super(Wild, self)._hashable_content() + (self.exclude, self.properties)
+        return super()._hashable_content() + (self.exclude, self.properties)
 
     # TODO add check against another Wild
     def _matches(self, expr, repl_dict={}):

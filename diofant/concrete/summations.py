@@ -654,8 +654,8 @@ def eval_sum_symbolic(f, limits):
 
         if n.is_Integer:
             if n >= 0:
-                if (b is oo and a is not -oo) or \
-                   (a is -oo and b is not oo):
+                if (b is oo and a != -oo) or \
+                   (a == -oo and b is not oo):
                     return oo
                 return ((bernoulli(n + 1, b + 1) - bernoulli(n + 1, a))/(n + 1)).expand()
             elif a.is_Integer and a >= 1:

@@ -30,6 +30,9 @@ known_functions = {
     "hyper": [(lambda *x: True, "HypergeometricPFQ")],
     "binomial": [(lambda n, k: True, "Binomial")],
     "erfc": [(lambda x: True, "Erfc")],
+    "conjugate": [(lambda x: True, "Conjugate")],
+    "re": [(lambda x: True, "Re")],
+    "im": [(lambda x: True, "Im")],
 }
 
 
@@ -78,7 +81,7 @@ class MCodePrinter(CodePrinter):
     def _print_Mul(self, expr):
         PREC = precedence(expr)
         c, nc = expr.args_cnc()
-        res = super(MCodePrinter, self)._print_Mul(expr.func(*c))
+        res = super()._print_Mul(expr.func(*c))
         if nc:
             res += '*'
             res += '**'.join(self.parenthesize(a, PREC) for a in nc)
@@ -186,9 +189,9 @@ class MCodePrinter(CodePrinter):
         return "RootSum[%s, %s]" % (self.doprint(Lambda(p.gens, p.as_expr())),
                                     self.doprint(f))
 
-    def _print_AlgebraicNumber(self, expr):
-        coeffs = list(reversed(expr.coeffs()))
-        return "AlgebraicNumber[%s, %s]" % (self.doprint(expr.root),
+    def _print_AlgebraicElement(self, expr):
+        coeffs = list(reversed(expr.rep))
+        return "AlgebraicNumber[%s, %s]" % (self.doprint(expr.parent.ext),
                                             self.doprint(coeffs))
 
     def _print_Dummy(self, expr):

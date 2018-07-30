@@ -92,7 +92,7 @@ class CodePrinter(StrPrinter):
 
     def __init__(self, settings=None):
 
-        super(CodePrinter, self).__init__(settings=settings)
+        super().__init__(settings=settings)
 
         self.reserved_words = set()
 
@@ -341,7 +341,7 @@ class CodePrinter(StrPrinter):
 
     def _print_Symbol(self, expr):
 
-        name = super(CodePrinter, self)._print_Symbol(expr)
+        name = super()._print_Symbol(expr)
 
         if name in self.reserved_words:
             if self._settings['error_on_reserved']:

@@ -77,8 +77,8 @@ Minor changes
 * Added support for limits of relational expressions, see :pull:`414`.
 * Make :class:`~diofant.matrices.expressions.MatrixSymbol` truly atomic, see :pull:`415`.
 * Support rewriting :class:`~diofant.functions.elementary.miscellaneous.Min` and :class:`~diofant.functions.elementary.miscellaneous.Max` as :class:`~diofant.functions.elementary.piecewise.Piecewise`, see :pull:`426`.
-* :func:`~diofant.polys.numberfields.minimal_polynomial` fixed to support generic :class:`~diofant.core.numbers.AlgebraicNumber`'s, see :pull:`433` and :pull:`438`.
-* :class:`~diofant.core.numbers.AlgebraicNumber` now support arithmetic operations, see :pull:`428` and :pull:`485`.
+* :func:`~diofant.polys.numberfields.minimal_polynomial` fixed to support generic ``AlgebraicNumber``'s, see :pull:`433` and :pull:`438`.
+* ``AlgebraicNumber`` now support arithmetic operations, see :pull:`428` and :pull:`485`.
 * Support rewrite :class:`~diofant.polys.rootoftools.RootOf` via radicals, see :pull:`563`.
 * Export set singletons, see :pull:`577`.
 * Correct implementation of the trial method (uses Gröbner bases) in :func:`~diofant.polys.numberfields.primitive_element`, see :pull:`608` and :pull:`609`.

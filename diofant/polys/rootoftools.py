@@ -120,7 +120,7 @@ class RootOf(Expr):
 
         coeff, poly = preprocess_roots(poly, extension=extension)
 
-        if poly.domain.is_Algebraic and extension:
+        if poly.domain.is_AlgebraicField and extension:
             x, y = poly.gen, Dummy('y')
             p = sum(Poly(c.rep, y)*x**n for (n,), c in poly.rep.terms()).inject(x)
             q = poly.domain.minpoly.eval(y)
@@ -311,7 +311,7 @@ class RootOf(Expr):
         complexes = sorted(complexes,
                            key=lambda r: (max(_[0].ax for _ in complexes
                                               if not _[0].is_disjoint(r[0], re_disjoint=True)),
-                                          r[0].ay))
+                                          r[0].ay if r[0].conj else r[0].by))
 
         for root, factor, _ in complexes:
             if factor in cache:
@@ -508,9 +508,9 @@ class RootOf(Expr):
             g = self.poly.gen
             if not g.is_Symbol:
                 d = Dummy('x')
-                func = lambdify(d, self.expr.subs(g, d))
+                func = lambdify(d, self.expr.subs(g, d), "mpmath")
             else:
-                func = lambdify(g, self.expr)
+                func = lambdify(g, self.expr, "mpmath")
 
             try:
                 interval = self.interval

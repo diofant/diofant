@@ -48,7 +48,7 @@ class AssocOp(Expr):
         elif len(args) == 1:
             return args[0]
 
-        return super(AssocOp, cls).__new__(cls, *args)
+        return super().__new__(cls, *args)
 
     def _new_rawargs(self, *args, **kwargs):
         """Create new instance of own class with args exactly as provided by
