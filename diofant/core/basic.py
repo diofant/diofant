@@ -432,25 +432,15 @@ class Basic(object):
                 unordered = True
                 sequence = sequence.items()
             elif not iterable(sequence):
-                from ..utilities.misc import filldedent
-                raise ValueError(filldedent("""
-                   When a single argument is passed to subs
-                   it should be a dictionary of old: new pairs or an iterable
-                   of (old, new) tuples."""))
+                raise ValueError("Expected a mapping or iterable "
+                                 "of (old, new) tuples.")
+            sequence = list(sequence)
         elif len(args) == 2:
             sequence = [args]
         else:
             raise ValueError("subs accepts either 1 or 2 arguments")
 
-        sequence = list(sequence)
-        for i in range(len(sequence)):
-            o, n = sequence[i]
-            so, sn = sympify(o), sympify(n)
-            sequence[i] = (so, sn)
-            if _aresame(so, sn):
-                sequence[i] = None
-                continue
-        sequence = list(filter(None, sequence))
+        sequence = [_ for _ in sympify(sequence) if not _aresame(*_)]
 
         if unordered:
             sequence = dict(sequence)
