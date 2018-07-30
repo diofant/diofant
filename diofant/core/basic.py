@@ -619,7 +619,6 @@ class Basic(object):
         Examples
         ========
 
-        >>> x, y, z = symbols('x y z')
         >>> (1 + x*y).xreplace({x: pi})
         pi*y + 1
         >>> (1 + x*y).xreplace({x: pi, y: 2})
@@ -1235,8 +1234,6 @@ class preorder_traversal:
 
     Examples
     ========
-
-    >>> x, y, z = symbols('x y z')
 
     The nodes are returned in the order that they are encountered unless key
     is given; simply passing key=True will guarantee that the traversal is
