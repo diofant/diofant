@@ -14,7 +14,7 @@ or to install also extra dependencies::
 
 .. tip::
 
-    Use `venv`_ to create isolated Python environment first,
+    Use :mod:`venv` to create isolated Python environment first,
     instead of installing everything system-wide.
 
 .. _installation-src:
@@ -60,5 +60,4 @@ request a feature, please :ref:`open an issue ticket
 <reporting-issues>`.
 
 .. _setuptools: https://setuptools.readthedocs.io/en/latest/
-.. _venv: https://docs.python.org/3/library/venv.html
 .. _IPython: http://ipython.readthedocs.io/en/stable/
