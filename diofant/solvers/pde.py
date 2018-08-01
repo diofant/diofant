@@ -401,7 +401,7 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     >>> assert checkpdesol(eq, sol)[0]
     >>> eq = x*f(x, y) + f(x, y).diff(x)
     >>> checkpdesol(eq, sol)
-    (False, E**(-6*x/25 - 8*y/25)*(x*F(4*x - 3*y) - 6*F(4*x - 3*y)/25 + 4*Subs(Derivative(F(_xi_1), _xi_1), (_xi_1,), (4*x - 3*y,))))
+    (False, E**(-6*x/25 - 8*y/25)*(x*F(4*x - 3*y) - 6*F(4*x - 3*y)/25 + 4*Subs(Derivative(F(_xi_1), _xi_1), (_xi_1, 4*x - 3*y))))
     """
 
     # Converting the pde into an equation
@@ -588,7 +588,7 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
     genterm = (1/(b**2 + c**2))*Integral(
         (1/expterm*e).subs(solvedict), (xi, b*x + c*y))
     return Eq(f(x, y), Subs(expterm*(functerm + genterm),
-                            (eta, xi), (c*x - b*y, b*x + c*y)))
+                            (eta, c*x - b*y), (xi, b*x + c*y)))
 
 
 def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):

@@ -368,7 +368,8 @@ def test_diofant__core__function__Lambda():
 
 
 def test_diofant__core__function__Subs():
-    assert _test_args(Subs(x + y, x, 2))
+    assert _test_args(Subs(x + y, (x, 2)))
+    assert _test_args(Subs(x + y, (x, 2), (y, 1)))
 
 
 def test_diofant__core__function__WildFunction():

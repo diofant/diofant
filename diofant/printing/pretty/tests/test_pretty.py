@@ -187,9 +187,9 @@ Limit(sin(x)/x, x, 0)
 
 SUBS:
 
-Subs(f(x), x, ph**2)
-Subs(f(x).diff(x), x, 0)
-Subs(f(x).diff(x)/y, (x, y), (0, Rational(1, 2)))
+Subs(f(x), (x, ph**2))
+Subs(f(x).diff(x), (x, 0))
+Subs(f(x).diff(x)/y, (x, 0), (y, Rational(1, 2)))
 
 
 ORDER:
@@ -4142,7 +4142,7 @@ n = -∞       \
 
 def test_pretty_Subs():
     f = Function('f')
-    expr = Subs(f(x), x, ph**2)
+    expr = Subs(f(x), (x, ph**2))
     ascii_str = \
         """\
 (f(x))|     2\n\
@@ -4157,7 +4157,7 @@ def test_pretty_Subs():
     assert pretty(expr) == ascii_str
     assert upretty(expr) == unicode_str
 
-    expr = Subs(f(x).diff(x), x, 0)
+    expr = Subs(f(x).diff(x), (x, 0))
     ascii_str = \
         """\
 /d       \\|   \n\
@@ -4174,7 +4174,7 @@ def test_pretty_Subs():
     assert pretty(expr) == ascii_str
     assert upretty(expr) == unicode_str
 
-    expr = Subs(f(x).diff(x)/y, (x, y), (0, Rational(1, 2)))
+    expr = Subs(f(x).diff(x)/y, (x, 0), (y, Rational(1, 2)))
     ascii_str = \
         """\
 /d       \\|          \n\

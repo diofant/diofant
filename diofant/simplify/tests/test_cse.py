@@ -209,21 +209,18 @@ def test_dont_cse_tuples():
     f = Function("f")
     g = Function("g")
 
-    name_val, (expr,) = cse(
-        Subs(f(x, y), (x, y), (0, 1))
-        + Subs(g(x, y), (x, y), (0, 1)))
+    name_val, (expr,) = cse(Subs(f(x, y), (x, 0), (y, 1)) +
+                            Subs(g(x, y), (x, 0), (y, 1)))
 
     assert name_val == []
-    assert expr == (Subs(f(x, y), (x, y), (0, 1))
-                    + Subs(g(x, y), (x, y), (0, 1)))
+    assert expr == (Subs(f(x, y), (x, 0), (y, 1))
+                    + Subs(g(x, y), (x, 0), (y, 1)))
 
-    name_val, (expr,) = cse(
-        Subs(f(x, y), (x, y), (0, x + y))
-        + Subs(g(x, y), (x, y), (0, x + y)))
+    name_val, (expr,) = cse(Subs(f(x, y), (x, 0), (y, x + y)) +
+                            Subs(g(x, y), (x, 0), (y, x + y)))
 
     assert name_val == [(x0, x + y)]
-    assert expr == Subs(f(x, y), (x, y), (0, x0)) + \
-        Subs(g(x, y), (x, y), (0, x0))
+    assert expr == Subs(f(x, y), (x, 0), (y, x0)) + Subs(g(x, y), (x, 0), (y, x0))
 
 
 def test_pow_invpow():

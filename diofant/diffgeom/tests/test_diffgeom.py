@@ -244,7 +244,7 @@ def test_sympyissue_11799():
     d = Symbol('d')
 
     assert (R[0, 1, 0, 1] ==
-            -Subs(Derivative(f(d, x[1]), d, d), (d,), (x[0],))/f(x[0], x[1]) -
-            Subs(Derivative(f(x[0], d), d, d), (d,), (x[1],))/f(x[0], x[1]) +
-            Subs(Derivative(f(d, x[1]), d), (d,), (x[0],))**2/f(x[0], x[1])**2 +
-            Subs(Derivative(f(x[0], d), d), (d,), (x[1],))**2/f(x[0], x[1])**2)
+            -Subs(Derivative(f(d, x[1]), d, d), (d, x[0]))/f(x[0], x[1]) -
+            Subs(Derivative(f(x[0], d), d, d), (d, x[1]))/f(x[0], x[1]) +
+            Subs(Derivative(f(d, x[1]), d), (d, x[0]))**2/f(x[0], x[1])**2 +
+            Subs(Derivative(f(x[0], d), d), (d, x[1]))**2/f(x[0], x[1])**2)
