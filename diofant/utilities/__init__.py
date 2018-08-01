@@ -11,5 +11,3 @@ from .iterables import (flatten, group, take, subsets,  # noqa: F401
 from .misc import filldedent  # noqa: F401
 
 from .lambdify import lambdify  # noqa: F401
-
-from .decorator import public  # noqa: F401

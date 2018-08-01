@@ -1,4 +1,4 @@
-from diofant import Dummy, Rational, Symbol, exp
+from diofant import Rational, Symbol, exp
 
 
 __all__ = ()
@@ -71,19 +71,3 @@ def test_cmp_sympyissue_4357():
     assert (Symbol != 1)
     assert not (Symbol == 'x')
     assert (Symbol != 'x')
-
-
-def test_dummy_eq():
-    x = Symbol('x')
-    y = Symbol('y')
-
-    u = Dummy('u')
-
-    assert (u**2 + 1).dummy_eq(x**2 + 1) is True
-    assert ((u**2 + 1) == (x**2 + 1)) is False
-
-    assert (u**2 + y).dummy_eq(x**2 + y, x) is True
-    assert (u**2 + y).dummy_eq(x**2 + y, y) is False
-
-    assert (x**2).dummy_eq(x**2 + 1) is False
-    assert u.dummy_eq(1) is False

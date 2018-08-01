@@ -142,50 +142,6 @@ class Basic(object):
 
         return self._hashable_content() == other._hashable_content()
 
-    def dummy_eq(self, other, symbol=None):
-        """
-        Compare two expressions and handle dummy symbols.
-
-        Examples
-        ========
-
-        >>> u = Dummy('u')
-
-        >>> (u**2 + 1).dummy_eq(x**2 + 1)
-        True
-        >>> (u**2 + 1) == (x**2 + 1)
-        False
-
-        >>> (u**2 + y).dummy_eq(x**2 + y, x)
-        True
-        >>> (u**2 + y).dummy_eq(x**2 + y, y)
-        False
-        """
-        other = sympify(other)
-        dummy_symbols = [s for s in self.free_symbols if s.is_Dummy]
-
-        if not dummy_symbols:
-            return self == other
-        elif len(dummy_symbols) == 1:
-            dummy = dummy_symbols.pop()
-        else:  # pragma: no cover
-            raise NotImplementedError(
-                "only one dummy symbol allowed on the left-hand side")
-
-        if symbol is None:
-            symbols = other.free_symbols
-
-            if not symbols:
-                return self == other
-            elif len(symbols) == 1:
-                symbol = symbols.pop()
-            else:  # pragma: no cover
-                raise NotImplementedError(
-                    "specify a symbol in which expressions should be compared")
-
-        tmp = dummy.__class__()
-        return self.subs(dummy, tmp) == other.subs(symbol, tmp)
-
     # Note, we always use the default ordering (lex) in __str__ and __repr__,
     # regardless of the global setting.  See issue sympy/sympy#5487.
     def __repr__(self):
@@ -476,25 +432,15 @@ class Basic(object):
                 unordered = True
                 sequence = sequence.items()
             elif not iterable(sequence):
-                from ..utilities.misc import filldedent
-                raise ValueError(filldedent("""
-                   When a single argument is passed to subs
-                   it should be a dictionary of old: new pairs or an iterable
-                   of (old, new) tuples."""))
+                raise ValueError("Expected a mapping or iterable "
+                                 "of (old, new) tuples.")
+            sequence = list(sequence)
         elif len(args) == 2:
             sequence = [args]
         else:
             raise ValueError("subs accepts either 1 or 2 arguments")
 
-        sequence = list(sequence)
-        for i in range(len(sequence)):
-            o, n = sequence[i]
-            so, sn = sympify(o), sympify(n)
-            sequence[i] = (so, sn)
-            if _aresame(so, sn):
-                sequence[i] = None
-                continue
-        sequence = list(filter(None, sequence))
+        sequence = [_ for _ in sympify(sequence) if not _aresame(*_)]
 
         if unordered:
             sequence = dict(sequence)
@@ -673,7 +619,6 @@ class Basic(object):
         Examples
         ========
 
-        >>> x, y, z = symbols('x y z')
         >>> (1 + x*y).xreplace({x: pi})
         pi*y + 1
         >>> (1 + x*y).xreplace({x: pi, y: 2})
@@ -1289,8 +1234,6 @@ class preorder_traversal:
 
     Examples
     ========
-
-    >>> x, y, z = symbols('x y z')
 
     The nodes are returned in the order that they are encountered unless key
     is given; simply passing key=True will guarantee that the traversal is
