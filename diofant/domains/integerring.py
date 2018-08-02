@@ -85,9 +85,6 @@ class PythonIntegerRing(IntegerRing):
     zero = dtype(0)
     one = dtype(1)
 
-    def __init__(self):
-        """Allow instantiation of this domain. """
-
     def gcdex(self, a, b):
         """Compute extended GCD of ``a`` and ``b``. """
         return python_gcdex(a, b)
@@ -115,9 +112,6 @@ class GMPYIntegerRing(IntegerRing):
     dtype = GMPYInteger
     zero = dtype(0)
     one = dtype(1)
-
-    def __init__(self):
-        """Allow instantiation of this domain. """
 
     def gcdex(self, a, b):
         """Compute extended GCD of ``a`` and ``b``. """
