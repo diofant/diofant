@@ -2798,8 +2798,8 @@ try:
     def sympify_mpq(x):
         return Rational(int(x.numerator), int(x.denominator))
 
-    converter[type(gmpy.mpz(1))] = sympify_mpz
-    converter[type(gmpy.mpq(1, 2))] = sympify_mpq
+    converter[gmpy.mpz] = sympify_mpz
+    converter[gmpy.mpq] = sympify_mpq
 except ImportError:
     pass
 
