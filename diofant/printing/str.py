@@ -477,23 +477,7 @@ class StrPrinter(Printer):
     def _print_Integer(self, expr):
         return str(expr.numerator)
 
-    def _print_int(self, expr):
-        return str(expr)
-
-    def _print_mpz(self, expr):
-        return str(expr)
-
     def _print_Rational(self, expr):
-        return "%s/%s" % (expr.numerator, expr.denominator)
-
-    def _print_Fraction(self, expr):
-        if expr.denominator == 1:
-            return str(expr.numerator)
-        else:
-            return "%s/%s" % (expr.numerator, expr.denominator)
-    _print_PythonRational = _print_Fraction
-
-    def _print_mpq(self, expr):
         if expr.denominator == 1:
             return str(expr.numerator)
         else:
