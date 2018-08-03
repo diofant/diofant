@@ -59,6 +59,7 @@ Developer changes
 =================
 
 * Removed cachetools dependence, see :pull:`647`.
+* Depend on `pylint <https://pylint.readthedocs.io/en/latest/>`_, see :pull:`668`.
 
 Issues closed
 =============

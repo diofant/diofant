@@ -53,7 +53,11 @@ All work should be submitted via `Pull Requests (PR)`_.
 
        $ python setup.py test
 
-7. If your change affects documentation, please build it by::
+7. Please also check for potential flaws in your Python code with::
+
+       $ pylint diofant
+
+8. If your change affects documentation, please build it by::
 
        $ python setup.py build_sphinx -W
 
