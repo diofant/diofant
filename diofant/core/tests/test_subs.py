@@ -190,7 +190,7 @@ def test_mul():
     assert (x*y/z).subs(x, 1/a) == y/(z*a)
     assert (2*x*y).subs(5*x*y, z) != 2*z/5
     assert (x*y*A).subs(x*y, a) == a*A
-    assert Subs(x*y*A, x*y, a).is_commutative is False
+    assert Subs(x*y*A, (x*y, a)).is_commutative is False
     assert (x**2*y**(3*x/2)).subs(x*y**(x/2), 2) == 4*y**(x/2)
     assert (x*exp(x*2)).subs(x*exp(x), 2) == 2*exp(x)
     assert ((x**(2*y))**3).subs(x**y, 2) == 64
@@ -198,7 +198,7 @@ def test_mul():
     assert (x*y*(1 + x)*(1 + x*y)).subs(x*y, 2) == 6*(1 + x)
     assert ((1 + A*B)*A*B).subs(A*B, x*A*B)
     assert (x*a/z).subs(x/z, A) == a*A
-    assert Subs(x*a/z, x/z, A).is_commutative is False
+    assert Subs(x*a/z, (x/z, A)).is_commutative is False
     assert (x**3*A).subs(x**2*A, a) == a*x
     assert (x**2*A*B).subs(x**2*B, a) == a*A
     assert (x**2*A*B).subs(x**2*A, a) == a*B
@@ -557,7 +557,7 @@ def test_simultaneous_subs():
     assert (x/y).subs(reps, simultaneous=True) == \
         (y/x).subs(reps, simultaneous=True)
     assert Derivative(x, y, z).subs(reps, simultaneous=True) == \
-        Subs(Derivative(0, y, z), (y,), (0,))
+        Subs(Derivative(0, y, z), (y, 0))
 
 
 def test_sympyissue_6419_6421():
@@ -681,12 +681,12 @@ def test_sympyissue_11746():
 
 def test_diofantissue_376():
     f = symbols('f', cls=Function)
-    e1 = Subs(Derivative(f(x), x), x, y*z)
-    e2 = Subs(Derivative(f(t), t), t, y*z)
+    e1 = Subs(Derivative(f(x), x), (x, y*z))
+    e2 = Subs(Derivative(f(t), t), (t, y*z))
     assert (x*e1).subs(e2, y) == x*y
-    e3 = Subs(Derivative(f(t), t), t, y*z**2)
+    e3 = Subs(Derivative(f(t), t), (t, y*z**2))
     assert e3.subs(e2, y) == e3
-    e4 = Subs(Derivative(f(t), t, t), t, y*z)
+    e4 = Subs(Derivative(f(t), t, t), (t, y*z))
     assert e4.subs(e2, y) == e4
 
 
@@ -698,5 +698,5 @@ def test_aresame_ordering():
 
 def test_underscores():
     _0, _1 = symbols('_0 _1')
-    e = Subs(_0 + _1, (_0, _1), (1, 0))
+    e = Subs(_0 + _1, (_0, 1), (_1, 0))
     assert e._expr == Symbol('__0') + Symbol('__1')

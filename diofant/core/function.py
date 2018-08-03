@@ -592,7 +592,7 @@ class Function(Application, Expr):
         new_args = [arg for arg in self.args]
         new_args[argindex-1] = arg_dummy
         return Subs(Derivative(self.func(*new_args), arg_dummy),
-                    arg_dummy, self.args[argindex - 1])
+                    (arg_dummy, self.args[argindex - 1]))
 
     def _eval_as_leading_term(self, x):
         """Stub that should be overridden by new Functions to return
@@ -844,11 +844,9 @@ class Derivative(Expr):
     Subs objects::
 
         >>> f(2*g(x)).diff(x)
-        2*Derivative(g(x), x)*Subs(Derivative(f(_xi_1), _xi_1),
-                                              (_xi_1,), (2*g(x),))
+        2*Derivative(g(x), x)*Subs(Derivative(f(_xi_1), _xi_1), (_xi_1, 2*g(x)))
         >>> f(g(x)).diff(x)
-        Derivative(g(x), x)*Subs(Derivative(f(_xi_1), _xi_1),
-                                            (_xi_1,), (g(x),))
+        Derivative(g(x), x)*Subs(Derivative(f(_xi_1), _xi_1), (_xi_1, g(x)))
 
     Finally, note that, to be consistent with variational calculus, and to
     ensure that the definition of substituting a Function for a Symbol in an
@@ -886,8 +884,7 @@ class Derivative(Expr):
         >>> Derivative(f(x)**2, f(x), evaluate=True)
         2*f(x)
         >>> Derivative(f(g(x)), x, evaluate=True)
-        Derivative(g(x), x)*Subs(Derivative(f(_xi_1), _xi_1),
-                                            (_xi_1,), (g(x),))
+        Derivative(g(x), x)*Subs(Derivative(f(_xi_1), _xi_1), (_xi_1, g(x)))
     """
 
     is_Derivative = True
@@ -1035,7 +1032,7 @@ class Derivative(Expr):
                         if obj.is_Derivative and not old_v.is_Symbol:
                             # Derivative evaluated at a generic point, i.e.
                             # that is not a symbol.
-                            obj = Subs(obj, v, old_v)
+                            obj = Subs(obj, (v, old_v))
                         else:
                             obj = obj.xreplace({v: old_v})
                     v = old_v
@@ -1210,7 +1207,7 @@ class Derivative(Expr):
     def _eval_subs(self, old, new):
         if old in self.variables and not new._diff_wrt:
             # issue sympy/sympy#4719
-            return Subs(self, old, new)
+            return Subs(self, (old, new))
         # If both are Derivatives with the same expr, check if old is
         # equivalent to self or if old is a subderivative of self.
         if old.is_Derivative and old.expr == self.expr:
@@ -1370,36 +1367,32 @@ class Subs(Expr):
 
     A simple example:
 
-    >>> e = Subs(f(x).diff(x), x, y)
+    >>> e = Subs(f(x).diff(x), (x, y))
     >>> e.subs(y, 0)
-    Subs(Derivative(f(x), x), (x,), (0,))
+    Subs(Derivative(f(x), x), (x, 0))
     >>> e.subs(f, sin).doit()
     cos(y)
 
     An example with several variables:
 
-    >>> Subs(f(x)*sin(y) + z, (x, y), (0, 1))
-    Subs(z + f(x)*sin(y), (x, y), (0, 1))
+    >>> Subs(f(x)*sin(y) + z, (x, 0), (y, 1))
+    Subs(z + f(x)*sin(y), (x, 0), (y, 1))
     >>> _.doit()
     z + f(0)*sin(1)
     """
 
-    def __new__(cls, expr, variables, point, **assumptions):
+    def __new__(cls, expr, *args, **assumptions):
         from .symbol import Symbol
-        if not is_sequence(variables, Tuple):
-            variables = [variables]
-        variables = list(sympify(variables))
+        args = sympify(args)
+        if len(args) and all(is_sequence(_) and len(_) == 2 for _ in args):
+            variables, point = zip(*args)
+        else:
+            raise ValueError("Subs support two or more arguments")
 
-        if list(uniq(variables)) != variables:
+        if tuple(uniq(variables)) != variables:
             repeated = [ v for v in set(variables) if variables.count(v) > 1 ]
             raise ValueError('cannot substitute expressions %s more than '
                              'once.' % repeated)
-
-        point = Tuple(*(point if is_sequence(point, Tuple) else [point]))
-
-        if len(point) != len(variables):
-            raise ValueError('Number of point values must be the same as '
-                             'the number of variables.')
 
         expr = sympify(expr)
 
@@ -1423,7 +1416,7 @@ class Subs(Expr):
                     for v, p in zip(variables, point)]
             # if any underscore-preppended symbol is already a free symbol
             # and is a variable with a different point value, then there
-            # is a clash, e.g. _0 clashes in Subs(_0 + _1, (_0, _1), (1, 0))
+            # is a clash, e.g. _0 clashes in Subs(_0 + _1, (_0, 1), (_1, 0))
             # because the new symbol that would be created is _1 but _1
             # is already mapped to 0 so __0 and __1 are used for the new
             # symbols
@@ -1435,7 +1428,7 @@ class Subs(Expr):
                 continue
             break
 
-        obj = Expr.__new__(cls, expr, Tuple(*variables), point)
+        obj = Expr.__new__(cls, expr, *sympify(tuple(zip(variables, point))))
         obj._expr = expr.subs(reps)
         return obj
 
@@ -1469,7 +1462,7 @@ class Subs(Expr):
     @property
     def variables(self):
         """The variables to be evaluated"""
-        return self.args[1]
+        return Tuple(*tuple(zip(*self.args[1:])))[0]
 
     @property
     def expr(self):
@@ -1479,7 +1472,7 @@ class Subs(Expr):
     @property
     def point(self):
         """The values for which the variables are to be substituted"""
-        return self.args[2]
+        return Tuple(*tuple(zip(*self.args[1:])))[1]
 
     @property
     def free_symbols(self):
@@ -1513,11 +1506,9 @@ class Subs(Expr):
                 return new
 
     def _eval_derivative(self, s):
-        return Add((self.func(self.expr.diff(s),
-                              self.variables, self.point).doit()
+        return Add((self.func(self.expr.diff(s), *self.args[1:]).doit()
                     if s not in self.variables else S.Zero),
-                   *[p.diff(s)*self.func(self.expr.diff(v),
-                                         self.variables, self.point).doit()
+                   *[p.diff(s)*self.func(self.expr.diff(v), *self.args[1:]).doit()
                      for v, p in zip(self.variables, self.point)])
 
 

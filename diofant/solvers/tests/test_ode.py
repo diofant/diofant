@@ -1015,8 +1015,8 @@ def test_solve_init():
              f(L).diff(L, 3): 0}
     init2 = {f(0): 0,
              f(x).diff(x).subs(x, 0): 0,
-             Subs(f(x).diff(x, 2), x, L): 0,
-             Subs(f(x).diff(x, 3), x, L): 0}
+             Subs(f(x).diff(x, 2), (x, L)): 0,
+             Subs(f(x).diff(x, 3), (x, L)): 0}
 
     solved_constants1 = solve_init(sols, funcs, constants, init1)
     solved_constants2 = solve_init(sols, funcs, constants, init2)
@@ -2807,7 +2807,7 @@ def test_sympyissue_11290():
     assert (str(s1) ==
             "Eq(Subs(Integral(-x*sin(_y) + _y**2 "
             "- Integral(-sin(_y), x), _y) + "
-            "Integral(cos(_y), x), (_y,), (f(x),)), C1)")
+            "Integral(cos(_y), x), (_y, f(x))), C1)")
     assert s1.doit() == s0
 
 

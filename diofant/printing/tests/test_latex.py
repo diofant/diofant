@@ -525,9 +525,9 @@ def test_latex_derivatives():
 
 
 def test_latex_subs():
-    assert latex(Subs(x, x, 1)) == r'\left. x \right|_{\substack{ x=1 }}'
-    assert latex(Subs(x*y, (
-        x, y), (1, 2))) == r'\left. x y \right|_{\substack{ x=1\\ y=2 }}'
+    assert latex(Subs(x, (x, 1))) == r'\left. x \right|_{\substack{ x=1 }}'
+    assert latex(Subs(x*y, (x, 1),
+                      (y, 2))) == r'\left. x y \right|_{\substack{ x=1\\ y=2 }}'
 
 
 def test_latex_integrals():

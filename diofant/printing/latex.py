@@ -530,7 +530,7 @@ class LatexPrinter(Printer):
             return r"%s %s" % (tex, self._print(expr.expr))
 
     def _print_Subs(self, subs):
-        expr, old, new = subs.args
+        expr, old, new = subs.expr, subs.variables, subs.point
         latex_expr = self._print(expr)
         latex_old = (self._print(e) for e in old)
         latex_new = (self._print(e) for e in new)  # pragma: no branch
