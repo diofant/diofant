@@ -52,8 +52,8 @@ class Relational(Boolean, Expr, EvalfMixin):
         # If called directly with an operator, look up the subclass
         # corresponding to that operator and delegate to it
         try:
-            cls = cls.ValidRelationOperator[rop]
-            return cls(lhs, rhs, **assumptions)
+            new_cls = cls.ValidRelationOperator[rop]
+            return new_cls(lhs, rhs, **assumptions)
         except KeyError:
             raise ValueError("Invalid relational operator symbol: %r" % rop)
 

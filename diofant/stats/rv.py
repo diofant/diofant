@@ -259,14 +259,15 @@ class ProductPSpace(PSpace):
         if len(symbols) < sum(len(space.symbols) for space in spaces):
             raise ValueError("Overlapping Random Variables")
 
+        new_cls = cls
         if all(space.is_Finite for space in spaces):
             from .frv import ProductFinitePSpace
-            cls = ProductFinitePSpace
+            new_cls = ProductFinitePSpace
         if all(space.is_Continuous for space in spaces):
             from .crv import ProductContinuousPSpace
-            cls = ProductContinuousPSpace
+            new_cls = ProductContinuousPSpace
 
-        obj = Expr.__new__(cls, *FiniteSet(*spaces))
+        obj = Expr.__new__(new_cls, *FiniteSet(*spaces))
 
         return obj
 
@@ -333,14 +334,15 @@ class ProductDomain(RandomDomain):
                 domains2.extend(domain.domains)
         domains2 = FiniteSet(*domains2)
 
+        new_cls = cls
         if all(domain.is_Finite for domain in domains2):
             from .frv import ProductFiniteDomain
-            cls = ProductFiniteDomain
+            new_cls = ProductFiniteDomain
         if all(domain.is_Continuous for domain in domains2):
             from .crv import ProductContinuousDomain
-            cls = ProductContinuousDomain
+            new_cls = ProductContinuousDomain
 
-        return Expr.__new__(cls, *domains2)
+        return Expr.__new__(new_cls, *domains2)
 
     @property
     def symbols(self):
