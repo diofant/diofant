@@ -10,7 +10,7 @@ from .singleton import S
 from .sympify import SympifyError, sympify
 
 
-class Basic(object):
+class Basic:
     """
     Base class for all objects in Diofant.
 
