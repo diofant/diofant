@@ -105,9 +105,6 @@ class DenseNDimArray(NDimArray):
 
 
 class ImmutableDenseNDimArray(DenseNDimArray, ImmutableNDimArray):
-    """
-
-    """
 
     def __new__(cls, *args, **kwargs):
         return cls._new(*args, **kwargs)
