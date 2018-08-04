@@ -4,8 +4,8 @@ import pytest
 
 from diofant import (Add, GoldenRatio, I, Integer, PurePoly, Rational, cbrt,
                      conjugate, cos, exp, exp_polar, expand,
-                     expand_multinomial, nsimplify, oo, pi, root, sin, solve,
-                     sqrt)
+                     expand_multinomial, im, nsimplify, oo, pi, re, root, sin,
+                     solve, sqrt)
 from diofant.abc import x, y, z
 from diofant.domains import QQ
 from diofant.polys.numberfields import (field_isomorphism,
@@ -199,6 +199,17 @@ def test_minimal_polynomial_conjugate():
         assert (minimal_polynomial((e + ec)/2, method=meth)(x) ==
                 4096*x**16 - 16384*x**14 + 20480*x**12 - 12288*x**10 -
                 1152*x**8 + 3328*x**6 - 1600*x**4 + 64*x**2 + 1)
+
+
+def test_diofantissue_662():
+    e1 = abs(sqrt(1 + sqrt(2 + I)))
+    e2 = re(sqrt(I), evaluate=False)
+    e3 = im(sqrt(I), evaluate=False)
+    for meth in ('compose', 'groebner'):
+        assert (minimal_polynomial(e1, method=meth)(x) ==
+                x**16 - 4*x**12 - 12*x**8 - 8*x**4 + 4)
+        assert minimal_polynomial(e2, method=meth)(x) == 2*x**2 - 1
+        assert minimal_polynomial(e3, method=meth)(x) == 2*x**2 - 1
 
 
 def test_minimal_polynomial_sq():

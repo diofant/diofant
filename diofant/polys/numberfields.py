@@ -9,7 +9,7 @@ from ..core import (Add, Dummy, E, GoldenRatio, I, Mul, Rational, S, pi, prod,
 from ..core.exprtools import Factors
 from ..core.function import _mexpand, count_ops
 from ..domains import QQ, ZZ, AlgebraicField
-from ..functions import conjugate, cos, exp_polar, root, sin, sqrt
+from ..functions import Abs, conjugate, cos, exp_polar, im, re, root, sin, sqrt
 from ..ntheory import divisors, sieve
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
@@ -514,6 +514,12 @@ def _minpoly_compose(ex, x, dom):
         res = _minpoly_rootof(ex, x)
     elif isinstance(ex, conjugate):
         res = _minpoly_compose(ex.args[0], x, dom)
+    elif isinstance(ex, Abs):
+        res = _minpoly_compose(sqrt(ex.args[0]*ex.args[0].conjugate()), x, dom)
+    elif isinstance(ex, re):
+        res = _minpoly_compose((ex.args[0] + ex.args[0].conjugate())/2, x, dom)
+    elif isinstance(ex, im):
+        res = _minpoly_compose((ex.args[0] - ex.args[0].conjugate())/2/I, x, dom)
     else:
         raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
     return res
@@ -638,6 +644,12 @@ def minpoly_groebner(ex, x, domain):
         elif isinstance(ex, conjugate):
             return update_mapping(ex, minimal_polynomial(ex.args[0], domain=domain,
                                                          method='groebner'))
+        elif isinstance(ex, Abs):
+            return bottom_up_scan(sqrt(ex.args[0]*ex.args[0].conjugate()))
+        elif isinstance(ex, re):
+            return bottom_up_scan((ex.args[0] + ex.args[0].conjugate())/2)
+        elif isinstance(ex, im):
+            return bottom_up_scan((ex.args[0] - ex.args[0].conjugate())/2/I)
 
         raise NotAlgebraic("%s doesn't seem to be an algebraic number" % ex)
 

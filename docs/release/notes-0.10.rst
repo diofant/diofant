@@ -53,7 +53,7 @@ Minor changes
 * Added argument ``method`` for :func:`~diofant.polys.numberfields.minimal_polynomial` and ``MINPOLY_METHOD`` configuration option to select default algorithm, see :pull:`624`.
 * Support derivatives of :class:`~diofant.polys.rootoftools.RootOf` instances, see :pull:`624`.
 * :func:`~diofant.polys.numberfields.primitive_element` now return an algebraic integer and support algebraic fields, see :pull:`643`, :pull:`655` and :pull:`659`.
-* Support :class:`~diofant.functions.elementary.complexes.conjugate` in :func:`~diofant.polys.numberfields.minimal_polynomial`, see :pull:`661`.
+* Support :class:`~diofant.functions.elementary.complexes.conjugate`, :class:`~diofant.functions.elementary.complexes.Abs`, :class:`~diofant.functions.elementary.complexes.re` and :class:`~diofant.functions.elementary.complexes.im` in :func:`~diofant.polys.numberfields.minimal_polynomial`, see :pull:`661` and :pull:`668`.
 
 Developer changes
 =================
