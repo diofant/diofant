@@ -162,14 +162,6 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         """Returns True if ``a`` is negative. """
         return self.domain.is_negative(a.LC())
 
-    def is_nonpositive(self, a):
-        """Returns True if ``a`` is non-positive. """
-        return self.domain.is_nonpositive(a.LC())
-
-    def is_nonnegative(self, a):
-        """Returns True if ``a`` is non-negative. """
-        return self.domain.is_nonnegative(a.LC())
-
     @staticmethod
     def _compute_ext_root(ext, minpoly):
         from ..polys import minimal_polynomial
@@ -190,6 +182,14 @@ class RealAlgebraicField(AlgebraicField):
     """A class for representing real algebraic number fields. """
 
     is_RealAlgebraicField = True
+
+    def is_positive(self, a):
+        """Returns True if ``a`` is positive. """
+        return a > 0
+
+    def is_negative(self, a):
+        """Returns True if ``a`` is negative. """
+        return a < 0
 
 
 class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
