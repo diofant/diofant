@@ -844,6 +844,9 @@ def test_AlgebraicElement():
     pytest.raises(TypeError, lambda: A.unit > x)
     pytest.raises(TypeError, lambda: QQ.algebraic_field(I).unit > 0)
 
+    assert abs(+A.unit) == A.unit
+    assert abs(-A.unit) == A.unit
+
     a = A([QQ(2), QQ(-1), QQ(1)])
     b = A([QQ(1), QQ(2)])
 

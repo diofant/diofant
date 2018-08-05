@@ -343,6 +343,9 @@ class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
 class RealAlgebraicElement(AlgebraicElement):
     """Elements of real algebraic numbers field. """
 
+    def __abs__(self):
+        return self if self >= 0 else -self
+
     def _cmp(self, other, op):
         from ..polys.rootisolation import dup_count_real_roots
 
