@@ -10,7 +10,7 @@ from diofant.domains.complexfield import ComplexField
 from diofant.domains.domainelement import DomainElement
 from diofant.domains.groundtypes import PythonRational
 from diofant.domains.realfield import RealField
-from diofant.polys import RootOf, field, ring
+from diofant.polys import RootOf, field, ring, roots
 from diofant.polys.polyerrors import (CoercionFailed, DomainError,
                                       GeneratorsError, GeneratorsNeeded,
                                       NotInvertible, UnificationFailed)
@@ -684,11 +684,14 @@ def test_Domain__algebraic_field():
 
     assert alg.characteristic == 0
 
+    assert alg.is_RealAlgebraicField is True
+
     assert int(alg(2)) == 2
     pytest.raises(TypeError, lambda: int(alg([1, 1])))
 
     alg = QQ.algebraic_field(I)
     assert alg.algebraic_field(I) == alg
+    assert alg.is_RealAlgebraicField is False
 
     alg = QQ.algebraic_field(sqrt(2)).algebraic_field(sqrt(3))
     assert alg.minpoly == Poly(x**2 - 3, x, domain=QQ.algebraic_field(sqrt(2)))
@@ -701,6 +704,11 @@ def test_Domain__algebraic_field():
                                                   alg.domain(2*sqrt(2))])
     alg2 = QQ.algebraic_field(sqrt(2))
     assert alg2.from_expr(sqrt(2)) == alg2.convert(alg.from_expr(sqrt(2)))
+
+    eq = -x**3 + 2*x**2 + 3*x - 2
+    rs = roots(eq, multiple=True)
+    alg = QQ.algebraic_field(rs[0])
+    assert alg.ext_root == RootOf(eq, 2)
 
 
 def test_PolynomialRing_from_FractionField():
@@ -828,6 +836,13 @@ def test_AlgebraicElement():
     assert a.rep == [-1, 1]
 
     A = QQ.algebraic_field(root(2, 3))
+
+    assert A.unit > 0
+    assert A.unit >= 0
+    assert (A.unit < 0) is False
+    assert (A.unit <= 0) is False
+    pytest.raises(TypeError, lambda: A.unit > x)
+    pytest.raises(TypeError, lambda: QQ.algebraic_field(I).unit > 0)
 
     a = A([QQ(2), QQ(-1), QQ(1)])
     b = A([QQ(1), QQ(2)])
