@@ -4,7 +4,7 @@ from diofant import (Abs, Derivative, Dummy, E, Ei, Eq, Function, I, Integer,
                      Integral, LambertW, Mul, O, Piecewise, Poly, Pow,
                      Rational, RootOf, Subs, Symbol, acos, acosh, asin, asinh,
                      atan, cbrt, cos, diff, dsolve, erf, erfi, exp, log, pi,
-                     root, simplify, sin, sinh, sqrt, sstr, symbols, tan)
+                     root, sec, simplify, sin, sinh, sqrt, sstr, symbols, tan)
 from diofant.abc import A
 from diofant.solvers.deutils import ode_order
 from diofant.solvers.ode import (_linear_coeff_match,
@@ -2833,3 +2833,11 @@ def test_sympyissue_10867():
     v = Eq(g(x).diff(x).diff(x), (x-2)**2 + (x-3)**3)
     ans = Eq(g(x), C1 + C2*x + x**5/20 - 2*x**4/3 + 23*x**3/6 - 23*x**2/2)
     assert dsolve(v, g(x)) == ans
+
+
+def test_diofantissue_281():
+    # test from sympy/sympy#11131
+    ex = -8*cos(x) + sec(x)**2
+    eq = diff(f(x), x, x) + ex
+    assert dsolve(eq) == Eq(f(x),
+                            C1 + x*(C2 - Integral(ex, x)) + Integral(x*ex, x))

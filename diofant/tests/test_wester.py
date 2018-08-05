@@ -2475,6 +2475,7 @@ def test_Z4():
 def test_Z5():
     eq = Derivative(f(x), x, 2) + 4*f(x) - sin(2*x)
     sol = dsolve(eq, f(x), init={f(0): 0, f(x).diff(x).subs(x, 0): 0})
+    sol = sol.doit().simplify()
     assert solve(sol, f(x))[0][f(x)] == -x*cos(2*x)/4 + sin(2*x)/8
 
 
