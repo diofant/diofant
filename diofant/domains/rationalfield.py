@@ -74,9 +74,6 @@ class PythonRationalField(RationalField):
     zero = dtype(0)
     one = dtype(1)
 
-    def __init__(self):
-        pass
-
     @property
     def ring(self):
         """Returns ring associated with ``self``. """
@@ -94,9 +91,6 @@ class GMPYRationalField(RationalField):
     dtype = GMPYRational
     zero = dtype(0)
     one = dtype(1)
-
-    def __init__(self):
-        pass
 
     @property
     def ring(self):

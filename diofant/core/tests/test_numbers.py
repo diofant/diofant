@@ -1574,7 +1574,7 @@ def test_sympyissue_13081():
 
 
 def test_comparisons_with_unknown_type():
-    class Foo(object):
+    class Foo:
         """
         Class that is unaware of Basic, and relies on both classes returning
         the NotImplemented singleton for equivalence to evaluate to False, and
@@ -1598,7 +1598,7 @@ def test_comparisons_with_unknown_type():
         pytest.raises(TypeError, lambda: n >= foo)
         pytest.raises(TypeError, lambda: foo <= n)
 
-    class Bar(object):
+    class Bar:
         """
         Class that considers itself greater than any instance of Number except
         Infinity, and relies on the NotImplemented singleton for symmetric

@@ -238,10 +238,6 @@ class MpmathPrinter(LambdaPrinter):
         else:  # pragma: no cover
             raise NotImplementedError
 
-    def _print_mpq(self, expr):
-        return "mp.mpq(%s, %s)" % (self._print(expr.numerator),
-                                   self._print(expr.denominator))
-
     def _print_Sum(self, expr):
         return "nsum(lambda %s: %s, %s)" % (",".join([self._print(v) for v in expr.variables]),
                                             self._print(expr.function),

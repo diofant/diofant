@@ -131,9 +131,6 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
     has_assoc_Ring = False
     has_assoc_Field = True
 
-    def __init__(self):
-        pass
-
     def to_expr(self, a):
         """Convert ``a`` to a Diofant object. """
         return a.as_expr()

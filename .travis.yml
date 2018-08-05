@@ -45,6 +45,7 @@ matrix:
         - travis_wait pip install .[exports,plot,interactive,develop,docs]
       script:
         - python setup.py flake8
+        - pylint diofant
         - python setup.py build_sphinx -W -b html
         - |
           if [ "${TRAVIS_EVENT_TYPE}" = "cron" ]; then

@@ -280,15 +280,3 @@ class Domain(DefaultPrinting, abc.ABC):
     def is_nonnegative(self, a):
         """Returns True if ``a`` is non-negative. """
         return a >= 0
-
-    def half_gcdex(self, a, b):
-        """Half extended GCD of ``a`` and ``b``. """
-        s, t, h = self.gcdex(a, b)
-        return s, h
-
-    def cofactors(self, a, b):
-        """Returns GCD and cofactors of ``a`` and ``b``. """
-        gcd = self.gcd(a, b)
-        cfa = self.quo(a, gcd)
-        cfb = self.quo(b, gcd)
-        return gcd, cfa, cfb

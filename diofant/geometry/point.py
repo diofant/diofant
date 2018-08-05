@@ -98,11 +98,11 @@ class Point(GeometryEntity):
     def is_concyclic(*args):
         # Coincident points are irrelevant and can confuse this algorithm.
         # Use only unique points.
-        args = list(set(args))
-        if not all(isinstance(p, Point) for p in args):
+        uniq_args = list(set(args))
+        if not all(isinstance(p, Point) for p in uniq_args):
             raise TypeError('Must pass only Point objects')
 
-        return args[0].is_concyclic(*args[1:])
+        return uniq_args[0].is_concyclic(*uniq_args[1:])
 
     def is_collinear(*args):
         """Is a sequence of points collinear?
@@ -159,17 +159,17 @@ class Point(GeometryEntity):
         """
 
         # Coincident points are irrelevant; use only unique points.
-        args = list(set(args))
-        if not all(isinstance(p, Point) for p in args):
+        uniq_args = list(set(args))
+        if not all(isinstance(p, Point) for p in uniq_args):
             raise TypeError('Must pass only Point objects')
 
-        if len(args) == 0:
+        if len(uniq_args) == 0:
             return False
-        if len(args) <= 2:
+        if len(uniq_args) <= 2:
             return True
 
         # translate our points
-        points = [p - args[0] for p in args[1:]]
+        points = [p - uniq_args[0] for p in uniq_args[1:]]
         for p in points[1:]:
             if not Point.is_scalar_multiple(points[0], p):
                 return False
@@ -567,14 +567,14 @@ class Point2D(Point):
             return False
         if len(points) <= 2:
             return True
-        points = [Point(p) for p in points]
-        if len(points) == 3:
-            return not Point.is_collinear(*points)
+        ppoints = [Point(p) for p in points]
+        if len(ppoints) == 3:
+            return not Point.is_collinear(*ppoints)
 
         try:
             from .ellipse import Circle
-            c = Circle(points[0], points[1], points[2])
-            for point in points[3:]:
+            c = Circle(ppoints[0], ppoints[1], ppoints[2])
+            for point in ppoints[3:]:
                 if point not in c:
                     return False
             return True
