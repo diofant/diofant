@@ -361,6 +361,9 @@ def get_numbered_constants(eq, num=1, start=1, prefix='C'):
         raise ValueError("Expected Expr or iterable but got %s" % eq)
 
     atom_set = set().union(*[i.free_symbols for i in eq])
+    functions_set = set().union(*[i.atoms(Function) for i in eq])
+    if functions_set:
+        atom_set |= {Symbol(str(f.func)) for f in functions_set}
     ncs = numbered_symbols(start=start, prefix=prefix, exclude=atom_set)
     Cs = [next(ncs) for i in range(num)]
     return Cs[0] if num == 1 else tuple(Cs)
