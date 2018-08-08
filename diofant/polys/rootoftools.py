@@ -552,7 +552,7 @@ class RootOf(Expr):
                     elif (ax <= root.real <= bx and ay <= root.imag <= by
                           and (interval.ay > 0 or interval.by < 0)):
                         break
-                except ValueError:
+                except (ValueError, UnboundLocalError):
                     pass
                 interval = interval.refine()
 

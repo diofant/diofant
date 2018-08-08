@@ -302,6 +302,9 @@ def test_RootOf_evalf():
     assert RootOf(x**3 + I*x + 2, 0).n(7) == (Float('-1.260785326', dps=7) +
                                               I*Float('0.2684419416', dps=7))
 
+    r = RootOf(x**2 - 4456178*x + 60372201703370, 0, radicals=False)
+    assert r.n(2) == Float('2.2282e+6', dps=2) - I*Float('7.4465e+6', dps=2)
+
 
 def test_RootOf_evalf_caching_bug():
     r = RootOf(x**5 - 5*x + 12, 1)
