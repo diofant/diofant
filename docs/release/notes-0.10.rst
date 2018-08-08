@@ -97,3 +97,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14831` minpoly(-3*sqrt(12*sqrt(2) + 17) + 12*sqrt(2) + 17 -2*sqrt(2)*sqrt(12*sqrt(2) + 17), x) fails
 * :sympyissue:`14476` QQ.algebraic_field(Rational) should be just QQ
 * :sympyissue:`14885` Sympy series gives TypeError on x^(-3/2) * exp(x) at x = 0
+* :sympyissue:`15055` Incorrect limit of n**3*((-n - 1)*sin(1/n) + (n + 2)*sin(1/(n + 1)))/(-n + 1)

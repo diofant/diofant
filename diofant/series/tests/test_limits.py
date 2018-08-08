@@ -626,3 +626,7 @@ def test_sympyissue_14793():
 
 def test_sympyissue_14811():
     assert limit(((1 + Rational(2, 3)**(x + 1))**2**x)/(2**Rational(4, 3)**(x - 1)), x, oo) == oo
+
+
+def test_sympyissue_15055():
+    assert limit(n**3*((-n - 1)*sin(1/n) + (n + 2)*sin(1/(n + 1)))/(-n + 1), n, oo) == 1
