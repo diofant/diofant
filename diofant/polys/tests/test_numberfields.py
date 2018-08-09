@@ -314,6 +314,10 @@ def test_minpoly_compose():
                   2236416*x**12 + 1317888*x**10 - 456192*x**8 +
                   88704*x**6 - 8640*x**4 + 324*x**2 - 3)
 
+    ex = sqrt(2) - RootOf(x**2 - 2, 0, radicals=False)
+    for meth in ('compose', 'groebner'):
+        assert minimal_polynomial(ex, method=meth)(x) == x**2 - 8
+
 
 def test_minpoly_sympyissue_7113():
     # see discussion in https://github.com/sympy/sympy/pull/2234
