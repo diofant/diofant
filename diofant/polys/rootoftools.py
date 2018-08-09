@@ -495,6 +495,16 @@ class RootOf(Expr):
             reals_count = len(_reals_cache[self.poly.rep])
             return _complexes_cache[self.poly.rep][self.index - reals_count]
 
+    def refine(self):
+        """Refine isolation interval for the root. """
+        if self.is_real:
+            root = _reals_cache[self.poly.rep][self.index]
+            _reals_cache[self.poly.rep][self.index] = root.refine()
+        else:
+            reals_count = len(_reals_cache[self.poly.rep])
+            root = _complexes_cache[self.poly.rep][self.index - reals_count]
+            _complexes_cache[self.poly.rep][self.index - reals_count] = root.refine()
+
     def _eval_subs(self, old, new):
         if old in self.free_symbols:
             return self.func(self.poly.subs(old, new), *self.args[1:])
@@ -554,7 +564,8 @@ class RootOf(Expr):
                         break
                 except (ValueError, UnboundLocalError):
                     pass
-                interval = interval.refine()
+                self.refine()
+                interval = self.interval
 
         return (Float._new(root.real._mpf_, prec) +
                 I*Float._new(root.imag._mpf_, prec))
@@ -582,7 +593,8 @@ class RootOf(Expr):
             raise NotImplementedError("eval_rational() only works for real polynomials so far")
         interval = self.interval
         while interval.b - interval.a > tol:
-            interval = interval.refine()
+            self.refine()
+            interval = self.interval
         a = Rational(str(interval.a))
         b = Rational(str(interval.b))
         return (a + b)/2
@@ -611,7 +623,8 @@ class RootOf(Expr):
         need = [True]*2
         # make sure it would be distinct from others
         while any(need):
-            i = i.refine()
+            self.refine()
+            i = self.interval
             a, b = i.a, i.b
             if need[0] and a != was[0]:
                 need[0] = False
