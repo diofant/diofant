@@ -5,12 +5,13 @@ from mpmath.libmp.libmpf import prec_to_dps
 
 from ..core import (Add, Dummy, Expr, Float, I, Integer, Lambda, Rational, S,
                     cacheit, symbols, sympify)
+from ..core.compatibility import ordered
 from ..core.evaluate import global_evaluate
 from ..core.function import AppliedUndef
 from ..domains import QQ
 from ..functions import root as _root
 from ..functions import sign
-from ..utilities import lambdify
+from ..utilities import lambdify, sift
 from .polyerrors import (DomainError, GeneratorsNeeded,
                          MultivariatePolynomialError, PolynomialError)
 from .polyfuncs import symmetrize, viete
@@ -180,6 +181,13 @@ class RootOf(Expr):
     def _eval_is_complex(self):
         if all(_.is_complex for _ in self.poly.coeffs()):
             return True
+
+    def _eval_is_imaginary(self):
+        if self.is_real:
+            return False
+        elif self.is_real is False:
+            ivl = self.interval
+            return ivl.ax*ivl.bx <= 0
 
     def _eval_is_algebraic(self):
         if all(_.is_algebraic for _ in self.poly.coeffs()):
@@ -366,6 +374,23 @@ class RootOf(Expr):
         return sum(k for _, _, k in roots)
 
     @classmethod
+    def _refine_imaginaries(cls, complexes):
+        sifted = sift(complexes, lambda c: c[1])
+        complexes = []
+        for f in ordered(sifted):
+            nimag = f.compose(PurePoly(I*f.gen, f.gen)).count_roots()
+            potential_imag = list(range(len(sifted[f])))
+            while len(potential_imag) > nimag:
+                for i in list(potential_imag):
+                    u, f, k = sifted[f][i]
+                    if u.ax*u.bx > 0:
+                        potential_imag.remove(i)
+                    else:
+                        sifted[f][i] = u.refine(), f, k
+            complexes.extend(sifted[f])
+        return complexes
+
+    @classmethod
     def _indexed_root(cls, poly, index):
         """Get a root of a composite polynomial by index. """
         _, factors = poly.factor_list()
@@ -378,6 +403,7 @@ class RootOf(Expr):
             return cls._reals_index(reals, index)
         else:
             complexes = cls._get_complexes(factors)
+            complexes = cls._refine_imaginaries(complexes)
             complexes = cls._complexes_sorted(complexes)
             return cls._complexes_index(complexes, index - reals_count)
 
@@ -416,6 +442,7 @@ class RootOf(Expr):
             roots.append(cls._reals_index(reals, index))
 
         complexes = cls._get_complexes(factors)
+        complexes = cls._refine_imaginaries(complexes)
         complexes = cls._complexes_sorted(complexes)
         complexes_count = cls._count_roots(complexes)
 
@@ -567,7 +594,7 @@ class RootOf(Expr):
                 self.refine()
                 interval = self.interval
 
-        return (Float._new(root.real._mpf_, prec) +
+        return ((Float._new(root.real._mpf_, prec) if not self.is_imaginary else 0) +
                 I*Float._new(root.imag._mpf_, prec))
 
     def eval_rational(self, tol):
