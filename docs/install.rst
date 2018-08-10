@@ -47,7 +47,7 @@ ones below::
 .. tip::
 
     Use `IPython`_ for interactive work.  Please refer to the
-    documentation of module :mod:`diofant.interactive` for details
+    documentation of module :mod:`~diofant.interactive` for details
     of available configuration settings.
 
 For a starter guide on using Diofant, refer to the :ref:`tutorial`.

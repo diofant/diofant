@@ -54,6 +54,7 @@ Minor changes
 * Support derivatives of :class:`~diofant.polys.rootoftools.RootOf` instances, see :pull:`624`.
 * :func:`~diofant.polys.numberfields.primitive_element` now return an algebraic integer and support algebraic fields, see :pull:`643`, :pull:`655` and :pull:`659`.
 * Support :class:`~diofant.functions.elementary.complexes.conjugate`, :class:`~diofant.functions.elementary.complexes.Abs`, :class:`~diofant.functions.elementary.complexes.re` and :class:`~diofant.functions.elementary.complexes.im` in :func:`~diofant.polys.numberfields.minimal_polynomial`, see :pull:`661` and :pull:`668`.
+* :meth:`~diofant.polys.rootoftools.RootOf.refine` method to refine interval for the root, see :pull:`670`.
 
 Developer changes
 =================
@@ -69,7 +70,7 @@ for complete list of issues and pull requests involved in this release.
 
 These Sympy issues also were addressed:
 
-* :sympyissue:`14384` An unspecified power of x is reported to be `O(log(x)**6)`
+* :sympyissue:`14384` An unspecified power of x is reported to be O(log(x)**6)
 * :sympyissue:`14393` Incorrect limit
 * :sympyissue:`14414` Should QQ[x, y, ...] syntax be removed?
 * :sympyissue:`13886` Raise an exception for non-prime p in FiniteFIeld(p)
@@ -97,3 +98,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`14831` minpoly(-3*sqrt(12*sqrt(2) + 17) + 12*sqrt(2) + 17 -2*sqrt(2)*sqrt(12*sqrt(2) + 17), x) fails
 * :sympyissue:`14476` QQ.algebraic_field(Rational) should be just QQ
 * :sympyissue:`14885` Sympy series gives TypeError on x^(-3/2) * exp(x) at x = 0
+* :sympyissue:`15055` Incorrect limit of n**3*((-n - 1)*sin(1/n) + (n + 2)*sin(1/(n + 1)))/(-n + 1)
+* :sympyissue:`15056` dsolve: get_numbered_constants should consider Functions

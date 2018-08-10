@@ -7,7 +7,7 @@ Tutorial
 .. warning::
 
     It assumed that the reader already knows the Python programming language.
-    If you do not, please start from the `official Python tutorial
+    If you do not, please start from the `Python tutorial
     <https://docs.python.org/3/tutorial/>`_.
 
 This tutorial aims to give an introduction to Diofant for someone who has not
