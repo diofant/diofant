@@ -1,13 +1,14 @@
 """Implementation of :class:`AlgebraicField` class. """
 
 import functools
+import operator
 
 from ..core import Integer, sympify
 from ..core.sympify import CantSympify
 from ..polys.densearith import (dmp_neg, dmp_pow, dmp_rem, dup_add, dup_mul,
                                 dup_sub)
 from ..polys.densebasic import dmp_LC, dmp_strip, dmp_to_dict, dmp_to_tuple
-from ..polys.densetools import dmp_compose
+from ..polys.densetools import dmp_compose, dmp_eval
 from ..polys.euclidtools import dup_invert
 from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
 from ..printing.defaults import DefaultPrinting
@@ -46,9 +47,18 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         from ..polys.numberfields import primitive_element
 
         minpoly, coeffs, H = primitive_element(ext, domain=dom)
+        ext = sum(c*e for c, e in zip(coeffs, ext))
 
-        obj = super().__new__(cls)
-        obj.ext = sum(c*e for c, e in zip(coeffs, ext))
+        is_real = ext.is_real
+        if is_real is None:
+            ext_root = cls._compute_ext_root(ext, minpoly)
+            is_real = ext_root.is_real
+        else:
+            ext_root = None
+
+        obj = super().__new__(RealAlgebraicField if is_real else cls)
+        obj.ext = ext
+        obj._ext_root = ext_root
         obj.minpoly = minpoly
         obj.mod = minpoly.rep
         obj.domain = dom
@@ -59,7 +69,8 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         try:
             obj.dtype = _algebraic_numbers_cache[(obj.domain, obj.ext)]
         except KeyError:
-            obj.dtype = type("AlgebraicElement", (AlgebraicElement,), {"_parent": obj})
+            dtype_cls = RealAlgebraicElement if is_real else AlgebraicElement
+            obj.dtype = type(dtype_cls.__name__, (dtype_cls,), {"_parent": obj})
             _algebraic_numbers_cache[(obj.domain, obj.ext)] = obj.dtype
 
         obj.root = sum(obj.dtype(h) for h in H)
@@ -151,13 +162,34 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         """Returns True if ``a`` is negative. """
         return self.domain.is_negative(a.LC())
 
-    def is_nonpositive(self, a):
-        """Returns True if ``a`` is non-positive. """
-        return self.domain.is_nonpositive(a.LC())
+    @staticmethod
+    def _compute_ext_root(ext, minpoly):
+        from ..polys import minimal_polynomial
 
-    def is_nonnegative(self, a):
-        """Returns True if ``a`` is non-negative. """
-        return self.domain.is_nonnegative(a.LC())
+        for r in minpoly.all_roots(radicals=False,  # pragma: no branch
+                                   extension=True):
+            if not minimal_polynomial(ext - r)(0):
+                return r
+
+    @property
+    def ext_root(self):
+        if self._ext_root is None:
+            self._ext_root = self._compute_ext_root(self.ext, self.minpoly)
+        return self._ext_root
+
+
+class RealAlgebraicField(AlgebraicField):
+    """A class for representing real algebraic number fields. """
+
+    is_RealAlgebraicField = True
+
+    def is_positive(self, a):
+        """Returns True if ``a`` is positive. """
+        return a > 0
+
+    def is_negative(self, a):
+        """Returns True if ``a`` is negative. """
+        return a < 0
 
 
 class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
@@ -287,9 +319,6 @@ class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
 
         return self.rep == other.rep
 
-    def __lt__(self, other):
-        return self.rep.__lt__(other.rep)
-
     def __bool__(self):
         return bool(self.rep)
 
@@ -309,3 +338,40 @@ class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
         from . import ZZ
         return self.per(functools.reduce(ZZ.lcm, (ZZ.convert(_.denominator)
                                                   for _ in self.rep), ZZ.one))
+
+
+class RealAlgebraicElement(AlgebraicElement):
+    """Elements of real algebraic numbers field. """
+
+    def __abs__(self):
+        return self if self >= 0 else -self
+
+    def _cmp(self, other, op):
+        from ..polys.rootisolation import dup_count_real_roots
+
+        if not isinstance(other, self.parent.dtype):
+            try:
+                other = self.per(other)
+            except CoercionFailed:
+                return NotImplemented
+
+        diff = self - other
+        while dup_count_real_roots(diff.rep, self.domain,
+                                   inf=self.parent.ext_root.interval.a,
+                                   sup=self.parent.ext_root.interval.b):
+            self.parent.ext_root.refine()
+        v = dmp_eval(diff.rep, diff.parent.ext_root.interval.center,
+                     0, diff.domain)
+        return bool(op(v, 0))
+
+    def __lt__(self, other):
+        return self._cmp(other, operator.lt)
+
+    def __le__(self, other):
+        return self._cmp(other, operator.le)
+
+    def __gt__(self, other):
+        return self._cmp(other, operator.gt)
+
+    def __ge__(self, other):
+        return self._cmp(other, operator.ge)
