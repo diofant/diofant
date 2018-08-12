@@ -646,30 +646,13 @@ class RootOf(Expr):
         if o != s and None not in o and None not in s:
             return S.false
         i = self.interval
-        was = i.a, i.b
-        need = [True]*2
-        # make sure it would be distinct from others
-        while any(need):
-            self.refine()
-            i = self.interval
-            a, b = i.a, i.b
-            if need[0] and a != was[0]:
-                need[0] = False
-            if need[1] and b != was[1]:
-                need[1] = False
         re, im = other.as_real_imag()
-        if not im:
-            if self.is_extended_real:
-                a, b = [Rational(str(i)) for i in (a, b)]
-                return sympify(a < other and other < b)
-            return S.false
         if self.is_extended_real:
-            return S.false
-        z = r1, r2, i1, i2 = [Rational(str(j)) for j in (
-            i.ax, i.bx, i.ay, i.by)]
-        return sympify((
-            r1 < re and re < r2) and (
-            i1 < im and im < i2))
+            if im:
+                return S.false
+            else:
+                return sympify(i.a < other and other < i.b)
+        return sympify((i.ax < re and re < i.bx) and (i.ay < im and im < i.by))
 
     def _eval_derivative(self, x):
         coeffs = self.poly.all_coeffs()
