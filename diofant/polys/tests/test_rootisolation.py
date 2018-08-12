@@ -4,6 +4,7 @@ import pytest
 
 from diofant.core import I
 from diofant.domains import EX, QQ, ZZ
+from diofant.functions import sqrt
 from diofant.polys.polyerrors import DomainError, RefinementFailed
 from diofant.polys.rings import ring
 from diofant.polys.rootisolation import (RealInterval,
@@ -322,6 +323,28 @@ def test_dup_isolate_real_roots_sqf():
     assert R.dup_isolate_real_roots_sqf(x) == [(0, 0)]
     assert R.dup_isolate_real_roots_sqf(x - 1) == [(1, 1)]
     assert R.dup_isolate_real_roots_sqf(x - I) == []
+
+    R, x = ring("x", QQ.algebraic_field(sqrt(2)))
+
+    f = (-x**3 + sqrt(2)*x - 1)*(x**2 + 1)
+
+    assert R.dup_isolate_real_roots_sqf(f) == [(-2, -1)]
+    assert R.dup_isolate_real_roots_sqf(f, eps=QQ(1, 1000)) == [(QQ(-74, 51), QQ(-29, 20))]
+
+    f = (x - sqrt(2))*(x + 2*sqrt(2))*(x - 7 + sqrt(2))*(x + 3*sqrt(2))*(x - 1)*(x + 1 - sqrt(2))
+
+    assert R.dup_isolate_real_roots_sqf(f) == [(-5, -4), (-3, -2), (0, 1),
+                                               (1, 1), (1, 2), (5, 6)]
+
+    R, x = ring("x", QQ.algebraic_field(sqrt(2), sqrt(3)))
+
+    f = (x - sqrt(2))*(x - sqrt(3))*(x - 2*sqrt(6))*(x - sqrt(6))*(x**2 + 2)
+
+    assert R.dup_isolate_real_roots_sqf(f) == [(1, QQ(3, 2)), (QQ(3, 2), 2),
+                                               (2, 3), (4, 5)]
+    assert (R.dup_isolate_real_roots_sqf(f, eps=QQ(1, 1000)) ==
+            [(QQ(41, 29), QQ(58, 41)), (QQ(71, 41), QQ(97, 56)),
+             (QQ(169, 69), QQ(49, 20)), (QQ(436, 89), QQ(485, 99))])
 
 
 def test_dup_isolate_real_roots():

@@ -64,6 +64,8 @@ def dup_root_upper_bound(f, K):
            of Universal Computer Science, Vol. 15, No. 3, 523-537, 2009.
     """
     n, P = len(f), []
+    if K.is_AlgebraicField:
+        return
     t = n * [K.one]
     if dmp_LC(f, K) < 0:
         f = dmp_neg(f, 0, K)
@@ -93,7 +95,7 @@ def dup_root_upper_bound(f, K):
         P.append(q[0])
 
     if P:
-        return K(2)**(max(P) + 1)
+        return K(2)**int(max(P) + 1)
 
 
 def dup_root_lower_bound(f, K):
@@ -231,7 +233,7 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=F
     f = dmp_convert(f, 0, R, K)
     f = dup_clear_denoms(f, K)[1]
 
-    if not K.is_RationalField:
+    if not (K.is_RationalField or K.is_RealAlgebraicField):
         raise DomainError("real root refinement not supported over %s" % K)
 
     if s == t:
@@ -469,7 +471,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
     f = dmp_convert(f, 0, R, K)
     f = dup_clear_denoms(f, K)[1]
 
-    if K.is_AlgebraicField:
+    if K.is_AlgebraicField and not K.is_RealAlgebraicField:
         A, K = K, K.domain
         polys = [dmp_eval_in(_, K.zero, 1, 1, K) for _ in dup_real_imag(f, A)]
         if not polys[1]:
@@ -479,7 +481,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
             roots = [_[0] for _ in roots if _[1].keys() == {0, 1}]
             return [RealInterval((a, b), f, K) for (a, b) in roots] if blackbox else roots
 
-    if not K.is_RationalField:
+    if not (K.is_RationalField or K.is_RealAlgebraicField):
         raise DomainError("isolation of real roots not supported over %s" % K)
 
     if dmp_degree(f, 0) <= 0:
@@ -517,10 +519,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):
         (f, k), = factors
         return [(r, k) for r in dup_isolate_real_roots_sqf(f, K, eps, inf, sup, fast)]
     else:
-        if K.is_AlgebraicField:
-            raise NotImplementedError  # pragma: no cover
-
-        if not K.is_RationalField:
+        if not (K.is_RationalField or K.is_RealAlgebraicField):
             raise DomainError("isolation of real roots not supported over %s" % K)
 
         I_zero, f = _isolate_zero(f, K, inf, sup)
@@ -547,7 +546,7 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
         p = dmp_convert(p, 0, R, K)
         polys[i] = dup_clear_denoms(p, K)[1]
 
-    if not K.is_RationalField:
+    if not (K.is_RationalField or K.is_RealAlgebraicField):
         raise DomainError("isolation of real roots not supported over %s" % K)
 
     zeros, factors_dict = False, {}
@@ -1519,7 +1518,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     if v < 0 < t:
         roots = dup_isolate_complex_roots_sqf(f, F, eps=eps, inf=(u, 0),
                                               sup=(s, t), blackbox=True)
-        if F.is_RationalField:
+        if F.is_RationalField or F.is_RealAlgebraicField:
             _roots = []
             for root in roots:
                 croot = root.conjugate()
