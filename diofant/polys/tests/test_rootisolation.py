@@ -510,6 +510,14 @@ def test_dup_count_real_roots():
     assert R.dup_count_real_roots(f, sup=0) == 1
     assert R.dup_count_real_roots(f, inf=-1, sup=1) == 0
 
+    R, x = ring("x", QQ.algebraic_field(I))
+
+    f = x**3 + I*x + 2
+    assert R.dup_count_real_roots(f) == 0
+
+    f *= x**2 - 1
+    assert R.dup_count_real_roots(f) == 2
+
 
 # parameters for test_dup_count_complex_roots_n(): n = 1..8
 a, b = (-QQ(1), -QQ(1)), (QQ(1), QQ(1))

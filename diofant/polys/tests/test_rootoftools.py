@@ -173,6 +173,16 @@ def test_RootOf_is_real():
     assert RootOf(x**3 + I*x + 2, 0).is_real is False
 
 
+def test_RootOf_is_imaginary():
+    assert RootOf(x**3 + x + 3, 0).is_imaginary is False
+    assert RootOf(x**3 + x + 3, 1).is_imaginary is False
+    assert RootOf(x**3 + y*x + 1, x, 0).is_imaginary is None
+
+    assert RootOf(x**3 + I*x + 2, 0).is_real is False
+
+    assert RootOf(x**4 + 10*x**2 + 1, 2).is_imaginary is True
+
+
 def test_RootOf_is_complex():
     assert RootOf(x**3 + x + 3, 0).is_complex is True
     assert RootOf(x**3 + y*x + 3, x, 0).is_complex is None

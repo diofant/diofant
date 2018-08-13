@@ -681,6 +681,9 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
         R, K = K, K.field
         f = dmp_convert(f, 0, R, K)
 
+    if K.is_AlgebraicField:
+        return sum(k for *_, k in dup_isolate_real_roots(f, K, inf, sup))
+
     sturm = dup_sturm(f, K)
 
     if inf is None:

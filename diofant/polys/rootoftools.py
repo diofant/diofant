@@ -5,12 +5,13 @@ from mpmath.libmp.libmpf import prec_to_dps
 
 from ..core import (Add, Dummy, Expr, Float, I, Integer, Lambda, Rational, S,
                     cacheit, symbols, sympify)
+from ..core.compatibility import ordered
 from ..core.evaluate import global_evaluate
 from ..core.function import AppliedUndef
 from ..domains import QQ
 from ..functions import root as _root
 from ..functions import sign
-from ..utilities import lambdify
+from ..utilities import lambdify, sift
 from .polyerrors import (DomainError, GeneratorsNeeded,
                          MultivariatePolynomialError, PolynomialError)
 from .polyfuncs import symmetrize, viete
@@ -180,6 +181,13 @@ class RootOf(Expr):
     def _eval_is_complex(self):
         if all(_.is_complex for _ in self.poly.coeffs()):
             return True
+
+    def _eval_is_imaginary(self):
+        if self.is_real:
+            return False
+        elif self.is_real is False:
+            ivl = self.interval
+            return ivl.ax*ivl.bx <= 0
 
     def _eval_is_algebraic(self):
         if all(_.is_algebraic for _ in self.poly.coeffs()):
@@ -366,6 +374,23 @@ class RootOf(Expr):
         return sum(k for _, _, k in roots)
 
     @classmethod
+    def _refine_imaginaries(cls, complexes):
+        sifted = sift(complexes, lambda c: c[1])
+        complexes = []
+        for f in ordered(sifted):
+            nimag = f.compose(PurePoly(I*f.gen, f.gen)).count_roots()
+            potential_imag = list(range(len(sifted[f])))
+            while len(potential_imag) > nimag:
+                for i in list(potential_imag):
+                    u, f, k = sifted[f][i]
+                    if u.ax*u.bx > 0:
+                        potential_imag.remove(i)
+                    else:
+                        sifted[f][i] = u.refine(), f, k
+            complexes.extend(sifted[f])
+        return complexes
+
+    @classmethod
     def _indexed_root(cls, poly, index):
         """Get a root of a composite polynomial by index. """
         _, factors = poly.factor_list()
@@ -378,6 +403,7 @@ class RootOf(Expr):
             return cls._reals_index(reals, index)
         else:
             complexes = cls._get_complexes(factors)
+            complexes = cls._refine_imaginaries(complexes)
             complexes = cls._complexes_sorted(complexes)
             return cls._complexes_index(complexes, index - reals_count)
 
@@ -416,6 +442,7 @@ class RootOf(Expr):
             roots.append(cls._reals_index(reals, index))
 
         complexes = cls._get_complexes(factors)
+        complexes = cls._refine_imaginaries(complexes)
         complexes = cls._complexes_sorted(complexes)
         complexes_count = cls._count_roots(complexes)
 
@@ -567,7 +594,7 @@ class RootOf(Expr):
                 self.refine()
                 interval = self.interval
 
-        return (Float._new(root.real._mpf_, prec) +
+        return ((Float._new(root.real._mpf_, prec) if not self.is_imaginary else 0) +
                 I*Float._new(root.imag._mpf_, prec))
 
     def eval_rational(self, tol):
@@ -619,30 +646,13 @@ class RootOf(Expr):
         if o != s and None not in o and None not in s:
             return S.false
         i = self.interval
-        was = i.a, i.b
-        need = [True]*2
-        # make sure it would be distinct from others
-        while any(need):
-            self.refine()
-            i = self.interval
-            a, b = i.a, i.b
-            if need[0] and a != was[0]:
-                need[0] = False
-            if need[1] and b != was[1]:
-                need[1] = False
         re, im = other.as_real_imag()
-        if not im:
-            if self.is_extended_real:
-                a, b = [Rational(str(i)) for i in (a, b)]
-                return sympify(a < other and other < b)
-            return S.false
         if self.is_extended_real:
-            return S.false
-        z = r1, r2, i1, i2 = [Rational(str(j)) for j in (
-            i.ax, i.bx, i.ay, i.by)]
-        return sympify((
-            r1 < re and re < r2) and (
-            i1 < im and im < i2))
+            if im:
+                return S.false
+            else:
+                return sympify(i.a < other and other < i.b)
+        return sympify((i.ax < re and re < i.bx) and (i.ay < im and im < i.by))
 
     def _eval_derivative(self, x):
         coeffs = self.poly.all_coeffs()
