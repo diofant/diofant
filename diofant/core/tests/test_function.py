@@ -745,3 +745,12 @@ def test_sympyissue_13098():
                            dps=25), 10)) == 2
     assert floor(log(Float('999.99999000000003'), 10)) == 2
     assert floor(log(Float('999.999999'), 10)) == 2
+
+
+def test_undef_fcn_float_sympyissue_6938():
+    f = Function('ceil')
+    assert isinstance(f(0.3), Function)
+    f = Function('sin')
+    assert isinstance(f(0.3), Function)
+    assert isinstance(f(pi).evalf(), Function)
+    assert isinstance(f(x).evalf(subs={x: 1.2}), Function)

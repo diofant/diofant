@@ -406,6 +406,8 @@ class Function(Application, Expr):
         return 4, i, name
 
     def _eval_evalf(self, prec):
+        if isinstance(self.func, UndefinedFunction):
+            return
         # Lookup mpmath function based on name
         fname = self.func.__name__
         try:
