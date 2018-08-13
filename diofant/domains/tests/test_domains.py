@@ -710,6 +710,10 @@ def test_Domain__algebraic_field():
     alg = QQ.algebraic_field(rs[0])
     assert alg.ext_root == RootOf(eq, 2)
 
+    alg1 = QQ.algebraic_field(I)
+    alg2 = QQ.algebraic_field(sqrt(2)).algebraic_field(I)
+    assert alg1 != alg2
+
 
 def test_PolynomialRing_from_FractionField():
     F,  x, y = field("x,y", ZZ)
