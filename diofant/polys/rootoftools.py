@@ -378,7 +378,8 @@ class RootOf(Expr):
         sifted = sift(complexes, lambda c: c[1])
         complexes = []
         for f in ordered(sifted):
-            nimag = f.compose(PurePoly(I*f.gen, f.gen)).count_roots()
+            nimag = f.compose(PurePoly(I*f.gen, f.gen,
+                                       domain=f.domain.algebraic_field(I))).count_roots()
             potential_imag = list(range(len(sifted[f])))
             while len(potential_imag) > nimag:
                 for i in list(potential_imag):
