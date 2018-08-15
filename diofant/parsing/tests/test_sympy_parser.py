@@ -4,9 +4,10 @@ from diofant.core import (Float, Function, I, Integer, Mul, Pow, Rational,
                           Symbol)
 from diofant.functions import exp, sin
 from diofant.logic import And
-from diofant.parsing.sympy_parser import (TokenError, implicit_multiplication,
-                                          parse_expr, rationalize,
-                                          split_symbols,
+from diofant.parsing.sympy_parser import (TokenError, convert_xor,
+                                          function_exponentiation,
+                                          implicit_multiplication, parse_expr,
+                                          rationalize, split_symbols,
                                           standard_transformations)
 from diofant.series import Limit
 
@@ -57,6 +58,15 @@ def test_local_dict():
         assert parse_expr(text, local_dict=local_dict) == result
 
 
+def test_local_dict_symbol_to_fcn():
+    x = Symbol('x')
+    d = {'foo': Function('bar')}
+    assert parse_expr('foo(x)', local_dict=d) == d['foo'](x)
+    # XXX: bit odd, but would be error if parser left the Symbol
+    d = {'foo': Symbol('baz')}
+    assert parse_expr('foo(x)', local_dict=d) == Function('baz')(x)
+
+
 def test_global_dict():
     global_dict = {
         'Symbol': Symbol
@@ -100,6 +110,19 @@ def test_split_symbols_function():
     assert parse_expr("ay(x+1)", transformations=transformations) == a*y*(x + 1)
     assert parse_expr("af(x+1)", transformations=transformations,
                       local_dict={'f': f}) == a*f(x + 1)
+
+
+def test_functional_exponent():
+    t = standard_transformations + (convert_xor, function_exponentiation)
+    x = Symbol('x')
+    y = Symbol('y')
+    a = Symbol('a')
+    yfcn = Function('y')
+    assert parse_expr("sin^2(x)", transformations=t) == (sin(x))**2
+    assert parse_expr("sin^y(x)", transformations=t) == (sin(x))**y
+    assert parse_expr("exp^y(x)", transformations=t) == (exp(x))**y
+    assert parse_expr("E^y(x)", transformations=t) == exp(yfcn(x))
+    assert parse_expr("a^y(x)", transformations=t) == a**(yfcn(x))
 
 
 def test_match_parentheses_implicit_multiplication():
