@@ -324,8 +324,8 @@ class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
 
     def __int__(self):
         try:
-            from . import ZZ
-            return int(ZZ.convert(self))
+            from . import QQ
+            return int(QQ.convert(self))
         except CoercionFailed:
             raise TypeError("Can't convert algebraic number to int")
 

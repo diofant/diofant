@@ -687,6 +687,7 @@ def test_Domain__algebraic_field():
     assert alg.is_RealAlgebraicField is True
 
     assert int(alg(2)) == 2
+    assert int(alg.from_expr(Rational(3, 2))) == 1
     pytest.raises(TypeError, lambda: int(alg([1, 1])))
 
     alg = QQ.algebraic_field(I)
