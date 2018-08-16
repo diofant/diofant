@@ -122,6 +122,10 @@ class RootOf(Expr):
         coeff, poly = preprocess_roots(poly, extension=extension)
 
         if poly.domain.is_AlgebraicField and extension:
+            if poly.domain.domain.is_AlgebraicField:
+                new_domain = QQ.algebraic_field(poly.domain.domain.ext,
+                                                poly.domain.ext)
+                poly = poly.set_domain(new_domain)
             x, y = poly.gen, Dummy('y')
             p = sum(Poly(c.rep, y)*x**n for (n,), c in poly.rep.terms()).inject(x)
             q = poly.domain.minpoly.eval(y)

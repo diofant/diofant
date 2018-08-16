@@ -1,6 +1,6 @@
 """Tools for constructing domains for expressions. """
 
-from ..core import sympify
+from ..core import I, sympify
 from ..domains import EX, QQ, RR, ZZ
 from ..domains.realfield import RealField
 from .polyerrors import GeneratorsNeeded
@@ -66,7 +66,6 @@ def _construct_simple(coeffs, opt):
 
 def _construct_algebraic(coeffs, opt):
     """We know that coefficients are algebraic so construct the extension. """
-    from .numberfields import primitive_element
 
     result, exts = [], set()
 
@@ -91,10 +90,13 @@ def _construct_algebraic(coeffs, opt):
 
     exts = list(exts)
 
-    g, span, H = primitive_element(exts)
-    root = sum(s*ext for s, ext in zip(span, exts))
+    if all(e.is_real for e in exts):
+        domain = QQ.algebraic_field(*exts)
+    else:
+        ground_exts = list(set().union(*[_.as_real_imag() for _ in exts]))
+        domain = QQ.algebraic_field(*ground_exts).algebraic_field(I)
 
-    domain, g = QQ.algebraic_field(root), g.rep.rep
+    H = [domain.from_expr(e).rep for e in exts]
 
     for i, (coeff, a, b) in enumerate(result):
         if coeff is not None:
