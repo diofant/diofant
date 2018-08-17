@@ -141,7 +141,10 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         coeffs = field_isomorphism(K0, self)
 
         if coeffs is not None:
-            return self(dmp_compose(a.rep, coeffs, 0, self.domain))
+            if K0.domain == self.domain:
+                return self(dmp_compose(a.rep, coeffs, 0, self.domain))
+            else:
+                return self.from_expr(K0.to_expr(a))
         else:
             raise CoercionFailed("%s is not in a subfield of %s" % (K0, self))
 
