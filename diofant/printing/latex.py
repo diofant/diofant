@@ -1290,7 +1290,7 @@ class LatexPrinter(Printer):
         if not isinstance(mat, MatrixSymbol):
             return r"\left(%s\right)^\dag" % self._print(mat)
         else:
-            return "%s^\dag" % self._print(mat)
+            return r"%s^\dag" % self._print(mat)
 
     def _print_MatAdd(self, expr):
         terms = list(expr.args)
@@ -1333,7 +1333,7 @@ class LatexPrinter(Printer):
             if isinstance(x, (Add, MatAdd, MatMul)):
                 return r"\left(%s\right)" % self._print(x)
             return self._print(x)
-        return ' \circ '.join(map(parens, expr.args))
+        return r' \circ '.join(map(parens, expr.args))
 
     def _print_MatPow(self, expr):
         base, exp = expr.base, expr.exp
@@ -1433,7 +1433,7 @@ class LatexPrinter(Printer):
     def _print_Range(self, s):
         if len(s) > 4:
             it = iter(s)
-            printset = next(it), next(it), '\ldots', s._last_element
+            printset = next(it), next(it), r'\ldots', s._last_element
         else:
             printset = tuple(s)
 
