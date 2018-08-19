@@ -203,12 +203,12 @@ def test_real_imag():
 
 def test_pow_sympyissue_4823():
     e = cbrt(-1)
-    assert e.conjugate().n() == e.n().conjugate()
+    assert e.conjugate().evalf() == e.evalf().conjugate()
     e = (Rational(-2, 3) - cbrt(Rational(-29, 54) + sqrt(93)/18)
          - 1/(9*cbrt(Rational(-29, 54) + sqrt(93)/18)))
-    assert e.conjugate().n() == e.n().conjugate()
+    assert e.conjugate().evalf() == e.evalf().conjugate()
     e = 2**I
-    assert e.conjugate().n() == e.n().conjugate()
+    assert e.conjugate().evalf() == e.evalf().conjugate()
 
 
 def test_sympyissue_5429():

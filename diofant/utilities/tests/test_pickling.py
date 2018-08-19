@@ -513,5 +513,5 @@ def test_sympyissue_7457():
 
     a = Float('1.2')
     b = pickle.loads(pickle.dumps(a))
-    b.n(strict=False)  # not raises
+    b.evalf(strict=False)  # not raises
     assert a == b

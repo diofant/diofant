@@ -827,7 +827,7 @@ def test_reflect():
     l = Line((0, pi), slope=sqrt(2))
     rpent = pent.reflect(l)
     assert rpent.center == pent.center.reflect(l)
-    assert [w.n(3) for w in rpent.vertices] == \
+    assert [w.evalf(3) for w in rpent.vertices] == \
         [Point2D(Float('-0.585815', dps=3),
                  Float('4.27051', dps=3)),
          Point2D(Float('-1.69409', dps=3),

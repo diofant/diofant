@@ -392,5 +392,5 @@ def test_sympyissue_5615():
 
 def test_sympyissue_5933():
     x = Polygon(*RegularPolygon((0, 0), 1, 5).vertices).centroid.x
-    assert abs(denom(x).n()) > 1e-12
+    assert abs(denom(x).evalf()) > 1e-12
     assert abs(denom(radsimp(x))) > 1e-12  # in case simplify didn't handle it

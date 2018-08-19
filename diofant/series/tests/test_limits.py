@@ -483,7 +483,7 @@ def test_diofantissue_296():
 
 def test_sympyissue_5383():
     e = (1.0 + 1.0*x)**(1.0/x)
-    assert e.limit(x, 0) == E.n()
+    assert e.limit(x, 0) == E.evalf()
 
 
 def test_sympyissue_6171():

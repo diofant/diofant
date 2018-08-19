@@ -390,7 +390,7 @@ class zeta(Function):
     No closed-form expressions are known at positive odd integers, but
     numerical evaluation is possible:
 
-    >>> zeta(3).n()
+    >>> zeta(3).evalf()
     1.20205690315959
 
     The derivative of `\zeta(s, a)` with respect to `a` is easily

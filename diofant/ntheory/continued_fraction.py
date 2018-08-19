@@ -117,7 +117,7 @@ def continued_fraction_reduce(cf):
     225/157
     >>> continued_fraction_reduce([-2, 1, 9, 7, 1, 2])
     -256/233
-    >>> continued_fraction_reduce([2, 1, 2, 1, 1, 4, 1, 1, 6, 1, 1, 8]).n(10)
+    >>> continued_fraction_reduce([2, 1, 2, 1, 1, 4, 1, 1, 6, 1, 1, 8]).evalf(10)
     2.718281835
     >>> continued_fraction_reduce([1, 4, 2, [3, 1]])
     (sqrt(21) + 287)/238

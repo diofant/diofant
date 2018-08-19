@@ -729,5 +729,5 @@ def test_sympyissue_12522():
 
 
 def test_sympyissue_10641():
-    assert str(Or(x < sqrt(3), x).n(2)) == 'Or(x, x < 1.7)'
-    assert str(And(x < sqrt(3), x).n(2)) == 'And(x, x < 1.7)'
+    assert str(Or(x < sqrt(3), x).evalf(2)) == 'Or(x, x < 1.7)'
+    assert str(And(x < sqrt(3), x).evalf(2)) == 'And(x, x < 1.7)'

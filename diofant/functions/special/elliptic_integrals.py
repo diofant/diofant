@@ -165,7 +165,7 @@ class elliptic_e(Function):
     z + z**5*(-m**2/40 + m/30) - m*z**3/6 + O(z**6)
     >>> elliptic_e(z).series(z, n=4)
     pi/2 - pi*z/8 - 3*pi*z**2/128 - 5*pi*z**3/512 + O(z**4)
-    >>> elliptic_e(1 + I, 2 - I/2).n()
+    >>> elliptic_e(1 + I, 2 - I/2).evalf()
     1.55203744279187 + 0.290764986058437*I
     >>> elliptic_e(0)
     pi/2

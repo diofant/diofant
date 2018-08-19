@@ -161,4 +161,4 @@ def test_log_to_atan():
 
 def test_sympyissue_13460():
     assert integrate(1/(-28*x**3 - 46*x**2 - 25*x - 10),
-                     [x, 2, 3]).n() == Float('-0.0013230197536986538', dps=15)
+                     [x, 2, 3]).evalf() == Float('-0.0013230197536986538', dps=15)

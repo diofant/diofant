@@ -538,7 +538,7 @@ def test_ineq_avoid_wild_symbol_flip():
 
 def test_sympyissue_8245():
     a = Rational(6506833320952669167898688709329, 5070602400912917605986812821504)
-    q = a.n(10)
+    q = a.evalf(10)
     assert (a == q) is True
     assert (a != q) is False
     assert (a > q) is false
@@ -547,7 +547,7 @@ def test_sympyissue_8245():
     assert (a <= q) is true
 
     a = sqrt(2)
-    r = Rational(str(a.n(30)))
+    r = Rational(str(a.evalf(30)))
     assert (r == a) is False
     assert (r != a) is True
     assert (r > a) is true
@@ -555,7 +555,7 @@ def test_sympyissue_8245():
     assert (r >= a) is true
     assert (r <= a) is false
     a = sqrt(2)
-    r = Rational(str(a.n(29)))
+    r = Rational(str(a.evalf(29)))
     assert (r == a) is False
     assert (r != a) is True
     assert (r > a) is false

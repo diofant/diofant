@@ -984,11 +984,11 @@ class Integral(AddWithLimits):
         by using the midpoint or right-hand method:
 
         >>> e = Integral(1/sqrt(x), (x, 0, 1))
-        >>> e.as_sum(5).n(4)
+        >>> e.as_sum(5).evalf(4)
         1.730
-        >>> e.as_sum(10).n(4)
+        >>> e.as_sum(10).evalf(4)
         1.809
-        >>> e.doit().n(4)  # the actual value is 2
+        >>> e.doit().evalf(4)  # the actual value is 2
         2.000
 
         The left- or trapezoid method will encounter the discontinuity and

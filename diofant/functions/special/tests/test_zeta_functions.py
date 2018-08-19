@@ -142,8 +142,8 @@ def myexpand(func, target):
     subs = {}
     for a in func.free_symbols:
         subs[a] = randcplx()
-    return abs(func.subs(subs).n()
-               - expanded.replace(exp_polar, exp).subs(subs).n()) < 1e-10
+    return abs(func.subs(subs).evalf()
+               - expanded.replace(exp_polar, exp).subs(subs).evalf()) < 1e-10
 
 
 def test_polylog_eval():

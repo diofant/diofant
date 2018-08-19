@@ -558,8 +558,8 @@ def test_acosh():
     assert acosh((sqrt(5) + 1)/4) == I*pi/5
     assert acosh(-(sqrt(5) + 1)/4) == 4*I*pi/5
 
-    assert str(acosh(5*I).n(6)) == '2.31244 + 1.5708*I'
-    assert str(acosh(-5*I).n(6)) == '2.31244 - 1.5708*I'
+    assert str(acosh(5*I).evalf(6)) == '2.31244 + 1.5708*I'
+    assert str(acosh(-5*I).evalf(6)) == '2.31244 - 1.5708*I'
 
     pytest.raises(ArgumentIndexError, lambda: acosh(x).fdiff(2))
 

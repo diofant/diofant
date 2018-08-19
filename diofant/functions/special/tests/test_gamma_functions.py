@@ -101,7 +101,7 @@ def tn_branch(s, func):
     expr = func(s, c*exp_polar(I*pi)) - func(s, c*exp_polar(-I*pi))
     eps = 1e-15
     expr2 = func(s + eps, -c + eps*I) - func(s + eps, -c - eps*I)
-    return abs(expr - expr2).n(strict=False) < 1e-10
+    return abs(expr - expr2).evalf(strict=False) < 1e-10
 
 
 def test_lowergamma():
@@ -222,7 +222,7 @@ def test_polygamma():
         r = polygamma(0, x)
         if r.has(polygamma):
             return False
-        return abs(polygamma(0, x.n()).n(strict=False) - r.n()).n(strict=False) < 1e-10
+        return abs(polygamma(0, x.evalf()).evalf(strict=False) - r.evalf()).evalf(strict=False) < 1e-10
     assert t(1, 2)
     assert t(3, 2)
     assert t(-1, 2)
@@ -340,27 +340,27 @@ def test_loggamma():
     L = loggamma(Rational(16, 3))
     E = -5*log(3) + loggamma(Rational(1, 3)) + log(4) + log(7) + log(10) + log(13)
     assert expand_func(L).doit() == E
-    assert L.n() == E.n()
+    assert L.evalf() == E.evalf()
 
     L = loggamma(19/Integer(4))
     E = -4*log(4) + loggamma(Rational(3, 4)) + log(3) + log(7) + log(11) + log(15)
     assert expand_func(L).doit() == E
-    assert L.n() == E.n()
+    assert L.evalf() == E.evalf()
 
     L = loggamma(Rational(23, 7))
     E = -3*log(7) + log(2) + loggamma(Rational(2, 7)) + log(9) + log(16)
     assert expand_func(L).doit() == E
-    assert L.n() == E.n()
+    assert L.evalf() == E.evalf()
 
     L = loggamma(19/Integer(4)-7)
     E = -log(9) - log(5) + loggamma(Rational(3, 4)) + 3*log(4) - 3*I*pi
     assert expand_func(L).doit() == E
-    assert L.n() == E.n()
+    assert L.evalf() == E.evalf()
 
     L = loggamma(23/Integer(7)-6)
     E = -log(19) - log(12) - log(5) + loggamma(Rational(2, 7)) + 3*log(7) - 3*I*pi
     assert expand_func(L).doit() == E
-    assert L.n() == E.n()
+    assert L.evalf() == E.evalf()
 
     assert expand_func(loggamma(x)) == loggamma(x)
     assert expand_func(loggamma(1/Integer(3))) == loggamma(1/Integer(3))

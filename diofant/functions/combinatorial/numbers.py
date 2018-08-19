@@ -513,9 +513,9 @@ class harmonic(Function):
     >>> He
     log(sin(pi/7)**(-2*cos(pi/7))*sin(2*pi/7)**(2*cos(16*pi/7))*cos(pi/14)**(-2*sin(pi/14))/14)
     + pi*tan(pi/14)/2 + 30247/9900
-    >>> He.n(40)
+    >>> He.evalf(40)
     1.983697455232980674869851942390639915940
-    >>> harmonic(25/Integer(7)).n(40)
+    >>> harmonic(25/Integer(7)).evalf(40)
     1.983697455232980674869851942390639915940
 
     We can rewrite harmonic numbers in terms of polygamma functions:

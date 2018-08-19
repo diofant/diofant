@@ -108,7 +108,7 @@ def test_karr_convention():
 
     e = Piecewise((exp(-i), Mod(i, 2) > 0), (0, True))
     s = Sum(e, (i, 0, 11))
-    assert s.n(3) == s.doit().n(3)
+    assert s.evalf(3) == s.doit().evalf(3)
 
 
 def test_karr_proposition_2a():
@@ -687,7 +687,7 @@ def test_sympyissue_4171():
 
 
 def test_sympyissue_6273():
-    assert Sum(x, (x, 1, n)).n(2, subs={n: 1}) == 1
+    assert Sum(x, (x, 1, n)).evalf(2, subs={n: 1}) == 1
 
 
 def test_sympyissue_6274():

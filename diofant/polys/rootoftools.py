@@ -619,7 +619,7 @@ class RootOf(Expr):
 
         >>> p = legendre_poly(4, x, polys=True)
         >>> roots = [r.eval_rational(Rational(1, 10)**7) for r in p.real_roots()]
-        >>> roots = [str(r.n(5)) for r in roots]
+        >>> roots = [str(r.evalf(5)) for r in roots]
         >>> roots
         ['-0.86114', '-0.33998', '0.33998', '0.86114']
 

@@ -512,7 +512,7 @@ def roots_quintic(f):
     order = quintic.order(theta, d)
     test = order*delta - (l1 - l4)*(l2 - l3)
     # Comparing floats
-    if not comp(test.n(strict=False), 0, tol):
+    if not comp(test.evalf(strict=False), 0, tol):
         l2, l3 = l3, l2
 
     # Now we have correct order of l's
@@ -551,7 +551,7 @@ def roots_quintic(f):
 
     for i in range(1, 5):
         for j in range(5):
-            Res_n[i][j] = Res[i][j].n()
+            Res_n[i][j] = Res[i][j].evalf()
             Res[i][j] = _quintic_simplify(Res[i][j])
     r1 = Res[1][0]
     r1_n = Res_n[1][0]
@@ -566,12 +566,12 @@ def roots_quintic(f):
     # Now we have various Res values. Each will be a list of five
     # values. We have to pick one r value from those five for each Res
     u, v = quintic.uv(theta, d)
-    testplus = (u + v*delta*sqrt(5)).n(strict=False)
-    testminus = (u - v*delta*sqrt(5)).n(strict=False)
+    testplus = (u + v*delta*sqrt(5)).evalf(strict=False)
+    testminus = (u - v*delta*sqrt(5)).evalf(strict=False)
 
     # Evaluated numbers suffixed with _n
     # We will use evaluated numbers for calculation. Much faster.
-    r4_n = r4.n()
+    r4_n = r4.evalf()
     r2 = r3 = None
 
     for i in range(5):  # pragma: no branch

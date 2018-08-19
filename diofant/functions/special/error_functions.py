@@ -970,12 +970,12 @@ class Ei(Function):
 
     This yields a real value:
 
-    >>> Ei(-1).n(chop=True)
+    >>> Ei(-1).evalf(chop=True)
     -0.219383934395520
 
     On the other hand the analytic continuation is not real:
 
-    >>> Ei(polar_lift(-1)).n(chop=True)
+    >>> Ei(polar_lift(-1)).evalf(chop=True)
     -0.21938393439552 + 3.14159265358979*I
 
     The exponential integral has a logarithmic branch point at the origin:

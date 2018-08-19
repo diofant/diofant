@@ -256,9 +256,9 @@ def test_Subs():
     assert Derivative(f(x), x).subs(x, g(x)) == Derivative(f(g(x)), g(x))
     assert Derivative(f(x), x).subs(x, x + y) == Subs(Derivative(f(x), x),
                                                       (x, x + y))
-    assert Subs(f(x)*cos(y) + z, (x, 0), (y, pi/3)).n(2, strict=False) == \
+    assert Subs(f(x)*cos(y) + z, (x, 0), (y, pi/3)).evalf(2, strict=False) == \
         Subs(f(x)*cos(y) + z, (x, 0), (y, pi/3)).evalf(2, strict=False) == \
-        z + Rational('1/2').n(2)*f(0)
+        z + Rational('1/2').evalf(2)*f(0)
 
     assert f(x).diff(x).subs(x, 0).subs(x, y) == f(x).diff(x).subs(x, 0)
     assert (x*f(x).diff(x).subs(x, 0)).subs(x, y) == y*f(x).diff(x).subs(x, 0)

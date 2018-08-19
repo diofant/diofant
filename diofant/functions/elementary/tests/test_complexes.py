@@ -17,7 +17,7 @@ __all__ = ()
 
 def N_equals(a, b):
     """Check whether two complex numbers are numerically close"""
-    return comp(a.n(), b.n(), 1.e-6)
+    return comp(a.evalf(), b.evalf(), 1.e-6)
 
 
 def test_re():
@@ -308,8 +308,8 @@ def test_sign_sympyissue_6167():
     # perhaps it's not possible to get the sign right when
     # only 1 digit is being requested for this situtation;
     # 2 digits works
-    assert (n - x).n(1, subs={x: i}) > 0
-    assert (n - x).n(2, subs={x: i}) > 0
+    assert (n - x).evalf(1, subs={x: i}) > 0
+    assert (n - x).evalf(2, subs={x: i}) > 0
 
 
 def test_Abs():
@@ -790,7 +790,7 @@ def test_principal_branch():
     assert isinstance(principal_branch(x, -oo), principal_branch)
     assert isinstance(principal_branch(x, zoo), principal_branch)
 
-    assert (principal_branch((4 + I)**2, 2*pi).n() ==
+    assert (principal_branch((4 + I)**2, 2*pi).evalf() ==
             principal_branch((4 + I)**2, 2*pi))
 
 
