@@ -44,6 +44,7 @@ matrix:
       install:
         - travis_wait pip install .[exports,plot,interactive,develop,docs]
       script:
+        - python -We:invalid -m compileall -f diofant -q
         - travis_wait python setup.py flake8
         - travis_wait 30 pylint diofant
         - python setup.py build_sphinx -W -b html

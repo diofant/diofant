@@ -102,3 +102,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14885` Sympy series gives TypeError on x^(-3/2) * exp(x) at x = 0
 * :sympyissue:`15055` Incorrect limit of n**3*((-n - 1)*sin(1/n) + (n + 2)*sin(1/(n + 1)))/(-n + 1)
 * :sympyissue:`15056` dsolve: get_numbered_constants should consider Functions
+* :sympyissue:`6938` Undefined Functions should not use the evalf name lookup scheme

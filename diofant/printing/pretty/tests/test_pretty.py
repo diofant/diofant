@@ -1392,7 +1392,7 @@ n!!\
         """\
   /n\\\n\
 2*| |\n\
-  \k/\
+  \\k/\
 """
     ucode_str = \
         """\
@@ -1409,7 +1409,7 @@ n!!\
         """\
   /2*n\\\n\
 2*|   |\n\
-  \ k /\
+  \\ k /\
 """
     ucode_str = \
         """\
@@ -1427,7 +1427,7 @@ n!!\
   / 2\\\n\
   |n |\n\
 2*|  |\n\
-  \k /\
+  \\k /\
 """
     ucode_str = \
         """\
@@ -1672,7 +1672,7 @@ f⎜─────, y⎟\n\
         """\
      /     1      \\\n\
 floor|------------|\n\
-     \y - floor(x)/\
+     \\y - floor(x)/\
 """
     ucode_str = \
         """\
@@ -1688,7 +1688,7 @@ floor|------------|\n\
         """\
        /      1       \\\n\
 ceiling|--------------|\n\
-       \y - ceiling(x)/\
+       \\y - ceiling(x)/\
 """
     ucode_str = \
         """\
@@ -1746,7 +1746,7 @@ def test_pretty_sqrt():
     ascii_str = \
         """\
   ___\n\
-\/ 2 \
+\\/ 2 \
 """
     ucode_str = \
         """\
@@ -1760,7 +1760,7 @@ def test_pretty_sqrt():
     ascii_str = \
         """\
 3 ___\n\
-\/ 2 \
+\\/ 2 \
 """
     ucode_str = \
         """\
@@ -1774,7 +1774,7 @@ def test_pretty_sqrt():
     ascii_str = \
         """\
 1000___\n\
-  \/ 2 \
+  \\/ 2 \
 """
     ucode_str = \
         """\
@@ -1789,7 +1789,7 @@ def test_pretty_sqrt():
         """\
    ________\n\
   /  2     \n\
-\/  x  + 1 \
+\\/  x  + 1 \
 """
     ucode_str = \
         """\
@@ -1805,7 +1805,7 @@ def test_pretty_sqrt():
         """\
    ___________\n\
 3 /       ___ \n\
-\/  1 + \/ 5  \
+\\/  1 + \\/ 5  \
 """
     ucode_str = \
         """\
@@ -1820,7 +1820,7 @@ def test_pretty_sqrt():
     ascii_str = \
         """\
 x ___\n\
-\/ 2 \
+\\/ 2 \
 """
     ucode_str = \
         """\
@@ -1834,7 +1834,7 @@ x ___\n\
     ascii_str = \
         """\
   ________\n\
-\/ 2 + pi \
+\\/ 2 + pi \
 """
     ucode_str = \
         """\
@@ -1849,11 +1849,11 @@ x ___\n\
         """\
      ____________              \n\
     /      2        1000___    \n\
-   /      x  + 1      \/ x  + 1\n\
+   /      x  + 1      \\/ x  + 1\n\
 4 /   2 + ------  + -----------\n\
-\/        x + 2        ________\n\
+\\/        x + 2        ________\n\
                       /  2     \n\
-                    \/  x  + 3 \
+                    \\/  x  + 3 \
 """
     ucode_str = \
         """\
@@ -1907,7 +1907,7 @@ __________      \n\
 |        |  / 2\\\n\
 |        |  |n |\n\
 |        | f|--|\n\
-|        |  \9 /\n\
+|        |  \\9 /\n\
 |        |      \n\
        2        \n\
   n = k         """
@@ -1935,7 +1935,7 @@ __________ __________      \n\
 |        | |        |  / 2\\\n\
 |        | |        |  |n |\n\
 |        | |        | f|--|\n\
-|        | |        |  \9 /\n\
+|        | |        |  \\9 /\n\
 |        | |        |      \n\
   l = 1           2        \n\
              n = k         """
@@ -2172,7 +2172,7 @@ dx                \
         """\
    2              \n\
   d  /          2\\\n\
------\log(x) + x /\n\
+-----\\log(x) + x /\n\
 dy dx             \
 """
     ascii_str_2 = \
@@ -2381,7 +2381,7 @@ def test_pretty_integrals():
         """\
   /        \n\
  |         \n\
- |  / x\   \n\
+ |  / x\\   \n\
  |  \\2 /   \n\
  | x     dx\n\
  |         \n\
@@ -2612,7 +2612,7 @@ def test_pretty_Trace():
         """\
   /[1  2]\\
 tr|[    ]|
-  \[3  4]/\
+  \\[3  4]/\
 """
     ucode_str_1 = \
         """\
@@ -2622,9 +2622,9 @@ tr⎜⎢    ⎥⎟
 """
     ascii_str_2 = \
         """\
-  /[1  2]\     /[2  4]\\
+  /[1  2]\\     /[2  4]\\
 tr|[    ]| + tr|[    ]|
-  \[3  4]/     \[6  8]/\
+  \\[3  4]/     \\[6  8]/\
 """
     ucode_str_2 = \
         """\
@@ -2668,7 +2668,7 @@ def test_pretty_piecewise():
 |             \n\
 < 2           \n\
 |x   otherwise\n\
-\             \
+\\             \
 """
     ucode_str = \
         """\
@@ -2705,10 +2705,10 @@ def test_pretty_piecewise():
                                                             (y**2, x > 2), (1, True)) + 1
     ascii_str = \
         """\
-                      //x            \    \n\
+                      //x            \\    \n\
                       ||-   for x < 2|    \n\
                       ||y            |    \n\
-    //x  for x > 0\   ||             |    \n\
+    //x  for x > 0\\   ||             |    \n\
 x + |<            | + |< 2           | + 1\n\
     \\\\y  otherwise/   ||y   for x > 2|    \n\
                       ||             |    \n\
@@ -2734,10 +2734,10 @@ x + ⎜⎨            ⎟ + ⎜⎨ 2           ⎟ + 1\n\
                                                             (y**2, x > 2), (1, True)) + 1
     ascii_str = \
         """\
-                      //x            \    \n\
+                      //x            \\    \n\
                       ||-   for x < 2|    \n\
                       ||y            |    \n\
-    //x  for x > 0\   ||             |    \n\
+    //x  for x > 0\\   ||             |    \n\
 x - |<            | + |< 2           | + 1\n\
     \\\\y  otherwise/   ||y   for x > 2|    \n\
                       ||             |    \n\
@@ -2782,7 +2782,7 @@ x⋅⎜⎨            ⎟\n\
                 //x            \\\n\
                 ||-   for x < 2|\n\
                 ||y            |\n\
-//x  for x > 0\ ||             |\n\
+//x  for x > 0\\ ||             |\n\
 |<            |*|< 2           |\n\
 \\\\y  otherwise/ ||y   for x > 2|\n\
                 ||             |\n\
@@ -2811,7 +2811,7 @@ x⋅⎜⎨            ⎟\n\
                  //x            \\\n\
                  ||-   for x < 2|\n\
                  ||y            |\n\
- //x  for x > 0\ ||             |\n\
+ //x  for x > 0\\ ||             |\n\
 -|<            |*|< 2           |\n\
  \\\\y  otherwise/ ||y   for x > 2|\n\
                  ||             |\n\
@@ -2843,9 +2843,9 @@ x⋅⎜⎨            ⎟\n\
 |                                       \n\
 <            1               for |y| < 1\n\
 |                                       \n\
-|   __0, 2 /2, 1       | 1\             \n\
+|   __0, 2 /2, 1       | 1\\             \n\
 |y*/__     |           | -|   otherwise \n\
-\  \\_|2, 2 \      1, 0 | y/             \
+\\  \\_|2, 2 \\      1, 0 | y/             \
 """
     ucode_str = \
         """\
@@ -2868,7 +2868,7 @@ x⋅⎜⎨            ⎟\n\
     ascii_str = \
         """\
                2\n\
-//x  for x > 0\ \n\
+//x  for x > 0\\ \n\
 |<            | \n\
 \\\\y  otherwise/ \
 """
@@ -3296,7 +3296,7 @@ x─→0  x   \
         """\
      /    1\\\n\
  lim |x - -|\n\
-x->1+\    y/\
+x->1+\\    y/\
 """
     ucode_str = \
         """\
@@ -3751,11 +3751,11 @@ k = 0           \
          /                            \n\
          -oo                          \n\
           ______                      \n\
-          \     `                     \n\
-           \                  oo      \n\
-            \                  /      \n\
-             \                |       \n\
-              \               |   n   \n\
+          \\     `                     \n\
+           \\                  oo      \n\
+            \\                  /      \n\
+             \\                |       \n\
+              \\               |   n   \n\
                )              |  x  dx\n\
               /               |       \n\
              /               /        \n\
@@ -3801,11 +3801,11 @@ k = n  + n + x  + x + ─ + ─          \n\
 n  + n + x  + x + - + -           \n\
                   x   n           \n\
         ______                    \n\
-        \     `                   \n\
-         \                oo      \n\
-          \                /      \n\
-           \              |       \n\
-            \             |   n   \n\
+        \\     `                   \n\
+         \\                oo      \n\
+          \\                /      \n\
+           \\              |       \n\
+            \\             |   n   \n\
              )            |  x  dx\n\
             /             |       \n\
            /             /        \n\
@@ -4116,9 +4116,9 @@ k = ─────                                \n\
     ascii_str = """\
    -3         \n\
  ____         \n\
- \   `        \n\
-  \      -1   \n\
-   \    ------\n\
+ \\   `        \n\
+  \\      -1   \n\
+   \\    ------\n\
    /     3    \n\
   /     n  - 1\n\
  /___,        \n\
@@ -4356,7 +4356,7 @@ def test_meijerg():
         """\
  __2, 3 /pi, pi, x     1    |  \\\n\
 /__     |                   | z|\n\
-\_|4, 5 \\  0, 1     1, 2, 3 |  /\
+\\_|4, 5 \\  0, 1     1, 2, 3 |  /\
 """
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
@@ -4375,7 +4375,7 @@ def test_meijerg():
         /   pi           |   \\\n\
  __0, 2 |1, --  2, pi, 5 |  2|\n\
 /__     |   7            | z |\n\
-\_|5, 0 |                |   |\n\
+\\_|5, 0 |                |   |\n\
         \\                |   /\
 """
     assert pretty(expr) == ascii_str
@@ -4391,7 +4391,7 @@ def test_meijerg():
         """\
  __ 1, 10 /1, 1, 1, 1, 1, 1, 1, 1, 1, 1  1 |  \\\n\
 /__       |                                | z|\n\
-\_|11,  2 \\             1                1 |  /\
+\\_|11,  2 \\             1                1 |  /\
 """
 
     expr = meijerg([1]*10, [1], [1], [1], z)
@@ -4420,7 +4420,7 @@ def test_meijerg():
         |           |         1    |\n\
  __1, 2 |1, 2  4, 3 | 1 + ---------|\n\
 /__     |           |           1  |\n\
-\_|4, 3 | 3    4, 5 |     1 + -----|\n\
+\\_|4, 3 | 3    4, 5 |     1 + -----|\n\
         |           |             1|\n\
         |           |         1 + -|\n\
         \\           |             x/\
@@ -4455,7 +4455,7 @@ def test_meijerg():
  |         |           |         1    |   \n\
  |  __1, 2 |1, 2  4, 3 | 1 + ---------|   \n\
  | /__     |           |           1  | dx\n\
- | \_|4, 3 | 3    4, 5 |     1 + -----|   \n\
+ | \\_|4, 3 | 3    4, 5 |     1 + -----|   \n\
  |         |           |             1|   \n\
  |         |           |         1 + -|   \n\
  |         \\           |             x/   \n\
@@ -4586,7 +4586,7 @@ def test_elliptic_functions():
         """\
  /  1  \\\n\
 K|-----|\n\
- \z + 1/\
+ \\z + 1/\
 """
     ucode_str = \
         """\
@@ -4602,7 +4602,7 @@ K⎜─────⎟\n\
         """\
  / |  1  \\\n\
 F|1|-----|\n\
- \ |z + 1/\
+ \\ |z + 1/\
 """
     ucode_str = \
         """\
@@ -4618,7 +4618,7 @@ F⎜1│─────⎟\n\
         """\
  /  1  \\\n\
 E|-----|\n\
- \z + 1/\
+ \\z + 1/\
 """
     ucode_str = \
         """\
@@ -4634,7 +4634,7 @@ E⎜─────⎟\n\
         """\
  / |  1  \\\n\
 E|1|-----|\n\
- \ |z + 1/\
+ \\ |z + 1/\
 """
     ucode_str = \
         """\
@@ -4650,7 +4650,7 @@ E⎜1│─────⎟\n\
         """\
   / |4\\\n\
 Pi|3|-|\n\
-  \ |x/\
+  \\ |x/\
 """
     ucode_str = \
         """\
@@ -4666,7 +4666,7 @@ Pi|3|-|\n\
         """\
   /   4| \\\n\
 Pi|3; -|6|\n\
-  \   x| /\
+  \\   x| /\
 """
     ucode_str = \
         """\
@@ -4714,12 +4714,12 @@ def test_sympyissue_6359():
     assert pretty(Integral(x**2, x)**2) == \
         """\
           2
-/  /     \ \n\
+/  /     \\ \n\
 | |      | \n\
 | |  2   | \n\
 | | x  dx| \n\
 | |      | \n\
-\/       / \
+\\/       / \
 """
     assert upretty(Integral(x**2, x)**2) == \
         """\
@@ -4798,7 +4798,7 @@ def test_sympyissue_6739():
   1  \n\
 -----\n\
   ___\n\
-\/ x \
+\\/ x \
 """
     ucode_str = \
         """\
@@ -4853,10 +4853,10 @@ def test_sympyissue_7180():
 
 
 def test_pretty_Complement():
-    assert pretty(S.Reals - S.Naturals) == '(-oo, oo) \ Naturals()'
-    assert upretty(S.Reals - S.Naturals) == 'ℝ \ ℕ'
-    assert pretty(S.Reals - S.Naturals0) == '(-oo, oo) \ Naturals0()'
-    assert upretty(S.Reals - S.Naturals0) == 'ℝ \ ℕ₀'
+    assert pretty(S.Reals - S.Naturals) == r'(-oo, oo) \ Naturals()'
+    assert upretty(S.Reals - S.Naturals) == r'ℝ \ ℕ'
+    assert pretty(S.Reals - S.Naturals0) == r'(-oo, oo) \ Naturals0()'
+    assert upretty(S.Reals - S.Naturals0) == r'ℝ \ ℕ₀'
 
 
 def test_pretty_SymmetricDifference():
@@ -4989,11 +4989,11 @@ def test_sympyissue_6134():
 
 
 def test_sympyissue_9877():
-    ucode_str1 = '(2, 3) ∪ ([1, 2] \ {x})'
+    ucode_str1 = '(2, 3) ∪ ([1, 2] \\ {x})'
     a, b, c = Interval(2, 3, True, True), Interval(1, 2), FiniteSet(x)
     assert upretty(Union(a, Complement(b, c))) == ucode_str1
 
-    ucode_str2 = '{x} ∩ {y} ∩ ({z} \ [1, 2])'
+    ucode_str2 = '{x} ∩ {y} ∩ ({z} \\ [1, 2])'
     d, e, f, g = FiniteSet(x), FiniteSet(y), FiniteSet(z), Interval(1, 2)
     assert upretty(Intersection(d, e, Complement(f, g))) == ucode_str2
 

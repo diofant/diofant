@@ -711,7 +711,7 @@ def test_Xor():
 
 
 def test_Complement():
-    assert str(Complement(S.Reals, S.Naturals)) == '(-oo, oo) \ Naturals()'
+    assert str(Complement(S.Reals, S.Naturals)) == '(-oo, oo) \\ Naturals()'
 
 
 def test_SymmetricDifference():
