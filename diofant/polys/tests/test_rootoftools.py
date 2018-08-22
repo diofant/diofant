@@ -3,8 +3,8 @@
 import pytest
 
 from diofant import (Eq, Float, Function, I, Lambda, Pow, Rational, Symbol,
-                     conjugate, exp, false, legendre_poly, log, oo, root,
-                     solve, sqrt, tan, true)
+                     conjugate, exp, expand_func, false, legendre_poly, log,
+                     oo, root, solve, sqrt, tan, true)
 from diofant.abc import a, b, r, x, y, z
 from diofant.polys.polyerrors import (GeneratorsNeeded,
                                       MultivariatePolynomialError,
@@ -543,12 +543,14 @@ def test_rewrite():
 
 
 @pytest.mark.slow
-def test_RootOf_algebraic_domain():
-    assert RootOf(x**3 + I*x + 2, 0,
-                  extension=True) == RootOf(x**6 + 4*x**3 + x**2 + 4, 1)
-    assert RootOf(x**3 + I*x + 2, 1,
-                  extension=True) == RootOf(x**6 + 4*x**3 + x**2 + 4, 3)
+def test_RootOf_expand_func():
+    r0 = RootOf(x**3 + x + 1, 0)
+    assert expand_func(r0) == r0
+    r0 = RootOf(x**3 + I*x + 2, 0, extension=True)
+    assert expand_func(r0) == RootOf(x**6 + 4*x**3 + x**2 + 4, 1)
+    r1 = RootOf(x**3 + I*x + 2, 1, extension=True)
+    assert expand_func(r1) == RootOf(x**6 + 4*x**3 + x**2 + 4, 3)
 
     e = RootOf(x**4 + sqrt(2)*x**3 - I*x + 1, 0, extension=True)
-    assert e == RootOf(x**16 - 4*x**14 + 8*x**12 - 6*x**10 +
-                       10*x**8 + 5*x**4 + 2*x**2 + 1, 1)
+    assert expand_func(e) == RootOf(x**16 - 4*x**14 + 8*x**12 - 6*x**10 +
+                                    10*x**8 + 5*x**4 + 2*x**2 + 1, 1)

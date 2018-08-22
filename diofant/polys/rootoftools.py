@@ -58,7 +58,7 @@ class RootOf(Expr):
     Examples
     ========
 
-    >>> RootOf(x**3 + I*x + 2, 0, extension=True)
+    >>> expand_func(RootOf(x**3 + I*x + 2, 0, extension=True))
     RootOf(x**6 + 4*x**3 + x**2 + 4, 1)
     """
 
@@ -121,22 +121,6 @@ class RootOf(Expr):
 
         coeff, poly = preprocess_roots(poly, extension=extension)
 
-        if poly.domain.is_AlgebraicField and extension:
-            if poly.domain.domain.is_AlgebraicField:
-                new_domain = QQ.algebraic_field(poly.domain.domain.ext,
-                                                poly.domain.ext)
-                poly = poly.set_domain(new_domain)
-            x, y = poly.gen, Dummy('y')
-            p = sum(Poly(c.rep, y)*x**n for (n,), c in poly.rep.terms()).inject(x)
-            q = poly.domain.minpoly.eval(y)
-            minpoly = PurePoly(resultant(p, q, y), x)
-            for idx, r in enumerate(minpoly.all_roots()):  # pragma: no branch
-                if poly.as_expr().evalf(2, subs={x: r}, chop=True) == 0:
-                    index -= 1
-                    if index == -1:
-                        break
-            poly, index = minpoly, idx
-
         if poly.domain.is_IntegerRing or poly.domain == QQ.algebraic_field(I):
             root = cls._indexed_root(poly, index)
         else:
@@ -174,6 +158,26 @@ class RootOf(Expr):
     @property
     def free_symbols(self):
         return self.poly.free_symbols
+
+    def _eval_expand_func(self, **hints):
+        poly = self.poly
+        index = self.index
+        if poly.domain.is_AlgebraicField:
+            if poly.domain.domain.is_AlgebraicField:
+                new_domain = QQ.algebraic_field(poly.domain.domain.ext,
+                                                poly.domain.ext)
+                poly = poly.set_domain(new_domain)
+            x, y = poly.gen, Dummy('y')
+            p = sum(Poly(c.rep, y)*x**n for (n,), c in poly.rep.terms()).inject(x)
+            q = poly.domain.minpoly.eval(y)
+            minpoly = PurePoly(resultant(p, q, y), x)
+            for idx, r in enumerate(minpoly.all_roots()):  # pragma: no branch
+                if poly.as_expr().evalf(2, subs={x: r}, chop=True) == 0:
+                    index -= 1
+                    if index == -1:
+                        break
+            poly, index = minpoly, idx
+        return self.func(poly.as_expr(), poly.gen, index)
 
     def _eval_is_real(self):
         try:
