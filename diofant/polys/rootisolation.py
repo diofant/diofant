@@ -1544,7 +1544,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     f1, f2 = dup_real_imag(f, F)
 
     if F.is_AlgebraicField:
-        F = K.domain
+        F = F.domain
 
     f1L1 = dmp_eval_in(f1, v, 1, 1, F)
     f2L1 = dmp_eval_in(f2, v, 1, 1, F)
