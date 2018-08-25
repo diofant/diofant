@@ -1526,11 +1526,10 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
                     _roots.append(croot)
                 _roots.append(root)
             roots = _roots
-        elif F.is_AlgebraicField and F.ext.as_expr() == I:
+        elif F.is_ComplexAlgebraicField:
             # Take conjugated polynomial to get solutions in the
             # bottom half-plane.
-            f = [F([-_.to_dict().get((1,), F.domain.zero),
-                    +_.to_dict().get((0,), F.domain.zero)]) for _ in f]
+            f = [_.conjugate() for _ in f]
             roots += [_.conjugate()
                       for _ in dup_isolate_complex_roots_sqf(f, F, eps=eps,
                                                              inf=(u, 0), sup=(s, -v),
@@ -1834,8 +1833,7 @@ class ComplexInterval:
                 f = dmp_add(f1, dmp_mul_ground(f2, dom.unit, 0, dom), 0, dom)
                 f = dmp_compose(f, [-dom.unit, 0], 0, dom)
                 if i.conj:
-                    f = [dom([-_.to_dict().get((1,), dom.domain.zero),
-                              +_.to_dict().get((0,), dom.domain.zero)]) for _ in f]
+                    f = [_.conjugate() for _ in f]
                 f = dmp_compose(f, [dom.unit, 0], 0, dom)
                 r = dup_isolate_real_roots(f, dom, inf=i.ay, sup=i.by)
                 if len([1 for _ in r if ((not i.conj and i.ay < _[0][0]) or

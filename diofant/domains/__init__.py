@@ -15,7 +15,7 @@ from .integerring import GMPYIntegerRing, IntegerRing, PythonIntegerRing  # noqa
 from .rationalfield import GMPYRationalField, PythonRationalField, RationalField  # noqa: F401
 from .realfield import RealField
 from .complexfield import ComplexField
-from .algebraicfield import AlgebraicField, RealAlgebraicField  # noqa: F401
+from .algebraicfield import AlgebraicField, ComplexAlgebraicField, RealAlgebraicField  # noqa: F401
 from .expressiondomain import ExpressionDomain
 from .groundtypes import PythonRational  # noqa: F401
 
