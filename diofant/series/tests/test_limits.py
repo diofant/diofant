@@ -4,10 +4,10 @@ import pytest
 
 from diofant import (E, Float, Function, I, Integral, Limit, Matrix, Piecewise,
                      PoleError, Rational, Sum, Symbol, acos, atan, cbrt,
-                     ceiling, cos, cot, diff, erf, erfi, exp, factorial, floor,
-                     gamma, integrate, limit, log, nan, oo, pi, polygamma,
-                     root, sign, simplify, sin, sinh, sqrt, subfactorial,
-                     symbols, tan)
+                     ceiling, cos, cot, diff, digamma, erf, erfi, exp,
+                     factorial, floor, gamma, integrate, limit, log, nan, oo,
+                     pi, polygamma, root, sign, simplify, sin, sinh, sqrt,
+                     subfactorial, symbols, tan)
 from diofant.abc import a, b, c, n, x, y, z
 from diofant.series.limits import heuristics
 from diofant.series.order import O
@@ -630,3 +630,9 @@ def test_sympyissue_14811():
 
 def test_sympyissue_15055():
     assert limit(n**3*((-n - 1)*sin(1/n) + (n + 2)*sin(1/(n + 1)))/(-n + 1), n, oo) == 1
+
+
+def test_sympyissue_15146():
+    assert limit((n/2)*(-2*n**3 - 2*(n**3 - 1)*n**2*digamma(n**3 + 1) +
+                        2*(n**3 - 1)*n**2*digamma(n**3 + n + 1) +
+                        n + 3), n, oo) == Rational(1, 3)
