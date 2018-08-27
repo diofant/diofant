@@ -2,7 +2,6 @@
 
 import math
 
-from ..core import I
 from ..utilities import variations
 from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
                          dmp_exquo_ground, dmp_mul, dmp_mul_ground, dmp_neg,
@@ -579,12 +578,12 @@ def dup_real_imag(f, K):
     >>> R.dup_real_imag(x**3 + x**2 + x + 1)
     (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1, 3*x**2*y + 2*x*y - y**3 + y)
     """
-    if K.is_AlgebraicField and K.ext.as_expr() == I:
+    if K.is_ComplexAlgebraicField:
         K0 = K.domain
-        r1, i1 = dup_real_imag([_.to_dict().get((0,), K0.zero) for _ in f], K0)
-        r2, i2 = dup_real_imag([_.to_dict().get((1,), K0.zero) for _ in f], K0)
+        r1, i1 = dup_real_imag([_.real for _ in f], K0)
+        r2, i2 = dup_real_imag([_.imag for _ in f], K0)
         return dmp_add(r1, dmp_neg(i2, 1, K0), 1, K0), dmp_add(r2, i1, 1, K0)
-    elif not K.is_IntegerRing and not K.is_RationalField:
+    elif not K.is_IntegerRing and not K.is_RationalField and not K.is_RealAlgebraicField:
         raise DomainError("computing real and imaginary parts is not supported over %s" % K)
 
     f1 = dmp_zero(1)

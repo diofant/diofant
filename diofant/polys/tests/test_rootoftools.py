@@ -554,3 +554,17 @@ def test_RootOf_expand_func():
     e = RootOf(x**4 + sqrt(2)*x**3 - I*x + 1, 0, extension=True)
     assert expand_func(e) == RootOf(x**16 - 4*x**14 + 8*x**12 - 6*x**10 +
                                     10*x**8 + 5*x**4 + 2*x**2 + 1, 1)
+
+
+@pytest.mark.slow
+def test_RootOf_algebraic():
+    e = RootOf(sqrt(2)*x**4 + sqrt(2)*x**3 - I*x + sqrt(2), x, 0, extension=True)
+    assert e.interval.as_tuple() == ((Rational(-201, 100), 0),
+                                     (Rational(-201, 200), Rational(201, 200)))
+    assert e.evalf(7) == Float('-1.22731258', dps=7) + I*Float('0.6094138324', dps=7)
+
+    t = RootOf(x**5 + 4*x + 2, 0)
+    e = RootOf(x**4 + t*x + 1, 0, extension=True)
+    assert e.interval.as_tuple() == ((Rational(-201, 200), Rational(-201, 200)),
+                                     (Rational(-201, 400), Rational(-201, 400)))
+    assert e.evalf(7) == Float('-0.7123350278', dps=7) - I*Float('0.8248345032', dps=7)

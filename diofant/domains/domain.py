@@ -35,6 +35,7 @@ class Domain(DefaultPrinting, abc.ABC):
     is_ComplexField = is_CC = False
     is_AlgebraicField = is_Algebraic = False
     is_RealAlgebraicField = False
+    is_ComplexAlgebraicField = False
     is_PolynomialRing = is_Poly = False
     is_FractionField = is_Frac = False
     is_SymbolicDomain = is_EX = False

@@ -9,13 +9,13 @@ New features
 
 * New representation for elements of :class:`~diofant.domains.AlgebraicField`, see :pull:`619` and :pull:`631`.
 * Ground domains for :class:`~diofant.domains.AlgebraicField` can be also instances of :class:`~diofant.domains.AlgebraicField`, see :pull:`653`.
-* New subclass, :class:`~diofant.domains.RealAlgebraicField`, to represent real algebraic fields, see :pull:`669`.
+* New subclasses of :class:`~diofant.domains.AlgebraicField`: :class:`~diofant.domains.RealAlgebraicField` and :class:`~diofant.domains.ComplexAlgebraicField`, see :pull:`669` and :pull:`630`.
 
 Major changes
 =============
 
 * Stable enumeration of polynomial roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`633` and :pull:`658`.
-* Support for real algebraic domains in isolation of real roots, see :pull:`673`.
+* Support root isolation for polynomials with algebraic coefficients, see :pull:`673` and :pull:`630`.
 
 Compatibility breaks
 ====================

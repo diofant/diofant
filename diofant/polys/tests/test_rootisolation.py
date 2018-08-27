@@ -767,6 +767,22 @@ def test_dup_count_complex_roots_8():
     assert R.dup_count_complex_roots(f, c, d) == 4
 
 
+def test_dup_count_complex_roots_9():
+    R, x = ring("x", QQ.algebraic_field(sqrt(2)))
+
+    f = -x**3 + sqrt(2)*x - 1
+
+    assert R.dup_count_complex_roots(f, a, b) == 2
+    assert R.dup_count_complex_roots(f, c, d) == 1
+
+    R, x = ring("x", QQ.algebraic_field(sqrt(2)).algebraic_field(I))
+
+    f = -x**3 + I*x**2 + sqrt(2)*x - 1
+
+    assert R.dup_count_complex_roots(f, a, b) == 2
+    assert R.dup_count_complex_roots(f, c, d) == 1
+
+
 def test_dup_count_complex_roots_implicit():
     R, x = ring("x", ZZ)
 
@@ -903,6 +919,21 @@ def test_dup_isolate_complex_roots_sqf():
                                                   ((0, QQ(-1001, 800)), (QQ(1001, 400), 0)),
                                                   ((0, 0), (QQ(1001, 400), QQ(1001, 800))),
                                                   ((0, QQ(1001, 800)), (QQ(1001, 400), QQ(1001, 400)))]
+
+    R, x = ring("x", QQ.algebraic_field(sqrt(2)))
+
+    f = -x**3 + sqrt(2)*x - 1
+
+    assert R.dup_isolate_complex_roots_sqf(f) == [((0, QQ(-283, 100)), (QQ(283, 100), 0)),
+                                                  ((0, 0), (QQ(283, 100), QQ(283, 100)))]
+
+    R, x = ring("x", QQ.algebraic_field(sqrt(2)).algebraic_field(I))
+
+    f = -x**3 + I*x**2 + sqrt(2)*x - 1
+
+    assert R.dup_isolate_complex_roots_sqf(f) == [((QQ(-283, 100), 0), (0, QQ(283, 100))),
+                                                  ((0, QQ(-283, 100)), (QQ(283, 100), 0)),
+                                                  ((0, 0), (QQ(283, 100), QQ(283, 100)))]
 
 
 def test_dup_isolate_all_roots_sqf():

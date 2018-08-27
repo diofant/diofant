@@ -3,7 +3,7 @@
 import functools
 import operator
 
-from ..core import Integer, sympify
+from ..core import I, Integer, sympify
 from ..core.sympify import CantSympify
 from ..polys.densearith import (dmp_neg, dmp_pow, dmp_rem, dup_add, dup_mul,
                                 dup_sub)
@@ -15,6 +15,7 @@ from ..printing.defaults import DefaultPrinting
 from .characteristiczero import CharacteristicZero
 from .domainelement import DomainElement
 from .field import Field
+from .rationalfield import RationalField
 from .simpledomain import SimpleDomain
 
 
@@ -56,7 +57,14 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         else:
             ext_root = None
 
-        obj = super().__new__(RealAlgebraicField if is_real else cls)
+        if is_real:
+            new_cls = RealAlgebraicField
+        elif isinstance(dom, (RationalField, RealAlgebraicField)) and ext == I:
+            new_cls = ComplexAlgebraicField
+        else:
+            new_cls = cls
+        obj = super().__new__(new_cls)
+
         obj.ext = ext
         obj._ext_root = ext_root
         obj.minpoly = minpoly
@@ -69,7 +77,12 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         try:
             obj.dtype = _algebraic_numbers_cache[(obj.domain, obj.ext)]
         except KeyError:
-            dtype_cls = RealAlgebraicElement if is_real else AlgebraicElement
+            if new_cls == RealAlgebraicField:
+                dtype_cls = RealAlgebraicElement
+            elif new_cls == ComplexAlgebraicField:
+                dtype_cls = ComplexAlgebraicElement
+            else:
+                dtype_cls = AlgebraicElement
             obj.dtype = type(dtype_cls.__name__, (dtype_cls,), {"_parent": obj})
             _algebraic_numbers_cache[(obj.domain, obj.ext)] = obj.dtype
 
@@ -193,6 +206,12 @@ class RealAlgebraicField(AlgebraicField):
     def is_negative(self, a):
         """Returns True if ``a`` is negative. """
         return a < 0
+
+
+class ComplexAlgebraicField(AlgebraicField):
+    """A class for representing complex algebraic number fields. """
+
+    is_ComplexAlgebraicField = True
 
 
 class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
@@ -343,7 +362,25 @@ class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
                                                   for _ in self.rep), ZZ.one))
 
 
-class RealAlgebraicElement(AlgebraicElement):
+class ComplexAlgebraicElement(AlgebraicElement):
+    """Elements of complex algebraic numbers field. """
+
+    @property
+    def real(self):
+        """Returns real part of ``self``. """
+        return self.domain.convert(self.rep[-1]) if self else self.domain.zero
+
+    @property
+    def imag(self):
+        """Returns imaginary part of ``self``. """
+        return self.domain.convert((self - self.real)/self.parent.unit)
+
+    def conjugate(self):
+        """Returns the complex conjugate of ``self``. """
+        return self.real - self.parent.unit*self.imag
+
+
+class RealAlgebraicElement(ComplexAlgebraicElement):
     """Elements of real algebraic numbers field. """
 
     def __abs__(self):
@@ -378,3 +415,13 @@ class RealAlgebraicElement(AlgebraicElement):
 
     def __ge__(self, other):
         return self._cmp(other, operator.ge)
+
+    @property
+    def real(self):
+        """Returns real part of ``self``. """
+        return self
+
+    @property
+    def imag(self):
+        """Returns imaginary part of ``self``. """
+        return self.parent.zero

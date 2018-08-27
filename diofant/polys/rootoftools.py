@@ -121,7 +121,7 @@ class RootOf(Expr):
 
         coeff, poly = preprocess_roots(poly, extension=extension)
 
-        if poly.domain.is_IntegerRing or poly.domain == QQ.algebraic_field(I):
+        if poly.domain.is_IntegerRing or poly.domain.is_AlgebraicField:
             root = cls._indexed_root(poly, index)
         else:
             root = poly, index
@@ -436,7 +436,7 @@ class RootOf(Expr):
     def _all_roots(cls, poly):
         """Get real and complex roots of a composite polynomial. """
 
-        if not poly.domain.is_IntegerRing and poly.domain != QQ.algebraic_field(I):
+        if not (poly.domain.is_IntegerRing or poly.domain.is_AlgebraicField):
             return [(poly, i) for i in range(poly.degree())]
 
         _, factors = poly.factor_list()

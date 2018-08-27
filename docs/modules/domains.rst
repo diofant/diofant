@@ -56,6 +56,9 @@ Concrete Domains
 .. autoclass:: RealAlgebraicField
    :members:
 
+.. autoclass:: ComplexAlgebraicField
+   :members:
+
 .. autoclass:: diofant.polys.rings.PolynomialRing
    :members:
 

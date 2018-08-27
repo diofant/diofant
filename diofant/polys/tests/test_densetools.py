@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import I, Rational, sin
+from diofant import I, Rational, sin, sqrt
 from diofant.abc import x
 from diofant.domains import EX, FF, QQ, ZZ
 from diofant.polys.densearith import dmp_mul_ground
@@ -431,6 +431,21 @@ def test_dup_real_imag():
     i = 4*x**3*y + x**3 - 4*x*y**3 - 3*x*y**2 - y
 
     assert R.dup_real_imag(f) == (r, i)
+
+    K = ZZ.algebraic_field(sqrt(2))
+    R = K.poly_ring("x", "y")
+    x, y = R.gens
+
+    f = R.x**2 + sqrt(2)*R.x - 1
+    assert R.dup_real_imag(f) == (x**2 - y**2 + sqrt(2)*x - 1, 2*x*y + sqrt(2)*y)
+
+    K = ZZ.algebraic_field(sqrt(2)).algebraic_field(I)
+    R = K.poly_ring("x", "y")
+    x, y = R.to_ground().gens
+
+    f = R.x**2 + 2*sqrt(2)*I*R.x - 1 + I
+    assert R.dup_real_imag(f) == (x**2 - y**2 - 2*sqrt(2)*y - 1,
+                                  2*x*y + 2*sqrt(2)*x + 1)
 
 
 def test_dup_mirror():
