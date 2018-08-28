@@ -6,6 +6,7 @@ from ..functions import Piecewise, log, piecewise_fold, sign, sqrt
 from ..matrices import MatrixBase
 from ..polys import Poly, PolynomialError
 from ..series import Order, limit
+from ..simplify.fu import sincos_to_sum
 from ..utilities import filldedent
 from .meijerint import meijerint_definite, meijerint_indefinite
 from .trigonometry import trigintegrate
@@ -893,7 +894,7 @@ class Integral(AddWithLimits):
             # collection on the expressions if they are already
             # in an expanded form
             if not h and len(args) == 1:
-                f = f.expand(mul=True, deep=False)
+                f = sincos_to_sum(f).expand(mul=True, deep=False)
                 if f.is_Add:
                     # Note: risch will be identical on the expanded
                     # expression, but maybe it will be able to pick out parts,
@@ -984,11 +985,11 @@ class Integral(AddWithLimits):
         by using the midpoint or right-hand method:
 
         >>> e = Integral(1/sqrt(x), (x, 0, 1))
-        >>> e.as_sum(5).n(4)
+        >>> e.as_sum(5).evalf(4)
         1.730
-        >>> e.as_sum(10).n(4)
+        >>> e.as_sum(10).evalf(4)
         1.809
-        >>> e.doit().n(4)  # the actual value is 2
+        >>> e.doit().evalf(4)  # the actual value is 2
         2.000
 
         The left- or trapezoid method will encounter the discontinuity and

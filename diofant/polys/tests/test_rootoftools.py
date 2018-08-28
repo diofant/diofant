@@ -255,7 +255,7 @@ def test_RootOf_evalf():
     assert im.epsilon_eq(Float("1.45061224918844152650"))
 
     p = legendre_poly(4, x, polys=True)
-    roots = [str(r.n(17)) for r in p.real_roots()]
+    roots = [str(r.evalf(17)) for r in p.real_roots()]
     assert roots == [
         "-0.86113631159405258",
         "-0.33998104358485626",
@@ -283,45 +283,45 @@ def test_RootOf_evalf():
     assert im.epsilon_eq(Float("+0.719798681483861386681"))
 
     # issue sympy/sympy#6393
-    assert str(RootOf(x**5 + 2*x**4 + x**3 - 68719476736, 0).n(3)) == '147.'
+    assert str(RootOf(x**5 + 2*x**4 + x**3 - 68719476736, 0).evalf(3)) == '147.'
     eq = (531441*x**11 + 3857868*x**10 + 13730229*x**9 + 32597882*x**8 +
           55077472*x**7 + 60452000*x**6 + 32172064*x**5 - 4383808*x**4 -
           11942912*x**3 - 1506304*x**2 + 1453312*x + 512)
-    a, b = RootOf(eq, 1).n(2).as_real_imag()
-    c, d = RootOf(eq, 2).n(2).as_real_imag()
+    a, b = RootOf(eq, 1).evalf(2).as_real_imag()
+    c, d = RootOf(eq, 2).evalf(2).as_real_imag()
     assert a == c
     assert b < d
     assert b == -d
     # issue sympy/sympy#6451
     r = RootOf(legendre_poly(64, x), 7)
-    assert r.n(2) == r.n(100).n(2)
+    assert r.evalf(2) == r.evalf(100).evalf(2)
     # issue sympy/sympy#8617
-    ans = [w[x].n(2) for w in solve(x**3 - x - 4)]
-    assert RootOf(exp(x)**3 - exp(x) - 4, 0).n(2) in ans
+    ans = [w[x].evalf(2) for w in solve(x**3 - x - 4)]
+    assert RootOf(exp(x)**3 - exp(x) - 4, 0).evalf(2) in ans
     # issue sympy/sympy#9019
     r0 = RootOf(x**2 + 1, 0, radicals=False)
     r1 = RootOf(x**2 + 1, 1, radicals=False)
-    assert r0.n(4, chop=True) == -1.0*I
-    assert r1.n(4, chop=True) == +1.0*I
+    assert r0.evalf(4, chop=True) == -1.0*I
+    assert r1.evalf(4, chop=True) == +1.0*I
 
     # make sure verification is used in case a max/min traps the "root"
-    assert str(RootOf(4*x**5 + 16*x**3 + 12*x**2 + 7, 0).n(3)) == '-0.976'
+    assert str(RootOf(4*x**5 + 16*x**3 + 12*x**2 + 7, 0).evalf(3)) == '-0.976'
 
-    assert isinstance(RootOf(x**3 + y*x + 1, x, 0).n(2), RootOf)
+    assert isinstance(RootOf(x**3 + y*x + 1, x, 0).evalf(2), RootOf)
 
-    assert RootOf(x**3 + I*x + 2, 0).n(7) == (Float('-1.260785326', dps=7) +
-                                              I*Float('0.2684419416', dps=7))
+    assert RootOf(x**3 + I*x + 2, 0).evalf(7) == (Float('-1.260785326', dps=7) +
+                                                  I*Float('0.2684419416', dps=7))
 
     r = RootOf(x**2 - 4456178*x + 60372201703370, 0, radicals=False)
-    assert r.n(2) == Float('2.2282e+6', dps=2) - I*Float('7.4465e+6', dps=2)
+    assert r.evalf(2) == Float('2.2282e+6', dps=2) - I*Float('7.4465e+6', dps=2)
 
 
 def test_RootOf_evalf_caching_bug():
     r = RootOf(x**5 - 5*x + 12, 1)
-    r.n()
+    r.evalf()
     a = r.interval
     r = RootOf(x**5 - 5*x + 12, 1)
-    r.n()
+    r.evalf()
     b = r.interval
     assert a == b
 
@@ -368,7 +368,7 @@ def test_RootOf_eval_rational():
     # All we know is that the Rational instance will be at most 1/10^20 from
     # the exact root. So if we evaluate to 17 digits, it must be exactly equal
     # to:
-    roots = [str(r.n(17)) for r in roots]
+    roots = [str(r.evalf(17)) for r in roots]
     assert roots == [
         "-0.86113631159405258",
         "-0.33998104358485626",
@@ -533,11 +533,11 @@ def test_sympyissue_8316():
 
 def test_rewrite():
     r3 = RootOf(x**3 + x - 1, 0)
-    assert r3.n() == r3.rewrite(Pow).n()
+    assert r3.evalf() == r3.rewrite(Pow).evalf()
     assert r3.rewrite(Pow) == (-1/(3*root(Rational(1, 2) + sqrt(93)/18, 3)) +
                                root(Rational(1, 2) + sqrt(93)/18, 3))
     r4 = RootOf(x**4 - x + 5, 0)
-    assert r4.n() == r4.rewrite(Pow).n()
+    assert r4.evalf() == r4.rewrite(Pow).evalf()
     r11 = RootOf(x**11 + x - 3, 0)
     assert r11.rewrite(Pow) == r11
 

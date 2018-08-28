@@ -219,7 +219,7 @@ def test_harmonic_rational():
     for h, a in zip(H, A):
         e = expand_func(h).doit()
         assert cancel(e/a) == 1
-        assert h.n() == a.n()
+        assert h.evalf() == a.evalf()
 
 
 def test_harmonic_evalf():

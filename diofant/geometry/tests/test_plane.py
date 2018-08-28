@@ -199,7 +199,7 @@ def test_plane():
                (-Float(9.00000087501922), Float(-4.81170658872543e-13),
                 Float(0.0)))
 
-    assert sstr([i.n(2) for i in p2.intersection(l2)]) == \
+    assert sstr([i.evalf(2) for i in p2.intersection(l2)]) == \
         '[Point3D(4.0, -0.89, 2.3)]'
 
 

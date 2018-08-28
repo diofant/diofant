@@ -208,7 +208,7 @@ def test_pow_E():
         r, i = b.as_real_imag()
         if i:
             break
-    assert verify_numerically(b**(1/(log(-b) + sign(i)*I*pi).n(strict=False)), E)
+    assert verify_numerically(b**(1/(log(-b) + sign(i)*I*pi).evalf(strict=False)), E)
 
 
 def test_pow_sympyissue_3516():
@@ -221,7 +221,7 @@ def test_pow_im():
             b = m*I
             for i in range(1, 4*d + 1):
                 e = Rational(i, d)
-                assert (b**e - (b**e).n()).n(2, chop=True, strict=False) == 0
+                assert (b**e - (b**e).evalf()).evalf(2, chop=True, strict=False) == 0
 
     e = Rational(7, 3)
     assert (2*x*I)**e == 4*cbrt(2)*(I*x)**e  # same as Wolfram Alpha
@@ -1546,7 +1546,7 @@ def test_Mod():
     r3 = sqrt(3)
     for i in [-r3, -r2, r2, r3]:
         for j in [-r3, -r2, r2, r3]:
-            assert verify_numerically(i % j, i.n() % j.n())
+            assert verify_numerically(i % j, i.evalf() % j.evalf())
     for _x in range(4):
         for _y in range(9):
             reps = [(x, _x), (y, _y)]
@@ -1732,7 +1732,7 @@ def test_diofantissue_31():
 
 def test_sympyissue_5160_6087_6089_6090():
     # issue sympy/sympy#6087
-    assert ((-2*x*y**y)**3.2).n(2, strict=False) == (2**3.2*(-x*y**y)**3.2).n(2, strict=False)
+    assert ((-2*x*y**y)**3.2).evalf(2, strict=False) == (2**3.2*(-x*y**y)**3.2).evalf(2, strict=False)
     # issue sympy/sympy#6089
     A, B, C = symbols('A,B,C', commutative=False)
     assert (2.*B*C)**3 == 8.0*(B*C)**3

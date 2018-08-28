@@ -55,8 +55,8 @@ def test_roots_quadratic():
 
     # issue sympy/sympy#8255
     f = Poly(-24*x**2 - 180*x + 264)
-    assert [w.n(2) for w in f.all_roots(radicals=True)] == \
-           [w.n(2) for w in f.all_roots(radicals=False)]
+    assert [w.evalf(2) for w in f.all_roots(radicals=True)] == \
+           [w.evalf(2) for w in f.all_roots(radicals=False)]
     for _a, _b, _c in itertools.product((-2, 2), (-2, 2), (0, -1)):
         f = Poly(_a*x**2 + _b*x + _c)
         roots = roots_quadratic(f)
@@ -71,7 +71,7 @@ def test_sympyissue_8438():
     assert set(post) == \
         set(roots_cubic(Poly(p.subs(y, z), x)))
     # /!\ if p is not made an expression, this is *very* slow
-    assert all(p.subs({y: z, x: i}).n(2, chop=True) == 0 for i in post)
+    assert all(p.subs({y: z, x: i}).evalf(2, chop=True) == 0 for i in post)
 
 
 def test_sympyissue_8285():
@@ -157,7 +157,7 @@ def test_roots_quartic():
             d = a*(a*(3*a**2/Integer(256) - b/Integer(16)) + c/Integer(4))
         eq = x**4 + a*x**3 + b*x**2 + c*x + d
         ans = roots_quartic(Poly(eq, x))
-        assert all(eq.subs(x, ai).n(chop=True) == 0 for ai in ans)
+        assert all(eq.subs(x, ai).evalf(chop=True) == 0 for ai in ans)
 
     # not all symbolic quartics are unresolvable
     eq = Poly(q*x + q/4 + x**4 + x**3 + 2*x**2 - Rational(1, 3), x)
@@ -541,7 +541,7 @@ def test_roots_slow():
     f = x**3 + 2*x**2 + 8
     R = list(roots(f))
 
-    assert not any(i for i in [f.subs(x, ri).n(chop=True) for ri in R])
+    assert not any(i for i in [f.subs(x, ri).evalf(chop=True) for ri in R])
 
 
 def test_roots_inexact():
@@ -681,7 +681,7 @@ def test_sympyissue_7724():
     e = x**4*I + x**2 + I
     r1, r2 = roots(e, x), Poly(e, x).all_roots()
     assert len(r1) == 4
-    assert {_.n() for _ in r1} == {_.n() for _ in r2}
+    assert {_.evalf() for _ in r1} == {_.evalf() for _ in r2}
 
 
 def test_sympyissue_14291():

@@ -107,7 +107,7 @@ def test_point():
 
     a, b = Rational(1, 2), Rational(1, 3)
     assert Point(a, b).evalf(2) == \
-        Point(a.n(2), b.n(2))
+        Point(a.evalf(2), b.evalf(2))
     pytest.raises(ValueError, lambda: Point(1, 2) + 1)
 
     # test transformations
@@ -178,7 +178,7 @@ def test_point3D():
 
     a, b = Rational(1, 2), Rational(1, 3)
     assert Point(a, b).evalf(2) == \
-        Point(a.n(2), b.n(2))
+        Point(a.evalf(2), b.evalf(2))
     pytest.raises(ValueError, lambda: Point(1, 2) + 1)
 
     # test transformations

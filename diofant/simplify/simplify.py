@@ -209,7 +209,7 @@ def _nthroot_solve(p, n, prec):
     sols = solve(f, x)
     for sol in sols:
         sol = sol[x]
-        if abs(sol - pn).n() < 1./10**prec:
+        if abs(sol - pn).evalf() < 1./10**prec:
             sol = sqrtdenest(sol)
             if _mexpand(sol**n) == p:
                 return sol
@@ -700,7 +700,7 @@ def _real_to_rational(expr, tolerance=None):
             r = Rational(tolerance*round(float/tolerance)).limit_denominator(int(tolerance))
         else:
             r = nsimplify(float, rational=False)
-            # e.g. log(3).n() -> log(3) instead of a Rational
+            # e.g. log(3).evalf() -> log(3) instead of a Rational
             if float and not r:
                 r = Rational(float)
             elif not r.is_Rational:

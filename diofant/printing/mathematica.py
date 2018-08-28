@@ -33,6 +33,7 @@ known_functions = {
     "conjugate": [(lambda x: True, "Conjugate")],
     "re": [(lambda x: True, "Re")],
     "im": [(lambda x: True, "Im")],
+    "polygamma": [(lambda n, x: True, "PolyGamma")],
 }
 
 

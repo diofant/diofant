@@ -199,7 +199,7 @@ def test_literal_evalf_is_number_is_zero_is_comparable():
     # it should appear in the is_zero property for that object;
     # if is_zero is true evalf should always be able to compute that
     # zero
-    assert i.n() == 0
+    assert i.evalf() == 0
     assert i.is_zero
     assert i.is_number is False
     assert i.evalf(2, strict=False) == 0
@@ -207,4 +207,4 @@ def test_literal_evalf_is_number_is_zero_is_comparable():
     # issue sympy/sympy#10272
     n = sin(1)**2 + cos(1)**2 - 1
     assert n.is_comparable is not True
-    assert n.n(2, strict=False).is_comparable is not True
+    assert n.evalf(2, strict=False).is_comparable is not True

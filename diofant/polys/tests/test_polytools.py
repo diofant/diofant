@@ -2827,7 +2827,7 @@ def test_nroots():
 
     # issue sympy/sympy#8296
     f = Poly(x**4 - 1)
-    assert f.nroots(2) == [w.n(2) for w in f.all_roots()]
+    assert f.nroots(2) == [w.evalf(2) for w in f.all_roots()]
 
 
 def test_ground_roots():

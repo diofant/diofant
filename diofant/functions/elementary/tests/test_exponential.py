@@ -430,7 +430,7 @@ def test_polar():
     x, y = symbols('x y', polar=True)
 
     assert abs(exp_polar(I*4)) == 1
-    assert exp_polar(I*10).n() == exp_polar(I*10)
+    assert exp_polar(I*10).evalf() == exp_polar(I*10)
 
     assert log(exp_polar(z)) == z
     assert log(x*y).expand() == log(x) + log(y)
@@ -439,7 +439,7 @@ def test_polar():
     assert exp_polar(3).exp == 3
 
     # Compare exp(1.0*pi*I).
-    assert (exp_polar(1.0*pi*I).n(5)).as_real_imag()[1] >= 0
+    assert (exp_polar(1.0*pi*I).evalf(5)).as_real_imag()[1] >= 0
 
     assert exp_polar(0).is_rational is True  # issue sympy/sympy#8008
 

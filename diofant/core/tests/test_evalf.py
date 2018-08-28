@@ -207,12 +207,12 @@ def test_evalf_bugs():
     # because the order depends on the hashes of the terms.
     assert NS(20 - 5008329267844*n**25 - 477638700*n**37 - 19*n,
               subs={n: .01}, strict=False) == '19.8100000000000'
-    assert NS(((x - 1)*((1 - x))**1000).n(strict=False),
+    assert NS(((x - 1)*((1 - x))**1000).evalf(strict=False),
               strict=False) == '(-x + 1.00000000000000)**1000*(x - 1.00000000000000)'
-    assert NS((-x).n(strict=False)) == '-x'
-    assert NS((-2*x).n(strict=False), strict=False) == '-2.00000000000000*x'
-    assert NS((-2*x*y).n(strict=False), strict=False) == '-2.00000000000000*x*y'
-    assert cos(x).n(subs={x: 1+I}) == cos(x).subs(x, 1+I).n()
+    assert NS((-x).evalf(strict=False)) == '-x'
+    assert NS((-2*x).evalf(strict=False), strict=False) == '-2.00000000000000*x'
+    assert NS((-2*x*y).evalf(strict=False), strict=False) == '-2.00000000000000*x*y'
+    assert cos(x).evalf(subs={x: 1+I}) == cos(x).subs(x, 1+I).evalf()
     # issue sympy/sympy#6660. Also NaN != mpmath.nan
     # In this order:
     # 0*nan, 0/nan, 0*inf, 0/inf
@@ -220,32 +220,32 @@ def test_evalf_bugs():
     # >>> n = Some Number
     # n*nan, n/nan, n*inf, n/inf
     # n+nan, n-nan, n+inf, n-inf
-    assert (0*sin(oo)).n() == 0
-    assert (0/sin(oo)).n() == 0
-    assert (0*E**oo).n() == nan
-    assert (0/E**oo).n() == 0
+    assert (0*sin(oo)).evalf() == 0
+    assert (0/sin(oo)).evalf() == 0
+    assert (0*E**oo).evalf() == nan
+    assert (0/E**oo).evalf() == 0
 
-    assert (0+sin(oo)).n() == nan
-    assert (0-sin(oo)).n() == nan
-    assert (0+E**oo).n() == +oo
-    assert (0-E**oo).n() == -oo
+    assert (0+sin(oo)).evalf() == nan
+    assert (0-sin(oo)).evalf() == nan
+    assert (0+E**oo).evalf() == +oo
+    assert (0-E**oo).evalf() == -oo
 
-    assert (5*sin(oo)).n() == nan
-    assert (5/sin(oo)).n() == nan
-    assert (5*E**oo).n() == oo
-    assert (5/E**oo).n() == 0
+    assert (5*sin(oo)).evalf() == nan
+    assert (5/sin(oo)).evalf() == nan
+    assert (5*E**oo).evalf() == oo
+    assert (5/E**oo).evalf() == 0
 
-    assert (5+sin(oo)).n() == nan
-    assert (5-sin(oo)).n() == nan
-    assert (5+E**oo).n() == +oo
-    assert (5-E**oo).n() == -oo
+    assert (5+sin(oo)).evalf() == nan
+    assert (5-sin(oo)).evalf() == nan
+    assert (5+E**oo).evalf() == +oo
+    assert (5-E**oo).evalf() == -oo
 
     # issue sympy/sympy#7416
     assert as_mpmath(0.0, 10, {'chop': True}) == 0
 
     # issue sympy/sympy#5412
-    assert (oo*I).n() == oo*I
-    assert (oo + oo*I).n() == oo + oo*I
+    assert (oo*I).evalf() == oo*I
+    assert (oo + oo*I).evalf() == oo + oo*I
 
 
 def test_evalf_integer_parts():
@@ -307,7 +307,7 @@ def test_evalf_sum():
     assert Sum(2**n*n/factorial(n), (n, 0, oo)).evalf() == (2*E*E).evalf()
     # issue sympy/sympy#8411
     s = Sum(1/x**2, (x, 100, oo))
-    assert s.n() == s.doit().n()
+    assert s.evalf() == s.doit().evalf()
 
 
 def test_evalf_divergent_series():
@@ -376,7 +376,7 @@ def test_evalf_relational():
 
 
 def test_sympyissue_5486():
-    assert not cos(sqrt(0.5 + I)).n(strict=False).is_Function
+    assert not cos(sqrt(0.5 + I)).evalf(strict=False).is_Function
 
 
 def test_sympyissue_5486_bug():
@@ -388,7 +388,7 @@ def test_bugs():
     assert abs(re((1 + I)**2)) < 1e-15
 
     # anything that evalf's to 0 will do in place of polar_lift
-    assert abs(polar_lift(0)).n() == 0
+    assert abs(polar_lift(0)).evalf() == 0
 
 
 def test_subs():
@@ -430,12 +430,12 @@ def test_sympyissue_4956_5204():
 def test_old_docstring():
     a = (E + pi*I)*(E - pi*I)
     assert NS(a) == '17.2586605000200'
-    assert a.n() == 17.25866050002001
+    assert a.evalf() == 17.25866050002001
 
 
 def test_sympyissue_4806():
     assert integrate(atan(x)**2, (x, -1, 1)).evalf().round(1) == 0.5
-    assert atan(0, evaluate=False).n() == 0
+    assert atan(0, evaluate=False).evalf() == 0
 
 
 def test_evalf_mul():
@@ -459,7 +459,7 @@ def test_scaled_zero():
 
 def test_chop_value():
     for i in range(-27, 28):
-        assert (Pow(10, i)*2).n(chop=10**i) and not (Pow(10, i)).n(chop=10**i)
+        assert (Pow(10, i)*2).evalf(chop=10**i) and not (Pow(10, i)).evalf(chop=10**i)
 
 
 def test_infinities():
@@ -474,8 +474,8 @@ def test_to_mpmath():
 
 def test_sympyissue_6632_evalf():
     add = (-100000*sqrt(2500000001) + 5000000001)
-    assert add.n() == 9.999999998e-11
-    assert (add*add).n() == 9.999999996e-21
+    assert add.evalf() == 9.999999998e-11
+    assert (add*add).evalf() == 9.999999996e-21
 
 
 def test_sympyissue_4945():
@@ -485,8 +485,8 @@ def test_sympyissue_4945():
 def test_evalf_integral():
     # test that workprec has to increase in order to get a result other than 0
     eps = Rational(1, 1000000)
-    assert Integral(sin(x), (x, -pi, pi + eps)).n(2)._prec == 10
-    assert (Integral(sin(I*x), (x, -pi, pi + eps)).n(2)/I)._prec == 10
+    assert Integral(sin(x), (x, -pi, pi + eps)).evalf(2)._prec == 10
+    assert (Integral(sin(I*x), (x, -pi, pi + eps)).evalf(2)/I)._prec == 10
 
 
 def test_sympyissue_8821_highprec_from_str():
@@ -544,7 +544,7 @@ def test_diofantissue_514():
 def test_diofantissue_499():
     e = -3000 + log(1 + E**3000)
     pytest.raises(PrecisionExhausted, lambda: e.evalf(2))
-    assert e.n(2, maxn=2000) == Float('1.3074e-1303', dps=2)
+    assert e.evalf(2, maxn=2000) == Float('1.3074e-1303', dps=2)
 
 
 def test_sympyissue_10395():
@@ -552,7 +552,7 @@ def test_sympyissue_10395():
     assert nfloat(eq) == eq
     eq = x*Max(y, -1.1)
     assert nfloat(eq) == eq
-    assert Max(y, 4).n() == Max(4.0, y)
+    assert Max(y, 4).evalf() == Max(4.0, y)
 
 
 def test_evalf_bernoulli():

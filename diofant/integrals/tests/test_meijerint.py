@@ -312,12 +312,12 @@ def test_lookup_table():
 
             # Now test that the meijer g-function is indeed as advertised.
             expanded = Add(*[f*x for (f, x) in terms])
-            a, b = formula.n(subs=subs, strict=False), expanded.n(subs=subs, strict=False)
+            a, b = formula.evalf(subs=subs, strict=False), expanded.evalf(subs=subs, strict=False)
             r = min(abs(a), abs(b))
             if r < 1:
-                assert abs(a - b).n(strict=False) <= 1e-10
+                assert abs(a - b).evalf(strict=False) <= 1e-10
             else:
-                assert (abs(a - b)/r).n(strict=False) <= 1e-10
+                assert (abs(a - b)/r).evalf(strict=False) <= 1e-10
 
 
 def test_branch_bug():

@@ -399,8 +399,8 @@ def test_Float():
     # rationality properties
     assert Float(1).is_rational is None
     assert Float(1).is_irrational is None
-    assert sqrt(2).n(15).is_rational is None
-    assert sqrt(2).n(15).is_irrational is None
+    assert sqrt(2).evalf(15).is_rational is None
+    assert sqrt(2).evalf(15).is_irrational is None
 
     # do not automatically evalf
     def teq(a):
@@ -462,7 +462,7 @@ def test_Float():
     assert Float(decimal.Decimal('-Infinity')) == -oo
 
     assert '{0:.3f}'.format(Float(4.236622)) == '4.237'
-    assert '{0:.35f}'.format(Float(pi.n(40), 40)) == '3.14159265358979323846264338327950288'
+    assert '{0:.35f}'.format(Float(pi.evalf(40), 40)) == '3.14159265358979323846264338327950288'
 
     assert Float(+oo) == Float('+inf')
     assert Float(-oo) == Float('-inf')
@@ -1022,7 +1022,7 @@ def test_powers_Rational():
 
 
 def test_powers_Float():
-    assert str((Rational(-1, 10)**Rational(3, 10)).n()) == str(Float(-.1)**(.3))
+    assert str((Rational(-1, 10)**Rational(3, 10)).evalf()) == str(Float(-.1)**(.3))
 
 
 def test_abs1():
@@ -1412,13 +1412,13 @@ def test_mpmath_issues():
 
 def test_Catalan_EulerGamma_prec():
     n = GoldenRatio
-    f = Float(n.n(), 5)
+    f = Float(n.evalf(), 5)
     assert f._mpf_ == (0, int(212079), -17, 18)
     assert f._prec == 20
     assert n._as_mpf_val(20) == f._mpf_
 
     n = EulerGamma
-    f = Float(n.n(), 5)
+    f = Float(n.evalf(), 5)
     assert f._mpf_ == (0, int(302627), -19, 19)
     assert f._prec == 20
     assert n._as_mpf_val(20) == f._mpf_
@@ -1509,15 +1509,15 @@ def test_Float_idempotence():
 
 def test_comp():
     # sqrt(2) = 1.414213 5623730950...
-    a = sqrt(2).n(7)
+    a = sqrt(2).evalf(7)
     assert comp(a, 1.41421346) is False
     assert comp(a, 1.41421347)
     assert comp(a, 1.41421366)
     assert comp(a, 1.41421367) is False
-    assert comp(sqrt(2).n(2), '1.4')
-    assert comp(sqrt(2).n(2), Float(1.4, 2), '')
-    pytest.raises(ValueError, lambda: comp(sqrt(2).n(2), 1.4, ''))
-    assert comp(sqrt(2).n(2), Float(1.4, 3), '') is False
+    assert comp(sqrt(2).evalf(2), '1.4')
+    assert comp(sqrt(2).evalf(2), Float(1.4, 2), '')
+    pytest.raises(ValueError, lambda: comp(sqrt(2).evalf(2), 1.4, ''))
+    assert comp(sqrt(2).evalf(2), Float(1.4, 3), '') is False
     pytest.raises(ValueError, lambda: comp('123', '123'))
 
 

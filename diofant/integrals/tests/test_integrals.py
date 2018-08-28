@@ -612,7 +612,7 @@ def test_as_sum_midpoint1():
         8*sqrt(3081)/27 + 8*sqrt(52809)/27
     assert e.as_sum(4, method="midpoint") == 2*sqrt(730) + \
         4*sqrt(7) + 4*sqrt(86) + 6*sqrt(14)
-    assert abs(e.as_sum(4, method="midpoint").n() - e.n()) < 0.5
+    assert abs(e.as_sum(4, method="midpoint").evalf() - e.evalf()) < 0.5
 
     e = Integral(sqrt(x**3 + y**3), (x, 2, 10), (y, 0, 10))
     pytest.raises(NotImplementedError, lambda: e.as_sum(4))
@@ -714,11 +714,11 @@ def test_is_number():
     # `foo.is_number` should always be eqivalent to `not foo.free_symbols`
     # in each of these cases, there are pseudo-free symbols
     i = Integral(x, (y, 1, 1))
-    assert i.is_number is False and i.n() == 0
+    assert i.is_number is False and i.evalf() == 0
     i = Integral(x, (y, z, z))
-    assert i.is_number is False and i.n() == 0
+    assert i.is_number is False and i.evalf() == 0
     i = Integral(1, (y, z, z + 2))
-    assert i.is_number is False and i.n() == 2
+    assert i.is_number is False and i.evalf() == 2
 
     assert Integral(x*y, (x, 1, 2), (y, 1, 3)).is_number is True
     assert Integral(x*y, (x, 1, 2), (y, 1, z)).is_number is False
@@ -1119,6 +1119,16 @@ def test_sympyissue_8901():
     assert integrate(sinh(1.0*x)) == 1.0*cosh(1.0*x)
     assert integrate(tanh(1.0*x)) == 1.0*x - 1.0*log(tanh(1.0*x) + 1)
     assert integrate(tanh(x)) == x - log(tanh(x) + 1)
+
+
+def test_sympyissue_8945():
+    assert integrate(sin(x)**3/x, (x, 0, 1)) == -Si(3)/4 + 3*Si(1)/4
+    assert integrate(sin(x)**3/x, (x, 0, oo)) == pi/4
+    assert integrate(cos(x)**2/x**2, x) == -Si(2*x) - cos(2*x)/(2*x) - 1/(2*x)
+
+
+def test_diofantissue_303():
+    assert integrate((cos(x)/x)**2, (x, pi, 2*pi)) == Si(2*pi) - Si(4*pi) + 1/pi/2
 
 
 @pytest.mark.slow

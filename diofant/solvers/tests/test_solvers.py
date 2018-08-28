@@ -263,7 +263,7 @@ def test_quintics_1():
     f = x**5 - 110*x**3 - 55*x**2 + 2310*x + 979
     s = solve(f, check=False)
     for root in s:
-        res = f.subs(root).n(strict=False)
+        res = f.subs(root).evalf(strict=False)
         assert tn(res, 0)
 
     f = x**5 - 15*x**3 - 5*x**2 + 10*x + 20
@@ -277,9 +277,9 @@ def test_quintics_1():
     # it is *much* faster to use nroots to get them than to solve the
     # equation only to get RootOf solutions which are then numerically
     # evaluated. So for eq = x**5 + 3*x + 7 do Poly(eq).nroots() rather
-    # than [i[x].n() for i in solve(eq)] to get the numerical roots of eq.
+    # than [i[x].evalf() for i in solve(eq)] to get the numerical roots of eq.
     assert (nfloat(solve(x**5 + 3*x**3 + 7)[0][x], exponent=False) ==
-            RootOf(x**5 + 3*x**3 + 7, 0).n())
+            RootOf(x**5 + 3*x**3 + 7, 0).evalf())
 
 
 def test_highorder_poly():
@@ -292,7 +292,7 @@ def test_quintics_2():
     f = x**5 + 15*x + 12
     s = solve(f, check=False)
     for root in s:
-        res = f.subs(root).n(strict=False)
+        res = f.subs(root).evalf(strict=False)
         assert tn(res, 0)
 
     f = x**5 - 15*x**3 - 5*x**2 + 10*x + 20
@@ -365,7 +365,7 @@ def test_solve_radicals():
 
     # XXX is this correct?
     sol = solve(eq, check=False)
-    assert abs(real_root(eq.subs(sol[0])).n(2, strict=False)).epsilon_eq(0)
+    assert abs(real_root(eq.subs(sol[0])).evalf(2, strict=False)).epsilon_eq(0)
 
 
 # Note: multiple solutions exist for some of these equations, so the tests
@@ -409,7 +409,7 @@ def test_solve_transcendental():
             {-4, log(8) + pi*I})
     eq = 2*exp(3*x + 4) - 3
     ans = solve(eq, x)  # this generated a failure in flatten
-    assert len(ans) == 3 and all(eq.subs(a).n(chop=True) == 0 for a in ans)
+    assert len(ans) == 3 and all(eq.subs(a).evalf(chop=True) == 0 for a in ans)
     assert solve(2*log(3*x + 4) - 3, x) == [{x: (exp(Rational(3, 2)) - 4)/3}]
     assert solve(exp(x) + 1, x) == [{x: pi*I}]
 
@@ -642,7 +642,7 @@ def test_sympyissue_4793():
     assert solve(x**2 + x + sin(y)**2 + cos(y)**2 - 1, x) in [[{x: 0}, {x: -1}], [{x: -1}, {x: 0}]]
     eq = 4*3**(5*x + 2) - 7
     ans = solve(eq, x)
-    assert len(ans) == 5 and all(eq.subs(a).n(chop=True) == 0 for a in ans)
+    assert len(ans) == 5 and all(eq.subs(a).evalf(chop=True) == 0 for a in ans)
     assert solve(log(x**2) - y**2/exp(x),
                  x, y) == [{y: -sqrt(exp(x)*log(x**2))},
                            {y: sqrt(exp(x)*log(x**2))}]

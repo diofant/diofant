@@ -294,7 +294,7 @@ class Function(Application, Expr):
     1
     >>> my_func(oo)
     0
-    >>> my_func(3.54).n() # Not yet implemented for my_func.
+    >>> my_func(3.54).evalf() # Not yet implemented for my_func.
     my_func(3.54)
     >>> my_func(I).is_real
     False
@@ -2300,7 +2300,7 @@ def nfloat(expr, n=15, exponent=False):
         return Float(rv, n)
     elif rv.is_number:
         # evalf doesn't always set the precision
-        rv = rv.n(n)
+        rv = rv.evalf(n)
         if rv.is_Number:
             rv = Float(rv, n)
         else:
@@ -2310,12 +2310,12 @@ def nfloat(expr, n=15, exponent=False):
     # watch out for RootOf instances that don't like to have
     # their exponents replaced with Dummies and also sometimes have
     # problems with evaluating at low precision (issue sympy/sympy#6393)
-    rv = rv.xreplace({ro: ro.n(n) for ro in rv.atoms(RootOf)})
+    rv = rv.xreplace({ro: ro.evalf(n) for ro in rv.atoms(RootOf)})
 
     if not exponent:
         reps = [(p, Pow(p.base, Dummy())) for p in rv.atoms(Pow)]
         rv = rv.xreplace(dict(reps))
-    rv = rv.n(n, strict=False)
+    rv = rv.evalf(n, strict=False)
     if not exponent:
         rv = rv.xreplace({d.exp: p.exp for p, d in reps})
     else:

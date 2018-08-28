@@ -2274,7 +2274,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         is_number = self.is_number
         if is_number is False:
             return False
-        n, i = self.n(strict=False).as_real_imag()
+        n, i = self.evalf(strict=False).as_real_imag()
         if not i.is_Number or not n.is_Number:
             return False
         if i._prec > 1 or i._prec == -1:
@@ -3094,10 +3094,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         mag = Pow(10, p)  # magnitude needed to bring digit p to units place
         xwas = x
         x += 1/(2*mag)  # add the half for rounding
-        i10 = 10*mag*x.n((dps if dps is not None else digits_needed) + 1, strict=False)
+        i10 = 10*mag*x.evalf((dps if dps is not None else digits_needed) + 1, strict=False)
         if i10.is_negative:
             x = xwas - 1/(2*mag)  # should have gone the other way
-            i10 = 10*mag*x.n((dps if dps is not None else digits_needed) + 1, strict=False)
+            i10 = 10*mag*x.evalf((dps if dps is not None else digits_needed) + 1, strict=False)
             rv = -(Integer(-i10)//10)
         else:
             rv = Integer(i10)//10
@@ -3159,7 +3159,7 @@ def _mag(x):
     """
     from math import log10, ceil, log
     from .numbers import Float
-    xpos = abs(x.n(strict=False))
+    xpos = abs(x.evalf(strict=False))
     if not xpos:
         return S.Zero
     try:

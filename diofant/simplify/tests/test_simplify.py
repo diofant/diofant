@@ -315,10 +315,10 @@ def test_nsimplify():
     assert nsimplify(2.0**(1/3.), tolerance=0.001, full=True) == cbrt(2)
     assert nsimplify(x + .5, rational=True) == Rational(1, 2) + x
     assert nsimplify(1/.3 + x, rational=True) == Rational(10, 3) + x
-    assert nsimplify(log(3).n(), rational=True) == Rational(109861228866811,
-                                                            100000000000000)
+    assert nsimplify(log(3).evalf(), rational=True) == Rational(109861228866811,
+                                                                100000000000000)
     assert nsimplify(Float(0.272198261287950), [pi, log(2)]) == pi*log(2)/8
-    assert nsimplify(Float(0.272198261287950).n(3), [pi, log(2)]) == \
+    assert nsimplify(Float(0.272198261287950).evalf(3), [pi, log(2)]) == \
         -pi/4 - log(2) + Rational(7, 4)
     assert nsimplify(x/7.0) == x/7
     assert nsimplify(pi/1e2) == pi/100

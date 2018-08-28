@@ -5,7 +5,7 @@ from diofant.abc import a, b, c, x, y, z
 from diofant.simplify.fu import _TR56 as T
 from diofant.simplify.fu import (TR1, TR2, TR3, TR5, TR6, TR7, TR8, TR9, TR10,
                                  TR11, TR12, TR13, TR14, TR15, TR16, TR111, L,
-                                 TR2i, TR10i, TR12i, TRmorrie)
+                                 TR2i, TR10i, TR12i, TRmorrie, TRpower)
 from diofant.simplify.fu import _osborne as o
 from diofant.simplify.fu import _osbornei as i
 from diofant.simplify.fu import (as_f_sign_1, csc, fu, hyper_as_trig,
@@ -338,6 +338,15 @@ def test_TRmorrie():
     assert TR8(TRmorrie(e)) == -Rational(1, 8)
     e = Mul(*[cos(2**i*pi/17) for i in range(1, 17)])
     assert TR8(TR3(TRmorrie(e))) == Rational(1, 65536)
+
+
+def test_TRpower():
+    assert TRpower(1/sin(x)**2) == 1/sin(x)**2
+    assert TRpower(cos(x)**3*sin(x/2)**4) == \
+        (3*cos(x)/4 + cos(3*x)/4)*(-cos(x)/2 + cos(2*x)/8 + Rational(3, 8))
+    for k in range(2, 8):
+        assert verify_numerically(sin(x)**k, TRpower(sin(x)**k))
+        assert verify_numerically(cos(x)**k, TRpower(cos(x)**k))
 
 
 def test_hyper_as_trig():

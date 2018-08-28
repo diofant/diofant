@@ -67,7 +67,7 @@ def test_expand_func():
     assert expand_func(hyper([a, b], [c], 1)) == \
         gamma(c)*gamma(-a - b + c)/(gamma(-a + c)*gamma(-b + c))
     assert abs(expand_func(hyper([a1, b1], [c1], 1))
-               - hyper([a1, b1], [c1], 1)).n(strict=False) < 1e-10
+               - hyper([a1, b1], [c1], 1)).evalf(strict=False) < 1e-10
 
     # hyperexpand wrapper for hyper:
     assert expand_func(hyper([], [], z)) == exp(z)
@@ -276,7 +276,7 @@ def test_hyperrep():
             return False
         # Next check continuity along exp_polar(I*pi)*t
         expr = func.subs(z, exp_polar(I*pi)*z).rewrite('nonrep')
-        if abs(expr.subs(z, 1 + 1e-15) - expr.subs(z, 1 - 1e-15)).n(strict=False) > 1e-10:
+        if abs(expr.subs(z, 1 + 1e-15) - expr.subs(z, 1 - 1e-15)).evalf(strict=False) > 1e-10:
             return False
         # Finally check continuity of the big reps.
 
@@ -319,23 +319,23 @@ def test_meijerg_eval():
     # Test that the two expressions agree for all arguments.
     for x_ in [0.5, 1.5]:
         for k_ in [0.0, 0.1, 0.3, 0.5, 0.8, 1, 5.751, 15.3]:
-            assert abs((expr1 - expr2).n(subs={x: x_, k: k_}, strict=False)) < 1e-10
-            assert abs((expr1 - expr2).n(subs={x: x_, k: -k_}, strict=False)) < 1e-10
+            assert abs((expr1 - expr2).evalf(subs={x: x_, k: k_}, strict=False)) < 1e-10
+            assert abs((expr1 - expr2).evalf(subs={x: x_, k: -k_}, strict=False)) < 1e-10
 
     # Test continuity independently
     eps = 1e-13
     expr2 = expr1.subs(k, l)
     for x_ in [0.5, 1.5]:
         for k_ in [0.5, Rational(1, 3), 0.25, 0.75, Rational(2, 3), 1.0, 1.5]:
-            assert abs((expr1 - expr2).n(
+            assert abs((expr1 - expr2).evalf(
                        subs={x: x_, k: k_ + eps, l: k_ - eps})) < 1e-10
-            assert abs((expr1 - expr2).n(
+            assert abs((expr1 - expr2).evalf(
                        subs={x: x_, k: -k_ + eps, l: -k_ - eps})) < 1e-10
 
     expr = (meijerg(((0.5,), ()), ((0.5, 0, 0.5), ()), exp_polar(-I*pi)/4)
             + meijerg(((0.5,), ()), ((0.5, 0, 0.5), ()), exp_polar(I*pi)/4)) \
         / (2*sqrt(pi))
-    assert (expr - pi/exp(1)).n(chop=True) == 0
+    assert (expr - pi/exp(1)).evalf(chop=True) == 0
 
 
 def test_limits():

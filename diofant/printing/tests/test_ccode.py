@@ -97,7 +97,7 @@ def test_ccode_inline_function():
     assert ccode(g(x)) == "2*x"
     g = implemented_function('g', Lambda(x, 2*x/Catalan))
     assert ccode(
-        g(x)) == "double const Catalan = %s;\n2*x/Catalan" % Catalan.n()
+        g(x)) == "double const Catalan = %s;\n2*x/Catalan" % Catalan.evalf()
     A = IndexedBase('A')
     i = Idx('i', symbols('n', integer=True))
     g = implemented_function('g', Lambda(x, x*(1 + x)*(2 + x)))

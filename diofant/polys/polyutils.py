@@ -45,7 +45,7 @@ def _nsort(roots, separated=False):
         raise NotImplementedError
     # see issue sympy/sympy#6137:
     # get the real part of the evaluated real and imaginary parts of each root
-    key = [[i.n(2).as_real_imag()[0] for i in r.as_real_imag()] for r in roots]
+    key = [[i.evalf(2).as_real_imag()[0] for i in r.as_real_imag()] for r in roots]
     # make sure the parts were computed with precision
     if any(i._prec == 1 for k in key for i in k):  # pragma: no cover
         raise NotImplementedError("could not compute root with precision")

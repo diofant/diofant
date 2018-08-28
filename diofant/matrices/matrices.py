@@ -964,13 +964,13 @@ class MatrixBase(DefaultPrinting):
         [1/3],
         [1/3],
         [1/3]])
-        >>> _.norm().n(2)
+        >>> _.norm().evalf(2)
         0.58
 
         If a different xy is used, the norm will be higher:
 
         >>> xy += ones(2, 1)/10
-        >>> (S*xy - r).norm().n(2)
+        >>> (S*xy - r).norm().evalf(2)
         1.5
 
         See Also

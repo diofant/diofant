@@ -511,7 +511,7 @@ def test_as_numer_denom():
         (2*a + b + 4.0*c, 2*x)
     # this should take no more than a few seconds
     assert int(log(Add(*[Dummy()/i/x for i in range(1, 705)]
-                       ).as_numer_denom()[1]/x).n(4)) == 705
+                       ).as_numer_denom()[1]/x).evalf(4)) == 705
     for i in (oo, -oo, zoo):
         assert (i + x/3).as_numer_denom() == \
             (x + i, 3)

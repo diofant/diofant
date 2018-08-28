@@ -426,7 +426,7 @@ class LambertW(Function):
 
     >>> LambertW(1.2)
     0.635564016364870
-    >>> LambertW(1.2, -1).n()
+    >>> LambertW(1.2, -1).evalf()
     -1.34747534407696 - 4.41624341514535*I
     >>> LambertW(-1).is_real
     False

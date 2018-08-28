@@ -72,8 +72,8 @@ def gauss_legendre(n, n_digits):
     for r in p.real_roots():
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
-        xi.append(r.n(n_digits))
-        w.append((2/((1-r**2) * pd.subs(x, r)**2)).n(n_digits))
+        xi.append(r.evalf(n_digits))
+        w.append((2/((1-r**2) * pd.subs(x, r)**2)).evalf(n_digits))
     return xi, w
 
 
@@ -145,8 +145,8 @@ def gauss_laguerre(n, n_digits):
     for r in p.real_roots():
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
-        xi.append(r.n(n_digits))
-        w.append((r/((n+1)**2 * p1.subs(x, r)**2)).n(n_digits))
+        xi.append(r.evalf(n_digits))
+        w.append((r/((n+1)**2 * p1.subs(x, r)**2)).evalf(n_digits))
     return xi, w
 
 
@@ -217,8 +217,8 @@ def gauss_hermite(n, n_digits):
     for r in p.real_roots():
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
-        xi.append(r.n(n_digits))
-        w.append(((2**(n-1) * factorial(n) * sqrt(pi))/(n**2 * p1.subs(x, r)**2)).n(n_digits))
+        xi.append(r.evalf(n_digits))
+        w.append(((2**(n-1) * factorial(n) * sqrt(pi))/(n**2 * p1.subs(x, r)**2)).evalf(n_digits))
     return xi, w
 
 
@@ -292,8 +292,8 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     for r in p.real_roots():
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
-        xi.append(r.n(n_digits))
-        w.append((gamma(alpha+n)/(n*gamma(n)*p1.subs(x, r)*p2.subs(x, r))).n(n_digits))
+        xi.append(r.evalf(n_digits))
+        w.append((gamma(alpha+n)/(n*gamma(n)*p1.subs(x, r)*p2.subs(x, r))).evalf(n_digits))
     return xi, w
 
 
@@ -360,8 +360,8 @@ def gauss_chebyshev_t(n, n_digits):
     xi = []
     w = []
     for i in range(1, n + 1):
-        xi.append((cos((2*i-S.One)/(2*n)*pi)).n(n_digits))
-        w.append((pi/n).n(n_digits))
+        xi.append((cos((2*i-S.One)/(2*n)*pi)).evalf(n_digits))
+        w.append((pi/n).evalf(n_digits))
     return xi, w
 
 
@@ -428,8 +428,8 @@ def gauss_chebyshev_u(n, n_digits):
     xi = []
     w = []
     for i in range(1, n + 1):
-        xi.append((cos(i/(n+S.One)*pi)).n(n_digits))
-        w.append((pi/(n+S.One)*sin(i*pi/(n+S.One))**2).n(n_digits))
+        xi.append((cos(i/(n+S.One)*pi)).evalf(n_digits))
+        w.append((pi/(n+S.One)*sin(i*pi/(n+S.One))**2).evalf(n_digits))
     return xi, w
 
 
@@ -507,10 +507,10 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     for r in p.real_roots():
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
-        xi.append(r.n(n_digits))
+        xi.append(r.evalf(n_digits))
         w.append((
             - (2*n+alpha+beta+2) / (n+alpha+beta+S.One)
             * (gamma(n+alpha+1)*gamma(n+beta+1)) / (gamma(n+alpha+beta+S.One)*gamma(n+2))
             * 2**(alpha+beta) / (pd.subs(x, r) * pn.subs(x, r))
-        ).n(n_digits))
+        ).evalf(n_digits))
     return xi, w
