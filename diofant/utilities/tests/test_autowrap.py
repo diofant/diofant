@@ -146,7 +146,6 @@ def test_binary_function():
 def test_ufuncify_source():
     x, y, z = symbols('x,y,z')
     code_wrapper = UfuncifyCodeWrapper(CCodeGen("ufuncify"))
-    CodeWrapper._module_counter = 0
     routine = make_routine("test", x + y + z)
     source = get_string(code_wrapper.dump_c, [routine])
     expected = """\
@@ -157,7 +156,7 @@ def test_ufuncify_source():
 #include "numpy/halffloat.h"
 #include "file.h"
 
-static PyMethodDef wrapper_module_0Methods[] = {
+static PyMethodDef wrapper_module_%(num)sMethods[] = {
         {NULL, NULL, 0, NULL}
 };
 
@@ -188,17 +187,17 @@ static void *test_data[1] = {NULL};
 #if PY_VERSION_HEX >= 0x03000000
 static struct PyModuleDef moduledef = {
     PyModuleDef_HEAD_INIT,
-    "wrapper_module_0",
+    "wrapper_module_%(num)s",
     NULL,
     -1,
-    wrapper_module_0Methods,
+    wrapper_module_%(num)sMethods,
     NULL,
     NULL,
     NULL,
     NULL
 };
 
-PyMODINIT_FUNC PyInit_wrapper_module_0(void)
+PyMODINIT_FUNC PyInit_wrapper_module_%(num)s(void)
 {
     PyObject *m, *d;
     PyObject *ufunc0;
@@ -210,17 +209,17 @@ PyMODINIT_FUNC PyInit_wrapper_module_0(void)
     import_umath();
     d = PyModule_GetDict(m);
     ufunc0 = PyUFunc_FromFuncAndData(test_funcs, test_data, test_types, 1, 3, 1,
-            PyUFunc_None, "wrapper_module_0", "Created in Diofant with Ufuncify", 0);
+            PyUFunc_None, "wrapper_module_%(num)s", "Created in Diofant with Ufuncify", 0);
     PyDict_SetItemString(d, "test", ufunc0);
     Py_DECREF(ufunc0);
     return m;
 }
 #else
-PyMODINIT_FUNC initwrapper_module_0(void)
+PyMODINIT_FUNC initwrapper_module_%(num)s(void)
 {
     PyObject *m, *d;
     PyObject *ufunc0;
-    m = Py_InitModule("wrapper_module_0", wrapper_module_0Methods);
+    m = Py_InitModule("wrapper_module_%(num)s", wrapper_module_%(num)sMethods);
     if (m == NULL) {
         return;
     }
@@ -228,9 +227,9 @@ PyMODINIT_FUNC initwrapper_module_0(void)
     import_umath();
     d = PyModule_GetDict(m);
     ufunc0 = PyUFunc_FromFuncAndData(test_funcs, test_data, test_types, 1, 3, 1,
-            PyUFunc_None, "wrapper_module_0", "Created in Diofant with Ufuncify", 0);
+            PyUFunc_None, "wrapper_module_%(num)s", "Created in Diofant with Ufuncify", 0);
     PyDict_SetItemString(d, "test", ufunc0);
     Py_DECREF(ufunc0);
 }
-#endif"""
+#endif""" % {'num': CodeWrapper._module_counter}
     assert source == expected
