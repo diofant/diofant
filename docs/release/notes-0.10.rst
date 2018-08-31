@@ -47,6 +47,7 @@ Compatibility breaks
 * Removed ``dummy_eq()`` method from :class:`~diofant.core.basic.Basic`, see :pull:`666`.
 * :class:`~diofant.core.function.Subs` now support only ``Subs(expr, (var1, val1), (var2, val2), ...)`` syntax, see :pull:`667`.
 * :class:`~diofant.polys.rootoftools.RootOf` don't canonicalize anymore polynomials to have integer coefficients, use :func:`~diofant.core.function.expand_func` instead, see :pull:`679`.
+* Removed `Theano <https://github.com/Theano/Theano/>`_ support.
 
 Minor changes
 =============

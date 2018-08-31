@@ -10,8 +10,7 @@ Fortunately Diofant offers a number of easy-to-use hooks into other numeric
 systems, allowing you to create mathematical expressions in Diofant and then
 ship them off to the numeric system of your choice.  This page documents many
 of the options available including the ``math`` library, the popular array
-computing package ``numpy``, code generation in ``Fortran`` or ``C``, and the
-use of the array compiler ``Theano``.
+computing package ``numpy``, code generation in ``Fortran`` or ``C``.
 
 
 Subs/evalf
@@ -123,37 +122,11 @@ then ``ufuncify`` often significantly outperforms the NumPy backed solution.
 Jensen has a good `blog post <https://ojensen.wordpress.com/2010/08/10/fast-ufunc-ish-hydrogen-solutions/>`_
 on this topic.
 
-Theano
-------
-
-Diofant has a strong connection with
-`Theano <http://deeplearning.net/software/theano/>`_, a mathematical array
-compiler.  Diofant expressions can be easily translated to Theano graphs and then
-compiled using the Theano compiler chain.
-
-    >>> expr = sin(x)/x
-
-    >>> from diofant.printing.theanocode import theano_function  # doctest: +SKIP
-    >>> f = theano_function([x], [expr])  # doctest: +SKIP
-
-If array broadcasting or types are desired then Theano requires this extra
-information
-
-    >>> f = theano_function([x], [expr], dims={x: 1}, dtypes={x: 'float64'})  # doctest: +SKIP
-
-Theano has a more sophisticated code generation system than Diofant's C/Fortran
-code printers.  Among other things it handles common sub-expressions and
-compilation onto the GPU.  Theano also supports Diofant Matrix and Matrix
-Expression objects.
-
-
 So Which Should I Use?
 ----------------------
 
 The options here were listed in order from slowest and least dependencies to
-fastest and most dependencies.  For example, if you have Theano installed then
-that will often be the best choice.  If you don't have Theano but do have
-``f2py`` then you should use ``ufuncify``.
+fastest and most dependencies.
 
 +-----------------+-------+-----------------------------+---------------+
 | Tool            | Speed | Qualities                   | Dependencies  |
@@ -165,6 +138,4 @@ that will often be the best choice.  If you don't have Theano but do have
 | lambdify-numpy  | 10ns  | Vector functions            | numpy         |
 +-----------------+-------+-----------------------------+---------------+
 | ufuncify        | 10ns  | Complex vector expressions  | f2py, Cython  |
-+-----------------+-------+-----------------------------+---------------+
-| Theano          | 10ns  | Many outputs, CSE, GPUs     | Theano        |
 +-----------------+-------+-----------------------------+---------------+
