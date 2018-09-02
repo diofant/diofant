@@ -194,13 +194,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     To get the old default behavior you must pass in ``[{'ImmutableMatrix':
     numpy.matrix}, 'numpy']`` to the ``modules`` kwarg.
 
-    >>> import numpy
-    >>> array2mat = [{'ImmutableMatrix': numpy.matrix}, 'numpy']
-    >>> f = lambdify((x, y), Matrix([x, y]), modules=array2mat)
-    >>> f(1, 2)
-    [[1]
-     [2]]
-
     (1) Use one of the provided modules:
 
         >>> f = lambdify(x, sin(x), "math")
