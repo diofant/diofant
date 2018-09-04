@@ -99,3 +99,9 @@ extlinks = {
 # The number of times the linkcheck builder will attempt to check a URL
 # before declaring it broken.
 linkcheck_retries = 3
+
+# A list of regular expressions that match URIs that should not be checked.
+linkcheck_ignore = [r'https://primes.utm.edu/notes/gaps.html',
+                    r'https://primes.utm.edu/glossary/xpage/BertrandsPostulate.html',
+                    r'https://primes.utm.edu/prove/prove2_3.html',
+                    r'https://primes.utm.edu/glossary/xpage/Pseudoprime.html']

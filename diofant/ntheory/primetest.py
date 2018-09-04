@@ -154,10 +154,10 @@ def _mr_safe(n):
     References
     ==========
 
-    .. [1] http://primes.utm.edu/prove/prove2_3.html
+    .. [1] https://primes.utm.edu/prove/prove2_3.html
     .. [2] http://www.trnicely.net/misc/mpzspsp.html
     .. [3] https//en.wikipedia.org/wiki/Miller-Rabin_primality_test#Accuracy_of_the_test
-    .. [4] http://primes.utm.edu/glossary/xpage/Pseudoprime.html
+    .. [4] https://primes.utm.edu/glossary/xpage/Pseudoprime.html
     .. [5] http://uucode.com/obf/dalbec/alg.html#sprp
     """
 
