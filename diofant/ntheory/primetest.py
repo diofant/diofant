@@ -51,7 +51,7 @@ def is_square(n, prep=True):
     References
     ==========
 
-    .. [1] http://mersenneforum.org/showpost.php?p=110896
+    .. [1] https://mersenneforum.org/showpost.php?p=110896
 
     See Also
     ========

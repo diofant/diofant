@@ -46,7 +46,7 @@ March 2014 (see :sympyissue:`7235`).  Transfered issue numbers were
 shifted by 3099.  I.e. ``issue 123`` in the history - does mean issue
 ``sympy/sympy#3222`` on Github.
 
-.. _SymPy : http://www.sympy.org/
+.. _SymPy : https://www.sympy.org/
 .. _Diofant's issues : https://github.com/diofant/diofant/issues
 
 Versioning and Release Procedure

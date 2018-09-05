@@ -10,7 +10,7 @@ SymPy 0.5.14
   - ``sum(x**i/i,i=1..400)`` is now 4.8x faster
   - ``isinstance(term, C.Mul)`` was replaced by ``term.is_Mul`` and similarly for other basic classes
 
-* Documentation was improved a lot. See http://docs.sympy.org/
+* Documentation was improved a lot. See https://docs.sympy.org/
 * rsolve_poly & rsolve_hyper fixed
 * ``subs`` and ``subs_dict`` unified to ``.subs()``
 * faster and more robust polynomials module

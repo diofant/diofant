@@ -234,9 +234,9 @@ Minor changes
   ``isympy -a -i``.  ``isympy -I`` makes isympy act much more like a traditional
   interactive computer algebra system.  These both require IPython.
 
-- The official documentation at http://docs.sympy.org/ now includes an
+- The official documentation at https://docs.sympy.org/ now includes an
   extension that automatically hooks the documentation examples in to
-  `SymPy Live <http://live.sympy.org>`_.
+  `SymPy Live <https://live.sympy.org>`_.
 
 In addition to the more noticeable changes listed above, there have been
 numerous smaller additions, improvements and bug fixes in the commits in
