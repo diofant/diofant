@@ -108,3 +108,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`6938` Undefined Functions should not use the evalf name lookup scheme
 * :sympyissue:`8945` integrate(sin(x)**3/x, (x, 0, 1)) can't do it
 * :sympyissue:`15146` Incorrect limit (n/2) * (-2*n**3 - 2*(n**3 - 1) * n**2 * digamma(n**3 + 1) + 2*(n**3 - 1) * n**2 * digamma(n**3 +n + 1) + n + 3)
+* :sympyissue:`5934` PolynomialError with minpoly()

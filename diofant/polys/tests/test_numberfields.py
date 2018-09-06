@@ -663,3 +663,16 @@ def test_diofantissue_224():
     a, b, c, d = e.args
     assert minimal_polynomial(Add(d, a, b, c, evaluate=False))(x) == x
     assert minimal_polynomial(e)(x) == x
+
+
+def test_sympyissue_5934():
+    e = ((-240*sqrt(2)*sqrt(sqrt(5) + 5)*sqrt(8*sqrt(5) + 40) -
+          360*sqrt(2)*sqrt(-8*sqrt(5) + 40)*sqrt(-sqrt(5) + 5) -
+          120*sqrt(10)*sqrt(-8*sqrt(5) + 40)*sqrt(-sqrt(5) + 5) +
+          120*sqrt(2)*sqrt(-8*sqrt(5) + 40)*sqrt(sqrt(5) + 5) +
+          120*sqrt(2)*sqrt(-sqrt(5) + 5)*sqrt(8*sqrt(5) + 40) +
+          120*sqrt(10)*sqrt(-8*sqrt(5) + 40)*sqrt(sqrt(5) + 5) +
+          120*sqrt(10)*sqrt(-sqrt(5) + 5)*sqrt(8*sqrt(5) + 40)) /
+         (-36000 - 7200*sqrt(5) + (12*sqrt(10)*sqrt(sqrt(5) + 5) +
+                                   24*sqrt(10)*sqrt(-sqrt(5) + 5))**2))
+    assert [minimal_polynomial(i)(x) for i in e.as_numer_denom()] == [x]*2
