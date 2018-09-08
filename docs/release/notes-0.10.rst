@@ -110,3 +110,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`15146` Incorrect limit (n/2) * (-2*n**3 - 2*(n**3 - 1) * n**2 * digamma(n**3 + 1) + 2*(n**3 - 1) * n**2 * digamma(n**3 +n + 1) + n + 3)
 * :sympyissue:`5934` PolynomialError with minpoly()
 * :sympyissue:`8210` Zero degree polynomial copy() error
+* :sympyissue:`11775` TypeError: unorderable types: PolyElement() < mpz() from factor_list
