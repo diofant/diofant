@@ -111,3 +111,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`5934` PolynomialError with minpoly()
 * :sympyissue:`8210` Zero degree polynomial copy() error
 * :sympyissue:`11775` TypeError: unorderable types: PolyElement() < mpz() from factor_list
+* :sympyissue:`7047` Python and gmpy ground type specific stuff from "from sympy import \*"
