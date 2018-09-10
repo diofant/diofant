@@ -12,7 +12,67 @@ Developer's Guide
     you are willing to contribute - it's assumed you know the Python
     programming language and the Git Version Control System.
 
-.. include:: CONTRIBUTING.rst
+This project adheres to `No Code of Conduct`_.  Contributions will
+be judged by their technical merit.  Nothing else matters.
+
+.. _reporting-issues:
+
+Reporting Issues
+================
+
+When opening a new issue, please take the following steps:
+
+1. Please search `GitHub issues`_ to avoid duplicate reports.
+
+2. If possible, try updating to master and reproducing your issue.
+
+3. Try to include a minimal reproducible test case as an example.
+
+4. Include any relevant details of your local setup (i.e. Python
+   version, installed libraries).
+
+Contributing Code
+=================
+
+All work should be submitted via `Pull Requests (PR)`_.
+
+1. PR can be submitted as soon as there is code worth discussing.
+
+2. Please put your work on the branch of your fork, not in the
+   master branch.  PR should generally be made against master.
+
+3. One logical change per commit.  Make good commit messages: short
+   (<= 78 characters) one-line summary, then newline followed by
+   verbose description of your changes.  Please `mention closed
+   issues`_ with commit message.
+
+4. Please conform to `PEP 8`_ and `PEP 257`_, enable `flake8 git hook
+   <http://flake8.pycqa.org/en/stable/user/using-hooks.html>`_ to
+   prevent badly formatted commits.
+
+5. PR should include tests:
+
+   1. Bugfixes should include regression tests.
+   2. All new functionality should be tested, every new line
+      should be covered by tests.
+   3. Optionally, provide doctests to illustrate usage.  But keep in
+      mind, doctests are not tests.  Think of them as examples that
+      happen to be tested.
+
+6. It's good idea to be sure that **all** existing tests
+   pass and you don't break anything, so please run::
+
+       $ python setup.py test
+
+7. Please also check for potential flaws in your Python code with::
+
+       $ pylint diofant
+
+8. If your change affects documentation, please build it by::
+
+       $ python setup.py build_sphinx -W
+
+   and check that it looks as expected.
 
 Rosetta Stone
 =============
@@ -32,7 +92,7 @@ Please note, that we have dozens of references to SymPy issues in our
 codebase.  Such reference must be either a direct URL of the issue, or
 a fully qualified reference in the Github format, like
 ``sympy/sympy#123``.  Unqualified references like ``#123`` or ``issue
-123`` --- are reserved for `Diofant's issues`_.  Functions for
+123`` --- are reserved for our `Github issues`_.  Functions for
 regression tests should be named like ``test_sympyissue_123`` and
 ``test_diofantissue_123``, respectively.
 
@@ -45,9 +105,6 @@ stated.  SymPy issues from the Google Code were moved to the Github in
 March 2014 (see :sympyissue:`7235`).  Transfered issue numbers were
 shifted by 3099.  I.e. ``issue 123`` in the history - does mean issue
 ``sympy/sympy#3222`` on Github.
-
-.. _SymPy : https://www.sympy.org/
-.. _Diofant's issues : https://github.com/diofant/diofant/issues
 
 Versioning and Release Procedure
 ================================
@@ -71,9 +128,6 @@ Releasing a new version is done as follows:
     $ git pull
     $ git tag -s vX.Y.Z
     $ git push origin vX.Y.Z
-
-.. _Semantic Versioning: https://semver.org/
-.. _PEP 440: https://www.python.org/dev/peps/pep-0440/
 
 .. XXX adopt http://www.contribution-guide.org
 
@@ -105,3 +159,14 @@ Following table lists meanings of labels, including
 +------------------+----------------------------------------------------+
 | wontfix          | indicates that work won't continue on this issue   |
 +------------------+----------------------------------------------------+
+
+.. _SymPy : https://www.sympy.org/
+.. _Semantic Versioning: https://semver.org/
+.. _PEP 440: https://www.python.org/dev/peps/pep-0440/
+.. _GitHub issues: https://github.com/diofant/diofant/issues
+.. _Pull Requests (PR): https://github.com/diofant/diofant/pulls
+.. _PEP 8: https://www.python.org/dev/peps/pep-0008/
+.. _PEP 257: https://www.python.org/dev/peps/pep-0257/
+.. _flake8: http://flake8.rtfd.io/
+.. _No Code of Conduct: https://github.com/domgetter/NCoC
+.. _mention closed issues: https://help.github.com/articles/closing-issues-via-commit-messages
