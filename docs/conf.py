@@ -42,7 +42,7 @@ master_doc = 'index'
 
 # Project information.
 project = 'Diofant'
-copyright = '2006-2017 SymPy Development Team, 2013-2018 Sergey B Kirpichev'
+copyright = '2006-2018 SymPy Development Team, 2013-2018 Sergey B Kirpichev'
 version = diofant.__version__
 release = version
 
