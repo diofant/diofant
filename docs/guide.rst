@@ -1,8 +1,8 @@
 .. _guide:
 
-=================
-Developer's Guide
-=================
+===========
+Development
+===========
 
 .. role:: input(strong)
 
