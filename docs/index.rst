@@ -1,5 +1,5 @@
-Welcome to Diofant's documentation!
-===================================
+Diofant's documentation
+=======================
 
 `Diofant <https://diofant.readthedocs.io/en/latest/>`_ is a Python library for symbolic mathematics.
 If you are new to Diofant, start with the :ref:`Tutorial <tutorial>`.
