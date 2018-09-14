@@ -17,8 +17,6 @@ This is the central page for all of Diofant's documentation.
       >>> k, m, n = symbols('k m n', integer=True)
       >>> f, g, h = symbols('f g h', cls=Function)
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
 
