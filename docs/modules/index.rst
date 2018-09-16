@@ -12,9 +12,6 @@ automatically generated using Diofant's docstrings.
     sure how to use something, just look into the ``tests`` subdirectories,
     find that feature and read the tests for it.
 
-Click the  "modules" (:ref:`modindex`) link in the top right corner to easily
-access any Diofant module, or use this contents:
-
 .. toctree::
    :maxdepth: 2
 
