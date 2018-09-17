@@ -22,4 +22,3 @@ and multivariate factorization over algebraic number domains.
     basics
     wester
     reference
-    literature
