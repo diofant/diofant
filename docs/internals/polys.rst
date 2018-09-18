@@ -189,6 +189,11 @@ may be slightly more efficient.)
 
 .. autofunction:: dup_sturm
 
+.. autofunction:: dup_root_upper_bound
+.. autofunction:: dup_root_lower_bound
+
+.. autofunction:: dup_isolate_real_roots
+
 Manipulation of dense, univariate polynomials with finite field coefficients
 ****************************************************************************
 .. currentmodule:: diofant.polys.galoistools

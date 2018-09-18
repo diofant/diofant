@@ -1995,8 +1995,7 @@ def gf_csolve(f, n):
     References
     ==========
 
-    .. [1] 'An introduction to the Theory of Numbers' 5th Edition by
-           Ivan Niven, Zuckerman and Montgomery.
+    .. [1] [Niven91]_
     """
     from ..domains import ZZ
     P = factorint(n)

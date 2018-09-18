@@ -2745,15 +2745,8 @@ class Poly(Expr):
         References
         ==========
 
-        .. [1] Alkiviadis G. Akritas and Adam W. Strzebonski: A
-               Comparative Study of Two Real Root Isolation Methods.
-               Nonlinear Analysis: Modelling and Control, Vol. 10,
-               No. 4, 297-304, 2005.
-        .. [2] Alkiviadis G. Akritas, Adam W. Strzebonski and Panagiotis
-               S. Vigklas: Improving the Performance of the Continued
-               Fractions Method Using new Bounds of Positive Roots.
-               Nonlinear Analysis: Modelling and Control, Vol. 13,
-               No. 3, 265-279, 2008.
+        .. [1] [Alkiviadis05]_
+        .. [2] [Alkiviadis08]_
 
         Examples
         ========
@@ -5798,9 +5791,7 @@ class GroebnerBasis(Basic):
         References
         ==========
 
-        .. [1] H. Kredel and V. Weispfennig. Computing dimension and
-               independent sets for polynomial ideals. J. Symbolic
-               Computation, 6(1):231–247, November 1988.
+        .. [1] [KredelWeispfennig88]_
         """
         if self.contains(Integer(1)):
             return
@@ -5848,9 +5839,7 @@ class GroebnerBasis(Basic):
         References
         ==========
 
-        .. [1] J.C. Faugère, P. Gianni, D. Lazard, T. Mora (1994).
-               Efficient Computation of Zero-dimensional Gröbner
-               Bases by Change of Ordering.
+        .. [1] [Faugère94]_
         """
         src_order = self.order
         dst_order = monomial_key(order)

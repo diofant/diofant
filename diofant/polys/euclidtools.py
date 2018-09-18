@@ -210,8 +210,7 @@ def dup_inner_subresultants(f, g, K):
     References
     ==========
 
-    .. [1] W.S. Brown, The Subresultant PRS Algorithm.
-           ACM Transaction of Mathematical Software 4 (1978) 237-249
+    .. [1] [Brown78]_
     """
     n = dmp_degree(f, 0)
     m = dmp_degree(g, 0)
