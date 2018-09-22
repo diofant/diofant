@@ -60,4 +60,4 @@ request a feature, please :ref:`open an issue ticket
 <reporting-issues>`.
 
 .. _setuptools: https://setuptools.readthedocs.io/en/latest/
-.. _IPython: http://ipython.readthedocs.io/en/stable/
+.. _IPython: https://ipython.readthedocs.io/en/stable/

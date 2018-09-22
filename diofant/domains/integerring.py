@@ -133,3 +133,7 @@ class GMPYIntegerRing(IntegerRing):
     def factorial(self, a):
         """Compute factorial of ``a``. """
         return gmpy_factorial(a)
+
+
+ZZ_python = PythonIntegerRing()
+ZZ_gmpy = GMPYIntegerRing()

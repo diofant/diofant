@@ -1,19 +1,16 @@
-.. _module-docs:
-
-Modules Reference
-=================
+Reference
+=========
 
 .. module:: diofant
-
-Because every feature of Diofant must have a test case, when you are not sure how
-to use something, just look into the ``tests/`` directories, find that feature
-and read the tests for it, that will tell you everything you need to know.
 
 Most of the things are already documented though in this document, that is
 automatically generated using Diofant's docstrings.
 
-Click the  "modules" (:ref:`modindex`) link in the top right corner to easily
-access any Diofant module, or use this contents:
+.. tip::
+
+    Because every feature of Diofant must have a test case, when you are not
+    sure how to use something, just look into the ``tests`` subdirectories,
+    find that feature and read the tests for it.
 
 .. toctree::
    :maxdepth: 2

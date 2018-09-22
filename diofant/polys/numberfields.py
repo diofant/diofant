@@ -682,7 +682,7 @@ def primitive_element(extension, **args):
     .. [2] Steven Arno, M.L. Robinson, Ferell S. Wheeler, On Denominators
            of Algebraic Numbers and Integer Polynomials, Journal of Number
            Theory, Volume 57, Issue 2, 1996, pp. 292-302,
-           https://doi.org/10.1006/jnth.1996.0049.
+           https://linkinghub.elsevier.com/retrieve/pii/S0022314X96900499
     """
     if not extension:
         raise ValueError("can't compute primitive element for empty extension")

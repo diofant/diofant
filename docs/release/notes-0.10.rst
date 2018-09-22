@@ -47,6 +47,7 @@ Compatibility breaks
 * Removed ``dummy_eq()`` method from :class:`~diofant.core.basic.Basic`, see :pull:`666`.
 * :class:`~diofant.core.function.Subs` now support only ``Subs(expr, (var1, val1), (var2, val2), ...)`` syntax, see :pull:`667`.
 * :class:`~diofant.polys.rootoftools.RootOf` don't canonicalize anymore polynomials to have integer coefficients, use :func:`~diofant.core.function.expand_func` instead, see :pull:`679`.
+* Removed `Theano <https://github.com/Theano/Theano/>`_ support.
 
 Minor changes
 =============
@@ -107,3 +108,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`6938` Undefined Functions should not use the evalf name lookup scheme
 * :sympyissue:`8945` integrate(sin(x)**3/x, (x, 0, 1)) can't do it
 * :sympyissue:`15146` Incorrect limit (n/2) * (-2*n**3 - 2*(n**3 - 1) * n**2 * digamma(n**3 + 1) + 2*(n**3 - 1) * n**2 * digamma(n**3 +n + 1) + n + 3)
+* :sympyissue:`5934` PolynomialError with minpoly()
+* :sympyissue:`8210` Zero degree polynomial copy() error
+* :sympyissue:`11775` TypeError: unorderable types: PolyElement() < mpz() from factor_list
+* :sympyissue:`7047` Python and gmpy ground type specific stuff from "from sympy import \*"

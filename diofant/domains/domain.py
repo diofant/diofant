@@ -95,9 +95,9 @@ class Domain(DefaultPrinting, abc.ABC):
         if isinstance(element, self.dtype):
             return element
 
-        from . import (PythonIntegerRing, GMPYIntegerRing, GMPYRationalField,
-                       RealField, ComplexField, PythonRationalField,
-                       PythonRational)
+        from .integerring import PythonIntegerRing, GMPYIntegerRing
+        from .rationalfield import PythonRationalField, GMPYRationalField
+        from . import RealField, ComplexField, PythonRational
 
         if isinstance(element, int):
             return self.convert_from(element, PythonIntegerRing())

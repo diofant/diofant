@@ -2028,7 +2028,7 @@ def sqf_normal(a, b, c, steps=False):
     ==========
 
     .. [1] Legendre's Theorem, Legrange's Descent,
-           http://public.csusm.edu/aitken_html/notes/legendre.pdf
+           https://public.csusm.edu/aitken_html/notes/legendre.pdf
 
     See Also
     ========
@@ -2230,9 +2230,7 @@ def gaussian_reduce(w, a, b):
     References
     ==========
 
-    .. [1] Gaussian lattice Reduction [online]. Available:
-           http://home.ie.cuhk.edu.hk/~wkshum/wordpress/?p=404
-    .. [2] Efficient Solution of Rational Conices, J. E. Cremona and D. Rusin,
+    .. [1] Efficient Solution of Rational Conices, J. E. Cremona and D. Rusin,
            Mathematics of Computation, Volume 00, Number 0.
     """
     u = (0, 1)

@@ -252,7 +252,7 @@ def Benini(name, alpha, beta, sigma):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Benini_distribution
-    .. [2] http://reference.wolfram.com/legacy/v8/ref/BeniniDistribution.html
+    .. [2] https://reference.wolfram.com/legacy/v8/ref/BeniniDistribution.html
     """
 
     return rv(name, BeniniDistribution, (alpha, beta, sigma))

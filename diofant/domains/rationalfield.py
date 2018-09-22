@@ -77,7 +77,7 @@ class PythonRationalField(RationalField):
     @property
     def ring(self):
         """Returns ring associated with ``self``. """
-        from . import PythonIntegerRing
+        from .integerring import PythonIntegerRing
         return PythonIntegerRing()
 
     def factorial(self, a):
@@ -95,7 +95,7 @@ class GMPYRationalField(RationalField):
     @property
     def ring(self):
         """Returns ring associated with ``self``. """
-        from . import GMPYIntegerRing
+        from .integerring import GMPYIntegerRing
         return GMPYIntegerRing()
 
     def exquo(self, a, b):
@@ -109,3 +109,7 @@ class GMPYRationalField(RationalField):
     def factorial(self, a):
         """Returns factorial of `a`. """
         return self.dtype(gmpy_factorial(int(a)))
+
+
+QQ_python = PythonRationalField()
+QQ_gmpy = GMPYRationalField()

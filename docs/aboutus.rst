@@ -63,5 +63,5 @@ be open and public, without hidden double standards, centered about
 good, proved code and not project popularity counters.  Here we believe
 that mathematical correctness is more important than political one.
 
-.. _SymPy : http://www.sympy.org/
+.. _SymPy : https://www.sympy.org/
 .. _Diofant : https://diofant.readthedocs.io/en/latest/

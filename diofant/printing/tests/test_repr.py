@@ -18,6 +18,8 @@ __all__ = ()
 # environment is the scope of "from diofant import *" for most cases.
 ENV = {}
 imports = ["from diofant import *",
+           "from diofant.domains.integerring import GMPYIntegerRing",
+           "from diofant.domains.rationalfield import GMPYRationalField",
            "from diofant.polys.orderings import GradedLexOrder, LexOrder"]
 exec("\n".join(imports), ENV)
 

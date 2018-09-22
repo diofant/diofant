@@ -194,7 +194,7 @@ def prime(nth):
     References
     ==========
 
-    .. [1] http://primes.utm.edu/glossary/xpage/BertrandsPostulate.html
+    .. [1] https://primes.utm.edu/glossary/xpage/BertrandsPostulate.html
 
     Examples
     ========
@@ -376,7 +376,7 @@ def primerange(a, b):
     ==========
 
     .. [1] https//en.wikipedia.org/wiki/Prime_number
-    .. [2] http://primes.utm.edu/notes/gaps.html
+    .. [2] https://primes.utm.edu/notes/gaps.html
 
     Examples
     ========

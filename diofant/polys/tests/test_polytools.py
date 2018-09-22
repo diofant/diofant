@@ -3388,3 +3388,15 @@ def test_factor_terms():
     # issue sympy/sympy#7067
     assert factor_list(x*(x + y)) == (1, [(x, 1), (x + y, 1)])
     assert sqf_list(x*(x + y)) == (1, [(x, 1), (x + y, 1)])
+
+
+def test_sympyissue_8210():
+    p = Poly(0, x)
+    p2 = p.copy()
+    assert id(p) != id(p2)
+    assert p == p2
+
+
+def test_sympyissue_11775():
+    e = y**4 + x*y**3 + y**2 + x*y
+    assert factor_list(e, y) == (1, [(y, 1), (x + y, 1), (y**2 + 1, 1)])
