@@ -557,12 +557,11 @@ def test_dup_decompose():
 
 
 def test_dmp_lift():
-    R, _ = ring('x', QQ.algebraic_field(I))
-    x, = R.to_ground().gens
+    A = QQ.algebraic_field(I)
+    f = [A(1), A(0), A(0), A(I), A(17*I)]
 
-    f = R.x**4 + I*R.x + 17*I
-
-    assert R.dmp_lift(f) == x**16 + 2*x**10 + 578*x**8 + x**4 - 578*x**2 + 83521
+    assert dmp_lift(f, 0, A) == [1, 0, 0, 0, 0, 0, 2, 0, 578, 0, 0, 0,
+                                 1, 0, -578, 0, 83521]
 
     pytest.raises(DomainError, lambda: dmp_lift([EX(1), EX(2)], 0, EX))
 
