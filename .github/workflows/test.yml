@@ -20,7 +20,7 @@ jobs:
         sudo apt install libmpc-dev libmpfr-dev libgmp-dev
         sudo apt install libatlas-base-dev liblapack-dev gfortran
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
-                         fonts-freefont-otf latexmk lmodern
+                         fonts-freefont-otf latexmk lmodern pandoc
     - name: Install dependencies
       run: pip install -U .[interactive,develop,gmpy,exports,plot,docs]
     - name: Linting with flake8 and pylint

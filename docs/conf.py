@@ -26,7 +26,7 @@ warnings.simplefilter('error', UserWarning)
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.linkcode', 'sphinx.ext.mathjax',
               'sphinx.ext.graphviz', 'sphinx.ext.intersphinx',
               'sphinx.ext.extlinks', 'sphinx.ext.napoleon',
-              'sphinxcontrib.bibtex']
+              'sphinxcontrib.bibtex', 'nbsphinx']
 
 napoleon_google_docstring = False
 napoleon_use_param = False
@@ -36,7 +36,7 @@ napoleon_use_rtype = False
 nitpicky = True
 
 # Glob-style patterns that should be excluded when looking for sources.
-exclude_patterns = ['README.rst']
+exclude_patterns = ['README.rst', '**.ipynb_checkpoints']
 
 # The document name of the "master" document, that is, the document
 # that contains the root toctree directive.
@@ -159,6 +159,15 @@ mathjax_config = {
     'HTML-CSS': {'linebreaks': {'automatic': True}},
     'SVG': {'linebreaks': {'automatic': True}},
 }
+
+# Input prompt for code cells.
+nbsphinx_input_prompt = 'In [%s]:'
+
+# Output prompt for code cells.
+nbsphinx_output_prompt = 'Out[%s]:'
+
+# Width of input/output prompts used in CSS.
+nbsphinx_prompt_width = '10ex'
 
 
 def linkcode_resolve(domain, info):
