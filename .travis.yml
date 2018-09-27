@@ -46,7 +46,7 @@ matrix:
       script:
         - python -We:invalid -m compileall -f diofant -q
         - travis_wait python setup.py flake8
-        - travis_wait 30 pylint diofant
+        - travis_wait 30 pylint -j1 diofant
         - python setup.py build_sphinx -W -b html
         - |
           if [ "${TRAVIS_EVENT_TYPE}" = "cron" ]; then

@@ -675,14 +675,8 @@ def primitive_element(extension, **args):
     References
     ==========
 
-    .. [1] Kazuhiro Yokoyama, Masayuki Noro, Taku Takeshima, Computing
-           primitive elements of extension fields, Journal of Symbolic
-           Computation, Volume 8, Issue 6, 1989, pp. 553-580,
-           https://linkinghub.elsevier.com/retrieve/pii/S0747717189800616.
-    .. [2] Steven Arno, M.L. Robinson, Ferell S. Wheeler, On Denominators
-           of Algebraic Numbers and Integer Polynomials, Journal of Number
-           Theory, Volume 57, Issue 2, 1996, pp. 292-302,
-           https://linkinghub.elsevier.com/retrieve/pii/S0022314X96900499
+    .. [1] [Yokoyama89]_
+    .. [2] [Arno96]_
     """
     if not extension:
         raise ValueError("can't compute primitive element for empty extension")

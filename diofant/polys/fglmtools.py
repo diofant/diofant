@@ -12,9 +12,7 @@ def matrix_fglm(F, ring, O_to):
     References
     ==========
 
-    .. [1] J.C. Faugère, P. Gianni, D. Lazard, T. Mora (1994). Efficient
-           Computation of Zero-dimensional Gröbner Bases by Change
-           of Ordering.
+    .. [1] [Faugère94]_
     """
     domain = ring.domain
     ngens = ring.ngens

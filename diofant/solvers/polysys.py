@@ -88,8 +88,7 @@ def solve_poly_system(eqs, *gens, **args):
     References
     ==========
 
-    .. [Cox97] D. Cox, J. Little, D. O'Shea, Ideals, Varieties and
-               Algorithms, Springer, Second Edition, 1997, pp. 112.
+    .. [1] [Cox97]_, pp. 112
 
     Examples
     ========

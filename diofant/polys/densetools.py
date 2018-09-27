@@ -577,6 +577,11 @@ def dup_real_imag(f, K):
 
     >>> R.dup_real_imag(x**3 + x**2 + x + 1)
     (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1, 3*x**2*y + 2*x*y - y**3 + y)
+
+    >>> R, x, y = ring("x y", QQ.algebraic_field(I))
+
+    >>> R.dup_real_imag(x**2 + I*x - 1)
+    (x**2 - y**2 - y - 1, 2*x*y + x)
     """
     if K.is_ComplexAlgebraicField:
         K0 = K.domain

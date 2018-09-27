@@ -545,9 +545,7 @@ def f5b(F, ring):
     References
     ==========
 
-    .. [1] Yao Sun, Dingkang Wang: "A New Proof for the Correctness of F5
-           (F5-Like) Algorithm", https://arxiv.org/abs/1004.0084
-           (specifically v4).
+    .. [1] [SunWang10]_
     .. [2] [BeckerWeispfenning93]_, pp. 203, 216.
     """
     order = ring.order

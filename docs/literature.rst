@@ -1,11 +1,9 @@
-.. _polys-literature:
-
 ==========
 Literature
 ==========
 
 The following is a non-comprehensive list of publications that were used as
-a theoretical foundation for implementing polynomials manipulation module.
+a theoretical foundation for implementing the Diofant.
 
 .. [Kozen89] D. Kozen, S. Landau, Polynomial decomposition algorithms,
     Journal of Symbolic Computation 7 (1989), pp. 445-456
@@ -124,3 +122,43 @@ a theoretical foundation for implementing polynomials manipulation module.
 
 .. [BeckerWeispfenning93] Thomas Becker, Volker Weispfenning, Gröbner
     bases: A computational approach to commutative algebra, 1993.
+
+.. [KredelWeispfennig88] Computing dimension and independent sets for
+    polynomial ideals. J. Symbolic Computation, 6(1):231–247, November 1988.
+
+.. [Alkiviadis05] Alkiviadis G. Akritas and Adam W. Strzebonski: A Comparative
+    Study of Two Real Root Isolation Methods. Nonlinear Analysis: Modelling
+    and Control, Vol. 10, No. 4, 297-304, 2005.
+
+.. [Alkiviadis08] Alkiviadis G. Akritas, Adam W. Strzebonski and
+    Panagiotis S. Vigklas: Improving the Performance of the Continued
+    Fractions Method Using new Bounds of Positive Roots. Nonlinear
+    Analysis: Modelling and Control, Vol. 13, No. 3, 265-279, 2008.
+
+.. [Alkiviadis09] Alkiviadis G. Akritas: Linear and Quadratic Complexity Bounds
+    on the Values of the Positive Roots of Polynomials. Journal of Universal
+    Computer Science, Vol. 15, No. 3, 523-537, 2009.
+
+.. [Faugère94] J.C. Faugère, P. Gianni, D. Lazard, T. Mora (1994). Efficient
+    Computation of Zero-dimensional Gröbner Bases by Change of Ordering.
+
+.. [Niven91] Ivan Niven, Zuckerman and Montgomery. An introduction to the
+    Theory of Numbers, 5th Edition, 1991.
+
+.. [SunWang10] Yao Sun, Dingkang Wang: A New Proof for the Correctness of F5
+    (F5-Like) Algorithm", https://arxiv.org/abs/1004.0084, 2010.
+
+.. [Yokoyama89] Kazuhiro Yokoyama, Masayuki Noro, Taku Takeshima, Computing
+    primitive elements of extension fields, Journal of Symbolic
+    Computation, Volume 8, Issue 6, 1989, pp. 553-580,
+    https://linkinghub.elsevier.com/retrieve/pii/S0747717189800616.
+
+.. [Arno96] Steven Arno, M.L. Robinson, Ferell S. Wheeler, On Denominators
+    of Algebraic Numbers and Integer Polynomials, Journal of Number
+    Theory, Volume 57, Issue 2, 1996, pp. 292-302,
+    https://linkinghub.elsevier.com/retrieve/pii/S0022314X96900499
+
+.. [Bostan02] A. Bostan, P. Flajolet, B. Salvy and E. Schost "Fast
+    Computation with Two Algebraic Numbers", (2002) Research
+    Report 4579, Institut National de Recherche en
+    Informatique et en Automatique.

@@ -17,9 +17,10 @@ from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dmp_integrate_in, dmp_lift, dmp_trunc,
                                       dup_clear_denoms, dup_decompose,
                                       dup_diff, dup_eval, dup_integrate,
-                                      dup_mirror, dup_revert, dup_scale,
-                                      dup_shift, dup_sign_variations,
-                                      dup_transform, dup_trunc)
+                                      dup_mirror, dup_real_imag, dup_revert,
+                                      dup_scale, dup_shift,
+                                      dup_sign_variations, dup_transform,
+                                      dup_trunc)
 from diofant.polys.polyerrors import (DomainError, ExactQuotientFailed,
                                       NotReversible)
 from diofant.polys.rings import ring
@@ -404,48 +405,42 @@ def test_dmp_ground_extract():
 
 
 def test_dup_real_imag():
-    R, x, y = ring("x y", ZZ)
+    assert dup_real_imag([], ZZ) == ([[]], [[]])
+    assert dup_real_imag([ZZ(1)], ZZ) == ([[1]], [[]])
 
-    assert R.dup_real_imag(R.zero) == (R.zero, R.zero)
-    assert R.dup_real_imag(R.one) == (R.one, R.zero)
+    assert dup_real_imag([ZZ(1), ZZ(1)], ZZ) == ([[1], [1]], [[1, 0]])
+    assert dup_real_imag([ZZ(1), ZZ(2)], ZZ) == ([[1], [2]], [[1, 0]])
 
-    assert R.dup_real_imag(x + 1) == (x + 1, y)
-    assert R.dup_real_imag(x + 2) == (x + 2, y)
+    assert dup_real_imag([ZZ(1), ZZ(2), ZZ(3)], ZZ) == ([[1], [2], [-1, 0, 3]],
+                                                        [[2, 0], [2, 0]])
 
-    assert R.dup_real_imag(x**2 + 2*x + 3) == (x**2 - y**2 + 2*x + 3,
-                                               2*x*y + 2*y)
+    f = dmp_normal([1, 1, 1, 1], 0, ZZ)
 
-    f = x**3 + x**2 + x + 1
+    assert dup_real_imag(f, ZZ) == ([[1], [1], [-3, 0, 1], [-1, 0, 1]],
+                                    [[3, 0], [2, 0], [-1, 0, 1, 0]])
 
-    assert R.dup_real_imag(f) == (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1,
-                                  3*x**2*y + 2*x*y - y**3 + y)
+    f = dmp_normal([1, 1], 0, EX)
 
-    R, x, y = ring("x y", EX)
-    pytest.raises(DomainError, lambda: R.dup_real_imag(x + 1))
+    pytest.raises(DomainError, lambda: dup_real_imag(f, EX))
 
-    R = ZZ.algebraic_field(I).poly_ring("x", "y")
-    x, y = R.to_ground().gens
+    A = QQ.algebraic_field(I)
+    f = [A(1), A(I), A(0), A(-1), A(1)]
 
-    f = R.x**4 + I*R.x**3 - R.x + 1
-    r = x**4 - 6*x**2*y**2 - 3*x**2*y - x + y**4 + y**3 + 1
-    i = 4*x**3*y + x**3 - 4*x*y**3 - 3*x*y**2 - y
+    assert dup_real_imag(f, A) == ([[1], [], [-6, -3, 0], [-1],
+                                    [1, 1, 0, 0, 1]],
+                                   [[4, 1], [], [-4, -3, 0, 0], [-1, 0]])
 
-    assert R.dup_real_imag(f) == (r, i)
+    A = QQ.algebraic_field(sqrt(2))
+    f = [A(1), A(sqrt(2)), A(-1)]
 
-    K = ZZ.algebraic_field(sqrt(2))
-    R = K.poly_ring("x", "y")
-    x, y = R.gens
+    assert dup_real_imag(f, A) == ([[1], [A.unit], [-1, 0, -1]],
+                                   [[2, 0], [A.unit, 0]])
 
-    f = R.x**2 + sqrt(2)*R.x - 1
-    assert R.dup_real_imag(f) == (x**2 - y**2 + sqrt(2)*x - 1, 2*x*y + sqrt(2)*y)
+    A2 = A.algebraic_field(I)
+    f = [A2(1), A2(2*sqrt(2)*I), A2(I - 1)]
 
-    K = ZZ.algebraic_field(sqrt(2)).algebraic_field(I)
-    R = K.poly_ring("x", "y")
-    x, y = R.to_ground().gens
-
-    f = R.x**2 + 2*sqrt(2)*I*R.x - 1 + I
-    assert R.dup_real_imag(f) == (x**2 - y**2 - 2*sqrt(2)*y - 1,
-                                  2*x*y + 2*sqrt(2)*x + 1)
+    assert dup_real_imag(f, A2) == ([[1], [], [-1, -2*A.unit, -1]],
+                                    [[2, 2*A.unit], [1]])
 
 
 def test_dup_mirror():
@@ -557,12 +552,11 @@ def test_dup_decompose():
 
 
 def test_dmp_lift():
-    R, _ = ring('x', QQ.algebraic_field(I))
-    x, = R.to_ground().gens
+    A = QQ.algebraic_field(I)
+    f = [A(1), A(0), A(0), A(I), A(17*I)]
 
-    f = R.x**4 + I*R.x + 17*I
-
-    assert R.dmp_lift(f) == x**16 + 2*x**10 + 578*x**8 + x**4 - 578*x**2 + 83521
+    assert dmp_lift(f, 0, A) == [1, 0, 0, 0, 0, 0, 2, 0, 578, 0, 0, 0,
+                                 1, 0, -578, 0, 83521]
 
     pytest.raises(DomainError, lambda: dmp_lift([EX(1), EX(2)], 0, EX))
 
