@@ -7,7 +7,7 @@ from ..utilities import has_dups, numbered_symbols, topological_sort
 from .polyerrors import FlagError, GeneratorsError, OptionError
 
 
-__all__ = ("Options",)
+__all__ = ("Options", "Order")
 
 
 class Option:

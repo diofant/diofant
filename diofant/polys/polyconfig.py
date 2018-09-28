@@ -5,6 +5,9 @@ import contextlib
 import os
 
 
+__all__ = ('setup',)
+
+
 _default_config = {
     'USE_COLLINS_RESULTANT':      False,
     'USE_SIMPLIFY_GCD':           True,
