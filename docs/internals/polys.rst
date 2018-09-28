@@ -584,6 +584,12 @@ manual for usage.
 
 .. autofunction:: matrix_fglm
 
+Algebraic number fields
+***********************
+
+.. currentmodule:: diofant.polys.numberfields
+.. autofunction:: minpoly_groebner
+
 Exceptions
 ==========
 

@@ -9,7 +9,8 @@ from .polytools import Poly, PurePoly
 
 
 __all__ = ('jacobi_poly', 'chebyshevt_poly', 'chebyshevu_poly', 'hermite_poly',
-           'legendre_poly', 'laguerre_poly', 'spherical_bessel_fn')
+           'legendre_poly', 'laguerre_poly', 'spherical_bessel_fn',
+           'gegenbauer_poly')
 
 
 def dup_jacobi(n, a, b, K):
