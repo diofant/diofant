@@ -16,15 +16,15 @@ from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
                                        gf_from_dict, gf_from_int_poly, gf_gcd,
                                        gf_gcdex, gf_int, gf_irred_p_ben_or,
                                        gf_irred_p_rabin, gf_irreducible,
-                                       gf_irreducible_p, gf_lcm, gf_lshift,
-                                       gf_monic, gf_mul, gf_mul_ground,
-                                       gf_multi_eval, gf_neg, gf_pow,
-                                       gf_pow_mod, gf_Qbasis, gf_Qmatrix,
-                                       gf_quo, gf_rem, gf_rshift, gf_sqf_list,
-                                       gf_sqf_p, gf_sqf_part, gf_sqr, gf_sub,
-                                       gf_sub_ground, gf_sub_mul, gf_to_dict,
-                                       gf_to_int_poly, gf_trace_map, gf_trunc,
-                                       gf_value, linear_congruence)
+                                       gf_irreducible_p, gf_lcm, gf_monic,
+                                       gf_mul, gf_mul_ground, gf_multi_eval,
+                                       gf_neg, gf_pow, gf_pow_mod, gf_Qbasis,
+                                       gf_Qmatrix, gf_quo, gf_rem, gf_rshift,
+                                       gf_sqf_list, gf_sqf_p, gf_sqf_part,
+                                       gf_sqr, gf_sub, gf_sub_ground,
+                                       gf_sub_mul, gf_to_dict, gf_to_int_poly,
+                                       gf_trace_map, gf_trunc, gf_value,
+                                       linear_congruence)
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.rings import ring
 
@@ -220,11 +220,7 @@ def test_gf_division():
 def test_gf_shift():
     f = [1, 2, 3, 4, 5]
 
-    assert gf_lshift([], 5, ZZ) == []
     assert gf_rshift([], 5, ZZ) == ([], [])
-
-    assert gf_lshift(f, 1, ZZ) == [1, 2, 3, 4, 5, 0]
-    assert gf_lshift(f, 2, ZZ) == [1, 2, 3, 4, 5, 0, 0]
 
     assert gf_rshift(f, 0, ZZ) == (f, [])
     assert gf_rshift(f, 1, ZZ) == ([1, 2, 3, 4], [5])
