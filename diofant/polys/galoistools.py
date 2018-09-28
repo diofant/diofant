@@ -5,7 +5,7 @@ import random
 
 from ..core import prod
 from ..ntheory import factorint
-from .debsearith import dup_lshift
+from .densearith import dup_lshift
 from .densebasic import dmp_degree, dmp_LC, dmp_strip
 from .polyconfig import query
 from .polyerrors import ExactQuotientFailed
@@ -597,23 +597,6 @@ def gf_exquo(f, g, p, K):
         return q
     else:
         raise ExactQuotientFailed(f, g)
-
-
-def gf_rshift(f, n, K):
-    """
-    Efficiently divide ``f`` by ``x**n``.
-
-    Examples
-    ========
-
-    >>> gf_rshift([1, 2, 3, 4, 0], 3, ZZ)
-    ([1, 2], [3, 4, 0])
-
-    """
-    if not n:
-        return f, []
-    else:
-        return f[:-n], f[-n:]
 
 
 def gf_pow(f, n, p, K):

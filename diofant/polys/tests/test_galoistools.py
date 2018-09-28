@@ -19,12 +19,11 @@ from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
                                        gf_irreducible_p, gf_lcm, gf_monic,
                                        gf_mul, gf_mul_ground, gf_multi_eval,
                                        gf_neg, gf_pow, gf_pow_mod, gf_Qbasis,
-                                       gf_Qmatrix, gf_quo, gf_rem, gf_rshift,
-                                       gf_sqf_list, gf_sqf_p, gf_sqf_part,
-                                       gf_sqr, gf_sub, gf_sub_ground,
-                                       gf_sub_mul, gf_to_dict, gf_to_int_poly,
-                                       gf_trace_map, gf_trunc, gf_value,
-                                       linear_congruence)
+                                       gf_Qmatrix, gf_quo, gf_rem, gf_sqf_list,
+                                       gf_sqf_p, gf_sqf_part, gf_sqr, gf_sub,
+                                       gf_sub_ground, gf_sub_mul, gf_to_dict,
+                                       gf_to_int_poly, gf_trace_map, gf_trunc,
+                                       gf_value, linear_congruence)
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.rings import ring
 
@@ -215,17 +214,6 @@ def test_gf_division():
     pytest.raises(ExactQuotientFailed, lambda: gf_exquo(f, g, 7, ZZ))
 
     assert gf_quo(ZZ.map([1, 2, 1]), ZZ.map([1, 1]), 11, ZZ) == [1, 1]
-
-
-def test_gf_shift():
-    f = [1, 2, 3, 4, 5]
-
-    assert gf_rshift([], 5, ZZ) == ([], [])
-
-    assert gf_rshift(f, 0, ZZ) == (f, [])
-    assert gf_rshift(f, 1, ZZ) == ([1, 2, 3, 4], [5])
-    assert gf_rshift(f, 3, ZZ) == ([1, 2], [3, 4, 5])
-    assert gf_rshift(f, 5, ZZ) == ([], f)
 
 
 def test_gf_expand():

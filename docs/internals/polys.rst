@@ -230,7 +230,6 @@ fields.
 .. autofunction:: gf_rem
 .. autofunction:: gf_quo
 .. autofunction:: gf_exquo
-.. autofunction:: gf_rshift
 .. autofunction:: gf_pow
 .. autofunction:: gf_pow_mod
 .. autofunction:: gf_gcd
