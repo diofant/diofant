@@ -739,7 +739,7 @@ def roots(f, *gens, **flags):
     the algorithm. To disable them because of unreadable output
     set ``cubics=False`` or ``quartics=False`` respectively. If cubic
     roots are real but are expressed in terms of complex numbers
-    (casus irreducibilis [1]) the ``trig`` flag can be set to True to
+    (casus irreducibilis [1]_) the ``trig`` flag can be set to True to
     have the solutions returned in terms of cosine and inverse cosine
     functions.
 

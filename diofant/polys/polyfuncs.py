@@ -144,7 +144,7 @@ def horner(f, *gens, **args):
     Rewrite a polynomial in Horner form.
 
     Among other applications, evaluation of a polynomial at a point is optimal
-    when it is applied using the Horner scheme ([1]).
+    when it is applied using the Horner scheme [1]_.
 
     Examples
     ========
