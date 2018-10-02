@@ -5,6 +5,7 @@ import random
 
 from ..core import prod
 from ..ntheory import factorint
+from .densearith import dup_lshift
 from .densebasic import dmp_degree, dmp_LC, dmp_strip
 from .polyconfig import query
 from .polyerrors import ExactQuotientFailed
@@ -598,39 +599,6 @@ def gf_exquo(f, g, p, K):
         raise ExactQuotientFailed(f, g)
 
 
-def gf_lshift(f, n, K):
-    """
-    Efficiently multiply ``f`` by ``x**n``.
-
-    Examples
-    ========
-
-    >>> gf_lshift([3, 2, 4], 4, ZZ)
-    [3, 2, 4, 0, 0, 0, 0]
-    """
-    if not f:
-        return f
-    else:
-        return f + [K.zero]*n
-
-
-def gf_rshift(f, n, K):
-    """
-    Efficiently divide ``f`` by ``x**n``.
-
-    Examples
-    ========
-
-    >>> gf_rshift([1, 2, 3, 4, 0], 3, ZZ)
-    ([1, 2], [3, 4, 0])
-
-    """
-    if not n:
-        return f, []
-    else:
-        return f[:-n], f[-n:]
-
-
 def gf_pow(f, n, p, K):
     """
     Compute ``f**n`` in ``GF(p)[x]`` using repeated squaring.
@@ -684,7 +652,7 @@ def gf_frobenius_monomial_base(g, p, K):
     b[0] = [1]
     if p < n:
         for i in range(1, n):
-            mon = gf_lshift(b[i - 1], p, K)
+            mon = dup_lshift(b[i - 1], p, K)
             b[i] = gf_rem(mon, g, p, K)
     elif n > 1:
         b[1] = gf_pow_mod([K.one, K.zero], p, g, p, K)

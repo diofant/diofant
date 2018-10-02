@@ -11,7 +11,8 @@ from .rings import PolynomialRing
 
 
 __all__ = ('modgcd_univariate', 'modgcd_bivariate', 'modgcd_multivariate',
-           'func_field_modgcd')
+           'func_field_modgcd', 'trial_division',
+           'integer_rational_reconstruction')
 
 
 def _trivial_gcd(f, g):
@@ -1106,12 +1107,6 @@ def modgcd_multivariate(f, g):
 
     .. [1] [Monagan00]_
     .. [2] [Brown71]_
-
-    See also
-    ========
-
-    _modgcd_multivariate_p
-
     """
     assert f.ring == g.ring and f.ring.domain.is_IntegerRing
 

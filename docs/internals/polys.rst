@@ -45,10 +45,8 @@ is preferred.
 Level One
 =========
 
-.. currentmodule:: diofant.polys.polyclasses
-
-.. autoclass:: DMP
-   :members:
+.. automodule:: diofant.polys.polyclasses
+    :members:
 
 Level Zero
 ==========
@@ -70,133 +68,24 @@ may be slightly more efficient.)
 
 **Basic manipulation:**
 
-.. currentmodule:: diofant.polys.densebasic
-
-.. autofunction:: dmp_LC
-.. autofunction:: dmp_TC
-.. autofunction:: dmp_ground_LC
-.. autofunction:: dmp_ground_TC
-.. autofunction:: dmp_true_LT
-.. autofunction:: dmp_degree
-.. autofunction:: dmp_degree_in
-.. autofunction:: dmp_degree_list
-.. autofunction:: dmp_strip
-.. autofunction:: dmp_validate
-.. autofunction:: dup_reverse
-.. autofunction:: dmp_copy
-.. autofunction:: dmp_to_tuple
-.. autofunction:: dmp_normal
-.. autofunction:: dmp_convert
-.. autofunction:: dmp_from_diofant
-.. autofunction:: dmp_nth
-.. autofunction:: dmp_ground_nth
-.. autofunction:: dmp_zero_p
-.. autofunction:: dmp_zero
-.. autofunction:: dmp_one_p
-.. autofunction:: dmp_one
-.. autofunction:: dmp_ground_p
-.. autofunction:: dmp_ground
-.. autofunction:: dmp_zeros
-.. autofunction:: dmp_grounds
-.. autofunction:: dmp_negative_p
-.. autofunction:: dmp_positive_p
-.. autofunction:: dmp_from_dict
-.. autofunction:: dmp_to_dict
-.. autofunction:: dmp_swap
-.. autofunction:: dmp_permute
-.. autofunction:: dmp_nest
-.. autofunction:: dmp_raise
-.. autofunction:: dmp_deflate
-.. autofunction:: dmp_multi_deflate
-.. autofunction:: dmp_inflate
-.. autofunction:: dmp_exclude
-.. autofunction:: dmp_include
-.. autofunction:: dmp_inject
-.. autofunction:: dmp_eject
-.. autofunction:: dmp_terms_gcd
-.. autofunction:: dmp_list_terms
-.. autofunction:: dmp_apply_pairs
-.. autofunction:: dmp_slice
-.. autofunction:: dup_random
+.. automodule:: diofant.polys.densebasic
+    :members:
 
 **Arithmetic operations:**
 
-.. currentmodule:: diofant.polys.densearith
-
-.. autofunction:: dmp_add_term
-.. autofunction:: dmp_sub_term
-.. autofunction:: dmp_mul_term
-.. autofunction:: dmp_add_ground
-.. autofunction:: dmp_sub_ground
-.. autofunction:: dmp_mul_ground
-.. autofunction:: dmp_quo_ground
-.. autofunction:: dmp_exquo_ground
-.. autofunction:: dup_lshift
-.. autofunction:: dup_rshift
-.. autofunction:: dmp_abs
-.. autofunction:: dmp_neg
-.. autofunction:: dmp_add
-.. autofunction:: dmp_sub
-.. autofunction:: dmp_add_mul
-.. autofunction:: dmp_sub_mul
-.. autofunction:: dmp_mul
-.. autofunction:: dmp_sqr
-.. autofunction:: dmp_pow
-.. autofunction:: dmp_pdiv
-.. autofunction:: dmp_prem
-.. autofunction:: dmp_pquo
-.. autofunction:: dmp_pexquo
-.. autofunction:: dmp_rr_div
-.. autofunction:: dmp_ff_div
-.. autofunction:: dmp_div
-.. autofunction:: dmp_rem
-.. autofunction:: dmp_quo
-.. autofunction:: dmp_exquo
-.. autofunction:: dmp_max_norm
-.. autofunction:: dmp_l1_norm
-.. autofunction:: dmp_expand
+.. automodule:: diofant.polys.densearith
+    :members:
 
 **Further tools:**
 
-.. currentmodule:: diofant.polys.densetools
+.. automodule:: diofant.polys.densetools
+    :members:
 
-.. autofunction:: dmp_integrate
-.. autofunction:: dmp_integrate_in
-.. autofunction:: dmp_diff
-.. autofunction:: dmp_diff_in
-.. autofunction:: dmp_eval
-.. autofunction:: dmp_eval_in
-.. autofunction:: dmp_eval_tail
-.. autofunction:: dmp_diff_eval_in
-.. autofunction:: dmp_trunc
-.. autofunction:: dmp_ground_trunc
-.. autofunction:: dmp_ground_monic
-.. autofunction:: dmp_ground_content
-.. autofunction:: dmp_ground_primitive
-.. autofunction:: dmp_ground_extract
-.. autofunction:: dup_real_imag
-.. autofunction:: dup_mirror
-.. autofunction:: dup_scale
-.. autofunction:: dup_shift
-.. autofunction:: dup_transform
-.. autofunction:: dmp_compose
-.. autofunction:: dup_decompose
-.. autofunction:: dmp_lift
-.. autofunction:: dup_sign_variations
-.. autofunction:: dmp_clear_denoms
-
-.. currentmodule:: diofant.polys.rootisolation
-
-.. autofunction:: dup_sturm
-
-.. autofunction:: dup_root_upper_bound
-.. autofunction:: dup_root_lower_bound
-
-.. autofunction:: dup_isolate_real_roots
+.. automodule:: diofant.polys.rootisolation
+    :members:
 
 Manipulation of dense, univariate polynomials with finite field coefficients
 ****************************************************************************
-.. currentmodule:: diofant.polys.galoistools
 
 Functions in this module carry the prefix ``gf_``, referring to the classical
 name "Galois Fields" for finite fields. Note that many polynomial
@@ -205,64 +94,8 @@ special implementations for this case is justified both by performance, and by
 the necessity of certain methods which do not even make sense over general
 fields.
 
-.. autofunction:: gf_crt
-.. autofunction:: gf_crt1
-.. autofunction:: gf_crt2
-.. autofunction:: gf_int
-.. autofunction:: gf_trunc
-.. autofunction:: gf_from_dict
-.. autofunction:: gf_to_dict
-.. autofunction:: gf_from_int_poly
-.. autofunction:: gf_to_int_poly
-.. autofunction:: gf_neg
-.. autofunction:: gf_add_ground
-.. autofunction:: gf_sub_ground
-.. autofunction:: gf_mul_ground
-.. autofunction:: gf_quo_ground
-.. autofunction:: gf_add
-.. autofunction:: gf_sub
-.. autofunction:: gf_mul
-.. autofunction:: gf_sqr
-.. autofunction:: gf_add_mul
-.. autofunction:: gf_sub_mul
-.. autofunction:: gf_expand
-.. autofunction:: gf_div
-.. autofunction:: gf_rem
-.. autofunction:: gf_quo
-.. autofunction:: gf_exquo
-.. autofunction:: gf_lshift
-.. autofunction:: gf_rshift
-.. autofunction:: gf_pow
-.. autofunction:: gf_pow_mod
-.. autofunction:: gf_gcd
-.. autofunction:: gf_lcm
-.. autofunction:: gf_cofactors
-.. autofunction:: gf_gcdex
-.. autofunction:: gf_monic
-.. autofunction:: gf_diff
-.. autofunction:: gf_eval
-.. autofunction:: gf_multi_eval
-.. autofunction:: gf_compose
-.. autofunction:: gf_compose_mod
-.. autofunction:: gf_trace_map
-.. autofunction:: gf_random
-.. autofunction:: gf_irreducible
-.. autofunction:: gf_irreducible_p
-.. autofunction:: gf_sqf_p
-.. autofunction:: gf_sqf_part
-.. autofunction:: gf_sqf_list
-.. autofunction:: gf_Qmatrix
-.. autofunction:: gf_Qbasis
-.. autofunction:: gf_berlekamp
-.. autofunction:: gf_zassenhaus
-.. autofunction:: gf_shoup
-.. autofunction:: gf_ddf_shoup
-.. autofunction:: gf_factor_sqf
-.. autofunction:: gf_factor
-.. autofunction:: gf_value
-.. autofunction:: gf_csolve
-.. autofunction:: gf_irred_p_ben_or
-.. autofunction:: gf_edf_shoup
+.. automodule:: diofant.polys.galoistools
+    :members:
 
 Manipulation of sparse, distributed polynomials and vectors
 ***********************************************************
@@ -535,31 +368,8 @@ including the last one which is the resultant if this does not vanish.
 
 Polynomial factorization in characteristic zero:
 
-.. currentmodule:: diofant.polys.factortools
-
-.. autofunction:: dmp_trial_division
-.. autofunction:: dmp_zz_mignotte_bound
-.. autofunction:: dup_zz_hensel_step
-.. autofunction:: dup_zz_hensel_lift
-.. autofunction:: dup_zz_zassenhaus
-.. autofunction:: dup_zz_irreducible_p
-.. autofunction:: dup_cyclotomic_p
-.. autofunction:: dup_zz_cyclotomic_poly
-.. autofunction:: dup_zz_cyclotomic_factor
-.. autofunction:: dup_zz_factor_sqf
-.. autofunction:: dup_zz_factor
-.. autofunction:: dmp_zz_wang_non_divisors
-.. autofunction:: dmp_zz_wang_test_points
-.. autofunction:: dmp_zz_wang_lead_coeffs
-.. autofunction:: dmp_zz_diophantine
-.. autofunction:: dmp_zz_wang_hensel_lifting
-.. autofunction:: dmp_zz_wang
-.. autofunction:: dmp_zz_factor
-.. autofunction:: dmp_ext_factor
-.. autofunction:: dup_gf_factor
-.. autofunction:: dmp_factor_list
-.. autofunction:: dmp_factor_list_include
-.. autofunction:: dmp_irreducible_p
+.. automodule:: diofant.polys.factortools
+    :members:
 
 Gröbner basis algorithms
 ************************
@@ -570,19 +380,17 @@ performance-sensitive. We present here various low-level implementations of
 Gröbner basis computation algorithms; please see the previous section of the
 manual for usage.
 
-.. currentmodule:: diofant.polys.groebnertools
+.. automodule:: diofant.polys.groebnertools
+    :members:
 
-.. autofunction:: groebner
-.. autofunction:: buchberger
-.. autofunction:: f5b
-.. autofunction:: spoly
-.. autofunction:: red_groebner
-.. autofunction:: is_groebner
-.. autofunction:: is_minimal
+.. automodule:: diofant.polys.fglmtools
+    :members:
 
-.. currentmodule:: diofant.polys.fglmtools
+Algebraic number fields
+***********************
 
-.. autofunction:: matrix_fglm
+.. currentmodule:: diofant.polys.numberfields
+.. autofunction:: minpoly_groebner
 
 Exceptions
 ==========
@@ -591,33 +399,8 @@ These are exceptions defined by the polynomials module.
 
 TODO sort and explain
 
-.. currentmodule:: diofant.polys.polyerrors
-
-.. autoclass:: BasePolynomialError
-
-.. autoclass:: ExactQuotientFailed
-.. autoclass:: OperationNotSupported
-.. autoclass:: HeuristicGCDFailed
-.. autoclass:: HomomorphismFailed
-.. autoclass:: IsomorphismFailed
-.. autoclass:: ExtraneousFactors
-.. autoclass:: EvaluationFailed
-.. autoclass:: RefinementFailed
-.. autoclass:: CoercionFailed
-.. autoclass:: NotInvertible
-.. autoclass:: NotReversible
-.. autoclass:: NotAlgebraic
-.. autoclass:: DomainError
-.. autoclass:: PolynomialError
-.. autoclass:: UnificationFailed
-.. autoclass:: GeneratorsNeeded
-.. autoclass:: ComputationFailed
-.. autoclass:: GeneratorsError
-.. autoclass:: UnivariatePolynomialError
-.. autoclass:: MultivariatePolynomialError
-.. autoclass:: PolificationFailed
-.. autoclass:: OptionError
-.. autoclass:: FlagError
+.. automodule:: diofant.polys.polyerrors
+    :members:
 
 Reference
 =========
@@ -625,16 +408,8 @@ Reference
 Modular GCD
 ***********
 
-.. currentmodule:: diofant.polys.modulargcd
-
-.. autofunction:: modgcd_univariate
-.. autofunction:: modgcd_bivariate
-.. autofunction:: modgcd_multivariate
-.. autofunction:: func_field_modgcd
-.. autofunction:: _modgcd_multivariate_p
-
-.. autofunction:: trial_division
-.. autofunction:: integer_rational_reconstruction
+.. automodule:: diofant.polys.modulargcd
+    :members:
 
 Manipulation of power series
 ****************************************************************************
@@ -644,20 +419,8 @@ Functions in this module carry the prefix ``rs_``, standing for "ring series".
 They manipulate finite power series in the sparse representation provided
 by ``polys.ring.ring``.
 
-
-.. autofunction:: rs_trunc
-.. autofunction:: rs_mul
-.. autofunction:: rs_square
-.. autofunction:: rs_pow
-.. autofunction:: rs_series_inversion
-.. autofunction:: rs_series_from_list
-.. autofunction:: rs_integrate
-.. autofunction:: rs_log
-.. autofunction:: rs_exp
-.. autofunction:: rs_newton
-.. autofunction:: rs_hadamard_exp
-.. autofunction:: rs_compose_add
-
+.. automodule:: diofant.polys.ring_series
+    :members:
 
 Undocumented
 ============
@@ -665,10 +428,8 @@ Undocumented
 Many parts of the polys module are still undocumented, and even where there is
 documentation it is scarce. Please contribute!
 
-.. currentmodule:: diofant.polys.polyoptions
+.. automodule:: diofant.polys.polyoptions
+    :members:
 
-.. autoclass:: Order
-.. autoclass:: Options
-
-.. currentmodule:: diofant.polys.polyconfig
-.. autofunction:: setup
+.. automodule:: diofant.polys.polyconfig
+    :members:

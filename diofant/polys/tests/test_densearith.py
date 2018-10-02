@@ -253,10 +253,24 @@ def test_dup_lshift():
     assert dup_lshift([], 3, ZZ) == []
     assert dup_lshift([1], 3, ZZ) == [1, 0, 0, 0]
 
+    f = [1, 2, 3, 4, 5]
+
+    assert dup_lshift(f, 1, ZZ) == [1, 2, 3, 4, 5, 0]
+    assert dup_lshift(f, 2, ZZ) == [1, 2, 3, 4, 5, 0, 0]
+
 
 def test_dup_rshift():
     assert dup_rshift([], 3, ZZ) == []
     assert dup_rshift([1, 0, 0, 0], 3, ZZ) == [1]
+
+    f = [1, 2, 3, 4, 5]
+
+    assert dup_rshift([], 5, ZZ) == []
+
+    assert dup_rshift(f, 0, ZZ) == []
+    assert dup_rshift(f, 1, ZZ) == [1, 2, 3, 4]
+    assert dup_rshift(f, 3, ZZ) == [1, 2]
+    assert dup_rshift(f, 5, ZZ) == []
 
 
 def test_dmp_abs():

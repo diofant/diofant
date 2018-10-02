@@ -4,7 +4,8 @@ from ..core import Symbol, Tuple
 from ..core.compatibility import iterable
 
 
-__all__ = ("lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex")
+__all__ = ("lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex",
+           "LexOrder", "GradedLexOrder", "ReversedGradedLexOrder")
 
 
 class MonomialOrder:

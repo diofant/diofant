@@ -22,8 +22,8 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dup_shift, dup_trunc)
 from .euclidtools import dmp_inner_gcd, dmp_primitive, dup_inner_gcd
 from .galoistools import (gf_add_mul, gf_div, gf_factor, gf_factor_sqf,
-                          gf_from_int_poly, gf_gcdex, gf_lshift, gf_mul,
-                          gf_rem, gf_sqf_p, gf_to_int_poly)
+                          gf_from_int_poly, gf_gcdex, gf_mul, gf_rem, gf_sqf_p,
+                          gf_to_int_poly)
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
@@ -676,8 +676,8 @@ def dup_zz_diophantine(F, m, p, K):
 
         s, t, G = gf_gcdex(g, f, p, K)
 
-        s = gf_lshift(s, m, K)
-        t = gf_lshift(t, m, K)
+        s = dup_lshift(s, m, K)
+        t = dup_lshift(t, m, K)
 
         q, s = gf_div(s, f, p, K)
 
@@ -706,7 +706,7 @@ def dup_zz_diophantine(F, m, p, K):
             s = gf_from_int_poly(s, p)
             f = gf_from_int_poly(f, p)
 
-            r = gf_rem(gf_lshift(s, m, K), f, p, K)
+            r = gf_rem(dup_lshift(s, m, K), f, p, K)
             s = gf_to_int_poly(r, p)
 
             result.append(s)

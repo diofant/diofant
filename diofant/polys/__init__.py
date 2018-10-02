@@ -24,7 +24,7 @@ from .polyerrors import (BasePolynomialError,  # noqa: F401
                          GeneratorsError, GeneratorsNeeded, ComputationFailed,
                          UnivariatePolynomialError, MultivariatePolynomialError,
                          PolificationFailed, OptionError, FlagError)
-from .numberfields import (minimal_polynomial, minpoly,  # noqa: F401
+from .numberfields import (minimal_polynomial,  # noqa: F401
                            primitive_element, field_isomorphism)
 from .monomials import Monomial, itermonomials  # noqa: F401
 from .orderings import (lex, grlex, grevlex, ilex,  # noqa: F401

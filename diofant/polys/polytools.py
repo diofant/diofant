@@ -5651,7 +5651,7 @@ def groebner(F, *gens, **args):
     Examples
     ========
 
-    Example taken from [1].
+    Example taken from [1]_.
 
     >>> F = [x*y - 2*y, 2*y**2 - x**2]
 
