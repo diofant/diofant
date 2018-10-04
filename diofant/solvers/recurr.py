@@ -96,15 +96,9 @@ def rsolve_poly(coeffs, f, n, **hints):
     References
     ==========
 
-    .. [1] S. A. Abramov, M. Bronstein and M. Petkovšek, On polynomial
-           solutions of linear operator equations, in: T. Levelt, ed.,
-           Proc. ISSAC '95, ACM Press, New York, 1995, 290-296.
-
-    .. [2] M. Petkovšek, Hypergeometric solutions of linear recurrences
-           with polynomial coefficients, J. Symbolic Computation,
-           14 (1992), 243-264.
-
-    .. [3] M. Petkovšek, H. S. Wilf, D. Zeilberger, A = B, 1996.
+    .. [1] [AbramovBronstein95]_
+    .. [2] [Petkovšek92]_
+    .. [3] [Petkovšek97]_
     """
     f = sympify(f)
 
@@ -371,10 +365,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
     References
     ==========
 
-    .. [1] S. A. Abramov, Rational solutions of linear difference
-           and q-difference equations with polynomial coefficients,
-           in: T. Levelt, ed., Proc. ISSAC '95, ACM Press, New York,
-           1995, 285-289
+    .. [1] [Abramov95]_
 
     See Also
     ========
@@ -480,11 +471,8 @@ def rsolve_hyper(coeffs, f, n, **hints):
     References
     ==========
 
-    .. [1] M. Petkovšek, Hypergeometric solutions of linear recurrences
-           with polynomial coefficients, J. Symbolic Computation,
-           14 (1992), 243-264.
-
-    .. [2] M. Petkovšek, H. S. Wilf, D. Zeilberger, A = B, 1996.
+    .. [1] [Petkovšek92]_
+    .. [2] [Petkovšek97]_
     """
     coeffs = list(map(sympify, coeffs))
 

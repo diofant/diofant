@@ -16,8 +16,8 @@ class Product(ExprWithIntLimits):
     the product.
 
     For finite products (and products with symbolic limits assumed to be finite)
-    we follow the analogue of the summation convention described by Karr [1],
-    especially definition 3 of section 1.4. The product:
+    we follow the analogue of the summation convention described by
+    Karr [Karr81]_, especially definition 3 of section 1.4. The product:
 
     .. math::
 
@@ -169,11 +169,8 @@ class Product(ExprWithIntLimits):
     References
     ==========
 
-    .. [1] Michael Karr, "Summation in Finite Terms", Journal of the ACM,
-           Volume 28 Issue 2, April 1981, Pages 305-350
-           https://dl.acm.org/citation.cfm?doid=322248.322255
-    .. [2] https://en.wikipedia.org/wiki/Multiplication#Capital_Pi_notation
-    .. [3] https://en.wikipedia.org/wiki/Empty_product
+    .. [1] https://en.wikipedia.org/wiki/Multiplication#Capital_Pi_notation
+    .. [2] https://en.wikipedia.org/wiki/Empty_product
     """
 
     def __new__(cls, function, *symbols, **assumptions):
@@ -376,9 +373,7 @@ class Product(ExprWithIntLimits):
         References
         ==========
 
-        .. [1] Michael Karr, "Summation in Finite Terms", Journal of the ACM,
-               Volume 28 Issue 2, April 1981, Pages 305-350
-               https://dl.acm.org/citation.cfm?doid=322248.322255
+        .. [1] [Karr81]_
         """
         l_indices = list(indices)
 

@@ -18,7 +18,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     summation.
 
     For finite sums (and sums with symbolic limits assumed to be finite) we
-    follow the summation convention described by Karr [1], especially
+    follow the summation convention described by Karr [Karr81]_, especially
     definition 3 of section 1.4. The sum:
 
     .. math::
@@ -128,11 +128,8 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     References
     ==========
 
-    .. [1] Michael Karr, "Summation in Finite Terms", Journal of the ACM,
-           Volume 28 Issue 2, April 1981, Pages 305-350
-           https://dl.acm.org/citation.cfm?doid=322248.322255
-    .. [2] https://en.wikipedia.org/wiki/Summation#Capital-sigma_notation
-    .. [3] https://en.wikipedia.org/wiki/Empty_sum
+    .. [1] https://en.wikipedia.org/wiki/Summation#Capital-sigma_notation
+    .. [2] https://en.wikipedia.org/wiki/Empty_sum
     """
 
     def __new__(cls, function, *symbols, **assumptions):
@@ -370,9 +367,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         References
         ==========
 
-        .. [1] Michael Karr, "Summation in Finite Terms", Journal of the ACM,
-               Volume 28 Issue 2, April 1981, Pages 305-350
-               https://dl.acm.org/citation.cfm?doid=322248.322255
+        .. [1] [Karr81]_
         """
         l_indices = list(indices)
 
@@ -416,7 +411,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         References
         ==========
 
-        .. [1] M. Petkovšek, H. S. Wilf, D. Zeilberger, A = B, 1996, Ch. 4.
+        .. [1] [Petkovšek97]_, Ch. 4.
         """
         from ..core import expand_func, Mul
         from ..functions import gamma
