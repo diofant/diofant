@@ -164,8 +164,7 @@ def gosper_sum(f, k):
     References
     ==========
 
-    .. [1] Marko Petkovšek, Herbert S. Wilf, Doron Zeilberger, A = B,
-           AK Peters, Ltd., Wellesley, MA, USA, 1997, pp. 73--100
+    .. [1] [Petkovšek97]_
     """
     indefinite = False
 

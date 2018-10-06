@@ -636,3 +636,7 @@ def test_sympyissue_15146():
     assert limit((n/2)*(-2*n**3 - 2*(n**3 - 1)*n**2*digamma(n**3 + 1) +
                         2*(n**3 - 1)*n**2*digamma(n**3 + n + 1) +
                         n + 3), n, oo) == Rational(1, 3)
+
+
+def test_sympyissue_15323():
+    assert limit(((1 - 1/x)**x).diff(x), x, 1) == 1

@@ -57,6 +57,7 @@ def test_Function():
 
     assert mcode(Min(x, y)) == "Min[x, y]"
     assert mcode(Max(x, y)) == "Max[x, y]"
+    assert mcode(Max(x, 2)) == "Max[2, x]"  # issue sympy/sympy#15344
 
     assert mcode(binomial(x, y)) == "Binomial[x, y]"
 

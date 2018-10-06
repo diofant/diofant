@@ -162,3 +162,21 @@ a theoretical foundation for implementing the Diofant.
     Computation with Two Algebraic Numbers", (2002) Research
     Report 4579, Institut National de Recherche en
     Informatique et en Automatique.
+
+.. [Karr81] Michael Karr, "Summation in Finite Terms", Journal of the ACM,
+    Volume 28 Issue 2, April 1981, Pages 305-350,
+    https://dl.acm.org/citation.cfm?doid=322248.322255
+
+.. [Petkovšek97] Marko Petkovšek, Herbert S. Wilf, Doron Zeilberger, A = B,
+    AK Peters, Ltd., Wellesley, MA, USA, 1997.
+
+.. [AbramovBronstein95] S. A. Abramov, M. Bronstein and M. Petkovšek, On
+    polynomial solutions of linear operator equations, in: T. Levelt, ed.,
+    Proc. ISSAC '95, ACM Press, New York, 1995, 290-296.
+
+.. [Petkovšek92] M. Petkovšek, Hypergeometric solutions of linear recurrences
+    with polynomial coefficients, J. Symbolic Computation, 14 (1992), 243-264.
+
+.. [Abramov95] S. A. Abramov, Rational solutions of linear difference
+    and q-difference equations with polynomial coefficients, in: T. Levelt,
+    ed., Proc. ISSAC '95, ACM Press, New York, 1995, 285-289.
