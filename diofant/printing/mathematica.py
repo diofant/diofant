@@ -34,6 +34,8 @@ known_functions = {
     "re": [(lambda x: True, "Re")],
     "im": [(lambda x: True, "Im")],
     "polygamma": [(lambda n, x: True, "PolyGamma")],
+    "Max": [(lambda *x: True, "Max")],
+    "Min": [(lambda *x: True, "Min")],
 }
 
 
@@ -110,10 +112,7 @@ class MCodePrinter(CodePrinter):
             if cond(*expr.args):
                 return "%s[%s]" % (mfunc, self.stringify(expr.args, ", "))
         return fname + "[%s]" % self.stringify(expr.args, ", ")
-
-    def _print_Min(self, expr):
-        return expr.func.__name__ + "[%s]" % self.stringify(expr.args, ", ")
-    _print_Max = _print_Min
+    _print_MinMaxBase = _print_Function
 
     def _print_Piecewise(self, expr):
         return expr.func.__name__ + "[{%s}]" % self.stringify(expr.args, ", ")

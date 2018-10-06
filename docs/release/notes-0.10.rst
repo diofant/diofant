@@ -114,3 +114,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`11775` TypeError: unorderable types: PolyElement() < mpz() from factor_list
 * :sympyissue:`7047` Python and gmpy ground type specific stuff from "from sympy import \*"
 * :sympyissue:`15323` limit of the derivative of (1-1/x)^x as x --> 1+ gives wrong answer
+* :sympyissue:`15344` mathematica_code gives wrong output with Max
