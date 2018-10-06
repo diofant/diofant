@@ -5641,41 +5641,43 @@ def reduced(f, G, *gens, **args):
 
 
 def groebner(F, *gens, **args):
-    """
+    r"""
     Computes the reduced Gröbner basis for a set of polynomials.
 
-    Use the ``order`` argument to set the monomial ordering that will be
-    used to compute the basis. Allowed orders are ``lex``, ``grlex`` and
-    ``grevlex``. If no order is specified, it defaults to ``lex``.
+    Parameters
+    ==========
+
+    F : list
+        a set of polynomials
+    \*gens : tuple
+        polynomial generators
+    \**args : dict
+        a dictionary of parameters, namely
+
+        order : str, optional
+            Monomial order, defaults to ``lex``.
+        method : {'buchberger', 'f5b'}, optional
+            Set algorithm to compute Gröbner basis.  By default, an improved
+            implementation of the Buchberger algorithm is used.
+        field : bool, optional
+            Force coefficients domain to be a field.  Defaults to False.
 
     Examples
     ========
 
-    Example taken from [1]_.
+    >>> F = [x*y - 2*x, 2*x**2 - y**2]
 
-    >>> F = [x*y - 2*y, 2*y**2 - x**2]
+    >>> groebner(F)
+    GroebnerBasis([2*x**2 - y**2, x*y - 2*x, y**3 - 2*y**2],
+                  x, y, domain='ZZ', order='lex')
 
-    >>> groebner(F, x, y, order='lex')
-    GroebnerBasis([x**2 - 2*y**2, x*y - 2*y, y**3 - 2*y], x, y,
-                  domain='ZZ', order='lex')
-    >>> groebner(F, x, y, order='grlex')
-    GroebnerBasis([y**3 - 2*y, x**2 - 2*y**2, x*y - 2*y], x, y,
-                  domain='ZZ', order='grlex')
-    >>> groebner(F, x, y, order='grevlex')
-    GroebnerBasis([y**3 - 2*y, x**2 - 2*y**2, x*y - 2*y], x, y,
-                  domain='ZZ', order='grevlex')
+    >>> groebner(F, order=grevlex)
+    GroebnerBasis([y**3 - 2*y**2, 2*x**2 - y**2, x*y - 2*x],
+                  x, y, domain='ZZ', order='grevlex')
 
-    By default, an improved implementation of the Buchberger algorithm is
-    used. Optionally, an implementation of the F5B algorithm can be used.
-    The algorithm can be set using ``method`` flag or with the
-    function :func:`~diofant.polys.polyconfig.setup`:
-
-    >>> F = [x**2 - x - 1, (2*x - 1) * y - (x**10 - (1 - x)**10)]
-
-    >>> groebner(F, x, y, method='buchberger')
-    GroebnerBasis([x**2 - x - 1, y - 55], x, y, domain='ZZ', order='lex')
-    >>> groebner(F, x, y, method='f5b')
-    GroebnerBasis([x**2 - x - 1, y - 55], x, y, domain='ZZ', order='lex')
+    >>> groebner(F, field=True)
+    GroebnerBasis([x**2 - y**2/2, x*y - 2*x, y**3 - 2*y**2],
+                  x, y, domain='QQ', order='lex')
 
     References
     ==========

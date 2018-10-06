@@ -118,3 +118,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`12602` count_roots is extremely slow with Python ground types
 * :sympyissue:`5595` Should mpmath use the polys ground types?
 * :sympyissue:`5602` Poly should use free_symbols to check for variable dependence
+* :sympyissue:`5555` Explain coefficient domain handling in groebner()'s docstring

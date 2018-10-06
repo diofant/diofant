@@ -3069,7 +3069,9 @@ def test_groebner():
 
     F = [x*y - 2*y, 2*y**2 - x**2]
 
-    assert groebner(F, x, y, order='grevlex') == \
+    assert groebner(F, x, y) == \
+        [x**2 - 2*y**2, x*y - 2*y, y**3 - 2*y]
+    assert groebner(F, x, y, order='grlex') == \
         [y**3 - 2*y, x**2 - 2*y**2, x*y - 2*y]
     assert groebner(F, y, x, order='grevlex') == \
         [x**3 - 2*x**2, -x**2 + 2*y**2, x*y - 2*y]
@@ -3084,6 +3086,10 @@ def test_groebner():
     assert groebner([x**2 - 1, x**3 + 1], method='f5b') == [x + 1]
 
     pytest.raises(ValueError, lambda: groebner([x, y], method='unknown'))
+
+    F = [x**2 - x - 1, (2*x - 1) * y - (x**10 - (1 - x)**10)]
+    assert groebner(F, x, y, method='buchberger') == [x**2 - x - 1, y - 55]
+    assert groebner(F, x, y, method='f5b') == [x**2 - x - 1, y - 55]
 
     # issue sympy/sympy#11623
     pytest.raises(ValueError,
