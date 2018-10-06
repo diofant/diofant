@@ -2,10 +2,10 @@
 
 import pytest
 
-from diofant import (Derivative, Eq, Expr, Float, I, Integer, Mul, Piecewise,
-                     Rational, RootOf, Sum, Symbol, Tuple, diff, exp, expand,
-                     false, im, oo, pi, re, root, sin, sqrt, symbols, tanh,
-                     true)
+from diofant import (Derivative, Eq, Expr, Float, I, Integer, Integral, Mul,
+                     Piecewise, Rational, RootOf, Sum, Symbol, Tuple, diff,
+                     exp, expand, false, im, oo, pi, re, root, sin, sqrt,
+                     symbols, tanh, true)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.compatibility import iterable
 from diofant.core.mul import _keep_coeff
@@ -3405,3 +3405,7 @@ def test_sympyissue_8210():
 def test_sympyissue_11775():
     e = y**4 + x*y**3 + y**2 + x*y
     assert factor_list(e, y) == (1, [(y, 1), (x + y, 1), (y**2 + 1, 1)])
+
+
+def test_sympyissue_5602():
+    Poly(Integral(x, (x, 0, 1))*x + x**2, x)
