@@ -1173,12 +1173,12 @@ class Mul(AssocOp):
             noncommutatives come back as a list [(b**e, Rational)]
             """
 
-            (c, nc) = (defaultdict(int), [])
+            c, nc = defaultdict(int), []
             for a in Mul.make_args(eq):
                 a = powdenest(a)
-                (b, e) = base_exp(a)
+                b, e = base_exp(a)
                 if e is not S.One:
-                    (co, _) = e.as_coeff_mul()
+                    co, _ = e.as_coeff_mul()
                     b = Pow(b, e/co)
                     e = co
                 if a.is_commutative:
@@ -1194,7 +1194,7 @@ class Mul(AssocOp):
             it back.
             """
 
-            (b, e) = base_exp(b)
+            b, e = base_exp(b)
             return Pow(b, e*co)
 
         def ndiv(a, b):
@@ -1237,8 +1237,8 @@ class Mul(AssocOp):
 
         # break self and old into factors
 
-        (c, nc) = breakup(self2)
-        (old_c, old_nc) = breakup(old)
+        c, nc = breakup(self2)
+        old_c, old_nc = breakup(old)
 
         # update the coefficients if we had an extraction
         # e.g. if co_self were 2*(3/35*x)**2 and co_old = 3/5

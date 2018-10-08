@@ -212,8 +212,8 @@ def igcdex(a, b):
     x, y, r, s = 1, 0, 0, 1
 
     while b:
-        (c, q) = (a % b, a // b)
-        (a, b, r, s, x, y) = (b, c, x - q*r, y - q*s, r, s)
+        c, q = a % b, a // b
+        a, b, r, s, x, y = b, c, x - q*r, y - q*s, r, s
 
     return x*x_sign, y*y_sign, a
 
