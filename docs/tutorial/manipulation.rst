@@ -190,22 +190,21 @@ Walking the Tree
 ================
 
 Let's look at how to dig our way through an expression tree, using a very
-generic interface --- attributes :attr:`~diofant.core.basic.Basic.func` and
+generic interface --- builtin :class:`type` and attribute
 :attr:`~diofant.core.basic.Basic.args`.
 
-The head of the object is encoded in the :attr:`~diofant.core.basic.Basic.func`
-attribute
+The class of the object encode the head of expression
 
     >>> expr = 2 + x*y; expr
     x⋅y + 2
-    >>> expr.func
+    >>> type(expr)
     <class 'diofant.core.add.Add'>
 
 The class of an object need not be the same as the one used to create it
 
     >>> Add(x, x)
     2⋅x
-    >>> _.func
+    >>> type(_)
     <class 'diofant.core.mul.Mul'>
 
 .. note::
@@ -225,7 +224,7 @@ The children of a node in the tree are held in the
    Every expression with non-empty :attr:`~diofant.core.basic.Basic.args` can
    be reconstructed, using
 
-       >>> expr.func(*expr.args)
+       >>> type(expr)(*expr.args)
        x⋅y + 2
 
 Empty :attr:`~diofant.core.basic.Basic.args` signal that
