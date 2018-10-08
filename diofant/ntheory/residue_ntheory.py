@@ -1,6 +1,7 @@
+import math
 from random import randint
 
-from ..core import Function, S, igcd
+from ..core import Function, S
 from ..core.compatibility import as_int
 from ..core.numbers import igcdex
 from ..utilities.iterables import cantor_product
@@ -24,7 +25,7 @@ def n_order(a, n):
     """
     from collections import defaultdict
     a, n = as_int(a), as_int(n)
-    if igcd(a, n) != 1:
+    if math.gcd(a, n) != 1:
         raise ValueError("The two numbers should be relatively prime")
     factors = defaultdict(int)
     f = factorint(n)
@@ -133,7 +134,7 @@ def primitive_root(p):
                 return g
             else:
                 for i in range(2, g + p1 + 1):  # pragma: no branch
-                    if igcd(i, p) == 1 and is_primitive_root(i, p):
+                    if math.gcd(i, p) == 1 and is_primitive_root(i, p):
                         return i
 
     return next(_primitive_root_prime_iter(p))
@@ -160,7 +161,7 @@ def is_primitive_root(a, p):
     False
     """
     a, p = as_int(a), as_int(p)
-    if igcd(a, p) != 1:
+    if math.gcd(a, p) != 1:
         raise ValueError("The two numbers should be relatively prime")
     if a > p:
         a = a % p
@@ -603,7 +604,7 @@ def _is_nthpow_residue_bign(a, n, m):
                 return False
         return True
     f = totient(m)
-    k = f // igcd(f, n)
+    k = f // math.gcd(f, n)
     return pow(a, k, m) == 1
 
 
@@ -879,7 +880,7 @@ def jacobi_symbol(m, n):
         return int(n == 1)
     if n == 1 or m == 1:
         return 1
-    if igcd(m, n) != 1:
+    if math.gcd(m, n) != 1:
         return 0
 
     j = 1

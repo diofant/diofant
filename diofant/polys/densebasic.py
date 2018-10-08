@@ -1,8 +1,9 @@
 """Basic tools for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
+import math
 import random
 
-from ..core import igcd, oo
+from ..core import oo
 from .monomials import monomial_div, monomial_min
 from .orderings import monomial_key
 
@@ -836,7 +837,7 @@ def dmp_deflate(f, u, K):
 
     for M in F:
         for i, m in enumerate(M):
-            B[i] = igcd(B[i], m)
+            B[i] = math.gcd(B[i], m)
 
     for i, b in enumerate(B):
         if not b:
@@ -877,7 +878,7 @@ def dmp_multi_deflate(polys, u, K):
         if not dmp_zero_p(p, u):
             for M in f:
                 for i, m in enumerate(M):
-                    B[i] = igcd(B[i], m)
+                    B[i] = math.gcd(B[i], m)
 
         F.append(f)
 

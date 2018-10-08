@@ -1,10 +1,11 @@
 """Sparse polynomial rings. """
 
 import functools
+import math
 import operator
 import types
 
-from ..core import Expr, Symbol, igcd, oo
+from ..core import Expr, Symbol, oo
 from ..core import symbols as _symbols
 from ..core import sympify
 from ..core.compatibility import is_sequence
@@ -1905,7 +1906,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         for p in polys:
             for monom in p.itermonoms():
                 for i, m in enumerate(monom):
-                    J[i] = igcd(J[i], m)
+                    J[i] = math.gcd(J[i], m)
 
         for i, b in enumerate(J):
             if not b:

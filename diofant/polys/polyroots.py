@@ -4,7 +4,7 @@ import functools
 import math
 
 from ..core import (Dummy, Eq, Float, I, Integer, Rational, S, Symbol, comp,
-                    factor_terms, igcd, pi, symbols, sympify)
+                    factor_terms, pi, symbols, sympify)
 from ..core.compatibility import ordered
 from ..core.mul import expand_2arg
 from ..functions import Piecewise, acos, cos, exp, im, root, sqrt
@@ -442,7 +442,7 @@ def roots_cyclotomic(f, factor=False):
         # get the indices in the right order so the computed
         # roots will be sorted
         h = n//2
-        ks = [i for i in range(1, n + 1) if igcd(i, n) == 1]
+        ks = [i for i in range(1, n + 1) if math.gcd(i, n) == 1]
         ks.sort(key=lambda x: (x, -1) if x <= h else (abs(x - n), 1))
         d = 2*I*pi/n
         for k in reversed(ks):

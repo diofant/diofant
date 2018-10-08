@@ -135,7 +135,7 @@ def test_C8():
 
 
 def test_C9():
-    assert igcd(igcd(1776, 1554), 5698) == 74
+    assert igcd(1776, 1554, 5698) == 74
 
 
 def test_C10():

@@ -212,8 +212,8 @@ def igcdex(a, b):
     x, y, r, s = 1, 0, 0, 1
 
     while b:
-        (c, q) = (a % b, a // b)
-        (a, b, r, s, x, y) = (b, c, x - q*r, y - q*s, r, s)
+        c, q = a % b, a // b
+        a, b, r, s, x, y = b, c, x - q*r, y - q*s, r, s
 
     return x*x_sign, y*y_sign, a
 
@@ -1379,7 +1379,7 @@ class Rational(Number):
         """Compute GCD of `self` and `other`. """
         if isinstance(other, Rational):
             return Rational(
-                Integer(igcd(self.numerator, other.numerator)),
+                Integer(math.gcd(self.numerator, other.numerator)),
                 Integer(ilcm(self.denominator, other.denominator)))
         return Number.gcd(self, other)
 
@@ -1388,8 +1388,8 @@ class Rational(Number):
         """Compute LCM of `self` and `other`. """
         if isinstance(other, Rational):
             return Rational(
-                self.numerator*other.numerator//igcd(self.numerator, other.numerator),
-                igcd(self.denominator, other.denominator))
+                self.numerator*other.numerator//math.gcd(self.numerator, other.numerator),
+                math.gcd(self.denominator, other.denominator))
         return Number.lcm(self, other)
 
     def _eval_as_numer_denom(self):
@@ -1581,7 +1581,7 @@ class Integer(Rational):
             if div_m > 0:
                 # see if the reduced exponent shares a gcd with e.denominator
                 # (2**2)**(1/10) -> 2**(1/5)
-                g = igcd(div_m, expt.denominator)
+                g = math.gcd(div_m, expt.denominator)
                 if g != 1:
                     out_rad *= Pow(prime, Rational(div_m//g, expt.denominator//g))
                 else:
@@ -1591,7 +1591,7 @@ class Integer(Rational):
             if sqr_gcd == 0:
                 sqr_gcd = ex
             else:
-                sqr_gcd = igcd(sqr_gcd, ex)
+                sqr_gcd = math.gcd(sqr_gcd, ex)
                 if sqr_gcd == 1:
                     break
         for k, v in sqr_dict.items():
