@@ -5,8 +5,7 @@ Integer factorization
 import math
 import random
 
-from ..core import (Function, Mul, Pow, Rational, S, igcd, integer_nthroot,
-                    sympify)
+from ..core import Function, Mul, Pow, Rational, S, integer_nthroot, sympify
 from ..core.compatibility import DIOFANT_INTS, as_int
 from ..core.evalf import bitcount
 from .generate import nextprime, primerange, sieve
@@ -308,7 +307,7 @@ def perfect_power(n, candidates=None, big=True, factor=True):
                         r, m = m
                         # adjust the two exponents so the bases can
                         # be combined
-                        g = igcd(m, e)
+                        g = math.gcd(m, e)
                         if g == 1:
                             return False
                         m //= g
@@ -443,7 +442,7 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
             j += 1
             U = F(U)
             V = F(F(V))  # V is 2x further along than U
-            g = igcd(U - V, n)
+            g = math.gcd(U - V, n)
             if g == 1:
                 continue
             if g == n:
@@ -506,8 +505,8 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
         >>> for i in range(2, 256):
         ...     M = ilcm(M, i)
         ...
-        >>> {igcd(pow(a, M, n) - 1, n) for a in range(2, 256) if
-        ...  igcd(pow(a, M, n) - 1, n) != n}
+        >>> {math.gcd(pow(a, M, n) - 1, n) for a in range(2, 256) if
+        ...  math.gcd(pow(a, M, n) - 1, n) != n}
         {1009}
 
     But does aM % d for every divisor of n give 1?
@@ -593,7 +592,7 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
         for p in sieve.primerange(2, B + 1):
             e = int(math.log(B, p))
             aM = pow(aM, pow(p, e), n)
-        g = igcd(aM - 1, n)
+        g = math.gcd(aM - 1, n)
         if 1 < g < n:
             return int(g)
 

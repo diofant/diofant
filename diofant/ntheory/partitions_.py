@@ -5,7 +5,6 @@ from mpmath.libmp import (bitcount, fhalf, fone, from_int, from_man_exp,
                           mpf_cosh_sinh, mpf_div, mpf_mul, mpf_pi, mpf_sqrt,
                           mpf_sub, pi_fixed, to_int, to_str)
 
-from ..core.numbers import igcd
 from ..utilities.misc import debug
 
 
@@ -20,7 +19,7 @@ def _a(n, j, prec):
     s = fzero
     pi = pi_fixed(prec)
     for h in range(1, j):
-        if igcd(h, j) != 1:
+        if math.gcd(h, j) != 1:
             continue
         # & with mask to compute fractional part of fixed-point number
         one = 1 << prec

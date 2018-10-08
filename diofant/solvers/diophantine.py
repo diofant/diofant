@@ -1,3 +1,5 @@
+import math
+
 from ..core import (Add, Eq, Integer, Mul, Rational, S, Symbol, factor_terms,
                     igcd, ilcm, integer_nthroot, oo, symbols, sympify)
 from ..core.assumptions import check_assumptions
@@ -543,11 +545,11 @@ def _diop_linear(var, coeff, param):
     A = [coeff[v] for v in var]
     B = []
     if len(var) > 2:
-        B.append(igcd(A[-2], A[-1]))
+        B.append(math.gcd(A[-2], A[-1]))
         A[-2] = A[-2] // B[0]
         A[-1] = A[-1] // B[0]
         for i in range(len(A) - 3, 0, -1):
-            gcd = igcd(B[0], A[i])
+            gcd = math.gcd(B[0], A[i])
             B[0] = B[0] // gcd
             A[i] = A[i] // gcd
             B.insert(0, gcd)
@@ -803,7 +805,7 @@ def _diop_quadratic(var, coeff, t):
                 sol.add((soln[1], soln[0]))
 
         else:
-            g = sign(A)*igcd(A, C)
+            g = sign(A)*math.gcd(A, C)
             a = A // g
             c = C // g
             e = sign(B/A)
@@ -2038,13 +2040,13 @@ def sqf_normal(a, b, c, steps=False):
     ABC = A, B, C = _remove_gcd(a, b, c)
     sq = tuple(square_factor(i) for i in ABC)
     sqf = A, B, C = tuple(i//j**2 for i, j in zip(ABC, sq))
-    pc = igcd(A, B)
+    pc = math.gcd(A, B)
     A //= pc
     B //= pc
-    pa = igcd(B, C)
+    pa = math.gcd(B, C)
     B //= pa
     C //= pa
-    pb = igcd(A, C)
+    pb = math.gcd(A, C)
     A //= pb
     B //= pb
 
@@ -2092,7 +2094,7 @@ def reconstruct(A, B, z):
     equation, `a'*x^2 + b'*y^2 + c'*z^2`, where `a'`, `b'` and `c'` are square
     free and `gcd(a', b', c') == 1`.
     """
-    f = factorint(igcd(A, B))
+    f = factorint(math.gcd(A, B))
     for p, e in f.items():
         if e != 1:
             raise ValueError('a and b should be square-free')
