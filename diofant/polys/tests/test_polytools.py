@@ -621,7 +621,7 @@ def test_Poly_abs():
 
 
 def test_Poly_neg():
-    assert Poly(-x + 1, x).neg() == -Poly(-x + 1, x) == Poly(x - 1, x)
+    assert -Poly(-x + 1, x) == Poly(x - 1, x)
 
 
 def test_Poly_add():

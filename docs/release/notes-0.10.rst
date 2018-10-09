@@ -49,7 +49,7 @@ Compatibility breaks
 * :class:`~diofant.polys.rootoftools.RootOf` don't canonicalize anymore polynomials to have integer coefficients, use :func:`~diofant.core.function.expand_func` instead, see :pull:`679`.
 * Removed `Theano <https://github.com/Theano/Theano/>`_ support, see :pull:`681`.
 * Removed ``minpoly`` alias for :func:`~diofant.polys.numberfields.minimal_polynomial`, see :pull:`684`.
-* Removed ``abs()`` method of :class:`~diofant.polys.polytools.Poly`, see :pull:`688`.
+* Removed ``abs()`` and ``neg()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`688`.
 
 Minor changes
 =============

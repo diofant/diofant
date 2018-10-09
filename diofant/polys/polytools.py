@@ -1059,26 +1059,6 @@ class Poly(Expr):
 
         return self.per(result)
 
-    def neg(self):
-        """
-        Negate all coefficients in ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 - 1, x).neg()
-        Poly(-x**2 + 1, x, domain='ZZ')
-
-        >>> -Poly(x**2 - 1, x)
-        Poly(-x**2 + 1, x, domain='ZZ')
-        """
-        if hasattr(self.rep, 'neg'):
-            result = self.rep.neg()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'neg')
-
-        return self.per(result)
-
     def add(self, other):
         """
         Add two polynomials ``self`` and ``other``.
@@ -3356,7 +3336,21 @@ class Poly(Expr):
         return self.per(result)
 
     def __neg__(self):
-        return self.neg()
+        """
+        Negate all coefficients in ``self``.
+
+        Examples
+        ========
+
+        >>> -Poly(x**2 - 1, x)
+        Poly(-x**2 + 1, x, domain='ZZ')
+        """
+        if hasattr(self.rep, 'neg'):
+            result = self.rep.neg()
+        else:  # pragma: no cover
+            raise OperationNotSupported(self, '__neg__')
+
+        return self.per(result)
 
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
