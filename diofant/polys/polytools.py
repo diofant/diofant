@@ -1059,23 +1059,6 @@ class Poly(Expr):
 
         return self.per(result)
 
-    def abs(self):
-        """
-        Make all coefficients in ``self`` positive.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 - 1, x).abs()
-        Poly(x**2 + 1, x, domain='ZZ')
-        """
-        if hasattr(self.rep, 'abs'):
-            result = self.rep.abs()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'abs')
-
-        return self.per(result)
-
     def neg(self):
         """
         Negate all coefficients in ``self``.
@@ -3356,7 +3339,21 @@ class Poly(Expr):
         return self.rep.is_cyclotomic
 
     def __abs__(self):
-        return self.abs()
+        """
+        Make all coefficients in ``self`` positive.
+
+        Examples
+        ========
+
+        >>> abs(Poly(x**2 - 1, x))
+        Poly(x**2 + 1, x, domain='ZZ')
+        """
+        if hasattr(self.rep, 'abs'):
+            result = self.rep.abs()
+        else:  # pragma: no cover
+            raise OperationNotSupported(self, '__abs__')
+
+        return self.per(result)
 
     def __neg__(self):
         return self.neg()
