@@ -444,9 +444,3 @@ a composition of :func:`~diofant.polys.rationaltools.together` and :func:`~diofa
     ───────────────────
      3      2
     x  + 4⋅x  + 5⋅x + 2
-
-Literature
-==========
-
-.. [Wester1999] Michael J. Wester, A Critique of the Mathematical Abilities of
-    CA Systems, 1999, `<http://www.math.unm.edu/~wester/cas/book/Wester.pdf>`_

@@ -180,3 +180,6 @@ a theoretical foundation for implementing the Diofant.
 .. [Abramov95] S. A. Abramov, Rational solutions of linear difference
     and q-difference equations with polynomial coefficients, in: T. Levelt,
     ed., Proc. ISSAC '95, ACM Press, New York, 1995, 285-289.
+
+.. [Wester1999] Michael J. Wester, A Critique of the Mathematical Abilities of
+    CA Systems, 1999, `<http://www.math.unm.edu/~wester/cas/book/Wester.pdf>`_
