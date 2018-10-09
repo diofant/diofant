@@ -1285,7 +1285,7 @@ class Permutation(Basic):
                 "i^p = p(i) when i is an integer, not %s." % i)
 
     def __xor__(self, h):
-        """Return the conjugate permutation ``~h*self*h` `.
+        """Return the conjugate permutation ``~h*self*h``.
 
         If ``a`` and ``b`` are conjugates, ``a = h*b*~h`` and
         ``b = ~h*a*h`` and both have the same cycle structure.
