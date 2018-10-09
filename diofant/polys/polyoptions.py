@@ -610,7 +610,7 @@ class Auto(BooleanOption, Flag, metaclass=OptionType):
 
 
 class Frac(BooleanOption, Flag, metaclass=OptionType):
-    """``auto`` option to polynomial manipulation functions. """
+    """``frac`` option to polynomial manipulation functions. """
 
     option = 'frac'
 
