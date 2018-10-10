@@ -5809,12 +5809,15 @@ class GroebnerBasis(Basic):
 
         return dimrec([], list(self.gens), [])
 
-    def fglm(self, order):
+    def set_order(self, order):
         """
         Convert a Gröbner basis from one ordering to another.
 
-        The FGLM algorithm converts reduced Gröbner bases of zero-dimensional
-        ideals from one ordering to another. This method is often used when it
+        Notes
+        =====
+
+        The FGLM algorithm [Faugère94]_ used to convert reduced Gröbner bases
+        of zero-dimensional ideals from one ordering to another.  Sometimes it
         is infeasible to compute a Gröbner basis with respect to a particular
         ordering directly.
 
@@ -5824,15 +5827,8 @@ class GroebnerBasis(Basic):
         >>> F = [x**2 - 3*y - x + 1, y**2 - 2*x + y - 1]
         >>> G = groebner(F, x, y, order='grlex')
 
-        >>> list(G.fglm('lex'))
-        [2*x - y**2 - y + 1, y**4 + 2*y**3 - 3*y**2 - 16*y + 7]
-        >>> list(groebner(F, x, y, order='lex'))
-        [2*x - y**2 - y + 1, y**4 + 2*y**3 - 3*y**2 - 16*y + 7]
-
-        References
-        ==========
-
-        .. [1] [Faugère94]_
+        >>> G.set_order('lex') == groebner(F, x, y, order='lex')
+        True
         """
         src_order = self.order
         dst_order = monomial_key(order)
