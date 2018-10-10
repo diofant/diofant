@@ -447,8 +447,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant.abc import a, b, c, d
-
         >>> Poly(a + x, a, b, c, d, x).exclude()
         Poly(a + x, a, x, domain='ZZ')
 
@@ -2220,7 +2218,6 @@ class Poly(Expr):
         We can even perform the computations for polynomials
         having symbolic coefficients:
 
-        >>> from diofant.abc import a
         >>> fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
         >>> sorted(dispersionset(fp))
         [0, 1]
@@ -2292,7 +2289,6 @@ class Poly(Expr):
         We can even perform the computations for polynomials
         having symbolic coefficients:
 
-        >>> from diofant.abc import a
         >>> fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
         >>> sorted(dispersionset(fp))
         [0, 1]

@@ -51,7 +51,6 @@ attempted. For example,
 
     Set-up for examples below:
 
-    >>> from diofant.abc import a
     >>> from time import time
 
 >>> eq = cos(x + y)/cos(x)
@@ -272,7 +271,6 @@ def TR2i(rv, half=False):
     Examples
     ========
 
-    >>> from diofant.abc import a
     >>> TR2i(sin(x)/cos(x))
     tan(x)
 
@@ -719,7 +717,6 @@ def TR10(rv, first=True):
     Examples
     ========
 
-    >>> from diofant.abc import a, b, c
     >>> TR10(cos(a + b))
     -sin(a)*sin(b) + cos(a)*cos(b)
     >>> TR10(sin(a + b))
@@ -1003,7 +1000,6 @@ def TR12i(rv):
     Examples
     ========
 
-    >>> from diofant.abc import a, b, c
     >>> ta, tb, tc = [tan(i) for i in (a, b, c)]
     >>> TR12i((ta + tb)/(-ta*tb + 1))
     tan(a + b)
@@ -1607,8 +1603,6 @@ def fu(rv, measure=lambda x: (L(x), x.count_ops())):
 
     Examples
     ========
-
-    >>> from diofant.abc import a, b
 
     >>> fu(sin(50)**2 + cos(50)**2 + sin(pi/6))
     3/2

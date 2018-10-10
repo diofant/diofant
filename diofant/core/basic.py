@@ -377,7 +377,7 @@ class Basic:
         default_sort_key to break any ties. All other iterables are left
         unsorted.
 
-        >>> from diofant.abc import a, b, c, d, e
+        >>> from diofant.abc import e
 
         >>> expr = sqrt(sin(2*x))*sin(exp(x)*x)*cos(2*x) + sin(2*x)
 
@@ -940,7 +940,6 @@ class Basic:
         Examples
         ========
 
-        >>> a, b, c = symbols('a b c')
         >>> x = Wild('x')
         >>> Basic(a + x, x)._matches(Basic(a + b, c)) is None
         True

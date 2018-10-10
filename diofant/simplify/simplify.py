@@ -856,7 +856,6 @@ def logcombine(expr, force=False):
     Examples
     ========
 
-    >>> from diofant.abc import a
     >>> logcombine(a*log(x) + log(y) - log(z))
     a*log(x) + log(y) - log(z)
     >>> logcombine(a*log(x) + log(y) - log(z), force=True)

@@ -646,7 +646,6 @@ def sstr(expr, **settings):
     Examples
     ========
 
-    >>> a, b = symbols('a b')
     >>> sstr(Eq(a + b, 0))
     'Eq(a + b, 0)'
     """

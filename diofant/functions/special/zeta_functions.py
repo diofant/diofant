@@ -78,7 +78,7 @@ class lerchphi(Function):
 
     If `z=1`, the Lerch transcendent reduces to the Hurwitz zeta function:
 
-    >>> from diofant.abc import s, a
+    >>> from diofant.abc import s
     >>> expand_func(lerchphi(1, s, a))
     zeta(s, a)
 
@@ -396,7 +396,6 @@ class zeta(Function):
     The derivative of `\zeta(s, a)` with respect to `a` is easily
     computed:
 
-    >>> from diofant.abc import a
     >>> zeta(s, a).diff(a)
     -s*zeta(s + 1, a)
 

@@ -57,7 +57,7 @@ class Product(ExprWithIntLimits):
     Examples
     ========
 
-    >>> from diofant.abc import a, b, i
+    >>> from diofant.abc import i
 
     >>> Product(k, (k, 1, m))
     Product(k, (k, 1, m))
@@ -324,8 +324,6 @@ class Product(ExprWithIntLimits):
 
         Examples
         ========
-
-        >>> from diofant.abc import a, b, c, d
 
         >>> P = Product(x, (x, a, b))
         >>> Pr = P.reverse_order(x)

@@ -672,7 +672,6 @@ class Formula:
     - func, the function
     - B, C, M (see _compute_basis)
 
-    >>> from diofant.abc import a, b
     >>> func = Hyper_Function((a/2, a/3 + b, (1+a)/2), (a, b, (a+b)/7))
     >>> f = Formula(func, z, None, [a, b])
 

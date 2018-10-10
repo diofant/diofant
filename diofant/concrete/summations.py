@@ -222,8 +222,6 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         and e is the estimated error (taken to be the magnitude of
         the first omitted term in the tail):
 
-            >>> from diofant.abc import a, b
-
             >>> Sum(1/k, (k, 2, 5)).doit().evalf()
             1.28333333333333
             >>> s, e = Sum(1/k, (k, 2, 5)).euler_maclaurin()
@@ -324,8 +322,6 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
         Examples
         ========
-
-        >>> from diofant.abc import a, b, c, d
 
         >>> Sum(x, (x, 0, 3)).reverse_order(x)
         Sum(-x, (x, 4, -1))
@@ -521,7 +517,6 @@ def telescopic_direct(L, R, n, limits):
 
     For example:
 
-    >>> from diofant.abc import a, b
     >>> telescopic_direct(1/k, -1/(k+2), 2, (k, a, b))
     -1/(b + 2) - 1/(b + 1) + 1/(a + 1) + 1/a
 

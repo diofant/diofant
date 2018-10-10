@@ -1539,7 +1539,6 @@ def _finger(eq):
     counting Symbol as 1 and Not(Symbol) as 2
     ]
 
-    >>> from diofant.abc import a, b
     >>> eq = Or(And(Not(y), a), And(Not(y), b), And(x, y))
     >>> dict(_finger(eq))
     {(0, 0, 1, 0, 2): [x],
@@ -1585,7 +1584,7 @@ def bool_map(bool1, bool2):
     Examples
     ========
 
-    >>> from diofant.abc import w, a, b, c, d
+    >>> from diofant.abc import w
     >>> function1 = SOPform([x, z, y], [[1, 0, 1], [0, 0, 1]])
     >>> function2 = SOPform([a, b, c], [[1, 0, 1], [1, 0, 0]])
     >>> bool_map(function1, function2)

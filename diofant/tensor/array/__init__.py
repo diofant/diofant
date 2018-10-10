@@ -95,7 +95,6 @@ creates the combined array `P = A \otimes B` defined as
 It is available through ``tensorproduct(...)``:
 
 >>> from diofant.tensor.array import Array, tensorproduct
->>> from diofant.abc import t
 >>> A = Array([x, y, z, t])
 >>> B = Array([1, 2, 3, 4])
 >>> tensorproduct(A, B)
@@ -177,7 +176,6 @@ the derivative of arrays will return a new array `B` defined by
 The function ``derive_by_array`` performs such an operation:
 
 >>> from diofant.tensor.array import Array, tensorcontraction, derive_by_array
->>> from diofant.abc import t
 
 With scalars, it behaves exactly as the ordinary derivative:
 

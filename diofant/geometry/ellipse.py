@@ -586,7 +586,6 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.abc import t
         >>> e = Ellipse((0, 0), 3, 2)
         >>> e.encloses_point((0, 0))
         True
@@ -936,7 +935,6 @@ class Ellipse(GeometrySet):
         a point is on the ellipse doesn't simplify to zero and doesn't evaluate
         exactly to zero:
 
-        >>> from diofant.abc import t
         >>> e1.arbitrary_point(t)
         Point2D(3*cos(t), 2*sin(t))
         >>> p2 = _.subs(t, 0.1)

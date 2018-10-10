@@ -397,8 +397,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant.abc import a
-
         >>> x.is_constant()
         False
         >>> Integer(2).is_constant()
@@ -921,7 +919,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Note: -1 is always separated from a Number unless split_1 is False.
 
         >>> A, B = symbols('A B', commutative=0)
-        >>> x, y = symbols('x y')
         >>> (-2*x*y).args_cnc()
         [[-1, 2, x, y], []]
         >>> (-2.5*x).args_cnc()
@@ -1553,7 +1550,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant.abc import a
         >>> (3*x + a*x + 4).as_coefficients_dict()
         {1: 4, x: 3, a*x: 1}
         >>> _[a]

@@ -263,7 +263,6 @@ class Vector(BasisDependent):
         ========
 
         >>> C = CoordSysCartesian('C')
-        >>> from diofant.abc import a, b, c
         >>> v = a*C.i + b*C.j + c*C.k
         >>> v.to_matrix(C)
         Matrix([

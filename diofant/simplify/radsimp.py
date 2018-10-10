@@ -45,8 +45,6 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
     Examples
     ========
 
-    >>> from diofant.abc import a, b, c
-
     This function can collect symbolic coefficients in polynomials or
     rational expressions. It will manage to find all integer or rational
     powers of collection variable:
@@ -430,8 +428,6 @@ def collect_sqrt(expr, evaluate=True):
     Examples
     ========
 
-    >>> from diofant.abc import a, b
-
     >>> r2, r3, r5 = [sqrt(i) for i in [2, 3, 5]]
     >>> collect_sqrt(a*r2 + b*r2)
     sqrt(2)*(a + b)
@@ -500,7 +496,7 @@ def collect_const(expr, *vars, **kwargs):
     Examples
     ========
 
-    >>> from diofant.abc import a, s
+    >>> from diofant.abc import s
     >>> collect_const(sqrt(3) + sqrt(3)*(1 + sqrt(2)))
     sqrt(3)*(sqrt(2) + 2)
     >>> collect_const(sqrt(3)*s + sqrt(7)*s + sqrt(3) + sqrt(7))
@@ -613,13 +609,10 @@ def radsimp(expr, symbolic=True, max_terms=4):
     Examples
     ========
 
-    >>> from diofant.abc import a, b, c
-
     >>> radsimp(1/(I + 1))
     (1 - I)/2
     >>> radsimp(1/(2 + sqrt(2)))
     (-sqrt(2) + 2)/2
-    >>> x, y = map(Symbol, 'xy')
     >>> e = ((2 + 2*sqrt(2))*x + (2 + sqrt(8))*y)/(2 + sqrt(2))
     >>> radsimp(e)
     sqrt(2)*(x + y)

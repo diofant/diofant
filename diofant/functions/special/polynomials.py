@@ -53,8 +53,6 @@ class jacobi(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant.abc import a, b
-
     >>> jacobi(0, a, b, x)
     1
     >>> jacobi(1, a, b, x)
@@ -208,8 +206,6 @@ def jacobi_normalized(n, a, b, x):
     Examples
     ========
 
-    >>> from diofant.abc import a, b
-
     >>> jacobi_normalized(n, a, b, x)
     jacobi(n, a, b, x)/sqrt(2**(a + b + 1)*gamma(a + n + 1)*gamma(b + n + 1)/((a + b + 2*n + 1)*factorial(n)*gamma(a + b + n + 1)))
 
@@ -260,7 +256,6 @@ class gegenbauer(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant.abc import a
     >>> gegenbauer(0, a, x)
     1
     >>> gegenbauer(1, a, x)
@@ -1020,7 +1015,6 @@ class assoc_laguerre(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant.abc import a
     >>> assoc_laguerre(0, a, x)
     1
     >>> assoc_laguerre(1, a, x)

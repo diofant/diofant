@@ -289,7 +289,6 @@ class Function(Application, Expr):
     ...     def _eval_is_real(self):
     ...         return self.args[0].is_real
     ...
-    >>> x = Symbol('x')
     >>> my_func(0) + sin(0)
     1
     >>> my_func(oo)
@@ -796,7 +795,7 @@ class Derivative(Expr):
     identically equal.  However this is the wrong way to think of this.  Think
     of it instead as if we have something like this::
 
-        >>> from diofant.abc import c, s
+        >>> from diofant.abc import s
         >>> def F(u):
         ...     return 2*u
         ...
@@ -1259,7 +1258,6 @@ class Lambda(Expr):
 
     For multivariate functions, use:
 
-    >>> from diofant.abc import t
     >>> f2 = Lambda((x, y, z, t), x + y**z + t**z)
     >>> f2(1, 2, 3, 4)
     73
@@ -2096,8 +2094,6 @@ def count_ops(expr, visual=False):
 
     Examples
     ========
-
-    >>> from diofant.abc import a, b
 
     Although there isn't a SUB object, minus signs are interpreted as
     either negations or subtractions:

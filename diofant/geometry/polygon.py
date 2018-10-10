@@ -478,7 +478,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.abc import t
         >>> p = Polygon((0, 0), (4, 0), (4, 4))
         >>> p.encloses_point(Point(2, 1))
         True
