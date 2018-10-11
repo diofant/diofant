@@ -159,8 +159,7 @@ Simple operations like addition and multiplication are done just by
 using ``+``, ``*``, and ``**``.  To find the inverse of a matrix, just
 raise it to the ``-1`` power.
 
-    >>> M = Matrix([[1, 3], [-2, 3]])
-    >>> N = Matrix([[0, 3], [0, 7]])
+    >>> M, N = Matrix([[1, 3], [-2, 3]]), Matrix([[0, 3], [0, 7]])
     >>> M + N
     ⎡1   6 ⎤
     ⎢      ⎥
@@ -255,14 +254,13 @@ Advanced Methods
 To compute the determinant of a matrix, use
 :meth:`~diofant.matrices.matrices.MatrixBase.det` method.
 
-    >>> M = Matrix([[1, 0, 1], [2, -1, 3], [4, 3, 2]])
-    >>> M
+    >>> Matrix([[1, 0, 1], [2, -1, 3], [4, 3, 2]])
     ⎡1  0   1⎤
     ⎢        ⎥
     ⎢2  -1  3⎥
     ⎢        ⎥
     ⎣4  3   2⎦
-    >>> det(M)
+    >>> det(_)
     -1
 
 To put a matrix into reduced row echelon form, use method
@@ -270,14 +268,13 @@ To put a matrix into reduced row echelon form, use method
 tuple of two elements.  The first is the reduced row echelon form, and
 the second is a list of indices of the pivot columns.
 
-    >>> M = Matrix([[1, 0, 1, 3], [2, 3, 4, 7], [-1, -3, -3, -4]])
-    >>> M
+    >>> Matrix([[1, 0, 1, 3], [2, 3, 4, 7], [-1, -3, -3, -4]])
     ⎡1   0   1   3 ⎤
     ⎢              ⎥
     ⎢2   3   4   7 ⎥
     ⎢              ⎥
     ⎣-1  -3  -3  -4⎦
-    >>> M.rref()
+    >>> _.rref()
     ⎛⎡1  0   1    3 ⎤, [0, 1]⎞
     ⎜⎢              ⎥        ⎟
     ⎜⎢0  1  2/3  1/3⎥        ⎟
@@ -288,12 +285,11 @@ To find the nullspace of a matrix, use method
 :meth:`~diofant.matrices.matrices.MatrixBase.nullspace`.  It returns a
 list of column vectors that span the nullspace of the matrix.
 
-    >>> M = Matrix([[1, 2, 3, 0, 0], [4, 10, 0, 0, 1]])
-    >>> M
+    >>> Matrix([[1, 2, 3, 0, 0], [4, 10, 0, 0, 1]])
     ⎡1  2   3  0  0⎤
     ⎢              ⎥
     ⎣4  10  0  0  1⎦
-    >>> M.nullspace()
+    >>> _.nullspace()
     ⎡⎡-15⎤, ⎡0⎤, ⎡ 1  ⎤⎤
     ⎢⎢   ⎥  ⎢ ⎥  ⎢    ⎥⎥
     ⎢⎢ 6 ⎥  ⎢0⎥  ⎢-1/2⎥⎥
@@ -358,24 +354,15 @@ To diagonalize a matrix, use method
 :meth:`~diofant.matrices.matrices.MatrixBase.diagonalize`.  It returns
 a tuple `(P, D)`, where `D` is diagonal and `M = PDP^{-1}`.
 
-    >>> P, D = M.diagonalize()
-    >>> P
-    ⎡0  1  1  0 ⎤
-    ⎢           ⎥
-    ⎢1  1  1  -1⎥
-    ⎢           ⎥
-    ⎢1  1  1  0 ⎥
-    ⎢           ⎥
-    ⎣1  1  0  1 ⎦
-    >>> D
-    ⎡-2  0  0  0⎤
-    ⎢           ⎥
-    ⎢0   3  0  0⎥
-    ⎢           ⎥
-    ⎢0   0  5  0⎥
-    ⎢           ⎥
-    ⎣0   0  0  5⎦
-    >>> P*D*P**-1 == M
+    >>> M.diagonalize()
+    ⎛⎡0  1  1  0 ⎤, ⎡-2  0  0  0⎤⎞
+    ⎜⎢           ⎥  ⎢           ⎥⎟
+    ⎜⎢1  1  1  -1⎥  ⎢0   3  0  0⎥⎟
+    ⎜⎢           ⎥  ⎢           ⎥⎟
+    ⎜⎢1  1  1  0 ⎥  ⎢0   0  5  0⎥⎟
+    ⎜⎢           ⎥  ⎢           ⎥⎟
+    ⎝⎣1  1  0  1 ⎦  ⎣0   0  0  5⎦⎠
+    >>> _[0]*_[1]*_[0]**-1 == M
     True
 
 If all you want is the characteristic polynomial, use method
@@ -384,8 +371,9 @@ efficient than :meth:`~diofant.matrices.matrices.MatrixBase.eigenvals`
 method, because sometimes symbolic roots can be expensive to
 calculate.
 
-    >>> p = M.charpoly(x)
-    >>> factor(p)
+    >>> M.charpoly(x)
+    PurePoly(x**4 - 11*x**3 + 29*x**2 + 35*x - 150, x, domain='ZZ')
+    >>> factor(_)
            2
     (x - 5) ⋅(x - 3)⋅(x + 2)
 
@@ -393,16 +381,13 @@ To compute Jordan canonical form `J` for matrix `M` and its similarity
 transformation `P` (i.e. such that `J = P M P^{-1}`), use method
 :meth:`~diofant.matrices.matrices.MatrixBase.jordan_form`.
 
-    >>> M = Matrix([[-2, 4], [1, 3]])
-    >>> P, J = M.jordan_form()
-    >>> J
-    ⎡      ____              ⎤
-    ⎢1   ╲╱ 41               ⎥
-    ⎢─ + ──────       0      ⎥
-    ⎢2     2                 ⎥
-    ⎢                        ⎥
-    ⎢                ____    ⎥
-    ⎢              ╲╱ 41    1⎥
-    ⎢    0       - ────── + ─⎥
-    ⎣                2      2⎦
-
+    >>> Matrix([[-2, 4], [1, 3]]).jordan_form()
+    ⎛                              ⎡      ____              ⎤⎞
+    ⎜⎡    -4            -4      ⎤  ⎢1   ╲╱ 41               ⎥⎟
+    ⎜⎢────────────  ────────────⎥, ⎢─ + ──────       0      ⎥⎟
+    ⎜⎢    ____              ____⎥  ⎢2     2                 ⎥⎟
+    ⎜⎢  ╲╱ 41    5    5   ╲╱ 41 ⎥  ⎢                        ⎥⎟
+    ⎜⎢- ────── - ─  - ─ + ──────⎥  ⎢                ____    ⎥⎟
+    ⎜⎢    2      2    2     2   ⎥  ⎢              ╲╱ 41    1⎥⎟
+    ⎜⎢                          ⎥  ⎢    0       - ────── + ─⎥⎟
+    ⎝⎣     1             1      ⎦  ⎣                2      2⎦⎠
