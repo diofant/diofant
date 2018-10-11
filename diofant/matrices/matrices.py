@@ -1418,8 +1418,8 @@ class MatrixBase(DefaultPrinting):
             raise ValueError("`i` and `j` must satisfy 0 <= i < `self.rows` " +
                              "(%d)" % self.rows + "and 0 <= j < `self.cols` (%d)." % self.cols)
         M = self.as_mutable()
-        M.row_del(i)
-        M.col_del(j)
+        del M[i, :]
+        del M[:, j]
         return self._new(M)
 
     def cofactor(self, i, j, method="berkowitz"):

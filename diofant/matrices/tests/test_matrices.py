@@ -2556,32 +2556,36 @@ def test_hermitian():
 
 
 def test_sympyissue_9457_9467_9876():
-    # for row_del(index)
+    # for row deletion
     M = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    M.row_del(1)
+    del M[1, :]
     assert M == Matrix([[1, 2, 3], [3, 4, 5]])
     N = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    N.row_del(-2)
+    del N[-2, :]
     assert N == Matrix([[1, 2, 3], [3, 4, 5]])
     O = Matrix([[1, 2, 3], [5, 6, 7], [9, 10, 11]])
-    O.row_del(-1)
+    del O[-1, :]
     assert O == Matrix([[1, 2, 3], [5, 6, 7]])
     P = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    pytest.raises(IndexError, lambda: P.row_del(10))
+    with pytest.raises(IndexError):
+        del P[10, :]
     Q = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    pytest.raises(IndexError, lambda: Q.row_del(-10))
+    with pytest.raises(IndexError):
+        del Q[-10, :]
 
-    # for col_del(index)
+    # for column deletion
     M = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    M.col_del(1)
+    del M[:, 1]
     assert M == Matrix([[1, 3], [2, 4], [3, 5]])
     N = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    N.col_del(-2)
+    del N[:, -2]
     assert N == Matrix([[1, 3], [2, 4], [3, 5]])
     P = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    pytest.raises(IndexError, lambda: P.col_del(10))
+    with pytest.raises(IndexError):
+        del P[:, 10]
     Q = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    pytest.raises(IndexError, lambda: Q.col_del(-10))
+    with pytest.raises(IndexError):
+        del Q[:, -10]
 
 
 def test_sympyissue_9422():

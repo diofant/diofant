@@ -92,16 +92,14 @@ To get the shape of a matrix use
     >>> M.shape
     (2, 3)
 
-To delete a row or column, use methods
-:meth:`~diofant.matrices.dense.MutableDenseMatrix.row_del` or
-:meth:`~diofant.matrices.dense.MutableDenseMatrix.col_del`.
+To delete a row or column, use :keyword:`del`
 
-    >>> M.col_del(0)
+    >>> del M[:, 0]
     >>> M
     ⎡2  3⎤
     ⎢    ⎥
     ⎣0  4⎦
-    >>> M.row_del(1)
+    >>> del M[1, :]
     >>> M
     [2  3]
 

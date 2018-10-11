@@ -1125,8 +1125,8 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
 
     __hash__ = None
 
-    def row_del(self, k):
-        """Delete the given row of the matrix.
+    def __delitem__(self, key):
+        """Delete portion of self defined by key.
 
         Examples
         ========
@@ -1136,60 +1136,39 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         Matrix([
         [0, 0],
         [0, 1]])
-        >>> M.row_del(0)
+        >>> del M[0, :]
         >>> M
         Matrix([[0, 1]])
-
-        See Also
-        ========
-
-        col_del
-        """
-        newD = {}
-        k = a2idx(k, self.rows)
-        for (i, j) in self._smat:
-            if i == k:
-                pass
-            elif i > k:
-                newD[i - 1, j] = self._smat[i, j]
-            else:
-                newD[i, j] = self._smat[i, j]
-        self._smat = newD
-        self.rows -= 1
-
-    def col_del(self, k):
-        """Delete the given column of the matrix.
-
-        Examples
-        ========
-
-        >>> M = SparseMatrix([[0, 0], [0, 1]])
+        >>> del M[:, 1]
         >>> M
-        Matrix([
-        [0, 0],
-        [0, 1]])
-        >>> M.col_del(0)
-        >>> M
-        Matrix([
-        [0],
-        [1]])
-
-        See Also
-        ========
-
-        row_del
+        Matrix([[0]])
         """
+        i, j = self.key2ij(key)
         newD = {}
-        k = a2idx(k, self.cols)
-        for (i, j) in self._smat:
-            if j == k:
-                pass
-            elif j > k:
-                newD[i, j - 1] = self._smat[i, j]
-            else:
-                newD[i, j] = self._smat[i, j]
-        self._smat = newD
-        self.cols -= 1
+        if isinstance(i, int) and j == slice(None):
+            k = a2idx(i, self.rows)
+            for (i, j) in self._smat:
+                if i == k:
+                    pass
+                elif i > k:
+                    newD[i - 1, j] = self._smat[i, j]
+                else:
+                    newD[i, j] = self._smat[i, j]
+            self._smat = newD
+            self.rows -= 1
+        elif i == slice(None) and isinstance(j, int):
+            k = a2idx(j, self.cols)
+            for (i, j) in self._smat:
+                if j == k:
+                    pass
+                elif j > k:
+                    newD[i, j - 1] = self._smat[i, j]
+                else:
+                    newD[i, j] = self._smat[i, j]
+            self._smat = newD
+            self.cols -= 1
+        else:  # pragma: no cover
+            raise NotImplementedError
 
     def row_swap(self, i, j):
         """Swap, in place, columns i and j.

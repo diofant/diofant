@@ -114,12 +114,12 @@ def test_sparse_matrix():
 
     assert a == b
     S = sparse_eye(3)
-    S.row_del(1)
+    del S[1, :]
     assert S == SparseMatrix([
                              [1, 0, 0],
                              [0, 0, 1]])
     S = sparse_eye(3)
-    S.col_del(1)
+    del S[:, 1]
     assert S == SparseMatrix([
                              [1, 0],
                              [0, 0],
@@ -152,9 +152,9 @@ def test_sparse_matrix():
     b = a.copy()
     c = a.copy()
     assert a[0] == 1
-    a.row_del(0)
+    del a[0, :]
     assert a == SparseMatrix(0, 2, [])
-    b.col_del(1)
+    del b[:, 1]
     assert b == SparseMatrix(1, 1, [1])
 
     # test_determinant
