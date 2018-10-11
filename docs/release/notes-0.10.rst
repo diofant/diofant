@@ -51,6 +51,7 @@ Compatibility breaks
 * Removed ``minpoly`` alias for :func:`~diofant.polys.numberfields.minimal_polynomial`, see :pull:`684`.
 * Removed ``abs()`` and ``neg()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`688`.
 * Method :meth:`~diofant.polys.polytools.GroebnerBasis.set_order` was renamed from ``fglm()``, see :pull:`688`.
+* Removed ``row()`` and ``col()`` methods of :class:`~diofant.matrices.Matrix`, see :pull:`688`.
 
 Minor changes
 =============

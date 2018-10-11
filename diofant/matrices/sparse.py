@@ -143,42 +143,6 @@ class SparseMatrixBase(MatrixBase):
         I, J = self.shape
         return [[self[i, j] for j in range(J)] for i in range(I)]
 
-    def row(self, i):
-        """Returns column i from self as a row vector.
-
-        Examples
-        ========
-
-        >>> a = SparseMatrix(((1, 2), (3, 4)))
-        >>> a.row(0)
-        Matrix([[1, 2]])
-
-        See Also
-        ========
-        col
-        row_list
-        """
-        return self[i, :]
-
-    def col(self, j):
-        """Returns column j from self as a column vector.
-
-        Examples
-        ========
-
-        >>> a = SparseMatrix(((1, 2), (3, 4)))
-        >>> a.col(0)
-        Matrix([
-        [1],
-        [3]])
-
-        See Also
-        ========
-        row
-        col_list
-        """
-        return self[:, j]
-
     def row_list(self):
         """Returns a row-sorted list of non-zero elements of the matrix.
 
@@ -491,12 +455,12 @@ class SparseMatrixBase(MatrixBase):
             for i, r in enumerate(rowsList):
                 i_previous = rowsList.index(r)
                 if i_previous != i:
-                    rv = rv.row_insert(i, rv.row(i_previous))
+                    rv = rv.row_insert(i, rv[i_previous, :])
         if len(colsList) != len(ucol):
             for i, c in enumerate(colsList):
                 i_previous = colsList.index(c)
                 if i_previous != i:
-                    rv = rv.col_insert(i, rv.col(i_previous))
+                    rv = rv.col_insert(i, rv[:, i_previous])
         return rv
     extract.__doc__ = MatrixBase.extract.__doc__
 
@@ -1450,7 +1414,6 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.sparse.SparseMatrixBase.row
         row_op
         col_op
 
@@ -1475,7 +1438,6 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.sparse.SparseMatrixBase.row
         zip_row_op
         col_op
 

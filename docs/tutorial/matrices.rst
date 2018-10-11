@@ -58,14 +58,9 @@ integers or :class:`slice` instances.  In last case, new
     ⎣5⎦
     >>> M[1, :-1]
     [4  5]
-
-To get an individual row or column of a matrix, you could also use
-methods :meth:`~diofant.matrices.dense.DenseMatrix.row` or
-:meth:`~diofant.matrices.dense.DenseMatrix.col`.
-
-    >>> M.row(0)
+    >>> M[0, :]
     [1  2  3]
-    >>> M.col(-1)
+    >>> M[:, -1]
     ⎡3⎤
     ⎢ ⎥
     ⎣6⎦

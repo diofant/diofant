@@ -129,50 +129,6 @@ class DenseMatrix(MatrixBase):
         return [self._mat[i: i + self.cols]
                 for i in range(0, len(self), self.cols)]
 
-    def row(self, i):
-        """Elementary row selector.
-
-        Examples
-        ========
-
-        >>> eye(2).row(0)
-        Matrix([[1, 0]])
-
-        See Also
-        ========
-
-        diofant.matrices.dense.DenseMatrix.col
-        diofant.matrices.dense.MutableDenseMatrix.row_op
-        diofant.matrices.dense.MutableDenseMatrix.row_swap
-        diofant.matrices.dense.MutableDenseMatrix.row_del
-        diofant.matrices.matrices.MatrixBase.row_join
-        diofant.matrices.matrices.MatrixBase.row_insert
-        """
-        return self[i, :]
-
-    def col(self, j):
-        """Elementary column selector.
-
-        Examples
-        ========
-
-        >>> eye(2).col(0)
-        Matrix([
-        [1],
-        [0]])
-
-        See Also
-        ========
-
-        diofant.matrices.dense.DenseMatrix.row
-        diofant.matrices.dense.MutableDenseMatrix.col_op
-        diofant.matrices.dense.MutableDenseMatrix.col_swap
-        diofant.matrices.dense.MutableDenseMatrix.col_del
-        diofant.matrices.matrices.MatrixBase.col_join
-        diofant.matrices.matrices.MatrixBase.col_insert
-        """
-        return self[:, j]
-
     def _eval_trace(self):
         """Calculate the trace of a square matrix.
 
@@ -705,7 +661,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.row
         diofant.matrices.dense.MutableDenseMatrix.row_op
         diofant.matrices.dense.MutableDenseMatrix.col_op
         """
@@ -734,7 +689,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.row
         diofant.matrices.dense.MutableDenseMatrix.zip_row_op
         diofant.matrices.dense.MutableDenseMatrix.col_op
         """
@@ -759,7 +713,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.col
         diofant.matrices.dense.MutableDenseMatrix.row_op
         """
         self._mat[j::self.cols] = [f(*t) for t in list(zip(self._mat[j::self.cols], range(self.rows)))]
@@ -784,7 +737,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.row
         diofant.matrices.dense.MutableDenseMatrix.col_swap
         """
         for k in range(self.cols):
@@ -810,7 +762,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.col
         diofant.matrices.dense.MutableDenseMatrix.row_swap
         """
         for k in range(self.rows):
@@ -832,7 +783,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.row
         diofant.matrices.dense.MutableDenseMatrix.col_del
         """
         if i < -self.rows or i >= self.rows:
@@ -860,7 +810,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.col
         diofant.matrices.dense.MutableDenseMatrix.row_del
         """
         if i < -self.cols or i >= self.cols:
