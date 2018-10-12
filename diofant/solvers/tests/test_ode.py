@@ -1640,18 +1640,6 @@ def test_nth_linear_constant_coeff_homogeneous_RootOf():
              C4*exp(x*RootOf(x**5 + 11*x - 2, 3)) +
              C5*exp(x*RootOf(x**5 + 11*x - 2, 4)))
     assert dsolve(eq) == sol
-
-
-@pytest.mark.slow
-@pytest.mark.xfail
-def test_nth_linear_constant_coeff_homogeneous_RootOf_sol():
-    eq = f(x).diff(x, 5) + 11*f(x).diff(x) - 2*f(x)
-    sol = Eq(f(x),
-             C1*exp(x*RootOf(x**5 + 11*x - 2, 0)) +
-             C2*exp(x*RootOf(x**5 + 11*x - 2, 1)) +
-             C3*exp(x*RootOf(x**5 + 11*x - 2, 2)) +
-             C4*exp(x*RootOf(x**5 + 11*x - 2, 3)) +
-             C5*exp(x*RootOf(x**5 + 11*x - 2, 4)))
     assert checkodesol(eq, sol, order=5, solve_for_func=False)[0]
 
 
