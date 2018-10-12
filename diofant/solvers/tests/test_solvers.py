@@ -481,10 +481,11 @@ def test_solve_transcendental():
     assert solve(eq, check=False) == [{x: _**15}
                                       for _ in Poly(-x**5 + x**3 + v,
                                                     x).all_roots()]
-    assert solve(eq1, check=False) == [{x: _**15}
-                                       for _ in Poly((-1)**Rational(2, 3)*x**5 -
-                                                     (-1)**Rational(2, 5)*x**3 -
-                                                     v, x).all_roots()]
+    for s, v in zip((x.subs(_) for _ in solve(eq1, check=False)),
+                    (_**15 for _ in Poly((-1)**Rational(2, 3)*x**5 -
+                                         (-1)**Rational(2, 5)*x**3 -
+                                         v, x).all_roots())):
+        assert simplify(s - v) == 0
 
 
 def test_solve_for_exprs():
