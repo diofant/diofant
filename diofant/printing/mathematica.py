@@ -155,7 +155,7 @@ class MCodePrinter(CodePrinter):
         res = []
         for i in range(A.rows):
             res.append("{" +
-                       ", ".join([self.doprint(e) for e in A.row(i)]) +
+                       ", ".join([self.doprint(e) for e in A[i, :]]) +
                        "}")
         return "{" + ", ".join(res) + "}"
 

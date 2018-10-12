@@ -93,7 +93,6 @@ def sring(exprs, *symbols, **options):
     Examples
     ========
 
-    >>> x, y, z = symbols("x y z")
     >>> R, f = sring(x + 2*y + 3*z)
     >>> R
     ZZ[x,y,z]

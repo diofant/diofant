@@ -330,7 +330,7 @@ def classify_diop(eq, _dict=True):
     Examples
     ========
 
-    >>> from diofant.abc import w, t
+    >>> from diofant.abc import w
     >>> classify_diop(4*x + 6*y - 4)
     ([x, y], {1: -4, x: 4, y: 6}, 'linear')
     >>> classify_diop(x + 3*y -4*z + 5)
@@ -662,7 +662,6 @@ def base_solution_linear(c, a, b, t=None):
     Examples
     ========
 
-    >>> from diofant.abc import t
     >>> base_solution_linear(5, 2, 3)  # equation 2*x + 3*y = 5
     (-5, 5)
     >>> base_solution_linear(0, 5, 7)  # equation 5*x + 7*y = 0
@@ -725,7 +724,6 @@ def diop_quadratic(eq, param=symbols("t", integer=True)):
     Examples
     ========
 
-    >>> from diofant.abc import t
     >>> diop_quadratic(x**2 + y**2 + 2*x + 2*y + 2, t)
     {(-1, -1)}
 
@@ -2361,7 +2359,7 @@ def diop_general_pythagorean(eq, param=symbols("m", integer=True)):
     Examples
     ========
 
-    >>> from diofant.abc import a, b, c, d, e
+    >>> from diofant.abc import e
     >>> diop_general_pythagorean(a**2 + b**2 + c**2 - d**2)
     (m1**2 + m2**2 - m3**2, 2*m1*m3, 2*m2*m3, m1**2 + m2**2 + m3**2)
     >>> diop_general_pythagorean(9*a**2 - 4*b**2 + 16*c**2 + 25*d**2 + e**2)
@@ -2430,7 +2428,7 @@ def diop_general_sum_of_squares(eq, limit=1):
     Examples
     ========
 
-    >>> from diofant.abc import a, b, c, d, e, f
+    >>> from diofant.abc import e, f
     >>> diop_general_sum_of_squares(a**2 + b**2 + c**2 + d**2 + e**2 - 2345)
     {(15, 22, 22, 24, 24)}
 
@@ -2492,7 +2490,6 @@ def diop_general_sum_of_even_powers(eq, limit=1):
     Examples
     ========
 
-    >>> from diofant.abc import a, b
     >>> diop_general_sum_of_even_powers(a**4 + b**4 - (2**4 + 3**4))
     {(2, 3)}
 

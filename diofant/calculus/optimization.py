@@ -244,9 +244,9 @@ def simplex(c, m, b):
         if tableau[-1, -1].is_nonzero:
             raise InfeasibleProblem
 
-        tableau.row_del(-1)
+        del tableau[-1, :]
         for i in range(nneg):
-            tableau.col_del(-2)
+            del tableau[:, -2]
 
         for row in [_ for _ in range(rows) if basis[_] > cols + rows - 1]:
             for col in range(tableau.cols - 1):  # pragma: no branch

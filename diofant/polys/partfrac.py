@@ -237,8 +237,6 @@ def apart_list(f, x=None, dummies=None, **options):
 
     A first example:
 
-    >>> from diofant.abc import t
-
     >>> f = (2*x**3 - 2*x) / (x**2 - 2*x + 1)
     >>> pfd = apart_list(f)
     >>> pfd

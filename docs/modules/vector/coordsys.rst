@@ -112,7 +112,6 @@ are applied to the new system in the order the ``Orienter`` instances
 appear in the iterable.
 
   >>> from diofant.vector import BodyOrienter
-  >>> from diofant.abc import a, b, c
   >>> body_orienter = BodyOrienter(a, b, c, 'XYZ')
   >>> C = A.orient_new('C', (axis_orienter, body_orienter))
 
@@ -195,7 +194,6 @@ in different coordinate systems using the ``express`` function.
 For purposes of this section, assume the following initializations-
 
   >>> from diofant.vector import CoordSysCartesian, express
-  >>> from diofant.abc import a, b, c
   >>> N = CoordSysCartesian('N')
   >>> M = N.orient_new_axis('M', a, N.k)
 

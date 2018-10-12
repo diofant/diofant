@@ -102,3 +102,16 @@ linkcheck_ignore = [r'https://primes.utm.edu/notes/gaps.html',
                     r'https://primes.utm.edu/glossary/xpage/BertrandsPostulate.html',
                     r'https://primes.utm.edu/prove/prove2_3.html',
                     r'https://primes.utm.edu/glossary/xpage/Pseudoprime.html']
+
+# This value controls if docstring for classes or methods, if not explicitly
+# set, is inherited form parents.
+autodoc_inherit_docstrings = False
+
+# A list of paths that contain custom static files. Relative paths are taken as
+# relative to the configuration directory. They are copied to the output’s
+# _static directory.
+html_static_path = ['_static']
+
+# https://docs.readthedocs.io/en/latest/guides/adding-custom-css.html
+def setup(app):
+    app.add_stylesheet('custom.css')

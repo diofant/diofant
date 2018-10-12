@@ -267,7 +267,7 @@ The extended Pythagorean equation,
 general sum of squares equation, `x_{1}^2 + x_{2}^2 + \ldots + x_{n}^2 = k` can
 also be solved using the Diophantine module.
 
->>> from diofant.abc import a, b, c, d, e, f
+>>> from diofant.abc import e, f
 >>> diophantine(9*a**2 + 16*b**2 + c**2 + 49*d**2 + 4*e**2 - 25*f**2)
 {(70*t1**2 + 70*t2**2 + 70*t3**2 + 70*t4**2 - 70*t5**2, 105*t1*t5, 420*t2*t5, 60*t3*t5, 210*t4*t5, 42*t1**2 + 42*t2**2 + 42*t3**2 + 42*t4**2 + 42*t5**2)}
 

@@ -1125,7 +1125,6 @@ def intcurve_series(vector_field, param, start_point, n=6, coord_sys=None, coeff
 
     Use the predefined R2 manifold:
 
-    >>> from diofant.abc import t
     >>> from diofant.diffgeom.rn import R2, R2_p, R2_r
 
     Specify a starting point and a vector field:
@@ -1237,7 +1236,6 @@ def intcurve_diffequ(vector_field, param, start_point, coord_sys=None):
 
     Use the predefined R2 manifold:
 
-    >>> from diofant.abc import t
     >>> from diofant.diffgeom.rn import R2, R2_p, R2_r
 
     Specify a starting point and a vector field:
@@ -1296,7 +1294,6 @@ def contravariant_order(expr, _strict=False):
     ========
 
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant.abc import a
     >>> contravariant_order(a)
     0
     >>> contravariant_order(a*R2.x + 2)
@@ -1338,7 +1335,6 @@ def covariant_order(expr, _strict=False):
     ========
 
     >>> from diofant.diffgeom.rn import R2
-    >>> from diofant.abc import a
     >>> covariant_order(a)
     0
     >>> covariant_order(a*R2.x + 2)

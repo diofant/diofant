@@ -172,7 +172,7 @@ class Integral(AddWithLimits):
         Examples
         ========
 
-        >>> from diofant.abc import a, b, c, d, u
+        >>> from diofant.abc import u
 
         >>> i = Integral(x*cos(x**2 - 1), (x, 0, 1))
 
@@ -1146,8 +1146,6 @@ def integrate(*args, **kwargs):
     Examples
     ========
 
-    >>> from diofant.abc import a
-
     >>> integrate(x*y, x)
     x**2*y/2
 
@@ -1211,7 +1209,6 @@ def line_integrate(field, curve, vars):
     Examples
     ========
 
-    >>> from diofant.abc import t
     >>> C = Curve([E**t + 1, E**t - 1], (t, 0, ln(2)))
     >>> line_integrate(x + y, C, [x, y])
     3*sqrt(2)

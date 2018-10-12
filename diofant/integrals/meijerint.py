@@ -305,7 +305,6 @@ def _get_coeff_exp(expr, x):
     When expr is known to be of the form c*x**b, with c and/or b possibly 1,
     return c, b.
 
-    >>> from diofant.abc import a, b
     >>> _get_coeff_exp(a*x**b, x)
     (a, b)
     >>> _get_coeff_exp(x, x)
@@ -368,7 +367,6 @@ def _find_splitting_points(expr, x):
     Find numbers a such that a linear substitution x -> x + a would
     (hopefully) simplify expr.
 
-    >>> from diofant.abc import a
     >>> _find_splitting_points(x, x)
     {0}
     >>> _find_splitting_points((x-1)**3, x)
@@ -827,7 +825,6 @@ def _int0oo_1(g, x):
     Evaluate int_0^\infty g dx using G functions,
     assuming the necessary conditions are fulfilled.
 
-    >>> from diofant.abc import a, b, c, d
     >>> _int0oo_1(meijerg([a], [b], [c], [d], x*y), x)
     gamma(-a)*gamma(c + 1)/(y*gamma(-d)*gamma(b + 1))
     """
@@ -855,7 +852,7 @@ def _rewrite_saxena(fac, po, g1, g2, x, full_pb=False):
     Return C, f1, f2 such that integral C f1 f2 from 0 to infinity equals
     integral fac po g1 g2 from 0 to infinity.
 
-    >>> from diofant.abc import s, t
+    >>> from diofant.abc import s
     >>> g1 = meijerg([], [], [0], [], s*t)
     >>> g2 = meijerg([], [], [m/2], [-m/2], t**2/4)
     >>> r = _rewrite_saxena(1, t**0, g1, g2, t)
@@ -1221,7 +1218,7 @@ def _int0oo(g1, g2, x):
     Express integral from zero to infinity g1*g2 using a G function,
     assuming the necessary conditions are fulfilled.
 
-    >>> from diofant.abc import s, t
+    >>> from diofant.abc import s
     >>> g1 = meijerg([], [], [-Rational(1, 2), 0], [], s**2*t/4)
     >>> g2 = meijerg([], [], [m/2], [-m/2], t/4)
     >>> _int0oo(g1, g2, t)
@@ -1999,7 +1996,6 @@ def meijerint_inversion(f, x, t):
     Examples
     ========
 
-    >>> from diofant.abc import t
     >>> meijerint_inversion(1/x, x, t)
     Heaviside(t)
     """

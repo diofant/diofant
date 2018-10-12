@@ -3421,7 +3421,7 @@ GroebnerBasis⎝⎣x  - x - 3⋅y + 1, y  - 2⋅x + y - 1⎦, x, y, domain=ℤ, 
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = expr.fglm('lex')
+    expr = expr.set_order('lex')
 
     ascii_str = \
         """\

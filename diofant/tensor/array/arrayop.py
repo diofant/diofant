@@ -24,7 +24,6 @@ def tensorproduct(*args):
     ========
 
     >>> from diofant.tensor.array import Array
-    >>> from diofant.abc import t
     >>> A = Array([[1, 2], [3, 4]])
     >>> B = Array([x, y])
     >>> tensorproduct(A, B)
@@ -84,7 +83,7 @@ def tensorcontraction(array, *contraction_axes):
     Matrix multiplication may be emulated with a proper combination of
     ``tensorcontraction`` and ``tensorproduct``
 
-    >>> from diofant.abc import a, b, c, d, e, f, g, h
+    >>> from diofant.abc import e, f, g, h
     >>> m1 = Matrix([[a, b], [c, d]])
     >>> m2 = Matrix([[e, f], [g, h]])
     >>> p = tensorproduct(m1, m2)
@@ -178,7 +177,6 @@ def derive_by_array(expr, dx):
     Examples
     ========
 
-    >>> from diofant.abc import t
     >>> derive_by_array(cos(x*t), x)
     -t*sin(t*x)
     >>> derive_by_array(cos(x*t), [x, y, z, t])
@@ -215,7 +213,6 @@ def permutedims(expr, perm):
     Examples
     ========
 
-    >>> from diofant.abc import t
     >>> from diofant.tensor.array import Array
     >>> a = Array([[x, y, z], [t, sin(x), 0]])
     >>> a

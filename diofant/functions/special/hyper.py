@@ -111,7 +111,6 @@ class hyper(TupleParametersBase):
     The parameters `a_p` and `b_q` can be passed as arbitrary
     iterables, for example:
 
-    >>> from diofant.abc import a
     >>> hyper((1, 2, 3), [3, 4], x)
     hyper((1, 2, 3), (3, 4), x)
 
@@ -157,7 +156,6 @@ class hyper(TupleParametersBase):
 
     We can also sometimes hyperexpand parametric functions:
 
-    >>> from diofant.abc import a
     >>> hyperexpand(hyper([-a], [], x))
     (-x + 1)**a
 
@@ -363,7 +361,6 @@ class meijerg(TupleParametersBase):
 
     You can pass the parameters either as four separate vectors:
 
-    >>> from diofant.abc import a
     >>> pprint(meijerg([1, 2], [a, 4], [5], [], x), use_unicode=False)
      __1, 2 /1, 2  a, 4 |  \
     /__     |           | x|
@@ -406,7 +403,6 @@ class meijerg(TupleParametersBase):
     In some cases it can be expressed in terms of hypergeometric functions,
     using Slater's theorem. For example:
 
-    >>> from diofant.abc import a, b, c
     >>> hyperexpand(meijerg([a], [], [c], [b], x), allow_hyper=True)
     x**c*gamma(-a + c + 1)*hyper((-a + c + 1,),
                                  (-b + c + 1,), -x)/gamma(-b + c + 1)

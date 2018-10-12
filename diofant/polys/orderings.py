@@ -263,8 +263,6 @@ def build_product_order(arg, gens):
 
     For example, build a product of two grlex orders:
 
-    >>> from diofant.abc import t
-
     >>> O = build_product_order((("grlex", x, y), ("grlex", z, t)), [x, y, z, t])
     >>> O((1, 2, 3, 4))
     ((3, (1, 2)), (7, (3, 4)))

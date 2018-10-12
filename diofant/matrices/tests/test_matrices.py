@@ -1033,14 +1033,14 @@ def test_col_row_op():
 
     # neither row nor slice give copies that allow the original matrix to
     # be changed
-    assert M.row(0) == Matrix([[x + 1, 0, 0]])
-    r1 = M.row(0)
+    assert M[0, :] == Matrix([[x + 1, 0, 0]])
+    r1 = M[0, :]
     r1[0] = 42
     assert M[0, 0] == x + 1
     r1 = M[0, :-1]  # also testing negative slice
     r1[0] = 42
     assert M[0, 0] == x + 1
-    c1 = M.col(0)
+    c1 = M[:, 0]
     assert c1 == Matrix([x + 1, 1 + y])
     c1[0] = 0
     assert M[0, 0] == x + 1
@@ -2074,7 +2074,7 @@ def test_row_insert():
     for i in range(-4, 5):
         l = [1, 0, 0]
         l.insert(i, 4)
-        assert flatten(eye(3).row_insert(i, r4).col(0).tolist()) == l
+        assert flatten(eye(3).row_insert(i, r4)[:, 0].tolist()) == l
 
 
 def test_col_insert():
@@ -2082,7 +2082,7 @@ def test_col_insert():
     for i in range(-4, 5):
         l = [0, 0, 0]
         l.insert(i, 4)
-        assert flatten(zeros(3).col_insert(i, c4).row(0).tolist()) == l
+        assert flatten(zeros(3).col_insert(i, c4)[0, :].tolist()) == l
 
 
 def test_normalized():
@@ -2556,32 +2556,36 @@ def test_hermitian():
 
 
 def test_sympyissue_9457_9467_9876():
-    # for row_del(index)
+    # for row deletion
     M = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    M.row_del(1)
+    del M[1, :]
     assert M == Matrix([[1, 2, 3], [3, 4, 5]])
     N = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    N.row_del(-2)
+    del N[-2, :]
     assert N == Matrix([[1, 2, 3], [3, 4, 5]])
     O = Matrix([[1, 2, 3], [5, 6, 7], [9, 10, 11]])
-    O.row_del(-1)
+    del O[-1, :]
     assert O == Matrix([[1, 2, 3], [5, 6, 7]])
     P = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    pytest.raises(IndexError, lambda: P.row_del(10))
+    with pytest.raises(IndexError):
+        del P[10, :]
     Q = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    pytest.raises(IndexError, lambda: Q.row_del(-10))
+    with pytest.raises(IndexError):
+        del Q[-10, :]
 
-    # for col_del(index)
+    # for column deletion
     M = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    M.col_del(1)
+    del M[:, 1]
     assert M == Matrix([[1, 3], [2, 4], [3, 5]])
     N = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    N.col_del(-2)
+    del N[:, -2]
     assert N == Matrix([[1, 3], [2, 4], [3, 5]])
     P = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    pytest.raises(IndexError, lambda: P.col_del(10))
+    with pytest.raises(IndexError):
+        del P[:, 10]
     Q = Matrix([[1, 2, 3], [2, 3, 4], [3, 4, 5]])
-    pytest.raises(IndexError, lambda: Q.col_del(-10))
+    with pytest.raises(IndexError):
+        del Q[:, -10]
 
 
 def test_sympyissue_9422():

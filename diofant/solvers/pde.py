@@ -446,7 +446,6 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
 
     The general solution is of the form::
 
-        >>> from diofant.abc import a, b, c
         >>> u = f(x, y)
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
@@ -508,7 +507,6 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
 
     The general solution of the PDE is::
 
-        >>> from diofant.abc import a, b, c
         >>> f = Function('f')
         >>> G = Function('G')
         >>> u = f(x, y)
@@ -744,7 +742,6 @@ def pde_separate(eq, fun, sep, strategy='mul'):
     Examples
     ========
 
-    >>> from diofant.abc import t
     >>> u, X, T = map(Function, 'uXT')
 
     >>> eq = Eq(Derivative(u(x, t), x), E**(u(x, t))*Derivative(u(x, t), t))
@@ -826,7 +823,6 @@ def pde_separate_add(eq, fun, sep):
     Examples
     ========
 
-    >>> from diofant.abc import t
     >>> u, X, T = map(Function, 'uXT')
 
     >>> eq = Eq(Derivative(u(x, t), x), E**(u(x, t))*Derivative(u(x, t), t))

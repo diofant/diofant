@@ -83,7 +83,7 @@ def enable_mpl_agg_backend():
 
 @pytest.fixture(autouse=True)
 def add_np(doctest_namespace):
-    for sym in (diofant.symbols('x y z t') +
+    for sym in (diofant.symbols('a b c d x y z t') +
                 diofant.symbols('k m n', integer=True) +
                 diofant.symbols('f g h', cls=diofant.Function)):
         doctest_namespace[str(sym)] = sym

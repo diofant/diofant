@@ -129,50 +129,6 @@ class DenseMatrix(MatrixBase):
         return [self._mat[i: i + self.cols]
                 for i in range(0, len(self), self.cols)]
 
-    def row(self, i):
-        """Elementary row selector.
-
-        Examples
-        ========
-
-        >>> eye(2).row(0)
-        Matrix([[1, 0]])
-
-        See Also
-        ========
-
-        diofant.matrices.dense.DenseMatrix.col
-        diofant.matrices.dense.MutableDenseMatrix.row_op
-        diofant.matrices.dense.MutableDenseMatrix.row_swap
-        diofant.matrices.dense.MutableDenseMatrix.row_del
-        diofant.matrices.matrices.MatrixBase.row_join
-        diofant.matrices.matrices.MatrixBase.row_insert
-        """
-        return self[i, :]
-
-    def col(self, j):
-        """Elementary column selector.
-
-        Examples
-        ========
-
-        >>> eye(2).col(0)
-        Matrix([
-        [1],
-        [0]])
-
-        See Also
-        ========
-
-        diofant.matrices.dense.DenseMatrix.row
-        diofant.matrices.dense.MutableDenseMatrix.col_op
-        diofant.matrices.dense.MutableDenseMatrix.col_swap
-        diofant.matrices.dense.MutableDenseMatrix.col_del
-        diofant.matrices.matrices.MatrixBase.col_join
-        diofant.matrices.matrices.MatrixBase.col_insert
-        """
-        return self[:, j]
-
     def _eval_trace(self):
         """Calculate the trace of a square matrix.
 
@@ -705,7 +661,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.row
         diofant.matrices.dense.MutableDenseMatrix.row_op
         diofant.matrices.dense.MutableDenseMatrix.col_op
         """
@@ -734,7 +689,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.row
         diofant.matrices.dense.MutableDenseMatrix.zip_row_op
         diofant.matrices.dense.MutableDenseMatrix.col_op
         """
@@ -759,7 +713,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.col
         diofant.matrices.dense.MutableDenseMatrix.row_op
         """
         self._mat[j::self.cols] = [f(*t) for t in list(zip(self._mat[j::self.cols], range(self.rows)))]
@@ -784,7 +737,6 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.row
         diofant.matrices.dense.MutableDenseMatrix.col_swap
         """
         for k in range(self.cols):
@@ -810,65 +762,41 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.col
         diofant.matrices.dense.MutableDenseMatrix.row_swap
         """
         for k in range(self.rows):
             self[k, i], self[k, j] = self[k, j], self[k, i]
 
-    def row_del(self, i):
-        """Delete the given row.
+    def __delitem__(self, key):
+        """Delete portion of self defined by key.
 
         Examples
         ========
 
         >>> M = eye(3)
-        >>> M.row_del(1)
+        >>> del M[1, :]
         >>> M
         Matrix([
         [1, 0, 0],
         [0, 0, 1]])
-
-        See Also
-        ========
-
-        diofant.matrices.dense.DenseMatrix.row
-        diofant.matrices.dense.MutableDenseMatrix.col_del
-        """
-        if i < -self.rows or i >= self.rows:
-            raise IndexError("Index out of range: 'i = %s', valid -%s <= i"
-                             " < %s" % (i, self.rows, self.rows))
-        if i < 0:
-            i += self.rows
-        del self._mat[i*self.cols:(i + 1)*self.cols]
-        self.rows -= 1
-
-    def col_del(self, i):
-        """Delete the given column.
-
-        Examples
-        ========
-
-        >>> M = eye(3)
-        >>> M.col_del(1)
+        >>> del M[:, 0]
         >>> M
         Matrix([
-        [1, 0],
         [0, 0],
         [0, 1]])
-
-        See Also
-        ========
-
-        diofant.matrices.dense.DenseMatrix.col
-        diofant.matrices.dense.MutableDenseMatrix.row_del
         """
-        if i < -self.cols or i >= self.cols:
-            raise IndexError("Index out of range: 'i=%s', valid -%s <= i < %s"
-                             % (i, self.cols, self.cols))
-        for j in range(self.rows - 1, -1, -1):
-            del self._mat[i + j*self.cols]
-        self.cols -= 1
+        i, j = self.key2ij(key)
+        if isinstance(i, int) and j == slice(None):
+            del self._mat[i*self.cols:(i + 1)*self.cols]
+            self.rows -= 1
+            return
+        elif i == slice(None) and isinstance(j, int):
+            for i in range(self.rows - 1, -1, -1):
+                del self._mat[j + i*self.cols]
+            self.cols -= 1
+            return
+        else:  # pragma: no cover
+            raise NotImplementedError
 
     # Utility functions
     def simplify(self, ratio=1.7, measure=count_ops):

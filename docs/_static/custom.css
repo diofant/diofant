@@ -1,0 +1,3 @@
+.rst-content div[class^="highlight"] pre {
+    line-height: normal;
+}

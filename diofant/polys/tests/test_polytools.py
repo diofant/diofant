@@ -617,11 +617,11 @@ def test_Poly_exquo_ground():
 
 
 def test_Poly_abs():
-    assert Poly(-x + 1, x).abs() == abs(Poly(-x + 1, x)) == Poly(x + 1, x)
+    assert abs(Poly(-x + 1, x)) == Poly(x + 1, x)
 
 
 def test_Poly_neg():
-    assert Poly(-x + 1, x).neg() == -Poly(-x + 1, x) == Poly(x - 1, x)
+    assert -Poly(-x + 1, x) == Poly(x - 1, x)
 
 
 def test_Poly_add():
@@ -3097,57 +3097,52 @@ def test_groebner():
                                     0.072*y**2 + 0.036*x*y + 0.05*y - 1.423],
                                    [x, y]))
 
-    G = groebner([x**3 - y**3], x, y, order='grlex')
-    pytest.raises(NotImplementedError, lambda: G.fglm('lex'))
 
-
-def test_fglm():
+def test_set_order():
     F = [a + b + c + d, a*b + a*d + b*c + b*d, a*b*c + a*b*d + a*c*d + b*c*d, a*b*c*d - 1]
     G = groebner(F, a, b, c, d, order=grlex)
 
-    B = [
-        4*a + 3*d**9 - 4*d**5 - 3*d,
-        4*b + 4*c - 3*d**9 + 4*d**5 + 7*d,
-        4*c**2 + 3*d**10 - 4*d**6 - 3*d**2,
-        4*c*d**4 + 4*c - d**9 + 4*d**5 + 5*d,
-        d**12 - d**8 - d**4 + 1,
-    ]
+    B = [4*a + 3*d**9 - 4*d**5 - 3*d,
+         4*b + 4*c - 3*d**9 + 4*d**5 + 7*d,
+         4*c**2 + 3*d**10 - 4*d**6 - 3*d**2,
+         4*c*d**4 + 4*c - d**9 + 4*d**5 + 5*d,
+         d**12 - d**8 - d**4 + 1]
 
     assert groebner(F, a, b, c, d, order=lex) == B
-    assert G.fglm(lex) == B
-    assert G.fglm(grlex) == G
+    assert G.set_order(lex) == B
+    assert G.set_order(grlex) == G
 
     F = [9*x**8 + 36*x**7 - 32*x**6 - 252*x**5 - 78*x**4 + 468*x**3 + 288*x**2 - 108*x + 9,
          -72*t*x**7 - 252*t*x**6 + 192*t*x**5 + 1260*t*x**4 + 312*t*x**3 - 404*t*x**2 - 576*t*x +
          108*t - 72*x**7 - 256*x**6 + 192*x**5 + 1280*x**4 + 312*x**3 - 576*x + 96]
     G = groebner(F, t, x, order=grlex)
 
-    B = [
-        203577793572507451707*t + 627982239411707112*x**7 - 666924143779443762*x**6 -
-        10874593056632447619*x**5 + 5119998792707079562*x**4 + 72917161949456066376*x**3 +
-        20362663855832380362*x**2 - 142079311455258371571*x + 183756699868981873194,
-        9*x**8 + 36*x**7 - 32*x**6 - 252*x**5 - 78*x**4 + 468*x**3 + 288*x**2 - 108*x + 9,
-    ]
+    B = [203577793572507451707*t + 627982239411707112*x**7 - 666924143779443762*x**6 -
+         10874593056632447619*x**5 + 5119998792707079562*x**4 + 72917161949456066376*x**3 +
+         20362663855832380362*x**2 - 142079311455258371571*x + 183756699868981873194,
+         9*x**8 + 36*x**7 - 32*x**6 - 252*x**5 - 78*x**4 + 468*x**3 + 288*x**2 - 108*x + 9]
 
     assert groebner(F, t, x, order=lex) == B
-    assert G.fglm(lex) == B
+    assert G.set_order(lex) == B
 
     F = [x**2 - x - 3*y + 1, -2*x + y**2 + y - 1]
     G = groebner(F, x, y, order=lex)
-
-    B = [
-        x**2 - x - 3*y + 1,
-        y**2 - 2*x + y - 1,
-    ]
+    B = [x**2 - x - 3*y + 1, y**2 - 2*x + y - 1]
 
     assert groebner(F, x, y, order=grlex) == B
-    assert G.fglm(grlex) == B
+    assert G.set_order(grlex) == B
+    assert G.set_order(grlex).set_order(lex) == G
+    assert G == [2*x - y**2 - y + 1, y**4 + 2*y**3 - 3*y**2 - 16*y + 7]
 
     F = [x**2 - 2*y + 1, x + y/2]
     G = groebner(F, x, y, order=grlex)
     B = [y**2 - 8*y + 4, x + y/2]
+
     assert G == B
-    assert G.fglm(lex) == reversed(B)
+    assert G.set_order(lex) == reversed(B)
+
+    G = groebner([x**3 - y**3], x, y, order='grlex')
+    pytest.raises(NotImplementedError, lambda: G.set_order('lex'))
 
 
 def test_dimension_and_independent_sets():

@@ -158,8 +158,6 @@ class EPath:
         Examples
         ========
 
-        >>> from diofant.abc import t
-
         >>> path = EPath("/*/[0]/Symbol")
         >>> expr = [((x, 1), 2), ((3, y), z)]
 
@@ -227,8 +225,6 @@ class EPath:
 
         Examples
         ========
-
-        >>> from diofant.abc import t
 
         >>> path = EPath("/*/[0]/Symbol")
         >>> expr = [((x, 1), 2), ((3, y), z)]
@@ -319,8 +315,6 @@ def epath(path, expr=None, func=None, args=None, kwargs=None):
 
     Examples
     ========
-
-    >>> from diofant.abc import t
 
     >>> path = "/*/[0]/Symbol"
     >>> expr = [((x, 1), 2), ((3, y), z)]

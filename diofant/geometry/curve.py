@@ -48,7 +48,6 @@ class Curve(GeometrySet):
     Examples
     ========
 
-    >>> from diofant.abc import t, a
     >>> C = Curve((sin(t), cos(t)), (t, 0, 2))
     >>> C.functions
     (sin(t), cos(t))
@@ -88,7 +87,6 @@ class Curve(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.abc import t, a
         >>> Curve((t, t**2), (t, 0, 2)).free_symbols
         set()
         >>> Curve((t, t**2), (t, a, 2)).free_symbols
@@ -117,7 +115,6 @@ class Curve(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.abc import t
         >>> C = Curve((t, t**2), (t, 0, 2))
         >>> C.functions
         (t, t**2)
@@ -142,7 +139,6 @@ class Curve(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.abc import t
         >>> C = Curve([t, t**2], (t, 0, 2))
         >>> C.parameter
         t
@@ -168,7 +164,6 @@ class Curve(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.abc import t
         >>> C = Curve([t, t**3], (t, -2, 2))
         >>> C.limits
         (t, -2, 2)
@@ -303,7 +298,7 @@ class Curve(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.abc import t, s
+        >>> from diofant.abc import s
         >>> Curve((x, sin(x)), (x, 1, 2)).plot_interval()
         [t, 1, 2]
         >>> Curve((x, sin(x)), (x, 1, 2)).plot_interval(s)

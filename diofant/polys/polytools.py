@@ -447,8 +447,6 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant.abc import a, b, c, d
-
         >>> Poly(a + x, a, b, c, d, x).exclude()
         Poly(a + x, a, x, domain='ZZ')
 
@@ -1056,43 +1054,6 @@ class Poly(Expr):
             result = self.rep.exquo_ground(coeff)
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'exquo_ground')
-
-        return self.per(result)
-
-    def abs(self):
-        """
-        Make all coefficients in ``self`` positive.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 - 1, x).abs()
-        Poly(x**2 + 1, x, domain='ZZ')
-        """
-        if hasattr(self.rep, 'abs'):
-            result = self.rep.abs()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'abs')
-
-        return self.per(result)
-
-    def neg(self):
-        """
-        Negate all coefficients in ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 - 1, x).neg()
-        Poly(-x**2 + 1, x, domain='ZZ')
-
-        >>> -Poly(x**2 - 1, x)
-        Poly(-x**2 + 1, x, domain='ZZ')
-        """
-        if hasattr(self.rep, 'neg'):
-            result = self.rep.neg()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'neg')
 
         return self.per(result)
 
@@ -2257,7 +2218,6 @@ class Poly(Expr):
         We can even perform the computations for polynomials
         having symbolic coefficients:
 
-        >>> from diofant.abc import a
         >>> fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
         >>> sorted(dispersionset(fp))
         [0, 1]
@@ -2329,7 +2289,6 @@ class Poly(Expr):
         We can even perform the computations for polynomials
         having symbolic coefficients:
 
-        >>> from diofant.abc import a
         >>> fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
         >>> sorted(dispersionset(fp))
         [0, 1]
@@ -3356,10 +3315,38 @@ class Poly(Expr):
         return self.rep.is_cyclotomic
 
     def __abs__(self):
-        return self.abs()
+        """
+        Make all coefficients in ``self`` positive.
+
+        Examples
+        ========
+
+        >>> abs(Poly(x**2 - 1, x))
+        Poly(x**2 + 1, x, domain='ZZ')
+        """
+        if hasattr(self.rep, 'abs'):
+            result = self.rep.abs()
+        else:  # pragma: no cover
+            raise OperationNotSupported(self, '__abs__')
+
+        return self.per(result)
 
     def __neg__(self):
-        return self.neg()
+        """
+        Negate all coefficients in ``self``.
+
+        Examples
+        ========
+
+        >>> -Poly(x**2 - 1, x)
+        Poly(-x**2 + 1, x, domain='ZZ')
+        """
+        if hasattr(self.rep, 'neg'):
+            result = self.rep.neg()
+        else:  # pragma: no cover
+            raise OperationNotSupported(self, '__neg__')
+
+        return self.per(result)
 
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
@@ -5818,12 +5805,15 @@ class GroebnerBasis(Basic):
 
         return dimrec([], list(self.gens), [])
 
-    def fglm(self, order):
+    def set_order(self, order):
         """
         Convert a Gröbner basis from one ordering to another.
 
-        The FGLM algorithm converts reduced Gröbner bases of zero-dimensional
-        ideals from one ordering to another. This method is often used when it
+        Notes
+        =====
+
+        The FGLM algorithm [Faugère94]_ used to convert reduced Gröbner bases
+        of zero-dimensional ideals from one ordering to another.  Sometimes it
         is infeasible to compute a Gröbner basis with respect to a particular
         ordering directly.
 
@@ -5833,15 +5823,8 @@ class GroebnerBasis(Basic):
         >>> F = [x**2 - 3*y - x + 1, y**2 - 2*x + y - 1]
         >>> G = groebner(F, x, y, order='grlex')
 
-        >>> list(G.fglm('lex'))
-        [2*x - y**2 - y + 1, y**4 + 2*y**3 - 3*y**2 - 16*y + 7]
-        >>> list(groebner(F, x, y, order='lex'))
-        [2*x - y**2 - y + 1, y**4 + 2*y**3 - 3*y**2 - 16*y + 7]
-
-        References
-        ==========
-
-        .. [1] [Faugère94]_
+        >>> G.set_order('lex') == groebner(F, x, y, order='lex')
+        True
         """
         src_order = self.order
         dst_order = monomial_key(order)

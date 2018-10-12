@@ -49,6 +49,9 @@ Compatibility breaks
 * :class:`~diofant.polys.rootoftools.RootOf` don't canonicalize anymore polynomials to have integer coefficients, use :func:`~diofant.core.function.expand_func` instead, see :pull:`679`.
 * Removed `Theano <https://github.com/Theano/Theano/>`_ support, see :pull:`681`.
 * Removed ``minpoly`` alias for :func:`~diofant.polys.numberfields.minimal_polynomial`, see :pull:`684`.
+* Removed ``abs()`` and ``neg()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`688`.
+* Method :meth:`~diofant.polys.polytools.GroebnerBasis.set_order` was renamed from ``fglm()``, see :pull:`688`.
+* Removed ``row()``, ``col()``, ``row_del()`` and ``col_del()`` methods of :class:`~diofant.matrices.Matrix`, see :pull:`688`.
 
 Minor changes
 =============
@@ -61,6 +64,7 @@ Minor changes
 * Support :class:`~diofant.functions.elementary.complexes.conjugate`, :class:`~diofant.functions.elementary.complexes.Abs`, :class:`~diofant.functions.elementary.complexes.re` and :class:`~diofant.functions.elementary.complexes.im` in :func:`~diofant.polys.numberfields.minimal_polynomial`, see :pull:`661` and :pull:`668`.
 * :meth:`~diofant.polys.rootoftools.RootOf.refine` method to refine interval for the root, see :pull:`670`.
 * Support detection of imaginary roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`625`.
+* Mutable matrices support indexed deletion with :meth:`~object.__delitem__`, see :pull:`688`.
 
 Developer changes
 =================

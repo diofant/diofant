@@ -247,7 +247,6 @@ class ExprWithLimits(Expr):
         >>> Sum(1/n**s, (n, 1, oo)).subs(s, 2)
         Sum(n**(-2), (n, 1, oo))
 
-        >>> from diofant.abc import a
         >>> Integral(a*x**2, x).subs(x, 4)
         Integral(a*x**2, (x, 4))
 

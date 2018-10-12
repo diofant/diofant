@@ -1418,8 +1418,8 @@ class MatrixBase(DefaultPrinting):
             raise ValueError("`i` and `j` must satisfy 0 <= i < `self.rows` " +
                              "(%d)" % self.rows + "and 0 <= j < `self.cols` (%d)." % self.cols)
         M = self.as_mutable()
-        M.row_del(i)
-        M.col_del(j)
+        del M[i, :]
+        del M[:, j]
         return self._new(M)
 
     def cofactor(self, i, j, method="berkowitz"):
@@ -1550,7 +1550,7 @@ class MatrixBase(DefaultPrinting):
         rank = n
         row_reduced = mat.rref()[0]
         for i in range(row_reduced.rows):
-            if row_reduced.row(i).norm() == 0:
+            if row_reduced[i, :].norm() == 0:
                 rank -= 1
         if not rank == mat.cols:
             raise MatrixError("The rank of the matrix must match the columns")
@@ -1653,9 +1653,9 @@ class MatrixBase(DefaultPrinting):
 
         >>> M = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
         >>> v = [1, 1, 1]
-        >>> M.row(0).dot(v)
+        >>> M[0, :].dot(v)
         6
-        >>> M.col(0).dot(v)
+        >>> M[:, 0].dot(v)
         12
         >>> M.dot(v)
         [6, 15, 24]
@@ -3718,8 +3718,6 @@ class MatrixBase(DefaultPrinting):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.row
-        diofant.matrices.sparse.SparseMatrixBase.row
         col_join
         """
         from . import MutableMatrix
@@ -3753,8 +3751,6 @@ class MatrixBase(DefaultPrinting):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.col
-        diofant.matrices.sparse.SparseMatrixBase.col
         row_join
         """
         from . import MutableMatrix
@@ -3788,8 +3784,6 @@ class MatrixBase(DefaultPrinting):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.row
-        diofant.matrices.sparse.SparseMatrixBase.row
         col_insert
         """
         if not self:
@@ -3832,8 +3826,6 @@ class MatrixBase(DefaultPrinting):
         See Also
         ========
 
-        diofant.matrices.dense.DenseMatrix.col
-        diofant.matrices.sparse.SparseMatrixBase.col
         row_insert
         """
         from . import MutableMatrix

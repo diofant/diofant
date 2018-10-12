@@ -131,16 +131,16 @@ def rubik(n):
 
     # 1-based reference to rows and columns in Matrix
     def getr(f, i):
-        return faces[f].col(n - i)
+        return faces[f][:, n - i]
 
     def getl(f, i):
-        return faces[f].col(i - 1)
+        return faces[f][:, i - 1]
 
     def getu(f, i):
-        return faces[f].row(i - 1)
+        return faces[f][i - 1, :]
 
     def getd(f, i):
-        return faces[f].row(n - i)
+        return faces[f][n - i, :]
 
     def setr(f, i, s):
         faces[f][:, n - i] = Matrix(n, 1, s)

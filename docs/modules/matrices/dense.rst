@@ -14,6 +14,11 @@ Matrix Class Reference
 .. autoclass:: diofant.matrices.dense.MutableDenseMatrix
    :members:
 
+.. class:: MutableMatrix
+    :module: diofant.matrices.dense
+
+    alias of :class:`~diofant.matrices.dense.MutableDenseMatrix`
+
 ImmutableMatrix Class Reference
 -------------------------------
 

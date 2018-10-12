@@ -516,8 +516,6 @@ def powdenest(eq, force=False, polar=False):
     Examples
     ========
 
-    >>> from diofant.abc import a, b
-
     >>> powdenest((x**(2*a/3))**(3*x))
     (x**(2*a/3))**(3*x)
     >>> powdenest(exp(3*x*log(2)))

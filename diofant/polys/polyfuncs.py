@@ -149,7 +149,7 @@ def horner(f, *gens, **args):
     Examples
     ========
 
-    >>> from diofant.abc import a, b, c, d, e
+    >>> from diofant.abc import e
 
     >>> horner(9*x**4 + 8*x**3 + 7*x**2 + 6*x + 5)
     x*(x*(x*(9*x + 8) + 7) + 6) + 5
@@ -241,7 +241,7 @@ def viete(f, roots=None, *gens, **args):
     Examples
     ========
 
-    >>> x, a, b, c, r1, r2 = symbols('x a:c r1:3')
+    >>> r1, r2 = symbols('r1:3')
 
     >>> viete(a*x**2 + b*x + c, [r1, r2], x)
     [(r1 + r2, -b/a), (r1*r2, c/a)]

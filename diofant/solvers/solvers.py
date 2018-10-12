@@ -1128,7 +1128,7 @@ def minsolve_linear_system(system, *symbols, **flags):
             debug('minsolve: %s' % n)
             thissol = None
             for nonzeros in combinations(list(range(N)), n):
-                subm = Matrix([system.col(i).T for i in nonzeros] + [system.col(-1).T]).T
+                subm = Matrix([system[:, i].T for i in nonzeros] + [system[:, -1].T]).T
                 s = solve_linear_system(subm, *[symbols[i] for i in nonzeros])
                 if s and not all(v == 0 for v in s.values()):
                     subs = [(symbols[v], Integer(1)) for v in nonzeros]

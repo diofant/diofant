@@ -107,10 +107,10 @@ def test_nocache(clear_imports, monkeypatch):
 
 
 def test_sympyissue_8825():
-    a, b = symbols('a b')
-    d = weakref.WeakKeyDictionary([(a, 1), (b, 2)])
-    assert sstr(list(ordered(d.items()))) == '[(a, 1), (b, 2)]'
-    del a
+    t1, t2 = symbols('t1:3')
+    d = weakref.WeakKeyDictionary([(t1, 1), (t2, 2)])
+    assert sstr(list(ordered(d.items()))) == '[(t1, 1), (t2, 2)]'
+    del t1
     clear_cache()
     gc.collect()
-    assert sstr(list(ordered(d.items()))) == '[(b, 2)]'
+    assert sstr(list(ordered(d.items()))) == '[(t2, 2)]'

@@ -1098,7 +1098,7 @@ def laplace_transform(f, t, s, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`. If ``noconds=True``,
     only `F` will be returned (i.e. not ``cond``, and also not the plane ``a``).
 
-    >>> from diofant.abc import t, s, a
+    >>> from diofant.abc import s
     >>> laplace_transform(t**a, t, s)
     (s**(-a)*gamma(a + 1)/s, 0, -re(a) < 1)
 
@@ -1247,7 +1247,7 @@ def inverse_laplace_transform(F, s, t, plane=None, **hints):
     For a description of possible hints, refer to the docstring of
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
 
-    >>> from diofant.abc import s, t
+    >>> from diofant.abc import s
     >>> a = Symbol('a', positive=True)
     >>> inverse_laplace_transform(exp(-a*s)/s, s, t)
     Heaviside(-a + t)
@@ -1509,7 +1509,6 @@ def sine_transform(f, x, k, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant.abc import a
     >>> sine_transform(x*exp(-a*x**2), x, k)
     sqrt(2)*E**(-k**2/(4*a))*k/(4*a**(3/2))
     >>> sine_transform(x**(-a), x, k)
@@ -1562,7 +1561,6 @@ def inverse_sine_transform(F, k, x, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant.abc import a
     >>> inverse_sine_transform(2**((1-2*a)/2)*k**(a - 1)*
     ...     gamma(-a/2 + 1)/gamma((a+1)/2), k, x)
     x**(-a)
@@ -1616,7 +1614,6 @@ def cosine_transform(f, x, k, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant.abc import a
     >>> cosine_transform(exp(-a*x), x, k)
     sqrt(2)*a/(sqrt(pi)*(a**2 + k**2))
     >>> cosine_transform(exp(-a*sqrt(x))*cos(a*sqrt(x)), x, k)
@@ -1669,7 +1666,6 @@ def inverse_cosine_transform(F, k, x, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant.abc import a
     >>> inverse_cosine_transform(sqrt(2)*a/(sqrt(pi)*(a**2 + k**2)), k, x)
     E**(-a*x)
     >>> inverse_cosine_transform(1/sqrt(k), k, x)
@@ -1768,7 +1764,7 @@ def hankel_transform(f, r, k, nu, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant.abc import r, nu, a, k
+    >>> from diofant.abc import r, nu, k
 
     >>> ht = hankel_transform(1/r**m, r, k, nu)
     >>> ht
@@ -1823,7 +1819,7 @@ def inverse_hankel_transform(F, k, r, nu, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> from diofant.abc import r, nu, a, k
+    >>> from diofant.abc import r, nu, k
 
     >>> ht = hankel_transform(1/r**m, r, k, nu)
     >>> ht

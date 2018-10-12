@@ -395,7 +395,6 @@ class Polyhedron(Basic):
         Examples
         ========
 
-        >>> from diofant.abc import a, b, c, d
         >>> p = Polyhedron(list('abcd'))
         >>> p.corners == p.vertices == (a, b, c, d)
         True
@@ -477,7 +476,6 @@ class Polyhedron(Basic):
         Examples
         ========
 
-        >>> from diofant.abc import a, b, c
         >>> corners = (a, b, c)
         >>> faces = [(0, 1, 2)]
         >>> Polyhedron(corners, faces).edges

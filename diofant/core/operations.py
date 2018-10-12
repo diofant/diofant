@@ -122,7 +122,6 @@ class AssocOp(Expr):
         >>> a = Wild("a")
         >>> b = Wild("b")
         >>> c = Wild("c")
-        >>> x, y, z = symbols("x y z")
         >>> (a + sin(b)*c)._matches_commutative(x + sin(y)*z)
         {a_: x, b_: y, c_: z}
 
