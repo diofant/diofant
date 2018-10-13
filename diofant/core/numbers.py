@@ -1741,6 +1741,7 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
     _denominator = 1
 
     def _eval_power(self, expt):
+        from .function import expand_mul
         if isinstance(expt, Number):
             if isinstance(expt, Float):
                 return Float(-1.0)**expt
@@ -1757,7 +1758,7 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
                     return self**i*self**Rational(r, expt.denominator)
         if isinstance(expt, Add):
             # Handle (-1)**((-1)**n/2 + m/2)
-            e2 = 2*expt
+            e2 = expand_mul(2*expt)
             if e2.is_even and e2.could_extract_minus_sign():
                 e2 *= self
             assert e2.is_Add
