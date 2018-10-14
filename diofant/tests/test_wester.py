@@ -436,7 +436,6 @@ def test_H16():
                                                                                                                                                             + x**5 + 1)*(x**40 - x**30 + x**20 - x**10 + 1))
 
 
-@pytest.mark.slow
 def test_H17():
     assert simplify(factor(expand(p1 * p2)) - p1*p2) == 0
 
@@ -469,19 +468,16 @@ def test_H24():
             (x - phi)*(x + 1 - phi)*(x - 1 + phi)*(x + phi))
 
 
-@pytest.mark.slow
 def test_H25():
     e = (x - 2*y**2 + 3*z**3) ** 20
     assert factor(expand(e)) == e
 
 
-@pytest.mark.slow
 def test_H26():
     g = expand((sin(x) - 2*cos(y)**2 + 3*tan(z)**3)**20)
     assert factor(g, expand=False) == (-sin(x) + 2*cos(y)**2 - 3*tan(z)**3)**20
 
 
-@pytest.mark.slow
 def test_H27():
     f = 24*x*y**19*z**8 - 47*x**17*y**5*z**8 + 6*x**15*y**9*z**2 - 3*x**22 + 5
     g = 34*x**5*y**8*z**13 + 20*x**7*y**7*z**7 + 12*x**9*y**16*z**4 + 80*y**14*z
@@ -851,7 +847,6 @@ def test_M21():
     assert solve(x + sqrt(x) - 2) == [{x: 1}]
 
 
-@pytest.mark.slow
 def test_M22():
     assert solve(2*sqrt(x) + 3*x**R(1, 4) - 2) == [{x: R(1, 16)}]
 
@@ -924,7 +919,6 @@ def test_M37():
     assert solve([x + y + z - 6, 2*x + y + 2*z - 10, x + 3*y + z - 10]) == [{x: -z + 4, y: 2}]
 
 
-@pytest.mark.slow
 def test_M38():
     F, a, b, c = field("a,b,c", ZZ)
     R, *variables = ring("k1:50", F)
@@ -1816,7 +1810,6 @@ def test_T4():
                   - exp(x))/x, x, oo) == -exp(2)
 
 
-@pytest.mark.slow
 def test_T5():
     assert limit(x*log(x)*log(x*exp(x) - x**2)**2/log(log(x**2
                                                           + 2*exp(exp(3*x**3*log(x))))), x, oo) == Rational(1, 3)
@@ -2120,6 +2113,7 @@ def test_W10():
 
 
 @pytest.mark.xfail
+@pytest.mark.slow
 def test_W11():
     # integral not calculated
     assert (integrate(sqrt(1 - x**2)/(1 + x**2), (x, -1, 1)) ==
@@ -2347,6 +2341,7 @@ def test_Y2():
     assert f == cos(t*abs(w - 1))
 
 
+@pytest.mark.slow
 def test_Y3():
     t = symbols('t', real=True, positive=True)
     w = symbols('w', real=True)
