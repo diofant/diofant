@@ -350,10 +350,7 @@ def test_H3():
 
 
 def test_H4():
-    expr = factor(6*x - 10)
-    assert type(expr) is Mul
-    assert expr.args[0] == 2
-    assert expr.args[1] == 3*x - 5
+    assert factor(6*x - 10) == Mul(2, 3*x - 5, evaluate=False)
 
 
 p1 = 64*x**34 - 21*x**47 - 126*x**8 - 46*x**5 - 16*x**60 - 81
