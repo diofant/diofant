@@ -15,22 +15,23 @@ from diofant import (ZZ, And, Complement, Derivative, DiracDelta, E,
                      EulerGamma, FiniteSet, Function, GoldenRatio, I, Lambda,
                      LambertW, Le, Lt, Max, Mul, N, O, Or, Piecewise, Poly,
                      Rational, Subs, Symbol, acos, acot, apart, asin, asinh,
-                     assoc_legendre, atan, bernoulli, besselj, binomial, cbrt,
-                     ceiling, chebyshevt, combsimp, conjugate)
+                     assoc_legendre, atan, bernoulli, besselj, binomial,
+                     cancel, cbrt, ceiling, chebyshevt, combsimp, conjugate)
 from diofant import continued_fraction_convergents as cf_c
 from diofant import continued_fraction_iterator as cf_i
 from diofant import continued_fraction_periodic as cf_p
 from diofant import continued_fraction_reduce as cf_r
 from diofant import (cos, cosh, cot, csc, diff, elliptic_e, elliptic_f, exp,
                      expand, expand_func, factor, factorial, factorial2,
-                     factorint, fibonacci, floor, gamma, gcd, hessian, hyper,
-                     hyperexpand, igcd, im, legendre_poly, limit, log,
-                     logcombine, maximize, minimize, nan, npartitions, oo, pi,
-                     polygamma, polylog, powdenest, powsimp, primerange,
-                     primitive_root, product, radsimp, re, reduce_inequalities,
-                     residue, resultant, rf, sec, series, sign, simplify, sin,
-                     sinh, solve, sqrt, sqrtdenest, symbols, tan, tanh,
-                     totient, trigsimp, wronskian, zoo)
+                     factorint, fibonacci, floor, gamma, gcd, groebner,
+                     hessian, hyper, hyperexpand, igcd, im, legendre_poly,
+                     limit, log, logcombine, maximize, minimize, nan,
+                     npartitions, oo, pi, polygamma, polylog, powdenest,
+                     powsimp, primerange, primitive, primitive_root, product,
+                     radsimp, re, reduce_inequalities, residue, resultant, rf,
+                     sec, series, sign, simplify, sin, sinh, solve, sqrt,
+                     sqrtdenest, symbols, tan, tanh, totient, trigsimp, trunc,
+                     wronskian, zoo)
 from diofant.abc import a, b, c, s, t, w, x, y, z
 from diofant.concrete import Sum
 from diofant.concrete.products import Product
@@ -350,6 +351,7 @@ def test_H3():
 
 
 def test_H4():
+    assert primitive(6*x - 10) == (2, 3*x - 5)
     assert factor(6*x - 10) == Mul(2, 3*x - 5, evaluate=False)
 
 
@@ -389,6 +391,8 @@ def test_H10():
     p1 = 3*x**4 + 3*x**3 + x**2 - x - 2
     p2 = x**3 - 3*x**2 + x + 5
     assert resultant(p1, p2, x) == 0
+    assert factor(p1) == (x + 1)*(3*x**3 + x - 2)
+    assert factor(p2) == (x + 1)*(x**2 - 4*x + 5)
 
 
 def test_H11():
@@ -398,6 +402,7 @@ def test_H11():
 def test_H12():
     num = x**2 - 4
     den = x**2 + 4*x + 4
+    assert cancel(num/den) == (x - 2)/(x + 2)
     assert simplify(num/den) == (x - 2)/(x + 2)
 
 
@@ -427,10 +432,15 @@ def test_H15():
 
 
 def test_H16():
-    assert factor(x**100 - 1) == ((x - 1)*(x + 1)*(x**2 + 1)*(x**4 - x**3
-                                                              + x**2 - x + 1)*(x**4 + x**3 + x**2 + x + 1)*(x**8 - x**6 + x**4
-                                                                                                            - x**2 + 1)*(x**20 - x**15 + x**10 - x**5 + 1)*(x**20 + x**15 + x**10
-                                                                                                                                                            + x**5 + 1)*(x**40 - x**30 + x**20 - x**10 + 1))
+    assert (factor(x**15 - 1) ==
+            (x - 1)*(x**2 + x + 1)*(x**4 + x**3 + x**2 + x + 1) *
+            (x**8 - x**7 + x**5 - x**4 + x**3 - x + 1))
+    assert (factor(x**100 - 1) ==
+            (x - 1)*(x + 1)*(x**2 + 1)*(x**4 - x**3 + x**2 - x + 1) *
+            (x**4 + x**3 + x**2 + x + 1)*(x**8 - x**6 + x**4 - x**2 + 1) *
+            (x**20 - x**15 + x**10 - x**5 + 1) *
+            (x**20 + x**15 + x**10 + x**5 + 1) *
+            (x**40 - x**30 + x**20 - x**10 + 1))
 
 
 def test_H17():
@@ -449,14 +459,28 @@ def test_H19():
     assert Poly(a - 1).invert(Poly(a**2 - 2)) == a + 1
 
 
+def test_H20():
+    f = x**3 + (sqrt(2) - 2)*x**2 - (2*sqrt(2) + 3)*x - 3*sqrt(2)
+    g = x**2 - 2
+    r = (x**2 - 2*x - 3)/(x - sqrt(2))
+    assert cancel(f/g, extension=True) == cancel(f/g, extension=sqrt(2)) == r
+
+
 def test_H22():
-    assert factor(x**4 - 3*x**2 + 1, modulus=5) == (x - 2)**2 * (x + 2)**2
+    f = x**4 - 3*x**2 + 1
+    assert factor(f) == (x**2 - x - 1)*(x**2 + x - 1)
+    assert factor(f, modulus=5) == (x - 2)**2 * (x + 2)**2
 
 
 def test_H23():
     f = x**11 + x + 1
-    g = (x**2 + x + 1) * (x**9 - x**8 + x**6 - x**5 + x**3 - x**2 + 1)
+    g = (x**2 + x + 1)*(x**9 - x**8 + x**6 - x**5 + x**3 - x**2 + 1)
     assert factor(f, modulus=65537) == g
+    assert expand(g) == f
+    s = (x**2 + x + 1)*(x**9 + 65536*x**8 + x**6 + 65536*x**5 +
+                        x**3 + 65536*x**2 + 1)
+    assert factor(f, modulus=65537, symmetric=False) == s
+    assert trunc(expand(s), 65537) == f
 
 
 def test_H24():
@@ -484,6 +508,15 @@ def test_H27():
     assert factor(expand(f*g)) == h
 
 
+def test_H28():
+    f = expand((1 - c**2)**5 * (1 - s**2)**5 * (c**2 + s**2)**10)
+    g = groebner([f, c**2 + s**2 - 1])
+    assert g[-1] == c**20 - 5*c**18 + 10*c**16 - 10*c**14 + 5*c**12 - c**10
+    assert factor(g[-1]) == c**10 * (c - 1)**5 * (c + 1)**5
+    assert solve([f, c**2 + s**2 - 1]) == [{c: -1, s: 0}, {c: 0, s: -1},
+                                           {c: 0, s: 1}, {c: 1, s: 0}]
+
+
 @pytest.mark.xfail
 def test_H29():
     assert factor(4*x**2 - 21*x*y + 20*y**2, modulus=3) == (x + y)*(x - y)
@@ -497,8 +530,9 @@ def test_H30():
 
 def test_H31():
     f = (x**2 + 2*x + 3)/(x**3 + 4*x**2 + 5*x + 2)
-    g = 2 / (x + 1)**2 - 2 / (x + 1) + 3 / (x + 2)
+    g = 2/(x + 1)**2 - 2/(x + 1) + 3/(x + 2)
     assert apart(f) == g
+    assert cancel(g) == f
 
 
 # I. Trigonometry
