@@ -103,11 +103,6 @@ To delete a row or column, use :keyword:`del`
     >>> M
     [2  3]
 
-.. note::
-
-   You can see, that these methods will modify the Matrix **in
-   place**.  In general, as a rule, such methods will return ``None``.
-
 To insert rows or columns, use methods
 :meth:`~diofant.matrices.matrices.MatrixBase.row_insert` or
 :meth:`~diofant.matrices.matrices.MatrixBase.col_insert`.
@@ -124,6 +119,11 @@ To insert rows or columns, use methods
     ⎡1   2  3⎤
     ⎢        ⎥
     ⎣-2  0  4⎦
+
+.. note::
+
+   You can see, that these methods will modify the Matrix **in
+   place**.  In general, as a rule, such methods will return ``None``.
 
 To swap two given rows or columns, use methods
 :meth:`~diofant.matrices.dense.MutableDenseMatrix.row_swap` or
