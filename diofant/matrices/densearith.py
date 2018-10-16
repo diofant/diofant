@@ -144,10 +144,10 @@ def mulmatmat(matlist1, matlist2, K):
     return result
 
 
-def mulmatscaler(matlist, scaler, K):
+def mulmatscalar(matlist, scalar, K):
     """
-    Performs scaler matrix multiplication one row at at time. The row-scaler
-    multiplication is done using mulrowscaler.
+    Performs scalar matrix multiplication one row at at time. The row-scalar
+    multiplication is done using mulrowscalar.
 
     Examples
     ========
@@ -155,29 +155,29 @@ def mulmatscaler(matlist, scaler, K):
     >>> a = [[ZZ(3), ZZ(7), ZZ(4)],
     ...      [ZZ(2), ZZ(4), ZZ(5)],
     ...      [ZZ(6), ZZ(2), ZZ(3)]]
-    >>> mulmatscaler(a, ZZ(1), ZZ)
+    >>> mulmatscalar(a, ZZ(1), ZZ)
     [[3, 7, 4], [2, 4, 5], [6, 2, 3]]
 
     See Also
     ========
 
-    mulscalerrow
+    mulscalarrow
     """
-    return [mulrowscaler(row, scaler, K) for row in matlist]
+    return [mulrowscalar(row, scalar, K) for row in matlist]
 
 
-def mulrowscaler(row, scaler, K):
+def mulrowscalar(row, scalar, K):
     """
-    Performs the scaler-row multiplication element-wise.
+    Performs the scalar-row multiplication element-wise.
 
     Examples
     ========
 
     >>> a = [ZZ(3), ZZ(4), ZZ(5)]
-    >>> mulrowscaler(a, 2, ZZ)
+    >>> mulrowscalar(a, 2, ZZ)
     [6, 8, 10]
     """
-    return [scaler*element for element in row]
+    return [scalar*element for element in row]
 
 
 def mulrowcol(row, col, K):
