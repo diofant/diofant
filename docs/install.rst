@@ -57,8 +57,8 @@ sure everything works::
 
     $ py.test --pyargs diofant
 
-`pytest <https://pytest.org/>`_ and some other packages are required for
-testing, so be sure to install the Diofant first with extra dependecies::
+`pytest`_ and some other packages are required for testing, so be sure to
+install the Diofant first with extra dependecies::
 
     $ pip install diofant[develop]
 
@@ -71,3 +71,4 @@ request a feature, please :ref:`open an issue ticket
 
 .. _setuptools: https://setuptools.readthedocs.io/en/latest/
 .. _IPython: https://ipython.readthedocs.io/en/stable/
+.. _pytest: https://docs.pytest.org/en/latest/
