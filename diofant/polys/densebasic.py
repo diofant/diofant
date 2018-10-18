@@ -51,7 +51,7 @@ def dmp_ground_LC(f, u, K):
     Examples
     ========
 
-    >>> f = ZZ.map([[[1], [2, 3]]])
+    >>> f = dmp_normal([[[1], [2, 3]]], 2, ZZ)
 
     >>> dmp_ground_LC(f, 2, ZZ)
     1
@@ -70,7 +70,7 @@ def dmp_ground_TC(f, u, K):
     Examples
     ========
 
-    >>> f = ZZ.map([[[1], [2, 3]]])
+    >>> f = dmp_normal([[[1], [2, 3]]], 2, ZZ)
 
     >>> dmp_ground_TC(f, 2, ZZ)
     3
@@ -94,7 +94,7 @@ def dmp_degree(f, u):
     >>> dmp_degree([[[]]], 2)
     -oo
 
-    >>> f = ZZ.map([[2], [1, 2, 3]])
+    >>> f = dmp_normal([[2], [1, 2, 3]], 1, ZZ)
 
     >>> dmp_degree(f, 1)
     1
@@ -109,7 +109,7 @@ def dmp_degree_in(f, j, u):
     Examples
     ========
 
-    >>> f = ZZ.map([[2], [1, 2, 3]])
+    >>> f = dmp_normal([[2], [1, 2, 3]], 1, ZZ)
 
     >>> dmp_degree_in(f, 0, 1)
     1
@@ -139,7 +139,7 @@ def dmp_degree_list(f, u):
     Examples
     ========
 
-    >>> f = ZZ.map([[1], [1, 2, 3]])
+    >>> f = dmp_normal([[1], [1, 2, 3]], 1, ZZ)
     >>> dmp_degree_list(f, 1)
     (1, 2)
     """
@@ -241,7 +241,7 @@ def dup_reverse(f):
     Examples
     ========
 
-    >>> f = ZZ.map([1, 2, 3, 0])
+    >>> f = dmp_normal([1, 2, 3, 0], 0, ZZ)
     >>> dup_reverse(f)
     [3, 2, 1]
     """
@@ -255,7 +255,7 @@ def dmp_copy(f, u):
     Examples
     ========
 
-    >>> f = ZZ.map([[1], [1, 2]])
+    >>> f = dmp_normal([[1], [1, 2]], 1, ZZ)
     >>> dmp_copy(f, 1)
     [[1], [1, 2]]
     """
@@ -275,11 +275,11 @@ def dmp_to_tuple(f, u):
     Examples
     ========
 
-    >>> f = ZZ.map([1, 2, 3, 0])
+    >>> f = dmp_normal([1, 2, 3, 0], 0, ZZ)
     >>> dmp_to_tuple(f, 0)
     (1, 2, 3, 0)
 
-    >>> f = ZZ.map([[1], [1, 2]])
+    >>> f = dmp_normal([[1], [1, 2]], 1, ZZ)
     >>> dmp_to_tuple(f, 1)
     ((1,), (1, 2))
     """
@@ -342,7 +342,7 @@ def dmp_ground_nth(f, N, u, K):
     Examples
     ========
 
-    >>> f = ZZ.map([[1], [2, 3]])
+    >>> f = dmp_normal([[1], [2, 3]], 1, ZZ)
     >>> dmp_ground_nth(f, (0, 1), 1, ZZ)
     2
     """
@@ -603,7 +603,7 @@ def dmp_swap(f, i, j, u, K):
     Examples
     ========
 
-    >>> f = ZZ.map([[[2], [1, 0]], []])
+    >>> f = dmp_normal([[[2], [1, 0]], []], 2, ZZ)
 
     >>> dmp_swap(f, 0, 1, 2, ZZ)
     [[[2], []], [[1, 0], []]]
@@ -634,7 +634,7 @@ def dmp_permute(f, P, u, K):
     Examples
     ========
 
-    >>> f = ZZ.map([[[2], [1, 0]], []])
+    >>> f = dmp_normal([[[2], [1, 0]], []], 2, ZZ)
 
     >>> dmp_permute(f, [1, 0, 2], 2, ZZ)
     [[[2], []], [[1, 0], []]]
@@ -680,9 +680,7 @@ def dmp_raise(f, l, u, K):
     Examples
     ========
 
-    >>> f = ZZ.map([[], [1, 2]])
-
-    >>> dmp_raise(f, 2, 1, ZZ)
+    >>> dmp_raise([[], [ZZ(1), ZZ(2)]], 2, 1, ZZ)
     [[[[]]], [[[1]], [[2]]]]
     """
     if not l:
@@ -708,7 +706,7 @@ def dmp_deflate(f, u, K):
     Examples
     ========
 
-    >>> f = ZZ.map([[1, 0, 0, 2], [], [3, 0, 0, 4]])
+    >>> f = dmp_normal([[1, 0, 0, 2], [], [3, 0, 0, 4]], 1, ZZ)
 
     >>> dmp_deflate(f, 1, ZZ)
     ((2, 3), [[1, 2], [3, 4]])
@@ -748,8 +746,8 @@ def dmp_multi_deflate(polys, u, K):
     Examples
     ========
 
-    >>> f = ZZ.map([[1, 0, 0, 2], [], [3, 0, 0, 4]])
-    >>> g = ZZ.map([[1, 0, 2], [], [3, 0, 4]])
+    >>> f = dmp_normal([[1, 0, 0, 2], [], [3, 0, 0, 4]], 1, ZZ)
+    >>> g = dmp_normal([[1, 0, 2], [], [3, 0, 4]], 1, ZZ)
 
     >>> dmp_multi_deflate((f, g), 1, ZZ)
     ((2, 1), ([[1, 0, 0, 2], [3, 0, 0, 4]], [[1, 0, 2], [3, 0, 4]]))
@@ -796,7 +794,7 @@ def dup_inflate(f, m, K):
     Examples
     ========
 
-    >>> f = ZZ.map([1, 1, 1])
+    >>> f = dmp_normal([1, 1, 1], 0, ZZ)
 
     >>> dup_inflate(f, 3, ZZ)
     [1, 0, 0, 1, 0, 0, 1]
@@ -822,7 +820,7 @@ def dmp_inflate(f, M, u, K):
     Examples
     ========
 
-    >>> f = ZZ.map([[1, 2], [3, 4]])
+    >>> f = dmp_normal([[1, 2], [3, 4]], 1, ZZ)
 
     >>> dmp_inflate(f, (2, 3), 1, ZZ)
     [[1, 0, 0, 2], [], [3, 0, 0, 4]]
@@ -865,7 +863,7 @@ def dmp_exclude(f, u, K):
     Examples
     ========
 
-    >>> f = ZZ.map([[[1]], [[1], [2]]])
+    >>> f = dmp_normal([[[1]], [[1], [2]]], 2, ZZ)
 
     >>> dmp_exclude(f, 2, ZZ)
     ([2], [[1], [1, 2]], 1)
@@ -907,7 +905,7 @@ def dmp_include(f, J, u, K):
     Examples
     ========
 
-    >>> f = ZZ.map([[1], [1, 2]])
+    >>> f = dmp_normal([[1], [1, 2]], 1, ZZ)
 
     >>> dmp_include(f, [2], 1, ZZ)
     [[[1]], [[1], [2]]]
@@ -1001,7 +999,7 @@ def dmp_terms_gcd(f, u, K):
     Examples
     ========
 
-    >>> f = ZZ.map([[1, 0], [1, 0, 0], [], []])
+    >>> f = dmp_normal([[1, 0], [1, 0, 0], [], []], 1, ZZ)
 
     >>> dmp_terms_gcd(f, 1, ZZ)
     ((2, 1), [[1], [1, 0]])
@@ -1030,7 +1028,7 @@ def dmp_list_terms(f, u, K, order=None):
     Examples
     ========
 
-    >>> f = ZZ.map([[1, 1], [2, 3]])
+    >>> f = dmp_normal([[1, 1], [2, 3]], 1, ZZ)
 
     >>> dmp_list_terms(f, 1, ZZ)
     [((1, 1), 1), ((1, 0), 1), ((0, 1), 2), ((0, 0), 3)]
