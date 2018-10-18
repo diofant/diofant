@@ -31,12 +31,6 @@ def test_dup_root_upper_bound():
     assert R.dup_root_upper_bound(-x - 1) is None
 
 
-def test_dup_root_lower_bound():
-    R, x = ring("x", ZZ)
-
-    assert R.dup_root_lower_bound(-x - 1) is None
-
-
 def test_dup_step_refine_real_root():
     assert dup_step_refine_real_root([1, 1], (-2, 0, 1, 1),
                                      ZZ) == ([1, 2], (0, -2, 1, 2))

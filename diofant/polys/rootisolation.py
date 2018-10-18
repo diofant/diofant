@@ -19,7 +19,8 @@ def dup_sturm(f, K):
     Computes the Sturm sequence of ``f`` in ``F[x]``.
 
     Given a univariate, square-free polynomial ``f(x)`` returns the
-    associated Sturm sequence ``f_0(x), ..., f_n(x)`` defined by::
+    associated Sturm sequence (see e.g. [Davenport88]_)
+    ``f_0(x), ..., f_n(x)`` defined by::
 
        f_0(x), f_1(x) = f(x), f'(x)
        f_n = -rem(f_{n-2}(x), f_{n-1}(x))
@@ -31,11 +32,6 @@ def dup_sturm(f, K):
 
     >>> R.dup_sturm(x**3 - 2*x**2 + x - 3)
     [x**3 - 2*x**2 + x - 3, 3*x**2 - 4*x + 1, 2/9*x + 25/9, -2079/4]
-
-    References
-    ==========
-
-    .. [1] [Davenport88]_
     """
     if not K.has_Field:
         raise DomainError("can't compute Sturm sequence over %s" % K)
@@ -54,12 +50,8 @@ def dup_sturm(f, K):
 def dup_root_upper_bound(f, K):
     """Compute the LMQ upper bound for the positive roots of `f`.
 
-    LMQ (Local Max Quadratic) was developed by Akritas-Strzebonski-Vigklas [1]_.
-
-    References
-    ==========
-
-    .. [1] [Alkiviadis09]_
+    LMQ (Local Max Quadratic) bound was developed by
+    Akritas-Strzebonski-Vigklas [Alkiviadis09]_.
     """
     n, P = len(f), []
     if K.is_AlgebraicField:
@@ -96,22 +88,6 @@ def dup_root_upper_bound(f, K):
         return K(2)**int(max(P) + 1)
 
 
-def dup_root_lower_bound(f, K):
-    """Compute the LMQ lower bound for the positive roots of `f`.
-
-    LMQ (Local Max Quadratic) was developed by Akritas-Strzebonski-Vigklas [1]_.
-
-    References
-    ==========
-
-    .. [1] [Alkiviadis09]_
-    """
-    bound = dup_root_upper_bound(dup_reverse(f), K)
-
-    if bound is not None:
-        return 1/bound
-
-
 def _mobius_from_interval(I, field):
     """Convert an open interval to a Mobius transform. """
     s, t = I
@@ -138,10 +114,10 @@ def dup_step_refine_real_root(f, M, K, fast=False):
     if a == b and c == d:
         return f, (a, b, c, d)
 
-    A = dup_root_lower_bound(f, K)
+    A = dup_root_upper_bound(dup_reverse(f), K)
 
     if A is not None:
-        A = K.convert(A)
+        A = 1/K.convert(A)
     else:
         A = K.zero
 
@@ -258,14 +234,7 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=F
 
 
 def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
-    """Internal function for isolation positive roots up to given precision.
-
-    References
-    ==========
-
-    .. [1] [Alkiviadis05]_
-    .. [2] [Alkiviadis08]_
-    """
+    """Internal function for isolation positive roots up to given precision. """
     a, b, c, d = K.one, K.zero, K.zero, K.one
     k = dup_sign_variations(f, K)
 
@@ -274,10 +243,10 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
     while stack:
         a, b, c, d, f, k = stack.pop()
 
-        A = dup_root_lower_bound(f, K)
+        A = dup_root_upper_bound(dup_reverse(f), K)
 
         if A is not None:
-            A = K.convert(A)
+            A = 1/K.convert(A)
         else:
             A = K.zero
 
@@ -445,14 +414,7 @@ def _isolate_zero(f, K, inf, sup, sqf=False):
 
 
 def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, blackbox=False):
-    """Isolate real roots of a square-free polynomial using the Vincent-Akritas-Strzebonski (VAS) CF approach.
-
-    References
-    ==========
-
-    .. [1] [Alkiviadis05]_
-    .. [2] [Alkiviadis08]_
-    """
+    """Isolate real roots of a square-free polynomial. """
     R, K = K, K.field
     f = dmp_convert(f, 0, R, K)
     f = dup_clear_denoms(f, K)[1]
@@ -483,13 +445,13 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
 
 
 def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):
-    """Isolate real roots using Vincent-Akritas-Strzebonski (VAS) continued fractions approach.
+    """Isolate real roots.
 
-    References
-    ==========
+    Notes
+    =====
 
-    .. [1] [Alkiviadis05]_
-    .. [2] [Alkiviadis08]_
+    Implemented algorithms use Vincent-Akritas-Strzebonski (VAS) continued
+    fractions approach [Alkiviadis05]_, [Alkiviadis08]_.
     """
     R, K = K, K.field
     f = dmp_convert(f, 0, R, K)
@@ -510,14 +472,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):
 
 
 def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=False, basis=False, fast=False):
-    """Isolate real roots of a list of polynomials using Vincent-Akritas-Strzebonski (VAS) CF approach.
-
-    References
-    ==========
-
-    .. [1] [Alkiviadis05]_
-    .. [2] [Alkiviadis08]_
-    """
+    """Isolate real roots of a list of polynomials. """
     R, K = K, K.field
     for i, p in enumerate(polys):
         p = dmp_convert(p, 0, R, K)
