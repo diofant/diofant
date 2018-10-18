@@ -13,16 +13,14 @@ def trace(matlist, K):
 
     >>> from diofant.matrices.densetools import eye, trace
 
-    >>> a = [
-    ... [ZZ(3), ZZ(7), ZZ(4)],
-    ... [ZZ(2), ZZ(4), ZZ(5)],
-    ... [ZZ(6), ZZ(2), ZZ(3)]]
+    >>> a = [[ZZ(3), ZZ(7), ZZ(4)],
+    ...      [ZZ(2), ZZ(4), ZZ(5)],
+    ...      [ZZ(6), ZZ(2), ZZ(3)]]
     >>> b = eye(4, ZZ)
     >>> trace(a, ZZ)
     10
     >>> trace(b, ZZ)
     4
-
     """
     result = K.zero
     for i in range(len(matlist)):
@@ -39,13 +37,11 @@ def transpose(matlist, K):
 
     >>> from diofant.matrices.densetools import transpose
 
-    >>> a = [
-    ... [ZZ(3), ZZ(7), ZZ(4)],
-    ... [ZZ(2), ZZ(4), ZZ(5)],
-    ... [ZZ(6), ZZ(2), ZZ(3)]]
+    >>> a = [[ZZ(3), ZZ(7), ZZ(4)],
+    ...      [ZZ(2), ZZ(4), ZZ(5)],
+    ...      [ZZ(6), ZZ(2), ZZ(3)]]
     >>> transpose(a, ZZ)
     [[3, 2, 6], [7, 4, 2], [4, 5, 3]]
-
     """
     return [list(a) for a in (zip(*matlist))]
 
@@ -59,10 +55,9 @@ def conjugate(matlist, K):
 
     >>> from diofant.matrices.densetools import conjugate
 
-    >>> a = [
-    ... [ZZ(3), ZZ(2), ZZ(6)],
-    ... [ZZ(7), ZZ(4), ZZ(2)],
-    ... [ZZ(4), ZZ(5), ZZ(3)]]
+    >>> a = [[ZZ(3), ZZ(2), ZZ(6)],
+    ...      [ZZ(7), ZZ(4), ZZ(2)],
+    ...      [ZZ(4), ZZ(5), ZZ(3)]]
     >>> conjugate(a, ZZ)
     [[3, 2, 6], [7, 4, 2], [4, 5, 3]]
 
@@ -101,10 +96,9 @@ def conjugate_transpose(matlist, K):
     Examples
     ========
 
-    >>> a = [
-    ... [ZZ(3), ZZ(7), ZZ(4)],
-    ... [ZZ(2), ZZ(4), ZZ(5)],
-    ... [ZZ(6), ZZ(2), ZZ(3)]]
+    >>> a = [[ZZ(3), ZZ(7), ZZ(4)],
+    ...      [ZZ(2), ZZ(4), ZZ(5)],
+    ...      [ZZ(6), ZZ(2), ZZ(3)]]
     >>> conjugate_transpose(a, ZZ)
     [[3, 2, 6], [7, 4, 2], [4, 5, 3]]
     """
@@ -118,14 +112,10 @@ def augment(matlist, column, K):
     Examples
     ========
 
-    >>> a = [
-    ... [ZZ(3), ZZ(7), ZZ(4)],
-    ... [ZZ(2), ZZ(4), ZZ(5)],
-    ... [ZZ(6), ZZ(2), ZZ(3)]]
-    >>> b = [
-    ... [ZZ(4)],
-    ... [ZZ(5)],
-    ... [ZZ(6)]]
+    >>> a = [[ZZ(3), ZZ(7), ZZ(4)],
+    ...      [ZZ(2), ZZ(4), ZZ(5)],
+    ...      [ZZ(6), ZZ(2), ZZ(3)]]
+    >>> b = [[ZZ(4)], [ZZ(5)], [ZZ(6)]]
     >>> augment(a, b, ZZ)
     [[3, 7, 4, 4], [2, 4, 5, 5], [6, 2, 3, 6]]
     """
@@ -161,10 +151,9 @@ def row(matlist, i):
     Examples
     ========
 
-    >>> a = [
-    ... [ZZ(3), ZZ(7), ZZ(4)],
-    ... [ZZ(2), ZZ(4), ZZ(5)],
-    ... [ZZ(6), ZZ(2), ZZ(3)]]
+    >>> a = [[ZZ(3), ZZ(7), ZZ(4)],
+    ...      [ZZ(2), ZZ(4), ZZ(5)],
+    ...      [ZZ(6), ZZ(2), ZZ(3)]]
     >>> row(a, 2)
     [6, 2, 3]
     """
@@ -179,10 +168,9 @@ def col(matlist, i):
     Examples
     ========
 
-    >>> a = [
-    ... [ZZ(3), ZZ(7), ZZ(4)],
-    ... [ZZ(2), ZZ(4), ZZ(5)],
-    ... [ZZ(6), ZZ(2), ZZ(3)]]
+    >>> a = [[ZZ(3), ZZ(7), ZZ(4)],
+    ...      [ZZ(2), ZZ(4), ZZ(5)],
+    ...      [ZZ(6), ZZ(2), ZZ(3)]]
     >>> col(a, 1)
     [[7], [4], [2]]
     """
@@ -223,10 +211,9 @@ def isHermitian(matlist, K):
     Examples
     ========
 
-    >>> a = [
-    ... [QQ(2,1), QQ(-1,1), QQ(-1,1)],
-    ... [QQ(0,1), QQ(4,1), QQ(-1,1)],
-    ... [QQ(0,1), QQ(0,1), QQ(3,1)]]
+    >>> a = [[QQ(2), QQ(-1), QQ(-1)],
+    ...      [QQ(0), QQ(4), QQ(-1)],
+    ...      [QQ(0), QQ(0), QQ(3)]]
     >>> isHermitian(a, QQ)
     False
     """

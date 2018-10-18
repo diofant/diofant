@@ -1,5 +1,5 @@
 from diofant import ZZ
-from diofant.matrices.densearith import add, mulmatmat, mulmatscaler, sub
+from diofant.matrices.densearith import add, mulmatmat, mulmatscalar, sub
 from diofant.matrices.densetools import eye
 
 
@@ -41,9 +41,9 @@ def test_mulmatmat():
     assert mulmatmat(b, d, ZZ) == [[ZZ(20)], [ZZ(98)]]
 
 
-def test_mulmatscaler():
+def test_mulmatscalar():
     a = eye(3, ZZ)
     b = [[ZZ(3), ZZ(7), ZZ(4)], [ZZ(2), ZZ(4), ZZ(5)], [ZZ(6), ZZ(2), ZZ(3)]]
 
-    assert mulmatscaler(a, ZZ(4), ZZ) == [[ZZ(4), ZZ(0), ZZ(0)], [ZZ(0), ZZ(4), ZZ(0)], [ZZ(0), ZZ(0), ZZ(4)]]
-    assert mulmatscaler(b, ZZ(1), ZZ) == [[ZZ(3), ZZ(7), ZZ(4)], [ZZ(2), ZZ(4), ZZ(5)], [ZZ(6), ZZ(2), ZZ(3)]]
+    assert mulmatscalar(a, ZZ(4), ZZ) == [[ZZ(4), ZZ(0), ZZ(0)], [ZZ(0), ZZ(4), ZZ(0)], [ZZ(0), ZZ(0), ZZ(4)]]
+    assert mulmatscalar(b, ZZ(1), ZZ) == [[ZZ(3), ZZ(7), ZZ(4)], [ZZ(2), ZZ(4), ZZ(5)], [ZZ(6), ZZ(2), ZZ(3)]]

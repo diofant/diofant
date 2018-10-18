@@ -13,15 +13,9 @@ def add(matlist1, matlist2, K):
 
     >>> from diofant.matrices.densearith import add
 
-    >>> e = [
-    ... [ZZ(12), ZZ(78)],
-    ... [ZZ(56), ZZ(79)]]
-    >>> f = [
-    ... [ZZ(1), ZZ(2)],
-    ... [ZZ(3), ZZ(4)]]
-    >>> g = [
-    ... [ZZ.zero, ZZ.zero],
-    ... [ZZ.zero, ZZ.zero]]
+    >>> e = [[ZZ(12), ZZ(78)], [ZZ(56), ZZ(79)]]
+    >>> f = [[ZZ(1), ZZ(2)], [ZZ(3), ZZ(4)]]
+    >>> g = [[ZZ(0), ZZ(0)], [ZZ(0), ZZ(0)]]
     >>> add(e, f, ZZ)
     [[13, 80], [59, 83]]
     >>> add(f, g, ZZ)
@@ -42,7 +36,6 @@ def addrow(row1, row2, K):
     Examples
     ========
 
-
     >>> a = [ZZ(12), ZZ(34), ZZ(56)]
     >>> b = [ZZ(14), ZZ(56), ZZ(63)]
     >>> c = [ZZ(0), ZZ(0), ZZ(0)]
@@ -51,7 +44,6 @@ def addrow(row1, row2, K):
     [26, 90, 119]
     >>> addrow(b, c, ZZ)
     [14, 56, 63]
-
     """
     return [element1 + element2 for element1, element2 in zip(row1, row2)]
 
@@ -64,15 +56,9 @@ def sub(matlist1, matlist2, K):
     Examples
     ========
 
-    >>> e = [
-    ... [ZZ(12), ZZ(78)],
-    ... [ZZ(56), ZZ(79)]]
-    >>> f = [
-    ... [ZZ(1), ZZ(2)],
-    ... [ZZ(3), ZZ(4)]]
-    >>> g = [
-    ... [ZZ.zero, ZZ.zero],
-    ... [ZZ.zero, ZZ.zero]]
+    >>> e = [[ZZ(12), ZZ(78)], [ZZ(56), ZZ(79)]]
+    >>> f = [[ZZ(1), ZZ(2)], [ZZ(3), ZZ(4)]]
+    >>> g = [[ZZ(0), ZZ(0)], [ZZ(0), ZZ(0)]]
     >>> sub(e, f, ZZ)
     [[11, 76], [53, 75]]
     >>> sub(f, g, ZZ)
@@ -94,12 +80,8 @@ def negate(matlist, K):
     Examples
     ========
 
-    >>> a = [
-    ... [ZZ(2), ZZ(3)],
-    ... [ZZ(4), ZZ(5)]]
-    >>> b = [
-    ... [ZZ(0), ZZ(0)],
-    ... [ZZ(0), ZZ(0)]]
+    >>> a = [[ZZ(2), ZZ(3)], [ZZ(4), ZZ(5)]]
+    >>> b = [[ZZ(0), ZZ(0)], [ZZ(0), ZZ(0)]]
     >>> negate(a, ZZ)
     [[-2, -3], [-4, -5]]
     >>> negate(b, ZZ)
@@ -126,7 +108,6 @@ def negaterow(row, K):
     [-2, -3, -4]
     >>> negaterow(b, ZZ)
     [0, 0, 0]
-
     """
     return [-element for element in row]
 
@@ -143,12 +124,8 @@ def mulmatmat(matlist1, matlist2, K):
     ========
 
     >>> from diofant.matrices.densetools import eye
-    >>> a = [
-    ... [ZZ(3), ZZ(4)],
-    ... [ZZ(5), ZZ(6)]]
-    >>> b = [
-    ... [ZZ(1), ZZ(2)],
-    ... [ZZ(7), ZZ(8)]]
+    >>> a = [[ZZ(3), ZZ(4)], [ZZ(5), ZZ(6)]]
+    >>> b = [[ZZ(1), ZZ(2)], [ZZ(7), ZZ(8)]]
     >>> c = eye(2, ZZ)
     >>> mulmatmat(a, b, ZZ)
     [[31, 38], [47, 58]]
@@ -167,42 +144,40 @@ def mulmatmat(matlist1, matlist2, K):
     return result
 
 
-def mulmatscaler(matlist, scaler, K):
+def mulmatscalar(matlist, scalar, K):
     """
-    Performs scaler matrix multiplication one row at at time. The row-scaler
-    multiplication is done using mulrowscaler.
+    Performs scalar matrix multiplication one row at at time. The row-scalar
+    multiplication is done using mulrowscalar.
 
     Examples
     ========
 
-    >>> a = [
-    ... [ZZ(3), ZZ(7), ZZ(4)],
-    ... [ZZ(2), ZZ(4), ZZ(5)],
-    ... [ZZ(6), ZZ(2), ZZ(3)]]
-    >>> mulmatscaler(a, ZZ(1), ZZ)
+    >>> a = [[ZZ(3), ZZ(7), ZZ(4)],
+    ...      [ZZ(2), ZZ(4), ZZ(5)],
+    ...      [ZZ(6), ZZ(2), ZZ(3)]]
+    >>> mulmatscalar(a, ZZ(1), ZZ)
     [[3, 7, 4], [2, 4, 5], [6, 2, 3]]
 
     See Also
     ========
 
-    mulscalerrow
+    mulscalarrow
     """
-    return [mulrowscaler(row, scaler, K) for row in matlist]
+    return [mulrowscalar(row, scalar, K) for row in matlist]
 
 
-def mulrowscaler(row, scaler, K):
+def mulrowscalar(row, scalar, K):
     """
-    Performs the scaler-row multiplication element-wise.
+    Performs the scalar-row multiplication element-wise.
 
     Examples
     ========
 
     >>> a = [ZZ(3), ZZ(4), ZZ(5)]
-    >>> mulrowscaler(a, 2, ZZ)
+    >>> mulrowscalar(a, 2, ZZ)
     [6, 8, 10]
-
     """
-    return [scaler*element for element in row]
+    return [scalar*element for element in row]
 
 
 def mulrowcol(row, col, K):

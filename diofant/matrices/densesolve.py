@@ -2,7 +2,6 @@
 Solution of equations using dense matrices.
 
 The dense matrix is stored as a list of lists.
-
 """
 
 import copy
@@ -20,10 +19,9 @@ def row_echelon(matlist, K):
     Examples
     ========
 
-    >>> a = [
-    ... [QQ(3), QQ(7), QQ(4)],
-    ... [QQ(2), QQ(4), QQ(5)],
-    ... [QQ(6), QQ(2), QQ(3)]]
+    >>> a = [[QQ(3), QQ(7), QQ(4)],
+    ...      [QQ(2), QQ(4), QQ(5)],
+    ...      [QQ(6), QQ(2), QQ(3)]]
     >>> row_echelon(a, QQ)
     [[1, 7/3, 4/3], [0, 1, -7/2], [0, 0, 1]]
 
@@ -49,10 +47,9 @@ def rref(matlist, K):
     Examples
     ========
 
-    >>> a = [
-    ... [QQ(1), QQ(2), QQ(1)],
-    ... [QQ(-2), QQ(-3), QQ(1)],
-    ... [QQ(3), QQ(5), QQ(0)]]
+    >>> a = [[QQ(1), QQ(2), QQ(1)],
+    ...      [QQ(-2), QQ(-3), QQ(1)],
+    ...      [QQ(3), QQ(5), QQ(0)]]
     >>> rref(a, QQ)
     [[1, 0, -5], [0, 1, 3], [0, 0, 0]]
 
@@ -79,10 +76,9 @@ def LU(matlist, K, reverse=0):
     Examples
     ========
 
-    >>> a = [
-    ... [QQ(1), QQ(2), QQ(3)],
-    ... [QQ(2), QQ(-4), QQ(6)],
-    ... [QQ(3), QQ(-9), QQ(-3)]]
+    >>> a = [[QQ(1), QQ(2), QQ(3)],
+    ...      [QQ(2), QQ(-4), QQ(6)],
+    ...      [QQ(3), QQ(-9), QQ(-3)]]
     >>> LU(a, QQ)
     ([[1, 0, 0], [2, 1, 0], [3, 15/8, 1]], [[1, 2, 3], [0, -8, 0], [0, 0, -12]])
 
@@ -110,7 +106,9 @@ def cholesky(matlist, K):
     Examples
     ========
 
-    >>> cholesky([[QQ(25), QQ(15), QQ(-5)], [QQ(15), QQ(18), QQ(0)], [QQ(-5), QQ(0), QQ(11)]], QQ)
+    >>> cholesky([[QQ(25), QQ(15), QQ(-5)],
+    ...           [QQ(15), QQ(18), QQ(0)],
+    ...           [QQ(-5), QQ(0), QQ(11)]], QQ)
     ([[5, 0, 0], [3, 3, 0], [-1, 1, 3]], [[5, 3, -1], [0, 3, 1], [0, 0, 3]])
 
     See Also
@@ -141,13 +139,11 @@ def LDL(matlist, K):
     Examples
     ========
 
-    >>> a = [
-    ... [QQ(4), QQ(12), QQ(-16)],
-    ... [QQ(12), QQ(37), QQ(-43)],
-    ... [QQ(-16), QQ(-43), QQ(98)]]
+    >>> a = [[QQ(4), QQ(12), QQ(-16)],
+    ...      [QQ(12), QQ(37), QQ(-43)],
+    ...      [QQ(-16), QQ(-43), QQ(98)]]
     >>> LDL(a, QQ)
     ([[1, 0, 0], [3, 1, 0], [-4, 5, 1]], [[4, 0, 0], [0, 1, 0], [0, 0, 9]], [[1, 3, -4], [0, 1, 5], [0, 0, 1]])
-
     """
     new_matlist = copy.deepcopy(matlist)
     nrow = len(new_matlist)
@@ -172,10 +168,9 @@ def upper_triangle(matlist, K):
     Examples
     ========
 
-    >>> a = [
-    ... [QQ(4,1), QQ(12,1), QQ(-16,1)],
-    ... [QQ(12,1), QQ(37,1), QQ(-43,1)],
-    ... [QQ(-16,1), QQ(-43,1), QQ(98,1)]]
+    >>> a = [[QQ(4), QQ(12), QQ(-16)],
+    ...      [QQ(12), QQ(37), QQ(-43)],
+    ...      [QQ(-16), QQ(-43), QQ(98)]]
     >>> upper_triangle(a, QQ)
     [[4, 12, -16], [0, 1, 5], [0, 0, 9]]
 
@@ -197,10 +192,9 @@ def lower_triangle(matlist, K):
     Examples
     ========
 
-    >>> a = [
-    ... [QQ(4,1), QQ(12,1), QQ(-16)],
-    ... [QQ(12,1), QQ(37,1), QQ(-43,1)],
-    ... [QQ(-16,1), QQ(-43,1), QQ(98,1)]]
+    >>> a = [[QQ(4), QQ(12), QQ(-16)],
+    ...      [QQ(12), QQ(37), QQ(-43)],
+    ...      [QQ(-16), QQ(-43), QQ(98)]]
     >>> lower_triangle(a, QQ)
     [[1, 0, 0], [3, 1, 0], [-4, 5, 1]]
 
@@ -222,19 +216,11 @@ def rref_solve(matlist, variable, constant, K):
     Examples
     ========
 
-    >>> x, y, z = Dummy('x'), Dummy('y'), Dummy('z')
-    >>> coefficients = [
-    ... [QQ(25), QQ(15), QQ(-5)],
-    ... [QQ(15), QQ(18), QQ(0)],
-    ... [QQ(-5), QQ(0), QQ(11)]]
-    >>> constants = [
-    ... [QQ(2)],
-    ... [QQ(3)],
-    ... [QQ(1)]]
-    >>> variables = [
-    ... [x],
-    ... [y],
-    ... [z]]
+    >>> coefficients = [[QQ(25), QQ(15), QQ(-5)],
+    ...                 [QQ(15), QQ(18), QQ(0)],
+    ...                 [QQ(-5), QQ(0), QQ(11)]]
+    >>> constants = [[QQ(2)], [QQ(3)], [QQ(1)]]
+    >>> variables = [[x], [y], [z]]
     >>> rref_solve(coefficients, variables, constants, QQ)
     [[-1/225], [23/135], [4/45]]
 
@@ -258,19 +244,11 @@ def LU_solve(matlist, variable, constant, K):
     Examples
     ========
 
-    >>> x, y, z = Dummy('x'), Dummy('y'), Dummy('z')
-    >>> coefficients = [
-    ... [QQ(2), QQ(-1), QQ(-2)],
-    ... [QQ(-4), QQ(6), QQ(3)],
-    ... [QQ(-4), QQ(-2), QQ(8)]]
-    >>> variables = [
-    ... [x],
-    ... [y],
-    ... [z]]
-    >>> constants = [
-    ... [QQ(-1)],
-    ... [QQ(13)],
-    ... [QQ(-6)]]
+    >>> coefficients = [[QQ(2), QQ(-1), QQ(-2)],
+    ...                 [QQ(-4), QQ(6), QQ(3)],
+    ...                 [QQ(-4), QQ(-2), QQ(8)]]
+    >>> variables = [[x], [y], [z]]
+    >>> constants = [[QQ(-1)], [QQ(13)], [QQ(-6)]]
     >>> LU_solve(coefficients, variables, constants, QQ)
     [[2], [3], [1]]
 
@@ -298,20 +276,15 @@ def cholesky_solve(matlist, variable, constant, K):
     Examples
     ========
 
-    >>> x, y, z = Dummy('x'), Dummy('y'), Dummy('z')
-    >>> coefficients = [
-    ... [QQ(25), QQ(15), QQ(-5)],
-    ... [QQ(15), QQ(18), QQ(0)],
-    ... [QQ(-5), QQ(0), QQ(11)]]
-    >>> variables = [
-    ... [x],
-    ... [y],
-    ... [z]]
-    >>> coefficients = [
-    ... [QQ(2)],
-    ... [QQ(3)],
-    ... [QQ(1)]]
-    >>> cholesky_solve([[QQ(25), QQ(15), QQ(-5)], [QQ(15), QQ(18), QQ(0)], [QQ(-5), QQ(0), QQ(11)]], [[x], [y], [z]], [[QQ(2)], [QQ(3)], [QQ(1)]], QQ)
+    >>> coefficients = [[QQ(25), QQ(15), QQ(-5)],
+    ...                 [QQ(15), QQ(18), QQ(0)],
+    ...                 [QQ(-5), QQ(0), QQ(11)]]
+    >>> variables = [[x], [y], [z]]
+    >>> coefficients = [[QQ(2)], [QQ(3)], [QQ(1)]]
+    >>> cholesky_solve([[QQ(25), QQ(15), QQ(-5)],
+    ...                 [QQ(15), QQ(18), QQ(0)],
+    ...                 [QQ(-5), QQ(0), QQ(11)]],
+    ...                [[x], [y], [z]], [[QQ(2)], [QQ(3)], [QQ(1)]], QQ)
     [[-1/225], [23/135], [4/45]]
 
     See Also
@@ -338,19 +311,11 @@ def forward_substitution(lower_triangle, variable, constant, K):
     Examples
     ========
 
-    >>> x, y, z = Dummy('x'), Dummy('y'), Dummy('z')
-    >>> a = [
-    ... [QQ(1), QQ(0), QQ(0)],
-    ... [QQ(-2), QQ(1), QQ(0)],
-    ... [QQ(-2), QQ(-1), QQ(1)]]
-    >>> variables = [
-    ... [x],
-    ... [y],
-    ... [z]]
-    >>> constants = [
-    ... [QQ(-1)],
-    ... [QQ(13)],
-    ... [QQ(-6)]]
+    >>> a = [[QQ(1), QQ(0), QQ(0)],
+    ...      [QQ(-2), QQ(1), QQ(0)],
+    ...      [QQ(-2), QQ(-1), QQ(1)]]
+    >>> variables = [[x], [y], [z]]
+    >>> constants = [[QQ(-1)], [QQ(13)], [QQ(-6)]]
     >>> forward_substitution(a, variables, constants, QQ)
     [[-1], [11], [3]]
 
@@ -378,19 +343,11 @@ def backward_substitution(upper_triangle, variable, constant, K):
     Examples
     ========
 
-    >>> x, y, z = Dummy('x'), Dummy('y'), Dummy('z')
-    >>> a = [
-    ... [QQ(2), QQ(-1), QQ(-2)],
-    ... [QQ(0), QQ(4), QQ(-1)],
-    ... [QQ(0), QQ(0), QQ(3)]]
-    >>> variables = [
-    ... [x],
-    ... [y],
-    ... [z]]
-    >>> constants = [
-    ... [QQ(-1)],
-    ... [QQ(11)],
-    ... [QQ(3)]]
+    >>> a = [[QQ(2), QQ(-1), QQ(-2)],
+    ...      [QQ(0), QQ(4), QQ(-1)],
+    ...      [QQ(0), QQ(0), QQ(3)]]
+    >>> variables = [[x], [y], [z]]
+    >>> constants = [[QQ(-1)], [QQ(11)], [QQ(3)]]
     >>> backward_substitution(a, variables, constants, QQ)
     [[2], [3], [1]]
 
