@@ -29,7 +29,7 @@ extra_reqs = {'exports': ['numpy>=1.12.1', 'scipy', 'Cython'],
                        'sphinx_rtd_theme>=0.2.4'],
               }
 extra_reqs['develop'] = ['pytest>=3.0', 'flake8>=2.5.5,!=3.1.0',
-                         'flake8-docstrings>=1.2.0', 'pydocstyle', 'pep8-naming',
+                         'flake8-docstrings>=1.2.0', 'pep8-naming',
                          'flake8-comprehensions', 'flake8-isort', 'hypothesis',
                          'pytest-xdist>=1.22.4', 'pytest-cov', 'pytest-timeout',
                          'pylint;platform_python_implementation!="PyPy"',
