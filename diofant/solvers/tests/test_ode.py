@@ -19,10 +19,8 @@ from diofant.utilities.iterables import variations
 __all__ = ()
 
 C0, C1, C2, C3, C4, C5, C6, C7, C8, C9, C10 = symbols('C0:11')
-x, y, z = symbols('x:z', real=True)
-f = Function('f')
-g = Function('g')
-h = Function('h')
+x, y, z, t = symbols('x y z t', real=True)
+f, g, h = symbols('f g h', cls=Function)
 
 # Note: the tests below may fail (but still be correct) if ODE solver,
 # the integral engine, solve(), or even simplify() changes. Also, in
@@ -2821,3 +2819,12 @@ def test_sympyissue_10867():
     v = Eq(g(x).diff(x).diff(x), (x-2)**2 + (x-3)**3)
     ans = Eq(g(x), C1 + C2*x + x**5/20 - 2*x**4/3 + 23*x**3/6 - 23*x**2/2)
     assert dsolve(v, g(x)) == ans
+
+
+def test_sympyissue_15407():
+    eqs = [Eq(Derivative(f(t), t), -(x + y)*f(t)),
+           Eq(Derivative(g(t), t), x*f(t)), Eq(Derivative(h(t), t), y*f(t))]
+    ans = [Eq(f(t), exp(-t*(x + y))*C1),
+           Eq(g(t), C1*(x/(x + y) - exp(-t*(x + y))*x/(x + y)) + C2),
+           Eq(h(t), C1*(y/(x + y) - exp(-t*(x + y))*y/(x + y)) + C3)]
+    assert dsolve(eqs) == ans
