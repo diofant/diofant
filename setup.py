@@ -23,10 +23,9 @@ with open('diofant/__init__.py') as f:
 setup_reqs = ['setuptools>=5.5.1', 'pip>=6.0', 'pytest-runner', 'isort']
 extra_reqs = {'exports': ['numpy>=1.12.1', 'scipy', 'Cython'],
               'gmpy': ['gmpy2>=2.1.0;platform_python_implementation!="PyPy"'],
-              'plot': ['pyparsing!=2.1.2', 'matplotlib!=2.1.1'],
+              'plot': ['matplotlib!=2.1.1'],
               'interactive': ['ipykernel'],
-              'docs': ['docutils!=0.13.1', 'sphinx>=1.6.7', 'numpydoc',
-                       'sphinx_rtd_theme>=0.2.4'],
+              'docs': ['sphinx>=1.6.7', 'numpydoc', 'sphinx_rtd_theme>=0.2.4'],
               }
 extra_reqs['develop'] = ['pytest>=3.0', 'flake8>=2.5.5,!=3.1.0',
                          'flake8-docstrings>=1.2.0', 'pep8-naming',
