@@ -209,7 +209,8 @@ class RootOf(Expr):
             b = Poly(p.gen**abs(expt), p.gen, domain=p.domain)
             if expt < 0:
                 b = b.invert(p)
-            return sum(c*self**n for (n,), c in b.rem(p).terms())
+            x = self.doit()
+            return sum(c*x**n for (n,), c in b.rem(p).terms())
 
     def _eval_rewrite_as_Pow(self, e, x, i):
         p = self.poly
