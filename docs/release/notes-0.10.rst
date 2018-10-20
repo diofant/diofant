@@ -65,6 +65,7 @@ Minor changes
 * :meth:`~diofant.polys.rootoftools.RootOf.refine` method to refine interval for the root, see :pull:`670`.
 * Support detection of imaginary roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`625`.
 * Mutable matrices support indexed deletion with :meth:`~object.__delitem__`, see :pull:`688`.
+* Integer powers of :class:`~diofant.polys.rootoftools.RootOf` instances are automatically reduced, according to their minimal polynomial, see :pull:`691`.
 
 Developer changes
 =================

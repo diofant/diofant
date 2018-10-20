@@ -203,6 +203,10 @@ def test_RootOf_power():
     assert e**2 == Pow(e, 2, evaluate=False)
     e2 = RootOf(y**3 - x*y, y, 0)
     assert e2**3 == Pow(e2, 3, evaluate=False)
+    e3 = RootOf(3*x**5 + 2*x - 1, 0)
+    assert e3**5 == -2*e3/3 + Rational(1, 3)  # issue sympy/sympy#8543
+    assert e3**4 == Pow(e3, 4, evaluate=False)
+    assert e3**-1 == 3*e3**4 + 2
 
 
 def test_RootOf_conjugate():

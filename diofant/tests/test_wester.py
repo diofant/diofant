@@ -1012,19 +1012,14 @@ def test_M38():
 
 @pytest.mark.slow
 def test_M39():
-    x, y, z = symbols('x y z', complex=True)
     r0, r1, r2, r3, r4 = Poly(6*z**5 - 6*z**4 - 9*z**3 -
                               7*z**2 - 3*z - 1).all_roots()
     sol = [{x: -1, y: 1, z: 1}, {x: 1, y: 1, z: 1}]
     for r in [r1, r2, r3, r4, r0]:
-        sol.extend([{x: -sqrt(6)*sqrt((-19 + 48*r - 2*r**2 + 48*r**5 - 3*r**4 -
-                                       18*r**6 - 48*r**3)*r)/6,
-                     y: -1 - 5*r**2/2 - 21*r**4/2 + 24*r**5 - 9*r**6,
-                     z: r},
-                    {x: sqrt(6)*sqrt((-19 + 48*r - 2*r**2 + 48*r**5 - 3*r**4 -
-                                      18*r**6 - 48*r**3)*r)/6,
-                     y: -1 - 5*r**2/2 - 21*r**4/2 + 24*r**5 - 9*r**6,
-                     z: r}])
+        sol.extend([{x: -sqrt(3)*sqrt(r*(-12*r**3 + 12*r**2 + 30*r - 7))/3,
+                     y: -9*r**4 + 12*r**3 + 21*r**2/2 + 6*r + 3/2, z: r},
+                    {x: sqrt(3)*sqrt(r*(-12*r**3 + 12*r**2 + 30*r - 7))/3,
+                     y: -9*r**4 + 12*r**3 + 21*r**2/2 + 6*r + 3/2, z: r}])
     sol.extend([{x: -sqrt(-1 - sqrt(2)*I), y: sqrt(2)*I,
                  z: Rational(1, 3) - sqrt(2)*I/3},
                 {x: sqrt(-1 - sqrt(2)*I), y: sqrt(2)*I,
