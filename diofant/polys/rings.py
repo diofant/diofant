@@ -601,7 +601,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             except CoercionFailed:
                 return False
             else:
-                return ring.domain.almosteq(self.const(), other, tolerance)
+                return ring.domain.almosteq(self.coeff(1), other, tolerance)
 
     def sort_key(self):
         return len(self), self.terms()
@@ -1545,10 +1545,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
                     return self._get_coeff(monom)
 
         raise ValueError("expected a monomial, got %s" % element)
-
-    def const(self):
-        """Returns the constant coefficient. """
-        return self._get_coeff(self.ring.zero_monom)
 
     @property
     def LC(self):

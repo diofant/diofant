@@ -258,13 +258,6 @@ def test_PolyElement_listterms():
     assert f.listterms() == [((1, 1, 0), 1), ((0, 0, 1), 3)]
 
 
-def test_PolyElement_const():
-    R,  x, y, z = ring("x,y,z", ZZ)
-
-    f = 2*x + 3*x*y + 4*z + 5
-    assert f.const() == R.domain(5)
-
-
 def test_PolyElement_as_expr():
     R,  x, y, z = ring("x,y,z", ZZ)
     f = 3*x**2*y - x*y*z + 7*z**3 + 1
@@ -415,6 +408,9 @@ def test_PolyElement_coeff():
     pytest.raises(ValueError, lambda: f.coeff(-x*y*z))
     pytest.raises(ValueError, lambda: f.coeff(7*z**3))
     pytest.raises(ValueError, lambda: f.coeff(x + y))
+
+    f = 2*x + 3*x*y + 4*z + 5
+    assert f.coeff(1) == R.domain(5)
 
 
 def test_PolyElement_LC():
