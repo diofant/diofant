@@ -82,32 +82,6 @@ def dmp_ground_TC(f, u, K):
     return dmp_TC(f, K)
 
 
-def dmp_true_LT(f, u, K):
-    """
-    Return the leading term ``c * x_1**n_1 ... x_k**n_k``.
-
-    Examples
-    ========
-
-    >>> f = ZZ.map([[4], [2, 0], [3, 0, 0]])
-
-    >>> dmp_true_LT(f, 1, ZZ)
-    ((2, 0), 4)
-    """
-    monom = []
-
-    while u:
-        monom.append(len(f) - 1)
-        f, u = f[0], u - 1
-
-    if not f:
-        monom.append(0)
-    else:
-        monom.append(len(f) - 1)
-
-    return tuple(monom), dmp_LC(f, K)
-
-
 def dmp_degree(f, u):
     """
     Return the leading degree of ``f`` in ``x_0`` in ``K[X]``.

@@ -19,10 +19,10 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_nth, dmp_one, dmp_one_p, dmp_permute,
                                       dmp_positive_p, dmp_raise, dmp_slice,
                                       dmp_strip, dmp_swap, dmp_TC,
-                                      dmp_terms_gcd, dmp_to_dict, dmp_true_LT,
-                                      dmp_validate, dmp_zero, dmp_zero_p,
-                                      dmp_zeros, dup_from_dict, dup_inflate,
-                                      dup_random, dup_reverse)
+                                      dmp_terms_gcd, dmp_to_dict, dmp_validate,
+                                      dmp_zero, dmp_zero_p, dmp_zeros,
+                                      dup_from_dict, dup_inflate, dup_random,
+                                      dup_reverse)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -68,15 +68,6 @@ def test_dmp_ground_TC():
     assert dmp_ground_TC([[2, 3, 4], [5]], 1, ZZ) == 5
     assert dmp_ground_TC([[[]]], 2, ZZ) == 0
     assert dmp_ground_TC([[[2], [3, 4]], [[5]]], 2, ZZ) == 5
-
-
-def test_dmp_true_LT():
-    assert dmp_true_LT([[]], 1, ZZ) == ((0, 0), 0)
-    assert dmp_true_LT([[7]], 1, ZZ) == ((0, 0), 7)
-
-    assert dmp_true_LT([[1, 0]], 1, ZZ) == ((0, 1), 1)
-    assert dmp_true_LT([[1], []], 1, ZZ) == ((1, 0), 1)
-    assert dmp_true_LT([[1, 0], []], 1, ZZ) == ((1, 1), 1)
 
 
 def test_dmp_degree():
