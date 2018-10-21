@@ -1,7 +1,7 @@
 """Test sparse polynomials. """
 
-from functools import reduce
-from operator import add, mul
+import functools
+import operator
 
 import pytest
 
@@ -139,16 +139,17 @@ def test_PolynomialRing_is_():
 
 def test_PolynomialRing_add():
     R, x = ring("x", ZZ)
-    F = [ x**2 + 2*i + 3 for i in range(4) ]
+    F = [x**2 + 2*i + 3 for i in range(4)]
 
-    assert R.add(F) == reduce(add, F) == 4*x**2 + 24
+    assert functools.reduce(operator.add, F) == 4*x**2 + 24
 
 
 def test_PolynomialRing_mul():
     R, x = ring("x", ZZ)
-    F = [ x**2 + 2*i + 3 for i in range(4) ]
+    F = [x**2 + 2*i + 3 for i in range(4)]
 
-    assert R.mul(F) == reduce(mul, F) == x**8 + 24*x**6 + 206*x**4 + 744*x**2 + 945
+    assert functools.reduce(operator.mul, F) == (x**8 + 24*x**6 +
+                                                 206*x**4 + 744*x**2 + 945)
 
 
 def test_PolynomialRing_to_ground():

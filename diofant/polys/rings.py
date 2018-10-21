@@ -3,7 +3,6 @@
 import functools
 import math
 import operator
-import types
 
 from ..core import Expr, Symbol, oo
 from ..core import symbols as _symbols
@@ -370,52 +369,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
     @property
     def is_multivariate(self):
         return len(self.gens) > 1
-
-    def add(self, *objs):
-        """
-        Add a sequence of polynomials or containers of polynomials.
-
-        Examples
-        ========
-
-        >>> R, x = ring("x", ZZ)
-        >>> R.add([x**2 + 2*i + 3 for i in range(4)])
-        4*x**2 + 24
-        >>> _.factor_list()
-        (4, [(x**2 + 6, 1)])
-        """
-        p = self.zero
-
-        for obj in objs:
-            if is_sequence(obj, include=types.GeneratorType):
-                p += self.add(*obj)
-            else:
-                p += obj
-
-        return p
-
-    def mul(self, *objs):
-        """
-        Multiply a sequence of polynomials or containers of polynomials.
-
-        Examples
-        ========
-
-        >>> R, x = ring("x", ZZ)
-        >>> R.mul([x**2 + 2*i + 3 for i in range(4)])
-        x**8 + 24*x**6 + 206*x**4 + 744*x**2 + 945
-        >>> _.factor_list()
-        (1, [(x**2 + 3, 1), (x**2 + 5, 1), (x**2 + 7, 1), (x**2 + 9, 1)])
-        """
-        p = self.one
-
-        for obj in objs:
-            if is_sequence(obj, include=types.GeneratorType):
-                p *= self.mul(*obj)
-            else:
-                p *= obj
-
-        return p
 
     def drop_to_ground(self, *gens):
         r"""
