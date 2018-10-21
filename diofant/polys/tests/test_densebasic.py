@@ -11,13 +11,12 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_degree_list, dmp_eject, dmp_exclude,
                                       dmp_from_dict, dmp_ground, dmp_ground_LC,
                                       dmp_ground_nth, dmp_ground_p,
-                                      dmp_ground_TC, dmp_grounds, dmp_include,
-                                      dmp_inflate, dmp_inject, dmp_LC,
-                                      dmp_list_terms, dmp_multi_deflate,
-                                      dmp_negative_p, dmp_nest, dmp_normal,
-                                      dmp_one, dmp_one_p, dmp_permute,
-                                      dmp_positive_p, dmp_raise, dmp_slice,
-                                      dmp_strip, dmp_swap, dmp_TC,
+                                      dmp_ground_TC, dmp_include, dmp_inflate,
+                                      dmp_inject, dmp_LC, dmp_list_terms,
+                                      dmp_multi_deflate, dmp_negative_p,
+                                      dmp_nest, dmp_normal, dmp_one, dmp_one_p,
+                                      dmp_permute, dmp_positive_p, dmp_raise,
+                                      dmp_slice, dmp_strip, dmp_swap, dmp_TC,
                                       dmp_terms_gcd, dmp_to_dict, dmp_validate,
                                       dmp_zero, dmp_zero_p, dmp_zeros,
                                       dup_from_dict, dup_inflate, dup_random,
@@ -297,16 +296,6 @@ def test_dmp_zeros():
     assert dmp_zeros(3, 2, ZZ) == [[[[]]], [[[]]], [[[]]]]
 
     assert dmp_zeros(3, -1, ZZ) == [0, 0, 0]
-
-
-def test_dmp_grounds():
-    assert dmp_grounds(ZZ(7), 0, 2) == []
-
-    assert dmp_grounds(ZZ(7), 1, 2) == [[[[7]]]]
-    assert dmp_grounds(ZZ(7), 2, 2) == [[[[7]]], [[[7]]]]
-    assert dmp_grounds(ZZ(7), 3, 2) == [[[[7]]], [[[7]]], [[[7]]]]
-
-    assert dmp_grounds(ZZ(7), 3, -1) == [7, 7, 7]
 
 
 def test_dmp_negative_p():

@@ -497,27 +497,6 @@ def dmp_zeros(n, u, K):
         return [ dmp_zero(u) for i in range(n) ]
 
 
-def dmp_grounds(c, n, u):
-    """
-    Return a list of multivariate constants.
-
-    Examples
-    ========
-
-    >>> dmp_grounds(ZZ(4), 3, 2)
-    [[[[4]]], [[[4]]], [[[4]]]]
-    >>> dmp_grounds(ZZ(4), 3, -1)
-    [4, 4, 4]
-    """
-    if not n:
-        return []
-
-    if u < 0:
-        return [c]*n
-    else:
-        return [ dmp_ground(c, u) for i in range(n) ]
-
-
 def dmp_negative_p(f, u, K):
     """
     Return ``True`` if ``LC(f)`` is negative.
