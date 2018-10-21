@@ -32,8 +32,8 @@ def _invert_monoms(p1):
     deg = p1.degree()
     ring = p1.ring
     p = ring.zero
-    cv = p1.listcoeffs()
-    mv = p1.listmonoms()
+    cv = list(p1.values())
+    mv = list(p1)
     for i in range(len(mv)):
         p[(deg - mv[i][0],)] = cv[i]
     return p

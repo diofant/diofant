@@ -251,11 +251,11 @@ def test_PolyElement_copy():
     assert f != g
 
 
-def test_PolyElement_listterms():
+def test_PolyElement_items():
     R,  x, y, z = ring("x,y,z", ZZ)
 
     f = x*y + 3*z
-    assert f.listterms() == [((1, 1, 0), 1), ((0, 0, 1), 3)]
+    assert list(f.items()) == [((1, 1, 0), 1), ((0, 0, 1), 3)]
 
 
 def test_PolyElement_as_expr():
