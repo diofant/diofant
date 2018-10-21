@@ -149,7 +149,7 @@ def rs_square(p1, x, prec):
                 p[exp] = get(exp, 0) + v1*v2
             else:
                 break
-    p = p.imul_num(2)
+    p *= 2
     get = p.get
     for expv, v in p1.items():
         if 2*expv[iv] < prec:

@@ -53,7 +53,7 @@ Compatibility breaks
 * Method :meth:`~diofant.polys.polytools.GroebnerBasis.set_order` was renamed from ``fglm()``, see :pull:`688`.
 * Removed ``row()``, ``col()``, ``row_del()`` and ``col_del()`` methods of :class:`~diofant.matrices.Matrix`, see :pull:`688`.
 * Removed ``add()`` and ``mul()`` methods for :class:`~diofant.polys.rings.PolynomialRing`, see :pull:`697`.
-* Removed ``itercoeffs()``, ``itermonoms()``, ``iterterms()``, ``listcoeffs()``, ``listmonoms()``, ``listterms()``, ``const()`` and ``square()`` methods of :class:`~diofant.polys.rings.PolyElement`, see :pull:`697`.
+* Removed ``itercoeffs()``, ``itermonoms()``, ``iterterms()``, ``listcoeffs()``, ``listmonoms()``, ``listterms()``, ``const()``, ``imul_num()`` and ``square()`` methods of :class:`~diofant.polys.rings.PolyElement`, see :pull:`697`.
 
 Minor changes
 =============

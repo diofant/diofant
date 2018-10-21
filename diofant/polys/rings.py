@@ -1132,7 +1132,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
                 k2 = keys[j]
                 exp = monomial_mul(k1, k2)
                 p[exp] = get(exp, zero) + pk*self[k2]
-        p = p.imul_num(2)
+        p = p._imul_num(2)
         get = p.get
         for k, v in self.items():
             k2 = monomial_mul(k, k)
@@ -1670,7 +1670,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         """
         return self._sorted(self.items(), order)
 
-    def imul_num(self, c):
+    def _imul_num(self, c):
         """multiply inplace the polynomial self by an element in the
         coefficient ring, provided self is not one of the generators;
         else multiply not inplace
@@ -1680,13 +1680,13 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> p = x + y**2
-        >>> p1 = p.imul_num(3)
+        >>> p1 = p._imul_num(3)
         >>> p1
         3*x + 3*y**2
         >>> p1 is p
         True
         >>> p = x
-        >>> p1 = p.imul_num(3)
+        >>> p1 = p._imul_num(3)
         >>> p1
         3*x
         >>> p1 is p

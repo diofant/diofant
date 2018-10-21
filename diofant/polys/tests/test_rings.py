@@ -623,9 +623,9 @@ def test_PolyElement___mul__():
 
     R, x, y = ring("x,y", ZZ)
     p = x + y**2
-    p1 = p.imul_num(3)
+    p1 = p._imul_num(3)
     assert p == p1 and p1 == 3*x + 3*y**2
-    p2 = p.imul_num(0)
+    p2 = p._imul_num(0)
     assert p == p2 and p2 == R.zero
 
 
