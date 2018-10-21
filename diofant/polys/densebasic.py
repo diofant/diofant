@@ -497,36 +497,6 @@ def dmp_zeros(n, u, K):
         return [ dmp_zero(u) for i in range(n) ]
 
 
-def dmp_negative_p(f, u, K):
-    """
-    Return ``True`` if ``LC(f)`` is negative.
-
-    Examples
-    ========
-
-    >>> dmp_negative_p([[ZZ(1)], [-ZZ(1)]], 1, ZZ)
-    False
-    >>> dmp_negative_p([[-ZZ(1)], [ZZ(1)]], 1, ZZ)
-    True
-    """
-    return K.is_negative(dmp_ground_LC(f, u, K))
-
-
-def dmp_positive_p(f, u, K):
-    """
-    Return ``True`` if ``LC(f)`` is positive.
-
-    Examples
-    ========
-
-    >>> dmp_positive_p([[ZZ(1)], [-ZZ(1)]], 1, ZZ)
-    True
-    >>> dmp_positive_p([[-ZZ(1)], [ZZ(1)]], 1, ZZ)
-    False
-    """
-    return K.is_positive(dmp_ground_LC(f, u, K))
-
-
 def dup_from_dict(f, K):
     """
     Create a ``K[x]`` polynomial from a ``dict``.

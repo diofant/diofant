@@ -13,14 +13,13 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_ground_nth, dmp_ground_p,
                                       dmp_ground_TC, dmp_include, dmp_inflate,
                                       dmp_inject, dmp_LC, dmp_list_terms,
-                                      dmp_multi_deflate, dmp_negative_p,
-                                      dmp_nest, dmp_normal, dmp_one, dmp_one_p,
-                                      dmp_permute, dmp_positive_p, dmp_raise,
-                                      dmp_slice, dmp_strip, dmp_swap, dmp_TC,
-                                      dmp_terms_gcd, dmp_to_dict, dmp_validate,
-                                      dmp_zero, dmp_zero_p, dmp_zeros,
-                                      dup_from_dict, dup_inflate, dup_random,
-                                      dup_reverse)
+                                      dmp_multi_deflate, dmp_nest, dmp_normal,
+                                      dmp_one, dmp_one_p, dmp_permute,
+                                      dmp_raise, dmp_slice, dmp_strip,
+                                      dmp_swap, dmp_TC, dmp_terms_gcd,
+                                      dmp_to_dict, dmp_validate, dmp_zero,
+                                      dmp_zero_p, dmp_zeros, dup_from_dict,
+                                      dup_inflate, dup_random, dup_reverse)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -296,18 +295,6 @@ def test_dmp_zeros():
     assert dmp_zeros(3, 2, ZZ) == [[[[]]], [[[]]], [[[]]]]
 
     assert dmp_zeros(3, -1, ZZ) == [0, 0, 0]
-
-
-def test_dmp_negative_p():
-    assert dmp_negative_p([[[]]], 2, ZZ) is False
-    assert dmp_negative_p([[[1], [2]]], 2, ZZ) is False
-    assert dmp_negative_p([[[-1], [2]]], 2, ZZ) is True
-
-
-def test_dmp_positive_p():
-    assert dmp_positive_p([[[]]], 2, ZZ) is False
-    assert dmp_positive_p([[[1], [2]]], 2, ZZ) is True
-    assert dmp_positive_p([[[-1], [2]]], 2, ZZ) is False
 
 
 def test_dup_from_to_dict():
