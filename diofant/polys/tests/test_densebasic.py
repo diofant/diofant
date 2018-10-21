@@ -4,13 +4,12 @@ import random
 
 import pytest
 
-from diofant import Integer, Rational, oo
+from diofant import oo
 from diofant.domains import FF, QQ, ZZ
 from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_deflate, dmp_degree, dmp_degree_in,
                                       dmp_degree_list, dmp_eject, dmp_exclude,
-                                      dmp_from_dict, dmp_from_diofant,
-                                      dmp_ground, dmp_ground_LC,
+                                      dmp_from_dict, dmp_ground, dmp_ground_LC,
                                       dmp_ground_nth, dmp_ground_p,
                                       dmp_ground_TC, dmp_grounds, dmp_include,
                                       dmp_inflate, dmp_inject, dmp_LC,
@@ -222,14 +221,6 @@ def test_dmp_convert():
     f = [[K0(1)], [K0(2)], [], [K0(3)]]
 
     assert dmp_convert(f, 1, K0, K1) == [[ZZ(1)], [ZZ(2)], [], [ZZ(3)]]
-
-
-def test_dmp_from_diofant():
-    assert dmp_from_diofant([Integer(1), Integer(2)], 0, ZZ) == [ZZ(1), ZZ(2)]
-    assert dmp_from_diofant([Rational(1, 2), Integer(3)], 0, QQ) == [QQ(1, 2), QQ(3, 1)]
-
-    assert dmp_from_diofant([[Integer(1), Integer(2)], [Integer(0)]], 1, ZZ) == [[ZZ(1), ZZ(2)], []]
-    assert dmp_from_diofant([[Rational(1, 2), Integer(2)]], 1, QQ) == [[QQ(1, 2), QQ(2, 1)]]
 
 
 def test_dmp_nth():

@@ -335,24 +335,6 @@ def dmp_convert(f, u, K0, K1):
     return dmp_strip(r, u)
 
 
-def dmp_from_diofant(f, u, K):
-    """
-    Convert the ground domain of ``f`` from Diofant to ``K``.
-
-    Examples
-    ========
-
-    >>> dmp_from_diofant([[Integer(1)], [Integer(2)]], 1, ZZ)
-    [[1], [2]]
-    """
-    if not u:
-        r = [K.convert(c) for c in f]
-    else:
-        v = u - 1
-        r = [dmp_from_diofant(c, v, K) for c in f]
-    return dmp_strip(r, u)
-
-
 def dmp_nth(f, n, u, K):
     """
     Return the ``n``-th coefficient of ``f`` in ``x_0`` in ``K[X]``.
