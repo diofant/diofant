@@ -335,27 +335,6 @@ def dmp_convert(f, u, K0, K1):
     return dmp_strip(r, u)
 
 
-def dmp_nth(f, n, u, K):
-    """
-    Return the ``n``-th coefficient of ``f`` in ``x_0`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> f = ZZ.map([[1], [2], [3]])
-    >>> dmp_nth(f, 0, 1, ZZ)
-    [3]
-    >>> dmp_nth(f, 4, 1, ZZ)
-    []
-    """
-    if n < 0:
-        raise IndexError("'n' must be non-negative, got %i" % n)
-    elif n >= len(f):
-        return dmp_zero(u - 1) if u else K.zero
-    else:
-        return f[dmp_degree(f, u) - n]
-
-
 def dmp_ground_nth(f, N, u, K):
     """
     Return the ground ``n``-th coefficient of ``f`` in ``K[x]``.

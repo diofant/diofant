@@ -15,7 +15,7 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_inflate, dmp_inject, dmp_LC,
                                       dmp_list_terms, dmp_multi_deflate,
                                       dmp_negative_p, dmp_nest, dmp_normal,
-                                      dmp_nth, dmp_one, dmp_one_p, dmp_permute,
+                                      dmp_one, dmp_one_p, dmp_permute,
                                       dmp_positive_p, dmp_raise, dmp_slice,
                                       dmp_strip, dmp_swap, dmp_TC,
                                       dmp_terms_gcd, dmp_to_dict, dmp_validate,
@@ -221,24 +221,6 @@ def test_dmp_convert():
     f = [[K0(1)], [K0(2)], [], [K0(3)]]
 
     assert dmp_convert(f, 1, K0, K1) == [[ZZ(1)], [ZZ(2)], [], [ZZ(3)]]
-
-
-def test_dmp_nth():
-    assert dmp_nth([1, 2, 3], 0, 0, ZZ) == 3
-    assert dmp_nth([1, 2, 3], 1, 0, ZZ) == 2
-    assert dmp_nth([1, 2, 3], 2, 0, ZZ) == 1
-    assert dmp_nth([1, 2, 3], 4, 0, ZZ) == 0
-    assert dmp_nth([1, 2, 3], 9, 0, ZZ) == 0
-
-    pytest.raises(IndexError, lambda: dmp_nth([3, 4, 5], -1, 0, ZZ))
-
-    assert dmp_nth([[1], [2], [3]], 0, 1, ZZ) == [3]
-    assert dmp_nth([[1], [2], [3]], 1, 1, ZZ) == [2]
-    assert dmp_nth([[1], [2], [3]], 2, 1, ZZ) == [1]
-
-    assert dmp_nth([[1], [2], [3]], 9, 1, ZZ) == []
-
-    pytest.raises(IndexError, lambda: dmp_nth([[3], [4], [5]], -1, 1, ZZ))
 
 
 def test_dmp_ground_nth():
