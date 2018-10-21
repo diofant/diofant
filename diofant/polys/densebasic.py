@@ -82,32 +82,6 @@ def dmp_ground_TC(f, u, K):
     return dmp_TC(f, K)
 
 
-def dmp_true_LT(f, u, K):
-    """
-    Return the leading term ``c * x_1**n_1 ... x_k**n_k``.
-
-    Examples
-    ========
-
-    >>> f = ZZ.map([[4], [2, 0], [3, 0, 0]])
-
-    >>> dmp_true_LT(f, 1, ZZ)
-    ((2, 0), 4)
-    """
-    monom = []
-
-    while u:
-        monom.append(len(f) - 1)
-        f, u = f[0], u - 1
-
-    if not f:
-        monom.append(0)
-    else:
-        monom.append(len(f) - 1)
-
-    return tuple(monom), dmp_LC(f, K)
-
-
 def dmp_degree(f, u):
     """
     Return the leading degree of ``f`` in ``x_0`` in ``K[X]``.
@@ -361,45 +335,6 @@ def dmp_convert(f, u, K0, K1):
     return dmp_strip(r, u)
 
 
-def dmp_from_diofant(f, u, K):
-    """
-    Convert the ground domain of ``f`` from Diofant to ``K``.
-
-    Examples
-    ========
-
-    >>> dmp_from_diofant([[Integer(1)], [Integer(2)]], 1, ZZ)
-    [[1], [2]]
-    """
-    if not u:
-        r = [K.convert(c) for c in f]
-    else:
-        v = u - 1
-        r = [dmp_from_diofant(c, v, K) for c in f]
-    return dmp_strip(r, u)
-
-
-def dmp_nth(f, n, u, K):
-    """
-    Return the ``n``-th coefficient of ``f`` in ``x_0`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> f = ZZ.map([[1], [2], [3]])
-    >>> dmp_nth(f, 0, 1, ZZ)
-    [3]
-    >>> dmp_nth(f, 4, 1, ZZ)
-    []
-    """
-    if n < 0:
-        raise IndexError("'n' must be non-negative, got %i" % n)
-    elif n >= len(f):
-        return dmp_zero(u - 1) if u else K.zero
-    else:
-        return f[dmp_degree(f, u) - n]
-
-
 def dmp_ground_nth(f, N, u, K):
     """
     Return the ground ``n``-th coefficient of ``f`` in ``K[x]``.
@@ -560,57 +495,6 @@ def dmp_zeros(n, u, K):
         return [K.zero]*n
     else:
         return [ dmp_zero(u) for i in range(n) ]
-
-
-def dmp_grounds(c, n, u):
-    """
-    Return a list of multivariate constants.
-
-    Examples
-    ========
-
-    >>> dmp_grounds(ZZ(4), 3, 2)
-    [[[[4]]], [[[4]]], [[[4]]]]
-    >>> dmp_grounds(ZZ(4), 3, -1)
-    [4, 4, 4]
-    """
-    if not n:
-        return []
-
-    if u < 0:
-        return [c]*n
-    else:
-        return [ dmp_ground(c, u) for i in range(n) ]
-
-
-def dmp_negative_p(f, u, K):
-    """
-    Return ``True`` if ``LC(f)`` is negative.
-
-    Examples
-    ========
-
-    >>> dmp_negative_p([[ZZ(1)], [-ZZ(1)]], 1, ZZ)
-    False
-    >>> dmp_negative_p([[-ZZ(1)], [ZZ(1)]], 1, ZZ)
-    True
-    """
-    return K.is_negative(dmp_ground_LC(f, u, K))
-
-
-def dmp_positive_p(f, u, K):
-    """
-    Return ``True`` if ``LC(f)`` is positive.
-
-    Examples
-    ========
-
-    >>> dmp_positive_p([[ZZ(1)], [-ZZ(1)]], 1, ZZ)
-    True
-    >>> dmp_positive_p([[-ZZ(1)], [ZZ(1)]], 1, ZZ)
-    False
-    """
-    return K.is_positive(dmp_ground_LC(f, u, K))
 
 
 def dup_from_dict(f, K):

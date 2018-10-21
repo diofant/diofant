@@ -52,6 +52,8 @@ Compatibility breaks
 * Removed ``abs()`` and ``neg()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`688`.
 * Method :meth:`~diofant.polys.polytools.GroebnerBasis.set_order` was renamed from ``fglm()``, see :pull:`688`.
 * Removed ``row()``, ``col()``, ``row_del()`` and ``col_del()`` methods of :class:`~diofant.matrices.Matrix`, see :pull:`688`.
+* Removed ``add()`` and ``mul()`` methods for :class:`~diofant.polys.rings.PolynomialRing`, see :pull:`697`.
+* Removed ``itercoeffs()``, ``itermonoms()``, ``iterterms()``, ``listcoeffs()``, ``listmonoms()``, ``listterms()``, ``const()``, ``imul_num()`` and ``square()`` methods of :class:`~diofant.polys.rings.PolyElement`, see :pull:`697`.
 
 Minor changes
 =============
@@ -124,3 +126,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`5595` Should mpmath use the polys ground types?
 * :sympyissue:`5602` Poly should use free_symbols to check for variable dependence
 * :sympyissue:`5555` Explain coefficient domain handling in groebner()'s docstring
+* :sympyissue:`15407` BUG: dsolve fails for linear first order ODE with three equations

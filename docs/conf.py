@@ -112,6 +112,7 @@ autodoc_inherit_docstrings = False
 # _static directory.
 html_static_path = ['_static']
 
+
 # https://docs.readthedocs.io/en/latest/guides/adding-custom-css.html
 def setup(app):
     app.add_stylesheet('custom.css')

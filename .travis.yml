@@ -31,13 +31,11 @@ stages:
 matrix:
   include:
     - python: 3.5
-      env: SPLIT='1/4' COVERAGE='on'
+      env: SPLIT='1/3' COVERAGE='on'
     - python: 3.5
-      env: SPLIT='2/4' COVERAGE='on'
+      env: SPLIT='2/3' COVERAGE='on'
     - python: 3.5
-      env: SPLIT='3/4' COVERAGE='on'
-    - python: 3.5
-      env: SPLIT='4/4' COVERAGE='on'
+      env: SPLIT='3/3' COVERAGE='on'
     - stage: quality
       python: 3.5
       env: COVERAGE='on'

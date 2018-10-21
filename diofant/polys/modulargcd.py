@@ -323,7 +323,7 @@ def _primitive(f, p):
     k = ring.ngens
 
     coeffs = {}
-    for monom, coeff in f.iterterms():
+    for monom, coeff in f.items():
         if monom[:-1] not in coeffs:
             coeffs[monom[:-1]] = {}
         coeffs[monom[:-1]][monom[-1]] = coeff
@@ -377,7 +377,7 @@ def _deg(f):
     """
     k = f.ring.ngens
     degf = (0,) * (k-1)
-    for monom in f.itermonoms():
+    for monom in f:
         if monom[:-1] > degf:
             degf = monom[:-1]
     return degf
@@ -427,7 +427,7 @@ def _LC(f):
     degf = _deg(f)
 
     lcf = yring.zero
-    for monom, coeff in f.iterterms():
+    for monom, coeff in f.items():
         if monom[:-1] == degf:
             lcf += coeff*y**monom[-1]
     return lcf
@@ -439,7 +439,7 @@ def _swap(f, i):
     """
     ring = f.ring
     fswap = ring.zero
-    for monom, coeff in f.iterterms():
+    for monom, coeff in f.items():
         monomswap = (monom[i],) + monom[:i] + monom[i+1:]
         fswap[monomswap] = coeff
     return fswap
@@ -1300,7 +1300,7 @@ def _rational_reconstruction_func_coeffs(hm, p, m, ring, k):
     """
     h = ring.zero
 
-    for monom, coeff in hm.iterterms():
+    for monom, coeff in hm.items():
         if k == 0:
             coeffh = _rational_function_reconstruction(coeff, p, m)
 
@@ -1309,7 +1309,7 @@ def _rational_reconstruction_func_coeffs(hm, p, m, ring, k):
 
         else:
             coeffh = ring.domain.zero
-            for mon, c in coeff.drop_to_ground(k).iterterms():
+            for mon, c in coeff.drop_to_ground(k).items():
                 ch = _rational_function_reconstruction(c, p, m)
 
                 if not ch:
@@ -1496,7 +1496,7 @@ def _evaluate_ground(f, i, a):
     ring = f.ring.clone(domain=f.ring.domain.ring.drop(i))
     fa = ring.zero
 
-    for monom, coeff in f.iterterms():
+    for monom, coeff in f.items():
         fa[monom] = coeff.evaluate(i, a)
 
     return fa
@@ -1607,7 +1607,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
 
         LM = [ha.degree()] + [0]*(k-1)
         if k > 1:
-            for monom, coeff in ha.iterterms():
+            for monom, coeff in ha.items():
                 if monom[0] == LM[0] and coeff.LM > tuple(LM[1:]):
                     LM[1:] = coeff.LM
 
@@ -1645,7 +1645,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
             dom = qring.domain.field
             den = dom.ring.one
 
-            for coeff in h.itercoeffs():
+            for coeff in h.values():
                 den = dom.ring.from_dense(gf_lcm(den.to_dense(), coeff.denom.to_dense(),
                                                  p, dom.domain))
 
@@ -1653,8 +1653,8 @@ def _func_field_modgcd_p(f, g, minpoly, p):
             dom = qring.domain.domain.field
             den = dom.ring.one
 
-            for coeff in h.itercoeffs():
-                for c in coeff.itercoeffs():
+            for coeff in h.values():
+                for c in coeff.values():
                     den = dom.ring.from_dense(gf_lcm(den.to_dense(), c.denom.to_dense(),
                                                      p, dom.domain))
 
@@ -1780,7 +1780,7 @@ def _rational_reconstruction_int_coeffs(hm, m, ring):
         reconstruction = integer_rational_reconstruction
         domain = hm.ring.domain
 
-    for monom, coeff in hm.iterterms():
+    for monom, coeff in hm.items():
         coeffh = reconstruction(coeff, m, domain)
 
         if not coeffh:
@@ -1906,7 +1906,7 @@ def _func_field_modgcd_m(f, g, minpoly):
 
         LM = [hp.degree()] + [0]*k
         if k > 0:
-            for monom, coeff in hp.iterterms():
+            for monom, coeff in hp.items():
                 if monom[0] == LM[0] and coeff.LM > tuple(LM[1:]):
                     LM[1:] = coeff.LM
 
@@ -1931,7 +1931,7 @@ def _func_field_modgcd_m(f, g, minpoly):
             h = hm.clear_denoms()[1]
         else:
             den = domain.domain.one
-            for coeff in hm.itercoeffs():
+            for coeff in hm.values():
                 den = domain.domain.lcm(den, coeff.clear_denoms()[0])
             h = hm.mul_ground(den)
 
@@ -1978,12 +1978,12 @@ def _to_ZZ_poly(f, ring):
 
     den = domain.one
 
-    for coeff in f.itercoeffs():
+    for coeff in f.values():
         for c in coeff.rep:
             if c:
                 den = domain.lcm(den, c.denominator)
 
-    for monom, coeff in f.iterterms():
+    for monom, coeff in f.items():
         coeff = coeff.rep
         m = ring.domain.one
         if isinstance(ring.domain, PolynomialRing):
@@ -2030,8 +2030,8 @@ def _to_ANP_poly(f, ring):
     f_ = ring.zero
 
     if isinstance(f.ring.domain, PolynomialRing):
-        for monom, coeff in f.iterterms():
-            for mon, coef in coeff.iterterms():
+        for monom, coeff in f.items():
+            for mon, coef in coeff.items():
                 m = (monom[0],) + mon
                 c = domain([domain.domain(coef)] + [0]*monom[1])
 
@@ -2041,7 +2041,7 @@ def _to_ANP_poly(f, ring):
                     f_[m] += c
 
     else:
-        for monom, coeff in f.iterterms():
+        for monom, coeff in f.items():
             m = (monom[0],)
             c = domain([domain.domain(coeff)] + [0]*monom[1])
 
@@ -2078,7 +2078,7 @@ def _primitive_in_x0(f):
     f_ = ring(f.as_expr())
     cont = dom.zero
 
-    for coeff in f_.itercoeffs():
+    for coeff in f_.values():
         cont = func_field_modgcd(cont, coeff)[0]
         if cont == dom.one:
             return cont, f

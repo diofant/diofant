@@ -4,25 +4,22 @@ import random
 
 import pytest
 
-from diofant import Integer, Rational, oo
+from diofant import oo
 from diofant.domains import FF, QQ, ZZ
 from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_deflate, dmp_degree, dmp_degree_in,
                                       dmp_degree_list, dmp_eject, dmp_exclude,
-                                      dmp_from_dict, dmp_from_diofant,
-                                      dmp_ground, dmp_ground_LC,
+                                      dmp_from_dict, dmp_ground, dmp_ground_LC,
                                       dmp_ground_nth, dmp_ground_p,
-                                      dmp_ground_TC, dmp_grounds, dmp_include,
-                                      dmp_inflate, dmp_inject, dmp_LC,
-                                      dmp_list_terms, dmp_multi_deflate,
-                                      dmp_negative_p, dmp_nest, dmp_normal,
-                                      dmp_nth, dmp_one, dmp_one_p, dmp_permute,
-                                      dmp_positive_p, dmp_raise, dmp_slice,
-                                      dmp_strip, dmp_swap, dmp_TC,
-                                      dmp_terms_gcd, dmp_to_dict, dmp_true_LT,
-                                      dmp_validate, dmp_zero, dmp_zero_p,
-                                      dmp_zeros, dup_from_dict, dup_inflate,
-                                      dup_random, dup_reverse)
+                                      dmp_ground_TC, dmp_include, dmp_inflate,
+                                      dmp_inject, dmp_LC, dmp_list_terms,
+                                      dmp_multi_deflate, dmp_nest, dmp_normal,
+                                      dmp_one, dmp_one_p, dmp_permute,
+                                      dmp_raise, dmp_slice, dmp_strip,
+                                      dmp_swap, dmp_TC, dmp_terms_gcd,
+                                      dmp_to_dict, dmp_validate, dmp_zero,
+                                      dmp_zero_p, dmp_zeros, dup_from_dict,
+                                      dup_inflate, dup_random, dup_reverse)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -68,15 +65,6 @@ def test_dmp_ground_TC():
     assert dmp_ground_TC([[2, 3, 4], [5]], 1, ZZ) == 5
     assert dmp_ground_TC([[[]]], 2, ZZ) == 0
     assert dmp_ground_TC([[[2], [3, 4]], [[5]]], 2, ZZ) == 5
-
-
-def test_dmp_true_LT():
-    assert dmp_true_LT([[]], 1, ZZ) == ((0, 0), 0)
-    assert dmp_true_LT([[7]], 1, ZZ) == ((0, 0), 7)
-
-    assert dmp_true_LT([[1, 0]], 1, ZZ) == ((0, 1), 1)
-    assert dmp_true_LT([[1], []], 1, ZZ) == ((1, 0), 1)
-    assert dmp_true_LT([[1, 0], []], 1, ZZ) == ((1, 1), 1)
 
 
 def test_dmp_degree():
@@ -233,32 +221,6 @@ def test_dmp_convert():
     assert dmp_convert(f, 1, K0, K1) == [[ZZ(1)], [ZZ(2)], [], [ZZ(3)]]
 
 
-def test_dmp_from_diofant():
-    assert dmp_from_diofant([Integer(1), Integer(2)], 0, ZZ) == [ZZ(1), ZZ(2)]
-    assert dmp_from_diofant([Rational(1, 2), Integer(3)], 0, QQ) == [QQ(1, 2), QQ(3, 1)]
-
-    assert dmp_from_diofant([[Integer(1), Integer(2)], [Integer(0)]], 1, ZZ) == [[ZZ(1), ZZ(2)], []]
-    assert dmp_from_diofant([[Rational(1, 2), Integer(2)]], 1, QQ) == [[QQ(1, 2), QQ(2, 1)]]
-
-
-def test_dmp_nth():
-    assert dmp_nth([1, 2, 3], 0, 0, ZZ) == 3
-    assert dmp_nth([1, 2, 3], 1, 0, ZZ) == 2
-    assert dmp_nth([1, 2, 3], 2, 0, ZZ) == 1
-    assert dmp_nth([1, 2, 3], 4, 0, ZZ) == 0
-    assert dmp_nth([1, 2, 3], 9, 0, ZZ) == 0
-
-    pytest.raises(IndexError, lambda: dmp_nth([3, 4, 5], -1, 0, ZZ))
-
-    assert dmp_nth([[1], [2], [3]], 0, 1, ZZ) == [3]
-    assert dmp_nth([[1], [2], [3]], 1, 1, ZZ) == [2]
-    assert dmp_nth([[1], [2], [3]], 2, 1, ZZ) == [1]
-
-    assert dmp_nth([[1], [2], [3]], 9, 1, ZZ) == []
-
-    pytest.raises(IndexError, lambda: dmp_nth([[3], [4], [5]], -1, 1, ZZ))
-
-
 def test_dmp_ground_nth():
     assert dmp_ground_nth([[]], (0, 0), 1, ZZ) == 0
     assert dmp_ground_nth([[1], [2], [3]], (0, 0), 1, ZZ) == 3
@@ -333,28 +295,6 @@ def test_dmp_zeros():
     assert dmp_zeros(3, 2, ZZ) == [[[[]]], [[[]]], [[[]]]]
 
     assert dmp_zeros(3, -1, ZZ) == [0, 0, 0]
-
-
-def test_dmp_grounds():
-    assert dmp_grounds(ZZ(7), 0, 2) == []
-
-    assert dmp_grounds(ZZ(7), 1, 2) == [[[[7]]]]
-    assert dmp_grounds(ZZ(7), 2, 2) == [[[[7]]], [[[7]]]]
-    assert dmp_grounds(ZZ(7), 3, 2) == [[[[7]]], [[[7]]], [[[7]]]]
-
-    assert dmp_grounds(ZZ(7), 3, -1) == [7, 7, 7]
-
-
-def test_dmp_negative_p():
-    assert dmp_negative_p([[[]]], 2, ZZ) is False
-    assert dmp_negative_p([[[1], [2]]], 2, ZZ) is False
-    assert dmp_negative_p([[[-1], [2]]], 2, ZZ) is True
-
-
-def test_dmp_positive_p():
-    assert dmp_positive_p([[[]]], 2, ZZ) is False
-    assert dmp_positive_p([[[1], [2]]], 2, ZZ) is True
-    assert dmp_positive_p([[[-1], [2]]], 2, ZZ) is False
 
 
 def test_dup_from_to_dict():

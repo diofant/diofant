@@ -1,7 +1,7 @@
 """Test sparse polynomials. """
 
-from functools import reduce
-from operator import add, mul
+import functools
+import operator
 
 import pytest
 
@@ -139,16 +139,17 @@ def test_PolynomialRing_is_():
 
 def test_PolynomialRing_add():
     R, x = ring("x", ZZ)
-    F = [ x**2 + 2*i + 3 for i in range(4) ]
+    F = [x**2 + 2*i + 3 for i in range(4)]
 
-    assert R.add(F) == reduce(add, F) == 4*x**2 + 24
+    assert functools.reduce(operator.add, F) == 4*x**2 + 24
 
 
 def test_PolynomialRing_mul():
     R, x = ring("x", ZZ)
-    F = [ x**2 + 2*i + 3 for i in range(4) ]
+    F = [x**2 + 2*i + 3 for i in range(4)]
 
-    assert R.mul(F) == reduce(mul, F) == x**8 + 24*x**6 + 206*x**4 + 744*x**2 + 945
+    assert functools.reduce(operator.mul, F) == (x**8 + 24*x**6 +
+                                                 206*x**4 + 744*x**2 + 945)
 
 
 def test_PolynomialRing_to_ground():
@@ -250,18 +251,11 @@ def test_PolyElement_copy():
     assert f != g
 
 
-def test_PolyElement_listterms():
+def test_PolyElement_items():
     R,  x, y, z = ring("x,y,z", ZZ)
 
     f = x*y + 3*z
-    assert f.listterms() == [((1, 1, 0), 1), ((0, 0, 1), 3)]
-
-
-def test_PolyElement_const():
-    R,  x, y, z = ring("x,y,z", ZZ)
-
-    f = 2*x + 3*x*y + 4*z + 5
-    assert f.const() == R.domain(5)
+    assert list(f.items()) == [((1, 1, 0), 1), ((0, 0, 1), 3)]
 
 
 def test_PolyElement_as_expr():
@@ -414,6 +408,9 @@ def test_PolyElement_coeff():
     pytest.raises(ValueError, lambda: f.coeff(-x*y*z))
     pytest.raises(ValueError, lambda: f.coeff(7*z**3))
     pytest.raises(ValueError, lambda: f.coeff(x + y))
+
+    f = 2*x + 3*x*y + 4*z + 5
+    assert f.coeff(1) == R.domain(5)
 
 
 def test_PolyElement_LC():
@@ -626,9 +623,9 @@ def test_PolyElement___mul__():
 
     R, x, y = ring("x,y", ZZ)
     p = x + y**2
-    p1 = p.imul_num(3)
+    p1 = p._imul_num(3)
     assert p == p1 and p1 == 3*x + 3*y**2
-    p2 = p.imul_num(0)
+    p2 = p._imul_num(0)
     assert p == p2 and p2 == R.zero
 
 

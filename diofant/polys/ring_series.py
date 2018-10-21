@@ -32,8 +32,8 @@ def _invert_monoms(p1):
     deg = p1.degree()
     ring = p1.ring
     p = ring.zero
-    cv = p1.listcoeffs()
-    mv = p1.listmonoms()
+    cv = list(p1.values())
+    mv = list(p1)
     for i in range(len(mv)):
         p[(deg - mv[i][0],)] = cv[i]
     return p
@@ -149,7 +149,7 @@ def rs_square(p1, x, prec):
                 p[exp] = get(exp, 0) + v1*v2
             else:
                 break
-    p = p.imul_num(2)
+    p *= 2
     get = p.get
     for expv, v in p1.items():
         if 2*expv[iv] < prec:
@@ -251,7 +251,7 @@ def _series_inversion1(p, x, prec):
     else:
         p1 = ring(1)
     for precx in _giant_steps(prec):
-        tmp = p1.square()
+        tmp = p1**2
         tmp = rs_mul(tmp, p, x, precx)
         p1 = 2*p1 - tmp
     return p1
