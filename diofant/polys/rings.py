@@ -1056,9 +1056,9 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         elif n == 1:
             return self.copy()
         elif n == 2:
-            return self.square()
+            return self._square()
         elif n == 3:
-            return self*self.square()
+            return self*self._square()
         elif len(self) <= 5:  # TODO: use an actuall density measure
             return self._pow_multinomial(n)
         else:
@@ -1075,7 +1075,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
                 if not n:
                     break
 
-            c = c.square()
+            c = c._square()
             n = n // 2
 
         return p
@@ -1109,7 +1109,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
         return poly
 
-    def square(self):
+    def _square(self):
         """square of a polynomial
 
         Examples
@@ -1117,7 +1117,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
         >>> _, x, y = ring('x, y', ZZ)
         >>> p = x + y**2
-        >>> p.square()
+        >>> p._square()
         x**2 + 2*x*y**2 + y**4
         """
         ring = self.ring

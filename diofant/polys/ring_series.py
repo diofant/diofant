@@ -251,7 +251,7 @@ def _series_inversion1(p, x, prec):
     else:
         p1 = ring(1)
     for precx in _giant_steps(prec):
-        tmp = p1.square()
+        tmp = p1**2
         tmp = rs_mul(tmp, p, x, precx)
         p1 = 2*p1 - tmp
     return p1
