@@ -17,7 +17,7 @@ from mpmath.libmp.libmpf import prec_to_dps
 
 from ..utilities import filldedent
 from .cache import cacheit, clear_cache
-from .compatibility import DIOFANT_INTS, HAS_GMPY, as_int
+from .compatibility import DIOFANT_INTS, GROUND_TYPES, HAS_GMPY, as_int, gmpy
 from .containers import Tuple
 from .decorators import _sympifyit
 from .expr import AtomicExpr, Expr
@@ -1017,6 +1017,10 @@ class Float(Number):
 converter[float] = converter[decimal.Decimal] = Float
 
 
+# Ground type for components of Rational
+_int_dtype = gmpy.mpz if GROUND_TYPES == 'gmpy' else int
+
+
 class Rational(Number):
     """Represents integers and rational numbers (p/q) of any size.
 
@@ -1134,8 +1138,9 @@ class Rational(Number):
             return S.Half
 
         obj = Expr.__new__(cls)
-        obj._numerator = int(p)
-        obj._denominator = int(q)
+
+        obj._numerator = _int_dtype(p)
+        obj._denominator = _int_dtype(q)
 
         return obj
 
@@ -1273,8 +1278,8 @@ class Rational(Number):
     def __int__(self):
         p, q = self.numerator, self.denominator
         if p < 0:
-            return -(-p//q)
-        return p//q
+            return -int(-p//q)
+        return int(p//q)
 
     @_sympifyit('other', NotImplemented)
     def __eq__(self, other):
@@ -1438,7 +1443,7 @@ numbers.Rational.register(Rational)
 
 class Integer(Rational):
 
-    _denominator = 1
+    _denominator = _int_dtype(1)
     is_integer = True
     is_number = True
 
@@ -1476,7 +1481,7 @@ class Integer(Rational):
             obj = S.NegativeOne
         else:
             obj = Expr.__new__(cls)
-            obj._numerator = ival
+            obj._numerator = _int_dtype(ival)
 
         return obj
 
@@ -1487,7 +1492,7 @@ class Integer(Rational):
         return hash(self.numerator)
 
     def __index__(self):
-        return self.numerator
+        return int(self.numerator)
 
     def __eq__(self, other):
         if isinstance(other, int):
@@ -1664,8 +1669,8 @@ class Zero(IntegerConstant, metaclass=Singleton):
     .. [1] https//en.wikipedia.org/wiki/Zero
     """
 
-    _numerator = 0
-    _denominator = 1
+    _numerator = _int_dtype(0)
+    _denominator = _int_dtype(1)
 
     is_positive = False
     is_negative = False
@@ -1709,8 +1714,8 @@ class One(IntegerConstant, metaclass=Singleton):
 
     is_number = True
 
-    _numerator = 1
-    _denominator = 1
+    _numerator = _int_dtype(1)
+    _denominator = _int_dtype(1)
 
 
 class NegativeOne(IntegerConstant, metaclass=Singleton):
@@ -1737,8 +1742,8 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
 
     is_number = True
 
-    _numerator = -1
-    _denominator = 1
+    _numerator = _int_dtype(-1)
+    _denominator = _int_dtype(1)
 
     def _eval_power(self, expt):
         if isinstance(expt, Number):
@@ -1787,8 +1792,8 @@ class Half(RationalConstant, metaclass=Singleton):
 
     is_number = True
 
-    _numerator = 1
-    _denominator = 2
+    _numerator = _int_dtype(1)
+    _denominator = _int_dtype(2)
 
 
 class Infinity(Number, metaclass=Singleton):
@@ -2786,12 +2791,7 @@ def sympify_fractions(f):
 converter[fractions.Fraction] = sympify_fractions
 
 
-try:
-    if HAS_GMPY:
-        import gmpy2 as gmpy
-    else:
-        raise ImportError
-
+if HAS_GMPY:
     def sympify_mpz(x):
         return Integer(int(x))
 
@@ -2800,8 +2800,6 @@ try:
 
     converter[gmpy.mpz] = sympify_mpz
     converter[gmpy.mpq] = sympify_mpq
-except ImportError:
-    pass
 
 
 def sympify_mpmath(x):

@@ -68,6 +68,7 @@ Minor changes
 * Support detection of imaginary roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`625`.
 * Mutable matrices support indexed deletion with :meth:`~object.__delitem__`, see :pull:`688`.
 * Integer powers of :class:`~diofant.polys.rootoftools.RootOf` instances are automatically reduced, according to their minimal polynomial, see :pull:`691`.
+* Support gmpy2.mpz ground type for numerator/denominator of :class:`~diofant.core.numbers.Rational`, see :pull:`694`.
 
 Developer changes
 =================
