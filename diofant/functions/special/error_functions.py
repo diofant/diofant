@@ -1464,7 +1464,7 @@ class Li(Function):
     def eval(cls, z):
         if z is oo:
             return oo
-        elif z is 2*S.One:
+        elif z == 2:
             return S.Zero
 
     def fdiff(self, argindex=1):
