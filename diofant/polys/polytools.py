@@ -1026,28 +1026,6 @@ class Poly(Expr):
 
         return self.per(result)
 
-    def pow(self, n):
-        """
-        Raise ``self`` to a non-negative power ``n``.
-
-        Examples
-        ========
-
-        >>> Poly(x - 2, x).pow(3)
-        Poly(x**3 - 6*x**2 + 12*x - 8, x, domain='ZZ')
-
-        >>> Poly(x - 2, x)**3
-        Poly(x**3 - 6*x**2 + 12*x - 8, x, domain='ZZ')
-        """
-        n = int(n)
-
-        if hasattr(self.rep, 'pow'):
-            result = self.rep.pow(n)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'pow')
-
-        return self.per(result)
-
     def pdiv(self, other):
         """
         Polynomial pseudo-division of ``self`` by ``other``.
@@ -3297,7 +3275,12 @@ class Poly(Expr):
     @_sympifyit('n', NotImplemented)
     def __pow__(self, n):
         if n.is_Integer and n >= 0:
-            return self.pow(n)
+            n = int(n)
+            if hasattr(self.rep, 'pow'):
+                result = self.rep.pow(n)
+            else:  # pragma: no cover
+                raise OperationNotSupported(self, 'pow')
+            return self.per(result)
         else:
             return self.as_expr()**n
 
@@ -5851,7 +5834,7 @@ def poly(expr, *gens, **args):
                 elif (factor.is_Pow and factor.base.is_Add and
                       factor.exp.is_Integer and factor.exp >= 0):
                     poly_factors.append(_poly(factor.base,
-                                              opt).pow(factor.exp))
+                                              opt)**factor.exp)
                 else:
                     factors.append(factor)
 

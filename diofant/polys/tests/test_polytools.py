@@ -674,16 +674,18 @@ def test_Poly_sqr():
 
 
 def test_Poly_pow():
-    assert Poly(x, x).pow(10) == Poly(x**10, x)
-    assert Poly(x, x).pow(Integer(10)) == Poly(x**10, x)
+    assert Poly(x, x)**10 == Poly(x**10, x)
+    assert Poly(x, x)**Integer(10) == Poly(x**10, x)
 
-    assert Poly(2*y, x, y).pow(4) == Poly(16*y**4, x, y)
-    assert Poly(2*y, x, y).pow(Integer(4)) == Poly(16*y**4, x, y)
+    assert Poly(2*y, x, y)**4 == Poly(16*y**4, x, y)
+    assert Poly(2*y, x, y)**Integer(4) == Poly(16*y**4, x, y)
 
     assert Poly(7*x*y, x, y)**3 == Poly(343*x**3*y**3, x, y)
 
     assert Poly(x*y + 1, x, y)**(-1) == (x*y + 1)**(-1)
     assert Poly(x*y + 1, x, y)**x == (x*y + 1)**x
+
+    assert Poly(x - 2, x)**3 == Poly(x**3 - 6*x**2 + 12*x - 8)
 
 
 def test_Poly_divmod():
