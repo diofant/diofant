@@ -5387,7 +5387,7 @@ def cancel(f, *gens, **args):
             return f
         else:
             return S.One, p, q
-    except PolynomialError as msg:
+    except PolynomialError:
         assert not f.is_commutative or f.has(Piecewise)
         # Handling of noncommutative and/or piecewise expressions
         if f.is_Add or f.is_Mul:
