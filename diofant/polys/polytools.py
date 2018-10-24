@@ -964,23 +964,6 @@ class Poly(Expr):
 
         return J, self.per(result)
 
-    def add_ground(self, coeff):
-        """
-        Add an element of the ground domain to ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x + 1).add_ground(2)
-        Poly(x + 3, x, domain='ZZ')
-        """
-        if hasattr(self.rep, 'add_ground'):
-            result = self.rep.add_ground(coeff)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'add_ground')
-
-        return self.per(result)
-
     def sub_ground(self, coeff):
         """
         Subtract an element of the ground domain from ``self``.
@@ -1056,33 +1039,6 @@ class Poly(Expr):
             raise OperationNotSupported(self, 'exquo_ground')
 
         return self.per(result)
-
-    def add(self, other):
-        """
-        Add two polynomials ``self`` and ``other``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + 1, x).add(Poly(x - 2, x))
-        Poly(x**2 + x - 1, x, domain='ZZ')
-
-        >>> Poly(x**2 + 1, x) + Poly(x - 2, x)
-        Poly(x**2 + x - 1, x, domain='ZZ')
-        """
-        other = sympify(other)
-
-        if not other.is_Poly:
-            return self.add_ground(other)
-
-        _, per, F, G = self._unify(other)
-
-        if hasattr(self.rep, 'add'):
-            result = F.add(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'add')
-
-        return per(result)
 
     def sub(self, other):
         """
@@ -3356,7 +3312,14 @@ class Poly(Expr):
             except PolynomialError:
                 return self.as_expr() + other
 
-        return self.add(other)
+        _, per, F, G = self._unify(other)
+
+        if hasattr(self.rep, 'add'):
+            result = F.add(G)
+        else:  # pragma: no cover
+            raise OperationNotSupported(self, 'add')
+
+        return per(result)
 
     @_sympifyit('other', NotImplemented)
     def __radd__(self, other):
@@ -3365,7 +3328,7 @@ class Poly(Expr):
         except PolynomialError:
             return other + self.as_expr()
 
-        return other.add(self)
+        return other + self
 
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
@@ -5990,15 +5953,15 @@ def poly(expr, *gens, **args):
             result = poly_terms[0]
 
             for term in poly_terms[1:]:
-                result = result.add(term)
+                result += term
 
             if terms:
                 term = Add(*terms)
 
                 if term.is_Number:
-                    result = result.add(term)
+                    result += term
                 else:
-                    result = result.add(Poly._from_expr(term, opt))
+                    result += Poly._from_expr(term, opt)
 
         return result.reorder(*opt.get('gens', ()), **args)
 
