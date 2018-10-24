@@ -22,8 +22,8 @@ from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
                                        gf_quo, gf_rem, gf_sqf_list, gf_sqf_p,
                                        gf_sqf_part, gf_sqr, gf_sub,
                                        gf_sub_ground, gf_sub_mul, gf_to_dict,
-                                       gf_to_int_poly, gf_trace_map, gf_trunc,
-                                       gf_value, linear_congruence)
+                                       gf_to_int_poly, gf_trace_map, gf_value,
+                                       linear_congruence)
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.rings import ring
 
@@ -54,16 +54,6 @@ def test_gf_int():
     assert gf_int(3, 5) == -2
     assert gf_int(4, 5) == -1
     assert gf_int(5, 5) == 0
-
-
-def test_gf_trunc():
-    assert gf_trunc([], 11) == []
-    assert gf_trunc([1], 11) == [1]
-    assert gf_trunc([22], 11) == []
-    assert gf_trunc([12], 11) == [1]
-
-    assert gf_trunc([11, 22, 17, 1, 0], 11) == [6, 1, 0]
-    assert gf_trunc([12, 23, 17, 1, 0], 11) == [1, 1, 6, 1, 0]
 
 
 def test_gf_from_to_dict():
