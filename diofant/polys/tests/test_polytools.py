@@ -594,10 +594,6 @@ def test_Poly_set_modulus():
     pytest.raises(CoercionFailed, lambda: Poly(x/2 + 1).set_modulus(2))
 
 
-def test_Poly_sub_ground():
-    assert Poly(x + 1).sub_ground(2) == Poly(x - 1)
-
-
 def test_Poly_mul_ground():
     assert Poly(x + 1).mul_ground(2) == Poly(2*x + 2)
 
@@ -639,13 +635,12 @@ def test_Poly_add():
 
 
 def test_Poly_sub():
-    assert Poly(0, x).sub(Poly(0, x)) == Poly(0, x)
     assert Poly(0, x) - Poly(0, x) == Poly(0, x)
 
-    assert Poly(1, x).sub(Poly(0, x)) == Poly(1, x)
-    assert Poly(1, x).sub(1) == Poly(0, x)
+    assert Poly(1, x) - Poly(0, x) == Poly(1, x)
+    assert Poly(1, x) - 1 == Poly(0, x)
     assert Poly(1, x, y) - Poly(0, x) == Poly(1, x, y)
-    assert Poly(0, x).sub(Poly(1, x, y)) == Poly(-1, x, y)
+    assert Poly(0, x) - Poly(1, x, y) == Poly(-1, x, y)
     assert Poly(0, x, y) - Poly(1, x, y) == Poly(-1, x, y)
 
     assert Poly(1, x) - x == Poly(1 - x, x)
@@ -654,6 +649,9 @@ def test_Poly_sub():
 
     assert Poly(x, x) - 1 == Poly(x - 1, x)
     assert 1 - Poly(x, x) == Poly(1 - x, x)
+
+    assert Poly(x + 1) - 2 == Poly(x - 1)
+    assert Poly(x**2 + 1, x) - Poly(x - 2, x) == Poly(x**2 - x + 3)
 
 
 def test_Poly_mul():

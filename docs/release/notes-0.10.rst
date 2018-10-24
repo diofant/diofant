@@ -54,7 +54,7 @@ Compatibility breaks
 * Removed ``row()``, ``col()``, ``row_del()`` and ``col_del()`` methods of :class:`~diofant.matrices.Matrix`, see :pull:`688`.
 * Removed ``add()`` and ``mul()`` methods for :class:`~diofant.polys.rings.PolynomialRing`, see :pull:`697`.
 * Removed ``itercoeffs()``, ``itermonoms()``, ``iterterms()``, ``listcoeffs()``, ``listmonoms()``, ``listterms()``, ``const()``, ``imul_num()`` and ``square()`` methods of :class:`~diofant.polys.rings.PolyElement`, see :pull:`697`.
-* Removed ``add()``, ``add_ground()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`701`.
+* Removed ``add()``, ``add_ground()``, ``sub()``, ``sub_ground()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`701`.
 
 Minor changes
 =============

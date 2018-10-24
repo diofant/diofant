@@ -964,23 +964,6 @@ class Poly(Expr):
 
         return J, self.per(result)
 
-    def sub_ground(self, coeff):
-        """
-        Subtract an element of the ground domain from ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x + 1).sub_ground(2)
-        Poly(x - 1, x, domain='ZZ')
-        """
-        if hasattr(self.rep, 'sub_ground'):
-            result = self.rep.sub_ground(coeff)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'sub_ground')
-
-        return self.per(result)
-
     def mul_ground(self, coeff):
         """
         Multiply ``self`` by a an element of the ground domain.
@@ -1039,33 +1022,6 @@ class Poly(Expr):
             raise OperationNotSupported(self, 'exquo_ground')
 
         return self.per(result)
-
-    def sub(self, other):
-        """
-        Subtract two polynomials ``self`` and ``other``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + 1, x).sub(Poly(x - 2, x))
-        Poly(x**2 - x + 3, x, domain='ZZ')
-
-        >>> Poly(x**2 + 1, x) - Poly(x - 2, x)
-        Poly(x**2 - x + 3, x, domain='ZZ')
-        """
-        other = sympify(other)
-
-        if not other.is_Poly:
-            return self.sub_ground(other)
-
-        _, per, F, G = self._unify(other)
-
-        if hasattr(self.rep, 'sub'):
-            result = F.sub(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'sub')
-
-        return per(result)
 
     def mul(self, other):
         """
@@ -3338,7 +3294,14 @@ class Poly(Expr):
             except PolynomialError:
                 return self.as_expr() - other
 
-        return self.sub(other)
+        _, per, F, G = self._unify(other)
+
+        if hasattr(self.rep, 'sub'):
+            result = F.sub(G)
+        else:  # pragma: no cover
+            raise OperationNotSupported(self, 'sub')
+
+        return per(result)
 
     @_sympifyit('other', NotImplemented)
     def __rsub__(self, other):
@@ -3347,7 +3310,7 @@ class Poly(Expr):
         except PolynomialError:
             return other - self.as_expr()
 
-        return other.sub(self)
+        return other - self
 
     @_sympifyit('other', NotImplemented)
     def __mul__(self, other):
