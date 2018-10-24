@@ -927,7 +927,8 @@ def canonical_representation(a, d, DE):
     """
     # Make d monic
     l = Poly(1/d.LC(), DE.t)
-    a, d = a.mul(l), d.mul(l)
+    a *= l
+    d *= l
 
     q, r = a.div(d)
     dn, ds = splitfactor(d, DE)
@@ -948,12 +949,14 @@ def hermite_reduce(a, d, DE):
     """
     # Make d monic
     l = Poly(1/d.LC(), DE.t)
-    a, d = a.mul(l), d.mul(l)
+    a *= l
+    d *= l
 
     fp, fs, fn = canonical_representation(a, d, DE)
     a, d = fn
     l = Poly(1/d.LC(), DE.t)
-    a, d = a.mul(l), d.mul(l)
+    a *= l
+    d *= l
 
     ga = Poly(0, DE.t)
     gd = Poly(1, DE.t)
@@ -967,7 +970,7 @@ def hermite_reduce(a, d, DE):
         ddm = derivation(dm, DE)
         dm2 = gcd(dm, ddm)
         dms, r = dm.div(dm2)
-        ds_ddm = ds.mul(ddm)
+        ds_ddm = ds*ddm
         ds_ddm_dm, r = ds_ddm.div(dm)
 
         b, c = gcdex_diophantine(-ds_ddm_dm.as_poly(DE.t), dms.as_poly(DE.t), a.as_poly(DE.t))
@@ -975,7 +978,7 @@ def hermite_reduce(a, d, DE):
 
         db = derivation(b, DE).as_poly(DE.t)
         ds_dms, r = ds.div(dms)
-        a = c.as_poly(DE.t) - db.mul(ds_dms).as_poly(DE.t)
+        a = c.as_poly(DE.t) - (db*ds_dms).as_poly(DE.t)
 
         ga = ga*dm + b*gd
         gd = gd*dm
@@ -1005,8 +1008,8 @@ def polynomial_reduce(p, DE):
     q = Poly(0, DE.t)
     while p.degree(DE.t) >= DE.d.degree(DE.t):
         m = p.degree(DE.t) - DE.d.degree(DE.t) + 1
-        q0 = Poly(DE.t**m, DE.t).mul(Poly(p.as_poly(DE.t).LC() /
-                                          (m*DE.d.LC()), DE.t))
+        q0 = Poly(DE.t**m, DE.t)*Poly(p.as_poly(DE.t).LC() /
+                                      (m*DE.d.LC()), DE.t)
         q += q0
         p = p - derivation(q0, DE)
 
@@ -1156,7 +1159,7 @@ def residue_reduce(a, d, DE, z=None, invert=True):
 
     z = z or Dummy('z')
     a, d = a.cancel(d, include=True)
-    a, d = a.to_field().mul_ground(1/d.LC()), d.to_field().mul_ground(1/d.LC())
+    a, d = a.to_field()*(1/d.LC()), d.to_field()*(1/d.LC())
     kkinv = [1/x for x in DE.T[:DE.level]] + DE.T[:DE.level]
 
     if a.is_zero:

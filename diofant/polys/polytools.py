@@ -964,23 +964,6 @@ class Poly(Expr):
 
         return J, self.per(result)
 
-    def mul_ground(self, coeff):
-        """
-        Multiply ``self`` by a an element of the ground domain.
-
-        Examples
-        ========
-
-        >>> Poly(x + 1).mul_ground(2)
-        Poly(2*x + 2, x, domain='ZZ')
-        """
-        if hasattr(self.rep, 'mul_ground'):
-            result = self.rep.mul_ground(coeff)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'mul_ground')
-
-        return self.per(result)
-
     def quo_ground(self, coeff):
         """
         Quotient of ``self`` by a an element of the ground domain.
@@ -1022,33 +1005,6 @@ class Poly(Expr):
             raise OperationNotSupported(self, 'exquo_ground')
 
         return self.per(result)
-
-    def mul(self, other):
-        """
-        Multiply two polynomials ``self`` and ``other``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + 1, x).mul(Poly(x - 2, x))
-        Poly(x**3 - 2*x**2 + x - 2, x, domain='ZZ')
-
-        >>> Poly(x**2 + 1, x)*Poly(x - 2, x)
-        Poly(x**3 - 2*x**2 + x - 2, x, domain='ZZ')
-        """
-        other = sympify(other)
-
-        if not other.is_Poly:
-            return self.mul_ground(other)
-
-        _, per, F, G = self._unify(other)
-
-        if hasattr(self.rep, 'mul'):
-            result = F.mul(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'mul')
-
-        return per(result)
 
     def sqr(self):
         """
@@ -1729,8 +1685,8 @@ class Poly(Expr):
         a, f = f.clear_denoms(convert=True)
         b, g = g.clear_denoms(convert=True)
 
-        f = f.mul_ground(b)
-        g = g.mul_ground(a)
+        f *= b
+        g *= a
 
         return f, g
 
@@ -3320,7 +3276,14 @@ class Poly(Expr):
             except PolynomialError:
                 return self.as_expr()*other
 
-        return self.mul(other)
+        _, per, F, G = self._unify(other)
+
+        if hasattr(self.rep, 'mul'):
+            result = F.mul(G)
+        else:  # pragma: no cover
+            raise OperationNotSupported(self, 'mul')
+
+        return per(result)
 
     @_sympifyit('other', NotImplemented)
     def __rmul__(self, other):
@@ -3329,7 +3292,7 @@ class Poly(Expr):
         except PolynomialError:
             return other*self.as_expr()
 
-        return other.mul(self)
+        return other*self
 
     @_sympifyit('n', NotImplemented)
     def __pow__(self, n):
@@ -5898,15 +5861,15 @@ def poly(expr, *gens, **args):
                 product = poly_factors[0]
 
                 for factor in poly_factors[1:]:
-                    product = product.mul(factor)
+                    product *= factor
 
                 if factors:
                     factor = Mul(*factors)
 
                     if factor.is_Number:
-                        product = product.mul(factor)
+                        product *= factor
                     else:
-                        product = product.mul(Poly._from_expr(factor, opt))
+                        product *= Poly._from_expr(factor, opt)
 
                 poly_terms.append(product)
 
