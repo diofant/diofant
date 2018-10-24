@@ -192,6 +192,19 @@ def test_solve_polynomial1():
     assert solve(x - y**2, x, y) == [{x: y**2}]
     assert solve(x**2 - y, x, y) == [{y: x**2}]
 
+    assert solve(x**3 + 2*x + 3, x) == [{x: -1},
+                                        {x: Rational(1, 2) - sqrt(11)*I/2},
+                                        {x: Rational(1, 2) + sqrt(11)*I/2}]
+    assert solve([y - x, x - 5]) == [{x: 5, y: 5}]
+
+    assert solve(x**2 + p*x + q, x) == [{x: -p/2 - sqrt(p**2 - 4*q)/2},
+                                        {x: -p/2 + sqrt(p**2 - 4*q)/2}]
+
+    assert (solve([y**2 - x**3 + 1, x*y]) ==
+            [{x: 0, y: -I}, {x: 0, y: I}, {x: 1, y: 0},
+             {x: -Rational(1, 2) - sqrt(3)*I/2, y: 0},
+             {x: -Rational(1, 2) + sqrt(3)*I/2, y: 0}])
+
 
 def test_solve_polynomial2():
     assert solve(4, x) == []
