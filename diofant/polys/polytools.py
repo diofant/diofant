@@ -3195,12 +3195,7 @@ class Poly(Expr):
                 return self.as_expr() + other
 
         _, per, F, G = self._unify(other)
-
-        if hasattr(self.rep, 'add'):
-            result = F.add(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'add')
-
+        result = F + G
         return per(result)
 
     @_sympifyit('other', NotImplemented)
@@ -3221,12 +3216,7 @@ class Poly(Expr):
                 return self.as_expr() - other
 
         _, per, F, G = self._unify(other)
-
-        if hasattr(self.rep, 'sub'):
-            result = F.sub(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'sub')
-
+        result = F - G
         return per(result)
 
     @_sympifyit('other', NotImplemented)
@@ -3247,12 +3237,7 @@ class Poly(Expr):
                 return self.as_expr()*other
 
         _, per, F, G = self._unify(other)
-
-        if hasattr(self.rep, 'mul'):
-            result = F.mul(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'mul')
-
+        result = F * G
         return per(result)
 
     @_sympifyit('other', NotImplemented)
@@ -3268,10 +3253,7 @@ class Poly(Expr):
     def __pow__(self, n):
         if n.is_Integer and n >= 0:
             n = int(n)
-            if hasattr(self.rep, 'pow'):
-                result = self.rep.pow(n)
-            else:  # pragma: no cover
-                raise OperationNotSupported(self, 'pow')
+            result = self.rep**n
             return self.per(result)
         else:
             return self.as_expr()**n
