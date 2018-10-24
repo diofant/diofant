@@ -286,14 +286,6 @@ class DMP(CantSympify):
         return self.per(dmp_exquo_ground(self.rep, self.domain.convert(c),
                                          self.lev, self.domain))
 
-    def abs(self):
-        """Make all coefficients in ``self`` positive. """
-        return self.per(dmp_abs(self.rep, self.lev, self.domain))
-
-    def neg(self):
-        """Negate all coefficients in ``self``. """
-        return self.per(dmp_neg(self.rep, self.lev, self.domain))
-
     def add(self, other):
         """Add two multivariate polynomials ``self`` and ``other``. """
         lev, dom, per, F, G = self.unify(other)
@@ -746,10 +738,10 @@ class DMP(CantSympify):
             return False
 
     def __abs__(self):
-        return self.abs()
+        return self.per(dmp_abs(self.rep, self.lev, self.domain))
 
     def __neg__(self):
-        return self.neg()
+        return self.per(dmp_neg(self.rep, self.lev, self.domain))
 
     def __add__(self, other):
         if not isinstance(other, DMP):

@@ -3170,11 +3170,7 @@ class Poly(Expr):
         >>> abs(Poly(x**2 - 1, x))
         Poly(x**2 + 1, x, domain='ZZ')
         """
-        if hasattr(self.rep, 'abs'):
-            result = self.rep.abs()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, '__abs__')
-
+        result = abs(self.rep)
         return self.per(result)
 
     def __neg__(self):
@@ -3187,11 +3183,7 @@ class Poly(Expr):
         >>> -Poly(x**2 - 1, x)
         Poly(-x**2 + 1, x, domain='ZZ')
         """
-        if hasattr(self.rep, 'neg'):
-            result = self.rep.neg()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, '__neg__')
-
+        result = -self.rep
         return self.per(result)
 
     @_sympifyit('other', NotImplemented)

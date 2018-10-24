@@ -96,10 +96,8 @@ def test_DMP_arithmetics():
     f = DMP([[-5]], ZZ)
     g = DMP([[5]], ZZ)
 
-    assert f.abs() == g
     assert abs(f) == g
 
-    assert g.neg() == f
     assert -g == f
 
     h = DMP([[]], ZZ)
