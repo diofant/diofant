@@ -109,7 +109,7 @@ class Relational(Boolean, Expr, EvalfMixin):
         elif r.func in (Eq, Ne):
             r = r.func(*ordered(r.args), evaluate=False)
         else:  # pragma: no cover
-            raise NotImplemented
+            raise NotImplementedError
         if r.lhs.is_Number and not r.rhs.is_Number:
             r = r.reversed
         elif r.rhs.is_Symbol and not r.lhs.is_Symbol:
