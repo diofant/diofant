@@ -1,7 +1,7 @@
 """Arithmetics for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
-from .densebasic import (dmp_degree, dmp_ground, dmp_LC, dmp_one, dmp_one_p,
-                         dmp_slice, dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
+from .densebasic import (dmp_degree, dmp_LC, dmp_one, dmp_one_p, dmp_slice,
+                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
 from .polyerrors import ExactQuotientFailed, PolynomialDivisionFailed
 
 
@@ -164,36 +164,6 @@ def dmp_mul_term(f, c, i, u, K):
         return dmp_zero(u)
     else:
         return [ dmp_mul(cf, c, v, K) for cf in f ] + dmp_zeros(i, v, K)
-
-
-def dmp_add_ground(f, c, u, K):
-    """
-    Add an element of the ground domain to ``f``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> R.dmp_add_ground(x**3 + 2*x**2 + 3*x + 4, ZZ(4))
-    x**3 + 2*x**2 + 3*x + 8
-    """
-    return dmp_add_term(f, dmp_ground(c, u - 1), 0, u, K)
-
-
-def dmp_sub_ground(f, c, u, K):
-    """
-    Subtract an element of the ground domain from ``f``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> R.dmp_sub_ground(x**3 + 2*x**2 + 3*x + 4, ZZ(4))
-    x**3 + 2*x**2 + 3*x
-    """
-    return dmp_sub_term(f, dmp_ground(c, u - 1), 0, u, K)
 
 
 def dmp_mul_ground(f, c, u, K):
