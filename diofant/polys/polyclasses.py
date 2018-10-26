@@ -296,17 +296,6 @@ class DMP(CantSympify):
         lev, dom, per, F, G = self.unify(other)
         return per(dmp_pexquo(F, G, lev, dom))
 
-    def div(self, other):
-        """Polynomial division with remainder of ``self`` and ``other``. """
-        lev, dom, per, F, G = self.unify(other)
-        q, r = dmp_div(F, G, lev, dom)
-        return per(q), per(r)
-
-    def rem(self, other):
-        """Computes polynomial remainder of ``self`` and ``other``. """
-        lev, dom, per, F, G = self.unify(other)
-        return per(dmp_rem(F, G, lev, dom))
-
     def quo(self, other):
         """Computes polynomial quotient of ``self`` and ``other``. """
         lev, dom, per, F, G = self.unify(other)
@@ -744,10 +733,13 @@ class DMP(CantSympify):
             raise TypeError("``int`` expected, got %s" % type(n))
 
     def __divmod__(self, other):
-        return self.div(other)
+        lev, dom, per, F, G = self.unify(other)
+        q, r = dmp_div(F, G, lev, dom)
+        return per(q), per(r)
 
     def __mod__(self, other):
-        return self.rem(other)
+        lev, dom, per, F, G = self.unify(other)
+        return per(dmp_rem(F, G, lev, dom))
 
     def __floordiv__(self, other):
         if isinstance(other, DMP):

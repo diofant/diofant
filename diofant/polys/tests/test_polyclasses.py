@@ -89,7 +89,7 @@ def test_DMP_arithmetics():
     f = DMP([[2], [2, 0]], ZZ)
 
     assert f*2 == DMP([[4], [4, 0]], ZZ)
-    assert f.quo_ground(2) == DMP([[1], [1, 0]], ZZ)
+    assert f//2 == DMP([[1], [1, 0]], ZZ)
 
     pytest.raises(ExactQuotientFailed, lambda: f.exquo_ground(3))
 
@@ -146,9 +146,7 @@ def test_DMP_arithmetics():
     q = DMP([[1], [1, 0]], ZZ)
     r = DMP([[2, 0, 0]], ZZ)
 
-    assert f.div(g) == (q, r)
     assert f.quo(g) == q
-    assert f.rem(g) == r
 
     assert divmod(f, g) == (q, r)
     assert f // g == q

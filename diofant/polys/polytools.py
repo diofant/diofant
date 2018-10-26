@@ -1133,10 +1133,7 @@ class Poly(Expr):
             F, G = F.to_field(), G.to_field()
             retract = True
 
-        if hasattr(self.rep, 'div'):
-            q, r = F.div(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'div')
+        q, r = divmod(F, G)
 
         if retract:
             try:
@@ -1168,10 +1165,7 @@ class Poly(Expr):
             F, G = F.to_field(), G.to_field()
             retract = True
 
-        if hasattr(self.rep, 'rem'):
-            r = F.rem(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'rem')
+        r = F % G
 
         if retract:
             try:
