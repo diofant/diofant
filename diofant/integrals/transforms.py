@@ -729,9 +729,9 @@ def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
         else:
             try:
                 h = hyperexpand(G)
-            except NotImplementedError as detail:
-                raise IntegralTransformError(
-                    'Inverse Mellin', F, 'Could not calculate integral')
+            except NotImplementedError:
+                raise IntegralTransformError('Inverse Mellin', F,
+                                             'Could not calculate integral')
 
             if h.is_Piecewise and len(h.args) == 3:
                 # XXX we break modularity here!

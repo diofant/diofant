@@ -964,57 +964,6 @@ class Poly(Expr):
 
         return J, self.per(result)
 
-    def add_ground(self, coeff):
-        """
-        Add an element of the ground domain to ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x + 1).add_ground(2)
-        Poly(x + 3, x, domain='ZZ')
-        """
-        if hasattr(self.rep, 'add_ground'):
-            result = self.rep.add_ground(coeff)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'add_ground')
-
-        return self.per(result)
-
-    def sub_ground(self, coeff):
-        """
-        Subtract an element of the ground domain from ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x + 1).sub_ground(2)
-        Poly(x - 1, x, domain='ZZ')
-        """
-        if hasattr(self.rep, 'sub_ground'):
-            result = self.rep.sub_ground(coeff)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'sub_ground')
-
-        return self.per(result)
-
-    def mul_ground(self, coeff):
-        """
-        Multiply ``self`` by a an element of the ground domain.
-
-        Examples
-        ========
-
-        >>> Poly(x + 1).mul_ground(2)
-        Poly(2*x + 2, x, domain='ZZ')
-        """
-        if hasattr(self.rep, 'mul_ground'):
-            result = self.rep.mul_ground(coeff)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'mul_ground')
-
-        return self.per(result)
-
     def quo_ground(self, coeff):
         """
         Quotient of ``self`` by a an element of the ground domain.
@@ -1057,87 +1006,6 @@ class Poly(Expr):
 
         return self.per(result)
 
-    def add(self, other):
-        """
-        Add two polynomials ``self`` and ``other``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + 1, x).add(Poly(x - 2, x))
-        Poly(x**2 + x - 1, x, domain='ZZ')
-
-        >>> Poly(x**2 + 1, x) + Poly(x - 2, x)
-        Poly(x**2 + x - 1, x, domain='ZZ')
-        """
-        other = sympify(other)
-
-        if not other.is_Poly:
-            return self.add_ground(other)
-
-        _, per, F, G = self._unify(other)
-
-        if hasattr(self.rep, 'add'):
-            result = F.add(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'add')
-
-        return per(result)
-
-    def sub(self, other):
-        """
-        Subtract two polynomials ``self`` and ``other``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + 1, x).sub(Poly(x - 2, x))
-        Poly(x**2 - x + 3, x, domain='ZZ')
-
-        >>> Poly(x**2 + 1, x) - Poly(x - 2, x)
-        Poly(x**2 - x + 3, x, domain='ZZ')
-        """
-        other = sympify(other)
-
-        if not other.is_Poly:
-            return self.sub_ground(other)
-
-        _, per, F, G = self._unify(other)
-
-        if hasattr(self.rep, 'sub'):
-            result = F.sub(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'sub')
-
-        return per(result)
-
-    def mul(self, other):
-        """
-        Multiply two polynomials ``self`` and ``other``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + 1, x).mul(Poly(x - 2, x))
-        Poly(x**3 - 2*x**2 + x - 2, x, domain='ZZ')
-
-        >>> Poly(x**2 + 1, x)*Poly(x - 2, x)
-        Poly(x**3 - 2*x**2 + x - 2, x, domain='ZZ')
-        """
-        other = sympify(other)
-
-        if not other.is_Poly:
-            return self.mul_ground(other)
-
-        _, per, F, G = self._unify(other)
-
-        if hasattr(self.rep, 'mul'):
-            result = F.mul(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'mul')
-
-        return per(result)
-
     def sqr(self):
         """
         Square a polynomial ``self``.
@@ -1155,28 +1023,6 @@ class Poly(Expr):
             result = self.rep.sqr()
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'sqr')
-
-        return self.per(result)
-
-    def pow(self, n):
-        """
-        Raise ``self`` to a non-negative power ``n``.
-
-        Examples
-        ========
-
-        >>> Poly(x - 2, x).pow(3)
-        Poly(x**3 - 6*x**2 + 12*x - 8, x, domain='ZZ')
-
-        >>> Poly(x - 2, x)**3
-        Poly(x**3 - 6*x**2 + 12*x - 8, x, domain='ZZ')
-        """
-        n = int(n)
-
-        if hasattr(self.rep, 'pow'):
-            result = self.rep.pow(n)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'pow')
 
         return self.per(result)
 
@@ -1287,10 +1133,7 @@ class Poly(Expr):
             F, G = F.to_field(), G.to_field()
             retract = True
 
-        if hasattr(self.rep, 'div'):
-            q, r = F.div(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'div')
+        q, r = divmod(F, G)
 
         if retract:
             try:
@@ -1322,10 +1165,7 @@ class Poly(Expr):
             F, G = F.to_field(), G.to_field()
             retract = True
 
-        if hasattr(self.rep, 'rem'):
-            r = F.rem(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'rem')
+        r = F % G
 
         if retract:
             try:
@@ -1817,8 +1657,8 @@ class Poly(Expr):
         a, f = f.clear_denoms(convert=True)
         b, g = g.clear_denoms(convert=True)
 
-        f = f.mul_ground(b)
-        g = g.mul_ground(a)
+        f *= b
+        g *= a
 
         return f, g
 
@@ -3324,11 +3164,7 @@ class Poly(Expr):
         >>> abs(Poly(x**2 - 1, x))
         Poly(x**2 + 1, x, domain='ZZ')
         """
-        if hasattr(self.rep, 'abs'):
-            result = self.rep.abs()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, '__abs__')
-
+        result = abs(self.rep)
         return self.per(result)
 
     def __neg__(self):
@@ -3341,11 +3177,7 @@ class Poly(Expr):
         >>> -Poly(x**2 - 1, x)
         Poly(-x**2 + 1, x, domain='ZZ')
         """
-        if hasattr(self.rep, 'neg'):
-            result = self.rep.neg()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, '__neg__')
-
+        result = -self.rep
         return self.per(result)
 
     @_sympifyit('other', NotImplemented)
@@ -3356,7 +3188,9 @@ class Poly(Expr):
             except PolynomialError:
                 return self.as_expr() + other
 
-        return self.add(other)
+        _, per, F, G = self._unify(other)
+        result = F + G
+        return per(result)
 
     @_sympifyit('other', NotImplemented)
     def __radd__(self, other):
@@ -3365,7 +3199,7 @@ class Poly(Expr):
         except PolynomialError:
             return other + self.as_expr()
 
-        return other.add(self)
+        return other + self
 
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
@@ -3375,7 +3209,9 @@ class Poly(Expr):
             except PolynomialError:
                 return self.as_expr() - other
 
-        return self.sub(other)
+        _, per, F, G = self._unify(other)
+        result = F - G
+        return per(result)
 
     @_sympifyit('other', NotImplemented)
     def __rsub__(self, other):
@@ -3384,7 +3220,7 @@ class Poly(Expr):
         except PolynomialError:
             return other - self.as_expr()
 
-        return other.sub(self)
+        return other - self
 
     @_sympifyit('other', NotImplemented)
     def __mul__(self, other):
@@ -3394,7 +3230,9 @@ class Poly(Expr):
             except PolynomialError:
                 return self.as_expr()*other
 
-        return self.mul(other)
+        _, per, F, G = self._unify(other)
+        result = F * G
+        return per(result)
 
     @_sympifyit('other', NotImplemented)
     def __rmul__(self, other):
@@ -3403,12 +3241,14 @@ class Poly(Expr):
         except PolynomialError:
             return other*self.as_expr()
 
-        return other.mul(self)
+        return other*self
 
     @_sympifyit('n', NotImplemented)
     def __pow__(self, n):
         if n.is_Integer and n >= 0:
-            return self.pow(n)
+            n = int(n)
+            result = self.rep**n
+            return self.per(result)
         else:
             return self.as_expr()**n
 
@@ -5541,7 +5381,7 @@ def cancel(f, *gens, **args):
             return f
         else:
             return S.One, p, q
-    except PolynomialError as msg:
+    except PolynomialError:
         assert not f.is_commutative or f.has(Piecewise)
         # Handling of noncommutative and/or piecewise expressions
         if f.is_Add or f.is_Mul:
@@ -5962,7 +5802,7 @@ def poly(expr, *gens, **args):
                 elif (factor.is_Pow and factor.base.is_Add and
                       factor.exp.is_Integer and factor.exp >= 0):
                     poly_factors.append(_poly(factor.base,
-                                              opt).pow(factor.exp))
+                                              opt)**factor.exp)
                 else:
                     factors.append(factor)
 
@@ -5972,15 +5812,15 @@ def poly(expr, *gens, **args):
                 product = poly_factors[0]
 
                 for factor in poly_factors[1:]:
-                    product = product.mul(factor)
+                    product *= factor
 
                 if factors:
                     factor = Mul(*factors)
 
                     if factor.is_Number:
-                        product = product.mul(factor)
+                        product *= factor
                     else:
-                        product = product.mul(Poly._from_expr(factor, opt))
+                        product *= Poly._from_expr(factor, opt)
 
                 poly_terms.append(product)
 
@@ -5990,15 +5830,15 @@ def poly(expr, *gens, **args):
             result = poly_terms[0]
 
             for term in poly_terms[1:]:
-                result = result.add(term)
+                result += term
 
             if terms:
                 term = Add(*terms)
 
                 if term.is_Number:
-                    result = result.add(term)
+                    result += term
                 else:
-                    result = result.add(Poly._from_expr(term, opt))
+                    result += Poly._from_expr(term, opt)
 
         return result.reorder(*opt.get('gens', ()), **args)
 

@@ -88,23 +88,20 @@ def test_DMP_properties():
 def test_DMP_arithmetics():
     f = DMP([[2], [2, 0]], ZZ)
 
-    assert f.mul_ground(2) == DMP([[4], [4, 0]], ZZ)
-    assert f.quo_ground(2) == DMP([[1], [1, 0]], ZZ)
+    assert f*2 == DMP([[4], [4, 0]], ZZ)
+    assert f//2 == DMP([[1], [1, 0]], ZZ)
 
     pytest.raises(ExactQuotientFailed, lambda: f.exquo_ground(3))
 
     f = DMP([[-5]], ZZ)
     g = DMP([[5]], ZZ)
 
-    assert f.abs() == g
     assert abs(f) == g
 
-    assert g.neg() == f
     assert -g == f
 
     h = DMP([[]], ZZ)
 
-    assert f.add(g) == h
     assert f + g == h
     assert g + f == h
     assert f + 5 == h
@@ -112,7 +109,6 @@ def test_DMP_arithmetics():
 
     h = DMP([[-10]], ZZ)
 
-    assert f.sub(g) == h
     assert f - g == h
     assert g - f == -h
     assert f - 5 == h
@@ -120,7 +116,6 @@ def test_DMP_arithmetics():
 
     h = DMP([[-25]], ZZ)
 
-    assert f.mul(g) == h
     assert f * g == h
     assert g * f == h
     assert f * 5 == h
@@ -129,10 +124,9 @@ def test_DMP_arithmetics():
     h = DMP([[25]], ZZ)
 
     assert f.sqr() == h
-    assert f.pow(2) == h
     assert f**2 == h
 
-    pytest.raises(TypeError, lambda: f.pow('x'))
+    pytest.raises(TypeError, lambda: f**'x')
 
     f = DMP([[1], [], [1, 0, 0]], ZZ)
     g = DMP([[2], [-2, 0]], ZZ)
@@ -152,9 +146,7 @@ def test_DMP_arithmetics():
     q = DMP([[1], [1, 0]], ZZ)
     r = DMP([[2, 0, 0]], ZZ)
 
-    assert f.div(g) == (q, r)
     assert f.quo(g) == q
-    assert f.rem(g) == r
 
     assert divmod(f, g) == (q, r)
     assert f // g == q

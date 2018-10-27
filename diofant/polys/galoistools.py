@@ -115,20 +115,6 @@ def gf_int(a, p):
         return a - p
 
 
-def gf_trunc(f, p):
-    """
-    Reduce all coefficients modulo ``p``.
-
-    Examples
-    ========
-
-    >>> gf_trunc([7, -2, 3], 5)
-    [2, 3, 3]
-
-    """
-    return dmp_strip([a % p for a in f], 0)
-
-
 def gf_from_dict(f, p, K):
     """
     Create a ``GF(p)[x]`` polynomial from a dict.
@@ -144,7 +130,7 @@ def gf_from_dict(f, p, K):
     for k in range(n, -1, -1):
         h.append(f.get(k, K.zero) % p)
 
-    return gf_trunc(h, p)
+    return dmp_strip([a % p for a in h], 0)
 
 
 def gf_to_dict(f, p, symmetric=True):
@@ -183,7 +169,7 @@ def gf_from_int_poly(f, p):
     >>> gf_from_int_poly([7, -2, 3], 5)
     [2, 3, 3]
     """
-    return gf_trunc(f, p)
+    return dmp_strip([a % p for a in f], 0)
 
 
 def gf_to_int_poly(f, p, symmetric=True):

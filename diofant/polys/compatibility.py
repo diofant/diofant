@@ -1,15 +1,14 @@
 """Compatibility interface between dense and sparse polys. """
 
-from .densearith import (dmp_abs, dmp_add, dmp_add_ground, dmp_add_mul,
-                         dmp_add_term, dmp_div, dmp_expand, dmp_exquo,
-                         dmp_exquo_ground, dmp_ff_div, dmp_l1_norm,
-                         dmp_max_norm, dmp_mul, dmp_mul_ground, dmp_mul_term,
-                         dmp_neg, dmp_pdiv, dmp_pexquo, dmp_pow, dmp_pquo,
-                         dmp_prem, dmp_quo, dmp_quo_ground, dmp_rem,
-                         dmp_rr_div, dmp_sqr, dmp_sub, dmp_sub_ground,
-                         dmp_sub_mul, dmp_sub_term, dup_add, dup_add_term,
-                         dup_lshift, dup_mul, dup_mul_term, dup_pexquo,
-                         dup_pquo, dup_rshift, dup_sqr, dup_sub, dup_sub_term)
+from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term, dmp_div,
+                         dmp_expand, dmp_exquo, dmp_exquo_ground, dmp_ff_div,
+                         dmp_l1_norm, dmp_max_norm, dmp_mul, dmp_mul_ground,
+                         dmp_mul_term, dmp_neg, dmp_pdiv, dmp_pexquo, dmp_pow,
+                         dmp_pquo, dmp_prem, dmp_quo, dmp_quo_ground, dmp_rem,
+                         dmp_rr_div, dmp_sqr, dmp_sub, dmp_sub_mul,
+                         dmp_sub_term, dup_add, dup_add_term, dup_lshift,
+                         dup_mul, dup_mul_term, dup_pexquo, dup_pquo,
+                         dup_rshift, dup_sqr, dup_sub, dup_sub_term)
 from .densebasic import dmp_degree, dmp_LC, dmp_strip, dmp_to_dict
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                          dmp_diff_eval_in, dmp_diff_in, dmp_eval, dmp_eval_in,
@@ -102,12 +101,6 @@ class IPolys:
 
     def dmp_mul_term(self, f, c, i):
         return self.from_dense(dmp_mul_term(self.to_dense(f), self.wrap(c).drop(0).to_dense(), i, self.ngens-1, self.domain))
-
-    def dmp_add_ground(self, f, c):
-        return self.from_dense(dmp_add_ground(self.to_dense(f), c, self.ngens-1, self.domain))
-
-    def dmp_sub_ground(self, f, c):
-        return self.from_dense(dmp_sub_ground(self.to_dense(f), c, self.ngens-1, self.domain))
 
     def dmp_mul_ground(self, f, c):
         return self.from_dense(dmp_mul_ground(self.to_dense(f), c, self.ngens-1, self.domain))

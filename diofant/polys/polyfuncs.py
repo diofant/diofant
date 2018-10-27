@@ -112,10 +112,10 @@ def symmetrize(F, *gens, **args):
             poly = [ p**n for (_, p), n in zip(polys, exponents) ]
 
             symmetric.append(Mul(coeff, *term))
-            product = poly[0].mul(coeff)
+            product = poly[0]*coeff
 
             for p in poly[1:]:
-                product = product.mul(p)
+                product *= p
 
             f -= product
 

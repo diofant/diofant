@@ -55,7 +55,7 @@ def gosper_normal(f, g, n, polys=True):
         for j in range(1, i + 1):
             C *= d.shift(-j)
 
-    A = A.mul_ground(Z)
+    A *= Z
 
     if not polys:
         A = A.as_expr()

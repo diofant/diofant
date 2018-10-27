@@ -2,11 +2,11 @@
 
 from ..core import oo
 from ..core.sympify import CantSympify
-from .densearith import (dmp_abs, dmp_add, dmp_add_ground, dmp_div, dmp_exquo,
+from .densearith import (dmp_abs, dmp_add, dmp_div, dmp_exquo,
                          dmp_exquo_ground, dmp_l1_norm, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_neg, dmp_pdiv, dmp_pexquo,
                          dmp_pow, dmp_pquo, dmp_prem, dmp_quo, dmp_quo_ground,
-                         dmp_rem, dmp_sqr, dmp_sub, dmp_sub_ground)
+                         dmp_rem, dmp_sqr, dmp_sub)
 from .densebasic import (dmp_convert, dmp_deflate, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC,
@@ -261,21 +261,6 @@ class DMP(CantSympify):
         J, F = dmp_terms_gcd(self.rep, self.lev, self.domain)
         return J, self.per(F)
 
-    def add_ground(self, c):
-        """Add an element of the ground domain to ``self``. """
-        return self.per(dmp_add_ground(self.rep, self.domain.convert(c),
-                                       self.lev, self.domain))
-
-    def sub_ground(self, c):
-        """Subtract an element of the ground domain from ``self``. """
-        return self.per(dmp_sub_ground(self.rep, self.domain.convert(c),
-                                       self.lev, self.domain))
-
-    def mul_ground(self, c):
-        """Multiply ``self`` by a an element of the ground domain. """
-        return self.per(dmp_mul_ground(self.rep, self.domain.convert(c),
-                                       self.lev, self.domain))
-
     def quo_ground(self, c):
         """Quotient of ``self`` by a an element of the ground domain. """
         return self.per(dmp_quo_ground(self.rep, self.domain.convert(c),
@@ -286,39 +271,9 @@ class DMP(CantSympify):
         return self.per(dmp_exquo_ground(self.rep, self.domain.convert(c),
                                          self.lev, self.domain))
 
-    def abs(self):
-        """Make all coefficients in ``self`` positive. """
-        return self.per(dmp_abs(self.rep, self.lev, self.domain))
-
-    def neg(self):
-        """Negate all coefficients in ``self``. """
-        return self.per(dmp_neg(self.rep, self.lev, self.domain))
-
-    def add(self, other):
-        """Add two multivariate polynomials ``self`` and ``other``. """
-        lev, dom, per, F, G = self.unify(other)
-        return per(dmp_add(F, G, lev, dom))
-
-    def sub(self, other):
-        """Subtract two multivariate polynomials ``self`` and ``other``. """
-        lev, dom, per, F, G = self.unify(other)
-        return per(dmp_sub(F, G, lev, dom))
-
-    def mul(self, other):
-        """Multiply two multivariate polynomials ``f`` and ``g``. """
-        lev, dom, per, F, G = self.unify(other)
-        return per(dmp_mul(F, G, lev, dom))
-
     def sqr(self):
         """Square a multivariate polynomial ``self``. """
         return self.per(dmp_sqr(self.rep, self.lev, self.domain))
-
-    def pow(self, n):
-        """Raise ``self`` to a non-negative power ``n``. """
-        if isinstance(n, int):
-            return self.per(dmp_pow(self.rep, n, self.lev, self.domain))
-        else:
-            raise TypeError("``int`` expected, got %s" % type(n))
 
     def pdiv(self, other):
         """Polynomial pseudo-division of ``self`` and ``other``. """
@@ -340,17 +295,6 @@ class DMP(CantSympify):
         """Polynomial exact pseudo-quotient of ``self`` and ``other``. """
         lev, dom, per, F, G = self.unify(other)
         return per(dmp_pexquo(F, G, lev, dom))
-
-    def div(self, other):
-        """Polynomial division with remainder of ``self`` and ``other``. """
-        lev, dom, per, F, G = self.unify(other)
-        q, r = dmp_div(F, G, lev, dom)
-        return per(q), per(r)
-
-    def rem(self, other):
-        """Computes polynomial remainder of ``self`` and ``other``. """
-        lev, dom, per, F, G = self.unify(other)
-        return per(dmp_rem(F, G, lev, dom))
 
     def quo(self, other):
         """Computes polynomial quotient of ``self`` and ``other``. """
@@ -746,16 +690,17 @@ class DMP(CantSympify):
             return False
 
     def __abs__(self):
-        return self.abs()
+        return self.per(dmp_abs(self.rep, self.lev, self.domain))
 
     def __neg__(self):
-        return self.neg()
+        return self.per(dmp_neg(self.rep, self.lev, self.domain))
 
     def __add__(self, other):
         if not isinstance(other, DMP):
             other = self.per(dmp_ground(self.domain.convert(other), self.lev))
 
-        return self.add(other)
+        lev, dom, per, F, G = self.unify(other)
+        return per(dmp_add(F, G, lev, dom))
 
     def __radd__(self, other):
         return self.__add__(other)
@@ -764,28 +709,37 @@ class DMP(CantSympify):
         if not isinstance(other, DMP):
             other = self.per(dmp_ground(self.domain.convert(other), self.lev))
 
-        return self.sub(other)
+        lev, dom, per, F, G = self.unify(other)
+        return per(dmp_sub(F, G, lev, dom))
 
     def __rsub__(self, other):
         return (-self).__add__(other)
 
     def __mul__(self, other):
         if isinstance(other, DMP):
-            return self.mul(other)
+            lev, dom, per, F, G = self.unify(other)
+            return per(dmp_mul(F, G, lev, dom))
         else:
-            return self.mul_ground(other)
+            return self.per(dmp_mul_ground(self.rep, self.domain.convert(other),
+                                           self.lev, self.domain))
 
     def __rmul__(self, other):
         return self.__mul__(other)
 
     def __pow__(self, n):
-        return self.pow(n)
+        if isinstance(n, int):
+            return self.per(dmp_pow(self.rep, n, self.lev, self.domain))
+        else:
+            raise TypeError("``int`` expected, got %s" % type(n))
 
     def __divmod__(self, other):
-        return self.div(other)
+        lev, dom, per, F, G = self.unify(other)
+        q, r = dmp_div(F, G, lev, dom)
+        return per(q), per(r)
 
     def __mod__(self, other):
-        return self.rem(other)
+        lev, dom, per, F, G = self.unify(other)
+        return per(dmp_rem(F, G, lev, dom))
 
     def __floordiv__(self, other):
         if isinstance(other, DMP):

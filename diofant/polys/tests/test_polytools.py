@@ -594,18 +594,6 @@ def test_Poly_set_modulus():
     pytest.raises(CoercionFailed, lambda: Poly(x/2 + 1).set_modulus(2))
 
 
-def test_Poly_add_ground():
-    assert Poly(x + 1).add_ground(2) == Poly(x + 3)
-
-
-def test_Poly_sub_ground():
-    assert Poly(x + 1).sub_ground(2) == Poly(x - 1)
-
-
-def test_Poly_mul_ground():
-    assert Poly(x + 1).mul_ground(2) == Poly(2*x + 2)
-
-
 def test_Poly_quo_ground():
     assert Poly(2*x + 4).quo_ground(2) == Poly(x + 2)
     assert Poly(2*x + 3).quo_ground(2) == Poly(x + 1)
@@ -625,13 +613,14 @@ def test_Poly_neg():
 
 
 def test_Poly_add():
-    assert Poly(0, x).add(Poly(0, x)) == Poly(0, x)
     assert Poly(0, x) + Poly(0, x) == Poly(0, x)
 
-    assert Poly(1, x).add(Poly(0, x)) == Poly(1, x)
+    assert Poly(1, x) + Poly(0, x) == Poly(1, x)
     assert Poly(1, x, y) + Poly(0, x) == Poly(1, x, y)
-    assert Poly(0, x).add(Poly(1, x, y)) == Poly(1, x, y)
     assert Poly(0, x, y) + Poly(1, x, y) == Poly(1, x, y)
+
+    assert Poly(x + 1) + 2 == Poly(x + 3)
+    assert Poly(x**2 + 1, x) + Poly(x - 2, x) == Poly(x**2 + x - 1, x)
 
     assert Poly(1, x) + x == Poly(x + 1, x)
     assert Poly(1, x) + sin(x) == 1 + sin(x)
@@ -642,13 +631,12 @@ def test_Poly_add():
 
 
 def test_Poly_sub():
-    assert Poly(0, x).sub(Poly(0, x)) == Poly(0, x)
     assert Poly(0, x) - Poly(0, x) == Poly(0, x)
 
-    assert Poly(1, x).sub(Poly(0, x)) == Poly(1, x)
-    assert Poly(1, x).sub(1) == Poly(0, x)
+    assert Poly(1, x) - Poly(0, x) == Poly(1, x)
+    assert Poly(1, x) - 1 == Poly(0, x)
     assert Poly(1, x, y) - Poly(0, x) == Poly(1, x, y)
-    assert Poly(0, x).sub(Poly(1, x, y)) == Poly(-1, x, y)
+    assert Poly(0, x) - Poly(1, x, y) == Poly(-1, x, y)
     assert Poly(0, x, y) - Poly(1, x, y) == Poly(-1, x, y)
 
     assert Poly(1, x) - x == Poly(1 - x, x)
@@ -658,14 +646,16 @@ def test_Poly_sub():
     assert Poly(x, x) - 1 == Poly(x - 1, x)
     assert 1 - Poly(x, x) == Poly(1 - x, x)
 
+    assert Poly(x + 1) - 2 == Poly(x - 1)
+    assert Poly(x**2 + 1, x) - Poly(x - 2, x) == Poly(x**2 - x + 3)
+
 
 def test_Poly_mul():
-    assert Poly(0, x).mul(Poly(0, x)) == Poly(0, x)
     assert Poly(0, x) * Poly(0, x) == Poly(0, x)
 
-    assert Poly(2, x).mul(Poly(4, x)) == Poly(8, x)
+    assert Poly(2, x) * Poly(4, x) == Poly(8, x)
     assert Poly(2, x, y) * Poly(4, x) == Poly(8, x, y)
-    assert Poly(4, x).mul(Poly(2, x, y)) == Poly(8, x, y)
+    assert Poly(4, x) * Poly(2, x, y) == Poly(8, x, y)
     assert Poly(4, x, y) * Poly(2, x, y) == Poly(8, x, y)
 
     assert Poly(1, x) * x == Poly(x, x)
@@ -675,22 +665,27 @@ def test_Poly_mul():
     assert Poly(x, x) * 2 == Poly(2*x, x)
     assert 2 * Poly(x, x) == Poly(2*x, x)
 
+    assert Poly(x + 1) * 2 == Poly(2*x + 2)
+    assert Poly(x**2 + 1, x) * Poly(x - 2, x) == Poly(x**3 - 2*x**2 + x - 2)
+
 
 def test_Poly_sqr():
     assert Poly(x*y, x, y).sqr() == Poly(x**2*y**2, x, y)
 
 
 def test_Poly_pow():
-    assert Poly(x, x).pow(10) == Poly(x**10, x)
-    assert Poly(x, x).pow(Integer(10)) == Poly(x**10, x)
+    assert Poly(x, x)**10 == Poly(x**10, x)
+    assert Poly(x, x)**Integer(10) == Poly(x**10, x)
 
-    assert Poly(2*y, x, y).pow(4) == Poly(16*y**4, x, y)
-    assert Poly(2*y, x, y).pow(Integer(4)) == Poly(16*y**4, x, y)
+    assert Poly(2*y, x, y)**4 == Poly(16*y**4, x, y)
+    assert Poly(2*y, x, y)**Integer(4) == Poly(16*y**4, x, y)
 
     assert Poly(7*x*y, x, y)**3 == Poly(343*x**3*y**3, x, y)
 
     assert Poly(x*y + 1, x, y)**(-1) == (x*y + 1)**(-1)
     assert Poly(x*y + 1, x, y)**x == (x*y + 1)**x
+
+    assert Poly(x - 2, x)**3 == Poly(x**3 - 6*x**2 + 12*x - 8)
 
 
 def test_Poly_divmod():
@@ -1741,6 +1736,9 @@ def test_div():
     f, g, q = x**2 + 1, 2*x - 9, QQ(85, 4)
     assert rem(f, g) == q
 
+    f, g = a*x**2 + b*x + c, 3*x + 2
+    assert div(f, g) == (a*x/3 - 2*a/9 + b/3, 4*a/9 - 2*b/3 + c)
+
 
 def test_gcdex():
     f, g = 2*x, x**2 - 16
@@ -2486,17 +2484,19 @@ def test_factor():
             Mul(4.0, 0.25*x + 0.5, 0.25*y + 0.5))
     assert factor(expand((0.5*x + 1)**2)) == 4.0*(0.25*x + 0.5)**2
 
+    assert factor(x**4/2 + 5*x**3/12 - x**2/3) == x**2*(2*x - 1)*(3*x + 4)/12
+
 
 def test_factor_large():
     f = (x**2 + 4*x + 4)**10000000*(x**2 + 1)*(x**2 + 2*x + 1)**1234567
-    g = ((x**2 + 2*x + 1)**3000*y**2 + (x**2 + 2*x + 1)**3000*2*y + (
-        x**2 + 2*x + 1)**3000)
+    g = ((x**2 + 2*x + 1)**3000*y**2 + (x**2 + 2*x + 1)**3000*2*y +
+         (x**2 + 2*x + 1)**3000)
 
     assert factor(f) == (x + 2)**20000000*(x**2 + 1)*(x + 1)**2469134
     assert factor(g) == (x + 1)**6000*(y + 1)**2
 
-    assert factor_list(
-        f) == (1, [(x + 1, 2469134), (x + 2, 20000000), (x**2 + 1, 1)])
+    assert factor_list(f) == (1, [(x + 1, 2469134), (x + 2, 20000000),
+                                  (x**2 + 1, 1)])
     assert factor_list(g) == (1, [(y + 1, 2), (x + 1, 6000)])
 
     f = (x**2 - y**2)**200000*(x**7 + 1)
