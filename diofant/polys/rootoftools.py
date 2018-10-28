@@ -205,7 +205,8 @@ class RootOf(Expr):
         p = self.poly
         if p.degree() == expt and p.length() == 2 and p.TC():
             return -p.TC()/p.LC()
-        elif self.is_number and isinstance(expt, Integer) and (expt < 0 or expt >= p.degree()):
+        elif ((p.domain.is_IntegerRing or p.domain.is_AlgebraicField) and
+              isinstance(expt, Integer) and (expt < 0 or expt >= p.degree())):
             b = Poly(p.gen**abs(expt), p.gen, domain=p.domain)
             if expt < 0:
                 b = b.invert(p)
