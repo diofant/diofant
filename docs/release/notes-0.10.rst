@@ -129,3 +129,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`5602` Poly should use free_symbols to check for variable dependence
 * :sympyissue:`5555` Explain coefficient domain handling in groebner()'s docstring
 * :sympyissue:`15407` BUG: dsolve fails for linear first order ODE with three equations
+* :sympyissue:`15311` 3rd-order ODE with irrational coefficient fails
