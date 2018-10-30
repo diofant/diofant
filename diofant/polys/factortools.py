@@ -755,7 +755,8 @@ def dmp_zz_diophantine(F, c, A, d, p, u, K):
         m = dmp_nest([K.one, -a], n, K)
         M = dmp_one(n, K)
 
-        for k in K.map(range(d)):
+        for k in range(d):
+            k = K(k)
             if dmp_zero_p(c, u):
                 break
 
@@ -810,7 +811,8 @@ def dmp_zz_wang_hensel_lifting(f, H, LC, A, p, u, K):
 
         dj = dmp_degree_in(s, w, w)
 
-        for k in K.map(range(dj)):
+        for k in range(dj):
+            k = K(k)
             if dmp_zero_p(c, w):
                 break
 
