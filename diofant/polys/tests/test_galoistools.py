@@ -84,13 +84,13 @@ def test_gf_from_to_int_poly():
 
 
 def test_gf_monic():
-    assert gf_monic(ZZ.map([]), 11, ZZ) == (0, [])
+    assert gf_monic([], 11, ZZ) == (0, [])
 
-    assert gf_monic(ZZ.map([1]), 11, ZZ) == (1, [1])
-    assert gf_monic(ZZ.map([2]), 11, ZZ) == (2, [1])
+    assert gf_monic([1], 11, ZZ) == (1, [1])
+    assert gf_monic([2], 11, ZZ) == (2, [1])
 
-    assert gf_monic(ZZ.map([1, 2, 3, 4]), 11, ZZ) == (1, [1, 2, 3, 4])
-    assert gf_monic(ZZ.map([2, 3, 4, 5]), 11, ZZ) == (2, [1, 7, 2, 8])
+    assert gf_monic([1, 2, 3, 4], 11, ZZ) == (1, [1, 2, 3, 4])
+    assert gf_monic([2, 3, 4, 5], 11, ZZ) == (2, [1, 7, 2, 8])
 
 
 def test_gf_arith():
@@ -181,8 +181,8 @@ def test_gf_division():
     assert gf_rem([1], [1, 2, 3], 7, ZZ) == [1]
     assert gf_quo([1], [1, 2, 3], 7, ZZ) == []
 
-    f = ZZ.map([5, 4, 3, 2, 1, 0])
-    g = ZZ.map([1, 2, 3])
+    f = [5, 4, 3, 2, 1, 0]
+    g = [1, 2, 3]
     q = [5, 1, 0, 6]
     r = [3, 3]
 
@@ -192,8 +192,8 @@ def test_gf_division():
 
     pytest.raises(ExactQuotientFailed, lambda: gf_exquo(f, g, 7, ZZ))
 
-    f = ZZ.map([5, 4, 3, 2, 1, 0])
-    g = ZZ.map([1, 2, 3, 0])
+    f = [5, 4, 3, 2, 1, 0]
+    g = [1, 2, 3, 0]
     q = [5, 1, 0]
     r = [6, 1, 0]
 
@@ -203,7 +203,7 @@ def test_gf_division():
 
     pytest.raises(ExactQuotientFailed, lambda: gf_exquo(f, g, 7, ZZ))
 
-    assert gf_quo(ZZ.map([1, 2, 1]), ZZ.map([1, 1]), 11, ZZ) == [1, 1]
+    assert gf_quo([1, 2, 1], [1, 1], 11, ZZ) == [1, 1]
 
 
 def test_gf_expand():
@@ -236,67 +236,66 @@ def test_gf_powering():
           10, 0, 0, 10,  3, 0, 0, 0, 0, 0, 0,  2, 0, 0,  2,  5, 0, 0, 0, 0, 0, 0,
           4, 0, 0,  4, 10]
 
-    assert gf_pow_mod(ZZ.map([1, 0, 0, 1, 8]), 0, ZZ.map([2, 0, 7]), 11, ZZ) == [1]
-    assert gf_pow_mod(ZZ.map([1, 0, 0, 1, 8]), 1, ZZ.map([2, 0, 7]), 11, ZZ) == [1, 1]
-    assert gf_pow_mod(ZZ.map([1, 0, 0, 1, 8]), 2, ZZ.map([2, 0, 7]), 11, ZZ) == [2, 3]
-    assert gf_pow_mod(ZZ.map([1, 0, 0, 1, 8]), 5, ZZ.map([2, 0, 7]), 11, ZZ) == [7, 8]
-    assert gf_pow_mod(ZZ.map([1, 0, 0, 1, 8]), 8, ZZ.map([2, 0, 7]), 11, ZZ) == [1, 5]
-    assert gf_pow_mod(ZZ.map([1, 0, 0, 1, 8]), 45, ZZ.map([2, 0, 7]), 11, ZZ) == [5, 4]
+    assert gf_pow_mod([1, 0, 0, 1, 8], 0, [2, 0, 7], 11, ZZ) == [1]
+    assert gf_pow_mod([1, 0, 0, 1, 8], 1, [2, 0, 7], 11, ZZ) == [1, 1]
+    assert gf_pow_mod([1, 0, 0, 1, 8], 2, [2, 0, 7], 11, ZZ) == [2, 3]
+    assert gf_pow_mod([1, 0, 0, 1, 8], 5, [2, 0, 7], 11, ZZ) == [7, 8]
+    assert gf_pow_mod([1, 0, 0, 1, 8], 8, [2, 0, 7], 11, ZZ) == [1, 5]
+    assert gf_pow_mod([1, 0, 0, 1, 8], 45, [2, 0, 7], 11, ZZ) == [5, 4]
 
 
 def test_gf_gcdex():
-    assert gf_gcdex(ZZ.map([]), ZZ.map([]), 11, ZZ) == ([1], [], [])
-    assert gf_gcdex(ZZ.map([2]), ZZ.map([]), 11, ZZ) == ([6], [], [1])
-    assert gf_gcdex(ZZ.map([]), ZZ.map([2]), 11, ZZ) == ([], [6], [1])
-    assert gf_gcdex(ZZ.map([2]), ZZ.map([2]), 11, ZZ) == ([], [6], [1])
+    assert gf_gcdex([], [], 11, ZZ) == ([1], [], [])
+    assert gf_gcdex([2], [], 11, ZZ) == ([6], [], [1])
+    assert gf_gcdex([], [2], 11, ZZ) == ([], [6], [1])
+    assert gf_gcdex([2], [2], 11, ZZ) == ([], [6], [1])
 
-    assert gf_gcdex(ZZ.map([]), ZZ.map([3, 0]), 11, ZZ) == ([], [4], [1, 0])
-    assert gf_gcdex(ZZ.map([3, 0]), ZZ.map([]), 11, ZZ) == ([4], [], [1, 0])
+    assert gf_gcdex([], [3, 0], 11, ZZ) == ([], [4], [1, 0])
+    assert gf_gcdex([3, 0], [], 11, ZZ) == ([4], [], [1, 0])
 
-    assert gf_gcdex(ZZ.map([3, 0]), ZZ.map([3, 0]), 11, ZZ) == ([], [4], [1, 0])
+    assert gf_gcdex([3, 0], [3, 0], 11, ZZ) == ([], [4], [1, 0])
 
-    assert gf_gcdex(ZZ.map([1, 8, 7]), ZZ.map([1, 7, 1, 7]), 11, ZZ) == ([5, 6], [6], [1, 7])
+    assert gf_gcdex([1, 8, 7], [1, 7, 1, 7], 11, ZZ) == ([5, 6], [6], [1, 7])
 
 
 def test_gf_gcd():
-    assert gf_gcd(ZZ.map([]), ZZ.map([]), 11, ZZ) == []
-    assert gf_gcd(ZZ.map([2]), ZZ.map([]), 11, ZZ) == [1]
-    assert gf_gcd(ZZ.map([]), ZZ.map([2]), 11, ZZ) == [1]
-    assert gf_gcd(ZZ.map([2]), ZZ.map([2]), 11, ZZ) == [1]
+    assert gf_gcd([], [], 11, ZZ) == []
+    assert gf_gcd([2], [], 11, ZZ) == [1]
+    assert gf_gcd([], [2], 11, ZZ) == [1]
+    assert gf_gcd([2], [2], 11, ZZ) == [1]
 
-    assert gf_gcd(ZZ.map([]), ZZ.map([1, 0]), 11, ZZ) == [1, 0]
-    assert gf_gcd(ZZ.map([1, 0]), ZZ.map([]), 11, ZZ) == [1, 0]
+    assert gf_gcd([], [1, 0], 11, ZZ) == [1, 0]
+    assert gf_gcd([1, 0], [], 11, ZZ) == [1, 0]
 
-    assert gf_gcd(ZZ.map([3, 0]), ZZ.map([3, 0]), 11, ZZ) == [1, 0]
-    assert gf_gcd(ZZ.map([1, 8, 7]), ZZ.map([1, 7, 1, 7]), 11, ZZ) == [1, 7]
+    assert gf_gcd([3, 0], [3, 0], 11, ZZ) == [1, 0]
+    assert gf_gcd([1, 8, 7], [1, 7, 1, 7], 11, ZZ) == [1, 7]
 
 
 def test_gf_lcm():
-    assert gf_lcm(ZZ.map([]), ZZ.map([]), 11, ZZ) == []
-    assert gf_lcm(ZZ.map([2]), ZZ.map([]), 11, ZZ) == []
-    assert gf_lcm(ZZ.map([]), ZZ.map([2]), 11, ZZ) == []
-    assert gf_lcm(ZZ.map([2]), ZZ.map([2]), 11, ZZ) == [1]
+    assert gf_lcm([], [], 11, ZZ) == []
+    assert gf_lcm([2], [], 11, ZZ) == []
+    assert gf_lcm([], [2], 11, ZZ) == []
+    assert gf_lcm([2], [2], 11, ZZ) == [1]
 
-    assert gf_lcm(ZZ.map([]), ZZ.map([1, 0]), 11, ZZ) == []
-    assert gf_lcm(ZZ.map([1, 0]), ZZ.map([]), 11, ZZ) == []
+    assert gf_lcm([], [1, 0], 11, ZZ) == []
+    assert gf_lcm([1, 0], [], 11, ZZ) == []
 
-    assert gf_lcm(ZZ.map([3, 0]), ZZ.map([3, 0]), 11, ZZ) == [1, 0]
-    assert gf_lcm(ZZ.map([1, 8, 7]), ZZ.map([1, 7, 1, 7]), 11, ZZ) == [1, 8, 8, 8, 7]
+    assert gf_lcm([3, 0], [3, 0], 11, ZZ) == [1, 0]
+    assert gf_lcm([1, 8, 7], [1, 7, 1, 7], 11, ZZ) == [1, 8, 8, 8, 7]
 
 
 def test_gf_cofactors():
-    assert gf_cofactors(ZZ.map([]), ZZ.map([]), 11, ZZ) == ([], [], [])
-    assert gf_cofactors(ZZ.map([2]), ZZ.map([]), 11, ZZ) == ([1], [2], [])
-    assert gf_cofactors(ZZ.map([]), ZZ.map([2]), 11, ZZ) == ([1], [], [2])
-    assert gf_cofactors(ZZ.map([2]), ZZ.map([2]), 11, ZZ) == ([1], [2], [2])
+    assert gf_cofactors([], [], 11, ZZ) == ([], [], [])
+    assert gf_cofactors([2], [], 11, ZZ) == ([1], [2], [])
+    assert gf_cofactors([], [2], 11, ZZ) == ([1], [], [2])
+    assert gf_cofactors([2], [2], 11, ZZ) == ([1], [2], [2])
 
-    assert gf_cofactors(ZZ.map([]), ZZ.map([1, 0]), 11, ZZ) == ([1, 0], [], [1])
-    assert gf_cofactors(ZZ.map([1, 0]), ZZ.map([]), 11, ZZ) == ([1, 0], [1], [])
+    assert gf_cofactors([], [1, 0], 11, ZZ) == ([1, 0], [], [1])
+    assert gf_cofactors([1, 0], [], 11, ZZ) == ([1, 0], [1], [])
 
-    assert gf_cofactors(ZZ.map([3, 0]), ZZ.map([3, 0]), 11, ZZ) == (
-        [1, 0], [3], [3])
-    assert gf_cofactors(ZZ.map([1, 8, 7]), ZZ.map([1, 7, 1, 7]), 11, ZZ) == (
-        ([1, 7], [1, 1], [1, 0, 1]))
+    assert gf_cofactors([3, 0], [3, 0], 11, ZZ) == ([1, 0], [3], [3])
+    assert gf_cofactors([1, 8, 7], [1, 7, 1, 7], 11, ZZ) == (([1, 7], [1, 1],
+                                                              [1, 0, 1]))
 
 
 def test_gf_diff():
@@ -332,34 +331,27 @@ def test_gf_compose():
     assert gf_compose([1, 0], [], 11, ZZ) == []
     assert gf_compose([1, 0], [1, 0], 11, ZZ) == [1, 0]
 
-    f = ZZ.map([1, 1, 4, 9, 1])
-    g = ZZ.map([1, 1, 1])
-    h = ZZ.map([1, 0, 0, 2])
+    f = [1, 1, 4, 9, 1]
+    g = [1, 1, 1]
+    h = [1, 0, 0, 2]
 
     assert gf_compose(g, h, 11, ZZ) == [1, 0, 0, 5, 0, 0, 7]
     assert gf_compose_mod(g, h, f, 11, ZZ) == [3, 9, 6, 10]
 
 
 def test_gf_trace_map():
-    f = ZZ.map([1, 1, 4, 9, 1])
+    f = [1, 1, 4, 9, 1]
     a = [1, 1, 1]
-    c = ZZ.map([1, 0])
+    c = [1, 0]
     b = gf_pow_mod(c, 11, f, 11, ZZ)
 
-    assert gf_trace_map(a, b, c, 0, f, 11, ZZ) == \
-        ([1, 1, 1], [1, 1, 1])
-    assert gf_trace_map(a, b, c, 1, f, 11, ZZ) == \
-        ([5, 2, 10, 3], [5, 3, 0, 4])
-    assert gf_trace_map(a, b, c, 2, f, 11, ZZ) == \
-        ([5, 9, 5, 3], [10, 1, 5, 7])
-    assert gf_trace_map(a, b, c, 3, f, 11, ZZ) == \
-        ([1, 10, 6, 0], [7])
-    assert gf_trace_map(a, b, c, 4, f, 11, ZZ) == \
-        ([1, 1, 1], [1, 1, 8])
-    assert gf_trace_map(a, b, c, 5, f, 11, ZZ) == \
-        ([5, 2, 10, 3], [5, 3, 0, 0])
-    assert gf_trace_map(a, b, c, 11, f, 11, ZZ) == \
-        ([1, 10, 6, 0], [10])
+    assert gf_trace_map(a, b, c, 0, f, 11, ZZ) == ([1, 1, 1], [1, 1, 1])
+    assert gf_trace_map(a, b, c, 1, f, 11, ZZ) == ([5, 2, 10, 3], [5, 3, 0, 4])
+    assert gf_trace_map(a, b, c, 2, f, 11, ZZ) == ([5, 9, 5, 3], [10, 1, 5, 7])
+    assert gf_trace_map(a, b, c, 3, f, 11, ZZ) == ([1, 10, 6, 0], [7])
+    assert gf_trace_map(a, b, c, 4, f, 11, ZZ) == ([1, 1, 1], [1, 1, 8])
+    assert gf_trace_map(a, b, c, 5, f, 11, ZZ) == ([5, 2, 10, 3], [5, 3, 0, 0])
+    assert gf_trace_map(a, b, c, 11, f, 11, ZZ) == ([1, 10, 6, 0], [10])
 
 
 def test_gf_irreducible():
@@ -373,35 +365,35 @@ def test_gf_irreducible():
 
 
 def test_gf_irreducible_p():
-    assert gf_irred_p_ben_or(ZZ.map([7]), 11, ZZ) is True
-    assert gf_irred_p_ben_or(ZZ.map([7, 3]), 11, ZZ) is True
-    assert gf_irred_p_ben_or(ZZ.map([7, 3, 1]), 11, ZZ) is False
+    assert gf_irred_p_ben_or([7], 11, ZZ) is True
+    assert gf_irred_p_ben_or([7, 3], 11, ZZ) is True
+    assert gf_irred_p_ben_or([7, 3, 1], 11, ZZ) is False
 
-    assert gf_irred_p_rabin(ZZ.map([7]), 11, ZZ) is True
-    assert gf_irred_p_rabin(ZZ.map([7, 3]), 11, ZZ) is True
-    assert gf_irred_p_rabin(ZZ.map([7, 3, 1]), 11, ZZ) is False
+    assert gf_irred_p_rabin([7], 11, ZZ) is True
+    assert gf_irred_p_rabin([7, 3], 11, ZZ) is True
+    assert gf_irred_p_rabin([7, 3, 1], 11, ZZ) is False
 
-    assert gf_irred_p_ben_or(ZZ.map([2, 3, 4, 5, 6]), 13, ZZ) is False
-    assert gf_irred_p_ben_or(ZZ.map([2, 3, 4, 5, 8]), 13, ZZ) is True
+    assert gf_irred_p_ben_or([2, 3, 4, 5, 6], 13, ZZ) is False
+    assert gf_irred_p_ben_or([2, 3, 4, 5, 8], 13, ZZ) is True
 
     config.setup('GF_IRRED_METHOD', 'ben-or')
 
-    assert gf_irreducible_p(ZZ.map([7]), 11, ZZ) is True
-    assert gf_irreducible_p(ZZ.map([7, 3]), 11, ZZ) is True
-    assert gf_irreducible_p(ZZ.map([7, 3, 1]), 11, ZZ) is False
+    assert gf_irreducible_p([7], 11, ZZ) is True
+    assert gf_irreducible_p([7, 3], 11, ZZ) is True
+    assert gf_irreducible_p([7, 3, 1], 11, ZZ) is False
 
     config.setup('GF_IRRED_METHOD', 'rabin')
 
-    assert gf_irreducible_p(ZZ.map([7]), 11, ZZ) is True
-    assert gf_irreducible_p(ZZ.map([7, 3]), 11, ZZ) is True
-    assert gf_irreducible_p(ZZ.map([7, 3, 1]), 11, ZZ) is False
+    assert gf_irreducible_p([7], 11, ZZ) is True
+    assert gf_irreducible_p([7, 3], 11, ZZ) is True
+    assert gf_irreducible_p([7, 3, 1], 11, ZZ) is False
 
     config.setup('GF_IRRED_METHOD', 'other')
     pytest.raises(KeyError, lambda: gf_irreducible_p([7], 11, ZZ))
     config.setup('GF_IRRED_METHOD')
 
-    f = ZZ.map([1, 9, 9, 13, 16, 15, 6, 7, 7, 7, 10])
-    g = ZZ.map([1, 7, 16, 7, 15, 13, 13, 11, 16, 10, 9])
+    f = [1, 9, 9, 13, 16, 15, 6, 7, 7, 7, 10]
+    g = [1, 7, 16, 7, 15, 13, 13, 11, 16, 10, 9]
 
     h = gf_mul(f, g, 17, ZZ)
 
@@ -429,30 +421,24 @@ def test_gf_squarefree():
 
     assert gf_sqf_p(f, 11, ZZ) is False
 
-    assert gf_sqf_list(f, 11, ZZ) == \
-        (1, [([1, 1], 11)])
+    assert gf_sqf_list(f, 11, ZZ) == (1, [([1, 1], 11)])
 
     f = [1, 5, 8, 4]
 
     assert gf_sqf_p(f, 11, ZZ) is False
 
-    assert gf_sqf_list(f, 11, ZZ) == \
-        (1, [([1, 1], 1),
-             ([1, 2], 2)])
+    assert gf_sqf_list(f, 11, ZZ) == (1, [([1, 1], 1), ([1, 2], 2)])
 
     assert gf_sqf_part(f, 11, ZZ) == [1, 3, 2]
 
     f = [1, 0, 0, 2, 0, 0, 2, 0, 0, 1, 0]
 
-    assert gf_sqf_list(f, 3, ZZ) == \
-        (1, [([1, 0], 1),
-             ([1, 1], 3),
-             ([1, 2], 6)])
+    assert gf_sqf_list(f, 3, ZZ) == (1, [([1, 0], 1), ([1, 1], 3), ([1, 2], 6)])
 
 
 def test_gf_frobenius_map():
-    f = ZZ.map([2, 0, 1, 0, 2, 2, 0, 2, 2, 2])
-    g = ZZ.map([1, 1, 0, 2, 0, 1, 0, 2, 0, 1])
+    f = [2, 0, 1, 0, 2, 2, 0, 2, 2, 2]
+    g = [1, 1, 0, 2, 0, 1, 0, 2, 0, 1]
     p = 3
     b = gf_frobenius_monomial_base(g, p, ZZ)
     h = gf_frobenius_map(f, g, b, p, ZZ)
@@ -477,19 +463,18 @@ def test_gf_berlekamp():
     assert gf_Qmatrix(f, 11, ZZ) == Q
     assert gf_Qbasis(Q, 11, ZZ) == V
 
-    assert gf_berlekamp(f, 11, ZZ) == \
-        [[1, 1], [1, 5, 3], [1, 2, 3, 4]]
+    assert gf_berlekamp(f, 11, ZZ) == [[1, 1], [1, 5, 3], [1, 2, 3, 4]]
 
-    f = ZZ.map([1, 0, 1, 0, 10, 10, 8, 2, 8])
+    f = [1, 0, 1, 0, 10, 10, 8, 2, 8]
 
-    Q = ZZ.map([[1, 0, 0, 0, 0, 0, 0, 0],
-                [2, 1, 7, 11, 10, 12, 5, 11],
-                [3, 6, 4, 3, 0, 4, 7, 2],
-                [4, 3, 6, 5, 1, 6, 2, 3],
-                [2, 11, 8, 8, 3, 1, 3, 11],
-                [6, 11, 8, 6, 2, 7, 10, 9],
-                [5, 11, 7, 10, 0, 11, 7, 12],
-                [3, 3, 12, 5, 0, 11, 9, 12]])
+    Q = [[1, 0, 0, 0, 0, 0, 0, 0],
+         [2, 1, 7, 11, 10, 12, 5, 11],
+         [3, 6, 4, 3, 0, 4, 7, 2],
+         [4, 3, 6, 5, 1, 6, 2, 3],
+         [2, 11, 8, 8, 3, 1, 3, 11],
+         [6, 11, 8, 6, 2, 7, 10, 9],
+         [5, 11, 7, 10, 0, 11, 7, 12],
+         [3, 3, 12, 5, 0, 11, 9, 12]]
 
     V = [[1, 0, 0, 0, 0, 0, 0, 0],
          [0, 5, 5, 0, 9, 5, 1, 0],
@@ -498,8 +483,7 @@ def test_gf_berlekamp():
     assert gf_Qmatrix(f, 13, ZZ) == Q
     assert gf_Qbasis(Q, 13, ZZ) == V
 
-    assert gf_berlekamp(f, 13, ZZ) == \
-        [[1, 3], [1, 8, 4, 12], [1, 2, 3, 4, 6]]
+    assert gf_berlekamp(f, 13, ZZ) == [[1, 3], [1, 8, 4, 12], [1, 2, 3, 4, 6]]
 
 
 def test_gf_ddf():
@@ -528,7 +512,7 @@ def test_gf_ddf():
     assert gf_ddf_zassenhaus(f, 3, ZZ) == g
     assert gf_ddf_shoup(f, 3, ZZ) == g
 
-    f = ZZ.map([1, 2, 5, 26, 677, 436, 791, 325, 456, 24, 577])
+    f = [1, 2, 5, 26, 677, 436, 791, 325, 456, 24, 577]
     g = [([1, 701], 1),
          ([1, 110, 559, 532, 694, 151, 110, 70, 735, 122], 9)]
 
@@ -546,8 +530,8 @@ def test_gf_ddf():
 
 
 def test_gf_edf():
-    f = ZZ.map([1, 1, 0, 1, 2])
-    g = ZZ.map([[1, 0, 1], [1, 1, 2]])
+    f = [1, 1, 0, 1, 2]
+    g = [[1, 0, 1], [1, 1, 2]]
 
     assert gf_edf_zassenhaus(f, 2, 3, ZZ) == g
     assert gf_edf_shoup(f, 2, 3, ZZ) == g
@@ -576,11 +560,11 @@ def test_gf_factor():
 
     config.setup('GF_FACTOR_METHOD', 'shoup')
 
-    assert gf_factor_sqf(ZZ.map([]), 11, ZZ) == (0, [])
-    assert gf_factor_sqf(ZZ.map([1]), 11, ZZ) == (1, [])
-    assert gf_factor_sqf(ZZ.map([1, 1]), 11, ZZ) == (1, [[1, 1]])
+    assert gf_factor_sqf([], 11, ZZ) == (0, [])
+    assert gf_factor_sqf([1], 11, ZZ) == (1, [])
+    assert gf_factor_sqf([1, 1], 11, ZZ) == (1, [[1, 1]])
 
-    f, p = ZZ.map([1, 0, 0, 1, 0]), 2
+    f, p = [1, 0, 0, 1, 0], 2
 
     g = (1, [([1, 0], 1),
              ([1, 1], 1),
@@ -742,7 +726,7 @@ def test_gf_factor():
     # (mod p > 2**(n-2) * pi), where a_n = a_{n-1}**2 + 1, a_0 = 1
 
     p = ZZ(nextprime(int((2**4 * pi).evalf())))
-    f = ZZ.map([1, 2, 5, 26, 41, 39, 38])
+    f = [1, 2, 5, 26, 41, 39, 38]
 
     assert gf_sqf_p(f, p, ZZ) is True
 

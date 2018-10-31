@@ -950,8 +950,7 @@ def dmp_rr_div(f, g, u, K):
 
         if dr < dg:
             break
-        elif not (dr < _dr):
-            raise PolynomialDivisionFailed(f, g, K)
+        assert dr < _dr
 
     return q, r
 

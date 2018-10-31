@@ -55,6 +55,7 @@ Compatibility breaks
 * Removed ``add()`` and ``mul()`` methods for :class:`~diofant.polys.rings.PolynomialRing`, see :pull:`697`.
 * Removed ``itercoeffs()``, ``itermonoms()``, ``iterterms()``, ``listcoeffs()``, ``listmonoms()``, ``listterms()``, ``const()``, ``imul_num()`` and ``square()`` methods of :class:`~diofant.polys.rings.PolyElement`, see :pull:`697`.
 * Removed ``add()``, ``add_ground()``, ``sub()``, ``sub_ground()``, ``mul()``, ``mul_ground()`` and ``pow()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`701`.
+* Removed ``map()`` method of :class:`~diofant.domains.domain.Domain`, see :pull:`704`.
 
 Minor changes
 =============
@@ -129,3 +130,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`5602` Poly should use free_symbols to check for variable dependence
 * :sympyissue:`5555` Explain coefficient domain handling in groebner()'s docstring
 * :sympyissue:`15407` BUG: dsolve fails for linear first order ODE with three equations
+* :sympyissue:`15311` 3rd-order ODE with irrational coefficient fails

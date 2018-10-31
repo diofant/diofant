@@ -89,6 +89,7 @@ def test_dmp_sub_term():
 
     f = [[ZZ(2)], [ZZ(1), ZZ(0)], [ZZ(1)]]
     assert dmp_sub_term(f, [ZZ(2)], 3, 1, ZZ) == [[-2], [2], [1, 0], [1]]
+    assert dmp_sub_term(f, [ZZ(2)], 1, 1, ZZ) == [[2], [1, -2], [1]]
 
 
 def test_dup_mul_term():

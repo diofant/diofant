@@ -52,8 +52,7 @@ from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_real_roots,
                             dup_isolate_real_roots_list,
                             dup_isolate_real_roots_sqf, dup_refine_real_root,
-                            dup_root_lower_bound, dup_root_upper_bound,
-                            dup_sturm)
+                            dup_root_upper_bound, dup_sturm)
 from .sqfreetools import (dmp_sqf_list, dmp_sqf_list_include, dmp_sqf_norm,
                           dmp_sqf_part, dup_gff_list)
 
@@ -638,9 +637,6 @@ class IPolys:
 
     def dup_root_upper_bound(self, f):
         return dup_root_upper_bound(self.to_dense(f), self.domain)
-
-    def dup_root_lower_bound(self, f):
-        return dup_root_lower_bound(self.to_dense(f), self.domain)
 
     def dup_refine_real_root(self, f, s, t, eps=None, steps=None, disjoint=None, fast=False):
         return dup_refine_real_root(self.to_dense(f), s, t, self.domain, eps=eps, steps=steps, disjoint=disjoint, fast=fast)

@@ -241,18 +241,6 @@ class Domain(DefaultPrinting, abc.ABC):
         """Returns ``True`` if two domains are equivalent. """
         return isinstance(other, Domain) and self.dtype == other.dtype
 
-    def map(self, seq):
-        """Rersively apply ``self`` to all elements of ``seq``. """
-        result = []
-
-        for elt in seq:
-            if isinstance(elt, list):
-                result.append(self.map(elt))
-            else:
-                result.append(self(elt))
-
-        return result
-
     def get_exact(self):
         """Returns an exact domain associated with ``self``. """
         return self

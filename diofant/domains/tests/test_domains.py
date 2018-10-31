@@ -632,16 +632,6 @@ def test_inject():
     pytest.raises(GeneratorsError, lambda: ZZ.poly_ring(x).inject(x))
 
 
-def test_Domain_map():
-    seq = ZZ.map([1, 2, 3, 4])
-
-    assert all(isinstance(elt, ZZ.dtype) for elt in seq)
-
-    seq = ZZ.map([[1, 2, 3, 4]])
-
-    assert all(isinstance(elt, ZZ.dtype) for elt in seq[0]) and len(seq) == 1
-
-
 def test_Domain___eq__():
     assert (ZZ.poly_ring(x, y) == ZZ.poly_ring(x, y)) is True
     assert (QQ.poly_ring(x, y) == QQ.poly_ring(x, y)) is True

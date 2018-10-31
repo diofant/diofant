@@ -2828,3 +2828,10 @@ def test_sympyissue_15407():
            Eq(g(t), C1*(x/(x + y) - exp(-t*(x + y))*x/(x + y)) + C2),
            Eq(h(t), C1*(y/(x + y) - exp(-t*(x + y))*y/(x + y)) + C3)]
     assert dsolve(eqs) == ans
+
+
+def test_sympyissue_15311():
+    eqn = sqrt(2) * f(x).diff(x, 3) + f(x).diff(x)
+    assert dsolve(eqn) == Eq(f(x), exp(x*RootOf(sqrt(2)*x**3 + x, 0))*C1 +
+                             exp(x*RootOf(sqrt(2)*x**3 + x, 1))*C2 +
+                             exp(x*RootOf(sqrt(2)*x**3 + x, 2))*C3)
