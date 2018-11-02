@@ -2,8 +2,7 @@
 """
 Setup script for Diofant.
 
-This script uses Setuptools (https://setuptools.readthedocs.io/en/latest/),
-a collection of enhancements to the standard Python distutils.
+This script uses Setuptools (https://setuptools.readthedocs.io/en/latest/).
 """
 
 import re
@@ -12,10 +11,10 @@ import setuptools
 
 
 with open('diofant/__init__.py') as f:
-    source = f.read()
-    for line in source.splitlines():
-        m = re.match('^__version__ = "([0-9ab.]+(dev[0-9]+)?)".*$', line)
-        if m:
-            __version__ = m.group(1)
+    m = re.search('^__version__ = "([0-9ab.]+(dev[0-9]+)?)".*$', f.read(), re.M)
+    if m:
+        __version__ = m.group(1)
+    else:
+        raise RuntimeError("Unable to find version string.")
 
 setuptools.setup(version=__version__)
