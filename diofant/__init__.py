@@ -1,6 +1,6 @@
 """Diofant is a Python library for symbolic mathematics. """
 
-__version__ = "0.10.0a0"
+__version__ = "0.10.0a1"
 
 import os
 DIOFANT_DEBUG = os.getenv('DIOFANT_DEBUG', 'False') != 'False'
