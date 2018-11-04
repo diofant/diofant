@@ -17,6 +17,10 @@ here will have more options or capabilities than what will be shown.  The rest
 of documentation serves as API documentation, which extensively lists every
 feature and option of each function.
 
+Some examples in this tutorial are taken from Wester's article [Wester1999]_
+concerning comparison and critique of mathematical abilities of several
+computer algebra systems.
+
 .. These are the goals of this tutorial:
 
    - To give a guide, suitable for someone who has never used Diofant (but who
@@ -54,5 +58,6 @@ feature and option of each function.
    simplification
    calculus
    solvers
+   polys
    matrices
    manipulation

@@ -25,7 +25,7 @@ automatically generated using Diofant's docstrings.
    logic
    domains
    matrices/index
-   polys/index
+   polys
    printing
    interactive
    plotting
