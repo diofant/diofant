@@ -19,6 +19,5 @@ and multivariate factorization over algebraic number domains.
     :name: polytoc
     :maxdepth: 3
 
-    basics
     wester
     reference

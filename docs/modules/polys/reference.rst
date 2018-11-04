@@ -4,6 +4,8 @@
 Polynomials Manipulation Module Reference
 =========================================
 
+.. automodule:: diofant.polys
+
 Basic polynomial manipulation functions
 =======================================
 

@@ -54,5 +54,6 @@ feature and option of each function.
    simplification
    calculus
    solvers
+   polys
    matrices
    manipulation
