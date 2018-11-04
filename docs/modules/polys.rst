@@ -1,8 +1,8 @@
 .. _polys-reference:
 
-=========================================
-Polynomials Manipulation Module Reference
-=========================================
+===========
+Polynomials
+===========
 
 .. automodule:: diofant.polys
 
