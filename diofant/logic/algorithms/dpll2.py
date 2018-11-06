@@ -27,10 +27,9 @@ def dpll_satisfiable(expr, all_models=False):
     Examples
     ========
 
-    >>> from diofant.abc import A, B
-    >>> dpll_satisfiable(A & ~B)
-    {A: True, B: False}
-    >>> dpll_satisfiable(A & ~A)
+    >>> dpll_satisfiable(a & ~b)
+    {a: True, b: False}
+    >>> dpll_satisfiable(a & ~a)
     False
     """
     clauses = conjuncts(to_cnf(expr))
@@ -162,11 +161,10 @@ class SATSolver:
         >>> list(l._find_model())
         [{1: True, 2: False, 3: False}, {1: True, 2: True, 3: True}]
 
-        >>> from diofant.abc import A, B, C
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ...                {3, -2}], {1, 2, 3}, set(), [A, B, C])
+        ...                {3, -2}], {1, 2, 3}, set(), [a, b, c])
         >>> list(l._find_model())
-        [{A: True, B: False, C: False}, {A: True, B: True, C: True}]
+        [{a: True, b: False, c: False}, {a: True, b: True, c: True}]
         """
 
         # We use this variable to keep track of if we should flip a

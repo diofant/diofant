@@ -12,11 +12,10 @@ def literal_symbol(literal):
     Examples
     ========
 
-    >>> from diofant.abc import A
-    >>> literal_symbol(A)
-    A
-    >>> literal_symbol(~A)
-    A
+    >>> literal_symbol(a)
+    a
+    >>> literal_symbol(~a)
+    a
     """
 
     if literal is True or literal is False:
@@ -45,20 +44,19 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
     Examples
     ========
 
-    >>> from diofant.abc import A, B
-    >>> satisfiable(A & ~B)
-    {A: True, B: False}
-    >>> satisfiable(A & ~A)
+    >>> satisfiable(a & ~b)
+    {a: True, b: False}
+    >>> satisfiable(a & ~a)
     False
     >>> satisfiable(True)
     {true: True}
-    >>> next(satisfiable(A & ~A, all_models=True))
+    >>> next(satisfiable(a & ~a, all_models=True))
     False
-    >>> models = satisfiable((A >> B) & B, all_models=True)
+    >>> models = satisfiable((a >> b) & b, all_models=True)
     >>> next(models)
-    {A: False, B: True}
+    {a: False, b: True}
     >>> next(models)
-    {A: True, B: True}
+    {a: True, b: True}
     >>> def use_models(models):
     ...     for model in models:
     ...         if model:
@@ -67,9 +65,9 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
     ...         else:
     ...             # Given expr is unsatisfiable.
     ...             print("UNSAT")
-    >>> use_models(satisfiable(A >> ~A, all_models=True))
-    {A: False}
-    >>> use_models(satisfiable(A ^ A, all_models=True))
+    >>> use_models(satisfiable(a >> ~a, all_models=True))
+    {a: False}
+    >>> use_models(satisfiable(a ^ a, all_models=True))
     UNSAT
     """
     expr = to_cnf(expr)
@@ -91,10 +89,9 @@ def valid(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B
-    >>> valid(A | ~A)
+    >>> valid(a | ~a)
     True
-    >>> valid(A | B)
+    >>> valid(a | b)
     False
 
     References
@@ -125,21 +122,20 @@ def pl_true(expr, model={}, deep=False):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> pl_true(A & B, {A: True, B: True})
+    >>> pl_true(a & b, {a: True, b: True})
     True
-    >>> pl_true(A & B, {A: False})
+    >>> pl_true(a & b, {a: False})
     False
-    >>> pl_true(A & B, {A: True})
-    >>> pl_true(A & B, {A: True}, deep=True)
-    >>> pl_true(A >> (B >> A))
-    >>> pl_true(A >> (B >> A), deep=True)
+    >>> pl_true(a & b, {a: True})
+    >>> pl_true(a & b, {a: True}, deep=True)
+    >>> pl_true(a >> (b >> a))
+    >>> pl_true(a >> (b >> a), deep=True)
     True
-    >>> pl_true(A & ~A)
-    >>> pl_true(A & ~A, deep=True)
+    >>> pl_true(a & ~a)
+    >>> pl_true(a & ~a, deep=True)
     False
-    >>> pl_true(A & B & (~A | ~B), {A: True})
-    >>> pl_true(A & B & (~A | ~B), {A: True}, deep=True)
+    >>> pl_true(a & b & (~a | ~b), {a: True})
+    >>> pl_true(a & b & (~a | ~b), {a: True}, deep=True)
     False
     """
 
@@ -182,14 +178,13 @@ def entails(expr, formula_set={}):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> entails(A, [A >> B, B >> C])
+    >>> entails(a, [a >> b, b >> c])
     False
-    >>> entails(C, [A >> B, B >> C, A])
+    >>> entails(c, [a >> b, b >> c, a])
     True
-    >>> entails(A >> B)
+    >>> entails(a >> b)
     False
-    >>> entails(A >> (B >> A))
+    >>> entails(a >> (b >> a))
     True
 
     References

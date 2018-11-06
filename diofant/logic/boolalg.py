@@ -59,12 +59,11 @@ class Boolean(Expr):
         Examples
         ========
 
-        >>> from diofant.abc import A, B, C
-        >>> (A >> B).equals(~B >> ~A)
+        >>> (a >> b).equals(~b >> ~a)
         True
-        >>> Not(And(A, B, C)).equals(And(Not(A), Not(B), Not(C)))
+        >>> Not(And(a, b, c)).equals(And(Not(a), Not(b), Not(c)))
         False
-        >>> Not(And(A, Not(A))).equals(Or(B, Not(B)))
+        >>> Not(And(a, Not(a))).equals(Or(b, Not(b)))
         False
         """
         from .inference import satisfiable
@@ -338,7 +337,6 @@ class And(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> x = Symbol('x', real=True)
         >>> And(x<2, x>-2).as_set()
         (-2, 2)
         """
@@ -405,7 +403,6 @@ class Or(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> x = Symbol('x', real=True)
         >>> Or(x>2, x<-2).as_set()
         (-oo, -2) U (2, oo)
         """
@@ -428,7 +425,6 @@ class Not(BooleanFunction):
     Examples
     ========
 
-    >>> from diofant.abc import A, B
     >>> Not(True)
     false
     >>> Not(False)
@@ -441,8 +437,8 @@ class Not(BooleanFunction):
     Not(x)
     >>> ~x
     Not(x)
-    >>> Not(And(Or(A, B), Or(~A, ~B)))
-    Not(And(Or(A, B), Or(Not(A), Not(B))))
+    >>> Not(And(Or(x, y), Or(~x, ~y)))
+    Not(And(Or(Not(x), Not(y)), Or(x, y)))
 
     Notes
     =====
@@ -492,7 +488,6 @@ class Not(BooleanFunction):
         Examples
         ========
 
-        >>> x = Symbol('x', real=True)
         >>> Not(x>0, evaluate=False).as_set()
         (-oo, 0]
         """
@@ -902,10 +897,9 @@ def conjuncts(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B
-    >>> conjuncts(A & B) == frozenset([A, B])
+    >>> conjuncts(a & b) == frozenset([a, b])
     True
-    >>> conjuncts(A | B) == frozenset([Or(A, B)])
+    >>> conjuncts(a | b) == frozenset([Or(a, b)])
     True
     """
     return And.make_args(expr)
@@ -917,10 +911,9 @@ def disjuncts(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B
-    >>> disjuncts(A | B) == frozenset([A, B])
+    >>> disjuncts(a | b) == frozenset([a, b])
     True
-    >>> disjuncts(A & B) == frozenset([And(A, B)])
+    >>> disjuncts(a & b) == frozenset([And(a, b)])
     True
     """
     return Or.make_args(expr)
@@ -934,9 +927,8 @@ def distribute_and_over_or(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> distribute_and_over_or(Or(A, And(Not(B), Not(C))))
-    And(Or(A, Not(B)), Or(A, Not(C)))
+    >>> distribute_and_over_or(Or(a, And(Not(b), Not(c))))
+    And(Or(Not(b), a), Or(Not(c), a))
     """
     return _distribute((expr, And, Or))
 
@@ -951,9 +943,8 @@ def distribute_or_over_and(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> distribute_or_over_and(And(Or(Not(A), B), C))
-    Or(And(B, C), And(C, Not(A)))
+    >>> distribute_or_over_and(And(Or(Not(a), b), c))
+    Or(And(Not(a), c), And(b, c))
     """
     return _distribute((expr, Or, And))
 
@@ -989,11 +980,10 @@ def to_nnf(expr, simplify=True):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C, D
-    >>> to_nnf(Not((~A & ~B) | (C & D)))
-    And(Or(A, B), Or(Not(C), Not(D)))
-    >>> to_nnf(Equivalent(A >> B, B >> A))
-    And(Or(A, And(A, Not(B)), Not(B)), Or(And(B, Not(A)), B, Not(A)))
+    >>> to_nnf(Not((~a & ~b) | (c & d)))
+    And(Or(Not(c), Not(d)), Or(a, b))
+    >>> to_nnf(Equivalent(a >> b, b >> a))
+    And(Or(And(Not(a), b), Not(a), b), Or(And(Not(b), a), Not(b), a))
     """
     if is_nnf(expr, simplify):
         return expr
@@ -1009,11 +999,10 @@ def to_cnf(expr, simplify=False):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, D
-    >>> to_cnf(~(A | B) | D)
-    And(Or(D, Not(A)), Or(D, Not(B)))
-    >>> to_cnf((A | B) & (A | ~A), True)
-    Or(A, B)
+    >>> to_cnf(~(a | b) | c)
+    And(Or(Not(a), c), Or(Not(b), c))
+    >>> to_cnf((a | b) & (a | ~a), True)
+    Or(a, b)
     """
     expr = sympify(expr)
     if not isinstance(expr, BooleanFunction):
@@ -1039,11 +1028,10 @@ def to_dnf(expr, simplify=False):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> to_dnf(B & (A | C))
-    Or(And(A, B), And(B, C))
-    >>> to_dnf((A & B) | (A & ~B) | (B & C) | (~B & C), True)
-    Or(A, C)
+    >>> to_dnf(b & (a | c))
+    Or(And(a, b), And(b, c))
+    >>> to_dnf((a & b) | (a & ~b) | (b & c) | (~b & c), True)
+    Or(a, c)
     """
     expr = sympify(expr)
     if not isinstance(expr, BooleanFunction):
@@ -1070,16 +1058,15 @@ def is_nnf(expr, simplified=True):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> is_nnf(A & B | ~C)
+    >>> is_nnf(a & b | ~c)
     True
-    >>> is_nnf((A | ~A) & (B | C))
+    >>> is_nnf((a | ~a) & (b | c))
     False
-    >>> is_nnf((A | ~A) & (B | C), False)
+    >>> is_nnf((a | ~a) & (b | c), False)
     True
-    >>> is_nnf(Not(A & B) | C)
+    >>> is_nnf(Not(a & b) | c)
     False
-    >>> is_nnf((A >> B) & (B >> A))
+    >>> is_nnf((a >> b) & (b >> a))
     False
     """
 
@@ -1112,12 +1099,11 @@ def is_cnf(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> is_cnf(A | B | C)
+    >>> is_cnf(a | b | c)
     True
-    >>> is_cnf(A & B & C)
+    >>> is_cnf(a & b & c)
     True
-    >>> is_cnf((A & B) | C)
+    >>> is_cnf((a & b) | c)
     False
     """
     return _is_form(expr, And, Or)
@@ -1130,14 +1116,13 @@ def is_dnf(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> is_dnf(A | B | C)
+    >>> is_dnf(a | b | c)
     True
-    >>> is_dnf(A & B & C)
+    >>> is_dnf(a & b & c)
     True
-    >>> is_dnf((A & B) | C)
+    >>> is_dnf((a & b) | c)
     True
-    >>> is_dnf(A & (B | C))
+    >>> is_dnf(a & (b | c))
     False
     """
     return _is_form(expr, Or, And)
@@ -1200,13 +1185,12 @@ def eliminate_implications(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> eliminate_implications(Implies(A, B))
-    Or(B, Not(A))
-    >>> eliminate_implications(Equivalent(A, B))
-    And(Or(A, Not(B)), Or(B, Not(A)))
-    >>> eliminate_implications(Equivalent(A, B, C))
-    And(Or(A, Not(C)), Or(B, Not(A)), Or(C, Not(B)))
+    >>> eliminate_implications(Implies(a, b))
+    Or(Not(a), b)
+    >>> eliminate_implications(Equivalent(a, b))
+    And(Or(Not(a), b), Or(Not(b), a))
+    >>> eliminate_implications(Equivalent(a, b, c))
+    And(Or(Not(a), b), Or(Not(b), c), Or(Not(c), a))
     """
     return to_nnf(expr)
 
@@ -1218,14 +1202,13 @@ def is_literal(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B
-    >>> is_literal(A)
+    >>> is_literal(a)
     True
-    >>> is_literal(~A)
+    >>> is_literal(~a)
     True
-    >>> is_literal(A + B)
+    >>> is_literal(a + b)
     True
-    >>> is_literal(Or(A, B))
+    >>> is_literal(Or(a, b))
     False
     """
     if isinstance(expr, Not):
@@ -1379,12 +1362,11 @@ def SOPform(variables, minterms, dontcares=None):
     Examples
     ========
 
-    >>> w = Symbol('w')
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1],
     ...             [0, 1, 1, 1], [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
-    >>> SOPform([w, x, y, z], minterms, dontcares)
-    Or(And(Not(w), z), And(y, z))
+    >>> SOPform([t, x, y, z], minterms, dontcares)
+    Or(And(Not(t), z), And(y, z))
 
     References
     ==========
@@ -1428,12 +1410,11 @@ def POSform(variables, minterms, dontcares=None):
     Examples
     ========
 
-    >>> w = Symbol('w')
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1],
     ...             [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
-    >>> POSform([w, x, y, z], minterms, dontcares)
-    And(Or(Not(w), y), z)
+    >>> POSform([t, x, y, z], minterms, dontcares)
+    And(Or(Not(t), y), z)
 
     References
     ==========
@@ -1584,20 +1565,19 @@ def bool_map(bool1, bool2):
     Examples
     ========
 
-    >>> from diofant.abc import w
     >>> function1 = SOPform([x, z, y], [[1, 0, 1], [0, 0, 1]])
     >>> function2 = SOPform([a, b, c], [[1, 0, 1], [1, 0, 0]])
     >>> bool_map(function1, function2)
     (And(Not(z), y), {y: a, z: b})
 
     The results are not necessarily unique, but they are canonical. Here,
-    ``(w, z)`` could be ``(a, d)`` or ``(d, a)``:
+    ``(t, z)`` could be ``(a, d)`` or ``(d, a)``:
 
-    >>> eq =  Or(And(Not(y), w), And(Not(y), z), And(x, y))
+    >>> eq =  Or(And(Not(y), t), And(Not(y), z), And(x, y))
     >>> eq2 = Or(And(Not(c), a), And(Not(c), d), And(b, c))
     >>> bool_map(eq, eq2)
-    (Or(And(Not(y), w), And(Not(y), z),
-     And(x, y)), {w: a, x: b, y: c, z: d})
+    (Or(And(Not(y), t), And(Not(y), z),
+     And(x, y)), {t: a, x: b, y: c, z: d})
     >>> eq = And(Xor(a, b), c, And(c, d))
     >>> bool_map(eq, eq.subs(c, x))
     (And(Or(Not(a), Not(b)),
