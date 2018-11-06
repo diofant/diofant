@@ -205,6 +205,8 @@ def test_solve_polynomial1():
              {x: -Rational(1, 2) - sqrt(3)*I/2, y: 0},
              {x: -Rational(1, 2) + sqrt(3)*I/2, y: 0}])
 
+    assert solve(x**5 + 5*x**4 + 10*x**3 + 10*x**2 + 5*x + 1, x) == [{x: -1}]
+
 
 def test_solve_polynomial2():
     assert solve(4, x) == []
