@@ -17,7 +17,7 @@ class SympifyError(ValueError):
 
         try:
             s = str(self.expr)
-        except Exception:
+        except TypeError:
             s = repr(self.expr)
 
         return ("Sympify of expression '%s' failed, because of exception being "

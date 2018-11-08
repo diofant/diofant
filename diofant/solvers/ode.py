@@ -2128,11 +2128,8 @@ def odesimp(eq, func, order, constants, hint):
             # rational powers for no reason.  We have to do a match
             # to fix this using Wilds.
             global collectterms
-            try:
-                collectterms.sort(key=default_sort_key)
-                collectterms.reverse()
-            except Exception:
-                pass
+            collectterms.sort(key=default_sort_key)
+            collectterms.reverse()
             assert len(eq) == 1 and eq[0].lhs == f(x)
             sol = eq[0].rhs
             sol = expand_mul(sol)
@@ -2706,7 +2703,7 @@ def constantsimp(expr, constants):
             else:
                 rexpr = rexpr.subs(*s)
         expr = rexpr
-    except Exception:
+    except PolynomialError:
         pass
     expr = __remove_linear_redundancies(expr, Cs)
 
