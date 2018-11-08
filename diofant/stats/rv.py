@@ -815,7 +815,7 @@ def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
         fn(*args)
         if condition is not None:
             given_fn(*args)
-    except Exception:
+    except (TypeError, ValueError):
         raise TypeError("Expr/condition too complex for lambdify")
 
     def return_generator():

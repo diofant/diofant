@@ -19,10 +19,9 @@ def dpll_satisfiable(expr):
 
     It returns a model rather than True when it succeeds
 
-    >>> from diofant.abc import A, B
-    >>> dpll_satisfiable(A & ~B)
-    {A: True, B: False}
-    >>> dpll_satisfiable(A & ~A)
+    >>> dpll_satisfiable(a & ~b)
+    {a: True, b: False}
+    >>> dpll_satisfiable(a & ~a)
     False
     """
     clauses = conjuncts(to_cnf(expr))

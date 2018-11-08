@@ -1346,9 +1346,8 @@ class Subs(Expr):
     """
     Represents unevaluated substitutions of an expression.
 
-    ``Subs(expr, x, x0)`` receives 3 arguments: an expression, a variable or
-    list of distinct variables and a point or list of evaluation points
-    corresponding to those variables.
+    ``Subs`` receives at least 2 arguments: an expression, a pair of old
+    and new expression to substitute or several such pairs.
 
     ``Subs`` objects are generally useful to represent unevaluated derivatives
     calculated at a point.
@@ -1366,15 +1365,14 @@ class Subs(Expr):
     this case the expression is always expanded (for the unevaluated form, use
     Derivative()).
 
-    A simple example:
+    Examples
+    ========
 
     >>> e = Subs(f(x).diff(x), (x, y))
     >>> e.subs(y, 0)
     Subs(Derivative(f(x), x), (x, 0))
     >>> e.subs(f, sin).doit()
     cos(y)
-
-    An example with several variables:
 
     >>> Subs(f(x)*sin(y) + z, (x, 0), (y, 1))
     Subs(z + f(x)*sin(y), (x, 0), (y, 1))
