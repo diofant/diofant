@@ -2835,3 +2835,13 @@ def test_sympyissue_15311():
     assert dsolve(eqn) == Eq(f(x), exp(x*RootOf(sqrt(2)*x**3 + x, 0))*C1 +
                              exp(x*RootOf(sqrt(2)*x**3 + x, 1))*C2 +
                              exp(x*RootOf(sqrt(2)*x**3 + x, 2))*C3)
+
+
+def test_sympyissue_15474():
+    a, b = symbols('a b')
+    eqs = [Eq(f(t).diff(t), a*f(t)), Eq(g(t).diff(t), b*g(t))]
+    ans = [Eq(f(t), C1*exp(a*t)), Eq(g(t), C2*exp(b*t))]
+    assert dsolve(eqs) == ans
+    eqs = [Eq(f(t).diff(t), -a*g(t)), Eq(g(t).diff(t), a*f(t))]
+    ans = [Eq(f(t), C1*cos(a*t) - C2*sin(a*t)), Eq(g(t), C1*sin(a*t) + C2*cos(a*t))]
+    assert [simplify(_.rewrite(sin)) for _ in dsolve(eqs)] == ans

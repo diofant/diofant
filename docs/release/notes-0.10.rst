@@ -134,3 +134,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`15311` 3rd-order ODE with irrational coefficient fails
 * :sympyissue:`11668` Get rid of bare "except"s
 * :sympyissue:`4511` integrate(cos(x)**2 / (1-sin(x))) gives too complicated answer
+* :sympyissue:`15474` dsolve system gives complicated solution for diagonal system
