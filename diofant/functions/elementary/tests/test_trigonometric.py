@@ -1451,11 +1451,8 @@ def test_acsc():
 
 
 @pytest.mark.xfail
-@pytest.mark.slow
 def test_csc_rewrite_failing():
     # Move these 2 tests to test_csc() once bugs fixed
-    # sin(x).rewrite(sqrt) raises RuntimeError: maximum recursion depth
-    # https://github.com/sympy/sympy/issues/7171
     assert csc(x).rewrite(sqrt) == csc(x)
 
 
