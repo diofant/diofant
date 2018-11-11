@@ -991,6 +991,7 @@ def test_sympyissue_4493():
 def test_sympyissue_4737():
     assert integrate(sin(x)/x, (x, -oo, oo)) == pi
     assert integrate(sin(x)/x, (x, 0, oo)) == pi/2
+    assert integrate(sin(x)/x, x) == Si(x)
 
 
 def test_sympyissue_4992():
@@ -1239,3 +1240,30 @@ def test_diofantissue_447():
 
 def test_sympyissue_14782():
     assert integrate(sqrt(-x**2 + 1)*(-x**2 + x), (x, -1, 1)) != 0
+
+
+def test_sympyissue_4511():
+    assert simplify(integrate(cos(x)**2/(1 - sin(x)), x)) in [x - cos(x),
+                                                              +1 - cos(x) + x,
+                                                              -1 - cos(x) + x,
+                                                              -2/(tan(x/2)**2 + 1) + x]
+
+
+def test_sympyissue_4551():
+    assert (integrate(1/(x*sqrt(1 - x**2)), x) ==
+            Piecewise((-acosh(1/x), Abs(x**(-2)) > 1), (I*asin(1/x), True)))
+
+
+@pytest.mark.xfail
+def test_sympyissue_4212():
+    assert not isinstance(integrate(sign(x), x), Integral)
+
+
+@pytest.mark.xfail
+def test_sympyissue_4491():
+    assert not isinstance(integrate(x*sqrt(x**2 + 2*x + 4), x), Integral)
+
+
+@pytest.mark.xfail
+def test_sympyissue_4514():
+    assert not isinstance(integrate(sin(2*x)/sin(x)), Integral)

@@ -133,3 +133,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`15407` BUG: dsolve fails for linear first order ODE with three equations
 * :sympyissue:`15311` 3rd-order ODE with irrational coefficient fails
 * :sympyissue:`11668` Get rid of bare "except"s
+* :sympyissue:`4511` integrate(cos(x)**2 / (1-sin(x))) gives too complicated answer
