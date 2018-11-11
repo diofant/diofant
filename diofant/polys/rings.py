@@ -2086,13 +2086,25 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
             return poly
 
-    def subs(self, x, a=None):
+    def subs(self, x):
         f = self
+        a = None
 
-        if isinstance(x, list) and a is None:
-            for X, a in x:
-                f = f.subs(X, a)
-            return f
+        if isinstance(x, dict):
+            return f.subs(sorted(x.items()))
+        elif isinstance(x, (set, frozenset)):
+            return f.subs(sorted(x))
+        elif isinstance(x, (list, tuple)):
+            if len(x) == 0:
+                return f
+            x = list(x)
+            while len(x) > 1:
+                f = f.subs([x[0]])
+                del x[0]
+            else:
+                x, a = x[0]
+        else:
+            raise ValueError("subs argument should be an iterable of pairs")
 
         ring = f.ring
         i = ring.index(x)

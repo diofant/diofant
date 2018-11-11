@@ -1251,25 +1251,29 @@ def test_PolyElement_subs():
     R, x = ring("x", ZZ)
     f = x**3 + 4*x**2 + 2*x + 3
 
-    r = f.subs(x, 0)
-    assert r == 3 and isinstance(r, R.dtype)
+    assert f == f.subs([])
+    pytest.raises(ValueError, lambda: f.subs(object()))
 
-    pytest.raises(CoercionFailed, lambda: f.subs(x, QQ(1, 7)))
+    r = f.subs({x: 0})
+    assert r == 3 and isinstance(r, R.dtype)
+    assert f.subs({(x, 0)}) == r
+
+    pytest.raises(CoercionFailed, lambda: f.subs({x: QQ(1, 7)}))
 
     R,  x, y, z = ring("x,y,z", ZZ)
     f = x**3 + 4*x**2 + 2*x + 3
 
-    r = f.subs(x, 0)
+    r = f.subs({x: 0})
     assert r == 3 and isinstance(r, R.dtype)
-    r = f.subs([(x, 0), (y, 0)])
+    r = f.subs({x: 0, y: 0})
     assert r == 3 and isinstance(r, R.dtype)
 
-    pytest.raises(CoercionFailed, lambda: f.subs([(x, 1), (y, QQ(1, 7))]))
-    pytest.raises(CoercionFailed, lambda: f.subs([(x, QQ(1, 7)), (y, 1)]))
-    pytest.raises(CoercionFailed, lambda: f.subs([(x, QQ(1, 7)), (y, QQ(1, 7))]))
+    pytest.raises(CoercionFailed, lambda: f.subs({x: 1, y: QQ(1, 7)}))
+    pytest.raises(CoercionFailed, lambda: f.subs({x: QQ(1, 7), y: 1}))
+    pytest.raises(CoercionFailed, lambda: f.subs({x: QQ(1, 7), y: QQ(1, 7)}))
 
     f = 1 - x - y - z
-    r = f.subs(y, 1)
+    r = f.subs({y: 1})
     assert r == -x - z
 
 
