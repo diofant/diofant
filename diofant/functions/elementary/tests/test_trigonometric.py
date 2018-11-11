@@ -62,6 +62,7 @@ def test_sin():
     assert sin(pi*e/2) == 0
     assert sin(pi*k) == 0
     assert sin(pi*k).subs({k: 3}) == sin(pi*k/2).subs({k: 6})  # issue sympy/sympy#8298
+    assert sin(pi/2*cos(k*pi)) == (-1)**k
 
     assert sin(pi/3) == sqrt(3)/2
     assert sin(-2*pi/3) == -sqrt(3)/2

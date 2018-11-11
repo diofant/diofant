@@ -2,12 +2,12 @@ import pytest
 
 from diofant import (Abs, And, Derivative, E, Eq, Float, Function, Gt, I,
                      Indexed, IndexedBase, Integer, Integral, LambertW, Lt,
-                     Matrix, Mul, Or, Piecewise, Poly, Pow, Rational, Symbol,
-                     Tuple, Wild, acos, arg, asin, atan, atan2, cbrt, cos,
-                     cosh, diff, erf, erfc, erfcinv, erfinv, exp, expand_log,
-                     im, log, nan, oo, ordered, pi, re, real_root, root, sec,
-                     sech, simplify, sin, sinh, solve, solve_linear, sqrt,
-                     sstr, symbols, sympify, tan, tanh)
+                     Matrix, Max, Mul, Or, Piecewise, Poly, Pow, Rational,
+                     Symbol, Tuple, Wild, acos, arg, asin, atan, atan2, cbrt,
+                     cos, cosh, diff, erf, erfc, erfcinv, erfinv, exp,
+                     expand_log, im, log, nan, oo, ordered, pi, re, real_root,
+                     root, sec, sech, simplify, sin, sinh, solve, solve_linear,
+                     sqrt, sstr, symbols, sympify, tan, tanh)
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
 from diofant.core.function import nfloat
@@ -148,6 +148,12 @@ def test_solve_args():
     assert solve(Poly(x - 3), x) == [{x: 3}]
 
     assert solve([x - 2, x**2 + y]) == [{x: 2, y: -4}]
+
+
+def test_solve_max():
+    x = symbols('x', real=True)
+    assert solve(1 - abs(x) - Max(-x - 2, x - 2), x) == [{x: -Rational(3, 2)},
+                                                         {x: Rational(3, 2)}]
 
 
 def test_solve_polynomial1():

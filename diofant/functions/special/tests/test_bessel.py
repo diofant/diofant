@@ -6,8 +6,8 @@ from diofant import (Abs, I, Integer, Limit, O, Rational, Symbol, besseli,
                      besselj, besselk, besselsimp, bessely, cbrt, conjugate,
                      cos, cosh, diff, exp, exp_polar, expand_func, gamma,
                      hankel1, hankel2, hyper, im, jn, jn_zeros, log, nan, oo,
-                     pi, polar_lift, re, root, series, sin, sinh, sqrt, yn,
-                     zoo)
+                     pi, polar_lift, re, root, series, simplify, sin, sinh,
+                     sqrt, yn, zoo)
 from diofant.abc import k, n, x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
@@ -86,6 +86,9 @@ def test_expand():
     assert expand_func(bessely(Rational(1, 2), z).rewrite(yn)) == \
         -sqrt(2)*cos(z)/(sqrt(pi)*sqrt(z))
     assert expand_func(besselj(I, z)) == besselj(I, z)
+
+    # Test simplify helper
+    assert simplify(besselj(Rational(1, 2), z)) == sqrt(2)*sin(z)/(sqrt(pi)*sqrt(z))
 
     # XXX: teach sin/cos to work around arguments like
     # x*exp_polar(I*pi*n/2).  Then change besselsimp -> expand_func

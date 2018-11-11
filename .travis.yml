@@ -76,7 +76,7 @@ install:
 script:
   - |
     if [ -n "${COVERAGE}" ]; then
-      python setup.py test --addopts "-n auto --cov diofant -m \"not slow and not xfail\" --split=${SPLIT}"
+      python setup.py test --addopts "-n auto --cov diofant --ignore diofant/tests -m \"not slow and not xfail\" --split=${SPLIT}"
     else
       python setup.py test --addopts "-n auto --split=${SPLIT}"
     fi
