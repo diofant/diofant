@@ -593,21 +593,21 @@ def test_polygon():
         Point(0, 0), Point(1, 0),
         Point(1, 1), Point(0, 1))
     p2 = Polygon(
-        Point(0, Rational(5)/4), Point(1, Rational(5)/4),
-        Point(1, Rational(9)/4), Point(0, Rational(9)/4))
+        Point(0, Rational(5, 4)), Point(1, Rational(5, 4)),
+        Point(1, Rational(9, 4)), Point(0, Rational(9, 4)))
     p3 = Polygon(
         Point(1, 2), Point(2, 2),
         Point(2, 1))
     p4 = Polygon(
-        Point(1, 1), Point(Rational(6)/5, 1),
-        Point(1, Rational(6)/5))
+        Point(1, 1), Point(Rational(6, 5), 1),
+        Point(1, Rational(6, 5)))
     pt1 = Point(half, half)
     pt2 = Point(1, 1)
 
     '''Polygon to Point'''
     assert p1.distance(pt1) == half
     assert p1.distance(pt2) == 0
-    assert p2.distance(pt1) == Rational(3)/4
+    assert p2.distance(pt1) == Rational(3, 4)
     assert p3.distance(pt2) == sqrt(2)/2
 
     '''Polygon to Polygon'''
@@ -622,7 +622,7 @@ def test_polygon():
     assert p1.distance(p2) == half/2
 
     assert p1.distance(p3) == sqrt(2)/2
-    assert p3.distance(p4) == (sqrt(2)/2 - sqrt(Rational(2)/25)/2)
+    assert p3.distance(p4) == 2*sqrt(2)/5
 
 
 def test_convex_hull():

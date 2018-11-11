@@ -166,21 +166,21 @@ def test_expand_arit():
     b = Symbol("b", positive=True)
     c = Symbol("c")
 
-    p = Rational(5)
+    p = Integer(5)
     e = (a + b)*c
     assert e == c*(a + b)
-    assert (e.expand() - a*c - b*c) == Rational(0)
+    assert (e.expand() - a*c - b*c) == 0
     e = (a + b)*(a + b)
     assert e == (a + b)**2
     assert e.expand() == 2*a*b + a**2 + b**2
-    e = (a + b)*(a + b)**Rational(2)
+    e = (a + b)*(a + b)**2
     assert e == (a + b)**3
     assert e.expand() == 3*b*a**2 + 3*a*b**2 + a**3 + b**3
     assert e.expand() == 3*b*a**2 + 3*a*b**2 + a**3 + b**3
     e = (a + b)*(a + c)*(b + c)
     assert e == (a + c)*(a + b)*(b + c)
     assert e.expand() == 2*a*b*c + b*a**2 + c*a**2 + b*c**2 + a*c**2 + c*b**2 + a*b**2
-    e = (a + Rational(1))**p
+    e = (a + 1)**p
     assert e == (1 + a)**5
     assert e.expand() == 1 + 5*a + 10*a**2 + 10*a**3 + 5*a**4 + a**5
     e = (a + b + c)*(a + c + p)

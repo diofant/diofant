@@ -223,12 +223,12 @@ def test_Mul():
         is_commutative = True
     cc1 = CustomClass1()
     cc2 = CustomClass2()
-    assert str(Rational(2)*cc1) == '2*CustomClass1()'
-    assert str(cc1*Rational(2)) == '2*CustomClass1()'
+    assert str(2*cc1) == '2*CustomClass1()'
+    assert str(cc1*2) == '2*CustomClass1()'
     assert str(cc1*Float("1.5")) == '1.5*CustomClass1()'
-    assert str(cc2*Rational(2)) == '2*CustomClass2()'
-    assert str(cc2*Rational(2)*cc1) == '2*CustomClass1()*CustomClass2()'
-    assert str(cc1*Rational(2)*cc2) == '2*CustomClass1()*CustomClass2()'
+    assert str(cc2*2) == '2*CustomClass2()'
+    assert str(cc2*2*cc1) == '2*CustomClass1()*CustomClass2()'
+    assert str(cc1*2*cc2) == '2*CustomClass1()*CustomClass2()'
     assert str(Mul(1, 1, evaluate=False)) == '1*1'
 
 
@@ -440,9 +440,9 @@ def test_Rational():
     n2 = Rational(1, 3)
     n3 = Rational(2, 4)
     n4 = Rational(2, -4)
-    n5 = Rational(0)
-    n7 = Rational(3)
-    n8 = Rational(-3)
+    n5 = Integer(0)
+    n7 = Integer(3)
+    n8 = Integer(-3)
     assert str(n1*n2) == "1/12"
     assert str(n1*n2) == "1/12"
     assert str(n3) == "1/2"

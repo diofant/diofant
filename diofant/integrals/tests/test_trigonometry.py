@@ -1,4 +1,4 @@
-from diofant.core import Eq, Rational, Symbol
+from diofant.core import Eq, Integer, Symbol
 from diofant.functions import Piecewise, cos, cot, csc, log, sec, sin, tan
 from diofant.integrals.trigonometry import trigintegrate
 
@@ -9,7 +9,7 @@ x = Symbol('x')
 
 
 def test_trigintegrate_odd():
-    assert trigintegrate(Rational(1), x) == x
+    assert trigintegrate(Integer(1), x) == x
     assert trigintegrate(x, x) is None
     assert trigintegrate(x**2, x) is None
 

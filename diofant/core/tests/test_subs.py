@@ -14,19 +14,19 @@ __all__ = ()
 
 
 def test_subs():
-    n3 = Rational(3)
+    n3 = Integer(3)
     e = x
     e = e.subs({x: n3})
-    assert e == Rational(3)
+    assert e == 3
 
     e = 2*x
     assert e == 2*x
     e = e.subs({x: n3})
-    assert e == Rational(6)
+    assert e == 6
 
 
 def test_trigonometric():
-    n3 = Rational(3)
+    n3 = Integer(3)
     e = (sin(x)**2).diff(x)
     assert e == 2*sin(x)*cos(x)
     e = e.subs({x: n3})
@@ -69,7 +69,7 @@ def test_logexppow():   # no eval()
     w = Symbol('w')
     e = (3**(1 + x) + 2**(1 + x))/(3**x + 2**x)
     assert e.subs({2**x: w}) != e
-    assert e.subs({exp(x*log(Rational(2))): w}) != e
+    assert e.subs({exp(x*log(2)): w}) != e
 
 
 def test_bug():

@@ -56,8 +56,8 @@ def test_systematic_basic():
     numpy_objs = [
         array([1]),
         array([3, 8, -1]),
-        array([x, x**2, Rational(5)]),
-        array([x/y*sin(y), 5, Rational(5)]),
+        array([x, x**2, Integer(5)]),
+        array([x/y*sin(y), 5, Integer(5)]),
     ]
     for x in diofant_objs:
         for y in numpy_objs:
@@ -68,8 +68,8 @@ def test_systematic_basic():
 # check that the results of the operations are correct
 
 def test_basics():
-    one = Rational(1)
-    zero = Rational(0)
+    one = Integer(1)
+    zero = Integer(0)
     assert array(1) == array(one)
     assert array([one]) == array([one])
     assert array([x]) == array([x])
@@ -82,8 +82,8 @@ def test_basics():
 
 
 def test_arrays():
-    one = Rational(1)
-    zero = Rational(0)
+    one = Integer(1)
+    zero = Integer(0)
     X = array([one, zero, zero])
     Y = one*X
     X = array([Symbol("a") + Rational(1, 2)])
@@ -110,8 +110,8 @@ def test_conversion2():
     b = list2numpy([2*x**2, 2*x])
     assert (a == b).all()
 
-    one = Rational(1)
-    zero = Rational(0)
+    one = Integer(1)
+    zero = Integer(0)
     X = list2numpy([one, zero, zero])
     Y = one*X
     X = list2numpy([Symbol("a") + Rational(1, 2)])

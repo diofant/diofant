@@ -162,7 +162,7 @@ def test_integration():
 
 
 def test_multiple_integration():
-    assert integrate((x**2)*(y**2), (x, 0, 1), (y, -1, 2)) == Rational(1)
+    assert integrate((x**2)*(y**2), (x, 0, 1), (y, -1, 2)) == 1
     assert integrate((y**2)*(x**2), x, y) == Rational(1, 9)*(x**3)*(y**3)
     assert integrate(1/(x + 3)/(1 + x)**3, x) == \
         -Rational(1, 8)*log(3 + x) + Rational(1, 8)*log(1 + x) + x/(4 + 8*x + 4*x**2)
@@ -261,7 +261,7 @@ def test_sympyissue_3664():
     n = Symbol('n', integer=True, nonzero=True)
     assert integrate(-1./2 * x * sin(n * pi * x/2), [x, -2, 0]) == \
         2*cos(pi*n)/(pi*n)
-    assert integrate(-Rational(1)/2 * x * sin(n * pi * x/2), [x, -2, 0]) == \
+    assert integrate(-x*sin(n*pi*x/2)/2, [x, -2, 0]) == \
         2*cos(pi*n)/(pi*n)
 
 

@@ -195,9 +195,9 @@ def test_compare():
 
 
 def test_sign():
-    assert mrv_sign(Rational(0), x) == 0
-    assert mrv_sign(Rational(3), x) == 1
-    assert mrv_sign(Rational(-5), x) == -1
+    assert mrv_sign(Integer(0), x) == 0
+    assert mrv_sign(Integer(3), x) == 1
+    assert mrv_sign(Integer(-5), x) == -1
     assert mrv_sign(log(x), x) == 1
     assert mrv_sign(exp(-x), x) == 1
     assert mrv_sign(exp(x), x) == 1
@@ -205,7 +205,6 @@ def test_sign():
     assert mrv_sign(3 - 1/x, x) == 1
     assert mrv_sign(-3 - 1/x, x) == -1
     assert mrv_sign(sin(1/x), x) == 1
-    assert mrv_sign((x**Integer(2)), x) == 1
     assert mrv_sign(x**2, x) == 1
     assert mrv_sign(x**5, x) == 1
 

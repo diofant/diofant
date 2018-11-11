@@ -289,7 +289,7 @@ def test_sympyissue_3515():
 
 def test_sympyissue_3505():
     e = sin(x)**(-4)*(sqrt(cos(x))*sin(x)**2 - cbrt(cos(x))*sin(x)**2)
-    assert e.nseries(x, n=8) == -Rational(1)/12 - 7*x**2/288 - \
+    assert e.nseries(x, n=8) == -Rational(1, 12) - 7*x**2/288 - \
         43*x**4/10368 + O(x**6)
 
 

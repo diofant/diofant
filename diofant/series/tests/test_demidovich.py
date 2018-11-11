@@ -50,23 +50,23 @@ def test_Limits_simple_3a():
 def test_Limits_simple_3b():
     assert limit(((x + h)**3 - x**3)/h, h, 0) == 3*x**2  # 197
     assert limit((1/(1 - x) - 3/(1 - x**3)), x, 1) == -1  # 198
-    assert limit((sqrt(1 + x) - 1)/(root3(1 + x) - 1), x, 0) == Rational(3)/2  # Primer 4
-    assert limit((sqrt(x) - 1)/(x - 1), x, 1) == Rational(1)/2  # 199
+    assert limit((sqrt(1 + x) - 1)/(root3(1 + x) - 1), x, 0) == Rational(3, 2)  # Primer 4
+    assert limit((sqrt(x) - 1)/(x - 1), x, 1) == Rational(1, 2)  # 199
     assert limit((sqrt(x) - 8)/(root3(x) - 4), x, 64) == 3  # 200
-    assert limit((root3(x) - 1)/(root4(x) - 1), x, 1) == Rational(4)/3  # 201
+    assert limit((root3(x) - 1)/(root4(x) - 1), x, 1) == Rational(4, 3)  # 201
     assert limit(
-        (root3(x**2) - 2*root3(x) + 1)/(x - 1)**2, x, 1) == Rational(1)/9  # 202
+        (root3(x**2) - 2*root3(x) + 1)/(x - 1)**2, x, 1) == Rational(1, 9)  # 202
 
 
 def test_Limits_simple_4a():
     assert limit((sqrt(x) - sqrt(a))/(x - a), x, a) == 1/(2*sqrt(a))  # Primer 5
-    assert limit((sqrt(x) - 1)/(root3(x) - 1), x, 1) == Rational(3)/2  # 205
+    assert limit((sqrt(x) - 1)/(root3(x) - 1), x, 1) == Rational(3, 2)  # 205
     assert limit((sqrt(1 + x) - sqrt(1 - x))/x, x, 0) == 1  # 207
-    assert limit(sqrt(x**2 - 5*x + 6) - x, x, oo) == -Rational(5)/2  # 213
+    assert limit(sqrt(x**2 - 5*x + 6) - x, x, oo) == -Rational(5, 2)  # 213
 
 
 def test_limits_simple_4aa():
-    assert limit(x*(sqrt(x**2 + 1) - x), x, oo) == Rational(1)/2  # 214
+    assert limit(x*(sqrt(x**2 + 1) - x), x, oo) == Rational(1, 2)  # 214
 
 
 def test_Limits_simple_4b():
@@ -97,8 +97,8 @@ def test_f1a2():
 def test_f1b():
     assert limit(sin(x)/x, x, 2) == sin(2)/2  # 216a
     assert limit(sin(3*x)/x, x, 0) == 3  # 217
-    assert limit(sin(5*x)/sin(2*x), x, 0) == Rational(5)/2  # 218
-    assert limit(sin(pi*x)/sin(3*pi*x), x, 0) == Rational(1)/3  # 219
+    assert limit(sin(5*x)/sin(2*x), x, 0) == Rational(5, 2)  # 218
+    assert limit(sin(pi*x)/sin(3*pi*x), x, 0) == Rational(1, 3)  # 219
     assert limit(x*sin(pi/x), x, oo) == pi  # 220
     assert limit((1 - cos(x))/x**2, x, 0) == Rational(1, 2)  # 221
     assert limit(x*sin(1/x), x, oo) == 1  # 227b

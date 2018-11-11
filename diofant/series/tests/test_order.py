@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import (Add, Derivative, Function, I, Integral, O, Rational,
-                     Symbol, conjugate, cos, digamma, exp, expand, ln, log,
-                     nan, oo, pi, sin, sqrt, symbols, transpose)
+from diofant import (Add, Derivative, Function, I, Integer, Integral, O,
+                     Rational, Symbol, conjugate, cos, digamma, exp, expand,
+                     ln, log, nan, oo, pi, sin, sqrt, symbols, transpose)
 from diofant.abc import w, x, y, z
 
 
@@ -26,7 +26,7 @@ def test_free_symbols():
 
 
 def test_simple_1():
-    o = Rational(0)
+    o = Integer(0)
     assert O(2*x) == O(x)
     assert O(x)*3 == O(x)
     assert -28*O(x) == O(x)

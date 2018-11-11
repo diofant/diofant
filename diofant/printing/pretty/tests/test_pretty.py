@@ -340,8 +340,8 @@ def test_pretty_atom():
 
 
 def test_pretty_basic():
-    assert pretty( -Rational(1)/2 ) == '-1/2'
-    assert pretty( -Rational(13)/22 ) == \
+    assert pretty(-Rational(1, 2)) == '-1/2'
+    assert pretty(-Rational(13, 22)) == \
         """\
 -13 \n\
 ----\n\

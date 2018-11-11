@@ -16,7 +16,7 @@ def test_symbol():
     assert e.match(x) == {}
     assert e.match(a) == {a: x}
 
-    e = Rational(5)
+    e = Integer(5)
     assert e.match(c) == {c: 5}
     assert e.match(e) == {}
     assert e.match(e + 1) is None
@@ -73,7 +73,7 @@ def test_match_exclude():
     q = Wild("q")
     r = Wild("r")
 
-    e = Rational(6)
+    e = Integer(6)
     assert e.match(2*p) == {p: 3}
 
     e = 3/(4*x + 5)
@@ -270,7 +270,7 @@ def test_match_deriv_bug1():
     e = e.subs({n(x): -l(x)}).doit()
     t = x*exp(-l(x))
     t2 = t.diff(x, x)/t
-    assert e.match( (p*t2).expand() ) == {p: -Rational(1)/2}
+    assert e.match( (p*t2).expand() ) == {p: -Rational(1, 2)}
 
 
 def test_match_bug2():
@@ -299,7 +299,7 @@ def test_match_bug5():
 def test_match_bug6():
     p = Wild('p')
     e = x
-    assert e.match(3*p*x) == {p: Rational(1)/3}
+    assert e.match(3*p*x) == {p: Rational(1, 3)}
 
 
 def test_match_polynomial():

@@ -221,7 +221,7 @@ def test_meijerint():
     alpha = symbols('alpha', positive=True)
     assert meijerint_definite((2 - x)**alpha*sin(alpha/x), x, 0, 2) == \
         (sqrt(pi)*alpha*gamma(alpha + 1)*meijerg(((), (alpha/2 + Rational(1, 2),
-                                                       alpha/2 + 1)), ((0, 0, Rational(1, 2)), (-Rational(1, 2),)), alpha**Integer(2)/16)/4, True)
+                                                       alpha/2 + 1)), ((0, 0, Rational(1, 2)), (-Rational(1, 2),)), alpha**2/16)/4, True)
 
     # test a bug related to 3016
     a, s = symbols('a s', positive=True)

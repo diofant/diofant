@@ -394,8 +394,8 @@ def test_airyai():
     assert l.doit() == l  # cover _airyais._eval_aseries
 
     assert airyai(z).rewrite(hyper) == (
-        -3**Rational(2, 3)*z*hyper((), (Rational(4, 3),), z**Integer(3)/9)/(3*gamma(Rational(1, 3))) +
-        cbrt(3)*hyper((), (Rational(2, 3),), z**Integer(3)/9)/(3*gamma(Rational(2, 3))))
+        -3**Rational(2, 3)*z*hyper((), (Rational(4, 3),), z**3/9)/(3*gamma(Rational(1, 3))) +
+        cbrt(3)*hyper((), (Rational(2, 3),), z**3/9)/(3*gamma(Rational(2, 3))))
 
     assert isinstance(airyai(z).rewrite(besselj), airyai)
     assert airyai(t).rewrite(besselj) == (
@@ -447,8 +447,8 @@ def test_airybi():
     assert l.doit() == l
 
     assert airybi(z).rewrite(hyper) == (
-        root(3, 6)*z*hyper((), (Rational(4, 3),), z**Integer(3)/9)/gamma(Rational(1, 3)) +
-        3**Rational(5, 6)*hyper((), (Rational(2, 3),), z**Integer(3)/9)/(3*gamma(Rational(2, 3))))
+        root(3, 6)*z*hyper((), (Rational(4, 3),), z**3/9)/gamma(Rational(1, 3)) +
+        3**Rational(5, 6)*hyper((), (Rational(2, 3),), z**3/9)/(3*gamma(Rational(2, 3))))
 
     assert isinstance(airybi(z).rewrite(besselj), airybi)
     assert (airybi(t).rewrite(besselj) ==
@@ -489,8 +489,8 @@ def test_airyaiprime():
         -3**Rational(2, 3)/(3*gamma(Rational(1, 3))) + cbrt(3)*z**2/(6*gamma(Rational(2, 3))) + O(z**3))
 
     assert airyaiprime(z).rewrite(hyper) == (
-        cbrt(3)*z**2*hyper((), (Rational(5, 3),), z**Integer(3)/9)/(6*gamma(Rational(2, 3))) -
-        3**Rational(2, 3)*hyper((), (Rational(1, 3),), z**Integer(3)/9)/(3*gamma(Rational(1, 3))))
+        cbrt(3)*z**2*hyper((), (Rational(5, 3),), z**3/9)/(6*gamma(Rational(2, 3))) -
+        3**Rational(2, 3)*hyper((), (Rational(1, 3),), z**3/9)/(3*gamma(Rational(1, 3))))
 
     assert isinstance(airyaiprime(z).rewrite(besselj), airyaiprime)
     assert (airyaiprime(t).rewrite(besselj) ==
@@ -528,8 +528,8 @@ def test_airybiprime():
         root(3, 6)/gamma(Rational(1, 3)) + 3**Rational(5, 6)*z**2/(6*gamma(Rational(2, 3))) + O(z**3))
 
     assert airybiprime(z).rewrite(hyper) == (
-        3**Rational(5, 6)*z**2*hyper((), (Rational(5, 3),), z**Integer(3)/9)/(6*gamma(Rational(2, 3))) +
-        root(3, 6)*hyper((), (Rational(1, 3),), z**Integer(3)/9)/gamma(Rational(1, 3)))
+        3**Rational(5, 6)*z**2*hyper((), (Rational(5, 3),), z**3/9)/(6*gamma(Rational(2, 3))) +
+        root(3, 6)*hyper((), (Rational(1, 3),), z**3/9)/gamma(Rational(1, 3)))
 
     assert isinstance(airybiprime(z).rewrite(besselj), airybiprime)
     assert (airybiprime(t).rewrite(besselj) ==

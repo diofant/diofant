@@ -501,7 +501,7 @@ def test_diophantine():
     # assert check_solutions(y**2 - 7*x*y + 4*y*z)
     assert check_solutions(x**2 - 2*x + 1)
 
-    assert diophantine(Rational(0)) == {(t,)}
+    assert diophantine(Integer(0)) == {(t,)}
     assert diophantine(x - y) == diophantine(Eq(x, y))
     assert diophantine(3*x*pi - 2*y*pi) == {(2*t_0, 3*t_0)}
     assert diophantine(x**2 + y**2 + z**2 - 14) == {(1, 2, 3)}

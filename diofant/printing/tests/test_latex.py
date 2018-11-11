@@ -4,7 +4,7 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, BlockMatrix, Chi, Ci,
                      Complement, Contains, CosineTransform, Dict, Dummy, Ei,
                      Eq, Equivalent, FallingFactorial, FiniteSet, Float,
                      FourierTransform, Function, Identity, ImageSet,
-                     IndexedBase, Integral, Intersection, Interval,
+                     IndexedBase, Integer, Integral, Intersection, Interval,
                      InverseCosineTransform, InverseFourierTransform,
                      InverseLaplaceTransform, InverseMellinTransform,
                      InverseSineTransform, Lambda, LaplaceTransform, Limit,
@@ -695,7 +695,7 @@ def test_latex():
 
 
 def test_latex_dict():
-    d = {Rational(1): 1, x**2: 2, x: 3, x**3: 4}
+    d = {Integer(1): 1, x**2: 2, x: 3, x**3: 4}
     assert latex(d) == r'\left \{ 1 : 1, \quad x : 3, \quad x^{2} : 2, \quad x^{3} : 4\right \}'
     D = Dict(d)
     assert latex(D) == r'\left \{ 1 : 1, \quad x : 3, \quad x^{2} : 2, \quad x^{3} : 4\right \}'
