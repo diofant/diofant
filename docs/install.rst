@@ -60,7 +60,7 @@ sure everything works::
 `pytest`_ and some other packages are required for testing, so be sure to
 install the Diofant first with extra dependecies::
 
-    $ pip install diofant[develop]
+    $ pip install diofant[tests]
 
 Feedback
 ========
