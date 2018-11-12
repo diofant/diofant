@@ -38,7 +38,7 @@ from .factortools import (dmp_ext_factor, dmp_factor_list,
                           dmp_zz_factor, dmp_zz_mignotte_bound, dmp_zz_wang,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
                           dmp_zz_wang_non_divisors, dup_cyclotomic_p,
-                          dup_ext_factor, dup_factor_list, dup_trial_division,
+                          dup_ext_factor, dup_trial_division,
                           dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
                           dup_zz_factor, dup_zz_factor_sqf, dup_zz_hensel_lift,
                           dup_zz_hensel_step, dup_zz_irreducible_p,
@@ -593,10 +593,6 @@ class IPolys:
 
     def dmp_ext_factor(self, f):
         coeff, factors = dmp_ext_factor(self.to_dense(f), self.ngens-1, self.domain)
-        return coeff, [(self.from_dense(g), k) for g, k in factors]
-
-    def dup_factor_list(self, f):
-        coeff, factors = dup_factor_list(self.to_dense(f), self.domain)
         return coeff, [(self.from_dense(g), k) for g, k in factors]
 
     def dmp_factor_list(self, f):

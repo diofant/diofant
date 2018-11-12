@@ -9,7 +9,7 @@ from .densetools import (dmp_compose, dmp_eval_in, dup_clear_denoms, dup_diff,
                          dup_eval, dup_mirror, dup_real_imag, dup_scale,
                          dup_shift, dup_sign_variations, dup_transform)
 from .euclidtools import dmp_gcd, dmp_resultant
-from .factortools import dup_factor_list
+from .factortools import dmp_factor_list
 from .polyerrors import DomainError, RefinementFailed
 from .sqfreetools import dmp_sqf_list, dmp_sqf_part
 
@@ -492,7 +492,7 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
         if zeros and j > 0:
             zero_indices[i] = j
 
-        for f, k in dup_factor_list(p, K)[1]:
+        for f, k in dmp_factor_list(p, 0, K)[1]:
             f = tuple(f)
 
             if f not in factors_dict:
