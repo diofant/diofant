@@ -792,7 +792,13 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if self.is_zero:
             return True
         else:
-            return not self.gcd(self.diff(0)).degree(0)
+            g = self.copy()
+            for i in range(self.ring.ngens):
+                g = g.gcd(self.diff(i))
+                if g.is_ground:
+                    return True
+            else:
+                return False
 
     @property
     def is_irreducible(self):
@@ -1715,7 +1721,10 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
     def primitive(self):
         """Returns content and a primitive polynomial. """
         cont = self.content()
-        return cont, self.quo_ground(cont)
+        if self.is_zero:
+            return cont, self
+        else:
+            return cont, self.quo_ground(cont)
 
     def monic(self):
         """Divides all coefficients by the leading coefficient. """
@@ -2234,10 +2243,54 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         return self.ring.dmp_sqf_norm(self)
 
     def sqf_part(self):
-        return self.ring.dmp_sqf_part(self)
+        g = self.copy()
+        for i in range(self.ring.ngens):
+            g = g.gcd(self.diff(i))
+        g = self.quo(g)
+        if self.ring.domain.has_Field:
+            return g.monic()
+        else:
+            return g.primitive()[1]
 
-    def sqf_list(self, all=False):
-        return self.ring.dmp_sqf_list(self, all=all)
+    def sqf_list(self):
+        f = self.copy()
+        ring = self.ring
+
+        if ring.domain.has_Field:
+            coeff, f = f.LC, f.monic()
+        else:
+            coeff, f = f.primitive()
+
+            if f.is_negative:
+                f = -f
+                coeff = -coeff
+
+        if f.is_ground:
+            return coeff, []
+
+        result, count = [], 1
+        qs = [f.diff(x) for x in ring.gens]
+
+        g = f.copy()
+        for q in qs:
+            g = g.gcd(q)
+
+        while not f.is_ground:
+            for i in range(ring.ngens):
+                qs[i] = qs[i].quo(g)
+            f = f.quo(g)
+            for i in range(ring.ngens):
+                qs[i] -= f.diff(i)
+
+            g = f.copy()
+            for q in qs:
+                g = g.gcd(q)
+            if not g.is_one:
+                result.append((g, count))
+
+            count += 1
+
+        return coeff, result
 
     def factor_list(self):
         return self.ring.dmp_factor_list(self)
