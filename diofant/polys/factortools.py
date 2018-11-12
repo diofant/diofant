@@ -1097,22 +1097,17 @@ def dmp_ext_factor(f, u, K):
     return lc, dmp_trial_division(F, factors, u, K)
 
 
-def dup_gf_factor(f, K):
-    """Factor univariate polynomials over finite fields. """
-    f = dmp_convert(f, 0, K, K.domain)
-
-    coeff, factors = gf_factor(f, K.mod, K.domain)
-
-    for i, (f, k) in enumerate(factors):
-        factors[i] = (dmp_convert(f, 0, K.domain, K), k)
-
-    return K.convert(coeff, K.domain), factors
-
-
 def dmp_gf_factor(f, u, K):
     """Factor multivariate polynomials over finite fields. """
     if u == 0:
-        return dup_gf_factor(f, K)
+        f = dmp_convert(f, 0, K, K.domain)
+
+        coeff, factors = gf_factor(f, K.mod, K.domain)
+
+        for i, (f, k) in enumerate(factors):
+            factors[i] = (dmp_convert(f, 0, K.domain, K), k)
+
+        return K.convert(coeff, K.domain), factors
     else:  # pragma: no cover
         raise NotImplementedError('multivariate polynomials over finite fields')
 
