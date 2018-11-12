@@ -38,9 +38,9 @@ from .factortools import (dmp_ext_factor, dmp_factor_list,
                           dmp_zz_factor, dmp_zz_mignotte_bound, dmp_zz_wang,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
                           dmp_zz_wang_non_divisors, dup_cyclotomic_p,
-                          dup_ext_factor, dup_trial_division,
-                          dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
-                          dup_zz_factor, dup_zz_factor_sqf, dup_zz_hensel_lift,
+                          dup_ext_factor, dup_zz_cyclotomic_factor,
+                          dup_zz_cyclotomic_poly, dup_zz_factor,
+                          dup_zz_factor_sqf, dup_zz_hensel_lift,
                           dup_zz_hensel_step, dup_zz_irreducible_p,
                           dup_zz_mignotte_bound)
 from .galoistools import gf_factor_sqf
@@ -503,10 +503,6 @@ class IPolys:
         else:
             F, G = result
             return self.from_dense(F), self.from_dense(G)
-
-    def dup_trial_division(self, f, factors):
-        factors = dup_trial_division(self.to_dense(f), list(map(self.to_dense, factors)), self.domain)
-        return [ (self.from_dense(g), k) for g, k in factors ]
 
     def dmp_trial_division(self, f, factors):
         factors = dmp_trial_division(self.to_dense(f), list(map(self.to_dense, factors)), self.ngens-1, self.domain)

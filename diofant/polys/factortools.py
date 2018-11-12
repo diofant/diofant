@@ -30,26 +30,6 @@ from .polyutils import _sort_factors
 from .sqfreetools import dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
 
 
-def dup_trial_division(f, factors, K):
-    """Determine multiplicities of factors using trial division. """
-    result = []
-
-    for factor in factors:
-        k = 0
-
-        while True:
-            q, r = dmp_div(f, factor, 0, K)
-
-            if not r:
-                f, k = q, k + 1
-            else:
-                break
-
-        result.append((factor, k))
-
-    return _sort_factors(result)
-
-
 def dmp_trial_division(f, factors, u, K):
     """Determine multiplicities of factors using trial division. """
     result = []
@@ -561,7 +541,7 @@ def dup_zz_factor(f, K):
     if H is None:
         H = dup_zz_zassenhaus(g, K)
 
-    factors = dup_trial_division(f, H, K)
+    factors = dmp_trial_division(f, H, 0, K)
     return cont, factors
 
 
@@ -1063,7 +1043,7 @@ def dup_ext_factor(f, K):
         h = dup_shift(h, H, K)
         factors[i] = h
 
-    factors = dup_trial_division(F, factors, K)
+    factors = dmp_trial_division(F, factors, 0, K)
     return lc, factors
 
 
