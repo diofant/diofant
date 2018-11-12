@@ -264,22 +264,6 @@ def dup_inner_subresultants(f, g, K):
     return R, S
 
 
-def dup_subresultants(f, g, K):
-    """
-    Computes subresultant PRS of two polynomials in `K[x]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_subresultants(x**2 + 1, x**2 - 1)
-    [x**2 + 1, x**2 - 1, -2]
-
-    """
-    return dup_inner_subresultants(f, g, K)[0]
-
-
 def dup_prs_resultant(f, g, K):
     """
     Resultant algorithm in `K[x]` using subresultant PRS.
@@ -842,7 +826,7 @@ def dup_rr_prs_gcd(f, g, K):
 
     c = K.gcd(fc, gc)
 
-    h = dup_subresultants(F, G, K)[-1]
+    h = dmp_subresultants(F, G, 0, K)[-1]
     _, h = dmp_ground_primitive(h, 0, K)
 
     if K.is_negative(dmp_LC(h, K)):
@@ -877,7 +861,7 @@ def dup_ff_prs_gcd(f, g, K):
     if result is not None:
         return result
 
-    h = dup_subresultants(f, g, K)[-1]
+    h = dmp_subresultants(f, g, 0, K)[-1]
     h = dmp_ground_monic(h, 0, K)
 
     cff = dmp_quo(f, h, 0, K)

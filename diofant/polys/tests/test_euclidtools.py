@@ -86,7 +86,7 @@ def test_dup_primitive_prs():
         1]
 
 
-def test_dup_subresultants():
+def test_dmp_subresultants():
     R, x = ring("x", ZZ)
 
     assert R.dup_resultant(0, 0) == 0
@@ -102,7 +102,7 @@ def test_dup_subresultants():
     c = 9326*x - 12300
     d = 260708
 
-    assert R.dup_subresultants(f, g) == [f, g, a, b, c, d]
+    assert R.dmp_subresultants(f, g) == [f, g, a, b, c, d]
     assert R.dup_resultant(f, g) == R.dmp_LC(d)
 
     f = x**2 - 2*x + 1
@@ -110,7 +110,7 @@ def test_dup_subresultants():
 
     a = 2*x - 2
 
-    assert R.dup_subresultants(f, g) == [f, g, a]
+    assert R.dmp_subresultants(f, g) == [f, g, a]
     assert R.dup_resultant(f, g) == 0
 
     f = x**2 + 1
@@ -118,7 +118,7 @@ def test_dup_subresultants():
 
     a = -2
 
-    assert R.dup_subresultants(f, g) == [f, g, a]
+    assert R.dmp_subresultants(f, g) == [f, g, a]
     assert R.dup_resultant(f, g) == 4
 
     f = x**2 - 1
@@ -159,8 +159,6 @@ def test_dup_subresultants():
     assert R.dup_inner_subresultants(0, 0) == ([], [])
     assert R.dup_inner_subresultants(0, 1) == ([1], [1])
 
-
-def test_dmp_subresultants():
     R, x, y = ring("x,y", ZZ)
 
     assert R.dmp_resultant(0, 0) == 0
