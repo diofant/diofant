@@ -1051,7 +1051,7 @@ def dup_ext_factor(f, K):
     f, F = dmp_sqf_part(f, 0, K), f
     s, g, r = dmp_sqf_norm(f, 0, K)
 
-    factors = dup_factor_list_include(r, K.domain)
+    factors = dmp_factor_list_include(r, 0, K.domain)
 
     if len(factors) == 1:
         return lc, [(f, n//dmp_degree(f, 0))]
@@ -1176,17 +1176,6 @@ def dup_factor_list(f, K0):
     return coeff*cont, _sort_factors(factors)
 
 
-def dup_factor_list_include(f, K):
-    """Factor polynomials into irreducibles in `K[x]`. """
-    coeff, factors = dup_factor_list(f, K)
-
-    if not factors:
-        return [(dmp_strip([coeff], 0), 1)]
-    else:
-        g = dmp_mul_ground(factors[0][0], coeff, 0, K)
-        return [(g, factors[0][1])] + factors[1:]
-
-
 def dmp_factor_list(f, u, K0):
     """Factor polynomials into irreducibles in `K[X]`. """
     if not u:
@@ -1261,9 +1250,6 @@ def dmp_factor_list(f, u, K0):
 
 def dmp_factor_list_include(f, u, K):
     """Factor polynomials into irreducibles in `K[X]`. """
-    if not u:
-        return dup_factor_list_include(f, K)
-
     coeff, factors = dmp_factor_list(f, u, K)
 
     if not factors:

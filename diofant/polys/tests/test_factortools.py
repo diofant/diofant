@@ -528,11 +528,11 @@ def test_dup_factor_list():
     assert R.dup_factor_list(QQ(1, 7)) == (QQ(1, 7), [])
 
     R, x = ring("x", ZZ)
-    assert R.dup_factor_list_include(0) == [(0, 1)]
-    assert R.dup_factor_list_include(7) == [(7, 1)]
+    assert R.dmp_factor_list_include(0) == [(0, 1)]
+    assert R.dmp_factor_list_include(7) == [(7, 1)]
 
     assert R.dup_factor_list(x**2 + 2*x + 1) == (1, [(x + 1, 2)])
-    assert R.dup_factor_list_include(x**2 + 2*x + 1) == [(x + 1, 2)]
+    assert R.dmp_factor_list_include(x**2 + 2*x + 1) == [(x + 1, 2)]
     # issue sympy/sympy#8037
     assert R.dup_factor_list(6*x**2 - 5*x - 6) == (1, [(2*x - 3, 1), (3*x + 2, 1)])
 
