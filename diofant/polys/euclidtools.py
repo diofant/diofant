@@ -1428,22 +1428,6 @@ def dmp_inner_gcd(f, g, u, K):
             dmp_inflate(cfg, J, u, K))
 
 
-def dup_gcd(f, g, K):
-    """
-    Computes polynomial GCD of `f` and `g` in `K[x]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_gcd(x**2 - 1, x**2 - 3*x + 2)
-    x - 1
-
-    """
-    return dup_inner_gcd(f, g, K)[0]
-
-
 def dmp_gcd(f, g, u, K):
     """
     Computes polynomial GCD of `f` and `g` in `K[X]`.
@@ -1482,7 +1466,7 @@ def dup_rr_lcm(f, g, K):
     c = K.lcm(fc, gc)
 
     h = dmp_quo(dup_mul(f, g, K),
-                dup_gcd(f, g, K), 0, K)
+                dmp_gcd(f, g, 0, K), 0, K)
 
     return dmp_mul_ground(h, c, 0, K)
 
@@ -1504,7 +1488,7 @@ def dup_ff_lcm(f, g, K):
 
     """
     h = dmp_quo(dup_mul(f, g, K),
-                dup_gcd(f, g, K), 0, K)
+                dmp_gcd(f, g, 0, K), 0, K)
 
     return dmp_ground_monic(h, 0, K)
 

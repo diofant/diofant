@@ -308,7 +308,7 @@ def test_dmp_discriminant():
         (-27*y**2*v**2 + 18*y*z*u*v - 4*y*u**3 - 4*z**3*v + z**2*u**2).drop(x)
 
 
-def test_dup_gcd():
+def test_dmp_gcd():
     R, x = ring("x", ZZ)
 
     f, g = 0, 0
@@ -461,8 +461,6 @@ def test_dup_gcd():
     f, g = (x**2 - y, x**3 - y*x + 2)
     assert R.dmp_inner_gcd(f, g) == (1, f, g)
 
-
-def test_dmp_gcd():
     R,  x, y = ring("x,y", ZZ)
 
     f, g = 0, 0
@@ -649,6 +647,10 @@ def test_dmp_gcd():
              244093590929967254073813518342605644787785800*x -
              22495499028725631994927113634418779135935898997901327211111875586270479483*y -
              876801128965234839118530545935732755107147297241756982389990, 1))
+
+    R, x = ring("x", ZZ)
+
+    assert R.dmp_gcd(x**2 - 1, x**2 - 3*x + 2) == x - 1
 
 
 def test_dmp_lcm():

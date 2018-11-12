@@ -28,7 +28,7 @@ from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_zz_collins_resultant, dmp_zz_heu_gcd,
                           dmp_zz_modular_resultant, dup_discriminant,
                           dup_euclidean_prs, dup_ff_lcm, dup_ff_prs_gcd,
-                          dup_gcd, dup_gcdex, dup_half_gcdex, dup_inner_gcd,
+                          dup_gcdex, dup_half_gcdex, dup_inner_gcd,
                           dup_inner_subresultants, dup_invert,
                           dup_primitive_prs, dup_prs_resultant, dup_qq_heu_gcd,
                           dup_resultant, dup_rr_lcm, dup_rr_prs_gcd,
@@ -436,10 +436,6 @@ class IPolys:
     def dmp_inner_gcd(self, f, g):
         H, F, G = dmp_inner_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
-    def dup_gcd(self, f, g):
-        H = dup_gcd(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(H)
 
     def dmp_gcd(self, f, g):
         H = dmp_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
