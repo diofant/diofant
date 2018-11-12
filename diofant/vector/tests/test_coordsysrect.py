@@ -334,4 +334,4 @@ def test_locatenew_point():
 def test_evalf():
     A = CoordSysCartesian('A')
     v = 3*A.i + 4*A.j + a*A.k
-    assert v.evalf(subs={a: 1}) == v.subs(a, 1).evalf()
+    assert v.evalf(subs={a: 1}) == v.subs({a: 1}).evalf()

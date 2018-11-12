@@ -530,7 +530,7 @@ class Function(Application, Expr):
             s = e1._eval_nseries(v, n, logx)
             o = s.getO()
             s = s.removeO()
-            return s.subs(v, zi).expand() + Order(o.expr.subs(v, zi), x)
+            return s.subs({v: zi}).expand() + Order(o.expr.subs({v: zi}), x)
         if (self.func.nargs is S.Naturals0
                 or (self.func.nargs == FiniteSet(1) and args0[0])
                 or any(c > 1 for c in self.func.nargs)):
@@ -539,18 +539,18 @@ class Function(Application, Expr):
             if e == e1:
                 # for example when e = sin(x+1) or e = sin(cos(x))
                 # let's try the general algorithm
-                term = e.subs(x, S.Zero)
+                term = e.subs({x: 0})
                 if term.is_finite is False:
                     raise PoleError("Cannot expand %s around 0" % self)
                 series = term
                 fact = S.One
                 _x = Dummy('x', real=True, positive=True)
-                e = e.subs(x, _x)
+                e = e.subs({x: _x})
                 for i in range(n - 1):
                     i += 1
                     fact *= Rational(i)
                     e = e.diff(_x)
-                    subs = e.subs(_x, S.Zero)
+                    subs = e.subs({_x: 0})
                     term = subs*(x**i)/fact
                     term = term.expand()
                     series += term
@@ -816,12 +816,12 @@ class Derivative(Expr):
         0
 
     Here, the Symbols c and s act just like the functions cos(x) and sin(x),
-    respectively. Think of 2*cos(x) as f(c).subs(c, cos(x)) (or f(c) *at*
-    c = cos(x)) and 2*sqrt(1 - sin(x)**2) as g(s).subs(s, sin(x)) (or g(s) *at*
+    respectively. Think of 2*cos(x) as f(c).subs({c: cos(x)}) (or f(c) *at*
+    c = cos(x)) and 2*sqrt(1 - sin(x)**2) as g(s).subs({s: sin(x)}) (or g(s) *at*
     s = sin(x)), where f(u) == 2*u and g(u) == 2*sqrt(1 - u**2).  Here, we
     define the function first and evaluate it at the function, but we can
     actually unambiguously do this in reverse in Diofant, because
-    expr.subs(Function, Symbol) is well-defined:  just structurally replace the
+    expr.subs({Function: Symbol}) is well-defined:  just structurally replace the
     function everywhere it appears in the expression.
 
     This is the same notational convenience used in the Euler-Lagrange method
@@ -1178,7 +1178,7 @@ class Derivative(Expr):
         z = list(self.free_symbols)[0]
 
         def eval(x):
-            f0 = self.expr.subs(z, Expr._from_mpmath(x, prec=mpmath.mp.prec))
+            f0 = self.expr.subs({z: Expr._from_mpmath(x, prec=mpmath.mp.prec)})
             f0 = f0.evalf(mlib.libmpf.prec_to_dps(mpmath.mp.prec), strict=False)
             return f0._to_mpmath(mpmath.mp.prec)
         return Expr._from_mpmath(mpmath.diff(eval,
@@ -1369,9 +1369,9 @@ class Subs(Expr):
     ========
 
     >>> e = Subs(f(x).diff(x), (x, y))
-    >>> e.subs(y, 0)
+    >>> e.subs({y: 0})
     Subs(Derivative(f(x), x), (x, 0))
-    >>> e.subs(f, sin).doit()
+    >>> e.subs({f: sin}).doit()
     cos(y)
 
     >>> Subs(f(x)*sin(y) + z, (x, 0), (y, 1))

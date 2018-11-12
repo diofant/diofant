@@ -43,7 +43,7 @@ def residue(expr, x, x0):
 
     expr = sympify(expr)
     if x0 != 0:
-        expr = expr.subs(x, x + x0)
+        expr = expr.subs({x: x + x0})
     s, n = Order(1, x), 1
     while s.has(Order) and s.getn() <= 0:
         s = expr.nseries(x, n=n)

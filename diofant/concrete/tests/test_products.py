@@ -116,13 +116,13 @@ def test_karr_proposition_2a():
         # g
         g = i**3 + 2*i**2 - 3*i
         # f = Delta g
-        f = simplify(g.subs(i, i+1) / g)
+        f = simplify(g.subs({i: i + 1})/g)
         # The product
         a = m
         b = n - 1
         P = Product(f, (i, a, b)).doit()
         # Test if Product_{m <= i < n} f(i) = g(n) / g(m)
-        assert simplify(P / (g.subs(i, n) / g.subs(i, m))) == 1
+        assert simplify(P/(g.subs({i: n})/g.subs({i: m}))) == 1
 
     # m < n
     test_the_product(u,   u+v)

@@ -359,7 +359,7 @@ class Order(Expr):
 
     def _eval_subs(self, old, new):
         if old in self.variables:
-            newexpr = self.expr.subs(old, new)
+            newexpr = self.expr.subs({old: new})
             i = self.variables.index(old)
             newvars = list(self.variables)
             newpt = list(self.point)
@@ -374,12 +374,12 @@ class Order(Expr):
                         var = syms.pop()
                     # First, try to substitute self.point in the "new"
                     # expr to see if this is a fixed point.
-                    # E.g.  O(y).subs(y, sin(x))
-                    point = new.subs(var, self.point[i])
+                    # E.g.  O(y).subs({y: sin(x)})
+                    point = new.subs({var: self.point[i]})
                     if point != self.point[i]:
                         from ..solvers import solve
                         d = Dummy()
-                        res = solve(old - new.subs(var, d), d)
+                        res = solve(old - new.subs({var: d}), d)
                         point = d.subs(res[0]).limit(old, self.point[i])
                     newvars[i] = var
                     newpt[i] = point

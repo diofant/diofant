@@ -84,12 +84,12 @@ def test_Idx_func_args():
 
 def test_Idx_subs():
     i, a, b = symbols('i a b', integer=True)
-    assert Idx(i, a).subs(a, b) == Idx(i, b)
-    assert Idx(i, a).subs(i, b) == Idx(b, a)
+    assert Idx(i, a).subs({a: b}) == Idx(i, b)
+    assert Idx(i, a).subs({i: b}) == Idx(b, a)
 
-    assert Idx(i).subs(i, 2) == Idx(2)
-    assert Idx(i, a).subs(a, 2) == Idx(i, 2)
-    assert Idx(i, (a, b)).subs(i, 2) == Idx(2, (a, b))
+    assert Idx(i).subs({i: 2}) == Idx(2)
+    assert Idx(i, a).subs({a: 2}) == Idx(i, 2)
+    assert Idx(i, (a, b)).subs({i: 2}) == Idx(2, (a, b))
 
 
 def test_IndexedBase_sugar():
@@ -108,8 +108,8 @@ def test_IndexedBase_subs():
     A = IndexedBase(a)
     B = IndexedBase(b)
     C = IndexedBase(c)
-    assert A[i] == B[i].subs(b, a)
-    assert isinstance(C[1].subs(C, Dict({1: 2})), type(A[1]))
+    assert A[i] == B[i].subs({b: a})
+    assert isinstance(C[1].subs({C: Dict({1: 2})}), type(A[1]))
 
 
 def test_IndexedBase_shape():
@@ -118,7 +118,7 @@ def test_IndexedBase_shape():
     b = IndexedBase('a', shape=(m, n))
     assert b.shape == Tuple(m, n)
     assert a[i, j] != b[i, j]
-    assert a[i, j] == b[i, j].subs(n, m)
+    assert a[i, j] == b[i, j].subs({n: m})
     assert b.func(*b.args) == b
     assert b[i, j].func(*b[i, j].args) == b[i, j]
     pytest.raises(IndexException, lambda: b[i])
@@ -126,7 +126,7 @@ def test_IndexedBase_shape():
 
     F = IndexedBase("F", shape=m)
     assert F.shape == Tuple(m)
-    assert F[i].subs(i, j) == F[j]
+    assert F[i].subs({i: j}) == F[j]
     pytest.raises(IndexException, lambda: F[i, j])
 
 
@@ -149,8 +149,8 @@ def test_Indexed_subs():
     i, j, k = symbols('i j k', integer=True)
     A = IndexedBase(a)
     B = IndexedBase(b)
-    assert A[i, j] == B[i, j].subs(b, a)
-    assert A[i, j] == A[i, k].subs(k, j)
+    assert A[i, j] == B[i, j].subs({b: a})
+    assert A[i, j] == A[i, k].subs({k: j})
 
 
 def test_Indexed_properties():

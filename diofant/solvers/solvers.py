@@ -582,7 +582,7 @@ def _solve(f, symbol, **flags):
                 if candidate in result:
                     continue
                 try:
-                    v = (cond == S.true) or cond.subs(symbol, candidate)
+                    v = (cond == S.true) or cond.subs({symbol: candidate})
                 except TypeError:
                     v = False
                 if v != S.false:
@@ -593,7 +593,7 @@ def _solve(f, symbol, **flags):
                         if other_n == n:
                             break
                         try:
-                            if other_cond.subs(symbol, candidate) == S.true:
+                            if other_cond.subs({symbol: candidate}) == S.true:
                                 matches_other_piece = True
                                 break
                         except TypeError:
@@ -683,7 +683,7 @@ def _solve(f, symbol, **flags):
                     f1 = funcs[0]
                     t = Dummy('t')
                     # perform the substitution
-                    ftry = f_num.subs(f1, t)
+                    ftry = f_num.subs({f1: t})
 
                     # if no Functions left, we can proceed with usual solve
                     if not ftry.has(symbol):
@@ -691,7 +691,7 @@ def _solve(f, symbol, **flags):
                         cv_inv = _solve(t - f1, symbol, **flags)[0]
                         sols = []
                         for sol in cv_sols:
-                            sols.append(cv_inv.subs(t, sol))
+                            sols.append(cv_inv.subs({t: sol}))
                         result = list(ordered(sols))
 
                 if result is False:
@@ -709,21 +709,21 @@ def _solve(f, symbol, **flags):
                     # having to factor:
                     #
                     # >>> eq = (exp(I*(-x-2))+exp(I*(x+2)))
-                    # >>> eq.subs(exp(x), y)  # fails
+                    # >>> eq.subs({exp(x): y})  # fails
                     # exp(I*(-x - 2)) + exp(I*(x + 2))
-                    # >>> eq.expand().subs(exp(x), y)  # works
+                    # >>> eq.expand().subs({exp(x): y})  # works
                     # y**I*exp(2*I) + y**(-I)*exp(-2*I)
                     def _expand(p):
                         b, e = p.as_base_exp()
                         e = expand_mul(e)
                         return expand_power_exp(b**e)
-                    ftry = f_num.replace(lambda w: w.is_Pow, _expand).subs(u, t)
+                    ftry = f_num.replace(lambda w: w.is_Pow, _expand).subs({u: t})
                     assert not ftry.has(symbol)
                     soln = _solve(ftry, t, **flags)
                     sols = []
                     for sol in soln:
                         for i in inv:
-                            sols.append(i.subs(t, sol))
+                            sols.append(i.subs({t: sol}))
                     result = list(ordered(sols))
 
         else:
@@ -758,7 +758,7 @@ def _solve(f, symbol, **flags):
                     try:
                         t = Dummy('t')
                         iv = _solve(u - t, symbol, **flags)
-                        soln = list(ordered({i.subs(t, s) for i in iv for s in soln}))
+                        soln = list(ordered({i.subs({t: s}) for i in iv for s in soln}))
                     except NotImplementedError:
                         # perhaps _tsolve can handle f_num
                         soln = None
@@ -785,7 +785,7 @@ def _solve(f, symbol, **flags):
             if cov:
                 isym, ieq = cov
                 inv = _solve(ieq, symbol, **flags)[0]
-                rv = {inv.subs(isym, xi) for xi in _solve(eq, isym, **flags)}
+                rv = {inv.subs({isym: xi}) for xi in _solve(eq, isym, **flags)}
             else:
                 rv = set(_solve(eq, symbol, **flags))
             result = list(ordered(rv))
@@ -983,7 +983,7 @@ def _solve_system(exprs, symbols, **flags):
                             continue
                         rnew = r.copy()
                         for k, v in r.items():
-                            rnew[k] = v.subs(s, sol)
+                            rnew[k] = v.subs({s: sol})
                         # and add this new solution
                         rnew[s] = sol
                         newresult.append(rnew)
@@ -1105,7 +1105,7 @@ def minsolve_linear_system(system, *symbols, **flags):
                 determined[x] = Integer(0)
             else:
                 val = solve(k)[0][x]
-                if val == 0 and all(v.subs(x, val) == 0 for v in s.values()):
+                if val == 0 and all(v.subs({x: val}) == 0 for v in s.values()):
                     determined[x] = Integer(1)
                 else:
                     determined[x] = val
@@ -1277,7 +1277,7 @@ def _tsolve(eq, sym, **flags):
                         inversion = _tsolve(g - u, sym, **flags)
                         if inversion:
                             sol = _solve(p, u, **flags)
-                            return list(ordered({i.subs(u, s)
+                            return list(ordered({i.subs({u: s})
                                                  for i in inversion for s in sol}))
                         else:  # pragma: no cover
                             raise NotImplementedError

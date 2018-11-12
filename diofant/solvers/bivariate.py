@@ -102,9 +102,9 @@ def _lambert(eq, x):
     mainlog = _mostfunc(eq, log, x)
     if not mainlog:
         return []  # violated assumptions
-    other = eq.subs(mainlog, 0)
+    other = eq.subs({mainlog: 0})
     if isinstance(-other, log):
-        eq = (eq - other).subs(mainlog, mainlog.args[0])
+        eq = (eq - other).subs({mainlog: mainlog.args[0]})
         mainlog = mainlog.args[0]
         if not isinstance(mainlog, log):
             return []  # violated assumptions
@@ -135,7 +135,7 @@ def _lambert(eq, x):
 
         solns = solve(X1 - u, x)
         for i, tmp in enumerate(solns):
-            solns[i] = tmp[x].subs(u, rhs)
+            solns[i] = tmp[x].subs({u: rhs})
             sol.append(solns[i])
     return sol
 
@@ -205,7 +205,7 @@ def _solve_lambert(f, symbol, gens):
         if lhs.is_Mul and rhs != 0:
             soln = _lambert(log(lhs) - log(rhs), symbol)
         elif lhs.is_Add:
-            other = lhs.subs(mainlog, 0)
+            other = lhs.subs({mainlog: 0})
             if other and not other.is_Add and [
                     tmp for tmp in other.atoms(Pow)
                     if symbol in tmp.free_symbols]:
@@ -230,7 +230,7 @@ def _solve_lambert(f, symbol, gens):
                 soln = _lambert(expand_log(log(lhs) - log(rhs)), symbol)
             elif lhs.is_Add:
                 # move all but mainpow-containing term to rhs
-                other = lhs.subs(mainpow, 0)
+                other = lhs.subs({mainpow: 0})
                 mainterm = lhs - other
                 rhs = rhs - other
                 diff = log(mainterm) - log(rhs)
@@ -266,7 +266,7 @@ def bivariate_type(f, x, y, **kwargs):
     Examples
     ========
 
-    >>> eq = (x**2 - 3).subs(x, x + y)
+    >>> eq = (x**2 - 3).subs({x: x + y})
     >>> bivariate_type(eq, x, y)
     (x + y, _u**2 - 3, _u)
     >>> uxy, pu, u = _
@@ -298,7 +298,7 @@ def bivariate_type(f, x, y, **kwargs):
     args = Add.make_args(p.as_expr())
     new = []
     for a in args:
-        a = _mexpand(a.subs(x, u/y))
+        a = _mexpand(a.subs({x: u/y}))
         free = a.free_symbols
         if x in free or y in free:
             break
@@ -307,7 +307,7 @@ def bivariate_type(f, x, y, **kwargs):
         return x*y, Add(*new), u
 
     def ok(f, v, c):
-        new = _mexpand(f.subs(v, c))
+        new = _mexpand(f.subs({v: c}))
         free = new.free_symbols
         return None if (x in free or y in free) else new
 

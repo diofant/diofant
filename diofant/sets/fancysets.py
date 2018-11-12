@@ -289,7 +289,7 @@ class ImageSet(Set):
                 # on the variable name, they are replaced by the dummy variables
                 # below
                 a, b = Dummy('a'), Dummy('b')
-                f, g = f.subs(n, a), g.subs(m, b)
+                f, g = f.subs({n: a}), g.subs({m: b})
                 solns_set = diophantine(f - g)
                 if solns_set == set():
                     return EmptySet()
@@ -300,7 +300,7 @@ class ImageSet(Set):
                     return  # pragma: no cover
 
                 # since 'a' < 'b'
-                return imageset(Lambda(t, f.subs(a, solns[0][0])), S.Integers)
+                return imageset(Lambda(t, f.subs({a: solns[0][0]})), S.Integers)
 
         if other == S.Reals:
             from ..solvers.diophantine import diophantine
@@ -313,7 +313,7 @@ class ImageSet(Set):
             n = self.lamda.variables[0]
 
             n_ = Dummy(n.name, integer=True)
-            f_ = f.subs(n, n_)
+            f_ = f.subs({n: n_})
 
             re, im = map(expand_complex, f_.as_real_imag())
 

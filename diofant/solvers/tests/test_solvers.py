@@ -2,12 +2,12 @@ import pytest
 
 from diofant import (Abs, And, Derivative, E, Eq, Float, Function, Gt, I,
                      Indexed, IndexedBase, Integer, Integral, LambertW, Lt,
-                     Matrix, Mul, Or, Piecewise, Poly, Pow, Rational, Symbol,
-                     Tuple, Wild, acos, arg, asin, atan, atan2, cbrt, cos,
-                     cosh, diff, erf, erfc, erfcinv, erfinv, exp, expand_log,
-                     im, log, nan, oo, ordered, pi, re, real_root, root, sec,
-                     sech, simplify, sin, sinh, solve, solve_linear, sqrt,
-                     sstr, symbols, sympify, tan, tanh)
+                     Matrix, Max, Mul, Or, Piecewise, Poly, Pow, Rational,
+                     Symbol, Tuple, Wild, acos, arg, asin, atan, atan2, cbrt,
+                     cos, cosh, diff, erf, erfc, erfcinv, erfinv, exp,
+                     expand_log, im, log, nan, oo, ordered, pi, re, real_root,
+                     root, sec, sech, simplify, sin, sinh, solve, solve_linear,
+                     sqrt, sstr, symbols, sympify, tan, tanh)
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
 from diofant.core.function import nfloat
@@ -148,6 +148,12 @@ def test_solve_args():
     assert solve(Poly(x - 3), x) == [{x: 3}]
 
     assert solve([x - 2, x**2 + y]) == [{x: 2, y: -4}]
+
+
+def test_solve_max():
+    x = symbols('x', real=True)
+    assert solve(1 - abs(x) - Max(-x - 2, x - 2), x) == [{x: -Rational(3, 2)},
+                                                         {x: Rational(3, 2)}]
 
 
 def test_solve_polynomial1():
@@ -490,7 +496,7 @@ def test_solve_transcendental():
 
     expr = root(x, 3) - root(x, 5)
     expr1 = root(x, 3, 1) - root(x, 5, 1)
-    v = expr1.subs(x, -3)
+    v = expr1.subs({x: -3})
     eq = Eq(expr, v)
     eq1 = Eq(expr1, v)
     assert solve(eq, check=False) == [{x: _**15}
@@ -528,8 +534,8 @@ def test_solve_for_exprs():
 
     assert solve(sqrt(2) - 1, 1, check=False) == [{1: sqrt(2)}]
     assert solve(x - y + 1, 1) == [{1: x/(y - 1)}]  # /!\ -1 is targeted, too
-    assert [_[1].subs(z, -1)
-            for _ in solve((x - y + 1).subs(-1, z), 1)] == [-x + y]
+    assert [_[1].subs({z: -1})
+            for _ in solve((x - y + 1).subs({-1: z}), 1)] == [-x + y]
 
     assert solve([x - 2, x**2 + f(x)], {f(x), x}) == [{x: 2, f(x): -4}]
 
@@ -874,7 +880,7 @@ def test_sympyissue_5849():
          -I2 + dQ2,
          2*I3 + 2*I5 + 3*I6 - Q2,
          I4 - 2*I5 + 2*Q4 + dI4)
-    e = tuple(_.subs(I3, I6) for _ in e)
+    e = tuple(_.subs({I3: I6}) for _ in e)
 
     ans = [{dQ4: I3 - I5,
             dI1: -4*I2 - 8*I3 - 4*I5 - 6*I6 + 24,
@@ -883,7 +889,7 @@ def test_sympyissue_5849():
             Q2: 2*I3 + 2*I5 + 3*I6,
             I1: I2 + I3,
             Q4: -I3/2 + 3*I5/2 - dI4/2}]
-    ans = [{k: v.subs(I3, I6) for k, v in ans[0].items()}]
+    ans = [{k: v.subs({I3: I6}) for k, v in ans[0].items()}]
     syms = I1, I4, Q2, Q4, dI1, dI4, dQ2, dQ4
     assert solve(e, *syms) == ans
     assert [_.subs(ans[0]) for _ in e] == [0]*9
@@ -1210,14 +1216,14 @@ def test_sympyissue_6989():
 def test_lambert_multivariate():
     assert _filtered_gens(Poly(x + 1/x + exp(x) + y), x) == {x, exp(x)}
     assert _lambert(x, x) == []
-    assert solve((x**2 - 2*x + 1).subs(x, log(x) + 3*x)) == [{x: LambertW(3*E)/3}]
-    assert (solve((x**2 - 2*x + 1).subs(x, (log(x) + 3*x)**2 - 1)) ==
+    assert solve((x**2 - 2*x + 1).subs({x: log(x) + 3*x})) == [{x: LambertW(3*E)/3}]
+    assert (solve((x**2 - 2*x + 1).subs({x: (log(x) + 3*x)**2 - 1})) ==
             [{x: LambertW(3*exp(-sqrt(2)))/3}, {x: LambertW(3*exp(sqrt(2)))/3}])
-    assert (solve((x**2 - 2*x - 2).subs(x, log(x) + 3*x)) ==
+    assert (solve((x**2 - 2*x - 2).subs({x: log(x) + 3*x})) ==
             [{x: LambertW(3*exp(1 + sqrt(3)))/3},
              {x: LambertW(3*exp(-sqrt(3) + 1))/3}])
     assert solve(x*log(x) + 3*x + 1, x) == [{x: exp(-3 + LambertW(-exp(3)))}]
-    eq = (x*exp(x) - 3).subs(x, x*exp(x))
+    eq = (x*exp(x) - 3).subs({x: x*exp(x)})
     assert solve(eq) == [{x: LambertW(3*exp(-LambertW(3)))}]
     # coverage test
     pytest.raises(NotImplementedError, lambda: solve(x - sin(x)*log(y - x), x))
@@ -1249,7 +1255,7 @@ def test_lambert_multivariate():
     assert (solve((a/x + exp(x/2)).diff(x, 2), x) ==
             [{x: 6*LambertW(root(-1, 3)*root(a, 3)/3)}])
 
-    assert (solve((log(x) + x).subs(x, x**2 + 1)) ==
+    assert (solve((log(x) + x).subs({x: x**2 + 1})) ==
             [{x: -I*sqrt(-LambertW(1) + 1)}, {x: sqrt(-1 + LambertW(1))}])
 
     # these only give one of the solutions (see XFAIL below)

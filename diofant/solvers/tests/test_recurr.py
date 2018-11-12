@@ -93,7 +93,7 @@ def test_rsolve_hyper():
 
 def recurrence_term(c, f):
     """Compute RHS of recurrence in f(n) with coefficients in c."""
-    return sum(c[i]*f.subs(n, n + i) for i in range(len(c)))
+    return sum(c[i]*f.subs({n: n + i}) for i in range(len(c)))
 
 
 def test_rsolve_bulk():
@@ -129,7 +129,7 @@ def test_rsolve():
     assert rsolve(y(n) - y(n - 1) - y(n - 2), y(n), [0, 5]) == h
     assert rsolve(Eq(y(n), y(n - 1) + y(n - 2)), y(n), [0, 5]) == h
 
-    assert f.subs(y, Lambda(k, rsolve(f, y(n)).subs(n, k))).simplify() == 0
+    assert f.subs({y: Lambda(k, rsolve(f, y(n)).subs({n: k}))}).simplify() == 0
 
     f = (n - 1)*y(n + 2) - (n**2 + 3*n - 2)*y(n + 1) + 2*n*(n + 1)*y(n)
     g = C1*factorial(n) + C0*2**n
@@ -143,7 +143,7 @@ def test_rsolve():
     assert rsolve(f, y(n), {0: 0, 1: 3}) == h
     assert rsolve(f, y(n), {y(0): 0, y(1): 3}) == h
 
-    assert f.subs(y, Lambda(k, rsolve(f, y(n)).subs(n, k))).simplify() == 0
+    assert f.subs({y: Lambda(k, rsolve(f, y(n)).subs({n: k}))}).simplify() == 0
 
     f = y(n) - y(n - 1) - 2
 
@@ -151,7 +151,7 @@ def test_rsolve():
     assert rsolve(f, y(n), {y(0): 1}) == 2*n + 1
     assert rsolve(f, y(n), {y(0): 0, y(1): 1}) is None
 
-    assert f.subs(y, Lambda(k, rsolve(f, y(n)).subs(n, k))).simplify() == 0
+    assert f.subs({y: Lambda(k, rsolve(f, y(n)).subs({n: k}))}).simplify() == 0
 
     f = 3*y(n - 1) - y(n) - 1
 
@@ -159,11 +159,11 @@ def test_rsolve():
     assert rsolve(f, y(n), {y(0): 1}) == 3**n/2 + Rational(1, 2)
     assert rsolve(f, y(n), {y(0): 2}) == 3*3**n/2 + Rational(1, 2)
 
-    assert f.subs(y, Lambda(k, rsolve(f, y(n)).subs(n, k))).simplify() == 0
+    assert f.subs({y: Lambda(k, rsolve(f, y(n)).subs({n: k}))}).simplify() == 0
 
     f = y(n) - 1/n*y(n - 1)
     assert rsolve(f, y(n)) == C0/factorial(n)
-    assert f.subs(y, Lambda(k, rsolve(f, y(n)).subs(n, k))).simplify() == 0
+    assert f.subs({y: Lambda(k, rsolve(f, y(n)).subs({n: k}))}).simplify() == 0
 
     f = y(n) - 1/n*y(n - 1) - 1
     assert rsolve(f, y(n)) is None
@@ -174,7 +174,7 @@ def test_rsolve():
     assert rsolve(f, y(n), {y(1): 2}) == 2**(n - 1)*n*2
     assert rsolve(f, y(n), {y(1): 3}) == 2**(n - 1)*n*3
 
-    assert f.subs(y, Lambda(k, rsolve(f, y(n)).subs(n, k))).simplify() == 0
+    assert f.subs({y: Lambda(k, rsolve(f, y(n)).subs({n: k}))}).simplify() == 0
 
     f = (n - 1)*(n - 2)*y(n + 2) - (n + 1)*(n + 2)*y(n)
 
@@ -182,7 +182,7 @@ def test_rsolve():
     assert rsolve(
         f, y(n), {y(3): 6, y(4): -24}) == -n*(n - 1)*(n - 2)*(-1)**(n)
 
-    assert f.subs(y, Lambda(k, rsolve(f, y(n)).subs(n, k))).simplify() == 0
+    assert f.subs({y: Lambda(k, rsolve(f, y(n)).subs({n: k}))}).simplify() == 0
 
     assert rsolve(Eq(y(n + 1), a*y(n)), y(n), {y(1): a}).simplify() == a**n
 

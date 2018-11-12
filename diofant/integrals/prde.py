@@ -795,7 +795,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
     respolys, residues = list(zip(*roots)) or [[], []]
     # Note: this might be empty, but everything below should work find in that
     # case (it should be the same as if it were [[1, 1]])
-    residueterms = [(H[j][1].subs(z, i), i) for j in range(len(H)) for
+    residueterms = [(H[j][1].subs({z: i}), i) for j in range(len(H)) for
                     i in residues[j]]
 
     # TODO: finish writing this and write tests

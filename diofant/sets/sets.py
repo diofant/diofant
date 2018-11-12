@@ -1854,7 +1854,8 @@ def imageset(*args):
     if isinstance(set, ImageSet):
         if len(set.lamda.variables) == 1 and len(f.variables) == 1:
             return imageset(Lambda(set.lamda.variables[0],
-                                   f.expr.subs(f.variables[0], set.lamda.expr)),
+                                   f.expr.subs({f.variables[0]:
+                                                set.lamda.expr})),
                             set.base_set)
 
     if r is not None:

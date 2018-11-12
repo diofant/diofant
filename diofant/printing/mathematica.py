@@ -175,8 +175,8 @@ class MCodePrinter(CodePrinter):
     def _print_RootOf(self, expr):
         from ..core import Symbol
 
-        return 'Root[%s &, %s]' % (self.doprint(expr.expr.subs(expr.poly.gen,
-                                                               Symbol('#'))),
+        return 'Root[%s &, %s]' % (self.doprint(expr.expr.subs({expr.poly.gen:
+                                                                Symbol('#')})),
                                    self.doprint(expr.index + 1))
 
     def _print_Lambda(self, expr):

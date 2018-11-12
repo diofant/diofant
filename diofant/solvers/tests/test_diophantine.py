@@ -501,7 +501,7 @@ def test_diophantine():
     # assert check_solutions(y**2 - 7*x*y + 4*y*z)
     assert check_solutions(x**2 - 2*x + 1)
 
-    assert diophantine(Rational(0)) == {(t,)}
+    assert diophantine(Integer(0)) == {(t,)}
     assert diophantine(x - y) == diophantine(Eq(x, y))
     assert diophantine(3*x*pi - 2*y*pi) == {(2*t_0, 3*t_0)}
     assert diophantine(x**2 + y**2 + z**2 - 14) == {(1, 2, 3)}
@@ -728,7 +728,7 @@ def test_diopcoverage():
     assert base_solution_linear(0, 1, 2, t=None) == (0, 0)
     ans = (3*t - 1, -2*t + 1)
     assert base_solution_linear(4, 8, 12, t) == ans
-    assert base_solution_linear(4, 8, 12, t=None) == tuple(_.subs(t, 0) for _ in ans)
+    assert base_solution_linear(4, 8, 12, t=None) == tuple(_.subs({t: 0}) for _ in ans)
 
     assert cornacchia(1, 1, 20) is None
     assert cornacchia(1, 1, 5) == {(1, 2)}

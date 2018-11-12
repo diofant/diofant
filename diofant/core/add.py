@@ -516,16 +516,16 @@ class Add(AssocOp):
         coeff_old, terms_old = old.as_coeff_Add()
 
         if coeff_self.is_Rational and coeff_old.is_Rational:
-            if terms_self == terms_old:   # (2 + a).subs( 3 + a, y) -> -1 + y
+            if terms_self == terms_old:   # (2 + a).subs({+3 + a: y}) -> -1 + y
                 return self.func(new, coeff_self, -coeff_old)
-            if terms_self == -terms_old:  # (2 + a).subs(-3 - a, y) -> -1 - y
+            if terms_self == -terms_old:  # (2 + a).subs({-3 - a: y}) -> -1 - y
                 return self.func(-new, coeff_self, coeff_old)
 
         if coeff_self.is_Rational and coeff_old.is_Rational \
                 or coeff_self == coeff_old:
             args_old, args_self = self.func.make_args(
                 terms_old), self.func.make_args(terms_self)
-            if len(args_old) < len(args_self):  # (a+b+c).subs(b+c,x) -> a+x
+            if len(args_old) < len(args_self):  # (a+b+c).subs({b+c: x}) -> a+x
                 self_set = set(args_self)
                 old_set = set(args_old)
 
@@ -535,7 +535,7 @@ class Add(AssocOp):
                                      *[s._subs(old, new) for s in ret_set])
 
                 args_old = self.func.make_args(
-                    -terms_old)     # (a+b+c+d).subs(-b-c,x) -> a-x+d
+                    -terms_old)     # (a+b+c+d).subs({-b-c: x}) -> a-x+d
                 old_set = set(args_old)
                 if old_set < self_set:
                     ret_set = self_set - old_set

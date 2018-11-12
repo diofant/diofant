@@ -438,7 +438,7 @@ class Poly(Expr):
                 except PolynomialError:
                     pass
 
-        return self.as_expr().subs(old, new)
+        return self.as_expr().subs({old: new})
 
     def exclude(self):
         """

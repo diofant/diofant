@@ -386,7 +386,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
     include_x = expr.func(0, 0)
 
     def valid(x):
-        v = e.subs(gen, x)
+        v = e.subs({gen: x})
         try:
             r = expr.func(v, 0)
         except TypeError:

@@ -60,9 +60,9 @@ class Piecewise(Function):
       >>> f = x**2
       >>> g = log(x)
       >>> p = Piecewise((0, x<-1), (f, x<=1), (g, True))
-      >>> p.subs(x, 1)
+      >>> p.subs({x: 1})
       1
-      >>> p.subs(x, 5)
+      >>> p.subs({x: 5})
       log(5)
 
     See Also
@@ -163,7 +163,7 @@ class Piecewise(Function):
 
     def _eval_as_leading_term(self, x):
         for e, c in self.args:  # pragma: no branch
-            if c == S.true or c.subs(x, 0) == S.true:
+            if c == S.true or c.subs({x: 0}) == S.true:
                 return e.as_leading_term(x)
 
     def _eval_adjoint(self):
@@ -193,7 +193,7 @@ class Piecewise(Function):
 
         if sym.is_real is None:
             d = Dummy('d', real=True)
-            return self.subs(sym, d)._eval_interval(d, a, b)
+            return self.subs({sym: d})._eval_interval(d, a, b)
 
         if self.has(Abs):
             return piecewise_fold(self.rewrite(Abs, Piecewise))._eval_interval(sym, a, b)
@@ -246,7 +246,7 @@ class Piecewise(Function):
                             and the upper limit are symbolic is not yet implemented.""")
                     values.append(val)
                 if len(set(values)) == 1:
-                    c = c.subs(sym, rep)
+                    c = c.subs({sym: rep})
                     e = values[0]
                     newargs.append((e, c))
                 else:

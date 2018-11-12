@@ -229,9 +229,9 @@ def test_RootOf_conjugate():
 
 
 def test_RootOf_subs():
-    assert RootOf(x**3 + x + 1, 0).subs(x, y) == RootOf(y**3 + y + 1, 0)
+    assert RootOf(x**3 + x + 1, 0).subs({x: y}) == RootOf(y**3 + y + 1, 0)
     eq = -x + RootOf(y**3 - x**3 + 3*x**2, y, 0) + 1
-    assert eq.subs(x, Rational(1, 3)) == 0
+    assert eq.subs({x: Rational(1, 3)}) == 0
 
 
 def test_RootOf_diff():
@@ -494,8 +494,8 @@ def test_RootSum_subs():
     F = y**3 + y + 3
     G = Lambda(r, exp(r*y))
 
-    assert RootSum(f, g).subs(y, 1) == RootSum(f, g)
-    assert RootSum(f, g).subs(x, y) == RootSum(F, G)
+    assert RootSum(f, g).subs({y: 1}) == RootSum(f, g)
+    assert RootSum(f, g).subs({x: y}) == RootSum(F, G)
 
 
 def test_RootSum_rational():

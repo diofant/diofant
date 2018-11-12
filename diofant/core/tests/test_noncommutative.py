@@ -107,12 +107,12 @@ def test_simplify():
 
 
 def test_subs():
-    assert (x*y*A).subs(x*y, z) == A*z
-    assert (x*A*B).subs(x*A, C) == C*B
-    assert (x*A*x*x).subs(x**2*A, C) == x*C
-    assert (x*A*x*B).subs(x**2*A, C) == C*B
-    assert (A**2*B**2).subs(A*B**2, C) == A*C
-    assert (A*A*A + A*B*A).subs(A*A*A, C) == C + A*B*A
+    assert (x*y*A).subs({x*y: z}) == A*z
+    assert (x*A*B).subs({x*A: C}) == C*B
+    assert (x*A*x*x).subs({x**2*A: C}) == x*C
+    assert (x*A*x*B).subs({x**2*A: C}) == C*B
+    assert (A**2*B**2).subs({A*B**2: C}) == A*C
+    assert (A*A*A + A*B*A).subs({A*A*A: C}) == C + A*B*A
 
 
 def test_transpose():

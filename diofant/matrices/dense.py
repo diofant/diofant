@@ -1462,10 +1462,10 @@ def casoratian(seqs, n, zero=True):
 
     if not zero:
         def f(i, j):
-            return seqs[j].subs(n, n + i)
+            return seqs[j].subs({n: n + i})
     else:
         def f(i, j):
-            return seqs[j].subs(n, i)
+            return seqs[j].subs({n: i})
 
     k = len(seqs)
 

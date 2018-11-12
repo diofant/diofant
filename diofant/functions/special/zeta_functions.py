@@ -126,7 +126,7 @@ class lerchphi(Function):
             for c in reversed(p.all_coeffs()):
                 res += c*start
                 start = t*start.diff(t)
-            return res.subs(t, z)
+            return res.subs({t: z})
 
         if a.is_Rational:
             # See section 18 of
@@ -301,7 +301,7 @@ class polylog(Function):
             start = u/(1 - u)
             for _ in range(-s):
                 start = u*start.diff(u)
-            return expand_mul(start).subs(u, z)
+            return expand_mul(start).subs({u: z})
         return polylog(s, z)
 
 ###############################################################################

@@ -302,7 +302,7 @@ class And(LatticeOp, BooleanFunction):
     and. Hence, ``And(a, b)`` and ``a & b`` will return different things if
     ``a`` and ``b`` are integers.
 
-    >>> And(x, y).subs(x, 1)
+    >>> And(x, y).subs({x: 1})
     y
     """
 
@@ -370,7 +370,7 @@ class Or(LatticeOp, BooleanFunction):
     or. Hence, ``Or(a, b)`` and ``a | b`` will return different things if
     ``a`` and ``b`` are integers.
 
-    >>> Or(x, y).subs(x, 0)
+    >>> Or(x, y).subs({x: 0})
     y
     """
 
@@ -566,7 +566,7 @@ class Xor(BooleanFunction):
     particular, ``a ^ b`` and ``Xor(a, b)`` will be different if ``a`` and
     ``b`` are integers.
 
-    >>> Xor(x, y).subs(y, 0)
+    >>> Xor(x, y).subs({y: 0})
     x
     """
 
@@ -1579,7 +1579,7 @@ def bool_map(bool1, bool2):
     (Or(And(Not(y), t), And(Not(y), z),
      And(x, y)), {t: a, x: b, y: c, z: d})
     >>> eq = And(Xor(a, b), c, And(c, d))
-    >>> bool_map(eq, eq.subs(c, x))
+    >>> bool_map(eq, eq.subs({c: x}))
     (And(Or(Not(a), Not(b)),
      Or(a, b), c, d),
      {a: a, b: b, c: d, d: x})

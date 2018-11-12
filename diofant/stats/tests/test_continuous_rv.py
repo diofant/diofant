@@ -314,9 +314,9 @@ def test_gamma():
     X = Gamma('x', k, theta)
     assert simplify(E(X)) == k*theta
     # can't get things to simplify on this one so we use subs
-    assert variance(X).subs(k, 5) == (k*theta**2).subs(k, 5)
+    assert variance(X).subs({k: 5}) == (k*theta**2).subs({k: 5})
     # The following is too slow
-    # assert simplify(skewness(X)).subs(k, 5) == (2/sqrt(k)).subs(k, 5)
+    # assert simplify(skewness(X)).subs({k: 5}) == (2/sqrt(k)).subs({k: 5})
 
 
 def test_gamma_inverse():
@@ -637,7 +637,7 @@ def test_random_parameters():
     assert density(meas, evaluate=False)(z)
     assert isinstance(pspace(meas), ProductPSpace)
     # assert density(meas, evaluate=False)(z) == Integral(mu.pspace.pdf *
-    #        meas.pspace.pdf, (mu.symbol, -oo, oo)).subs(meas.symbol, z)
+    #        meas.pspace.pdf, (mu.symbol, -oo, oo)).subs({meas.symbol: z})
 
 
 def test_random_parameters_given():

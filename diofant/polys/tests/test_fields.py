@@ -355,8 +355,10 @@ def test_FracElement_subs():
     F,  x, y, z = field("x,y,z", ZZ)
     f = (x**2 + 3*y)/z
 
-    assert f.subs(x, 0) == 3*y/z
-    pytest.raises(ZeroDivisionError, lambda: f.subs(z, 0))
+    assert f.subs({(x, 0)}) == 3*y/z
+    assert f.subs({x: 0}) == 3*y/z
+    pytest.raises(ValueError, lambda: f.subs(object()))
+    pytest.raises(ZeroDivisionError, lambda: f.subs({z: 0}))
 
     assert f.subs([(x, 0), (y, 1)]) == 3/z
 

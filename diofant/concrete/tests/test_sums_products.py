@@ -121,13 +121,13 @@ def test_karr_proposition_2a():
         # g
         g = i**3 + 2*i**2 - 3*i
         # f = Delta g
-        f = simplify(g.subs(i, i+1) - g)
+        f = simplify(g.subs({i: i + 1}) - g)
         # The sum
         a = m
         b = n - 1
         S = Sum(f, (i, a, b)).doit()
         # Test if Sum_{m <= i < n} f(i) = g(n) - g(m)
-        assert simplify(S - (g.subs(i, n) - g.subs(i, m))) == 0
+        assert simplify(S - (g.subs({i: n}) - g.subs({i: m}))) == 0
 
     # m < n
     test_the_sum(u,   u+v)
@@ -270,8 +270,8 @@ def test_composite_sums():
     assert not isinstance(s, Sum)
     A = 0
     for i in range(-3, 5):
-        A += f.subs(n, i)
-    B = s.subs(a, -3).subs(b, 4)
+        A += f.subs({n: i})
+    B = s.subs({a: -3}).subs({b: 4})
     assert A == B
 
 
@@ -498,22 +498,22 @@ def test_sum_reconstruct():
 
 def test_limit_subs():
     for F in (Sum, Product, Integral):
-        assert F(a*exp(a), (a, -2, 2)) == F(a*exp(a), (a, -b, b)).subs(b, 2)
-        assert F(a, (a, F(b, (b, 1, 2)), 4)).subs(F(b, (b, 1, 2)), c) == \
+        assert F(a*exp(a), (a, -2, 2)) == F(a*exp(a), (a, -b, b)).subs({b: 2})
+        assert F(a, (a, F(b, (b, 1, 2)), 4)).subs({F(b, (b, 1, 2)): c}) == \
             F(a, (a, c, 4))
-        assert F(x, (x, 1, x + y)).subs(x, 1) == F(x, (x, 1, y + 1))
+        assert F(x, (x, 1, x + y)).subs({x: 1}) == F(x, (x, 1, y + 1))
 
 
 def test_function_subs():
     f = Function("f")
     S = Sum(x*f(y), (x, 0, oo), (y, 0, oo))
-    assert S.subs(f(y), y) == Sum(x*y, (x, 0, oo), (y, 0, oo))
-    assert S.subs(f(x), x) == S
-    pytest.raises(ValueError, lambda: S.subs(f(y), x + y))
+    assert S.subs({f(y): y}) == Sum(x*y, (x, 0, oo), (y, 0, oo))
+    assert S.subs({f(x): x}) == S
+    pytest.raises(ValueError, lambda: S.subs({f(y): x + y}))
     S = Sum(x*log(y), (x, 0, oo), (y, 0, oo))
-    assert S.subs(log(y), y) == S
+    assert S.subs({log(y): y}) == S
     S = Sum(x*f(y), (x, 0, oo), (y, 0, oo))
-    assert S.subs(f(y), y) == Sum(x*y, (x, 0, oo), (y, 0, oo))
+    assert S.subs({f(y): y}) == Sum(x*y, (x, 0, oo), (y, 0, oo))
 
 
 def test_equality():
@@ -535,7 +535,7 @@ def test_equality():
         assert F(1, (x, 1, x)) != F(1, (y, 1, y))
 
     # issue sympy/sympy#5265
-    assert Sum(x, (x, 1, x)).subs(x, a) == Sum(x, (x, 1, a))
+    assert Sum(x, (x, 1, x)).subs({x: a}) == Sum(x, (x, 1, a))
 
 
 def test_Sum_doit():
@@ -846,11 +846,11 @@ def test_factor_expand_subs():
         == Sum(x**(a + n), (x, 0, 3)).expand(power_exp=False)
 
     # test subs
-    assert Sum(1/(1 + a*x**2), (x, 0, 3)).subs([(a, 3)]) == Sum(1/(1 + 3*x**2), (x, 0, 3))
-    assert Sum(x*y, (x, 0, y), (y, 0, x)).subs([(x, 3)]) == Sum(x*y, (x, 0, y), (y, 0, 3))
-    assert Sum(x, (x, 1, 10)).subs([(x, y - 2)]) == Sum(x, (x, 1, 10))
-    assert Sum(1/x, (x, 1, 10)).subs([(x, (3 + n)**3)]) == Sum(1/x, (x, 1, 10))
-    assert Sum(1/x, (x, 1, 10)).subs([(x, 3*x - 2)]) == Sum(1/x, (x, 1, 10))
+    assert Sum(1/(1 + a*x**2), (x, 0, 3)).subs({a: 3}) == Sum(1/(1 + 3*x**2), (x, 0, 3))
+    assert Sum(x*y, (x, 0, y), (y, 0, x)).subs({x: 3}) == Sum(x*y, (x, 0, y), (y, 0, 3))
+    assert Sum(x, (x, 1, 10)).subs({x: y - 2}) == Sum(x, (x, 1, 10))
+    assert Sum(1/x, (x, 1, 10)).subs({x: (3 + n)**3}) == Sum(1/x, (x, 1, 10))
+    assert Sum(1/x, (x, 1, 10)).subs({x: 3*x - 2}) == Sum(1/x, (x, 1, 10))
 
 
 def test_distribution_over_equality():

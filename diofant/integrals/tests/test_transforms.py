@@ -66,36 +66,6 @@ def test_as_integral():
     assert inverse_fourier_transform(f(s), s, x).rewrite('Integral') == \
         Integral(f(s)*exp(2*I*pi*s*x), (s, -oo, oo))
 
-# NOTE this is stuck in risch because meijerint cannot handle it
-
-
-@pytest.mark.slow
-@pytest.mark.xfail
-@pytest.mark.skipif(True, reason="Risch takes forever.")
-def test_mellin_transform_fail():
-    MT = mellin_transform
-
-    bpos = symbols('b', positive=True)
-
-    expr = (sqrt(x + b**2) + b)**a/sqrt(x + b**2)
-    # TODO does not work with bneg, argument wrong. Needs changes to matching.
-    assert MT(expr.subs(b, -bpos), x, s) == \
-        ((-1)**(a + 1)*2**(a + 2*s)*bpos**(a + 2*s - 1)*gamma(a + s)
-         * gamma(1 - a - 2*s)/gamma(1 - s),
-            (-re(a), -re(a)/2 + Rational(1, 2)), True)
-
-    expr = (sqrt(x + b**2) + b)**a
-    assert MT(expr.subs(b, -bpos), x, s) == \
-        (
-            2**(a + 2*s)*a*bpos**(a + 2*s)*gamma(-a - 2 *
-                                                 s)*gamma(a + s)/gamma(-s + 1),
-            (-re(a), -re(a)/2), True)
-
-    # Test exponent 1:
-    assert MT(expr.subs({b: -bpos, a: 1}), x, s) == \
-        (-bpos**(2*s + 1)*gamma(s)*gamma(-s - Rational(1, 2))/(2*sqrt(pi)),
-            (-1, -Rational(1, 2)), True)
-
 
 def test_mellin_transform():
     MT = mellin_transform
@@ -132,11 +102,11 @@ def test_mellin_transform():
             (Max(-re(a), 0), Min(1 - re(a), 1)), True)
 
     expr = (sqrt(x + b**2) + b)**a
-    assert MT(expr.subs(b, bpos), x, s) == \
+    assert MT(expr.subs({b: bpos}), x, s) == \
         (-a*(2*bpos)**(a + 2*s)*gamma(s)*gamma(-a - 2*s)/gamma(-a - s + 1),
          (0, -re(a)/2), True)
     expr = (sqrt(x + b**2) + b)**a/sqrt(x + b**2)
-    assert MT(expr.subs(b, bpos), x, s) == \
+    assert MT(expr.subs({b: bpos}), x, s) == \
         (2**(a + 2*s)*bpos**(a + 2*s - 1)*gamma(s)
                                          * gamma(1 - a - 2*s)/gamma(1 - a - s),
             (0, -re(a)/2 + Rational(1, 2)), True)
@@ -333,7 +303,7 @@ def test_inverse_mellin_transform():
     # test factorisation of polys
     r = symbols('r', extended_real=True)
     assert (IMT(1/(s**2 + 1), s, exp(-x),
-                (None, oo)).subs(x, r).rewrite(sin).simplify() ==
+            (None, oo)).subs({x: r}).rewrite(sin).simplify() ==
             sin(r)*Heaviside(1 - exp(-r)))
 
     # test multiplicative substitution

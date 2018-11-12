@@ -550,7 +550,7 @@ class RootOf(Expr):
 
     def _eval_subs(self, old, new):
         if old in self.free_symbols:
-            return self.func(self.poly.subs(old, new), *self.args[1:])
+            return self.func(self.poly.subs({old: new}), *self.args[1:])
         else:
             # don't allow subs to change anything
             return self
@@ -561,7 +561,7 @@ class RootOf(Expr):
             g = self.poly.gen
             if not g.is_Symbol:
                 d = Dummy('x')
-                func = lambdify(d, self.expr.subs(g, d), "mpmath")
+                func = lambdify(d, self.expr.subs({g: d}), "mpmath")
             else:
                 func = lambdify(g, self.expr, "mpmath")
 
@@ -653,7 +653,7 @@ class RootOf(Expr):
             return S.false
         if not other.is_finite:
             return S.false
-        z = self.expr.subs(self.expr.free_symbols.pop(), other).is_zero
+        z = self.expr.subs({self.expr.free_symbols.pop(): other}).is_zero
         if z is False:  # all roots will make z True but we don't know
                         # whether this is the right root if z is True
             return S.false
@@ -706,7 +706,7 @@ class RootSum(Expr):
         var, expr = func.variables[0], func.expr
 
         if coeff is not S.One:
-            expr = expr.subs(var, coeff*var)
+            expr = expr.subs({var: coeff*var})
 
         deg = poly.degree()
 
@@ -783,7 +783,7 @@ class RootSum(Expr):
         roots = symbols('r:%d' % poly.degree())
         var, expr = func.variables[0], func.expr
 
-        f = sum(expr.subs(var, r) for r in roots)
+        f = sum(expr.subs({var: r}) for r in roots)
         p, q = together(f).as_numer_denom()
 
         domain = QQ.poly_ring(*roots)

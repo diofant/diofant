@@ -195,9 +195,9 @@ def test_compare():
 
 
 def test_sign():
-    assert mrv_sign(Rational(0), x) == 0
-    assert mrv_sign(Rational(3), x) == 1
-    assert mrv_sign(Rational(-5), x) == -1
+    assert mrv_sign(Integer(0), x) == 0
+    assert mrv_sign(Integer(3), x) == 1
+    assert mrv_sign(Integer(-5), x) == -1
     assert mrv_sign(log(x), x) == 1
     assert mrv_sign(exp(-x), x) == 1
     assert mrv_sign(exp(x), x) == 1
@@ -205,7 +205,6 @@ def test_sign():
     assert mrv_sign(3 - 1/x, x) == 1
     assert mrv_sign(-3 - 1/x, x) == -1
     assert mrv_sign(sin(1/x), x) == 1
-    assert mrv_sign((x**Integer(2)), x) == 1
     assert mrv_sign(x**2, x) == 1
     assert mrv_sign(x**5, x) == 1
 
@@ -435,9 +434,9 @@ def test_sympyissue_5172():
     m = Symbol('m', negative=True)
     expr = ((2*n*(n - r + 1)/(n + r*(n - r + 1)))**c +
             (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
-    expr = expr.subs(c, c + 1)
-    assert gruntz(expr.subs(c, m), n) == 1
-    assert gruntz(expr.subs(c, p), n).simplify() == \
+    expr = expr.subs({c: c + 1})
+    assert gruntz(expr.subs({c: m}), n) == 1
+    assert gruntz(expr.subs({c: p}), n).simplify() == \
         (2**(p + 1) + r - 1)/(r + 1)**(p + 1)
 
 

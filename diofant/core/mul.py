@@ -115,7 +115,7 @@ class Mul(AssocOp):
                 (x*sqrt(y))**(3/2)
                 >>> a*a*a
                 x*sqrt(y)*sqrt(x*sqrt(y))
-                >>> _.subs(a.base, z).subs(z, a.base)
+                >>> _.subs({a.base: z}).subs({z: a.base})
                 (x*sqrt(y))**(3/2)
 
               -  If more than two terms are being multiplied then all the
@@ -1373,7 +1373,7 @@ class Mul(AssocOp):
 
                 failed.extend(range(i, len(nc)))
                 for i in failed:
-                    nc[i] = rejoin(*nc[i]).subs(old, new)
+                    nc[i] = rejoin(*nc[i]).subs({old: new})
 
         # rebuild the expression
 
@@ -1393,7 +1393,7 @@ class Mul(AssocOp):
                 e = c[b] - old_c[b]*do
                 margs.append(rejoin(b, e))
             else:
-                margs.append(rejoin(b.subs(old, new), c[b]))
+                margs.append(rejoin(b.subs({old: new}), c[b]))
         if cdid and not ncdid:
 
             # in case we are replacing commutative with non-commutative,

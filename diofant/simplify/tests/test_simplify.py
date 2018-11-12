@@ -332,9 +332,9 @@ def test_nsimplify():
     assert nsimplify(3.333333, tolerance=0.01, rational=True) == Rational(10, 3)
     assert nsimplify(3.666666, tolerance=0.1, rational=True) == Rational(11, 3)
     assert nsimplify(3.666666, tolerance=0.01, rational=True) == Rational(11, 3)
-    assert nsimplify(33, tolerance=10, rational=True) == Rational(33)
-    assert nsimplify(33.33, tolerance=10, rational=True) == Rational(30)
-    assert nsimplify(37.76, tolerance=10, rational=True) == Rational(40)
+    assert nsimplify(33, tolerance=10, rational=True) == 33
+    assert nsimplify(33.33, tolerance=10, rational=True) == 30
+    assert nsimplify(37.76, tolerance=10, rational=True) == 40
     assert nsimplify(-203.1) == -Rational(2031, 10)
     assert nsimplify(+.2, tolerance=0) == Rational(+1, 5)
     assert nsimplify(-.2, tolerance=0) == Rational(-1, 5)

@@ -194,7 +194,7 @@ def test_abs():
     # sympy/sympy#12398
     assert limit(abs(log(n)/n**3), n, oo) == 0
     expr = abs(log(n)/n**3)
-    expr2 = expr.subs(n, n + 1)
+    expr2 = expr.subs({n: n + 1})
     assert limit(n*(expr/expr2 - 1), n, oo) == 3
 
 
@@ -404,9 +404,9 @@ def test_sympyissue_5172():
     m = Symbol('m', negative=True)
     expr = ((2*n*(n - r + 1)/(n + r*(n - r + 1)))**c +
             (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
-    expr = expr.subs(c, c + 1)
-    assert limit(expr.subs(c, m), n, oo) == 1
-    assert limit(expr.subs(c, p), n, oo).simplify() == \
+    expr = expr.subs({c: c + 1})
+    assert limit(expr.subs({c: m}), n, oo) == 1
+    assert limit(expr.subs({c: p}), n, oo).simplify() == \
         (2**(p + 1) + r - 1)/(r + 1)**(p + 1)
 
 
@@ -606,7 +606,7 @@ def test_diofantissue_558():
     c = Symbol('c')
     expr = ((2*n*(n - r + 1)/(n + r*(n - r + 1)))**c +
             (r - 1)*(n*(n - r + 2)/(n + r*(n - r + 1)))**c - n)/(n**c - n)
-    expr = expr.subs(c, c + 1)
+    expr = expr.subs({c: c + 1})
     assert limit(expr, n, oo) == Limit(expr, n, oo)
 
 

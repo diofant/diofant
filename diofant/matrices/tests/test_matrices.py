@@ -176,7 +176,7 @@ def test_power():
     assert A**1 == A
     assert (Matrix([[2]]) ** 100)[0, 0] == 2**100
     assert eye(2)**10000000 == eye(2)
-    assert Matrix([[1, 2], [3, 4]])**Integer(2) == Matrix([[7, 10], [15, 22]])
+    assert Matrix([[1, 2], [3, 4]])**2 == Matrix([[7, 10], [15, 22]])
 
     A = Matrix([[33, 24], [48, 57]])
     assert (A**Rational(1, 2))[:] == [5, 2, 4, 7]
@@ -914,18 +914,14 @@ def test_eigen():
 
 
 def test_subs():
-    assert Matrix([[1, x], [x, 4]]).subs(x, 5) == Matrix([[1, 5], [5, 4]])
-    assert Matrix([[x, 2], [x + y, 4]]).subs([[x, -1], [y, -2]]) == \
-        Matrix([[-1, 2], [-3, 4]])
-    assert Matrix([[x, 2], [x + y, 4]]).subs([(x, -1), (y, -2)]) == \
-        Matrix([[-1, 2], [-3, 4]])
+    assert Matrix([[1, x], [x, 4]]).subs({x: 5}) == Matrix([[1, 5], [5, 4]])
     assert Matrix([[x, 2], [x + y, 4]]).subs({x: -1, y: -2}) == \
         Matrix([[-1, 2], [-3, 4]])
     assert Matrix([x*y]).subs({x: y - 1, y: x - 1}, simultaneous=True) == \
         Matrix([(x - 1)*(y - 1)])
 
     for cls in classes:
-        assert Matrix([[2, 0], [0, 2]]) == cls.eye(2).subs(1, 2)
+        assert Matrix([[2, 0], [0, 2]]) == cls.eye(2).subs({1: 2})
 
 
 def test_xreplace():
@@ -1667,7 +1663,7 @@ def test_has():
     assert not A.has(z)
     assert A.has(Symbol)
 
-    A = A.subs(x, 2)
+    A = A.subs({x: 2})
     assert not A.has(x)
 
 
@@ -2038,7 +2034,7 @@ def test_condition_number():
 
     M = Matrix([[cos(x), sin(x)], [-sin(x), cos(x)]])
     Mc = M.condition_number()
-    assert all(Float(1.).epsilon_eq(Mc.subs(x, val).evalf()) for val in
+    assert all(Float(1.).epsilon_eq(Mc.subs({x: val}).evalf()) for val in
                [Rational(1, 5), Rational(1, 2), Rational(1, 10), pi/2, pi, 7*pi/4 ])
 
     assert Matrix([]).condition_number() == 0  # issue sympy/sympy#10782
@@ -2260,7 +2256,7 @@ def test_invertible_check():
 @pytest.mark.xfail
 def test_sympyissue_3959():
     e = x*y
-    assert e.subs(x, Matrix([3, 5, 3])) == Matrix([3, 5, 3])*y
+    assert e.subs({x: Matrix([3, 5, 3])}) == Matrix([3, 5, 3])*y
 
 
 def test_sympyissue_5964():

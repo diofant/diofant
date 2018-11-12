@@ -470,7 +470,7 @@ def test__eis():
 def tn_arg(func):
     def test(arg, e1, e2):
         v = uniform(1, 5)
-        v1 = func(arg*x).subs(x, v).evalf(strict=False)
+        v1 = func(arg*x).subs({x: v}).evalf(strict=False)
         v2 = func(e1*v + e2*1e-15).evalf(strict=False)
         return abs(v1 - v2).evalf(strict=False) < 1e-10
     return test(exp_polar(I*pi/2), I, 1) and \

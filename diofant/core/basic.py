@@ -319,7 +319,6 @@ class Basic:
         Substitutes old for new in an expression after sympifying args.
 
         `args` is either:
-          - two arguments, e.g. foo.subs(old, new)
           - one iterable argument, e.g. foo.subs(iterable). The iterable may be
              o an iterable container with (old, new) pairs. In this case the
                replacements are processed in the order given with successive
@@ -336,7 +335,7 @@ class Basic:
         Examples
         ========
 
-        >>> (1 + x*y).subs(x, pi)
+        >>> (1 + x*y).subs({x: pi})
         pi*y + 1
         >>> (1 + x*y).subs({x: pi, y: 2})
         1 + 2*pi
@@ -348,7 +347,7 @@ class Basic:
         >>> (x + y).subs(reversed(reps))
         x**2 + 2
 
-        >>> (x**2 + x**4).subs(x**2, y)
+        >>> (x**2 + x**4).subs({x**2: y})
         y**2 + y
 
         To replace only the x**2 but not the x**4, use xreplace:
@@ -435,10 +434,8 @@ class Basic:
                 raise ValueError("Expected a mapping or iterable "
                                  "of (old, new) tuples.")
             sequence = list(sequence)
-        elif len(args) == 2:
-            sequence = [args]
         else:
-            raise ValueError("subs accepts either 1 or 2 arguments")
+            raise ValueError("subs accepts one argument")
 
         sequence = [_ for _ in sympify(sequence) if not _aresame(*_)]
 
@@ -500,7 +497,7 @@ class Basic:
         Add's _eval_subs knows how to target x + y in the following
         so it makes the change:
 
-            >>> (x + y + z).subs(x + y, 1)
+            >>> (x + y + z).subs({x + y: 1})
             z + 1
 
         Add's _eval_subs doesn't need to know how to find x + y in
@@ -513,7 +510,7 @@ class Basic:
         pass the z*(x + y) arg to Mul where the change will take place and the
         substitution will succeed:
 
-            >>> (z*(x + y) + 3).subs(x + y, 1)
+            >>> (z*(x + y) + 3).subs({x + y: 1})
             z + 3
 
         ** Developers Notes **

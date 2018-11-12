@@ -42,11 +42,11 @@ def test_subs():
     B = MatrixSymbol('B', m, l)
     C = MatrixSymbol('C', m, l)
 
-    assert A.subs(n, m).shape == (m, m)
+    assert A.subs({n: m}).shape == (m, m)
 
-    assert (A*B).subs(B, C) == A*C
+    assert (A*B).subs({B: C}) == A*C
 
-    assert (A*B).subs(l, n).is_square
+    assert (A*B).subs({l: n}).is_square
 
 
 def test_ZeroMatrix():
@@ -227,8 +227,8 @@ def test_MatrixElement_diff():
 def test_MatrixElement_doit():
     u = MatrixSymbol('u', 2, 1)
     v = ImmutableMatrix([3, 5])
-    assert u[0, 0].subs(u, v).doit() == v[0, 0]
-    assert u[0, 0].subs(u, v).doit(deep=False) == v[0, 0]
+    assert u[0, 0].subs({u: v}).doit() == v[0, 0]
+    assert u[0, 0].subs({u: v}).doit(deep=False) == v[0, 0]
 
 
 def test_identity_powers():

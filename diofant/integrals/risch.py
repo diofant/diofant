@@ -508,7 +508,7 @@ class DifferentialExtension:
                     i = Dummy("i")
                 else:
                     i = Symbol('i')
-                self.Tfuncs = self.Tfuncs + [Lambda(i, exp(arg.subs(self.x, i)))]
+                self.Tfuncs = self.Tfuncs + [Lambda(i, exp(arg.subs({self.x: i})))]
                 self.newf = self.newf.xreplace(
                     {exp(exparg): self.t**p for exparg, p in others})
                 new_extension = True
@@ -562,7 +562,7 @@ class DifferentialExtension:
                     i = Dummy("i")
                 else:
                     i = Symbol('i')
-                self.Tfuncs = self.Tfuncs + [Lambda(i, log(arg.subs(self.x, i)))]
+                self.Tfuncs = self.Tfuncs + [Lambda(i, log(arg.subs({self.x: i})))]
                 self.newf = self.newf.xreplace({log(arg): self.t})
                 new_extension = True
 
@@ -735,8 +735,8 @@ def as_poly_1t(p, t, z):
 
     >>> p1 = random_poly(x, 10, -10, 10)
     >>> p2 = random_poly(x, 10, -10, 10)
-    >>> p = p1 + p2.subs(x, 1/x)
-    >>> as_poly_1t(p, x, z).as_expr().subs(z, 1/x) == p
+    >>> p = p1 + p2.subs({x: 1/x})
+    >>> as_poly_1t(p, x, z).as_expr().subs({z: 1/x}) == p
     True
     """
     # TODO: Use this on the final result.  That way, we can avoid answers like
@@ -1056,7 +1056,7 @@ def laurent_series(a, d, F, n, DE):
         Pa, Pd = cancel((zEha, zEhd))[1], cancel((zEha, zEhd))[2]
         Q = Pa.quo(Pd)
         for i in range(j + 1):
-            Q = Q.subs(Z[i], V[i])
+            Q = Q.subs({Z[i]: V[i]})
         Dha = hd*derivation(ha, DE, basic=True) + ha*derivation(hd, DE, basic=True)
         Dha += hd*derivation(ha, DE_new, basic=True) + ha*derivation(hd, DE_new, basic=True)
         Dhd = Poly(j + 1, DE.t)*hd**2
@@ -1154,8 +1154,9 @@ def residue_reduce(a, d, DE, z=None, invert=True):
     """
     # TODO: Use log_to_atan() from rationaltools.py
     # If r = residue_reduce(...), then the logarithmic part is given by:
-    # sum(RootSum(a[0].as_poly(z), lambda i: i*log(a[1].as_expr()).subs(z,
-    # i)).subs(t, log(x)) for a in r[0])
+    # sum(RootSum(a[0].as_poly(z),
+    #             lambda i: i*log(a[1].as_expr()).subs({z: i})).subs({t: log(x)})
+    #     for a in r[0])
 
     z = z or Dummy('z')
     a, d = a.cancel(d, include=True)
@@ -1239,8 +1240,8 @@ def residue_reduce_derivation(H, DE, z):
     """
     # TODO: verify that this is correct for multiple extensions
     i = Dummy('i')
-    return sympify(sum((RootSum(a[0].as_poly(z), Lambda(i, i*derivation(a[1],
-                                                                        DE).as_expr().subs(z, i)/a[1].as_expr().subs(z, i))) for a in H)))
+    return sympify(sum((RootSum(a[0].as_poly(z),
+                        Lambda(i, i*derivation(a[1], DE).as_expr().subs({z: i})/a[1].as_expr().subs({z: i}))) for a in H)))
 
 
 def integrate_primitive_polynomial(p, DE):
@@ -1431,7 +1432,7 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
         # XXX: Does qd = 0 always necessarily correspond to the exponential
         # equaling 1?
         ret += Piecewise(
-            (integrate((p - i).subs(DE.t, 1).subs(s), DE.x), Eq(qds, 0)),
+            (integrate((p - i).subs({DE.t: 1}).subs(s), DE.x), Eq(qds, 0)),
             (qas/qds, True))
     else:
         ret += qas/qds

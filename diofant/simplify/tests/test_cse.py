@@ -350,7 +350,7 @@ def test_sympyissue_7840():
     C391 = sympify(
         'Piecewise((2.05*C390**(-1.03), C390 < 0.5), (2.5*C390**(-0.625), True))'
     )
-    C393 = C393.subs('C391', C391)
+    C393 = C393.subs({'C391': C391})
     # simple substitution
     sub = {}
     sub['C390'] = 0.703451854

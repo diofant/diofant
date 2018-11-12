@@ -47,7 +47,7 @@ def test_Symbol():
 
 
 def test_arit0():
-    p = Rational(5)
+    p = 5
     e = a*b
     assert e == a*b
     e = a*b + b*a
@@ -62,18 +62,18 @@ def test_arit0():
     assert e == b + 2*a
     e = a + b*b + a + b*b
     assert e == 2*a + 2*b**2
-    e = a + Rational(2) + b*b + a + b*b + p
+    e = a + 2 + b*b + a + b*b + p
     assert e == 7 + 2*a + 2*b**2
     e = (a + b*b + a + b*b)*p
     assert e == 5*(2*a + 2*b**2)
     e = (a*b*c + c*b*a + b*a*c)*p
     assert e == 15*a*b*c
-    e = (a*b*c + c*b*a + b*a*c)*p - Rational(15)*a*b*c
-    assert e == Rational(0)
-    e = Rational(50)*(a - a)
-    assert e == Rational(0)
+    e = (a*b*c + c*b*a + b*a*c)*p - 15*a*b*c
+    assert e == 0
+    e = 50*(a - a)
+    assert e == 0
     e = b*a - b - a*b + b
-    assert e == Rational(0)
+    assert e == 0
     e = a*b + c**p
     assert e == a*b + c**5
     e = a/b
@@ -100,29 +100,29 @@ def test_div():
     e = a/b
     assert e == a*b**(-1)
     e = a/b + c/2
-    assert e == a*b**(-1) + Rational(1)/2*c
+    assert e == a*b**(-1) + c/2
     e = (1 - b)/(b - 1)
     assert e == (1 + -b)*((-1) + b)**(-1)
 
 
 def test_pow():
-    n1 = Rational(1)
-    n2 = Rational(2)
-    n5 = Rational(5)
+    n1 = Integer(1)
+    n2 = Integer(2)
+    n5 = Integer(5)
     e = a*a
     assert e == a**2
     e = a*a*a
     assert e == a**3
-    e = a*a*a*a**Rational(6)
+    e = a*a*a*a**6
     assert e == a**9
-    e = a*a*a*a**Rational(6) - a**Rational(9)
-    assert e == Rational(0)
+    e = a*a*a*a**6 - a**9
+    assert e == 0
     e = a**(b - b)
-    assert e == Rational(1)
+    assert e == 1
     e = (a - a)**b
-    assert e == Rational(0)
-    e = (a + Rational(1) - a)**b
-    assert e == Rational(1)
+    assert e == 0
+    e = (a + 1 - a)**b
+    assert e == 1
 
     e = (a + b + c)**n2
     assert e == (a + b + c)**2
@@ -139,7 +139,7 @@ def test_pow():
     n = n5**(n1/n2)
     assert n == sqrt(5)
     e = n*a*b - n*b*a
-    assert e == Rational(0)
+    assert e == 0
     e = n*a*b + n*b*a
     assert e == 2*a*b*sqrt(5)
     assert e.diff(a) == 2*b*sqrt(5)
@@ -1654,7 +1654,7 @@ def test_sympyissue_6001():
     B = Symbol("B", commutative=False)
     # Although commutative terms could cancel we return True
     # meaning "there are non-commutative symbols; aftersubstitution
-    # that definition can change, e.g. (A*B).subs(B,A**-1) -> 1
+    # that definition can change, e.g. (A*B).subs({B: A**-1}) -> 1
     assert (sqrt(2)*A).is_commutative is False
     assert (sqrt(2)*A*B).is_commutative is False
 

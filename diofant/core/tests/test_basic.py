@@ -65,9 +65,9 @@ def test_has():
 
 
 def test_subs():
-    assert b21.subs(b2, b1) == Basic(b1, b1)
-    assert b21.subs(b2, b21) == Basic(b21, b1)
-    assert b3.subs(b2, b1) == b2
+    assert b21.subs({b2: b1}) == Basic(b1, b1)
+    assert b21.subs({b2: b21}) == Basic(b21, b1)
+    assert b3.subs({b2: b1}) == b2
 
     assert b21.subs([(b2, b1), (b1, b2)]) == Basic(b2, b2)
 

@@ -626,7 +626,7 @@ def test_minpoly_fraction_field():
 
 @pytest.mark.slow
 def test_minpoly_fraction_field_slow():
-    assert minimal_polynomial(minimal_polynomial(sqrt(root(x, 5) - 1))(y).subs(y, sqrt(root(x, 5) - 1)))(z) == z
+    assert minimal_polynomial(minimal_polynomial(sqrt(root(x, 5) - 1))(y).subs({y: sqrt(root(x, 5) - 1)}))(z) == z
 
 
 def test_minpoly_domain():

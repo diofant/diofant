@@ -73,7 +73,7 @@ def gauss_legendre(n, n_digits):
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
         xi.append(r.evalf(n_digits))
-        w.append((2/((1-r**2) * pd.subs(x, r)**2)).evalf(n_digits))
+        w.append((2/((1-r**2) * pd.subs({x: r})**2)).evalf(n_digits))
     return xi, w
 
 
@@ -146,7 +146,7 @@ def gauss_laguerre(n, n_digits):
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
         xi.append(r.evalf(n_digits))
-        w.append((r/((n+1)**2 * p1.subs(x, r)**2)).evalf(n_digits))
+        w.append((r/((n+1)**2 * p1.subs({x: r})**2)).evalf(n_digits))
     return xi, w
 
 
@@ -218,7 +218,7 @@ def gauss_hermite(n, n_digits):
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
         xi.append(r.evalf(n_digits))
-        w.append(((2**(n-1) * factorial(n) * sqrt(pi))/(n**2 * p1.subs(x, r)**2)).evalf(n_digits))
+        w.append(((2**(n-1) * factorial(n) * sqrt(pi))/(n**2 * p1.subs({x: r})**2)).evalf(n_digits))
     return xi, w
 
 
@@ -293,7 +293,7 @@ def gauss_gen_laguerre(n, alpha, n_digits):
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
         xi.append(r.evalf(n_digits))
-        w.append((gamma(alpha+n)/(n*gamma(n)*p1.subs(x, r)*p2.subs(x, r))).evalf(n_digits))
+        w.append((gamma(alpha+n)/(n*gamma(n)*p1.subs({x: r})*p2.subs({x: r}))).evalf(n_digits))
     return xi, w
 
 
@@ -511,6 +511,6 @@ def gauss_jacobi(n, alpha, beta, n_digits):
         w.append((
             - (2*n+alpha+beta+2) / (n+alpha+beta+S.One)
             * (gamma(n+alpha+1)*gamma(n+beta+1)) / (gamma(n+alpha+beta+S.One)*gamma(n+2))
-            * 2**(alpha+beta) / (pd.subs(x, r) * pn.subs(x, r))
+            * 2**(alpha+beta) / (pd.subs({x: r}) * pn.subs({x: r}))
         ).evalf(n_digits))
     return xi, w

@@ -155,11 +155,11 @@ def test_line_geom():
 
     # issue sympy/sympy#7963
     r = Ray((0, 0), angle=x)
-    assert r.subs(x, 3*pi/4) == Ray((0, 0), (-1, 1))
-    assert r.subs(x, 5*pi/4) == Ray((0, 0), (-1, -1))
-    assert r.subs(x, -pi/4) == Ray((0, 0), (1, -1))
-    assert r.subs(x, pi/2) == Ray((0, 0), (0, 1))
-    assert r.subs(x, -pi/2) == Ray((0, 0), (0, -1))
+    assert r.subs({x: 3*pi/4}) == Ray((0, 0), (-1, 1))
+    assert r.subs({x: 5*pi/4}) == Ray((0, 0), (-1, -1))
+    assert r.subs({x: -pi/4}) == Ray((0, 0), (1, -1))
+    assert r.subs({x: pi/2}) == Ray((0, 0), (0, 1))
+    assert r.subs({x: -pi/2}) == Ray((0, 0), (0, -1))
 
     r1 = Ray(p1, Point(-1, 5))
     r2 = Ray(p1, Point(-1, 1))
@@ -219,7 +219,7 @@ def test_line_geom():
     s1 = Segment(Point(0, 0), Point(1, 1))
     s2 = Segment(Point(half, half), Point(1, 0))
     pt1 = Point(0, 0)
-    pt2 = Point(Rational(3)/2, Rational(3)/2)
+    pt2 = Point(Rational(3, 2), Rational(3, 2))
     assert s1.distance(pt1) == 0
     assert s1.distance((0, 0)) == 0
     assert s2.distance(pt1) == 2**half/2
@@ -470,7 +470,7 @@ def test_line3d():
     s1 = Segment3D(Point3D(0, 0, 0), Point3D(1, 1, 1))
     s2 = Segment3D(Point3D(1/2, 1/2, 1/2), Point3D(1, 0, 1))
     pt1 = Point3D(0, 0, 0)
-    pt2 = Point3D(Rational(3)/2, Rational(3)/2, Rational(3)/2)
+    pt2 = Point3D(Rational(3, 2), Rational(3, 2), Rational(3, 2))
     assert s1.distance(pt1) == 0
     assert s2.distance(pt1) == sqrt(3)/2
     assert s2.distance(pt2) == 2

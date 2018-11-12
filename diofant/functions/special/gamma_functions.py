@@ -133,7 +133,7 @@ class gamma(Function):
                 x = Dummy('x')
                 n = arg.numerator // arg.denominator
                 p = arg.numerator - n*arg.denominator
-                return self.func(x + n)._eval_expand_func().subs(x, Rational(p, arg.denominator))
+                return self.func(x + n)._eval_expand_func().subs({x: Rational(p, arg.denominator)})
 
         if arg.is_Add:
             coeff, tail = arg.as_coeff_add()

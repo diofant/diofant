@@ -184,7 +184,7 @@ def test_meijerint():
 
     # Test a bug
     def res(n):
-        return (1/(1 + x**2)).diff(x, n).subs(x, 1)*(-1)**n
+        return (1/(1 + x**2)).diff(x, n).subs({x: 1})*(-1)**n
     for n in range(6):
         assert integrate(exp(-x)*sin(x)*x**n, (x, 0, oo), meijerg=True) == \
             res(n)
@@ -221,7 +221,7 @@ def test_meijerint():
     alpha = symbols('alpha', positive=True)
     assert meijerint_definite((2 - x)**alpha*sin(alpha/x), x, 0, 2) == \
         (sqrt(pi)*alpha*gamma(alpha + 1)*meijerg(((), (alpha/2 + Rational(1, 2),
-                                                       alpha/2 + 1)), ((0, 0, Rational(1, 2)), (-Rational(1, 2),)), alpha**Integer(2)/16)/4, True)
+                                                       alpha/2 + 1)), ((0, 0, Rational(1, 2)), (-Rational(1, 2),)), alpha**2/16)/4, True)
 
     # test a bug related to 3016
     a, s = symbols('a s', positive=True)

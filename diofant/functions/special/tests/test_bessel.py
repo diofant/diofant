@@ -6,8 +6,8 @@ from diofant import (Abs, I, Integer, Limit, O, Rational, Symbol, besseli,
                      besselj, besselk, besselsimp, bessely, cbrt, conjugate,
                      cos, cosh, diff, exp, exp_polar, expand_func, gamma,
                      hankel1, hankel2, hyper, im, jn, jn_zeros, log, nan, oo,
-                     pi, polar_lift, re, root, series, sin, sinh, sqrt, yn,
-                     zoo)
+                     pi, polar_lift, re, root, series, simplify, sin, sinh,
+                     sqrt, yn, zoo)
 from diofant.abc import k, n, x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
@@ -86,6 +86,9 @@ def test_expand():
     assert expand_func(bessely(Rational(1, 2), z).rewrite(yn)) == \
         -sqrt(2)*cos(z)/(sqrt(pi)*sqrt(z))
     assert expand_func(besselj(I, z)) == besselj(I, z)
+
+    # Test simplify helper
+    assert simplify(besselj(Rational(1, 2), z)) == sqrt(2)*sin(z)/(sqrt(pi)*sqrt(z))
 
     # XXX: teach sin/cos to work around arguments like
     # x*exp_polar(I*pi*n/2).  Then change besselsimp -> expand_func
@@ -394,8 +397,8 @@ def test_airyai():
     assert l.doit() == l  # cover _airyais._eval_aseries
 
     assert airyai(z).rewrite(hyper) == (
-        -3**Rational(2, 3)*z*hyper((), (Rational(4, 3),), z**Integer(3)/9)/(3*gamma(Rational(1, 3))) +
-        cbrt(3)*hyper((), (Rational(2, 3),), z**Integer(3)/9)/(3*gamma(Rational(2, 3))))
+        -3**Rational(2, 3)*z*hyper((), (Rational(4, 3),), z**3/9)/(3*gamma(Rational(1, 3))) +
+        cbrt(3)*hyper((), (Rational(2, 3),), z**3/9)/(3*gamma(Rational(2, 3))))
 
     assert isinstance(airyai(z).rewrite(besselj), airyai)
     assert airyai(t).rewrite(besselj) == (
@@ -447,8 +450,8 @@ def test_airybi():
     assert l.doit() == l
 
     assert airybi(z).rewrite(hyper) == (
-        root(3, 6)*z*hyper((), (Rational(4, 3),), z**Integer(3)/9)/gamma(Rational(1, 3)) +
-        3**Rational(5, 6)*hyper((), (Rational(2, 3),), z**Integer(3)/9)/(3*gamma(Rational(2, 3))))
+        root(3, 6)*z*hyper((), (Rational(4, 3),), z**3/9)/gamma(Rational(1, 3)) +
+        3**Rational(5, 6)*hyper((), (Rational(2, 3),), z**3/9)/(3*gamma(Rational(2, 3))))
 
     assert isinstance(airybi(z).rewrite(besselj), airybi)
     assert (airybi(t).rewrite(besselj) ==
@@ -489,8 +492,8 @@ def test_airyaiprime():
         -3**Rational(2, 3)/(3*gamma(Rational(1, 3))) + cbrt(3)*z**2/(6*gamma(Rational(2, 3))) + O(z**3))
 
     assert airyaiprime(z).rewrite(hyper) == (
-        cbrt(3)*z**2*hyper((), (Rational(5, 3),), z**Integer(3)/9)/(6*gamma(Rational(2, 3))) -
-        3**Rational(2, 3)*hyper((), (Rational(1, 3),), z**Integer(3)/9)/(3*gamma(Rational(1, 3))))
+        cbrt(3)*z**2*hyper((), (Rational(5, 3),), z**3/9)/(6*gamma(Rational(2, 3))) -
+        3**Rational(2, 3)*hyper((), (Rational(1, 3),), z**3/9)/(3*gamma(Rational(1, 3))))
 
     assert isinstance(airyaiprime(z).rewrite(besselj), airyaiprime)
     assert (airyaiprime(t).rewrite(besselj) ==
@@ -528,8 +531,8 @@ def test_airybiprime():
         root(3, 6)/gamma(Rational(1, 3)) + 3**Rational(5, 6)*z**2/(6*gamma(Rational(2, 3))) + O(z**3))
 
     assert airybiprime(z).rewrite(hyper) == (
-        3**Rational(5, 6)*z**2*hyper((), (Rational(5, 3),), z**Integer(3)/9)/(6*gamma(Rational(2, 3))) +
-        root(3, 6)*hyper((), (Rational(1, 3),), z**Integer(3)/9)/gamma(Rational(1, 3)))
+        3**Rational(5, 6)*z**2*hyper((), (Rational(5, 3),), z**3/9)/(6*gamma(Rational(2, 3))) +
+        root(3, 6)*hyper((), (Rational(1, 3),), z**3/9)/gamma(Rational(1, 3)))
 
     assert isinstance(airybiprime(z).rewrite(besselj), airybiprime)
     assert (airybiprime(t).rewrite(besselj) ==

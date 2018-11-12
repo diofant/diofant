@@ -126,7 +126,7 @@ def gosper_term(f, n):
 
     for coeff in coeffs:
         if coeff not in solution:
-            x = x.subs(coeff, 0)
+            x = x.subs({coeff: 0})
 
     if x is S.Zero:
         return  # 'f(n)' is *not* Gosper-summable
@@ -154,11 +154,11 @@ def gosper_sum(f, k):
     >>> f = (4*k + 1)*factorial(k)/factorial(2*k + 1)
     >>> gosper_sum(f, (k, 0, n))
     (-factorial(n) + 2*factorial(2*n + 1))/factorial(2*n + 1)
-    >>> _.subs(n, 2) == sum(f.subs(k, i) for i in [0, 1, 2])
+    >>> _.subs({n: 2}) == sum(f.subs({k: i}) for i in [0, 1, 2])
     True
     >>> gosper_sum(f, (k, 3, n))
     (-60*factorial(n) + factorial(2*n + 1))/(60*factorial(2*n + 1))
-    >>> _.subs(n, 5) == sum(f.subs(k, i) for i in [3, 4, 5])
+    >>> _.subs({n: 5}) == sum(f.subs({k: i}) for i in [3, 4, 5])
     True
 
     References
@@ -181,7 +181,7 @@ def gosper_sum(f, k):
     if indefinite:
         result = f*g
     else:
-        result = (f*(g + 1)).subs(k, b) - (f*g).subs(k, a)
+        result = (f*(g + 1)).subs({k: b}) - (f*g).subs({k: a})
 
         if result is nan:
             try:

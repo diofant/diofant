@@ -95,7 +95,7 @@ def test_nocache(clear_imports, monkeypatch):
     # see commit 2eaaba2
     s = 1/sqrt(x**2)
     y = Symbol('y')
-    result = s.subs(sqrt(x**2), y)
+    result = s.subs({sqrt(x**2): y})
     assert result == 1/y
 
     # problem from https://groups.google.com/forum/#!topic/sympy/LkTMQKC_BOw

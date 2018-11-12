@@ -322,10 +322,10 @@ def test_Rational_cmp():
     n2 = Rational(1, 3)
     n3 = Rational(2, 4)
     n4 = Rational(2, -4)
-    n5 = Rational(0)
-    n6 = Rational(1)
-    n7 = Rational(3)
-    n8 = Rational(-3)
+    n5 = Integer(0)
+    n6 = Integer(1)
+    n7 = Integer(3)
+    n8 = Integer(-3)
 
     assert n8 < n5
     assert n5 < n6
@@ -340,8 +340,8 @@ def test_Rational_cmp():
     assert n1 < n2
     assert n3 > n1
     assert not n3 < n1
-    assert not (Rational(-1) > 0)
-    assert Rational(-1) < 0
+    assert not (Integer(-1) > 0)
+    assert Integer(-1) < 0
 
     pytest.raises(TypeError, lambda: n1 < nan)
     pytest.raises(TypeError, lambda: n1 <= nan)
@@ -1040,7 +1040,7 @@ def test_dont_accept_str():
 
 
 def test_int():
-    a = Rational(5)
+    a = Integer(5)
     assert int(a) == 5
     a = Rational(9, 10)
     assert int(a) == int(-a) == 0
@@ -1060,7 +1060,7 @@ def test_real_bug():
 
 
 def test_bug_sqrt():
-    assert ((sqrt(Rational(2)) + 1)*(sqrt(Rational(2)) - 1)).expand() == 1
+    assert ((sqrt(2) + 1)*(sqrt(2) - 1)).expand() == 1
 
 
 def test_pi_Pi():
@@ -1071,7 +1071,6 @@ def test_pi_Pi():
 
 def test_no_len():
     # there should be no len for numbers
-    pytest.raises(TypeError, lambda: len(Rational(2)))
     pytest.raises(TypeError, lambda: len(Rational(2, 3)))
     pytest.raises(TypeError, lambda: len(Integer(2)))
 
@@ -1095,7 +1094,7 @@ def test_sympyissue_3423():
 
 def test_sympyissue_3449():
     x = Symbol("x")
-    assert sqrt(x - 1).subs(x, 5) == 2
+    assert sqrt(x - 1).subs({x: 5}) == 2
 
 
 def test_Integer_factors():
@@ -1389,12 +1388,9 @@ def test_hashing_diofant_integers():
 
 
 def test_sympyissue_4172():
-    assert int((E**100).round()) == \
-        26881171418161354484126255515800135873611119
-    assert int((pi**100).round()) == \
-        51878483143196131920862615246303013562686760680406
-    assert int((Rational(1)/EulerGamma**100).round()) == \
-        734833795660954410469466
+    assert int((E**100).round()) == 26881171418161354484126255515800135873611119
+    assert int((pi**100).round()) == 51878483143196131920862615246303013562686760680406
+    assert int((1/EulerGamma**100).round()) == 734833795660954410469466
 
 
 @pytest.mark.xfail

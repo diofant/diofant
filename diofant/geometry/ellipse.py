@@ -589,7 +589,7 @@ class Ellipse(GeometrySet):
         >>> e = Ellipse((0, 0), 3, 2)
         >>> e.encloses_point((0, 0))
         True
-        >>> e.encloses_point(e.arbitrary_point(t).subs(t, S.Half))
+        >>> e.encloses_point(e.arbitrary_point(t).subs({t: S.Half}))
         False
         >>> e.encloses_point((4, 0))
         False
@@ -807,7 +807,7 @@ class Ellipse(GeometrySet):
         slope = Line(p, (x, y)).slope
         seq = slope - norm
         yis = solve(seq, y)[0][y]
-        xeq = eq.subs(y, yis).as_numer_denom()[0].expand()
+        xeq = eq.subs({y: yis}).as_numer_denom()[0].expand()
         if len(xeq.free_symbols) == 1:
             try:
                 # this is so much faster, it's worth a try
@@ -815,7 +815,7 @@ class Ellipse(GeometrySet):
             except (DomainError, PolynomialError, NotImplementedError):
                 xsol = _nsort([s[x] for s in solve(xeq, x)],
                               separated=True)[0]
-            points = [Point(i, solve(eq.subs(x, i), y)[0][y])
+            points = [Point(i, solve(eq.subs({x: i}), y)[0][y])
                       for i in xsol]
         else:
             raise NotImplementedError(
@@ -937,7 +937,7 @@ class Ellipse(GeometrySet):
 
         >>> e1.arbitrary_point(t)
         Point2D(3*cos(t), 2*sin(t))
-        >>> p2 = _.subs(t, 0.1)
+        >>> p2 = _.subs({t: 0.1})
         >>> p2 in e1
         False
 
@@ -961,7 +961,7 @@ class Ellipse(GeometrySet):
             # simplify this now or else the Float will turn s into a Float
             c = 2*Rational(rng.random()) - 1
             s = sqrt(1 - c**2)
-            p1 = Point(x.subs(cos(t), c), y.subs(sin(t), s))
+            p1 = Point(x.subs({cos(t): c}), y.subs({sin(t): s}))
             if p1 in self:
                 return p1
         raise GeometryError(

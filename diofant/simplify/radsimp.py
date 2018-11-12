@@ -648,9 +648,9 @@ def radsimp(expr, symbolic=True, max_terms=4):
     Results with symbols will not always be valid for all substitutions:
 
     >>> eq = 1/(a + b*sqrt(c))
-    >>> eq.subs(a, b*sqrt(c))
+    >>> eq.subs({a: b*sqrt(c)})
     1/(2*b*sqrt(c))
-    >>> radsimp(eq).subs(a, b*sqrt(c))
+    >>> radsimp(eq).subs({a: b*sqrt(c)})
     nan
 
     If symbolic=False, symbolic denominators will not be transformed (but

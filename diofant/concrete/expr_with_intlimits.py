@@ -127,8 +127,8 @@ class ExprWithIntLimits(ExprWithLimits):
             else:
                 limits.append(limit)
 
-        function = self.function.subs(var, (var - beta)/alpha)
-        function = function.subs(var, newvar)
+        function = self.function.subs({var: (var - beta)/alpha})
+        function = function.subs({var: newvar})
 
         return self.func(function, *limits)
 

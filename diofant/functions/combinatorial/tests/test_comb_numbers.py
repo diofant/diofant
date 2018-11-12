@@ -298,7 +298,7 @@ def test_euler():
 
     n = Symbol('n', integer=True)
     assert euler(n) != -1
-    assert euler(n).subs(n, 2) == -1
+    assert euler(n).subs({n: 2}) == -1
 
     assert euler(20).evalf() == 370371188237525.0
     assert euler(20, evaluate=False).evalf() == 370371188237525.0
@@ -322,8 +322,8 @@ def test_catalan():
     catalans = [1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796, 58786]
     for i, c in enumerate(catalans):
         assert catalan(i) == c
-        assert catalan(n).rewrite(factorial).subs(n, i) == c
-        assert catalan(n).rewrite(Product).subs(n, i).doit() == c
+        assert catalan(n).rewrite(factorial).subs({n: i}) == c
+        assert catalan(n).rewrite(Product).subs({n: i}).doit() == c
 
     assert catalan(x) == catalan(x)
     assert catalan(2*x).rewrite(binomial) == binomial(4*x, 2*x)/(2*x + 1)

@@ -290,10 +290,6 @@ class Number(AtomicExpr):
     Floating point numbers are represented by the Float class.
     Integer numbers (of any size), together with rational numbers (again,
     there is no limit on their size) are represented by the Rational class.
-
-    If you want to represent, for example, ``1+sqrt(2)``, then you need to do::
-
-      Rational(1) + sqrt(Rational(2))
     """
 
     is_commutative = True
@@ -2614,7 +2610,7 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
-            return S.One, Rational(2)
+            return S.One, Integer(2)
 
 
 class EulerGamma(NumberSymbol, metaclass=Singleton):

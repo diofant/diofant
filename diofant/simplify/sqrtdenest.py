@@ -375,14 +375,14 @@ def _sqrt_symbolic_denest(a, b, r):
 
     Otherwise, it will only be simplified if assumptions allow:
 
-    >>> w = w.subs(sqrt(3), sqrt(x + 3))
+    >>> w = w.subs({sqrt(3): sqrt(x + 3)})
     >>> sqrtdenest(sqrt((w**2).expand()))
     sqrt((sqrt(sqrt(sqrt(x + 3) + 1) + 1) + 1 + sqrt(2))**2)
 
     Notice that the argument of the sqrt is a square. If x is made positive
     then the sqrt of the square is resolved:
 
-    >>> _.subs(x, Symbol('x', positive=True))
+    >>> _.subs({x: Symbol('x', positive=True)})
     sqrt(sqrt(sqrt(x + 3) + 1) + 1) + 1 + sqrt(2)
     """
 
@@ -394,7 +394,7 @@ def _sqrt_symbolic_denest(a, b, r):
     if rb:
         y = Dummy('y', positive=True)
         try:
-            newa = Poly(a.subs(sqrt(rr), (y**2 - ra)/rb), y)
+            newa = Poly(a.subs({sqrt(rr): (y**2 - ra)/rb}), y)
         except PolynomialError:
             return
         if newa.degree() == 2:
@@ -812,7 +812,7 @@ def unrad(eq, *syms, **flags):
                 if not inv or any(isinstance(s[x], RootOf)
                                   for s in inv):  # pragma: no cover
                     raise NotImplementedError
-                eq = poly.as_expr().subs(b, covsym**lcm).subs(inv[0])
+                eq = poly.as_expr().subs({b: covsym**lcm}).subs(inv[0])
                 _cov(covsym, covsym**lcm - b)
                 return _canonical(eq, cov)
             except NotImplementedError:  # pragma: no cover

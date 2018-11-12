@@ -1121,9 +1121,9 @@ class MatrixBase(DefaultPrinting):
 
         >>> SparseMatrix(1, 1, [x])
         Matrix([[x]])
-        >>> _.subs(x, y)
+        >>> _.subs({x: y})
         Matrix([[y]])
-        >>> Matrix(_).subs(y, x)
+        >>> Matrix(_).subs({y: x})
         Matrix([[x]])
         """
         return self.applyfunc(lambda x: x.subs(*args, **kwargs))

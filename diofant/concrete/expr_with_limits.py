@@ -244,10 +244,10 @@ class ExprWithLimits(Expr):
         ========
 
         >>> from diofant.abc import s
-        >>> Sum(1/n**s, (n, 1, oo)).subs(s, 2)
+        >>> Sum(1/n**s, (n, 1, oo)).subs({s: 2})
         Sum(n**(-2), (n, 1, oo))
 
-        >>> Integral(a*x**2, x).subs(x, 4)
+        >>> Integral(a*x**2, x).subs({x: 4})
         Integral(a*x**2, (x, 4))
 
         See Also
@@ -289,7 +289,7 @@ class ExprWithLimits(Expr):
                         "substitution can not create dummy dependencies")
                 sub_into_func = True
             if sub_into_func:
-                func = func.subs(old, new)
+                func = func.subs({old: new})
         else:
             # old is a Symbol and a dummy variable of some limit
             for i, xab in enumerate(limits):

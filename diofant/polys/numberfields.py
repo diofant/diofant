@@ -247,7 +247,7 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
 
 def _invertx(p, x):
     """
-    Returns ``expand_mul(x**degree(p, x)*p.subs(x, 1/x))``
+    Returns ``expand_mul(x**degree(p, x)*p.subs({x: 1/x}))``
     """
     p1 = poly_from_expr(p, x)[0]
 

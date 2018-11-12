@@ -15,8 +15,8 @@ ph = Symbol('phi')
 
 def test_python_basic():
     # Simple numbers/symbols
-    assert python(-Rational(1)/2) == "e = Rational(-1, 2)"
-    assert python(-Rational(13)/22) == "e = Rational(-13, 22)"
+    assert python(-Rational(1, 2)) == "e = Rational(-1, 2)"
+    assert python(-Rational(13, 22)) == "e = Rational(-13, 22)"
     assert python(oo) == "e = oo"
 
     # Powers

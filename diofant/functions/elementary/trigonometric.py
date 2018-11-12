@@ -958,7 +958,7 @@ class tan(TrigonometricFunction):
             if coeff.is_Integer and coeff > 1:
                 z = Symbol('dummy', extended_real=True)
                 P = ((1 + I*z)**coeff).expand()
-                return (im(P)/re(P)).subs([(z, tan(terms))])
+                return (im(P)/re(P)).subs({z: tan(terms)})
         return tan(arg)
 
     def _eval_rewrite_as_exp(self, arg):
@@ -1394,7 +1394,7 @@ class cot(ReciprocalTrigonometricFunction):
             if coeff.is_Integer and coeff > 1:
                 z = Symbol('dummy', real=True)
                 P = ((z + I)**coeff).expand()
-                return (re(P)/im(P)).subs([(z, cot(terms))])
+                return (re(P)/im(P)).subs({z: cot(terms)})
         return cot(arg)
 
     def _eval_as_leading_term(self, x):
@@ -1408,7 +1408,7 @@ class cot(ReciprocalTrigonometricFunction):
 
     def _eval_subs(self, old, new):
         arg = self.args[0]
-        argnew = arg.subs(old, new)
+        argnew = arg.subs({old: new})
         if arg != argnew and (argnew/pi).is_integer:
             return zoo
         return cot(argnew)

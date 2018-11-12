@@ -426,7 +426,7 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     # try direct substitution of the solution into the PDE and simplify
     if sol.lhs == func:
         pde = pde.lhs - pde.rhs
-        s = simplify(pde.subs(func, sol.rhs).doit())
+        s = simplify(pde.subs({func: sol.rhs}).doit())
         return s is S.Zero, s
 
     raise NotImplementedError(filldedent('''
@@ -689,16 +689,16 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
         return Eq(f(x, y), rhs)
 
     dummy = Function('d')
-    h = (c/b).subs(y, dummy(x))
+    h = (c/b).subs({y: dummy(x)})
     sol = dsolve(dummy(x).diff(x) - h, dummy(x))
     if isinstance(sol, list):
         sol = sol[0]
     solsym = sol.free_symbols - h.free_symbols - {x, y}
     if len(solsym) == 1:
         solsym = solsym.pop()
-        etat = (solve(sol, solsym)[0][solsym]).subs(dummy(x), y)
+        etat = (solve(sol, solsym)[0][solsym]).subs({dummy(x): y})
         ysub = solve(eta - etat, y)[0][y]
-        deq = (b*(f(x).diff(x)) + d*f(x) - e).subs(y, ysub)
+        deq = (b*(f(x).diff(x)) + d*f(x) - e).subs({y: ysub})
         final = (dsolve(deq, f(x), hint='1st_linear')).rhs
         finsyms = final.free_symbols - deq.free_symbols - {x, y}
         rhs = _simplify_variable_coeff(final, finsyms, solvefun, etat)
@@ -716,11 +716,11 @@ def _simplify_variable_coeff(sol, syms, func, funcarg):
     eta = Symbol("eta")
     if len(syms) == 1:
         sym = syms.pop()
-        final = sol.subs(sym, func(funcarg))
+        final = sol.subs({sym: func(funcarg)})
     else:  # pragma: no cover
         raise NotImplementedError
 
-    return simplify(final.subs(eta, funcarg))
+    return simplify(final.subs({eta: funcarg}))
 
 
 def pde_separate(eq, fun, sep, strategy='mul'):
@@ -796,7 +796,7 @@ def pde_separate(eq, fun, sep, strategy='mul'):
         raise ValueError("Arguments do not match")
 
     # Substitute original function with separated...
-    result = eq.lhs.subs(fun, functions).doit()
+    result = eq.lhs.subs({fun: functions}).doit()
 
     # Divide by terms when doing multiplicative separation
     if not do_add:

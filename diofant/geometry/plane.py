@@ -570,7 +570,7 @@ class Plane(GeometryEntity):
         else:
             rng = random
         t = Dummy('t')
-        return self.arbitrary_point(t).subs(t, Rational(rng.random()))
+        return self.arbitrary_point(t).subs({t: Rational(rng.random())})
 
     def arbitrary_point(self, t=None):
         """ Returns an arbitrary point on the Plane; varying `t` from 0 to 2*pi
@@ -661,7 +661,7 @@ class Plane(GeometryEntity):
                 if not c:
                     return []
                 else:
-                    p = a.subs(t, c[0][t])
+                    p = a.subs({t: c[0][t]})
                     if p not in self:
                         return []  # e.g. a segment might not intersect a plane
                     return [p]
@@ -676,15 +676,15 @@ class Plane(GeometryEntity):
                 c = list(a.cross(b))
                 d = self.equation(x, y, z)
                 e = o.equation(x, y, z)
-                f = solve((d.subs(z, 0), e.subs(z, 0)), [x, y])
+                f = solve((d.subs({z: 0}), e.subs({z: 0})), [x, y])
                 if f and len(f[0]) == 2:
                     f = f[0]
                     return [Line3D(Point3D(f[x], f[y], 0), direction_ratio=c)]
-                g = solve((d.subs(y, 0), e.subs(y, 0)), [x, z])
+                g = solve((d.subs({y: 0}), e.subs({y: 0})), [x, z])
                 if g and len(g[0]) == 2:
                     g = g[0]
                     return [Line3D(Point3D(g[x], 0, g[z]), direction_ratio=c)]
-                h = solve((d.subs(x, 0), e.subs(x, 0)), [y, z])
+                h = solve((d.subs({x: 0}), e.subs({x: 0})), [y, z])
                 if h and len(h[0]) == 2:  # pragma: no branch
                     h = h[0]
                     return [Line3D(Point3D(0, h[y], h[z]), direction_ratio=c)]

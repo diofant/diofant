@@ -51,8 +51,8 @@ matrix:
             rm -rf build/
             python setup.py build_sphinx -W -b linkcheck
           fi
-        - DIOFANT_GROUND_TYPES='gmpy' py.test --cov diofant diofant/domains
-        - travis_wait py.test --cov diofant --cov-append diofant/polys
+        - DIOFANT_GROUND_TYPES='gmpy' py.test -n auto --cov diofant diofant/domains
+        - travis_wait py.test -n auto --cov diofant --cov-append diofant/polys
     - stage: deploy
       env:
         -
@@ -76,9 +76,9 @@ install:
 script:
   - |
     if [ -n "${COVERAGE}" ]; then
-      python setup.py test --addopts "--cov diofant -m \"not slow and not xfail\" --split=${SPLIT}"
+      python setup.py test --addopts "-n auto --cov diofant --ignore diofant/tests -m \"not slow and not xfail\" --split=${SPLIT}"
     else
-      python setup.py test --addopts "--split=${SPLIT}"
+      python setup.py test --addopts "-n auto --split=${SPLIT}"
     fi
 after_success: test -n "${COVERAGE}" && codecov
 notifications:

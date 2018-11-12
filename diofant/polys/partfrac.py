@@ -374,9 +374,9 @@ def apart_list_full_decomposition(P, Q, dummygen):
             P, Q = cancel(H[j]).as_numer_denom()
 
             for i in range(j + 1):
-                P = P.subs(*subs[j - i])
+                P = P.subs([subs[j - i]])
 
-            Q = Q.subs(*subs[0])
+            Q = Q.subs([subs[0]])
 
             P = Poly(P, x)
             Q = Poly(Q, x)
@@ -387,8 +387,8 @@ def apart_list_full_decomposition(P, Q, dummygen):
             B, g = Q.half_gcdex(D)
             b = (P * B.quo(g)).rem(D)
 
-            Dw = D.subs(x, next(dummygen))
-            numer = Lambda(a, b.as_expr().subs(x, a))
+            Dw = D.subs({x: next(dummygen)})
+            numer = Lambda(a, b.as_expr().subs({x: a}))
             denom = Lambda(a, (x - a))
             exponent = n-j
 
@@ -460,7 +460,7 @@ def assemble_partfrac_list(partial_list):
             an, nu = nf.variables, nf.expr
             ad, de = df.variables, df.expr
             # Hack to make dummies equal because Lambda created new Dummies
-            de = de.subs(ad[0], an[0])
+            de = de.subs({ad[0]: an[0]})
             func = Lambda(an, nu/de**ex)
             pfd += RootSum(r, func, auto=False, quadratic=False)
         else:
