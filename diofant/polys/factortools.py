@@ -50,15 +50,6 @@ def dmp_trial_division(f, factors, u, K):
     return _sort_factors(result)
 
 
-def dup_zz_mignotte_bound(f, K):
-    """Mignotte bound for univariate polynomials in `K[x]`. """
-    a = dmp_max_norm(f, 0, K)
-    b = abs(dmp_LC(f, K))
-    n = dmp_degree(f, 0)
-
-    return K.sqrt(K(n + 1))*2**n*a*b
-
-
 def dmp_zz_mignotte_bound(f, u, K):
     """Mignotte bound for multivariate polynomials in `K[X]`. """
     a = dmp_max_norm(f, u, K)
