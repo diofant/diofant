@@ -651,22 +651,21 @@ def test_dmp_gcd():
              876801128965234839118530545935732755107147297241756982389990, 1))
 
 
-def test_dup_lcm():
+def test_dmp_lcm():
     R, x = ring("x", ZZ)
 
-    assert R.dup_lcm(2, 6) == 6
+    assert R.dmp_lcm(2, 6) == 6
 
-    assert R.dup_lcm(2*x**3, 6*x) == 6*x**3
-    assert R.dup_lcm(2*x**3, 3*x) == 6*x**3
+    assert R.dmp_lcm(2*x**3, 6*x) == 6*x**3
+    assert R.dmp_lcm(2*x**3, 3*x) == 6*x**3
 
-    assert R.dup_lcm(x**2 + x, x) == x**2 + x
-    assert R.dup_lcm(x**2 + x, 2*x) == 2*x**2 + 2*x
-    assert R.dup_lcm(x**2 + 2*x, x) == x**2 + 2*x
-    assert R.dup_lcm(2*x**2 + x, x) == 2*x**2 + x
-    assert R.dup_lcm(2*x**2 + x, 2*x) == 4*x**2 + 2*x
+    assert R.dmp_lcm(x**2 + x, x) == x**2 + x
+    assert R.dmp_lcm(x**2 + x, 2*x) == 2*x**2 + 2*x
+    assert R.dmp_lcm(x**2 + 2*x, x) == x**2 + 2*x
+    assert R.dmp_lcm(2*x**2 + x, x) == 2*x**2 + x
+    assert R.dmp_lcm(2*x**2 + x, 2*x) == 4*x**2 + 2*x
+    assert R.dmp_lcm(x**2 - 1, x**2 - 3*x + 2) == x**3 - 2*x**2 - x + 2
 
-
-def test_dmp_lcm():
     R,  x, y = ring("x,y", ZZ)
 
     assert R.dmp_lcm(2, 6) == 6

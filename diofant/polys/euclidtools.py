@@ -1509,25 +1509,6 @@ def dup_ff_lcm(f, g, K):
     return dmp_ground_monic(h, 0, K)
 
 
-def dup_lcm(f, g, K):
-    """
-    Computes polynomial LCM of `f` and `g` in `K[x]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_lcm(x**2 - 1, x**2 - 3*x + 2)
-    x**3 - 2*x**2 - x + 2
-
-    """
-    if K.has_Field:
-        return dup_ff_lcm(f, g, K)
-    else:
-        return dup_rr_lcm(f, g, K)
-
-
 def dmp_rr_lcm(f, g, u, K):
     """
     Computes polynomial LCM over a ring in `K[X]`.
@@ -1591,11 +1572,7 @@ def dmp_lcm(f, g, u, K):
 
     >>> R.dmp_lcm(f, g)
     x**3 + 2*x**2*y + x*y**2
-
     """
-    if not u:
-        return dup_lcm(f, g, K)
-
     if K.has_Field:
         return dmp_ff_lcm(f, g, u, K)
     else:
