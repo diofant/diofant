@@ -828,7 +828,7 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     References
     ----------
 
-    .. [1] https://docs.scipy.org/doc/numpy/reference/ufuncs.html
+    * https://docs.scipy.org/doc/numpy/reference/ufuncs.html
 
     Examples
     --------

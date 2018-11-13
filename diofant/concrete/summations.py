@@ -128,8 +128,8 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Summation#Capital-sigma_notation
-    .. [2] https://en.wikipedia.org/wiki/Empty_sum
+    * https://en.wikipedia.org/wiki/Summation#Capital-sigma_notation
+    * https://en.wikipedia.org/wiki/Empty_sum
     """
 
     def __new__(cls, function, *symbols, **assumptions):
@@ -363,7 +363,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         References
         ==========
 
-        .. [1] [Karr81]_
+        * [Karr81]_
         """
         l_indices = list(indices)
 

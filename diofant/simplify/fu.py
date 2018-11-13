@@ -1512,7 +1512,7 @@ def TRpower(rv):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/List_of_trigonometric_identities#Power-reduction_formulae
+    * https://en.wikipedia.org/wiki/List_of_trigonometric_identities#Power-reduction_formulae
     """
 
     def f(rv):

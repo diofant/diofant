@@ -28,10 +28,10 @@ class GrayCode(Basic):
     References
     ==========
 
-    .. [1] Nijenhuis,A. and Wilf,H.S.(1978).
-           Combinatorial Algorithms. Academic Press.
-    .. [2] Knuth, D. (2011). The Art of Computer Programming, Vol 4
-           Addison Wesley
+    * Nijenhuis,A. and Wilf,H.S.(1978).
+      Combinatorial Algorithms. Academic Press.
+    * Knuth, D. (2011). The Art of Computer Programming, Vol 4
+      Addison Wesley
 
     Examples
     ========
@@ -232,7 +232,7 @@ class GrayCode(Basic):
         References
         ==========
 
-        .. [1] http://statweb.stanford.edu/~susan/courses/s208/node12.html
+        * http://statweb.stanford.edu/~susan/courses/s208/node12.html
 
         Examples
         ========

@@ -136,13 +136,13 @@ class besselj(BesselBase):
     References
     ==========
 
-    .. [1] Abramowitz, Milton; Stegun, Irene A., eds. (1965), "Chapter 9",
-           Handbook of Mathematical Functions with Formulas, Graphs, and
-           Mathematical Tables
-    .. [2] Luke, Y. L. (1969), The Special Functions and Their
-           Approximations, Volume 1
-    .. [3] https//en.wikipedia.org/wiki/Bessel_function
-    .. [4] http://functions.wolfram.com/Bessel-TypeFunctions/BesselJ/
+    * Abramowitz, Milton; Stegun, Irene A., eds. (1965), "Chapter 9",
+      Handbook of Mathematical Functions with Formulas, Graphs, and
+      Mathematical Tables
+    * Luke, Y. L. (1969), The Special Functions and Their
+      Approximations, Volume 1
+    * https//en.wikipedia.org/wiki/Bessel_function
+    * http://functions.wolfram.com/Bessel-TypeFunctions/BesselJ/
     """
 
     _a = S.One
@@ -234,7 +234,7 @@ class bessely(BesselBase):
     References
     ==========
 
-    .. [1] http://functions.wolfram.com/Bessel-TypeFunctions/BesselY/
+    * http://functions.wolfram.com/Bessel-TypeFunctions/BesselY/
 
     """
 
@@ -306,7 +306,7 @@ class besseli(BesselBase):
     References
     ==========
 
-    .. [1] http://functions.wolfram.com/Bessel-TypeFunctions/BesselI/
+    * http://functions.wolfram.com/Bessel-TypeFunctions/BesselI/
 
     """
 
@@ -396,7 +396,7 @@ class besselk(BesselBase):
     References
     ==========
 
-    .. [1] http://functions.wolfram.com/Bessel-TypeFunctions/BesselK/
+    * http://functions.wolfram.com/Bessel-TypeFunctions/BesselK/
 
     """
 
@@ -467,7 +467,7 @@ class hankel1(BesselBase):
     References
     ==========
 
-    .. [1] http://functions.wolfram.com/Bessel-TypeFunctions/HankelH1/
+    * http://functions.wolfram.com/Bessel-TypeFunctions/HankelH1/
 
     """
 
@@ -509,7 +509,7 @@ class hankel2(BesselBase):
     References
     ==========
 
-    .. [1] http://functions.wolfram.com/Bessel-TypeFunctions/HankelH2/
+    * http://functions.wolfram.com/Bessel-TypeFunctions/HankelH2/
 
     """
 
@@ -825,10 +825,10 @@ class airyai(AiryBase):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Airy_function
-    .. [2] https://dlmf.nist.gov/9
-    .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
-    .. [4] http://mathworld.wolfram.com/AiryFunctions.html
+    * https//en.wikipedia.org/wiki/Airy_function
+    * https://dlmf.nist.gov/9
+    * https://www.encyclopediaofmath.org/index.php/Airy_functions
+    * http://mathworld.wolfram.com/AiryFunctions.html
     """
 
     unbranched = True
@@ -978,10 +978,10 @@ class airybi(AiryBase):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Airy_function
-    .. [2] https://dlmf.nist.gov/9
-    .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
-    .. [4] http://mathworld.wolfram.com/AiryFunctions.html
+    * https//en.wikipedia.org/wiki/Airy_function
+    * https://dlmf.nist.gov/9
+    * https://www.encyclopediaofmath.org/index.php/Airy_functions
+    * http://mathworld.wolfram.com/AiryFunctions.html
     """
 
     unbranched = True
@@ -1182,10 +1182,10 @@ class airyaiprime(AiryBase):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Airy_function
-    .. [2] https://dlmf.nist.gov/9
-    .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
-    .. [4] http://mathworld.wolfram.com/AiryFunctions.html
+    * https//en.wikipedia.org/wiki/Airy_function
+    * https://dlmf.nist.gov/9
+    * https://www.encyclopediaofmath.org/index.php/Airy_functions
+    * http://mathworld.wolfram.com/AiryFunctions.html
     """
 
     unbranched = True
@@ -1324,10 +1324,10 @@ class airybiprime(AiryBase):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Airy_function
-    .. [2] https://dlmf.nist.gov/9
-    .. [3] https://www.encyclopediaofmath.org/index.php/Airy_functions
-    .. [4] http://mathworld.wolfram.com/AiryFunctions.html
+    * https//en.wikipedia.org/wiki/Airy_function
+    * https://dlmf.nist.gov/9
+    * https://www.encyclopediaofmath.org/index.php/Airy_functions
+    * http://mathworld.wolfram.com/AiryFunctions.html
     """
 
     unbranched = True

@@ -38,7 +38,7 @@ class DiracDelta(Function):
     References
     ==========
 
-    .. [1] http://mathworld.wolfram.com/DeltaFunction.html
+    * http://mathworld.wolfram.com/DeltaFunction.html
     """
 
     is_commutative = True

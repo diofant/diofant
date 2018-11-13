@@ -169,8 +169,8 @@ class Product(ExprWithIntLimits):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Multiplication#Capital_Pi_notation
-    .. [2] https://en.wikipedia.org/wiki/Empty_product
+    * https://en.wikipedia.org/wiki/Multiplication#Capital_Pi_notation
+    * https://en.wikipedia.org/wiki/Empty_product
     """
 
     def __new__(cls, function, *symbols, **assumptions):
@@ -371,7 +371,7 @@ class Product(ExprWithIntLimits):
         References
         ==========
 
-        .. [1] [Karr81]_
+        * [Karr81]_
         """
         l_indices = list(indices)
 

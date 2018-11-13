@@ -422,8 +422,8 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     References
     ==========
 
-    .. [1] Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
-           A Computational Perspective", Springer, 2nd edition, 229-231
+    * Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
+      A Computational Perspective", Springer, 2nd edition, 229-231
     """
     n = int(n)
     if n < 5:
@@ -573,10 +573,10 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     References
     ==========
 
-    .. [1] Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
-           A Computational Perspective", Springer, 2nd edition, 236-238
-    .. [2] https://web.archive.org/web/20150716201437/http://modular.math.washington.edu/edu/2007/spring/ent/ent-html/node81.html
-    .. [3] https://web.archive.org/web/20170830055619/http://www.cs.toronto.edu/~yuvalf/Factorization.pdf
+    * Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
+      A Computational Perspective", Springer, 2nd edition, 236-238
+    * https://web.archive.org/web/20150716201437/http://modular.math.washington.edu/edu/2007/spring/ent/ent-html/node81.html
+    * https://web.archive.org/web/20170830055619/http://www.cs.toronto.edu/~yuvalf/Factorization.pdf
     """
 
     n = int(n)
@@ -1274,7 +1274,7 @@ def divisors(n, generator=False):
     References
     ==========
 
-    .. [1] https//stackoverflow.com/questions/1010381/python-factorization
+    * https//stackoverflow.com/questions/1010381/python-factorization
     """
 
     n = as_int(abs(n))
@@ -1299,7 +1299,7 @@ def divisor_count(n, modulus=1):
     References
     ==========
 
-    .. [1] https://web.archive.org/web/20130629014824/http://www.mayer.dial.pipex.com:80/maths/formulae.htm
+    * https://web.archive.org/web/20130629014824/http://www.mayer.dial.pipex.com:80/maths/formulae.htm
 
     Examples
     ========
@@ -1348,7 +1348,7 @@ def antidivisors(n, generator=False):
     References
     ==========
 
-    .. [1] definition is described in http://oeis.org/A066272/a066272a.html
+    * definition is described in http://oeis.org/A066272/a066272a.html
 
     Examples
     ========
@@ -1380,7 +1380,7 @@ def antidivisor_count(n):
     References
     ==========
 
-    .. [1] formula from https://oeis.org/A066272
+    * formula from https://oeis.org/A066272
 
     Examples
     ========
@@ -1464,7 +1464,7 @@ class divisor_sigma(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Divisor_function
+    * https//en.wikipedia.org/wiki/Divisor_function
 
     Examples
     ========
@@ -1526,7 +1526,7 @@ def core(n, t=2):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Square-free_integer#Squarefree_core
+    * https//en.wikipedia.org/wiki/Square-free_integer#Squarefree_core
 
     Examples
     ========

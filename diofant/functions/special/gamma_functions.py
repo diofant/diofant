@@ -77,10 +77,10 @@ class gamma(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gamma_function
-    .. [2] https://dlmf.nist.gov/5
-    .. [3] http://mathworld.wolfram.com/GammaFunction.html
-    .. [4] http://functions.wolfram.com/GammaBetaErf/Gamma/
+    * https//en.wikipedia.org/wiki/Gamma_function
+    * https://dlmf.nist.gov/5
+    * http://mathworld.wolfram.com/GammaFunction.html
+    * http://functions.wolfram.com/GammaBetaErf/Gamma/
     """
 
     unbranched = True
@@ -231,12 +231,12 @@ class lowergamma(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Incomplete_gamma_function#Lower_incomplete_Gamma_function
-    .. [2] Abramowitz, Milton; Stegun, Irene A., eds. (1965), Chapter 6, Section 5,
-           Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables
-    .. [3] https://dlmf.nist.gov/8
-    .. [4] http://functions.wolfram.com/GammaBetaErf/Gamma2/
-    .. [5] http://functions.wolfram.com/GammaBetaErf/Gamma3/
+    * https//en.wikipedia.org/wiki/Incomplete_gamma_function#Lower_incomplete_Gamma_function
+    * Abramowitz, Milton; Stegun, Irene A., eds. (1965), Chapter 6, Section 5,
+      Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables
+    * https://dlmf.nist.gov/8
+    * http://functions.wolfram.com/GammaBetaErf/Gamma2/
+    * http://functions.wolfram.com/GammaBetaErf/Gamma3/
     """
 
     def fdiff(self, argindex=2):
@@ -373,13 +373,13 @@ class uppergamma(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Incomplete_gamma_function#Upper_incomplete_Gamma_function
-    .. [2] Abramowitz, Milton; Stegun, Irene A., eds. (1965), Chapter 6, Section 5,
-           Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables
-    .. [3] https://dlmf.nist.gov/8
-    .. [4] http://functions.wolfram.com/GammaBetaErf/Gamma2/
-    .. [5] http://functions.wolfram.com/GammaBetaErf/Gamma3/
-    .. [6] https//en.wikipedia.org/wiki/Exponential_integral#Relation_with_other_functions
+    * https//en.wikipedia.org/wiki/Incomplete_gamma_function#Upper_incomplete_Gamma_function
+    * Abramowitz, Milton; Stegun, Irene A., eds. (1965), Chapter 6, Section 5,
+      Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables
+    * https://dlmf.nist.gov/8
+    * http://functions.wolfram.com/GammaBetaErf/Gamma2/
+    * http://functions.wolfram.com/GammaBetaErf/Gamma3/
+    * https//en.wikipedia.org/wiki/Exponential_integral#Relation_with_other_functions
     """
 
     def fdiff(self, argindex=2):
@@ -540,10 +540,10 @@ class polygamma(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Polygamma_function
-    .. [2] http://mathworld.wolfram.com/PolygammaFunction.html
-    .. [3] http://functions.wolfram.com/GammaBetaErf/PolyGamma/
-    .. [4] http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
+    * https//en.wikipedia.org/wiki/Polygamma_function
+    * http://mathworld.wolfram.com/PolygammaFunction.html
+    * http://functions.wolfram.com/GammaBetaErf/PolyGamma/
+    * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
     """
 
     def fdiff(self, argindex=2):
@@ -803,10 +803,10 @@ class loggamma(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gamma_function
-    .. [2] https://dlmf.nist.gov/5
-    .. [3] http://mathworld.wolfram.com/LogGammaFunction.html
-    .. [4] http://functions.wolfram.com/GammaBetaErf/LogGamma/
+    * https//en.wikipedia.org/wiki/Gamma_function
+    * https://dlmf.nist.gov/5
+    * http://mathworld.wolfram.com/LogGammaFunction.html
+    * http://functions.wolfram.com/GammaBetaErf/LogGamma/
     """
 
     @classmethod
@@ -914,9 +914,9 @@ def digamma(x):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Digamma_function
-    .. [2] http://mathworld.wolfram.com/DigammaFunction.html
-    .. [3] http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
+    * https//en.wikipedia.org/wiki/Digamma_function
+    * http://mathworld.wolfram.com/DigammaFunction.html
+    * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
     """
     return polygamma(0, x)
 
@@ -944,8 +944,8 @@ def trigamma(x):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Trigamma_function
-    .. [2] http://mathworld.wolfram.com/TrigammaFunction.html
-    .. [3] http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
+    * https//en.wikipedia.org/wiki/Trigamma_function
+    * http://mathworld.wolfram.com/TrigammaFunction.html
+    * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
     """
     return polygamma(1, x)

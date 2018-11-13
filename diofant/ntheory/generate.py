@@ -194,7 +194,7 @@ def prime(nth):
     References
     ==========
 
-    .. [1] https://primes.utm.edu/glossary/xpage/BertrandsPostulate.html
+    * https://primes.utm.edu/glossary/xpage/BertrandsPostulate.html
 
     Examples
     ========
@@ -432,7 +432,7 @@ def randprime(a, b):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Bertrand's_postulate
+    * https//en.wikipedia.org/wiki/Bertrand's_postulate
 
     Examples
     ========
@@ -567,7 +567,7 @@ def cycle_length(f, x0, nmax=None, values=False):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Cycle_detection.
+    * https//en.wikipedia.org/wiki/Cycle_detection.
     """
 
     nmax = int(nmax or 0)

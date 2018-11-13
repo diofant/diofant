@@ -187,7 +187,7 @@ def continued_fraction_iterator(x):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Continued_fraction
+    * https//en.wikipedia.org/wiki/Continued_fraction
     """
     from ..functions import floor
 

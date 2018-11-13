@@ -96,9 +96,9 @@ def rsolve_poly(coeffs, f, n, **hints):
     References
     ==========
 
-    .. [1] [AbramovBronstein95]_
-    .. [2] [Petkovšek92]_
-    .. [3] [Petkovšek97]_
+    * [AbramovBronstein95]_
+    * [Petkovšek92]_
+    * [Petkovšek97]_
     """
     f = sympify(f)
 
@@ -365,7 +365,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
     References
     ==========
 
-    .. [1] [Abramov95]_
+    * [Abramov95]_
 
     See Also
     ========
@@ -471,8 +471,8 @@ def rsolve_hyper(coeffs, f, n, **hints):
     References
     ==========
 
-    .. [1] [Petkovšek92]_
-    .. [2] [Petkovšek97]_
+    * [Petkovšek92]_
+    * [Petkovšek97]_
     """
     coeffs = list(map(sympify, coeffs))
 

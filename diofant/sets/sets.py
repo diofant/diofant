@@ -115,7 +115,7 @@ class Set(Basic):
         References
         ==========
 
-        .. [1] https//en.wikipedia.org/wiki/Disjoint_sets
+        * https//en.wikipedia.org/wiki/Disjoint_sets
         """
         return self.intersection(other) == S.EmptySet
 
@@ -362,7 +362,7 @@ class Set(Basic):
         References
         ==========
 
-        .. [1] https//en.wikipedia.org/wiki/Power_set
+        * https//en.wikipedia.org/wiki/Power_set
         """
         return self._eval_powerset()
 
@@ -521,7 +521,7 @@ class ProductSet(Set):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Cartesian_product
+    * https//en.wikipedia.org/wiki/Cartesian_product
     """
 
     is_ProductSet = True
@@ -672,7 +672,7 @@ class Interval(Set, EvalfMixin):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Interval_%28mathematics%29
+    * https//en.wikipedia.org/wiki/Interval_%28mathematics%29
     """
 
     is_Interval = True
@@ -1069,7 +1069,7 @@ class Union(Set, EvalfMixin):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Union_%28set_theory%29
+    * https//en.wikipedia.org/wiki/Union_%28set_theory%29
     """
 
     is_Union = True
@@ -1277,7 +1277,7 @@ class Intersection(Set):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Intersection_%28set_theory%29
+    * https//en.wikipedia.org/wiki/Intersection_%28set_theory%29
     """
 
     is_Intersection = True
@@ -1425,7 +1425,7 @@ class Complement(Set, EvalfMixin):
     References
     ==========
 
-    .. [1] http://mathworld.wolfram.com/ComplementSet.html
+    * http://mathworld.wolfram.com/ComplementSet.html
     """
 
     is_Complement = True
@@ -1478,7 +1478,7 @@ class EmptySet(Set, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Empty_set
+    * https//en.wikipedia.org/wiki/Empty_set
     """
 
     is_EmptySet = True
@@ -1543,7 +1543,7 @@ class UniversalSet(Set, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Universal_set
+    * https//en.wikipedia.org/wiki/Universal_set
     """
 
     is_UniversalSet = True
@@ -1587,7 +1587,7 @@ class FiniteSet(Set, EvalfMixin):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Finite_set
+    * https//en.wikipedia.org/wiki/Finite_set
     """
 
     is_FiniteSet = True
@@ -1783,7 +1783,7 @@ class SymmetricDifference(Set):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Symmetric_difference
+    * https//en.wikipedia.org/wiki/Symmetric_difference
     """
 
     is_SymmetricDifference = True

@@ -485,8 +485,8 @@ def gf_div(f, g, p, K):
     References
     ==========
 
-    .. [1] [Monagan93]_
-    .. [2] [Gathen99]_
+    * [Monagan93]_
+    * [Gathen99]_
     """
     df = dmp_degree(f, 0)
     dg = dmp_degree(g, 0)
@@ -720,7 +720,7 @@ def gf_pow_mod(f, n, g, p, K):
     References
     ==========
 
-    .. [1] [Gathen99]_
+    * [Gathen99]_
     """
     if not n:
         return [K.one]
@@ -829,7 +829,7 @@ def gf_gcdex(f, g, p, K):
     References
     ==========
 
-    .. [1] [Gathen99]_
+    * [Gathen99]_
     """
     if not (f or g):
         return [K.one], [], []
@@ -1006,7 +1006,7 @@ def gf_trace_map(a, b, c, n, f, p, K):
     References
     ==========
 
-    .. [1] [Gathen92]_
+    * [Gathen92]_
     """
     u = gf_compose_mod(a, b, f, p, K)
     v = b
@@ -1091,7 +1091,7 @@ def gf_irred_p_ben_or(f, p, K):
     References
     ==========
 
-    .. [1] [BenOr81]_
+    * [BenOr81]_
     """
     n = dmp_degree(f, 0)
 
@@ -1256,7 +1256,7 @@ def gf_sqf_list(f, p, K, all=False):
     References
     ==========
 
-    .. [1] [Geddes92]_
+    * [Geddes92]_
     """
     n, sqf, factors, r = 1, False, [], int(p)
 
@@ -1464,8 +1464,8 @@ def gf_ddf_zassenhaus(f, p, K):
     References
     ==========
 
-    .. [1] [Gathen99]_
-    .. [2] [Geddes92]_
+    * [Gathen99]_
+    * [Geddes92]_
     """
     i, g, factors = 1, [K.one, K.zero], []
 
@@ -1507,8 +1507,8 @@ def gf_edf_zassenhaus(f, n, p, K):
     References
     ==========
 
-    .. [1] [Gathen99]_
-    .. [2] [Geddes92]_
+    * [Gathen99]_
+    * [Geddes92]_
     """
     factors = [f]
 
@@ -1565,9 +1565,9 @@ def gf_ddf_shoup(f, p, K):
     References
     ==========
 
-    .. [1] [Kaltofen98]_
-    .. [2] [Shoup95]_
-    .. [3] [Gathen92]_
+    * [Kaltofen98]_
+    * [Shoup95]_
+    * [Gathen92]_
     """
     n = dmp_degree(f, 0)
     k = int(math.ceil(math.sqrt(n//2)))
@@ -1635,8 +1635,8 @@ def gf_edf_shoup(f, n, p, K):
     References
     ==========
 
-    .. [1] [Shoup91]_
-    .. [2] [Gathen92]_
+    * [Shoup91]_
+    * [Gathen92]_
     """
     N, q = dmp_degree(f, 0), int(p)
 
@@ -1782,7 +1782,7 @@ def gf_factor(f, p, K):
     References
     ==========
 
-    .. [1] [Gathen99]_
+    * [Gathen99]_
     """
     lc, f = gf_monic(f, p, K)
 
@@ -1834,7 +1834,7 @@ def linear_congruence(a, b, m):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Linear_congruence_theorem
+    * https//en.wikipedia.org/wiki/Linear_congruence_theorem
     """
     from .polytools import gcdex
     if a % m == 0:
@@ -1936,7 +1936,7 @@ def gf_csolve(f, n):
     References
     ==========
 
-    .. [1] [Niven91]_
+    * [Niven91]_
     """
     from ..domains import ZZ
     P = factorint(n)

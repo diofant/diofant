@@ -36,11 +36,11 @@ Here we take minimalistic approach to get something usable first.
 References
 ==========
 
-.. [1] https//en.wikipedia.org/wiki/Rete_algorithm
-.. [2] http://reports-archive.adm.cs.cmu.edu/anon/1995/CMU-CS-95-113.pdf
-.. [3] https//en.wikipedia.org/wiki/Propositional_formula
-.. [4] https//en.wikipedia.org/wiki/Inference_rule
-.. [5] https//en.wikipedia.org/wiki/List_of_rules_of_inference
+* https//en.wikipedia.org/wiki/Rete_algorithm
+* http://reports-archive.adm.cs.cmu.edu/anon/1995/CMU-CS-95-113.pdf
+* https//en.wikipedia.org/wiki/Propositional_formula
+* https//en.wikipedia.org/wiki/Inference_rule
+* https//en.wikipedia.org/wiki/List_of_rules_of_inference
 """
 
 from collections import defaultdict
@@ -81,7 +81,7 @@ def transitive_closure(implications):
     References
     ==========
 
-    .. [1] http://www.cs.hope.edu/~cusack/Notes/Notes/DiscreteMath/Warshall.pdf
+    * http://www.cs.hope.edu/~cusack/Notes/Notes/DiscreteMath/Warshall.pdf
     """
     full_implications = set(implications)
     literals = set().union(*map(set, full_implications))

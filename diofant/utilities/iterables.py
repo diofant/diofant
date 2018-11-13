@@ -714,7 +714,7 @@ def topological_sort(graph, key=None):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Topological_sorting
+    * https//en.wikipedia.org/wiki/Topological_sorting
     """
     V, E = graph
 
@@ -981,10 +981,10 @@ def _set_partitions(n):
     References
     ==========
 
-    .. [1] Nijenhuis, Albert and Wilf, Herbert. (1978) Combinatorial Algorithms,
-           2nd Ed, p 91, algorithm "nexequ". Available online from
-           http://www.math.upenn.edu/~wilf/website/CombAlgDownld.html (viewed
-           November 17, 2012).
+    * Nijenhuis, Albert and Wilf, Herbert. (1978) Combinatorial Algorithms,
+      2nd Ed, p 91, algorithm "nexequ". Available online from
+      http://www.math.upenn.edu/~wilf/website/CombAlgDownld.html (viewed
+      November 17, 2012).
     """
     p = [0]*n
     q = [0]*n
@@ -1391,11 +1391,11 @@ def ordered_partitions(n, m=None, sort=True):
     References
     ==========
 
-    .. [1] Generating Integer Partitions, [online],
-           Available: http://jeromekelleher.net/generating-integer-partitions.html
-    .. [2] Jerome Kelleher and Barry O'Sullivan, "Generating All
-           Partitions: A Comparison Of Two Encodings", [online],
-           Available: https://arxiv.org/pdf/0909.2331v2.pdf
+    * Generating Integer Partitions, [online],
+      Available: http://jeromekelleher.net/generating-integer-partitions.html
+    * Jerome Kelleher and Barry O'Sullivan, "Generating All
+      Partitions: A Comparison Of Two Encodings", [online],
+      Available: https://arxiv.org/pdf/0909.2331v2.pdf
     """
     if n < 1 or m is not None and m < 1:
         # the empty set is the only way to handle these inputs
@@ -1466,7 +1466,7 @@ def binary_partitions(n):
     References
     ==========
 
-    .. [1] TAOCP 4, section 7.2.1.5, problem 64
+    * TAOCP 4, section 7.2.1.5, problem 64
 
     Examples
     ========
@@ -1708,7 +1708,7 @@ def generate_involutions(n):
     References
     ==========
 
-    .. [1] http://mathworld.wolfram.com/PermutationInvolution.html
+    * http://mathworld.wolfram.com/PermutationInvolution.html
 
     Examples
     ========
@@ -1821,9 +1821,9 @@ def generate_oriented_forest(n):
     References
     ==========
 
-    .. [1] T. Beyer and S.M. Hedetniemi: constant time generation of
-           rooted trees, SIAM J. Computing Vol. 9, No. 4, November 1980
-    .. [2] https//stackoverflow.com/questions/1633833/oriented-forest-taocp-algorithm-in-python
+    * T. Beyer and S.M. Hedetniemi: constant time generation of
+      rooted trees, SIAM J. Computing Vol. 9, No. 4, November 1980
+    * https//stackoverflow.com/questions/1633833/oriented-forest-taocp-algorithm-in-python
 
     Examples
     ========

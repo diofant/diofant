@@ -95,8 +95,8 @@ def sqrt(arg, **kwargs):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Square_root
-    .. [2] https//en.wikipedia.org/wiki/Principal_value
+    * https//en.wikipedia.org/wiki/Square_root
+    * https//en.wikipedia.org/wiki/Principal_value
     """
     # arg = sympify(arg) is handled by Pow
     return Pow(arg, S.Half, **kwargs)

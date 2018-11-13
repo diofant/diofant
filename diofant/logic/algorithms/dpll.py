@@ -6,8 +6,8 @@ efficient unit propagation.
 References
 ==========
 
-.. [1] https://en.wikipedia.org/wiki/DPLL_algorithm
-.. [2] https://www.researchgate.net/publication/242384772
+* https://en.wikipedia.org/wiki/DPLL_algorithm
+* https://www.researchgate.net/publication/242384772
 """
 
 from ...core.compatibility import default_sort_key

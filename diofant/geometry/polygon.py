@@ -489,7 +489,7 @@ class Polygon(GeometrySet):
         References
         ==========
 
-        .. [1] http://paulbourke.net/geometry/polygonmesh/#insidepoly
+        * http://paulbourke.net/geometry/polygonmesh/#insidepoly
 
         """
         p = Point(p)

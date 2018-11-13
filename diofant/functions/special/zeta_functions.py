@@ -64,10 +64,10 @@ class lerchphi(Function):
     References
     ==========
 
-    .. [1] Bateman, H.; Erdélyi, A. (1953), Higher Transcendental Functions,
-           Vol. I, New York: McGraw-Hill. Section 1.11.
-    .. [2] https://dlmf.nist.gov/25.14
-    .. [3] https//en.wikipedia.org/wiki/Lerch_transcendent
+    * Bateman, H.; Erdélyi, A. (1953), Higher Transcendental Functions,
+      Vol. I, New York: McGraw-Hill. Section 1.11.
+    * https://dlmf.nist.gov/25.14
+    * https//en.wikipedia.org/wiki/Lerch_transcendent
 
     Examples
     ========
@@ -263,8 +263,8 @@ class polylog(Function):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Polylogarithm
-    .. [2] http://mathworld.wolfram.com/Polylogarithm.html
+    * https://en.wikipedia.org/wiki/Polylogarithm
+    * http://mathworld.wolfram.com/Polylogarithm.html
     """
 
     @classmethod
@@ -344,8 +344,8 @@ class zeta(Function):
     References
     ==========
 
-    .. [1] https://dlmf.nist.gov/25.11
-    .. [2] https//en.wikipedia.org/wiki/Hurwitz_zeta_function
+    * https://dlmf.nist.gov/25.11
+    * https//en.wikipedia.org/wiki/Hurwitz_zeta_function
 
     Examples
     ========
@@ -511,8 +511,8 @@ class dirichlet_eta(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Dirichlet_eta_function
-    .. [2] http://mathworld.wolfram.com/DirichletEtaFunction.html
+    * https//en.wikipedia.org/wiki/Dirichlet_eta_function
+    * http://mathworld.wolfram.com/DirichletEtaFunction.html
 
     Examples
     ========

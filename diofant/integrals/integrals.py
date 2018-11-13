@@ -581,8 +581,8 @@ class Integral(AddWithLimits):
         References
         ==========
 
-        .. [1] https//en.wikipedia.org/wiki/Differentiation_under_the_integral_sign
-        .. [2] https//en.wikipedia.org/wiki/Fundamental_theorem_of_calculus
+        * https//en.wikipedia.org/wiki/Differentiation_under_the_integral_sign
+        * https//en.wikipedia.org/wiki/Fundamental_theorem_of_calculus
 
         Examples
         ========
@@ -942,7 +942,7 @@ class Integral(AddWithLimits):
         References
         ==========
 
-        .. [1] https//en.wikipedia.org/wiki/Rectangle_method
+        * https//en.wikipedia.org/wiki/Rectangle_method
 
         Examples
         ========

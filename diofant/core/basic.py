@@ -132,7 +132,7 @@ class Basic:
         References
         ==========
 
-        .. [1] http://docs.python.org/dev/reference/datamodel.html#object.__hash__
+        * http://docs.python.org/dev/reference/datamodel.html#object.__hash__
         """
         if self is other:
             return True

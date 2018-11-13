@@ -298,7 +298,7 @@ class factorial2(CombinatorialFunction):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Double_factorial
+    * https://en.wikipedia.org/wiki/Double_factorial
 
     Examples
     ========

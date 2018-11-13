@@ -83,10 +83,10 @@ class erf(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Error_function
-    .. [2] https://dlmf.nist.gov/7
-    .. [3] http://mathworld.wolfram.com/Erf.html
-    .. [4] http://functions.wolfram.com/GammaBetaErf/Erf
+    * https//en.wikipedia.org/wiki/Error_function
+    * https://dlmf.nist.gov/7
+    * http://mathworld.wolfram.com/Erf.html
+    * http://functions.wolfram.com/GammaBetaErf/Erf
     """
 
     unbranched = True
@@ -272,10 +272,10 @@ class erfc(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Error_function
-    .. [2] https://dlmf.nist.gov/7
-    .. [3] http://mathworld.wolfram.com/Erfc.html
-    .. [4] http://functions.wolfram.com/GammaBetaErf/Erfc
+    * https//en.wikipedia.org/wiki/Error_function
+    * https://dlmf.nist.gov/7
+    * http://mathworld.wolfram.com/Erfc.html
+    * http://functions.wolfram.com/GammaBetaErf/Erfc
     """
 
     unbranched = True
@@ -459,9 +459,9 @@ class erfi(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Error_function
-    .. [2] http://mathworld.wolfram.com/Erfi.html
-    .. [3] http://functions.wolfram.com/GammaBetaErf/Erfi
+    * https//en.wikipedia.org/wiki/Error_function
+    * http://mathworld.wolfram.com/Erfi.html
+    * http://functions.wolfram.com/GammaBetaErf/Erfi
     """
 
     unbranched = True
@@ -625,7 +625,7 @@ class erf2(Function):
     References
     ==========
 
-    .. [1] http://functions.wolfram.com/GammaBetaErf/Erf2/
+    * http://functions.wolfram.com/GammaBetaErf/Erf2/
     """
 
     def fdiff(self, argindex):
@@ -740,8 +740,8 @@ class erfinv(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Error_function#Inverse_functions
-    .. [2] http://functions.wolfram.com/GammaBetaErf/InverseErf/
+    * https//en.wikipedia.org/wiki/Error_function#Inverse_functions
+    * http://functions.wolfram.com/GammaBetaErf/InverseErf/
     """
 
     def fdiff(self, argindex=1):
@@ -812,8 +812,8 @@ class erfcinv (Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Error_function#Inverse_functions
-    .. [2] http://functions.wolfram.com/GammaBetaErf/InverseErfc/
+    * https//en.wikipedia.org/wiki/Error_function#Inverse_functions
+    * http://functions.wolfram.com/GammaBetaErf/InverseErfc/
     """
 
     def fdiff(self, argindex=1):
@@ -884,7 +884,7 @@ class erf2inv(Function):
     References
     ==========
 
-    .. [1] http://functions.wolfram.com/GammaBetaErf/InverseErf2/
+    * http://functions.wolfram.com/GammaBetaErf/InverseErf2/
     """
 
     def fdiff(self, argindex):
@@ -1012,9 +1012,9 @@ class Ei(Function):
     References
     ==========
 
-    .. [1] https://dlmf.nist.gov/6.6
-    .. [2] https//en.wikipedia.org/wiki/Exponential_integral
-    .. [3] Abramowitz & Stegun, section 5: http://people.math.sfu.ca/~cbm/aands/page_228.htm
+    * https://dlmf.nist.gov/6.6
+    * https//en.wikipedia.org/wiki/Exponential_integral
+    * Abramowitz & Stegun, section 5: http://people.math.sfu.ca/~cbm/aands/page_228.htm
 
     """
 
@@ -1172,9 +1172,9 @@ class expint(Function):
     References
     ==========
 
-    .. [1] https://dlmf.nist.gov/8.19
-    .. [2] http://functions.wolfram.com/GammaBetaErf/ExpIntegralE/
-    .. [3] https//en.wikipedia.org/wiki/Exponential_integral
+    * https://dlmf.nist.gov/8.19
+    * http://functions.wolfram.com/GammaBetaErf/ExpIntegralE/
+    * https//en.wikipedia.org/wiki/Exponential_integral
     """
 
     @classmethod
@@ -1343,10 +1343,10 @@ class li(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Logarithmic_integral
-    .. [2] http://mathworld.wolfram.com/LogarithmicIntegral.html
-    .. [3] https://dlmf.nist.gov/6
-    .. [4] http://mathworld.wolfram.com/SoldnersConstant.html
+    * https//en.wikipedia.org/wiki/Logarithmic_integral
+    * http://mathworld.wolfram.com/LogarithmicIntegral.html
+    * https://dlmf.nist.gov/6
+    * http://mathworld.wolfram.com/SoldnersConstant.html
     """
 
     @classmethod
@@ -1455,9 +1455,9 @@ class Li(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Logarithmic_integral
-    .. [2] http://mathworld.wolfram.com/LogarithmicIntegral.html
-    .. [3] https://dlmf.nist.gov/6
+    * https//en.wikipedia.org/wiki/Logarithmic_integral
+    * http://mathworld.wolfram.com/LogarithmicIntegral.html
+    * https://dlmf.nist.gov/6
     """
 
     @classmethod
@@ -1597,7 +1597,7 @@ class Si(TrigonometricIntegral):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Trigonometric_integral
+    * https//en.wikipedia.org/wiki/Trigonometric_integral
 
     """
 
@@ -1691,7 +1691,7 @@ class Ci(TrigonometricIntegral):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Trigonometric_integral
+    * https//en.wikipedia.org/wiki/Trigonometric_integral
 
     """
 
@@ -1769,7 +1769,7 @@ class Shi(TrigonometricIntegral):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Trigonometric_integral
+    * https//en.wikipedia.org/wiki/Trigonometric_integral
 
     """
 
@@ -1859,7 +1859,7 @@ class Chi(TrigonometricIntegral):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Trigonometric_integral
+    * https//en.wikipedia.org/wiki/Trigonometric_integral
 
     """
 
@@ -2048,12 +2048,12 @@ class fresnels(FresnelIntegral):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Fresnel_integral
-    .. [2] https://dlmf.nist.gov/7
-    .. [3] http://mathworld.wolfram.com/FresnelIntegrals.html
-    .. [4] http://functions.wolfram.com/GammaBetaErf/FresnelS
-    .. [5] The converging factors for the fresnel integrals
-            by John W. Wrench Jr. and Vicki Alley
+    * https//en.wikipedia.org/wiki/Fresnel_integral
+    * https://dlmf.nist.gov/7
+    * http://mathworld.wolfram.com/FresnelIntegrals.html
+    * http://functions.wolfram.com/GammaBetaErf/FresnelS
+    * The converging factors for the fresnel integrals
+      by John W. Wrench Jr. and Vicki Alley
     """
 
     _trigfunc = sin
@@ -2175,12 +2175,12 @@ class fresnelc(FresnelIntegral):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Fresnel_integral
-    .. [2] https://dlmf.nist.gov/7
-    .. [3] http://mathworld.wolfram.com/FresnelIntegrals.html
-    .. [4] http://functions.wolfram.com/GammaBetaErf/FresnelC
-    .. [5] The converging factors for the fresnel integrals
-            by John W. Wrench Jr. and Vicki Alley
+    * https//en.wikipedia.org/wiki/Fresnel_integral
+    * https://dlmf.nist.gov/7
+    * http://mathworld.wolfram.com/FresnelIntegrals.html
+    * http://functions.wolfram.com/GammaBetaErf/FresnelC
+    * The converging factors for the fresnel integrals
+      by John W. Wrench Jr. and Vicki Alley
     """
 
     _trigfunc = cos

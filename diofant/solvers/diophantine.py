@@ -730,10 +730,10 @@ def diop_quadratic(eq, param=symbols("t", integer=True)):
     References
     ==========
 
-    .. [1] Methods to solve Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0, [online],
-           Available: https://www.alpertron.com.ar/METHODS.HTM
-    .. [2] Solving the equation ax^2+ bxy + cy^2 + dx + ey + f= 0, [online],
-           Available: http://www.jpr2718.org/ax2p.pdf
+    * Methods to solve Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0, [online],
+      Available: https://www.alpertron.com.ar/METHODS.HTM
+    * Solving the equation ax^2+ bxy + cy^2 + dx + ey + f= 0, [online],
+      Available: http://www.jpr2718.org/ax2p.pdf
 
     See Also
     ========
@@ -1148,10 +1148,10 @@ def cornacchia(a, b, m):
     References
     ===========
 
-    .. [1] A. Nitaj, "L'algorithme de Cornacchia"
-    .. [2] Solving the diophantine equation ax**2 + by**2 = m by Cornacchia's
-           method, [online], Available:
-           http://www.numbertheory.org/php/cornacchia.html
+    * A. Nitaj, "L'algorithme de Cornacchia"
+    * Solving the diophantine equation ax**2 + by**2 = m by Cornacchia's
+      method, [online], Available:
+      http://www.numbertheory.org/php/cornacchia.html
 
     See Also
     ========
@@ -1563,9 +1563,9 @@ def find_DN(eq):
     References
     ==========
 
-    .. [1] Solving the equation ax^2 + bxy + cy^2 + dx + ey + f = 0,
-           John P.Robertson, May 8, 2003, Page 7 - 11.
-           http://www.jpr2718.org/ax2p.pdf
+    * Solving the equation ax^2 + bxy + cy^2 + dx + ey + f = 0,
+      John P.Robertson, May 8, 2003, Page 7 - 11.
+      http://www.jpr2718.org/ax2p.pdf
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
     if diop_type == "binary_quadratic":
@@ -1868,9 +1868,9 @@ def parametrize_ternary_quadratic(eq):
     References
     ==========
 
-    .. [1] The algorithmic resolution of Diophantine equations, Nigel P. Smart,
-           London Mathematical Society Student Texts 41, Cambridge University
-           Press, Cambridge, 1998.
+    * The algorithmic resolution of Diophantine equations, Nigel P. Smart,
+      London Mathematical Society Student Texts 41, Cambridge University
+      Press, Cambridge, 1998.
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
 
@@ -2027,8 +2027,8 @@ def sqf_normal(a, b, c, steps=False):
     References
     ==========
 
-    .. [1] Legendre's Theorem, Legrange's Descent,
-           https://public.csusm.edu/aitken_html/notes/legendre.pdf
+    * Legendre's Theorem, Legrange's Descent,
+      https://public.csusm.edu/aitken_html/notes/legendre.pdf
 
     See Also
     ========
@@ -2125,12 +2125,12 @@ def ldescent(A, B):
     References
     ==========
 
-    .. [1] The algorithmic resolution of Diophantine equations, Nigel P. Smart,
-           London Mathematical Society Student Texts 41, Cambridge University
-           Press, Cambridge, 1998.
-    .. [2] Efficient Solution of Rational Conices, J. E. Cremona and D. Rusin,
-           Mathematics of Computation, Volume 00, Number 0,
-           http://eprints.nottingham.ac.uk/60/1/kvxefz87.pdf
+    * The algorithmic resolution of Diophantine equations, Nigel P. Smart,
+      London Mathematical Society Student Texts 41, Cambridge University
+      Press, Cambridge, 1998.
+    * Efficient Solution of Rational Conices, J. E. Cremona and D. Rusin,
+      Mathematics of Computation, Volume 00, Number 0,
+      http://eprints.nottingham.ac.uk/60/1/kvxefz87.pdf
     """
     if abs(A) > abs(B):
         w, y, x = ldescent(B, A)
@@ -2191,8 +2191,8 @@ def descent(A, B):
     References
     ==========
 
-    .. [1] Efficient Solution of Rational Conices, J. E. Cremona and D. Rusin,
-           Mathematics of Computation, Volume 00, Number 0.
+    * Efficient Solution of Rational Conices, J. E. Cremona and D. Rusin,
+      Mathematics of Computation, Volume 00, Number 0.
     """
     if abs(A) > abs(B):
         x, y, z = descent(B, A)
@@ -2230,8 +2230,8 @@ def gaussian_reduce(w, a, b):
     References
     ==========
 
-    .. [1] Efficient Solution of Rational Conices, J. E. Cremona and D. Rusin,
-           Mathematics of Computation, Volume 00, Number 0.
+    * Efficient Solution of Rational Conices, J. E. Cremona and D. Rusin,
+      Mathematics of Computation, Volume 00, Number 0.
     """
     u = (0, 1)
     v = (1, 0)
@@ -2606,8 +2606,8 @@ def prime_as_sum_of_two_squares(p):
     References
     ==========
 
-    .. [1] Representing a number as a sum of four squares, [online],
-           Available: https://schorn.ch/lagrange.html
+    * Representing a number as a sum of four squares, [online],
+      Available: https://schorn.ch/lagrange.html
 
     See Also
     ========
@@ -2736,8 +2736,8 @@ def sum_of_four_squares(n):
     References
     ==========
 
-    .. [1] Representing a number as a sum of four squares, [online],
-           Available: https://schorn.ch/lagrange.html
+    * Representing a number as a sum of four squares, [online],
+      Available: https://schorn.ch/lagrange.html
 
     See Also
     ========

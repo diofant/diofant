@@ -63,10 +63,10 @@ def dispersionset(p, q=None, *gens, **args):
     References
     ==========
 
-    .. [1] [ManWright94]_
-    .. [2] [Koepf98]_
-    .. [3] [Abramov71]_
-    .. [4] [Man93]_
+    * [ManWright94]_
+    * [Koepf98]_
+    * [Abramov71]_
+    * [Man93]_
     """
     # Check for valid input
     same = False if q is not None else True
@@ -186,10 +186,10 @@ def dispersion(p, q=None, *gens, **args):
     References
     ==========
 
-    .. [1] [ManWright94]_
-    .. [2] [Koepf98]_
-    .. [3] [Abramov71]_
-    .. [4] [Man93]_
+    * [ManWright94]_
+    * [Koepf98]_
+    * [Abramov71]_
+    * [Man93]_
     """
     J = dispersionset(p, q, *gens, **args)
     if not J:

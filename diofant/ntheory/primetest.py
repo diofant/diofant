@@ -51,7 +51,7 @@ def is_square(n, prep=True):
     References
     ==========
 
-    .. [1] https://mersenneforum.org/showpost.php?p=110896
+    * https://mersenneforum.org/showpost.php?p=110896
 
     See Also
     ========
@@ -101,10 +101,10 @@ def mr(n, bases):
     References
     ==========
 
-    .. [1] Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
-           A Computational Perspective", Springer, 2nd edition, 135-138
-    .. [2] A list of thresholds and the bases they require are here:
-           https//en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test#Deterministic_variants_of_the_test
+    * Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
+      A Computational Perspective", Springer, 2nd edition, 135-138
+    * A list of thresholds and the bases they require are here:
+      https//en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test#Deterministic_variants_of_the_test
 
     Examples
     ========
@@ -154,11 +154,11 @@ def _mr_safe(n):
     References
     ==========
 
-    .. [1] https://primes.utm.edu/prove/prove2_3.html
-    .. [2] http://www.trnicely.net/misc/mpzspsp.html
-    .. [3] https//en.wikipedia.org/wiki/Miller-Rabin_primality_test#Accuracy_of_the_test
-    .. [4] https://primes.utm.edu/glossary/xpage/Pseudoprime.html
-    .. [5] http://uucode.com/obf/dalbec/alg.html#sprp
+    * https://primes.utm.edu/prove/prove2_3.html
+    * http://www.trnicely.net/misc/mpzspsp.html
+    * https//en.wikipedia.org/wiki/Miller-Rabin_primality_test#Accuracy_of_the_test
+    * https://primes.utm.edu/glossary/xpage/Pseudoprime.html
+    * http://uucode.com/obf/dalbec/alg.html#sprp
     """
 
     if n < 1373653:

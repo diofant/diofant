@@ -68,9 +68,9 @@ class beta(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Beta_function
-    .. [2] http://mathworld.wolfram.com/BetaFunction.html
-    .. [3] https://dlmf.nist.gov/5.12
+    * https//en.wikipedia.org/wiki/Beta_function
+    * http://mathworld.wolfram.com/BetaFunction.html
+    * https://dlmf.nist.gov/5.12
     """
 
     unbranched = True

@@ -153,9 +153,9 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     References
     ==========
 
-    .. [1] Generation of Finite Difference Formulas on Arbitrarily Spaced
-            Grids, Bengt Fornberg; Mathematics of computation; 51; 184;
-            (1988); 699-706; doi:10.1090/S0025-5718-1988-0935077-0
+    * Generation of Finite Difference Formulas on Arbitrarily Spaced
+      Grids, Bengt Fornberg; Mathematics of computation; 51; 184;
+      (1988); 699-706; doi:10.1090/S0025-5718-1988-0935077-0
 
     """
     # The notation below closely corresponds to the one used in the paper.
