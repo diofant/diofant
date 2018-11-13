@@ -94,11 +94,11 @@ class PythonFiniteField(FiniteField):
     """Finite field based on Python's integers. """
 
     def __init__(self, mod, symmetric=True):
-        return super().__init__(mod, PythonIntegerRing(), symmetric)
+        super().__init__(mod, PythonIntegerRing(), symmetric)
 
 
 class GMPYFiniteField(FiniteField):
     """Finite field based on GMPY's integers. """
 
     def __init__(self, mod, symmetric=True):
-        return super().__init__(mod, GMPYIntegerRing(), symmetric)
+        super().__init__(mod, GMPYIntegerRing(), symmetric)

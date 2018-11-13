@@ -1,6 +1,5 @@
 import collections
 import copy
-from collections import defaultdict
 
 from ..core import Dict, S
 from ..core.compatibility import as_int, is_sequence
@@ -279,7 +278,7 @@ class SparseMatrixBase(MatrixBase):
         Blist = [[] for i in range(B.rows)]
         for i, j, v in B.row_list():
             Blist[i].append((j, v))
-        Cdict = defaultdict(int)
+        Cdict = collections.defaultdict(int)
         for k, j, Akj in A.row_list():
             for n, Bjn in Blist[j]:
                 temp = Akj*Bjn
