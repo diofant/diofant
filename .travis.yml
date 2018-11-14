@@ -1,10 +1,10 @@
 language: python
-dist: trusty
+dist: xenial
 sudo: false
 cache: pip
 python:
   - 3.6
-  - 3.7-dev
+  - 3.7
   - pypy3.5
 env:
   global:
@@ -68,11 +68,9 @@ matrix:
   allow_failures:
     - python: pypy3.5
       env: SPLIT=3/3
-before_install:
-  - pip install --upgrade pip setuptools pytest codecov
 install:
   - pip install --pre -U 'gmpy2;platform_python_implementation!="PyPy"'
-  - travis_wait pip install .[exports,plot,interactive,docs]
+  - travis_wait pip install .[exports,plot,interactive,develop,docs]
 script:
   - |
     if [ -n "${COVERAGE}" ]; then
