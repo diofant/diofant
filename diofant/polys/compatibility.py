@@ -38,9 +38,8 @@ from .factortools import (dmp_ext_factor, dmp_factor_list,
                           dmp_zz_factor, dmp_zz_mignotte_bound, dmp_zz_wang,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
                           dmp_zz_wang_non_divisors, dup_cyclotomic_p,
-                          dup_ext_factor, dup_zz_cyclotomic_factor,
-                          dup_zz_cyclotomic_poly, dup_zz_factor,
-                          dup_zz_factor_sqf, dup_zz_hensel_lift,
+                          dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
+                          dup_zz_factor, dup_zz_factor_sqf, dup_zz_hensel_lift,
                           dup_zz_hensel_step, dup_zz_irreducible_p)
 from .galoistools import gf_factor_sqf
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
@@ -556,10 +555,6 @@ class IPolys:
 
     def dmp_zz_factor(self, f):
         coeff, factors = dmp_zz_factor(self.to_dense(f), self.ngens-1, self.domain)
-        return coeff, [(self.from_dense(g), k) for g, k in factors]
-
-    def dup_ext_factor(self, f):
-        coeff, factors = dup_ext_factor(self.to_dense(f), self.domain)
         return coeff, [(self.from_dense(g), k) for g, k in factors]
 
     def dmp_ext_factor(self, f):

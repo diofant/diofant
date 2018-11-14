@@ -423,56 +423,54 @@ def test_dmp_zz_factor():
                (x**4 + 6*x**2*y + y**2, 1)])
 
 
-def test_dup_ext_factor():
+def test_dmp_ext_factor():
     R, x = ring("x", QQ.algebraic_field(I))
 
-    assert R.dup_ext_factor(0) == (R.domain(0), [])
+    assert R.dmp_ext_factor(0) == (R.domain(0), [])
 
     f = x + 1
 
-    assert R.dup_ext_factor(f) == (R.domain(1), [(f, 1)])
+    assert R.dmp_ext_factor(f) == (R.domain(1), [(f, 1)])
 
     g = 2*x + 2
 
-    assert R.dup_ext_factor(g) == (R.domain(2), [(f, 1)])
+    assert R.dmp_ext_factor(g) == (R.domain(2), [(f, 1)])
 
     f = 7*x**4 + 1
     g = x**4 + QQ(1, 7)
 
-    assert R.dup_ext_factor(f) == (R.domain(7), [(g, 1)])
+    assert R.dmp_ext_factor(f) == (R.domain(7), [(g, 1)])
 
     f = x**4 + 1
 
-    assert R.dup_ext_factor(f) == (R.domain(1), [(x**2 - I, 1), (x**2 + I, 1)])
+    assert R.dmp_ext_factor(f) == (R.domain(1), [(x**2 - I, 1), (x**2 + I, 1)])
 
     f = 4*x**2 + 9
 
-    assert R.dup_ext_factor(f) == (R.domain(4), [(x - 3*I/2, 1), (x + 3*I/2, 1)])
+    assert R.dmp_ext_factor(f) == (R.domain(4), [(x - 3*I/2, 1), (x + 3*I/2, 1)])
 
     f = 4*x**4 + 8*x**3 + 77*x**2 + 18*x + 153
 
-    assert R.dup_ext_factor(f) == (4, [(x - 3*I/2, 1), (x + 1 + 4*I, 1),
+    assert R.dmp_ext_factor(f) == (4, [(x - 3*I/2, 1), (x + 1 + 4*I, 1),
                                        (x + 1 - 4*I, 1), (x + 3*I/2, 1)])
 
     R, x = ring("x", QQ.algebraic_field(sqrt(2)))
 
     f = x**4 + 1
 
-    assert R.dup_ext_factor(f) == (R.domain(1), [(x**2 - sqrt(2)*x + 1, 1),
+    assert R.dmp_ext_factor(f) == (R.domain(1), [(x**2 - sqrt(2)*x + 1, 1),
                                                  (x**2 + sqrt(2)*x + 1, 1)])
 
     f = x**2 + 2*sqrt(2)*x + 2
 
-    assert R.dup_ext_factor(f) == (R.domain(1), [(x + sqrt(2), 2)])
-    assert R.dup_ext_factor(f**3) == (R.domain(1), [(x + sqrt(2), 6)])
+    assert R.dmp_ext_factor(f) == (R.domain(1), [(x + sqrt(2), 2)])
+    assert R.dmp_ext_factor(f**3) == (R.domain(1), [(x + sqrt(2), 6)])
 
     f *= 2
 
-    assert R.dup_ext_factor(f) == (R.domain(2), [(x + sqrt(2), 2)])
-    assert R.dup_ext_factor(f**3) == (R.domain(8), [(x + sqrt(2), 6)])
+    assert R.dmp_ext_factor(f) == (R.domain(2), [(x + sqrt(2), 2)])
+    assert R.dmp_ext_factor(f**3) == (R.domain(8), [(x + sqrt(2), 6)])
 
-
-def test_dmp_ext_factor():
     R,  x, y = ring("x,y", QQ.algebraic_field(sqrt(2)))
 
     assert R.dmp_ext_factor(0) == (R.domain(0), [])
