@@ -86,7 +86,7 @@ def test_dup_primitive_prs():
         1]
 
 
-def test_dup_subresultants():
+def test_dmp_subresultants():
     R, x = ring("x", ZZ)
 
     assert R.dup_resultant(0, 0) == 0
@@ -102,7 +102,7 @@ def test_dup_subresultants():
     c = 9326*x - 12300
     d = 260708
 
-    assert R.dup_subresultants(f, g) == [f, g, a, b, c, d]
+    assert R.dmp_subresultants(f, g) == [f, g, a, b, c, d]
     assert R.dup_resultant(f, g) == R.dmp_LC(d)
 
     f = x**2 - 2*x + 1
@@ -110,7 +110,7 @@ def test_dup_subresultants():
 
     a = 2*x - 2
 
-    assert R.dup_subresultants(f, g) == [f, g, a]
+    assert R.dmp_subresultants(f, g) == [f, g, a]
     assert R.dup_resultant(f, g) == 0
 
     f = x**2 + 1
@@ -118,7 +118,7 @@ def test_dup_subresultants():
 
     a = -2
 
-    assert R.dup_subresultants(f, g) == [f, g, a]
+    assert R.dmp_subresultants(f, g) == [f, g, a]
     assert R.dup_resultant(f, g) == 4
 
     f = x**2 - 1
@@ -159,8 +159,6 @@ def test_dup_subresultants():
     assert R.dup_inner_subresultants(0, 0) == ([], [])
     assert R.dup_inner_subresultants(0, 1) == ([1], [1])
 
-
-def test_dmp_subresultants():
     R, x, y = ring("x,y", ZZ)
 
     assert R.dmp_resultant(0, 0) == 0
@@ -308,7 +306,7 @@ def test_dmp_discriminant():
         (-27*y**2*v**2 + 18*y*z*u*v - 4*y*u**3 - 4*z**3*v + z**2*u**2).drop(x)
 
 
-def test_dup_gcd():
+def test_dmp_gcd():
     R, x = ring("x", ZZ)
 
     f, g = 0, 0
@@ -461,8 +459,6 @@ def test_dup_gcd():
     f, g = (x**2 - y, x**3 - y*x + 2)
     assert R.dmp_inner_gcd(f, g) == (1, f, g)
 
-
-def test_dmp_gcd():
     R,  x, y = ring("x,y", ZZ)
 
     f, g = 0, 0
@@ -650,23 +646,26 @@ def test_dmp_gcd():
              22495499028725631994927113634418779135935898997901327211111875586270479483*y -
              876801128965234839118530545935732755107147297241756982389990, 1))
 
-
-def test_dup_lcm():
     R, x = ring("x", ZZ)
 
-    assert R.dup_lcm(2, 6) == 6
-
-    assert R.dup_lcm(2*x**3, 6*x) == 6*x**3
-    assert R.dup_lcm(2*x**3, 3*x) == 6*x**3
-
-    assert R.dup_lcm(x**2 + x, x) == x**2 + x
-    assert R.dup_lcm(x**2 + x, 2*x) == 2*x**2 + 2*x
-    assert R.dup_lcm(x**2 + 2*x, x) == x**2 + 2*x
-    assert R.dup_lcm(2*x**2 + x, x) == 2*x**2 + x
-    assert R.dup_lcm(2*x**2 + x, 2*x) == 4*x**2 + 2*x
+    assert R.dmp_gcd(x**2 - 1, x**2 - 3*x + 2) == x - 1
 
 
 def test_dmp_lcm():
+    R, x = ring("x", ZZ)
+
+    assert R.dmp_lcm(2, 6) == 6
+
+    assert R.dmp_lcm(2*x**3, 6*x) == 6*x**3
+    assert R.dmp_lcm(2*x**3, 3*x) == 6*x**3
+
+    assert R.dmp_lcm(x**2 + x, x) == x**2 + x
+    assert R.dmp_lcm(x**2 + x, 2*x) == 2*x**2 + 2*x
+    assert R.dmp_lcm(x**2 + 2*x, x) == x**2 + 2*x
+    assert R.dmp_lcm(2*x**2 + x, x) == 2*x**2 + x
+    assert R.dmp_lcm(2*x**2 + x, 2*x) == 4*x**2 + 2*x
+    assert R.dmp_lcm(x**2 - 1, x**2 - 3*x + 2) == x**3 - 2*x**2 - x + 2
+
     R,  x, y = ring("x,y", ZZ)
 
     assert R.dmp_lcm(2, 6) == 6
@@ -748,7 +747,7 @@ def test_dmp_primitive():
     assert cont == 1 and f == f_6
 
 
-def test_dup_cancel():
+def test_dmp_cancel():
     R, x = ring("x", ZZ)
 
     f = 2*x**2 - 2
@@ -757,8 +756,8 @@ def test_dup_cancel():
     p = 2*x + 2
     q = x - 1
 
-    assert R.dup_cancel(f, g) == (p, q)
-    assert R.dup_cancel(f, g, include=False) == (1, 1, p, q)
+    assert R.dmp_cancel(f, g) == (p, q)
+    assert R.dmp_cancel(f, g, include=False) == (1, 1, p, q)
 
     f = -x - 2
     g = 3*x - 4
@@ -766,26 +765,24 @@ def test_dup_cancel():
     F = x + 2
     G = -3*x + 4
 
-    assert R.dup_cancel(f, g) == (f, g)
-    assert R.dup_cancel(F, G) == (f, g)
+    assert R.dmp_cancel(f, g) == (f, g)
+    assert R.dmp_cancel(F, G) == (f, g)
 
-    assert R.dup_cancel(0, 0) == (0, 0)
-    assert R.dup_cancel(0, 0, include=False) == (1, 1, 0, 0)
+    assert R.dmp_cancel(0, 0) == (0, 0)
+    assert R.dmp_cancel(0, 0, include=False) == (1, 1, 0, 0)
 
-    assert R.dup_cancel(x, 0) == (1, 0)
-    assert R.dup_cancel(x, 0, include=False) == (1, 1, 1, 0)
+    assert R.dmp_cancel(x, 0) == (1, 0)
+    assert R.dmp_cancel(x, 0, include=False) == (1, 1, 1, 0)
 
-    assert R.dup_cancel(0, x) == (0, 1)
-    assert R.dup_cancel(0, x, include=False) == (1, 1, 0, 1)
+    assert R.dmp_cancel(0, x) == (0, 1)
+    assert R.dmp_cancel(0, x, include=False) == (1, 1, 0, 1)
 
     f = 0
     g = x
     one = 1
 
-    assert R.dup_cancel(f, g, include=True) == (f, one)
+    assert R.dmp_cancel(f, g, include=True) == (f, one)
 
-
-def test_dmp_cancel():
     R, x, y = ring("x,y", ZZ)
 
     f = 2*x**2 - 2

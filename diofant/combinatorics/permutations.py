@@ -745,7 +745,7 @@ class Permutation(Basic):
            Concrete Mathematics: A Foundation for Computer Science, 2nd ed.
            Reading, MA: Addison-Wesley, 1994.
 
-    .. [6] https://en.wikipedia.org/wiki/Permutation#Product_and_inverse
+    .. [6] https://en.wikipedia.org/wiki/Permutation
 
     .. [7] https://en.wikipedia.org/wiki/Lehmer_code
 

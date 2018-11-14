@@ -264,22 +264,6 @@ def dup_inner_subresultants(f, g, K):
     return R, S
 
 
-def dup_subresultants(f, g, K):
-    """
-    Computes subresultant PRS of two polynomials in `K[x]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_subresultants(x**2 + 1, x**2 - 1)
-    [x**2 + 1, x**2 - 1, -2]
-
-    """
-    return dup_inner_subresultants(f, g, K)[0]
-
-
 def dup_prs_resultant(f, g, K):
     """
     Resultant algorithm in `K[x]` using subresultant PRS.
@@ -842,7 +826,7 @@ def dup_rr_prs_gcd(f, g, K):
 
     c = K.gcd(fc, gc)
 
-    h = dup_subresultants(F, G, K)[-1]
+    h = dmp_subresultants(F, G, 0, K)[-1]
     _, h = dmp_ground_primitive(h, 0, K)
 
     if K.is_negative(dmp_LC(h, K)):
@@ -877,7 +861,7 @@ def dup_ff_prs_gcd(f, g, K):
     if result is not None:
         return result
 
-    h = dup_subresultants(f, g, K)[-1]
+    h = dmp_subresultants(f, g, 0, K)[-1]
     h = dmp_ground_monic(h, 0, K)
 
     cff = dmp_quo(f, h, 0, K)
@@ -1428,22 +1412,6 @@ def dmp_inner_gcd(f, g, u, K):
             dmp_inflate(cfg, J, u, K))
 
 
-def dup_gcd(f, g, K):
-    """
-    Computes polynomial GCD of `f` and `g` in `K[x]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_gcd(x**2 - 1, x**2 - 3*x + 2)
-    x - 1
-
-    """
-    return dup_inner_gcd(f, g, K)[0]
-
-
 def dmp_gcd(f, g, u, K):
     """
     Computes polynomial GCD of `f` and `g` in `K[X]`.
@@ -1482,7 +1450,7 @@ def dup_rr_lcm(f, g, K):
     c = K.lcm(fc, gc)
 
     h = dmp_quo(dup_mul(f, g, K),
-                dup_gcd(f, g, K), 0, K)
+                dmp_gcd(f, g, 0, K), 0, K)
 
     return dmp_mul_ground(h, c, 0, K)
 
@@ -1504,28 +1472,9 @@ def dup_ff_lcm(f, g, K):
 
     """
     h = dmp_quo(dup_mul(f, g, K),
-                dup_gcd(f, g, K), 0, K)
+                dmp_gcd(f, g, 0, K), 0, K)
 
     return dmp_ground_monic(h, 0, K)
-
-
-def dup_lcm(f, g, K):
-    """
-    Computes polynomial LCM of `f` and `g` in `K[x]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_lcm(x**2 - 1, x**2 - 3*x + 2)
-    x**3 - 2*x**2 - x + 2
-
-    """
-    if K.has_Field:
-        return dup_ff_lcm(f, g, K)
-    else:
-        return dup_rr_lcm(f, g, K)
 
 
 def dmp_rr_lcm(f, g, u, K):
@@ -1591,11 +1540,7 @@ def dmp_lcm(f, g, u, K):
 
     >>> R.dmp_lcm(f, g)
     x**3 + 2*x**2*y + x*y**2
-
     """
-    if not u:
-        return dup_lcm(f, g, K)
-
     if K.has_Field:
         return dmp_ff_lcm(f, g, u, K)
     else:
@@ -1651,22 +1596,6 @@ def dmp_primitive(f, u, K):
         return cont, f
     else:
         return cont, [ dmp_quo(c, cont, v, K) for c in f ]
-
-
-def dup_cancel(f, g, K, include=True):
-    """
-    Cancel common factors in a rational function `f/g`.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_cancel(2*x**2 - 2, x**2 - 2*x + 1)
-    (2*x + 2, x - 1)
-
-    """
-    return dmp_cancel(f, g, 0, K, include=include)
 
 
 def dmp_cancel(f, g, u, K, include=True):

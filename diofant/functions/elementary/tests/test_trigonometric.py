@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import (E, FiniteSet, Float, Heaviside, I, Integer, Matrix, Mul,
-                     O, PoleError, Pow, Rational, Symbol, acos, acot, acoth,
-                     acsc, arg, asec, asin, asinh, atan, atan2, atanh, cancel,
+from diofant import (E, FiniteSet, Float, Heaviside, I, Matrix, Mul, O,
+                     PoleError, Pow, Rational, Symbol, acos, acot, acoth, acsc,
+                     arg, asec, asin, asinh, atan, atan2, atanh, cancel,
                      conjugate, cos, cosh, cot, coth, csc, csch, diff, exp,
                      gcd, im, log, nan, oo, pi, re, sec, sech, series,
                      simplify, sin, sinh, sqrt, symbols, tan, tanh, zoo)
@@ -896,7 +896,7 @@ def test_atan2():
     assert ex.subs({x: 2, y: 3}).rewrite(arg) == 0
     assert ex.subs({x: 2, y: 3*I}).rewrite(arg) == -pi - I*log(sqrt(5)*I/5)
     assert ex.subs({x: 2*I, y: 3}).rewrite(arg) == -pi/2 - I*log(sqrt(5)*I)
-    assert ex.subs({x: 2*I, y: 3*I}).rewrite(arg) == -pi + atan(2/Integer(3)) + atan(3/Integer(2))
+    assert ex.subs({x: 2*I, y: 3*I}).rewrite(arg) == -pi + atan(Rational(2, 3)) + atan(Rational(3, 2))
     i = symbols('i', imaginary=True)
     r = symbols('r', extended_real=True)
     e = atan2(i, r)

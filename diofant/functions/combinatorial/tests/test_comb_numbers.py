@@ -164,54 +164,54 @@ def test_harmonic_rational():
     qo = Integer(13)
 
     Heee = harmonic(ne + pe/qe)
-    Aeee = (-log(10) + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
-            + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
-            + pi*(1/Integer(4) + sqrt(5)/4)/(2*sqrt(-sqrt(5)/8 + 5/Integer(8)))
-            + 13944145/Integer(4720968))
+    Aeee = (-log(10) + 2*(Rational(-1, 4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + Rational(5, 8)))
+            + 2*(-sqrt(5)/4 - Rational(1, 4))*log(sqrt(sqrt(5)/8 + Rational(5, 8)))
+            + pi*(Rational(1, 4) + sqrt(5)/4)/(2*sqrt(-sqrt(5)/8 + Rational(5, 8)))
+            + Rational(13944145, 4720968))
 
     Heeo = harmonic(ne + pe/qo)
     Aeeo = (-log(26) + 2*log(sin(3*pi/13))*cos(4*pi/13) + 2*log(sin(2*pi/13))*cos(32*pi/13)
             + 2*log(sin(5*pi/13))*cos(80*pi/13) - 2*log(sin(6*pi/13))*cos(5*pi/13)
             - 2*log(sin(4*pi/13))*cos(pi/13) + pi*cot(5*pi/13)/2 - 2*log(sin(pi/13))*cos(3*pi/13)
-            + 2422020029/Integer(702257080))
+            + Rational(2422020029, 702257080))
 
     Heoe = harmonic(ne + po/qe)
-    Aeoe = (-log(20) + 2*(1/Integer(4) + sqrt(5)/4)*log(-1/Integer(4) + sqrt(5)/4)
-            + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
-            + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
-            + 2*(-sqrt(5)/4 + 1/Integer(4))*log(1/Integer(4) + sqrt(5)/4)
-            + 11818877030/Integer(4286604231) + pi*(sqrt(5)/8 + 5/Integer(8))/sqrt(-sqrt(5)/8 + 5/Integer(8)))
+    Aeoe = (-log(20) + 2*(Rational(1, 4) + sqrt(5)/4)*log(Rational(-1, 4) + sqrt(5)/4)
+            + 2*(Rational(-1, 4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + Rational(5, 8)))
+            + 2*(-sqrt(5)/4 - Rational(1, 4))*log(sqrt(sqrt(5)/8 + Rational(5, 8)))
+            + 2*(-sqrt(5)/4 + Rational(1, 4))*log(Rational(1, 4) + sqrt(5)/4)
+            + Rational(11818877030, 4286604231) + pi*(sqrt(5)/8 + Rational(5, 8))/sqrt(-sqrt(5)/8 + Rational(5, 8)))
 
     Heoo = harmonic(ne + po/qo)
     Aeoo = (-log(26) + 2*log(sin(3*pi/13))*cos(54*pi/13) + 2*log(sin(4*pi/13))*cos(6*pi/13)
             + 2*log(sin(6*pi/13))*cos(108*pi/13) - 2*log(sin(5*pi/13))*cos(pi/13)
             - 2*log(sin(pi/13))*cos(5*pi/13) + pi*cot(4*pi/13)/2
-            - 2*log(sin(2*pi/13))*cos(3*pi/13) + 11669332571/Integer(3628714320))
+            - 2*log(sin(2*pi/13))*cos(3*pi/13) + Rational(11669332571, 3628714320))
 
     Hoee = harmonic(no + pe/qe)
-    Aoee = (-log(10) + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
-            + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
-            + pi*(1/Integer(4) + sqrt(5)/4)/(2*sqrt(-sqrt(5)/8 + 5/Integer(8)))
-            + 779405/Integer(277704))
+    Aoee = (-log(10) + 2*(Rational(-1, 4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + Rational(5, 8)))
+            + 2*(-sqrt(5)/4 - Rational(1, 4))*log(sqrt(sqrt(5)/8 + Rational(5, 8)))
+            + pi*(Rational(1, 4) + sqrt(5)/4)/(2*sqrt(-sqrt(5)/8 + Rational(5, 8)))
+            + Rational(779405, 277704))
 
     Hoeo = harmonic(no + pe/qo)
     Aoeo = (-log(26) + 2*log(sin(3*pi/13))*cos(4*pi/13) + 2*log(sin(2*pi/13))*cos(32*pi/13)
             + 2*log(sin(5*pi/13))*cos(80*pi/13) - 2*log(sin(6*pi/13))*cos(5*pi/13)
             - 2*log(sin(4*pi/13))*cos(pi/13) + pi*cot(5*pi/13)/2
-            - 2*log(sin(pi/13))*cos(3*pi/13) + 53857323/Integer(16331560))
+            - 2*log(sin(pi/13))*cos(3*pi/13) + Rational(53857323, 16331560))
 
     Hooe = harmonic(no + po/qe)
-    Aooe = (-log(20) + 2*(1/Integer(4) + sqrt(5)/4)*log(-1/Integer(4) + sqrt(5)/4)
-            + 2*(-1/Integer(4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + 5/Integer(8)))
-            + 2*(-sqrt(5)/4 - 1/Integer(4))*log(sqrt(sqrt(5)/8 + 5/Integer(8)))
-            + 2*(-sqrt(5)/4 + 1/Integer(4))*log(1/Integer(4) + sqrt(5)/4)
-            + 486853480/Integer(186374097) + pi*(sqrt(5)/8 + 5/Integer(8))/sqrt(-sqrt(5)/8 + 5/Integer(8)))
+    Aooe = (-log(20) + 2*(Rational(1, 4) + sqrt(5)/4)*log(Rational(-1, 4) + sqrt(5)/4)
+            + 2*(Rational(-1, 4) + sqrt(5)/4)*log(sqrt(-sqrt(5)/8 + Rational(5, 8)))
+            + 2*(-sqrt(5)/4 - Rational(1, 4))*log(sqrt(sqrt(5)/8 + Rational(5, 8)))
+            + 2*(-sqrt(5)/4 + Rational(1, 4))*log(Rational(1, 4) + sqrt(5)/4)
+            + Rational(486853480, 186374097) + pi*(sqrt(5)/8 + Rational(5, 8))/sqrt(-sqrt(5)/8 + Rational(5, 8)))
 
     Hooo = harmonic(no + po/qo)
     Aooo = (-log(26) + 2*log(sin(3*pi/13))*cos(54*pi/13) + 2*log(sin(4*pi/13))*cos(6*pi/13)
             + 2*log(sin(6*pi/13))*cos(108*pi/13) - 2*log(sin(5*pi/13))*cos(pi/13)
             - 2*log(sin(pi/13))*cos(5*pi/13) + pi*cot(4*pi/13)/2
-            - 2*log(sin(2*pi/13))*cos(3*pi/13) + 383693479/Integer(125128080))
+            - 2*log(sin(2*pi/13))*cos(3*pi/13) + Rational(383693479, 125128080))
 
     H = [Heee, Heeo, Heoe, Heoo, Hoee, Hoeo, Hooe, Hooo]
     A = [Aeee, Aeeo, Aeoe, Aeoo, Aoee, Aoeo, Aooe, Aooo]

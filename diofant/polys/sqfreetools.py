@@ -5,7 +5,7 @@ from .densebasic import (dmp_convert, dmp_degree, dmp_ground, dmp_ground_LC,
                          dmp_inject, dmp_raise, dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
                          dmp_ground_primitive, dup_shift)
-from .euclidtools import dmp_gcd, dmp_inner_gcd, dmp_resultant, dup_gcd
+from .euclidtools import dmp_gcd, dmp_inner_gcd, dmp_resultant
 from .galoistools import gf_sqf_list, gf_sqf_part
 from .polyerrors import DomainError
 
@@ -234,7 +234,7 @@ def dup_gff_list(f, K):
     if not dmp_degree(f, 0):
         return []
     else:
-        g = dup_gcd(f, dup_shift(f, K.one, K), K)
+        g = dmp_gcd(f, dup_shift(f, K.one, K), 0, K)
         H = dup_gff_list(g, K)
 
         for i, (h, k) in enumerate(H):

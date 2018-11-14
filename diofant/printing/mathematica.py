@@ -36,6 +36,12 @@ known_functions = {
     "polygamma": [(lambda n, x: True, "PolyGamma")],
     "Max": [(lambda *x: True, "Max")],
     "Min": [(lambda *x: True, "Min")],
+    "factorial": [(lambda x: True, "Factorial")],
+    "factorial2": [(lambda *x: True, "Factorial2")],
+    "RisingFactorial": [(lambda x, k: True, "Pochhammer")],
+    "gamma": [(lambda x: True, "Gamma")],
+    "asinh": [(lambda x: True, "ArcSinh")],
+    "zeta": [(lambda x: True, "Zeta")],
 }
 
 

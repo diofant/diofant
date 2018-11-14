@@ -342,7 +342,7 @@ def test_loggamma():
     assert expand_func(L).doit() == E
     assert L.evalf() == E.evalf()
 
-    L = loggamma(19/Integer(4))
+    L = loggamma(Rational(19, 4))
     E = -4*log(4) + loggamma(Rational(3, 4)) + log(3) + log(7) + log(11) + log(15)
     assert expand_func(L).doit() == E
     assert L.evalf() == E.evalf()
@@ -352,18 +352,18 @@ def test_loggamma():
     assert expand_func(L).doit() == E
     assert L.evalf() == E.evalf()
 
-    L = loggamma(19/Integer(4)-7)
+    L = loggamma(Rational(19, 4) - 7)
     E = -log(9) - log(5) + loggamma(Rational(3, 4)) + 3*log(4) - 3*I*pi
     assert expand_func(L).doit() == E
     assert L.evalf() == E.evalf()
 
-    L = loggamma(23/Integer(7)-6)
+    L = loggamma(Rational(23, 7) - 6)
     E = -log(19) - log(12) - log(5) + loggamma(Rational(2, 7)) + 3*log(7) - 3*I*pi
     assert expand_func(L).doit() == E
     assert L.evalf() == E.evalf()
 
     assert expand_func(loggamma(x)) == loggamma(x)
-    assert expand_func(loggamma(1/Integer(3))) == loggamma(1/Integer(3))
+    assert expand_func(loggamma(Rational(1, 3))) == loggamma(Rational(1, 3))
 
     assert loggamma(x).diff(x) == polygamma(0, x)
     s1 = loggamma(1/(x + sin(x)) + cos(x)).nseries(x, n=4)

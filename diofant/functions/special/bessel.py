@@ -854,7 +854,7 @@ class airyai(AiryBase):
             return S.Zero
         else:
             x = sympify(x)
-            return (S.One/(3**Rational(2, 3)*pi) * gamma((n+S.One)/Integer(3)) * sin(2*pi*(n+S.One)/Integer(3)) / factorial(n) * (root(3, 3)*x)**n)
+            return 1/(3**Rational(2, 3)*pi) * gamma(Rational(n+1, 3)) * sin(2*pi*(n+1)/3) / factorial(n) * (root(3, 3)*x)**n
 
     def _eval_rewrite_as_besselj(self, z):
         ot = Rational(1, 3)
@@ -1009,7 +1009,7 @@ class airybi(AiryBase):
             return S.Zero
         else:
             x = sympify(x)
-            return (S.One/(root(3, 6)*pi) * gamma((n + S.One)/Integer(3)) * Abs(sin(2*pi*(n + S.One)/Integer(3))) / factorial(n) * (root(3, 3)*x)**n)
+            return 1/(root(3, 6)*pi) * gamma(Rational(n + 1, 3)) * Abs(sin(2*pi*(n + 1)/3)) / factorial(n) * (root(3, 3)*x)**n
 
     def _eval_rewrite_as_besselj(self, z):
         ot = Rational(1, 3)

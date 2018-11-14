@@ -26,24 +26,21 @@ from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_qq_heu_gcd, dmp_resultant, dmp_rr_lcm,
                           dmp_rr_prs_gcd, dmp_subresultants,
                           dmp_zz_collins_resultant, dmp_zz_heu_gcd,
-                          dmp_zz_modular_resultant, dup_cancel,
-                          dup_discriminant, dup_euclidean_prs, dup_ff_lcm,
-                          dup_ff_prs_gcd, dup_gcd, dup_gcdex, dup_half_gcdex,
-                          dup_inner_gcd, dup_inner_subresultants, dup_invert,
-                          dup_lcm, dup_primitive_prs, dup_prs_resultant,
-                          dup_qq_heu_gcd, dup_resultant, dup_rr_lcm,
-                          dup_rr_prs_gcd, dup_subresultants, dup_zz_heu_gcd)
+                          dmp_zz_modular_resultant, dup_discriminant,
+                          dup_euclidean_prs, dup_ff_lcm, dup_ff_prs_gcd,
+                          dup_gcdex, dup_half_gcdex, dup_inner_gcd,
+                          dup_inner_subresultants, dup_invert,
+                          dup_primitive_prs, dup_prs_resultant, dup_qq_heu_gcd,
+                          dup_resultant, dup_rr_lcm, dup_rr_prs_gcd,
+                          dup_zz_heu_gcd)
 from .factortools import (dmp_ext_factor, dmp_factor_list,
                           dmp_factor_list_include, dmp_trial_division,
                           dmp_zz_factor, dmp_zz_mignotte_bound, dmp_zz_wang,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
                           dmp_zz_wang_non_divisors, dup_cyclotomic_p,
-                          dup_ext_factor, dup_factor_list,
-                          dup_factor_list_include, dup_trial_division,
                           dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
                           dup_zz_factor, dup_zz_factor_sqf, dup_zz_hensel_lift,
-                          dup_zz_hensel_step, dup_zz_irreducible_p,
-                          dup_zz_mignotte_bound)
+                          dup_zz_hensel_step, dup_zz_irreducible_p)
 from .galoistools import gf_factor_sqf
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
@@ -349,10 +346,6 @@ class IPolys:
         prs, sres = dmp_inner_subresultants(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return list(map(self.from_dense, prs)), sres
 
-    def dup_subresultants(self, f, g):
-        prs = dup_subresultants(self.to_dense(f), self.to_dense(g), self.domain)
-        return list(map(self.from_dense, prs))
-
     def dmp_subresultants(self, f, g):
         prs = dmp_subresultants(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return list(map(self.from_dense, prs))
@@ -439,10 +432,6 @@ class IPolys:
         H, F, G = dmp_inner_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.from_dense(H), self.from_dense(F), self.from_dense(G)
 
-    def dup_gcd(self, f, g):
-        H = dup_gcd(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(H)
-
     def dmp_gcd(self, f, g):
         H = dmp_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.from_dense(H)
@@ -453,10 +442,6 @@ class IPolys:
 
     def dup_ff_lcm(self, f, g):
         H = dup_ff_lcm(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(H)
-
-    def dup_lcm(self, f, g):
-        H = dup_lcm(self.to_dense(f), self.to_dense(g), self.domain)
         return self.from_dense(H)
 
     def dmp_rr_lcm(self, f, g):
@@ -487,15 +472,6 @@ class IPolys:
         cont, prim = dmp_ground_primitive(self.to_dense(f), self.ngens-1, self.domain)
         return cont, self.from_dense(prim)
 
-    def dup_cancel(self, f, g, include=True):
-        result = dup_cancel(self.to_dense(f), self.to_dense(g), self.domain, include=include)
-        if not include:
-            cf, cg, F, G = result
-            return cf, cg, self.from_dense(F), self.from_dense(G)
-        else:
-            F, G = result
-            return self.from_dense(F), self.from_dense(G)
-
     def dmp_cancel(self, f, g, include=True):
         result = dmp_cancel(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain, include=include)
         if not include:
@@ -505,16 +481,9 @@ class IPolys:
             F, G = result
             return self.from_dense(F), self.from_dense(G)
 
-    def dup_trial_division(self, f, factors):
-        factors = dup_trial_division(self.to_dense(f), list(map(self.to_dense, factors)), self.domain)
-        return [ (self.from_dense(g), k) for g, k in factors ]
-
     def dmp_trial_division(self, f, factors):
         factors = dmp_trial_division(self.to_dense(f), list(map(self.to_dense, factors)), self.ngens-1, self.domain)
         return [ (self.from_dense(g), k) for g, k in factors ]
-
-    def dup_zz_mignotte_bound(self, f):
-        return dup_zz_mignotte_bound(self.to_dense(f), self.domain)
 
     def dmp_zz_mignotte_bound(self, f):
         return dmp_zz_mignotte_bound(self.to_dense(f), self.ngens-1, self.domain)
@@ -588,21 +557,9 @@ class IPolys:
         coeff, factors = dmp_zz_factor(self.to_dense(f), self.ngens-1, self.domain)
         return coeff, [(self.from_dense(g), k) for g, k in factors]
 
-    def dup_ext_factor(self, f):
-        coeff, factors = dup_ext_factor(self.to_dense(f), self.domain)
-        return coeff, [(self.from_dense(g), k) for g, k in factors]
-
     def dmp_ext_factor(self, f):
         coeff, factors = dmp_ext_factor(self.to_dense(f), self.ngens-1, self.domain)
         return coeff, [(self.from_dense(g), k) for g, k in factors]
-
-    def dup_factor_list(self, f):
-        coeff, factors = dup_factor_list(self.to_dense(f), self.domain)
-        return coeff, [(self.from_dense(g), k) for g, k in factors]
-
-    def dup_factor_list_include(self, f):
-        factors = dup_factor_list_include(self.to_dense(f), self.domain)
-        return [ (self.from_dense(g), k) for g, k in factors ]
 
     def dmp_factor_list(self, f):
         coeff, factors = dmp_factor_list(self.to_dense(f), self.ngens-1, self.domain)

@@ -7,10 +7,11 @@ from diofant.concrete import Sum
 from diofant.core import (Catalan, Derivative, Dummy, E, Eq, EulerGamma,
                           Function, Gt, Integer, Lambda, Le, Ne, Rational,
                           Tuple, oo, pi, symbols)
-from diofant.functions import (Max, Min, Piecewise, acos, asin, atan, atanh,
-                               binomial, conjugate, cos, cosh, cot, coth, csch,
-                               erfc, exp, hyper, im, log, meijerg, polygamma,
-                               re, sech, sign, sin, sinh, tan, tanh)
+from diofant.functions import (Max, Min, Piecewise, acos, asin, asinh, atan,
+                               atanh, binomial, conjugate, cos, cosh, cot,
+                               coth, csch, erfc, exp, factorial, factorial2,
+                               gamma, hyper, im, log, meijerg, polygamma, re,
+                               rf, sech, sign, sin, sinh, tan, tanh, zeta)
 from diofant.integrals import Integral
 from diofant.logic import Or, false, true
 from diofant.matrices import Matrix
@@ -78,6 +79,12 @@ def test_Function():
     assert mcode(re(x)) == "Re[x]"
     assert mcode(im(x)) == "Im[x]"
     assert mcode(polygamma(x, y)) == "PolyGamma[x, y]"
+    assert mcode(factorial(x)) == "Factorial[x]"
+    assert mcode(factorial2(x)) == "Factorial2[x]"
+    assert mcode(rf(x, y)) == "Pochhammer[x, y]"
+    assert mcode(gamma(x)) == "Gamma[x]"
+    assert mcode(zeta(x)) == "Zeta[x]"
+    assert mcode(asinh(x)) == "ArcSinh[x]"
 
     class myfunc1(Function):
         @classmethod

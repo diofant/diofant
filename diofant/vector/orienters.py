@@ -109,7 +109,7 @@ class ThreeAngleOrienter(Orienter):
                            '313', '323', '')
         original_rot_order = rot_order
         rot_order = str(rot_order).upper()
-        if not (len(rot_order) == 3):
+        if len(rot_order) != 3:
             raise TypeError('rot_order should be a str of length 3')
         rot_order = [i.replace('X', '1') for i in rot_order]
         rot_order = [i.replace('Y', '2') for i in rot_order]

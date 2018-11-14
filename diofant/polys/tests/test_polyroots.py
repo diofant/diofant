@@ -334,7 +334,7 @@ def test_roots0():
     assert roots(1, x) == {}
     assert roots(x, x) == {0: 1}
     assert roots(x**9, x) == {0: 9}
-    assert roots(((x - 2)*(x + 3)*(x - 4)).expand(), x) == {-Integer(3): 1, Integer(2): 1, Integer(4): 1}
+    assert roots(((x - 2)*(x + 3)*(x - 4)).expand(), x) == {-3: 1, 2: 1, 4: 1}
 
     assert roots(x**2 - 2*x + 1, x, auto=False) == {1: 2}
 
@@ -376,20 +376,20 @@ def test_roots0():
     f = -2016*x**2 - 5616*x**3 - 2056*x**4 + 3324*x**5 + 2176*x**6 - \
         224*x**7 - 384*x**8 - 64*x**9
 
-    assert roots(f) == {Integer(0): 2, -Integer(2): 2, Integer(2): 1, -Rational(7, 2): 1, -Rational(3, 2): 1, -Rational(1, 2): 1, Rational(3, 2): 1}
+    assert roots(f) == {0: 2, -2: 2, 2: 1, -Rational(7, 2): 1, -Rational(3, 2): 1, -Rational(1, 2): 1, Rational(3, 2): 1}
 
     assert roots((a + b + c)*x - (a + b + c + d), x) == {(a + b + c + d)/(a + b + c): 1}
 
     assert roots(x**3 + x**2 - x + 1, x, cubics=False) == {}
     assert roots(((x - 2)*(
-        x + 3)*(x - 4)).expand(), x, cubics=False) == {-Integer(3): 1, Integer(2): 1, Integer(4): 1}
+        x + 3)*(x - 4)).expand(), x, cubics=False) == {-3: 1, 2: 1, 4: 1}
     assert roots(((x - 2)*(x + 3)*(x - 4)*(x - 5)).expand(), x, cubics=False) == \
-        {-Integer(3): 1, Integer(2): 1, Integer(4): 1, Integer(5): 1}
-    assert roots(x**3 + 2*x**2 + 4*x + 8, x) == {-Integer(2): 1, -2*I: 1, 2*I: 1}
+        {-3: 1, 2: 1, 4: 1, 5: 1}
+    assert roots(x**3 + 2*x**2 + 4*x + 8, x) == {-2: 1, -2*I: 1, 2*I: 1}
     assert roots(x**3 + 2*x**2 + 4*x + 8, x, cubics=True) == \
-        {-2*I: 1, 2*I: 1, -Integer(2): 1}
+        {-2*I: 1, 2*I: 1, -2: 1}
     assert roots((x**2 - x)*(x**3 + 2*x**2 + 4*x + 8), x ) == \
-        {Integer(1): 1, Integer(0): 1, -Integer(2): 1, -2*I: 1, 2*I: 1}
+        {1: 1, 0: 1, -2: 1, -2*I: 1, 2*I: 1}
 
     r1_2, r1_3 = Rational(1, 2), Rational(1, 3)
 

@@ -176,7 +176,7 @@ def add_formulae(formulae):
     # 3F2
     addb([-S.Half, 1, 1], [S.Half, 2],
          Matrix([z*HyperRep_atanh(z), HyperRep_log1(z), 1]),
-         Matrix([[-Rational(2, 3), -Integer(1)/(3*z), Rational(2, 3)]]),
+         Matrix([[-Rational(2, 3), -1/(3*z), Rational(2, 3)]]),
          Matrix([[Rational(1, 2), 0, z/(1 - z)/2],
                  [0, 0, z/(z - 1)],
                  [0, 0, 0]]))

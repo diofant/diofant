@@ -2182,10 +2182,10 @@ def test_sturm():
     pytest.raises(ComputationFailed, lambda: sturm(4))
     pytest.raises(DomainError, lambda: sturm(f, auto=False))
 
-    f = Poly(Integer(1024)/(15625*pi**8)*x**5
-             - Integer(4096)/(625*pi**8)*x**4
-             + Integer(32)/(15625*pi**4)*x**3
-             - Integer(128)/(625*pi**4)*x**2
+    f = Poly(1024/(15625*pi**8)*x**5
+             - 4096/(625*pi**8)*x**4
+             + 32/(15625*pi**4)*x**3
+             - 128/(625*pi**4)*x**2
              + Rational(1, 62500)*x
              - Rational(1, 625), x, domain='ZZ(pi)')
 
@@ -2832,8 +2832,8 @@ def test_nroots():
 def test_ground_roots():
     f = x**6 - 4*x**4 + 4*x**3 - x**2
 
-    assert Poly(f).ground_roots() == {Integer(1): 2, Integer(0): 2}
-    assert ground_roots(f) == {Integer(1): 2, Integer(0): 2}
+    assert Poly(f).ground_roots() == {1: 2, 0: 2}
+    assert ground_roots(f) == {1: 2, 0: 2}
 
     pytest.raises(MultivariatePolynomialError,
                   lambda: Poly(x + y).ground_roots())

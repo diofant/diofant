@@ -789,8 +789,7 @@ def dmp_pdiv(f, g, u, K):
 
         if dr < dg:
             break
-        elif not (dr < _dr):
-            raise PolynomialDivisionFailed(f, g, K)
+        assert dr < _dr
 
     if u:
         c = dmp_pow(lc_g, N, u - 1, K)
@@ -841,8 +840,7 @@ def dmp_prem(f, g, u, K):
 
         if dr < dg:
             break
-        elif not (dr < _dr):
-            raise PolynomialDivisionFailed(f, g, K)
+        assert dr < _dr
 
     if u:
         c = dmp_pow(lc_g, N, u - 1, K)

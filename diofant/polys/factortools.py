@@ -18,8 +18,7 @@ from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
-                         dmp_ground_trunc, dup_clear_denoms, dup_mirror,
-                         dup_shift, dup_trunc)
+                         dmp_ground_trunc, dup_mirror, dup_shift, dup_trunc)
 from .euclidtools import dmp_inner_gcd, dmp_primitive, dup_inner_gcd
 from .galoistools import (gf_add_mul, gf_div, gf_factor, gf_factor_sqf,
                           gf_from_int_poly, gf_gcdex, gf_mul, gf_rem, gf_sqf_p,
@@ -29,26 +28,6 @@ from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
 from .sqfreetools import dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
-
-
-def dup_trial_division(f, factors, K):
-    """Determine multiplicities of factors using trial division. """
-    result = []
-
-    for factor in factors:
-        k = 0
-
-        while True:
-            q, r = dmp_div(f, factor, 0, K)
-
-            if not r:
-                f, k = q, k + 1
-            else:
-                break
-
-        result.append((factor, k))
-
-    return _sort_factors(result)
 
 
 def dmp_trial_division(f, factors, u, K):
@@ -69,15 +48,6 @@ def dmp_trial_division(f, factors, u, K):
         result.append((factor, k))
 
     return _sort_factors(result)
-
-
-def dup_zz_mignotte_bound(f, K):
-    """Mignotte bound for univariate polynomials in `K[x]`. """
-    a = dmp_max_norm(f, 0, K)
-    b = abs(dmp_LC(f, K))
-    n = dmp_degree(f, 0)
-
-    return K.sqrt(K(n + 1))*2**n*a*b
 
 
 def dmp_zz_mignotte_bound(f, u, K):
@@ -361,7 +331,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
         return False
 
     if not irreducible:
-        coeff, factors = dup_factor_list(f, K)
+        coeff, factors = dmp_factor_list(f, 0, K)
 
         if coeff != K.one or factors != [(f, 1)]:
             return False
@@ -562,7 +532,7 @@ def dup_zz_factor(f, K):
     if H is None:
         H = dup_zz_zassenhaus(g, K)
 
-    factors = dup_trial_division(f, H, K)
+    factors = dmp_trial_division(f, H, 0, K)
     return cont, factors
 
 
@@ -1051,7 +1021,7 @@ def dup_ext_factor(f, K):
     f, F = dmp_sqf_part(f, 0, K), f
     s, g, r = dmp_sqf_norm(f, 0, K)
 
-    factors = dup_factor_list_include(r, K.domain)
+    factors = dmp_factor_list_include(r, 0, K.domain)
 
     if len(factors) == 1:
         return lc, [(f, n//dmp_degree(f, 0))]
@@ -1064,7 +1034,7 @@ def dup_ext_factor(f, K):
         h = dup_shift(h, H, K)
         factors[i] = h
 
-    factors = dup_trial_division(F, factors, K)
+    factors = dmp_trial_division(F, factors, 0, K)
     return lc, factors
 
 
@@ -1098,104 +1068,27 @@ def dmp_ext_factor(f, u, K):
     return lc, dmp_trial_division(F, factors, u, K)
 
 
-def dup_gf_factor(f, K):
-    """Factor univariate polynomials over finite fields. """
-    f = dmp_convert(f, 0, K, K.domain)
-
-    coeff, factors = gf_factor(f, K.mod, K.domain)
-
-    for i, (f, k) in enumerate(factors):
-        factors[i] = (dmp_convert(f, 0, K.domain, K), k)
-
-    return K.convert(coeff, K.domain), factors
-
-
 def dmp_gf_factor(f, u, K):
     """Factor multivariate polynomials over finite fields. """
-    raise NotImplementedError('multivariate polynomials over finite fields')
+    if u == 0:
+        f = dmp_convert(f, 0, K, K.domain)
 
+        coeff, factors = gf_factor(f, K.mod, K.domain)
 
-def dup_factor_list(f, K0):
-    """Factor polynomials into irreducibles in `K[x]`. """
-    (j,), f = dmp_terms_gcd(f, 0, K0)
-    cont, f = dmp_ground_primitive(f, 0, K0)
+        for i, (f, k) in enumerate(factors):
+            factors[i] = (dmp_convert(f, 0, K.domain, K), k)
 
-    if K0.is_FiniteField:
-        coeff, factors = dup_gf_factor(f, K0)
-    elif K0.is_AlgebraicField:
-        coeff, factors = dup_ext_factor(f, K0)
-    else:
-        if not K0.is_Exact:
-            K0_inexact, K0 = K0, K0.get_exact()
-            f = dmp_convert(f, 0, K0_inexact, K0)
-        else:
-            K0_inexact = None
-
-        if K0.has_Field:
-            K = K0.ring
-
-            denom, f = dup_clear_denoms(f, K0, K)
-            f = dmp_convert(f, 0, K0, K)
-        else:
-            K = K0
-
-        if K.is_IntegerRing:
-            coeff, factors = dup_zz_factor(f, K)
-        elif K.is_Poly:
-            f, u = dmp_inject(f, 0, K)
-
-            coeff, factors = dmp_factor_list(f, u, K.domain)
-
-            for i, (f, k) in enumerate(factors):
-                factors[i] = (dmp_eject(f, u, K), k)
-
-            coeff = K.convert(coeff, K.domain)
-        else:  # pragma: no cover
-            raise DomainError('factorization not supported over %s' % K0)
-
-        if K0.has_Field:
-            for i, (f, k) in enumerate(factors):
-                factors[i] = (dmp_convert(f, 0, K, K0), k)
-
-            coeff = K0.convert(coeff, K)
-            coeff = K0.quo(coeff, denom)
-
-            if K0_inexact:
-                for i, (f, k) in enumerate(factors):
-                    f = dmp_quo_ground(f, denom, 0, K0)
-                    f = dmp_convert(f, 0, K0, K0_inexact)
-                    factors[i] = (f, k)
-                    coeff *= denom**k
-
-                coeff = K0_inexact.convert(coeff, K0)
-                K0 = K0_inexact
-
-    if j:
-        factors.insert(0, ([K0.one, K0.zero], j))
-
-    return coeff*cont, _sort_factors(factors)
-
-
-def dup_factor_list_include(f, K):
-    """Factor polynomials into irreducibles in `K[x]`. """
-    coeff, factors = dup_factor_list(f, K)
-
-    if not factors:
-        return [(dmp_strip([coeff], 0), 1)]
-    else:
-        g = dmp_mul_ground(factors[0][0], coeff, 0, K)
-        return [(g, factors[0][1])] + factors[1:]
+        return K.convert(coeff, K.domain), factors
+    else:  # pragma: no cover
+        raise NotImplementedError('multivariate polynomials over finite fields')
 
 
 def dmp_factor_list(f, u, K0):
     """Factor polynomials into irreducibles in `K[X]`. """
-    if not u:
-        return dup_factor_list(f, K0)
-
     J, f = dmp_terms_gcd(f, u, K0)
     cont, f = dmp_ground_primitive(f, u, K0)
 
-    if K0.is_FiniteField:  # pragma: no cover
+    if K0.is_FiniteField:
         coeff, factors = dmp_gf_factor(f, u, K0)
     elif K0.is_AlgebraicField:
         coeff, factors = dmp_ext_factor(f, u, K0)
@@ -1261,9 +1154,6 @@ def dmp_factor_list(f, u, K0):
 
 def dmp_factor_list_include(f, u, K):
     """Factor polynomials into irreducibles in `K[X]`. """
-    if not u:
-        return dup_factor_list_include(f, K)
-
     coeff, factors = dmp_factor_list(f, u, K)
 
     if not factors:

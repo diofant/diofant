@@ -30,12 +30,10 @@ being integer, is also real, complex, etc.
 See Also
 ========
 
-.. seealso::
-
-    :py:class:`~diofant.core.numbers.ImaginaryUnit`
-    :py:attr:`~diofant.core.expr.Expr.is_algebraic`
-    :py:attr:`~diofant.core.expr.Expr.is_real`
-    :py:attr:`~diofant.core.expr.Expr.is_prime`
+:py:class:`~diofant.core.numbers.ImaginaryUnit`
+:py:attr:`~diofant.core.expr.Expr.is_algebraic`
+:py:attr:`~diofant.core.expr.Expr.is_real`
+:py:attr:`~diofant.core.expr.Expr.is_prime`
 
 Notes
 =====
