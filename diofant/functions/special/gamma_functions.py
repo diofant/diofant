@@ -1,7 +1,7 @@
 from mpmath import mp, workprec
 
-from ...core import (Add, Dummy, EulerGamma, Expr, Function, I, Integer, Pow,
-                     Rational, S, oo, pi, sympify, zoo)
+from ...core import (Add, Dummy, EulerGamma, Expr, Function, I, Pow, Rational,
+                     S, oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.factorials import RisingFactorial, factorial, rf
 from ..combinatorial.numbers import bernoulli, harmonic
@@ -474,11 +474,11 @@ class polygamma(Function):
 
     >>> polygamma(0, 1)
     -EulerGamma
-    >>> polygamma(0, 1/Integer(2))
+    >>> polygamma(0, Rational(1, 2))
     -2*log(2) - EulerGamma
-    >>> polygamma(0, 1/Integer(3))
+    >>> polygamma(0, Rational(1, 3))
     -3*log(3)/2 - sqrt(3)*pi/6 - EulerGamma
-    >>> polygamma(0, 1/Integer(4))
+    >>> polygamma(0, Rational(1, 4))
     -3*log(2) - pi/2 - EulerGamma
     >>> polygamma(0, 2)
     -EulerGamma + 1
@@ -860,7 +860,7 @@ class loggamma(Function):
         if args0[0] != oo:
             return super()._eval_aseries(n, args0, x, logx)
         z = self.args[0]
-        m = min(n, ceiling((n + Integer(1))/2))
+        m = min(n, ceiling(Rational(n + 1, 2)))
         r = log(z)*(z - Rational(1, 2)) - z + log(2*pi)/2
         l = [bernoulli(2*k) / (2*k*(2*k - 1)*z**(2*k - 1)) for k in range(1, m)]
         o = None

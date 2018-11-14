@@ -1,7 +1,7 @@
 import pytest
 
-from diofant import (Eq, Function, I, Integer, Symbol, cos, diff, exp, log,
-                     sin, symbols, tan)
+from diofant import (Eq, Function, I, Symbol, cos, diff, exp, log, sin,
+                     symbols, tan)
 from diofant.solvers.pde import (checkpdesol, classify_pde, pde_separate,
                                  pde_separate_add, pde_separate_mul, pdsolve)
 
@@ -149,8 +149,8 @@ def test_checkpdesol():
     eq5 = 2*f(x, y) + 1*f(x, y).diff(x) + 3*f(x, y).diff(y)
     eq6 = f(x, y) + 1*f(x, y).diff(x) + 3*f(x, y).diff(y)
     assert checkpdesol(eq4, [pdsolve(eq5), pdsolve(eq6)]) == [
-        (False, (x - 2)*F(3*x - y)*exp(-x/Integer(5) - 3*y/Integer(5))),
-        (False, (x - 1)*F(3*x - y)*exp(-x/Integer(10) - 3*y/Integer(10)))]
+        (False, (x - 2)*F(3*x - y)*exp(-x/5 - 3*y/5)),
+        (False, (x - 1)*F(3*x - y)*exp(-x/10 - 3*y/10))]
     for eq in [eq4, eq5, eq6]:
         assert checkpdesol(eq, pdsolve(eq))[0]
     sol = pdsolve(eq4)
@@ -181,13 +181,13 @@ def test_pde_1st_linear_constant_coeff_homogeneous():
     eq = 4 + (3*u.diff(x)/u) + (2*u.diff(y)/u)
     assert classify_pde(eq) == ('1st_linear_constant_coeff_homogeneous',)
     sol = pdsolve(eq)
-    assert sol == Eq(u, F(2*x - 3*y)*exp(-Integer(12)*x/13 - Integer(8)*y/13))
+    assert sol == Eq(u, F(2*x - 3*y)*exp(-12*x/13 - 8*y/13))
     assert checkpdesol(eq, sol)[0]
 
     eq = u + (6*u.diff(x)) + (7*u.diff(y))
     assert classify_pde(eq) == ('1st_linear_constant_coeff_homogeneous',)
     sol = pdsolve(eq)
-    assert sol == Eq(u, F(7*x - 6*y)*exp(-6*x/Integer(85) - 7*y/Integer(85)))
+    assert sol == Eq(u, F(7*x - 6*y)*exp(-6*x/85 - 7*y/85))
     assert checkpdesol(eq, sol)[0]
 
     eq = a*u + b*u.diff(x) + c*u.diff(y)
@@ -201,14 +201,14 @@ def test_pde_1st_linear_constant_coeff():
     eq = -2*u.diff(x) + 4*u.diff(y) + 5*u - exp(x + 3*y)
     sol = pdsolve(eq)
     assert sol == Eq(f(x, y),
-                     (F(4*x + 2*y) + exp(x/Integer(2) + 4*y)/Integer(15))*exp(x/Integer(2) - y))
+                     (F(4*x + 2*y) + exp(x/2 + 4*y)/15)*exp(x/2 - y))
     assert classify_pde(eq) == ('1st_linear_constant_coeff',
                                 '1st_linear_constant_coeff_Integral')
     assert checkpdesol(eq, sol)[0]
 
     eq = (u.diff(x)/u) + (u.diff(y)/u) + 1 - (exp(x + y)/u)
     sol = pdsolve(eq)
-    assert sol == Eq(f(x, y), F(x - y)*exp(-x/2 - y/2) + exp(x + y)/Integer(3))
+    assert sol == Eq(f(x, y), F(x - y)*exp(-x/2 - y/2) + exp(x + y)/3)
     assert classify_pde(eq) == ('1st_linear_constant_coeff',
                                 '1st_linear_constant_coeff_Integral')
     assert checkpdesol(eq, sol)[0]
@@ -216,7 +216,7 @@ def test_pde_1st_linear_constant_coeff():
     eq = 2*u + -u.diff(x) + 3*u.diff(y) + sin(x)
     sol = pdsolve(eq)
     assert sol == Eq(f(x, y),
-                     F(3*x + y)*exp(x/Integer(5) - 3*y/Integer(5)) - 2*sin(x)/Integer(5) - cos(x)/Integer(5))
+                     F(3*x + y)*exp(x/5 - 3*y/5) - 2*sin(x)/5 - cos(x)/5)
     assert classify_pde(eq) == ('1st_linear_constant_coeff',
                                 '1st_linear_constant_coeff_Integral')
     assert checkpdesol(eq, sol)[0]
@@ -224,7 +224,7 @@ def test_pde_1st_linear_constant_coeff():
     eq = u + u.diff(x) + u.diff(y) + x*y
     sol = pdsolve(eq)
     assert sol == Eq(f(x, y),
-                     -x*y + x + y + F(x - y)*exp(-x/Integer(2) - y/Integer(2)) - 2)
+                     -x*y + x + y + F(x - y)*exp(-x/2 - y/2) - 2)
     assert classify_pde(eq) == ('1st_linear_constant_coeff',
                                 '1st_linear_constant_coeff_Integral')
     assert checkpdesol(eq, sol)[0]
@@ -245,7 +245,7 @@ def test_pdsolve_all():
     assert sol['order'] == 1
     assert sol['default'] == '1st_linear_constant_coeff'
     assert sol['1st_linear_constant_coeff'] == Eq(f(x, y),
-                                                  -x**2*y + x**2 + 2*x*y - 4*x - 2*y + F(x - y)*exp(-x/Integer(2) - y/Integer(2)) + 6)
+                                                  -x**2*y + x**2 + 2*x*y - 4*x - 2*y + F(x - y)*exp(-x/2 - y/2) + 6)
 
 
 def test_pdsolve_variable_coeff():

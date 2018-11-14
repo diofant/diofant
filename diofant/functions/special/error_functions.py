@@ -135,7 +135,7 @@ class erf(Function):
             return S.Zero
         else:
             x = sympify(x)
-            k = floor((n - 1)/Integer(2))
+            k = floor(Rational(n - 1, 2))
             if len(previous_terms) >= 2:
                 return -previous_terms[-2] * x**2 * (n - 2)/(n*k)
             else:
@@ -324,7 +324,7 @@ class erfc(Function):
             return S.Zero
         else:
             x = sympify(x)
-            k = floor((n - 1)/Integer(2))
+            k = floor(Rational(n - 1, 2))
             if len(previous_terms) >= 2:
                 return -previous_terms[-2] * x**2 * (n - 2)/(n*k)
             else:
@@ -501,7 +501,7 @@ class erfi(Function):
             return S.Zero
         else:
             x = sympify(x)
-            k = floor((n - 1)/Integer(2))
+            k = floor(Rational(n - 1, 2))
             if len(previous_terms) >= 2:
                 return previous_terms[-2] * x**2 * (n - 2)/(n*k)
             else:

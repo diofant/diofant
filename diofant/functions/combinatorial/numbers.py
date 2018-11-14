@@ -499,7 +499,7 @@ class harmonic(Function):
     >>> harmonic(11)
     83711/27720
 
-    >>> H = harmonic(1/Integer(3))
+    >>> H = harmonic(Rational(1, 3))
     >>> H
     harmonic(1/3)
     >>> He = expand_func(H)
@@ -508,14 +508,14 @@ class harmonic(Function):
                            + 3*Sum(1/(3*_k + 1), (_k, 0, 0))
     >>> He.doit()
     -log(6) - sqrt(3)*pi/6 - log(sqrt(3)/2) + 3
-    >>> H = harmonic(25/Integer(7))
+    >>> H = harmonic(Rational(25, 7))
     >>> He = simplify(expand_func(H).doit())
     >>> He
     log(sin(pi/7)**(-2*cos(pi/7))*sin(2*pi/7)**(2*cos(16*pi/7))*cos(pi/14)**(-2*sin(pi/14))/14)
     + pi*tan(pi/14)/2 + 30247/9900
     >>> He.evalf(40)
     1.983697455232980674869851942390639915940
-    >>> harmonic(25/Integer(7)).evalf(40)
+    >>> harmonic(Rational(25, 7)).evalf(40)
     1.983697455232980674869851942390639915940
 
     We can rewrite harmonic numbers in terms of polygamma functions:
@@ -656,7 +656,7 @@ class harmonic(Function):
                     t1 = q * Sum(1 / (q * k + p), (k, 0, u))
                     t2 = 2 * Sum(cos((2 * pi * p * k) / q) *
                                  log(sin((pi * k) / q)),
-                                 (k, 1, floor((q - 1) / Integer(2))))
+                                 (k, 1, floor(Rational(q - 1, 2))))
                     t3 = (pi / 2) * cot((pi * p) / q) + log(2 * q)
                     return t1 + t2 - t3
 
@@ -934,7 +934,7 @@ class genocchi(Function):
             if (not n.is_Integer) or n.is_nonpositive:
                 raise ValueError("Genocchi numbers are defined only for " +
                                  "positive integers")
-            return 2*(1 - Integer(2)**n)*bernoulli(n)
+            return 2*(1 - 2**n)*bernoulli(n)
 
         if n.is_odd and (n - 1).is_positive:
             return S.Zero
@@ -944,7 +944,7 @@ class genocchi(Function):
 
     def _eval_rewrite_as_bernoulli(self, n):
         if n.is_integer and n.is_nonnegative:
-            return 2*(1 - Integer(2)**n)*bernoulli(n)
+            return 2*(1 - 2**n)*bernoulli(n)
 
     def _eval_is_negative(self):
         n = self.args[0]

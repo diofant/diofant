@@ -43,13 +43,13 @@ def test_mod():
     z = Rational(5, 18043)
 
     assert x % x == 0
-    assert x % y == 1/Integer(2)
-    assert x % z == 3/Integer(36086)
-    assert y % x == 1/Integer(4)
+    assert x % y == Rational(1, 2)
+    assert x % z == Rational(3, 36086)
+    assert y % x == Rational(1, 4)
     assert y % y == 0
-    assert y % z == 9/Integer(72172)
-    assert z % x == 5/Integer(18043)
-    assert z % y == 5/Integer(18043)
+    assert y % z == Rational(9, 72172)
+    assert z % x == Rational(5, 18043)
+    assert z % y == Rational(5, 18043)
     assert z % z == 0
 
     a = Float(2.6)
@@ -120,7 +120,7 @@ def test_divmod():
 
     assert divmod(Integer(2), Rational(3, 2)) == (1, Rational(1, 2))
     assert divmod(Rational(3, 2), Integer(2)) == (0, Rational(3, 2))
-    assert divmod(Integer(2), Float(3.5)) == (0, Integer(2))
+    assert divmod(Integer(2), Float(3.5)) == (0, 2)
     assert divmod(Float(3.5), Integer(2)) == (1, Float(1.5))
     assert divmod(Integer(2), Rational(1, 3)) == (6, 0)
     assert divmod(Rational(1, 3), Integer(2)) == (0, Rational(1, 3))
@@ -964,8 +964,8 @@ def test_powers_Integer():
         2*2**Rational(5, 9)*3**Rational(8, 9)
     assert (-2)**Rational(2, 3)*cbrt(-4) == -2*cbrt(2)
     assert 3*Pow(3, 2, evaluate=False) == 3**3
-    assert 3*Pow(3, -1/Integer(3), evaluate=False) == 3**(2/Integer(3))
-    assert (-2)**(1/Integer(3))*(-3)**(1/Integer(4))*(-5)**(5/Integer(6)) == \
+    assert 3*Pow(3, Rational(-1, 3), evaluate=False) == 3**Rational(2, 3)
+    assert (-2)**Rational(1, 3)*(-3)**Rational(1, 4)*(-5)**Rational(5, 6) == \
         -(-1)**Rational(5, 12)*cbrt(2)*root(3, 4) * \
         5**Rational(5, 6)
 

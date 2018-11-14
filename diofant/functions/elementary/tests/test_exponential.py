@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (E, Float, I, Integer, LambertW, O, Rational, Symbol, arg,
+from diofant import (E, Float, I, LambertW, O, Rational, Symbol, arg,
                      conjugate, cos, cosh, exp, exp_polar, expand_log, log,
                      nan, oo, pi, re, sign, simplify, sin, sinh, sqrt, symbols,
                      tanh, zoo)
@@ -95,7 +95,7 @@ def test_exp_subs():
     e = (exp(3*log(x), evaluate=False))  # evaluates to x**3
     assert e.subs({x**3: y**3}) == e
     assert e.subs({x**2: 5}) == e
-    assert (x**3).subs({x**2: y}) != y**(3/Integer(2))
+    assert (x**3).subs({x**2: y}) != y**Rational(3, 2)
     assert exp(exp(x) + exp(x**2)).subs({exp(exp(x)): y}) == y * exp(exp(x**2))
     assert exp(x).subs({E: y}) == y**x
     x = symbols('x', extended_real=True)

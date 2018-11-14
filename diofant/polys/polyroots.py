@@ -503,11 +503,11 @@ def roots_quintic(f):
 
     l0 = quintic.l0(theta)
 
-    l1 = _quintic_simplify((-alpha + sqrt(disc)) / Integer(2))
-    l4 = _quintic_simplify((-alpha - sqrt(disc)) / Integer(2))
+    l1 = _quintic_simplify((-alpha + sqrt(disc))/2)
+    l4 = _quintic_simplify((-alpha - sqrt(disc))/2)
 
-    l2 = _quintic_simplify((-alpha_bar + sqrt(disc_bar)) / Integer(2))
-    l3 = _quintic_simplify((-alpha_bar - sqrt(disc_bar)) / Integer(2))
+    l2 = _quintic_simplify((-alpha_bar + sqrt(disc_bar))/2)
+    l3 = _quintic_simplify((-alpha_bar - sqrt(disc_bar))/2)
 
     order = quintic.order(theta, d)
     test = order*delta - (l1 - l4)*(l2 - l3)

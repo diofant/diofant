@@ -690,7 +690,7 @@ def test_sympypull_1964():
     f = Function('f')
     assert solve((3 - 5*x/f(x))*f(x), f(x)) == [{f(x): 5*x/3}]
     # issue sympy/sympy#4497
-    assert solve(1/root(5 + x, 5) - 9, x) == [{x: -295244/Integer(59049)}]
+    assert solve(1/root(5 + x, 5) - 9, x) == [{x: Rational(-295244, 59049)}]
 
     assert solve(sqrt(x) + sqrt(sqrt(x)) - 4) == [{x: (Rational(-1, 2) + sqrt(17)/2)**4}]
     assert ({s[x] for s in solve(Poly(sqrt(exp(x)) + sqrt(exp(-x)) - 4))} in
@@ -1005,8 +1005,8 @@ def test_sympyissue_6056():
 def test_sympyissue_6060():
     x = Symbol('x')
     absxm3 = Piecewise(
-        (x - 3, Integer(0) <= x - 3),
-        (3 - x, Integer(0) > x - 3)
+        (x - 3, 0 <= x - 3),
+        (3 - x, 0 > x - 3)
     )
     y = Symbol('y')
     assert (solve(absxm3 - y, x) ==
@@ -1383,7 +1383,7 @@ def test_sympyissue_2777():
     # the equations represent two circles
     x, y = symbols('x y', extended_real=True)
     e1, e2 = sqrt(x**2 + y**2) - 10, sqrt(y**2 + (-x + 10)**2) - 3
-    a, b = 191/Integer(20), 3*sqrt(391)/20
+    a, b = Rational(191, 20), 3*sqrt(391)/20
     ans = [{x: a, y: -b}, {x: a, y: b}]
     assert solve((e1, e2), (x, y)) == ans
     assert solve((e1, e2/(x - a)), (x, y)) == []
@@ -1399,7 +1399,7 @@ def test_sympyissue_7322():
 
 
 def test_sympyissue_8587():
-    f = Piecewise((2*x**2, And(Integer(0) < x, x < 1)), (2, True))
+    f = Piecewise((2*x**2, And(0 < x, x < 1)), (2, True))
     assert solve(f - 1) == [{x: 1/sqrt(2)}]
 
 
