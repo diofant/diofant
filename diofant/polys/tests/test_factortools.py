@@ -493,15 +493,23 @@ def test_dmp_ext_factor():
     assert R.dmp_ext_factor(f) == (R.domain(2), [(x - sqrt(2)*y, 1),
                                                  (x + sqrt(2)*y, 1)])
 
-    # issue sympy/sympy#5786
-    R,  x, y, z, t = ring("x, y, z, t", QQ.algebraic_field(I))
-
-    f = -I*t*x - t*y + x*z - I*y*z
-    assert (R.dmp_ext_factor(f) == (R.domain(1), [(z - I*t, 1), (x - I*y, 1)]))
-
     R,  x = ring("x", QQ.algebraic_field(I))
     f = x**2 + 1
     assert R.dmp_ext_factor(f) == (R.domain(1), [(x - I, 1), (x + I, 1)])
+
+
+@pytest.mark.xfail
+def test_sympyissue_5786():
+    R,  x, y, z, t = ring("x, y, z, t", QQ.algebraic_field(I))
+
+    f = (z - I*t)*(x - I*y)
+    assert (R.dmp_ext_factor(f) == (R.domain(1), [(z - I*t, 1), (x - I*y, 1)]))
+
+    f = (z - I*t)**2*(x - I*y)
+    assert (R.dmp_ext_factor(f) == (R.domain(1), [(z - I*t, 2), (x - I*y, 1)]))
+
+    f = (z - I*t)*(x - I*y)**3
+    assert (R.dmp_ext_factor(f) == (R.domain(1), [(z - I*t, 1), (x - I*y, 3)]))
 
 
 def test_dmp_factor_list():
