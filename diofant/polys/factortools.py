@@ -11,10 +11,10 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
                          dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
-                         dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
-                         dmp_inject, dmp_LC, dmp_nest, dmp_one, dmp_raise,
-                         dmp_strip, dmp_TC, dmp_terms_gcd, dmp_zero_p,
-                         dup_inflate)
+                         dmp_from_dict, dmp_ground, dmp_ground_LC,
+                         dmp_ground_p, dmp_include, dmp_inject, dmp_LC,
+                         dmp_nest, dmp_one, dmp_raise, dmp_strip, dmp_TC,
+                         dmp_terms_gcd, dmp_zero_p, dup_inflate)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
@@ -416,7 +416,7 @@ def dup_zz_cyclotomic_factor(f, K):
     """
     lc_f, tc_f = dmp_LC(f, K), dmp_TC(f, K)
 
-    if dmp_degree(f, 0) <= 0:
+    if dmp_ground_p(f, None, 0):
         return
 
     if lc_f != 1 or tc_f not in [-1, 1]:
@@ -989,7 +989,7 @@ def dmp_zz_factor(f, u, K):
     if dmp_ground_LC(g, u, K) < 0:
         cont, g = -cont, dmp_neg(g, u, K)
 
-    if all(d <= 0 for d in dmp_degree_list(g, u)):
+    if dmp_ground_p(g, None, u):
         return cont, []
 
     G, g = dmp_primitive(g, u, K)
@@ -1012,7 +1012,7 @@ def dmp_ext_factor(f, u, K):
     lc = dmp_ground_LC(f, u, K)
     f = dmp_ground_monic(f, u, K)
 
-    if all(d <= 0 for d in dmp_degree_list(f, u)):
+    if dmp_ground_p(f, None, u):
         return lc, []
 
     f, F = dmp_sqf_part(f, u, K), f
