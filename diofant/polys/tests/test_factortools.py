@@ -498,7 +498,6 @@ def test_dmp_ext_factor():
     assert R.dmp_ext_factor(f) == (R.domain(1), [(x - I, 1), (x + I, 1)])
 
 
-@pytest.mark.xfail
 def test_sympyissue_5786():
     R,  x, y, z, t = ring("x, y, z, t", QQ.algebraic_field(I))
 

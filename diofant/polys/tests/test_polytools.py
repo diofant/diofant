@@ -3343,7 +3343,6 @@ def test_poly_matching_consistency():
     assert Poly(x, x) * I == Poly(I*x, x)
 
 
-@pytest.mark.xfail
 def test_sympyissue_5786():
     e = (x - I*y)*(z - I*t)
     assert factor(expand(e), extension=[I]) == e
