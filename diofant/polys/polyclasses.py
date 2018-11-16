@@ -22,8 +22,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
 from .euclidtools import (dmp_cancel, dmp_discriminant, dmp_gcd, dmp_inner_gcd,
                           dmp_lcm, dmp_resultant, dmp_subresultants, dup_gcdex,
                           dup_half_gcdex, dup_invert)
-from .factortools import (dmp_factor_list, dmp_factor_list_include,
-                          dmp_irreducible_p, dup_cyclotomic_p)
+from .factortools import dmp_factor_list, dmp_irreducible_p, dup_cyclotomic_p
 from .polyerrors import PolynomialError, UnificationFailed
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
@@ -574,11 +573,6 @@ class DMP(CantSympify):
         """Returns a list of irreducible factors of ``self``. """
         coeff, factors = dmp_factor_list(self.rep, self.lev, self.domain)
         return coeff, [(self.per(g), k) for g, k in factors]
-
-    def factor_list_include(self):
-        """Returns a list of irreducible factors of ``self``. """
-        factors = dmp_factor_list_include(self.rep, self.lev, self.domain)
-        return [(self.per(g), k) for g, k in factors]
 
     def intervals(self, all=False, eps=None, inf=None, sup=None, fast=False, sqf=False):
         """Compute isolating intervals for roots of ``self``. """

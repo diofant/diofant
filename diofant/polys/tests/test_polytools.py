@@ -2320,8 +2320,6 @@ def test_factor():
     assert factor_list(f, polys=True) == (1, [(U, 1), (V, 2), (W, 1)])
     assert factor_list(F, polys=False) == (1, [(u, 1), (v, 2), (w, 1)])
 
-    assert F.factor_list_include() == [(U, 1), (V, 2), (W, 1)]
-
     assert factor_list(1) == (1, [])
     assert factor_list(6) == (6, [])
     assert factor_list(sqrt(3), x) == (1, [(3, Rational(1, 2))])
@@ -2382,7 +2380,6 @@ def test_factor():
     f = Poly(sin(1)*x + 1, x, domain=EX)
 
     assert f.factor_list() == (1, [(f, 1)])
-    assert f.factor_list_include() == [(f, 1)]
 
     f = x**4 + 1
 

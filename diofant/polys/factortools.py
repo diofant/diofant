@@ -11,10 +11,10 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
                          dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
-                         dmp_from_dict, dmp_ground, dmp_ground_LC,
-                         dmp_ground_p, dmp_include, dmp_inject, dmp_LC,
-                         dmp_nest, dmp_one, dmp_raise, dmp_strip, dmp_TC,
-                         dmp_terms_gcd, dmp_zero_p, dup_inflate)
+                         dmp_from_dict, dmp_ground_LC, dmp_ground_p,
+                         dmp_include, dmp_inject, dmp_LC, dmp_nest, dmp_one,
+                         dmp_raise, dmp_strip, dmp_TC, dmp_terms_gcd,
+                         dmp_zero_p, dup_inflate)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
@@ -1118,17 +1118,6 @@ def dmp_factor_list(f, u, K0):
         factors.insert(0, (dmp_from_dict(term, u, K0), j))
 
     return coeff*cont, _sort_factors(factors)
-
-
-def dmp_factor_list_include(f, u, K):
-    """Factor polynomials into irreducibles in `K[X]`. """
-    coeff, factors = dmp_factor_list(f, u, K)
-
-    if not factors:
-        return [(dmp_ground(coeff, u), 1)]
-    else:
-        g = dmp_mul_ground(factors[0][0], coeff, u, K)
-        return [(g, factors[0][1])] + factors[1:]
 
 
 def dmp_irreducible_p(f, u, K):
