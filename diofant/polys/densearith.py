@@ -705,24 +705,6 @@ def dmp_pow(f, n, u, K):
     return g
 
 
-def dup_pquo(f, g, K):
-    """
-    Polynomial exact pseudo-quotient in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_pquo(x**2 - 1, 2*x - 2)
-    2*x + 2
-
-    >>> R.dup_pquo(x**2 + 1, 2*x - 4)
-    2*x + 4
-    """
-    return dmp_pdiv(f, g, 0, K)[0]
-
-
 def dup_pexquo(f, g, K):
     """
     Polynomial pseudo-quotient in ``K[x]``.
