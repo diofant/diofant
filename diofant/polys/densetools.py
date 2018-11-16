@@ -220,30 +220,6 @@ def dmp_diff_in(f, m, j, u, K):
     return diff_in(f, m, u, 0, j, K)
 
 
-def dup_eval(f, a, K):
-    """
-    Evaluate a polynomial at ``x = a`` in ``K[x]`` using Horner scheme.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_eval(x**2 + 2*x + 3, 2)
-    11
-    """
-    if not a:
-        return dmp_TC(f, K)
-
-    result = K.zero
-
-    for c in f:
-        result *= a
-        result += c
-
-    return result
-
-
 def dmp_eval(f, a, u, K):
     """
     Evaluate a polynomial at ``x_0 = a`` in ``K[X]`` using the Horner scheme.
@@ -256,17 +232,19 @@ def dmp_eval(f, a, u, K):
     >>> R.dmp_eval(2*x*y + 3*x + y + 2, 2)
     5*y + 8
     """
-    if not u:
-        return dup_eval(f, a, K)
-
     if not a:
         return dmp_TC(f, K)
 
     result, v = dmp_LC(f, K), u - 1
 
-    for coeff in f[1:]:
-        result = dmp_mul_ground(result, a, v, K)
-        result = dmp_add(result, coeff, v, K)
+    if u:
+        for coeff in f[1:]:
+            result = dmp_mul_ground(result, a, v, K)
+            result = dmp_add(result, coeff, v, K)
+    else:
+        for coeff in f[1:]:
+            result *= a
+            result += coeff
 
     return result
 
@@ -325,14 +303,14 @@ def dmp_eval_tail(f, A, u, K):
 
     def eval_tail(g, i, A, u, K):
         if i == u:
-            return dup_eval(g, A[-1], K)
+            return dmp_eval(g, A[-1], 0, K)
         else:
             h = [eval_tail(c, i + 1, A, u, K) for c in g]
 
             if i < u - len(A) + 1:
                 return h
             else:
-                return dup_eval(h, A[-u + i - 1], K)
+                return dmp_eval(h, A[-u + i - 1], 0, K)
 
     e = eval_tail(f, 0, A, u, K)
 

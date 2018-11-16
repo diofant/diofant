@@ -15,9 +15,9 @@ from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dmp_ground_monic, dmp_ground_primitive,
                                       dmp_ground_trunc, dmp_integrate,
                                       dmp_integrate_in, dmp_lift, dmp_trunc,
-                                      dup_decompose, dup_diff, dup_eval,
-                                      dup_integrate, dup_mirror, dup_real_imag,
-                                      dup_revert, dup_scale, dup_shift,
+                                      dup_decompose, dup_diff, dup_integrate,
+                                      dup_mirror, dup_real_imag, dup_revert,
+                                      dup_scale, dup_shift,
                                       dup_sign_variations, dup_transform,
                                       dup_trunc)
 from diofant.polys.polyerrors import (DomainError, ExactQuotientFailed,
@@ -165,13 +165,12 @@ def test_dmp_diff_in():
     pytest.raises(IndexError, lambda: dmp_diff_in(f_6, 2, 1, 0, ZZ))
 
 
-def test_dup_eval():
-    assert dup_eval([], 7, ZZ) == 0
-    assert dup_eval([1, 2], 0, ZZ) == 2
-    assert dup_eval([1, 2, 3], 7, ZZ) == 66
-
-
 def test_dmp_eval():
+    assert dmp_eval([], 7, 0, ZZ) == 0
+    assert dmp_eval([1, 2], 0, 0, ZZ) == 2
+    assert dmp_eval([1, 2, 3], 7, 0, ZZ) == 66
+    assert dmp_eval([1, 2, 3], 2, 0, ZZ) == 11
+
     assert dmp_eval([], 3, 0, ZZ) == 0
 
     assert dmp_eval([[]], 3, 1, ZZ) == []
