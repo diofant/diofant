@@ -1386,7 +1386,7 @@ def dmp_inner_gcd(f, g, u, K):
     """
     Computes polynomial GCD and cofactors of `f` and `g` in `K[X]`.
 
-    Returns ``(h, cff, cfg)`` such that ``a = gcd(f, g)``,
+    Returns ``(h, cff, cfg)`` such that ``h = gcd(f, g)``,
     ``cff = quo(f, h)``, and ``cfg = quo(g, h)``.
 
     Examples
