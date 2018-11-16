@@ -5,7 +5,7 @@ from .densearith import dmp_add, dmp_mul_ground, dmp_neg, dmp_rem, dup_rshift
 from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_permute,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dmp_to_tuple,
                          dup_reverse)
-from .densetools import (dmp_compose, dmp_eval_in, dup_clear_denoms, dup_diff,
+from .densetools import (dmp_clear_denoms, dmp_compose, dmp_eval_in, dup_diff,
                          dup_eval, dup_mirror, dup_real_imag, dup_scale,
                          dup_shift, dup_sign_variations, dup_transform)
 from .euclidtools import dmp_gcd, dmp_resultant
@@ -203,7 +203,7 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=F
     """Refine real root's approximating interval to the given precision. """
     R, K = K, K.field
     f = dmp_convert(f, 0, R, K)
-    f = dup_clear_denoms(f, K)[1]
+    f = dmp_clear_denoms(f, 0, K)[1]
 
     if not (K.is_RationalField or K.is_RealAlgebraicField):
         raise DomainError("real root refinement not supported over %s" % K)
@@ -417,7 +417,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
     """Isolate real roots of a square-free polynomial. """
     R, K = K, K.field
     f = dmp_convert(f, 0, R, K)
-    f = dup_clear_denoms(f, K)[1]
+    f = dmp_clear_denoms(f, 0, K)[1]
 
     if K.is_AlgebraicField and not K.is_RealAlgebraicField:
         A, K = K, K.domain
@@ -455,7 +455,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):
     """
     R, K = K, K.field
     f = dmp_convert(f, 0, R, K)
-    f = dup_clear_denoms(f, K)[1]
+    f = dmp_clear_denoms(f, 0, K)[1]
 
     _, factors = dmp_sqf_list(f, 0, K)
 
@@ -476,7 +476,7 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
     R, K = K, K.field
     for i, p in enumerate(polys):
         p = dmp_convert(p, 0, R, K)
-        polys[i] = dup_clear_denoms(p, K)[1]
+        polys[i] = dmp_clear_denoms(p, 0, K)[1]
 
     if not (K.is_RationalField or K.is_RealAlgebraicField):
         raise DomainError("isolation of real roots not supported over %s" % K)

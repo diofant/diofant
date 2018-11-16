@@ -15,10 +15,10 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                          dmp_eval_tail, dmp_ground_content, dmp_ground_extract,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dmp_integrate, dmp_integrate_in,
-                         dmp_lift, dmp_trunc, dup_clear_denoms, dup_decompose,
-                         dup_diff, dup_eval, dup_integrate, dup_mirror,
-                         dup_real_imag, dup_revert, dup_scale, dup_shift,
-                         dup_sign_variations, dup_transform, dup_trunc)
+                         dmp_lift, dmp_trunc, dup_decompose, dup_diff,
+                         dup_eval, dup_integrate, dup_mirror, dup_real_imag,
+                         dup_revert, dup_scale, dup_shift, dup_sign_variations,
+                         dup_transform, dup_trunc)
 from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_ff_lcm, dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
                           dmp_inner_subresultants, dmp_lcm, dmp_primitive,
@@ -299,14 +299,6 @@ class IPolys:
 
     def dup_sign_variations(self, f):
         return dup_sign_variations(self.to_dense(f), self.domain)
-
-    def dup_clear_denoms(self, f, convert=False):
-        c, F = dup_clear_denoms(self.to_dense(f), self.domain, convert=convert)
-        if convert:
-            ring = self.clone(domain=self.domain.ring)
-        else:
-            ring = self
-        return c, ring.from_dense(F)
 
     def dmp_clear_denoms(self, f, convert=False):
         c, F = dmp_clear_denoms(self.to_dense(f), self.ngens-1, self.domain, convert=convert)

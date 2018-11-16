@@ -906,42 +906,6 @@ def dup_sign_variations(f, K):
     return k
 
 
-def dup_clear_denoms(f, K0, K1=None, convert=False):
-    """
-    Clear denominators, i.e. transform ``K_0`` to ``K_1``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", QQ)
-
-    >>> f = x/2 + QQ(1, 3)
-
-    >>> R.dup_clear_denoms(f, convert=False)
-    (6, 3*x + 2)
-    >>> R.dup_clear_denoms(f, convert=True)
-    (6, 3*x + 2)
-    """
-    if K1 is None:
-        if K0.has_assoc_Ring:
-            K1 = K0.ring
-        else:
-            K1 = K0
-
-    common = K1.one
-
-    for c in f:
-        common = K1.lcm(common, c.denominator)
-
-    if common != K1.one:
-        f = dmp_mul_ground(f, common, 0, K0)
-
-    if not convert:
-        return common, f
-    else:
-        return common, dmp_convert(f, 0, K0, K1)
-
-
 def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
     """
     Clear denominators, i.e. transform ``K_0`` to ``K_1``.
@@ -958,9 +922,6 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
     >>> R.dmp_clear_denoms(f, convert=True)
     (6, 3*x + 2*y + 6)
     """
-    if not u:
-        return dup_clear_denoms(f, K0, K1, convert=convert)
-
     if K1 is None:
         if K0.has_assoc_Ring:
             K1 = K0.ring

@@ -12,8 +12,8 @@ from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
                          dmp_raise, dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
 from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval, dmp_eval_in,
                          dmp_ground_extract, dmp_ground_monic,
-                         dmp_ground_primitive, dmp_ground_trunc,
-                         dup_clear_denoms, dup_diff, dup_eval, dup_trunc)
+                         dmp_ground_primitive, dmp_ground_trunc, dup_diff,
+                         dup_eval, dup_trunc)
 from .galoistools import gf_crt, gf_int
 from .polyconfig import query
 from .polyerrors import (DomainError, HeuristicGCDFailed, HomomorphismFailed,
@@ -1226,8 +1226,8 @@ def dup_qq_heu_gcd(f, g, K0):
 
     K1 = K0.ring
 
-    cf, f = dup_clear_denoms(f, K0, K1)
-    cg, g = dup_clear_denoms(g, K0, K1)
+    cf, f = dmp_clear_denoms(f, 0, K0, K1)
+    cg, g = dmp_clear_denoms(g, 0, K0, K1)
 
     f = dmp_convert(f, 0, K0, K1)
     g = dmp_convert(g, 0, K0, K1)
