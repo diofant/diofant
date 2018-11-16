@@ -1021,7 +1021,7 @@ def dmp_ext_factor(f, u, K):
         sqf = dmp_sqf_part(f, u, K)
         s, g, r = dmp_sqf_norm(sqf, u, K)
 
-        sqf_factors = dmp_factor_list_include(r, u, K.domain)
+        _, sqf_factors = dmp_factor_list(r, u, K.domain)
 
         H = dmp_raise([K.one, s*K.unit], u, 0, K)
 
