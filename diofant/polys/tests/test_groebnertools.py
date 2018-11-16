@@ -10,7 +10,8 @@ from diofant.polys.groebnertools import (Num, Polyn, Sign, cp_key,
                                          groebner_gcd, groebner_lcm,
                                          is_groebner, is_minimal,
                                          is_rewritable_or_comparable, lbp,
-                                         lbp_key, s_poly, sig, sig_key)
+                                         lbp_key, lbp_sub, s_poly, sig,
+                                         sig_key)
 from diofant.polys.orderings import grlex, lex
 from diofant.polys.rings import ring
 
@@ -28,6 +29,9 @@ def _do_test_groebner():
     assert groebner([f, g], R) == ans
     assert is_groebner(ans)
     assert is_minimal(ans, R)
+
+    assert groebner([x, x**2], R) == [x]
+    assert groebner([x**2, x], R) == [x]
 
     R, x, y = ring("x,y", ZZ)
     f = x**2*y + y**6 + 1
@@ -424,6 +428,15 @@ def test_lbp_key():
 
     assert lbp_key(p1) > lbp_key(p2)
     assert lbp_key(p2) < lbp_key(p3)
+
+
+def test_lbp_sub():
+    R,  x, y, z, t = ring("x,y,z,t", ZZ, lex)
+
+    p1 = lbp(sig((0,) * 4, 3), R.zero, 12)
+    p2 = lbp(sig((0,) * 4, 4), R.zero, 13)
+
+    assert lbp_sub(p1, p2) == lbp_sub(p2, p1) == p1
 
 
 def test_critical_pair():
