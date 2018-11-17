@@ -1223,7 +1223,7 @@ def gf_sqf_part(f, p, K):
     return g
 
 
-def gf_sqf_list(f, p, K, all=False):
+def gf_sqf_list(f, p, K):
     """
     Return the square-free decomposition of a ``GF(p)[x]`` polynomial.
 
@@ -1297,9 +1297,6 @@ def gf_sqf_list(f, p, K, all=False):
             f, n = f[:d + 1], n*r
         else:
             break
-
-    if all:  # pragma: no cover
-        raise NotImplementedError("'all=True' is not supported yet")
 
     return lc, factors
 

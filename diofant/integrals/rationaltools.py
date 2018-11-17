@@ -223,7 +223,7 @@ def ratint_logpart(f, g, x, t=None):
             h = R_map[i]
             h_lc = Poly(h.LC(), t, field=True)
 
-            c, h_lc_sqf = h_lc.sqf_list(all=True)
+            c, h_lc_sqf = h_lc.sqf_list()
             _include_sign(c, h_lc_sqf)
 
             for a, j in h_lc_sqf:

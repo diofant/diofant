@@ -146,9 +146,6 @@ def test_dmp_sqf():
     assert R.dmp_sqf_list(f) == (2, [(x + 1, 2), (x + 2, 3)])
     assert R.dmp_sqf_list_include(f) == [(2, 1), (x + 1, 2), (x + 2, 3)]
 
-    assert R.dmp_sqf_list(f, all=True) == (2, [(1, 1), (x + 1, 2), (x + 2, 3)])
-    assert R.dmp_sqf_list_include(f, all=True) == [(2, 1), (x + 1, 2), (x + 2, 3)]
-
     R, x, y = ring("x,y", ZZ)
     f = -x**5 + x**4 + x - 1
 

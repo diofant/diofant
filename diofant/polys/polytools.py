@@ -2433,7 +2433,7 @@ class Poly(Expr):
 
         return self.per(result)
 
-    def sqf_list(self, all=False):
+    def sqf_list(self):
         """
         Returns a list of square-free factors of ``self``.
 
@@ -2445,21 +2445,16 @@ class Poly(Expr):
         >>> Poly(f).sqf_list()
         (2, [(Poly(x + 1, x, domain='ZZ'), 2),
              (Poly(x + 2, x, domain='ZZ'), 3)])
-
-        >>> Poly(f).sqf_list(all=True)
-        (2, [(Poly(1, x, domain='ZZ'), 1),
-             (Poly(x + 1, x, domain='ZZ'), 2),
-             (Poly(x + 2, x, domain='ZZ'), 3)])
         """
         if hasattr(self.rep, 'sqf_list'):
-            coeff, factors = self.rep.sqf_list(all)
+            coeff, factors = self.rep.sqf_list()
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'sqf_list')
 
         return (self.rep.domain.to_expr(coeff),
                 [(self.per(g), k) for g, k in factors])
 
-    def sqf_list_include(self, all=False):
+    def sqf_list_include(self):
         """
         Returns a list of square-free factors of ``self``.
 
@@ -2474,15 +2469,9 @@ class Poly(Expr):
         [(Poly(2, x, domain='ZZ'), 1),
          (Poly(x + 1, x, domain='ZZ'), 3),
          (Poly(x, x, domain='ZZ'), 4)]
-
-        >>> Poly(f).sqf_list_include(all=True)
-        [(Poly(2, x, domain='ZZ'), 1),
-         (Poly(1, x, domain='ZZ'), 2),
-         (Poly(x + 1, x, domain='ZZ'), 3),
-         (Poly(x, x, domain='ZZ'), 4)]
         """
         if hasattr(self.rep, 'sqf_list_include'):
-            factors = self.rep.sqf_list_include(all)
+            factors = self.rep.sqf_list_include()
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'sqf_list_include')
 

@@ -356,7 +356,7 @@ def apart_list_full_decomposition(P, Q, dummygen):
 
     partial = []
 
-    for d, n in Q.sqf_list_include(all=True):
+    for d, n in Q.sqf_list_include():
         b = d.as_expr()
         U += [ u.diff(x, n - 1) ]
 
