@@ -11,15 +11,15 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
                          dup_sub)
 from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
-                         dmp_from_dict, dmp_ground, dmp_ground_LC, dmp_include,
-                         dmp_inject, dmp_LC, dmp_nest, dmp_one, dmp_raise,
-                         dmp_strip, dmp_TC, dmp_terms_gcd, dmp_zero_p,
-                         dup_inflate)
+                         dmp_from_dict, dmp_ground_LC, dmp_ground_p,
+                         dmp_include, dmp_inject, dmp_LC, dmp_nest, dmp_one,
+                         dmp_raise, dmp_strip, dmp_TC, dmp_terms_gcd,
+                         dmp_zero_p, dup_inflate)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
-                         dmp_ground_trunc, dup_mirror, dup_shift, dup_trunc)
-from .euclidtools import dmp_inner_gcd, dmp_primitive, dup_inner_gcd
+                         dmp_ground_trunc, dup_mirror, dup_trunc)
+from .euclidtools import dmp_content, dmp_inner_gcd, dmp_primitive
 from .galoistools import (gf_add_mul, gf_div, gf_factor, gf_factor_sqf,
                           gf_from_int_poly, gf_gcdex, gf_mul, gf_rem, gf_sqf_p,
                           gf_to_int_poly)
@@ -416,7 +416,7 @@ def dup_zz_cyclotomic_factor(f, K):
     """
     lc_f, tc_f = dmp_LC(f, K), dmp_TC(f, K)
 
-    if dmp_degree(f, 0) <= 0:
+    if dmp_ground_p(f, None, 0):
         return
 
     if lc_f != 1 or tc_f not in [-1, 1]:
@@ -989,7 +989,7 @@ def dmp_zz_factor(f, u, K):
     if dmp_ground_LC(g, u, K) < 0:
         cont, g = -cont, dmp_neg(g, u, K)
 
-    if all(d <= 0 for d in dmp_degree_list(g, u)):
+    if dmp_ground_p(g, None, u):
         return cont, []
 
     G, g = dmp_primitive(g, u, K)
@@ -1007,65 +1007,33 @@ def dmp_zz_factor(f, u, K):
     return cont, _sort_factors(factors)
 
 
-def dup_ext_factor(f, K):
-    """Factor univariate polynomials over algebraic number fields. """
-    n, lc = dmp_degree(f, 0), dmp_LC(f, K)
-
-    f = dmp_ground_monic(f, 0, K)
-
-    if n <= 0:
-        return lc, []
-    if n == 1:
-        return lc, [(f, 1)]
-
-    f, F = dmp_sqf_part(f, 0, K), f
-    s, g, r = dmp_sqf_norm(f, 0, K)
-
-    factors = dmp_factor_list_include(r, 0, K.domain)
-
-    if len(factors) == 1:
-        return lc, [(f, n//dmp_degree(f, 0))]
-
-    H = s*K.unit
-
-    for i, (factor, _) in enumerate(factors):
-        h = dmp_convert(factor, 0, K.domain, K)
-        h, _, g = dup_inner_gcd(h, g, K)
-        h = dup_shift(h, H, K)
-        factors[i] = h
-
-    factors = dmp_trial_division(F, factors, 0, K)
-    return lc, factors
-
-
 def dmp_ext_factor(f, u, K):
     """Factor multivariate polynomials over algebraic number fields. """
-    if not u:
-        return dup_ext_factor(f, K)
-
     lc = dmp_ground_LC(f, u, K)
     f = dmp_ground_monic(f, u, K)
+    factors = []
 
-    if all(d <= 0 for d in dmp_degree_list(f, u)):
-        return lc, []
+    if u:
+        for factor, k in dmp_ext_factor(dmp_content(f, u, K), u - 1, K)[1]:
+            factors.append(([factor], k))
 
-    f, F = dmp_sqf_part(f, u, K), f
-    s, g, r = dmp_sqf_norm(F, u, K)
+    if dmp_degree(f, u) > 0:
+        sqf = dmp_sqf_part(f, u, K)
+        s, g, r = dmp_sqf_norm(sqf, u, K)
 
-    factors = dmp_factor_list_include(r, u, K.domain)
+        _, sqf_factors = dmp_factor_list(r, u, K.domain)
 
-    if len(factors) == 1:
-        factors = [f]
-    else:
         H = dmp_raise([K.one, s*K.unit], u, 0, K)
 
-        for i, (factor, _) in enumerate(factors):
+        for i, (factor, _) in enumerate(sqf_factors):
             h = dmp_convert(factor, u, K.domain, K)
             h, _, g = dmp_inner_gcd(h, g, u, K)
             h = dmp_compose(h, H, u, K)
-            factors[i] = h
+            sqf_factors[i] = h
 
-    return lc, dmp_trial_division(F, factors, u, K)
+        factors.extend(dmp_trial_division(f, sqf_factors, u, K))
+
+    return lc, factors
 
 
 def dmp_gf_factor(f, u, K):
@@ -1150,17 +1118,6 @@ def dmp_factor_list(f, u, K0):
         factors.insert(0, (dmp_from_dict(term, u, K0), j))
 
     return coeff*cont, _sort_factors(factors)
-
-
-def dmp_factor_list_include(f, u, K):
-    """Factor polynomials into irreducibles in `K[X]`. """
-    coeff, factors = dmp_factor_list(f, u, K)
-
-    if not factors:
-        return [(dmp_ground(coeff, u), 1)]
-    else:
-        g = dmp_mul_ground(factors[0][0], coeff, u, K)
-        return [(g, factors[0][1])] + factors[1:]
 
 
 def dmp_irreducible_p(f, u, K):

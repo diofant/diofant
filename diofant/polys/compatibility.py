@@ -7,18 +7,18 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term, dmp_div,
                          dmp_pquo, dmp_prem, dmp_quo, dmp_quo_ground, dmp_rem,
                          dmp_rr_div, dmp_sqr, dmp_sub, dmp_sub_mul,
                          dmp_sub_term, dup_add, dup_add_term, dup_lshift,
-                         dup_mul, dup_mul_term, dup_pexquo, dup_pquo,
-                         dup_rshift, dup_sqr, dup_sub, dup_sub_term)
+                         dup_mul, dup_mul_term, dup_pexquo, dup_rshift,
+                         dup_sqr, dup_sub, dup_sub_term)
 from .densebasic import dmp_degree, dmp_LC, dmp_strip, dmp_to_dict
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                          dmp_diff_eval_in, dmp_diff_in, dmp_eval, dmp_eval_in,
                          dmp_eval_tail, dmp_ground_content, dmp_ground_extract,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dmp_integrate, dmp_integrate_in,
-                         dmp_lift, dmp_trunc, dup_clear_denoms, dup_decompose,
-                         dup_diff, dup_eval, dup_integrate, dup_mirror,
-                         dup_real_imag, dup_revert, dup_scale, dup_shift,
-                         dup_sign_variations, dup_transform, dup_trunc)
+                         dmp_lift, dmp_trunc, dup_decompose, dup_diff,
+                         dup_integrate, dup_mirror, dup_real_imag, dup_revert,
+                         dup_scale, dup_shift, dup_sign_variations,
+                         dup_transform, dup_trunc)
 from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_ff_lcm, dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
                           dmp_inner_subresultants, dmp_lcm, dmp_primitive,
@@ -33,8 +33,7 @@ from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dup_primitive_prs, dup_prs_resultant, dup_qq_heu_gcd,
                           dup_resultant, dup_rr_lcm, dup_rr_prs_gcd,
                           dup_zz_heu_gcd)
-from .factortools import (dmp_ext_factor, dmp_factor_list,
-                          dmp_factor_list_include, dmp_trial_division,
+from .factortools import (dmp_ext_factor, dmp_factor_list, dmp_trial_division,
                           dmp_zz_factor, dmp_zz_mignotte_bound, dmp_zz_wang,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
                           dmp_zz_wang_non_divisors, dup_cyclotomic_p,
@@ -152,9 +151,6 @@ class IPolys:
     def dmp_pow(self, f, n):
         return self.from_dense(dmp_pow(self.to_dense(f), n, self.ngens-1, self.domain))
 
-    def dup_pquo(self, f, g):
-        return self.from_dense(dup_pquo(self.to_dense(f), self.to_dense(g), self.domain))
-
     def dup_pexquo(self, f, g):
         return self.from_dense(dup_pexquo(self.to_dense(f), self.to_dense(g), self.domain))
 
@@ -229,9 +225,6 @@ class IPolys:
     def dmp_integrate_in(self, f, m, j):
         return self.from_dense(dmp_integrate_in(self.to_dense(f), m, j, self.ngens-1, self.domain))
 
-    def dup_eval(self, f, a):
-        return dup_eval(self.to_dense(f), a, self.domain)
-
     def dmp_eval(self, f, a):
         result = dmp_eval(self.to_dense(f), a, self.ngens-1, self.domain)
         return self.drop(0).from_dense(result)
@@ -299,14 +292,6 @@ class IPolys:
 
     def dup_sign_variations(self, f):
         return dup_sign_variations(self.to_dense(f), self.domain)
-
-    def dup_clear_denoms(self, f, convert=False):
-        c, F = dup_clear_denoms(self.to_dense(f), self.domain, convert=convert)
-        if convert:
-            ring = self.clone(domain=self.domain.ring)
-        else:
-            ring = self
-        return c, ring.from_dense(F)
 
     def dmp_clear_denoms(self, f, convert=False):
         c, F = dmp_clear_denoms(self.to_dense(f), self.ngens-1, self.domain, convert=convert)
@@ -564,10 +549,6 @@ class IPolys:
     def dmp_factor_list(self, f):
         coeff, factors = dmp_factor_list(self.to_dense(f), self.ngens-1, self.domain)
         return coeff, [(self.from_dense(g), k) for g, k in factors]
-
-    def dmp_factor_list_include(self, f):
-        factors = dmp_factor_list_include(self.to_dense(f), self.ngens-1, self.domain)
-        return [ (self.from_dense(g), k) for g, k in factors ]
 
     def dup_sturm(self, f):
         seq = dup_sturm(self.to_dense(f), self.domain)

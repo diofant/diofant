@@ -2512,29 +2512,6 @@ class Poly(Expr):
         return (self.rep.domain.to_expr(coeff),
                 [(self.per(g), k) for g, k in factors])
 
-    def factor_list_include(self):
-        """
-        Returns a list of irreducible factors of ``self``.
-
-        Examples
-        ========
-
-        >>> f = 2*x**5 + 2*x**4*y + 4*x**3 + 4*x**2*y + 2*x + 2*y
-
-        >>> Poly(f).factor_list_include()
-        [(Poly(2*x + 2*y, x, y, domain='ZZ'), 1),
-         (Poly(x**2 + 1, x, y, domain='ZZ'), 2)]
-        """
-        if hasattr(self.rep, 'factor_list_include'):
-            try:
-                factors = self.rep.factor_list_include()
-            except DomainError:
-                return [(self, 1)]
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'factor_list_include')
-
-        return [(self.per(g), k) for g, k in factors]
-
     def intervals(self, all=False, eps=None, inf=None, sup=None, fast=False, sqf=False):
         """
         Compute isolating intervals for roots of ``self``.

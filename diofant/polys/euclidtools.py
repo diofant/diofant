@@ -12,8 +12,8 @@ from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
                          dmp_raise, dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
 from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval, dmp_eval_in,
                          dmp_ground_extract, dmp_ground_monic,
-                         dmp_ground_primitive, dmp_ground_trunc,
-                         dup_clear_denoms, dup_diff, dup_eval, dup_trunc)
+                         dmp_ground_primitive, dmp_ground_trunc, dup_diff,
+                         dup_trunc)
 from .galoistools import gf_crt, gf_int
 from .polyconfig import query
 from .polyerrors import (DomainError, HeuristicGCDFailed, HomomorphismFailed,
@@ -501,7 +501,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
             R = [R]
             e = [e]
 
-        d = K.invert(dup_eval(D, a, K), p)
+        d = K.invert(dmp_eval(D, a, 0, K), p)
         d = dmp_mul_ground(D, d, 0, K)
         d = dmp_raise(d, v, 0, K)
 
@@ -1030,8 +1030,8 @@ def dup_zz_heu_gcd(f, g, K):
                   g_norm // abs(dmp_LC(g, K))) + 2)
 
     for i in range(query('HEU_GCD_MAX')):
-        ff = dup_eval(f, x, K)
-        gg = dup_eval(g, x, K)
+        ff = dmp_eval(f, x, 0, K)
+        gg = dmp_eval(g, x, 0, K)
 
         if ff and gg:
             h = K.gcd(ff, gg)
@@ -1226,8 +1226,8 @@ def dup_qq_heu_gcd(f, g, K0):
 
     K1 = K0.ring
 
-    cf, f = dup_clear_denoms(f, K0, K1)
-    cg, g = dup_clear_denoms(g, K0, K1)
+    cf, f = dmp_clear_denoms(f, 0, K0, K1)
+    cg, g = dmp_clear_denoms(g, 0, K0, K1)
 
     f = dmp_convert(f, 0, K0, K1)
     g = dmp_convert(g, 0, K0, K1)
@@ -1386,7 +1386,7 @@ def dmp_inner_gcd(f, g, u, K):
     """
     Computes polynomial GCD and cofactors of `f` and `g` in `K[X]`.
 
-    Returns ``(h, cff, cfg)`` such that ``a = gcd(f, g)``,
+    Returns ``(h, cff, cfg)`` such that ``h = gcd(f, g)``,
     ``cff = quo(f, h)``, and ``cfg = quo(g, h)``.
 
     Examples

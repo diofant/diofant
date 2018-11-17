@@ -15,8 +15,7 @@ from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dmp_ground_monic, dmp_ground_primitive,
                                       dmp_ground_trunc, dmp_integrate,
                                       dmp_integrate_in, dmp_lift, dmp_trunc,
-                                      dup_clear_denoms, dup_decompose,
-                                      dup_diff, dup_eval, dup_integrate,
+                                      dup_decompose, dup_diff, dup_integrate,
                                       dup_mirror, dup_real_imag, dup_revert,
                                       dup_scale, dup_shift,
                                       dup_sign_variations, dup_transform,
@@ -166,13 +165,12 @@ def test_dmp_diff_in():
     pytest.raises(IndexError, lambda: dmp_diff_in(f_6, 2, 1, 0, ZZ))
 
 
-def test_dup_eval():
-    assert dup_eval([], 7, ZZ) == 0
-    assert dup_eval([1, 2], 0, ZZ) == 2
-    assert dup_eval([1, 2, 3], 7, ZZ) == 66
-
-
 def test_dmp_eval():
+    assert dmp_eval([], 7, 0, ZZ) == 0
+    assert dmp_eval([1, 2], 0, 0, ZZ) == 2
+    assert dmp_eval([1, 2, 3], 7, 0, ZZ) == 66
+    assert dmp_eval([1, 2, 3], 2, 0, ZZ) == 11
+
     assert dmp_eval([], 3, 0, ZZ) == 0
 
     assert dmp_eval([[]], 3, 1, ZZ) == []
@@ -591,33 +589,35 @@ def test_dup_sign_variations():
     assert dup_sign_variations([ 1, 0, 4, 0, 5], ZZ) == 0
 
 
-def test_dup_clear_denoms():
-    assert dup_clear_denoms([], QQ, ZZ) == (ZZ(1), [])
-
-    assert dup_clear_denoms([QQ(1)], QQ, ZZ) == (ZZ(1), [QQ(1)])
-    assert dup_clear_denoms([QQ(7)], QQ, ZZ) == (ZZ(1), [QQ(7)])
-
-    assert dup_clear_denoms([QQ(7, 3)], QQ) == (ZZ(3), [QQ(7)])
-    assert dup_clear_denoms([QQ(7, 3)], QQ, ZZ) == (ZZ(3), [QQ(7)])
-
-    assert dup_clear_denoms(
-        [QQ(3), QQ(1), QQ(0)], QQ, ZZ) == (ZZ(1), [QQ(3), QQ(1), QQ(0)])
-    assert dup_clear_denoms(
-        [QQ(1), QQ(1, 2), QQ(0)], QQ, ZZ) == (ZZ(2), [QQ(2), QQ(1), QQ(0)])
-
-    assert dup_clear_denoms([QQ(3), QQ(
-        1), QQ(0)], QQ, ZZ, convert=True) == (ZZ(1), [ZZ(3), ZZ(1), ZZ(0)])
-    assert dup_clear_denoms([QQ(1), QQ(
-        1, 2), QQ(0)], QQ, ZZ, convert=True) == (ZZ(2), [ZZ(2), ZZ(1), ZZ(0)])
-
-    assert dup_clear_denoms(
-        [EX(Rational(3, 2)), EX(Rational(9, 4))], EX) == (EX(4), [EX(6), EX(9)])
-
-    assert dup_clear_denoms([EX(7)], EX) == (EX(1), [EX(7)])
-    assert dup_clear_denoms([EX(sin(x)/x), EX(0)], EX) == (EX(x), [EX(sin(x)), EX(0)])
-
-
 def test_dmp_clear_denoms():
+    assert dmp_clear_denoms([], 0, QQ, ZZ) == (ZZ(1), [])
+
+    assert dmp_clear_denoms([QQ(1)], 0, QQ, ZZ) == (ZZ(1), [QQ(1)])
+    assert dmp_clear_denoms([QQ(7)], 0, QQ, ZZ) == (ZZ(1), [QQ(7)])
+
+    assert dmp_clear_denoms([QQ(7, 3)], 0, QQ) == (ZZ(3), [QQ(7)])
+    assert dmp_clear_denoms([QQ(7, 3)], 0, QQ, ZZ) == (ZZ(3), [QQ(7)])
+
+    assert dmp_clear_denoms(
+        [QQ(3), QQ(1), QQ(0)], 0, QQ, ZZ) == (ZZ(1), [QQ(3), QQ(1), QQ(0)])
+    assert dmp_clear_denoms(
+        [QQ(1), QQ(1, 2), QQ(0)], 0, QQ, ZZ) == (ZZ(2), [QQ(2), QQ(1), QQ(0)])
+
+    assert dmp_clear_denoms([QQ(3), QQ(
+        1), QQ(0)], 0, QQ, ZZ, convert=True) == (ZZ(1), [ZZ(3), ZZ(1), ZZ(0)])
+    assert dmp_clear_denoms([QQ(1), QQ(
+        1, 2), QQ(0)], 0, QQ, ZZ, convert=True) == (ZZ(2), [ZZ(2), ZZ(1), ZZ(0)])
+
+    assert dmp_clear_denoms([QQ(1, 2), QQ(1, 3)], 0, QQ) == (QQ(6), [QQ(3), QQ(2)])
+    assert dmp_clear_denoms([QQ(1, 2), QQ(1, 3)], 0, QQ,
+                            convert=True) == (ZZ(6), [ZZ(3), ZZ(2)])
+
+    assert dmp_clear_denoms(
+        [EX(Rational(3, 2)), EX(Rational(9, 4))], 0, EX) == (EX(4), [EX(6), EX(9)])
+
+    assert dmp_clear_denoms([EX(7)], 0, EX) == (EX(1), [EX(7)])
+    assert dmp_clear_denoms([EX(sin(x)/x), EX(0)], 0, EX) == (EX(x), [EX(sin(x)), EX(0)])
+
     assert dmp_clear_denoms([[]], 1, QQ, ZZ) == (ZZ(1), [[]])
 
     assert dmp_clear_denoms([[QQ(1)]], 1, QQ, ZZ) == (ZZ(1), [[QQ(1)]])

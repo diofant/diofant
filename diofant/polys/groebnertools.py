@@ -307,11 +307,8 @@ def sig_cmp(u, v, order):
     """
     if u[1] > v[1]:
         return -1
-    if u[1] == v[1]:
-        # if u[0] == v[0]:
-        #    return 0
-        if order(u[0]) < order(v[0]):
-            return -1
+    if u[1] == v[1] and order(u[0]) < order(v[0]):
+        return -1
     return 1
 
 
@@ -346,7 +343,7 @@ def lbp_sub(f, g):
     The signature and number of the difference of f and g are signature
     and number of the maximum of f and g, w.r.t. lbp_cmp.
     """
-    if sig_cmp(Sign(f), Sign(g), Polyn(f).ring.order) < 0:
+    if lbp_cmp(f, g) < 0:
         max_poly = g
     else:
         max_poly = f
@@ -607,14 +604,14 @@ def f5b(F, ring):
 
             # only add new critical pairs that are not made redundant by p:
             for g in B:
-                if Polyn(g):
-                    cp = critical_pair(p, g, ring)
-                    if is_rewritable_or_comparable(cp[0], Num(cp[2]), [p]):
-                        continue
-                    elif is_rewritable_or_comparable(cp[3], Num(cp[5]), [p]):
-                        continue
+                assert Polyn(g)
+                cp = critical_pair(p, g, ring)
+                if is_rewritable_or_comparable(cp[0], Num(cp[2]), [p]):
+                    continue
+                elif is_rewritable_or_comparable(cp[3], Num(cp[5]), [p]):
+                    continue
 
-                    CP.append(cp)
+                CP.append(cp)
 
             # sort (other sorting methods/selection strategies were not as successful)
             CP.sort(key=lambda cp: cp_key(cp, ring), reverse=True)
@@ -631,7 +628,6 @@ def f5b(F, ring):
 
             k += 1
 
-            # print(len(B), len(CP), "%d critical pairs removed" % len(indices))
         else:
             reductions_to_zero += 1
 
@@ -782,9 +778,6 @@ def groebner_gcd(f, g):
         gcd = domain.gcd(fc, gc)
 
     H = (f*g).quo([groebner_lcm(f, g)])
-
-    if len(H) != 1:
-        raise ValueError("Length should be 1")
     h = H[0]
 
     if not domain.has_Field:
