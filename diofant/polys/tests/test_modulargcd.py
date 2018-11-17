@@ -306,6 +306,15 @@ def test_modgcd_algebraic_field():
     f, g = h*(x + 1), h*sqrt(2)/sqrt(3)
     assert func_field_modgcd(f, g) == (h, x + 1, R(sqrt(2)/sqrt(3)))
 
+    h = x**4*y**9 + sqrt(6)/22*z
+    f, g = h*(21*y**3 + 1), h*(y + x)
+
+    assert func_field_modgcd(f, g) == (x**4*y**9 + sqrt(6)/22*z, 21*y**3 + 1, x + y)
+
+    h = x**4*y**3 + sqrt(6)/22*z
+    f, g = h*(11*y**3 + 1), h*(y + x)
+    assert func_field_modgcd(f, g) == (x**4*y**3 + sqrt(6)/22*z, 11*y**3 + 1, x + y)
+
     A = AlgebraicField(QQ, sqrt(2)**(-1)*sqrt(3))
     R, x = ring("x", A)
 
