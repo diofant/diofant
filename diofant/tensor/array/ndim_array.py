@@ -84,13 +84,13 @@ class NDimArray:
         return tuple(index)
 
     def _setter_iterable_check(self, value):
-        if isinstance(value, (collections.Iterable, MatrixBase, NDimArray)):
+        if isinstance(value, (collections.abc.Iterable, MatrixBase, NDimArray)):
             raise NotImplementedError  # pragma: no cover
 
     @classmethod
     def _scan_iterable_shape(cls, iterable):
         def f(pointer):
-            if not isinstance(pointer, collections.Iterable):
+            if not isinstance(pointer, collections.abc.Iterable):
                 return [pointer], ()
 
             result = []
@@ -116,7 +116,7 @@ class NDimArray:
             iterable = list(iterable)
 
         # Construct N-dim array from an iterable (numpy arrays included):
-        elif shape is None and isinstance(iterable, collections.Iterable):
+        elif shape is None and isinstance(iterable, collections.abc.Iterable):
             iterable, shape = cls._scan_iterable_shape(iterable)
 
         # Construct N-dim array from a Matrix:
@@ -284,21 +284,21 @@ class NDimArray:
         return type(self)(result_list, self.shape)
 
     def __mul__(self, other):
-        if isinstance(other, (collections.Iterable, NDimArray, MatrixBase)):
+        if isinstance(other, (collections.abc.Iterable, NDimArray, MatrixBase)):
             raise ValueError("scalar expected, use tensorproduct(...) for tensorial product")
         other = sympify(other)
         result_list = [i*other for i in self]
         return type(self)(result_list, self.shape)
 
     def __rmul__(self, other):
-        if isinstance(other, (collections.Iterable, NDimArray, MatrixBase)):
+        if isinstance(other, (collections.abc.Iterable, NDimArray, MatrixBase)):
             raise ValueError("scalar expected, use tensorproduct(...) for tensorial product")
         other = sympify(other)
         result_list = [other*i for i in self]
         return type(self)(result_list, self.shape)
 
     def __truediv__(self, other):
-        if isinstance(other, (collections.Iterable, NDimArray, MatrixBase)):
+        if isinstance(other, (collections.abc.Iterable, NDimArray, MatrixBase)):
             raise ValueError("scalar expected")
         other = sympify(other)
         result_list = [i/other for i in self]

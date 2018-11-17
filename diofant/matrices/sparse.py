@@ -29,7 +29,7 @@ class SparseMatrixBase(MatrixBase):
             self.rows = as_int(args[0])
             self.cols = as_int(args[1])
 
-            if isinstance(args[2], collections.Callable):
+            if isinstance(args[2], collections.abc.Callable):
                 op = args[2]
                 for i in range(self.rows):
                     for j in range(self.cols):

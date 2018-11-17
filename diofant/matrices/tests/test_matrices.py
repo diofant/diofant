@@ -2386,7 +2386,7 @@ def test_hash():
         assert len(s) == 1 and s.pop() == cls.eye(1)
     # issue sympy/sympy#3979
     for cls in classes[:2]:
-        assert not isinstance(cls.eye(1), collections.Hashable)
+        assert not isinstance(cls.eye(1), collections.abc.Hashable)
 
 
 @pytest.mark.xfail
