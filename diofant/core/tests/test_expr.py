@@ -583,9 +583,8 @@ def test_as_independent():
 
 @pytest.mark.xfail
 def test_call_2():
-    # TODO UndefinedFunction does not subclass Expr
     f = Function('f')
-    assert (2*f)(x) == 2*f(x)
+    assert (2*f)(x) == 2*f(x)  # UndefinedFunction does not subclass Expr yet
 
 
 def test_replace():

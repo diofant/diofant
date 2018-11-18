@@ -591,13 +591,12 @@ class harmonic(Function):
         if m.is_zero:
             return n
 
-        if n is oo and m.is_Number:
-            # TODO: Fix for symbolic values of m
+        if n is oo:
             if m.is_negative:
                 return nan
-            elif m <= 1:
+            elif (m - 1).is_nonpositive and m.is_nonnegative:
                 return oo
-            else:
+            elif (m - 1).is_positive:
                 return zeta(m)
 
         if n.is_Integer and n.is_nonnegative and m.is_Integer:

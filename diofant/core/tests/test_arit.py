@@ -445,43 +445,24 @@ def test_Mul_is_even_odd():
     assert (x*(x + k)).is_odd is False
     assert (x*(x + m)).is_odd is None
 
+    assert (x*y*(y + m)).is_even is None
+    assert (x*y*(y + m)).is_odd is None
+
 
 @pytest.mark.xfail
-def test_evenness_in_ternary_integer_product_with_odd():
+def test_even_odd_in_ternary_integer_product():
     # Tests that oddness inference is independent of term ordering.
-    # Term ordering at the point of testing depends on Diofant's symbol order, so
-    # we try to force a different order by modifying symbol names.
+    # We try to force a different order by modifying symbol names.
+
     x = Symbol('x', integer=True)
     y = Symbol('y', integer=True)
     k = Symbol('k', odd=True)
+
     assert (x*y*(y + k)).is_even is True
     assert (y*x*(x + k)).is_even is True
 
-
-def test_evenness_in_ternary_integer_product_with_even():
-    x = Symbol('x', integer=True)
-    y = Symbol('y', integer=True)
-    m = Symbol('m', even=True)
-    assert (x*y*(y + m)).is_even is None
-
-
-@pytest.mark.xfail
-def test_oddness_in_ternary_integer_product_with_odd():
-    # Tests that oddness inference is independent of term ordering.
-    # Term ordering at the point of testing depends on Diofant's symbol order, so
-    # we try to force a different order by modifying symbol names.
-    x = Symbol('x', integer=True)
-    y = Symbol('y', integer=True)
-    k = Symbol('k', odd=True)
     assert (x*y*(y + k)).is_odd is False
     assert (y*x*(x + k)).is_odd is False
-
-
-def test_oddness_in_ternary_integer_product_with_even():
-    x = Symbol('x', integer=True)
-    y = Symbol('y', integer=True)
-    m = Symbol('m', even=True)
-    assert (x*y*(y + m)).is_odd is None
 
 
 def test_Mul_is_rational():
