@@ -1156,6 +1156,7 @@ def test_sympyissue_4187():
 
 
 @pytest.mark.xfail
+@pytest.mark.slow
 def test_sympyissue_4187_xfail():
     assert integrate(log(x)*exp(x), (x, 0, oo)) == oo
 

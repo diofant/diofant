@@ -1577,6 +1577,7 @@ def test_R3():
 
 
 @pytest.mark.xfail
+@pytest.mark.slow
 def test_R5():
     a, b, c, n, k = symbols('a b c n k', integer=True, positive=True)
     sk = ((-1)**k)*(binomial(a + b, a + k)
@@ -2095,6 +2096,7 @@ def test_W2():
 
 @pytest.mark.slow
 @pytest.mark.xfail
+@pytest.mark.slow
 def test_W3():
     # integral is not  calculated
     # https://github.com/sympy/sympy/issues/7161
@@ -2158,6 +2160,7 @@ def test_W14():
 
 
 @pytest.mark.xfail
+@pytest.mark.slow
 def test_W15():
     # integral not calculated
     assert integrate(log(gamma(x))*cos(6*pi*x), (x, 0, 1)) == Rational(1, 12)
@@ -2179,6 +2182,7 @@ def test_W18():
 
 
 @pytest.mark.xfail
+@pytest.mark.slow
 def test_W20():
     # integral not calculated
     assert (integrate(x**2*polylog(3, 1/(x + 1)), (x, 0, 1)) ==
