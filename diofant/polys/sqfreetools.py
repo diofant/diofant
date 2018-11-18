@@ -1,11 +1,12 @@
 """Square-free decomposition algorithms and related tools. """
 
-from .densearith import dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub, dup_mul
+from .densearith import (dmp_mul, dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub,
+                         dup_mul)
 from .densebasic import (dmp_convert, dmp_degree, dmp_ground, dmp_ground_LC,
                          dmp_inject, dmp_raise, dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
                          dmp_ground_primitive, dup_shift)
-from .euclidtools import dmp_gcd, dmp_inner_gcd, dmp_resultant
+from .euclidtools import dmp_gcd, dmp_inner_gcd, dmp_primitive, dmp_resultant
 from .galoistools import gf_sqf_list, gf_sqf_part
 from .polyerrors import DomainError
 
@@ -125,7 +126,7 @@ def dmp_gf_sqf_list(f, u, K):
         for i, (f, k) in enumerate(factors):
             factors[i] = (dmp_convert(f, u, K.domain, K), k)
 
-        return K.convert(coeff, K.domain), factors
+        return [K.convert(coeff, K.domain)], factors
 
     else:
         raise NotImplementedError('multivariate polynomials over finite fields')
@@ -157,6 +158,12 @@ def dmp_sqf_list(f, u, K):
         if K.is_negative(dmp_ground_LC(f, u, K)):
             f = dmp_neg(f, u, K)
             coeff = -coeff
+
+    if u:
+        c, f = dmp_primitive(f, u, K)
+        coeff = dmp_mul_ground([c], coeff, u, K)
+    else:
+        coeff = dmp_ground(coeff, u)
 
     if dmp_degree(f, u) <= 0:
         return coeff, []
@@ -201,11 +208,10 @@ def dmp_sqf_list_include(f, u, K):
     coeff, factors = dmp_sqf_list(f, u, K)
 
     if factors and factors[0][1] == 1:
-        g = dmp_mul_ground(factors[0][0], coeff, u, K)
+        g = dmp_mul(factors[0][0], coeff, u, K)
         return [(g, 1)] + factors[1:]
     else:
-        g = dmp_ground(coeff, u)
-        return [(g, 1)] + factors
+        return [(coeff, 1)] + factors
 
 
 def dup_gff_list(f, K):

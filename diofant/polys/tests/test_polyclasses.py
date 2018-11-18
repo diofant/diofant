@@ -216,7 +216,7 @@ def test_DMP_functionality():
     f = DMP(f_4, ZZ)
 
     assert f.sqf_part() == -f
-    assert f.sqf_list() == (ZZ(-1), [(-f, 1)])
+    assert f.sqf_list() == (DMP([[[-1]]], ZZ), [(-f, 1)])
 
     f = DMP([[-1], [], [], [5]], ZZ)
     g = DMP([[3, 1], [], []], ZZ)

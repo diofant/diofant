@@ -562,7 +562,7 @@ class DMP(CantSympify):
     def sqf_list(self):
         """Returns a list of square-free factors of ``self``. """
         coeff, factors = dmp_sqf_list(self.rep, self.lev, self.domain)
-        return coeff, [(self.per(g), k) for g, k in factors]
+        return self.per(coeff), [(self.per(g), k) for g, k in factors]
 
     def sqf_list_include(self):
         """Returns a list of square-free factors of ``self``. """

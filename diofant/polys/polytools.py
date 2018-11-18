@@ -2443,15 +2443,15 @@ class Poly(Expr):
         >>> f = 2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16
 
         >>> Poly(f).sqf_list()
-        (2, [(Poly(x + 1, x, domain='ZZ'), 2),
-             (Poly(x + 2, x, domain='ZZ'), 3)])
+        (Poly(2, x, domain='ZZ'), [(Poly(x + 1, x, domain='ZZ'), 2),
+                                   (Poly(x + 2, x, domain='ZZ'), 3)])
         """
         if hasattr(self.rep, 'sqf_list'):
             coeff, factors = self.rep.sqf_list()
         else:  # pragma: no cover
             raise OperationNotSupported(self, 'sqf_list')
 
-        return (self.rep.domain.to_expr(coeff),
+        return (self.per(coeff),
                 [(self.per(g), k) for g, k in factors])
 
     def sqf_list_include(self):
@@ -4734,6 +4734,7 @@ def _symbolic_factor_list(expr, opt, method):
             func = getattr(poly, method + '_list')
 
             _coeff, _factors = func()
+            _coeff = _coeff.as_expr()
             if _coeff is not S.One:
                 if exp.is_Integer:
                     coeff *= _coeff**exp

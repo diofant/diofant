@@ -1,6 +1,6 @@
 """This module implements tools for integrating rational functions. """
 
-from ..core import Dummy, I, Integer, Lambda, S, Symbol, symbols
+from ..core import Dummy, I, Integer, Lambda, Symbol, symbols
 from ..domains import ZZ
 from ..functions import atan, log
 from ..polys import Poly, RootSum, cancel, resultant, roots
@@ -183,7 +183,7 @@ def ratint_logpart(f, g, x, t=None):
       Poly(3*_t**2 + 1, _t, domain='ZZ'))]
     >>> ratint_logpart(Poly(12, x), Poly(x**2 - x - 2, x), x)
     [(Poly(x - 3*_t/8 - 1/2, x, domain='QQ[_t]'),
-      Poly(-_t**2 + 16, _t, domain='ZZ'))]
+      Poly(_t**2 - 16, _t, domain='ZZ'))]
 
     See Also
     ========
@@ -206,13 +206,7 @@ def ratint_logpart(f, g, x, t=None):
     for r in R:
         R_map[r.degree()] = r
 
-    def _include_sign(c, sqf):
-        if (c < 0) is S.true:
-            h, k = sqf[0]
-            sqf[0] = h*c, k
-
     C, res_sqf = res.sqf_list()
-    _include_sign(C, res_sqf)
 
     for q, i in res_sqf:
         _, q = q.primitive()
@@ -224,7 +218,6 @@ def ratint_logpart(f, g, x, t=None):
             h_lc = Poly(h.LC(), t, field=True)
 
             c, h_lc_sqf = h_lc.sqf_list()
-            _include_sign(c, h_lc_sqf)
 
             for a, j in h_lc_sqf:
                 h = h.quo(Poly(a.gcd(q)**j, x))
