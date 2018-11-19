@@ -93,9 +93,8 @@ def test_minimize_linear():
 
 @pytest.mark.xfail
 def test_minimize_poly():
-    assert minimize([x - 2*y, x**2 + y**2 <= 1],
-                    x, y) == (-sqrt(5), {x: 4/sqrt(5) - sqrt(5),
-                                         y: 2/sqrt(5)})
+    assert minimize([x - 2*y, x**2 + y**2 <= 1], x, y)[0] == -sqrt(5)
+    # at {x: 4/sqrt(5) - sqrt(5), y: 2/sqrt(5)}
 
 
 @pytest.mark.xfail

@@ -264,12 +264,6 @@ def test_Subs():
     assert (x*f(x).diff(x).subs({x: 0})).subs({x: y}) == y*f(x).diff(x).subs({x: 0})
 
 
-@pytest.mark.xfail
-def test_Subs2():
-    # this reflects a limitation of subs(), probably won't fix
-    assert Subs(f(x), (x**2, x)).doit() == f(sqrt(x))
-
-
 def test_expand_function():
     assert expand(x + y) == x + y
     assert expand(x + y, complex=True) == I*im(x) + I*im(y) + re(x) + re(y)

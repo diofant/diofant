@@ -796,17 +796,6 @@ def test_special_is_rational():
     assert sin(asin(3), evaluate=False).is_rational is True
 
 
-@pytest.mark.xfail
-def test_sympyissue_6275():
-    x = Symbol('x')
-    # both zero or both Muls...but neither "change would be very appreciated.
-    # This is similar to x/x => 1 even though if x = 0, it is really nan.
-    assert isinstance(x*0, type(0*oo))
-    if 0*oo is nan:
-        b = Symbol('b', finite=None)
-        assert (b*0).is_zero is None
-
-
 def test_sanitize_assumptions():
     # issue sympy/sympy#6666
     for cls in (Symbol, Dummy, Wild):
@@ -879,8 +868,8 @@ def test_sympyissue_7899():
 
 @pytest.mark.xfail
 def test_sympyissue_7993():
-    x = Dummy(integer=True)
-    y = Dummy(noninteger=True)
+    x = Symbol('x', integer=True)
+    y = Symbol('y', noninteger=True)
     assert (x - y).is_zero is False
 
 

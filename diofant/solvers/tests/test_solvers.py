@@ -1270,6 +1270,7 @@ def test_lambert_multivariate():
 
 
 @pytest.mark.xfail
+@pytest.mark.slow
 def test_other_lambert():
     assert solve(3*sin(x) - x*sin(3), x) == [{x: 3}]
     assert {s[x] for s in solve(3*log(x) - x*log(3))} == {3, -3*LambertW(-log(3)/3)/log(3)}

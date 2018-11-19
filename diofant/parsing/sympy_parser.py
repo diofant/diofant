@@ -4,7 +4,7 @@ import ast
 import unicodedata
 from io import BytesIO
 from keyword import iskeyword
-from tokenize import (ENDMARKER, NAME, NUMBER, OP, STRING, TokenError,
+from tokenize import (ENDMARKER, NAME, NEWLINE, NUMBER, OP, STRING, TokenError,
                       tokenize, untokenize)
 
 from ..core import Basic, Symbol
@@ -231,7 +231,7 @@ def _implicit_application(tokens, local_dict, global_dict):
         result.append(tok)
         if (tok[0] == NAME and
             nextTok[0] != OP and
-                nextTok[0] != ENDMARKER):
+                nextTok[0] not in (ENDMARKER, NEWLINE)):
             if _token_callable(tok, local_dict, global_dict, nextTok):
                 result.append((OP, '('))
                 appendParen += 1
@@ -528,7 +528,7 @@ def lambda_notation(tokens, local_dict, global_dict):
     toknum, tokval = tokens[0]
     tokLen = len(tokens)
     if toknum == NAME and tokval == 'lambda':
-        if tokLen == 2:
+        if tokLen == 2 or (tokLen == 3 and tokens[1][0] == NEWLINE):
             result.extend(tokens)
         elif tokLen > 2:
             result.extend([

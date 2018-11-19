@@ -4,8 +4,8 @@ from random import choice
 import pytest
 
 from diofant import (Dummy, EulerGamma, GoldenRatio, I, Integer, Product,
-                     Rational, Sum, Symbol, cancel, diff, expand_func, im, nan,
-                     oo, pi, re, sstr, symbols, zoo)
+                     Rational, Sum, Symbol, cancel, diff, expand_func, im,
+                     limit, nan, oo, pi, re, sstr, symbols, zoo)
 from diofant.abc import x
 from diofant.combinatorics.permutations import Permutation
 from diofant.functions import (bell, bernoulli, binomial, catalan, cos, cot,
@@ -153,6 +153,7 @@ def test_harmonic():
     assert harmonic(oo, 1) == oo
     assert harmonic(oo, 2) == (pi**2)/6
     assert harmonic(oo, 3) == zeta(3)
+    assert harmonic(oo, x) == harmonic(oo, x, evaluate=False)
 
 
 def test_harmonic_rational():
@@ -250,12 +251,10 @@ def test_harmonic_rewrite_polygamma():
     assert expand_func(harmonic(x)) == harmonic(x)
 
 
-@pytest.mark.xfail
 def test_harmonic_limit_fail():
     n = Symbol("n")
-    m = Symbol("m")
-    # For m > 1:
-    assert limit(harmonic(n, m), n, oo) == zeta(m)
+    m = Symbol("m", positive=True)
+    assert limit(harmonic(n, m + 1), n, oo) == zeta(m + 1)
 
 
 @pytest.mark.xfail
@@ -307,12 +306,6 @@ def test_euler():
     assert euler(n).rewrite(Sum) == euler(n)
     # XXX: Not sure what the guy who wrote this test was trying to do with the _j and _k stuff
     assert euler(2*n + 1).rewrite(Sum) == 0
-
-
-@pytest.mark.xfail
-def test_euler_failing():
-    # depends on dummy variables being implemented https://github.com/sympy/sympy/issues/5665
-    assert euler(2*n).rewrite(Sum) == I*Sum(Sum((-1)**_j*2**(-_k)*I**(-_k)*(-2*_j + _k)**(2*n + 1)*binomial(_k, _j)/_k, (_j, 0, _k)), (_k, 1, 2*n + 1))
 
 
 def test_catalan():

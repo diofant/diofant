@@ -68,16 +68,11 @@ def test_evalf_rump():
 
 def test_evalf_complex():
     assert NS('2*sqrt(pi)*I', 10) == '3.544907702*I'
-    assert NS('3+3*I', 15) == '3.00000000000000 + 3.00000000000000*I'
-    assert NS('E+pi*I', 15) == '2.71828182845905 + 3.14159265358979*I'
-    assert NS('pi * (3+4*I)', 15) == '9.42477796076938 + 12.5663706143592*I'
-    assert NS('I*(2+I)', 15) == '-1.00000000000000 + 2.00000000000000*I'
-
-
-@pytest.mark.xfail
-def test_evalf_complex_bug():
-    assert NS('(pi+E*I)*(E+pi*I)', 15) in ('0.e-15 + 17.25866050002*I',
-                                           '0.e-17 + 17.25866050002*I', '-0.e-17 + 17.25866050002*I')
+    assert NS('3+3*I') == '3.00000000000000 + 3.00000000000000*I'
+    assert NS('E+pi*I') == '2.71828182845905 + 3.14159265358979*I'
+    assert NS('pi * (3+4*I)') == '9.42477796076938 + 12.5663706143592*I'
+    assert NS('(pi+E*I)*(E+pi*I)') == '17.2586605000200*I'
+    assert NS('I*(2+I)') == '-1.00000000000000 + 2.00000000000000*I'
 
 
 def test_evalf_complex_powers():
@@ -95,11 +90,7 @@ def test_evalf_complex_powers():
     assert NS('(pi + 1/10**12 + pi*I)**4') == '-389.636364136258 + 2.481e-10*I'
     assert NS(
         '(10000*pi + 10000*pi*I)**4', chop=True) == '-3.89636364136010e+18'
-
-
-@pytest.mark.xfail
-def test_evalf_complex_powers_bug():
-    assert NS('(pi + pi*I)**4') == '-389.63636413601 + 0.e-14*I'
+    assert NS('(pi + pi*I)**4') == '-389.636364136010'
 
 
 def test_evalf_exponentiation():

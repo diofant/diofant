@@ -1,15 +1,12 @@
-import pytest
-
-from diofant import (Function, I, Integer, Rational, Symbol, cbrt, cos, exp,
-                     root, sqrt, tan)
+from diofant import (Function, I, Integer, Rational, cbrt, cos, exp, root,
+                     sqrt, tan)
+from diofant.abc import a, b, x, y
 
 
 __all__ = ()
 
 
 def test_add_eval():
-    a = Symbol("a")
-    b = Symbol("b")
     c = Integer(1)
     p = Integer(5)
     assert a*b + c + p == a*b + 6
@@ -22,8 +19,6 @@ def test_add_eval():
 
 
 def test_addmul_eval():
-    a = Symbol("a")
-    b = Symbol("b")
     c = Integer(1)
     p = Integer(5)
     assert c + a + b*c + a - p == 2*a + b + (-4)
@@ -56,27 +51,17 @@ def test_pow_eval():
     assert (cos(2) / tan(2))**2 == (cos(2) / tan(2))**2
 
 
-@pytest.mark.xfail
-def test_pow_eval_X1():
-    assert cbrt(-1) == Rational(1, 2) + I*sqrt(3)/2
-
-
 def test_mulpow_eval():
-    x = Symbol('x')
     assert sqrt(50)/(sqrt(2)*x) == 5/x
     assert sqrt(27)/sqrt(3) == 3
 
 
 def test_evalpow_bug():
-    x = Symbol("x")
     assert 1/(1/x) == x
     assert 1/(-1/x) == -x
 
 
 def test_symbol_expand():
-    x = Symbol('x')
-    y = Symbol('y')
-
     f = x**4*y**4
     assert f == x**4*y**4
     assert f == f.expand()
@@ -89,6 +74,5 @@ def test_symbol_expand():
 
 def test_function():
     f, l = map(Function, 'fl')
-    x = Symbol('x')
     assert exp(l(x))*l(x)/exp(l(x)) == l(x)
     assert exp(f(x))*f(x)/exp(f(x)) == f(x)
