@@ -37,7 +37,7 @@ def test_globalring():
     assert X + Y == R.convert(x + y)
     assert X - Y == R.convert(x - y)
     assert X + 1 == R.convert(x + 1)
-    assert X**2 / X == X
+    assert X**2 // X == X
 
     assert R.convert(ZZ.poly_ring(x, y).convert(x), ZZ.poly_ring(x, y)) == X
     assert R.convert(Qxy.convert(x), Qxy) == X
@@ -56,7 +56,7 @@ def test_localring():
     assert X + Y == R.convert(x + y)
     assert X - Y == R.convert(x - y)
     assert X + 1 == R.convert(x + 1)
-    assert X**2 / X == X
+    assert X**2 // X == X
 
     assert R.convert(ZZ.poly_ring(x, y).convert(x), ZZ.poly_ring(x, y)) == X
     assert R.convert(Qxy.convert(x), Qxy) == X

@@ -1190,7 +1190,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
     def __rmod__(self, other):
         return NotImplemented
 
-    def __truediv__(self, other):
+    def __floordiv__(self, other):
         ring = self.ring
 
         if not other:
@@ -1201,7 +1201,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
                 pass
             elif isinstance(other.ring.domain, PolynomialRing) and other.ring.domain.ring == ring:
-                return other.__rtruediv__(self)
+                return other.__rfloordiv__(self)
             else:
                 return NotImplemented
 
@@ -1212,13 +1212,26 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         else:
             return self.quo_ground(other)
 
-    def __rtruediv__(self, other):
+    def __rfloordiv__(self, other):
         return NotImplemented
 
-    __floordiv__ = __truediv__
-    __rfloordiv__ = __rtruediv__
+    def __truediv__(self, other):
+        ring = self.ring
 
-    # TODO: use // (__floordiv__) for exquo()?
+        if not other:
+            raise ZeroDivisionError("polynomial division")
+        elif isinstance(other, ring.domain.dtype):
+            return self.quo_ground(other)
+
+        try:
+            other = ring.domain_new(other)
+        except CoercionFailed:
+            return NotImplemented
+        else:
+            return self.quo_ground(other)
+
+    def __rtruediv__(self, other):
+        return NotImplemented
 
     def _term_div(self):
         zm = self.ring.zero_monom
