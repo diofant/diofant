@@ -401,6 +401,10 @@ def test_dmp_ground_extract():
 
     assert dmp_ground_extract(f, g, 1, ZZ) == (45796, F, G)
 
+    f, g = dmp_normal([1, 2], 0, ZZ), dmp_normal([3, 4], 0, ZZ)
+
+    assert dmp_ground_extract(f, g, 0, ZZ) == (1, f, g)
+
 
 def test_dup_real_imag():
     assert dup_real_imag([], ZZ) == ([[]], [[]])
