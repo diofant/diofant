@@ -19,11 +19,14 @@ from .compatibility import IPolys
 from .constructor import construct_domain
 from .densebasic import dmp_from_dict, dmp_to_dict
 from .heuristicgcd import heugcd
+from .modulargcd import modgcd
 from .monomials import (monomial_div, monomial_gcd, monomial_ldiv,
                         monomial_mul, monomial_pow)
 from .orderings import lex
+from .polyconfig import query
 from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
-                         GeneratorsNeeded, MultivariatePolynomialError)
+                         GeneratorsNeeded, HeuristicGCDFailed,
+                         MultivariatePolynomialError)
 from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
 from .polyoptions import build_options
@@ -1936,7 +1939,17 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             return ring.dmp_inner_gcd(self, other)
 
     def _gcd_ZZ(self, other):
-        return heugcd(self, other)
+        if query('USE_HEU_GCD'):
+            try:
+                return heugcd(self, other)
+            except HeuristicGCDFailed:  # pragma: no cover
+                pass
+
+        _gcd_zz_methods = {'modgcd': modgcd,
+                           'prs': lambda f, g: self.ring.dmp_rr_prs_gcd(f, g)}
+
+        method = _gcd_zz_methods[query('FALLBACK_GCD_ZZ_METHOD')]
+        return method(self, other)
 
     def _gcd_QQ(self, g):
         f = self

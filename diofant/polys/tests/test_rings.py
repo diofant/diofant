@@ -11,6 +11,7 @@ from diofant.core import Symbol, symbols
 from diofant.domains import EX, FF, QQ, RR, ZZ
 from diofant.polys.fields import field
 from diofant.polys.orderings import grlex, lex
+from diofant.polys.polyconfig import using
 from diofant.polys.polyerrors import (CoercionFailed, ExactQuotientFailed,
                                       GeneratorsError, GeneratorsNeeded,
                                       MultivariatePolynomialError)
@@ -1123,6 +1124,11 @@ def test_PolyElement_gcd():
     g = x/2 + QQ(1, 2)
 
     assert f.gcd(g) == x + 1
+
+    with using(use_heu_gcd=False):
+        assert f.gcd(g) == x + 1
+    with using(use_heu_gcd=False, fallback_gcd_zz_method='modgcd'):
+        assert f.gcd(g) == x + 1
 
 
 def test_PolyElement_cancel():

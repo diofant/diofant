@@ -1019,6 +1019,18 @@ def dmp_qq_heu_gcd(f, g, u, K0):
     return h, cff, cfg
 
 
+def _dmp_zz_modgcd(f, g, u, K):
+    from .modulargcd import modgcd
+    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    f, g = map(ring.from_dense, (f, g))
+    h, cff, cfg = modgcd(f, g)
+    return tuple(map(ring.to_dense, f.cofactors(g)))
+
+
+_gcd_zz_methods = {'modgcd': _dmp_zz_modgcd,
+                   'prs': dmp_rr_prs_gcd}
+
+
 def _dmp_inner_gcd(f, g, u, K):
     """Helper function for `dmp_inner_gcd()`. """
     if not K.is_Exact:
@@ -1038,19 +1050,24 @@ def _dmp_inner_gcd(f, g, u, K):
 
         return h, cff, cfg
     elif K.has_Field:
-        if K.is_RationalField and query('USE_HEU_GCD'):
-            try:
-                return dmp_qq_heu_gcd(f, g, u, K)
-            except HeuristicGCDFailed:  # pragma: no cover
-                pass
+        if K.is_RationalField:
+            if query('USE_HEU_GCD'):
+                try:
+                    return dmp_qq_heu_gcd(f, g, u, K)
+                except HeuristicGCDFailed:  # pragma: no cover
+                    pass
 
         return dmp_ff_prs_gcd(f, g, u, K)
     else:
-        if K.is_IntegerRing and query('USE_HEU_GCD'):
-            try:
-                return dmp_zz_heu_gcd(f, g, u, K)
-            except HeuristicGCDFailed:  # pragma: no cover
-                pass
+        if K.is_IntegerRing:
+            if query('USE_HEU_GCD'):
+                try:
+                    return dmp_zz_heu_gcd(f, g, u, K)
+                except HeuristicGCDFailed:  # pragma: no cover
+                    pass
+
+            method = _gcd_zz_methods[query('FALLBACK_GCD_ZZ_METHOD')]
+            return method(f, g, u, K)
 
         return dmp_rr_prs_gcd(f, g, u, K)
 

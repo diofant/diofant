@@ -73,6 +73,7 @@ Minor changes
 * Mutable matrices support indexed deletion with :meth:`~object.__delitem__`, see :pull:`688`.
 * Integer powers of :class:`~diofant.polys.rootoftools.RootOf` instances are automatically reduced, according to their minimal polynomial, see :pull:`691`.
 * Support gmpy2.mpz ground type for numerator/denominator of :class:`~diofant.core.numbers.Rational`, see :pull:`694`.
+* Added ``FALLBACK_GCD_ZZ_METHOD`` configuration option to specify GCD algorithm for polynomials with integer coefficients if heuristic GCD was off or just unlucky, see :pull:`721`.
 
 Developer changes
 =================

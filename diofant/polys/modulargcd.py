@@ -2,12 +2,12 @@ import random
 
 from mpmath import sqrt
 
+from . import rings
 from ..core import Dummy
 from ..ntheory import nextprime
 from ..ntheory.modular import crt
 from .galoistools import gf_div, gf_from_dict, gf_gcd, gf_gcdex, gf_lcm
 from .polyerrors import ModularGCDFailed
-from .rings import PolynomialRing
 
 
 __all__ = ('modgcd', 'func_field_modgcd', 'trial_division',
@@ -303,7 +303,7 @@ def _chinese_remainder_reconstruction(hp, hq, p, q):
 
     hpq = hp.ring.zero
 
-    if isinstance(hp.ring.domain, PolynomialRing):
+    if isinstance(hp.ring.domain, rings.PolynomialRing):
         crt_ = _chinese_remainder_reconstruction
     else:
         def crt_(cp, cq, p, q):
@@ -1025,7 +1025,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     ring = f.ring
     domain = ring.domain  # Z[t_1, ..., t_k]
 
-    if isinstance(domain, PolynomialRing):
+    if isinstance(domain, rings.PolynomialRing):
         k = domain.ngens
     else:
         return _euclidean_algorithm(f, g, minpoly, p)
@@ -1252,7 +1252,7 @@ def _rational_reconstruction_int_coeffs(hm, m, ring):
     """
     h = ring.zero
 
-    if isinstance(ring.domain, PolynomialRing):
+    if isinstance(ring.domain, rings.PolynomialRing):
         reconstruction = _rational_reconstruction_int_coeffs
         domain = ring.domain.ring
     else:
@@ -1336,7 +1336,7 @@ def _func_field_modgcd_m(f, g, minpoly):
     ring = f.ring
     domain = ring.domain
 
-    if isinstance(domain, PolynomialRing):
+    if isinstance(domain, rings.PolynomialRing):
         k = domain.ngens
         QQdomain = domain.ring.clone(domain=domain.domain.field)
         QQring = ring.clone(domain=QQdomain)
@@ -1450,7 +1450,7 @@ def _to_ZZ_poly(f, ring):
     """
     f_ = ring.zero
 
-    if isinstance(ring.domain, PolynomialRing):
+    if isinstance(ring.domain, rings.PolynomialRing):
         domain = ring.domain.domain
     else:
         domain = ring.domain
@@ -1465,7 +1465,7 @@ def _to_ZZ_poly(f, ring):
     for monom, coeff in f.items():
         coeff = coeff.rep
         m = ring.domain.one
-        if isinstance(ring.domain, PolynomialRing):
+        if isinstance(ring.domain, rings.PolynomialRing):
             m = m.mul_monom(monom[1:])
         n = len(coeff)
 
@@ -1508,7 +1508,7 @@ def _to_ANP_poly(f, ring):
     domain = ring.domain
     f_ = ring.zero
 
-    if isinstance(f.ring.domain, PolynomialRing):
+    if isinstance(f.ring.domain, rings.PolynomialRing):
         for monom, coeff in f.items():
             for mon, coef in coeff.items():
                 m = (monom[0],) + mon

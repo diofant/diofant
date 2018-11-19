@@ -648,7 +648,19 @@ def test_dmp_gcd():
 
     R, x = ring("x", ZZ)
 
-    assert R.dmp_gcd(x**2 - 1, x**2 - 3*x + 2) == x - 1
+    f, g = x**2 - 1, x**2 - 3*x + 2
+    assert R.dmp_gcd(f, g) == x - 1
+
+    with using(use_heu_gcd=False, fallback_gcd_zz_method='modgcd'):
+        R.dmp_gcd(f, g) == x - 1
+
+    R, x = ring("x", QQ)
+
+    f, g = x**2/2 + x + QQ(1, 2), x/2 + QQ(1, 2)
+
+    assert R.dmp_gcd(f, g) == x + 1
+    with using(use_heu_gcd=False):
+        R.dmp_gcd(f, g) == x + 1
 
 
 def test_dmp_lcm():
