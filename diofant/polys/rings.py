@@ -1722,7 +1722,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if not self:
             return self
         else:
-            return self.quo_ground(self.LC)
+            return self.exquo_ground(self.LC)
 
     def mul_ground(self, x):
         if not x:
@@ -1759,6 +1759,20 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             terms = [(monom, quo(coeff, x)) for monom, coeff in self.items()]
         else:
             terms = [(monom, coeff//x) for monom, coeff in self.items()]
+
+        p = self.new(terms)
+        p.strip_zero()
+        return p
+
+    def exquo_ground(self, x):
+        domain = self.ring.domain
+
+        if not x:
+            raise ZeroDivisionError('polynomial division')
+        if not self or x == domain.one:
+            return self
+
+        terms = [(monom, domain.exquo(coeff, x)) for monom, coeff in self.items()]
 
         p = self.new(terms)
         p.strip_zero()

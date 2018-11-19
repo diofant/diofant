@@ -821,6 +821,9 @@ def test_PolyElement___truediv__():
 
     pytest.raises(ZeroDivisionError, lambda: f.quo_ground(0))
     pytest.raises(ZeroDivisionError, lambda: f.quo_term(((1, 1), 0)))
+    pytest.raises(ZeroDivisionError, lambda: f.exquo_ground(0))
+
+    assert R.zero.exquo_ground(2) == R.zero
 
     assert R.zero.quo_term(((1, 0), 1)) == R.zero
     assert g.quo_term((R.zero_monom, 2)) == x - y
@@ -957,6 +960,18 @@ def test_PolyElement_rem():
     r = 2*x + 1
 
     assert f.rem(G) == f.div(G)[1] == r
+
+
+def test_PolyElement_monic():
+    R, x = ring("x", ZZ)
+
+    assert (2*x + 2).monic() == x + 1
+
+    pytest.raises(ExactQuotientFailed, lambda: (2*x + 1).monic())
+
+    R, x = ring("x", QQ)
+
+    assert (2*x + 1).monic() == x + QQ(1, 2)
 
 
 def test_PolyElement_deflate():
