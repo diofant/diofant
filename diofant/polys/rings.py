@@ -792,10 +792,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     @property
     def is_squarefree(self):
-        if self.is_zero:
-            return True
-        else:
-            return not self.gcd(self.diff(0)).degree(0)
+        return self.ring.dmp_sqf_p_in(self, list(range(self.ring.ngens)))
 
     @property
     def is_irreducible(self):
@@ -2285,10 +2282,10 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         return self.ring.dmp_sqf_norm(self)
 
     def sqf_part(self):
-        return self.ring.dmp_sqf_part(self)
+        return self.ring.dmp_sqf_part_in(self, list(range(self.ring.ngens)))
 
     def sqf_list(self):
-        return self.ring.dmp_sqf_list(self)
+        return self.ring.dmp_sqf_list_in(self, list(range(self.ring.ngens)))
 
     def factor_list(self):
         return self.ring.dmp_factor_list(self)

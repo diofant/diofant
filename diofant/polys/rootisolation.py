@@ -11,7 +11,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_eval, dmp_eval_in,
 from .euclidtools import dmp_gcd, dmp_resultant
 from .factortools import dmp_factor_list
 from .polyerrors import DomainError, RefinementFailed
-from .sqfreetools import dmp_sqf_list, dmp_sqf_part
+from .sqfreetools import dmp_sqf_list_in, dmp_sqf_part_in
 
 
 def dup_sturm(f, K):
@@ -36,7 +36,7 @@ def dup_sturm(f, K):
     if not K.has_Field:
         raise DomainError("can't compute Sturm sequence over %s" % K)
 
-    f = dmp_sqf_part(f, 0, K)
+    f = dmp_sqf_part_in(f, [0], 0, K)
 
     sturm = [f, dup_diff(f, 1, K)]
 
@@ -457,7 +457,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):
     f = dmp_convert(f, 0, R, K)
     f = dmp_clear_denoms(f, 0, K)[1]
 
-    _, factors = dmp_sqf_list(f, 0, K)
+    _, factors = dmp_sqf_list_in(f, [0], 0, K)
 
     if len(factors) == 1:
         (f, k), = factors
@@ -1574,7 +1574,7 @@ def dup_isolate_all_roots(f, K, eps=None, inf=None, sup=None, fast=False):
     if not K.is_IntegerRing and not K.is_RationalField:
         raise DomainError("isolation of real and complex roots is not supported over %s" % K)
 
-    _, factors = dmp_sqf_list(f, 0, K)
+    _, factors = dmp_sqf_list_in(f, [0], 0, K)
 
     if len(factors) == 1:
         (f, k), = factors

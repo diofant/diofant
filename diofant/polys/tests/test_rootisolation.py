@@ -362,7 +362,7 @@ def test_dup_isolate_real_roots():
 
     f = 16*x**14 - 96*x**13 + 24*x**12 + 936*x**11 - 1599*x**10 - 2880*x**9 + 9196*x**8 \
         + 552*x**7 - 21831*x**6 + 13968*x**5 + 21690*x**4 - 26784*x**3 - 2916*x**2 + 15552*x - 5832
-    g = R.dmp_sqf_part(f)
+    g = R.dmp_sqf_part_in(f, [0])
 
     assert R.dup_isolate_real_roots(f) == \
         [((-2, -QQ(3, 2)), 2), ((-QQ(3, 2), -QQ(1, 1)), 3), ((1, QQ(3, 2)), 3),

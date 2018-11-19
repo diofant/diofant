@@ -27,7 +27,7 @@ from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-from .sqfreetools import dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
+from .sqfreetools import dmp_sqf_norm, dmp_sqf_p_in, dmp_sqf_part_in
 
 
 def dmp_trial_division(f, factors, u, K):
@@ -364,7 +364,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     if F == g and dup_cyclotomic_p(g, K):
         return True
 
-    G = dmp_sqf_part(F, 0, K)
+    G = dmp_sqf_part_in(F, [0], 0, K)
 
     if dup_sqr(G, K) == F and dup_cyclotomic_p(G, K):
         return True
@@ -523,7 +523,7 @@ def dup_zz_factor(f, K):
         if dup_zz_irreducible_p(g, K):
             return cont, [(g, 1)]
 
-    g = dmp_sqf_part(g, 0, K)
+    g = dmp_sqf_part_in(g, [0], 0, K)
     H = None
 
     if query('USE_CYCLOTOMIC_FACTOR'):
@@ -563,7 +563,7 @@ def dmp_zz_wang_test_points(f, T, ct, A, u, K):
 
     g = dmp_eval_tail(f, A, u, K)
 
-    if not dmp_sqf_p(g, 0, K):
+    if not dmp_sqf_p_in(g, [0], 0, K):
         raise EvaluationFailed('no luck')
 
     c, h = dmp_ground_primitive(g, 0, K)
@@ -997,7 +997,7 @@ def dmp_zz_factor(f, u, K):
     factors = []
 
     if dmp_degree(g, u) > 0:
-        g = dmp_sqf_part(g, u, K)
+        g = dmp_sqf_part_in(g, [0], u, K)
         H = dmp_zz_wang(g, u, K)
         factors = dmp_trial_division(f, H, u, K)
 
@@ -1018,7 +1018,7 @@ def dmp_ext_factor(f, u, K):
             factors.append(([factor], k))
 
     if dmp_degree(f, u) > 0:
-        sqf = dmp_sqf_part(f, u, K)
+        sqf = dmp_sqf_part_in(f, [0], u, K)
         s, g, r = dmp_sqf_norm(sqf, u, K)
 
         _, sqf_factors = dmp_factor_list(r, u, K.domain)

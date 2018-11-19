@@ -1,34 +1,40 @@
 """Square-free decomposition algorithms and related tools. """
 
-from .densearith import (dmp_mul, dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub,
-                         dup_mul)
-from .densebasic import (dmp_convert, dmp_degree, dmp_ground, dmp_ground_LC,
-                         dmp_inject, dmp_raise, dmp_zero_p)
-from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
+from .densearith import (dmp_mul, dmp_mul_ground, dmp_neg, dmp_pow, dmp_quo,
+                         dmp_sub, dup_mul)
+from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in, dmp_ground_LC,
+                         dmp_inject, dmp_one_p, dmp_raise, dmp_zero_p)
+from .densetools import (dmp_compose, dmp_diff_in, dmp_ground_monic,
                          dmp_ground_primitive, dup_shift)
-from .euclidtools import dmp_gcd, dmp_inner_gcd, dmp_primitive, dmp_resultant
+from .euclidtools import dmp_gcd, dmp_resultant
 from .galoistools import gf_sqf_list, gf_sqf_part
 from .polyerrors import DomainError
 
 
-def dmp_sqf_p(f, u, K):
+def dmp_sqf_p_in(f, N, u, K):
     """
     Return ``True`` if ``f`` is a square-free polynomial in ``K[X]``.
 
     Examples
     ========
 
-    >>> dmp_sqf_p([[]], 1, ZZ)
+    >>> dmp_sqf_p_in([[]], [0], 1, ZZ)
     True
-    >>> dmp_sqf_p([[1], [2, 0], [1, 0, 0]], 1, ZZ)
+    >>> dmp_sqf_p_in([[1], [2, 0], [1, 0, 0]], [0], 1, ZZ)
     False
-    >>> dmp_sqf_p([[1], [], [1, 0, 0]], 1, ZZ)
+    >>> dmp_sqf_p_in([[1], [], [1, 0, 0]], [0], 1, ZZ)
     True
     """
     if dmp_zero_p(f, u):
         return True
     else:
-        return not dmp_degree(dmp_gcd(f, dmp_diff(f, 1, u, K), u, K), u)
+        g = f
+        for i in N:
+            g = dmp_gcd(g, dmp_diff_in(f, 1, i, u, K), u, K)
+            if max(dmp_degree_in(g, j, u) for j in N) <= 0:
+                return True
+        else:
+            return False
 
 
 def dmp_sqf_norm(f, u, K):
@@ -67,7 +73,7 @@ def dmp_sqf_norm(f, u, K):
         h, _ = dmp_inject(f, u, K, front=True)
         r = dmp_resultant(g, h, u + 1, K.domain)
 
-        if dmp_sqf_p(r, u, K.domain):
+        if dmp_sqf_p_in(r, [0], u, K.domain):
             break
         else:
             f, s = dmp_compose(f, F, u, K), s + 1
@@ -85,7 +91,7 @@ def dmp_gf_sqf_part(f, u, K):
         raise NotImplementedError('multivariate polynomials over finite fields')
 
 
-def dmp_sqf_part(f, u, K):
+def dmp_sqf_part_in(f, N, u, K):
     """
     Returns square-free part of a polynomial in ``K[X]``.
 
@@ -94,7 +100,7 @@ def dmp_sqf_part(f, u, K):
 
     >>> R, x, y = ring("x y", ZZ)
 
-    >>> R.dmp_sqf_part(x**3 + 2*x**2*y + x*y**2)
+    >>> R.dmp_sqf_part_in(x**3 + 2*x**2*y + x*y**2, [0, 1])
     x**2 + x*y
 
     """
@@ -107,7 +113,9 @@ def dmp_sqf_part(f, u, K):
     if K.is_negative(dmp_ground_LC(f, u, K)):
         f = dmp_neg(f, u, K)
 
-    gcd = dmp_gcd(f, dmp_diff(f, 1, u, K), u, K)
+    gcd = f
+    for i in N:
+        gcd = dmp_gcd(gcd, dmp_diff_in(f, 1, i, u, K), u, K)
     sqf = dmp_quo(f, gcd, u, K)
 
     if K.has_Field:
@@ -132,7 +140,7 @@ def dmp_gf_sqf_list(f, u, K):
         raise NotImplementedError('multivariate polynomials over finite fields')
 
 
-def dmp_sqf_list(f, u, K):
+def dmp_sqf_list_in(f, N, u, K):
     """
     Return square-free decomposition of a polynomial in ``K[X]``.
 
@@ -143,7 +151,7 @@ def dmp_sqf_list(f, u, K):
 
     >>> f = x**5 + 2*x**4*y + x**3*y**2
 
-    >>> R.dmp_sqf_list(f)
+    >>> R.dmp_sqf_list_in(f, [0, 1])
     (1, [(x + y, 2), (x, 3)])
     """
     if K.is_FiniteField:
@@ -159,39 +167,35 @@ def dmp_sqf_list(f, u, K):
             f = dmp_neg(f, u, K)
             coeff = -coeff
 
-    if u:
-        c, f = dmp_primitive(f, u, K)
-        coeff = dmp_mul_ground([c], coeff, u, K)
-    else:
-        coeff = dmp_ground(coeff, u)
+    coeff = dmp_mul_ground(f, coeff, u, K)
 
-    if dmp_degree(f, u) <= 0:
-        return coeff, []
+    result, count = [], 1
+    qs = [dmp_diff_in(f, 1, i, u, K) for i in N]
 
-    result, i = [], 1
+    g = f
+    for q in qs:
+        g = dmp_gcd(g, q, u, K)
 
-    h = dmp_diff(f, 1, u, K)
-    g, p, q = dmp_inner_gcd(f, h, u, K)
+    while max(dmp_degree_in(f, j, u) for j in N) > 0:
+        for i in range(len(N)):
+            qs[i] = dmp_quo(qs[i], g, u, K)
+        f = dmp_quo(f, g, u, K)
+        for i, j in enumerate(N):
+            qs[i] = dmp_sub(qs[i], dmp_diff_in(f, 1, j, u, K), u, K)
 
-    while True:
-        d = dmp_diff(p, 1, u, K)
-        h = dmp_sub(q, d, u, K)
+        g = f
+        for q in qs:
+            g = dmp_gcd(g, q, u, K)
+        if not dmp_one_p(g, u, K):
+            result.append((g, count))
+            coeff = dmp_quo(coeff, dmp_pow(g, count, u, K), u, K)
 
-        if dmp_zero_p(h, u):
-            result.append((p, i))
-            break
-
-        g, p, q = dmp_inner_gcd(p, h, u, K)
-
-        if dmp_degree(g, u) > 0:
-            result.append((g, i))
-
-        i += 1
+        count += 1
 
     return coeff, result
 
 
-def dmp_sqf_list_include(f, u, K):
+def dmp_sqf_list_include_in(f, N, u, K):
     """
     Return square-free decomposition of a polynomial in ``K[x]``.
 
@@ -202,10 +206,10 @@ def dmp_sqf_list_include(f, u, K):
 
     >>> f = x**5 + 2*x**4*y + x**3*y**2
 
-    >>> R.dmp_sqf_list_include(f)
+    >>> R.dmp_sqf_list_include_in(f, [0, 1])
     [(1, 1), (x + y, 2), (x, 3)]
     """
-    coeff, factors = dmp_sqf_list(f, u, K)
+    coeff, factors = dmp_sqf_list_in(f, N, u, K)
 
     if factors and factors[0][1] == 1:
         g = dmp_mul(factors[0][0], coeff, u, K)

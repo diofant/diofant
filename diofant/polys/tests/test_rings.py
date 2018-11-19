@@ -1414,6 +1414,13 @@ def test_PolyElement_is_():
     assert f.is_nonnegative is True
     assert f.is_nonpositive is False
 
+    # issue diofant/diofant#714
+    R, x, y, z = ring('x y z', ZZ)
+    f = (x - y)*(z - 1)**2
+    assert f.is_squarefree is False
+    assert ((x - y)**2*(z - 1)).is_squarefree is False
+    assert ((x - y)*(z - 1)).is_squarefree is True
+
 
 def test_PolyElement_drop():
     R,  x, y, z = ring("x,y,z", ZZ)
@@ -1555,7 +1562,20 @@ def test_PolyElement_sqf_norm():
 
 
 def test_PolyElement_sqf_list():
-    _, x = ring("x", ZZ)
+    R, x = ring("x", ZZ)
+
+    assert R.zero.sqf_list() == (0, [])
+    assert R.one.sqf_list() == (1, [])
+    assert x.sqf_list() == (1, [(x, 1)])
+    assert (2*x**2).sqf_list() == (2, [(x, 2)])
+    assert (3*x**3).sqf_list() == (3, [(x, 3)])
+    assert (-2*x + 1).sqf_list() == (-1, [(2*x - 1, 1)])
+
+    assert (-x**5 + x**4 + x - 1).sqf_list() == (-1, [(x**3 + x**2 + x + 1, 1),
+                                                      (x - 1, 2)])
+    assert (x**8 + 6*x**6 + 12*x**4 + 8*x**2).sqf_list() == (1, [(x, 2),
+                                                                 (x**2 + 2, 3)])
+    assert (2*x**2 + 4*x + 2).sqf_list() == (2, [(x + 1, 2)])
 
     f = x**5 - x**3 - x**2 + 1
     g = x**3 + 2*x**2 + 2*x + 1
@@ -1564,6 +1584,37 @@ def test_PolyElement_sqf_list():
 
     assert f.sqf_part() == p
     assert f.sqf_list() == (1, [(g, 1), (h, 2)])
+
+    f = -x**5 + x**4 + x - 1
+
+    assert f.sqf_list() == (-1, [(x**3 + x**2 + x + 1, 1), (x - 1, 2)])
+
+    f = 2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16
+
+    assert f.sqf_list() == (2, [(x + 1, 2), (x + 2, 3)])
+
+    _, x, y = ring("x,y", ZZ)
+    f = -x**5 + x**4 + x - 1
+
+    assert f.sqf_list() == (-1, [(x**3 + x**2 + x + 1, 1), (x - 1, 2)])
+
+    _, x = ring("x", QQ)
+
+    assert (2*x**2 + 4*x + 2).sqf_list() == (2, [(x + 1, 2)])
+
+    f = (2*x - 1)*(3*x**2 + 4)
+    assert f.sqf_part() == (x - QQ(1, 2))*(x**2 + QQ(4, 3))
+    assert f.sqf_list() == (6, [(x**3 - x**2/2 + 4*x/3 - QQ(2, 3), 1)])
+
+    # issue diofant/diofant#714
+
+    _, x, y, z = ring('x y z', ZZ)
+
+    f = (x - y)*(z - 1)**2
+    assert f.sqf_list() == (1, [(x - y, 1), (z - 1, 2)])
+
+    f = (x - y)**2*(z - 1)**3
+    assert f.sqf_list() == (1, [(x - y, 2), (z - 1, 3)])
 
 
 def test_PolyElement_factor_list():
