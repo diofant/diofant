@@ -633,7 +633,7 @@ def test_PolyElement___truediv__():
     R,  x, y, z = ring("x,y,z", ZZ)
 
     assert (2*x**2 - 4)/2 == x**2 - 2
-    assert (2*x**2 - 3)/2 == x**2
+    assert (2*x**2 - 3)/2 == x**2 - 2
 
     assert (x**2 - 1)/x == (x**2 - 1).quo(x) == x
     assert (x**2 - x)/x == (x**2 - x).quo(x) == x - 1

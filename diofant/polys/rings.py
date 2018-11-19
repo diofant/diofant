@@ -1758,9 +1758,11 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             quo = domain.quo
             terms = [(monom, quo(coeff, x)) for monom, coeff in self.items()]
         else:
-            terms = [(monom, coeff//x) for monom, coeff in self.items() if not (coeff % x)]
+            terms = [(monom, coeff//x) for monom, coeff in self.items()]
 
-        return self.new(terms)
+        p = self.new(terms)
+        p.strip_zero()
+        return p
 
     def quo_term(self, term):
         monom, coeff = term
