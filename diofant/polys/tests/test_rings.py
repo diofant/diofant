@@ -1130,6 +1130,14 @@ def test_PolyElement_gcd():
     with using(use_heu_gcd=False, fallback_gcd_zz_method='modgcd'):
         assert f.gcd(g) == x + 1
 
+    R, x, y = ring("x,y", QQ.algebraic_field(sqrt(2)))
+
+    f, g = (x + sqrt(2)*y)**2, x + sqrt(2)*y
+
+    assert f.gcd(g) == g
+    with using(gcd_aa_method='modgcd'):
+        assert f.gcd(g) == g
+
 
 def test_PolyElement_cancel():
     R,  x, y = ring("x,y", ZZ)

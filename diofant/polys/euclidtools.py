@@ -1031,6 +1031,18 @@ _gcd_zz_methods = {'modgcd': _dmp_zz_modgcd,
                    'prs': dmp_rr_prs_gcd}
 
 
+def _dmp_aa_modgcd(f, g, u, K):
+    from .modulargcd import func_field_modgcd
+    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    f, g = map(ring.from_dense, (f, g))
+    h, cff, cfg = func_field_modgcd(f, g)
+    return tuple(map(ring.to_dense, f.cofactors(g)))
+
+
+_gcd_aa_methods = {'modgcd': _dmp_aa_modgcd,
+                   'prs': dmp_ff_prs_gcd}
+
+
 def _dmp_inner_gcd(f, g, u, K):
     """Helper function for `dmp_inner_gcd()`. """
     if not K.is_Exact:
@@ -1056,6 +1068,9 @@ def _dmp_inner_gcd(f, g, u, K):
                     return dmp_qq_heu_gcd(f, g, u, K)
                 except HeuristicGCDFailed:  # pragma: no cover
                     pass
+        elif K.is_AlgebraicField:
+            method = _gcd_aa_methods[query('GCD_AA_METHOD')]
+            return method(f, g, u, K)
 
         return dmp_ff_prs_gcd(f, g, u, K)
     else:

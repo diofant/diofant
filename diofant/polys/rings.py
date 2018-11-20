@@ -19,7 +19,7 @@ from .compatibility import IPolys
 from .constructor import construct_domain
 from .densebasic import dmp_from_dict, dmp_to_dict
 from .heuristicgcd import heugcd
-from .modulargcd import modgcd
+from .modulargcd import func_field_modgcd, modgcd
 from .monomials import (monomial_div, monomial_gcd, monomial_ldiv,
                         monomial_mul, monomial_pow)
 from .orderings import lex
@@ -1935,6 +1935,8 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             return self._gcd_QQ(other)
         elif ring.domain.is_IntegerRing:
             return self._gcd_ZZ(other)
+        elif ring.domain.is_AlgebraicField:
+            return self._gcd_AA(other)
         else:  # TODO: don't use dense representation (port PRS algorithms)
             return ring.dmp_inner_gcd(self, other)
 
@@ -1971,6 +1973,13 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         cfg = cfg.set_ring(ring).mul_ground(ring.domain.quo(c, cg))
 
         return h, cff, cfg
+
+    def _gcd_AA(self, g):
+        _gcd_aa_methods = {'modgcd': func_field_modgcd,
+                           'prs': lambda f, g: self.ring.dmp_ff_prs_gcd(f, g)}
+
+        method = _gcd_aa_methods[query('GCD_AA_METHOD')]
+        return method(self, g)
 
     def cancel(self, g):
         """

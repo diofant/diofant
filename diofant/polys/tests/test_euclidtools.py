@@ -3,6 +3,7 @@
 import pytest
 
 from diofant.domains import CC, QQ, RR, ZZ
+from diofant.functions import sqrt
 from diofant.polys.polyconfig import using
 from diofant.polys.polyerrors import HeuristicGCDFailed
 from diofant.polys.rings import ring
@@ -661,6 +662,14 @@ def test_dmp_gcd():
     assert R.dmp_gcd(f, g) == x + 1
     with using(use_heu_gcd=False):
         R.dmp_gcd(f, g) == x + 1
+
+    R, x, y = ring("x,y", QQ.algebraic_field(sqrt(2)))
+
+    f, g = (x + sqrt(2)*y)**2, x + sqrt(2)*y
+
+    assert R.dmp_gcd(f, g) == g
+    with using(gcd_aa_method='modgcd'):
+        assert R.dmp_gcd(f, g) == g
 
 
 def test_dmp_lcm():

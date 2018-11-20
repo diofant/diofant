@@ -15,6 +15,7 @@ _default_config = {
     'HEU_GCD_MAX':                6,
 
     'FALLBACK_GCD_ZZ_METHOD':     'prs',
+    'GCD_AA_METHOD':              'prs',
 
     'USE_IRREDUCIBLE_IN_FACTOR':  False,
     'USE_CYCLOTOMIC_FACTOR':      True,
