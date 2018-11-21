@@ -137,3 +137,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`4511` integrate(cos(x)**2 / (1-sin(x))) gives too complicated answer
 * :sympyissue:`15474` dsolve system gives complicated solution for diagonal system
 * :sympyissue:`15502` Python 3.7 test failures
+* :sympyissue:`15520` 5th-order ODE with irrational coefficient fails
