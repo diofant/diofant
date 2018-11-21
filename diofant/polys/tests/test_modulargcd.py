@@ -31,6 +31,14 @@ def test_modgcd_univariate_integers():
     f, g = 2*x + 2, 6*x**2 - 6
     assert modgcd_univariate(f, g) == (2*x + 2, 1, 3*x - 3)
 
+    f, g = [1000000000000*x + 998549000000]*2
+
+    assert modgcd_univariate(f, g) == (f, 1, 1)
+
+    f, g = 999530000000*x + 1000000000000, 999530000000*x + 999999000000
+
+    assert modgcd_univariate(f, g) == (1000000, 999530*x + 1000000, 999530*x + 999999)
+
     f = x**4 + 8*x**3 + 21*x**2 + 22*x + 8
     g = x**3 + 6*x**2 + 11*x + 6
 
