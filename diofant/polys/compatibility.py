@@ -27,12 +27,11 @@ from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_rr_prs_gcd, dmp_subresultants,
                           dmp_zz_collins_resultant, dmp_zz_heu_gcd,
                           dmp_zz_modular_resultant, dup_discriminant,
-                          dup_euclidean_prs, dup_ff_lcm, dup_ff_prs_gcd,
-                          dup_gcdex, dup_half_gcdex, dup_inner_gcd,
+                          dup_euclidean_prs, dup_ff_prs_gcd, dup_gcdex,
+                          dup_half_gcdex, dup_inner_gcd,
                           dup_inner_subresultants, dup_invert,
                           dup_primitive_prs, dup_prs_resultant, dup_qq_heu_gcd,
-                          dup_resultant, dup_rr_lcm, dup_rr_prs_gcd,
-                          dup_zz_heu_gcd)
+                          dup_resultant, dup_rr_prs_gcd, dup_zz_heu_gcd)
 from .factortools import (dmp_ext_factor, dmp_factor_list, dmp_trial_division,
                           dmp_zz_factor, dmp_zz_mignotte_bound, dmp_zz_wang,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
@@ -419,14 +418,6 @@ class IPolys:
 
     def dmp_gcd(self, f, g):
         H = dmp_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(H)
-
-    def dup_rr_lcm(self, f, g):
-        H = dup_rr_lcm(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(H)
-
-    def dup_ff_lcm(self, f, g):
-        H = dup_ff_lcm(self.to_dense(f), self.to_dense(g), self.domain)
         return self.from_dense(H)
 
     def dmp_rr_lcm(self, f, g):
