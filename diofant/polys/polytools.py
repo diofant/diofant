@@ -4883,7 +4883,7 @@ def to_rational_coeffs(f):
         polynomial; else ``alpha`` is ``None``.
         """
         from ..core import Add
-        if not len(f.gens) == 1 or not (f.gens[0]).is_Atom:
+        if f.is_multivariate or not (f.gens[0]).is_Atom:
             return
         n = f.degree()
         lc = f.LC()
@@ -4917,7 +4917,7 @@ def to_rational_coeffs(f):
         polynomial; else ``alpha`` is ``None``.
         """
         from ..core import Add
-        if not len(f.gens) == 1 or not (f.gens[0]).is_Atom:
+        if f.is_multivariate or not (f.gens[0]).is_Atom:
             return
         n = f.degree()
         f1 = f1 or f1.monic()

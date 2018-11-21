@@ -1431,58 +1431,17 @@ def dmp_gcd(f, g, u, K):
     return dmp_inner_gcd(f, g, u, K)[0]
 
 
-def dup_rr_lcm(f, g, K):
-    """
-    Computes polynomial LCM over a ring in `K[x]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_rr_lcm(x**2 - 1, x**2 - 3*x + 2)
-    x**3 - 2*x**2 - x + 2
-
-    """
-    fc, f = dmp_ground_primitive(f, 0, K)
-    gc, g = dmp_ground_primitive(g, 0, K)
-
-    c = K.lcm(fc, gc)
-
-    h = dmp_quo(dup_mul(f, g, K),
-                dmp_gcd(f, g, 0, K), 0, K)
-
-    return dmp_mul_ground(h, c, 0, K)
-
-
-def dup_ff_lcm(f, g, K):
-    """
-    Computes polynomial LCM over a field in `K[x]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", QQ)
-
-    >>> f = (x**2 + 7*x/2 + 3)/2
-    >>> g = x**2/2 + x
-
-    >>> R.dup_ff_lcm(f, g)
-    x**3 + 7/2*x**2 + 3*x
-
-    """
-    h = dmp_quo(dup_mul(f, g, K),
-                dmp_gcd(f, g, 0, K), 0, K)
-
-    return dmp_ground_monic(h, 0, K)
-
-
 def dmp_rr_lcm(f, g, u, K):
     """
     Computes polynomial LCM over a ring in `K[X]`.
 
     Examples
     ========
+
+    >>> R, x = ring("x", ZZ)
+
+    >>> R.dmp_rr_lcm(x**2 - 1, x**2 - 3*x + 2)
+    x**3 - 2*x**2 - x + 2
 
     >>> R, x, y = ring("x y", ZZ)
 
@@ -1511,6 +1470,14 @@ def dmp_ff_lcm(f, g, u, K):
     Examples
     ========
 
+    >>> R, x = ring("x", QQ)
+
+    >>> f = (x**2 + 7*x/2 + 3)/2
+    >>> g = x**2/2 + x
+
+    >>> R.dmp_ff_lcm(f, g)
+    x**3 + 7/2*x**2 + 3*x
+
     >>> R, x, y = ring("x y", QQ)
 
     >>> f = x**2/4 + x*y + y**2
@@ -1518,7 +1485,6 @@ def dmp_ff_lcm(f, g, u, K):
 
     >>> R.dmp_ff_lcm(f, g)
     x**3 + 4*x**2*y + 4*x*y**2
-
     """
     h = dmp_quo(dmp_mul(f, g, u, K),
                 dmp_gcd(f, g, u, K), u, K)

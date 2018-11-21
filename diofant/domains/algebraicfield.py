@@ -53,7 +53,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         is_real = ext.is_real
         if is_real is None:
             ext_root = cls._compute_ext_root(ext, minpoly)
-            is_real = ext_root.is_real
+            is_real = ext_root[1].is_real
         else:
             ext_root = None
 
@@ -185,7 +185,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         for r in minpoly.all_roots(radicals=False,  # pragma: no branch
                                    extension=True):
             if not minimal_polynomial(ext - r)(0):
-                return r
+                return r.as_content_primitive()
 
     @property
     def ext_root(self):
@@ -396,11 +396,14 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
                 return NotImplemented
 
         diff = self - other
-        while dup_count_real_roots(diff.rep, self.domain,
-                                   inf=self.parent.ext_root.interval.a,
-                                   sup=self.parent.ext_root.interval.b):
-            self.parent.ext_root.refine()
-        v = dmp_eval(diff.rep, diff.parent.ext_root.interval.center,
+        rep = dmp_compose(diff.rep,
+                          [self.domain.from_expr(self.parent.ext_root[0]), 0],
+                          0, self.domain)
+        while dup_count_real_roots(rep, self.domain,
+                                   inf=self.parent.ext_root[1].interval.a,
+                                   sup=self.parent.ext_root[1].interval.b):
+            self.parent.ext_root[1].refine()
+        v = dmp_eval(rep, diff.parent.ext_root[1].interval.center,
                      0, diff.domain)
         return bool(op(v, 0))
 

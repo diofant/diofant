@@ -628,7 +628,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         ring = self.ring
         i = ring.index(gen)
 
-        if ring.ngens == 1:
+        if ring.is_univariate:
             return i, ring.domain
         else:
             symbols = list(ring.symbols)
@@ -638,7 +638,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
     def drop(self, gen):
         i, ring = self._drop(gen)
 
-        if self.ring.ngens == 1:
+        if self.ring.is_univariate:
             if self.is_ground:
                 return self.coeff(1)
             else:
@@ -666,7 +666,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         return i, ring.clone(symbols=symbols, domain=ring.clone([symbol]))
 
     def drop_to_ground(self, gen):
-        if self.ring.ngens == 1:
+        if self.ring.is_univariate:
             raise ValueError("can't drop only generator to ground")
 
         i, ring = self._drop_to_ground(gen)
@@ -2059,7 +2059,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         i = ring.index(x)
         a = ring.domain.convert(a)
 
-        if ring.ngens == 1:
+        if ring.is_univariate:
             result = ring.domain.zero
 
             for (n,), coeff in f.items():
@@ -2110,7 +2110,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         i = ring.index(x)
         a = ring.domain.convert(a)
 
-        if ring.ngens == 1:
+        if ring.is_univariate:
             result = ring.domain.zero
 
             for (n,), coeff in f.items():

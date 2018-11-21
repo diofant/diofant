@@ -29,7 +29,7 @@ from diofant import (cos, cosh, cot, csc, diff, elliptic_e, elliptic_f, exp,
                      npartitions, oo, pi, polygamma, polylog, powdenest,
                      powsimp, primerange, primitive, primitive_root, product,
                      radsimp, re, reduce_inequalities, residue, resultant, rf,
-                     sec, series, sign, simplify, sin, sinh, solve, sqrt,
+                     root, sec, series, sign, simplify, sin, sinh, solve, sqrt,
                      sqrtdenest, symbols, tan, tanh, totient, trigsimp, trunc,
                      wronskian, zoo)
 from diofant.abc import a, b, c, s, t, w, x, y, z
@@ -49,9 +49,6 @@ from diofant.matrices import GramSchmidt, Matrix, eye
 from diofant.matrices.expressions import MatrixSymbol, ZeroMatrix
 from diofant.matrices.expressions.blockmatrix import (BlockMatrix,
                                                       block_collapse)
-from diofant.polys.fields import field
-from diofant.polys.rings import ring
-from diofant.polys.solvers import solve_lin_sys
 from diofant.solvers.ode import dsolve
 from diofant.solvers.recurr import rsolve
 from diofant.utilities.iterables import partitions
@@ -59,7 +56,6 @@ from diofant.utilities.iterables import partitions
 
 __all__ = ()
 
-R = Rational
 i, j, k, l, m, n = symbols('i j k l m n', integer=True)
 f = Function('f')
 g = Function('g')
@@ -142,17 +138,17 @@ def test_C9():
 def test_C10():
     x = 0
     for n in range(2, 11):
-        x += R(1, n)
-    assert x == R(4861, 2520)
+        x += Rational(1, n)
+    assert x == Rational(4861, 2520)
 
 
 def test_C12():
-    assert R(7, 11) * R(22, 7) == 2
+    assert Rational(7, 11) * Rational(22, 7) == 2
 
 
 def test_C13():
-    test = R(10, 7) * (1 + R(29, 1000)) ** R(1, 3)
-    good = 3 ** R(1, 3)
+    test = Rational(10, 7) * root(1 + Rational(29, 1000), 3)
+    good = root(3, 3)
     assert test == good
 
 
@@ -227,8 +223,8 @@ def test_D3():
 
 
 def test_D4():
-    assert floor(R(-5, 3)) == -2
-    assert ceiling(R(-5, 3)) == -1
+    assert floor(Rational(-5, 3)) == -2
+    assert ceiling(Rational(-5, 3)) == -1
 
 
 @pytest.mark.xfail
@@ -260,9 +256,9 @@ def test_F4():
     assert combsimp((2**n * factorial(n) * product(2*k - 1, (k, 1, n)))) == factorial(2*n)
 
 
-@pytest.mark.xfail
 def test_F5():
-    assert gamma(n + R(1, 2)) / sqrt(pi) / factorial(n) == factorial(2*n)/2**(2*n)/factorial(n)**2
+    assert combsimp(gamma((2*n + 1)/2)/sqrt(pi)/factorial(n) -
+                    factorial(2*n)/2**(2*n)/factorial(n)**2) == 0
 
 
 def test_F6():
@@ -524,7 +520,7 @@ def test_H29():
 
 def test_H30():
     test = factor(x**3 + y**3, extension=sqrt(-3))
-    answer = (x + y)*(x + y*(-R(1, 2) - sqrt(3)/2*I))*(x + y*(-R(1, 2) + sqrt(3)/2*I))
+    answer = (x + y)*(x + y*(-Rational(1, 2) - sqrt(3)/2*I))*(x + y*(-Rational(1, 2) + sqrt(3)/2*I))
     assert answer == test
 
 
@@ -600,7 +596,7 @@ def test_I12():
 
 
 def test_J1():
-    assert bernoulli(16) == R(-3617, 510)
+    assert bernoulli(16) == Rational(-3617, 510)
 
 
 def test_J2():
@@ -608,11 +604,11 @@ def test_J2():
 
 
 def test_J4():
-    assert gamma(R(-1, 2)) == -2*sqrt(pi)
+    assert gamma(Rational(-1, 2)) == -2*sqrt(pi)
 
 
 def test_J5():
-    assert polygamma(0, R(1, 3)) == -EulerGamma - pi/2*sqrt(R(1, 3)) - R(3, 2)*log(3)
+    assert polygamma(0, Rational(1, 3)) == -EulerGamma - pi/2*sqrt(Rational(1, 3)) - Rational(3, 2)*log(3)
 
 
 def test_J6():
@@ -620,11 +616,11 @@ def test_J6():
 
 
 def test_J7():
-    assert simplify(besselj(R(-5, 2), pi/2)) == 12/(pi**2)
+    assert simplify(besselj(Rational(-5, 2), pi/2)) == 12/(pi**2)
 
 
 def test_J8():
-    p = besselj(R(3, 2), z)
+    p = besselj(Rational(3, 2), z)
     q = (sin(z)/z - cos(z))/sqrt(pi*z/2)
     assert simplify(expand_func(p) - q) == 0
 
@@ -639,7 +635,7 @@ def test_J10():
 
 
 def test_J11():
-    assert simplify(assoc_legendre(3, 1, x)) == simplify(-R(3, 2)*sqrt(1 - x**2)*(5*x**2 - 1))
+    assert simplify(assoc_legendre(3, 1, x)) == simplify(-Rational(3, 2)*sqrt(1 - x**2)*(5*x**2 - 1))
 
 
 @pytest.mark.slow
@@ -681,7 +677,7 @@ def test_K3():
 
 
 def test_K4():
-    assert log(3 + 4*I).expand(complex=True) == log(5) + I*atan(R(4, 3))
+    assert log(3 + 4*I).expand(complex=True) == log(5) + I*atan(Rational(4, 3))
 
 
 def test_K5():
@@ -725,15 +721,15 @@ def test_K10():
 
 
 def test_L1():
-    assert sqrt(997) - (997**3)**R(1, 6) == 0
+    assert sqrt(997) - root(997**3, 6) == 0
 
 
 def test_L2():
-    assert sqrt(999983) - (999983**3)**R(1, 6) == 0
+    assert sqrt(999983) - root(999983**3, 6) == 0
 
 
 def test_L3():
-    assert simplify((2**R(1, 3) + 4**R(1, 3))**3 - 6*(2**R(1, 3) + 4**R(1, 3)) - 6) == 0
+    assert simplify((root(2, 3) + root(4, 3))**3 - 6*(root(2, 3) + root(4, 3)) - 6) == 0
 
 
 def test_L4():
@@ -742,7 +738,7 @@ def test_L4():
 
 @pytest.mark.xfail
 def test_L5():
-    assert log(tan(R(1, 2)*x + pi/4)) - asinh(tan(x)) == 0
+    assert simplify(log(tan(x/2 + pi/4)) - asinh(tan(x))) == 0
 
 
 def test_L6():
@@ -867,7 +863,7 @@ def test_M18():
 
 
 def test_M19():
-    assert solve((x - 2)/x**R(1, 3), x) == [{x: 2}]
+    assert solve((x - 2)/root(x, 3), x) == [{x: 2}]
 
 
 def test_M20():
@@ -879,7 +875,7 @@ def test_M21():
 
 
 def test_M22():
-    assert solve(2*sqrt(x) + 3*x**R(1, 4) - 2) == [{x: R(1, 16)}]
+    assert solve(2*sqrt(x) + 3*root(x, 4) - 2) == [{x: Rational(1, 16)}]
 
 
 def test_M23():
@@ -951,12 +947,10 @@ def test_M37():
 
 
 def test_M38():
-    F, a, b, c = field("a,b,c", ZZ)
-    R, *variables = ring("k1:50", F)
     [k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15,
      k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k27, k28, k29,
      k30, k31, k32, k33, k34, k35, k36, k37, k38, k39, k40, k41, k42, k43,
-     k44, k45, k46, k47, k48, k49] = variables
+     k44, k45, k46, k47, k48, k49] = variables = symbols("k1:50")
     system = [
         -b*k8/a + c*k8/a, -b*k11/a + c*k11/a, -b*k10/a + c*k10/a + k2, -k3 - b*k9/a + c*k9/a,
         -b*k14/a + c*k14/a, -b*k15/a + c*k15/a, -b*k18/a + c*k18/a - k2, -b*k17/a + c*k17/a,
@@ -998,7 +992,7 @@ def test_M38():
         -a*k48/b + c*k48/b, a*k49/c - b*k49/c, k33, -k45, k46, a*k48/b - c*k48/b,
         -a*k49/c + b*k49/c
     ]
-    solution = {
+    solution = [{
         k49: 0, k48: 0, k47: 0, k46: 0, k45: 0, k44: 0, k41: 0, k40: 0,
         k38: 0, k37: 0, k36: 0, k35: 0, k33: 0, k32: 0, k30: 0, k29: 0,
         k28: 0, k27: 0, k25: 0, k24: 0, k22: 0, k21: 0, k20: 0, k19: 0,
@@ -1006,8 +1000,8 @@ def test_M38():
         k10: 0, k9:  0, k8:  0, k7:  0, k6:  0, k5:  0, k4:  0, k3:  0,
         k2:  0, k1:  0,
         k34: b/c*k42, k31: k39, k26: a/c*k42, k23: k39
-    }
-    assert solve_lin_sys(system, R) == solution
+    }]
+    assert solve(system, *variables) == solution
 
 
 @pytest.mark.slow
@@ -1375,8 +1369,8 @@ def test_P26():
                 [  0,   0,   0,   0,   0,  0,  1, -1, -1],
                 [  0,   0,   0,   0,   0,  0,  0,  1,  0]])
     assert M.eigenvals() == {
-        R(-1, 2) - sqrt(3)*I/2: 2,
-        R(-1, 2) + sqrt(3)*I/2: 2}
+        Rational(-1, 2) - sqrt(3)*I/2: 2,
+        Rational(-1, 2) + sqrt(3)*I/2: 2}
 
 
 def test_P27():
