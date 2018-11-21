@@ -1076,31 +1076,13 @@ def modgcd_multivariate(f, g):
 
     >>> R, x, y = ring("x, y", ZZ)
 
-    >>> f = x**2 - y**2
-    >>> g = x**2 + 2*x*y + y**2
-
-    >>> h, cff, cfg = modgcd_multivariate(f, g)
-    >>> h, cff, cfg
+    >>> modgcd_multivariate((x - y)*(x + y), (x + y)**2)
     (x + y, x - y, x + y)
-
-    >>> cff * h == f
-    True
-    >>> cfg * h == g
-    True
 
     >>> R, x, y, z = ring("x, y, z", ZZ)
 
-    >>> f = x*z**2 - y*z**2
-    >>> g = x**2*z + z
-
-    >>> h, cff, cfg = modgcd_multivariate(f, g)
-    >>> h, cff, cfg
+    >>> modgcd_multivariate((x - y)*z**2, (x**2 + 1)*z)
     (z, x*z - y*z, x**2 + 1)
-
-    >>> cff * h == f
-    True
-    >>> cfg * h == g
-    True
 
     References
     ==========
@@ -2140,46 +2122,19 @@ def func_field_modgcd(f, g):
     Examples
     ========
 
-    >>> A = AlgebraicField(QQ, sqrt(2))
+    >>> A = QQ.algebraic_field(sqrt(2))
     >>> R, x = ring('x', A)
 
-    >>> f = x**2 - 2
-    >>> g = x + sqrt(2)
-
-    >>> h, cff, cfg = func_field_modgcd(f, g)
-
-    >>> h == x + sqrt(2)
-    True
-    >>> cff * h == f
-    True
-    >>> cfg * h == g
-    True
+    >>> func_field_modgcd(x**2 - 2, x + sqrt(2))
+    (x + sqrt(2), x - sqrt(2), 1)
 
     >>> R, x, y = ring('x, y', A)
 
-    >>> f = x**2 + 2*sqrt(2)*x*y + 2*y**2
-    >>> g = x + sqrt(2)*y
+    >>> func_field_modgcd((x + sqrt(2)*y)**2, x + sqrt(2)*y)
+    (x + sqrt(2)*y, x + sqrt(2)*y, 1)
 
-    >>> h, cff, cfg = func_field_modgcd(f, g)
-
-    >>> h == x + sqrt(2)*y
-    True
-    >>> cff * h == f
-    True
-    >>> cfg * h == g
-    True
-
-    >>> f = x + sqrt(2)*y
-    >>> g = x + y
-
-    >>> h, cff, cfg = func_field_modgcd(f, g)
-
-    >>> h == R.one
-    True
-    >>> cff * h == f
-    True
-    >>> cfg * h == g
-    True
+    >>> func_field_modgcd(x + sqrt(2)*y, x + y)
+    (1, x + sqrt(2)*y, x + y)
 
     References
     ==========

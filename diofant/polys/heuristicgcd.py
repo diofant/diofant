@@ -31,17 +31,8 @@ def heugcd(f, g):
 
     >>> R, x, y = ring("x y", ZZ)
 
-    >>> f = x**2 + 2*x*y + y**2
-    >>> g = x**2 + x*y
-
-    >>> h, cff, cfg = heugcd(f, g)
-    >>> h, cff, cfg
+    >>> heugcd((x + y)**2, x*(x + y))
     (x + y, x + y, x)
-
-    >>> cff*h == f
-    True
-    >>> cfg*h == g
-    True
 
     References
     ==========
