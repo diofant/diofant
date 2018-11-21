@@ -699,11 +699,15 @@ def test_Domain__algebraic_field():
     eq = -x**3 + 2*x**2 + 3*x - 2
     rs = roots(eq, multiple=True)
     alg = QQ.algebraic_field(rs[0])
-    assert alg.ext_root == RootOf(eq, 2)
+    assert alg.ext_root == (1, RootOf(eq, 2))
 
     alg1 = QQ.algebraic_field(I)
     alg2 = QQ.algebraic_field(sqrt(2)).algebraic_field(I)
     assert alg1 != alg2
+
+    alg3 = QQ.algebraic_field(RootOf(4*x**7 + x - 1, 0))
+    assert alg3.ext_root == (2, RootOf(x**7 + 16*x - 32, 0))
+    assert 2.772 > alg3.unit > 2.771
 
 
 def test_PolynomialRing_from_FractionField():
