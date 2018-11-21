@@ -49,9 +49,6 @@ from diofant.matrices import GramSchmidt, Matrix, eye
 from diofant.matrices.expressions import MatrixSymbol, ZeroMatrix
 from diofant.matrices.expressions.blockmatrix import (BlockMatrix,
                                                       block_collapse)
-from diofant.polys.fields import field
-from diofant.polys.rings import ring
-from diofant.polys.solvers import solve_lin_sys
 from diofant.solvers.ode import dsolve
 from diofant.solvers.recurr import rsolve
 from diofant.utilities.iterables import partitions
@@ -951,12 +948,10 @@ def test_M37():
 
 
 def test_M38():
-    F, a, b, c = field("a,b,c", ZZ)
-    R, *variables = ring("k1:50", F)
     [k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15,
      k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k27, k28, k29,
      k30, k31, k32, k33, k34, k35, k36, k37, k38, k39, k40, k41, k42, k43,
-     k44, k45, k46, k47, k48, k49] = variables
+     k44, k45, k46, k47, k48, k49] = variables = symbols("k1:50")
     system = [
         -b*k8/a + c*k8/a, -b*k11/a + c*k11/a, -b*k10/a + c*k10/a + k2, -k3 - b*k9/a + c*k9/a,
         -b*k14/a + c*k14/a, -b*k15/a + c*k15/a, -b*k18/a + c*k18/a - k2, -b*k17/a + c*k17/a,
@@ -998,7 +993,7 @@ def test_M38():
         -a*k48/b + c*k48/b, a*k49/c - b*k49/c, k33, -k45, k46, a*k48/b - c*k48/b,
         -a*k49/c + b*k49/c
     ]
-    solution = {
+    solution = [{
         k49: 0, k48: 0, k47: 0, k46: 0, k45: 0, k44: 0, k41: 0, k40: 0,
         k38: 0, k37: 0, k36: 0, k35: 0, k33: 0, k32: 0, k30: 0, k29: 0,
         k28: 0, k27: 0, k25: 0, k24: 0, k22: 0, k21: 0, k20: 0, k19: 0,
@@ -1006,8 +1001,8 @@ def test_M38():
         k10: 0, k9:  0, k8:  0, k7:  0, k6:  0, k5:  0, k4:  0, k3:  0,
         k2:  0, k1:  0,
         k34: b/c*k42, k31: k39, k26: a/c*k42, k23: k39
-    }
-    assert solve_lin_sys(system, R) == solution
+    }]
+    assert solve(system, *variables) == solution
 
 
 @pytest.mark.slow
