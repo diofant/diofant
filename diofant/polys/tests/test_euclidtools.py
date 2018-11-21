@@ -732,7 +732,7 @@ def test_dmp_primitive():
         g *= f
         F += x**i*g
 
-    assert R.dmp_primitive(F) == (f.drop(x), F / f)
+    assert R.dmp_primitive(F) == (f.drop(x), F // f)
 
     R,  x, y, z = ring("x,y,z", ZZ)
 
