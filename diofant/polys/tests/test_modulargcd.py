@@ -1,5 +1,5 @@
 from diofant import sqrt
-from diofant.domains import QQ, ZZ, AlgebraicField
+from diofant.domains import QQ, ZZ
 from diofant.polys.modulargcd import (_chinese_remainder_reconstruction_multivariate,
                                       _func_field_modgcd_m, _to_ANP_poly,
                                       _to_ZZ_poly, func_field_modgcd,
@@ -257,7 +257,7 @@ def test_modgcd_multivariate_integers():
 
 
 def test_to_ZZ_ANP_poly():
-    A = AlgebraicField(QQ, sqrt(2))
+    A = QQ.algebraic_field(sqrt(2))
     R, x = ring("x", A)
     f = x*(sqrt(2) + 1)
 
@@ -279,7 +279,7 @@ def test_to_ZZ_ANP_poly():
 
 
 def test_modgcd_algebraic_field():
-    A = AlgebraicField(QQ, sqrt(2))
+    A = QQ.algebraic_field(sqrt(2))
     R, x = ring("x", A)
     one = A.one
 
@@ -303,7 +303,7 @@ def test_modgcd_algebraic_field():
     f, g = x**2 + 2*sqrt(2)*x*y + 2*y**2, x + sqrt(2)*y
     assert func_field_modgcd(f, g) == (g, g, one)
 
-    A = AlgebraicField(QQ, sqrt(2), sqrt(3))
+    A = QQ.algebraic_field(sqrt(2), sqrt(3))
     R, x, y, z = ring("x, y, z", A)
 
     h = x**2*y**7 + sqrt(6)/21*z
@@ -323,7 +323,7 @@ def test_modgcd_algebraic_field():
     f, g = h*(11*y**3 + 1), h*(y + x)
     assert func_field_modgcd(f, g) == (x**4*y**3 + sqrt(6)/22*z, 11*y**3 + 1, x + y)
 
-    A = AlgebraicField(QQ, sqrt(2)**(-1)*sqrt(3))
+    A = QQ.algebraic_field(sqrt(2)**(-1)*sqrt(3))
     R, x = ring("x", A)
 
     f, g = x + 1, x - 1
