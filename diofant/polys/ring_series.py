@@ -100,7 +100,7 @@ def rs_mul(p1, p2, x, prec):
     get = p.get
     items2 = list(p2.items())
     items2.sort(key=lambda e: e[0][iv])
-    if ring.ngens == 1:
+    if ring.is_univariate:
         for exp1, v1 in p1.items():
             for exp2, v2 in items2:
                 exp = exp1[0] + exp2[0]
