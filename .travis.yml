@@ -40,8 +40,6 @@ matrix:
     - stage: quality
       python: 3.5
       env: COVERAGE='on'
-      install:
-        - travis_wait pip install .[exports,plot,interactive,develop,docs]
       script:
         - python -We:invalid -m compileall -f diofant -q
         - travis_wait python setup.py flake8
@@ -52,6 +50,7 @@ matrix:
             rm -rf build/
             python setup.py build_sphinx -W -b linkcheck
           fi
+        - pip uninstall -y gmpy2
         - DIOFANT_GROUND_TYPES='gmpy' py.test --cov diofant diofant/domains
         - travis_wait py.test --cov diofant --cov-append diofant/polys
     - stage: deploy
