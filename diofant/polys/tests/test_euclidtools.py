@@ -3,6 +3,7 @@
 import pytest
 
 from diofant.domains import CC, QQ, RR, ZZ
+from diofant.functions import sqrt
 from diofant.polys.polyconfig import using
 from diofant.polys.polyerrors import HeuristicGCDFailed
 from diofant.polys.rings import ring
@@ -310,55 +311,55 @@ def test_dmp_gcd():
     R, x = ring("x", ZZ)
 
     f, g = 0, 0
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (0, 0, 0)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (0, 0, 0)
 
     f, g = 2, 0
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, 1, 0)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, 1, 0)
 
     f, g = -2, 0
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, -1, 0)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, -1, 0)
 
     f, g = 0, -2
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, 0, -1)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, 0, -1)
 
     f, g = 0, 2*x + 4
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2*x + 4, 0, 1)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2*x + 4, 0, 1)
 
     f, g = 2*x + 4, 0
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2*x + 4, 1, 0)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2*x + 4, 1, 0)
 
     f, g = 2, 2
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, 1, 1)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, 1, 1)
 
     f, g = -2, 2
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, -1, 1)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, -1, 1)
 
     f, g = 2, -2
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, 1, -1)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, 1, -1)
 
     f, g = -2, -2
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, -1, -1)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, -1, -1)
 
     f, g = x**2 + 2*x + 1, 1
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (1, x**2 + 2*x + 1, 1)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (1, x**2 + 2*x + 1, 1)
 
     f, g = x**2 + 2*x + 1, 2
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (1, x**2 + 2*x + 1, 2)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (1, x**2 + 2*x + 1, 2)
 
     f, g = 2*x**2 + 4*x + 2, 2
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, x**2 + 2*x + 1, 1)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, x**2 + 2*x + 1, 1)
 
     f, g = 2, 2*x**2 + 4*x + 2
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, 1, x**2 + 2*x + 1)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, 1, x**2 + 2*x + 1)
 
     f, g = 2*x**2 + 4*x + 2, x + 1
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (x + 1, 2*x + 2, 1)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (x + 1, 2*x + 2, 1)
 
     f, g = x + 1, 2*x**2 + 4*x + 2
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (x + 1, 1, 2*x + 2)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (x + 1, 1, 2*x + 2)
 
     f, g = x - 31, x
-    assert R.dup_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (1, f, g)
+    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (1, f, g)
 
     f = x**4 + 8*x**3 + 21*x**2 + 22*x + 8
     g = x**3 + 6*x**2 + 11*x + 6
@@ -368,7 +369,7 @@ def test_dmp_gcd():
     cff = x**2 + 5*x + 4
     cfg = x + 3
 
-    assert R.dup_zz_heu_gcd(f, g) == (h, cff, cfg)
+    assert R.dmp_zz_heu_gcd(f, g) == (h, cff, cfg)
     assert R.dup_rr_prs_gcd(f, g) == (h, cff, cfg)
 
     f = x**4 - 4
@@ -379,7 +380,7 @@ def test_dmp_gcd():
     cff = x**2 - 2
     cfg = x**2 + 2
 
-    assert R.dup_zz_heu_gcd(f, g) == (h, cff, cfg)
+    assert R.dmp_zz_heu_gcd(f, g) == (h, cff, cfg)
     assert R.dup_rr_prs_gcd(f, g) == (h, cff, cfg)
 
     f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
@@ -390,7 +391,7 @@ def test_dmp_gcd():
     cff = f
     cfg = g
 
-    assert R.dup_zz_heu_gcd(f, g) == (h, cff, cfg)
+    assert R.dmp_zz_heu_gcd(f, g) == (h, cff, cfg)
     assert R.dup_rr_prs_gcd(f, g) == (h, cff, cfg)
 
     R, x = ring("x", QQ)
@@ -403,7 +404,7 @@ def test_dmp_gcd():
     cff = f
     cfg = g
 
-    assert R.dup_qq_heu_gcd(f, g) == (h, cff, cfg)
+    assert R.dmp_qq_heu_gcd(f, g) == (h, cff, cfg)
     assert R.dup_ff_prs_gcd(f, g) == (h, cff, cfg)
 
     assert R.dup_ff_prs_gcd(R.zero, R.zero) == ([], [], [])
@@ -424,7 +425,7 @@ def test_dmp_gcd():
         - 9504116979659010018253915765478924103928886144*x**7 \
         - 311973482284542371301330321821976049
 
-    assert R.dup_zz_heu_gcd(f, R.dup_diff(f, 1))[0] == g
+    assert R.dmp_zz_heu_gcd(f, R.dup_diff(f, 1))[0] == g
     assert R.dup_rr_prs_gcd(f, R.dup_diff(f, 1))[0] == g
 
     R, x = ring("x", QQ)
@@ -434,7 +435,7 @@ def test_dmp_gcd():
 
     h = x + 1
 
-    assert R.dup_qq_heu_gcd(f, g) == (h, g, QQ(1, 2))
+    assert R.dmp_qq_heu_gcd(f, g) == (h, g, QQ(1, 2))
     assert R.dup_ff_prs_gcd(f, g) == (h, g, QQ(1, 2))
 
     R, x = ring("x", ZZ)
@@ -446,14 +447,14 @@ def test_dmp_gcd():
     cff = 10946
     cfg = 1
 
-    assert R.dup_zz_heu_gcd(f, g) == (h, cff, cfg)
+    assert R.dmp_zz_heu_gcd(f, g) == (h, cff, cfg)
 
     with using(heu_gcd_max=0):
-        pytest.raises(HeuristicGCDFailed, lambda: R.dup_zz_heu_gcd(f, g))
+        pytest.raises(HeuristicGCDFailed, lambda: R.dmp_zz_heu_gcd(f, g))
 
     R, x = ring("x", CC)
     f, g = (x**2 - 1, x**3 - 3*x + 2)
-    assert R.dup_inner_gcd(f, g) == (1, f, g)
+    assert R.dmp_inner_gcd(f, g) == (1, f, g)
 
     R, x, y = ring("x,y", CC)
     f, g = (x**2 - y, x**3 - y*x + 2)
@@ -648,7 +649,27 @@ def test_dmp_gcd():
 
     R, x = ring("x", ZZ)
 
-    assert R.dmp_gcd(x**2 - 1, x**2 - 3*x + 2) == x - 1
+    f, g = x**2 - 1, x**2 - 3*x + 2
+    assert R.dmp_gcd(f, g) == x - 1
+
+    with using(use_heu_gcd=False, fallback_gcd_zz_method='modgcd'):
+        R.dmp_gcd(f, g) == x - 1
+
+    R, x = ring("x", QQ)
+
+    f, g = x**2/2 + x + QQ(1, 2), x/2 + QQ(1, 2)
+
+    assert R.dmp_gcd(f, g) == x + 1
+    with using(use_heu_gcd=False):
+        R.dmp_gcd(f, g) == x + 1
+
+    R, x, y = ring("x,y", QQ.algebraic_field(sqrt(2)))
+
+    f, g = (x + sqrt(2)*y)**2, x + sqrt(2)*y
+
+    assert R.dmp_gcd(f, g) == g
+    with using(gcd_aa_method='modgcd'):
+        assert R.dmp_gcd(f, g) == g
 
 
 def test_dmp_lcm():

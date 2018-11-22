@@ -2,16 +2,15 @@ import random
 
 from mpmath import sqrt
 
+from . import rings
 from ..core import Dummy
 from ..ntheory import nextprime
 from ..ntheory.modular import crt
 from .galoistools import gf_div, gf_from_dict, gf_gcd, gf_gcdex, gf_lcm
 from .polyerrors import ModularGCDFailed
-from .rings import PolynomialRing
 
 
-__all__ = ('modgcd_univariate', 'modgcd_bivariate', 'modgcd_multivariate',
-           'func_field_modgcd', 'trial_division',
+__all__ = ('modgcd', 'func_field_modgcd', 'trial_division',
            'integer_rational_reconstruction')
 
 
@@ -58,226 +57,6 @@ def _gf_gcd(fp, gp, p):
         gp = rem
 
     return fp.mul_ground(dom.invert(fp.LC, p)).trunc_ground(p)
-
-
-def _degree_bound_univariate(f, g):
-    r"""
-    Compute an upper bound for the degree of the GCD of two univariate
-    integer polynomials `f` and `g`.
-
-    The function chooses a suitable prime `p` and computes the GCD of
-    `f` and `g` in `\mathbb{Z}_p[x]`. The choice of `p` guarantees that
-    the degree in `\mathbb{Z}_p[x]` is greater than or equal to the degree
-    in `\mathbb{Z}[x]`.
-
-    Parameters
-    ==========
-
-    f : PolyElement
-        univariate integer polynomial
-    g : PolyElement
-        univariate integer polynomial
-
-    """
-    gamma = f.ring.domain.gcd(f.LC, g.LC)
-    p = 1
-
-    p = nextprime(p)
-    while gamma % p == 0:
-        p = nextprime(p)
-
-    fp = f.trunc_ground(p)
-    gp = g.trunc_ground(p)
-    hp = _gf_gcd(fp, gp, p)
-    deghp = hp.degree()
-    return deghp
-
-
-def _chinese_remainder_reconstruction_univariate(hp, hq, p, q):
-    r"""
-    Construct a polynomial `h_{pq}` in `\mathbb{Z}_{p q}[x]` such that
-
-    .. math ::
-
-        h_{pq} = h_p \; \mathrm{mod} \, p
-
-        h_{pq} = h_q \; \mathrm{mod} \, q
-
-    for relatively prime integers `p` and `q` and polynomials
-    `h_p` and `h_q` in `\mathbb{Z}_p[x]` and `\mathbb{Z}_q[x]`
-    respectively.
-
-    The coefficients of the polynomial `h_{pq}` are computed with the
-    Chinese Remainder Theorem. The symmetric representation in
-    `\mathbb{Z}_p[x]`, `\mathbb{Z}_q[x]` and `\mathbb{Z}_{p q}[x]` is used.
-    It is assumed that `h_p` and `h_q` have the same degree.
-
-    Parameters
-    ==========
-
-    hp : PolyElement
-        univariate integer polynomial with coefficients in `\mathbb{Z}_p`
-    hq : PolyElement
-        univariate integer polynomial with coefficients in `\mathbb{Z}_q`
-    p : Integer
-        modulus of `h_p`, relatively prime to `q`
-    q : Integer
-        modulus of `h_q`, relatively prime to `p`
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-    >>> p = 3
-    >>> q = 5
-
-    >>> hp = -x**3 - 1
-    >>> hq = 2*x**3 - 2*x**2 + x
-
-    >>> hpq = _chinese_remainder_reconstruction_univariate(hp, hq, p, q)
-    >>> hpq
-    2*x**3 + 3*x**2 + 6*x + 5
-
-    >>> hpq.trunc_ground(p) == hp
-    True
-    >>> hpq.trunc_ground(q) == hq
-    True
-
-    """
-    n = hp.degree()
-    x = hp.ring.gens[0]
-    hpq = hp.ring.zero
-
-    for i in range(n+1):
-        hpq[(i,)] = crt([p, q], [hp.coeff(x**i), hq.coeff(x**i)], symmetric=True)[0]
-
-    hpq.strip_zero()
-    return hpq
-
-
-def modgcd_univariate(f, g):
-    r"""
-    Computes the GCD of two polynomials in `\mathbb{Z}[x]` using a modular
-    algorithm.
-
-    The algorithm computes the GCD of two univariate integer polynomials
-    `f` and `g` by computing the GCD in `\mathbb{Z}_p[x]` for suitable
-    primes `p` and then reconstructing the coefficients with the Chinese
-    Remainder Theorem. Trial division is only made for candidates which
-    are very likely the desired GCD.
-
-    Parameters
-    ==========
-
-    f : PolyElement
-        univariate integer polynomial
-    g : PolyElement
-        univariate integer polynomial
-
-    Returns
-    =======
-
-    h : PolyElement
-        GCD of the polynomials `f` and `g`
-    cff : PolyElement
-        cofactor of `f`, i.e. `\frac{f}{h}`
-    cfg : PolyElement
-        cofactor of `g`, i.e. `\frac{g}{h}`
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> f = x**5 - 1
-    >>> g = x - 1
-
-    >>> h, cff, cfg = modgcd_univariate(f, g)
-    >>> h, cff, cfg
-    (x - 1, x**4 + x**3 + x**2 + x + 1, 1)
-
-    >>> cff * h == f
-    True
-    >>> cfg * h == g
-    True
-
-    >>> f = 6*x**2 - 6
-    >>> g = 2*x**2 + 4*x + 2
-
-    >>> h, cff, cfg = modgcd_univariate(f, g)
-    >>> h, cff, cfg
-    (2*x + 2, 3*x - 3, x + 1)
-
-    >>> cff * h == f
-    True
-    >>> cfg * h == g
-    True
-
-    References
-    ==========
-
-    .. [1] [Monagan00]_
-    """
-    assert f.ring == g.ring and f.ring.domain.is_IntegerRing
-
-    result = _trivial_gcd(f, g)
-    if result is not None:
-        return result
-
-    ring = f.ring
-
-    cf, f = f.primitive()
-    cg, g = g.primitive()
-    ch = ring.domain.gcd(cf, cg)
-
-    bound = _degree_bound_univariate(f, g)
-    if bound == 0:
-        return ring(ch), f.mul_ground(cf // ch), g.mul_ground(cg // ch)
-
-    gamma = ring.domain.gcd(f.LC, g.LC)
-    m = 1
-    p = 1
-
-    while True:
-        p = nextprime(p)
-        while gamma % p == 0:
-            p = nextprime(p)
-
-        fp = f.trunc_ground(p)
-        gp = g.trunc_ground(p)
-        hp = _gf_gcd(fp, gp, p)
-        deghp = hp.degree()
-
-        if deghp > bound:
-            continue
-        elif deghp < bound:
-            m = 1
-            bound = deghp
-            continue
-
-        hp = hp.mul_ground(gamma).trunc_ground(p)
-        if m == 1:
-            m = p
-            hlastm = hp
-            continue
-
-        hm = _chinese_remainder_reconstruction_univariate(hp, hlastm, p, m)
-        m *= p
-
-        if not hm == hlastm:
-            hlastm = hm
-            continue
-
-        h = hm.quo_ground(hm.content())
-        fquo, frem = f.div(h)
-        gquo, grem = g.div(h)
-        if not frem and not grem:
-            if h.LC < 0:
-                ch = -ch
-            h = h.mul_ground(ch)
-            cff = fquo.mul_ground(cf // ch)
-            cfg = gquo.mul_ground(cg // ch)
-            return h, cff, cfg
 
 
 def _primitive(f, p):
@@ -445,81 +224,7 @@ def _swap(f, i):
     return fswap
 
 
-def _degree_bound_bivariate(f, g):
-    r"""
-    Compute upper degree bounds for the GCD of two bivariate
-    integer polynomials `f` and `g`.
-
-    The GCD is viewed as a polynomial in `\mathbb{Z}[y][x]` and the
-    function returns an upper bound for its degree and one for the degree
-    of its content. This is done by choosing a suitable prime `p` and
-    computing the GCD of the contents of `f \; \mathrm{mod} \, p` and
-    `g \; \mathrm{mod} \, p`. The choice of `p` guarantees that the degree
-    of the content in `\mathbb{Z}_p[y]` is greater than or equal to the
-    degree in `\mathbb{Z}[y]`. To obtain the degree bound in the variable
-    `x`, the polynomials are evaluated at `y = a` for a suitable
-    `a \in \mathbb{Z}_p` and then their GCD in `\mathbb{Z}_p[x]` is
-    computed. If no such `a` exists, i.e. the degree in `\mathbb{Z}_p[x]`
-    is always smaller than the one in `\mathbb{Z}[y][x]`, then the bound is
-    set to the minimum of the degrees of `f` and `g` in `x`.
-
-    Parameters
-    ==========
-
-    f : PolyElement
-        bivariate integer polynomial
-    g : PolyElement
-        bivariate integer polynomial
-
-    Returns
-    =======
-
-    xbound : Integer
-        upper bound for the degree of the GCD of the polynomials `f` and
-        `g` in the variable `x`
-    ycontbound : Integer
-        upper bound for the degree of the content of the GCD of the
-        polynomials `f` and `g` in the variable `y`
-
-    References
-    ==========
-
-    .. [1] [Monagan00]_
-    """
-    ring = f.ring
-
-    gamma1 = ring.domain.gcd(f.LC, g.LC)
-    gamma2 = ring.domain.gcd(_swap(f, 1).LC, _swap(g, 1).LC)
-    badprimes = gamma1 * gamma2
-    p = 1
-
-    p = nextprime(p)
-    while badprimes % p == 0:
-        p = nextprime(p)
-
-    fp = f.trunc_ground(p)
-    gp = g.trunc_ground(p)
-    contfp, fp = _primitive(fp, p)
-    contgp, gp = _primitive(gp, p)
-    conthp = _gf_gcd(contfp, contgp, p)  # polynomial in Z_p[y]
-    ycontbound = conthp.degree()
-
-    # polynomial in Z_p[y]
-    delta = _gf_gcd(_LC(fp), _LC(gp), p)
-
-    for a in range(p):
-        if not delta.evaluate(0, a) % p:
-            continue
-        fpa = fp.evaluate(1, a).trunc_ground(p)
-        gpa = gp.evaluate(1, a).trunc_ground(p)
-        hpa = _gf_gcd(fpa, gpa, p)
-        xbound = hpa.degree()
-        return xbound, ycontbound
-
-    return min(fp.degree(), gp.degree()), ycontbound
-
-
-def _chinese_remainder_reconstruction_multivariate(hp, hq, p, q):
+def _chinese_remainder_reconstruction(hp, hq, p, q):
     r"""
     Construct a polynomial `h_{pq}` in
     `\mathbb{Z}_{p q}[x_0, \ldots, x_{k-1}]` such that
@@ -562,7 +267,7 @@ def _chinese_remainder_reconstruction_multivariate(hp, hq, p, q):
     >>> hp = x**3*y - x**2 - 1
     >>> hq = -x**3*y - 2*x*y**2 + 2
 
-    >>> hpq = _chinese_remainder_reconstruction_multivariate(hp, hq, p, q)
+    >>> hpq = _chinese_remainder_reconstruction(hp, hq, p, q)
     >>> hpq
     4*x**3*y + 5*x**2 + 3*x*y**2 + 2
 
@@ -578,7 +283,7 @@ def _chinese_remainder_reconstruction_multivariate(hp, hq, p, q):
     >>> hp = 3*x**4 - y**3*z + z
     >>> hq = -2*x**4 + z
 
-    >>> hpq = _chinese_remainder_reconstruction_multivariate(hp, hq, p, q)
+    >>> hpq = _chinese_remainder_reconstruction(hp, hq, p, q)
     >>> hpq
     3*x**4 + 5*y**3*z + z
 
@@ -598,8 +303,8 @@ def _chinese_remainder_reconstruction_multivariate(hp, hq, p, q):
 
     hpq = hp.ring.zero
 
-    if isinstance(hp.ring.domain, PolynomialRing):
-        crt_ = _chinese_remainder_reconstruction_multivariate
+    if isinstance(hp.ring.domain, rings.PolynomialRing):
+        crt_ = _chinese_remainder_reconstruction
     else:
         def crt_(cp, cq, p, q):
             return crt([p, q], [cp, cq], symmetric=True)[0]
@@ -614,7 +319,7 @@ def _chinese_remainder_reconstruction_multivariate(hp, hq, p, q):
     return hpq
 
 
-def _interpolate_multivariate(evalpoints, hpeval, ring, i, p, ground=False):
+def _interpolate(evalpoints, hpeval, ring, i, p, ground=False):
     r"""
     Reconstruct a polynomial `h_p` in `\mathbb{Z}_p[x_0, \ldots, x_{k-1}]`
     from a list of evaluation points in `\mathbb{Z}_p` and a list of
@@ -679,215 +384,7 @@ def _interpolate_multivariate(evalpoints, hpeval, ring, i, p, ground=False):
     return hp.trunc_ground(p)
 
 
-def modgcd_bivariate(f, g):
-    r"""
-    Computes the GCD of two polynomials in `\mathbb{Z}[x, y]` using a
-    modular algorithm.
-
-    The algorithm computes the GCD of two bivariate integer polynomials
-    `f` and `g` by calculating the GCD in `\mathbb{Z}_p[x, y]` for
-    suitable primes `p` and then reconstructing the coefficients with the
-    Chinese Remainder Theorem. To compute the bivariate GCD over
-    `\mathbb{Z}_p`, the polynomials `f \; \mathrm{mod} \, p` and
-    `g \; \mathrm{mod} \, p` are evaluated at `y = a` for certain
-    `a \in \mathbb{Z}_p` and then their univariate GCD in `\mathbb{Z}_p[x]`
-    is computed. Interpolating those yields the bivariate GCD in
-    `\mathbb{Z}_p[x, y]`. To verify the result in `\mathbb{Z}[x, y]`, trial
-    division is done, but only for candidates which are very likely the
-    desired GCD.
-
-    Parameters
-    ==========
-
-    f : PolyElement
-        bivariate integer polynomial
-    g : PolyElement
-        bivariate integer polynomial
-
-    Returns
-    =======
-
-    h : PolyElement
-        GCD of the polynomials `f` and `g`
-    cff : PolyElement
-        cofactor of `f`, i.e. `\frac{f}{h}`
-    cfg : PolyElement
-        cofactor of `g`, i.e. `\frac{g}{h}`
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x, y", ZZ)
-
-    >>> f = x**2 - y**2
-    >>> g = x**2 + 2*x*y + y**2
-
-    >>> h, cff, cfg = modgcd_bivariate(f, g)
-    >>> h, cff, cfg
-    (x + y, x - y, x + y)
-
-    >>> cff * h == f
-    True
-    >>> cfg * h == g
-    True
-
-    >>> f = x**2*y - x**2 - 4*y + 4
-    >>> g = x + 2
-
-    >>> h, cff, cfg = modgcd_bivariate(f, g)
-    >>> h, cff, cfg
-    (x + 2, x*y - x - 2*y + 2, 1)
-
-    >>> cff * h == f
-    True
-    >>> cfg * h == g
-    True
-
-    References
-    ==========
-
-    .. [1] [Monagan00]_
-    """
-    assert f.ring == g.ring and f.ring.domain.is_IntegerRing
-
-    result = _trivial_gcd(f, g)
-    if result is not None:
-        return result
-
-    ring = f.ring
-
-    cf, f = f.primitive()
-    cg, g = g.primitive()
-    ch = ring.domain.gcd(cf, cg)
-
-    xbound, ycontbound = _degree_bound_bivariate(f, g)
-    if xbound == ycontbound == 0:
-        return ring(ch), f.mul_ground(cf // ch), g.mul_ground(cg // ch)
-
-    fswap = _swap(f, 1)
-    gswap = _swap(g, 1)
-    degyf = fswap.degree()
-    degyg = gswap.degree()
-
-    ybound, xcontbound = _degree_bound_bivariate(fswap, gswap)
-    if ybound == xcontbound == 0:
-        return ring(ch), f.mul_ground(cf // ch), g.mul_ground(cg // ch)
-
-    # TODO: to improve performance, choose the main variable here
-
-    gamma1 = ring.domain.gcd(f.LC, g.LC)
-    gamma2 = ring.domain.gcd(fswap.LC, gswap.LC)
-    badprimes = gamma1 * gamma2
-    m = 1
-    p = 1
-
-    while True:
-        p = nextprime(p)
-        while badprimes % p == 0:
-            p = nextprime(p)
-
-        fp = f.trunc_ground(p)
-        gp = g.trunc_ground(p)
-        contfp, fp = _primitive(fp, p)
-        contgp, gp = _primitive(gp, p)
-        conthp = _gf_gcd(contfp, contgp, p)  # monic polynomial in Z_p[y]
-        degconthp = conthp.degree()
-
-        if degconthp > ycontbound:
-            continue
-        elif degconthp < ycontbound:
-            m = 1
-            ycontbound = degconthp
-            continue
-
-        # polynomial in Z_p[y]
-        delta = _gf_gcd(_LC(fp), _LC(gp), p)
-
-        degcontfp = contfp.degree()
-        degcontgp = contgp.degree()
-        degdelta = delta.degree()
-
-        N = min(degyf - degcontfp, degyg - degcontgp,
-                ybound - ycontbound + degdelta) + 1
-
-        if p < N:
-            continue
-
-        n = 0
-        evalpoints = []
-        hpeval = []
-        unlucky = False
-
-        for a in range(p):
-            deltaa = delta.evaluate(0, a)
-            if not deltaa % p:
-                continue
-
-            fpa = fp.evaluate(1, a).trunc_ground(p)
-            gpa = gp.evaluate(1, a).trunc_ground(p)
-            hpa = _gf_gcd(fpa, gpa, p)  # monic polynomial in Z_p[x]
-            deghpa = hpa.degree()
-
-            if deghpa > xbound:
-                continue
-            elif deghpa < xbound:
-                m = 1
-                xbound = deghpa
-                unlucky = True
-                break
-
-            hpa = hpa.mul_ground(deltaa).trunc_ground(p)
-            evalpoints.append(a)
-            hpeval.append(hpa)
-            n += 1
-
-            if n == N:
-                break
-
-        if unlucky:
-            continue
-        if n < N:
-            continue
-
-        hp = _interpolate_multivariate(evalpoints, hpeval, ring, 1, p)
-
-        hp = _primitive(hp, p)[1]
-        hp = hp * conthp.set_ring(ring)
-        degyhp = hp.degree(1)
-
-        if degyhp > ybound:
-            continue
-        if degyhp < ybound:
-            m = 1
-            ybound = degyhp
-            continue
-
-        hp = hp.mul_ground(gamma1).trunc_ground(p)
-        if m == 1:
-            m = p
-            hlastm = hp
-            continue
-
-        hm = _chinese_remainder_reconstruction_multivariate(hp, hlastm, p, m)
-        m *= p
-
-        if not hm == hlastm:
-            hlastm = hm
-            continue
-
-        h = hm.quo_ground(hm.content())
-        fquo, frem = f.div(h)
-        gquo, grem = g.div(h)
-        if not frem and not grem:
-            if h.LC < 0:
-                ch = -ch
-            h = h.mul_ground(ch)
-            cff = fquo.mul_ground(cf // ch)
-            cfg = gquo.mul_ground(cg // ch)
-            return h, cff, cfg
-
-
-def _modgcd_multivariate_p(f, g, p, degbound, contbound):
+def _modgcd_p(f, g, p, degbound, contbound):
     r"""
     Compute the GCD of two polynomials in
     `\mathbb{Z}_p[x0, \ldots, x{k-1}]`.
@@ -1004,7 +501,7 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
         ga = g.evaluate(k-1, a).trunc_ground(p)
 
         # polynomials in Z_p[x_0, ..., x_{k-2}]
-        ha = _modgcd_multivariate_p(fa, ga, p, degbound, contbound)
+        ha = _modgcd_p(fa, ga, p, degbound, contbound)
 
         if ha is None:
             d += 1
@@ -1023,7 +520,7 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
         n += 1
 
         if n == N:
-            h = _interpolate_multivariate(evalpoints, heval, ring, k-1, p)
+            h = _interpolate(evalpoints, heval, ring, k-1, p)
 
             h = _primitive(h, p)[1] * conth.set_ring(ring)
             degyh = h.degree(k-1)
@@ -1039,7 +536,7 @@ def _modgcd_multivariate_p(f, g, p, degbound, contbound):
     return
 
 
-def modgcd_multivariate(f, g):
+def modgcd(f, g):
     r"""
     Compute the GCD of two polynomials in `\mathbb{Z}[x_0, \ldots, x_{k-1}]`
     using a modular algorithm.
@@ -1049,7 +546,7 @@ def modgcd_multivariate(f, g):
     `\mathbb{Z}_p[x_0, \ldots, x_{k-1}]` for suitable primes `p` and then
     reconstructing the coefficients with the Chinese Remainder Theorem. To
     compute the multivariate GCD over `\mathbb{Z}_p` the recursive
-    subroutine ``_modgcd_multivariate_p`` is used. To verify the result in
+    subroutine ``_modgcd_p`` is used. To verify the result in
     `\mathbb{Z}[x_0, \ldots, x_{k-1}]`, trial division is done, but only for
     candidates which are very likely the desired GCD.
 
@@ -1076,12 +573,12 @@ def modgcd_multivariate(f, g):
 
     >>> R, x, y = ring("x, y", ZZ)
 
-    >>> modgcd_multivariate((x - y)*(x + y), (x + y)**2)
+    >>> modgcd((x - y)*(x + y), (x + y)**2)
     (x + y, x - y, x + y)
 
     >>> R, x, y, z = ring("x, y, z", ZZ)
 
-    >>> modgcd_multivariate((x - y)*z**2, (x**2 + 1)*z)
+    >>> modgcd((x - y)*z**2, (x**2 + 1)*z)
     (z, x*z - y*z, x**2 + 1)
 
     References
@@ -1126,7 +623,7 @@ def modgcd_multivariate(f, g):
 
         try:
             # monic GCD of fp, gp in Z_p[x_0, ..., x_{k-2}, y]
-            hp = _modgcd_multivariate_p(fp, gp, p, degbound, contbound)
+            hp = _modgcd_p(fp, gp, p, degbound, contbound)
         except ModularGCDFailed:
             m = 1
             continue
@@ -1140,7 +637,7 @@ def modgcd_multivariate(f, g):
             hlastm = hp
             continue
 
-        hm = _chinese_remainder_reconstruction_multivariate(hp, hlastm, p, m)
+        hm = _chinese_remainder_reconstruction(hp, hlastm, p, m)
         m *= p
 
         if not hm == hlastm:
@@ -1528,7 +1025,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     ring = f.ring
     domain = ring.domain  # Z[t_1, ..., t_k]
 
-    if isinstance(domain, PolynomialRing):
+    if isinstance(domain, rings.PolynomialRing):
         k = domain.ngens
     else:
         return _euclidean_algorithm(f, g, minpoly, p)
@@ -1615,7 +1112,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
         n += 1
 
         # polynomial in Z_p[t_1, ..., t_k][x, z]
-        h = _interpolate_multivariate(evalpoints_a, heval_a, ring, k-1, p, ground=True)
+        h = _interpolate(evalpoints_a, heval_a, ring, k-1, p, ground=True)
 
         # polynomial in Z_p(t_k)[t_1, ..., t_{k-1}][x, z]
         h = _rational_reconstruction_func_coeffs(h, p, m, qring, k-1)
@@ -1755,7 +1252,7 @@ def _rational_reconstruction_int_coeffs(hm, m, ring):
     """
     h = ring.zero
 
-    if isinstance(ring.domain, PolynomialRing):
+    if isinstance(ring.domain, rings.PolynomialRing):
         reconstruction = _rational_reconstruction_int_coeffs
         domain = ring.domain.ring
     else:
@@ -1839,7 +1336,7 @@ def _func_field_modgcd_m(f, g, minpoly):
     ring = f.ring
     domain = ring.domain
 
-    if isinstance(domain, PolynomialRing):
+    if isinstance(domain, rings.PolynomialRing):
         k = domain.ngens
         QQdomain = domain.ring.clone(domain=domain.domain.field)
         QQring = ring.clone(domain=QQdomain)
@@ -1897,7 +1394,7 @@ def _func_field_modgcd_m(f, g, minpoly):
 
         for q, hq, LMhq in zip(primes, hplist, LMlist):
             if LMhq == LM:
-                hm = _chinese_remainder_reconstruction_multivariate(hq, hm, q, m)
+                hm = _chinese_remainder_reconstruction(hq, hm, q, m)
                 m *= q
 
         primes.append(p)
@@ -1953,7 +1450,7 @@ def _to_ZZ_poly(f, ring):
     """
     f_ = ring.zero
 
-    if isinstance(ring.domain, PolynomialRing):
+    if isinstance(ring.domain, rings.PolynomialRing):
         domain = ring.domain.domain
     else:
         domain = ring.domain
@@ -1968,7 +1465,7 @@ def _to_ZZ_poly(f, ring):
     for monom, coeff in f.items():
         coeff = coeff.rep
         m = ring.domain.one
-        if isinstance(ring.domain, PolynomialRing):
+        if isinstance(ring.domain, rings.PolynomialRing):
             m = m.mul_monom(monom[1:])
         n = len(coeff)
 
@@ -2011,7 +1508,7 @@ def _to_ANP_poly(f, ring):
     domain = ring.domain
     f_ = ring.zero
 
-    if isinstance(f.ring.domain, PolynomialRing):
+    if isinstance(f.ring.domain, rings.PolynomialRing):
         for monom, coeff in f.items():
             for mon, coef in coeff.items():
                 m = (monom[0],) + mon

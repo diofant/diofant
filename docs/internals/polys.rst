@@ -411,6 +411,12 @@ Modular GCD
 .. automodule:: diofant.polys.modulargcd
     :members:
 
+Heuristic GCD
+*************
+
+.. automodule:: diofant.polys.heuristicgcd
+    :members:
+
 Manipulation of power series
 ****************************************************************************
 .. currentmodule:: diofant.polys.ring_series

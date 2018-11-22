@@ -1,10 +1,8 @@
 from diofant import sqrt
 from diofant.domains import QQ, ZZ
-from diofant.polys.modulargcd import (_chinese_remainder_reconstruction_multivariate,
+from diofant.polys.modulargcd import (_chinese_remainder_reconstruction,
                                       _func_field_modgcd_m, _to_ANP_poly,
-                                      _to_ZZ_poly, func_field_modgcd,
-                                      modgcd_bivariate, modgcd_multivariate,
-                                      modgcd_univariate)
+                                      _to_ZZ_poly, func_field_modgcd, modgcd)
 from diofant.polys.rings import ring
 
 
@@ -15,29 +13,29 @@ def test_modgcd_univariate_integers():
     R, x = ring("x", ZZ)
 
     f, g = R.zero, R.zero
-    assert modgcd_univariate(f, g) == (0, 0, 0)
+    assert modgcd(f, g) == (0, 0, 0)
 
     f, g = R.zero, x
-    assert modgcd_univariate(f, g) == (x, 0, 1)
-    assert modgcd_univariate(g, f) == (x, 1, 0)
+    assert modgcd(f, g) == (x, 0, 1)
+    assert modgcd(g, f) == (x, 1, 0)
 
     f, g = R.zero, -x
-    assert modgcd_univariate(f, g) == (x, 0, -1)
-    assert modgcd_univariate(g, f) == (x, -1, 0)
+    assert modgcd(f, g) == (x, 0, -1)
+    assert modgcd(g, f) == (x, -1, 0)
 
     f, g = 2*x, R(2)
-    assert modgcd_univariate(f, g) == (2, x, 1)
+    assert modgcd(f, g) == (2, x, 1)
 
     f, g = 2*x + 2, 6*x**2 - 6
-    assert modgcd_univariate(f, g) == (2*x + 2, 1, 3*x - 3)
+    assert modgcd(f, g) == (2*x + 2, 1, 3*x - 3)
 
     f, g = [1000000000000*x + 998549000000]*2
 
-    assert modgcd_univariate(f, g) == (f, 1, 1)
+    assert modgcd(f, g) == (f, 1, 1)
 
     f, g = 999530000000*x + 1000000000000, 999530000000*x + 999999000000
 
-    assert modgcd_univariate(f, g) == (1000000, 999530*x + 1000000, 999530*x + 999999)
+    assert modgcd(f, g) == (1000000, 999530*x + 1000000, 999530*x + 999999)
 
     f = x**4 + 8*x**3 + 21*x**2 + 22*x + 8
     g = x**3 + 6*x**2 + 11*x + 6
@@ -47,7 +45,7 @@ def test_modgcd_univariate_integers():
     cff = x**2 + 5*x + 4
     cfg = x + 3
 
-    assert modgcd_univariate(f, g) == (h, cff, cfg)
+    assert modgcd(f, g) == (h, cff, cfg)
 
     f = x**4 - 4
     g = x**4 + 4*x**2 + 4
@@ -57,7 +55,7 @@ def test_modgcd_univariate_integers():
     cff = x**2 - 2
     cfg = x**2 + 2
 
-    assert modgcd_univariate(f, g) == (h, cff, cfg)
+    assert modgcd(f, g) == (h, cff, cfg)
 
     f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
     g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
@@ -67,7 +65,7 @@ def test_modgcd_univariate_integers():
     cff = f
     cfg = g
 
-    assert modgcd_univariate(f, g) == (h, cff, cfg)
+    assert modgcd(f, g) == (h, cff, cfg)
 
     f = - 352518131239247345597970242177235495263669787845475025293906825864749649589178600387510272*x**49 \
         + 46818041807522713962450042363465092040687472354933295397472942006618953623327997952*x**42 \
@@ -83,7 +81,7 @@ def test_modgcd_univariate_integers():
         - 9504116979659010018253915765478924103928886144*x**7 \
         - 311973482284542371301330321821976049
 
-    assert modgcd_univariate(f, f.diff(x))[0] == g
+    assert modgcd(f, f.diff(x))[0] == g
 
     f = 1317378933230047068160*x + 2945748836994210856960
     g = 120352542776360960*x + 269116466014453760
@@ -92,47 +90,47 @@ def test_modgcd_univariate_integers():
     cff = 10946
     cfg = 1
 
-    assert modgcd_univariate(f, g) == (h, cff, cfg)
+    assert modgcd(f, g) == (h, cff, cfg)
 
 
 def test_modgcd_bivariate_integers():
     R, x, y = ring("x,y", ZZ)
 
     f, g = R.zero, R.zero
-    assert modgcd_bivariate(f, g) == (0, 0, 0)
+    assert modgcd(f, g) == (0, 0, 0)
 
     f, g = 2*x, R(2)
-    assert modgcd_bivariate(f, g) == (2, x, 1)
+    assert modgcd(f, g) == (2, x, 1)
 
     f, g = x + 2*y, x + y
-    assert modgcd_bivariate(f, g) == (1, f, g)
+    assert modgcd(f, g) == (1, f, g)
 
     f, g = x**2 + 2*x*y + y**2, x**3 + y**3
-    assert modgcd_bivariate(f, g) == (x + y, x + y, x**2 - x*y + y**2)
+    assert modgcd(f, g) == (x + y, x + y, x**2 - x*y + y**2)
 
     f, g = x*y**2 + 2*x*y + x, x*y**3 + x
-    assert modgcd_bivariate(f, g) == (x*y + x, y + 1, y**2 - y + 1)
+    assert modgcd(f, g) == (x*y + x, y + 1, y**2 - y + 1)
 
     f, g = x**2*y**2 + x**2*y + 1, x*y**2 + x*y + 1
-    assert modgcd_bivariate(f, g) == (1, f, g)
+    assert modgcd(f, g) == (1, f, g)
 
     f = 2*x*y**2 + 4*x*y + 2*x + y**2 + 2*y + 1
     g = 2*x*y**3 + 2*x + y**3 + 1
-    assert modgcd_bivariate(f, g) == (2*x*y + 2*x + y + 1, y + 1, y**2 - y + 1)
+    assert modgcd(f, g) == (2*x*y + 2*x + y + 1, y + 1, y**2 - y + 1)
 
     f, g = 2*x**2 + 4*x + 2, x + 1
-    assert modgcd_bivariate(f, g) == (x + 1, 2*x + 2, 1)
+    assert modgcd(f, g) == (x + 1, 2*x + 2, 1)
 
     f, g = x + 1, 2*x**2 + 4*x + 2
-    assert modgcd_bivariate(f, g) == (x + 1, 1, 2*x + 2)
+    assert modgcd(f, g) == (x + 1, 1, 2*x + 2)
 
     f = 2*x**2 + 4*x*y - 2*x - 4*y
     g = x**2 + x - 2
-    assert modgcd_bivariate(f, g) == (x - 1, 2*x + 4*y, x + 2)
+    assert modgcd(f, g) == (x - 1, 2*x + 4*y, x + 2)
 
     f = 2*x**2 + 2*x*y - 3*x - 3*y
     g = 4*x*y - 2*x + 4*y**2 - 2*y
-    assert modgcd_bivariate(f, g) == (x + y, 2*x - 3, 4*y - 2)
+    assert modgcd(f, g) == (x + y, 2*x - 3, 4*y - 2)
 
 
 def test_chinese_remainder():
@@ -142,7 +140,7 @@ def test_chinese_remainder():
     hp = x**3*y - x**2 - 1
     hq = -x**3*y - 2*x*y**2 + 2
 
-    hpq = _chinese_remainder_reconstruction_multivariate(hp, hq, p, q)
+    hpq = _chinese_remainder_reconstruction(hp, hq, p, q)
 
     assert hpq.trunc_ground(p) == hp
     assert hpq.trunc_ground(q) == hq
@@ -153,7 +151,7 @@ def test_chinese_remainder():
     hp = (x*y + 1)*z**2 + x
     hq = (x**2 - 3*y)*z + 2
 
-    hpq = _chinese_remainder_reconstruction_multivariate(hp, hq, p, q)
+    hpq = _chinese_remainder_reconstruction(hp, hq, p, q)
 
     assert hpq.trunc_ground(p) == hp
     assert hpq.trunc_ground(q) == hq
@@ -163,23 +161,23 @@ def test_modgcd_multivariate_integers():
     R, x, y = ring("x,y", ZZ)
 
     f, g = R.zero, R.zero
-    assert modgcd_multivariate(f, g) == (0, 0, 0)
+    assert modgcd(f, g) == (0, 0, 0)
 
     f, g = 2*x**2 + 4*x + 2, x + 1
-    assert modgcd_multivariate(f, g) == (x + 1, 2*x + 2, 1)
+    assert modgcd(f, g) == (x + 1, 2*x + 2, 1)
 
     f, g = x + 1, 2*x**2 + 4*x + 2
-    assert modgcd_multivariate(f, g) == (x + 1, 1, 2*x + 2)
+    assert modgcd(f, g) == (x + 1, 1, 2*x + 2)
 
     f = 2*x**2 + 2*x*y - 3*x - 3*y
     g = 4*x*y - 2*x + 4*y**2 - 2*y
-    assert modgcd_multivariate(f, g) == (x + y, 2*x - 3, 4*y - 2)
+    assert modgcd(f, g) == (x + y, 2*x - 3, 4*y - 2)
 
     f, g = x*y**2 + 2*x*y + x, x*y**3 + x
-    assert modgcd_multivariate(f, g) == (x*y + x, y + 1, y**2 - y + 1)
+    assert modgcd(f, g) == (x*y + x, y + 1, y**2 - y + 1)
 
     f, g = x**2*y**2 + x**2*y + 1, x*y**2 + x*y + 1
-    assert modgcd_multivariate(f, g) == (1, f, g)
+    assert modgcd(f, g) == (1, f, g)
 
     f = x**4 + 8*x**3 + 21*x**2 + 22*x + 8
     g = x**3 + 6*x**2 + 11*x + 6
@@ -189,69 +187,69 @@ def test_modgcd_multivariate_integers():
     cff = x**2 + 5*x + 4
     cfg = x + 3
 
-    assert modgcd_multivariate(f, g) == (h, cff, cfg)
+    assert modgcd(f, g) == (h, cff, cfg)
 
     R, x, y, z, u = ring("x,y,z,u", ZZ)
 
     f, g = x + y + z, -x - y - z - u
-    assert modgcd_multivariate(f, g) == (1, f, g)
+    assert modgcd(f, g) == (1, f, g)
 
     f, g = u**2 + 2*u + 1, 2*u + 2
-    assert modgcd_multivariate(f, g) == (u + 1, u + 1, 2)
+    assert modgcd(f, g) == (u + 1, u + 1, 2)
 
     f, g = z**2*u**2 + 2*z**2*u + z**2 + z*u + z, u**2 + 2*u + 1
     h, cff, cfg = u + 1, z**2*u + z**2 + z, u + 1
 
-    assert modgcd_multivariate(f, g) == (h, cff, cfg)
-    assert modgcd_multivariate(g, f) == (h, cfg, cff)
+    assert modgcd(f, g) == (h, cff, cfg)
+    assert modgcd(g, f) == (h, cfg, cff)
 
     R, x, y, z = ring("x,y,z", ZZ)
 
     f, g = x - y*z, x - y*z
-    assert modgcd_multivariate(f, g) == (x - y*z, 1, 1)
+    assert modgcd(f, g) == (x - y*z, 1, 1)
 
     f, g, h = R.fateman_poly_F_1()
-    H, cff, cfg = modgcd_multivariate(f, g)
+    H, cff, cfg = modgcd(f, g)
 
     assert H == h and H*cff == f and H*cfg == g
 
     R, x, y, z, u, v = ring("x,y,z,u,v", ZZ)
 
     f, g, h = R.fateman_poly_F_1()
-    H, cff, cfg = modgcd_multivariate(f, g)
+    H, cff, cfg = modgcd(f, g)
 
     assert H == h and H*cff == f and H*cfg == g
 
     R, x, y, z, u, v, a, b = ring("x,y,z,u,v,a,b", ZZ)
 
     f, g, h = R.fateman_poly_F_1()
-    H, cff, cfg = modgcd_multivariate(f, g)
+    H, cff, cfg = modgcd(f, g)
 
     assert H == h and H*cff == f and H*cfg == g
 
     R, x, y, z, u, v, a, b, c, d = ring("x,y,z,u,v,a,b,c,d", ZZ)
 
     f, g, h = R.fateman_poly_F_1()
-    H, cff, cfg = modgcd_multivariate(f, g)
+    H, cff, cfg = modgcd(f, g)
 
     assert H == h and H*cff == f and H*cfg == g
 
     R, x, y, z = ring("x,y,z", ZZ)
 
     f, g, h = R.fateman_poly_F_2()
-    H, cff, cfg = modgcd_multivariate(f, g)
+    H, cff, cfg = modgcd(f, g)
 
     assert H == h and H*cff == f and H*cfg == g
 
     f, g, h = R.fateman_poly_F_3()
-    H, cff, cfg = modgcd_multivariate(f, g)
+    H, cff, cfg = modgcd(f, g)
 
     assert H == h and H*cff == f and H*cfg == g
 
     R, x, y, z, t = ring("x,y,z,t", ZZ)
 
     f, g, h = R.fateman_poly_F_3()
-    H, cff, cfg = modgcd_multivariate(f, g)
+    H, cff, cfg = modgcd(f, g)
 
     assert H == h and H*cff == f and H*cfg == g
 
