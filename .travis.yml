@@ -61,7 +61,10 @@ matrix:
         provider: pypi
         user: skirpichev
         password:
-          secure: "OCi5YeQKvjr62Yzg1Bq9/xzIVDJSlr3q3YICp/gfnoPxTmiOiOug/QSM0rxl929Rb9hvf/QuNI6bpkPs0lz2roXa0PdJ2pdoNOm5Md2e43htbMRfH54YS98QDxL+gwasr327iGLi++avxF3N+vSyWboJLkSydDDlVhB7k/t57Ig="
+          secure: "OCi5YeQKvjr62Yzg1Bq9/xzIVDJSlr3q3YICp/gfnoPxTmiOiOug/Q\
+                   SM0rxl929Rb9hvf/QuNI6bpkPs0lz2roXa0PdJ2pdoNOm5Md2e43ht\
+                   bMRfH54YS98QDxL+gwasr327iGLi++avxF3N+vSyWboJLkSydDDlVh\
+                   B7k/t57Ig="
         distributions: "sdist bdist_wheel"
         on:
           tags: true
