@@ -1,13 +1,13 @@
 language: python
-dist: trusty
-sudo: false
+dist: xenial
 cache: pip
 python:
   - 3.6
-  - 3.7-dev
+  - 3.7
   - pypy3.5
 env:
   global:
+    - PYTEST_ADDOPTS="-n auto --cov-config setup.cfg -o xfail_strict=1"
     - PYTHONHASHSEED=0
   matrix:
     - SPLIT=1/3
@@ -39,8 +39,6 @@ matrix:
     - stage: quality
       python: 3.5
       env: COVERAGE='on'
-      install:
-        - travis_wait pip install .[exports,plot,interactive,develop,docs]
       script:
         - python -We:invalid -m compileall -f diofant -q
         - travis_wait python setup.py flake8
@@ -51,8 +49,9 @@ matrix:
             rm -rf build/
             python setup.py build_sphinx -W -b linkcheck
           fi
-        - DIOFANT_GROUND_TYPES='gmpy' py.test -n auto --cov diofant diofant/domains
-        - travis_wait py.test -n auto --cov diofant --cov-append diofant/polys
+        - pip uninstall -y gmpy2
+        - DIOFANT_GROUND_TYPES='gmpy' py.test --cov diofant diofant/domains
+        - travis_wait py.test --cov diofant --cov-append diofant/polys
     - stage: deploy
       env:
         -
@@ -61,24 +60,25 @@ matrix:
         provider: pypi
         user: skirpichev
         password:
-          secure: "OCi5YeQKvjr62Yzg1Bq9/xzIVDJSlr3q3YICp/gfnoPxTmiOiOug/QSM0rxl929Rb9hvf/QuNI6bpkPs0lz2roXa0PdJ2pdoNOm5Md2e43htbMRfH54YS98QDxL+gwasr327iGLi++avxF3N+vSyWboJLkSydDDlVhB7k/t57Ig="
+          secure: "OCi5YeQKvjr62Yzg1Bq9/xzIVDJSlr3q3YICp/gfnoPxTmiOiOug/Q\
+                   SM0rxl929Rb9hvf/QuNI6bpkPs0lz2roXa0PdJ2pdoNOm5Md2e43ht\
+                   bMRfH54YS98QDxL+gwasr327iGLi++avxF3N+vSyWboJLkSydDDlVh\
+                   B7k/t57Ig="
         distributions: "sdist bdist_wheel"
         on:
           tags: true
   allow_failures:
     - python: pypy3.5
       env: SPLIT=3/3
-before_install:
-  - pip install --upgrade pip setuptools pytest codecov
 install:
   - pip install --pre -U 'gmpy2;platform_python_implementation!="PyPy"'
-  - travis_wait pip install .[exports,plot,interactive,docs]
+  - travis_wait pip install .[exports,plot,interactive,develop,docs]
 script:
   - |
     if [ -n "${COVERAGE}" ]; then
-      python setup.py test --addopts "-n auto --cov diofant --ignore diofant/tests -m \"not slow and not xfail\" --split=${SPLIT}"
+      python setup.py test --addopts "--cov diofant --ignore diofant/tests -m \"not slow and not xfail\" --split=${SPLIT}"
     else
-      python setup.py test --addopts "-n auto --split=${SPLIT}"
+      python setup.py test --addopts "--split=${SPLIT}"
     fi
 after_success: test -n "${COVERAGE}" && codecov
 notifications:
