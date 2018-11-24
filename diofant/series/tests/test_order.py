@@ -440,3 +440,7 @@ def test_sympyissue_9192():
 def test_sympyissue_7599():
     n = Symbol('n', integer=True)
     assert O(x**n, x) + O(x**2) == Add(O(x**2), O(x**n, x), evaluate=False)
+
+
+def test_sympyissue_15539():
+    assert O(x**-6, (x, -oo)) == O(x**(-6), (x, -oo), evaluate=False)
