@@ -42,6 +42,7 @@ known_functions = {
     "gamma": [(lambda x: True, "Gamma")],
     "asinh": [(lambda x: True, "ArcSinh")],
     "zeta": [(lambda x: True, "Zeta")],
+    "Heaviside": [(lambda x: True, "UnitStep")],
 }
 
 
