@@ -834,7 +834,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
 
     elif case == 'base':
         # TODO: we can use more efficient residue reduction from ratint()
-        if not fd.is_sqf or fa.degree() >= fd.degree():
+        if not fd.is_squarefree or fa.degree() >= fd.degree():
             # f is the logarithmic derivative in the base case if and only if
             # f = fa/fd, fd is square-free, deg(fa) < deg(fd), and
             # gcd(fa, fd) == 1.  The last condition is handled by cancel() above.
