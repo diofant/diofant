@@ -54,7 +54,7 @@ class Ellipse(GeometrySet):
     Raises
     ======
 
-    GeometryError
+    diofant.geometry.exceptions.GeometryError
         When `hradius`, `vradius` and `eccentricity` are incorrectly supplied
         as parameters.
     TypeError
@@ -1201,7 +1201,7 @@ class Circle(Ellipse):
     Raises
     ======
 
-    GeometryError
+    diofant.geometry.exceptions.GeometryError
         When trying to construct circle from three collinear points.
         When trying to construct circle from incorrect parameters.
 

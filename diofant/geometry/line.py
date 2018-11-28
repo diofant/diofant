@@ -344,7 +344,7 @@ class LinearEntity(GeometrySet):
         Parameters
         ==========
 
-        p : Point
+        p : diofant.geometry.point.Point
 
         Returns
         =======
@@ -379,7 +379,7 @@ class LinearEntity(GeometrySet):
         Parameters
         ==========
 
-        p : Point
+        p : diofant.geometry.point.Point
 
         Returns
         =======
@@ -425,7 +425,7 @@ class LinearEntity(GeometrySet):
         Parameters
         ==========
 
-        p : Point
+        p : diofant.geometry.point.Point
 
         Returns
         =======
@@ -497,7 +497,7 @@ class LinearEntity(GeometrySet):
         Returns
         =======
 
-        slope : number or diofant expression
+        slope : Expr
 
         See Also
         ========
@@ -554,18 +554,18 @@ class LinearEntity(GeometrySet):
         Parameters
         ==========
 
-        other : Point or LinearEntity (Line, Ray, Segment)
+        other : diofant.geometry.point.Point or LinearEntity
 
         Returns
         =======
 
-        projection : Point or LinearEntity (Line, Ray, Segment)
+        projection : diofant.geometry.point.Point or LinearEntity
             The return type matches the type of the parameter ``other``.
 
         Raises
         ======
 
-        GeometryError
+        diofant.geometry.exceptions.GeometryError
             When method is unable to perform projection.
 
         Notes
@@ -633,7 +633,7 @@ class LinearEntity(GeometrySet):
         Parameters
         ==========
 
-        o : Point or LinearEntity
+        o : diofant.geometry.point.Point or LinearEntity
 
         Returns
         =======
@@ -803,7 +803,7 @@ class LinearEntity(GeometrySet):
         Returns
         =======
 
-        point : Point
+        point : diofant.geometry.point.Point
 
         Raises
         ======
@@ -839,7 +839,7 @@ class LinearEntity(GeometrySet):
         Returns
         =======
 
-        point : Point
+        point : diofant.geometry.point.Point
 
         See Also
         ========
@@ -950,9 +950,9 @@ class Line(LinearEntity):
     Parameters
     ==========
 
-    p1 : Point
-    pt : Point
-    slope : diofant expression
+    p1 : diofant.geometry.point.Point
+    pt : diofant.geometry.point.Point
+    slope : Expr
 
     See Also
     ========
@@ -1162,9 +1162,9 @@ class Ray(LinearEntity):
     Parameters
     ==========
 
-    p1 : Point
+    p1 : diofant.geometry.point.Point
         The source of the Ray
-    p2 : Point or radian value
+    p2 : diofant.geometry.point.Point or Expr
         This point determines the direction in which the Ray propagates.
         If given as an angle it is interpreted in radians with the positive
         direction being ccw.
@@ -1489,14 +1489,14 @@ class Segment(LinearEntity):
     Parameters
     ==========
 
-    p1 : Point
-    p2 : Point
+    p1 : diofant.geometry.point.Point
+    p2 : diofant.geometry.point.Point
 
     Attributes
     ==========
 
-    length : number or diofant expression
-    midpoint : Point
+    length : Expr
+    midpoint : diofant.geometry.point.Point
 
     See Also
     ========
@@ -1582,7 +1582,7 @@ class Segment(LinearEntity):
         Parameters
         ==========
 
-        p : Point
+        p : diofant.geometry.point.Point
 
         Returns
         =======

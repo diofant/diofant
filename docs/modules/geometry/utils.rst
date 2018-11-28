@@ -12,3 +12,6 @@ Utils
 .. autofunction:: are_similar
 
 .. autofunction:: centroid
+
+.. automodule:: diofant.geometry.exceptions
+    :members:
