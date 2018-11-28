@@ -75,8 +75,8 @@ def test_DMP_properties():
     assert DMP([[1]], ZZ).is_ground is True
     assert DMP([[1], [2], [1]], ZZ).is_ground is False
 
-    assert DMP([[1], [2, 0], [1, 0]], ZZ).is_sqf is True
-    assert DMP([[1], [2, 0], [1, 0, 0]], ZZ).is_sqf is False
+    assert DMP([[1], [2, 0], [1, 0]], ZZ).is_squarefree is True
+    assert DMP([[1], [2, 0], [1, 0, 0]], ZZ).is_squarefree is False
 
     assert DMP([[1, 2], [3]], ZZ).is_monic is True
     assert DMP([[2, 2], [3]], ZZ).is_monic is False

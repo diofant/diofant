@@ -746,8 +746,8 @@ def test_Poly_properties():
     assert Poly(1, x).is_one is True
     assert Poly(2, x).is_one is False
 
-    assert Poly(x - 1, x).is_sqf is True
-    assert Poly((x - 1)**2, x).is_sqf is False
+    assert Poly(x - 1, x).is_squarefree is True
+    assert Poly((x - 1)**2, x).is_squarefree is False
 
     assert Poly(x - 1, x).is_monic is True
     assert Poly(2*x - 1, x).is_monic is False

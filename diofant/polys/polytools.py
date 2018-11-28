@@ -2592,7 +2592,7 @@ class Poly(Expr):
         >>> Poly(x**2 - 3, x).refine_root(1, 2, eps=1e-2)
         (19/11, 26/15)
         """
-        if check_sqf and not self.is_sqf:
+        if check_sqf and not self.is_squarefree:
             raise PolynomialError("only square-free polynomials supported")
 
         s, t = QQ.convert(s), QQ.convert(t)
@@ -2933,19 +2933,19 @@ class Poly(Expr):
         return self.rep.is_one
 
     @property
-    def is_sqf(self):
+    def is_squarefree(self):
         """
         Returns ``True`` if ``self`` is a square-free polynomial.
 
         Examples
         ========
 
-        >>> Poly(x**2 - 2*x + 1, x).is_sqf
+        >>> Poly(x**2 - 2*x + 1, x).is_squarefree
         False
-        >>> Poly(x**2 - 1, x).is_sqf
+        >>> Poly(x**2 - 1, x).is_squarefree
         True
         """
-        return self.rep.is_sqf
+        return self.rep.is_squarefree
 
     @property
     def is_monic(self):

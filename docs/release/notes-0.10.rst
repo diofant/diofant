@@ -58,6 +58,7 @@ Compatibility breaks
 * Removed ``map()`` method of :class:`~diofant.domains.domain.Domain`, see :pull:`704`.
 * :meth:`~diofant.core.basic.Basic.subs` support one argument (a mapping or an iterable of pairs), see :pull:`532`.
 * Removed ``factor_list_include()`` method of :class:`~diofant.polys.polytools.Poly`, see :pull:`717`.
+* Renamed ``is_sqf`` property of :class:`~diofant.polys.polytools.Poly` to :attr:`~diofant.polys.polytools.Poly.is_squarefree`, see :pull:`724`.
 
 Minor changes
 =============
@@ -140,3 +141,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`15474` dsolve system gives complicated solution for diagonal system
 * :sympyissue:`15502` Python 3.7 test failures
 * :sympyissue:`15520` 5th-order ODE with irrational coefficient fails
+* :sympyissue:`15539` Order at negative infinity

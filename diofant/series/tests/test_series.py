@@ -220,3 +220,7 @@ def test_sympyissue_14885():
             (x**Rational(-3, 2) + 1/sqrt(x) + sqrt(x)/2 + x**Rational(3, 2)/6 +
              x**Rational(5, 2)/24 + x**Rational(7, 2)/120 +
              x**Rational(9, 2)/720 + x**Rational(11, 2)/5040 + O(x**6)))
+
+
+def test_sympyissue_15539():
+    assert series(exp(x), x, x0=-oo) == exp(-x)

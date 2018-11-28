@@ -634,7 +634,7 @@ class DMP(CantSympify):
         return dmp_ground_p(self.rep, None, self.lev)
 
     @property
-    def is_sqf(self):
+    def is_squarefree(self):
         """Returns ``True`` if ``self`` is a square-free polynomial. """
         return dmp_sqf_p(self.rep, self.lev, self.domain)
 
