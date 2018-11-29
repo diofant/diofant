@@ -1290,9 +1290,11 @@ class TensorIndexType(Basic):
     ==========
 
     ``name``
-    ``metric_name`` : it is 'metric' or metric.name
+    ``metric_name`` : str
+        it is 'metric' or metric.name
     ``metric_antisym``
-    ``metric`` : the metric tensor
+    ``metric`` : TensorType
+        the metric tensor
     ``delta`` : ``Kronecker delta``
     ``epsilon`` : the ``Levi-Civita epsilon`` tensor
     ``dim``
@@ -1629,9 +1631,12 @@ class TensorSymmetry(Basic):
     Attributes
     ==========
 
-    ``base`` : base of the BSGS
-    ``generators`` : generators of the BSGS
-    ``rank`` : rank of the tensor
+    ``base`` : Tuple
+        base of the BSGS
+    ``generators`` : Tuple
+        generators of the BSGS
+    ``rank`` : Tuple
+        rank of the tensor
 
     Notes
     =====
@@ -1905,7 +1910,8 @@ class TensorHead(Basic):
     ``rank``
     ``types``  :  equal to ``typ.types``
     ``symmetry`` : equal to ``typ.symmetry``
-    ``comm`` : commutation group
+    ``comm`` : int
+        commutation group
 
     Notes
     =====
@@ -2432,9 +2438,12 @@ class TensAdd(TensExpr):
     Attributes
     ==========
 
-    ``args`` : tuple of addends
-    ``rank`` : rank of the tensor
-    ``free_args`` : list of the free indices in sorted order
+    ``args`` : tuple
+        of addends
+    ``rank`` : tuple
+        rank of the tensor
+    ``free_args`` : list
+        of the free indices in sorted order
 
     Notes
     =====
@@ -3117,10 +3126,14 @@ class TensMul(TensExpr):
     ``types`` : list of nonrepeated ``TensorIndexType``
     ``free`` : list of ``(ind, ipos, icomp)``, see Notes
     ``dum`` : list of ``(ipos1, ipos2, icomp1, icomp2)``, see Notes
-    ``ext_rank`` : rank of the tensor counting the dummy indices
-    ``rank`` : rank of the tensor
-    ``coeff`` : Diofant coefficient of the tensor
-    ``free_args`` : list of the free indices in sorted order
+    ``ext_rank`` : tuple
+        rank of the tensor counting the dummy indices
+    ``rank`` : tuple
+        rank of the tensor
+    ``coeff`` : Expr
+        Diofant coefficient of the tensor
+    ``free_args`` : list
+        list of the free indices in sorted order
     ``is_canon_bp`` : ``True`` if the tensor in in canonical form
 
     Notes
