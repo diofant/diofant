@@ -2,7 +2,7 @@ r"""
 The Gruntz Algorithm
 ====================
 
-This section explains the basics of the algorithm [1]_ used for computing
+This section explains the basics of the algorithm [Gruntz96]_ used for computing
 limits.  Most of the time the :py:func:`~diofant.series.limits.limit` function
 should just work.  However it is still useful to keep in mind how it is
 implemented in case something does not work as expected.
@@ -56,13 +56,8 @@ Notes
 -----
 
 This exposition glossed over several details.  For example, limits could be
-computed recursively (steps 1 and 4).  Please address to the Gruntz thesis [1]_
+computed recursively (steps 1 and 4).  Please address to the Gruntz thesis [Gruntz96]_
 for proof of the termination (pp. 52-60).
-
-References
-----------
-
-.. [1] `Gruntz Thesis <http://www.cybertester.com/data/gruntz.pdf>`_
 """
 
 from functools import reduce

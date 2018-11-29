@@ -420,9 +420,6 @@ class _Less(_Inequality):
 class GreaterThan(_Greater):
     r"""Class representations of inequalities.
 
-    Extended Summary
-    ================
-
     The ``*Than`` classes represent unequal relationships, where the left-hand
     side is generally bigger or smaller than the right-hand side.  For example,
     the GreaterThan class represents an unequal relationship where the
@@ -582,75 +579,17 @@ class GreaterThan(_Greater):
     The other gotcha is with chained inequalities.  Occasionally, one may be
     tempted to write statements like:
 
-    >>> e = x < y < z
+    >>> x < y < z
     Traceback (most recent call last):
     ...
     TypeError: symbolic boolean expression has no truth value.
 
-    Due to an implementation detail or decision of Python [1]_, there is no way
-    for Diofant to reliably create that as a chained inequality.  To create a
+    Due to an implementation detail or decision of Python, to create a
     chained inequality, the only method currently available is to make use of
     And:
 
-    >>> e = And(x < y, y < z)
-    >>> type(e)
-    And
-    >>> e
+    >>> And(x < y, y < z)
     And(x < y, y < z)
-
-    Note that this is different than chaining an equality directly via use of
-    parenthesis (this is currently an open bug in Diofant [2]_):
-
-    >>> e = (x < y) < z
-    >>> type(e)
-    <class 'diofant.core.relational.StrictLessThan'>
-    >>> e
-    (x < y) < z
-
-    Any code that explicitly relies on this latter functionality will not be
-    robust as this behaviour is completely wrong and will be corrected at some
-    point.  For the time being (circa Jan 2012), use And to create chained
-    inequalities.
-
-    References
-    ==========
-
-    .. [1] This implementation detail is that Python provides no reliable
-       method to determine that a chained inequality is being built.  Chained
-       comparison operators are evaluated pairwise, using "and" logic (see
-       https://docs.python.org/3/reference/expressions.html#not-in).  This is done
-       in an efficient way, so that each object being compared is only
-       evaluated once and the comparison can short-circuit.  For example, ``1
-       > 2 > 3`` is evaluated by Python as ``(1 > 2) and (2 > 3)``.  The
-       ``and`` operator coerces each side into a bool, returning the object
-       itself when it short-circuits.  The bool of the --Than operators
-       will raise TypeError on purpose, because Diofant cannot determine the
-       mathematical ordering of symbolic expressions.  Thus, if we were to
-       compute ``x > y > z``, with ``x``, ``y``, and ``z`` being Symbols,
-       Python converts the statement (roughly) into these steps:
-
-        (1) x > y > z
-        (2) (x > y) and (y > z)
-        (3) (GreaterThanObject) and (y > z)
-        (4) (GreaterThanObject.__bool__()) and (y > z)
-        (5) TypeError
-
-       Because of the "and" added at step 2, the statement gets turned into a
-       weak ternary statement, and the first object's __bool__ method will
-       raise TypeError.  Thus, creating a chained inequality is not possible.
-
-           In Python, there is no way to override the ``and`` operator, or to
-           control how it short circuits, so it is impossible to make something
-           like ``x > y > z`` work.  There was a PEP to change this,
-           :pep:`335`, but it was officially closed in March, 2012.
-
-    .. [2] For more information, see these two bug reports:
-
-       "Separate boolean and symbolic relationals"
-       `Issue sympy/sympy#4986 <https://github.com/sympy/sympy/issues/4986>`_
-
-       "It right 0 < x < 1 ?"
-       `Issue sympy/sympy#6059 <https://github.com/sympy/sympy/issues/6059>`_
     """
 
     rel_op = '>='

@@ -402,12 +402,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         Notes
         =====
 
-        We use Sister Celine's algorithm, see [1]_.
-
-        References
-        ==========
-
-        .. [1] [Petkovšek97]_, Ch. 4.
+        We use Sister Celine's algorithm, see [Petkovšek97]_, Ch. 4.
         """
         from ..core import expand_func, Mul
         from ..functions import gamma
