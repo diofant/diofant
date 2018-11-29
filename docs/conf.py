@@ -19,16 +19,12 @@ warnings.simplefilter('error', UserWarning)
 
 # Add any Sphinx extension module names here, as strings.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax',
-              'numpydoc', 'sphinx.ext.graphviz', 'sphinx.ext.intersphinx',
-              'sphinx.ext.extlinks']
+              'sphinx.ext.graphviz', 'sphinx.ext.intersphinx',
+              'sphinx.ext.extlinks', 'sphinx.ext.napoleon']
 
-# Whether to show all members of a class in the Methods and Attributes
-# sections automatically.
-numpydoc_show_class_members = False
-
-# Whether to create a Sphinx table of contents for the lists
-# of class methods and attributes.
-numpydoc_class_members_toctree = False
+napoleon_google_docstring = False
+napoleon_use_param = False
+napoleon_use_rtype = False
 
 # Sphinx will warn about all references where the target cannot be found.
 nitpicky = True
