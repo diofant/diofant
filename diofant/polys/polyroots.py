@@ -739,7 +739,7 @@ def roots(f, *gens, **flags):
     the algorithm. To disable them because of unreadable output
     set ``cubics=False`` or ``quartics=False`` respectively. If cubic
     roots are real but are expressed in terms of complex numbers
-    (casus irreducibilis [1]_) the ``trig`` flag can be set to True to
+    (casus irreducibilis) the ``trig`` flag can be set to True to
     have the solutions returned in terms of cosine and inverse cosine
     functions.
 
@@ -778,7 +778,7 @@ def roots(f, *gens, **flags):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Cubic_function#Trigonometric_.28and_hyperbolic.29_method
+    * https//en.wikipedia.org/wiki/Cubic_function#Trigonometric_.28and_hyperbolic.29_method
     """
     from .polytools import to_rational_coeffs
     flags = dict(flags)

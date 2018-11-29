@@ -408,7 +408,7 @@ class log(Function):
 class LambertW(Function):
     r"""
     The Lambert W function `W(z)` is defined as the inverse
-    function of `w \exp(w)` [1]_.
+    function of `w \exp(w)`.
 
     In other words, the value of `W(z)` is such that `z = W(z) \exp(W(z))`
     for any complex number `z`.  The Lambert W function is a multivalued
@@ -434,7 +434,7 @@ class LambertW(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Lambert_W_function
+    * https//en.wikipedia.org/wiki/Lambert_W_function
     """
 
     @classmethod

@@ -433,7 +433,7 @@ class Permutation(Basic):
     A permutation, alternatively known as an 'arrangement number' or 'ordering'
     is an arrangement of the elements of an ordered list into a one-to-one
     mapping with itself. The permutation of a given arrangement is given by
-    indicating the positions of the elements after re-arrangement [2]_. For
+    indicating the positions of the elements after re-arrangement. For
     example, if one started with elements [x, y, a, b] (in that order) and
     they were reordered as [x, y, b, a] then the permutation would be
     [0, 1, 3, 2]. Notice that (in Diofant) the first element is always referred
@@ -694,7 +694,7 @@ class Permutation(Basic):
     Permutation([1, 0, 3, 2])
 
     The product of two permutations p and q is defined as their composition as
-    functions, (p*q)(i) = q(p(i)) [6]_.
+    functions, (p*q)(i) = q(p(i)).
 
     >>> p = Permutation([1, 0, 2, 3])
     >>> q = Permutation([2, 3, 1, 0])
@@ -727,27 +727,27 @@ class Permutation(Basic):
     References
     ==========
 
-    .. [1] Skiena, S. 'Permutations.' 1.1 in Implementing Discrete Mathematics
-           Combinatorics and Graph Theory with Mathematica.  Reading, MA:
-           Addison-Wesley, pp. 3-16, 1990.
+    * Skiena, S. 'Permutations.' 1.1 in Implementing Discrete Mathematics
+      Combinatorics and Graph Theory with Mathematica.  Reading, MA:
+      Addison-Wesley, pp. 3-16, 1990.
 
-    .. [2] Knuth, D. E. The Art of Computer Programming, Vol. 4: Combinatorial
-           Algorithms, 1st ed. Reading, MA: Addison-Wesley, 2011.
+    * Knuth, D. E. The Art of Computer Programming, Vol. 4: Combinatorial
+      Algorithms, 1st ed. Reading, MA: Addison-Wesley, 2011.
 
-    .. [3] Wendy Myrvold and Frank Ruskey. 2001. Ranking and unranking
-           permutations in linear time. Inf. Process. Lett. 79, 6 (September 2001),
-           281-284. DOI=10.1016/S0020-0190(01)00141-7
+    * Wendy Myrvold and Frank Ruskey. 2001. Ranking and unranking
+      permutations in linear time. Inf. Process. Lett. 79, 6 (September 2001),
+      281-284. DOI=10.1016/S0020-0190(01)00141-7
 
-    .. [4] D. L. Kreher, D. R. Stinson 'Combinatorial Algorithms'
-           CRC Press, 1999
+    * D. L. Kreher, D. R. Stinson 'Combinatorial Algorithms'
+      CRC Press, 1999
 
-    .. [5] Graham, R. L.; Knuth, D. E.; and Patashnik, O.
-           Concrete Mathematics: A Foundation for Computer Science, 2nd ed.
-           Reading, MA: Addison-Wesley, 1994.
+    * Graham, R. L.; Knuth, D. E.; and Patashnik, O.
+      Concrete Mathematics: A Foundation for Computer Science, 2nd ed.
+      Reading, MA: Addison-Wesley, 1994.
 
-    .. [6] https://en.wikipedia.org/wiki/Permutation
+    * https://en.wikipedia.org/wiki/Permutation
 
-    .. [7] https://en.wikipedia.org/wiki/Lehmer_code
+    * https://en.wikipedia.org/wiki/Lehmer_code
 
     """
 

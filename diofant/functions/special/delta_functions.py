@@ -169,7 +169,7 @@ class DiracDelta(Function):
 
 
 class Heaviside(Function):
-    r"""Heaviside step function [1]_
+    r"""Heaviside step function
 
     .. math ::
         H(x) = \left\{\begin{matrix}0, x < 0\\
@@ -183,7 +183,7 @@ class Heaviside(Function):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Heaviside_step_function
+    * https://en.wikipedia.org/wiki/Heaviside_step_function
     """
 
     def fdiff(self, argindex=1):

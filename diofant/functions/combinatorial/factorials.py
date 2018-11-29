@@ -209,7 +209,7 @@ class subfactorial(CombinatorialFunction):
     It can also be written as int(round(n!/exp(1))) but the recursive
     definition with caching is implemented for this function.
 
-    An interesting analytic expression is the following [2]_
+    An interesting analytic expression is the following
 
     .. math:: !x = \Gamma(x + 1, -1)/e
 
@@ -221,8 +221,8 @@ class subfactorial(CombinatorialFunction):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Subfactorial
-    .. [2] http://mathworld.wolfram.com/Subfactorial.html
+    * https//en.wikipedia.org/wiki/Subfactorial
+    * http://mathworld.wolfram.com/Subfactorial.html
 
     Examples
     ========

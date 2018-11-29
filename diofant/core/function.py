@@ -1685,7 +1685,7 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
         Note that the forms of ``sin(n*x)`` and ``cos(n*x)`` in terms of ``sin(x)``
         and ``cos(x)`` are not unique, due to the identity `\sin^2(x) + \cos^2(x)
         = 1`.  The current implementation uses the form obtained from Chebyshev
-        polynomials, but this may change.  See [1]_ for more information.
+        polynomials, but this may change.
 
     force : boolean, optional
         If the ``force`` hint is used, assumptions about variables will be ignored
@@ -1860,7 +1860,7 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     References
     ==========
 
-    .. [1] http://mathworld.wolfram.com/Multiple-AngleFormulas.html
+    * http://mathworld.wolfram.com/Multiple-AngleFormulas.html
     """
     # don't modify this; modify the Expr.expand method
     hints['power_base'] = power_base

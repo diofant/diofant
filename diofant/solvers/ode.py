@@ -7264,15 +7264,15 @@ def _linear_neq_order1_type1(match_):
 
     The nonhomogeneous case is not implemented yet.  Mass-matrix
     assumed to be invertible and provided general solution uses the
-    Jordan canonical form for `A = M^{-1} L`, see [1]_.
+    Jordan canonical form for `A = M^{-1} L`.
 
     References
     ==========
 
-    .. [1] Ernst Hairer, Syvert Paul Nørsett, Gerhard Wanner.  Solving
-           Ordinary Differential Equations I.  Nonstiff Problems.
-           Springer Series in Comput. Mathematics, Vol. 8, Springer-Verlag 1987,
-           Second revised edition 1993, pp. 73-76.
+    * Ernst Hairer, Syvert Paul Nørsett, Gerhard Wanner.  Solving
+      Ordinary Differential Equations I.  Nonstiff Problems.
+      Springer Series in Comput. Mathematics, Vol. 8, Springer-Verlag 1987,
+      Second revised edition 1993, pp. 73-76.
     """
 
     func = match_['func']

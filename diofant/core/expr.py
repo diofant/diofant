@@ -2197,7 +2197,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         or in any kind of canonical form.
 
         This function returns False for expressions that are "algebraic
-        expressions" [1]_ with symbolic exponents. This is a simple extension
+        expressions" with symbolic exponents. This is a simple extension
         to the is_rational_function, including rational exponentiation.
 
         Examples
@@ -2227,7 +2227,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         References
         ==========
 
-        .. [1] https//en.wikipedia.org/wiki/Algebraic_expression
+        * https//en.wikipedia.org/wiki/Algebraic_expression
         """
         if syms:
             syms = set(map(sympify, syms))

@@ -118,7 +118,7 @@ is_real
 """,
     'real':
     """
-Test if self can have only values from the set of real numbers [1]_.
+Test if self can have only values from the set of real numbers.
 
 See Also
 ========
@@ -128,11 +128,11 @@ is_complex
 References
 ==========
 
-.. [1] https//en.wikipedia.org/wiki/Real_number
+* https//en.wikipedia.org/wiki/Real_number
 """,
     'imaginary':
     """
-Test if self is an imaginary number [1]_.
+Test if self is an imaginary number.
 
 I.e. that it can be written as a real number multiplied by
 the imaginary unit ``I``.
@@ -140,11 +140,11 @@ the imaginary unit ``I``.
 References
 ==========
 
-.. [1] https//en.wikipedia.org/wiki/Imaginary_number
+* https//en.wikipedia.org/wiki/Imaginary_number
 """,
     'extended_real':
     """
-Test if self can have only values on the extended real number line [1]_.
+Test if self can have only values on the extended real number line.
 
 See Also
 ========
@@ -154,7 +154,7 @@ is_real
 References
 ==========
 
-.. [1] https//en.wikipedia.org/wiki/Extended_real_number_line
+* https//en.wikipedia.org/wiki/Extended_real_number_line
 """,
     'integer':
     """
@@ -167,7 +167,7 @@ that aren't integers.
 """,
     'odd':
     """
-Test if self can have only values from the set of odd integers [1]_.
+Test if self can have only values from the set of odd integers.
 
 See Also
 ========
@@ -177,11 +177,11 @@ is_even
 References
 ==========
 
-.. [1] https//en.wikipedia.org/wiki/Parity_%28mathematics%29
+* https//en.wikipedia.org/wiki/Parity_%28mathematics%29
 """,
     'even':
     """
-Test if self can have only values from the set of even integers [1]_.
+Test if self can have only values from the set of even integers.
 
 See Also
 ========
@@ -191,27 +191,27 @@ is_odd
 References
 ==========
 
-.. [1] https//en.wikipedia.org/wiki/Parity_%28mathematics%29
+* https//en.wikipedia.org/wiki/Parity_%28mathematics%29
 """,
     'prime':
     """
 Test if self is a natural number greater than ``1`` that has
-no positive divisors other than ``1`` and itself.  See [1]_.
+no positive divisors other than ``1`` and itself.
 
 References
 ==========
 
-.. [1] https//en.wikipedia.org/wiki/Prime_number
+* https//en.wikipedia.org/wiki/Prime_number
 """,
     'composite':
     """
 Test if self is a positive integer that has at least one positive
-divisor other than ``1`` or the number itself.  See [1]_.
+divisor other than ``1`` or the number itself.
 
 References
 ==========
 
-.. [1] https//en.wikipedia.org/wiki/Composite_number
+* https//en.wikipedia.org/wiki/Composite_number
 """,
     'zero':
     """
@@ -237,63 +237,63 @@ Test if self can have only values from the set of rationals.
 """,
     'algebraic':
     """
-Test if self can have only values from the set of algebraic numbers [1]_.
+Test if self can have only values from the set of algebraic numbers.
 
 References
 ==========
 
-.. [1] https//en.wikipedia.org/wiki/Algebraic_number
+* https//en.wikipedia.org/wiki/Algebraic_number
 """,
     'transcendental':
     """
-Test if self can have only values from the set of transcendental numbers [1]_.
+Test if self can have only values from the set of transcendental numbers.
 
 References
 ==========
 
-.. [1] https//en.wikipedia.org/wiki/Transcendental_number
+* https//en.wikipedia.org/wiki/Transcendental_number
 """,
     'irrational':
     """
-Test if self value cannot be represented exactly by Rational, see [1]_.
+Test if self value cannot be represented exactly by Rational.
 
 References
 ==========
 
-.. [1] https//en.wikipedia.org/wiki/Irrational_number
+* https//en.wikipedia.org/wiki/Irrational_number
 """,
     'finite':
     """
-Test if self absolute value is bounded.  See [1]_.
+Test if self absolute value is bounded.
 
 References
 ==========
 
-.. [1] https//en.wikipedia.org/wiki/Finite
+* https//en.wikipedia.org/wiki/Finite
 
 """,
     'infinite':
     """
-Test if self absolute value can be arbitrarily large.  See [1]_, [2]_.
+Test if self absolute value can be arbitrarily large.
 
 References
 ==========
 
-.. [1] :func:`math.isfinite`
-.. [2] :obj:`numpy.isfinite`
+* :func:`math.isfinite`
+* :obj:`numpy.isfinite`
 """,
     'negative':
     """
-Test if self can have only negative values [1]_.
+Test if self can have only negative values.
 
 References
 ==========
 
-.. [1] https//en.wikipedia.org/wiki/Negative_number
+* https//en.wikipedia.org/wiki/Negative_number
 """,
     'nonnegative':
     """
-Test if self can have only nonnegative values [1]_.
+Test if self can have only nonnegative values.
 
 See Also
 ========
@@ -303,7 +303,7 @@ is_negative
 References
 ==========
 
-.. [1] https//en.wikipedia.org/wiki/Negative_number
+* https//en.wikipedia.org/wiki/Negative_number
 """,
     'positive':
     """

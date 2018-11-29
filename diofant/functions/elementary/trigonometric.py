@@ -147,7 +147,7 @@ class sin(TrigonometricFunction):
     =====
 
     This function will evaluate automatically in the
-    case x/pi is some rational number [4]_.  For example,
+    case x/pi is some rational number.  For example,
     if x is a multiple of pi, pi/2, pi/3, pi/4 and pi/6.
 
     Examples
@@ -184,10 +184,10 @@ class sin(TrigonometricFunction):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Trigonometric_functions
-    .. [2] https://dlmf.nist.gov/4.14
-    .. [3] http://functions.wolfram.com/ElementaryFunctions/Sin
-    .. [4] http://mathworld.wolfram.com/TrigonometryAngles.html
+    * https//en.wikipedia.org/wiki/Trigonometric_functions
+    * https://dlmf.nist.gov/4.14
+    * http://functions.wolfram.com/ElementaryFunctions/Sin
+    * http://mathworld.wolfram.com/TrigonometryAngles.html
     """
 
     def fdiff(self, argindex=1):
@@ -2080,7 +2080,7 @@ class asec(InverseTrigonometricFunction):
     ``oo``, ``-oo``, ``0``, ``1``, ``-1``.
 
     ``asec(x)`` has branch cut in the interval [-1, 1]. For complex arguments,
-    it can be defined [4]_ as
+    it can be defined as
 
     .. math::
         sec^{-1}(z) = -i*(log(\sqrt{1 - z^2} + 1) / z)
@@ -2124,10 +2124,10 @@ class asec(InverseTrigonometricFunction):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Inverse_trigonometric_functions
-    .. [2] https://dlmf.nist.gov/4.23
-    .. [3] http://functions.wolfram.com/ElementaryFunctions/ArcSec
-    .. [4] https://reference.wolfram.com/language/ref/ArcSec.html
+    * https//en.wikipedia.org/wiki/Inverse_trigonometric_functions
+    * https://dlmf.nist.gov/4.23
+    * http://functions.wolfram.com/ElementaryFunctions/ArcSec
+    * https://reference.wolfram.com/language/ref/ArcSec.html
     """
 
     @classmethod

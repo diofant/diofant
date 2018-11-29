@@ -475,7 +475,7 @@ class Max(MinMaxBase, Application):
     =====
 
     The task can be considered as searching of supremums in the
-    directed complete partial orders [1]_.
+    directed complete partial orders.
 
     The source values are sequentially allocated by the isolated subsets
     in which supremums are searched and result as Max arguments.
@@ -499,8 +499,8 @@ class Max(MinMaxBase, Application):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Directed_complete_partial_order
-    .. [2] https//en.wikipedia.org/wiki/Lattice_%28order%29
+    * https//en.wikipedia.org/wiki/Directed_complete_partial_order
+    * https//en.wikipedia.org/wiki/Lattice_%28order%29
 
     See Also
     ========

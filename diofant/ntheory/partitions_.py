@@ -56,7 +56,7 @@ def npartitions(n):
     """Calculate the partition function P(n), i.e. the number of ways that
     n can be written as a sum of positive integers.
 
-    P(n) is computed using the Hardy-Ramanujan-Rademacher formula [1]_.
+    P(n) is computed using the Hardy-Ramanujan-Rademacher formula.
 
     The correctness of this implementation has been tested for 10**n
     up to n = 8.
@@ -70,7 +70,7 @@ def npartitions(n):
     References
     ==========
 
-    .. [1] http://mathworld.wolfram.com/PartitionFunctionP.html
+    * http://mathworld.wolfram.com/PartitionFunctionP.html
     """
     n = int(n)
     if n < 0:

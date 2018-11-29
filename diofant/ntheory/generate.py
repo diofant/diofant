@@ -356,7 +356,7 @@ def primerange(a, b):
     =====
 
     Some famous conjectures about the occurrence of primes in a given
-    range are [1]_:
+    range are:
 
     - Twin primes: though often not, the following will give 2 primes
                    an infinite number of times: primerange(6*n - 1, 6*n + 2)
@@ -367,7 +367,7 @@ def primerange(a, b):
     - Brocard's: there are at least four primes in the range
                    primerange(prime(n)**2, prime(n+1)**2)
 
-    The average gap between primes is log(n) [2]_; the gap between
+    The average gap between primes is log(n); the gap between
     primes can be arbitrarily large since sequences of composite
     numbers are arbitrarily large, e.g. the numbers in the sequence
     n! + 2, n! + 3 ... n! + n are all composite.
@@ -375,8 +375,8 @@ def primerange(a, b):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Prime_number
-    .. [2] https://primes.utm.edu/notes/gaps.html
+    * https//en.wikipedia.org/wiki/Prime_number
+    * https://primes.utm.edu/notes/gaps.html
 
     Examples
     ========

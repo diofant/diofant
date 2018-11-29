@@ -337,7 +337,7 @@ def hypersimp(f, k):
     Notes
     =====
 
-    The algorithm [1]_ performs three basic steps::
+    The algorithm performs three basic steps::
 
        1. Rewrite all functions in terms of gamma, if possible.
 
@@ -356,7 +356,7 @@ def hypersimp(f, k):
     References
     ==========
 
-    .. [1] W. Koepf, Algorithms for m-fold Hypergeometric Summation,
+    * W. Koepf, Algorithms for m-fold Hypergeometric Summation,
            Journal of Symbolic Computation (1995) 20, 399-417
     """
     f = sympify(f)

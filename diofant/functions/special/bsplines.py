@@ -29,7 +29,7 @@ def _add_splines(c, b1, d, b2):
 def bspline_basis(d, knots, n, x, close=True):
     """The `n`-th B-spline at `x` of degree `d` with knots.
 
-    B-Splines are piecewise polynomials of degree `d` [1]_.  They are defined on
+    B-Splines are piecewise polynomials of degree `d`.  They are defined on
     a set of knots, which is a sequence of integers or floats.
 
     The 0th degree splines have a value of one on a single interval:
@@ -77,7 +77,7 @@ def bspline_basis(d, knots, n, x, close=True):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/B-spline
+    * https//en.wikipedia.org/wiki/B-spline
 
     """
     knots = [sympify(k) for k in knots]

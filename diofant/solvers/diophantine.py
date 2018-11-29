@@ -943,7 +943,7 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
 
     Mainly concerned with the case `D > 0, D` is not a perfect square,
     which is the same as the generalized Pell equation. The LMM
-    algorithm [1]_ is used to solve this equation.
+    algorithm is used to solve this equation.
 
     Returns
     =======
@@ -983,9 +983,9 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
     References
     ==========
 
-    .. [1] Solving the generalized Pell equation x**2 - D*y**2 = N, John P.
-           Robertson, July 31, 2004, Pages 16 - 17. [online], Available:
-           http://www.jpr2718.org/pell.pdf
+    * Solving the generalized Pell equation x**2 - D*y**2 = N, John P.
+      Robertson, July 31, 2004, Pages 16 - 17. [online], Available:
+      http://www.jpr2718.org/pell.pdf
     """
     if D < 0:
         if N == 0:
@@ -1196,8 +1196,7 @@ def PQa(P_0, Q_0, D):
     There are six sequences of integers defined related to the continued
     fraction representation of `\frac{P + \sqrt{D}}{Q}`, namely {`P_{i}`},
     {`Q_{i}`}, {`a_{i}`},{`A_{i}`}, {`B_{i}`}, {`G_{i}`}. ``PQa()`` Returns
-    these values as a 6-tuple in the same order as mentioned above. Refer [1]_
-    for more detailed information.
+    these values as a 6-tuple in the same order as mentioned above.
 
     Parameters
     ==========
@@ -1219,8 +1218,8 @@ def PQa(P_0, Q_0, D):
     References
     ==========
 
-    .. [1] Solving the generalized Pell equation x^2 - Dy^2 = N, John P.
-           Robertson, July 31, 2004, Pages 4 - 8. http://www.jpr2718.org/pell.pdf
+    * Solving the generalized Pell equation x^2 - Dy^2 = N, John P.
+      Robertson, July 31, 2004, Pages 4 - 8. http://www.jpr2718.org/pell.pdf
     """
     A_i_2 = B_i_1 = 0
     A_i_1 = B_i_2 = 1
@@ -1253,8 +1252,8 @@ def diop_bf_DN(D, N, t=symbols("t", integer=True)):
     Uses brute force to solve the equation, `x^2 - Dy^2 = N`.
 
     Mainly concerned with the generalized Pell equation which is the case when
-    `D > 0, D` is not a perfect square. For more information on the case refer
-    [1]_. Let `(t, u)` be the minimal positive solution of the equation
+    `D > 0, D` is not a perfect square.
+    Let `(t, u)` be the minimal positive solution of the equation
     `x^2 - Dy^2 = 1`. Then this method requires
     `\sqrt{\frac{\mid N \mid (t \pm 1)}{2D}}` to be small.
 
@@ -1282,8 +1281,8 @@ def diop_bf_DN(D, N, t=symbols("t", integer=True)):
     References
     ==========
 
-    .. [1] Solving the generalized Pell equation x**2 - D*y**2 = N, John P.
-           Robertson, July 31, 2004, Page 15. http://www.jpr2718.org/pell.pdf
+    * Solving the generalized Pell equation x**2 - D*y**2 = N, John P.
+      Robertson, July 31, 2004, Page 15. http://www.jpr2718.org/pell.pdf
     """
     D = as_int(D)
     N = as_int(N)
@@ -1337,7 +1336,7 @@ def equivalent(u, v, r, s, D, N):
 
     Two solutions `(u, v)` and `(r, s)` to the above equation fall to the same
     equivalence class iff both `(ur - Dvs)` and `(us - vr)` are divisible by
-    `N`. See reference [1]_. No test is performed to test whether `(u, v)` and
+    `N`. No test is performed to test whether `(u, v)` and
     `(r, s)` are actually solutions to the equation. User should take care of
     this.
 
@@ -1357,8 +1356,8 @@ def equivalent(u, v, r, s, D, N):
     References
     ==========
 
-    .. [1] Solving the generalized Pell equation x**2 - D*y**2 = N, John P.
-           Robertson, July 31, 2004, Page 12. http://www.jpr2718.org/pell.pdf
+    * Solving the generalized Pell equation x**2 - D*y**2 = N, John P.
+      Robertson, July 31, 2004, Page 12. http://www.jpr2718.org/pell.pdf
     """
     return divisible(u*r - D*v*s, N) and divisible(u*s - v*r, N)
 
@@ -1408,8 +1407,7 @@ def transformation_to_DN(eq):
     to more easy to deal with `X^2 - DY^2 = N` form.
 
     This is used to solve the general quadratic equation by transforming it to
-    the latter form. Refer [1]_ for more detailed information on the
-    transformation. This function returns a tuple (A, B) where A is a 2 X 2
+    the latter form.  This function returns a tuple (A, B) where A is a 2 X 2
     matrix and B is a 2 X 1 matrix such that,
 
     Transpose([x y]) =  A * Transpose([X Y]) + B
@@ -1468,9 +1466,9 @@ def transformation_to_DN(eq):
     References
     ==========
 
-    .. [1] Solving the equation ax^2 + bxy + cy^2 + dx + ey + f = 0,
-           John P.Robertson, May 8, 2003, Page 7 - 11.
-           http://www.jpr2718.org/ax2p.pdf
+    * Solving the equation ax^2 + bxy + cy^2 + dx + ey + f = 0,
+      John P.Robertson, May 8, 2003, Page 7 - 11.
+      http://www.jpr2718.org/ax2p.pdf
     """
 
     var, coeff, diop_type = classify_diop(eq, _dict=False)
@@ -2284,15 +2282,14 @@ def holzer(x, y, z, a, b, c):
     a new reduced solution `(x', y', z')` such that `z'^2 \leq \mid ab \mid`.
 
     The algorithm is an interpretation of Mordell's reduction as described
-    on page 8 of Cremona and Rusin's paper [1]_ and the work of Mordell in
-    reference [2]_.
+    on page 8 of Cremona and Rusin's paper and the work of Mordell.
 
     References
     ==========
 
-    .. [1] Efficient Solution of Rational Conices, J. E. Cremona and D. Rusin,
-           Mathematics of Computation, Volume 00, Number 0.
-    .. [2] Diophantine Equations, L. J. Mordell, page 48.
+    * Efficient Solution of Rational Conices, J. E. Cremona and D. Rusin,
+      Mathematics of Computation, Volume 00, Number 0.
+    * Diophantine Equations, L. J. Mordell, page 48.
     """
 
     if _odd(c):
@@ -2423,7 +2420,7 @@ def diop_general_sum_of_squares(eq, limit=1):
     =====
 
     When `n = 3` if `k = 4^a(8m + 7)` for some `a, m \in Z` then there will be
-    no solutions. Refer [1]_ for more details.
+    no solutions.
 
     Examples
     ========
@@ -2435,9 +2432,9 @@ def diop_general_sum_of_squares(eq, limit=1):
     References
     ==========
 
-    .. [1] Representing an integer as a sum of three squares, [online],
-           Available:
-           https//www.proofwiki.org/wiki/Integer_as_Sum_of_Three_Squares
+    * Representing an integer as a sum of three squares, [online],
+      Available:
+      https//www.proofwiki.org/wiki/Integer_as_Sum_of_Three_Squares
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
 
@@ -2639,8 +2636,7 @@ def sum_of_three_squares(n):
     Returns a 3-tuple `(a, b, c)` such that `a^2 + b^2 + c^2 = n` and
     `a, b, c \geq 0`.
 
-    Returns None if `n = 4^a(8m + 7)` for some `a, m \in Z`. See
-    [1]_ for more details.
+    Returns None if `n = 4^a(8m + 7)` for some `a, m \in Z`.
 
     Parameters
     ==========
@@ -2657,8 +2653,8 @@ def sum_of_three_squares(n):
     References
     ==========
 
-    .. [1] Representing a number as a sum of three squares, [online],
-           Available: https://schorn.ch/lagrange.html
+    * Representing a number as a sum of three squares, [online],
+      Available: https://schorn.ch/lagrange.html
 
     See Also
     ========

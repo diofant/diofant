@@ -6,7 +6,7 @@ from ..core.compatibility import iterable
 
 def euler_equations(L, funcs=(), vars=()):
     r"""
-    Find the Euler-Lagrange equations [1]_ for a given Lagrangian.
+    Find the Euler-Lagrange equations for a given Lagrangian.
 
     Parameters
     ==========
@@ -57,7 +57,7 @@ def euler_equations(L, funcs=(), vars=()):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Euler%E2%80%93Lagrange_equation
+    * https://en.wikipedia.org/wiki/Euler%E2%80%93Lagrange_equation
     """
     L = sympify(L)
     funcs = tuple(funcs) if iterable(funcs) else (funcs,)

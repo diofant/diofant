@@ -1235,12 +1235,12 @@ def partitions(n, m=None, k=None, size=False):
     References
     ==========
 
-    .. [1] http://code.activestate.com/recipes/218332-generator-for-integer-partitions/
+    * http://code.activestate.com/recipes/218332-generator-for-integer-partitions/
 
     Notes
     =====
 
-    Modified from Tim Peter's version [1]_ to allow for k and m values.
+    Modified from Tim Peter's version to allow for k and m values.
 
     See Also
     ========
