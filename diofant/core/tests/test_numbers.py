@@ -176,6 +176,11 @@ def test_divmod():
 
     pytest.raises(ZeroDivisionError, lambda: divmod(oo, 0))
 
+    # issue sympy/sympy#15561
+    assert divmod(Integer(4), Float(-2.1)) == divmod(4, -2.1)
+    f = fractions.Fraction(-31, 10)
+    assert divmod(Integer(4), Rational(f)) == divmod(4, f)
+
 
 def test_igcd():
     assert igcd(0, 0) == 0

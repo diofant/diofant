@@ -192,6 +192,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             raise TypeError("can't convert %s to int" % r)
         return int(r)
 
+    def __floor__(self):
+        from ..functions import floor
+        return floor(self)
+
     def __float__(self):
         # Don't bother testing if it's a number; if it's not this is going
         # to fail, and if it is we still need to check that it evalf'ed to

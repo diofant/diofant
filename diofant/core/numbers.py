@@ -328,7 +328,6 @@ class Number(AtomicExpr):
 
     def __divmod__(self, other):
         from .containers import Tuple
-        from ..functions.elementary.complexes import sign
 
         other = Number(other)
         if not other:
@@ -337,7 +336,7 @@ class Number(AtomicExpr):
             return Tuple(*divmod(self.numerator, other.numerator))
         else:
             rat = self/other
-        w = sign(rat)*int(abs(rat))  # = rat.floor()
+        w = math.floor(rat)
         r = self - other*w
         return Tuple(w, r)
 
