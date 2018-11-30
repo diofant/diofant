@@ -805,7 +805,7 @@ def dup_decompose(f, K):
     References
     ==========
 
-    .. [1] [Kozen89]_
+    * [Kozen89]_
     """
     F = []
 

@@ -18,7 +18,7 @@ class Contains(BooleanFunction):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Element_%28mathematics%29
+    * https//en.wikipedia.org/wiki/Element_%28mathematics%29
     """
 
     @classmethod

@@ -252,8 +252,8 @@ def mod_inverse(a, m):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Modular_multiplicative_inverse
-    .. [2] https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
+    * https://en.wikipedia.org/wiki/Modular_multiplicative_inverse
+    * https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
     """
     c = None
     try:
@@ -1662,7 +1662,7 @@ class Zero(IntegerConstant, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Zero
+    * https//en.wikipedia.org/wiki/Zero
     """
 
     _numerator = _int_dtype(0)
@@ -1705,7 +1705,7 @@ class One(IntegerConstant, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/1_%28number%29
+    * https//en.wikipedia.org/wiki/1_%28number%29
     """
 
     is_number = True
@@ -1733,7 +1733,7 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/%E2%88%921_%28number%29
+    * https//en.wikipedia.org/wiki/%E2%88%921_%28number%29
     """
 
     is_number = True
@@ -1783,7 +1783,7 @@ class Half(RationalConstant, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/One_half
+    * https//en.wikipedia.org/wiki/One_half
     """
 
     is_number = True
@@ -1826,7 +1826,7 @@ class Infinity(Number, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Infinity
+    * https//en.wikipedia.org/wiki/Infinity
     """
 
     is_commutative = True
@@ -2203,7 +2203,7 @@ class NaN(Number, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/NaN
+    * https//en.wikipedia.org/wiki/NaN
     """
 
     is_commutative = True
@@ -2396,7 +2396,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/E_%28mathematical_constant%29
+    * https//en.wikipedia.org/wiki/E_%28mathematical_constant%29
     """
 
     is_real = True
@@ -2529,7 +2529,7 @@ class Pi(NumberSymbol, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Pi
+    * https//en.wikipedia.org/wiki/Pi
     """
 
     is_real = True
@@ -2582,7 +2582,7 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Golden_ratio
+    * https//en.wikipedia.org/wiki/Golden_ratio
     """
 
     is_real = True
@@ -2636,7 +2636,7 @@ class EulerGamma(NumberSymbol, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Euler%E2%80%93Mascheroni_constant
+    * https//en.wikipedia.org/wiki/Euler%E2%80%93Mascheroni_constant
     """
 
     is_real = True
@@ -2682,7 +2682,7 @@ class Catalan(NumberSymbol, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Catalan%27s_constant
+    * https//en.wikipedia.org/wiki/Catalan%27s_constant
     """
 
     is_real = True
@@ -2724,7 +2724,7 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Imaginary_unit
+    * https//en.wikipedia.org/wiki/Imaginary_unit
     """
 
     is_commutative = True

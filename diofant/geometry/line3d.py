@@ -509,7 +509,7 @@ class LinearEntity3D(GeometryEntity):
         Raises
         ======
 
-        GeometryError
+        diofant.geometry.exceptions.GeometryError
             When method is unable to perform projection.
 
         Notes
@@ -1254,7 +1254,7 @@ class Segment3D(LinearEntity3D):
     Attributes
     ==========
 
-    length : number or diofant expression
+    length : Expr
     midpoint : Point3D
 
     See Also

@@ -7,7 +7,7 @@ from ..utilities.iterables import uniq
 class Order(Expr):
     r"""Represents the limiting behavior of function.
 
-    The formal definition [1]_ for order symbol `O(f(x))` (Big O) is
+    The formal definition for order symbol `O(f(x))` (Big O) is
     that `g(x) \in O(f(x))` as `x\to a` iff
 
     .. math:: \lim\limits_{x \rightarrow a} \sup
@@ -81,7 +81,7 @@ class Order(Expr):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Big_O_notation
+    * https//en.wikipedia.org/wiki/Big_O_notation
     """
 
     is_Order = True

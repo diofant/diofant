@@ -2,7 +2,7 @@ from ..core import Integer, Rational
 
 
 def continued_fraction_periodic(p, q, d=0):
-    r"""Find the periodic continued fraction [1]_ expansion.
+    r"""Find the periodic continued fraction expansion.
 
     Compute the continued fraction expansion of a rational or a
     quadratic surd, i.e. `\frac{p + \sqrt{d}}{q}`, where `p`, `q`
@@ -53,9 +53,9 @@ def continued_fraction_periodic(p, q, d=0):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Periodic_continued_fraction
-    .. [2] K. Rosen. Elementary Number theory and its applications.
-           Addison-Wesley, 3 Sub edition, pages 379-381, January 1992.
+    * https//en.wikipedia.org/wiki/Periodic_continued_fraction
+    * K. Rosen. Elementary Number theory and its applications.
+      Addison-Wesley, 3 Sub edition, pages 379-381, January 1992.
     """
     from ..core.compatibility import as_int
     from ..functions import sqrt
@@ -187,7 +187,7 @@ def continued_fraction_iterator(x):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Continued_fraction
+    * https//en.wikipedia.org/wiki/Continued_fraction
     """
     from ..functions import floor
 

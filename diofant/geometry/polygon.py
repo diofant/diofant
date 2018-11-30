@@ -40,7 +40,7 @@ class Polygon(GeometrySet):
     Raises
     ======
 
-    GeometryError
+    diofant.geometry.exceptions.GeometryError
         If all parameters are not Points.
 
         If the Polygon has intersecting sides.
@@ -489,7 +489,7 @@ class Polygon(GeometrySet):
         References
         ==========
 
-        .. [1] http://paulbourke.net/geometry/polygonmesh/#insidepoly
+        * http://paulbourke.net/geometry/polygonmesh/#insidepoly
 
         """
         p = Point(p)
@@ -992,7 +992,7 @@ class RegularPolygon(Polygon):
     Raises
     ======
 
-    GeometryError
+    diofant.geometry.exceptions.GeometryError
         If the `center` is not a Point, or the `radius` is not a number or Basic
         instance, or the number of sides, `n`, is less than three.
 
@@ -1565,7 +1565,7 @@ class Triangle(Polygon):
     Raises
     ======
 
-    GeometryError
+    diofant.geometry.exceptions.GeometryError
         If the number of vertices is not equal to three, or one of the vertices
         is not a Point, or a valid keyword is not given.
 

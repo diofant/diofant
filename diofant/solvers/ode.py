@@ -2907,9 +2907,9 @@ def ode_1st_exact(eq, func, order, match):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Exact_differential_equation
-    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-           Dover 1963, pp. 73.
+    * https//en.wikipedia.org/wiki/Exact_differential_equation
+    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+      Dover 1963, pp. 73.
     """
     x = func.args[0]
     r = match  # d+e*diff(f(x),x)
@@ -2958,9 +2958,9 @@ def ode_1st_homogeneous_coeff_best(eq, func, order, match):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Homogeneous_differential_equation
-    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-           Dover 1963, pp. 59.
+    * https//en.wikipedia.org/wiki/Homogeneous_differential_equation
+    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+      Dover 1963, pp. 59.
     """
     # There are two substitutions that solve the equation, u1=y/x and u2=x/y
     # They produce different integrals, so try them both and see which
@@ -3054,9 +3054,9 @@ def ode_1st_homogeneous_coeff_subs_dep_div_indep(eq, func, order, match):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Homogeneous_differential_equation
-    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-           Dover 1963, pp. 59.
+    * https//en.wikipedia.org/wiki/Homogeneous_differential_equation
+    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+      Dover 1963, pp. 59.
     """
     x = func.args[0]
     f = func.func
@@ -3146,9 +3146,9 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Homogeneous_differential_equation
-    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-           Dover 1963, pp. 59.
+    * https//en.wikipedia.org/wiki/Homogeneous_differential_equation
+    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+      Dover 1963, pp. 59.
     """
     x = func.args[0]
     f = func.func
@@ -3296,9 +3296,9 @@ def ode_1st_linear(eq, func, order, match):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Linear_differential_equation#First_order_equation
-    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-           Dover 1963, pp. 92.
+    * https//en.wikipedia.org/wiki/Linear_differential_equation#First_order_equation
+    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+      Dover 1963, pp. 92.
     """
     x = func.args[0]
     f = func.func
@@ -3375,9 +3375,9 @@ def ode_Bernoulli(eq, func, order, match):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Bernoulli_differential_equation
-    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-           Dover 1963, pp. 95.
+    * https//en.wikipedia.org/wiki/Bernoulli_differential_equation
+    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+      Dover 1963, pp. 95.
     """
     x = func.args[0]
     f = func.func
@@ -3482,9 +3482,9 @@ def ode_Liouville(eq, func, order, match):
     References
     ==========
 
-    .. [1] Goldstein and Braun, "Advanced Methods for the Solution of Differential
-           Equations", pp. 98.
-    .. [2] https//www.maplesoft.com/support/help/Maple/view.aspx?path=odeadvisor/Liouville
+    * Goldstein and Braun, "Advanced Methods for the Solution of Differential
+      Equations", pp. 98.
+    * https//www.maplesoft.com/support/help/Maple/view.aspx?path=odeadvisor/Liouville
     """
     # Liouville ODE:
     #  f(x).diff(x, 2) + g(f(x))*(f(x).diff(x, 2))**2 + h(x)*f(x).diff(x)
@@ -3530,9 +3530,9 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     References
     ==========
 
-    .. [1] http://tutorial.math.lamar.edu/Classes/DE/SeriesSolutions.aspx
-    .. [2] George E. Simmons, "Differential Equations with Applications and
-           Historical Notes", pp 176 - 184.
+    * http://tutorial.math.lamar.edu/Classes/DE/SeriesSolutions.aspx
+    * George E. Simmons, "Differential Equations with Applications and
+      Historical Notes", pp 176 - 184.
     """
     x = func.args[0]
     f = func.func
@@ -3913,9 +3913,9 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Cauchy%E2%80%93Euler_equation
-    .. [2] C. Bender & S. Orszag, "Advanced Mathematical Methods for Scientists and
-           Engineers", Springer 1999, pp. 12.
+    * https//en.wikipedia.org/wiki/Cauchy%E2%80%93Euler_equation
+    * C. Bender & S. Orszag, "Advanced Mathematical Methods for Scientists and
+      Engineers", Springer 1999, pp. 12.
     """
     global collectterms
     collectterms = []
@@ -4525,10 +4525,10 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Linear_differential_equation section:
-           Nonhomogeneous_equation_with_constant_coefficients
-    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-           Dover 1963, pp. 211.
+    * https//en.wikipedia.org/wiki/Linear_differential_equation section:
+      Nonhomogeneous_equation_with_constant_coefficients
+    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+      Dover 1963, pp. 211.
     """
     x = func.args[0]
     f = func.func
@@ -4656,9 +4656,9 @@ def ode_nth_linear_constant_coeff_undetermined_coefficients(eq, func, order, mat
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Method_of_undetermined_coefficients
-    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-           Dover 1963, pp. 221.
+    * https//en.wikipedia.org/wiki/Method_of_undetermined_coefficients
+    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+      Dover 1963, pp. 221.
     """
     gensol = ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
                                                        returns='both')
@@ -4974,9 +4974,9 @@ def ode_nth_linear_constant_coeff_variation_of_parameters(eq, func, order, match
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Variation_of_parameters
-    .. [2] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-           Dover 1963, pp. 233.
+    * https//en.wikipedia.org/wiki/Variation_of_parameters
+    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+      Dover 1963, pp. 233.
     """
 
     gensol = ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
@@ -5090,8 +5090,8 @@ def ode_separable(eq, func, order, match):
     References
     ==========
 
-    .. [1] M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-           Dover 1963, pp. 52.
+    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
+      Dover 1963, pp. 52.
     """
     x = func.args[0]
     f = func.func
@@ -5222,8 +5222,8 @@ def ode_lie_group(eq, func, order, match):
     References
     ==========
 
-    .. [1] Solving differential equations by Symmetry Groups,
-           John Starrett, pp. 1-14.
+    * Solving differential equations by Symmetry Groups,
+      John Starrett, pp. 1-14.
     """
 
     heuristics = lie_heuristics
@@ -7264,15 +7264,15 @@ def _linear_neq_order1_type1(match_):
 
     The nonhomogeneous case is not implemented yet.  Mass-matrix
     assumed to be invertible and provided general solution uses the
-    Jordan canonical form for `A = M^{-1} L`, see [1]_.
+    Jordan canonical form for `A = M^{-1} L`.
 
     References
     ==========
 
-    .. [1] Ernst Hairer, Syvert Paul Nørsett, Gerhard Wanner.  Solving
-           Ordinary Differential Equations I.  Nonstiff Problems.
-           Springer Series in Comput. Mathematics, Vol. 8, Springer-Verlag 1987,
-           Second revised edition 1993, pp. 73-76.
+    * Ernst Hairer, Syvert Paul Nørsett, Gerhard Wanner.  Solving
+      Ordinary Differential Equations I.  Nonstiff Problems.
+      Springer Series in Comput. Mathematics, Vol. 8, Springer-Verlag 1987,
+      Second revised edition 1993, pp. 73-76.
     """
 
     func = match_['func']

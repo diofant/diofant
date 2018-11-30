@@ -210,7 +210,7 @@ def dup_inner_subresultants(f, g, K):
     References
     ==========
 
-    .. [1] [Brown78]_
+    * [Brown78]_
     """
     n = dmp_degree(f, 0)
     m = dmp_degree(g, 0)
@@ -958,7 +958,7 @@ def dmp_zz_heu_gcd(f, g, u, K):
     References
     ==========
 
-    .. [1] [Liao95]_
+    * [Liao95]_
     """
     result = _dmp_rr_trivial_gcd(f, g, u, K)
 

@@ -3898,7 +3898,7 @@ class MatrixBase(DefaultPrinting):
         References
         ==========
 
-        .. [1] https://en.wikipedia.org/wiki/Moore-Penrose_pseudoinverse
+        * https://en.wikipedia.org/wiki/Moore-Penrose_pseudoinverse
 
         """
         A = self
@@ -3983,7 +3983,7 @@ class MatrixBase(DefaultPrinting):
         References
         ==========
 
-        .. [1] https://en.wikipedia.org/wiki/Moore-Penrose_pseudoinverse#Obtaining_all_solutions_of_a_linear_system
+        * https://en.wikipedia.org/wiki/Moore-Penrose_pseudoinverse#Obtaining_all_solutions_of_a_linear_system
 
         """
         from . import eye
@@ -4050,7 +4050,7 @@ def mgamma(mu, lower=False):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gamma_matrices
+    * https//en.wikipedia.org/wiki/Gamma_matrices
     """
     from . import Matrix
     if mu not in [0, 1, 2, 3, 5]:

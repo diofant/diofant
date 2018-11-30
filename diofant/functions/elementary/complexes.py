@@ -572,7 +572,7 @@ class arg(Function):
 class conjugate(Function):
     """Returns the complex conjugate of an argument.
 
-    In mathematics, the complex conjugate [1]_ of a complex number
+    In mathematics, the complex conjugate of a complex number
     is given by changing the sign of the imaginary part.
 
     Thus, the conjugate of the complex number
@@ -595,7 +595,7 @@ class conjugate(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Complex_conjugation
+    * https//en.wikipedia.org/wiki/Complex_conjugation
     """
 
     @classmethod

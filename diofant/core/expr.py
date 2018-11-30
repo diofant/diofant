@@ -2197,7 +2197,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         or in any kind of canonical form.
 
         This function returns False for expressions that are "algebraic
-        expressions" [1]_ with symbolic exponents. This is a simple extension
+        expressions" with symbolic exponents. This is a simple extension
         to the is_rational_function, including rational exponentiation.
 
         Examples
@@ -2227,7 +2227,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         References
         ==========
 
-        .. [1] https//en.wikipedia.org/wiki/Algebraic_expression
+        * https//en.wikipedia.org/wiki/Algebraic_expression
         """
         if syms:
             syms = set(map(sympify, syms))
@@ -2580,7 +2580,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             return e.subs({p: x})
 
     def aseries(self, x, n=6, bound=0, hir=False):
-        """Returns asymptotic expansion for "self". See [3]_
+        """Returns asymptotic expansion for "self".
 
         This is equivalent to ``self.series(x, oo, n)``
 
@@ -2614,7 +2614,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         =====
 
         This algorithm is directly induced from the limit computational algorithm
-        provided by Gruntz. It majorly uses the mrv and rewrite sub-routines.
+        provided by Gruntz [Gruntz96]_, p.90. It majorly uses the mrv and rewrite sub-routines.
         The overall idea of this algorithm is first to look for the most
         rapidly varying subexpression w of a given expression f and then expands f
         in a series in w. Then same thing is recursively done on the leading coefficient
@@ -2623,9 +2623,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         References
         ==========
 
-        .. [1] A New Algorithm for Computing Asymptotic Series - Dominik Gruntz
-        .. [2] Gruntz thesis - p90
-        .. [3] https//en.wikipedia.org/wiki/Asymptotic_expansion
+        * https//en.wikipedia.org/wiki/Asymptotic_expansion
         """
         from . import Dummy
         from ..series.gruntz import mrv, rewrite

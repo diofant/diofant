@@ -7,7 +7,7 @@ from ..polys.rootoftools import RootOf
 
 def gauss_legendre(n, n_digits):
     r"""
-    Computes the Gauss-Legendre quadrature [1]_ points and weights.
+    Computes the Gauss-Legendre quadrature points and weights.
 
     The Gauss-Legendre quadrature approximates the integral:
 
@@ -62,7 +62,7 @@ def gauss_legendre(n, n_digits):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gaussian_quadrature
+    * https//en.wikipedia.org/wiki/Gaussian_quadrature
     """
     x = Dummy("x")
     p = legendre_poly(n, x, polys=True)
@@ -79,7 +79,7 @@ def gauss_legendre(n, n_digits):
 
 def gauss_laguerre(n, n_digits):
     r"""
-    Computes the Gauss-Laguerre quadrature [1]_ points and weights.
+    Computes the Gauss-Laguerre quadrature points and weights.
 
     The Gauss-Laguerre quadrature approximates the integral:
 
@@ -135,7 +135,7 @@ def gauss_laguerre(n, n_digits):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
+    * https//en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
     """
     x = Dummy("x")
     p = laguerre_poly(n, x, polys=True)
@@ -152,7 +152,7 @@ def gauss_laguerre(n, n_digits):
 
 def gauss_hermite(n, n_digits):
     r"""
-    Computes the Gauss-Hermite quadrature [1]_ points and weights.
+    Computes the Gauss-Hermite quadrature points and weights.
 
     The Gauss-Hermite quadrature approximates the integral:
 
@@ -207,7 +207,7 @@ def gauss_hermite(n, n_digits):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gauss-Hermite_Quadrature
+    * https//en.wikipedia.org/wiki/Gauss-Hermite_Quadrature
     """
     x = Dummy("x")
     p = hermite_poly(n, x, polys=True)
@@ -224,7 +224,7 @@ def gauss_hermite(n, n_digits):
 
 def gauss_gen_laguerre(n, alpha, n_digits):
     r"""
-    Computes the generalized Gauss-Laguerre quadrature [1]_ points and weights.
+    Computes the generalized Gauss-Laguerre quadrature points and weights.
 
     The generalized Gauss-Laguerre quadrature approximates the integral:
 
@@ -281,7 +281,7 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
+    * https//en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
     """
     x = Dummy("x")
     p = laguerre_poly(n, x, alpha=alpha, polys=True)
@@ -299,7 +299,7 @@ def gauss_gen_laguerre(n, alpha, n_digits):
 
 def gauss_chebyshev_t(n, n_digits):
     r"""
-    Computes the Gauss-Chebyshev quadrature [1]_ points and weights of
+    Computes the Gauss-Chebyshev quadrature points and weights of
     the first kind.
 
     The Gauss-Chebyshev quadrature of the first kind approximates the integral:
@@ -355,7 +355,7 @@ def gauss_chebyshev_t(n, n_digits):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
+    * https//en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
     """
     xi = []
     w = []
@@ -367,7 +367,7 @@ def gauss_chebyshev_t(n, n_digits):
 
 def gauss_chebyshev_u(n, n_digits):
     r"""
-    Computes the Gauss-Chebyshev quadrature [1]_ points and weights of
+    Computes the Gauss-Chebyshev quadrature points and weights of
     the second kind.
 
     The Gauss-Chebyshev quadrature of the second kind approximates the integral:
@@ -423,7 +423,7 @@ def gauss_chebyshev_u(n, n_digits):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
+    * https//en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
     """
     xi = []
     w = []
@@ -435,7 +435,7 @@ def gauss_chebyshev_u(n, n_digits):
 
 def gauss_jacobi(n, alpha, beta, n_digits):
     r"""
-    Computes the Gauss-Jacobi quadrature [1]_ points and weights.
+    Computes the Gauss-Jacobi quadrature points and weights.
 
     The Gauss-Jacobi quadrature of the first kind approximates the integral:
 
@@ -496,7 +496,7 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gauss%E2%80%93Jacobi_quadrature
+    * https//en.wikipedia.org/wiki/Gauss%E2%80%93Jacobi_quadrature
     """
     x = Dummy("x")
     p = jacobi_poly(n, alpha, beta, x, polys=True)

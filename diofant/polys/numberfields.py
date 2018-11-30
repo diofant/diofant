@@ -198,9 +198,9 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Resultant
-    .. [2] I.M. Isaacs, Proc. Amer. Math. Soc. 25 (1970), 638
-           "Degrees of sums in a separable field extension".
+    * https//en.wikipedia.org/wiki/Resultant
+    * I.M. Isaacs, Proc. Amer. Math. Soc. 25 (1970), 638
+      "Degrees of sums in a separable field extension".
     """
     y = Dummy(str(x))
     if mp1 is None:
@@ -599,7 +599,7 @@ def minpoly_groebner(ex, x, domain):
     References
     ==========
 
-    .. [1] [Adams94]_
+    * [Adams94]_
     """
 
     generator = numbered_symbols('a', cls=Dummy)
@@ -671,8 +671,8 @@ def primitive_element(extension, **args):
     References
     ==========
 
-    .. [1] [Yokoyama89]_
-    .. [2] [Arno96]_
+    * [Yokoyama89]_
+    * [Arno96]_
     """
     if not extension:
         raise ValueError("can't compute primitive element for empty extension")

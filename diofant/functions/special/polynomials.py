@@ -107,9 +107,9 @@ class jacobi(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Jacobi_polynomials
-    .. [2] http://mathworld.wolfram.com/JacobiPolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/JacobiP/
+    * https//en.wikipedia.org/wiki/Jacobi_polynomials
+    * http://mathworld.wolfram.com/JacobiPolynomial.html
+    * http://functions.wolfram.com/Polynomials/JacobiP/
     """
 
     @classmethod
@@ -228,9 +228,9 @@ def jacobi_normalized(n, a, b, x):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Jacobi_polynomials
-    .. [2] http://mathworld.wolfram.com/JacobiPolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/JacobiP/
+    * https//en.wikipedia.org/wiki/Jacobi_polynomials
+    * http://mathworld.wolfram.com/JacobiPolynomial.html
+    * http://functions.wolfram.com/Polynomials/JacobiP/
     """
     nfactor = (Integer(2)**(a + b + 1) * (gamma(n + a + 1) * gamma(n + b + 1))
                / (2*n + a + b + 1) / (factorial(n) * gamma(n + a + b + 1)))
@@ -300,9 +300,9 @@ class gegenbauer(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gegenbauer_polynomials
-    .. [2] http://mathworld.wolfram.com/GegenbauerPolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/GegenbauerC3/
+    * https//en.wikipedia.org/wiki/Gegenbauer_polynomials
+    * http://mathworld.wolfram.com/GegenbauerPolynomial.html
+    * http://functions.wolfram.com/Polynomials/GegenbauerC3/
     """
 
     @classmethod
@@ -430,11 +430,11 @@ class chebyshevt(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Chebyshev_polynomial
-    .. [2] http://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
-    .. [3] http://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
-    .. [4] http://functions.wolfram.com/Polynomials/ChebyshevT/
-    .. [5] http://functions.wolfram.com/Polynomials/ChebyshevU/
+    * https//en.wikipedia.org/wiki/Chebyshev_polynomial
+    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
+    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
+    * http://functions.wolfram.com/Polynomials/ChebyshevT/
+    * http://functions.wolfram.com/Polynomials/ChebyshevU/
     """
 
     _ortho_poly = staticmethod(chebyshevt_poly)
@@ -527,11 +527,11 @@ class chebyshevu(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Chebyshev_polynomial
-    .. [2] http://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
-    .. [3] http://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
-    .. [4] http://functions.wolfram.com/Polynomials/ChebyshevT/
-    .. [5] http://functions.wolfram.com/Polynomials/ChebyshevU/
+    * https//en.wikipedia.org/wiki/Chebyshev_polynomial
+    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
+    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
+    * http://functions.wolfram.com/Polynomials/ChebyshevT/
+    * http://functions.wolfram.com/Polynomials/ChebyshevU/
     """
 
     _ortho_poly = staticmethod(chebyshevu_poly)
@@ -695,10 +695,10 @@ class legendre(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Legendre_polynomial
-    .. [2] http://mathworld.wolfram.com/LegendrePolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/LegendreP/
-    .. [4] http://functions.wolfram.com/Polynomials/LegendreP2/
+    * https//en.wikipedia.org/wiki/Legendre_polynomial
+    * http://mathworld.wolfram.com/LegendrePolynomial.html
+    * http://functions.wolfram.com/Polynomials/LegendreP/
+    * http://functions.wolfram.com/Polynomials/LegendreP2/
     """
 
     _ortho_poly = staticmethod(legendre_poly)
@@ -784,10 +784,10 @@ class assoc_legendre(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Associated_Legendre_polynomials
-    .. [2] http://mathworld.wolfram.com/LegendrePolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/LegendreP/
-    .. [4] http://functions.wolfram.com/Polynomials/LegendreP2/
+    * https//en.wikipedia.org/wiki/Associated_Legendre_polynomials
+    * http://mathworld.wolfram.com/LegendrePolynomial.html
+    * http://functions.wolfram.com/Polynomials/LegendreP/
+    * http://functions.wolfram.com/Polynomials/LegendreP2/
     """
 
     @classmethod
@@ -871,9 +871,9 @@ class hermite(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Hermite_polynomial
-    .. [2] http://mathworld.wolfram.com/HermitePolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/HermiteH/
+    * https//en.wikipedia.org/wiki/Hermite_polynomial
+    * http://mathworld.wolfram.com/HermitePolynomial.html
+    * http://functions.wolfram.com/Polynomials/HermiteH/
     """
 
     _ortho_poly = staticmethod(hermite_poly)
@@ -958,10 +958,10 @@ class laguerre(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Laguerre_polynomial
-    .. [2] http://mathworld.wolfram.com/LaguerrePolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/LaguerreL/
-    .. [4] http://functions.wolfram.com/Polynomials/LaguerreL3/
+    * https//en.wikipedia.org/wiki/Laguerre_polynomial
+    * http://mathworld.wolfram.com/LaguerrePolynomial.html
+    * http://functions.wolfram.com/Polynomials/LaguerreL/
+    * http://functions.wolfram.com/Polynomials/LaguerreL3/
     """
 
     _ortho_poly = staticmethod(laguerre_poly)
@@ -1059,10 +1059,10 @@ class assoc_laguerre(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Laguerre_polynomial#Assoc_laguerre_polynomials
-    .. [2] http://mathworld.wolfram.com/AssociatedLaguerrePolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/LaguerreL/
-    .. [4] http://functions.wolfram.com/Polynomials/LaguerreL3/
+    * https//en.wikipedia.org/wiki/Laguerre_polynomial#Assoc_laguerre_polynomials
+    * http://mathworld.wolfram.com/AssociatedLaguerrePolynomial.html
+    * http://functions.wolfram.com/Polynomials/LaguerreL/
+    * http://functions.wolfram.com/Polynomials/LaguerreL3/
     """
 
     @classmethod

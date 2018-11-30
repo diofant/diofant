@@ -171,8 +171,8 @@ def simplex(c, m, b):
     References
     ==========
 
-    .. [1] Paul R. Thie, Gerard E. Keough, An Introduction to Linear
-           Programming and Game Theory, Third edition, 2008, Ch. 3.
+    * Paul R. Thie, Gerard E. Keough, An Introduction to Linear
+      Programming and Game Theory, Third edition, 2008, Ch. 3.
     """
 
     rows, cols = len(b), len(c)

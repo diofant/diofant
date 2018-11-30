@@ -394,7 +394,7 @@ def are_similar(e1, e2):
     Raises
     ======
 
-    GeometryError
+    diofant.geometry.exceptions.GeometryError
         When `e1` and `e2` cannot be compared.
 
     Notes

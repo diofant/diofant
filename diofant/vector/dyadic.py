@@ -11,8 +11,8 @@ class Dyadic(BasisDependent):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Dyadic_tensor
-    .. [2] Kane, T., Levinson, D. Dynamics Theory and Applications. 1985 McGraw-Hill
+    * https//en.wikipedia.org/wiki/Dyadic_tensor
+    * Kane, T., Levinson, D. Dynamics Theory and Applications. 1985 McGraw-Hill
     """
 
     _op_priority = 13.0

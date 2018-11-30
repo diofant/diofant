@@ -89,8 +89,8 @@ def roots_cubic(f, trig=False):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Cubic_function, General
-           formula for roots, (accessed November 17, 2014).
+    * https://en.wikipedia.org/wiki/Cubic_function, General
+      formula for roots, (accessed November 17, 2014).
     """
     if trig:
         a, b, c, d = f.all_coeffs()
@@ -242,12 +242,12 @@ def roots_quartic(f):
     References
     ==========
 
-    .. [1] http://mathforum.org/dr.math/faq/faq.cubic.equations.html
-    .. [2] https//en.wikipedia.org/wiki/Quartic_function#Summary_of_Ferrari.27s_method
-    .. [3] http://staff.bath.ac.uk/masjhd/JHD-CA.pdf
-    .. [4] http://www.albmath.org/files/Math_5713.pdf
-    .. [5] http://www.statemaster.com/encyclopedia/Quartic-equation
-    .. [6] eqworld.ipmnet.ru/en/solutions/ae/ae0108.pdf
+    * http://mathforum.org/dr.math/faq/faq.cubic.equations.html
+    * https//en.wikipedia.org/wiki/Quartic_function#Summary_of_Ferrari.27s_method
+    * http://staff.bath.ac.uk/masjhd/JHD-CA.pdf
+    * http://www.albmath.org/files/Math_5713.pdf
+    * http://www.statemaster.com/encyclopedia/Quartic-equation
+    * eqworld.ipmnet.ru/en/solutions/ae/ae0108.pdf
     """
     _, a, b, c, d = f.monic().all_coeffs()
 
@@ -739,7 +739,7 @@ def roots(f, *gens, **flags):
     the algorithm. To disable them because of unreadable output
     set ``cubics=False`` or ``quartics=False`` respectively. If cubic
     roots are real but are expressed in terms of complex numbers
-    (casus irreducibilis [1]_) the ``trig`` flag can be set to True to
+    (casus irreducibilis) the ``trig`` flag can be set to True to
     have the solutions returned in terms of cosine and inverse cosine
     functions.
 
@@ -778,7 +778,7 @@ def roots(f, *gens, **flags):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Cubic_function#Trigonometric_.28and_hyperbolic.29_method
+    * https//en.wikipedia.org/wiki/Cubic_function#Trigonometric_.28and_hyperbolic.29_method
     """
     from .polytools import to_rational_coeffs
     flags = dict(flags)

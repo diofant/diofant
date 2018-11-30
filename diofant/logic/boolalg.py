@@ -1371,7 +1371,7 @@ def SOPform(variables, minterms, dontcares=None):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Quine-McCluskey_algorithm
+    * https://en.wikipedia.org/wiki/Quine-McCluskey_algorithm
     """
     variables = [sympify(v) for v in variables]
     if minterms == []:
@@ -1419,7 +1419,7 @@ def POSform(variables, minterms, dontcares=None):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Quine-McCluskey_algorithm
+    * https://en.wikipedia.org/wiki/Quine-McCluskey_algorithm
     """
     variables = [sympify(v) for v in variables]
     if minterms == []:

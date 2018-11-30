@@ -113,8 +113,8 @@ class floor(RoundFunction):
     References
     ==========
 
-    .. [1] "Concrete mathematics" by Graham, pp. 87
-    .. [2] http://mathworld.wolfram.com/FloorFunction.html
+    * "Concrete mathematics" by Graham, pp. 87
+    * http://mathworld.wolfram.com/FloorFunction.html
     """
 
     _dir = -1
@@ -188,8 +188,8 @@ class ceiling(RoundFunction):
     References
     ==========
 
-    .. [1] "Concrete mathematics" by Graham, pp. 87
-    .. [2] http://mathworld.wolfram.com/CeilingFunction.html
+    * "Concrete mathematics" by Graham, pp. 87
+    * http://mathworld.wolfram.com/CeilingFunction.html
     """
 
     _dir = 1

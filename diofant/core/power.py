@@ -166,9 +166,9 @@ class Pow(Expr):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Exponentiation
-    .. [2] https//en.wikipedia.org/wiki/Exponentiation#Zero_to_the_power_of_zero
-    .. [3] https//en.wikipedia.org/wiki/Indeterminate_forms
+    * https//en.wikipedia.org/wiki/Exponentiation
+    * https//en.wikipedia.org/wiki/Exponentiation#Zero_to_the_power_of_zero
+    * https//en.wikipedia.org/wiki/Indeterminate_forms
     """
 
     is_Pow = True

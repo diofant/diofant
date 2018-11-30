@@ -1,2 +1,5 @@
-*.py    diff=python
 *       text=auto
+*.py    diff=python text
+*.rst   text
+*.cfg   text
+*.yml   text

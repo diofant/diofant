@@ -2070,10 +2070,10 @@ class Poly(Expr):
         References
         ==========
 
-        .. [1] [ManWright94]_
-        .. [2] [Koepf98]_
-        .. [3] [Abramov71]_
-        .. [4] [Man93]_
+        * [ManWright94]_
+        * [Koepf98]_
+        * [Abramov71]_
+        * [Man93]_
         """
         from .dispersion import dispersionset
         return dispersionset(self, other)
@@ -2141,10 +2141,10 @@ class Poly(Expr):
         References
         ==========
 
-        .. [1] [ManWright94]_
-        .. [2] [Koepf98]_
-        .. [3] [Abramov71]_
-        .. [4] [Man93]_
+        * [ManWright94]_
+        * [Koepf98]_
+        * [Abramov71]_
+        * [Man93]_
         """
         from .dispersion import dispersion
         return dispersion(self, other)
@@ -2521,8 +2521,8 @@ class Poly(Expr):
         References
         ==========
 
-        .. [1] [Alkiviadis05]_
-        .. [2] [Alkiviadis08]_
+        * [Alkiviadis05]_
+        * [Alkiviadis08]_
 
         Examples
         ========
@@ -5486,8 +5486,8 @@ def groebner(F, *gens, **args):
     References
     ==========
 
-    .. [1] [Buchberger01]_
-    .. [2] [Cox97]_
+    * [Buchberger01]_
+    * [Cox97]_
 
     See Also
     ========
@@ -5597,7 +5597,7 @@ class GroebnerBasis(Basic):
         References
         ==========
 
-        .. [1] [KredelWeispfennig88]_
+        * [KredelWeispfennig88]_
         """
         if self.contains(Integer(1)):
             return

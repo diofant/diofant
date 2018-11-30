@@ -355,7 +355,7 @@ class MultisetPartitionTraverser():
     Has methods to ``enumerate`` and ``count`` the partitions of a multiset.
 
     This implements a refactored and extended version of Knuth's algorithm
-    7.1.2.5M [AOCP]_.
+    7.1.2.5M.
 
     The enumeration methods of this class are generators and return
     data structures which can be interpreted by the same visitor
@@ -378,17 +378,17 @@ class MultisetPartitionTraverser():
     References
     ==========
 
-    .. [AOCP] Algorithm 7.1.2.5M in Volume 4A, Combinatoral Algorithms,
-           Part 1, of The Art of Computer Programming, by Donald Knuth.
+    * Algorithm 7.1.2.5M in Volume 4A, Combinatoral Algorithms,
+      Part 1, of The Art of Computer Programming, by Donald Knuth.
 
-    .. [Factorisatio] On a Problem of Oppenheim concerning
-           "Factorisatio Numerorum" E. R. Canfield, Paul Erdős, Carl
-           Pomerance, JOURNAL OF NUMBER THEORY, Vol. 17, No. 1. August
-           1983.  See section 7 for a description of an algorithm
-           similar to Knuth's.
+    * On a Problem of Oppenheim concerning
+      "Factorisatio Numerorum" E. R. Canfield, Paul Erdős, Carl
+      Pomerance, JOURNAL OF NUMBER THEORY, Vol. 17, No. 1. August
+      1983.  See section 7 for a description of an algorithm
+      similar to Knuth's.
 
-    .. [Yorgey] Generating Multiset Partitions, Brent Yorgey, The
-           Monad.Reader, Issue 8, September 2007.
+    * Generating Multiset Partitions, Brent Yorgey, The
+      Monad.Reader, Issue 8, September 2007.
 
     """
 
@@ -790,13 +790,13 @@ class MultisetPartitionTraverser():
         [['a', 'b'], ['a', 'b']]]
 
         The implementation is based, in part, on the answer given to
-        exercise 69, in Knuth [AOCP]_.
+        exercise 69, in Knuth.
 
         References
         ==========
 
-        .. [AOCP] Algorithm 7.1.2.5M in Volume 4A, Combinatoral Algorithms,
-           Part 1, of The Art of Computer Programming, by Donald Knuth.
+        * Algorithm 7.1.2.5M in Volume 4A, Combinatoral Algorithms,
+          Part 1, of The Art of Computer Programming, by Donald Knuth.
         """
 
         # Keep track of iterations which do not yield a partition.
@@ -1008,7 +1008,7 @@ class MultisetPartitionTraverser():
         Notes
         =====
 
-        If one looks at the workings of Knuth's algorithm M [AOCP]_, it
+        If one looks at the workings of Knuth's algorithm M, it
         can be viewed as a traversal of a binary tree of parts.  A
         part has (up to) two children, the left child resulting from
         the spread operation, and the right child from the decrement
@@ -1051,8 +1051,8 @@ class MultisetPartitionTraverser():
         References
         ==========
 
-        .. [AOCP] Algorithm 7.1.2.5M in Volume 4A, Combinatoral Algorithms,
-           Part 1, of The Art of Computer Programming, by Donald Knuth.
+        * Algorithm 7.1.2.5M in Volume 4A, Combinatoral Algorithms,
+          Part 1, of The Art of Computer Programming, by Donald Knuth.
         """
         # number of partitions so far in the enumeration
         self.pcount = 0

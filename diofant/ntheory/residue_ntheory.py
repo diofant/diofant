@@ -57,7 +57,7 @@ def _primitive_root_prime_iter(p):
     References
     ==========
 
-    .. [1] W. Stein "Elementary Number Theory" (2011), page 44
+    * W. Stein "Elementary Number Theory" (2011), page 44
 
     Examples
     ========
@@ -83,8 +83,8 @@ def primitive_root(p):
     References
     ==========
 
-    .. [1] W. Stein "Elementary Number Theory" (2011), page 44
-    .. [2] P. Hackman "Elementary Number Theory" (2009),  Chapter C
+    * W. Stein "Elementary Number Theory" (2011), page 44
+    * P. Hackman "Elementary Number Theory" (2009),  Chapter C
 
     Parameters
     ==========
@@ -174,7 +174,7 @@ def _sqrt_mod_tonelli_shanks(a, p):
     References
     ==========
 
-    .. [1] R. Crandall and C. Pomerance "Prime Numbers", 2nt Ed., page 101
+    * R. Crandall and C. Pomerance "Prime Numbers", 2nt Ed., page 101
     """
     s = trailing(p - 1)
     t = p >> s
@@ -319,9 +319,9 @@ def _sqrt_mod_prime_power(a, p, k):
     References
     ==========
 
-    .. [1] P. Hackman "Elementary Number Theory" (2009),  page 160
-    .. [2] http://www.numbertheory.org/php/squareroot.html
-    .. [3] [Gathen99]_
+    * P. Hackman "Elementary Number Theory" (2009),  page 160
+    * http://www.numbertheory.org/php/squareroot.html
+    * [Gathen99]_
 
     Examples
     ========
@@ -426,7 +426,7 @@ def _sqrt_mod1(a, p, n):
     References
     ==========
 
-    .. [1] http://www.numbertheory.org/php/squareroot.html
+    * http://www.numbertheory.org/php/squareroot.html
     """
     pn = p**n
     a = a % pn
@@ -574,7 +574,7 @@ def is_nthpow_residue(a, n, m):
     References
     ==========
 
-    .. [1] P. Hackman "Elementary Number Theory" (2009),  page 76
+    * P. Hackman "Elementary Number Theory" (2009),  page 76
     """
     a, n, m = [as_int(i) for i in (a, n, m)]
     if m <= 0:
@@ -647,7 +647,7 @@ def _nthroot_mod1(s, q, p, all_roots):
     References
     ==========
 
-    .. [1] A. M. Johnston "A Generalized qth Root Algorithm"
+    * A. M. Johnston "A Generalized qth Root Algorithm"
     """
     g = primitive_root(p)
     if not isprime(q):
@@ -803,7 +803,7 @@ def legendre_symbol(a, p):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Legendre_symbol
+    * https://en.wikipedia.org/wiki/Legendre_symbol
     """
     a, p = as_int(a), as_int(p)
     if not isprime(p) or p == 2:
@@ -934,8 +934,8 @@ class mobius(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/M%C3%B6bius_function
-    .. [2] Thomas Koshy "Elementary Number Theory with Applications"
+    * https//en.wikipedia.org/wiki/M%C3%B6bius_function
+    * Thomas Koshy "Elementary Number Theory with Applications"
     """
 
     @classmethod

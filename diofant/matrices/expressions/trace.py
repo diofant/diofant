@@ -10,11 +10,6 @@ class Trace(Expr):
     >>> A = MatrixSymbol('A', 3, 3)
     >>> Trace(A)
     Trace(A)
-
-    See Also
-    ========
-
-    trace
     """
 
     is_Trace = True

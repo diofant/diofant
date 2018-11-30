@@ -183,3 +183,5 @@ a theoretical foundation for implementing the Diofant.
 
 .. [Wester1999] Michael J. Wester, A Critique of the Mathematical Abilities of
     CA Systems, 1999, `<http://www.math.unm.edu/~wester/cas/book/Wester.pdf>`_
+
+.. [Gruntz96] Gruntz Thesis, http://www.cybertester.com/data/gruntz.pdf

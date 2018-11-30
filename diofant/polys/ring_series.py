@@ -523,7 +523,7 @@ def rs_compose_add(p1, p2):
     References
     ==========
 
-    .. [1] [Bostan02]_
+    * [Bostan02]_
     """
     R = p1.ring
     x = R.gens[0]

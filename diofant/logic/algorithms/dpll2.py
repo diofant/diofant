@@ -8,7 +8,7 @@ Features:
 References
 ==========
 
-.. [1] https://en.wikipedia.org/wiki/DPLL_algorithm
+* https://en.wikipedia.org/wiki/DPLL_algorithm
 """
 
 from collections import defaultdict

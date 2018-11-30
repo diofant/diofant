@@ -71,17 +71,17 @@ def buchberger(f, ring):
     References
     ==========
 
-    .. [1] [Bose03]_
-    .. [2] [Giovini91]_
-    .. [3] [Ajwa95]_
-    .. [4] [Cox97]_
-    .. [5] [BeckerWeispfenning93]_, page 232
+    * [Bose03]_
+    * [Giovini91]_
+    * [Ajwa95]_
+    * [Cox97]_
+    * [BeckerWeispfenning93]_, page 232
 
     Notes
     =====
 
     Used an improved version of Buchberger's algorithm
-    as presented in [5]_.
+    as presented in [BeckerWeispfenning93]_.
     """
     order = ring.order
 
@@ -542,8 +542,8 @@ def f5b(F, ring):
     References
     ==========
 
-    .. [1] [SunWang10]_
-    .. [2] [BeckerWeispfenning93]_, pp. 203, 216.
+    * [SunWang10]_
+    * [BeckerWeispfenning93]_, pp. 203, 216.
     """
     order = ring.order
 
@@ -640,7 +640,7 @@ def f5b(F, ring):
 
 def red_groebner(G, ring):
     """
-    Compute reduced Gröbner basis [1]_.
+    Compute reduced Gröbner basis.
 
     Selects a subset of generators, that already generate the ideal
     and computes a reduced Gröbner basis for them.
@@ -648,7 +648,7 @@ def red_groebner(G, ring):
     References
     ==========
 
-    .. [1] [BeckerWeispfenning93], page 216.
+    * [BeckerWeispfenning93], page 216.
     """
     def reduction(P):
         """
@@ -722,7 +722,7 @@ def groebner_lcm(f, g):
     References
     ==========
 
-    .. [1] [Cox97]_
+    * [Cox97]_
     """
     if f.ring != g.ring:
         raise ValueError("Values should be equal")

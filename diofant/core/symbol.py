@@ -59,7 +59,7 @@ class BaseSymbol(AtomicExpr, Boolean):
     References
     ==========
 
-    .. [1] https://docs.python.org/3/reference/datamodel.html#object.__lt__
+    * https://docs.python.org/3/reference/datamodel.html#object.__lt__
     """
 
     is_comparable = False

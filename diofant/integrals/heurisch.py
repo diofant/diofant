@@ -156,7 +156,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     This is a heuristic approach to indefinite integration in finite
     terms using the extended heuristic (parallel) Risch algorithm, based
-    on Manuel Bronstein's "Poor Man's Integrator" [1]_.
+    on Manuel Bronstein's "Poor Man's Integrator".
 
     The algorithm supports various classes of functions including
     transcendental elementary or special functions like Airy,
@@ -196,22 +196,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     References
     ==========
 
-    .. [1] Manuel Bronstein's "Poor Man's Integrator",
-           http://www-sop.inria.fr/cafe/Manuel.Bronstein/pmint/index.html
-
-    .. [2] K. Geddes, L. Stefanus, On the Risch-Norman Integration
-           Method and its Implementation in Maple, Proceedings of
-           ISSAC'89, ACM Press, 212-217.
-
-    .. [3] J. H. Davenport, On the Parallel Risch Algorithm (I),
-           Proceedings of EUROCAM'82, LNCS 144, Springer, 144-157.
-
-    .. [4] J. H. Davenport, On the Parallel Risch Algorithm (III):
-           Use of Tangents, SIGSAM Bulletin 16 (1982), 3-6.
-
-    .. [5] J. H. Davenport, B. M. Trager, On the Parallel Risch
-           Algorithm (II), ACM Transactions on Mathematical
-           Software 11 (1985), 356-362.
+    * Manuel Bronstein's "Poor Man's Integrator",
+      http://www-sop.inria.fr/cafe/Manuel.Bronstein/pmint/index.html
 
     See Also
     ========
