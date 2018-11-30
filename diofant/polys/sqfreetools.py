@@ -1,7 +1,7 @@
 """Square-free decomposition algorithms and related tools. """
 
-from .densearith import (dmp_mul, dmp_mul_ground, dmp_neg, dmp_pow, dmp_quo,
-                         dmp_sub, dup_mul)
+from .densearith import (dmp_mul_ground, dmp_neg, dmp_pow, dmp_quo, dmp_sub,
+                         dup_mul)
 from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in, dmp_ground_LC,
                          dmp_inject, dmp_one_p, dmp_raise, dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff_in, dmp_ground_monic,
@@ -193,29 +193,6 @@ def dmp_sqf_list_in(f, N, u, K):
         count += 1
 
     return coeff, result
-
-
-def dmp_sqf_list_include_in(f, N, u, K):
-    """
-    Return square-free decomposition of a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> f = x**5 + 2*x**4*y + x**3*y**2
-
-    >>> R.dmp_sqf_list_include_in(f, [0, 1])
-    [(1, 1), (x + y, 2), (x, 3)]
-    """
-    coeff, factors = dmp_sqf_list_in(f, N, u, K)
-
-    if factors and factors[0][1] == 1:
-        g = dmp_mul(factors[0][0], coeff, u, K)
-        return [(g, 1)] + factors[1:]
-    else:
-        return [(coeff, 1)] + factors
 
 
 def dup_gff_list(f, K):

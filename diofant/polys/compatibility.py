@@ -47,9 +47,8 @@ from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_real_roots_list,
                             dup_isolate_real_roots_sqf, dup_refine_real_root,
                             dup_root_upper_bound, dup_sturm)
-from .sqfreetools import (dmp_sqf_list_in, dmp_sqf_list_include_in,
-                          dmp_sqf_norm, dmp_sqf_p_in, dmp_sqf_part_in,
-                          dup_gff_list)
+from .sqfreetools import (dmp_sqf_list_in, dmp_sqf_norm, dmp_sqf_p_in,
+                          dmp_sqf_part_in, dup_gff_list)
 
 
 __all__ = ('IPolys',)
@@ -546,10 +545,6 @@ class IPolys:
     def dmp_sqf_list_in(self, f, N):
         coeff, factors = dmp_sqf_list_in(self.to_dense(f), N, self.ngens-1, self.domain)
         return self.from_dense(coeff), [(self.from_dense(g), k) for g, k in factors]
-
-    def dmp_sqf_list_include_in(self, f, N):
-        factors = dmp_sqf_list_include_in(self.to_dense(f), N, self.ngens-1, self.domain)
-        return [(self.from_dense(g), k) for g, k in factors]
 
     def dup_gff_list(self, f):
         factors = dup_gff_list(self.to_dense(f), self.domain)

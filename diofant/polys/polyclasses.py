@@ -28,9 +28,8 @@ from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_real_roots, dup_isolate_real_roots_sqf,
                             dup_refine_real_root, dup_sturm)
-from .sqfreetools import (dmp_sqf_list_in, dmp_sqf_list_include_in,
-                          dmp_sqf_norm, dmp_sqf_p_in, dmp_sqf_part_in,
-                          dup_gff_list)
+from .sqfreetools import (dmp_sqf_list_in, dmp_sqf_norm, dmp_sqf_p_in,
+                          dmp_sqf_part_in, dup_gff_list)
 
 
 class DMP(CantSympify):
@@ -564,11 +563,6 @@ class DMP(CantSympify):
         """Returns a list of square-free factors of ``self``. """
         coeff, factors = dmp_sqf_list_in(self.rep, list(range(self.lev + 1)), self.lev, self.domain)
         return self.per(coeff), [(self.per(g), k) for g, k in factors]
-
-    def sqf_list_include(self):
-        """Returns a list of square-free factors of ``self``. """
-        factors = dmp_sqf_list_include_in(self.rep, list(range(self.lev + 1)), self.lev, self.domain)
-        return [(self.per(g), k) for g, k in factors]
 
     def factor_list(self):
         """Returns a list of irreducible factors of ``self``. """

@@ -2261,9 +2261,6 @@ def test_sqf():
     assert sqf_list(F, polys=False) == (1, [(g, 1), (h, 2)])
 
     pytest.raises(PolynomialError, lambda: sqf_list([1, 2]))
-
-    assert F.sqf_list_include() == [(G, 1), (H, 2)]
-
     pytest.raises(ComputationFailed, lambda: sqf_part(4))
 
     assert sqf(1) == 1

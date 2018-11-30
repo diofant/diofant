@@ -897,7 +897,11 @@ def splitfactor_sqf(p, DE, coefficientD=False, z=None, basic=False):
 
     S = []
     N = []
-    p_sqf = p.sqf_list_include()
+
+    c_sqf, p_sqf = p.sqf_list()
+    if not c_sqf.is_one:
+        p_sqf.insert(0, (c_sqf, 1))
+
     if p.is_zero:
         return ((p, 1),), ()
 
@@ -1194,7 +1198,9 @@ def residue_reduce(a, d, DE, z=None, invert=True):
                 continue
             h_lc = Poly(h.as_poly(DE.t).LC(), DE.t, field=True)
 
-            h_lc_sqf = h_lc.sqf_list_include()
+            c_sqf, h_lc_sqf = h_lc.sqf_list()
+            if not c_sqf.is_one:
+                h_lc_sqf.insert(0, (c_sqf, 1))
 
             for a, j in h_lc_sqf:
                 h = Poly(h, DE.t, field=True).exquo(Poly(gcd(a, s**j, *kkinv),
@@ -1212,7 +1218,8 @@ def residue_reduce(a, d, DE, z=None, invert=True):
 
                 h = Poly(dict(zip(h.monoms(), coeffs)), DE.t)
 
-            H.append((s, h))
+            if not s.is_one:
+                H.append((s, h))
 
     b = all(not cancel(i.as_expr()).has(DE.t, z) for i, _ in Np)
 
