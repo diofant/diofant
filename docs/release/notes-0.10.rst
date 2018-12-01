@@ -143,3 +143,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`15520` 5th-order ODE with irrational coefficient fails
 * :sympyissue:`15539` Order at negative infinity
 * :sympyissue:`15561` SymPy's Number.__divmod__ doesn't agree with the builtin divmod
+* :sympyissue:`15574` dsolve fails for a system of independent equations
