@@ -843,7 +843,7 @@ def _trunc(f, minpoly, p):
     minpoly = minpoly.set_ring(ring)
     p_ = ring.ground_new(p)
 
-    return f.trunc_ground(p).rem([minpoly, p_]).trunc_ground(p)
+    return f.trunc_ground(p).div([minpoly, p_])[1].trunc_ground(p)
 
 
 def _euclidean_algorithm(f, g, minpoly, p):
@@ -1066,7 +1066,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
         gammaa = _evaluate_ground(gamma, k-1, a)
         minpolya = _evaluate_ground(minpoly, k-1, a)
 
-        if gammaa.rem([minpolya, gammaa.ring(p)]) == 0:
+        if gammaa.div([minpolya, gammaa.ring(p)])[1] == 0:
             continue
 
         fa = _evaluate_ground(f, k-1, a)

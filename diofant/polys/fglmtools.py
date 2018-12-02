@@ -113,7 +113,7 @@ def _representing_matrices(basis, G, ring):
         M = [[domain.zero] * len(basis) for _ in range(len(basis))]
 
         for i, v in enumerate(basis):
-            r = ring.term_new(monomial_mul(m, v), domain.one).rem(G)
+            r = ring.term_new(monomial_mul(m, v), domain.one).div(G)[1]
 
             for monom, coeff in r.terms():
                 j = basis.index(monom)

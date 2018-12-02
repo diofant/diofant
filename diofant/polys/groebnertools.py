@@ -92,7 +92,7 @@ def buchberger(f, ring):
         return pr
 
     def normal(g, J):
-        h = g.rem([ f[j] for j in J ])
+        h = g.div([f[j] for j in J])[1]
 
         if not h:
             return
@@ -189,7 +189,7 @@ def buchberger(f, ring):
 
         for i in range(len(f)):
             p = f[i]
-            r = p.rem(f[:i])
+            r = p.div(f[:i])[1]
 
             if r:
                 f1.append(r.monic())
@@ -486,7 +486,7 @@ def f5_reduce(f, B):
     >>> f = lbp(sig((1, 1, 1), 4), x, 3)
     >>> g = lbp(sig((0, 0, 0), 2), x, 2)
 
-    >>> Polyn(f).rem([Polyn(g)])
+    >>> Polyn(f).div([Polyn(g)])[1]
     0
     >>> f5_reduce(f, [g])
     (((1, 1, 1), 4), x, 3)
@@ -555,7 +555,7 @@ def f5b(F, ring):
 
         for i in range(len(F)):
             p = F[i]
-            r = p.rem(F[:i])
+            r = p.div(F[:i])[1]
 
             if r:
                 B.append(r)
@@ -656,7 +656,7 @@ def red_groebner(G, ring):
         """
         Q = []
         for i, p in enumerate(P):
-            h = p.rem(P[:i] + P[i + 1:])
+            h = p.div(P[:i] + P[i + 1:])[1]
             if h:
                 Q.append(h)
 
@@ -682,7 +682,7 @@ def is_groebner(G):
     for i in range(len(G)):
         for j in range(i + 1, len(G)):
             s = spoly(G[i], G[j])
-            s = s.rem(G)
+            s = s.div(G)[1]
             if s:
                 return False
 

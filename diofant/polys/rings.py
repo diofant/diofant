@@ -1174,7 +1174,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if not other:
             raise ZeroDivisionError("polynomial division")
         elif isinstance(other, ring.dtype):
-            return self.rem(other)
+            return divmod(self, other)[1]
         elif isinstance(other, PolyElement):
             if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
                 pass
@@ -1336,48 +1336,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             return qv[0], r
         else:
             return qv, r
-
-    def rem(self, G):
-        f = self
-        if isinstance(G, PolyElement):
-            G = [G]
-        if any(not g for g in G):
-            raise ZeroDivisionError("polynomial division")
-        ring = f.ring
-        domain = ring.domain
-        zero = domain.zero
-        r = ring.zero
-        term_div = f._term_div()
-        ltf = f.LT
-        f = f.copy()
-        get = f.get
-        while f:
-            for g in G:
-                tq = term_div(ltf, g.LT)
-                if tq is not None:
-                    m, c = tq
-                    for mg, cg in g.items():
-                        m1 = monomial_mul(mg, m)
-                        c1 = get(m1, zero) - c*cg
-                        if not c1:
-                            del f[m1]
-                        else:
-                            f[m1] = c1
-                    ltm = f.leading_expv()
-                    if ltm is not None:
-                        ltf = ltm, f[ltm]
-
-                    break
-            else:
-                ltm, ltc = ltf
-                assert ltm not in r
-                r[ltm] = ltc
-                del f[ltm]
-                ltm = f.leading_expv()
-                if ltm is not None:
-                    ltf = ltm, f[ltm]
-
-        return r
 
     def exquo(self, other):
         q, r = divmod(self, other)
