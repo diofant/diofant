@@ -777,8 +777,7 @@ def groebner_gcd(f, g):
         gc, g = g.primitive()
         gcd = domain.gcd(fc, gc)
 
-    H = (f*g).quo([groebner_lcm(f, g)])
-    h = H[0]
+    h = (f*g)//groebner_lcm(f, g)
 
     if not domain.has_Field:
         return gcd*h

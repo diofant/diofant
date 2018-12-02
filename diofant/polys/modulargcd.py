@@ -114,7 +114,7 @@ def _primitive(f, p):
     yring = ring.clone(symbols=ring.symbols[k-1])
     contf = yring.from_dense(cont).trunc_ground(p)
 
-    return contf, f.quo(contf.set_ring(ring))
+    return contf, f//contf.set_ring(ring)
 
 
 def _deg(f):
@@ -1562,7 +1562,7 @@ def _primitive_in_x0(f):
         if cont == dom.one:
             return cont, f
 
-    return cont, f.quo(cont.set_ring(fring))
+    return cont, f//cont.set_ring(fring)
 
 
 # TODO: add support for algebraic function fields
@@ -1682,4 +1682,4 @@ def func_field_modgcd(f, g):
 
     h = h.quo_ground(h.LC)
 
-    return h, f.quo(h), g.quo(h)
+    return h, f//h, g//h

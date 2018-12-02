@@ -1199,7 +1199,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if not other:
             raise ZeroDivisionError("polynomial division")
         elif isinstance(other, ring.dtype):
-            return self.quo(other)
+            return divmod(self, other)[0]
         elif isinstance(other, PolyElement):
             if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
                 pass
@@ -1378,9 +1378,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
                     ltf = ltm, f[ltm]
 
         return r
-
-    def quo(self, G):
-        return self.div(G)[0]
 
     def exquo(self, G):
         q, r = self.div(G)
@@ -1904,7 +1901,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             gc, g = g.primitive()
             c = domain.lcm(fc, gc)
 
-        h = (f*g).quo(f.gcd(g))
+        h = (f*g)//f.gcd(g)
 
         if not domain.has_Field:
             return h.mul_ground(c)
