@@ -250,10 +250,6 @@ class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
         """Convert ``self`` to a dict representation with native coefficients. """
         return dmp_to_dict(self.rep, 0, self.domain)
 
-    @classmethod
-    def from_list(cls, rep):
-        return cls(dmp_strip(list(map(cls._parent.domain.convert, rep)), 0))
-
     def LC(self):
         """Returns the leading coefficient of ``self``. """
         return dmp_LC(self.rep, self.domain)
