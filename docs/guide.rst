@@ -113,17 +113,8 @@ We use standard `Semantic Versioning`_ numbering scheme, but adopt
 `PEP 440`_ for alpha ("aN" suffix), beta ("bN") and development
 (".devN") releases.
 
-Releasing a new version is done as follows:
-
-1. Increase ``__version__`` in ``diofant/__init__.py``.
-
-2. Commit version update::
-
-    $ git commit -am 'Bump version to X.Y.Z'
-
-3. Merge commit to the master branch.
-
-4. Tag merge commit and push release tag::
+To release a new version, tag latest commit to the master branch
+and publish this release tag::
 
     $ git pull
     $ git tag -s vX.Y.Z
