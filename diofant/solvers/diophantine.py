@@ -733,7 +733,7 @@ def diop_quadratic(eq, param=symbols("t", integer=True)):
     * Methods to solve Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0, [online],
       Available: https://www.alpertron.com.ar/METHODS.HTM
     * Solving the equation ax^2+ bxy + cy^2 + dx + ey + f= 0, [online],
-      Available: http://www.jpr2718.org/ax2p.pdf
+      Available: https://web.archive.org/web/20180831180321/http://www.jpr2718.org/ax2p.pdf
 
     See Also
     ========
@@ -831,7 +831,7 @@ def _diop_quadratic(var, coeff, t):
                         sol.add((solve_x(z0), solve_y(z0)))
 
     # (3) Method used when B**2 - 4*A*C is a square, is described in p. 6 of the below paper
-    # by John P. Robertson, http://www.jpr2718.org/ax2p.pdf
+    # by John P. Robertson, https://web.archive.org/web/20180831180321/http://www.jpr2718.org/ax2p.pdf
 
     elif is_square(discr):
         if A != 0:
@@ -985,7 +985,7 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
 
     * Solving the generalized Pell equation x**2 - D*y**2 = N, John P.
       Robertson, July 31, 2004, Pages 16 - 17. [online], Available:
-      http://www.jpr2718.org/pell.pdf
+      https://web.archive.org/web/20180831180333/http://www.jpr2718.org/pell.pdf
     """
     if D < 0:
         if N == 0:
@@ -1219,7 +1219,7 @@ def PQa(P_0, Q_0, D):
     ==========
 
     * Solving the generalized Pell equation x^2 - Dy^2 = N, John P.
-      Robertson, July 31, 2004, Pages 4 - 8. http://www.jpr2718.org/pell.pdf
+      Robertson, July 31, 2004, Pages 4 - 8. https://web.archive.org/web/20180831180333/http://www.jpr2718.org/pell.pdf
     """
     A_i_2 = B_i_1 = 0
     A_i_1 = B_i_2 = 1
@@ -1282,7 +1282,7 @@ def diop_bf_DN(D, N, t=symbols("t", integer=True)):
     ==========
 
     * Solving the generalized Pell equation x**2 - D*y**2 = N, John P.
-      Robertson, July 31, 2004, Page 15. http://www.jpr2718.org/pell.pdf
+      Robertson, July 31, 2004, Page 15. https://web.archive.org/web/20180831180333/http://www.jpr2718.org/pell.pdf
     """
     D = as_int(D)
     N = as_int(N)
@@ -1357,7 +1357,7 @@ def equivalent(u, v, r, s, D, N):
     ==========
 
     * Solving the generalized Pell equation x**2 - D*y**2 = N, John P.
-      Robertson, July 31, 2004, Page 12. http://www.jpr2718.org/pell.pdf
+      Robertson, July 31, 2004, Page 12. https://web.archive.org/web/20180831180333/http://www.jpr2718.org/pell.pdf
     """
     return divisible(u*r - D*v*s, N) and divisible(u*s - v*r, N)
 
@@ -1468,7 +1468,7 @@ def transformation_to_DN(eq):
 
     * Solving the equation ax^2 + bxy + cy^2 + dx + ey + f = 0,
       John P.Robertson, May 8, 2003, Page 7 - 11.
-      http://www.jpr2718.org/ax2p.pdf
+      https://web.archive.org/web/20180831180321/http://www.jpr2718.org/ax2p.pdf
     """
 
     var, coeff, diop_type = classify_diop(eq, _dict=False)
@@ -1563,7 +1563,7 @@ def find_DN(eq):
 
     * Solving the equation ax^2 + bxy + cy^2 + dx + ey + f = 0,
       John P.Robertson, May 8, 2003, Page 7 - 11.
-      http://www.jpr2718.org/ax2p.pdf
+      https://web.archive.org/web/20180831180321/http://www.jpr2718.org/ax2p.pdf
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
     if diop_type == "binary_quadratic":

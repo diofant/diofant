@@ -43,6 +43,9 @@ known_functions = {
     "asinh": [(lambda x: True, "ArcSinh")],
     "zeta": [(lambda x: True, "Zeta")],
     "Heaviside": [(lambda x: True, "UnitStep")],
+    "fibonacci": [(lambda x: True, "Fibonacci")],
+    "polylog": [(lambda x, y: True, "PolyLog")],
+    "atanh": [(lambda x: True, "ArcTanh")],
 }
 
 

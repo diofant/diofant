@@ -2848,3 +2848,12 @@ def test_sympyissue_15474():
     eqs = [Eq(f(t).diff(t), -a*g(t)), Eq(g(t).diff(t), a*f(t))]
     ans = [Eq(f(t), C1*cos(a*t) - C2*sin(a*t)), Eq(g(t), C1*sin(a*t) + C2*cos(a*t))]
     assert [simplify(_.rewrite(sin)) for _ in dsolve(eqs)] == ans
+
+
+def test_sympyissue_15574():
+    f1, f2, f3, f4 = symbols('f1 f2 f3 f4', cls=Function)
+    eqs = [Eq(f(x).diff(x), f(x)) for f in (f1, f2, f3, f4)]
+    ans = [Eq(f(x), c*exp(x)) for f, c in zip((f1, f2, f3, f4), (C1, C2, C3, C4))]
+    assert dsolve(eqs[:2]) == ans[:2]
+    assert dsolve(eqs[:3]) == ans[:3]
+    assert dsolve(eqs[:4]) == ans[:4]

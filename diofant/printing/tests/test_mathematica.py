@@ -10,9 +10,9 @@ from diofant.core import (Catalan, Derivative, Dummy, E, Eq, EulerGamma,
 from diofant.functions import (Heaviside, Max, Min, Piecewise, acos, asin,
                                asinh, atan, atanh, binomial, conjugate, cos,
                                cosh, cot, coth, csch, erfc, exp, factorial,
-                               factorial2, gamma, hyper, im, log, meijerg,
-                               polygamma, re, rf, sech, sign, sin, sinh, tan,
-                               tanh, zeta)
+                               factorial2, fibonacci, gamma, hyper, im, log,
+                               meijerg, polygamma, polylog, re, rf, sech, sign,
+                               sin, sinh, tan, tanh, zeta)
 from diofant.integrals import Integral
 from diofant.logic import Or, false, true
 from diofant.matrices import Matrix
@@ -87,6 +87,9 @@ def test_Function():
     assert mcode(zeta(x)) == "Zeta[x]"
     assert mcode(asinh(x)) == "ArcSinh[x]"
     assert mcode(Heaviside(x)) == "UnitStep[x]"
+    assert mcode(fibonacci(x)) == "Fibonacci[x]"
+    assert mcode(polylog(x, y)) == "PolyLog[x, y]"
+    assert mcode(atanh(x)) == "ArcTanh[x]"
 
     class myfunc1(Function):
         @classmethod
