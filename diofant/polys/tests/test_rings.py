@@ -675,12 +675,9 @@ def test_PolyElement___floordiv__truediv__():
     pytest.raises(TypeError, lambda: u % sqrt(2))
     pytest.raises(TypeError, lambda: u // sqrt(2))
 
-    pytest.raises(ValueError, lambda: u.div(t))
-
     R, x = ring("x", ZZ)
     f, g = x**2 + 2*x + 3, R(0)
 
-    pytest.raises(ZeroDivisionError, lambda: f.div(g))
     pytest.raises(ZeroDivisionError, lambda: divmod(f, g))
     pytest.raises(ZeroDivisionError, lambda: f.rem(g))
     pytest.raises(ZeroDivisionError, lambda: f % g)
@@ -690,7 +687,6 @@ def test_PolyElement___floordiv__truediv__():
     R,  x, y = ring("x,y", ZZ)
     f, g = x*y + 2*x + 3, R(0)
 
-    pytest.raises(ZeroDivisionError, lambda: f.div(g))
     pytest.raises(ZeroDivisionError, lambda: divmod(f, g))
     pytest.raises(ZeroDivisionError, lambda: f.rem(g))
     pytest.raises(ZeroDivisionError, lambda: f % g)
@@ -702,18 +698,17 @@ def test_PolyElement___floordiv__truediv__():
     f, g = x**2 + 1, 2*x - 4
     q, r = R(0), x**2 + 1
 
-    assert f.div(g) == divmod(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
     assert f.rem(g) == f % g == r
     assert f // g == q
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
 
-    assert R.zero.div(f) == (R.zero, R.zero)
-    assert R.zero.div([f]) == ([], R.zero)
+    assert divmod(R.zero, f) == (R.zero, R.zero)
 
     f, g = 3*x**3 + x**2 + x + 5, 5*x**2 - 3*x + 1
     q, r = R(0), f
 
-    assert f.div(g) == divmod(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
     assert f.rem(g) == f % g == r
     assert f // g == q
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
@@ -721,7 +716,7 @@ def test_PolyElement___floordiv__truediv__():
     f, g = 5*x**4 + 4*x**3 + 3*x**2 + 2*x + 1, x**2 + 2*x + 3
     q, r = 5*x**2 - 6*x, 20*x + 1
 
-    assert f.div(g) == divmod(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
     assert f.rem(g) == f % g == r
     assert f // g == q
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
@@ -729,7 +724,7 @@ def test_PolyElement___floordiv__truediv__():
     f, g = 5*x**5 + 4*x**4 + 3*x**3 + 2*x**2 + x, x**4 + 2*x**3 + 9
     q, r = 5*x - 6, 15*x**3 + 2*x**2 - 44*x + 54
 
-    assert f.div(g) == divmod(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
     assert f.rem(g) == f % g == r
     assert f // g == q
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
@@ -739,7 +734,7 @@ def test_PolyElement___floordiv__truediv__():
     f, g = x**2 + 1, 2*x - 4
     q, r = x/2 + 1, R(5)
 
-    assert f.div(g) == divmod(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
     assert f.rem(g) == f % g == r
     assert f // g == q
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
@@ -747,7 +742,7 @@ def test_PolyElement___floordiv__truediv__():
     f, g = 3*x**3 + x**2 + x + 5, 5*x**2 - 3*x + 1
     q, r = 3*x/5 + QQ(14, 25), 52*x/25 + QQ(111, 25)
 
-    assert f.div(g) == divmod(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
     assert f.rem(g) == f % g == r
     assert f // g == q
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
@@ -757,7 +752,7 @@ def test_PolyElement___floordiv__truediv__():
     f, g = x**2 - y**2, x - y
     q, r = x + y, R(0)
 
-    assert f.div(g) == divmod(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
     assert f.rem(g) == f % g == r
     assert f // g == q
     assert f.exquo(g) == q
@@ -765,7 +760,7 @@ def test_PolyElement___floordiv__truediv__():
     f, g = x**2 + y**2, x - y
     q, r = x + y, 2*y**2
 
-    assert f.div(g) == divmod(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
     assert f.rem(g) == f % g == r
     assert f // g == q
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
@@ -773,7 +768,7 @@ def test_PolyElement___floordiv__truediv__():
     f, g = x**2 + y**2, -x + y
     q, r = -x - y, 2*y**2
 
-    assert f.div(g) == divmod(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
     assert f.rem(g) == f % g == r
     assert f // g == q
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
@@ -781,7 +776,7 @@ def test_PolyElement___floordiv__truediv__():
     f, g = x**2 + y**2, 2*x - 2*y
     q, r = R(0), f
 
-    assert f.div(g) == divmod(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
     assert f.rem(g) == f % g == r
     assert f // g == q
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
@@ -791,7 +786,7 @@ def test_PolyElement___floordiv__truediv__():
     f, g = x**2 - y**2, x - y
     q, r = x + y, R(0)
 
-    assert f.div(g) == divmod(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
     assert f.rem(g) == f % g == r
     assert f // g == q
     assert f.exquo(g) == q
@@ -799,7 +794,7 @@ def test_PolyElement___floordiv__truediv__():
     f, g = x**2 + y**2, x - y
     q, r = x + y, 2*y**2
 
-    assert f.div(g) == divmod(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
     assert f.rem(g) == f % g == r
     assert f // g == q
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
@@ -807,7 +802,7 @@ def test_PolyElement___floordiv__truediv__():
     f, g = x**2 + y**2, -x + y
     q, r = -x - y, 2*y**2
 
-    assert f.div(g) == divmod(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
     assert f.rem(g) == f % g == r
     assert f // g == q
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
@@ -815,7 +810,7 @@ def test_PolyElement___floordiv__truediv__():
     f, g = x**2 + y**2, 2*x - 2*y
     q, r = x/2 + y/2, 2*y**2
 
-    assert f.div(g) == divmod(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
     assert f.rem(g) == f % g == r
     assert f // g == q
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
@@ -871,6 +866,14 @@ def test_PolyElement___pow__():
 
 
 def test_PolyElement_div():
+    _, u = ring("u", ZZ)
+    R, t = ring("t", ZZ)
+
+    pytest.raises(ValueError, lambda: u.div(t))
+    pytest.raises(ZeroDivisionError, lambda: R.one.div(R.zero))
+
+    assert R.zero.div([t**2 + 1]) == ([], R.zero)
+
     R, x = ring("x", ZZ, grlex)
 
     f = x**3 - 12*x**2 - 42

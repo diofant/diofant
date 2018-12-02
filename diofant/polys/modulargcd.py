@@ -645,8 +645,8 @@ def modgcd(f, g):
             continue
 
         h = hm.primitive()[1]
-        fquo, frem = f.div(h)
-        gquo, grem = g.div(h)
+        fquo, frem = divmod(f, h)
+        gquo, grem = divmod(g, h)
         if not frem and not grem:
             if h.LC < 0:
                 ch = -ch

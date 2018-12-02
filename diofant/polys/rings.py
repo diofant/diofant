@@ -1379,13 +1379,13 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
         return r
 
-    def exquo(self, G):
-        q, r = self.div(G)
+    def exquo(self, other):
+        q, r = divmod(self, other)
 
         if not r:
             return q
         else:
-            raise ExactQuotientFailed(self, G)
+            raise ExactQuotientFailed(self, other)
 
     def _iadd_monom(self, mc):
         """add to self the monomial coeff*x0**i0*x1**i1*...
