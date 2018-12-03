@@ -324,9 +324,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
 
     def index(self, gen):
         """Compute index of ``gen`` in ``self.gens``. """
-        if gen is None:
-            i = 0
-        elif isinstance(gen, int):
+        if isinstance(gen, int):
             i = gen
 
             if 0 <= i and i < self.ngens:
@@ -1417,7 +1415,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
                 del p1[ka]
         return p1
 
-    def degree(self, x=None):
+    def degree(self, x=0):
         """
         The leading degree in ``x`` or the main variable.
 
@@ -1441,7 +1439,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         else:
             return tuple(map(max, zip(*self)))
 
-    def tail_degree(self, x=None):
+    def tail_degree(self, x=0):
         """
         The tail degree in ``x`` or the main variable.
 
