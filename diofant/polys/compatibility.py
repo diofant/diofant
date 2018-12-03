@@ -16,9 +16,9 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dmp_integrate, dmp_integrate_in,
                          dmp_lift, dmp_trunc, dup_decompose, dup_diff,
-                         dup_integrate, dup_mirror, dup_real_imag, dup_revert,
-                         dup_scale, dup_shift, dup_sign_variations,
-                         dup_transform, dup_trunc)
+                         dup_integrate, dup_mirror, dup_real_imag, dup_scale,
+                         dup_shift, dup_sign_variations, dup_transform,
+                         dup_trunc)
 from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_ff_lcm, dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
                           dmp_inner_subresultants, dmp_lcm, dmp_primitive,
@@ -294,9 +294,6 @@ class IPolys:
         else:
             ring = self
         return c, ring.from_dense(F)
-
-    def dup_revert(self, f, n):
-        return self.from_dense(dup_revert(self.to_dense(f), n, self.domain))
 
     def dup_half_gcdex(self, f, g):
         s, h = dup_half_gcdex(self.to_dense(f), self.to_dense(g), self.domain)

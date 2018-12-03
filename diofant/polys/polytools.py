@@ -1906,36 +1906,6 @@ class Poly(Expr):
 
         return per(result)
 
-    def revert(self, n):
-        """
-        Compute ``self**(-1)`` mod ``x**n``.
-
-        Examples
-        ========
-
-        >>> Poly(1, x).revert(2)
-        Poly(1, x, domain='ZZ')
-
-        >>> Poly(1 + x, x).revert(1)
-        Poly(1, x, domain='ZZ')
-
-        >>> Poly(x**2 - 1, x).revert(1)
-        Traceback (most recent call last):
-        ...
-        NotReversible: only unity is reversible in a ring
-
-        >>> Poly(1/x, x).revert(1)
-        Traceback (most recent call last):
-        ...
-        PolynomialError: 1/x contains an element of the generators set
-        """
-        if hasattr(self.rep, 'revert'):
-            result = self.rep.revert(int(n))
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'revert')
-
-        return self.per(result)
-
     def subresultants(self, other):
         """
         Computes the subresultant PRS of ``self`` and ``other``.

@@ -17,8 +17,7 @@ from .densebasic import (dmp_convert, dmp_deflate, dmp_degree_in,
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_content, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
-                         dmp_integrate_in, dmp_lift, dup_decompose, dup_revert,
-                         dup_shift)
+                         dmp_integrate_in, dmp_lift, dup_decompose, dup_shift)
 from .euclidtools import (dmp_cancel, dmp_discriminant, dmp_gcd, dmp_inner_gcd,
                           dmp_lcm, dmp_resultant, dmp_subresultants, dup_gcdex,
                           dup_half_gcdex, dup_invert)
@@ -437,13 +436,6 @@ class DMP(CantSympify):
 
         if not lev:
             return per(dup_invert(F, G, dom))
-        else:
-            raise ValueError('univariate polynomial expected')
-
-    def revert(self, n):
-        """Compute ``self**(-1)`` mod ``x**n``. """
-        if not self.lev:
-            return self.per(dup_revert(self.rep, n, self.domain))
         else:
             raise ValueError('univariate polynomial expected')
 

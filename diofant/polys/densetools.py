@@ -1,12 +1,9 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
-import math
-
 from ..utilities import variations
 from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
                          dmp_exquo_ground, dmp_mul, dmp_mul_ground, dmp_neg,
-                         dmp_quo_ground, dmp_rem, dmp_sub, dup_add, dup_lshift,
-                         dup_mul, dup_sqr, dup_sub)
+                         dmp_quo_ground, dmp_rem, dmp_sub, dup_add, dup_mul)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros, dup_from_dict)
@@ -917,35 +914,3 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
         return common, f
     else:
         return common, dmp_convert(f, u, K0, K1)
-
-
-def dup_revert(f, n, K):
-    """
-    Compute ``f**(-1)`` mod ``x**n`` using Newton iteration.
-
-    This function computes first ``2**n`` terms of a polynomial that
-    is a result of inversion of a polynomial modulo ``x**n``. This is
-    useful to efficiently compute series expansion of ``1/f``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", QQ)
-
-    >>> f = -x**6/720 + x**4/24 - x**2/2 + 1
-
-    >>> R.dup_revert(f, 8)
-    61/720*x**6 + 5/24*x**4 + 1/2*x**2 + 1
-    """
-    g = [K.revert(dmp_TC(f, K))]
-    h = [K.one, K.zero, K.zero]
-
-    N = int(math.ceil(math.log(n, 2)))
-
-    for i in range(1, N + 1):
-        a = dmp_mul_ground(g, K(2), 0, K)
-        b = dup_mul(f, dup_sqr(g, K), K)
-        g = dmp_rem(dup_sub(a, b, K), h, 0, K)
-        h = dup_lshift(h, dmp_degree_in(h, 0, 0), K)
-
-    return g
