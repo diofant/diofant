@@ -7,7 +7,7 @@ import pytest
 from diofant import oo
 from diofant.domains import FF, QQ, ZZ
 from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
-                                      dmp_deflate, dmp_degree, dmp_degree_in,
+                                      dmp_deflate, dmp_degree_in,
                                       dmp_degree_list, dmp_eject, dmp_exclude,
                                       dmp_from_dict, dmp_ground, dmp_ground_LC,
                                       dmp_ground_nth, dmp_ground_p,
@@ -67,22 +67,22 @@ def test_dmp_ground_TC():
     assert dmp_ground_TC([[[2], [3, 4]], [[5]]], 2, ZZ) == 5
 
 
-def test_dmp_degree():
-    assert dmp_degree([], 0) == -oo
-    assert dmp_degree([1], 0) == 0
-    assert dmp_degree([1, 0], 0) == 1
-    assert dmp_degree([1, 0, 0, 0, 1], 0) == 4
-    assert dmp_degree([1, 2, 0, 3], 0) == 3
-    assert dmp_degree([1, 1, 2, 0], 0) == 3
-
-    assert dmp_degree([[]], 1) == -oo
-    assert dmp_degree([[[]]], 2) == -oo
-
-    assert dmp_degree([[1]], 1) == 0
-    assert dmp_degree([[2], [1]], 1) == 1
-
-
 def test_dmp_degree_in():
+    assert dmp_degree_in([], 0, 0) == -oo
+    assert dmp_degree_in([1], 0, 0) == 0
+    assert dmp_degree_in([1, 0], 0, 0) == 1
+    assert dmp_degree_in([1, 0, 0, 0, 1], 0, 0) == 4
+    assert dmp_degree_in([1, 2, 0, 3], 0, 0) == 3
+    assert dmp_degree_in([1, 1, 2, 0], 0, 0) == 3
+
+    assert dmp_degree_in([[]], 0, 1) == -oo
+    assert dmp_degree_in([[[]]], 0, 2) == -oo
+
+    assert dmp_degree_in([[1]], 0, 1) == 0
+    assert dmp_degree_in([[2], [1]], 0, 1) == 1
+
+    assert dmp_degree_in([[2], [1, 2, 3]], 0, 1) == 1
+
     assert dmp_degree_in([[[]]], 0, 2) == -oo
     assert dmp_degree_in([[[]]], 1, 2) == -oo
     assert dmp_degree_in([[[]]], 2, 2) == -oo
@@ -639,27 +639,27 @@ def test_dmp_slice():
 def test_dup_random():
     f = dup_random(0, -10, 10, ZZ)
 
-    assert dmp_degree(f, 0) == 0
+    assert dmp_degree_in(f, 0, 0) == 0
     assert all(-10 <= c <= 10 for c in f)
 
     f = dup_random(1, -20, 20, ZZ)
 
-    assert dmp_degree(f, 0) == 1
+    assert dmp_degree_in(f, 0, 0) == 1
     assert all(-20 <= c <= 20 for c in f)
 
     f = dup_random(2, -30, 30, ZZ)
 
-    assert dmp_degree(f, 0) == 2
+    assert dmp_degree_in(f, 0, 0) == 2
     assert all(-30 <= c <= 30 for c in f)
 
     f = dup_random(3, -40, 40, ZZ)
 
-    assert dmp_degree(f, 0) == 3
+    assert dmp_degree_in(f, 0, 0) == 3
     assert all(-40 <= c <= 40 for c in f)
 
     f = dup_random(3, -400, 400, ZZ)
 
-    assert dmp_degree(f, 0) == 3
+    assert dmp_degree_in(f, 0, 0) == 3
     assert all(-400 <= c <= 400 for c in f)
 
     random.seed(11)

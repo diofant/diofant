@@ -9,12 +9,11 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
                          dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_sub,
                          dmp_sub_mul, dup_add, dup_lshift, dup_mul, dup_sqr,
                          dup_sub)
-from .densebasic import (dmp_convert, dmp_degree, dmp_degree_in,
-                         dmp_degree_list, dmp_eject, dmp_exclude,
-                         dmp_from_dict, dmp_ground_LC, dmp_ground_p,
-                         dmp_include, dmp_inject, dmp_LC, dmp_nest, dmp_one,
-                         dmp_raise, dmp_strip, dmp_TC, dmp_terms_gcd,
-                         dmp_zero_p, dup_inflate)
+from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
+                         dmp_eject, dmp_exclude, dmp_from_dict, dmp_ground_LC,
+                         dmp_ground_p, dmp_include, dmp_inject, dmp_LC,
+                         dmp_nest, dmp_one, dmp_raise, dmp_strip, dmp_TC,
+                         dmp_terms_gcd, dmp_zero_p, dup_inflate)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
@@ -182,7 +181,7 @@ def _test_pl(fc, q, pl):
 
 def dup_zz_zassenhaus(f, K):
     """Factor primitive square-free polynomials in `Z[x]`. """
-    n = dmp_degree(f, 0)
+    n = dmp_degree_in(f, 0, 0)
 
     if n == 1:
         return [f]
@@ -336,7 +335,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
         if coeff != K.one or factors != [(f, 1)]:
             return False
 
-    n = dmp_degree(f, 0)
+    n = dmp_degree_in(f, 0, 0)
     g, h = [], []
 
     for i in range(n, -1, -2):
@@ -425,7 +424,7 @@ def dup_zz_cyclotomic_factor(f, K):
     if any(bool(cf) for cf in f[1:-1]):
         return
 
-    n = dmp_degree(f, 0)
+    n = dmp_degree_in(f, 0, 0)
     F = _dup_cyclotomic_decompose(n, K)
 
     if tc_f != K.one:
@@ -444,7 +443,7 @@ def dup_zz_factor_sqf(f, K):
     """Factor square-free (non-primitive) polynomials in `Z[x]`. """
     cont, g = dmp_ground_primitive(f, 0, K)
 
-    n = dmp_degree(g, 0)
+    n = dmp_degree_in(g, 0, 0)
 
     if dmp_LC(g, K) < 0:
         cont, g = -cont, dmp_neg(g, 0, K)
@@ -509,7 +508,7 @@ def dup_zz_factor(f, K):
     """
     cont, g = dmp_ground_primitive(f, 0, K)
 
-    n = dmp_degree(g, 0)
+    n = dmp_degree_in(g, 0, 0)
 
     if dmp_LC(g, K) < 0:
         cont, g = -cont, dmp_neg(g, 0, K)
@@ -688,7 +687,7 @@ def dmp_zz_diophantine(F, c, A, d, p, u, K):
     """Wang/EEZ: Solve multivariate Diophantine equations. """
     if not A:
         S = [ [] for _ in F ]
-        n = dmp_degree(c, 0)
+        n = dmp_degree_in(c, 0, 0)
 
         for i, coeff in enumerate(c):
             if not coeff:
@@ -996,7 +995,7 @@ def dmp_zz_factor(f, u, K):
 
     factors = []
 
-    if dmp_degree(g, u) > 0:
+    if dmp_degree_in(g, 0, u) > 0:
         g = dmp_sqf_part(g, u, K)
         H = dmp_zz_wang(g, u, K)
         factors = dmp_trial_division(f, H, u, K)
@@ -1017,7 +1016,7 @@ def dmp_ext_factor(f, u, K):
         for factor, k in dmp_ext_factor(dmp_content(f, u, K), u - 1, K)[1]:
             factors.append(([factor], k))
 
-    if dmp_degree(f, u) > 0:
+    if dmp_degree_in(f, 0, u) > 0:
         sqf = dmp_sqf_part(f, u, K)
         s, g, r = dmp_sqf_norm(sqf, u, K)
 

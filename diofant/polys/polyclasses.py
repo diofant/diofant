@@ -7,7 +7,7 @@ from .densearith import (dmp_abs, dmp_add, dmp_div, dmp_exquo,
                          dmp_mul_ground, dmp_neg, dmp_pdiv, dmp_pexquo,
                          dmp_pow, dmp_pquo, dmp_prem, dmp_quo, dmp_quo_ground,
                          dmp_rem, dmp_sqr, dmp_sub)
-from .densebasic import (dmp_convert, dmp_deflate, dmp_degree, dmp_degree_in,
+from .densebasic import (dmp_convert, dmp_deflate, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC,
                          dmp_ground_nth, dmp_ground_p, dmp_ground_TC,
@@ -184,7 +184,7 @@ class DMP(CantSympify):
     def all_monoms(self):
         """Returns all monomials from ``self``. """
         if not self.lev:
-            n = dmp_degree(self.rep, 0)
+            n = dmp_degree_in(self.rep, 0, 0)
 
             if n < 0:
                 return [(0,)]
@@ -196,7 +196,7 @@ class DMP(CantSympify):
     def all_terms(self):
         """Returns all terms from a ``self``. """
         if not self.lev:
-            n = dmp_degree(self.rep, 0)
+            n = dmp_degree_in(self.rep, 0, 0)
 
             if n < 0:
                 return [((0,), self.domain.zero)]

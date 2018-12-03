@@ -2,7 +2,7 @@
 
 from ..core import I
 from .densearith import dmp_add, dmp_mul_ground, dmp_neg, dmp_rem, dup_rshift
-from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_permute,
+from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dmp_to_tuple,
                          dup_reverse)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_eval, dmp_eval_in,
@@ -432,7 +432,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
     if not (K.is_RationalField or K.is_RealAlgebraicField):
         raise DomainError("isolation of real roots not supported over %s" % K)
 
-    if dmp_degree(f, 0) <= 0:
+    if dmp_degree_in(f, 0, 0) <= 0:
         return []
 
     I_zero, f = _isolate_zero(f, K, inf, sup, sqf=True)
@@ -605,7 +605,7 @@ def _real_isolate_and_disjoin(factors, K, eps=None, inf=None, sup=None, strict=F
 
 def dup_count_real_roots(f, K, inf=None, sup=None):
     """Returns the number of distinct real roots of ``f`` in ``[inf, sup]``. """
-    if dmp_degree(f, 0) <= 0:
+    if dmp_degree_in(f, 0, 0) <= 0:
         return 0
 
     if not K.has_Field:
@@ -618,7 +618,7 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
     sturm = dup_sturm(f, K)
 
     if inf is None:
-        signs_inf = dup_sign_variations([dmp_LC(s, K)*(-1)**dmp_degree(s, 0) for s in sturm], K)
+        signs_inf = dup_sign_variations([dmp_LC(s, K)*(-1)**dmp_degree_in(s, 0, 0) for s in sturm], K)
     else:
         signs_inf = dup_sign_variations([dmp_eval(s, inf, 0, K) for s in sturm], K)
 
@@ -1420,7 +1420,7 @@ def _rectangle_small_p(a, b, eps):
 
 def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=False):
     """Isolate complex roots of a square-free polynomial using Collins-Krandick algorithm. """
-    if dmp_degree(f, 0) <= 0:
+    if dmp_degree_in(f, 0, 0) <= 0:
         return []
 
     F = K.field

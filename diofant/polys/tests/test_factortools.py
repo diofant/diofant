@@ -291,7 +291,7 @@ def test_dmp_zz_wang():
         1036728*_x**6 + 915552*_x**5 + 55748*_x**4 + 105621*_x**3 - 17304*_x**2 - 26841*_x - 644
 
     assert R.dmp_zz_wang_non_divisors(E, cs, ZZ(4)) == [7, 3, 11, 17]
-    assert s.is_squarefree and UV.dmp_degree(s) == R.dmp_degree(w_1)
+    assert s.is_squarefree and UV.dmp_degree_in(s, 0) == R.dmp_degree_in(w_1, 0)
 
     _, H = UV.dup_zz_factor_sqf(s)
 

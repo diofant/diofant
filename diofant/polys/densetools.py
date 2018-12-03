@@ -7,7 +7,7 @@ from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
                          dmp_exquo_ground, dmp_mul, dmp_mul_ground, dmp_neg,
                          dmp_quo_ground, dmp_rem, dmp_sub, dup_add, dup_lshift,
                          dup_mul, dup_sqr, dup_sub)
-from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
+from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros, dup_from_dict)
 from .polyerrors import DomainError
@@ -121,7 +121,7 @@ def dup_diff(f, m, K):
     if m <= 0:
         return f
 
-    n = dmp_degree(f, 0)
+    n = dmp_degree_in(f, 0, 0)
 
     if n < m:
         return []
@@ -166,7 +166,7 @@ def dmp_diff(f, m, u, K):
     if m <= 0:
         return f
 
-    n = dmp_degree(f, u)
+    n = dmp_degree_in(f, 0, u)
 
     if n < m:
         return dmp_zero(u)
@@ -747,7 +747,7 @@ def _dup_left_decompose(f, h, K):
     while f:
         q, r = dmp_div(f, h, 0, K)
 
-        if dmp_degree(r, 0) > 0:
+        if dmp_degree_in(r, 0, 0) > 0:
             return
         else:
             g[(i,)] = dmp_LC(r, K)
@@ -958,6 +958,6 @@ def dup_revert(f, n, K):
         a = dmp_mul_ground(g, K(2), 0, K)
         b = dup_mul(f, dup_sqr(g, K), K)
         g = dmp_rem(dup_sub(a, b, K), h, 0, K)
-        h = dup_lshift(h, dmp_degree(h, 0), K)
+        h = dup_lshift(h, dmp_degree_in(h, 0, 0), K)
 
     return g

@@ -1,7 +1,7 @@
 """Square-free decomposition algorithms and related tools. """
 
 from .densearith import dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub, dup_mul
-from .densebasic import (dmp_convert, dmp_degree, dmp_ground, dmp_ground_LC,
+from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_ground_LC,
                          dmp_inject, dmp_raise, dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
                          dmp_ground_primitive, dup_shift)
@@ -27,7 +27,7 @@ def dmp_sqf_p(f, u, K):
     if dmp_zero_p(f, u):
         return True
     else:
-        return not dmp_degree(dmp_gcd(f, dmp_diff(f, 1, u, K), u, K), u)
+        return not dmp_degree_in(dmp_gcd(f, dmp_diff(f, 1, u, K), u, K), 0, u)
 
 
 def dmp_sqf_norm(f, u, K):
@@ -160,7 +160,7 @@ def dmp_sqf_list(f, u, K, all=False):
             f = dmp_neg(f, u, K)
             coeff = -coeff
 
-    if dmp_degree(f, u) <= 0:
+    if dmp_degree_in(f, 0, u) <= 0:
         return coeff, []
 
     result, i = [], 1
@@ -178,7 +178,7 @@ def dmp_sqf_list(f, u, K, all=False):
 
         g, p, q = dmp_inner_gcd(p, h, u, K)
 
-        if all or dmp_degree(g, u) > 0:
+        if all or dmp_degree_in(g, 0, u) > 0:
             result.append((g, i))
 
         i += 1
@@ -231,7 +231,7 @@ def dup_gff_list(f, K):
 
     f = dmp_ground_monic(f, 0, K)
 
-    if not dmp_degree(f, 0):
+    if not dmp_degree_in(f, 0, 0):
         return []
     else:
         g = dmp_gcd(f, dup_shift(f, K.one, K), 0, K)
@@ -243,7 +243,7 @@ def dup_gff_list(f, K):
 
         f = dmp_quo(f, g, 0, K)
 
-        if not dmp_degree(f, 0):
+        if not dmp_degree_in(f, 0, 0):
             return H
         else:
             return [(f, 1)] + H
