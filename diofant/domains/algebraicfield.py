@@ -8,7 +8,7 @@ from ..core.sympify import CantSympify
 from ..polys.densearith import (dmp_neg, dmp_pow, dmp_rem, dup_add, dup_mul,
                                 dup_sub)
 from ..polys.densebasic import dmp_LC, dmp_strip, dmp_to_dict, dmp_to_tuple
-from ..polys.densetools import dmp_compose, dmp_eval
+from ..polys.densetools import dmp_compose, dmp_eval_in
 from ..polys.euclidtools import dup_invert
 from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
 from ..printing.defaults import DefaultPrinting
@@ -395,8 +395,8 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
                                    inf=self.parent.ext_root[1].interval.a,
                                    sup=self.parent.ext_root[1].interval.b):
             self.parent.ext_root[1].refine()
-        v = dmp_eval(rep, diff.parent.ext_root[1].interval.center,
-                     0, diff.domain)
+        v = dmp_eval_in(rep, diff.parent.ext_root[1].interval.center,
+                        0, 0, diff.domain)
         return bool(op(v, 0))
 
     def __lt__(self, other):

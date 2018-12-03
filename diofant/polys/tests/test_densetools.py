@@ -9,7 +9,7 @@ from diofant.polys.densearith import dmp_mul_ground
 from diofant.polys.densebasic import (dmp_convert, dmp_normal, dmp_swap,
                                       dup_from_dict)
 from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
-                                      dmp_diff_eval_in, dmp_diff_in, dmp_eval,
+                                      dmp_diff_eval_in, dmp_diff_in,
                                       dmp_eval_in, dmp_eval_tail,
                                       dmp_ground_content, dmp_ground_extract,
                                       dmp_ground_monic, dmp_ground_primitive,
@@ -165,35 +165,35 @@ def test_dmp_diff_in():
     pytest.raises(IndexError, lambda: dmp_diff_in(f_6, 2, 1, 0, ZZ))
 
 
-def test_dmp_eval():
-    assert dmp_eval([], 7, 0, ZZ) == 0
-    assert dmp_eval([1, 2], 0, 0, ZZ) == 2
-    assert dmp_eval([1, 2, 3], 7, 0, ZZ) == 66
-    assert dmp_eval([1, 2, 3], 2, 0, ZZ) == 11
-
-    assert dmp_eval([], 3, 0, ZZ) == 0
-
-    assert dmp_eval([[]], 3, 1, ZZ) == []
-    assert dmp_eval([[[]]], 3, 2, ZZ) == [[]]
-
-    assert dmp_eval([[1, 2]], 0, 1, ZZ) == [1, 2]
-
-    assert dmp_eval([[[1]]], 3, 2, ZZ) == [[1]]
-    assert dmp_eval([[[1, 2]]], 3, 2, ZZ) == [[1, 2]]
-
-    assert dmp_eval([[3, 2], [1, 2]], 3, 1, ZZ) == [10, 8]
-    assert dmp_eval([[[3, 2]], [[1, 2]]], 3, 2, ZZ) == [[10, 8]]
-
-
 def test_dmp_eval_in():
+    assert dmp_eval_in([], 7, 0, 0, ZZ) == 0
+    assert dmp_eval_in([1, 2], 0, 0, 0, ZZ) == 2
+    assert dmp_eval_in([1, 2, 3], 7, 0, 0, ZZ) == 66
+    assert dmp_eval_in([1, 2, 3], 2, 0, 0, ZZ) == 11
+
+    assert dmp_eval_in([], 3, 0, 0, ZZ) == 0
+
+    assert dmp_eval_in([[]], 3, 0, 1, ZZ) == []
+    assert dmp_eval_in([[[]]], 3, 0, 2, ZZ) == [[]]
+
+    assert dmp_eval_in([[1, 2]], 0, 0, 1, ZZ) == [1, 2]
+
+    assert dmp_eval_in([[2, 3], [1, 2]], 2, 0, 1, ZZ) == [5, 8]
+
+    assert dmp_eval_in([[[1]]], 3, 0, 2, ZZ) == [[1]]
+    assert dmp_eval_in([[[1, 2]]], 3, 0, 2, ZZ) == [[1, 2]]
+
+    assert dmp_eval_in([[3, 2], [1, 2]], 3, 0, 1, ZZ) == [10, 8]
+    assert dmp_eval_in([[[3, 2]], [[1, 2]]], 3, 0, 2, ZZ) == [[10, 8]]
+
     assert dmp_eval_in(
-        f_6, -2, 1, 3, ZZ) == dmp_eval(dmp_swap(f_6, 0, 1, 3, ZZ), -2, 3, ZZ)
+        f_6, -2, 1, 3, ZZ) == dmp_eval_in(dmp_swap(f_6, 0, 1, 3, ZZ), -2, 0, 3, ZZ)
     assert dmp_eval_in(
-        f_6, 7, 1, 3, ZZ) == dmp_eval(dmp_swap(f_6, 0, 1, 3, ZZ), 7, 3, ZZ)
+        f_6, 7, 1, 3, ZZ) == dmp_eval_in(dmp_swap(f_6, 0, 1, 3, ZZ), 7, 0, 3, ZZ)
     assert dmp_eval_in(f_6, -2, 2, 3, ZZ) == dmp_swap(
-        dmp_eval(dmp_swap(f_6, 0, 2, 3, ZZ), -2, 3, ZZ), 0, 1, 2, ZZ)
+        dmp_eval_in(dmp_swap(f_6, 0, 2, 3, ZZ), -2, 0, 3, ZZ), 0, 1, 2, ZZ)
     assert dmp_eval_in(f_6, 7, 2, 3, ZZ) == dmp_swap(
-        dmp_eval(dmp_swap(f_6, 0, 2, 3, ZZ), 7, 3, ZZ), 0, 1, 2, ZZ)
+        dmp_eval_in(dmp_swap(f_6, 0, 2, 3, ZZ), 7, 0, 3, ZZ), 0, 1, 2, ZZ)
 
     f = [[[int(45)]], [[]], [[]], [[int(-9)], [-1], [],
                                    [int(3), int(0), int(10), int(0)]]]
@@ -233,7 +233,7 @@ def test_dmp_eval_tail():
 
 def test_dmp_diff_eval_in():
     assert dmp_diff_eval_in(f_6, 2, 7, 1, 3, ZZ) == \
-        dmp_eval(dmp_diff(dmp_swap(f_6, 0, 1, 3, ZZ), 2, 3, ZZ), 7, 3, ZZ)
+        dmp_eval_in(dmp_diff(dmp_swap(f_6, 0, 1, 3, ZZ), 2, 3, ZZ), 7, 0, 3, ZZ)
 
     pytest.raises(IndexError, lambda: dmp_diff_eval_in(f_6, 2, 7, 4, 3, ZZ))
 

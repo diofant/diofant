@@ -11,7 +11,7 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term, dmp_div,
                          dup_sqr, dup_sub, dup_sub_term)
 from .densebasic import dmp_degree_in, dmp_LC, dmp_strip, dmp_to_dict
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
-                         dmp_diff_eval_in, dmp_diff_in, dmp_eval, dmp_eval_in,
+                         dmp_diff_eval_in, dmp_diff_in, dmp_eval_in,
                          dmp_eval_tail, dmp_ground_content, dmp_ground_extract,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dmp_integrate, dmp_integrate_in,
@@ -222,10 +222,6 @@ class IPolys:
 
     def dmp_integrate_in(self, f, m, j):
         return self.from_dense(dmp_integrate_in(self.to_dense(f), m, j, self.ngens-1, self.domain))
-
-    def dmp_eval(self, f, a):
-        result = dmp_eval(self.to_dense(f), a, self.ngens-1, self.domain)
-        return self.drop(0).from_dense(result)
 
     def dmp_eval_in(self, f, a, j):
         result = dmp_eval_in(self.to_dense(f), a, j, self.ngens-1, self.domain)

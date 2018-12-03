@@ -10,7 +10,7 @@ from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
                          dmp_ground, dmp_ground_LC, dmp_inflate, dmp_LC,
                          dmp_multi_deflate, dmp_one, dmp_one_p, dmp_raise,
                          dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
-from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval, dmp_eval_in,
+from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval_in,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dup_diff, dup_trunc)
 from .galoistools import gf_crt, gf_int
@@ -492,7 +492,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
                     break
 
         R = dmp_zz_modular_resultant(F, G, p, v, K)
-        e = dmp_eval(r, a, v, K)
+        e = dmp_eval_in(r, a, 0, v, K)
 
         if not v:
             R = dmp_strip([R], 0)
@@ -501,7 +501,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
             R = [R]
             e = [e]
 
-        d = K.invert(dmp_eval(D, a, 0, K), p)
+        d = K.invert(dmp_eval_in(D, a, 0, 0, K), p)
         d = dmp_mul_ground(D, d, 0, K)
         d = dmp_raise(d, v, 0, K)
 
