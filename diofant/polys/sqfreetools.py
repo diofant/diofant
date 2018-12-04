@@ -115,12 +115,12 @@ def dmp_sqf_part(f, u, K):
         return dmp_ground_primitive(sqf, u, K)[1]
 
 
-def dmp_gf_sqf_list(f, u, K, all=False):
+def dmp_gf_sqf_list(f, u, K):
     """Compute square-free decomposition of ``f`` in ``GF(p)[X]``. """
     if not u:
         f = dmp_convert(f, u, K, K.domain)
 
-        coeff, factors = gf_sqf_list(f, K.mod, K.domain, all=all)
+        coeff, factors = gf_sqf_list(f, K.mod, K.domain)
 
         for i, (f, k) in enumerate(factors):
             factors[i] = (dmp_convert(f, u, K.domain, K), k)
@@ -131,7 +131,7 @@ def dmp_gf_sqf_list(f, u, K, all=False):
         raise NotImplementedError('multivariate polynomials over finite fields')
 
 
-def dmp_sqf_list(f, u, K, all=False):
+def dmp_sqf_list(f, u, K):
     """
     Return square-free decomposition of a polynomial in ``K[X]``.
 
@@ -144,11 +144,9 @@ def dmp_sqf_list(f, u, K, all=False):
 
     >>> R.dmp_sqf_list(f)
     (1, [(x + y, 2), (x, 3)])
-    >>> R.dmp_sqf_list(f, all=True)
-    (1, [(1, 1), (x + y, 2), (x, 3)])
     """
     if K.is_FiniteField:
-        return dmp_gf_sqf_list(f, u, K, all=all)
+        return dmp_gf_sqf_list(f, u, K)
 
     if K.has_Field:
         coeff = dmp_ground_LC(f, u, K)
@@ -178,7 +176,7 @@ def dmp_sqf_list(f, u, K, all=False):
 
         g, p, q = dmp_inner_gcd(p, h, u, K)
 
-        if all or dmp_degree_in(g, 0, u) > 0:
+        if dmp_degree_in(g, 0, u) > 0:
             result.append((g, i))
 
         i += 1
@@ -186,7 +184,7 @@ def dmp_sqf_list(f, u, K, all=False):
     return coeff, result
 
 
-def dmp_sqf_list_include(f, u, K, all=False):
+def dmp_sqf_list_include(f, u, K):
     """
     Return square-free decomposition of a polynomial in ``K[x]``.
 
@@ -199,11 +197,8 @@ def dmp_sqf_list_include(f, u, K, all=False):
 
     >>> R.dmp_sqf_list_include(f)
     [(1, 1), (x + y, 2), (x, 3)]
-    >>> R.dmp_sqf_list_include(f, all=True)
-    [(1, 1), (x + y, 2), (x, 3)]
-
     """
-    coeff, factors = dmp_sqf_list(f, u, K, all=all)
+    coeff, factors = dmp_sqf_list(f, u, K)
 
     if factors and factors[0][1] == 1:
         g = dmp_mul_ground(factors[0][0], coeff, u, K)

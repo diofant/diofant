@@ -532,13 +532,13 @@ class IPolys:
     def dmp_sqf_part(self, f):
         return self.from_dense(dmp_sqf_part(self.to_dense(f), self.ngens-1, self.domain))
 
-    def dmp_sqf_list(self, f, all=False):
-        coeff, factors = dmp_sqf_list(self.to_dense(f), self.ngens-1, self.domain, all=all)
+    def dmp_sqf_list(self, f):
+        coeff, factors = dmp_sqf_list(self.to_dense(f), self.ngens-1, self.domain)
         return coeff, [(self.from_dense(g), k) for g, k in factors]
 
-    def dmp_sqf_list_include(self, f, all=False):
-        factors = dmp_sqf_list_include(self.to_dense(f), self.ngens-1, self.domain, all=all)
-        return [ (self.from_dense(g), k) for g, k in factors ]
+    def dmp_sqf_list_include(self, f):
+        factors = dmp_sqf_list_include(self.to_dense(f), self.ngens-1, self.domain)
+        return [(self.from_dense(g), k) for g, k in factors]
 
     def dup_gff_list(self, f):
         factors = dup_gff_list(self.to_dense(f), self.domain)

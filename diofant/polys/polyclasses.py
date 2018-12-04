@@ -551,14 +551,14 @@ class DMP(CantSympify):
         """Computes square-free part of ``self``. """
         return self.per(dmp_sqf_part(self.rep, self.lev, self.domain))
 
-    def sqf_list(self, all=False):
+    def sqf_list(self):
         """Returns a list of square-free factors of ``self``. """
-        coeff, factors = dmp_sqf_list(self.rep, self.lev, self.domain, all)
+        coeff, factors = dmp_sqf_list(self.rep, self.lev, self.domain)
         return coeff, [(self.per(g), k) for g, k in factors]
 
-    def sqf_list_include(self, all=False):
+    def sqf_list_include(self):
         """Returns a list of square-free factors of ``self``. """
-        factors = dmp_sqf_list_include(self.rep, self.lev, self.domain, all)
+        factors = dmp_sqf_list_include(self.rep, self.lev, self.domain)
         return [(self.per(g), k) for g, k in factors]
 
     def factor_list(self):

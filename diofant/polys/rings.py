@@ -2240,8 +2240,8 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
     def sqf_part(self):
         return self.ring.dmp_sqf_part(self)
 
-    def sqf_list(self, all=False):
-        return self.ring.dmp_sqf_list(self, all=all)
+    def sqf_list(self):
+        return self.ring.dmp_sqf_list(self)
 
     def factor_list(self):
         return self.ring.dmp_factor_list(self)

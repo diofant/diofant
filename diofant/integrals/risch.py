@@ -1194,7 +1194,7 @@ def residue_reduce(a, d, DE, z=None, invert=True):
                 continue
             h_lc = Poly(h.as_poly(DE.t).LC(), DE.t, field=True)
 
-            h_lc_sqf = h_lc.sqf_list_include(all=True)
+            h_lc_sqf = h_lc.sqf_list_include()
 
             for a, j in h_lc_sqf:
                 h = Poly(h, DE.t, field=True).exquo(Poly(gcd(a, s**j, *kkinv),
