@@ -1,5 +1,6 @@
 """Implementation of :class:`FiniteField` class. """
 
+from ..core.cache import cacheit
 from ..core.compatibility import DIOFANT_INTS
 from ..ntheory import isprime, perfect_power
 from ..polys.polyerrors import CoercionFailed
@@ -13,9 +14,6 @@ from .simpledomain import SimpleDomain
 __all__ = 'FiniteField', 'GMPYFiniteField', 'PythonFiniteField'
 
 
-_modular_integer_cache = {}
-
-
 class FiniteField(Field, SimpleDomain):
     """General class for finite fields. """
 
@@ -27,6 +25,7 @@ class FiniteField(Field, SimpleDomain):
 
     mod = None
 
+    @cacheit
     def __new__(cls, mod, dom):
         if not (isinstance(mod, DIOFANT_INTS) and isprime(mod)):
             pp = perfect_power(mod)
@@ -40,16 +39,10 @@ class FiniteField(Field, SimpleDomain):
         mod = dom.convert(mod)
         order = mod**deg
 
-        key = order, dom
-
         obj = super().__new__(cls)
 
-        try:
-            obj.dtype = _modular_integer_cache[key]
-        except KeyError:
-            obj.dtype = type("ModularIntegerMod%s" % mod, (ModularInteger,),
-                             {"mod": mod, "domain": dom, "_parent": obj})
-            _modular_integer_cache[key] = obj.dtype
+        obj.dtype = type("ModularIntegerMod%s" % mod, (ModularInteger,),
+                         {"_parent": obj, "mod": mod, "domain": dom})
 
         obj.domain = dom
         obj.mod = mod
