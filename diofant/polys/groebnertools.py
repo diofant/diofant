@@ -579,9 +579,8 @@ def f5b(F, ring):
         cp = CP.pop()
 
         # discard redundant critical pairs:
-        if is_rewritable_or_comparable(cp[0], Num(cp[2]), B):
-            continue
-        if is_rewritable_or_comparable(cp[3], Num(cp[5]), B):
+        if any(is_rewritable_or_comparable(x, Num(y), B)
+               for x, y in [(cp[0], cp[2]), (cp[3], cp[5])]):
             continue
 
         s = s_poly(cp)
@@ -657,8 +656,8 @@ def red_groebner(G, ring):
         Q = []
         for i, p in enumerate(P):
             h = p.div(P[:i] + P[i + 1:])[1]
-            if h:
-                Q.append(h)
+            assert h
+            Q.append(h)
 
         return [p.monic() for p in Q]
 
