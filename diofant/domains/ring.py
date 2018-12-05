@@ -10,7 +10,7 @@ __all__ = ('Ring',)
 class Ring(Domain):
     """Represents a ring domain. """
 
-    has_Ring = True
+    is_Ring = True
 
     @property
     def ring(self):

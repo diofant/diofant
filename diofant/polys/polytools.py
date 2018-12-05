@@ -38,7 +38,7 @@ __all__ = ('Poly', 'PurePoly', 'poly_from_expr', 'parallel_poly_from_expr',
            'invert', 'subresultants', 'resultant', 'discriminant', 'cofactors',
            'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
            'monic', 'content', 'primitive', 'compose', 'decompose', 'sturm',
-           'gff_list', 'gff', 'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
+           'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
            'factor_list', 'factor', 'intervals', 'refine_root', 'count_roots',
            'real_roots', 'nroots', 'ground_roots', 'nth_power_roots_poly',
            'cancel', 'reduced', 'groebner', 'GroebnerBasis', 'poly')
@@ -1129,7 +1129,7 @@ class Poly(Expr):
         dom, per, F, G = self._unify(other)
         retract = False
 
-        if auto and dom.has_Ring and not dom.has_Field:
+        if auto and dom.is_Ring and not dom.is_Field:
             F, G = F.to_field(), G.to_field()
             retract = True
 
@@ -1161,7 +1161,7 @@ class Poly(Expr):
         dom, per, F, G = self._unify(other)
         retract = False
 
-        if auto and dom.has_Ring and not dom.has_Field:
+        if auto and dom.is_Ring and not dom.is_Field:
             F, G = F.to_field(), G.to_field()
             retract = True
 
@@ -1191,7 +1191,7 @@ class Poly(Expr):
         dom, per, F, G = self._unify(other)
         retract = False
 
-        if auto and dom.has_Ring and not dom.has_Field:
+        if auto and dom.is_Ring and not dom.is_Field:
             F, G = F.to_field(), G.to_field()
             retract = True
 
@@ -1226,7 +1226,7 @@ class Poly(Expr):
         dom, per, F, G = self._unify(other)
         retract = False
 
-        if auto and dom.has_Ring and not dom.has_Field:
+        if auto and dom.is_Ring and not dom.is_Field:
             F, G = F.to_field(), G.to_field()
             retract = True
 
@@ -1608,7 +1608,7 @@ class Poly(Expr):
         """
         f = self
 
-        if not f.rep.domain.has_Field:
+        if not f.rep.domain.is_Field:
             return S.One, f
 
         dom = f.domain
@@ -1651,7 +1651,7 @@ class Poly(Expr):
         f = per(f)
         g = per(g)
 
-        if not (dom.has_Field and dom.has_assoc_Ring):
+        if not (dom.is_Field and dom.has_assoc_Ring):
             return f, g
 
         a, f = f.clear_denoms(convert=True)
@@ -1677,7 +1677,7 @@ class Poly(Expr):
         """
         f = self
 
-        if args.get('auto', True) and f.rep.domain.has_Ring:
+        if args.get('auto', True) and f.rep.domain.is_Ring:
             f = f.to_field()
 
         if hasattr(f.rep, 'integrate'):
@@ -1840,7 +1840,7 @@ class Poly(Expr):
         """
         dom, per, F, G = self._unify(other)
 
-        if auto and dom.has_Ring:
+        if auto and dom.is_Ring:
             F, G = F.to_field(), G.to_field()
 
         if hasattr(self.rep, 'half_gcdex'):
@@ -1869,7 +1869,7 @@ class Poly(Expr):
         """
         dom, per, F, G = self._unify(other)
 
-        if auto and dom.has_Ring:
+        if auto and dom.is_Ring:
             F, G = F.to_field(), G.to_field()
 
         if hasattr(self.rep, 'gcdex'):
@@ -1896,7 +1896,7 @@ class Poly(Expr):
         """
         dom, per, F, G = self._unify(other)
 
-        if auto and dom.has_Ring:
+        if auto and dom.is_Ring:
             F, G = F.to_field(), G.to_field()
 
         if hasattr(self.rep, 'invert'):
@@ -2218,7 +2218,7 @@ class Poly(Expr):
         """
         f = self
 
-        if auto and f.rep.domain.has_Ring:
+        if auto and f.rep.domain.is_Ring:
             f = f.to_field()
 
         if hasattr(f.rep, 'monic'):
@@ -2330,7 +2330,7 @@ class Poly(Expr):
         """
         f = self
 
-        if auto and f.rep.domain.has_Ring:
+        if auto and f.rep.domain.is_Ring:
             f = f.to_field()
 
         if hasattr(f.rep, 'sturm'):
@@ -2339,25 +2339,6 @@ class Poly(Expr):
             raise OperationNotSupported(f, 'sturm')
 
         return list(map(f.per, result))
-
-    def gff_list(self):
-        """
-        Computes greatest factorial factorization of ``self``.
-
-        Examples
-        ========
-
-        >>> f = x**5 + 2*x**4 - x**3 - 2*x**2
-
-        >>> Poly(f).gff_list()
-        [(Poly(x, x, domain='ZZ'), 1), (Poly(x + 2, x, domain='ZZ'), 4)]
-        """
-        if hasattr(self.rep, 'gff_list'):
-            result = self.rep.gff_list()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'gff_list')
-
-        return [(self.per(g), k) for g, k in result]
 
     def sqf_norm(self):
         """
@@ -4347,12 +4328,12 @@ def terms_gcd(f, *gens, **args):
 
     J, f = F.terms_gcd()
 
-    if opt.domain.has_Field:
+    if opt.domain.is_Field:
         denom, f = f.clear_denoms(convert=True)
 
     coeff, f = f.primitive()
 
-    if opt.domain.has_Field:
+    if opt.domain.is_Field:
         coeff /= denom
 
     term = Mul(*[x**j for x, j in zip(f.gens, J)])
@@ -4560,42 +4541,6 @@ def sturm(f, *gens, **args):
         return [r.as_expr() for r in result]
     else:
         return result
-
-
-def gff_list(f, *gens, **args):
-    """
-    Compute a list of greatest factorial factors of ``f``.
-
-    Examples
-    ========
-
-    >>> f = x**5 + 2*x**4 - x**3 - 2*x**2
-
-    >>> gff_list(f)
-    [(x, 1), (x + 2, 4)]
-
-    >>> (ff(x, 1)*ff(x + 2, 4)).expand() == f
-    True
-
-    """
-    options.allowed_flags(args, ['polys'])
-
-    try:
-        F, opt = poly_from_expr(f, *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('gff_list', 1, exc)
-
-    factors = F.gff_list()
-
-    if not opt.polys:
-        return [(g.as_expr(), k) for g, k in factors]
-    else:
-        return factors
-
-
-def gff(f, *gens, **args):
-    """Compute greatest factorial factorization of ``f``. """
-    raise NotImplementedError('symbolic falling factorial')
 
 
 def sqf_norm(f, *gens, **args):
@@ -5374,7 +5319,7 @@ def reduced(f, G, *gens, **args):
     domain = opt.domain
     retract = False
 
-    if opt.auto and domain.has_Ring and not domain.has_Field:
+    if opt.auto and domain.is_Ring and not domain.is_Field:
         opt = opt.clone({'domain': domain.field})
         retract = True
 
@@ -5627,7 +5572,7 @@ class GroebnerBasis(Basic):
         G = matrix_fglm(polys, _ring, dst_order)
         G = [Poly._from_dict(dict(g), opt) for g in G]
 
-        if not domain.has_Field:
+        if not domain.is_Field:
             G = [g.clear_denoms(convert=True)[1] for g in G]
             opt.domain = domain
 
@@ -5666,7 +5611,7 @@ class GroebnerBasis(Basic):
 
         retract = False
 
-        if auto and domain.has_Ring and not domain.has_Field:
+        if auto and domain.is_Ring and not domain.is_Field:
             opt = self._options.clone({'domain': domain.field})
             retract = True
 

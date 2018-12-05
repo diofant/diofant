@@ -504,10 +504,11 @@ def _modgcd_p(f, g, p, degbound, contbound):
         ha = _modgcd_p(fa, ga, p, degbound, contbound)
 
         if ha is None:
-            d += 1
-            if d > n:
+            if d < n:
+                d += 1
+                continue
+            else:
                 return
-            continue
 
         if ha.is_ground:
             h = conth.set_ring(ring).trunc_ground(p)
@@ -1076,10 +1077,11 @@ def _func_field_modgcd_p(f, g, minpoly, p):
         ha = _func_field_modgcd_p(fa, ga, minpolya, p)
 
         if ha is None:
-            d += 1
-            if d > n:
+            if d < n:
+                d += 1
+                continue
+            else:
                 return
-            continue
 
         if ha == 1:
             return ha
@@ -1198,15 +1200,11 @@ def integer_rational_reconstruction(c, m, domain):
         return
 
     if s1 < 0:
-        a, b = -r1, -s1
-    elif s1 > 0:
-        a, b = r1, s1
-    else:
-        return
+        r1, s1 = -r1, -s1
 
     field = domain.field
 
-    return field(a) / field(b)
+    return field(r1) / field(s1)
 
 
 def _rational_reconstruction_int_coeffs(hm, m, ring):
@@ -1351,6 +1349,7 @@ def _func_field_modgcd_m(f, g, minpoly):
     gamma = f.drop_to_ground(-1).LC * g.drop_to_ground(-1).LC
     # polynomial in Z[t_1, ..., t_k]
     delta = minpoly.LC
+    assert k > 0 or delta == 1
 
     p = 1
     primes = []
@@ -1361,14 +1360,6 @@ def _func_field_modgcd_m(f, g, minpoly):
         p = nextprime(p)
 
         if gamma.trunc_ground(p) == 0:
-            continue
-
-        if k == 0:
-            test = (delta % p == 0)
-        else:
-            test = (delta.trunc_ground(p) == 0)
-
-        if test:
             continue
 
         fp = f.trunc_ground(p)

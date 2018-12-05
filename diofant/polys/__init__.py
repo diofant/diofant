@@ -6,7 +6,7 @@ from .polytools import (Poly, PurePoly, poly_from_expr,  # noqa: F401
                         exquo, half_gcdex, gcdex, invert, subresultants,
                         resultant, discriminant, cofactors, gcd_list, gcd,
                         lcm_list, lcm, terms_gcd, trunc, monic, content,
-                        primitive, compose, decompose, sturm, gff_list, gff,
+                        primitive, compose, decompose, sturm,
                         sqf_norm, sqf_part, sqf_list, sqf, factor_list,
                         factor, intervals, refine_root, count_roots,
                         real_roots, nroots, ground_roots, nth_power_roots_poly,

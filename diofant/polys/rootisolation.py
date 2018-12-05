@@ -33,7 +33,7 @@ def dup_sturm(f, K):
     >>> R.dup_sturm(x**3 - 2*x**2 + x - 3)
     [x**3 - 2*x**2 + x - 3, 3*x**2 - 4*x + 1, 2/9*x + 25/9, -2079/4]
     """
-    if not K.has_Field:
+    if not K.is_Field:
         raise DomainError("can't compute Sturm sequence over %s" % K)
 
     f = dmp_sqf_part(f, 0, K)
@@ -608,7 +608,7 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
     if dmp_degree_in(f, 0, 0) <= 0:
         return 0
 
-    if not K.has_Field:
+    if not K.is_Field:
         R, K = K, K.field
         f = dmp_convert(f, 0, R, K)
 

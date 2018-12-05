@@ -203,6 +203,11 @@ def test_modgcd_multivariate_integers():
     assert modgcd(f, g) == (h, cff, cfg)
     assert modgcd(g, f) == (h, cfg, cff)
 
+    f, g, h = (1199999999999991*x**17 - y, 2*y - 19989798798 + x**211,
+               12*x*y**7 + x**4 - 1)
+    for i in range(10):
+        assert modgcd(f*h, g*h) == (h, f, g)
+
     R, x, y, z = ring("x,y,z", ZZ)
 
     f, g = x - y*z, x - y*z

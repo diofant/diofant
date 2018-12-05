@@ -535,7 +535,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
     def clear_denoms(self):
         domain = self.ring.domain
 
-        if not domain.has_Field or not domain.has_assoc_Ring:
+        if not domain.is_Field or not domain.has_assoc_Ring:
             return domain.one, self
 
         ground_ring = domain.ring
@@ -1239,7 +1239,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         domain = self.ring.domain
         domain_quo = domain.quo
 
-        if domain.has_Field:
+        if domain.is_Field:
             def term_div(a_lm_a_lc, b_lm_b_lc):
                 a_lm, a_lc = a_lm_a_lc
                 b_lm, b_lc = b_lm_b_lc
@@ -1723,7 +1723,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if not self or x == domain.one:
             return self
 
-        if domain.has_Field:
+        if domain.is_Field:
             quo = domain.quo
             terms = [(monom, quo(coeff, x)) for monom, coeff in self.items()]
         else:
@@ -1852,14 +1852,14 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         f = self
         domain = f.ring.domain
 
-        if not domain.has_Field:
+        if not domain.is_Field:
             fc, f = f.primitive()
             gc, g = g.primitive()
             c = domain.lcm(fc, gc)
 
         h = (f*g)//f.gcd(g)
 
-        if not domain.has_Field:
+        if not domain.is_Field:
             return h.mul_ground(c)
         else:
             return h.monic()
@@ -1983,7 +1983,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
         domain = ring.domain
 
-        if not (domain.has_Field and domain.has_assoc_Ring):
+        if not (domain.is_Field and domain.has_assoc_Ring):
             _, p, q = f.cofactors(g)
 
             if q.is_negative:
@@ -2227,12 +2227,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             return self.ring.dup_sturm(self)
         else:
             raise MultivariatePolynomialError("sturm sequence")
-
-    def gff_list(self):
-        if self.ring.is_univariate:
-            return self.ring.dup_gff_list(self)
-        else:
-            raise MultivariatePolynomialError("greatest factorial factorization")
 
     def sqf_norm(self):
         return self.ring.dmp_sqf_norm(self)

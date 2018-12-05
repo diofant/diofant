@@ -27,11 +27,10 @@ from diofant.polys.polytools import (LC, LM, LT, GroebnerBasis, Poly, PurePoly,
                                      cofactors, compose, content, count_roots,
                                      decompose, degree, degree_list,
                                      discriminant, div, exquo, factor,
-                                     factor_list, gcd, gcd_list, gcdex, gff,
-                                     gff_list, groebner, ground_roots,
-                                     half_gcdex, intervals, invert, lcm,
-                                     lcm_list, monic, nroots,
-                                     nth_power_roots_poly,
+                                     factor_list, gcd, gcd_list, gcdex,
+                                     groebner, ground_roots, half_gcdex,
+                                     intervals, invert, lcm, lcm_list, monic,
+                                     nroots, nth_power_roots_poly,
                                      parallel_poly_from_expr, pdiv, pexquo,
                                      poly, pquo, prem, primitive, quo,
                                      real_roots, reduced, refine_root, rem,
@@ -2187,25 +2186,6 @@ def test_sturm():
          Poly(3*x**2 - 200*x + pi**4/64, x, domain='ZZ(pi)'),
          Poly((Rational(20000, 9) - pi**4/96)*x + 25*pi**4/18, x, domain='ZZ(pi)'),
          Poly((-3686400000000*pi**4 - 11520000*pi**8 - 9*pi**12)/(26214400000000 - 245760000*pi**4 + 576*pi**8), x, domain='ZZ(pi)')]
-
-
-def test_gff():
-    f = x**5 + 2*x**4 - x**3 - 2*x**2
-
-    assert Poly(f).gff_list() == [(Poly(x), 1), (Poly(x + 2), 4)]
-    assert gff_list(f) == [(x, 1), (x + 2, 4)]
-    assert gff_list(f, polys=True) == [(Poly(x), 1), (Poly(x + 2), 4)]
-
-    pytest.raises(ComputationFailed, lambda: gff_list([1, 2]))
-    pytest.raises(NotImplementedError, lambda: gff(f))
-
-    f = x*(x - 1)**3*(x - 2)**2*(x - 4)**2*(x - 5)
-
-    assert Poly(f).gff_list() == [(
-        Poly(x**2 - 5*x + 4), 1), (Poly(x**2 - 5*x + 4), 2), (Poly(x), 3)]
-    assert gff_list(f) == [(x**2 - 5*x + 4, 1), (x**2 - 5*x + 4, 2), (x, 3)]
-
-    pytest.raises(NotImplementedError, lambda: gff(f))
 
 
 def test_sqf_norm():

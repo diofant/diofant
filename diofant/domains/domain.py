@@ -22,8 +22,8 @@ class Domain(DefaultPrinting, abc.ABC):
     zero = None
     one = None
 
-    has_Ring = False
-    has_Field = False
+    is_Ring = False
+    is_Field = False
 
     has_assoc_Ring = False
     has_assoc_Field = False
@@ -190,7 +190,7 @@ class Domain(DefaultPrinting, abc.ABC):
 
             if ((self.is_FractionField and K1.is_PolynomialRing or
                  K1.is_FractionField and self.is_PolynomialRing) and
-                    (not self_ground.has_Field or not K1_ground.has_Field) and domain.has_Field):
+                    (not self_ground.is_Field or not K1_ground.is_Field) and domain.is_Field):
                 domain = domain.ring
 
             if self.is_Composite and (not K1.is_Composite or self.is_FractionField or K1.is_PolynomialRing):
