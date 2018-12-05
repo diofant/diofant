@@ -1349,6 +1349,7 @@ def _func_field_modgcd_m(f, g, minpoly):
     gamma = f.drop_to_ground(-1).LC * g.drop_to_ground(-1).LC
     # polynomial in Z[t_1, ..., t_k]
     delta = minpoly.LC
+    assert k > 0 or delta == 1
 
     p = 1
     primes = []
@@ -1359,14 +1360,6 @@ def _func_field_modgcd_m(f, g, minpoly):
         p = nextprime(p)
 
         if gamma.trunc_ground(p) == 0:
-            continue
-
-        if k == 0:
-            test = (delta % p == 0)
-        else:
-            test = (delta.trunc_ground(p) == 0)
-
-        if test:
             continue
 
         fp = f.trunc_ground(p)
