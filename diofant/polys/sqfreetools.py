@@ -1,12 +1,12 @@
 """Square-free decomposition algorithms and related tools. """
 
 from .densearith import dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub
-from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_ground_LC,
-                         dmp_ground_p, dmp_inject, dmp_raise, dmp_swap,
-                         dmp_zero_p)
-from .densetools import (dmp_compose, dmp_diff, dmp_diff_in, dmp_ground_monic,
+from .densebasic import (dmp_convert, dmp_ground, dmp_ground_LC,
+                         dmp_ground_p, dmp_inject, dmp_one_p, dmp_raise,
+                         dmp_swap, dmp_zero_p)
+from .densetools import (dmp_compose, dmp_diff_in, dmp_ground_monic,
                          dmp_ground_primitive)
-from .euclidtools import dmp_gcd, dmp_inner_gcd, dmp_resultant
+from .euclidtools import dmp_gcd, dmp_resultant
 from .galoistools import gf_sqf_list, gf_sqf_part
 from .polyerrors import DomainError
 
@@ -162,28 +162,30 @@ def dmp_sqf_list(f, u, K):
             f = dmp_neg(f, u, K)
             coeff = -coeff
 
-    if dmp_degree_in(f, 0, u) <= 0:
+    if dmp_ground_p(f, None, u):
         return coeff, []
 
-    result, i = [], 1
+    result, count = [], 1
+    qs = [dmp_diff_in(f, 1, i, u, K) for i in range(u + 1)]
 
-    h = dmp_diff(f, 1, u, K)
-    g, p, q = dmp_inner_gcd(f, h, u, K)
+    g = f
+    for q in qs:
+        g = dmp_gcd(g, q, u, K)
 
-    while True:
-        d = dmp_diff(p, 1, u, K)
-        h = dmp_sub(q, d, u, K)
+    while not dmp_one_p(f, u, K):
+        for i in range(u + 1):
+            qs[i] = dmp_quo(qs[i], g, u, K)
+        f = dmp_quo(f, g, u, K)
+        for i in range(u + 1):
+            qs[i] = dmp_sub(qs[i], dmp_diff_in(f, 1, i, u, K), u, K)
 
-        if dmp_zero_p(h, u):
-            result.append((p, i))
-            break
+        g = f
+        for q in qs:
+            g = dmp_gcd(g, q, u, K)
+        if not dmp_one_p(g, u, K):
+            result.append((g, count))
 
-        g, p, q = dmp_inner_gcd(p, h, u, K)
-
-        if dmp_degree_in(g, 0, u) > 0:
-            result.append((g, i))
-
-        i += 1
+        count += 1
 
     return coeff, result
 

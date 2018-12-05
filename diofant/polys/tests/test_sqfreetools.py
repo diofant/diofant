@@ -165,3 +165,20 @@ def test_dmp_sqf():
     R, x, y = ring("x,y", QQ.algebraic_field(I))
     assert R.dmp_sqf_list(x**2 + 2*I*x - 1) == (R.one.to_dense()[0][0],
                                                 [(x + I, 2)])
+
+
+def test_diofantissue_714():
+    R, x, y, z = ring('x y z', ZZ)
+
+    f = (x - y)*(z - 1)**2
+
+    assert f.is_squarefree is False
+    assert f.sqf_part() == (x - y)*(z - 1)
+    assert f.sqf_list() == (1, [(x - y, 1), (z - 1, 2)])
+
+    g = f
+    f = (x - y)*(z - 1)
+    assert (f*g).sqf_list() == (1, [(x - y, 2), (z - 1, 3)])
+
+    assert f.is_squarefree
+    assert ((x - y)*f).is_squarefree is False
