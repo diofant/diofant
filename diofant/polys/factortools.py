@@ -18,7 +18,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dup_mirror, dup_trunc)
-from .euclidtools import dmp_content, dmp_inner_gcd, dmp_primitive
+from .euclidtools import dmp_inner_gcd, dmp_primitive
 from .galoistools import (gf_add_mul, gf_div, gf_factor, gf_factor_sqf,
                           gf_from_int_poly, gf_gcdex, gf_mul, gf_rem, gf_sqf_p,
                           gf_to_int_poly)
@@ -1010,29 +1010,27 @@ def dmp_ext_factor(f, u, K):
     """Factor multivariate polynomials over algebraic number fields. """
     lc = dmp_ground_LC(f, u, K)
     f = dmp_ground_monic(f, u, K)
-    factors = []
 
-    if u:
-        for factor, k in dmp_ext_factor(dmp_content(f, u, K), u - 1, K)[1]:
-            factors.append(([factor], k))
+    if dmp_ground_p(f, None, u):
+        return lc, []
 
-    if dmp_degree_in(f, 0, u) > 0:
-        sqf = dmp_sqf_part(f, u, K)
-        s, g, r = dmp_sqf_norm(sqf, u, K)
+    f, F = dmp_sqf_part(f, u, K), f
+    s, g, r = dmp_sqf_norm(f, u, K)
 
-        _, sqf_factors = dmp_factor_list(r, u, K.domain)
+    _, factors = dmp_factor_list(r, u, K.domain)
 
+    if len(factors) == 1:
+        factors = [f]
+    else:
         H = dmp_raise([K.one, s*K.unit], u, 0, K)
 
-        for i, (factor, _) in enumerate(sqf_factors):
+        for i, (factor, _) in enumerate(factors):
             h = dmp_convert(factor, u, K.domain, K)
             h, _, g = dmp_inner_gcd(h, g, u, K)
             h = dmp_compose(h, H, u, K)
-            sqf_factors[i] = h
+            factors[i] = h
 
-        factors.extend(dmp_trial_division(f, sqf_factors, u, K))
-
-    return lc, factors
+    return lc, dmp_trial_division(F, factors, u, K)
 
 
 def dmp_gf_factor(f, u, K):
