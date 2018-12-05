@@ -12,8 +12,8 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
                          dmp_eject, dmp_exclude, dmp_from_dict, dmp_ground_LC,
                          dmp_ground_p, dmp_include, dmp_inject, dmp_LC,
-                         dmp_nest, dmp_one, dmp_raise, dmp_strip, dmp_TC,
-                         dmp_terms_gcd, dmp_zero_p, dup_inflate)
+                         dmp_nest, dmp_one, dmp_raise, dmp_strip, dmp_swap,
+                         dmp_TC, dmp_terms_gcd, dmp_zero_p, dup_inflate)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
@@ -1027,7 +1027,10 @@ def dmp_ext_factor(f, u, K):
         for i, (factor, _) in enumerate(factors):
             h = dmp_convert(factor, u, K.domain, K)
             h, _, g = dmp_inner_gcd(h, g, u, K)
-            h = dmp_compose(h, H, u, K)
+            for j in range(u + 1):
+                h = dmp_swap(h, 0, j, u, K)
+                h = dmp_compose(h, H, u, K)
+                h = dmp_swap(h, 0, j, u, K)
             factors[i] = h
 
     return lc, dmp_trial_division(F, factors, u, K)

@@ -2,7 +2,8 @@
 
 from .densearith import dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_ground_LC,
-                         dmp_ground_p, dmp_inject, dmp_raise, dmp_zero_p)
+                         dmp_ground_p, dmp_inject, dmp_raise, dmp_swap,
+                         dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff, dmp_diff_in, dmp_ground_monic,
                          dmp_ground_primitive)
 from .euclidtools import dmp_gcd, dmp_inner_gcd, dmp_resultant
@@ -48,17 +49,10 @@ def dmp_sqf_norm(f, u, K):
 
     >>> K = QQ.algebraic_field(I)
     >>> R, x, y = ring("x y", K)
-    >>> _, X, Y = ring("x y", QQ)
 
-    >>> s, f, r = R.dmp_sqf_norm(x*y + y**2)
-
-    >>> s == 1
-    True
-    >>> f == x*y + y**2 - I*y
-    True
-    >>> r == X**2*Y**2 + 2*X*Y**3 + Y**4 + Y**2
-    True
-
+    >>> R.dmp_sqf_norm(x*y + y**2)
+    (1, x*y - I*x + y**2 - 3*I*y - 2,
+     x**2*y**2 + x**2 + 2*x*y**3 + 2*x*y + y**4 + 5*y**2 + 4)
     """
     if not K.is_AlgebraicField:
         raise DomainError("ground domain must be algebraic")
@@ -73,11 +67,13 @@ def dmp_sqf_norm(f, u, K):
         r = dmp_resultant(g, h, u + 1, K.domain)
 
         if dmp_sqf_p(r, u, K.domain):
-            break
+            return s, f, r
         else:
-            f, s = dmp_compose(f, F, u, K), s + 1
-
-    return s, f, r
+            for j in range(u + 1):
+                f = dmp_swap(f, 0, j, u, K)
+                f = dmp_compose(f, F, u, K)
+                f = dmp_swap(f, 0, j, u, K)
+            s += 1
 
 
 def dmp_gf_sqf_part(f, u, K):
