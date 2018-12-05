@@ -504,10 +504,11 @@ def _modgcd_p(f, g, p, degbound, contbound):
         ha = _modgcd_p(fa, ga, p, degbound, contbound)
 
         if ha is None:
-            d += 1
-            if d > n:
+            if d < n:
+                d += 1
+                continue
+            else:
                 return
-            continue
 
         if ha.is_ground:
             h = conth.set_ring(ring).trunc_ground(p)
@@ -1076,10 +1077,11 @@ def _func_field_modgcd_p(f, g, minpoly, p):
         ha = _func_field_modgcd_p(fa, ga, minpolya, p)
 
         if ha is None:
-            d += 1
-            if d > n:
+            if d < n:
+                d += 1
+                continue
+            else:
                 return
-            continue
 
         if ha == 1:
             return ha
