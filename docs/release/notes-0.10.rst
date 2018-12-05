@@ -61,6 +61,7 @@ Compatibility breaks
 * Renamed ``is_sqf`` property of :class:`~diofant.polys.polytools.Poly` to :attr:`~diofant.polys.polytools.Poly.is_squarefree`, see :pull:`724`.
 * Removed ``revert()`` method of :class:`~diofant.polys.polytools.Poly`, see :pull:`727`.
 * Removed ``all`` option for :meth:`~diofant.polys.polytools.Poly.sqf_list` and :meth:`~diofant.polys.polytools.Poly.sqf_list_include` methods, see :pull:`727`.
+* Renamed ``has_Ring/Field`` attributes of :class:`~diofant.domains.domain.Domain` to ``is_Ring/Field``, see :pull:`729`.
 
 Minor changes
 =============

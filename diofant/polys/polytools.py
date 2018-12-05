@@ -1129,7 +1129,7 @@ class Poly(Expr):
         dom, per, F, G = self._unify(other)
         retract = False
 
-        if auto and dom.has_Ring and not dom.has_Field:
+        if auto and dom.is_Ring and not dom.is_Field:
             F, G = F.to_field(), G.to_field()
             retract = True
 
@@ -1161,7 +1161,7 @@ class Poly(Expr):
         dom, per, F, G = self._unify(other)
         retract = False
 
-        if auto and dom.has_Ring and not dom.has_Field:
+        if auto and dom.is_Ring and not dom.is_Field:
             F, G = F.to_field(), G.to_field()
             retract = True
 
@@ -1191,7 +1191,7 @@ class Poly(Expr):
         dom, per, F, G = self._unify(other)
         retract = False
 
-        if auto and dom.has_Ring and not dom.has_Field:
+        if auto and dom.is_Ring and not dom.is_Field:
             F, G = F.to_field(), G.to_field()
             retract = True
 
@@ -1226,7 +1226,7 @@ class Poly(Expr):
         dom, per, F, G = self._unify(other)
         retract = False
 
-        if auto and dom.has_Ring and not dom.has_Field:
+        if auto and dom.is_Ring and not dom.is_Field:
             F, G = F.to_field(), G.to_field()
             retract = True
 
@@ -1608,7 +1608,7 @@ class Poly(Expr):
         """
         f = self
 
-        if not f.rep.domain.has_Field:
+        if not f.rep.domain.is_Field:
             return S.One, f
 
         dom = f.domain
@@ -1651,7 +1651,7 @@ class Poly(Expr):
         f = per(f)
         g = per(g)
 
-        if not (dom.has_Field and dom.has_assoc_Ring):
+        if not (dom.is_Field and dom.has_assoc_Ring):
             return f, g
 
         a, f = f.clear_denoms(convert=True)
@@ -1677,7 +1677,7 @@ class Poly(Expr):
         """
         f = self
 
-        if args.get('auto', True) and f.rep.domain.has_Ring:
+        if args.get('auto', True) and f.rep.domain.is_Ring:
             f = f.to_field()
 
         if hasattr(f.rep, 'integrate'):
@@ -1840,7 +1840,7 @@ class Poly(Expr):
         """
         dom, per, F, G = self._unify(other)
 
-        if auto and dom.has_Ring:
+        if auto and dom.is_Ring:
             F, G = F.to_field(), G.to_field()
 
         if hasattr(self.rep, 'half_gcdex'):
@@ -1869,7 +1869,7 @@ class Poly(Expr):
         """
         dom, per, F, G = self._unify(other)
 
-        if auto and dom.has_Ring:
+        if auto and dom.is_Ring:
             F, G = F.to_field(), G.to_field()
 
         if hasattr(self.rep, 'gcdex'):
@@ -1896,7 +1896,7 @@ class Poly(Expr):
         """
         dom, per, F, G = self._unify(other)
 
-        if auto and dom.has_Ring:
+        if auto and dom.is_Ring:
             F, G = F.to_field(), G.to_field()
 
         if hasattr(self.rep, 'invert'):
@@ -2218,7 +2218,7 @@ class Poly(Expr):
         """
         f = self
 
-        if auto and f.rep.domain.has_Ring:
+        if auto and f.rep.domain.is_Ring:
             f = f.to_field()
 
         if hasattr(f.rep, 'monic'):
@@ -2330,7 +2330,7 @@ class Poly(Expr):
         """
         f = self
 
-        if auto and f.rep.domain.has_Ring:
+        if auto and f.rep.domain.is_Ring:
             f = f.to_field()
 
         if hasattr(f.rep, 'sturm'):
@@ -4347,12 +4347,12 @@ def terms_gcd(f, *gens, **args):
 
     J, f = F.terms_gcd()
 
-    if opt.domain.has_Field:
+    if opt.domain.is_Field:
         denom, f = f.clear_denoms(convert=True)
 
     coeff, f = f.primitive()
 
-    if opt.domain.has_Field:
+    if opt.domain.is_Field:
         coeff /= denom
 
     term = Mul(*[x**j for x, j in zip(f.gens, J)])
@@ -5374,7 +5374,7 @@ def reduced(f, G, *gens, **args):
     domain = opt.domain
     retract = False
 
-    if opt.auto and domain.has_Ring and not domain.has_Field:
+    if opt.auto and domain.is_Ring and not domain.is_Field:
         opt = opt.clone({'domain': domain.field})
         retract = True
 
@@ -5627,7 +5627,7 @@ class GroebnerBasis(Basic):
         G = matrix_fglm(polys, _ring, dst_order)
         G = [Poly._from_dict(dict(g), opt) for g in G]
 
-        if not domain.has_Field:
+        if not domain.is_Field:
             G = [g.clear_denoms(convert=True)[1] for g in G]
             opt.domain = domain
 
@@ -5666,7 +5666,7 @@ class GroebnerBasis(Basic):
 
         retract = False
 
-        if auto and domain.has_Ring and not domain.has_Field:
+        if auto and domain.is_Ring and not domain.is_Field:
             opt = self._options.clone({'domain': domain.field})
             retract = True
 

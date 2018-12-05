@@ -110,7 +110,7 @@ class FractionField(Field, CompositeDomain):
         except CoercionFailed:
             domain = self.domain
 
-            if not domain.has_Field and domain.has_assoc_Field:
+            if not domain.is_Field and domain.has_assoc_Field:
                 ring = self.ring
                 ground_field = domain.field
                 element = ground_field.convert(element)
@@ -160,7 +160,7 @@ class FractionField(Field, CompositeDomain):
                 if c.is_Integer and c != 1:
                     return _rebuild(expr.base**a)**int(c)
 
-            if not domain.has_Field and domain.has_assoc_Field:
+            if not domain.is_Field and domain.has_assoc_Field:
                 return domain.field.convert(expr)
             else:
                 return domain.convert(expr)

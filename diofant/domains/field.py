@@ -9,7 +9,7 @@ __all__ = ('Field',)
 class Field(Ring):
     """Represents a field domain. """
 
-    has_Field = True
+    is_Field = True
 
     @property
     def ring(self):

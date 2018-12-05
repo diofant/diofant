@@ -207,7 +207,7 @@ def dmp_quo_ground(f, c, u, K):
         if not f:
             return f
 
-        if K.has_Field:
+        if K.is_Field:
             return [K.quo(coeff, c) for coeff in f]
         else:
             return [coeff // c for coeff in f]
@@ -1001,7 +1001,7 @@ def dmp_div(f, g, u, K):
     >>> R.dmp_div(x**2 + x*y, 2*x + 2)
     (1/2*x + 1/2*y - 1/2, -y + 1)
     """
-    if K.has_Field:
+    if K.is_Field:
         return dmp_ff_div(f, g, u, K)
     else:
         return dmp_rr_div(f, g, u, K)
