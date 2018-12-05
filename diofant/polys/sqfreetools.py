@@ -2,8 +2,8 @@
 
 from .densearith import dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_ground_LC,
-                         dmp_inject, dmp_raise, dmp_zero_p)
-from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
+                         dmp_ground_p, dmp_inject, dmp_raise, dmp_zero_p)
+from .densetools import (dmp_compose, dmp_diff, dmp_diff_in, dmp_ground_monic,
                          dmp_ground_primitive)
 from .euclidtools import dmp_gcd, dmp_inner_gcd, dmp_resultant
 from .galoistools import gf_sqf_list, gf_sqf_part
@@ -24,10 +24,16 @@ def dmp_sqf_p(f, u, K):
     >>> dmp_sqf_p([[1], [], [1, 0, 0]], 1, ZZ)
     True
     """
-    if dmp_zero_p(f, u):
+    if dmp_ground_p(f, None, u):
         return True
     else:
-        return not dmp_degree_in(dmp_gcd(f, dmp_diff(f, 1, u, K), u, K), 0, u)
+        g = f
+        for i in range(u + 1):
+            g = dmp_gcd(g, dmp_diff_in(f, 1, i, u, K), u, K)
+            if dmp_ground_p(g, None, u):
+                return True
+        else:
+            return False
 
 
 def dmp_sqf_norm(f, u, K):
@@ -106,7 +112,9 @@ def dmp_sqf_part(f, u, K):
     if K.is_negative(dmp_ground_LC(f, u, K)):
         f = dmp_neg(f, u, K)
 
-    gcd = dmp_gcd(f, dmp_diff(f, 1, u, K), u, K)
+    gcd = f
+    for i in range(u + 1):
+        gcd = dmp_gcd(gcd, dmp_diff_in(f, 1, i, u, K), u, K)
     sqf = dmp_quo(f, gcd, u, K)
 
     if K.is_Field:

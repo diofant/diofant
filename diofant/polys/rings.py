@@ -790,10 +790,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     @property
     def is_squarefree(self):
-        if self.is_zero:
-            return True
-        else:
-            return not self.gcd(self.diff(0)).degree(0)
+        return self.ring.dmp_sqf_p(self)
 
     @property
     def is_irreducible(self):
