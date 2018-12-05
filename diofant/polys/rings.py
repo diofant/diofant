@@ -324,9 +324,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
 
     def index(self, gen):
         """Compute index of ``gen`` in ``self.gens``. """
-        if gen is None:
-            i = 0
-        elif isinstance(gen, int):
+        if isinstance(gen, int):
             i = gen
 
             if 0 <= i and i < self.ngens:
@@ -1174,7 +1172,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if not other:
             raise ZeroDivisionError("polynomial division")
         elif isinstance(other, ring.dtype):
-            return self.rem(other)
+            return divmod(self, other)[1]
         elif isinstance(other, PolyElement):
             if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
                 pass
@@ -1199,7 +1197,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         if not other:
             raise ZeroDivisionError("polynomial division")
         elif isinstance(other, ring.dtype):
-            return self.quo(other)
+            return divmod(self, other)[0]
         elif isinstance(other, PolyElement):
             if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
                 pass
@@ -1337,58 +1335,13 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         else:
             return qv, r
 
-    def rem(self, G):
-        f = self
-        if isinstance(G, PolyElement):
-            G = [G]
-        if any(not g for g in G):
-            raise ZeroDivisionError("polynomial division")
-        ring = f.ring
-        domain = ring.domain
-        zero = domain.zero
-        r = ring.zero
-        term_div = f._term_div()
-        ltf = f.LT
-        f = f.copy()
-        get = f.get
-        while f:
-            for g in G:
-                tq = term_div(ltf, g.LT)
-                if tq is not None:
-                    m, c = tq
-                    for mg, cg in g.items():
-                        m1 = monomial_mul(mg, m)
-                        c1 = get(m1, zero) - c*cg
-                        if not c1:
-                            del f[m1]
-                        else:
-                            f[m1] = c1
-                    ltm = f.leading_expv()
-                    if ltm is not None:
-                        ltf = ltm, f[ltm]
-
-                    break
-            else:
-                ltm, ltc = ltf
-                assert ltm not in r
-                r[ltm] = ltc
-                del f[ltm]
-                ltm = f.leading_expv()
-                if ltm is not None:
-                    ltf = ltm, f[ltm]
-
-        return r
-
-    def quo(self, G):
-        return self.div(G)[0]
-
-    def exquo(self, G):
-        q, r = self.div(G)
+    def exquo(self, other):
+        q, r = divmod(self, other)
 
         if not r:
             return q
         else:
-            raise ExactQuotientFailed(self, G)
+            raise ExactQuotientFailed(self, other)
 
     def _iadd_monom(self, mc):
         """add to self the monomial coeff*x0**i0*x1**i1*...
@@ -1462,7 +1415,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
                 del p1[ka]
         return p1
 
-    def degree(self, x=None):
+    def degree(self, x=0):
         """
         The leading degree in ``x`` or the main variable.
 
@@ -1486,7 +1439,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         else:
             return tuple(map(max, zip(*self)))
 
-    def tail_degree(self, x=None):
+    def tail_degree(self, x=0):
         """
         The tail degree in ``x`` or the main variable.
 
@@ -1904,7 +1857,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
             gc, g = g.primitive()
             c = domain.lcm(fc, gc)
 
-        h = (f*g).quo(f.gcd(g))
+        h = (f*g)//f.gcd(g)
 
         if not domain.has_Field:
             return h.mul_ground(c)
@@ -2287,8 +2240,8 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
     def sqf_part(self):
         return self.ring.dmp_sqf_part(self)
 
-    def sqf_list(self, all=False):
-        return self.ring.dmp_sqf_list(self, all=all)
+    def sqf_list(self):
+        return self.ring.dmp_sqf_list(self)
 
     def factor_list(self):
         return self.ring.dmp_factor_list(self)

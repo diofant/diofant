@@ -67,10 +67,10 @@ def heugcd(f, g):
             h = _gcd_interpolate(h, x, ring)
             h = h.primitive()[1]
 
-            cff_, r = f.div(h)
+            cff_, r = divmod(f, h)
 
             if not r:
-                cfg_, r = g.div(h)
+                cfg_, r = divmod(g, h)
 
                 if not r:
                     h = h.mul_ground(gcd)
@@ -78,10 +78,10 @@ def heugcd(f, g):
 
             cff = _gcd_interpolate(cff, x, ring)
 
-            h, r = f.div(cff)
+            h, r = divmod(f, cff)
 
             if not r:
-                cfg_, r = g.div(h)
+                cfg_, r = divmod(g, h)
 
                 if not r:
                     h = h.mul_ground(gcd)
@@ -89,10 +89,10 @@ def heugcd(f, g):
 
             cfg = _gcd_interpolate(cfg, x, ring)
 
-            h, r = g.div(cfg)
+            h, r = divmod(g, cfg)
 
             if not r:
-                cff_, r = f.div(h)
+                cff_, r = divmod(f, h)
 
                 if not r:
                     h = h.mul_ground(gcd)

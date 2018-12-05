@@ -6,7 +6,7 @@ import random
 from ..core import prod
 from ..ntheory import factorint
 from .densearith import dup_lshift
-from .densebasic import dmp_degree, dmp_LC, dmp_strip
+from .densebasic import dmp_degree_in, dmp_LC, dmp_strip
 from .polyconfig import query
 from .polyerrors import ExactQuotientFailed
 from .polyutils import _sort_factors
@@ -145,7 +145,7 @@ def gf_to_dict(f, p, symmetric=True):
     >>> gf_to_dict([4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4], 5, symmetric=False)
     {0: 4, 4: 3, 10: 4}
     """
-    n, result = dmp_degree(f, 0), {}
+    n, result = dmp_degree_in(f, 0, 0), {}
 
     for k in range(n + 1):
         if symmetric:
@@ -296,8 +296,8 @@ def gf_add(f, g, p, K):
     if not g:
         return f
 
-    df = dmp_degree(f, 0)
-    dg = dmp_degree(g, 0)
+    df = dmp_degree_in(f, 0, 0)
+    dg = dmp_degree_in(g, 0, 0)
 
     if df == dg:
         return dmp_strip([(a + b) % p for a, b in zip(f, g)], 0)
@@ -327,8 +327,8 @@ def gf_sub(f, g, p, K):
     if not f:
         return gf_neg(g, p, K)
 
-    df = dmp_degree(f, 0)
-    dg = dmp_degree(g, 0)
+    df = dmp_degree_in(f, 0, 0)
+    dg = dmp_degree_in(g, 0, 0)
 
     if df == dg:
         return dmp_strip([(a - b) % p for a, b in zip(f, g)], 0)
@@ -353,8 +353,8 @@ def gf_mul(f, g, p, K):
     >>> gf_mul([3, 2, 4], [2, 2, 2], 5, ZZ)
     [1, 0, 3, 2, 3]
     """
-    df = dmp_degree(f, 0)
-    dg = dmp_degree(g, 0)
+    df = dmp_degree_in(f, 0, 0)
+    dg = dmp_degree_in(g, 0, 0)
 
     dh = df + dg
     if dh < 0:
@@ -383,7 +383,7 @@ def gf_sqr(f, p, K):
     >>> gf_sqr([3, 2, 4], 5, ZZ)
     [4, 2, 3, 1, 1]
     """
-    df = dmp_degree(f, 0)
+    df = dmp_degree_in(f, 0, 0)
     if df < 0:
         return []
 
@@ -488,8 +488,8 @@ def gf_div(f, g, p, K):
     * [Monagan93]_
     * [Gathen99]_
     """
-    df = dmp_degree(f, 0)
-    dg = dmp_degree(g, 0)
+    df = dmp_degree_in(f, 0, 0)
+    dg = dmp_degree_in(g, 0, 0)
 
     if not g:
         raise ZeroDivisionError("polynomial division")
@@ -539,8 +539,8 @@ def gf_quo(f, g, p, K):
     >>> gf_quo([1, 0, 3, 2, 3], [2, 2, 2], 5, ZZ)
     [3, 2, 4]
     """
-    df = dmp_degree(f, 0)
-    dg = dmp_degree(g, 0)
+    df = dmp_degree_in(f, 0, 0)
+    dg = dmp_degree_in(g, 0, 0)
 
     if not g:
         raise ZeroDivisionError("polynomial division")
@@ -622,7 +622,7 @@ def gf_pow(f, n, p, K):
 def gf_frobenius_monomial_base(g, p, K):
     """
     return the list of ``x**(i*p) mod g in Z_p`` for ``i = 0, .., n - 1``
-    where ``n = dmp_degree(g, 0)``
+    where ``n = dmp_degree_in(g, 0, 0)``
 
     Examples
     ========
@@ -631,7 +631,7 @@ def gf_frobenius_monomial_base(g, p, K):
     >>> gf_frobenius_monomial_base(g, 5, ZZ)
     [[1], [4, 4, 2], [1, 2]]
     """
-    n = dmp_degree(g, 0)
+    n = dmp_degree_in(g, 0, 0)
     if n == 0:
         return []
     b = [0]*n
@@ -672,12 +672,12 @@ def gf_frobenius_map(f, g, b, p, K):
     >>> gf_frobenius_map(f, g, b, p, ZZ)
     [4, 0, 3]
     """
-    m = dmp_degree(g, 0)
-    if dmp_degree(f, 0) >= m:
+    m = dmp_degree_in(g, 0, 0)
+    if dmp_degree_in(f, 0, 0) >= m:
         f = gf_rem(f, g, p, K)
     if not f:
         return []
-    n = dmp_degree(f, 0)
+    n = dmp_degree_in(f, 0, 0)
     sf = [f[-1]]
     for i in range(1, n + 1):
         v = gf_mul_ground(b[i], f[n - i], p, K)
@@ -895,7 +895,7 @@ def gf_diff(f, p, K):
     >>> gf_diff([3, 2, 4], 5, ZZ)
     [1, 2]
     """
-    df = dmp_degree(f, 0)
+    df = dmp_degree_in(f, 0, 0)
     if df < 0:
         return []
 
@@ -1093,7 +1093,7 @@ def gf_irred_p_ben_or(f, p, K):
 
     * [BenOr81]_
     """
-    n = dmp_degree(f, 0)
+    n = dmp_degree_in(f, 0, 0)
 
     if n <= 1:
         return True
@@ -1134,7 +1134,7 @@ def gf_irred_p_rabin(f, p, K):
     >>> gf_irred_p_rabin([3, 2, 4], 5, ZZ)
     False
     """
-    n = dmp_degree(f, 0)
+    n = dmp_degree_in(f, 0, 0)
 
     if n <= 1:
         return True
@@ -1223,7 +1223,7 @@ def gf_sqf_part(f, p, K):
     return g
 
 
-def gf_sqf_list(f, p, K, all=False):
+def gf_sqf_list(f, p, K):
     """
     Return the square-free decomposition of a ``GF(p)[x]`` polynomial.
 
@@ -1262,7 +1262,7 @@ def gf_sqf_list(f, p, K, all=False):
 
     lc, f = gf_monic(f, p, K)
 
-    if dmp_degree(f, 0) < 1:
+    if dmp_degree_in(f, 0, 0) < 1:
         return lc, []
 
     while True:
@@ -1278,7 +1278,7 @@ def gf_sqf_list(f, p, K, all=False):
                 G = gf_gcd(g, h, p, K)
                 H = gf_quo(h, G, p, K)
 
-                if dmp_degree(H, 0) > 0:
+                if dmp_degree_in(H, 0, 0) > 0:
                     factors.append((H, i*n))
 
                 g, h, i = gf_quo(g, G, p, K), G, i + 1
@@ -1289,7 +1289,7 @@ def gf_sqf_list(f, p, K, all=False):
                 f = g
 
         if not sqf:
-            d = dmp_degree(f, 0) // r
+            d = dmp_degree_in(f, 0, 0) // r
 
             for i in range(d + 1):
                 f[i] = f[i*r]
@@ -1297,9 +1297,6 @@ def gf_sqf_list(f, p, K, all=False):
             f, n = f[:d + 1], n*r
         else:
             break
-
-    if all:  # pragma: no cover
-        raise NotImplementedError("'all=True' is not supported yet")
 
     return lc, factors
 
@@ -1321,7 +1318,7 @@ def gf_Qmatrix(f, p, K):
      [0, 0, 1, 0],
      [0, 0, 0, 4]]
     """
-    n, r = dmp_degree(f, 0), int(p)
+    n, r = dmp_degree_in(f, 0, 0), int(p)
 
     q = [K.one] + [K.zero]*(n - 1)
     Q = [list(q)] + [[]]*(n - 1)
@@ -1470,7 +1467,7 @@ def gf_ddf_zassenhaus(f, p, K):
     i, g, factors = 1, [K.one, K.zero], []
 
     b = gf_frobenius_monomial_base(f, p, K)
-    while 2*i <= dmp_degree(f, 0):
+    while 2*i <= dmp_degree_in(f, 0, 0):
         g = gf_frobenius_map(g, f, b, p, K)
         h = gf_gcd(f, gf_sub(g, [K.one, K.zero], p, K), p, K)
 
@@ -1484,7 +1481,7 @@ def gf_ddf_zassenhaus(f, p, K):
         i += 1
 
     if f != [K.one]:
-        return factors + [(f, dmp_degree(f, 0))]
+        return factors + [(f, dmp_degree_in(f, 0, 0))]
     else:
         return factors
 
@@ -1512,10 +1509,10 @@ def gf_edf_zassenhaus(f, n, p, K):
     """
     factors = [f]
 
-    if dmp_degree(f, 0) <= n:
+    if dmp_degree_in(f, 0, 0) <= n:
         return factors
 
-    N = dmp_degree(f, 0) // n
+    N = dmp_degree_in(f, 0, 0) // n
     if p != 2:
         b = gf_frobenius_monomial_base(f, p, K)
 
@@ -1569,7 +1566,7 @@ def gf_ddf_shoup(f, p, K):
     * [Shoup95]_
     * [Gathen92]_
     """
-    n = dmp_degree(f, 0)
+    n = dmp_degree_in(f, 0, 0)
     k = int(math.ceil(math.sqrt(n//2)))
     b = gf_frobenius_monomial_base(f, p, K)
     h = gf_frobenius_map([K.one, K.zero], f, b, p, K)
@@ -1609,7 +1606,7 @@ def gf_ddf_shoup(f, p, K):
             g, j = gf_quo(g, F, p, K), j - 1
 
     if f != [K.one]:
-        factors.append((f, dmp_degree(f, 0)))
+        factors.append((f, dmp_degree_in(f, 0, 0)))
 
     return factors
 
@@ -1638,7 +1635,7 @@ def gf_edf_shoup(f, n, p, K):
     * [Shoup91]_
     * [Gathen92]_
     """
-    N, q = dmp_degree(f, 0), int(p)
+    N, q = dmp_degree_in(f, 0, 0), int(p)
 
     if not N:
         return []
@@ -1730,7 +1727,7 @@ def gf_factor_sqf(f, p, K):
     """
     lc, f = gf_monic(f, p, K)
 
-    if dmp_degree(f, 0) < 1:
+    if dmp_degree_in(f, 0, 0) < 1:
         return lc, []
 
     method = query('GF_FACTOR_METHOD')
@@ -1786,7 +1783,7 @@ def gf_factor(f, p, K):
     """
     lc, f = gf_monic(f, p, K)
 
-    if dmp_degree(f, 0) < 1:
+    if dmp_degree_in(f, 0, 0) < 1:
         return lc, []
 
     factors = []

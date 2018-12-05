@@ -1,7 +1,6 @@
 """Implementation of :class:`Ring` class. """
 
-from ..polys.polyerrors import (ExactQuotientFailed, NotInvertible,
-                                NotReversible)
+from ..polys.polyerrors import ExactQuotientFailed, NotInvertible
 from .domain import Domain
 
 
@@ -45,13 +44,6 @@ class Ring(Domain):
             return s % b
         else:
             raise NotInvertible("zero divisor")
-
-    def revert(self, a):
-        """Returns ``a**(-1)`` if possible. """
-        if a == self.one:
-            return a
-        else:
-            raise NotReversible('only unity is reversible in a ring')
 
     def half_gcdex(self, a, b):
         """Half extended GCD of ``a`` and ``b``. """

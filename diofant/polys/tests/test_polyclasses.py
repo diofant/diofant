@@ -266,7 +266,6 @@ def test_DMP_functionality():
     pytest.raises(PolynomialError, lambda: f.all_monoms())
     pytest.raises(PolynomialError, lambda: f.all_terms())
 
-    pytest.raises(ValueError, lambda: f.revert(1))
     pytest.raises(ValueError, lambda: f.shift(1))
     pytest.raises(ValueError, lambda: f.gff_list())
     pytest.raises(PolynomialError, lambda: f.intervals())

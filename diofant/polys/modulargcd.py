@@ -114,7 +114,7 @@ def _primitive(f, p):
     yring = ring.clone(symbols=ring.symbols[k-1])
     contf = yring.from_dense(cont).trunc_ground(p)
 
-    return contf, f.quo(contf.set_ring(ring))
+    return contf, f//contf.set_ring(ring)
 
 
 def _deg(f):
@@ -645,8 +645,8 @@ def modgcd(f, g):
             continue
 
         h = hm.primitive()[1]
-        fquo, frem = f.div(h)
-        gquo, grem = g.div(h)
+        fquo, frem = divmod(f, h)
+        gquo, grem = divmod(g, h)
         if not frem and not grem:
             if h.LC < 0:
                 ch = -ch
@@ -843,7 +843,7 @@ def _trunc(f, minpoly, p):
     minpoly = minpoly.set_ring(ring)
     p_ = ring.ground_new(p)
 
-    return f.trunc_ground(p).rem([minpoly, p_]).trunc_ground(p)
+    return f.trunc_ground(p).div([minpoly, p_])[1].trunc_ground(p)
 
 
 def _euclidean_algorithm(f, g, minpoly, p):
@@ -1066,7 +1066,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
         gammaa = _evaluate_ground(gamma, k-1, a)
         minpolya = _evaluate_ground(minpoly, k-1, a)
 
-        if gammaa.rem([minpolya, gammaa.ring(p)]) == 0:
+        if gammaa.div([minpolya, gammaa.ring(p)])[1] == 0:
             continue
 
         fa = _evaluate_ground(f, k-1, a)
@@ -1562,7 +1562,7 @@ def _primitive_in_x0(f):
         if cont == dom.one:
             return cont, f
 
-    return cont, f.quo(cont.set_ring(fring))
+    return cont, f//cont.set_ring(fring)
 
 
 # TODO: add support for algebraic function fields
@@ -1682,4 +1682,4 @@ def func_field_modgcd(f, g):
 
     h = h.quo_ground(h.LC)
 
-    return h, f.quo(h), g.quo(h)
+    return h, f//h, g//h

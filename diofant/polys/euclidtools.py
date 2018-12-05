@@ -6,11 +6,11 @@ from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_prem, dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
                          dmp_sub_mul, dup_mul)
-from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree,
-                         dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
-                         dmp_LC, dmp_multi_deflate, dmp_one, dmp_one_p,
-                         dmp_raise, dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
-from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval, dmp_eval_in,
+from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
+                         dmp_ground, dmp_ground_LC, dmp_inflate, dmp_LC,
+                         dmp_multi_deflate, dmp_one, dmp_one_p, dmp_raise,
+                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
+from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval_in,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dup_diff, dup_trunc)
 from .galoistools import gf_crt, gf_int
@@ -212,8 +212,8 @@ def dup_inner_subresultants(f, g, K):
 
     * [Brown78]_
     """
-    n = dmp_degree(f, 0)
-    m = dmp_degree(g, 0)
+    n = dmp_degree_in(f, 0, 0)
+    m = dmp_degree_in(g, 0, 0)
 
     if n < m:
         f, g = g, f
@@ -241,7 +241,7 @@ def dup_inner_subresultants(f, g, K):
     c = -c
 
     while h:
-        k = dmp_degree(h, 0)
+        k = dmp_degree_in(h, 0, 0)
         R.append(h)
 
         f, g, m, d = g, h, k, m - k
@@ -281,7 +281,7 @@ def dup_prs_resultant(f, g, K):
 
     R, S = dup_inner_subresultants(f, g, K)
 
-    if dmp_degree(R[-1], 0) > 0:
+    if dmp_degree_in(R[-1], 0, 0) > 0:
         return K.zero, R
 
     return S[-1], R
@@ -329,8 +329,8 @@ def dmp_inner_subresultants(f, g, u, K):
     if not u:
         return dup_inner_subresultants(f, g, K)
 
-    n = dmp_degree(f, u)
-    m = dmp_degree(g, u)
+    n = dmp_degree_in(f, 0, u)
+    m = dmp_degree_in(g, 0, u)
 
     if n < m:
         f, g = g, f
@@ -358,7 +358,7 @@ def dmp_inner_subresultants(f, g, u, K):
     c = dmp_neg(c, v, K)
 
     while not dmp_zero_p(h, u):
-        k = dmp_degree(h, u)
+        k = dmp_degree_in(h, 0, u)
         R.append(h)
 
         f, g, m, d = g, h, k, m - k
@@ -438,7 +438,7 @@ def dmp_prs_resultant(f, g, u, K):
 
     R, S = dmp_inner_subresultants(f, g, u, K)
 
-    if dmp_degree(R[-1], u) > 0:
+    if dmp_degree_in(R[-1], 0, u) > 0:
         return dmp_zero(u - 1), R
 
     return S[-1], R
@@ -465,8 +465,8 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
 
     v = u - 1
 
-    n = dmp_degree(f, u)
-    m = dmp_degree(g, u)
+    n = dmp_degree_in(f, 0, u)
+    m = dmp_degree_in(g, 0, u)
 
     N = dmp_degree_in(f, 1, u)
     M = dmp_degree_in(g, 1, u)
@@ -476,7 +476,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
     D, a = [K.one], -K.one
     r = dmp_zero(v)
 
-    while dmp_degree(D, 0) <= B:
+    while dmp_degree_in(D, 0, 0) <= B:
         while True:
             a += K.one
 
@@ -485,14 +485,14 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
 
             F = dmp_eval_in(f, gf_int(a, p), 1, u, K)
 
-            if dmp_degree(F, v) == n:
+            if dmp_degree_in(F, 0, v) == n:
                 G = dmp_eval_in(g, gf_int(a, p), 1, u, K)
 
-                if dmp_degree(G, v) == m:
+                if dmp_degree_in(G, 0, v) == m:
                     break
 
         R = dmp_zz_modular_resultant(F, G, p, v, K)
-        e = dmp_eval(r, a, v, K)
+        e = dmp_eval_in(r, a, 0, v, K)
 
         if not v:
             R = dmp_strip([R], 0)
@@ -501,7 +501,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
             R = [R]
             e = [e]
 
-        d = K.invert(dmp_eval(D, a, 0, K), p)
+        d = K.invert(dmp_eval_in(D, a, 0, 0, K), p)
         d = dmp_mul_ground(D, d, 0, K)
         d = dmp_raise(d, v, 0, K)
 
@@ -538,8 +538,8 @@ def dmp_zz_collins_resultant(f, g, u, K):
 
     """
 
-    n = dmp_degree(f, u)
-    m = dmp_degree(g, u)
+    n = dmp_degree_in(f, 0, u)
+    m = dmp_degree_in(g, 0, u)
 
     if n < 0 or m < 0:
         return dmp_zero(u - 1)
@@ -595,8 +595,8 @@ def dmp_qq_collins_resultant(f, g, u, K0):
     -2*y**2 - 7/3*y + 5/6
 
     """
-    n = dmp_degree(f, u)
-    m = dmp_degree(g, u)
+    n = dmp_degree_in(f, 0, u)
+    m = dmp_degree_in(g, 0, u)
 
     if n < 0 or m < 0:
         return dmp_zero(u - 1)
@@ -662,7 +662,7 @@ def dup_discriminant(f, K):
     >>> R.dup_discriminant(x**2 + 2*x + 3)
     -8
     """
-    d = dmp_degree(f, 0)
+    d = dmp_degree_in(f, 0, 0)
 
     if d <= 0:
         return K.zero
@@ -690,7 +690,7 @@ def dmp_discriminant(f, u, K):
     if not u:
         return dup_discriminant(f, K)
 
-    d, v = dmp_degree(f, u), u - 1
+    d, v = dmp_degree_in(f, 0, u), u - 1
 
     if d <= 0:
         return dmp_zero(v)
@@ -748,8 +748,8 @@ def _dmp_ff_trivial_gcd(f, g, u, K):
 
 def _dmp_simplify_gcd(f, g, u, K):
     """Try to eliminate `x_0` from GCD computation in `K[X]`. """
-    df = dmp_degree(f, u)
-    dg = dmp_degree(g, u)
+    df = dmp_degree_in(f, 0, u)
+    dg = dmp_degree_in(g, 0, u)
 
     if df > 0 and dg > 0:
         return

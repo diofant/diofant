@@ -1,13 +1,10 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
-import math
-
 from ..utilities import variations
 from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
                          dmp_exquo_ground, dmp_mul, dmp_mul_ground, dmp_neg,
-                         dmp_quo_ground, dmp_rem, dmp_sub, dup_add, dup_lshift,
-                         dup_mul, dup_sqr, dup_sub)
-from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
+                         dmp_quo_ground, dmp_rem, dmp_sub, dup_add, dup_mul)
+from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros, dup_from_dict)
 from .polyerrors import DomainError
@@ -121,7 +118,7 @@ def dup_diff(f, m, K):
     if m <= 0:
         return f
 
-    n = dmp_degree(f, 0)
+    n = dmp_degree_in(f, 0, 0)
 
     if n < m:
         return []
@@ -166,7 +163,7 @@ def dmp_diff(f, m, u, K):
     if m <= 0:
         return f
 
-    n = dmp_degree(f, u)
+    n = dmp_degree_in(f, 0, u)
 
     if n < m:
         return dmp_zero(u)
@@ -220,35 +217,6 @@ def dmp_diff_in(f, m, j, u, K):
     return diff_in(f, m, u, 0, j, K)
 
 
-def dmp_eval(f, a, u, K):
-    """
-    Evaluate a polynomial at ``x_0 = a`` in ``K[X]`` using the Horner scheme.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> R.dmp_eval(2*x*y + 3*x + y + 2, 2)
-    5*y + 8
-    """
-    if not a:
-        return dmp_TC(f, K)
-
-    result, v = dmp_LC(f, K), u - 1
-
-    if u:
-        for coeff in f[1:]:
-            result = dmp_mul_ground(result, a, v, K)
-            result = dmp_add(result, coeff, v, K)
-    else:
-        for coeff in f[1:]:
-            result *= a
-            result += coeff
-
-    return result
-
-
 def dmp_eval_in(f, a, j, u, K):
     """
     Evaluate a polynomial at ``x_j = a`` in ``K[X]`` using the Horner scheme.
@@ -268,9 +236,26 @@ def dmp_eval_in(f, a, j, u, K):
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
 
+    if not j:
+        if not a:
+            return dmp_TC(f, K)
+
+        result, v = dmp_LC(f, K), u - 1
+
+        if u:
+            for coeff in f[1:]:
+                result = dmp_mul_ground(result, a, v, K)
+                result = dmp_add(result, coeff, v, K)
+        else:
+            for coeff in f[1:]:
+                result *= a
+                result += coeff
+
+        return result
+
     def eval_in(g, a, v, i, j, K):
         if i == j:
-            return dmp_eval(g, a, v, K)
+            return dmp_eval_in(g, a, 0, v, K)
 
         v, i = v - 1, i + 1
 
@@ -303,14 +288,14 @@ def dmp_eval_tail(f, A, u, K):
 
     def eval_tail(g, i, A, u, K):
         if i == u:
-            return dmp_eval(g, A[-1], 0, K)
+            return dmp_eval_in(g, A[-1], 0, 0, K)
         else:
             h = [eval_tail(c, i + 1, A, u, K) for c in g]
 
             if i < u - len(A) + 1:
                 return h
             else:
-                return dmp_eval(h, A[-u + i - 1], 0, K)
+                return dmp_eval_in(h, A[-u + i - 1], 0, 0, K)
 
     e = eval_tail(f, 0, A, u, K)
 
@@ -339,11 +324,11 @@ def dmp_diff_eval_in(f, m, a, j, u, K):
     if j > u:
         raise IndexError("-%s <= j < %s expected, got %s" % (u, u, j))
     if not j:
-        return dmp_eval(dmp_diff(f, m, u, K), a, u, K)
+        return dmp_eval_in(dmp_diff(f, m, u, K), a, 0, u, K)
 
     def diff_eval(g, m, a, v, i, j, K):
         if i == j:
-            return dmp_eval(dmp_diff(g, m, v, K), a, v, K)
+            return dmp_eval_in(dmp_diff(g, m, v, K), a, 0, v, K)
 
         v, i = v - 1, i + 1
 
@@ -747,7 +732,7 @@ def _dup_left_decompose(f, h, K):
     while f:
         q, r = dmp_div(f, h, 0, K)
 
-        if dmp_degree(r, 0) > 0:
+        if dmp_degree_in(r, 0, 0) > 0:
             return
         else:
             g[(i,)] = dmp_LC(r, K)
@@ -929,35 +914,3 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
         return common, f
     else:
         return common, dmp_convert(f, u, K0, K1)
-
-
-def dup_revert(f, n, K):
-    """
-    Compute ``f**(-1)`` mod ``x**n`` using Newton iteration.
-
-    This function computes first ``2**n`` terms of a polynomial that
-    is a result of inversion of a polynomial modulo ``x**n``. This is
-    useful to efficiently compute series expansion of ``1/f``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", QQ)
-
-    >>> f = -x**6/720 + x**4/24 - x**2/2 + 1
-
-    >>> R.dup_revert(f, 8)
-    61/720*x**6 + 5/24*x**4 + 1/2*x**2 + 1
-    """
-    g = [K.revert(dmp_TC(f, K))]
-    h = [K.one, K.zero, K.zero]
-
-    N = int(math.ceil(math.log(n, 2)))
-
-    for i in range(1, N + 1):
-        a = dmp_mul_ground(g, K(2), 0, K)
-        b = dup_mul(f, dup_sqr(g, K), K)
-        g = dmp_rem(dup_sub(a, b, K), h, 0, K)
-        h = dup_lshift(h, dmp_degree(h, 0), K)
-
-    return g

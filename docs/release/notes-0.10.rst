@@ -59,6 +59,8 @@ Compatibility breaks
 * :meth:`~diofant.core.basic.Basic.subs` support one argument (a mapping or an iterable of pairs), see :pull:`532`.
 * Removed ``factor_list_include()`` method of :class:`~diofant.polys.polytools.Poly`, see :pull:`717`.
 * Renamed ``is_sqf`` property of :class:`~diofant.polys.polytools.Poly` to :attr:`~diofant.polys.polytools.Poly.is_squarefree`, see :pull:`724`.
+* Removed ``revert()`` method of :class:`~diofant.polys.polytools.Poly`, see :pull:`727`.
+* Removed ``all`` option for :meth:`~diofant.polys.polytools.Poly.sqf_list` and :meth:`~diofant.polys.polytools.Poly.sqf_list_include` methods, see :pull:`727`.
 
 Minor changes
 =============

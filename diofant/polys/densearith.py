@@ -1,6 +1,6 @@
 """Arithmetics for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
-from .densebasic import (dmp_degree, dmp_LC, dmp_one, dmp_one_p, dmp_slice,
+from .densebasic import (dmp_degree_in, dmp_LC, dmp_one, dmp_one_p, dmp_slice,
                          dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
 from .polyerrors import ExactQuotientFailed, PolynomialDivisionFailed
 
@@ -330,8 +330,8 @@ def dup_add(f, g, K):
     if not g:
         return f
 
-    df = dmp_degree(f, 0)
-    dg = dmp_degree(g, 0)
+    df = dmp_degree_in(f, 0, 0)
+    dg = dmp_degree_in(g, 0, 0)
 
     if df == dg:
         return dmp_strip([a + b for a, b in zip(f, g)], 0)
@@ -361,12 +361,12 @@ def dmp_add(f, g, u, K):
     if not u:
         return dup_add(f, g, K)
 
-    df = dmp_degree(f, u)
+    df = dmp_degree_in(f, 0, u)
 
     if df < 0:
         return g
 
-    dg = dmp_degree(g, u)
+    dg = dmp_degree_in(g, 0, u)
 
     if dg < 0:
         return f
@@ -403,8 +403,8 @@ def dup_sub(f, g, K):
     if not g:
         return f
 
-    df = dmp_degree(f, 0)
-    dg = dmp_degree(g, 0)
+    df = dmp_degree_in(f, 0, 0)
+    dg = dmp_degree_in(g, 0, 0)
 
     if df == dg:
         return dmp_strip([a - b for a, b in zip(f, g)], 0)
@@ -434,12 +434,12 @@ def dmp_sub(f, g, u, K):
     if not u:
         return dup_sub(f, g, K)
 
-    df = dmp_degree(f, u)
+    df = dmp_degree_in(f, 0, u)
 
     if df < 0:
         return dmp_neg(g, u, K)
 
-    dg = dmp_degree(g, u)
+    dg = dmp_degree_in(g, 0, u)
 
     if dg < 0:
         return f
@@ -508,8 +508,8 @@ def dup_mul(f, g, K):
     if not (f and g):
         return []
 
-    df = dmp_degree(f, 0)
-    dg = dmp_degree(g, 0)
+    df = dmp_degree_in(f, 0, 0)
+    dg = dmp_degree_in(g, 0, 0)
 
     n = max(df, dg) + 1
 
@@ -563,12 +563,12 @@ def dmp_mul(f, g, u, K):
     if f == g:
         return dmp_sqr(f, u, K)
 
-    df = dmp_degree(f, u)
+    df = dmp_degree_in(f, 0, u)
 
     if df < 0:
         return f
 
-    dg = dmp_degree(g, u)
+    dg = dmp_degree_in(g, 0, u)
 
     if dg < 0:
         return g
@@ -639,7 +639,7 @@ def dmp_sqr(f, u, K):
     if not u:
         return dup_sqr(f, K)
 
-    df = dmp_degree(f, u)
+    df = dmp_degree_in(f, 0, u)
 
     if df < 0:
         return f
@@ -742,8 +742,8 @@ def dmp_pdiv(f, g, u, K):
     >>> R.dmp_pdiv(x**2 + x*y, 2*x + 2)
     (2*x + 2*y - 2, -4*y + 4)
     """
-    df = dmp_degree(f, u)
-    dg = dmp_degree(g, u)
+    df = dmp_degree_in(f, 0, u)
+    dg = dmp_degree_in(g, 0, u)
 
     if dg < 0:
         raise ZeroDivisionError("polynomial division")
@@ -767,7 +767,7 @@ def dmp_pdiv(f, g, u, K):
         G = dmp_mul_term(g, lc_r, j, u, K)
         r = dmp_sub(R, G, u, K)
 
-        _dr, dr = dr, dmp_degree(r, u)
+        _dr, dr = dr, dmp_degree_in(r, 0, u)
 
         if dr < dg:
             break
@@ -796,8 +796,8 @@ def dmp_prem(f, g, u, K):
     >>> R.dmp_prem(x**2 + x*y, 2*x + 2)
     -4*y + 4
     """
-    df = dmp_degree(f, u)
-    dg = dmp_degree(g, u)
+    df = dmp_degree_in(f, 0, u)
+    dg = dmp_degree_in(g, 0, u)
 
     if dg < 0:
         raise ZeroDivisionError("polynomial division")
@@ -818,7 +818,7 @@ def dmp_prem(f, g, u, K):
         G = dmp_mul_term(g, lc_r, j, u, K)
         r = dmp_sub(R, G, u, K)
 
-        _dr, dr = dr, dmp_degree(r, u)
+        _dr, dr = dr, dmp_degree_in(r, 0, u)
 
         if dr < dg:
             break
@@ -895,8 +895,8 @@ def dmp_rr_div(f, g, u, K):
     >>> R.dmp_rr_div(x**2 + x*y, 2*x + 2)
     (0, x**2 + x*y)
     """
-    df = dmp_degree(f, u)
-    dg = dmp_degree(g, u)
+    df = dmp_degree_in(f, 0, u)
+    dg = dmp_degree_in(g, 0, u)
 
     if dg < 0:
         raise ZeroDivisionError("polynomial division")
@@ -926,7 +926,7 @@ def dmp_rr_div(f, g, u, K):
         h = dmp_mul_term(g, c, j, u, K)
         r = dmp_sub(r, h, u, K)
 
-        _dr, dr = dr, dmp_degree(r, u)
+        _dr, dr = dr, dmp_degree_in(r, 0, u)
 
         if dr < dg:
             break
@@ -947,8 +947,8 @@ def dmp_ff_div(f, g, u, K):
     >>> R.dmp_ff_div(x**2 + x*y, 2*x + 2)
     (1/2*x + 1/2*y - 1/2, -y + 1)
     """
-    df = dmp_degree(f, u)
-    dg = dmp_degree(g, u)
+    df = dmp_degree_in(f, 0, u)
+    dg = dmp_degree_in(g, 0, u)
 
     if dg < 0:
         raise ZeroDivisionError("polynomial division")
@@ -976,7 +976,7 @@ def dmp_ff_div(f, g, u, K):
         h = dmp_mul_term(g, c, j, u, K)
         r = dmp_sub(r, h, u, K)
 
-        _dr, dr = dr, dmp_degree(r, u)
+        _dr, dr = dr, dmp_degree_in(r, 0, u)
 
         if dr < dg:
             break

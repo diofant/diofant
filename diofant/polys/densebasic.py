@@ -82,26 +82,6 @@ def dmp_ground_TC(f, u, K):
     return dmp_TC(f, K)
 
 
-def dmp_degree(f, u):
-    """
-    Return the leading degree of ``f`` in ``x_0`` in ``K[X]``.
-
-    Note that the degree of 0 is negative infinity (the Diofant object -oo).
-
-    Examples
-    ========
-
-    >>> dmp_degree([[[]]], 2)
-    -oo
-
-    >>> f = dmp_normal([[2], [1, 2, 3]], 1, ZZ)
-
-    >>> dmp_degree(f, 1)
-    1
-    """
-    return -oo if dmp_zero_p(f, u) else len(f) - 1
-
-
 def dmp_degree_in(f, j, u):
     """
     Return the leading degree of ``f`` in ``x_j`` in ``K[X]``.
@@ -117,13 +97,14 @@ def dmp_degree_in(f, j, u):
     2
     """
     if not j:
-        return dmp_degree(f, u)
+        return -oo if dmp_zero_p(f, u) else len(f) - 1
+
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
 
     def degree_in(g, v, i, j):
         if i == j:
-            return dmp_degree(g, v)
+            return dmp_degree_in(g, 0, v)
 
         v, i = v - 1, i + 1
 
@@ -146,7 +127,7 @@ def dmp_degree_list(f, u):
     degs = [-oo]*(u + 1)
 
     def degree_list(g, v, i, degs):
-        degs[i] = max(degs[i], dmp_degree(g, v))
+        degs[i] = max(degs[i], dmp_degree_in(g, 0, v))
 
         if v > 0:
             v, i = v - 1, i + 1
@@ -354,7 +335,7 @@ def dmp_ground_nth(f, N, u, K):
         elif n >= len(f):
             return K.zero
         else:
-            d = dmp_degree(f, v)
+            d = dmp_degree_in(f, 0, v)
             if d == -oo:
                 d = -1
             f, v = f[d - n], v - 1
@@ -579,7 +560,7 @@ def dmp_to_dict(f, u, K=None, zero=False):
     if dmp_zero_p(f, u) and zero:
         return {(0,)*(u + 1): K.zero}
 
-    n, v, result = dmp_degree(f, u), u - 1, {}
+    n, v, result = dmp_degree_in(f, 0, u), u - 1, {}
 
     if n == -oo:
         n = -1
@@ -1039,7 +1020,7 @@ def dmp_list_terms(f, u, K, order=None):
         return sorted(terms, key=lambda term: O(term[0]), reverse=True)
 
     def list_terms(g, v, monom):
-        d, terms = dmp_degree(g, v), []
+        d, terms = dmp_degree_in(g, 0, v), []
 
         if not v:
             for i, c in enumerate(g):

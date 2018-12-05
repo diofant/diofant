@@ -7,7 +7,7 @@ from .densearith import (dmp_abs, dmp_add, dmp_div, dmp_exquo,
                          dmp_mul_ground, dmp_neg, dmp_pdiv, dmp_pexquo,
                          dmp_pow, dmp_pquo, dmp_prem, dmp_quo, dmp_quo_ground,
                          dmp_rem, dmp_sqr, dmp_sub)
-from .densebasic import (dmp_convert, dmp_deflate, dmp_degree, dmp_degree_in,
+from .densebasic import (dmp_convert, dmp_deflate, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC,
                          dmp_ground_nth, dmp_ground_p, dmp_ground_TC,
@@ -17,8 +17,7 @@ from .densebasic import (dmp_convert, dmp_deflate, dmp_degree, dmp_degree_in,
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_content, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
-                         dmp_integrate_in, dmp_lift, dup_decompose, dup_revert,
-                         dup_shift)
+                         dmp_integrate_in, dmp_lift, dup_decompose, dup_shift)
 from .euclidtools import (dmp_cancel, dmp_discriminant, dmp_gcd, dmp_inner_gcd,
                           dmp_lcm, dmp_resultant, dmp_subresultants, dup_gcdex,
                           dup_half_gcdex, dup_invert)
@@ -184,7 +183,7 @@ class DMP(CantSympify):
     def all_monoms(self):
         """Returns all monomials from ``self``. """
         if not self.lev:
-            n = dmp_degree(self.rep, 0)
+            n = dmp_degree_in(self.rep, 0, 0)
 
             if n < 0:
                 return [(0,)]
@@ -196,7 +195,7 @@ class DMP(CantSympify):
     def all_terms(self):
         """Returns all terms from a ``self``. """
         if not self.lev:
-            n = dmp_degree(self.rep, 0)
+            n = dmp_degree_in(self.rep, 0, 0)
 
             if n < 0:
                 return [((0,), self.domain.zero)]
@@ -440,13 +439,6 @@ class DMP(CantSympify):
         else:
             raise ValueError('univariate polynomial expected')
 
-    def revert(self, n):
-        """Compute ``self**(-1)`` mod ``x**n``. """
-        if not self.lev:
-            return self.per(dup_revert(self.rep, n, self.domain))
-        else:
-            raise ValueError('univariate polynomial expected')
-
     def subresultants(self, other):
         """Computes subresultant PRS sequence of ``self`` and ``other``. """
         lev, dom, per, F, G = self.unify(other)
@@ -559,14 +551,14 @@ class DMP(CantSympify):
         """Computes square-free part of ``self``. """
         return self.per(dmp_sqf_part(self.rep, self.lev, self.domain))
 
-    def sqf_list(self, all=False):
+    def sqf_list(self):
         """Returns a list of square-free factors of ``self``. """
-        coeff, factors = dmp_sqf_list(self.rep, self.lev, self.domain, all)
+        coeff, factors = dmp_sqf_list(self.rep, self.lev, self.domain)
         return coeff, [(self.per(g), k) for g, k in factors]
 
-    def sqf_list_include(self, all=False):
+    def sqf_list_include(self):
         """Returns a list of square-free factors of ``self``. """
-        factors = dmp_sqf_list_include(self.rep, self.lev, self.domain, all)
+        factors = dmp_sqf_list_include(self.rep, self.lev, self.domain)
         return [(self.per(g), k) for g, k in factors]
 
     def factor_list(self):

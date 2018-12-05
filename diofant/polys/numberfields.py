@@ -788,7 +788,8 @@ def field_isomorphism_factor(a, b):
 
     for f, _ in factors:
         if f.degree() == 1:
-            coeffs = f.rep.TC().to_diofant_list()
+            tc = f.rep.TC()
+            coeffs = [tc.domain.to_expr(c) for c in tc.rep]
             d, terms = len(coeffs) - 1, []
 
             for i, coeff in enumerate(coeffs):

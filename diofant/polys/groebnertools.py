@@ -92,7 +92,7 @@ def buchberger(f, ring):
         return pr
 
     def normal(g, J):
-        h = g.rem([ f[j] for j in J ])
+        h = g.div([f[j] for j in J])[1]
 
         if not h:
             return
@@ -189,7 +189,7 @@ def buchberger(f, ring):
 
         for i in range(len(f)):
             p = f[i]
-            r = p.rem(f[:i])
+            r = p.div(f[:i])[1]
 
             if r:
                 f1.append(r.monic())
@@ -486,7 +486,7 @@ def f5_reduce(f, B):
     >>> f = lbp(sig((1, 1, 1), 4), x, 3)
     >>> g = lbp(sig((0, 0, 0), 2), x, 2)
 
-    >>> Polyn(f).rem([Polyn(g)])
+    >>> Polyn(f).div([Polyn(g)])[1]
     0
     >>> f5_reduce(f, [g])
     (((1, 1, 1), 4), x, 3)
@@ -555,7 +555,7 @@ def f5b(F, ring):
 
         for i in range(len(F)):
             p = F[i]
-            r = p.rem(F[:i])
+            r = p.div(F[:i])[1]
 
             if r:
                 B.append(r)
@@ -579,9 +579,8 @@ def f5b(F, ring):
         cp = CP.pop()
 
         # discard redundant critical pairs:
-        if is_rewritable_or_comparable(cp[0], Num(cp[2]), B):
-            continue
-        if is_rewritable_or_comparable(cp[3], Num(cp[5]), B):
+        if any(is_rewritable_or_comparable(x, Num(y), B)
+               for x, y in [(cp[0], cp[2]), (cp[3], cp[5])]):
             continue
 
         s = s_poly(cp)
@@ -656,9 +655,9 @@ def red_groebner(G, ring):
         """
         Q = []
         for i, p in enumerate(P):
-            h = p.rem(P[:i] + P[i + 1:])
-            if h:
-                Q.append(h)
+            h = p.div(P[:i] + P[i + 1:])[1]
+            assert h
+            Q.append(h)
 
         return [p.monic() for p in Q]
 
@@ -682,7 +681,7 @@ def is_groebner(G):
     for i in range(len(G)):
         for j in range(i + 1, len(G)):
             s = spoly(G[i], G[j])
-            s = s.rem(G)
+            s = s.div(G)[1]
             if s:
                 return False
 
@@ -777,8 +776,7 @@ def groebner_gcd(f, g):
         gc, g = g.primitive()
         gcd = domain.gcd(fc, gc)
 
-    H = (f*g).quo([groebner_lcm(f, g)])
-    h = H[0]
+    h = (f*g)//groebner_lcm(f, g)
 
     if not domain.has_Field:
         return gcd*h

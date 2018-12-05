@@ -2,12 +2,12 @@
 
 from ..core import I
 from .densearith import dmp_add, dmp_mul_ground, dmp_neg, dmp_rem, dup_rshift
-from .densebasic import (dmp_convert, dmp_degree, dmp_LC, dmp_permute,
+from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dmp_to_tuple,
                          dup_reverse)
-from .densetools import (dmp_clear_denoms, dmp_compose, dmp_eval, dmp_eval_in,
-                         dup_diff, dup_mirror, dup_real_imag, dup_scale,
-                         dup_shift, dup_sign_variations, dup_transform)
+from .densetools import (dmp_clear_denoms, dmp_compose, dmp_eval_in, dup_diff,
+                         dup_mirror, dup_real_imag, dup_scale, dup_shift,
+                         dup_sign_variations, dup_transform)
 from .euclidtools import dmp_gcd, dmp_resultant
 from .factortools import dmp_factor_list
 from .polyerrors import DomainError, RefinementFailed
@@ -135,7 +135,7 @@ def dup_step_refine_real_root(f, M, K, fast=False):
 
     a1, b1, c1, d1 = a, a + b, c, c + d
 
-    if not dmp_eval(f, K.zero, 0, K):
+    if not dmp_eval_in(f, K.zero, 0, 0, K):
         return f, (b1, b1, d1, d1)
 
     k = dup_sign_variations(f, K)
@@ -432,7 +432,7 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
     if not (K.is_RationalField or K.is_RealAlgebraicField):
         raise DomainError("isolation of real roots not supported over %s" % K)
 
-    if dmp_degree(f, 0) <= 0:
+    if dmp_degree_in(f, 0, 0) <= 0:
         return []
 
     I_zero, f = _isolate_zero(f, K, inf, sup, sqf=True)
@@ -605,7 +605,7 @@ def _real_isolate_and_disjoin(factors, K, eps=None, inf=None, sup=None, strict=F
 
 def dup_count_real_roots(f, K, inf=None, sup=None):
     """Returns the number of distinct real roots of ``f`` in ``[inf, sup]``. """
-    if dmp_degree(f, 0) <= 0:
+    if dmp_degree_in(f, 0, 0) <= 0:
         return 0
 
     if not K.has_Field:
@@ -618,18 +618,18 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
     sturm = dup_sturm(f, K)
 
     if inf is None:
-        signs_inf = dup_sign_variations([dmp_LC(s, K)*(-1)**dmp_degree(s, 0) for s in sturm], K)
+        signs_inf = dup_sign_variations([dmp_LC(s, K)*(-1)**dmp_degree_in(s, 0, 0) for s in sturm], K)
     else:
-        signs_inf = dup_sign_variations([dmp_eval(s, inf, 0, K) for s in sturm], K)
+        signs_inf = dup_sign_variations([dmp_eval_in(s, inf, 0, 0, K) for s in sturm], K)
 
     if sup is None:
         signs_sup = dup_sign_variations([dmp_LC(s, K) for s in sturm], K)
     else:
-        signs_sup = dup_sign_variations([dmp_eval(s, sup, 0, K) for s in sturm], K)
+        signs_sup = dup_sign_variations([dmp_eval_in(s, sup, 0, 0, K) for s in sturm], K)
 
     count = abs(signs_inf - signs_sup)
 
-    if inf is not None and not dmp_eval(f, inf, 0, K):
+    if inf is not None and not dmp_eval_in(f, inf, 0, 0, K):
         count += 1
 
     return count
@@ -894,14 +894,14 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t, F):
 
         if a == b == s:
             if len(intervals) == 1:
-                if dmp_eval(f2, t, 0, F) > 0:
+                if dmp_eval_in(f2, t, 0, 0, F) > 0:
                     return [OO, A2]
                 else:
                     return [OO, A4]
             else:
                 (a, _), _, _ = intervals[1]
 
-                if dmp_eval(f2, (s + a)/2, 0, F) > 0:
+                if dmp_eval_in(f2, (s + a)/2, 0, 0, F) > 0:
                     Q.extend([OO, A2])
                     f2_sgn = +1
                 else:
@@ -910,7 +910,7 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t, F):
 
                 intervals = intervals[1:]
         else:
-            if dmp_eval(f2, s, 0, F) > 0:
+            if dmp_eval_in(f2, s, 0, 0, F) > 0:
                 Q.append(A2)
                 f2_sgn = +1
             else:
@@ -936,14 +936,14 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t, F):
 
         if a == b == s:
             if len(intervals) == 1:
-                if dmp_eval(f1, t, 0, F) > 0:
+                if dmp_eval_in(f1, t, 0, 0, F) > 0:
                     return [OO, A1]
                 else:
                     return [OO, A3]
             else:
                 (a, _), _, _ = intervals[1]
 
-                if dmp_eval(f1, (s + a)/2, 0, F) > 0:
+                if dmp_eval_in(f1, (s + a)/2, 0, 0, F) > 0:
                     Q.extend([OO, A1])
                     f1_sgn = +1
                 else:
@@ -952,7 +952,7 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t, F):
 
                 intervals = intervals[1:]
         else:
-            if dmp_eval(f1, s, 0, F) > 0:
+            if dmp_eval_in(f1, s, 0, 0, F) > 0:
                 Q.append(A1)
                 f1_sgn = +1
             else:
@@ -973,20 +973,20 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t, F):
 
         return Q
 
-    re = dmp_eval(f1, s, 0, F)
-    im = dmp_eval(f2, s, 0, F)
+    re = dmp_eval_in(f1, s, 0, 0, F)
+    im = dmp_eval_in(f2, s, 0, 0, F)
 
     if not re or not im:
         Q.append(_classify_point(re, im))
 
         if len(intervals) == 1:
-            re = dmp_eval(f1, t, 0, F)
-            im = dmp_eval(f2, t, 0, F)
+            re = dmp_eval_in(f1, t, 0, 0, F)
+            im = dmp_eval_in(f2, t, 0, 0, F)
         else:
             (a, _), _, _ = intervals[1]
 
-            re = dmp_eval(f1, (s + a)/2, 0, F)
-            im = dmp_eval(f2, (s + a)/2, 0, F)
+            re = dmp_eval_in(f1, (s + a)/2, 0, 0, F)
+            im = dmp_eval_in(f2, (s + a)/2, 0, 0, F)
 
         intervals = intervals[1:]
 
@@ -1011,8 +1011,8 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t, F):
 
     for (a, b), indices, _ in intervals:
         if a == b:
-            re = dmp_eval(f1, a, 0, F)
-            im = dmp_eval(f2, a, 0, F)
+            re = dmp_eval_in(f1, a, 0, 0, F)
+            im = dmp_eval_in(f2, a, 0, 0, F)
 
             Q.append(_classify_point(re, im))
 
@@ -1420,7 +1420,7 @@ def _rectangle_small_p(a, b, eps):
 
 def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=False):
     """Isolate complex roots of a square-free polynomial using Collins-Krandick algorithm. """
-    if dmp_degree(f, 0) <= 0:
+    if dmp_degree_in(f, 0, 0) <= 0:
         return []
 
     F = K.field
