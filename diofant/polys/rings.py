@@ -2228,12 +2228,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         else:
             raise MultivariatePolynomialError("sturm sequence")
 
-    def gff_list(self):
-        if self.ring.is_univariate:
-            return self.ring.dup_gff_list(self)
-        else:
-            raise MultivariatePolynomialError("greatest factorial factorization")
-
     def sqf_norm(self):
         return self.ring.dmp_sqf_norm(self)
 

@@ -38,7 +38,7 @@ __all__ = ('Poly', 'PurePoly', 'poly_from_expr', 'parallel_poly_from_expr',
            'invert', 'subresultants', 'resultant', 'discriminant', 'cofactors',
            'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
            'monic', 'content', 'primitive', 'compose', 'decompose', 'sturm',
-           'gff_list', 'gff', 'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
+           'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
            'factor_list', 'factor', 'intervals', 'refine_root', 'count_roots',
            'real_roots', 'nroots', 'ground_roots', 'nth_power_roots_poly',
            'cancel', 'reduced', 'groebner', 'GroebnerBasis', 'poly')
@@ -2340,25 +2340,6 @@ class Poly(Expr):
 
         return list(map(f.per, result))
 
-    def gff_list(self):
-        """
-        Computes greatest factorial factorization of ``self``.
-
-        Examples
-        ========
-
-        >>> f = x**5 + 2*x**4 - x**3 - 2*x**2
-
-        >>> Poly(f).gff_list()
-        [(Poly(x, x, domain='ZZ'), 1), (Poly(x + 2, x, domain='ZZ'), 4)]
-        """
-        if hasattr(self.rep, 'gff_list'):
-            result = self.rep.gff_list()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'gff_list')
-
-        return [(self.per(g), k) for g, k in result]
-
     def sqf_norm(self):
         """
         Computes square-free norm of ``self``.
@@ -4560,42 +4541,6 @@ def sturm(f, *gens, **args):
         return [r.as_expr() for r in result]
     else:
         return result
-
-
-def gff_list(f, *gens, **args):
-    """
-    Compute a list of greatest factorial factors of ``f``.
-
-    Examples
-    ========
-
-    >>> f = x**5 + 2*x**4 - x**3 - 2*x**2
-
-    >>> gff_list(f)
-    [(x, 1), (x + 2, 4)]
-
-    >>> (ff(x, 1)*ff(x + 2, 4)).expand() == f
-    True
-
-    """
-    options.allowed_flags(args, ['polys'])
-
-    try:
-        F, opt = poly_from_expr(f, *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('gff_list', 1, exc)
-
-    factors = F.gff_list()
-
-    if not opt.polys:
-        return [(g.as_expr(), k) for g, k in factors]
-    else:
-        return factors
-
-
-def gff(f, *gens, **args):
-    """Compute greatest factorial factorization of ``f``. """
-    raise NotImplementedError('symbolic falling factorial')
 
 
 def sqf_norm(f, *gens, **args):

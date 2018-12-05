@@ -28,7 +28,7 @@ from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_real_roots, dup_isolate_real_roots_sqf,
                             dup_refine_real_root, dup_sturm)
 from .sqfreetools import (dmp_sqf_list, dmp_sqf_list_include, dmp_sqf_norm,
-                          dmp_sqf_p, dmp_sqf_part, dup_gff_list)
+                          dmp_sqf_p, dmp_sqf_part)
 
 
 class DMP(CantSympify):
@@ -531,14 +531,6 @@ class DMP(CantSympify):
         """Computes the Sturm sequence of ``self``. """
         if not self.lev:
             return list(map(self.per, dup_sturm(self.rep, self.domain)))
-        else:
-            raise ValueError('univariate polynomial expected')
-
-    def gff_list(self):
-        """Computes greatest factorial factorization of ``self``. """
-        if not self.lev:
-            return [(self.per(g), k) for g, k in dup_gff_list(self.rep,
-                                                              self.domain)]
         else:
             raise ValueError('univariate polynomial expected')
 

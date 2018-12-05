@@ -1,10 +1,10 @@
 """Square-free decomposition algorithms and related tools. """
 
-from .densearith import dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub, dup_mul
+from .densearith import dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_ground_LC,
                          dmp_inject, dmp_raise, dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
-                         dmp_ground_primitive, dup_shift)
+                         dmp_ground_primitive)
 from .euclidtools import dmp_gcd, dmp_inner_gcd, dmp_resultant
 from .galoistools import gf_sqf_list, gf_sqf_part
 from .polyerrors import DomainError
@@ -206,39 +206,3 @@ def dmp_sqf_list_include(f, u, K):
     else:
         g = dmp_ground(coeff, u)
         return [(g, 1)] + factors
-
-
-def dup_gff_list(f, K):
-    """
-    Compute greatest factorial factorization of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_gff_list(x**5 + 2*x**4 - x**3 - 2*x**2)
-    [(x, 1), (x + 2, 4)]
-
-    """
-    if not f:
-        raise ValueError("greatest factorial factorization doesn't exist for a zero polynomial")
-
-    f = dmp_ground_monic(f, 0, K)
-
-    if not dmp_degree_in(f, 0, 0):
-        return []
-    else:
-        g = dmp_gcd(f, dup_shift(f, K.one, K), 0, K)
-        H = dup_gff_list(g, K)
-
-        for i, (h, k) in enumerate(H):
-            g = dup_mul(g, dup_shift(h, -K(k), K), K)
-            H[i] = (h, k + 1)
-
-        f = dmp_quo(f, g, 0, K)
-
-        if not dmp_degree_in(f, 0, 0):
-            return H
-        else:
-            return [(f, 1)] + H

@@ -165,15 +165,3 @@ def test_dmp_sqf():
     R, x, y = ring("x,y", QQ.algebraic_field(I))
     assert R.dmp_sqf_list(x**2 + 2*I*x - 1) == (R.one.to_dense()[0][0],
                                                 [(x + I, 2)])
-
-
-def test_dup_gff_list():
-    R, x = ring("x", ZZ)
-
-    f = x**5 + 2*x**4 - x**3 - 2*x**2
-    assert R.dup_gff_list(f) == [(x, 1), (x + 2, 4)]
-
-    g = x**9 - 20*x**8 + 166*x**7 - 744*x**6 + 1965*x**5 - 3132*x**4 + 2948*x**3 - 1504*x**2 + 320*x
-    assert R.dup_gff_list(g) == [(x**2 - 5*x + 4, 1), (x**2 - 5*x + 4, 2), (x, 3)]
-
-    pytest.raises(ValueError, lambda: R.dup_gff_list(0))
