@@ -1203,26 +1203,6 @@ def gf_sqf_p(f, p, K):
         return gf_gcd(f, gf_diff(f, p, K), p, K) == [K.one]
 
 
-def gf_sqf_part(f, p, K):
-    """
-    Return square-free part of a ``GF(p)[x]`` polynomial.
-
-    Examples
-    ========
-
-    >>> gf_sqf_part([1, 1, 3, 0, 1, 0, 2, 2, 1], 5, ZZ)
-    [1, 4, 3]
-    """
-    _, sqf = gf_sqf_list(f, p, K)
-
-    g = [K.one]
-
-    for f, _ in sqf:
-        g = gf_mul(g, f, p, K)
-
-    return g
-
-
 def gf_sqf_list(f, p, K):
     """
     Return the square-free decomposition of a ``GF(p)[x]`` polynomial.

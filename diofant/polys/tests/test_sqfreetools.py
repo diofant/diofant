@@ -80,6 +80,18 @@ def test_dup_sqf():
     assert f.is_squarefree is True
     assert g.is_squarefree is False
 
+    R, x = ring("x", FF(5))
+
+    f = x**8 + x**7 + 3*x**6 + x**4 + 2*x**2 + 2*x + 1
+
+    assert R.dmp_sqf_part(f) == x**2 + 4*x + 3
+
+    R, x = ring("x", FF(11))
+
+    f = x**3 + 5*x**2 + 8*x + 4
+
+    assert R.dmp_sqf_part(f) == x**2 + 3*x + 2
+
     R, x, y = ring("x,y", ZZ)
 
     A = x**4 - 3*x**2 + 6

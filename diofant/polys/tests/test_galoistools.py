@@ -20,9 +20,9 @@ from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
                                        gf_mul, gf_mul_ground, gf_neg, gf_pow,
                                        gf_pow_mod, gf_Qbasis, gf_Qmatrix,
                                        gf_quo, gf_rem, gf_sqf_list, gf_sqf_p,
-                                       gf_sqf_part, gf_sqr, gf_sub,
-                                       gf_sub_ground, gf_sub_mul, gf_to_dict,
-                                       gf_to_int_poly, gf_trace_map, gf_value,
+                                       gf_sqr, gf_sub, gf_sub_ground,
+                                       gf_sub_mul, gf_to_dict, gf_to_int_poly,
+                                       gf_trace_map, gf_value,
                                        linear_congruence)
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.rings import ring
@@ -428,8 +428,6 @@ def test_gf_squarefree():
     assert gf_sqf_p(f, 11, ZZ) is False
 
     assert gf_sqf_list(f, 11, ZZ) == (1, [([1, 1], 1), ([1, 2], 2)])
-
-    assert gf_sqf_part(f, 11, ZZ) == [1, 3, 2]
 
     f = [1, 0, 0, 2, 0, 0, 2, 0, 0, 1, 0]
 

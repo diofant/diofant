@@ -1,13 +1,13 @@
 """Square-free decomposition algorithms and related tools. """
 
-from .densearith import dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub
-from .densebasic import (dmp_convert, dmp_ground, dmp_ground_LC,
-                         dmp_ground_p, dmp_inject, dmp_one_p, dmp_raise,
-                         dmp_swap, dmp_zero_p)
+from .densearith import dmp_mul, dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub
+from .densebasic import (dmp_convert, dmp_ground, dmp_ground_LC, dmp_ground_p,
+                         dmp_inject, dmp_one_p, dmp_raise, dmp_swap,
+                         dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff_in, dmp_ground_monic,
                          dmp_ground_primitive)
 from .euclidtools import dmp_gcd, dmp_resultant
-from .galoistools import gf_sqf_list, gf_sqf_part
+from .galoistools import gf_sqf_list
 from .polyerrors import DomainError
 
 
@@ -76,16 +76,6 @@ def dmp_sqf_norm(f, u, K):
             s += 1
 
 
-def dmp_gf_sqf_part(f, u, K):
-    """Compute square-free part of ``f`` in ``GF(p)[X]``. """
-    if not u:
-        f = dmp_convert(f, u, K, K.domain)
-        g = gf_sqf_part(f, K.mod, K.domain)
-        return dmp_convert(g, u, K.domain, K)
-    else:  # pragma: no cover
-        raise NotImplementedError('multivariate polynomials over finite fields')
-
-
 def dmp_sqf_part(f, u, K):
     """
     Returns square-free part of a polynomial in ``K[X]``.
@@ -100,7 +90,13 @@ def dmp_sqf_part(f, u, K):
 
     """
     if K.is_FiniteField:
-        return dmp_gf_sqf_part(f, u, K)
+        _, sqf = dmp_sqf_list(f, u, K)
+
+        g = [K.one]
+        for f, _ in sqf:
+            g = dmp_mul(g, f, u, K)
+
+        return g
 
     if dmp_zero_p(f, u):
         return f
