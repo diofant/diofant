@@ -1200,15 +1200,11 @@ def integer_rational_reconstruction(c, m, domain):
         return
 
     if s1 < 0:
-        a, b = -r1, -s1
-    elif s1 > 0:
-        a, b = r1, s1
-    else:
-        return
+        r1, s1 = -r1, -s1
 
     field = domain.field
 
-    return field(a) / field(b)
+    return field(r1) / field(s1)
 
 
 def _rational_reconstruction_int_coeffs(hm, m, ring):
