@@ -18,11 +18,13 @@ def dmp_sqf_p(f, u, K):
     Examples
     ========
 
-    >>> dmp_sqf_p([[]], 1, ZZ)
+    >>> R, x, y = ring("x y", ZZ)
+
+    >>> R.dmp_sqf_p(R(0))
     True
-    >>> dmp_sqf_p([[1], [2, 0], [1, 0, 0]], 1, ZZ)
+    >>> R.dmp_sqf_p((x + y)**2)
     False
-    >>> dmp_sqf_p([[1], [], [1, 0, 0]], 1, ZZ)
+    >>> R.dmp_sqf_p(x**2 + y**2)
     True
     """
     if dmp_ground_p(f, None, u):
@@ -140,9 +142,7 @@ def dmp_sqf_list(f, u, K):
 
     >>> R, x, y = ring("x y", ZZ)
 
-    >>> f = x**5 + 2*x**4*y + x**3*y**2
-
-    >>> R.dmp_sqf_list(f)
+    >>> R.dmp_sqf_list(x**5 + 2*x**4*y + x**3*y**2)
     (1, [(x + y, 2), (x, 3)])
     """
     if K.is_FiniteField:
@@ -195,9 +195,7 @@ def dmp_sqf_list_include(f, u, K):
 
     >>> R, x, y = ring("x y", ZZ)
 
-    >>> f = x**5 + 2*x**4*y + x**3*y**2
-
-    >>> R.dmp_sqf_list_include(f)
+    >>> R.dmp_sqf_list_include(x**5 + 2*x**4*y + x**3*y**2)
     [(1, 1), (x + y, 2), (x, 3)]
     """
     coeff, factors = dmp_sqf_list(f, u, K)
