@@ -19,10 +19,9 @@ from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
                                        gf_irreducible_p, gf_lcm, gf_monic,
                                        gf_mul, gf_mul_ground, gf_neg, gf_pow,
                                        gf_pow_mod, gf_Qbasis, gf_Qmatrix,
-                                       gf_quo, gf_rem, gf_sqf_list, gf_sqf_p,
-                                       gf_sqr, gf_sub, gf_sub_ground,
-                                       gf_sub_mul, gf_to_dict, gf_to_int_poly,
-                                       gf_trace_map, gf_value,
+                                       gf_quo, gf_rem, gf_sqr, gf_sub,
+                                       gf_sub_ground, gf_sub_mul, gf_to_dict,
+                                       gf_to_int_poly, gf_trace_map, gf_value,
                                        linear_congruence)
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.rings import ring
@@ -408,32 +407,6 @@ def test_gf_irreducible_p():
     assert gf_irred_p_rabin(h, 17, ZZ) is False
 
 
-def test_gf_squarefree():
-    assert gf_sqf_list([], 11, ZZ) == (0, [])
-    assert gf_sqf_list([1], 11, ZZ) == (1, [])
-    assert gf_sqf_list([1, 1], 11, ZZ) == (1, [([1, 1], 1)])
-
-    assert gf_sqf_p([], 11, ZZ) is True
-    assert gf_sqf_p([1], 11, ZZ) is True
-    assert gf_sqf_p([1, 1], 11, ZZ) is True
-
-    f = gf_from_dict({11: 1, 0: 1}, 11, ZZ)
-
-    assert gf_sqf_p(f, 11, ZZ) is False
-
-    assert gf_sqf_list(f, 11, ZZ) == (1, [([1, 1], 11)])
-
-    f = [1, 5, 8, 4]
-
-    assert gf_sqf_p(f, 11, ZZ) is False
-
-    assert gf_sqf_list(f, 11, ZZ) == (1, [([1, 1], 1), ([1, 2], 2)])
-
-    f = [1, 0, 0, 2, 0, 0, 2, 0, 0, 1, 0]
-
-    assert gf_sqf_list(f, 3, ZZ) == (1, [([1, 0], 1), ([1, 1], 3), ([1, 2], 6)])
-
-
 def test_gf_frobenius_map():
     f = [2, 0, 1, 0, 2, 2, 0, 2, 2, 2]
     g = [1, 1, 0, 2, 0, 1, 0, 2, 0, 1]
@@ -696,8 +669,6 @@ def test_gf_factor():
     p = ZZ(nextprime(int((2**15 * pi).evalf())))
     f = gf_from_dict({15: 1, 1: 1, 0: 1}, p, ZZ)
 
-    assert gf_sqf_p(f, p, ZZ) is True
-
     g = (1, [([1, 22730, 68144], 1),
              ([1, 81553, 77449, 86810, 4724], 1),
              ([1, 86276, 56779, 14859, 31575], 1),
@@ -725,8 +696,6 @@ def test_gf_factor():
 
     p = ZZ(nextprime(int((2**4 * pi).evalf())))
     f = [1, 2, 5, 26, 41, 39, 38]
-
-    assert gf_sqf_p(f, p, ZZ) is True
 
     g = (1, [([1, 44, 26], 1),
              ([1, 11, 25, 18, 30], 1)])

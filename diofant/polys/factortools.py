@@ -12,15 +12,16 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
                          dmp_eject, dmp_exclude, dmp_from_dict, dmp_ground_LC,
                          dmp_ground_p, dmp_include, dmp_inject, dmp_LC,
-                         dmp_nest, dmp_one, dmp_raise, dmp_strip, dmp_swap,
-                         dmp_TC, dmp_terms_gcd, dmp_zero_p, dup_inflate)
+                         dmp_nest, dmp_normal, dmp_one, dmp_raise, dmp_strip,
+                         dmp_swap, dmp_TC, dmp_terms_gcd, dmp_zero_p,
+                         dup_inflate)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dup_mirror, dup_trunc)
 from .euclidtools import dmp_inner_gcd, dmp_primitive
 from .galoistools import (gf_add_mul, gf_div, gf_factor, gf_factor_sqf,
-                          gf_from_int_poly, gf_gcdex, gf_mul, gf_rem, gf_sqf_p,
+                          gf_from_int_poly, gf_gcdex, gf_mul, gf_rem,
                           gf_to_int_poly)
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
@@ -202,11 +203,12 @@ def dup_zz_zassenhaus(f, K):
             continue
 
         px = K.convert(px)
+        F = dmp_normal(f, 0, K.finite_field(px))
+
+        if not dmp_sqf_p(F, 0, K.finite_field(px)):
+            continue
 
         F = gf_from_int_poly(f, px)
-
-        if not gf_sqf_p(F, px, K):
-            continue
         fsqfx = gf_factor_sqf(F, px, K)[1]
         a.append((px, fsqfx))
         if len(fsqfx) < 15 or len(a) > 4:

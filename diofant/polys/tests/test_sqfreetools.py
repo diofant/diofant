@@ -86,11 +86,57 @@ def test_dup_sqf():
 
     assert R.dmp_sqf_part(f) == x**2 + 4*x + 3
 
+    f = 3*x**2 + 2*x + 4
+
+    assert f.is_squarefree is True
+
+    f = 2*x**6 + 4*x**5 + 4*x**4 + 2*x**3 + 2*x**2 + x + 4
+
+    assert f.is_squarefree is False
+
     R, x = ring("x", FF(11))
 
     f = x**3 + 5*x**2 + 8*x + 4
 
     assert R.dmp_sqf_part(f) == x**2 + 3*x + 2
+
+    assert R.zero.is_squarefree is True
+    assert R.dmp_sqf_list(R.zero) == (0, [])
+
+    assert R.one.is_squarefree is True
+    assert R.dmp_sqf_list(R.one) == (1, [])
+
+    assert (x + 1).is_squarefree is True
+    assert R.dmp_sqf_list(x + 1) == (1, [(x + 1, 1)])
+
+    f = x**11 + 1
+
+    assert f.is_squarefree is False
+    assert R.dmp_sqf_list(f) == (1, [(x + 1, 11)])
+
+    f = x**3 + 5*x**2 + 8*x + 4
+
+    assert f.is_squarefree is False
+    assert R.dmp_sqf_list(f) == (1, [(x + 1, 1), (x + 2, 2)])
+
+    R, x = ring('x', FF(3))
+
+    f = x**10 + 2*x**7 + 2*x**4 + x
+
+    assert f.is_squarefree is False
+    assert R.dmp_sqf_list(f) == (1, [(x, 1), (x + 1, 3), (x + 2, 6)])
+
+    R, x = ring('x', FF(53))
+
+    f = x**6 + 2*x**5 + 5*x**4 + 26*x**3 + 41*x**2 + 39*x + 38
+
+    assert f.is_squarefree is True
+
+    R, x = ring('x', FF(102953))
+
+    f = x**15 + x + 1
+
+    assert f.is_squarefree is True
 
     R, x, y = ring("x,y", ZZ)
 

@@ -1183,26 +1183,6 @@ def gf_irreducible_p(f, p, K):
     return _irred_methods[method](f, p, K)
 
 
-def gf_sqf_p(f, p, K):
-    """
-    Return ``True`` if ``f`` is square-free in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_sqf_p([3, 2, 4], 5, ZZ)
-    True
-    >>> gf_sqf_p([2, 4, 4, 2, 2, 1, 4], 5, ZZ)
-    False
-    """
-    _, f = gf_monic(f, p, K)
-
-    if not f:
-        return True
-    else:
-        return gf_gcd(f, gf_diff(f, p, K), p, K) == [K.one]
-
-
 def gf_sqf_list(f, p, K):
     """
     Return the square-free decomposition of a ``GF(p)[x]`` polynomial.
