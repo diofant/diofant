@@ -13,6 +13,9 @@ gmpy = import_module('gmpy2')
 
 @pytest.mark.skipif(gmpy is None, reason="no gmpy")
 def test_convert():
+    assert ZZ_gmpy.finite_field(2) == FF_gmpy(2)
+    assert ZZ_python.finite_field(2) == FF_python(2)
+
     F3 = FF(3)
     F3_gmpy = FF_gmpy(3)
     F3_python = FF_python(3)

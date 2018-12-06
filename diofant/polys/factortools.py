@@ -12,15 +12,16 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
                          dmp_eject, dmp_exclude, dmp_from_dict, dmp_ground_LC,
                          dmp_ground_p, dmp_include, dmp_inject, dmp_LC,
-                         dmp_nest, dmp_one, dmp_raise, dmp_strip, dmp_TC,
-                         dmp_terms_gcd, dmp_zero_p, dup_inflate)
+                         dmp_nest, dmp_normal, dmp_one, dmp_raise, dmp_strip,
+                         dmp_swap, dmp_TC, dmp_terms_gcd, dmp_zero_p,
+                         dup_inflate)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dup_mirror, dup_trunc)
-from .euclidtools import dmp_content, dmp_inner_gcd, dmp_primitive
+from .euclidtools import dmp_inner_gcd, dmp_primitive
 from .galoistools import (gf_add_mul, gf_div, gf_factor, gf_factor_sqf,
-                          gf_from_int_poly, gf_gcdex, gf_mul, gf_rem, gf_sqf_p,
+                          gf_from_int_poly, gf_gcdex, gf_mul, gf_rem,
                           gf_to_int_poly)
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
@@ -202,11 +203,12 @@ def dup_zz_zassenhaus(f, K):
             continue
 
         px = K.convert(px)
+        F = dmp_normal(f, 0, K.finite_field(px))
+
+        if not dmp_sqf_p(F, 0, K.finite_field(px)):
+            continue
 
         F = gf_from_int_poly(f, px)
-
-        if not gf_sqf_p(F, px, K):
-            continue
         fsqfx = gf_factor_sqf(F, px, K)[1]
         a.append((px, fsqfx))
         if len(fsqfx) < 15 or len(a) > 4:
@@ -1010,29 +1012,30 @@ def dmp_ext_factor(f, u, K):
     """Factor multivariate polynomials over algebraic number fields. """
     lc = dmp_ground_LC(f, u, K)
     f = dmp_ground_monic(f, u, K)
-    factors = []
 
-    if u:
-        for factor, k in dmp_ext_factor(dmp_content(f, u, K), u - 1, K)[1]:
-            factors.append(([factor], k))
+    if dmp_ground_p(f, None, u):
+        return lc, []
 
-    if dmp_degree_in(f, 0, u) > 0:
-        sqf = dmp_sqf_part(f, u, K)
-        s, g, r = dmp_sqf_norm(sqf, u, K)
+    f, F = dmp_sqf_part(f, u, K), f
+    s, g, r = dmp_sqf_norm(f, u, K)
 
-        _, sqf_factors = dmp_factor_list(r, u, K.domain)
+    _, factors = dmp_factor_list(r, u, K.domain)
 
+    if len(factors) == 1:
+        factors = [f]
+    else:
         H = dmp_raise([K.one, s*K.unit], u, 0, K)
 
-        for i, (factor, _) in enumerate(sqf_factors):
+        for i, (factor, _) in enumerate(factors):
             h = dmp_convert(factor, u, K.domain, K)
             h, _, g = dmp_inner_gcd(h, g, u, K)
-            h = dmp_compose(h, H, u, K)
-            sqf_factors[i] = h
+            for j in range(u + 1):
+                h = dmp_swap(h, 0, j, u, K)
+                h = dmp_compose(h, H, u, K)
+                h = dmp_swap(h, 0, j, u, K)
+            factors[i] = h
 
-        factors.extend(dmp_trial_division(f, sqf_factors, u, K))
-
-    return lc, factors
+    return lc, dmp_trial_division(F, factors, u, K)
 
 
 def dmp_gf_factor(f, u, K):

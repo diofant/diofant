@@ -84,6 +84,9 @@ may be slightly more efficient.)
 .. automodule:: diofant.polys.rootisolation
     :members:
 
+.. automodule:: diofant.polys.sqfreetools
+    :members:
+
 Manipulation of dense, univariate polynomials with finite field coefficients
 ****************************************************************************
 

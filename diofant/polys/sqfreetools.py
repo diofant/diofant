@@ -1,12 +1,13 @@
 """Square-free decomposition algorithms and related tools. """
 
-from .densearith import dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub
-from .densebasic import (dmp_convert, dmp_degree_in, dmp_ground, dmp_ground_LC,
-                         dmp_inject, dmp_raise, dmp_zero_p)
-from .densetools import (dmp_compose, dmp_diff, dmp_ground_monic,
+from .densearith import dmp_mul, dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub
+from .densebasic import (dmp_convert, dmp_ground, dmp_ground_LC, dmp_ground_p,
+                         dmp_inject, dmp_one_p, dmp_raise, dmp_swap,
+                         dmp_zero_p)
+from .densetools import (dmp_compose, dmp_diff_in, dmp_ground_monic,
                          dmp_ground_primitive)
-from .euclidtools import dmp_gcd, dmp_inner_gcd, dmp_resultant
-from .galoistools import gf_sqf_list, gf_sqf_part
+from .euclidtools import dmp_gcd, dmp_resultant
+from .galoistools import gf_sqf_list
 from .polyerrors import DomainError
 
 
@@ -17,17 +18,25 @@ def dmp_sqf_p(f, u, K):
     Examples
     ========
 
-    >>> dmp_sqf_p([[]], 1, ZZ)
+    >>> R, x, y = ring("x y", ZZ)
+
+    >>> R.dmp_sqf_p(R(0))
     True
-    >>> dmp_sqf_p([[1], [2, 0], [1, 0, 0]], 1, ZZ)
+    >>> R.dmp_sqf_p((x + y)**2)
     False
-    >>> dmp_sqf_p([[1], [], [1, 0, 0]], 1, ZZ)
+    >>> R.dmp_sqf_p(x**2 + y**2)
     True
     """
-    if dmp_zero_p(f, u):
+    if dmp_ground_p(f, None, u):
         return True
     else:
-        return not dmp_degree_in(dmp_gcd(f, dmp_diff(f, 1, u, K), u, K), 0, u)
+        g = f
+        for i in range(u + 1):
+            g = dmp_gcd(g, dmp_diff_in(f, 1, i, u, K), u, K)
+            if dmp_ground_p(g, None, u):
+                return True
+        else:
+            return False
 
 
 def dmp_sqf_norm(f, u, K):
@@ -42,17 +51,10 @@ def dmp_sqf_norm(f, u, K):
 
     >>> K = QQ.algebraic_field(I)
     >>> R, x, y = ring("x y", K)
-    >>> _, X, Y = ring("x y", QQ)
 
-    >>> s, f, r = R.dmp_sqf_norm(x*y + y**2)
-
-    >>> s == 1
-    True
-    >>> f == x*y + y**2 - I*y
-    True
-    >>> r == X**2*Y**2 + 2*X*Y**3 + Y**4 + Y**2
-    True
-
+    >>> R.dmp_sqf_norm(x*y + y**2)
+    (1, x*y - I*x + y**2 - 3*I*y - 2,
+     x**2*y**2 + x**2 + 2*x*y**3 + 2*x*y + y**4 + 5*y**2 + 4)
     """
     if not K.is_AlgebraicField:
         raise DomainError("ground domain must be algebraic")
@@ -67,21 +69,13 @@ def dmp_sqf_norm(f, u, K):
         r = dmp_resultant(g, h, u + 1, K.domain)
 
         if dmp_sqf_p(r, u, K.domain):
-            break
+            return s, f, r
         else:
-            f, s = dmp_compose(f, F, u, K), s + 1
-
-    return s, f, r
-
-
-def dmp_gf_sqf_part(f, u, K):
-    """Compute square-free part of ``f`` in ``GF(p)[X]``. """
-    if not u:
-        f = dmp_convert(f, u, K, K.domain)
-        g = gf_sqf_part(f, K.mod, K.domain)
-        return dmp_convert(g, u, K.domain, K)
-    else:  # pragma: no cover
-        raise NotImplementedError('multivariate polynomials over finite fields')
+            for j in range(u + 1):
+                f = dmp_swap(f, 0, j, u, K)
+                f = dmp_compose(f, F, u, K)
+                f = dmp_swap(f, 0, j, u, K)
+            s += 1
 
 
 def dmp_sqf_part(f, u, K):
@@ -98,7 +92,13 @@ def dmp_sqf_part(f, u, K):
 
     """
     if K.is_FiniteField:
-        return dmp_gf_sqf_part(f, u, K)
+        _, sqf = dmp_sqf_list(f, u, K)
+
+        g = [K.one]
+        for f, _ in sqf:
+            g = dmp_mul(g, f, u, K)
+
+        return g
 
     if dmp_zero_p(f, u):
         return f
@@ -106,7 +106,9 @@ def dmp_sqf_part(f, u, K):
     if K.is_negative(dmp_ground_LC(f, u, K)):
         f = dmp_neg(f, u, K)
 
-    gcd = dmp_gcd(f, dmp_diff(f, 1, u, K), u, K)
+    gcd = f
+    for i in range(u + 1):
+        gcd = dmp_gcd(gcd, dmp_diff_in(f, 1, i, u, K), u, K)
     sqf = dmp_quo(f, gcd, u, K)
 
     if K.is_Field:
@@ -131,6 +133,42 @@ def dmp_gf_sqf_list(f, u, K):
         raise NotImplementedError('multivariate polynomials over finite fields')
 
 
+def dmp_rr_yun0_sqf_list(f, u, K):
+    """Compute square-free decomposition of ``f`` in zero-characteristic ring ``K``.
+
+    References
+    ==========
+
+    * [LeeM13]_, page 8
+    """
+    if dmp_ground_p(f, None, u):
+        return []
+
+    result, count = [], 1
+    qs = [dmp_diff_in(f, 1, i, u, K) for i in range(u + 1)]
+
+    g = f
+    for q in qs:
+        g = dmp_gcd(g, q, u, K)
+
+    while not dmp_one_p(f, u, K):
+        for i in range(u + 1):
+            qs[i] = dmp_quo(qs[i], g, u, K)
+        f = dmp_quo(f, g, u, K)
+        for i in range(u + 1):
+            qs[i] = dmp_sub(qs[i], dmp_diff_in(f, 1, i, u, K), u, K)
+
+        g = f
+        for q in qs:
+            g = dmp_gcd(g, q, u, K)
+        if not dmp_one_p(g, u, K):
+            result.append((g, count))
+
+        count += 1
+
+    return result
+
+
 def dmp_sqf_list(f, u, K):
     """
     Return square-free decomposition of a polynomial in ``K[X]``.
@@ -140,9 +178,7 @@ def dmp_sqf_list(f, u, K):
 
     >>> R, x, y = ring("x y", ZZ)
 
-    >>> f = x**5 + 2*x**4*y + x**3*y**2
-
-    >>> R.dmp_sqf_list(f)
+    >>> R.dmp_sqf_list(x**5 + 2*x**4*y + x**3*y**2)
     (1, [(x + y, 2), (x, 3)])
     """
     if K.is_FiniteField:
@@ -158,30 +194,7 @@ def dmp_sqf_list(f, u, K):
             f = dmp_neg(f, u, K)
             coeff = -coeff
 
-    if dmp_degree_in(f, 0, u) <= 0:
-        return coeff, []
-
-    result, i = [], 1
-
-    h = dmp_diff(f, 1, u, K)
-    g, p, q = dmp_inner_gcd(f, h, u, K)
-
-    while True:
-        d = dmp_diff(p, 1, u, K)
-        h = dmp_sub(q, d, u, K)
-
-        if dmp_zero_p(h, u):
-            result.append((p, i))
-            break
-
-        g, p, q = dmp_inner_gcd(p, h, u, K)
-
-        if dmp_degree_in(g, 0, u) > 0:
-            result.append((g, i))
-
-        i += 1
-
-    return coeff, result
+    return coeff, dmp_rr_yun0_sqf_list(f, u, K)
 
 
 def dmp_sqf_list_include(f, u, K):
@@ -193,9 +206,7 @@ def dmp_sqf_list_include(f, u, K):
 
     >>> R, x, y = ring("x y", ZZ)
 
-    >>> f = x**5 + 2*x**4*y + x**3*y**2
-
-    >>> R.dmp_sqf_list_include(f)
+    >>> R.dmp_sqf_list_include(x**5 + 2*x**4*y + x**3*y**2)
     [(1, 1), (x + y, 2), (x, 3)]
     """
     coeff, factors = dmp_sqf_list(f, u, K)

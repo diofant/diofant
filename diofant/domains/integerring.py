@@ -1,5 +1,7 @@
 """Implementation of :class:`IntegerRing` class. """
 
+import abc
+
 from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
 from .groundtypes import (DiofantInteger, GMPYInteger, PythonInteger,
@@ -77,6 +79,11 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
         if a.is_ground:
             return self.convert(a.LC(), K0.domain)
 
+    @abc.abstractmethod
+    def finite_field(self, p):
+        """Returns a finite field. """
+        raise NotImplementedError  # pragma: no cover
+
 
 class PythonIntegerRing(IntegerRing):
     """Integer ring based on Python's integers. """
@@ -104,6 +111,11 @@ class PythonIntegerRing(IntegerRing):
     def factorial(self, a):
         """Compute factorial of ``a``. """
         return python_factorial(a)
+
+    def finite_field(self, p):
+        """Returns a finite field. """
+        from .finitefield import PythonFiniteField
+        return PythonFiniteField(p, self)
 
 
 class GMPYIntegerRing(IntegerRing):
@@ -133,6 +145,11 @@ class GMPYIntegerRing(IntegerRing):
     def factorial(self, a):
         """Compute factorial of ``a``. """
         return gmpy_factorial(a)
+
+    def finite_field(self, p):
+        """Returns a finite field. """
+        from .finitefield import GMPYFiniteField
+        return GMPYFiniteField(p, self)
 
 
 ZZ_python = PythonIntegerRing()
