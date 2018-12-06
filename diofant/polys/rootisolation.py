@@ -75,8 +75,7 @@ def dup_root_upper_bound(f, K):
             q = t[j] + a - K.log(f[j], 2)
             QL.append([q // (j - i), j])
 
-        if not QL:
-            continue
+        assert QL
 
         q = min(QL)
 
@@ -455,9 +454,9 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):
     """
     R, K = K, K.field
     f = dmp_convert(f, 0, R, K)
-    f = dmp_clear_denoms(f, 0, K)[1]
 
     _, factors = dmp_sqf_list(f, 0, K)
+    factors = [(dmp_clear_denoms(f, 0, K)[1], k) for f, k in factors]
 
     if len(factors) == 1:
         (f, k), = factors
