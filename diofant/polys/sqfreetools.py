@@ -133,6 +133,42 @@ def dmp_gf_sqf_list(f, u, K):
         raise NotImplementedError('multivariate polynomials over finite fields')
 
 
+def dmp_rr_yun0_sqf_list(f, u, K):
+    """Compute square-free decomposition of ``f`` in zero-characteristic ring ``K``.
+
+    References
+    ==========
+
+    * [LeeM13]_, page 8
+    """
+    if dmp_ground_p(f, None, u):
+        return []
+
+    result, count = [], 1
+    qs = [dmp_diff_in(f, 1, i, u, K) for i in range(u + 1)]
+
+    g = f
+    for q in qs:
+        g = dmp_gcd(g, q, u, K)
+
+    while not dmp_one_p(f, u, K):
+        for i in range(u + 1):
+            qs[i] = dmp_quo(qs[i], g, u, K)
+        f = dmp_quo(f, g, u, K)
+        for i in range(u + 1):
+            qs[i] = dmp_sub(qs[i], dmp_diff_in(f, 1, i, u, K), u, K)
+
+        g = f
+        for q in qs:
+            g = dmp_gcd(g, q, u, K)
+        if not dmp_one_p(g, u, K):
+            result.append((g, count))
+
+        count += 1
+
+    return result
+
+
 def dmp_sqf_list(f, u, K):
     """
     Return square-free decomposition of a polynomial in ``K[X]``.
@@ -158,32 +194,7 @@ def dmp_sqf_list(f, u, K):
             f = dmp_neg(f, u, K)
             coeff = -coeff
 
-    if dmp_ground_p(f, None, u):
-        return coeff, []
-
-    result, count = [], 1
-    qs = [dmp_diff_in(f, 1, i, u, K) for i in range(u + 1)]
-
-    g = f
-    for q in qs:
-        g = dmp_gcd(g, q, u, K)
-
-    while not dmp_one_p(f, u, K):
-        for i in range(u + 1):
-            qs[i] = dmp_quo(qs[i], g, u, K)
-        f = dmp_quo(f, g, u, K)
-        for i in range(u + 1):
-            qs[i] = dmp_sub(qs[i], dmp_diff_in(f, 1, i, u, K), u, K)
-
-        g = f
-        for q in qs:
-            g = dmp_gcd(g, q, u, K)
-        if not dmp_one_p(g, u, K):
-            result.append((g, count))
-
-        count += 1
-
-    return coeff, result
+    return coeff, dmp_rr_yun0_sqf_list(f, u, K)
 
 
 def dmp_sqf_list_include(f, u, K):

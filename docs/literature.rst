@@ -185,3 +185,6 @@ a theoretical foundation for implementing the Diofant.
     CA Systems, 1999, `<http://www.math.unm.edu/~wester/cas/book/Wester.pdf>`_
 
 .. [Gruntz96] Gruntz Thesis, http://www.cybertester.com/data/gruntz.pdf
+
+.. [LeeM13] M M-D Lee, Factorization of multivariate polynomials,
+    Ph.D. thesis, University of Kaiserslautern, 2013.
