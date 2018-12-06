@@ -234,7 +234,7 @@ class RootOf(Expr):
             conj_interval = self.interval.conjugate()
             index = self.index
             nreals = len(_reals_cache[poly.rep])
-            for i in range(nreals, degree - nreals):  # pragma: no branch
+            for i in range(nreals, degree - nreals + 1):  # pragma: no branch
                 other = _complexes_cache[poly.rep][i - nreals]
                 if i != index and not other.is_disjoint(conj_interval):
                     break

@@ -580,3 +580,4 @@ def test_diofantissue_730():
     assert e.is_real is False
     assert e.is_imaginary is False
     assert e.n(3) == Float('0.00498962', dps=3) + I*Float('0.31604', dps=3)
+    assert e.conjugate().conjugate() == e
