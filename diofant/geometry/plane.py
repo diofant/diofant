@@ -197,7 +197,7 @@ class Plane(GeometryEntity):
         from .line import LinearEntity
         from .line3d import LinearEntity3D
         if not isinstance(line, (LinearEntity, LinearEntity3D)):
-            raise NotImplementedError('Enter a linear entity only')  # pragma: no cover
+            raise NotImplementedError('Enter a linear entity only')
         a, b = self.projection(line.p1), self.projection(line.p2)
         if a == b:
             # projection does not imply intersection so for

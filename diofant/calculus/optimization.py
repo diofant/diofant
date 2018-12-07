@@ -95,7 +95,7 @@ def minimize(f, *v):
 
         return -res, dict(zip(v, sol))
 
-    raise NotImplementedError  # pragma: no cover
+    raise NotImplementedError
 
 
 def maximize(f, *v):

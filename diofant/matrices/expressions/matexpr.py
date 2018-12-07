@@ -50,7 +50,7 @@ class MatrixExpr(Expr):
         return MatMul(S.NegativeOne, self).doit()
 
     def __abs__(self):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__radd__')

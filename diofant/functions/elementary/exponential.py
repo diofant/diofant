@@ -395,7 +395,7 @@ class log(Function):
                 if l.is_finite:
                     log_series += 2*I*pi*l
                 else:
-                    raise NotImplementedError  # pragma: no cover
+                    raise NotImplementedError
         return log_series + log(c) + e*logx
 
     def _eval_as_leading_term(self, x):

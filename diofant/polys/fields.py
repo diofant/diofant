@@ -604,4 +604,4 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         return self.new(numer, denom)
 
     def compose(self, x, a=None):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError

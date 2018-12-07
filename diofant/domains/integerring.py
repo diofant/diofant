@@ -82,7 +82,7 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
     @abc.abstractmethod
     def finite_field(self, p):
         """Returns a finite field. """
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
 
 class PythonIntegerRing(IntegerRing):

@@ -17,7 +17,7 @@ class BasePolynomialError(Exception):
     """Base class for polynomial related exceptions. """
 
     def new(self, *args):
-        raise NotImplementedError("abstract base class")  # pragma: no cover
+        raise NotImplementedError("abstract base class")
 
 
 class ExactQuotientFailed(BasePolynomialError):

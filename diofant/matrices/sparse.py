@@ -107,7 +107,7 @@ class SparseMatrixBase(MatrixBase):
         return self._smat.get((i, j), S.Zero)
 
     def __setitem__(self, key, value):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def copy(self):
         return self._new(self.rows, self.cols, self._smat)

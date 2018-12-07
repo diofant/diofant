@@ -535,11 +535,11 @@ class SphericalBesselBase(BesselBase):
 
     def _expand(self, **hints):
         """ Expand self into a polynomial. Nu is guaranteed to be Integer. """
-        raise NotImplementedError('expansion')  # pragma: no cover
+        raise NotImplementedError('expansion')
 
     def _rewrite(self):
         """ Rewrite self in terms of ordinary Bessel functions. """
-        raise NotImplementedError('rewriting')  # pragma: no cover
+        raise NotImplementedError('rewriting')
 
     def _eval_expand_func(self, **hints):
         if self.order.is_Integer:

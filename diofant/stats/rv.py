@@ -46,10 +46,10 @@ class RandomDomain(Expr):
         return self.args[1]
 
     def __contains__(self, other):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def integrate(self, expr):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
 
 class SingleDomain(RandomDomain):
@@ -135,19 +135,19 @@ class PSpace(Expr):
         return self.domain.symbols
 
     def where(self, condition):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def compute_density(self, expr):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def sample(self):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def probability(self, condition):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def integrate(self, expr):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
 
 class SinglePSpace(PSpace):

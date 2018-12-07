@@ -206,13 +206,13 @@ class KB:
             self.tell(sentence)
 
     def tell(self, sentence):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def ask(self, query):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def retract(self, sentence):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     @property
     def clauses(self):

@@ -889,7 +889,7 @@ def do_integral(expr, prec, options):
 def evalf_integral(expr, prec, options):
     limits = expr.limits
     if len(limits) != 1 or len(limits[0]) != 3:
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
     workprec = prec
     i = 0
     maxprec = options.get('maxprec', INF)

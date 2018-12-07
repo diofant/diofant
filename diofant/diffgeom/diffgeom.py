@@ -1003,7 +1003,7 @@ class BaseCovarDerivativeOp(Expr):
         If the argument is not a scalar field the behaviour is undefined.
         """
         if covariant_order(field) != 0:
-            raise NotImplementedError  # pragma: no cover
+            raise NotImplementedError
 
         field = vectors_in_basis(field, self._coord_sys)
 

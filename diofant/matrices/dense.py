@@ -84,7 +84,7 @@ class DenseMatrix(MatrixBase):
             return self._mat[a2idx(key)]
 
     def __setitem__(self, key, value):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     @property
     def is_Identity(self):
