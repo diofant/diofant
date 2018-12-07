@@ -975,3 +975,19 @@ def test_RealInterval():
     f = (x - 1)**2
     pytest.raises(ValueError, lambda: RealInterval((-2, 1), R.to_dense(f),
                                                    R.domain))
+
+
+def test_ComplexInterval():
+    R, x = ring("x", QQ.algebraic_field(I))
+
+    f = x**3 + x + I
+
+    _, r1, r2 = R.dup_isolate_complex_roots_sqf(f, blackbox=True)
+
+    assert r1.is_disjoint(r2) is True
+    assert r1.is_disjoint(r2, check_re_refinement=True) is False
+
+    for i in range(4):
+        r1, r2 = r1.refine(), r2.refine()
+
+    assert r1.is_disjoint(r2, check_re_refinement=True) is True
