@@ -1629,6 +1629,7 @@ def test_nth_linear_constant_coeff_homogeneous():
     assert checkodesol(eq30, sol30, order=5, solve_for_func=False)[0]
 
 
+@pytest.mark.slow
 def test_nth_linear_constant_coeff_homogeneous_RootOf():
     c = [C1, C2, C3, C4, C5]
     eq = f(x).diff(x, 5) + 11*f(x).diff(x) - 2*f(x)

@@ -30,6 +30,10 @@ def test_rsolve_poly():
 
     assert rsolve_poly([1, 1], sqrt(n), n) is None
 
+    assert rsolve_poly([-2, -1, 1],
+                       -2*n**4 - (n + 1)**4 + (n + 2)**4, n) == n**4
+    assert rsolve_poly([-n, 1], -n**3 + (n + 1)**2, n) == n**2
+
 
 def test_rsolve_ratio():
     solution = rsolve_ratio([-2*n**3 + n**2 + 2*n - 1, 2*n**3 + n**2 - 6*n,
@@ -96,6 +100,7 @@ def recurrence_term(c, f):
     return sum(c[i]*f.subs({n: n + i}) for i in range(len(c)))
 
 
+@pytest.mark.slow
 def test_rsolve_bulk():
     """Some bulk-generated tests."""
     funcs = [n, n + 1, n**2, n**3, n**4, n + n**2,
