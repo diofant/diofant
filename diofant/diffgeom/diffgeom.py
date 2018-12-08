@@ -238,7 +238,7 @@ class CoordSystem(Basic):
             to_sys.transforms[self] = self._inv_transf(from_coords, to_exprs)
 
         if fill_in_gaps:
-            return NotImplementedError  # pragma: no cover
+            raise NotImplementedError
 
     @staticmethod
     def _inv_transf(from_coords, to_exprs):
