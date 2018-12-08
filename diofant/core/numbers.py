@@ -2369,7 +2369,7 @@ class NumberSymbol(AtomicExpr):
             return Expr.__ge__(self, other)
 
     def __int__(self):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def __hash__(self):
         return super().__hash__()

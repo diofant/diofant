@@ -715,22 +715,22 @@ class HyperRep(Function):
     @classmethod
     def _expr_small(cls, x):
         """ An expression for F(x) which holds for |x| < 1. """
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     @classmethod
     def _expr_small_minus(cls, x):
         """ An expression for F(-x) which holds for |x| < 1. """
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     @classmethod
     def _expr_big(cls, x, n):
         """ An expression for F(exp_polar(2*I*pi*n)*x), |x| > 1. """
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     @classmethod
     def _expr_big_minus(cls, x, n):
         """ An expression for F(exp_polar(2*I*pi*n + pi*I)*x), |x| > 1. """
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def _eval_rewrite_as_nonrep(self, *args):
         from .. import Piecewise

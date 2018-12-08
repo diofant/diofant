@@ -572,3 +572,12 @@ def test_RootOf_algebraic():
     assert e.interval.as_tuple() == ((Rational(-201, 200), Rational(-201, 200)),
                                      (Rational(-201, 400), Rational(-201, 400)))
     assert e.evalf(7) == Float('-0.7123350278', dps=7) - I*Float('0.8248345032', dps=7)
+
+
+@pytest.mark.timeout(10)
+def test_diofantissue_730():
+    e = RootOf(x**3 + 10*x**2 + 1, 2)
+    assert e.is_real is False
+    assert e.is_imaginary is False
+    assert e.n(3) == Float('0.00498962', dps=3) + I*Float('0.31604', dps=3)
+    assert e.conjugate().conjugate() == e

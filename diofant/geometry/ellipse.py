@@ -1150,7 +1150,7 @@ class Ellipse(GeometrySet):
         2**(2/3)*y**(2/3) + (3*x - 3)**(2/3) - 5**(2/3)
         """
         if len(self.args) != 3:
-            raise NotImplementedError('Evolute of arbitrary Ellipse is not supported.')  # pragma: no cover
+            raise NotImplementedError('Evolute of arbitrary Ellipse is not supported.')
         x = _symbol(x)
         y = _symbol(y)
         t1 = (self.hradius*(x - self.center.x))**Rational(2, 3)

@@ -17,4 +17,4 @@ class DomainElement(abc.ABC):
     @property
     @abc.abstractmethod
     def parent(self):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError

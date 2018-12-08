@@ -85,7 +85,7 @@ class NDimArray:
 
     def _setter_iterable_check(self, value):
         if isinstance(value, (collections.abc.Iterable, MatrixBase, NDimArray)):
-            raise NotImplementedError  # pragma: no cover
+            raise NotImplementedError
 
     @classmethod
     def _scan_iterable_shape(cls, iterable):

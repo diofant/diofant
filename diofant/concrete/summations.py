@@ -203,7 +203,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
                 rv = rv.doit()
             return rv
         else:  # pragma: no cover
-            return NotImplementedError('Lower and upper bound expected.')
+            raise NotImplementedError('Lower and upper bound expected.')
 
     def _eval_simplify(self, ratio, measure):
         from ..simplify.simplify import sum_simplify

@@ -19,7 +19,7 @@ class MonomialOrder:
         return self.alias
 
     def __call__(self, monomial):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def __eq__(self, other):
         return self.__class__ == other.__class__

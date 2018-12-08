@@ -187,7 +187,7 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
         string = 'PDE '
 
     else:  # pragma: no cover
-        return NotImplementedError
+        raise NotImplementedError
 
     # Magic that should only be used internally.  Prevents classify_ode from
     # being called more than it needs to be by passing its results through

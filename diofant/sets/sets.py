@@ -236,7 +236,7 @@ class Set(Basic):
 
     @property
     def _sup(self):
-        raise NotImplementedError("(%s)._sup" % self)  # pragma: no cover
+        raise NotImplementedError("(%s)._sup" % self)
 
     def contains(self, other):
         """
@@ -259,7 +259,7 @@ class Set(Basic):
         return ret
 
     def _contains(self, other):
-        raise NotImplementedError("(%s)._contains(%s)" % (self, other))  # pragma: no cover
+        raise NotImplementedError("(%s)._contains(%s)" % (self, other))
 
     def is_subset(self, other):
         """
@@ -445,7 +445,7 @@ class Set(Basic):
 
     @property
     def _boundary(self):
-        raise NotImplementedError()  # pragma: no cover
+        raise NotImplementedError()
 
     def _eval_imageset(self, f):
         from .fancysets import ImageSet
@@ -453,7 +453,7 @@ class Set(Basic):
 
     @property
     def _measure(self):
-        raise NotImplementedError("(%s)._measure" % self)  # pragma: no cover
+        raise NotImplementedError("(%s)._measure" % self)
 
     def __add__(self, other):
         return self.union(other)

@@ -238,7 +238,7 @@ class CoordSystem(Basic):
             to_sys.transforms[self] = self._inv_transf(from_coords, to_exprs)
 
         if fill_in_gaps:
-            return NotImplementedError  # pragma: no cover
+            raise NotImplementedError
 
     @staticmethod
     def _inv_transf(from_coords, to_exprs):
@@ -1003,7 +1003,7 @@ class BaseCovarDerivativeOp(Expr):
         If the argument is not a scalar field the behaviour is undefined.
         """
         if covariant_order(field) != 0:
-            raise NotImplementedError  # pragma: no cover
+            raise NotImplementedError
 
         field = vectors_in_basis(field, self._coord_sys)
 
