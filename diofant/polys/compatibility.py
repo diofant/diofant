@@ -26,9 +26,9 @@ from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_qq_heu_gcd, dmp_resultant, dmp_rr_lcm,
                           dmp_rr_prs_gcd, dmp_subresultants,
                           dmp_zz_collins_resultant, dmp_zz_heu_gcd,
-                          dmp_zz_modular_resultant, dup_discriminant,
-                          dup_euclidean_prs, dup_ff_prs_gcd, dup_gcdex,
-                          dup_half_gcdex, dup_inner_subresultants, dup_invert,
+                          dmp_zz_modular_resultant, dup_euclidean_prs,
+                          dup_ff_prs_gcd, dup_gcdex, dup_half_gcdex,
+                          dup_inner_subresultants, dup_invert,
                           dup_primitive_prs, dup_prs_resultant, dup_resultant,
                           dup_rr_prs_gcd)
 from .factortools import (dmp_ext_factor, dmp_factor_list, dmp_trial_division,
@@ -357,9 +357,6 @@ class IPolys:
             return self.drop(0).from_dense(res)
         else:
             return res
-
-    def dup_discriminant(self, f):
-        return dup_discriminant(self.to_dense(f), self.domain)
 
     def dmp_discriminant(self, f):
         disc = dmp_discriminant(self.to_dense(f), self.ngens-1, self.domain)

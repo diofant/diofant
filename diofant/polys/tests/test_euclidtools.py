@@ -266,22 +266,18 @@ def test_dmp_subresultants():
         assert R.dmp_resultant(f, g) == (1 + 2*y**2).drop(x)
 
 
-def test_dup_discriminant():
-    R, x = ring("x", ZZ)
-
-    assert R.dup_discriminant(0) == 0
-    assert R.dup_discriminant(x) == 1
-
-    assert R.dup_discriminant(x**3 + 3*x**2 + 9*x - 13) == -11664
-    assert R.dup_discriminant(5*x**5 + x**3 + 2) == 31252160
-    assert R.dup_discriminant(x**4 + 2*x**3 + 6*x**2 - 22*x + 13) == 0
-    assert R.dup_discriminant(12*x**7 + 15*x**4 + 30*x**3 + x**2 + 1) == -220289699947514112
-
-
 def test_dmp_discriminant():
     R, x = ring("x", ZZ)
 
     assert R.dmp_discriminant(0) == 0
+    assert R.dmp_discriminant(x) == 1
+
+    assert R.dmp_discriminant(x**3 + 3*x**2 + 9*x - 13) == -11664
+    assert R.dmp_discriminant(5*x**5 + x**3 + 2) == 31252160
+    assert R.dmp_discriminant(x**4 + 2*x**3 + 6*x**2 - 22*x + 13) == 0
+    assert R.dmp_discriminant(12*x**7 + 15*x**4 + 30*x**3 + x**2 + 1) == -220289699947514112
+
+    assert R.dmp_discriminant(x**2 + 2*x + 3) == -8
 
     R, x, y = ring("x,y", ZZ)
 
