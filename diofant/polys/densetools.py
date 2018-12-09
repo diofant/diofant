@@ -56,47 +56,6 @@ def dmp_integrate_in(f, m, j, u, K):
     return integrate_in(f, m, u, 0, j, K)
 
 
-def dup_diff(f, m, K):
-    """
-    ``m``-th order derivative of a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_diff(x**3 + 2*x**2 + 3*x + 4, 1)
-    3*x**2 + 4*x + 3
-    >>> R.dup_diff(x**3 + 2*x**2 + 3*x + 4, 2)
-    6*x + 4
-    """
-    if m <= 0:
-        return f
-
-    n = dmp_degree_in(f, 0, 0)
-
-    if n < m:
-        return []
-
-    deriv = []
-
-    if m == 1:
-        for coeff in f[:-m]:
-            deriv.append(K(n)*coeff)
-            n -= 1
-    else:
-        for coeff in f[:-m]:
-            k = n
-
-            for i in range(n - 1, n - m, -1):
-                k *= i
-
-            deriv.append(K(k)*coeff)
-            n -= 1
-
-    return dmp_strip(deriv, 0)
-
-
 def dmp_diff(f, m, u, K):
     """
     ``m``-th order derivative in ``x_0`` of a polynomial in ``K[X]``.
@@ -113,8 +72,6 @@ def dmp_diff(f, m, u, K):
     >>> R.dmp_diff(f, 2)
     0
     """
-    if not u:
-        return dup_diff(f, m, K)
     if m <= 0:
         return f
 
@@ -127,7 +84,8 @@ def dmp_diff(f, m, u, K):
 
     if m == 1:
         for coeff in f[:-m]:
-            deriv.append(dmp_mul_ground(coeff, K(n), v, K))
+            d = dmp_mul_ground(coeff, K(n), v, K) if u else K(n)*coeff
+            deriv.append(d)
             n -= 1
     else:
         for coeff in f[:-m]:
@@ -136,7 +94,8 @@ def dmp_diff(f, m, u, K):
             for i in range(n - 1, n - m, -1):
                 k *= i
 
-            deriv.append(dmp_mul_ground(coeff, K(k), v, K))
+            d = dmp_mul_ground(coeff, K(k), v, K) if u else K(k)*coeff
+            deriv.append(d)
             n -= 1
 
     return dmp_strip(deriv, u)

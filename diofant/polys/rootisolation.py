@@ -5,7 +5,7 @@ from .densearith import dmp_add, dmp_mul_ground, dmp_neg, dmp_rem, dup_rshift
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dmp_to_tuple,
                          dup_reverse)
-from .densetools import (dmp_clear_denoms, dmp_compose, dmp_eval_in, dup_diff,
+from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff, dmp_eval_in,
                          dup_mirror, dup_real_imag, dup_scale, dup_shift,
                          dup_sign_variations, dup_transform)
 from .euclidtools import dmp_gcd, dmp_resultant
@@ -38,7 +38,7 @@ def dup_sturm(f, K):
 
     f = dmp_sqf_part(f, 0, K)
 
-    sturm = [f, dup_diff(f, 1, K)]
+    sturm = [f, dmp_diff(f, 1, 0, K)]
 
     while sturm[-1]:
         s = dmp_rem(sturm[-2], sturm[-1], 0, K)

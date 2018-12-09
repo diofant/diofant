@@ -15,10 +15,9 @@ from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dmp_ground_monic, dmp_ground_primitive,
                                       dmp_ground_trunc, dmp_integrate_in,
                                       dmp_lift, dmp_trunc, dup_decompose,
-                                      dup_diff, dup_mirror, dup_real_imag,
-                                      dup_scale, dup_shift,
-                                      dup_sign_variations, dup_transform,
-                                      dup_trunc)
+                                      dup_mirror, dup_real_imag, dup_scale,
+                                      dup_shift, dup_sign_variations,
+                                      dup_transform, dup_trunc)
 from diofant.polys.polyerrors import DomainError, ExactQuotientFailed
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
@@ -91,37 +90,36 @@ def test_dmp_integrate_in():
     pytest.raises(IndexError, lambda: dmp_integrate_in(f, 2, 1, 0, QQ))
 
 
-def test_dup_diff():
-    assert dup_diff([], 1, ZZ) == []
-    assert dup_diff([7], 1, ZZ) == []
-    assert dup_diff([2, 7], 1, ZZ) == [2]
-    assert dup_diff([1, 2, 1], 1, ZZ) == [2, 2]
-    assert dup_diff([1, 2, 3, 4], 1, ZZ) == [3, 4, 3]
-    assert dup_diff([1, -1, 0, 0, 2], 1, ZZ) == [4, -3, 0, 0]
+def test_dmp_diff():
+    assert dmp_diff([], 1, 0, ZZ) == []
+    assert dmp_diff([7], 1, 0, ZZ) == []
+    assert dmp_diff([2, 7], 1, 0, ZZ) == [2]
+    assert dmp_diff([1, 2, 1], 1, 0, ZZ) == [2, 2]
+    assert dmp_diff([1, 2, 3, 4], 1, 0, ZZ) == [3, 4, 3]
+    assert dmp_diff([1, -1, 0, 0, 2], 1, 0, ZZ) == [4, -3, 0, 0]
+
+    assert dmp_diff([1, 2, 3, 4], 1, 0, ZZ) == [3, 4, 3]
+    assert dmp_diff([1, 2, 3, 4], 2, 0, ZZ) == [6, 4]
 
     f = dmp_normal([17, 34, 56, -345, 23, 76, 0, 0, 12, 3, 7], 0, ZZ)
 
-    assert dup_diff(f, 0, ZZ) == f
-    assert dup_diff(f, 1, ZZ) == dup_diff(f, 1, ZZ)
-    assert dup_diff(f, 2, ZZ) == dup_diff(dup_diff(f, 1, ZZ), 1, ZZ)
-    assert dup_diff(
-        f, 3, ZZ) == dup_diff(dup_diff(dup_diff(f, 1, ZZ), 1, ZZ), 1, ZZ)
+    assert dmp_diff(f, 0, 0, ZZ) == f
+    assert dmp_diff(f, 2, 0, ZZ) == dmp_diff(dmp_diff(f, 1, 0, ZZ), 1, 0, ZZ)
+    assert dmp_diff(f, 3, 0, ZZ) == dmp_diff(dmp_diff(dmp_diff(f, 1, 0, ZZ),
+                                                      1, 0, ZZ), 1, 0, ZZ)
 
     K = FF(3)
     f = dmp_normal([17, 34, 56, -345, 23, 76, 0, 0, 12, 3, 7], 0, K)
 
-    assert dup_diff(f, 1, K) == dmp_normal([2, 0, 1, 0, 0, 2, 0, 0, 0, 0], 0, K)
-    assert dup_diff(f, 2, K) == dmp_normal([1, 0, 0, 2, 0, 0, 0], 0, K)
-    assert dup_diff(f, 3, K) == dmp_normal([], 0, K)
+    assert dmp_diff(f, 1, 0, K) == dmp_normal([2, 0, 1, 0, 0, 2, 0, 0, 0, 0], 0, K)
+    assert dmp_diff(f, 2, 0, K) == dmp_normal([1, 0, 0, 2, 0, 0, 0], 0, K)
+    assert dmp_diff(f, 3, 0, K) == dmp_normal([], 0, K)
 
-    assert dup_diff(f, 0, K) == f
-    assert dup_diff(f, 1, K) == dup_diff(f, 1, K)
-    assert dup_diff(f, 2, K) == dup_diff(dup_diff(f, 1, K), 1, K)
-    assert dup_diff(
-        f, 3, K) == dup_diff(dup_diff(dup_diff(f, 1, K), 1, K), 1, K)
+    assert dmp_diff(f, 0, 0, K) == f
+    assert dmp_diff(f, 2, 0, K) == dmp_diff(dmp_diff(f, 1, 0, K), 1, 0, K)
+    assert dmp_diff(f, 3, 0, K) == dmp_diff(dmp_diff(dmp_diff(f, 1, 0, K),
+                                                     1, 0, K), 1, 0, K)
 
-
-def test_dmp_diff():
     assert dmp_diff([], 1, 0, ZZ) == []
     assert dmp_diff([[]], 1, 1, ZZ) == [[]]
     assert dmp_diff([[[]]], 1, 2, ZZ) == [[[]]]
@@ -132,7 +130,7 @@ def test_dmp_diff():
     assert dmp_diff([[[3]], [[1]], [[]]], 1, 2, ZZ) == [[[6]], [[1]]]
 
     assert dmp_diff([1, -1, 0, 0, 2], 1, 0, ZZ) == \
-        dup_diff([1, -1, 0, 0, 2], 1, ZZ)
+        dmp_diff([1, -1, 0, 0, 2], 1, 0, ZZ)
 
     assert dmp_diff(f_6, 0, 3, ZZ) == f_6
     assert dmp_diff(f_6, 1, 3, ZZ) == dmp_diff(f_6, 1, 3, ZZ)

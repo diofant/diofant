@@ -15,9 +15,9 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                          dmp_eval_tail, dmp_ground_content, dmp_ground_extract,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dmp_integrate_in, dmp_lift,
-                         dmp_trunc, dup_decompose, dup_diff, dup_mirror,
-                         dup_real_imag, dup_scale, dup_shift,
-                         dup_sign_variations, dup_transform, dup_trunc)
+                         dmp_trunc, dup_decompose, dup_mirror, dup_real_imag,
+                         dup_scale, dup_shift, dup_sign_variations,
+                         dup_transform, dup_trunc)
 from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_ff_lcm, dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
                           dmp_inner_subresultants, dmp_lcm, dmp_primitive,
@@ -203,9 +203,6 @@ class IPolys:
 
     def dmp_degree_in(self, f, j):
         return dmp_degree_in(self.to_dense(f), j, self.ngens-1)
-
-    def dup_diff(self, f, m):
-        return self.from_dense(dup_diff(self.to_dense(f), m, self.domain))
 
     def dmp_diff(self, f, m):
         return self.from_dense(dmp_diff(self.to_dense(f), m, self.ngens-1, self.domain))
