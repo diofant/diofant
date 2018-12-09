@@ -8,7 +8,7 @@ from diofant.domains import EX, FF, QQ, ZZ
 from diofant.polys.densearith import dmp_mul_ground
 from diofant.polys.densebasic import (dmp_convert, dmp_normal, dmp_swap,
                                       dup_from_dict)
-from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
+from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose,
                                       dmp_diff_eval_in, dmp_diff_in,
                                       dmp_eval_in, dmp_eval_tail,
                                       dmp_ground_content, dmp_ground_extract,
@@ -90,74 +90,74 @@ def test_dmp_integrate_in():
     pytest.raises(IndexError, lambda: dmp_integrate_in(f, 2, 1, 0, QQ))
 
 
-def test_dmp_diff():
-    assert dmp_diff([], 1, 0, ZZ) == []
-    assert dmp_diff([7], 1, 0, ZZ) == []
-    assert dmp_diff([2, 7], 1, 0, ZZ) == [2]
-    assert dmp_diff([1, 2, 1], 1, 0, ZZ) == [2, 2]
-    assert dmp_diff([1, 2, 3, 4], 1, 0, ZZ) == [3, 4, 3]
-    assert dmp_diff([1, -1, 0, 0, 2], 1, 0, ZZ) == [4, -3, 0, 0]
+def test_dmp_diff_in():
+    assert dmp_diff_in([], 1, 0, 0, ZZ) == []
+    assert dmp_diff_in([7], 1, 0, 0, ZZ) == []
+    assert dmp_diff_in([2, 7], 1, 0, 0, ZZ) == [2]
+    assert dmp_diff_in([1, 2, 1], 1, 0, 0, ZZ) == [2, 2]
+    assert dmp_diff_in([1, 2, 3, 4], 1, 0, 0, ZZ) == [3, 4, 3]
+    assert dmp_diff_in([1, -1, 0, 0, 2], 1, 0, 0, ZZ) == [4, -3, 0, 0]
 
-    assert dmp_diff([1, 2, 3, 4], 1, 0, ZZ) == [3, 4, 3]
-    assert dmp_diff([1, 2, 3, 4], 2, 0, ZZ) == [6, 4]
+    assert dmp_diff_in([1, 2, 3, 4], 1, 0, 0, ZZ) == [3, 4, 3]
+    assert dmp_diff_in([1, 2, 3, 4], 2, 0, 0, ZZ) == [6, 4]
 
     f = dmp_normal([17, 34, 56, -345, 23, 76, 0, 0, 12, 3, 7], 0, ZZ)
 
-    assert dmp_diff(f, 0, 0, ZZ) == f
-    assert dmp_diff(f, 2, 0, ZZ) == dmp_diff(dmp_diff(f, 1, 0, ZZ), 1, 0, ZZ)
-    assert dmp_diff(f, 3, 0, ZZ) == dmp_diff(dmp_diff(dmp_diff(f, 1, 0, ZZ),
-                                                      1, 0, ZZ), 1, 0, ZZ)
+    assert dmp_diff_in(f, 0, 0, 0, ZZ) == f
+    assert dmp_diff_in(f, 2, 0, 0, ZZ) == dmp_diff_in(dmp_diff_in(f, 1, 0, 0, ZZ), 1, 0, 0, ZZ)
+    assert dmp_diff_in(f, 3, 0, 0, ZZ) == dmp_diff_in(dmp_diff_in(dmp_diff_in(f, 1, 0, 0, ZZ),
+                                                      1, 0, 0, ZZ), 1, 0, 0, ZZ)
 
     K = FF(3)
     f = dmp_normal([17, 34, 56, -345, 23, 76, 0, 0, 12, 3, 7], 0, K)
 
-    assert dmp_diff(f, 1, 0, K) == dmp_normal([2, 0, 1, 0, 0, 2, 0, 0, 0, 0], 0, K)
-    assert dmp_diff(f, 2, 0, K) == dmp_normal([1, 0, 0, 2, 0, 0, 0], 0, K)
-    assert dmp_diff(f, 3, 0, K) == dmp_normal([], 0, K)
+    assert dmp_diff_in(f, 1, 0, 0, K) == dmp_normal([2, 0, 1, 0, 0, 2, 0, 0, 0, 0], 0, K)
+    assert dmp_diff_in(f, 2, 0, 0, K) == dmp_normal([1, 0, 0, 2, 0, 0, 0], 0, K)
+    assert dmp_diff_in(f, 3, 0, 0, K) == dmp_normal([], 0, K)
 
-    assert dmp_diff(f, 0, 0, K) == f
-    assert dmp_diff(f, 2, 0, K) == dmp_diff(dmp_diff(f, 1, 0, K), 1, 0, K)
-    assert dmp_diff(f, 3, 0, K) == dmp_diff(dmp_diff(dmp_diff(f, 1, 0, K),
-                                                     1, 0, K), 1, 0, K)
+    assert dmp_diff_in(f, 0, 0, 0, K) == f
+    assert dmp_diff_in(f, 2, 0, 0, K) == dmp_diff_in(dmp_diff_in(f, 1, 0, 0, K), 1, 0, 0, K)
+    assert dmp_diff_in(f, 3, 0, 0, K) == dmp_diff_in(dmp_diff_in(dmp_diff_in(f, 1, 0, 0, K),
+                                                     1, 0, 0, K), 1, 0, 0, K)
 
-    assert dmp_diff([], 1, 0, ZZ) == []
-    assert dmp_diff([[]], 1, 1, ZZ) == [[]]
-    assert dmp_diff([[[]]], 1, 2, ZZ) == [[[]]]
+    assert dmp_diff_in([], 1, 0, 0, ZZ) == []
+    assert dmp_diff_in([[]], 1, 0, 1, ZZ) == [[]]
+    assert dmp_diff_in([[[]]], 1, 0, 2, ZZ) == [[[]]]
 
-    assert dmp_diff([[[1], [2]]], 1, 2, ZZ) == [[[]]]
+    assert dmp_diff_in([[[1], [2]]], 1, 0, 2, ZZ) == [[[]]]
 
-    assert dmp_diff([[[1]], [[]]], 1, 2, ZZ) == [[[1]]]
-    assert dmp_diff([[[3]], [[1]], [[]]], 1, 2, ZZ) == [[[6]], [[1]]]
+    assert dmp_diff_in([[[1]], [[]]], 1, 0, 2, ZZ) == [[[1]]]
+    assert dmp_diff_in([[[3]], [[1]], [[]]], 1, 0, 2, ZZ) == [[[6]], [[1]]]
 
-    assert dmp_diff([1, -1, 0, 0, 2], 1, 0, ZZ) == \
-        dmp_diff([1, -1, 0, 0, 2], 1, 0, ZZ)
+    assert dmp_diff_in([[1, 2, 3], [2, 3, 1]], 1, 0, 1, ZZ) == [[1, 2, 3]]
+    assert dmp_diff_in([[1, 2, 3], [2, 3, 1]], 2, 0, 1, ZZ) == [[]]
+    assert dmp_diff_in([[1, 2, 3], [2, 3, 1]], 1, 1, 1, ZZ) == [[2, 2], [4, 3]]
 
-    assert dmp_diff(f_6, 0, 3, ZZ) == f_6
-    assert dmp_diff(f_6, 1, 3, ZZ) == dmp_diff(f_6, 1, 3, ZZ)
-    assert dmp_diff(
-        f_6, 2, 3, ZZ) == dmp_diff(dmp_diff(f_6, 1, 3, ZZ), 1, 3, ZZ)
-    assert dmp_diff(f_6, 3, 3, ZZ) == dmp_diff(
-        dmp_diff(dmp_diff(f_6, 1, 3, ZZ), 1, 3, ZZ), 1, 3, ZZ)
+    assert dmp_diff_in(f_6, 0, 0, 3, ZZ) == f_6
+    assert dmp_diff_in(f_6, 2, 0, 3, ZZ) == dmp_diff_in(dmp_diff_in(f_6, 1, 0, 3, ZZ), 1, 0, 3, ZZ)
+    assert dmp_diff_in(f_6, 3, 0, 3, ZZ) == dmp_diff_in(
+        dmp_diff_in(dmp_diff_in(f_6, 1, 0, 3, ZZ), 1, 0, 3, ZZ), 1, 0, 3, ZZ)
+
+    f = [[1, 2, 3], [2, 3, 1]]
+    assert dmp_diff_in(f, 1, 0, 1, ZZ) == [[1, 2, 3]]
+    assert dmp_diff_in(f, 2, 0, 1, ZZ) == [[]]
 
     K = FF(23)
     F_6 = dmp_normal(f_6, 3, K)
 
-    assert dmp_diff(F_6, 0, 3, K) == F_6
-    assert dmp_diff(F_6, 1, 3, K) == dmp_diff(F_6, 1, 3, K)
-    assert dmp_diff(F_6, 2, 3, K) == dmp_diff(dmp_diff(F_6, 1, 3, K), 1, 3, K)
-    assert dmp_diff(F_6, 3, 3, K) == dmp_diff(
-        dmp_diff(dmp_diff(F_6, 1, 3, K), 1, 3, K), 1, 3, K)
+    assert dmp_diff_in(F_6, 0, 0, 3, K) == F_6
+    assert dmp_diff_in(F_6, 2, 0, 3, K) == dmp_diff_in(dmp_diff_in(F_6, 1, 0, 3, K), 1, 0, 3, K)
+    assert dmp_diff_in(F_6, 3, 0, 3, K) == dmp_diff_in(
+        dmp_diff_in(dmp_diff_in(F_6, 1, 0, 3, K), 1, 0, 3, K), 1, 0, 3, K)
 
-
-def test_dmp_diff_in():
     assert dmp_diff_in(f_6, 2, 1, 3, ZZ) == \
-        dmp_swap(dmp_diff(dmp_swap(f_6, 0, 1, 3, ZZ), 2, 3, ZZ), 0, 1, 3, ZZ)
+        dmp_swap(dmp_diff_in(dmp_swap(f_6, 0, 1, 3, ZZ), 2, 0, 3, ZZ), 0, 1, 3, ZZ)
     assert dmp_diff_in(f_6, 3, 1, 3, ZZ) == \
-        dmp_swap(dmp_diff(dmp_swap(f_6, 0, 1, 3, ZZ), 3, 3, ZZ), 0, 1, 3, ZZ)
+        dmp_swap(dmp_diff_in(dmp_swap(f_6, 0, 1, 3, ZZ), 3, 0, 3, ZZ), 0, 1, 3, ZZ)
     assert dmp_diff_in(f_6, 2, 2, 3, ZZ) == \
-        dmp_swap(dmp_diff(dmp_swap(f_6, 0, 2, 3, ZZ), 2, 3, ZZ), 0, 2, 3, ZZ)
+        dmp_swap(dmp_diff_in(dmp_swap(f_6, 0, 2, 3, ZZ), 2, 0, 3, ZZ), 0, 2, 3, ZZ)
     assert dmp_diff_in(f_6, 3, 2, 3, ZZ) == \
-        dmp_swap(dmp_diff(dmp_swap(f_6, 0, 2, 3, ZZ), 3, 3, ZZ), 0, 2, 3, ZZ)
+        dmp_swap(dmp_diff_in(dmp_swap(f_6, 0, 2, 3, ZZ), 3, 0, 3, ZZ), 0, 2, 3, ZZ)
 
     pytest.raises(IndexError, lambda: dmp_diff_in(f_6, 2, -1, 3, ZZ))
     pytest.raises(IndexError, lambda: dmp_diff_in(f_6, 2, 1, 0, ZZ))
@@ -231,7 +231,7 @@ def test_dmp_eval_tail():
 
 def test_dmp_diff_eval_in():
     assert dmp_diff_eval_in(f_6, 2, 7, 1, 3, ZZ) == \
-        dmp_eval_in(dmp_diff(dmp_swap(f_6, 0, 1, 3, ZZ), 2, 3, ZZ), 7, 0, 3, ZZ)
+        dmp_eval_in(dmp_diff_in(dmp_swap(f_6, 0, 1, 3, ZZ), 2, 0, 3, ZZ), 7, 0, 3, ZZ)
 
     pytest.raises(IndexError, lambda: dmp_diff_eval_in(f_6, 2, 7, 4, 3, ZZ))
 

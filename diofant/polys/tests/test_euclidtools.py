@@ -421,8 +421,8 @@ def test_dmp_gcd():
         - 9504116979659010018253915765478924103928886144*x**7 \
         - 311973482284542371301330321821976049
 
-    assert R.dmp_zz_heu_gcd(f, R.dmp_diff(f, 1))[0] == g
-    assert R.dup_rr_prs_gcd(f, R.dmp_diff(f, 1))[0] == g
+    assert R.dmp_zz_heu_gcd(f, R.dmp_diff_in(f, 1, 0))[0] == g
+    assert R.dup_rr_prs_gcd(f, R.dmp_diff_in(f, 1, 0))[0] == g
 
     R, x = ring("x", QQ)
 

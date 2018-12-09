@@ -10,7 +10,7 @@ from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
                          dmp_ground, dmp_ground_LC, dmp_inflate, dmp_LC,
                          dmp_multi_deflate, dmp_one, dmp_one_p, dmp_raise,
                          dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
-from .densetools import (dmp_clear_denoms, dmp_diff, dmp_eval_in,
+from .densetools import (dmp_clear_denoms, dmp_diff_in, dmp_eval_in,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dup_trunc)
 from .galoistools import gf_crt, gf_int
@@ -670,7 +670,7 @@ def dmp_discriminant(f, u, K):
         s = (-1)**((d*(d - 1)) // 2)
         c = dmp_LC(f, K)
 
-        r = dmp_resultant(f, dmp_diff(f, 1, u, K), u, K)
+        r = dmp_resultant(f, dmp_diff_in(f, 1, 0, u, K), u, K)
 
         if u:
             c = dmp_mul_ground(c, K(s), v, K)

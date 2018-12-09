@@ -10,9 +10,9 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term, dmp_div,
                          dup_mul, dup_mul_term, dup_pexquo, dup_rshift,
                          dup_sqr, dup_sub, dup_sub_term)
 from .densebasic import dmp_degree_in, dmp_LC, dmp_strip, dmp_to_dict
-from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
-                         dmp_diff_eval_in, dmp_diff_in, dmp_eval_in,
-                         dmp_eval_tail, dmp_ground_content, dmp_ground_extract,
+from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
+                         dmp_diff_in, dmp_eval_in, dmp_eval_tail,
+                         dmp_ground_content, dmp_ground_extract,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dmp_integrate_in, dmp_lift,
                          dmp_trunc, dup_decompose, dup_mirror, dup_real_imag,
@@ -203,9 +203,6 @@ class IPolys:
 
     def dmp_degree_in(self, f, j):
         return dmp_degree_in(self.to_dense(f), j, self.ngens-1)
-
-    def dmp_diff(self, f, m):
-        return self.from_dense(dmp_diff(self.to_dense(f), m, self.ngens-1, self.domain))
 
     def dmp_diff_in(self, f, m, j):
         return self.from_dense(dmp_diff_in(self.to_dense(f), m, j, self.ngens-1, self.domain))
