@@ -13,10 +13,10 @@ from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
                                       dmp_eval_in, dmp_eval_tail,
                                       dmp_ground_content, dmp_ground_extract,
                                       dmp_ground_monic, dmp_ground_primitive,
-                                      dmp_ground_trunc, dmp_integrate,
-                                      dmp_integrate_in, dmp_lift, dmp_trunc,
-                                      dup_decompose, dup_diff, dup_mirror,
-                                      dup_real_imag, dup_scale, dup_shift,
+                                      dmp_ground_trunc, dmp_integrate_in,
+                                      dmp_lift, dmp_trunc, dup_decompose,
+                                      dup_diff, dup_mirror, dup_real_imag,
+                                      dup_scale, dup_shift,
                                       dup_sign_variations, dup_transform,
                                       dup_trunc)
 from diofant.polys.polyerrors import DomainError, ExactQuotientFailed
@@ -29,64 +29,63 @@ __all__ = ()
 f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
 
 
-def test_dmp_integrate():
-    assert dmp_integrate([], 1, 0, QQ) == []
-    assert dmp_integrate([], 2, 0, QQ) == []
+def test_dmp_integrate_in():
+    assert dmp_integrate_in([], 1, 0, 0, QQ) == []
+    assert dmp_integrate_in([], 2, 0, 0, QQ) == []
 
-    assert dmp_integrate([QQ(1)], 1, 0, QQ) == [QQ(1), QQ(0)]
-    assert dmp_integrate([QQ(1)], 2, 0, QQ) == [QQ(1, 2), QQ(0), QQ(0)]
+    assert dmp_integrate_in([QQ(1)], 1, 0, 0, QQ) == [QQ(1), QQ(0)]
+    assert dmp_integrate_in([QQ(1)], 2, 0, 0, QQ) == [QQ(1, 2), QQ(0), QQ(0)]
 
-    assert dmp_integrate([QQ(1), QQ(2), QQ(3)], 0, 0, QQ) == \
+    assert dmp_integrate_in([QQ(1), QQ(2), QQ(3)], 0, 0, 0, QQ) == \
         [QQ(1), QQ(2), QQ(3)]
-    assert dmp_integrate([QQ(1), QQ(2), QQ(3)], 1, 0, QQ) == \
+    assert dmp_integrate_in([QQ(1), QQ(2), QQ(3)], 1, 0, 0, QQ) == \
         [QQ(1, 3), QQ(1), QQ(3), QQ(0)]
-    assert dmp_integrate([QQ(1), QQ(2), QQ(3)], 2, 0, QQ) == \
+    assert dmp_integrate_in([QQ(1), QQ(2), QQ(3)], 2, 0, 0, QQ) == \
         [QQ(1, 12), QQ(1, 3), QQ(3, 2), QQ(0), QQ(0)]
-    assert dmp_integrate([QQ(1), QQ(2), QQ(3)], 3, 0, QQ) == \
+    assert dmp_integrate_in([QQ(1), QQ(2), QQ(3)], 3, 0, 0, QQ) == \
         [QQ(1, 60), QQ(1, 12), QQ(1, 2), QQ(0), QQ(0), QQ(0)]
 
-    assert dmp_integrate([QQ(1), QQ(2), QQ(0)], 1, 0, QQ) == \
+    assert dmp_integrate_in([QQ(1), QQ(2), QQ(0)], 1, 0, 0, QQ) == \
         [QQ(1, 3), QQ(1), QQ(0), QQ(0)]
-    assert dmp_integrate([QQ(1), QQ(2), QQ(0)], 2, 0, QQ) == \
+    assert dmp_integrate_in([QQ(1), QQ(2), QQ(0)], 2, 0, 0, QQ) == \
         [QQ(1, 12), QQ(1, 3), QQ(0), QQ(0), QQ(0)]
 
-    assert dmp_integrate(dup_from_dict({(29,): QQ(17)}, QQ), 3, 0, QQ) == \
+    assert dmp_integrate_in(dup_from_dict({(29,): QQ(17)}, QQ), 3, 0, 0, QQ) == \
         dup_from_dict({(32,): QQ(17, 29760)}, QQ)
 
-    assert dmp_integrate(dup_from_dict({(29,): QQ(17), (5,): QQ(1, 2)}, QQ), 3, 0, QQ) == \
+    assert dmp_integrate_in(dup_from_dict({(29,): QQ(17), (5,): QQ(1, 2)}, QQ), 3, 0, 0, QQ) == \
         dup_from_dict({(32,): QQ(17, 29760), (8,): QQ(1, 672)}, QQ)
 
-    assert dmp_integrate([[[]]], 1, 2, QQ) == [[[]]]
-    assert dmp_integrate([[[]]], 2, 2, QQ) == [[[]]]
+    assert dmp_integrate_in([[[]]], 1, 0, 2, QQ) == [[[]]]
+    assert dmp_integrate_in([[[]]], 2, 0, 2, QQ) == [[[]]]
 
-    assert dmp_integrate([[[QQ(1)]]], 1, 2, QQ) == [[[QQ(1)]], [[]]]
-    assert dmp_integrate([[[QQ(1)]]], 2, 2, QQ) == [[[QQ(1, 2)]], [[]], [[]]]
+    assert dmp_integrate_in([[[QQ(1)]]], 1, 0, 2, QQ) == [[[QQ(1)]], [[]]]
+    assert dmp_integrate_in([[[QQ(1)]]], 2, 0, 2, QQ) == [[[QQ(1, 2)]], [[]], [[]]]
 
-    assert dmp_integrate([[QQ(1)], [QQ(2)], [QQ(3)]], 0, 1, QQ) == \
+    assert dmp_integrate_in([[QQ(1)], [QQ(2)], [QQ(3)]], 0, 0, 1, QQ) == \
         [[QQ(1)], [QQ(2)], [QQ(3)]]
-    assert dmp_integrate([[QQ(1)], [QQ(2)], [QQ(3)]], 1, 1, QQ) == \
+    assert dmp_integrate_in([[QQ(1)], [QQ(2)], [QQ(3)]], 1, 0, 1, QQ) == \
         [[QQ(1, 3)], [QQ(1)], [QQ(3)], []]
-    assert dmp_integrate([[QQ(1)], [QQ(2)], [QQ(3)]], 2, 1, QQ) == \
+    assert dmp_integrate_in([[QQ(1)], [QQ(2)], [QQ(3)]], 2, 0, 1, QQ) == \
         [[QQ(1, 12)], [QQ(1, 3)], [QQ(3, 2)], [], []]
-    assert dmp_integrate([[QQ(1)], [QQ(2)], [QQ(3)]], 3, 1, QQ) == \
+    assert dmp_integrate_in([[QQ(1)], [QQ(2)], [QQ(3)]], 3, 0, 1, QQ) == \
         [[QQ(1, 60)], [QQ(1, 12)], [QQ(1, 2)], [], [], []]
 
+    assert dmp_integrate_in([[QQ(1)], [QQ(2), QQ(0)]], 1, 0, 1, QQ) == \
+        [[QQ(1, 2)], [QQ(2), QQ(0)], []]
+    assert dmp_integrate_in([[QQ(1)], [QQ(2), QQ(0)]], 2, 0, 1, QQ) == \
+        [[QQ(1, 6)], [QQ(1), QQ(0)], [], []]
 
-def test_dmp_integrate_in():
     f = dmp_convert(f_6, 3, ZZ, QQ)
 
     assert dmp_integrate_in(f, 2, 1, 3, QQ) == \
-        dmp_swap(
-            dmp_integrate(dmp_swap(f, 0, 1, 3, QQ), 2, 3, QQ), 0, 1, 3, QQ)
+        dmp_swap(dmp_integrate_in(dmp_swap(f, 0, 1, 3, QQ), 2, 0, 3, QQ), 0, 1, 3, QQ)
     assert dmp_integrate_in(f, 3, 1, 3, QQ) == \
-        dmp_swap(
-            dmp_integrate(dmp_swap(f, 0, 1, 3, QQ), 3, 3, QQ), 0, 1, 3, QQ)
+        dmp_swap(dmp_integrate_in(dmp_swap(f, 0, 1, 3, QQ), 3, 0, 3, QQ), 0, 1, 3, QQ)
     assert dmp_integrate_in(f, 2, 2, 3, QQ) == \
-        dmp_swap(
-            dmp_integrate(dmp_swap(f, 0, 2, 3, QQ), 2, 3, QQ), 0, 2, 3, QQ)
+        dmp_swap(dmp_integrate_in(dmp_swap(f, 0, 2, 3, QQ), 2, 0, 3, QQ), 0, 2, 3, QQ)
     assert dmp_integrate_in(f, 3, 2, 3, QQ) == \
-        dmp_swap(
-            dmp_integrate(dmp_swap(f, 0, 2, 3, QQ), 3, 3, QQ), 0, 2, 3, QQ)
+        dmp_swap(dmp_integrate_in(dmp_swap(f, 0, 2, 3, QQ), 3, 0, 3, QQ), 0, 2, 3, QQ)
 
     pytest.raises(IndexError, lambda: dmp_integrate_in(f, 2, -1, 3, QQ))
     pytest.raises(IndexError, lambda: dmp_integrate_in(f, 2, 1, 0, QQ))
