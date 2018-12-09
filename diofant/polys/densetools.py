@@ -10,36 +10,6 @@ from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
 from .polyerrors import DomainError
 
 
-def dup_integrate(f, m, K):
-    """
-    Computes the indefinite integral of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", QQ)
-
-    >>> R.dup_integrate(x**2 + 2*x, 1)
-    1/3*x**3 + x**2
-    >>> R.dup_integrate(x**2 + 2*x, 2)
-    1/12*x**4 + 1/3*x**3
-    """
-    if m <= 0 or not f:
-        return f
-
-    g = [K.zero]*m
-
-    for i, c in enumerate(reversed(f)):
-        n = i + 1
-
-        for j in range(1, m):
-            n *= i + j + 1
-
-        g.insert(0, K.exquo(c, K(n)))
-
-    return g
-
-
 def dmp_integrate(f, m, u, K):
     """
     Computes the indefinite integral of ``f`` in ``x_0`` in ``K[X]``.
@@ -54,13 +24,11 @@ def dmp_integrate(f, m, u, K):
     >>> R.dmp_integrate(x + 2*y, 2)
     1/6*x**3 + x**2*y
     """
-    if not u:
-        return dup_integrate(f, m, K)
-
     if m <= 0 or dmp_zero_p(f, u):
         return f
 
-    g, v = dmp_zeros(m, u - 1, K), u - 1
+    v = u - 1
+    g = dmp_zeros(m, v, K) if u else [K.zero]*m
 
     for i, c in enumerate(reversed(f)):
         n = i + 1
@@ -68,7 +36,8 @@ def dmp_integrate(f, m, u, K):
         for j in range(1, m):
             n *= i + j + 1
 
-        g.insert(0, dmp_quo_ground(c, K(n), v, K))
+        t = dmp_quo_ground(c, K(n), v, K) if u else K.exquo(c, K(n))
+        g.insert(0, t)
 
     return g
 
