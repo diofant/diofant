@@ -1203,7 +1203,7 @@ def _tsolve(eq, sym, **flags):
                 if f.count(log) != lhs.count(log):
                     if isinstance(f, log):
                         return _solve(f.args[0] - exp(rhs), sym, **flags)
-                    else:  # pragma: no cover
+                    else:
                         raise NotImplementedError
 
         elif lhs.is_Pow:
@@ -1279,7 +1279,7 @@ def _tsolve(eq, sym, **flags):
                             sol = _solve(p, u, **flags)
                             return list(ordered({i.subs({u: s})
                                                  for i in inversion for s in sol}))
-                        else:  # pragma: no cover
+                        else:
                             raise NotImplementedError
                     except NotImplementedError:
                         pass
@@ -1419,7 +1419,7 @@ def _invert(eq, *symbols, **kwargs):
                         ad.func == bd.func and len(ad.args) == len(bd.args):
                     if len(ad.args) == 1:
                         lhs = ad.args[0] - bd.args[0]
-                    else:  # pragma: no cover
+                    else:
                         # should be able to solve
                         # f(x, y) == f(2, 3) -> x == 2
                         # f(x, x + y) == f(2, 3) -> x == 2 or x == 3 - y

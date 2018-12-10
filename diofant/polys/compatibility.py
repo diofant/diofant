@@ -65,7 +65,7 @@ class IPolys:
         if isinstance(element, PolyElement):
             if element.ring == self:
                 return element
-            else:  # pragma: no cover
+            else:
                 raise NotImplementedError("domain conversions")
         else:
             return self.ground_new(element)

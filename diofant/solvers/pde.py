@@ -704,7 +704,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
         rhs = _simplify_variable_coeff(final, finsyms, solvefun, etat)
         return Eq(f(x, y), rhs)
 
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError("Cannot solve the partial differential "
                                   "equation due to inability of constantsimp")
 
@@ -717,7 +717,7 @@ def _simplify_variable_coeff(sol, syms, func, funcarg):
     if len(syms) == 1:
         sym = syms.pop()
         final = sol.subs({sym: func(funcarg)})
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError
 
     return simplify(final.subs({eta: funcarg}))

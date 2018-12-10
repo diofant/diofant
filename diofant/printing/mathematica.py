@@ -152,7 +152,7 @@ class MCodePrinter(CodePrinter):
             direction = "1"
         elif direction == "real":
             direction = "Reals"
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
         e, x, x0 = [self.doprint(a) for a in expr.args[:-1]]
         return ("Hold[Limit[%s, %s -> %s, Direction -> %s]]" % (e, x, x0,

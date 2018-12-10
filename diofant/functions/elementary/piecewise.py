@@ -240,7 +240,7 @@ class Piecewise(Function):
                     elif ((b >= lower) is S.true) and ((b <= upper) is S.true):
                         rep = a
                         val = e._eval_interval(sym, a, b)
-                    else:  # pragma: no cover
+                    else:
                         raise NotImplementedError(
                             """The evaluation of a Piecewise interval when both the lower
                             and the upper limit are symbolic is not yet implemented.""")
@@ -326,7 +326,7 @@ class Piecewise(Function):
                         upper = Min(cond2.gts, upper)
                     elif cond2.gts == sym:
                         lower = Max(cond2.lts, lower)
-                    else:  # pragma: no cover
+                    else:
                         raise NotImplementedError(
                             "Unable to handle interval evaluation of expression.")
             else:
@@ -335,7 +335,7 @@ class Piecewise(Function):
                     lower = -oo   # e.g. x <= 0 ---> -oo <= 0
                 elif cond.gts == sym:            # part 1a: ... that can be expanded
                     upper = oo           # e.g. x >= 0 --->  oo >= 0
-                else:  # pragma: no cover
+                else:
                     raise NotImplementedError(
                         "Unable to handle interval evaluation of expression.")
 

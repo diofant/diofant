@@ -1466,7 +1466,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
                                                              inf=(u, 0), sup=(s, -v),
                                                              blackbox=True)]
             roots = sorted(roots, key=lambda r: (r.ax, r.ay))
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
         return roots if blackbox else [r.as_tuple() for r in roots]

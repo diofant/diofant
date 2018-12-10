@@ -1049,7 +1049,7 @@ def dmp_gf_factor(f, u, K):
             factors[i] = (dmp_convert(f, 0, K.domain, K), k)
 
         return K.convert(coeff, K.domain), factors
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError('multivariate polynomials over finite fields')
 
 

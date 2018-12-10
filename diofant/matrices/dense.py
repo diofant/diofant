@@ -795,7 +795,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
                 del self._mat[j + i*self.cols]
             self.cols -= 1
             return
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
     # Utility functions

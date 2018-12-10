@@ -128,7 +128,7 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
         if len(self.symbols) == 1:
             return (self.fulldomain.set & reduce_rational_inequalities_wrap(
                 self.condition, tuple(self.symbols)[0]))
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError(
                 "Set of Conditional Domain not Implemented")
 
@@ -344,7 +344,7 @@ class SingleContinuousPSpace(ContinuousPSpace, SinglePSpace):
     def compute_cdf(self, expr, **kwargs):
         if expr == self.value:
             return self.distribution.compute_cdf(**kwargs)
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
     def compute_density(self, expr, **kwargs):
@@ -386,5 +386,5 @@ def reduce_rational_inequalities_wrap(condition, var):
         for i in intervals:
             I = I.intersection(i)
         return I
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError

@@ -77,7 +77,7 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
     elif algorithm == "dpll2":
         from .algorithms.dpll2 import dpll_satisfiable
         return dpll_satisfiable(expr, all_models)
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError
 
 

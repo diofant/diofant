@@ -64,7 +64,7 @@ def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
             if prec1 > prec:
                 break
             prec1 *= 2
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError("multiple candidates for the minimal polynomial of %s" % v)
 
 
@@ -104,7 +104,7 @@ def _separate_sq(p):
                 a.append((S.One, y**2))
             elif y.is_Atom:
                 a.append((y, S.One))
-            else:  # pragma: no cover
+            else:
                 raise NotImplementedError
         else:
             sifted = sift(y.args, is_sqrt)
@@ -223,7 +223,7 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
 
     elif op is Mul:
         mp1a = _muly(mp1, x, y)
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError('option not available')
 
     if op is Mul or dom != QQ:

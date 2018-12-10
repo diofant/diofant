@@ -235,7 +235,7 @@ class MpmathPrinter(LambdaPrinter):
                     "method='bisection')" % (self._print(expr.poly.gen),
                                              self._print(expr.expr),
                                              self._print(expr.interval.as_tuple())))
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
     def _print_Sum(self, expr):

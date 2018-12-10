@@ -977,7 +977,7 @@ class SparseMatrixBase(MatrixBase):
             solve = M._LDL_solve
         elif method == "CH":
             solve = M._cholesky_solve
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError('Method may be "CH" or '
                                       '"LDL", not %s.' % method)
         rv = M.hstack(*[solve(I[:, i]) for i in range(I.cols)])
@@ -1166,7 +1166,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
                     newD[i, j] = self._smat[i, j]
             self._smat = newD
             self.cols -= 1
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
     def row_swap(self, i, j):

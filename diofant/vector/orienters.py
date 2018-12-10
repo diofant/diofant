@@ -385,5 +385,5 @@ def _rot(axis, angle):
         return ImmutableMatrix(rot_axis2(angle).T)
     elif axis == 3:
         return ImmutableMatrix(rot_axis3(angle).T)
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError

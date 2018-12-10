@@ -654,7 +654,7 @@ def unrad(eq, *syms, **flags):
     def _cov(p, e):
         if not cov:
             cov[:] = [p, e]
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
     def _canonical(eq, cov):
@@ -852,7 +852,7 @@ def unrad(eq, *syms, **flags):
                                 eq, newcov = tmp
                                 if not newcov:
                                     _cov(covsym, c)
-                                else:  # pragma: no cover
+                                else:
                                     raise NotImplementedError
                             else:
                                 eq = neweq

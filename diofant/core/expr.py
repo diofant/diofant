@@ -1806,7 +1806,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     return
                 else:
                     return quotient
-            else:  # pragma: no cover
+            else:
                 raise NotImplementedError
         elif self.is_Add:
             cs, ps = self.primitive()

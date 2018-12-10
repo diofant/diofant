@@ -4686,7 +4686,7 @@ def _symbolic_factor(expr, opt, method):
         return expr.func(*[_symbolic_factor(arg, opt, method) for arg in expr.args])
     elif hasattr(expr, '__iter__'):
         return expr.__class__([_symbolic_factor(arg, opt, method) for arg in expr])
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError
 
 

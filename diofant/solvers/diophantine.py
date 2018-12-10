@@ -187,7 +187,7 @@ def diophantine(eq, param=symbols("t", integer=True), syms=None):
             for sol in solution:
                 sols.add(merge_solution(var, var_t, sol))
 
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError('unhandled type: %s' % eq_type)
 
     # remove null merge results
