@@ -854,7 +854,7 @@ def roots(f, *gens, **flags):
 
         if f.length() == 2:
             if f.degree() == 1:
-                return list(map(cancel, roots_linear(f)))
+                return roots_linear(f)
             else:
                 return roots_binomial(f)
 
@@ -863,7 +863,7 @@ def roots(f, *gens, **flags):
         n = f.degree()
 
         if n == 2:
-            result += list(map(cancel, roots_quadratic(f)))
+            result += roots_quadratic(f)
         elif f.is_cyclotomic:
             result += roots_cyclotomic(f)
         elif n == 3 and cubics:

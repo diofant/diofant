@@ -2790,12 +2790,12 @@ def test_cancel():
 
     f = (x**2 - 2)/(x + sqrt(2))
 
-    assert cancel(f) == f
+    assert cancel(f, extension=False) == f
     assert cancel(f, greedy=False) == x - sqrt(2)
 
     f = (x**2 - 2)/(x - sqrt(2))
 
-    assert cancel(f) == f
+    assert cancel(f, extension=False) == f
     assert cancel(f, greedy=False) == x + sqrt(2)
 
     assert cancel((x**2/4 - 1, x/2 - 1)) == (Rational(1, 2), x + 2, 1)
@@ -2822,7 +2822,7 @@ def test_cancel():
     f = x**3 + (sqrt(2) - 2)*x**2 - (2*sqrt(2) + 3)*x - 3*sqrt(2)
     g = x**2 - 2
 
-    assert cancel((f, g), extension=True) == (1, x**2 - 2*x - 3, x - sqrt(2))
+    assert cancel((f, g)) == (1, x**2 - 2*x - 3, x - sqrt(2))
 
     f = Poly(-2*x + 3, x)
     g = Poly(-x**9 + x**8 + x**6 - x**5 + 2*x**2 - 3*x + 1, x)

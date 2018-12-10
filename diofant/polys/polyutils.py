@@ -230,9 +230,9 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
     if opt.domain is not None:
         def _is_coeff(factor):
             return factor in opt.domain
-    elif opt.extension is True:
+    elif opt.extension is not False:
         def _is_coeff(factor):
-            return factor.is_algebraic
+            return factor.is_number and factor.is_algebraic
     elif opt.greedy is not False:
         def _is_coeff(factor):
             return False

@@ -111,7 +111,9 @@ def test_precision():
 def test_sympyissue_11538():
     assert construct_domain(E)[0] == ZZ.poly_ring(E)
     assert (construct_domain(x**2 + 2*x + E) == (ZZ.poly_ring(x, E), ZZ.poly_ring(x, E)(x**2 + 2*x + E)))
-    assert (construct_domain(x + y + GoldenRatio) == (EX, EX(x + y + GoldenRatio)))
+    assert (construct_domain(x + y + GoldenRatio) ==
+            (QQ.algebraic_field(GoldenRatio).poly_ring(x, y),
+             QQ.algebraic_field(GoldenRatio).poly_ring(x, y)(x + y + GoldenRatio)))
 
 
 def test_sympyissue_5428_14337():
