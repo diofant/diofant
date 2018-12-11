@@ -833,7 +833,7 @@ def roots(f, *gens, **flags):
             previous, roots = list(roots), []
 
             for root in previous:
-                g = factor - Poly(root, f.gen)
+                g = factor - Poly(root, f.gen, extension=False)
 
                 for root in _try_heuristics(g):
                     roots.append(root)
