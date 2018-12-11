@@ -22,7 +22,7 @@ __all__ = ('roots',)
 
 def roots_linear(f):
     """Returns a list of roots of a linear polynomial."""
-    r = -f.nth(0)/f.nth(1)
+    r = -f.coeff_monomial(1)/f.coeff_monomial(f.gen)
     dom = f.domain
 
     if not dom.is_Numerical:
@@ -333,7 +333,7 @@ def roots_binomial(f):
     """
     n = f.degree()
 
-    a, b = f.nth(n), f.nth(0)
+    a, b = f.coeff_monomial(f.gen**n), f.coeff_monomial(1)
     base = -cancel(b/a)
     alpha = root(base, n)
 

@@ -656,7 +656,6 @@ class Poly(Expr):
 
         all_coeffs
         coeff_monomial
-        nth
         """
         return [self.rep.domain.to_expr(c) for c in self.rep.coeffs(order=order)]
 
@@ -1330,6 +1329,8 @@ class Poly(Expr):
         0
         >>> p.coeff_monomial(x*y)
         24*E**8
+        >>> p.coeff_monomial((1, 1))
+        24*E**8
 
         Note that ``Expr.coeff()`` behaves differently, collecting terms
         if possible; the Poly must be converted to an Expr to use that
@@ -1341,40 +1342,12 @@ class Poly(Expr):
         24*E**8*x
         >>> p.as_expr().coeff(x*y)
         24*E**8
-
-        See Also
-        ========
-
-        nth: more efficient query using exponents of the monomial's generators
         """
-        return self.nth(*Monomial(monom, self.gens).exponents)
-
-    def nth(self, *N):
-        """
-        Returns the ``n``-th coefficient of ``f`` where ``N`` are the
-        exponents of the generators in the term of interest.
-
-        Examples
-        ========
-
-        >>> Poly(x**3 + 2*x**2 + 3*x, x).nth(2)
-        2
-        >>> Poly(x**3 + 2*x*y**2 + y**2, x, y).nth(1, 2)
-        2
-        >>> Poly(4*sqrt(x)*y)
-        Poly(4*y*sqrt(x), y, sqrt(x), domain='ZZ')
-        >>> _.nth(1, 1)
-        4
-
-        See Also
-        ========
-
-        coeff_monomial
-        """
+        N = Monomial(monom, self.gens).exponents
         if len(N) != len(self.gens):
             raise ValueError('exponent of each generator must be specified')
-        result = self.rep.nth(*list(map(int, N)))
 
+        result = self.rep.nth(*N)
         return self.rep.domain.to_expr(result)
 
     def coeff(self, x, n=1, right=False):

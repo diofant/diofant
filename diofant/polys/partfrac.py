@@ -164,7 +164,7 @@ def apart_undetermined_coeffs(P, Q):
     system, result = [], Integer(0)
 
     for (k,), coeff in F.terms():
-        system.append(coeff - P.nth(k))
+        system.append(coeff - P.coeff_monomial((k,)))
 
     from ..solvers import solve
     solution = solve(system, symbols)[0]

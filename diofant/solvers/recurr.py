@@ -576,7 +576,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
         d, poly = max(degrees), S.Zero
 
         for i in range(r + 1):
-            coeff = polys[i].nth(d)
+            coeff = polys[i].coeff_monomial((d,))
 
             if coeff is not S.Zero:
                 poly += coeff * Z**i

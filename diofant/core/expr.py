@@ -984,7 +984,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.core.expr.Expr.as_coeff_Mul
         diofant.core.expr.Expr.as_independent
         diofant.polys.polytools.Poly.coeff_monomial
-        diofant.polys.polytools.Poly.nth
 
         Examples
         ========
@@ -1298,8 +1297,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Poly(x*E + 2*E, x, E, domain='ZZ')
         >>> p.coeff_monomial(E)
         2
-        >>> p.nth(0, 1)
-        2
 
         Since the following cannot be written as a product containing
         E as a factor, None is returned. (If the coefficient ``2*x`` is
@@ -1323,7 +1320,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         as_coeff_Mul: separate the multiplicative constant from an expression
         as_independent: separate x-dependent terms/factors from others
         diofant.polys.polytools.Poly.coeff_monomial: efficiently find the single coefficient of a monomial in Poly
-        diofant.polys.polytools.Poly.nth: like coeff_monomial but powers of monomial terms are used
         """
 
         r = self.extract_multiplicatively(expr)

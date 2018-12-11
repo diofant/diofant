@@ -1026,7 +1026,7 @@ class UnShiftA(Operator):
         for b in bq:
             n *= (D + b - 1)
 
-        b0 = -n.nth(0)
+        b0 = -n.coeff_monomial(1)
         if b0 == 0:
             raise ValueError('Cannot decrement upper index: '
                              'cancels with lower')
@@ -1068,7 +1068,7 @@ class UnShiftB(Operator):
         for a in ap:
             n *= (D + a)
 
-        b0 = n.nth(0)
+        b0 = n.coeff_monomial(1)
         if b0 == 0:
             raise ValueError('Cannot increment index: cancels with upper')
 
@@ -1158,7 +1158,7 @@ class MeijerUnShiftA(Operator):
         for a in ap:
             n *= (-D + a - 1)
 
-        b0 = n.nth(0)
+        b0 = n.coeff_monomial(1)
         if b0 == 0:
             raise ValueError('Cannot decrement upper b index (cancels)')
 
@@ -1204,7 +1204,7 @@ class MeijerUnShiftB(Operator):
         for b in bq:
             n *= (D - b)
 
-        b0 = n.nth(0)
+        b0 = n.coeff_monomial(1)
         if b0 == 0:
             raise ValueError('Cannot increment upper a index (cancels)')
 
@@ -1256,7 +1256,7 @@ class MeijerUnShiftC(Operator):
         for a in ap:
             n *= (-D + a - 1)
 
-        b0 = n.nth(0)
+        b0 = n.coeff_monomial(1)
         if b0 == 0:
             raise ValueError('Cannot decrement lower b index (cancels)')
 
@@ -1305,7 +1305,7 @@ class MeijerUnShiftD(Operator):
         for b in bq:
             n *= (D - b)
 
-        b0 = n.nth(0)
+        b0 = n.coeff_monomial(1)
         if b0 == 0:
             raise ValueError('Cannot increment lower a index (cancels)')
 

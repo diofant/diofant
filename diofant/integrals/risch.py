@@ -763,8 +763,8 @@ def as_poly_1t(p, t, z):
         one_t_part *= Poly(t**r, t)
 
     one_t_part = one_t_part.replace(t, z)  # z will be 1/t
-    if pd.nth(d):
-        one_t_part *= Poly(1/pd.nth(d), z, expand=False)
+    if pd.coeff_monomial((d,)):
+        one_t_part *= Poly(1/pd.coeff_monomial((d,)), z, expand=False)
     ans = t_part.as_poly(t, z, expand=False) + one_t_part.as_poly(t, z,
                                                                   expand=False)
 
@@ -1361,11 +1361,11 @@ def integrate_hyperexponential_polynomial(p, DE, z):
                 # If you get AttributeError: 'NoneType' object has no attribute 'nth'
                 # then this should really not have expand=False
                 # But it shouldn't happen because p is already a Poly in t and z
-                a = p.as_poly(z, expand=False).nth(-i)
+                a = p.as_poly(z, expand=False).coeff_monomial((-i,))
             else:
                 # If you get AttributeError: 'NoneType' object has no attribute 'nth'
                 # then this should really not have expand=False
-                a = p.as_poly(t1, expand=False).nth(i)
+                a = p.as_poly(t1, expand=False).coeff_monomial((i,))
 
             aa, ad = frac_in(a, DE.t, field=True)
             aa, ad = aa.cancel(ad, include=True)
@@ -1419,7 +1419,7 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
 
     qa, qd, b = integrate_hyperexponential_polynomial(pp, DE, z)
 
-    i = pp.nth(0, 0)
+    i = pp.coeff_monomial(1)
 
     ret = ((g1[0].as_expr()/g1[1].as_expr()).subs(s)
            + residue_reduce_to_basic(g2, DE, z))
@@ -1456,7 +1456,7 @@ def integrate_hypertangent_polynomial(p, DE):
     # XXX: Make sure that sqrt(-1) is not in k.
     q, r = polynomial_reduce(p, DE)
     a = DE.d.exquo(Poly(DE.t**2 + 1, DE.t))
-    c = Poly(r.nth(1)/(2*a.as_expr()), DE.t)
+    c = Poly(r.coeff_monomial((1,))/(2*a.as_expr()), DE.t)
     return q, c
 
 
