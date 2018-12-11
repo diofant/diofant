@@ -255,9 +255,9 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
                 return element
             elif isinstance(self.domain, PolynomialRing) and self.domain.ring == element.ring:
                 return self.ground_new(element)
-            else:  # pragma: no cover
+            else:
                 raise NotImplementedError
-        elif isinstance(element, str):  # pragma: no cover
+        elif isinstance(element, str):
             raise NotImplementedError
         elif isinstance(element, dict):
             return self.from_dict(element)

@@ -45,7 +45,7 @@ def solve_poly_inequality(poly, rel):
             return [S.Reals]
         elif t is S.false:
             return [S.EmptySet]
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError("Couldn't determine truth value of %s" % t)
 
     reals, intervals = poly.real_roots(multiple=False), []
@@ -396,7 +396,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
             return r
         elif v.is_comparable is False:
             return False
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
     start = -oo

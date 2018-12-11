@@ -178,7 +178,7 @@ def _construct_composite(coeffs, opt):
         elif coeff.is_Float:
             reals = True
             break
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
     if reals:

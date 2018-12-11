@@ -235,7 +235,7 @@ def _implicit_application(tokens, local_dict, global_dict):
             if _token_callable(tok, local_dict, global_dict, nextTok):
                 result.append((OP, '('))
                 appendParen += 1
-            else:  # pragma: no cover
+            else:
                 raise NotImplementedError
         # name followed by exponent - function exponentiation
         elif (tok[0] == NAME and nextTok[0] == OP and nextTok[1] == '**'):
@@ -548,7 +548,7 @@ def lambda_notation(tokens, local_dict, global_dict):
                     result.insert(-1, (tokNum, tokVal))
                 else:
                     result.insert(-2, (tokNum, tokVal))
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
     else:
         result.extend(tokens)

@@ -10,69 +10,6 @@ from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
 from .polyerrors import DomainError
 
 
-def dup_integrate(f, m, K):
-    """
-    Computes the indefinite integral of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", QQ)
-
-    >>> R.dup_integrate(x**2 + 2*x, 1)
-    1/3*x**3 + x**2
-    >>> R.dup_integrate(x**2 + 2*x, 2)
-    1/12*x**4 + 1/3*x**3
-    """
-    if m <= 0 or not f:
-        return f
-
-    g = [K.zero]*m
-
-    for i, c in enumerate(reversed(f)):
-        n = i + 1
-
-        for j in range(1, m):
-            n *= i + j + 1
-
-        g.insert(0, K.exquo(c, K(n)))
-
-    return g
-
-
-def dmp_integrate(f, m, u, K):
-    """
-    Computes the indefinite integral of ``f`` in ``x_0`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", QQ)
-
-    >>> R.dmp_integrate(x + 2*y, 1)
-    1/2*x**2 + 2*x*y
-    >>> R.dmp_integrate(x + 2*y, 2)
-    1/6*x**3 + x**2*y
-    """
-    if not u:
-        return dup_integrate(f, m, K)
-
-    if m <= 0 or dmp_zero_p(f, u):
-        return f
-
-    g, v = dmp_zeros(m, u - 1, K), u - 1
-
-    for i, c in enumerate(reversed(f)):
-        n = i + 1
-
-        for j in range(1, m):
-            n *= i + j + 1
-
-        g.insert(0, dmp_quo_ground(c, K(n), v, K))
-
-    return g
-
-
 def dmp_integrate_in(f, m, j, u, K):
     """
     Computes the indefinite integral of ``f`` in ``x_j`` in ``K[X]``.
@@ -90,101 +27,33 @@ def dmp_integrate_in(f, m, j, u, K):
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
 
-    def integrate_in(g, m, v, i, j, K):
+    if not j:
+        if m <= 0 or dmp_zero_p(f, u):
+            return f
+
+        v = u - 1
+        g = dmp_zeros(m, v, K) if u else [K.zero]*m
+
+        for i, c in enumerate(reversed(f)):
+            n = i + 1
+
+            for j in range(1, m):
+                n *= i + j + 1
+
+            t = dmp_quo_ground(c, K(n), v, K) if u else K.exquo(c, K(n))
+            g.insert(0, t)
+
+        return g
+
+    def integrate_in(f, m, u, i, j, K):
         if i == j:
-            return dmp_integrate(g, m, v, K)
+            return dmp_integrate_in(f, m, 0, u, K)
 
-        w, i = v - 1, i + 1
+        v, i = u - 1, i + 1
 
-        return dmp_strip([integrate_in(c, m, w, i, j, K) for c in g], v)
+        return dmp_strip([integrate_in(c, m, v, i, j, K) for c in f], u)
 
     return integrate_in(f, m, u, 0, j, K)
-
-
-def dup_diff(f, m, K):
-    """
-    ``m``-th order derivative of a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_diff(x**3 + 2*x**2 + 3*x + 4, 1)
-    3*x**2 + 4*x + 3
-    >>> R.dup_diff(x**3 + 2*x**2 + 3*x + 4, 2)
-    6*x + 4
-    """
-    if m <= 0:
-        return f
-
-    n = dmp_degree_in(f, 0, 0)
-
-    if n < m:
-        return []
-
-    deriv = []
-
-    if m == 1:
-        for coeff in f[:-m]:
-            deriv.append(K(n)*coeff)
-            n -= 1
-    else:
-        for coeff in f[:-m]:
-            k = n
-
-            for i in range(n - 1, n - m, -1):
-                k *= i
-
-            deriv.append(K(k)*coeff)
-            n -= 1
-
-    return dmp_strip(deriv, 0)
-
-
-def dmp_diff(f, m, u, K):
-    """
-    ``m``-th order derivative in ``x_0`` of a polynomial in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
-
-    >>> R.dmp_diff(f, 1)
-    y**2 + 2*y + 3
-    >>> R.dmp_diff(f, 2)
-    0
-    """
-    if not u:
-        return dup_diff(f, m, K)
-    if m <= 0:
-        return f
-
-    n = dmp_degree_in(f, 0, u)
-
-    if n < m:
-        return dmp_zero(u)
-
-    deriv, v = [], u - 1
-
-    if m == 1:
-        for coeff in f[:-m]:
-            deriv.append(dmp_mul_ground(coeff, K(n), v, K))
-            n -= 1
-    else:
-        for coeff in f[:-m]:
-            k = n
-
-            for i in range(n - 1, n - m, -1):
-                k *= i
-
-            deriv.append(dmp_mul_ground(coeff, K(k), v, K))
-            n -= 1
-
-    return dmp_strip(deriv, u)
 
 
 def dmp_diff_in(f, m, j, u, K):
@@ -206,13 +75,42 @@ def dmp_diff_in(f, m, j, u, K):
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
 
-    def diff_in(g, m, v, i, j, K):
+    if not j:
+        if m <= 0:
+            return f
+
+        n = dmp_degree_in(f, 0, u)
+
+        if n < m:
+            return dmp_zero(u)
+
+        deriv, v = [], u - 1
+
+        if m == 1:
+            for coeff in f[:-m]:
+                d = dmp_mul_ground(coeff, K(n), v, K) if u else K(n)*coeff
+                deriv.append(d)
+                n -= 1
+        else:
+            for coeff in f[:-m]:
+                k = n
+
+                for i in range(n - 1, n - m, -1):
+                    k *= i
+
+                d = dmp_mul_ground(coeff, K(k), v, K) if u else K(k)*coeff
+                deriv.append(d)
+                n -= 1
+
+        return dmp_strip(deriv, u)
+
+    def diff_in(f, m, u, i, j, K):
         if i == j:
-            return dmp_diff(g, m, v, K)
+            return dmp_diff_in(f, m, 0, u, K)
 
-        w, i = v - 1, i + 1
+        v, i = u - 1, i + 1
 
-        return dmp_strip([diff_in(c, m, w, i, j, K) for c in g], v)
+        return dmp_strip([diff_in(c, m, v, i, j, K) for c in f], u)
 
     return diff_in(f, m, u, 0, j, K)
 
@@ -324,11 +222,11 @@ def dmp_diff_eval_in(f, m, a, j, u, K):
     if j > u:
         raise IndexError("-%s <= j < %s expected, got %s" % (u, u, j))
     if not j:
-        return dmp_eval_in(dmp_diff(f, m, u, K), a, 0, u, K)
+        return dmp_eval_in(dmp_diff_in(f, m, 0, u, K), a, 0, u, K)
 
     def diff_eval(g, m, a, v, i, j, K):
         if i == j:
-            return dmp_eval_in(dmp_diff(g, m, v, K), a, 0, v, K)
+            return dmp_eval_in(dmp_diff_in(g, m, 0, v, K), a, 0, v, K)
 
         v, i = v - 1, i + 1
 

@@ -700,13 +700,13 @@ def jn_zeros(n, k, method="diofant", dps=15):
 
         def f(x):
             return spherical_jn(n, x)
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError("Unknown method.")
 
     def solver(f, x):
         if method == "scipy":
             root = newton(f, x)
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError("Unknown method.")
         return root
 

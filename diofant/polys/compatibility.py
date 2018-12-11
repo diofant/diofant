@@ -10,15 +10,14 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term, dmp_div,
                          dup_mul, dup_mul_term, dup_pexquo, dup_rshift,
                          dup_sqr, dup_sub, dup_sub_term)
 from .densebasic import dmp_degree_in, dmp_LC, dmp_strip, dmp_to_dict
-from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff,
-                         dmp_diff_eval_in, dmp_diff_in, dmp_eval_in,
-                         dmp_eval_tail, dmp_ground_content, dmp_ground_extract,
+from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
+                         dmp_diff_in, dmp_eval_in, dmp_eval_tail,
+                         dmp_ground_content, dmp_ground_extract,
                          dmp_ground_monic, dmp_ground_primitive,
-                         dmp_ground_trunc, dmp_integrate, dmp_integrate_in,
-                         dmp_lift, dmp_trunc, dup_decompose, dup_diff,
-                         dup_integrate, dup_mirror, dup_real_imag, dup_scale,
-                         dup_shift, dup_sign_variations, dup_transform,
-                         dup_trunc)
+                         dmp_ground_trunc, dmp_integrate_in, dmp_lift,
+                         dmp_trunc, dup_decompose, dup_mirror, dup_real_imag,
+                         dup_scale, dup_shift, dup_sign_variations,
+                         dup_transform, dup_trunc)
 from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_ff_lcm, dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
                           dmp_inner_subresultants, dmp_lcm, dmp_primitive,
@@ -26,9 +25,9 @@ from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_qq_heu_gcd, dmp_resultant, dmp_rr_lcm,
                           dmp_rr_prs_gcd, dmp_subresultants,
                           dmp_zz_collins_resultant, dmp_zz_heu_gcd,
-                          dmp_zz_modular_resultant, dup_discriminant,
-                          dup_euclidean_prs, dup_ff_prs_gcd, dup_gcdex,
-                          dup_half_gcdex, dup_inner_subresultants, dup_invert,
+                          dmp_zz_modular_resultant, dup_euclidean_prs,
+                          dup_ff_prs_gcd, dup_gcdex, dup_half_gcdex,
+                          dup_inner_subresultants, dup_invert,
                           dup_primitive_prs, dup_prs_resultant, dup_resultant,
                           dup_rr_prs_gcd)
 from .factortools import (dmp_ext_factor, dmp_factor_list, dmp_trial_division,
@@ -66,7 +65,7 @@ class IPolys:
         if isinstance(element, PolyElement):
             if element.ring == self:
                 return element
-            else:  # pragma: no cover
+            else:
                 raise NotImplementedError("domain conversions")
         else:
             return self.ground_new(element)
@@ -204,18 +203,6 @@ class IPolys:
 
     def dmp_degree_in(self, f, j):
         return dmp_degree_in(self.to_dense(f), j, self.ngens-1)
-
-    def dup_integrate(self, f, m):
-        return self.from_dense(dup_integrate(self.to_dense(f), m, self.domain))
-
-    def dmp_integrate(self, f, m):
-        return self.from_dense(dmp_integrate(self.to_dense(f), m, self.ngens-1, self.domain))
-
-    def dup_diff(self, f, m):
-        return self.from_dense(dup_diff(self.to_dense(f), m, self.domain))
-
-    def dmp_diff(self, f, m):
-        return self.from_dense(dmp_diff(self.to_dense(f), m, self.ngens-1, self.domain))
 
     def dmp_diff_in(self, f, m, j):
         return self.from_dense(dmp_diff_in(self.to_dense(f), m, j, self.ngens-1, self.domain))
@@ -357,9 +344,6 @@ class IPolys:
             return self.drop(0).from_dense(res)
         else:
             return res
-
-    def dup_discriminant(self, f):
-        return dup_discriminant(self.to_dense(f), self.domain)
 
     def dmp_discriminant(self, f):
         disc = dmp_discriminant(self.to_dense(f), self.ngens-1, self.domain)

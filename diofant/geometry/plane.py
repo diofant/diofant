@@ -726,5 +726,5 @@ class Plane(GeometryEntity):
             return not cancel(self.equation(x, y, z)/o.equation(x, y, z)).has(x, y, z)
         elif isinstance(o, Point3D):
             return o in self
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError

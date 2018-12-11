@@ -495,7 +495,7 @@ class StrPrinter(Printer):
             strip = True
         elif self._settings["full_prec"] == "auto":
             strip = self._print_level > 1
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
         rv = mlib.to_str(expr._mpf_, dps, strip_zeros=strip)
         if rv.startswith('-.0'):

@@ -668,10 +668,6 @@ def test_Poly_mul():
     assert Poly(x**2 + 1, x) * Poly(x - 2, x) == Poly(x**3 - 2*x**2 + x - 2)
 
 
-def test_Poly_sqr():
-    assert Poly(x*y, x, y).sqr() == Poly(x**2*y**2, x, y)
-
-
 def test_Poly_pow():
     assert Poly(x, x)**10 == Poly(x**10, x)
     assert Poly(2*y, x, y)**4 == Poly(16*y**4, x, y)
@@ -679,6 +675,8 @@ def test_Poly_pow():
     assert Poly(x*y + 1, x, y)**(-1) == (x*y + 1)**(-1)
     assert Poly(x*y + 1, x, y)**x == (x*y + 1)**x
     assert Poly(x - 2, x)**3 == Poly(x**3 - 6*x**2 + 12*x - 8)
+    assert Poly(x*y, x, y)**2 == Poly(x**2*y**2, x, y)
+    assert Poly(x - 2, x)**2 == Poly(x**2 - 4*x + 4, x)
 
 
 def test_Poly_divmod():
@@ -1275,23 +1273,25 @@ def test_Poly_coeff():
     pytest.raises(ValueError, lambda: Poly(x + 1).coeff_monomial(3*x))
     pytest.raises(ValueError, lambda: Poly(x + 1).coeff_monomial(3*x*y))
 
+    assert Poly(0, x).coeff_monomial((0,)) == 0
+    assert Poly(0, x).coeff_monomial((1,)) == 0
 
-def test_Poly_nth():
-    assert Poly(0, x).nth(0) == 0
-    assert Poly(0, x).nth(1) == 0
+    assert Poly(1, x).coeff_monomial((0,)) == 1
+    assert Poly(1, x).coeff_monomial((1,)) == 0
 
-    assert Poly(1, x).nth(0) == 1
-    assert Poly(1, x).nth(1) == 0
+    assert Poly(x**8, x).coeff_monomial((0,)) == 0
+    assert Poly(x**8, x).coeff_monomial((7,)) == 0
+    assert Poly(x**8, x).coeff_monomial((8,)) == 1
+    assert Poly(x**8, x).coeff_monomial((9,)) == 0
 
-    assert Poly(x**8, x).nth(0) == 0
-    assert Poly(x**8, x).nth(7) == 0
-    assert Poly(x**8, x).nth(8) == 1
-    assert Poly(x**8, x).nth(9) == 0
+    assert Poly(3*x*y**2 + 1, x, y).coeff_monomial((0, 0)) == 1
+    assert Poly(3*x*y**2 + 1, x, y).coeff_monomial((1, 2)) == 3
 
-    assert Poly(3*x*y**2 + 1, x, y).nth(0, 0) == 1
-    assert Poly(3*x*y**2 + 1, x, y).nth(1, 2) == 3
+    pytest.raises(ValueError, lambda: Poly(x*y + 1, x, y).coeff_monomial((1,)))
 
-    pytest.raises(ValueError, lambda: Poly(x*y + 1, x, y).nth(1))
+    assert Poly(x**3 + 2*x**2 + 3*x, x).coeff_monomial((2,)) == 2
+    assert Poly(x**3 + 2*x*y**2 + y**2, x, y).coeff_monomial((1, 2)) == 2
+    assert Poly(4*sqrt(x)*y).coeff_monomial((1, 1)) == 4
 
 
 def test_Poly_LM():

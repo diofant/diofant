@@ -834,7 +834,7 @@ class Mul(AssocOp):
             a = self.func(*nc1)
             if not isinstance(a, self.func):
                 repl_dict = a._matches(self.func(*nc2), repl_dict)
-            else:  # pragma: no cover
+            else:
                 raise NotImplementedError
         return repl_dict or None
 

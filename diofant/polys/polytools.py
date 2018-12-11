@@ -22,8 +22,8 @@ from .polyclasses import DMP
 from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
                          ExactQuotientFailed, GeneratorsError,
                          GeneratorsNeeded, MultivariatePolynomialError,
-                         OperationNotSupported, PolificationFailed,
-                         PolynomialError, UnificationFailed)
+                         PolificationFailed, PolynomialError,
+                         UnificationFailed)
 from .polyutils import (_dict_from_expr, _dict_reorder,
                         _parallel_dict_from_expr, _sort_gens, _unify_gens,
                         basic_from_dict)
@@ -579,11 +579,7 @@ class Poly(Expr):
         >>> Poly(x**2 + 1, domain=QQ).to_ring()
         Poly(x**2 + 1, x, domain='ZZ')
         """
-        if hasattr(self.rep, 'to_ring'):
-            result = self.rep.to_ring()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'to_ring')
-
+        result = self.rep.to_ring()
         return self.per(result)
 
     def to_field(self):
@@ -596,11 +592,7 @@ class Poly(Expr):
         >>> Poly(x**2 + 1, x, domain=ZZ).to_field()
         Poly(x**2 + 1, x, domain='QQ')
         """
-        if hasattr(self.rep, 'to_field'):
-            result = self.rep.to_field()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'to_field')
-
+        result = self.rep.to_field()
         return self.per(result)
 
     def to_exact(self):
@@ -613,11 +605,7 @@ class Poly(Expr):
         >>> Poly(x**2 + 1.0, x, domain=RR).to_exact()
         Poly(x**2 + 1, x, domain='QQ')
         """
-        if hasattr(self.rep, 'to_exact'):
-            result = self.rep.to_exact()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'to_exact')
-
+        result = self.rep.to_exact()
         return self.per(result)
 
     def retract(self, field=None, extension=None):
@@ -650,11 +638,7 @@ class Poly(Expr):
 
         m, n = int(m), int(n)
 
-        if hasattr(self.rep, 'slice'):
-            result = self.rep.slice(m, n, j)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'slice')
-
+        result = self.rep.slice(m, n, j)
         return self.per(result)
 
     def coeffs(self, order=None):
@@ -672,7 +656,6 @@ class Poly(Expr):
 
         all_coeffs
         coeff_monomial
-        nth
         """
         return [self.rep.domain.to_expr(c) for c in self.rep.coeffs(order=order)]
 
@@ -854,11 +837,7 @@ class Poly(Expr):
         >>> Poly(x**2 + I*x + 1, x, extension=I).lift()
         Poly(x**4 + 3*x**2 + 1, x, domain='QQ')
         """
-        if hasattr(self.rep, 'lift'):
-            result = self.rep.lift()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'lift')
-
+        result = self.rep.lift()
         return self.per(result)
 
     def deflate(self):
@@ -871,11 +850,7 @@ class Poly(Expr):
         >>> Poly(x**6*y**2 + x**3 + 1, x, y).deflate()
         ((3, 2), Poly(x**2*y + x + 1, x, y, domain='ZZ'))
         """
-        if hasattr(self.rep, 'deflate'):
-            J, result = self.rep.deflate()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'deflate')
-
+        J, result = self.rep.deflate()
         return J, self.per(result)
 
     def inject(self, front=False):
@@ -897,10 +872,7 @@ class Poly(Expr):
         if dom.is_Numerical:
             return self
 
-        if hasattr(self.rep, 'inject'):
-            result = self.rep.inject(front=front)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'inject')
+        result = self.rep.inject(front=front)
 
         if front:
             gens = dom.symbols + self.gens
@@ -940,11 +912,7 @@ class Poly(Expr):
 
         dom = dom.inject(*gens)
 
-        if hasattr(self.rep, 'eject'):
-            result = self.rep.eject(dom, front=front)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'eject')
-
+        result = self.rep.eject(dom, front=front)
         return self.new(result, *_gens)
 
     def terms_gcd(self):
@@ -957,11 +925,7 @@ class Poly(Expr):
         >>> Poly(x**6*y**2 + x**3*y, x, y).terms_gcd()
         ((3, 1), Poly(x**3*y + 1, x, y, domain='ZZ'))
         """
-        if hasattr(self.rep, 'terms_gcd'):
-            J, result = self.rep.terms_gcd()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'terms_gcd')
-
+        J, result = self.rep.terms_gcd()
         return J, self.per(result)
 
     def quo_ground(self, coeff):
@@ -977,11 +941,7 @@ class Poly(Expr):
         >>> Poly(2*x + 3).quo_ground(2)
         Poly(x + 1, x, domain='ZZ')
         """
-        if hasattr(self.rep, 'quo_ground'):
-            result = self.rep.quo_ground(coeff)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'quo_ground')
-
+        result = self.rep.quo_ground(coeff)
         return self.per(result)
 
     def exquo_ground(self, coeff):
@@ -999,31 +959,7 @@ class Poly(Expr):
         ...
         ExactQuotientFailed: 2 does not divide 3 in ZZ
         """
-        if hasattr(self.rep, 'exquo_ground'):
-            result = self.rep.exquo_ground(coeff)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'exquo_ground')
-
-        return self.per(result)
-
-    def sqr(self):
-        """
-        Square a polynomial ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x - 2, x).sqr()
-        Poly(x**2 - 4*x + 4, x, domain='ZZ')
-
-        >>> Poly(x - 2, x)**2
-        Poly(x**2 - 4*x + 4, x, domain='ZZ')
-        """
-        if hasattr(self.rep, 'sqr'):
-            result = self.rep.sqr()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'sqr')
-
+        result = self.rep.exquo_ground(coeff)
         return self.per(result)
 
     def pdiv(self, other):
@@ -1038,11 +974,7 @@ class Poly(Expr):
         """
         _, per, F, G = self._unify(other)
 
-        if hasattr(self.rep, 'pdiv'):
-            q, r = F.pdiv(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'pdiv')
-
+        q, r = F.pdiv(G)
         return per(q), per(r)
 
     def prem(self, other):
@@ -1057,11 +989,7 @@ class Poly(Expr):
         """
         _, per, F, G = self._unify(other)
 
-        if hasattr(self.rep, 'prem'):
-            result = F.prem(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'prem')
-
+        result = F.prem(G)
         return per(result)
 
     def pquo(self, other):
@@ -1079,11 +1007,7 @@ class Poly(Expr):
         """
         _, per, F, G = self._unify(other)
 
-        if hasattr(self.rep, 'pquo'):
-            result = F.pquo(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'pquo')
-
+        result = F.pquo(G)
         return per(result)
 
     def pexquo(self, other):
@@ -1103,13 +1027,10 @@ class Poly(Expr):
         """
         _, per, F, G = self._unify(other)
 
-        if hasattr(self.rep, 'pexquo'):
-            try:
-                result = F.pexquo(G)
-            except ExactQuotientFailed as exc:
-                raise exc.new(self.as_expr(), other.as_expr())
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'pexquo')
+        try:
+            result = F.pexquo(G)
+        except ExactQuotientFailed as exc:
+            raise exc.new(self.as_expr(), other.as_expr())
 
         return per(result)
 
@@ -1195,10 +1116,7 @@ class Poly(Expr):
             F, G = F.to_field(), G.to_field()
             retract = True
 
-        if hasattr(self.rep, 'quo'):
-            q = F.quo(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'quo')
+        q = F.quo(G)
 
         if retract:
             try:
@@ -1230,13 +1148,10 @@ class Poly(Expr):
             F, G = F.to_field(), G.to_field()
             retract = True
 
-        if hasattr(self.rep, 'exquo'):
-            try:
-                q = F.exquo(G)
-            except ExactQuotientFailed as exc:
-                raise exc.new(self.as_expr(), other.as_expr())
-        else:  # pragma: no cover
-            raise OperationNotSupported(other, 'exquo')
+        try:
+            q = F.exquo(G)
+        except ExactQuotientFailed as exc:
+            raise exc.new(self.as_expr(), other.as_expr())
 
         if retract:
             try:
@@ -1284,10 +1199,7 @@ class Poly(Expr):
         """
         j = self._gen_to_level(gen)
 
-        if hasattr(self.rep, 'degree'):
-            return self.rep.degree(j)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'degree')
+        return self.rep.degree(j)
 
     def degree_list(self):
         """
@@ -1299,10 +1211,7 @@ class Poly(Expr):
         >>> Poly(x**2 + y*x + 1, x, y).degree_list()
         (2, 1)
         """
-        if hasattr(self.rep, 'degree_list'):
-            return self.rep.degree_list()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'degree_list')
+        return self.rep.degree_list()
 
     def total_degree(self):
         """
@@ -1316,10 +1225,7 @@ class Poly(Expr):
         >>> Poly(x + y**5, x, y).total_degree()
         5
         """
-        if hasattr(self.rep, 'total_degree'):
-            return self.rep.total_degree()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'total_degree')
+        return self.rep.total_degree()
 
     def homogenize(self, s):
         """
@@ -1347,10 +1253,7 @@ class Poly(Expr):
         else:
             i = len(self.gens)
             gens = self.gens + (s,)
-        if hasattr(self.rep, 'homogenize'):
-            return self.per(self.rep.homogenize(i), gens=gens)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'homogeneous_order')
+        return self.per(self.rep.homogenize(i), gens=gens)
 
     def homogeneous_order(self):
         """
@@ -1368,10 +1271,7 @@ class Poly(Expr):
         >>> f.homogeneous_order()
         5
         """
-        if hasattr(self.rep, 'homogeneous_order'):
-            return self.rep.homogeneous_order()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'homogeneous_order')
+        return self.rep.homogeneous_order()
 
     def LC(self, order=None):
         """
@@ -1386,11 +1286,7 @@ class Poly(Expr):
         if order is not None:
             return self.coeffs(order)[0]
 
-        if hasattr(self.rep, 'LC'):
-            result = self.rep.LC()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'LC')
-
+        result = self.rep.LC()
         return self.rep.domain.to_expr(result)
 
     def TC(self):
@@ -1403,11 +1299,7 @@ class Poly(Expr):
         >>> Poly(x**3 + 2*x**2 + 3*x, x).TC()
         0
         """
-        if hasattr(self.rep, 'TC'):
-            result = self.rep.TC()
-        else:  # pragma: no cover
-            raise OperationNotSupported(f, 'TC')
-
+        result = self.rep.TC()
         return self.rep.domain.to_expr(result)
 
     def EC(self, order=None):
@@ -1420,10 +1312,7 @@ class Poly(Expr):
         >>> Poly(x**3 + 2*x**2 + 3*x, x).EC()
         3
         """
-        if hasattr(self.rep, 'coeffs'):
-            return self.coeffs(order)[-1]
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'EC')
+        return self.coeffs(order)[-1]
 
     def coeff_monomial(self, monom):
         """
@@ -1440,6 +1329,8 @@ class Poly(Expr):
         0
         >>> p.coeff_monomial(x*y)
         24*E**8
+        >>> p.coeff_monomial((1, 1))
+        24*E**8
 
         Note that ``Expr.coeff()`` behaves differently, collecting terms
         if possible; the Poly must be converted to an Expr to use that
@@ -1451,43 +1342,12 @@ class Poly(Expr):
         24*E**8*x
         >>> p.as_expr().coeff(x*y)
         24*E**8
-
-        See Also
-        ========
-
-        nth: more efficient query using exponents of the monomial's generators
         """
-        return self.nth(*Monomial(monom, self.gens).exponents)
+        N = Monomial(monom, self.gens).exponents
+        if len(N) != len(self.gens):
+            raise ValueError('exponent of each generator must be specified')
 
-    def nth(self, *N):
-        """
-        Returns the ``n``-th coefficient of ``f`` where ``N`` are the
-        exponents of the generators in the term of interest.
-
-        Examples
-        ========
-
-        >>> Poly(x**3 + 2*x**2 + 3*x, x).nth(2)
-        2
-        >>> Poly(x**3 + 2*x*y**2 + y**2, x, y).nth(1, 2)
-        2
-        >>> Poly(4*sqrt(x)*y)
-        Poly(4*y*sqrt(x), y, sqrt(x), domain='ZZ')
-        >>> _.nth(1, 1)
-        4
-
-        See Also
-        ========
-
-        coeff_monomial
-        """
-        if hasattr(self.rep, 'nth'):
-            if len(N) != len(self.gens):
-                raise ValueError('exponent of each generator must be specified')
-            result = self.rep.nth(*list(map(int, N)))
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'nth')
-
+        result = self.rep.nth(*N)
         return self.rep.domain.to_expr(result)
 
     def coeff(self, x, n=1, right=False):
@@ -1568,11 +1428,7 @@ class Poly(Expr):
         >>> Poly(-x**2 + 2*x - 3, x).max_norm()
         3
         """
-        if hasattr(self.rep, 'max_norm'):
-            result = self.rep.max_norm()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'max_norm')
-
+        result = self.rep.max_norm()
         return self.rep.domain.to_expr(result)
 
     def l1_norm(self):
@@ -1585,11 +1441,7 @@ class Poly(Expr):
         >>> Poly(-x**2 + 2*x - 3, x).l1_norm()
         6
         """
-        if hasattr(self.rep, 'l1_norm'):
-            result = self.rep.l1_norm()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'l1_norm')
-
+        result = self.rep.l1_norm()
         return self.rep.domain.to_expr(result)
 
     def clear_denoms(self, convert=False):
@@ -1615,11 +1467,7 @@ class Poly(Expr):
         if dom.has_assoc_Ring:
             dom = f.rep.domain.ring
 
-        if hasattr(f.rep, 'clear_denoms'):
-            coeff, result = f.rep.clear_denoms()
-        else:  # pragma: no cover
-            raise OperationNotSupported(f, 'clear_denoms')
-
+        coeff, result = f.rep.clear_denoms()
         coeff, f = dom.to_expr(coeff), f.per(result)
 
         if not convert or not dom.has_assoc_Ring:
@@ -1680,23 +1528,20 @@ class Poly(Expr):
         if args.get('auto', True) and f.rep.domain.is_Ring:
             f = f.to_field()
 
-        if hasattr(f.rep, 'integrate'):
-            if not specs:
-                return f.per(f.rep.integrate(m=1))
+        if not specs:
+            return f.per(f.rep.integrate(m=1))
 
-            rep = f.rep
+        rep = f.rep
 
-            for spec in specs:
-                if type(spec) is tuple:
-                    gen, m = spec
-                else:
-                    gen, m = spec, 1
+        for spec in specs:
+            if type(spec) is tuple:
+                gen, m = spec
+            else:
+                gen, m = spec, 1
 
-                rep = rep.integrate(int(m), f._gen_to_level(gen))
+            rep = rep.integrate(int(m), f._gen_to_level(gen))
 
-            return f.per(rep)
-        else:  # pragma: no cover
-            raise OperationNotSupported(f, 'integrate')
+        return f.per(rep)
 
     def diff(self, *specs, **kwargs):
         """
@@ -1714,23 +1559,20 @@ class Poly(Expr):
         if not kwargs.get('evaluate', True):
             return Derivative(self, *specs, **kwargs)
 
-        if hasattr(self.rep, 'diff'):
-            if not specs:
-                return self.per(self.rep.diff(m=1))
+        if not specs:
+            return self.per(self.rep.diff(m=1))
 
-            rep = self.rep
+        rep = self.rep
 
-            for spec in specs:
-                if type(spec) is tuple:
-                    gen, m = spec
-                else:
-                    gen, m = spec, 1
+        for spec in specs:
+            if type(spec) is tuple:
+                gen, m = spec
+            else:
+                gen, m = spec, 1
 
-                rep = rep.diff(int(m), self._gen_to_level(gen))
+            rep = rep.diff(int(m), self._gen_to_level(gen))
 
-            return self.per(rep)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'diff')
+        return self.per(rep)
 
     _eval_derivative = diff
 
@@ -1786,9 +1628,6 @@ class Poly(Expr):
         else:
             j = f._gen_to_level(x)
 
-        if not hasattr(f.rep, 'eval'):  # pragma: no cover
-            raise OperationNotSupported(f, 'eval')
-
         try:
             result = f.rep.eval(a, j)
         except CoercionFailed:
@@ -1843,11 +1682,7 @@ class Poly(Expr):
         if auto and dom.is_Ring:
             F, G = F.to_field(), G.to_field()
 
-        if hasattr(self.rep, 'half_gcdex'):
-            s, h = F.half_gcdex(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'half_gcdex')
-
+        s, h = F.half_gcdex(G)
         return per(s), per(h)
 
     def gcdex(self, other, auto=True):
@@ -1872,11 +1707,7 @@ class Poly(Expr):
         if auto and dom.is_Ring:
             F, G = F.to_field(), G.to_field()
 
-        if hasattr(self.rep, 'gcdex'):
-            s, t, h = F.gcdex(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'gcdex')
-
+        s, t, h = F.gcdex(G)
         return per(s), per(t), per(h)
 
     def invert(self, other, auto=True):
@@ -1899,11 +1730,7 @@ class Poly(Expr):
         if auto and dom.is_Ring:
             F, G = F.to_field(), G.to_field()
 
-        if hasattr(self.rep, 'invert'):
-            result = F.invert(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'invert')
-
+        result = F.invert(G)
         return per(result)
 
     def subresultants(self, other):
@@ -1920,11 +1747,7 @@ class Poly(Expr):
         """
         _, per, F, G = self._unify(other)
 
-        if hasattr(self.rep, 'subresultants'):
-            result = F.subresultants(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'subresultants')
-
+        result = F.subresultants(G)
         return list(map(per, result))
 
     def resultant(self, other, includePRS=False):
@@ -1948,13 +1771,10 @@ class Poly(Expr):
         """
         _, per, F, G = self._unify(other)
 
-        if hasattr(self.rep, 'resultant'):
-            if includePRS:
-                result, R = F.resultant(G, includePRS=includePRS)
-            else:
-                result = F.resultant(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'resultant')
+        if includePRS:
+            result, R = F.resultant(G, includePRS=includePRS)
+        else:
+            result = F.resultant(G)
 
         if includePRS:
             return per(result, remove=0), list(map(per, R))
@@ -1970,11 +1790,7 @@ class Poly(Expr):
         >>> Poly(x**2 + 2*x + 3, x).discriminant()
         -8
         """
-        if hasattr(self.rep, 'discriminant'):
-            result = self.rep.discriminant()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'discriminant')
-
+        result = self.rep.discriminant()
         return self.per(result, remove=0)
 
     def dispersionset(self, other=None):
@@ -2137,11 +1953,7 @@ class Poly(Expr):
         """
         _, per, F, G = self._unify(other)
 
-        if hasattr(self.rep, 'cofactors'):
-            h, cff, cfg = F.cofactors(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'cofactors')
-
+        h, cff, cfg = F.cofactors(G)
         return per(h), per(cff), per(cfg)
 
     def gcd(self, other):
@@ -2156,11 +1968,7 @@ class Poly(Expr):
         """
         _, per, F, G = self._unify(other)
 
-        if hasattr(self.rep, 'gcd'):
-            result = F.gcd(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'gcd')
-
+        result = F.gcd(G)
         return per(result)
 
     def lcm(self, other):
@@ -2175,11 +1983,7 @@ class Poly(Expr):
         """
         _, per, F, G = self._unify(other)
 
-        if hasattr(self.rep, 'lcm'):
-            result = F.lcm(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'lcm')
-
+        result = F.lcm(G)
         return per(result)
 
     def trunc(self, p):
@@ -2195,11 +1999,7 @@ class Poly(Expr):
         """
         p = self.rep.domain.convert(p)
 
-        if hasattr(self.rep, 'trunc'):
-            result = self.rep.trunc(p)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'trunc')
-
+        result = self.rep.trunc(p)
         return self.per(result)
 
     def monic(self, auto=True):
@@ -2221,11 +2021,7 @@ class Poly(Expr):
         if auto and f.rep.domain.is_Ring:
             f = f.to_field()
 
-        if hasattr(f.rep, 'monic'):
-            result = f.rep.monic()
-        else:  # pragma: no cover
-            raise OperationNotSupported(f, 'monic')
-
+        result = f.rep.monic()
         return f.per(result)
 
     def content(self):
@@ -2238,11 +2034,7 @@ class Poly(Expr):
         >>> Poly(6*x**2 + 8*x + 12, x).content()
         2
         """
-        if hasattr(self.rep, 'content'):
-            result = self.rep.content()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'content')
-
+        result = self.rep.content()
         return self.rep.domain.to_expr(result)
 
     def primitive(self):
@@ -2255,11 +2047,7 @@ class Poly(Expr):
         >>> Poly(2*x**2 + 8*x + 12, x).primitive()
         (2, Poly(x**2 + 4*x + 6, x, domain='ZZ'))
         """
-        if hasattr(self.rep, 'primitive'):
-            cont, result = self.rep.primitive()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'primitive')
-
+        cont, result = self.rep.primitive()
         return self.rep.domain.to_expr(cont), self.per(result)
 
     def compose(self, other):
@@ -2274,11 +2062,7 @@ class Poly(Expr):
         """
         _, per, F, G = self._unify(other)
 
-        if hasattr(self.rep, 'compose'):
-            result = F.compose(G)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'compose')
-
+        result = F.compose(G)
         return per(result)
 
     def decompose(self):
@@ -2291,11 +2075,7 @@ class Poly(Expr):
         >>> Poly(x**4 + 2*x**3 - x - 1, x, domain='ZZ').decompose()
         [Poly(x**2 - x - 1, x, domain='ZZ'), Poly(x**2 + x, x, domain='ZZ')]
         """
-        if hasattr(self.rep, 'decompose'):
-            result = self.rep.decompose()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'decompose')
-
+        result = self.rep.decompose()
         return list(map(self.per, result))
 
     def shift(self, a):
@@ -2308,11 +2088,7 @@ class Poly(Expr):
         >>> Poly(x**2 - 2*x + 1, x).shift(2)
         Poly(x**2 + 2*x + 1, x, domain='ZZ')
         """
-        if hasattr(self.rep, 'shift'):
-            result = self.rep.shift(a)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'shift')
-
+        result = self.rep.shift(a)
         return self.per(result)
 
     def sturm(self, auto=True):
@@ -2333,11 +2109,7 @@ class Poly(Expr):
         if auto and f.rep.domain.is_Ring:
             f = f.to_field()
 
-        if hasattr(f.rep, 'sturm'):
-            result = f.rep.sturm()
-        else:  # pragma: no cover
-            raise OperationNotSupported(f, 'sturm')
-
+        result = f.rep.sturm()
         return list(map(f.per, result))
 
     def sqf_norm(self):
@@ -2360,11 +2132,7 @@ class Poly(Expr):
         >>> r
         Poly(x**4 - 4*x**2 + 16, x, domain='QQ')
         """
-        if hasattr(self.rep, 'sqf_norm'):
-            s, g, r = self.rep.sqf_norm()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'sqf_norm')
-
+        s, g, r = self.rep.sqf_norm()
         return s, self.per(g), self.per(r)
 
     def sqf_part(self):
@@ -2377,11 +2145,7 @@ class Poly(Expr):
         >>> Poly(x**3 - 3*x - 2, x).sqf_part()
         Poly(x**2 - x - 2, x, domain='ZZ')
         """
-        if hasattr(self.rep, 'sqf_part'):
-            result = self.rep.sqf_part()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'sqf_part')
-
+        result = self.rep.sqf_part()
         return self.per(result)
 
     def sqf_list(self):
@@ -2397,11 +2161,7 @@ class Poly(Expr):
         (2, [(Poly(x + 1, x, domain='ZZ'), 2),
              (Poly(x + 2, x, domain='ZZ'), 3)])
         """
-        if hasattr(self.rep, 'sqf_list'):
-            coeff, factors = self.rep.sqf_list()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'sqf_list')
-
+        coeff, factors = self.rep.sqf_list()
         return (self.rep.domain.to_expr(coeff),
                 [(self.per(g), k) for g, k in factors])
 
@@ -2421,11 +2181,7 @@ class Poly(Expr):
          (Poly(x + 1, x, domain='ZZ'), 3),
          (Poly(x, x, domain='ZZ'), 4)]
         """
-        if hasattr(self.rep, 'sqf_list_include'):
-            factors = self.rep.sqf_list_include()
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'sqf_list_include')
-
+        factors = self.rep.sqf_list_include()
         return [(self.per(g), k) for g, k in factors]
 
     def factor_list(self):
@@ -2441,13 +2197,10 @@ class Poly(Expr):
         (2, [(Poly(x + y, x, y, domain='ZZ'), 1),
              (Poly(x**2 + 1, x, y, domain='ZZ'), 2)])
         """
-        if hasattr(self.rep, 'factor_list'):
-            try:
-                coeff, factors = self.rep.factor_list()
-            except DomainError:
-                return S.One, [(self, 1)]
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'factor_list')
+        try:
+            coeff, factors = self.rep.factor_list()
+        except DomainError:
+            return S.One, [(self, 1)]
 
         return (self.rep.domain.to_expr(coeff),
                 [(self.per(g), k) for g, k in factors])
@@ -2483,11 +2236,8 @@ class Poly(Expr):
         if sup is not None:
             sup = QQ.convert(sup)
 
-        if hasattr(self.rep, 'intervals'):
-            result = self.rep.intervals(all=all, eps=eps, inf=inf,
-                                        sup=sup, fast=fast, sqf=sqf)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'intervals')
+        result = self.rep.intervals(all=all, eps=eps, inf=inf,
+                                    sup=sup, fast=fast, sqf=sqf)
 
         if sqf:
             def _real(interval):
@@ -2548,11 +2298,7 @@ class Poly(Expr):
         elif eps is None:
             steps = 1
 
-        if hasattr(self.rep, 'refine_root'):
-            S, T = self.rep.refine_root(s, t, eps=eps, steps=steps, fast=fast)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'refine_root')
-
+        S, T = self.rep.refine_root(s, t, eps=eps, steps=steps, fast=fast)
         return QQ.to_expr(S), QQ.to_expr(T)
 
     def count_roots(self, inf=None, sup=None):
@@ -2596,10 +2342,7 @@ class Poly(Expr):
                     sup, sup_real = tuple(map(QQ.convert, (re, im))), False
 
         if inf_real and sup_real:
-            if hasattr(self.rep, 'count_real_roots'):
-                count = self.rep.count_real_roots(inf=inf, sup=sup)
-            else:  # pragma: no cover
-                raise OperationNotSupported(self, 'count_real_roots')
+            count = self.rep.count_real_roots(inf=inf, sup=sup)
         else:
             if inf_real and inf is not None:
                 inf = (inf, QQ.zero)
@@ -2607,10 +2350,7 @@ class Poly(Expr):
             if sup_real and sup is not None:
                 sup = (sup, QQ.zero)
 
-            if hasattr(self.rep, 'count_complex_roots'):
-                count = self.rep.count_complex_roots(inf=inf, sup=sup)
-            else:  # pragma: no cover
-                raise OperationNotSupported(self, 'count_complex_roots')
+            count = self.rep.count_complex_roots(inf=inf, sup=sup)
 
         return Integer(count)
 
@@ -2824,10 +2564,7 @@ class Poly(Expr):
         """
         dom, per, F, G = self._unify(other)
 
-        if hasattr(F, 'cancel'):
-            result = F.cancel(G, include=include)
-        else:  # pragma: no cover
-            raise OperationNotSupported(self, 'cancel')
+        result = F.cancel(G, include=include)
 
         if not include:
             if dom.has_assoc_Ring:
@@ -4686,7 +4423,7 @@ def _symbolic_factor(expr, opt, method):
         return expr.func(*[_symbolic_factor(arg, opt, method) for arg in expr.args])
     elif hasattr(expr, '__iter__'):
         return expr.__class__([_symbolic_factor(arg, opt, method) for arg in expr])
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError
 
 

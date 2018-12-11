@@ -2420,7 +2420,7 @@ class TensExpr(Basic):
                 for i in range(rows):
                     mat_list[i] = self[i]
             return Matrix(mat_list)
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError(
                 "missing multidimensional reduction to matrix.")
 

@@ -101,7 +101,8 @@ def gosper_term(f, n):
     elif not N:
         D = {K - N + 1, Integer(0)}
     else:
-        D = {K - N + 1, (B.nth(N - 1) - A.nth(N - 1))/A.LC()}
+        D = {K - N + 1, (B.coeff_monomial(n**(N - 1)) -
+                         A.coeff_monomial(n**(N - 1)))/A.LC()}
 
     for d in set(D):
         if not d.is_Integer or d < 0:

@@ -692,7 +692,7 @@ def _helper_simplify(eq, hint, match, simplify=True, init=None, **kwargs):
                 if solved_constants:
                     rv1.append(s.subs(solved_constants))
             rv = rv1
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
     return rv
 
@@ -764,7 +764,7 @@ def solve_init(sols, funcs, constants, init):
                         diff_sols.append(Eq(sol.lhs.diff(*variables), sol.rhs.diff(*variables)))
             diff_variables.add(variables)
             S = diff_sols
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError("Unrecognized initial condition")
 
         for sol in S:
@@ -5323,7 +5323,7 @@ def ode_lie_group(eq, func, order, match):
                     elif denom:  # (ds/dr) is zero which means s is constant
                         return Eq(f(x), solve(scoord - C1, y)[0][y])
 
-                    else:  # pragma: no cover
+                    else:
                         raise NotImplementedError
 
     # If nothing works, return solution as it is, without solving for y
@@ -5917,7 +5917,7 @@ def lie_heuristic_function_sum(match, comp=False):
                     if not check:
                         fx = fx.subs({k: 1})
                         gy = (gy/k)
-                    else:  # pragma: no cover
+                    else:
                         raise NotImplementedError
                     if odefac == hinv:  # Inverse ODE
                         fx = fx.subs({x: y})
@@ -6504,7 +6504,7 @@ def _linear_2eq_order1_type5(x, y, t, r, eq):
         sol = dsolve(eq)
         sol1 = exp(Integral(r['a'], t))*sol[0].rhs.subs({T: Integral(r['b'], t)})
         sol2 = exp(Integral(r['a'], t))*sol[1].rhs.subs({T: Integral(r['b'], t)})
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError
     return [Eq(x(t), sol1), Eq(y(t), sol2)]
 

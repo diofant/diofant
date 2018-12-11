@@ -140,7 +140,7 @@ def minimize_univariate(f, x, dom):
     elif dom.is_FiniteSet:
         for p in dom.args:
             extr[p] = f.subs({x: p})
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError
 
     if extr:

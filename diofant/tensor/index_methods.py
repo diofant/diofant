@@ -235,7 +235,7 @@ def get_indices(expr):
                 ind0 |= ind
             return ind0, sym
 
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError("No specialized handling of "
                                       "type %s" % type(expr))
 
@@ -400,6 +400,6 @@ def get_contraction_structure(expr):
             d[expr] = deeplist
         return d
 
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError("No specialized handling of "
                                   "type %s" % type(expr))

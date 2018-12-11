@@ -850,7 +850,7 @@ class MatrixBase(DefaultPrinting):
         elif self.rows >= self.cols:
             L = (self.T*self)._cholesky()
             rhs = self.T*rhs
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError("Under-determined System.")
         Y = L._lower_triangular_solve(rhs)
         return (L.T)._upper_triangular_solve(Y)
@@ -916,7 +916,7 @@ class MatrixBase(DefaultPrinting):
         elif self.rows >= self.cols:
             L, D = (self.T*self).LDLdecomposition()
             rhs = self.T*rhs
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError("Under-determined System.")
         Y = L._lower_triangular_solve(rhs)
         Z = D._diagonal_solve(Y)
@@ -1802,7 +1802,7 @@ class MatrixBase(DefaultPrinting):
                 # Reshape as vector and send back to norm function
                 return self.vec().norm(ord=2)
 
-            else:  # pragma: no cover
+            else:
                 raise NotImplementedError("Matrix Norms under development")
 
     def normalized(self):

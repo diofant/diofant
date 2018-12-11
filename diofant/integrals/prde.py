@@ -183,7 +183,7 @@ def prde_linear_constraints(a, b, G, DE):
 
     if not all(ri.is_zero for _, ri in Q):
         N = max(ri.degree(DE.t) for _, ri in Q)
-        M = Matrix(N + 1, m, lambda i, j: Q[j][1].nth(i))
+        M = Matrix(N + 1, m, lambda i, j: Q[j][1].coeff_monomial((i,)))
     else:
         M = Matrix()  # No constraints, return the empty matrix.
 
@@ -302,7 +302,7 @@ def prde_no_cancel_b_large(b, Q, n, DE):
 
     for N in range(n, -1, -1):  # [n, ..., 0]
         for i in range(m):
-            si = Q[i].nth(N + db)/b.LC()
+            si = Q[i].coeff_monomial((N + db,))/b.LC()
             sitn = Poly(si*DE.t**N, DE.t)
             H[i] = H[i] + sitn
             Q[i] = Q[i] - derivation(sitn, DE) - b*sitn
@@ -312,7 +312,7 @@ def prde_no_cancel_b_large(b, Q, n, DE):
         M = zeros(0, 2)
     else:
         dc = max(qi.degree(DE.t) for qi in Q)
-        M = Matrix(dc + 1, m, lambda i, j: Q[j].nth(i))
+        M = Matrix(dc + 1, m, lambda i, j: Q[j].coeff_monomial((i,)))
     A, u = constant_system(M, zeros(dc + 1, 1), DE)
     c = eye(m)
     A = A.row_join(zeros(A.rows, m)).col_join(c.row_join(-c))
@@ -336,14 +336,14 @@ def prde_no_cancel_b_small(b, Q, n, DE):
 
     for N in range(n, 0, -1):  # [n, ..., 1]
         for i in range(m):
-            si = Q[i].nth(N + DE.d.degree(DE.t) - 1)/(N*DE.d.LC())
+            si = Q[i].coeff_monomial((N + DE.d.degree(DE.t) - 1,))/(N*DE.d.LC())
             sitn = Poly(si*DE.t**N, DE.t)
             H[i] = H[i] + sitn
             Q[i] = Q[i] - derivation(sitn, DE) - b*sitn
 
     if b.degree(DE.t) > 0:
         for i in range(m):
-            si = Poly(Q[i].nth(b.degree(DE.t))/b.LC(), DE.t)
+            si = Poly(Q[i].coeff_monomial((b.degree(DE.t),))/b.LC(), DE.t)
             H[i] = H[i] + si
             Q[i] = Q[i] - derivation(si, DE) - b*si
         if all(qi.is_zero for qi in Q):
@@ -351,7 +351,7 @@ def prde_no_cancel_b_small(b, Q, n, DE):
             M = Matrix()
         else:
             dc = max(qi.degree(DE.t) for qi in Q)
-            M = Matrix(dc + 1, m, lambda i, j: Q[j].nth(i))
+            M = Matrix(dc + 1, m, lambda i, j: Q[j].coeff_monomial((i,)))
         A, u = constant_system(M, zeros(dc + 1, 1), DE)
         c = eye(m)
         A = A.row_join(zeros(A.rows, m)).col_join(c.row_join(-c))
@@ -469,7 +469,7 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
     C = max(p.degree(DE.t), q.degree(DE.t))
 
     if q.degree(DE.t) > B:
-        eqs = [p.nth(i) - c1*q.nth(i) for i in range(B + 1, C + 1)]
+        eqs = [p.coeff_monomial((i,)) - c1*q.coeff_monomial((i,)) for i in range(B + 1, C + 1)]
         s = solve(eqs, c1)
         if not s or not s[0][c1].is_Rational:
             # deg(q) > B, no solution for c.
@@ -510,7 +510,7 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
     u1, r1 = (fa*l.quo(fd)).div(z)  # (l*f).div(z)
     u2, r2 = (wa*l.quo(wd)).div(z)  # (l*w).div(z)
 
-    eqs = [r1.nth(i) - c1*r2.nth(i) for i in range(z.degree(DE.t))]
+    eqs = [r1.coeff_monomial((i,)) - c1*r2.coeff_monomial((i,)) for i in range(z.degree(DE.t))]
     s = solve(eqs, c1)
     if not s or not s[0][c1].is_Rational:
         # deg(q) <= B, no solution for c.

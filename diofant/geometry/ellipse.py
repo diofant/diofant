@@ -744,7 +744,7 @@ class Ellipse(GeometrySet):
                 inter = self._do_line_intersection(seg)
                 c += len([True for point in inter if point in seg])
             return c == 1
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError("Unknown argument type")
 
     def normal_lines(self, p, prec=None):

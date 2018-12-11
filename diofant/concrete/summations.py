@@ -202,7 +202,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
             if limit[0] not in df.free_symbols:
                 rv = rv.doit()
             return rv
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError('Lower and upper bound expected.')
 
     def _eval_simplify(self, ratio, measure):

@@ -343,7 +343,7 @@ class And(LatticeOp, BooleanFunction):
         from ..sets import Intersection
         if len(self.free_symbols) == 1:
             return Intersection(*[arg.as_set() for arg in self.args])
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError("Sorry, And.as_set has not yet been"
                                       " implemented for multivariate"
                                       " expressions")
@@ -409,7 +409,7 @@ class Or(LatticeOp, BooleanFunction):
         from ..sets import Union
         if len(self.free_symbols) == 1:
             return Union(*[arg.as_set() for arg in self.args])
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError("Sorry, Or.as_set has not yet been"
                                       " implemented for multivariate"
                                       " expressions")
@@ -493,7 +493,7 @@ class Not(BooleanFunction):
         """
         if len(self.free_symbols) == 1:
             return self.args[0].as_set().complement(S.Reals)
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError("Sorry, Not.as_set has not yet been"
                                       " implemented for mutivariate"
                                       " expressions")

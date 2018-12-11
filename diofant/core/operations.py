@@ -235,7 +235,7 @@ class AssocOp(Expr):
                         i += 0
                         continue
 
-                else:  # pragma: no cover
+                else:
                     raise NotImplementedError
 
                 break  # if we didn't continue, there is nothing more to do

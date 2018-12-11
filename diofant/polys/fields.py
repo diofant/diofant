@@ -117,14 +117,14 @@ class FractionField(Field, CompositeDomain):
                 numer = ring.ground_new(element.numerator)
                 denom = ring.ground_new(element.denominator)
                 return self.raw_new(numer, denom)
-            else:  # pragma: no cover
+            else:
                 raise NotImplementedError
 
     def field_new(self, element):
         if isinstance(element, FracElement):
             if self == element.field:
                 return element
-            else:  # pragma: no cover
+            else:
                 raise NotImplementedError("conversion")
         elif isinstance(element, PolyElement):
             denom, numer = element.clear_denoms()
@@ -134,7 +134,7 @@ class FractionField(Field, CompositeDomain):
         elif isinstance(element, tuple) and len(element) == 2:
             numer, denom = list(map(self.ring.ring_new, element))
             return self.new(numer, denom)
-        elif isinstance(element, str):  # pragma: no cover
+        elif isinstance(element, str):
             raise NotImplementedError("parsing")
         elif isinstance(element, Expr):
             return self.convert(element)

@@ -95,13 +95,13 @@ class SATSolver:
             self.heur_lit_unset = self._vsids_lit_unset
             self.heur_clause_added = self._vsids_clause_added
 
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
         if 'none' == clause_learning:
             self.add_learned_clause = lambda x: None
             self.compute_conflict = lambda: None
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
         # Create the base level

@@ -22,7 +22,7 @@ def apply_on_element(f, args, kwargs, n):
     elif isinstance(n, str):
         structure = kwargs[n]
         is_arg = False
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError
 
     # Define reduced function that is only dependend of the specified argument.
@@ -122,7 +122,7 @@ class vectorize:
                     except KeyError:
                         continue
                     is_arg = False
-                else:  # pragma: no cover
+                else:
                     raise NotImplementedError
 
                 if hasattr(entry, "__iter__"):

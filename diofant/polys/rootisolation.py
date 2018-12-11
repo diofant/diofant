@@ -5,9 +5,9 @@ from .densearith import dmp_add, dmp_mul_ground, dmp_neg, dmp_rem, dup_rshift
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dmp_to_tuple,
                          dup_reverse)
-from .densetools import (dmp_clear_denoms, dmp_compose, dmp_eval_in, dup_diff,
-                         dup_mirror, dup_real_imag, dup_scale, dup_shift,
-                         dup_sign_variations, dup_transform)
+from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
+                         dmp_eval_in, dup_mirror, dup_real_imag, dup_scale,
+                         dup_shift, dup_sign_variations, dup_transform)
 from .euclidtools import dmp_gcd, dmp_resultant
 from .factortools import dmp_factor_list
 from .polyerrors import DomainError, RefinementFailed
@@ -38,7 +38,7 @@ def dup_sturm(f, K):
 
     f = dmp_sqf_part(f, 0, K)
 
-    sturm = [f, dup_diff(f, 1, K)]
+    sturm = [f, dmp_diff_in(f, 1, 0, 0, K)]
 
     while sturm[-1]:
         s = dmp_rem(sturm[-2], sturm[-1], 0, K)
@@ -1466,7 +1466,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
                                                              inf=(u, 0), sup=(s, -v),
                                                              blackbox=True)]
             roots = sorted(roots, key=lambda r: (r.ax, r.ay))
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
         return roots if blackbox else [r.as_tuple() for r in roots]
