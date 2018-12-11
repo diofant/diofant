@@ -123,7 +123,6 @@ def test_DMP_arithmetics():
 
     h = DMP([[25]], ZZ)
 
-    assert f.sqr() == h
     assert f**2 == h
 
     pytest.raises(TypeError, lambda: f**'x')

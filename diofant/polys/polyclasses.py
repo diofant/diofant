@@ -6,7 +6,7 @@ from .densearith import (dmp_abs, dmp_add, dmp_div, dmp_exquo,
                          dmp_exquo_ground, dmp_l1_norm, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_neg, dmp_pdiv, dmp_pexquo,
                          dmp_pow, dmp_pquo, dmp_prem, dmp_quo, dmp_quo_ground,
-                         dmp_rem, dmp_sqr, dmp_sub)
+                         dmp_rem, dmp_sub)
 from .densebasic import (dmp_convert, dmp_deflate, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC,
@@ -268,10 +268,6 @@ class DMP(CantSympify):
         """Exact quotient of ``self`` by a an element of the ground domain. """
         return self.per(dmp_exquo_ground(self.rep, self.domain.convert(c),
                                          self.lev, self.domain))
-
-    def sqr(self):
-        """Square a multivariate polynomial ``self``. """
-        return self.per(dmp_sqr(self.rep, self.lev, self.domain))
 
     def pdiv(self, other):
         """Polynomial pseudo-division of ``self`` and ``other``. """

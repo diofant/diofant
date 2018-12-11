@@ -963,22 +963,6 @@ class Poly(Expr):
         result = self.rep.exquo_ground(coeff)
         return self.per(result)
 
-    def sqr(self):
-        """
-        Square a polynomial ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x - 2, x).sqr()
-        Poly(x**2 - 4*x + 4, x, domain='ZZ')
-
-        >>> Poly(x - 2, x)**2
-        Poly(x**2 - 4*x + 4, x, domain='ZZ')
-        """
-        result = self.rep.sqr()
-        return self.per(result)
-
     def pdiv(self, other):
         """
         Polynomial pseudo-division of ``self`` by ``other``.
