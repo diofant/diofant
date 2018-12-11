@@ -297,6 +297,7 @@ def test_Gaussian_postprocess():
 def test_Extension_preprocess():
     assert Extension.preprocess(True) is True
     assert Extension.preprocess(1) is True
+    assert Extension.preprocess(False) is False
 
     assert Extension.preprocess([]) is None
 
@@ -304,9 +305,6 @@ def test_Extension_preprocess():
     assert Extension.preprocess([sqrt(2)]) == {sqrt(2)}
 
     assert Extension.preprocess([sqrt(2), I]) == {sqrt(2), I}
-
-    pytest.raises(OptionError, lambda: Extension.preprocess(False))
-    pytest.raises(OptionError, lambda: Extension.preprocess(0))
 
 
 def test_Extension_postprocess():

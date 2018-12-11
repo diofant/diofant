@@ -1,6 +1,7 @@
 """Tests for tools for constructing domains for expressions. """
 
-from diofant import E, Float, GoldenRatio, Integer, Rational, sin, sqrt
+from diofant import (E, Float, GoldenRatio, I, Integer, Poly, Rational, sin,
+                     sqrt)
 from diofant.abc import x, y
 from diofant.domains import EX, QQ, RR, ZZ
 from diofant.polys.constructor import construct_domain
@@ -19,23 +20,23 @@ def test_construct_domain():
     assert construct_domain([Rational(1, 2), Integer(2)]) == (QQ, [QQ(1, 2), QQ(2)])
     assert construct_domain([3.14, 1, Rational(1, 2)]) == (RR, [RR(3.14), RR(1.0), RR(0.5)])
 
-    assert construct_domain([3.14, sqrt(2)], extension=None) == (EX, [EX(3.14), EX(sqrt(2))])
-    assert construct_domain([3.14, sqrt(2)], extension=True) == (EX, [EX(3.14), EX(sqrt(2))])
-    assert construct_domain([sqrt(2), 3.14], extension=True) == (EX, [EX(sqrt(2)), EX(3.14)])
+    assert construct_domain([3.14, sqrt(2)], extension=False) == (EX, [EX(3.14), EX(sqrt(2))])
+    assert construct_domain([3.14, sqrt(2)]) == (EX, [EX(3.14), EX(sqrt(2))])
+    assert construct_domain([sqrt(2), 3.14]) == (EX, [EX(sqrt(2)), EX(3.14)])
 
-    assert construct_domain([1, sqrt(2)], extension=None) == (EX, [EX(1), EX(sqrt(2))])
+    assert construct_domain([1, sqrt(2)], extension=False) == (EX, [EX(1), EX(sqrt(2))])
 
     assert construct_domain([x, sqrt(x)]) == (EX, [EX(x), EX(sqrt(x))])
     assert construct_domain([x, sqrt(x), sqrt(y)]) == (EX, [EX(x), EX(sqrt(x)), EX(sqrt(y))])
 
     alg = QQ.algebraic_field(sqrt(2))
 
-    assert (construct_domain([7, Rational(1, 2), sqrt(2)], extension=True) ==
+    assert (construct_domain([7, Rational(1, 2), sqrt(2)]) ==
             (alg, [alg(7), alg(Rational(1, 2)), alg(sqrt(2))]))
 
     alg = QQ.algebraic_field(sqrt(2) + sqrt(3))
 
-    assert (construct_domain([7, sqrt(2), sqrt(3)], extension=True) ==
+    assert (construct_domain([7, sqrt(2), sqrt(3)]) ==
             (alg, [alg(7), alg(sqrt(2)), alg(sqrt(3))]))
 
     dom = ZZ.poly_ring(x)
@@ -111,3 +112,8 @@ def test_sympyissue_11538():
     assert construct_domain(E)[0] == ZZ.poly_ring(E)
     assert (construct_domain(x**2 + 2*x + E) == (ZZ.poly_ring(x, E), ZZ.poly_ring(x, E)(x**2 + 2*x + E)))
     assert (construct_domain(x + y + GoldenRatio) == (EX, EX(x + y + GoldenRatio)))
+
+
+def test_sympyissue_5428_14337():
+    assert Poly(x**2 + I, x).domain == QQ.algebraic_field(I)
+    assert Poly(x**2 + sqrt(2), x).domain == QQ.algebraic_field(sqrt(2))

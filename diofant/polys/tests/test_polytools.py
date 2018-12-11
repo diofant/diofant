@@ -3290,7 +3290,9 @@ def test_poly():
     assert poly(x + y, y, x) == Poly(x + y, y, x)
 
     # issue sympy/sympy#12400
-    assert poly(1/(1 + sqrt(2)), x) == Poly(1/(1 + sqrt(2)), x, domain=EX)
+    assert (poly(1/(1 + sqrt(2)), x) ==
+            Poly(1/(1 + sqrt(2)), x,
+                 domain=QQ.algebraic_field(1/(1 + sqrt(2)))))
 
 
 def test_keep_coeff():

@@ -890,7 +890,7 @@ def _solve_system(exprs, symbols, **flags):
         g = d - i
         g = g.as_numer_denom()[0]
 
-        poly = g.as_poly(*symbols, extension=True)
+        poly = g.as_poly(*symbols)
 
         if poly is not None:
             polys.append(poly)

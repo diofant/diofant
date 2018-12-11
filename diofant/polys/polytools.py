@@ -608,7 +608,7 @@ class Poly(Expr):
         result = self.rep.to_exact()
         return self.per(result)
 
-    def retract(self, field=None, extension=None):
+    def retract(self, field=None):
         """
         Recalculate the ground domain of a polynomial.
 
@@ -2380,7 +2380,7 @@ class Poly(Expr):
         from .rootoftools import RootOf
         return RootOf(self, index, radicals=radicals)
 
-    def real_roots(self, multiple=True, radicals=True, extension=None):
+    def real_roots(self, multiple=True, radicals=True):
         """
         Return a list of real roots with multiplicities.
 
@@ -2393,14 +2393,14 @@ class Poly(Expr):
         [RootOf(x**3 + x + 1, 0)]
         """
         from .rootoftools import RootOf
-        reals = RootOf.real_roots(self, radicals=radicals, extension=extension)
+        reals = RootOf.real_roots(self, radicals=radicals)
 
         if multiple:
             return reals
         else:
             return group(reals, multiple=False)
 
-    def all_roots(self, multiple=True, radicals=True, extension=None):
+    def all_roots(self, multiple=True, radicals=True):
         """
         Return a list of real and complex roots with multiplicities.
 
@@ -2414,7 +2414,7 @@ class Poly(Expr):
          RootOf(x**3 + x + 1, 2)]
         """
         from .rootoftools import RootOf
-        roots = RootOf.all_roots(self, radicals=radicals, extension=extension)
+        roots = RootOf.all_roots(self, radicals=radicals)
 
         if multiple:
             return roots

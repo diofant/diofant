@@ -16,6 +16,7 @@ Major changes
 
 * Stable enumeration of polynomial roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`633` and :pull:`658`.
 * Support root isolation for polynomials with algebraic coefficients, see :pull:`673` and :pull:`630`.
+* Polynomials with algebraic coefficients will use algebraic number domains per default, see :pull:`478`.
 
 Compatibility breaks
 ====================
@@ -150,3 +151,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`15561` SymPy's Number.__divmod__ doesn't agree with the builtin divmod
 * :sympyissue:`15574` dsolve fails for a system of independent equations
 * :sympyissue:`12695` [matrices] remove dead files densearith.py densetools.py and densesolve.py
+* :sympyissue:`5428` Should Poly use an algebraic domain by default?
+* :sympyissue:`14337` Poly constructor uses domain EX when it's not necessary
