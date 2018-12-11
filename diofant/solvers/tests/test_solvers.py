@@ -335,8 +335,8 @@ def test_solve_nonlinear():
     assert solve(x**2 - y**2, x, y) == [{x: -y}, {x: y}]
     assert solve(x**2 - y**2) == [{x: -y}, {x: y}]
     assert solve(x**2 - y**2/exp(x), x, y) == [{x: 2*LambertW(y/2)}]
-    assert solve(x**2 - y**2/exp(x), y, x) == [{y: -x*sqrt(exp(x))},
-                                               {y: x*sqrt(exp(x))}]
+    assert solve(x**2 - y**2/exp(x), y, x) == [{y: -sqrt(E**x*x**2)},
+                                               {y: sqrt(E**x*x**2)}]
 
 
 def test_sympyissue_8666():
@@ -501,11 +501,11 @@ def test_solve_transcendental():
     eq1 = Eq(expr1, v)
     assert solve(eq, check=False) == [{x: _**15}
                                       for _ in Poly(-x**5 + x**3 + v,
-                                                    x).all_roots()]
+                                                    x, extension=False).all_roots()]
     for s, v in zip((x.subs(_) for _ in solve(eq1, check=False)),
                     (_**15 for _ in Poly((-1)**Rational(2, 3)*x**5 -
                                          (-1)**Rational(2, 5)*x**3 -
-                                         v, x).all_roots())):
+                                         v, x, extension=False).all_roots())):
         assert simplify(s - v) == 0
 
 
@@ -1284,10 +1284,10 @@ def test_other_lambert():
 def test_rewrite_trig():
     assert solve(sin(x) + tan(x)) == [{x: 0}, {x: -pi}, {x: pi}, {x: 2*pi}]
     assert (solve(sin(x) + sec(x)) ==
-            [{x: -2*atan(Rational(-1, 2) + sqrt(2)*sqrt(1 - sqrt(3)*I)/2 + sqrt(3)*I/2)},
-             {x: 2*atan(Rational(1, 2) - sqrt(2)*sqrt(1 + sqrt(3)*I)/2 + sqrt(3)*I/2)},
-             {x: 2*atan(Rational(1, 2) + sqrt(2)*sqrt(1 + sqrt(3)*I)/2 + sqrt(3)*I/2)},
-             {x: 2*atan(Rational(1, 2) - sqrt(3)*I/2 + sqrt(2)*sqrt(1 - sqrt(3)*I)/2)}])
+            [{x: -2*atan(Rational(-1, 2) + sqrt(4 + (1 - sqrt(3)*I)**2)/2 + sqrt(3)*I/2)},
+             {x: 2*atan(Rational(1, 2) - sqrt(3)*I/2 + sqrt(4 + (1 - sqrt(3)*I)**2)/2)},
+             {x: 2*atan(Rational(1, 2) - sqrt(4 + (1 + sqrt(3)*I)**2)/2 + sqrt(3)*I/2)},
+             {x: 2*atan(Rational(1, 2) + sqrt(4 + (1 + sqrt(3)*I)**2)/2 + sqrt(3)*I/2)}])
     assert solve(sinh(x) + tanh(x)) == [{x: 0}, {x: I*pi}]
 
     # issue sympy/sympy#6157

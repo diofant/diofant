@@ -2836,9 +2836,7 @@ def test_sympyissue_15407():
 
 def test_sympyissue_15311():
     eqn = sqrt(2) * f(x).diff(x, 3) + f(x).diff(x)
-    assert dsolve(eqn) == Eq(f(x), exp(x*RootOf(sqrt(2)*x**3 + x, 0))*C1 +
-                             exp(x*RootOf(sqrt(2)*x**3 + x, 1))*C2 +
-                             exp(x*RootOf(sqrt(2)*x**3 + x, 2))*C3)
+    assert dsolve(eqn) == Eq(f(x), C1 + C2*sin(root(8, 4)*x/2) + C3*cos(root(8, 4)*x/2))
 
 
 def test_sympyissue_15474():
