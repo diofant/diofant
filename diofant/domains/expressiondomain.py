@@ -160,9 +160,6 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
     def _from_FractionField(self, a, K0):
         return self(K0.to_expr(a))
 
-    def _from_ExpressionDomain(self, a, K0):
-        return a
-
     def _from_AlgebraicField(self, a, K0):
         return self(K0.to_expr(a))
 
