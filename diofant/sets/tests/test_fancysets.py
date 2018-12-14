@@ -113,9 +113,6 @@ def test_image_is_ImageSet():
 
 @pytest.mark.xfail
 def test_halfcircle():
-    # This test sometimes works and sometimes doesn't.
-    # It may be an issue with solve? Maybe with using Lambdas/dummys?
-    # I believe the code within fancysets is correct
     r, th = symbols('r, theta', extended_real=True)
     L = Lambda((r, th), (r*cos(th), r*sin(th)))
     halfcircle = ImageSet(L, Interval(0, 1)*Interval(0, pi))
@@ -283,12 +280,11 @@ def test_imageset_intersection_real():
     assert s.intersection(S.Reals) == imageset(Lambda(n, 2*n*pi - pi/4), S.Integers)
 
 
-@pytest.mark.xfail
-def test_infinitely_indexed_failed_diophantine():
+def test_infinitely_indexed_diophantine():
     assert (imageset(Lambda(m, 2*pi*m),
                      S.Integers).intersection(imageset(Lambda(n, 3*pi*n),
                                                        S.Integers)) ==
-            ImageSet(Lambda(t, -6*pi*t), S.Integers))
+            ImageSet(Lambda(t, 6*pi*t), S.Integers))
 
 
 @pytest.mark.xfail

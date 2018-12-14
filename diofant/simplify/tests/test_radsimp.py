@@ -4,7 +4,7 @@ from diofant import (Add, Derivative, Function, I, Integer, Mul, O, Polygon,
                      Rational, RegularPolygon, Symbol, Wild, collect,
                      collect_const, cos, denom, diff, exp, factor, fraction,
                      log, nan, radsimp, rcollect, root, sin, sqrt, symbols)
-from diofant.abc import a, b, c, d, f, t, x, y, z
+from diofant.abc import a, b, c, d, t, x, y, z
 from diofant.core.mul import _unevaluated_Mul as UMul
 from diofant.simplify.radsimp import collect_sqrt, fraction_expand
 
@@ -249,6 +249,11 @@ def test_collect_func():
         x**3: 1
     }
 
+    assert collect(f, x, factor,
+                   evaluate=False) == {1: (a + 1)**3, x: 3*(a + 1)**2,
+                                       x**2: Mul(3, a + 1, evaluate=False),
+                                       x**3: 1}
+
 
 def test_collect_order():
     assert collect(t + t*x + t*x**2 + O(x**3), t) == t*(1 + x + x**2 + O(x**3))
@@ -274,13 +279,6 @@ def test_rcollect():
     assert rcollect((x**2*y + x*y + x + y)/(x + y), y) == \
         (x + y*(1 + x + x**2))/(x + y)
     assert rcollect(sqrt(-((x + 1)*(y + 1))), z) == sqrt(-((x + 1)*(y + 1)))
-
-
-@pytest.mark.xfail
-def test_collect_func_xfail():
-    # XXX: this test will pass when automatic constant distribution is removed (issue sympy/sympy#4596)
-    assert collect(f, x, factor, evaluate=False) == {1: (a + 1)**3,
-                                                     x: 3*(a + 1)**2, x**2: 3*(a + 1), x**3: 1}
 
 
 @pytest.mark.xfail

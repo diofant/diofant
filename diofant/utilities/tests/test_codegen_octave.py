@@ -5,7 +5,7 @@ import pytest
 import diofant
 from diofant import Equality, Piecewise, cos, sin, tan
 from diofant.abc import A, B, C, a, t, x, y, z
-from diofant.core import Catalan, Eq, EulerGamma, Function, pi, symbols, zoo
+from diofant.core import Catalan, Eq, Function, pi, symbols, zoo
 from diofant.matrices import Matrix, MatrixSymbol
 from diofant.tensor import Idx, IndexedBase
 from diofant.utilities.codegen import OctaveCodeGen, codegen, make_routine
@@ -74,24 +74,6 @@ def test_m_numbersymbol():
     expected = (
         "function out1 = test()\n"
         "  out1 = pi^0.915965594177219;\n"
-        "end\n"
-    )
-    assert source == expected
-
-
-@pytest.mark.xfail
-def test_m_numbersymbol_no_inline():
-    # FIXME: how to pass inline=False to the OctaveCodePrinter?
-    name_expr = ("test", [pi**Catalan, EulerGamma])
-    result, = codegen(name_expr, "Octave", header=False,
-                      empty=False, inline=False)
-    source = result[1]
-    expected = (
-        "function [out1, out2] = test()\n"
-        "  Catalan = 0.915965594177219;  % constant\n"
-        "  EulerGamma = 0.5772156649015329;  % constant\n"
-        "  out1 = pi^Catalan;\n"
-        "  out2 = EulerGamma;\n"
         "end\n"
     )
     assert source == expected
@@ -210,30 +192,6 @@ def test_m_piecewise_():
         "  out1 = ((x < -1).*(0) + (~(x < -1)).*( ...\n"
         "  (x <= 1).*(x.^2) + (~(x <= 1)).*( ...\n"
         "  (x > 1).*(-x + 2) + (~(x > 1)).*(1))));\n"
-        "end\n"
-    )
-    assert source == expected
-
-
-@pytest.mark.xfail
-def test_m_piecewise_no_inline():
-    # FIXME: how to pass inline=False to the OctaveCodePrinter?
-    pw = Piecewise((0, x < -1), (x**2, x <= 1), (-x+2, x > 1), (1, True))
-    name_expr = ("pwtest", pw)
-    result, = codegen(name_expr, "Octave", header=False, empty=False,
-                      inline=False)
-    source = result[1]
-    expected = (
-        "function out1 = pwtest(x)\n"
-        "  if (x < -1)\n"
-        "    out1 = 0;\n"
-        "  elseif (x <= 1)\n"
-        "    out1 = x.^2;\n"
-        "  elseif (x > 1)\n"
-        "    out1 = -x + 2;\n"
-        "  else\n"
-        "    out1 = 1;\n"
-        "  end\n"
         "end\n"
     )
     assert source == expected

@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import (Abs, Derivative, Eq, Function, Ge, Gt, I, Integral, Le,
-                     Lt, Matrix, Ne, Rational, Symbol, cbrt, conjugate, exp,
-                     limit, log, oo, pi, root, sin, sqrt, symbols)
+from diofant import (Abs, Derivative, Eq, Function, Ge, Gt, Integral, Le, Lt,
+                     Matrix, Ne, Rational, Symbol, cbrt, exp, limit, log, oo,
+                     pi, root, sin, sqrt, symbols)
 from diofant.printing.python import python
 
 
@@ -123,13 +123,6 @@ def test_python_functions():
 
     # Function powers
     assert python(sin(x)**2) == "x = Symbol('x')\ne = sin(x)**2"
-
-
-@pytest.mark.xfail
-def test_python_functions_conjugates():
-    a, b = map(Symbol, 'ab')
-    assert python( conjugate(a + b*I) ) == '_     _\na - I*b'
-    assert python( conjugate(exp(a + b*I)) ) == ' _     _\n a - I*b\ne       '
 
 
 def test_python_derivatives():

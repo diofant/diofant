@@ -169,17 +169,6 @@ def test_vector_entries_hadamard():
     assert mcode(A.T) == "[1; sin(2./x); 3*pi./(5*x)]"
 
 
-@pytest.mark.xfail
-def test_Matrices_entries_not_hadamard():
-    # For Matrix with col >= 2, row >= 2, they need to be scalars
-    # FIXME: is it worth worrying about this?  Its not wrong, just
-    # leave it user's responsibility to put scalar data for x.
-    A = Matrix([[1, sin(2/x), 3*pi/x/5], [1, 2, x*y]])
-    expected = ("[1 sin(2/x) 3*pi/(5*x);\n"
-                "1        2        x*y]")  # <- we give x.*y
-    assert mcode(A) == expected
-
-
 def test_MatrixSymbol():
     n = Symbol('n', integer=True)
     A = MatrixSymbol('A', n, n)

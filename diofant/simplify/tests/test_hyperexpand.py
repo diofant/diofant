@@ -81,13 +81,13 @@ def test_roach():
     assert can_do([-Rational(3, 2), -Rational(1, 2)], [-Rational(5, 2), 1])
     assert can_do([-Rational(3, 2), ], [-Rational(1, 2), Rational(1, 2)])  # shine-integral
     assert can_do([-Rational(3, 2), -Rational(1, 2)], [2])  # elliptic integrals
+    assert can_do([-Rational(1, 2), Rational(1, 2), 1], [Rational(3, 2), Rational(5, 2)])  # polylog, pfdd
 
 
 @pytest.mark.xfail
 def test_roach_fail():
     assert can_do([-Rational(1, 2), 1], [Rational(1, 4), Rational(1, 2), Rational(3, 4)])  # PFDD
     assert can_do([Rational(3, 2)], [Rational(5, 2), 5])  # struve function
-    assert can_do([-Rational(1, 2), Rational(1, 2), 1], [Rational(3, 2), Rational(5, 2)])  # polylog, pfdd
     assert can_do([1, 2, 3], [Rational(1, 2), 4])  # XXX ?
     assert can_do([Rational(1, 2)], [-Rational(1, 3), -Rational(1, 2), -Rational(2, 3)])  # PFDD ?
 
@@ -405,6 +405,11 @@ def test_meijerg_expand():
     assert hyperexpand(meijerg([1], [], [a], [0, 0], z)) == hyper(
         (a,), (a + 1, a + 1), z*exp_polar(I*pi))*z**a*gamma(a)/gamma(a + 1)**2
 
+    assert can_do_meijer([], [], [a + Rational(1, 2)], [a, a - b/2, a + b/2])
+    assert can_do_meijer([], [], [3*a - Rational(1, 2), a, -a - Rational(1, 2)], [a - Rational(1, 2)])
+    assert can_do_meijer([], [], [0, a - Rational(1, 2), -a - Rational(1, 2)], [Rational(1, 2)])
+    assert can_do_meijer([Rational(1, 2)], [], [-a, a], [0])
+
 
 def test_meijerg_lookup():
     assert hyperexpand(meijerg([a], [], [b, a], [], z)) == \
@@ -429,13 +434,8 @@ def test_meijerg_expand_fail():
     # which is *very* messy. But since the meijer g actually yields a
     # sum of bessel functions, things can sometimes be simplified a lot and
     # are then put into tables...
-    assert can_do_meijer([], [], [a + Rational(1, 2)], [a, a - b/2, a + b/2])
     assert can_do_meijer([], [], [0, Rational(1, 2)], [a, -a])
-    assert can_do_meijer([], [], [3*a - Rational(1, 2), a, -a - Rational(1, 2)], [a - Rational(1, 2)])
-    assert can_do_meijer([], [], [0, a - Rational(1, 2), -a - Rational(1, 2)], [Rational(1, 2)])
     assert can_do_meijer([], [], [a, b + Rational(1, 2), b], [2*b - a])
-    assert can_do_meijer([], [], [a, b + Rational(1, 2), b, 2*b - a])
-    assert can_do_meijer([Rational(1, 2)], [], [-a, a], [0])
 
 
 @pytest.mark.slow
@@ -903,33 +903,7 @@ def test_prudnikov_2F1():
             for n in [1, 2, 3, 4]:
                 assert can_do([p, m], [n])
 
-
-@pytest.mark.xfail
-def test_prudnikov_fail_2F1():
-    assert can_do([a, b], [b + 1])  # incomplete beta function
     assert can_do([-1, b], [c])    # Poly. also -2, -3 etc
-
-    # TODO polys
-
-    # Legendre functions:
-    assert can_do([a, b], [a + b + Rational(1, 2)])
-    assert can_do([a, b], [a + b - Rational(1, 2)])
-    assert can_do([a, b], [a + b + Rational(3, 2)])
-    assert can_do([a, b], [(a + b + 1)/2])
-    assert can_do([a, b], [(a + b)/2 + 1])
-    assert can_do([a, b], [a - b + 1])
-    assert can_do([a, b], [a - b + 2])
-    assert can_do([a, b], [2*b])
-    assert can_do([a, b], [Rational(1, 2)])
-    assert can_do([a, b], [Rational(3, 2)])
-    assert can_do([a, 1 - a], [c])
-    assert can_do([a, 2 - a], [c])
-    assert can_do([a, 3 - a], [c])
-    assert can_do([a, a + Rational(1, 2)], [c])
-    assert can_do([1, b], [c])
-    assert can_do([1, b], [Rational(3, 2)])
-
-    assert can_do([Rational(1, 4), Rational(3, 4)], [1])
 
     # PFDD
     o = Integer(1)
@@ -960,7 +934,47 @@ def test_prudnikov_fail_2F1():
 
 
 @pytest.mark.xfail
-def test_prudnikov_fail_3F2():
+def test_prudnikov_2F1_fail():
+    assert can_do([a, b], [b + 1])  # incomplete beta function
+
+    # TODO polys
+
+    # Legendre functions:
+    assert can_do([a, b], [a + b + Rational(1, 2)])
+    assert can_do([a, b], [a + b - Rational(1, 2)])
+    assert can_do([a, b], [a + b + Rational(3, 2)])
+    assert can_do([a, b], [(a + b + 1)/2])
+    assert can_do([a, b], [(a + b)/2 + 1])
+    assert can_do([a, b], [a - b + 1])
+    assert can_do([a, b], [a - b + 2])
+    assert can_do([a, b], [2*b])
+    assert can_do([a, b], [Rational(1, 2)])
+    assert can_do([a, b], [Rational(3, 2)])
+    assert can_do([a, 1 - a], [c])
+    assert can_do([a, 2 - a], [c])
+    assert can_do([a, 3 - a], [c])
+    assert can_do([a, a + Rational(1, 2)], [c])
+    assert can_do([1, b], [c])
+    assert can_do([1, b], [Rational(3, 2)])
+
+    assert can_do([Rational(1, 4), Rational(3, 4)], [1])
+
+
+def test_prudnikov_3F2():
+    # pages 422 ...
+    assert can_do([Rational(-1, 2), Rational(1, 2), 1], [Rational(3, 2), Rational(3, 2)])
+
+    # PFDD
+    assert can_do([Rational(1, 8), Rational(3, 8), 1], [Rational(9, 8), Rational(11, 8)])
+    assert can_do([Rational(1, 8), Rational(5, 8), 1], [Rational(9, 8), Rational(13, 8)])
+    assert can_do([Rational(1, 8), Rational(7, 8), 1], [Rational(9, 8), Rational(15, 8)])
+    assert can_do([Rational(1, 6), Rational(1, 3), 1], [Rational(7, 6), Rational(4, 3)])
+    assert can_do([Rational(1, 6), Rational(2, 3), 1], [Rational(7, 6), Rational(5, 3)])
+    assert can_do([Rational(1, 6), Rational(2, 3), 1], [Rational(5, 3), Rational(13, 6)])
+
+
+@pytest.mark.xfail
+def test_prudnikov_3F2_fail():
     assert can_do([a, a + Rational(1, 3), a + Rational(2, 3)], [Rational(1, 3), Rational(2, 3)])
     assert can_do([a, a + Rational(1, 3), a + Rational(2, 3)], [Rational(2, 3), Rational(4, 3)])
     assert can_do([a, a + Rational(1, 3), a + Rational(2, 3)], [Rational(4, 3), Rational(5, 3)])
@@ -970,35 +984,33 @@ def test_prudnikov_fail_3F2():
 
     # pages 422 ...
     assert can_do([Rational(-1, 2), Rational(1, 2), Rational(1, 2)], [1, 1])  # elliptic integrals
-    assert can_do([Rational(-1, 2), Rational(1, 2), 1], [Rational(3, 2), Rational(3, 2)])
     # TODO LOTS more
 
     # PFDD
-    assert can_do([Rational(1, 8), Rational(3, 8), 1], [Rational(9, 8), Rational(11, 8)])
-    assert can_do([Rational(1, 8), Rational(5, 8), 1], [Rational(9, 8), Rational(13, 8)])
-    assert can_do([Rational(1, 8), Rational(7, 8), 1], [Rational(9, 8), Rational(15, 8)])
-    assert can_do([Rational(1, 6), Rational(1, 3), 1], [Rational(7, 6), Rational(4, 3)])
-    assert can_do([Rational(1, 6), Rational(2, 3), 1], [Rational(7, 6), Rational(5, 3)])
-    assert can_do([Rational(1, 6), Rational(2, 3), 1], [Rational(5, 3), Rational(13, 6)])
     assert can_do([Rational(1, 2), 1, 1], [Rational(1, 4), Rational(3, 4)])
     # LOTS more
 
 
-@pytest.mark.xfail
-def test_prudnikov_fail_other():
-    # 7.11.2
+def test_prudnikov_other():
+    # 7.14.2
+    assert can_do([Rational(1, 4)], [Rational(1, 2), Rational(5, 4)])  # PFDD
+    assert can_do([Rational(3, 4)], [Rational(3, 2), Rational(7, 4)])  # PFDD
+    assert can_do([1], [Rational(1, 4), Rational(3, 4)])  # PFDD
+    assert can_do([1], [Rational(3, 4), Rational(5, 4)])  # PFDD
+    assert can_do([1], [Rational(5, 4), Rational(7, 4)])  # PFDD
 
+    # XXX this does not *evaluate* right??
+    assert can_do([], [a, a + Rational(1, 2), 2*a - 1])
+
+
+@pytest.mark.xfail
+def test_prudnikov_other_fail():
     # 7.12.1
     assert can_do([1, a], [b, 1 - 2*a + b])  # ???
 
     # 7.14.2
     assert can_do([-Rational(1, 2)], [Rational(1, 2), 1])  # struve
     assert can_do([1], [Rational(1, 2), Rational(1, 2)])  # struve
-    assert can_do([Rational(1, 4)], [Rational(1, 2), Rational(5, 4)])  # PFDD
-    assert can_do([Rational(3, 4)], [Rational(3, 2), Rational(7, 4)])  # PFDD
-    assert can_do([1], [Rational(1, 4), Rational(3, 4)])  # PFDD
-    assert can_do([1], [Rational(3, 4), Rational(5, 4)])  # PFDD
-    assert can_do([1], [Rational(5, 4), Rational(7, 4)])  # PFDD
     # TODO LOTS more
 
     # 7.15.2
@@ -1006,12 +1018,9 @@ def test_prudnikov_fail_other():
     assert can_do([Rational(1, 2), 1], [Rational(7, 4), Rational(5, 4), Rational(3, 2)])  # PFDD
 
     # 7.16.1
-    assert can_do([], [Rationa(1, 3), Rational(2, 3)])  # PFDD
+    assert can_do([], [Rational(1, 3), Rational(2, 3)])  # PFDD
     assert can_do([], [Rational(2, 3), Rational(4, 3)])  # PFDD
     assert can_do([], [Rational(5, 3), Rational(4, 3)])  # PFDD
-
-    # XXX this does not *evaluate* right??
-    assert can_do([], [a, a + Rational(1, 2), 2*a - 1])
 
 
 def test_bug():

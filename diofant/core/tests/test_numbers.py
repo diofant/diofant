@@ -3,10 +3,9 @@ import fractions
 from math import sqrt as _sqrt
 
 import mpmath
-import mpmath.libmp as mlib
 import pytest
 from mpmath import mpf
-from mpmath.libmp.libmpf import _normalize, finf, fnan, fninf
+from mpmath.libmp.libmpf import finf, fninf
 
 from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      Integer, Le, Lt, Mul, Number, Pow, Rational, Symbol, cbrt,
@@ -1396,19 +1395,6 @@ def test_sympyissue_4172():
     assert int((E**100).round()) == 26881171418161354484126255515800135873611119
     assert int((pi**100).round()) == 51878483143196131920862615246303013562686760680406
     assert int((1/EulerGamma**100).round()) == 734833795660954410469466
-
-
-@pytest.mark.xfail
-def test_mpmath_issues():
-    rnd = mlib.round_nearest
-    mpf = (0, int(0), -123, -1, 53, rnd)  # nan
-    assert _normalize(mpf, 53) != (0, int(0), 0, 0)
-    mpf = (0, int(0), -456, -2, 53, rnd)  # +inf
-    assert _normalize(mpf, 53) != (0, int(0), 0, 0)
-    mpf = (1, int(0), -789, -3, 53, rnd)  # -inf
-    assert _normalize(mpf, 53) != (0, int(0), 0, 0)
-
-    assert mlib.mpf_eq(fnan, fnan)
 
 
 def test_Catalan_EulerGamma_prec():

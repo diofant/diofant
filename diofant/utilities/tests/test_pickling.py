@@ -66,7 +66,7 @@ from diofant.polys.polyerrors import (CoercionFailed, DomainError,
                                       UnificationFailed,
                                       UnivariatePolynomialError)
 from diofant.polys.polyoptions import Options
-from diofant.polys.polytools import Poly, PurePoly
+from diofant.polys.polytools import GroebnerBasis, Poly, PurePoly
 from diofant.polys.rings import PolynomialRing
 from diofant.polys.rootoftools import RootOf, RootSum
 from diofant.printing.latex import LatexPrinter
@@ -186,7 +186,6 @@ def test_core_function():
 
 @pytest.mark.xfail
 def test_core_dynamicfunctions():
-    # This fails because f is assumed to be a class at diofant.basic.function.f
     f = Function("f")
     check(f)
 
@@ -283,9 +282,8 @@ def test_pickling_polys_polytools():
     for c in (Poly, Poly(x, x), PurePoly, PurePoly(x)):
         check(c)
 
-    # TODO: fix pickling of Options class (see GroebnerBasis._options)
-    # for c in (GroebnerBasis, GroebnerBasis([x**2 - 1], x)):
-    #     check(c)
+    for c in (GroebnerBasis, GroebnerBasis([x**2 - 1], x)):
+        check(c)
 
 
 def test_pickling_polys_polyclasses():
@@ -325,28 +323,8 @@ def test_pickling_polys_elements():
     for c in (PythonRational, PythonRational(1, 7)):
         check(c)
 
-    # gf = PythonFiniteField(17)
-
-    # TODO: fix pickling of ModularInteger
-    # for c in (gf.dtype, gf(5)):
-    #     check(c)
-
-    # mp = MPContext()
-
-    # TODO: fix pickling of RealElement
-    # for c in (mp.mpf, mp.mpf(1.0)):
-    #     check(c)
-
-    # TODO: fix pickling of ComplexElement
-    # for c in (mp.mpc, mp.mpc(1.0, -1.5)):
-    #     check(c)
-
 
 def test_pickling_polys_domains():
-    # TODO: fix pickling of ModularInteger
-    # for c in (PythonFiniteField, PythonFiniteField(17)):
-    #     check(c)
-
     for c in (PythonIntegerRing, PythonIntegerRing()):
         check(c)
 
@@ -354,35 +332,11 @@ def test_pickling_polys_domains():
         check(c)
 
     if HAS_GMPY:
-        # TODO: fix pickling of ModularInteger
-        # for c in (GMPYFiniteField, GMPYFiniteField(17)):
-        #     check(c)
-
         for c in (GMPYIntegerRing, GMPYIntegerRing()):
             check(c)
 
         for c in (GMPYRationalField, GMPYRationalField()):
             check(c)
-
-    # TODO: fix pickling of RealElement
-    # for c in (RealField, RealField(100)):
-    #     check(c)
-
-    # TODO: fix pickling of ComplexElement
-    # for c in (ComplexField, ComplexField(100)):
-    #     check(c)
-
-    # TODO: fix pickling of AlgebraicField
-    # for c in (AlgebraicField, AlgebraicField(QQ, sqrt(3))):
-    #     check(c)
-
-    # TODO: AssertionError
-    # for c in (PolynomialRing, PolynomialRing(ZZ, "x,y,z")):
-    #     check(c)
-
-    # TODO: AttributeError: 'PolyElement' object has no attribute 'ring'
-    # for c in (FractionField, FractionField(ZZ, "x,y,z")):
-    #     check(c)
 
     for c in (ExpressionDomain, ExpressionDomain()):
         check(c)
@@ -466,10 +420,6 @@ def test_pickling_polys_options():
     for c in (Options, Options((), {'domain': 'ZZ', 'polys': False})):
         check(c)
 
-# TODO: def test_pickling_polys_rootisolation():
-#    RealInterval
-#    ComplexInterval
-
 
 def test_pickling_polys_rootoftools():
     f = x**3 + x + 3
@@ -486,16 +436,6 @@ def test_printing():
               PrettyPrinter, prettyForm, stringPict, stringPict("a"),
               Printer, Printer(), PythonPrinter, PythonPrinter()):
         check(c)
-
-
-@pytest.mark.xfail
-def test_printing1():
-    check(MathMLPrinter())
-
-
-@pytest.mark.xfail
-def test_printing2():
-    check(PrettyPrinter())
 
 
 def test_series():

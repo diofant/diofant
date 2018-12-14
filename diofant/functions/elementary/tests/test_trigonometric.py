@@ -1206,14 +1206,6 @@ def test_real_imag():
         assert cot(a).as_real_imag(deep=deep) == (cot(a), 0)
 
 
-@pytest.mark.xfail
-def test_sin_cos_with_infinity():
-    # Test for issue sympy/sympy#5196
-    # https://github.com/sympy/sympy/issues/5196
-    assert sin(oo) == nan
-    assert cos(oo) == nan
-
-
 @pytest.mark.slow
 def test_sincos_rewrite_sqrt():
     for p in [1, 3, 5, 17]:
@@ -1454,7 +1446,7 @@ def test_acsc():
 @pytest.mark.xfail
 def test_csc_rewrite_failing():
     # Move these 2 tests to test_csc() once bugs fixed
-    assert csc(x).rewrite(sqrt) == csc(x)
+    csc(x).rewrite(sqrt)
 
 
 def test_sympyissue_8653():

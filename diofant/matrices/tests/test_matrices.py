@@ -1493,15 +1493,13 @@ def test_diagonalization():
     assert m.is_diagonalizable()
 
 
-@pytest.mark.xfail
 def test_eigen_vects():
     m = Matrix(2, 2, [1, 0, 0, I])
-    pytest.raises(NotImplementedError, lambda: m.is_diagonalizable(True))
-    # !!! bug because of eigenvects() or roots(x**2 + (-1 - I)*x + I, x)
     # see issue sympy/sympy#5292
     assert not m.is_diagonalizable(True)
     pytest.raises(MatrixError, lambda: m.diagonalize(True))
-    (P, D) = m.diagonalize(True)
+    (P, D) = m.diagonalize()
+    assert D == m and P == eye(2)
 
 
 def test_jordan_form():
@@ -2387,14 +2385,6 @@ def test_hash():
     # issue sympy/sympy#3979
     for cls in classes[:2]:
         assert not isinstance(cls.eye(1), collections.abc.Hashable)
-
-
-@pytest.mark.xfail
-def test_sympyissue_3979():
-    # when this passes, delete this and change the [1:2]
-    # to [:2] in the test_hash above for issue sympy/sympy#3979
-    cls = classes[0]
-    pytest.raises(AttributeError, lambda: hash(cls.eye(1)))
 
 
 def test_adjoint():
