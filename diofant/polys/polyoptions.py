@@ -526,7 +526,7 @@ class Extension(Option, metaclass=OptionType):
         if extension == 1:
             return bool(extension)
         elif extension == 0:
-            raise OptionError("'False' is an invalid argument for 'extension'")
+            return bool(extension)
         else:
             if not hasattr(extension, '__iter__'):
                 extension = {extension}
@@ -541,7 +541,7 @@ class Extension(Option, metaclass=OptionType):
     @classmethod
     def postprocess(cls, options):
         from .. import domains
-        if 'extension' in options and options['extension'] is not True:
+        if 'extension' in options and options['extension'] not in (True, False):
             options['domain'] = domains.QQ.algebraic_field(
                 *options['extension'])
 

@@ -15,12 +15,12 @@ def _construct_simple(coeffs, opt):
     """Handle simple domains, e.g.: ZZ, QQ, RR and algebraic domains. """
     result, rationals, reals, algebraics = {}, False, False, False
 
-    if opt.extension is True:
+    if opt.extension is False:
         def is_algebraic(coeff):
-            return coeff.is_number and coeff.is_algebraic
+            return False
     else:
         def is_algebraic(coeff):
-            return all(_.is_Rational for _ in coeff.as_real_imag())
+            return coeff.is_number and coeff.is_algebraic
 
     for coeff in coeffs:
         if coeff.is_Rational:

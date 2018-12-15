@@ -37,7 +37,7 @@ def gosper_normal(f, g, n, polys=True):
     >>> gosper_normal(4*n + 5, 2*(4*n + 1)*(2*n + 3), n, polys=False)
     (1/4, n + 3/2, n + 1/4)
     """
-    (p, q), opt = parallel_poly_from_expr((f, g), n, field=True, extension=True)
+    (p, q), opt = parallel_poly_from_expr((f, g), n, field=True)
 
     a, A = p.LC(), p.monic()
     b, B = q.LC(), q.monic()

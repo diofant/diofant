@@ -182,8 +182,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
     def _compute_ext_root(ext, minpoly):
         from ..polys import minimal_polynomial
 
-        for r in minpoly.all_roots(radicals=False,  # pragma: no branch
-                                   extension=True):
+        for r in minpoly.all_roots(radicals=False):  # pragma: no branch
             if not minimal_polynomial(ext - r)(0):
                 return r.as_content_primitive()
 

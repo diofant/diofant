@@ -330,7 +330,7 @@ def log_to_real(h, q, x, t):
     result = Integer(0)
 
     for r_u in R_u:
-        C = Poly(c.subs({u: r_u}), v)
+        C = Poly(c.subs({u: r_u}), v, extension=False)
         R_v = roots(C, filter='R')
 
         if len(R_v) != C.count_roots():
@@ -345,8 +345,8 @@ def log_to_real(h, q, x, t):
             if D.evalf(2, chop=True) != 0:
                 continue
 
-            A = Poly(a.subs({u: r_u, v: r_v}), x)
-            B = Poly(b.subs({u: r_u, v: r_v}), x)
+            A = Poly(a.subs({u: r_u, v: r_v}), x, extension=False)
+            B = Poly(b.subs({u: r_u, v: r_v}), x, extension=False)
 
             AB = (A**2 + B**2).as_expr()
 

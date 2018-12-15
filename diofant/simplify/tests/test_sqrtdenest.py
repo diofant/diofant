@@ -419,15 +419,15 @@ def test_unrad1():
     # watch out for when the cov doesn't involve the symbol of interest
     eq = -x + (7*y/8 - cbrt(27*x/2 + 27*sqrt(x**2)/2)/3)**3 - 1
     assert solve(eq, y) == [
-        {y: 4*2**Rational(2, 3)*cbrt(27*x + 27*sqrt(x**2))/21 - (-Rational(1, 2) -
-                                                                 sqrt(3)*I/2)*cbrt(-6912*x/343 + sqrt((-13824*x/343 - Rational(13824, 343))**2)/2 -
-                                                                                   Rational(6912, 343))/3},
-        {y: 4*2**Rational(2, 3)*cbrt(27*x + 27*sqrt(x**2))/21 -
-         (-Rational(1, 2) + sqrt(3)*I/2)*cbrt(-6912*x/343 + sqrt((-13824*x/343 -
-                                                                  Rational(13824, 343))**2)/2 - Rational(6912, 343))/3},
-        {y: 4*2**Rational(2, 3)*cbrt(27*x +
-                                     27*sqrt(x**2))/21 - cbrt(-6912*x/343 + sqrt((-13824*x/343 -
-                                                                                  Rational(13824, 343))**2)/2 - Rational(6912, 343))/3}]
+        {y: RootOf(-2304*x + 1029*y**3 - 1764*cbrt(4)*y**2*cbrt(x + sqrt(x**2)) +
+                   2016*cbrt(2)*y*(x + sqrt(x**2))**Rational(2, 3) -
+                   768*sqrt(x**2) - 1536, y, 0, evaluate=False)},
+        {y: RootOf(-2304*x + 1029*y**3 - 1764*cbrt(4)*y**2*cbrt(x + sqrt(x**2)) +
+                   2016*cbrt(2)*y*(x + sqrt(x**2))**Rational(2, 3) -
+                   768*sqrt(x**2) - 1536, y, 1, evaluate=False)},
+        {y: RootOf(-2304*x + 1029*y**3 - 1764*cbrt(4)*y**2*cbrt(x + sqrt(x**2)) +
+                   2016*cbrt(2)*y*(x + sqrt(x**2))**Rational(2, 3) -
+                   768*sqrt(x**2) - 1536, y, 2, evaluate=False)}]
 
     eq = root(x + 1, 3) - (root(x, 3) + root(x, 5))
     assert check(unrad(eq),

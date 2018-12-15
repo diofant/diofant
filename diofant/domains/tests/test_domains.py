@@ -291,7 +291,7 @@ def test_Domain_unify_algebraic():
     assert sqrt2.unify(rootof) == rootof.unify(sqrt2) == ans
 
     # here domain created from tuple, not Expr
-    p = Poly(x**3 - sqrt(2)*x - 1, x, extension=True)
+    p = Poly(x**3 - sqrt(2)*x - 1, x)
     sqrt2 = p.domain
     assert sqrt2.unify(rootof) == rootof.unify(sqrt2) == ans
 

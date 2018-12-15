@@ -713,7 +713,7 @@ def frac_in(f, t, **kwargs):
         fa, fd = f
         f = fa.as_expr()/fd.as_expr()
     fa, fd = f.as_expr().as_numer_denom()
-    fa, fd = fa.as_poly(t, **kwargs), fd.as_poly(t, **kwargs)
+    fa, fd = fa.as_poly(t, extension=False, **kwargs), fd.as_poly(t, extension=False, **kwargs)
     if cancel:
         fa, fd = fa.cancel(fd, include=True)
     if fa is None or fd is None:

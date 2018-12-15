@@ -1,5 +1,6 @@
 """Solvers of systems of polynomial equations. """
 
+from ..domains import EX
 from ..matrices import Matrix
 from ..polys import groebner, poly, sring
 from ..polys.polyerrors import ComputationFailed, PolificationFailed
@@ -100,6 +101,7 @@ def solve_poly_system(eqs, *gens, **args):
     [{x: 0}, {y: 0}]
     """
     try:
+        args['extension'] = False
         polys, opt = parallel_poly_from_expr(eqs, *gens, **args)
         polys = [p.to_exact() for p in polys]
     except PolificationFailed as exc:
@@ -108,7 +110,7 @@ def solve_poly_system(eqs, *gens, **args):
     def _solve_reduced_system(system, gens):
         """Recursively solves reduced polynomial systems. """
 
-        basis = groebner(system, gens, polys=True)
+        basis = groebner(system, gens, polys=True, extension=False)
         dim = basis.dimension
         solutions = []
 
@@ -148,13 +150,15 @@ def solve_poly_system(eqs, *gens, **args):
             if len(basis) == 1:
                 return [{gen: zero} for zero in zeros]
 
+            new_basis = [b.set_domain(EX) for b in basis[:-1]]
+
             # Now substitute zeros for the last variable and
             # solve recursively new obtained zero-dimensional systems.
             for zero in zeros:
                 new_system = []
                 new_gens = gens[:-1]
 
-                for b in basis[:-1]:
+                for b in new_basis:
                     eq = b.eval(gen, zero)
 
                     if not eq.is_zero:

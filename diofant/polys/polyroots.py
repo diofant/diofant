@@ -658,14 +658,14 @@ def _integer_basis(poly):
             return div
 
 
-def preprocess_roots(poly, extension=None):
+def preprocess_roots(poly):
     """Try to get rid of symbolic coefficients from ``poly``. """
     coeff = S.One
 
     _, poly = poly.clear_denoms(convert=True)
 
     poly = poly.primitive()[1]
-    poly = poly.retract(extension=extension)
+    poly = poly.retract()
 
     # TODO: This is fragile. Figure out how to make this independent of construct_domain().
     if poly.domain.is_Poly and all(c.is_term for c in poly.rep.coeffs()):
@@ -833,7 +833,7 @@ def roots(f, *gens, **flags):
             previous, roots = list(roots), []
 
             for root in previous:
-                g = factor - Poly(root, f.gen)
+                g = factor - Poly(root, f.gen, extension=False)
 
                 for root in _try_heuristics(g):
                     roots.append(root)

@@ -5,9 +5,9 @@ import itertools
 import mpmath
 import pytest
 
-from diofant import (ZZ, I, Integer, Interval, Piecewise, Rational, Symbol,
-                     Wild, acos, cbrt, cos, exp, im, pi, powsimp, re, root,
-                     sin, sqrt, symbols)
+from diofant import (ZZ, I, Integer, Interval, Mul, Piecewise, Rational,
+                     Symbol, Wild, acos, cbrt, cos, exp, im, pi, powsimp, re,
+                     root, sin, sqrt, symbols)
 from diofant.abc import a, b, c, d, e, q, x, y, z
 from diofant.polys import Poly, RootOf, cyclotomic_poly, intervals, nroots
 from diofant.polys.orthopolys import legendre_poly
@@ -120,6 +120,12 @@ def test_roots_cubic():
         -2*sqrt(13)*sin(-acos(8*sqrt(13)/169)/3 + pi/6)/3 + Rational(2, 3),
         -2*sqrt(13)*cos(-acos(8*sqrt(13)/169)/3 + pi/3)/3 + Rational(2, 3),
     ]
+    res = roots_cubic(Poly(x**3 + 2*a/27, x))
+    assert res == [-root(a + sqrt(a**2), 3)/3,
+                   Mul(Rational(-1, 3), Rational(-1, 2) + sqrt(3)*I/2,
+                       root(a + sqrt(a**2), 3), evaluate=False),
+                   Mul(Rational(-1, 3), Rational(-1, 2) - sqrt(3)*I/2,
+                       root(a + sqrt(a**2), 3), evaluate=False)]
 
 
 def test_roots_quartic():

@@ -734,7 +734,7 @@ def _solve(f, symbol, **flags):
             # Also use composite=True with f_num since Poly won't update
             # poly as documented in issue sympy/sympy#8810.
 
-            poly = Poly(f_num, gens[0], composite=True)
+            poly = Poly(f_num, gens[0], extension=False)
 
             # if we aren't on the tsolve-pass, use roots
             if not flags.pop('tsolve', False):
@@ -890,7 +890,7 @@ def _solve_system(exprs, symbols, **flags):
         g = d - i
         g = g.as_numer_denom()[0]
 
-        poly = g.as_poly(*symbols, extension=True)
+        poly = g.as_poly(*symbols)
 
         if poly is not None:
             polys.append(poly)
@@ -1042,7 +1042,7 @@ def solve_linear(f, x):
         raise ValueError("%s is not a Symbol" % x)
     f = f.replace(lambda e: e.is_Derivative, lambda e: e.doit())
     n, d = res = f.as_numer_denom()
-    poly = n.as_poly(x)
+    poly = n.as_poly(x, extension=False)
     if poly is not None and poly.is_linear:
         a, b = n.expand().coeff(x, 1), n.expand().coeff(x, 0)
         if a != 0 and d.subs({x: -b/a}) != 0:
