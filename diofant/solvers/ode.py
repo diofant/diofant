@@ -1846,8 +1846,8 @@ def check_nonlinear_2eq_order1(eq, func, func_coef):
     if not (r1 and r2):
         r1 = eq[0].match(diff(x(t), t) - x(t)/t + f/t)
         r2 = eq[1].match(diff(y(t), t) - y(t)/t + g/t)
-    if r1 and r2 and not (r1[f].subs({diff(x(t), t): u}).subs({diff(y(t), t): v}).has(t)
-                          or r2[g].subs({diff(x(t), t): u}).subs({diff(y(t), t): v}).has(t)):
+    if r1 and r2 and not (r1[f].subs({diff(x(t), t): u, diff(y(t), t): v}).has(t)
+                          or r2[g].subs({diff(x(t), t): u, diff(y(t), t): v}).has(t)):
         return 'type5'
     for i in range(2):
         eqs = 0
@@ -1857,23 +1857,23 @@ def check_nonlinear_2eq_order1(eq, func, func_coef):
     r = eq[0].match(diff(x(t), t) - x(t)**n*f)
     if r:
         g = (diff(y(t), t) - eq[1])/r[f]
-    if r and not (g.has(x(t)) or g.subs({y(t): v}).has(t) or r[f].subs({x(t): u}).subs({y(t): v}).has(t)):
+    if r and not (g.has(x(t)) or g.subs({y(t): v}).has(t) or r[f].subs({x(t): u, y(t): v}).has(t)):
         return 'type1'
     r = eq[0].match(diff(x(t), t) - exp(n*x(t))*f)
     if r:
         g = (diff(y(t), t) - eq[1])/r[f]
-    if r and not (g.has(x(t)) or g.subs({y(t): v}).has(t) or r[f].subs({x(t): u}).subs({y(t): v}).has(t)):
+    if r and not (g.has(x(t)) or g.subs({y(t): v}).has(t) or r[f].subs({x(t): u, y(t): v}).has(t)):
         return 'type2'
     g = Wild('g')
     r1 = eq[0].match(diff(x(t), t) - f)
     r2 = eq[1].match(diff(y(t), t) - g)
-    if r1 and r2 and not (r1[f].subs({x(t): u}).subs({y(t): v}).has(t) or
-                          r2[g].subs({x(t): u}).subs({y(t): v}).has(t)):
+    if r1 and r2 and not (r1[f].subs({x(t): u, y(t): v}).has(t) or
+                          r2[g].subs({x(t): u, y(t): v}).has(t)):
         return 'type3'
     r1 = eq[0].match(diff(x(t), t) - f)
     r2 = eq[1].match(diff(y(t), t) - g)
-    num, den = ((r1[f].subs({x(t): u}).subs({y(t): v})) /
-                (r2[g].subs({x(t): u}).subs({y(t): v}))).as_numer_denom()
+    num, den = ((r1[f].subs({x(t): u, y(t): v})) /
+                (r2[g].subs({x(t): u, y(t): v}))).as_numer_denom()
     R1 = num.match(f1*g1)
     R2 = den.match(f2*g2)
     if R1 and R2:
@@ -7353,7 +7353,7 @@ def _nonlinear_2eq_order1_type1(x, y, t, eq):
     u, v, phi = symbols('u, v, phi', function=True)
     r = eq[0].match(diff(x(t), t) - x(t)**n*f)
     g = ((diff(y(t), t) - eq[1])/r[f]).subs({y(t): v})
-    F = r[f].subs({x(t): u}).subs({y(t): v})
+    F = r[f].subs({x(t): u, y(t): v})
     n = r[n]
     if n != 1:
         phi = (C1 + (1-n)*Integral(1/g, v))**(1/(1-n))
@@ -7399,7 +7399,7 @@ def _nonlinear_2eq_order1_type2(x, y, t, eq):
     u, v, phi = symbols('u, v, phi', function=True)
     r = eq[0].match(diff(x(t), t) - exp(n*x(t))*f)
     g = ((diff(y(t), t) - eq[1])/r[f]).subs({y(t): v})
-    F = r[f].subs({x(t): u}).subs({y(t): v})
+    F = r[f].subs({x(t): u, y(t): v})
     n = r[n]
     if n:
         phi = -1/n*log(C1 - n*Integral(1/g, v))
@@ -7439,8 +7439,8 @@ def _nonlinear_2eq_order1_type3(x, y, t, eq):
     g = Wild('g')
     r1 = eq[0].match(diff(x(t), t) - f)
     r2 = eq[1].match(diff(y(t), t) - g)
-    F = r1[f].subs({x(t): u}).subs({y(t): v(u)})
-    G = r2[g].subs({x(t): u}).subs({y(t): v(u)})
+    F = r1[f].subs({x(t): u, y(t): v(u)})
+    G = r2[g].subs({x(t): u, y(t): v(u)})
     sol2r = dsolve(Eq(diff(v(u), u), G/F))
     for sol2s in sol2r:
         sol1 = solve(Integral(1/F.subs({v(u): sol2s.rhs}), u).doit() - t - C2, u)
@@ -7481,11 +7481,11 @@ def _nonlinear_2eq_order1_type4(x, y, t, eq):
     g2 = Wild('g2', exclude=[u, t])
     r1 = eq[0].match(diff(x(t), t) - f)
     r2 = eq[1].match(diff(y(t), t) - g)
-    num, den = ((r1[f].subs({x(t): u}).subs({y(t): v})) /
-                (r2[g].subs({x(t): u}).subs({y(t): v}))).as_numer_denom()
+    num, den = ((r1[f].subs({x(t): u, y(t): v})) /
+                (r2[g].subs({x(t): u, y(t): v}))).as_numer_denom()
     R1 = num.match(f1*g1)
     R2 = den.match(f2*g2)
-    phi = (r1[f].subs({x(t): u}).subs({y(t): v}))/num
+    phi = (r1[f].subs({x(t): u, y(t): v}))/num
     F1 = R1[f1]
     F2 = R2[f2]
     G1 = R1[g1]
@@ -7537,7 +7537,7 @@ def _nonlinear_2eq_order1_type5(func, t, eq):
     if not (r1 and r2):
         r1 = (-eq[0]).match(t*diff(x(t), t) - x(t) + f)
         r2 = (-eq[1]).match(t*diff(y(t), t) - y(t) + g)
-    return {Eq(x(t), C1*t + r1[f].subs({x1: C1}).subs({y1: C2})), Eq(y(t), C2*t + r2[g].subs({x1: C1}).subs({y1: C2}))}
+    return {Eq(x(t), C1*t + r1[f].subs({x1: C1, y1: C2})), Eq(y(t), C2*t + r2[g].subs({x1: C1, y1: C2}))}
 
 
 def sysode_nonlinear_3eq_order1(match_):
