@@ -3,7 +3,7 @@
 from .ring import Ring
 
 
-__all__ = ('Field',)
+__all__ = 'Field',
 
 
 class Field(Ring):

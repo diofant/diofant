@@ -2923,7 +2923,7 @@ def test_pretty_seq():
     assert upretty(expr) == ucode_str
     assert upretty(expr_2) == ucode_str
 
-    expr = (1/x,)
+    expr = 1/x,
     ascii_str = \
         """\
  1  \n\
@@ -3048,7 +3048,7 @@ def test_pretty_seq():
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = (x**2,)
+    expr = x**2,
     ascii_str = \
         """\
   2  \n\

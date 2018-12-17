@@ -12,7 +12,7 @@ from .ring import Ring
 from .simpledomain import SimpleDomain
 
 
-__all__ = ('GMPYIntegerRing', 'IntegerRing', 'PythonIntegerRing')
+__all__ = 'GMPYIntegerRing', 'IntegerRing', 'PythonIntegerRing'
 
 
 class IntegerRing(Ring, CharacteristicZero, SimpleDomain):

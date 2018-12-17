@@ -9,7 +9,7 @@ from .modularinteger import ModularIntegerFactory
 from .simpledomain import SimpleDomain
 
 
-__all__ = ('FiniteField', 'GMPYFiniteField', 'PythonFiniteField')
+__all__ = 'FiniteField', 'GMPYFiniteField', 'PythonFiniteField'
 
 
 class FiniteField(Field, SimpleDomain):

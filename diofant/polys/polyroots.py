@@ -17,7 +17,7 @@ from .rationaltools import together
 from .specialpolys import cyclotomic_poly
 
 
-__all__ = ('roots',)
+__all__ = 'roots',
 
 
 def roots_linear(f):

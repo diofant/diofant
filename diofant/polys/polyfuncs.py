@@ -9,7 +9,7 @@ from .polytools import Poly, parallel_poly_from_expr, poly_from_expr
 from .specialpolys import interpolating_poly, symmetric_poly
 
 
-__all__ = ('symmetrize', 'horner', 'interpolate', 'viete')
+__all__ = 'symmetrize', 'horner', 'interpolate', 'viete'
 
 
 def symmetrize(F, *gens, **args):

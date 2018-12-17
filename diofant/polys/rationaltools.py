@@ -3,7 +3,7 @@
 from ..core import Add, gcd_terms, sympify
 
 
-__all__ = ('together',)
+__all__ = 'together',
 
 
 def together(expr, deep=False):

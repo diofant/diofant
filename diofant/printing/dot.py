@@ -1,7 +1,7 @@
 from ..core import Basic, Expr
 
 
-__all__ = ('dotprint')
+__all__ = 'dotprint'
 
 default_styles = [(Basic, {'color': 'blue', 'shape': 'ellipse'}),
                   (Expr,  {'color': 'black'})]

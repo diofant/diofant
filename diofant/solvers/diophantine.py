@@ -17,7 +17,7 @@ from ..utilities import default_sort_key, filldedent, numbered_symbols
 from .solvers import solve
 
 
-__all__ = ('diophantine', 'classify_diop')
+__all__ = 'diophantine', 'classify_diop'
 
 # these types are known (but not necessarily handled)
 diop_known = {
@@ -496,7 +496,7 @@ def _diop_linear(var, coeff, param):
     if len(var) == 1:
         q, r = divmod(c, coeff[var[0]])
         if not r:
-            return (q,)
+            return q,
         else:
             return None,
 
@@ -2829,14 +2829,14 @@ def power_representation(n, p, k, zeros=False):
 
     if k == 1:
         if p == 1:
-            yield (n,)
+            yield n,
         else:
             be = perfect_power(n)
             if be:
                 b, e = be
                 d, r = divmod(e, p)
                 if not r:
-                    yield (b**d,)
+                    yield b**d,
         return
 
     if p == 1:

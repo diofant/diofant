@@ -454,7 +454,7 @@ def Cauchy(name, x0, gamma):
 
 
 class ChiDistribution(SingleContinuousDistribution):
-    _argnames = ('k',)
+    _argnames = 'k',
 
     set = Interval(0, oo, False, True)
 
@@ -570,7 +570,7 @@ def ChiNoncentral(name, k, l):
 
 
 class ChiSquaredDistribution(SingleContinuousDistribution):
-    _argnames = ('k',)
+    _argnames = 'k',
 
     set = Interval(0, oo, False, True)
 
@@ -760,7 +760,7 @@ def Erlang(name, k, l):
 
 
 class ExponentialDistribution(SingleContinuousDistribution):
-    _argnames = ('rate',)
+    _argnames = 'rate',
 
     set = Interval(0, oo, False, True)
 
@@ -1463,7 +1463,7 @@ def LogNormal(name, mean, std):
 
 
 class MaxwellDistribution(SingleContinuousDistribution):
-    _argnames = ('a',)
+    _argnames = 'a',
 
     set = Interval(0, oo, False, True)
 
@@ -1898,7 +1898,7 @@ def RaisedCosine(name, mu, s):
 
 
 class RayleighDistribution(SingleContinuousDistribution):
-    _argnames = ('sigma',)
+    _argnames = 'sigma',
 
     set = Interval(0, oo, False, True)
 
@@ -1961,7 +1961,7 @@ def Rayleigh(name, sigma):
 
 
 class StudentTDistribution(SingleContinuousDistribution):
-    _argnames = ('nu',)
+    _argnames = 'nu',
 
     def pdf(self, x):
         nu = self.nu
@@ -2199,7 +2199,7 @@ def Uniform(name, left, right):
 
 
 class UniformSumDistribution(SingleContinuousDistribution):
-    _argnames = ('n',)
+    _argnames = 'n',
 
     @property
     def n(self):
@@ -2419,7 +2419,7 @@ def Weibull(name, alpha, beta):
 
 
 class WignerSemicircleDistribution(SingleContinuousDistribution):
-    _argnames = ('R',)
+    _argnames = 'R',
 
     @property
     def set(self):

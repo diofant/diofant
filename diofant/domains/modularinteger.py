@@ -6,7 +6,7 @@ from ..polys.polyerrors import CoercionFailed
 from .domainelement import DomainElement
 
 
-__all__ = ('ModularInteger',)
+__all__ = 'ModularInteger',
 
 
 class ModularInteger(DomainElement):

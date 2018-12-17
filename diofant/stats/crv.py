@@ -208,7 +208,7 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
 
 
 class ContinuousDistributionHandmade(SingleContinuousDistribution):
-    _argnames = ('pdf',)
+    _argnames = 'pdf',
 
     @property
     def set(self):

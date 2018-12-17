@@ -3,7 +3,7 @@
 import abc
 
 
-__all__ = ('DomainElement',)
+__all__ = 'DomainElement',
 
 
 class DomainElement(abc.ABC):

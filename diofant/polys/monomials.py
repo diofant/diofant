@@ -6,7 +6,7 @@ from .polyerrors import ExactQuotientFailed
 from .polyutils import dict_from_expr
 
 
-__all__ = ('Monomial', 'itermonomials')
+__all__ = 'Monomial', 'itermonomials'
 
 
 def itermonomials(variables, degree):

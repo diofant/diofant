@@ -19,7 +19,7 @@ from .rationalfield import RationalField
 from .simpledomain import SimpleDomain
 
 
-__all__ = ('AlgebraicField',)
+__all__ = 'AlgebraicField',
 
 
 _algebraic_numbers_cache = {}
@@ -72,7 +72,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         obj.domain = dom
 
         obj.ngens = 1
-        obj.symbols = obj.gens = (obj.ext.as_expr(),)
+        obj.symbols = obj.gens = obj.ext.as_expr(),
 
         try:
             obj.dtype = _algebraic_numbers_cache[(obj.domain, obj.ext)]

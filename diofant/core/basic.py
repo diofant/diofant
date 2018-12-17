@@ -228,7 +228,7 @@ class Basic:
         if types:
             types = tuple(t if isinstance(t, type) else type(t) for t in types)
         else:
-            types = (Atom,)
+            types = Atom,
         return set().union(*[self.find(t) for t in types])
 
     @property

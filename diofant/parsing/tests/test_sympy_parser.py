@@ -90,7 +90,7 @@ def test_sympyissue_7663():
 
 def test_split_symbols():
     transformations = standard_transformations + \
-        (split_symbols, implicit_multiplication,)
+        (split_symbols, implicit_multiplication)
     x = Symbol('x')
     y = Symbol('y')
     xy = Symbol('xy')
@@ -101,7 +101,7 @@ def test_split_symbols():
 
 def test_split_symbols_function():
     transformations = standard_transformations + \
-        (split_symbols, implicit_multiplication,)
+        (split_symbols, implicit_multiplication)
     x = Symbol('x')
     y = Symbol('y')
     a = Symbol('a')
@@ -126,6 +126,5 @@ def test_functional_exponent():
 
 
 def test_match_parentheses_implicit_multiplication():
-    transformations = standard_transformations + \
-        (implicit_multiplication,)
+    transformations = standard_transformations + (implicit_multiplication,)
     pytest.raises(TokenError, lambda: parse_expr('(1,2),(3,4]', transformations=transformations))

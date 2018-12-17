@@ -114,7 +114,7 @@ class FunctionClass(ManagedProperties):
                 raise ValueError("Incorrectly specified nargs as %s" % str(nargs))
             nargs = tuple(ordered(set(nargs)))
         elif nargs is not None:
-            nargs = (as_int(nargs),)
+            nargs = as_int(nargs),
         self._nargs = nargs
 
     @property
@@ -216,7 +216,7 @@ class Application(Expr, metaclass=FunctionClass):
             if is_sequence(obj.nargs):
                 nargs = tuple(ordered(set(obj.nargs)))
             elif obj.nargs is not None:
-                nargs = (as_int(obj.nargs),)
+                nargs = as_int(obj.nargs),
             else:
                 nargs = None
         except AttributeError:
@@ -714,7 +714,7 @@ class WildFunction(Function, AtomicExpr):
             if is_sequence(nargs):
                 nargs = tuple(ordered(set(nargs)))
             else:
-                nargs = (as_int(nargs),)
+                nargs = as_int(nargs),
             nargs = FiniteSet(*nargs)
         self.nargs = nargs
 
