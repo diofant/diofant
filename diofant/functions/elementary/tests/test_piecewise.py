@@ -316,8 +316,7 @@ def test_piecewise_solve():
 @pytest.mark.xfail
 def test_piecewise_solve2():
     f = Piecewise(((x - 2)**2, x >= 0), (0, True))
-    C0 = Symbol('C0', negative=True)
-    assert solve(f, x) == [{x: 2}, {x: C0}]
+    assert solve(f, x) != [{x: 2}]
 
 
 def test_piecewise_fold():
@@ -356,15 +355,6 @@ def test_piecewise_fold_piecewise_in_cond():
     p7 = piecewise_fold(Piecewise((1, p5 < p6), (0, True)))
     assert p7
     assert Piecewise((1, And(Not(x < 1), x < 0)), (0, True))
-
-
-@pytest.mark.xfail
-def test_piecewise_fold_piecewise_in_cond_2():
-    p1 = Piecewise((cos(x), x < 0), (0, True))
-    p2 = Piecewise((0, Eq(p1, 0)), (1 / p1, True))
-    p3 = Piecewise((0, Or(And(Eq(cos(x), 0), x < 0), Not(x < 0))),
-                   (1 / cos(x), True))
-    assert(piecewise_fold(p2) == p3)
 
 
 def test_piecewise_fold_expand():

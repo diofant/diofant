@@ -40,16 +40,14 @@ def test_single_normal():
     assert E(X, Eq(X, mu)) == mu
 
 
-@pytest.mark.xfail
 def test_conditional_1d():
     X = Normal('x', 0, 1)
     Y = given(X, X >= 0)
 
-    assert density(Y) == 2 * density(X)
+    assert density(Y)(x) == 2 * density(X)(x)
 
-    assert Y.pspace.domain.set == Interval(0, oo)
-    assert E(Y) == sqrt(2) / sqrt(pi)
-
+    assert Y.pspace.domain.set == Interval(0, oo, right_open=True)
+    assert E(Y) == sqrt(2/pi)
     assert E(X**2) == E(Y**2)
 
 
@@ -452,7 +450,6 @@ def test_studentt():
     assert density(X)(x) == (1 + x**2/nu)**(-nu/2 - 1/2)/(sqrt(nu)*beta(1/2, nu/2))
 
 
-@pytest.mark.xfail
 def test_triangular():
     a = Symbol("a")
     b = Symbol("b")
@@ -461,7 +458,7 @@ def test_triangular():
     X = Triangular('x', a, b, c)
     assert density(X)(x) == Piecewise(
         ((2*x - 2*a)/((-a + b)*(-a + c)), And(a <= x, x < c)),
-        (2/(-a + b), x == c),
+        (2/(-a + b), Eq(x, c)),
         ((-2*x + 2*b)/((-a + b)*(b - c)), And(x <= b, c < x)),
         (0, True))
 
@@ -592,7 +589,6 @@ def test_input_value_assertions():
         fn('x', p, q)  # No error raised
 
 
-@pytest.mark.xfail
 def test_unevaluated():
     X = Normal('x', 0, 1)
     assert E(X, evaluate=False) == (
@@ -601,6 +597,10 @@ def test_unevaluated():
     assert E(X + 1, evaluate=False) == (
         Integral(sqrt(2)*x*exp(-x**2/2)/(2*sqrt(pi)), (x, -oo, oo)) + 1)
 
+
+@pytest.mark.xfail
+def test_unevaluated_fail():
+    X = Normal('x', 0, 1)
     assert P(X > 0, evaluate=False) == (
         Integral(sqrt(2)*exp(-x**2/2)/(2*sqrt(pi)), (x, 0, oo)))
 

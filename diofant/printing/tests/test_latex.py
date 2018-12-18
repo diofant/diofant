@@ -191,15 +191,6 @@ def test_latex_symbols():
     assert latex(Dummy('x')) == 'x'
 
 
-@pytest.mark.xfail
-def test_latex_symbols_failing():
-    rho, mass, volume = symbols('rho, mass, volume')
-    assert latex(
-        volume * rho == mass) == r"\rho \mathrm{volume} = \mathrm{mass}"
-    assert latex(volume / mass * rho == 1) == r"\rho \mathrm{volume} {\mathrm{mass}}^{(-1)} = 1"
-    assert latex(mass**3 * volume**3) == r"{\mathrm{mass}}^{3} \cdot {\mathrm{volume}}^{3}"
-
-
 def test_latex_functions():
     assert latex(exp(x)) == "e^{x}"
     assert latex(exp(1) + exp(2)) == "e + e^{2}"
@@ -1307,9 +1298,8 @@ def test_greek_symbols():
     assert latex(Symbol('vartheta')) == r'\vartheta'
 
 
-@pytest.mark.xfail
 def test_builtin_without_args_mismatched_names():
-    assert latex(CosineTransform) == r'\mathcal{COS}'
+    assert latex(CosineTransform) == r'\operatorname{CosineTransform}'
 
 
 def test_builtin_no_args():

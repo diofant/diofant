@@ -308,8 +308,8 @@ def test_sign_sympyissue_6167():
     # perhaps it's not possible to get the sign right when
     # only 1 digit is being requested for this situtation;
     # 2 digits works
-    assert (n - x).evalf(1, subs={x: i}) > 0
-    assert (n - x).evalf(2, subs={x: i}) > 0
+    assert (n - x).evalf(1, subs={x: i}, maxn=400) > 0
+    assert (n - x).evalf(2, subs={x: i}, maxn=400) > 0
 
 
 def test_Abs():

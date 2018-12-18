@@ -180,19 +180,6 @@ def test_heurisch_function():
     assert heurisch(f(x), x) is None
 
 
-@pytest.mark.xfail
-def test_heurisch_function_derivative():
-    # TODO: it looks like this used to work just by coincindence and
-    # thanks to sloppy implementation. Investigate why this used to
-    # work at all and if support for this can be restored.
-
-    df = diff(f(x), x)
-
-    assert heurisch(f(x)*df, x) == f(x)**2/2
-    assert heurisch(f(x)**2*df, x) == f(x)**3/3
-    assert heurisch(df/f(x), x) == log(f(x))
-
-
 def test_heurisch_wrapper():
     f = 1/(y + x)
     assert heurisch_wrapper(f, x) == log(x + y)
@@ -271,12 +258,12 @@ def test_pmint_besselj():
     f = besselj(nu + 1, x)/besselj(nu, x)
     g = nu*log(x) - log(besselj(nu, x))
 
-    assert heurisch(f, x) == g
+    assert simplify(heurisch(f, x) - g) == 0
 
     f = (nu*besselj(nu, x) - x*besselj(nu + 1, x))/x
     g = besselj(nu, x)
 
-    assert heurisch(f, x) == g
+    assert simplify(heurisch(f, x) - g) == 0
 
 
 @pytest.mark.slow

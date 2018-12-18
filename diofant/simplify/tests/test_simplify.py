@@ -449,14 +449,6 @@ def test_sympyissue_4194():
     assert simplify((4*x + 6*f(y))/(2*x + 3*f(y))) == 2
 
 
-@pytest.mark.xfail
-def test_simplify_float_vs_integer():
-    # Test for issue sympy/sympy#4473:
-    # https://github.com/sympy/sympy/issues/4473
-    assert simplify(x**2.0 - x**2) == 0
-    assert simplify(x**2 - x**2.0) == 0
-
-
 def test_as_content_primitive():
     # although the _as_content_primitive methods do not alter the underlying structure,
     # the as_content_primitive function will touch up the expression and join

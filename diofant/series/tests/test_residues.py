@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (Function, I, Rational, Symbol, exp, factorial, log, pi,
-                     residue, sin, sqrt)
+                     residue, root, sin)
 from diofant.abc import a, s, x, z
 
 
@@ -49,16 +49,15 @@ def test_expressions():
     assert residue(1/(x**2 + 1), x, I) == -I/2
     assert residue(1/(x**2 + 1), x, -I) == I/2
     assert residue(1/(x**4 + 1), x, 0) == 0
+    assert residue(1/(x**4 + 1), x, exp(I*pi/4)) == -root(-1, 4)/4
+    assert residue(1/(x**2 + a**2)**2, x, a*I) == -I/4/a**3
 
 
 @pytest.mark.xfail
 def test_expressions_failing():
-    assert residue(1/(x**4 + 1), x, exp(I*pi/4)) == -(Rational(1, 4) + I/4)/sqrt(2)
-
     n = Symbol('n', integer=True, positive=True)
     assert residue(exp(z)/(z - pi*I/4*a)**n, z, I*pi*a) == \
         exp(I*pi*a/4)/factorial(n - 1)
-    assert residue(1/(x**2 + a**2)**2, x, a*I) == -I/4/a**3
 
 
 def test_NotImplemented():

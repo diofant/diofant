@@ -271,7 +271,7 @@ def test_composite_sums():
     A = 0
     for i in range(-3, 5):
         A += f.subs({n: i})
-    B = s.subs({a: -3}).subs({b: 4})
+    B = s.subs({a: -3, b: 4})
     assert A == B
 
 

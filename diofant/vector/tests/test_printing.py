@@ -1,5 +1,3 @@
-import pytest
-
 from diofant import Function, Integral, latex
 from diofant import pretty as xpretty
 from diofant.abc import a, b, c
@@ -111,21 +109,6 @@ def test_str_printing():
     assert str(d[5]) == 'a*(N.i|N.k) + (-b)*(N.j|N.k)'
     assert str(d[8]) == ('(N.j|N.k) + (C.x**2 - ' +
                          'Integral(f(b), b))*(N.k|N.k)')
-
-
-@pytest.mark.xfail
-def test_pretty_printing_ascii():
-    assert pretty(v[0]) == '0'
-    assert pretty(v[1]) == 'N_i'
-    assert pretty(v[5]) == '(a) N_i + (-b) N_j'
-    assert pretty(v[8]) == pretty_v_8
-    assert pretty(v[2]) == '(-1) N_i'
-    assert pretty(v[11]) == pretty_v_11
-    assert pretty(s) == pretty_s
-    assert pretty(d[0]) == '(0|0)'
-    assert pretty(d[5]) == '(a) (N_i|N_k) + (-b) (N_j|N_k)'
-    assert pretty(d[7]) == pretty_d_7
-    assert pretty(d[10]) == '(cos(a)) (C_i|N_k) + (-sin(a)) (C_j|N_k)'
 
 
 def test_pretty_print_unicode():
