@@ -3,7 +3,7 @@
 from .domain import Domain
 
 
-__all__ = ('CharacteristicZero',)
+__all__ = 'CharacteristicZero',
 
 
 class CharacteristicZero(Domain):

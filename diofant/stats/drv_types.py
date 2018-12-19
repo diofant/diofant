@@ -4,7 +4,7 @@ from .drv import SingleDiscreteDistribution, SingleDiscretePSpace
 from .rv import _value_check
 
 
-__all__ = ('Geometric', 'Poisson')
+__all__ = 'Geometric', 'Poisson'
 
 
 def rv(symbol, cls, *args):
@@ -15,7 +15,7 @@ def rv(symbol, cls, *args):
 
 
 class PoissonDistribution(SingleDiscreteDistribution):
-    _argnames = ('lamda',)
+    _argnames = 'lamda',
 
     set = S.Naturals0
 
@@ -75,7 +75,7 @@ def Poisson(name, lamda):
 
 
 class GeometricDistribution(SingleDiscreteDistribution):
-    _argnames = ('p',)
+    _argnames = 'p',
     set = S.Naturals
 
     @staticmethod

@@ -748,7 +748,7 @@ class Point3D(Point):
                     "Enter a 2 or 3 dimensional point")
         coords = Tuple(*args)
         if len(coords) == 2:
-            coords += (S.Zero,)
+            coords += S.Zero,
         if eval:
             coords = coords.xreplace({f: simplify(nsimplify(f, rational=True))
                                       for f in coords.atoms(Float)})

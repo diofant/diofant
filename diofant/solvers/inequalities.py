@@ -13,7 +13,7 @@ from ..sets import FiniteSet, Interval, Union
 from ..utilities import filldedent
 
 
-__all__ = ('reduce_inequalities',)
+__all__ = 'reduce_inequalities',
 
 
 def solve_poly_inequality(poly, rel):

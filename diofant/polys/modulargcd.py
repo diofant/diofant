@@ -1512,7 +1512,7 @@ def _to_ANP_poly(f, ring):
 
     else:
         for monom, coeff in f.items():
-            m = (monom[0],)
+            m = monom[0],
             c = domain([domain.domain(coeff)] + [0]*monom[1])
 
             if m not in f_:

@@ -131,7 +131,7 @@ class NDimArray:
             raise TypeError("Data type not understood")
 
         if isinstance(shape, (int, Integer)):
-            shape = (shape,)
+            shape = shape,
 
         if any(not isinstance(dim, (int, Integer)) for dim in shape):
             raise TypeError("Shape should contain integers only.")

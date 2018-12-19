@@ -7,7 +7,7 @@ from ..utilities import has_dups, numbered_symbols, topological_sort
 from .polyerrors import FlagError, GeneratorsError, OptionError
 
 
-__all__ = ("Options", "Order")
+__all__ = "Options", "Order"
 
 
 class Option:
@@ -267,7 +267,7 @@ class Gens(Option, metaclass=OptionType):
     @classmethod
     def preprocess(cls, gens):
         if isinstance(gens, Basic):
-            gens = (gens,)
+            gens = gens,
         elif len(gens) == 1 and hasattr(gens[0], '__iter__'):
             gens = gens[0]
 

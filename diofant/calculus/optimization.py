@@ -8,7 +8,7 @@ from ..sets import Interval
 from ..solvers import reduce_inequalities, solve
 
 
-__all__ = ('minimize', 'maximize')
+__all__ = 'minimize', 'maximize'
 
 
 def minimize(f, *v):

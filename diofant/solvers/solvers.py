@@ -34,7 +34,7 @@ from ..utilities.iterables import uniq
 from .polysys import solve_linear_system, solve_poly_system
 
 
-__all__ = ('solve', 'solve_linear', 'minsolve_linear_system', 'checksol')
+__all__ = 'solve', 'solve_linear', 'minsolve_linear_system', 'checksol'
 
 
 def denoms(eq, symbols=None):

@@ -854,7 +854,7 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     """
 
     if isinstance(args, (Dummy, Symbol)):
-        args = (args,)
+        args = args,
     else:
         args = tuple(args)
 

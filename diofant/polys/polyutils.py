@@ -274,7 +274,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
         if len(exprs) == 1:
             arg = exprs[0]
         else:
-            arg = (exprs,)
+            arg = exprs,
 
         raise GeneratorsNeeded("specify generators to give %s a meaning" % arg)
 

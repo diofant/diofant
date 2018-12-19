@@ -102,7 +102,7 @@ MODULES = {
     "diofant": (DIOFANT, DIOFANT_DEFAULT, {}, (
         "from diofant.functions import *",
         "from diofant.matrices import *",
-        "from diofant import Sum, Integral, pi, oo, nan, zoo, E, I",)),
+        "from diofant import Sum, Integral, pi, oo, nan, zoo, E, I")),
     "numexpr": (NUMEXPR, NUMEXPR_DEFAULT, NUMEXPR_TRANSLATIONS,
                 ("import_module('numexpr')", )),
 }
@@ -337,7 +337,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
     # Get the names of the args, for creating a docstring
     if not iterable(args):
-        args = (args,)
+        args = args,
     names = []
     # Grab the callers frame, for getting the names by inspection (if needed)
     callers_local_vars = inspect.currentframe().f_back.f_locals.items()

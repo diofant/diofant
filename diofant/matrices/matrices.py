@@ -1094,7 +1094,7 @@ class MatrixBase(DefaultPrinting):
         if types:
             types = tuple(t if isinstance(t, type) else type(t) for t in types)
         else:
-            types = (Atom,)
+            types = Atom,
         result = set()
         for i in self:
             result.update( i.atoms(*types) )

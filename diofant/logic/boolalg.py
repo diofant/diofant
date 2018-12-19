@@ -271,7 +271,7 @@ class BooleanFunction(Application, Boolean):
                 if isinstance(arg, cls):
                     arg = arg.args
                 else:
-                    arg = (arg,)
+                    arg = arg,
                 for a in arg:
                     if Not(a) in argset:
                         return cls.zero

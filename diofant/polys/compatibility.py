@@ -50,7 +50,7 @@ from .sqfreetools import (dmp_sqf_list, dmp_sqf_list_include, dmp_sqf_norm,
                           dmp_sqf_p, dmp_sqf_part)
 
 
-__all__ = ('IPolys',)
+__all__ = 'IPolys',
 
 
 class IPolys:

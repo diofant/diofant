@@ -8,7 +8,7 @@ from .polyoptions import build_options
 from .polyutils import parallel_dict_from_basic
 
 
-__all__ = ('construct_domain',)
+__all__ = 'construct_domain',
 
 
 def _construct_simple(coeffs, opt):

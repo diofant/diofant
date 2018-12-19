@@ -81,9 +81,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             expr, exp = expr, S.One
 
         if expr.is_Dummy:
-            args = (expr.sort_key(),)
+            args = expr.sort_key(),
         elif expr.is_Atom:
-            args = (str(expr),)
+            args = str(expr),
         else:
             if expr.is_Add:
                 args = expr.as_ordered_terms(order=order)

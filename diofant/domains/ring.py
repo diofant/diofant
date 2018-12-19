@@ -4,7 +4,7 @@ from ..polys.polyerrors import ExactQuotientFailed, NotInvertible
 from .domain import Domain
 
 
-__all__ = ('Ring',)
+__all__ = 'Ring',
 
 
 class Ring(Domain):

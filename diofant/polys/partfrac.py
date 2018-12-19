@@ -9,7 +9,7 @@ from .polyoptions import allowed_flags, set_defaults
 from .polytools import parallel_poly_from_expr
 
 
-__all__ = ('apart', 'apart_list', 'assemble_partfrac_list')
+__all__ = 'apart', 'apart_list', 'assemble_partfrac_list'
 
 
 def apart(f, x=None, full=False, **options):

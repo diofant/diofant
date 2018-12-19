@@ -33,7 +33,7 @@ from .polyoptions import build_options
 from .polyutils import _dict_reorder, _parallel_dict_from_expr, expr_from_dict
 
 
-__all__ = ('PolynomialRing', 'ring', 'sring', 'vring')
+__all__ = 'PolynomialRing', 'ring', 'sring', 'vring'
 
 
 def ring(symbols, domain, order=lex):

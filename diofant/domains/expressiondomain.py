@@ -6,7 +6,7 @@ from .field import Field
 from .simpledomain import SimpleDomain
 
 
-__all__ = ('ExpressionDomain',)
+__all__ = 'ExpressionDomain',
 
 
 class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):

@@ -12,7 +12,7 @@ from ..printing.defaults import DefaultPrinting
 from .domainelement import DomainElement
 
 
-__all__ = ('Domain',)
+__all__ = 'Domain',
 
 
 class Domain(DefaultPrinting, abc.ABC):

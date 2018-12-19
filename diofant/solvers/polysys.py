@@ -10,7 +10,7 @@ from ..simplify import simplify
 from ..utilities import default_sort_key
 
 
-__all__ = ('solve_linear_system', 'solve_poly_system')
+__all__ = 'solve_linear_system', 'solve_poly_system'
 
 
 def solve_linear_system(system, *symbols, **flags):

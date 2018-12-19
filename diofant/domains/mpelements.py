@@ -9,7 +9,7 @@ from mpmath.rational import mpq
 from .domainelement import DomainElement
 
 
-__all__ = ('RealElement', 'ComplexElement', 'MPContext')
+__all__ = 'RealElement', 'ComplexElement', 'MPContext'
 
 
 class RealElement(_mpf, DomainElement):

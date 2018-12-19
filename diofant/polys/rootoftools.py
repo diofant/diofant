@@ -23,7 +23,7 @@ from .rootisolation import (dup_isolate_complex_roots_sqf,
                             dup_isolate_real_roots_sqf)
 
 
-__all__ = ('RootOf', 'RootSum')
+__all__ = 'RootOf', 'RootSum'
 
 
 _reals_cache = {}

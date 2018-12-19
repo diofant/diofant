@@ -103,7 +103,7 @@ def DiscreteUniform(name, items):
 
 
 class DieDistribution(SingleFiniteDistribution):
-    _argnames = ('sides',)
+    _argnames = 'sides',
 
     def __new__(cls, sides):
         sides_sym = sympify(sides)

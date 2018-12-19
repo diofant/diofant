@@ -1653,7 +1653,7 @@ def generate_bell(n):
     if n < 1:
         raise ValueError('n must be a positive integer')
     if n == 1:
-        yield (0,)
+        yield 0,
     elif n == 2:
         yield (0, 1)
         yield (1, 0)

@@ -13,7 +13,7 @@ class SympifyError(ValueError):
 
     def __str__(self):
         if self.base_exc is None:
-            return "SympifyError: %r" % (self.expr,)
+            return "SympifyError: %r" % self.expr,
 
         try:
             s = str(self.expr)
@@ -289,9 +289,9 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     transformations = standard_transformations
 
     if rational:
-        transformations += (t_rationalize,)
+        transformations += t_rationalize,
     if convert_xor:
-        transformations += (t_convert_xor,)
+        transformations += t_convert_xor,
 
     try:
         a = a.replace('\n', '')

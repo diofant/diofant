@@ -8,7 +8,7 @@ from .mpelements import MPContext
 from .simpledomain import SimpleDomain
 
 
-__all__ = ('RealField',)
+__all__ = 'RealField',
 
 
 class RealField(Field, CharacteristicZero, SimpleDomain):

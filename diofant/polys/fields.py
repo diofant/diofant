@@ -15,7 +15,7 @@ from .polyerrors import CoercionFailed, GeneratorsError
 from .rings import PolyElement, PolynomialRing
 
 
-__all__ = ('FractionField', 'field', 'vfield')
+__all__ = 'FractionField', 'field', 'vfield'
 
 
 def field(symbols, domain, order=lex):
