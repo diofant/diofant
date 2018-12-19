@@ -29,6 +29,9 @@ napoleon_use_rtype = False
 # Sphinx will warn about all references where the target cannot be found.
 nitpicky = True
 
+# Glob-style patterns that should be excluded when looking for sources.
+exclude_patterns = ['README.rst']
+
 # The document name of the "master" document, that is, the document
 # that contains the root toctree directive.
 master_doc = 'index'
