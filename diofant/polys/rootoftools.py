@@ -131,12 +131,6 @@ class RootOf(Expr):
         obj.poly = PurePoly(poly)
         obj.index = index
 
-        try:
-            _reals_cache[obj.poly.rep] = _reals_cache[poly.rep]
-            _complexes_cache[obj.poly.rep] = _complexes_cache[poly.rep]
-        except KeyError:
-            pass
-
         return obj
 
     def _hashable_content(self):
