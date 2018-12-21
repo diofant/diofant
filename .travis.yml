@@ -9,6 +9,9 @@ env:
   global:
     - PYTEST_ADDOPTS="-n auto --cov-config setup.cfg -o xfail_strict=1"
     - PYTHONHASHSEED=0
+    - secure: "VNgpd/TFAkLGjWZzRBWxujDHktdvp2Fg9D8PbGmr/pbmLcJS3a5pf6po1T/\
+               GJgioh8SI1TgPURjku5t48VHN18HoMBzABBSZ4C7cUjpNQlJMPKhWCZKmIJ\
+               alcS7yEFlTk8QqEBNh1twUFxHLxW/B9j4N5wHjOileocoo4EvhYUA="
   matrix:
     - SPLIT=1/3
     - SPLIT=2/3
@@ -55,18 +58,30 @@ matrix:
     - stage: deploy
       env:
         -
-      script: skip
+      script:
+        - python setup.py build_sphinx -W -b html
+        - mkdir -p sphinx_docs/latest
+        - cp -a build/sphinx/html sphinx_docs/latest/
       deploy:
-        provider: pypi
-        user: skirpichev
-        password:
-          secure: "OCi5YeQKvjr62Yzg1Bq9/xzIVDJSlr3q3YICp/gfnoPxTmiOiOug/Q\
-                   SM0rxl929Rb9hvf/QuNI6bpkPs0lz2roXa0PdJ2pdoNOm5Md2e43ht\
-                   bMRfH54YS98QDxL+gwasr327iGLi++avxF3N+vSyWboJLkSydDDlVh\
-                   B7k/t57Ig="
-        distributions: "sdist bdist_wheel"
-        on:
-          tags: true
+        - provider: pypi
+          user: skirpichev
+          password:
+            secure: "OCi5YeQKvjr62Yzg1Bq9/xzIVDJSlr3q3YICp/gfnoPxTmiOiOug/Q\
+                     SM0rxl929Rb9hvf/QuNI6bpkPs0lz2roXa0PdJ2pdoNOm5Md2e43ht\
+                     bMRfH54YS98QDxL+gwasr327iGLi++avxF3N+vSyWboJLkSydDDlVh\
+                     B7k/t57Ig="
+          distributions: "sdist bdist_wheel"
+          on:
+            tags: true
+        - provider: pages
+          repo: diofant/diofant.github.io
+          local-dir: sphinx_docs
+          target-branch: master
+          github-token: $GITHUB_TOKEN
+          skip-cleanup: true
+          keep-history: true
+          on:
+            branch: master
   allow_failures:
     - python: pypy3.5
       env: SPLIT=3/3
