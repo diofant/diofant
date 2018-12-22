@@ -354,9 +354,16 @@ def apart_list_full_decomposition(P, Q, dummygen):
     u = Function('u')(x)
     a = Dummy('a')
 
+    Q_c, Q_sqf = Q.sqf_list()
+    if Q_c != 1 and Q_sqf:
+        if Q_sqf[0][1] == 1:
+            Q_sqf[0] = Q_c*Q_sqf[0][0], 1
+        else:
+            Q_sqf.insert(0, (Poly(Q_c, x), 1))
+
     partial = []
 
-    for d, n in Q.sqf_list_include():
+    for d, n in Q_sqf:
         b = d.as_expr()
         U += [ u.diff(x, n - 1) ]
 

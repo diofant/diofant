@@ -2166,25 +2166,6 @@ class Poly(Expr):
         return (self.rep.domain.to_expr(coeff),
                 [(self.per(g), k) for g, k in factors])
 
-    def sqf_list_include(self):
-        """
-        Returns a list of square-free factors of ``self``.
-
-        Examples
-        ========
-
-        >>> f = expand(2*(x + 1)**3*x**4)
-        >>> f
-        2*x**7 + 6*x**6 + 6*x**5 + 2*x**4
-
-        >>> Poly(f).sqf_list_include()
-        [(Poly(2, x, domain='ZZ'), 1),
-         (Poly(x + 1, x, domain='ZZ'), 3),
-         (Poly(x, x, domain='ZZ'), 4)]
-        """
-        factors = self.rep.sqf_list_include()
-        return [(self.per(g), k) for g, k in factors]
-
     def factor_list(self):
         """
         Returns a list of irreducible factors of ``self``.

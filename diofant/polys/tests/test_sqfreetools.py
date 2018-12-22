@@ -149,10 +149,6 @@ def test_dmp_sqf():
 
     pytest.raises(DomainError, lambda: (x**2 - 1).sqf_norm())
 
-    Rt, t = ring("t", ZZ)
-    R, x = ring("x", Rt)
-    assert R.dmp_sqf_list_include(t**3*x**2) == [(t**3, 1), (x, 2)]
-
     K = QQ.algebraic_field(sqrt(3))
     R, x = ring("x", K)
     _, X = ring("x", QQ)
@@ -167,7 +163,6 @@ def test_dmp_sqf():
     assert R(7).is_squarefree is True
 
     assert R(3).sqf_list() == (3, [])
-    assert R.dmp_sqf_list_include(3) == [(3, 1)]
 
     R, x, y, z = ring("x,y,z", ZZ)
     assert f_0.is_squarefree is True
@@ -193,23 +188,17 @@ def test_dmp_sqf():
     f = -x**5 + x**4 + x - 1
 
     assert f.sqf_list() == (-1, [(x**3 + x**2 + x + 1, 1), (x - 1, 2)])
-    assert R.dmp_sqf_list_include(f) == [(-x**3 - x**2 - x - 1, 1), (x - 1, 2)]
 
     f = 2*x**5 + 16*x**4 + 50*x**3 + 76*x**2 + 56*x + 16
 
     assert f.sqf_list() == (2, [(x + 1, 2), (x + 2, 3)])
-    assert R.dmp_sqf_list_include(f) == [(2, 1), (x + 1, 2), (x + 2, 3)]
 
     R, x, y = ring("x,y", ZZ)
     f = -x**5 + x**4 + x - 1
 
     assert f.sqf_list() == (-1, [(x**3 + x**2 + x + 1, 1), (x - 1, 2)])
-    assert R.dmp_sqf_list_include(f) == [(-x**3 - x**2 - x - 1, 1), (x - 1, 2)]
 
     pytest.raises(DomainError, lambda: (x**2 + y**2).sqf_norm())
-
-    f = -x**2 + 2*x - 1
-    assert R.dmp_sqf_list_include(f) == [(-1, 1), (x - 1, 2)]
 
     R, x, y = ring("x,y", FF(2))
     pytest.raises(NotImplementedError, lambda: (y**2 + 1).sqf_list())
