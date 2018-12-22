@@ -5,7 +5,7 @@ import operator
 
 import pytest
 
-from diofant import oo, pi, sqrt
+from diofant import I, oo, pi, sqrt
 from diofant.abc import t, x, y, z
 from diofant.core import Symbol, symbols
 from diofant.domains import EX, FF, QQ, RR, ZZ
@@ -1558,3 +1558,13 @@ def test_PolyElement_almosteq():
     assert (x + 2*y).almosteq(2*x + y) is False
     assert R.one.almosteq(2) is False
     assert R.one.almosteq(z) is False
+
+
+def test_PolyElement_lift():
+    K = QQ.algebraic_field(I)
+    R = K.poly_ring(x)
+
+    f = x**2 + I*x + 2*I
+
+    assert R.from_expr(f).lift() == R.to_ground().from_expr(x**8 + 2*x**6 +
+                                                            9*x**4 - 8*x**2 + 16)

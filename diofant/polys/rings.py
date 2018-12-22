@@ -2237,3 +2237,6 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         ring = self.ring
         i = ring.index(x)
         return ring.dmp_integrate_in(self, m, i)
+
+    def lift(self):
+        return self.ring.dmp_lift(self)
