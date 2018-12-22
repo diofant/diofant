@@ -1,6 +1,5 @@
 """OO layer for several polynomial representations. """
 
-from ..core import oo
 from ..core.sympify import CantSympify
 from .densearith import (dmp_abs, dmp_add, dmp_div, dmp_exquo,
                          dmp_exquo_ground, dmp_l1_norm, dmp_max_norm, dmp_mul,
@@ -314,41 +313,6 @@ class DMP(CantSympify):
         """Returns the total degree of ``self``. """
         return max(sum(m) for m in self.monoms())
 
-    def homogenize(self, s):
-        """Return homogeneous polynomial of ``self``"""
-        td = self.total_degree()
-        result = {}
-        new_symbol = (s == len(self.terms()[0][0]))
-        for term in self.terms():
-            d = sum(term[0])
-            if d < td:
-                i = td - d
-            else:
-                i = 0
-            if new_symbol:
-                result[term[0] + (i,)] = term[1]
-            else:
-                l = list(term[0])
-                l[s] += i
-                result[tuple(l)] = term[1]
-        return DMP(result, self.domain, self.lev + int(new_symbol))
-
-    def homogeneous_order(self):
-        """Returns the homogeneous order of ``self``. """
-        if self.is_zero:
-            return -oo
-
-        monoms = self.monoms()
-        tdeg = sum(monoms[0])
-
-        for monom in monoms:
-            _tdeg = sum(monom)
-
-            if _tdeg != tdeg:
-                return
-
-        return tdeg
-
     def LC(self):
         """Returns the leading coefficient of ``self``. """
         return dmp_ground_LC(self.rep, self.lev, self.domain)
@@ -642,7 +606,19 @@ class DMP(CantSympify):
     @property
     def is_homogeneous(self):
         """Returns ``True`` if ``self`` is a homogeneous polynomial. """
-        return self.homogeneous_order() is not None
+        if self.is_zero:
+            return True
+
+        monoms = self.monoms()
+        tdeg = sum(monoms[0])
+
+        for monom in monoms:
+            _tdeg = sum(monom)
+
+            if _tdeg != tdeg:
+                return False
+
+        return True
 
     @property
     def is_irreducible(self):

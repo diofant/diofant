@@ -1195,27 +1195,6 @@ def test_Poly_total_degree():
     assert Poly(x**3 + x + 1).total_degree() == 3
 
 
-def test_Poly_homogenize():
-    assert Poly(x**2+y).homogenize(z) == Poly(x**2+y*z)
-    assert Poly(x+y).homogenize(z) == Poly(x+y, x, y, z)
-    assert Poly(x+y**2).homogenize(y) == Poly(x*y+y**2)
-
-    pytest.raises(TypeError, lambda: Poly(x, x).homogenize(1))
-
-
-def test_Poly_homogeneous_order():
-    assert Poly(0, x, y).homogeneous_order() == -oo
-    assert Poly(1, x, y).homogeneous_order() == 0
-    assert Poly(x, x, y).homogeneous_order() == 1
-    assert Poly(x*y, x, y).homogeneous_order() == 2
-
-    assert Poly(x + 1, x, y).homogeneous_order() is None
-    assert Poly(x*y + x, x, y).homogeneous_order() is None
-
-    assert Poly(x**5 + 2*x**3*y**2 + 9*x*y**4).homogeneous_order() == 5
-    assert Poly(x**5 + 2*x**3*y**3 + 9*x*y**4).homogeneous_order() is None
-
-
 def test_Poly_LC():
     assert Poly(0, x).LC() == 0
     assert Poly(1, x).LC() == 1
