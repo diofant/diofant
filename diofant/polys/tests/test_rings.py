@@ -374,12 +374,12 @@ def test_PolyElement_tail_degree():
     assert (7*x**5*y**3 + x**3*z).tail_degree(z) == 0
 
 
-def test_PolyElement_degrees():
+def test_PolyElement_degree_list():
     R,  x, y, z = ring("x,y,z", ZZ)
 
-    assert R(0).degrees() == (-oo, -oo, -oo)
-    assert R(1).degrees() == (0, 0, 0)
-    assert (x**2*y + x**3*z**2).degrees() == (3, 1, 2)
+    assert R(0).degree_list() == (-oo, -oo, -oo)
+    assert R(1).degree_list() == (0, 0, 0)
+    assert (x**2*y + x**3*z**2).degree_list() == (3, 1, 2)
 
 
 def test_PolyElement_tail_degrees():

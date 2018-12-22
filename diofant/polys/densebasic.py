@@ -115,7 +115,7 @@ def dmp_degree_in(f, j, u):
 
 def dmp_degree_list(f, u):
     """
-    Return a list of degrees of ``f`` in ``K[X]``.
+    Return a tuple of degrees of ``f`` in ``K[X]``.
 
     Examples
     ========

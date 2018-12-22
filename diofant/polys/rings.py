@@ -1425,7 +1425,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         else:
             return max(monom[i] for monom in self)
 
-    def degrees(self):
+    def degree_list(self):
         """
         A tuple containing leading degrees in all variables.
 

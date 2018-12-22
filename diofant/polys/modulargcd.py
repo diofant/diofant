@@ -608,7 +608,7 @@ def modgcd(f, g):
     for i in range(k):
         badprimes *= ring.domain.gcd(_swap(f, i).LC, _swap(g, i).LC)
 
-    degbound = [min(fdeg, gdeg) for fdeg, gdeg in zip(f.degrees(), g.degrees())]
+    degbound = [min(fdeg, gdeg) for fdeg, gdeg in zip(f.degree_list(), g.degree_list())]
     contbound = list(degbound)
 
     m = 1
