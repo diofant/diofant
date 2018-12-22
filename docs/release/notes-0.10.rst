@@ -64,7 +64,7 @@ Compatibility breaks
 * Removed ``all`` option for :meth:`~diofant.polys.polytools.Poly.sqf_list` method, see :pull:`727`.
 * Renamed ``has_Ring/Field`` attributes of :class:`~diofant.domains.domain.Domain` to ``is_Ring/Field``, see :pull:`729`.
 * Removed ``gff()``, ``gff_list()`` functions and methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`729`.
-* Removed ``sqf_list_include()``, ``homogenize()`` and ``homogeneous_order()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`747`.
+* Removed ``sqf_list_include()``, ``homogenize()``, ``homogeneous_order()``, ``eq()`` and ``ne()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`747`.
 
 Minor changes
 =============

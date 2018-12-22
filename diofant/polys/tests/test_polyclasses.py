@@ -38,7 +38,6 @@ def test_DMP___init__():
 def test_DMP___eq__():
     f = DMP([[ZZ(1), ZZ(2)], [ZZ(3)]], ZZ)
     assert f == f
-    assert f.eq(f)
 
     assert DMP([[ZZ(1), ZZ(2)], [ZZ(3)]], ZZ) == \
         DMP([[QQ(1), QQ(2)], [QQ(3)]], QQ)
@@ -46,7 +45,6 @@ def test_DMP___eq__():
         DMP([[ZZ(1), ZZ(2)], [ZZ(3)]], ZZ)
 
     assert DMP([[[ZZ(1)]]], ZZ) != DMP([[ZZ(1)]], ZZ)
-    assert DMP([[[ZZ(1)]]], ZZ).ne(DMP([[ZZ(1)]], ZZ))
     assert DMP([[ZZ(1)]], ZZ) != DMP([[[ZZ(1)]]], ZZ)
 
 

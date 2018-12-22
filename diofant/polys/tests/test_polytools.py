@@ -7,7 +7,6 @@ from diofant import (Derivative, Eq, Expr, Float, I, Integer, Integral, Mul,
                      exp, expand, false, im, oo, pi, re, root, sin, sqrt,
                      symbols, tanh, true)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
-from diofant.core.compatibility import iterable
 from diofant.core.mul import _keep_coeff
 from diofant.domains import EX, FF, QQ, RR, ZZ
 from diofant.domains.realfield import RealField
@@ -48,19 +47,6 @@ def _epsilon_eq(a, b):
         if abs(x - y) > 1e-10:
             return False
     return True
-
-
-def _strict_eq(a, b):
-    if type(a) == type(b):
-        if iterable(a):
-            if len(a) == len(b):
-                return all(_strict_eq(c, d) for c, d in zip(a, b))
-            else:
-                return False
-        else:
-            return isinstance(a, Poly) and a.eq(b, strict=True)
-    else:
-        return False
 
 
 def test_Poly_from_dict():
@@ -489,11 +475,8 @@ def test_Poly__eq__():
     f = Poly(x, x, domain=ZZ)
     g = Poly(x, x, domain=QQ)
 
-    assert f.eq(g) is True
-    assert f.ne(g) is False
-
-    assert f.eq(g, strict=True) is False
-    assert f.ne(g, strict=True) is True
+    assert (f == g) is True
+    assert (f != g) is False
 
     t0 = Symbol('t0')
 
@@ -522,24 +505,18 @@ def test_PurePoly__eq__():
     f = PurePoly(x, x, domain=ZZ)
     g = PurePoly(x, x, domain=QQ)
 
-    assert f.eq(g) is True
-    assert f.ne(g) is False
-
-    assert f.eq(g, strict=True) is False
-    assert f.ne(g, strict=True) is True
+    assert (f == g) is True
+    assert (f != g) is False
 
     f = PurePoly(x, x, domain=ZZ)
     g = PurePoly(y, y, domain=QQ)
 
-    assert f.eq(g) is True
-    assert f.ne(g) is False
+    assert (f == g) is True
+    assert (f != g) is False
 
-    assert f.eq(g, strict=True) is False
-    assert f.ne(g, strict=True) is True
+    assert (f == 1) is False
 
-    assert f.eq(1) is False
-
-    assert f.eq(sin(x)) is False
+    assert (f == sin(x)) is False
 
 
 def test_PurePoly_Poly():
@@ -2953,12 +2930,12 @@ def test_reduced():
     Q = [Poly(2*x, x, y), Poly(1, x, y)]
     r = Poly(x**2 + y**2 + y, x, y)
 
-    assert _strict_eq(reduced(f, G, polys=True), (Q, r))
-    assert _strict_eq(reduced(f, G, x, y, polys=True), (Q, r))
+    assert reduced(f, G, polys=True) == (Q, r)
+    assert reduced(f, G, x, y, polys=True) == (Q, r)
 
     H = groebner(G, polys=True)
 
-    assert _strict_eq(H.reduce(f), (Q, r))
+    assert H.reduce(f) == (Q, r)
 
     f = 2*x**3 + y**3 + 3*y
     G = groebner([x**2 + y**2 - 1, x*y - 2])

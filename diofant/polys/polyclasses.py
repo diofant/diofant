@@ -701,18 +701,5 @@ class DMP(CantSympify):
 
         return False
 
-    def eq(self, other, strict=False):
-        if not strict:
-            return self.__eq__(other)
-        else:
-            return self._strict_eq(other)
-
-    def ne(self, other, strict=False):
-        return not self.eq(other, strict=strict)
-
-    def _strict_eq(self, other):
-        return (isinstance(other, self.__class__) and self.lev == other.lev
-                and self.domain == other.domain and self.rep == other.rep)
-
     def __bool__(self):
         return not dmp_zero_p(self.rep, self.lev)

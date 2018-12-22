@@ -2910,19 +2910,6 @@ class Poly(Expr):
     def __bool__(self):
         return not self.is_zero
 
-    def eq(self, other, strict=False):
-        if not strict:
-            return self.__eq__(other)
-        else:
-            return self._strict_eq(sympify(other))
-
-    def ne(self, other, strict=False):
-        return not self.eq(other, strict=strict)
-
-    def _strict_eq(self, other):
-        return (isinstance(other, self.__class__) and
-                self.gens == other.gens and self.rep.eq(other.rep, strict=True))
-
 
 class PurePoly(Poly):
     """Class for representing pure polynomials. """
@@ -2974,10 +2961,6 @@ class PurePoly(Poly):
             g = g.set_domain(dom)
 
         return f.rep == g.rep
-
-    def _strict_eq(self, other):
-        return isinstance(other, self.__class__) and self.rep.eq(other.rep,
-                                                                 strict=True)
 
     def _unify(self, other):
         other = sympify(other)
