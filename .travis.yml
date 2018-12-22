@@ -60,8 +60,9 @@ matrix:
         -
       script:
         - python setup.py build_sphinx -W -b html
-        - mkdir -p sphinx_docs/latest
-        - cp -a build/sphinx/html sphinx_docs/latest/
+        - git clone https://github.com/diofant/diofant.github.io.git sphinx_docs
+        - rm -rf sphinx_docs/.git
+        - rsync -a --delete build/sphinx/html/ sphinx_docs/latest/
       deploy:
         - provider: pypi
           user: skirpichev
