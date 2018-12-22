@@ -63,6 +63,11 @@ matrix:
         - git clone https://github.com/diofant/diofant.github.io.git sphinx_docs
         - rm -rf sphinx_docs/.git
         - rsync -a --delete build/sphinx/html/ sphinx_docs/latest/
+        - python setup.py sdist bdist_wheel
+        - VERSION=$(python -c 'import pkg_resources;print(pkg_resources.get_distribution("diofant").parsed_version.base_version)')
+        - cp -a build/sphinx/html "diofant-docs-html-${VERSION}"
+        - zip -r dist/diofant-docs-html-${VERSION}.zip diofant-docs-html-${VERSION}
+        - SHORT_VERSION=$(echo ${VERSION}|sed 's/.0$//')
       deploy:
         - provider: pypi
           user: skirpichev
@@ -83,6 +88,17 @@ matrix:
           keep-history: true
           on:
             branch: master
+        - provider: releases
+          api_key: $GITHUB_TOKEN
+          skip_cleanup: true
+          draft: true
+          file_glob: true
+          file: dist/*
+          body: "See [release notes](https://diofant.readthedocs.io/\
+                 en/latest/release/notes-${SHORT_VERSION}.html)."
+          on:
+            tags: true
+            condition: "$TRAVIS_TAG =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+.*$"
   allow_failures:
     - python: pypy3.5
       env: SPLIT=3/3
