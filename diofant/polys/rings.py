@@ -216,9 +216,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
     def __eq__(self, other):
         return self is other
 
-    def __ne__(self, other):
-        return self is not other
-
     def clone(self, symbols=None, domain=None, order=None):
         return self.__class__(domain or self.domain, symbols or self.symbols, order or self.order)
 
