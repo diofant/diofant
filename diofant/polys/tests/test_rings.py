@@ -1568,3 +1568,15 @@ def test_PolyElement_lift():
 
     assert R.from_expr(f).lift() == R.to_ground().from_expr(x**8 + 2*x**6 +
                                                             9*x**4 - 8*x**2 + 16)
+
+
+def test_PolyElement_slice():
+    R, x = ring('x', ZZ)
+
+    f = x**3 + 2*x**2 + 3*x + 4
+
+    assert f.slice(0, 0) == f.slice(0, 0, x) == 0
+    assert f.slice(0, 1) == f.slice(0, 1, x) == 4
+    assert f.slice(0, 2) == f.slice(0, 2, x) == 3*x + 4
+    assert f.slice(0, 3) == f.slice(0, 3, x) == 2*x**2 + 3*x + 4
+    assert f.slice(0, 4) == f.slice(0, 4, x) == x**3 + 2*x**2 + 3*x + 4

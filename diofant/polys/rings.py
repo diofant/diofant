@@ -2240,3 +2240,8 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     def lift(self):
         return self.ring.dmp_lift(self)
+
+    def slice(self, m, n, x=0):
+        ring = self.ring
+        j = ring.index(x)
+        return ring.dmp_slice_in(self, m, n, j)
