@@ -173,9 +173,9 @@ def test_DMP_functionality():
 
     assert f.LC() == ZZ(1)
     assert f.TC() == ZZ(0)
-    assert f.nth(1, 1) == ZZ(2)
+    assert f.coeff((1, 1)) == ZZ(2)
 
-    pytest.raises(TypeError, lambda: f.nth(0, 'x'))
+    pytest.raises(TypeError, lambda: f.coeff((0, 'x')))
 
     assert f.max_norm() == 2
     assert f.l1_norm() == 4

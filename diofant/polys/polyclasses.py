@@ -357,12 +357,12 @@ class DMP(CantSympify):
         """Returns the trailing coefficient of ``self``. """
         return dmp_ground_TC(self.rep, self.lev, self.domain)
 
-    def nth(self, *N):
+    def coeff(self, N):
         """Returns the ``n``-th coefficient of ``self``. """
-        if all(isinstance(n, int) for n in N):
+        if isinstance(N, tuple) and all(isinstance(n, int) for n in N):
             return dmp_ground_nth(self.rep, N, self.lev, self.domain)
         else:
-            raise TypeError("a sequence of integers expected")
+            raise TypeError("a tuple of integers expected")
 
     def max_norm(self):
         """Returns maximum norm of ``self``. """

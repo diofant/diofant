@@ -403,7 +403,9 @@ def test_PolyElement_coeff():
 
     assert f.coeff(x**2*y) == 3
     assert f.coeff(x*y*z) == -1
+    assert f.coeff((1, 1, 1)) == -1
     assert f.coeff(z**3) == 7
+    assert f.coeff((0, 0, 3)) == 7
 
     pytest.raises(ValueError, lambda: f.coeff(3*x**2*y))
     pytest.raises(ValueError, lambda: f.coeff(-x*y*z))
