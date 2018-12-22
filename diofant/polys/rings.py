@@ -2232,3 +2232,8 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     def factor_list(self):
         return self.ring.dmp_factor_list(self)
+
+    def integrate(self, m=1, x=0):
+        ring = self.ring
+        i = ring.index(x)
+        return ring.dmp_integrate_in(self, m, i)

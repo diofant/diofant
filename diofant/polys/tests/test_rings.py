@@ -1180,6 +1180,28 @@ def test_PolyElement_diff():
     assert f.diff(X[10]) == 576*X[0]**8*X[1]**6*X[4]**3*X[10]/5
 
 
+def test_PolyElement_integrate():
+    R, x = ring('x', QQ)
+
+    f = x + 1
+
+    assert f.integrate() == x**2/2 + x
+    assert f.integrate(x=0) == x**2/2 + x
+    assert f.integrate(x=x) == x**2/2 + x
+
+    R, x, y = ring('x y', QQ)
+
+    f = x*y + 1
+
+    assert f.integrate(x=x) == x**2*y/2 + x
+    assert f.integrate(x=y) == x*y**2/2 + y
+    assert f.integrate(2, x) == x**3*y/6 + x**2/2
+    assert f.integrate(2, y) == x*y**3/6 + y**2/2
+
+    assert f.integrate(x=x).integrate(x=y) == x**2*y**2/4 + x*y
+    assert f.integrate(x=y).integrate(x=x) == x**2*y**2/4 + x*y
+
+
 def test_PolyElement___call__():
     R, x = ring("x", ZZ)
     f = 3*x + 1
