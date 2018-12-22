@@ -568,17 +568,17 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
     def __call__(self, *values):
         if 0 < len(values) <= self.field.ngens:
-            return self.evaluate(list(zip(self.field.gens, values)))
+            return self.eval(list(zip(self.field.gens, values)))
         else:
             raise ValueError("expected at least 1 and at most %s values, got %s" % (self.field.ngens, len(values)))
 
-    def evaluate(self, x, a=None):
+    def eval(self, x, a=None):
         if isinstance(x, list) and a is None:
             x = [(X.to_poly(), a) for X, a in x]
-            numer, denom = self.numer.evaluate(x), self.denom.evaluate(x)
+            numer, denom = self.numer.eval(x), self.denom.eval(x)
         else:
             x = x.to_poly()
-            numer, denom = self.numer.evaluate(x, a), self.denom.evaluate(x, a)
+            numer, denom = self.numer.eval(x, a), self.denom.eval(x, a)
 
         if self._extract_ground(denom) == (1, 1, None):
             return numer

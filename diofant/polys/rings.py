@@ -2039,22 +2039,22 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     def __call__(self, *values):
         if 0 < len(values) <= self.ring.ngens:
-            return self.evaluate(list(zip(self.ring.gens, values)))
+            return self.eval(list(zip(self.ring.gens, values)))
         else:
             raise ValueError("expected at least 1 and at most %s values, got %s" % (self.ring.ngens, len(values)))
 
-    def evaluate(self, x, a=None):
+    def eval(self, x, a=None):
         f = self
 
         if isinstance(x, list) and a is None:
             (X, a), x = x[0], x[1:]
-            f = f.evaluate(X, a)
+            f = f.eval(X, a)
 
             if not x:
                 return f
             else:
                 x = [ (Y.drop(X), a) for (Y, a) in x ]
-                return f.evaluate(x)
+                return f.eval(x)
 
         ring = f.ring
         i = ring.index(x)

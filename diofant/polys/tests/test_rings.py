@@ -1209,33 +1209,33 @@ def test_PolyElement___call__():
     pytest.raises(CoercionFailed, lambda: f(QQ(1, 7), QQ(1, 7)))
 
 
-def test_PolyElement_evaluate():
+def test_PolyElement_eval():
     R, x = ring("x", ZZ)
     f = x**3 + 4*x**2 + 2*x + 3
 
-    r = f.evaluate(x, 0)
+    r = f.eval(x, 0)
     assert r == 3 and not isinstance(r, PolyElement)
 
-    pytest.raises(CoercionFailed, lambda: f.evaluate(x, QQ(1, 7)))
+    pytest.raises(CoercionFailed, lambda: f.eval(x, QQ(1, 7)))
 
     R,  x, y, z = ring("x,y,z", ZZ)
     f = (x*y)**3 + 4*(x*y)**2 + 2*x*y + 3
 
-    r = f.evaluate(x, 0)
+    r = f.eval(x, 0)
     assert r == 3 and isinstance(r, R.drop(x).dtype)
-    r = f.evaluate([(x, 0), (y, 0)])
+    r = f.eval([(x, 0), (y, 0)])
     assert r == 3 and isinstance(r, R.drop(x, y).dtype)
-    r = f.evaluate(y, 0)
+    r = f.eval(y, 0)
     assert r == 3 and isinstance(r, R.drop(y).dtype)
-    r = f.evaluate([(y, 0), (x, 0)])
+    r = f.eval([(y, 0), (x, 0)])
     assert r == 3 and isinstance(r, R.drop(y, x).dtype)
 
-    r = f.evaluate([(x, 0), (y, 0), (z, 0)])
+    r = f.eval([(x, 0), (y, 0), (z, 0)])
     assert r == 3 and not isinstance(r, PolyElement)
 
-    pytest.raises(CoercionFailed, lambda: f.evaluate([(x, 1), (y, QQ(1, 7))]))
-    pytest.raises(CoercionFailed, lambda: f.evaluate([(x, QQ(1, 7)), (y, 1)]))
-    pytest.raises(CoercionFailed, lambda: f.evaluate([(x, QQ(1, 7)), (y, QQ(1, 7))]))
+    pytest.raises(CoercionFailed, lambda: f.eval([(x, 1), (y, QQ(1, 7))]))
+    pytest.raises(CoercionFailed, lambda: f.eval([(x, QQ(1, 7)), (y, 1)]))
+    pytest.raises(CoercionFailed, lambda: f.eval([(x, QQ(1, 7)), (y, QQ(1, 7))]))
 
 
 def test_PolyElement_subs():

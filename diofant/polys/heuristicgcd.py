@@ -59,8 +59,8 @@ def heugcd(f, g):
     cofactors = domain.cofactors if ring.is_univariate else heugcd
 
     for i in range(query('HEU_GCD_MAX')):
-        ff = f.evaluate(x0, x)
-        gg = g.evaluate(x0, x)
+        ff = f.eval(x0, x)
+        gg = g.eval(x0, x)
 
         if ff and gg:
             h, cff, cfg = cofactors(ff, gg)
