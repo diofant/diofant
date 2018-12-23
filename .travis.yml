@@ -71,11 +71,11 @@ matrix:
         - rm -rf sphinx_docs/.git
         - rsync -a --delete build/sphinx/html/ sphinx_docs/latest/
         - python setup.py sdist bdist_wheel
-        - VERSION=$(python -c 'import pkg_resources;print(pkg_resources.get_distribution("diofant").parsed_version.base_version)')
+        - VERSION=$(python -c 'import diofant;print(diofant.__version__)')
         - cp -a build/sphinx/html diofant-docs-html-${VERSION}
         - zip -r dist/diofant-docs-html-${VERSION}.zip diofant-docs-html-${VERSION}
         - cp -a build/sphinx/latex/diofant.pdf dist/diofant-docs-${VERSION}.pdf
-        - SHORT_VERSION=$(echo ${VERSION}|sed 's/.0$//')
+        - SHORT_VERSION=$(echo ${VERSION}|sed 's/\([0-9]\+\.[0-9]\+\).*$/\1/')
       deploy:
         - provider: pypi
           user: skirpichev
@@ -102,9 +102,10 @@ matrix:
           draft: true
           file_glob: true
           file: dist/*
-          name: "Diofant ${SHORT_VERSION}"
+          name: "Diofant ${VERSION}"
           body: "See [release notes](https://diofant.readthedocs.io/\
                  en/latest/release/notes-${SHORT_VERSION}.html)."
+          prerelease: true
           on:
             tags: true
             condition: "$TRAVIS_TAG =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+.*$"
