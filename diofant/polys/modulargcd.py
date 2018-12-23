@@ -526,8 +526,7 @@ def _modgcd_p(f, g, p, degbound, contbound):
             h = _primitive(h, p)[1] * conth.set_ring(ring)
             degyh = h.degree(k-1)
 
-            if degyh > degbound[k-1]:
-                return
+            assert degyh <= degbound[k-1]
             if degyh < degbound[k-1]:
                 degbound[k-1] = degyh
                 raise ModularGCDFailed
