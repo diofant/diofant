@@ -26,6 +26,12 @@ addons:
       - liblapack-dev
       - gfortran
       - graphviz
+      - texlive-xetex
+      - texlive-latex-extra
+      - texlive-fonts-recommended
+      - latexmk
+      - lmodern
+      - xindy
 stages:
   - quality
   - test
@@ -45,7 +51,8 @@ matrix:
         - python -We:invalid -m compileall -f diofant -q
         - travis_wait python setup.py flake8
         - travis_wait 30 pylint -j1 diofant
-        - python setup.py build_sphinx -W -b html
+        - python setup.py build_sphinx -W -b html,latex
+        - make -C build/sphinx/latex all-pdf
         - |
           if [ "${TRAVIS_EVENT_TYPE}" = "cron" ]; then
             rm -rf build/
@@ -58,14 +65,16 @@ matrix:
       env:
         -
       script:
-        - python setup.py build_sphinx -W -b html
+        - python setup.py build_sphinx -W -b html,latex
+        - make -C build/sphinx/latex all-pdf
         - git clone https://github.com/diofant/diofant.github.io.git sphinx_docs
         - rm -rf sphinx_docs/.git
         - rsync -a --delete build/sphinx/html/ sphinx_docs/latest/
         - python setup.py sdist bdist_wheel
         - VERSION=$(python -c 'import pkg_resources;print(pkg_resources.get_distribution("diofant").parsed_version.base_version)')
-        - cp -a build/sphinx/html "diofant-docs-html-${VERSION}"
+        - cp -a build/sphinx/html diofant-docs-html-${VERSION}
         - zip -r dist/diofant-docs-html-${VERSION}.zip diofant-docs-html-${VERSION}
+        - cp -a build/sphinx/latex/diofant.pdf dist/diofant-docs-${VERSION}.pdf
         - SHORT_VERSION=$(echo ${VERSION}|sed 's/.0$//')
       deploy:
         - provider: pypi
