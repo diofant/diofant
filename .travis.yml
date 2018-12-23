@@ -93,6 +93,7 @@ matrix:
           draft: true
           file_glob: true
           file: dist/*
+          name: "Diofant ${SHORT_VERSION}"
           body: "See [release notes](https://diofant.readthedocs.io/\
                  en/latest/release/notes-${SHORT_VERSION}.html)."
           on:
