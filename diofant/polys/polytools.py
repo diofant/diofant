@@ -5,7 +5,7 @@ from mpmath.libmp.libhyper import NoConvergence
 
 from . import polyoptions as options
 from ..core import (Add, Basic, Derivative, Dummy, E, Expr, I, Integer, Mul, S,
-                    Symbol, Tuple, oo, preorder_traversal, sympify)
+                    Tuple, oo, preorder_traversal, sympify)
 from ..core.compatibility import default_sort_key, iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
@@ -1228,52 +1228,6 @@ class Poly(Expr):
         """
         return self.rep.total_degree()
 
-    def homogenize(self, s):
-        """
-        Returns the homogeneous polynomial of ``self``.
-
-        A homogeneous polynomial is a polynomial whose all monomials with
-        non-zero coefficients have the same total degree. If you only
-        want to check if a polynomial is homogeneous, then use
-        :func:`Poly.is_homogeneous`. If you want not only to check if a
-        polynomial is homogeneous but also compute its homogeneous order,
-        then use :func:`Poly.homogeneous_order`.
-
-        Examples
-        ========
-
-        >>> f = Poly(x**5 + 2*x**2*y**2 + 9*x*y**3)
-        >>> f.homogenize(z)
-        Poly(x**5 + 2*x**2*y**2*z + 9*x*y**3*z, x, y, z, domain='ZZ')
-        """
-        if not isinstance(s, Symbol):
-            raise TypeError("``Symbol`` expected, got %s" % type(s))
-        if s in self.gens:
-            i = self.gens.index(s)
-            gens = self.gens
-        else:
-            i = len(self.gens)
-            gens = self.gens + (s,)
-        return self.per(self.rep.homogenize(i), gens=gens)
-
-    def homogeneous_order(self):
-        """
-        Returns the homogeneous order of ``self``.
-
-        A homogeneous polynomial is a polynomial whose all monomials with
-        non-zero coefficients have the same total degree. This degree is
-        the homogeneous order of ``f``. If you only want to check if a
-        polynomial is homogeneous, then use :func:`Poly.is_homogeneous`.
-
-        Examples
-        ========
-
-        >>> f = Poly(x**5 + 2*x**3*y**2 + 9*x*y**4)
-        >>> f.homogeneous_order()
-        5
-        """
-        return self.rep.homogeneous_order()
-
     def LC(self, order=None):
         """
         Returns the leading coefficient of ``self``.
@@ -1348,7 +1302,7 @@ class Poly(Expr):
         if len(N) != len(self.gens):
             raise ValueError('exponent of each generator must be specified')
 
-        result = self.rep.nth(*N)
+        result = self.rep.coeff(N)
         return self.rep.domain.to_expr(result)
 
     def coeff(self, x, n=1, right=False):
@@ -2166,25 +2120,6 @@ class Poly(Expr):
         return (self.rep.domain.to_expr(coeff),
                 [(self.per(g), k) for g, k in factors])
 
-    def sqf_list_include(self):
-        """
-        Returns a list of square-free factors of ``self``.
-
-        Examples
-        ========
-
-        >>> f = expand(2*(x + 1)**3*x**4)
-        >>> f
-        2*x**7 + 6*x**6 + 6*x**5 + 2*x**4
-
-        >>> Poly(f).sqf_list_include()
-        [(Poly(2, x, domain='ZZ'), 1),
-         (Poly(x + 1, x, domain='ZZ'), 3),
-         (Poly(x, x, domain='ZZ'), 4)]
-        """
-        factors = self.rep.sqf_list_include()
-        return [(self.per(g), k) for g, k in factors]
-
     def factor_list(self):
         """
         Returns a list of irreducible factors of ``self``.
@@ -2723,9 +2658,7 @@ class Poly(Expr):
         Returns ``True`` if ``self`` is a homogeneous polynomial.
 
         A homogeneous polynomial is a polynomial whose all monomials with
-        non-zero coefficients have the same total degree. If you want not
-        only to check if a polynomial is homogeneous but also compute its
-        homogeneous order, then use :func:`Poly.homogeneous_order`.
+        non-zero coefficients have the same total degree.
 
         Examples
         ========
@@ -2977,19 +2910,6 @@ class Poly(Expr):
     def __bool__(self):
         return not self.is_zero
 
-    def eq(self, other, strict=False):
-        if not strict:
-            return self.__eq__(other)
-        else:
-            return self._strict_eq(sympify(other))
-
-    def ne(self, other, strict=False):
-        return not self.eq(other, strict=strict)
-
-    def _strict_eq(self, other):
-        return (isinstance(other, self.__class__) and
-                self.gens == other.gens and self.rep.eq(other.rep, strict=True))
-
 
 class PurePoly(Poly):
     """Class for representing pure polynomials. """
@@ -3041,10 +2961,6 @@ class PurePoly(Poly):
             g = g.set_domain(dom)
 
         return f.rep == g.rep
-
-    def _strict_eq(self, other):
-        return isinstance(other, self.__class__) and self.rep.eq(other.rep,
-                                                                 strict=True)
 
     def _unify(self, other):
         other = sympify(other)

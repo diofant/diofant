@@ -9,7 +9,8 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term, dmp_div,
                          dmp_sub_term, dup_add, dup_add_term, dup_lshift,
                          dup_mul, dup_mul_term, dup_pexquo, dup_rshift,
                          dup_sqr, dup_sub, dup_sub_term)
-from .densebasic import dmp_degree_in, dmp_LC, dmp_strip, dmp_to_dict
+from .densebasic import (dmp_degree_in, dmp_LC, dmp_slice_in, dmp_strip,
+                         dmp_to_dict)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_diff_in, dmp_eval_in, dmp_eval_tail,
                          dmp_ground_content, dmp_ground_extract,
@@ -46,8 +47,7 @@ from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_real_roots_list,
                             dup_isolate_real_roots_sqf, dup_refine_real_root,
                             dup_root_upper_bound, dup_sturm)
-from .sqfreetools import (dmp_sqf_list, dmp_sqf_list_include, dmp_sqf_norm,
-                          dmp_sqf_p, dmp_sqf_part)
+from .sqfreetools import dmp_sqf_list, dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
 
 
 __all__ = 'IPolys',
@@ -206,6 +206,9 @@ class IPolys:
 
     def dmp_diff_in(self, f, m, j):
         return self.from_dense(dmp_diff_in(self.to_dense(f), m, j, self.ngens-1, self.domain))
+
+    def dmp_slice_in(self, f, m, n, j=0):
+        return self.from_dense(dmp_slice_in(self.to_dense(f), m, n, j, self.ngens-1, self.domain))
 
     def dmp_integrate_in(self, f, m, j):
         return self.from_dense(dmp_integrate_in(self.to_dense(f), m, j, self.ngens-1, self.domain))
@@ -522,10 +525,6 @@ class IPolys:
     def dmp_sqf_list(self, f):
         coeff, factors = dmp_sqf_list(self.to_dense(f), self.ngens-1, self.domain)
         return coeff, [(self.from_dense(g), k) for g, k in factors]
-
-    def dmp_sqf_list_include(self, f):
-        factors = dmp_sqf_list_include(self.to_dense(f), self.ngens-1, self.domain)
-        return [(self.from_dense(g), k) for g, k in factors]
 
     def dup_root_upper_bound(self, f):
         return dup_root_upper_bound(self.to_dense(f), self.domain)

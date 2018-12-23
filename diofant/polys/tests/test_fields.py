@@ -342,13 +342,13 @@ def test_FracElement___call__():
     assert f(1, 1) == 4/Fz.z
 
 
-def test_FracElement_evaluate():
+def test_FracElement_eval():
     F,  x, y, z = field("x,y,z", ZZ)
     Fyz = field("y,z", ZZ)[0]
     f = (x**2 + 3*y)/z
 
-    assert f.evaluate(x, 0) == 3*Fyz.y/Fyz.z
-    pytest.raises(ZeroDivisionError, lambda: f.evaluate(z, 0))
+    assert f.eval(x, 0) == 3*Fyz.y/Fyz.z
+    pytest.raises(ZeroDivisionError, lambda: f.eval(z, 0))
 
 
 def test_FracElement_subs():

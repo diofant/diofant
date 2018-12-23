@@ -1,6 +1,5 @@
 """OO layer for several polynomial representations. """
 
-from ..core import oo
 from ..core.sympify import CantSympify
 from .densearith import (dmp_abs, dmp_add, dmp_div, dmp_exquo,
                          dmp_exquo_ground, dmp_l1_norm, dmp_max_norm, dmp_mul,
@@ -27,8 +26,7 @@ from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_real_roots, dup_isolate_real_roots_sqf,
                             dup_refine_real_root, dup_sturm)
-from .sqfreetools import (dmp_sqf_list, dmp_sqf_list_include, dmp_sqf_norm,
-                          dmp_sqf_p, dmp_sqf_part)
+from .sqfreetools import dmp_sqf_list, dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
 
 
 class DMP(CantSympify):
@@ -315,41 +313,6 @@ class DMP(CantSympify):
         """Returns the total degree of ``self``. """
         return max(sum(m) for m in self.monoms())
 
-    def homogenize(self, s):
-        """Return homogeneous polynomial of ``self``"""
-        td = self.total_degree()
-        result = {}
-        new_symbol = (s == len(self.terms()[0][0]))
-        for term in self.terms():
-            d = sum(term[0])
-            if d < td:
-                i = td - d
-            else:
-                i = 0
-            if new_symbol:
-                result[term[0] + (i,)] = term[1]
-            else:
-                l = list(term[0])
-                l[s] += i
-                result[tuple(l)] = term[1]
-        return DMP(result, self.domain, self.lev + int(new_symbol))
-
-    def homogeneous_order(self):
-        """Returns the homogeneous order of ``self``. """
-        if self.is_zero:
-            return -oo
-
-        monoms = self.monoms()
-        tdeg = sum(monoms[0])
-
-        for monom in monoms:
-            _tdeg = sum(monom)
-
-            if _tdeg != tdeg:
-                return
-
-        return tdeg
-
     def LC(self):
         """Returns the leading coefficient of ``self``. """
         return dmp_ground_LC(self.rep, self.lev, self.domain)
@@ -358,12 +321,12 @@ class DMP(CantSympify):
         """Returns the trailing coefficient of ``self``. """
         return dmp_ground_TC(self.rep, self.lev, self.domain)
 
-    def nth(self, *N):
+    def coeff(self, N):
         """Returns the ``n``-th coefficient of ``self``. """
-        if all(isinstance(n, int) for n in N):
+        if isinstance(N, tuple) and all(isinstance(n, int) for n in N):
             return dmp_ground_nth(self.rep, N, self.lev, self.domain)
         else:
-            raise TypeError("a sequence of integers expected")
+            raise TypeError("a tuple of integers expected")
 
     def max_norm(self):
         """Returns maximum norm of ``self``. """
@@ -544,11 +507,6 @@ class DMP(CantSympify):
         coeff, factors = dmp_sqf_list(self.rep, self.lev, self.domain)
         return coeff, [(self.per(g), k) for g, k in factors]
 
-    def sqf_list_include(self):
-        """Returns a list of square-free factors of ``self``. """
-        factors = dmp_sqf_list_include(self.rep, self.lev, self.domain)
-        return [(self.per(g), k) for g, k in factors]
-
     def factor_list(self):
         """Returns a list of irreducible factors of ``self``. """
         coeff, factors = dmp_factor_list(self.rep, self.lev, self.domain)
@@ -648,7 +606,19 @@ class DMP(CantSympify):
     @property
     def is_homogeneous(self):
         """Returns ``True`` if ``self`` is a homogeneous polynomial. """
-        return self.homogeneous_order() is not None
+        if self.is_zero:
+            return True
+
+        monoms = self.monoms()
+        tdeg = sum(monoms[0])
+
+        for monom in monoms:
+            _tdeg = sum(monom)
+
+            if _tdeg != tdeg:
+                return False
+
+        return True
 
     @property
     def is_irreducible(self):
@@ -730,19 +700,6 @@ class DMP(CantSympify):
             pass
 
         return False
-
-    def eq(self, other, strict=False):
-        if not strict:
-            return self.__eq__(other)
-        else:
-            return self._strict_eq(other)
-
-    def ne(self, other, strict=False):
-        return not self.eq(other, strict=strict)
-
-    def _strict_eq(self, other):
-        return (isinstance(other, self.__class__) and self.lev == other.lev
-                and self.domain == other.domain and self.rep == other.rep)
 
     def __bool__(self):
         return not dmp_zero_p(self.rep, self.lev)

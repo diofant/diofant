@@ -5,7 +5,7 @@ import operator
 
 import pytest
 
-from diofant import oo, pi, sqrt
+from diofant import I, oo, pi, sqrt
 from diofant.abc import t, x, y, z
 from diofant.core import Symbol, symbols
 from diofant.domains import EX, FF, QQ, RR, ZZ
@@ -374,12 +374,12 @@ def test_PolyElement_tail_degree():
     assert (7*x**5*y**3 + x**3*z).tail_degree(z) == 0
 
 
-def test_PolyElement_degrees():
+def test_PolyElement_degree_list():
     R,  x, y, z = ring("x,y,z", ZZ)
 
-    assert R(0).degrees() == (-oo, -oo, -oo)
-    assert R(1).degrees() == (0, 0, 0)
-    assert (x**2*y + x**3*z**2).degrees() == (3, 1, 2)
+    assert R(0).degree_list() == (-oo, -oo, -oo)
+    assert R(1).degree_list() == (0, 0, 0)
+    assert (x**2*y + x**3*z**2).degree_list() == (3, 1, 2)
 
 
 def test_PolyElement_tail_degrees():
@@ -403,7 +403,9 @@ def test_PolyElement_coeff():
 
     assert f.coeff(x**2*y) == 3
     assert f.coeff(x*y*z) == -1
+    assert f.coeff((1, 1, 1)) == -1
     assert f.coeff(z**3) == 7
+    assert f.coeff((0, 0, 3)) == 7
 
     pytest.raises(ValueError, lambda: f.coeff(3*x**2*y))
     pytest.raises(ValueError, lambda: f.coeff(-x*y*z))
@@ -1178,6 +1180,28 @@ def test_PolyElement_diff():
     assert f.diff(X[10]) == 576*X[0]**8*X[1]**6*X[4]**3*X[10]/5
 
 
+def test_PolyElement_integrate():
+    R, x = ring('x', QQ)
+
+    f = x + 1
+
+    assert f.integrate() == x**2/2 + x
+    assert f.integrate(x=0) == x**2/2 + x
+    assert f.integrate(x=x) == x**2/2 + x
+
+    R, x, y = ring('x y', QQ)
+
+    f = x*y + 1
+
+    assert f.integrate(x=x) == x**2*y/2 + x
+    assert f.integrate(x=y) == x*y**2/2 + y
+    assert f.integrate(2, x) == x**3*y/6 + x**2/2
+    assert f.integrate(2, y) == x*y**3/6 + y**2/2
+
+    assert f.integrate(x=x).integrate(x=y) == x**2*y**2/4 + x*y
+    assert f.integrate(x=y).integrate(x=x) == x**2*y**2/4 + x*y
+
+
 def test_PolyElement___call__():
     R, x = ring("x", ZZ)
     f = 3*x + 1
@@ -1209,33 +1233,33 @@ def test_PolyElement___call__():
     pytest.raises(CoercionFailed, lambda: f(QQ(1, 7), QQ(1, 7)))
 
 
-def test_PolyElement_evaluate():
+def test_PolyElement_eval():
     R, x = ring("x", ZZ)
     f = x**3 + 4*x**2 + 2*x + 3
 
-    r = f.evaluate(x, 0)
+    r = f.eval(x, 0)
     assert r == 3 and not isinstance(r, PolyElement)
 
-    pytest.raises(CoercionFailed, lambda: f.evaluate(x, QQ(1, 7)))
+    pytest.raises(CoercionFailed, lambda: f.eval(x, QQ(1, 7)))
 
     R,  x, y, z = ring("x,y,z", ZZ)
     f = (x*y)**3 + 4*(x*y)**2 + 2*x*y + 3
 
-    r = f.evaluate(x, 0)
+    r = f.eval(x, 0)
     assert r == 3 and isinstance(r, R.drop(x).dtype)
-    r = f.evaluate([(x, 0), (y, 0)])
+    r = f.eval([(x, 0), (y, 0)])
     assert r == 3 and isinstance(r, R.drop(x, y).dtype)
-    r = f.evaluate(y, 0)
+    r = f.eval(y, 0)
     assert r == 3 and isinstance(r, R.drop(y).dtype)
-    r = f.evaluate([(y, 0), (x, 0)])
+    r = f.eval([(y, 0), (x, 0)])
     assert r == 3 and isinstance(r, R.drop(y, x).dtype)
 
-    r = f.evaluate([(x, 0), (y, 0), (z, 0)])
+    r = f.eval([(x, 0), (y, 0), (z, 0)])
     assert r == 3 and not isinstance(r, PolyElement)
 
-    pytest.raises(CoercionFailed, lambda: f.evaluate([(x, 1), (y, QQ(1, 7))]))
-    pytest.raises(CoercionFailed, lambda: f.evaluate([(x, QQ(1, 7)), (y, 1)]))
-    pytest.raises(CoercionFailed, lambda: f.evaluate([(x, QQ(1, 7)), (y, QQ(1, 7))]))
+    pytest.raises(CoercionFailed, lambda: f.eval([(x, 1), (y, QQ(1, 7))]))
+    pytest.raises(CoercionFailed, lambda: f.eval([(x, QQ(1, 7)), (y, 1)]))
+    pytest.raises(CoercionFailed, lambda: f.eval([(x, QQ(1, 7)), (y, QQ(1, 7))]))
 
 
 def test_PolyElement_subs():
@@ -1534,3 +1558,25 @@ def test_PolyElement_almosteq():
     assert (x + 2*y).almosteq(2*x + y) is False
     assert R.one.almosteq(2) is False
     assert R.one.almosteq(z) is False
+
+
+def test_PolyElement_lift():
+    K = QQ.algebraic_field(I)
+    R = K.poly_ring(x)
+
+    f = x**2 + I*x + 2*I
+
+    assert R.from_expr(f).lift() == R.to_ground().from_expr(x**8 + 2*x**6 +
+                                                            9*x**4 - 8*x**2 + 16)
+
+
+def test_PolyElement_slice():
+    R, x = ring('x', ZZ)
+
+    f = x**3 + 2*x**2 + 3*x + 4
+
+    assert f.slice(0, 0) == f.slice(0, 0, x) == 0
+    assert f.slice(0, 1) == f.slice(0, 1, x) == 4
+    assert f.slice(0, 2) == f.slice(0, 2, x) == 3*x + 4
+    assert f.slice(0, 3) == f.slice(0, 3, x) == 2*x**2 + 3*x + 4
+    assert f.slice(0, 4) == f.slice(0, 4, x) == x**3 + 2*x**2 + 3*x + 4

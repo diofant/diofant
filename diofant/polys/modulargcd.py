@@ -492,13 +492,13 @@ def _modgcd_p(f, g, p, degbound, contbound):
         a = random.sample(points, 1)[0]
         points.remove(a)
 
-        if not evaltest.evaluate(0, a) % p:
+        if not evaltest.eval(0, a) % p:
             continue
 
-        deltaa = delta.evaluate(0, a) % p
+        deltaa = delta.eval(0, a) % p
 
-        fa = f.evaluate(k-1, a).trunc_ground(p)
-        ga = g.evaluate(k-1, a).trunc_ground(p)
+        fa = f.eval(k-1, a).trunc_ground(p)
+        ga = g.eval(k-1, a).trunc_ground(p)
 
         # polynomials in Z_p[x_0, ..., x_{k-2}]
         ha = _modgcd_p(fa, ga, p, degbound, contbound)
@@ -526,8 +526,7 @@ def _modgcd_p(f, g, p, degbound, contbound):
             h = _primitive(h, p)[1] * conth.set_ring(ring)
             degyh = h.degree(k-1)
 
-            if degyh > degbound[k-1]:
-                return
+            assert degyh <= degbound[k-1]
             if degyh < degbound[k-1]:
                 degbound[k-1] = degyh
                 raise ModularGCDFailed
@@ -608,7 +607,7 @@ def modgcd(f, g):
     for i in range(k):
         badprimes *= ring.domain.gcd(_swap(f, i).LC, _swap(g, i).LC)
 
-    degbound = [min(fdeg, gdeg) for fdeg, gdeg in zip(f.degrees(), g.degrees())]
+    degbound = [min(fdeg, gdeg) for fdeg, gdeg in zip(f.degree_list(), g.degree_list())]
     contbound = list(degbound)
 
     m = 1
@@ -977,7 +976,7 @@ def _evaluate_ground(f, i, a):
     fa = ring.zero
 
     for monom, coeff in f.items():
-        fa[monom] = coeff.evaluate(i, a)
+        fa[monom] = coeff.eval(i, a)
 
     return fa
 
@@ -1057,9 +1056,9 @@ def _func_field_modgcd_p(f, g, minpoly, p):
         points.remove(a)
 
         if k == 1:
-            test = delta.evaluate(k-1, a) % p == 0
+            test = delta.eval(k-1, a) % p == 0
         else:
-            test = delta.evaluate(k-1, a).trunc_ground(p) == 0
+            test = delta.eval(k-1, a).trunc_ground(p) == 0
 
         if test:
             continue

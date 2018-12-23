@@ -1,9 +1,8 @@
 """Square-free decomposition algorithms and related tools. """
 
-from .densearith import dmp_mul, dmp_mul_ground, dmp_neg, dmp_quo, dmp_sub
-from .densebasic import (dmp_convert, dmp_ground, dmp_ground_LC, dmp_ground_p,
-                         dmp_inject, dmp_one_p, dmp_raise, dmp_swap,
-                         dmp_zero_p)
+from .densearith import dmp_mul, dmp_neg, dmp_quo, dmp_sub
+from .densebasic import (dmp_convert, dmp_ground_LC, dmp_ground_p, dmp_inject,
+                         dmp_one_p, dmp_raise, dmp_swap, dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff_in, dmp_ground_monic,
                          dmp_ground_primitive)
 from .euclidtools import dmp_gcd, dmp_resultant
@@ -195,25 +194,3 @@ def dmp_sqf_list(f, u, K):
             coeff = -coeff
 
     return coeff, dmp_rr_yun0_sqf_list(f, u, K)
-
-
-def dmp_sqf_list_include(f, u, K):
-    """
-    Return square-free decomposition of a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> R.dmp_sqf_list_include(x**5 + 2*x**4*y + x**3*y**2)
-    [(1, 1), (x + y, 2), (x, 3)]
-    """
-    coeff, factors = dmp_sqf_list(f, u, K)
-
-    if factors and factors[0][1] == 1:
-        g = dmp_mul_ground(factors[0][0], coeff, u, K)
-        return [(g, 1)] + factors[1:]
-    else:
-        g = dmp_ground(coeff, u)
-        return [(g, 1)] + factors

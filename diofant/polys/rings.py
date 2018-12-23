@@ -216,9 +216,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
     def __eq__(self, other):
         return self is other
 
-    def __ne__(self, other):
-        return self is not other
-
     def clone(self, symbols=None, domain=None, order=None):
         return self.__class__(domain or self.domain, symbols or self.symbols, order or self.order)
 
@@ -1425,7 +1422,7 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         else:
             return max(monom[i] for monom in self)
 
-    def degrees(self):
+    def degree_list(self):
         """
         A tuple containing leading degrees in all variables.
 
@@ -1503,12 +1500,11 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
         """
         if element == 1:
             return self._get_coeff(self.ring.zero_monom)
-        elif isinstance(element, self.ring.dtype):
-            terms = list(element.items())
-            if len(terms) == 1:
-                monom, coeff = terms[0]
-                if coeff == self.ring.domain.one:
-                    return self._get_coeff(monom)
+        elif isinstance(element, self.ring.dtype) and element.is_monomial:
+            monom = element.monoms().pop()
+            return self._get_coeff(monom)
+        elif is_sequence(element) and all(isinstance(n, int) for n in element):
+            return self._get_coeff(element)
 
         raise ValueError("expected a monomial, got %s" % element)
 
@@ -2039,22 +2035,22 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     def __call__(self, *values):
         if 0 < len(values) <= self.ring.ngens:
-            return self.evaluate(list(zip(self.ring.gens, values)))
+            return self.eval(list(zip(self.ring.gens, values)))
         else:
             raise ValueError("expected at least 1 and at most %s values, got %s" % (self.ring.ngens, len(values)))
 
-    def evaluate(self, x, a=None):
+    def eval(self, x, a=None):
         f = self
 
         if isinstance(x, list) and a is None:
             (X, a), x = x[0], x[1:]
-            f = f.evaluate(X, a)
+            f = f.eval(X, a)
 
             if not x:
                 return f
             else:
                 x = [ (Y.drop(X), a) for (Y, a) in x ]
-                return f.evaluate(x)
+                return f.eval(x)
 
         ring = f.ring
         i = ring.index(x)
@@ -2236,3 +2232,16 @@ class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
 
     def factor_list(self):
         return self.ring.dmp_factor_list(self)
+
+    def integrate(self, m=1, x=0):
+        ring = self.ring
+        i = ring.index(x)
+        return ring.dmp_integrate_in(self, m, i)
+
+    def lift(self):
+        return self.ring.dmp_lift(self)
+
+    def slice(self, m, n, x=0):
+        ring = self.ring
+        j = ring.index(x)
+        return ring.dmp_slice_in(self, m, n, j)
