@@ -331,7 +331,7 @@ def test_roots_preprocessing():
     assert poly == Poly(f, x)
 
     f = Poly(-y**2 + x**2*exp(x), y, domain=ZZ.poly_ring(x, exp(x)))
-    g = Poly(-y**2 + exp(x), y, domain=ZZ.poly_ring(exp(x)))
+    g = Poly(y**2 - exp(x), y, domain=ZZ.poly_ring(exp(x)))
 
     assert preprocess_roots(f) == (x, g)
 

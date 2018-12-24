@@ -5,7 +5,7 @@ import pytest
 from diofant import I, Rational, sin, sqrt
 from diofant.abc import x
 from diofant.domains import EX, FF, QQ, ZZ
-from diofant.polys.densearith import dmp_mul_ground
+from diofant.polys.densearith import dmp_mul_ground, dmp_neg
 from diofant.polys.densebasic import (dmp_convert, dmp_normal, dmp_swap,
                                       dup_from_dict)
 from diofant.polys.densetools import (dmp_clear_denoms, dmp_compose,
@@ -353,11 +353,11 @@ def test_dmp_ground_primitive():
     assert dmp_ground_primitive(f_3, 2, ZZ) == (1, f_3)
     assert dmp_ground_primitive(dmp_mul_ground(f_3, ZZ(5), 2, ZZ), 2, ZZ) == (5, f_3)
 
-    assert dmp_ground_primitive(f_4, 2, ZZ) == (1, f_4)
-    assert dmp_ground_primitive(dmp_mul_ground(f_4, ZZ(6), 2, ZZ), 2, ZZ) == (6, f_4)
+    assert dmp_ground_primitive(f_4, 2, ZZ) == (-1, dmp_neg(f_4, 2, ZZ))
+    assert dmp_ground_primitive(dmp_mul_ground(f_4, ZZ(6), 2, ZZ), 2, ZZ) == (-6, dmp_neg(f_4, 2, ZZ))
 
-    assert dmp_ground_primitive(f_5, 2, ZZ) == (1, f_5)
-    assert dmp_ground_primitive(dmp_mul_ground(f_5, ZZ(7), 2, ZZ), 2, ZZ) == (7, f_5)
+    assert dmp_ground_primitive(f_5, 2, ZZ) == (-1, dmp_neg(f_5, 2, ZZ))
+    assert dmp_ground_primitive(dmp_mul_ground(f_5, ZZ(7), 2, ZZ), 2, ZZ) == (-7, dmp_neg(f_5, 2, ZZ))
 
     assert dmp_ground_primitive(f_6, 3, ZZ) == (1, f_6)
     assert dmp_ground_primitive(dmp_mul_ground(f_6, ZZ(8), 3, ZZ), 3, ZZ) == (8, f_6)

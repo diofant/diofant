@@ -183,7 +183,7 @@ def ratint_logpart(f, g, x, t=None):
       Poly(3*_t**2 + 1, _t, domain='ZZ'))]
     >>> ratint_logpart(Poly(12, x), Poly(x**2 - x - 2, x), x)
     [(Poly(x - 3*_t/8 - 1/2, x, domain='QQ[_t]'),
-      Poly(-_t**2 + 16, _t, domain='ZZ'))]
+      Poly(_t**2 - 16, _t, domain='ZZ'))]
 
     See Also
     ========
