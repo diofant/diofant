@@ -447,9 +447,6 @@ def dup_zz_factor_sqf(f, K):
 
     n = dmp_degree_in(g, 0, 0)
 
-    if dmp_LC(g, K) < 0:
-        cont, g = -cont, dmp_neg(g, 0, K)
-
     if n <= 0:
         return cont, []
     elif n == 1:
@@ -512,9 +509,6 @@ def dup_zz_factor(f, K):
 
     n = dmp_degree_in(g, 0, 0)
 
-    if dmp_LC(g, K) < 0:
-        cont, g = -cont, dmp_neg(g, 0, K)
-
     if n <= 0:
         return cont, []
     elif n == 1:
@@ -568,9 +562,6 @@ def dmp_zz_wang_test_points(f, T, ct, A, u, K):
         raise EvaluationFailed('no luck')
 
     c, h = dmp_ground_primitive(g, 0, K)
-
-    if K.is_negative(dmp_LC(h, K)):
-        c, h = -c, dmp_neg(h, 0, K)
 
     v = u - 1
 
@@ -940,9 +931,6 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
     for f in factors:
         _, f = dmp_ground_primitive(f, u, K)
 
-        if K.is_negative(dmp_ground_LC(f, u, K)):
-            f = dmp_neg(f, u, K)
-
         result.append(f)
 
     return result
@@ -986,9 +974,6 @@ def dmp_zz_factor(f, u, K):
         return K.zero, []
 
     cont, g = dmp_ground_primitive(f, u, K)
-
-    if dmp_ground_LC(g, u, K) < 0:
-        cont, g = -cont, dmp_neg(g, u, K)
 
     if dmp_ground_p(g, None, u):
         return cont, []

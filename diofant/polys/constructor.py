@@ -20,7 +20,7 @@ def _construct_simple(coeffs, opt):
             return False
     else:
         def is_algebraic(coeff):
-            return coeff.is_number and coeff.is_algebraic
+            return coeff.is_number and coeff.is_algebraic and not coeff.is_rational
 
     for coeff in coeffs:
         if coeff.is_Rational:

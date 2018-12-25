@@ -397,10 +397,14 @@ def dmp_ground_primitive(f, u, K):
 
     cont = dmp_ground_content(f, u, K)
 
-    if cont == K.one:
-        return cont, f
-    else:
-        return cont, dmp_quo_ground(f, cont, u, K)
+    if cont != K.one:
+        f = dmp_quo_ground(f, cont, u, K)
+
+    if K.is_negative(dmp_ground_LC(f, u, K)):
+        f = dmp_neg(f, u, K)
+        cont = -cont
+
+    return cont, f
 
 
 def dmp_ground_extract(f, g, u, K):

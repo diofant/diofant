@@ -167,7 +167,7 @@ def dup_primitive_prs(f, g, K):
     >>> prs[1]
     3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
     >>> prs[2]
-    -5*x**4 + x**2 - 3
+    5*x**4 - x**2 + 3
     >>> prs[3]
     13*x**2 + 25*x - 49
     >>> prs[4]
@@ -777,9 +777,6 @@ def dup_rr_prs_gcd(f, g, K):
 
     h = dmp_subresultants(F, G, 0, K)[-1]
     _, h = dmp_ground_primitive(h, 0, K)
-
-    if K.is_negative(dmp_LC(h, K)):
-        c = -c
 
     h = dmp_mul_ground(h, c, 0, K)
 

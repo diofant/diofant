@@ -101,7 +101,7 @@ def test_pde_separate_mul():
 
     # coverage tests
     assert pde_separate_mul(Eq(u(x, t).diff(x), u(x, t).diff(x, t)), u(x, t),
-                            [X(x), T(t)]) == [1, T(t)/diff(T(t), t)]
+                            [X(x), T(t)]) == [-1, -T(t)/diff(T(t), t)]
     assert pde_separate(Eq((x + t)*u(x, t).diff(x), u(x, t).diff(t)),
                         u(x, t), [X(x), T(t)], strategy='mul') is None
     assert pde_separate(Eq(u(x, t).diff(x), u(x, t).diff(t) + t), u(x, t),

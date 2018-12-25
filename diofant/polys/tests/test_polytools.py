@@ -2078,7 +2078,7 @@ def test_primitive():
     assert g.primitive() == (1.0, g)
 
     assert primitive(-3*x/4 + y + Rational(11, 8)) == \
-        (Rational(1, 8), -6*x + 8*y + 11)
+        (Rational(-1, 8), 6*x - 8*y - 11)
 
 
 def test_compose():

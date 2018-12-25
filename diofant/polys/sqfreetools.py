@@ -189,8 +189,4 @@ def dmp_sqf_list(f, u, K):
     else:
         coeff, f = dmp_ground_primitive(f, u, K)
 
-        if K.is_negative(dmp_ground_LC(f, u, K)):
-            f = dmp_neg(f, u, K)
-            coeff = -coeff
-
     return coeff, dmp_rr_yun0_sqf_list(f, u, K)

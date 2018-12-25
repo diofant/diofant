@@ -81,7 +81,7 @@ def test_dup_primitive_prs():
     assert R.dup_primitive_prs(f, g) == [
         f,
         g,
-        -5*x**4 + x**2 - 3,
+        5*x**4 - x**2 + 3,
         13*x**2 + 25*x - 49,
         4663*x - 6150,
         1]

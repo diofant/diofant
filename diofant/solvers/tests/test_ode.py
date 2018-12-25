@@ -1509,7 +1509,7 @@ def test_nth_linear_constant_coeff_homogeneous():
                C4*exp(-x*sqrt(a)))
     sol11 = Eq(f(x),
                C1*exp(x*(k - sqrt(k**2 + 2))) + C2*exp(x*(k + sqrt(k**2 + 2))))
-    sol12 = Eq(f(x), E**(2*x*(-k - 2*Abs(k)))*C1 + E**(2*x*(-k + 2*Abs(k)))*C2)
+    sol12 = Eq(f(x), E**(-2*x*(k + 2*Abs(k)))*C1 + E**(-2*x*(k - 2*Abs(k)))*C2)
     sol13 = Eq(f(x), C1 + C2*x + C3*x**2 + C4*x**3)
     sol14 = Eq(f(x), (C1 + C2*x)*exp(-2*x))
     sol15 = Eq(f(x), (C1 + C2*x)*exp(-x) + C3*exp(x/3))
@@ -1804,7 +1804,7 @@ def test_nth_linear_constant_coeff_undetermined_coefficients():
     sol9 = Eq(f(x),
               -2*x + x**2 + (C1*sin(x*sqrt(3)/2) + C2*cos(x*sqrt(3)/2))*exp(-x/2))
     sol10 = Eq(f(x), -x*exp(x) - 2*exp(-x) + C1*exp(-2*x) + C2*exp(4*x))
-    sol11 = Eq(f(x), C1 + C2*exp(3*x) + (-3*sin(x) - cos(x))*exp(2*x)/5)
+    sol11 = Eq(f(x), C1 + C2*exp(3*x) - (3*sin(x) + cos(x))*exp(2*x)/5)
     sol12 = Eq(f(x), x - sin(x)/4 + (C1 + C2*x)*exp(-x) + (C3 + C4*x)*exp(x))
     sol13 = Eq(f(x), C1 + x**3/3 + C2*exp(-x))
     sol14 = Eq(f(x), C1 - x - sin(2*x)/5 - cos(2*x)/10 + x**2/2 + C2*exp(-x))
