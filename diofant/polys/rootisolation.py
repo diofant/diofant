@@ -614,6 +614,9 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
         R, K = K, K.field
         f = dmp_convert(f, 0, R, K)
 
+    if not (K.is_ComplexAlgebraicField or K.is_RationalField):
+        raise DomainError("Can't count real roots in domain %s" % K)
+
     if K.is_AlgebraicField:
         return sum(k for *_, k in dup_isolate_real_roots(f, K, inf, sup))
 

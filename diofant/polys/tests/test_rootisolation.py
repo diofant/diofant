@@ -991,3 +991,9 @@ def test_ComplexInterval():
         r1, r2 = r1.refine(), r2.refine()
 
     assert r1.is_disjoint(r2, check_re_refinement=True) is True
+
+
+def test_diofantissue_745():
+    D, y = ring('y', ZZ)
+    R, x = ring('x', D)
+    pytest.raises(DomainError, lambda: R.dup_count_real_roots(x**7 + y*x + 1))
