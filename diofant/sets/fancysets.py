@@ -25,8 +25,8 @@ class Naturals(Set, metaclass=Singleton):
     2
     >>> next(iterable)
     3
-    >>> pprint(S.Naturals.intersection(Interval(0, 10)))
-    {1, 2, ..., 10}
+    >>> S.Naturals.intersection(Interval(0, 10))
+    Range(1, 11, 1)
 
     See Also
     ========
@@ -104,8 +104,8 @@ class Integers(Set, metaclass=Singleton):
     >>> next(iterable)
     2
 
-    >>> pprint(S.Integers.intersection(Interval(-4, 4)))
-    {-4, -3, ..., 4}
+    >>> S.Integers.intersection(Interval(-4, 4))
+    Range(-4, 5, 1)
 
     See Also
     ========
@@ -214,8 +214,7 @@ class ImageSet(Set):
     Examples
     ========
 
-    >>> N = S.Naturals
-    >>> squares = ImageSet(Lambda(x, x**2), N) # {x**2 for x in N}
+    >>> squares = ImageSet(Lambda(x, x**2), S.Naturals)
     >>> 4 in squares
     True
     >>> 5 in squares
@@ -334,13 +333,13 @@ class Range(Set):
     Examples
     ========
 
-    >>> list(Range(5)) # 0 to 5
+    >>> list(Range(5))
     [0, 1, 2, 3, 4]
-    >>> list(Range(10, 15)) # 10 to 15
+    >>> list(Range(10, 15))
     [10, 11, 12, 13, 14]
-    >>> list(Range(10, 20, 2)) # 10 to 20 in steps of 2
+    >>> list(Range(10, 20, 2))
     [10, 12, 14, 16, 18]
-    >>> list(Range(20, 10, -2)) # 20 to 10 backward in steps of 2
+    >>> list(Range(20, 10, -2))
     [12, 14, 16, 18, 20]
     """
 

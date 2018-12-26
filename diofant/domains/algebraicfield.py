@@ -186,14 +186,14 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
             if not minimal_polynomial(ext - r)(0):
                 return r.as_content_primitive()
 
-    @property
-    def ext_root(self):
-        if self._ext_root is None:
-            self._ext_root = self._compute_ext_root(self.ext, self.minpoly)
-        return self._ext_root
+
+class ComplexAlgebraicField(AlgebraicField):
+    """A class for representing complex algebraic number fields. """
+
+    is_ComplexAlgebraicField = True
 
 
-class RealAlgebraicField(AlgebraicField):
+class RealAlgebraicField(ComplexAlgebraicField):
     """A class for representing real algebraic number fields. """
 
     is_RealAlgebraicField = True
@@ -205,12 +205,6 @@ class RealAlgebraicField(AlgebraicField):
     def is_negative(self, a):
         """Returns True if ``a`` is negative. """
         return a < 0
-
-
-class ComplexAlgebraicField(AlgebraicField):
-    """A class for representing complex algebraic number fields. """
-
-    is_ComplexAlgebraicField = True
 
 
 class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
@@ -386,15 +380,19 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
             except CoercionFailed:
                 return NotImplemented
 
+        if self.parent._ext_root is None:
+            self.parent._ext_root = self.parent._compute_ext_root(self.parent.ext,
+                                                                  self.parent.minpoly)
+
         diff = self - other
         rep = dmp_compose(diff.rep,
-                          [self.domain.from_expr(self.parent.ext_root[0]), 0],
+                          [self.domain.from_expr(self.parent._ext_root[0]), 0],
                           0, self.domain)
         while dup_count_real_roots(rep, self.domain,
-                                   inf=self.parent.ext_root[1].interval.a,
-                                   sup=self.parent.ext_root[1].interval.b):
-            self.parent.ext_root[1].refine()
-        v = dmp_eval_in(rep, diff.parent.ext_root[1].interval.center,
+                                   inf=self.parent._ext_root[1].interval.a,
+                                   sup=self.parent._ext_root[1].interval.b):
+            self.parent._ext_root[1].refine()
+        v = dmp_eval_in(rep, diff.parent._ext_root[1].interval.center,
                         0, 0, diff.domain)
         return bool(op(v, 0))
 

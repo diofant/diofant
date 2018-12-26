@@ -321,25 +321,34 @@ def log_to_real(h, q, x, t):
 
     R = Poly(resultant(c, d, v), u)
 
-    R_u = roots(R, filter='R')
-    R_q = roots(q, filter='R')
+    R_u_all = roots(R)
+    R_q_all = roots(q)
 
-    if len(R_u) != R.count_roots() or len(R_q) != q.count_roots():
+    if sum(R_u_all.values()) < R.degree() or sum(R_q_all.values()) < q.degree():
         return
+
+    R_u = {k: v for k, v in R_u_all.items() if k.is_extended_real}
+    R_q = {k: v for k, v in R_q_all.items() if k.is_extended_real}
 
     result = Integer(0)
 
     for r_u in R_u:
         C = Poly(c.subs({u: r_u}), v, extension=False)
-        R_v = roots(C, filter='R')
 
-        if len(R_v) != C.count_roots():
+        R_v_all = roots(C)
+        if sum(R_v_all.values()) < C.degree():
             return
+        R_v = {k: v for k, v in R_v_all.items() if k.is_extended_real is not False}
 
+        R_v_paired = []  # take one from each pair of conjugate roots
         for r_v in R_v:
-            if not r_v.is_positive:
-                continue
+            if all(_ not in R_v_paired for _ in [+r_v, -r_v]):
+                if r_v.could_extract_minus_sign():
+                    R_v_paired.append(-r_v)
+                elif not r_v.is_zero:
+                    R_v_paired.append(r_v)
 
+        for r_v in R_v_paired:
             D = d.subs({u: r_u, v: r_v})
 
             if D.evalf(2, chop=True) != 0:

@@ -901,8 +901,7 @@ def test_sympyissue_5413():
 def test_sympyissue_5907():
     a = Symbol('a', real=True)
     assert (integrate(1/(x**2 + a**2)**2, x) ==
-            x/(2*a**4 + 2*a**2*x**2) + (-I*log(-I*a + x)/4 +
-                                        I*log(I*a + x)/4)/a**3)
+            x/(2*a**4 + 2*a**2*x**2) + atan(x/a)/(2*a**3))
 
 
 def test_sympyissue_4892a():
@@ -1224,8 +1223,7 @@ def test_sympyissue_10680():
 
 def test_sympyissue_13501():
     a = Symbol('a', real=True)
-    assert integrate(1/(1 + a**2*x**2), x) == ((-I*log(x - I/a)/2 +
-                                               I*log(x + I/a)/2)/a)
+    assert integrate(1/(1 + a**2*x**2), x) == atan(a*x)/a
 
 
 def test_diofantissue_447():
