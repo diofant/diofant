@@ -414,8 +414,10 @@ def _isolate_zero(f, K, inf, sup, sqf=False):
 
 def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, blackbox=False):
     """Isolate real roots of a square-free polynomial. """
-    R, K = K, K.field
-    f = dmp_convert(f, 0, R, K)
+    if not K.is_Field:
+        R, K = K, K.field
+        f = dmp_convert(f, 0, R, K)
+
     f = dmp_clear_denoms(f, 0, K)[1]
 
     if K.is_AlgebraicField and not K.is_RealAlgebraicField:
@@ -452,8 +454,9 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):
     Implemented algorithms use Vincent-Akritas-Strzebonski (VAS) continued
     fractions approach [Alkiviadis05]_, [Alkiviadis08]_.
     """
-    R, K = K, K.field
-    f = dmp_convert(f, 0, R, K)
+    if not K.is_Field:
+        R, K = K, K.field
+        f = dmp_convert(f, 0, R, K)
 
     _, factors = dmp_sqf_list(f, 0, K)
     factors = [(dmp_clear_denoms(f, 0, K)[1], k) for f, k in factors]
@@ -1151,12 +1154,12 @@ def _count_roots(f1, f2, F, inf, sup, exclude=None):
 
 def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
     """Count all roots in [u + v*I, s + t*I] rectangle using Collins-Krandick algorithm. """
-    F = K.field
-
-    f = dmp_convert(f, 0, K, F)
+    if not K.is_Field:
+        R, K = K, K.field
+        f = dmp_convert(f, 0, R, K)
 
     if not all(isinstance(_, tuple) for _ in (inf, sup)):
-        B = _roots_bound(f, F)
+        B = _roots_bound(f, K)
 
     if isinstance(inf, tuple):
         u, v = inf
@@ -1172,12 +1175,12 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
     else:
         s, t = B, B
 
-    f1, f2 = dup_real_imag(f, F)
+    f1, f2 = dup_real_imag(f, K)
 
-    if F.is_ComplexAlgebraicField and not F.is_RealAlgebraicField:
-        F = F.domain
+    if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
+        K = K.domain
 
-    return _count_roots(f1, f2, F, (u, v), (s, t), exclude)
+    return _count_roots(f1, f2, K, (u, v), (s, t), exclude)
 
 
 def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
@@ -1422,12 +1425,12 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     if dmp_degree_in(f, 0, 0) <= 0:
         return []
 
-    F = K.field
-
-    f = dmp_convert(f, 0, K, F)
+    if not K.is_Field:
+        R, K = K, K.field
+        f = dmp_convert(f, 0, R, K)
 
     if not all(isinstance(_, tuple) for _ in (inf, sup)):
-        B = _roots_bound(f, F)
+        B = _roots_bound(f, K)
 
     if isinstance(inf, tuple):
         u, v = inf
@@ -1447,9 +1450,9 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
         raise ValueError("not a valid complex isolation rectangle")
 
     if v < 0 < t:
-        roots = dup_isolate_complex_roots_sqf(f, F, eps=eps, inf=(u, 0),
+        roots = dup_isolate_complex_roots_sqf(f, K, eps=eps, inf=(u, 0),
                                               sup=(s, t), blackbox=True)
-        if F.is_RationalField or F.is_RealAlgebraicField:
+        if K.is_RationalField or K.is_RealAlgebraicField:
             _roots = []
             for root in roots:
                 croot = root.conjugate()
@@ -1457,12 +1460,12 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
                     _roots.append(croot)
                 _roots.append(root)
             roots = _roots
-        elif F.is_ComplexAlgebraicField:
+        elif K.is_ComplexAlgebraicField:
             # Take conjugated polynomial to get solutions in the
             # bottom half-plane.
             f = [_.conjugate() for _ in f]
             roots += [_.conjugate()
-                      for _ in dup_isolate_complex_roots_sqf(f, F, eps=eps,
+                      for _ in dup_isolate_complex_roots_sqf(f, K, eps=eps,
                                                              inf=(u, 0), sup=(s, -v),
                                                              blackbox=True)]
             roots = sorted(roots, key=lambda r: (r.ax, r.ay))
@@ -1471,43 +1474,43 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
 
         return roots if blackbox else [r.as_tuple() for r in roots]
 
-    f1, f2 = dup_real_imag(f, F)
+    f1, f2 = dup_real_imag(f, K)
 
-    if F.is_ComplexAlgebraicField and not F.is_RealAlgebraicField:
-        F = F.domain
+    if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
+        K = K.domain
 
-    f1L1 = dmp_eval_in(f1, v, 1, 1, F)
-    f2L1 = dmp_eval_in(f2, v, 1, 1, F)
+    f1L1 = dmp_eval_in(f1, v, 1, 1, K)
+    f2L1 = dmp_eval_in(f2, v, 1, 1, K)
 
-    f1L2 = dmp_eval_in(f1, s, 0, 1, F)
-    f2L2 = dmp_eval_in(f2, s, 0, 1, F)
+    f1L2 = dmp_eval_in(f1, s, 0, 1, K)
+    f2L2 = dmp_eval_in(f2, s, 0, 1, K)
 
-    f1L3 = dmp_eval_in(f1, t, 1, 1, F)
-    f2L3 = dmp_eval_in(f2, t, 1, 1, F)
+    f1L3 = dmp_eval_in(f1, t, 1, 1, K)
+    f2L3 = dmp_eval_in(f2, t, 1, 1, K)
 
-    f1L4 = dmp_eval_in(f1, u, 0, 1, F)
-    f2L4 = dmp_eval_in(f2, u, 0, 1, F)
+    f1L4 = dmp_eval_in(f1, u, 0, 1, K)
+    f2L4 = dmp_eval_in(f2, u, 0, 1, K)
 
     S_L1 = [f1L1, f2L1]
     S_L2 = [f1L2, f2L2]
     S_L3 = [f1L3, f2L3]
     S_L4 = [f1L4, f2L4]
 
-    I_L1 = dup_isolate_real_roots_list(S_L1, F, inf=u, sup=s, fast=True, strict=True, basis=True)
-    I_L2 = dup_isolate_real_roots_list(S_L2, F, inf=v, sup=t, fast=True, strict=True, basis=True)
-    I_L3 = dup_isolate_real_roots_list(S_L3, F, inf=u, sup=s, fast=True, strict=True, basis=True)
-    I_L4 = dup_isolate_real_roots_list(S_L4, F, inf=v, sup=t, fast=True, strict=True, basis=True)
+    I_L1 = dup_isolate_real_roots_list(S_L1, K, inf=u, sup=s, fast=True, strict=True, basis=True)
+    I_L2 = dup_isolate_real_roots_list(S_L2, K, inf=v, sup=t, fast=True, strict=True, basis=True)
+    I_L3 = dup_isolate_real_roots_list(S_L3, K, inf=u, sup=s, fast=True, strict=True, basis=True)
+    I_L4 = dup_isolate_real_roots_list(S_L4, K, inf=v, sup=t, fast=True, strict=True, basis=True)
 
     I_L3 = _reverse_intervals(I_L3)
     I_L4 = _reverse_intervals(I_L4)
 
-    Q_L1 = _intervals_to_quadrants(I_L1, f1L1, f2L1, u, s, F)
-    Q_L2 = _intervals_to_quadrants(I_L2, f1L2, f2L2, v, t, F)
-    Q_L3 = _intervals_to_quadrants(I_L3, f1L3, f2L3, s, u, F)
-    Q_L4 = _intervals_to_quadrants(I_L4, f1L4, f2L4, t, v, F)
+    Q_L1 = _intervals_to_quadrants(I_L1, f1L1, f2L1, u, s, K)
+    Q_L2 = _intervals_to_quadrants(I_L2, f1L2, f2L2, v, t, K)
+    Q_L3 = _intervals_to_quadrants(I_L3, f1L3, f2L3, s, u, K)
+    Q_L4 = _intervals_to_quadrants(I_L4, f1L4, f2L4, t, v, K)
 
     T = _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4)
-    N = _winding_number(T, F)
+    N = _winding_number(T, K)
 
     if not N:
         return []
@@ -1524,37 +1527,37 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
         N, (u, v), (s, t), I_L, Q_L, F1, F2 = _depth_first_select(rectangles)
 
         if s - u > t - v:
-            D_L, D_R = _vertical_bisection(N, (u, v), (s, t), I_L, Q_L, F1, F2, f1, f2, F)
+            D_L, D_R = _vertical_bisection(N, (u, v), (s, t), I_L, Q_L, F1, F2, f1, f2, K)
 
             N_L, a, b, I_L, Q_L, F1_L, F2_L = D_L
             N_R, c, d, I_R, Q_R, F1_R, F2_R = D_R
 
             if N_L >= 1:
                 if N_L == 1 and _rectangle_small_p(a, b, eps):
-                    roots.append(ComplexInterval(a, b, I_L, Q_L, F1_L, F2_L, f1, f2, F))
+                    roots.append(ComplexInterval(a, b, I_L, Q_L, F1_L, F2_L, f1, f2, K))
                 else:
                     rectangles.append(D_L)
 
             if N_R >= 1:
                 if N_R == 1 and _rectangle_small_p(c, d, eps):
-                    roots.append(ComplexInterval(c, d, I_R, Q_R, F1_R, F2_R, f1, f2, F))
+                    roots.append(ComplexInterval(c, d, I_R, Q_R, F1_R, F2_R, f1, f2, K))
                 else:
                     rectangles.append(D_R)
         else:
-            D_B, D_U = _horizontal_bisection(N, (u, v), (s, t), I_L, Q_L, F1, F2, f1, f2, F)
+            D_B, D_U = _horizontal_bisection(N, (u, v), (s, t), I_L, Q_L, F1, F2, f1, f2, K)
 
             N_B, a, b, I_B, Q_B, F1_B, F2_B = D_B
             N_U, c, d, I_U, Q_U, F1_U, F2_U = D_U
 
             if N_B >= 1:
                 if N_B == 1 and _rectangle_small_p(a, b, eps):
-                    roots.append(ComplexInterval(a, b, I_B, Q_B, F1_B, F2_B, f1, f2, F))
+                    roots.append(ComplexInterval(a, b, I_B, Q_B, F1_B, F2_B, f1, f2, K))
                 else:
                     rectangles.append(D_B)
 
             if N_U >= 1:
                 if N_U == 1 and _rectangle_small_p(c, d, eps):
-                    roots.append(ComplexInterval(c, d, I_U, Q_U, F1_U, F2_U, f1, f2, F))
+                    roots.append(ComplexInterval(c, d, I_U, Q_U, F1_U, F2_U, f1, f2, K))
                 else:
                     rectangles.append(D_U)
 
