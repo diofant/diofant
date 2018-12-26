@@ -11,9 +11,8 @@ class Contains(BooleanFunction):
     true
     >>> Contains(Integer(-2), S.Naturals)
     false
-    >>> i = Symbol('i', integer=True)
-    >>> Contains(i, S.Naturals)
-    Contains(i, Naturals())
+    >>> Contains(n, S.Naturals)
+    Contains(n, Naturals())
 
     References
     ==========
