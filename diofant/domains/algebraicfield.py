@@ -187,7 +187,13 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
                 return r.as_content_primitive()
 
 
-class RealAlgebraicField(AlgebraicField):
+class ComplexAlgebraicField(AlgebraicField):
+    """A class for representing complex algebraic number fields. """
+
+    is_ComplexAlgebraicField = True
+
+
+class RealAlgebraicField(ComplexAlgebraicField):
     """A class for representing real algebraic number fields. """
 
     is_RealAlgebraicField = True
@@ -199,12 +205,6 @@ class RealAlgebraicField(AlgebraicField):
     def is_negative(self, a):
         """Returns True if ``a`` is negative. """
         return a < 0
-
-
-class ComplexAlgebraicField(AlgebraicField):
-    """A class for representing complex algebraic number fields. """
-
-    is_ComplexAlgebraicField = True
 
 
 class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
