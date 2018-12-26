@@ -236,14 +236,20 @@ class RootOf(Expr):
     def _get_reals_sqf(cls, factor):
         """Compute real root isolating intervals for a square-free polynomial. """
         if factor.rep not in _reals_cache:
-            _reals_cache[factor.rep] = dup_isolate_real_roots_sqf(factor.rep.rep, factor.rep.domain, blackbox=True)
+            reals = dup_isolate_real_roots_sqf(factor.rep.rep, factor.rep.domain, blackbox=True)
+            if not reals:
+                _reals_cache[factor.rep] = []
+            return reals
         return _reals_cache[factor.rep]
 
     @classmethod
     def _get_complexes_sqf(cls, factor):
         """Compute complex root isolating intervals for a square-free polynomial. """
         if factor.rep not in _complexes_cache:
-            _complexes_cache[factor.rep] = dup_isolate_complex_roots_sqf(factor.rep.rep, factor.rep.domain, blackbox=True)
+            complexes = dup_isolate_complex_roots_sqf(factor.rep.rep, factor.rep.domain, blackbox=True)
+            if not complexes:
+                _complexes_cache[factor.rep] = []
+            return complexes
         return _complexes_cache[factor.rep]
 
     @classmethod
@@ -271,6 +277,10 @@ class RootOf(Expr):
     @classmethod
     def _reals_sorted(cls, reals):
         """Make real isolating intervals disjoint and sort roots. """
+        factors = list({f for _, f, _ in reals})
+        if len(factors) == 1 and factors[0].rep in _reals_cache:
+            return reals
+
         cache = {}
 
         for i, (u, f, k) in enumerate(reals):
@@ -297,8 +307,10 @@ class RootOf(Expr):
     @classmethod
     def _complexes_sorted(cls, complexes):
         """Make complex isolating intervals disjoint and sort roots. """
-        if not complexes:
-            return []
+        factors = list({f for _, f, _ in complexes})
+        if len(factors) == 1 and factors[0].rep in _complexes_cache:
+            return complexes
+
         cache = {}
 
         for i, (u, f, k) in enumerate(complexes):
@@ -390,10 +402,10 @@ class RootOf(Expr):
         _, factors = poly.factor_list()
 
         reals = cls._get_reals(factors)
+        reals = cls._reals_sorted(reals)
         reals_count = cls._count_roots(reals)
 
         if index < reals_count:
-            reals = cls._reals_sorted(reals)
             return cls._reals_index(reals, index)
         else:
             complexes = cls._get_complexes(factors)
