@@ -929,6 +929,9 @@ def test_dup_isolate_complex_roots_sqf():
                                                   ((0, QQ(-283, 100)), (QQ(283, 100), 0)),
                                                   ((0, 0), (QQ(283, 100), QQ(283, 100)))]
 
+    R, x = ring("x", EX)
+    pytest.raises(DomainError, lambda: R.dup_isolate_complex_roots_sqf(x))
+
 
 def test_dup_isolate_all_roots_sqf():
     R, x = ring("x", ZZ)
