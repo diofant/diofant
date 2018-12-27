@@ -170,8 +170,8 @@ class RootOf(Expr):
 
     def _eval_is_real(self):
         try:
-            return self.index < len(_reals_cache[self.poly.rep])
-        except KeyError:
+            return int(self.index) < int(self.poly.count_roots())
+        except DomainError:
             pass
     _eval_is_extended_real = _eval_is_real
 
@@ -214,7 +214,7 @@ class RootOf(Expr):
         if self.is_real:
             return self
         elif self.poly.domain.is_IntegerRing:
-            nreals = len(_reals_cache[self.poly.rep])
+            nreals = self.poly.count_roots()
             ci = self.index + 2*((self.index - nreals + 1) % 2) - 1
             return self._new(self.poly, ci)
 
@@ -367,7 +367,7 @@ class RootOf(Expr):
                     if factor == poly:
                         index += 1
 
-                index += len(_reals_cache[poly.rep])
+                index += poly.count_roots()
 
                 return poly, index
             else:
@@ -525,7 +525,7 @@ class RootOf(Expr):
         if self.is_real:
             return _reals_cache[self.poly.rep][self.index]
         else:
-            reals_count = len(_reals_cache[self.poly.rep])
+            reals_count = self.poly.count_roots()
             return _complexes_cache[self.poly.rep][self.index - reals_count]
 
     def refine(self):
@@ -534,7 +534,7 @@ class RootOf(Expr):
             root = _reals_cache[self.poly.rep][self.index]
             _reals_cache[self.poly.rep][self.index] = root.refine()
         else:
-            reals_count = len(_reals_cache[self.poly.rep])
+            reals_count = self.poly.count_roots()
             root = _complexes_cache[self.poly.rep][self.index - reals_count]
             _complexes_cache[self.poly.rep][self.index - reals_count] = root.refine()
 
@@ -557,7 +557,7 @@ class RootOf(Expr):
 
             try:
                 interval = self.interval
-            except KeyError:
+            except DomainError:
                 return super()._eval_evalf(prec)
 
             while True:
