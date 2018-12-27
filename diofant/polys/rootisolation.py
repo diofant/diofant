@@ -418,9 +418,12 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
         R, K = K, K.field
         f = dmp_convert(f, 0, R, K)
 
+    if not (K.is_ComplexAlgebraicField or K.is_RationalField):
+        raise DomainError("Can't isolate real roots in domain %s" % K)
+
     f = dmp_clear_denoms(f, 0, K)[1]
 
-    if K.is_AlgebraicField and not K.is_RealAlgebraicField:
+    if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
         A, K = K, K.domain
         polys = [dmp_eval_in(_, K.zero, 1, 1, K) for _ in dup_real_imag(f, A)]
         if not polys[1]:
@@ -429,9 +432,6 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, b
             roots = dup_isolate_real_roots_list(polys, K, eps=eps, inf=inf, sup=sup, strict=True)
             roots = [_[0] for _ in roots if _[1].keys() == {0, 1}]
             return [RealInterval((a, b), f, K) for (a, b) in roots] if blackbox else roots
-
-    if not (K.is_RationalField or K.is_RealAlgebraicField):
-        raise DomainError("isolation of real roots not supported over %s" % K)
 
     if dmp_degree_in(f, 0, 0) <= 0:
         return []
@@ -613,6 +613,9 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
     if not K.is_Field:
         R, K = K, K.field
         f = dmp_convert(f, 0, R, K)
+
+    if not (K.is_ComplexAlgebraicField or K.is_RationalField):
+        raise DomainError("Can't count real roots in domain %s" % K)
 
     if K.is_AlgebraicField:
         return sum(k for *_, k in dup_isolate_real_roots(f, K, inf, sup))
@@ -1158,6 +1161,9 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
         R, K = K, K.field
         f = dmp_convert(f, 0, R, K)
 
+    if not (K.is_ComplexAlgebraicField or K.is_RationalField):
+        raise DomainError("Can't count complex roots in domain %s" % K)
+
     if not all(isinstance(_, tuple) for _ in (inf, sup)):
         B = _roots_bound(f, K)
 
@@ -1177,7 +1183,7 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
 
     f1, f2 = dup_real_imag(f, K)
 
-    if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
+    if not (K.is_RationalField or K.is_RealAlgebraicField):
         K = K.domain
 
     return _count_roots(f1, f2, K, (u, v), (s, t), exclude)
@@ -1429,6 +1435,9 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
         R, K = K, K.field
         f = dmp_convert(f, 0, R, K)
 
+    if not (K.is_ComplexAlgebraicField or K.is_RationalField):
+        raise DomainError("Can't isolate complex roots in domain %s" % K)
+
     if not all(isinstance(_, tuple) for _ in (inf, sup)):
         B = _roots_bound(f, K)
 
@@ -1460,7 +1469,7 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
                     _roots.append(croot)
                 _roots.append(root)
             roots = _roots
-        elif K.is_ComplexAlgebraicField:
+        else:
             # Take conjugated polynomial to get solutions in the
             # bottom half-plane.
             f = [_.conjugate() for _ in f]
@@ -1469,14 +1478,12 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
                                                              inf=(u, 0), sup=(s, -v),
                                                              blackbox=True)]
             roots = sorted(roots, key=lambda r: (r.ax, r.ay))
-        else:
-            raise NotImplementedError
 
         return roots if blackbox else [r.as_tuple() for r in roots]
 
     f1, f2 = dup_real_imag(f, K)
 
-    if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
+    if not (K.is_RationalField or K.is_RealAlgebraicField):
         K = K.domain
 
     f1L1 = dmp_eval_in(f1, v, 1, 1, K)

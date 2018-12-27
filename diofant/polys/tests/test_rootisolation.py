@@ -929,6 +929,9 @@ def test_dup_isolate_complex_roots_sqf():
                                                   ((0, QQ(-283, 100)), (QQ(283, 100), 0)),
                                                   ((0, 0), (QQ(283, 100), QQ(283, 100)))]
 
+    R, x = ring("x", EX)
+    pytest.raises(DomainError, lambda: R.dup_isolate_complex_roots_sqf(x))
+
 
 def test_dup_isolate_all_roots_sqf():
     R, x = ring("x", ZZ)
@@ -991,3 +994,9 @@ def test_ComplexInterval():
         r1, r2 = r1.refine(), r2.refine()
 
     assert r1.is_disjoint(r2, check_re_refinement=True) is True
+
+
+def test_diofantissue_745():
+    D, y = ring('y', ZZ)
+    R, x = ring('x', D)
+    pytest.raises(DomainError, lambda: R.dup_count_real_roots(x**7 + y*x + 1))
