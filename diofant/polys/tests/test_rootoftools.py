@@ -581,3 +581,12 @@ def test_diofantissue_730():
     assert e.is_imaginary is False
     assert e.n(3) == Float('0.00498962', dps=3) + I*Float('0.31604', dps=3)
     assert e.conjugate().conjugate() == e
+
+
+@pytest.mark.timeout(120)
+@pytest.mark.slow
+def test_diofantissue_723():
+    p = x**5 + sqrt(3)*x - 2
+    for i in range(20):
+        for j in (1, 2):
+            RootOf(p, j)
