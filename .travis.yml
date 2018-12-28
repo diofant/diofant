@@ -7,7 +7,7 @@ python:
   - pypy3.5
 env:
   global:
-    - PYTEST_ADDOPTS="-n auto --cov-config setup.cfg -o xfail_strict=1"
+    - PYTEST_ADDOPTS="-n auto --cov-config setup.cfg"
     - PYTHONHASHSEED=0
     - secure: "VNgpd/TFAkLGjWZzRBWxujDHktdvp2Fg9D8PbGmr/pbmLcJS3a5pf6po1T/\
                GJgioh8SI1TgPURjku5t48VHN18HoMBzABBSZ4C7cUjpNQlJMPKhWCZKmIJ\
