@@ -15,8 +15,7 @@ License
 Unless stated otherwise, all files in the Diofant project are licensed
 using the new BSD license:
 
-.. literalinclude:: ../LICENSE
-    :language: none
+.. include:: ../LICENSE.rst
 
 SymPy Development Team
 ----------------------
