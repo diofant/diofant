@@ -238,6 +238,7 @@ class FractionField(Field, CompositeDomain):
         return self.dtype(self.domain.factorial(a))
 
 
+@functools.total_ordering
 class FracElement(DomainElement, DefaultPrinting, CantSympify):
     """Element of multivariate distributed rational function field.
 
@@ -314,23 +315,11 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
     def sort_key(self):
         return self.denom.sort_key(), self.numer.sort_key()
 
-    def _cmp(self, other, op):
+    def __lt__(self, other):
         if isinstance(other, self.field.dtype):
-            return op(self.sort_key(), other.sort_key())
+            return self.sort_key() < other.sort_key()
         else:  # pragma: no cover
             return NotImplemented
-
-    def __lt__(self, other):
-        return self._cmp(other, operator.lt)
-
-    def __le__(self, other):
-        return self._cmp(other, operator.le)
-
-    def __gt__(self, other):
-        return self._cmp(other, operator.gt)
-
-    def __ge__(self, other):
-        return self._cmp(other, operator.ge)
 
     def __pos__(self):
         return self.raw_new(self.numer, self.denom)

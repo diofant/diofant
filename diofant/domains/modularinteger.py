@@ -1,5 +1,6 @@
 """Implementation of :class:`ModularInteger` class. """
 
+import functools
 import operator
 
 from ..polys.polyerrors import CoercionFailed
@@ -9,6 +10,7 @@ from .domainelement import DomainElement
 __all__ = 'ModularInteger',
 
 
+@functools.total_ordering
 class ModularInteger(DomainElement):
     """A class representing a modular integer. """
 
@@ -140,20 +142,8 @@ class ModularInteger(DomainElement):
     def __eq__(self, other):
         return self._compare(other, operator.eq)
 
-    def __ne__(self, other):
-        return self._compare(other, operator.ne)
-
     def __lt__(self, other):
         return self._compare(other, operator.lt)
-
-    def __le__(self, other):
-        return self._compare(other, operator.le)
-
-    def __gt__(self, other):
-        return self._compare(other, operator.gt)
-
-    def __ge__(self, other):
-        return self._compare(other, operator.ge)
 
     def __bool__(self):
         return bool(self.val)
