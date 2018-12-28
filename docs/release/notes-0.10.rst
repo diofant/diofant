@@ -9,13 +9,13 @@ New features
 
 * New representation for elements of :class:`~diofant.domains.AlgebraicField`, see :pull:`619` and :pull:`631`.
 * Ground domains for :class:`~diofant.domains.AlgebraicField` can be also instances of :class:`~diofant.domains.AlgebraicField`, see :pull:`653`.
-* New subclasses of :class:`~diofant.domains.AlgebraicField`: :class:`~diofant.domains.RealAlgebraicField` and :class:`~diofant.domains.ComplexAlgebraicField`, see :pull:`669`, :pull:`630` and :pull:`748`.
+* New subclasses of :class:`~diofant.domains.AlgebraicField`: :class:`~diofant.domains.RealAlgebraicField` and :class:`~diofant.domains.ComplexAlgebraicField`, see :pull:`669`, :pull:`630` and :pull:`748`.  Thanks to Kalevi Suominen for help with review.
 
 Major changes
 =============
 
-* Stable enumeration of polynomial roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`633`, :pull:`658` and :pull:`741`.
-* Support root isolation for polynomials with algebraic coefficients, see :pull:`673` and :pull:`630`.
+* Stable enumeration of polynomial roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`633`, :pull:`658` and :pull:`741`.  Thanks to Kalevi Suominen for the implementation idea and help with review.
+* Support root isolation for polynomials with algebraic coefficients, see :pull:`673` and :pull:`630`.  Thanks to Kalevi Suominen for help with review.
 * Polynomials with algebraic coefficients will use algebraic number domains per default, see :pull:`478`.
 
 Compatibility breaks
@@ -89,6 +89,7 @@ Developer changes
 
 * Removed cachetools dependence, see :pull:`647`.
 * Depend on `pylint <https://pylint.readthedocs.io/en/latest/>`_, see :pull:`668`.
+* Use `setuptools_scm <https://github.com/pypa/setuptools_scm/>`_ to track package versions, see :pull:`725`.
 
 Issues closed
 =============
