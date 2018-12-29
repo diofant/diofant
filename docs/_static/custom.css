@@ -1,3 +1,13 @@
+@import url("https://fontlibrary.org/face/dejavu-sans-mono");
+
+@font-face {
+    font-family: 'DejaVuSansMonoBookFallback';
+    src: url('DejaVuSansMonoBook.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 .rst-content div[class^="highlight"] pre {
     line-height: normal;
+    font-family: 'DejaVuSansMonoBook', 'DejaVuSansMonoBookFallback', 'DejaVu Sans Mono', monospace;
 }

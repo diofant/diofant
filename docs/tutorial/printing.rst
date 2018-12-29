@@ -74,6 +74,11 @@ obtained with :func:`~diofant.printing.pretty.pretty.pretty`.
     ⎮ ╲╱   x
     ⌡
 
+.. note::
+
+    Unicode pretty-printing is enabled by default in the `IPython`_
+    terminal frontend.
+
 You can pass ``use_unicode=False`` to use ASCII symbols.
 
     >>> print(pretty(expr, use_unicode=False))
@@ -147,3 +152,5 @@ format, which can be rendered with `Graphviz
     "Pow(Symbol('x'), Integer(-1))_(0, 0)" -> "Integer(-1)_(0, 0, 1)";
     "Tuple(Symbol('x'))_(1,)" -> "Symbol('x')_(1, 0)";
     }
+
+.. _IPython: https://ipython.readthedocs.io/en/stable/
