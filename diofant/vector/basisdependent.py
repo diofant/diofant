@@ -275,28 +275,28 @@ class BasisDependentZero(BasisDependent):
     def __add__(self, other):
         if isinstance(other, self._expr_type):
             return other
-        else:  # pragma: no cover
+        else:
             return NotImplemented
 
     @call_highest_priority('__add__')
     def __radd__(self, other):
         if isinstance(other, self._expr_type):
             return other
-        else:  # pragma: no cover
+        else:
             return NotImplemented
 
     @call_highest_priority('__rsub__')
     def __sub__(self, other):
         if isinstance(other, self._expr_type):
             return -other
-        else:  # pragma: no cover
+        else:
             return NotImplemented
 
     @call_highest_priority('__sub__')
     def __rsub__(self, other):
         if isinstance(other, self._expr_type):
             return other
-        else:  # pragma: no cover
+        else:
             return NotImplemented
 
     def __neg__(self):

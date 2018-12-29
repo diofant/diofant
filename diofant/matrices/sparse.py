@@ -367,7 +367,7 @@ class SparseMatrixBase(MatrixBase):
             return self.add(other)
         elif isinstance(other, MatrixBase):
             return other._new(other + self)
-        else:  # pragma: no cover
+        else:
             return NotImplemented
 
     def __neg__(self):
