@@ -8,13 +8,7 @@
 To make a matrix in Diofant, use the
 :class:`~diofant.matrices.Matrix` object.  A matrix is
 constructed by providing a list of row vectors that make up the
-matrix.  For example, to construct the matrix
-
-.. math::
-
-   \left[\begin{array}{cc}1 & -1\\3 & 4\\0 & 2\end{array}\right]
-
-use
+matrix.
 
     >>> Matrix([[1, -1], [3, 4], [0, 2]])
     ⎡1  -1⎤
@@ -23,8 +17,7 @@ use
     ⎢     ⎥
     ⎣0  2 ⎦
 
-To make it easy to make column vectors, a list of elements is
-considered to be a column vector.
+A list of elements is considered to be a column vector.
 
     >>> Matrix([1, 2, 3])
     ⎡1⎤

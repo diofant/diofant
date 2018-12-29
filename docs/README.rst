@@ -10,4 +10,4 @@ see the `online documentation`_.
 
 .. _online documentation: https://diofant.readthedocs.io/en/latest/
 .. _installation instructions: https://diofant.readthedocs.io/en/latest/install.html#installation
-.. _New BSD License: https://github.com/diofant/diofant/blob/master/LICENSE
+.. _New BSD License: https://github.com/diofant/diofant/blob/master/LICENSE.rst

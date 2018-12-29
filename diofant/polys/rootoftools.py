@@ -402,10 +402,10 @@ class RootOf(Expr):
         _, factors = poly.factor_list()
 
         reals = cls._get_reals(factors)
-        reals = cls._reals_sorted(reals)
         reals_count = cls._count_roots(reals)
 
         if index < reals_count:
+            reals = cls._reals_sorted(reals)
             return cls._reals_index(reals, index)
         else:
             complexes = cls._get_complexes(factors)

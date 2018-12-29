@@ -7,7 +7,7 @@ python:
   - pypy3.5
 env:
   global:
-    - PYTEST_ADDOPTS="-n auto --cov-config setup.cfg -o xfail_strict=1"
+    - PYTEST_ADDOPTS="-n auto --cov-config setup.cfg --cov-append"
     - PYTHONHASHSEED=0
     - secure: "VNgpd/TFAkLGjWZzRBWxujDHktdvp2Fg9D8PbGmr/pbmLcJS3a5pf6po1T/\
                GJgioh8SI1TgPURjku5t48VHN18HoMBzABBSZ4C7cUjpNQlJMPKhWCZKmIJ\
@@ -19,16 +19,12 @@ env:
 addons:
   apt:
     packages:
-      - libmpc-dev
-      - libmpfr-dev
-      - libgmp-dev
       - libatlas-dev
       - libatlas-base-dev
       - liblapack-dev
       - gfortran
       - graphviz
       - texlive-xetex
-      - texlive-latex-extra
       - texlive-fonts-recommended
       - latexmk
       - lmodern
@@ -61,7 +57,7 @@ matrix:
           fi
         - pip uninstall -y gmpy2
         - DIOFANT_GROUND_TYPES='gmpy' py.test --cov diofant diofant/domains
-        - travis_wait py.test --cov diofant --cov-append diofant/polys
+        - travis_wait py.test --cov diofant diofant/polys
     - stage: deploy
       env:
         -

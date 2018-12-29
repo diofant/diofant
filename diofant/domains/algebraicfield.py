@@ -1,7 +1,6 @@
 """Implementation of :class:`AlgebraicField` class. """
 
 import functools
-import operator
 
 from ..core import I, Integer, sympify
 from ..core.sympify import CantSympify
@@ -365,13 +364,14 @@ class ComplexAlgebraicElement(AlgebraicElement):
         return self.real - self.parent.unit*self.imag
 
 
+@functools.total_ordering
 class RealAlgebraicElement(ComplexAlgebraicElement):
     """Elements of real algebraic numbers field. """
 
     def __abs__(self):
         return self if self >= 0 else -self
 
-    def _cmp(self, other, op):
+    def __lt__(self, other):
         from ..polys.rootisolation import dup_count_real_roots
 
         if not isinstance(other, self.parent.dtype):
@@ -384,29 +384,17 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
             self.parent._ext_root = self.parent._compute_ext_root(self.parent.ext,
                                                                   self.parent.minpoly)
 
-        diff = self - other
-        rep = dmp_compose(diff.rep,
+        rep = dmp_compose((self - other).rep,
                           [self.domain.from_expr(self.parent._ext_root[0]), 0],
                           0, self.domain)
+
         while dup_count_real_roots(rep, self.domain,
                                    inf=self.parent._ext_root[1].interval.a,
                                    sup=self.parent._ext_root[1].interval.b):
             self.parent._ext_root[1].refine()
-        v = dmp_eval_in(rep, diff.parent._ext_root[1].interval.center,
-                        0, 0, diff.domain)
-        return bool(op(v, 0))
 
-    def __lt__(self, other):
-        return self._cmp(other, operator.lt)
-
-    def __le__(self, other):
-        return self._cmp(other, operator.le)
-
-    def __gt__(self, other):
-        return self._cmp(other, operator.gt)
-
-    def __ge__(self, other):
-        return self._cmp(other, operator.ge)
+        return dmp_eval_in(rep, self.parent._ext_root[1].interval.center,
+                           0, 0, self.domain) < 0
 
     @property
     def real(self):
