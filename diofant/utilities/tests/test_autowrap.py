@@ -8,7 +8,8 @@ from io import StringIO
 
 import pytest
 
-from diofant.core import Eq, Equality, symbols
+from diofant.abc import x, y, z
+from diofant.core import Eq
 from diofant.utilities.autowrap import (CodeWrapper, CythonCodeWrapper,
                                         UfuncifyCodeWrapper, autowrap,
                                         binary_function)
@@ -35,7 +36,6 @@ def get_string(dump_fn, routines, prefix="file"):
 
 
 def test_cython_wrapper_scalar_function():
-    x, y, z = symbols('x,y,z')
     expr = (x + y)*z
     routine = make_routine("test", expr)
     code_gen = CythonCodeWrapper(CCodeGen())
@@ -51,10 +51,9 @@ def test_cython_wrapper_scalar_function():
 
 
 def test_cython_wrapper_outarg():
-    x, y, z = symbols('x,y,z')
     code_gen = CythonCodeWrapper(CCodeGen())
 
-    routine = make_routine("test", Equality(z, x + y))
+    routine = make_routine("test", Eq(z, x + y))
     source = get_string(code_gen.dump_pyx, [routine])
     expected = (
         "cdef extern from 'file.h':\n"
@@ -69,9 +68,8 @@ def test_cython_wrapper_outarg():
 
 
 def test_cython_wrapper_inoutarg():
-    x, y, z = symbols('x,y,z')
     code_gen = CythonCodeWrapper(CCodeGen())
-    routine = make_routine("test", Equality(z, x + y + z))
+    routine = make_routine("test", Eq(z, x + y + z))
     source = get_string(code_gen.dump_pyx, [routine])
     expected = (
         "cdef extern from 'file.h':\n"
@@ -85,8 +83,6 @@ def test_cython_wrapper_inoutarg():
 
 
 def test_autowrap_dummy():
-    x, y, z = symbols('x y z')
-
     # Uses DummyWrapper to test that codegen works as expected
 
     f = autowrap(x + y, backend='dummy')
@@ -104,8 +100,6 @@ def test_autowrap_dummy():
 
 
 def test_autowrap_args():
-    x, y, z = symbols('x y z')
-
     pytest.raises(CodeGenArgumentListError,
                   lambda: autowrap(Eq(z, x + y), backend='dummy', args=(x,)))
     f = autowrap(Eq(z, x + y), backend='dummy', args=(y, x))
@@ -127,7 +121,6 @@ def test_autowrap_args():
 
 
 def test_autowrap_store_files():
-    x, y = symbols('x y')
     tmp = tempfile.mkdtemp()
     try:
         f = autowrap(x + y, backend='dummy', tempdir=tmp)
@@ -138,13 +131,11 @@ def test_autowrap_store_files():
 
 
 def test_binary_function():
-    x, y = symbols('x y')
     f = binary_function('f', x + y, backend='dummy')
     assert f._imp_() == str(x + y)
 
 
 def test_ufuncify_source():
-    x, y, z = symbols('x,y,z')
     code_wrapper = UfuncifyCodeWrapper(CCodeGen("ufuncify"))
     routine = make_routine("test", x + y + z)
     source = get_string(code_wrapper.dump_c, [routine])
