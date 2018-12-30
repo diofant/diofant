@@ -881,13 +881,16 @@ def _solve_system(exprs, symbols, **flags):
     dens = set()
     failed = []
     result = [{}]
-    linear = False
+    polynomial = False
+    inversions = False
     checkdens = check = flags.get('check', True)
 
     for j, g in enumerate(exprs):
         dens.update(denoms(g, symbols))
         i, d = _invert(g, *symbols)
         g = d - i
+        if exprs[j] not in (+g, -g):
+            inversions = True
         g = g.as_numer_denom()[0]
 
         poly = g.as_poly(*symbols)
@@ -914,13 +917,7 @@ def _solve_system(exprs, symbols, **flags):
 
             # returns a dictionary {symbols: values} or None
             result = solve_linear_system(matrix, *symbols, **flags)
-            if failed:
-                if result:
-                    solved_syms = list(result)
-                else:
-                    solved_syms = []
-            else:
-                linear = True
+            solved_syms = list(result) if result else []
             result = [result] if result else [{}]
         else:
             result = solve_poly_system(polys, *symbols)
@@ -994,6 +991,8 @@ def _solve_system(exprs, symbols, **flags):
             else:
                 result = newresult
                 assert not any(b in bad_results for b in result)
+    else:
+        polynomial = True
 
     default_simplify = bool(failed)  # rely on system-solvers to simplify
     if flags.get('simplify', default_simplify):
@@ -1006,7 +1005,7 @@ def _solve_system(exprs, symbols, **flags):
         result = [r for r in result
                   if not any(checksol(d, r, **flags) for d in dens)]
 
-    if check and not linear:
+    if check and (inversions or not polynomial):
         result = [r for r in result
                   if not any(checksol(e, r, **flags) is False for e in exprs)]
 

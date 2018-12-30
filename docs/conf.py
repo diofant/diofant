@@ -111,6 +111,9 @@ autodoc_inherit_docstrings = False
 # _static directory.
 html_static_path = ['_static']
 
+# Should we show "Created using Sphinx" in the HTML footer?
+html_show_sphinx = False
+
 
 # https://docs.readthedocs.io/en/latest/guides/adding-custom-css.html
 def setup(app):
