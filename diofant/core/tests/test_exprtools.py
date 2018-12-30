@@ -96,7 +96,7 @@ def test_Factors():
     assert Factors(x).mul(Integer(2)) == Factors(2*x)
     assert Factors(x).mul(Integer(0)).is_zero
     assert Factors(x).mul(1/x).is_one
-    assert Factors(x**sqrt(2)**3).as_expr() == x**(2*sqrt(2))
+    assert Factors(x**sqrt(8)).as_expr() == x**(2*sqrt(2))
     assert Factors(x)**Factors(Integer(2)) == Factors(x**2)
     assert Factors(x).gcd(Integer(0)) == Factors(x)
     assert Factors(x).lcm(Integer(0)).is_zero
