@@ -833,8 +833,6 @@ def _solve_system(exprs, symbols, **flags):
     """
 
     if len(symbols) != 1 and len(exprs) == 1:
-        not_impl_msg = "No algorithms are implemented to solve equation %s"
-
         f = exprs[0]
         soln = None
         free = f.free_symbols
@@ -847,21 +845,6 @@ def _solve_system(exprs, symbols, **flags):
         got_s = set()
         result = []
         for s in symbols:
-            n, d = solve_linear(f, s)
-            if n.is_Symbol:
-                # no need to check but we should simplify if desired
-                if flags.get('simplify', True):
-                    d = simplify(d)
-                if got_s and any(ss in d.free_symbols for ss in got_s):
-                    # sol depends on previously solved symbols: discard it
-                    continue
-                got_s.add(n)
-                result.append({n: d})
-            elif n and d:  # otherwise there was no solution for s
-                failed.append(s)
-        if not failed:
-            return result
-        for s in failed:
             try:
                 soln = _solve(f, s, **flags)
                 for sol in soln:
@@ -874,8 +857,6 @@ def _solve_system(exprs, symbols, **flags):
                 continue
         if got_s:
             return result
-        else:
-            raise NotImplementedError(not_impl_msg % f)
 
     polys = []
     dens = set()
