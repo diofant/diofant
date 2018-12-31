@@ -133,7 +133,7 @@ def gf_from_dict(f, p, K):
     return dmp_strip([a % p for a in h], 0)
 
 
-def gf_to_dict(f, p, symmetric=True):
+def gf_to_dict(f, p):
     """
     Convert a ``GF(p)[x]`` polynomial to a dict.
 
@@ -141,17 +141,12 @@ def gf_to_dict(f, p, symmetric=True):
     ========
 
     >>> gf_to_dict([4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4], 5)
-    {0: -1, 4: -2, 10: -1}
-    >>> gf_to_dict([4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4], 5, symmetric=False)
     {0: 4, 4: 3, 10: 4}
     """
     n, result = dmp_degree_in(f, 0, 0), {}
 
     for k in range(n + 1):
-        if symmetric:
-            a = gf_int(f[n - k], p)
-        else:
-            a = f[n - k]
+        a = f[n - k]
 
         if a:
             result[k] = a
@@ -170,25 +165,6 @@ def gf_from_int_poly(f, p):
     [2, 3, 3]
     """
     return dmp_strip([a % p for a in f], 0)
-
-
-def gf_to_int_poly(f, p, symmetric=True):
-    """
-    Convert a ``GF(p)[x]`` polynomial to ``Z[x]``.
-
-
-    Examples
-    ========
-
-    >>> gf_to_int_poly([2, 3, 3], 5)
-    [2, -2, -2]
-    >>> gf_to_int_poly([2, 3, 3], 5, symmetric=False)
-    [2, 3, 3]
-    """
-    if symmetric:
-        return [ gf_int(c, p) for c in f ]
-    else:
-        return f
 
 
 def gf_neg(f, p, K):

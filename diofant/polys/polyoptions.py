@@ -157,10 +157,6 @@ class Options(dict):
         for option in self:
             cls = self.__options__[option]
 
-            for require_option in cls.requires:
-                if self.get(require_option) is None:
-                    raise OptionError("'%s' option is only allowed together with '%s'" % (option, require_option))
-
             for exclude_option in cls.excludes:
                 if self.get(exclude_option) is not None:
                     raise OptionError("'%s' option is not allowed together with '%s'" % (option, exclude_option))
@@ -364,7 +360,7 @@ class Greedy(BooleanOption, metaclass=OptionType):
     option = 'greedy'
 
     requires = []
-    excludes = ['domain', 'split', 'gaussian', 'extension', 'modulus', 'symmetric']
+    excludes = ['domain', 'split', 'gaussian', 'extension', 'modulus']
 
 
 class Composite(BooleanOption, metaclass=OptionType):
@@ -377,7 +373,7 @@ class Composite(BooleanOption, metaclass=OptionType):
         return
 
     requires = []
-    excludes = ['domain', 'split', 'gaussian', 'modulus', 'symmetric']
+    excludes = ['domain', 'split', 'gaussian', 'modulus']
 
 
 class Domain(Option, metaclass=OptionType):
@@ -487,8 +483,7 @@ class Split(BooleanOption, metaclass=OptionType):
     option = 'split'
 
     requires = []
-    excludes = ['field', 'greedy', 'domain', 'gaussian', 'extension',
-                'modulus', 'symmetric']
+    excludes = ['field', 'greedy', 'domain', 'gaussian', 'extension', 'modulus']
 
     @classmethod
     def postprocess(cls, options):
@@ -502,8 +497,7 @@ class Gaussian(BooleanOption, metaclass=OptionType):
     option = 'gaussian'
 
     requires = []
-    excludes = ['field', 'greedy', 'domain', 'split', 'extension',
-                'modulus', 'symmetric']
+    excludes = ['field', 'greedy', 'domain', 'split', 'extension', 'modulus']
 
     @classmethod
     def postprocess(cls, options):
@@ -518,8 +512,7 @@ class Extension(Option, metaclass=OptionType):
     option = 'extension'
 
     requires = []
-    excludes = ['greedy', 'domain', 'split', 'gaussian', 'modulus',
-                'symmetric']
+    excludes = ['greedy', 'domain', 'split', 'gaussian', 'modulus']
 
     @classmethod
     def preprocess(cls, extension):
@@ -569,17 +562,7 @@ class Modulus(Option, metaclass=OptionType):
         from .. import domains
         if 'modulus' in options:
             modulus = options['modulus']
-            symmetric = options.get('symmetric', True)
-            options['domain'] = domains.FF(modulus, symmetric)
-
-
-class Symmetric(BooleanOption, metaclass=OptionType):
-    """``symmetric`` option to polynomial manipulation functions. """
-
-    option = 'symmetric'
-
-    requires = ['modulus']
-    excludes = ['greedy', 'domain', 'split', 'gaussian', 'extension']
+            options['domain'] = domains.FF(modulus)
 
 
 class Strict(BooleanOption, metaclass=OptionType):

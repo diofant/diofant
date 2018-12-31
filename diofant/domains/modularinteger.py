@@ -14,7 +14,7 @@ __all__ = 'ModularInteger',
 class ModularInteger(DomainElement):
     """A class representing a modular integer. """
 
-    mod, domain, sym, _parent = None, None, None, None
+    mod, domain, _parent = None, None, None
 
     @property
     def parent(self):
@@ -33,16 +33,7 @@ class ModularInteger(DomainElement):
         return "%s mod %s" % (self.val, self.mod)
 
     def __int__(self):
-        return int(self.to_int())
-
-    def to_int(self):
-        if self.sym:
-            if self.val <= self.mod // 2:
-                return self.val
-            else:
-                return self.val - self.mod
-        else:
-            return self.val
+        return int(self.val)
 
     def __pos__(self):
         return self
@@ -159,7 +150,7 @@ class ModularInteger(DomainElement):
 _modular_integer_cache = {}
 
 
-def ModularIntegerFactory(_mod, _dom, _sym, parent):
+def ModularIntegerFactory(_mod, _dom, parent):
     """Create custom class for specific integer modulus."""
     try:
         _mod = _dom.convert(_mod)
@@ -171,19 +162,16 @@ def ModularIntegerFactory(_mod, _dom, _sym, parent):
     if not ok or _mod < 1:
         raise ValueError("modulus must be a positive integer, got %s" % _mod)
 
-    key = _mod, _dom, _sym
+    key = _mod, _dom
 
     try:
         cls = _modular_integer_cache[key]
     except KeyError:
         class cls(ModularInteger):
-            mod, domain, sym = _mod, _dom, _sym
+            mod, domain = _mod, _dom
             _parent = parent
 
-        if _sym:
-            cls.__name__ = "SymmetricModularIntegerMod%s" % _mod
-        else:
-            cls.__name__ = "ModularIntegerMod%s" % _mod
+        cls.__name__ = "ModularIntegerMod%s" % _mod
 
         _modular_integer_cache[key] = cls
 

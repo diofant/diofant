@@ -420,17 +420,14 @@ def test_H20():
 def test_H22():
     f = x**4 - 3*x**2 + 1
     assert factor(f) == (x**2 - x - 1)*(x**2 + x - 1)
-    assert factor(f, modulus=5) == (x - 2)**2 * (x + 2)**2
+    assert factor(f, modulus=5) == (x + 3)**2 * (x + 2)**2
 
 
 def test_H23():
     f = x**11 + x + 1
-    g = (x**2 + x + 1)*(x**9 - x**8 + x**6 - x**5 + x**3 - x**2 + 1)
-    assert factor(f, modulus=65537) == g
-    assert expand(g) == f
     s = (x**2 + x + 1)*(x**9 + 65536*x**8 + x**6 + 65536*x**5 +
                         x**3 + 65536*x**2 + 1)
-    assert factor(f, modulus=65537, symmetric=False) == s
+    assert factor(f, modulus=65537) == s
     assert trunc(expand(s), 65537) == f
 
 

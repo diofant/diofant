@@ -23,13 +23,13 @@ class FiniteField(Field, SimpleDomain):
 
     mod = None
 
-    def __init__(self, mod, dom, symmetric=True):
+    def __init__(self, mod, dom):
         if not isprime(mod):
             if perfect_power(mod):  # pragma: no cover
                 raise NotImplementedError
             raise ValueError('modulus must be a positive prime number, got %s' % mod)
 
-        self.dtype = ModularIntegerFactory(mod, dom, symmetric, self)
+        self.dtype = ModularIntegerFactory(mod, dom, self)
         self.zero = self.dtype(0)
         self.one = self.dtype(1)
         self.domain = dom
@@ -93,12 +93,12 @@ class FiniteField(Field, SimpleDomain):
 class PythonFiniteField(FiniteField):
     """Finite field based on Python's integers. """
 
-    def __init__(self, mod, symmetric=True):
-        super().__init__(mod, PythonIntegerRing(), symmetric)
+    def __init__(self, mod):
+        super().__init__(mod, PythonIntegerRing())
 
 
 class GMPYFiniteField(FiniteField):
     """Finite field based on GMPY's integers. """
 
-    def __init__(self, mod, symmetric=True):
-        super().__init__(mod, GMPYIntegerRing(), symmetric)
+    def __init__(self, mod):
+        super().__init__(mod, GMPYIntegerRing())

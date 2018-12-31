@@ -127,7 +127,7 @@ field with characteristic 5, rational field or its algebraic extension::
 
     >>> factor(f, modulus=5)
            2        2
-    (x - 2) ⋅(x + 2)
+    (x + 2) ⋅(x + 3)
     >>> factor(f)
     ⎛ 2        ⎞ ⎛ 2        ⎞
     ⎝x  - x - 1⎠⋅⎝x  + x - 1⎠
