@@ -117,7 +117,7 @@ def test_minimal_polynomial():
                               method='groebner')(x) == ans
     K1 = QQ.algebraic_field(RootOf(x**3 + 4*x - 15, 1))
     K2 = QQ.algebraic_field(RootOf(x**3 - x + 1, 0))
-    theta = sqrt(1 + 1/(K1.to_expr(K([1, 0, 1])) +
+    theta = sqrt(1 + 1/(K1.to_expr(K1([1, 0, 1])) +
                         1/(sqrt(3) + K2.to_expr(K2([1, 2, -1])))))
     ans = (2262264837876687263*x**36 - 38939909597855051866*x**34 +
            315720420314462950715*x**32 - 1601958657418182606114*x**30 +
