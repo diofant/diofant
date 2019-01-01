@@ -84,7 +84,7 @@ class FiniteField(Field, SimpleDomain):
             raise CoercionFailed("expected an integer, got %s" % a)
 
     def _from_PythonFiniteField(self, a, K0=None):
-        return self.dtype(self.domain.convert(a.val, K0.domain))
+        return self.dtype(self.domain.convert(a.rep, K0.domain))
 
     def _from_PythonIntegerRing(self, a, K0=None):
         return self.dtype(self.domain.convert(a, K0))
@@ -94,7 +94,7 @@ class FiniteField(Field, SimpleDomain):
             return self.convert(a.numerator)
 
     def _from_GMPYFiniteField(self, a, K0=None):
-        return self.dtype(self.domain.convert(a.val, K0.domain))
+        return self.dtype(self.domain.convert(a.rep, K0.domain))
 
     def _from_GMPYIntegerRing(self, a, K0=None):
         return self.dtype(self.domain.convert(a, K0))
@@ -134,115 +134,98 @@ class ModularInteger(DomainElement):
     def parent(self):
         return self._parent
 
-    def __init__(self, val):
-        if isinstance(val, self.__class__):
-            self.val = val.val % self.mod
+    def __init__(self, rep):
+        if isinstance(rep, self.__class__):
+            self.rep = rep.rep % self.mod
         else:
-            self.val = self.domain.convert(val) % self.mod
+            self.rep = self.domain.convert(rep) % self.mod
 
     def __hash__(self):
-        return hash((self.val, self.mod))
+        return hash((self.rep, self.mod))
 
     def __str__(self):
-        return "%s mod %s" % (self.val, self.mod)
+        return "%s mod %s" % (self.rep, self.mod)
 
     def __int__(self):
-        return int(self.val)
+        return int(self.rep)
 
     def __pos__(self):
         return self
 
     def __neg__(self):
-        return self.__class__(-self.val)
-
-    @classmethod
-    def _get_val(cls, other):
-        if isinstance(other, cls):
-            return other.val
-        else:
-            try:
-                return cls.domain.convert(other)
-            except CoercionFailed:
-                return
+        return self.__class__(-self.rep)
 
     def __add__(self, other):
-        val = self._get_val(other)
-
-        if val is not None:
-            return self.__class__(self.val + val)
-        else:
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
             return NotImplemented
+        return self.__class__(self.rep + other.rep)
 
     def __radd__(self, other):
         return self.__add__(other)
 
     def __sub__(self, other):
-        val = self._get_val(other)
-
-        if val is not None:
-            return self.__class__(self.val - val)
-        else:
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
             return NotImplemented
+        return self.__class__(self.rep - other.rep)
 
     def __rsub__(self, other):
         return (-self).__add__(other)
 
     def __mul__(self, other):
-        val = self._get_val(other)
-
-        if val is not None:
-            return self.__class__(self.val * val)
-        else:
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
             return NotImplemented
+        return self.__class__(self.rep * other.rep)
 
     def __rmul__(self, other):
         return self.__mul__(other)
 
     def __truediv__(self, other):
-        val = self._get_val(other)
-
-        if val is not None:
-            return self.__class__(self.val * self._invert(val))
-        else:
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
             return NotImplemented
+        return self.__class__(self.rep * self._invert(other.rep))
 
     def __rtruediv__(self, other):
         return self.invert().__mul__(other)
 
     def __mod__(self, other):
-        val = self._get_val(other)
-
-        if val is not None:
-            return self.__class__(self.val % val)
-        else:
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
             return NotImplemented
+        return self.__class__(self.rep % other.rep)
 
     def __rmod__(self, other):
-        val = self._get_val(other)
-
-        if val is not None:
-            return self.__class__(val % self.val)
-        else:
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
             return NotImplemented
+        return other.__mod__(self)
 
     def __pow__(self, exp):
         if not exp:
-            return self.__class__(self.domain.one)
+            return self.parent.one
 
         if exp < 0:
-            val, exp = self.invert(), -exp
+            rep, exp = self.invert(), -exp
         else:
-            val = self.val
+            rep = self.rep
 
-        return self.__class__(val**exp)
+        return self.__class__(rep**exp)
 
     def _compare(self, other, op):
-        val = self._get_val(other)
-
-        if val is not None:
-            return op(self.val, val % self.mod)
-        else:
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
             return NotImplemented
+        return op(self.rep, other.rep)
 
     def __eq__(self, other):
         return self._compare(other, operator.eq)
@@ -251,11 +234,11 @@ class ModularInteger(DomainElement):
         return self._compare(other, operator.lt)
 
     def __bool__(self):
-        return bool(self.val)
+        return bool(self.rep)
 
     @classmethod
     def _invert(cls, value):
         return cls.domain.invert(value, cls.mod)
 
     def invert(self):
-        return self.__class__(self._invert(self.val))
+        return self.__class__(self._invert(self.rep))
