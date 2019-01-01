@@ -143,9 +143,6 @@ class ModularInteger(DomainElement):
     def __hash__(self):
         return hash((self.rep, self.mod))
 
-    def __str__(self):
-        return "%s mod %s" % (self.rep, self.mod)
-
     def __int__(self):
         return int(self.rep)
 

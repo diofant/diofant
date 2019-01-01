@@ -434,6 +434,9 @@ class StrPrinter(Printer):
     def _print_AlgebraicElement(self, expr):
         return self._print(expr.parent.to_expr(expr))
 
+    def _print_ModularInteger(self, expr):
+        return "%s mod %s" % (expr.rep, expr.mod)
+
     def _print_Pow(self, expr, rational=False):
         PREC = precedence(expr)
 
