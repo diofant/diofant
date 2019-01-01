@@ -46,7 +46,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
         from ..polys.numberfields import primitive_element
 
-        minpoly, coeffs, H = primitive_element(ext, domain=dom)
+        minpoly, coeffs, _ = primitive_element(ext, domain=dom)
         ext = sum(c*e for c, e in zip(coeffs, ext))
 
         is_real = ext.is_real
@@ -85,7 +85,6 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
             obj.dtype = type(dtype_cls.__name__, (dtype_cls,), {"_parent": obj})
             _algebraic_numbers_cache[(obj.domain, obj.ext)] = obj.dtype
 
-        obj.root = sum(obj.dtype(h) for h in H)
         obj.unit = obj.dtype([dom(1), dom(0)])
 
         obj.zero = obj.dtype([dom(0)])
@@ -125,7 +124,12 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         if a in self.domain:
             return self.new([a])
         else:
-            return self.convert(K0.root, K0)
+            from ..polys import field_isomorphism
+
+            coeffs = field_isomorphism(K0, self)
+            factor = Integer((K0.to_expr(K0.unit)/a).simplify())
+
+            return self.dtype(coeffs)/factor
 
     def _from_PythonIntegerRing(self, a, K0):
         return self([self.domain.convert(a, K0)])

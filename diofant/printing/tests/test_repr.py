@@ -112,10 +112,10 @@ def test_Rational():
 
 def test_AlgebraicElement():
     K = QQ.algebraic_field(sqrt(2))
-    a = K.root
+    a = K.unit
     sT(a, "AlgebraicField(%s, Pow(Integer(2), Rational(1, 2)))([Integer(1), Integer(0)])" % repr(QQ))
     K = QQ.algebraic_field(root(-2, 3))
-    a = K.root
+    a = K.unit
     sT(a, "AlgebraicField(%s, Pow(Integer(-2), Rational(1, 3)))([Integer(1), Integer(0)])" % repr(QQ))
 
 
