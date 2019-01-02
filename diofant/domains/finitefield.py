@@ -187,10 +187,10 @@ class ModularInteger(DomainElement):
             other = self.parent.convert(other)
         except CoercionFailed:
             return NotImplemented
-        return self.__class__(self.rep * self._invert(other.rep))
+        return self * other**-1
 
     def __rtruediv__(self, other):
-        return self.invert().__mul__(other)
+        return (self**-1).__mul__(other)
 
     def __mod__(self, other):
         try:
@@ -207,14 +207,12 @@ class ModularInteger(DomainElement):
         return other.__mod__(self)
 
     def __pow__(self, exp):
-        if not exp:
-            return self.parent.one
-
+        if not isinstance(exp, numbers.Integral):
+            raise TypeError("Integer exponent expected, got %s" % type(exp))
         if exp < 0:
-            rep, exp = self.invert(), -exp
+            rep, exp = self.domain.invert(self.rep, self.mod), -exp
         else:
             rep = self.rep
-
         return self.__class__(rep**exp)
 
     def _compare(self, other, op):
@@ -232,10 +230,3 @@ class ModularInteger(DomainElement):
 
     def __bool__(self):
         return bool(self.rep)
-
-    @classmethod
-    def _invert(cls, value):
-        return cls.domain.invert(value, cls.mod)
-
-    def invert(self):
-        return self.__class__(self._invert(self.rep))
