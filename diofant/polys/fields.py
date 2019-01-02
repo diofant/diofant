@@ -8,7 +8,6 @@ from ..core.sympify import CantSympify
 from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
 from ..domains.field import Field
-from ..printing.defaults import DefaultPrinting
 from ..utilities.magic import pollute
 from .orderings import lex
 from .polyerrors import CoercionFailed, GeneratorsError
@@ -239,7 +238,7 @@ class FractionField(Field, CompositeDomain):
 
 
 @functools.total_ordering
-class FracElement(DomainElement, DefaultPrinting, CantSympify):
+class FracElement(DomainElement, CantSympify):
     """Element of multivariate distributed rational function field.
 
     See Also

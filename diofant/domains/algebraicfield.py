@@ -10,7 +10,6 @@ from ..polys.densebasic import dmp_LC, dmp_strip, dmp_to_dict, dmp_to_tuple
 from ..polys.densetools import dmp_compose, dmp_eval_in
 from ..polys.euclidtools import dup_invert
 from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
-from ..printing.defaults import DefaultPrinting
 from .characteristiczero import CharacteristicZero
 from .domainelement import DomainElement
 from .field import Field
@@ -46,7 +45,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
         from ..polys.numberfields import primitive_element
 
-        minpoly, coeffs, H = primitive_element(ext, domain=dom)
+        minpoly, coeffs, _ = primitive_element(ext, domain=dom)
         ext = sum(c*e for c, e in zip(coeffs, ext))
 
         is_real = ext.is_real
@@ -85,7 +84,6 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
             obj.dtype = type(dtype_cls.__name__, (dtype_cls,), {"_parent": obj})
             _algebraic_numbers_cache[(obj.domain, obj.ext)] = obj.dtype
 
-        obj.root = sum(obj.dtype(h) for h in H)
         obj.unit = obj.dtype([dom(1), dom(0)])
 
         obj.zero = obj.dtype([dom(0)])
@@ -125,7 +123,12 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         if a in self.domain:
             return self.new([a])
         else:
-            return self.convert(K0.root, K0)
+            from ..polys import field_isomorphism
+
+            coeffs = field_isomorphism(K0, self)
+            factor = Integer((K0.to_expr(K0.unit)/a).simplify())
+
+            return self.dtype(coeffs)/factor
 
     def _from_PythonIntegerRing(self, a, K0):
         return self([self.domain.convert(a, K0)])
@@ -206,7 +209,7 @@ class RealAlgebraicField(ComplexAlgebraicField):
         return a < 0
 
 
-class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
+class AlgebraicElement(DomainElement, CantSympify):
     """Dense Algebraic Number Polynomials over a field. """
 
     def __init__(self, rep):
@@ -233,10 +236,7 @@ class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
 
     def __hash__(self):
         return hash((self.__class__.__name__, dmp_to_tuple(self.rep, 0),
-                     self._parent.domain, self._parent.ext))
-
-    def per(self, rep):
-        return type(self)(rep)
+                     self.domain, self.parent.ext))
 
     def to_dict(self):
         """Convert ``self`` to a dict representation with native coefficients. """
@@ -255,41 +255,35 @@ class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
         return self
 
     def __neg__(self):
-        return self.per(dmp_neg(self.rep, 0, self.domain))
+        return self.__class__(dmp_neg(self.rep, 0, self.domain))
 
     def __add__(self, other):
-        if not isinstance(other, self.parent.dtype):
-            try:
-                other = self.per(other)
-            except CoercionFailed:
-                return NotImplemented
-
-        return self.per(dup_add(self.rep, other.rep, self.domain))
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        return self.__class__(dup_add(self.rep, other.rep, self.domain))
 
     def __radd__(self, other):
         return self.__add__(other)
 
     def __sub__(self, other):
-        if not isinstance(other, self.parent.dtype):
-            try:
-                other = self.per(other)
-            except CoercionFailed:
-                return NotImplemented
-
-        return self.per(dup_sub(self.rep, other.rep, self.domain))
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        return self.__class__(dup_sub(self.rep, other.rep, self.domain))
 
     def __rsub__(self, other):
         return (-self).__add__(other)
 
     def __mul__(self, other):
-        if not isinstance(other, self.parent.dtype):
-            try:
-                other = self.per(other)
-            except CoercionFailed:
-                return NotImplemented
-
-        return self.per(dmp_rem(dup_mul(self.rep, other.rep, self.domain),
-                                self.mod, 0, self.domain))
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        return self.__class__(dmp_rem(dup_mul(self.rep, other.rep, self.domain),
+                                      self.mod, 0, self.domain))
 
     def __rmul__(self, other):
         return self.__mul__(other)
@@ -301,28 +295,24 @@ class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
             else:
                 F = self.rep
 
-            return self.per(dmp_rem(dmp_pow(F, n, 0, self.domain),
-                                    self.mod, 0, self.domain))
+            return self.__class__(dmp_rem(dmp_pow(F, n, 0, self.domain),
+                                          self.mod, 0, self.domain))
         else:
             raise TypeError("``int`` expected, got %s" % type(n))
 
     def __truediv__(self, other):
-        if not isinstance(other, self.parent.dtype):
-            try:
-                other = self.per(other)
-            except CoercionFailed:
-                return NotImplemented
-
-        return self.per(dmp_rem(dup_mul(self.rep, dup_invert(other.rep, self.mod, self.domain), self.domain),
-                                self.mod, 0, self.domain))
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        return self.__class__(dmp_rem(dup_mul(self.rep, dup_invert(other.rep, self.mod, self.domain), self.domain),
+                                      self.mod, 0, self.domain))
 
     def __eq__(self, other):
-        if not isinstance(other, self.parent.dtype):
-            try:
-                other = self.per(other)
-            except CoercionFailed:
-                return False
-
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
+            return False
         return self.rep == other.rep
 
     def __bool__(self):
@@ -342,8 +332,8 @@ class AlgebraicElement(DomainElement, CantSympify, DefaultPrinting):
     @property
     def denominator(self):
         from . import ZZ
-        return self.per(functools.reduce(ZZ.lcm, (ZZ.convert(_.denominator)
-                                                  for _ in self.rep), ZZ.one))
+        return self.__class__(functools.reduce(ZZ.lcm, (ZZ.convert(_.denominator)
+                                               for _ in self.rep), ZZ.one))
 
 
 class ComplexAlgebraicElement(AlgebraicElement):
@@ -374,11 +364,10 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
     def __lt__(self, other):
         from ..polys.rootisolation import dup_count_real_roots
 
-        if not isinstance(other, self.parent.dtype):
-            try:
-                other = self.per(other)
-            except CoercionFailed:
-                return NotImplemented
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
+            return NotImplemented
 
         if self.parent._ext_root is None:
             self.parent._ext_root = self.parent._compute_ext_root(self.parent.ext,

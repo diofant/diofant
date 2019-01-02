@@ -565,6 +565,8 @@ def test_Domain_convert():
     assert ALG.convert(EX(sqrt(2)), EX) == ALG.from_expr(sqrt(2))
     pytest.raises(CoercionFailed, lambda: ALG.convert(EX(sqrt(5)), EX))
 
+    pytest.raises(CoercionFailed, lambda: ALG2.convert(ALG.unit))
+
 
 def test_arithmetics():
     assert ZZ.rem(ZZ(2), ZZ(3)) == 2

@@ -12,7 +12,7 @@ from diofant.polys.polyoptions import (All, Auto, BooleanOption, Domain,
                                        Gaussian, Gen, Gens, Greedy, Include,
                                        Method, Modulus, Options, OptionType,
                                        Order, Polys, Sort, Split, Strict,
-                                       Symbols, Symmetric, Wrt, allowed_flags,
+                                       Symbols, Wrt, allowed_flags,
                                        set_defaults)
 
 
@@ -339,31 +339,13 @@ def test_Modulus_postprocess():
         'domain': FF(5),
     }
 
-    opt = {'modulus': 5, 'symmetric': False}
+    opt = {'modulus': 5}
     Modulus.postprocess(opt)
 
     assert opt == {
         'modulus': 5,
-        'domain': FF(5, False),
-        'symmetric': False,
+        'domain': FF(5),
     }
-
-
-def test_Symmetric_preprocess():
-    assert Symmetric.preprocess(False) is False
-    assert Symmetric.preprocess(True) is True
-
-    assert Symmetric.preprocess(0) is False
-    assert Symmetric.preprocess(1) is True
-
-    pytest.raises(OptionError, lambda: Symmetric.preprocess(x))
-
-
-def test_Symmetric_postprocess():
-    opt = {'symmetric': True}
-    Symmetric.postprocess(opt)
-
-    assert opt == {'symmetric': True}
 
 
 def test_Strict_preprocess():

@@ -1,15 +1,22 @@
 """Implementation of :class:`FiniteField` class. """
 
+import functools
+import numbers
+import operator
+
 from ..ntheory import isprime, perfect_power
 from ..polys.polyerrors import CoercionFailed
+from .domainelement import DomainElement
 from .field import Field
 from .groundtypes import DiofantInteger
 from .integerring import GMPYIntegerRing, PythonIntegerRing
-from .modularinteger import ModularIntegerFactory
 from .simpledomain import SimpleDomain
 
 
 __all__ = 'FiniteField', 'GMPYFiniteField', 'PythonFiniteField'
+
+
+_modular_integer_cache = {}
 
 
 class FiniteField(Field, SimpleDomain):
@@ -23,19 +30,32 @@ class FiniteField(Field, SimpleDomain):
 
     mod = None
 
-    def __init__(self, mod, dom, symmetric=True):
-        if not isprime(mod):
+    def __new__(cls, mod, dom):
+        if not (isinstance(mod, numbers.Integral) and isprime(mod)):
             if perfect_power(mod):  # pragma: no cover
                 raise NotImplementedError
             raise ValueError('modulus must be a positive prime number, got %s' % mod)
 
-        self.dtype = ModularIntegerFactory(mod, dom, symmetric, self)
-        self.zero = self.dtype(0)
-        self.one = self.dtype(1)
-        self.domain = dom
-        self.mod = mod
+        mod = dom.convert(mod)
+        key = mod, dom
 
-        self.rep = 'GF(%s)' % self.mod
+        obj = super().__new__(cls)
+
+        try:
+            obj.dtype = _modular_integer_cache[key]
+        except KeyError:
+            obj.dtype = type("ModularIntegerMod%s" % mod, (ModularInteger,),
+                             {"mod": mod, "domain": dom, "_parent": obj})
+            _modular_integer_cache[key] = obj.dtype
+
+        obj.zero = obj.dtype(0)
+        obj.one = obj.dtype(1)
+        obj.domain = dom
+        obj.mod = mod
+
+        obj.rep = 'GF(%s)' % obj.mod
+
+        return obj
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype, self.mod, self.domain))
@@ -64,7 +84,7 @@ class FiniteField(Field, SimpleDomain):
             raise CoercionFailed("expected an integer, got %s" % a)
 
     def _from_PythonFiniteField(self, a, K0=None):
-        return self.dtype(self.domain.convert(a.val, K0.domain))
+        return self.dtype(self.domain.convert(a.rep, K0.domain))
 
     def _from_PythonIntegerRing(self, a, K0=None):
         return self.dtype(self.domain.convert(a, K0))
@@ -74,7 +94,7 @@ class FiniteField(Field, SimpleDomain):
             return self.convert(a.numerator)
 
     def _from_GMPYFiniteField(self, a, K0=None):
-        return self.dtype(self.domain.convert(a.val, K0.domain))
+        return self.dtype(self.domain.convert(a.rep, K0.domain))
 
     def _from_GMPYIntegerRing(self, a, K0=None):
         return self.dtype(self.domain.convert(a, K0))
@@ -93,12 +113,120 @@ class FiniteField(Field, SimpleDomain):
 class PythonFiniteField(FiniteField):
     """Finite field based on Python's integers. """
 
-    def __init__(self, mod, symmetric=True):
-        super().__init__(mod, PythonIntegerRing(), symmetric)
+    def __new__(cls, mod):
+        return super().__new__(cls, mod, PythonIntegerRing())
 
 
 class GMPYFiniteField(FiniteField):
     """Finite field based on GMPY's integers. """
 
-    def __init__(self, mod, symmetric=True):
-        super().__init__(mod, GMPYIntegerRing(), symmetric)
+    def __new__(cls, mod):
+        return super().__new__(cls, mod, GMPYIntegerRing())
+
+
+@functools.total_ordering
+class ModularInteger(DomainElement):
+    """A class representing a modular integer. """
+
+    mod, domain, _parent = None, None, None
+
+    @property
+    def parent(self):
+        return self._parent
+
+    def __init__(self, rep):
+        if isinstance(rep, self.__class__):
+            self.rep = rep.rep % self.mod
+        else:
+            self.rep = self.domain.convert(rep) % self.mod
+
+    def __hash__(self):
+        return hash((self.rep, self.mod))
+
+    def __int__(self):
+        return int(self.rep)
+
+    def __pos__(self):
+        return self
+
+    def __neg__(self):
+        return self.__class__(-self.rep)
+
+    def __add__(self, other):
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        return self.__class__(self.rep + other.rep)
+
+    def __radd__(self, other):
+        return self.__add__(other)
+
+    def __sub__(self, other):
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        return self.__class__(self.rep - other.rep)
+
+    def __rsub__(self, other):
+        return (-self).__add__(other)
+
+    def __mul__(self, other):
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        return self.__class__(self.rep * other.rep)
+
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def __truediv__(self, other):
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        return self * other**-1
+
+    def __rtruediv__(self, other):
+        return (self**-1).__mul__(other)
+
+    def __mod__(self, other):
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        return self.__class__(self.rep % other.rep)
+
+    def __rmod__(self, other):
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        return other.__mod__(self)
+
+    def __pow__(self, exp):
+        if not isinstance(exp, numbers.Integral):
+            raise TypeError("Integer exponent expected, got %s" % type(exp))
+        if exp < 0:
+            rep, exp = self.domain.invert(self.rep, self.mod), -exp
+        else:
+            rep = self.rep
+        return self.__class__(rep**exp)
+
+    def _compare(self, other, op):
+        try:
+            other = self.parent.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        return op(self.rep, other.rep)
+
+    def __eq__(self, other):
+        return self._compare(other, operator.eq)
+
+    def __lt__(self, other):
+        return self._compare(other, operator.lt)
+
+    def __bool__(self):
+        return bool(self.rep)

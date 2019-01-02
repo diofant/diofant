@@ -145,12 +145,12 @@ def test_Poly_from_poly():
     K = FF(2)
 
     assert Poly.from_poly(g) == g
-    assert Poly.from_poly(g, domain=ZZ).rep == DMP([1, -1], ZZ)
+    assert Poly.from_poly(g, domain=ZZ).rep == DMP([1, 2], ZZ)
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(g, domain=QQ))
     assert Poly.from_poly(g, domain=K).rep == DMP([K(1), K(0)], K)
 
     assert Poly.from_poly(g, gens=x) == g
-    assert Poly.from_poly(g, gens=x, domain=ZZ).rep == DMP([1, -1], ZZ)
+    assert Poly.from_poly(g, gens=x, domain=ZZ).rep == DMP([1, 2], ZZ)
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(g, gens=x, domain=QQ))
     assert Poly.from_poly(g, gens=x, domain=K).rep == DMP([K(1), K(0)], K)
 
@@ -241,7 +241,6 @@ def test_Poly__new__():
     pytest.raises(GeneratorsError, lambda: Poly(x + y, x, y, domain=ZZ.poly_ring(x)))
     pytest.raises(GeneratorsError, lambda: Poly(x + y, x, y, domain=ZZ.poly_ring(y)))
 
-    pytest.raises(OptionError, lambda: Poly(x, x, symmetric=True))
     pytest.raises(OptionError, lambda: Poly(x + 2, x, modulus=3, domain=QQ))
 
     pytest.raises(OptionError, lambda: Poly(x + 2, x, domain=ZZ, gaussian=True))
@@ -307,12 +306,8 @@ def test_Poly__new__():
 
     f = 3*x**5 - x**4 + x**3 - x**2 + 65538
 
-    assert Poly(f, x, modulus=65537, symmetric=True) == \
-        Poly(3*x**5 - x**4 + x**3 - x**2 + 1, x, modulus=65537,
-             symmetric=True)
-    assert Poly(f, x, modulus=65537, symmetric=False) == \
-        Poly(3*x**5 + 65536*x**4 + x**3 + 65536*x**2 + 1, x,
-             modulus=65537, symmetric=False)
+    assert Poly(f, x, modulus=65537) == \
+        Poly(3*x**5 + 65536*x**4 + x**3 + 65536*x**2 + 1, x, modulus=65537)
 
     assert isinstance(Poly(x**2 + x + 1.0).domain, RealField)
 
@@ -1920,21 +1915,13 @@ def test_gcd():
     assert gcd(8, 6) == 2
     assert lcm(8, 6) == 24
 
-    f, g = x**2 - 3*x - 4, x**3 - 4*x**2 + x - 4
-    l = x**4 - 3*x**3 - 3*x**2 - 3*x - 4
-    h, s, t = x - 4, x + 1, x**2 + 1
-
-    assert cofactors(f, g, modulus=11) == (h, s, t)
-    assert gcd(f, g, modulus=11) == h
-    assert lcm(f, g, modulus=11) == l
-
     f, g = x**2 + 8*x + 7, x**3 + 7*x**2 + x + 7
     l = x**4 + 8*x**3 + 8*x**2 + 8*x + 7
     h, s, t = x + 7, x + 1, x**2 + 1
 
-    assert cofactors(f, g, modulus=11, symmetric=False) == (h, s, t)
-    assert gcd(f, g, modulus=11, symmetric=False) == h
-    assert lcm(f, g, modulus=11, symmetric=False) == l
+    assert cofactors(f, g, modulus=11) == (h, s, t)
+    assert gcd(f, g, modulus=11) == h
+    assert lcm(f, g, modulus=11) == l
 
     pytest.raises(TypeError, lambda: gcd(x))
     pytest.raises(TypeError, lambda: lcm(x))
@@ -2041,7 +2028,7 @@ def test_monic():
     pytest.raises(ExactQuotientFailed, lambda: monic(2*x + 6*x + 1, auto=False))
 
     assert monic(2.0*x**2 + 6.0*x + 4.0) == 1.0*x**2 + 3.0*x + 2.0
-    assert monic(2*x**2 + 3*x + 4, modulus=5) == x**2 - x + 2
+    assert monic(2*x**2 + 3*x + 4, modulus=5) == x**2 + 4*x + 2
 
 
 def test_content():
@@ -2332,9 +2319,7 @@ def test_factor():
 
     assert factor(6*x - 10) == Mul(2, 3*x - 5, evaluate=False)
 
-    assert factor(x**11 + x + 1, modulus=65537, symmetric=True) == \
-        (x**2 + x + 1)*(x**9 - x**8 + x**6 - x**5 + x**3 - x**2 + 1)
-    assert factor(x**11 + x + 1, modulus=65537, symmetric=False) == \
+    assert factor(x**11 + x + 1, modulus=65537) == \
         (x**2 + x + 1)*(x**9 + 65536*x**8 + x**6 + 65536*x**5 +
                         x**3 + 65536*x**2 + 1)
 
@@ -2973,14 +2958,14 @@ def test_groebner():
     F = [3*x**2 + y*z - 5*x - 1, 2*x + 3*x*y + y**2, x - 3*y + x*z - 2*z**2]
     f = z**9 - x**2*y**3 - 3*x*y**2*z + 11*y*z**2 + x**2*z**2 - 5
 
-    G = groebner(F, x, y, z, modulus=7, symmetric=False)
+    G = groebner(F, x, y, z, modulus=7)
 
     assert G == [1 + x + y + 3*z + 2*z**2 + 2*z**3 + 6*z**4 + z**5,
                  1 + 3*y + y**2 + 6*z**2 + 3*z**3 + 3*z**4 + 3*z**5 + 4*z**6,
                  1 + 4*y + 4*z + y*z + 4*z**3 + z**4 + z**6,
                  6 + 6*z + z**2 + 4*z**3 + 3*z**4 + 6*z**5 + 3*z**6 + z**7]
 
-    Q, r = reduced(f, G, x, y, z, modulus=7, symmetric=False, polys=True)
+    Q, r = reduced(f, G, x, y, z, modulus=7, polys=True)
 
     assert sum((q*g for q, g in zip(Q, G.polys)), r) == Poly(f, modulus=7)
 

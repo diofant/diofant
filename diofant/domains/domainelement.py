@@ -2,11 +2,13 @@
 
 import abc
 
+from ..printing.defaults import DefaultPrinting
+
 
 __all__ = 'DomainElement',
 
 
-class DomainElement(abc.ABC):
+class DomainElement(abc.ABC, DefaultPrinting):
     """
     Represents an element of a domain.
 

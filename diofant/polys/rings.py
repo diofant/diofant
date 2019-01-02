@@ -13,7 +13,6 @@ from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
 from ..domains.ring import Ring
 from ..ntheory import multinomial_coefficients
-from ..printing.defaults import DefaultPrinting
 from ..utilities.magic import pollute
 from .compatibility import IPolys
 from .constructor import construct_domain
@@ -455,7 +454,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         return self.new(self.domain.factorial(a))
 
 
-class PolyElement(DomainElement, DefaultPrinting, CantSympify, dict):
+class PolyElement(DomainElement, CantSympify, dict):
     """Element of multivariate distributed polynomial ring.
 
     See Also
