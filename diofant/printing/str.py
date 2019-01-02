@@ -436,6 +436,7 @@ class StrPrinter(Printer):
 
     def _print_ModularInteger(self, expr):
         return "%s mod %s" % (expr.rep, expr.mod)
+    _print_GaloisFieldElement = emptyPrinter
 
     def _print_Pow(self, expr, rational=False):
         PREC = precedence(expr)

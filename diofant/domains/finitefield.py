@@ -1,7 +1,11 @@
 """Implementation of :class:`FiniteField` class. """
 
+import random
+
+from ..core import Dummy, integer_digits
 from ..core.compatibility import DIOFANT_INTS
 from ..ntheory import isprime, perfect_power
+from ..polys.galoistools import gf_irreducible
 from ..polys.polyerrors import CoercionFailed
 from .domainelement import DomainElement
 from .field import Field
@@ -25,37 +29,54 @@ class FiniteField(Field, SimpleDomain):
     has_assoc_Ring = False
     has_assoc_Field = True
 
-    mod = None
-
-    def __new__(cls, mod, dom):
-        if not (isinstance(mod, DIOFANT_INTS) and isprime(mod)):
-            pp = perfect_power(mod)
+    def __new__(cls, order, dom, modulus=None):
+        if not (isinstance(order, DIOFANT_INTS) and isprime(order)):
+            pp = perfect_power(order)
             if not pp:
-                raise ValueError('modulus must be a positive prime number, got %s' % mod)
+                raise ValueError('order must be a prime power, '
+                                 'got %s' % order)
             mod, deg = pp
-            raise NotImplementedError
         else:
-            deg = 1
+            mod, deg = order, 1
+            if modulus is None:
+                modulus = [1, 0]
+            else:
+                deg = len(modulus) - 1
+
+        if modulus is None:
+            random.seed(0)
+            modulus = gf_irreducible(deg, mod, dom)
+        elif deg != len(modulus) - 1:
+            raise ValueError('degree of a defining polynomial for the field'
+                             ' does not match extension degree')
+        modulus = tuple(map(dom.dtype, modulus))
 
         mod = dom.convert(mod)
-        order = mod**deg
 
-        key = order, dom
+        key = order, dom, mod, modulus
 
         obj = super().__new__(cls)
-
-        try:
-            obj.dtype = _modular_integer_cache[key]
-        except KeyError:
-            obj.dtype = type("ModularIntegerMod%s" % mod, (ModularInteger,),
-                             {"mod": mod, "domain": dom, "_parent": obj})
-            _modular_integer_cache[key] = obj.dtype
 
         obj.domain = dom
         obj.mod = mod
         obj.order = order
 
         obj.rep = 'GF(%s)' % obj.order
+
+        try:
+            obj.dtype = _modular_integer_cache[key]
+        except KeyError:
+            if deg == 1:
+                obj.dtype = type("ModularInteger", (ModularInteger,),
+                                 {"mod": mod, "domain": dom, "_parent": obj})
+            else:
+                ff = dom.finite_field(mod).poly_ring(Dummy('x'))
+                mod = ff.from_dense(modulus)
+                if not mod.is_irreducible:
+                    raise ValueError('defining polynomial must be irreducible')
+                obj.dtype = type("GaloisFieldElement", (GaloisFieldElement,),
+                                 {"mod": mod, "domain": ff, "_parent": obj})
+            _modular_integer_cache[key] = obj.dtype
 
         obj.zero = obj.dtype(0)
         obj.one = obj.dtype(1)
@@ -126,21 +147,19 @@ class FiniteField(Field, SimpleDomain):
 class PythonFiniteField(FiniteField):
     """Finite field based on Python's integers. """
 
-    def __new__(cls, mod):
-        return super().__new__(cls, mod, PythonIntegerRing())
+    def __new__(cls, order, modulus=None):
+        return super().__new__(cls, order, PythonIntegerRing(), modulus)
 
 
 class GMPYFiniteField(FiniteField):
     """Finite field based on GMPY's integers. """
 
-    def __new__(cls, mod):
-        return super().__new__(cls, mod, GMPYIntegerRing())
+    def __new__(cls, order, modulus=None):
+        return super().__new__(cls, order, GMPYIntegerRing(), modulus)
 
 
 class ModularInteger(DomainElement):
     """A class representing a modular integer. """
-
-    mod, domain, _parent = None, None, None
 
     @property
     def parent(self):
@@ -236,3 +255,20 @@ class ModularInteger(DomainElement):
 
     def __bool__(self):
         return bool(self.rep)
+
+
+class GaloisFieldElement(ModularInteger):
+    def __init__(self, rep):
+        if isinstance(rep, DIOFANT_INTS):
+            rep = integer_digits(rep, self.parent.mod)
+
+        if isinstance(rep, (list, tuple)):
+            rep = self.domain.from_dense(rep)
+            self.rep = rep = rep % self.mod
+        else:
+            super().__init__(rep)
+
+        self._int_rep = self.parent.domain.poly_ring(*self.rep.parent.symbols)(dict(self.rep))
+
+    def __int__(self):
+        return int(self._int_rep.eval(0, self.parent.mod))

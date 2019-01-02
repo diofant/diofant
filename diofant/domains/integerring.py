@@ -53,7 +53,7 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
         return self.dtype(a)
 
     def _from_PythonFiniteField(self, a, K0):
-        return self.dtype(a.rep)
+        return self.dtype(int(a))
     _from_GMPYFiniteField = _from_PythonFiniteField
 
     def _from_PythonRationalField(self, a, K0):

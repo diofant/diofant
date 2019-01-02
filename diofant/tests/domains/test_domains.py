@@ -1011,13 +1011,47 @@ def test_ModularInteger():
     pytest.raises(ValueError, lambda: FF(0))
     pytest.raises(ValueError, lambda: FF(2.1))
     pytest.raises(ValueError, lambda: FF(6))
+    pytest.raises(ValueError, lambda: FF(9, [1, 0]))
+    pytest.raises(ValueError, lambda: FF(9, [1, 1, 1]))
 
     assert F5.is_positive(a) is True
     assert F5.is_negative(a) is False
     assert F5.is_positive(F5.zero) is False
     assert F5.is_negative(F5.zero) is False
 
-    pytest.raises(NotImplementedError, lambda: FF(9))
+    assert F5 == FF(5, [1, 0])
+
+    F9 = FF(9, [1, 0, 1])
+
+    assert F9.order == 9
+    assert F9.characteristic == 3
+
+    assert F9.zero == F9([0])
+    assert F9.one == F9([1])
+    assert F9(F9([2, 1])) == F9([2, 1])
+    assert F9([2, 1]) + F9([1, 2]) == F9([1, 2]) + F9([2, 1]) == F9.zero
+    assert F9([2, 1]) + F9([1, 3]) == F9.one
+    assert F9([2, 1]) * F9([1, 3]) == F9([1, 1])
+    assert sum(F9.one for _ in range(3)) == F9.zero
+
+    assert int(F9.zero) == 0
+    assert int(F9.one) == 1
+    assert int(F9([1, 1])) == int(F9(4)) == 4
+    assert int(F9([2, 0])) == int(F9(6)) == 6
+
+    F81 = FF(3, [1, 0, 0, 1, 2])
+
+    assert F81([1, 2, 1])*F81([2, 2, 2]) == F81([2, 1, 1])
+    assert F81([5, 4, 3, 2, 1]) == F81([1, 0, 0, 0])
+    assert F81([0, 1, 0]) == F81([1, 0])
+    assert 1 + F81([1, 1]) == F81([1, 2])
+
+    F8 = FF(8)
+
+    assert F8.order == 8
+    assert F8.characteristic == 2
+    assert F8.dtype.mod.to_dense() == [1, 0, 1, 1]
+    assert int(F8([1, 0, 1])) == int(F8(5)) == 5
 
 
 def test_QQ_int():

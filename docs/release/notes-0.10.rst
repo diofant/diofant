@@ -11,6 +11,7 @@ New features
 * Ground domains for :class:`~diofant.domains.AlgebraicField` can be also instances of :class:`~diofant.domains.AlgebraicField`, see :pull:`653`.
 * New subclasses of :class:`~diofant.domains.AlgebraicField`: :class:`~diofant.domains.RealAlgebraicField` and :class:`~diofant.domains.ComplexAlgebraicField`, see :pull:`669`, :pull:`630` and :pull:`748`.  Thanks to Kalevi Suominen for help with review.
 * Added :func:`~diofant.core.numbers.integer_digits`, see :pull:`765`.
+* Support finite fields for prime power orders, see :pull:`762`.
 
 Major changes
 =============
@@ -159,3 +160,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`5428` Should Poly use an algebraic domain by default?
 * :sympyissue:`14337` Poly constructor uses domain EX when it's not necessary
 * :sympyissue:`8818` lambdify precision loss with module=mpmath from high-precision Floats
+* :sympyissue:`9544` Finite fields
