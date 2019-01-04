@@ -1,8 +1,6 @@
 """Implementation of :class:`FiniteField` class. """
 
-import functools
 import numbers
-import operator
 
 from ..ntheory import isprime, perfect_power
 from ..polys.polyerrors import CoercionFailed
@@ -109,6 +107,14 @@ class FiniteField(Field, SimpleDomain):
         if q == 1:
             return self.dtype(self.domain.dtype(p))
 
+    def is_positive(self, a):
+        """Returns True if ``a`` is positive. """
+        return a.rep != 0
+
+    def is_negative(self, a):
+        """Returns True if ``a`` is negative. """
+        return False
+
 
 class PythonFiniteField(FiniteField):
     """Finite field based on Python's integers. """
@@ -124,7 +130,6 @@ class GMPYFiniteField(FiniteField):
         return super().__new__(cls, mod, GMPYIntegerRing())
 
 
-@functools.total_ordering
 class ModularInteger(DomainElement):
     """A class representing a modular integer. """
 
@@ -215,18 +220,12 @@ class ModularInteger(DomainElement):
             rep = self.rep
         return self.__class__(rep**exp)
 
-    def _compare(self, other, op):
+    def __eq__(self, other):
         try:
             other = self.parent.convert(other)
         except CoercionFailed:
             return NotImplemented
-        return op(self.rep, other.rep)
-
-    def __eq__(self, other):
-        return self._compare(other, operator.eq)
-
-    def __lt__(self, other):
-        return self._compare(other, operator.lt)
+        return self.rep == other.rep
 
     def __bool__(self):
         return bool(self.rep)
