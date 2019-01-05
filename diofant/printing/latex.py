@@ -1495,7 +1495,7 @@ class LatexPrinter(Printer):
         return r"%s \in %s" % tuple(self._print(a) for a in e.args)
 
     def _print_FiniteField(self, expr):
-        return r"\mathbb{F}_{%s}" % expr.mod
+        return r"\mathbb{F}_{%s}" % expr.order
 
     def _print_IntegerRing(self, expr):
         return r"\mathbb{Z}"

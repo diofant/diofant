@@ -1017,6 +1017,8 @@ def test_ModularInteger():
     assert F5.is_positive(F5.zero) is False
     assert F5.is_negative(F5.zero) is False
 
+    pytest.raises(NotImplementedError, lambda: FF(9))
+
 
 def test_QQ_int():
     assert int(QQ(2**2000, 3**1250)) == 455431

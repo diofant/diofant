@@ -1523,7 +1523,7 @@ class PrettyPrinter(Printer):
         else:
             form = 'GF(%d)'
 
-        return prettyForm(pretty_symbol(form % expr.mod))
+        return prettyForm(pretty_symbol(form % expr.order))
 
     def _print_IntegerRing(self, expr):
         if self._use_unicode:
