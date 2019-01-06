@@ -160,7 +160,6 @@ class Pow(Expr):
     ========
 
     diofant.core.numbers.Infinity
-    diofant.core.numbers.NegativeInfinity
     diofant.core.numbers.NaN
 
     References
