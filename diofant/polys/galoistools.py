@@ -6,7 +6,8 @@ import random
 from ..core import prod
 from ..ntheory import factorint
 from .densearith import dup_lshift
-from .densebasic import dmp_degree_in, dmp_LC, dmp_strip
+from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_LC,
+                         dmp_normal, dmp_strip)
 from .polyconfig import query
 from .polyerrors import ExactQuotientFailed
 from .polyutils import _sort_factors
@@ -125,12 +126,10 @@ def gf_from_dict(f, p, K):
     >>> gf_from_dict({10: 4, 4: 33, 0: -1}, 5, ZZ)
     [4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4]
     """
-    n, h = max(f), []
+    f = dmp_from_dict(f, 0, K.finite_field(p))
+    f = dmp_normal(f, 0, K.finite_field(p))
 
-    for k in range(n, -1, -1):
-        h.append(f.get(k, K.zero) % p)
-
-    return dmp_strip([a % p for a in h], 0)
+    return dmp_convert(f, 0, K.finite_field(p), K)
 
 
 def gf_to_dict(f, p):
