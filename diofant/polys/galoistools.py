@@ -132,27 +132,6 @@ def gf_from_dict(f, p, K):
     return dmp_convert(f, 0, K.finite_field(p), K)
 
 
-def gf_to_dict(f, p):
-    """
-    Convert a ``GF(p)[x]`` polynomial to a dict.
-
-    Examples
-    ========
-
-    >>> gf_to_dict([4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4], 5)
-    {0: 4, 4: 3, 10: 4}
-    """
-    n, result = dmp_degree_in(f, 0, 0), {}
-
-    for k in range(n + 1):
-        a = f[n - k]
-
-        if a:
-            result[k] = a
-
-    return result
-
-
 def gf_from_int_poly(f, p):
     """
     Create a ``GF(p)[x]`` polynomial from ``Z[x]``.
