@@ -165,7 +165,7 @@ def test_sympify5():
 
     with pytest.raises(SympifyError) as err:
         sympify(A())
-    assert re.match(r"^Sympify of expression '<diofant.core\.tests\.test_sympify"
+    assert re.match(r"^Sympify of expression '<diofant\.tests\.core\.test_sympify"
                     r"\.test_sympify5\.<locals>\.A object at 0x[0-9a-f]+>' failed,"
                     " because of exception being raised:\nTypeError: $", str(err.value))
 

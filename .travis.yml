@@ -59,8 +59,8 @@ matrix:
             python setup.py build_sphinx -W -b linkcheck
           fi
         - pip uninstall -y gmpy2
-        - DIOFANT_GROUND_TYPES='gmpy' py.test --cov diofant diofant/domains
-        - travis_wait py.test --cov diofant diofant/polys
+        - DIOFANT_GROUND_TYPES='gmpy' py.test --cov diofant diofant/tests/domains
+        - travis_wait py.test --cov diofant diofant/tests/polys
     - stage: deploy
       env:
         -
@@ -116,11 +116,11 @@ install:
   - travis_wait pip install .[exports,plot,interactive,develop,gmpy,docs]
 script:
   - |
+    PYTEST_ADDOPTS="${PYTEST_ADDOPTS} --split=${SPLIT}"
     if [ -n "${COVERAGE}" ]; then
-      python setup.py test --addopts "--cov diofant --ignore diofant/tests -m \"not slow and not xfail\" --split=${SPLIT}"
-    else
-      python setup.py test --addopts "--split=${SPLIT}"
+      PYTEST_ADDOPTS="${PYTEST_ADDOPTS} --cov diofant -m \"not slow and not xfail\""
     fi
+    python setup.py test
 after_success: test -n "${COVERAGE}" && codecov
 notifications:
   email: false
