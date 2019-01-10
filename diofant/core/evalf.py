@@ -774,13 +774,13 @@ def evalf_bernoulli(expr, prec, options):
 
 
 def as_mpmath(x, prec, options):
-    from .numbers import Infinity, NegativeInfinity, Zero
+    from .numbers import oo
     x = sympify(x)
-    if isinstance(x, Zero) or x == 0:
+    if x == 0:
         return mpf(0)
-    if isinstance(x, Infinity):
+    if x == oo:
         return mpf('inf')
-    if isinstance(x, NegativeInfinity):
+    if x == -oo:
         return mpf('-inf')
     # XXX
     re, im, _, _ = evalf(x, prec, options)

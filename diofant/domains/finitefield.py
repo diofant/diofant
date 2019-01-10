@@ -1,8 +1,6 @@
 """Implementation of :class:`FiniteField` class. """
 
-import functools
 import numbers
-import operator
 
 from ..ntheory import isprime, perfect_power
 from ..polys.polyerrors import CoercionFailed
@@ -32,12 +30,18 @@ class FiniteField(Field, SimpleDomain):
 
     def __new__(cls, mod, dom):
         if not (isinstance(mod, numbers.Integral) and isprime(mod)):
-            if perfect_power(mod):  # pragma: no cover
-                raise NotImplementedError
-            raise ValueError('modulus must be a positive prime number, got %s' % mod)
+            pp = perfect_power(mod)
+            if not pp:
+                raise ValueError('modulus must be a positive prime number, got %s' % mod)
+            mod, deg = pp
+            raise NotImplementedError
+        else:
+            deg = 1
 
         mod = dom.convert(mod)
-        key = mod, dom
+        order = mod**deg
+
+        key = order, dom
 
         obj = super().__new__(cls)
 
@@ -48,22 +52,24 @@ class FiniteField(Field, SimpleDomain):
                              {"mod": mod, "domain": dom, "_parent": obj})
             _modular_integer_cache[key] = obj.dtype
 
-        obj.zero = obj.dtype(0)
-        obj.one = obj.dtype(1)
         obj.domain = dom
         obj.mod = mod
+        obj.order = order
 
-        obj.rep = 'GF(%s)' % obj.mod
+        obj.rep = 'GF(%s)' % obj.order
+
+        obj.zero = obj.dtype(0)
+        obj.one = obj.dtype(1)
 
         return obj
 
     def __hash__(self):
-        return hash((self.__class__.__name__, self.dtype, self.mod, self.domain))
+        return hash((self.__class__.__name__, self.dtype, self.order, self.domain))
 
     def __eq__(self, other):
         """Returns ``True`` if two domains are equivalent. """
         return isinstance(other, FiniteField) and \
-            self.mod == other.mod and self.domain == other.domain
+            self.order == other.order and self.domain == other.domain
 
     @property
     def characteristic(self):
@@ -109,6 +115,14 @@ class FiniteField(Field, SimpleDomain):
         if q == 1:
             return self.dtype(self.domain.dtype(p))
 
+    def is_positive(self, a):
+        """Returns True if ``a`` is positive. """
+        return a.rep != 0
+
+    def is_negative(self, a):
+        """Returns True if ``a`` is negative. """
+        return False
+
 
 class PythonFiniteField(FiniteField):
     """Finite field based on Python's integers. """
@@ -124,7 +138,6 @@ class GMPYFiniteField(FiniteField):
         return super().__new__(cls, mod, GMPYIntegerRing())
 
 
-@functools.total_ordering
 class ModularInteger(DomainElement):
     """A class representing a modular integer. """
 
@@ -215,18 +228,12 @@ class ModularInteger(DomainElement):
             rep = self.rep
         return self.__class__(rep**exp)
 
-    def _compare(self, other, op):
+    def __eq__(self, other):
         try:
             other = self.parent.convert(other)
         except CoercionFailed:
             return NotImplemented
-        return op(self.rep, other.rep)
-
-    def __eq__(self, other):
-        return self._compare(other, operator.eq)
-
-    def __lt__(self, other):
-        return self._compare(other, operator.lt)
+        return self.rep == other.rep
 
     def __bool__(self):
         return bool(self.rep)

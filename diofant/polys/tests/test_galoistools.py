@@ -20,9 +20,8 @@ from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
                                        gf_mul, gf_mul_ground, gf_neg, gf_pow,
                                        gf_pow_mod, gf_Qbasis, gf_Qmatrix,
                                        gf_quo, gf_rem, gf_sqr, gf_sub,
-                                       gf_sub_ground, gf_sub_mul, gf_to_dict,
-                                       gf_trace_map, gf_value,
-                                       linear_congruence)
+                                       gf_sub_ground, gf_sub_mul, gf_trace_map,
+                                       gf_value, linear_congruence)
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.rings import ring
 
@@ -55,21 +54,16 @@ def test_gf_int():
     assert gf_int(5, 5) == 0
 
 
-def test_gf_from_to_dict():
+def test_gf_from_dict():
     f = {11: 12, 6: 2, 0: 25}
-    F = {11: 1, 6: 2, 0: 3}
     g = [1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 3]
 
     assert gf_from_dict(f, 11, ZZ) == g
-    assert gf_to_dict(g, 11) == F
 
     f = {11: -5, 4: 0, 3: 1, 0: 12}
-    F = {11: -5, 3: 1, 0: 1}
     g = [6, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1]
 
     assert gf_from_dict(f, 11, ZZ) == g
-
-    assert gf_to_dict([10], 11) == {0: 10}
 
 
 def test_gf_from_int_poly():

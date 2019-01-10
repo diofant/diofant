@@ -1005,52 +1005,19 @@ def test_ModularInteger():
     a = F5(4)**(-1)
     assert isinstance(a, F5.dtype) and a == 4
 
-    assert (F5(1) < F5(2)) is True
-    assert (F5(1) <= F5(2)) is True
-    assert (F5(1) > F5(2)) is False
-    assert (F5(1) >= F5(2)) is False
-
-    assert (F5(3) < F5(2)) is False
-    assert (F5(3) <= F5(2)) is False
-    assert (F5(3) > F5(2)) is True
-    assert (F5(3) >= F5(2)) is True
-
-    assert (F5(1) < F5(7)) is True
-    assert (F5(1) <= F5(7)) is True
-    assert (F5(1) > F5(7)) is False
-    assert (F5(1) >= F5(7)) is False
-
-    assert (F5(3) < F5(7)) is False
-    assert (F5(3) <= F5(7)) is False
-    assert (F5(3) > F5(7)) is True
-    assert (F5(3) >= F5(7)) is True
-
-    assert (F5(1) < 2) is True
-    assert (F5(1) <= 2) is True
-    assert (F5(1) > 2) is False
-    assert (F5(1) >= 2) is False
-
-    assert (F5(3) < 2) is False
-    assert (F5(3) <= 2) is False
-    assert (F5(3) > 2) is True
-    assert (F5(3) >= 2) is True
-
-    assert (F5(1) < 7) is True
-    assert (F5(1) <= 7) is True
-    assert (F5(1) > 7) is False
-    assert (F5(1) >= 7) is False
-
-    assert (F5(3) < 7) is False
-    assert (F5(3) <= 7) is False
-    assert (F5(3) > 7) is True
-    assert (F5(3) >= 7) is True
-
     pytest.raises(NotInvertible, lambda: F5(0)**(-1))
     pytest.raises(NotInvertible, lambda: F5(5)**(-1))
 
     pytest.raises(ValueError, lambda: FF(0))
     pytest.raises(ValueError, lambda: FF(2.1))
     pytest.raises(ValueError, lambda: FF(6))
+
+    assert F5.is_positive(a) is True
+    assert F5.is_negative(a) is False
+    assert F5.is_positive(F5.zero) is False
+    assert F5.is_negative(F5.zero) is False
+
+    pytest.raises(NotImplementedError, lambda: FF(9))
 
 
 def test_QQ_int():
