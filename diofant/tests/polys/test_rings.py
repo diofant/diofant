@@ -550,6 +550,8 @@ def test_PolyElement___add__():
     p3 = p._iadd_monom(((0, 1), -4))
     assert p == p3 and p3 == x**4 + 5*x*y**2
 
+    assert x._iadd_monom((m, 5)) == 5*x*y**2 + x
+
 
 def test_PolyElement___sub__():
     Rt, t = ring("t", ZZ)

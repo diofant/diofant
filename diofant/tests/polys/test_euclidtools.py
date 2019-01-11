@@ -5,7 +5,7 @@ import pytest
 from diofant.domains import CC, QQ, RR, ZZ
 from diofant.functions import sqrt
 from diofant.polys.polyconfig import using
-from diofant.polys.polyerrors import HeuristicGCDFailed
+from diofant.polys.polyerrors import HeuristicGCDFailed, NotInvertible
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import (dmp_fateman_poly_F_1,
                                         dmp_fateman_poly_F_2,
@@ -55,6 +55,7 @@ def test_dup_gcdex():
 def test_dup_invert():
     R, x = ring("x", QQ)
     assert R.dup_invert(2*x, x**2 - 16) == x/32
+    pytest.raises(NotInvertible, lambda: R.dup_invert(x**2 - 1, x - 1))
 
 
 def test_dup_euclidean_prs():
@@ -264,6 +265,12 @@ def test_dmp_subresultants():
 
     with using(use_collins_resultant=True):
         assert R.dmp_resultant(f, g) == (1 + 2*y**2).drop(x)
+
+    R, x, y = ring("x y", ZZ)
+
+    f = x + y + 2
+    g = 2*x*y + x + 3
+    assert R.dmp_zz_collins_resultant(f, g) == (-2*y**2 - 5*y + 1).drop(x)
 
 
 def test_dmp_discriminant():
@@ -510,6 +517,11 @@ def test_dmp_gcd():
 
     with using(heu_gcd_max=0):
         pytest.raises(HeuristicGCDFailed, lambda: R.dmp_zz_heu_gcd(f, g))
+
+    f = x**2 + 2*x*y + y**2
+    g = x**2 + x*y
+
+    assert R.dmp_rr_prs_gcd(f, g) == (x + y, x + y, x)
 
     R, x, y, z, u = ring("x,y,z,u", ZZ)
 

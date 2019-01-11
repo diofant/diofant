@@ -179,6 +179,12 @@ def test_gf_division():
 
     pytest.raises(ExactQuotientFailed, lambda: gf_exquo(f, g, 7, ZZ))
 
+    f = [1, 0, 3, 2, 3]
+    g = [2, 2, 2]
+    q = [3, 2, 4]
+
+    assert gf_exquo(f, g, 5, ZZ) == q
+
     f = [5, 4, 3, 2, 1, 0]
     g = [1, 2, 3, 0]
     q = [5, 1, 0]

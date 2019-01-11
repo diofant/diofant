@@ -90,6 +90,11 @@ def test_dmp_sub_term():
     assert dmp_sub_term(f, [ZZ(2)], 3, 1, ZZ) == [[-2], [2], [1, 0], [1]]
     assert dmp_sub_term(f, [ZZ(2)], 1, 1, ZZ) == [[2], [1, -2], [1]]
 
+    f = dmp_normal([[2], [1, 0], [1]], 1, ZZ)
+    g = dmp_normal([[1, 0], [1]], 1, ZZ)
+
+    assert dmp_sub_term(f, [ZZ(2)], 2, 1, ZZ) == g
+
 
 def test_dup_mul_term():
     f = dmp_normal([], 0, ZZ)
@@ -757,6 +762,12 @@ def test_dmp_pdiv():
     pytest.raises(ExactQuotientFailed, lambda: dup_pexquo(f, g, ZZ))
     pytest.raises(ZeroDivisionError, lambda: dmp_pdiv(f, [], 0, ZZ))
     pytest.raises(ZeroDivisionError, lambda: dmp_prem(f, [], 0, ZZ))
+
+    f = dmp_normal([1, 0, -1], 0, ZZ)
+    g = dmp_normal([2, -2], 0, ZZ)
+    q = dmp_normal([2, 2], 0, ZZ)
+
+    assert dup_pexquo(f, g, ZZ) == q
 
     f = dmp_normal([1, 0, -1], 0, ZZ)
     g = dmp_normal([2, -2], 0, ZZ)
