@@ -1,7 +1,6 @@
 """Implementation of :class:`FiniteField` class. """
 
-import numbers
-
+from ..core.compatibility import DIOFANT_INTS
 from ..ntheory import isprime, perfect_power
 from ..polys.polyerrors import CoercionFailed
 from .domainelement import DomainElement
@@ -29,7 +28,7 @@ class FiniteField(Field, SimpleDomain):
     mod = None
 
     def __new__(cls, mod, dom):
-        if not (isinstance(mod, numbers.Integral) and isprime(mod)):
+        if not (isinstance(mod, DIOFANT_INTS) and isprime(mod)):
             pp = perfect_power(mod)
             if not pp:
                 raise ValueError('modulus must be a positive prime number, got %s' % mod)
@@ -220,7 +219,7 @@ class ModularInteger(DomainElement):
         return other.__mod__(self)
 
     def __pow__(self, exp):
-        if not isinstance(exp, numbers.Integral):
+        if not isinstance(exp, DIOFANT_INTS):
             raise TypeError("Integer exponent expected, got %s" % type(exp))
         if exp < 0:
             rep, exp = self.domain.invert(self.rep, self.mod), -exp

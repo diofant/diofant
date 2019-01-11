@@ -54,6 +54,10 @@ class Domain(DefaultPrinting, abc.ABC):
     def new(self, *args):
         return self.dtype(*args)
 
+    @property
+    def tp(self):
+        return self.dtype
+
     def __call__(self, *args):
         """Construct an element of ``self`` domain from ``args``. """
         return self.new(*args)
@@ -92,7 +96,7 @@ class Domain(DefaultPrinting, abc.ABC):
         if base is not None:
             return self.convert_from(element, base)
 
-        if isinstance(element, self.dtype):
+        if isinstance(element, self.tp):
             return element
 
         from .integerring import PythonIntegerRing, GMPYIntegerRing
@@ -107,11 +111,11 @@ class Domain(DefaultPrinting, abc.ABC):
 
         if HAS_GMPY:
             integers = GMPYIntegerRing()
-            if isinstance(element, integers.dtype):
+            if isinstance(element, integers.tp):
                 return self.convert_from(element, integers)
 
             rationals = GMPYRationalField()
-            if isinstance(element, rationals.dtype):
+            if isinstance(element, rationals.tp):
                 return self.convert_from(element, rationals)
 
         if isinstance(element, float):
