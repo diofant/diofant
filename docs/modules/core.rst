@@ -1,6 +1,8 @@
 Core
 ====
 
+.. automodule:: diofant.core
+
 sympify
 -------
 .. module:: diofant.core.sympify

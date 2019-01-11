@@ -84,6 +84,7 @@ Minor changes
 * Added ``FALLBACK_GCD_ZZ_METHOD`` configuration option to specify GCD algorithm for polynomials with integer coefficients if heuristic GCD was off or just unlucky, see :pull:`721`.
 * Added ``GCD_AA_METHOD`` configuration option to specify GCD algorithm for polynomials with algebraic coefficients, see :pull:`721`.
 * :meth:`~diofant.polys.polytools.Poly.sqf_part`, :meth:`~diofant.polys.polytools.Poly.sqf_norm`, :meth:`~diofant.polys.polytools.Poly.sqf_list` methods and  :attr:`~diofant.polys.polytools.Poly.is_squarefree` property use notion of being square-free w.r.t. to all polynomial variables, see :pull:`726`.
+* 100% test coverage for :mod:`~diofant.core`, :mod:`~diofant.polys` and :mod:`~diofant.stats` modules.  Overall test coverage is 97%.
 
 Developer changes
 =================
