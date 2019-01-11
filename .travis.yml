@@ -19,6 +19,9 @@ env:
 addons:
   apt:
     packages:
+      - libmpc-dev
+      - libmpfr-dev
+      - libgmp-dev
       - libatlas-dev
       - libatlas-base-dev
       - liblapack-dev
