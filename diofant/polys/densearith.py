@@ -678,31 +678,6 @@ def dmp_pow(f, n, u, K):
     return g
 
 
-def dup_pexquo(f, g, K):
-    """
-    Polynomial pseudo-quotient in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_pexquo(x**2 - 1, 2*x - 2)
-    2*x + 2
-
-    >>> R.dup_pexquo(x**2 + 1, 2*x - 4)
-    Traceback (most recent call last):
-    ...
-    ExactQuotientFailed: [2, -4] does not divide [1, 0, 1]
-    """
-    q, r = dmp_pdiv(f, g, 0, K)
-
-    if not r:
-        return q
-    else:
-        raise ExactQuotientFailed(f, g)
-
-
 def dmp_pdiv(f, g, u, K):
     """
     Polynomial pseudo-division in ``K[X]``.

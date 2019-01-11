@@ -6,7 +6,7 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term, dmp_div,
                          dmp_mul_term, dmp_neg, dmp_pdiv, dmp_pexquo, dmp_pow,
                          dmp_pquo, dmp_prem, dmp_quo, dmp_quo_ground, dmp_rem,
                          dmp_rr_div, dmp_sqr, dmp_sub, dmp_sub_mul,
-                         dmp_sub_term, dup_lshift, dup_pexquo, dup_rshift)
+                         dmp_sub_term, dup_lshift, dup_rshift)
 from .densebasic import (dmp_degree_in, dmp_LC, dmp_slice_in, dmp_strip,
                          dmp_to_dict)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
@@ -127,9 +127,6 @@ class IPolys:
 
     def dmp_pow(self, f, n):
         return self.from_dense(dmp_pow(self.to_dense(f), n, self.ngens-1, self.domain))
-
-    def dup_pexquo(self, f, g):
-        return self.from_dense(dup_pexquo(self.to_dense(f), self.to_dense(g), self.domain))
 
     def dmp_pdiv(self, f, g):
         q, r = dmp_pdiv(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
