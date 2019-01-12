@@ -533,7 +533,7 @@ def rs_compose_add(p1, p2):
     References
     ==========
 
-    * [Bostan02]_
+    * :cite:`Bostan02`
 
     """
     R = p1.ring

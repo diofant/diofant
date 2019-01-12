@@ -140,7 +140,7 @@ def dmp_rr_yun0_sqf_list(f, u, K):
     References
     ==========
 
-    * [LeeM13]_, page 8
+    * :cite:`LeeM2013factor`, page 8
 
     """
     if dmp_ground_p(f, None, u):

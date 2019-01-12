@@ -19,6 +19,8 @@ Minor changes
 Developer changes
 =================
 
+* Depend on `sphinxcontrib-bibtex <https://sphinxcontrib-bibtex.readthedocs.io/en/latest/>`_ to track the bibliography, see :pull:`766`.
+
 Issues closed
 =============
 

@@ -193,7 +193,7 @@ def apart_full_decomposition(P, Q):
     References
     ==========
 
-    * [Bronstein93]_
+    * :cite:`Bronstein1993partial`
 
     """
     return assemble_partfrac_list(apart_list(P/Q, P.gens[0]))
@@ -296,7 +296,7 @@ def apart_list(f, x=None, dummies=None, **options):
     References
     ==========
 
-    * [Bronstein93]_
+    * :cite:`Bronstein1993partial`
 
     """
     allowed_flags(options, [])
@@ -350,7 +350,7 @@ def apart_list_full_decomposition(P, Q, dummygen):
     References
     ==========
 
-    * [Bronstein93]_
+    * :cite:`Bronstein1993partial`
 
     """
     f, x, U = P/Q, P.gen, []

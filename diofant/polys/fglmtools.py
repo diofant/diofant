@@ -12,7 +12,7 @@ def matrix_fglm(F, ring, O_to):
     References
     ==========
 
-    * [Faugère94]_
+    * :cite:`Faugere1993groebner`
 
     """
     domain = ring.domain

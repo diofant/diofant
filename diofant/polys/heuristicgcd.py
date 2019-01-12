@@ -38,7 +38,7 @@ def heugcd(f, g):
     References
     ==========
 
-    * [Liao95]_
+    * :cite:`Liao1995heuristic`
 
     """
     assert f.ring == g.ring and f.ring.domain.is_IntegerRing

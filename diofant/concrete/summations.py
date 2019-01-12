@@ -18,7 +18,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     summation.
 
     For finite sums (and sums with symbolic limits assumed to be finite) we
-    follow the summation convention described by Karr [Karr81]_, especially
+    follow the summation convention described by Karr :cite:`Karr1981summation`, especially
     definition 3 of section 1.4. The sum:
 
     .. math::
@@ -366,7 +366,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         References
         ==========
 
-        * [Karr81]_
+        * :cite:`Karr1981summation`
 
         """
         l_indices = list(indices)
@@ -406,7 +406,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         Notes
         =====
 
-        We use Sister Celine's algorithm, see [Petkovšek97]_, Ch. 4.
+        We use Sister Celine's algorithm, see :cite:`Petkovsek1997AeqB`, Ch. 4.
 
         """
         from ..core import expand_func, Mul

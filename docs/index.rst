@@ -31,4 +31,4 @@ This is the central page for all of Diofant's documentation.
    guide
    aboutus
    release/index
-   bibliography
+   sources

@@ -17,7 +17,7 @@ class Product(ExprWithIntLimits):
 
     For finite products (and products with symbolic limits assumed to be finite)
     we follow the analogue of the summation convention described by
-    Karr [Karr81]_, especially definition 3 of section 1.4. The product:
+    Karr :cite:`Karr1981summation`, especially definition 3 of section 1.4. The product:
 
     .. math::
 
@@ -372,7 +372,7 @@ class Product(ExprWithIntLimits):
         References
         ==========
 
-        * [Karr81]_
+        * :cite:`Karr1981summation`
 
         """
         l_indices = list(indices)
