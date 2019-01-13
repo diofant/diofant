@@ -7,7 +7,7 @@ Not Released Yet
 New features
 ============
 
-* New representation for elements of :class:`~diofant.domains.AlgebraicField`, see :pull:`619` and :pull:`631`.
+* New representation for elements of :class:`~diofant.domains.AlgebraicField`, see :pull:`619`, :pull:`631` and :pull:`763`.
 * Ground domains for :class:`~diofant.domains.AlgebraicField` can be also instances of :class:`~diofant.domains.AlgebraicField`, see :pull:`653`.
 * New subclasses of :class:`~diofant.domains.AlgebraicField`: :class:`~diofant.domains.RealAlgebraicField` and :class:`~diofant.domains.ComplexAlgebraicField`, see :pull:`669`, :pull:`630` and :pull:`748`.  Thanks to Kalevi Suominen for help with review.
 

@@ -184,7 +184,7 @@ class ReprPrinter(Printer):
 
     def _print_AlgebraicElement(self, expr):
         return "%s(%s)" % (self._print(expr.parent),
-                           self._print(list(map(expr.domain.to_expr, expr.rep))))
+                           self._print(list(map(expr.domain.domain.to_expr, expr.rep.to_dense()))))
 
 
 def srepr(expr, **settings):

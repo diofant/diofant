@@ -789,7 +789,7 @@ def field_isomorphism_factor(a, b):
     for f, _ in factors:
         if f.degree() == 1:
             tc = f.rep.TC()
-            coeffs = [tc.domain.to_expr(c) for c in tc.rep]
+            coeffs = [tc.domain.domain.to_expr(c) for c in tc.rep.to_dense()]
             d, terms = len(coeffs) - 1, []
 
             for i, coeff in enumerate(coeffs):
@@ -811,7 +811,7 @@ def field_isomorphism(a, b, **args):
                          "got %s and %s" % (a, b))
 
     if a == b:
-        return a.unit.rep
+        return a.unit.rep.to_dense()
 
     n = a.minpoly.degree()
     m = b.minpoly.degree()

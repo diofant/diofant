@@ -1,14 +1,11 @@
 """Implementation of :class:`AlgebraicField` class. """
 
 import functools
+import numbers
 
 from ..core import I, Integer, sympify
 from ..core.sympify import CantSympify
-from ..polys.densearith import (dmp_neg, dmp_pow, dmp_rem, dup_add, dup_mul,
-                                dup_sub)
-from ..polys.densebasic import dmp_LC, dmp_strip, dmp_to_dict, dmp_to_tuple
 from ..polys.densetools import dmp_compose, dmp_eval_in
-from ..polys.euclidtools import dup_invert
 from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
 from .characteristiczero import CharacteristicZero
 from .domainelement import DomainElement
@@ -66,11 +63,13 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         obj.ext = ext
         obj._ext_root = ext_root
         obj.minpoly = minpoly
-        obj.mod = minpoly.rep
         obj.domain = dom
 
         obj.ngens = 1
         obj.symbols = obj.gens = obj.ext.as_expr(),
+
+        rep_ring = dom.poly_ring(obj.ext)
+        obj.mod = mod = rep_ring.from_dense(minpoly.rep.rep)
 
         try:
             obj.dtype = _algebraic_numbers_cache[(obj.domain, obj.ext)]
@@ -81,7 +80,8 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
                 dtype_cls = ComplexAlgebraicElement
             else:
                 dtype_cls = AlgebraicElement
-            obj.dtype = type(dtype_cls.__name__, (dtype_cls,), {"_parent": obj})
+            obj.dtype = type(dtype_cls.__name__, (dtype_cls,),
+                             {"mod": mod, "domain": rep_ring, "_parent": obj})
             _algebraic_numbers_cache[(obj.domain, obj.ext)] = obj.dtype
 
         obj.unit = obj.dtype([dom(1), dom(0)])
@@ -112,7 +112,8 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     def to_expr(self, a):
         """Convert ``a`` to a Diofant object. """
-        return sum(((a.domain.to_expr(c)*self.ext**n).expand() for n, c in enumerate(reversed(a.rep))), Integer(0))
+        return sum(((self.domain.to_expr(c)*self.ext**n).expand()
+                    for n, c in enumerate(reversed(a.rep.to_dense()))), Integer(0))
 
     def from_expr(self, a):
         """Convert Diofant's expression to ``dtype``. """
@@ -149,7 +150,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         if K0 == self.domain:
             return self([a])
         elif self == K0.domain and len(a.rep) <= 1:
-            return a.rep[0] if a else self.zero
+            return a.rep.coeff(1) if a else self.zero
 
         from ..polys import field_isomorphism
 
@@ -157,7 +158,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
         if coeffs is not None:
             if K0.domain == self.domain:
-                return self(dmp_compose(a.rep, coeffs, 0, self.domain))
+                return self(dmp_compose(a.rep.to_dense(), coeffs, 0, self.domain))
             else:
                 return self.from_expr(K0.to_expr(a))
         else:
@@ -215,54 +216,50 @@ class AlgebraicElement(DomainElement, CantSympify):
     def __init__(self, rep):
         dom = self.domain
 
-        if type(rep) is not list:
-            rep = [dom.convert(rep)]
+        if isinstance(rep, dict):
+            rep = dom.from_dict(rep)
         else:
-            rep = [dom.convert(_) for _ in rep]
+            if type(rep) is not list:
+                rep = [dom.domain.convert(rep)]
+            else:
+                rep = [dom.domain.convert(_) for _ in rep]
+            rep = dom.from_dense(rep)
 
-        self.rep = dmp_rem(dmp_strip(rep, 0), self.mod, 0, self.domain)
+        self.rep = rep % self.mod
 
     @property
     def parent(self):
         return self._parent
 
-    @property
-    def mod(self):
-        return self._parent.mod.rep
-
-    @property
-    def domain(self):
-        return self._parent.domain
-
     def __hash__(self):
-        return hash((self.__class__.__name__, dmp_to_tuple(self.rep, 0),
-                     self.domain, self.parent.ext))
+        return hash((self.__class__.__name__, self.rep, self.domain.domain,
+                     self.parent.ext))
 
     def to_dict(self):
         """Convert ``self`` to a dict representation with native coefficients. """
-        return dmp_to_dict(self.rep, 0, self.domain)
+        return self.rep.to_dict()
 
     def LC(self):
         """Returns the leading coefficient of ``self``. """
-        return dmp_LC(self.rep, self.domain)
+        return self.rep.LC
 
     @property
     def is_ground(self):
         """Returns ``True`` if ``self`` is an element of the ground domain. """
-        return len(self.rep) <= 1
+        return self.rep.is_ground
 
     def __pos__(self):
         return self
 
     def __neg__(self):
-        return self.__class__(dmp_neg(self.rep, 0, self.domain))
+        return self.__class__(-self.rep)
 
     def __add__(self, other):
         try:
             other = self.parent.convert(other)
         except CoercionFailed:
             return NotImplemented
-        return self.__class__(dup_add(self.rep, other.rep, self.domain))
+        return self.__class__(self.rep + other.rep)
 
     def __radd__(self, other):
         return self.__add__(other)
@@ -272,7 +269,7 @@ class AlgebraicElement(DomainElement, CantSympify):
             other = self.parent.convert(other)
         except CoercionFailed:
             return NotImplemented
-        return self.__class__(dup_sub(self.rep, other.rep, self.domain))
+        return self.__class__(self.rep - other.rep)
 
     def __rsub__(self, other):
         return (-self).__add__(other)
@@ -282,31 +279,26 @@ class AlgebraicElement(DomainElement, CantSympify):
             other = self.parent.convert(other)
         except CoercionFailed:
             return NotImplemented
-        return self.__class__(dmp_rem(dup_mul(self.rep, other.rep, self.domain),
-                                      self.mod, 0, self.domain))
+        return self.__class__(self.rep * other.rep)
 
     def __rmul__(self, other):
         return self.__mul__(other)
 
-    def __pow__(self, n):
-        if isinstance(n, int):
-            if n < 0:
-                F, n = dup_invert(self.rep, self.mod, self.domain), -n
-            else:
-                F = self.rep
-
-            return self.__class__(dmp_rem(dmp_pow(F, n, 0, self.domain),
-                                          self.mod, 0, self.domain))
+    def __pow__(self, exp):
+        if not isinstance(exp, numbers.Integral):
+            raise TypeError("Integer exponent expected, got %s" % type(exp))
+        if exp < 0:
+            rep, exp = self.domain.invert(self.rep, self.mod), -exp
         else:
-            raise TypeError("``int`` expected, got %s" % type(n))
+            rep = self.rep
+        return self.__class__(rep**exp)
 
     def __truediv__(self, other):
         try:
             other = self.parent.convert(other)
         except CoercionFailed:
             return NotImplemented
-        return self.__class__(dmp_rem(dup_mul(self.rep, dup_invert(other.rep, self.mod, self.domain), self.domain),
-                                      self.mod, 0, self.domain))
+        return self * other**-1
 
     def __eq__(self, other):
         try:
@@ -333,7 +325,7 @@ class AlgebraicElement(DomainElement, CantSympify):
     def denominator(self):
         from . import ZZ
         return self.__class__(functools.reduce(ZZ.lcm, (ZZ.convert(_.denominator)
-                                               for _ in self.rep), ZZ.one))
+                                                        for _ in self.rep.to_dense()), ZZ.one))
 
 
 class ComplexAlgebraicElement(AlgebraicElement):
@@ -342,16 +334,16 @@ class ComplexAlgebraicElement(AlgebraicElement):
     @property
     def real(self):
         """Returns real part of ``self``. """
-        return self.domain.convert(self.rep[-1]) if self else self.domain.zero
+        return self.domain.domain.convert(self.rep.coeff(1)) if self else self.domain.domain.zero
 
     @property
     def imag(self):
         """Returns imaginary part of ``self``. """
-        return self.domain.convert((self - self.real)/self.parent.unit)
+        return self.domain.domain.convert((self - self.real)/self.parent.unit)
 
     def conjugate(self):
         """Returns the complex conjugate of ``self``. """
-        return self.real - self.parent.unit*self.imag
+        return self.parent.one*self.real - self.parent.unit*self.imag
 
 
 @functools.total_ordering
@@ -373,17 +365,17 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
             self.parent._ext_root = self.parent._compute_ext_root(self.parent.ext,
                                                                   self.parent.minpoly)
 
-        rep = dmp_compose((self - other).rep,
-                          [self.domain.from_expr(self.parent._ext_root[0]), 0],
-                          0, self.domain)
+        rep = dmp_compose((self - other).rep.to_dense(),
+                          [self.domain.domain.from_expr(self.parent._ext_root[0]), 0],
+                          0, self.domain.domain)
 
-        while dup_count_real_roots(rep, self.domain,
+        while dup_count_real_roots(rep, self.domain.domain,
                                    inf=self.parent._ext_root[1].interval.a,
                                    sup=self.parent._ext_root[1].interval.b):
             self.parent._ext_root[1].refine()
 
         return dmp_eval_in(rep, self.parent._ext_root[1].interval.center,
-                           0, 0, self.domain) < 0
+                           0, 0, self.domain.domain) < 0
 
     @property
     def real(self):
