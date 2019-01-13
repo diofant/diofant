@@ -508,6 +508,11 @@ def test_uniformsum():
     X = UniformSum('x', n)
     assert X.pspace.domain.set == Interval(0, n)
 
+    # see test_uniformsum_d()
+    d = density(X)(z)
+    assert str(d) == ("Sum((-1)**_k*(z - _k)**(n - 1)*binomial(n, _k), "
+                      "(_k, 0, floor(z)))/factorial(n - 1)")
+
 
 @pytest.mark.xfail
 def test_uniformsum_d():
