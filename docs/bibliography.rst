@@ -1,9 +1,11 @@
-==========
-Literature
-==========
+.. only:: html
 
-The following is a non-comprehensive list of publications that were used as
-a theoretical foundation for implementing the Diofant.
+    ============
+    Bibliography
+    ============
+
+    The following is a non-comprehensive list of publications that were
+    used as a theoretical foundation for implementing the Diofant.
 
 .. [Kozen89] D. Kozen, S. Landau, Polynomial decomposition algorithms,
     Journal of Symbolic Computation 7 (1989), pp. 445-456
