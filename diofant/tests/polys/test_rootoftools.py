@@ -583,7 +583,7 @@ def test_diofantissue_730():
     assert e.conjugate().conjugate() == e
 
 
-@pytest.mark.timeout(120)
+@pytest.mark.timeout(130)
 @pytest.mark.slow
 def test_diofantissue_723():
     p = x**5 + sqrt(3)*x - 2
