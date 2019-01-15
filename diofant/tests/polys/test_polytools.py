@@ -1571,6 +1571,8 @@ def test_pdiv():
     pytest.raises(ComputationFailed, lambda: prem(4, 2))
     pytest.raises(ComputationFailed, lambda: pquo(4, 2))
     pytest.raises(ComputationFailed, lambda: pexquo(4, 2))
+    pytest.raises(ExactQuotientFailed,
+                  lambda: Poly(x**2 + 1).pexquo(Poly(2*x - 4)))
 
 
 def test_div():
@@ -2614,6 +2616,8 @@ def test_count_roots():
 
     assert count_roots(x**2 + 1, inf=-I, sup=1) == 1
 
+    assert count_roots(x**4 - 4, inf=0, sup=1 + 3*I) == 1
+
     pytest.raises(PolynomialError, lambda: count_roots(1))
 
 
@@ -2781,6 +2785,11 @@ def test_torational_factor_list():
 
     p = expand(((x**2 - 1)*(x - 2)).subs({x: x*(1 + root(2, 4))}))
     assert _torational_factor_list(p, x) is None
+
+    p = expand(((x**2 - 1)*(x - 2)).subs({x: x + sqrt(2)}))
+    assert _torational_factor_list(p, x) == (1, [(x - 2 + sqrt(2), 1),
+                                                 (x - 1 + sqrt(2), 1),
+                                                 (x + 1 + sqrt(2), 1)])
 
 
 def test_cancel():

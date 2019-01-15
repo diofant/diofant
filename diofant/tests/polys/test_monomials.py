@@ -5,10 +5,10 @@ import pytest
 from diofant.abc import a, b, c, x, y, z
 from diofant.domains import QQ, ZZ
 from diofant.polys.monomials import (Monomial, itermonomials, monomial_count,
-                                     monomial_div, monomial_divides,
-                                     monomial_gcd, monomial_lcm, monomial_max,
-                                     monomial_min, monomial_mul, monomial_pow,
-                                     term_div)
+                                     monomial_deg, monomial_div,
+                                     monomial_divides, monomial_gcd,
+                                     monomial_lcm, monomial_max, monomial_min,
+                                     monomial_mul, monomial_pow, term_div)
 from diofant.polys.polyerrors import ExactQuotientFailed
 
 
@@ -63,6 +63,10 @@ def test_monomial_max():
 
 def test_monomial_min():
     assert monomial_min((3, 4, 5), (0, 5, 1), (6, 3, 9)) == (0, 3, 1)
+
+
+def test_monomial_deg():
+    assert monomial_deg((1, 2)) == 3
 
 
 def test_monomial_divides():

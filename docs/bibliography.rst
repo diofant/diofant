@@ -1,9 +1,11 @@
-==========
-Literature
-==========
+.. only:: html
 
-The following is a non-comprehensive list of publications that were used as
-a theoretical foundation for implementing the Diofant.
+    ============
+    Bibliography
+    ============
+
+    The following is a non-comprehensive list of publications that were
+    used as a theoretical foundation for implementing the Diofant.
 
 .. [Kozen89] D. Kozen, S. Landau, Polynomial decomposition algorithms,
     Journal of Symbolic Computation 7 (1989), pp. 445-456
@@ -188,3 +190,18 @@ a theoretical foundation for implementing the Diofant.
 
 .. [LeeM13] M M-D Lee, Factorization of multivariate polynomials,
     Ph.D. thesis, University of Kaiserslautern, 2013.
+
+.. [Roach1996] Kelly B. Roach.  Hypergeometric Function Representations.
+    In: Proceedings of the 1996 International Symposium on Symbolic and
+    Algebraic Computation, pages 301-308, New York, 1996. ACM.
+
+.. [Roach1997] Kelly B. Roach.  Meijer G Function Representations.
+    In: Proceedings of the 1997 International Symposium on Symbolic and
+    Algebraic Computation, pages 205-211, New York, 1997. ACM.
+
+.. [Luke1969] Luke, Y. L. (1969), The Special Functions and Their
+    Approximations, Volume 1.
+
+.. [Prudnikov1990] A. P. Prudnikov, Yu. A. Brychkov and O. I. Marichev (1990).
+    Integrals and Series: More Special Functions, Vol. 3,
+    Gordon and Breach Science Publisher.

@@ -235,6 +235,9 @@ def test_dmp_diff_eval_in():
 
     pytest.raises(IndexError, lambda: dmp_diff_eval_in(f_6, 2, 7, 4, 3, ZZ))
 
+    f = [[1, 2, 3], [2, 3, 1]]
+    assert dmp_diff_eval_in(f, 1, 2, 0, 1, ZZ) == [1, 2, 3]
+
 
 def test_dup_trunc():
     assert dup_trunc([1, 2, 3, 4, 5, 6], ZZ(3), ZZ) == [1, -1, 0, 1, -1, 0]

@@ -282,6 +282,9 @@ def test_DMP_functionality():
 
     assert f.is_cyclotomic is False
 
+    f = DMP([[[2], [1, 0]], [[]]], ZZ)
+    assert f.permute([1, 0, 2]) == DMP([[[2], []], [[1, 0], []]], ZZ)
+
 
 def test_DMP_exclude():
     f = [[[[[[[[[[[[[[[[[[[[[[[[[[1]], [[]]]]]]]]]]]]]]]]]]]]]]]]]]

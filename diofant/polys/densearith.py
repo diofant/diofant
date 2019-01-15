@@ -14,7 +14,7 @@ def dup_add_term(f, c, i, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_add_term(x**2 - 1, ZZ(2), 4)
+    >>> R.dmp_add_term(x**2 - 1, ZZ(2), 4)
     2*x**4 + x**2 - 1
     """
     if not c:
@@ -64,33 +64,6 @@ def dmp_add_term(f, c, i, u, K):
             return f[:m] + [dmp_add(f[m], c, v, K)] + f[m + 1:]
 
 
-def dup_sub_term(f, c, i, K):
-    """
-    Subtract ``c*x**i`` from ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_sub_term(2*x**4 + x**2 - 1, ZZ(2), 4)
-    x**2 - 1
-    """
-    if not c:
-        return f
-
-    n = len(f)
-    m = n - i - 1
-
-    if i == n - 1:
-        return dmp_strip([f[0] - c] + f[1:], 0)
-    else:
-        if i >= n:
-            return [-c] + [K.zero]*(i - n) + f
-        else:
-            return f[:m] + [f[m] - c] + f[m + 1:]
-
-
 def dmp_sub_term(f, c, i, u, K):
     """
     Subtract ``c(x_2..x_u)*x_0**i`` from ``f`` in ``K[X]``.
@@ -132,7 +105,7 @@ def dup_mul_term(f, c, i, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_mul_term(x**2 - 1, ZZ(3), 2)
+    >>> R.dmp_mul_term(x**2 - 1, ZZ(3), 2)
     3*x**4 - 3*x**2
     """
     if not c or not f:
@@ -299,7 +272,7 @@ def dmp_neg(f, u, K):
     Negate a polynomial in ``K[X]``.
 
     Examples
-    ========
+    =======
 
     >>> R, x, y = ring("x y", ZZ)
 
@@ -322,7 +295,7 @@ def dup_add(f, g, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_add(x**2 - 1, x - 2)
+    >>> R.dmp_add(x**2 - 1, x - 2)
     x**2 + x - 3
     """
     if not f:
@@ -395,7 +368,7 @@ def dup_sub(f, g, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_sub(x**2 - 1, x - 2)
+    >>> R.dmp_sub(x**2 - 1, x - 2)
     x**2 - x + 1
     """
     if not f:
@@ -499,7 +472,7 @@ def dup_mul(f, g, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_mul(x - 2, x + 2)
+    >>> R.dmp_mul(x - 2, x + 2)
     x**2 - 4
     """
     if f == g:
@@ -595,7 +568,7 @@ def dup_sqr(f, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_sqr(x**2 + 1)
+    >>> R.dmp_sqr(x**2 + 1)
     x**4 + 2*x**2 + 1
     """
     df, h = len(f) - 1, []

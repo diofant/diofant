@@ -10,6 +10,7 @@ New features
 * New representation for elements of :class:`~diofant.domains.AlgebraicField`, see :pull:`619`, :pull:`631` and :pull:`763`.
 * Ground domains for :class:`~diofant.domains.AlgebraicField` can be also instances of :class:`~diofant.domains.AlgebraicField`, see :pull:`653`.
 * New subclasses of :class:`~diofant.domains.AlgebraicField`: :class:`~diofant.domains.RealAlgebraicField` and :class:`~diofant.domains.ComplexAlgebraicField`, see :pull:`669`, :pull:`630` and :pull:`748`.  Thanks to Kalevi Suominen for help with review.
+* Added :func:`~diofant.core.numbers.integer_digits`, see :pull:`765`.
 
 Major changes
 =============
@@ -84,6 +85,7 @@ Minor changes
 * Added ``FALLBACK_GCD_ZZ_METHOD`` configuration option to specify GCD algorithm for polynomials with integer coefficients if heuristic GCD was off or just unlucky, see :pull:`721`.
 * Added ``GCD_AA_METHOD`` configuration option to specify GCD algorithm for polynomials with algebraic coefficients, see :pull:`721`.
 * :meth:`~diofant.polys.polytools.Poly.sqf_part`, :meth:`~diofant.polys.polytools.Poly.sqf_norm`, :meth:`~diofant.polys.polytools.Poly.sqf_list` methods and  :attr:`~diofant.polys.polytools.Poly.is_squarefree` property use notion of being square-free w.r.t. to all polynomial variables, see :pull:`726`.
+* 100% test coverage for :mod:`~diofant.core`, :mod:`~diofant.polys` and :mod:`~diofant.stats` modules.  Overall test coverage is 97%.
 
 Developer changes
 =================

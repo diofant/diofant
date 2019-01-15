@@ -12,8 +12,8 @@ from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      cos, exp, factorial, false, latex, log, nan, nextprime,
                      oo, pi, root, sin, sqrt, true, zoo)
 from diofant.core.cache import clear_cache
-from diofant.core.numbers import (comp, igcd, igcdex, ilcm, mod_inverse,
-                                  mpf_norm, seterr)
+from diofant.core.numbers import (comp, igcd, igcdex, ilcm, integer_digits,
+                                  mod_inverse, mpf_norm, seterr)
 from diofant.core.power import integer_nthroot, isqrt
 
 
@@ -1548,6 +1548,12 @@ def test_mod_inverse():
     pytest.raises(ValueError, lambda: mod_inverse(2, Rational(1, 2)))
     pytest.raises(ValueError, lambda: mod_inverse(2, cos(1)**2 + sin(1)**2))
     pytest.raises(ValueError, lambda: mod_inverse(2, 1))
+
+
+def test_integer_digits():
+    assert integer_digits(0, 2) == integer_digits(0, 3) == [0]
+    assert integer_digits(10, 3) == [1, 0, 1]
+    assert integer_digits(874881, 712) == [1, 516, 545]
 
 
 def test_sympyissue_13081():

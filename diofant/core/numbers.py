@@ -283,6 +283,18 @@ def mod_inverse(a, m):
     return c
 
 
+def integer_digits(n, b):
+    """Gives a list of the base `b` digits in the integer `n`. """
+    n, b = map(as_int, (n, b))
+    if n == 0:
+        return [0]
+    digits = []
+    while n:
+        digits.append(n % b)
+        n //= b
+    return digits[::-1]
+
+
 class Number(AtomicExpr):
     """
     Represents any kind of number in diofant.

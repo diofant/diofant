@@ -28,7 +28,7 @@ This is the central page for all of Diofant's documentation.
    tutorial/index
    modules/index
    internals/index
-   literature
    guide
    aboutus
    release/index
+   bibliography

@@ -199,6 +199,12 @@ def test_Density():
     X = Die('X', 6)
     d = Density(X)
     assert d.doit() == density(X)
+    r = Rational(1, 6)
+    assert density(2*X).dict == {2: r, 4: r, 6: r, 8: r, 10: r, 12: r}
+
+    X = Normal('X', 0, 1)
+    Y = Normal('Y', 0, 1)
+    assert str(density(X - Y, Y)(z)) == 'sqrt(2)*E**(-(Y + z)**2/2)/(2*sqrt(pi))'
 
 
 def test_NamedArgsMixin():

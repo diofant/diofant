@@ -1,6 +1,8 @@
 Core
 ====
 
+.. automodule:: diofant.core
+
 sympify
 -------
 .. module:: diofant.core.sympify
@@ -124,6 +126,10 @@ ilcm
 mod_inverse
 ^^^^^^^^^^^
 .. autofunction:: mod_inverse
+
+integer_digits
+^^^^^^^^^^^^^^
+.. autofunction:: integer_digits
 
 seterr
 ^^^^^^
