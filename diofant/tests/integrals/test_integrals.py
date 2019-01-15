@@ -691,6 +691,10 @@ def test_doit_integrals():
     assert Integral(a, *list(reversed(limits))).doit() == 0
 
 
+def test_as_dummy():
+    assert Integral(x, x).as_dummy() == Integral(x, x)
+
+
 def test_sympyissue_4884():
     assert integrate(sqrt(x)*(1 + x)) == \
         Piecewise(

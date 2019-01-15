@@ -732,7 +732,7 @@ def test_simplify():
 
 
 def test_change_index():
-    b, v = symbols('b, v', integer=True)
+    b, u, v = symbols('b, u, v', integer=True)
 
     assert Sum(x, (x, a, b)).change_index(x, x + 1, y) == \
         Sum(y - 1, (y, a + 1, b + 1))
@@ -748,6 +748,9 @@ def test_change_index():
         Sum(-v + x, (x, a + v, b + v))
     assert Sum(x, (x, a, b)).change_index( x, -x - v) == \
         Sum(-v - x, (x, -b - v, -a - v))
+
+    S = Sum(x, (x, a, b))
+    assert S.change_index(x, u*x+v, y) == Sum((-v + y)/u, (y, b*u + v, a*u + v))
 
 
 def test_reorder():
@@ -789,6 +792,8 @@ def test_reverse_order():
         Sum(x*y, (x, b + 1, a - 1), (y, 6, 1))
     assert Sum(x*y, (x, a, b), (y, 2, 5)).reverse_order(y, x) == \
         Sum(x*y, (x, b + 1, a - 1), (y, 6, 1))
+    assert Sum(x**2, (x, a, b), (x, c, d)).reverse_order(0) == \
+        Sum(-x**2, (x, b + 1, a - 1), (x, c, d))
 
 
 def test_findrecur():
