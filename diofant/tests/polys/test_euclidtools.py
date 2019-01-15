@@ -36,10 +36,10 @@ def test_dup_gcdex():
     s, t, h = R.dup_gcdex(f, g)
     S, T, H = R.dup_gcdex(g, f)
 
-    assert R.dup_add(R.dup_mul(s, f),
-                     R.dup_mul(t, g)) == h
-    assert R.dup_add(R.dup_mul(S, g),
-                     R.dup_mul(T, f)) == H
+    assert R.dmp_add(R.dmp_mul(s, f),
+                     R.dmp_mul(t, g)) == h
+    assert R.dmp_add(R.dmp_mul(S, g),
+                     R.dmp_mul(T, f)) == H
 
     f = 2*x
     g = x**2 - 16
