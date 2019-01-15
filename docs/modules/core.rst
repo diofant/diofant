@@ -127,6 +127,10 @@ mod_inverse
 ^^^^^^^^^^^
 .. autofunction:: mod_inverse
 
+integer_digits
+^^^^^^^^^^^^^^
+.. autofunction:: integer_digits
+
 seterr
 ^^^^^^
 .. autofunction:: seterr
