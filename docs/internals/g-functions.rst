@@ -153,7 +153,8 @@ of the argument of the G-function to unity (see ``_rewrite_saxena_1`` and
 ``_rewrite_saxena``, respectively, for one or two G-functions). Next we go through
 a list of conditions under which the integral theorem applies. It can fail for
 basically two reasons: either the integral does not exist, or the manipulations
-in deriving the theorem may not be allowed (for more details, see this [BlogPost]_).
+in deriving the theorem may not be allowed (for more details, see
+`this <https://nessgrh.wordpress.com/2011/07/07/tricky-branch-cuts/>`_).
 
 Sometimes this can be remedied by reducing the argument of the G-functions
 involved. For example it is clear that the G-function representing `e^z`
@@ -162,8 +163,6 @@ is satisfies `G(\operatorname{Exp}(2 \pi i)z) = G(z)` for all `z \in \mathcal{S}
 ``principal_branch(z, period)`` in ``functions/elementary/complexes.py`` can
 be used to exploit the information. This is done transparently by the
 integration code.
-
-.. [BlogPost] https://nessgrh.wordpress.com/2011/07/07/tricky-branch-cuts/
 
 The G-Function Integration Theorems
 ***********************************
