@@ -1519,7 +1519,7 @@ class PrettyPrinter(Printer):
 
     def _print_FiniteField(self, expr):
         if self._use_unicode:
-            form = '\N{DOUBLE-STRUCK CAPITAL Z}_%d'
+            form = '\N{MATHEMATICAL DOUBLE-STRUCK CAPITAL F}_%d'
         else:
             form = 'GF(%d)'
 
