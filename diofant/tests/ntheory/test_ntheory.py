@@ -293,6 +293,7 @@ def test_factorint_invariant(x):
 
 def test_factorint():
     assert primefactors(123456) == [2, 3, 643]
+    assert primefactors(10000000001, limit=300) == [101]
     assert factorint(0) == {0: 1}
     assert factorint(1) == {}
     assert factorint(-1) == {-1: 1}
@@ -320,6 +321,8 @@ def test_factorint():
         assert multiproduct(factorint(n)) == n
     assert pollard_rho(2**64 + 1, seed=1) == 274177
     assert pollard_rho(19, seed=1) is None
+    n = 16843009
+    assert pollard_rho(n, F=lambda x: (2048*pow(x, 2, n) + 32767) % n) == 257
     assert factorint(3, limit=2) == {3: 1}
     assert factorint(12345) == {3: 1, 5: 1, 823: 1}
     assert factorint(
@@ -723,6 +726,7 @@ def test_crt():
     mcrt([2, 3, 5], [-1, -1, -1], 2*3*5 - 1, False)
 
     assert crt([656, 350], [811, 133], symmetric=True) == (-56917, 114800)
+    assert crt([12, 6, 17], [3, 4, 2]) is None
 
 
 def test_binomial_coefficients_list():
@@ -913,6 +917,8 @@ def test_search():
     assert 1 not in sieve
     assert 2**1000 not in sieve
     pytest.raises(ValueError, lambda: sieve.search(1))
+    assert 25 not in sieve
+    assert sieve.search(340000) == (29182, 29183)
 
 
 def test_sieve_slice():
