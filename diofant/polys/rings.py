@@ -1038,10 +1038,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if n < 0:
             raise ValueError("negative exponent")
         elif not n:
-            if self:
-                return ring.one
-            else:
-                raise ValueError("0**0")
+            return ring.one
         elif len(self) == 1:
             monom, coeff = list(self.items())[0]
             p = ring.zero
