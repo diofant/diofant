@@ -15,7 +15,7 @@ from diofant.functions import (Heaviside, Max, Min, Piecewise, acos, asin,
                                sin, sinh, tan, tanh, zeta)
 from diofant.integrals import Integral
 from diofant.logic import Or, false, true
-from diofant.matrices import Matrix
+from diofant.matrices import Matrix, SparseMatrix
 from diofant.polys import Poly, RootOf, RootSum
 from diofant.series import Limit
 
@@ -178,7 +178,12 @@ def test_Sum():
 
 def test_Matrix():
     assert mcode(Matrix()) == '{}'
-    assert mcode(Matrix([[1, 2], [3, 4444]])) == '{{1, 2}, {3, 4444}}'
+
+    m = Matrix([[1, 2], [3, 4444]])
+    assert mcode(m) == mcode(m.as_immutable()) == '{{1, 2}, {3, 4444}}'
+
+    m = SparseMatrix(m)
+    assert mcode(m) == mcode(m.as_immutable()) == '{{1, 2}, {3, 4444}}'
 
 
 def test_Relational():
