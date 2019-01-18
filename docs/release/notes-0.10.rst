@@ -161,3 +161,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14337` Poly constructor uses domain EX when it's not necessary
 * :sympyissue:`8818` lambdify precision loss with module=mpmath from high-precision Floats
 * :sympyissue:`9544` Finite fields
+* :sympyissue:`15798` Poly.copy() does not copy unused generators
