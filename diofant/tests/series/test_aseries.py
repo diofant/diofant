@@ -8,21 +8,24 @@ from diofant.abc import x
 __all__ = ()
 
 
-@pytest.mark.slow
-def test_simple():
+def test_simple1():
     # Gruntz' theses pp. 91 to 96
     # 6.6
     e = sin(1/x + exp(-x)) - sin(1/x)
-    assert e.aseries(x) == (1/(24*x**4) - 1/(2*x**2) + 1 + O(x**(-6), (x, oo)))*exp(-x)
     assert e.series(x, oo) == (1/(24*x**4) - 1/(2*x**2) + 1 + O(x**(-6), (x, oo)))*exp(-x)
-    # 6.7
-    e = exp(x) * (exp(1/x + exp(-x)) - exp(1/x))
-    assert e.aseries(x, n=4) == 1/(6*x**3) + 1/(2*x**2) + 1/x + 1 + O(x**(-4), (x, oo))
     # 6.11
     e = exp(exp(x)/(1 - 1/x))
     assert e.aseries(x) == exp(exp(x)/(1 - 1/x))
     assert e.aseries(x, bound=3) == exp(exp(x)/x**2)*exp(exp(x)/x)*exp(-exp(x) + exp(x)/(1 - 1/x) -
                                                                        exp(x)/x - exp(x)/x**2)*exp(exp(x))
+
+
+@pytest.mark.slow
+def test_simple2():
+    # Gruntz' theses pp. 91 to 96
+    # 6.7
+    e = exp(x) * (exp(1/x + exp(-x)) - exp(1/x))
+    assert e.aseries(x, n=4) == 1/(6*x**3) + 1/(2*x**2) + 1/x + 1 + O(x**(-4), (x, oo))
     # 6.12
     e = exp(sin(1/x + exp(-exp(x)))) - exp(sin(1/x))
     assert e.aseries(x, n=4) == (-1/(2*x**3) + 1/x + 1 + O(x**(-4), (x, oo)))*exp(-exp(x))

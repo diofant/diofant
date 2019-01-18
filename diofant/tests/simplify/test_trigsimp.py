@@ -312,6 +312,11 @@ def test_trigsimp_groebner():
     trigsimp_groebner(csc(x) * sin(x))  # not raises
 
 
+def test_trigsimp_old():
+    e = 2*sin(x)**2 + 2*cos(x)**2
+    assert trigsimp(e, old=True) == 2
+
+
 def test_sympyissue_2827_trigsimp_methods():
     def measure1(expr):
         return len(str(expr))

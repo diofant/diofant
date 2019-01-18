@@ -2,9 +2,9 @@
 
 import pytest
 
-from diofant import (Add, Basic, Dict, Float, I, Integer, Integral, Interval,
-                     Mul, O, Rational, Sum, Symbol, Tuple, cbrt, collect, cos,
-                     exp, oo, root, simplify, sin, sqrt, symbols)
+from diofant import (Add, Basic, Dict, Expr, Float, I, Integer, Integral,
+                     Interval, Mul, O, Rational, Sum, Symbol, Tuple, cbrt,
+                     collect, cos, exp, oo, root, simplify, sin, sqrt, symbols)
 from diofant.abc import a, b, t, x, y, z
 from diofant.core.coreerrors import NonCommutativeExpression
 from diofant.core.exprtools import (Factors, Term, _gcd_terms, decompose_power,
@@ -367,6 +367,8 @@ def test_factor_nc():
 
     # issue sympy/sympy#6918
     assert factor_nc(-n*(2*x**2 + 2*x)) == -2*n*x*(x + 1)
+
+    assert factor_nc(1 + Mul(Expr(), Expr(), evaluate=False)) == 1 + Expr()**2
 
 
 def test_sympyissue_6360():

@@ -407,6 +407,9 @@ def test_is_algebraic_expr():
     assert (cos(y)/sqrt(x)).is_algebraic_expr(y) is False
     assert (cos(y)/sqrt(x)).is_algebraic_expr(x, y) is False
 
+    a = sqrt(exp(x)**2 + 2*exp(x) + 1)/(exp(x) + 1)
+    assert a.is_algebraic_expr(x) is False
+
 
 def test_SAGE1():
     # see https://github.com/sympy/sympy/issues/3346
@@ -635,6 +638,8 @@ def test_replace():
 
     # for test coverage
     pytest.raises(TypeError, lambda: x.replace(None, y))
+
+    assert (2*x + y).replace(a*x + b, b - a, exact=True) == y - 2
 
 
 def test_find():
@@ -1430,6 +1435,8 @@ def test_is_constant():
     assert e.is_constant(x) is True
     assert e.is_constant(a) is False
 
+    assert Integer(2).is_constant() is True
+
 
 def test_equals():
     assert (-3 - sqrt(5) + (-sqrt(10)/2 - sqrt(2)/2)**2).equals(0)
@@ -1489,6 +1496,8 @@ def test_random():
 
     # issue sympy/sympy#8662
     assert Piecewise((Max(x, y), z))._random() is None
+
+    assert sqrt(2)._random(2) == Float('1.4141', dps=2)
 
 
 def test_round():
@@ -1597,6 +1606,9 @@ def test_round_exception_nostr():
 
 def test_extract_branch_factor():
     assert exp_polar(2.0*I*pi).extract_branch_factor() == (1, 1)
+    assert exp_polar(3*pi*I + x).extract_branch_factor() == (exp_polar(x + I*pi), 1)
+    e = y*exp_polar(-5*pi*I)*exp_polar(3*pi*I + 2*pi*x)
+    assert e.extract_branch_factor() == (y*exp_polar(2*pi*x), -1)
 
 
 def test_identity_removal():

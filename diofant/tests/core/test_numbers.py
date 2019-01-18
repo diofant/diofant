@@ -1548,6 +1548,7 @@ def test_mod_inverse():
     pytest.raises(ValueError, lambda: mod_inverse(2, Rational(1, 2)))
     pytest.raises(ValueError, lambda: mod_inverse(2, cos(1)**2 + sin(1)**2))
     pytest.raises(ValueError, lambda: mod_inverse(2, 1))
+    pytest.raises(ValueError, lambda: mod_inverse(3, 6))
 
 
 def test_integer_digits():
