@@ -8,6 +8,7 @@ python:
 env:
   global:
     - PYTEST_ADDOPTS="-n auto --cov-config setup.cfg --cov-append"
+    - COVOPTS="--cov diofant -m \"not slow and not xfail\""
     - PYTHONHASHSEED=0
     - secure: "VNgpd/TFAkLGjWZzRBWxujDHktdvp2Fg9D8PbGmr/pbmLcJS3a5pf6po1T/\
                GJgioh8SI1TgPURjku5t48VHN18HoMBzABBSZ4C7cUjpNQlJMPKhWCZKmIJ\
@@ -59,8 +60,9 @@ matrix:
             python setup.py build_sphinx -W -b linkcheck
           fi
         - pip uninstall -y gmpy2
-        - DIOFANT_GROUND_TYPES='gmpy' py.test --cov diofant diofant/tests/domains
-        - travis_wait py.test --cov diofant diofant/tests/polys
+        - PYTEST_ADDOPTS="${PYTEST_ADDOPTS} ${COVOPTS}"
+        - DIOFANT_GROUND_TYPES='gmpy' py.test diofant/tests/domains
+        - travis_wait py.test diofant/tests/polys
     - stage: deploy
       env:
         -
@@ -118,7 +120,7 @@ script:
   - |
     PYTEST_ADDOPTS="${PYTEST_ADDOPTS} --split=${SPLIT}"
     if [ -n "${COVERAGE}" ]; then
-      PYTEST_ADDOPTS="${PYTEST_ADDOPTS} --cov diofant -m \"not slow and not xfail\""
+      PYTEST_ADDOPTS="${PYTEST_ADDOPTS} ${COVOPTS}"
     fi
     python setup.py test
 after_success: test -n "${COVERAGE}" && codecov
