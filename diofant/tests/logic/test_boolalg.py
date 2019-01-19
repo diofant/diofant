@@ -425,6 +425,7 @@ def test_to_cnf():
         (~A | B) & (~A | C) & (~B | ~C | A)
     assert to_cnf(Equivalent(A, B | C), True) == \
         And(Or(Not(B), A), Or(Not(C), A), Or(B, C, Not(A)))
+    assert to_cnf(~(A | B) | C) == And(Or(Not(A), C), Or(Not(B), C))
 
 
 def test_to_dnf():
