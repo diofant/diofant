@@ -17,7 +17,7 @@ from .polyerrors import (DomainError, GeneratorsNeeded,
 from .polyfuncs import symmetrize, viete
 from .polyroots import (preprocess_roots, roots, roots_binomial, roots_cubic,
                         roots_linear, roots_quadratic, roots_quartic)
-from .polytools import Poly, PurePoly, factor, resultant
+from .polytools import Poly, PurePoly, factor
 from .rationaltools import together
 from .rootisolation import (dup_isolate_complex_roots_sqf,
                             dup_isolate_real_roots_sqf)
@@ -152,14 +152,10 @@ class RootOf(Expr):
         poly = self.poly
         index = self.index
         if poly.domain.is_AlgebraicField:
-            if poly.domain.domain.is_AlgebraicField:
-                new_domain = QQ.algebraic_field(poly.domain.domain.ext,
-                                                poly.domain.ext)
-                poly = poly.set_domain(new_domain)
-            x, y = poly.gen, Dummy('y')
-            p = sum(Poly(c.rep, y)*x**n for (n,), c in poly.rep.terms()).inject(x)
-            q = poly.domain.minpoly.eval(y)
-            minpoly = PurePoly(resultant(p, q, y), x)
+            minpoly, x = poly, poly.gen
+            while minpoly.domain.is_AlgebraicField:
+                _, _, minpoly = minpoly.sqf_norm()
+                minpoly = minpoly.retract()
             for idx, r in enumerate(minpoly.all_roots()):  # pragma: no branch
                 if poly.as_expr().evalf(2, subs={x: r}, chop=True) == 0:
                     index -= 1

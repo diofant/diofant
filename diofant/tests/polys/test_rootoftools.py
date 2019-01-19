@@ -563,6 +563,8 @@ def test_RootOf_expand_func2():
     r2 = RootOf(x**4 + sqrt(2)*x**3 - I*x + 1, 0)
     assert expand_func(r2) == RootOf(x**16 - 4*x**14 + 8*x**12 - 6*x**10 +
                                      10*x**8 + 5*x**4 + 2*x**2 + 1, 1)
+    r3 = RootOf(x**3 - I*sqrt(2)*x + 5, 1)
+    assert expand_func(r3) == RootOf(x**6 + 10*x**3 + 2*x**2 + 25, 2)
 
 
 @pytest.mark.slow
