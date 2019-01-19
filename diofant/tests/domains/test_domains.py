@@ -711,6 +711,9 @@ def test_Domain__algebraic_field():
     assert alg3.is_RealAlgebraicField
     assert 2.772 > alg3.unit > 2.771
 
+    alg4 = QQ.algebraic_field(sqrt(2) + I)
+    assert alg4.convert(alg2.unit) == alg4.from_expr(I)
+
 
 def test_PolynomialRing_from_FractionField():
     F,  x, y = field("x,y", ZZ)
