@@ -68,6 +68,7 @@ Compatibility breaks
 * Removed ``gff()``, ``gff_list()`` functions and methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`729`.
 * Removed ``sqf_list_include()``, ``homogenize()``, ``homogeneous_order()``, ``eq()`` and ``ne()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`747`.
 * Removed ``symmetric`` option for polynomial functions, see :pull:`761`.
+* Removed ``print_mathml()`` function and ``tree`` submodule, see :pull:`769`.
 
 Minor changes
 =============

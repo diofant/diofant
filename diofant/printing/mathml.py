@@ -2,7 +2,7 @@
 A MathML printer.
 """
 
-from ..core import Mul, S, sympify
+from ..core import Mul, S
 from ..core.function import _coeff_isneg
 from .conventions import requires_partial, split_super_sub
 from .pretty.pretty_symbology import greek_unicode
@@ -377,25 +377,3 @@ class MathMLPrinter(Printer):
 def mathml(expr, **settings):
     """Returns the MathML representation of expr"""
     return MathMLPrinter(settings).doprint(expr)
-
-
-def print_mathml(expr, **settings):
-    """
-    Prints a pretty representation of the MathML code for expr
-
-    Examples
-    ========
-
-    >>> print_mathml(x+1)  #doctest: +NORMALIZE_WHITESPACE
-    <apply>
-        <plus/>
-        <ci>x</ci>
-        <cn>1</cn>
-    </apply>
-
-    """
-    s = MathMLPrinter(settings)
-    xml = s._print(sympify(expr))
-    pretty_xml = xml.toprettyxml()
-
-    print(pretty_xml)

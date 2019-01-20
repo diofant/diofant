@@ -16,7 +16,7 @@ from diofant import (FF, QQ, RR, ZZ, Add, And, Basic, Complement, Contains,
 from diofant.abc import a, b, c, d, e, f, k, l, lamda, m, n, t, w, x, y, z
 from diofant.core.trace import Tr
 from diofant.diffgeom import BaseVectorField
-from diofant.diffgeom.rn import R2_r
+from diofant.diffgeom.rn import R2, R2_r
 from diofant.functions import (Abs, Chi, Ci, DiracDelta, Ei, KroneckerDelta,
                                Piecewise, Shi, Si, atan2, binomial, catalan,
                                ceiling, cos, elliptic_e, elliptic_f,
@@ -2492,6 +2492,46 @@ def test_pretty_integrals():
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
+    expr = Integral(sin(x) + log(x), x)
+    ascii_str = \
+        """\
+  /                    \n\
+ |                     \n\
+ | (log(x) + sin(x)) dx\n\
+ |                     \n\
+/                      \
+"""
+    ucode_str = \
+        """\
+⌠                     \n\
+⎮ (log(x) + sin(x)) dx\n\
+⌡                     \
+"""
+    assert pretty(expr) == ascii_str
+    assert upretty(expr) == ucode_str
+
+    expr = Integral(sin(x), (x, x))
+    ascii_str = \
+        """\
+  x          \n\
+  /          \n\
+ |           \n\
+ |  sin(x) dx\n\
+ |           \n\
+/            \n\
+             \
+"""
+    ucode_str = \
+        """\
+x          \n\
+⌠          \n\
+⎮ sin(x) dx\n\
+⌡          \n\
+           \
+"""
+    assert pretty(expr) == ascii_str
+    assert upretty(expr) == ucode_str
+
 
 def test_pretty_matrix():
     # Empty Matrix
@@ -4203,9 +4243,11 @@ def test_pretty_Subs():
 
 def test_gammas():
     assert upretty(lowergamma(x, y)) == "γ(x, y)"
+    assert pretty(lowergamma(x, y)) == "lowergamma(x, y)"
     assert upretty(uppergamma(x, y)) == "Γ(x, y)"
     assert pretty(uppergamma(x, y)) == "uppergamma(x, y)"
-    assert xpretty(gamma(x), use_unicode=True) == 'Γ(x)'
+    assert upretty(gamma(x)) == 'Γ(x)'
+    assert pretty(gamma(x)) == 'gamma(x)'
 
 
 def test_deltas():
@@ -5005,6 +5047,18 @@ def test_sympyissue_9877():
 
 def test_BaseVectorField():
     assert upretty(BaseVectorField(R2_r, 1)) == '∂_y'
+
+
+def test_BaseScalarField():
+    v = BaseVectorField(R2_r, 1)
+    g = Function('g')
+    s_field = g(R2.x, R2.y)
+    assert pretty(v(s_field)) == \
+        """\
+/  d              \\|      \n\
+|-----(g(x, xi_2))||      \n\
+\\dxi_2            /|xi_2=y\
+"""
 
 
 def test_MatrixElement():
