@@ -29,6 +29,7 @@ def test_IM_MM():
     assert isinstance(IM + MM, ImmutableMatrix)
     assert isinstance(2*IM + MM, ImmutableMatrix)
     assert MM.equals(IM)
+    assert MM.equals(2) is False
 
 
 def test_ME_MM():

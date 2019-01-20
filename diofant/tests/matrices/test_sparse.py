@@ -3,7 +3,7 @@ import pytest
 from diofant import I, PurePoly, Rational
 from diofant.abc import x, y, z
 from diofant.matrices import (Matrix, MutableDenseMatrix, MutableSparseMatrix,
-                              ShapeError, SparseMatrix, eye, zeros)
+                              ShapeError, SparseMatrix, eye, ones, zeros)
 
 
 __all__ = ()
@@ -343,6 +343,17 @@ def test_sparse_matrix():
         [1,     0],
         [0,     1]
     ])
+    A = SparseMatrix(ones(3))
+    B = eye(3)
+    assert A.col_join(B) == Matrix([[1, 1, 1], [1, 1, 1], [1, 1, 1],
+                                    [1, 0, 0], [0, 1, 0], [0, 0, 1]])
+
+    # row join
+    A = SparseMatrix(((1, 0, 1), (0, 1, 0), (1, 1, 0)))
+    B = Matrix(((1, 0, 0), (0, 1, 0), (0, 0, 1)))
+    assert A.row_join(B) == Matrix([[1, 0, 1, 1, 0, 0],
+                                    [0, 1, 0, 0, 1, 0],
+                                    [1, 1, 0, 0, 0, 1]])
 
     # symmetric
     assert not a.is_symmetric(simplify=False)
@@ -437,6 +448,17 @@ def test_sparse_matrix():
     assert A.row_list() == [(0, 0, 18), (0, 9, 12), (1, 4, 18), (2, 7, 16), (3, 9, 12), (4, 2, 19), (5, 7, 16), (6, 2, 12), (9, 7, 18)]
     assert A.col_list() == [(0, 0, 18), (4, 2, 19), (6, 2, 12), (1, 4, 18), (2, 7, 16), (5, 7, 16), (9, 7, 18), (0, 9, 12), (3, 9, 12)]
     assert SparseMatrix.eye(2).nnz() == 2
+
+    M = SparseMatrix.eye(3)*2
+    M[1, 0] = -1
+    M.col_op(1, lambda v, i: v + 2*M[i, 0])
+    assert M == Matrix([[ 2, 4, 0], [-1, 0, 0], [ 0, 0, 2]])
+
+    M = SparseMatrix.zeros(3)
+    M.fill(1)
+    assert M == ones(3)
+
+    assert SparseMatrix(ones(0, 3)).tolist() == []
 
 
 def test_eq():

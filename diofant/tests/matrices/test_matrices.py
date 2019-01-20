@@ -11,7 +11,7 @@ from diofant.core.compatibility import iterable
 from diofant.external import import_module
 from diofant.matrices import (GramSchmidt, ImmutableMatrix,
                               ImmutableSparseMatrix, Matrix, SparseMatrix,
-                              casoratian, diag, eye, hessian,
+                              casoratian, diag, eye, hessian, jordan_cell,
                               matrix_multiply_elementwise, ones, randMatrix,
                               rot_axis1, rot_axis2, rot_axis3, vandermonde,
                               wronskian, zeros)
@@ -1337,6 +1337,8 @@ def test_diag():
 
     pytest.raises(ValueError, lambda: diag(1, 2, 3, spam=123))
 
+    assert isinstance(diag(1, cls=ImmutableMatrix), ImmutableMatrix)
+
 
 def test_get_diag_blocks1():
     a = Matrix([[1, 2], [2, 3]])
@@ -1611,6 +1613,13 @@ def test_jordan_form_complex_sympyissue_9274():
     assert simplify(P*J*P.inv()) == A
 
 
+def test_jordan_cell():
+    assert jordan_cell(x, 4) == Matrix([[x, 1, 0, 0],
+                                        [0, x, 1, 0],
+                                        [0, 0, x, 1],
+                                        [0, 0, 0, x]])
+
+
 def test_sympyissue_10220():
     # two non-orthogonal Jordan blocks with eigenvalue 1
     M = Matrix([[1, 0, 0, 1],
@@ -1843,6 +1852,10 @@ def test_LDLsolve():
     b = A*x
     soln = A.LDLsolve(b)
     assert soln == x
+
+    A = eye(2)*2
+    B = Matrix([[1, 2], [3, 4]])
+    assert A.LDLsolve(B) == B/2
 
 
 def test_lower_triangular_solve():
