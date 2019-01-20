@@ -293,6 +293,7 @@ def test_latex_functions():
     assert latex(conjugate(x)) == r"\overline{x}"
     assert latex(conjugate(x)**3) == r'\overline{x}^{3}'
     assert latex(gamma(x)) == r"\Gamma{\left(x \right)}"
+    assert latex(gamma(x)**3) == r"\Gamma^{3}{\left(x \right)}"
     w = Wild('w')
     assert latex(gamma(w)) == r"\Gamma{\left(w \right)}"
     assert latex(Order(x)) == r"\mathcal{O}\left(x\right)"

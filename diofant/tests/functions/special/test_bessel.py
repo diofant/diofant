@@ -2,12 +2,12 @@ from random import uniform
 
 import pytest
 
-from diofant import (Abs, I, Integer, Limit, O, Rational, Symbol, besseli,
-                     besselj, besselk, besselsimp, bessely, cbrt, conjugate,
-                     cos, cosh, diff, exp, exp_polar, expand_func, gamma,
-                     hankel1, hankel2, hyper, im, jn, jn_zeros, log, nan, oo,
-                     pi, polar_lift, re, root, series, simplify, sin, sinh,
-                     sqrt, yn, zoo)
+from diofant import (Abs, Float, I, Integer, Limit, O, Rational, Symbol,
+                     besseli, besselj, besselk, besselsimp, bessely, cbrt,
+                     conjugate, cos, cosh, diff, exp, exp_polar, expand_func,
+                     gamma, hankel1, hankel2, hyper, im, jn, jn_zeros, log,
+                     nan, oo, pi, polar_lift, re, root, series, simplify, sin,
+                     sinh, sqrt, yn, zoo)
 from diofant.abc import k, n, x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
@@ -513,6 +513,8 @@ def test_airyaiprime():
     assert expand_func(airyaiprime(log(x))) == airyaiprime(log(x))
     assert expand_func(airyaiprime(2*root(3*z**5, 5))) == airyaiprime(2*root(3*z**5, 5))
 
+    assert airyaiprime(-2).evalf(50) == Float('0.61825902074169104140626429133247528291577794512414753', dps=50)
+
 
 def test_airybiprime():
     z = Symbol('z', extended_real=False)
@@ -551,3 +553,5 @@ def test_airybiprime():
     assert expand_func(airybiprime(x*y)) == airybiprime(x*y)
     assert expand_func(airybiprime(log(x))) == airybiprime(log(x))
     assert expand_func(airybiprime(2*root(3*z**5, 5))) == airybiprime(2*root(3*z**5, 5))
+
+    assert airybiprime(-2).evalf(50) == Float('0.27879516692116952268509756941098324140300059345163131', dps=50)

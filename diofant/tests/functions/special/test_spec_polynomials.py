@@ -196,6 +196,9 @@ def test_assoc_legendre():
 
     pytest.raises(ArgumentIndexError, lambda: assoc_legendre(n, m, x).fdiff(1))
 
+    assert (str(assoc_laguerre(n, m, x).diff(m)) ==
+            'Sum(assoc_laguerre(_k, m, x)/(-m + n), (_k, 0, n - 1))')
+
 
 def test_chebyshev():
     assert chebyshevt(0, x) == 1
