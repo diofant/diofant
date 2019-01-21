@@ -227,6 +227,12 @@ def test_RootOf_conjugate():
     assert RootOf(p3, x, 0).conjugate() == conjugate(RootOf(p3, x, 0),
                                                      evaluate=False)
 
+    p4 = x**12 - 4*x**8 + 2*x**6 + 4*x**4 + 4*x**2 + 1
+    r4 = RootOf(p4, 4)
+    r5 = RootOf(p4, 5)
+    assert r4.conjugate() == r5
+    assert r4.evalf() == -r5.evalf()
+
 
 def test_RootOf_subs():
     assert RootOf(x**3 + x + 1, 0).subs({x: y}) == RootOf(y**3 + y + 1, 0)
@@ -551,7 +557,7 @@ def test_RootOf_expand_func1():
     assert expand_func(r0) == r0
     r1 = RootOf(x**3 - sqrt(2)*x + I, 1)
     assert expand_func(r1) == RootOf(x**12 - 4*x**8 + 2*x**6 +
-                                     4*x**4 + 4*x**2 + 1, 6)
+                                     4*x**4 + 4*x**2 + 1, 7)
 
 
 @pytest.mark.slow

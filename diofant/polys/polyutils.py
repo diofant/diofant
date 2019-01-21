@@ -50,13 +50,13 @@ def _nsort(roots, separated=False):
     if any(i._prec == 1 for k in key for i in k):  # pragma: no cover
         raise NotImplementedError("could not compute root with precision")
     # insert a key to indicate if the root has an imaginary part
-    key = [(1 if i else 0, r, i) for r, i in key]
+    key = [(1 if i else 0, r, -abs(i), i.is_positive) for r, i in key]
     key = sorted(zip(key, roots))
     # return the real and imaginary roots separately if desired
     if separated:
         r = []
         i = []
-        for (im, _, _), v in key:
+        for (im, _, _, _), v in key:
             if im:
                 i.append(v)
             else:
