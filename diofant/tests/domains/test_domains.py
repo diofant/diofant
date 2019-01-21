@@ -1056,6 +1056,11 @@ def test_ModularInteger():
     assert F8.dtype.mod.to_dense() == [1, 0, 1, 1]
     assert int(F8([1, 0, 1])) == int(F8(5)) == 5
 
+    F4 = FF(2, [1, 1, 1])
+
+    assert F4.order == 4
+    assert F4.characteristic == 2
+
 
 def test_QQ_int():
     assert int(QQ(2**2000, 3**1250)) == 455431
