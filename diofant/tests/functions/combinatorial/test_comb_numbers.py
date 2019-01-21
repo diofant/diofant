@@ -251,10 +251,13 @@ def test_harmonic_rewrite_polygamma():
     assert expand_func(harmonic(x)) == harmonic(x)
 
 
-def test_harmonic_limit_fail():
+def test_harmonic_limit():
     n = Symbol("n")
     m = Symbol("m", positive=True)
     assert limit(harmonic(n, m + 1), n, oo) == zeta(m + 1)
+
+    assert limit(harmonic(n, 2), n, oo) == pi**2/6
+    assert limit(harmonic(n, 3), n, oo) == -polygamma(2, 1)/2
 
 
 @pytest.mark.xfail
@@ -353,6 +356,7 @@ def test_genocchi():
     m = Symbol('m', integer=True)
     n = Symbol('n', integer=True, positive=True)
 
+    assert genocchi(2*n + 1) == 0
     assert genocchi(m) == genocchi(m)
     assert genocchi(n).rewrite(bernoulli) == 2 * (1 - 2 ** n) * bernoulli(n)
     assert genocchi(x).rewrite(bernoulli) == genocchi(x)
@@ -498,6 +502,8 @@ def test_nC_nP_nT():
             stirling(5, 3, d=d) == 7)
 
     # other coverage tests
+    assert nC('aabc', replacement=True) == 35
+    assert nP(3) == sum(nP(3, i) for i in range(4))
     assert nC('abb', 2) == nC('aab', 2) == 2
     assert nP(3, 3, replacement=True) == nP('aabc', 3, replacement=True) == 27
     assert nP(3, 4) == 0

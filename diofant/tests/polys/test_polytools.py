@@ -3323,3 +3323,11 @@ def test_sympyissue_11775():
 
 def test_sympyissue_5602():
     Poly(Integral(x, (x, 0, 1))*x + x**2, x)
+
+
+def test_sympyissue_15798():
+    o1 = Poly(x + y, x, y, z)
+    o2 = o1.copy()
+    assert o1 == o2
+    p = Poly(x + sqrt(2), x)
+    assert p == p.copy()

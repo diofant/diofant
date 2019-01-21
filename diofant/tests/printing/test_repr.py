@@ -5,6 +5,7 @@ from diofant import (Abs, Catalan, Dummy, E, EulerGamma, Float, Function,
                      Rational, Symbol, Wild, WildFunction, false, nan, ones,
                      oo, pi, root, sin, sqrt, true, zoo)
 from diofant.abc import x, y
+from diofant.core.exprtools import Factors
 from diofant.domains import QQ, ZZ
 from diofant.geometry import Ellipse, Point
 from diofant.polys import field, grlex, ring
@@ -108,6 +109,10 @@ def test_empty_Matrix():
 def test_Rational():
     sT(Rational(1, 3), "Rational(1, 3)")
     sT(Rational(-1, 3), "Rational(-1, 3)")
+
+
+def test_Factors():
+    assert repr(Factors(x*y**2)) == "Factors({x: 1, y: 2})"
 
 
 def test_AlgebraicElement():

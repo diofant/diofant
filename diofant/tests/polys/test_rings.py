@@ -830,9 +830,10 @@ def test_PolyElement___floordiv__truediv__():
 
 def test_PolyElement___pow__():
     R, x = ring("x", ZZ, grlex)
-    f = 2*x + 3
 
-    pytest.raises(ValueError, lambda: R.zero**0)
+    assert R.zero**0 == R.one
+
+    f = 2*x + 3
 
     assert f**0 == 1
     assert f**1 == f

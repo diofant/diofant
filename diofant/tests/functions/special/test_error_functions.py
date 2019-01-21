@@ -161,6 +161,8 @@ def test_erfc():
 
     assert erfc(x).limit(x, oo) == 0
 
+    assert erfc(x).diff(x) == -2*exp(-x**2)/sqrt(pi)
+
 
 def test_erfc_series():
     assert erfc(x).series(x, 0, 7) == 1 - 2*x/sqrt(pi) + \
@@ -267,6 +269,9 @@ def test_erf2():
 
     pytest.raises(ArgumentIndexError, lambda: erfi(x).fdiff(3))
     pytest.raises(ArgumentIndexError, lambda: erf2(x, y).fdiff(3))
+
+    assert erf2(x, y).diff(x) == -2*exp(-x**2)/sqrt(pi)
+    assert erf2(x, y).diff(y) == +2*exp(-y**2)/sqrt(pi)
 
 
 def test_erfinv():
@@ -527,6 +532,8 @@ def test_Li():
     pytest.raises(ArgumentIndexError, lambda: Li(z).fdiff(2))
 
     assert Li(z).rewrite(li) == li(z) - li(2)
+
+    assert Li(4).evalf(30) == Float('1.92242131492155809316615998937961', dps=30)
 
 
 def test_si():

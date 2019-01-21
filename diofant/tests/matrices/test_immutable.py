@@ -21,6 +21,9 @@ def test_immutable_creation():
 def test_immutability():
     with pytest.raises(TypeError):
         IM[2, 2] = 5
+    ISM = SparseMatrix(IM).as_immutable()
+    with pytest.raises(TypeError):
+        ISM[2, 2] = 5
 
 
 def test_slicing():

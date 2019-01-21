@@ -1,5 +1,7 @@
 """For more tests on satisfiability, see test_dimacs"""
 
+import copy
+
 import pytest
 
 from diofant import numbered_symbols, pi
@@ -99,9 +101,37 @@ def test_dpll2_satisfiable():
     assert l.lit_heap == []
     assert l._vsids_calculate() == 0
 
+    l0 = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
+                    {3, -2}], {1, 2, 3}, set())
+
+    l = copy.deepcopy(l0)
+    assert l.num_learned_clauses == 0
+    assert l.lit_scores == {-3: -2.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -2.0, 3: -2.0}
+    l._vsids_clause_added({2, -3})
+    assert l.num_learned_clauses == 1
+    assert l.lit_scores == {-3: -1.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -1.0, 3: -2.0}
+
+    l = copy.deepcopy(l0)
+    assert l.num_learned_clauses == 0
+    assert l.clauses == [[2, -3], [1], [3, -3], [2, -2], [3, -2]]
+    assert l.sentinels == {-3: {0, 2}, -2: {3, 4}, 2: {0, 3}, 3: {2, 4}}
+    l._simple_add_learned_clause([3])
+    assert l.clauses == [[2, -3], [1], [3, -3], [2, -2], [3, -2], [3]]
+    assert l.sentinels == {-3: {0, 2}, -2: {3, 4}, 2: {0, 3}, 3: {2, 4, 5}}
+
+    l = copy.deepcopy(l0)
+    assert l.lit_scores == {-3: -2.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -2.0, 3: -2.0}
+    l._vsids_decay()
+    assert l.lit_scores == {-3: -1.0, -2: -1.0, -1: 0.0, 1: 0.0, 2: -1.0, 3: -1.0}
+
+    l = copy.deepcopy(l0)
+    assert next(l._find_model()) == {1: True, 2: False, 3: False}
+    assert l._simple_compute_conflict() == [3]
+
 
 def test_satisfiable():
     assert satisfiable(A & (A >> B) & ~B) is False
+    assert next(satisfiable(A & ~A, all_models=True)) is False
 
 
 def test_valid():
@@ -159,10 +189,13 @@ def test_entails():
 
 def test_PropKB():
     kb = PropKB()
+    assert kb.clauses == []
     assert kb.ask(A >> B) is False
     assert kb.ask(A >> (B >> A)) is True
     kb.tell(A >> B)
+    assert kb.clauses == [~A | B]
     kb.tell(B >> C)
+    assert kb.clauses == [~A | B, ~B | C]
     assert kb.ask(A) is False
     assert kb.ask(B) is False
     assert kb.ask(C) is False

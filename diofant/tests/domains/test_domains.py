@@ -711,6 +711,9 @@ def test_Domain__algebraic_field():
     assert alg3.is_RealAlgebraicField
     assert 2.772 > alg3.unit > 2.771
 
+    alg4 = QQ.algebraic_field(sqrt(2) + I)
+    assert alg4.convert(alg2.unit) == alg4.from_expr(I)
+
 
 def test_PolynomialRing_from_FractionField():
     F,  x, y = field("x,y", ZZ)
@@ -1052,6 +1055,11 @@ def test_ModularInteger():
     assert F8.characteristic == 2
     assert F8.dtype.mod.to_dense() == [1, 0, 1, 1]
     assert int(F8([1, 0, 1])) == int(F8(5)) == 5
+
+    F4 = FF(2, [1, 1, 1])
+
+    assert F4.order == 4
+    assert F4.characteristic == 2
 
 
 def test_QQ_int():

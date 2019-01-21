@@ -1,5 +1,6 @@
 import pytest
 
+from diofant.abc import x
 from diofant.core.rules import Transform
 
 
@@ -15,3 +16,7 @@ def test_Transform():
     pytest.raises(KeyError, lambda: add1[2])
     assert (2 in add1) is False
     assert add1.get(2) is None
+
+    add1 = Transform(lambda x: x + 1)
+    assert add1[1] == 2
+    assert add1[x] == x + 1

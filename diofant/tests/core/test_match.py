@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import (Add, Derivative, Float, Function, I, Integer, Mul,
-                     Rational, Symbol, Wild, WildFunction, cos, diff, exp, log,
-                     meijerg, oo, pi, sin, sqrt, symbols)
+from diofant import (Add, Derivative, FiniteSet, Float, Function, I, Integer,
+                     Mul, Rational, Symbol, Wild, WildFunction, cos, diff, exp,
+                     log, meijerg, oo, pi, sin, sqrt, symbols)
 from diofant.abc import X, Y, Z, a, b, c, gamma, mu, x, y
 
 
@@ -192,6 +192,14 @@ def test_functions():
     assert f.match(p*cos(q*x)) == {p: 1, q: 5}
     assert f.match(p*g) == {p: 1, g: cos(5*x)}
     assert notf.match(g) is None
+
+    F = WildFunction('F', nargs=2)
+    assert F.nargs == FiniteSet(2)
+    f = Function('f')
+    assert f(x).match(F) is None
+
+    F = WildFunction('F', nargs=(1, 2))
+    assert F.nargs == FiniteSet(1, 2)
 
 
 @pytest.mark.xfail

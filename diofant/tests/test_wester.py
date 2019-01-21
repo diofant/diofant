@@ -543,7 +543,7 @@ def test_J5():
 
 
 def test_J6():
-    assert besselj(2, 1 + I).n() == Float('0.04157988694396212', 15) + Float('0.24739764151330632', 15)*I
+    assert besselj(2, 1 + I).evalf() == Float('0.04157988694396212', 15) + Float('0.24739764151330632', 15)*I
 
 
 def test_J7():

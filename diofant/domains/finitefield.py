@@ -42,6 +42,7 @@ class FiniteField(Field, SimpleDomain):
                 modulus = [1, 0]
             else:
                 deg = len(modulus) - 1
+                order = mod**deg
 
         if modulus is None:
             random.seed(0)

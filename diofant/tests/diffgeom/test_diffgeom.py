@@ -12,7 +12,7 @@ from diofant.diffgeom import (BaseCovarDerivativeOp, Commutator, CoordSystem,
                               metric_to_Ricci_components,
                               metric_to_Riemann_components, twoform_to_matrix)
 from diofant.diffgeom.rn import R2, R2_p, R2_r, R3_c, R3_r, R3_s
-from diofant.functions import atan2, exp, sin, sqrt
+from diofant.functions import atan2, cos, exp, sin, sqrt
 from diofant.matrices import Matrix
 from diofant.printing import sstr
 from diofant.simplify import simplify, trigsimp
@@ -60,6 +60,16 @@ def test_point():
     # TODO assert p.free_symbols() == {x, y}
     assert p.coords(R2_r) == p.coords() == Matrix([x, y])
     assert p.coords(R2_p) == Matrix([sqrt(x**2 + y**2), atan2(y, x)])
+
+
+def test_coords():
+    r, theta = symbols('r, theta')
+    m = Manifold('M', 2)
+    patch = Patch('P', m)
+    rect = CoordSystem('rect', patch)
+    polar = CoordSystem('polar', patch)
+    polar.connect_to(rect, [r, theta], [r*cos(theta), r*sin(theta)])
+    polar.coord_tuple_transform_to(rect, [0, 2]) == Matrix([[0], [0]])
 
 
 def test_commutator():
@@ -119,6 +129,11 @@ def test_intcurve_diffequ():
     assert sstr(
         equations) == '[Derivative(f_0(t), t), Derivative(f_1(t), t) - 1]'
     assert sstr(init_cond) == '[f_0(0) - 1, f_1(0)]'
+
+    start_point = R2_r.point([x, y])
+    vector_field = R2_r.e_x
+    assert intcurve_series(vector_field, t, start_point,
+                           n=3) == Matrix([[t + x], [y]])
 
 
 def test_helpers_and_coordinate_dependent():

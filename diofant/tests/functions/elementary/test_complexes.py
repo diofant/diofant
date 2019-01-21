@@ -346,6 +346,7 @@ def test_Abs():
     assert Abs((-1)**n) == 1
     assert x**(2*n) == Abs(x)**(2*n)
     assert Abs(x).diff(x) == sign(x)
+    assert Abs(-x).fdiff() == sign(x)
     assert abs(x) == Abs(x)  # Python built-in
     assert Abs(x)**3 == x**2*Abs(x)
     assert Abs(x)**4 == x**4

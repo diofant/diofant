@@ -38,6 +38,9 @@ def test_diff():
     e = a*b*c
     assert e.diff(c) == a*b
 
+    f = Function('f')
+    assert f(x).diff(x, 2).diff(f(x).diff(x, 1)) == 0
+
 
 def test_diff2():
     n3 = Integer(3)

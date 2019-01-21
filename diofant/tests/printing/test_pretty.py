@@ -3516,6 +3516,11 @@ def test_pretty_Domain():
     assert pretty(expr) == "GF(23)"
     assert upretty(expr) == "𝔽₂₃"
 
+    expr = FF(2, [1, 1, 1])
+
+    assert pretty(expr) == "GF(4)"
+    assert upretty(expr) == "𝔽₄"
+
     expr = ZZ
 
     assert pretty(expr) == "ZZ"

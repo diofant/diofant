@@ -546,18 +546,25 @@ def test_rewrite():
     assert r11.rewrite(Pow) == r11
 
 
-@pytest.mark.slow
-def test_RootOf_expand_func():
+def test_RootOf_expand_func1():
     r0 = RootOf(x**3 + x + 1, 0)
     assert expand_func(r0) == r0
+    r1 = RootOf(x**3 - sqrt(2)*x + I, 1)
+    assert expand_func(r1) == RootOf(x**12 - 4*x**8 + 2*x**6 +
+                                     4*x**4 + 4*x**2 + 1, 6)
+
+
+@pytest.mark.slow
+def test_RootOf_expand_func2():
     r0 = RootOf(x**3 + I*x + 2, 0)
     assert expand_func(r0) == RootOf(x**6 + 4*x**3 + x**2 + 4, 1)
     r1 = RootOf(x**3 + I*x + 2, 1)
     assert expand_func(r1) == RootOf(x**6 + 4*x**3 + x**2 + 4, 3)
-
-    e = RootOf(x**4 + sqrt(2)*x**3 - I*x + 1, 0)
-    assert expand_func(e) == RootOf(x**16 - 4*x**14 + 8*x**12 - 6*x**10 +
-                                    10*x**8 + 5*x**4 + 2*x**2 + 1, 1)
+    r2 = RootOf(x**4 + sqrt(2)*x**3 - I*x + 1, 0)
+    assert expand_func(r2) == RootOf(x**16 - 4*x**14 + 8*x**12 - 6*x**10 +
+                                     10*x**8 + 5*x**4 + 2*x**2 + 1, 1)
+    r3 = RootOf(x**3 - I*sqrt(2)*x + 5, 1)
+    assert expand_func(r3) == RootOf(x**6 + 10*x**3 + 2*x**2 + 25, 2)
 
 
 @pytest.mark.slow
@@ -579,7 +586,7 @@ def test_diofantissue_730():
     e = RootOf(x**3 + 10*x**2 + 1, 2)
     assert e.is_real is False
     assert e.is_imaginary is False
-    assert e.n(3) == Float('0.00498962', dps=3) + I*Float('0.31604', dps=3)
+    assert e.evalf(3) == Float('0.00498962', dps=3) + I*Float('0.31604', dps=3)
     assert e.conjugate().conjugate() == e
 
 
