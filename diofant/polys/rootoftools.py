@@ -34,6 +34,10 @@ class RootOf(Expr):
     """
     Represents ``k``-th root of a univariate polynomial.
 
+    The ordering used for indexing takes real roots to come before complex
+    ones, sort complex roots by real part, then by imaginary part and
+    finally takes complex conjugate pairs of roots to be adjacent.
+
     Parameters
     ==========
 
@@ -320,7 +324,7 @@ class RootOf(Expr):
         complexes = sorted(complexes,
                            key=lambda r: (max(_[0].ax for _ in complexes
                                               if not _[0].is_disjoint(r[0], re_disjoint=True)),
-                                          r[0].ay if r[0].conj else r[0].by))
+                                          (r[0] if r[0].conj else r[0].conjugate()).ay))
 
         for root, factor, _ in complexes:
             if factor in cache:

@@ -16,7 +16,7 @@ New features
 Major changes
 =============
 
-* Stable enumeration of polynomial roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`633`, :pull:`658` and :pull:`741`.  Thanks to Kalevi Suominen for the implementation idea and help with review.
+* Stable enumeration of polynomial roots in :class:`~diofant.polys.rootoftools.RootOf`, see :pull:`633`, :pull:`658`, :pull:`741` and :pull:`768`.  Thanks to Kalevi Suominen for the implementation idea and help with review.
 * Support root isolation for polynomials with algebraic coefficients, see :pull:`673` and :pull:`630`.  Thanks to Kalevi Suominen for help with review.
 * Polynomials with algebraic coefficients will use algebraic number domains per default, see :pull:`478`.
 
