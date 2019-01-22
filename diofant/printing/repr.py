@@ -11,6 +11,7 @@ from mpmath.libmp import prec_to_dps, repr_dps
 
 from ..core.compatibility import default_sort_key
 from ..core.function import AppliedUndef
+from .defaults import DefaultPrinting
 from .printer import Printer
 
 
@@ -36,8 +37,11 @@ class ReprPrinter(Printer):
             for o in expr.args:
                 l.append(self._print(o))
             return expr.__class__.__name__ + '(%s)' % ', '.join(l)
-        else:
+        elif hasattr(expr, '__repr__') and not issubclass(expr.__class__,
+                                                          DefaultPrinting):
             return repr(expr)
+        else:
+            return object.__repr__(expr)
 
     def _print_Dict(self, expr):
         l = []
@@ -185,6 +189,9 @@ class ReprPrinter(Printer):
     def _print_AlgebraicElement(self, expr):
         return "%s(%s)" % (self._print(expr.parent),
                            self._print(list(map(expr.domain.domain.to_expr, expr.rep.to_dense()))))
+
+    def _print_Domain(self, expr):
+        return expr.rep
 
 
 def srepr(expr, **settings):

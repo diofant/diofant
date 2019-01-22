@@ -8,6 +8,7 @@ from mpmath.libmp import prec_to_dps
 from ..core import Mul, Pow, Rational, S, oo
 from ..core.mul import _keep_coeff
 from ..utilities import default_sort_key
+from .defaults import DefaultPrinting
 from .precedence import PRECEDENCE, precedence
 from .printer import Printer
 
@@ -33,8 +34,11 @@ class StrPrinter(Printer):
     def emptyPrinter(self, expr):
         if isinstance(expr, str):
             return expr
-        else:
+        elif hasattr(expr, '__str__') and not issubclass(expr.__class__,
+                                                         DefaultPrinting):
             return str(expr)
+        else:
+            return repr(expr)
 
     def _print_Add(self, expr, order=None):
         if self.order == 'none':
