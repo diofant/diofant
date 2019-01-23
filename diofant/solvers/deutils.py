@@ -45,12 +45,6 @@ def _preprocess(expr, func=None, hint='_Integral'):
     >>> _preprocess(Derivative(f(x), y), f(x), hint='')
     (0, f(x))
 
-    Don't do any derivatives if hint is None:
-
-    >>> eq = Derivative(f(x) + 1, x) + Derivative(f(x), y)
-    >>> _preprocess(eq, f(x), hint=None)
-    (Derivative(f(x), y) + Derivative(f(x) + 1, x), f(x))
-
     If it's not clear what the function of interest is, it must be given:
 
     >>> eq = Derivative(f(x) + g(x), x)
@@ -70,8 +64,6 @@ def _preprocess(expr, func=None, hint='_Integral'):
                              'automatically detected for %s.' % expr)
         func = funcs.pop()
     fvars = set(func.args)
-    if hint is None:
-        return expr, func
     reps = [(d, d.doit()) for d in derivs if not hint.endswith('_Integral') or
             d.has(func) or set(d.variables) & fvars]
     eq = expr.subs(reps)

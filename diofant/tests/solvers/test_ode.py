@@ -725,6 +725,9 @@ def test_classify_ode():
     assert classify_ode(Eq(2*f(x)**3*f(x).diff(x), 0), f(x)) == \
         ('separable', '1st_power_series', 'lie_group', 'separable_Integral')
 
+    pytest.raises(ValueError, lambda: classify_ode(Derivative(f(x), x) +
+                                                   Derivative(g(x), x)))
+
 
 def test_classify_ode_init():
     # Dummy

@@ -10,7 +10,8 @@ from diofant.abc import x, y
 from diofant.polys.rootoftools import RootOf
 from diofant.solvers.inequalities import (reduce_inequalities,
                                           reduce_piecewise_inequality,
-                                          reduce_rational_inequalities)
+                                          reduce_rational_inequalities,
+                                          solve_poly_inequalities)
 from diofant.solvers.inequalities import solve_poly_inequality as psolve
 from diofant.solvers.inequalities import solve_univariate_inequality as isolve
 from diofant.solvers.solvers import solve
@@ -27,6 +28,12 @@ def test_solve_poly_inequality():
     assert psolve(PurePoly(x + 1, x), ">") == [Interval(-1, oo, True, True)]
     pytest.raises(ValueError, lambda: psolve(x, '=='))
     pytest.raises(ValueError, lambda: psolve(Poly(x, x), '??'))
+
+    assert (solve_poly_inequalities(((Poly(x**2 - 3), ">"),
+                                     (Poly(-x**2 + 1), ">"))) ==
+            Union(Interval(-oo, -sqrt(3), True, True),
+                  Interval(-1, 1, True, True),
+                  Interval(sqrt(3), oo, True, True)))
 
 
 def test_reduce_poly_inequalities_real_interval():
