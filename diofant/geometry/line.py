@@ -853,7 +853,7 @@ class LinearEntity(GeometrySet):
         >>> l1 = Line(p1, p2)
         >>> p3 = l1.random_point()
         >>> # random point - don't know its coords in advance
-        >>> p3 # doctest: +ELLIPSIS
+        >>> p3
         Point2D(...)
         >>> # point should belong to the line
         >>> p3 in l1

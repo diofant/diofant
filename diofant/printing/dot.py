@@ -138,7 +138,7 @@ def dotprint(expr, styles=default_styles,
     Examples
     ========
 
-    >>> print(dotprint(x + 2)) # doctest: +NORMALIZE_WHITESPACE
+    >>> print(dotprint(x + 2))
     digraph{
     <BLANKLINE>
     # Graph style
