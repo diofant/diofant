@@ -26,8 +26,7 @@ from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_zz_heu_gcd, dmp_zz_modular_resultant,
                           dup_euclidean_prs, dup_ff_prs_gcd, dup_gcdex,
                           dup_half_gcdex, dup_inner_subresultants, dup_invert,
-                          dup_primitive_prs, dup_prs_resultant, dup_resultant,
-                          dup_rr_prs_gcd)
+                          dup_primitive_prs, dup_rr_prs_gcd)
 from .factortools import (dmp_ext_factor, dmp_factor_list, dmp_trial_division,
                           dmp_zz_factor, dmp_zz_mignotte_bound, dmp_zz_wang,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
@@ -292,10 +291,6 @@ class IPolys:
         prs = dmp_subresultants(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return list(map(self.from_dense, prs))
 
-    def dup_prs_resultant(self, f, g):
-        res, prs = dup_prs_resultant(self.to_dense(f), self.to_dense(g), self.domain)
-        return res, list(map(self.from_dense, prs))
-
     def dmp_prs_resultant(self, f, g):
         res, prs = dmp_prs_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         if isinstance(res, list):
@@ -314,15 +309,15 @@ class IPolys:
         res = dmp_qq_collins_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.drop(0).from_dense(res)
 
-    def dup_resultant(self, f, g):
-        return dup_resultant(self.to_dense(f), self.to_dense(g), self.domain)
-
     def dmp_resultant(self, f, g, includePRS=False):
         res = dmp_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain, includePRS=includePRS)
-        if isinstance(res, list):
-            return self.drop(0).from_dense(res)
+        res0 = res[0] if includePRS else res
+        if self.ngens > 1:
+            res0 = self.drop(0).from_dense(res0)
+        if includePRS:
+            return res0, list(map(self.from_dense, res[1]))
         else:
-            return res
+            return res0
 
     def dmp_discriminant(self, f):
         disc = dmp_discriminant(self.to_dense(f), self.ngens-1, self.domain)

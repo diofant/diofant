@@ -91,10 +91,10 @@ def test_dup_primitive_prs():
 def test_dmp_subresultants():
     R, x = ring("x", ZZ)
 
-    assert R.dup_resultant(0, 0) == 0
+    assert R.dmp_resultant(0, 0) == 0
 
-    assert R.dup_resultant(1, 0) == 0
-    assert R.dup_resultant(0, 1) == 0
+    assert R.dmp_resultant(1, 0) == 0
+    assert R.dmp_resultant(0, 1) == 0
 
     f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
     g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
@@ -105,7 +105,7 @@ def test_dmp_subresultants():
     d = 260708
 
     assert R.dmp_subresultants(f, g) == [f, g, a, b, c, d]
-    assert R.dup_resultant(f, g) == R.dmp_LC(d)
+    assert R.dmp_resultant(f, g) == R.dmp_LC(d)
 
     f = x**2 - 2*x + 1
     g = x**2 - 1
@@ -113,7 +113,7 @@ def test_dmp_subresultants():
     a = 2*x - 2
 
     assert R.dmp_subresultants(f, g) == [f, g, a]
-    assert R.dup_resultant(f, g) == 0
+    assert R.dmp_resultant(f, g) == 0
 
     f = x**2 + 1
     g = x**2 - 1
@@ -121,42 +121,43 @@ def test_dmp_subresultants():
     a = -2
 
     assert R.dmp_subresultants(f, g) == [f, g, a]
-    assert R.dup_resultant(f, g) == 4
+    assert R.dmp_resultant(f, g) == 4
+    assert R.dmp_resultant(f, g, includePRS=True) == (4, [x**2 + 1, x**2 - 1, -2])
 
     f = x**2 - 1
     g = x**3 - x**2 + 2
 
-    assert R.dup_resultant(f, g) == 0
+    assert R.dmp_resultant(f, g) == 0
 
     f = 3*x**3 - x
     g = 5*x**2 + 1
 
-    assert R.dup_resultant(f, g) == 64
+    assert R.dmp_resultant(f, g) == 64
 
     f = x**2 - 2*x + 7
     g = x**3 - x + 5
 
-    assert R.dup_resultant(f, g) == 265
+    assert R.dmp_resultant(f, g) == 265
 
     f = x**3 - 6*x**2 + 11*x - 6
     g = x**3 - 15*x**2 + 74*x - 120
 
-    assert R.dup_resultant(f, g) == -8640
+    assert R.dmp_resultant(f, g) == -8640
 
     f = x**3 - 6*x**2 + 11*x - 6
     g = x**3 - 10*x**2 + 29*x - 20
 
-    assert R.dup_resultant(f, g) == 0
+    assert R.dmp_resultant(f, g) == 0
 
     f = x**3 - 1
     g = x**3 + 2*x**2 + 2*x - 1
 
-    assert R.dup_resultant(f, g) == 16
+    assert R.dmp_resultant(f, g) == 16
 
     f = x**8 - 2
     g = x - 1
 
-    assert R.dup_resultant(f, g) == -1
+    assert R.dmp_resultant(f, g) == -1
 
     assert R.dup_inner_subresultants(0, 0) == ([], [])
     assert R.dup_inner_subresultants(0, 1) == ([1], [1])
@@ -187,10 +188,10 @@ def test_dmp_subresultants():
     b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
 
     r = R.dmp_LC(b)
-    rr = ([-3, 0, 0, -12, 1, 0, -54, 8, 729, -216, 16],
-          [[[3, 0], [], [-1, 0, 0, -4]], [[1], [1, 0, 0, 0], [-9]],
-           [[3, 0, 0, 0, 0], [1, 0, -27, 4]],
-           [[-3, 0, 0, -12, 1, 0, -54, 8, 729, -216, 16]]])
+    Y = R.drop(x).y
+    rr = (-3*Y**10 - 12*Y**7 + Y**6 - 54*Y**4 + 8*Y**3 + 729*Y**2 - 216*Y + 16,
+          [3*x**2*y - y**3 - 4, x**2 + x*y**3 - 9, 3*x*y**4 + y**3 - 27*y + 4,
+           -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16])
 
     assert R.dmp_subresultants(f, g) == [f, g, a, b]
 
@@ -243,7 +244,7 @@ def test_dmp_subresultants():
     f = x**6 - 5*x**4 + 5*x**2 + 4
     g = -6*t*x**5 + x**4 + 20*t*x**3 - 3*x**2 - 10*t*x + 6
 
-    assert Rx.dup_resultant(f, g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
+    assert Rx.dmp_resultant(f, g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
 
     assert Rx.dmp_prs_resultant(x - 1, x + 1) == (2, [x - 1, x + 1, 2])
 

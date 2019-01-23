@@ -273,7 +273,7 @@ def dup_prs_resultant(f, g, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_prs_resultant(x**2 + 1, x**2 - 1)
+    >>> R.dmp_resultant(x**2 + 1, x**2 - 1, includePRS=True)
     (4, [x**2 + 1, x**2 - 1, -2])
     """
     if not f or not g:
@@ -296,7 +296,7 @@ def dup_resultant(f, g, K, includePRS=False):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_resultant(x**2 + 1, x**2 - 1)
+    >>> R.dmp_resultant(x**2 + 1, x**2 - 1)
     4
     """
     if includePRS:
