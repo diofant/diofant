@@ -224,7 +224,7 @@ class IPolys:
     def dup_real_imag(self, f):
         ring = self
         p, q = dup_real_imag(ring.wrap(f).drop(1).to_dense(), ring.domain)
-        if ring.domain.is_ComplexAlgebraicField:
+        if ring.domain.is_ComplexAlgebraicField and not ring.domain.is_RealAlgebraicField:
             ring = ring.to_ground()
         return ring.from_dense(p), ring.from_dense(q)
 
