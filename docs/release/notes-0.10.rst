@@ -163,3 +163,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`8818` lambdify precision loss with module=mpmath from high-precision Floats
 * :sympyissue:`9544` Finite fields
 * :sympyissue:`15798` Poly.copy() does not copy unused generators
+* :sympyissue:`15810` integrate(1/(2**(2*x/3)+1), (x,0,oo)) is wrong

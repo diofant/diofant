@@ -790,7 +790,7 @@ def derivation(p, DE, coefficientD=False, basic=False):
     if basic:
         r = 0
     else:
-        r = Poly(0, DE.t)
+        r = Poly(0, DE.t, field=True)
 
     t = DE.t
     if coefficientD:
@@ -810,7 +810,7 @@ def derivation(p, DE, coefficientD=False, basic=False):
         if basic:
             r += d.as_expr()*pv.diff(v)
         else:
-            r += (d*pv.diff(v)).as_poly(t)
+            r += (d*pv.diff(v)).as_poly(t, field=True)
 
     if basic:
         r = cancel(r)

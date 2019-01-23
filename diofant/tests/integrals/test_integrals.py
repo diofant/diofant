@@ -1265,3 +1265,7 @@ def test_sympyissue_4491():
 @pytest.mark.xfail
 def test_sympyissue_4514():
     assert not isinstance(integrate(sin(2*x)/sin(x)), Integral)
+
+
+def test_sympyissue_15810():
+    assert integrate(1/(2**(2*x/3) + 1), (x, 0, oo)) == Rational(3, 2)
