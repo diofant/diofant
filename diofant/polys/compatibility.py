@@ -199,7 +199,7 @@ class IPolys:
     def dmp_eval_tail(self, f, A):
         result = dmp_eval_tail(self.to_dense(f), A, self.ngens-1, self.domain)
         if isinstance(result, list):
-            return self.drop(*range(self.ngens)[-len(A):]).from_dense(result)
+            return self.drop(*range(self.ngens)[self.ngens - len(A):]).from_dense(result)
         else:
             return result
 
