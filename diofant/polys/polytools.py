@@ -624,7 +624,7 @@ class Poly(Expr):
         >>> f.retract(field=True)
         Poly(x**2 + 1, x, domain='QQ')
         """
-        dom, rep = construct_domain(self.as_dict(zero=True),
+        dom, rep = construct_domain(self.as_dict(),
                                     field=field,
                                     composite=self.domain.is_Composite or None,
                                     extension=False if self.domain.is_EX else True)
@@ -780,7 +780,7 @@ class Poly(Expr):
         """
         return len(self.as_dict())
 
-    def as_dict(self, native=False, zero=False):
+    def as_dict(self, native=False):
         """
         Switch to a ``dict`` representation.
 
@@ -791,9 +791,9 @@ class Poly(Expr):
         {(0, 1): -1, (1, 2): 2, (2, 0): 1}
         """
         if native:
-            return self.rep.to_dict(zero=zero)
+            return self.rep.to_dict()
         else:
-            return self.rep.to_diofant_dict(zero=zero)
+            return self.rep.to_diofant_dict()
 
     def as_expr(self, *gens):
         """

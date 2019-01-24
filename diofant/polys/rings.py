@@ -284,7 +284,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         return self.from_dict(dict(element))
 
     def from_list(self, element):
-        return self.from_dict(dmp_to_dict(element, self.ngens-1, self.domain))
+        return self.from_dict(dmp_to_dict(element, self.ngens-1))
 
     def _rebuild_expr(self, expr, mapping):
         domain = self.domain

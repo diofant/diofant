@@ -543,7 +543,7 @@ def dmp_from_dict(f, u, K):
     return dmp_strip(h, u)
 
 
-def dmp_to_dict(f, u, K=None, zero=False):
+def dmp_to_dict(f, u):
     """
     Convert a ``K[X]`` polynomial to a ``dict````.
 
@@ -553,9 +553,6 @@ def dmp_to_dict(f, u, K=None, zero=False):
     >>> dmp_to_dict([[1, 0], [], [2, 3]], 1)
     {(0, 0): 3, (0, 1): 2, (2, 1): 1}
     """
-    if dmp_zero_p(f, u) and zero:
-        return {(0,)*(u + 1): K.zero}
-
     n, v, result = dmp_degree_in(f, 0, u), u - 1, {}
 
     if n == -oo:

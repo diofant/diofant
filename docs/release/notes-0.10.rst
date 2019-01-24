@@ -61,6 +61,7 @@ Compatibility breaks
 * Renamed ``has_Ring/Field`` attributes of :class:`~diofant.domains.domain.Domain` to ``is_Ring/Field``, see :pull:`729`.
 * Removed ``symmetric`` option for polynomial functions, see :pull:`761`.
 * Removed ``print_mathml()`` function and ``tree`` submodule, see :pull:`769`.
+* Removed ``zero`` option from :meth:`~diofant.polys.polytools.Poly.as_dict` method, see :pull:`771`.
 
 Minor changes
 =============

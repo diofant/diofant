@@ -70,7 +70,7 @@ class IPolys:
         return self.wrap(element).to_dense()
 
     def from_dense(self, element):
-        return self.from_dict(dmp_to_dict(element, self.ngens-1, self.domain))
+        return self.from_dict(dmp_to_dict(element, self.ngens-1))
 
     def dmp_add_term(self, f, c, i):
         c = self.wrap(c).drop(0).to_dense() if self.ngens > 1 else c
@@ -544,7 +544,7 @@ class IPolys:
         return dmp_strip([self.domain.domain.convert(c, self.domain) for c in self.wrap(element).to_dense()], 0)
 
     def from_gf_dense(self, element):
-        return self.from_dict(dmp_to_dict(element, self.ngens-1, self.domain.domain))
+        return self.from_dict(dmp_to_dict(element, self.ngens-1))
 
     def gf_factor_sqf(self, f):
         coeff, factors = gf_factor_sqf(self.to_gf_dense(f), self.domain.mod, self.domain.domain)

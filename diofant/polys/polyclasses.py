@@ -100,13 +100,13 @@ class DMP(CantSympify):
         """Create an instance of ``cls`` given a list of native coefficients. """
         return cls(dmp_convert(rep, lev, None, dom), dom, lev)
 
-    def to_dict(self, zero=False):
+    def to_dict(self):
         """Convert ``self`` to a dict representation with native coefficients. """
-        return dmp_to_dict(self.rep, self.lev, self.domain, zero=zero)
+        return dmp_to_dict(self.rep, self.lev)
 
-    def to_diofant_dict(self, zero=False):
+    def to_diofant_dict(self):
         """Convert ``self`` to a dict representation with Diofant coefficients. """
-        rep = dmp_to_dict(self.rep, self.lev, self.domain, zero=zero)
+        rep = dmp_to_dict(self.rep, self.lev)
 
         for k, v in rep.items():
             rep[k] = self.domain.to_expr(v)
@@ -589,14 +589,12 @@ class DMP(CantSympify):
     @property
     def is_linear(self):
         """Returns ``True`` if ``self`` is linear in all its variables. """
-        return all(sum(monom) <= 1 for monom in dmp_to_dict(self.rep, self.lev,
-                                                            self.domain))
+        return all(sum(monom) <= 1 for monom in dmp_to_dict(self.rep, self.lev))
 
     @property
     def is_quadratic(self):
         """Returns ``True`` if ``self`` is quadratic in all its variables. """
-        return all(sum(monom) <= 2 for monom in dmp_to_dict(self.rep, self.lev,
-                                                            self.domain))
+        return all(sum(monom) <= 2 for monom in dmp_to_dict(self.rep, self.lev))
 
     @property
     def is_monomial(self):
