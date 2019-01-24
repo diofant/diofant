@@ -6,7 +6,7 @@ from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
                          dmp_quo_ground, dmp_rem, dmp_sub, dup_add, dup_mul)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
-                         dmp_zero, dmp_zero_p, dmp_zeros, dup_from_dict)
+                         dmp_zero, dmp_zero_p, dmp_zeros)
 from .polyerrors import DomainError
 
 
@@ -624,7 +624,7 @@ def _dup_right_decompose(f, s, K):
 
         g[(s - i,)] = K.quo(coeff, i*r*lc)
 
-    return dup_from_dict(g, K)
+    return dmp_from_dict(g, 0, K)
 
 
 def _dup_left_decompose(f, h, K):
@@ -640,7 +640,7 @@ def _dup_left_decompose(f, h, K):
             g[(i,)] = dmp_LC(r, K)
             f, i = q, i + 1
 
-    return dup_from_dict(g, K)
+    return dmp_from_dict(g, 0, K)
 
 
 def _dup_decompose(f, K):

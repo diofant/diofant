@@ -6,8 +6,8 @@ from ..functions import sqrt
 from ..ntheory import nextprime
 from ..utilities import subsets
 from .densearith import dmp_add_term, dmp_mul, dmp_neg, dmp_sqr
-from .densebasic import (dmp_ground, dmp_one, dmp_raise, dmp_zero,
-                         dup_from_dict, dup_random)
+from .densebasic import (dmp_from_dict, dmp_ground, dmp_one, dmp_raise,
+                         dmp_zero, dup_random)
 from .factortools import dup_zz_cyclotomic_poly
 from .polyclasses import DMP
 from .polytools import Poly, PurePoly
@@ -228,7 +228,7 @@ def fateman_poly_F_3(n):
 
 def dmp_fateman_poly_F_3(n, K):
     """Fateman's GCD benchmark: sparse inputs (deg f ~ vars f) """
-    u = dup_from_dict({(n + 1,): K.one}, K)
+    u = dmp_from_dict({(n + 1,): K.one}, 0, K)
 
     for i in range(n - 1):
         u = dmp_add_term([u], dmp_one(i, K), n + 1, i + 1, K)

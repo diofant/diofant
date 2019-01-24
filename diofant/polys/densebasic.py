@@ -485,10 +485,8 @@ def dup_from_dict(f, K):
     Examples
     ========
 
-    >>> dup_from_dict({(0,): ZZ(7), (2,): ZZ(5), (4,): ZZ(1)}, ZZ)
+    >>> dmp_from_dict({(0,): ZZ(7), (2,): ZZ(5), (4,): ZZ(1)}, 0, ZZ)
     [1, 0, 5, 0, 7]
-    >>> dup_from_dict({}, ZZ)
-    []
     """
     if not f:
         return []
@@ -516,8 +514,6 @@ def dmp_from_dict(f, u, K):
 
     >>> dmp_from_dict({(0, 0): ZZ(3), (0, 1): ZZ(2), (2, 1): ZZ(1)}, 1, ZZ)
     [[1, 0], [], [2, 3]]
-    >>> dmp_from_dict({}, 0, ZZ)
-    []
     """
     if not u:
         return dup_from_dict(f, K)
@@ -532,7 +528,7 @@ def dmp_from_dict(f, u, K):
         if head in coeffs:
             coeffs[head][tail] = coeff
         else:
-            coeffs[head] = { tail: coeff }
+            coeffs[head] = {tail: coeff}
 
     n, v, h = max(coeffs), u - 1, []
 
