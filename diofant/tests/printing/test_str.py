@@ -1,23 +1,27 @@
 import pytest
 
-from diofant import (Abs, Add, And, Catalan, Complement, Derivative, Dict,
-                     Dummy, E, Equivalent, EulerGamma, FiniteSet, Float,
-                     Function, GoldenRatio, I, Integer, Integral, Interval,
-                     Lambda, Limit, Matrix, MatrixSymbol, Mul, O, Pow,
-                     Rational, Rel, S, SparseMatrix, Sum, Symbol,
-                     SymmetricDifference, Tuple, Wild, WildFunction, Xor, cbrt,
-                     cos, exp, factor, factorial, factorial2, false, nan, oo,
-                     pi, root, sin, sqrt, subfactorial, summation, symbols,
-                     true, zeta, zoo)
+from diofant import (Abs, Add, And, BlockMatrix, Catalan, Complement,
+                     Derivative, Dict, Dummy, E, Equivalent, EulerGamma,
+                     FiniteSet, Float, Function, GoldenRatio, I, Integer,
+                     Integral, Interval, Lambda, Limit, Matrix, MatrixSymbol,
+                     Mul, O, Pow, Rational, Rel, S, SparseMatrix, Sum, Symbol,
+                     SymmetricDifference, Tuple, Wild, WildFunction, Xor,
+                     ZeroMatrix, cbrt, cos, exp, factor, factorial, factorial2,
+                     false, nan, oo, pi, root, sin, sqrt, subfactorial,
+                     summation, symbols, true, zeta, zoo)
 from diofant.abc import w, x, y, z
-from diofant.combinatorics import Cycle, Permutation
+from diofant.combinatorics import AbelianGroup, Cycle, Permutation
 from diofant.core import Expr
 from diofant.core.trace import Tr
+from diofant.diffgeom import Differential, LieDerivative, TensorProduct
+from diofant.diffgeom.rn import R2
 from diofant.domains import QQ, ZZ
 from diofant.geometry import Circle, Point
 from diofant.polys import Poly, RootOf, RootSum, field, grlex, groebner, ring
+from diofant.polys.polyclasses import DMP
 from diofant.printing import StrPrinter, sstr, sstrrepr
 from diofant.stats import Die, Exponential, Normal, pspace, where
+from diofant.tensor.array import ImmutableDenseNDimArray
 
 
 __all__ = ()
@@ -206,6 +210,15 @@ def test_Matrix_str():
     assert str(M) == sstr(M) == "Matrix(0, 1, [])"
 
 
+def test_BlockMatrix():
+    n, m = symbols('n m', integer=True)
+    X = MatrixSymbol('X', n, n)
+    Y = MatrixSymbol('Y', m, m)
+    Z = MatrixSymbol('Z', n, m)
+    B = BlockMatrix([[X, Z], [ZeroMatrix(m, n), Y]])
+    assert str(B) == "Matrix([\n[X, Z],\n[0, Y]])"
+
+
 def test_Mul():
     assert str(x/y) == "x/y"
     assert str(y/x) == "y/x"
@@ -309,6 +322,11 @@ def test_Permutation_Cycle():
          'Permutation(9)(2, 3)'),
     ]:
         assert str(p) == s
+
+    assert str(AbelianGroup(3, 4)) == ("PermutationGroup([\n    "
+                                       "Permutation(6)(0, 1, 2),\n"
+                                       "    Permutation(3, 4, 5, 6)])")
+    assert sstr(Cycle(1, 2)) == repr(Cycle(1, 2))
 
 
 def test_Pi():
@@ -531,6 +549,7 @@ def test_set():
     assert sstr(frozenset()) == 'frozenset()'
 
     assert sstr({1, 2, 3}) == '{1, 2, 3}'
+    assert sstr(frozenset({1, 2, 3})) == 'frozenset({1, 2, 3})'
     assert sstr(
         {1, x, x**2, x**3, x**4}) == '{1, x, x**2, x**3, x**4}'
 
@@ -722,3 +741,21 @@ def test_SymmetricDifference():
 def test_AlgebraicElement():
     K = QQ.algebraic_field(sqrt(2))
     assert str(K([1, 0])) == 'sqrt(2)'
+
+
+def test_DMP():
+    assert sstr(DMP([[0], [], [0, 1, 2], [3]], ZZ)) == 'DMP([[1, 2], [3]], ZZ)'
+
+
+def test_Differential():
+    tp = TensorProduct(R2.dx, R2.dy)
+    assert sstr(LieDerivative(R2.e_x, tp)) == 'LieDerivative(e_x, TensorProduct(dx, dy))'
+
+    g = Function('g')
+    s_field = g(R2.x, R2.y)
+    assert sstr(Differential(s_field)) == 'd(g(x, y))'
+
+
+def test_ImmutableDenseNDimArray():
+    m = [2*i + j for i in range(2) for j in range(2)]
+    assert sstr(ImmutableDenseNDimArray(m, (2, 2))) == '[[0, 1], [2, 3]]'

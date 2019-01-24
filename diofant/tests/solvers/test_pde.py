@@ -137,6 +137,9 @@ def test_pde_classify():
                                        'order': 1}
     assert classify_pde(2*u.diff(x, y, y)) == ()
 
+    eq = Eq(1 + (2*(u.diff(x)/u)) + (3*(u.diff(y)/u)))
+    assert classify_pde(eq) == ('1st_linear_constant_coeff_homogeneous',)
+
 
 def test_checkpdesol():
     f, F = map(Function, ['f', 'F'])

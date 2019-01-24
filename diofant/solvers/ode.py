@@ -4487,8 +4487,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
 
     >>> f = Function('f')
     >>> dsolve(f(x).diff(x, 5) + 10*f(x).diff(x) - 2*f(x), f(x),
-    ... hint='nth_linear_constant_coeff_homogeneous')
-    ... # doctest: +NORMALIZE_WHITESPACE
+    ...        hint='nth_linear_constant_coeff_homogeneous')
     Eq(f(x), E**(x*RootOf(_x**5 + 10*_x - 2, 0))*C1 +
     E**(x*RootOf(_x**5 + 10*_x - 2, 1))*C2 +
     E**(x*RootOf(_x**5 + 10*_x - 2, 2))*C3 +

@@ -255,8 +255,6 @@ More info on mathml content: http://www.w3.org/TR/MathML2/chapter4.html
 
 .. autofunction:: mathml
 
-.. autofunction:: print_mathml
-
 PythonPrinter
 -------------
 
@@ -298,22 +296,6 @@ This module generates readable representations of Diofant expressions.
 .. autofunction:: sstr
 
 .. autofunction:: sstrrepr
-
-Tree Printing
--------------
-
-.. module:: diofant.printing.tree
-
-The functions in this module create a representation of an expression as a
-tree.
-
-.. autofunction:: pprint_nodes
-
-.. autofunction:: print_node
-
-.. autofunction:: tree
-
-.. autofunction:: print_tree
 
 Implementation - Helper Classes/Functions
 -----------------------------------------

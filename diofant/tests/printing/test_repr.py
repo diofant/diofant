@@ -6,7 +6,7 @@ from diofant import (Abs, Catalan, Dummy, E, EulerGamma, Float, Function,
                      oo, pi, root, sin, sqrt, true, zoo)
 from diofant.abc import x, y
 from diofant.core.exprtools import Factors
-from diofant.domains import QQ, ZZ
+from diofant.domains import FF, QQ, ZZ
 from diofant.geometry import Ellipse, Point
 from diofant.polys import field, grlex, ring
 from diofant.printing.repr import srepr
@@ -188,6 +188,13 @@ def test_settings():
 
 def test_Mul():
     sT(3*x**3*y, "Mul(Integer(3), Pow(Symbol('x'), Integer(3)), Symbol('y'))")
+
+
+def test_FiniteField():
+    sT(FF(2), "GF(2)")
+
+    F4 = FF(2, [1, 1, 1])
+    repr(F4.one)  # not raises
 
 
 def test_PolynomialRing():

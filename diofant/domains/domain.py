@@ -194,7 +194,7 @@ class Domain(DefaultPrinting, abc.ABC):
 
             if ((self.is_FractionField and K1.is_PolynomialRing or
                  K1.is_FractionField and self.is_PolynomialRing) and
-                    (not self_ground.is_Field or not K1_ground.is_Field) and domain.is_Field):
+                    (not self_ground.is_Field or not K1_ground.is_Field) and domain.has_assoc_Ring):
                 domain = domain.ring
 
             if self.is_Composite and (not K1.is_Composite or self.is_FractionField or K1.is_PolynomialRing):

@@ -87,6 +87,8 @@ def test_latex_basic():
     assert latex(2*Integral(x, x)/3) == r"\frac{2}{3} \int x\, dx"
     assert latex(2*Integral(x, x)/3, fold_short_frac=True) == \
         r"\left(2 \int x\, dx\right) / 3"
+    assert latex(Integral(x, x)/2/pi, long_frac_ratio=0) == \
+        r"\frac{1}{2 \pi} \int x\, dx"
 
     assert latex(sqrt(x)) == r"\sqrt{x}"
     assert latex(cbrt(x)) == r"\sqrt[3]{x}"

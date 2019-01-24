@@ -273,7 +273,7 @@ def dup_prs_resultant(f, g, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_prs_resultant(x**2 + 1, x**2 - 1)
+    >>> R.dmp_resultant(x**2 + 1, x**2 - 1, includePRS=True)
     (4, [x**2 + 1, x**2 - 1, -2])
     """
     if not f or not g:
@@ -296,7 +296,7 @@ def dup_resultant(f, g, K, includePRS=False):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_resultant(x**2 + 1, x**2 - 1)
+    >>> R.dmp_resultant(x**2 + 1, x**2 - 1)
     4
     """
     if includePRS:
@@ -1114,7 +1114,7 @@ def dmp_rr_lcm(f, g, u, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dmp_rr_lcm(x**2 - 1, x**2 - 3*x + 2)
+    >>> R.dmp_lcm(x**2 - 1, x**2 - 3*x + 2)
     x**3 - 2*x**2 - x + 2
 
     >>> R, x, y = ring("x y", ZZ)
@@ -1122,7 +1122,7 @@ def dmp_rr_lcm(f, g, u, K):
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
 
-    >>> R.dmp_rr_lcm(f, g)
+    >>> R.dmp_lcm(f, g)
     x**3 + 2*x**2*y + x*y**2
 
     """
@@ -1149,7 +1149,7 @@ def dmp_ff_lcm(f, g, u, K):
     >>> f = (x**2 + 7*x/2 + 3)/2
     >>> g = x**2/2 + x
 
-    >>> R.dmp_ff_lcm(f, g)
+    >>> R.dmp_lcm(f, g)
     x**3 + 7/2*x**2 + 3*x
 
     >>> R, x, y = ring("x y", QQ)
@@ -1157,7 +1157,7 @@ def dmp_ff_lcm(f, g, u, K):
     >>> f = x**2/4 + x*y + y**2
     >>> g = x**2/2 + x*y
 
-    >>> R.dmp_ff_lcm(f, g)
+    >>> R.dmp_lcm(f, g)
     x**3 + 4*x**2*y + 4*x*y**2
     """
     h = dmp_quo(dmp_mul(f, g, u, K),
