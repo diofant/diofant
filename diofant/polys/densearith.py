@@ -1,7 +1,8 @@
 """Arithmetics for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
 
-from .densebasic import (dmp_degree_in, dmp_LC, dmp_one, dmp_one_p, dmp_slice,
-                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
+from .densebasic import (dmp_degree_in, dmp_LC, dmp_one, dmp_one_p,
+                         dmp_slice_in, dmp_strip, dmp_zero, dmp_zero_p,
+                         dmp_zeros)
 from .polyerrors import ExactQuotientFailed, PolynomialDivisionFailed
 
 
@@ -504,10 +505,10 @@ def dup_mul(f, g, K):
         # J. Symbolic Computation, 11 (2002), section 3.1.1.
         n2 = n//2
 
-        fl, gl = dmp_slice(f, 0, n2, 0, K), dmp_slice(g, 0, n2, 0, K)
+        fl, gl = dmp_slice_in(f, 0, n2, 0, 0, K), dmp_slice_in(g, 0, n2, 0, 0, K)
 
-        fh = dup_rshift(dmp_slice(f, n2, n, 0, K), n2, K)
-        gh = dup_rshift(dmp_slice(g, n2, n, 0, K), n2, K)
+        fh = dup_rshift(dmp_slice_in(f, n2, n, 0, 0, K), n2, K)
+        gh = dup_rshift(dmp_slice_in(g, n2, n, 0, 0, K), n2, K)
 
         lo, hi = dup_mul(fl, gl, K), dup_mul(fh, gh, K)
 

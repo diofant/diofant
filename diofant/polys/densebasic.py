@@ -1077,11 +1077,6 @@ def dmp_apply_pairs(f, g, h, args, u, K):
     return dmp_strip(result, u)
 
 
-def dmp_slice(f, m, n, u, K):
-    """Take a continuous subsequence of terms of ``f`` in ``K[X]``. """
-    return dmp_slice_in(f, m, n, 0, u, K)
-
-
 def dmp_slice_in(f, m, n, j, u, K):
     """Take a continuous subsequence of terms of ``f`` in ``x_j`` in ``K[X]``. """
     if j < 0 or j > u:
