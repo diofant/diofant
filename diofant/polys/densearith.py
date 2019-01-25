@@ -481,6 +481,39 @@ def dmp_sub_mul(f, g, h, u, K):
     return dmp_sub(f, dmp_mul(g, h, u, K), u, K)
 
 
+def dup_mul_karatsuba(f, g, K):
+    """
+    Multiply dense polynomials in ``K[x]`` using Karatsuba's algorithm.
+
+    References
+    ==========
+
+    * [Hoeven02]_
+
+    """
+    df = dmp_degree_in(f, 0, 0)
+    dg = dmp_degree_in(g, 0, 0)
+
+    n = max(df, dg) + 1
+
+    n2 = n//2
+
+    fl = dmp_slice_in(f, 0, n2, 0, 0, K)
+    gl = dmp_slice_in(g, 0, n2, 0, 0, K)
+
+    fh = dup_rshift(dmp_slice_in(f, n2, n, 0, 0, K), n2, K)
+    gh = dup_rshift(dmp_slice_in(g, n2, n, 0, 0, K), n2, K)
+
+    lo = dup_mul(fl, gl, K)
+    hi = dup_mul(fh, gh, K)
+
+    mid = dup_mul(dup_add(fl, fh, K), dup_add(gl, gh, K), K)
+    mid = dup_sub(mid, dup_add(lo, hi, K), K)
+
+    return dup_add(dup_add(lo, dup_lshift(mid, n2, K), K),
+                   dup_lshift(hi, 2*n2, K), K)
+
+
 def dup_mul(f, g, K):
     """
     Multiply dense polynomials in ``K[x]``.
@@ -505,36 +538,20 @@ def dup_mul(f, g, K):
 
     n = max(df, dg) + 1
 
-    if n < 100:
-        h = []
+    if n > 100:
+        return dup_mul_karatsuba(f, g, K)
 
-        for i in range(df + dg + 1):
-            coeff = K.zero
+    h = []
 
-            for j in range(max(0, i - dg), min(df, i) + 1):
-                coeff += f[j]*g[i - j]
+    for i in range(df + dg + 1):
+        coeff = K.zero
 
-            h.append(coeff)
+        for j in range(max(0, i - dg), min(df, i) + 1):
+            coeff += f[j]*g[i - j]
 
-        return dmp_strip(h, 0)
-    else:
-        # Use Karatsuba's algorithm (divide and conquer), see e.g.:
-        # Joris van der Hoeven, Relax But Don't Be Too Lazy,
-        # J. Symbolic Computation, 11 (2002), section 3.1.1.
-        n2 = n//2
+        h.append(coeff)
 
-        fl, gl = dmp_slice_in(f, 0, n2, 0, 0, K), dmp_slice_in(g, 0, n2, 0, 0, K)
-
-        fh = dup_rshift(dmp_slice_in(f, n2, n, 0, 0, K), n2, K)
-        gh = dup_rshift(dmp_slice_in(g, n2, n, 0, 0, K), n2, K)
-
-        lo, hi = dup_mul(fl, gl, K), dup_mul(fh, gh, K)
-
-        mid = dup_mul(dup_add(fl, fh, K), dup_add(gl, gh, K), K)
-        mid = dup_sub(mid, dup_add(lo, hi, K), K)
-
-        return dup_add(dup_add(lo, dup_lshift(mid, n2, K), K),
-                       dup_lshift(hi, 2*n2, K), K)
+    return dmp_strip(h, 0)
 
 
 def dmp_mul(f, g, u, K):
