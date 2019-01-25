@@ -1738,70 +1738,18 @@ class Poly(Expr):
     def dispersionset(self, other=None):
         r"""Compute the *dispersion set* of two polynomials.
 
-        For two polynomials `f(x)` and `g(x)` with `\deg f > 0`
-        and `\deg g > 0` the dispersion set `\operatorname{J}(f, g)` is defined as:
-
-        .. math::
-            \operatorname{J}(f, g)
-            & := \{a \in \mathbb{N}_0 | \gcd(f(x), g(x+a)) \neq 1\} \\
-            &  = \{a \in \mathbb{N}_0 | \deg \gcd(f(x), g(x+a)) \geq 1\}
-
-        For a single polynomial one defines `\operatorname{J}(f) := \operatorname{J}(f, f)`.
-
         Examples
         ========
 
-        >>> from diofant.polys.dispersion import dispersion, dispersionset
-
-        Dispersion set and dispersion of a simple polynomial:
-
-        >>> fp = Poly((x - 3)*(x + 3), x)
-        >>> sorted(dispersionset(fp))
+        >>> sorted(Poly((x - 3)*(x + 3)).dispersionset())
         [0, 6]
-        >>> dispersion(fp)
-        6
-
-        Note that the definition of the dispersion is not symmetric:
-
-        >>> fp = Poly(x**4 - 3*x**2 + 1, x)
-        >>> gp = fp.shift(-3)
-        >>> sorted(dispersionset(fp, gp))
-        [2, 3, 4]
-        >>> dispersion(fp, gp)
-        4
-        >>> sorted(dispersionset(gp, fp))
-        []
-        >>> dispersion(gp, fp)
-        -oo
-
-        Computing the dispersion also works over field extensions:
-
-        >>> fp = Poly(x**2 + sqrt(5)*x - 1, x)
-        >>> gp = Poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x)
-        >>> sorted(dispersionset(fp, gp))
-        [2]
-        >>> sorted(dispersionset(gp, fp))
-        [1, 4]
-
-        We can even perform the computations for polynomials
-        having symbolic coefficients:
-
-        >>> fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
-        >>> sorted(dispersionset(fp))
-        [0, 1]
 
         See Also
         ========
 
-        diofant.polys.polytools.Poly.dispersion
+        dispersion
+        diofant.polys.dispersion.dispersionset
 
-        References
-        ==========
-
-        * [ManWright94]_
-        * [Koepf98]_
-        * [Abramov71]_
-        * [Man93]_
         """
         from .dispersion import dispersionset
         return dispersionset(self, other)
@@ -1809,70 +1757,18 @@ class Poly(Expr):
     def dispersion(self, other=None):
         r"""Compute the *dispersion* of polynomials.
 
-        For two polynomials `f(x)` and `g(x)` with `\deg f > 0`
-        and `\deg g > 0` the dispersion `\operatorname{dis}(f, g)` is defined as:
-
-        .. math::
-            \operatorname{dis}(f, g)
-            & := \max\{ J(f,g) \cup \{0\} \} \\
-            &  = \max\{ \{a \in \mathbb{N} | \gcd(f(x), g(x+a)) \neq 1\} \cup \{0\} \}
-
-        and for a single polynomial `\operatorname{dis}(f) := \operatorname{dis}(f, f)`.
-
         Examples
         ========
 
-        >>> from diofant.polys.dispersion import dispersion, dispersionset
-
-        Dispersion set and dispersion of a simple polynomial:
-
-        >>> fp = Poly((x - 3)*(x + 3), x)
-        >>> sorted(dispersionset(fp))
-        [0, 6]
-        >>> dispersion(fp)
+        >>> Poly((x - 3)*(x + 3)).dispersion()
         6
-
-        Note that the definition of the dispersion is not symmetric:
-
-        >>> fp = Poly(x**4 - 3*x**2 + 1, x)
-        >>> gp = fp.shift(-3)
-        >>> sorted(dispersionset(fp, gp))
-        [2, 3, 4]
-        >>> dispersion(fp, gp)
-        4
-        >>> sorted(dispersionset(gp, fp))
-        []
-        >>> dispersion(gp, fp)
-        -oo
-
-        Computing the dispersion also works over field extensions:
-
-        >>> fp = Poly(x**2 + sqrt(5)*x - 1, x)
-        >>> gp = Poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x)
-        >>> sorted(dispersionset(fp, gp))
-        [2]
-        >>> sorted(dispersionset(gp, fp))
-        [1, 4]
-
-        We can even perform the computations for polynomials
-        having symbolic coefficients:
-
-        >>> fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
-        >>> sorted(dispersionset(fp))
-        [0, 1]
 
         See Also
         ========
 
-        diofant.polys.polytools.Poly.dispersionset
+        dispersionset
+        diofant.polys.dispersion.dispersion
 
-        References
-        ==========
-
-        * [ManWright94]_
-        * [Koepf98]_
-        * [Abramov71]_
-        * [Man93]_
         """
         from .dispersion import dispersion
         return dispersion(self, other)
