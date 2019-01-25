@@ -190,16 +190,22 @@ class IPolys:
 
     def dmp_eval_in(self, f, a, j):
         result = dmp_eval_in(self.to_dense(f), a, j, self.ngens-1, self.domain)
-        return self.drop(j).from_dense(result)
+        if self.ngens > 1:
+            return self.drop(j).from_dense(result)
+        else:
+            return result
 
     def dmp_diff_eval_in(self, f, m, a, j):
         result = dmp_diff_eval_in(self.to_dense(f), m, a, j, self.ngens-1, self.domain)
-        return self.drop(j).from_dense(result)
+        if self.ngens > 1:
+            return self.drop(j).from_dense(result)
+        else:
+            return result
 
     def dmp_eval_tail(self, f, A):
         result = dmp_eval_tail(self.to_dense(f), A, self.ngens-1, self.domain)
         if isinstance(result, list):
-            return self.drop(*range(self.ngens)[-len(A):]).from_dense(result)
+            return self.drop(*range(self.ngens)[self.ngens - len(A):]).from_dense(result)
         else:
             return result
 

@@ -121,6 +121,8 @@ script:
     PYTEST_ADDOPTS="${PYTEST_ADDOPTS} --split=${SPLIT}"
     if [ -n "${COVERAGE}" ]; then
       PYTEST_ADDOPTS="${PYTEST_ADDOPTS} ${COVOPTS}"
+    else
+      PYTEST_ADDOPTS="${PYTEST_ADDOPTS} --doctest-modules"
     fi
     python setup.py test
 after_success: test -n "${COVERAGE}" && codecov
