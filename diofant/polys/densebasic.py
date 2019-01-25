@@ -249,9 +249,9 @@ def dmp_copy(f, u):
 
 def dmp_to_tuple(f, u):
     """
-    Convert `f` into a nested :class:`tuple`.
+    Convert ``f`` into a nested :class:`tuple`.
 
-    This is needed for hashing.  This is similar to dmp_copy().
+    This is needed for hashing.
 
     Examples
     ========
@@ -263,6 +263,11 @@ def dmp_to_tuple(f, u):
     >>> f = dmp_normal([[1], [1, 2]], 1, ZZ)
     >>> dmp_to_tuple(f, 1)
     ((1,), (1, 2))
+
+    See Also
+    ========
+
+    dmp_copy
     """
     if not u:
         return tuple(f)
