@@ -1198,8 +1198,7 @@ def test_definite_integrals_abs():
 
 
 def test_sympyissue_12081():
-    assert isinstance(integrate(x**(-Rational(3, 2))*exp(-x),
-                                (x, 0, oo)), Integral)
+    assert integrate(x**(-Rational(3, 2))*exp(-x), (x, 0, oo)) == oo
 
 
 def test_sympyissue_7163():
@@ -1269,3 +1268,12 @@ def test_sympyissue_4514():
 
 def test_sympyissue_15810():
     assert integrate(1/(2**(2*x/3) + 1), (x, 0, oo)) == Rational(3, 2)
+
+
+def test_diofantissue_149():
+    a = Symbol('a', positive=True)
+    expr = (2 - x)**a*sin(a/x)
+    res = sqrt(pi)*a*meijerg(((), (a/2 + 1/2, a/2 + 1)),
+                             ((0, 0, Rational(1, 2)), (Rational(-1, 2),)),
+                             a**2/16)*gamma(a + 1)/4
+    assert integrate(expr, (x, 0, 2)) == res

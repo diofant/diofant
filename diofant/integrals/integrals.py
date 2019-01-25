@@ -457,9 +457,10 @@ class Integral(AddWithLimits):
                 return ret
 
             meijerg1 = meijerg
-            if len(xab) == 3 and xab[1].is_extended_real and xab[2].is_extended_real \
-                and not function.is_Poly and \
-                    (xab[1].has(oo, -oo) or xab[2].has(oo, -oo)):
+            if len(xab) == 3 and all(_.is_extended_real for _ in xab[1:]) and \
+                    not function.is_Poly and \
+                    (any(_.has(-oo, oo) for _ in xab[1:]) or
+                     len(self.limits) == 1 and all(_.is_number for _ in xab[1:])):
                 ret = try_meijerg(function, xab)
                 if ret is not None:
                     function = ret
@@ -489,7 +490,7 @@ class Integral(AddWithLimits):
 
                 antideriv = self._eval_integral(
                     function, xab[0],
-                    meijerg=meijerg1, risch=risch,
+                    meijerg=meijerg, risch=risch,
                     conds=conds)
                 if antideriv is None and meijerg1 is True:
                     ret = try_meijerg(function, xab)

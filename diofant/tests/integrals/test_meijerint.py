@@ -422,7 +422,10 @@ def test_probability():
     assert simplify(integrate(x**2*betadist, (x, 0, 1), meijerg=True)) == \
         a*(a + 1)/(a + b)/(a + b + 1)
     assert simplify(integrate(x**y*betadist, (x, 0, 1), meijerg=True)) == \
-        gamma(a + b)*gamma(a + y)/gamma(a)/gamma(a + b + y)
+        Piecewise((gamma(a + b)*gamma(a + y)/(gamma(a)*gamma(a + b + y)),
+                   -a - re(y) + 1 < 1),
+                  (Integral(x**(a + y - 1)*(-x + 1)**(b - 1)*gamma(a + b)/(gamma(a)*gamma(b)),
+                            (x, 0, 1)), True))
 
     # Chi distribution
     k = Symbol('k', integer=True, positive=True)
