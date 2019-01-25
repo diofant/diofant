@@ -828,19 +828,6 @@ class Poly(Expr):
 
         return basic_from_dict(self.rep.to_diofant_dict(), *gens)
 
-    def lift(self):
-        """
-        Convert algebraic coefficients to rationals.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + I*x + 1, x, extension=I).lift()
-        Poly(x**4 + 3*x**2 + 1, x, domain='QQ')
-        """
-        result = self.rep.lift()
-        return self.per(result)
-
     def deflate(self):
         """
         Reduce degree of ``self`` by mapping ``x_i**m`` to ``y_i``.

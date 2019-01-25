@@ -720,21 +720,6 @@ def test_dup_decompose():
     assert R.dup_decompose(f) == [f]
 
 
-def test_dmp_lift():
-    A = QQ.algebraic_field(I)
-
-    R, x = ring('x', A)
-    f = x**4 + I*x + 17*I
-    x = R.to_ground().x
-    g = x**16 + 2*x**10 + 578*x**8 + x**4 - 578*x**2 + 83521
-
-    assert R.dmp_lift(f) == g
-
-    R, x = ring('x', EX)
-
-    pytest.raises(DomainError, lambda: R.dmp_lift(x + 2))
-
-
 def test_dmp_clear_denoms():
     R0, X = ring('x', QQ)
     R1 = R0.domain.ring.poly_ring('x')

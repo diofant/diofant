@@ -2234,9 +2234,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         i = ring.index(x)
         return ring.dmp_integrate_in(self, m, i)
 
-    def lift(self):
-        return self.ring.dmp_lift(self)
-
     def slice(self, m, n, x=0):
         ring = self.ring
         j = ring.index(x)

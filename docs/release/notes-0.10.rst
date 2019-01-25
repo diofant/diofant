@@ -62,6 +62,7 @@ Compatibility breaks
 * Removed ``symmetric`` option for polynomial functions, see :pull:`761`.
 * Removed ``print_mathml()`` function and ``tree`` submodule, see :pull:`769`.
 * Removed ``zero`` option from :meth:`~diofant.polys.polytools.Poly.as_dict` method, see :pull:`771`.
+* Removed ``lift()`` method of :class:`~diofant.polys.polytools.Poly`, see :pull:`771`.
 
 Minor changes
 =============

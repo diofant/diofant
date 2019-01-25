@@ -1,9 +1,8 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from ..utilities import variations
-from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
-                         dmp_exquo_ground, dmp_mul, dmp_mul_ground, dmp_neg,
-                         dmp_quo_ground, dmp_rem, dmp_sub, dup_add, dup_mul)
+from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_exquo_ground,
+                         dmp_mul, dmp_mul_ground, dmp_neg, dmp_quo_ground,
+                         dmp_rem, dmp_sub, dup_add, dup_mul)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros)
@@ -722,46 +721,6 @@ def dup_decompose(f, K):
             break
 
     return [f] + F
-
-
-def dmp_lift(f, u, K):
-    """
-    Convert algebraic coefficients to integers in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> K = QQ.algebraic_field(I)
-    >>> R, x = ring("x", K)
-
-    >>> f = x**2 + I*x + 2*I
-
-    >>> R.dmp_lift(f)
-    x**8 + 2*x**6 + 9*x**4 - 8*x**2 + 16
-
-    """
-    if not K.is_AlgebraicField:
-        raise DomainError(
-            'computation can be done only in an algebraic domain')
-
-    F, monoms, polys = dmp_to_dict(f, u), [], []
-
-    for monom, coeff in F.items():
-        if not coeff.is_ground:
-            monoms.append(monom)
-
-    perms = variations([-1, 1], len(monoms), repetition=True)
-
-    for perm in perms:
-        G = dict(F)
-
-        for sign, monom in zip(perm, monoms):
-            if sign == -1:
-                G[monom] = -G[monom]
-
-        polys.append(dmp_from_dict(G, u, K))
-
-    return dmp_convert(dmp_expand(polys, u, K), u, K, K.domain)
 
 
 def dmp_clear_denoms(f, u, K0, K1=None, convert=False):

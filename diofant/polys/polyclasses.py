@@ -16,7 +16,7 @@ from .densebasic import (dmp_convert, dmp_deflate, dmp_degree_in,
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_content, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
-                         dmp_integrate_in, dmp_lift, dup_decompose, dup_shift)
+                         dmp_integrate_in, dup_decompose, dup_shift)
 from .euclidtools import (dmp_cancel, dmp_discriminant, dmp_gcd, dmp_inner_gcd,
                           dmp_lcm, dmp_resultant, dmp_subresultants, dup_gcdex,
                           dup_half_gcdex, dup_invert)
@@ -201,11 +201,6 @@ class DMP(CantSympify):
                 return [((n - i,), c) for i, c in enumerate(self.rep)]
         else:
             raise PolynomialError('multivariate polynomials not supported')
-
-    def lift(self):
-        """Convert algebraic coefficients to rationals. """
-        return self.per(dmp_lift(self.rep, self.lev, self.domain),
-                        dom=self.domain.domain)
 
     def deflate(self):
         """Reduce degree of `self` by mapping `x_i^m` to `y_i`. """
