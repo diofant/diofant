@@ -735,38 +735,6 @@ def test_dmp_lift():
     pytest.raises(DomainError, lambda: R.dmp_lift(x + 2))
 
 
-def test_dup_sign_variations():
-    R, x = ring('x', ZZ)
-
-    assert R.dup_sign_variations(0) == 0
-    assert R.dup_sign_variations(x) == 0
-    assert R.dup_sign_variations(x**2 + 2) == 0
-    assert R.dup_sign_variations(x**3 + 3*x) == 0
-    assert R.dup_sign_variations(x**4 + 4*x**2 + 5) == 0
-
-    assert R.dup_sign_variations(2 - x**2) == 1
-    assert R.dup_sign_variations(3*x - x**3) == 1
-    assert R.dup_sign_variations(-x**4 + 4*x**2 + 5) == 1
-
-    assert R.dup_sign_variations(-x**2 - 4*x - 5) == 0
-    assert R.dup_sign_variations(+x**2 - 4*x - 5) == 1
-    assert R.dup_sign_variations(+x**2 + 4*x - 5) == 1
-    assert R.dup_sign_variations(+x**2 - 4*x + 5) == 2
-    assert R.dup_sign_variations(-x**2 + 4*x - 5) == 2
-    assert R.dup_sign_variations(-x**2 + 4*x + 5) == 1
-    assert R.dup_sign_variations(-x**2 - 4*x + 5) == 1
-    assert R.dup_sign_variations(+x**2 + 4*x + 5) == 0
-
-    assert R.dup_sign_variations(-x**4 - 4*x**2 - 5) == 0
-    assert R.dup_sign_variations(+x**4 - 4*x**2 - 5) == 1
-    assert R.dup_sign_variations(+x**4 + 4*x**2 - 5) == 1
-    assert R.dup_sign_variations(+x**4 - 4*x**2 + 5) == 2
-    assert R.dup_sign_variations(-x**4 + 4*x**2 - 5) == 2
-    assert R.dup_sign_variations(-x**4 + 4*x**2 + 5) == 1
-    assert R.dup_sign_variations(-x**4 - 4*x**2 + 5) == 1
-    assert R.dup_sign_variations(+x**4 + 4*x**2 + 5) == 0
-
-
 def test_dmp_clear_denoms():
     R0, X = ring('x', QQ)
     R1 = R0.domain.ring.poly_ring('x')

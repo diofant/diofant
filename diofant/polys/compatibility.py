@@ -15,8 +15,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dmp_integrate_in, dmp_lift,
                          dmp_trunc, dup_decompose, dup_mirror, dup_real_imag,
-                         dup_scale, dup_shift, dup_sign_variations,
-                         dup_transform, dup_trunc)
+                         dup_scale, dup_shift, dup_transform, dup_trunc)
 from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
                           dmp_inner_subresultants, dmp_lcm, dmp_primitive,
@@ -42,7 +41,8 @@ from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_real_roots,
                             dup_isolate_real_roots_list,
                             dup_isolate_real_roots_sqf, dup_refine_real_root,
-                            dup_root_upper_bound, dup_sturm)
+                            dup_root_upper_bound, dup_sign_variations,
+                            dup_sturm)
 from .sqfreetools import dmp_sqf_list, dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
 
 

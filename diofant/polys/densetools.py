@@ -764,31 +764,6 @@ def dmp_lift(f, u, K):
     return dmp_convert(dmp_expand(polys, u, K), u, K, K.domain)
 
 
-def dup_sign_variations(f, K):
-    """
-    Compute the number of sign variations of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_sign_variations(x**4 - x**2 - x + 1)
-    2
-
-    """
-    prev, k = K.zero, 0
-
-    for coeff in f:
-        if K.is_negative(coeff*prev):
-            k += 1
-
-        if coeff:
-            prev = coeff
-
-    return k
-
-
 def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
     """
     Clear denominators, i.e. transform ``K_0`` to ``K_1``.
