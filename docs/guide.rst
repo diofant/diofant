@@ -64,6 +64,10 @@ All work should be submitted via `Pull Requests (PR)`_.
 
        $ python setup.py test
 
+   To check also doctests, run::
+
+       $ python setup.py test --addopts --doctest-modules
+
 7. Please also check for potential flaws in your Python code with::
 
        $ pylint diofant
