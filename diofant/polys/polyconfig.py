@@ -30,6 +30,8 @@ _default_config = {
 
     'GROEBNER':                   'buchberger',
     'MINPOLY_METHOD':             'compose',
+
+    'KARATSUBA_CUTOFF':           100,
 }
 
 _current_config = {}

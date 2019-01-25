@@ -3,6 +3,7 @@
 from .densebasic import (dmp_degree_in, dmp_LC, dmp_one, dmp_one_p,
                          dmp_slice_in, dmp_strip, dmp_zero, dmp_zero_p,
                          dmp_zeros)
+from .polyconfig import query
 from .polyerrors import ExactQuotientFailed, PolynomialDivisionFailed
 
 
@@ -538,7 +539,7 @@ def dup_mul(f, g, K):
 
     n = max(df, dg) + 1
 
-    if n > 100:
+    if n > query('KARATSUBA_CUTOFF'):
         return dup_mul_karatsuba(f, g, K)
 
     h = []
