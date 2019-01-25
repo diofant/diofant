@@ -619,7 +619,7 @@ def _integer_basis(poly):
     Examples
     ========
 
-    >>> p = Poly(x**5 + 512*x + 1024, x, domain='ZZ')
+    >>> p = Poly(x**5 + 512*x + 1024, x)
     >>> _integer_basis(p)
     4
     """

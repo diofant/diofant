@@ -41,8 +41,8 @@ def dispersionset(p, q=None, *gens, **args):
 
     Computing the dispersion also works over field extensions:
 
-    >>> fp = poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
-    >>> gp = poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
+    >>> fp = poly(x**2 + sqrt(5)*x - 1, x)
+    >>> gp = poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x)
     >>> sorted(dispersionset(fp, gp))
     [2]
     >>> sorted(dispersionset(gp, fp))
@@ -164,8 +164,8 @@ def dispersion(p, q=None, *gens, **args):
 
     Computing the dispersion also works over field extensions:
 
-    >>> fp = poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
-    >>> gp = poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
+    >>> fp = poly(x**2 + sqrt(5)*x - 1, x)
+    >>> gp = poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x)
     >>> sorted(dispersionset(fp, gp))
     [2]
     >>> sorted(dispersionset(gp, fp))

@@ -576,7 +576,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, domain=QQ).to_ring()
+        >>> Poly(x**2 + 1, field=True).to_ring()
         Poly(x**2 + 1, x, domain='ZZ')
         """
         result = self.rep.to_ring()
@@ -589,7 +589,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x, domain=ZZ).to_field()
+        >>> Poly(x**2 + 1).to_field()
         Poly(x**2 + 1, x, domain='QQ')
         """
         result = self.rep.to_field()
@@ -602,7 +602,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1.0, x, domain=RR).to_exact()
+        >>> Poly(x**2 + 1.0).to_exact()
         Poly(x**2 + 1, x, domain='QQ')
         """
         result = self.rep.to_exact()
@@ -615,7 +615,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(x**2 + 1, x, domain='QQ[y]')
+        >>> f = Poly(x**2 + 1, domain=QQ.poly_ring(y))
         >>> f
         Poly(x**2 + 1, x, domain='QQ[y]')
 
@@ -1393,7 +1393,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(x/2 + Rational(1, 3), x, domain=QQ)
+        >>> f = Poly(x/2 + Rational(1, 3))
 
         >>> f.clear_denoms()
         (6, Poly(3*x + 2, x, domain='QQ'))
@@ -1776,8 +1776,8 @@ class Poly(Expr):
 
         Computing the dispersion also works over field extensions:
 
-        >>> fp = Poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
-        >>> gp = Poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
+        >>> fp = Poly(x**2 + sqrt(5)*x - 1, x)
+        >>> gp = Poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x)
         >>> sorted(dispersionset(fp, gp))
         [2]
         >>> sorted(dispersionset(gp, fp))
@@ -1847,8 +1847,8 @@ class Poly(Expr):
 
         Computing the dispersion also works over field extensions:
 
-        >>> fp = Poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
-        >>> gp = Poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
+        >>> fp = Poly(x**2 + sqrt(5)*x - 1, x)
+        >>> gp = Poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x)
         >>> sorted(dispersionset(fp, gp))
         [2]
         >>> sorted(dispersionset(gp, fp))
@@ -1951,10 +1951,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(3*x**2 + 6*x + 9, x, domain=ZZ).monic()
+        >>> Poly(3*x**2 + 6*x + 9).monic()
         Poly(x**2 + 2*x + 3, x, domain='QQ')
 
-        >>> Poly(3*x**2 + 4*x + 2, x, domain=ZZ).monic()
+        >>> Poly(3*x**2 + 4*x + 2).monic()
         Poly(x**2 + 4/3*x + 2/3, x, domain='QQ')
 
         """
@@ -2014,7 +2014,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**4 + 2*x**3 - x - 1, x, domain='ZZ').decompose()
+        >>> Poly(x**4 + 2*x**3 - x - 1).decompose()
         [Poly(x**2 - x - 1, x, domain='ZZ'), Poly(x**2 + x, x, domain='ZZ')]
         """
         result = self.rep.decompose()
@@ -3364,9 +3364,9 @@ def div(f, g, *gens, **args):
     Examples
     ========
 
-    >>> div(x**2 + 1, 2*x - 4, domain=ZZ)
+    >>> div(x**2 + 1, 2*x - 4, field=False)
     (0, x**2 + 1)
-    >>> div(x**2 + 1, 2*x - 4, domain=QQ)
+    >>> div(x**2 + 1, 2*x - 4)
     (x/2 + 1, 5)
 
     """
@@ -3392,9 +3392,9 @@ def rem(f, g, *gens, **args):
     Examples
     ========
 
-    >>> rem(x**2 + 1, 2*x - 4, domain=ZZ)
+    >>> rem(x**2 + 1, 2*x - 4, field=False)
     x**2 + 1
-    >>> rem(x**2 + 1, 2*x - 4, domain=QQ)
+    >>> rem(x**2 + 1, 2*x - 4)
     5
 
     """
@@ -4406,14 +4406,14 @@ def to_rational_coeffs(f):
     Examples
     ========
 
-    >>> p = Poly(((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))}), x, domain='EX')
+    >>> p = Poly(((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))}), x, domain=EX)
     >>> lc, r, _, g = to_rational_coeffs(p)
     >>> lc, r
     (7 + 5*sqrt(2), -2*sqrt(2) + 2)
     >>> g
     Poly(x**3 + x**2 - 1/4*x - 1/4, x, domain='QQ')
     >>> r1 = simplify(1/r)
-    >>> Poly(lc*r**3*(g.as_expr()).subs({x: x*r1}), x, domain='EX') == p
+    >>> Poly(lc*r**3*(g.as_expr()).subs({x: x*r1}), x, domain=EX) == p
     True
 
     """
