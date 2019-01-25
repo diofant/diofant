@@ -341,6 +341,12 @@ def test_dmp_swap():
 
     pytest.raises(IndexError, lambda: dmp_swap(f, -1, -7, 1, ZZ))
 
+    f = dmp_normal([[[2], [1, 0]], []], 2, ZZ)
+
+    assert dmp_swap(f, 0, 1, 2, ZZ) == dmp_normal([[[2], []], [[1, 0], []]], 2, ZZ)
+    assert dmp_swap(f, 1, 2, 2, ZZ) == dmp_normal([[[1], [2, 0]], [[]]], 2, ZZ)
+    assert dmp_swap(f, 0, 2, 2, ZZ) == dmp_normal([[[1, 0]], [[2, 0], []]], 2, ZZ)
+
 
 def test_dmp_permute():
     f = dmp_normal([[1, 0, 0], [], [1, 0], [], [1]], 1, ZZ)
@@ -351,6 +357,11 @@ def test_dmp_permute():
 
     assert dmp_permute(f, [1, 0], 1, ZZ) == g
     assert dmp_permute(g, [1, 0], 1, ZZ) == f
+
+    f = dmp_normal([[[2], [1, 0]], []], 2, ZZ)
+
+    assert dmp_permute(f, [1, 0, 2], 2, ZZ) == dmp_normal([[[2], []], [[1, 0], []]], 2, ZZ)
+    assert dmp_permute(f, [1, 2, 0], 2, ZZ) == dmp_normal([[[1], []], [[2, 0], []]], 2, ZZ)
 
 
 def test_dmp_nest():
@@ -505,6 +516,9 @@ def test_dmp_inject():
 
     assert dmp_inject([R(1)], 0, R) == ([[[1]]], 2)
     assert dmp_inject([[R(1)]], 1, R) == ([[[[1]]]], 3)
+
+    assert dmp_inject([R(1), x + 2], 0, R) == ([[[1]], [[1], [2]]], 2)
+    assert dmp_inject([R(1), x + 2], 0, R, front=True) == ([[[1]], [[1, 2]]], 2)
 
     assert dmp_inject([R(1), 2*x + 3*y + 4], 0, R) == ([[[1]], [[2], [3, 4]]], 2)
 
