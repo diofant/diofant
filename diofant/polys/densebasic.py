@@ -1,4 +1,4 @@
-"""Basic tools for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
+"""Basic tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
 import math
 import random
@@ -19,6 +19,7 @@ def dmp_LC(f, K):
     0
     >>> dmp_LC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
     1
+
     """
     if not f:
         return K.zero
@@ -37,6 +38,7 @@ def dmp_TC(f, K):
     0
     >>> dmp_TC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
     3
+
     """
     if not f:
         return K.zero
@@ -53,6 +55,7 @@ def dmp_ground_LC(f, u, K):
 
     >>> dmp_ground_LC([[[ZZ(1)], [ZZ(2), ZZ(3)]]], 2, ZZ)
     1
+
     """
     while u:
         f = dmp_LC(f, K)
@@ -70,6 +73,7 @@ def dmp_ground_TC(f, u, K):
 
     >>> dmp_ground_TC([[[ZZ(1)], [ZZ(2), ZZ(3)]]], 2, ZZ)
     3
+
     """
     while u:
         f = dmp_TC(f, K)
@@ -87,6 +91,7 @@ def dmp_degree_in(f, j, u):
 
     >>> dmp_degree_in([[ZZ(2)], [ZZ(1), ZZ(2), ZZ(3)]], 1, 1)
     2
+
     """
     if not j:
         return -oo if dmp_zero_p(f, u) else len(f) - 1
@@ -114,6 +119,7 @@ def dmp_degree_list(f, u):
 
     >>> dmp_degree_list([[ZZ(1)], [ZZ(1), ZZ(2), ZZ(3)]], 1)
     (1, 2)
+
     """
     degs = [-oo]*(u + 1)
 
@@ -139,6 +145,7 @@ def dmp_strip(f, u):
 
     >>> dmp_strip([[], [ZZ(0), ZZ(1), ZZ(2)], [ZZ(1)]], 1)
     [[0, 1, 2], [1]]
+
     """
     if not u:
         for i, c in enumerate(f):
@@ -170,6 +177,7 @@ def dmp_validate(f, K=None):
     Traceback (most recent call last):
     ...
     ValueError: invalid data structure for a multivariate polynomial
+
     """
     def validate(f, g, i, K):
         if type(g) is not list:
@@ -202,8 +210,7 @@ def dmp_validate(f, K=None):
     if not levels:
         return strip(f, u), u
     else:
-        raise ValueError(
-            "invalid data structure for a multivariate polynomial")
+        raise ValueError("invalid data structure for a multivariate polynomial")
 
 
 def dup_reverse(f):
@@ -215,6 +222,7 @@ def dup_reverse(f):
 
     >>> dup_reverse([ZZ(1), ZZ(2), ZZ(3), ZZ(0)])
     [3, 2, 1]
+
     """
     return dmp_strip(list(reversed(f)), 0)
 
@@ -228,6 +236,7 @@ def dmp_copy(f, u):
 
     >>> dmp_copy([[ZZ(1)], [ZZ(1), ZZ(2)]], 1)
     [[1], [1, 2]]
+
     """
     if not u:
         return list(f)
@@ -255,6 +264,7 @@ def dmp_to_tuple(f, u):
     ========
 
     dmp_copy
+
     """
     if not u:
         return tuple(f)
@@ -272,6 +282,7 @@ def dmp_normal(f, u, K):
 
     >>> dmp_normal([[], [0, 1.5, 2]], 1, ZZ)
     [[1, 2]]
+
     """
     if not u:
         r = [K.normal(c) for c in f]
@@ -295,6 +306,7 @@ def dmp_convert(f, u, K0, K1):
     [[1], [2]]
     >>> dmp_convert([[ZZ(1)], [ZZ(2)]], 1, ZZ, R)
     [[1], [2]]
+
     """
     if K0 is not None and K0 == K1:
         return f
@@ -317,6 +329,7 @@ def dmp_ground_nth(f, N, u, K):
 
     >>> dmp_ground_nth([[ZZ(1)], [ZZ(2), ZZ(3)]], (0, 1), 1, ZZ)
     2
+
     """
     v = u
 
@@ -345,6 +358,7 @@ def dmp_zero_p(f, u):
     True
     >>> dmp_zero_p([[[[[ZZ(1)]]]]], 4)
     False
+
     """
     while u:
         if len(f) != 1:
@@ -365,6 +379,7 @@ def dmp_zero(u):
 
     >>> dmp_zero(4)
     [[[[[]]]]]
+
     """
     r = []
 
@@ -383,6 +398,7 @@ def dmp_one_p(f, u, K):
 
     >>> dmp_one_p([[[ZZ(1)]]], 2, ZZ)
     True
+
     """
     return dmp_ground_p(f, K.one, u)
 
@@ -396,6 +412,7 @@ def dmp_one(u, K):
 
     >>> dmp_one(2, ZZ)
     [[[1]]]
+
     """
     return dmp_ground(K.one, u)
 
@@ -411,6 +428,7 @@ def dmp_ground_p(f, c, u):
     True
     >>> dmp_ground_p([[[ZZ(4)]]], None, 2)
     True
+
     """
     if c is not None and not c:
         return dmp_zero_p(f, u)
@@ -438,6 +456,7 @@ def dmp_ground(c, u):
     [[[[[[3]]]]]]
     >>> dmp_ground(ZZ(1), -1)
     1
+
     """
     if not c:
         return dmp_zero(u)
@@ -459,6 +478,7 @@ def dmp_zeros(n, u, K):
     [[[[]]], [[[]]], [[[]]]]
     >>> dmp_zeros(3, -1, ZZ)
     [0, 0, 0]
+
     """
     if not n:
         return []
@@ -466,7 +486,7 @@ def dmp_zeros(n, u, K):
     if u < 0:
         return [K.zero]*n
     else:
-        return [ dmp_zero(u) for i in range(n) ]
+        return [dmp_zero(u) for i in range(n)]
 
 
 def dup_from_dict(f, K):
@@ -478,6 +498,7 @@ def dup_from_dict(f, K):
 
     >>> dmp_from_dict({(0,): ZZ(7), (2,): ZZ(5), (4,): ZZ(1)}, 0, ZZ)
     [1, 0, 5, 0, 7]
+
     """
     if not f:
         return []
@@ -505,6 +526,7 @@ def dmp_from_dict(f, u, K):
 
     >>> dmp_from_dict({(0, 0): ZZ(3), (0, 1): ZZ(2), (2, 1): ZZ(1)}, 1, ZZ)
     [[1, 0], [], [2, 3]]
+
     """
     if not u:
         return dup_from_dict(f, K)
@@ -543,6 +565,7 @@ def dmp_to_dict(f, u):
 
     >>> dmp_to_dict([[ZZ(1), ZZ(0)], [], [ZZ(2), ZZ(3)]], 1)
     {(0, 0): 3, (0, 1): 2, (2, 1): 1}
+
     """
     n, v, result = dmp_degree_in(f, 0, u), u - 1, {}
 
@@ -570,6 +593,7 @@ def dmp_swap(f, i, j, u, K):
 
     >>> dmp_swap([[[ZZ(2)], [ZZ(1), ZZ(0)]], []], 0, 1, 2, ZZ)
     [[[2], []], [[1, 0], []]]
+
     """
     if i < 0 or j < 0 or i > u or j > u:
         raise IndexError("0 <= i < j <= %s expected" % u)
@@ -579,9 +603,7 @@ def dmp_swap(f, i, j, u, K):
     F, H = dmp_to_dict(f, u), {}
 
     for exp, coeff in F.items():
-        H[exp[:i] + (exp[j],) +
-          exp[i + 1:j] +
-          (exp[i],) + exp[j + 1:]] = coeff
+        H[exp[:i] + (exp[j],) + exp[i + 1:j] + (exp[i],) + exp[j + 1:]] = coeff
 
     return dmp_from_dict(H, u, K)
 
@@ -595,6 +617,7 @@ def dmp_permute(f, P, u, K):
 
     >>> dmp_permute([[[ZZ(2)], [ZZ(1), ZZ(0)]], []], [1, 0, 2], 2, ZZ)
     [[[2], []], [[1, 0], []]]
+
     """
     F, H = dmp_to_dict(f, u), {}
 
@@ -618,6 +641,7 @@ def dmp_nest(f, l, K):
 
     >>> dmp_nest([[ZZ(1)]], 2, ZZ)
     [[[[1]]]]
+
     """
     if not isinstance(f, list):
         return dmp_ground(f, l)
@@ -637,6 +661,7 @@ def dmp_raise(f, l, u, K):
 
     >>> dmp_raise([[], [ZZ(1), ZZ(2)]], 2, 1, ZZ)
     [[[[]]], [[[1]], [[2]]]]
+
     """
     if not l:
         return f
@@ -647,11 +672,11 @@ def dmp_raise(f, l, u, K):
 
         k = l - 1
 
-        return [ dmp_ground(c, k) for c in f ]
+        return [dmp_ground(c, k) for c in f]
 
     v = u - 1
 
-    return [ dmp_raise(c, l, v, K) for c in f ]
+    return [dmp_raise(c, l, v, K) for c in f]
 
 
 def dmp_deflate(f, u, K):
@@ -664,6 +689,7 @@ def dmp_deflate(f, u, K):
     >>> dmp_deflate([[ZZ(1), ZZ(0), ZZ(0), ZZ(2)], [],
     ...              [ZZ(3), ZZ(0), ZZ(0), ZZ(4)]], 1, ZZ)
     ((2, 3), [[1, 2], [3, 4]])
+
     """
     if dmp_zero_p(f, u):
         return (1,)*(u + 1), f
@@ -705,6 +731,7 @@ def dmp_multi_deflate(polys, u, K):
 
     >>> dmp_multi_deflate((f, g), 1, ZZ)
     ((2, 1), ([[1, 0, 0, 2], [3, 0, 0, 4]], [[1, 0, 2], [3, 0, 4]]))
+
     """
     F, B = [], [0]*(u + 1)
 
@@ -733,7 +760,7 @@ def dmp_multi_deflate(polys, u, K):
         h = {}
 
         for A, coeff in f.items():
-            N = [ a // b for a, b in zip(A, B) ]
+            N = [a // b for a, b in zip(A, B)]
             h[tuple(N)] = coeff
 
         H.append(dmp_from_dict(h, u, K))
@@ -750,6 +777,7 @@ def dup_inflate(f, m, K):
 
     >>> dup_inflate([ZZ(1), ZZ(1), ZZ(1)], 3, ZZ)
     [1, 0, 0, 1, 0, 0, 1]
+
     """
     if m <= 0:
         raise IndexError("'m' must be positive, got %s" % m)
@@ -774,6 +802,7 @@ def dmp_inflate(f, M, u, K):
 
     >>> dmp_inflate([[ZZ(1), ZZ(2)], [ZZ(3), ZZ(4)]], (2, 3), 1, ZZ)
     [[1, 0, 0, 2], [], [3, 0, 0, 4]]
+
     """
     if not u:
         return dup_inflate(f, M[0], K)
@@ -815,6 +844,7 @@ def dmp_exclude(f, u, K):
 
     >>> dmp_exclude([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], 2, ZZ)
     ([2], [[1], [1, 2]], 1)
+
     """
     if not u or dmp_ground_p(f, None, u):
         return [], f, u
@@ -855,6 +885,7 @@ def dmp_include(f, J, u, K):
 
     >>> dmp_include([[ZZ(1)], [ZZ(1), ZZ(2)]], [2], 1, ZZ)
     [[[1]], [[1], [2]]]
+
     """
     if not J:
         return f
@@ -887,6 +918,7 @@ def dmp_inject(f, u, K, front=False):
     ([[[1]], [[1], [2]]], 2)
     >>> dmp_inject([R(1), x + 2], 0, R, front=True)
     ([[[1]], [[1, 2]]], 2)
+
     """
     f, h = dmp_to_dict(f, u), {}
 
@@ -915,6 +947,7 @@ def dmp_eject(f, u, K, front=False):
 
     >>> dmp_eject([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], 2, ZZ.poly_ring('x', 'y'))
     [1, x + 2]
+
     """
     f, h = dmp_to_dict(f, u), {}
 
@@ -947,6 +980,7 @@ def dmp_terms_gcd(f, u, K):
 
     >>> dmp_terms_gcd([[ZZ(1), ZZ(0)], [ZZ(1), ZZ(0), ZZ(0)], [], []], 1, ZZ)
     ((2, 1), [[1], [1, 0]])
+
     """
     if dmp_ground_TC(f, u, K) or dmp_zero_p(f, u):
         return (0,)*(u + 1), f
@@ -976,6 +1010,7 @@ def dmp_list_terms(f, u, K, order=None):
     [((1, 1), 1), ((1, 0), 1), ((0, 1), 2), ((0, 0), 3)]
     >>> dmp_list_terms([[ZZ(1), ZZ(1)], [ZZ(2), ZZ(3)]], 1, ZZ, order='grevlex')
     [((1, 1), 1), ((1, 0), 1), ((0, 1), 2), ((0, 0), 3)]
+
     """
     def sort(terms, O):
         return sorted(terms, key=lambda term: O(term[0]), reverse=True)
@@ -1020,6 +1055,7 @@ def dmp_apply_pairs(f, g, h, args, u, K):
     >>> dmp_apply_pairs([[ZZ(1)], [ZZ(2), ZZ(3)]],
     ...                 [[ZZ(3)], [ZZ(2), ZZ(1)]], h, [ZZ(1)], 1, ZZ)
     [[4], [5, 6]]
+
     """
     if u < 0:
         return h(f, g, *args)
@@ -1040,7 +1076,7 @@ def dmp_apply_pairs(f, g, h, args, u, K):
 
 
 def dmp_slice_in(f, m, n, j, u, K):
-    """Take a continuous subsequence of terms of ``f`` in ``x_j`` in ``K[X]``. """
+    """Take a continuous subsequence of terms of ``f`` in ``x_j`` in ``K[X]``."""
     if j < 0 or j > u:
         raise IndexError("-%s <= j < %s expected, got %s" % (u, u, j))
 
@@ -1079,6 +1115,7 @@ def dup_random(n, a, b, K, percent=None):
 
     >>> dup_random(3, -10, 10, ZZ) #doctest: +SKIP
     [-2, -8, 9, -4]
+
     """
     if percent is None:
         percent = 100//(b - a)
