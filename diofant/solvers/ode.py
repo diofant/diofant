@@ -1952,7 +1952,7 @@ def checksysodesol(eqs, sols, func=None):
     This function returns a tuple.  The first item in the tuple is ``True`` if
     the substitution results for each equation is ``0``, and ``False`` otherwise.
     The second item in the tuple is what the substitution results in.  Each element
-    of the ``list`` should always be ``0`` corresponding to each equation if the
+    of the list should always be ``0`` corresponding to each equation if the
     first item is ``True``. Note that sometimes this function may return ``False``,
     but with an expression that is identically equal to ``0``, instead of returning
     ``True``.  This is because :py:meth:`~diofant.simplify.simplify.simplify` cannot

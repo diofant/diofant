@@ -90,13 +90,13 @@ class Poly(Expr):
 
     @classmethod
     def from_dict(cls, rep, *gens, **args):
-        """Construct a polynomial from a ``dict``. """
+        """Construct a polynomial from a :class:`dict`. """
         opt = options.build_options(gens, args)
         return cls._from_dict(rep, opt)
 
     @classmethod
     def from_list(cls, rep, *gens, **args):
-        """Construct a polynomial from a ``list``. """
+        """Construct a polynomial from a :class:`list`. """
         opt = options.build_options(gens, args)
         return cls._from_list(rep, opt)
 
@@ -114,7 +114,7 @@ class Poly(Expr):
 
     @classmethod
     def _from_dict(cls, rep, opt):
-        """Construct a polynomial from a ``dict``. """
+        """Construct a polynomial from a :class:`dict`. """
         gens = opt.gens
 
         if not gens:
@@ -134,7 +134,7 @@ class Poly(Expr):
 
     @classmethod
     def _from_list(cls, rep, opt):
-        """Construct a polynomial from a ``list``. """
+        """Construct a polynomial from a :class:`list`. """
         gens = opt.gens
 
         if not gens:
@@ -782,7 +782,7 @@ class Poly(Expr):
 
     def as_dict(self, native=False):
         """
-        Switch to a ``dict`` representation.
+        Switch to a :class:`dict` representation.
 
         Examples
         ========

@@ -123,7 +123,7 @@ class DMP(CantSympify):
 
     @classmethod
     def from_dict(cls, rep, lev, dom):
-        """Construct and instance of ``cls`` from a ``dict`` representation. """
+        """Construct and instance of ``cls`` from a :class:`dict` representation. """
         return cls(dmp_from_dict(rep, lev, dom), dom, lev)
 
     @classmethod

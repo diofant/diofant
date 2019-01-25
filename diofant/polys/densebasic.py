@@ -249,7 +249,7 @@ def dmp_copy(f, u):
 
 def dmp_to_tuple(f, u):
     """
-    Convert `f` into a nested tuple of tuples.
+    Convert `f` into a nested :class:`tuple`.
 
     This is needed for hashing.  This is similar to dmp_copy().
 
@@ -480,7 +480,7 @@ def dmp_zeros(n, u, K):
 
 def dup_from_dict(f, K):
     """
-    Create a ``K[x]`` polynomial from a ``dict``.
+    Create a ``K[x]`` polynomial from a :class:`dict`.
 
     Examples
     ========
@@ -507,7 +507,7 @@ def dup_from_dict(f, K):
 
 def dmp_from_dict(f, u, K):
     """
-    Create a ``K[X]`` polynomial from a ``dict``.
+    Create a ``K[X]`` polynomial from a :class:`dict`.
 
     Examples
     ========
@@ -545,7 +545,7 @@ def dmp_from_dict(f, u, K):
 
 def dmp_to_dict(f, u):
     """
-    Convert a ``K[X]`` polynomial to a ``dict``.
+    Convert a ``K[X]`` polynomial to a :class:`dict`.
 
     Examples
     ========
