@@ -657,7 +657,7 @@ class Add(AssocOp):
 
     def primitive(self):
         """
-        Return ``(R, self/R)`` where ``R``` is the Rational GCD of ``self```.
+        Return ``(R, self/R)`` where ``R`` is the Rational GCD of ``self``.
 
         ``R`` is collected only from the leading coefficient of each term.
 

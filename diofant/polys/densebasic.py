@@ -545,7 +545,7 @@ def dmp_from_dict(f, u, K):
 
 def dmp_to_dict(f, u):
     """
-    Convert a ``K[X]`` polynomial to a ``dict````.
+    Convert a ``K[X]`` polynomial to a ``dict``.
 
     Examples
     ========

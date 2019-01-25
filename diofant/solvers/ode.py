@@ -1399,7 +1399,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
     parameter.
 
     'func_coeff' (dict) with the coefficient for each triple ``(equation number,
-    function, order)```. The coefficients are those subexpressions that do not
+    function, order)``. The coefficients are those subexpressions that do not
     appear in 'func', and hence can be considered constant for purposes of ODE
     solving.
 
