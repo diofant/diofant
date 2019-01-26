@@ -70,6 +70,7 @@ def Poisson(name, lamda):
 
     [1] https//en.wikipedia.org/wiki/Poisson_distribution
     [2] http://mathworld.wolfram.com/PoissonDistribution.html
+
     """
     return rv(name, PoissonDistribution, lamda)
 
@@ -129,5 +130,6 @@ def Geometric(name, p):
 
     [1] https//en.wikipedia.org/wiki/Geometric_distribution
     [2] http://mathworld.wolfram.com/GeometricDistribution.html
+
     """
     return rv(name, GeometricDistribution, p)

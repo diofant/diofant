@@ -16,6 +16,7 @@ def ratsimp(expr):
 
     >>> ratsimp(1/x + 1/y)
     (x + y)/(x*y)
+
     """
 
     f, g = cancel(expr).as_numer_denom()
@@ -52,6 +53,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
     Ideal,
     http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.163.6984
     (specifically, the second algorithm)
+
     """
     from ..matrices import Matrix, zeros
     from ..solvers.solvers import minsolve_linear_system
@@ -76,6 +78,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
         """
         Compute all monomials with degree less than ``n`` that are
         not divisible by any element of ``leading_monomials``.
+
         """
         if n == 0:
             return [1]
@@ -114,6 +117,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
         that the total degree is less than *or equal to* the best current
         solution. We retain a list of all solutions of minimal degree, and try
         to find the best one at the end.
+
         """
         c, d = a, b
         steps = 0

@@ -104,7 +104,7 @@ def _mod1(x):
 
 # leave add formulae at the top for easy reference
 def add_formulae(formulae):
-    """ Create our knowledge base. """
+    """Create our knowledge base."""
     from ..matrices import Matrix
 
     a, b, c, z = symbols('a b c, z', cls=Dummy)
@@ -463,10 +463,10 @@ def add_meijerg_formulae(formulae):
 
 
 def make_simp(z):
-    """ Create a function that simplifies rational functions in ``z``. """
+    """Create a function that simplifies rational functions in ``z``."""
 
     def simp(expr):
-        """ Efficiently simplify the rational function ``expr``. """
+        """Efficiently simplify the rational function ``expr``."""
         numer, denom = expr.as_numer_denom()
         c, numer, denom = poly(numer, z).cancel(poly(denom, z))
         return c * numer.as_expr() / denom.as_expr()
@@ -482,7 +482,7 @@ def debug(*args):
 
 
 class Hyper_Function(Expr):
-    """ A generalized hypergeometric function. """
+    """A generalized hypergeometric function."""
 
     def __new__(cls, ap, bq):
         obj = super().__new__(cls)
@@ -504,6 +504,7 @@ class Hyper_Function(Expr):
         Number of upper parameters that are negative integers
 
         This is a transformation invariant.
+
         """
         return sum(bool(x.is_integer and x.is_negative) for x in self.ap)
 
@@ -539,6 +540,7 @@ class Hyper_Function(Expr):
 
         >>> Hyper_Function(ap, bq).build_invariants()
         (1, ((0, 1), (1/3, 1), (1/2, 2)), ((0, 2),))
+
         """
         abuckets, bbuckets = sift(self.ap, _mod1), sift(self.bq, _mod1)
 
@@ -555,6 +557,7 @@ class Hyper_Function(Expr):
     def difficulty(self, func):
         """ Estimate how many steps it takes to reach ``func`` from self.
         Return -1 if impossible.
+
         """
         if self.gamma != func.gamma:
             return -1
@@ -603,7 +606,7 @@ class Hyper_Function(Expr):
 
 
 class G_Function(Expr):
-    """ A Meijer G-function. """
+    """A Meijer G-function."""
 
     def __new__(cls, an, ap, bm, bq):
         obj = super().__new__(cls)
@@ -638,6 +641,7 @@ class G_Function(Expr):
         >>> G_Function(a, b, [2], [y]).compute_buckets()
         ({0: [3, 2, 1], 1/2: [3/2]}, {0: [2], y: [y, y + 1, y + 3]},
          {0: [2]}, {y: [y]})
+
         """
         dicts = pan, pap, pbm, pbq = [defaultdict(list) for i in range(4)]
         for dic, lis in zip(dicts, (self.an, self.ap, self.bm, self.bq)):
@@ -683,6 +687,7 @@ class Formula:
         and a 1xn matrix C such that:
            closed_form = C B
            z d/dz B = M B.
+
         """
         from ..matrices import Matrix, eye, zeros
 
@@ -789,10 +794,10 @@ class Formula:
 
 
 class FormulaCollection:
-    """ A collection of formulae to use as origins. """
+    """A collection of formulae to use as origins."""
 
     def __init__(self):
-        """ Doing this globally at module init time is a pain ... """
+        """Doing this globally at module init time is a pain ..."""
         self.symbolic_formulae = defaultdict(list)
         self.concrete_formulae = defaultdict(dict)
         self.formulae = []
@@ -824,6 +829,7 @@ class FormulaCollection:
         >>> i = Hyper_Function([Rational(1, 4), Rational(3, 4) + 4], [S.Half])
         >>> f.lookup_origin(i).closed_form
         HyperRep_sqrts1(-1/4, _z)
+
         """
         inv = func.build_invariants()
         sizes = func.sizes
@@ -867,6 +873,7 @@ class MeijerFormula:
     - symbols, the free symbols (parameters) in the formula
     - func, the function
     - B, C, M (c/f ordinary Formula)
+
     """
 
     def __init__(self, an, ap, bm, bq, z, symbols, B, C, M, matcher):
@@ -887,6 +894,7 @@ class MeijerFormula:
         """
         Try to instantiate the current formula to (almost) match func.
         This uses the _matcher passed on init.
+
         """
         if func.signature != self.func.signature:
             return
@@ -900,9 +908,7 @@ class MeijerFormula:
 
 
 class MeijerFormulaCollection:
-    """
-    This class holds a collection of meijer g formulae.
-    """
+    """This class holds a collection of meijer g formulae."""
 
     def __init__(self):
         formulae = []
@@ -913,7 +919,7 @@ class MeijerFormulaCollection:
         self.formulae = dict(self.formulae)
 
     def lookup_origin(self, func):
-        """ Try to find a formula that matches func. """
+        """Try to find a formula that matches func."""
         if func.signature not in self.formulae:
             return
         for formula in self.formulae[func.signature]:
@@ -944,6 +950,7 @@ class Operator:
 
     This class is used only in the implementation of the hypergeometric
     function expansion algorithm.
+
     """
 
     def apply(self, obj, op):
@@ -954,6 +961,7 @@ class Operator:
         >>> op._poly = Poly(x**2 + z*x + y, x)
         >>> op.apply(z**7, lambda f: f.diff(z))
         y*z**7 + 7*z**7 + 42*z**5
+
         """
         coeffs = self._poly.all_coeffs()
         coeffs.reverse()
@@ -967,14 +975,14 @@ class Operator:
 
 
 class MultOperator(Operator):
-    """ Simply multiply by a "constant" """
+    """Simply multiply by a "constant"."""
 
     def __init__(self, p):
         self._poly = Poly(p, _x)
 
 
 class ShiftA(Operator):
-    """ Increment an upper index. """
+    """Increment an upper index."""
 
     def __init__(self, ai):
         ai = sympify(ai)
@@ -987,7 +995,7 @@ class ShiftA(Operator):
 
 
 class ShiftB(Operator):
-    """ Decrement a lower index. """
+    """Decrement a lower index."""
 
     def __init__(self, bi):
         bi = sympify(bi)
@@ -1000,10 +1008,10 @@ class ShiftB(Operator):
 
 
 class UnShiftA(Operator):
-    """ Decrement an upper index. """
+    """Decrement an upper index."""
 
     def __init__(self, ap, bq, i, z):
-        """ Note: i counts from zero! """
+        """Note: i counts from zero!"""
         ap, bq, i = list(map(sympify, [ap, bq, i]))
 
         self._ap = ap
@@ -1041,10 +1049,10 @@ class UnShiftA(Operator):
 
 
 class UnShiftB(Operator):
-    """ Increment a lower index. """
+    """Increment a lower index."""
 
     def __init__(self, ap, bq, i, z):
-        """ Note: i counts from zero! """
+        """Note: i counts from zero!"""
         ap, bq, i = list(map(sympify, [ap, bq, i]))
 
         self._ap = ap
@@ -1082,7 +1090,7 @@ class UnShiftB(Operator):
 
 
 class MeijerShiftA(Operator):
-    """ Increment an upper b index. """
+    """Increment an upper b index."""
 
     def __init__(self, bi):
         bi = sympify(bi)
@@ -1093,7 +1101,7 @@ class MeijerShiftA(Operator):
 
 
 class MeijerShiftB(Operator):
-    """ Decrement an upper a index. """
+    """Decrement an upper a index."""
 
     def __init__(self, bi):
         bi = sympify(bi)
@@ -1104,7 +1112,7 @@ class MeijerShiftB(Operator):
 
 
 class MeijerShiftC(Operator):
-    """ Increment a lower b index. """
+    """Increment a lower b index."""
 
     def __init__(self, bi):
         bi = sympify(bi)
@@ -1115,7 +1123,7 @@ class MeijerShiftC(Operator):
 
 
 class MeijerShiftD(Operator):
-    """ Decrement a lower a index. """
+    """Decrement a lower a index."""
 
     def __init__(self, bi):
         bi = sympify(bi)
@@ -1126,10 +1134,10 @@ class MeijerShiftD(Operator):
 
 
 class MeijerUnShiftA(Operator):
-    """ Decrement an upper b index. """
+    """Decrement an upper b index."""
 
     def __init__(self, an, ap, bm, bq, i, z):
-        """ Note: i counts from zero! """
+        """Note: i counts from zero!"""
         an, ap, bm, bq, i = list(map(sympify, [an, ap, bm, bq, i]))
 
         self._an = an
@@ -1172,10 +1180,10 @@ class MeijerUnShiftA(Operator):
 
 
 class MeijerUnShiftB(Operator):
-    """ Increment an upper a index. """
+    """Increment an upper a index."""
 
     def __init__(self, an, ap, bm, bq, i, z):
-        """ Note: i counts from zero! """
+        """Note: i counts from zero!"""
         an, ap, bm, bq, i = list(map(sympify, [an, ap, bm, bq, i]))
 
         self._an = an
@@ -1218,7 +1226,7 @@ class MeijerUnShiftB(Operator):
 
 
 class MeijerUnShiftC(Operator):
-    """ Decrement a lower b index. """
+    """Decrement a lower b index."""
 
     # XXX this is "essentially" the same as MeijerUnShiftA. This "essentially"
     #     can be made rigorous using the functional equation G(1/z) = G'(z),
@@ -1227,7 +1235,7 @@ class MeijerUnShiftC(Operator):
     #     again.
 
     def __init__(self, an, ap, bm, bq, i, z):
-        """ Note: i counts from zero! """
+        """Note: i counts from zero!"""
         an, ap, bm, bq, i = list(map(sympify, [an, ap, bm, bq, i]))
 
         self._an = an
@@ -1270,13 +1278,13 @@ class MeijerUnShiftC(Operator):
 
 
 class MeijerUnShiftD(Operator):
-    """ Increment a lower a index. """
+    """Increment a lower a index."""
 
     # XXX This is essentially the same as MeijerUnShiftA.
     #     See comment at MeijerUnShiftC.
 
     def __init__(self, an, ap, bm, bq, i, z):
-        """ Note: i counts from zero! """
+        """Note: i counts from zero!"""
         an, ap, bm, bq, i = list(map(sympify, [an, ap, bm, bq, i]))
 
         self._an = an
@@ -1319,10 +1327,10 @@ class MeijerUnShiftD(Operator):
 
 
 class ReduceOrder(Operator):
-    """ Reduce Order by cancelling an upper and a lower index. """
+    """Reduce Order by cancelling an upper and a lower index."""
 
     def __new__(cls, ai, bj):
-        """ For convenience if reduction is not possible, return None. """
+        """For convenience if reduction is not possible, return None."""
         ai = sympify(ai)
         bj = sympify(bj)
         n = ai - bj
@@ -1345,8 +1353,9 @@ class ReduceOrder(Operator):
 
     @classmethod
     def _meijer(cls, b, a, sign):
-        """ Cancel b + sign*s and a + sign*s
+        """Cancel b + sign*s and a + sign*s
         This is for meijer G functions.
+
         """
         b = sympify(b)
         a = sympify(a)
@@ -1384,7 +1393,7 @@ class ReduceOrder(Operator):
 
 
 def _reduce_order(ap, bq, gen, key):
-    """ Order reduction algorithm used in Hypergeometric and Meijer G """
+    """Order reduction algorithm used in Hypergeometric and Meijer G."""
     ap = list(ap)
     bq = list(bq)
 
@@ -1434,6 +1443,7 @@ def reduce_order(func):
     >>> for i in r[1]:
     ...     print(i)
     <Reduce order by cancelling upper 4 with lower 3.>
+
     """
     nap, nbq, operators = _reduce_order(func.ap, func.bq, ReduceOrder, default_sort_key)
 
@@ -1458,6 +1468,7 @@ def reduce_order_meijer(func):
     G_Function((3,), (), (), (1,))
     >>> reduce_order_meijer(G_Function([3, 4], [5, 6], [7, 5], [5, 3]))[0]
     G_Function((), (), (), ())
+
     """
 
     nan, nbq, ops1 = _reduce_order(func.an, func.bq, ReduceOrder.meijer_plus,
@@ -1469,7 +1480,7 @@ def reduce_order_meijer(func):
 
 
 def make_derivative_operator(M, z):
-    """ Create a derivative operator, to be passed to Operator.apply. """
+    """Create a derivative operator, to be passed to Operator.apply."""
     def doit(C):
         r = z*C.diff(z) + C*M
         r = r.applyfunc(make_simp(z))
@@ -1481,6 +1492,7 @@ def apply_operators(obj, ops, op):
     """
     Apply the list of operators ``ops`` to object ``obj``, substituting
     ``op`` for the generator.
+
     """
     res = obj
     for o in reversed(ops):
@@ -1534,6 +1546,7 @@ def devise_plan(target, origin, z):
     <Decrement upper index #1 of [-1, 2], [4].>
     <Decrement upper index #1 of [-1, 3], [4].>
     <Increment upper -2.>
+
     """
     abuckets, bbuckets, nabuckets, nbbuckets = [sift(params, _mod1) for
                                                 params in (target.ap, target.bq, origin.ap, origin.bq)]
@@ -1561,12 +1574,12 @@ def devise_plan(target, origin, z):
         return ops
 
     def do_shifts_a(nal, nbk, al, aother, bother):
-        """ Shift us from (nal, nbk) to (al, nbk). """
+        """Shift us from (nal, nbk) to (al, nbk)."""
         return do_shifts(nal, al, lambda p, i: ShiftA(p[i]),
                          lambda p, i: UnShiftA(p + aother, nbk + bother, i, z))
 
     def do_shifts_b(nal, nbk, bk, aother, bother):
-        """ Shift us from (nal, nbk) to (nal, bk). """
+        """Shift us from (nal, nbk) to (nal, bk)."""
         return do_shifts(nbk, bk,
                          lambda p, i: UnShiftB(nal + aother, p + bother, i, z),
                          lambda p, i: ShiftB(p[i]))
@@ -1627,7 +1640,7 @@ def devise_plan(target, origin, z):
 
 
 def try_shifted_sum(func, z):
-    """ Try to recognise a hypergeometric sum that starts from k > 0. """
+    """Try to recognise a hypergeometric sum that starts from k > 0."""
     abuckets, bbuckets = sift(func.ap, _mod1), sift(func.bq, _mod1)
     if len(abuckets[Integer(0)]) != 1:
         return
@@ -1676,8 +1689,9 @@ def try_shifted_sum(func, z):
 
 
 def try_polynomial(func, z):
-    """ Recognise polynomial cases. Returns None if not such a case.
+    """Recognise polynomial cases. Returns None if not such a case.
     Requires order to be fully reduced.
+
     """
     abuckets, bbuckets = sift(func.ap, _mod1), sift(func.bq, _mod1)
     a0 = abuckets[Integer(0)]
@@ -1712,6 +1726,7 @@ def try_lerchphi(func):
     Transcendents.
 
     Return None if no such expression can be found.
+
     """
     # This is actually quite simple, and is described in Roach's paper,
     # section 18.
@@ -1905,6 +1920,7 @@ def hyperexpand_special(ap, bq, z):
 
     This function tries various of the classical summation formulae
     (Gauss, Saalschuetz, etc).
+
     """
     # This code is very ad-hoc. There are many clever algorithms
     # (notably Zeilberger's) related to this problem.
@@ -1946,6 +1962,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     The result is expressed in terms of a dummy variable z0. Then it
     is multiplied by premult. Then ops0 is applied.
     premult must be a*z**prem for some a independent of z.
+
     """
 
     z = polarify(z, subs=False)
@@ -2098,6 +2115,7 @@ def devise_plan_meijer(fro, to, z):
     ...     print(i)
     <Increment upper a index #0 of [0], [], [1], [].>
     <Increment upper b=0.>
+
     """
     # TODO for now, we use the following simple heuristic: inverse-shift
     #      when possible, shift otherwise. Give up if we cannot make progress.
@@ -2109,6 +2127,7 @@ def devise_plan_meijer(fro, to, z):
         blocking the shift.
 
         Return an operator if change was possible, else None.
+
         """
         for idx, (a, b) in enumerate(zip(f, t)):
             if (
@@ -2190,6 +2209,7 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
     an expression in terms of hypergeometric functions is allowed.
 
     Currently this just does slater's theorem.
+
     """
     global _meijercollection
     if _meijercollection is None:
@@ -2235,7 +2255,7 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default'):
     #      simplified.
 
     def can_do(pbm, pap):
-        """ Test if slater applies. """
+        """Test if slater applies."""
         for i in pbm:
             if len(pbm[i]) > 1:
                 l = 0
@@ -2445,6 +2465,7 @@ def hyperexpand(f, allow_hyper=False, rewrite='default'):
 
     >>> hyperexpand(1 + hyper([1, 1, 1], [], z))
     hyper((1, 1, 1), (), z) + 1
+
     """
     f = sympify(f)
 

@@ -2,7 +2,7 @@
 Diofant 0.10
 ============
 
-Not Released Yet
+27 Jan 2019
 
 New features
 ============

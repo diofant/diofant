@@ -4,9 +4,7 @@ from ..matrices import ImmutableMatrix, eye, rot_axis1, rot_axis2, rot_axis3
 
 
 class Orienter(Basic):
-    """
-    Super-class for all orienter classes.
-    """
+    """Super-class for all orienter classes."""
 
     def rotation_matrix(self):
         """
@@ -17,9 +15,7 @@ class Orienter(Basic):
 
 
 class AxisOrienter(Orienter):
-    """
-    Class to denote an axis orienter.
-    """
+    """Class to denote an axis orienter."""
 
     def __new__(cls, angle, axis):
         from .vector import Vector
@@ -74,6 +70,7 @@ class AxisOrienter(Orienter):
         system : CoordSysCartesian
             The coordinate system wrt which the rotation matrix
             is to be computed
+
         """
 
         from .functions import express
@@ -99,9 +96,7 @@ class AxisOrienter(Orienter):
 
 
 class ThreeAngleOrienter(Orienter):
-    """
-    Super-class for Body and Space orienters.
-    """
+    """Super-class for Body and Space orienters."""
 
     def __new__(cls, angle1, angle2, angle3, rot_order):
         approved_orders = ('123', '231', '312', '132', '213',
@@ -162,9 +157,7 @@ class ThreeAngleOrienter(Orienter):
 
 
 class BodyOrienter(ThreeAngleOrienter):
-    """
-    Class to denote a body-orienter.
-    """
+    """Class to denote a body-orienter."""
 
     _in_order = True
 
@@ -230,9 +223,7 @@ class BodyOrienter(ThreeAngleOrienter):
 
 
 class SpaceOrienter(ThreeAngleOrienter):
-    """
-    Class to denote a space-orienter.
-    """
+    """Class to denote a space-orienter."""
 
     _in_order = False
 
@@ -291,9 +282,7 @@ class SpaceOrienter(ThreeAngleOrienter):
 
 
 class QuaternionOrienter(Orienter):
-    """
-    Class to denote a quaternion-orienter.
-    """
+    """Class to denote a quaternion-orienter."""
 
     def __new__(cls, q0, q1, q2, q3):
         q0 = sympify(q0)
@@ -378,7 +367,7 @@ class QuaternionOrienter(Orienter):
 
 
 def _rot(axis, angle):
-    """DCM for simple axis 1, 2 or 3 rotations. """
+    """DCM for simple axis 1, 2 or 3 rotations."""
     if axis == 1:
         return ImmutableMatrix(rot_axis1(angle).T)
     elif axis == 2:

@@ -3,9 +3,7 @@ from .expr_with_limits import ExprWithLimits
 
 
 class ReorderError(NotImplementedError):
-    """
-    Exception raised when trying to reorder dependent limits.
-    """
+    """Exception raised when trying to reorder dependent limits."""
 
     def __init__(self, expr, msg):
         super().__init__("%s could not be reordered: %s." % (expr, msg))
@@ -102,6 +100,7 @@ class ExprWithIntLimits(ExprWithLimits):
         diofant.concrete.expr_with_intlimits.ExprWithIntLimits.reorder
         diofant.concrete.summations.Sum.reverse_order
         diofant.concrete.products.Product.reverse_order
+
         """
         if newvar is None:
             newvar = var
@@ -164,6 +163,7 @@ class ExprWithIntLimits(ExprWithLimits):
         diofant.concrete.expr_with_intlimits.ExprWithIntLimits.reorder
         diofant.concrete.summations.Sum.reverse_order
         diofant.concrete.products.Product.reverse_order
+
         """
         variables = [limit[0] for limit in self.limits]
 
@@ -218,6 +218,7 @@ class ExprWithIntLimits(ExprWithLimits):
         diofant.concrete.expr_with_intlimits.ExprWithIntLimits.reorder_limit
         diofant.concrete.summations.Sum.reverse_order
         diofant.concrete.products.Product.reverse_order
+
         """
         new_expr = self
 
@@ -268,6 +269,7 @@ class ExprWithIntLimits(ExprWithLimits):
         diofant.concrete.expr_with_intlimits.ExprWithIntLimits.reorder
         diofant.concrete.summations.Sum.reverse_order
         diofant.concrete.products.Product.reverse_order
+
         """
         var = {limit[0] for limit in self.limits}
         limit_x = self.limits[x]

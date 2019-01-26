@@ -15,6 +15,7 @@ def symmetric_residue(a, m):
     1
     >>> symmetric_residue(4, 6)
     -2
+
     """
     if a <= m // 2:
         return a
@@ -73,6 +74,7 @@ def crt(m, v, symmetric=False, check=True):
 
     solve_congruence
     diofant.polys.galoistools.gf_crt : low level crt routine used by this routine
+
     """
     if check:
         m = list(map(as_int, m))
@@ -102,6 +104,7 @@ def crt1(m):
 
     >>> crt1([18, 42, 6])
     (4536, [252, 108, 756], [0, 2, 0])
+
     """
 
     return gf_crt1(m, ZZ)
@@ -116,6 +119,7 @@ def crt2(m, v, mm, e, s, symmetric=False):
     >>> mm, e, s = crt1([18, 42, 6])
     >>> crt2([18, 42, 6], [0, 0, 0], mm, e, s)
     (0, 4536)
+
     """
 
     result = gf_crt2(v, m, mm, e, s, ZZ)
@@ -173,6 +177,7 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
     ========
 
     crt : high level routine implementing the Chinese Remainder Theorem
+
     """
     def combine(c1, c2):
         """Return the tuple (a, m) which satisfies the requirement
@@ -182,6 +187,7 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
         ==========
 
         * https//en.wikipedia.org/wiki/Method_of_successive_substitution
+
         """
         a1, m1 = c1
         a2, m2 = c2

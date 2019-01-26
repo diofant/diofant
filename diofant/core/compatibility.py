@@ -20,6 +20,7 @@ class NotIterable:
     Use this as mixin when creating a class which is not supposed to return
     true when iterable() is called on its instances. I.e. avoid infinite loop
     when calling e.g. list() on the instance
+
     """
 
     pass
@@ -62,6 +63,7 @@ def iterable(i, exclude=(str, dict, NotIterable)):
     True
     >>> iterable("no", exclude=str)
     False
+
     """
     try:
         iter(i)
@@ -106,6 +108,7 @@ def is_sequence(i, include=None):
     False
     >>> is_sequence(generator, include=(str, GeneratorType))
     True
+
     """
     return (hasattr(i, '__getitem__') and
             iterable(i) or
@@ -133,6 +136,7 @@ def as_int(n):
     Traceback (most recent call last):
     ...
     ValueError: ... is not an integer
+
     """
     try:
         result = int(n)
@@ -255,6 +259,7 @@ def default_sort_key(item, order=None):
     ordered
     diofant.core.expr.Expr.as_ordered_factors
     diofant.core.expr.Expr.as_ordered_terms
+
     """
     from . import S, Basic
     from .sympify import sympify, SympifyError
@@ -307,6 +312,7 @@ def _nodes(e):
     for Basic objects is the number of Basic nodes in the expression tree
     but for other objects is 1 (unless the object is an iterable or dict
     for which the sum of nodes is returned).
+
     """
     from .basic import Basic
 
@@ -389,6 +395,7 @@ def ordered(seq, keys=None, default=True, warn=False):
     there were several criteria used to define the sort order, then this
     function would be good at returning that quickly if the first group
     of candidates is small relative to the number of items being processed.
+
     """
     d = defaultdict(list)
     if keys:

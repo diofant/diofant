@@ -36,6 +36,7 @@ def dup_half_gcdex(f, g, K):
 
     >>> R.dup_half_gcdex(f, g)
     (-1/5*x + 3/5, x + 1)
+
     """
     if not K.is_Field:
         raise DomainError("can't compute half extended GCD over %s" % K)
@@ -211,6 +212,7 @@ def dup_inner_subresultants(f, g, K):
     ==========
 
     * [Brown78]_
+
     """
     n = dmp_degree_in(f, 0, 0)
     m = dmp_degree_in(g, 0, 0)
@@ -275,6 +277,7 @@ def dup_prs_resultant(f, g, K):
 
     >>> R.dmp_resultant(x**2 + 1, x**2 - 1, includePRS=True)
     (4, [x**2 + 1, x**2 - 1, -2])
+
     """
     if not f or not g:
         return K.zero, []
@@ -298,6 +301,7 @@ def dup_resultant(f, g, K, includePRS=False):
 
     >>> R.dmp_resultant(x**2 + 1, x**2 - 1)
     4
+
     """
     if includePRS:
         return dup_prs_resultant(f, g, K)
@@ -517,7 +521,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
 
 
 def _collins_crt(r, R, P, p, K):
-    """Wrapper of CRT for Collins's resultant algorithm. """
+    """Wrapper of CRT for Collins's resultant algorithm."""
     return gf_int(gf_crt([r, R], [P, p], K), P*p)
 
 
@@ -661,6 +665,7 @@ def dmp_discriminant(f, u, K):
 
     >>> R.dmp_discriminant(x**2*y + x*z + t)
     -4*y*t + z**2
+
     """
     d, v = dmp_degree_in(f, 0, u), u - 1
 
@@ -680,7 +685,7 @@ def dmp_discriminant(f, u, K):
 
 
 def _dmp_rr_trivial_gcd(f, g, u, K):
-    """Handle trivial cases in GCD algorithm over a ring. """
+    """Handle trivial cases in GCD algorithm over a ring."""
     zero_f = dmp_zero_p(f, u)
     zero_g = dmp_zero_p(g, u)
 
@@ -703,7 +708,7 @@ def _dmp_rr_trivial_gcd(f, g, u, K):
 
 
 def _dmp_ff_trivial_gcd(f, g, u, K):
-    """Handle trivial cases in GCD algorithm over a field. """
+    """Handle trivial cases in GCD algorithm over a field."""
     zero_f = dmp_zero_p(f, u)
     zero_g = dmp_zero_p(g, u)
 
@@ -722,7 +727,7 @@ def _dmp_ff_trivial_gcd(f, g, u, K):
 
 
 def _dmp_simplify_gcd(f, g, u, K):
-    """Try to eliminate `x_0` from GCD computation in `K[X]`. """
+    """Try to eliminate `x_0` from GCD computation in `K[X]`."""
     df = dmp_degree_in(f, 0, u)
     dg = dmp_degree_in(g, 0, u)
 
@@ -931,6 +936,7 @@ def dmp_zz_heu_gcd(f, g, u, K):
     ==========
 
     * [Liao95]_
+
     """
     result = _dmp_rr_trivial_gcd(f, g, u, K)
 
@@ -1016,7 +1022,7 @@ _gcd_aa_methods = {'modgcd': _dmp_aa_modgcd,
 
 
 def _dmp_inner_gcd(f, g, u, K):
-    """Helper function for `dmp_inner_gcd()`. """
+    """Helper function for `dmp_inner_gcd()`."""
     if not K.is_Exact:
         try:
             exact = K.get_exact()
@@ -1159,6 +1165,7 @@ def dmp_ff_lcm(f, g, u, K):
 
     >>> R.dmp_lcm(f, g)
     x**3 + 4*x**2*y + 4*x*y**2
+
     """
     h = dmp_quo(dmp_mul(f, g, u, K),
                 dmp_gcd(f, g, u, K), u, K)
@@ -1180,6 +1187,7 @@ def dmp_lcm(f, g, u, K):
 
     >>> R.dmp_lcm(f, g)
     x**3 + 2*x**2*y + x*y**2
+
     """
     if K.is_Field:
         return dmp_ff_lcm(f, g, u, K)

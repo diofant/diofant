@@ -45,7 +45,7 @@ known_functions = {
 
 
 class FCodePrinter(CodePrinter):
-    """A printer to convert diofant expressions to strings of Fortran code"""
+    """A printer to convert diofant expressions to strings of Fortran code."""
 
     printmethod = "_fcode"
     language = "Fortran"
@@ -282,6 +282,7 @@ class FCodePrinter(CodePrinter):
 
         A comment line is split at white space. Code lines are split with a more
         complex rule to give nice results.
+
         """
         # routine to find split point in a code line
         my_alnum = set("_+-." + string.digits + string.ascii_letters)
@@ -348,7 +349,7 @@ class FCodePrinter(CodePrinter):
         return result
 
     def indent_code(self, code):
-        """Accepts a string of code or a list of code lines"""
+        """Accepts a string of code or a list of code lines."""
         if isinstance(code, str):
             code_lines = self.indent_code(code.splitlines(True))
             return ''.join(code_lines)
@@ -503,6 +504,7 @@ def fcode(expr, assign_to=None, **settings):
           A(2, 1) = x
              end if
           A(3, 1) = sin(x)
+
     """
 
     return FCodePrinter(settings).doprint(expr, assign_to)

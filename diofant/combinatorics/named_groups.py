@@ -34,6 +34,7 @@ def AbelianGroup(*cyclic_orders):
     ==========
 
     * https://groupprops.subwiki.org/wiki/Structure_theorem_for_finitely_generated_abelian_groups
+
     """
     groups = []
     degree = 0
@@ -291,6 +292,7 @@ def RubikGroup(n):
 
     >>> RubikGroup(2).is_group
     True
+
     """
     from .generators import rubik
     if n <= 1:

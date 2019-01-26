@@ -118,6 +118,7 @@ def diophantine(eq, param=symbols("t", integer=True), syms=None):
     ========
 
     diofant.solvers.diophantine.diop_solve
+
     """
     if isinstance(eq, Eq):
         eq = eq.lhs - eq.rhs
@@ -213,6 +214,7 @@ def merge_solution(var, var_t, solution):
     we should introduce a value for z when we output the solution for the
     original equation. This function converts `(t, t)` into `(t, t, n_{1})`
     where `n_{1}` is an integer parameter.
+
     """
     sol = []
 
@@ -267,6 +269,7 @@ def diop_solve(eq, param=symbols("t", integer=True)):
     ========
 
     diofant.solvers.diophantine.diophantine
+
     """
     var, coeff, eq_type = classify_diop(eq, _dict=False)
 
@@ -337,6 +340,7 @@ def classify_diop(eq, _dict=True):
     ([x, y, z], {1: 5, x: 1, y: 3, z: -4}, 'linear')
     >>> classify_diop(x**2 + y**2 - x*y + x + 5)
     ([x, y], {1: 5, x: 1, x**2: 1, y**2: 1, x*y: -1}, 'binary_quadratic')
+
     """
     try:
         var = list(eq.free_symbols)
@@ -463,6 +467,7 @@ def diop_linear(eq, param=symbols("t", integer=True)):
     diofant.solvers.diophantine.diop_ternary_quadratic
     diofant.solvers.diophantine.diop_general_pythagorean
     diofant.solvers.diophantine.diop_general_sum_of_squares
+
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
 
@@ -477,6 +482,7 @@ def _diop_linear(var, coeff, param):
     a_0*x_0 + a_1*x_1 + ... + a_n*x_n == c
 
     Note that no solution exists if gcd(a_0, ..., a_n) doesn't divide c.
+
     """
 
     if 1 in coeff:
@@ -670,6 +676,7 @@ def base_solution_linear(c, a, b, t=None):
     (3*t - 5, -2*t + 5)
     >>> base_solution_linear(0, 5, 7, t)  # equation 5*x + 7*y = 0
     (7*t, -5*t)
+
     """
     a, b, c = _remove_gcd(a, b, c)
 
@@ -698,9 +705,7 @@ def base_solution_linear(c, a, b, t=None):
 
 
 def divisible(a, b):
-    """
-    Returns `True` if ``a`` is divisible by ``b`` and `False` otherwise.
-    """
+    """Returns `True` if ``a`` is divisible by ``b`` and `False` otherwise."""
     return not a % b
 
 
@@ -742,6 +747,7 @@ def diop_quadratic(eq, param=symbols("t", integer=True)):
     diofant.solvers.diophantine.diop_ternary_quadratic
     diofant.solvers.diophantine.diop_general_sum_of_squares
     diofant.solvers.diophantine.diop_general_pythagorean
+
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
 
@@ -931,6 +937,7 @@ def is_solution_quad(var, coeff, u, v):
     ``coeff``.
 
     Not intended for use by normal users.
+
     """
     reps = dict(zip(var, (u, v)))
     eq = Add(*[j*i.xreplace(reps) for i, j in coeff.items()])
@@ -986,6 +993,7 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
     * Solving the generalized Pell equation x**2 - D*y**2 = N, John P.
       Robertson, July 31, 2004, Pages 16 - 17. [online], Available:
       https://web.archive.org/web/20180831180333/http://www.jpr2718.org/pell.pdf
+
     """
     if D < 0:
         if N == 0:
@@ -1157,6 +1165,7 @@ def cornacchia(a, b, m):
     ========
 
     diofant.utilities.iterables.signed_permutations
+
     """
     sols = set()
 
@@ -1220,6 +1229,7 @@ def PQa(P_0, Q_0, D):
 
     * Solving the generalized Pell equation x^2 - Dy^2 = N, John P.
       Robertson, July 31, 2004, Pages 4 - 8. https://web.archive.org/web/20180831180333/http://www.jpr2718.org/pell.pdf
+
     """
     A_i_2 = B_i_1 = 0
     A_i_1 = B_i_2 = 1
@@ -1283,6 +1293,7 @@ def diop_bf_DN(D, N, t=symbols("t", integer=True)):
 
     * Solving the generalized Pell equation x**2 - D*y**2 = N, John P.
       Robertson, July 31, 2004, Page 15. https://web.archive.org/web/20180831180333/http://www.jpr2718.org/pell.pdf
+
     """
     D = as_int(D)
     N = as_int(N)
@@ -1358,6 +1369,7 @@ def equivalent(u, v, r, s, D, N):
 
     * Solving the generalized Pell equation x**2 - D*y**2 = N, John P.
       Robertson, July 31, 2004, Page 12. https://web.archive.org/web/20180831180333/http://www.jpr2718.org/pell.pdf
+
     """
     return divisible(u*r - D*v*s, N) and divisible(u*s - v*r, N)
 
@@ -1388,6 +1400,7 @@ def length(P, Q, D):
     ========
 
     diofant.ntheory.continued_fraction.continued_fraction_periodic
+
     """
     from ..ntheory import continued_fraction_periodic
     v = continued_fraction_periodic(P, Q, D)
@@ -1469,6 +1482,7 @@ def transformation_to_DN(eq):
     * Solving the equation ax^2 + bxy + cy^2 + dx + ey + f = 0,
       John P.Robertson, May 8, 2003, Page 7 - 11.
       https://web.archive.org/web/20180831180321/http://www.jpr2718.org/ax2p.pdf
+
     """
 
     var, coeff, diop_type = classify_diop(eq, _dict=False)
@@ -1564,6 +1578,7 @@ def find_DN(eq):
     * Solving the equation ax^2 + bxy + cy^2 + dx + ey + f = 0,
       John P.Robertson, May 8, 2003, Page 7 - 11.
       https://web.archive.org/web/20180831180321/http://www.jpr2718.org/ax2p.pdf
+
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
     if diop_type == "binary_quadratic":
@@ -1593,6 +1608,7 @@ def check_param(x, y, a, t):
     else return (None, None).
 
     Here ``x`` and ``y`` are functions of ``t``.
+
     """
 
     from ..simplify.simplify import clear_coefficients
@@ -1645,6 +1661,7 @@ def diop_ternary_quadratic(eq):
     (28, 45, 105)
     >>> diop_ternary_quadratic(x**2 - 49*y**2 - z**2 + 13*z*y -8*x*y)
     (9, 1, 5)
+
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
 
@@ -1758,6 +1775,7 @@ def transformation_to_normal(eq):
     to a form without cross terms: `ax^2 + by^2 + cz^2 = 0`. This is
     not used in solving ternary quadratics; it is only implemented for
     the sake of completeness.
+
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
 
@@ -1869,6 +1887,7 @@ def parametrize_ternary_quadratic(eq):
     * The algorithmic resolution of Diophantine equations, Nigel P. Smart,
       London Mathematical Society Student Texts 41, Cambridge University
       Press, Cambridge, 1998.
+
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
 
@@ -1935,6 +1954,7 @@ def diop_ternary_quadratic_normal(eq):
     (1, 0, 2)
     >>> diop_ternary_quadratic_normal(34*x**2 - 3*y**2 - 301*z**2)
     (4, 9, 1)
+
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
 
@@ -2032,6 +2052,7 @@ def sqf_normal(a, b, c, steps=False):
     ========
 
     diofant.solvers.diophantine.reconstruct
+
     """
     ABC = A, B, C = _remove_gcd(a, b, c)
     sq = tuple(square_factor(i) for i in ABC)
@@ -2078,6 +2099,7 @@ def square_factor(a):
 
     diofant.solvers.diophantine.reconstruct
     diofant.ntheory.factor_.core
+
     """
     f = a if isinstance(a, dict) else factorint(a)
     return Mul(*[p**(e//2) for p, e in f.items()])
@@ -2089,6 +2111,7 @@ def reconstruct(A, B, z):
     from the `z` value of a solution of the square-free normal form of the
     equation, `a'*x^2 + b'*y^2 + c'*z^2`, where `a'`, `b'` and `c'` are square
     free and `gcd(a', b', c') == 1`.
+
     """
     f = factorint(math.gcd(A, B))
     for p, e in f.items():
@@ -2129,6 +2152,7 @@ def ldescent(A, B):
     * Efficient Solution of Rational Conices, J. E. Cremona and D. Rusin,
       Mathematics of Computation, Volume 00, Number 0,
       http://eprints.nottingham.ac.uk/60/1/kvxefz87.pdf
+
     """
     if abs(A) > abs(B):
         w, y, x = ldescent(B, A)
@@ -2191,6 +2215,7 @@ def descent(A, B):
 
     * Efficient Solution of Rational Conices, J. E. Cremona and D. Rusin,
       Mathematics of Computation, Volume 00, Number 0.
+
     """
     if abs(A) > abs(B):
         x, y, z = descent(B, A)
@@ -2230,6 +2255,7 @@ def gaussian_reduce(w, a, b):
 
     * Efficient Solution of Rational Conices, J. E. Cremona and D. Rusin,
       Mathematics of Computation, Volume 00, Number 0.
+
     """
     u = (0, 1)
     v = (1, 0)
@@ -2259,6 +2285,7 @@ def dot(u, v, w, a, b):
     Returns a special dot product of the vectors `u = (u_{1}, u_{2})` and
     `v = (v_{1}, v_{2})` which is defined in order to reduce solution of
     the congruence equation `X^2 - aZ^2 \equiv 0 \ (mod \ b)`.
+
     """
     u_1, u_2 = u
     v_1, v_2 = v
@@ -2270,6 +2297,7 @@ def norm(u, w, a, b):
     Returns the norm of the vector `u = (u_{1}, u_{2})` under the dot product
     defined by `u \cdot v = (wu_{1} + bu_{2})(w*v_{1} + bv_{2}) + |a|*u_{1}*v_{1}`
     where `u = (u_{1}, u_{2})` and `v = (v_{1}, v_{2})`.
+
     """
     u_1, u_2 = u
     return sqrt(dot((u_1, u_2), (u_1, u_2), w, a, b))
@@ -2290,6 +2318,7 @@ def holzer(x, y, z, a, b, c):
     * Efficient Solution of Rational Conices, J. E. Cremona and D. Rusin,
       Mathematics of Computation, Volume 00, Number 0.
     * Diophantine Equations, L. J. Mordell, page 48.
+
     """
 
     if _odd(c):
@@ -2361,6 +2390,7 @@ def diop_general_pythagorean(eq, param=symbols("m", integer=True)):
     (m1**2 + m2**2 - m3**2, 2*m1*m3, 2*m2*m3, m1**2 + m2**2 + m3**2)
     >>> diop_general_pythagorean(9*a**2 - 4*b**2 + 16*c**2 + 25*d**2 + e**2)
     (10*m1**2  + 10*m2**2  + 10*m3**2 - 10*m4**2, 15*m1**2  + 15*m2**2  + 15*m3**2  + 15*m4**2, 15*m1*m4, 12*m2*m4, 60*m3*m4)
+
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
 
@@ -2435,6 +2465,7 @@ def diop_general_sum_of_squares(eq, limit=1):
     * Representing an integer as a sum of three squares, [online],
       Available:
       https//www.proofwiki.org/wiki/Integer_as_Sum_of_Three_Squares
+
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
 
@@ -2494,6 +2525,7 @@ def diop_general_sum_of_even_powers(eq, limit=1):
     ========
 
     diofant.solvers.diophantine.power_representation
+
     """
     var, coeff, diop_type = classify_diop(eq, _dict=False)
 
@@ -2576,6 +2608,7 @@ def partition(n, k=None, zeros=False):
     >>> g = partition(5, 3, zeros=True)
     >>> next(g)
     (0, 0, 5)
+
     """
     from diofant.utilities.iterables import ordered_partitions
     if not zeros or k is None:
@@ -2610,6 +2643,7 @@ def prime_as_sum_of_two_squares(p):
     ========
 
     diofant.solvers.diophantine.sum_of_squares
+
     """
     if not p % 4 == 1:
         return
@@ -2660,6 +2694,7 @@ def sum_of_three_squares(n):
     ========
 
     diofant.solvers.diophantine.sum_of_squares
+
     """
     special = {1: (1, 0, 0), 2: (1, 1, 0), 3: (1, 1, 1), 10: (1, 3, 0), 34: (3, 3, 4), 58: (3, 7, 0),
                85: (6, 7, 0), 130: (3, 11, 0), 214: (3, 6, 13), 226: (8, 9, 9), 370: (8, 9, 15),
@@ -2739,6 +2774,7 @@ def sum_of_four_squares(n):
     ========
 
     diofant.solvers.diophantine.sum_of_squares
+
     """
     if n == 0:
         return 0, 0, 0, 0
@@ -2809,6 +2845,7 @@ def power_representation(n, p, k, zeros=False):
     >>> list(signed_permutations((1, 12)))
     [(1, 12), (-1, 12), (1, -12), (-1, -12), (12, 1), (-12, 1),
      (12, -1), (-12, -1)]
+
     """
     n, p, k = [as_int(i) for i in (n, p, k)]
 
@@ -2934,6 +2971,7 @@ def sum_of_squares(n, k, zeros=False):
     ========
 
     diofant.utilities.iterables.signed_permutations
+
     """
     for t in power_representation(n, 2, k, zeros):
         yield t
@@ -2945,6 +2983,7 @@ def _can_do_sum_of_squares(n, k):
     case it *can* be written as a sum of two squares). A False
     is returned only if it can't be written as k-squares, even
     if 0s are allowed.
+
     """
     if k < 1:
         return False

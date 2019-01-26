@@ -181,6 +181,7 @@ modelling 44.11 (2006): 1169-1177.
 http://rfdz.ph-noe.ac.at/fileadmin/Mathematik_Uploads/ACDCA/DESTIME2006/DES_contribs/Fu/simplification.pdf
 
 http://www.sosmath.com/trig/Trig5/trig5/pdf/pdf.html gives a formula sheet.
+
 """
 
 from collections import defaultdict
@@ -208,6 +209,7 @@ from .simplify import bottom_up
 def TR0(rv):
     """Simplification of rational polynomials, trying to simplify
     the expression, e.g. combine things like 3*x + 2*x, etc....
+
     """
     # although it would be nice to use cancel, it doesn't work
     # with noncommutatives
@@ -222,6 +224,7 @@ def TR1(rv):
 
     >>> TR1(2*csc(x) + sec(x))
     1/cos(x) + 2/sin(x)
+
     """
 
     def f(rv):
@@ -432,6 +435,7 @@ def TR4(rv):
     sqrt(2)/2 sqrt(2)/2 1 1
     1/2 sqrt(3)/2 sqrt(3) sqrt(3)/3
     0 1 zoo 0
+
     """
     # special values at 0, pi/6, pi/4, pi/3, pi/2 already handled
     return rv
@@ -458,6 +462,7 @@ def _TR56(rv, f, g, h, max, pow):
     sin(x)**6
     >>> _TR56(sin(x)**8, sin, cos, h, 10, True)
     (-cos(x)**2 + 1)**4
+
     """
 
     def _f(rv):
@@ -505,6 +510,7 @@ def TR5(rv, max=4, pow=False):
     sin(x)**(-2)
     >>> TR5(sin(x)**4)
     (-cos(x)**2 + 1)**2
+
     """
     return _TR56(rv, sin, cos, lambda x: 1 - x, max=max, pow=pow)
 
@@ -523,6 +529,7 @@ def TR6(rv, max=4, pow=False):
     cos(x)**(-2)
     >>> TR6(cos(x)**4)
     (-sin(x)**2 + 1)**2
+
     """
     return _TR56(rv, cos, sin, lambda x: 1 - x, max=max, pow=pow)
 
@@ -561,6 +568,7 @@ def TR8(rv, first=True):
     sin(5)/2 + sin(1)/2
     >>> TR8(sin(2)*sin(3))
     -cos(5)/2 + cos(1)/2
+
     """
 
     def f(rv):
@@ -724,6 +732,7 @@ def TR10(rv, first=True):
     >>> TR10(sin(a + b + c))
     (-sin(a)*sin(b) + cos(a)*cos(b))*sin(c) +
     (sin(a)*cos(b) + sin(b)*cos(a))*cos(c)
+
     """
 
     def f(rv):
@@ -969,6 +978,7 @@ def TR12(rv, first=True):
 
     >>> TR12(tan(x + y))
     (tan(x) + tan(y))/(-tan(x)*tan(y) + 1)
+
     """
 
     def f(rv):
@@ -1010,6 +1020,7 @@ def TR12i(rv):
     >>> eq = (ta + tb)/(-ta*tb + 1)**2*(-3*ta - 3*tc)/(2*(ta*tc - 1))
     >>> TR12i(eq.expand())
     -3*tan(a + b)*tan(a + c)/(2*(tan(a) + tan(b) - 1))
+
     """
     from ..polys import factor
 
@@ -1125,6 +1136,7 @@ def TR13(rv):
     -tan(2)/tan(5) - tan(3)/tan(5) + 1
     >>> TR13(cot(3)*cot(2))
     cot(2)*cot(5) + 1 + cot(3)*cot(5)
+
     """
 
     def f(rv):
@@ -1513,6 +1525,7 @@ def TRpower(rv):
     ==========
 
     * https://en.wikipedia.org/wiki/List_of_trigonometric_identities#Power-reduction_formulae
+
     """
 
     def f(rv):
@@ -1550,6 +1563,7 @@ def L(rv):
 
     >>> L(cos(x)+sin(x))
     2
+
     """
     return Integer(rv.count(TrigonometricFunction))
 
@@ -1658,6 +1672,7 @@ def fu(rv, measure=lambda x: (L(x), x.count_ops())):
     ==========
     http://rfdz.ph-noe.ac.at/fileadmin/Mathematik_Uploads/ACDCA/
     DESTIME2006/DES_contribs/Fu/simplification.pdf
+
     """
     fRL1 = greedy(RL1, measure)
     fRL2 = greedy(RL2, measure)
@@ -1685,6 +1700,7 @@ def process_common_addends(rv, do, key2=None, key1=True):
     a common absolute value of their coefficient and the value of ``key2`` when
     applied to the argument. If ``key1`` is False ``key2`` must be supplied and
     will be the only key applied.
+
     """
 
     # collect by absolute value of coefficient and key2
@@ -1783,6 +1799,7 @@ def trig_split(a, b, two=False):
     >>> trig_split(cos(x)*cos(y), sin(x)*sin(z))
     >>> trig_split(cos(x)*cos(y), sin(x)*sin(y))
     >>> trig_split(-sqrt(6)*cos(x), sqrt(2)*sin(x)*sin(y), two=True)
+
     """
     global _ROOT2, _ROOT3, _invROOT3
     if _ROOT2 is None:
@@ -1819,6 +1836,7 @@ def trig_split(a, b, two=False):
 
         If the above conditions dictated by ``two`` are not met then None
         is returned.
+
         """
         c = s = None
         co = S.One
@@ -1934,6 +1952,7 @@ def as_f_sign_1(e):
     (-1, x, 1)
     >>> as_f_sign_1(2*x + 2)
     (2, x, 1)
+
     """
     if not e.is_Add or len(e.args) != 2:
         return
@@ -1986,6 +2005,7 @@ def _osborne(e, d):
     ==========
 
     https//en.wikipedia.org/wiki/Hyperbolic_function
+
     """
 
     def f(rv):
@@ -2021,6 +2041,7 @@ def _osbornei(e, d):
     ==========
 
     https//en.wikipedia.org/wiki/Hyperbolic_function
+
     """
 
     def f(rv):
@@ -2067,6 +2088,7 @@ def hyper_as_trig(rv):
     ==========
 
     https//en.wikipedia.org/wiki/Hyperbolic_function
+
     """
     from .simplify import signsimp
     from .radsimp import collect
@@ -2096,6 +2118,7 @@ def sincos_to_sum(expr):
 
     >>> sincos_to_sum(16*sin(x)**3*cos(2*x)**2)
     7*sin(x) - 5*sin(3*x) + 3*sin(5*x) - sin(7*x)
+
     """
 
     return TR8(expand_mul(TRpower(expr)))

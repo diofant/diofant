@@ -51,7 +51,8 @@ known_functions = {
 
 class MCodePrinter(CodePrinter):
     """A printer to convert python expressions to
-    strings of the Wolfram's Mathematica code
+    strings of the Wolfram's Mathematica code.
+
     """
 
     printmethod = "_mcode"
@@ -68,7 +69,7 @@ class MCodePrinter(CodePrinter):
     _not_supported = set()
 
     def __init__(self, settings={}):
-        """Register function mappings supplied by user"""
+        """Register function mappings supplied by user."""
         CodePrinter.__init__(self, settings)
         self.known_functions = dict(known_functions)
         userfuncs = settings.get('user_functions', {})
@@ -214,5 +215,6 @@ def mathematica_code(expr, **settings):
 
     >>> mathematica_code(sin(x).series(x).removeO())
     '(1/120)*x^5 - 1/6*x^3 + x'
+
     """
     return MCodePrinter(settings).doprint(expr)

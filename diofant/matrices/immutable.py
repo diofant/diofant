@@ -28,6 +28,7 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
     Traceback (most recent call last):
     ...
     TypeError: Cannot set values of ImmutableDenseMatrix
+
     """
 
     _class_priority = 8
@@ -137,6 +138,7 @@ class ImmutableSparseMatrix(Basic, SparseMatrixBase):
     TypeError: Cannot set values of ImmutableSparseMatrix
     >>> _.shape
     (3, 3)
+
     """
 
     _class_priority = 9

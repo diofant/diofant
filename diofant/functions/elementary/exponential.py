@@ -33,6 +33,7 @@ class exp_polar(Function):
     diofant.functions.elementary.complexes.polar_lift
     diofant.functions.elementary.complexes.periodic_argument
     diofant.functions.elementary.complexes.principal_branch
+
     """
 
     is_polar = True
@@ -51,6 +52,7 @@ class exp_polar(Function):
         (1, E**x)
         >>> exp(x).as_numer_denom()
         (E**x, 1)
+
         """
         # this should be the same as Pow.as_numer_denom wrt
         # exponent handling
@@ -64,9 +66,7 @@ class exp_polar(Function):
 
     @property
     def exp(self):
-        """
-        Returns the exponent of the function.
-        """
+        """Returns the exponent of the function."""
         return self.args[0]
 
     def _eval_conjugate(self):
@@ -106,7 +106,7 @@ class exp_polar(Function):
         return sqrt(expand_mul(self * self.conjugate()))
 
     def _eval_evalf(self, prec):
-        """ Careful! any evalf of polar numbers is flaky """
+        """Careful! any evalf of polar numbers is flaky."""
         from .complexes import im, re
         i = im(self.exp)
         try:
@@ -142,6 +142,7 @@ def exp(arg, **kwargs):
     ========
 
     diofant.functions.elementary.exponential.log
+
     """
     return Pow(E, arg, **kwargs)
 
@@ -157,21 +158,18 @@ class log(Function):
     ========
 
     diofant.functions.elementary.exponential.exp
+
     """
 
     def fdiff(self, argindex=1):
-        """
-        Returns the first derivative of the function.
-        """
+        """Returns the first derivative of the function."""
         if argindex == 1:
             return 1/self.args[0]
         else:
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
-        r"""
-        Returns `e^x`, the inverse function of `\log(x)`.
-        """
+        r"""Returns `e^x`, the inverse function of `\log(x)`."""
         return exp
 
     @classmethod
@@ -243,9 +241,7 @@ class log(Function):
                         return -pi * I * S.Half + cls(-coeff)
 
     def as_base_exp(self):
-        """
-        Returns this function in the form (base, exponent).
-        """
+        """Returns this function in the form (base, exponent)."""
         return self, S.One
 
     def _eval_expand_log(self, deep=True, **hints):
@@ -435,6 +431,7 @@ class LambertW(Function):
     ==========
 
     * https//en.wikipedia.org/wiki/Lambert_W_function
+
     """
 
     @classmethod
@@ -468,9 +465,7 @@ class LambertW(Function):
                 return -Integer(2)
 
     def fdiff(self, argindex=1):
-        """
-        Return the first derivative of this function.
-        """
+        """Return the first derivative of this function."""
         x = self.args[0]
 
         if len(self.args) == 1:

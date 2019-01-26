@@ -42,6 +42,7 @@ def tensorproduct(*args):
     [[[[x, y], [z, t]], [[0, 0], [0, 0]], [[0, 0], [0, 0]]],
      [[[0, 0], [0, 0]], [[x, y], [z, t]], [[0, 0], [0, 0]]],
      [[[0, 0], [0, 0]], [[0, 0], [0, 0]], [[x, y], [z, t]]]]
+
     """
     if len(args) == 0:
         return S.One
@@ -96,6 +97,7 @@ def tensorcontraction(array, *contraction_axes):
     Matrix([
     [a*e + b*g, a*f + b*h],
     [c*e + d*g, c*f + d*h]])
+
     """
     array = _arrayfy(array)
 
@@ -237,6 +239,7 @@ def permutedims(expr, perm):
 
     >>> permutedims(b, Permutation([1, 2, 0]))
     [[[1, 5], [2, 6]], [[3, 7], [4, 8]]]
+
     """
     if not isinstance(expr, NDimArray):
         raise TypeError("expression has to be an N-dim array")

@@ -38,6 +38,7 @@ def heugcd(f, g):
     ==========
 
     * [Liao95]_
+
     """
     assert f.ring == g.ring and f.ring.domain.is_IntegerRing
 
@@ -104,7 +105,7 @@ def heugcd(f, g):
 
 
 def _gcd_interpolate(h, x, ring):
-    """Interpolate polynomial GCD from integer GCD. """
+    """Interpolate polynomial GCD from integer GCD."""
     f, i = ring.zero, 0
 
     # TODO: don't expose poly repr implementation details

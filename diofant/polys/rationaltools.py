@@ -53,6 +53,7 @@ def together(expr, deep=False):
 
     >>> together(1/exp(2*x) + 1/(x*exp(3*x)))
     E**(-3*x)*(E**x*x + 1)/x
+
     """
     def _together(expr):
         if expr.is_Atom or (expr.is_Function and not deep):

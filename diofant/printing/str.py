@@ -311,6 +311,7 @@ class StrPrinter(Printer):
 
         >>> Cycle(1, 2) # will print as a dict without this method
         Cycle(1, 2)
+
         """
         return expr.__repr__()
 
@@ -656,6 +657,7 @@ def sstr(expr, **settings):
 
     >>> sstr(Eq(a + b, 0))
     'Eq(a + b, 0)'
+
     """
 
     p = StrPrinter(settings)

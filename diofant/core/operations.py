@@ -16,6 +16,7 @@ class AssocOp(Expr):
 
     This is an abstract base class, concrete derived classes must define
     the attribute `identity`.
+
     """
 
     @cacheit
@@ -42,7 +43,7 @@ class AssocOp(Expr):
 
     @classmethod
     def _from_args(cls, args):
-        """Create new instance with already-processed args"""
+        """Create new instance with already-processed args."""
         if len(args) == 0:
             return cls.identity
         elif len(args) == 1:
@@ -89,6 +90,7 @@ class AssocOp(Expr):
            of safety is enforced: commutativity will always be recomputed if
            self is non-commutative and kwarg `reeval=False` has not been
            passed.
+
         """
         return self._from_args(args)
 
@@ -98,6 +100,7 @@ class AssocOp(Expr):
 
         This is the vanilla routine that will be used if a class derived
         from AssocOp does not define its own flatten routine.
+
         """
         # apply associativity, no commutativity property is used
         new_seq = []
@@ -142,6 +145,7 @@ class AssocOp(Expr):
 
         the "a: x" is not returned in the result, but otherwise it is
         equivalent.
+
         """
         # make sure expr is Expr if pattern is Expr
         from .expr import Add, Expr
@@ -243,7 +247,7 @@ class AssocOp(Expr):
         return
 
     def _has_matcher(self):
-        """Helper for .has()"""
+        """Helper for .has()."""
         def _ncsplit(expr):
             # this is not the same as args_cnc because here
             # we don't assume expr is a Mul -- hence deal with args --
@@ -285,6 +289,7 @@ class AssocOp(Expr):
         number and non-number parts and evaluates the number parts and
         walks the args of the non-number part recursively (doing the same
         thing).
+
         """
         from .add import Add
         from .mul import Mul
@@ -337,6 +342,7 @@ class AssocOp(Expr):
         (x*y,)
         >>> set(Add.make_args(x*y + y))
         {y, x*y}
+
         """
         if isinstance(expr, cls):
             return expr.args
@@ -377,6 +383,7 @@ class LatticeOp(AssocOp):
     ==========
 
     * https//en.wikipedia.org/wiki/Lattice_%28order%29
+
     """
 
     is_commutative = True
@@ -402,7 +409,7 @@ class LatticeOp(AssocOp):
 
     @classmethod
     def _new_args_filter(cls, arg_sequence, call_cls=None):
-        """Generator filtering args"""
+        """Generator filtering args."""
         ncls = call_cls or cls
         for arg in arg_sequence:
             if arg == ncls.zero:
@@ -426,6 +433,7 @@ class LatticeOp(AssocOp):
         (x*y,)
         >>> set(Add.make_args(x*y + y))
         {y, x*y}
+
         """
         if isinstance(expr, cls):
             return expr._argset

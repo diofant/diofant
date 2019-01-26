@@ -61,12 +61,13 @@ class RootOf(Expr):
 
     >>> expand_func(RootOf(x**3 + I*x + 2, 0))
     RootOf(x**6 + 4*x**3 + x**2 + 4, 1)
+
     """
 
     is_commutative = True
 
     def __new__(cls, f, x, index=None, radicals=True, expand=True, evaluate=None):
-        """Construct a new ``RootOf`` object for ``k``-th root of ``f``. """
+        """Construct a new ``RootOf`` object for ``k``-th root of ``f``."""
         x = sympify(x)
 
         if index is None and x.is_Integer:
@@ -129,7 +130,7 @@ class RootOf(Expr):
 
     @classmethod
     def _new(cls, poly, index):
-        """Construct new ``RootOf`` object from raw data. """
+        """Construct new ``RootOf`` object from raw data."""
         obj = Expr.__new__(cls)
 
         obj.poly = PurePoly(poly)
@@ -224,17 +225,17 @@ class RootOf(Expr):
 
     @classmethod
     def real_roots(cls, poly, radicals=True):
-        """Get real roots of a polynomial. """
+        """Get real roots of a polynomial."""
         return cls._get_roots("_real_roots", poly, radicals)
 
     @classmethod
     def all_roots(cls, poly, radicals=True):
-        """Get real and complex roots of a polynomial. """
+        """Get real and complex roots of a polynomial."""
         return cls._get_roots("_all_roots", poly, radicals)
 
     @classmethod
     def _get_reals_sqf(cls, factor):
-        """Compute real root isolating intervals for a square-free polynomial. """
+        """Compute real root isolating intervals for a square-free polynomial."""
         if factor.rep not in _reals_cache:
             reals = dup_isolate_real_roots_sqf(factor.rep.rep, factor.rep.domain, blackbox=True)
             if not reals:
@@ -244,7 +245,7 @@ class RootOf(Expr):
 
     @classmethod
     def _get_complexes_sqf(cls, factor):
-        """Compute complex root isolating intervals for a square-free polynomial. """
+        """Compute complex root isolating intervals for a square-free polynomial."""
         if factor.rep not in _complexes_cache:
             complexes = dup_isolate_complex_roots_sqf(factor.rep.rep, factor.rep.domain, blackbox=True)
             if not complexes:
@@ -254,7 +255,7 @@ class RootOf(Expr):
 
     @classmethod
     def _get_reals(cls, factors):
-        """Compute real root isolating intervals for a list of factors. """
+        """Compute real root isolating intervals for a list of factors."""
         reals = []
 
         for factor, k in factors:
@@ -265,7 +266,7 @@ class RootOf(Expr):
 
     @classmethod
     def _get_complexes(cls, factors):
-        """Compute complex root isolating intervals for a list of factors. """
+        """Compute complex root isolating intervals for a list of factors."""
         complexes = []
 
         for factor, k in factors:
@@ -276,7 +277,7 @@ class RootOf(Expr):
 
     @classmethod
     def _reals_sorted(cls, reals):
-        """Make real isolating intervals disjoint and sort roots. """
+        """Make real isolating intervals disjoint and sort roots."""
         factors = list({f for _, f, _ in reals})
         if len(factors) == 1 and factors[0].rep in _reals_cache:
             return reals
@@ -306,7 +307,7 @@ class RootOf(Expr):
 
     @classmethod
     def _complexes_sorted(cls, complexes):
-        """Make complex isolating intervals disjoint and sort roots. """
+        """Make complex isolating intervals disjoint and sort roots."""
         factors = list({f for _, f, _ in complexes})
         if len(factors) == 1 and factors[0].rep in _complexes_cache:
             return complexes
@@ -339,7 +340,7 @@ class RootOf(Expr):
 
     @classmethod
     def _reals_index(cls, reals, index):
-        """Map initial real root index to an index in a factor where the root belongs. """
+        """Map initial real root index to an index in a factor where the root belongs."""
         i = 0
 
         for j, (_, factor, k) in enumerate(reals):  # pragma: no branch
@@ -356,7 +357,7 @@ class RootOf(Expr):
 
     @classmethod
     def _complexes_index(cls, complexes, index):
-        """Map initial complex root index to an index in a factor where the root belongs. """
+        """Map initial complex root index to an index in a factor where the root belongs."""
         index, i = index, 0
 
         for j, (_, factor, k) in enumerate(complexes):  # pragma: no branch
@@ -398,7 +399,7 @@ class RootOf(Expr):
 
     @classmethod
     def _indexed_root(cls, poly, index):
-        """Get a root of a composite polynomial by index. """
+        """Get a root of a composite polynomial by index."""
         _, factors = poly.factor_list()
 
         reals = cls._get_reals(factors)
@@ -415,7 +416,7 @@ class RootOf(Expr):
 
     @classmethod
     def _real_roots(cls, poly):
-        """Get real roots of a composite polynomial. """
+        """Get real roots of a composite polynomial."""
         _, factors = poly.factor_list()
 
         reals = cls._get_reals(factors)
@@ -431,7 +432,7 @@ class RootOf(Expr):
 
     @classmethod
     def _all_roots(cls, poly):
-        """Get real and complex roots of a composite polynomial. """
+        """Get real and complex roots of a composite polynomial."""
 
         if not (poly.domain.is_IntegerRing or poly.domain.is_AlgebraicField):
             return [(poly, i) for i in range(poly.degree())]
@@ -460,7 +461,7 @@ class RootOf(Expr):
     @classmethod
     @cacheit
     def _roots_trivial(cls, poly, radicals):
-        """Compute roots in linear, quadratic and binomial cases. """
+        """Compute roots in linear, quadratic and binomial cases."""
         n = poly.degree()
 
         if n == 1:
@@ -482,7 +483,7 @@ class RootOf(Expr):
 
     @classmethod
     def _preprocess_roots(cls, poly):
-        """Take heroic measures to make ``poly`` compatible with ``RootOf``. """
+        """Take heroic measures to make ``poly`` compatible with ``RootOf``."""
         dom = poly.domain
 
         if not dom.is_Exact:
@@ -498,7 +499,7 @@ class RootOf(Expr):
 
     @classmethod
     def _postprocess_root(cls, root, radicals):
-        """Return the root if it is trivial or a ``RootOf`` object. """
+        """Return the root if it is trivial or a ``RootOf`` object."""
         poly, index = root
         roots = cls._roots_trivial(poly, radicals)
 
@@ -509,7 +510,7 @@ class RootOf(Expr):
 
     @classmethod
     def _get_roots(cls, method, poly, radicals):
-        """Return postprocessed roots of specified kind. """
+        """Return postprocessed roots of specified kind."""
 
         coeff, poly = cls._preprocess_roots(poly)
         roots = []
@@ -521,7 +522,7 @@ class RootOf(Expr):
 
     @property
     def interval(self):
-        """Return isolation interval for the root. """
+        """Return isolation interval for the root."""
         if self.is_real:
             return _reals_cache[self.poly.rep][self.index]
         else:
@@ -529,7 +530,7 @@ class RootOf(Expr):
             return _complexes_cache[self.poly.rep][self.index - reals_count]
 
     def refine(self):
-        """Refine isolation interval for the root. """
+        """Refine isolation interval for the root."""
         if self.is_real:
             root = _reals_cache[self.poly.rep][self.index]
             _reals_cache[self.poly.rep][self.index] = root.refine()
@@ -546,7 +547,7 @@ class RootOf(Expr):
             return self
 
     def _eval_evalf(self, prec):
-        """Evaluate this complex root to the given precision. """
+        """Evaluate this complex root to the given precision."""
         with workprec(prec):
             g = self.poly.gen
             if not g.is_Symbol:
@@ -668,10 +669,10 @@ class RootOf(Expr):
 
 
 class RootSum(Expr):
-    """Represents a sum of all roots of a univariate polynomial. """
+    """Represents a sum of all roots of a univariate polynomial."""
 
     def __new__(cls, expr, func=None, x=None, auto=True, quadratic=False):
-        """Construct a new ``RootSum`` instance carrying all roots of a polynomial. """
+        """Construct a new ``RootSum`` instance carrying all roots of a polynomial."""
         coeff, poly = cls._transform(expr, x)
 
         if not poly.is_univariate:
@@ -735,7 +736,7 @@ class RootSum(Expr):
 
     @classmethod
     def _new(cls, poly, func, auto=True):
-        """Construct new raw ``RootSum`` instance. """
+        """Construct new raw ``RootSum`` instance."""
         obj = Expr.__new__(cls)
 
         obj.poly = poly
@@ -746,7 +747,7 @@ class RootSum(Expr):
 
     @classmethod
     def new(cls, poly, func, auto=True):
-        """Construct new ``RootSum`` instance. """
+        """Construct new ``RootSum`` instance."""
 
         rational = cls._is_func_rational(poly, func)
 
@@ -757,19 +758,19 @@ class RootSum(Expr):
 
     @classmethod
     def _transform(cls, expr, x):
-        """Transform an expression to a polynomial. """
+        """Transform an expression to a polynomial."""
         poly = PurePoly(expr, x, greedy=False)
         return preprocess_roots(poly)
 
     @classmethod
     def _is_func_rational(cls, poly, func):
-        """Check if a lambda is areational function. """
+        """Check if a lambda is areational function."""
         var, expr = func.variables[0], func.expr
         return expr.is_rational_function(var)
 
     @classmethod
     def _rational_case(cls, poly, func):
-        """Handle the rational function case. """
+        """Handle the rational function case."""
         roots = symbols('r:%d' % poly.degree())
         var, expr = func.variables[0], func.expr
 

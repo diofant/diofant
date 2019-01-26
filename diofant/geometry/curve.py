@@ -61,6 +61,7 @@ class Curve(GeometrySet):
     Point2D(4, 16)
     >>> C.arbitrary_point(a)
     Point2D(a, a**2)
+
     """
 
     def __new__(cls, function, limits):
@@ -91,6 +92,7 @@ class Curve(GeometrySet):
         set()
         >>> Curve((t, t**2), (t, a, 2)).free_symbols
         {a}
+
         """
         free = set()
         for a in self.functions + self.limits[1:]:
@@ -181,6 +183,7 @@ class Curve(GeometrySet):
 
         >>> Curve((x, x), (x, 0, 1)).rotate(pi/2)
         Curve((-x, x), (x, 0, 1))
+
         """
         from ..matrices import Matrix, rot_axis3
         pt = -Point(pt or (0, 0))
@@ -201,6 +204,7 @@ class Curve(GeometrySet):
 
         >>> Curve((x, x), (x, 0, 1)).scale(2)
         Curve((2*x, x), (x, 0, 1))
+
         """
         if pt:
             pt = Point(pt)
@@ -216,6 +220,7 @@ class Curve(GeometrySet):
 
         >>> Curve((x, x), (x, 0, 1)).translate(1, 2)
         Curve((x + 1, x + 2), (x, 0, 1))
+
         """
         fx, fy = self.functions
         return self.func((fx + x, fy + y), self.limits)

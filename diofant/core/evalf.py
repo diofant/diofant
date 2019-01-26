@@ -101,6 +101,7 @@ def fastlog(x):
     >>> n = [1, -1][s]*m*2**e
     >>> n, (log(n)/log(2)).evalf(2), fastlog((s, m, e, bc))
     (10, 3.3, 4)
+
     """
 
     if not x or x == fzero:
@@ -118,6 +119,7 @@ def pure_complex(v):
     (2, 3)
     >>> pure_complex(I)
     (0, 1)
+
     """
     from .numbers import I
     h, t = v.as_coeff_Add()
@@ -148,6 +150,7 @@ def scaled_zero(mag, sign=1):
     >>> ok, p = scaled_zero(100, -1)
     >>> Float(scaled_zero(ok), p)
     -0.e+30
+
     """
     if type(mag) is tuple and len(mag) == 4 and iszero(mag, scaled=True):
         return (mag[0][0],) + mag[1:]
@@ -180,6 +183,7 @@ def complex_accuracy(result):
 
     In the worst case (re and im equal), this is wrong by a factor
     sqrt(2), or by log2(sqrt(2)) = 0.5 bit.
+
     """
     re, im, re_acc, im_acc = result
     if not im:
@@ -208,7 +212,7 @@ def get_abs(expr, prec, options):
 
 
 def get_complex_part(expr, no, prec, options):
-    """no = 0 for real part, no = 1 for imaginary part"""
+    """no = 0 for real part, no = 1 for imaginary part."""
     workprec = prec
     i = 0
     while 1:
@@ -252,9 +256,7 @@ def finalize_complex(re, im, prec):
 
 
 def chop_parts(value, prec):
-    """
-    Chop off tiny real or complex parts.
-    """
+    """Chop off tiny real or complex parts."""
     re, im, re_acc, im_acc = value
     # chop based on absolute value
     if re and re not in _infs_nan and (fastlog(re) < -prec + 4):
@@ -284,7 +286,7 @@ def add_terms(terms, prec, target_prec):
     Helper for evalf_add. Adds a list of (mpfval, accuracy) terms.
 
     Returns
-    -------
+    =======
 
     - None, None if there are no non-zero terms;
     - terms[0] if there is only 1 term;
@@ -300,6 +302,7 @@ def add_terms(terms, prec, target_prec):
     prec is used to define the working precision.
 
     XXX explain why this is needed and why one can't just loop using mpf_add
+
     """
 
     terms = [t for t in terms if not iszero(t)]
@@ -630,6 +633,7 @@ def evalf_trig(v, prec, options):
     This function handles sin and cos of complex arguments.
 
     TODO: should also handle tan of complex arguments.
+
     """
     from ..functions import cos, sin
     if isinstance(v, cos):
@@ -735,7 +739,7 @@ def evalf_atan(v, prec, options):
 
 
 def evalf_subs(prec, subs):
-    """ Change all Float entries in `subs` to have precision prec. """
+    """Change all Float entries in `subs` to have precision prec."""
     newsubs = {}
     for a, b in subs.items():
         b = sympify(b)
@@ -956,6 +960,7 @@ def hypsum(expr, n, start, prec):
     given general term, e.g. e = hypsum(1/factorial(n), n). The
     quotient between successive terms must be a quotient of integer
     polynomials.
+
     """
     from .numbers import Float
     from ..simplify import hypersimp
@@ -1236,6 +1241,7 @@ class EvalfMixin:
                 Choose algorithm for numerical quadrature. By default,
                 tanh-sinh quadrature is used. For oscillatory
                 integrals on an infinite interval, try quad='osc'.
+
         """
         from .numbers import Float, I
 
@@ -1283,7 +1289,7 @@ class EvalfMixin:
     n = evalf
 
     def _evalf(self, prec):
-        """Helper for evalf. Does the same thing but takes binary precision"""
+        """Helper for evalf. Does the same thing but takes binary precision."""
         r = self._eval_evalf(prec)
         if r is None:
             r = self
@@ -1339,5 +1345,6 @@ def N(x, dps=15, **options):
     ========
 
     diofant.core.evalf.EvalfMixin.evalf
+
     """
     return sympify(x).evalf(dps, **options)

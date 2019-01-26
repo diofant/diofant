@@ -7,6 +7,7 @@ Examples
 log(x)
 >>> integrate(sin(x), x)
 -cos(x)
+
 """
 
 from .integrals import integrate, Integral, line_integrate  # noqa: F401

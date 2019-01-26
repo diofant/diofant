@@ -17,6 +17,7 @@ class Mod(Function):
     x**2%y
     >>> _.subs({x: 5, y: 6})
     1
+
     """
 
     @classmethod
@@ -30,6 +31,7 @@ class Mod(Function):
         def doit(p, q):
             """Try to return p % q if both are numbers or +/-p is known
             to be less than or equal q.
+
             """
 
             if p.is_infinite or q.is_infinite:

@@ -17,6 +17,7 @@ def Eijk(*args, **kwargs):
     ========
 
     diofant.functions.special.tensor_functions.LeviCivita
+
     """
     return LeviCivita(*args, **kwargs)
 
@@ -120,6 +121,7 @@ class KroneckerDelta(Function):
     ==========
 
     * https//en.wikipedia.org/wiki/Kronecker_delta
+
     """
 
     is_integer = True
@@ -142,6 +144,7 @@ class KroneckerDelta(Function):
         0
         >>> KroneckerDelta(i, i + 1 + k)
         KroneckerDelta(i, i + k + 1)
+
         """
         diff = i - j
         if diff.is_zero:
@@ -192,6 +195,7 @@ class KroneckerDelta(Function):
         diofant.functions.special.tensor_functions.KroneckerDelta.is_below_fermi
         diofant.functions.special.tensor_functions.KroneckerDelta.is_only_below_fermi
         diofant.functions.special.tensor_functions.KroneckerDelta.is_only_above_fermi
+
         """
         if self.args[0]._assumptions.get("below_fermi"):
             return False
@@ -224,6 +228,7 @@ class KroneckerDelta(Function):
         diofant.functions.special.tensor_functions.KroneckerDelta.is_above_fermi
         diofant.functions.special.tensor_functions.KroneckerDelta.is_only_above_fermi
         diofant.functions.special.tensor_functions.KroneckerDelta.is_only_below_fermi
+
         """
         if self.args[0]._assumptions.get("above_fermi"):
             return False
@@ -256,6 +261,7 @@ class KroneckerDelta(Function):
         diofant.functions.special.tensor_functions.KroneckerDelta.is_above_fermi
         diofant.functions.special.tensor_functions.KroneckerDelta.is_below_fermi
         diofant.functions.special.tensor_functions.KroneckerDelta.is_only_below_fermi
+
         """
         return (self.args[0]._assumptions.get("above_fermi") or
                 self.args[1]._assumptions.get("above_fermi") or False)
@@ -285,6 +291,7 @@ class KroneckerDelta(Function):
         diofant.functions.special.tensor_functions.KroneckerDelta.is_above_fermi
         diofant.functions.special.tensor_functions.KroneckerDelta.is_below_fermi
         diofant.functions.special.tensor_functions.KroneckerDelta.is_only_above_fermi
+
         """
         return (self.args[0]._assumptions.get("below_fermi") or
                 self.args[1]._assumptions.get("below_fermi") or False)
@@ -394,6 +401,7 @@ class KroneckerDelta(Function):
 
         The preferred index is the index with more information regarding fermi
         level.  If indices contain same information, index 0 is returned.
+
         """
         if not self.is_above_fermi:
             if self.args[0]._assumptions.get("below_fermi"):

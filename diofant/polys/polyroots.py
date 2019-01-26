@@ -40,6 +40,7 @@ def roots_quadratic(f):
     The ordering will be the same for any numerical coefficients as long as
     the assumptions tested are correct, otherwise the ordering will not be
     sorted (but will be canonical).
+
     """
 
     a, b, c = f.all_coeffs()
@@ -91,6 +92,7 @@ def roots_cubic(f, trig=False):
 
     * https://en.wikipedia.org/wiki/Cubic_function, General
       formula for roots, (accessed November 17, 2014).
+
     """
     if trig:
         a, b, c, d = f.all_coeffs()
@@ -189,6 +191,7 @@ def _roots_quartic_euler(p, q, r, a):
     >>> p, q, r = -Rational(64, 5), -Rational(512, 125), -Rational(1024, 3125)
     >>> _roots_quartic_euler(p, q, r, Integer(0))[0]
     -sqrt(32*sqrt(5)/125 + 16/5) + 4*sqrt(5)/5
+
     """
     # solve the resolvent equation
     x = Symbol('x')
@@ -248,6 +251,7 @@ def roots_quartic(f):
     * http://www.albmath.org/files/Math_5713.pdf
     * http://www.statemaster.com/encyclopedia/Quartic-equation
     * eqworld.ipmnet.ru/en/solutions/ae/ae0108.pdf
+
     """
     _, a, b, c, d = f.monic().all_coeffs()
 
@@ -330,6 +334,7 @@ def roots_binomial(f):
     The ordering will be the same for any numerical coefficients as long as
     the assumptions tested are correct, otherwise the ordering will not be
     sorted (but will be canonical).
+
     """
     n = f.degree()
 
@@ -393,6 +398,7 @@ def _inv_totient_estimate(m):
     (192, 840)
     >>> _inv_totient_estimate(400)
     (400, 1750)
+
     """
     primes = [ d + 1 for d in divisors(m) if isprime(d + 1) ]
 
@@ -425,7 +431,7 @@ def _inv_totient_estimate(m):
 
 
 def roots_cyclotomic(f, factor=False):
-    """Compute roots of cyclotomic polynomials. """
+    """Compute roots of cyclotomic polynomials."""
     L, U = _inv_totient_estimate(f.degree())
 
     for n in range(L, U + 1):
@@ -457,9 +463,7 @@ def roots_cyclotomic(f, factor=False):
 
 
 def roots_quintic(f):
-    """
-    Calulate exact roots of a solvable quintic
-    """
+    """Calulate exact roots of a solvable quintic."""
     result = []
     coeff_5, coeff_4, p, q, r, s = f.all_coeffs()
 
@@ -622,6 +626,7 @@ def _integer_basis(poly):
     >>> p = Poly(x**5 + 512*x + 1024, x)
     >>> _integer_basis(p)
     4
+
     """
     monoms, coeffs = list(zip(*poly.terms()))
 
@@ -659,7 +664,7 @@ def _integer_basis(poly):
 
 
 def preprocess_roots(poly):
-    """Try to get rid of symbolic coefficients from ``poly``. """
+    """Try to get rid of symbolic coefficients from ``poly``."""
     coeff = S.One
 
     _, poly = poly.clear_denoms(convert=True)
@@ -779,6 +784,7 @@ def roots(f, *gens, **flags):
     ==========
 
     * https//en.wikipedia.org/wiki/Cubic_function#Trigonometric_.28and_hyperbolic.29_method
+
     """
     from .polytools import to_rational_coeffs
     flags = dict(flags)
@@ -823,7 +829,7 @@ def roots(f, *gens, **flags):
             result[root] = k
 
     def _try_decompose(f):
-        """Find roots using functional decomposition. """
+        """Find roots using functional decomposition."""
         factors, roots = f.decompose(), []
 
         for root in _try_heuristics(factors[0]):
@@ -841,7 +847,7 @@ def roots(f, *gens, **flags):
         return roots
 
     def _try_heuristics(f):
-        """Find roots using formulas and some tricks. """
+        """Find roots using formulas and some tricks."""
         if f.is_ground:
             return []
 
@@ -978,6 +984,7 @@ def root_factors(f, *gens, **args):
 
     >>> root_factors(x**2 - y, x)
     [x - sqrt(y), x + sqrt(y)]
+
     """
     args = dict(args)
     filter = args.pop('filter', None)

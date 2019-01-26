@@ -63,6 +63,7 @@ def gauss_legendre(n, n_digits):
     ==========
 
     * https//en.wikipedia.org/wiki/Gaussian_quadrature
+
     """
     x = Dummy("x")
     p = legendre_poly(n, x, polys=True)
@@ -136,6 +137,7 @@ def gauss_laguerre(n, n_digits):
     ==========
 
     * https//en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
+
     """
     x = Dummy("x")
     p = laguerre_poly(n, x, polys=True)
@@ -208,6 +210,7 @@ def gauss_hermite(n, n_digits):
     ==========
 
     * https//en.wikipedia.org/wiki/Gauss-Hermite_Quadrature
+
     """
     x = Dummy("x")
     p = hermite_poly(n, x, polys=True)
@@ -282,6 +285,7 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     ==========
 
     * https//en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
+
     """
     x = Dummy("x")
     p = laguerre_poly(n, x, alpha=alpha, polys=True)
@@ -356,6 +360,7 @@ def gauss_chebyshev_t(n, n_digits):
     ==========
 
     * https//en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
+
     """
     xi = []
     w = []
@@ -424,6 +429,7 @@ def gauss_chebyshev_u(n, n_digits):
     ==========
 
     * https//en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
+
     """
     xi = []
     w = []
@@ -497,6 +503,7 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     ==========
 
     * https//en.wikipedia.org/wiki/Gauss%E2%80%93Jacobi_quadrature
+
     """
     x = Dummy("x")
     p = jacobi_poly(n, alpha, beta, x, polys=True)

@@ -39,6 +39,7 @@ class DiracDelta(Function):
     ==========
 
     * http://mathworld.wolfram.com/DeltaFunction.html
+
     """
 
     is_commutative = True
@@ -89,6 +90,7 @@ class DiracDelta(Function):
 
         diofant.functions.special.delta_functions.DiracDelta.is_simple
         diofant.functions.special.delta_functions.DiracDelta
+
         """
         from ...polys import roots
 
@@ -143,6 +145,7 @@ class DiracDelta(Function):
 
         diofant.simplify.simplify.simplify
         diofant.functions.special.delta_functions.DiracDelta
+
         """
         p = self.args[0].as_poly(x)
         if p:
@@ -184,6 +187,7 @@ class Heaviside(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Heaviside_step_function
+
     """
 
     def fdiff(self, argindex=1):

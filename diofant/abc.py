@@ -87,6 +87,7 @@ def clashing():
     be tested after removing "clashing" from the list of deleted items
     at the bottom of this file which removes this function from the
     namespace.
+
     """
 
     ns = {}

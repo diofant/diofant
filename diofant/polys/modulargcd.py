@@ -18,6 +18,7 @@ def _trivial_gcd(f, g):
     """
     Compute the GCD of two polynomials in trivial cases, i.e. when one
     or both polynomials are zero.
+
     """
     ring = f.ring
 
@@ -37,9 +38,7 @@ def _trivial_gcd(f, g):
 
 
 def _gf_gcd(fp, gp, p):
-    r"""
-    Compute the GCD of two univariate polynomials in `\mathbb{Z}_p[x]`.
-    """
+    r"""Compute the GCD of two univariate polynomials in `\mathbb{Z}_p[x]`."""
     dom = fp.ring.domain
 
     while gp:
@@ -213,9 +212,7 @@ def _LC(f):
 
 
 def _swap(f, i):
-    """
-    Make the variable `x_i` the leading one in a multivariate polynomial `f`.
-    """
+    """Make the variable `x_i` the leading one in a multivariate polynomial `f`."""
     ring = f.ring
     fswap = ring.zero
     for monom, coeff in f.items():
@@ -430,6 +427,7 @@ def _modgcd_p(f, g, p, degbound, contbound):
 
     * [Monagan00]_
     * [Brown71]_
+
     """
     ring = f.ring
     k = ring.ngens
@@ -586,6 +584,7 @@ def modgcd(f, g):
 
     * [Monagan00]_
     * [Brown71]_
+
     """
     assert f.ring == g.ring and f.ring.domain.is_IntegerRing
 
@@ -660,6 +659,7 @@ def _gf_div(f, g, p):
     r"""
     Compute `\frac f g` modulo `p` for two univariate polynomials over
     `\mathbb Z_p`.
+
     """
     ring = f.ring
     densequo, denserem = gf_div(f.to_dense(), g.to_dense(), p, ring.domain)
@@ -701,6 +701,7 @@ def _rational_function_reconstruction(c, p, m):
     ==========
 
     * [Hoeij04]_
+
     """
     ring = c.ring
     domain = ring.domain
@@ -933,6 +934,7 @@ def trial_division(f, h, minpoly, p=None):
     ==========
 
     * [Hoeij02]_
+
     """
     ring = f.ring
     zxring = ring.clone(symbols=(ring.symbols[1], ring.symbols[0]))
@@ -971,6 +973,7 @@ def _evaluate_ground(f, i, a):
     r"""
     Evaluate a polynomial `f` at `a` in the `i`-th variable of the ground
     domain.
+
     """
     ring = f.ring.clone(domain=f.ring.domain.ring.drop(i))
     fa = ring.zero
@@ -1021,6 +1024,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     ==========
 
     * [Hoeij04]_
+
     """
     ring = f.ring
     domain = ring.domain  # Z[t_1, ..., t_k]
@@ -1181,6 +1185,7 @@ def integer_rational_reconstruction(c, m, domain):
     ==========
 
     * [Wang81]_
+
     """
     if c < 0:
         c += m
@@ -1526,6 +1531,7 @@ def _minpoly_from_dense(minpoly, ring):
     r"""
     Change representation of the minimal polynomial from ``DMP`` to
     ``PolyElement`` for a given ring.
+
     """
     minpoly_ = ring.zero
 
@@ -1540,6 +1546,7 @@ def _primitive_in_x0(f):
     Compute the content in `x_0` and the primitive part of a polynomial `f`
     in
     `\mathbb Q(\alpha)[x_0, x_1, \ldots, x_{n-1}] \cong \mathbb Q(\alpha)[x_1, \ldots, x_{n-1}][x_0]`.
+
     """
     fring = f.ring
     ring = fring.drop_to_ground(*range(1, fring.ngens))
@@ -1627,6 +1634,7 @@ def func_field_modgcd(f, g):
     ==========
 
     * [Hoeij04]_
+
     """
     ring = f.ring
     domain = ring.domain

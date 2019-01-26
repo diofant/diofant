@@ -33,6 +33,7 @@ def smoothness(n):
     ========
 
     factorint, smoothness_p
+
     """
 
     if n == 1:
@@ -99,6 +100,7 @@ def smoothness_p(n, m=-1, power=0, visual=None):
     ========
 
     factorint, smoothness
+
     """
     from ..utilities import flatten
 
@@ -155,6 +157,7 @@ def trailing(n):
     7
     >>> trailing(63)
     0
+
     """
     n = int(n)
     if not n:
@@ -189,6 +192,7 @@ def multiplicity(p, n):
     [0, 1, 2, 3, 3]
     >>> multiplicity(3, Rational(1, 9))
     -2
+
     """
     try:
         p, n = as_int(p), as_int(n)
@@ -263,6 +267,7 @@ def perfect_power(n, candidates=None, big=True, factor=True):
     (2, 4)
     >>> perfect_power(16, big = False)
     (4, 2)
+
     """
     n = int(n)
     if n < 3:
@@ -424,6 +429,7 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
 
     * Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
       A Computational Perspective", Springer, 2nd edition, 229-231
+
     """
     n = int(n)
     if n < 5:
@@ -577,6 +583,7 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
       A Computational Perspective", Springer, 2nd edition, 236-238
     * https://web.archive.org/web/20150716201437/http://modular.math.washington.edu/edu/2007/spring/ent/ent-html/node81.html
     * https://web.archive.org/web/20170830055619/http://www.cs.toronto.edu/~yuvalf/Factorization.pdf
+
     """
 
     n = int(n)
@@ -610,6 +617,7 @@ def _trial(factors, n, candidates, verbose=False):
     against all integers given in the sequence ``candidates``
     and updates the dict ``factors`` in-place. Returns the reduced
     value of ``n`` and a flag indicating whether any factors were found.
+
     """
     if verbose:
         factors0 = list(factors)
@@ -631,6 +639,7 @@ def _check_termination(factors, n, limitp1, use_trial, use_rho, use_pm1,
     Helper function for integer factorization. Checks if ``n``
     is a prime or a perfect power, and in those cases updates
     the factorization and raises ``StopIteration``.
+
     """
 
     if verbose:
@@ -683,11 +692,13 @@ def _factorint_small(factors, n, limit, fail_max):
     If factors of n were found they will be in the factors dictionary as
     {factor: multiplicity} and the returned value of n will have had those
     factors removed. The factors dictionary is modified in-place.
+
     """
 
     def done(n, d):
         """return n, d if the sqrt(n) wasn't reached yet, else
         n, 0 indicating that factoring is done.
+
         """
         if d*d <= n:
             return n, d
@@ -903,6 +914,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     ========
 
     smoothness, smoothness_p, divisors
+
     """
     factordict = {}
     if visual and not isinstance(n, Mul) and not isinstance(n, dict):
@@ -1159,6 +1171,7 @@ def factorrat(rat, limit=None, use_trial=True, use_rho=True, use_pm1=True,
         - ``use_pm1``: Toggle use of Pollard's p-1 method
         - ``verbose``: Toggle detailed printing of progress
         - ``visual``: Toggle product form of output
+
     """
     from collections import defaultdict
     f = factorint(rat.numerator, limit=limit, use_trial=use_trial,
@@ -1215,6 +1228,7 @@ def primefactors(n, limit=None, verbose=False):
     ========
 
     divisors
+
     """
     n = int(n)
     factors = sorted(factorint(n, limit=limit, verbose=verbose))
@@ -1275,6 +1289,7 @@ def divisors(n, generator=False):
     ==========
 
     * https//stackoverflow.com/questions/1010381/python-factorization
+
     """
 
     n = as_int(abs(n))
@@ -1311,6 +1326,7 @@ def divisor_count(n, modulus=1):
     ========
 
     factorint, divisors, totient
+
     """
 
     if not modulus:
@@ -1363,6 +1379,7 @@ def antidivisors(n, generator=False):
     ========
 
     primefactors, factorint, divisors, divisor_count, antidivisor_count
+
     """
 
     n = as_int(abs(n))
@@ -1394,6 +1411,7 @@ def antidivisor_count(n):
     ========
 
     factorint, divisors, antidivisors, divisor_count, totient
+
     """
 
     n = as_int(abs(n))
@@ -1415,6 +1433,7 @@ class totient(Function):
     ========
 
     divisor_count
+
     """
 
     @classmethod
@@ -1482,6 +1501,7 @@ class divisor_sigma(Function):
     ========
 
     divisor_count, totient, divisors, factorint
+
     """
 
     @classmethod
@@ -1545,6 +1565,7 @@ def core(n, t=2):
     ========
 
     factorint, diofant.solvers.diophantine.square_factor
+
     """
 
     n = as_int(n)

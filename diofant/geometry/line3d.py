@@ -37,6 +37,7 @@ class LinearEntity3D(GeometryEntity):
     =====
 
     This is a base class and is not meant to be instantiated.
+
     """
 
     def __new__(cls, p1, p2, **kwargs):
@@ -105,6 +106,7 @@ class LinearEntity3D(GeometryEntity):
         >>> l = Line3D(p1, p2)
         >>> l.direction_ratio
         [5, 3, 1]
+
         """
         p1, p2 = self.points
         return p1.direction_ratio(p2)
@@ -127,6 +129,7 @@ class LinearEntity3D(GeometryEntity):
         [sqrt(35)/7, 3*sqrt(35)/35, sqrt(35)/35]
         >>> sum(i**2 for i in _)
         1
+
         """
         p1, p2 = self.points
         return p1.direction_cosine(p2)
@@ -143,6 +146,7 @@ class LinearEntity3D(GeometryEntity):
         >>> l1 = Line3D(p1, p2)
         >>> l1.length
         oo
+
         """
         return oo
 
@@ -755,6 +759,7 @@ class LinearEntity3D(GeometryEntity):
         >>> l2 = Line3D(p1, p3)
         >>> l1.is_similar(l2)
         True
+
         """
         if isinstance(other, Line3D):
             if self.direction_cosine == other.direction_cosine and other.p1 in self:
@@ -766,6 +771,7 @@ class LinearEntity3D(GeometryEntity):
     def __contains__(self, other):
         """Return a definitive answer or else raise an error if it cannot
         be determined that other is on the boundaries of self.
+
         """
         result = self.contains(other)
 
@@ -780,6 +786,7 @@ class LinearEntity3D(GeometryEntity):
         True if other is on the boundaries of self;
         False if not on the boundaries of self;
         None if a determination cannot be made.
+
         """
         raise NotImplementedError()
 
@@ -811,6 +818,7 @@ class Line3D(LinearEntity3D):
     Line3D(Point3D(2, 3, 4), Point3D(3, 5, 1))
     >>> L.points
     (Point3D(2, 3, 4), Point3D(3, 5, 1))
+
     """
 
     def __new__(cls, p1, pt=None, direction_ratio=[], **kwargs):
@@ -905,6 +913,7 @@ class Line3D(LinearEntity3D):
         False
         >>> l1 in l2
         True
+
         """
         if is_sequence(o):
             o = Point3D(o)
@@ -944,6 +953,7 @@ class Line3D(LinearEntity3D):
         2*sqrt(6)/3
         >>> s.distance((-1, 1, 1))
         2*sqrt(6)/3
+
         """
         if not isinstance(o, Point3D):
             if is_sequence(o):
@@ -954,7 +964,7 @@ class Line3D(LinearEntity3D):
         return a
 
     def equals(self, other):
-        """Returns True if self and other are the same mathematical entities"""
+        """Returns True if self and other are the same mathematical entities."""
         if not isinstance(other, Line3D):
             return False
         return Point3D.are_collinear(self.p1, other.p1, self.p2, other.p2)
@@ -1156,6 +1166,7 @@ class Ray3D(LinearEntity3D):
         sqrt(6)
         >>> s.distance((-1, -1, 2))
         sqrt(6)
+
         """
         if not isinstance(o, Point3D):
             if is_sequence(o):
@@ -1236,7 +1247,7 @@ class Ray3D(LinearEntity3D):
         return False
 
     def equals(self, other):
-        """Returns True if self and other are the same mathematical entities"""
+        """Returns True if self and other are the same mathematical entities."""
         if not isinstance(other, Ray3D):
             return False
         return self.source == other.source and other.p2 in self
@@ -1277,6 +1288,7 @@ class Segment3D(LinearEntity3D):
     sqrt(17)
     >>> s.midpoint
     Point3D(5/2, 2, 8)
+
     """
 
     def __new__(cls, p1, p2, **kwargs):
@@ -1380,6 +1392,7 @@ class Segment3D(LinearEntity3D):
         sqrt(341)
         >>> s.distance((10, 15, 12))
         sqrt(341)
+
         """
         if is_sequence(o):
             o = Point3D(o)
@@ -1410,6 +1423,7 @@ class Segment3D(LinearEntity3D):
         >>> s2 = Segment3D(p2, p1)
         >>> s.contains(s2)
         True
+
         """
         if is_sequence(other):
             other = Point3D(other)

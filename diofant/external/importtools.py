@@ -88,6 +88,7 @@ def import_module(module, min_module_version=None, min_python_version=None,
     ========
 
     __import__
+
     """
     warn_old_version = True if DIOFANT_DEBUG else warn_old_version
     warn_not_installed = True if DIOFANT_DEBUG else warn_not_installed

@@ -40,6 +40,7 @@ def _af_rmul(a, b):
     See Also
     ========
     rmul, _af_rmuln
+
     """
     return [a[i] for i in b]
 
@@ -71,6 +72,7 @@ def _af_rmuln(*abc):
     See Also
     ========
     rmul, _af_rmul
+
     """
     a = abc
     m = len(a)
@@ -124,6 +126,7 @@ def _af_parity(pi):
     ========
 
     Permutation
+
     """
     n = len(pi)
     a = [0] * n
@@ -156,6 +159,7 @@ def _af_invert(a):
     ========
 
     Permutation, __invert__
+
     """
     inv_form = [0] * len(a)
     for i, ai in enumerate(a):
@@ -176,6 +180,7 @@ def _af_pow(a, n):
     4
     >>> _af_pow(p._array_form, 4)
     [0, 1, 2, 3]
+
     """
     if n == 0:
         return list(range(len(a)))
@@ -222,6 +227,7 @@ def _af_commutes_with(a, b):
     ========
 
     Permutation, commutes_with
+
     """
     return not any(a[b[i]] != b[a[i]] for i in range(len(a) - 1))
 
@@ -296,6 +302,7 @@ class Cycle(dict):
     ========
 
     Permutation
+
     """
 
     def __missing__(self, arg):
@@ -357,6 +364,7 @@ class Cycle(dict):
 
         >>> Cycle(2, 4)(1, 2, 4).list(-1)
         [0, 2, 1]
+
         """
         if not self and size is None:
             raise ValueError('must give size for empty Cycle')
@@ -379,6 +387,7 @@ class Cycle(dict):
         Cycle(1, 2)
         >>> list(Cycle(1, 2).items())
         [(1, 2), (2, 1)]
+
         """
         if not self:
             return 'Cycle()'
@@ -397,6 +406,7 @@ class Cycle(dict):
 
         >>> Cycle(1, 2, 6)
         Cycle(1, 2, 6)
+
         """
 
         if not args:
@@ -803,6 +813,7 @@ class Permutation(Basic):
         Permutation([0, 4, 3, 5, 1, 2], size=10)
         >>> _.array_form
         [0, 4, 3, 5, 1, 2, 6, 7, 8, 9]
+
         """
         size = kwargs.pop('size', None)
         if size is not None:
@@ -934,6 +945,7 @@ class Permutation(Basic):
         [2, 0, 3, 1]
         >>> Permutation([[1, 2], [4, 5]]).array_form
         [0, 2, 1, 3, 5, 4]
+
         """
         return self._array_form[:]
 
@@ -960,6 +972,7 @@ class Permutation(Basic):
         [0, 2, 1]
         >>> Permutation(3).list(-1)
         []
+
         """
         if not self and size is None:
             raise ValueError('must give size for empty Cycle')
@@ -997,6 +1010,7 @@ class Permutation(Basic):
         ========
 
         array_form, full_cyclic_form
+
         """
         if self._cyclic_form is not None:
             return list(self._cyclic_form)
@@ -1029,6 +1043,7 @@ class Permutation(Basic):
 
         >>> Permutation([0, 2, 1]).full_cyclic_form
         [[0], [1, 2]]
+
         """
         need = set(range(self.size)) - set(flatten(self.cyclic_form))
         rv = self.cyclic_form
@@ -1051,6 +1066,7 @@ class Permutation(Basic):
         ========
 
         cardinality, length, order, rank
+
         """
         return self._size
 
@@ -1065,6 +1081,7 @@ class Permutation(Basic):
         [1, 0, 3, 2, 4]
         >>> p.support()
         [0, 1, 2, 3]
+
         """
         a = self.array_form
         return [i for i, e in enumerate(a) if a[i] != i]
@@ -1102,6 +1119,7 @@ class Permutation(Basic):
         ========
 
         __add__
+
         """
         return self.__add__(-other)
 
@@ -1155,6 +1173,7 @@ class Permutation(Basic):
         """
         same as rmul, but the elements of args are Permutation objects
         which have _array_form
+
         """
         a = [x._array_form for x in args]
         rv = _af_new(_af_rmuln(*a))
@@ -1163,6 +1182,7 @@ class Permutation(Basic):
     def mul_inv(self, other):
         """
         other*~self, self and other have _array_form
+
         """
         a = _af_invert(self._array_form)
         b = other._array_form
@@ -1218,6 +1238,7 @@ class Permutation(Basic):
 
         >>> Cycle(1, 2)(2, 3)
         Cycle(1, 3, 2)
+
         """
         a = self.array_form
         # __rmul__ makes sure the other is a Permutation
@@ -1243,6 +1264,7 @@ class Permutation(Basic):
         >>> b = Permutation([2, 3, 5, 4, 1, 0])
         >>> a.commutes_with(b)
         False
+
         """
         a = self.array_form
         b = other.array_form
@@ -1261,6 +1283,7 @@ class Permutation(Basic):
         4
         >>> p**4
         Permutation([0, 1, 2, 3])
+
         """
         if type(n) == Perm:
             raise NotImplementedError(
@@ -1277,6 +1300,7 @@ class Permutation(Basic):
         >>> p = Permutation(1, 2, 9)
         >>> 2^p == p(2) == 9
         True
+
         """
         if int(i) == i:
             return self(i)
@@ -1350,6 +1374,7 @@ class Permutation(Basic):
 
         >>> p^~r == r*p*~r
         True
+
         """
 
         if self.size != h.size:
@@ -1414,6 +1439,7 @@ class Permutation(Basic):
         ['S', 'y', 'm', 'P', 'y']
         >>> Permutation.from_sequence('SymPy', key=lambda x: x.lower())
         Permutation(4)(0, 2)(1, 3)
+
         """
         ic = list(zip(i, range(len(i))))
         if key:
@@ -1438,6 +1464,7 @@ class Permutation(Basic):
         True
         >>> p*~p == ~p*p == Permutation([0, 1, 2, 3])
         True
+
         """
         return _af_new(_af_invert(self._array_form))
 
@@ -1449,6 +1476,7 @@ class Permutation(Basic):
 
         >>> list(Permutation(range(3)))
         [0, 1, 2]
+
         """
         for i in self.array_form:
             yield i
@@ -1471,6 +1499,7 @@ class Permutation(Basic):
 
         >>> p([x, 1, 0, x**2])
         [0, x**2, x, 1]
+
         """
         # list indices can be Integer or int; leave this
         # as it is (don't test or convert it) because this
@@ -1498,6 +1527,7 @@ class Permutation(Basic):
         {0, 1, 2, 3, 4, 5}
         >>> Permutation([[0, 1], [2, 3], [4, 5]]).atoms()
         {0, 1, 2, 3, 4, 5}
+
         """
         return set(self.array_form)
 
@@ -1522,6 +1552,7 @@ class Permutation(Basic):
         ========
 
         rank, unrank_lex
+
         """
         perm = self.array_form[:]
         n = len(perm)
@@ -1562,6 +1593,7 @@ class Permutation(Basic):
         ========
 
         next_nonlex, rank_nonlex
+
         """
         def _unrank1(n, r, a):
             if n > 0:
@@ -1591,6 +1623,7 @@ class Permutation(Basic):
         ========
 
         next_nonlex, unrank_nonlex
+
         """
         def _rank1(n, perm, inv_perm):
             if n == 1:
@@ -1629,6 +1662,7 @@ class Permutation(Basic):
         ========
 
         rank_nonlex, unrank_nonlex
+
         """
         r = self.rank_nonlex()
         if r == ifac(self.size) - 1:
@@ -1653,6 +1687,7 @@ class Permutation(Basic):
         ========
 
         next_lex, unrank_lex, cardinality, length, order, size
+
         """
         if self._rank is not None:
             return self._rank
@@ -1687,6 +1722,7 @@ class Permutation(Basic):
         ========
 
         length, order, rank, size
+
         """
         return int(ifac(self.size))
 
@@ -1712,6 +1748,7 @@ class Permutation(Basic):
         ========
 
         _af_parity
+
         """
         if self._cyclic_form is not None:
             return (self.size - self.cycles) % 2
@@ -1737,6 +1774,7 @@ class Permutation(Basic):
         ========
 
         is_odd
+
         """
         return not self.is_odd
 
@@ -1759,6 +1797,7 @@ class Permutation(Basic):
         ========
 
         is_even
+
         """
         return bool(self.parity() % 2)
 
@@ -1780,6 +1819,7 @@ class Permutation(Basic):
         ========
 
         is_Empty
+
         """
         return self.size == 1
 
@@ -1800,6 +1840,7 @@ class Permutation(Basic):
         ========
 
         is_Singleton
+
         """
         return self.size == 0
 
@@ -1828,6 +1869,7 @@ class Permutation(Basic):
         ========
 
         order
+
         """
         af = self.array_form
         return not af or all(i == af[i] for i in range(self.size))
@@ -1848,6 +1890,7 @@ class Permutation(Basic):
         ========
 
         descents, inversions, min, max
+
         """
         a = self.array_form
         pos = [i for i in range(len(a) - 1) if a[i] < a[i + 1]]
@@ -1869,6 +1912,7 @@ class Permutation(Basic):
         ========
 
         ascents, inversions, min, max
+
         """
         a = self.array_form
         pos = [i for i in range(len(a) - 1) if a[i] > a[i + 1]]
@@ -1889,6 +1933,7 @@ class Permutation(Basic):
         ========
 
         min, descents, ascents, inversions
+
         """
         max = 0
         a = self.array_form
@@ -1912,6 +1957,7 @@ class Permutation(Basic):
         ========
 
         max, descents, ascents, inversions
+
         """
         a = self.array_form
         min = len(a)
@@ -1949,6 +1995,7 @@ class Permutation(Basic):
         ========
 
         descents, ascents, min, max
+
         """
         inversions = 0
         a = self.array_form
@@ -2007,6 +2054,7 @@ class Permutation(Basic):
         ==========
 
         https://en.wikipedia.org/wiki/Commutator
+
         """
 
         a = self.array_form
@@ -2047,6 +2095,7 @@ class Permutation(Basic):
         ========
 
         inversions
+
         """
         if self.is_even:
             return 1
@@ -2073,6 +2122,7 @@ class Permutation(Basic):
         ========
 
         is_Identity, cardinality, length, rank, size
+
         """
 
         return reduce(lcm, [len(cycle) for cycle in self.cyclic_form], 1)
@@ -2093,6 +2143,7 @@ class Permutation(Basic):
         ========
 
         min, max, support, cardinality, order, rank, size
+
         """
 
         return len(self.support())
@@ -2110,6 +2161,7 @@ class Permutation(Basic):
         {1: 4}
         >>> Permutation(0, 4, 3)(1, 2)(5, 6).cycle_structure
         {2: 2, 3: 1}
+
         """
         if self._cycle_structure:
             rv = self._cycle_structure
@@ -2143,6 +2195,7 @@ class Permutation(Basic):
         See Also
         ========
         diofant.functions.combinatorial.numbers.stirling
+
         """
         return len(self.full_cyclic_form)
 
@@ -2159,6 +2212,7 @@ class Permutation(Basic):
         >>> p = Permutation([3, 0, 2, 1, 4])
         >>> p.index()
         2
+
         """
         a = self.array_form
 
@@ -2180,6 +2234,7 @@ class Permutation(Basic):
         >>> q = Permutation([1, 3, 2, 0])
         >>> q.runs()
         [[1, 3], [2], [0]]
+
         """
         return runs(self.array_form)
 
@@ -2222,6 +2277,7 @@ class Permutation(Basic):
         See Also
         ========
         from_inversion_vector
+
         """
         self_array_form = self.array_form
         n = len(self_array_form)
@@ -2254,6 +2310,7 @@ class Permutation(Basic):
         ========
 
         unrank_trotterjohnson, next_trotterjohnson
+
         """
         if self.array_form == [] or self.is_Identity:
             return 0
@@ -2291,6 +2348,7 @@ class Permutation(Basic):
         ========
 
         rank_trotterjohnson, next_trotterjohnson
+
         """
         perm = [0]*size
         r2 = 0
@@ -2335,6 +2393,7 @@ class Permutation(Basic):
         ========
 
         rank_trotterjohnson, unrank_trotterjohnson, diofant.utilities.iterables.generate_bell
+
         """
         pi = self.array_form[:]
         n = len(pi)
@@ -2389,6 +2448,7 @@ class Permutation(Basic):
         ========
 
         get_precedence_distance, get_adjacency_matrix, get_adjacency_distance
+
         """
         m = zeros(self.size)
         perm = self.array_form
@@ -2419,6 +2479,7 @@ class Permutation(Basic):
         ========
 
         get_precedence_matrix, get_adjacency_matrix, get_adjacency_distance
+
         """
         if self.size != other.size:
             raise ValueError("The permutations must be of equal size.")
@@ -2466,6 +2527,7 @@ class Permutation(Basic):
         ========
 
         get_precedence_matrix, get_precedence_distance, get_adjacency_distance
+
         """
         m = zeros(self.size)
         perm = self.array_form
@@ -2500,6 +2562,7 @@ class Permutation(Basic):
         ========
 
         get_precedence_matrix, get_precedence_distance, get_adjacency_matrix
+
         """
         if self.size != other.size:
             raise ValueError("The permutations must be of the same size.")
@@ -2534,6 +2597,7 @@ class Permutation(Basic):
         ========
 
         get_precedence_distance, get_adjacency_distance
+
         """
         a = self.array_form
         b = other.array_form
@@ -2651,6 +2715,7 @@ class Permutation(Basic):
         ========
 
         rank, next_lex
+
         """
         perm_array = [0] * size
         psize = 1
@@ -2677,6 +2742,7 @@ def _merge(arr, temp, left, mid, right):
 
     Helper function for calculating inversions. This method is
     for internal use only.
+
     """
     i = k = left
     j = mid

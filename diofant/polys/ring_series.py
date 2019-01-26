@@ -26,6 +26,7 @@ def _invert_monoms(p1):
     ========
 
     diofant.polys.densebasic.dup_reverse
+
     """
     terms = list(p1.items())
     terms.sort()
@@ -40,9 +41,7 @@ def _invert_monoms(p1):
 
 
 def _giant_steps(target):
-    """
-    list of precision steps for the Newton's method
-    """
+    """List of precision steps for the Newton's method."""
     res = giant_steps(2, target)
     if res[0] != 2:
         res = [2] + res
@@ -63,6 +62,7 @@ def rs_trunc(p1, x, prec):
     x**10 + x**5 + x + 1
     >>> rs_trunc(p, x, 10)
     x**5 + x + 1
+
     """
 
     ring = p1.ring
@@ -89,6 +89,7 @@ def rs_mul(p1, p2, x, prec):
     >>> p2 = x + 1
     >>> rs_mul(p1, p2, x, 3)
     3*x**2 + 3*x + 1
+
     """
 
     ring = p1.ring
@@ -133,6 +134,7 @@ def rs_square(p1, x, prec):
     >>> p = x**2 + 2*x + 1
     >>> rs_square(p, x, 3)
     6*x**2 + 4*x + 1
+
     """
     ring = p1.ring
     p = ring.zero
@@ -170,6 +172,7 @@ def rs_pow(p1, n, x, prec):
     >>> p = x + 1
     >>> rs_pow(p, 4, x, 3)
     6*x**2 + 4*x + 1
+
     """
     R = p1.ring
     p = R.zero
@@ -215,6 +218,7 @@ def _has_constant_term(p, x):
     >>> p = x**2 + x + 1
     >>> _has_constant_term(p, x)
     True
+
     """
     ring = p.ring
     iv = ring.gens.index(x)
@@ -241,6 +245,7 @@ def _series_inversion1(p, x, prec):
     >>> p = x + 1
     >>> _series_inversion1(p, x, 4)
     -x**3 + x**2 - x + 1
+
     """
     ring = p.ring
     zm = ring.zero_monom
@@ -269,6 +274,7 @@ def rs_series_inversion(p, x, prec):
     -x**3*y**6 + x**2*y**4 - x*y**2 + 1
     >>> rs_series_inversion(1 + x*y**2, y, 4)
     -x*y**2 + 1
+
     """
     ring = p.ring
     zm = ring.zero_monom
@@ -310,6 +316,7 @@ def rs_series_from_list(p, c, x, prec, concur=1):
     ========
 
     diofant.polys.rings.PolyElement.compose
+
     """
 
     ring = p.ring
@@ -377,6 +384,7 @@ def rs_integrate(self, x):
     >>> p = x + x**2*y**3
     >>> rs_integrate(p, x)
     1/3*x**3*y**3 + 1/2*x**2
+
     """
     ring = self.ring
     p1 = ring.zero
@@ -406,6 +414,7 @@ def rs_log(p, x, prec):
     >>> R, x = ring('x', QQ)
     >>> rs_log(1 + x, x, 8)
     1/7*x**7 - 1/6*x**6 + 1/5*x**5 - 1/4*x**4 + 1/3*x**3 - 1/2*x**2 + x
+
     """
     ring = p.ring
     if p == 1:
@@ -418,9 +427,7 @@ def rs_log(p, x, prec):
 
 
 def _exp1(p, x, prec):
-    """
-    helper function for ``rs_exp``
-    """
+    """Helper function for ``rs_exp``."""
     ring = p.ring
     p1 = ring(1)
     for precx in _giant_steps(prec):
@@ -440,6 +447,7 @@ def rs_exp(p, x, prec):
     >>> R, x = ring('x', QQ)
     >>> rs_exp(x**2, x, 7)
     1/6*x**6 + 1/2*x**4 + x**2 + 1
+
     """
     ring = p.ring
     if _has_constant_term(p, x):  # pragma: no cover
@@ -470,6 +478,7 @@ def rs_newton(p, x, prec):
     >>> p = x**2 - 2
     >>> rs_newton(p, x, 5)
     8*x**4 + 4*x**2 + 2
+
     """
     deg = p.degree()
     p1 = _invert_monoms(p)
@@ -493,6 +502,7 @@ def rs_hadamard_exp(p1, inverse=False):
     >>> p = 1 + x + x**2 + x**3
     >>> rs_hadamard_exp(p)
     1/6*x**3 + 1/2*x**2 + x + 1
+
     """
     R = p1.ring
     if R.domain != QQ:  # pragma: no cover
@@ -524,6 +534,7 @@ def rs_compose_add(p1, p2):
     ==========
 
     * [Bostan02]_
+
     """
     R = p1.ring
     x = R.gens[0]

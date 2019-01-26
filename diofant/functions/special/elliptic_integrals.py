@@ -42,6 +42,7 @@ class elliptic_k(Function):
     ========
 
     elliptic_f
+
     """
 
     @classmethod
@@ -110,6 +111,7 @@ class elliptic_f(Function):
     ========
 
     elliptic_k
+
     """
 
     @classmethod
@@ -178,6 +180,7 @@ class elliptic_e(Function):
     * https//en.wikipedia.org/wiki/Elliptic_integrals
     * http://functions.wolfram.com/EllipticIntegrals/EllipticE2
     * http://functions.wolfram.com/EllipticIntegrals/EllipticE
+
     """
 
     @classmethod
@@ -282,6 +285,7 @@ class elliptic_pi(Function):
     * https//en.wikipedia.org/wiki/Elliptic_integrals
     * http://functions.wolfram.com/EllipticIntegrals/EllipticPi3
     * http://functions.wolfram.com/EllipticIntegrals/EllipticPi
+
     """
 
     @classmethod

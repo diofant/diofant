@@ -6,6 +6,7 @@ See Also
 diofant.stats.frv_types
 diofant.stats.rv
 diofant.stats.crv
+
 """
 
 import random
@@ -38,6 +39,7 @@ class FiniteDomain(RandomDomain):
     A domain with discrete finite support
 
     Represented using a FiniteSet.
+
     """
 
     is_Finite = True
@@ -55,6 +57,7 @@ class SingleFiniteDomain(FiniteDomain):
     A FiniteDomain over a single symbol/set
 
     Example: The possibilities of a *single* die roll.
+
     """
 
     def __new__(cls, symbol, set):
@@ -91,6 +94,7 @@ class ProductFiniteDomain(ProductDomain, FiniteDomain):
     A Finite domain consisting of several other FiniteDomains
 
     Example: The possibilities of the rolls of three independent dice
+
     """
 
     def __iter__(self):
@@ -108,6 +112,7 @@ class ConditionalFiniteDomain(ConditionalDomain, ProductFiniteDomain):
 
     Example: The possibilities of a die roll under the condition that the
     roll is even.
+
     """
 
     def __new__(cls, domain, condition):
@@ -192,6 +197,7 @@ class FinitePSpace(PSpace):
     A Finite Probability Space
 
     Represents the probabilities of a finite number of events.
+
     """
 
     is_Finite = True
@@ -273,6 +279,7 @@ class FinitePSpace(PSpace):
         Internal sample method
 
         Returns dictionary mapping RandomSymbol to realization value.
+
         """
         expr = Tuple(*self.values)
         cdf = self.sorted_cdf(expr, python_float=True)
@@ -297,6 +304,7 @@ class SingleFinitePSpace(SinglePSpace, FinitePSpace):
 
     This class is implemented by many of the standard FiniteRV types such as
     Die, Bernoulli, Coin, etc....
+
     """
 
     @property
@@ -311,9 +319,7 @@ class SingleFinitePSpace(SinglePSpace, FinitePSpace):
 
 
 class ProductFinitePSpace(ProductPSpace, FinitePSpace):
-    """
-    A collection of several independent finite probability spaces
-    """
+    """A collection of several independent finite probability spaces."""
 
     @property
     def domain(self):

@@ -13,6 +13,7 @@ def matrix_fglm(F, ring, O_to):
     ==========
 
     * [Faugère94]_
+
     """
     domain = ring.domain
     ngens = ring.ngens
@@ -83,9 +84,7 @@ def _matrix_mul(M, v):
 
 
 def _update(s, _lambda, P):
-    """
-    Update ``P`` such that for the updated `P'` `P' v = e_{s}`.
-    """
+    """Update ``P`` such that for the updated `P'` `P' v = e_{s}`."""
     k = min(j for j in range(s, len(_lambda)) if _lambda[j] != 0)
 
     for r in range(len(_lambda)):
@@ -102,6 +101,7 @@ def _representing_matrices(basis, G, ring):
     r"""
     Compute the matrices corresponding to the linear maps `m \mapsto
     x_i m` for all variables `x_i`.
+
     """
     domain = ring.domain
     u = ring.ngens-1
@@ -129,6 +129,7 @@ def _basis(G, ring):
     Computes a list of monomials which are not divisible by the leading
     monomials wrt to ``O`` of ``G``. These monomials are a basis of
     `K[X_1, \ldots, X_n]/(G)`.
+
     """
     order = ring.order
 

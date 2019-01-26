@@ -198,6 +198,7 @@ Contraction of the resulting array: `\sum_m \frac{\partial A^m}{\partial x^m}`
 
 >>> tensorcontraction(ax, (0, 1))
 E**x + z*cos(y*z)
+
 """
 
 from .dense_ndim_array import MutableDenseNDimArray, ImmutableDenseNDimArray  # noqa: F401

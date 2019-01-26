@@ -215,8 +215,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
         # ---------------- helper functions
 
         def ratq(x):
-            """Return Rational part of x's exponent as it appears in the bkey.
-            """
+            """Return Rational part of x's exponent as it appears in the bkey."""
             return bkey(x)[0][1]
 
         def bkey(b, e=None):
@@ -249,6 +248,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
             and put the factors of its base in the common_b dictionary or
             update the existing bases if necessary. If it has been zeroed
             out, simply remove the base.
+
             """
             newe, r = divmod(common_b[b], b[1])
             if not r:
@@ -566,6 +566,7 @@ def powdenest(eq, force=False, polar=False):
     x**(i*y)
     >>> powdenest((n**i)**x, force=True)
     (n**i)**x
+
     """
     from .simplify import posify
 
@@ -590,6 +591,7 @@ def _denest_pow(eq):
 
     This is a helper function for powdenest that performs the actual
     transformation.
+
     """
     from .simplify import logcombine
 

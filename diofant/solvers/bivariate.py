@@ -17,6 +17,7 @@ def _filtered_gens(poly, symbol):
 
     >>> _filtered_gens(Poly(x + 1/x + exp(x)), x)
     {E**x, x}
+
     """
     gens = {g for g in poly.gens if symbol in g.free_symbols}
     for g in list(gens):
@@ -48,6 +49,7 @@ def _mostfunc(lhs, func, X=None):
     True
     >>> _mostfunc(exp(x) + exp(x*y), Pow, x)
     E**x
+
     """
     fterms = [tmp for tmp in lhs.atoms(func) if (not X or
                                                  X.is_Symbol and X in tmp.free_symbols or
@@ -75,6 +77,7 @@ def _linab(arg, symbol):
     (y + 2, y, x)
     >>> _linab(3 + 2*exp(x), x)
     (2, 3, E**x)
+
     """
 
     arg = arg.expand()
@@ -97,6 +100,7 @@ def _lambert(eq, x):
         ``F(X, a..f) = a*log(b*X + c) + d*X + f = 0``
     where X = g(x) and x = g^-1(X), return the Lambert solution if possible:
         ``x = g^-1(-c/b + (a/d)*W(d/(a*b)*exp(c*d/a/b)*exp(-f/a)))``.
+
     """
     eq = _mexpand(expand_log(eq))
     mainlog = _mostfunc(eq, log, x)
@@ -163,6 +167,7 @@ def _solve_lambert(f, symbol, gens):
       if d*p**(a*B + g) - b*B = c then
       log(d) + (a*B + g)*log(p) - log(c + b*B) = 0
       a = -1, d = a*log(p), f = -log(d) - g*log(p)
+
     """
 
     nrhs, lhs = f.as_independent(symbol, as_Add=True)
@@ -276,6 +281,7 @@ def bivariate_type(f, x, y, **kwargs):
     [[{x: -y + sqrt(3)}]]
     >>> all(eq.subs(s).equals(0) for sol in _ for s in sol)
     True
+
     """
 
     u = Dummy('u', positive=True)

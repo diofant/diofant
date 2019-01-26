@@ -58,9 +58,7 @@ class SparseNDimArray(NDimArray):
 
     @classmethod
     def zeros(cls, *shape):
-        """
-        Return a sparse N-dim array of zeros.
-        """
+        """Return a sparse N-dim array of zeros."""
         return cls({}, shape)
 
     def tomatrix(self):
@@ -77,6 +75,7 @@ class SparseNDimArray(NDimArray):
         [1, 1, 1],
         [1, 1, 1],
         [1, 1, 1]])
+
         """
         if self.rank() != 2:
             raise ValueError('Dimensions must be of size of 2')
@@ -159,7 +158,6 @@ class MutableSparseNDimArray(MutableNDimArray, SparseNDimArray):
         >>> a[1, 1] = 1
         >>> a
         [[1, 0], [0, 1]]
-
 
         """
         index = self._parse_index(index)

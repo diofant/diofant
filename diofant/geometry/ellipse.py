@@ -85,6 +85,7 @@ class Ellipse(GeometrySet):
     >>> e2 = Ellipse(Point(3, 1), hradius=3, eccentricity=Rational(4, 5))
     >>> e2
     Ellipse(Point2D(3, 1), 3, 9/5)
+
     """
 
     def __new__(
@@ -489,6 +490,7 @@ class Ellipse(GeometrySet):
         Ellipse(Point2D(0, 1), 1, 2)
         >>> Ellipse((1, 0), 2, 1).rotate(pi)
         Ellipse(Point2D(-1, 0), 2, 1)
+
         """
         if self.hradius == self.vradius:
             return self.func(self.center.rotate(angle, pt), self.hradius)
@@ -510,6 +512,7 @@ class Ellipse(GeometrySet):
         Circle(Point2D(0, 0), 4)
         >>> Ellipse((0, 0), 2, 1).scale(2)
         Ellipse(Point2D(0, 0), 4, 1)
+
         """
         c = self.center
         if pt:
@@ -645,6 +648,7 @@ class Ellipse(GeometrySet):
         >>> e1 = Ellipse(Point(0, 0), 3, 2)
         >>> e1.tangent_lines(Point(3, 0))
         [Line(Point2D(3, 0), Point2D(3, -12))]
+
         """
         p = Point(p)
         if self.encloses_point(p):
@@ -781,6 +785,7 @@ class Ellipse(GeometrySet):
 
         Whereas the above solution has an operation count of 12, the exact
         solution has an operation count of 2020.
+
         """
         p = Point(p)
 
@@ -1103,6 +1108,7 @@ class Ellipse(GeometrySet):
 
         >>> e.intersection(Ellipse(Point(-1, 0), 3, 4))
         [Point2D(-17/5, -12/5), Point2D(-17/5, 12/5), Point2D(7/5, -12/5), Point2D(7/5, 12/5)]
+
         """
         if isinstance(o, Point):
             if o in self:
@@ -1148,6 +1154,7 @@ class Ellipse(GeometrySet):
         >>> e1 = Ellipse(Point(1, 0), 3, 2)
         >>> e1.evolute()
         2**(2/3)*y**(2/3) + (3*x - 3)**(2/3) - 5**(2/3)
+
         """
         if len(self.args) != 3:
             raise NotImplementedError('Evolute of arbitrary Ellipse is not supported.')
@@ -1287,6 +1294,7 @@ class Circle(Ellipse):
         >>> c1 = Circle(Point(3, 4), 6)
         >>> c1.vradius
         6
+
         """
         return abs(self.radius)
 
@@ -1411,6 +1419,7 @@ class Circle(Ellipse):
         Circle(Point2D(0, 0), 2)
         >>> Circle((0, 0), 1).scale(2, 4)
         Ellipse(Point2D(0, 0), 2, 4)
+
         """
         c = self.center
         if pt:
@@ -1432,6 +1441,7 @@ class Circle(Ellipse):
 
         >>> Circle((0, 1), 1).reflect(Line((0, 0), (1, 1)))
         Circle(Point2D(1, 0), -1)
+
         """
         c = self.center
         c = c.reflect(line)

@@ -33,6 +33,7 @@ class Naturals(Set, metaclass=Singleton):
 
     Naturals0 : non-negative integers
     Integers : also includes negative integers
+
     """
 
     is_iterable = True
@@ -72,6 +73,7 @@ class Naturals0(Naturals):
 
     Naturals : positive integers
     Integers : also includes the negative integers
+
     """
 
     _inf = S.Zero
@@ -112,6 +114,7 @@ class Integers(Set, metaclass=Singleton):
 
     Naturals0 : non-negative integers
     Integers : positive and negative integers and zero
+
     """
 
     is_iterable = True
@@ -172,7 +175,7 @@ class Integers(Set, metaclass=Singleton):
 
 
 class Rationals(Set, metaclass=Singleton):
-    """The set of all rationals. """
+    """The set of all rationals."""
 
     def _contains(self, other):
         if other.is_rational:
@@ -238,6 +241,7 @@ class ImageSet(Set):
     4
     >>> squares.lamda(S.One/2)
     1/4
+
     """
 
     def __new__(cls, lamda, base_set):
@@ -341,6 +345,7 @@ class Range(Set):
     [10, 12, 14, 16, 18]
     >>> list(Range(20, 10, -2))
     [12, 14, 16, 18, 20]
+
     """
 
     is_iterable = True

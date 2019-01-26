@@ -7,7 +7,7 @@ from ...ntheory import sieve
 
 
 class CombinatorialFunction(Function):
-    """Base class for combinatorial functions. """
+    """Base class for combinatorial functions."""
 
     def _eval_simplify(self, ratio, measure):
         from ...simplify import combsimp
@@ -68,6 +68,7 @@ class factorial(CombinatorialFunction):
     diofant.functions.combinatorial.factorials.factorial2
     diofant.functions.combinatorial.factorials.RisingFactorial
     diofant.functions.combinatorial.factorials.FallingFactorial
+
     """
 
     def fdiff(self, argindex=1):
@@ -238,6 +239,7 @@ class subfactorial(CombinatorialFunction):
     diofant.functions.combinatorial.factorials.factorial,
     diofant.utilities.iterables.generate_derangements,
     diofant.functions.special.gamma_functions.uppergamma
+
     """
 
     @classmethod
@@ -318,6 +320,7 @@ class factorial2(CombinatorialFunction):
     diofant.functions.combinatorial.factorials.factorial
     diofant.functions.combinatorial.factorials.RisingFactorial
     diofant.functions.combinatorial.factorials.FallingFactorial
+
     """
 
     @classmethod
@@ -403,6 +406,7 @@ class RisingFactorial(CombinatorialFunction):
     diofant.functions.combinatorial.factorials.factorial
     diofant.functions.combinatorial.factorials.factorial2
     diofant.functions.combinatorial.factorials.FallingFactorial
+
     """
 
     @classmethod
@@ -474,6 +478,7 @@ class FallingFactorial(CombinatorialFunction):
     diofant.functions.combinatorial.factorials.factorial
     diofant.functions.combinatorial.factorials.factorial2
     diofant.functions.combinatorial.factorials.RisingFactorial
+
     """
 
     @classmethod
@@ -662,9 +667,7 @@ class binomial(CombinatorialFunction):
             return cls._eval(n, k)
 
     def _eval_expand_func(self, **hints):
-        """
-        Function to expand binomial(n,k) when n is positive integer
-        """
+        """Function to expand binomial(n,k) when n is positive integer."""
         n = self.args[0]
         if n.is_Number:
             return self.func(*self.args)

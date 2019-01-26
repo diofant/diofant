@@ -57,6 +57,7 @@ class DenseMatrix(MatrixBase):
         1
         >>> m[::2]
         [1, 3]
+
         """
         if isinstance(key, tuple):
             i, j = key
@@ -169,6 +170,7 @@ class DenseMatrix(MatrixBase):
         ========
 
         conjugate: By-element conjugation
+
         """
         a = []
         for i in range(self.cols):
@@ -184,6 +186,7 @@ class DenseMatrix(MatrixBase):
         transpose: Matrix transposition
         H: Hermite conjugation
         D: Dirac conjugation
+
         """
         out = self._new(self.rows, self.cols,
                         lambda i, j: self[i, j].conjugate())
@@ -230,6 +233,7 @@ class DenseMatrix(MatrixBase):
         inverse_LU
         inverse_GE
         inverse_ADJ
+
         """
         from . import diag
 
@@ -281,6 +285,7 @@ class DenseMatrix(MatrixBase):
         ========
 
         diofant.core.expr.Expr.equals
+
         """
         try:
             if self.shape != other.shape:
@@ -312,6 +317,7 @@ class DenseMatrix(MatrixBase):
         """Helper function of cholesky.
         Without the error checks.
         To be used privately.
+
         """
         L = zeros(self.rows, self.rows)
         for i in range(self.rows):
@@ -326,6 +332,7 @@ class DenseMatrix(MatrixBase):
         """Helper function of LDLdecomposition.
         Without the error checks.
         To be used privately.
+
         """
         D = zeros(self.rows, self.rows)
         L = eye(self.rows)
@@ -341,6 +348,7 @@ class DenseMatrix(MatrixBase):
         """Helper function of function lower_triangular_solve.
         Without the error checks.
         To be used privately.
+
         """
         X = zeros(self.rows, rhs.cols)
         for j in range(rhs.cols):
@@ -354,6 +362,7 @@ class DenseMatrix(MatrixBase):
     def _upper_triangular_solve(self, rhs):
         """Helper function of function upper_triangular_solve.
         Without the error checks, to be used privately.
+
         """
         X = zeros(self.rows, rhs.cols)
         for j in range(rhs.cols):
@@ -367,6 +376,7 @@ class DenseMatrix(MatrixBase):
     def _diagonal_solve(self, rhs):
         """Helper function of function diagonal_solve,
         without the error checks, to be used privately.
+
         """
         return self._new(rhs.rows, rhs.cols, lambda i, j: rhs[i, j] / self[i, i])
 
@@ -430,12 +440,12 @@ class DenseMatrix(MatrixBase):
         Matrix([
         [1, 2],
         [3, 5]])
+
         """
         return MutableMatrix(self)
 
     def as_immutable(self):
-        """Returns an Immutable version of this Matrix
-        """
+        """Returns an Immutable version of this Matrix."""
         from .immutable import ImmutableMatrix
         if self.rows and self.cols:
             return ImmutableMatrix._new(self.tolist())
@@ -471,7 +481,7 @@ class DenseMatrix(MatrixBase):
 
     @call_highest_priority('__rmul__')
     def __mul__(self, other):
-        """Return self*other"""
+        """Return self*other."""
         return super().__mul__(_force_mutable(other))
 
     @call_highest_priority('__mul__')
@@ -518,7 +528,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         return self.copy()
 
     def __setitem__(self, key, value):
-        """
+        """Set matrix item.
 
         Examples
         ========
@@ -555,6 +565,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         [0, 0, 4, 0],
         [0, 0, 4, 0],
         [2, 2, 4, 2]])
+
         """
         rv = self._setitem(key, value)
         if rv is not None:
@@ -594,6 +605,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         ========
 
         diofant.matrices.dense.MutableDenseMatrix.copyin_list
+
         """
         rlo, rhi, clo, chi = self.key2bounds(key)
         shape = value.shape
@@ -639,6 +651,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         ========
 
         diofant.matrices.dense.MutableDenseMatrix.copyin_matrix
+
         """
         if not is_sequence(value):
             raise TypeError("`value` must be an ordered iterable, not %s." % type(value))
@@ -663,6 +676,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
 
         diofant.matrices.dense.MutableDenseMatrix.row_op
         diofant.matrices.dense.MutableDenseMatrix.col_op
+
         """
         i0 = i*self.cols
         k0 = k*self.cols
@@ -691,6 +705,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
 
         diofant.matrices.dense.MutableDenseMatrix.zip_row_op
         diofant.matrices.dense.MutableDenseMatrix.col_op
+
         """
         i0 = i*self.cols
         ri = self._mat[i0: i0 + self.cols]
@@ -714,6 +729,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         ========
 
         diofant.matrices.dense.MutableDenseMatrix.row_op
+
         """
         self._mat[j::self.cols] = [f(*t) for t in list(zip(self._mat[j::self.cols], range(self.rows)))]
 
@@ -738,6 +754,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         ========
 
         diofant.matrices.dense.MutableDenseMatrix.col_swap
+
         """
         for k in range(self.cols):
             self[i, k], self[j, k] = self[j, k], self[i, k]
@@ -763,6 +780,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         ========
 
         diofant.matrices.dense.MutableDenseMatrix.row_swap
+
         """
         for k in range(self.rows):
             self[k, i], self[k, j] = self[k, j], self[k, i]
@@ -784,6 +802,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         Matrix([
         [0, 0],
         [0, 1]])
+
         """
         i, j = self.key2ij(key)
         if isinstance(i, int) and j == slice(None):
@@ -808,6 +827,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         ========
 
         diofant.simplify.simplify.simplify
+
         """
         for i in range(len(self._mat)):
             self._mat[i] = _simplify(self._mat[i], ratio=ratio,
@@ -821,6 +841,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
 
         diofant.matrices.dense.zeros
         diofant.matrices.dense.ones
+
         """
         self._mat = [value]*len(self)
 
@@ -840,6 +861,7 @@ def list2numpy(l, dtype=object):  # pragma: no cover
     ========
 
     diofant.matrices.dense.matrix2numpy
+
     """
     from numpy import empty
     a = empty(len(l), dtype)
@@ -855,6 +877,7 @@ def matrix2numpy(m, dtype=object):  # pragma: no cover
     ========
 
     diofant.matrices.dense.list2numpy
+
     """
     from numpy import empty
     a = empty(m.shape, dtype)
@@ -873,7 +896,7 @@ def symarray(prefix, shape, **kwargs):  # pragma: no cover
     arrays, as Diofant symbols with identical names are the same object.
 
     Parameters
-    ----------
+    ==========
 
     prefix : string
       A prefix prepended to the name of every symbol.
@@ -886,7 +909,7 @@ def symarray(prefix, shape, **kwargs):  # pragma: no cover
       keyword arguments passed on to Symbol
 
     Examples
-    --------
+    ========
 
     These doctests require numpy.
 
@@ -928,6 +951,7 @@ def symarray(prefix, shape, **kwargs):  # pragma: no cover
 
     >>> [s.is_real for s in symarray('a', 2, real=True)]
     [True, True]
+
     """
     from numpy import empty, ndindex
     arr = empty(shape, dtype=object)
@@ -968,6 +992,7 @@ def rot_axis3(theta):
         about the 1-axis
     diofant.matrices.dense.rot_axis2: Returns a rotation matrix for a rotation of theta (in radians)
         about the 2-axis
+
     """
     from . import Matrix
 
@@ -1010,6 +1035,7 @@ def rot_axis2(theta):
         about the 1-axis
     diofant.matrices.dense.rot_axis3: Returns a rotation matrix for a rotation of theta (in radians)
         about the 3-axis
+
     """
     from . import Matrix
 
@@ -1052,6 +1078,7 @@ def rot_axis1(theta):
         about the 2-axis
     diofant.matrices.dense.rot_axis3: Returns a rotation matrix for a rotation of theta (in radians)
         about the 3-axis
+
     """
     from . import Matrix
 
@@ -1081,6 +1108,7 @@ def matrix_multiply_elementwise(A, B):
     ========
 
     diofant.matrices.dense.DenseMatrix.__mul__
+
     """
     if A.shape != B.shape:
         raise ShapeError()
@@ -1099,6 +1127,7 @@ def ones(r, c=None):
     diofant.matrices.dense.zeros
     diofant.matrices.dense.eye
     diofant.matrices.dense.diag
+
     """
     from . import Matrix
 
@@ -1118,6 +1147,7 @@ def zeros(r, c=None, cls=None):
     diofant.matrices.dense.ones
     diofant.matrices.dense.eye
     diofant.matrices.dense.diag
+
     """
     if cls is None:
         from . import Matrix as cls  # noqa: N813
@@ -1133,6 +1163,7 @@ def eye(n, cls=None):
     diofant.matrices.dense.diag
     diofant.matrices.dense.zeros
     diofant.matrices.dense.ones
+
     """
     if cls is None:
         from . import Matrix as cls  # noqa: N813
@@ -1221,6 +1252,7 @@ def diag(*values, **kwargs):
     ========
 
     diofant.matrices.dense.eye
+
     """
     from . import Matrix
     from .sparse import MutableSparseMatrix
@@ -1264,7 +1296,7 @@ def diag(*values, **kwargs):
 
 
 def vandermonde(order, gen=None):
-    """Computes a Vandermonde matrix of given order and dimension. """
+    """Computes a Vandermonde matrix of given order and dimension."""
     if not gen:
         gen = numbered_symbols('C')
     a = list(itertools.islice(gen, int(order)))
@@ -1288,6 +1320,7 @@ def jordan_cell(eigenval, n):
     [0, x, 1, 0],
     [0, 0, x, 1],
     [0, 0, 0, x]])
+
     """
     n = as_int(n)
     out = zeros(n)
@@ -1338,6 +1371,7 @@ def hessian(f, varlist, constraints=[]):
 
     diofant.matrices.matrices.MatrixBase.jacobian
     diofant.matrices.dense.wronskian
+
     """
     # f is the expression representing a function f, return regular matrix
     if isinstance(varlist, MatrixBase):
@@ -1378,6 +1412,7 @@ def GramSchmidt(vlist, orthonormal=False):
     Apply the Gram-Schmidt process to a set of vectors.
 
     see: https//en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process
+
     """
     out = []
     m = len(vlist)
@@ -1416,6 +1451,7 @@ def wronskian(functions, var, method='bareis'):
 
     diofant.matrices.matrices.MatrixBase.jacobian
     diofant.matrices.dense.hessian
+
     """
     from . import Matrix
 
@@ -1455,6 +1491,7 @@ def casoratian(seqs, n, zero=True):
 
     >>> casoratian([2**n, factorial(n)], n) != 0
     True
+
     """
     from . import Matrix
 
@@ -1507,6 +1544,7 @@ def randMatrix(r, c=None, min=0, max=99, seed=None, symmetric=False, percent=100
     [0, 68, 43]
     [0, 68,  0]
     [0, 91, 34]
+
     """
     from . import Matrix
 

@@ -116,6 +116,7 @@ def _import(module, reload="False"):
     "mpmath", "numpy", "diofant".
     These dictionaries map names of python functions to their equivalent in
     other modules.
+
     """
     try:
         namespace, namespace_default, translations, import_commands = MODULES[
@@ -278,6 +279,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
     ``lambdify`` always prefers ``_imp_`` implementations to implementations
     in other namespaces, unless the ``use_imps`` input parameter is False.
+
     """
     from ..core import Symbol
     from .iterables import flatten
@@ -389,9 +391,7 @@ def _module_present(modname, modlist):
 
 
 def _get_namespace(m):
-    """
-    This is used by _lambdify to parse its arguments.
-    """
+    """This is used by _lambdify to parse its arguments."""
     if isinstance(m, str):
         _import(m)
         return MODULES[m][0]
@@ -421,6 +421,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
 
     >>> lambdastr((x, (y, z)), x + y)
     'lambda _0,_1: (lambda x,y,z: (x + y))(*list(__flatten_args__([_0,_1])))'
+
     """
     # Transforming everything to strings.
     from ..matrices import DeferredVector
@@ -520,7 +521,8 @@ def _imp_namespace(expr, namespace=None):
     contain diofant expressions.
 
     Parameters
-    ----------
+    ==========
+
     expr : object
        Something passed to lambdify, that will generate valid code from
        ``str(expr)``.
@@ -528,20 +530,22 @@ def _imp_namespace(expr, namespace=None):
        Namespace to fill.  None results in new empty dict
 
     Returns
-    -------
+    =======
+
     namespace : dict
        dict with keys of implemented function names within `expr` and
        corresponding values being the numerical implementation of
        function
 
     Examples
-    --------
+    ========
 
     >>> f = implemented_function(Function('f'), lambda x: x+1)
     >>> g = implemented_function(Function('g'), lambda x: x*10)
     >>> namespace = _imp_namespace(f(g(x)))
     >>> sorted(namespace)
     ['f', 'g']
+
     """
     # Delayed import to avoid circular imports
     from ..core.function import FunctionClass
@@ -589,7 +593,8 @@ def implemented_function(symfunc, implementation):
     class.
 
     Parameters
-    ----------
+    ==========
+
     symfunc : ``str`` or ``UndefinedFunction`` instance
        If ``str``, then create new ``UndefinedFunction`` with this as
        name.  If `symfunc` is a diofant function, attach implementation to it.
@@ -597,17 +602,19 @@ def implemented_function(symfunc, implementation):
        numerical implementation to be called by ``evalf()`` or ``lambdify``
 
     Returns
-    -------
+    =======
+
     afunc : diofant.FunctionClass instance
        function with attached implementation
 
     Examples
-    --------
+    ========
 
     >>> f = implemented_function(Function('f'), lambda x: x+1)
     >>> lam_f = lambdify(x, f(x))
     >>> lam_f(4)
     5
+
     """
     # Delayed import to avoid circular imports
     from ..core.function import UndefinedFunction

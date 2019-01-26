@@ -81,6 +81,7 @@ class gamma(Function):
     * https://dlmf.nist.gov/5
     * http://mathworld.wolfram.com/GammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/Gamma/
+
     """
 
     unbranched = True
@@ -237,6 +238,7 @@ class lowergamma(Function):
     * https://dlmf.nist.gov/8
     * http://functions.wolfram.com/GammaBetaErf/Gamma2/
     * http://functions.wolfram.com/GammaBetaErf/Gamma3/
+
     """
 
     def fdiff(self, argindex=2):
@@ -380,6 +382,7 @@ class uppergamma(Function):
     * http://functions.wolfram.com/GammaBetaErf/Gamma2/
     * http://functions.wolfram.com/GammaBetaErf/Gamma3/
     * https//en.wikipedia.org/wiki/Exponential_integral#Relation_with_other_functions
+
     """
 
     def fdiff(self, argindex=2):
@@ -544,6 +547,7 @@ class polygamma(Function):
     * http://mathworld.wolfram.com/PolygammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma/
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
+
     """
 
     def fdiff(self, argindex=2):
@@ -807,6 +811,7 @@ class loggamma(Function):
     * https://dlmf.nist.gov/5
     * http://mathworld.wolfram.com/LogGammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/LogGamma/
+
     """
 
     @classmethod
@@ -917,6 +922,7 @@ def digamma(x):
     * https//en.wikipedia.org/wiki/Digamma_function
     * http://mathworld.wolfram.com/DigammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
+
     """
     return polygamma(0, x)
 
@@ -947,5 +953,6 @@ def trigamma(x):
     * https//en.wikipedia.org/wiki/Trigamma_function
     * http://mathworld.wolfram.com/TrigammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
+
     """
     return polygamma(1, x)

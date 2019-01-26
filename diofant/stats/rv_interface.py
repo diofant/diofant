@@ -26,6 +26,7 @@ def moment(X, n, c=0, condition=None, **kwargs):
     91/6
     >>> moment(X, 1) == E(X)
     True
+
     """
     return expectation((X - c)**n, condition, **kwargs)
 
@@ -50,6 +51,7 @@ def variance(X, condition=None, **kwargs):
 
     >>> simplify(variance(B))
     p*(-p + 1)
+
     """
     return cmoment(X, 2, condition, **kwargs)
 
@@ -70,6 +72,7 @@ def standard_deviation(X, condition=None, **kwargs):
 
     >>> simplify(std(B))
     sqrt(p*(-p + 1))
+
     """
     return sqrt(variance(X, condition, **kwargs))
 
@@ -100,6 +103,7 @@ def covariance(X, Y, condition=None, **kwargs):
     0
     >>> covariance(X, Y + rate*X)
     1/lambda
+
     """
     return expectation(
         (X - expectation(X, condition, **kwargs)) *
@@ -132,6 +136,7 @@ def correlation(X, Y, condition=None, **kwargs):
     0
     >>> correlation(X, Y + rate*X)
     1/sqrt(1 + lambda**(-2))
+
     """
     return covariance(X, Y, condition, **kwargs)/(std(X, condition, **kwargs)
                                                   * std(Y, condition, **kwargs))
@@ -153,6 +158,7 @@ def cmoment(X, n, condition=None, **kwargs):
     35/12
     >>> cmoment(X, 2) == variance(X)
     True
+
     """
     mu = expectation(X, condition, **kwargs)
     return moment(X, n, mu, condition, **kwargs)
@@ -175,6 +181,7 @@ def smoment(X, n, condition=None, **kwargs):
     True
     >>> smoment(Y, 3) == skewness(Y)
     True
+
     """
     sigma = std(X, condition, **kwargs)
     return (1/sigma)**n*cmoment(X, n, condition, **kwargs)
@@ -200,6 +207,7 @@ def skewness(X, condition=None, **kwargs):
     >>> Y = Exponential('Y', rate)
     >>> skewness(Y)
     2
+
     """
     return smoment(X, 3, condition, **kwargs)
 

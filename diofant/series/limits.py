@@ -25,6 +25,7 @@ def limit(expr, z, z0, dir="+"):
     ========
 
     Limit
+
     """
 
     return Limit(expr, z, z0, dir).doit(deep=False)
@@ -81,6 +82,7 @@ class Limit(Expr):
     Limit(sin(x)/x, x, 0)
     >>> Limit(1/x, x, 0, dir="-")
     Limit(1/x, x, 0, dir='-')
+
     """
 
     def __new__(cls, e, z, z0, dir="+"):
@@ -118,6 +120,7 @@ class Limit(Expr):
 
         First we handle some trivial cases (i.e. constant), then try
         Gruntz algorithm (see the :py:mod:`~diofant.series.gruntz` module).
+
         """
         e, z, z0, dir = self.args
 

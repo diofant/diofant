@@ -82,6 +82,7 @@ class Order(Expr):
     ==========
 
     * https//en.wikipedia.org/wiki/Big_O_notation
+
     """
 
     is_Order = True
@@ -295,6 +296,7 @@ class Order(Expr):
             Return True if ``expr`` belongs to ``self``.  Return False if
             ``self`` belongs to ``expr``.  Return None if the inclusion
             relation cannot be determined.
+
         """
         from ..simplify import powsimp
         from .limits import Limit

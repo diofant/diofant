@@ -7,9 +7,7 @@ from .str import StrPrinter
 
 
 class AssignmentError(Exception):
-    """
-    Raised if an assignment variable for a loop is missing.
-    """
+    """Raised if an assignment variable for a loop is missing."""
 
     pass
 
@@ -19,7 +17,8 @@ class Assignment(Relational):
     Represents variable assignment for code generation.
 
     Parameters
-    ----------
+    ==========
+
     lhs : Expr
         Diofant object representing the lhs of the expression. These should be
         singular objects, such as one would use in writing code. Notable types
@@ -33,7 +32,7 @@ class Assignment(Relational):
         the dimensions will not align.
 
     Examples
-    --------
+    ========
 
     >>> Assignment(x, y)
     x := y
@@ -45,6 +44,7 @@ class Assignment(Relational):
     A := Matrix([[x, y, z]])
     >>> Assignment(A[0, 1], x)
     A[0, 1] := x
+
     """
 
     rel_op = ':='
@@ -75,9 +75,7 @@ class Assignment(Relational):
 
 
 class CodePrinter(StrPrinter):
-    """
-    The base class for code-printing subclasses.
-    """
+    """The base class for code-printing subclasses."""
 
     _operators = {
         'and': '&&',
@@ -101,13 +99,15 @@ class CodePrinter(StrPrinter):
         Print the expression as code.
 
         Parameters
-        ----------
+        ==========
+
         expr : Expression
             The expression to be printed.
 
         assign_to : Symbol, MatrixSymbol, or string (optional)
             If provided, the printed code will set the expression to a
             variable with name ``assign_to``.
+
         """
         from ..matrices import MatrixSymbol
 
@@ -269,6 +269,7 @@ class CodePrinter(StrPrinter):
 
         This method is used to sort loops in an optimized order, see
         CodePrinter._sort_optimized()
+
         """
         raise NotImplementedError("This function must be implemented by "
                                   "subclass of CodePrinter.")  # pragma: no cover
@@ -284,7 +285,7 @@ class CodePrinter(StrPrinter):
                                   "subclass of CodePrinter.")  # pragma: no cover
 
     def _declare_number_const(self, name, value):
-        """Declare a numeric constant at the top of a function"""
+        """Declare a numeric constant at the top of a function."""
         raise NotImplementedError("This function must be implemented by "
                                   "subclass of CodePrinter.")  # pragma: no cover
 
@@ -292,6 +293,7 @@ class CodePrinter(StrPrinter):
         """Take in a list of lines of code, and format them accordingly.
 
         This may include indenting, wrapping long lines, etc...
+
         """
         raise NotImplementedError("This function must be implemented by "
                                   "subclass of CodePrinter.")  # pragma: no cover
@@ -299,6 +301,7 @@ class CodePrinter(StrPrinter):
     def _get_loop_opening_ending(self, indices):
         """Returns a tuple (open_lines, close_lines) containing lists
         of codelines
+
         """
         raise NotImplementedError("This function must be implemented by "
                                   "subclass of CodePrinter.")  # pragma: no cover

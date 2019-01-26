@@ -25,6 +25,7 @@ def dmp_sqf_p(f, u, K):
     False
     >>> R.dmp_sqf_p(x**2 + y**2)
     True
+
     """
     if dmp_ground_p(f, None, u):
         return True
@@ -54,6 +55,7 @@ def dmp_sqf_norm(f, u, K):
     >>> R.dmp_sqf_norm(x*y + y**2)
     (1, x*y - I*x + y**2 - 3*I*y - 2,
      x**2*y**2 + x**2 + 2*x*y**3 + 2*x*y + y**4 + 5*y**2 + 4)
+
     """
     if not K.is_AlgebraicField:
         raise DomainError("ground domain must be algebraic")
@@ -117,7 +119,7 @@ def dmp_sqf_part(f, u, K):
 
 
 def dmp_gf_sqf_list(f, u, K):
-    """Compute square-free decomposition of ``f`` in ``GF(p)[X]``. """
+    """Compute square-free decomposition of ``f`` in ``GF(p)[X]``."""
     if not u:
         f = dmp_convert(f, u, K, K.domain)
 
@@ -139,6 +141,7 @@ def dmp_rr_yun0_sqf_list(f, u, K):
     ==========
 
     * [LeeM13]_, page 8
+
     """
     if dmp_ground_p(f, None, u):
         return []
@@ -179,6 +182,7 @@ def dmp_sqf_list(f, u, K):
 
     >>> R.dmp_sqf_list(x**5 + 2*x**4*y + x**3*y**2)
     (1, [(x + y, 2), (x, 3)])
+
     """
     if K.is_FiniteField:
         return dmp_gf_sqf_list(f, u, K)

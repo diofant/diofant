@@ -99,6 +99,7 @@ def rsolve_poly(coeffs, f, n, **hints):
     * [AbramovBronstein95]_
     * [Petkovšek92]_
     * [Petkovšek97]_
+
     """
     f = sympify(f)
 
@@ -371,6 +372,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
     ========
 
     rsolve_hyper
+
     """
     f = sympify(f)
 
@@ -473,6 +475,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
 
     * [Petkovšek92]_
     * [Petkovšek97]_
+
     """
     coeffs = list(map(sympify, coeffs))
 
@@ -665,6 +668,7 @@ def rsolve(f, y, init=None):
     ========
 
     rsolve_poly, rsolve_ratio, rsolve_hyper
+
     """
     if isinstance(f, Equality):
         f = f.lhs - f.rhs

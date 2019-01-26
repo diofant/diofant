@@ -16,7 +16,7 @@ from .miscellaneous import sqrt
 
 
 class TrigonometricFunction(Function):
-    """Base class for trigonometric functions. """
+    """Base class for trigonometric functions."""
 
     unbranched = True
 
@@ -51,6 +51,7 @@ def _peeloff_pi(arg):
     (x, pi/2)
     >>> _peeloff_pi(x + 2*pi/3 + pi*y)
     (x + pi*y + pi/6, pi/2)
+
     """
     for a in Add.make_args(arg):
         if a is pi:
@@ -100,6 +101,7 @@ def _pi_coeff(arg, cycles=1):
     2
     >>> _pi_coeff(2*Dummy(even=True)*pi)
     0
+
     """
     arg = sympify(arg)
     if arg is pi:
@@ -188,6 +190,7 @@ class sin(TrigonometricFunction):
     * https://dlmf.nist.gov/4.14
     * http://functions.wolfram.com/ElementaryFunctions/Sin
     * http://mathworld.wolfram.com/TrigonometryAngles.html
+
     """
 
     def fdiff(self, argindex=1):
@@ -431,6 +434,7 @@ class cos(TrigonometricFunction):
     * https//en.wikipedia.org/wiki/Trigonometric_functions
     * https://dlmf.nist.gov/4.14
     * http://functions.wolfram.com/ElementaryFunctions/Cos
+
     """
 
     def fdiff(self, argindex=1):
@@ -795,6 +799,7 @@ class tan(TrigonometricFunction):
     * https//en.wikipedia.org/wiki/Trigonometric_functions
     * https://dlmf.nist.gov/4.14
     * http://functions.wolfram.com/ElementaryFunctions/Tan
+
     """
 
     def fdiff(self, argindex=1):
@@ -804,9 +809,7 @@ class tan(TrigonometricFunction):
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return atan
 
     @classmethod
@@ -1030,7 +1033,7 @@ class tan(TrigonometricFunction):
 
 
 class ReciprocalTrigonometricFunction(TrigonometricFunction):
-    """Base class for reciprocal functions of trigonometric functions. """
+    """Base class for reciprocal functions of trigonometric functions."""
 
     _reciprocal_of = None       # mandatory, to be defined in subclass
 
@@ -1181,6 +1184,7 @@ class sec(ReciprocalTrigonometricFunction):
     * https//en.wikipedia.org/wiki/Trigonometric_functions
     * https://dlmf.nist.gov/4.14
     * http://functions.wolfram.com/ElementaryFunctions/Sec
+
     """
 
     _reciprocal_of = cos
@@ -1256,6 +1260,7 @@ class csc(ReciprocalTrigonometricFunction):
     * https//en.wikipedia.org/wiki/Trigonometric_functions
     * https://dlmf.nist.gov/4.14
     * http://functions.wolfram.com/ElementaryFunctions/Csc
+
     """
 
     _reciprocal_of = sin
@@ -1332,6 +1337,7 @@ class cot(ReciprocalTrigonometricFunction):
     * https//en.wikipedia.org/wiki/Trigonometric_functions
     * https://dlmf.nist.gov/4.14
     * http://functions.wolfram.com/ElementaryFunctions/Cot
+
     """
 
     _reciprocal_of = tan
@@ -1344,9 +1350,7 @@ class cot(ReciprocalTrigonometricFunction):
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return acot
 
     def _eval_rewrite_as_tan(self, arg):
@@ -1468,6 +1472,7 @@ class asin(InverseTrigonometricFunction):
     * https//en.wikipedia.org/wiki/Inverse_trigonometric_functions
     * https://dlmf.nist.gov/4.23
     * http://functions.wolfram.com/ElementaryFunctions/ArcSin
+
     """
 
     def fdiff(self, argindex=1):
@@ -1588,9 +1593,7 @@ class asin(InverseTrigonometricFunction):
             return fuzzy_not((self.args[0] + 1).is_positive)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return sin
 
 
@@ -1641,6 +1644,7 @@ class acos(InverseTrigonometricFunction):
     * https//en.wikipedia.org/wiki/Inverse_trigonometric_functions
     * https://dlmf.nist.gov/4.23
     * http://functions.wolfram.com/ElementaryFunctions/ArcCos
+
     """
 
     def fdiff(self, argindex=1):
@@ -1738,9 +1742,7 @@ class acos(InverseTrigonometricFunction):
         return atan(sqrt(1 - x**2)/x) + (pi/2)*(1 - x*sqrt(1/x**2))
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return cos
 
     def _eval_rewrite_as_acot(self, arg):
@@ -1805,6 +1807,7 @@ class atan(InverseTrigonometricFunction):
     * https//en.wikipedia.org/wiki/Inverse_trigonometric_functions
     * https://dlmf.nist.gov/4.23
     * http://functions.wolfram.com/ElementaryFunctions/ArcTan
+
     """
 
     def fdiff(self, argindex=1):
@@ -1899,9 +1902,7 @@ class atan(InverseTrigonometricFunction):
             return super()._eval_aseries(n, args0, x, logx)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return tan
 
     def _eval_rewrite_as_asin(self, arg):
@@ -1950,6 +1951,7 @@ class acot(InverseTrigonometricFunction):
     * https://dlmf.nist.gov/4.23
     * http://functions.wolfram.com/ElementaryFunctions/ArcCot
     * https//en.wikipedia.org/wiki/Inverse_trigonometric_functions
+
     """
 
     def fdiff(self, argindex=1):
@@ -2045,9 +2047,7 @@ class acot(InverseTrigonometricFunction):
             (log((x - I)/(x + I)))
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return cot
 
     def _eval_rewrite_as_asin(self, arg):
@@ -2128,6 +2128,7 @@ class asec(InverseTrigonometricFunction):
     * https://dlmf.nist.gov/4.23
     * http://functions.wolfram.com/ElementaryFunctions/ArcSec
     * https://reference.wolfram.com/language/ref/ArcSec.html
+
     """
 
     @classmethod
@@ -2149,9 +2150,7 @@ class asec(InverseTrigonometricFunction):
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return sec
 
     def _eval_as_leading_term(self, x):
@@ -2223,6 +2222,7 @@ class acsc(InverseTrigonometricFunction):
     * https//en.wikipedia.org/wiki/Inverse_trigonometric_functions
     * https://dlmf.nist.gov/4.23
     * http://functions.wolfram.com/ElementaryFunctions/ArcCsc
+
     """
 
     @classmethod
@@ -2242,9 +2242,7 @@ class acsc(InverseTrigonometricFunction):
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return csc
 
     def _eval_as_leading_term(self, x):
@@ -2371,6 +2369,7 @@ class atan2(InverseTrigonometricFunction):
     * https//en.wikipedia.org/wiki/Inverse_trigonometric_functions
     * https//en.wikipedia.org/wiki/Atan2
     * http://functions.wolfram.com/ElementaryFunctions/ArcTan2
+
     """
 
     @classmethod

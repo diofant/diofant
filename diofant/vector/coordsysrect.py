@@ -7,9 +7,7 @@ from .scalar import BaseScalar
 
 
 class CoordSysCartesian(Basic):
-    """
-    Represents a coordinate system in 3-D space.
-    """
+    """Represents a coordinate system in 3-D space."""
 
     def __new__(cls, name, location=None, rotation_matrix=None,
                 parent=None, vector_names=None, variable_names=None):
@@ -40,6 +38,7 @@ class CoordSysCartesian(Basic):
             Iterables of 3 strings each, with custom names for base
             vectors and base scalars of the new system respectively.
             Used for simple str printing.
+
         """
 
         from .vector import Vector, BaseVector
@@ -298,6 +297,7 @@ class CoordSysCartesian(Basic):
         >>> B = A.orient_new_axis('B', q, A.k)
         >>> A.scalar_map(B)
         {A.x: -sin(q)*B.y + cos(q)*B.x, A.y: sin(q)*B.x + cos(q)*B.y, A.z: B.z}
+
         """
 
         relocated_scalars = []

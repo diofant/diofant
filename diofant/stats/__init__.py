@@ -33,6 +33,7 @@ Examples
 35/6
 >>> simplify(P(Z>1)) # Probability of Z being greater than 1
 -erf(sqrt(2)/2)/2 + 1/2
+
 """
 
 from .rv_interface import (cdf, covariance, density, dependent, E, given,  # noqa: F401

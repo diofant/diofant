@@ -56,6 +56,7 @@ def continued_fraction_periodic(p, q, d=0):
     * https//en.wikipedia.org/wiki/Periodic_continued_fraction
     * K. Rosen. Elementary Number theory and its applications.
       Addison-Wesley, 3 Sub edition, pages 379-381, January 1992.
+
     """
     from ..core.compatibility import as_int
     from ..functions import sqrt
@@ -130,6 +131,7 @@ def continued_fraction_reduce(cf):
     ========
 
     continued_fraction_periodic
+
     """
     from ..core import Dummy
     from ..solvers import solve
@@ -188,6 +190,7 @@ def continued_fraction_iterator(x):
     ==========
 
     * https//en.wikipedia.org/wiki/Continued_fraction
+
     """
     from ..functions import floor
 
@@ -234,6 +237,7 @@ def continued_fraction_convergents(cf):
     ========
 
     continued_fraction_iterator
+
     """
     p_2, q_2 = Integer(0), Integer(1)
     p_1, q_1 = Integer(1), Integer(0)

@@ -18,16 +18,12 @@ class ExprCondPair(Tuple):
 
     @property
     def expr(self):
-        """
-        Returns the expression of this pair.
-        """
+        """Returns the expression of this pair."""
         return self.args[0]
 
     @property
     def cond(self):
-        """
-        Returns the condition of this pair.
-        """
+        """Returns the condition of this pair."""
         return self.args[1]
 
     @property
@@ -69,6 +65,7 @@ class Piecewise(Function):
     ========
 
     diofant.functions.elementary.piecewise.piecewise_fold
+
     """
 
     nargs = None
@@ -150,9 +147,7 @@ class Piecewise(Function):
         return
 
     def doit(self, **hints):
-        """
-        Evaluate this piecewise function.
-        """
+        """Evaluate this piecewise function."""
         newargs = []
         for e, c in self.args:
             if hints.get('deep', True):
@@ -183,7 +178,7 @@ class Piecewise(Function):
         return self.func(*[(integrate(e, x), c) for e, c in self.args])
 
     def _eval_interval(self, sym, a, b):
-        """Evaluates the function along the sym in a given interval ab"""
+        """Evaluates the function along the sym in a given interval ab."""
         # FIXME: Currently complex intervals are not supported.  A possible
         # replacement algorithm, discussed in issue sympy/sympy#5227, can be found in the
         # following papers;
@@ -285,6 +280,7 @@ class Piecewise(Function):
         along the real axis corresponding to the symbol sym.  If targetcond
         is given, we return a list of (lowerbound, upperbound) pairs for
         this condition.
+
         """
         from ...solvers.inequalities import solve_univariate_inequality
         default = None
@@ -433,9 +429,7 @@ class Piecewise(Function):
         return self.func(*[(e**s, c) for e, c in self.args])
 
     def _eval_subs(self, old, new):
-        """
-        Piecewise conditions may contain bool which are not of Basic type.
-        """
+        """Piecewise conditions may contain bool which are not of Basic type."""
         args = list(self.args)
         for i, (e, c) in enumerate(args):
             c = c._subs(old, new)
@@ -544,6 +538,7 @@ def piecewise_fold(expr):
     ========
 
     diofant.functions.elementary.piecewise.Piecewise
+
     """
     if not isinstance(expr, Basic) or not expr.has(Piecewise):
         return expr

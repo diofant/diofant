@@ -204,6 +204,7 @@ class Routine:
         """Returns a list of OutputArgument, InOutArgument and Result.
 
         If return values are present, they are at the end ot the list.
+
         """
         args = [arg for arg in self.arguments if isinstance(
             arg, (OutputArgument, InOutArgument))]
@@ -313,6 +314,7 @@ class Argument(Variable):
     """An abstract Argument data structure: a name and a data type.
 
     This structure is refined in the descendants below.
+
     """
 
     pass
@@ -328,6 +330,7 @@ class ResultBase:
     Objects of this class stores a diofant expression, and a diofant object
     representing a result variable that will be used in the generated code
     only if necessary.
+
     """
 
     def __init__(self, expr, result_var):
@@ -1560,6 +1563,7 @@ def make_routine(name, expr, argument_sequence=None,
     [g]
     >>> [a.expr for a in r.arguments if isinstance(a, InOutArgument)]
     [g + x]
+
     """
 
     # initialize a new code generator

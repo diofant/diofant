@@ -28,6 +28,7 @@ def part_range_filter(partition_iterator, lb, ub):
     that lpart is 0-based (it points to the topmost part on the part
     stack), so if you want to return parts of sizes 2,3,4,5 you would
     use lb=1 and ub=5.
+
     """
     for state in partition_iterator:
         f, lpart, pstack = state
@@ -65,6 +66,7 @@ def multiset_partitions_baseline(multiplicities, components):
     straightforward baseline against which to regress the production
     versions.  (This code is a simplified version of an earlier
     production implementation.)
+
     """
 
     canon = []                  # list of components with repeats
@@ -110,6 +112,7 @@ def compare_multiset_states(s1, s2):
 
     This is useful for comparing different versions of the algorithm
     to verify correctness.
+
     """
     # Comparison is physical, the only use of semantics is to ignore
     # trash off the top of the stack.
@@ -125,6 +128,7 @@ def compare_multiset_states(s1, s2):
 def test_multiset_partitions_taocp():
     """Compares the output of multiset_partitions_taocp with a baseline
     (set partition based) implementation.
+
     """
 
     # Test cases should not be too large, since the baseline
@@ -137,7 +141,7 @@ def test_multiset_partitions_taocp():
 
 
 def test_multiset_partitions_versions():
-    """Compares Knuth-based versions of multiset_partitions"""
+    """Compares Knuth-based versions of multiset_partitions."""
     multiplicities = [5, 2, 2, 1]
     m = MultisetPartitionTraverser()
     for s1, s2 in zip_longest(m.enum_all(multiplicities),
@@ -149,6 +153,7 @@ def subrange_exercise(mult, lb, ub):
     """Compare filter-based and more optimized subrange implementations
 
     Helper for tests, called with both small and larger multisets.
+
     """
     m = MultisetPartitionTraverser()
     assert m.count_partitions(mult) == \

@@ -16,6 +16,7 @@ def literal_symbol(literal):
     a
     >>> literal_symbol(~a)
     a
+
     """
 
     if literal is True or literal is False:
@@ -69,6 +70,7 @@ def satisfiable(expr, algorithm="dpll2", all_models=False):
     {a: False}
     >>> use_models(satisfiable(a ^ a, all_models=True))
     UNSAT
+
     """
     expr = to_cnf(expr)
     if algorithm == "dpll":
@@ -98,6 +100,7 @@ def valid(expr):
     ==========
 
     * https//en.wikipedia.org/wiki/Validity
+
     """
     return not satisfiable(Not(expr))
 
@@ -137,6 +140,7 @@ def pl_true(expr, model={}, deep=False):
     >>> pl_true(a & b & (~a | ~b), {a: True})
     >>> pl_true(a & b & (~a | ~b), {a: True}, deep=True)
     False
+
     """
 
     from ..core import Symbol
@@ -191,6 +195,7 @@ def entails(expr, formula_set={}):
     ==========
 
     * https//en.wikipedia.org/wiki/Logical_consequence
+
     """
     formula_set = list(formula_set)
     formula_set.append(Not(expr))
@@ -198,7 +203,7 @@ def entails(expr, formula_set={}):
 
 
 class KB:
-    """Base class for all knowledge bases"""
+    """Base class for all knowledge bases."""
 
     def __init__(self, sentence=None):
         self.clauses_ = set()
@@ -239,6 +244,7 @@ class PropKB(KB):
         >>> l.tell(y)
         >>> l.clauses
         [y, Or(x, y)]
+
         """
         for c in conjuncts(to_cnf(sentence)):
             self.clauses_.add(c)
@@ -255,6 +261,7 @@ class PropKB(KB):
         True
         >>> l.ask(y)
         False
+
         """
         return entails(query, self.clauses_)
 
@@ -275,6 +282,7 @@ class PropKB(KB):
         >>> l.retract(x | y)
         >>> l.clauses
         []
+
         """
         for c in conjuncts(to_cnf(sentence)):
             self.clauses_.discard(c)

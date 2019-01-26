@@ -37,6 +37,7 @@ class BlockMatrix(MatrixExpr):
 
     >>> block_collapse(C*B)
     Matrix([[X, Z + Z*Y]])
+
     """
 
     def __new__(cls, *args):
@@ -133,6 +134,7 @@ class BlockMatrix(MatrixExpr):
         Matrix([
         [X, Z],
         [0, Y]])
+
         """
         return self._eval_transpose()
 
@@ -185,6 +187,7 @@ class BlockDiagMatrix(BlockMatrix):
     Matrix([
     [X, 0],
     [0, Y]])
+
     """
 
     def __new__(cls, *mats):
@@ -260,6 +263,7 @@ def block_collapse(expr):
 
     >>> block_collapse(C*B)
     Matrix([[X, Z + Z*Y]])
+
     """
     def hasbm(expr):
         return isinstance(expr, MatrixExpr) and expr.has(BlockMatrix)
@@ -312,7 +316,7 @@ def bc_block_plus_ident(expr):
 
 
 def bc_dist(expr):
-    """ Turn  a*[X, Y] into [a*X, a*Y] """
+    """Turn  a*[X, Y] into [a*X, a*Y]."""
     factor, mat = expr.as_coeff_mmul()
     if factor != 1 and isinstance(unpack(mat), BlockMatrix):
         B = unpack(mat).blocks
@@ -359,7 +363,7 @@ def blockinverse_2x2(expr):
 
 
 def deblock(B):
-    """ Flatten a BlockMatrix of BlockMatrices """
+    """Flatten a BlockMatrix of BlockMatrices."""
     if not isinstance(B, BlockMatrix) or not B.blocks.has(BlockMatrix):
         return B
 
@@ -380,7 +384,7 @@ def deblock(B):
 
 
 def reblock_2x2(B):
-    """ Reblock a BlockMatrix so that it has 2x2 blocks of block matrices """
+    """Reblock a BlockMatrix so that it has 2x2 blocks of block matrices."""
     if not isinstance(B, BlockMatrix) or not all(d > 2 for d in B.blocks.shape):
         return B
 
@@ -394,6 +398,7 @@ def bounds(sizes):
 
     >>> bounds((1, 10, 50))
     [(0, 1), (1, 11), (11, 61)]
+
     """
     low = 0
     rv = []
@@ -412,6 +417,7 @@ def blockcut(expr, rowsizes, colsizes):
     'BlockMatrix'
     >>> ImmutableMatrix(B.blocks[0, 1])
     Matrix([[1, 2, 3]])
+
     """
 
     rowbounds = bounds(rowsizes)

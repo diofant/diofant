@@ -142,6 +142,7 @@ def bspline_basis_set(d, knots, x):
     ========
 
     diofant.functions.special.bsplines.bspline_basis
+
     """
     n_splines = len(knots) - d - 1
     return [bspline_basis(d, knots, i, x) for i in range(n_splines)]

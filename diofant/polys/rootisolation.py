@@ -32,6 +32,7 @@ def dup_sturm(f, K):
 
     >>> R.dup_sturm(x**3 - 2*x**2 + x - 3)
     [x**3 - 2*x**2 + x - 3, 3*x**2 - 4*x + 1, 2/9*x + 25/9, -2079/4]
+
     """
     if not K.is_Field:
         raise DomainError("can't compute Sturm sequence over %s" % K)
@@ -77,6 +78,7 @@ def dup_root_upper_bound(f, K):
 
     LMQ (Local Max Quadratic) bound was developed by
     Akritas-Strzebonski-Vigklas [Alkiviadis09]_.
+
     """
     n, P = len(f), []
     if K.is_AlgebraicField:
@@ -113,7 +115,7 @@ def dup_root_upper_bound(f, K):
 
 
 def _mobius_from_interval(I, field):
-    """Convert an open interval to a Mobius transform. """
+    """Convert an open interval to a Mobius transform."""
     s, t = I
 
     a, c = map(field, (s.numerator, s.denominator))
@@ -123,7 +125,7 @@ def _mobius_from_interval(I, field):
 
 
 def _mobius_to_interval(M):
-    """Convert a Mobius transform to an open interval. """
+    """Convert a Mobius transform to an open interval."""
     a, b, c, d = M
 
     s, t = a/c, b/d
@@ -132,7 +134,7 @@ def _mobius_to_interval(M):
 
 
 def dup_step_refine_real_root(f, M, K, fast=False):
-    """One step of positive real root refinement algorithm. """
+    """One step of positive real root refinement algorithm."""
     a, b, c, d = M
 
     if a == b and c == d:
@@ -177,7 +179,7 @@ def dup_step_refine_real_root(f, M, K, fast=False):
 
 
 def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fast=False, mobius=False):
-    """Refine a positive root of `f` given a Mobius transform or an interval. """
+    """Refine a positive root of `f` given a Mobius transform or an interval."""
     a, b, c, d = M
 
     while not c:
@@ -212,7 +214,7 @@ def dup_inner_refine_real_root(f, M, K, eps=None, steps=None, disjoint=None, fas
 
 
 def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=False):
-    """Refine a positive root of `f` given an interval `(s, t)`. """
+    """Refine a positive root of `f` given an interval `(s, t)`."""
     a, b, c, d = _mobius_from_interval((s, t), K)
 
     f = dup_transform(f, dmp_strip([a, b], 0), dmp_strip([c, d], 0), K)
@@ -224,7 +226,7 @@ def dup_outer_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, 
 
 
 def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=False):
-    """Refine real root's approximating interval to the given precision. """
+    """Refine real root's approximating interval to the given precision."""
     R, K = K, K.field
     f = dmp_convert(f, 0, R, K)
     f = dmp_clear_denoms(f, 0, K)[1]
@@ -258,7 +260,7 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None, fast=F
 
 
 def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
-    """Internal function for isolation positive roots up to given precision. """
+    """Internal function for isolation positive roots up to given precision."""
     a, b, c, d = K.one, K.zero, K.zero, K.one
     k = dup_sign_variations(f, K)
 
@@ -355,7 +357,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None, fast=False):
 
 
 def _discard_if_outside_interval(f, M, inf, sup, K, negative, fast, mobius):
-    """Discard an isolating interval if outside ``(inf, sup)``. """
+    """Discard an isolating interval if outside ``(inf, sup)``."""
     while True:
         u, v = _mobius_to_interval(M)
 
@@ -374,7 +376,7 @@ def _discard_if_outside_interval(f, M, inf, sup, K, negative, fast, mobius):
 
 
 def dup_inner_isolate_positive_roots(f, K, eps=None, inf=None, sup=None, fast=False, mobius=False):
-    """Iteratively compute disjoint positive root isolation intervals. """
+    """Iteratively compute disjoint positive root isolation intervals."""
     if sup is not None and sup < 0:
         return []
 
@@ -399,7 +401,7 @@ def dup_inner_isolate_positive_roots(f, K, eps=None, inf=None, sup=None, fast=Fa
 
 
 def dup_inner_isolate_negative_roots(f, K, inf=None, sup=None, eps=None, fast=False, mobius=False):
-    """Iteratively compute disjoint negative root isolation intervals. """
+    """Iteratively compute disjoint negative root isolation intervals."""
     if inf is not None and inf >= 0:
         return []
 
@@ -424,7 +426,7 @@ def dup_inner_isolate_negative_roots(f, K, inf=None, sup=None, eps=None, fast=Fa
 
 
 def _isolate_zero(f, K, inf, sup, sqf=False):
-    """Handle special case of CF algorithm when ``f`` is homogeneous. """
+    """Handle special case of CF algorithm when ``f`` is homogeneous."""
     (j,), f = dmp_terms_gcd(f, 0, K)
 
     if j > 0:
@@ -438,7 +440,7 @@ def _isolate_zero(f, K, inf, sup, sqf=False):
 
 
 def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, blackbox=False):
-    """Isolate real roots of a square-free polynomial. """
+    """Isolate real roots of a square-free polynomial."""
     if not K.is_Field:
         R, K = K, K.field
         f = dmp_convert(f, 0, R, K)
@@ -478,6 +480,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):
 
     Implemented algorithms use Vincent-Akritas-Strzebonski (VAS) continued
     fractions approach [Alkiviadis05]_, [Alkiviadis08]_.
+
     """
     if not K.is_Field:
         R, K = K, K.field
@@ -499,7 +502,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):
 
 
 def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=False, basis=False, fast=False):
-    """Isolate real roots of a list of polynomials. """
+    """Isolate real roots of a list of polynomials."""
     R, K = K, K.field
     for i, p in enumerate(polys):
         p = dmp_convert(p, 0, R, K)
@@ -547,7 +550,7 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
 
 
 def _disjoint_p(M, N, strict=False):
-    """Check if Mobius transforms define disjoint intervals. """
+    """Check if Mobius transforms define disjoint intervals."""
     a1, b1, c1, d1 = M
     a2, b2, c2, d2 = N
 
@@ -570,7 +573,7 @@ def _disjoint_p(M, N, strict=False):
 
 
 def _real_isolate_and_disjoin(factors, K, eps=None, inf=None, sup=None, strict=False, basis=False, fast=False):
-    """Isolate real roots of a list of polynomials and disjoin intervals. """
+    """Isolate real roots of a list of polynomials and disjoin intervals."""
     I_pos, I_neg = [], []
 
     for i, (f, k) in enumerate(factors):
@@ -631,7 +634,7 @@ def _real_isolate_and_disjoin(factors, K, eps=None, inf=None, sup=None, strict=F
 
 
 def dup_count_real_roots(f, K, inf=None, sup=None):
-    """Returns the number of distinct real roots of ``f`` in ``[inf, sup]``. """
+    """Returns the number of distinct real roots of ``f`` in ``[inf, sup]``."""
     if dmp_degree_in(f, 0, 0) <= 0:
         return 0
 
@@ -666,7 +669,7 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
 
 
 def dup_isolate_imaginary_roots(f, K, eps=None, inf=None, sup=None, fast=False):
-    """Isolate imaginary roots. """
+    """Isolate imaginary roots."""
     F = K.algebraic_field(I)
     f = dmp_compose(dmp_convert(f, 0, K, F), [F.unit, 0], 0, F)
     return dup_isolate_real_roots(f, F, eps=eps, inf=inf, sup=sup, fast=fast)
@@ -894,7 +897,7 @@ _values = {
 
 
 def _classify_point(re, im):
-    """Return the half-axis (or origin) on which (re, im) point is located. """
+    """Return the half-axis (or origin) on which (re, im) point is located."""
     assert not re or not im
 
     if not re and not im:
@@ -913,7 +916,7 @@ def _classify_point(re, im):
 
 
 def _intervals_to_quadrants(intervals, f1, f2, s, t, F):
-    """Generate a sequence of extended quadrants from a list of critical points. """
+    """Generate a sequence of extended quadrants from a list of critical points."""
     if not intervals:
         return []
 
@@ -1061,7 +1064,7 @@ def _intervals_to_quadrants(intervals, f1, f2, s, t, F):
 
 
 def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=None):
-    """Transform sequences of quadrants to a sequence of rules. """
+    """Transform sequences of quadrants to a sequence of rules."""
     if exclude is True:
         edges = [1, 1, 0, 0]
 
@@ -1124,12 +1127,12 @@ def _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=None):
 
 
 def _reverse_intervals(intervals):
-    """Reverse intervals for traversal from right to left and from top to bottom. """
+    """Reverse intervals for traversal from right to left and from top to bottom."""
     return [((b, a), indices, f) for (a, b), indices, f in reversed(intervals)]
 
 
 def _winding_number(T, field):
-    """Compute the winding number of the input polynomial, i.e. the number of roots. """
+    """Compute the winding number of the input polynomial, i.e. the number of roots."""
     return int(sum((field(_values[t][i][0])/field(_values[t][i][1]) for t, i in T), field(0)) / field(2))
 
 
@@ -1181,7 +1184,7 @@ def _count_roots(f1, f2, F, inf, sup, exclude=None):
 
 
 def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
-    """Count all roots in [u + v*I, s + t*I] rectangle using Collins-Krandick algorithm. """
+    """Count all roots in [u + v*I, s + t*I] rectangle using Collins-Krandick algorithm."""
     if not K.is_Field:
         R, K = K, K.field
         f = dmp_convert(f, 0, R, K)
@@ -1215,7 +1218,7 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
 
 
 def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
-    """Vertical bisection step in Collins-Krandick root isolation algorithm. """
+    """Vertical bisection step in Collins-Krandick root isolation algorithm."""
     (u, v), (s, t) = a, b
 
     I_L1, I_L2, I_L3, I_L4 = I
@@ -1322,7 +1325,7 @@ def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
 
 
 def _horizontal_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
-    """Horizontal bisection step in Collins-Krandick root isolation algorithm. """
+    """Horizontal bisection step in Collins-Krandick root isolation algorithm."""
     (u, v), (s, t) = a, b
 
     I_L1, I_L2, I_L3, I_L4 = I
@@ -1429,7 +1432,7 @@ def _horizontal_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
 
 
 def _depth_first_select(rectangles):
-    """Find a rectangle of minimum area for bisection. """
+    """Find a rectangle of minimum area for bisection."""
     min_area, j = None, None
 
     for i, (_, (u, v), (s, t), _, _, _, _) in enumerate(rectangles):
@@ -1442,7 +1445,7 @@ def _depth_first_select(rectangles):
 
 
 def _rectangle_small_p(a, b, eps):
-    """Return ``True`` if the given rectangle is small enough. """
+    """Return ``True`` if the given rectangle is small enough."""
     (u, v), (s, t) = a, b
 
     if eps is not None:
@@ -1452,7 +1455,7 @@ def _rectangle_small_p(a, b, eps):
 
 
 def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=False):
-    """Isolate complex roots of a square-free polynomial using Collins-Krandick algorithm. """
+    """Isolate complex roots of a square-free polynomial using Collins-Krandick algorithm."""
     if dmp_degree_in(f, 0, 0) <= 0:
         return []
 
@@ -1598,13 +1601,13 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
 
 
 def dup_isolate_all_roots_sqf(f, K, eps=None, inf=None, sup=None, fast=False, blackbox=False):
-    """Isolate real and complex roots of a square-free polynomial ``f``. """
+    """Isolate real and complex roots of a square-free polynomial ``f``."""
     return (dup_isolate_real_roots_sqf(f, K, eps=eps, inf=inf, sup=sup, fast=fast, blackbox=blackbox),
             dup_isolate_complex_roots_sqf(f, K, eps=eps, inf=inf, sup=sup, blackbox=blackbox))
 
 
 def dup_isolate_all_roots(f, K, eps=None, inf=None, sup=None, fast=False):
-    """Isolate real and complex roots of a non-square-free polynomial ``f``. """
+    """Isolate real and complex roots of a non-square-free polynomial ``f``."""
     if not K.is_IntegerRing and not K.is_RationalField:
         raise DomainError("isolation of real and complex roots is not supported over %s" % K)
 
@@ -1624,10 +1627,10 @@ def dup_isolate_all_roots(f, K, eps=None, inf=None, sup=None, fast=False):
 
 
 class RealInterval:
-    """A fully qualified representation of a real isolation interval. """
+    """A fully qualified representation of a real isolation interval."""
 
     def __init__(self, data, f, dom):
-        """Initialize new real interval with complete information. """
+        """Initialize new real interval with complete information."""
         if len(data) == 2:
             s, t = data
 
@@ -1652,7 +1655,7 @@ class RealInterval:
 
     @property
     def a(self):
-        """Return the position of the left end. """
+        """Return the position of the left end."""
         a, b, c, d = self.mobius
 
         if not self.neg:
@@ -1666,7 +1669,7 @@ class RealInterval:
 
     @property
     def b(self):
-        """Return the position of the right end. """
+        """Return the position of the right end."""
         was = self.neg
         self.neg = not was
         rv = -self.a
@@ -1675,19 +1678,19 @@ class RealInterval:
 
     @property
     def center(self):
-        """Return the center of the real isolating interval. """
+        """Return the center of the real isolating interval."""
         return (self.a + self.b)/2
 
     def as_tuple(self):
-        """Return tuple representation of real isolating interval. """
+        """Return tuple representation of real isolating interval."""
         return self.a, self.b
 
     def is_disjoint(self, other):
-        """Return ``True`` if two isolation intervals are disjoint. """
+        """Return ``True`` if two isolation intervals are disjoint."""
         return self.b <= other.a or other.b <= self.a
 
     def refine(self):
-        """Perform one step of real root refinement algorithm. """
+        """Perform one step of real root refinement algorithm."""
         assert self.mobius is not None
 
         f, mobius = dup_inner_refine_real_root(self.f, self.mobius, self.domain, steps=1, mobius=True)
@@ -1699,10 +1702,11 @@ class ComplexInterval:
     """A fully qualified representation of a complex isolation interval.
     The printed form is shown as (x1, y1) x (x2, y2): the southwest x northeast
     coordinates of the interval's rectangle.
+
     """
 
     def __init__(self, a, b, I, Q, F1, F2, f1, f2, dom, conj=False):
-        """Initialize new complex interval with complete information. """
+        """Initialize new complex interval with complete information."""
         self.a, self.b = a, b  # the southwest and northeast corner: (x1, y1), (x2, y2)
         self.I, self.Q = I, Q
 
@@ -1714,12 +1718,12 @@ class ComplexInterval:
 
     @property
     def ax(self):
-        """Return ``x`` coordinate of south-western corner. """
+        """Return ``x`` coordinate of south-western corner."""
         return self.a[0]
 
     @property
     def ay(self):
-        """Return ``y`` coordinate of south-western corner. """
+        """Return ``y`` coordinate of south-western corner."""
         if not self.conj:
             return +self.a[1]
         else:
@@ -1727,12 +1731,12 @@ class ComplexInterval:
 
     @property
     def bx(self):
-        """Return ``x`` coordinate of north-eastern corner. """
+        """Return ``x`` coordinate of north-eastern corner."""
         return self.b[0]
 
     @property
     def by(self):
-        """Return ``y`` coordinate of north-eastern corner. """
+        """Return ``y`` coordinate of north-eastern corner."""
         if not self.conj:
             return +self.b[1]
         else:
@@ -1740,15 +1744,15 @@ class ComplexInterval:
 
     @property
     def center(self):
-        """Return the center of the complex isolating interval. """
+        """Return the center of the complex isolating interval."""
         return (self.ax + self.bx)/2, (self.ay + self.by)/2
 
     def as_tuple(self):
-        """Return tuple representation of complex isolating interval. """
+        """Return tuple representation of complex isolating interval."""
         return (self.ax, self.ay), (self.bx, self.by)
 
     def conjugate(self):
-        """Return conjugated isolating interval. """
+        """Return conjugated isolating interval."""
         return ComplexInterval(self.a, self.b, self.I, self.Q,
                                self.F1, self.F2, self.f1, self.f2,
                                self.domain, not self.conj)
@@ -1765,6 +1769,7 @@ class ComplexInterval:
         re_disjoint : bool, optional
             If enabled, return ``True`` only if real projections of isolation
             intervals are disjoint.
+
         """
         test_re = self.bx <= other.ax or other.bx <= self.ax
         if test_re or re_disjoint:
@@ -1812,7 +1817,7 @@ class ComplexInterval:
                        for i in (self, other))
 
     def refine(self):
-        """Perform one step of complex root refinement algorithm. """
+        """Perform one step of complex root refinement algorithm."""
         (u, v), (s, t) = self.a, self.b
 
         I, Q = self.I, self.Q

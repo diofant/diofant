@@ -130,6 +130,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
     * https://en.wikipedia.org/wiki/Summation#Capital-sigma_notation
     * https://en.wikipedia.org/wiki/Empty_sum
+
     """
 
     def __new__(cls, function, *symbols, **assumptions):
@@ -183,6 +184,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         Sum(a*b*x, (x, 1, a)) can be differentiated wrt x or b but not `a`
         since the value of the sum is discontinuous in `a`. In a case
         involving a limit variable, the unevaluated derivative is returned.
+
         """
 
         # get limits and the function
@@ -248,6 +250,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
         With a nonzero `eps` specified, the summation is ended
         as soon as the remainder term is less than the epsilon.
+
         """
         from ..functions import bernoulli, factorial
         from ..integrals import Integral
@@ -364,6 +367,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         ==========
 
         * [Karr81]_
+
         """
         l_indices = list(indices)
 
@@ -403,6 +407,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         =====
 
         We use Sister Celine's algorithm, see [Petkovšek97]_, Ch. 4.
+
         """
         from ..core import expand_func, Mul
         from ..functions import gamma
@@ -499,6 +504,7 @@ def summation(f, *symbols, **kwargs):
     diofant.concrete.summations.Sum
     diofant.concrete.products.Product
     diofant.concrete.products.product
+
     """
     return Sum(f, *symbols, **kwargs).doit(deep=False)
 
@@ -527,6 +533,7 @@ def telescopic(L, R, limits):
     """Tries to perform the summation using the telescopic property
 
     return None if not possible
+
     """
     (i, a, b) = limits
     if L.is_Add or R.is_Add:
@@ -675,7 +682,7 @@ def eval_sum_symbolic(f, limits):
 
 
 def _eval_sum_hyper(f, i, a):
-    """ Returns (res, cond). Sums from a to oo. """
+    """Returns (res, cond). Sums from a to oo."""
     from ..functions import hyper
     from ..simplify import hyperexpand, hypersimp, fraction, simplify
     from ..polys import Poly, factor

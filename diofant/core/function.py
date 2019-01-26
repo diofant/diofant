@@ -88,6 +88,7 @@ class FunctionClass(ManagedProperties):
 
     Use Function('<function name>' [ , signature ]) to create
     undefined function classes.
+
     """
 
     def __init__(self, *args, **kwargs):
@@ -122,6 +123,7 @@ class FunctionClass(ManagedProperties):
         """
         Allow inspect.signature to give a useful signature for
         Function subclasses.
+
         """
 
         # TODO: Look at nargs
@@ -156,6 +158,7 @@ class FunctionClass(ManagedProperties):
         Naturals0()
         >>> len(f(1).args)
         1
+
         """
         from ..sets.sets import FiniteSet
         # XXX it would be nice to handle this in __init__ but there are import
@@ -178,6 +181,7 @@ class Application(Expr, metaclass=FunctionClass):
 
     Instances of Application represent the result of applying an application of
     any type to any object.
+
     """
 
     is_Function = True
@@ -237,6 +241,7 @@ class Application(Expr, metaclass=FunctionClass):
         instantiated and it should return either some simplified instance
         (possible of some other class), or if the class cls should be
         unmodified, return None.
+
         """
         return
 
@@ -310,6 +315,7 @@ class Function(Application, Expr):
     ...     nargs = (1, 2)
     ...
     >>>
+
     """
 
     @property
@@ -366,6 +372,7 @@ class Function(Application, Expr):
         By default (in this implementation), this happens if (and only if) the
         ARG is a floating point number.
         This function is used by __new__.
+
         """
         if arg.is_Float:
             return arg._prec
@@ -456,9 +463,7 @@ class Function(Application, Expr):
         return fuzzy_and(a.is_commutative for a in self.args)
 
     def as_base_exp(self):
-        """
-        Returns the method as the 2-tuple (base, exponent).
-        """
+        """Returns the method as the 2-tuple (base, exponent)."""
         return self, S.One
 
     def _eval_aseries(self, n, args0, x, logx):
@@ -467,6 +472,7 @@ class Function(Application, Expr):
         This function is only used internally by _eval_nseries and should not
         be called directly; derived classes can overwrite this to implement
         asymptotic expansions.
+
         """
         from ..utilities.misc import filldedent
         raise PoleError(filldedent('''
@@ -570,9 +576,7 @@ class Function(Application, Expr):
         return f_series + order
 
     def fdiff(self, argindex=1):
-        """
-        Returns the first derivative of the function.
-        """
+        """Returns the first derivative of the function."""
         from .symbol import Dummy
 
         if not (1 <= argindex <= len(self.args)):
@@ -601,6 +605,7 @@ class Function(Application, Expr):
         the first non-zero term in a series if ever an x-dependent
         argument whose leading term vanishes as x -> 0 might be encountered.
         See, for example, cos._eval_as_leading_term.
+
         """
         from ..series import Order
         args = [a.as_leading_term(x) for a in self.args]
@@ -629,6 +634,7 @@ class AppliedUndef(Function):
     """
     Base class for expressions resulting from the application of an undefined
     function.
+
     """
 
     def __new__(cls, *args, **options):
@@ -641,9 +647,7 @@ class AppliedUndef(Function):
 
 
 class UndefinedFunction(FunctionClass):
-    """
-    The (meta)class of undefined functions.
-    """
+    """The (meta)class of undefined functions."""
 
     def __new__(cls, name, **kwargs):
         ret = type.__new__(cls, name, (AppliedUndef,), kwargs)
@@ -725,6 +729,7 @@ class WildFunction(Function, AtomicExpr):
         ========
 
         diofant.core.basic.Basic.matches
+
         """
         if not isinstance(expr, (AppliedUndef, Function)):
             return
@@ -887,6 +892,7 @@ class Derivative(Expr):
         2*f(x)
         >>> Derivative(f(g(x)), x, evaluate=True)
         Derivative(g(x), x)*Subs(Derivative(f(_xi_1), _xi_1), (_xi_1, g(x)))
+
     """
 
     is_Derivative = True
@@ -902,6 +908,7 @@ class Derivative(Expr):
             True
             >>> Derivative(x**2, x)._diff_wrt
             False
+
         """
         if self.expr.is_Function:
             return True
@@ -1100,6 +1107,7 @@ class Derivative(Expr):
 
         >>> vsort((z, y, f(x), x, f(x), g(x), z, z, y, x))
         [y, z, f(x), x, f(x), g(x), x, y, z, z]
+
         """
 
         sorted_vars = []
@@ -1156,6 +1164,7 @@ class Derivative(Expr):
         ========
 
         diofant.core.basic.Basic.doit
+
         """
         expr = self.expr
         if hints.get('deep', True):
@@ -1170,6 +1179,7 @@ class Derivative(Expr):
 
         When we can represent derivatives at a point, this should be folded
         into the normal evalf. For now, we need a special method.
+
         """
         import mpmath
         from .expr import Expr
@@ -1187,7 +1197,7 @@ class Derivative(Expr):
 
     @property
     def expr(self):
-        """Return expression"""
+        """Return expression."""
         return self.args[0]
 
     @property
@@ -1203,6 +1213,7 @@ class Derivative(Expr):
         ========
 
         diofant.core.basic.Basic.free_symbols
+
         """
         return self.expr.free_symbols
 
@@ -1268,6 +1279,7 @@ class Lambda(Expr):
     >>> f = Lambda(p, x + y*z)
     >>> f(*p)
     x + y*z
+
     """
 
     is_Function = True
@@ -1287,12 +1299,12 @@ class Lambda(Expr):
 
     @property
     def variables(self):
-        """The variables used in the internal representation of the function"""
+        """The variables used in the internal representation of the function."""
         return self.args[0]
 
     @property
     def expr(self):
-        """The return value of the function"""
+        """The return value of the function."""
         return self.args[1]
 
     @property
@@ -1303,6 +1315,7 @@ class Lambda(Expr):
         ========
 
         diofant.core.basic.Basic.free_symbols
+
         """
         return self.expr.free_symbols - set(self.variables)
 
@@ -1378,6 +1391,7 @@ class Subs(Expr):
     Subs(z + f(x)*sin(y), (x, 0), (y, 1))
     >>> _.doit()
     z + f(0)*sin(1)
+
     """
 
     def __new__(cls, expr, *args, **assumptions):
@@ -1442,6 +1456,7 @@ class Subs(Expr):
         ========
 
         diofant.core.basic.Basic.doit
+
         """
         return self.expr.doit(**hints).subs(list(zip(self.variables, self.point)))
 
@@ -1452,6 +1467,7 @@ class Subs(Expr):
         ========
 
         diofant.core.evalf.EvalfMixin.evalf
+
         """
         return self.doit().evalf(dps, **options)
 
@@ -1460,17 +1476,17 @@ class Subs(Expr):
 
     @property
     def variables(self):
-        """The variables to be evaluated"""
+        """The variables to be evaluated."""
         return Tuple(*tuple(zip(*self.args[1:])))[0]
 
     @property
     def expr(self):
-        """The expression on which the substitution operates"""
+        """The expression on which the substitution operates."""
         return self.args[0]
 
     @property
     def point(self):
-        """The values for which the variables are to be substituted"""
+        """The values for which the variables are to be substituted."""
         return Tuple(*tuple(zip(*self.args[1:])))[1]
 
     @property
@@ -1481,6 +1497,7 @@ class Subs(Expr):
         ========
 
         diofant.core.basic.Basic.free_symbols
+
         """
         return (self.expr.free_symbols - set(self.variables) |
                 set(self.point.free_symbols))
@@ -1861,6 +1878,7 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     ==========
 
     * http://mathworld.wolfram.com/Multiple-AngleFormulas.html
+
     """
     # don't modify this; modify the Expr.expand method
     hints['power_base'] = power_base
@@ -1902,6 +1920,7 @@ def expand_mul(expr, deep=True):
     >>> x, y = symbols('x y', positive=True)
     >>> expand_mul(exp(x+y)*(x+y)*log(x*y**2))
     E**(x + y)*x*log(x*y**2) + E**(x + y)*y*log(x*y**2)
+
     """
     return sympify(expr).expand(deep=deep, mul=True, power_exp=False,
                                 power_base=False, basic=False, multinomial=False, log=False)
@@ -1918,6 +1937,7 @@ def expand_multinomial(expr, deep=True):
     >>> x, y = symbols('x y', positive=True)
     >>> expand_multinomial((x + exp(x + 1))**2)
     2*E**(x + 1)*x + E**(2*x + 2) + x**2
+
     """
     return sympify(expr).expand(deep=deep, mul=False, power_exp=False,
                                 power_base=False, basic=False, multinomial=True, log=False)
@@ -1934,6 +1954,7 @@ def expand_log(expr, deep=True, force=False):
     >>> x, y = symbols('x y', positive=True)
     >>> expand_log(exp(x+y)*(x+y)*log(x*y**2))
     E**(x + y)*(x + y)*(log(x) + 2*log(y))
+
     """
     return sympify(expr).expand(deep=deep, log=True, mul=False,
                                 power_exp=False, power_base=False, multinomial=False,
@@ -1950,6 +1971,7 @@ def expand_func(expr, deep=True):
 
     >>> expand_func(gamma(x + 2))
     x*(x + 1)*gamma(x)
+
     """
     return sympify(expr).expand(deep=deep, func=True, basic=False,
                                 log=False, mul=False, power_exp=False, power_base=False, multinomial=False)
@@ -1988,6 +2010,7 @@ def expand_complex(expr, deep=True):
     ========
 
     diofant.core.expr.Expr.as_real_imag
+
     """
     return sympify(expr).expand(deep=deep, complex=True, basic=False,
                                 log=False, mul=False, power_exp=False, power_base=False, multinomial=False)
@@ -2051,6 +2074,7 @@ def expand_power_base(expr, deep=True, force=False):
     ========
 
     expand
+
     """
     return sympify(expr).expand(deep=deep, log=False, mul=False,
                                 power_exp=False, power_base=True, multinomial=False,
@@ -2071,6 +2095,7 @@ def expand_power_exp(expr, deep=True):
     ========
 
     expand
+
     """
     return sympify(expr).expand(deep=deep, complex=False, basic=False,
                                 log=False, mul=False, power_exp=True, power_base=False, multinomial=False)

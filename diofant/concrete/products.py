@@ -171,6 +171,7 @@ class Product(ExprWithIntLimits):
 
     * https://en.wikipedia.org/wiki/Multiplication#Capital_Pi_notation
     * https://en.wikipedia.org/wiki/Empty_product
+
     """
 
     def __new__(cls, function, *symbols, **assumptions):
@@ -372,6 +373,7 @@ class Product(ExprWithIntLimits):
         ==========
 
         * [Karr81]_
+
         """
         l_indices = list(indices)
 
@@ -417,6 +419,7 @@ def product(*args, **kwargs):
     m**k
     >>> product(i, (i, 1, k), (k, 1, n))
     Product(factorial(k), (k, 1, n))
+
     """
 
     prod = Product(*args, **kwargs)

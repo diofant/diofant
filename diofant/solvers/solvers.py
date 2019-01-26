@@ -53,6 +53,7 @@ def denoms(eq, symbols=None):
     {x, z}
     >>> denoms(x/2 + y/z)
     {2, z}
+
     """
 
     pot = preorder_traversal(eq)
@@ -117,6 +118,7 @@ def checksol(f, sol, **flags):
         force : bool, optional
            Make positive all symbols without assumptions regarding
            sign.  Default is False.
+
     """
     minimal = flags.get('minimal', False)
 
@@ -293,6 +295,7 @@ def solve(f, *symbols, **flags):
     diofant.solvers.recurr.rsolve : solving recurrence equations
     diofant.solvers.ode.dsolve : solving differential equations
     diofant.solvers.inequalities.reduce_inequalities : solving inequalities
+
     """
     def _sympified_list(w):
         return list(map(sympify, w if iterable(w) else [w]))
@@ -546,6 +549,7 @@ def _solve(f, symbol, **flags):
     If no method is implemented to solve the equation, a NotImplementedError
     will be raised. In the case that conversion of an expression to a Poly
     gives None a ValueError will be raised.
+
     """
 
     not_impl_msg = "No algorithms are implemented to solve equation %s"
@@ -637,6 +641,7 @@ def _solve(f, symbol, **flags):
         def _as_base_q(x):
             """Return (b**e, q) for x = b**(p*e/q) where p/q is the leading
             Rational of the exponent of x, e.g. exp(-2*x/3) -> (exp(x), 3)
+
             """
             b, e = x.as_base_exp()
             if e.is_Rational:
@@ -830,6 +835,7 @@ def _solve(f, symbol, **flags):
 def _solve_system(exprs, symbols, **flags):
     """Return a checked solution for list of exprs in terms of one or more
     of the symbols. A list of dict's (possibly empty) should be returned.
+
     """
 
     if len(symbols) != 1 and len(exprs) == 1:
@@ -1017,6 +1023,7 @@ def solve_linear(f, x):
     (0, 1)
     >>> solve_linear(1/(1/x - 2), x)
     (0, 0)
+
     """
     if not x.is_Symbol:
         raise ValueError("%s is not a Symbol" % x)
@@ -1053,6 +1060,7 @@ def minsolve_linear_system(system, *symbols, **flags):
         quick : boolean, optional
             If True, a heuristic is used.  Otherwise (default) a naive
             algorithm with exponential complexity is used.
+
     """
     quick = flags.get('quick', False)
     # Check if there are any non-zero solutions at all
@@ -1157,6 +1165,7 @@ def _tsolve(eq, sym, **flags):
 
     >>> _tsolve(log(x) + 2*x, x)
     [LambertW(2)/2]
+
     """
     from .bivariate import bivariate_type, _solve_lambert, _filtered_gens
 

@@ -61,6 +61,7 @@ def apart(f, x=None, full=False, **options):
     ========
 
     apart_list, assemble_partfrac_list
+
     """
     allowed_flags(options, [])
 
@@ -138,7 +139,7 @@ def apart(f, x=None, full=False, **options):
 
 
 def apart_undetermined_coeffs(P, Q):
-    """Partial fractions via method of undetermined coefficients. """
+    """Partial fractions via method of undetermined coefficients."""
     X = numbered_symbols(cls=Dummy)
     partial, symbols = [], []
 
@@ -193,6 +194,7 @@ def apart_full_decomposition(P, Q):
     ==========
 
     * [Bronstein93]_
+
     """
     return assemble_partfrac_list(apart_list(P/Q, P.gens[0]))
 
@@ -295,6 +297,7 @@ def apart_list(f, x=None, dummies=None, **options):
     ==========
 
     * [Bronstein93]_
+
     """
     allowed_flags(options, [])
 
@@ -348,6 +351,7 @@ def apart_list_full_decomposition(P, Q, dummygen):
     ==========
 
     * [Bronstein93]_
+
     """
     f, x, U = P/Q, P.gen, []
 
@@ -452,6 +456,7 @@ def assemble_partfrac_list(partial_list):
     ========
 
     apart, apart_list
+
     """
     # Common factor
     common = partial_list[0]

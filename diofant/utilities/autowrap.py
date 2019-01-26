@@ -83,7 +83,7 @@ class CodeWrapError(Exception):
 
 
 class CodeWrapper:
-    """Base Class for code wrappers"""
+    """Base Class for code wrappers."""
 
     _filename = "wrapped_code"
     _module_basename = "wrapper_module"
@@ -98,9 +98,7 @@ class CodeWrapper:
         return "%s_%s" % (self._module_basename, CodeWrapper._module_counter)
 
     def __init__(self, generator, filepath=None, flags=[], verbose=False):
-        """
-        generator -- the code generator to use
-        """
+        """Generator -- the code generator to use."""
         self.generator = generator
         self.filepath = filepath
         self.flags = flags
@@ -160,7 +158,7 @@ class CodeWrapper:
 
 
 class DummyWrapper(CodeWrapper):
-    """Class used for testing independent of backends """
+    """Class used for testing independent of backends."""
 
     template = """# dummy module for testing of Diofant
 def %(name)s():
@@ -202,7 +200,7 @@ def %(name)s():
 
 
 class CythonCodeWrapper(CodeWrapper):
-    """Wrapper that uses Cython"""
+    """Wrapper that uses Cython."""
 
     setup_template = (
         "from setuptools import setup\n"
@@ -272,7 +270,7 @@ class CythonCodeWrapper(CodeWrapper):
         refers to the header file.
 
         Parameters
-        ----------
+        ==========
 
         routines : list
             List of Routine instances
@@ -281,6 +279,7 @@ class CythonCodeWrapper(CodeWrapper):
         prefix : str
             The filename prefix, used to refer to the proper header file.
             Only the basename of the prefix is used.
+
         """
         headers = []
         functions = []
@@ -391,7 +390,7 @@ class CythonCodeWrapper(CodeWrapper):
 
 
 class F2PyCodeWrapper(CodeWrapper):
-    """Wrapper that uses f2py"""
+    """Wrapper that uses f2py."""
 
     @property
     def command(self):
@@ -424,7 +423,7 @@ _lang_lookup = {'CYTHON': ('C',),
 
 
 def _infer_language(backend):
-    """For a given backend, return the top choice of language"""
+    """For a given backend, return the top choice of language."""
     langs = _lang_lookup.get(backend.upper(), False)
     if not langs:
         raise ValueError("Unrecognized backend: " + backend)
@@ -432,7 +431,7 @@ def _infer_language(backend):
 
 
 def _validate_backend_language(backend, language):
-    """Throws error if backend and language are incompatible"""
+    """Throws error if backend and language are incompatible."""
     langs = _lang_lookup.get(backend.upper(), False)
     if not langs:
         raise ValueError("Unrecognized backend: " + backend)
@@ -448,7 +447,7 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
     """Generates python callable binaries based on the math expression.
 
     Parameters
-    ----------
+    ==========
 
     expr
         The Diofant expression that should be wrapped as a binary routine.
@@ -480,12 +479,13 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
         is mandatory to supply an argument sequence to helper routines.
 
     Examples
-    --------
+    ========
 
     >>> expr = ((x - y + z)**13).expand()
     >>> binary_func = autowrap(expr)
     >>> binary_func(1, 4, 2)
     -1.0
+
     """
     if language:
         _validate_backend_language(backend, language)
@@ -540,6 +540,7 @@ def binary_function(symfunc, expr, **kwargs):
     2*f(x, y)
     >>> f(x, y).evalf(2, subs={x: 1, y: 2})
     -1.0
+
     """
     binary = autowrap(expr, **kwargs)
     return implemented_function(symfunc, binary)
@@ -646,7 +647,7 @@ if __name__ == "__main__":
 
 
 class UfuncifyCodeWrapper(CodeWrapper):
-    """Wrapper for Ufuncify"""
+    """Wrapper for Ufuncify."""
 
     @property
     def command(self):
@@ -679,7 +680,7 @@ class UfuncifyCodeWrapper(CodeWrapper):
         This file contains all the definitions of the routines in c code.
 
         Parameters
-        ----------
+        ==========
 
         routines : list
             List of Routine instances
@@ -687,6 +688,7 @@ class UfuncifyCodeWrapper(CodeWrapper):
             File-like object to write the file to
         prefix : str
             The filename prefix, used to name the imported module.
+
         """
         functions = []
         function_creation = []
@@ -785,7 +787,7 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     Generates a binary function that supports broadcasting on numpy arrays.
 
     Parameters
-    ----------
+    ==========
 
     args : iterable
         Either a Symbol or an iterable of symbols. Specifies the argument
@@ -817,7 +819,7 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
         is mandatory to supply an argument sequence to helper routines.
 
     Notes
-    -----
+    =====
 
     The default backend ('numpy') will create actual instances of
     ``numpy.ufunc``. These support ndimensional broadcasting, and implicit type
@@ -826,12 +828,12 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     arguments, and will not perform any type conversions.
 
     References
-    ----------
+    ==========
 
     * https://docs.scipy.org/doc/numpy/reference/ufuncs.html
 
     Examples
-    --------
+    ========
 
     >>> import numpy as np
     >>> f = ufuncify((x, y), y + x**2)
@@ -851,6 +853,7 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     [ 3.]
     >>> f_fortran(np.array([1, 2, 3]), np.array([1.0, 2.0, 3.0]))
     [  2.   6.  12.]
+
     """
 
     if isinstance(args, (Dummy, Symbol)):

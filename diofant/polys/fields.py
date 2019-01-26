@@ -18,13 +18,13 @@ __all__ = 'FractionField', 'field', 'vfield'
 
 
 def field(symbols, domain, order=lex):
-    """Construct new rational function field returning (field, x1, ..., xn). """
+    """Construct new rational function field returning (field, x1, ..., xn)."""
     _field = FractionField(domain, symbols, order)
     return (_field,) + _field.gens
 
 
 def vfield(symbols, domain, order=lex):
-    """Construct new rational function field and inject generators into global namespace. """
+    """Construct new rational function field and inject generators into global namespace."""
     _field = FractionField(domain, symbols, order)
     pollute([sym.name for sym in _field.symbols], _field.gens)
     return _field
@@ -34,7 +34,7 @@ _field_cache = {}
 
 
 class FractionField(Field, CompositeDomain):
-    """A class for representing multivariate rational function fields. """
+    """A class for representing multivariate rational function fields."""
 
     is_FractionField = is_Frac = True
 
@@ -79,7 +79,7 @@ class FractionField(Field, CompositeDomain):
         return obj
 
     def _gens(self):
-        """Return a list of polynomial generators. """
+        """Return a list of polynomial generators."""
         return tuple(self.dtype(gen) for gen in self.ring.gens)
 
     def __hash__(self):
@@ -167,7 +167,7 @@ class FractionField(Field, CompositeDomain):
         return _rebuild(sympify(expr))
 
     def from_expr(self, expr):
-        """Convert Diofant's expression to ``dtype``. """
+        """Convert Diofant's expression to ``dtype``."""
         mapping = dict(zip(self.symbols, self.gens))
 
         try:
@@ -181,7 +181,7 @@ class FractionField(Field, CompositeDomain):
         return self.domain.poly_ring(*self.symbols, order=self.order)
 
     def to_expr(self, a):
-        """Convert ``a`` to a Diofant object. """
+        """Convert ``a`` to a Diofant object."""
         return a.as_expr()
 
     def _from_PythonIntegerRing(self, a, K0):
@@ -213,27 +213,27 @@ class FractionField(Field, CompositeDomain):
 
     @property
     def ring(self):
-        """Returns a field associated with ``self``. """
+        """Returns a field associated with ``self``."""
         return self.to_ring()
 
     def is_positive(self, a):
-        """Returns True if ``LC(a)`` is positive. """
+        """Returns True if ``LC(a)`` is positive."""
         return self.domain.is_positive(a.numer.LC)
 
     def is_negative(self, a):
-        """Returns True if ``LC(a)`` is negative. """
+        """Returns True if ``LC(a)`` is negative."""
         return self.domain.is_negative(a.numer.LC)
 
     def is_nonpositive(self, a):
-        """Returns True if ``LC(a)`` is non-positive. """
+        """Returns True if ``LC(a)`` is non-positive."""
         return self.domain.is_nonpositive(a.numer.LC)
 
     def is_nonnegative(self, a):
-        """Returns True if ``LC(a)`` is non-negative. """
+        """Returns True if ``LC(a)`` is non-negative."""
         return self.domain.is_nonnegative(a.numer.LC)
 
     def factorial(self, a):
-        """Returns factorial of ``a``. """
+        """Returns factorial of ``a``."""
         return self.dtype(self.domain.factorial(a))
 
 
@@ -245,6 +245,7 @@ class FracElement(DomainElement, CantSympify):
     ========
 
     FractionField
+
     """
 
     def __init__(self, numer, denom=None):
@@ -324,7 +325,7 @@ class FracElement(DomainElement, CantSympify):
         return self.raw_new(self.numer, self.denom)
 
     def __neg__(self):
-        """Negate all coefficients in ``self``. """
+        """Negate all coefficients in ``self``."""
         return self.raw_new(-self.numer, self.denom)
 
     def _extract_ground(self, element):
@@ -345,7 +346,7 @@ class FracElement(DomainElement, CantSympify):
             return 1, element, None
 
     def __add__(self, other):
-        """Add rational functions ``self`` and ``other``. """
+        """Add rational functions ``self`` and ``other``."""
         field = self.field
 
         if not other:
@@ -391,7 +392,7 @@ class FracElement(DomainElement, CantSympify):
                             self.denom*other_denom)
 
     def __sub__(self, other):
-        """Subtract rational functions ``self`` and ``other``. """
+        """Subtract rational functions ``self`` and ``other``."""
         field = self.field
 
         if not other:
@@ -445,7 +446,7 @@ class FracElement(DomainElement, CantSympify):
                             self.denom*other_denom)
 
     def __mul__(self, other):
-        """Multiply rational functions ``self`` and ``other``. """
+        """Multiply rational functions ``self`` and ``other``."""
         field = self.field
 
         if not self or not other:
@@ -484,7 +485,7 @@ class FracElement(DomainElement, CantSympify):
             return self.new(self.numer*other_numer, self.denom*other_denom)
 
     def __truediv__(self, other):
-        """Computes quotient of fractions ``self`` and ``other``. """
+        """Computes quotient of fractions ``self`` and ``other``."""
         field = self.field
 
         if not other:
@@ -532,7 +533,7 @@ class FracElement(DomainElement, CantSympify):
             return self.new(self.denom*other_numer, self.numer*other_denom)
 
     def __pow__(self, n):
-        """Raise ``self`` to a non-negative power ``n``. """
+        """Raise ``self`` to a non-negative power ``n``."""
         if n >= 0:
             return self.raw_new(self.numer**n, self.denom**n)
         elif not self:
@@ -549,6 +550,7 @@ class FracElement(DomainElement, CantSympify):
         >>> _, x, y, z = field("x y z", ZZ)
         >>> ((x**2 + y)/(z + 1)).diff(x)
         2*x/(z + 1)
+
         """
         x = x.to_poly()
         return self.new(self.numer.diff(x)*self.denom -

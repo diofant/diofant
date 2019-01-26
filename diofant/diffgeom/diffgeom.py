@@ -22,6 +22,7 @@ class Manifold(Basic):
     The only role that this object plays is to keep a list of all patches
     defined on the manifold. It does not provide any means to study the
     topological characteristics of the manifold that it represents.
+
     """
 
     def __new__(cls, name, dim):
@@ -64,6 +65,7 @@ class Patch(Basic):
     >>> p = Patch('P', m)
     >>> p in m.patches
     True
+
     """
 
     # Contains a reference to the parent manifold in order to be able to access
@@ -172,6 +174,7 @@ class CoordSystem(Basic):
     >>> rect = CoordSystem('rect', patch, ['x', 'y'])
     >>> rect.coord_function(0), rect.base_vector(0), rect.base_oneform(0)
     (x, e_x, dx)
+
     """
 
     #  Contains a reference to the parent patch in order to be able to access
@@ -258,6 +261,7 @@ class CoordSystem(Basic):
         ========
 
         CoordSystem
+
         """
         coords = Matrix(coords)
         if self != to_sys:
@@ -284,6 +288,7 @@ class CoordSystem(Basic):
         ========
 
         CoordSystem
+
         """
         return BaseScalarField(self, coord_index)
 
@@ -291,6 +296,7 @@ class CoordSystem(Basic):
         """Returns a list of all coordinate functions.
 
         For more details see the ``coord_function`` method of this class.
+
         """
         return [self.coord_function(i) for i in range(self.dim)]
 
@@ -304,6 +310,7 @@ class CoordSystem(Basic):
         ========
 
         CoordSystem
+
         """
         return BaseVectorField(self, coord_index)
 
@@ -311,6 +318,7 @@ class CoordSystem(Basic):
         """Returns a list of all base vectors.
 
         For more details see the ``base_vector`` method of this class.
+
         """
         return [self.base_vector(i) for i in range(self.dim)]
 
@@ -324,6 +332,7 @@ class CoordSystem(Basic):
         ========
 
         CoordSystem
+
         """
         return Differential(self.coord_function(coord_index))
 
@@ -331,6 +340,7 @@ class CoordSystem(Basic):
         """Returns a list of all base oneforms.
 
         For more details see the ``base_oneform`` method of this class.
+
         """
         return [self.base_oneform(i) for i in range(self.dim)]
 
@@ -345,6 +355,7 @@ class CoordSystem(Basic):
         ========
 
         CoordSystem
+
         """
         return Point(self, coords)
 
@@ -355,6 +366,7 @@ class CoordSystem(Basic):
         ========
 
         CoordSystem
+
         """
         return point.coords(self)
 
@@ -401,6 +413,7 @@ class Point(Basic):
     Matrix([
     [-sqrt(2)*r/2],
     [ sqrt(2)*r/2]])
+
     """
 
     def __init__(self, coord_sys, coords):
@@ -414,6 +427,7 @@ class Point(Basic):
 
         If ``to_sys`` is ``None`` it returns the coordinates in the system in
         which the point was defined.
+
         """
         if to_sys:
             return self._coord_sys.coord_tuple_transform_to(to_sys, self._coords)
@@ -468,6 +482,7 @@ class BaseScalarField(Expr):
     >>> fg = g(ftheta-pi)
     >>> fg.rcall(point)
     g(-pi)
+
     """
 
     is_commutative = True
@@ -485,6 +500,7 @@ class BaseScalarField(Expr):
         point. The field is returned itself if the argument is any other
         object. It is so in order to have working recursive calling mechanics
         for all fields (check the ``__call__`` method of ``Expr``).
+
         """
         point = args[0]
         if len(args) != 1 or not isinstance(point, Point):
@@ -555,6 +571,7 @@ class BaseVectorField(Expr):
     /  d                           \|
     |-----(g(r0*cos(theta0), xi_2))||
     \dxi_2                         /|xi_2=r0*sin(theta0)
+
     """
 
     is_commutative = False
@@ -573,6 +590,7 @@ class BaseVectorField(Expr):
         differentiation.
 
         If the argument is not a scalar field an error is raised.
+
         """
         if covariant_order(scalar_field) or contravariant_order(scalar_field):
             raise ValueError('Only scalar fields can be supplied as arguments to vector fields.')
@@ -631,6 +649,7 @@ class Commutator(Expr):
 
     >>> simplify(c_xr(R2.y**2).doit())
     -2*cos(theta)*y**2/(x**2 + y**2)
+
     """
 
     def __new__(cls, v1, v2):
@@ -668,6 +687,7 @@ class Commutator(Expr):
         """Apply on a scalar field.
 
         If the argument is not a scalar field an error is raised.
+
         """
         return self._v1(self._v2(scalar_field)) - self._v2(self._v1(scalar_field))
 
@@ -715,6 +735,7 @@ class Differential(Expr):
 
     >>> Differential(dg)
     0
+
     """
 
     is_commutative = False
@@ -751,6 +772,7 @@ class Differential(Expr):
         commutator.
 
         If the arguments are not vectors or ``None``s an error is raised.
+
         """
         if any((contravariant_order(a) != 1 or covariant_order(a)) and a is not None
                 for a in vector_fields):
@@ -823,6 +845,7 @@ class TensorProduct(Expr):
 
     >>> metric.rcall(R2.e_y)
     3*dy
+
     """
 
     def __new__(cls, *args):
@@ -851,6 +874,7 @@ class TensorProduct(Expr):
         the forms inside the tensor product. The sublists are provided as
         arguments to these forms and the resulting expressions are given to the
         constructor of ``TensorProduct``.
+
         """
         tot_order = covariant_order(self)
         tot_args = len(v_fields)
@@ -892,6 +916,7 @@ class WedgeProduct(TensorProduct):
     >>> wp1 = WedgeProduct(R2.dx, R2.dy)
     >>> WedgeProduct(wp1, R2.dx)(R2.e_x, R2.e_y, R2.e_x)
     0
+
     """
 
     # TODO the calculation of signatures is slow
@@ -900,6 +925,7 @@ class WedgeProduct(TensorProduct):
         """Apply on a list of vector_fields.
 
         The expression is rewritten internally in terms of tensor products and evaluated.
+
         """
         orders = (covariant_order(e) for e in self.args)
         mul = 1/Mul(*(factorial(o) for o in orders))
@@ -939,6 +965,7 @@ class LieDerivative(Expr):
     LieDerivative(e_x, TensorProduct(dx, dy))
     >>> LieDerivative(R2.e_x, tp).doit()
     LieDerivative(e_x, TensorProduct(dx, dy))
+
     """
 
     def __new__(cls, v_field, expr):
@@ -985,6 +1012,7 @@ class BaseCovarDerivativeOp(Expr):
     1
     >>> cvd(R2.x*R2.e_x)
     e_x
+
     """
 
     def __init__(self, coord_sys, index, christoffel):
@@ -1001,6 +1029,7 @@ class BaseCovarDerivativeOp(Expr):
         differentiation.
 
         If the argument is not a scalar field the behaviour is undefined.
+
         """
         if covariant_order(field) != 0:
             raise NotImplementedError
@@ -1051,6 +1080,7 @@ class CovarDerivativeOp(Expr):
     x
     >>> cvd(R2.x*R2.e_x)
     x*e_x
+
     """
 
     def __init__(self, wrt, christoffel):
@@ -1388,6 +1418,7 @@ def vectors_in_basis(expr, to_sys):
     -y*e_theta/(x**2 + y**2) + x*e_r/sqrt(x**2 + y**2)
     >>> vectors_in_basis(R2_p.e_r, R2_r)
     sin(theta)*e_y + cos(theta)*e_x
+
     """
     vectors = list(expr.atoms(BaseVectorField))
     new_vectors = []
@@ -1537,6 +1568,7 @@ def metric_to_Riemann_components(expr):
     [[[0, 0], [0, 0]], [[0, E**(-2*r)*r], [-E**(-2*r)*r, 0]]]
     >>> riemann[1, :, :, :]
     [[[0, -1/r], [1/r, 0]], [[0, 0], [0, 0]]]
+
     """
     ch_2nd = metric_to_Christoffel_2nd(expr)
     coord_sys = expr.atoms(CoordSystem).pop()
@@ -1585,6 +1617,7 @@ def metric_to_Ricci_components(expr):
     E**(2*r)*TensorProduct(dr, dr) + r**2*TensorProduct(dtheta, dtheta)
     >>> metric_to_Ricci_components(non_trivial_metric)
     [[1/r, 0], [0, E**(-2*r)*r]]
+
     """
     riemann = metric_to_Riemann_components(expr)
     coord_sys = expr.atoms(CoordSystem).pop()

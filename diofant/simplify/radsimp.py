@@ -149,6 +149,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
     ========
 
     collect_const, collect_sqrt, rcollect
+
     """
     def make_expression(terms):
         product = []
@@ -208,6 +209,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
 
          for example, the output of x would be (x, 1, None, None)
          the output of 2**x would be (2, 1, x, None)
+
         """
         rat_expo, sym_expo = S.One, None
         sexpr, deriv = expr, None
@@ -236,6 +238,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
         """Parse terms searching for a pattern.
         terms is a list of tuples as returned by parse_terms;
         pattern is an expression treated as a product of factors
+
         """
         pattern = Mul.make_args(pattern)
 
@@ -403,6 +406,7 @@ def rcollect(expr, *vars):
     See Also
     ========
     collect, collect_const, collect_sqrt
+
     """
     if expr.is_Atom or not expr.has(*vars):
         return expr
@@ -450,6 +454,7 @@ def collect_sqrt(expr, evaluate=True):
     See Also
     ========
     collect, collect_const, rcollect
+
     """
     # this step will help to standardize any complex arguments
     # of sqrts
@@ -522,6 +527,7 @@ def collect_const(expr, *vars, **kwargs):
     See Also
     ========
     collect, collect_sqrt, rcollect
+
     """
     if not expr.is_Add:
         return expr
@@ -847,6 +853,7 @@ def rad_rationalize(num, den):
 
     >>> rad_rationalize(sqrt(3), 1 + sqrt(2)/3)
     (-sqrt(3) + sqrt(6)/3, -7/9)
+
     """
     if not den.is_Add:
         return num, den
@@ -900,6 +907,7 @@ def fraction(expr, exact=False):
 
     >>> fraction(exp(-x), exact=True)
     (E**(-x), 1)
+
     """
     expr = sympify(expr)
 
@@ -969,6 +977,7 @@ def split_surds(expr):
 
     >>> split_surds(3*sqrt(3) + sqrt(5)/7 + sqrt(6) + sqrt(10) + sqrt(15))
     (3, sqrt(2) + sqrt(5) + 3, sqrt(5)/7 + sqrt(10))
+
     """
     args = sorted(expr.args, key=default_sort_key)
     coeff_muls = [x.as_coeff_Mul() for x in args]
@@ -1008,6 +1017,7 @@ def _split_gcd(*a):
 
     >>> _split_gcd(55, 35, 22, 14, 77, 10)
     (5, [55, 35, 10], [22, 14, 77])
+
     """
     g = a[0]
     b1 = [g]
