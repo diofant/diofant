@@ -132,7 +132,8 @@ def opt_cse(exprs, order='canonical'):
     coefficient Muls
 
     Parameters
-    ----------
+    ==========
+
     exprs : list of diofant expressions
         The expressions to optimize.
     order : string, 'none' or 'canonical'
@@ -140,12 +141,13 @@ def opt_cse(exprs, order='canonical'):
         expressions where speed is a concern, use the setting order='none'.
 
     Returns
-    -------
+    =======
+
     opt_subs : dictionary of expression substitutions
         The expression substitutions which can be useful to optimize CSE.
 
     Examples
-    --------
+    ========
 
     >>> opt_subs = opt_cse([x**-2])
     >>> opt_subs

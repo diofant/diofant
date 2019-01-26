@@ -54,7 +54,6 @@ computing `\lim_{x \to \infty} f(x)`:
 
 Notes
 -----
-
 This exposition glossed over several details.  For example, limits could be
 computed recursively (steps 1 and 4).  Please address to the Gruntz thesis [Gruntz96]_
 for proof of the termination (pp. 52-60).

@@ -520,7 +520,8 @@ def _imp_namespace(expr, namespace=None):
     contain diofant expressions.
 
     Parameters
-    ----------
+    ==========
+
     expr : object
        Something passed to lambdify, that will generate valid code from
        ``str(expr)``.
@@ -528,14 +529,15 @@ def _imp_namespace(expr, namespace=None):
        Namespace to fill.  None results in new empty dict
 
     Returns
-    -------
+    =======
+
     namespace : dict
        dict with keys of implemented function names within `expr` and
        corresponding values being the numerical implementation of
        function
 
     Examples
-    --------
+    ========
 
     >>> f = implemented_function(Function('f'), lambda x: x+1)
     >>> g = implemented_function(Function('g'), lambda x: x*10)
@@ -589,7 +591,8 @@ def implemented_function(symfunc, implementation):
     class.
 
     Parameters
-    ----------
+    ==========
+
     symfunc : ``str`` or ``UndefinedFunction`` instance
        If ``str``, then create new ``UndefinedFunction`` with this as
        name.  If `symfunc` is a diofant function, attach implementation to it.
@@ -597,12 +600,13 @@ def implemented_function(symfunc, implementation):
        numerical implementation to be called by ``evalf()`` or ``lambdify``
 
     Returns
-    -------
+    =======
+
     afunc : diofant.FunctionClass instance
        function with attached implementation
 
     Examples
-    --------
+    ========
 
     >>> f = implemented_function(Function('f'), lambda x: x+1)
     >>> lam_f = lambdify(x, f(x))

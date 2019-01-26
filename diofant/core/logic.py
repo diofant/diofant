@@ -3,7 +3,6 @@ Logic expressions handling
 
 Notes
 -----
-
 At present this is mainly needed for facts.py, feel free however to improve
 this stuff for general purpose.
 """

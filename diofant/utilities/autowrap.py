@@ -272,7 +272,7 @@ class CythonCodeWrapper(CodeWrapper):
         refers to the header file.
 
         Parameters
-        ----------
+        ==========
 
         routines : list
             List of Routine instances
@@ -448,7 +448,7 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
     """Generates python callable binaries based on the math expression.
 
     Parameters
-    ----------
+    ==========
 
     expr
         The Diofant expression that should be wrapped as a binary routine.
@@ -480,7 +480,7 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
         is mandatory to supply an argument sequence to helper routines.
 
     Examples
-    --------
+    ========
 
     >>> expr = ((x - y + z)**13).expand()
     >>> binary_func = autowrap(expr)
@@ -679,7 +679,7 @@ class UfuncifyCodeWrapper(CodeWrapper):
         This file contains all the definitions of the routines in c code.
 
         Parameters
-        ----------
+        ==========
 
         routines : list
             List of Routine instances
@@ -785,7 +785,7 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     Generates a binary function that supports broadcasting on numpy arrays.
 
     Parameters
-    ----------
+    ==========
 
     args : iterable
         Either a Symbol or an iterable of symbols. Specifies the argument
@@ -817,7 +817,7 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
         is mandatory to supply an argument sequence to helper routines.
 
     Notes
-    -----
+    =====
 
     The default backend ('numpy') will create actual instances of
     ``numpy.ufunc``. These support ndimensional broadcasting, and implicit type
@@ -826,12 +826,12 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     arguments, and will not perform any type conversions.
 
     References
-    ----------
+    ==========
 
     * https://docs.scipy.org/doc/numpy/reference/ufuncs.html
 
     Examples
-    --------
+    ========
 
     >>> import numpy as np
     >>> f = ufuncify((x, y), y + x**2)

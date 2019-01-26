@@ -873,7 +873,7 @@ def symarray(prefix, shape, **kwargs):  # pragma: no cover
     arrays, as Diofant symbols with identical names are the same object.
 
     Parameters
-    ----------
+    ==========
 
     prefix : string
       A prefix prepended to the name of every symbol.
@@ -886,7 +886,7 @@ def symarray(prefix, shape, **kwargs):  # pragma: no cover
       keyword arguments passed on to Symbol
 
     Examples
-    --------
+    ========
 
     These doctests require numpy.
 

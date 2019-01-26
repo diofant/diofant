@@ -19,7 +19,8 @@ class Assignment(Relational):
     Represents variable assignment for code generation.
 
     Parameters
-    ----------
+    ==========
+
     lhs : Expr
         Diofant object representing the lhs of the expression. These should be
         singular objects, such as one would use in writing code. Notable types
@@ -33,7 +34,7 @@ class Assignment(Relational):
         the dimensions will not align.
 
     Examples
-    --------
+    ========
 
     >>> Assignment(x, y)
     x := y
@@ -101,7 +102,8 @@ class CodePrinter(StrPrinter):
         Print the expression as code.
 
         Parameters
-        ----------
+        ==========
+
         expr : Expression
             The expression to be printed.
 

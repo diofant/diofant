@@ -202,7 +202,7 @@ def remove_ids(mul):
     as args.
 
     See Also
-    --------
+    ========
 
     diofant.core.strategies.rm_id
     """

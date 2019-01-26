@@ -284,7 +284,7 @@ def add_terms(terms, prec, target_prec):
     Helper for evalf_add. Adds a list of (mpfval, accuracy) terms.
 
     Returns
-    -------
+    =======
 
     - None, None if there are no non-zero terms;
     - terms[0] if there is only 1 term;
