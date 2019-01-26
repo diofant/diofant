@@ -7,7 +7,7 @@ from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
                          dup_reverse)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dup_mirror, dup_real_imag, dup_scale,
-                         dup_shift, dup_sign_variations, dup_transform)
+                         dup_shift, dup_transform)
 from .euclidtools import dmp_gcd, dmp_resultant
 from .factortools import dmp_factor_list
 from .polyerrors import DomainError, RefinementFailed
@@ -45,6 +45,31 @@ def dup_sturm(f, K):
         sturm.append(dmp_neg(s, 0, K))
 
     return sturm[:-1]
+
+
+def dup_sign_variations(f, K):
+    """
+    Compute the number of sign variations of ``f`` in ``K[x]``.
+
+    Examples
+    ========
+
+    >>> R, x = ring("x", ZZ)
+
+    >>> R.dup_sign_variations(x**4 - x**2 - x + 1)
+    2
+
+    """
+    prev, k = K.zero, 0
+
+    for coeff in f:
+        if K.is_negative(coeff*prev):
+            k += 1
+
+        if coeff:
+            prev = coeff
+
+    return k
 
 
 def dup_root_upper_bound(f, K):

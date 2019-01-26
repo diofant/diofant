@@ -13,10 +13,9 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_diff_in, dmp_eval_in, dmp_eval_tail,
                          dmp_ground_content, dmp_ground_extract,
                          dmp_ground_monic, dmp_ground_primitive,
-                         dmp_ground_trunc, dmp_integrate_in, dmp_lift,
-                         dmp_trunc, dup_decompose, dup_mirror, dup_real_imag,
-                         dup_scale, dup_shift, dup_sign_variations,
-                         dup_transform, dup_trunc)
+                         dmp_ground_trunc, dmp_integrate_in, dmp_trunc,
+                         dup_decompose, dup_mirror, dup_real_imag, dup_scale,
+                         dup_shift, dup_transform, dup_trunc)
 from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
                           dmp_inner_subresultants, dmp_lcm, dmp_primitive,
@@ -42,7 +41,8 @@ from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_real_roots,
                             dup_isolate_real_roots_list,
                             dup_isolate_real_roots_sqf, dup_refine_real_root,
-                            dup_root_upper_bound, dup_sturm)
+                            dup_root_upper_bound, dup_sign_variations,
+                            dup_sturm)
 from .sqfreetools import dmp_sqf_list, dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
 
 
@@ -70,7 +70,7 @@ class IPolys:
         return self.wrap(element).to_dense()
 
     def from_dense(self, element):
-        return self.from_dict(dmp_to_dict(element, self.ngens-1, self.domain))
+        return self.from_dict(dmp_to_dict(element, self.ngens-1))
 
     def dmp_add_term(self, f, c, i):
         c = self.wrap(c).drop(0).to_dense() if self.ngens > 1 else c
@@ -250,10 +250,6 @@ class IPolys:
     def dup_decompose(self, f):
         components = dup_decompose(self.to_dense(f), self.domain)
         return list(map(self.from_dense, components))
-
-    def dmp_lift(self, f):
-        result = dmp_lift(self.to_dense(f), self.ngens-1, self.domain)
-        return self.to_ground().from_dense(result)
 
     def dup_sign_variations(self, f):
         return dup_sign_variations(self.to_dense(f), self.domain)
@@ -544,7 +540,7 @@ class IPolys:
         return dmp_strip([self.domain.domain.convert(c, self.domain) for c in self.wrap(element).to_dense()], 0)
 
     def from_gf_dense(self, element):
-        return self.from_dict(dmp_to_dict(element, self.ngens-1, self.domain.domain))
+        return self.from_dict(dmp_to_dict(element, self.ngens-1))
 
     def gf_factor_sqf(self, f):
         coeff, factors = gf_factor_sqf(self.to_gf_dense(f), self.domain.mod, self.domain.domain)

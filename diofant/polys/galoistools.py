@@ -21,20 +21,18 @@ def gf_crt(U, M, K=None):
     co-prime integer moduli ``m_0,...,m_n``, returns an integer
     ``u``, such that ``u = u_i mod m_i`` for ``i = ``0,...,n``.
 
-    As an example consider a set of residues ``U = [49, 76, 65]``
-    and a set of moduli ``M = [99, 97, 95]``. Then we have::
+    Examples
+    ========
 
-       >>> from diofant.ntheory.modular import solve_congruence
+    >>> gf_crt([49, 76, 65], [99, 97, 95], ZZ)
+    639985
+    >>> [_ % m for m in [99, 97, 95]]
+    [49, 76, 65]
 
-       >>> gf_crt([49, 76, 65], [99, 97, 95], ZZ)
-       639985
+    Notes
+    =====
 
-    This is the correct result because::
-
-       >>> [639985 % m for m in [99, 97, 95]]
-       [49, 76, 65]
-
-    Note: this is a low-level routine with no error checking.
+    This is a low-level routine with no error checking.
 
     See Also
     ========
@@ -426,15 +424,13 @@ def gf_div(f, g, p, K):
     finite field with ``p`` elements, returns polynomials ``q`` and ``r``
     (quotient and remainder) such that ``f = q*g + r``.
 
-    Consider polynomials ``x**3 + x + 1`` and ``x**2 + x`` in GF(2)::
+    Examples
+    ========
 
-       >>> gf_div([1, 0, 1, 1], [1, 1, 0], 2, ZZ)
-       ([1, 1], [1])
-
-    As result we obtained quotient ``x + 1`` and remainder ``1``, thus::
-
-       >>> gf_add_mul([1], [1, 1], [1, 1, 0], 2, ZZ)
-       [1, 0, 1, 1]
+    >>> gf_div([1, 0, 1, 1], [1, 1, 0], 2, ZZ)
+    ([1, 1], [1])
+    >>> gf_add_mul(_[1], _[0], [1, 1, 0], 2, ZZ)
+    [1, 0, 1, 1]
 
     References
     ==========
@@ -581,8 +577,7 @@ def gf_frobenius_monomial_base(g, p, K):
     Examples
     ========
 
-    >>> g = [1, 0, 2, 1]
-    >>> gf_frobenius_monomial_base(g, 5, ZZ)
+    >>> gf_frobenius_monomial_base([1, 0, 2, 1], 5, ZZ)
     [[1], [4, 4, 2], [1, 2]]
     """
     n = dmp_degree_in(g, 0, 0)
@@ -764,21 +759,17 @@ def gf_gcdex(f, g, p, K):
     ``s``, ``t`` and ``h``, such that ``h = gcd(f, g)`` and ``s*f + t*g = h``.
     The typical application of EEA is solving polynomial diophantine equations.
 
-    Consider polynomials ``f = (x + 7) (x + 1)``, ``g = (x + 7) (x**2 + 1)``
-    in ``GF(11)[x]``. Application of Extended Euclidean Algorithm gives::
+    Examples
+    ========
 
-       >>> s, t, g = gf_gcdex([1, 8, 7], [1, 7, 1, 7], 11, ZZ)
-       >>> (s, t, g)
-       ([5, 6], [6], [1, 7])
+    >>> s, t, g = gf_gcdex([1, 8, 7], [1, 7, 1, 7], 11, ZZ)
+    >>> (s, t, g)
+    ([5, 6], [6], [1, 7])
 
-    As result we obtained polynomials ``s = 5*x + 6`` and ``t = 6``, and
-    additionally ``gcd(f, g) = x + 7``. This is correct because::
-
-       >>> S = gf_mul(s, [1, 8, 7], 11, ZZ)
-       >>> T = gf_mul(t, [1, 7, 1, 7], 11, ZZ)
-
-       >>> gf_add(S, T, 11, ZZ)
-       [1, 7]
+    >>> S = gf_mul(s, [1, 8, 7], 11, ZZ)
+    >>> T = gf_mul(t, [1, 7, 1, 7], 11, ZZ)
+    >>> gf_add(S, T, 11, ZZ)
+    [1, 7]
 
     References
     ==========
@@ -1147,25 +1138,23 @@ def gf_sqf_list(f, p, K):
     are co-prime and ``e_1 ... e_k`` are given in increasing order. All trivial
     terms (i.e. ``f_i = 1``) aren't included in the output.
 
-    Consider polynomial ``f = x**11 + 1`` over ``GF(11)[x]``::
+    Examples
+    ========
 
-       >>> f = gf_from_dict({11: ZZ(1), 0: ZZ(1)}, 11, ZZ)
+    >>> f = gf_from_dict({11: ZZ(1), 0: ZZ(1)}, 11, ZZ)
 
-    Note that ``f'(x) = 0``::
+    Note that:
 
-       >>> gf_diff(f, 11, ZZ)
-       []
+    >>> gf_diff(f, 11, ZZ)
+    []
 
     This phenomenon doesn't happen in characteristic zero. However we can
-    still compute square-free decomposition of ``f`` using ``gf_sqf()``::
+    still compute square-free decomposition of ``f``:
 
-       >>> gf_sqf_list(f, 11, ZZ)
-       (1, [([1, 1], 11)])
-
-    We obtained factorization ``f = (x + 1)**11``. This is correct because::
-
-       >>> gf_pow([1, 1], 11, 11, ZZ) == f
-       True
+    >>> gf_sqf_list(f, 11, ZZ)
+    (1, [([1, 1], 11)])
+    >>> gf_pow(*_[1][0], 11, ZZ) == f
+    True
 
     References
     ==========
@@ -1359,17 +1348,15 @@ def gf_ddf_zassenhaus(f, p, K):
     list of pairs ``(f_i, e_i)`` where ``deg(f_i) > 0`` and ``e_i > 0``
     is an argument to the equal degree factorization routine.
 
-    Consider the polynomial ``x**15 - 1`` in ``GF(11)[x]``::
+    Examples
+    ========
 
-       >>> f = gf_from_dict({15: ZZ(1), 0: ZZ(-1)}, 11, ZZ)
+    >>> f = gf_from_dict({15: ZZ(1), 0: ZZ(-1)}, 11, ZZ)
 
-    Distinct degree factorization gives::
+    >>> gf_ddf_zassenhaus(f, 11, ZZ)
+    [([1, 0, 0, 0, 0, 10], 1), ([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], 2)]
 
-       >>> gf_ddf_zassenhaus(f, 11, ZZ)
-       [([1, 0, 0, 0, 0, 10], 1), ([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], 2)]
-
-    which means ``x**15 - 1 = (x**5 - 1) (x**10 + x**5 + 1)``. To obtain
-    factorization into irreducibles, use equal degree factorization
+    To obtain factorization into irreducibles, use equal degree factorization
     procedure (EDF) with each of the factors.
 
     References
@@ -1409,11 +1396,11 @@ def gf_edf_zassenhaus(f, n, p, K):
     irreducible factors ``f_1,...,f_d`` of ``f``, each of degree ``n``.
     EDF procedure gives complete factorization over Galois fields.
 
-    Consider the square-free polynomial ``f = x**3 + x**2 + x + 1`` in
-    ``GF(5)[x]``. Let's compute its irreducible factors of degree one::
+    Examples
+    ========
 
-       >>> gf_edf_zassenhaus([1, 1, 1, 1], 1, 5, ZZ)
-       [[1, 1], [1, 2], [1, 3]]
+    >>> gf_edf_zassenhaus([1, 1, 1, 1], 1, 5, ZZ)
+    [[1, 1], [1, 2], [1, 3]]
 
     References
     ==========
@@ -1666,16 +1653,6 @@ def gf_factor(f, p, K):
     The algorithm proceeds by first computing square-free decomposition
     of ``f`` and then iteratively factoring each of square-free factors.
 
-    Consider a non square-free polynomial ``f = (7*x + 1) (x + 2)**2`` in
-    ``GF(11)[x]``. We obtain its factorization into irreducibles as follows::
-
-       >>> gf_factor([5, 2, 7, 2], 11, ZZ)
-       (5, [([1, 2], 1), ([1, 8], 2)])
-
-    We arrived with factorization ``f = 5 (x + 2) (x + 8)**2``. We didn't
-    recover the exact form of the input polynomial because we requested to
-    get monic factors of ``f`` and its leading coefficient separately.
-
     Square-free factors of ``f`` can be factored into irreducibles over
     ``GF(p)`` using three very different methods:
 
@@ -1689,6 +1666,16 @@ def gf_factor(f, p, K):
     If you want to use a specific factorization method, instead of the default
     one, set ``GF_FACTOR_METHOD`` with one of ``berlekamp``, ``zassenhaus`` or
     ``shoup`` values.
+
+    Examples
+    ========
+
+    >>> gf_factor([5, 2, 7, 2], 11, ZZ)
+    (5, [([1, 2], 1), ([1, 8], 2)])
+
+    We arrived with factorization ``f = 5 (x + 2) (x + 8)**2``. We didn't
+    recover the exact form of the input polynomial because we requested to
+    get monic factors of ``f`` and its leading coefficient separately.
 
     References
     ==========
@@ -1807,9 +1794,6 @@ def csolve_prime(f, p, e=1):
     [1]
     >>> csolve_prime([1, 1, 7], 3, 2)
     [1, 4, 7]
-
-    Solutions [7, 4, 1] (mod 3**2) are generated by ``_raise_mod_power()``
-    from solution [1] (mod 3).
     """
     from ..domains import ZZ
     X1 = [i for i in range(p) if gf_eval(f, i, p, ZZ) == 0]
@@ -1838,8 +1822,6 @@ def gf_csolve(f, n):
 
     Examples
     ========
-
-    Solve [1, 1, 7] congruent 0 mod(189):
 
     >>> gf_csolve([1, 1, 7], 189)
     [13, 49, 76, 112, 139, 175]

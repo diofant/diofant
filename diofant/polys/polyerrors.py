@@ -1,4 +1,4 @@
-"""Definitions of common exceptions for `polys` module. """
+"""Definitions of common exceptions for :mod:`~diofant.polys` module. """
 
 
 __all__ = ('BasePolynomialError', 'ExactQuotientFailed',

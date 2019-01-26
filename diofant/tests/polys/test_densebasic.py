@@ -15,7 +15,7 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_inject, dmp_LC, dmp_list_terms,
                                       dmp_multi_deflate, dmp_nest, dmp_normal,
                                       dmp_one, dmp_one_p, dmp_permute,
-                                      dmp_raise, dmp_slice, dmp_strip,
+                                      dmp_raise, dmp_slice_in, dmp_strip,
                                       dmp_swap, dmp_TC, dmp_terms_gcd,
                                       dmp_to_dict, dmp_validate, dmp_zero,
                                       dmp_zero_p, dmp_zeros, dup_from_dict,
@@ -297,17 +297,15 @@ def test_dmp_zeros():
     assert dmp_zeros(3, -1, ZZ) == [0, 0, 0]
 
 
-def test_dup_from_to_dict():
-    assert dup_from_dict({}, ZZ) == []
+def test_dmp_from_to_dict():
+    assert dmp_from_dict({}, 0, ZZ) == []
 
     assert dmp_to_dict([], 0) == {}
-
-    assert dmp_to_dict([], 0, ZZ, zero=True) == {(0,): ZZ(0)}
 
     f = [3, 0, 0, 2, 0, 0, 0, 0, 8]
     h = {(8,): 3, (5,): 2, (0,): 8}
 
-    assert dup_from_dict(h, ZZ) == f
+    assert dmp_from_dict(h, 0, ZZ) == f
 
     assert dmp_to_dict(f, 0) == h
 
@@ -316,19 +314,14 @@ def test_dup_from_to_dict():
     f = [R(3), R(0), R(2), R(0), R(0), R(8)]
     h = {(5,): R(3), (3,): R(2), (0,): R(8)}
 
-    assert dup_from_dict(h, R) == f
+    assert dmp_from_dict(h, 0, R) == f
 
     assert dmp_to_dict(f, 0) == h
 
     assert dmp_to_dict([1, 0, 5, 0, 7], 0) == {(0,): 7, (2,): 5, (4,): 1}
 
-
-def test_dmp_from_to_dict():
     assert dmp_from_dict({}, 1, ZZ) == [[]]
     assert dmp_to_dict([[]], 1) == {}
-
-    assert dmp_to_dict([], 0, ZZ, zero=True) == {(0,): ZZ(0)}
-    assert dmp_to_dict([[]], 1, ZZ, zero=True) == {(0, 0): ZZ(0)}
 
     f = [[3], [], [], [2], [], [], [], [], [8]]
     g = {(8, 0): 3, (5, 0): 2, (0, 0): 8}
@@ -348,6 +341,12 @@ def test_dmp_swap():
 
     pytest.raises(IndexError, lambda: dmp_swap(f, -1, -7, 1, ZZ))
 
+    f = dmp_normal([[[2], [1, 0]], []], 2, ZZ)
+
+    assert dmp_swap(f, 0, 1, 2, ZZ) == dmp_normal([[[2], []], [[1, 0], []]], 2, ZZ)
+    assert dmp_swap(f, 1, 2, 2, ZZ) == dmp_normal([[[1], [2, 0]], [[]]], 2, ZZ)
+    assert dmp_swap(f, 0, 2, 2, ZZ) == dmp_normal([[[1, 0]], [[2, 0], []]], 2, ZZ)
+
 
 def test_dmp_permute():
     f = dmp_normal([[1, 0, 0], [], [1, 0], [], [1]], 1, ZZ)
@@ -358,6 +357,11 @@ def test_dmp_permute():
 
     assert dmp_permute(f, [1, 0], 1, ZZ) == g
     assert dmp_permute(g, [1, 0], 1, ZZ) == f
+
+    f = dmp_normal([[[2], [1, 0]], []], 2, ZZ)
+
+    assert dmp_permute(f, [1, 0, 2], 2, ZZ) == dmp_normal([[[2], []], [[1, 0], []]], 2, ZZ)
+    assert dmp_permute(f, [1, 2, 0], 2, ZZ) == dmp_normal([[[1], []], [[2, 0], []]], 2, ZZ)
 
 
 def test_dmp_nest():
@@ -513,6 +517,9 @@ def test_dmp_inject():
     assert dmp_inject([R(1)], 0, R) == ([[[1]]], 2)
     assert dmp_inject([[R(1)]], 1, R) == ([[[[1]]]], 3)
 
+    assert dmp_inject([R(1), x + 2], 0, R) == ([[[1]], [[1], [2]]], 2)
+    assert dmp_inject([R(1), x + 2], 0, R, front=True) == ([[[1]], [[1, 2]]], 2)
+
     assert dmp_inject([R(1), 2*x + 3*y + 4], 0, R) == ([[[1]], [[2], [3, 4]]], 2)
 
     f = [3*x**2 + 7*x*y + 5*y**2, 2*x, R(0), x*y**2 + 11]
@@ -605,35 +612,35 @@ def test_dmp_apply_pairs():
     assert dmp_apply_pairs([1, 2, 3], [3, 2, 1], h2, [1], 0, ZZ) == [4, 5, 6]
 
 
-def test_dmp_slice():
+def test_dmp_slice_in():
     f = [1, 2, 3, 4]
 
-    assert dmp_slice(f, 0, 0, 0, ZZ) == []
-    assert dmp_slice(f, 0, 1, 0, ZZ) == [4]
-    assert dmp_slice(f, 0, 2, 0, ZZ) == [3, 4]
-    assert dmp_slice(f, 0, 3, 0, ZZ) == [2, 3, 4]
-    assert dmp_slice(f, 0, 4, 0, ZZ) == [1, 2, 3, 4]
+    assert dmp_slice_in(f, 0, 0, 0, 0, ZZ) == []
+    assert dmp_slice_in(f, 0, 1, 0, 0, ZZ) == [4]
+    assert dmp_slice_in(f, 0, 2, 0, 0, ZZ) == [3, 4]
+    assert dmp_slice_in(f, 0, 3, 0, 0, ZZ) == [2, 3, 4]
+    assert dmp_slice_in(f, 0, 4, 0, 0, ZZ) == [1, 2, 3, 4]
 
-    assert dmp_slice(f, 0, 4, 0, ZZ) == f
-    assert dmp_slice(f, 0, 9, 0, ZZ) == f
+    assert dmp_slice_in(f, 0, 4, 0, 0, ZZ) == f
+    assert dmp_slice_in(f, 0, 9, 0, 0, ZZ) == f
 
-    assert dmp_slice(f, 1, 0, 0, ZZ) == []
-    assert dmp_slice(f, 1, 1, 0, ZZ) == []
-    assert dmp_slice(f, 1, 2, 0, ZZ) == [3, 0]
-    assert dmp_slice(f, 1, 3, 0, ZZ) == [2, 3, 0]
-    assert dmp_slice(f, 1, 4, 0, ZZ) == [1, 2, 3, 0]
+    assert dmp_slice_in(f, 1, 0, 0, 0, ZZ) == []
+    assert dmp_slice_in(f, 1, 1, 0, 0, ZZ) == []
+    assert dmp_slice_in(f, 1, 2, 0, 0, ZZ) == [3, 0]
+    assert dmp_slice_in(f, 1, 3, 0, 0, ZZ) == [2, 3, 0]
+    assert dmp_slice_in(f, 1, 4, 0, 0, ZZ) == [1, 2, 3, 0]
 
-    assert dmp_slice([1, 2], 0, 3, 0, ZZ) == [1, 2]
+    assert dmp_slice_in([1, 2], 0, 3, 0, 0, ZZ) == [1, 2]
 
     f = [[1], [2, 3, 4]]
-    assert dmp_slice(f, 1, 2, 1, ZZ) == f
-    assert dmp_slice(f, 2, 1, 1, ZZ) == [[2, 3, 5]]
+    assert dmp_slice_in(f, 1, 2, 0, 1, ZZ) == f
+    assert dmp_slice_in(f, 2, 1, 0, 1, ZZ) == [[2, 3, 5]]
 
     g = [1, 2, 3, 4]
-    assert dmp_slice(g, 0, 0, 0, ZZ) == []
-    assert dmp_slice(g, 0, 3, 0, ZZ) == [2, 3, 4]
+    assert dmp_slice_in(g, 0, 0, 0, 0, ZZ) == []
+    assert dmp_slice_in(g, 0, 3, 0, 0, ZZ) == [2, 3, 4]
 
-    pytest.raises(IndexError, lambda: dmp_slice(g, 0, 0, -1, ZZ))
+    pytest.raises(IndexError, lambda: dmp_slice_in(g, 0, 0, 0, -1, ZZ))
 
 
 def test_dup_random():

@@ -1,18 +1,17 @@
-"""Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
+"""Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from ..utilities import variations
-from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
-                         dmp_exquo_ground, dmp_mul, dmp_mul_ground, dmp_neg,
-                         dmp_quo_ground, dmp_rem, dmp_sub, dup_add, dup_mul)
+from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_exquo_ground,
+                         dmp_mul, dmp_mul_ground, dmp_neg, dmp_quo_ground,
+                         dmp_rem, dmp_sub, dup_add, dup_mul)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
-                         dmp_zero, dmp_zero_p, dmp_zeros, dup_from_dict)
+                         dmp_zero, dmp_zero_p, dmp_zeros)
 from .polyerrors import DomainError
 
 
 def dmp_integrate_in(f, m, j, u, K):
     """
-    Computes the indefinite integral of ``f`` in ``x_j`` in ``K[X]``.
+    Compute the indefinite integral of ``f`` in ``x_j`` in ``K[X]``.
 
     Examples
     ========
@@ -23,6 +22,7 @@ def dmp_integrate_in(f, m, j, u, K):
     1/2*x**2 + 2*x*y
     >>> R.dmp_integrate_in(x + 2*y, 1, 1)
     x*y + y**2
+
     """
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
@@ -71,6 +71,7 @@ def dmp_diff_in(f, m, j, u, K):
     y**2 + 2*y + 3
     >>> R.dmp_diff_in(f, 1, 1)
     2*x*y + 2*x + 4*y + 3
+
     """
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
@@ -130,6 +131,7 @@ def dmp_eval_in(f, a, j, u, K):
     5*y + 8
     >>> R.dmp_eval_in(f, 2, 1)
     7*x + 4
+
     """
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
@@ -177,6 +179,7 @@ def dmp_eval_tail(f, A, u, K):
     7*x + 4
     >>> R.dmp_eval_tail(f, [2, 2])
     18
+
     """
     if not A:
         return f
@@ -218,6 +221,7 @@ def dmp_diff_eval_in(f, m, a, j, u, K):
     y**2 + 2*y + 3
     >>> R.dmp_diff_eval_in(f, 1, 2, 1)
     6*x + 11
+
     """
     if j > u:
         raise IndexError("-%s <= j < %s expected, got %s" % (u, u, j))
@@ -246,6 +250,7 @@ def dup_trunc(f, p, K):
 
     >>> R.dup_trunc(2*x**3 + 3*x**2 + 5*x + 7, ZZ(3))
     -x**3 - x + 1
+
     """
     if K.is_IntegerRing:
         g = []
@@ -258,7 +263,7 @@ def dup_trunc(f, p, K):
             else:
                 g.append(c)
     else:
-        g = [ c % p for c in f ]
+        g = [c % p for c in f]
 
     return dmp_strip(g, 0)
 
@@ -277,8 +282,9 @@ def dmp_trunc(f, p, u, K):
 
     >>> R.dmp_trunc(f, g)
     11*x**2 + 11*x + 5
+
     """
-    return dmp_strip([ dmp_rem(c, p, u - 1, K) for c in f ], u)
+    return dmp_strip([dmp_rem(c, p, u - 1, K) for c in f], u)
 
 
 def dmp_ground_trunc(f, p, u, K):
@@ -294,13 +300,14 @@ def dmp_ground_trunc(f, p, u, K):
 
     >>> R.dmp_ground_trunc(f, ZZ(3))
     -x**2 - x*y - y
+
     """
     if not u:
         return dup_trunc(f, p, K)
 
     v = u - 1
 
-    return dmp_strip([ dmp_ground_trunc(c, p, v, K) for c in f ], u)
+    return dmp_strip([dmp_ground_trunc(c, p, v, K) for c in f], u)
 
 
 def dmp_ground_monic(f, u, K):
@@ -321,6 +328,7 @@ def dmp_ground_monic(f, u, K):
 
     >>> R.dmp_ground_monic(f)
     x**2*y + 8/3*x**2 + 5/3*x*y + 2*x + 2/3*y + 1
+
     """
     if dmp_zero_p(f, u):
         return f
@@ -351,6 +359,7 @@ def dmp_ground_content(f, u, K):
 
     >>> R.dmp_ground_content(f)
     2
+
     """
     if u < 0:
         return f
@@ -391,6 +400,7 @@ def dmp_ground_primitive(f, u, K):
 
     >>> R.dmp_ground_primitive(f)
     (2, x*y + 3*x + 2*y + 6)
+
     """
     if dmp_zero_p(f, u):
         return K.zero, f
@@ -418,6 +428,7 @@ def dmp_ground_extract(f, g, u, K):
 
     >>> R.dmp_ground_extract(6*x*y + 12*x + 18, 4*x*y + 8*x + 12)
     (2, 3*x*y + 6*x + 9, 2*x*y + 4*x + 6)
+
     """
     fc = dmp_ground_content(f, u, K)
     gc = dmp_ground_content(g, u, K)
@@ -447,6 +458,7 @@ def dup_real_imag(f, K):
 
     >>> R.dup_real_imag(x**2 + I*x - 1)
     (x**2 - y**2 - y - 1, 2*x*y + x)
+
     """
     if K.is_ComplexAlgebraicField:
         K0 = K.domain
@@ -497,6 +509,7 @@ def dup_mirror(f, K):
 
     >>> R.dup_mirror(x**3 + 2*x**2 - 4*x + 2)
     -x**3 + 2*x**2 + 4*x + 2
+
     """
     f = list(f)
 
@@ -517,6 +530,7 @@ def dup_scale(f, a, K):
 
     >>> R.dup_scale(x**2 - 2*x + 1, ZZ(2))
     4*x**2 - 4*x + 1
+
     """
     f, n, b = list(f), len(f) - 1, a
 
@@ -537,6 +551,7 @@ def dup_shift(f, a, K):
 
     >>> R.dup_shift(x**2 - 2*x + 1, ZZ(2))
     x**2 + 2*x + 1
+
     """
     f, n = list(f), len(f) - 1
 
@@ -558,6 +573,7 @@ def dup_transform(f, p, q, K):
 
     >>> R.dup_transform(x**2 - 2*x + 1, x**2 + 1, x - 1)
     x**4 - 2*x**3 + 5*x**2 - 4*x + 4
+
     """
     if not f:
         return []
@@ -587,6 +603,7 @@ def dmp_compose(f, g, u, K):
 
     >>> R.dmp_compose(x*y + 2*x + y, y)
     y**2 + 3*y
+
     """
     if dmp_zero_p(f, u):
         return f
@@ -601,7 +618,6 @@ def dmp_compose(f, g, u, K):
 
 
 def _dup_right_decompose(f, s, K):
-    """Helper function for :func:`_dup_decompose`."""
     n = len(f) - 1
     lc = dmp_LC(f, K)
 
@@ -624,11 +640,10 @@ def _dup_right_decompose(f, s, K):
 
         g[(s - i,)] = K.quo(coeff, i*r*lc)
 
-    return dup_from_dict(g, K)
+    return dmp_from_dict(g, 0, K)
 
 
 def _dup_left_decompose(f, h, K):
-    """Helper function for :func:`_dup_decompose`."""
     g, i = {}, 0
 
     while f:
@@ -640,11 +655,10 @@ def _dup_left_decompose(f, h, K):
             g[(i,)] = dmp_LC(r, K)
             f, i = q, i + 1
 
-    return dup_from_dict(g, K)
+    return dmp_from_dict(g, 0, K)
 
 
 def _dup_decompose(f, K):
-    """Helper function for :func:`dup_decompose`."""
     df = len(f) - 1
 
     for s in range(2, df):
@@ -662,7 +676,7 @@ def _dup_decompose(f, K):
 
 def dup_decompose(f, K):
     """
-    Computes functional decomposition of ``f`` in ``K[x]``.
+    Compute functional decomposition of ``f`` in ``K[x]``.
 
     Given a univariate polynomial ``f`` with coefficients in a field of
     characteristic zero, returns list ``[f_1, f_2, ..., f_n]``, where::
@@ -693,6 +707,7 @@ def dup_decompose(f, K):
     ==========
 
     * [Kozen89]_
+
     """
     F = []
 
@@ -706,69 +721,6 @@ def dup_decompose(f, K):
             break
 
     return [f] + F
-
-
-def dmp_lift(f, u, K):
-    """
-    Convert algebraic coefficients to integers in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> K = QQ.algebraic_field(I)
-    >>> R, x = ring("x", K)
-
-    >>> f = x**2 + I*x + 2*I
-
-    >>> R.dmp_lift(f)
-    x**8 + 2*x**6 + 9*x**4 - 8*x**2 + 16
-    """
-    if not K.is_AlgebraicField:
-        raise DomainError(
-            'computation can be done only in an algebraic domain')
-
-    F, monoms, polys = dmp_to_dict(f, u), [], []
-
-    for monom, coeff in F.items():
-        if not coeff.is_ground:
-            monoms.append(monom)
-
-    perms = variations([-1, 1], len(monoms), repetition=True)
-
-    for perm in perms:
-        G = dict(F)
-
-        for sign, monom in zip(perm, monoms):
-            if sign == -1:
-                G[monom] = -G[monom]
-
-        polys.append(dmp_from_dict(G, u, K))
-
-    return dmp_convert(dmp_expand(polys, u, K), u, K, K.domain)
-
-
-def dup_sign_variations(f, K):
-    """
-    Compute the number of sign variations of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_sign_variations(x**4 - x**2 - x + 1)
-    2
-    """
-    prev, k = K.zero, 0
-
-    for coeff in f:
-        if K.is_negative(coeff*prev):
-            k += 1
-
-        if coeff:
-            prev = coeff
-
-    return k
 
 
 def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
@@ -786,6 +738,7 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
     (6, 3*x + 2*y + 6)
     >>> R.dmp_clear_denoms(f, convert=True)
     (6, 3*x + 2*y + 6)
+
     """
     if K1 is None:
         if K0.has_assoc_Ring:

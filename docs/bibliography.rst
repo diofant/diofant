@@ -205,3 +205,6 @@
 .. [Prudnikov1990] A. P. Prudnikov, Yu. A. Brychkov and O. I. Marichev (1990).
     Integrals and Series: More Special Functions, Vol. 3,
     Gordon and Breach Science Publisher.
+
+.. [Hoeven02] Van der Hoeven, Joris, Relax, but Don'T Be Too Lazy,
+    J. Symb. Comput., Vol. 34, Number 8, pp. 479--542, 2002.

@@ -25,6 +25,38 @@ def test_dup_sturm():
     assert R.dup_sturm(f) == [f, 3*x**2 - 4*x + 3, -10*x/9 + QQ(13, 3), -QQ(3303, 100)]
 
 
+def test_dup_sign_variations():
+    R, x = ring('x', ZZ)
+
+    assert R.dup_sign_variations(0) == 0
+    assert R.dup_sign_variations(x) == 0
+    assert R.dup_sign_variations(x**2 + 2) == 0
+    assert R.dup_sign_variations(x**3 + 3*x) == 0
+    assert R.dup_sign_variations(x**4 + 4*x**2 + 5) == 0
+
+    assert R.dup_sign_variations(2 - x**2) == 1
+    assert R.dup_sign_variations(3*x - x**3) == 1
+    assert R.dup_sign_variations(-x**4 + 4*x**2 + 5) == 1
+
+    assert R.dup_sign_variations(-x**2 - 4*x - 5) == 0
+    assert R.dup_sign_variations(+x**2 - 4*x - 5) == 1
+    assert R.dup_sign_variations(+x**2 + 4*x - 5) == 1
+    assert R.dup_sign_variations(+x**2 - 4*x + 5) == 2
+    assert R.dup_sign_variations(-x**2 + 4*x - 5) == 2
+    assert R.dup_sign_variations(-x**2 + 4*x + 5) == 1
+    assert R.dup_sign_variations(-x**2 - 4*x + 5) == 1
+    assert R.dup_sign_variations(+x**2 + 4*x + 5) == 0
+
+    assert R.dup_sign_variations(-x**4 - 4*x**2 - 5) == 0
+    assert R.dup_sign_variations(+x**4 - 4*x**2 - 5) == 1
+    assert R.dup_sign_variations(+x**4 + 4*x**2 - 5) == 1
+    assert R.dup_sign_variations(+x**4 - 4*x**2 + 5) == 2
+    assert R.dup_sign_variations(-x**4 + 4*x**2 - 5) == 2
+    assert R.dup_sign_variations(-x**4 + 4*x**2 + 5) == 1
+    assert R.dup_sign_variations(-x**4 - 4*x**2 + 5) == 1
+    assert R.dup_sign_variations(+x**4 + 4*x**2 + 5) == 0
+
+
 def test_dup_root_upper_bound():
     R, x = ring("x", ZZ)
 

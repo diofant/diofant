@@ -1023,12 +1023,6 @@ def test_Poly_as_expr():
     pytest.raises(GeneratorsError, lambda: f.as_expr({z: 7}))
 
 
-def test_Poly_lift():
-    assert Poly(x**4 - I*x + 17*I, x, gaussian=True).lift() == \
-        Poly(x**16 + 2*x**10 + 578*x**8 + x**4 - 578*x**2 + 83521,
-             x, domain='QQ')
-
-
 def test_Poly_deflate():
     assert Poly(0, x).deflate() == ((1,), Poly(0, x))
     assert Poly(1, x).deflate() == ((1,), Poly(1, x))

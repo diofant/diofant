@@ -8,10 +8,10 @@ New features
 ============
 
 * New representation for elements of :class:`~diofant.domains.AlgebraicField`, see :pull:`619`, :pull:`631` and :pull:`763`.
-* Ground domains for :class:`~diofant.domains.AlgebraicField` can be also instances of :class:`~diofant.domains.AlgebraicField`, see :pull:`653`.
+* Support towers of algebraic field extensions: ground domain for :class:`~diofant.domains.AlgebraicField` can be also an instance of :class:`~diofant.domains.AlgebraicField`, see :pull:`653`.
 * New subclasses of :class:`~diofant.domains.AlgebraicField`: :class:`~diofant.domains.RealAlgebraicField` and :class:`~diofant.domains.ComplexAlgebraicField`, see :pull:`669`, :pull:`630` and :pull:`748`.  Thanks to Kalevi Suominen for help with review.
 * Added :func:`~diofant.core.numbers.integer_digits`, see :pull:`765`.
-* Support finite fields for prime power orders, see :pull:`762`.
+* :class:`~diofant.domains.FiniteField` support prime power orders, forbid everything else, see :pull:`622` and :pull:`762`.
 
 Major changes
 =============
@@ -25,7 +25,6 @@ Compatibility breaks
 
 * Removed ``DMF`` class, see :pull:`620`.
 * Removed ``K[x, y, ...]`` sugar, use :meth:`~diofant.domains.domain.Domain.poly_ring` to create polynomial rings, see :pull:`622`.
-* Allow only prime orders for :class:`~diofant.domains.FiniteField`, see :pull:`622`.
 * Removed ``FracField`` class, see :pull:`622`.
 * ``get_field()`` method for domains, derived from :class:`~diofant.domains.ring.Ring`, now is a property, e.g. :attr:`~diofant.domains.field.Field.field`, see :pull:`622`.
 * Removed ``PolyRing`` class, see :pull:`621`.
@@ -36,9 +35,8 @@ Compatibility breaks
 * Removed ``ANP`` class, see :pull:`619`.
 * Removed ``to_number_field()``, use :meth:`~diofant.domains.domain.Domain.convert` instead, see :pull:`619`.
 * Removed ``RealNumber`` alias, see :pull:`635`.
-* Removed ``of_type()`` method of :class:`~diofant.domains.domain.Domain`, see :pull:`636`.
 * Method ``characteristic()`` now is a property of :class:`~diofant.domains.characteristiczero.CharacteristicZero` and :class:`~diofant.domains.FiniteField`, see :pull:`636`.
-* Removed ``abs()``, ``is_one()`` and ``unify_with_symbols()`` methods and ``has_CharacteristicZero`` attribute of :class:`~diofant.domains.domain.Domain`, see :pull:`637`.
+* Removed ``of_type()``, ``abs()``, ``is_one()``, ``unify_with_symbols()`` and ``map()`` methods and ``has_CharacteristicZero`` attribute of :class:`~diofant.domains.domain.Domain`, see :pull:`636`, :pull:`704` and :pull:`637`.
 * Removed ``is_unit()``, ``numer()`` and ``denom()`` methods of :class:`~diofant.domains.ring.Ring`, see :pull:`637`.
 * ``from_<Foo>()`` methods of :class:`~diofant.domains.domain.Domain` now are private, see :pull:`637`.
 * Method :meth:`~diofant.domains.domain.Domain.from_expr` was renamed from ``from_diofant()``, see :pull:`637`.
@@ -52,23 +50,19 @@ Compatibility breaks
 * :class:`~diofant.polys.rootoftools.RootOf` don't canonicalize anymore polynomials to have integer coefficients, use :func:`~diofant.core.function.expand_func` instead, see :pull:`679`.
 * Removed `Theano <https://github.com/Theano/Theano/>`_ support, see :pull:`681`.
 * Removed ``minpoly`` alias for :func:`~diofant.polys.numberfields.minimal_polynomial`, see :pull:`684`.
-* Removed ``abs()`` and ``neg()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`688`.
 * Method :meth:`~diofant.polys.polytools.GroebnerBasis.set_order` was renamed from ``fglm()``, see :pull:`688`.
 * Removed ``row()``, ``col()``, ``row_del()`` and ``col_del()`` methods of :class:`~diofant.matrices.Matrix`, see :pull:`688`.
 * Removed ``add()`` and ``mul()`` methods for :class:`~diofant.polys.rings.PolynomialRing`, see :pull:`697`.
 * Removed ``itercoeffs()``, ``itermonoms()``, ``iterterms()``, ``listcoeffs()``, ``listmonoms()``, ``listterms()``, ``const()``, ``imul_num()`` and ``square()`` methods of :class:`~diofant.polys.rings.PolyElement`, see :pull:`697`.
-* Removed ``add()``, ``add_ground()``, ``sub()``, ``sub_ground()``, ``mul()``, ``mul_ground()``, ``pow()``, ``sqr()`` and ``nth()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`701`, :pull:`732`.
-* Removed ``map()`` method of :class:`~diofant.domains.domain.Domain`, see :pull:`704`.
+* Removed ``abs()``, ``neg()``, ``add()``, ``add_ground()``, ``sub()``, ``sub_ground()``, ``mul()``, ``mul_ground()``, ``pow()``, ``sqr()``, ``nth()``, ``factor_list_include()``, ``revert()``, ``gff()``, ``gff_list()``, ``sqf_list_include()``, ``homogenize()``, ``homogeneous_order()``, ``eq()`` and ``ne()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`688`, :pull:`701`, :pull:`732`, :pull:`717`, :pull:`727`, :pull:`729` and :pull:`747`.
 * :meth:`~diofant.core.basic.Basic.subs` support one argument (a mapping or an iterable of pairs), see :pull:`532`.
-* Removed ``factor_list_include()`` method of :class:`~diofant.polys.polytools.Poly`, see :pull:`717`.
 * Renamed ``is_sqf`` property of :class:`~diofant.polys.polytools.Poly` to :attr:`~diofant.polys.polytools.Poly.is_squarefree`, see :pull:`724`.
-* Removed ``revert()`` method of :class:`~diofant.polys.polytools.Poly`, see :pull:`727`.
 * Removed ``all`` option for :meth:`~diofant.polys.polytools.Poly.sqf_list` method, see :pull:`727`.
 * Renamed ``has_Ring/Field`` attributes of :class:`~diofant.domains.domain.Domain` to ``is_Ring/Field``, see :pull:`729`.
-* Removed ``gff()``, ``gff_list()`` functions and methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`729`.
-* Removed ``sqf_list_include()``, ``homogenize()``, ``homogeneous_order()``, ``eq()`` and ``ne()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`747`.
 * Removed ``symmetric`` option for polynomial functions, see :pull:`761`.
 * Removed ``print_mathml()`` function and ``tree`` submodule, see :pull:`769`.
+* Removed ``zero`` option from :meth:`~diofant.polys.polytools.Poly.as_dict` method, see :pull:`771`.
+* Removed ``lift()`` method of :class:`~diofant.polys.polytools.Poly`, see :pull:`771`.
 
 Minor changes
 =============

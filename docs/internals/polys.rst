@@ -100,8 +100,8 @@ fields.
 .. automodule:: diofant.polys.galoistools
     :members:
 
-Manipulation of sparse, distributed polynomials and vectors
-***********************************************************
+Manipulation of sparse, distributed polynomials
+***********************************************
 
 Dense representations quickly require infeasible amounts of storage and
 computation time if the number of variables increases. For this reason,
@@ -400,7 +400,7 @@ Exceptions
 
 These are exceptions defined by the polynomials module.
 
-TODO sort and explain
+.. TODO sort and explain
 
 .. automodule:: diofant.polys.polyerrors
     :members:
@@ -421,7 +421,8 @@ Heuristic GCD
     :members:
 
 Manipulation of power series
-****************************************************************************
+****************************
+
 .. currentmodule:: diofant.polys.ring_series
 
 Functions in this module carry the prefix ``rs_``, standing for "ring series".

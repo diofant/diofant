@@ -23,11 +23,11 @@ def solve_poly_inequality(poly, rel):
     Examples
     ========
 
-    >>> solve_poly_inequality(Poly(x, x, domain='ZZ'), '==')
+    >>> solve_poly_inequality(Poly(x), '==')
     [{0}]
-    >>> solve_poly_inequality(Poly(x**2 - 1, x, domain='ZZ'), '!=')
+    >>> solve_poly_inequality(Poly(x**2 - 1), '!=')
     [(-oo, -1), (-1, 1), (1, oo)]
-    >>> solve_poly_inequality(Poly(x**2 - 1, x, domain='ZZ'), '==')
+    >>> solve_poly_inequality(Poly(x**2 - 1), '==')
     [{-1}, {1}]
 
     See Also

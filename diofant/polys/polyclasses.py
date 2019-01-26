@@ -16,7 +16,7 @@ from .densebasic import (dmp_convert, dmp_deflate, dmp_degree_in,
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_content, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
-                         dmp_integrate_in, dmp_lift, dup_decompose, dup_shift)
+                         dmp_integrate_in, dup_decompose, dup_shift)
 from .euclidtools import (dmp_cancel, dmp_discriminant, dmp_gcd, dmp_inner_gcd,
                           dmp_lcm, dmp_resultant, dmp_subresultants, dup_gcdex,
                           dup_half_gcdex, dup_invert)
@@ -100,13 +100,13 @@ class DMP(CantSympify):
         """Create an instance of ``cls`` given a list of native coefficients. """
         return cls(dmp_convert(rep, lev, None, dom), dom, lev)
 
-    def to_dict(self, zero=False):
+    def to_dict(self):
         """Convert ``self`` to a dict representation with native coefficients. """
-        return dmp_to_dict(self.rep, self.lev, self.domain, zero=zero)
+        return dmp_to_dict(self.rep, self.lev)
 
-    def to_diofant_dict(self, zero=False):
+    def to_diofant_dict(self):
         """Convert ``self`` to a dict representation with Diofant coefficients. """
-        rep = dmp_to_dict(self.rep, self.lev, self.domain, zero=zero)
+        rep = dmp_to_dict(self.rep, self.lev)
 
         for k, v in rep.items():
             rep[k] = self.domain.to_expr(v)
@@ -123,7 +123,7 @@ class DMP(CantSympify):
 
     @classmethod
     def from_dict(cls, rep, lev, dom):
-        """Construct and instance of ``cls`` from a ``dict`` representation. """
+        """Construct and instance of ``cls`` from a :class:`dict` representation. """
         return cls(dmp_from_dict(rep, lev, dom), dom, lev)
 
     @classmethod
@@ -201,11 +201,6 @@ class DMP(CantSympify):
                 return [((n - i,), c) for i, c in enumerate(self.rep)]
         else:
             raise PolynomialError('multivariate polynomials not supported')
-
-    def lift(self):
-        """Convert algebraic coefficients to rationals. """
-        return self.per(dmp_lift(self.rep, self.lev, self.domain),
-                        dom=self.domain.domain)
 
     def deflate(self):
         """Reduce degree of `self` by mapping `x_i^m` to `y_i`. """
@@ -589,14 +584,12 @@ class DMP(CantSympify):
     @property
     def is_linear(self):
         """Returns ``True`` if ``self`` is linear in all its variables. """
-        return all(sum(monom) <= 1 for monom in dmp_to_dict(self.rep, self.lev,
-                                                            self.domain))
+        return all(sum(monom) <= 1 for monom in dmp_to_dict(self.rep, self.lev))
 
     @property
     def is_quadratic(self):
         """Returns ``True`` if ``self`` is quadratic in all its variables. """
-        return all(sum(monom) <= 2 for monom in dmp_to_dict(self.rep, self.lev,
-                                                            self.domain))
+        return all(sum(monom) <= 2 for monom in dmp_to_dict(self.rep, self.lev))
 
     @property
     def is_monomial(self):

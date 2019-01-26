@@ -90,13 +90,13 @@ class Poly(Expr):
 
     @classmethod
     def from_dict(cls, rep, *gens, **args):
-        """Construct a polynomial from a ``dict``. """
+        """Construct a polynomial from a :class:`dict`. """
         opt = options.build_options(gens, args)
         return cls._from_dict(rep, opt)
 
     @classmethod
     def from_list(cls, rep, *gens, **args):
-        """Construct a polynomial from a ``list``. """
+        """Construct a polynomial from a :class:`list`. """
         opt = options.build_options(gens, args)
         return cls._from_list(rep, opt)
 
@@ -114,7 +114,7 @@ class Poly(Expr):
 
     @classmethod
     def _from_dict(cls, rep, opt):
-        """Construct a polynomial from a ``dict``. """
+        """Construct a polynomial from a :class:`dict`. """
         gens = opt.gens
 
         if not gens:
@@ -134,7 +134,7 @@ class Poly(Expr):
 
     @classmethod
     def _from_list(cls, rep, opt):
-        """Construct a polynomial from a ``list``. """
+        """Construct a polynomial from a :class:`list`. """
         gens = opt.gens
 
         if not gens:
@@ -576,7 +576,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, domain=QQ).to_ring()
+        >>> Poly(x**2 + 1, field=True).to_ring()
         Poly(x**2 + 1, x, domain='ZZ')
         """
         result = self.rep.to_ring()
@@ -589,7 +589,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1, x, domain=ZZ).to_field()
+        >>> Poly(x**2 + 1).to_field()
         Poly(x**2 + 1, x, domain='QQ')
         """
         result = self.rep.to_field()
@@ -602,7 +602,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**2 + 1.0, x, domain=RR).to_exact()
+        >>> Poly(x**2 + 1.0).to_exact()
         Poly(x**2 + 1, x, domain='QQ')
         """
         result = self.rep.to_exact()
@@ -615,7 +615,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(x**2 + 1, x, domain='QQ[y]')
+        >>> f = Poly(x**2 + 1, domain=QQ.poly_ring(y))
         >>> f
         Poly(x**2 + 1, x, domain='QQ[y]')
 
@@ -624,7 +624,7 @@ class Poly(Expr):
         >>> f.retract(field=True)
         Poly(x**2 + 1, x, domain='QQ')
         """
-        dom, rep = construct_domain(self.as_dict(zero=True),
+        dom, rep = construct_domain(self.as_dict(),
                                     field=field,
                                     composite=self.domain.is_Composite or None,
                                     extension=False if self.domain.is_EX else True)
@@ -780,9 +780,9 @@ class Poly(Expr):
         """
         return len(self.as_dict())
 
-    def as_dict(self, native=False, zero=False):
+    def as_dict(self, native=False):
         """
-        Switch to a ``dict`` representation.
+        Switch to a :class:`dict` representation.
 
         Examples
         ========
@@ -791,9 +791,9 @@ class Poly(Expr):
         {(0, 1): -1, (1, 2): 2, (2, 0): 1}
         """
         if native:
-            return self.rep.to_dict(zero=zero)
+            return self.rep.to_dict()
         else:
-            return self.rep.to_diofant_dict(zero=zero)
+            return self.rep.to_diofant_dict()
 
     def as_expr(self, *gens):
         """
@@ -827,19 +827,6 @@ class Poly(Expr):
                     gens[index] = value
 
         return basic_from_dict(self.rep.to_diofant_dict(), *gens)
-
-    def lift(self):
-        """
-        Convert algebraic coefficients to rationals.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + I*x + 1, x, extension=I).lift()
-        Poly(x**4 + 3*x**2 + 1, x, domain='QQ')
-        """
-        result = self.rep.lift()
-        return self.per(result)
 
     def deflate(self):
         """
@@ -1406,7 +1393,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(x/2 + Rational(1, 3), x, domain=QQ)
+        >>> f = Poly(x/2 + Rational(1, 3))
 
         >>> f.clear_denoms()
         (6, Poly(3*x + 2, x, domain='QQ'))
@@ -1751,70 +1738,18 @@ class Poly(Expr):
     def dispersionset(self, other=None):
         r"""Compute the *dispersion set* of two polynomials.
 
-        For two polynomials `f(x)` and `g(x)` with `\deg f > 0`
-        and `\deg g > 0` the dispersion set `\operatorname{J}(f, g)` is defined as:
-
-        .. math::
-            \operatorname{J}(f, g)
-            & := \{a \in \mathbb{N}_0 | \gcd(f(x), g(x+a)) \neq 1\} \\
-            &  = \{a \in \mathbb{N}_0 | \deg \gcd(f(x), g(x+a)) \geq 1\}
-
-        For a single polynomial one defines `\operatorname{J}(f) := \operatorname{J}(f, f)`.
-
         Examples
         ========
 
-        >>> from diofant.polys.dispersion import dispersion, dispersionset
-
-        Dispersion set and dispersion of a simple polynomial:
-
-        >>> fp = Poly((x - 3)*(x + 3), x)
-        >>> sorted(dispersionset(fp))
+        >>> sorted(Poly((x - 3)*(x + 3)).dispersionset())
         [0, 6]
-        >>> dispersion(fp)
-        6
-
-        Note that the definition of the dispersion is not symmetric:
-
-        >>> fp = Poly(x**4 - 3*x**2 + 1, x)
-        >>> gp = fp.shift(-3)
-        >>> sorted(dispersionset(fp, gp))
-        [2, 3, 4]
-        >>> dispersion(fp, gp)
-        4
-        >>> sorted(dispersionset(gp, fp))
-        []
-        >>> dispersion(gp, fp)
-        -oo
-
-        Computing the dispersion also works over field extensions:
-
-        >>> fp = Poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
-        >>> gp = Poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
-        >>> sorted(dispersionset(fp, gp))
-        [2]
-        >>> sorted(dispersionset(gp, fp))
-        [1, 4]
-
-        We can even perform the computations for polynomials
-        having symbolic coefficients:
-
-        >>> fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
-        >>> sorted(dispersionset(fp))
-        [0, 1]
 
         See Also
         ========
 
-        diofant.polys.polytools.Poly.dispersion
+        dispersion
+        diofant.polys.dispersion.dispersionset
 
-        References
-        ==========
-
-        * [ManWright94]_
-        * [Koepf98]_
-        * [Abramov71]_
-        * [Man93]_
         """
         from .dispersion import dispersionset
         return dispersionset(self, other)
@@ -1822,70 +1757,18 @@ class Poly(Expr):
     def dispersion(self, other=None):
         r"""Compute the *dispersion* of polynomials.
 
-        For two polynomials `f(x)` and `g(x)` with `\deg f > 0`
-        and `\deg g > 0` the dispersion `\operatorname{dis}(f, g)` is defined as:
-
-        .. math::
-            \operatorname{dis}(f, g)
-            & := \max\{ J(f,g) \cup \{0\} \} \\
-            &  = \max\{ \{a \in \mathbb{N} | \gcd(f(x), g(x+a)) \neq 1\} \cup \{0\} \}
-
-        and for a single polynomial `\operatorname{dis}(f) := \operatorname{dis}(f, f)`.
-
         Examples
         ========
 
-        >>> from diofant.polys.dispersion import dispersion, dispersionset
-
-        Dispersion set and dispersion of a simple polynomial:
-
-        >>> fp = Poly((x - 3)*(x + 3), x)
-        >>> sorted(dispersionset(fp))
-        [0, 6]
-        >>> dispersion(fp)
+        >>> Poly((x - 3)*(x + 3)).dispersion()
         6
-
-        Note that the definition of the dispersion is not symmetric:
-
-        >>> fp = Poly(x**4 - 3*x**2 + 1, x)
-        >>> gp = fp.shift(-3)
-        >>> sorted(dispersionset(fp, gp))
-        [2, 3, 4]
-        >>> dispersion(fp, gp)
-        4
-        >>> sorted(dispersionset(gp, fp))
-        []
-        >>> dispersion(gp, fp)
-        -oo
-
-        Computing the dispersion also works over field extensions:
-
-        >>> fp = Poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
-        >>> gp = Poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
-        >>> sorted(dispersionset(fp, gp))
-        [2]
-        >>> sorted(dispersionset(gp, fp))
-        [1, 4]
-
-        We can even perform the computations for polynomials
-        having symbolic coefficients:
-
-        >>> fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
-        >>> sorted(dispersionset(fp))
-        [0, 1]
 
         See Also
         ========
 
-        diofant.polys.polytools.Poly.dispersionset
+        dispersionset
+        diofant.polys.dispersion.dispersion
 
-        References
-        ==========
-
-        * [ManWright94]_
-        * [Koepf98]_
-        * [Abramov71]_
-        * [Man93]_
         """
         from .dispersion import dispersion
         return dispersion(self, other)
@@ -1964,10 +1847,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(3*x**2 + 6*x + 9, x, domain=ZZ).monic()
+        >>> Poly(3*x**2 + 6*x + 9).monic()
         Poly(x**2 + 2*x + 3, x, domain='QQ')
 
-        >>> Poly(3*x**2 + 4*x + 2, x, domain=ZZ).monic()
+        >>> Poly(3*x**2 + 4*x + 2).monic()
         Poly(x**2 + 4/3*x + 2/3, x, domain='QQ')
 
         """
@@ -2027,7 +1910,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> Poly(x**4 + 2*x**3 - x - 1, x, domain='ZZ').decompose()
+        >>> Poly(x**4 + 2*x**3 - x - 1).decompose()
         [Poly(x**2 - x - 1, x, domain='ZZ'), Poly(x**2 + x, x, domain='ZZ')]
         """
         result = self.rep.decompose()
@@ -3377,9 +3260,9 @@ def div(f, g, *gens, **args):
     Examples
     ========
 
-    >>> div(x**2 + 1, 2*x - 4, domain=ZZ)
+    >>> div(x**2 + 1, 2*x - 4, field=False)
     (0, x**2 + 1)
-    >>> div(x**2 + 1, 2*x - 4, domain=QQ)
+    >>> div(x**2 + 1, 2*x - 4)
     (x/2 + 1, 5)
 
     """
@@ -3405,9 +3288,9 @@ def rem(f, g, *gens, **args):
     Examples
     ========
 
-    >>> rem(x**2 + 1, 2*x - 4, domain=ZZ)
+    >>> rem(x**2 + 1, 2*x - 4, field=False)
     x**2 + 1
-    >>> rem(x**2 + 1, 2*x - 4, domain=QQ)
+    >>> rem(x**2 + 1, 2*x - 4)
     5
 
     """
@@ -4419,14 +4302,14 @@ def to_rational_coeffs(f):
     Examples
     ========
 
-    >>> p = Poly(((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))}), x, domain='EX')
+    >>> p = Poly(((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))}), x, domain=EX)
     >>> lc, r, _, g = to_rational_coeffs(p)
     >>> lc, r
     (7 + 5*sqrt(2), -2*sqrt(2) + 2)
     >>> g
     Poly(x**3 + x**2 - 1/4*x - 1/4, x, domain='QQ')
     >>> r1 = simplify(1/r)
-    >>> Poly(lc*r**3*(g.as_expr()).subs({x: x*r1}), x, domain='EX') == p
+    >>> Poly(lc*r**3*(g.as_expr()).subs({x: x*r1}), x, domain=EX) == p
     True
 
     """

@@ -119,8 +119,8 @@ def ratint_ratpart(f, g, x):
 
     >>> ratint_ratpart(Poly(1, x), Poly(x + 1, x), x)
     (0, 1/(x + 1))
-    >>> ratint_ratpart(Poly(1, x, domain='EX'),
-    ...                Poly(x**2 + y**2, x, domain='EX'), x)
+    >>> ratint_ratpart(Poly(1, x, domain=EX),
+    ...                Poly(x**2 + y**2, x, domain=EX), x)
     (0, 1/(x**2 + y**2))
     >>> ratint_ratpart(Poly(36, x),
     ...                Poly(x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2, x), x)

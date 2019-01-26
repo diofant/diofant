@@ -38,7 +38,7 @@ As you can see, ``q`` has a non-integer coefficient. If you want to do division
 only in the ring of polynomials with integer coefficients, you can specify an
 additional parameter::
 
-    >>> div(f, g, domain=ZZ)
+    >>> div(f, g, field=False)
     ⎛      2           ⎞
     ⎝0, 5⋅x  + 10⋅x + 3⎠
 
@@ -48,7 +48,7 @@ remainder doesn't need to be smaller than that of ``f``. Since 2 doesn't divide 
 
     >>> g = 5*x + 1
 
-    >>> div(f, g, domain=ZZ)
+    >>> div(f, g, field=False)
     (x, 9⋅x + 3)
     >>> expand(_[0]*g + _[1])
        2
