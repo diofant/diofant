@@ -79,6 +79,7 @@ class fibonacci(Function):
     diofant.functions.combinatorial.numbers.euler
     diofant.functions.combinatorial.numbers.harmonic
     diofant.functions.combinatorial.numbers.lucas
+
     """
 
     @staticmethod
@@ -145,6 +146,7 @@ class lucas(Function):
     diofant.functions.combinatorial.numbers.euler
     diofant.functions.combinatorial.numbers.fibonacci
     diofant.functions.combinatorial.numbers.harmonic
+
     """
 
     @classmethod
@@ -237,6 +239,7 @@ class bernoulli(Function):
     diofant.functions.combinatorial.numbers.fibonacci
     diofant.functions.combinatorial.numbers.harmonic
     diofant.functions.combinatorial.numbers.lucas
+
     """
 
     # Calculates B_n for positive even n
@@ -378,6 +381,7 @@ class bell(Function):
     diofant.functions.combinatorial.numbers.fibonacci
     diofant.functions.combinatorial.numbers.harmonic
     diofant.functions.combinatorial.numbers.lucas
+
     """
 
     @staticmethod
@@ -574,6 +578,7 @@ class harmonic(Function):
     diofant.functions.combinatorial.numbers.euler
     diofant.functions.combinatorial.numbers.fibonacci
     diofant.functions.combinatorial.numbers.lucas
+
     """
 
     # Generate one memoized Harmonic number-generating function for each
@@ -722,6 +727,7 @@ class euler(Function):
     diofant.functions.combinatorial.numbers.fibonacci
     diofant.functions.combinatorial.numbers.harmonic
     diofant.functions.combinatorial.numbers.lucas
+
     """
 
     @classmethod
@@ -828,6 +834,7 @@ class catalan(Function):
     diofant.functions.combinatorial.numbers.harmonic
     diofant.functions.combinatorial.numbers.lucas
     diofant.functions.combinatorial.factorials.binomial
+
     """
 
     @classmethod
@@ -925,6 +932,7 @@ class genocchi(Function):
     diofant.functions.combinatorial.numbers.fibonacci
     diofant.functions.combinatorial.numbers.harmonic
     diofant.functions.combinatorial.numbers.lucas
+
     """
 
     @classmethod
@@ -981,6 +989,7 @@ def _multiset_histogram(n):
 
     The data is stored in a class deriving from tuple so it is easily
     recognized and so it can be converted easily to a list.
+
     """
     if type(n) is dict:  # item: count
         if not all(isinstance(v, int) and v >= 0 for v in n.values()):
@@ -1146,6 +1155,7 @@ def _AOP_product(n):
     ==========
 
     * https://math.stackexchange.com/questions/4643/an-efficient-method-for-computing-the-number-of-submultisets-of-size-n-of-a-giv/4654
+
     """
     from collections import defaultdict
 
@@ -1233,6 +1243,7 @@ def nC(n, k=None, replacement=False):
     ========
 
     diofant.utilities.iterables.multiset_combinations
+
     """
     from .factorials import binomial
 
@@ -1417,6 +1428,7 @@ def stirling(n, k, d=None, kind=2, signed=False):
 def _nT(n, k):
     """Return the partitions of ``n`` items into ``k`` parts. This
     is used by ``nT`` for the case when ``n`` is an integer.
+
     """
     if k == 0:
         return 1 if k == n else 0

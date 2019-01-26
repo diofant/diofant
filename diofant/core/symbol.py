@@ -60,6 +60,7 @@ class BaseSymbol(AtomicExpr, Boolean):
     ==========
 
     * https://docs.python.org/3/reference/datamodel.html#object.__lt__
+
     """
 
     is_comparable = False
@@ -76,12 +77,14 @@ class BaseSymbol(AtomicExpr, Boolean):
             >>> x = Symbol('x')
             >>> x._diff_wrt
             True
+
         """
         return True
 
     @staticmethod
     def _sanitize(assumptions, obj=None):
         """Remove None, covert values to bool, check commutativity *in place*.
+
         """
 
         # be strict about commutativity: cannot be None
@@ -173,6 +176,7 @@ class BaseSymbol(AtomicExpr, Boolean):
         ========
 
         diofant.core.expr.Expr.is_constant
+
         """
         if not wrt:
             return False
@@ -186,6 +190,7 @@ class BaseSymbol(AtomicExpr, Boolean):
         ========
 
         diofant.core.basic.Basic.free_symbols
+
         """
         return {self}
 
@@ -225,6 +230,7 @@ class Symbol(BaseSymbol):
     :mod:`diofant.core.assumptions`
     Dummy
     Wild
+
     """
 
     pass
@@ -247,6 +253,7 @@ class Dummy(BaseSymbol):
     ========
 
     Symbol
+
     """
 
     _count = 0
@@ -348,6 +355,7 @@ class Wild(BaseSymbol):
     ========
 
     Symbol
+
     """
 
     is_Wild = True
@@ -380,6 +388,7 @@ class Wild(BaseSymbol):
         ========
 
         diofant.core.basic.Basic.matches
+
         """
         if any(expr.has(x) for x in self.exclude):
             return
@@ -504,6 +513,7 @@ def symbols(names, **args):
 
         >>> type(_[0])
         <class 'diofant.core.function.UndefinedFunction'>
+
     """
     result = []
 
@@ -627,9 +637,10 @@ def var(names, **args):
     ========
 
     symbols
+
     """
     def traverse(symbols, frame):
-        """Recursively inject symbols to the global namespace. """
+        """Recursively inject symbols to the global namespace."""
         for symbol in symbols:
             if isinstance(symbol, Basic):
                 frame.f_globals[symbol.name] = symbol

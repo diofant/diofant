@@ -29,6 +29,7 @@ def components(f, x):
     ========
 
     diofant.integrals.heurisch.heurisch
+
     """
     result = set()
 
@@ -61,7 +62,7 @@ _symbols_cache = {}
 
 # NB @cacheit is not convenient here
 def _symbols(name, n):
-    """get vector of symbols local to this module"""
+    """get vector of symbols local to this module."""
     try:
         lsyms = _symbols_cache[name]
     except KeyError:
@@ -95,6 +96,7 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     ========
 
     diofant.integrals.heurisch.heurisch
+
     """
     from ..solvers.solvers import solve, denoms
     f = sympify(f)
@@ -205,6 +207,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     diofant.integrals.integrals.Integral.doit
     diofant.integrals.integrals.Integral
     diofant.integrals.heurisch.components
+
     """
     f = sympify(f)
     if x not in f.free_symbols:

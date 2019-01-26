@@ -130,6 +130,7 @@ class Plot:
     aesthetics:
 
     - surface_color : function which returns a float.
+
     """
 
     def __init__(self, *args, **kwargs):
@@ -277,6 +278,7 @@ class BaseSeries:
     not obliged to use that api (eg. The LineOver1DRange belongs to the
     is_2Dline group and presents the get_points method, but the
     TextBackend does not use the get_points method).
+
     """
 
     # Some flags follow. The rationale for using flags instead of checking base
@@ -347,6 +349,7 @@ class Line2DBaseSeries(BaseSeries):
     - adding the label, steps and only_integers options
     - making is_2Dline true
     - defining get_segments and get_color_array
+
     """
 
     is_2Dline = True
@@ -435,6 +438,7 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
                 For depth < 6, points are added irrespective of whether they
                 satisfy the collinearity condition or not. The maximum depth
                 allowed is 12.
+
                 """
                 np = import_module('numpy')
                 # Randomly sample to avoid aliasing.
@@ -494,6 +498,7 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
 class Parametric2DLineSeries(Line2DBaseSeries):
     """Representation for a line consisting of two parametric diofant expressions
     over a range.
+
     """
 
     is_parametric = True
@@ -554,6 +559,7 @@ class Parametric2DLineSeries(Line2DBaseSeries):
             For depth < 6, points are added irrespective of whether they
             satisfy the collinearity condition or not. The maximum depth
             allowed is 12.
+
             """
             # Randomly sample to avoid aliasing.
             np = import_module('numpy')
@@ -616,6 +622,7 @@ class Line3DBaseSeries(Line2DBaseSeries):
     """A base class for 3D lines.
 
     Most of the stuff is derived from Line2DBaseSeries.
+
     """
 
     is_2Dline = False
@@ -629,6 +636,7 @@ class Line3DBaseSeries(Line2DBaseSeries):
 class Parametric3DLineSeries(Line3DBaseSeries):
     """Representation for a 3D line consisting of two parametric diofant
     expressions and a range.
+
     """
 
     def __init__(self, expr_x, expr_y, expr_z, var_start_end, **kwargs):
@@ -699,6 +707,7 @@ class SurfaceBaseSeries(BaseSeries):
 class SurfaceOver2DRangeSeries(SurfaceBaseSeries):
     """Representation for a 3D surface consisting of a diofant expression and 2D
     range.
+
     """
 
     def __init__(self, expr, var_start_end_x, var_start_end_y, **kwargs):
@@ -736,6 +745,7 @@ class SurfaceOver2DRangeSeries(SurfaceBaseSeries):
 class ParametricSurfaceSeries(SurfaceBaseSeries):
     """Representation for a 3D surface consisting of three parametric diofant
     expressions and a range.
+
     """
 
     is_parametric = True
@@ -988,7 +998,7 @@ def centers_of_faces(array):
 
 
 def flat(x, y, z, eps=1e-3):
-    """Checks whether three points are almost collinear"""
+    """Checks whether three points are almost collinear."""
     np = import_module('numpy')
     vector_a = x - y
     vector_b = z - y
@@ -1002,7 +1012,8 @@ def flat(x, y, z, eps=1e-3):
 def _matplotlib_list(interval_list):
     """
     Returns lists for matplotlib ``fill`` command from a list of bounding
-    rectangular intervals
+    rectangular intervals.
+
     """
     xlist = []
     ylist = []
@@ -1163,6 +1174,7 @@ def plot(*args, **kwargs):
 
     Plot
     diofant.plotting.plot.LineOver1DRangeSeries
+
     """
     args = list(map(sympify, args))
     free = set()
@@ -1307,6 +1319,7 @@ def plot_parametric(*args, **kwargs):
     ========
 
     Plot, Parametric2DLineSeries
+
     """
     args = list(map(sympify, args))
     show = kwargs.pop('show', True)
@@ -1397,6 +1410,7 @@ def plot3d_parametric_line(*args, **kwargs):
     ========
 
     Plot, Parametric3DLineSeries
+
     """
     args = list(map(sympify, args))
     show = kwargs.pop('show', True)
@@ -1498,6 +1512,7 @@ def plot3d(*args, **kwargs):
     ========
 
     Plot, SurfaceOver2DRangeSeries
+
     """
 
     args = list(map(sympify, args))
@@ -1588,6 +1603,7 @@ def plot3d_parametric_surface(*args, **kwargs):
     ========
 
     Plot, ParametricSurfaceSeries
+
     """
 
     args = list(map(sympify, args))
@@ -1614,6 +1630,7 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
 
     >>> check_arguments([x, x**2], 1, 1)
         [(x, (x, -10, 10)), (x**2, (x, -10, 10))]
+
     """
     if expr_len > 1 and isinstance(args[0], Expr):
         # Multiple expressions same range.

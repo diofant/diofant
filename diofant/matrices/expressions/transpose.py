@@ -23,6 +23,7 @@ class Transpose(MatrixExpr):
     (A*B).T
     >>> transpose(A*B)
     B.T*A.T
+
     """
 
     is_Transpose = True
@@ -64,5 +65,5 @@ class Transpose(MatrixExpr):
 
 
 def transpose(expr):
-    """ Matrix transpose """
+    """Matrix transpose."""
     return Transpose(expr).doit()

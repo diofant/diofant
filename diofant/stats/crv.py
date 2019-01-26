@@ -6,6 +6,7 @@ See Also
 diofant.stats.crv_types
 diofant.stats.rv
 diofant.stats.frv
+
 """
 
 import random
@@ -28,6 +29,7 @@ class ContinuousDomain(RandomDomain):
     A domain with continuous support
 
     Represented using symbols and Intervals.
+
     """
 
     is_Continuous = True
@@ -41,6 +43,7 @@ class SingleContinuousDomain(ContinuousDomain, SingleDomain):
     A univariate domain with continuous support
 
     Represented using a single symbol and interval.
+
     """
 
     def integrate(self, expr, variables=None, **kwargs):
@@ -53,9 +56,7 @@ class SingleContinuousDomain(ContinuousDomain, SingleDomain):
 
 
 class ProductContinuousDomain(ProductDomain, ContinuousDomain):
-    """
-    A collection of independent domains with continuous support
-    """
+    """A collection of independent domains with continuous support."""
 
     def integrate(self, expr, variables=None, **kwargs):
         for domain in self.domains:
@@ -72,6 +73,7 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
     """
     A domain with continuous support that has been further restricted by a
     condition such as x > 3
+
     """
 
     def integrate(self, expr, variables=None, **kwargs):
@@ -150,6 +152,7 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
 
     See Also:
         diofant.stats.crv_types.*
+
     """
 
     set = Interval(-oo, oo, True, True)
@@ -163,7 +166,7 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
         pass
 
     def sample(self):
-        """ A random realization from the distribution """
+        """A random realization from the distribution."""
         icdf = self._inverse_cdf_expression()
         return icdf(random.uniform(0, 1))
 
@@ -172,6 +175,7 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
         """ Inverse of the CDF
 
         Used by sample
+
         """
         x, z = symbols('x, z', extended_real=True, positive=True, cls=Dummy)
         # Invert CDF
@@ -183,9 +187,10 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
 
     @cacheit
     def compute_cdf(self, **kwargs):
-        """ Compute the CDF from the PDF
+        """Compute the CDF from the PDF
 
         Returns a Lambda
+
         """
         x, z = symbols('x, z', real=True, cls=Dummy)
         left_bound = self.set.start
@@ -198,11 +203,11 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
         return Lambda(z, cdf)
 
     def cdf(self, x, **kwargs):
-        """ Cumulative density function """
+        """Cumulative density function."""
         return self.compute_cdf(**kwargs)(x)
 
     def expectation(self, expr, var, evaluate=True, **kwargs):
-        """ Expectation of expression over distribution """
+        """Expectation of expression over distribution."""
         integral = Integral(expr * self.pdf(var), (var, self.set), **kwargs)
         return integral.doit() if evaluate else integral
 
@@ -224,6 +229,7 @@ class ContinuousPSpace(PSpace):
     Represents the likelihood of an event space defined over a continuum.
 
     Represented with a ContinuousDomain and a PDF (Lambda-Like)
+
     """
 
     is_Continuous = True
@@ -317,6 +323,7 @@ class SingleContinuousPSpace(ContinuousPSpace, SinglePSpace):
 
     This class is normally accessed through the various random variable
     functions, Normal, Exponential, Uniform, etc....
+
     """
 
     @property
@@ -332,6 +339,7 @@ class SingleContinuousPSpace(ContinuousPSpace, SinglePSpace):
         Internal sample method
 
         Returns dictionary mapping RandomSymbol to realization value.
+
         """
         return {self.value: self.distribution.sample()}
 
@@ -359,9 +367,7 @@ class SingleContinuousPSpace(ContinuousPSpace, SinglePSpace):
 
 
 class ProductContinuousPSpace(ProductPSpace, ContinuousPSpace):
-    """
-    A collection of independent continuous probability spaces
-    """
+    """A collection of independent continuous probability spaces."""
 
     @property
     def pdf(self):

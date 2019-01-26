@@ -72,6 +72,7 @@ def cse_separate(r, e):
     ...  [x0 + exp(x0/x1) + cos(x1), z - 2]]]
     ...
     True
+
     """
     d = sift(e, lambda w: w.is_Equality and w.lhs.is_Symbol)
     r = r + [w.args for w in d[True]]
@@ -96,6 +97,7 @@ def preprocess_for_cse(expr, optimizations):
     -------
     expr : diofant expression
         The transformed expression.
+
     """
     for pre, post in optimizations:
         if pre is not None:
@@ -120,6 +122,7 @@ def postprocess_for_cse(expr, optimizations):
     -------
     expr : diofant expression
         The transformed expression.
+
     """
     for pre, post in reversed(optimizations):
         if post is not None:
@@ -152,6 +155,7 @@ def opt_cse(exprs, order='canonical'):
     >>> opt_subs = opt_cse([x**-2])
     >>> opt_subs
     {x**(-2): 1/(x**2)}
+
     """
     opt_subs = {}
 
@@ -266,6 +270,7 @@ def tree_cse(exprs, symbols, opt_subs={}, order='canonical'):
     order : string, 'none' or 'canonical'
         The order by which Mul and Add arguments are processed. For large
         expressions where speed is a concern, use the setting order='none'.
+
     """
     # Find repeated sub-expressions
 
@@ -427,6 +432,7 @@ def cse(exprs, symbols=None, optimizations=None, postprocess=None,
 
     >>> isinstance(_[1][-1], SparseMatrix)
     True
+
     """
     from ..matrices import (MatrixBase, Matrix, ImmutableMatrix,
                             SparseMatrix, ImmutableSparseMatrix)

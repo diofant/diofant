@@ -9,7 +9,7 @@ __all__ = ("lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex",
 
 
 class MonomialOrder:
-    """Base class for monomial orderings. """
+    """Base class for monomial orderings."""
 
     alias = None
     is_global = None
@@ -32,7 +32,7 @@ class MonomialOrder:
 
 
 class LexOrder(MonomialOrder):
-    """Lexicographic order of monomials. """
+    """Lexicographic order of monomials."""
 
     alias = 'lex'
     is_global = True
@@ -43,7 +43,7 @@ class LexOrder(MonomialOrder):
 
 
 class GradedLexOrder(MonomialOrder):
-    """Graded lexicographic order of monomials. """
+    """Graded lexicographic order of monomials."""
 
     alias = 'grlex'
     is_global = True
@@ -53,7 +53,7 @@ class GradedLexOrder(MonomialOrder):
 
 
 class ReversedGradedLexOrder(MonomialOrder):
-    """Reversed graded lexicographic order of monomials. """
+    """Reversed graded lexicographic order of monomials."""
 
     alias = 'grevlex'
     is_global = True
@@ -103,6 +103,7 @@ class ProductOrder(MonomialOrder):
     `y_1, y_2, y_3` is used to decide the ordering. In this case the monomial
     `y_2^2` is ordered larger than `y_1`, since for the grlex order the degree
     of the monomial is most important.
+
     """
 
     def __init__(self, *args):
@@ -147,6 +148,7 @@ class InverseOrder(MonomialOrder):
     >>> ilex = InverseOrder(lex)
     >>> ilex([5]) < ilex([0])
     True
+
     """
 
     def __init__(self, O):
@@ -214,6 +216,7 @@ def monomial_key(order=None, gens=None):
 
     If the ``gens`` input argument contains a list of generators, the
     resulting key function can be used to sort Diofant ``Expr`` objects.
+
     """
     if order is None:
         order = lex
@@ -266,6 +269,7 @@ def build_product_order(arg, gens):
     >>> O = build_product_order((("grlex", x, y), ("grlex", z, t)), [x, y, z, t])
     >>> O((1, 2, 3, 4))
     ((3, (1, 2)), (7, (3, 4)))
+
     """
     gens2idx = {}
     for i, g in enumerate(gens):

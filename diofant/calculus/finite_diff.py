@@ -253,6 +253,7 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
     Fortran 90 implementation with Python interface for numerics: finitediff_
 
     .. _finitediff: https://github.com/bjodah/finitediff
+
     """
 
     # In the original paper the following holds for the notation:
@@ -345,6 +346,7 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
 
     diofant.calculus.finite_diff.apply_finite_diff
     diofant.calculus.finite_diff.finite_diff_weights
+
     """
     if wrt is None:
         wrt = derivative.variables[0]

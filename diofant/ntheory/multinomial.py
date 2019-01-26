@@ -14,6 +14,7 @@ def binomial_coefficients(n):
     ========
 
     binomial_coefficients_list, multinomial_coefficients
+
     """
     d = {(0, n): 1, (n, 0): 1}
     a = 1
@@ -36,6 +37,7 @@ def binomial_coefficients_list(n):
     ========
 
     binomial_coefficients, multinomial_coefficients
+
     """
     d = [1] * (n + 1)
     a = 1
@@ -69,6 +71,7 @@ def multinomial_coefficients(m, n):
     ========
 
     binomial_coefficients_list, binomial_coefficients
+
     """
     if not m:
         if n:
@@ -132,6 +135,7 @@ def multinomial_coefficients_iterator(m, n, _tuple=tuple):
     >>> it = multinomial_coefficients_iterator(20, 3)
     >>> next(it)
     ((3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), 1)
+
     """
     if m < 2*n or n == 1:
         mc = multinomial_coefficients(m, n)

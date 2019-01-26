@@ -148,6 +148,7 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
     ========
     classify_ode(ode.py)
     classify_pde(pde.py)
+
     """
     prep = kwargs.pop('prep', True)
     if isinstance(eq, Equality):

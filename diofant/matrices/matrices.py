@@ -29,7 +29,7 @@ class MatrixError(Exception):
 
 
 class ShapeError(ValueError, MatrixError):
-    """Wrong matrix shape"""
+    """Wrong matrix shape."""
 
     pass
 
@@ -51,6 +51,7 @@ class DeferredVector(Symbol, NotIterable):
     >>> func = lambdify(X, expr)
     >>> func([1, 2, 3])
     (3, 6)
+
     """
 
     def __getitem__(self, i):
@@ -258,6 +259,7 @@ class MatrixBase(DefaultPrinting):
         [0, 0, 4, 0],
         [0, 0, 4, 0],
         [2, 2, 4, 2]])
+
         """
         from . import Matrix
 
@@ -318,6 +320,7 @@ class MatrixBase(DefaultPrinting):
         inverse_LU
         inverse_GE
         inverse_ADJ
+
         """
         if not self.is_square:
             raise NonSquareMatrixError()
@@ -402,6 +405,7 @@ class MatrixBase(DefaultPrinting):
 
         conjugate: By-element conjugation
         D: Dirac conjugation
+
         """
         return self.T.C
 
@@ -437,6 +441,7 @@ class MatrixBase(DefaultPrinting):
 
         conjugate: By-element conjugation
         H: Hermite conjugation
+
         """
         if self.rows != 4:
             # In Python 3.2, properties can only return an AttributeError
@@ -454,6 +459,7 @@ class MatrixBase(DefaultPrinting):
         """Return the number of elements of self.
 
         Implemented mainly so bool(Matrix()) == False.
+
         """
         return int(self.rows*self.cols)
 
@@ -471,6 +477,7 @@ class MatrixBase(DefaultPrinting):
         2
         >>> M.cols
         3
+
         """
         return self.rows, self.cols
 
@@ -505,6 +512,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         matrix_multiply_elementwise
+
         """
         if getattr(other, 'is_Matrix', False):
             A = self
@@ -609,11 +617,12 @@ class MatrixBase(DefaultPrinting):
         dot
         cross
         multiply_elementwise
+
         """
         return self*b
 
     def add(self, b):
-        """Return self + b """
+        """Return self + b."""
         return self + b
 
     def table(self, printer, rowstart='[', rowend=']', rowsep='\n',
@@ -664,6 +673,7 @@ class MatrixBase(DefaultPrinting):
         >>> print(M.table(printer, rowstart='{', rowend='}'))
         {  1, 2}
         {-33, 4}
+
         """
         # Handle zero dimensions:
         if self.rows == 0 or self.cols == 0:
@@ -736,6 +746,7 @@ class MatrixBase(DefaultPrinting):
         LDLdecomposition
         LUdecomposition
         QRdecomposition
+
         """
 
         if not self.is_square:
@@ -776,6 +787,7 @@ class MatrixBase(DefaultPrinting):
         cholesky
         LUdecomposition
         QRdecomposition
+
         """
         if not self.is_square:
             raise NonSquareMatrixError("Matrix must be square.")
@@ -796,6 +808,7 @@ class MatrixBase(DefaultPrinting):
         LUsolve
         QRsolve
         pinv_solve
+
         """
 
         if not self.is_square:
@@ -819,6 +832,7 @@ class MatrixBase(DefaultPrinting):
         LUsolve
         QRsolve
         pinv_solve
+
         """
         if not self.is_square:
             raise NonSquareMatrixError("Matrix must be square.")
@@ -844,6 +858,7 @@ class MatrixBase(DefaultPrinting):
         LUsolve
         QRsolve
         pinv_solve
+
         """
         if self.is_symmetric():
             L = self._cholesky()
@@ -877,6 +892,7 @@ class MatrixBase(DefaultPrinting):
         LUsolve
         QRsolve
         pinv_solve
+
         """
         if not self.is_diagonal():
             raise TypeError("Matrix should be diagonal")
@@ -910,6 +926,7 @@ class MatrixBase(DefaultPrinting):
         LUsolve
         QRsolve
         pinv_solve
+
         """
         if self.is_symmetric():
             L, D = self.LDLdecomposition()
@@ -977,6 +994,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         inv
+
         """
         if method == 'CH':
             return self.cholesky_solve(rhs)
@@ -1036,6 +1054,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         key2ij
+
         """
 
         islice, jslice = [isinstance(k, slice) for k in keys]
@@ -1062,6 +1081,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         key2bounds
+
         """
         if is_sequence(key):
             if not len(key) == 2:
@@ -1089,6 +1109,7 @@ class MatrixBase(DefaultPrinting):
         Matrix([[x]])
         >>> _.atoms()
         {x}
+
         """
 
         if types:
@@ -1109,6 +1130,7 @@ class MatrixBase(DefaultPrinting):
 
         >>> Matrix([[x], [1]]).free_symbols
         {x}
+
         """
 
         return set().union(*[i.free_symbols for i in self])
@@ -1125,6 +1147,7 @@ class MatrixBase(DefaultPrinting):
         Matrix([[y]])
         >>> Matrix(_).subs({y: x})
         Matrix([[x]])
+
         """
         return self.applyfunc(lambda x: x.subs(*args, **kwargs))
 
@@ -1140,6 +1163,7 @@ class MatrixBase(DefaultPrinting):
         Matrix([[y]])
         >>> Matrix(_).xreplace({y: x})
         Matrix([[x]])
+
         """
         return self.applyfunc(lambda x: x.xreplace(rule))
 
@@ -1170,6 +1194,7 @@ class MatrixBase(DefaultPrinting):
         Matrix([[x*sin(y)**2 + x*cos(y)**2]])
         >>> _.simplify()
         Matrix([[x]])
+
         """
         return self.applyfunc(lambda x: x.simplify(ratio, measure))
     _eval_simplify = simplify
@@ -1224,6 +1249,7 @@ class MatrixBase(DefaultPrinting):
         QRsolve
         pinv_solve
         LUdecomposition
+
         """
         if rhs.rows != self.rows:
             raise ShapeError("`self` and `rhs` must have the same number of rows.")
@@ -1271,6 +1297,7 @@ class MatrixBase(DefaultPrinting):
         LUdecomposition_Simple
         LUdecompositionFF
         LUsolve
+
         """
         combined, p = self.LUdecomposition_Simple(iszerofunc=_iszero)
         L = self.zeros(self.rows)
@@ -1295,6 +1322,7 @@ class MatrixBase(DefaultPrinting):
         LUdecomposition
         LUdecompositionFF
         LUsolve
+
         """
         if not self.is_square:
             raise NonSquareMatrixError("A Matrix must be square to apply LUdecomposition_Simple().")
@@ -1343,6 +1371,7 @@ class MatrixBase(DefaultPrinting):
         LUdecomposition
         LUdecomposition_Simple
         LUsolve
+
         """
         from . import SparseMatrix
         zeros = SparseMatrix.zeros
@@ -1384,6 +1413,7 @@ class MatrixBase(DefaultPrinting):
         minorEntry
         minorMatrix
         adjugate
+
         """
         out = self._new(self.rows, self.cols, lambda i, j:
                         self.cofactor(i, j, method))
@@ -1398,6 +1428,7 @@ class MatrixBase(DefaultPrinting):
         minorMatrix
         cofactor
         cofactorMatrix
+
         """
         if not 0 <= i < self.rows or not 0 <= j < self.cols:
             raise ValueError("`i` and `j` must satisfy 0 <= i < `self.rows` " +
@@ -1413,6 +1444,7 @@ class MatrixBase(DefaultPrinting):
         minorEntry
         cofactor
         cofactorMatrix
+
         """
         if not 0 <= i < self.rows or not 0 <= j < self.cols:
             raise ValueError("`i` and `j` must satisfy 0 <= i < `self.rows` " +
@@ -1431,6 +1463,7 @@ class MatrixBase(DefaultPrinting):
         cofactorMatrix
         minorEntry
         minorMatrix
+
         """
         if (i + j) % 2 == 0:
             return self.minorEntry(i, j, method)
@@ -1471,6 +1504,7 @@ class MatrixBase(DefaultPrinting):
 
         diofant.matrices.dense.hessian
         diofant.matrices.dense.wronskian
+
         """
         if not isinstance(X, MatrixBase):
             X = self._new(X)
@@ -1538,6 +1572,7 @@ class MatrixBase(DefaultPrinting):
         LDLdecomposition
         LUdecomposition
         QRsolve
+
         """
         cls = self.__class__
         mat = self.as_mutable()
@@ -1598,6 +1633,7 @@ class MatrixBase(DefaultPrinting):
         LUsolve
         pinv_solve
         QRdecomposition
+
         """
 
         Q, R = self.as_mutable().QRdecomposition()
@@ -1628,6 +1664,7 @@ class MatrixBase(DefaultPrinting):
         dot
         multiply
         multiply_elementwise
+
         """
         if not is_sequence(b):
             raise TypeError("`b` must be an ordered iterable or Matrix, not %s." %
@@ -1666,6 +1703,7 @@ class MatrixBase(DefaultPrinting):
         cross
         multiply
         multiply_elementwise
+
         """
         from . import Matrix
 
@@ -1713,6 +1751,7 @@ class MatrixBase(DefaultPrinting):
         cross
         dot
         multiply
+
         """
         from . import matrix_multiply_elementwise
 
@@ -1767,6 +1806,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         normalized
+
         """
         # Row or Column Vector Norms
         vals = list(self.values()) or [0]
@@ -1812,6 +1852,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         norm
+
         """
         if self.rows != 1 and self.cols != 1:
             raise ShapeError("A Matrix must be a vector to normalize.")
@@ -1831,6 +1872,7 @@ class MatrixBase(DefaultPrinting):
         Matrix([[sqrt(3)/2, 0]])
         >>> V.project(-x)
         Matrix([[sqrt(3)/2, 0]])
+
         """
         return v*(self.dot(v) / v.dot(v))
 
@@ -1851,6 +1893,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         permuteFwd
+
         """
         copy = self.copy()
         for i in range(len(perm) - 1, -1, -1):
@@ -1874,6 +1917,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         permuteBkwd
+
         """
         copy = self.copy()
         for i in range(len(perm)):
@@ -1934,6 +1978,7 @@ class MatrixBase(DefaultPrinting):
         True
         >>> c.is_square
         True
+
         """
         return self.rows == self.cols
 
@@ -1963,6 +2008,7 @@ class MatrixBase(DefaultPrinting):
         >>> d.is_zero
         True
         >>> e.is_zero
+
         """
         if any(i.is_zero is False for i in self):
             return False
@@ -1986,6 +2032,7 @@ class MatrixBase(DefaultPrinting):
         >>> a = Matrix([[1, 0, 1], [1, 0, 0], [1, 1, 0]])
         >>> a.is_nilpotent()
         False
+
         """
         if not self:
             return True
@@ -2037,6 +2084,7 @@ class MatrixBase(DefaultPrinting):
         is_lower
         is_diagonal
         is_upper_hessenberg
+
         """
         return all(self[i, j].is_zero
                    for i in range(1, self.rows)
@@ -2082,6 +2130,7 @@ class MatrixBase(DefaultPrinting):
         is_upper
         is_diagonal
         is_lower_hessenberg
+
         """
         return all(self[i, j].is_zero
                    for i in range(self.rows)
@@ -2112,6 +2161,7 @@ class MatrixBase(DefaultPrinting):
         >>> a[0, 1] = a[1, 0]*I
         >>> a.is_hermitian
         False
+
         """
         def cond():
             yield self.is_square
@@ -2148,6 +2198,7 @@ class MatrixBase(DefaultPrinting):
 
         is_lower_hessenberg
         is_upper
+
         """
         return all(self[i, j].is_zero
                    for i in range(2, self.rows)
@@ -2178,6 +2229,7 @@ class MatrixBase(DefaultPrinting):
 
         is_upper_hessenberg
         is_lower
+
         """
         return all(self[i, j].is_zero
                    for i in range(self.rows)
@@ -2248,6 +2300,7 @@ class MatrixBase(DefaultPrinting):
         >>> m1 = m.expand()
         >>> m1.is_symmetric(simplify=False)
         True
+
         """
         if not self.is_square:
             return False
@@ -2317,6 +2370,7 @@ class MatrixBase(DefaultPrinting):
         >>> m = m.expand()
         >>> m.is_anti_symmetric(simplify=False)
         True
+
         """
         # accept custom simplification
         simpfunc = simplify if isinstance(simplify, FunctionType) else \
@@ -2382,6 +2436,7 @@ class MatrixBase(DefaultPrinting):
         is_upper
         is_diagonalizable
         diagonalize
+
         """
         for i in range(self.rows):
             for j in range(self.cols):
@@ -2403,6 +2458,7 @@ class MatrixBase(DefaultPrinting):
         det_bareis
         berkowitz_det
         det_LU_decomposition
+
         """
 
         # if methods were made internal and all determinant calculations
@@ -2440,6 +2496,7 @@ class MatrixBase(DefaultPrinting):
 
         det
         berkowitz_det
+
         """
         if not self.is_square:
             raise NonSquareMatrixError()
@@ -2507,6 +2564,7 @@ class MatrixBase(DefaultPrinting):
         det
         det_bareis
         berkowitz_det
+
         """
         if not self.is_square:
             raise NonSquareMatrixError()
@@ -2537,6 +2595,7 @@ class MatrixBase(DefaultPrinting):
         cofactorMatrix
         transpose
         berkowitz
+
         """
 
         return self.cofactorMatrix(method).T
@@ -2550,6 +2609,7 @@ class MatrixBase(DefaultPrinting):
         diofant.matrices.matrices.MatrixBase.inv
         inverse_GE
         inverse_ADJ
+
         """
         if not self.is_square:
             raise NonSquareMatrixError()
@@ -2569,6 +2629,7 @@ class MatrixBase(DefaultPrinting):
         diofant.matrices.matrices.MatrixBase.inv
         inverse_LU
         inverse_ADJ
+
         """
         from . import Matrix
 
@@ -2591,6 +2652,7 @@ class MatrixBase(DefaultPrinting):
         diofant.matrices.matrices.MatrixBase.inv
         inverse_LU
         inverse_GE
+
         """
         if not self.is_square:
             raise NonSquareMatrixError("A Matrix must be square to invert.")
@@ -2617,6 +2679,7 @@ class MatrixBase(DefaultPrinting):
         (Matrix([
         [1, 0],
         [0, 1]]), [0, 1])
+
         """
         simpfunc = simplify if isinstance(
             simplify, FunctionType) else _simplify
@@ -2659,14 +2722,14 @@ class MatrixBase(DefaultPrinting):
         >>> n = Matrix(3, 3, range(1, 10))
         >>> n.rank()
         2
+
         """
         row_reduced = self.rref(iszerofunc=iszerofunc, simplify=simplify)
         rank = len(row_reduced[-1])
         return rank
 
     def nullspace(self, simplify=False):
-        """Returns list of vectors (Matrix objects) that span nullspace of self
-        """
+        """Returns list of vectors (Matrix objects) that span nullspace of self."""
         from . import zeros
 
         simpfunc = simplify if isinstance(
@@ -2753,6 +2816,7 @@ class MatrixBase(DefaultPrinting):
         berkowitz_minors
         berkowitz_charpoly
         berkowitz_eigenvals
+
         """
         from . import zeros
 
@@ -2798,6 +2862,7 @@ class MatrixBase(DefaultPrinting):
 
         det
         berkowitz
+
         """
         if not self.is_square:
             raise NonSquareMatrixError()
@@ -2814,6 +2879,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         berkowitz
+
         """
         sign, minors = S.NegativeOne, []
 
@@ -2856,6 +2922,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         berkowitz
+
         """
         return PurePoly(list(map(simplify, self.berkowitz()[-1])), x)
 
@@ -2868,6 +2935,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         berkowitz
+
         """
         return roots(self.berkowitz_charpoly(Dummy('x')), **flags)
 
@@ -2877,6 +2945,7 @@ class MatrixBase(DefaultPrinting):
         Since the roots routine doesn't always work well with Floats,
         they will be replaced with Rationals before calling that
         routine. If this is not desired, set flag ``rational`` to False.
+
         """
         # roots doesn't like Floats, so replace them with Rationals
         # unless the nsimplify flag indicates that this has already
@@ -2906,6 +2975,7 @@ class MatrixBase(DefaultPrinting):
         for computation purposes, but the answers will be returned after being
         evaluated with evalf. If it is desired to removed small imaginary
         portions during the evalf step, pass a value for the ``chop`` flag.
+
         """
         from . import eye
 
@@ -2971,6 +3041,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         condition_number
+
         """
         mat = self.as_mutable()
         # Compute eigenvalues of A.H A
@@ -3001,6 +3072,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         singular_values
+
         """
 
         if not self:
@@ -3029,6 +3101,7 @@ class MatrixBase(DefaultPrinting):
 
         limit
         diff
+
         """
         return self._new(self.rows, self.cols,
                          lambda i, j: self[i, j].integrate(*args))
@@ -3050,6 +3123,7 @@ class MatrixBase(DefaultPrinting):
 
         integrate
         diff
+
         """
         return self._new(self.rows, self.cols,
                          lambda i, j: self[i, j].limit(*args))
@@ -3071,6 +3145,7 @@ class MatrixBase(DefaultPrinting):
 
         integrate
         limit
+
         """
         return self._new(self.rows, self.cols,
                          lambda i, j: self[i, j].diff(*args))
@@ -3097,6 +3172,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         vech
+
         """
         return self.T.reshape(len(self), 1)
 
@@ -3128,6 +3204,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         vec
+
         """
         from . import zeros
 
@@ -3301,6 +3378,7 @@ class MatrixBase(DefaultPrinting):
 
         is_diagonal
         diagonalize
+
         """
         if not self.is_square:
             return False
@@ -3542,6 +3620,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         jordan_cells
+
         """
         P, Jcells = self.jordan_cells()
         from . import diag
@@ -3586,6 +3665,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         jordan_form
+
         """
         n = self.rows
         Jcells = []
@@ -3627,6 +3707,7 @@ class MatrixBase(DefaultPrinting):
         False
         >>> A.has(Float)
         True
+
         """
         return any(a.has(*patterns) for a in self._mat)
 
@@ -3681,6 +3762,7 @@ class MatrixBase(DefaultPrinting):
         Matrix([
         [1, 0, 2, 0],
         [0, 1, 0, 2]])
+
         """
         return reduce(cls.row_join, args)
 
@@ -3698,6 +3780,7 @@ class MatrixBase(DefaultPrinting):
         [0, 1],
         [2, 0],
         [0, 2]])
+
         """
         return reduce(cls.col_join, args)
 
@@ -3719,6 +3802,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         col_join
+
         """
         from . import MutableMatrix
 
@@ -3752,6 +3836,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         row_join
+
         """
         from . import MutableMatrix
 
@@ -3785,6 +3870,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         col_insert
+
         """
         if not self:
             return type(self)(mti)
@@ -3827,6 +3913,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         row_insert
+
         """
         from . import MutableMatrix
 
@@ -3868,6 +3955,7 @@ class MatrixBase(DefaultPrinting):
         Matrix([
         [G(0), G(1)],
         [G(1), G(2)]])
+
         """
         M = self[:, :]
 
@@ -4009,6 +4097,7 @@ def classof(A, B):
     >>> IM = ImmutableMatrix([[1, 2], [3, 4]])
     >>> classof(M, IM)
     <class 'diofant.matrices.immutable.ImmutableMatrix'>
+
     """
     try:
         if A._class_priority > B._class_priority:
@@ -4051,6 +4140,7 @@ def mgamma(mu, lower=False):
     ==========
 
     * https//en.wikipedia.org/wiki/Gamma_matrices
+
     """
     from . import Matrix
     if mu not in [0, 1, 2, 3, 5]:

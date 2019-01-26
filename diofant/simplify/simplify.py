@@ -193,6 +193,7 @@ def _nthroot_solve(p, n, prec):
     """
     helper function for ``nthroot``
     It denests ``root(p, n)`` using its minimal polynomial
+
     """
     from ..polys.numberfields import _minimal_polynomial_sq
     from ..solvers import solve
@@ -238,6 +239,7 @@ def nthroot(expr, n, max_len=4, prec=15):
 
     >>> nthroot(90 + 34*sqrt(7), 3)
     sqrt(7) + 3
+
     """
     expr = sympify(expr)
     n = sympify(n)
@@ -307,6 +309,7 @@ def posify(eq):
     [_x**2 - 4, _x]
     >>> solve(*eq_x)
     [{_x: 2}]
+
     """
     eq = sympify(eq)
     if iterable(eq):
@@ -358,6 +361,7 @@ def hypersimp(f, k):
 
     * W. Koepf, Algorithms for m-fold Hypergeometric Summation,
            Journal of Symbolic Computation (1995) 20, 399-417
+
     """
     f = sympify(f)
 
@@ -385,6 +389,7 @@ def hypersimilar(f, g, k):
     ========
 
     hypersimp
+
     """
     f, g = list(map(sympify, (f, g)))
 
@@ -572,6 +577,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     simplification strategies and then compares them using the measure
     function, we get a completely different result that is still different
     from the input expression by doing this.
+
     """
     expr = sympify(expr)
 
@@ -600,6 +606,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     def shorter(*choices):
         """Return the choice that has the fewest ops. In case of a tie,
         the expression listed first is selected.
+
         """
         if not has_variety(choices):
             return choices[0]
@@ -975,6 +982,7 @@ def bottom_up(rv, F, atoms=False, nonbasic=False):
     """Apply ``F`` to all expressions in an expression tree from the
     bottom up. If ``atoms`` is True, apply ``F`` even if there are no args;
     if ``nonbasic`` is True, try to apply ``F`` to non-Basic objects.
+
     """
     try:
         if rv.args:
@@ -1016,6 +1024,7 @@ def besselsimp(expr):
     sqrt(2)*cosh(z)/(sqrt(pi)*sqrt(z))
     >>> besselsimp(z*besseli(0, z) + z*(besseli(2, z))/2 + besseli(1, z))
     3*z*besseli(0, z)/2
+
     """
     # TODO
     # - better algorithm?
@@ -1082,7 +1091,7 @@ def besselsimp(expr):
 
 
 def sum_simplify(s):
-    """Main function for Sum simplification"""
+    """Main function for Sum simplification."""
     from ..concrete import Sum
 
     terms = Add.make_args(s)
@@ -1138,7 +1147,7 @@ def sum_simplify(s):
 
 
 def sum_add(self, other, method=0):
-    """Helper function for Sum simplification"""
+    """Helper function for Sum simplification."""
     from ..concrete import Sum
 
     if type(self) == type(other):
@@ -1165,7 +1174,7 @@ def sum_add(self, other, method=0):
 
 
 def product_simplify(s):
-    """Main function for Product simplification"""
+    """Main function for Product simplification."""
     from ..concrete import Product
 
     terms = Mul.make_args(s)
@@ -1199,7 +1208,7 @@ def product_simplify(s):
 
 
 def product_mul(self, other, method=0):
-    """Helper function for Product simplification"""
+    """Helper function for Product simplification."""
     from ..concrete import Product
 
     if type(self) == type(other):
@@ -1248,6 +1257,7 @@ def clear_coefficients(expr, rhs=Integer(0)):
     (y*(2*x + 1), _rhs/12)
     >>> _[1].subs({rhs: 2})
     1/6
+
     """
     was = None
     free = expr.free_symbols

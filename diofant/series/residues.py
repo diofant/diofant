@@ -25,6 +25,7 @@ def residue(expr, x, x0):
 
     * https//en.wikipedia.org/wiki/Residue_%28complex_analysis%29
     * https//en.wikipedia.org/wiki/Residue_theorem
+
     """
     # The current implementation uses series expansion to
     # calculate it. A more general implementation is explained in

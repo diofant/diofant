@@ -38,6 +38,7 @@ class re(Function):
     ========
 
     diofant.functions.elementary.complexes.im
+
     """
 
     is_extended_real = True
@@ -81,9 +82,7 @@ class re(Function):
                 return cls(a) - im(b) + c
 
     def as_real_imag(self, deep=True, **hints):
-        """
-        Returns the real number with a zero imaginary part.
-        """
+        """Returns the real number with a zero imaginary part."""
         return self, S.Zero
 
     def _eval_derivative(self, x):
@@ -123,6 +122,7 @@ class im(Function):
     ========
 
     diofant.functions.elementary.complexes.re
+
     """
 
     is_extended_real = True
@@ -173,6 +173,7 @@ class im(Function):
 
         >>> im(2 + 3*I).as_real_imag()
         (3, 0)
+
         """
         return self, S.Zero
 
@@ -229,6 +230,7 @@ class sign(Function):
 
     diofant.functions.elementary.complexes.Abs
     diofant.functions.elementary.complexes.conjugate
+
     """
 
     is_complex = True
@@ -373,6 +375,7 @@ class Abs(Function):
 
     diofant.functions.elementary.complexes.sign
     diofant.functions.elementary.complexes.conjugate
+
     """
 
     is_extended_real = True
@@ -388,6 +391,7 @@ class Abs(Function):
 
         >>> Abs(-x).fdiff()
         sign(x)
+
         """
         if argindex == 1:
             return sign(self.args[0])
@@ -536,6 +540,7 @@ class arg(Function):
     pi/2
     >>> arg(sqrt(2) + I*sqrt(2))
     pi/4
+
     """
 
     is_real = True
@@ -596,6 +601,7 @@ class conjugate(Function):
     ==========
 
     * https//en.wikipedia.org/wiki/Complex_conjugation
+
     """
 
     @classmethod
@@ -627,9 +633,7 @@ class conjugate(Function):
 
 
 class transpose(Function):
-    """
-    Linear map transposition.
-    """
+    """Linear map transposition."""
 
     @classmethod
     def eval(cls, arg):
@@ -648,9 +652,7 @@ class transpose(Function):
 
 
 class adjoint(Function):
-    """
-    Conjugate transpose or Hermite conjugation.
-    """
+    """Conjugate transpose or Hermite conjugation."""
 
     @classmethod
     def eval(cls, arg):
@@ -700,6 +702,7 @@ class polar_lift(Function):
 
     diofant.functions.elementary.exponential.exp_polar
     diofant.functions.elementary.complexes.periodic_argument
+
     """
 
     is_polar = True
@@ -741,7 +744,7 @@ class polar_lift(Function):
                 return Mul(*positive)*exp_polar(0)
 
     def _eval_evalf(self, prec):
-        """ Careful! any evalf of polar numbers is flaky """
+        """Careful! any evalf of polar numbers is flaky."""
         return self.args[0]._eval_evalf(prec)
 
     def _eval_Abs(self):
@@ -771,6 +774,7 @@ class periodic_argument(Function):
     diofant.functions.elementary.exponential.exp_polar
     diofant.functions.elementary.complexes.polar_lift : Lift argument to the Riemann surface of the logarithm
     diofant.functions.elementary.complexes.principal_branch
+
     """
 
     @classmethod
@@ -856,6 +860,7 @@ class principal_branch(Function):
     diofant.functions.elementary.exponential.exp_polar
     diofant.functions.elementary.complexes.polar_lift : Lift argument to the Riemann surface of the logarithm
     diofant.functions.elementary.complexes.periodic_argument
+
     """
 
     is_polar = True
@@ -992,6 +997,7 @@ def polarify(eq, subs=True, lift=False):
 
     >>> polarify(1 + sin((1 + I)*x))
     (sin(_x*polar_lift(1 + I)) + 1, {_x: x})
+
     """
     if lift:
         subs = False
@@ -1049,6 +1055,7 @@ def unpolarify(eq, subs={}, exponents_only=False):
     2 + I
     >>> unpolarify(sin(polar_lift(I + 7)))
     sin(7 + I)
+
     """
     if isinstance(eq, bool):
         return eq

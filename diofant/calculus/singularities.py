@@ -28,6 +28,7 @@ def singularities(f, x):
     ==========
 
     * https://en.wikipedia.org/wiki/Mathematical_singularity
+
     """
     f, x = sympify(f), sympify(x)
     guess, res = set(), set()

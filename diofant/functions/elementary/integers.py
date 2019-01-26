@@ -115,6 +115,7 @@ class floor(RoundFunction):
 
     * "Concrete mathematics" by Graham, pp. 87
     * http://mathworld.wolfram.com/FloorFunction.html
+
     """
 
     _dir = -1
@@ -190,6 +191,7 @@ class ceiling(RoundFunction):
 
     * "Concrete mathematics" by Graham, pp. 87
     * http://mathworld.wolfram.com/CeilingFunction.html
+
     """
 
     _dir = 1

@@ -214,7 +214,7 @@ class Add(AssocOp):
 
     @classmethod
     def class_key(cls):
-        """Nice order of classes"""
+        """Nice order of classes."""
         return 4, 1, cls.__name__
 
     def as_coefficients_dict(self):
@@ -233,6 +233,7 @@ class Add(AssocOp):
         0
         >>> (3*y*x).as_coefficients_dict()
         {x*y: 3}
+
         """
 
         d = defaultdict(list)
@@ -261,6 +262,7 @@ class Add(AssocOp):
         (7, (3*x,))
         >>> (7*x).as_coeff_add()
         (0, (7*x,))
+
         """
         if deps:
             l1 = []
@@ -277,7 +279,7 @@ class Add(AssocOp):
         return S.Zero, self.args
 
     def as_coeff_Add(self, rational=False):
-        """Efficiently extract the coefficient of a summation. """
+        """Efficiently extract the coefficient of a summation."""
         coeff, args = self.args[0], self.args[1:]
 
         if coeff.is_Number and not rational or coeff.is_Rational:
@@ -310,6 +312,7 @@ class Add(AssocOp):
         ========
 
         diofant.core.basic.Basic.matches
+
         """
         return AssocOp._matches_commutative(self, expr, repl_dict)
 
@@ -318,6 +321,7 @@ class Add(AssocOp):
         """
         Returns lhs - rhs, but treats arguments like symbols, so things like
         oo - oo return 0, instead of a nan.
+
         """
         from . import oo, I
         from ..simplify import signsimp
@@ -341,6 +345,7 @@ class Add(AssocOp):
 
         >>> (3*x*y).as_two_terms()
         (3, x*y)
+
         """
         return self.args[0], self._new_rawargs(*self.args[1:])
 
@@ -351,6 +356,7 @@ class Add(AssocOp):
         ========
 
         diofant.core.expr.Expr.as_numer_denom
+
         """
         from .mul import Mul, _keep_coeff
 
@@ -549,6 +555,7 @@ class Add(AssocOp):
         ========
 
         diofant.core.expr.Expr.removeO
+
         """
         args = [a for a in self.args if not a.is_Order]
         return self._new_rawargs(*args)
@@ -560,6 +567,7 @@ class Add(AssocOp):
         ========
 
         diofant.core.expr.Expr.getO
+
         """
         args = [a for a in self.args if a.is_Order]
         if args:
@@ -578,6 +586,7 @@ class Add(AssocOp):
         ((1, O(1)),)
         >>> (x + x**2).extract_leading_order(x)
         ((x, O(x)),)
+
         """
         from ..series import Order
         lst = []
@@ -612,6 +621,7 @@ class Add(AssocOp):
         (0, 1)
         >>> ((1 + 2*I)*(1 + 3*I)).as_real_imag()
         (-5, 5)
+
         """
         sargs = self.args
         re_part, im_part = [], []
@@ -688,6 +698,7 @@ class Add(AssocOp):
         ========
 
         diofant.polys.polytools.primitive
+
         """
         from .mul import _keep_coeff
         from .numbers import Rational
@@ -751,6 +762,7 @@ class Add(AssocOp):
         ========
 
         diofant.core.expr.Expr.as_content_primitive
+
         """
         from .mul import Mul, _keep_coeff, prod
         from ..functions import root

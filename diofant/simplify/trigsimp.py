@@ -104,6 +104,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
     >>> ex = (tan(x) + tan(y))/(1 - tan(x)*tan(y))
     >>> trigsimp_groebner(ex, hints=[(tan, x, y)])
     tan(x + y)
+
     """
     # TODO
     #  - preprocess by replacing everything by funcs we can handle
@@ -219,6 +220,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         If any of the terms is trigonometric, sin(x) and cos(x) are guaranteed
         to appear in terms. Similarly for hyperbolic functions. For tan(n*x),
         sin(n*x) and cos(n*x) are guaranteed.
+
         """
         I = []
         y = Dummy('y')
@@ -242,6 +244,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         The meaning of ``hints`` is described in the main docstring.
         Return a new list of generators, and also the ideal we should
         work with.
+
         """
         # First parse the hints
         n, funcs, iterables, extragens = parse_hints(hints)
@@ -458,6 +461,7 @@ def trigsimp(expr, **opts):
     ========
 
     diofant.simplify.fu.fu
+
     """
     from .fu import fu
     from ..matrices import MatrixExpr
@@ -514,6 +518,7 @@ def exptrigsimp(expr, simplify=True):
     2*cosh(z)
     >>> exptrigsimp(cosh(z) - sinh(z))
     E**(-z)
+
     """
     from .fu import hyper_as_trig, TR2i
     from .simplify import bottom_up
@@ -643,6 +648,7 @@ def trigsimp_old(expr, **opts):
 
     diofant.simplify.fu.fu
     futrig
+
     """
     old = expr
     first = opts.pop('first', True)
@@ -724,6 +730,7 @@ def _dotrig(a, b):
     """Helper to tell whether ``a`` and ``b`` have the same sorts
     of symbols in them -- no need to test hyperbolic patterns against
     expressions that have no hyperbolics in them.
+
     """
     return a.func == b.func and (
         a.has(TrigonometricFunction) and b.has(TrigonometricFunction) or
@@ -822,6 +829,7 @@ def _replace_mul_fpowxgpow(expr, f, g, rexp, h, rexph):
 
     Replace f(b_)**c_*g(b_)**(rexp(c_)) with h(b)**rexph(c) if f(b_)
     and g(b_) are both positive or if c_ is an integer.
+
     """
     # assert expr.is_Mul and expr.is_commutative and f != g
     fargs = defaultdict(int)
@@ -874,7 +882,7 @@ def _one(x):
 
 
 def _match_div_rewrite(expr, i):
-    """helper for __trigsimp"""
+    """Helper for __trigsimp."""
     if i == 0:
         expr = _replace_mul_fpowxgpow(expr, sin, cos,
                                       _midn, tan, _idn)
@@ -927,7 +935,7 @@ def _trigsimp(expr, deep=False):
 
 @cacheit
 def __trigsimp(expr, deep=False):
-    """recursive helper for trigsimp"""
+    """Recursive helper for trigsimp."""
     from .fu import TR10i
 
     if _trigpat is None:
@@ -1163,6 +1171,7 @@ def _futrig(e, **kwargs):
 def _is_Expr(e):
     """_eapply helper to tell whether ``e`` and all its args
     are Exprs.
+
     """
     if not isinstance(e, Expr):
         return False
@@ -1172,6 +1181,7 @@ def _is_Expr(e):
 def _eapply(func, e, cond=None):
     """Apply ``func`` to ``e`` if all args are Exprs else only
     apply it to those args that *are* Exprs.
+
     """
     if not isinstance(e, Expr):
         return e

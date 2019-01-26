@@ -48,6 +48,7 @@ def express(expr, system, system2=None, variables=False):
     >>> d = N.i.outer(N.i)
     >>> express(d, B, N)
     (cos(q))*(B.i|N.i) + (-sin(q))*(B.j|N.i)
+
     """
 
     if expr == 0 or expr == Vector.zero:
@@ -430,6 +431,7 @@ def _path(from_object, to_object):
     ancestor in the tree.
 
     Returns (index, list) tuple.
+
     """
 
     if from_object._root != to_object._root:

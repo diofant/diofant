@@ -16,6 +16,7 @@ def symmetric(n):
     >>> list(symmetric(3))
     [Permutation(2), Permutation(1, 2), Permutation(2)(0, 1),
      Permutation(0, 1, 2), Permutation(0, 2, 1), Permutation(0, 2)]
+
     """
     for perm in variations(list(range(n)), n):
         yield Permutation(perm)
@@ -36,6 +37,7 @@ def cyclic(n):
     See Also
     ========
     dihedral
+
     """
     gen = list(range(n))
     for i in range(n):
@@ -53,6 +55,7 @@ def alternating(n):
     >>> Permutation.print_cyclic = True
     >>> list(alternating(3))
     [Permutation(2), Permutation(0, 1, 2), Permutation(0, 2, 1)]
+
     """
     for perm in variations(list(range(n)), n):
         p = Permutation(perm)
@@ -79,6 +82,7 @@ def dihedral(n):
     See Also
     ========
     cyclic
+
     """
     if n == 1:
         yield Permutation([0, 1])
@@ -99,6 +103,7 @@ def dihedral(n):
 def rubik_cube_generators():
     """Return the permutations of the 3x3 Rubik's cube, see
     http://www.gap-system.org/Doc/Examples/rubik.html
+
     """
     a = [
         [(1, 3, 8, 6), (2, 5, 7, 4), (9, 33, 25, 17), (10, 34, 26, 18),
@@ -124,6 +129,7 @@ def rubik(n):
     from the face up to the last face for each of the 3 sides (in this order):
     front, right and bottom. Hence, the first n - 1 permutations are for the
     slices from the front.
+
     """
 
     if n < 2:

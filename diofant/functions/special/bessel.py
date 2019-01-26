@@ -39,16 +39,17 @@ class BesselBase(Function):
 
     To use this base class, define class attributes ``_a`` and ``_b`` such that
     ``2*F_n' = -_a*F_{n+1} + b*F_{n-1}``.
+
     """
 
     @property
     def order(self):
-        """ The order of the bessel-type function. """
+        """The order of the bessel-type function."""
         return self.args[0]
 
     @property
     def argument(self):
-        """ The argument of the bessel-type function. """
+        """The argument of the bessel-type function."""
         return self.args[1]
 
     @classmethod
@@ -143,6 +144,7 @@ class besselj(BesselBase):
       Approximations, Volume 1
     * https//en.wikipedia.org/wiki/Bessel_function
     * http://functions.wolfram.com/Bessel-TypeFunctions/BesselJ/
+
     """
 
     _a = S.One
@@ -531,14 +533,15 @@ class SphericalBesselBase(BesselBase):
     ones just by a slight change in order.
 
     To use this class, define the ``_rewrite`` and ``_expand`` methods.
+
     """
 
     def _expand(self, **hints):
-        """ Expand self into a polynomial. Nu is guaranteed to be Integer. """
+        """Expand self into a polynomial. Nu is guaranteed to be Integer."""
         raise NotImplementedError('expansion')
 
     def _rewrite(self):
-        """ Rewrite self in terms of ordinary Bessel functions. """
+        """Rewrite self in terms of ordinary Bessel functions."""
         raise NotImplementedError('rewriting')
 
     def _eval_expand_func(self, **hints):
@@ -680,6 +683,7 @@ def jn_zeros(n, k, method="diofant", dps=15):
     ========
 
     jn, yn, besselj, besselk, bessely
+
     """
     from math import pi
 
@@ -727,6 +731,7 @@ class AiryBase(Function):
     Abstract base class for Airy functions.
 
     This class is meant to reduce code duplication.
+
     """
 
     def _eval_conjugate(self):
@@ -829,6 +834,7 @@ class airyai(AiryBase):
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
     * http://mathworld.wolfram.com/AiryFunctions.html
+
     """
 
     unbranched = True
@@ -982,6 +988,7 @@ class airybi(AiryBase):
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
     * http://mathworld.wolfram.com/AiryFunctions.html
+
     """
 
     unbranched = True
@@ -1186,6 +1193,7 @@ class airyaiprime(AiryBase):
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
     * http://mathworld.wolfram.com/AiryFunctions.html
+
     """
 
     unbranched = True
@@ -1328,6 +1336,7 @@ class airybiprime(AiryBase):
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
     * http://mathworld.wolfram.com/AiryFunctions.html
+
     """
 
     unbranched = True

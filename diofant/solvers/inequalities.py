@@ -34,6 +34,7 @@ def solve_poly_inequality(poly, rel):
     ========
 
     solve_poly_inequalities
+
     """
     if not isinstance(poly, Poly):
         raise ValueError('`poly` should be a Poly instance')
@@ -105,6 +106,7 @@ def solve_poly_inequalities(polys):
     >>> solve_poly_inequalities(((Poly(x**2 - 3), ">"),
     ...                          (Poly(-x**2 + 1), ">")))
     (-oo, -sqrt(3)) U (-1, 1) U (sqrt(3), oo)
+
     """
     return Union(*[solve_poly_inequality(*p) for p in polys])
 
@@ -128,6 +130,7 @@ def solve_rational_inequalities(eqs):
     ========
 
     solve_poly_inequality
+
     """
     result = S.EmptySet
 
@@ -183,6 +186,7 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
     -2 < x
     >>> reduce_rational_inequalities([[x + 2]], x)
     Eq(x, -2)
+
     """
     exact = True
     eqs = []
@@ -257,6 +261,7 @@ def reduce_piecewise_inequality(expr, rel, gen):
     ========
 
     reduce_piecewise_inequalities
+
     """
     if gen.is_extended_real is False:
         raise TypeError(filldedent('''
@@ -348,6 +353,7 @@ def reduce_piecewise_inequalities(exprs, gen):
     ========
 
     reduce_piecewise_inequality
+
     """
     return And(*[reduce_piecewise_inequality(expr, rel, gen)
                  for expr, rel in exprs])
@@ -366,6 +372,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
     Or(2 <= x, x <= -2)
     >>> solve_univariate_inequality(x**2 >= 4, x, relational=False)
     (-oo, -2] U [2, oo)
+
     """
     from ..simplify import simplify
     from .solvers import solve, denoms
@@ -503,6 +510,7 @@ def reduce_inequalities(inequalities, symbols=[]):
     ========
 
     diofant.solvers.solvers.solve : solve algebraic equations
+
     """
     if not iterable(inequalities):
         inequalities = [inequalities]

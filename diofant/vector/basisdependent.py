@@ -12,6 +12,7 @@ class BasisDependent(Expr):
     dyadics.
     Named so because the representation of these quantities in
     diofant.vector is dependent on the basis they are expressed in.
+
     """
 
     @call_highest_priority('__radd__')
@@ -41,9 +42,7 @@ class BasisDependent(Expr):
         return self._div_helper(other)
 
     def evalf(self, dps=15, **options):
-        """
-        Implements the Diofant evalf routine for this quantity.
-        """
+        """Implements the Diofant evalf routine for this quantity."""
         vec = self.zero
         for k, v in self.components.items():
             vec += v.evalf(dps, **options) * k
@@ -60,6 +59,7 @@ class BasisDependent(Expr):
         ========
 
         diofant.simplify.simplify.simplify
+
         """
         simp_components = [simplify(v, ratio, measure) * k for
                            k, v in self.components.items()]
@@ -73,6 +73,7 @@ class BasisDependent(Expr):
         ========
 
         diofant.simplify.trigsimp.trigsimp
+
         """
         trig_components = [trigsimp(v, **opts) * k for
                            k, v in self.components.items()]
@@ -101,13 +102,14 @@ class BasisDependent(Expr):
         ========
 
         diofant.polys.polytools.factor
+
         """
         fctr_components = [factor(v, *args, **kwargs) * k for
                            k, v in self.components.items()]
         return self._add_func(*fctr_components)
 
     def as_coeff_Mul(self, rational=False):
-        """Efficiently extract the coefficient of a product. """
+        """Efficiently extract the coefficient of a product."""
         return Integer(1), self
 
     def diff(self, *args, **kwargs):
@@ -118,6 +120,7 @@ class BasisDependent(Expr):
         ========
 
         diofant.core.function.diff
+
         """
         for x in args:
             if isinstance(x, BasisDependent):
@@ -127,7 +130,7 @@ class BasisDependent(Expr):
         return self._add_func(*diff_components)
 
     def doit(self, **hints):
-        """Calls .doit() on each term in the Dyadic"""
+        """Calls .doit() on each term in the Dyadic."""
         doit_components = [self.components[x].doit(**hints) * x
                            for x in self.components]
         return self._add_func(*doit_components)
@@ -137,6 +140,7 @@ class BasisDependentAdd(BasisDependent, Add):
     """
     Denotes sum of basis dependent quantities such that they cannot
     be expressed as base or Mul instances.
+
     """
 
     def __new__(cls, *args, **options):
@@ -183,9 +187,7 @@ class BasisDependentAdd(BasisDependent, Add):
 
 
 class BasisDependentMul(BasisDependent, Mul):
-    """
-    Denotes product of base- basis dependent quantity with a scalar.
-    """
+    """Denotes product of base- basis dependent quantity with a scalar."""
 
     def __new__(cls, *args, **options):
         count = 0
@@ -249,9 +251,7 @@ class BasisDependentMul(BasisDependent, Mul):
 
 
 class BasisDependentZero(BasisDependent):
-    """
-    Class to denote a zero basis dependent instance.
-    """
+    """Class to denote a zero basis dependent instance."""
 
     components = {}
 
@@ -303,9 +303,7 @@ class BasisDependentZero(BasisDependent):
         return self
 
     def normalize(self):
-        """
-        Returns the normalized version of this vector.
-        """
+        """Returns the normalized version of this vector."""
         return self
 
     def __str__(self, printer=None):

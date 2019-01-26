@@ -78,7 +78,7 @@ reserved_words = ['auto',
 
 
 class CCodePrinter(CodePrinter):
-    """A printer to convert python expressions to strings of c code"""
+    """A printer to convert python expressions to strings of c code."""
 
     printmethod = "_ccode"
     language = "C"
@@ -230,7 +230,7 @@ class CCodePrinter(CodePrinter):
         return '((({0}) > 0) - (({0}) < 0))'.format(self._print(func.args[0]))
 
     def indent_code(self, code):
-        """Accepts a string of code or a list of code lines"""
+        """Accepts a string of code or a list of code lines."""
 
         if isinstance(code, str):
             code_lines = self.indent_code(code.splitlines(True))
@@ -373,6 +373,7 @@ def ccode(expr, assign_to=None, **settings):
        A[1] = x;
     }
     A[2] = sin(x);
+
     """
 
     return CCodePrinter(settings).doprint(expr, assign_to)

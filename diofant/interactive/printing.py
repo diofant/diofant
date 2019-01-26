@@ -7,12 +7,13 @@ from ..printing.printer import Printer
 
 
 def _init_python_printing(stringify_func):
-    """Setup printing in Python interactive session. """
+    """Setup printing in Python interactive session."""
 
     def _displayhook(arg):
         """Python's pretty-printer display hook.
 
         This function was adapted from PEP 217.
+
         """
         if arg is not None:
             builtins._ = None
@@ -26,7 +27,7 @@ def _init_python_printing(stringify_func):
 
 
 def _init_ipython_printing(ip, stringify_func):
-    """Setup printing in IPython interactive session. """
+    """Setup printing in IPython interactive session."""
 
     def _print_plain_text(arg, p, cycle):
         p.text(stringify_func(arg))
@@ -86,6 +87,7 @@ def init_printing(no_global=False, pretty_print=None, **settings):
     >>> y + x + y**2 + x**2
      2    2
     x  + y  + x + y
+
     """
 
     try:

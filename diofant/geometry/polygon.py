@@ -300,6 +300,7 @@ class Polygon(GeometrySet):
         >>> poly = Polygon(p1, p2, p3, p4)
         >>> poly.perimeter
         sqrt(17) + 7
+
         """
         p = 0
         args = self.vertices
@@ -674,6 +675,7 @@ class Polygon(GeometrySet):
         >>> poly = Polygon(*RegularPolygon(p1, 1, 3).vertices)
         >>> poly.distance(p2)
         sqrt(61)
+
         """
         if isinstance(o, Point):
             dist = oo
@@ -724,6 +726,7 @@ class Polygon(GeometrySet):
         [2] https//en.wikipedia.org/wiki/Rotating_calipers
         and antipodal points:
         [3] https//en.wikipedia.org/wiki/Antipodal_point
+
         """
         e1 = self
 
@@ -1050,6 +1053,7 @@ class RegularPolygon(Polygon):
         >>> r = RegularPolygon(Point(0, 0), 5, 3)
         >>> r.args
         (Point2D(0, 0), 5, 3, 0)
+
         """
         return self._center, self._radius, self._n, self._rot
 
@@ -1071,6 +1075,7 @@ class RegularPolygon(Polygon):
         2
         >>> _ == square.length**2
         True
+
         """
         c, r, n, rot = self.args
         return sign(r)*n*self.length**2/(4*tan(pi/n))
@@ -1117,6 +1122,7 @@ class RegularPolygon(Polygon):
         >>> rp = RegularPolygon(Point(0, 0), 5, 4)
         >>> rp.center
         Point2D(0, 0)
+
         """
         return self._center
 
@@ -1133,6 +1139,7 @@ class RegularPolygon(Polygon):
         >>> rp = RegularPolygon(Point(0, 0), 5, 4)
         >>> rp.circumcenter
         Point2D(0, 0)
+
         """
         return self.center
 
@@ -1175,6 +1182,7 @@ class RegularPolygon(Polygon):
         >>> rp = RegularPolygon(Point(0, 0), radius, 4)
         >>> rp.circumradius
         r
+
         """
         return self.radius
 
@@ -1235,6 +1243,7 @@ class RegularPolygon(Polygon):
         >>> rp = RegularPolygon(Point(0, 0), radius, 4)
         >>> rp.inradius
         sqrt(2)*r/2
+
         """
         return self.apothem
 
@@ -1348,6 +1357,7 @@ class RegularPolygon(Polygon):
         {Point2D(-5/2, -5*sqrt(3)/2): pi/3,
          Point2D(-5/2, 5*sqrt(3)/2): pi/3,
          Point2D(5, 0): pi/3}
+
         """
         ret = {}
         ang = self.interior_angle
@@ -1902,6 +1912,7 @@ class Triangle(Polygon):
         >>> t = Triangle(p1, p2, p3)
         >>> t.circumcenter
         Point2D(1/2, 1/2)
+
         """
         a, b, c = [x.perpendicular_bisector() for x in self.sides]
         return a.intersection(b)[0]
@@ -1928,6 +1939,7 @@ class Triangle(Polygon):
         >>> t = Triangle(p1, p2, p3)
         >>> t.circumradius
         sqrt(a**2/4 + 1/4)
+
         """
         return Point.distance(self.circumcenter, self.vertices[0])
 

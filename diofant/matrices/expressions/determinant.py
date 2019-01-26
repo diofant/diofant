@@ -21,6 +21,7 @@ class Determinant(Expr):
 
     >>> Determinant(Matrix()).doit()
     1
+
     """
 
     def __new__(cls, mat):
@@ -58,6 +59,7 @@ def det(matexpr):
     ========
 
     Determinant
+
     """
 
     return Determinant(matexpr).doit()

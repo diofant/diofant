@@ -81,6 +81,7 @@ class Integral(AddWithLimits):
         diofant.concrete.expr_with_limits.ExprWithLimits.function
         diofant.concrete.expr_with_limits.ExprWithLimits.limits
         diofant.concrete.expr_with_limits.ExprWithLimits.variables
+
         """
         return AddWithLimits.free_symbols.fget(self)
 
@@ -229,6 +230,7 @@ class Integral(AddWithLimits):
 
         diofant.concrete.expr_with_limits.ExprWithLimits.variables : Lists the integration variables
         diofant.concrete.expr_with_limits.ExprWithLimits.as_dummy : Replace integration variables with dummy ones
+
         """
 
         from ..solvers import solve
@@ -305,6 +307,7 @@ class Integral(AddWithLimits):
             """
             replace d with a, using subs if possible, otherwise limit
             where sign of b is considered
+
             """
             wok = F.subs({d: a})
             if wok is nan or wok.is_finite is False and a.is_finite:
@@ -315,6 +318,7 @@ class Integral(AddWithLimits):
             """
             replace d with a, using subs if possible, otherwise limit
             where sign of b is considered
+
             """
             avals = list({_calc_limit_1(Fi, a, b) for Fi in F})
             if len(avals) > 1:
@@ -362,6 +366,7 @@ class Integral(AddWithLimits):
         diofant.integrals.heurisch.heurisch
         diofant.integrals.rationaltools.ratint
         diofant.integrals.integrals.Integral.as_sum : Approximate the integral using a sum
+
         """
         if not hints.get('integrals', True):
             return self
@@ -601,6 +606,7 @@ class Integral(AddWithLimits):
         {x}
         >>> i.doit()
         2*x**3/3 - x/2 - 1/6
+
         """
 
         # differentiate under the integral sign; we do not
@@ -720,6 +726,7 @@ class Integral(AddWithLimits):
              integrals that can only be computed using this method.  The goal
              is to implement enough of the Risch and Meijer G-function methods
              so that this can be deleted.
+
         """
         from .deltafunctions import deltaintegrate
         from .heurisch import heurisch, heurisch_wrapper
@@ -1004,6 +1011,7 @@ class Integral(AddWithLimits):
         ========
 
         diofant.integrals.integrals.Integral.doit : Perform the integration using any hints
+
         """
 
         limits = self.limits
@@ -1188,6 +1196,7 @@ def integrate(*args, **kwargs):
 
     diofant.integrals.integrals.Integral
     diofant.integrals.integrals.Integral.doit
+
     """
     meijerg = kwargs.pop('meijerg', None)
     conds = kwargs.pop('conds', 'piecewise')
@@ -1218,6 +1227,7 @@ def line_integrate(field, curve, vars):
 
     diofant.integrals.integrals.integrate
     diofant.integrals.integrals.Integral
+
     """
     from ..geometry import Curve
     F = sympify(field)

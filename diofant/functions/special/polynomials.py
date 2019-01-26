@@ -24,8 +24,7 @@ _x = Dummy('dummy_for_special_polynomials')
 
 
 class OrthogonalPolynomial(Function):
-    """Base class for orthogonal polynomials.
-    """
+    """Base class for orthogonal polynomials."""
 
     @classmethod
     def _eval_at_order(cls, n, x):
@@ -110,6 +109,7 @@ class jacobi(OrthogonalPolynomial):
     * https//en.wikipedia.org/wiki/Jacobi_polynomials
     * http://mathworld.wolfram.com/JacobiPolynomial.html
     * http://functions.wolfram.com/Polynomials/JacobiP/
+
     """
 
     @classmethod
@@ -231,6 +231,7 @@ def jacobi_normalized(n, a, b, x):
     * https//en.wikipedia.org/wiki/Jacobi_polynomials
     * http://mathworld.wolfram.com/JacobiPolynomial.html
     * http://functions.wolfram.com/Polynomials/JacobiP/
+
     """
     nfactor = (Integer(2)**(a + b + 1) * (gamma(n + a + 1) * gamma(n + b + 1))
                / (2*n + a + b + 1) / (factorial(n) * gamma(n + a + b + 1)))
@@ -303,6 +304,7 @@ class gegenbauer(OrthogonalPolynomial):
     * https//en.wikipedia.org/wiki/Gegenbauer_polynomials
     * http://mathworld.wolfram.com/GegenbauerPolynomial.html
     * http://functions.wolfram.com/Polynomials/GegenbauerC3/
+
     """
 
     @classmethod
@@ -435,6 +437,7 @@ class chebyshevt(OrthogonalPolynomial):
     * http://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
     * http://functions.wolfram.com/Polynomials/ChebyshevT/
     * http://functions.wolfram.com/Polynomials/ChebyshevU/
+
     """
 
     _ortho_poly = staticmethod(chebyshevt_poly)
@@ -532,6 +535,7 @@ class chebyshevu(OrthogonalPolynomial):
     * http://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
     * http://functions.wolfram.com/Polynomials/ChebyshevT/
     * http://functions.wolfram.com/Polynomials/ChebyshevU/
+
     """
 
     _ortho_poly = staticmethod(chebyshevu_poly)
@@ -602,6 +606,7 @@ class chebyshevt_root(Function):
     diofant.polys.orthopolys.hermite_poly
     diofant.polys.orthopolys.legendre_poly
     diofant.polys.orthopolys.laguerre_poly
+
     """
 
     @classmethod
@@ -640,6 +645,7 @@ class chebyshevu_root(Function):
     diofant.polys.orthopolys.hermite_poly
     diofant.polys.orthopolys.legendre_poly
     diofant.polys.orthopolys.laguerre_poly
+
     """
 
     @classmethod
@@ -699,6 +705,7 @@ class legendre(OrthogonalPolynomial):
     * http://mathworld.wolfram.com/LegendrePolynomial.html
     * http://functions.wolfram.com/Polynomials/LegendreP/
     * http://functions.wolfram.com/Polynomials/LegendreP2/
+
     """
 
     _ortho_poly = staticmethod(legendre_poly)
@@ -788,6 +795,7 @@ class assoc_legendre(Function):
     * http://mathworld.wolfram.com/LegendrePolynomial.html
     * http://functions.wolfram.com/Polynomials/LegendreP/
     * http://functions.wolfram.com/Polynomials/LegendreP2/
+
     """
 
     @classmethod
@@ -874,6 +882,7 @@ class hermite(OrthogonalPolynomial):
     * https//en.wikipedia.org/wiki/Hermite_polynomial
     * http://mathworld.wolfram.com/HermitePolynomial.html
     * http://functions.wolfram.com/Polynomials/HermiteH/
+
     """
 
     _ortho_poly = staticmethod(hermite_poly)
@@ -962,6 +971,7 @@ class laguerre(OrthogonalPolynomial):
     * http://mathworld.wolfram.com/LaguerrePolynomial.html
     * http://functions.wolfram.com/Polynomials/LaguerreL/
     * http://functions.wolfram.com/Polynomials/LaguerreL3/
+
     """
 
     _ortho_poly = staticmethod(laguerre_poly)
@@ -1063,6 +1073,7 @@ class assoc_laguerre(OrthogonalPolynomial):
     * http://mathworld.wolfram.com/AssociatedLaguerrePolynomial.html
     * http://functions.wolfram.com/Polynomials/LaguerreL/
     * http://functions.wolfram.com/Polynomials/LaguerreL3/
+
     """
 
     @classmethod

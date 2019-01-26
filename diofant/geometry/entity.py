@@ -17,6 +17,7 @@ GeometryEntity not considered a Set.
 
 Rn is a GeometrySet representing n-dimensional Euclidean space. R2 and
 R3 are currently the only ambient spaces implemented.
+
 """
 
 from ..core import Basic, Dummy, Tuple, oo, sympify
@@ -59,6 +60,7 @@ class GeometryEntity(Basic):
         ========
 
         diofant.geometry.util.intersection
+
         """
         raise NotImplementedError()
 
@@ -202,6 +204,7 @@ class GeometryEntity(Basic):
         True
         >>> t.encloses(t2)
         False
+
         """
         from .line import Segment, Ray, Line
         from .ellipse import Ellipse
@@ -274,6 +277,7 @@ class GeometryEntity(Basic):
     def __repr__(self):
         """String representation of a GeometryEntity that can be evaluated
         by diofant.
+
         """
         return type(self).__name__ + repr(self.args)
 
@@ -297,7 +301,8 @@ class GeometryEntity(Basic):
 
 class GeometrySet(GeometryEntity, Set):
     """Parent class of all GeometryEntity that are also Sets
-    (compatible with diofant.sets)
+    (compatible with diofant.sets).
+
     """
 
     def _contains(self, other):
@@ -311,6 +316,7 @@ class GeometrySet(GeometryEntity, Set):
     def _union(self, o):
         """ Returns the union of self and o
         for use with diofant.sets.Set, if possible.
+
         """
 
         from ..sets import Union, FiniteSet
@@ -326,8 +332,9 @@ class GeometrySet(GeometryEntity, Set):
             return self
 
     def _intersection(self, o):
-        """ Returns a diofant.sets.Set of intersection objects,
+        """Returns a diofant.sets.Set of intersection objects,
         if possible.
+
         """
         from .point import Point
         from ..sets import FiniteSet, Union
@@ -358,6 +365,7 @@ def scale(x, y, pt=None):
     """Return the matrix to multiply a 2-D point's coordinates by x and y.
 
     If pt is given, the scaling is done relative to that point.
+
     """
     rv = eye(3)
     rv[0, 0] = x
@@ -383,6 +391,7 @@ def rotate(th):
     Point2D(1, 1)
     >>> Point(0, 0).transform(rot_about_11)
     Point2D(2, 0)
+
     """
     s = sin(th)
     rv = eye(3)*cos(th)

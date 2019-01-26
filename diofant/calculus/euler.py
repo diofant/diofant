@@ -58,6 +58,7 @@ def euler_equations(L, funcs=(), vars=()):
     ==========
 
     * https://en.wikipedia.org/wiki/Euler%E2%80%93Lagrange_equation
+
     """
     L = sympify(L)
     funcs = tuple(funcs) if iterable(funcs) else (funcs,)

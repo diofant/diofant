@@ -116,6 +116,7 @@ def _import(module, reload="False"):
     "mpmath", "numpy", "diofant".
     These dictionaries map names of python functions to their equivalent in
     other modules.
+
     """
     try:
         namespace, namespace_default, translations, import_commands = MODULES[
@@ -278,6 +279,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
     ``lambdify`` always prefers ``_imp_`` implementations to implementations
     in other namespaces, unless the ``use_imps`` input parameter is False.
+
     """
     from ..core import Symbol
     from .iterables import flatten
@@ -389,9 +391,7 @@ def _module_present(modname, modlist):
 
 
 def _get_namespace(m):
-    """
-    This is used by _lambdify to parse its arguments.
-    """
+    """This is used by _lambdify to parse its arguments."""
     if isinstance(m, str):
         _import(m)
         return MODULES[m][0]
@@ -421,6 +421,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
 
     >>> lambdastr((x, (y, z)), x + y)
     'lambda _0,_1: (lambda x,y,z: (x + y))(*list(__flatten_args__([_0,_1])))'
+
     """
     # Transforming everything to strings.
     from ..matrices import DeferredVector
@@ -544,6 +545,7 @@ def _imp_namespace(expr, namespace=None):
     >>> namespace = _imp_namespace(f(g(x)))
     >>> sorted(namespace)
     ['f', 'g']
+
     """
     # Delayed import to avoid circular imports
     from ..core.function import FunctionClass
@@ -612,6 +614,7 @@ def implemented_function(symfunc, implementation):
     >>> lam_f = lambdify(x, f(x))
     >>> lam_f(4)
     5
+
     """
     # Delayed import to avoid circular imports
     from ..core.function import UndefinedFunction

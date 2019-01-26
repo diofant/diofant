@@ -150,6 +150,7 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
     >>> eq = Eq(1 + (2*(ux/u)) + (3*(uy/u)))
     >>> pdsolve(eq)
     Eq(f(x, y), E**(-2*x/13 - 3*y/13)*F(3*x - 2*y))
+
     """
 
     if not solvefun:
@@ -190,6 +191,7 @@ def _helper_simplify(eq, hint, func, order, match, solvefun):
     pde functions to solve for the partial differential
     equations. This minimises the computation in
     calling _desolve multiple times.
+
     """
 
     if hint.endswith("_Integral"):
@@ -206,6 +208,7 @@ def _handle_Integral(expr, func, order, hint):
     Converts a solution with integrals in it into an actual solution.
 
     Simplifies the integral mainly using doit()
+
     """
     if hint.endswith("_Integral"):
         return expr
@@ -250,6 +253,7 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
     >>> eq = Eq(1 + (2*(ux/u)) + (3*(uy/u)))
     >>> classify_pde(eq)
     ('1st_linear_constant_coeff_homogeneous',)
+
     """
 
     prep = kwargs.pop('prep', True)
@@ -402,6 +406,7 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     >>> eq = x*f(x, y) + f(x, y).diff(x)
     >>> checkpdesol(eq, sol)
     (False, E**(-6*x/25 - 8*y/25)*(x*F(4*x - 3*y) - 6*F(4*x - 3*y)/25 + 4*Subs(Derivative(F(_xi_1), _xi_1), (_xi_1, 4*x - 3*y))))
+
     """
 
     # Converting the pde into an equation
@@ -712,6 +717,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
 def _simplify_variable_coeff(sol, syms, func, funcarg):
     r"""
     Helper function to replace constants by functions in 1st_linear_variable_coeff
+
     """
     eta = Symbol("eta")
     if len(syms) == 1:
@@ -757,6 +763,7 @@ def pde_separate(eq, fun, sep, strategy='mul'):
 
     diofant.solvers.pde.pde_separate_add
     diofant.solvers.pde.pde_separate_mul
+
     """
 
     do_add = False
@@ -828,6 +835,7 @@ def pde_separate_add(eq, fun, sep):
     >>> eq = Eq(Derivative(u(x, t), x), E**(u(x, t))*Derivative(u(x, t), t))
     >>> pde_separate_add(eq, u(x, t), [X(x), T(t)])
     [E**(-X(x))*Derivative(X(x), x), E**T(t)*Derivative(T(t), t)]
+
     """
     return pde_separate(eq, fun, sep, strategy='add')
 

@@ -8,6 +8,7 @@ def series(expr, x=None, x0=0, n=6, dir="+"):
     ========
 
     diofant.core.expr.Expr.series
+
     """
     expr = sympify(expr)
     return expr.series(x, x0, n, dir)

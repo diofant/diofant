@@ -9,7 +9,7 @@ from .sympify import sympify
 
 
 def _is_scalar(e):
-    """ Helper method used in Tr"""
+    """Helper method used in Tr."""
 
     # sympify to set proper attributes
     e = sympify(e)
@@ -58,6 +58,7 @@ def _cycle_permute(l):
 def _rearrange_args(l):
     """ Just moves the last arg to first position
     to enable expansion of args A,B,A ==> A**2,B
+
     """
     assert len(l) > 1
 
@@ -93,6 +94,7 @@ class Tr(Expr):
     >>> m = Matrix([[1, 2], [1, 1]])
     >>> Tr(m)
     2
+
     """
 
     def __new__(cls, *args):

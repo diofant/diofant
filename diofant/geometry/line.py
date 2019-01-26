@@ -487,6 +487,7 @@ class LinearEntity(GeometrySet):
         >>> l1 = Line(p1, p2)
         >>> l1.length
         oo
+
         """
         return oo
 
@@ -904,6 +905,7 @@ class LinearEntity(GeometrySet):
         >>> l2 = Line(p1, p3)
         >>> l1.is_similar(l2)
         True
+
         """
         def _norm(a, b, c):
             if a != 0:
@@ -917,6 +919,7 @@ class LinearEntity(GeometrySet):
     def __contains__(self, other):
         """Return a definitive answer or else raise an error if it cannot
         be determined that other is on the boundaries of self.
+
         """
         result = self.contains(other)
 
@@ -931,6 +934,7 @@ class LinearEntity(GeometrySet):
         True if other is on the boundaries of self;
         False if not on the boundaries of self;
         None if a determination cannot be made.
+
         """
         raise NotImplementedError()
 
@@ -983,6 +987,7 @@ class Line(LinearEntity):
     >>> s = Segment((0, 0), (0, 1))
     >>> Line(s).equation()
     x
+
     """
 
     def __new__(cls, p1, pt=None, slope=None, **kwargs):
@@ -1097,6 +1102,7 @@ class Line(LinearEntity):
         True
         >>> l.contains((0, 0))
         False
+
         """
         if is_sequence(o):
             o = Point(o)
@@ -1136,6 +1142,7 @@ class Line(LinearEntity):
         sqrt(2)
         >>> s.distance((-1, 2))
         3*sqrt(2)/2
+
         """
         if not isinstance(o, Point):
             if is_sequence(o):
@@ -1149,7 +1156,7 @@ class Line(LinearEntity):
         return abs(factor_terms(o.y - y))/sqrt(1 + m**2)
 
     def equal(self, other):
-        """Returns True if self and other are the same mathematical entities"""
+        """Returns True if self and other are the same mathematical entities."""
         if not isinstance(other, Line):
             return False
         return Point.is_collinear(self.p1, other.p1, self.p2, other.p2)
@@ -1374,6 +1381,7 @@ class Ray(LinearEntity):
         sqrt(2)
         >>> s.distance((-1, 2))
         3*sqrt(2)/2
+
         """
         if not isinstance(o, Point):
             if is_sequence(o):
@@ -1419,7 +1427,7 @@ class Ray(LinearEntity):
         return [t, 0, 10]
 
     def equals(self, other):
-        """Returns True if self and other are the same mathematical entities"""
+        """Returns True if self and other are the same mathematical entities."""
         if not isinstance(other, Ray):
             return False
         return self.source == other.source and other.p2 in self
@@ -1451,6 +1459,7 @@ class Ray(LinearEntity):
         >>> r1 = Ray((2, 2), (3, 5))
         >>> r.contains(r1)
         False
+
         """
         if isinstance(o, Ray):
             return (Point.is_collinear(self.p1, self.p2, o.p1, o.p2) and
@@ -1670,6 +1679,7 @@ class Segment(LinearEntity):
         sqrt(170)
         >>> s.distance((0, 12))
         sqrt(73)
+
         """
         if is_sequence(o):
             o = Point(o)
@@ -1699,6 +1709,7 @@ class Segment(LinearEntity):
         >>> s2 = Segment(p2, p1)
         >>> s.contains(s2)
         True
+
         """
         if isinstance(other, Segment):
             return other.p1 in self and other.p2 in self

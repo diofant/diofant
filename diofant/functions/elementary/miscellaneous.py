@@ -97,6 +97,7 @@ def sqrt(arg, **kwargs):
 
     * https//en.wikipedia.org/wiki/Square_root
     * https//en.wikipedia.org/wiki/Principal_value
+
     """
     # arg = sympify(arg) is handled by Pow
     return Pow(arg, S.Half, **kwargs)
@@ -267,6 +268,7 @@ def real_root(arg, n=None):
     diofant.core.power.integer_nthroot
     diofant.functions.elementary.miscellaneous.root
     diofant.functions.elementary.miscellaneous.sqrt
+
     """
     from .complexes import im
     from .piecewise import Piecewise
@@ -341,6 +343,7 @@ class MinMaxBase(LatticeOp):
         first standard filter, for cls.zero and cls.identity.
         Also reshape Max(a, Max(b, c)) to Max(a, b, c),
         and check arguments for comparability
+
         """
         for arg in arg_sequence:
 
@@ -366,6 +369,7 @@ class MinMaxBase(LatticeOp):
         When a value is identified as being more extreme than another member it
         replaces that member; if this is never true, then the value is simply
         appended to the localzeros.
+
         """
         localzeros = set()
         for v in values:
@@ -385,9 +389,7 @@ class MinMaxBase(LatticeOp):
 
     @classmethod
     def _is_connected(cls, x, y):
-        """
-        Check if x and y are connected somehow.
-        """
+        """Check if x and y are connected somehow."""
         def hit(v, t, f):
             if not v.is_Relational:
                 return t if v else f
@@ -506,6 +508,7 @@ class Max(MinMaxBase, Application):
     ========
 
     diofant.functions.elementary.miscellaneous.Min : find minimum values
+
     """
 
     zero = oo
@@ -556,6 +559,7 @@ class Min(MinMaxBase, Application):
     ========
 
     diofant.functions.elementary.miscellaneous.Max : find maximum values
+
     """
 
     zero = -oo

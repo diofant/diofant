@@ -11,7 +11,7 @@ from ..sets import Interval
 
 @cacheit
 def _expand_delta(expr, index):
-    """Expand the first Add containing a simple KroneckerDelta. """
+    """Expand the first Add containing a simple KroneckerDelta."""
     if not expr.is_Mul:
         return expr
     delta = None
@@ -55,6 +55,7 @@ def _extract_delta(expr, index):
     diofant.functions.special.tensor_functions.KroneckerDelta
     deltaproduct
     deltasummation
+
     """
     if not _has_simple_delta(expr, index):
         return None, expr
@@ -78,6 +79,7 @@ def _has_simple_delta(expr, index):
     Returns True if ``expr`` is an expression that contains a KroneckerDelta
     that is simple in the index ``index``, meaning that this KroneckerDelta
     is nonzero for a single value of the index ``index``.
+
     """
     if expr.has(KroneckerDelta):
         if _is_simple_delta(expr, index):
@@ -94,6 +96,7 @@ def _is_simple_delta(delta, index):
     """
     Returns True if ``delta`` is a KroneckerDelta and is nonzero for a single
     value of the index ``index``.
+
     """
     if isinstance(delta, KroneckerDelta) and delta.has(index):
         p = (delta.args[0] - delta.args[1]).as_poly(index)
@@ -104,7 +107,7 @@ def _is_simple_delta(delta, index):
 
 @cacheit
 def _remove_multiple_delta(expr):
-    """Evaluate products of KroneckerDelta's. """
+    """Evaluate products of KroneckerDelta's."""
     from ..solvers import solve
     if expr.is_Add:
         return expr.func(*list(map(_remove_multiple_delta, expr.args)))
@@ -133,7 +136,7 @@ def _remove_multiple_delta(expr):
 
 @cacheit
 def _simplify_delta(expr):
-    """Rewrite a KroneckerDelta's indices in its simplest form. """
+    """Rewrite a KroneckerDelta's indices in its simplest form."""
     from ..solvers import solve
     if isinstance(expr, KroneckerDelta):
         slns = solve(expr.args[0] - expr.args[1])
@@ -153,6 +156,7 @@ def deltaproduct(f, limit):
     deltasummation
     diofant.functions.special.tensor_functions.KroneckerDelta
     diofant.concrete.products.product
+
     """
     from .products import product
 
@@ -266,6 +270,7 @@ def deltasummation(f, limit, no_piecewise=False):
     deltaproduct
     diofant.functions.special.tensor_functions.KroneckerDelta
     diofant.concrete.sums.summation
+
     """
     from .summations import summation
     from ..solvers import solve

@@ -168,6 +168,7 @@ class Pow(Expr):
     * https//en.wikipedia.org/wiki/Exponentiation
     * https//en.wikipedia.org/wiki/Exponentiation#Zero_to_the_power_of_zero
     * https//en.wikipedia.org/wiki/Indeterminate_forms
+
     """
 
     is_Pow = True
@@ -224,17 +225,17 @@ class Pow(Expr):
 
     @property
     def base(self):
-        """Returns base of the power expression. """
+        """Returns base of the power expression."""
         return self.args[0]
 
     @property
     def exp(self):
-        """Returns exponent of the power expression. """
+        """Returns exponent of the power expression."""
         return self.args[1]
 
     @classmethod
     def class_key(cls):
-        """Nice order of classes. """
+        """Nice order of classes."""
         return 4, 2, cls.__name__
 
     def _eval_power(self, other):
@@ -253,6 +254,7 @@ class Pow(Expr):
             def _half(e):
                 """Return True if the exponent has a literal 2 as the
                 denominator, else None.
+
                 """
                 if getattr(e, 'denominator', None) == 2:
                     return True
@@ -263,6 +265,7 @@ class Pow(Expr):
             def _n2(e):
                 """Return ``e`` evaluated to a Number with 2 significant
                 digits, else None.
+
                 """
                 try:
                     rv = e.evalf(2)
@@ -532,6 +535,7 @@ class Pow(Expr):
             will give y**2 since (b**x)**2 == b**(2*x); if that equality does
             not hold then the substitution should not occur so `bool` will be
             False.
+
             """
             coeff1, terms1 = ct1
             coeff2, terms2 = ct2
@@ -645,7 +649,7 @@ class Pow(Expr):
             return transpose(self.base)**self.exp
 
     def _eval_expand_power_exp(self, **hints):
-        """a**(n+m) -> a**n*a**m"""
+        """a**(n+m) -> a**n*a**m."""
         b = self.base
         e = self.exp
         if e.is_Add and e.is_commutative:
@@ -656,7 +660,7 @@ class Pow(Expr):
         return self.func(b, e)
 
     def _eval_expand_power_base(self, **hints):
-        """(a*b)**n -> a**n * b**n"""
+        """(a*b)**n -> a**n * b**n."""
         force = hints.get('force', False)
 
         b = self.base
@@ -771,7 +775,7 @@ class Pow(Expr):
         return rv
 
     def _eval_expand_multinomial(self, **hints):
-        """(a+b+..) ** n -> a**n + n*a**(n-1)*b + .., n is nonzero integer"""
+        """(a+b+..) ** n -> a**n + n*a**(n-1)*b + .., n is nonzero integer."""
 
         base, exp = self.args
         result = self
@@ -893,6 +897,7 @@ class Pow(Expr):
         ========
 
         diofant.core.expr.Expr.as_real_imag
+
         """
         from ..functions import arg, cos, sin
         from ..polys.polytools import poly
@@ -1064,6 +1069,7 @@ class Pow(Expr):
         ========
 
         diofant.core.expr.Expr.as_numer_denom
+
         """
         if not self.is_commutative:
             return self, S.One
@@ -1105,6 +1111,7 @@ class Pow(Expr):
         ========
 
         diofant.core.basic.Basic.matches
+
         """
         expr = sympify(expr, strict=True)
 
@@ -1272,6 +1279,7 @@ class Pow(Expr):
         ========
 
         diofant.core.expr.Expr.as_content_primitive
+
         """
 
         b, e = self.as_base_exp()

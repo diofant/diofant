@@ -22,11 +22,12 @@ class MatrixExpr(Expr):
 
     See Also
     ========
-        MatrixSymbol
-        MatAdd
-        MatMul
-        Transpose
-        Inverse
+    MatrixSymbol
+    MatAdd
+    MatMul
+    Transpose
+    Inverse
+
     """
 
     _op_priority = 11.0
@@ -267,6 +268,7 @@ class MatrixExpr(Expr):
         See Also
         ========
         as_explicit: returns ImmutableMatrix
+
         """
         return self.as_explicit().as_mutable()
 
@@ -285,6 +287,7 @@ class MatrixExpr(Expr):
 
         >>> Identity(3).equals(eye(3))
         True
+
         """
         if all(x.is_Integer for x in self.shape):
             return self.as_explicit().equals(other)
@@ -330,6 +333,7 @@ class MatrixSymbol(MatrixExpr, AtomicExpr):
     (3, 4)
     >>> 2*A*B + Identity(3)
     I + 2*A*B
+
     """
 
     is_Atom = True
@@ -390,6 +394,7 @@ class Identity(MatrixExpr):
     >>> I = Identity(3)
     >>> I*A
     A
+
     """
 
     is_Identity = True
@@ -440,6 +445,7 @@ class ZeroMatrix(MatrixExpr):
     A
     >>> Z*A.T
     0
+
     """
 
     is_ZeroMatrix = True

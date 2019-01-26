@@ -22,6 +22,7 @@ def n_order(a, n):
     6
     >>> n_order(4, 7)
     3
+
     """
     from collections import defaultdict
     a, n = as_int(a), as_int(n)
@@ -64,6 +65,7 @@ def _primitive_root_prime_iter(p):
 
     >>> list(_primitive_root_prime_iter(19))
     [2, 3, 10, 13, 14, 15]
+
     """
     p = as_int(p)
     v = [(p - 1) // i for i in factorint(p - 1)]
@@ -96,6 +98,7 @@ def primitive_root(p):
 
     >>> primitive_root(19)
     2
+
     """
     p = as_int(p)
     if p < 1:
@@ -159,6 +162,7 @@ def is_primitive_root(a, p):
     True
     >>> n_order(9, 10) == totient(10)
     False
+
     """
     a, p = as_int(a), as_int(p)
     if math.gcd(a, p) != 1:
@@ -175,6 +179,7 @@ def _sqrt_mod_tonelli_shanks(a, p):
     ==========
 
     * R. Crandall and C. Pomerance "Prime Numbers", 2nt Ed., page 101
+
     """
     s = trailing(p - 1)
     t = p >> s
@@ -225,6 +230,7 @@ def sqrt_mod(a, p, all_roots=False):
     21
     >>> sqrt_mod(17, 32, True)
     [7, 9, 23, 25]
+
     """
     if all_roots:
         return sorted(sqrt_mod_iter(a, p))
@@ -263,6 +269,7 @@ def sqrt_mod_iter(a, p, domain=int):
 
     >>> list(sqrt_mod_iter(11, 43))
     [21, 22]
+
     """
     from ..polys.galoistools import gf_crt1, gf_crt2
     from ..domains import ZZ
@@ -328,6 +335,7 @@ def _sqrt_mod_prime_power(a, p, k):
 
     >>> _sqrt_mod_prime_power(11, 43, 1)
     [21, 22]
+
     """
     from ..domains import ZZ
 
@@ -427,6 +435,7 @@ def _sqrt_mod1(a, p, n):
     ==========
 
     * http://www.numbertheory.org/php/squareroot.html
+
     """
     pn = p**n
     a = a % pn
@@ -548,6 +557,7 @@ def is_quad_residue(a, p):
     ========
 
     legendre_symbol, jacobi_symbol
+
     """
     a, p = as_int(a), as_int(p)
     if p < 1:
@@ -575,6 +585,7 @@ def is_nthpow_residue(a, n, m):
     ==========
 
     * P. Hackman "Elementary Number Theory" (2009),  page 76
+
     """
     a, n, m = [as_int(i) for i in (a, n, m)]
     if m <= 0:
@@ -611,6 +622,7 @@ def _is_nthpow_residue_bign(a, n, m):
 def _is_nthpow_residue_bign_prime_power(a, n, p, k):
     """Returns True/False if a solution for ``x**n == a (mod(p**k))``
     does/doesn't exist.
+
     """
     assert a >= 0 and n > 2 and isprime(p) and k > 0
     if a % p:
@@ -648,6 +660,7 @@ def _nthroot_mod1(s, q, p, all_roots):
     ==========
 
     * A. M. Johnston "A Generalized qth Root Algorithm"
+
     """
     g = primitive_root(p)
     if not isprime(q):
@@ -713,6 +726,7 @@ def nthroot_mod(a, n, p, all_roots=False):
     [8, 11]
     >>> nthroot_mod(68, 3, 109)
     23
+
     """
     if n == 2:
         return sqrt_mod(a, p, all_roots)
@@ -761,6 +775,7 @@ def quadratic_residues(p):
 
     >>> quadratic_residues(7)
     [0, 1, 2, 4]
+
     """
     r = set()
     for i in range(p // 2 + 1):
@@ -804,6 +819,7 @@ def legendre_symbol(a, p):
     ==========
 
     * https://en.wikipedia.org/wiki/Legendre_symbol
+
     """
     a, p = as_int(a), as_int(p)
     if not isprime(p) or p == 2:
@@ -870,6 +886,7 @@ def jacobi_symbol(m, n):
     ========
 
     is_quad_residue, legendre_symbol
+
     """
     m, n = as_int(m), as_int(n)
     if not n % 2:
@@ -936,6 +953,7 @@ class mobius(Function):
 
     * https//en.wikipedia.org/wiki/M%C3%B6bius_function
     * Thomas Koshy "Elementary Number Theory with Applications"
+
     """
 
     @classmethod

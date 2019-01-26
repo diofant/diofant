@@ -162,6 +162,7 @@ def _verify_normal_closure(group, arg, closure=None):
     ========
 
     diofant.combinatorics.perm_groups.PermutationGroup.normal_closure
+
     """
     from .perm_groups import PermutationGroup
 
@@ -209,6 +210,7 @@ def canonicalize_naive(g, dummies, sym, *v):
     >>> base2, gens2 = get_symmetric_group_sgs(2)
     >>> canonicalize_naive(g, [2, 3], 0, (base2, gens2, 2, 0))
     [0, 2, 1, 3, 4, 5]
+
     """
     from .perm_groups import PermutationGroup
     from .tensor_can import gens_products, dummy_sgs
@@ -276,6 +278,7 @@ def graph_certificate(gr):
     [0, 2, 4, 6, 1, 8, 10, 12, 3, 14, 16, 18, 5, 9, 15, 7, 11, 17, 13, 19, 20, 21]
     >>> c1 == c2
     True
+
     """
     from .permutations import _af_invert
     from .tensor_can import get_symmetric_group_sgs, canonicalize

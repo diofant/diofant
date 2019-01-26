@@ -48,6 +48,7 @@ class CantSympify:
     Traceback (most recent call last):
     ...
     SympifyError: SympifyError: {}
+
     """
 
     pass
@@ -215,6 +216,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     Matrix([
     [1],
     [2]])
+
     """
     from .basic import Basic
 

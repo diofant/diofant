@@ -57,6 +57,7 @@ Notes
 This exposition glossed over several details.  For example, limits could be
 computed recursively (steps 1 and 4).  Please address to the Gruntz thesis [Gruntz96]_
 for proof of the termination (pp. 52-60).
+
 """
 
 from functools import reduce
@@ -92,6 +93,7 @@ def compare(a, b, x):
     -1
     >>> compare(exp(x), x**5, x)
     1
+
     """
     # The log(exp(...)) must always be simplified here for termination.
     la = a.exp if a.is_Pow and a.base is E else log(a)
@@ -119,6 +121,7 @@ def mrv(e, x):
     {x}
     >>> mrv(exp(x + exp(-x)), x)
     {E**(-x), E**(x + E**(-x))}
+
     """
     if not e.has(x):
         return set()
@@ -171,6 +174,7 @@ def sign(e, x):
 
         The result of this function is currently undefined if `e` changes
         sign arbitrarily often at infinity (e.g. `\sin(x)`).
+
     """
     if not e.has(x):
         return sgn(e).simplify()
@@ -202,6 +206,7 @@ def limitinf(e, x):
     -1
     >>> limitinf(x/log(x**(log(x**(log(2)/log(x))))), x)
     oo
+
     """
     assert x.is_real and x.is_positive
     assert not e.has(Float)
@@ -257,6 +262,7 @@ def mrv_leadterm(e, x):
 
     >>> mrv_leadterm(1/exp(-x + exp(-x)) - exp(x), x)
     (-1, 0)
+
     """
     if not e.has(x):
         return e, S.Zero
@@ -313,6 +319,7 @@ def rewrite(e, x, w):
     (1/m, -x)
     >>> rewrite(exp(x)*log(log(exp(x))), x, m)
     (log(x)/m, -x)
+
     """
     Omega = mrv(e, x)
     if not Omega:

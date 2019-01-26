@@ -338,6 +338,7 @@ def sub_func_doit(eq, func, new):
     ... 1/(x*(z + 1/x)))
     x*(-1/(x**2*(z + 1/x)) + 1/(x**3*(z + 1/x)**2)) + 1/(x*(z + 1/x))
     ...- 1/(x**2*(z + 1/x)**2)
+
     """
     reps = {}
     repu = {}
@@ -353,6 +354,7 @@ def get_numbered_constants(eq, num=1, start=1, prefix='C'):
     """
     Returns a list of constants that do not occur
     in eq already.
+
     """
 
     if isinstance(eq, Expr):
@@ -559,6 +561,7 @@ def dsolve(eq, func=None, hint="default", simplify=True,
     >>> C1, C2 = symbols('C1 C2')
     >>> dsolve(eq)
     {Eq(x(t), -E**C1/(E**C1*C2 - cos(t))), Eq(y(t), -1/(C1 - cos(t)))}
+
     """
     if iterable(eq):
         match = classify_sysode(eq, func)
@@ -651,6 +654,7 @@ def _helper_simplify(eq, hint, match, simplify=True, init=None, **kwargs):
     :py:mod:`~diofant.solvers.ode` functions to solve for the ordinary
     differential equations. This minimises the computation in calling
     :py:meth:`~diofant.solvers.deutils._desolve` multiple times.
+
     """
     r = match
     if hint.endswith('_Integral'):
@@ -1335,6 +1339,7 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
             So we need to check that for each term, coeff == K*x**order from
             some K.  We have a few cases, since coeff may have several
             different types.
+
             """
             if order < 0:
                 raise ValueError("order should be greater than 0")
@@ -1429,6 +1434,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
     >>> eq = (Eq(diff(x(t), t), 5*t*x(t) + t**2*y(t)), Eq(diff(y(t), t), -t**2*x(t) + 5*t*y(t)))
     >>> classify_sysode(eq)
     {'eq': [-t**2*y(t) - 5*t*x(t) + Derivative(x(t), t), t**2*x(t) - 5*t*y(t) + Derivative(y(t), t)], 'func': [x(t), y(t)], 'func_coeff': {(0, x(t), 0): -5*t, (0, x(t), 1): 1, (0, y(t), 0): -t**2, (0, y(t), 1): 0, (1, x(t), 0): t**2, (1, x(t), 1): 0, (1, y(t), 0): -5*t, (1, y(t), 1): 1}, 'is_linear': True, 'no_of_equation': 2, 'order': {x(t): 1, y(t): 1}, 'type_of_equation': 'type4'}
+
     """
 
     # Sympify equations and convert iterables of equations into
@@ -2080,6 +2086,7 @@ def odesimp(eq, func, order, constants, hint):
     ...                hint='1st_homogeneous_coeff_subs_indep_div_dep'),
     ...        use_unicode=False)
     f(x) = 2*x*atan(C1*x)
+
     """
     x = func.args[0]
     f = func.func
@@ -2910,6 +2917,7 @@ def ode_1st_exact(eq, func, order, match):
     * https//en.wikipedia.org/wiki/Exact_differential_equation
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 73.
+
     """
     x = func.args[0]
     r = match  # d+e*diff(f(x),x)
@@ -2961,6 +2969,7 @@ def ode_1st_homogeneous_coeff_best(eq, func, order, match):
     * https//en.wikipedia.org/wiki/Homogeneous_differential_equation
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 59.
+
     """
     # There are two substitutions that solve the equation, u1=y/x and u2=x/y
     # They produce different integrals, so try them both and see which
@@ -3057,6 +3066,7 @@ def ode_1st_homogeneous_coeff_subs_dep_div_indep(eq, func, order, match):
     * https//en.wikipedia.org/wiki/Homogeneous_differential_equation
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 59.
+
     """
     x = func.args[0]
     f = func.func
@@ -3149,6 +3159,7 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
     * https//en.wikipedia.org/wiki/Homogeneous_differential_equation
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 59.
+
     """
     x = func.args[0]
     f = func.func
@@ -3299,6 +3310,7 @@ def ode_1st_linear(eq, func, order, match):
     * https//en.wikipedia.org/wiki/Linear_differential_equation#First_order_equation
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 92.
+
     """
     x = func.args[0]
     f = func.func
@@ -3378,6 +3390,7 @@ def ode_Bernoulli(eq, func, order, match):
     * https//en.wikipedia.org/wiki/Bernoulli_differential_equation
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 95.
+
     """
     x = func.args[0]
     f = func.func
@@ -3423,6 +3436,7 @@ def ode_Riccati_special_minus2(eq, func, order, match):
     1. https//www.maplesoft.com/support/help/Maple/view.aspx?path=odeadvisor/Riccati
     2. http://eqworld.ipmnet.ru/en/solutions/ode/ode0106.pdf -
        http://eqworld.ipmnet.ru/en/solutions/ode/ode0123.pdf
+
     """
 
     x = func.args[0]
@@ -3485,6 +3499,7 @@ def ode_Liouville(eq, func, order, match):
     * Goldstein and Braun, "Advanced Methods for the Solution of Differential
       Equations", pp. 98.
     * https//www.maplesoft.com/support/help/Maple/view.aspx?path=odeadvisor/Liouville
+
     """
     # Liouville ODE:
     #  f(x).diff(x, 2) + g(f(x))*(f(x).diff(x, 2))**2 + h(x)*f(x).diff(x)
@@ -3533,6 +3548,7 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     * http://tutorial.math.lamar.edu/Classes/DE/SeriesSolutions.aspx
     * George E. Simmons, "Differential Equations with Applications and
       Historical Notes", pp 176 - 184.
+
     """
     x = func.args[0]
     f = func.func
@@ -3765,6 +3781,7 @@ def ode_2nd_power_series_regular(eq, func, order, match):
 def _frobenius(n, m, p0, q0, p, q, x0, x, c, check=None):
     r"""
     Returns a dict with keys as coefficients and values as their values in terms of C0
+
     """
     n = int(n)
     # In cases where m1 - m2 is not an integer
@@ -3916,6 +3933,7 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
     * https//en.wikipedia.org/wiki/Cauchy%E2%80%93Euler_equation
     * C. Bender & S. Orszag, "Advanced Mathematical Methods for Scientists and
       Engineers", Springer 1999, pp. 12.
+
     """
     global collectterms
     collectterms = []
@@ -4176,6 +4194,7 @@ def ode_almost_linear(eq, func, order, match):
 
     - Joel Moses, "Symbolic Integration - The Stormy Decade", Communications
       of the ACM, Volume 14, Number 8, August 1971, pp. 558
+
     """
 
     # Since ode_1st_linear has already been implemented, and the
@@ -4223,6 +4242,7 @@ def _linear_coeff_match(expr, func):
         Internal function of _linear_coeff_match
         that returns Rationals a, b, c
         if eq is a*x + b*f(x) + c, else None.
+
         """
         eq = _mexpand(eq)
         c = eq.as_independent(x, f(x), as_Add=True)[0]
@@ -4243,6 +4263,7 @@ def _linear_coeff_match(expr, func):
         b1, c1, a2, b2, c2 and a2*b1 - a1*b2 of the expression (a1*x + b1*f(x)
         + c1)/(a2*x + b2*f(x) + c2) if one of c1 or c2 and a2*b1 - a1*b2 is
         non-zero, else None.
+
         """
         n, d = arg.together().as_numer_denom()
         m = abc(n)
@@ -4310,6 +4331,7 @@ def ode_linear_coefficients(eq, func, order, match):
 
     - Joel Moses, "Symbolic Integration - The Stormy Decade", Communications
       of the ACM, Volume 14, Number 8, August 1971, pp. 558
+
     """
 
     return ode_1st_homogeneous_coeff_best(eq, func, order, match)
@@ -4371,6 +4393,7 @@ def ode_separable_reduced(eq, func, order, match):
 
     - Joel Moses, "Symbolic Integration - The Stormy Decade", Communications
       of the ACM, Volume 14, Number 8, August 1971, pp. 558
+
     """
 
     # Arguments are passed in a way so that they are coherent with the
@@ -4528,6 +4551,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
       Nonhomogeneous_equation_with_constant_coefficients
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 211.
+
     """
     x = func.args[0]
     f = func.func
@@ -4658,6 +4682,7 @@ def ode_nth_linear_constant_coeff_undetermined_coefficients(eq, func, order, mat
     * https//en.wikipedia.org/wiki/Method_of_undetermined_coefficients
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 221.
+
     """
     gensol = ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
                                                        returns='both')
@@ -4813,6 +4838,7 @@ def _undetermined_coefficients_match(expr, x):
     def _test_term(expr, x):
         r"""
         Test if ``expr`` fits the proper form for undetermined coefficients.
+
         """
         if expr.is_Add:
             return all(_test_term(i, x) for i in expr.args)
@@ -4857,6 +4883,7 @@ def _undetermined_coefficients_match(expr, x):
         repeat themselves after a finite number of derivatives, except for the
         coefficients (they are linearly dependent).  So if we collect these,
         we should have the terms of our trial function.
+
         """
         def _remove_coefficient(expr, x):
             r"""
@@ -4864,6 +4891,7 @@ def _undetermined_coefficients_match(expr, x):
 
             Similar to expr.as_independent(x)[1], except it only works
             multiplicatively.
+
             """
             term = S.One
             if expr.is_Mul:
@@ -4976,6 +5004,7 @@ def ode_nth_linear_constant_coeff_variation_of_parameters(eq, func, order, match
     * https//en.wikipedia.org/wiki/Variation_of_parameters
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 233.
+
     """
 
     gensol = ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
@@ -5091,6 +5120,7 @@ def ode_separable(eq, func, order, match):
 
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 52.
+
     """
     x = func.args[0]
     f = func.func
@@ -5223,6 +5253,7 @@ def ode_lie_group(eq, func, order, match):
 
     * Solving differential equations by Symmetry Groups,
       John Starrett, pp. 1-14.
+
     """
 
     heuristics = lie_heuristics
@@ -6492,6 +6523,7 @@ def _linear_2eq_order1_type5(x, y, t, r, eq):
     leads to a system of constant coefficient linear differential equations
 
     .. math:: u'(T) = v , v'(T) = au + bv
+
     """
     C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
     u, v = symbols('u, v', cls=Function)
@@ -7272,6 +7304,7 @@ def _linear_neq_order1_type1(match_):
       Ordinary Differential Equations I.  Nonstiff Problems.
       Springer Series in Comput. Mathematics, Vol. 8, Springer-Verlag 1987,
       Second revised edition 1993, pp. 73-76.
+
     """
 
     func = match_['func']

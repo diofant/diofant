@@ -55,6 +55,7 @@ def trigintegrate(f, x, conds='piecewise'):
 
     diofant.integrals.integrals.Integral.doit
     diofant.integrals.integrals.Integral
+
     """
     from .integrals import integrate
     pat, a, n, m = _pat_sincos(x)

@@ -59,6 +59,7 @@ def dispersionset(p, q=None, *gens, **args):
     * [Koepf98]_
     * [Abramov71]_
     * [Man93]_
+
     """
     # Check for valid input
     same = False if q is not None else True
@@ -139,6 +140,7 @@ def dispersion(p, q=None, *gens, **args):
     * [Koepf98]_
     * [Abramov71]_
     * [Man93]_
+
     """
     J = dispersionset(p, q, *gens, **args)
     if not J:

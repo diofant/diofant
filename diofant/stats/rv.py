@@ -10,6 +10,7 @@ See Also
 diofant.stats.crv
 diofant.stats.frv
 diofant.stats.rv_interface
+
 """
 
 from ..abc import x
@@ -31,6 +32,7 @@ class RandomDomain(Expr):
     ========
     diofant.stats.crv.ContinuousDomain
     diofant.stats.frv.FiniteDomain
+
     """
 
     is_ProductDomain = False
@@ -61,6 +63,7 @@ class SingleDomain(RandomDomain):
 
     diofant.stats.crv.SingleContinuousDomain
     diofant.stats.frv.SingleFiniteDomain
+
     """
 
     def __new__(cls, symbol, set):
@@ -85,6 +88,7 @@ class ConditionalDomain(RandomDomain):
 
     diofant.stats.crv.ConditionalContinuousDomain
     diofant.stats.frv.ConditionalFiniteDomain
+
     """
 
     def __new__(cls, fulldomain, condition):
@@ -121,6 +125,7 @@ class PSpace(Expr):
     ========
     diofant.stats.crv.ContinuousPSpace
     diofant.stats.frv.FinitePSpace
+
     """
 
     is_Finite = None
@@ -154,6 +159,7 @@ class SinglePSpace(PSpace):
     """
     Represents the probabilities of a set of random events that can be
     attributed to a single variable/symbol.
+
     """
 
     def __new__(cls, s, distribution):
@@ -200,6 +206,7 @@ class RandomSymbol(Expr):
     user. They tend to be created instead by the PSpace class's value method.
     Traditionally a user doesn't even do this but instead calls one of the
     convenience functions Normal, Exponential, Coin, Die, FiniteRV, etc....
+
     """
 
     def __new__(cls, pspace, symbol):
@@ -245,6 +252,7 @@ class ProductPSpace(PSpace):
     spaces.
 
     Often created using the function, pspace
+
     """
 
     def __new__(cls, *spaces):
@@ -320,6 +328,7 @@ class ProductDomain(RandomDomain):
 
     diofant.stats.crv.ProductContinuousDomain
     diofant.stats.frv.ProductFiniteDomain
+
     """
 
     is_ProductDomain = True
@@ -371,9 +380,7 @@ class ProductDomain(RandomDomain):
 
 
 def random_symbols(expr):
-    """
-    Returns all RandomSymbols within a Diofant Expression.
-    """
+    """Returns all RandomSymbols within a Diofant Expression."""
     try:
         return list(expr.atoms(RandomSymbol))
     except AttributeError:
@@ -393,6 +400,7 @@ def pspace(expr):
     >>> X = Normal('X', 0, 1)
     >>> pspace(2*X + 1) == X.pspace
     True
+
     """
 
     expr = sympify(expr)
@@ -407,9 +415,7 @@ def pspace(expr):
 
 
 def sumsets(sets):
-    """
-    Union of sets
-    """
+    """Union of sets."""
     return frozenset().union(*sets)
 
 
@@ -425,6 +431,7 @@ def rs_swap(a, b):
 
     Inputs: collections a and b of random variables which share common symbols
     Output: dict mapping RVs in a to RVs in b
+
     """
     d = {}
     for rsa in a:
@@ -463,6 +470,7 @@ def given(expr, condition=None, **kwargs):
     ------------------
              ____
          2*\/ pi
+
     """
 
     if not random_symbols(condition) or pspace_independent(expr, condition):
@@ -520,6 +528,7 @@ def expectation(expr, condition=None, numsamples=None, evaluate=True, **kwargs):
 
     >>> E(X, X > 3) # Expectation of X given that it is above 3
     5
+
     """
 
     if not random_symbols(expr):  # expr isn't random?
@@ -574,6 +583,7 @@ def probability(condition, given_condition=None, numsamples=None,
     1/4
     >>> P(X > Y)
     5/12
+
     """
 
     condition = sympify(condition)
@@ -674,6 +684,7 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
     {2: 1/6, 4: 1/6, 6: 1/6, 8: 1/6, 10: 1/6, 12: 1/6}
     >>> density(X)(x)
     sqrt(2)*E**(-x**2/2)/(2*sqrt(pi))
+
     """
 
     if numsamples:
@@ -713,6 +724,7 @@ def cdf(expr, condition=None, evaluate=True, **kwargs):
 
     >>> cdf(X)
     Lambda(_z, erf(sqrt(2)*_z/2)/2 + 1/2)
+
     """
     if condition is not None:  # If there is a condition
         # Recompute on new conditional expr
@@ -748,6 +760,7 @@ def where(condition, given_condition=None, **kwargs):
 
     >>> where(And(D1<=D2 , D2<3))
     Domain: Or(And(Eq(a, 1), Eq(b, 1)), And(Eq(a, 1), Eq(b, 2)), And(Eq(a, 2), Eq(b, 2)))
+
     """
     if given_condition is not None:  # If there is a condition
         # Recompute on new conditional expr
@@ -768,6 +781,7 @@ def sample(expr, condition=None, **kwargs):
     >>> X, Y, Z = Die('X', 6), Die('Y', 6), Die('Z', 6)
 
     >>> die_roll = sample(X + Y + Z) # A random realization of three dice
+
     """
     return next(sample_iter(expr, condition, numsamples=1))
 
@@ -796,6 +810,7 @@ def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
     diofant.stats.sample
     diofant.stats.rv.sampling_P
     diofant.stats.rv.sampling_E
+
     """
     if condition is not None:
         ps = pspace(Tuple(expr, condition))
@@ -847,6 +862,7 @@ def sampling_P(condition, given_condition=None, numsamples=1,
     diofant.stats.P
     diofant.stats.rv.sampling_E
     diofant.stats.rv.sampling_density
+
     """
 
     count_true = 0
@@ -875,6 +891,7 @@ def sampling_E(expr, given_condition=None, numsamples=1,
     diofant.stats.P
     diofant.stats.rv.sampling_P
     diofant.stats.rv.sampling_density
+
     """
 
     samples = sample_iter(expr, given_condition,
@@ -893,6 +910,7 @@ def sampling_density(expr, given_condition=None, numsamples=1, **kwargs):
     diofant.stats.density
     diofant.stats.rv.sampling_P
     diofant.stats.rv.sampling_E
+
     """
 
     results = {}
@@ -926,6 +944,7 @@ def dependent(a, b):
     See Also
     ========
     diofant.stats.rv.independent
+
     """
     if pspace_independent(a, b):
         return False
@@ -961,6 +980,7 @@ def independent(a, b):
     See Also
     ========
     diofant.stats.rv.dependent
+
     """
     return not dependent(a, b)
 
@@ -976,6 +996,7 @@ def pspace_independent(a, b):
 
     pspace_independent(a, b) implies independent(a, b)
     independent(a, b) does not imply pspace_independent(a, b)
+
     """
     a_symbols = set(pspace(b).symbols)
     b_symbols = set(pspace(a).symbols)
@@ -986,9 +1007,7 @@ def pspace_independent(a, b):
 
 
 def rv_subs(expr):
-    """
-    Given a random expression replace all random variables with their symbols.
-    """
+    """Given a random expression replace all random variables with their symbols."""
     symbols = random_symbols(expr)
     if not symbols:
         return expr
@@ -1012,6 +1031,7 @@ def _value_check(condition, message):
     Check a condition on input value.
 
     Raises ValueError with message if condition is not True
+
     """
     if condition != S.true:
         raise ValueError(message)

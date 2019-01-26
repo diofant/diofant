@@ -10,9 +10,7 @@ from .matrices import MatrixBase, ShapeError, a2idx
 
 
 class SparseMatrixBase(MatrixBase):
-    """
-    A sparse matrix base class.
-    """
+    """A sparse matrix base class."""
 
     def __init__(self, *args):
         from . import Matrix
@@ -161,6 +159,7 @@ class SparseMatrixBase(MatrixBase):
 
         diofant.matrices.sparse.MutableSparseMatrix.row_op
         col_list
+
         """
         return [tuple(k + (self[k],)) for k in
                 sorted(self._smat, key=lambda k: list(k))]
@@ -185,6 +184,7 @@ class SparseMatrixBase(MatrixBase):
 
         diofant.matrices.sparse.MutableSparseMatrix.col_op
         row_list
+
         """
         return [tuple(k + (self[k],)) for k in sorted(self._smat, key=lambda k: list(reversed(k)))]
 
@@ -220,6 +220,7 @@ class SparseMatrixBase(MatrixBase):
         Matrix([
         [1, 3],
         [2, 4]])
+
         """
         tran = self.zeros(self.cols, self.rows)
         for key, value in self._smat.items():
@@ -251,6 +252,7 @@ class SparseMatrixBase(MatrixBase):
         transpose: Matrix transposition
         H: Hermite conjugation
         D: Dirac conjugation
+
         """
         conj = self.copy()
         for key, value in self._smat.items():
@@ -271,6 +273,7 @@ class SparseMatrixBase(MatrixBase):
         ========
 
         add
+
         """
         A = self
         B = other
@@ -288,7 +291,7 @@ class SparseMatrixBase(MatrixBase):
         return rv
 
     def scalar_multiply(self, scalar):
-        """Scalar element-wise multiplication"""
+        """Scalar element-wise multiplication."""
         M = self.zeros(*self.shape)
         if scalar:
             for i in self._smat:
@@ -315,6 +318,7 @@ class SparseMatrixBase(MatrixBase):
         [0, 0, 0]])
         >>> I*2 == 2*I
         True
+
         """
         if isinstance(other, SparseMatrixBase):
             return self.multiply(other)
@@ -338,6 +342,7 @@ class SparseMatrixBase(MatrixBase):
         >>> (isinstance(A*S, SparseMatrix) ==
         ...  isinstance(S*A, SparseMatrix) == False)
         True
+
         """
         return self.scalar_multiply(other)
 
@@ -416,6 +421,7 @@ class SparseMatrixBase(MatrixBase):
         ========
 
         multiply
+
         """
         if not isinstance(other, SparseMatrixBase):
             raise ValueError('only use add with %s, not %s' %
@@ -488,6 +494,7 @@ class SparseMatrixBase(MatrixBase):
         >>> a[0, 1] = a[1, 0]*I
         >>> a.is_hermitian
         False
+
         """
         def cond():
             d = self._smat
@@ -515,6 +522,7 @@ class SparseMatrixBase(MatrixBase):
         >>> M[0, 2] = 1
         >>> M.is_symmetric()
         False
+
         """
         if simplify:
             return all((k[1], k[0]) in self._smat and
@@ -537,6 +545,7 @@ class SparseMatrixBase(MatrixBase):
         False
         >>> A.has(Float)
         True
+
         """
         return any(self[key].has(*patterns) for key in self._smat)
 
@@ -612,6 +621,7 @@ class SparseMatrixBase(MatrixBase):
 
         Symbolic Sparse Cholesky Factorization using Elimination Trees,
         Jeroen Van Grondelle (1999)
+
         """
         # Algorithm 2.4, p 17 of reference
 
@@ -654,6 +664,7 @@ class SparseMatrixBase(MatrixBase):
 
         Symbolic Sparse Cholesky Factorization using Elimination Trees,
         Jeroen Van Grondelle (1999)
+
         """
 
         R, parent = self.liupc()
@@ -740,6 +751,7 @@ class SparseMatrixBase(MatrixBase):
     def _lower_triangular_solve(self, rhs):
         """Fast algorithm for solving a lower-triangular system,
         exploiting the sparsity of the given matrix.
+
         """
         rows = [[] for i in range(self.rows)]
         for i, j, v in self.row_list():
@@ -755,6 +767,7 @@ class SparseMatrixBase(MatrixBase):
     def _upper_triangular_solve(self, rhs):
         """Fast algorithm for solving an upper-triangular system,
         exploiting the sparsity of the given matrix.
+
         """
         rows = [[] for i in range(self.rows)]
         for i, j, v in self.row_list():
@@ -813,6 +826,7 @@ class SparseMatrixBase(MatrixBase):
         [-1, 1, 3]])
         >>> A.cholesky() * A.cholesky().T == A
         True
+
         """
 
         from ..core import nan, oo
@@ -914,6 +928,7 @@ class SparseMatrixBase(MatrixBase):
         ========
 
         diofant.matrices.matrices.MatrixBase.inv
+
         """
         t = self.T
         return (t*self).inv(method=method)*t*rhs
@@ -925,6 +940,7 @@ class SparseMatrixBase(MatrixBase):
         ========
 
         diofant.matrices.matrices.MatrixBase.inv
+
         """
         if not self.is_square:
             if self.rows < self.cols:
@@ -1010,6 +1026,7 @@ class SparseMatrixBase(MatrixBase):
         Matrix([
         [1, 2],
         [3, 5]])
+
         """
         return MutableSparseMatrix(self)
 
@@ -1057,6 +1074,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
     ========
 
     diofant.matrices.dense.DenseMatrix
+
     """
 
     @classmethod
@@ -1113,6 +1131,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         [0, 0, 4, 0],
         [0, 0, 4, 0],
         [2, 2, 4, 2]])
+
         """
         rv = self._setitem(key, value)
         if rv is not None:
@@ -1141,6 +1160,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         >>> del M[:, 1]
         >>> M
         Matrix([[0]])
+
         """
         i, j = self.key2ij(key)
         newD = {}
@@ -1181,6 +1201,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         [0, 1, 0],
         [1, 0, 0],
         [0, 2, 1]])
+
         """
         if i > j:
             i, j = j, i
@@ -1210,6 +1231,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         [0, 1, 0],
         [1, 0, 0],
         [2, 0, 1]])
+
         """
         if i > j:
             i, j = j, i
@@ -1260,6 +1282,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
 
         >>> C == A.col_insert(A.cols, B)
         True
+
         """
         A, B = self, other
         if not self:
@@ -1319,6 +1342,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
 
         >>> C == A.row_insert(A.rows, Matrix(B))
         True
+
         """
         A, B = self, other
         if not self:
@@ -1442,6 +1466,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         [ 2, 4, 0],
         [-1, 0, 0],
         [ 0, 0, 2]])
+
         """
         for i in range(self.rows):
             v = self._smat.get((i, j), S.Zero)
@@ -1474,6 +1499,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         [1, 1, 1],
         [1, 1, 1],
         [1, 1, 1]])
+
         """
         if not value:
             self._smat = {}

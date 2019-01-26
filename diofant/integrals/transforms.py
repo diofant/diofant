@@ -31,6 +31,7 @@ class IntegralTransformError(NotImplementedError):
     The hint ``needeval=True`` can be used to disable returning transform
     objects, and instead raise this exception if an integral cannot be
     computed.
+
     """
 
     def __init__(self, transform, function, msg):
@@ -53,21 +54,22 @@ class IntegralTransform(Function):
 
     Implement self._collapse_extra if your function returns more than just a
     number and possibly a convergence condition.
+
     """
 
     @property
     def function(self):
-        """ The function to be transformed. """
+        """The function to be transformed."""
         return self.args[0]
 
     @property
     def function_variable(self):
-        """ The dependent variable of the function to be transformed. """
+        """The dependent variable of the function to be transformed."""
         return self.args[1]
 
     @property
     def transform_variable(self):
-        """ The independent transform variable. """
+        """The independent transform variable."""
         return self.args[2]
 
     @property
@@ -75,6 +77,7 @@ class IntegralTransform(Function):
         """
         This method returns the symbols that will exist when the transform
         is evaluated.
+
         """
         return self.function.free_symbols.union({self.transform_variable}) \
             - {self.function_variable}
@@ -107,6 +110,7 @@ class IntegralTransform(Function):
         The default values of these hints depend on the concrete transform,
         usually the default is
         ``(simplify, noconds, needeval) = (True, False, False)``.
+
         """
         from ..core.function import AppliedUndef
         needeval = hints.pop('needeval', False)
@@ -185,6 +189,7 @@ def _noconds_(default):
 
     The default value of the ``noconds`` keyword will be ``default`` (i.e. the
     argument of this function).
+
     """
     def make_wrapper(func):
         @wraps(func)
@@ -211,7 +216,7 @@ def _default_integrator(f, x):
 
 @_noconds
 def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
-    """ Backend function to compute Mellin transforms. """
+    """Backend function to compute Mellin transforms."""
     from ..core import count_ops
     from ..functions import re, Max, Min
     # We use a fresh dummy, because assumptions on s might drop conditions on
@@ -231,9 +236,7 @@ def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
             'Mellin', f, 'integral in unexpected form')
 
     def process_conds(cond):
-        """
-        Turn ``cond`` into a strip (a, b), and auxiliary conditions.
-        """
+        """Turn ``cond`` into a strip (a, b), and auxiliary conditions."""
         a = -oo
         b = oo
         aux = True
@@ -288,6 +291,7 @@ class MellinTransform(IntegralTransform):
 
     IntegralTransform
     mellin_transform
+
     """
 
     _name = 'Mellin'
@@ -347,6 +351,7 @@ def mellin_transform(f, x, s, **hints):
 
     inverse_mellin_transform, laplace_transform, fourier_transform
     hankel_transform, inverse_hankel_transform
+
     """
     return MellinTransform(f, x, s).doit(**hints)
 
@@ -373,6 +378,7 @@ def _rewrite_sin(m_n, s, a, b):
     (gamma(2*s), gamma(-2*s + 1), pi)
     >>> _rewrite_sin((2*pi, 0), s, Rational(1, 2), 1)
     (gamma(2*s - 1), gamma(-2*s + 2), -pi)
+
     """
     # (This is a separate function because it is moderately complicated,
     #  and I want to doctest it.)
@@ -393,9 +399,7 @@ def _rewrite_sin(m_n, s, a, b):
 
 
 class MellinTransformStripError(ValueError):
-    """
-    Exception raised by _rewrite_gamma. Mainly for internal use.
-    """
+    """Exception raised by _rewrite_gamma. Mainly for internal use."""
 
     pass
 
@@ -444,6 +448,7 @@ def _rewrite_gamma(f, s, a, b):
 
     >>> _rewrite_gamma(2**(-s+3), s, -oo, oo)
     (([], []), ([], []), 1/2, 1, 8)
+
     """
     from ..core import ilcm, igcd
     from ..polys import Poly, roots, RootOf
@@ -461,9 +466,7 @@ def _rewrite_gamma(f, s, a, b):
     a_, b_ = sympify([a, b])
 
     def left(c, is_numer):
-        """
-        Decide whether pole at c lies to the left of the fundamental strip.
-        """
+        """Decide whether pole at c lies to the left of the fundamental strip."""
         # heuristically, this is the best chance for us to solve the inequalities
         c = expand(re(c))
         if a_ is None:
@@ -556,7 +559,7 @@ def _rewrite_gamma(f, s, a, b):
             ufacs = dfacs
 
         def linear_arg(arg):
-            """ Test if arg is of form a*s+b, raise exception if not. """
+            """Test if arg is of form a*s+b, raise exception if not."""
             if not arg.is_polynomial(s):
                 raise exception(fact)
             p = Poly(arg, s)
@@ -698,6 +701,7 @@ def _rewrite_gamma(f, s, a, b):
 def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
     """ A helper for the real inverse_mellin_transform function, this one here
     assumes x to be real and positive.
+
     """
     from ..functions import meijerg, arg, re, Heaviside, gamma
     from ..polys import factor
@@ -766,6 +770,7 @@ class InverseMellinTransform(IntegralTransform):
 
     IntegralTransform
     inverse_mellin_transform
+
     """
 
     _name = 'Inverse Mellin'
@@ -853,6 +858,7 @@ def inverse_mellin_transform(F, s, x, strip, **hints):
 
     mellin_transform
     hankel_transform, inverse_hankel_transform
+
     """
     return InverseMellinTransform(F, s, x, strip[0], strip[1]).doit(**hints)
 
@@ -884,6 +890,7 @@ def _simplifyconds(expr, s, a):
     True
     >>> _simplifyconds(Ne(1, x**3), x, 0)
     Ne(1, x**3)
+
     """
     from ..core.relational import (StrictGreaterThan, StrictLessThan,
                                    Unequality)
@@ -899,6 +906,7 @@ def _simplifyconds(expr, s, a):
     def bigger(ex1, ex2):
         """ Return True only if |ex1| > |ex2|, False only if |ex1| < |ex2|.
         Else return None.
+
         """
         if ex1.has(s) and ex2.has(s):
             return
@@ -920,7 +928,7 @@ def _simplifyconds(expr, s, a):
             pass
 
     def replie(x, y):
-        """ simplify x < y """
+        """simplify x < y."""
         if not (x.is_positive or isinstance(x, Abs)) \
                 or not (y.is_positive or isinstance(y, Abs)):
             return x < y
@@ -947,7 +955,7 @@ def _simplifyconds(expr, s, a):
 
 @_noconds
 def _laplace_transform(f, t, s_, simplify=True):
-    """ The backend function for Laplace transforms. """
+    """The backend function for Laplace transforms."""
     from ..core import Wild, symbols
     from ..functions import (re, Max, exp, Min, periodic_argument as arg,
                              cos, polar_lift)
@@ -967,7 +975,7 @@ def _laplace_transform(f, t, s_, simplify=True):
             'Laplace', f, 'integral in unexpected form')
 
     def process_conds(conds):
-        """ Turn ``conds`` into a strip and auxiliary conditions. """
+        """Turn ``conds`` into a strip and auxiliary conditions."""
         a = -oo
         aux = True
         conds = conjuncts(to_cnf(conds))
@@ -1052,6 +1060,7 @@ class LaplaceTransform(IntegralTransform):
 
     IntegralTransform
     laplace_transform
+
     """
 
     _name = 'Laplace'
@@ -1107,6 +1116,7 @@ def laplace_transform(f, t, s, **hints):
 
     inverse_laplace_transform, mellin_transform, fourier_transform
     hankel_transform, inverse_hankel_transform
+
     """
     if isinstance(f, MatrixBase) and hasattr(f, 'applyfunc'):
         return f.applyfunc(lambda fij: laplace_transform(fij, t, s, **hints))
@@ -1115,7 +1125,7 @@ def laplace_transform(f, t, s, **hints):
 
 @_noconds_(True)
 def _inverse_laplace_transform(F, s, t_, plane, simplify=True):
-    """ The backend function for inverse Laplace transforms. """
+    """The backend function for inverse Laplace transforms."""
     from ..core import expand_complex
     from ..functions import exp, Heaviside, log, Piecewise
     from .integrals import Integral
@@ -1127,7 +1137,7 @@ def _inverse_laplace_transform(F, s, t_, plane, simplify=True):
     t = Dummy('t', extended_real=True)
 
     def pw_simp(*args):
-        """ Simplify a piecewise expression from hyperexpand. """
+        """Simplify a piecewise expression from hyperexpand."""
         # XXX we break modularity here!
         if len(args) != 3:
             return Piecewise(*args)
@@ -1195,6 +1205,7 @@ class InverseLaplaceTransform(IntegralTransform):
 
     IntegralTransform
     inverse_laplace_transform
+
     """
 
     _name = 'Inverse Laplace'
@@ -1257,6 +1268,7 @@ def inverse_laplace_transform(F, s, t, plane=None, **hints):
 
     laplace_transform
     hankel_transform, inverse_hankel_transform
+
     """
     if isinstance(F, MatrixBase) and hasattr(F, 'applyfunc'):
         return F.applyfunc(lambda Fij: inverse_laplace_transform(Fij, s, t, plane, **hints))
@@ -1275,6 +1287,7 @@ def _fourier_transform(f, x, k, a, b, name, simplify=True):
 
     For suitable choice of a and b, this reduces to the standard Fourier
     and inverse Fourier transforms.
+
     """
     from ..functions import exp
     F = integrate(a*f*exp(b*I*x*k), (x, -oo, oo))
@@ -1293,7 +1306,7 @@ def _fourier_transform(f, x, k, a, b, name, simplify=True):
 
 
 class FourierTypeTransform(IntegralTransform):
-    """ Base class for Fourier transforms."""
+    """Base class for Fourier transforms."""
 
     def a(self):
         raise NotImplementedError(
@@ -1324,6 +1337,7 @@ class FourierTransform(FourierTypeTransform):
 
     IntegralTransform
     fourier_transform
+
     """
 
     _name = 'Fourier'
@@ -1362,6 +1376,7 @@ def fourier_transform(f, x, k, **hints):
     cosine_transform, inverse_cosine_transform
     hankel_transform, inverse_hankel_transform
     mellin_transform, laplace_transform
+
     """
     return FourierTransform(f, x, k).doit(**hints)
 
@@ -1375,6 +1390,7 @@ class InverseFourierTransform(FourierTypeTransform):
 
     IntegralTransform
     inverse_fourier_transform
+
     """
 
     _name = 'Inverse Fourier'
@@ -1413,6 +1429,7 @@ def inverse_fourier_transform(F, k, x, **hints):
     cosine_transform, inverse_cosine_transform
     hankel_transform, inverse_hankel_transform
     mellin_transform, laplace_transform
+
     """
     return InverseFourierTransform(F, k, x).doit(**hints)
 
@@ -1431,6 +1448,7 @@ def _sine_cosine_transform(f, x, k, a, b, K, name, simplify=True):
 
     For suitable choice of a and b, this reduces to the standard sine/cosine
     and inverse sine/cosine transforms.
+
     """
     F = integrate(a*f*K(b*x*k), (x, 0, oo))
 
@@ -1451,6 +1469,7 @@ class SineCosineTypeTransform(IntegralTransform):
     """
     Base class for sine and cosine transforms.
     Specify cls._kern.
+
     """
 
     def a(self):
@@ -1483,6 +1502,7 @@ class SineTransform(SineCosineTypeTransform):
 
     IntegralTransform
     sine_transform
+
     """
 
     _name = 'Sine'
@@ -1522,6 +1542,7 @@ def sine_transform(f, x, k, **hints):
     cosine_transform, inverse_cosine_transform
     hankel_transform, inverse_hankel_transform
     mellin_transform, laplace_transform
+
     """
     return SineTransform(f, x, k).doit(**hints)
 
@@ -1535,6 +1556,7 @@ class InverseSineTransform(SineCosineTypeTransform):
 
     IntegralTransform
     inverse_sine_transform
+
     """
 
     _name = 'Inverse Sine'
@@ -1575,6 +1597,7 @@ def inverse_sine_transform(F, k, x, **hints):
     cosine_transform, inverse_cosine_transform
     hankel_transform, inverse_hankel_transform
     mellin_transform, laplace_transform
+
     """
     return InverseSineTransform(F, k, x).doit(**hints)
 
@@ -1588,6 +1611,7 @@ class CosineTransform(SineCosineTypeTransform):
 
     IntegralTransform
     cosine_transform
+
     """
 
     _name = 'Cosine'
@@ -1627,6 +1651,7 @@ def cosine_transform(f, x, k, **hints):
     inverse_cosine_transform
     hankel_transform, inverse_hankel_transform
     mellin_transform, laplace_transform
+
     """
     return CosineTransform(f, x, k).doit(**hints)
 
@@ -1640,6 +1665,7 @@ class InverseCosineTransform(SineCosineTypeTransform):
 
     IntegralTransform
     inverse_cosine_transform
+
     """
 
     _name = 'Inverse Cosine'
@@ -1679,6 +1705,7 @@ def inverse_cosine_transform(F, k, x, **hints):
     cosine_transform
     hankel_transform, inverse_hankel_transform
     mellin_transform, laplace_transform
+
     """
     return InverseCosineTransform(F, k, x).doit(**hints)
 
@@ -1693,6 +1720,7 @@ def _hankel_transform(f, r, k, nu, name, simplify=True):
     Compute a general Hankel transform
 
     .. math:: F_\nu(k) = \int_{0}^\infty f(r) J_\nu(k r) r \mathrm{d} r.
+
     """
     from ..functions import besselj
     F = integrate(f*besselj(nu, k*r)*r, (r, 0, oo))
@@ -1711,9 +1739,7 @@ def _hankel_transform(f, r, k, nu, name, simplify=True):
 
 
 class HankelTypeTransform(IntegralTransform):
-    """
-    Base class for Hankel transforms.
-    """
+    """Base class for Hankel transforms."""
 
     def doit(self, **hints):
         return self._compute_transform(self.function,
@@ -1746,6 +1772,7 @@ class HankelTransform(HankelTypeTransform):
 
     IntegralTransform
     hankel_transform
+
     """
 
     _name = 'Hankel'
@@ -1788,6 +1815,7 @@ def hankel_transform(f, r, k, nu, **hints):
     cosine_transform, inverse_cosine_transform
     inverse_hankel_transform
     mellin_transform, laplace_transform
+
     """
     return HankelTransform(f, r, k, nu).doit(**hints)
 
@@ -1801,6 +1829,7 @@ class InverseHankelTransform(HankelTypeTransform):
 
     IntegralTransform
     inverse_hankel_transform
+
     """
 
     _name = 'Inverse Hankel'
@@ -1843,5 +1872,6 @@ def inverse_hankel_transform(F, k, r, nu, **hints):
     cosine_transform, inverse_cosine_transform
     hankel_transform
     mellin_transform, laplace_transform
+
     """
     return InverseHankelTransform(F, k, r, nu).doit(**hints)

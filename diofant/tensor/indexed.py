@@ -81,6 +81,7 @@ get_indices() and get_contraction_structure():
 {(j,): {A[i, j, j]}}
 
 See the appropriate docstrings for a detailed explanation of the output.
+
 """
 
 #   TODO:  (some ideas for improvement)
@@ -121,6 +122,7 @@ class Indexed(Expr):
     >>> A = IndexedBase('A')
     >>> Indexed('A', i, j) == A[i, j]
     True
+
     """
 
     is_commutative = True
@@ -207,6 +209,7 @@ class Indexed(Expr):
         (n, n)
         >>> B[i, j].shape
         (m, m)
+
         """
         from ..utilities import filldedent
 

@@ -82,6 +82,7 @@ def buchberger(f, ring):
 
     Used an improved version of Buchberger's algorithm
     as presented in [BeckerWeispfenning93]_.
+
     """
     order = ring.order
 
@@ -256,6 +257,7 @@ def spoly(p1, p2):
     Compute LCM(LM(p1), LM(p2))/LM(p1)*p1 - LCM(LM(p1), LM(p2))/LM(p2)*p2.
 
     This is the S-poly, provided p1 and p2 are monic
+
     """
     LM1 = p1.LM
     LM2 = p2.LM
@@ -304,6 +306,7 @@ def sig_cmp(u, v, order):
         - the index of v is equal to the index of u and u[0] < v[0] w.r.t. order
 
     u > v otherwise
+
     """
     if u[1] > v[1]:
         return -1
@@ -320,6 +323,7 @@ def sig_key(s, order):
 
     s < t iff [k > l] or [k == l and m < n]
     s > t otherwise
+
     """
     return -s[1], order(s[0])
 
@@ -330,6 +334,7 @@ def sig_mult(s, m):
 
     The product of a signature (m, i) and a monomial n is defined as
     (m * t, i).
+
     """
     return sig(monomial_mul(s[0], m), s[1])
 
@@ -342,6 +347,7 @@ def lbp_sub(f, g):
 
     The signature and number of the difference of f and g are signature
     and number of the maximum of f and g, w.r.t. lbp_cmp.
+
     """
     if lbp_cmp(f, g) < 0:
         max_poly = g
@@ -359,6 +365,7 @@ def lbp_mul_term(f, cx):
 
     The product of a labeled polynomial (s, p, k) by a monomial is
     defined as (m * s, m * p, k).
+
     """
     return lbp(sig_mult(Sign(f), cx[0]), Polyn(f).mul_term(cx), Num(f))
 
@@ -373,6 +380,7 @@ def lbp_cmp(f, g):
         - Sign(f) == Sign(g) and Num(f) > Num(g)
 
     f > g otherwise
+
     """
     if sig_cmp(Sign(f), Sign(g), Polyn(f).ring.order) == -1:
         return -1
@@ -382,9 +390,7 @@ def lbp_cmp(f, g):
 
 
 def lbp_key(f):
-    """
-    Key for comparing two labeled polynomials.
-    """
+    """Key for comparing two labeled polynomials."""
     return sig_key(Sign(f), Polyn(f).ring.order), -Num(f)
 
 # algorithm and helper functions
@@ -402,6 +408,7 @@ def critical_pair(f, g, ring):
     a new, relatively expensive object in memory, whereas Sign(um *
     f) and um are lightweight and f (in the tuple) is a reference to
     an already existing object in memory.
+
     """
     domain = ring.domain
 
@@ -426,17 +433,15 @@ def critical_pair(f, g, ring):
 
 
 def cp_key(c, ring):
-    """
-    Key for comparing critical pairs.
-    """
+    """Key for comparing critical pairs."""
     return lbp_key(lbp(c[0], ring.zero, Num(c[2]))), lbp_key(lbp(c[3], ring.zero, Num(c[5])))
 
 
 def s_poly(cp):
-    """
-    Compute the S-polynomial of a critical pair.
+    """Compute the S-polynomial of a critical pair.
 
     The S-polynomial of a critical pair cp is cp[1] * cp[2] - cp[4] * cp[5].
+
     """
     return lbp_sub(lbp_mul_term(cp[2], cp[1]), lbp_mul_term(cp[5], cp[4]))
 
@@ -453,6 +458,7 @@ def is_rewritable_or_comparable(sign, num, B):
     (sign, num) is rewritable if there exists a labeled polynomial
     h in B, such thatsign[1] is equal to Sign(h)[1], num < Num(h)
     and sign[0] is divisible by Sign(h)[0].
+
     """
     for h in B:
         # comparable
@@ -544,6 +550,7 @@ def f5b(F, ring):
 
     * [SunWang10]_
     * [BeckerWeispfenning93]_, pp. 203, 216.
+
     """
     order = ring.order
 
@@ -648,11 +655,10 @@ def red_groebner(G, ring):
     ==========
 
     * [BeckerWeispfenning93], page 216.
+
     """
     def reduction(P):
-        """
-        The actual reduction algorithm.
-        """
+        """The actual reduction algorithm."""
         Q = []
         for i, p in enumerate(P):
             h = p.div(P[:i] + P[i + 1:])[1]
@@ -675,9 +681,7 @@ def red_groebner(G, ring):
 
 
 def is_groebner(G):
-    """
-    Check if G is a Gröbner basis.
-    """
+    """Check if G is a Gröbner basis."""
     for i in range(len(G)):
         for j in range(i + 1, len(G)):
             s = spoly(G[i], G[j])
@@ -689,9 +693,7 @@ def is_groebner(G):
 
 
 def is_minimal(G, ring):
-    """
-    Checks if G is a minimal Gröbner basis.
-    """
+    """Checks if G is a minimal Gröbner basis."""
     order = ring.order
     domain = ring.domain
 
@@ -722,6 +724,7 @@ def groebner_lcm(f, g):
     ==========
 
     * [Cox97]_
+
     """
     if f.ring != g.ring:
         raise ValueError("Values should be equal")
@@ -766,7 +769,7 @@ def groebner_lcm(f, g):
 
 
 def groebner_gcd(f, g):
-    """Computes GCD of two polynomials using Gröbner bases. """
+    """Computes GCD of two polynomials using Gröbner bases."""
     if f.ring != g.ring:
         raise ValueError("Values should be equal")
     domain = f.ring.domain

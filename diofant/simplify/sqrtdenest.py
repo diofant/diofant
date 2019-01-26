@@ -28,6 +28,7 @@ def sqrt_depth(p):
 
     >>> sqrt_depth(1 + sqrt(2)*sqrt(1 + sqrt(3)))
     2
+
     """
 
     if p.is_Atom:
@@ -51,6 +52,7 @@ def is_algebraic(p):
     True
     >>> is_algebraic(sqrt(2)*(3/(sqrt(7) + sqrt(5)*cos(2))))
     False
+
     """
 
     if p.is_Rational:
@@ -116,6 +118,7 @@ def sqrtdenest(expr, max_iter=3):
 
     * D. J. Jeffrey and A. D. Rich, 'Symplifying Square Roots of Square Roots
       by Denesting' (available at http://www.cybertester.com/data/denest.pdf)
+
     """
     expr = expand_mul(sympify(expr))
     for i in range(max_iter):
@@ -135,6 +138,7 @@ def _sqrt_match(p):
 
     >>> _sqrt_match(1 + sqrt(2) + sqrt(2)*sqrt(3) +  2*sqrt(1+sqrt(5)))
     [1 + sqrt(2) + sqrt(6), 2, 1 + sqrt(5)]
+
     """
     from .radsimp import split_surds
 
@@ -251,6 +255,7 @@ def _sqrtdenest_rec(expr):
     >>> w = -6*sqrt(55)-6*sqrt(35)-2*sqrt(22)-2*sqrt(14)+2*sqrt(77)+6*sqrt(10)+65
     >>> _sqrtdenest_rec(sqrt(w))
     -sqrt(11) - sqrt(7) + sqrt(2) + 3*sqrt(5)
+
     """
     from .radsimp import radsimp, rad_rationalize, split_surds
     if not expr.is_Pow:
@@ -293,6 +298,7 @@ def _sqrtdenest_rec(expr):
 def _sqrtdenest1(expr, denester=True):
     """Return denested expr after denesting with simpler methods or, that
     failing, using the denester.
+
     """
 
     from .simplify import radsimp
@@ -384,6 +390,7 @@ def _sqrt_symbolic_denest(a, b, r):
 
     >>> _.subs({x: Symbol('x', positive=True)})
     sqrt(sqrt(sqrt(x + 3) + 1) + 1) + 1 + sqrt(2)
+
     """
 
     a, b, r = map(sympify, (a, b, r))
@@ -410,6 +417,7 @@ def _sqrt_symbolic_denest(a, b, r):
 def _sqrt_numeric_denest(a, b, r, d2):
     """Helper that denest expr = a + b*sqrt(r), with d2 = a**2 - b**2*r > 0
     or returns None if not denested.
+
     """
     from .simplify import radsimp
     depthr = sqrt_depth(r)
@@ -467,6 +475,7 @@ def sqrt_biquadratic_denest(expr, a, b, r, d2):
     >>> d2 = a**2 - b**2*r
     >>> sqrt_biquadratic_denest(z, a, b, r, d2)
     sqrt(2) + sqrt(sqrt(2) + 2) + 2
+
     """
     from .radsimp import radsimp, rad_rationalize
     if r <= 0 or d2 < 0 or not b or sqrt_depth(expr.base) < 2:
@@ -513,6 +522,7 @@ def _denester(nested, av0, h, max_depth_level):
     exponential complexity.
 
     This is discussed in the paper in the middle paragraph of page 179.
+
     """
     from .simplify import radsimp
     if h > max_depth_level:
@@ -645,6 +655,7 @@ def unrad(eq, *syms, **flags):
     >>> eq = sqrt(x) + root(x, 3) - 2
     >>> unrad(eq)
     (_p**3 + _p**2 - 2, [_p, -x + _p**6])
+
     """
     from ..polys.rootoftools import RootOf
     from ..solvers import solve

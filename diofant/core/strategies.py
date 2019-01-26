@@ -61,9 +61,10 @@ def rm_id(isid):
     ========
 
     unpack
+
     """
     def ident_remove(expr):
-        """ Remove identities """
+        """Remove identities."""
         ids = list(map(isid, arguments(expr)))
         if sum(ids) == 0:           # No identities. Common case
             return expr
@@ -95,9 +96,10 @@ def glom(key, count, combine):
     2
     >>> combine(2, x)
     2*x
+
     """
     def conglomerate(expr):
-        """ Conglomerate together identical args x + x -> 2x """
+        """Conglomerate together identical args x + x -> 2x."""
         groups = sift(arguments(expr), key)
         counts = {k: sum(map(count, args)) for k, args in groups.items()}
         newargs = [combine(cnt, mat) for mat, cnt in counts.items()]
@@ -115,6 +117,7 @@ def sort(key):
     >>> sort_rl = sort(str)
     >>> sort_rl(Basic(3, 1, 2))
     Basic(1, 2, 3)
+
     """
 
     def sort_rl(expr):
@@ -130,6 +133,7 @@ def unpack(expr):
 
     >>> unpack(Basic(2))
     2
+
     """
     if len(arguments(expr)) == 1:
         return arguments(expr)[0]
@@ -138,7 +142,7 @@ def unpack(expr):
 
 
 def flatten(expr):
-    """ Flatten T(a, b, T(c, d), T2(e)) to T(a, b, c, d, T2(e)) """
+    """Flatten T(a, b, T(c, d), T2(e)) to T(a, b, c, d, T2(e))."""
     cls = operator(expr)
     args = []
     for arg in arguments(expr):

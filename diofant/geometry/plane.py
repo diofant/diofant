@@ -42,6 +42,7 @@ class Plane(GeometryEntity):
     Plane(Point3D(1, 1, 1), (-1, 2, -1))
     >>> Plane(Point3D(1, 1, 1), normal_vector=(1, 4, 7))
     Plane(Point3D(1, 1, 1), (1, 4, 7))
+
     """
 
     def __new__(cls, p1, a=None, b=None, **kwargs):
@@ -153,6 +154,7 @@ class Plane(GeometryEntity):
         >>> XY = Plane((0, 0, 0), (0, 0, 1))
         >>> XY.projection((1, 1, 2))
         Point3D(1, 1, 0)
+
         """
         rv = Point3D(pt)
         if rv in self:
@@ -270,6 +272,7 @@ class Plane(GeometryEntity):
         >>> b = Plane(Point3D(2, 2, 2), normal_vector=(-1, 2, -1))
         >>> a.is_perpendicular(b)
         True
+
         """
         from .line3d import LinearEntity3D
         if isinstance(l, LinearEntity3D):
@@ -320,6 +323,7 @@ class Plane(GeometryEntity):
         >>> c = Line3D(Point3D(2, 3, 1), Point3D(1, 2, 2))
         >>> a.distance(c)
         0
+
         """
         from .line3d import LinearEntity3D
         x, y, z = map(Dummy, 'xyz')
@@ -376,6 +380,7 @@ class Plane(GeometryEntity):
         >>> b = Line3D(Point3D(1, 3, 4), Point3D(2, 2, 2))
         >>> a.angle_between(b)
         -asin(sqrt(21)/6)
+
         """
         from .line3d import LinearEntity3D
         if isinstance(o, LinearEntity3D):
@@ -521,6 +526,7 @@ class Plane(GeometryEntity):
         >>> p = Plane(a, normal_vector=Z)
         >>> p.perpendicular_plane(a, b)
         Plane(Point3D(0, 0, 0), (1, 0, 0))
+
         """
         if len(pts) > 2:
             raise ValueError('No more than 2 pts should be provided.')
@@ -590,6 +596,7 @@ class Plane(GeometryEntity):
         =======
 
         Point3D
+
         """
         from ..functions import cos, sin
         t = t or Dummy('t')
@@ -632,6 +639,7 @@ class Plane(GeometryEntity):
         >>> e = Plane(Point3D(2, 0, 0), normal_vector=(3, 4, -3))
         >>> d.intersection(e)
         [Line3D(Point3D(78/23, -24/23, 0), Point3D(147/23, 321/23, 23))]
+
         """
         from .line3d import LinearEntity3D
         from .line import LinearEntity
@@ -720,6 +728,7 @@ class Plane(GeometryEntity):
         False
         >>> p.is_coplanar(p2)
         True
+
         """
         if isinstance(o, Plane):
             x, y, z = map(Dummy, 'xyz')

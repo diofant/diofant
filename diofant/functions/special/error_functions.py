@@ -87,6 +87,7 @@ class erf(Function):
     * https://dlmf.nist.gov/7
     * http://mathworld.wolfram.com/Erf.html
     * http://functions.wolfram.com/GammaBetaErf/Erf
+
     """
 
     unbranched = True
@@ -98,9 +99,7 @@ class erf(Function):
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return erfinv
 
     @classmethod
@@ -276,6 +275,7 @@ class erfc(Function):
     * https://dlmf.nist.gov/7
     * http://mathworld.wolfram.com/Erfc.html
     * http://functions.wolfram.com/GammaBetaErf/Erfc
+
     """
 
     unbranched = True
@@ -287,9 +287,7 @@ class erfc(Function):
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return erfcinv
 
     @classmethod
@@ -462,6 +460,7 @@ class erfi(Function):
     * https//en.wikipedia.org/wiki/Error_function
     * http://mathworld.wolfram.com/Erfi.html
     * http://functions.wolfram.com/GammaBetaErf/Erfi
+
     """
 
     unbranched = True
@@ -626,6 +625,7 @@ class erf2(Function):
     ==========
 
     * http://functions.wolfram.com/GammaBetaErf/Erf2/
+
     """
 
     def fdiff(self, argindex):
@@ -742,6 +742,7 @@ class erfinv(Function):
 
     * https//en.wikipedia.org/wiki/Error_function#Inverse_functions
     * http://functions.wolfram.com/GammaBetaErf/InverseErf/
+
     """
 
     def fdiff(self, argindex=1):
@@ -751,9 +752,7 @@ class erfinv(Function):
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return erf
 
     @classmethod
@@ -777,7 +776,7 @@ class erfinv(Function):
         return erfcinv(1-z)
 
 
-class erfcinv (Function):
+class erfcinv(Function):
     r"""
     Inverse Complementary Error Function. The erfcinv function is defined as:
 
@@ -814,6 +813,7 @@ class erfcinv (Function):
 
     * https//en.wikipedia.org/wiki/Error_function#Inverse_functions
     * http://functions.wolfram.com/GammaBetaErf/InverseErfc/
+
     """
 
     def fdiff(self, argindex=1):
@@ -823,9 +823,7 @@ class erfcinv (Function):
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return erfc
 
     @classmethod
@@ -885,6 +883,7 @@ class erf2inv(Function):
     ==========
 
     * http://functions.wolfram.com/GammaBetaErf/InverseErf2/
+
     """
 
     def fdiff(self, argindex):
@@ -1175,6 +1174,7 @@ class expint(Function):
     * https://dlmf.nist.gov/8.19
     * http://functions.wolfram.com/GammaBetaErf/ExpIntegralE/
     * https//en.wikipedia.org/wiki/Exponential_integral
+
     """
 
     @classmethod
@@ -1262,6 +1262,7 @@ def E1(z):
     Ci: Cosine integral.
     Shi: Hyperbolic sine integral.
     Chi: Hyperbolic cosine integral.
+
     """
     return expint(1, z)
 
@@ -1347,6 +1348,7 @@ class li(Function):
     * http://mathworld.wolfram.com/LogarithmicIntegral.html
     * https://dlmf.nist.gov/6
     * http://mathworld.wolfram.com/SoldnersConstant.html
+
     """
 
     @classmethod
@@ -1458,6 +1460,7 @@ class Li(Function):
     * https//en.wikipedia.org/wiki/Logarithmic_integral
     * http://mathworld.wolfram.com/LogarithmicIntegral.html
     * https://dlmf.nist.gov/6
+
     """
 
     @classmethod
@@ -1489,7 +1492,7 @@ class Li(Function):
 
 
 class TrigonometricIntegral(Function):
-    """ Base class for trigonometric integrals. """
+    """Base class for trigonometric integrals."""
 
     @classmethod
     def eval(cls, z):
@@ -1904,7 +1907,7 @@ class Chi(TrigonometricIntegral):
 ###############################################################################
 
 class FresnelIntegral(Function):
-    """ Base class for the Fresnel integrals."""
+    """Base class for the Fresnel integrals."""
 
     unbranched = True
 
@@ -2054,6 +2057,7 @@ class fresnels(FresnelIntegral):
     * http://functions.wolfram.com/GammaBetaErf/FresnelS
     * The converging factors for the fresnel integrals
       by John W. Wrench Jr. and Vicki Alley
+
     """
 
     _trigfunc = sin
@@ -2181,6 +2185,7 @@ class fresnelc(FresnelIntegral):
     * http://functions.wolfram.com/GammaBetaErf/FresnelC
     * The converging factors for the fresnel integrals
       by John W. Wrench Jr. and Vicki Alley
+
     """
 
     _trigfunc = cos
@@ -2243,6 +2248,7 @@ class _erfs(Function):
     r"""
     Helper function to make the `\mathrm{erf}(z)` function
     tractable for the Gruntz algorithm.
+
     """
 
     @classmethod
@@ -2293,6 +2299,7 @@ class _eis(Function):
     r"""
     Helper function to make the `\mathrm{Ei}(z)` and `\mathrm{li}(z)` functions
     tractable for the Gruntz algorithm.
+
     """
 
     def _eval_aseries(self, n, args0, x, logx):

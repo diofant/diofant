@@ -46,9 +46,7 @@ known_fcns_src2 = {
 
 
 class OctaveCodePrinter(CodePrinter):
-    """
-    A printer to convert expressions to strings of Octave/Matlab code.
-    """
+    """A printer to convert expressions to strings of Octave/Matlab code."""
 
     printmethod = "_octave"
     language = "Octave"
@@ -427,7 +425,7 @@ class OctaveCodePrinter(CodePrinter):
             return "\n".join(lines)
 
     def indent_code(self, code):
-        """Accepts a string of code or a list of code lines"""
+        """Accepts a string of code or a list of code lines."""
 
         # code mostly copied from ccode
         if isinstance(code, str):
@@ -580,5 +578,6 @@ def octave_code(expr, assign_to=None, **settings):
     >>> e = Eq(Dy[i], (y[i+1]-y[i])/(t[i+1]-t[i]))
     >>> octave_code(e.rhs, assign_to=e.lhs, contract=False)
     'Dy(i) = (y(i + 1) - y(i))./(t(i + 1) - t(i));'
+
     """
     return OctaveCodePrinter(settings).doprint(expr, assign_to)

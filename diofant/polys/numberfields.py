@@ -34,6 +34,7 @@ def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
     """
     Return a factor having root ``v``
     It is assumed that one of the factors has root ``v``.
+
     """
     if isinstance(factors[0], tuple):
         factors = [f[0] for f in factors]
@@ -148,6 +149,7 @@ def _minimal_polynomial_sq(p, n, x):
     >>> q = 1 + sqrt(2) + sqrt(3)
     >>> _minimal_polynomial_sq(q, 3, x)
     x**12 - 4*x**9 - 4*x**6 + 16*x**3 - 8
+
     """
     p = sympify(p)
     n = sympify(n)
@@ -201,6 +203,7 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
     * https//en.wikipedia.org/wiki/Resultant
     * I.M. Isaacs, Proc. Amer. Math. Soc. 25 (1970), 638
       "Degrees of sums in a separable field extension".
+
     """
     y = Dummy(str(x))
     if mp1 is None:
@@ -246,9 +249,7 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
 
 
 def _invertx(p, x):
-    """
-    Returns ``expand_mul(x**degree(p, x)*p.subs({x: 1/x}))``
-    """
+    """Returns ``expand_mul(x**degree(p, x)*p.subs({x: 1/x}))``."""
     p1 = poly_from_expr(p, x)[0]
 
     n = degree(p1)
@@ -257,9 +258,7 @@ def _invertx(p, x):
 
 
 def _muly(p, x, y):
-    """
-    Returns ``_mexpand(y**deg*p.subs({x:x / y}))``
-    """
+    """Returns ``_mexpand(y**deg*p.subs({x:x / y}))``."""
     p1 = poly_from_expr(p, x)[0]
 
     n = degree(p1)
@@ -291,6 +290,7 @@ def _minpoly_pow(ex, pw, x, dom):
     x**3 - y
     >>> minimal_polynomial(cbrt(y))(x)
     x**3 - y
+
     """
     pw = sympify(pw)
     mp = _minpoly_compose(ex, x, dom)
@@ -315,9 +315,7 @@ def _minpoly_pow(ex, pw, x, dom):
 
 
 def _minpoly_add(x, dom, *a):
-    """
-    returns ``minimal_polynomial(Add(*a), dom)``
-    """
+    """Returns ``minimal_polynomial(Add(*a), dom)``."""
     mp = _minpoly_op_algebraic_element(Add, a[0], a[1], x, dom)
     p = a[0] + a[1]
     for px in a[2:]:
@@ -327,9 +325,7 @@ def _minpoly_add(x, dom, *a):
 
 
 def _minpoly_mul(x, dom, *a):
-    """
-    returns ``minimal_polynomial(Mul(*a), dom)``
-    """
+    """Returns ``minimal_polynomial(Mul(*a), dom)``."""
     mp = _minpoly_op_algebraic_element(Mul, a[0], a[1], x, dom)
     p = a[0] * a[1]
     for px in a[2:]:
@@ -342,6 +338,7 @@ def _minpoly_sin(ex, x):
     """
     Returns the minimal polynomial of ``sin(ex)``
     see http://mathworld.wolfram.com/TrigonometryAngles.html
+
     """
     c, a = ex.args[0].as_coeff_Mul()
     if a is pi:
@@ -378,6 +375,7 @@ def _minpoly_cos(ex, x):
     """
     Returns the minimal polynomial of ``cos(ex)``
     see http://mathworld.wolfram.com/TrigonometryAngles.html
+
     """
     c, a = ex.args[0].as_coeff_Mul()
     if a is pi:
@@ -404,9 +402,7 @@ def _minpoly_cos(ex, x):
 
 
 def _minpoly_exp(ex, x):
-    """
-    Returns the minimal polynomial of ``exp(ex)``
-    """
+    """Returns the minimal polynomial of ``exp(ex)``."""
     c, a = ex.exp.as_coeff_Mul()
     q = sympify(c.denominator)
     if a == I*pi:
@@ -436,9 +432,7 @@ def _minpoly_exp(ex, x):
 
 
 def _minpoly_rootof(ex, x):
-    """
-    Returns the minimal polynomial of a ``RootOf`` object.
-    """
+    """Returns the minimal polynomial of a ``RootOf`` object."""
     p = ex.expr
     p = p.subs({ex.poly.gens[0]: x})
     _, factors = factor_list(p, x)
@@ -557,6 +551,7 @@ def minimal_polynomial(ex, method=None, **args):
     x**3 + x + 3
     >>> minimal_polynomial(sqrt(y))(x)
     x**2 - y
+
     """
 
     if method is None:
@@ -600,6 +595,7 @@ def minpoly_groebner(ex, x, domain):
     ==========
 
     * [Adams94]_
+
     """
 
     generator = numbered_symbols('a', cls=Dummy)
@@ -673,6 +669,7 @@ def primitive_element(extension, **args):
 
     * [Yokoyama89]_
     * [Arno96]_
+
     """
     if not extension:
         raise ValueError("can't compute primitive element for empty extension")
@@ -722,7 +719,7 @@ def primitive_element(extension, **args):
 
 
 def is_isomorphism_possible(a, b):
-    """Returns `True` if there is a chance for isomorphism. """
+    """Returns `True` if there is a chance for isomorphism."""
     n = a.minpoly.degree()
     m = b.minpoly.degree()
 
@@ -753,7 +750,7 @@ def is_isomorphism_possible(a, b):
 
 
 def field_isomorphism_pslq(a, b):
-    """Construct field isomorphism using PSLQ algorithm. """
+    """Construct field isomorphism using PSLQ algorithm."""
     if not all(_.domain.is_RationalField and _.ext.is_real for _ in (a, b)):
         raise NotImplementedError("PSLQ doesn't support complex coefficients")
 
@@ -783,7 +780,7 @@ def field_isomorphism_pslq(a, b):
 
 
 def field_isomorphism_factor(a, b):
-    """Construct field isomorphism via factorization. """
+    """Construct field isomorphism via factorization."""
     _, factors = a.minpoly.set_domain(b).factor_list()
 
     for f, _ in factors:
@@ -805,7 +802,7 @@ def field_isomorphism_factor(a, b):
 
 
 def field_isomorphism(a, b, **args):
-    """Construct an isomorphism between two number fields. """
+    """Construct an isomorphism between two number fields."""
     if not all(isinstance(_, AlgebraicField) for _ in (a, b)):
         raise ValueError("Arguments should be algebraic fields, "
                          "got %s and %s" % (a, b))

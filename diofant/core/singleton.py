@@ -38,6 +38,7 @@ class SingletonRegistry:
 
     >>> int(0) is S.Zero
     False
+
     """
 
     def __init__(self):
@@ -65,6 +66,7 @@ class SingletonRegistry:
         already registered but not installed; if no, raises an AttributeError.
         Otherwise, retrieves the class, calculates its singleton value, installs
         it as an attribute of the given name, and unregisters the class.
+
         """
         if name not in self._classes_to_install:
             raise AttributeError(
@@ -114,6 +116,7 @@ class Singleton(type):
     metaclass of many classes that need to be Singletons (Python does not allow
     subclasses to have a different metaclass than the superclass, except the
     subclass may use a subclassed metaclass).
+
     """
 
     _instances = {}
@@ -135,6 +138,4 @@ class Singleton(type):
 
 
 class SingletonWithManagedProperties(Singleton, ManagedProperties):
-    """
-    Metaclass for singleton classes with managed properties.
-    """
+    """Metaclass for singleton classes with managed properties."""

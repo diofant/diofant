@@ -41,6 +41,7 @@ Notes
 Assumption values are stored in obj._assumptions dictionary or
 are returned by getter methods (with property decorators) or are
 attributes of objects/classes.
+
 """
 
 from random import shuffle
@@ -93,9 +94,7 @@ _assume_rules = FactRules([
 _assume_defined = frozenset(_assume_rules.defined_facts.copy())
 _assume_docs = {
     'commutative':
-    """
-Test if self commutes with any other object wrt multiplication operation.
-""",
+    """Test if self commutes with any other object wrt multiplication operation.""",
     'polar':
     """
 Test if self can have values from the Riemann surface of the logarithm.
@@ -106,6 +105,7 @@ See Also
 diofant.functions.elementary.complexes.polar_lift
 diofant.functions.elementary.complexes.principal_branch
 diofant.functions.elementary.exponential.exp_polar
+
 """,
     'complex':
     """
@@ -115,6 +115,7 @@ See Also
 ========
 
 is_real
+
 """,
     'real':
     """
@@ -129,6 +130,7 @@ References
 ==========
 
 * https//en.wikipedia.org/wiki/Real_number
+
 """,
     'imaginary':
     """
@@ -141,6 +143,7 @@ References
 ==========
 
 * https//en.wikipedia.org/wiki/Imaginary_number
+
 """,
     'extended_real':
     """
@@ -155,15 +158,15 @@ References
 ==========
 
 * https//en.wikipedia.org/wiki/Extended_real_number_line
+
 """,
     'integer':
-    """
-Test if self can have only values from the set of integers.
-""",
+    """Test if self can have only values from the set of integers.""",
     'noninteger':
     """
 Test if self can have only values from the subset of real numbers,
 that aren't integers.
+
 """,
     'odd':
     """
@@ -178,6 +181,7 @@ References
 ==========
 
 * https//en.wikipedia.org/wiki/Parity_%28mathematics%29
+
 """,
     'even':
     """
@@ -192,6 +196,7 @@ References
 ==========
 
 * https//en.wikipedia.org/wiki/Parity_%28mathematics%29
+
 """,
     'prime':
     """
@@ -212,6 +217,7 @@ References
 ==========
 
 * https//en.wikipedia.org/wiki/Composite_number
+
 """,
     'zero':
     """
@@ -221,6 +227,7 @@ See Also
 ========
 
 is_nonzero
+
 """,
     'nonzero':
     """
@@ -230,11 +237,10 @@ See Also
 ========
 
 is_zero
+
 """,
     'rational':
-    """
-Test if self can have only values from the set of rationals.
-""",
+    """Test if self can have only values from the set of rationals.""",
     'algebraic':
     """
 Test if self can have only values from the set of algebraic numbers.
@@ -243,6 +249,7 @@ References
 ==========
 
 * https//en.wikipedia.org/wiki/Algebraic_number
+
 """,
     'transcendental':
     """
@@ -252,6 +259,7 @@ References
 ==========
 
 * https//en.wikipedia.org/wiki/Transcendental_number
+
 """,
     'irrational':
     """
@@ -261,6 +269,7 @@ References
 ==========
 
 * https//en.wikipedia.org/wiki/Irrational_number
+
 """,
     'finite':
     """
@@ -281,6 +290,7 @@ References
 
 * :func:`math.isfinite`
 * :obj:`numpy.isfinite`
+
 """,
     'negative':
     """
@@ -290,6 +300,7 @@ References
 ==========
 
 * https//en.wikipedia.org/wiki/Negative_number
+
 """,
     'nonnegative':
     """
@@ -304,23 +315,16 @@ References
 ==========
 
 * https//en.wikipedia.org/wiki/Negative_number
+
 """,
     'positive':
-    """
-Test if self can have only positive values.
-""",
+    """Test if self can have only positive values.""",
     'nonpositive':
-    """
-Test if self can have only nonpositive values.
-""",
+    """Test if self can have only nonpositive values.""",
     'hermitian':
-    """
-Test if self belongs to the field of hermitian operators.
-""",
+    """Test if self belongs to the field of hermitian operators.""",
     'antihermitian':
-    """
-Test if self belongs to the field of antihermitian operators.
-""",
+    """Test if self belongs to the field of antihermitian operators.""",
 }
 
 
@@ -328,6 +332,7 @@ class StdFactKB(FactKB):
     """A FactKB specialised for the built-in rules
 
     This is the only kind of FactKB that Basic objects should use.
+
     """
 
     rules = _assume_rules
@@ -352,7 +357,7 @@ class StdFactKB(FactKB):
 
 
 def as_property(fact):
-    """Convert a fact name to the name of the corresponding property"""
+    """Convert a fact name to the name of the corresponding property."""
     return 'is_%s' % fact
 
 
@@ -397,6 +402,7 @@ def check_assumptions(expr, **assumptions):
     False
     >>> check_assumptions(z, real=True) is None
     True
+
     """
     expr = sympify(expr)
 
@@ -437,6 +443,7 @@ def _ask(fact, obj):
 
     In all cases, when we settle on some fact value, its implications are
     deduced, and the result is cached in ._assumptions.
+
     """
     assumptions = obj._assumptions
     handler_map = obj._prop_handler
@@ -475,7 +482,7 @@ def _ask(fact, obj):
 
 
 class ManagedProperties(type):
-    """Metaclass for classes with old-style assumptions"""
+    """Metaclass for classes with old-style assumptions."""
 
     def __init__(cls, *args, **kws):
         local_defs = {}

@@ -57,6 +57,7 @@ def is_square(n, prep=True):
     ========
 
     diofant.core.power.integer_nthroot
+
     """
     if prep:
         n = as_int(n)
@@ -78,6 +79,7 @@ def _test(n, base, s, t):
     """Miller-Rabin strong pseudoprime test for one base.
     Return False if n is definitely composite, True if n is
     probably prime, with a probability greater than 3/4.
+
     """
     # do the Fermat test
     b = pow(base, t, n)
@@ -113,6 +115,7 @@ def mr(n, bases):
     False
     >>> mr(479001599, [31, 73])
     True
+
     """
     from .factor_ import trailing
     from ..domains import ZZ
@@ -159,6 +162,7 @@ def _mr_safe(n):
     * https//en.wikipedia.org/wiki/Miller-Rabin_primality_test#Accuracy_of_the_test
     * https://primes.utm.edu/glossary/xpage/Pseudoprime.html
     * http://uucode.com/obf/dalbec/alg.html#sprp
+
     """
 
     if n < 1373653:
@@ -226,6 +230,7 @@ def isprime(n):
     diofant.ntheory.generate.primerange : Generates all primes in a given range
     diofant.ntheory.generate.primepi : Return the number of primes less than or equal to n
     diofant.ntheory.generate.prime : Return the nth prime
+
     """
     n = int(n)
     if n < 2:
@@ -277,6 +282,7 @@ def _mr_safe_helper(_s):
         This info tag should then be appended to any new mr_safe line
         that is added so someone can easily see whether that line satisfies
         the requirements of mr_safe (see docstring there for details).
+
         """
         from .factor_ import factorint, trailing
 

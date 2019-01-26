@@ -109,6 +109,7 @@ class PermutationGroup(Basic):
     [12] https://en.wikipedia.org/wiki/Nilpotent_group
 
     [13] http://www.math.colostate.edu/~hulpke/CGT/cgtnotes.pdf
+
     """
 
     is_group = True
@@ -116,6 +117,7 @@ class PermutationGroup(Basic):
     def __new__(cls, *args, **kwargs):
         """The default constructor. Accepts Cycle and Permutation forms.
         Removes duplicates unless ``dups`` keyword is False.
+
         """
         if not args:
             args = [Permutation()]
@@ -910,6 +912,7 @@ class PermutationGroup(Basic):
         []
 
         see util._strip
+
         """
         if isinstance(g, (Cycle, Permutation)):
             g = g.list()
@@ -1037,6 +1040,7 @@ class PermutationGroup(Basic):
         ========
 
         order
+
         """
         return self._degree
 
@@ -1044,9 +1048,6 @@ class PermutationGroup(Basic):
     def elements(self):
         """Returns all the elements of the permutation group in
         a list
-
-        Examples
-        ========
 
         """
         return set(list(islice(self.generate(), None)))
@@ -1181,6 +1182,7 @@ class PermutationGroup(Basic):
             Permutation(0, 2)(1, 3)])
         >>> _.is_group
         True
+
         """
         if method == "coset":
             return self.generate_schreier_sims(af)
@@ -1263,6 +1265,7 @@ class PermutationGroup(Basic):
         >>> list(g.generate_schreier_sims(af=True))
         [[0, 1, 2, 3], [0, 2, 1, 3], [0, 3, 2, 1],
          [0, 1, 3, 2], [0, 2, 3, 1], [0, 3, 1, 2]]
+
         """
 
         n = self._degree
@@ -1597,6 +1600,7 @@ class PermutationGroup(Basic):
         ========
 
         minimal_block, random_stab
+
         """
         if self._is_primitive is not None:
             return self._is_primitive
@@ -1691,6 +1695,7 @@ class PermutationGroup(Basic):
         True
         >>> C7.is_subgroup(G, 0)
         False
+
         """
         if not isinstance(G, PermutationGroup):
             return False
@@ -1732,6 +1737,7 @@ class PermutationGroup(Basic):
         >>> G3 = PermutationGroup([d, e])
         >>> G3.is_transitive() or G3.is_transitive(strict=False)
         False
+
         """
         if self._is_transitive:  # strict or not, if True then True
             return self._is_transitive
@@ -2136,6 +2142,7 @@ class PermutationGroup(Basic):
         >>> G = PermutationGroup([a, b])
         >>> G.orbits()
         [{0, 2, 3, 4, 6}, {1, 5}]
+
         """
         return _orbits(self._degree, self._generators)
 
@@ -2171,6 +2178,7 @@ class PermutationGroup(Basic):
         ========
 
         degree
+
         """
         if self._order is not None:
             return self._order
@@ -2270,6 +2278,7 @@ class PermutationGroup(Basic):
         ========
 
         random
+
         """
         if is_sequence(n):
             if seed is not None:
@@ -2291,8 +2300,7 @@ class PermutationGroup(Basic):
         return result
 
     def random(self, af=False):
-        """Return a random group element
-        """
+        """Return a random group element."""
         rank = randrange(self.order())
         return self.coset_unrank(rank, af)
 
@@ -2383,6 +2391,7 @@ class PermutationGroup(Basic):
         >>> G.basic_transversals
         [{0: Permutation(2)(0, 1), 1: Permutation(2), 2: Permutation(1, 2)},
          {0: Permutation(2), 2: Permutation(0, 2)}]
+
         """
         if self._transversals:
             return
@@ -3156,6 +3165,7 @@ def _orbits(degree, generators):
     >>> b = Permutation([1, 0, 2])
     >>> _orbits(a.size, [a, b])
     [{0, 1, 2}]
+
     """
 
     orbs = []
@@ -3197,6 +3207,7 @@ def _orbit_transversal(degree, generators, alpha, pairs, af=False):
          Permutation(0, 2, 4)(1, 3, 5),
          Permutation(5)(0, 4)(1, 3),
          Permutation(0, 3)(1, 4)(2, 5)]
+
     """
 
     tr = [(alpha, list(range(degree)))]

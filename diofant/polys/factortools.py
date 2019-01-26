@@ -30,7 +30,7 @@ from .sqfreetools import dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
 
 
 def dmp_trial_division(f, factors, u, K):
-    """Determine multiplicities of factors using trial division. """
+    """Determine multiplicities of factors using trial division."""
     result = []
 
     for factor in factors:
@@ -50,7 +50,7 @@ def dmp_trial_division(f, factors, u, K):
 
 
 def dmp_zz_mignotte_bound(f, u, K):
-    """Mignotte bound for multivariate polynomials in `K[X]`. """
+    """Mignotte bound for multivariate polynomials in `K[X]`."""
     a = dmp_max_norm(f, u, K)
     b = abs(dmp_ground_LC(f, u, K))
     n = sum(dmp_degree_list(f, u))
@@ -84,6 +84,7 @@ def dup_zz_hensel_step(m, f, g, h, s, t, K):
     ==========
 
     * [Gathen99]_
+
     """
     M = m**2
 
@@ -135,6 +136,7 @@ def dup_zz_hensel_lift(p, f, f_list, l, K):
     ==========
 
     * [Gathen99]_
+
     """
     r = len(f_list)
     lc = dmp_LC(f, K)
@@ -175,7 +177,7 @@ def _test_pl(fc, q, pl):
 
 
 def dup_zz_zassenhaus(f, K):
-    """Factor primitive square-free polynomials in `Z[x]`. """
+    """Factor primitive square-free polynomials in `Z[x]`."""
     n = dmp_degree_in(f, 0, 0)
 
     if n == 1:
@@ -279,7 +281,7 @@ def dup_zz_zassenhaus(f, K):
 
 
 def dup_zz_irreducible_p(f, K):
-    """Test irreducibility using Eisenstein's criterion. """
+    """Test irreducibility using Eisenstein's criterion."""
     lc = dmp_LC(f, K)
     tc = dmp_TC(f, K)
 
@@ -309,6 +311,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     >>> g = x**16 + x**14 - x**10 - x**8 - x**6 + x**2 + 1
     >>> R.dup_cyclotomic_p(g)
     True
+
     """
     if K.is_RationalField:
         try:
@@ -368,7 +371,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
 
 
 def dup_zz_cyclotomic_poly(n, K):
-    """Efficiently generate n-th cyclotomic polynomial. """
+    """Efficiently generate n-th cyclotomic polynomial."""
     h = [K.one, -K.one]
 
     for p, k in factorint(n).items():
@@ -408,6 +411,7 @@ def dup_zz_cyclotomic_factor(f, K):
     ==========
 
     * [Weisstein09]_
+
     """
     lc_f, tc_f = dmp_LC(f, K), dmp_TC(f, K)
 
@@ -436,7 +440,7 @@ def dup_zz_cyclotomic_factor(f, K):
 
 
 def dup_zz_factor_sqf(f, K):
-    """Factor square-free (non-primitive) polynomials in `Z[x]`. """
+    """Factor square-free (non-primitive) polynomials in `Z[x]`."""
     cont, g = dmp_ground_primitive(f, 0, K)
 
     n = dmp_degree_in(g, 0, 0)
@@ -498,6 +502,7 @@ def dup_zz_factor(f, K):
     ==========
 
     * [Gathen99]_
+
     """
     cont, g = dmp_ground_primitive(f, 0, K)
 
@@ -526,7 +531,7 @@ def dup_zz_factor(f, K):
 
 
 def dmp_zz_wang_non_divisors(E, cs, ct, K):
-    """Wang/EEZ: Compute a set of valid divisors.  """
+    """Wang/EEZ: Compute a set of valid divisors."""
     result = [ cs*ct ]
 
     for q in E:
@@ -546,7 +551,7 @@ def dmp_zz_wang_non_divisors(E, cs, ct, K):
 
 
 def dmp_zz_wang_test_points(f, T, ct, A, u, K):
-    """Wang/EEZ: Test evaluation points for suitability. """
+    """Wang/EEZ: Test evaluation points for suitability."""
     if not dmp_eval_tail(dmp_LC(f, K), A, u - 1, K):
         raise EvaluationFailed('no luck')
 
@@ -569,7 +574,7 @@ def dmp_zz_wang_test_points(f, T, ct, A, u, K):
 
 
 def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
-    """Wang/EEZ: Compute correct leading coefficients. """
+    """Wang/EEZ: Compute correct leading coefficients."""
     C, J, v = [], [0]*len(E), u - 1
 
     for h in H:
@@ -623,7 +628,7 @@ def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
 
 
 def dup_zz_diophantine(F, m, p, K):
-    """Wang/EEZ: Solve univariate Diophantine equations. """
+    """Wang/EEZ: Solve univariate Diophantine equations."""
     if len(F) == 2:
         a, b = F
 
@@ -667,7 +672,7 @@ def dup_zz_diophantine(F, m, p, K):
 
 
 def dmp_zz_diophantine(F, c, A, d, p, u, K):
-    """Wang/EEZ: Solve multivariate Diophantine equations. """
+    """Wang/EEZ: Solve multivariate Diophantine equations."""
     if not A:
         S = [ [] for _ in F ]
         n = dmp_degree_in(c, 0, 0)
@@ -736,7 +741,7 @@ def dmp_zz_diophantine(F, c, A, d, p, u, K):
 
 
 def dmp_zz_wang_hensel_lifting(f, H, LC, A, p, u, K):
-    """Wang/EEZ: Parallel Hensel lifting algorithm. """
+    """Wang/EEZ: Parallel Hensel lifting algorithm."""
     S, n, v = [f], len(A), u - 1
 
     H = list(H)
@@ -816,6 +821,7 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
 
     * [Wang78]_
     * [Geddes92]_
+
     """
     from ..utilities.randtest import _randint
 
@@ -956,6 +962,7 @@ def dmp_zz_factor(f, u, K):
     ==========
 
     * [Gathen99]_
+
     """
     if not u:
         return dup_zz_factor(f, K)
@@ -984,7 +991,7 @@ def dmp_zz_factor(f, u, K):
 
 
 def dmp_ext_factor(f, u, K):
-    """Factor multivariate polynomials over algebraic number fields. """
+    """Factor multivariate polynomials over algebraic number fields."""
     lc = dmp_ground_LC(f, u, K)
     f = dmp_ground_monic(f, u, K)
 
@@ -1014,7 +1021,7 @@ def dmp_ext_factor(f, u, K):
 
 
 def dmp_gf_factor(f, u, K):
-    """Factor multivariate polynomials over finite fields. """
+    """Factor multivariate polynomials over finite fields."""
     if u == 0:
         f = dmp_convert(f, 0, K, K.domain)
 
@@ -1029,7 +1036,7 @@ def dmp_gf_factor(f, u, K):
 
 
 def dmp_factor_list(f, u, K0):
-    """Factor polynomials into irreducibles in `K[X]`. """
+    """Factor polynomials into irreducibles in `K[X]`."""
     J, f = dmp_terms_gcd(f, u, K0)
     cont, f = dmp_ground_primitive(f, u, K0)
 
@@ -1098,7 +1105,7 @@ def dmp_factor_list(f, u, K0):
 
 
 def dmp_irreducible_p(f, u, K):
-    """Returns ``True`` if ``f`` has no factors over its domain. """
+    """Returns ``True`` if ``f`` has no factors over its domain."""
     _, factors = dmp_factor_list(f, u, K)
 
     if not factors:

@@ -54,6 +54,7 @@ def FiniteRV(name, density):
     2.00000000000000
     >>> P(X >= 2)
     0.700000000000000
+
     """
     return rv(name, FiniteDistributionHandmade, density)
 
@@ -98,6 +99,7 @@ def DiscreteUniform(name, items):
     >>> Y = DiscreteUniform('Y', list(range(5))) # distribution over a range
     >>> density(Y).dict
     {0: 1/5, 1: 1/5, 2: 1/5, 3: 1/5, 4: 1/5}
+
     """
     return rv(name, DiscreteUniformDistribution, *items)
 
@@ -150,6 +152,7 @@ def Die(name, sides=6):
     >>> D4 = Die('D4', 4) # Four sided Die
     >>> density(D4).dict
     {1: 1/4, 2: 1/4, 3: 1/4, 4: 1/4}
+
     """
 
     return rv(name, DieDistribution, sides)
@@ -179,6 +182,7 @@ def Bernoulli(name, p, succ=1, fail=0):
     >>> X = Bernoulli('X', S.Half, 'Heads', 'Tails') # A fair coin toss
     >>> density(X).dict
     {Heads: 1/2, Tails: 1/2}
+
     """
 
     return rv(name, BernoulliDistribution, p, succ, fail)
@@ -203,6 +207,7 @@ def Coin(name, p=S.Half):
     >>> C2 = Coin('C2', Rational(3, 5)) # An unfair coin
     >>> density(C2).dict
     {H: 3/5, T: 2/5}
+
     """
     return rv(name, BernoulliDistribution, p, 'H', 'T')
 
@@ -250,6 +255,7 @@ def Binomial(name, n, p, succ=1, fail=0):
     >>> X = Binomial('X', 4, S.Half) # Four "coin flips"
     >>> density(X).dict
     {0: 1/16, 1: 1/4, 2: 3/8, 3: 1/4, 4: 1/16}
+
     """
 
     return rv(name, BinomialDistribution, n, p, succ, fail)
@@ -288,6 +294,7 @@ def Hypergeometric(name, N, m, n):
     >>> X = Hypergeometric('X', 10, 5, 3) # 10 marbles, 5 white (success), 3 draws
     >>> density(X).dict
     {0: 1/12, 1: 5/12, 2: 5/12, 3: 1/12}
+
     """
     return rv(name, HypergeometricDistribution, N, m, n)
 

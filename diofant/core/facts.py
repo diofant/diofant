@@ -41,6 +41,7 @@ References
 * https//en.wikipedia.org/wiki/Propositional_formula
 * https//en.wikipedia.org/wiki/Inference_rule
 * https//en.wikipedia.org/wiki/List_of_rules_of_inference
+
 """
 
 from collections import defaultdict
@@ -53,6 +54,7 @@ def _base_fact(atom):
     Return the literal fact of an atom.
 
     Effectively, this merely strips the Not around a fact.
+
     """
     if isinstance(atom, Not):
         return atom.arg
@@ -82,6 +84,7 @@ def transitive_closure(implications):
     ==========
 
     * http://www.cs.hope.edu/~cusack/Notes/Notes/DiscreteMath/Warshall.pdf
+
     """
     full_implications = set(implications)
     literals = set().union(*map(set, full_implications))
@@ -115,6 +118,7 @@ def deduce_alpha_implications(implications):
 
     implications: [] of (a,b)
     return:       {} of a -> {b, c, ...}
+
     """
     implications = implications + [(Not(j), Not(i)) for (i, j) in implications]
     res = defaultdict(set)
@@ -162,6 +166,7 @@ def apply_beta_to_alpha_route(alpha_implications, beta_rules):
     then we'll extend a's rule to the following
 
     a  ->  [b, ~c, d, e]
+
     """
     x_impl = {}
     for x in alpha_implications:
@@ -237,6 +242,7 @@ def rules_2prereq(rules):
     Note however, that this prerequisites may be *not* enough to prove a
     fact. An example is 'a -> b' rule, where prereq(a) is b, and prereq(b)
     is a. That's because a=T -> b=T, and b=F -> a=F, but a=F -> b=?
+
     """
     prereq = defaultdict(set)
     for (a, _), impl in rules.items():
@@ -254,7 +260,7 @@ def rules_2prereq(rules):
 
 
 class TautologyDetected(Exception):
-    """(internal) Prover uses it for reporting detected tautology"""
+    """(internal) Prover uses it for reporting detected tautology."""
 
     pass
 
@@ -287,6 +293,7 @@ class Prover:
 
     i.e. beta rules are join conditions that say that something follows when
     *several* facts are true at the same time.
+
     """
 
     def __init__(self):
@@ -294,7 +301,7 @@ class Prover:
         self._rules_seen = set()
 
     def split_alpha_beta(self):
-        """split proved rules into alpha and beta chains"""
+        """Split proved rules into alpha and beta chains."""
         rules_alpha = []    # a      -> b
         rules_beta = []     # &(...) -> b
         for a, b in self.proved_rules:
@@ -313,7 +320,7 @@ class Prover:
         return self.split_alpha_beta()[1]
 
     def process_rule(self, a, b):
-        """process a -> b rule"""
+        """Process a -> b rule."""
         if (not a) or any(isinstance(x, bool) for x in [a, b]):
             return
         if (a, b) in self._rules_seen:
@@ -406,10 +413,11 @@ class FactRules:
     .prereq  -- {} k <- [] of k's prerequisites
 
     .defined_facts -- set of defined fact names
+
     """
 
     def __init__(self, rules):
-        """Compile rules into internal lookup tables"""
+        """Compile rules into internal lookup tables."""
 
         if isinstance(rules, str):
             rules = rules.splitlines()
@@ -476,6 +484,7 @@ class InconsistentAssumptions(ValueError):
 class FactKB(dict):
     """
     A simple propositional knowledge base relying on compiled inference rules.
+
     """
 
     def __str__(self):
@@ -490,6 +499,7 @@ class FactKB(dict):
         Add fact k=v to the knowledge base.
 
         Returns True if the KB has actually been updated, False otherwise.
+
         """
         if k in self and self[k] is not None:
             if self[k] == v:
@@ -509,6 +519,7 @@ class FactKB(dict):
 
         Facts can be specified as a dictionary or as a list of (key, value)
         pairs.
+
         """
         # keep frequently used attributes locally, so we'll avoid extra
         # attribute access overhead

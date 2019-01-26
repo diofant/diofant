@@ -26,6 +26,7 @@ class Polyhedron(Basic):
     ==========
 
     http://mathworld.wolfram.com/PolyhedralGroup.html
+
     """
 
     _edges = None
@@ -371,6 +372,7 @@ class Polyhedron(Basic):
         ==========
 
         [1] www.ocf.berkeley.edu/~wwu/articles/platonicsolids.pdf
+
         """
         faces = [minlex(f, directed=False, is_set=True) for f in faces]
         corners, faces, pgroup = args = \
@@ -403,6 +405,7 @@ class Polyhedron(Basic):
         ========
 
         array_form, cyclic_form
+
         """
         return self._corners
     vertices = corners
@@ -430,6 +433,7 @@ class Polyhedron(Basic):
         ========
 
         corners, cyclic_form
+
         """
         corners = list(self.args[0])
         return [corners.index(c) for c in self.corners]
@@ -444,28 +448,23 @@ class Polyhedron(Basic):
         ========
 
         corners, array_form
+
         """
         return Permutation._af_new(self.array_form).cyclic_form
 
     @property
     def size(self):
-        """
-        Get the number of corners of the Polyhedron.
-        """
+        """Get the number of corners of the Polyhedron."""
         return len(self._corners)
 
     @property
     def faces(self):
-        """
-        Get the faces of the Polyhedron.
-        """
+        """Get the faces of the Polyhedron."""
         return self._faces
 
     @property
     def pgroup(self):
-        """
-        Get the permutations of the Polyhedron.
-        """
+        """Get the permutations of the Polyhedron."""
         return self._pgroup
 
     @property
@@ -545,6 +544,7 @@ class Polyhedron(Basic):
         >>> h5.rotate(p)
         >>> h5.corners == copy.corners
         False
+
         """
         if not isinstance(perm, Permutation):
             perm = self.pgroup[perm]
@@ -570,6 +570,7 @@ class Polyhedron(Basic):
         >>> tetrahedron.reset()
         >>> tetrahedron.corners
         (0, 1, 2, 3)
+
         """
         self._corners = self.args[0]
 
@@ -645,6 +646,7 @@ def _pgroup_calcs():
     ==========
 
     http://dogschool.tripod.com/trianglegroup.html
+
     """
     def _pgroup_of_double(polyh, ordered_faces, pgroup):
         n = len(ordered_faces[0])

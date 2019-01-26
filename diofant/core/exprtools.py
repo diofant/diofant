@@ -188,6 +188,7 @@ class Factors:
         """
         >>> Factors(0).is_zero
         True
+
         """
         f = self.factors
         return len(f) == 1 and 0 in f
@@ -197,6 +198,7 @@ class Factors:
         """
         >>> Factors(1).is_one
         True
+
         """
         return not self.factors
 
@@ -238,6 +240,7 @@ class Factors:
         Factors({x: 2, y: 3, z: -1})
         >>> a*b
         Factors({x: 2, y: 3, z: -1})
+
         """
         if not isinstance(other, Factors):
             other = Factors(other)
@@ -426,6 +429,7 @@ class Factors:
         >>> b = Factors((x*y/z).as_powers_dict())
         >>> a.quo(b)  # same as a/b
         Factors({y: 1})
+
         """
         return self.div(other)[0]
 
@@ -441,6 +445,7 @@ class Factors:
         Factors({z: -1})
         >>> a.rem(a)
         Factors({})
+
         """
         return self.div(other)[1]
 
@@ -482,6 +487,7 @@ class Factors:
         >>> b = Factors((x*y/z).as_powers_dict())
         >>> a.gcd(b)
         Factors({x: 1, y: 1})
+
         """
         if not isinstance(other, Factors):
             other = Factors(other)
@@ -513,6 +519,7 @@ class Factors:
         >>> b = Factors((x*y/z).as_powers_dict())
         >>> a.lcm(b)
         Factors({x: 1, y: 2, z: -1})
+
         """
         if not isinstance(other, Factors):
             other = Factors(other)
@@ -551,7 +558,7 @@ class Factors:
 
 
 class Term:
-    """Efficient representation of ``coeff*(numer/denom)``. """
+    """Efficient representation of ``coeff*(numer/denom)``."""
 
     def __init__(self, term, numer=None, denom=None):
         if numer is None and denom is None:
@@ -658,6 +665,7 @@ def _gcd_terms(terms, isprimitive=False, fraction=True):
 
     If ``fraction`` is True then the expression will appear over a common
     denominator, the lcm of all term denominators.
+
     """
 
     if isinstance(terms, Basic) and not isinstance(terms, Tuple):
@@ -760,6 +768,7 @@ def gcd_terms(terms, isprimitive=False, clear=True, fraction=True):
     def mask(terms):
         """replace nc portions of each term with a unique Dummy symbols
         and return the replacements to restore them
+
         """
         args = [(a, []) if a.is_commutative else a.args_cnc() for a in terms]
         reps = []
@@ -971,6 +980,7 @@ def _mask_nc(eq, name=None):
     True
     >>> _mask_nc(eq, 'd')
     (_d0**2 + 1, {_d0: Expr()}, [])
+
     """
     name = name or 'mask'
     # Make Dummy() append sequential numbers to the name
@@ -1041,14 +1051,13 @@ def factor_nc(expr):
     (x + A)**2
     >>> factor_nc(((x + A)*(x + B)).expand())
     (x + A)*(x + B)
+
     """
     from ..simplify.simplify import powsimp
     from ..polys import gcd, factor
 
     def _pemexpand(expr):
-        """Expand with the minimal set of hints necessary to check
-        the result.
-        """
+        """Expand with the minimal set of hints necessary to check the result."""
         return expr.expand(deep=True, mul=True, power_exp=True,
                            power_base=False, basic=False, multinomial=True, log=False)
 

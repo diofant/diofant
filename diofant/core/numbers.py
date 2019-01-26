@@ -45,6 +45,7 @@ def comp(z1, z2, tol=None):
     the error is normalized by ``|z1|``, so if you want to see if the
     absolute error between ``z1`` and ``z2`` is <= ``tol`` then call this
     as ``comp(z1 - z2, 0, tol)``.
+
     """
     if type(z2) is str:
         if not isinstance(z1, Number):
@@ -81,6 +82,7 @@ def mpf_norm(mpf, prec):
     mpf tuples that were not created by mpmath may produce bad results. This
     is only a wrapper to ``mpf_normalize`` which provides the check for non-
     zero mpfs that have a 0 for the mantissa.
+
     """
     sign, man, expt, bc = mpf
     if not man:
@@ -107,6 +109,7 @@ def seterr(divide=False):
 
     divide == True .... raise an exception
     divide == False ... return nan
+
     """
     if _errdict["divide"] != divide:
         clear_cache()
@@ -144,6 +147,7 @@ def igcd(*args):
     2
     >>> igcd(5, 10, 15)
     5
+
     """
     a = args[0]
     for b in args[1:]:
@@ -190,6 +194,7 @@ def igcdex(a, b):
     (-20, 1, 4)
     >>> x*100 + y*2004
     4
+
     """
     if (not a) and (not b):
         return 0, 1, 0
@@ -254,6 +259,7 @@ def mod_inverse(a, m):
 
     * https://en.wikipedia.org/wiki/Modular_multiplicative_inverse
     * https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
+
     """
     c = None
     try:
@@ -284,7 +290,7 @@ def mod_inverse(a, m):
 
 
 def integer_digits(n, b):
-    """Gives a list of the base `b` digits in the integer `n`. """
+    """Gives a list of the base `b` digits in the integer `n`."""
     n, b = map(as_int, (n, b))
     if n == 0:
         return [0]
@@ -302,6 +308,7 @@ class Number(AtomicExpr):
     Floating point numbers are represented by the Float class.
     Integer numbers (of any size), together with rational numbers (again,
     there is no limit on their size) are represented by the Rational class.
+
     """
 
     is_commutative = True
@@ -449,6 +456,7 @@ class Number(AtomicExpr):
         ========
 
         diofant.core.expr.Expr.is_constant
+
         """
         return True
 
@@ -459,6 +467,7 @@ class Number(AtomicExpr):
         ========
 
         diofant.core.expr.Expr.as_coeff_mul
+
         """
         # a -> c*t
         if self.is_Rational or not kwargs.pop('rational', True):
@@ -474,6 +483,7 @@ class Number(AtomicExpr):
         ========
 
         diofant.core.expr.Expr.as_coeff_add
+
         """
         # a -> c + t
         if self.is_Rational:
@@ -481,29 +491,29 @@ class Number(AtomicExpr):
         return S.Zero, (self,)
 
     def as_coeff_Mul(self, rational=False):
-        """Efficiently extract the coefficient of a product. """
+        """Efficiently extract the coefficient of a product."""
         if rational and not self.is_Rational:
             return S.One, self
         return (self, S.One) if self else (S.One, self)
 
     def as_coeff_Add(self, rational=False):
-        """Efficiently extract the coefficient of a summation. """
+        """Efficiently extract the coefficient of a summation."""
         if not rational:
             return self, S.Zero
         return S.Zero, self
 
     def gcd(self, other):
-        """Compute GCD of `self` and `other`. """
+        """Compute GCD of `self` and `other`."""
         from ..polys import gcd
         return gcd(self, other)
 
     def lcm(self, other):
-        """Compute LCM of `self` and `other`. """
+        """Compute LCM of `self` and `other`."""
         from ..polys import lcm
         return lcm(self, other)
 
     def cofactors(self, other):
-        """Compute GCD and cofactors of `self` and `other`. """
+        """Compute GCD and cofactors of `self` and `other`."""
         from ..polys import cofactors
         return cofactors(self, other)
 
@@ -659,6 +669,7 @@ class Float(Number):
     This is not needed for instantiation and is not the same thing as the
     precision. The mpf tuple and the precision are two separate quantities
     that Float tracks.
+
     """
 
     # A Float represents many real numbers,
@@ -901,6 +912,7 @@ class Float(Number):
 
         (-p)**r -> exp(r*log(-p)) -> exp(r*(log(p) + I*Pi)) ->
                   -> p**r*(sin(Pi*r) + cos(Pi*r)*I)
+
         """
         if self == 0:
             if expt.is_positive:
@@ -1103,6 +1115,7 @@ class Rational(Number):
 
     diofant.core.sympify.sympify
     diofant.simplify.simplify.nsimplify
+
     """
 
     is_real = True
@@ -1381,6 +1394,7 @@ class Rational(Number):
         """A wrapper to factorint which return factors of self that are
         smaller than limit (or cheap to compute). Special methods of
         factoring are disabled by default so that only trial division is used.
+
         """
         from ..ntheory import factorrat
 
@@ -1390,7 +1404,7 @@ class Rational(Number):
 
     @_sympifyit('other', NotImplemented)
     def gcd(self, other):
-        """Compute GCD of `self` and `other`. """
+        """Compute GCD of `self` and `other`."""
         if isinstance(other, Rational):
             return Rational(
                 Integer(math.gcd(self.numerator, other.numerator)),
@@ -1399,7 +1413,7 @@ class Rational(Number):
 
     @_sympifyit('other', NotImplemented)
     def lcm(self, other):
-        """Compute LCM of `self` and `other`. """
+        """Compute LCM of `self` and `other`."""
         if isinstance(other, Rational):
             return Rational(
                 self.numerator*other.numerator//math.gcd(self.numerator, other.numerator),
@@ -1413,6 +1427,7 @@ class Rational(Number):
         ========
 
         diofant.core.expr.Expr.as_numer_denom
+
         """
         return Integer(self.numerator), Integer(self.denominator)
 
@@ -1430,6 +1445,7 @@ class Rational(Number):
         ========
 
         diofant.core.expr.Expr.as_content_primitive
+
         """
 
         if self:
@@ -1647,6 +1663,7 @@ class RationalConstant(Rational):
 
     Derived classes must define class attributes p and q and should probably all
     be singletons.
+
     """
 
     def __new__(cls):
@@ -1676,6 +1693,7 @@ class Zero(IntegerConstant, metaclass=Singleton):
     ==========
 
     * https//en.wikipedia.org/wiki/Zero
+
     """
 
     _numerator = _int_dtype(0)
@@ -1719,6 +1737,7 @@ class One(IntegerConstant, metaclass=Singleton):
     ==========
 
     * https//en.wikipedia.org/wiki/1_%28number%29
+
     """
 
     is_number = True
@@ -1747,6 +1766,7 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
     ==========
 
     * https//en.wikipedia.org/wiki/%E2%88%921_%28number%29
+
     """
 
     is_number = True
@@ -1797,6 +1817,7 @@ class Half(RationalConstant, metaclass=Singleton):
     ==========
 
     * https//en.wikipedia.org/wiki/One_half
+
     """
 
     is_number = True
@@ -1840,6 +1861,7 @@ class Infinity(Number, metaclass=Singleton):
     ==========
 
     * https//en.wikipedia.org/wiki/Infinity
+
     """
 
     is_commutative = True
@@ -2017,6 +2039,7 @@ class NegativeInfinity(Number, metaclass=Singleton):
     ========
 
     Infinity
+
     """
 
     is_commutative = True
@@ -2217,6 +2240,7 @@ class NaN(Number, metaclass=Singleton):
     ==========
 
     * https//en.wikipedia.org/wiki/NaN
+
     """
 
     is_commutative = True
@@ -2295,6 +2319,7 @@ class ComplexInfinity(AtomicExpr, metaclass=Singleton):
     ========
 
     Infinity
+
     """
 
     is_commutative = True
@@ -2339,6 +2364,7 @@ class NumberSymbol(AtomicExpr):
     def approximation_interval(self, number_cls):
         """ Return an interval with number_cls endpoints that contains the
         value of NumberSymbol.  If not implemented, then return None.
+
         """
         return  # pragma: no cover
 
@@ -2410,6 +2436,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
     ==========
 
     * https//en.wikipedia.org/wiki/E_%28mathematical_constant%29
+
     """
 
     is_real = True
@@ -2543,6 +2570,7 @@ class Pi(NumberSymbol, metaclass=Singleton):
     ==========
 
     * https//en.wikipedia.org/wiki/Pi
+
     """
 
     is_real = True
@@ -2596,6 +2624,7 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
     ==========
 
     * https//en.wikipedia.org/wiki/Golden_ratio
+
     """
 
     is_real = True
@@ -2650,6 +2679,7 @@ class EulerGamma(NumberSymbol, metaclass=Singleton):
     ==========
 
     * https//en.wikipedia.org/wiki/Euler%E2%80%93Mascheroni_constant
+
     """
 
     is_real = True
@@ -2696,6 +2726,7 @@ class Catalan(NumberSymbol, metaclass=Singleton):
     ==========
 
     * https//en.wikipedia.org/wiki/Catalan%27s_constant
+
     """
 
     is_real = True
@@ -2738,6 +2769,7 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
     ==========
 
     * https//en.wikipedia.org/wiki/Imaginary_unit
+
     """
 
     is_commutative = True
@@ -2771,6 +2803,7 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
         I**1 mod 4 -> I
         I**2 mod 4 -> -1
         I**3 mod 4 -> -I
+
         """
 
         if isinstance(expt, Number):

@@ -25,6 +25,7 @@ class Adjoint(MatrixExpr):
     False
     >>> adjoint(A*B) == Adjoint(A*B).doit()
     True
+
     """
 
     is_Adjoint = True

@@ -48,6 +48,7 @@ class MatrixSlice(MatrixExpr):
     Matrix([
     [2, 3],
     [6, 7]])
+
     """
 
     parent = property(lambda self: self.args[0])
@@ -104,6 +105,7 @@ def mat_slice_of_slice(parent, rowslice, colslice):
     X[5:8, 1:5]
     >>> X[1:9:2, 2:6][1:3, 2]
     X[3:7:2, 4]
+
     """
     row = slice_of_slice(parent.rowslice, rowslice)
     col = slice_of_slice(parent.colslice, colslice)

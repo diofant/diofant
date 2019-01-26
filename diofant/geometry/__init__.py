@@ -8,6 +8,7 @@ Notes
 
 Currently the geometry module supports 2-dimensional
 and 3-dimensional Euclidean space.
+
 """
 
 from .point import Point, Point2D, Point3D  # noqa: F401

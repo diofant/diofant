@@ -5,7 +5,7 @@ from ...matrices import MatrixBase
 
 
 class NDimArray:
-    """
+    """N-dim array.
 
     Examples
     ========
@@ -212,6 +212,7 @@ class NDimArray:
         [[0, 1], [2, 3]]
         >>> m.applyfunc(lambda i: 2*i)
         [[0, 2], [4, 6]]
+
         """
         return type(self)(map(f, self), self.shape)
 
@@ -250,6 +251,7 @@ class NDimArray:
         >>> b = a.tolist()
         >>> b
         [[1, 2], [3, 4]]
+
         """
 
         def f(sh, shape_left, i, j):
@@ -327,6 +329,7 @@ class NDimArray:
         >>> b[0, 0] = 2
         >>> a == b
         False
+
         """
         if not isinstance(other, NDimArray):
             return False

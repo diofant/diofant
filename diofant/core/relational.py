@@ -82,6 +82,7 @@ class Relational(Boolean, Expr, EvalfMixin):
         x < 1
         >>> _.reversed
         1 > x
+
         """
         ops = {Gt: Lt, Ge: Le, Lt: Gt, Le: Ge}
         a, b = self.args
@@ -100,6 +101,7 @@ class Relational(Boolean, Expr, EvalfMixin):
             3) Gt/Ge changed to Lt/Le;
             4) Lt/Le are unchanged;
             5) Eq and Ne get ordered args.
+
         """
         r = self
         if r.func in (Ge, Gt):
@@ -123,6 +125,7 @@ class Relational(Boolean, Expr, EvalfMixin):
         identical and the type of relationship is the same.
         If failing_expression is True, return the expression whose truth value
         was unknown.
+
         """
         if isinstance(other, Relational):
             if self == other or self.reversed == other:
@@ -265,6 +268,7 @@ class Equality(Relational):
     returns anything other than None, that return value will be substituted for
     the Equality.  If None is returned by `_eval_Eq`, an Equality object will
     be created as usual.
+
     """
 
     rel_op = '=='
@@ -332,6 +336,7 @@ class Unequality(Relational):
 
     This class is effectively the inverse of Equality.  As such, it uses the
     same algorithms, including any available `_eval_Eq` methods.
+
     """
 
     rel_op = '!='
@@ -358,6 +363,7 @@ class _Inequality(Relational):
 
     Each subclass must implement _eval_relation to provide the method for
     comparing two real numbers.
+
     """
 
     def __new__(cls, lhs, rhs, **options):
@@ -386,16 +392,17 @@ class _Greater(_Inequality):
 
     _Greater is only used so that GreaterThan and StrictGreaterThan may subclass
     it for the .gts and .lts properties.
+
     """
 
     @property
     def gts(self):
-        """Greater than side argument"""
+        """Greater than side argument."""
         return self.args[0]
 
     @property
     def lts(self):
-        """Less than side argument"""
+        """Less than side argument."""
         return self.args[1]
 
 
@@ -404,16 +411,17 @@ class _Less(_Inequality):
 
     _Less is only used so that LessThan and StrictLessThan may subclass it for
     the .gts and .lts properties.
+
     """
 
     @property
     def gts(self):
-        """Greater than side argument"""
+        """Greater than side argument."""
         return self.args[1]
 
     @property
     def lts(self):
-        """Less than side argument"""
+        """Less than side argument."""
         return self.args[0]
 
 
@@ -590,6 +598,7 @@ class GreaterThan(_Greater):
 
     >>> And(x < y, y < z)
     And(x < y, y < z)
+
     """
 
     rel_op = '>='

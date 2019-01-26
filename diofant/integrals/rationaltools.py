@@ -30,6 +30,7 @@ def ratint(f, x, **flags):
     diofant.integrals.integrals.Integral.doit
     diofant.integrals.rationaltools.ratint_logpart
     diofant.integrals.rationaltools.ratint_ratpart
+
     """
     if type(f) is not tuple:
         p, q = f.as_numer_denom()
@@ -131,6 +132,7 @@ def ratint_ratpart(f, g, x):
 
     diofant.integrals.rationaltools.ratint
     diofant.integrals.rationaltools.ratint_logpart
+
     """
     f = Poly(f, x)
     g = Poly(g, x)
@@ -190,6 +192,7 @@ def ratint_logpart(f, g, x, t=None):
 
     diofant.integrals.rationaltools.ratint
     diofant.integrals.rationaltools.ratint_ratpart
+
     """
     f, g = Poly(f, x), Poly(g, x)
 
@@ -264,6 +267,7 @@ def log_to_atan(f, g):
     ========
 
     log_to_real
+
     """
     if f.degree() < g.degree():
         f, g = -g, f
@@ -307,6 +311,7 @@ def log_to_real(h, q, x, t):
     ========
 
     log_to_atan
+
     """
     u, v = symbols('u,v', cls=Dummy)
 

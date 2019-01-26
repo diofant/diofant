@@ -110,6 +110,7 @@ class lerchphi(Function):
     (-a*lerchphi(z, s, a) + lerchphi(z, s - 1, a))/z
     >>> lerchphi(z, s, a).diff(a)
     -s*lerchphi(z, s + 1, a)
+
     """
 
     def _eval_expand_func(self, **hints):
@@ -265,6 +266,7 @@ class polylog(Function):
 
     * https://en.wikipedia.org/wiki/Polylogarithm
     * http://mathworld.wolfram.com/Polylogarithm.html
+
     """
 
     @classmethod
@@ -522,6 +524,7 @@ class dirichlet_eta(Function):
     >>> from diofant.abc import s
     >>> dirichlet_eta(s).rewrite(zeta)
     (-2**(-s + 1) + 1)*zeta(s)
+
     """
 
     @classmethod

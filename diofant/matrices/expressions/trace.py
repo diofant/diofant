@@ -10,6 +10,7 @@ class Trace(Expr):
     >>> A = MatrixSymbol('A', 3, 3)
     >>> Trace(A)
     Trace(A)
+
     """
 
     is_Trace = True
@@ -65,5 +66,6 @@ def trace(expr):
     ========
 
     Trace
+
     """
     return Trace(expr).doit()

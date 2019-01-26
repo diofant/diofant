@@ -40,6 +40,7 @@ def _d(n, j, prec, sq23pi, sqrt8):
     """Compute the sinh term in the outer sum of the HRR formula.
 
     The constants sqrt(2/3*pi) and sqrt(8) must be precomputed.
+
     """
     j = from_int(j)
     pi = mpf_pi(prec)
@@ -71,6 +72,7 @@ def npartitions(n):
     ==========
 
     * http://mathworld.wolfram.com/PartitionFunctionP.html
+
     """
     n = int(n)
     if n < 0:

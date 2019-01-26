@@ -41,6 +41,7 @@ class Transform:
     4
     >>> add1_odd.get(3, 0)
     4
+
     """
 
     def __init__(self, transform, filter=lambda x: True):

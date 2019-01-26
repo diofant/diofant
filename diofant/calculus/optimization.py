@@ -29,6 +29,7 @@ def minimize(f, *v):
     ========
 
     maximize
+
     """
     f = set(map(sympify, f if is_sequence(f) else [f]))
 
@@ -106,6 +107,7 @@ def maximize(f, *v):
     ========
 
     minimize
+
     """
     f = set(map(sympify, f if is_sequence(f) else [f]))
 
@@ -173,6 +175,7 @@ def simplex(c, m, b):
 
     * Paul R. Thie, Gerard E. Keough, An Introduction to Linear
       Programming and Game Theory, Third edition, 2008, Ch. 3.
+
     """
 
     rows, cols = len(b), len(c)

@@ -23,6 +23,7 @@ def evaluate(x):
     >>> with evaluate(False):
     ...     x + x
     x + x
+
     """
 
     old = global_evaluate[0]

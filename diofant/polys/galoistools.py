@@ -39,6 +39,7 @@ def gf_crt(U, M, K=None):
 
     diofant.ntheory.modular.crt : a higher level crt routine
     diofant.ntheory.modular.solve_congruence
+
     """
     p = prod(M, start=K.one)
     v = K.zero
@@ -60,6 +61,7 @@ def gf_crt1(M, K):
 
     >>> gf_crt1([99, 97, 95], ZZ)
     (912285, [9215, 9405, 9603], [62, 24, 12])
+
     """
     E, S = [], []
     p = prod(M, start=K.one)
@@ -86,6 +88,7 @@ def gf_crt2(U, M, p, E, S, K):
 
     >>> gf_crt2(U, M, p, E, S, ZZ)
     639985
+
     """
     v = K.zero
 
@@ -123,6 +126,7 @@ def gf_from_dict(f, p, K):
 
     >>> gf_from_dict({10: 4, 4: 33, 0: -1}, 5, ZZ)
     [4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4]
+
     """
     f = dmp_from_dict(f, 0, K.finite_field(p))
     f = dmp_normal(f, 0, K.finite_field(p))
@@ -139,6 +143,7 @@ def gf_from_int_poly(f, p):
 
     >>> gf_from_int_poly([7, -2, 3], 5)
     [2, 3, 3]
+
     """
     return dmp_strip([a % p for a in f], 0)
 
@@ -152,6 +157,7 @@ def gf_neg(f, p, K):
 
     >>> gf_neg([3, 2, 1, 0], 5, ZZ)
     [2, 3, 4, 0]
+
     """
     return [ -coeff % p for coeff in f ]
 
@@ -165,6 +171,7 @@ def gf_add_ground(f, a, p, K):
 
     >>> gf_add_ground([3, 2, 4], 2, 5, ZZ)
     [3, 2, 1]
+
     """
     if not f:
         a = a % p
@@ -189,6 +196,7 @@ def gf_sub_ground(f, a, p, K):
 
     >>> gf_sub_ground([3, 2, 4], 2, 5, ZZ)
     [3, 2, 2]
+
     """
     if not f:
         a = -a % p
@@ -213,6 +221,7 @@ def gf_mul_ground(f, a, p, K):
 
     >>> gf_mul_ground([3, 2, 4], 2, 5, ZZ)
     [1, 4, 3]
+
     """
     if not a:
         return []
@@ -229,6 +238,7 @@ def gf_quo_ground(f, a, p, K):
 
     >>> gf_quo_ground([3, 2, 4], 2, 5, ZZ)
     [4, 1, 2]
+
     """
     return gf_mul_ground(f, K.invert(a, p), p, K)
 
@@ -242,6 +252,7 @@ def gf_add(f, g, p, K):
 
     >>> gf_add([3, 2, 4], [2, 2, 2], 5, ZZ)
     [4, 1]
+
     """
     if not f:
         return g
@@ -273,6 +284,7 @@ def gf_sub(f, g, p, K):
 
     >>> gf_sub([3, 2, 4], [2, 2, 2], 5, ZZ)
     [1, 0, 2]
+
     """
     if not g:
         return f
@@ -304,6 +316,7 @@ def gf_mul(f, g, p, K):
 
     >>> gf_mul([3, 2, 4], [2, 2, 2], 5, ZZ)
     [1, 0, 3, 2, 3]
+
     """
     df = dmp_degree_in(f, 0, 0)
     dg = dmp_degree_in(g, 0, 0)
@@ -334,6 +347,7 @@ def gf_sqr(f, p, K):
 
     >>> gf_sqr([3, 2, 4], 5, ZZ)
     [4, 2, 3, 1, 1]
+
     """
     df = dmp_degree_in(f, 0, 0)
     if df < 0:
@@ -375,6 +389,7 @@ def gf_add_mul(f, g, h, p, K):
 
     >>> gf_add_mul([3, 2, 4], [2, 2, 2], [1, 4], 5, ZZ)
     [2, 3, 2, 2]
+
     """
     return gf_add(f, gf_mul(g, h, p, K), p, K)
 
@@ -388,6 +403,7 @@ def gf_sub_mul(f, g, h, p, K):
 
     >>> gf_sub_mul([3, 2, 4], [2, 2, 2], [1, 4], 5, ZZ)
     [3, 3, 2, 1]
+
     """
     return gf_sub(f, gf_mul(g, h, p, K), p, K)
 
@@ -401,6 +417,7 @@ def gf_expand(F, p, K):
 
     >>> gf_expand([([3, 2, 4], 1), ([2, 2], 2), ([3, 1], 3)], 5, ZZ)
     [4, 3, 0, 3, 0, 1, 4, 1]
+
     """
     if type(F) is tuple:
         lc, F = F
@@ -437,6 +454,7 @@ def gf_div(f, g, p, K):
 
     * [Monagan93]_
     * [Gathen99]_
+
     """
     df = dmp_degree_in(f, 0, 0)
     dg = dmp_degree_in(g, 0, 0)
@@ -473,6 +491,7 @@ def gf_rem(f, g, p, K):
 
     >>> gf_rem([1, 0, 1, 1], [1, 1, 0], 2, ZZ)
     [1]
+
     """
     return gf_div(f, g, p, K)[1]
 
@@ -488,6 +507,7 @@ def gf_quo(f, g, p, K):
     [1, 1]
     >>> gf_quo([1, 0, 3, 2, 3], [2, 2, 2], 5, ZZ)
     [3, 2, 4]
+
     """
     df = dmp_degree_in(f, 0, 0)
     dg = dmp_degree_in(g, 0, 0)
@@ -526,6 +546,7 @@ def gf_exquo(f, g, p, K):
     Traceback (most recent call last):
     ...
     ExactQuotientFailed: [1, 1, 0] does not divide [1, 0, 1, 1]
+
     """
     q, r = gf_div(f, g, p, K)
 
@@ -544,6 +565,7 @@ def gf_pow(f, n, p, K):
 
     >>> gf_pow([3, 2, 4], 3, 5, ZZ)
     [2, 4, 4, 2, 2, 1, 4]
+
     """
     if not n:
         return [K.one]
@@ -579,6 +601,7 @@ def gf_frobenius_monomial_base(g, p, K):
 
     >>> gf_frobenius_monomial_base([1, 0, 2, 1], 5, ZZ)
     [[1], [4, 4, 2], [1, 2]]
+
     """
     n = dmp_degree_in(g, 0, 0)
     if n == 0:
@@ -620,6 +643,7 @@ def gf_frobenius_map(f, g, b, p, K):
     >>> r = gf_frobenius_map(f, g, b, p, ZZ)
     >>> gf_frobenius_map(f, g, b, p, ZZ)
     [4, 0, 3]
+
     """
     m = dmp_degree_in(g, 0, 0)
     if dmp_degree_in(f, 0, 0) >= m:
@@ -639,6 +663,7 @@ def _gf_pow_pnm1d2(f, n, g, b, p, K):
     utility function for ``gf_edf_zassenhaus``
     Compute ``f**((p**n - 1) // 2)`` in ``GF(p)[x]/(g)``
     ``f**((p**n - 1) // 2) = (f*f**p*...*f**(p**n - 1))**((p - 1) // 2)``
+
     """
     f = gf_rem(f, g, p, K)
     h = f
@@ -670,6 +695,7 @@ def gf_pow_mod(f, n, g, p, K):
     ==========
 
     * [Gathen99]_
+
     """
     if not n:
         return [K.one]
@@ -706,6 +732,7 @@ def gf_gcd(f, g, p, K):
 
     >>> gf_gcd([3, 2, 4], [2, 2, 3], 5, ZZ)
     [1, 3]
+
     """
     while g:
         f, g = g, gf_rem(f, g, p, K)
@@ -722,6 +749,7 @@ def gf_lcm(f, g, p, K):
 
     >>> gf_lcm([3, 2, 4], [2, 2, 3], 5, ZZ)
     [1, 2, 0, 4]
+
     """
     if not f or not g:
         return []
@@ -741,6 +769,7 @@ def gf_cofactors(f, g, p, K):
 
     >>> gf_cofactors([3, 2, 4], [2, 2, 3], 5, ZZ)
     ([1, 3], [3, 3], [2, 1])
+
     """
     if not f and not g:
         return [], [], []
@@ -775,6 +804,7 @@ def gf_gcdex(f, g, p, K):
     ==========
 
     * [Gathen99]_
+
     """
     if not (f or g):
         return [K.one], [], []
@@ -818,6 +848,7 @@ def gf_monic(f, p, K):
 
     >>> gf_monic([3, 2, 4], 5, ZZ)
     (3, [1, 4, 3])
+
     """
     if not f:
         return K.zero, []
@@ -839,6 +870,7 @@ def gf_diff(f, p, K):
 
     >>> gf_diff([3, 2, 4], 5, ZZ)
     [1, 2]
+
     """
     df = dmp_degree_in(f, 0, 0)
     if df < 0:
@@ -867,6 +899,7 @@ def gf_eval(f, a, p, K):
 
     >>> gf_eval([3, 2, 4], 2, 5, ZZ)
     0
+
     """
     result = K.zero
 
@@ -887,6 +920,7 @@ def gf_compose(f, g, p, K):
 
     >>> gf_compose([3, 2, 4], [2, 2, 2], 5, ZZ)
     [2, 4, 0, 3, 0]
+
     """
     if len(g) <= 1:
         return dmp_strip([gf_eval(f, dmp_LC(g, K), p, K)], 0)
@@ -912,6 +946,7 @@ def gf_compose_mod(g, h, f, p, K):
 
     >>> gf_compose_mod([3, 2, 4], [2, 2, 2], [4, 3], 5, ZZ)
     [4]
+
     """
     if not g:
         return []
@@ -952,6 +987,7 @@ def gf_trace_map(a, b, c, n, f, p, K):
     ==========
 
     * [Gathen92]_
+
     """
     u = gf_compose_mod(a, b, f, p, K)
     v = b
@@ -981,6 +1017,7 @@ def gf_trace_map(a, b, c, n, f, p, K):
 def _gf_trace_map(f, n, g, b, p, K):
     """
     utility for ``gf_edf_shoup``
+
     """
     f = gf_rem(f, g, p, K)
     h = f
@@ -1001,6 +1038,7 @@ def gf_random(n, p, K):
 
     >>> gf_random(10, 5, ZZ) #doctest: +SKIP
     [1, 2, 3, 2, 1, 1, 1, 2, 0, 4, 2]
+
     """
     return [K.one] + [ K(int(random.uniform(0, p))) for i in range(n) ]
 
@@ -1014,6 +1052,7 @@ def gf_irreducible(n, p, K):
 
     >>> gf_irreducible(10, 5, ZZ) #doctest: +SKIP
     [1, 4, 2, 2, 3, 2, 4, 1, 4, 0, 4]
+
     """
     while True:
         f = gf_random(n, p, K)
@@ -1037,6 +1076,7 @@ def gf_irred_p_ben_or(f, p, K):
     ==========
 
     * [BenOr81]_
+
     """
     n = dmp_degree_in(f, 0, 0)
 
@@ -1078,6 +1118,7 @@ def gf_irred_p_rabin(f, p, K):
     True
     >>> gf_irred_p_rabin([3, 2, 4], 5, ZZ)
     False
+
     """
     n = dmp_degree_in(f, 0, 0)
 
@@ -1122,6 +1163,7 @@ def gf_irreducible_p(f, p, K):
     True
     >>> gf_irreducible_p([3, 2, 4], 5, ZZ)
     False
+
     """
     method = query('GF_IRRED_METHOD')
 
@@ -1160,6 +1202,7 @@ def gf_sqf_list(f, p, K):
     ==========
 
     * [Geddes92]_
+
     """
     n, sqf, factors, r = 1, False, [], int(p)
 
@@ -1220,6 +1263,7 @@ def gf_Qmatrix(f, p, K):
      [0, 4, 0, 0],
      [0, 0, 1, 0],
      [0, 0, 0, 4]]
+
     """
     n, r = dmp_degree_in(f, 0, 0), int(p)
 
@@ -1252,6 +1296,7 @@ def gf_Qbasis(Q, p, K):
 
     >>> gf_Qbasis(gf_Qmatrix([3, 2, 4], 5, ZZ), 5, ZZ)
     [[1, 0]]
+
     """
     Q, n = [ list(q) for q in Q ], len(Q)
 
@@ -1307,6 +1352,7 @@ def gf_berlekamp(f, p, K):
 
     >>> gf_berlekamp([1, 0, 0, 0, 1], 5, ZZ)
     [[1, 0, 2], [1, 0, 3]]
+
     """
     Q = gf_Qmatrix(f, p, K)
     V = gf_Qbasis(Q, p, K)
@@ -1364,6 +1410,7 @@ def gf_ddf_zassenhaus(f, p, K):
 
     * [Gathen99]_
     * [Geddes92]_
+
     """
     i, g, factors = 1, [K.one, K.zero], []
 
@@ -1407,6 +1454,7 @@ def gf_edf_zassenhaus(f, n, p, K):
 
     * [Gathen99]_
     * [Geddes92]_
+
     """
     factors = [f]
 
@@ -1466,6 +1514,7 @@ def gf_ddf_shoup(f, p, K):
     * [Kaltofen98]_
     * [Shoup95]_
     * [Gathen92]_
+
     """
     n = dmp_degree_in(f, 0, 0)
     k = int(math.ceil(math.sqrt(n//2)))
@@ -1535,6 +1584,7 @@ def gf_edf_shoup(f, n, p, K):
 
     * [Shoup91]_
     * [Gathen92]_
+
     """
     N, q = dmp_degree_in(f, 0, 0), int(p)
 
@@ -1625,6 +1675,7 @@ def gf_factor_sqf(f, p, K):
 
     >>> gf_factor_sqf([3, 2, 4], 5, ZZ)
     (3, [[1, 1], [1, 3]])
+
     """
     lc, f = gf_monic(f, p, K)
 
@@ -1681,6 +1732,7 @@ def gf_factor(f, p, K):
     ==========
 
     * [Gathen99]_
+
     """
     lc, f = gf_monic(f, p, K)
 
@@ -1733,6 +1785,7 @@ def linear_congruence(a, b, m):
     ==========
 
     * https//en.wikipedia.org/wiki/Linear_congruence_theorem
+
     """
     from .polytools import gcdex
     if a % m == 0:
@@ -1794,6 +1847,7 @@ def csolve_prime(f, p, e=1):
     [1]
     >>> csolve_prime([1, 1, 7], 3, 2)
     [1, 4, 7]
+
     """
     from ..domains import ZZ
     X1 = [i for i in range(p) if gf_eval(f, i, p, ZZ) == 0]
@@ -1830,6 +1884,7 @@ def gf_csolve(f, n):
     ==========
 
     * [Niven91]_
+
     """
     from ..domains import ZZ
     P = factorint(n)

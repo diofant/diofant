@@ -19,6 +19,7 @@ class Prufer(Basic):
     ==========
 
     * http://mathworld.wolfram.com/LabeledTree.html
+
     """
 
     _prufer_repr = None
@@ -346,6 +347,7 @@ class Prufer(Basic):
         >>> b = Prufer([1, 3])
         >>> b.tree_repr
         [[0, 1], [1, 3], [2, 3]]
+
         """
         newargs = []
         for a in args:
