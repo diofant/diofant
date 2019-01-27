@@ -114,6 +114,8 @@ matrix:
   allow_failures:
     - python: pypy3.5
       env: SPLIT=3/3
+before_install:
+  - pip install --pre -U 'gmpy2;platform_python_implementation!="PyPy"'
 install:
   - travis_wait pip install .[exports,plot,interactive,develop,gmpy,docs]
 script:

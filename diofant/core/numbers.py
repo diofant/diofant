@@ -1134,14 +1134,9 @@ class Rational(Number):
                 p, q = float(p).as_integer_ratio()
 
         if isinstance(p, Rational):
-            p = fractions.Fraction(int(p.numerator), int(p.denominator))
+            p = fractions.Fraction(p.numerator, p.denominator)
         if isinstance(q, Rational):
-            q = fractions.Fraction(int(q.numerator), int(q.denominator))
-
-        if isinstance(p, DIOFANT_INTS):
-            p = int(p)
-        if isinstance(q, DIOFANT_INTS):
-            q = int(q)
+            q = fractions.Fraction(q.numerator, q.denominator)
 
         try:
             f = fractions.Fraction(p)/fractions.Fraction(q)
@@ -1178,7 +1173,7 @@ class Rational(Number):
         311/99
 
         """
-        f = fractions.Fraction(int(self.numerator), int(self.denominator))
+        f = fractions.Fraction(self.numerator, self.denominator)
         return Rational(f.limit_denominator(fractions.Fraction(int(max_denominator))))
 
     def __getnewargs__(self):
@@ -2840,8 +2835,8 @@ if HAS_GMPY:
     def sympify_mpq(x):
         return Rational(int(x.numerator), int(x.denominator))
 
-    converter[type(gmpy.mpz(1))] = sympify_mpz
-    converter[type(gmpy.mpq(1, 2))] = sympify_mpq
+    converter[gmpy.mpz] = sympify_mpz
+    converter[gmpy.mpq] = sympify_mpq
 
 
 def sympify_mpmath(x):
