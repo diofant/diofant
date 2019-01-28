@@ -1294,6 +1294,10 @@ def test_PolyElement_subs():
     r = f.subs({y: 1})
     assert r == -x - z
 
+    f = x**2 + x - 1
+
+    assert f.subs({x: 20}) == 419
+
 
 def test_PolyElement_compose():
     R, x = ring("x", ZZ)
