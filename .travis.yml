@@ -81,6 +81,7 @@ matrix:
                      SM0rxl929Rb9hvf/QuNI6bpkPs0lz2roXa0PdJ2pdoNOm5Md2e43ht\
                      bMRfH54YS98QDxL+gwasr327iGLi++avxF3N+vSyWboJLkSydDDlVh\
                      B7k/t57Ig="
+          skip_cleanup: true
           distributions: "sdist bdist_wheel"
           on:
             tags: true
