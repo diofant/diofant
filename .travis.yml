@@ -69,9 +69,10 @@ matrix:
         - rsync -a --delete build/sphinx/html/ sphinx_docs/en/latest/
         - python setup.py sdist bdist_wheel
         - VERSION=$(python -c 'import diofant;print(diofant.__version__)')
+        - cp -a dist gdist
         - cp -a build/sphinx/html diofant-docs-html-${VERSION}
-        - zip -r dist/diofant-docs-html-${VERSION}.zip diofant-docs-html-${VERSION}
-        - cp -a build/sphinx/latex/diofant.pdf dist/diofant-docs-${VERSION}.pdf
+        - zip -r gdist/diofant-docs-html-${VERSION}.zip diofant-docs-html-${VERSION}
+        - cp -a build/sphinx/latex/diofant.pdf gdist/diofant-docs-${VERSION}.pdf
         - SHORT_VERSION=$(echo ${VERSION}|sed 's/\([0-9]\+\.[0-9]\+\).*$/\1/')
       deploy:
         - provider: pypi
@@ -99,7 +100,7 @@ matrix:
           skip_cleanup: true
           draft: true
           file_glob: true
-          file: dist/*
+          file: gdist/*
           name: "Diofant ${VERSION}"
           body: "See [release notes](https://diofant.readthedocs.io/\
                  en/latest/release/notes-${SHORT_VERSION}.html)."
