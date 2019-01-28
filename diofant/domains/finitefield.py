@@ -1,9 +1,9 @@
 """Implementation of :class:`FiniteField` class. """
 
+import numbers
 import random
 
 from ..core import Dummy, integer_digits
-from ..core.compatibility import DIOFANT_INTS
 from ..ntheory import isprime, perfect_power
 from ..polys.galoistools import gf_irreducible
 from ..polys.polyerrors import CoercionFailed
@@ -30,7 +30,7 @@ class FiniteField(Field, SimpleDomain):
     has_assoc_Field = True
 
     def __new__(cls, order, dom, modulus=None):
-        if not (isinstance(order, DIOFANT_INTS) and isprime(order)):
+        if not (isinstance(order, numbers.Integral) and isprime(order)):
             pp = perfect_power(order)
             if not pp:
                 raise ValueError('order must be a prime power, '
@@ -239,7 +239,7 @@ class ModularInteger(DomainElement):
         return other.__mod__(self)
 
     def __pow__(self, exp):
-        if not isinstance(exp, DIOFANT_INTS):
+        if not isinstance(exp, numbers.Integral):
             raise TypeError("Integer exponent expected, got %s" % type(exp))
         if exp < 0:
             rep, exp = self.domain.invert(self.rep, self.mod), -exp
@@ -260,7 +260,7 @@ class ModularInteger(DomainElement):
 
 class GaloisFieldElement(ModularInteger):
     def __init__(self, rep):
-        if isinstance(rep, DIOFANT_INTS):
+        if isinstance(rep, numbers.Integral):
             rep = integer_digits(rep, self.parent.mod)
 
         if isinstance(rep, (list, tuple)):

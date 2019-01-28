@@ -122,7 +122,6 @@ class GMPYIntegerRing(IntegerRing):
     dtype = GMPYInteger
     zero = dtype(0)
     one = dtype(1)
-    tp = type(one)
 
     def gcdex(self, a, b):
         """Compute extended GCD of ``a`` and ``b``. """

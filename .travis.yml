@@ -2,9 +2,7 @@ language: python
 dist: xenial
 cache: pip
 python:
-  - 3.6
   - 3.7
-  - pypy3.5
 env:
   global:
     - PYTEST_ADDOPTS="-n auto --cov-config setup.cfg --cov-append"
@@ -17,6 +15,9 @@ env:
     - SPLIT=1/3
     - SPLIT=2/3
     - SPLIT=3/3
+    - SPLIT=1/3 COVERAGE=on
+    - SPLIT=2/3 COVERAGE=on
+    - SPLIT=3/3 COVERAGE=on
 addons:
   apt:
     packages:
@@ -39,14 +40,8 @@ stages:
   - deploy
 matrix:
   include:
-    - python: 3.5
-      env: SPLIT='1/3' COVERAGE='on'
-    - python: 3.5
-      env: SPLIT='2/3' COVERAGE='on'
-    - python: 3.5
-      env: SPLIT='3/3' COVERAGE='on'
     - stage: quality
-      python: 3.5
+      python: 3.7
       env: COVERAGE='on'
       script:
         - python -We:invalid -m compileall -f diofant -q
@@ -86,6 +81,7 @@ matrix:
                      SM0rxl929Rb9hvf/QuNI6bpkPs0lz2roXa0PdJ2pdoNOm5Md2e43ht\
                      bMRfH54YS98QDxL+gwasr327iGLi++avxF3N+vSyWboJLkSydDDlVh\
                      B7k/t57Ig="
+          skip_cleanup: true
           distributions: "sdist bdist_wheel"
           on:
             tags: true
@@ -111,9 +107,8 @@ matrix:
           on:
             tags: true
             condition: "$TRAVIS_TAG =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+.*$"
-  allow_failures:
-    - python: pypy3.5
-      env: SPLIT=3/3
+before_install:
+  - pip install --pre -U gmpy2
 install:
   - travis_wait pip install .[exports,plot,interactive,develop,gmpy,docs]
 script:
