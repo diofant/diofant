@@ -1165,7 +1165,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         except CoercionFailed:
             return NotImplemented
         else:
-            return self.quo_ground(other), self.rem_ground(other)
+            return self.quo_ground(other), self.trunc_ground(other)
 
     def __rdivmod__(self, other):
         return NotImplemented
@@ -1190,7 +1190,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         except CoercionFailed:
             return NotImplemented
         else:
-            return self.rem_ground(other)
+            return self.trunc_ground(other)
 
     def __rmod__(self, other):
         return NotImplemented
@@ -1797,8 +1797,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         poly = self.new(terms)
         poly.strip_zero()
         return poly
-
-    rem_ground = trunc_ground
 
     def extract_ground(self, g):
         f = self
