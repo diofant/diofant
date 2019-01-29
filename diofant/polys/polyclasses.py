@@ -427,7 +427,7 @@ class DMP(CantSympify):
         else:
             return cF, cG, F, G
 
-    def trunc(self, p):
+    def trunc_ground(self, p):
         """Reduce ``self`` modulo a constant ``p``."""
         return self.per(dmp_ground_trunc(self.rep, self.domain.convert(p),
                                          self.lev, self.domain))

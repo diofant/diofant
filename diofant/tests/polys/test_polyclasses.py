@@ -206,7 +206,7 @@ def test_DMP_functionality():
 
     f = DMP([[1], [2], [3], [4], [5], [6]], ZZ)
 
-    assert f.trunc(3) == DMP([[1], [-1], [], [1], [-1], []], ZZ)
+    assert f.trunc_ground(3) == DMP([[1], [-1], [], [1], [-1], []], ZZ)
 
     f = DMP(f_4, ZZ)
 

@@ -1898,7 +1898,7 @@ class Poly(Expr):
         """
         p = self.rep.domain.convert(p)
 
-        result = self.rep.trunc(p)
+        result = self.rep.trunc_ground(p)
         return self.per(result)
 
     def monic(self, auto=True):
