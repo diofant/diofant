@@ -1,5 +1,6 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
+from ..ntheory.modular import symmetric_residue
 from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_exquo_ground,
                          dmp_mul, dmp_mul_ground, dmp_neg, dmp_quo_ground,
                          dmp_rem, dmp_sub, dup_add, dup_mul)
@@ -257,11 +258,8 @@ def dup_trunc(f, p, K):
 
         for c in f:
             c = c % p
-
-            if c > p // 2:
-                g.append(c - p)
-            else:
-                g.append(c)
+            c = symmetric_residue(c, p)
+            g.append(c)
     else:
         g = [c % p for c in f]
 

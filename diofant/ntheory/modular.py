@@ -3,7 +3,6 @@ from functools import reduce
 from ..core.compatibility import as_int
 from ..core.mul import prod
 from ..core.numbers import igcd, igcdex
-from ..domains import ZZ
 from ..polys.galoistools import gf_crt, gf_crt1, gf_crt2
 from .primetest import isprime
 
@@ -76,6 +75,8 @@ def crt(m, v, symmetric=False, check=True):
     diofant.polys.galoistools.gf_crt : low level crt routine used by this routine
 
     """
+    from ..domains import ZZ
+
     if check:
         m = list(map(as_int, m))
         v = list(map(as_int, v))
@@ -106,6 +107,7 @@ def crt1(m):
     (4536, [252, 108, 756], [0, 2, 0])
 
     """
+    from ..domains import ZZ
 
     return gf_crt1(m, ZZ)
 
@@ -121,6 +123,7 @@ def crt2(m, v, mm, e, s, symmetric=False):
     (0, 4536)
 
     """
+    from ..domains import ZZ
 
     result = gf_crt2(v, m, mm, e, s, ZZ)
 

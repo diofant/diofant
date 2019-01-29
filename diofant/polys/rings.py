@@ -13,6 +13,7 @@ from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
 from ..domains.ring import Ring
 from ..ntheory import multinomial_coefficients
+from ..ntheory.modular import symmetric_residue
 from ..utilities.magic import pollute
 from .compatibility import IPolys
 from .constructor import construct_domain
@@ -1815,10 +1816,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             for monom, coeff in self.items():
                 coeff = coeff % p
-
-                if coeff > p // 2:
-                    coeff = coeff - p
-
+                coeff = symmetric_residue(coeff, p)
                 terms.append((monom, coeff))
         else:
             terms = [(monom, coeff % p) for monom, coeff in self.items()]

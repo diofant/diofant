@@ -3,6 +3,7 @@
 import math
 
 from ..ntheory import factorint, isprime, nextprime
+from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
 from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
                          dmp_l1_norm, dmp_max_norm, dmp_mul, dmp_mul_ground,
@@ -169,8 +170,7 @@ def dup_zz_hensel_lift(p, f, f_list, l, K):
 
 
 def _test_pl(fc, q, pl):
-    if q > pl // 2:
-        q = q - pl
+    q = symmetric_residue(q, pl)
     if not q:
         return True
     return fc % q == 0

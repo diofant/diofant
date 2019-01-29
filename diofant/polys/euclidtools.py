@@ -2,6 +2,7 @@
 
 from ..core import cacheit
 from ..ntheory import nextprime
+from ..ntheory.modular import symmetric_residue
 from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_prem, dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
@@ -13,7 +14,7 @@ from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
 from .densetools import (dmp_clear_denoms, dmp_diff_in, dmp_eval_in,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc)
-from .galoistools import gf_crt, gf_int
+from .galoistools import gf_crt
 from .heuristicgcd import heugcd
 from .polyconfig import query
 from .polyerrors import (DomainError, HeuristicGCDFailed, HomomorphismFailed,
@@ -465,7 +466,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
 
     """
     if not u:
-        return gf_int(dup_prs_resultant(f, g, K)[0] % p, p)
+        return symmetric_residue(dup_prs_resultant(f, g, K)[0] % p, p)
 
     v = u - 1
 
@@ -487,10 +488,10 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
             if a == p:
                 raise HomomorphismFailed('no luck')
 
-            F = dmp_eval_in(f, gf_int(a, p), 1, u, K)
+            F = dmp_eval_in(f, symmetric_residue(a, p), 1, u, K)
 
             if dmp_degree_in(F, 0, v) == n:
-                G = dmp_eval_in(g, gf_int(a, p), 1, u, K)
+                G = dmp_eval_in(g, symmetric_residue(a, p), 1, u, K)
 
                 if dmp_degree_in(G, 0, v) == m:
                     break
@@ -522,7 +523,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
 
 def _collins_crt(r, R, P, p, K):
     """Wrapper of CRT for Collins's resultant algorithm."""
-    return gf_int(gf_crt([r, R], [P, p], K), P*p)
+    return symmetric_residue(gf_crt([r, R], [P, p], K), P*p)
 
 
 def dmp_zz_collins_resultant(f, g, u, K):
