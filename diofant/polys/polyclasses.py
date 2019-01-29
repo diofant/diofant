@@ -127,10 +127,6 @@ class DMP(CantSympify):
         """Construct and instance of ``cls`` from a :class:`dict` representation."""
         return cls(dmp_from_dict(rep, lev, dom), dom, lev)
 
-    @classmethod
-    def from_monoms_coeffs(cls, monoms, coeffs, lev, dom):
-        return DMP(dict(zip(monoms, coeffs)), dom, lev)
-
     def to_ring(self):
         """Make the ground domain a ring."""
         return self.convert(self.domain.ring)

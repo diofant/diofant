@@ -32,8 +32,6 @@ def test_DMP___init__():
     assert f.domain == ZZ
     assert f.lev == 1
 
-    assert f == DMP.from_monoms_coeffs(f.monoms(), f.coeffs(), f.lev, f.domain)
-
 
 def test_DMP___eq__():
     f = DMP([[ZZ(1), ZZ(2)], [ZZ(3)]], ZZ)
