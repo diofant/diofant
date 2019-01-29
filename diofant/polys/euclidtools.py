@@ -12,7 +12,7 @@ from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
                          dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
 from .densetools import (dmp_clear_denoms, dmp_diff_in, dmp_eval_in,
                          dmp_ground_monic, dmp_ground_primitive,
-                         dmp_ground_trunc, dup_trunc)
+                         dmp_ground_trunc)
 from .galoistools import gf_crt, gf_int
 from .heuristicgcd import heugcd
 from .polyconfig import query
@@ -515,7 +515,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
         r = dmp_ground_trunc(r, p, v, K)
 
         D = dup_mul(D, [K.one, -a], K)
-        D = dup_trunc(D, p, K)
+        D = dmp_ground_trunc(D, p, 0, K)
 
     return r
 

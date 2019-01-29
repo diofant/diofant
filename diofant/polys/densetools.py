@@ -248,7 +248,7 @@ def dup_trunc(f, p, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_trunc(2*x**3 + 3*x**2 + 5*x + 7, ZZ(3))
+    >>> R.dmp_ground_trunc(2*x**3 + 3*x**2 + 5*x + 7, ZZ(3))
     -x**3 - x + 1
 
     """

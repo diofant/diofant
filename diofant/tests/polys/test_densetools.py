@@ -308,15 +308,6 @@ def test_dmp_diff_eval_in():
     pytest.raises(IndexError, lambda: R.dmp_diff_eval_in(f, 2, 7, 4))
 
 
-def test_dup_trunc():
-    R, x = ring('x', ZZ)
-
-    assert R.dup_trunc(x**5 + 2*x**4 + 3*x**3 + 4*x**2 +
-                       5*x + 6, ZZ(3)) == x**5 - x**4 + x**2 - x
-    assert R.dup_trunc(6*x**5 + 5*x**4 + 4*x**3 + 3*x**2 +
-                       2*x + 1, ZZ(3)) == -x**4 + x**3 - x + 1
-
-
 def test_dmp_trunc():
     R, x, y = ring('x y', ZZ)
     R0 = R.drop(x)
@@ -331,6 +322,13 @@ def test_dmp_trunc():
 
 
 def test_dmp_ground_trunc():
+    R, x = ring('x', ZZ)
+
+    assert R.dmp_ground_trunc(x**5 + 2*x**4 + 3*x**3 + 4*x**2 +
+                              5*x + 6, ZZ(3)) == x**5 - x**4 + x**2 - x
+    assert R.dmp_ground_trunc(6*x**5 + 5*x**4 + 4*x**3 + 3*x**2 +
+                              2*x + 1, ZZ(3)) == -x**4 + x**3 - x + 1
+
     R, x, y, z = ring('x y z', ZZ)
 
     f = f_polys()[0]

@@ -18,7 +18,7 @@ from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
-                         dmp_ground_trunc, dup_mirror, dup_trunc)
+                         dmp_ground_trunc, dup_mirror)
 from .euclidtools import dmp_inner_gcd, dmp_primitive
 from .galoistools import (gf_add_mul, gf_div, gf_factor, gf_factor_sqf,
                           gf_from_int_poly, gf_gcdex, gf_mul, gf_rem)
@@ -89,28 +89,28 @@ def dup_zz_hensel_step(m, f, g, h, s, t, K):
     M = m**2
 
     e = dmp_sub_mul(f, g, h, 0, K)
-    e = dup_trunc(e, M, K)
+    e = dmp_ground_trunc(e, M, 0, K)
 
     q, r = dmp_div(dup_mul(s, e, K), h, 0, K)
 
-    q = dup_trunc(q, M, K)
-    r = dup_trunc(r, M, K)
+    q = dmp_ground_trunc(q, M, 0, K)
+    r = dmp_ground_trunc(r, M, 0, K)
 
     u = dup_add(dup_mul(t, e, K), dup_mul(q, g, K), K)
-    G = dup_trunc(dup_add(g, u, K), M, K)
-    H = dup_trunc(dup_add(h, r, K), M, K)
+    G = dmp_ground_trunc(dup_add(g, u, K), M, 0, K)
+    H = dmp_ground_trunc(dup_add(h, r, K), M, 0, K)
 
     u = dup_add(dup_mul(s, G, K), dup_mul(t, H, K), K)
-    b = dup_trunc(dup_sub(u, [K.one], K), M, K)
+    b = dmp_ground_trunc(dup_sub(u, [K.one], K), M, 0, K)
 
     c, d = dmp_div(dup_mul(s, b, K), H, 0, K)
 
-    c = dup_trunc(c, M, K)
-    d = dup_trunc(d, M, K)
+    c = dmp_ground_trunc(c, M, 0, K)
+    d = dmp_ground_trunc(d, M, 0, K)
 
     u = dup_add(dup_mul(t, b, K), dup_mul(c, G, K), K)
-    S = dup_trunc(dup_sub(s, d, K), M, K)
-    T = dup_trunc(dup_sub(t, u, K), M, K)
+    S = dmp_ground_trunc(dup_sub(s, d, K), M, 0, K)
+    T = dmp_ground_trunc(dup_sub(t, u, K), M, 0, K)
 
     return G, H, S, T
 
@@ -143,7 +143,7 @@ def dup_zz_hensel_lift(p, f, f_list, l, K):
 
     if r == 1:
         F = dmp_mul_ground(f, K.gcdex(lc, p**l)[0], 0, K)
-        return [ dup_trunc(F, p**l, K) ]
+        return [dmp_ground_trunc(F, p**l, 0, K)]
 
     m = p
     k = r // 2
@@ -239,7 +239,7 @@ def dup_zz_zassenhaus(f, K):
                 G = [b]
                 for i in S:
                     G = dup_mul(G, g[i], K)
-                G = dup_trunc(G, pl, K)
+                G = dmp_ground_trunc(G, pl, 0, K)
                 G = dmp_ground_primitive(G, 0, K)[1]
                 q = G[-1]
                 if q and fc % q != 0:
@@ -253,12 +253,12 @@ def dup_zz_zassenhaus(f, K):
                 G = [b]
                 for i in S:
                     G = dup_mul(G, g[i], K)
-                G = dup_trunc(G, pl, K)
+                G = dmp_ground_trunc(G, pl, 0, K)
 
             for i in T_S:
                 H = dup_mul(H, g[i], K)
 
-            H = dup_trunc(H, pl, K)
+            H = dmp_ground_trunc(H, pl, 0, K)
 
             G_norm = dmp_l1_norm(G, 0, K)
             H_norm = dmp_l1_norm(H, 0, K)
@@ -685,7 +685,7 @@ def dmp_zz_diophantine(F, c, A, d, p, u, K):
 
             for j, (s, t) in enumerate(zip(S, T)):
                 t = dmp_mul_ground(t, coeff, 0, K)
-                S[j] = dup_trunc(dup_add(s, t, K), p, K)
+                S[j] = dmp_ground_trunc(dup_add(s, t, K), p, 0, K)
     else:
         n = len(A)
         e = dmp_expand(F, u, K)
