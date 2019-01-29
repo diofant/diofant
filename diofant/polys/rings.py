@@ -813,6 +813,22 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             raise MultivariatePolynomialError("cyclotomic polynomial")
 
+    @property
+    def is_homogeneous(self):
+        if self.is_zero:
+            return True
+
+        monoms = iter(self.keys())
+        tdeg = sum(next(monoms))
+
+        for monom in monoms:
+            _tdeg = sum(monom)
+
+            if _tdeg != tdeg:
+                return False
+
+        return True
+
     def __neg__(self):
         return self.new([(monom, -coeff) for monom, coeff in self.items()])
 

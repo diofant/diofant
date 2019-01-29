@@ -1405,6 +1405,12 @@ def test_PolyElement_is_():
     assert f.is_nonnegative is True
     assert f.is_nonpositive is False
 
+    R, x, y = ring('x y', ZZ)
+
+    assert R.zero.is_homogeneous is True
+    assert (x**2 + x*y).is_homogeneous is True
+    assert (x**3 + x*y).is_homogeneous is False
+
 
 def test_PolyElement_drop():
     R,  x, y, z = ring("x,y,z", ZZ)
