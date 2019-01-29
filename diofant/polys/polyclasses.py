@@ -46,7 +46,7 @@ class DMP(CantSympify):
         self.domain = dom
 
     def __hash__(self):
-        return hash((self.__class__.__name__, self.to_tuple(),
+        return hash((self.__class__.__name__, dmp_to_tuple(self.rep, self.lev),
                      self.lev, self.domain))
 
     def unify(self, other):
@@ -112,15 +112,6 @@ class DMP(CantSympify):
             rep[k] = self.domain.to_expr(v)
 
         return rep
-
-    def to_tuple(self):
-        """
-        Convert ``self`` to a tuple representation with native coefficients.
-
-        This is needed for hashing.
-
-        """
-        return dmp_to_tuple(self.rep, self.lev)
 
     @classmethod
     def from_dict(cls, rep, lev, dom):
