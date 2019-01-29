@@ -680,11 +680,6 @@ class Poly(Expr):
         >>> Poly(x**2 + 2*x*y**2 + x*y + 3*y, x, y).monoms()
         [(2, 0), (1, 2), (1, 1), (0, 1)]
 
-        See Also
-        ========
-
-        all_monoms
-
         """
         return self.rep.monoms(order=order)
 
@@ -697,11 +692,6 @@ class Poly(Expr):
 
         >>> Poly(x**2 + 2*x*y**2 + x*y + 3*y, x, y).terms()
         [((2, 0), 1), ((1, 2), 2), ((1, 1), 1), ((0, 1), 3)]
-
-        See Also
-        ========
-
-        all_terms
 
         """
         return [(m, self.rep.domain.to_expr(c)) for m, c in self.rep.terms(order=order)]
@@ -718,37 +708,6 @@ class Poly(Expr):
 
         """
         return [self.rep.domain.to_expr(c) for c in self.rep.all_coeffs()]
-
-    def all_monoms(self):
-        """
-        Returns all monomials from a univariate polynomial ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x**3 + 2*x - 1, x).all_monoms()
-        [(3,), (2,), (1,), (0,)]
-
-        See Also
-        ========
-
-        all_terms
-
-        """
-        return self.rep.all_monoms()
-
-    def all_terms(self):
-        """
-        Returns all terms from a univariate polynomial ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x**3 + 2*x - 1, x).all_terms()
-        [((3,), 1), ((2,), 0), ((1,), 2), ((0,), -1)]
-
-        """
-        return [(m, self.rep.domain.to_expr(c)) for m, c in self.rep.all_terms()]
 
     def termwise(self, func, *gens, **args):
         """

@@ -166,30 +166,6 @@ class DMP(CantSympify):
         else:
             raise PolynomialError('multivariate polynomials not supported')
 
-    def all_monoms(self):
-        """Returns all monomials from ``self``."""
-        if not self.lev:
-            n = dmp_degree_in(self.rep, 0, 0)
-
-            if n < 0:
-                return [(0,)]
-            else:
-                return [(n - i,) for i, c in enumerate(self.rep)]
-        else:
-            raise PolynomialError('multivariate polynomials not supported')
-
-    def all_terms(self):
-        """Returns all terms from a ``self``."""
-        if not self.lev:
-            n = dmp_degree_in(self.rep, 0, 0)
-
-            if n < 0:
-                return [((0,), self.domain.zero)]
-            else:
-                return [((n - i,), c) for i, c in enumerate(self.rep)]
-        else:
-            raise PolynomialError('multivariate polynomials not supported')
-
     def deflate(self):
         """Reduce degree of `self` by mapping `x_i^m` to `y_i`."""
         J, F = dmp_deflate(self.rep, self.lev, self.domain)
