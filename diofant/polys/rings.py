@@ -25,7 +25,7 @@ from .orderings import lex
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
                          GeneratorsNeeded, HeuristicGCDFailed,
-                         MultivariatePolynomialError)
+                         MultivariatePolynomialError, PolynomialError)
 from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
 from .polyoptions import build_options
@@ -1631,6 +1631,15 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         return [ coeff for _, coeff in self.terms(order) ]
+
+    def all_coeffs(self):
+        if self.ring.is_univariate:
+            if self.is_zero:
+                return [self.parent.domain.zero]
+            else:
+                return self.to_dense()
+        else:
+            raise PolynomialError('multivariate polynomials not supported')
 
     def monoms(self, order=None):
         """Ordered list of polynomial monomials.

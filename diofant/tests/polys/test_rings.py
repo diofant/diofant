@@ -14,7 +14,8 @@ from diofant.polys.orderings import grlex, lex
 from diofant.polys.polyconfig import using
 from diofant.polys.polyerrors import (CoercionFailed, ExactQuotientFailed,
                                       GeneratorsError, GeneratorsNeeded,
-                                      MultivariatePolynomialError)
+                                      MultivariatePolynomialError,
+                                      PolynomialError)
 from diofant.polys.rings import PolyElement, PolynomialRing, ring, sring
 
 
@@ -512,6 +513,18 @@ def test_PolyElement_coeffs():
 
     assert f.coeffs() == f.coeffs(grlex) == f.coeffs('grlex') == [1, 2]
     assert f.coeffs(lex) == f.coeffs('lex') == [2, 1]
+
+
+def test_PolyElement_all_coeffs():
+    R, x = ring('x', ZZ)
+
+    assert R.zero.all_coeffs() == [0]
+    assert (3*x**2 + 2*x + 1).all_coeffs() == [3, 2, 1]
+    assert (7*x**4 + 2*x + 1).all_coeffs() == [7, 0, 0, 2, 1]
+
+    R, x, y = ring('x, y', ZZ)
+
+    pytest.raises(PolynomialError, lambda: (x + y).all_coeffs())
 
 
 def test_PolyElement___add__():
