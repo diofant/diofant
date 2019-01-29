@@ -10,9 +10,9 @@ from .densebasic import (dmp_convert, dmp_deflate, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC,
                          dmp_ground_nth, dmp_ground_p, dmp_ground_TC,
-                         dmp_inject, dmp_list_terms, dmp_one_p, dmp_permute,
-                         dmp_slice_in, dmp_terms_gcd, dmp_to_dict,
-                         dmp_to_tuple, dmp_validate, dmp_zero_p)
+                         dmp_inject, dmp_list_terms, dmp_one_p, dmp_slice_in,
+                         dmp_terms_gcd, dmp_to_dict, dmp_to_tuple,
+                         dmp_validate, dmp_zero_p)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_content, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -229,22 +229,6 @@ class DMP(CantSympify):
         """
         J, F, u = dmp_exclude(self.rep, self.lev, self.domain)
         return J, self.__class__(F, self.domain, u)
-
-    def permute(self, P):
-        r"""
-        Returns a polynomial in `K[x_{P(1)}, ..., x_{P(n)}]`.
-
-        Examples
-        ========
-
-        >>> DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 0, 2])
-        DMP([[[2], []], [[1, 0], []]], ZZ)
-
-        >>> DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 2, 0])
-        DMP([[[1], []], [[2, 0], []]], ZZ)
-
-        """
-        return self.per(dmp_permute(self.rep, P, self.lev, self.domain))
 
     def terms_gcd(self):
         """Remove GCD of terms from the polynomial ``self``."""
