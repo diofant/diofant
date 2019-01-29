@@ -1143,6 +1143,14 @@ def test_PolyElement_gcd():
         assert f.gcd(g) == g
 
 
+def test_PolyElement_terms_gcd():
+    R, x, y = ring('x y', ZZ)
+
+    assert R.zero.terms_gcd() == ((0, 0), R.zero)
+    assert R.one.terms_gcd() == ((0, 0), R.one)
+    assert (x**6*y**2 + x**3*y).terms_gcd() == ((3, 1), x**3*y + 1)
+
+
 def test_PolyElement_cancel():
     R,  x, y = ring("x,y", ZZ)
 
