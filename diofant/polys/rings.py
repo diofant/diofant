@@ -1490,6 +1490,10 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             return tuple(map(min, zip(*self)))
 
+    def total_degree(self):
+        """Returns the total degree."""
+        return max(sum(m) for m in self.monoms())
+
     def leading_expv(self):
         """Leading monomial tuple according to the monomial ordering.
 

@@ -390,6 +390,15 @@ def test_PolyElement_tail_degrees():
     assert (x**2*y + x**3*z**2).tail_degrees() == (2, 0, 0)
 
 
+def test_PolyEelemet_total_degree():
+    R, x, y, z = ring('x, y, z', ZZ)
+
+    assert (x**2*y + x**3*z**2 + 1).total_degree() == 5
+    assert (x**2 + z**3).total_degree() == 3
+    assert (x*y*z + z**4).total_degree() == 4
+    assert (x**3 + x + 1).total_degree() == 3
+
+
 def test_PolyElement_coeff():
     R,  x, y, z = ring("x,y,z", ZZ)
     f = 3*x**2*y - x*y*z + 7*z**3 + 23
