@@ -1136,7 +1136,7 @@ class Poly(Expr):
             F, G = F.to_field(), G.to_field()
             retract = True
 
-        q = F.quo(G)
+        q = F // G
 
         if retract:
             try:

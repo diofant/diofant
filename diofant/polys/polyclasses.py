@@ -266,11 +266,6 @@ class DMP(CantSympify):
         lev, dom, per, F, G = self.unify(other)
         return per(dmp_pexquo(F, G, lev, dom))
 
-    def quo(self, other):
-        """Computes polynomial quotient of ``self`` and ``other``."""
-        lev, dom, per, F, G = self.unify(other)
-        return per(dmp_quo(F, G, lev, dom))
-
     def exquo(self, other):
         """Computes polynomial exact quotient of ``self`` and ``other``."""
         lev, dom, per, F, G = self.unify(other)
@@ -664,7 +659,8 @@ class DMP(CantSympify):
 
     def __floordiv__(self, other):
         if isinstance(other, DMP):
-            return self.quo(other)
+            lev, dom, per, F, G = self.unify(other)
+            return per(dmp_quo(F, G, lev, dom))
         else:
             return self.quo_ground(other)
 

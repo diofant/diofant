@@ -141,8 +141,6 @@ def test_DMP_arithmetics():
     q = DMP([[1], [1, 0]], ZZ)
     r = DMP([[2, 0, 0]], ZZ)
 
-    assert f.quo(g) == q
-
     assert divmod(f, g) == (q, r)
     assert f // g == q
     assert f // 2 == DMP([[0], [], [0, 0, 0]], QQ)
