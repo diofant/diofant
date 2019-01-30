@@ -836,6 +836,9 @@ class PolyElement(DomainElement, CantSympify, dict):
     def __pos__(self):
         return self
 
+    def __abs__(self):
+        return self.new([(monom, abs(coeff)) for monom, coeff in self.items()])
+
     def __add__(self, other):
         """Add two polynomials.
 

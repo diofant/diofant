@@ -527,6 +527,12 @@ def test_PolyElement_all_coeffs():
     pytest.raises(PolynomialError, lambda: (x + y).all_coeffs())
 
 
+def test_PolyElement__abs__():
+    R, x, y = ring('x y', ZZ)
+
+    assert abs(x**2*y - x) == x**2*y + x
+
+
 def test_PolyElement___add__():
     Rt, t = ring("t", ZZ)
     Ruv,  u, v = ring("u,v", ZZ)
