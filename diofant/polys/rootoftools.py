@@ -645,9 +645,8 @@ class RootOf(Expr):
         if not other.is_finite:
             return S.false
         z = self.expr.subs({self.expr.free_symbols.pop(): other}).is_zero
-        if z is False:  # all roots will make z True but we don't know
-                        # whether this is the right root if z is True
-            return S.false
+        if z is False:      # all roots will make z True but we don't know
+            return S.false  # whether this is the right root if z is True
         o = other.is_extended_real, other.is_imaginary
         s = self.is_extended_real, self.is_imaginary
         if o != s and None not in o and None not in s:

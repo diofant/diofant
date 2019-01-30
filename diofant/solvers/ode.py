@@ -1697,7 +1697,7 @@ def check_linear_2eq_order2(eq, func, func_coef):
                     q[n] = 1
 
             if p[0] == 1 and p[1] == 1 and q[0] == 0 and q[1] == 0:
-                    return "type4"
+                return "type4"
             else:
                 return
         else:

@@ -310,7 +310,7 @@ def diop_solve(eq, param=symbols("t", integer=True)):
         return _diop_general_sum_of_even_powers(var, p, -int(coeff[1]), limit=oo)
 
     if eq_type is not None and eq_type not in diop_known:
-            raise ValueError(filldedent('''
+        raise ValueError(filldedent('''
     Alhough this type of equation was identified, it is not yet
     handled. It should, however, be listed in `diop_known` at the
     top of this file. Developers should see comments at the end of
@@ -2890,7 +2890,7 @@ def power_representation(n, p, k, zeros=False):
             # Todd G. Will, "When Is n^2 a Sum of k Squares?", [online].
             # Available: https://www.maa.org/sites/default/files/Will-MMz-201037918.pdf
             return
-        if feasible is 1:  # it's prime and k == 2
+        if feasible == 2:  # it's prime and k == 2
             yield prime_as_sum_of_two_squares(n)
             return
 
@@ -2998,7 +2998,7 @@ def _can_do_sum_of_squares(n, k):
             return True
         if isprime(n):
             if n % 4 == 1:
-                return 1  # signal that it was prime
+                return 2  # signal that it was prime
             return False
         else:
             f = factorint(n)

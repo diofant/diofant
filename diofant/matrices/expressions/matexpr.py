@@ -215,8 +215,8 @@ class MatrixExpr(Expr):
             else:
                 raise IndexError("Invalid index %s" % key)
         elif isinstance(key, (Symbol, Expr)):
-                raise IndexError("Single index only supported for "
-                                 "non-symbolic indices.")
+            raise IndexError("Single index only supported for "
+                             "non-symbolic indices.")
         raise IndexError("Invalid index, wanted %s[i,j]" % self)
 
     def as_explicit(self):
