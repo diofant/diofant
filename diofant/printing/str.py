@@ -415,6 +415,9 @@ class StrPrinter(Printer):
             else:
                 terms.extend(['+', s_term])
 
+        if not terms:
+            terms.extend(["+", "0"])
+
         modifier = terms.pop(0)
 
         if modifier == '-':
