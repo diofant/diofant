@@ -237,7 +237,7 @@ class RootOf(Expr):
     def _get_reals_sqf(cls, factor):
         """Compute real root isolating intervals for a square-free polynomial."""
         if factor.rep not in _reals_cache:
-            reals = dup_isolate_real_roots_sqf(factor.rep.rep, factor.rep.domain, blackbox=True)
+            reals = dup_isolate_real_roots_sqf(factor.rep.rep, factor.domain, blackbox=True)
             if not reals:
                 _reals_cache[factor.rep] = []
             return reals
@@ -247,7 +247,7 @@ class RootOf(Expr):
     def _get_complexes_sqf(cls, factor):
         """Compute complex root isolating intervals for a square-free polynomial."""
         if factor.rep not in _complexes_cache:
-            complexes = dup_isolate_complex_roots_sqf(factor.rep.rep, factor.rep.domain, blackbox=True)
+            complexes = dup_isolate_complex_roots_sqf(factor.rep.rep, factor.domain, blackbox=True)
             if not complexes:
                 _complexes_cache[factor.rep] = []
             return complexes
