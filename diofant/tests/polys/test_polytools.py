@@ -1062,7 +1062,8 @@ def test_Poly_eject():
     assert g.eject(z, t, w) == Poly(ex, x, y, domain='ZZ[w, t, z]')
 
     pytest.raises(DomainError, lambda: Poly(x*y, x, y, domain=ZZ.poly_ring(z)).eject(y))
-    pytest.raises(NotImplementedError, lambda: Poly(x*y, x, y, z).eject(y))
+
+    assert Poly(x*y, x, y, z).eject(y) == Poly(x*y, x, z, domain='ZZ[y]')
 
 
 def test_Poly_exclude():

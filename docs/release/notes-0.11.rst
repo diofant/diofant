@@ -12,6 +12,8 @@ New features
 Major changes
 =============
 
+* :class:`~diofant.polys.polytools.Poly` now use sparse polynomial representation (via :class:`~diofant.polys.rings.PolyElement`) internally, see :pull:`795`.
+
 Compatibility breaks
 ====================
 
