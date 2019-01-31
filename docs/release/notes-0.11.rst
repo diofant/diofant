@@ -21,6 +21,7 @@ Compatibility breaks
 * ``is_monomial`` attribute of :class:`~diofant.polys.polytools.Poly` renamed to :attr:`~diofant.polys.polytools.Poly.is_term`, see :pull:`780`.
 * Removed ``log()`` helper from :class:`~diofant.domains.RationalField`, see :pull:`787`.
 * Removed ``seterr()`` function, see :pull:`794`.
+* Removed ``DMP`` class, see :pull:`795`.
 
 Minor changes
 =============

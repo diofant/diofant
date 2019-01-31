@@ -42,12 +42,6 @@ the current implementation, to work in rings like `k[X][Y]`. This would create
 even more layers. For this reason, working in the isomorphic ring `k[X, Y]`
 is preferred.
 
-Level One
-=========
-
-.. automodule:: diofant.polys.polyclasses
-    :members:
-
 Level Zero
 ==========
 
