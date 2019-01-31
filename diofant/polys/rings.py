@@ -278,6 +278,8 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         poly = self.zero
 
         for monom, coeff in element.items():
+            if isinstance(monom, int):
+                monom = monom,
             coeff = domain_new(coeff)
             if coeff:
                 poly[monom] = coeff

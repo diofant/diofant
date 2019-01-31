@@ -93,6 +93,10 @@ def test_PolynomialRing_ring_new():
     assert R.ring_new({(2, 0, 0): 1, (1, 1, 0): 2, (1, 0, 0): 3, (0, 0, 2): 4, (0, 0, 1): 5, (0, 0, 0): 6}) == f
     assert R.ring_new([((2, 0, 0), 1), ((1, 1, 0), 2), ((1, 0, 0), 3), ((0, 0, 2), 4), ((0, 0, 1), 5), ((0, 0, 0), 6)]) == f
 
+    R, x = ring('x', ZZ)
+
+    assert R.ring_new({2: 1, 1: 0, 0: -1}) == x**2 - 1
+
 
 def test_PolynomialRing_drop():
     R,  x, y, z = ring("x,y,z", ZZ)
