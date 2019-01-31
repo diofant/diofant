@@ -32,8 +32,6 @@ def test_DMP___init__():
     assert f.domain == ZZ
     assert f.lev == 1
 
-    assert f == DMP.from_monoms_coeffs(f.monoms(), f.coeffs(), f.lev, f.domain)
-
 
 def test_DMP___eq__():
     f = DMP([[ZZ(1), ZZ(2)], [ZZ(3)]], ZZ)
@@ -143,8 +141,6 @@ def test_DMP_arithmetics():
     q = DMP([[1], [1, 0]], ZZ)
     r = DMP([[2, 0, 0]], ZZ)
 
-    assert f.quo(g) == q
-
     assert divmod(f, g) == (q, r)
     assert f // g == q
     assert f // 2 == DMP([[0], [], [0, 0, 0]], QQ)
@@ -208,7 +204,7 @@ def test_DMP_functionality():
 
     f = DMP([[1], [2], [3], [4], [5], [6]], ZZ)
 
-    assert f.trunc(3) == DMP([[1], [-1], [], [1], [-1], []], ZZ)
+    assert f.trunc_ground(3) == DMP([[1], [-1], [], [1], [-1], []], ZZ)
 
     f = DMP(f_4, ZZ)
 
@@ -260,8 +256,6 @@ def test_DMP_functionality():
     pytest.raises(ValueError, lambda: f.sturm())
 
     pytest.raises(PolynomialError, lambda: f.all_coeffs())
-    pytest.raises(PolynomialError, lambda: f.all_monoms())
-    pytest.raises(PolynomialError, lambda: f.all_terms())
 
     pytest.raises(ValueError, lambda: f.shift(1))
     pytest.raises(PolynomialError, lambda: f.intervals())
@@ -281,9 +275,6 @@ def test_DMP_functionality():
     assert DMP([1, 2], QQ).resultant(DMP([3], ZZ)) == 3
 
     assert f.is_cyclotomic is False
-
-    f = DMP([[[2], [1, 0]], [[]]], ZZ)
-    assert f.permute([1, 0, 2]) == DMP([[[2], []], [[1, 0], []]], ZZ)
 
 
 def test_DMP_exclude():

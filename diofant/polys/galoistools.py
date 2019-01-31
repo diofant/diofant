@@ -98,25 +98,6 @@ def gf_crt2(U, M, p, E, S, K):
     return v % p
 
 
-def gf_int(a, p):
-    """
-    Coerce ``a mod p`` to an integer in the range ``[-p/2, p/2]``.
-
-    Examples
-    ========
-
-    >>> gf_int(2, 7)
-    2
-    >>> gf_int(5, 7)
-    -2
-
-    """
-    if a <= p // 2:
-        return a
-    else:
-        return a - p
-
-
 def gf_from_dict(f, p, K):
     """
     Create a ``GF(p)[x]`` polynomial from a dict.

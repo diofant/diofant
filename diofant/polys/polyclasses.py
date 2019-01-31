@@ -10,9 +10,9 @@ from .densebasic import (dmp_convert, dmp_deflate, dmp_degree_in,
                          dmp_degree_list, dmp_eject, dmp_exclude,
                          dmp_from_dict, dmp_ground, dmp_ground_LC,
                          dmp_ground_nth, dmp_ground_p, dmp_ground_TC,
-                         dmp_inject, dmp_list_terms, dmp_one_p, dmp_permute,
-                         dmp_slice_in, dmp_terms_gcd, dmp_to_dict,
-                         dmp_to_tuple, dmp_validate, dmp_zero_p)
+                         dmp_inject, dmp_list_terms, dmp_one_p, dmp_slice_in,
+                         dmp_terms_gcd, dmp_to_dict, dmp_to_tuple,
+                         dmp_validate, dmp_zero_p)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_content, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc,
@@ -46,7 +46,7 @@ class DMP(CantSympify):
         self.domain = dom
 
     def __hash__(self):
-        return hash((self.__class__.__name__, self.to_tuple(),
+        return hash((self.__class__.__name__, dmp_to_tuple(self.rep, self.lev),
                      self.lev, self.domain))
 
     def unify(self, other):
@@ -113,23 +113,10 @@ class DMP(CantSympify):
 
         return rep
 
-    def to_tuple(self):
-        """
-        Convert ``self`` to a tuple representation with native coefficients.
-
-        This is needed for hashing.
-
-        """
-        return dmp_to_tuple(self.rep, self.lev)
-
     @classmethod
     def from_dict(cls, rep, lev, dom):
         """Construct and instance of ``cls`` from a :class:`dict` representation."""
         return cls(dmp_from_dict(rep, lev, dom), dom, lev)
-
-    @classmethod
-    def from_monoms_coeffs(cls, monoms, coeffs, lev, dom):
-        return DMP(dict(zip(monoms, coeffs)), dom, lev)
 
     def to_ring(self):
         """Make the ground domain a ring."""
@@ -179,30 +166,6 @@ class DMP(CantSympify):
         else:
             raise PolynomialError('multivariate polynomials not supported')
 
-    def all_monoms(self):
-        """Returns all monomials from ``self``."""
-        if not self.lev:
-            n = dmp_degree_in(self.rep, 0, 0)
-
-            if n < 0:
-                return [(0,)]
-            else:
-                return [(n - i,) for i, c in enumerate(self.rep)]
-        else:
-            raise PolynomialError('multivariate polynomials not supported')
-
-    def all_terms(self):
-        """Returns all terms from a ``self``."""
-        if not self.lev:
-            n = dmp_degree_in(self.rep, 0, 0)
-
-            if n < 0:
-                return [((0,), self.domain.zero)]
-            else:
-                return [((n - i,), c) for i, c in enumerate(self.rep)]
-        else:
-            raise PolynomialError('multivariate polynomials not supported')
-
     def deflate(self):
         """Reduce degree of `self` by mapping `x_i^m` to `y_i`."""
         J, F = dmp_deflate(self.rep, self.lev, self.domain)
@@ -233,22 +196,6 @@ class DMP(CantSympify):
         """
         J, F, u = dmp_exclude(self.rep, self.lev, self.domain)
         return J, self.__class__(F, self.domain, u)
-
-    def permute(self, P):
-        r"""
-        Returns a polynomial in `K[x_{P(1)}, ..., x_{P(n)}]`.
-
-        Examples
-        ========
-
-        >>> DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 0, 2])
-        DMP([[[2], []], [[1, 0], []]], ZZ)
-
-        >>> DMP([[[ZZ(2)], [ZZ(1), ZZ(0)]], [[]]], ZZ).permute([1, 2, 0])
-        DMP([[[1], []], [[2, 0], []]], ZZ)
-
-        """
-        return self.per(dmp_permute(self.rep, P, self.lev, self.domain))
 
     def terms_gcd(self):
         """Remove GCD of terms from the polynomial ``self``."""
@@ -285,11 +232,6 @@ class DMP(CantSympify):
         """Polynomial exact pseudo-quotient of ``self`` and ``other``."""
         lev, dom, per, F, G = self.unify(other)
         return per(dmp_pexquo(F, G, lev, dom))
-
-    def quo(self, other):
-        """Computes polynomial quotient of ``self`` and ``other``."""
-        lev, dom, per, F, G = self.unify(other)
-        return per(dmp_quo(F, G, lev, dom))
 
     def exquo(self, other):
         """Computes polynomial exact quotient of ``self`` and ``other``."""
@@ -447,7 +389,7 @@ class DMP(CantSympify):
         else:
             return cF, cG, F, G
 
-    def trunc(self, p):
+    def trunc_ground(self, p):
         """Reduce ``self`` modulo a constant ``p``."""
         return self.per(dmp_ground_trunc(self.rep, self.domain.convert(p),
                                          self.lev, self.domain))
@@ -684,7 +626,8 @@ class DMP(CantSympify):
 
     def __floordiv__(self, other):
         if isinstance(other, DMP):
-            return self.quo(other)
+            lev, dom, per, F, G = self.unify(other)
+            return per(dmp_quo(F, G, lev, dom))
         else:
             return self.quo_ground(other)
 

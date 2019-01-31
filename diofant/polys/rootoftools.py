@@ -237,7 +237,7 @@ class RootOf(Expr):
     def _get_reals_sqf(cls, factor):
         """Compute real root isolating intervals for a square-free polynomial."""
         if factor.rep not in _reals_cache:
-            reals = dup_isolate_real_roots_sqf(factor.rep.rep, factor.rep.domain, blackbox=True)
+            reals = dup_isolate_real_roots_sqf(factor.rep.rep, factor.domain, blackbox=True)
             if not reals:
                 _reals_cache[factor.rep] = []
             return reals
@@ -247,7 +247,7 @@ class RootOf(Expr):
     def _get_complexes_sqf(cls, factor):
         """Compute complex root isolating intervals for a square-free polynomial."""
         if factor.rep not in _complexes_cache:
-            complexes = dup_isolate_complex_roots_sqf(factor.rep.rep, factor.rep.domain, blackbox=True)
+            complexes = dup_isolate_complex_roots_sqf(factor.rep.rep, factor.domain, blackbox=True)
             if not complexes:
                 _complexes_cache[factor.rep] = []
             return complexes
@@ -645,9 +645,8 @@ class RootOf(Expr):
         if not other.is_finite:
             return S.false
         z = self.expr.subs({self.expr.free_symbols.pop(): other}).is_zero
-        if z is False:  # all roots will make z True but we don't know
-                        # whether this is the right root if z is True
-            return S.false
+        if z is False:      # all roots will make z True but we don't know
+            return S.false  # whether this is the right root if z is True
         o = other.is_extended_real, other.is_imaginary
         s = self.is_extended_real, self.is_imaginary
         if o != s and None not in o and None not in s:

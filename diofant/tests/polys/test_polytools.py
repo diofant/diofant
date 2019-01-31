@@ -922,28 +922,6 @@ def test_Poly_all_coeffs():
     assert Poly(7*x**4 + 2*x + 1, x).all_coeffs() == [7, 0, 0, 2, 1]
 
 
-def test_Poly_all_monoms():
-    assert Poly(0, x).all_monoms() == [(0,)]
-    assert Poly(1, x).all_monoms() == [(0,)]
-
-    assert Poly(2*x + 1, x).all_monoms() == [(1,), (0,)]
-
-    assert Poly(7*x**2 + 2*x + 1, x).all_monoms() == [(2,), (1,), (0,)]
-    assert Poly(7*x**4 + 2*x + 1, x).all_monoms() == [(4,), (3,), (2,), (1,), (0,)]
-
-
-def test_Poly_all_terms():
-    assert Poly(0, x).all_terms() == [((0,), 0)]
-    assert Poly(1, x).all_terms() == [((0,), 1)]
-
-    assert Poly(2*x + 1, x).all_terms() == [((1,), 2), ((0,), 1)]
-
-    assert Poly(7*x**2 + 2*x + 1, x).all_terms() == \
-        [((2,), 7), ((1,), 2), ((0,), 1)]
-    assert Poly(7*x**4 + 2*x + 1, x).all_terms() == \
-        [((4,), 7), ((3,), 0), ((2,), 0), ((1,), 2), ((0,), 1)]
-
-
 def test_Poly_termwise():
     f = Poly(x**2 + 20*x + 400)
     g = Poly(x**2 + 2*x + 4)

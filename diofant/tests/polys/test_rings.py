@@ -14,7 +14,8 @@ from diofant.polys.orderings import grlex, lex
 from diofant.polys.polyconfig import using
 from diofant.polys.polyerrors import (CoercionFailed, ExactQuotientFailed,
                                       GeneratorsError, GeneratorsNeeded,
-                                      MultivariatePolynomialError)
+                                      MultivariatePolynomialError,
+                                      PolynomialError)
 from diofant.polys.rings import PolyElement, PolynomialRing, ring, sring
 
 
@@ -390,6 +391,15 @@ def test_PolyElement_tail_degrees():
     assert (x**2*y + x**3*z**2).tail_degrees() == (2, 0, 0)
 
 
+def test_PolyEelemet_total_degree():
+    R, x, y, z = ring('x, y, z', ZZ)
+
+    assert (x**2*y + x**3*z**2 + 1).total_degree() == 5
+    assert (x**2 + z**3).total_degree() == 3
+    assert (x*y*z + z**4).total_degree() == 4
+    assert (x**3 + x + 1).total_degree() == 3
+
+
 def test_PolyElement_coeff():
     R,  x, y, z = ring("x,y,z", ZZ)
     f = 3*x**2*y - x*y*z + 7*z**3 + 23
@@ -503,6 +513,24 @@ def test_PolyElement_coeffs():
 
     assert f.coeffs() == f.coeffs(grlex) == f.coeffs('grlex') == [1, 2]
     assert f.coeffs(lex) == f.coeffs('lex') == [2, 1]
+
+
+def test_PolyElement_all_coeffs():
+    R, x = ring('x', ZZ)
+
+    assert R.zero.all_coeffs() == [0]
+    assert (3*x**2 + 2*x + 1).all_coeffs() == [3, 2, 1]
+    assert (7*x**4 + 2*x + 1).all_coeffs() == [7, 0, 0, 2, 1]
+
+    R, x, y = ring('x, y', ZZ)
+
+    pytest.raises(PolynomialError, lambda: (x + y).all_coeffs())
+
+
+def test_PolyElement__abs__():
+    R, x, y = ring('x y', ZZ)
+
+    assert abs(x**2*y - x) == x**2*y + x
 
 
 def test_PolyElement___add__():
@@ -1121,6 +1149,14 @@ def test_PolyElement_gcd():
         assert f.gcd(g) == g
 
 
+def test_PolyElement_terms_gcd():
+    R, x, y = ring('x y', ZZ)
+
+    assert R.zero.terms_gcd() == ((0, 0), R.zero)
+    assert R.one.terms_gcd() == ((0, 0), R.one)
+    assert (x**6*y**2 + x**3*y).terms_gcd() == ((3, 1), x**3*y + 1)
+
+
 def test_PolyElement_cancel():
     R,  x, y = ring("x,y", ZZ)
 
@@ -1404,6 +1440,12 @@ def test_PolyElement_is_():
     assert f.is_negative is False
     assert f.is_nonnegative is True
     assert f.is_nonpositive is False
+
+    R, x, y = ring('x y', ZZ)
+
+    assert R.zero.is_homogeneous is True
+    assert (x**2 + x*y).is_homogeneous is True
+    assert (x**3 + x*y).is_homogeneous is False
 
 
 def test_PolyElement_drop():

@@ -1,5 +1,6 @@
 """Heuristic polynomial GCD algorithm (HEUGCD). """
 
+from ..ntheory.modular import symmetric_residue
 from .polyconfig import query
 from .polyerrors import HeuristicGCDFailed
 
@@ -112,8 +113,7 @@ def _gcd_interpolate(h, x, ring):
     if ring.is_univariate:
         while h:
             g = h % x
-            if g > x // 2:
-                g -= x
+            g = symmetric_residue(g, x)
             h = (h - g) // x
 
             # f += X**i*g

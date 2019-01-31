@@ -13,6 +13,7 @@ from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
 from ..domains.ring import Ring
 from ..ntheory import multinomial_coefficients
+from ..ntheory.modular import symmetric_residue
 from ..utilities.magic import pollute
 from .compatibility import IPolys
 from .constructor import construct_domain
@@ -20,12 +21,12 @@ from .densebasic import dmp_from_dict, dmp_to_dict
 from .heuristicgcd import heugcd
 from .modulargcd import func_field_modgcd, modgcd
 from .monomials import (monomial_div, monomial_gcd, monomial_ldiv,
-                        monomial_mul, monomial_pow)
+                        monomial_min, monomial_mul, monomial_pow)
 from .orderings import lex
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
                          GeneratorsNeeded, HeuristicGCDFailed,
-                         MultivariatePolynomialError)
+                         MultivariatePolynomialError, PolynomialError)
 from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
 from .polyoptions import build_options
@@ -813,11 +814,30 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             raise MultivariatePolynomialError("cyclotomic polynomial")
 
+    @property
+    def is_homogeneous(self):
+        if self.is_zero:
+            return True
+
+        monoms = iter(self.keys())
+        tdeg = sum(next(monoms))
+
+        for monom in monoms:
+            _tdeg = sum(monom)
+
+            if _tdeg != tdeg:
+                return False
+
+        return True
+
     def __neg__(self):
         return self.new([(monom, -coeff) for monom, coeff in self.items()])
 
     def __pos__(self):
         return self
+
+    def __abs__(self):
+        return self.new([(monom, abs(coeff)) for monom, coeff in self.items()])
 
     def __add__(self, other):
         """Add two polynomials.
@@ -1165,7 +1185,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         except CoercionFailed:
             return NotImplemented
         else:
-            return self.quo_ground(other), self.rem_ground(other)
+            return self.quo_ground(other), self.trunc_ground(other)
 
     def __rdivmod__(self, other):
         return NotImplemented
@@ -1190,7 +1210,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         except CoercionFailed:
             return NotImplemented
         else:
-            return self.rem_ground(other)
+            return self.trunc_ground(other)
 
     def __rmod__(self, other):
         return NotImplemented
@@ -1474,6 +1494,10 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             return tuple(map(min, zip(*self)))
 
+    def total_degree(self):
+        """Returns the total degree."""
+        return max(sum(m) for m in self.monoms())
+
     def leading_expv(self):
         """Leading monomial tuple according to the monomial ordering.
 
@@ -1611,6 +1635,15 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         return [ coeff for _, coeff in self.terms(order) ]
+
+    def all_coeffs(self):
+        if self.ring.is_univariate:
+            if self.is_zero:
+                return [self.parent.domain.zero]
+            else:
+                return self.to_dense()
+        else:
+            raise PolynomialError('multivariate polynomials not supported')
 
     def monoms(self, order=None):
         """Ordered list of polynomial monomials.
@@ -1786,10 +1819,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             for monom, coeff in self.items():
                 coeff = coeff % p
-
-                if coeff > p // 2:
-                    coeff = coeff - p
-
+                coeff = symmetric_residue(coeff, p)
                 terms.append((monom, coeff))
         else:
             terms = [(monom, coeff % p) for monom, coeff in self.items()]
@@ -1797,8 +1827,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         poly = self.new(terms)
         poly.strip_zero()
         return poly
-
-    rem_ground = trunc_ground
 
     def extract_ground(self, g):
         f = self
@@ -1980,6 +2008,22 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         method = _gcd_aa_methods[query('GCD_AA_METHOD')]
         return method(self, g)
+
+    def terms_gcd(self):
+        if self.is_zero:
+            return (0,)*self.ring.ngens, self
+
+        G = monomial_min(*list(self))
+
+        if all(g == 0 for g in G):
+            return G, self
+
+        f = self.ring.zero
+
+        for monom, coeff in self.items():
+            f[monomial_div(monom, G)] = coeff
+
+        return G, f
 
     def cancel(self, g):
         """

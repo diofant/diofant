@@ -14,7 +14,7 @@ from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
                                        gf_frobenius_map,
                                        gf_frobenius_monomial_base,
                                        gf_from_dict, gf_from_int_poly, gf_gcd,
-                                       gf_gcdex, gf_int, gf_irred_p_ben_or,
+                                       gf_gcdex, gf_irred_p_ben_or,
                                        gf_irred_p_rabin, gf_irreducible,
                                        gf_irreducible_p, gf_lcm, gf_monic,
                                        gf_mul, gf_mul_ground, gf_neg, gf_pow,
@@ -43,15 +43,6 @@ def test_gf_crt():
 
     assert gf_crt1(M, ZZ) == (p, E, S)
     assert gf_crt2(U, M, p, E, S, ZZ) == u
-
-
-def test_gf_int():
-    assert gf_int(0, 5) == 0
-    assert gf_int(1, 5) == 1
-    assert gf_int(2, 5) == 2
-    assert gf_int(3, 5) == -2
-    assert gf_int(4, 5) == -1
-    assert gf_int(5, 5) == 0
 
 
 def test_gf_from_dict():

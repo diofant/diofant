@@ -1552,7 +1552,7 @@ def test_valued_assign_numpy_ndarray():
     arr = [E+1, px-1, py, pz]
     A.data = numpy.array(arr)
     for i in range(4):
-            assert A(i0).data[i] == arr[i]
+        assert A(i0).data[i] == arr[i]
 
     qx, qy, qz = symbols('qx qy qz')
     A(-i0).data = numpy.array([E, qx, qy, qz])
