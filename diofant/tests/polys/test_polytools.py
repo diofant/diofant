@@ -733,8 +733,8 @@ def test_Poly_properties():
     assert Poly(x*y + z + 1).is_quadratic is True
     assert Poly(x*y*z + 1).is_quadratic is False
 
-    assert Poly(x*y).is_monomial is True
-    assert Poly(x*y + 1).is_monomial is False
+    assert Poly(x*y).is_term is True
+    assert Poly(x*y + 1).is_term is False
 
     assert Poly(x**2 + x*y).is_homogeneous is True
     assert Poly(x**3 + x*y).is_homogeneous is False

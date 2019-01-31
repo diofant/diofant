@@ -747,7 +747,7 @@ def as_poly_1t(p, t, z):
     # TODO: Use this on the final result.  That way, we can avoid answers like
     # (...)*exp(-x).
     pa, pd = frac_in(p, t, cancel=True)
-    if not pd.is_monomial:
+    if not pd.is_term:
         # XXX: Is there a better Poly exception that we could raise here?
         # Either way, if you see this (from the Risch Algorithm) it indicates
         # a bug.

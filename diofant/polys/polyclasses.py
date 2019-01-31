@@ -538,7 +538,7 @@ class DMP(CantSympify):
         return all(sum(monom) <= 2 for monom in dmp_to_dict(self.rep, self.lev))
 
     @property
-    def is_monomial(self):
+    def is_term(self):
         """Returns ``True`` if ``self`` is zero or has only one term."""
         return len(self.to_dict()) <= 1
 
