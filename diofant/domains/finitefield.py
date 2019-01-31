@@ -261,6 +261,7 @@ class ModularInteger(DomainElement):
 class GaloisFieldElement(ModularInteger):
     def __init__(self, rep):
         if isinstance(rep, numbers.Integral):
+            rep = rep % self.parent.order
             rep = integer_digits(rep, self.parent.mod)
 
         if isinstance(rep, (list, tuple)):
