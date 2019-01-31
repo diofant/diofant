@@ -253,6 +253,19 @@ def test_PolyElement_copy():
     assert f != g
 
 
+def test_PolyElement_set_domain():
+    R, x, y = ring('x y', ZZ)
+
+    f = x + y
+
+    assert f.set_domain(ZZ) is f
+
+    g = f.set_domain(QQ)
+    assert g is not f
+    assert g.as_expr() == f.as_expr()
+    assert g.ring.domain is QQ
+
+
 def test_PolyElement_items():
     R,  x, y, z = ring("x,y,z", ZZ)
 

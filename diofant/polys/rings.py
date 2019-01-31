@@ -523,6 +523,14 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             return new_ring.from_dict(self)
 
+    def set_domain(self, new_domain):
+        if self.ring.domain == new_domain:
+            return self
+        else:
+            new_ring = new_domain.poly_ring(*self.ring.symbols,
+                                            order=self.ring.order)
+            return self.set_ring(new_ring)
+
     def as_expr(self, *symbols):
         if symbols and len(symbols) != self.ring.ngens:
             raise ValueError("not enough symbols, expected %s got %s" % (self.ring.ngens, len(symbols)))
