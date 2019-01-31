@@ -130,6 +130,10 @@ def test_PolynomialRing_index():
     assert R.index(y) == 1
     pytest.raises(ValueError, lambda: R.index(x + y))
 
+    assert R.index('x') == 0
+    assert R.index('z') == 2
+    pytest.raises(ValueError, lambda: R.index('t'))
+
 
 def test_PolynomialRing_is_():
     R = QQ.poly_ring("x")
