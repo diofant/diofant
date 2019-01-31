@@ -2081,7 +2081,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return p, q
 
-    def diff(self, x):
+    def diff(self, x, m=1):
         """Computes partial derivative in ``x``.
 
         Examples
@@ -2095,12 +2095,15 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         ring = self.ring
         i = ring.index(x)
-        m = ring.monomial_basis(i)
+        x = ring.monomial_basis(i)
+        x = monomial_pow(x, m)
         g = ring.zero
         for expv, coeff in self.items():
             if expv[i]:
-                e = monomial_ldiv(expv, m)
-                g[e] = coeff*expv[i]
+                e = monomial_ldiv(expv, x)
+                for j in range(expv[i], expv[i] - m, -1):
+                    coeff *= j
+                g[e] = coeff
         g.strip_zero()
         return g
 
