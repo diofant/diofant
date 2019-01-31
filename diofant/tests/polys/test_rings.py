@@ -426,6 +426,18 @@ def test_PolyElement_coeff():
     assert f.coeff(1) == R.domain(5)
 
 
+def test_PolyElement_TC():
+    R, x = ring('x', QQ)
+
+    assert R.zero.TC() == 0
+    assert (x/2).TC() == 0
+    assert (x**2 + x - 1).TC() == -1
+
+    R, x, y = ring('x y', QQ)
+
+    pytest.raises(PolynomialError, lambda: (x + y).TC())
+
+
 def test_PolyElement_LC():
     R,  x, y = ring("x,y", QQ)
     assert R(0).LC == QQ(0)

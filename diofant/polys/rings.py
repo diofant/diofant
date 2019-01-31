@@ -1555,6 +1555,15 @@ class PolyElement(DomainElement, CantSympify, dict):
     def LC(self):
         return self._get_coeff(self.leading_expv())
 
+    def TC(self):
+        if self.ring.is_univariate:
+            if self.is_zero:
+                return self.ring.domain.zero
+            else:
+                return self.to_dense()[-1]
+        else:
+            raise PolynomialError('multivariate polynomials not supported')
+
     @property
     def LM(self):
         expv = self.leading_expv()
