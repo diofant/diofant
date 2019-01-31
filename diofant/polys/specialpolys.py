@@ -9,7 +9,6 @@ from .densearith import dmp_add_term, dmp_mul, dmp_neg, dmp_sqr
 from .densebasic import (dmp_from_dict, dmp_ground, dmp_one, dmp_raise,
                          dmp_zero, dup_random)
 from .factortools import dup_zz_cyclotomic_poly
-from .polyclasses import DMP
 from .polytools import Poly, PurePoly
 from .polyutils import _analyze_gens
 from .rings import ring
@@ -57,12 +56,12 @@ def cyclotomic_poly(n, x=None, **args):
         raise ValueError(
             "can't generate cyclotomic polynomial of order %s" % n)
 
-    poly = DMP(dup_zz_cyclotomic_poly(int(n), ZZ), ZZ)
+    poly = dup_zz_cyclotomic_poly(int(n), ZZ)
 
     if x is not None:
-        poly = Poly.new(poly, x)
+        poly = Poly(poly, x)
     else:
-        poly = PurePoly.new(poly, Dummy('x'))
+        poly = PurePoly(poly, Dummy('x'))
 
     if not args.get('polys', False):
         return poly.as_expr()
