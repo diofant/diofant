@@ -1527,7 +1527,7 @@ def _to_ANP_poly(f, ring):
 
 def _minpoly_from_dense(minpoly, ring):
     r"""
-    Change representation of the minimal polynomial from ``DMP`` to
+    Change representation of the minimal polynomial to
     ``PolyElement`` for a given ring.
 
     """

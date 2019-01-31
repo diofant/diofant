@@ -18,7 +18,6 @@ from diofant.diffgeom.rn import R2
 from diofant.domains import QQ, ZZ
 from diofant.geometry import Circle, Point
 from diofant.polys import Poly, RootOf, RootSum, field, grlex, groebner, ring
-from diofant.polys.polyclasses import DMP
 from diofant.printing import StrPrinter, sstr, sstrrepr
 from diofant.stats import Die, Exponential, Normal, pspace, where
 from diofant.tensor.array import ImmutableDenseNDimArray
@@ -741,10 +740,6 @@ def test_SymmetricDifference():
 def test_AlgebraicElement():
     K = QQ.algebraic_field(sqrt(2))
     assert str(K([1, 0])) == 'sqrt(2)'
-
-
-def test_DMP():
-    assert sstr(DMP([[0], [], [0, 1, 2], [3]], ZZ)) == 'DMP([[1, 2], [3]], ZZ)'
 
 
 def test_Differential():
