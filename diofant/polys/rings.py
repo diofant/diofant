@@ -2268,10 +2268,10 @@ class PolyElement(DomainElement, CantSympify, dict):
         return self.ring.dmp_prem(self, other)
 
     def pquo(self, other):
-        return self.ring.dmp_quo(self, other)
+        return self.ring.dmp_pquo(self, other)
 
     def pexquo(self, other):
-        return self.ring.dmp_exquo(self, other)
+        return self.ring.dmp_pexquo(self, other)
 
     def half_gcdex(self, other):
         if self.ring.is_univariate:
