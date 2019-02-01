@@ -1785,8 +1785,8 @@ def try_lerchphi(func):
         numer, denom = arg.as_numer_denom()
         if not denom.has(t):
             p = Poly(numer, t)
-            if not p.is_monomial:
-                raise TypeError("p should be monomial")
+            if not p.is_term:
+                raise TypeError("p should be a term")
             ((b, ), a) = p.LT()
             monomials += [(a/denom, b)]
             continue

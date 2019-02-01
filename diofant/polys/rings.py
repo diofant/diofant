@@ -278,6 +278,8 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         poly = self.zero
 
         for monom, coeff in element.items():
+            if isinstance(monom, int):
+                monom = monom,
             coeff = domain_new(coeff)
             if coeff:
                 poly[monom] = coeff
@@ -336,6 +338,11 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         elif isinstance(gen, self.dtype):
             try:
                 i = self.gens.index(gen)
+            except ValueError:
+                raise ValueError("invalid generator: %s" % gen)
+        elif isinstance(gen, str):
+            try:
+                i = self.symbols.index(Symbol(gen))
             except ValueError:
                 raise ValueError("invalid generator: %s" % gen)
         else:
@@ -522,6 +529,14 @@ class PolyElement(DomainElement, CantSympify, dict):
             return new_ring.from_terms(terms)
         else:
             return new_ring.from_dict(self)
+
+    def set_domain(self, new_domain):
+        if self.ring.domain == new_domain:
+            return self
+        else:
+            new_ring = new_domain.poly_ring(*self.ring.symbols,
+                                            order=self.ring.order)
+            return self.set_ring(new_ring)
 
     def as_expr(self, *symbols):
         if symbols and len(symbols) != self.ring.ngens:
@@ -1555,6 +1570,15 @@ class PolyElement(DomainElement, CantSympify, dict):
     def LC(self):
         return self._get_coeff(self.leading_expv())
 
+    def TC(self):
+        if self.ring.is_univariate:
+            if self.is_zero:
+                return self.ring.domain.zero
+            else:
+                return self.to_dense()[-1]
+        else:
+            raise PolynomialError('multivariate polynomials not supported')
+
     @property
     def LM(self):
         expv = self.leading_expv()
@@ -2081,7 +2105,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return p, q
 
-    def diff(self, x):
+    def diff(self, x, m=1):
         """Computes partial derivative in ``x``.
 
         Examples
@@ -2095,12 +2119,15 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         ring = self.ring
         i = ring.index(x)
-        m = ring.monomial_basis(i)
+        x = ring.monomial_basis(i)
+        x = monomial_pow(x, m)
         g = ring.zero
         for expv, coeff in self.items():
             if expv[i]:
-                e = monomial_ldiv(expv, m)
-                g[e] = coeff*expv[i]
+                e = monomial_ldiv(expv, x)
+                for j in range(expv[i], expv[i] - m, -1):
+                    coeff *= j
+                g[e] = coeff
         g.strip_zero()
         return g
 
@@ -2248,10 +2275,10 @@ class PolyElement(DomainElement, CantSympify, dict):
         return self.ring.dmp_prem(self, other)
 
     def pquo(self, other):
-        return self.ring.dmp_quo(self, other)
+        return self.ring.dmp_pquo(self, other)
 
     def pexquo(self, other):
-        return self.ring.dmp_exquo(self, other)
+        return self.ring.dmp_pexquo(self, other)
 
     def half_gcdex(self, other):
         if self.ring.is_univariate:

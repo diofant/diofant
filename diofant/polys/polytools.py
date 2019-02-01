@@ -2569,20 +2569,20 @@ class Poly(Expr):
         return self.rep.is_quadratic
 
     @property
-    def is_monomial(self):
+    def is_term(self):
         """
         Returns ``True`` if ``self`` is zero or has only one term.
 
         Examples
         ========
 
-        >>> Poly(3*x**2, x).is_monomial
+        >>> Poly(3*x**2, x).is_term
         True
-        >>> Poly(3*x**2 + 1, x).is_monomial
+        >>> Poly(3*x**2 + 1, x).is_term
         False
 
         """
-        return self.rep.is_monomial
+        return self.rep.is_term
 
     @property
     def is_homogeneous(self):

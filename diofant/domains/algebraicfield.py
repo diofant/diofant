@@ -361,21 +361,22 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
         except CoercionFailed:
             return NotImplemented
 
-        if self.parent._ext_root is None:
-            self.parent._ext_root = self.parent._compute_ext_root(self.parent.ext,
-                                                                  self.parent.minpoly)
+        parent = self.parent
+        dom = parent.domain
+
+        if parent._ext_root is None:
+            parent._ext_root = parent._compute_ext_root(parent.ext,
+                                                        parent.minpoly)
+        coeff, root = parent._ext_root
 
         rep = dmp_compose((self - other).rep.to_dense(),
-                          [self.domain.domain.from_expr(self.parent._ext_root[0]), 0],
-                          0, self.domain.domain)
+                          (parent.unit.rep*coeff).to_dense(), 0, dom)
 
-        while dup_count_real_roots(rep, self.domain.domain,
-                                   inf=self.parent._ext_root[1].interval.a,
-                                   sup=self.parent._ext_root[1].interval.b):
-            self.parent._ext_root[1].refine()
+        while dup_count_real_roots(rep, dom, root.interval.a, root.interval.b):
+            root.refine()
 
-        return dmp_eval_in(rep, self.parent._ext_root[1].interval.center,
-                           0, 0, self.domain.domain) < 0
+        self.parent._ext_root = (coeff, root)
+        return dmp_eval_in(rep, root.interval.center, 0, 0, dom) < 0
 
     @property
     def real(self):

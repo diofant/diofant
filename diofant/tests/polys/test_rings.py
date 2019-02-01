@@ -93,6 +93,10 @@ def test_PolynomialRing_ring_new():
     assert R.ring_new({(2, 0, 0): 1, (1, 1, 0): 2, (1, 0, 0): 3, (0, 0, 2): 4, (0, 0, 1): 5, (0, 0, 0): 6}) == f
     assert R.ring_new([((2, 0, 0), 1), ((1, 1, 0), 2), ((1, 0, 0), 3), ((0, 0, 2), 4), ((0, 0, 1), 5), ((0, 0, 0), 6)]) == f
 
+    R, x = ring('x', ZZ)
+
+    assert R.ring_new({2: 1, 1: 0, 0: -1}) == x**2 - 1
+
 
 def test_PolynomialRing_drop():
     R,  x, y, z = ring("x,y,z", ZZ)
@@ -125,6 +129,10 @@ def test_PolynomialRing_index():
     assert R.index(x) == 0
     assert R.index(y) == 1
     pytest.raises(ValueError, lambda: R.index(x + y))
+
+    assert R.index('x') == 0
+    assert R.index('z') == 2
+    pytest.raises(ValueError, lambda: R.index('t'))
 
 
 def test_PolynomialRing_is_():
@@ -251,6 +259,19 @@ def test_PolyElement_copy():
     assert f == g
     g[(1, 1, 1)] = 7
     assert f != g
+
+
+def test_PolyElement_set_domain():
+    R, x, y = ring('x y', ZZ)
+
+    f = x + y
+
+    assert f.set_domain(ZZ) is f
+
+    g = f.set_domain(QQ)
+    assert g is not f
+    assert g.as_expr() == f.as_expr()
+    assert g.ring.domain is QQ
 
 
 def test_PolyElement_items():
@@ -424,6 +445,18 @@ def test_PolyElement_coeff():
 
     f = 2*x + 3*x*y + 4*z + 5
     assert f.coeff(1) == R.domain(5)
+
+
+def test_PolyElement_TC():
+    R, x = ring('x', QQ)
+
+    assert R.zero.TC() == 0
+    assert (x/2).TC() == 0
+    assert (x**2 + x - 1).TC() == -1
+
+    R, x, y = ring('x y', QQ)
+
+    pytest.raises(PolynomialError, lambda: (x + y).TC())
 
 
 def test_PolyElement_LC():
@@ -1217,6 +1250,16 @@ def test_PolyElement_diff():
     assert f.diff(X[0]) == 2304*X[0]**7*X[1]**6*X[4]**3*X[10]**2/5 + 16*X[0]*X[2]**3*X[4]**3 + 4*X[0]
     assert f.diff(X[4]) == 864*X[0]**8*X[1]**6*X[4]**2*X[10]**2/5 + 24*X[0]**2*X[2]**3*X[4]**2
     assert f.diff(X[10]) == 576*X[0]**8*X[1]**6*X[4]**3*X[10]/5
+
+    R, x, y = ring('x y', ZZ)
+
+    f = x + x**2*y**3
+
+    assert f.diff(x, 0) == f
+    assert f.diff(x) == 2*x*y**3 + 1
+    assert f.diff(y) == 3*x**2*y**2
+    assert f.diff(x, 2) == 2*y**3
+    assert f.diff(x, 3) == 0
 
 
 def test_PolyElement_integrate():
