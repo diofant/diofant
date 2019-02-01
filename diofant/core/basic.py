@@ -473,7 +473,6 @@ class Basic:
         if kwargs.pop('simultaneous', False):  # XXX should this be the default for dict subs?
             reps = {}
             rv = self
-            kwargs['hack2'] = True
             m = Dummy()
             for old, new in sequence:
                 d = Dummy(commutative=new.is_commutative)
@@ -572,24 +571,7 @@ class Basic:
                     hit = True
                     args[i] = arg
             if hit:
-                rv = self.func(*args)
-                hack2 = hints.get('hack2', False)
-                if hack2 and self.is_Mul and not rv.is_Mul:  # 2-arg hack
-                    coeff = S.One
-                    nonnumber = []
-                    for i in args:
-                        if i.is_Number:
-                            coeff *= i
-                        else:
-                            nonnumber.append(i)
-                    nonnumber = self.func(*nonnumber)
-                    if coeff is S.One:
-                        return nonnumber
-                    elif nonnumber is S.One:
-                        return coeff
-                    else:
-                        return self.func(coeff, nonnumber, evaluate=False)
-                return rv
+                return self.func(*args)
             return self
 
         if _aresame(self, old):
