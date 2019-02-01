@@ -55,12 +55,6 @@ def file_clear_cache():
     diofant.core.cache.clear_cache()
 
 
-@pytest.fixture(autouse=True, scope='module')
-def check_disabled(request):
-    if getattr(request.module, 'disabled', False):
-        pytest.skip("test requirements not met.")
-
-
 @pytest.fixture(autouse=True, scope='session')
 def set_displayhook():
     sys.__displayhook__ = sys.displayhook  # https://bugs.python.org/26092
