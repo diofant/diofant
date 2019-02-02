@@ -1,10 +1,10 @@
 import pytest
 
 from diofant import (Add, Basic, Derivative, Dict, E, Eq, Float, Function, I,
-                     Integer, Lambda, Min, Mul, Piecewise, Rational, RootOf,
-                     Subs, Symbol, Tuple, Wild, abc, atan2, cbrt, cos, cot,
-                     cse, exp, factor, false, log, nsimplify, oo, pi, sin,
-                     sqrt, symbols, tan, zoo)
+                     Integer, Lambda, Min, Piecewise, Rational, RootOf, Subs,
+                     Symbol, Tuple, Wild, abc, atan2, cbrt, cos, cot, cse, exp,
+                     factor, false, log, nsimplify, oo, pi, sin, sqrt, symbols,
+                     tan, zoo)
 from diofant.abc import a, b, c, d, e, t, x, y, z
 from diofant.core.basic import _aresame
 from diofant.core.cache import clear_cache
@@ -588,15 +588,6 @@ def test_sympyissue_5261():
 
 def test_sympyissue_6923():
     assert (-2*x*sqrt(2)).subs({2*x: y}) == -sqrt(2)*y
-
-
-def test_2arg_hack():
-    N = Symbol('N', commutative=False)
-    ans = Mul(2, y + 1, evaluate=False)
-    assert (2*x*(y + 1)).subs({x: 1}, hack2=True) == ans
-    assert (2*(y + 1 + N)).subs({N: 0}, hack2=True) == ans
-    assert Mul(1, x, evaluate=False).subs({x: 2}, hack2=True) == 2
-    assert Mul(1, x, evaluate=False).subs({x: y}, hack2=True) == y
 
 
 @pytest.mark.xfail
