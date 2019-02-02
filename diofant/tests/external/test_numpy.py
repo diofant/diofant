@@ -6,24 +6,21 @@
 # using Diofant with NumPy
 
 import mpmath
+import pytest
 
 import diofant
-from diofant import (Float, Integer, Matrix, Rational, Symbol, lambdify,
-                     list2numpy, matrix2numpy, sin, symarray, symbols)
+from diofant import (DeferredVector, Float, Integer, Matrix, MatrixSymbol,
+                     Rational, Symbol, lambdify, list2numpy, matrix2numpy, sin,
+                     symarray, symbols)
 from diofant.abc import x, y, z
-from diofant.external import import_module
+from diofant.matrices.expressions.matexpr import MatrixElement
 from diofant.utilities.decorator import conserve_mpmath_dps
 from diofant.utilities.lambdify import NUMPY_TRANSLATIONS
 
 
 __all__ = ()
 
-numpy = import_module('numpy')
-if numpy:
-    array, matrix, ndarray = numpy.array, numpy.matrix, numpy.ndarray
-else:
-    # py.test will not execute any tests now
-    disabled = True
+numpy = pytest.importorskip('numpy')
 
 
 # first, systematically check, that all operations are implemented and don't
@@ -54,10 +51,10 @@ def test_systematic_basic():
         Float(5.5),
     ]
     numpy_objs = [
-        array([1]),
-        array([3, 8, -1]),
-        array([x, x**2, Integer(5)]),
-        array([x/y*sin(y), 5, Integer(5)]),
+        numpy.array([1]),
+        numpy.array([3, 8, -1]),
+        numpy.array([x, x**2, Integer(5)]),
+        numpy.array([x/y*sin(y), 5, Integer(5)]),
     ]
     for x in diofant_objs:
         for y in numpy_objs:
@@ -70,35 +67,35 @@ def test_systematic_basic():
 def test_basics():
     one = Integer(1)
     zero = Integer(0)
-    assert array(1) == array(one)
-    assert array([one]) == array([one])
-    assert array([x]) == array([x])
-    assert array(x) == array(Symbol("x"))
-    assert array(one + x) == array(1 + x)
+    assert numpy.array(1) == numpy.array(one)
+    assert numpy.array([one]) == numpy.array([one])
+    assert numpy.array([x]) == numpy.array([x])
+    assert numpy.array(x) == numpy.array(Symbol("x"))
+    assert numpy.array(one + x) == numpy.array(1 + x)
 
-    X = array([one, zero, zero])
-    assert (X == array([one, zero, zero])).all()
-    assert (X == array([one, 0, 0])).all()
+    X = numpy.array([one, zero, zero])
+    assert (X == numpy.array([one, zero, zero])).all()
+    assert (X == numpy.array([one, 0, 0])).all()
 
 
 def test_arrays():
     one = Integer(1)
     zero = Integer(0)
-    X = array([one, zero, zero])
+    X = numpy.array([one, zero, zero])
     Y = one*X
-    X = array([Symbol("a") + Rational(1, 2)])
+    X = numpy.array([Symbol("a") + Rational(1, 2)])
     Y = X + X
-    assert Y == array([1 + 2*Symbol("a")])
+    assert Y == numpy.array([1 + 2*Symbol("a")])
     Y = Y + 1
-    assert Y == array([2 + 2*Symbol("a")])
+    assert Y == numpy.array([2 + 2*Symbol("a")])
     Y = X - X
-    assert Y == array([0])
+    assert Y == numpy.array([0])
 
 
 def test_conversion1():
     a = list2numpy([x**2, x])
     # looks like an array?
-    assert isinstance(a, ndarray)
+    assert isinstance(a, numpy.ndarray)
     assert a[0] == x**2
     assert a[1] == x
     assert len(a) == 2
@@ -116,36 +113,36 @@ def test_conversion2():
     Y = one*X
     X = list2numpy([Symbol("a") + Rational(1, 2)])
     Y = X + X
-    assert Y == array([1 + 2*Symbol("a")])
+    assert Y == numpy.array([1 + 2*Symbol("a")])
     Y = Y + 1
-    assert Y == array([2 + 2*Symbol("a")])
+    assert Y == numpy.array([2 + 2*Symbol("a")])
     Y = X - X
-    assert Y == array([0])
+    assert Y == numpy.array([0])
 
 
 def test_list2numpy():
-    assert (array([x**2, x]) == list2numpy([x**2, x])).all()
+    assert (numpy.array([x**2, x]) == list2numpy([x**2, x])).all()
 
 
 def test_Matrix1():
     m = Matrix([[x, x**2], [5, 2/x]])
-    assert (array(m.subs({x: 2})) == array([[2, 4], [5, 1]])).all()
+    assert (numpy.array(m.subs({x: 2})) == numpy.array([[2, 4], [5, 1]])).all()
     m = Matrix([[sin(x), x**2], [5, 2/x]])
-    assert (array(m.subs({x: 2})) == array([[sin(2), 4], [5, 1]])).all()
+    assert (numpy.array(m.subs({x: 2})) == numpy.array([[sin(2), 4], [5, 1]])).all()
 
 
 def test_Matrix2():
-    a = array([[2, 4], [5, 1]])
+    a = numpy.array([[2, 4], [5, 1]])
     assert Matrix(a) == Matrix([[2, 4], [5, 1]])
     assert Matrix(a) != Matrix([[2, 4], [5, 2]])
-    a = array([[sin(2), 4], [5, 1]])
+    a = numpy.array([[sin(2), 4], [5, 1]])
     assert Matrix(a) == Matrix([[sin(2), 4], [5, 1]])
     assert Matrix(a) != Matrix([[sin(0), 4], [5, 1]])
 
 
 def test_Matrix_sum():
     M = Matrix([[1, 2, 3], [x, y, x], [2*y, -50, z*x]])
-    m = array([[2, 3, 4], [x, 5, 6], [x, y, z**2]])
+    m = numpy.array([[2, 3, 4], [x, 5, 6], [x, y, z**2]])
     assert M + m == Matrix([[3, 5, 7], [2*x, y + 5, x + 6], [2*y + x, y - 50, z*x + z**2]])
     assert m + M == Matrix([[3, 5, 7], [2*x, y + 5, x + 6], [2*y + x, y - 50, z*x + z**2]])
     assert M + m == M.add(m)
@@ -153,7 +150,7 @@ def test_Matrix_sum():
 
 def test_Matrix_mul():
     M = Matrix([[1, 2, 3], [x, y, x]])
-    m = array([[2, 4], [x, 6], [x, z**2]])
+    m = numpy.array([[2, 4], [x, 6], [x, z**2]])
     assert M*m == Matrix([
         [         2 + 5*x,        16 + 3*z**2],
         [2*x + x*y + x**2, 4*x + 6*y + x*z**2],
@@ -164,12 +161,12 @@ def test_Matrix_mul():
         [       7*x,    2*x + 6*y,          9*x],
         [x + x*z**2, 2*x + y*z**2, 3*x + x*z**2],
     ])
-    a = array([2])
+    a = numpy.array([2])
     assert a[0] * M == 2 * M
     assert M * a[0] == 2 * M
 
 
-def test_Matrix_array():
+def test_Matrix_numpy_array():
     class matarray:
         def __array__(self):
             return numpy.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
@@ -179,7 +176,7 @@ def test_Matrix_array():
 
 def test_matrix2numpy():
     a = matrix2numpy(Matrix([[1, x**2], [3*sin(x), 0]]))
-    assert isinstance(a, ndarray)
+    assert isinstance(a, numpy.ndarray)
     assert a.shape == (2, 2)
     assert a[0, 0] == 1
     assert a[0, 1] == x**2
@@ -189,7 +186,7 @@ def test_matrix2numpy():
 
 def test_matrix2numpy_conversion():
     a = Matrix([[1, 2, sin(x)], [x**2, x, Rational(1, 2)]])
-    b = array([[1, 2, sin(x)], [x**2, x, Rational(1, 2)]])
+    b = numpy.array([[1, 2, sin(x)], [x**2, x, Rational(1, 2)]])
     assert (matrix2numpy(a) == b).all()
     assert matrix2numpy(a).dtype == numpy.dtype('object')
 
@@ -200,12 +197,12 @@ def test_matrix2numpy_conversion():
 
 
 def test_sympyissue_3728():
-    assert (Rational(1, 2)*array([2*x, 0]) == array([x, 0])).all()
-    assert (Rational(1, 2) + array(
-        [2*x, 0]) == array([2*x + Rational(1, 2), Rational(1, 2)])).all()
-    assert (Float("0.5")*array([2*x, 0]) == array([Float("1.0")*x, 0])).all()
-    assert (Float("0.5") + array(
-        [2*x, 0]) == array([2*x + Float("0.5"), Float("0.5")])).all()
+    assert (Rational(1, 2)*numpy.array([2*x, 0]) == numpy.array([x, 0])).all()
+    assert (Rational(1, 2) + numpy.array(
+        [2*x, 0]) == numpy.array([2*x + Rational(1, 2), Rational(1, 2)])).all()
+    assert (Float("0.5")*numpy.array([2*x, 0]) == numpy.array([Float("1.0")*x, 0])).all()
+    assert (Float("0.5") + numpy.array(
+        [2*x, 0]) == numpy.array([2*x + Float("0.5"), Float("0.5")])).all()
 
 
 @conserve_mpmath_dps
@@ -222,45 +219,44 @@ def test_lambdify():
         pass
 
 
-def test_lambdify_matrix():
+def test_lambdify_numpy_matrix():
     f = lambdify(x, Matrix([[x, 2*x], [1, 2]]), [{'ImmutableMatrix': numpy.array}, "numpy"])
-    assert (f(1) == array([[1, 2], [1, 2]])).all()
+    assert (f(1) == numpy.array([[1, 2], [1, 2]])).all()
 
 
 def test_lambdify_matrix_multi_input():
-    M = diofant.Matrix([[x**2, x*y, x*z],
-                        [y*x, y**2, y*z],
-                        [z*x, z*y, z**2]])
+    M = Matrix([[x**2, x*y, x*z],
+                [y*x, y**2, y*z],
+                [z*x, z*y, z**2]])
     f = lambdify((x, y, z), M, [{'ImmutableMatrix': numpy.array}, "numpy"])
 
     xh, yh, zh = 1.0, 2.0, 3.0
-    expected = array([[xh**2, xh*yh, xh*zh],
-                      [yh*xh, yh**2, yh*zh],
-                      [zh*xh, zh*yh, zh**2]])
+    expected = numpy.array([[xh**2, xh*yh, xh*zh],
+                            [yh*xh, yh**2, yh*zh],
+                            [zh*xh, zh*yh, zh**2]])
     actual = f(xh, yh, zh)
     assert numpy.allclose(actual, expected)
 
 
 def test_lambdify_matrix_vec_input():
-    X = diofant.DeferredVector('X')
-    M = Matrix([
-        [X[0]**2, X[0]*X[1], X[0]*X[2]],
-        [X[1]*X[0], X[1]**2, X[1]*X[2]],
-        [X[2]*X[0], X[2]*X[1], X[2]**2]])
+    X = DeferredVector('X')
+    M = Matrix([[X[0]**2, X[0]*X[1], X[0]*X[2]],
+                [X[1]*X[0], X[1]**2, X[1]*X[2]],
+                [X[2]*X[0], X[2]*X[1], X[2]**2]])
     f = lambdify(X, M, [{'ImmutableMatrix': numpy.array}, "numpy"])
 
-    Xh = array([1.0, 2.0, 3.0])
-    expected = array([[Xh[0]**2, Xh[0]*Xh[1], Xh[0]*Xh[2]],
-                      [Xh[1]*Xh[0], Xh[1]**2, Xh[1]*Xh[2]],
-                      [Xh[2]*Xh[0], Xh[2]*Xh[1], Xh[2]**2]])
+    Xh = numpy.array([1.0, 2.0, 3.0])
+    expected = numpy.array([[Xh[0]**2, Xh[0]*Xh[1], Xh[0]*Xh[2]],
+                            [Xh[1]*Xh[0], Xh[1]**2, Xh[1]*Xh[2]],
+                            [Xh[2]*Xh[0], Xh[2]*Xh[1], Xh[2]**2]])
     actual = f(Xh)
     assert numpy.allclose(actual, expected)
 
 
 def test_lambdify_transl():
     for sym, mat in NUMPY_TRANSLATIONS.items():
-        assert sym in diofant.__dict__
-        assert mat in numpy.__dict__
+        assert sym in dir(diofant)
+        assert mat in dir(numpy)
 
 
 def test_symarray():
@@ -297,3 +293,19 @@ def test_symarray():
 def test_vectorize():
     assert (numpy.vectorize(
         sin)([1, 2, 3]) == numpy.array([sin(1), sin(2), sin(3)])).all()
+
+
+def test_array_coeersion():
+    A = MatrixSymbol('A', 2, 2)
+    assert numpy.array(A)[1][0] == MatrixElement(A, 1, 0)
+
+
+def test_from_ndarray():
+    # See sympy/sympy#7465
+    assert Matrix(numpy.array([1, 2, 3])) == Matrix([1, 2, 3])
+    assert Matrix(numpy.array([[1, 2, 3]])) == Matrix([[1, 2, 3]])
+    assert Matrix(numpy.array([[1, 2, 3], [4, 5, 6]])) == \
+        Matrix([[1, 2, 3], [4, 5, 6]])
+    assert Matrix(numpy.array([x, y, z])) == Matrix([x, y, z])
+    pytest.raises(NotImplementedError, lambda: Matrix(numpy.array([[
+        [1, 2], [3, 4]], [[5, 6], [7, 8]]])))

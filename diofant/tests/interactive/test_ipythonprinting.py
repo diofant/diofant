@@ -3,15 +3,13 @@
 import pytest
 
 from diofant.core import Float, Rational, Symbol
-from diofant.external import import_module
 
 
 __all__ = ()
 
-ipython = import_module("IPython", min_module_version="2.3.0")
+ipython = pytest.importorskip("IPython", minversion="2.3.0")
 
 
-@pytest.mark.skipif(ipython is None, reason="no IPython")
 def test_ipython_printing(monkeypatch):
     app = ipython.terminal.ipapp.TerminalIPythonApp()
     app.display_banner = False

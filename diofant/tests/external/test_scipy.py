@@ -5,16 +5,14 @@
 # Python (without scipy). Here we test everything, that a user may need when
 # using Diofant with SciPy
 
+import pytest
+
 from diofant import jn_zeros
-from diofant.external import import_module
 
 
 __all__ = ()
 
-scipy = import_module('scipy')
-if not scipy:
-    # py.test will not execute any tests now
-    disabled = True
+scipy = pytest.importorskip('scipy')
 
 
 def eq(a, b, tol=1e-6):

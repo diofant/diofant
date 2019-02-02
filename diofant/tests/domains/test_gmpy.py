@@ -2,16 +2,14 @@ import pytest
 
 from diofant.domains import (CC, FF, FF_gmpy, FF_python, PythonRational,
                              QQ_gmpy, QQ_python, ZZ_gmpy, ZZ_python)
-from diofant.external import import_module
 from diofant.polys.polyerrors import CoercionFailed
 
 
 __all__ = ()
 
-gmpy = import_module('gmpy2')
+gmpy = pytest.importorskip('gmpy2')
 
 
-@pytest.mark.skipif(gmpy is None, reason="no gmpy")
 def test_convert():
     assert ZZ_gmpy.finite_field(2) == FF_gmpy(2)
     assert ZZ_python.finite_field(2) == FF_python(2)
