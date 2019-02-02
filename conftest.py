@@ -14,9 +14,6 @@ sp = re.compile(r'([0-9]+)/([1-9][0-9]*)')
 
 hypothesis.settings.register_profile("default",
                                      hypothesis.settings(max_examples=100))
-hypothesis.settings.register_profile("debug",
-                                     hypothesis.settings(max_examples=100,
-                                                         verbosity=hypothesis.Verbosity.verbose))
 
 
 def pytest_report_header(config):
@@ -66,7 +63,6 @@ def enable_mpl_agg_backend():
     try:
         import matplotlib as mpl
         mpl.use('Agg')
-        del mpl
     except ImportError:
         pass
 
