@@ -280,12 +280,12 @@ class Poly(Expr):
     @property
     def zero(self):
         """Return zero polynomial with ``self``'s properties."""
-        return self.new(self.rep.zero(self.rep.lev, self.domain), *self.gens)
+        return self.new(self.rep.ring.zero, *self.gens)
 
     @property
     def one(self):
         """Return one polynomial with ``self``'s properties."""
-        return self.new(self.rep.one(self.rep.lev, self.domain), *self.gens)
+        return self.new(self.rep.ring.one, *self.gens)
 
     @property
     def unit(self):
@@ -650,7 +650,10 @@ class Poly(Expr):
         coeff_monomial
 
         """
-        return [self.domain.to_expr(c) for c in self.rep.coeffs(order=order)]
+        if self.is_zero:
+            return [Integer(0)]
+        else:
+            return [self.domain.to_expr(c) for c in self.rep.coeffs(order=order)]
 
     def monoms(self, order=None):
         """
@@ -663,7 +666,10 @@ class Poly(Expr):
         [(2, 0), (1, 2), (1, 1), (0, 1)]
 
         """
-        return self.rep.monoms(order=order)
+        if self.is_zero:
+            return [(0,)*len(self.gens)]
+        else:
+            return self.rep.monoms(order=order)
 
     def terms(self, order=None):
         """
@@ -676,7 +682,10 @@ class Poly(Expr):
         [((2, 0), 1), ((1, 2), 2), ((1, 1), 1), ((0, 1), 3)]
 
         """
-        return [(m, self.domain.to_expr(c)) for m, c in self.rep.terms(order=order)]
+        if self.is_zero:
+            return [((0,)*len(self.gens), Integer(0))]
+        else:
+            return [(m, self.domain.to_expr(c)) for m, c in self.rep.terms(order=order)]
 
     def all_coeffs(self):
         """
@@ -1226,7 +1235,10 @@ class Poly(Expr):
         3
 
         """
-        return self.coeffs(order)[-1]
+        if self.is_zero:
+            return self.rep.ring.zero
+        else:
+            return self.coeffs(order)[-1]
 
     def coeff_monomial(self, monom):
         """
@@ -1291,7 +1303,11 @@ class Poly(Expr):
         x**2*y**0
 
         """
-        return Monomial(self.monoms(order)[0], self.gens)
+        if self.is_zero:
+            lm = (0,)*len(self.gens)
+        else:
+            lm = self.monoms(order)[0]
+        return Monomial(lm, self.gens)
 
     def EM(self, order=None):
         """
@@ -1304,7 +1320,11 @@ class Poly(Expr):
         x**0*y**1
 
         """
-        return Monomial(self.monoms(order)[-1], self.gens)
+        if self.is_zero:
+            em = (0,)*len(self.gens)
+        else:
+            em = self.monoms(order)[-1]
+        return Monomial(em, self.gens)
 
     def LT(self, order=None):
         """
@@ -1320,7 +1340,10 @@ class Poly(Expr):
         (x**2*y**0, 4)
 
         """
-        monom, coeff = self.terms(order)[0]
+        if self.is_zero:
+            monom, coeff = (0,)*len(self.gens), self.rep.ring.zero
+        else:
+            monom, coeff = self.terms(order)[0]
         return Monomial(monom, self.gens), coeff
 
     def ET(self, order=None):
@@ -1334,7 +1357,10 @@ class Poly(Expr):
         (x**0*y**1, 3)
 
         """
-        monom, coeff = self.terms(order)[-1]
+        if self.is_zero:
+            monom, coeff = (0,)*len(self.gens), self.rep.ring.zero
+        else:
+            monom, coeff = self.terms(order)[-1]
         return Monomial(monom, self.gens), coeff
 
     def max_norm(self):
