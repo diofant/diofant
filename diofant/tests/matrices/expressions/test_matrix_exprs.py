@@ -2,17 +2,13 @@ import pytest
 
 from diofant.abc import t, x
 from diofant.core import Add, Eq, Integer, Mul, Rational, symbols
-from diofant.external import import_module
 from diofant.functions import cos, sin, sqrt, transpose
 from diofant.matrices import (Adjoint, Identity, ImmutableMatrix, Inverse,
                               MatAdd, MatMul, MatPow, Matrix, MatrixExpr,
                               MatrixSymbol, ShapeError, Transpose, ZeroMatrix)
-from diofant.matrices.expressions.matexpr import MatrixElement
 from diofant.matrices.expressions.slice import MatrixSlice
 from diofant.simplify import simplify
 
-
-numpy = import_module('numpy')
 
 __all__ = ()
 
@@ -265,9 +261,3 @@ def test_diofantissue_469():
     B = MatrixSymbol("B", n, n)
     expr = Eq(A, B)
     assert simplify(expr) == expr
-
-
-@pytest.mark.skipif(numpy is None, reason="Couldn't import numpy.")
-def test_array_coeersion():
-    A = MatrixSymbol('A', 2, 2)
-    assert numpy.array(A)[1][0] == MatrixElement(A, 1, 0)

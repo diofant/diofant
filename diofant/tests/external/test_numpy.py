@@ -9,10 +9,11 @@ import mpmath
 import pytest
 
 import diofant
-from diofant import (DeferredVector, Float, Integer, Matrix, Rational, Symbol,
-                     lambdify, list2numpy, matrix2numpy, sin, symarray,
-                     symbols)
+from diofant import (DeferredVector, Float, Integer, Matrix, MatrixSymbol,
+                     Rational, Symbol, lambdify, list2numpy, matrix2numpy, sin,
+                     symarray, symbols)
 from diofant.abc import x, y, z
+from diofant.matrices.expressions.matexpr import MatrixElement
 from diofant.utilities.decorator import conserve_mpmath_dps
 from diofant.utilities.lambdify import NUMPY_TRANSLATIONS
 
@@ -292,3 +293,8 @@ def test_symarray():
 def test_vectorize():
     assert (numpy.vectorize(
         sin)([1, 2, 3]) == numpy.array([sin(1), sin(2), sin(3)])).all()
+
+
+def test_array_coeersion():
+    A = MatrixSymbol('A', 2, 2)
+    assert numpy.array(A)[1][0] == MatrixElement(A, 1, 0)
