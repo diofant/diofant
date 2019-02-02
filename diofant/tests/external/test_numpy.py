@@ -298,3 +298,14 @@ def test_vectorize():
 def test_array_coeersion():
     A = MatrixSymbol('A', 2, 2)
     assert numpy.array(A)[1][0] == MatrixElement(A, 1, 0)
+
+
+def test_from_ndarray():
+    # See sympy/sympy#7465
+    assert Matrix(numpy.array([1, 2, 3])) == Matrix([1, 2, 3])
+    assert Matrix(numpy.array([[1, 2, 3]])) == Matrix([[1, 2, 3]])
+    assert Matrix(numpy.array([[1, 2, 3], [4, 5, 6]])) == \
+        Matrix([[1, 2, 3], [4, 5, 6]])
+    assert Matrix(numpy.array([x, y, z])) == Matrix([x, y, z])
+    pytest.raises(NotImplementedError, lambda: Matrix(numpy.array([[
+        [1, 2], [3, 4]], [[5, 6], [7, 8]]])))

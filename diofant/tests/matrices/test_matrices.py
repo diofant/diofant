@@ -8,7 +8,6 @@ from diofant import (Abs, Basic, E, Float, Function, I, Integer, Max, Min, N,
                      trigsimp)
 from diofant.abc import a, b, c, d, k, n, x, y, z
 from diofant.core.compatibility import iterable
-from diofant.external import import_module
 from diofant.matrices import (GramSchmidt, ImmutableMatrix,
                               ImmutableSparseMatrix, Matrix, SparseMatrix,
                               casoratian, diag, eye, hessian, jordan_cell,
@@ -25,8 +24,6 @@ __all__ = ()
 
 # don't re-order this list
 classes = (Matrix, SparseMatrix, ImmutableMatrix, ImmutableSparseMatrix)
-
-numpy = import_module('numpy')
 
 
 def test_args():
@@ -2529,18 +2526,6 @@ def test_sympyissue_7201():
 def test_free_symbols():
     for M in ImmutableMatrix, ImmutableSparseMatrix, Matrix, SparseMatrix:
         assert M([[x], [0]]).free_symbols == {x}
-
-
-@pytest.mark.skipif(numpy is None, reason="no numpy")
-def test_from_ndarray():
-    """See issue sympy/sympy#7465."""
-    assert Matrix(numpy.array([1, 2, 3])) == Matrix([1, 2, 3])
-    assert Matrix(numpy.array([[1, 2, 3]])) == Matrix([[1, 2, 3]])
-    assert Matrix(numpy.array([[1, 2, 3], [4, 5, 6]])) == \
-        Matrix([[1, 2, 3], [4, 5, 6]])
-    assert Matrix(numpy.array([x, y, z])) == Matrix([x, y, z])
-    pytest.raises(NotImplementedError, lambda: Matrix(numpy.array([[
-        [1, 2], [3, 4]], [[5, 6], [7, 8]]])))
 
 
 def test_hermitian():
