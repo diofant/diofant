@@ -5,7 +5,7 @@ python:
   - 3.7
 env:
   global:
-    - PYTEST_ADDOPTS="-n auto --cov-config setup.cfg --cov-append"
+    - PYTEST_ADDOPTS="-n auto --cov-config setup.cfg --cov-append --cov-report="
     - COVOPTS="--cov diofant -m \"not slow and not xfail\""
     - PYTHONHASHSEED=0
     - secure: "VNgpd/TFAkLGjWZzRBWxujDHktdvp2Fg9D8PbGmr/pbmLcJS3a5pf6po1T/\
