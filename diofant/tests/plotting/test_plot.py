@@ -1,15 +1,14 @@
 import errno
+import functools
 import os
 import sys
-from functools import wraps
-from tempfile import NamedTemporaryFile
+import tempfile
 
 import pytest
 
 from diofant import (And, I, Integral, LambertW, Piecewise, cos, exp_polar,
                      log, meijerg, oo, pi, real_root, sin, sqrt, summation)
 from diofant.abc import x, y, z
-from diofant.external import import_module
 from diofant.plotting import (plot, plot3d, plot3d_parametric_line,
                               plot3d_parametric_surface, plot_parametric)
 from diofant.plotting.plot import unset_show
@@ -17,8 +16,7 @@ from diofant.plotting.plot import unset_show
 
 __all__ = ()
 
-matplotlib = import_module('matplotlib', min_module_version='1.1.0',
-                           catch=(RuntimeError,))
+matplotlib = pytest.importorskip('matplotlib', minversion='1.1.0')
 
 
 class MockPrint:
@@ -31,7 +29,7 @@ class MockPrint:
 
 
 def disable_print(func, *args, **kwargs):
-    @wraps(func)
+    @functools.wraps(func)
     def wrapper(*args, **kwargs):
         sys.stdout = MockPrint()
         func(*args, **kwargs)
@@ -49,7 +47,7 @@ class TmpFileManager:
 
     @classmethod
     def tmp_file(cls, name=''):
-        cls.tmp_files.append(NamedTemporaryFile(prefix=name, suffix='.png').name)
+        cls.tmp_files.append(tempfile.NamedTemporaryFile(prefix=name, suffix='.png').name)
         return cls.tmp_files[-1]
 
     @classmethod
@@ -62,7 +60,6 @@ class TmpFileManager:
                     raise
 
 
-@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 def test_matplotlib_intro():
     """Examples from the 'introduction' notebook."""
     try:
@@ -179,7 +176,6 @@ def test_matplotlib_intro():
         TmpFileManager.cleanup()
 
 
-@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 def test_matplotlib_colors():
     """Examples from the 'colors' notebook."""
     try:
@@ -238,7 +234,6 @@ def test_matplotlib_colors():
         TmpFileManager.cleanup()
 
 
-@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 @pytest.mark.xfail
 def test_matplotlib_advanced():
     """Examples from the 'advanced' notebook."""
@@ -273,7 +268,6 @@ def test_matplotlib_advanced():
         TmpFileManager.cleanup()
 
 
-@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 @pytest.mark.xfail
 def test_matplotlib_advanced_2():
     """More examples from the 'advanced' notebook."""
@@ -289,7 +283,6 @@ def test_matplotlib_advanced_2():
 
 
 @disable_print
-@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 def test_append_sympyissue_7140():
     p1 = plot(x)
     p2 = plot(x**2)
@@ -306,7 +299,6 @@ def test_append_sympyissue_7140():
 
 
 @disable_print
-@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 def test_sympyissue_11461():
     try:
         name = 'test'
@@ -320,7 +312,6 @@ def test_sympyissue_11461():
 
 
 @disable_print
-@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 def test_sympyissue_10925():
     try:
         name = 'test'

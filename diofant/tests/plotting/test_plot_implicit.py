@@ -1,22 +1,20 @@
+import tempfile
 import warnings
-from tempfile import NamedTemporaryFile
 
 import pytest
 
 from diofant import (And, Eq, I, Or, cos, exp, pi, plot_implicit, re, sin,
                      symbols, tan)
 from diofant.abc import x, y
-from diofant.external import import_module
 
 
 __all__ = ()
 
-matplotlib = import_module('matplotlib', min_module_version='1.1.0',
-                           catch=(RuntimeError,))
+matplotlib = pytest.importorskip('matplotlib', minversion='1.1.0')
 
 
 def tmp_file(name=''):
-    return NamedTemporaryFile(suffix='.png').name
+    return tempfile.NamedTemporaryFile(suffix='.png').name
 
 
 def plot_and_save(name):
@@ -64,13 +62,11 @@ def test_line_color():
     assert p._series[0].line_color == "r"
 
 
-@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 def test_matplotlib():
     plot_and_save('test')
 
 
 @pytest.mark.xfail
-@pytest.mark.skipif(matplotlib is None, reason="no matplotlib")
 def test_matplotlib2():
     name = 'test2'
 
