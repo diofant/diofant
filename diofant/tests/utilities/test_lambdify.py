@@ -23,7 +23,13 @@ __all__ = ()
 MutableDenseMatrix = Matrix
 
 numpy = import_module('numpy')
+with_numpy = pytest.mark.skipif(numpy is None,
+                                reason="Couldn't import numpy.")
+
 numexpr = import_module('numexpr')
+with_numexpr = pytest.mark.skipif(numexpr is None,
+                                  reason="Couldn't import numexpr.")
+
 
 # ================= Test different arguments =======================
 
@@ -152,21 +158,21 @@ def test_mpmath_transl():
         assert mat in mpmath.__dict__
 
 
-@pytest.mark.skipif(numpy is None, reason="no numpy")
+@with_numpy
 def test_numpy_transl():
     for sym, nump in NUMPY_TRANSLATIONS.items():
         assert sym in diofant.__dict__
         assert nump in numpy.__dict__
 
 
-@pytest.mark.skipif(numpy is None, reason="no numpy")
+@with_numpy
 def test_numpy_translation_abs():
     f = lambdify(x, Abs(x), "numpy")
     assert f(-1) == 1
     assert f(1) == 1
 
 
-@pytest.mark.skipif(numexpr is None, reason="no numexpr")
+@with_numexpr
 def test_numexpr_printer():
     # if translation/printing is done incorrectly then evaluating
     # a lambdified numexpr expression will throw an exception
@@ -186,8 +192,8 @@ def test_numexpr_printer():
         assert f(*(1, )*nargs) is not None
 
 
-@pytest.mark.skipif(numpy is None, reason="no numpy")
-@pytest.mark.skipif(numexpr is None, reason="no numexpr")
+@with_numpy
+@with_numexpr
 def test_sympyissue_9334():
     expr = b*a - sqrt(a**2)
     syms = sorted(expr.free_symbols, key=lambda s: s.name)
@@ -299,7 +305,7 @@ def test_matrix():
     assert lambdify(v.T, J, modules='diofant')(1, 2) == sol
 
 
-@pytest.mark.skipif(numpy is None, reason="no numpy")
+@with_numpy
 def test_numpy_matrix():
     A = Matrix([[x, x*y], [sin(z) + 4, x**z]])
     sol_arr = numpy.array([[1, 2], [numpy.sin(3) + 4, 1]])
@@ -310,21 +316,21 @@ def test_numpy_matrix():
     assert isinstance(f(1, 2, 3), numpy.ndarray)
 
 
-@pytest.mark.skipif(numpy is None, reason="no numpy")
+@with_numpy
 def test_numpy_transpose():
     A = Matrix([[1, x], [0, 1]])
     f = lambdify(x, A.T, modules="numpy")
     numpy.testing.assert_array_equal(f(2), numpy.array([[1, 0], [2, 1]]))
 
 
-@pytest.mark.skipif(numpy is None, reason="no numpy")
+@with_numpy
 def test_numpy_inverse():
     A = Matrix([[1, x], [0, 1]])
     f = lambdify(x, A**-1, modules="numpy")
     numpy.testing.assert_array_equal(f(2), numpy.array([[1, -2], [0,  1]]))
 
 
-@pytest.mark.skipif(numpy is None, reason="no numpy")
+@with_numpy
 def test_numpy_old_matrix():
     A = Matrix([[x, x*y], [sin(z) + 4, x**z]])
     sol_arr = numpy.array([[1, 2], [numpy.sin(3) + 4, 1]])
@@ -333,14 +339,14 @@ def test_numpy_old_matrix():
     assert isinstance(f(1, 2, 3), numpy.ndarray)
 
 
-@pytest.mark.skipif(numpy is None, reason="no numpy")
+@with_numpy
 @pytest.mark.filterwarnings('ignore::RuntimeWarning')
 def test_python_div_zero_sympyissue_11306():
     p = Piecewise((1 / x, y < -1), (x, y <= 1), (1 / x, True))
     lambdify([x, y], p, modules='numpy')(0, 1)
 
 
-@pytest.mark.skipif(numpy is None, reason="no numpy")
+@with_numpy
 def test_numpy_piecewise():
     pieces = Piecewise((x, x < 3), (x**2, x > 5), (0, True))
     f = lambdify(x, pieces, modules="numpy")
@@ -352,7 +358,7 @@ def test_numpy_piecewise():
                                      numpy.array([1, numpy.nan, 1]))
 
 
-@pytest.mark.skipif(numpy is None, reason="no numpy")
+@with_numpy
 def test_numpy_logical_ops():
     and_func = lambdify((x, y), And(x, y), modules="numpy")
     or_func = lambdify((x, y), Or(x, y), modules="numpy")
@@ -364,7 +370,7 @@ def test_numpy_logical_ops():
     numpy.testing.assert_array_equal(not_func(arr2), numpy.array([True, False]))
 
 
-@pytest.mark.skipif(numpy is None, reason="no numpy")
+@with_numpy
 def test_numpy_matmul():
     xmat = Matrix([[x, y], [z, 1+z]])
     ymat = Matrix([[x**2], [Abs(x)]])
@@ -377,8 +383,8 @@ def test_numpy_matmul():
                                                                 [159, 251]]))
 
 
-@pytest.mark.skipif(numpy is None, reason="no numpy")
-@pytest.mark.skipif(numexpr is None, reason="no numexpr")
+@with_numpy
+@with_numexpr
 def test_numpy_numexpr():
     a, b, c = numpy.random.randn(3, 128, 128)
     # ensure that numpy and numexpr return same value for complicated expression
@@ -389,8 +395,8 @@ def test_numpy_numexpr():
     assert numpy.allclose(npfunc(a, b, c), nefunc(a, b, c))
 
 
-@pytest.mark.skipif(numpy is None, reason="no numpy")
-@pytest.mark.skipif(numexpr is None, reason="no numexpr")
+@with_numpy
+@with_numexpr
 def test_numexpr_userfunctions():
     a, b = numpy.random.randn(2, 10)
     uf = type('uf', (Function, ),
