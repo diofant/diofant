@@ -19,7 +19,18 @@ hypothesis.settings.register_profile("debug",
                                                          verbosity=hypothesis.Verbosity.verbose))
 
 
-def process_split(session, config, items):
+def pytest_report_header(config):
+    return """
+cache: %s
+ground types: %s
+""" % (diofant.core.cache.USE_CACHE, diofant.core.compatibility.GROUND_TYPES)
+
+
+def pytest_addoption(parser):
+    parser.addoption("--split", action="store", default="", help="split tests")
+
+
+def pytest_collection_modifyitems(session, config, items):
     split = config.getoption("--split")
     if not split:
         return
@@ -33,21 +44,6 @@ def process_split(session, config, items):
     if i < t:
         del items[end:]
     del items[:start]
-
-
-def pytest_report_header(config):
-    return """
-cache: %s
-ground types: %s
-""" % (diofant.core.cache.USE_CACHE, diofant.core.compatibility.GROUND_TYPES)
-
-
-def pytest_addoption(parser):
-    parser.addoption("--split", action="store", default="", help="split tests")
-
-
-def pytest_collection_modifyitems(session, config, items):
-    process_split(session, config, items)
 
 
 @pytest.fixture(autouse=True, scope='module')
