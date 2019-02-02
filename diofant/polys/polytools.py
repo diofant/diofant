@@ -468,7 +468,8 @@ class Poly(Expr):
             if not dom.is_Composite or y not in dom.symbols:
                 gens = list(self.gens)
                 gens[gens.index(x)] = y
-                return self.per(self.rep, gens=gens)
+                rep = dom.poly_ring(*gens).from_dict(dict(self.rep))
+                return self.per(rep, gens=gens)
 
         raise PolynomialError("can't replace %s with %s in %s" % (x, y, self))
 
@@ -2918,7 +2919,7 @@ class PurePoly(Poly):
             f = f.set_domain(dom)
             g = g.set_domain(dom)
 
-        return f.rep == g.rep
+        return f.rep.items() == g.rep.items()
 
     def _unify(self, other):
         other = sympify(other)
