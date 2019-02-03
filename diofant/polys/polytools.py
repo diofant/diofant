@@ -433,6 +433,8 @@ class Poly(Expr):
 
         """
         rep = self.rep
+        if rep.is_ground:
+            return self
         for x in rep.ring.gens:
             try:
                 rep = rep.drop(str(x))
