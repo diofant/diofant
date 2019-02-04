@@ -168,7 +168,7 @@ def horner(f, *gens, **args):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Horner_scheme
+    * https://en.wikipedia.org/wiki/Horner_scheme
 
     """
     allowed_flags(args, [])

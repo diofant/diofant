@@ -68,7 +68,7 @@ def Poisson(name, lamda):
     References
     ==========
 
-    [1] https//en.wikipedia.org/wiki/Poisson_distribution
+    [1] https://en.wikipedia.org/wiki/Poisson_distribution
     [2] http://mathworld.wolfram.com/PoissonDistribution.html
 
     """
@@ -128,7 +128,7 @@ def Geometric(name, p):
     References
     ==========
 
-    [1] https//en.wikipedia.org/wiki/Geometric_distribution
+    [1] https://en.wikipedia.org/wiki/Geometric_distribution
     [2] http://mathworld.wolfram.com/GeometricDistribution.html
 
     """

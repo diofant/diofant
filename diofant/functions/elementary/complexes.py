@@ -600,7 +600,7 @@ class conjugate(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Complex_conjugation
+    * https://en.wikipedia.org/wiki/Complex_conjugation
 
     """
 

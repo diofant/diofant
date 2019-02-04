@@ -1288,7 +1288,7 @@ def divisors(n, generator=False):
     References
     ==========
 
-    * https//stackoverflow.com/questions/1010381/python-factorization
+    * https://stackoverflow.com/questions/1010381/python-factorization
 
     """
 
@@ -1483,7 +1483,7 @@ class divisor_sigma(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Divisor_function
+    * https://en.wikipedia.org/wiki/Divisor_function
 
     Examples
     ========
@@ -1546,7 +1546,7 @@ def core(n, t=2):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Square-free_integer#Squarefree_core
+    * https://en.wikipedia.org/wiki/Square-free_integer#Squarefree_core
 
     Examples
     ========

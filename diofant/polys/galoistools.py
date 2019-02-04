@@ -1765,7 +1765,7 @@ def linear_congruence(a, b, m):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Linear_congruence_theorem
+    * https://en.wikipedia.org/wiki/Linear_congruence_theorem
 
     """
     from .polytools import gcdex

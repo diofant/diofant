@@ -142,7 +142,7 @@ class besselj(BesselBase):
       Mathematical Tables
     * Luke, Y. L. (1969), The Special Functions and Their
       Approximations, Volume 1
-    * https//en.wikipedia.org/wiki/Bessel_function
+    * https://en.wikipedia.org/wiki/Bessel_function
     * http://functions.wolfram.com/Bessel-TypeFunctions/BesselJ/
 
     """
@@ -830,7 +830,7 @@ class airyai(AiryBase):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Airy_function
+    * https://en.wikipedia.org/wiki/Airy_function
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
     * http://mathworld.wolfram.com/AiryFunctions.html
@@ -984,7 +984,7 @@ class airybi(AiryBase):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Airy_function
+    * https://en.wikipedia.org/wiki/Airy_function
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
     * http://mathworld.wolfram.com/AiryFunctions.html
@@ -1189,7 +1189,7 @@ class airyaiprime(AiryBase):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Airy_function
+    * https://en.wikipedia.org/wiki/Airy_function
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
     * http://mathworld.wolfram.com/AiryFunctions.html
@@ -1332,7 +1332,7 @@ class airybiprime(AiryBase):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Airy_function
+    * https://en.wikipedia.org/wiki/Airy_function
     * https://dlmf.nist.gov/9
     * https://www.encyclopediaofmath.org/index.php/Airy_functions
     * http://mathworld.wolfram.com/AiryFunctions.html

@@ -129,7 +129,7 @@ is_complex
 References
 ==========
 
-* https//en.wikipedia.org/wiki/Real_number
+* https://en.wikipedia.org/wiki/Real_number
 
 """,
     'imaginary':
@@ -142,7 +142,7 @@ the imaginary unit ``I``.
 References
 ==========
 
-* https//en.wikipedia.org/wiki/Imaginary_number
+* https://en.wikipedia.org/wiki/Imaginary_number
 
 """,
     'extended_real':
@@ -157,7 +157,7 @@ is_real
 References
 ==========
 
-* https//en.wikipedia.org/wiki/Extended_real_number_line
+* https://en.wikipedia.org/wiki/Extended_real_number_line
 
 """,
     'integer':
@@ -180,7 +180,7 @@ is_even
 References
 ==========
 
-* https//en.wikipedia.org/wiki/Parity_%28mathematics%29
+* https://en.wikipedia.org/wiki/Parity_%28mathematics%29
 
 """,
     'even':
@@ -195,7 +195,7 @@ is_odd
 References
 ==========
 
-* https//en.wikipedia.org/wiki/Parity_%28mathematics%29
+* https://en.wikipedia.org/wiki/Parity_%28mathematics%29
 
 """,
     'prime':
@@ -206,7 +206,7 @@ no positive divisors other than ``1`` and itself.
 References
 ==========
 
-* https//en.wikipedia.org/wiki/Prime_number
+* https://en.wikipedia.org/wiki/Prime_number
 """,
     'composite':
     """
@@ -216,7 +216,7 @@ divisor other than ``1`` or the number itself.
 References
 ==========
 
-* https//en.wikipedia.org/wiki/Composite_number
+* https://en.wikipedia.org/wiki/Composite_number
 
 """,
     'zero':
@@ -248,7 +248,7 @@ Test if self can have only values from the set of algebraic numbers.
 References
 ==========
 
-* https//en.wikipedia.org/wiki/Algebraic_number
+* https://en.wikipedia.org/wiki/Algebraic_number
 
 """,
     'transcendental':
@@ -258,7 +258,7 @@ Test if self can have only values from the set of transcendental numbers.
 References
 ==========
 
-* https//en.wikipedia.org/wiki/Transcendental_number
+* https://en.wikipedia.org/wiki/Transcendental_number
 
 """,
     'irrational':
@@ -268,7 +268,7 @@ Test if self value cannot be represented exactly by Rational.
 References
 ==========
 
-* https//en.wikipedia.org/wiki/Irrational_number
+* https://en.wikipedia.org/wiki/Irrational_number
 
 """,
     'finite':
@@ -278,7 +278,7 @@ Test if self absolute value is bounded.
 References
 ==========
 
-* https//en.wikipedia.org/wiki/Finite
+* https://en.wikipedia.org/wiki/Finite
 
 """,
     'infinite':
@@ -299,7 +299,7 @@ Test if self can have only negative values.
 References
 ==========
 
-* https//en.wikipedia.org/wiki/Negative_number
+* https://en.wikipedia.org/wiki/Negative_number
 
 """,
     'nonnegative':
@@ -314,7 +314,7 @@ is_negative
 References
 ==========
 
-* https//en.wikipedia.org/wiki/Negative_number
+* https://en.wikipedia.org/wiki/Negative_number
 
 """,
     'positive':

@@ -11,7 +11,7 @@ __all__ = ()
 
 
 def test_Ynm():
-    # https//en.wikipedia.org/wiki/Spherical_harmonics
+    # https://en.wikipedia.org/wiki/Spherical_harmonics
     th, ph = Symbol("theta", extended_real=True), Symbol("phi", extended_real=True)
 
     assert Ynm(0, 0, th, ph).expand(func=True) == 1/(2*sqrt(pi))
@@ -56,7 +56,7 @@ def test_Ynm_c():
 
 
 def test_Znm():
-    # https//en.wikipedia.org/wiki/Solid_harmonics#List_of_lowest_functions
+    # https://en.wikipedia.org/wiki/Solid_harmonics#List_of_lowest_functions
     th, ph = Symbol("theta", extended_real=True), Symbol("phi", extended_real=True)
 
     assert Znm(0, 0, th, ph) == Ynm(0, 0, th, ph)

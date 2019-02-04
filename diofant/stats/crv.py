@@ -356,7 +356,7 @@ class SingleContinuousPSpace(ContinuousPSpace, SinglePSpace):
             raise NotImplementedError
 
     def compute_density(self, expr, **kwargs):
-        # https//en.wikipedia.org/wiki/Random_variable#Functions_of_random_variables
+        # https://en.wikipedia.org/wiki/Random_variable#Functions_of_random_variables
         if expr == self.value:
             return self.density
         y = Dummy('y')

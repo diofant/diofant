@@ -35,7 +35,7 @@ class elliptic_k(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Elliptic_integrals
+    * https://en.wikipedia.org/wiki/Elliptic_integrals
     * http://functions.wolfram.com/EllipticIntegrals/EllipticK
 
     See Also
@@ -104,7 +104,7 @@ class elliptic_f(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Elliptic_integrals
+    * https://en.wikipedia.org/wiki/Elliptic_integrals
     * http://functions.wolfram.com/EllipticIntegrals/EllipticF
 
     See Also
@@ -177,7 +177,7 @@ class elliptic_e(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Elliptic_integrals
+    * https://en.wikipedia.org/wiki/Elliptic_integrals
     * http://functions.wolfram.com/EllipticIntegrals/EllipticE2
     * http://functions.wolfram.com/EllipticIntegrals/EllipticE
 
@@ -282,7 +282,7 @@ class elliptic_pi(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Elliptic_integrals
+    * https://en.wikipedia.org/wiki/Elliptic_integrals
     * http://functions.wolfram.com/EllipticIntegrals/EllipticPi3
     * http://functions.wolfram.com/EllipticIntegrals/EllipticPi
 
