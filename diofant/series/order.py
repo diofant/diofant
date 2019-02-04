@@ -81,7 +81,7 @@ class Order(Expr):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Big_O_notation
+    * https://en.wikipedia.org/wiki/Big_O_notation
 
     """
 

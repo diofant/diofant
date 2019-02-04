@@ -95,8 +95,8 @@ def sqrt(arg, **kwargs):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Square_root
-    * https//en.wikipedia.org/wiki/Principal_value
+    * https://en.wikipedia.org/wiki/Square_root
+    * https://en.wikipedia.org/wiki/Principal_value
 
     """
     # arg = sympify(arg) is handled by Pow
@@ -144,8 +144,8 @@ def cbrt(arg, **kwargs):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Cube_root
-    * https//en.wikipedia.org/wiki/Principal_value
+    * https://en.wikipedia.org/wiki/Cube_root
+    * https://en.wikipedia.org/wiki/Principal_value
 
     """
     return Pow(arg, Rational(1, 3), **kwargs)
@@ -223,10 +223,10 @@ def root(arg, n, k=0, **kwargs):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Square_root
-    * https//en.wikipedia.org/wiki/Real_root
-    * https//en.wikipedia.org/wiki/Root_of_unity
-    * https//en.wikipedia.org/wiki/Principal_value
+    * https://en.wikipedia.org/wiki/Square_root
+    * https://en.wikipedia.org/wiki/Real_root
+    * https://en.wikipedia.org/wiki/Root_of_unity
+    * https://en.wikipedia.org/wiki/Principal_value
     * http://mathworld.wolfram.com/CubeRoot.html
 
     """
@@ -501,8 +501,8 @@ class Max(MinMaxBase, Application):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Directed_complete_partial_order
-    * https//en.wikipedia.org/wiki/Lattice_%28order%29
+    * https://en.wikipedia.org/wiki/Directed_complete_partial_order
+    * https://en.wikipedia.org/wiki/Lattice_%28order%29
 
     See Also
     ========

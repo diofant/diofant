@@ -322,7 +322,7 @@ def test_subs():
 
 """
 we test for axioms of boolean algebra
-see https//en.wikipedia.org/wiki/Boolean_algebra_(structure)
+see https://en.wikipedia.org/wiki/Boolean_algebra_(structure)
 """
 
 

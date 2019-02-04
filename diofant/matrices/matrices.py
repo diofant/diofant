@@ -2587,7 +2587,7 @@ class MatrixBase(DefaultPrinting):
 
         Adjugate matrix is the transpose of the cofactor matrix.
 
-        https//en.wikipedia.org/wiki/Adjugate
+        https://en.wikipedia.org/wiki/Adjugate
 
         See Also
         ========
@@ -4139,7 +4139,7 @@ def mgamma(mu, lower=False):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Gamma_matrices
+    * https://en.wikipedia.org/wiki/Gamma_matrices
 
     """
     from . import Matrix

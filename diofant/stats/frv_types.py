@@ -329,7 +329,7 @@ def Rademacher(name):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Rademacher_distribution
+    * https://en.wikipedia.org/wiki/Rademacher_distribution
 
     """
     return rv(name, RademacherDistribution)

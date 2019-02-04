@@ -83,7 +83,7 @@ class erf(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Error_function
+    * https://en.wikipedia.org/wiki/Error_function
     * https://dlmf.nist.gov/7
     * http://mathworld.wolfram.com/Erf.html
     * http://functions.wolfram.com/GammaBetaErf/Erf
@@ -271,7 +271,7 @@ class erfc(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Error_function
+    * https://en.wikipedia.org/wiki/Error_function
     * https://dlmf.nist.gov/7
     * http://mathworld.wolfram.com/Erfc.html
     * http://functions.wolfram.com/GammaBetaErf/Erfc
@@ -457,7 +457,7 @@ class erfi(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Error_function
+    * https://en.wikipedia.org/wiki/Error_function
     * http://mathworld.wolfram.com/Erfi.html
     * http://functions.wolfram.com/GammaBetaErf/Erfi
 
@@ -740,7 +740,7 @@ class erfinv(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Error_function#Inverse_functions
+    * https://en.wikipedia.org/wiki/Error_function#Inverse_functions
     * http://functions.wolfram.com/GammaBetaErf/InverseErf/
 
     """
@@ -811,7 +811,7 @@ class erfcinv(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Error_function#Inverse_functions
+    * https://en.wikipedia.org/wiki/Error_function#Inverse_functions
     * http://functions.wolfram.com/GammaBetaErf/InverseErfc/
 
     """
@@ -1012,7 +1012,7 @@ class Ei(Function):
     ==========
 
     * https://dlmf.nist.gov/6.6
-    * https//en.wikipedia.org/wiki/Exponential_integral
+    * https://en.wikipedia.org/wiki/Exponential_integral
     * Abramowitz & Stegun, section 5: http://people.math.sfu.ca/~cbm/aands/page_228.htm
 
     """
@@ -1173,7 +1173,7 @@ class expint(Function):
 
     * https://dlmf.nist.gov/8.19
     * http://functions.wolfram.com/GammaBetaErf/ExpIntegralE/
-    * https//en.wikipedia.org/wiki/Exponential_integral
+    * https://en.wikipedia.org/wiki/Exponential_integral
 
     """
 
@@ -1344,7 +1344,7 @@ class li(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Logarithmic_integral
+    * https://en.wikipedia.org/wiki/Logarithmic_integral
     * http://mathworld.wolfram.com/LogarithmicIntegral.html
     * https://dlmf.nist.gov/6
     * http://mathworld.wolfram.com/SoldnersConstant.html
@@ -1457,7 +1457,7 @@ class Li(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Logarithmic_integral
+    * https://en.wikipedia.org/wiki/Logarithmic_integral
     * http://mathworld.wolfram.com/LogarithmicIntegral.html
     * https://dlmf.nist.gov/6
 
@@ -1600,7 +1600,7 @@ class Si(TrigonometricIntegral):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Trigonometric_integral
+    * https://en.wikipedia.org/wiki/Trigonometric_integral
 
     """
 
@@ -1694,7 +1694,7 @@ class Ci(TrigonometricIntegral):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Trigonometric_integral
+    * https://en.wikipedia.org/wiki/Trigonometric_integral
 
     """
 
@@ -1772,7 +1772,7 @@ class Shi(TrigonometricIntegral):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Trigonometric_integral
+    * https://en.wikipedia.org/wiki/Trigonometric_integral
 
     """
 
@@ -1862,7 +1862,7 @@ class Chi(TrigonometricIntegral):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Trigonometric_integral
+    * https://en.wikipedia.org/wiki/Trigonometric_integral
 
     """
 
@@ -2051,7 +2051,7 @@ class fresnels(FresnelIntegral):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Fresnel_integral
+    * https://en.wikipedia.org/wiki/Fresnel_integral
     * https://dlmf.nist.gov/7
     * http://mathworld.wolfram.com/FresnelIntegrals.html
     * http://functions.wolfram.com/GammaBetaErf/FresnelS
@@ -2179,7 +2179,7 @@ class fresnelc(FresnelIntegral):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Fresnel_integral
+    * https://en.wikipedia.org/wiki/Fresnel_integral
     * https://dlmf.nist.gov/7
     * http://mathworld.wolfram.com/FresnelIntegrals.html
     * http://functions.wolfram.com/GammaBetaErf/FresnelC

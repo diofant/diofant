@@ -2914,7 +2914,7 @@ def ode_1st_exact(eq, func, order, match):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Exact_differential_equation
+    * https://en.wikipedia.org/wiki/Exact_differential_equation
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 73.
 
@@ -2966,7 +2966,7 @@ def ode_1st_homogeneous_coeff_best(eq, func, order, match):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Homogeneous_differential_equation
+    * https://en.wikipedia.org/wiki/Homogeneous_differential_equation
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 59.
 
@@ -3063,7 +3063,7 @@ def ode_1st_homogeneous_coeff_subs_dep_div_indep(eq, func, order, match):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Homogeneous_differential_equation
+    * https://en.wikipedia.org/wiki/Homogeneous_differential_equation
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 59.
 
@@ -3156,7 +3156,7 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Homogeneous_differential_equation
+    * https://en.wikipedia.org/wiki/Homogeneous_differential_equation
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 59.
 
@@ -3307,7 +3307,7 @@ def ode_1st_linear(eq, func, order, match):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Linear_differential_equation#First_order_equation
+    * https://en.wikipedia.org/wiki/Linear_differential_equation#First_order_equation
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 92.
 
@@ -3387,7 +3387,7 @@ def ode_Bernoulli(eq, func, order, match):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Bernoulli_differential_equation
+    * https://en.wikipedia.org/wiki/Bernoulli_differential_equation
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 95.
 
@@ -3433,7 +3433,7 @@ def ode_Riccati_special_minus2(eq, func, order, match):
     References
     ==========
 
-    1. https//www.maplesoft.com/support/help/Maple/view.aspx?path=odeadvisor/Riccati
+    1. https://www.maplesoft.com/support/help/Maple/view.aspx?path=odeadvisor/Riccati
     2. http://eqworld.ipmnet.ru/en/solutions/ode/ode0106.pdf -
        http://eqworld.ipmnet.ru/en/solutions/ode/ode0123.pdf
 
@@ -3498,14 +3498,14 @@ def ode_Liouville(eq, func, order, match):
 
     * Goldstein and Braun, "Advanced Methods for the Solution of Differential
       Equations", pp. 98.
-    * https//www.maplesoft.com/support/help/Maple/view.aspx?path=odeadvisor/Liouville
+    * https://www.maplesoft.com/support/help/Maple/view.aspx?path=odeadvisor/Liouville
 
     """
     # Liouville ODE:
     #  f(x).diff(x, 2) + g(f(x))*(f(x).diff(x, 2))**2 + h(x)*f(x).diff(x)
     # See Goldstein and Braun, "Advanced Methods for the Solution of
     # Differential Equations", pg. 98, as well as
-    # https//www.maplesoft.com/support/help/view.aspx?path=odeadvisor/Liouville
+    # https://www.maplesoft.com/support/help/view.aspx?path=odeadvisor/Liouville
     x = func.args[0]
     f = func.func
     r = match  # f(x).diff(x, 2) + g*f(x).diff(x)**2 + h*f(x).diff(x)
@@ -3930,7 +3930,7 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Cauchy%E2%80%93Euler_equation
+    * https://en.wikipedia.org/wiki/Cauchy%E2%80%93Euler_equation
     * C. Bender & S. Orszag, "Advanced Mathematical Methods for Scientists and
       Engineers", Springer 1999, pp. 12.
 
@@ -4547,7 +4547,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Linear_differential_equation section:
+    * https://en.wikipedia.org/wiki/Linear_differential_equation section:
       Nonhomogeneous_equation_with_constant_coefficients
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 211.
@@ -4679,7 +4679,7 @@ def ode_nth_linear_constant_coeff_undetermined_coefficients(eq, func, order, mat
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Method_of_undetermined_coefficients
+    * https://en.wikipedia.org/wiki/Method_of_undetermined_coefficients
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 221.
 
@@ -5001,7 +5001,7 @@ def ode_nth_linear_constant_coeff_variation_of_parameters(eq, func, order, match
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Variation_of_parameters
+    * https://en.wikipedia.org/wiki/Variation_of_parameters
     * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
       Dover 1963, pp. 233.
 

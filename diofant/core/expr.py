@@ -2262,7 +2262,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         References
         ==========
 
-        * https//en.wikipedia.org/wiki/Algebraic_expression
+        * https://en.wikipedia.org/wiki/Algebraic_expression
 
         """
         if syms:
@@ -2665,7 +2665,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         References
         ==========
 
-        * https//en.wikipedia.org/wiki/Asymptotic_expansion
+        * https://en.wikipedia.org/wiki/Asymptotic_expansion
 
         """
         from . import Dummy

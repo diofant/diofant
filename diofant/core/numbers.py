@@ -1687,7 +1687,7 @@ class Zero(IntegerConstant, metaclass=Singleton):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Zero
+    * https://en.wikipedia.org/wiki/Zero
 
     """
 
@@ -1731,7 +1731,7 @@ class One(IntegerConstant, metaclass=Singleton):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/1_%28number%29
+    * https://en.wikipedia.org/wiki/1_%28number%29
 
     """
 
@@ -1760,7 +1760,7 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/%E2%88%921_%28number%29
+    * https://en.wikipedia.org/wiki/%E2%88%921_%28number%29
 
     """
 
@@ -1811,7 +1811,7 @@ class Half(RationalConstant, metaclass=Singleton):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/One_half
+    * https://en.wikipedia.org/wiki/One_half
 
     """
 
@@ -1855,7 +1855,7 @@ class Infinity(Number, metaclass=Singleton):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Infinity
+    * https://en.wikipedia.org/wiki/Infinity
 
     """
 
@@ -2234,7 +2234,7 @@ class NaN(Number, metaclass=Singleton):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/NaN
+    * https://en.wikipedia.org/wiki/NaN
 
     """
 
@@ -2430,7 +2430,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/E_%28mathematical_constant%29
+    * https://en.wikipedia.org/wiki/E_%28mathematical_constant%29
 
     """
 
@@ -2564,7 +2564,7 @@ class Pi(NumberSymbol, metaclass=Singleton):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Pi
+    * https://en.wikipedia.org/wiki/Pi
 
     """
 
@@ -2618,7 +2618,7 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Golden_ratio
+    * https://en.wikipedia.org/wiki/Golden_ratio
 
     """
 
@@ -2673,7 +2673,7 @@ class EulerGamma(NumberSymbol, metaclass=Singleton):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Euler%E2%80%93Mascheroni_constant
+    * https://en.wikipedia.org/wiki/Euler%E2%80%93Mascheroni_constant
 
     """
 
@@ -2720,7 +2720,7 @@ class Catalan(NumberSymbol, metaclass=Singleton):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Catalan%27s_constant
+    * https://en.wikipedia.org/wiki/Catalan%27s_constant
 
     """
 
@@ -2763,7 +2763,7 @@ class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Imaginary_unit
+    * https://en.wikipedia.org/wiki/Imaginary_unit
 
     """
 

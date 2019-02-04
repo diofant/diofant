@@ -62,7 +62,7 @@ def gauss_legendre(n, n_digits):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Gaussian_quadrature
+    * https://en.wikipedia.org/wiki/Gaussian_quadrature
 
     """
     x = Dummy("x")
@@ -136,7 +136,7 @@ def gauss_laguerre(n, n_digits):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
+    * https://en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
 
     """
     x = Dummy("x")
@@ -209,7 +209,7 @@ def gauss_hermite(n, n_digits):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Gauss-Hermite_Quadrature
+    * https://en.wikipedia.org/wiki/Gauss-Hermite_Quadrature
 
     """
     x = Dummy("x")
@@ -284,7 +284,7 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
+    * https://en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
 
     """
     x = Dummy("x")
@@ -359,7 +359,7 @@ def gauss_chebyshev_t(n, n_digits):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
+    * https://en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
 
     """
     xi = []
@@ -428,7 +428,7 @@ def gauss_chebyshev_u(n, n_digits):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
+    * https://en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
 
     """
     xi = []
@@ -502,7 +502,7 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Gauss%E2%80%93Jacobi_quadrature
+    * https://en.wikipedia.org/wiki/Gauss%E2%80%93Jacobi_quadrature
 
     """
     x = Dummy("x")

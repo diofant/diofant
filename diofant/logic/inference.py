@@ -99,7 +99,7 @@ def valid(expr):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Validity
+    * https://en.wikipedia.org/wiki/Validity
 
     """
     return not satisfiable(Not(expr))
@@ -194,7 +194,7 @@ def entails(expr, formula_set={}):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Logical_consequence
+    * https://en.wikipedia.org/wiki/Logical_consequence
 
     """
     formula_set = list(formula_set)

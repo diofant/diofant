@@ -67,7 +67,7 @@ class fibonacci(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Fibonacci_number
+    * https://en.wikipedia.org/wiki/Fibonacci_number
     * http://mathworld.wolfram.com/FibonacciNumber.html
 
     See Also
@@ -134,7 +134,7 @@ class lucas(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Lucas_number
+    * https://en.wikipedia.org/wiki/Lucas_number
     * http://mathworld.wolfram.com/LucasNumber.html
 
     See Also
@@ -225,8 +225,8 @@ class bernoulli(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Bernoulli_number
-    * https//en.wikipedia.org/wiki/Bernoulli_polynomial
+    * https://en.wikipedia.org/wiki/Bernoulli_number
+    * https://en.wikipedia.org/wiki/Bernoulli_polynomial
     * http://mathworld.wolfram.com/BernoulliNumber.html
     * http://mathworld.wolfram.com/BernoulliPolynomial.html
 
@@ -368,7 +368,7 @@ class bell(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Bell_number
+    * https://en.wikipedia.org/wiki/Bell_number
     * http://mathworld.wolfram.com/BellNumber.html
     * http://mathworld.wolfram.com/BellPolynomial.html
 
@@ -565,7 +565,7 @@ class harmonic(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Harmonic_number
+    * https://en.wikipedia.org/wiki/Harmonic_number
     * http://functions.wolfram.com/GammaBetaErf/HarmonicNumber/
     * http://functions.wolfram.com/GammaBetaErf/HarmonicNumber2/
 
@@ -714,9 +714,9 @@ class euler(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Euler_numbers
+    * https://en.wikipedia.org/wiki/Euler_numbers
     * http://mathworld.wolfram.com/EulerNumber.html
-    * https//en.wikipedia.org/wiki/Alternating_permutation
+    * https://en.wikipedia.org/wiki/Alternating_permutation
     * http://mathworld.wolfram.com/AlternatingPermutation.html
 
     See Also
@@ -819,7 +819,7 @@ class catalan(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Catalan_number
+    * https://en.wikipedia.org/wiki/Catalan_number
     * http://mathworld.wolfram.com/CatalanNumber.html
     * http://functions.wolfram.com/GammaBetaErf/CatalanNumber/
     * http://geometer.org/mathcircles/catalan.pdf
@@ -1060,7 +1060,7 @@ def nP(n, k=None, replacement=False):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Permutation
+    * https://en.wikipedia.org/wiki/Permutation
 
     See Also
     ========
@@ -1236,7 +1236,7 @@ def nC(n, k=None, replacement=False):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Combination
+    * https://en.wikipedia.org/wiki/Combination
     * https://math.stackexchange.com/questions/4643/an-efficient-method-for-computing-the-number-of-submultisets-of-size-n-of-a-giv/4654
 
     See Also
@@ -1391,8 +1391,8 @@ def stirling(n, k, d=None, kind=2, signed=False):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Stirling_numbers_of_the_first_kind
-    * https//en.wikipedia.org/wiki/Stirling_numbers_of_the_second_kind
+    * https://en.wikipedia.org/wiki/Stirling_numbers_of_the_first_kind
+    * https://en.wikipedia.org/wiki/Stirling_numbers_of_the_second_kind
 
     See Also
     ========

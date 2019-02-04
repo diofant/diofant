@@ -117,7 +117,7 @@ class Set(Basic):
         References
         ==========
 
-        * https//en.wikipedia.org/wiki/Disjoint_sets
+        * https://en.wikipedia.org/wiki/Disjoint_sets
 
         """
         return self.intersection(other) == S.EmptySet
@@ -368,7 +368,7 @@ class Set(Basic):
         References
         ==========
 
-        * https//en.wikipedia.org/wiki/Power_set
+        * https://en.wikipedia.org/wiki/Power_set
 
         """
         return self._eval_powerset()
@@ -531,7 +531,7 @@ class ProductSet(Set):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Cartesian_product
+    * https://en.wikipedia.org/wiki/Cartesian_product
 
     """
 
@@ -685,7 +685,7 @@ class Interval(Set, EvalfMixin):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Interval_%28mathematics%29
+    * https://en.wikipedia.org/wiki/Interval_%28mathematics%29
 
     """
 
@@ -1089,7 +1089,7 @@ class Union(Set, EvalfMixin):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Union_%28set_theory%29
+    * https://en.wikipedia.org/wiki/Union_%28set_theory%29
 
     """
 
@@ -1299,7 +1299,7 @@ class Intersection(Set):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Intersection_%28set_theory%29
+    * https://en.wikipedia.org/wiki/Intersection_%28set_theory%29
 
     """
 
@@ -1500,7 +1500,7 @@ class EmptySet(Set, metaclass=Singleton):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Empty_set
+    * https://en.wikipedia.org/wiki/Empty_set
 
     """
 
@@ -1566,7 +1566,7 @@ class UniversalSet(Set, metaclass=Singleton):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Universal_set
+    * https://en.wikipedia.org/wiki/Universal_set
 
     """
 
@@ -1611,7 +1611,7 @@ class FiniteSet(Set, EvalfMixin):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Finite_set
+    * https://en.wikipedia.org/wiki/Finite_set
 
     """
 
@@ -1810,7 +1810,7 @@ class SymmetricDifference(Set):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Symmetric_difference
+    * https://en.wikipedia.org/wiki/Symmetric_difference
 
     """
 

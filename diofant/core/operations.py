@@ -382,7 +382,7 @@ class LatticeOp(AssocOp):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Lattice_%28order%29
+    * https://en.wikipedia.org/wiki/Lattice_%28order%29
 
     """
 

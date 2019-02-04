@@ -726,7 +726,7 @@ def topological_sort(graph, key=None):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Topological_sorting
+    * https://en.wikipedia.org/wiki/Topological_sorting
 
     """
     V, E = graph
@@ -1664,10 +1664,10 @@ def generate_bell(n):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Method_ringing
-    * https//stackoverflow.com/questions/4856615/recursive-permutation/4857018
+    * https://en.wikipedia.org/wiki/Method_ringing
+    * https://stackoverflow.com/questions/4856615/recursive-permutation/4857018
     * https://web.archive.org/web/20160324133718/http://programminggeeks.com/bell-algorithm-for-permutation/
-    * https//en.wikipedia.org/wiki/Steinhaus%E2%80%93Johnson%E2%80%93Trotter_algorithm
+    * https://en.wikipedia.org/wiki/Steinhaus%E2%80%93Johnson%E2%80%93Trotter_algorithm
     * Generating involutions, derangements, and relatives by ECO
       Vincent Vajnovszki, DMTCS vol 1 issue 12, 2010
 
@@ -1848,7 +1848,7 @@ def generate_oriented_forest(n):
 
     * T. Beyer and S.M. Hedetniemi: constant time generation of
       rooted trees, SIAM J. Computing Vol. 9, No. 4, November 1980
-    * https//stackoverflow.com/questions/1633833/oriented-forest-taocp-algorithm-in-python
+    * https://stackoverflow.com/questions/1633833/oriented-forest-taocp-algorithm-in-python
 
     Examples
     ========
@@ -2071,7 +2071,7 @@ def kbins(l, k, ordered=None):
     """
     def partition(lista, bins):
         #  EnricoGiampieri's partition generator from
-        #  https//stackoverflow.com/questions/13131491/
+        #  https://stackoverflow.com/questions/13131491/
         #  partition-n-items-into-k-bins-in-python-lazily
         if len(lista) == 1 or bins == 1:
             yield [lista]

@@ -36,11 +36,11 @@ Here we take minimalistic approach to get something usable first.
 References
 ==========
 
-* https//en.wikipedia.org/wiki/Rete_algorithm
+* https://en.wikipedia.org/wiki/Rete_algorithm
 * http://reports-archive.adm.cs.cmu.edu/anon/1995/CMU-CS-95-113.pdf
-* https//en.wikipedia.org/wiki/Propositional_formula
-* https//en.wikipedia.org/wiki/Inference_rule
-* https//en.wikipedia.org/wiki/List_of_rules_of_inference
+* https://en.wikipedia.org/wiki/Propositional_formula
+* https://en.wikipedia.org/wiki/Inference_rule
+* https://en.wikipedia.org/wiki/List_of_rules_of_inference
 
 """
 

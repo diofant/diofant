@@ -1224,7 +1224,7 @@ def TRmorrie(rv):
     References
     ==========
 
-    https//en.wikipedia.org/wiki/Morrie%27s_law
+    https://en.wikipedia.org/wiki/Morrie%27s_law
 
     """
 
@@ -2004,7 +2004,7 @@ def _osborne(e, d):
     References
     ==========
 
-    https//en.wikipedia.org/wiki/Hyperbolic_function
+    https://en.wikipedia.org/wiki/Hyperbolic_function
 
     """
 
@@ -2040,7 +2040,7 @@ def _osbornei(e, d):
     References
     ==========
 
-    https//en.wikipedia.org/wiki/Hyperbolic_function
+    https://en.wikipedia.org/wiki/Hyperbolic_function
 
     """
 
@@ -2087,7 +2087,7 @@ def hyper_as_trig(rv):
     References
     ==========
 
-    https//en.wikipedia.org/wiki/Hyperbolic_function
+    https://en.wikipedia.org/wiki/Hyperbolic_function
 
     """
     from .simplify import signsimp

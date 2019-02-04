@@ -172,7 +172,7 @@ class hyper(TupleParametersBase):
 
     * Luke, Y. L. (1969), The Special Functions and Their Approximations,
       Volume 1
-    * https//en.wikipedia.org/wiki/Generalized_hypergeometric_function
+    * https://en.wikipedia.org/wiki/Generalized_hypergeometric_function
 
     """
 
@@ -430,7 +430,7 @@ class meijerg(TupleParametersBase):
 
     * Luke, Y. L. (1969), The Special Functions and Their Approximations,
       Volume 1
-    * https//en.wikipedia.org/wiki/Meijer_G-function
+    * https://en.wikipedia.org/wiki/Meijer_G-function
 
     """
 

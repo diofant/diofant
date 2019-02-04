@@ -77,7 +77,7 @@ class gamma(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Gamma_function
+    * https://en.wikipedia.org/wiki/Gamma_function
     * https://dlmf.nist.gov/5
     * http://mathworld.wolfram.com/GammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/Gamma/
@@ -232,7 +232,7 @@ class lowergamma(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Incomplete_gamma_function#Lower_incomplete_Gamma_function
+    * https://en.wikipedia.org/wiki/Incomplete_gamma_function#Lower_incomplete_Gamma_function
     * Abramowitz, Milton; Stegun, Irene A., eds. (1965), Chapter 6, Section 5,
       Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables
     * https://dlmf.nist.gov/8
@@ -375,13 +375,13 @@ class uppergamma(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Incomplete_gamma_function#Upper_incomplete_Gamma_function
+    * https://en.wikipedia.org/wiki/Incomplete_gamma_function#Upper_incomplete_Gamma_function
     * Abramowitz, Milton; Stegun, Irene A., eds. (1965), Chapter 6, Section 5,
       Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables
     * https://dlmf.nist.gov/8
     * http://functions.wolfram.com/GammaBetaErf/Gamma2/
     * http://functions.wolfram.com/GammaBetaErf/Gamma3/
-    * https//en.wikipedia.org/wiki/Exponential_integral#Relation_with_other_functions
+    * https://en.wikipedia.org/wiki/Exponential_integral#Relation_with_other_functions
 
     """
 
@@ -543,7 +543,7 @@ class polygamma(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Polygamma_function
+    * https://en.wikipedia.org/wiki/Polygamma_function
     * http://mathworld.wolfram.com/PolygammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma/
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
@@ -807,7 +807,7 @@ class loggamma(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Gamma_function
+    * https://en.wikipedia.org/wiki/Gamma_function
     * https://dlmf.nist.gov/5
     * http://mathworld.wolfram.com/LogGammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/LogGamma/
@@ -919,7 +919,7 @@ def digamma(x):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Digamma_function
+    * https://en.wikipedia.org/wiki/Digamma_function
     * http://mathworld.wolfram.com/DigammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
 
@@ -950,7 +950,7 @@ def trigamma(x):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Trigamma_function
+    * https://en.wikipedia.org/wiki/Trigamma_function
     * http://mathworld.wolfram.com/TrigammaFunction.html
     * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
 

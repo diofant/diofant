@@ -120,7 +120,7 @@ class KroneckerDelta(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Kronecker_delta
+    * https://en.wikipedia.org/wiki/Kronecker_delta
 
     """
 

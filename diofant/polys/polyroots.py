@@ -246,7 +246,7 @@ def roots_quartic(f):
     ==========
 
     * http://mathforum.org/dr.math/faq/faq.cubic.equations.html
-    * https//en.wikipedia.org/wiki/Quartic_function#Summary_of_Ferrari.27s_method
+    * https://en.wikipedia.org/wiki/Quartic_function#Summary_of_Ferrari.27s_method
     * http://staff.bath.ac.uk/masjhd/JHD-CA.pdf
     * http://www.albmath.org/files/Math_5713.pdf
     * http://www.statemaster.com/encyclopedia/Quartic-equation
@@ -783,7 +783,7 @@ def roots(f, *gens, **flags):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Cubic_function#Trigonometric_.28and_hyperbolic.29_method
+    * https://en.wikipedia.org/wiki/Cubic_function#Trigonometric_.28and_hyperbolic.29_method
 
     """
     from .polytools import to_rational_coeffs

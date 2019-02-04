@@ -23,8 +23,8 @@ def residue(expr, x, x0):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Residue_%28complex_analysis%29
-    * https//en.wikipedia.org/wiki/Residue_theorem
+    * https://en.wikipedia.org/wiki/Residue_%28complex_analysis%29
+    * https://en.wikipedia.org/wiki/Residue_theorem
 
     """
     # The current implementation uses series expansion to

@@ -115,7 +115,7 @@ def test_product_rules():
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Del
+    * https://en.wikipedia.org/wiki/Del
 
     """
 

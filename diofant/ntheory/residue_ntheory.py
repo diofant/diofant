@@ -951,7 +951,7 @@ class mobius(Function):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/M%C3%B6bius_function
+    * https://en.wikipedia.org/wiki/M%C3%B6bius_function
     * Thomas Koshy "Elementary Number Theory with Applications"
 
     """

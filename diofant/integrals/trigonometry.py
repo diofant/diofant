@@ -48,7 +48,7 @@ def trigintegrate(f, x, conds='piecewise'):
     References
     ==========
 
-    * https//en.wikibooks.org/wiki/Calculus/Integration_techniques
+    * https://en.wikibooks.org/wiki/Calculus/Integration_techniques
 
     See Also
     ========
