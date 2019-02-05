@@ -300,6 +300,9 @@ class AlgebraicElement(DomainElement, CantSympify):
             return NotImplemented
         return self * other**-1
 
+    def __rtruediv__(self, other):
+        return (self**-1).__mul__(other)
+
     def __eq__(self, other):
         try:
             other = self.parent.convert(other)

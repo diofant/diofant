@@ -903,6 +903,7 @@ def test_AlgebraicElement():
     pytest.raises(TypeError, lambda: a**QQ(1, 2))
 
     assert a*a**(-1) == A(1)
+    assert 1/a == a**(-1)
 
     A = QQ.algebraic_field(I)
 
