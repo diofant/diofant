@@ -1,7 +1,5 @@
 """Implementation of :class:`RationalField` class. """
 
-import math
-
 from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
 from .field import Field
@@ -61,10 +59,6 @@ class RationalField(Field, CharacteristicZero, SimpleDomain):
     def _from_AlgebraicField(self, a, K0):
         if a.is_ground:
             return self.convert(a.LC(), K0.domain)
-
-    def log(self, a, b):
-        """Returns b-base logarithm of ``a``. """
-        return self.dtype(int(math.log(int(a), b)))
 
 
 class PythonRationalField(RationalField):
