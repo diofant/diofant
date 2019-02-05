@@ -109,7 +109,8 @@ def dup_root_upper_bound(f, K):
             q = t[j] + a - ilog2(b)
             QL.append([q // (j - i), j])
 
-        assert QL
+        if not QL:
+            continue
 
         q = min(QL)
 
