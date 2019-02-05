@@ -1,5 +1,7 @@
 """Real and complex root isolation and refinement algorithms. """
 
+import math
+
 from ..core import I
 from .densearith import dmp_add, dmp_mul_ground, dmp_neg, dmp_rem, dup_rshift
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
@@ -83,23 +85,28 @@ def dup_root_upper_bound(f, K):
     n, P = len(f), []
     if K.is_AlgebraicField:
         return
-    t = n * [K.one]
+    t = n * [1]
     if dmp_LC(f, K) < 0:
         f = dmp_neg(f, 0, K)
     f = list(reversed(f))
 
+    def ilog2(a):
+        return int(math.log(a, 2))
+
     for i in range(n):
-        if int(f[i]) >= 0:
+        b = int(-f[i])
+        if b <= 0:
             continue
 
-        a, QL = K.log(-f[i], 2), []
+        a, QL = ilog2(b), []
 
         for j in range(i + 1, n):
+            b = int(f[j])
 
-            if int(f[j]) <= 0:
+            if b <= 0:
                 continue
 
-            q = t[j] + a - K.log(f[j], 2)
+            q = t[j] + a - ilog2(b)
             QL.append([q // (j - i), j])
 
         assert QL
