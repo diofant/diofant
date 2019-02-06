@@ -680,11 +680,11 @@ def test_Domain__algebraic_field():
 
     assert int(alg(2)) == 2
     assert int(alg.from_expr(Rational(3, 2))) == 1
-    pytest.raises(TypeError, lambda: int(alg([1, 1])))
 
     alg = QQ.algebraic_field(I)
     assert alg.algebraic_field(I) == alg
     assert alg.is_RealAlgebraicField is False
+    pytest.raises(TypeError, lambda: int(alg([1, 1])))
 
     alg = QQ.algebraic_field(sqrt(2)).algebraic_field(sqrt(3))
     assert alg.minpoly == Poly(x**2 - 3, x, domain=QQ.algebraic_field(sqrt(2)))
