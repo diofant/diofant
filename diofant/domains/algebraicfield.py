@@ -46,7 +46,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         ext = sum(c*e for c, e in zip(coeffs, ext))
 
         is_real = ext.is_real
-        if is_real is None:
+        if is_real is not False:
             ext_root = cls._compute_ext_root(ext, minpoly)
             is_real = ext_root[1].is_real
         else:
@@ -364,21 +364,16 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
         except CoercionFailed:
             return NotImplemented
 
-        parent = self.parent
-        dom = parent.domain
-
-        if parent._ext_root is None:
-            parent._ext_root = parent._compute_ext_root(parent.ext,
-                                                        parent.minpoly)
-        coeff, root = parent._ext_root
+        dom = self.parent.domain
+        coeff, root = self.parent._ext_root
 
         rep = dmp_compose((self - other).rep.to_dense(),
-                          (parent.unit.rep*coeff).to_dense(), 0, dom)
+                          (self.parent.unit.rep*coeff).to_dense(), 0, dom)
 
         while dup_count_real_roots(rep, dom, root.interval.a, root.interval.b):
             root.refine()
 
-        self.parent._ext_root = (coeff, root)
+        self.parent._ext_root = coeff, root
         return dmp_eval_in(rep, root.interval.center, 0, 0, dom) < 0
 
     @property
