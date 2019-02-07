@@ -5,7 +5,7 @@ import numbers
 
 from ..core import I, Integer, sympify
 from ..core.sympify import CantSympify
-from ..polys.densetools import dmp_compose, dmp_eval_in
+from ..polys.densetools import dmp_compose, dmp_diff_in, dmp_eval_in
 from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
 from .characteristiczero import CharacteristicZero
 from .domainelement import DomainElement
@@ -46,7 +46,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         ext = sum(c*e for c, e in zip(coeffs, ext))
 
         is_real = ext.is_real
-        if is_real is None:
+        if is_real is not False:
             ext_root = cls._compute_ext_root(ext, minpoly)
             is_real = ext_root[1].is_real
         else:
@@ -364,22 +364,35 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
         except CoercionFailed:
             return NotImplemented
 
-        parent = self.parent
-        dom = parent.domain
-
-        if parent._ext_root is None:
-            parent._ext_root = parent._compute_ext_root(parent.ext,
-                                                        parent.minpoly)
-        coeff, root = parent._ext_root
+        dom = self.parent.domain
+        coeff, root = self.parent._ext_root
 
         rep = dmp_compose((self - other).rep.to_dense(),
-                          (parent.unit.rep*coeff).to_dense(), 0, dom)
+                          (self.parent.unit.rep*coeff).to_dense(), 0, dom)
 
         while dup_count_real_roots(rep, dom, root.interval.a, root.interval.b):
             root.refine()
 
-        self.parent._ext_root = (coeff, root)
+        self.parent._ext_root = coeff, root
         return dmp_eval_in(rep, root.interval.center, 0, 0, dom) < 0
+
+    def __int__(self):
+        from ..polys.rootisolation import dup_count_real_roots
+
+        dom = self.parent.domain
+        coeff, root = self.parent._ext_root
+
+        rep = dmp_compose(self.rep.to_dense(),
+                          (self.parent.unit.rep*coeff).to_dense(), 0, dom)
+        df = dmp_diff_in(rep, 1, 0, 0, dom)
+
+        while (dup_count_real_roots(df, dom, root.interval.a, root.interval.b) or
+               int(dmp_eval_in(rep, root.interval.b, 0, 0, dom)) !=
+               int(dmp_eval_in(rep, root.interval.a, 0, 0, dom))):
+            root.refine()
+
+        self.parent._ext_root = coeff, root
+        return int(dmp_eval_in(rep, root.interval.a, 0, 0, dom))
 
     @property
     def real(self):
