@@ -5,7 +5,7 @@ import numbers
 
 from ..core import I, Integer, sympify
 from ..core.sympify import CantSympify
-from ..polys.densetools import dmp_compose, dmp_eval_in
+from ..polys.densetools import dmp_compose, dmp_diff_in, dmp_eval_in
 from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
 from .characteristiczero import CharacteristicZero
 from .domainelement import DomainElement
@@ -375,6 +375,24 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
 
         self.parent._ext_root = coeff, root
         return dmp_eval_in(rep, root.interval.center, 0, 0, dom) < 0
+
+    def __int__(self):
+        from ..polys.rootisolation import dup_count_real_roots
+
+        dom = self.parent.domain
+        coeff, root = self.parent._ext_root
+
+        rep = dmp_compose(self.rep.to_dense(),
+                          (self.parent.unit.rep*coeff).to_dense(), 0, dom)
+        df = dmp_diff_in(rep, 1, 0, 0, dom)
+
+        while (dup_count_real_roots(df, dom, root.interval.a, root.interval.b) or
+               int(dmp_eval_in(rep, root.interval.b, 0, 0, dom)) !=
+               int(dmp_eval_in(rep, root.interval.a, 0, 0, dom))):
+            root.refine()
+
+        self.parent._ext_root = coeff, root
+        return int(dmp_eval_in(rep, root.interval.a, 0, 0, dom))
 
     @property
     def real(self):

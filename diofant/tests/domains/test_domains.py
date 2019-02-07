@@ -709,7 +709,12 @@ def test_Domain__algebraic_field():
 
     alg3 = QQ.algebraic_field(RootOf(4*x**7 + x - 1, 0))
     assert alg3.is_RealAlgebraicField
+    assert int(alg3.unit) == 2
     assert 2.772 > alg3.unit > 2.771
+    assert int(alg3([3, 17, 11, -1, 2])) == 622
+    assert int(alg3([1, QQ(-11, 4), QQ(125326976730518, 44208605852241),
+                     QQ(-16742151878022, 12894796053515),
+                     QQ(2331359268715, 10459004949272)])) == 18
 
     alg4 = QQ.algebraic_field(sqrt(2) + I)
     assert alg4.convert(alg2.unit) == alg4.from_expr(I)
