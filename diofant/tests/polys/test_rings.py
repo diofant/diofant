@@ -991,6 +991,14 @@ def test_PolyElement_monic():
     assert (2*x + 1).monic() == x + QQ(1, 2)
 
 
+def test_PolyElement_primitive():
+    R, x, y = ring('x y', QQ)
+
+    f = -3*x/4 + y + QQ(11, 8)
+
+    assert f.primitive() == (QQ(-1, 8), 6*x - 8*y - 11)
+
+
 def test_PolyElement_deflate():
     R, x = ring("x", ZZ)
 

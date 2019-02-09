@@ -1754,6 +1754,8 @@ class PolyElement(DomainElement, CantSympify, dict):
     def primitive(self):
         """Returns content and a primitive polynomial."""
         cont = self.content()
+        if self.ring.domain.is_negative(self.LC):
+            cont = -cont
         return cont, self.quo_ground(cont)
 
     def monic(self):
