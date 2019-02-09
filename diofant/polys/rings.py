@@ -553,10 +553,14 @@ class PolyElement(DomainElement, CantSympify, dict):
     def clear_denoms(self):
         domain = self.ring.domain
 
-        if not domain.is_Field or not domain.has_assoc_Ring:
+        if not domain.is_Field:
             return domain.one, self
 
-        ground_ring = domain.ring
+        if domain.has_assoc_Ring:
+            ground_ring = domain.ring
+        else:
+            ground_ring = domain
+
         common = ground_ring.one
         lcm = ground_ring.lcm
 
