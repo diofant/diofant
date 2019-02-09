@@ -56,7 +56,7 @@ def test_DMP_to_dict():
 
     assert f.to_dict() == \
         {(4, 0): 3, (2, 0): 2, (0, 0): 8}
-    assert f.to_diofant_dict() == \
+    assert f.as_expr_dict() == \
         {(4, 0): ZZ.to_expr(3), (2, 0): ZZ.to_expr(2), (0, 0):
          ZZ.to_expr(8)}
 
