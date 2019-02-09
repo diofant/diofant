@@ -435,9 +435,9 @@ class Poly(Expr):
         rep = self.rep
         if rep.is_ground:
             return self
-        for x in rep.ring.gens:
+        for x in rep.ring.symbols:
             try:
-                rep = rep.drop(str(x))
+                rep = rep.drop(x)
             except ValueError:
                 pass
 
@@ -866,7 +866,7 @@ class Poly(Expr):
 
         result = self.rep.copy()
         for x in gens:
-            result = result.drop_to_ground(str(x))
+            result = result.drop_to_ground(x)
 
         return self.new(result, *result.ring.symbols)
 
