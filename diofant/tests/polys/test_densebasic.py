@@ -12,10 +12,9 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_from_dict, dmp_ground, dmp_ground_LC,
                                       dmp_ground_nth, dmp_ground_p,
                                       dmp_include, dmp_inflate, dmp_inject,
-                                      dmp_LC, dmp_list_terms,
-                                      dmp_multi_deflate, dmp_nest, dmp_normal,
-                                      dmp_one, dmp_one_p, dmp_permute,
-                                      dmp_raise, dmp_slice_in, dmp_strip,
+                                      dmp_list_terms, dmp_multi_deflate,
+                                      dmp_nest, dmp_normal, dmp_one, dmp_one_p,
+                                      dmp_permute, dmp_raise, dmp_strip,
                                       dmp_swap, dmp_TC, dmp_terms_gcd,
                                       dmp_to_dict, dmp_validate, dmp_zero,
                                       dmp_zero_p, dmp_zeros, dup_from_dict,
@@ -30,15 +29,25 @@ f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
 
 
 def test_dmp_LC():
-    assert dmp_LC([[]], ZZ) == []
-    assert dmp_LC([], ZZ) == 0
-    assert dmp_LC([2, 3, 4, 5], ZZ) == 2
-    assert dmp_LC([[2, 3, 4], [5]], ZZ) == [2, 3, 4]
-    assert dmp_LC([[[]]], ZZ) == [[]]
-    assert dmp_LC([[[2], [3, 4]], [[5]]], ZZ) == [[2], [3, 4]]
-    assert dmp_LC([3, 0, 1], ZZ) == 3
-    assert dmp_LC([1], ZZ) == 1
-    assert dmp_LC([1, 2], ZZ) == 1
+    R, x = ring('x', ZZ)
+
+    assert R.dmp_LC(0) == 0
+    assert R.dmp_LC(1) == 1
+    assert R.dmp_LC(2*x**3 + 3*x**2 + 4*x + 5) == 2
+    assert R.dmp_LC(3*x**2 + 1) == 3
+    assert R.dmp_LC(x + 2) == 1
+
+    R, x, y = ring('x y', ZZ)
+    R1 = R.drop(x)
+
+    assert R.dmp_LC(0) == 0
+    assert R.dmp_LC(2*x*y**2 + 3*x*y + 4*x + 5) == 2*R1.y**2 + 3*R1.y + 4
+
+    R, x, y, z = ring('x y z', ZZ)
+    R12 = R.drop(x)
+
+    assert R.dmp_LC(0) == 0
+    assert R.dmp_LC(2*x*y + 3*x*z + 4*x + 5) == 2*R12.y + 3*R12.z + 4
 
 
 def test_dmp_TC():
@@ -73,39 +82,48 @@ def test_dmp_ground_TC():
 
 
 def test_dmp_degree_in():
-    assert dmp_degree_in([], 0, 0) == -oo
-    assert dmp_degree_in([1], 0, 0) == 0
-    assert dmp_degree_in([1, 0], 0, 0) == 1
-    assert dmp_degree_in([1, 0, 0, 0, 1], 0, 0) == 4
-    assert dmp_degree_in([1, 2, 0, 3], 0, 0) == 3
-    assert dmp_degree_in([1, 1, 2, 0], 0, 0) == 3
+    R, x = ring('x', ZZ)
 
-    assert dmp_degree_in([[]], 0, 1) == -oo
-    assert dmp_degree_in([[[]]], 0, 2) == -oo
+    assert R.dmp_degree_in(0, 0) == -oo
+    assert R.dmp_degree_in(1, 0) == 0
+    assert R.dmp_degree_in(x, 0) == 1
+    assert R.dmp_degree_in(x**4 + 1, 0) == 4
+    assert R.dmp_degree_in(x**3 + 2*x**2 + 3, 0) == 3
+    assert R.dmp_degree_in(x**3 + x**2 + 2*x, 0) == 3
 
-    assert dmp_degree_in([[1]], 0, 1) == 0
-    assert dmp_degree_in([[2], [1]], 0, 1) == 1
+    R, x, y = ring('x y', ZZ)
 
-    assert dmp_degree_in([[2], [1, 2, 3]], 0, 1) == 1
+    assert R.dmp_degree_in(0, 0) == -oo
+    assert R.dmp_degree_in(1, 0) == 0
+    assert R.dmp_degree_in(2*x + 1, 0) == 1
+    assert R.dmp_degree_in(2*x + y**2 + 2*y + 3, 0) == 1
 
-    assert dmp_degree_in([[[]]], 0, 2) == -oo
-    assert dmp_degree_in([[[]]], 1, 2) == -oo
-    assert dmp_degree_in([[[]]], 2, 2) == -oo
+    pytest.raises(IndexError, lambda: R.dmp_degree_in(1, -5))
 
-    assert dmp_degree_in([[[1]]], 0, 2) == 0
-    assert dmp_degree_in([[[1]]], 1, 2) == 0
-    assert dmp_degree_in([[[1]]], 2, 2) == 0
+    R, x, y, z = ring('x y z', ZZ)
 
-    assert dmp_degree_in(f_4, 0, 2) == 9
-    assert dmp_degree_in(f_4, 1, 2) == 12
-    assert dmp_degree_in(f_4, 2, 2) == 8
+    assert R.dmp_degree_in(0, 0) == -oo
+    assert R.dmp_degree_in(0, 1) == -oo
+    assert R.dmp_degree_in(0, 2) == -oo
 
-    assert dmp_degree_in(f_6, 0, 2) == 4
-    assert dmp_degree_in(f_6, 1, 2) == 4
-    assert dmp_degree_in(f_6, 2, 2) == 6
-    assert dmp_degree_in(f_6, 3, 3) == 3
+    assert R.dmp_degree_in(1, 0) == 0
+    assert R.dmp_degree_in(1, 1) == 0
+    assert R.dmp_degree_in(1, 2) == 0
 
-    pytest.raises(IndexError, lambda: dmp_degree_in([[1]], -5, 1))
+    f = R.from_dense(f_4)
+
+    assert R.dmp_degree_in(f, 0) == 9
+    assert R.dmp_degree_in(f, 1) == 12
+    assert R.dmp_degree_in(f, 2) == 8
+
+    R, x, y, z, t = ring('x y z t', ZZ)
+
+    f = R.from_dense(f_6)
+
+    assert R.dmp_degree_in(f, 0) == 4
+    assert R.dmp_degree_in(f, 1) == 4
+    assert R.dmp_degree_in(f, 2) == 6
+    assert R.dmp_degree_in(f, 3) == 3
 
 
 def test_dmp_degree_list():
@@ -618,34 +636,34 @@ def test_dmp_apply_pairs():
 
 
 def test_dmp_slice_in():
-    f = [1, 2, 3, 4]
+    R, x = ring('x', ZZ)
 
-    assert dmp_slice_in(f, 0, 0, 0, 0, ZZ) == []
-    assert dmp_slice_in(f, 0, 1, 0, 0, ZZ) == [4]
-    assert dmp_slice_in(f, 0, 2, 0, 0, ZZ) == [3, 4]
-    assert dmp_slice_in(f, 0, 3, 0, 0, ZZ) == [2, 3, 4]
-    assert dmp_slice_in(f, 0, 4, 0, 0, ZZ) == [1, 2, 3, 4]
+    f = x**3 + 2*x**2 + 3*x + 4
 
-    assert dmp_slice_in(f, 0, 4, 0, 0, ZZ) == f
-    assert dmp_slice_in(f, 0, 9, 0, 0, ZZ) == f
+    assert R.dmp_slice_in(f, 0, 0, 0) == 0
+    assert R.dmp_slice_in(f, 0, 1, 0) == 4
+    assert R.dmp_slice_in(f, 0, 2, 0) == 3*x + 4
+    assert R.dmp_slice_in(f, 0, 3, 0) == 2*x**2 + 3*x + 4
 
-    assert dmp_slice_in(f, 1, 0, 0, 0, ZZ) == []
-    assert dmp_slice_in(f, 1, 1, 0, 0, ZZ) == []
-    assert dmp_slice_in(f, 1, 2, 0, 0, ZZ) == [3, 0]
-    assert dmp_slice_in(f, 1, 3, 0, 0, ZZ) == [2, 3, 0]
-    assert dmp_slice_in(f, 1, 4, 0, 0, ZZ) == [1, 2, 3, 0]
+    assert R.dmp_slice_in(f, 0, 4, 0) == f
+    assert R.dmp_slice_in(f, 0, 9, 0) == f
 
-    assert dmp_slice_in([1, 2], 0, 3, 0, 0, ZZ) == [1, 2]
+    assert R.dmp_slice_in(f, 1, 0, 0) == 0
+    assert R.dmp_slice_in(f, 1, 1, 0) == 0
+    assert R.dmp_slice_in(f, 1, 2, 0) == 3*x
+    assert R.dmp_slice_in(f, 1, 3, 0) == 2*x**2 + 3*x
+    assert R.dmp_slice_in(f, 1, 4, 0) == x**3 + 2*x**2 + 3*x
 
-    f = [[1], [2, 3, 4]]
-    assert dmp_slice_in(f, 1, 2, 0, 1, ZZ) == f
-    assert dmp_slice_in(f, 2, 1, 0, 1, ZZ) == [[2, 3, 5]]
+    pytest.raises(IndexError, lambda: R.dmp_slice_in(f, 0, 0, -1))
 
-    g = [1, 2, 3, 4]
-    assert dmp_slice_in(g, 0, 0, 0, 0, ZZ) == []
-    assert dmp_slice_in(g, 0, 3, 0, 0, ZZ) == [2, 3, 4]
+    assert R.dmp_slice_in(x + 2, 0, 3, 0) == x + 2
 
-    pytest.raises(IndexError, lambda: dmp_slice_in(g, 0, 0, 0, -1, ZZ))
+    R, x, y = ring('x y', ZZ)
+
+    f = x + 2*y**2 + 3*y + 4
+
+    assert R.dmp_slice_in(f, 1, 2, 0) == f
+    assert R.dmp_slice_in(f, 2, 1, 0) == 2*y**2 + 3*y + 5
 
 
 def test_dup_random():

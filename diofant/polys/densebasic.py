@@ -15,9 +15,9 @@ def dmp_LC(f, K):
     Examples
     ========
 
-    >>> dmp_LC([], ZZ)
-    0
-    >>> dmp_LC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
+    >>> R, x = ring('x', ZZ)
+
+    >>> R.dmp_LC(x**2 + 2*x + 3)
     1
 
     """
@@ -89,7 +89,9 @@ def dmp_degree_in(f, j, u):
     Examples
     ========
 
-    >>> dmp_degree_in([[ZZ(2)], [ZZ(1), ZZ(2), ZZ(3)]], 1, 1)
+    >>> R, x, y = ring('x y', ZZ)
+
+    >>> R.dmp_degree_in(2*x + y**2 + 2*y + 3, 1)
     2
 
     """
