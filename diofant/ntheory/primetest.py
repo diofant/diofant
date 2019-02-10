@@ -106,7 +106,7 @@ def mr(n, bases):
     * Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
       A Computational Perspective", Springer, 2nd edition, 135-138
     * A list of thresholds and the bases they require are here:
-      https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test#Deterministic_variants_of_the_test
+      https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test#Deterministic_variants
 
     Examples
     ========

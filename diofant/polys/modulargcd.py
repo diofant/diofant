@@ -647,8 +647,6 @@ def modgcd(f, g):
         fquo, frem = divmod(f, h)
         gquo, grem = divmod(g, h)
         if not frem and not grem:
-            if h.LC < 0:
-                ch = -ch
             h = h.mul_ground(ch)
             cff = fquo.mul_ground(cf // ch)
             cfg = gquo.mul_ground(cg // ch)

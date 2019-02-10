@@ -20,8 +20,8 @@ from .constructor import construct_domain
 from .densebasic import dmp_from_dict, dmp_to_dict
 from .heuristicgcd import heugcd
 from .modulargcd import func_field_modgcd, modgcd
-from .monomials import (monomial_div, monomial_gcd, monomial_ldiv,
-                        monomial_min, monomial_mul, monomial_pow)
+from .monomials import (monomial_div, monomial_ldiv, monomial_min,
+                        monomial_mul, monomial_pow)
 from .orderings import lex
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
@@ -553,10 +553,14 @@ class PolyElement(DomainElement, CantSympify, dict):
     def clear_denoms(self):
         domain = self.ring.domain
 
-        if not domain.is_Field or not domain.has_assoc_Ring:
+        if not domain.is_Field:
             return domain.one, self
 
-        ground_ring = domain.ring
+        if domain.has_assoc_Ring:
+            ground_ring = domain.ring
+        else:
+            ground_ring = domain
+
         common = ground_ring.one
         lcm = ground_ring.lcm
 
@@ -1570,15 +1574,6 @@ class PolyElement(DomainElement, CantSympify, dict):
     def LC(self):
         return self._get_coeff(self.leading_expv())
 
-    def TC(self):
-        if self.ring.is_univariate:
-            if self.is_zero:
-                return self.ring.domain.zero
-            else:
-                return self.to_dense()[-1]
-        else:
-            raise PolynomialError('multivariate polynomials not supported')
-
     @property
     def LM(self):
         expv = self.leading_expv()
@@ -1759,6 +1754,8 @@ class PolyElement(DomainElement, CantSympify, dict):
     def primitive(self):
         """Returns content and a primitive polynomial."""
         cont = self.content()
+        if self.ring.domain.is_negative(self.LC):
+            cont = -cont
         return cont, self.quo_ground(cont)
 
     def monic(self):
@@ -1947,12 +1944,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         elif not other:
             h, cfg, cff = other._gcd_zero(self)
             return h, cff, cfg
-        elif len(self) == 1:
-            h, cff, cfg = self._gcd_monom(other)
-            return h, cff, cfg
-        elif len(other) == 1:
-            h, cfg, cff = other._gcd_monom(self)
-            return h, cff, cfg
 
         J, (f, g) = self.deflate(other)
         h, cff, cfg = f._gcd(g)
@@ -1965,20 +1956,6 @@ class PolyElement(DomainElement, CantSympify, dict):
             return other, zero, one
         else:
             return -other, zero, -one
-
-    def _gcd_monom(self, other):
-        ring = self.ring
-        ground_gcd = ring.domain.gcd
-        ground_quo = ring.domain.quo
-        mf, cf = list(self.items())[0]
-        _mgcd, _cgcd = mf, cf
-        for mg, cg in other.items():
-            _mgcd = monomial_gcd(_mgcd, mg)
-            _cgcd = ground_gcd(_cgcd, cg)
-        h = self.new([(_mgcd, _cgcd)])
-        cff = self.new([(monomial_ldiv(mf, _mgcd), ground_quo(cf, _cgcd))])
-        cfg = self.new([(monomial_ldiv(mg, _mgcd), ground_quo(cg, _cgcd)) for mg, cg in other.items()])
-        return h, cff, cfg
 
     def _gcd(self, other):
         ring = self.ring

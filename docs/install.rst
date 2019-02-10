@@ -17,11 +17,10 @@ or to install also extra dependencies::
     Use :mod:`venv` to create isolated Python environment first,
     instead of installing everything system-wide.
 
-To use `Unicode pretty printing
-<tutorial/printing.html#d-pretty-printer>`_ --- configure your system
-to have good TTF fonts.  The `DejaVu Sans Mono
-<https://dejavu-fonts.github.io/>`_ seems to be an acceptable choice.
-On Debian you can install this font with::
+To use :ref:`Unicode pretty printing <d-pretty-printer>` --- configure your
+system to have good TTF fonts.  The `DejaVu Sans Mono
+<https://dejavu-fonts.github.io/>`_ seems to be an acceptable choice.  On
+Debian you can install this font with::
 
     apt-get install fonts-dejavu
 

@@ -108,7 +108,7 @@ class PermutationGroup(Basic):
 
     [12] https://en.wikipedia.org/wiki/Nilpotent_group
 
-    [13] http://www.math.colostate.edu/~hulpke/CGT/cgtnotes.pdf
+    [13] https://www.math.colostate.edu/~hulpke/CGT/cgtnotes.pdf
 
     """
 

@@ -104,7 +104,7 @@ class DMP(CantSympify):
         """Convert ``self`` to a dict representation with native coefficients."""
         return dmp_to_dict(self.rep, self.lev)
 
-    def to_diofant_dict(self):
+    def as_expr_dict(self):
         """Convert ``self`` to a dict representation with Diofant coefficients."""
         rep = dmp_to_dict(self.rep, self.lev)
 

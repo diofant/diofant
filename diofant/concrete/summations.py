@@ -731,7 +731,7 @@ def _eval_sum_hyper(f, i, a):
     except PolynomialError:
         pass
 
-    return f.subs({i: 0})*e, h.convergence_statement
+    return f.limit(i, 0)*e, h.convergence_statement
 
 
 def eval_sum_hyper(f, i_a_b):

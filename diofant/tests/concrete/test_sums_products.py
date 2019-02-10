@@ -3,9 +3,9 @@ import pytest
 from diofant import (Abs, And, Catalan, Derivative, E, Eq, EulerGamma,
                      Function, I, Integer, Integral, KroneckerDelta, Le, Mod,
                      Ne, Or, Piecewise, Product, Rational, Sum, Symbol,
-                     binomial, cos, exp, factorial, gamma, harmonic, log, nan,
-                     oo, pi, product, simplify, sin, sqrt, summation, symbols,
-                     sympify, zeta)
+                     binomial, cos, exp, factorial, gamma, harmonic, log,
+                     lowergamma, nan, oo, pi, product, simplify, sin, sqrt,
+                     summation, symbols, sympify, zeta)
 from diofant.abc import a, b, c, d, k, m, x, y, z
 from diofant.concrete.summations import telescopic
 
@@ -902,3 +902,8 @@ def test_sympyissue_10156():
     e = 2*y*Sum(2*cx*x**2, (x, 1, 9))
     assert e.factor() == \
         8*y**3*Sum(x, (x, 1, 3))*Sum(x**2, (x, 1, 9))
+
+
+def test_sympyissue_15943():
+    s = Sum(binomial(n, k)*factorial(n - k), (k, 0, n))
+    assert s.doit().simplify() == E*(gamma(n + 1) - lowergamma(n + 1, 1))

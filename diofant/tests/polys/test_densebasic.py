@@ -11,8 +11,8 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
                                       dmp_degree_list, dmp_eject, dmp_exclude,
                                       dmp_from_dict, dmp_ground, dmp_ground_LC,
                                       dmp_ground_nth, dmp_ground_p,
-                                      dmp_ground_TC, dmp_include, dmp_inflate,
-                                      dmp_inject, dmp_LC, dmp_list_terms,
+                                      dmp_include, dmp_inflate, dmp_inject,
+                                      dmp_LC, dmp_list_terms,
                                       dmp_multi_deflate, dmp_nest, dmp_normal,
                                       dmp_one, dmp_one_p, dmp_permute,
                                       dmp_raise, dmp_slice_in, dmp_strip,
@@ -61,10 +61,15 @@ def test_dmp_ground_LC():
 
 
 def test_dmp_ground_TC():
-    assert dmp_ground_TC([[]], 1, ZZ) == 0
-    assert dmp_ground_TC([[2, 3, 4], [5]], 1, ZZ) == 5
-    assert dmp_ground_TC([[[]]], 2, ZZ) == 0
-    assert dmp_ground_TC([[[2], [3, 4]], [[5]]], 2, ZZ) == 5
+    R, x, y = ring('x y', ZZ)
+
+    assert R.dmp_ground_TC(0) == 0
+    assert R.dmp_ground_TC(2*x*y**2 + 3*x*y + 4*x + 5) == 5
+
+    R, x, y, z = ring('x y z', ZZ)
+
+    assert R.dmp_ground_TC(0) == 0
+    assert R.dmp_ground_TC(2*x*y + 3*x*z + 4*x + 5) == 5
 
 
 def test_dmp_degree_in():

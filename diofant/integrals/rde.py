@@ -127,6 +127,7 @@ def weak_normalizer(a, d, DE, z=None):
 
     q = reduce(mul, [gcd(a - Poly(n, DE.t)*derivation(d1, DE), d1) for n in N],
                Poly(1, DE.t))
+    q = q.monic()
 
     dq = derivation(q, DE)
     sn = q*a - d*dq

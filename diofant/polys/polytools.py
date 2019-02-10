@@ -770,7 +770,7 @@ class Poly(Expr):
         if native:
             return self.rep.to_dict()
         else:
-            return self.rep.to_diofant_dict()
+            return self.rep.as_expr_dict()
 
     def as_expr(self, *gens):
         """
@@ -804,7 +804,7 @@ class Poly(Expr):
                 else:
                     gens[index] = value
 
-        return basic_from_dict(self.rep.to_diofant_dict(), *gens)
+        return basic_from_dict(self.rep.as_expr_dict(), *gens)
 
     def deflate(self):
         """
