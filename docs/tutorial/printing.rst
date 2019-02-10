@@ -58,6 +58,8 @@ passed to :func:`eval`.  To get it, use :func:`repr`.
 The repr form is mostly useful for understanding how an expression is
 built internally.
 
+.. _d-pretty-printer:
+
 2D Pretty Printer
 =================
 
