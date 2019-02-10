@@ -1069,7 +1069,6 @@ class assoc_laguerre(OrthogonalPolynomial):
     References
     ==========
 
-    * https://en.wikipedia.org/wiki/Laguerre_polynomial#Assoc_laguerre_polynomials
     * http://mathworld.wolfram.com/AssociatedLaguerrePolynomial.html
     * http://functions.wolfram.com/Polynomials/LaguerreL/
     * http://functions.wolfram.com/Polynomials/LaguerreL3/

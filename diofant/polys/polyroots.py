@@ -783,7 +783,7 @@ def roots(f, *gens, **flags):
     References
     ==========
 
-    * https://en.wikipedia.org/wiki/Cubic_function#Trigonometric_.28and_hyperbolic.29_method
+    * https://en.wikipedia.org/wiki/Cubic_function#Trigonometric_and_hyperbolic_solutions
 
     """
     from .polytools import to_rational_coeffs
