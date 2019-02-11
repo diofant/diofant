@@ -6,11 +6,11 @@ Installation
 The Diofant can be installed on any computer with Python 3.7
 or above.  You can install latest release with pip::
 
-    $ pip install diofant
+    pip install diofant
 
 or to install also extra dependencies::
 
-    $ pip install diofant[gmpy,plot]
+    pip install diofant[gmpy,plot]
 
 .. tip::
 
@@ -32,9 +32,9 @@ From Sources
 If you are a developer or like to get the latest updates as they come,
 be sure to install from git::
 
-    $ git clone git://github.com/diofant/diofant.git
-    $ cd diofant
-    $ pip install -e .[develop,docs]
+    git clone git://github.com/diofant/diofant.git
+    cd diofant
+    pip install -e .[develop,docs]
 
 .. note::
 
@@ -62,12 +62,12 @@ For a starter guide on using Diofant, refer to the :ref:`tutorial`.
 Also, you may want to run full set of unit tests to make
 sure everything works::
 
-    $ py.test --pyargs diofant
+    py.test --pyargs diofant
 
 `pytest`_ and some other packages are required for testing, so be sure to
 install the Diofant first with extra dependecies::
 
-    $ pip install diofant[tests]
+    pip install diofant[tests]
 
 Feedback
 ========
