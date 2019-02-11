@@ -71,17 +71,17 @@ def buchberger(f, ring):
     References
     ==========
 
-    * [Bose03]_
-    * [Giovini91]_
-    * [Ajwa95]_
-    * [Cox97]_
-    * [BeckerWeispfenning93]_, page 232
+    * :cite:`Bose03`
+    * :cite:`Giovini1991sugar`
+    * :cite:`Ajwa95groebner`
+    * :cite:`Cox1997ideals`
+    * :cite:`BeckerWeispfenning93`, page 232
 
     Notes
     =====
 
     Used an improved version of Buchberger's algorithm
-    as presented in [BeckerWeispfenning93]_.
+    as presented in :cite:`BeckerWeispfenning93`.
 
     """
     order = ring.order
@@ -548,8 +548,8 @@ def f5b(F, ring):
     References
     ==========
 
-    * [SunWang10]_
-    * [BeckerWeispfenning93]_, pp. 203, 216.
+    * :cite:`SunWang2010f5`
+    * :cite:`BeckerWeispfenning93`, pp. 203, 216.
 
     """
     order = ring.order
@@ -654,7 +654,7 @@ def red_groebner(G, ring):
     References
     ==========
 
-    * [BeckerWeispfenning93], page 216.
+    * :cite:`BeckerWeispfenning93`, page 216.
 
     """
     def reduction(P):
@@ -723,7 +723,7 @@ def groebner_lcm(f, g):
     References
     ==========
 
-    * [Cox97]_
+    * :cite:`Cox1997ideals`
 
     """
     if f.ring != g.ring:

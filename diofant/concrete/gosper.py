@@ -167,7 +167,7 @@ def gosper_sum(f, k):
     References
     ==========
 
-    * [Petkovšek97]_
+    * :cite:`Petkovsek1997AeqB`
 
     """
     indefinite = False

@@ -2656,7 +2656,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         =====
 
         This algorithm is directly induced from the limit computational algorithm
-        provided by Gruntz [Gruntz96]_, p.90. It majorly uses the mrv and rewrite sub-routines.
+        provided by Gruntz :cite:`Gruntz1996limits`, p.90. It majorly uses the mrv and rewrite sub-routines.
         The overall idea of this algorithm is first to look for the most
         rapidly varying subexpression w of a given expression f and then expands f
         in a series in w. Then same thing is recursively done on the leading coefficient

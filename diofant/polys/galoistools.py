@@ -433,8 +433,8 @@ def gf_div(f, g, p, K):
     References
     ==========
 
-    * [Monagan93]_
-    * [Gathen99]_
+    * :cite:`Monagan1993inplace`
+    * :cite:`Gathen1999modern`
 
     """
     df = dmp_degree_in(f, 0, 0)
@@ -675,7 +675,7 @@ def gf_pow_mod(f, n, g, p, K):
     References
     ==========
 
-    * [Gathen99]_
+    * :cite:`Gathen1999modern`
 
     """
     if not n:
@@ -784,7 +784,7 @@ def gf_gcdex(f, g, p, K):
     References
     ==========
 
-    * [Gathen99]_
+    * :cite:`Gathen1999modern`
 
     """
     if not (f or g):
@@ -967,7 +967,7 @@ def gf_trace_map(a, b, c, n, f, p, K):
     References
     ==========
 
-    * [Gathen92]_
+    * :cite:`Gathen1992frobenious`
 
     """
     u = gf_compose_mod(a, b, f, p, K)
@@ -1056,7 +1056,7 @@ def gf_irred_p_ben_or(f, p, K):
     References
     ==========
 
-    * [BenOr81]_
+    * :cite:`Ben-Or1981ff`
 
     """
     n = dmp_degree_in(f, 0, 0)
@@ -1182,7 +1182,7 @@ def gf_sqf_list(f, p, K):
     References
     ==========
 
-    * [Geddes92]_
+    * :cite:`Geddes1992algorithms`
 
     """
     n, sqf, factors, r = 1, False, [], int(p)
@@ -1389,8 +1389,8 @@ def gf_ddf_zassenhaus(f, p, K):
     References
     ==========
 
-    * [Gathen99]_
-    * [Geddes92]_
+    * :cite:`Gathen1999modern`
+    * :cite:`Geddes1992algorithms`
 
     """
     i, g, factors = 1, [K.one, K.zero], []
@@ -1433,8 +1433,8 @@ def gf_edf_zassenhaus(f, n, p, K):
     References
     ==========
 
-    * [Gathen99]_
-    * [Geddes92]_
+    * :cite:`Gathen1999modern`
+    * :cite:`Geddes1992algorithms`
 
     """
     factors = [f]
@@ -1492,9 +1492,9 @@ def gf_ddf_shoup(f, p, K):
     References
     ==========
 
-    * [Kaltofen98]_
-    * [Shoup95]_
-    * [Gathen92]_
+    * :cite:`Kaltofen1998subquadratic`
+    * :cite:`Shoup1995factor`
+    * :cite:`Gathen1992frobenious`
 
     """
     n = dmp_degree_in(f, 0, 0)
@@ -1563,8 +1563,8 @@ def gf_edf_shoup(f, n, p, K):
     References
     ==========
 
-    * [Shoup91]_
-    * [Gathen92]_
+    * :cite:`Shoup1991ffactor`
+    * :cite:`Gathen1992frobenious`
 
     """
     N, q = dmp_degree_in(f, 0, 0), int(p)
@@ -1712,7 +1712,7 @@ def gf_factor(f, p, K):
     References
     ==========
 
-    * [Gathen99]_
+    * :cite:`Gathen1999modern`
 
     """
     lc, f = gf_monic(f, p, K)
@@ -1864,7 +1864,7 @@ def gf_csolve(f, n):
     References
     ==========
 
-    * [Niven91]_
+    * :cite:`NivenZuckerman`
 
     """
     from ..domains import ZZ

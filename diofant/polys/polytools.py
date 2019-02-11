@@ -1786,6 +1786,14 @@ class Poly(Expr):
         dispersionset
         diofant.polys.dispersion.dispersion
 
+        References
+        ==========
+
+        * :cite:`Man1994disp`
+        * :cite:`Koepf98`
+        * :cite:`Abramov71rat`
+        * :cite:`Man1993indefsum`
+
         """
         from .dispersion import dispersion
         return dispersion(self, other)
@@ -2063,8 +2071,8 @@ class Poly(Expr):
         References
         ==========
 
-        * [Alkiviadis05]_
-        * [Alkiviadis08]_
+        * :cite:`Alkiviadis2005comp`
+        * :cite:`Alkiviadis2008cf`
 
         Examples
         ========
@@ -4985,8 +4993,8 @@ def groebner(F, *gens, **args):
     References
     ==========
 
-    * [Buchberger01]_
-    * [Cox97]_
+    * :cite:`Buchberger2001systems`
+    * :cite:`Cox1997ideals`
 
     See Also
     ========
@@ -5097,7 +5105,7 @@ class GroebnerBasis(Basic):
         References
         ==========
 
-        * [KredelWeispfennig88]_
+        * :cite:`Kredel1988indep`
 
         """
         if self.contains(Integer(1)):
@@ -5130,7 +5138,7 @@ class GroebnerBasis(Basic):
         Notes
         =====
 
-        The FGLM algorithm [Faugère94]_ used to convert reduced Gröbner bases
+        The FGLM algorithm :cite:`Faugere1993groebner` used to convert reduced Gröbner bases
         of zero-dimensional ideals from one ordering to another.  Sometimes it
         is infeasible to compute a Gröbner basis with respect to a particular
         ordering directly.

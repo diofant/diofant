@@ -8,7 +8,7 @@ Hypergeometric Function Expansion Algorithm
 *******************************************
 
 This section describes the algorithm used to expand hypergeometric functions.
-Most of it is based on the papers [Roach1996]_ and [Roach1997]_.
+Most of it is based on the papers :cite:`Roach1996` and :cite:`Roach1997`.
 
 Recall that the hypergeometric function is (initially) defined as
 
@@ -599,8 +599,8 @@ Implemented Hypergeometric Formulae
 A vital part of the algorithm is a relatively large table of hypergeometric
 function representations. The following automatically generated list contains
 all the representations implemented in Diofant (of course many more are
-derived from them). These formulae are mostly taken from [Luke1969]_ and
-[Prudnikov1990]_. They are all tested numerically.
+derived from them). These formulae are mostly taken from :cite:`Luke1969` and
+:cite:`Prudnikov1990`. They are all tested numerically.
 
 .. automodule:: diofant.simplify.hyperexpand_doc
 

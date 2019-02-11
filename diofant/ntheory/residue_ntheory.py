@@ -328,7 +328,7 @@ def _sqrt_mod_prime_power(a, p, k):
 
     * P. Hackman "Elementary Number Theory" (2009),  page 160
     * http://www.numbertheory.org/php/squareroot.html
-    * [Gathen99]_
+    * :cite:`Gathen1999modern`
 
     Examples
     ========

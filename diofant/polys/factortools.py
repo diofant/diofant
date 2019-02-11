@@ -84,7 +84,7 @@ def dup_zz_hensel_step(m, f, g, h, s, t, K):
     References
     ==========
 
-    * [Gathen99]_
+    * :cite:`Gathen1999modern`
 
     """
     M = m**2
@@ -136,7 +136,7 @@ def dup_zz_hensel_lift(p, f, f_list, l, K):
     References
     ==========
 
-    * [Gathen99]_
+    * :cite:`Gathen1999modern`
 
     """
     r = len(f_list)
@@ -410,7 +410,7 @@ def dup_zz_cyclotomic_factor(f, K):
     References
     ==========
 
-    * [Weisstein09]_
+    * :cite:`MathWorld-Cyclotomic-Poly`
 
     """
     lc_f, tc_f = dmp_LC(f, K), dmp_TC(f, K)
@@ -501,7 +501,7 @@ def dup_zz_factor(f, K):
     References
     ==========
 
-    * [Gathen99]_
+    * :cite:`Gathen1999modern`
 
     """
     cont, g = dmp_ground_primitive(f, 0, K)
@@ -819,8 +819,8 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
     References
     ==========
 
-    * [Wang78]_
-    * [Geddes92]_
+    * :cite:`Wang1978improved`
+    * :cite:`Geddes1992algorithms`
 
     """
     from ..utilities.randtest import _randint
@@ -961,7 +961,7 @@ def dmp_zz_factor(f, u, K):
     References
     ==========
 
-    * [Gathen99]_
+    * :cite:`Gathen1999modern`
 
     """
     if not u:
