@@ -37,3 +37,4 @@ These Sympy issues also were addressed:
 
 * :sympyissue:`15943` Wrong result from summation
 * :sympyissue:`12163` matematica code printer does not handle floats and derivatives correctly
+* :sympyissue:`11642` Geometric sum doesn't evaluate with float base

@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Abs, And, Catalan, Derivative, E, Eq, EulerGamma,
+from diofant import (Abs, And, Catalan, Derivative, E, Eq, EulerGamma, Float,
                      Function, I, Integer, Integral, KroneckerDelta, Le, Mod,
                      Ne, Or, Piecewise, Product, Rational, Sum, Symbol,
                      binomial, cos, exp, factorial, gamma, harmonic, log,
@@ -255,6 +255,9 @@ def test_geometric_sums():
 
     # issue sympy/sympy#9908:
     assert Sum(1/(n**3 - 1), (n, -oo, -2)).doit() == summation(1/(n**3 - 1), (n, -oo, -2))
+
+    # issue sympy/sympy#11642:
+    assert summation(0.5**n, (n, 1, oo)) == Float('1.0', dps=15)
 
 
 def test_harmonic_sums():
