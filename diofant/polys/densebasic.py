@@ -129,19 +129,7 @@ def dmp_degree_list(f, u):
     (1, 2)
 
     """
-    degs = [-oo]*(u + 1)
-
-    def degree_list(g, v, i, degs):
-        degs[i] = max(degs[i], dmp_degree_in(g, 0, v))
-
-        if v > 0:
-            v, i = v - 1, i + 1
-
-            for c in g:
-                degree_list(c, v, i, degs)
-
-    degree_list(f, u, 0, degs)
-    return tuple(degs)
+    return tuple(dmp_degree_in(f, j, u) for j in range(u + 1))
 
 
 def dmp_strip(f, u):
