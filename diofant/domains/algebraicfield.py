@@ -3,7 +3,7 @@
 import functools
 import numbers
 
-from ..core import I, Integer, sympify
+from ..core import I, Integer, cacheit, sympify
 from ..core.sympify import CantSympify
 from ..polys.densetools import dmp_compose, dmp_diff_in, dmp_eval_in
 from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
@@ -356,6 +356,7 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
     def __abs__(self):
         return self if self >= 0 else -self
 
+    @cacheit
     def __lt__(self, other):
         from ..polys.rootisolation import dup_count_real_roots
 
@@ -376,6 +377,7 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
         self.parent._ext_root = coeff, root
         return dmp_eval_in(rep, root.interval.center, 0, 0, dom) < 0
 
+    @cacheit
     def __int__(self):
         from ..polys.rootisolation import dup_count_real_roots
 
