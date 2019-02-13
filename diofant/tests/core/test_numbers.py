@@ -299,6 +299,8 @@ def test_Rational_new():
     # handle fractions.Fraction instances
     assert Rational(fractions.Fraction(1, 2)) == Rational(1, 2)
 
+    assert Rational(pi.evalf(100)).evalf(100) == pi.evalf(100)
+
 
 def test_Number_new():
     """
