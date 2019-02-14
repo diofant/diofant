@@ -58,9 +58,6 @@ class Domain(DefaultPrinting, abc.ABC):
         """Construct an element of ``self`` domain from ``args``. """
         return self.new(*args)
 
-    def normal(self, *args):
-        return self.dtype(*args)
-
     @abc.abstractmethod
     def from_expr(self, element):
         """Convert Diofant's expression to ``dtype``. """
