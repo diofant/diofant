@@ -34,9 +34,9 @@ def dmp_TC(f, K):
     Examples
     ========
 
-    >>> dmp_TC([], ZZ)
-    0
-    >>> dmp_TC([ZZ(1), ZZ(2), ZZ(3)], ZZ)
+    >>> R, x = ring('x', ZZ)
+
+    >>> R.dmp_TC(x**2 + 2*x + 3)
     3
 
     """
@@ -53,7 +53,9 @@ def dmp_ground_LC(f, u, K):
     Examples
     ========
 
-    >>> dmp_ground_LC([[[ZZ(1)], [ZZ(2), ZZ(3)]]], 2, ZZ)
+    >>> R, x, y, z = ring('x y z', ZZ)
+
+    >>> R.dmp_ground_LC(y + 2*z + 3)
     1
 
     """
@@ -71,7 +73,9 @@ def dmp_ground_TC(f, u, K):
     Examples
     ========
 
-    >>> dmp_ground_TC([[[ZZ(1)], [ZZ(2), ZZ(3)]]], 2, ZZ)
+    >>> R, x, y, z = ring('x y z', ZZ)
+
+    >>> R.dmp_ground_TC(y + 2*z + 3)
     3
 
     """
@@ -119,23 +123,13 @@ def dmp_degree_list(f, u):
     Examples
     ========
 
-    >>> dmp_degree_list([[ZZ(1)], [ZZ(1), ZZ(2), ZZ(3)]], 1)
+    >>> R, x, y = ring('x y', ZZ)
+
+    >>> R.dmp_degree_list(x + y**2 + 2*y + 3)
     (1, 2)
 
     """
-    degs = [-oo]*(u + 1)
-
-    def degree_list(g, v, i, degs):
-        degs[i] = max(degs[i], dmp_degree_in(g, 0, v))
-
-        if v > 0:
-            v, i = v - 1, i + 1
-
-            for c in g:
-                degree_list(c, v, i, degs)
-
-    degree_list(f, u, 0, degs)
-    return tuple(degs)
+    return tuple(dmp_degree_in(f, j, u) for j in range(u + 1))
 
 
 def dmp_strip(f, u):

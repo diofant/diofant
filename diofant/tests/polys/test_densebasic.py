@@ -7,18 +7,17 @@ import pytest
 from diofant import oo
 from diofant.domains import FF, QQ, ZZ
 from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
-                                      dmp_deflate, dmp_degree_in,
-                                      dmp_degree_list, dmp_eject, dmp_exclude,
-                                      dmp_from_dict, dmp_ground, dmp_ground_LC,
+                                      dmp_deflate, dmp_degree_in, dmp_eject,
+                                      dmp_exclude, dmp_from_dict, dmp_ground,
                                       dmp_ground_nth, dmp_ground_p,
                                       dmp_include, dmp_inflate, dmp_inject,
                                       dmp_list_terms, dmp_multi_deflate,
                                       dmp_nest, dmp_normal, dmp_one, dmp_one_p,
                                       dmp_permute, dmp_raise, dmp_strip,
-                                      dmp_swap, dmp_TC, dmp_terms_gcd,
-                                      dmp_to_dict, dmp_validate, dmp_zero,
-                                      dmp_zero_p, dmp_zeros, dup_from_dict,
-                                      dup_inflate, dup_random, dup_reverse)
+                                      dmp_swap, dmp_terms_gcd, dmp_to_dict,
+                                      dmp_validate, dmp_zero, dmp_zero_p,
+                                      dmp_zeros, dup_from_dict, dup_inflate,
+                                      dup_random, dup_reverse)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -51,22 +50,35 @@ def test_dmp_LC():
 
 
 def test_dmp_TC():
-    assert dmp_TC([], ZZ) == 0
-    assert dmp_TC([2, 3, 4, 5], ZZ) == 5
-    assert dmp_TC([[]], ZZ) == []
-    assert dmp_TC([[2, 3, 4], [5]], ZZ) == [5]
-    assert dmp_TC([[[]]], ZZ) == [[]]
-    assert dmp_TC([[[2], [3, 4]], [[5]]], ZZ) == [[5]]
-    assert dmp_TC([1], ZZ) == 1
-    assert dmp_TC([1, 2], ZZ) == 2
-    assert dmp_TC([3, 0, 1], ZZ) == 1
+    R, x = ring('x', ZZ)
+
+    assert R.dmp_TC(0) == 0
+    assert R.dmp_TC(1) == 1
+    assert R.dmp_TC(x + 2) == 2
+    assert R.dmp_TC(3*x**2 + 1) == 1
+    assert R.dmp_TC(2*x**3 + 3*x**2 + 4*x + 5) == 5
+
+    R, x, y = ring('x y', ZZ)
+
+    assert R.dmp_TC(0) == 0
+    assert R.dmp_TC(2*x*y**2 + 3*x*y + 4*x + 5) == 5
+
+    R, x, y, z = ring('x y z', ZZ)
+
+    assert R.dmp_TC(0) == 0
+    assert R.dmp_TC(2*x*y + 3*x*z + 4*x + 5) == 5
 
 
 def test_dmp_ground_LC():
-    assert dmp_ground_LC([[]], 1, ZZ) == 0
-    assert dmp_ground_LC([[2, 3, 4], [5]], 1, ZZ) == 2
-    assert dmp_ground_LC([[[]]], 2, ZZ) == 0
-    assert dmp_ground_LC([[[2], [3, 4]], [[5]]], 2, ZZ) == 2
+    R, x, y = ring('x y', ZZ)
+
+    assert R.dmp_ground_LC(0) == 0
+    assert R.dmp_ground_LC(2*x*y**2 + 3*x*y + 4*x + 5) == 2
+
+    R, x, y, z = ring('x y z', ZZ)
+
+    assert R.dmp_ground_LC(0) == 0
+    assert R.dmp_ground_LC(2*x*y + 3*x*z + 4*x + 5) == 2
 
 
 def test_dmp_ground_TC():
@@ -127,16 +139,21 @@ def test_dmp_degree_in():
 
 
 def test_dmp_degree_list():
-    assert dmp_degree_list([[[[ ]]]], 3) == (-oo, -oo, -oo, -oo)
-    assert dmp_degree_list([[[[1]]]], 3) == ( 0, 0, 0, 0)
+    R, x, y, z = ring('x y z', ZZ)
 
-    assert dmp_degree_list(f_0, 2) == (2, 2, 2)
-    assert dmp_degree_list(f_1, 2) == (3, 3, 3)
-    assert dmp_degree_list(f_2, 2) == (5, 3, 3)
-    assert dmp_degree_list(f_3, 2) == (5, 4, 7)
-    assert dmp_degree_list(f_4, 2) == (9, 12, 8)
-    assert dmp_degree_list(f_5, 2) == (3, 3, 3)
-    assert dmp_degree_list(f_6, 3) == (4, 4, 6, 3)
+    assert R.dmp_degree_list(R.from_dense(f_0)) == (2, 2, 2)
+    assert R.dmp_degree_list(R.from_dense(f_1)) == (3, 3, 3)
+    assert R.dmp_degree_list(R.from_dense(f_2)) == (5, 3, 3)
+    assert R.dmp_degree_list(R.from_dense(f_3)) == (5, 4, 7)
+    assert R.dmp_degree_list(R.from_dense(f_4)) == (9, 12, 8)
+    assert R.dmp_degree_list(R.from_dense(f_5)) == (3, 3, 3)
+
+    R, x, y, z, t = ring('x y z t', ZZ)
+
+    assert R.dmp_degree_list(0) == (-oo, -oo, -oo, -oo)
+    assert R.dmp_degree_list(1) == ( 0, 0, 0, 0)
+
+    assert R.dmp_degree_list(R.from_dense(f_6)) == (4, 4, 6, 3)
 
 
 def test_dmp_strip():
