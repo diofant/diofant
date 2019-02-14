@@ -20,7 +20,8 @@ warnings.simplefilter('error', UserWarning)
 # Add any Sphinx extension module names here, as strings.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax',
               'sphinx.ext.graphviz', 'sphinx.ext.intersphinx',
-              'sphinx.ext.extlinks', 'sphinx.ext.napoleon']
+              'sphinx.ext.extlinks', 'sphinx.ext.napoleon',
+              'sphinxcontrib.bibtex']
 
 napoleon_google_docstring = False
 napoleon_use_param = False

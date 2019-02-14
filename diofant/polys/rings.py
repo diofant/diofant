@@ -1469,11 +1469,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         i = self.ring.index(x)
-
-        if not self:
-            return -oo
-        else:
-            return max(monom[i] for monom in self)
+        return max((monom[i] for monom in self), default=-oo)
 
     def degree_list(self):
         """
@@ -1482,10 +1478,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Note that the degree of 0 is negative infinity (the Diofant object -oo)
 
         """
-        if not self:
-            return (-oo,)*self.ring.ngens
-        else:
-            return tuple(map(max, zip(*self)))
+        return tuple(self.degree(i) for i in range(self.ring.ngens))
 
     def tail_degree(self, x=0):
         """
@@ -1495,11 +1488,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         i = self.ring.index(x)
-
-        if not self:
-            return -oo
-        else:
-            return min(monom[i] for monom in self)
+        return min((monom[i] for monom in self), default=-oo)
 
     def tail_degrees(self):
         """
@@ -1508,10 +1497,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Note that the degree of 0 is negative infinity (the Diofant object -oo)
 
         """
-        if not self:
-            return (-oo,)*self.ring.ngens
-        else:
-            return tuple(map(min, zip(*self)))
+        return tuple(self.tail_degree(i) for i in range(self.ring.ngens))
 
     def total_degree(self):
         """Returns the total degree."""

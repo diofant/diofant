@@ -212,7 +212,7 @@ def dup_inner_subresultants(f, g, K):
     References
     ==========
 
-    * [Brown78]_
+    * :cite:`Brown1978prs`
 
     """
     n = dmp_degree_in(f, 0, 0)
@@ -936,7 +936,7 @@ def dmp_zz_heu_gcd(f, g, u, K):
     References
     ==========
 
-    * [Liao95]_
+    * :cite:`Liao1995heuristic`
 
     """
     result = _dmp_rr_trivial_gcd(f, g, u, K)

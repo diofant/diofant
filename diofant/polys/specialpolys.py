@@ -7,7 +7,7 @@ from ..ntheory import nextprime
 from ..utilities import subsets
 from .densearith import dmp_add_term, dmp_mul, dmp_neg, dmp_sqr
 from .densebasic import (dmp_from_dict, dmp_ground, dmp_one, dmp_raise,
-                         dmp_zero, dup_random)
+                         dmp_to_dict, dmp_zero, dup_random)
 from .factortools import dup_zz_cyclotomic_poly
 from .polytools import Poly, PurePoly
 from .polyutils import _analyze_gens
@@ -129,17 +129,8 @@ def fateman_poly_F_1(n):
     """Fateman's GCD benchmark: trivial GCD """
     Y = [Symbol('y_' + str(i)) for i in range(n + 1)]
 
-    y_0, y_1 = Y[0], Y[1]
-
-    u = y_0 + Add(*[ y for y in Y[1:] ])
-    v = y_0**2 + Add(*[ y**2 for y in Y[1:] ])
-
-    F = ((u + 1)*(u + 2)).as_poly(*Y)
-    G = ((v + 1)*(-3*y_1*y_0**2 + y_1**2 - 1)).as_poly(*Y)
-
-    H = Poly(1, *Y)
-
-    return F, G, H
+    return tuple(map(lambda p: Poly(dmp_to_dict(p, n), *Y),
+                     dmp_fateman_poly_F_1(n, ZZ)))
 
 
 def dmp_fateman_poly_F_1(n, K):
@@ -176,16 +167,8 @@ def fateman_poly_F_2(n):
     """Fateman's GCD benchmark: linearly dense quartic inputs """
     Y = [Symbol('y_' + str(i)) for i in range(n + 1)]
 
-    y_0 = Y[0]
-
-    u = Add(*[ y for y in Y[1:] ])
-
-    H = Poly((y_0 + u + 1)**2, *Y)
-
-    F = Poly((y_0 - u - 2)**2, *Y)
-    G = Poly((y_0 + u + 2)**2, *Y)
-
-    return H*F, H*G, H
+    return tuple(map(lambda p: Poly(dmp_to_dict(p, n), *Y),
+                     dmp_fateman_poly_F_2(n, ZZ)))
 
 
 def dmp_fateman_poly_F_2(n, K):
@@ -213,16 +196,8 @@ def fateman_poly_F_3(n):
     """Fateman's GCD benchmark: sparse inputs (deg f ~ vars f) """
     Y = [Symbol('y_' + str(i)) for i in range(n + 1)]
 
-    y_0 = Y[0]
-
-    u = Add(*[ y**(n + 1) for y in Y[1:] ])
-
-    H = Poly((y_0**(n + 1) + u + 1)**2, *Y)
-
-    F = Poly((y_0**(n + 1) - u - 2)**2, *Y)
-    G = Poly((y_0**(n + 1) + u + 2)**2, *Y)
-
-    return H*F, H*G, H
+    return tuple(map(lambda p: Poly(dmp_to_dict(p, n), *Y),
+                     dmp_fateman_poly_F_3(n, ZZ)))
 
 
 def dmp_fateman_poly_F_3(n, K):

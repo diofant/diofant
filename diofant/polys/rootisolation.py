@@ -21,7 +21,7 @@ def dup_sturm(f, K):
     Computes the Sturm sequence of ``f`` in ``F[x]``.
 
     Given a univariate, square-free polynomial ``f(x)`` returns the
-    associated Sturm sequence (see e.g. [Davenport88]_)
+    associated Sturm sequence (see e.g. :cite:`Davenport1988systems`)
     ``f_0(x), ..., f_n(x)`` defined by::
 
        f_0(x), f_1(x) = f(x), f'(x)
@@ -79,7 +79,7 @@ def dup_root_upper_bound(f, K):
     """Compute the LMQ upper bound for the positive roots of `f`.
 
     LMQ (Local Max Quadratic) bound was developed by
-    Akritas-Strzebonski-Vigklas [Alkiviadis09]_.
+    Akritas-Strzebonski-Vigklas :cite:`Alkiviadis2009bounds`.
 
     """
     n, P = len(f), []
@@ -487,7 +487,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None, fast=False):
     =====
 
     Implemented algorithms use Vincent-Akritas-Strzebonski (VAS) continued
-    fractions approach [Alkiviadis05]_, [Alkiviadis08]_.
+    fractions approach :cite:`Alkiviadis2005comp`, :cite:`Alkiviadis2008cf`.
 
     """
     if not K.is_Field:

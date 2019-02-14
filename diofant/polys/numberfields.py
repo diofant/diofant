@@ -594,7 +594,7 @@ def minpoly_groebner(ex, x, domain):
     References
     ==========
 
-    * [Adams94]_
+    * :cite:`Adams1994intro`
 
     """
 
@@ -667,8 +667,8 @@ def primitive_element(extension, **args):
     References
     ==========
 
-    * [Yokoyama89]_
-    * [Arno96]_
+    * :cite:`Yokoyama1989primitive`
+    * :cite:`Arno1996alg`
 
     """
     if not extension:

@@ -96,9 +96,9 @@ def rsolve_poly(coeffs, f, n, **hints):
     References
     ==========
 
-    * [AbramovBronstein95]_
-    * [Petkovšek92]_
-    * [Petkovšek97]_
+    * :cite:`Abramov1995polynomial`
+    * :cite:`Petkovsek1992hyper`
+    * :cite:`Petkovsek1997AeqB`
 
     """
     f = sympify(f)
@@ -366,7 +366,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
     References
     ==========
 
-    * [Abramov95]_
+    * :cite:`Abramov1995rational`
 
     See Also
     ========
@@ -473,8 +473,8 @@ def rsolve_hyper(coeffs, f, n, **hints):
     References
     ==========
 
-    * [Petkovšek92]_
-    * [Petkovšek97]_
+    * :cite:`Petkovsek1992hyper`
+    * :cite:`Petkovsek1997AeqB`
 
     """
     coeffs = list(map(sympify, coeffs))

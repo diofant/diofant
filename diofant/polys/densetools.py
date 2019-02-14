@@ -704,7 +704,7 @@ def dup_decompose(f, K):
     References
     ==========
 
-    * [Kozen89]_
+    * :cite:`Kozen1989decomposition`
 
     """
     F = []

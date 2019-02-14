@@ -197,7 +197,7 @@ simple as possible, since they are very complicated anyway.):
 
 The more interesting question is under what conditions these formulae are
 valid. Below we detail the conditions implemented in Diofant. They are an
-amalgamation of conditions found in [Prudnikov1990]_ and [Luke1969]_; please
+amalgamation of conditions found in :cite:`Prudnikov1990` and :cite:`Luke1969`; please
 let us know if you find any errors.
 
 Conditions of Convergence for Integral (1)
@@ -206,7 +206,7 @@ Conditions of Convergence for Integral (1)
 
 We can without loss of generality assume `p \le q`, since the G-functions
 of indices `m, n, p, q` and of indices `n, m, q, p` can be related easily
-(see e.g. [Luke1969]_, section 5.3). We introduce the following notation:
+(see e.g. :cite:`Luke1969`, section 5.3). We introduce the following notation:
 
 .. math:: \xi = m + n - p \\
           \delta = m + n - \frac{p + q}{2}
@@ -387,7 +387,7 @@ The Inverse Laplace Transform of a G-function
 The inverse laplace transform of a Meijer G-function can be expressed as
 another G-function. This is a fairly versatile method for computing this
 transform. However, I could not find the details in the literature, so I work
-them out here. In [Luke1969]_, section 5.6.3, there is a formula for the inverse
+them out here. In :cite:`Luke1969`, section 5.6.3, there is a formula for the inverse
 Laplace transform of a G-function of argument `bz`, and convergence conditions
 are also given. However, we need a formula for argument `bz^a` for rational `a`.
 
@@ -462,13 +462,13 @@ function of its parameters, and of the coefficient `b`. Hence so is `f(t)`.
 Thus the final computation remains valid as long as the initial integral
 converges, and if there exists a changed set of parameters where the computation
 is valid. If we assume w.l.o.g. that `a > 0`, then the latter condition is
-fulfilled if `G` converges along contours (2) or (3) of [Luke1969]_,
+fulfilled if `G` converges along contours (2) or (3) of :cite:`Luke1969`,
 section 5.2, i.e. either `\delta >= \frac{a}{2}` or `p \ge 1, p \ge q`.
 
 When the integral exists
 ========================
 
-Using [Luke1969]_, section 5.10, for any given meijer G-function we can find a
+Using :cite:`Luke1969`, section 5.10, for any given meijer G-function we can find a
 dominant term of the form `z^a e^{bz^c}` (although this expression might not be
 the best possible, because of cancellation).
 

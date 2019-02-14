@@ -425,8 +425,8 @@ def _modgcd_p(f, g, p, degbound, contbound):
     References
     ==========
 
-    * [Monagan00]_
-    * [Brown71]_
+    * :cite:`Monagan2000Brown`
+    * :cite:`Brown1971gcd`
 
     """
     ring = f.ring
@@ -582,8 +582,8 @@ def modgcd(f, g):
     References
     ==========
 
-    * [Monagan00]_
-    * [Brown71]_
+    * :cite:`Monagan2000Brown`
+    * :cite:`Brown1971gcd`
 
     """
     assert f.ring == g.ring and f.ring.domain.is_IntegerRing
@@ -698,7 +698,7 @@ def _rational_function_reconstruction(c, p, m):
     References
     ==========
 
-    * [Hoeij04]_
+    * :cite:`Monagan2004algebraic`
 
     """
     ring = c.ring
@@ -931,7 +931,7 @@ def trial_division(f, h, minpoly, p=None):
     References
     ==========
 
-    * [Hoeij02]_
+    * :cite:`vanHoeij2002modgcd`
 
     """
     ring = f.ring
@@ -1021,7 +1021,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     References
     ==========
 
-    * [Hoeij04]_
+    * :cite:`Monagan2004algebraic`
 
     """
     ring = f.ring
@@ -1182,7 +1182,7 @@ def integer_rational_reconstruction(c, m, domain):
     References
     ==========
 
-    * [Wang81]_
+    * :cite:`Wang1981partial`
 
     """
     if c < 0:
@@ -1325,7 +1325,7 @@ def _func_field_modgcd_m(f, g, minpoly):
     References
     ==========
 
-    * [Hoeij04]_
+    * :cite:`Monagan2004algebraic`
 
     See also
     ========
@@ -1631,7 +1631,7 @@ def func_field_modgcd(f, g):
     References
     ==========
 
-    * [Hoeij04]_
+    * :cite:`Monagan2004algebraic`
 
     """
     ring = f.ring

@@ -62,19 +62,19 @@ All work should be submitted via `Pull Requests (PR)`_.
 6. It's good idea to be sure that **all** existing tests
    pass and you don't break anything, so please run::
 
-       $ python setup.py test
+       python setup.py test
 
    To check also doctests, run::
 
-       $ python setup.py test --addopts --doctest-modules
+       python setup.py test --addopts --doctest-modules
 
 7. Please also check for potential flaws in your Python code with::
 
-       $ pylint diofant
+       pylint diofant
 
 8. If your change affects documentation, please build it by::
 
-       $ python setup.py build_sphinx -W
+       python setup.py build_sphinx -W
 
    and check that it looks as expected.
 
@@ -90,7 +90,7 @@ Github.  But it's not a problem for us - we keep old history on the branch
 sympy-svn-history.  Also, you can see this history as part of master's, if you
 :ref:`clone our repo <installation-src>` and simply do this::
 
-    $ git fetch origin 'refs/replace/*:refs/replace/*'
+    git fetch origin 'refs/replace/*:refs/replace/*'
 
 Please note, that we have dozens of references to SymPy issues in our
 codebase.  Such reference must be either a direct URL of the issue, or
@@ -120,9 +120,9 @@ We use standard `Semantic Versioning`_ numbering scheme, but adopt
 To release a new version, tag latest commit to the master branch
 and publish this release tag::
 
-    $ git pull
-    $ git tag -s vX.Y.Z
-    $ git push origin vX.Y.Z
+    git pull
+    git tag -s vX.Y.Z
+    git push origin vX.Y.Z
 
 .. XXX adopt http://www.contribution-guide.org
 

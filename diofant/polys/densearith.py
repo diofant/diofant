@@ -489,7 +489,7 @@ def dup_mul_karatsuba(f, g, K):
     References
     ==========
 
-    * [Hoeven02]_
+    * :cite:`Hoeven02`
 
     """
     df = dmp_degree_in(f, 0, 0)

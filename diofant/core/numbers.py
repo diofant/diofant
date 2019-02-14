@@ -7,7 +7,7 @@ import re as regex
 import mpmath
 import mpmath.libmp as mlib
 from mpmath.ctx_mp import mpnumeric
-from mpmath.libmp import mpf_e, mpf_pi, mpf_pow, phi_fixed
+from mpmath.libmp import mpf_e, mpf_pi, mpf_pow, phi_fixed, to_rational
 from mpmath.libmp.libmpf import _normalize as mpf_normalize
 from mpmath.libmp.libmpf import finf as _mpf_inf
 from mpmath.libmp.libmpf import fnan as _mpf_nan
@@ -1131,7 +1131,8 @@ class Rational(Number):
             if isinstance(p, Rational):
                 return p
             elif isinstance(p, Float):
-                p, q = float(p).as_integer_ratio()
+                with mpmath.workprec(p._prec):
+                    p, q = to_rational(p._mpf_)
 
         if isinstance(p, Rational):
             p = fractions.Fraction(p.numerator, p.denominator)
