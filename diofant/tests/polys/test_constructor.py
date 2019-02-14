@@ -32,12 +32,12 @@ def test_construct_domain():
     alg = QQ.algebraic_field(sqrt(2))
 
     assert (construct_domain([7, Rational(1, 2), sqrt(2)]) ==
-            (alg, [alg(7), alg(Rational(1, 2)), alg(sqrt(2))]))
+            (alg, [alg([7]), alg([Rational(1, 2)]), alg([1, 0])]))
 
     alg = QQ.algebraic_field(sqrt(2) + sqrt(3))
 
     assert (construct_domain([7, sqrt(2), sqrt(3)]) ==
-            (alg, [alg(7), alg(sqrt(2)), alg(sqrt(3))]))
+            (alg, [alg([7]), alg.from_expr(sqrt(2)), alg.from_expr(sqrt(3))]))
 
     dom = ZZ.poly_ring(x)
 

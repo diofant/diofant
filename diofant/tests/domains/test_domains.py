@@ -693,8 +693,8 @@ def test_Domain__algebraic_field():
     assert QQ.algebraic_field(Rational(1, 7)) is QQ
 
     alg = QQ.algebraic_field(sqrt(2)).algebraic_field(I)
-    assert alg.from_expr(2*sqrt(2) + I/3) == alg([alg.domain(1)/3,
-                                                  alg.domain(2*sqrt(2))])
+    assert alg.from_expr(2*sqrt(2) + I/3) == alg([alg.domain([1])/3,
+                                                  alg.domain([2, 0])])
     alg2 = QQ.algebraic_field(sqrt(2))
     assert alg2.from_expr(sqrt(2)) == alg2.convert(alg.from_expr(sqrt(2)))
 

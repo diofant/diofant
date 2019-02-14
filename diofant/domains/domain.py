@@ -51,12 +51,9 @@ class Domain(DefaultPrinting, abc.ABC):
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype))
 
-    def new(self, *args):
-        return self.dtype(*args)
-
     def __call__(self, *args):
         """Construct an element of ``self`` domain from ``args``. """
-        return self.new(*args)
+        return self.dtype(*args)
 
     @abc.abstractmethod
     def from_expr(self, element):
