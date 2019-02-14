@@ -539,13 +539,13 @@ def test_Domain_convert():
     assert RR.convert(CC(1)) == RR(1)
     pytest.raises(CoercionFailed, lambda: RR.convert(CC(1, 2)))
 
-    assert QQ.convert(ALG.new(1), ALG) == QQ(1)
-    pytest.raises(CoercionFailed, lambda: QQ.convert(ALG.new([1, 1]), ALG))
+    assert QQ.convert(ALG(1), ALG) == QQ(1)
+    pytest.raises(CoercionFailed, lambda: QQ.convert(ALG([1, 1]), ALG))
 
-    assert ZZ.convert(ALG.new(1), ALG) == ZZ(1)
-    pytest.raises(CoercionFailed, lambda: ZZ.convert(ALG.new([1, 1]), ALG))
+    assert ZZ.convert(ALG(1), ALG) == ZZ(1)
+    pytest.raises(CoercionFailed, lambda: ZZ.convert(ALG([1, 1]), ALG))
 
-    assert EX.convert(ALG.new([1, 1]), ALG) == sqrt(2) + sqrt(3) + 1
+    assert EX.convert(ALG([1, 1]), ALG) == sqrt(2) + sqrt(3) + 1
 
     ALG2 = QQ.algebraic_field(sqrt(2))
     a2 = ALG2.convert(sqrt(2))
