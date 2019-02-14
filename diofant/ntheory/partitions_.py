@@ -8,7 +8,7 @@ from mpmath.libmp import (bitcount, fhalf, fone, from_int, from_man_exp,
 from ..utilities.misc import debug
 
 
-__all__ = 'npartitions'
+__all__ = 'npartitions',
 
 
 def _a(n, j, prec):
