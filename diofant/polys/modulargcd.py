@@ -1,17 +1,14 @@
 import random
 
-from mpmath import sqrt
-
 from . import rings
 from ..core import Dummy
 from ..ntheory import nextprime
-from ..ntheory.modular import crt
+from ..ntheory.modular import crt, integer_rational_reconstruction
 from .galoistools import gf_div, gf_from_dict, gf_gcd, gf_gcdex, gf_lcm
 from .polyerrors import ModularGCDFailed
 
 
-__all__ = ('modgcd', 'func_field_modgcd', 'trial_division',
-           'integer_rational_reconstruction')
+__all__ = 'modgcd', 'func_field_modgcd', 'trial_division',
 
 
 def _trivial_gcd(f, g):
@@ -1149,66 +1146,6 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     return
 
 
-def integer_rational_reconstruction(c, m, domain):
-    r"""
-    Reconstruct a rational number `\frac a b` from
-
-    .. math::
-
-        c = \frac a b \; \mathrm{mod} \, m,
-
-    where `c` and `m` are integers.
-
-    The algorithm is based on the Euclidean Algorithm. In general, `m` is
-    not a prime number, so it is possible that `b` is not invertible modulo
-    `m`. In that case ``None`` is returned.
-
-    Parameters
-    ==========
-
-    c : Integer
-        `c = \frac a b \; \mathrm{mod} \, m`
-    m : Integer
-        modulus, not necessarily prime
-    domain : IntegerRing
-        `a, b, c` are elements of ``domain``
-
-    Returns
-    =======
-
-    frac : Rational
-        either `\frac a b` in `\mathbb Q` or ``None``
-
-    References
-    ==========
-
-    * :cite:`Wang1981partial`
-
-    """
-    if c < 0:
-        c += m
-
-    r0, s0 = m, domain.zero
-    r1, s1 = c, domain.one
-
-    bound = sqrt(m / 2)  # still correct if replaced by ZZ.sqrt(m // 2) ?
-
-    while r1 >= bound:
-        quo = r0 // r1
-        r0, r1 = r1, r0 - quo*r1
-        s0, s1 = s1, s0 - quo*s1
-
-    if abs(s1) >= bound:
-        return
-
-    if s1 < 0:
-        r1, s1 = -r1, -s1
-
-    field = domain.field
-
-    return field(r1) / field(s1)
-
-
 def _rational_reconstruction_int_coeffs(hm, m, ring):
     r"""
     Reconstruct every rational coefficient `c_h` of a polynomial `h` in
@@ -1247,7 +1184,7 @@ def _rational_reconstruction_int_coeffs(hm, m, ring):
     See also
     ========
 
-    integer_rational_reconstruction
+    diofant.ntheory.modular.integer_rational_reconstruction
 
     """
     h = ring.zero

@@ -11,7 +11,7 @@ from diofant import factorial as fac
 from diofant import multinomial_coefficients, pi, sieve, sqrt, summation
 from diofant.core.add import Add
 from diofant.core.numbers import Integer, Rational
-from diofant.domains import ZZ
+from diofant.domains import QQ, ZZ
 from diofant.ntheory import (divisor_count, divisor_sigma, divisors, factorint,
                              is_nthpow_residue, is_primitive_root,
                              is_quad_residue, is_square, isprime,
@@ -34,7 +34,9 @@ from diofant.ntheory.egyptian_fraction import egyptian_fraction
 from diofant.ntheory.factor_ import (antidivisor_count, antidivisors, core,
                                      factorrat, smoothness, smoothness_p)
 from diofant.ntheory.generate import cycle_length
-from diofant.ntheory.modular import crt, crt1, crt2, solve_congruence
+from diofant.ntheory.modular import (crt, crt1, crt2,
+                                     integer_rational_reconstruction,
+                                     solve_congruence)
 from diofant.ntheory.multinomial import multinomial_coefficients_iterator
 from diofant.ntheory.primetest import _mr_safe_helper, mr
 from diofant.ntheory.residue_ntheory import _primitive_root_prime_iter
@@ -909,6 +911,12 @@ def test_modular():
     assert solve_congruence(*list(zip((1, 1, 2), (3, 2, 4)))) is None
     pytest.raises(
         ValueError, lambda: solve_congruence(*list(zip([3, 4, 2], [12.1, 35, 17]))))
+
+    assert integer_rational_reconstruction(ZZ(2), 3, ZZ) == QQ(-1)
+    assert integer_rational_reconstruction(ZZ(21), 33, ZZ) == QQ(-1)
+    assert integer_rational_reconstruction(ZZ(-21), 17, ZZ) == QQ(-4)
+    assert integer_rational_reconstruction(ZZ(17), 333, ZZ) is None
+    assert integer_rational_reconstruction(ZZ(49), 335, ZZ) == QQ(8, 7)
 
 
 def test_search():
