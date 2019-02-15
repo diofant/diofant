@@ -758,17 +758,15 @@ class Float(Number):
 
     def floor(self):
         """Compute floor of self."""
-        return Integer(int(mlib.to_int(
-            mlib.mpf_floor(self._mpf_, self._prec))))
+        return Integer(int(mlib.to_int(mlib.mpf_floor(self._mpf_, self._prec))))
 
     def ceiling(self):
         """Compute ceiling of self."""
-        return Integer(int(mlib.to_int(
-            mlib.mpf_ceil(self._mpf_, self._prec))))
+        return Integer(int(mlib.to_int(mlib.mpf_ceil(self._mpf_, self._prec))))
 
     @property
     def num(self):
-        """Return mpmath representation of self."""
+        """Return mpmath representation."""
         return mpmath.mpf(self._mpf_)
 
     def _as_mpf_val(self, prec):
@@ -778,37 +776,19 @@ class Float(Number):
         return self._mpf_, max(prec, self._prec)
 
     def _eval_is_finite(self):
-        if self._mpf_ in (_mpf_inf, _mpf_ninf):
-            return False
-        return True
-
-    def _eval_is_infinite(self):
-        if self._mpf_ in (_mpf_inf, _mpf_ninf):
-            return True
-        return False
+        return self._mpf_ not in (_mpf_inf, _mpf_ninf)
 
     def _eval_is_integer(self):
         return self._mpf_ == _mpf_zero
 
-    def _eval_is_negative(self):
-        if self._mpf_ == _mpf_ninf:
-            return True
-        if self._mpf_ == _mpf_inf:
-            return False
-        return self.num < 0
-
     def _eval_is_positive(self):
-        if self._mpf_ == _mpf_inf:
-            return True
-        if self._mpf_ == _mpf_ninf:
-            return False
-        return self.num > 0
+        return mlib.mpf_gt(self._mpf_, mlib.fzero)
 
     def _eval_is_zero(self):
         return self._mpf_ == _mpf_zero
 
     def __bool__(self):
-        return self._mpf_ != _mpf_zero
+        return self.is_nonzero
 
     def __neg__(self):
         return Float._new(mlib.mpf_neg(self._mpf_), self._prec)
@@ -907,8 +887,6 @@ class Float(Number):
         return Float._new(mlib.mpf_abs(self._mpf_), self._prec)
 
     def __int__(self):
-        if self._mpf_ == _mpf_zero:
-            return 0
         return int(mlib.to_int(self._mpf_))  # uses round_fast = round_down
 
     def __eq__(self, other):
