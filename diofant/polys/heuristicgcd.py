@@ -75,7 +75,7 @@ def heugcd(f, g):
                 cfg_, r = divmod(g, h)
 
                 if not r:
-                    h = h.mul_ground(gcd)
+                    h *= gcd
                     return h, cff_, cfg_
 
             cff = _gcd_interpolate(cff, x, ring)
@@ -86,7 +86,7 @@ def heugcd(f, g):
                 cfg_, r = divmod(g, h)
 
                 if not r:
-                    h = h.mul_ground(gcd)
+                    h *= gcd
                     return h, cff, cfg_
 
             cfg = _gcd_interpolate(cfg, x, ring)
@@ -97,7 +97,7 @@ def heugcd(f, g):
                 cff_, r = divmod(f, h)
 
                 if not r:
-                    h = h.mul_ground(gcd)
+                    h *= gcd
                     return h, cff_, cfg
 
         x = 73794*x * domain.sqrt(domain.sqrt(x)) // 27011
