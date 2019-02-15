@@ -345,22 +345,20 @@ class Number(AtomicExpr):
             return mod_inverse(self, other)
         return invert(self, other, *gens, **args)
 
+    @_sympifyit('other', NotImplemented)
     def __divmod__(self, other):
-        from .containers import Tuple
-
-        other = Number(other)
         if not other:
             raise ZeroDivisionError('modulo by zero')
-        if self.is_Integer and other.is_Integer:
+        elif self.is_Integer and other.is_Integer:
             return Tuple(*divmod(self.numerator, other.numerator))
         else:
             rat = self/other
-        w = math.floor(rat)
-        r = self - other*w
-        return Tuple(w, r)
+            w = math.floor(rat)
+            r = self - other*w
+            return Tuple(w, r)
 
+    @_sympifyit('other', NotImplemented)
     def __rdivmod__(self, other):
-        other = Number(other)
         return divmod(other, self)
 
     def __round__(self, *args):
@@ -398,53 +396,6 @@ class Number(AtomicExpr):
     def sort_key(self, order=None):
         """Return a sort key."""
         return self.class_key(), (0, ()), (), self
-
-    @_sympifyit('other', NotImplemented)
-    def __add__(self, other):
-        if self is S.Zero:
-            return other
-        if other is nan:
-            return nan
-        elif other in (oo, -oo):
-            return other
-        else:
-            return AtomicExpr.__add__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __sub__(self, other):
-        if other is nan:
-            return nan
-        elif other in (oo, -oo):
-            return -other
-        else:
-            return AtomicExpr.__sub__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __mul__(self, other):
-        if self is S.One:
-            return other
-        if other is nan:
-            return nan
-        elif other in (oo, -oo):
-            if self.is_zero:
-                return nan
-            elif self.is_positive:
-                return other
-            else:
-                return -other
-        elif isinstance(other, Tuple):
-            return NotImplemented
-        else:
-            return AtomicExpr.__mul__(self, other)
-
-    @_sympifyit('other', NotImplemented)
-    def __truediv__(self, other):
-        if isinstance(other, Number):
-            if other is nan:
-                return nan
-            elif other in (oo, -oo):
-                return S.Zero
-        return AtomicExpr.__truediv__(self, other)
 
     def __hash__(self):
         return super().__hash__()
@@ -868,6 +819,7 @@ class Float(Number):
             rhs, prec = other._as_mpf_op(self._prec)
             return Float._new(mlib.mpf_add(self._mpf_, rhs, prec, rnd), prec)
         return Number.__add__(self, other)
+    __radd__ = __add__
 
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
@@ -882,6 +834,7 @@ class Float(Number):
             rhs, prec = other._as_mpf_op(self._prec)
             return Float._new(mlib.mpf_mul(self._mpf_, rhs, prec, rnd), prec)
         return Number.__mul__(self, other)
+    __rmul__ = __mul__
 
     @_sympifyit('other', NotImplemented)
     def __truediv__(self, other):
@@ -905,6 +858,17 @@ class Float(Number):
             rhs, prec = other._as_mpf_op(self._prec)
             return Float._new(mlib.mpf_mod(self._mpf_, rhs, prec, rnd), prec)
         return Number.__mod__(self, other)
+
+    @_sympifyit('other', NotImplemented)
+    def __rmod__(self, other):
+        if isinstance(other, Float):
+            return other.__mod__(self)
+        elif isinstance(other, Rational):
+            # calculate mod with Rationals, *then* round the answer
+            return Float(other.__mod__(Rational(self)),
+                         prec_to_dps(self._prec))
+        else:
+            return NotImplemented
 
     def _eval_power(self, expt):
         """
@@ -1198,29 +1162,26 @@ class Rational(Number):
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
         if isinstance(other, Rational):
-            return Rational(self.numerator*other.denominator + self.denominator*other.numerator, self.denominator*other.denominator)
-        elif isinstance(other, Float):
-            return other + self
+            n, d = other.numerator, other.denominator
+            return Rational(self.numerator*d + self.denominator*n, self.denominator*d)
         else:
-            return Number.__add__(self, other)
+            return other.__radd__(self)
 
     @_sympifyit('other', NotImplemented)
     def __sub__(self, other):
         if isinstance(other, Rational):
-            return Rational(self.numerator*other.denominator - self.denominator*other.numerator, self.denominator*other.denominator)
-        elif isinstance(other, Float):
-            return -other + self
+            n, d = other.numerator, other.denominator
+            return Rational(self.numerator*d - self.denominator*n, self.denominator*d)
         else:
-            return Number.__sub__(self, other)
+            return other.__rsub__(self)
 
     @_sympifyit('other', NotImplemented)
     def __mul__(self, other):
         if isinstance(other, Rational):
-            return Rational(self.numerator*other.numerator, self.denominator*other.denominator)
-        elif isinstance(other, Float):
-            return other*self
+            n, d = other.numerator, other.denominator
+            return Rational(self.numerator*n, self.denominator*d)
         else:
-            return Number.__mul__(self, other)
+            return other.__rmul__(self)
 
     @_sympifyit('other', NotImplemented)
     def __truediv__(self, other):
@@ -1229,22 +1190,16 @@ class Rational(Number):
                 return zoo
             else:
                 return Rational(self.numerator*other.denominator, self.denominator*other.numerator)
-        elif isinstance(other, Float):
-            return self*(1/other)
         else:
-            return Number.__truediv__(self, other)
+            return other.__rtruediv__(self)
 
     @_sympifyit('other', NotImplemented)
     def __mod__(self, other):
         if isinstance(other, Rational):
             n = (self.numerator*other.denominator) // (other.numerator*self.denominator)
             return Rational(self.numerator*other.denominator - n*other.numerator*self.denominator, self.denominator*other.denominator)
-        elif isinstance(other, Float):
-            # calculate mod with Rationals, *then* round the answer
-            return Float(self.__mod__(Rational(other)),
-                         prec_to_dps(other._prec))
         else:
-            return Number.__mod__(self, other)
+            return other.__rmod__(self)
 
     @_sympifyit('other', NotImplemented)
     def __rmod__(self, other):
@@ -1899,6 +1854,12 @@ class Infinity(Number, metaclass=Singleton):
         return NotImplemented
 
     @_sympifyit('other', NotImplemented)
+    def __rsub__(self, other):
+        if isinstance(other, Number):
+            return (-self) + other
+        return NotImplemented
+
+    @_sympifyit('other', NotImplemented)
     def __mul__(self, other):
         if isinstance(other, Number):
             if other is S.Zero or other is nan:
@@ -2073,6 +2034,12 @@ class NegativeInfinity(Number, metaclass=Singleton):
                 return Float('-inf')
             else:
                 return -oo
+        return NotImplemented
+
+    @_sympifyit('other', NotImplemented)
+    def __rsub__(self, other):
+        if isinstance(other, Number):
+            return (-self) + other
         return NotImplemented
 
     @_sympifyit('other', NotImplemented)
