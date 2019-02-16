@@ -107,6 +107,7 @@ matrix:
             condition: "$TRAVIS_TAG =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+.*$"
 before_install:
   - pip install --pre -U gmpy2
+  - pip install git+https://github.com/skirpichev/mpmath.git@fix-mpf-inf
 install:
   - travis_wait pip install .[exports,plot,interactive,develop,gmpy,docs]
 script:
