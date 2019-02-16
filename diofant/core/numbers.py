@@ -2382,10 +2382,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
 
     is_real = True
     is_positive = True
-    is_negative = False  # XXX Forces is_negative/is_nonnegative
-    is_irrational = True
     is_number = True
-    is_algebraic = False
     is_transcendental = True
 
     def _latex(self, printer):
@@ -2516,10 +2513,7 @@ class Pi(NumberSymbol, metaclass=Singleton):
 
     is_real = True
     is_positive = True
-    is_negative = False
-    is_irrational = True
     is_number = True
-    is_algebraic = False
     is_transcendental = True
 
     def _latex(self, printer):
@@ -2570,11 +2564,9 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
 
     is_real = True
     is_positive = True
-    is_negative = False
     is_irrational = True
     is_number = True
     is_algebraic = True
-    is_transcendental = False
 
     def _latex(self, printer):
         return r"\phi"
@@ -2625,7 +2617,6 @@ class EulerGamma(NumberSymbol, metaclass=Singleton):
 
     is_real = True
     is_positive = True
-    is_negative = False
     is_number = True
 
     def _latex(self, printer):
@@ -2672,7 +2663,6 @@ class Catalan(NumberSymbol, metaclass=Singleton):
 
     is_real = True
     is_positive = True
-    is_negative = False
     is_number = True
 
     def __int__(self):
