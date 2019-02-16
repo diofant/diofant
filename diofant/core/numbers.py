@@ -22,8 +22,8 @@ from .containers import Tuple
 from .decorators import _sympifyit
 from .expr import AtomicExpr, Expr
 from .logic import fuzzy_not
-from .singleton import SingletonWithManagedProperties as Singleton
 from .singleton import S
+from .singleton import SingletonWithManagedProperties as Singleton
 from .sympify import SympifyError, converter, sympify
 
 
@@ -858,6 +858,7 @@ class Float(Number):
                   -> p**r*(sin(Pi*r) + cos(Pi*r)*I)
 
         """
+        from .power import Pow
         if self == 0:
             if expt.is_positive:
                 return S.Zero
@@ -1479,6 +1480,7 @@ class Integer(Rational):
 
         """
         from ..ntheory import perfect_power
+        from .power import Pow, integer_nthroot
 
         if expt is oo:
             if self.numerator > S.One:
@@ -1704,6 +1706,7 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
     _denominator = _int_dtype(1)
 
     def _eval_power(self, expt):
+        from .add import Add
         if isinstance(expt, Number):
             if isinstance(expt, Float):
                 return Float(-1.0)**expt
@@ -2788,9 +2791,3 @@ def sympify_complex(a):
 
 
 converter[complex] = sympify_complex
-
-from .power import Pow, integer_nthroot
-from .mul import Mul
-Mul.identity = One()
-from .add import Add
-Add.identity = Zero()
