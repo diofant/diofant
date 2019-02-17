@@ -573,25 +573,6 @@ class Float(Number):
     >>> show(Float(t, 2)) # lower prec
     307/2**10 at prec=10
 
-    Finally, Floats can be instantiated with an mpf tuple (n, c, p) to
-    produce the number (-1)**n*c*2**p:
-
-    >>> n, c, p = 1, 5, 0
-    >>> (-1)**n*c*2**p
-    -5
-    >>> Float((1, 5, 0))
-    -5.00000000000000
-
-    An actual mpf tuple also contains the number of bits in c as the last
-    element of the tuple:
-
-    >>> _._mpf_
-    (1, 5, 0, 3)
-
-    This is not needed for instantiation and is not the same thing as the
-    precision. The mpf tuple and the precision are two separate quantities
-    that Float tracks.
-
     """
 
     # A Float represents many real numbers,
@@ -613,10 +594,12 @@ class Float(Number):
             num = '0'
         elif isinstance(num, (DIOFANT_INTS, Integer)):
             num = str(num)  # faster than mlib.from_int
-        elif num is oo:
+        elif num is oo or num == mlib.finf:
             num = '+inf'
-        elif num == -oo:
+        elif num == -oo or num == mlib.fninf:
             num = '-inf'
+        elif num == nan or num == mlib.fnan:
+            num = 'nan'
         elif isinstance(num, mpmath.mpf):
             num = num._mpf_
 
@@ -663,20 +646,6 @@ class Float(Number):
             _mpf_ = mlib.from_Decimal(num, prec, rnd)
         elif isinstance(num, Rational):
             _mpf_ = mlib.from_rational(num.numerator, num.denominator, prec, rnd)
-        elif isinstance(num, tuple) and len(num) in (3, 4):
-            if type(num[1]) is str:
-                # it's a hexadecimal (coming from a pickled object)
-                # assume that it is in standard form
-                num = list(num)
-                num[1] = mlib.backend.MPZ(num[1], 16)
-                _mpf_ = tuple(num)
-            else:
-                if not num[1] and len(num) == 4:
-                    # handle normalization hack
-                    return Float._new(num, prec)
-                else:
-                    _mpf_ = mpmath.mpf(
-                        S.NegativeOne**num[0]*num[1]*2**num[2])._mpf_
         elif isinstance(num, Float):
             _mpf_ = num._mpf_
             if prec < num._prec:
@@ -710,7 +679,7 @@ class Float(Number):
 
     # mpz can't be pickled
     def __getnewargs__(self):
-        return mlib.to_pickable(self._mpf_),
+        return self._mpf_,
 
     def __getstate__(self):
         return {'_prec': self._prec}
