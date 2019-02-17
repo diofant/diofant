@@ -121,13 +121,12 @@ def igcd(*args):
     5
 
     """
-    a = args[0]
-    for b in args[1:]:
-        a, b = as_int(a), abs(as_int(b))
-
-        a = math.gcd(a, b)
+    args = map(as_int, args)
+    a = next(args)
+    for b in args:
         if a == 1:
             break
+        a = math.gcd(a, abs(b))
     return a
 
 
@@ -145,10 +144,11 @@ def ilcm(*args):
     30
 
     """
-    if 0 in args:
-        return 0
-    a = args[0]
-    for b in args[1:]:
+    args = map(as_int, args)
+    a = next(args)
+    for b in args:
+        if a == 0:
+            break
         a = a*b // igcd(a, b)
     return a
 
@@ -161,10 +161,9 @@ def igcdex(a, b):
     >>> igcdex(10, 12)
     (-1, 1, 2)
 
-    >>> x, y, g = igcdex(100, 2004)
-    >>> x, y, g
+    >>> igcdex(100, 2004)
     (-20, 1, 4)
-    >>> x*100 + y*2004
+    >>> x, y = _[:-1]; x*100 + y*2004
     4
 
     """

@@ -739,7 +739,7 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
                                       "coefficients in this case.")
         else:
             n = reduce(ilcm, [i.as_numer_denom()[1] for i in u])
-            u *= n
+            u *= Integer(n)
             terms = [DE.T[i] for i in DE.E_K] + DE.L_args
             ans = list(zip(terms, u))
             result = Mul(*[Pow(i, j) for i, j in ans])
@@ -843,7 +843,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
         # f had better be 0 in that case.
         n = reduce(ilcm, [i.as_numer_denom()[1] for _, i in residueterms], Integer(1))
         u = Mul(*[Pow(i, j*n) for i, j in residueterms])
-        return n, u
+        return Integer(n), u
 
     elif case == 'tan':
         raise NotImplementedError("The hypertangent case is "
@@ -865,4 +865,4 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
         raise ValueError("Inexact division")
     u = cancel(u**m*Mul(*[Pow(i, j) for i, j in residueterms]))
 
-    return common_denom, u
+    return Integer(common_denom), u
