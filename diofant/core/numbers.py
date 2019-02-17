@@ -1773,9 +1773,6 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
     def __new__(cls):
         return AtomicExpr.__new__(cls)
 
-    def _latex(self, printer):
-        return r"\infty"
-
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
         if isinstance(other, Number):
@@ -1955,9 +1952,6 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
 
     def __new__(cls):
         return AtomicExpr.__new__(cls)
-
-    def _latex(self, printer):
-        return r"-\infty"
 
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
@@ -2163,9 +2157,6 @@ class NaN(Number, metaclass=SingletonWithManagedProperties):
     def __new__(cls):
         return AtomicExpr.__new__(cls)
 
-    def _latex(self, printer):
-        return r"\mathrm{NaN}"
-
     @_sympifyit('other', NotImplemented)
     def __add__(self, other):
         return self
@@ -2242,9 +2233,6 @@ class ComplexInfinity(AtomicExpr, metaclass=SingletonWithManagedProperties):
 
     def __new__(cls):
         return AtomicExpr.__new__(cls)
-
-    def _latex(self, printer):
-        return r"\tilde{\infty}"
 
     def __abs__(self):
         return oo
@@ -2355,9 +2343,6 @@ class Exp1(NumberSymbol, metaclass=SingletonWithManagedProperties):
     is_positive = True
     is_number = True
     is_transcendental = True
-
-    def _latex(self, printer):
-        return r"e"
 
     def __abs__(self):
         return self
@@ -2487,9 +2472,6 @@ class Pi(NumberSymbol, metaclass=SingletonWithManagedProperties):
     is_number = True
     is_transcendental = True
 
-    def _latex(self, printer):
-        return r"\pi"
-
     def __abs__(self):
         return self
 
@@ -2539,9 +2521,6 @@ class GoldenRatio(NumberSymbol, metaclass=SingletonWithManagedProperties):
     is_number = True
     is_algebraic = True
 
-    def _latex(self, printer):
-        return r"\phi"
-
     def __int__(self):
         return 1
 
@@ -2589,9 +2568,6 @@ class EulerGamma(NumberSymbol, metaclass=SingletonWithManagedProperties):
     is_real = True
     is_positive = True
     is_number = True
-
-    def _latex(self, printer):
-        return r"\gamma"
 
     def __int__(self):
         return 0
@@ -2682,9 +2658,6 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
     is_algebraic = True
     is_transcendental = False
     is_real = False
-
-    def _latex(self, printer):
-        return r"i"
 
     def __abs__(self):
         return S.One

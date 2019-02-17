@@ -210,6 +210,9 @@ class Printer:
             for cls in type(expr).__mro__:
                 printmethod = '_print_' + cls.__name__
                 if hasattr(self, printmethod):
+                    if cls.__class__.__name__ == 'UndefinedFunction':
+                        # XXX a hack for sympy/sympy#6853
+                        continue
                     return getattr(self, printmethod)(expr, *args, **kwargs)
 
             # Unknown object, fall back to the emptyPrinter.
