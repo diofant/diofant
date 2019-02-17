@@ -2,7 +2,7 @@ import decimal
 import fractions
 import math
 import numbers
-import re as regex
+import re
 
 import mpmath
 import mpmath.libmp as mlib
@@ -22,14 +22,11 @@ from .containers import Tuple
 from .decorators import _sympifyit
 from .expr import AtomicExpr, Expr
 from .logic import fuzzy_not
-from .singleton import S
-from .singleton import SingletonWithManagedProperties as Singleton
+from .singleton import S, SingletonWithManagedProperties
 from .sympify import SympifyError, converter, sympify
 
 
 rnd = mlib.round_nearest
-
-_LOG2 = math.log(2)
 
 
 def comp(z1, z2, tol=None):
@@ -133,7 +130,7 @@ def _decimal_to_Rational_prec(dec):
 def _literal_float(f):
     """Return True if n can be interpreted as a floating point number."""
     pat = r"[-+]?((\d*\.\d+)|(\d+\.?))(eE[-+]?\d+)?"
-    return bool(regex.match(pat, f))
+    return bool(re.match(pat, f))
 
 
 @cacheit
@@ -1607,7 +1604,7 @@ class IntegerConstant(Integer):
         return AtomicExpr.__new__(cls)
 
 
-class Zero(IntegerConstant, metaclass=Singleton):
+class Zero(IntegerConstant, metaclass=SingletonWithManagedProperties):
     """The number zero.
 
     Zero is a singleton, and can be accessed by ``S.Zero``
@@ -1653,7 +1650,7 @@ class Zero(IntegerConstant, metaclass=Singleton):
             return self**terms
 
 
-class One(IntegerConstant, metaclass=Singleton):
+class One(IntegerConstant, metaclass=SingletonWithManagedProperties):
     """The number one.
 
     One is a singleton, and can be accessed by ``S.One``.
@@ -1677,7 +1674,7 @@ class One(IntegerConstant, metaclass=Singleton):
     _denominator = _int_dtype(1)
 
 
-class NegativeOne(IntegerConstant, metaclass=Singleton):
+class NegativeOne(IntegerConstant, metaclass=SingletonWithManagedProperties):
     """The number negative one.
 
     NegativeOne is a singleton, and can be accessed by ``S.NegativeOne``.
@@ -1734,7 +1731,7 @@ class NegativeOne(IntegerConstant, metaclass=Singleton):
                     return self**p.exp
 
 
-class Half(RationalConstant, metaclass=Singleton):
+class Half(RationalConstant, metaclass=SingletonWithManagedProperties):
     """The rational number 1/2.
 
     Half is a singleton, and can be accessed by ``S.Half``.
@@ -1758,7 +1755,7 @@ class Half(RationalConstant, metaclass=Singleton):
     _denominator = _int_dtype(2)
 
 
-class Infinity(Number, metaclass=Singleton):
+class Infinity(Number, metaclass=SingletonWithManagedProperties):
     r"""Positive infinite quantity.
 
     In real analysis the symbol `\infty` denotes an unbounded
@@ -1968,7 +1965,7 @@ class Infinity(Number, metaclass=Singleton):
 oo = S.Infinity
 
 
-class NegativeInfinity(Number, metaclass=Singleton):
+class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
     """Negative infinite quantity.
 
     NegativeInfinity is a singleton, and can be accessed by ``-oo``.
@@ -2143,7 +2140,7 @@ class NegativeInfinity(Number, metaclass=Singleton):
     __rmod__ = __mod__
 
 
-class NaN(Number, metaclass=Singleton):
+class NaN(Number, metaclass=SingletonWithManagedProperties):
     """
     Not a Number.
 
@@ -2238,7 +2235,7 @@ class NaN(Number, metaclass=Singleton):
 nan = S.NaN
 
 
-class ComplexInfinity(AtomicExpr, metaclass=Singleton):
+class ComplexInfinity(AtomicExpr, metaclass=SingletonWithManagedProperties):
     r"""Complex infinity.
 
     In complex analysis the symbol `\tilde\infty`, called "complex
@@ -2359,7 +2356,7 @@ class NumberSymbol(AtomicExpr):
         return super().__hash__()
 
 
-class Exp1(NumberSymbol, metaclass=Singleton):
+class Exp1(NumberSymbol, metaclass=SingletonWithManagedProperties):
     r"""The `e` constant.
 
     The transcendental number `e = 2.718281828\ldots` is the base of the
@@ -2484,7 +2481,7 @@ class Exp1(NumberSymbol, metaclass=Singleton):
 E = S.Exp1
 
 
-class Pi(NumberSymbol, metaclass=Singleton):
+class Pi(NumberSymbol, metaclass=SingletonWithManagedProperties):
     r"""The `\pi` constant.
 
     The transcendental number `\pi = 3.141592654\ldots` represents the ratio
@@ -2541,7 +2538,7 @@ class Pi(NumberSymbol, metaclass=Singleton):
 pi = S.Pi
 
 
-class GoldenRatio(NumberSymbol, metaclass=Singleton):
+class GoldenRatio(NumberSymbol, metaclass=SingletonWithManagedProperties):
     r"""The golden ratio, `\phi`.
 
     `\phi = \frac{1 + \sqrt{5}}{2}` is algebraic number.  Two quantities
@@ -2591,7 +2588,7 @@ class GoldenRatio(NumberSymbol, metaclass=Singleton):
             return S.One, Integer(2)
 
 
-class EulerGamma(NumberSymbol, metaclass=Singleton):
+class EulerGamma(NumberSymbol, metaclass=SingletonWithManagedProperties):
     r"""The Euler-Mascheroni constant.
 
     `\gamma = 0.5772157\ldots` (also called Euler's constant) is a mathematical
@@ -2641,7 +2638,7 @@ class EulerGamma(NumberSymbol, metaclass=Singleton):
             return S.Half, Rational(3, 5)
 
 
-class Catalan(NumberSymbol, metaclass=Singleton):
+class Catalan(NumberSymbol, metaclass=SingletonWithManagedProperties):
     r"""Catalan's constant.
 
     `K = 0.91596559\ldots` is given by the infinite series
@@ -2684,7 +2681,7 @@ class Catalan(NumberSymbol, metaclass=Singleton):
             return Rational(9, 10), S.One
 
 
-class ImaginaryUnit(AtomicExpr, metaclass=Singleton):
+class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
     r"""The imaginary unit, `i = \sqrt{-1}`.
 
     I is a singleton, and can be imported as ``I``.
