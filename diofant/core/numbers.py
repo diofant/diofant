@@ -6,14 +6,6 @@ import re
 
 import mpmath
 import mpmath.libmp as mlib
-from mpmath.ctx_mp import mpnumeric
-from mpmath.libmp import mpf_e, mpf_pi, mpf_pow, phi_fixed, to_rational
-from mpmath.libmp.libmpf import _normalize as mpf_normalize
-from mpmath.libmp.libmpf import finf as _mpf_inf
-from mpmath.libmp.libmpf import fnan as _mpf_nan
-from mpmath.libmp.libmpf import fninf as _mpf_ninf
-from mpmath.libmp.libmpf import fzero as _mpf_zero
-from mpmath.libmp.libmpf import prec_to_dps
 
 from ..utilities import filldedent
 from .cache import cacheit, clear_cache
@@ -55,7 +47,7 @@ def comp(z1, z2, tol=None):
     if not tol:
         if tol is None:
             a, b = Float(z1), Float(z2)
-            return int(abs(a - b)*10**prec_to_dps(
+            return int(abs(a - b)*10**mlib.prec_to_dps(
                 min(a._prec, b._prec)))*2 <= 1
         elif all(getattr(i, 'is_Number', False) for i in (z1, z2)):
             return z1._prec == z2._prec and str(z1) == str(z2)
@@ -77,22 +69,22 @@ def mpf_norm(mpf, prec):
 
     Note: this is not intended to validate a given mpf tuple, so sending
     mpf tuples that were not created by mpmath may produce bad results. This
-    is only a wrapper to ``mpf_normalize`` which provides the check for non-
-    zero mpfs that have a 0 for the mantissa.
+    is only a wrapper to ``mpmath.libmp.normalize`` which provides the check
+    for non-zero mpfs that have a 0 for the mantissa.
 
     """
     sign, man, expt, bc = mpf
     if not man:
-        # hack for mpf_normalize which does not do this;
+        # hack for normalize which does not do this;
         # it assumes that if man is zero the result is 0
         # (see issue sympy/sympy#6639)
         if not bc:
-            return _mpf_zero
+            return mlib.fzero
         else:
             # don't change anything; this should already
             # be a well formed mpf tuple
             return mpf
-    rv = mpf_normalize(sign, man, expt, bc, prec, rnd)
+    rv = mlib.normalize(sign, man, expt, bc, prec, rnd)
     return rv
 
 
@@ -689,13 +681,13 @@ class Float(Number):
             if num.is_finite():
                 _mpf_ = mlib.from_str(str(num), prec, rnd)
             elif num.is_nan():
-                _mpf_ = _mpf_nan
+                _mpf_ = mlib.fnan
             else:
                 assert num.is_infinite()
                 if num > 0:
-                    _mpf_ = _mpf_inf
+                    _mpf_ = mlib.finf
                 else:
-                    _mpf_ = _mpf_ninf
+                    _mpf_ = mlib.fninf
         elif isinstance(num, Rational):
             _mpf_ = mlib.from_rational(num.numerator, num.denominator, prec, rnd)
         elif isinstance(num, tuple) and len(num) in (3, 4):
@@ -720,9 +712,9 @@ class Float(Number):
             _mpf_ = mpmath.mpf(num)._mpf_
 
         # special cases
-        if _mpf_ == _mpf_zero:
+        if _mpf_ == mlib.fzero:
             pass  # we want a Float
-        elif _mpf_ == _mpf_nan:
+        elif _mpf_ == mlib.fnan:
             return nan
 
         obj = Expr.__new__(cls)
@@ -733,9 +725,9 @@ class Float(Number):
     @classmethod
     def _new(cls, _mpf_, _prec):
         # special cases
-        if _mpf_ == _mpf_zero:
+        if _mpf_ == mlib.fzero:
             return S.Zero  # XXX this is different from Float which gives 0.0
-        elif _mpf_ == _mpf_nan:
+        elif _mpf_ == mlib.fnan:
             return nan
 
         obj = Expr.__new__(cls)
@@ -773,16 +765,16 @@ class Float(Number):
         return self._mpf_, max(prec, self._prec)
 
     def _eval_is_finite(self):
-        return self._mpf_ not in (_mpf_inf, _mpf_ninf)
+        return self._mpf_ not in (mlib.finf, mlib.fninf)
 
     def _eval_is_integer(self):
-        return self._mpf_ == _mpf_zero
+        return self._mpf_ == mlib.fzero
 
     def _eval_is_positive(self):
         return mlib.mpf_gt(self._mpf_, mlib.fzero)
 
     def _eval_is_zero(self):
-        return self._mpf_ == _mpf_zero
+        return self._mpf_ == mlib.fzero
 
     def __bool__(self):
         return self.is_nonzero
@@ -825,11 +817,11 @@ class Float(Number):
         if isinstance(other, Rational) and other.denominator != 1:
             # calculate mod with Rationals, *then* round the result
             return Float(Rational.__mod__(Rational(self), other),
-                         prec_to_dps(self._prec))
+                         mlib.prec_to_dps(self._prec))
         if isinstance(other, Float):
             r = self/other
             if r == int(r):
-                prec = max(prec_to_dps(i) for i in (self._prec, other._prec))
+                prec = max(mlib.prec_to_dps(i) for i in (self._prec, other._prec))
                 return Float(0, prec)
         if isinstance(other, Number):
             rhs, prec = other._as_mpf_op(self._prec)
@@ -843,7 +835,7 @@ class Float(Number):
         elif isinstance(other, Rational):
             # calculate mod with Rationals, *then* round the answer
             return Float(other.__mod__(Rational(self)),
-                         prec_to_dps(self._prec))
+                         mlib.prec_to_dps(self._prec))
         else:
             return NotImplemented
 
@@ -873,11 +865,11 @@ class Float(Number):
             expt, prec = expt._as_mpf_op(self._prec)
             mpfself = self._mpf_
             try:
-                y = mpf_pow(mpfself, expt, prec, rnd)
+                y = mlib.mpf_pow(mpfself, expt, prec, rnd)
                 return Float._new(y, prec)
             except mlib.ComplexResult:
                 re, im = mlib.mpc_pow(
-                    (mpfself, _mpf_zero), (expt, _mpf_zero), prec, rnd)
+                    (mpfself, mlib.fzero), (expt, mlib.fzero), prec, rnd)
                 return Float._new(re, prec) + \
                     Float._new(im, prec)*I
 
@@ -1072,7 +1064,7 @@ class Rational(Number):
                 return p
             elif isinstance(p, Float):
                 with mpmath.workprec(p._prec):
-                    p, q = to_rational(p._mpf_)
+                    p, q = mlib.to_rational(p._mpf_)
 
         if isinstance(p, Rational):
             p = fractions.Fraction(p.numerator, p.denominator)
@@ -2212,7 +2204,7 @@ class NaN(Number, metaclass=SingletonWithManagedProperties):
         return self
 
     def _as_mpf_val(self, prec):
-        return _mpf_nan
+        return mlib.fnan
 
     def __hash__(self):
         return super().__hash__()
@@ -2395,7 +2387,7 @@ class Exp1(NumberSymbol, metaclass=SingletonWithManagedProperties):
         return 2
 
     def _as_mpf_val(self, prec):
-        return mpf_e(prec)
+        return mlib.mpf_e(prec)
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
@@ -2526,7 +2518,7 @@ class Pi(NumberSymbol, metaclass=SingletonWithManagedProperties):
         return 3
 
     def _as_mpf_val(self, prec):
-        return mpf_pi(prec)
+        return mlib.mpf_pi(prec)
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
@@ -2576,7 +2568,7 @@ class GoldenRatio(NumberSymbol, metaclass=SingletonWithManagedProperties):
 
     def _as_mpf_val(self, prec):
         # XXX track down why this has to be increased
-        rv = mlib.from_man_exp(phi_fixed(prec + 10), -prec - 10)
+        rv = mlib.from_man_exp(mlib.phi_fixed(prec + 10), -prec - 10)
         return mpf_norm(rv, prec)
 
     def _eval_expand_func(self, **hints):
@@ -2779,7 +2771,8 @@ def sympify_mpmath(x):
     return Expr._from_mpmath(x, x.context.prec)
 
 
-converter[mpnumeric] = sympify_mpmath
+converter[mpmath.mpf] = sympify_mpmath
+converter[mpmath.mpc] = sympify_mpmath
 
 
 def sympify_complex(a):
