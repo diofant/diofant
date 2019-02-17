@@ -660,16 +660,7 @@ class Float(Number):
         elif isinstance(num, str):
             _mpf_ = mlib.from_str(num, prec, rnd)
         elif isinstance(num, decimal.Decimal):
-            if num.is_finite():
-                _mpf_ = mlib.from_str(str(num), prec, rnd)
-            elif num.is_nan():
-                _mpf_ = mlib.fnan
-            else:
-                assert num.is_infinite()
-                if num > 0:
-                    _mpf_ = mlib.finf
-                else:
-                    _mpf_ = mlib.fninf
+            _mpf_ = mlib.from_Decimal(num, prec, rnd)
         elif isinstance(num, Rational):
             _mpf_ = mlib.from_rational(num.numerator, num.denominator, prec, rnd)
         elif isinstance(num, tuple) and len(num) in (3, 4):
