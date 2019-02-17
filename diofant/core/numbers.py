@@ -2351,7 +2351,7 @@ class Exp1(NumberSymbol, metaclass=SingletonWithManagedProperties):
         return 2
 
     def _as_mpf_val(self, prec):
-        return mlib.mpf_e(prec)
+        return mpmath.e(prec)._mpf_
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
@@ -2479,7 +2479,7 @@ class Pi(NumberSymbol, metaclass=SingletonWithManagedProperties):
         return 3
 
     def _as_mpf_val(self, prec):
-        return mlib.mpf_pi(prec)
+        return mpmath.pi(prec)._mpf_
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
@@ -2525,9 +2525,7 @@ class GoldenRatio(NumberSymbol, metaclass=SingletonWithManagedProperties):
         return 1
 
     def _as_mpf_val(self, prec):
-        # XXX track down why this has to be increased
-        rv = mlib.from_man_exp(mlib.phi_fixed(prec + 10), -prec - 10)
-        return mpf_norm(rv, prec)
+        return mpmath.phi(prec)._mpf_
 
     def _eval_expand_func(self, **hints):
         from ..functions import sqrt
@@ -2573,10 +2571,7 @@ class EulerGamma(NumberSymbol, metaclass=SingletonWithManagedProperties):
         return 0
 
     def _as_mpf_val(self, prec):
-        # XXX track down why this has to be increased
-        v = mlib.libhyper.euler_fixed(prec + 10)
-        rv = mlib.from_man_exp(v, -prec - 10)
-        return mpf_norm(rv, prec)
+        return mpmath.euler(prec)._mpf_
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
@@ -2616,10 +2611,7 @@ class Catalan(NumberSymbol, metaclass=SingletonWithManagedProperties):
         return 0
 
     def _as_mpf_val(self, prec):
-        # XXX track down why this has to be increased
-        v = mlib.catalan_fixed(prec + 10)
-        rv = mlib.from_man_exp(v, -prec - 10)
-        return mpf_norm(rv, prec)
+        return mpmath.catalan(prec)._mpf_
 
     def approximation_interval(self, number_cls):
         if issubclass(number_cls, Integer):
