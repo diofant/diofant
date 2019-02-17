@@ -8,7 +8,7 @@ import mpmath
 import mpmath.libmp as mlib
 
 from ..utilities import filldedent
-from .cache import cacheit, clear_cache
+from .cache import cacheit
 from .compatibility import DIOFANT_INTS, GROUND_TYPES, HAS_GMPY, as_int, gmpy
 from .containers import Tuple
 from .decorators import _sympifyit
@@ -86,23 +86,6 @@ def mpf_norm(mpf, prec):
             return mpf
     rv = mlib.normalize(sign, man, expt, bc, prec, rnd)
     return rv
-
-
-# TODO: we should use the warnings module
-_errdict = {"divide": False}
-
-
-def seterr(divide=False):
-    """
-    Should diofant raise an exception on 0/0 or return a nan?
-
-    divide == True .... raise an exception
-    divide == False ... return nan
-
-    """
-    if _errdict["divide"] != divide:
-        clear_cache()
-        _errdict["divide"] = divide
 
 
 def _decimal_to_Rational_prec(dec):
@@ -1078,10 +1061,7 @@ class Rational(Number):
             raise TypeError('invalid input: %s, %s' % (p, q))
         except ZeroDivisionError:
             if p == 0:
-                if _errdict["divide"]:
-                    raise ValueError("Indeterminate 0/0")
-                else:
-                    return nan
+                return nan
             else:
                 return zoo
 

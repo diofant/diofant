@@ -13,7 +13,7 @@ from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      oo, pi, root, sin, sqrt, true, zoo)
 from diofant.core.cache import clear_cache
 from diofant.core.numbers import (comp, igcd, igcdex, ilcm, integer_digits,
-                                  mod_inverse, mpf_norm, seterr)
+                                  mod_inverse, mpf_norm)
 from diofant.core.power import integer_nthroot, isqrt
 
 
@@ -25,15 +25,6 @@ t = Symbol('t', real=False)
 def same_and_same_prec(a, b):
     # stricter matching for Floats
     return a == b and a._prec == b._prec
-
-
-def test_seterr():
-    seterr(divide=True)
-    pytest.raises(ValueError, lambda: Integer(0)/Integer(0))
-    seterr(divide=False)
-    assert Integer(0)/Integer(0) == nan
-    seterr(divide=False)
-    assert Integer(0)/Integer(0) == nan
 
 
 def test_mod():
@@ -808,6 +799,7 @@ def test_NaN():
     assert 1**nan == nan  # IEEE 754 is not the best choice for symbolic work
     # test Pow._eval_power's handling of NaN
     assert Pow(nan, 0, evaluate=False)**2 == 1
+    assert Integer(0)/Integer(0) == nan
 
 
 def test_special_numbers():

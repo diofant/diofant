@@ -16,6 +16,7 @@ Compatibility breaks
 * Removed support for Python 3.5 and 3.6, see :pull:`775`.
 * ``is_monomial`` attribute of :class:`~diofant.polys.polytools.Poly` renamed to :attr:`~diofant.polys.polytools.Poly.is_term`, see :pull:`780`.
 * Removed ``log()`` helper from :class:`~diofant.domains.RationalField`, see :pull:`787`.
+* Removed ``seterr()`` function, see :pull:`794`.
 
 Minor changes
 =============
