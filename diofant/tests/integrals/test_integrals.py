@@ -1277,3 +1277,7 @@ def test_diofantissue_149():
                              ((0, 0, Rational(1, 2)), (Rational(-1, 2),)),
                              a**2/16)*gamma(a + 1)/4
     assert integrate(expr, (x, 0, 2)) == res
+
+
+def test_sympyissue_7337():
+    assert integrate(x*sqrt(2*x + 3), (x, -1, 1)) == Rational(2, 5)
