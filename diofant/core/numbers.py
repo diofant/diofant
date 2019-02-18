@@ -94,7 +94,7 @@ def _decimal_to_Rational_prec(dec):
     s, d, e = dec.as_tuple()
     prec = len(d)
     if e >= 0:  # it's an integer
-        rv = Integer(int(dec))
+        rv = Integer(dec)
     else:
         s = (-1)**s
         d = sum(di*10**i for i, di in enumerate(reversed(d)))
@@ -575,8 +575,6 @@ class Float(Number):
 
     """
 
-    # A Float represents many real numbers,
-    # both rational and irrational.
     is_number = True
 
     is_extended_real = True
@@ -677,7 +675,6 @@ class Float(Number):
         obj._prec = _prec
         return obj
 
-    # mpz can't be pickled
     def __getnewargs__(self):
         return self._mpf_,
 
@@ -689,11 +686,11 @@ class Float(Number):
 
     def floor(self):
         """Compute floor of self."""
-        return Integer(int(mlib.to_int(mlib.mpf_floor(self._mpf_, self._prec))))
+        return Integer(mlib.to_int(mlib.mpf_floor(self._mpf_, self._prec)))
 
     def ceiling(self):
         """Compute ceiling of self."""
-        return Integer(int(mlib.to_int(mlib.mpf_ceil(self._mpf_, self._prec))))
+        return Integer(mlib.to_int(mlib.mpf_ceil(self._mpf_, self._prec)))
 
     @property
     def num(self):
@@ -906,10 +903,6 @@ class Float(Number):
         return format(decimal.Decimal(str(self)), format_spec)
 
 
-# Add sympify converters
-converter[float] = converter[decimal.Decimal] = Float
-
-
 # Ground type for components of Rational
 _int_dtype = gmpy.mpz if GROUND_TYPES == 'gmpy' else int
 
@@ -1008,11 +1001,6 @@ class Rational(Number):
                 with mpmath.workprec(p._prec):
                     p, q = mlib.to_rational(p._mpf_)
 
-        if isinstance(p, Rational):
-            p = fractions.Fraction(p.numerator, p.denominator)
-        if isinstance(q, Rational):
-            q = fractions.Fraction(q.numerator, q.denominator)
-
         try:
             f = fractions.Fraction(p)/fractions.Fraction(q)
             p, q = f.numerator, f.denominator
@@ -1046,7 +1034,7 @@ class Rational(Number):
 
         """
         f = fractions.Fraction(self.numerator, self.denominator)
-        return Rational(f.limit_denominator(fractions.Fraction(int(max_denominator))))
+        return Rational(f.limit_denominator(max_denominator))
 
     def __getnewargs__(self):
         return self.numerator, self.denominator
@@ -1326,11 +1314,12 @@ numbers.Rational.register(Rational)
 
 class Integer(Rational):
 
-    _denominator = _int_dtype(1)
     is_integer = True
     is_number = True
 
     is_Integer = True
+
+    _denominator = _int_dtype(1)
 
     def _as_mpf_val(self, prec):
         return mlib.from_int(self.numerator, prec)
@@ -1340,33 +1329,21 @@ class Integer(Rational):
 
     @cacheit
     def __new__(cls, i):
-        if isinstance(i, str):
-            i = i.replace(' ', '')
-        # whereas we cannot, in general, make a Rational from an
-        # arbitrary expression, we can make an Integer unambiguously
-        # (except when a non-integer expression happens to round to
-        # an integer). So we proceed by taking int() of the input and
-        # let the int routines determine whether the expression can
-        # be made into an int or whether an error should be raised.
         try:
-            ival = int(i)
+            i = _int_dtype(i)
         except TypeError:
-            raise TypeError(
-                'Integer can only work with integer expressions.')
+            raise TypeError('Integer can only work with integer expressions.')
 
-        # We only work with well-behaved integer types. This converts, for
-        # example, numpy.int32 instances.
-        if ival == 0:
-            obj = S.Zero
-        elif ival == 1:
-            obj = S.One
-        elif ival == -1:
-            obj = S.NegativeOne
+        if i == 0:
+            return S.Zero
+        elif i == 1:
+            return S.One
+        elif i == -1:
+            return S.NegativeOne
         else:
             obj = Expr.__new__(cls)
-            obj._numerator = _int_dtype(ival)
-
-        return obj
+            obj._numerator = i
+            return obj
 
     def __getnewargs__(self):
         return self.numerator,
@@ -1377,10 +1354,9 @@ class Integer(Rational):
     def __index__(self):
         return int(self.numerator)
 
+    @_sympifyit('other', NotImplemented)
     def __eq__(self, other):
-        if isinstance(other, int):
-            return self.numerator == other
-        elif isinstance(other, Integer):
+        if isinstance(other, Integer):
             return self.numerator == other.numerator
         return Rational.__eq__(self, other)
 
@@ -1510,10 +1486,6 @@ class Integer(Rational):
 
 
 numbers.Integral.register(Integer)
-
-
-# Add sympify converters
-converter[int] = Integer
 
 
 class RationalConstant(Rational):
@@ -2653,35 +2625,29 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
 I = S.ImaginaryUnit
 
 
-def sympify_fractions(f):
-    return Rational(f.numerator, f.denominator)
+# Add sympify converters
 
+converter[float] = converter[decimal.Decimal] = Float
 
-converter[fractions.Fraction] = sympify_fractions
+converter[int] = Integer
+converter[fractions.Fraction] = Rational
 
 
 if HAS_GMPY:
-    def sympify_mpz(x):
-        return Integer(int(x))
-
-    def sympify_mpq(x):
-        return Rational(int(x.numerator), int(x.denominator))
-
-    converter[gmpy.mpz] = sympify_mpz
-    converter[gmpy.mpq] = sympify_mpq
+    converter[gmpy.mpz] = Integer
+    converter[gmpy.mpq] = Rational
 
 
-def sympify_mpmath(x):
+def _sympify_mpmath(x):
     return Expr._from_mpmath(x, x.context.prec)
 
 
-converter[mpmath.mpf] = sympify_mpmath
-converter[mpmath.mpc] = sympify_mpmath
+converter[mpmath.mpf] = _sympify_mpmath
+converter[mpmath.mpc] = _sympify_mpmath
 
 
-def sympify_complex(a):
-    real, imag = list(map(sympify, (a.real, a.imag)))
-    return real + I*imag
+def _sympify_complex(a):
+    return sympify(a.real) + I*sympify(a.imag)
 
 
-converter[complex] = sympify_complex
+converter[complex] = _sympify_complex
