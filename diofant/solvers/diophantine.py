@@ -53,8 +53,6 @@ def _remove_gcd(*x):
         return tuple(i//g for i in x)
     except ValueError:
         return x
-    except TypeError:
-        raise TypeError('_remove_gcd(a,b,c) or _remove_gcd(*container)')
 
 
 def _rational_pq(a, b):

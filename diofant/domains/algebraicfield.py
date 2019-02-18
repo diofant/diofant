@@ -93,12 +93,6 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
         return obj
 
-    def new(self, element):
-        if isinstance(element, list):
-            return self.dtype(element)
-        else:
-            return self.convert(element)
-
     def __hash__(self):
         return hash((self.__class__.__name__, self.domain, self.ext))
 
@@ -122,7 +116,7 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         except NotAlgebraic:
             raise CoercionFailed("%s is not a valid algebraic number in %s" % (a, self))
         if a in self.domain:
-            return self.new([a])
+            return self([a])
         else:
             from ..polys import field_isomorphism
 

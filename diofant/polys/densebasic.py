@@ -281,7 +281,7 @@ def dmp_normal(f, u, K):
 
     """
     if not u:
-        r = [K.normal(c) for c in f]
+        r = [K(c) for c in f]
     else:
         v = u - 1
         r = [dmp_normal(c, v, K) for c in f]

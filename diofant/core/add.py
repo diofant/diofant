@@ -13,6 +13,8 @@ class Add(AssocOp):
 
     is_Add = True
 
+    identity = S.Zero
+
     @classmethod
     def flatten(cls, seq):
         """

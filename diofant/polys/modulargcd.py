@@ -1,17 +1,14 @@
 import random
 
-from mpmath import sqrt
-
 from . import rings
 from ..core import Dummy
 from ..ntheory import nextprime
-from ..ntheory.modular import crt
+from ..ntheory.modular import crt, integer_rational_reconstruction
 from .galoistools import gf_div, gf_from_dict, gf_gcd, gf_gcdex, gf_lcm
 from .polyerrors import ModularGCDFailed
 
 
-__all__ = ('modgcd', 'func_field_modgcd', 'trial_division',
-           'integer_rational_reconstruction')
+__all__ = 'modgcd', 'func_field_modgcd', 'trial_division',
 
 
 def _trivial_gcd(f, g):
@@ -50,12 +47,12 @@ def _gf_gcd(fp, gp, p):
             degrem = rem.degree()
             if degrem < deg:
                 break
-            rem = (rem - gp.mul_monom((degrem - deg,)).mul_ground(lcinv * rem.LC)).trunc_ground(p)
+            rem = (rem - gp.mul_monom((degrem - deg,))*(lcinv * rem.LC)).trunc_ground(p)
 
         fp = gp
         gp = rem
 
-    return fp.mul_ground(dom.invert(fp.LC, p)).trunc_ground(p)
+    return (fp*dom.invert(fp.LC, p)).trunc_ground(p)
 
 
 def _primitive(f, p):
@@ -375,7 +372,7 @@ def _interpolate(evalpoints, hpeval, ring, i, p, ground=False):
             denom *= a - b
 
         denom = domain.invert(denom, p)
-        coeff = numer.mul_ground(denom)
+        coeff = numer*denom
         hp += hpa.set_ring(ring) * coeff
 
     return hp.trunc_ground(p)
@@ -512,7 +509,7 @@ def _modgcd_p(f, g, p, degbound, contbound):
             h = conth.set_ring(ring).trunc_ground(p)
             return h
 
-        ha = ha.mul_ground(deltaa).trunc_ground(p)
+        ha = (ha*deltaa).trunc_ground(p)
 
         evalpoints.append(a)
         heval.append(ha)
@@ -630,7 +627,7 @@ def modgcd(f, g):
         if hp is None:
             continue
 
-        hp = hp.mul_ground(gamma).trunc_ground(p)
+        hp = (hp*gamma).trunc_ground(p)
         if m == 1:
             m = p
             hlastm = hp
@@ -647,9 +644,9 @@ def modgcd(f, g):
         fquo, frem = divmod(f, h)
         gquo, grem = divmod(g, h)
         if not frem and not grem:
-            h = h.mul_ground(ch)
-            cff = fquo.mul_ground(cf // ch)
-            cfg = gquo.mul_ground(cg // ch)
+            h *= ch
+            cff = fquo*(cf // ch)
+            cfg = gquo*(cg // ch)
             return h, cff, cfg
 
 
@@ -722,8 +719,8 @@ def _rational_function_reconstruction(c, p, m):
     lc = b.LC
     if lc != 1:
         lcinv = domain.invert(lc, p)
-        a = a.mul_ground(lcinv).trunc_ground(p)
-        b = b.mul_ground(lcinv).trunc_ground(p)
+        a = (a*lcinv).trunc_ground(p)
+        b = (b*lcinv).trunc_ground(p)
 
     field = ring.to_field()
 
@@ -957,7 +954,7 @@ def trial_division(f, h, minpoly, p=None):
         while rem and degrem >= degm:
             # polynomial in Z[t_1, ..., t_k][x]
             lcrem = _LC(rem.set_ring(zxring)).set_ring(ring)
-            rem = rem.mul_ground(lcm) - minpoly.mul_monom((0, degrem - degm))*lcrem
+            rem = rem*lcm - minpoly.mul_monom((0, degrem - degm))*lcrem
             if p:
                 rem = rem.trunc_ground(p)
             degrem = rem.degree(1)
@@ -1141,72 +1138,12 @@ def _func_field_modgcd_p(f, g, minpoly, p):
                                                      p, dom.domain))
 
         den = qring.domain_new(den.trunc_ground(p))
-        h = ring(h.mul_ground(den).as_expr()).trunc_ground(p)
+        h = ring((h*den).as_expr()).trunc_ground(p)
 
         if not trial_division(f, h, minpoly, p) and not trial_division(g, h, minpoly, p):
             return h
 
     return
-
-
-def integer_rational_reconstruction(c, m, domain):
-    r"""
-    Reconstruct a rational number `\frac a b` from
-
-    .. math::
-
-        c = \frac a b \; \mathrm{mod} \, m,
-
-    where `c` and `m` are integers.
-
-    The algorithm is based on the Euclidean Algorithm. In general, `m` is
-    not a prime number, so it is possible that `b` is not invertible modulo
-    `m`. In that case ``None`` is returned.
-
-    Parameters
-    ==========
-
-    c : Integer
-        `c = \frac a b \; \mathrm{mod} \, m`
-    m : Integer
-        modulus, not necessarily prime
-    domain : IntegerRing
-        `a, b, c` are elements of ``domain``
-
-    Returns
-    =======
-
-    frac : Rational
-        either `\frac a b` in `\mathbb Q` or ``None``
-
-    References
-    ==========
-
-    * :cite:`Wang1981partial`
-
-    """
-    if c < 0:
-        c += m
-
-    r0, s0 = m, domain.zero
-    r1, s1 = c, domain.one
-
-    bound = sqrt(m / 2)  # still correct if replaced by ZZ.sqrt(m // 2) ?
-
-    while r1 >= bound:
-        quo = r0 // r1
-        r0, r1 = r1, r0 - quo*r1
-        s0, s1 = s1, s0 - quo*s1
-
-    if abs(s1) >= bound:
-        return
-
-    if s1 < 0:
-        r1, s1 = -r1, -s1
-
-    field = domain.field
-
-    return field(r1) / field(s1)
 
 
 def _rational_reconstruction_int_coeffs(hm, m, ring):
@@ -1247,7 +1184,7 @@ def _rational_reconstruction_int_coeffs(hm, m, ring):
     See also
     ========
 
-    integer_rational_reconstruction
+    diofant.ntheory.modular.integer_rational_reconstruction
 
     """
     h = ring.zero
@@ -1405,14 +1342,14 @@ def _func_field_modgcd_m(f, g, minpoly):
             den = domain.domain.one
             for coeff in hm.values():
                 den = domain.domain.lcm(den, coeff.clear_denoms()[0])
-            h = hm.mul_ground(den)
+            h = hm*den
 
         # convert back to Z[t_1, ..., t_k][x, z] from Q[t_1, ..., t_k][x, z]
         h = h.set_ring(ring)
         h = h.primitive()[1]
 
-        if not (trial_division(f.mul_ground(cf), h, minpoly) or
-                trial_division(g.mul_ground(cg), h, minpoly)):
+        if not (trial_division(f*cf, h, minpoly) or
+                trial_division(g*cg, h, minpoly)):
             return h
 
 

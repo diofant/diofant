@@ -3,16 +3,16 @@ Generating and counting primes.
 
 """
 
+import array
+import bisect
 import random
-from array import array as _array
-from bisect import bisect
 
 from ..core.compatibility import as_int
 from .primetest import isprime
 
 
 def _arange(a, b):
-    ar = _array('l', [0]*(b - a))
+    ar = array.array('l', [0]*(b - a))
     for i, e in enumerate(range(a, b)):
         ar[i] = e
     return ar
@@ -35,7 +35,7 @@ class Sieve:
     """
 
     # data shared (and updated) by all Sieve instances
-    _list = _array('l', [2, 3, 5, 7, 11, 13])
+    _list = array.array('l', [2, 3, 5, 7, 11, 13])
 
     def __repr__(self):
         return "<Sieve with %i primes sieved: 2, 3, 5, ... %i, %i>" % \
@@ -78,7 +78,7 @@ class Sieve:
                 newsieve[i] = 0
 
         # Merge the sieves
-        self._list += _array('l', [x for x in newsieve if x])
+        self._list += array.array('l', [x for x in newsieve if x])
 
     def extend_to_no(self, i):
         """Extend to include the ith prime number.
@@ -159,7 +159,7 @@ class Sieve:
             raise ValueError("n should be >= 2 but got: %s" % n)
         if n > self._list[-1]:
             self.extend(n)
-        b = bisect(self._list, n)
+        b = bisect.bisect(self._list, n)
         if self._list[b - 1] == test:
             return b, b
         else:

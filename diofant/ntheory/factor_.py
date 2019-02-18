@@ -1358,7 +1358,7 @@ def _antidivisors(n):
 def antidivisors(n, generator=False):
     r"""Return all antidivisors of n sorted from 1..n by default.
 
-    Antidivisors [1]_ of n are numbers that do not divide n by the largest
+    Antidivisors of n are numbers that do not divide n by the largest
     possible margin.  If generator is True an unordered generator is returned.
 
     References
@@ -1392,7 +1392,7 @@ def antidivisors(n, generator=False):
 
 
 def antidivisor_count(n):
-    """Return the number of antidivisors [1]_ of ``n``.
+    """Return the number of antidivisors of ``n``.
 
     References
     ==========

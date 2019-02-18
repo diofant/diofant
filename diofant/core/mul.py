@@ -79,6 +79,8 @@ class Mul(AssocOp):
 
     is_Mul = True
 
+    identity = S.One
+
     @classmethod
     def flatten(cls, seq):
         """Return commutative, noncommutative and order arguments by

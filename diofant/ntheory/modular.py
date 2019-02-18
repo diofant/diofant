@@ -1,4 +1,6 @@
-from functools import reduce
+import functools
+
+import mpmath
 
 from ..core.compatibility import as_int
 from ..core.mul import prod
@@ -195,7 +197,7 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
         a1, m1 = c1
         a2, m2 = c2
         a, b, c = m1, a2 - a1, m2
-        g = reduce(igcd, [a, b, c])
+        g = functools.reduce(igcd, [a, b, c])
         a, b, c = [i//g for i in [a, b, c]]
         if a != 1:
             inv_a, _, g = igcdex(a, c)
@@ -251,3 +253,63 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
         if symmetric:
             return symmetric_residue(n, m), m
         return n, m
+
+
+def integer_rational_reconstruction(c, m, domain):
+    r"""
+    Reconstruct a rational number `\frac a b` from
+
+    .. math::
+
+        c = \frac a b \; \mathrm{mod} \, m,
+
+    where `c` and `m` are integers.
+
+    The algorithm is based on the Euclidean Algorithm. In general, `m` is
+    not a prime number, so it is possible that `b` is not invertible modulo
+    `m`. In that case ``None`` is returned.
+
+    Parameters
+    ==========
+
+    c : Integer
+        `c = \frac a b \; \mathrm{mod} \, m`
+    m : Integer
+        modulus, not necessarily prime
+    domain : IntegerRing
+        `a, b, c` are elements of ``domain``
+
+    Returns
+    =======
+
+    frac : Rational
+        either `\frac a b` in `\mathbb Q` or ``None``
+
+    References
+    ==========
+
+    * :cite:`Wang1981partial`
+
+    """
+    if c < 0:
+        c += m
+
+    r0, s0 = m, domain.zero
+    r1, s1 = c, domain.one
+
+    bound = mpmath.sqrt(m / 2)  # still correct if replaced by ZZ.sqrt(m // 2) ?
+
+    while r1 >= bound:
+        quo = r0 // r1
+        r0, r1 = r1, r0 - quo*r1
+        s0, s1 = s1, s0 - quo*s1
+
+    if abs(s1) >= bound:
+        return
+
+    if s1 < 0:
+        r1, s1 = -r1, -s1
+
+    field = domain.field
+
+    return field(r1) / field(s1)

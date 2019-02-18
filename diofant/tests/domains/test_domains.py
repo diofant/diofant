@@ -539,13 +539,13 @@ def test_Domain_convert():
     assert RR.convert(CC(1)) == RR(1)
     pytest.raises(CoercionFailed, lambda: RR.convert(CC(1, 2)))
 
-    assert QQ.convert(ALG.new(1), ALG) == QQ(1)
-    pytest.raises(CoercionFailed, lambda: QQ.convert(ALG.new([1, 1]), ALG))
+    assert QQ.convert(ALG(1), ALG) == QQ(1)
+    pytest.raises(CoercionFailed, lambda: QQ.convert(ALG([1, 1]), ALG))
 
-    assert ZZ.convert(ALG.new(1), ALG) == ZZ(1)
-    pytest.raises(CoercionFailed, lambda: ZZ.convert(ALG.new([1, 1]), ALG))
+    assert ZZ.convert(ALG(1), ALG) == ZZ(1)
+    pytest.raises(CoercionFailed, lambda: ZZ.convert(ALG([1, 1]), ALG))
 
-    assert EX.convert(ALG.new([1, 1]), ALG) == sqrt(2) + sqrt(3) + 1
+    assert EX.convert(ALG([1, 1]), ALG) == sqrt(2) + sqrt(3) + 1
 
     ALG2 = QQ.algebraic_field(sqrt(2))
     a2 = ALG2.convert(sqrt(2))
@@ -693,8 +693,8 @@ def test_Domain__algebraic_field():
     assert QQ.algebraic_field(Rational(1, 7)) is QQ
 
     alg = QQ.algebraic_field(sqrt(2)).algebraic_field(I)
-    assert alg.from_expr(2*sqrt(2) + I/3) == alg([alg.domain(1)/3,
-                                                  alg.domain(2*sqrt(2))])
+    assert alg.from_expr(2*sqrt(2) + I/3) == alg([alg.domain([1])/3,
+                                                  alg.domain([2, 0])])
     alg2 = QQ.algebraic_field(sqrt(2))
     assert alg2.from_expr(sqrt(2)) == alg2.convert(alg.from_expr(sqrt(2)))
 

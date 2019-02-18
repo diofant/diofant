@@ -428,7 +428,7 @@ def test_laplace_transform():
 
     # test a bug
     spos = symbols('s', positive=True)
-    assert LT(exp(t), t, spos)[:2] == (1/(spos - 1), True)
+    assert LT(exp(t), t, spos)[:2] == (1/(spos - 1), 1)
 
     # basic tests from wikipedia
 

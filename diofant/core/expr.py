@@ -3218,8 +3218,8 @@ def _mag(x):
     return mag_first_dig
 
 
-from .mul import Mul
 from .add import Add
+from .mul import Mul
 from .power import Pow
 from .function import Function, expand_mul
 from .mod import Mod

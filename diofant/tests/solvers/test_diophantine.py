@@ -754,7 +754,6 @@ def test_diopcoverage():
     assert _odd(1) == (not _even(1)) is True
     assert _odd(0) == (not _even(0)) is False
     assert _remove_gcd(2, 4, 6) == (1, 2, 3)
-    pytest.raises(TypeError, lambda: _remove_gcd((2, 4, 6)))
     assert sqf_normal(2 * 3**2 * 5, 2 * 5 * 11, 2 * 7**2 * 11) == (11, 1, 5)
 
     # it's ok if these pass some day when the solvers are implemented

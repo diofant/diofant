@@ -94,18 +94,12 @@ class FractionField(Field, CompositeDomain):
     def raw_new(self, numer, denom=None):
         return self.dtype(numer, denom)
 
-    def new(self, numer, denom=None):
-        if denom is None:
-            denom = self.ring.one
-        numer, denom = numer.cancel(denom)
-        return self.raw_new(numer, denom)
-
     def domain_new(self, element):
         return self.domain.convert(element)
 
     def ground_new(self, element):
         try:
-            return self.new(self.ring.ground_new(element))
+            return self(self.ring.ground_new(element))
         except CoercionFailed:
             domain = self.domain
 
@@ -132,7 +126,8 @@ class FractionField(Field, CompositeDomain):
             return self.raw_new(numer, denom)
         elif isinstance(element, tuple) and len(element) == 2:
             numer, denom = list(map(self.ring.ring_new, element))
-            return self.new(numer, denom)
+            numer, denom = numer.cancel(denom)
+            return self.raw_new(numer, denom)
         elif isinstance(element, str):
             raise NotImplementedError("parsing")
         elif isinstance(element, Expr):
@@ -298,7 +293,7 @@ class FracElement(DomainElement, CantSympify):
             new_ring = new_field.ring
             numer = self.numer.set_ring(new_ring)
             denom = self.denom.set_ring(new_ring)
-            return new_field.new(numer, denom)
+            return new_field((numer, denom))
 
     def as_expr(self, *symbols):
         return self.numer.as_expr(*symbols)/self.denom.as_expr(*symbols)
@@ -576,7 +571,7 @@ class FracElement(DomainElement, CantSympify):
             field = numer.ring.to_field()
         else:
             field = self.field
-        return field.new(field.ring(numer), field.ring(denom))
+        return field((field.ring(numer), field.ring(denom)))
 
     def subs(self, x):
         if isinstance(x, (list, tuple)):

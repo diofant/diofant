@@ -640,3 +640,7 @@ def test_sympyissue_15146():
 
 def test_sympyissue_15323():
     assert limit(((1 - 1/x)**x).diff(x), x, 1) == 1
+
+
+def test_sympyissue_15984():
+    assert limit((-x + log(exp(x) + 1))/x, x, oo, dir='-') == 0

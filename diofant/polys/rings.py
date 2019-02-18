@@ -271,7 +271,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         else:
             return self.ground_new(element)
 
-    __call__ = new = ring_new
+    __call__ = ring_new
 
     def from_dict(self, element):
         domain_new = self.domain_new
@@ -414,7 +414,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
 
     def _from_AlgebraicField(self, a, K0):
         if self.domain == K0:
-            return self.new(a)
+            return self(a)
 
     def _from_PolynomialRing(self, a, K0):
         try:
@@ -463,7 +463,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
 
     def factorial(self, a):
         """Returns factorial of ``a``."""
-        return self.new(self.domain.factorial(a))
+        return self(self.domain.factorial(a))
 
 
 class PolyElement(DomainElement, CantSympify, dict):

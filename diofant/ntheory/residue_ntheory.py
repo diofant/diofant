@@ -1,5 +1,6 @@
+import collections
 import math
-from random import randint
+import random
 
 from ..core import Function, S
 from ..core.compatibility import as_int
@@ -24,11 +25,10 @@ def n_order(a, n):
     3
 
     """
-    from collections import defaultdict
     a, n = as_int(a), as_int(n)
     if math.gcd(a, n) != 1:
         raise ValueError("The two numbers should be relatively prime")
-    factors = defaultdict(int)
+    factors = collections.defaultdict(int)
     f = factorint(n)
     for px, kx in f.items():
         if kx > 1:
@@ -185,7 +185,7 @@ def _sqrt_mod_tonelli_shanks(a, p):
     t = p >> s
     # find a non-quadratic residue
     while 1:
-        d = randint(2, p - 1)
+        d = random.randint(2, p - 1)
         r = legendre_symbol(d, p)
         if r == -1:
             break

@@ -13,7 +13,7 @@ from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      oo, pi, root, sin, sqrt, true, zoo)
 from diofant.core.cache import clear_cache
 from diofant.core.numbers import (comp, igcd, igcdex, ilcm, integer_digits,
-                                  mod_inverse, mpf_norm, seterr)
+                                  mod_inverse, mpf_norm)
 from diofant.core.power import integer_nthroot, isqrt
 
 
@@ -25,15 +25,6 @@ t = Symbol('t', real=False)
 def same_and_same_prec(a, b):
     # stricter matching for Floats
     return a == b and a._prec == b._prec
-
-
-def test_seterr():
-    seterr(divide=True)
-    pytest.raises(ValueError, lambda: Integer(0)/Integer(0))
-    seterr(divide=False)
-    assert Integer(0)/Integer(0) == nan
-    seterr(divide=False)
-    assert Integer(0)/Integer(0) == nan
 
 
 def test_mod():
@@ -366,17 +357,9 @@ def test_Float():
     a = Float(2) ** Float(4)
     assert eq(a, Float(16))
     assert (Float(.3) == Float(.5)) is False
-    x_str = Float((0, '13333333333333', -52, 53))
-    x2_str = Float((0, '26666666666666', -53, 53))
-    x_hex = Float((0, int(0x13333333333333), -52, 53))
     x_dec = Float((0, 5404319552844595, -52, 53))
-    x2_hex = Float((0, int(0x13333333333333)*2, -53, 53))
-    assert x_str == x_hex == x_dec == x2_hex == Float(1.2)
-    # x2_str and 1.2 are superficially the same
-    assert str(x2_str) == str(Float(1.2))
-    # but are different at the mpf level
-    assert Float(1.2)._mpf_ == (0, int(5404319552844595), -52, 53)
-    assert x2_str._mpf_ == (0, int(10808639105689190), -53, 53)
+    x2_dec = Float(x_dec)
+    assert x_dec == x2_dec == Float(1.2)
 
     assert Float((0, int(0), -123, -1)) == Float('nan')
     assert Float((0, int(0), -456, -2)) == Float('inf') == Float('+inf')
@@ -808,6 +791,7 @@ def test_NaN():
     assert 1**nan == nan  # IEEE 754 is not the best choice for symbolic work
     # test Pow._eval_power's handling of NaN
     assert Pow(nan, 0, evaluate=False)**2 == 1
+    assert Integer(0)/Integer(0) == nan
 
 
 def test_special_numbers():

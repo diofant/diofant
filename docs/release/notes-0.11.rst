@@ -16,6 +16,7 @@ Compatibility breaks
 * Removed support for Python 3.5 and 3.6, see :pull:`775`.
 * ``is_monomial`` attribute of :class:`~diofant.polys.polytools.Poly` renamed to :attr:`~diofant.polys.polytools.Poly.is_term`, see :pull:`780`.
 * Removed ``log()`` helper from :class:`~diofant.domains.RationalField`, see :pull:`787`.
+* Removed ``seterr()`` function, see :pull:`794`.
 
 Minor changes
 =============
@@ -38,3 +39,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`15943` Wrong result from summation
 * :sympyissue:`12163` matematica code printer does not handle floats and derivatives correctly
 * :sympyissue:`11642` Geometric sum doesn't evaluate with float base
+* :sympyissue:`15984` Value error in limit
+* :sympyissue:`7337` Wrong integration result

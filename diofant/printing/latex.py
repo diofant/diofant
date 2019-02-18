@@ -1373,6 +1373,33 @@ class LatexPrinter(Printer):
     def _print_Dict(self, expr):
         return self._print_dict(expr)
 
+    def _print_Infinity(self, expr):
+        return r"\infty"
+
+    def _print_NegativeInfinity(self, expr):
+        return r"-\infty"
+
+    def _print_NaN(self, expr):
+        return r"\mathrm{NaN}"
+
+    def _print_ComplexInfinity(self, expr):
+        return r"\tilde{\infty}"
+
+    def _print_Exp1(self, expr):
+        return r"e"
+
+    def _print_Pi(self, expr):
+        return r"\pi"
+
+    def _print_GoldenRatio(self, expr):
+        return r"\phi"
+
+    def _print_EulerGamma(self, expr):
+        return r"\gamma"
+
+    def _print_ImaginaryUnit(self, expr):
+        return r"i"
+
     def _print_DiracDelta(self, expr, exp=None):
         if len(expr.args) == 1 or expr.args[1] == 0:
             tex = r"\delta\left(%s\right)" % self._print(expr.args[0])

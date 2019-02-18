@@ -131,10 +131,6 @@ integer_digits
 ^^^^^^^^^^^^^^
 .. autofunction:: integer_digits
 
-seterr
-^^^^^^
-.. autofunction:: seterr
-
 Zero
 ^^^^
 

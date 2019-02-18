@@ -71,9 +71,9 @@ def test_conversion():
     pytest.raises(CoercionFailed, lambda: G.convert(L.convert(1/(1 + x)), L))
 
     R = ALG.poly_ring(x, y)
-    assert R.convert(ALG.new(1), ALG) == R.new(1)
+    assert R.convert(ALG(1), ALG) == R(1)
     pytest.raises(CoercionFailed,
-                  lambda: R.convert(ALG.new(1), QQ.algebraic_field(sqrt(2))))
+                  lambda: R.convert(ALG(1), QQ.algebraic_field(sqrt(2))))
 
 
 def test_units():
