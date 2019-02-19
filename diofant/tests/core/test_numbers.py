@@ -123,7 +123,7 @@ def test_divmod():
     assert divmod(0.3, Integer(2)) == (0, Float(0.3))
     assert divmod(Rational(3, 2), Float(3.5)) == (0, Rational(3, 2))
     assert divmod(Float(3.5), Rational(3, 2)) == (2, Float(0.5))
-    assert divmod(Rational(3, 2), Rational(1, 3)) == (4, Float("1/6"))
+    assert divmod(Rational(3, 2), Rational(1, 3)) == (4, Float(0.16666666666666666))
     assert divmod(Rational(1, 3), Rational(3, 2)) == (0, Rational(1, 3))
     assert divmod(Rational(3, 2), Float(0.1)) == (15, 0)
     assert divmod(Float(0.1), Rational(3, 2)) == (0, Float(0.1))
@@ -451,7 +451,7 @@ def test_Float():
     assert Float(+oo) == Float('+inf')
     assert Float(-oo) == Float('-inf')
 
-    pytest.raises(ValueError, lambda: Float('inf', dps=''))
+    assert Float('inf', dps='') == Float('inf')
 
     assert Float(0)**2 is Integer(0)
     assert Float(0)**t == Pow(Float(0), t, evaluate=False)
