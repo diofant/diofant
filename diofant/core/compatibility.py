@@ -451,11 +451,5 @@ if GROUND_TYPES == 'gmpy' and not HAS_GMPY:
     warn("gmpy library is not installed, switching to 'python' ground types")
     GROUND_TYPES = 'python'
 
-# DIOFANT_INTS is a tuple containing the base types for valid integer types.
-DIOFANT_INTS = int,
-
-if GROUND_TYPES == 'gmpy':
-    DIOFANT_INTS += gmpy.mpz,
-
 if GROUND_TYPES == 'python':
     os.environ['MPMATH_NOGMPY'] = 'yes'

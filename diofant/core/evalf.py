@@ -4,6 +4,7 @@ for mathematical functions.
 """
 
 import math
+import numbers
 
 import mpmath.libmp as libmp
 from mpmath import inf as mpmath_inf
@@ -22,7 +23,7 @@ from mpmath.libmp.libmpc import _infs_nan
 from mpmath.libmp.libmpf import dps_to_prec, prec_to_dps
 
 from ..utilities.misc import debug
-from .compatibility import DIOFANT_INTS, is_sequence
+from .compatibility import is_sequence
 from .singleton import S
 from .sympify import sympify
 
@@ -154,7 +155,7 @@ def scaled_zero(mag, sign=1):
     """
     if type(mag) is tuple and len(mag) == 4 and iszero(mag, scaled=True):
         return (mag[0][0],) + mag[1:]
-    elif isinstance(mag, DIOFANT_INTS):
+    elif isinstance(mag, numbers.Integral):
         if sign not in [-1, 1]:
             raise ValueError('sign must be +/-1')
         rv, p = mpf_shift(fone, mag), -1

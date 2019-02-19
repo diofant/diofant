@@ -8,7 +8,7 @@ import mpmath.libmp as mlib
 
 from ..utilities import filldedent
 from .cache import cacheit
-from .compatibility import DIOFANT_INTS, GROUND_TYPES, HAS_GMPY, as_int, gmpy
+from .compatibility import GROUND_TYPES, HAS_GMPY, as_int, gmpy
 from .containers import Tuple
 from .decorators import _sympifyit
 from .expr import AtomicExpr, Expr
@@ -288,7 +288,7 @@ class Number(AtomicExpr):
 
         if isinstance(obj, Number):
             return obj
-        if isinstance(obj, DIOFANT_INTS):
+        if isinstance(obj, numbers.Integral):
             return Integer(obj)
         if isinstance(obj, tuple) and len(obj) == 2:
             return Rational(*obj)
