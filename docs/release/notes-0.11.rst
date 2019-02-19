@@ -41,3 +41,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`11642` Geometric sum doesn't evaluate with float base
 * :sympyissue:`15984` Value error in limit
 * :sympyissue:`7337` Wrong integration result
+* :sympyissue:`11600` re and im should work for matrix expressions
