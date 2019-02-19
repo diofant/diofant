@@ -483,12 +483,9 @@ class Float(Number):
     >>> Float(100, 4)
     100.0
 
-    Float can automatically count significant figures if a null string
-    is sent for the precision; space are also allowed in the string. (Auto-
-    counting is only allowed for strings and ints).
+    Float can automatically count significant figures if a null string is sent
+    for the precision. (Auto-counting is only allowed for strings and ints).
 
-    >>> Float('123 456 789 . 123 456', '')
-    123456789.123456
     >>> Float('12e-3', '')
     0.012
     >>> Float(3, '')
@@ -583,7 +580,6 @@ class Float(Number):
 
     def __new__(cls, num, dps=None):
         if isinstance(num, str):
-            num = num.replace(' ', '')
             if num.startswith('.') and len(num) > 1:
                 num = '0' + num
             elif num.startswith('-.') and len(num) > 2:

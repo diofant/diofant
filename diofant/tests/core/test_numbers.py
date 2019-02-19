@@ -417,11 +417,6 @@ def test_Float():
     assert float(Float('.12500000000000001', '')) == .125
     pytest.raises(ValueError, lambda: Float(.12500000000000001, ''))
 
-    # allow spaces
-    assert Float('123 456.123 456') == Float('123456.123456')
-    assert Integer('123 456') == Integer('123456')
-    assert Float(' .3e2') == Float('0.3e2')
-
     # allow auto precision detection
     assert Float('.1', '') == Float(.1, 1)
     assert Float('.125', '') == Float(.125, 3)
