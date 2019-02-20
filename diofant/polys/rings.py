@@ -680,29 +680,32 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             return poly
 
-    def _drop_to_ground(self, gen):
+    def _drop_to_ground(self, *gens):
         ring = self.ring
-        i = ring.index(gen)
 
         symbols = list(ring.symbols)
-        symbol = symbols[i]
-        del symbols[i]
-        return i, ring.clone(symbols=symbols, domain=ring.clone([symbol]))
+        indexes = [ring.index(gen) for gen in gens]
 
-    def drop_to_ground(self, gen):
+        dropped = [symbols[i] for i in indexes]
+        symbols = [symbols[i] for i in range(ring.ngens) if i not in indexes]
+
+        return indexes, ring.clone(symbols=symbols, domain=ring.clone(dropped))
+
+    def drop_to_ground(self, *gens):
         if self.ring.is_univariate:
             raise ValueError("can't drop only generator to ground")
 
-        i, ring = self._drop_to_ground(gen)
+        indexes, ring = self._drop_to_ground(*gens)
         poly = ring.zero
-        gen = ring.domain.gens[0]
+        gens = ring.domain.gens[0:len(indexes)]
 
         for monom, coeff in self.items():
-            mon = monom[:i] + monom[i+1:]
+            mon = tuple(monom[i] for i in range(self.ring.ngens) if i not in indexes)
+            gc = functools.reduce(operator.mul, [x**n for x, n in zip(gens, (monom[i] for i in indexes))])
             if mon not in poly:
-                poly[mon] = (gen**monom[i]).mul_ground(coeff)
+                poly[mon] = gc.mul_ground(coeff)
             else:
-                poly[mon] += (gen**monom[i]).mul_ground(coeff)
+                poly[mon] += gc.mul_ground(coeff)
 
         return poly
 

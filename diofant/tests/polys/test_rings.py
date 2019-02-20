@@ -1499,7 +1499,14 @@ def test_PolyElement_drop():
 
     f = z**2*x + 2*z*y + x*z + 1
     R2 = R.drop_to_ground(z)
-    assert f.drop_to_ground(z) == z**2*R2.x + 2*z*R2.y + z*R2.x + 1
+    D = R2.domain
+    assert f.drop_to_ground(z) == D.z**2*R2.x + 2*D.z*R2.y + D.z*R2.x + 1
+    R12 = R.drop_to_ground(y, z)
+    D = R12.domain
+    assert f.drop_to_ground(y, z) == R12.x*(D.z**2 + D.z) + 2*D.y*D.z + 1
+    R02 = R.drop_to_ground(x, z)
+    D = R02.domain
+    assert f.drop_to_ground(x, z) == R02.y*2*D.z + D.x*D.z**2 + D.x*D.z + 1
 
     R3 = R.drop(y, z)
     assert R3 == ZZ.poly_ring('x')
