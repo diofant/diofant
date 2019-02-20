@@ -1031,10 +1031,8 @@ class Rational(Number):
     @_sympifyit('other', NotImplemented)
     def __truediv__(self, other):
         if isinstance(other, Rational):
-            if self.numerator and other.numerator == 0:
-                return zoo
-            else:
-                return Rational(self.numerator*other.denominator, self.denominator*other.numerator)
+            n, d = other.numerator, other.denominator
+            return Rational(self.numerator*d, self.denominator*n)
         else:
             return other.__rtruediv__(self)
 
