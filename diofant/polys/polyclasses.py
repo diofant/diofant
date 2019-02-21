@@ -21,7 +21,8 @@ from .euclidtools import (dmp_cancel, dmp_discriminant, dmp_gcd, dmp_inner_gcd,
                           dmp_lcm, dmp_resultant, dmp_subresultants, dup_gcdex,
                           dup_half_gcdex, dup_invert)
 from .factortools import dmp_factor_list, dmp_irreducible_p, dup_cyclotomic_p
-from .polyerrors import PolynomialError, UnificationFailed
+from .polyerrors import (MultivariatePolynomialError, PolynomialError,
+                         UnificationFailed)
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_real_roots, dup_isolate_real_roots_sqf,
@@ -472,7 +473,7 @@ class DMP(CantSympify):
                                                      eps=eps, inf=inf, sup=sup,
                                                      fast=fast)
         else:
-            raise PolynomialError(
+            raise MultivariatePolynomialError(
                 "can't isolate roots of a multivariate polynomial")
 
     def refine_root(self, s, t, eps=None, steps=None, fast=False):
