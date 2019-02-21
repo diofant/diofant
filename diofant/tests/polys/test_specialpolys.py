@@ -84,13 +84,13 @@ def test_interpolating_poly():
 
 
 def test_fateman_poly_F_1():
-    f, g, h = map(lambda x: x.rep.rep, fateman_poly_F_1(1))
+    f, g, h = map(lambda x: x.rep.to_dense(), fateman_poly_F_1(1))
 
     assert f == [[1], [2, 3], [1, 3, 2]]
     assert g == [[-3, 0], [], [-3, 1, -3, -1], [], [1, 0, 0, 0, -1]]
     assert h == [[1]]
 
-    f, g, h = map(lambda x: x.rep.rep, fateman_poly_F_1(3))
+    f, g, h = map(lambda x: x.rep.to_dense(), fateman_poly_F_1(3))
 
     assert f == [[[[1]]], [[[2]], [[2], [2, 3]]],
                  [[[1]], [[2], [2, 3]], [[1], [2, 3], [1, 3, 2]]]]
@@ -102,13 +102,13 @@ def test_fateman_poly_F_1():
 
 
 def test_fateman_poly_F_2():
-    f, g, h = map(lambda x: x.rep.rep, fateman_poly_F_2(1))
+    f, g, h = map(lambda x: x.rep.to_dense(), fateman_poly_F_2(1))
 
     assert f == [[1], [-2], [-2, -6, -3], [2, 6, 4], [1, 6, 13, 12, 4]]
     assert g == [[1], [4, 6], [6, 18, 13], [4, 18, 26, 12], [1, 6, 13, 12, 4]]
     assert h == [[1], [2, 2], [1, 2, 1]]
 
-    f, g, h = map(lambda x: x.rep.rep, fateman_poly_F_2(3))
+    f, g, h = map(lambda x: x.rep.to_dense(), fateman_poly_F_2(3))
 
     assert f == [[[[1]]], [[[-2]]], [[[-2]], [[-4], [-4, -6]],
                                      [[-2], [-4, -6], [-2, -6, -3]]],
@@ -130,7 +130,7 @@ def test_fateman_poly_F_2():
 
 
 def test_fateman_poly_F_3():
-    f, g, h = map(lambda x: x.rep.rep, fateman_poly_F_3(1))
+    f, g, h = map(lambda x: x.rep.to_dense(), fateman_poly_F_3(1))
 
     assert f == [[1], [], [-2], [], [-2, 0, -6, 0, -3], [],
                  [2, 0, 6, 0, 4], [], [1, 0, 6, 0, 13, 0, 12, 0, 4]]
@@ -138,7 +138,7 @@ def test_fateman_poly_F_3():
                  [4, 0, 18, 0, 26, 0, 12], [], [1, 0, 6, 0, 13, 0, 12, 0, 4]]
     assert h == [[1], [], [2, 0, 2], [], [1, 0, 2, 0, 1]]
 
-    f, g, h = map(lambda x: x.rep.rep, fateman_poly_F_3(3))
+    f, g, h = map(lambda x: x.rep.to_dense(), fateman_poly_F_3(3))
 
     assert f == [[[[1]]], [[[]]], [[[]]], [[[]]], [[[-2]]], [[[]]], [[[]]],
                  [[[]]], [[[-2]], [[]], [[]], [[]],

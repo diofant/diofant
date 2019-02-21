@@ -4206,12 +4206,12 @@ def _sorted_factors(factors, method):
     if method == 'sqf':
         def key(obj):
             poly, exp = obj
-            rep = poly.rep.rep
+            rep = poly.rep.to_dense()
             return exp, len(rep), len(poly.gens), default_sort_key(rep)
     else:
         def key(obj):
             poly, exp = obj
-            rep = poly.rep.rep
+            rep = poly.rep.to_dense()
             return len(rep), len(poly.gens), exp, default_sort_key(rep)
 
     return sorted(factors, key=key)
@@ -4659,7 +4659,7 @@ def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, fast=Fal
             raise MultivariatePolynomialError
 
         for i, poly in enumerate(polys):
-            polys[i] = poly.rep.rep
+            polys[i] = poly.rep.to_dense()
 
         if eps is not None:
             eps = opt.domain.convert(eps)
