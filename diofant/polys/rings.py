@@ -1941,10 +1941,13 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def _gcd_zero(self, other):
         one, zero = self.ring.one, self.ring.zero
-        if other.is_nonnegative:
-            return other, zero, one
+        if self.ring.domain.is_Field:
+            return other.monic(), zero, other.LC
         else:
-            return -other, zero, -one
+            if other.is_nonnegative:
+                return other, zero, one
+            else:
+                return -other, zero, -one
 
     def _gcd(self, other):
         ring = self.ring

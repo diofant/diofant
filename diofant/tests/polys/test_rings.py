@@ -1177,6 +1177,11 @@ def test_PolyElement_gcd():
     with using(gcd_aa_method='modgcd'):
         assert f.gcd(g) == g
 
+    F, x = field('x', QQ)
+    R, t = ring('t', F)
+
+    assert R(x).gcd(R(0)) == R.dmp_gcd(R(x), R(0)) == 1
+
 
 def test_PolyElement_terms_gcd():
     R, x, y = ring('x y', ZZ)
