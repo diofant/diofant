@@ -11,6 +11,9 @@ from .simpledomain import SimpleDomain
 __all__ = 'RealField',
 
 
+_reals_cache = {}
+
+
 class RealField(Field, CharacteristicZero, SimpleDomain):
     """Real numbers up to the given precision. """
 
@@ -42,14 +45,24 @@ class RealField(Field, CharacteristicZero, SimpleDomain):
     def tolerance(self):
         return self._context.tolerance
 
-    def __init__(self, prec=_default_precision, dps=None, tol=None):
+    def __new__(cls, prec=_default_precision, dps=None, tol=None):
         context = MPContext(prec, dps, tol)
-        context._parent = self
-        self._context = context
 
-        self.dtype = context.mpf
-        self.zero = self.dtype(0)
-        self.one = self.dtype(1)
+        obj = super().__new__(cls)
+
+        try:
+            obj.dtype = _reals_cache[(context.prec, context.tolerance)]
+        except KeyError:
+            _reals_cache[(context.prec, context.tolerance)] = obj.dtype = context.mpf
+
+        context._parent = obj
+        obj._context = context
+        obj._hash = hash((cls.__name__, obj.dtype, context.prec, context.tolerance))
+
+        obj.zero = obj.dtype(0)
+        obj.one = obj.dtype(1)
+
+        return obj
 
     def __eq__(self, other):
         return (isinstance(other, RealField)
@@ -57,7 +70,7 @@ class RealField(Field, CharacteristicZero, SimpleDomain):
                 and self.tolerance == other.tolerance)
 
     def __hash__(self):
-        return hash((self.__class__.__name__, self.dtype, self.precision, self.tolerance))
+        return self._hash
 
     def to_expr(self, element):
         """Convert ``element`` to Diofant number. """
