@@ -1745,7 +1745,10 @@ class PolyElement(DomainElement, CantSympify, dict):
         cont = self.content()
         if self.ring.domain.is_negative(self.LC):
             cont = -cont
-        return cont, self.quo_ground(cont)
+        prim = self.copy()
+        if not prim.is_zero:
+            prim = prim.quo_ground(cont)
+        return cont, prim
 
     def monic(self):
         """Divides all coefficients by the leading coefficient."""
