@@ -345,8 +345,13 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
                 i = self.symbols.index(Symbol(gen))
             except ValueError:
                 raise ValueError("invalid generator: %s" % gen)
+        elif isinstance(gen, Expr):
+            try:
+                i = self.symbols.index(gen)
+            except ValueError:
+                raise ValueError("invalid generator: %s" % gen)
         else:
-            raise ValueError("expected a polynomial generator, an integer, a string or None, got %s" % gen)
+            raise ValueError("expected a polynomial generator, an integer, a string, an expression or None, got %s" % gen)
 
         return i
 

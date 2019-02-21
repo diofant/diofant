@@ -134,6 +134,10 @@ def test_PolynomialRing_index():
     assert R.index('z') == 2
     pytest.raises(ValueError, lambda: R.index('t'))
 
+    assert R.index(Symbol('x')) == 0
+    assert R.index(Symbol('z')) == 2
+    pytest.raises(ValueError, lambda: R.index(Symbol('t')))
+
 
 def test_PolynomialRing_is_():
     R = QQ.poly_ring("x")
