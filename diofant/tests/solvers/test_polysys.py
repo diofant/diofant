@@ -2,7 +2,8 @@
 
 import pytest
 
-from diofant import I, Matrix, Mul, Poly, Rational, flatten, sqrt, symbols
+from diofant import (I, Matrix, Mul, Poly, Rational, flatten, ordered, sqrt,
+                     symbols)
 from diofant.abc import n, t, x, y, z
 from diofant.polys import ComputationFailed, PolynomialError, RootOf
 from diofant.solvers.polysys import solve_linear_system, solve_poly_system
@@ -286,3 +287,23 @@ def test_sympyissue_12345():
            {x: sqrt(2)*r3**3/2 - 3*sqrt(2)*r3**2/2 - 2*r3 + sqrt(2)*r3/2 + 1,
             y: r3}]
     assert solve_poly_system(eqs, x, y) == sol
+
+
+@pytest.mark.slow
+def test_sympyissue_16038():
+    sys1 = [(2*x - 8*y)**2 + (5*x - 10*y)**2 + (10*x - 7*y)**2 - 437,
+            (7*y - 10*z)**2 + (8*y - z)**2 + (10*y - 9*z)**2 - 474,
+            (-10*x + 10*z)**2 + (-5*x + 9*z)**2 + (-2*x + z)**2 - 885]
+
+    sys2 = [(2.0*x - 8*y)**2 + (5*x - 10*y)**2 + (10*x - 7*y)**2 - 437,
+            (7*y - 10*z)**2 + (8*y - z)**2 + (10*y - 9*z)**2 - 474,
+            (-10*x + 10*z)**2 + (-5*x + 9*z)**2 + (-2*x + z)**2 - 885]
+
+    sols1 = solve_poly_system(sys1, (x, y, z))
+    sols2 = solve_poly_system(sys2, (x, y, z))
+
+    assert len(sols1) == len(sols2) == 8
+    assert {x: -1, y: -2, z: -3} in sols1
+    assert {x: +1, y: +2, z: +3} in sols2
+    assert (list(ordered([{k: v.n(7) for k, v in _.items()} for _ in sols1])) ==
+            list(ordered([{k: v.n(7) for k, v in _.items()} for _ in sols2])))
