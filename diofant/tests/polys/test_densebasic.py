@@ -577,7 +577,10 @@ def test_dmp_eject():
     assert dmp_eject([[[1]]], 2, R) == [R(1)]
     assert dmp_eject([[[[1]]]], 3, R) == [[R(1)]]
 
-    assert dmp_eject([[[1]], [[2], [3, 4]]], 2, R) == [R(1), 2*x + 3*y + 4]
+    f = [[[1]], [[2], [3, 4]]]
+
+    assert dmp_eject(f, 2, R) == [R(1), 2*x + 3*y + 4]
+    assert dmp_eject(f, 2, R, front=True) == [R(3), x + 2*y + 4]
 
     f = [3*x**2 + 7*x*y + 5*y**2, 2*x, R(0), x*y**2 + 11]
     g = [[[3], [7, 0], [5, 0, 0]], [[2], []], [[]], [[1, 0, 0], [11]]]

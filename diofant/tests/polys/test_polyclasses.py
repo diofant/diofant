@@ -4,7 +4,9 @@ import pytest
 
 from diofant.domains import QQ, ZZ
 from diofant.polys.polyclasses import DMP
-from diofant.polys.polyerrors import ExactQuotientFailed, PolynomialError
+from diofant.polys.polyerrors import (ExactQuotientFailed,
+                                      MultivariatePolynomialError,
+                                      PolynomialError)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -258,7 +260,7 @@ def test_DMP_functionality():
     pytest.raises(PolynomialError, lambda: f.all_coeffs())
 
     pytest.raises(ValueError, lambda: f.shift(1))
-    pytest.raises(PolynomialError, lambda: f.intervals())
+    pytest.raises(MultivariatePolynomialError, lambda: f.intervals())
     pytest.raises(PolynomialError, lambda: f.refine_root(1, 2))
 
     assert f.integrate() == DMP([[QQ(1, 3)], [QQ(1, 1)], [QQ(3, 1)], []], QQ)

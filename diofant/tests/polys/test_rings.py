@@ -134,6 +134,10 @@ def test_PolynomialRing_index():
     assert R.index('z') == 2
     pytest.raises(ValueError, lambda: R.index('t'))
 
+    assert R.index(Symbol('x')) == 0
+    assert R.index(Symbol('z')) == 2
+    pytest.raises(ValueError, lambda: R.index(Symbol('t')))
+
 
 def test_PolynomialRing_is_():
     R = QQ.poly_ring("x")
@@ -994,6 +998,8 @@ def test_PolyElement_monic():
 def test_PolyElement_primitive():
     R, x, y = ring('x y', QQ)
 
+    assert R(0).primitive() == (QQ(0), R(0))
+
     f = -3*x/4 + y + QQ(11, 8)
 
     assert f.primitive() == (QQ(-1, 8), 6*x - 8*y - 11)
@@ -1176,6 +1182,11 @@ def test_PolyElement_gcd():
     assert f.gcd(g) == g
     with using(gcd_aa_method='modgcd'):
         assert f.gcd(g) == g
+
+    F, x = field('x', QQ)
+    R, t = ring('t', F)
+
+    assert R(x).gcd(R(0)) == R.dmp_gcd(R(x), R(0)) == 1
 
 
 def test_PolyElement_terms_gcd():
@@ -1499,7 +1510,14 @@ def test_PolyElement_drop():
 
     f = z**2*x + 2*z*y + x*z + 1
     R2 = R.drop_to_ground(z)
-    assert f.drop_to_ground(z) == z**2*R2.x + 2*z*R2.y + z*R2.x + 1
+    D = R2.domain
+    assert f.drop_to_ground(z) == D.z**2*R2.x + 2*D.z*R2.y + D.z*R2.x + 1
+    R12 = R.drop_to_ground(y, z)
+    D = R12.domain
+    assert f.drop_to_ground(y, z) == R12.x*(D.z**2 + D.z) + 2*D.y*D.z + 1
+    R02 = R.drop_to_ground(x, z)
+    D = R02.domain
+    assert f.drop_to_ground(x, z) == R02.y*2*D.z + D.x*D.z**2 + D.x*D.z + 1
 
     R3 = R.drop(y, z)
     assert R3 == ZZ.poly_ring('x')

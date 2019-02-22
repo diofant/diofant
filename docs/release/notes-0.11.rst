@@ -41,3 +41,6 @@ These Sympy issues also were addressed:
 * :sympyissue:`11642` Geometric sum doesn't evaluate with float base
 * :sympyissue:`15984` Value error in limit
 * :sympyissue:`7337` Wrong integration result
+* :sympyissue:`11600` re and im should work for matrix expressions
+* :sympyissue:`16038` solve_poly_system works with integers but not floats
+* :sympyissue:`15553` rsolve can not solve this kind of recurrences

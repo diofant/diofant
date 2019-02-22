@@ -329,6 +329,11 @@ def test_dmp_ground_trunc():
     assert R.dmp_ground_trunc(6*x**5 + 5*x**4 + 4*x**3 + 3*x**2 +
                               2*x + 1, ZZ(3)) == -x**4 + x**3 - x + 1
 
+    R, x = ring('x', QQ)
+
+    assert R.dmp_ground_trunc(x**5 + 2*x**4 + 3*x**3 + 4*x**2 +
+                              5*x + 6, ZZ(3)) == x**5 + 2*x**4 + x**2 + 2*x
+
     R, x, y, z = ring('x y z', ZZ)
 
     f = f_polys()[0]

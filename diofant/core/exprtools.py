@@ -1,12 +1,12 @@
 """Tools for manipulating of large commutative expressions. """
 
+import numbers
 from collections import defaultdict
 
 from ..utilities.iterables import common_prefix, common_suffix, variations
 from .add import Add
 from .basic import Basic, preorder_traversal
-from .compatibility import (DIOFANT_INTS, default_sort_key, is_sequence,
-                            iterable, ordered)
+from .compatibility import default_sort_key, is_sequence, iterable, ordered
 from .containers import Dict, Tuple
 from .coreerrors import NonCommutativeExpression
 from .expr import Expr
@@ -19,7 +19,7 @@ from .sympify import sympify
 
 
 def _isnumber(i):
-    return isinstance(i, (DIOFANT_INTS, float)) or i.is_Number
+    return isinstance(i, (numbers.Integral, float)) or i.is_Number
 
 
 def decompose_power(expr):
@@ -99,7 +99,7 @@ class Factors:
         performed: powers of -1 and I are made canonical.
 
         """
-        if isinstance(factors, (DIOFANT_INTS, float)):
+        if isinstance(factors, (numbers.Integral, float)):
             factors = sympify(factors)
 
         if isinstance(factors, Factors):
@@ -464,7 +464,7 @@ class Factors:
             other = other.as_expr()
             if other.is_Integer:
                 other = int(other)
-        if isinstance(other, DIOFANT_INTS) and other >= 0:
+        if isinstance(other, numbers.Integral) and other >= 0:
             factors = {}
 
             if other:
@@ -645,7 +645,7 @@ class Term:
             return NotImplemented
 
     def __pow__(self, other):
-        if isinstance(other, DIOFANT_INTS):
+        if isinstance(other, numbers.Integral):
             return self.pow(other)
         else:
             return NotImplemented

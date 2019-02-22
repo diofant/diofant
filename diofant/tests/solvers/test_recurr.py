@@ -267,3 +267,10 @@ def test_diofantissue_456():
 def test_diofantissue_13629():
     assert rsolve(y(n + 1) - (y(n) + (n + 1)**2),
                   y(n), {y(0): 0}) == n*(2*n**2 + 3*n + 1)/6
+
+
+def test_sympyissue_15553():
+    assert rsolve(Eq(y(n + 1), 2*y(n) + n**2 + 1),
+                  y(n)) == 2**n*C0 - n**2 - 2*n - 4
+    assert rsolve(Eq(y(n + 1), 2*y(n) + n**2 + 1), y(n),
+                  {y(1): 0}) == 7*2**n/2 - n**2 - 2*n - 4

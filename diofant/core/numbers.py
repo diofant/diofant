@@ -2,14 +2,13 @@ import decimal
 import fractions
 import math
 import numbers
-import re
 
 import mpmath
 import mpmath.libmp as mlib
 
 from ..utilities import filldedent
 from .cache import cacheit
-from .compatibility import DIOFANT_INTS, GROUND_TYPES, HAS_GMPY, as_int, gmpy
+from .compatibility import GROUND_TYPES, HAS_GMPY, as_int, gmpy
 from .containers import Tuple
 from .decorators import _sympifyit
 from .expr import AtomicExpr, Expr
@@ -88,24 +87,18 @@ def mpf_norm(mpf, prec):
     return rv
 
 
-def _decimal_to_Rational_prec(dec):
-    """Convert an ordinary decimal instance to a Rational."""
-    assert dec.is_finite()
-    s, d, e = dec.as_tuple()
-    prec = len(d)
-    if e >= 0:  # it's an integer
-        rv = Integer(dec)
+def _str_to_Decimal_dps(s):
+    """Convert a string to pair of a Decimal instance and its precision."""
+    try:
+        num = decimal.Decimal(s)
+    except decimal.InvalidOperation:
+        raise ValueError('string-float not recognized: %s' % s)
     else:
-        s = (-1)**s
-        d = sum(di*10**i for i, di in enumerate(reversed(d)))
-        rv = Rational(s*d, 10**-e)
-    return rv, prec
-
-
-def _literal_float(f):
-    """Return True if n can be interpreted as a floating point number."""
-    pat = r"[-+]?((\d*\.\d+)|(\d+\.?))(eE[-+]?\d+)?"
-    return bool(re.match(pat, f))
+        dps = len(num.as_tuple().digits)
+        if num.is_finite():
+            if num.as_integer_ratio()[1] == 1 and '.' not in s:
+                dps = max(dps, num.adjusted() + 1)
+        return num, dps
 
 
 @cacheit
@@ -295,7 +288,7 @@ class Number(AtomicExpr):
 
         if isinstance(obj, Number):
             return obj
-        if isinstance(obj, DIOFANT_INTS):
+        if isinstance(obj, numbers.Integral):
             return Integer(obj)
         if isinstance(obj, tuple) and len(obj) == 2:
             return Rational(*obj)
@@ -473,7 +466,7 @@ class Float(Number):
     It may be preferable to enter high-precision decimal numbers
     as strings:
 
-    Float('1.23456789123456789')
+    >>> Float('1.23456789123456789')
     1.23456789123456789
 
     The desired number of digits can also be specified:
@@ -483,12 +476,9 @@ class Float(Number):
     >>> Float(100, 4)
     100.0
 
-    Float can automatically count significant figures if a null string
-    is sent for the precision; space are also allowed in the string. (Auto-
-    counting is only allowed for strings and ints).
+    Float can automatically count significant figures if a null string is sent
+    for the precision. (Auto-counting is only allowed for strings and ints).
 
-    >>> Float('123 456 789 . 123 456', '')
-    123456789.123456
     >>> Float('12e-3', '')
     0.012
     >>> Float(3, '')
@@ -582,74 +572,34 @@ class Float(Number):
     is_Float = True
 
     def __new__(cls, num, dps=None):
-        if isinstance(num, str):
-            num = num.replace(' ', '')
-            if num.startswith('.') and len(num) > 1:
-                num = '0' + num
-            elif num.startswith('-.') and len(num) > 2:
-                num = '-0.' + num[2:]
-        elif isinstance(num, float) and num == 0:
-            num = '0'
-        elif isinstance(num, (DIOFANT_INTS, Integer)):
-            num = str(num)  # faster than mlib.from_int
-        elif num is oo or num == mlib.finf:
+        if num is oo or num == mlib.finf:
             num = '+inf'
         elif num == -oo or num == mlib.fninf:
             num = '-inf'
         elif num == nan or num == mlib.fnan:
             num = 'nan'
-        elif isinstance(num, mpmath.mpf):
-            num = num._mpf_
 
         if dps is None:
             dps = 15
             if isinstance(num, Float):
                 return num
-            if isinstance(num, str) and _literal_float(num):
-                try:
-                    Num = decimal.Decimal(num)
-                except decimal.InvalidOperation:
-                    pass
-                else:
-                    isint = '.' not in num
-                    num, dps = _decimal_to_Rational_prec(Num)
-                    if num.is_Integer and isint:
-                        dps = max(dps, len(str(num).lstrip('-')))
-                    dps = max(15, dps)
+            elif isinstance(num, (str, numbers.Integral)):
+                num, dps = _str_to_Decimal_dps(str(num))
+                dps = max(15, dps)
         elif dps == '':
-            if not isinstance(num, str):
+            if not isinstance(num, (str, numbers.Integral)):
                 raise ValueError('The null string can only be used when '
                                  'the number to Float is passed as a string or an integer.')
-            ok = None
-            if _literal_float(num):
-                try:
-                    Num = decimal.Decimal(num)
-                except decimal.InvalidOperation:
-                    pass
-                else:
-                    isint = '.' not in num
-                    num, dps = _decimal_to_Rational_prec(Num)
-                    if num.is_Integer and isint:
-                        dps = max(dps, len(str(num).lstrip('-')))
-                    ok = True
-            if ok is None:
-                raise ValueError('string-float not recognized: %s' % num)
+            num, dps = _str_to_Decimal_dps(str(num))
 
         prec = mlib.libmpf.dps_to_prec(dps)
-        if isinstance(num, float):
-            _mpf_ = mlib.from_float(num, prec, rnd)
-        elif isinstance(num, str):
-            _mpf_ = mlib.from_str(num, prec, rnd)
-        elif isinstance(num, decimal.Decimal):
+
+        if isinstance(num, decimal.Decimal):
             _mpf_ = mlib.from_Decimal(num, prec, rnd)
-        elif isinstance(num, Rational):
-            _mpf_ = mlib.from_rational(num.numerator, num.denominator, prec, rnd)
-        elif isinstance(num, Float):
-            _mpf_ = num._mpf_
-            if prec < num._prec:
-                _mpf_ = mpf_norm(_mpf_, prec)
+        elif isinstance(num, Number):
+            _mpf_ = num._as_mpf_val(prec)
         else:
-            _mpf_ = mpmath.mpf(num)._mpf_
+            _mpf_ = mpmath.mpf(num, prec=prec, rounding=rnd)._mpf_
 
         # special cases
         if _mpf_ == mlib.fzero:
@@ -1081,10 +1031,8 @@ class Rational(Number):
     @_sympifyit('other', NotImplemented)
     def __truediv__(self, other):
         if isinstance(other, Rational):
-            if self.numerator and other.numerator == 0:
-                return zoo
-            else:
-                return Rational(self.numerator*other.denominator, self.denominator*other.numerator)
+            n, d = other.numerator, other.denominator
+            return Rational(self.numerator*d, self.denominator*n)
         else:
             return other.__rtruediv__(self)
 

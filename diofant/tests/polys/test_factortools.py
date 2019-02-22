@@ -663,6 +663,7 @@ def test_dmp_irreducible_p():
 
     assert dmp_irreducible_p((x**2 + x + 1).to_dense(), 0, ZZ) is True
     assert dmp_irreducible_p((x**2 + 2*x + 1).to_dense(), 0, ZZ) is False
+    assert dmp_irreducible_p((x**2 - 1).to_dense(), 0, ZZ) is False
 
     assert (x**2 + x + 1).is_irreducible is True
     assert (x**2 + 2*x + 1).is_irreducible is False

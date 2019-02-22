@@ -3,10 +3,11 @@ Integer factorization
 """
 
 import math
+import numbers
 import random
 
 from ..core import Function, Mul, Pow, Rational, S, integer_nthroot, sympify
-from ..core.compatibility import DIOFANT_INTS, as_int
+from ..core.compatibility import as_int
 from ..core.evalf import bitcount
 from .generate import nextprime, primerange, sieve
 from .primetest import isprime
@@ -197,7 +198,7 @@ def multiplicity(p, n):
     try:
         p, n = as_int(p), as_int(n)
     except ValueError:
-        if all(isinstance(i, (DIOFANT_INTS, Rational)) for i in (p, n)):
+        if all(isinstance(i, (numbers.Integral, Rational)) for i in (p, n)):
             p, n = Rational(p), Rational(n)
             if p.denominator == 1:
                 if n.numerator == 1:

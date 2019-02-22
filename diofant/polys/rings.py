@@ -345,8 +345,13 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
                 i = self.symbols.index(Symbol(gen))
             except ValueError:
                 raise ValueError("invalid generator: %s" % gen)
+        elif isinstance(gen, Expr):
+            try:
+                i = self.symbols.index(gen)
+            except ValueError:
+                raise ValueError("invalid generator: %s" % gen)
         else:
-            raise ValueError("expected a polynomial generator, an integer, a string or None, got %s" % gen)
+            raise ValueError("expected a polynomial generator, an integer, a string, an expression or None, got %s" % gen)
 
         return i
 
@@ -680,29 +685,32 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             return poly
 
-    def _drop_to_ground(self, gen):
+    def _drop_to_ground(self, *gens):
         ring = self.ring
-        i = ring.index(gen)
 
         symbols = list(ring.symbols)
-        symbol = symbols[i]
-        del symbols[i]
-        return i, ring.clone(symbols=symbols, domain=ring.clone([symbol]))
+        indexes = [ring.index(gen) for gen in gens]
 
-    def drop_to_ground(self, gen):
+        dropped = [symbols[i] for i in indexes]
+        symbols = [symbols[i] for i in range(ring.ngens) if i not in indexes]
+
+        return indexes, ring.clone(symbols=symbols, domain=ring.clone(dropped))
+
+    def drop_to_ground(self, *gens):
         if self.ring.is_univariate:
             raise ValueError("can't drop only generator to ground")
 
-        i, ring = self._drop_to_ground(gen)
+        indexes, ring = self._drop_to_ground(*gens)
         poly = ring.zero
-        gen = ring.domain.gens[0]
+        gens = ring.domain.gens[0:len(indexes)]
 
         for monom, coeff in self.items():
-            mon = monom[:i] + monom[i+1:]
+            mon = tuple(monom[i] for i in range(self.ring.ngens) if i not in indexes)
+            gc = functools.reduce(operator.mul, [x**n for x, n in zip(gens, (monom[i] for i in indexes))])
             if mon not in poly:
-                poly[mon] = (gen**monom[i]).mul_ground(coeff)
+                poly[mon] = gc.mul_ground(coeff)
             else:
-                poly[mon] += (gen**monom[i]).mul_ground(coeff)
+                poly[mon] += gc.mul_ground(coeff)
 
         return poly
 
@@ -1742,7 +1750,10 @@ class PolyElement(DomainElement, CantSympify, dict):
         cont = self.content()
         if self.ring.domain.is_negative(self.LC):
             cont = -cont
-        return cont, self.quo_ground(cont)
+        prim = self.copy()
+        if not prim.is_zero:
+            prim = prim.quo_ground(cont)
+        return cont, prim
 
     def monic(self):
         """Divides all coefficients by the leading coefficient."""
@@ -1938,10 +1949,13 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def _gcd_zero(self, other):
         one, zero = self.ring.one, self.ring.zero
-        if other.is_nonnegative:
-            return other, zero, one
+        if self.ring.domain.is_Field:
+            return other.monic(), zero, other.LC
         else:
-            return -other, zero, -one
+            if other.is_nonnegative:
+                return other, zero, one
+            else:
+                return -other, zero, -one
 
     def _gcd(self, other):
         ring = self.ring

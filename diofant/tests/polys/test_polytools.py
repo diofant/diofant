@@ -2411,6 +2411,7 @@ def test_intervals():
 
     pytest.raises(MultivariatePolynomialError,
                   lambda: intervals([x**2 - y, x*y + 1]))
+    pytest.raises(MultivariatePolynomialError, lambda: Poly(x**2 - y).intervals())
     pytest.raises(ValueError, lambda: intervals([x**2, x**4], eps=-0.1))
 
     f = Poly((2*x/5 - Rational(17, 3))*(4*x + Rational(1, 257)))

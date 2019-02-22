@@ -2,7 +2,7 @@ import pytest
 
 from diofant.abc import t, x
 from diofant.core import Add, Eq, Integer, Mul, Rational, symbols
-from diofant.functions import cos, sin, sqrt, transpose
+from diofant.functions import cos, re, sin, sqrt, transpose
 from diofant.matrices import (Adjoint, Identity, ImmutableMatrix, Inverse,
                               MatAdd, MatMul, MatPow, Matrix, MatrixExpr,
                               MatrixSymbol, ShapeError, Transpose, ZeroMatrix)
@@ -261,3 +261,7 @@ def test_diofantissue_469():
     B = MatrixSymbol("B", n, n)
     expr = Eq(A, B)
     assert simplify(expr) == expr
+
+
+def test_sympyissue_11600():
+    re(A)  # not raises

@@ -7,12 +7,14 @@ Factorials, binomial coefficients and related functions are located in
 the separate 'factorials' module.
 """
 
+import numbers
+
 from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
 
 from ...core import (Add, Dummy, E, Expr, Function, GoldenRatio, Integer,
                      Rational, S, cacheit, expand_mul, nan, oo, pi, prod)
-from ...core.compatibility import DIOFANT_INTS, as_int
+from ...core.compatibility import as_int
 from ...utilities.memoization import recurrence_memo
 from ..elementary.exponential import log
 from ..elementary.integers import floor
@@ -1080,7 +1082,7 @@ def _nP(n, k=None, replacement=False):
 
     if k == 0:
         return 1
-    if isinstance(n, DIOFANT_INTS):  # n different items
+    if isinstance(n, numbers.Integral):  # n different items
         # assert n >= 0
         if k is None:
             return sum(_nP(n, i, replacement) for i in range(n + 1))
@@ -1247,7 +1249,7 @@ def nC(n, k=None, replacement=False):
     """
     from .factorials import binomial
 
-    if isinstance(n, DIOFANT_INTS):
+    if isinstance(n, numbers.Integral):
         if k is None:
             if not replacement:
                 return 2**n
@@ -1494,7 +1496,7 @@ def nT(n, k=None):
     """
     from ...utilities.enumerative import MultisetPartitionTraverser
 
-    if isinstance(n, DIOFANT_INTS):
+    if isinstance(n, numbers.Integral):
         # assert n >= 0
         # all the same
         if k is None:
