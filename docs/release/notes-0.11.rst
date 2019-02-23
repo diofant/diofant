@@ -7,6 +7,8 @@ Not Released Yet
 New features
 ============
 
+* Added :func:`~diofant.ntheory.residue_ntheory.discrete_log` to compute discrete logarithms, see :pull:`785`.  Thanks to Gabriel Orisaka.
+
 Major changes
 =============
 
@@ -22,6 +24,8 @@ Minor changes
 =============
 
 * Support truncation for elements of :class:`~diofant.domains.RealAlgebraicField` to :class:`int`, see :pull:`788`.
+* :class:`~diofant.matrices.Matrix`'s and :class:`~diofant.tensor.array.Array`'s support symbolic indexes, see :pull:`785`.  Thanks to Francesco Bonazzi.
+* Support :class:`~diofant.polys.rings.PolynomialRing`'s without generators, see :pull:`785`.  Thanks to Kalevi Suominen.
 
 Developer changes
 =================
@@ -44,3 +48,31 @@ These Sympy issues also were addressed:
 * :sympyissue:`11600` re and im should work for matrix expressions
 * :sympyissue:`16038` solve_poly_system works with integers but not floats
 * :sympyissue:`15553` rsolve can not solve this kind of recurrences
+* :sympyissue:`11581` conjugate of real expression should not change expression
+* :sympyissue:`11976` Typo in ellipse.py
+* :sympyissue:`11275` LaTeX printer inconsistent with pretty printer
+* :sympyissue:`11841` Function('gamma') pretty prints as Γ
+* :sympyissue:`11926` ccode does not accept user_functions for Max and Min
+* :sympyissue:`11855` DiracDelta function is zero for nonzero arguments
+* :sympyissue:`11955` diophantine gives wrong solution for -4*x**2+4*x*y-y**2+2*x-3
+* :sympyissue:`11502` Discrete logarithms
+* :sympyissue:`11435` str printing of logic expressions should use operators
+* :sympyissue:`12200` coeff docstring is wrong
+* :sympyissue:`9123` apart drops term
+* :sympyissue:`12177` Wrong result with apart Wrong Result
+* :sympyissue:`8129` The probability function does not handle expressions like b>=b
+* :sympyissue:`9983` Product(1 + 1/n**(S(2)/3), (n, 1, oo)).doit() raise RunTimeError
+* :sympyissue:`11726` pde_separate does not allow expressions as input
+* :sympyissue:`11981` powsimp() fails with noncommutative variables
+* :sympyissue:`12092` evalf does not call _imp_ recursively
+* :sympyissue:`10472` pprint should align the middle of the matrix to the baseline?
+* :sympyissue:`11959` diophantine gives wrong solution for -4*x**2+4*x*y-y**2+2*x-3
+* :sympyissue:`11944` matrix vstack/hstack can fail with immutable matrix as first argument
+* :sympyissue:`11732` Fails operators between Interval and some S.Sets
+* :sympyissue:`12178` Empty intersection should be UniversalSet
+* :sympyissue:`10681` TypeError: 'Float' object cannot be interpreted as an integer from integrate(r**2*(R**2-r**2)**0.5, r)
+* :sympyissue:`11078` TypeError: 'Float' object cannot be interpreted as an integer from integrate((6-x*x)**(1.5))
+* :sympyissue:`11877` integrate(log(0.5-x), (x, 0, 0.5)) wrongly produces imaginary part
+* :sympyissue:`7337` Wrong integration result
+* :sympyissue:`10211` integrate((1/sqrt(((y-x)**2 + h**2))**3), (x,0,w), (y,0,w)) is wrong
+* :sympyissue:`11806` Incorrectly evaluating integral
