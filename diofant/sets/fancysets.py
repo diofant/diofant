@@ -1,4 +1,4 @@
-from ..core import Basic, Integer, Lambda, Rational, S, oo
+from ..core import Basic, Expr, Integer, Lambda, Rational, S, oo
 from ..core.compatibility import as_int
 from ..core.singleton import Singleton
 from ..core.sympify import converter, sympify
@@ -46,7 +46,9 @@ class Naturals(Set, metaclass=Singleton):
                 S.Integers, other, Interval(self._inf, oo, False, True))
 
     def _contains(self, other):
-        if other.is_positive and other.is_integer:
+        if not isinstance(other, Expr):
+            return S.false
+        elif other.is_positive and other.is_integer:
             return S.true
         elif other.is_integer is False or other.is_positive is False:
             return S.false
@@ -79,7 +81,9 @@ class Naturals0(Naturals):
     _inf = S.Zero
 
     def _contains(self, other):
-        if other.is_integer and other.is_nonnegative:
+        if not isinstance(other, Expr):
+            return S.false
+        elif other.is_integer and other.is_nonnegative:
             return S.true
         elif other.is_integer is False or other.is_nonnegative is False:
             return S.false
@@ -128,7 +132,9 @@ class Integers(Set, metaclass=Singleton):
             return s.intersection(other)  # take out endpoints if open interval
 
     def _contains(self, other):
-        if other.is_integer:
+        if not isinstance(other, Expr):
+            return S.false
+        elif other.is_integer:
             return S.true
         elif other.is_integer is False:
             return S.false

@@ -428,10 +428,10 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             return
 
     def _from_FractionField(self, a, K0):
-        denom = a.denominator
+        q, r = a.numerator.div(a.denominator)
 
-        if denom.is_ground:
-            return self.convert(a.numerator/denom, K0.ring)
+        if r.is_zero:
+            return self.convert(q, K0.field.ring)
 
     @property
     def field(self):

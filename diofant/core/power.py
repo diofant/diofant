@@ -629,6 +629,8 @@ class Pow(Expr):
             return self.base**adjoint(self.exp)
 
     def _eval_conjugate(self):
+        if self.is_extended_real:
+            return self
         from ..functions.elementary.complexes import conjugate as c
         i, p = self.exp.is_integer, self.base.is_positive
         if i:

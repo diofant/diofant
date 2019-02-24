@@ -437,12 +437,12 @@ def test_sympyissue_6540_6552():
 
 
 def test_sympyissue_6046():
-    assert str(sympify("Q & C", locals=_clash1)) == 'And(C, Q)'
+    assert str(sympify("Q & C", locals=_clash1)) == 'C & Q'
     assert str(sympify('pi(x)', locals=_clash2)) == 'pi(x)'
     assert str(sympify('pi(C, Q)', locals=_clash)) == 'pi(C, Q)'
     locals = {}
     exec("from diofant.abc import S, O", locals)
-    assert str(sympify('O&S', locals)) == 'And(O, S)'
+    assert str(sympify('O&S', locals)) == 'O & S'
 
 
 def test_sympyissue_8821_highprec_from_str():

@@ -40,6 +40,7 @@ from .compatibility import (as_int, default_sort_key, is_sequence, iterable,
                             ordered)
 from .containers import Dict, Tuple
 from .decorators import _sympifyit
+from .evalf import PrecisionExhausted
 from .evaluate import global_evaluate
 from .expr import AtomicExpr, Expr
 from .logic import fuzzy_and
@@ -424,8 +425,8 @@ class Function(Application, Expr):
             func = getattr(mpmath, fname)
         except (AttributeError, KeyError):
             try:
-                return Float(self._imp_(*self.args), prec)
-            except (AttributeError, TypeError, ValueError):
+                return Float(self._imp_(*[i.evalf(prec) for i in self.args]), prec)
+            except (AttributeError, TypeError, ValueError, PrecisionExhausted):
                 return
 
         # Convert all args to mpf or mpc

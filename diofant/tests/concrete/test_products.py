@@ -375,6 +375,11 @@ def test_reorder_limit():
                   lambda: Product(x**2, (x, a, b), (y, x, d)).reorder_limit(1, 0))
 
 
+def test_sympyissue_9983():
+    p = Product(1 + 1/n**Rational(2, 3), (n, 1, oo))
+    assert p == p.doit()
+
+
 def test_rewrite_Sum():
     assert Product(1 - 1/(4*k**2), (k, 1, oo)).rewrite(Sum) == \
         exp(Sum(log(1 - 1/(4*k**2)), (k, 1, oo)))

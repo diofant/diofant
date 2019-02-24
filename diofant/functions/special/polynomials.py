@@ -843,7 +843,7 @@ class hermite(OrthogonalPolynomial):
     hermite(n, x) gives the nth Hermite polynomial in x, `H_n(x)`
 
     The Hermite polynomials are orthogonal on `(-\infty, \infty)`
-    with respect to the weight `\exp\left(-\frac{x^2}{2}\right)`.
+    with respect to the weight `\exp\left(-x^2\right)`.
 
     Examples
     ========

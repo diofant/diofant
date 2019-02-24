@@ -23,7 +23,6 @@ def tensorproduct(*args):
     Examples
     ========
 
-    >>> from diofant.tensor.array import Array
     >>> A = Array([[1, 2], [3, 4]])
     >>> B = Array([x, y])
     >>> tensorproduct(A, B)
@@ -71,7 +70,6 @@ def tensorcontraction(array, *contraction_axes):
     Examples
     ========
 
-    >>> from diofant.tensor.array import Array
     >>> tensorcontraction(eye(3), (0, 1))
     3
     >>> A = Array(range(18), (3, 2, 3))
@@ -215,7 +213,6 @@ def permutedims(expr, perm):
     Examples
     ========
 
-    >>> from diofant.tensor.array import Array
     >>> a = Array([[x, y, z], [t, sin(x), 0]])
     >>> a
     [[x, y, z], [t, sin(x), 0]]

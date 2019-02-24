@@ -597,7 +597,7 @@ class GreaterThan(_Greater):
     And:
 
     >>> And(x < y, y < z)
-    And(x < y, y < z)
+    (x < y) & (y < z)
 
     """
 

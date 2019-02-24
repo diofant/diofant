@@ -1,10 +1,11 @@
 import collections
 import copy
 
-from ..core import Dict, S
+from ..core import Dict, Expr, S
 from ..core.compatibility import as_int, is_sequence
 from ..core.logic import fuzzy_and
 from ..functions import sqrt
+from ..logic import true
 from ..utilities.iterables import uniq
 from .matrices import MatrixBase, ShapeError, a2idx
 
@@ -74,6 +75,13 @@ class SparseMatrixBase(MatrixBase):
                 i, j = self.key2ij(key)
                 return self._smat.get((i, j), S.Zero)
             except (TypeError, IndexError):
+                if any(isinstance(_, Expr) and not _.is_number for _ in (i, j)):
+                    if ((j < 0) == true) or ((j >= self.shape[1]) == true) or \
+                       ((i < 0) == true) or ((i >= self.shape[0]) == true):
+                        raise ValueError("index out of boundary")
+                    from .expressions.matexpr import MatrixElement
+                    return MatrixElement(self, i, j)
+
                 if isinstance(i, slice):
                     i = range(self.rows)[i]
                 elif is_sequence(i):

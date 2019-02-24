@@ -1,18 +1,20 @@
 import pytest
 
-from diofant.abc import t, x
+from diofant.abc import t, w, x, y, z
 from diofant.core import Add, Eq, Integer, Mul, Rational, symbols
 from diofant.functions import cos, re, sin, sqrt, transpose
 from diofant.matrices import (Adjoint, Identity, ImmutableMatrix, Inverse,
                               MatAdd, MatMul, MatPow, Matrix, MatrixExpr,
-                              MatrixSymbol, ShapeError, Transpose, ZeroMatrix)
+                              MatrixSymbol, ShapeError, SparseMatrix,
+                              Transpose, ZeroMatrix)
+from diofant.matrices.expressions.matexpr import MatrixElement
 from diofant.matrices.expressions.slice import MatrixSlice
 from diofant.simplify import simplify
 
 
 __all__ = ()
 
-n, m, l, k, p = symbols('n m l k p', integer=True)
+n, m, l, k, p, i, j = symbols('n m l k p i j', integer=True)
 A = MatrixSymbol('A', n, m)
 B = MatrixSymbol('B', m, l)
 C = MatrixSymbol('C', n, n)
@@ -220,13 +222,6 @@ def test_MatrixElement_diff():
     assert (A[3, 0]*A[0, 0]).diff(A[0, 0]) == A[3, 0]
 
 
-def test_MatrixElement_doit():
-    u = MatrixSymbol('u', 2, 1)
-    v = ImmutableMatrix([3, 5])
-    assert u[0, 0].subs({u: v}).doit() == v[0, 0]
-    assert u[0, 0].subs({u: v}).doit(deep=False) == v[0, 0]
-
-
 def test_identity_powers():
     M = Identity(n)
     assert MatPow(M, 3).doit() == M**3
@@ -265,3 +260,35 @@ def test_diofantissue_469():
 
 def test_sympyissue_11600():
     re(A)  # not raises
+
+
+def test_MatrixElement_with_values():
+    M = Matrix([[x, y], [z, w]])
+    Mij = M[i, j]
+    assert isinstance(Mij, MatrixElement)
+    Ms = SparseMatrix([[2, 3], [4, 5]])
+    msij = Ms[i, j]
+    assert isinstance(msij, MatrixElement)
+    for oi, oj in [(0, 0), (0, 1), (1, 0), (1, 1)]:
+        assert Mij.subs({i: oi, j: oj}) == M[oi, oj]
+        assert msij.subs({i: oi, j: oj}) == Ms[oi, oj]
+    A = MatrixSymbol("A", 2, 2)
+    assert A[0, 0].subs({A: M}) == x
+    assert A[i, j].subs({A: M}) == M[i, j]
+    assert M[i, j].subs([(M, A)]) == A[i, j]
+
+    assert isinstance(M[3*i - 2, j], MatrixElement)
+    assert M[3*i - 2, j].subs({i: 1, j: 0}) == M[1, 0]
+    assert isinstance(M[i, 0], MatrixElement)
+    assert M[i, 0].subs({i: 0}) == M[0, 0]
+    assert M[0, i].subs({i: 1}) == M[0, 1]
+
+    pytest.raises(ValueError, lambda: M[i, 2])
+    pytest.raises(ValueError, lambda: M[i, -1])
+    pytest.raises(ValueError, lambda: M[2, i])
+    pytest.raises(ValueError, lambda: M[-1, i])
+
+    pytest.raises(ValueError, lambda: Ms[i, 2])
+    pytest.raises(ValueError, lambda: Ms[i, -1])
+    pytest.raises(ValueError, lambda: Ms[2, i])
+    pytest.raises(ValueError, lambda: Ms[-1, i])

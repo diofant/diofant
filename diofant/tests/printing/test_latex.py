@@ -23,7 +23,7 @@ from diofant import (CC, FF, QQ, ZZ, Abs, Add, BlockMatrix, Chi, Ci,
                      log, lowergamma, meijerg, oo, pi, polar_lift, polylog, re,
                      ring, root, sin, sqrt, subfactorial, symbols, tan,
                      totient, true, uppergamma, zeta)
-from diofant.abc import a, b, mu, t, tau, x, y, z
+from diofant.abc import a, b, mu, t, tau, w, x, y, z
 from diofant.combinatorics.permutations import Cycle, Permutation
 from diofant.core.trace import Tr
 from diofant.diffgeom import (CovarDerivativeOp, Differential, Manifold, Patch,
@@ -38,9 +38,13 @@ from diofant.logic.boolalg import And, Or, Xor
 from diofant.matrices import (Adjoint, HadamardProduct, Inverse, Transpose,
                               ZeroMatrix)
 from diofant.parsing.sympy_parser import parse_expr
-from diofant.printing.latex import (LatexPrinter, latex, other_symbols,
+from diofant.printing.latex import (LatexPrinter, greek_letters_set, latex,
+                                    other_symbols, tex_greek_dictionary,
                                     translate)
 from diofant.stats import Die, Exponential, Normal, pspace, where
+from diofant.tensor import (ImmutableDenseNDimArray, ImmutableSparseNDimArray,
+                            MutableDenseNDimArray, MutableSparseNDimArray,
+                            tensorproduct)
 
 
 __all__ = ()
@@ -174,7 +178,14 @@ def test_latex_Float():
 
 def test_latex_symbols():
     Gamma, lmbda, rho = symbols('Gamma, lambda, rho')
-    mass, volume = symbols('mass, volume')
+    tau, Tau, TAU, taU = symbols('tau, Tau, TAU, taU')
+    assert latex(tau) == r"\tau"
+    assert latex(Tau) == "T"
+    assert latex(TAU) == r"\tau"
+    assert latex(taU) == r"\tau"
+    # Check that all capitalized greek letters are handled explicitly
+    capitalized_letters = {l.capitalize() for l in greek_letters_set}
+    assert len(capitalized_letters - set(tex_greek_dictionary.keys())) == 0
     assert latex(Gamma + lmbda) == r"\Gamma + \lambda"
     assert latex(Gamma * lmbda) == r"\Gamma \lambda"
     assert latex(Symbol('q1')) == r"q_{1}"
@@ -776,7 +787,7 @@ def test_latex_Piecewise():
     p = Piecewise((A**2, Eq(A, B)), (A*B, True))
     s = r"\begin{cases} A^{2} & \text{for}\: A = B \\A B & \text{otherwise} \end{cases}"
     assert latex(p) == s
-    assert latex(A*p) == r"A %s" % s
+    assert latex(A*p) == r"A \left(%s\right)" % s
     assert latex(p*A) == r"\left(%s\right) A" % s
 
 
@@ -825,6 +836,45 @@ def test_latex_matrix_with_functions():
                 r')}\end{matrix}\right]')
 
     assert latex(M) == expected
+
+
+def test_latex_NDimArray():
+    for ArrayType in (ImmutableDenseNDimArray, ImmutableSparseNDimArray,
+                      MutableDenseNDimArray, MutableSparseNDimArray):
+        M = ArrayType([[1 / x, y], [z, w]])
+        M1 = ArrayType([1 / x, y, z])
+
+        M2 = tensorproduct(M1, M)
+        M3 = tensorproduct(M, M)
+
+        assert latex(M) == latex(M, mat_str='matrix') == r"\left[\begin{matrix}\frac{1}{x} & y\\z & w\end{matrix}\right]"
+        assert latex(M, mat_delim=None) == r"\begin{matrix}\frac{1}{x} & y\\z & w\end{matrix}"
+        assert latex(M, mode='inline') == r"$\left[\begin{smallmatrix}1 / x & y\\z & w\end{smallmatrix}\right]$"
+        assert latex(M1) == r"\left[\begin{matrix}\frac{1}{x} & y & z\end{matrix}\right]"
+        assert latex(M2) == r"\left[\begin{matrix}" \
+            r"\left[\begin{matrix}\frac{1}{x^{2}} & \frac{y}{x}\\\frac{z}{x} & \frac{w}{x}\end{matrix}\right] & " \
+            r"\left[\begin{matrix}\frac{y}{x} & y^{2}\\y z & w y\end{matrix}\right] & " \
+            r"\left[\begin{matrix}\frac{z}{x} & y z\\z^{2} & w z\end{matrix}\right]" \
+            r"\end{matrix}\right]"
+        assert latex(M3) == r"""\left[\begin{matrix}"""\
+            r"""\left[\begin{matrix}\frac{1}{x^{2}} & \frac{y}{x}\\\frac{z}{x} & \frac{w}{x}\end{matrix}\right] & """\
+            r"""\left[\begin{matrix}\frac{y}{x} & y^{2}\\y z & w y\end{matrix}\right]\\"""\
+            r"""\left[\begin{matrix}\frac{z}{x} & y z\\z^{2} & w z\end{matrix}\right] & """\
+            r"""\left[\begin{matrix}\frac{w}{x} & w y\\w z & w^{2}\end{matrix}\right]"""\
+            r"""\end{matrix}\right]"""
+        assert latex(ArrayType()) == r"\left[\begin{matrix}\end{matrix}\right]"
+
+        Mrow = ArrayType([[x, y, 1/z]])
+        Mcolumn = ArrayType([[x], [y], [1/z]])
+        Mcol2 = ArrayType([Mcolumn.tolist()])
+
+        assert latex(Mrow) == r"\left[\left[\begin{matrix}x & y & \frac{1}{z}\end{matrix}\right]\right]"
+        assert latex(Mcolumn) == r"\left[\begin{matrix}x\\y\\\frac{1}{z}\end{matrix}\right]"
+        assert latex(Mcol2) == r'\left[\begin{matrix}\left[\begin{matrix}x\\y\\\frac{1}{z}\end{matrix}\right]\end{matrix}\right]'
+
+        Arow = ArrayType([x]*11)
+
+        assert latex(Arow) == r"\left[\begin{array}x & x & x & x & x & x & x & x & x & x & x\end{array}\right]"
 
 
 def test_latex_mul_symbol():

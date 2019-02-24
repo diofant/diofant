@@ -4,9 +4,11 @@ import random
 
 from ..core import Function, S
 from ..core.compatibility import as_int
-from ..core.numbers import igcdex
+from ..core.numbers import igcdex, mod_inverse
+from ..core.power import isqrt
 from ..utilities.iterables import cantor_product
 from .factor_ import factorint, multiplicity, totient, trailing
+from .modular import crt
 from .primetest import isprime
 
 
@@ -680,15 +682,7 @@ def _nthroot_mod1(s, q, p, all_roots):
         r1 = pow(s, x, p)
         s1 = pow(s, f, p)
         h = pow(g, f*q, p)
-        # find t discrete log of s1 base h, h**x = s1 mod p
-        # used a naive implementation
-        # TODO implement using Ref [1]
-        pr = 1
-        for t in range(p):  # pragma: no branch
-            if pr == s1:
-                break
-            pr = pr*h % p
-
+        t = discrete_log(p, s1, h)
         g2 = pow(g, z*t, p)
         g3 = igcdex(g2, p)[0]
         r = r1*g3 % p
@@ -972,3 +966,130 @@ class mobius(Function):
             if any(i > 1 for i in a.values()):
                 return S.Zero
             return S.NegativeOne**len(a)
+
+
+def _discrete_log_trial_mul(n, a, b, order=None):
+    """
+    Trial multiplication algorithm for computing the discrete logarithm of
+    ``a`` to the base ``b`` modulo ``n``.
+
+    The algorithm finds the discrete logarithm using exhaustive search. This
+    naive method is used as fallback algorithm of ``discrete_log`` when the
+    group order is very small.
+
+    """
+    a %= n
+    b %= n
+    if order is None:
+        order = n
+    x = 1
+    for i in range(order):
+        if x == a:
+            return i
+        x = x * b % n
+    raise ValueError("Log does not exist")
+
+
+def _discrete_log_shanks_steps(n, a, b, order=None):
+    """
+    Baby-step giant-step algorithm for computing the discrete logarithm of
+    ``a`` to the base ``b`` modulo ``n``.
+
+    The algorithm is a time-memory trade-off of the method of exhaustive
+    search. It uses `O(sqrt(m))` memory, where `m` is the group order.
+
+    """
+    a %= n
+    b %= n
+    if order is None:
+        order = n_order(b, n)
+    m = isqrt(order) + 1
+    T = {}
+    x = 1
+    for i in range(m):
+        T[x] = i
+        x = x * b % n
+    z = mod_inverse(b, n)
+    z = pow(z, m, n)
+    x = a
+    for i in range(m):
+        if x in T:
+            return i * m + T[x]
+        x = x * z % n
+    raise ValueError("Log does not exist")
+
+
+def _discrete_log_pohlig_hellman(n, a, b, order=None):
+    """
+    Pohlig-Hellman algorithm for computing the discrete logarithm of ``a`` to
+    the base ``b`` modulo ``n``.
+
+    In order to compute the discrete logarithm, the algorithm takes advantage
+    of the factorization of the group order. It is more efficient when the
+    group order factors into many small primes.
+
+    """
+    a %= n
+    b %= n
+
+    if order is None:
+        order = n_order(b, n)
+
+    f = factorint(order)
+    l = [0] * len(f)
+
+    for i, (pi, ri) in enumerate(f.items()):
+        for j in range(ri):
+            gj = pow(b, l[i], n)
+            aj = pow(a * mod_inverse(gj, n), order // pi**(j + 1), n)
+            bj = pow(b, order // pi, n)
+            cj = discrete_log(n, aj, bj, pi, True)
+            l[i] += cj * pi**j
+
+    d, _ = crt([pi**ri for pi, ri in f.items()], l)
+    return d
+
+
+def discrete_log(n, a, b, order=None, prime_order=None):
+    """
+    Compute the discrete logarithm of ``a`` to the base ``b`` modulo ``n``.
+
+    This is a recursive function to reduce the discrete logarithm problem in
+    cyclic groups of composite order to the problem in cyclic groups of
+    prime order.
+
+    Notes
+    =====
+
+    It employs different algorithms depending on the problem (subgroup order
+    size, prime order or not):
+
+    * Trial multiplication
+    * Baby-step giant-step
+    * Pohlig-Hellman
+
+    References
+    ==========
+
+    * http://mathworld.wolfram.com/DiscreteLogarithm.html
+    * :cite:`Menezes97`
+
+    Examples
+    ========
+
+    >>> discrete_log(41, 15, 7)
+    3
+
+    """
+    if order is None:
+        order = n_order(b, n)
+
+    if prime_order is None:
+        prime_order = isprime(order)
+
+    if order < 1000:
+        return _discrete_log_trial_mul(n, a, b, order)
+    elif prime_order:
+        return _discrete_log_shanks_steps(n, a, b, order)
+
+    return _discrete_log_pohlig_hellman(n, a, b, order)

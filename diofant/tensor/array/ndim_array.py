@@ -1,6 +1,8 @@
 import collections
 
+from .. import Indexed
 from ...core import Expr, Integer, sympify
+from ...logic import true
 from ...matrices import MatrixBase
 
 
@@ -12,7 +14,6 @@ class NDimArray:
 
     Create an N-dim array of zeros:
 
-    >>> from diofant.tensor.array import MutableDenseNDimArray
     >>> a = MutableDenseNDimArray.zeros(2, 3, 4)
     >>> a
     [[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
@@ -83,6 +84,16 @@ class NDimArray:
         index.reverse()
         return tuple(index)
 
+    def _check_symbolic_index(self, index):
+        # Check if any index is symbolic:
+        tuple_index = (index if isinstance(index, tuple) else (index,))
+        if any((isinstance(i, Expr) and (not i.is_number)) for i in tuple_index):
+            for i, nth_dim in zip(tuple_index, self.shape):
+                i = sympify(i)
+                if ((i < 0) is true) or ((i >= nth_dim) is true):
+                    raise ValueError("index out of range")
+            return Indexed(self, *tuple_index)
+
     def _setter_iterable_check(self, value):
         if isinstance(value, (collections.abc.Iterable, MatrixBase, NDimArray)):
             raise NotImplementedError
@@ -144,7 +155,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(3, 3)
         >>> a
         [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
@@ -162,7 +172,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(3, 3)
         >>> a.shape
         (3, 3)
@@ -177,7 +186,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(3, 4, 5, 6, 3)
         >>> a.rank()
         5
@@ -192,7 +200,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array import ImmutableDenseNDimArray
         >>> M = ImmutableDenseNDimArray([[x, y], [1, x*y]])
         >>> M.diff(x)
         [[1, 0], [0, y]]
@@ -206,7 +213,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array import ImmutableDenseNDimArray
         >>> m = ImmutableDenseNDimArray([i*2+j for i in range(2) for j in range(2)], (2, 2))
         >>> m
         [[0, 1], [2, 3]]
@@ -222,7 +228,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(2, 2)
         >>> a
         [[0, 0], [0, 0]]
@@ -244,7 +249,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray([1, 2, 3, 4], (2, 2))
         >>> a
         [[1, 2], [3, 4]]
@@ -317,7 +321,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(2, 3)
         >>> b = MutableDenseNDimArray.zeros(2, 3)
         >>> a == b
@@ -359,3 +362,6 @@ class NDimArray:
 
 class ImmutableNDimArray(NDimArray, Expr):
     _op_priority = 11.0
+
+    def _subs(self, old, new, **hints):
+        return super()._subs(old, new, **hints)

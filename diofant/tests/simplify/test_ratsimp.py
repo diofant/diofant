@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import Rational, erf, log, pi, ratsimp, ratsimpmodprime, sqrt
+from diofant import FF, Rational, erf, log, pi, ratsimp, ratsimpmodprime, sqrt
 from diofant.abc import a, b, c, d, e, t, x, y, z
 
 
@@ -76,3 +76,7 @@ def test_ratsimpmodprime():
     assert ratsimpmodprime(x, [x - y/2], x, y, order='lex') == 2*y
     pytest.raises(ValueError, lambda: ratsimpmodprime((x + y)/(x - y),
                                                       [y**2 - 1, x**2 - 1]))
+
+    a = (x**5 + 2*x**4 + 2*x**3 + 2*x**2 + x + 2/x + x**(-2))
+    assert ratsimpmodprime(a, [x + 1], domain=FF(2)) == 1
+    assert ratsimpmodprime(a, [x + 1], domain=FF(3)) == 2

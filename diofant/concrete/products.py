@@ -193,7 +193,6 @@ class Product(ExprWithIntLimits):
 
     def doit(self, **hints):
         f = self.function
-
         for index, limit in enumerate(self.limits):
             i, a, b = limit
             dif = b - a
@@ -266,10 +265,13 @@ class Product(ExprWithIntLimits):
 
         elif term.is_Add:
             p, q = term.as_numer_denom()
-
-            p = self._eval_product(p, (k, a, n))
             q = self._eval_product(q, (k, a, n))
-
+            if q.is_Number:
+                # There is expression, which couldn't change by
+                # as_numer_denom(). E.g. n**(2/3) + 1 --> (n**(2/3) + 1, 1).
+                p = sum(self._eval_product(i, (k, a, n)) for i in p.as_coeff_Add())
+            else:
+                p = self._eval_product(p, (k, a, n))
             return p / q
 
         elif term.is_Mul:

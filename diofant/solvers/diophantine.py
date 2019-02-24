@@ -261,7 +261,7 @@ def diop_solve(eq, param=symbols("t", integer=True)):
     >>> diop_solve(x + 3*y - 4*z + w -6)
     (t_0, t_0 + t_1, 6*t_0 + 5*t_1 + 4*t_2 - 6, 5*t_0 + 4*t_1 + 3*t_2 - 6)
     >>> diop_solve(x**2 + y**2 - 5)
-    {(-1, -2), (-1, 2), (1, -2), (1, 2)}
+    {(-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1), (2, 1)}
 
     See Also
     ========
@@ -831,7 +831,8 @@ def _diop_quadratic(var, coeff, t):
                     return sqa*g*_c*t**2 + (D + 2*sqa*g*u)*t + (sqa*g*u**2 + D*u + sqa*F) // _c
 
                 for z0 in range(0, abs(_c)):
-                    if divisible(sqa*g*z0**2 + D*z0 + sqa*F, _c):
+                    if (divisible(sqa*g*z0**2 + D*z0 + sqa*F, _c) and
+                            divisible(e*sqc**g*z0**2 + E*z0 + e*sqc*F, _c)):
                         sol.add((solve_x(z0), solve_y(z0)))
 
     # (3) Method used when B**2 - 4*A*C is a square, is described in p. 6 of the below paper
@@ -871,15 +872,14 @@ def _diop_quadratic(var, coeff, t):
         solns_pell = diop_DN(D, N)
 
         if D < 0:
-            for solution in solns_pell:
-                for X_i in [-solution[0], solution[0]]:
-                    for Y_i in [-solution[1], solution[1]]:
-                        s = P*Matrix([X_i, Y_i]) + Q
+            for x0, y0 in solns_pell:
+                for x in [-x0, x0]:
+                    for y in [-y0, y0]:
+                        s = P*Matrix([x, y]) + Q
                         try:
                             sol.add(tuple(as_int(_) for _ in s))
                         except ValueError:
                             pass
-
         else:
             # In this case equation can be transformed into a Pell equation
 
@@ -973,7 +973,7 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
 
     The output can be interpreted as follows: There are three fundamental
     solutions to the equation `x^2 - 13y^2 = -4` given by (3, 1), (393, 109)
-    and (36, 10). Each tuple is in the form (x, y), i. e solution (3, 1) means
+    and (36, 10). Each tuple is in the form (x, y), i.e. solution (3, 1) means
     that `x = 3` and `y = 1`.
 
     >>> diop_DN(986, 1)  # Solves equation x**2 - 986*y**2 = 1
@@ -1005,7 +1005,8 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
                 if sols:
                     for x, y in sols:
                         sol.append((d*x, d*y))
-
+                        if D == -1:
+                            sol.append((d*y, d*x))
             return sol
 
     elif D == 0:
@@ -1036,6 +1037,8 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
                         sol.append((sq, y))
 
                 return sol
+        elif 1 < N**2 < D:
+            return _special_diop_DN(D, N)
         else:
             if N == 0:
                 return [(0, 0)]
@@ -1133,6 +1136,60 @@ def diop_DN(D, N, t=symbols("t", integer=True)):
                 return sol
 
 
+def _special_diop_DN(D, N):
+    """
+    Solves the equation `x^2 - Dy^2 = N` for the special case where
+    `1 < N**2 < D` and `D` is not a perfect square.
+
+    References
+    ==========
+
+    * :cite:`Andreescu15`, Section 4.4.4.
+
+    """
+    assert (1 < N**2 < D) and (not integer_nthroot(D, 2)[1])
+
+    sqrt_D = sqrt(D)
+    F = [(N, 1)]
+    f = 2
+    while True:
+        f2 = f**2
+        if f2 > abs(N):
+            break
+        n, r = divmod(N, f2)
+        if r == 0:
+            F.append((n, f))
+        f += 1
+
+    P = 0
+    Q = 1
+    G0, G1 = 0, 1
+    B0, B1 = 1, 0
+
+    solutions = []
+
+    i = 0
+    while True:
+        a = floor((P + sqrt_D) / Q)
+        P = a*Q - P
+        Q = (D - P**2) // Q
+        G2 = a*G1 + G0
+        B2 = a*B1 + B0
+
+        for n, f in F:
+            if G2**2 - D*B2**2 == n:
+                solutions.append((f*G2, f*B2))
+
+        i += 1
+        if Q == 1 and i % 2 == 0:
+            break
+
+        G0, G1 = G1, G2
+        B0, B1 = B1, B2
+
+    return solutions
+
+
 def cornacchia(a, b, m):
     r"""
     Solves `ax^2 + by^2 = m` where `\gcd(a, b) = 1 = gcd(a, m)` and `a, b > 0`.
@@ -1146,10 +1203,10 @@ def cornacchia(a, b, m):
     Examples
     ========
 
-    >>> cornacchia(2, 3, 35)  # equation 2x**2 + 3y**2 = 35
+    >>> cornacchia(2, 3, 35)
     {(2, 3), (4, 1)}
-    >>> cornacchia(1, 1, 25)  # equation x**2 + y**2 = 25
-    {(3, 4)}
+    >>> cornacchia(1, 1, 25)
+    {(4, 3)}
 
     References
     ===========
@@ -1189,7 +1246,7 @@ def cornacchia(a, b, m):
             m1 = m1 // b
             s, _exact = integer_nthroot(m1, 2)
             if _exact:
-                if a == b and r > s:
+                if a == b and r < s:
                     r, s = s, r
                 sols.add((int(r), int(s)))
 

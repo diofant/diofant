@@ -5,8 +5,7 @@ import pytest
 from diofant import Rational, SparseMatrix, Symbol
 from diofant.abc import x, y, z
 from diofant.matrices import Matrix
-from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
-from diofant.tensor.array.sparse_ndim_array import MutableSparseNDimArray
+from diofant.tensor import MutableDenseNDimArray, MutableSparseNDimArray
 
 
 __all__ = ()
@@ -315,3 +314,8 @@ def test_diff():
     sd = MutableSparseNDimArray(md)
     assert sd == MutableSparseNDimArray([x, y, x*z, x*y*z], (2, 2))
     assert sd.diff(x) == MutableSparseNDimArray([[1, 0], [z, y*z]])
+
+
+def test_indexing():
+    a = MutableDenseNDimArray([0, 1, 2, 3], (2, 2))
+    assert a[x, y].subs({x: 1, y: 1}) == 3

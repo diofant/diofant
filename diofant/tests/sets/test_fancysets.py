@@ -304,3 +304,21 @@ def test_sympyissue_10497():
     # __iter__ for infinite product set
     assert (list(itertools.islice(iter(S.Integers**2), 7)) ==
             [(0, 0), (0, 1), (1, 0), (1, 1), (0, -1), (1, -1), (-1, 0)])
+
+
+def test_sympyissue_11732():
+    interval12 = Interval(1, 2)
+    finiteset1234 = FiniteSet(1, 2, 3, 4)
+    pointComplex = (1, 2)
+
+    assert (interval12 in S.Naturals) is False
+    assert (interval12 in S.Naturals0) is False
+    assert (interval12 in S.Integers) is False
+
+    assert (finiteset1234 in S.Naturals) is False
+    assert (finiteset1234 in S.Naturals0) is False
+    assert (finiteset1234 in S.Integers) is False
+
+    assert (pointComplex in S.Naturals) is False
+    assert (pointComplex in S.Naturals0) is False
+    assert (pointComplex in S.Integers) is False

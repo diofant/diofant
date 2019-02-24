@@ -798,9 +798,9 @@ def test_sympyissue_4403():
         -z**2*acosh(x/z)/2 + x*sqrt(x**2 - z**2)/2
 
     x = Symbol('x', extended_real=True)
-    y = Symbol('y', nonzero=True, extended_real=True)
+    y = Symbol('y', positive=True)
     assert integrate(1/(x**2 + y**2)**Rational(3, 2), x) == \
-        1/(y**2*sqrt(1 + y**2/x**2))
+        x/(y**2*sqrt(x**2 + y**2))
 
 
 def test_sympyissue_4403_2():
@@ -1281,3 +1281,8 @@ def test_diofantissue_149():
 
 def test_sympyissue_7337():
     assert integrate(x*sqrt(2*x + 3), (x, -1, 1)) == Rational(2, 5)
+
+
+def test_sympyissue_11877():
+    assert integrate(log(Rational(1, 2) - x),
+                     (x, 0, Rational(1, 2))) == -Rational(1, 2) - log(2)/2
