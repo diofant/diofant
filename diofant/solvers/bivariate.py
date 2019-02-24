@@ -36,6 +36,9 @@ def _mostfunc(lhs, func, X=None):
     ``func`` can be a function (exp, log, etc...) or any other Diofant object,
     like Pow.
 
+    If ``X`` is not ``None``, then the function returns the term composed with the
+    most ``func`` having the specified variable.
+
     Examples
     ========
 
@@ -43,8 +46,8 @@ def _mostfunc(lhs, func, X=None):
     E**(E**x + 2)
     >>> _mostfunc(exp(x) + exp(exp(y) + 2), Pow, x)
     E**x
-    >>> _mostfunc(exp(x) + exp(exp(y) + 2), Pow, x)
-    E**x
+    >>> _mostfunc(exp(x) + exp(exp(y) + 2), Pow)
+    E**(E**y + 2)
     >>> _mostfunc(x, exp, x) is None
     True
     >>> _mostfunc(exp(x) + exp(x*y), Pow, x)

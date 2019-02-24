@@ -1657,6 +1657,10 @@ def test_div():
     f, g = a*x**2 + b*x + c, 3*x + 2
     assert div(f, g) == (a*x/3 - 2*a/9 + b/3, 4*a/9 - 2*b/3 + c)
 
+    f, g = Poly(x + y, x), Poly(2*x + y, x)
+    q, r = f.div(g)
+    assert q.domain.is_FractionField and r.domain.is_FractionField
+
 
 def test_gcdex():
     f, g = 2*x, x**2 - 16

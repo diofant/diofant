@@ -1,10 +1,11 @@
 import itertools
 import random
 
-from ..core import Basic, S, Symbol, count_ops, sympify
+from ..core import Basic, Expr, S, Symbol, count_ops, sympify
 from ..core.compatibility import as_int, is_sequence
 from ..core.decorators import call_highest_priority
 from ..functions import cos, sin, sqrt
+from ..logic import true
 from ..simplify import simplify as _simplify
 from ..utilities import filldedent, numbered_symbols
 from ..utilities.decorator import doctest_depends_on
@@ -65,6 +66,13 @@ class DenseMatrix(MatrixBase):
                 i, j = self.key2ij(key)
                 return self._mat[i*self.cols + j]
             except (TypeError, IndexError):
+                if any(isinstance(_, Expr) and not _.is_number for _ in (i, j)):
+                    if ((j < 0) == true) or ((j >= self.shape[1]) == true) or \
+                       ((i < 0) == true) or ((i >= self.shape[0]) == true):
+                        raise ValueError("index out of boundary")
+                    from .expressions.matexpr import MatrixElement
+                    return MatrixElement(self, i, j)
+
                 if isinstance(i, slice):
                     i = range(self.rows)[i]
                 elif is_sequence(i):

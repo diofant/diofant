@@ -2,6 +2,7 @@
 A Printer which converts an expression into its LaTeX equivalent.
 """
 
+import itertools
 import re
 
 import mpmath.libmp as mlib
@@ -31,18 +32,29 @@ accepted_latex_functions = ['arcsin', 'arccos', 'arctan', 'sin', 'cos', 'tan',
 tex_greek_dictionary = {
     'Alpha': 'A',
     'Beta': 'B',
+    'Gamma': r'\Gamma',
+    'Delta': r'\Delta',
     'Epsilon': 'E',
     'Zeta': 'Z',
     'Eta': 'H',
+    'Theta': r'\Theta',
     'Iota': 'I',
     'Kappa': 'K',
+    'Lambda': r'\Lambda',
     'Mu': 'M',
     'Nu': 'N',
+    'Xi': r'\Xi',
     'omicron': 'o',
     'Omicron': 'O',
+    'Pi': r'\Pi',
     'Rho': 'P',
+    'Sigma': r'\Sigma',
     'Tau': 'T',
+    'Upsilon': r'\Upsilon',
+    'Phi': r'\Phi',
     'Chi': 'X',
+    'Psi': r'\Psi',
+    'Omega': r'\Omega',
     'lamda': r'\lambda',
     'Lamda': r'\Lambda',
     'khi': r'\chi',
@@ -173,7 +185,6 @@ class LatexPrinter(Printer):
         specifies that this expr is the last to appear in a Mul.
         ``first=True`` specifies that this expr is the first to appear in a Mul.
         """
-        from ..functions import Piecewise
         from ..concrete import Product, Sum
         from ..integrals import Integral
 
@@ -185,11 +196,13 @@ class LatexPrinter(Printer):
             if not first and _coeff_isneg(expr):
                 return True
 
+        if expr.is_Piecewise:
+            return True
+
         if expr.has(Mod):
             return True
 
-        if (not last and any(expr.has(x) for
-                             x in (Integral, Piecewise, Product, Sum))):
+        if not last and any(expr.has(x) for x in (Integral, Product, Sum)):
             return True
 
         return False
@@ -1349,6 +1362,55 @@ class LatexPrinter(Printer):
     def _print_Identity(self, I):
         return r"\mathbb{I}"
 
+    def _print_NDimArray(self, expr):
+        mat_str = self._settings['mat_str']
+        if mat_str is None:
+            if self._settings['mode'] == 'inline':
+                mat_str = 'smallmatrix'
+            else:
+                if (expr.rank() == 0) or (expr.shape[-1] <= 10):
+                    mat_str = 'matrix'
+                else:
+                    mat_str = 'array'
+        block_str = r'\begin{%MATSTR%}%s\end{%MATSTR%}'
+        block_str = block_str.replace('%MATSTR%', mat_str)
+        if self._settings['mat_delim']:
+            left_delim = self._settings['mat_delim']
+            right_delim = self._delim_dict[left_delim]
+            block_str = r'\left' + left_delim + block_str + r'\right' + right_delim
+
+        if expr.rank() == 0:
+            return block_str % ""
+
+        level_str = [[]] + [[] for i in range(expr.rank())]
+        shape_ranges = [list(range(i)) for i in expr.shape]
+        for outer_i in itertools.product(*shape_ranges):
+            level_str[-1].append(self._print(expr[outer_i]))
+            even = True
+            for back_outer_i in range(expr.rank()-1, -1, -1):
+                if len(level_str[back_outer_i+1]) < expr.shape[back_outer_i]:
+                    break
+                if even:
+                    level_str[back_outer_i].append(r" & ".join(level_str[back_outer_i+1]))
+                else:
+                    level_str[back_outer_i].append(block_str % (r"\\".join(level_str[back_outer_i+1])))
+                    if len(level_str[back_outer_i+1]) == 1:
+                        level_str[back_outer_i][-1] = r"\left[" + level_str[back_outer_i][-1] + r"\right]"
+                even = not even
+                level_str[back_outer_i+1] = []
+
+        out_str = level_str[0][0]
+
+        if expr.rank() % 2 == 1:
+            out_str = block_str % out_str
+
+        return out_str
+
+    _print_ImmutableDenseNDimArray = _print_NDimArray
+    _print_ImmutableSparseNDimArray = _print_NDimArray
+    _print_MutableDenseNDimArray = _print_NDimArray
+    _print_MutableSparseNDimArray = _print_NDimArray
+
     def _print_tuple(self, expr):
         return r"\left ( %s\right )" % \
             r", \quad ".join([ self._print(i) for i in expr ])
@@ -1671,7 +1733,9 @@ def translate(s):
     tex = tex_greek_dictionary.get(s)
     if tex:
         return tex
-    elif s.lower() in greek_letters_set or s in other_symbols:
+    elif s.lower() in greek_letters_set:
+        return "\\" + s.lower()
+    elif s in other_symbols:
         return "\\" + s
     else:
         # Process modifiers, if any, and recurse

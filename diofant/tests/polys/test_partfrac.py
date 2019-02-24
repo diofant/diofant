@@ -42,6 +42,20 @@ def test_apart():
 
     pytest.raises(NotImplementedError, lambda: apart(1/(x + 1)/(y + 2)))
 
+    assert apart(x/2, y) == x/2  # issue sympy/sympy#9123
+
+    # issue sympy/sympy#12177
+
+    f, g = (x + y)/(2*x - y), 3*y/(2*x - y)/2 + Rational(1, 2)
+
+    assert apart(f, x, full=False) == g
+    assert apart(f, x, full=True) == g
+
+    f, g = (x + y)/(2*x - y), 3*x/(2*x - y) - 1
+
+    assert apart(f, y, full=False) == g
+    assert apart(f, y, full=True) == g
+
 
 def test_apart_symbolic():
     f = a*x**4 + (2*b + 2*a*c)*x**3 + (4*b*c - a**2 + a*c**2)*x**2 + \

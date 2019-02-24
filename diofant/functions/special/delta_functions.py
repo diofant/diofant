@@ -61,7 +61,7 @@ class DiracDelta(Function):
             raise ValueError("Error: the second argument of DiracDelta must be \
             a non-negative integer, %s given instead." % (k,))
         arg = sympify(arg)
-        if arg.is_positive or arg.is_negative:
+        if arg.is_nonzero:
             return S.Zero
 
     def simplify(self, x):

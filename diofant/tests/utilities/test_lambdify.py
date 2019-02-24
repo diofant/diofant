@@ -624,3 +624,8 @@ def test_Min_Max():
     # see sympy/sympy#10375
     assert lambdify((x, y, z), Min(x, y, z))(1, 2, 3) == 1
     assert lambdify((x, y, z), Max(x, y, z))(1, 2, 3) == 3
+
+
+def test_sympyissue_12092():
+    f = implemented_function('f', lambda x: x**2)
+    assert f(f(2)).evalf() == Float(16)

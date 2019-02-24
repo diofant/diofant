@@ -30,7 +30,19 @@ class SparseNDimArray(NDimArray):
         >>> a[2]
         2
 
+        Symbolic indexing:
+        >>> a[n, m]
+        [[0, 1], [2, 3]][n, m]
+
+        Replace `n` and `m` to get element `(0, 0)`:
+        >>> a[n, m].subs({n: 0, m: 0})
+        0
+
         """
+        syindex = self._check_symbolic_index(index)
+        if syindex is not None:
+            return syindex
+
         # `index` is a tuple with one or more slices:
         if isinstance(index, tuple) and any(isinstance(i, slice) for i in index):
 
@@ -95,9 +107,9 @@ class SparseNDimArray(NDimArray):
 
 class ImmutableSparseNDimArray(SparseNDimArray, ImmutableNDimArray):
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, iterable=None, shape=None, **kwargs):
 
-        shape, flat_list = cls._handle_ndarray_creation_inputs(*args, **kwargs)
+        shape, flat_list = cls._handle_ndarray_creation_inputs(iterable, shape, **kwargs)
         shape = Tuple(*(sympify(x, strict=True) for x in shape))
         loop_size = functools.reduce(lambda x, y: x*y, shape) if shape else 0
 
@@ -126,9 +138,9 @@ class ImmutableSparseNDimArray(SparseNDimArray, ImmutableNDimArray):
 
 class MutableSparseNDimArray(MutableNDimArray, SparseNDimArray):
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, iterable=None, shape=None, **kwargs):
 
-        shape, flat_list = cls._handle_ndarray_creation_inputs(*args, **kwargs)
+        shape, flat_list = cls._handle_ndarray_creation_inputs(iterable, shape, **kwargs)
         self = object.__new__(cls)
         self._shape = shape
         self._rank = len(shape)

@@ -12,10 +12,10 @@ from diofant import multinomial_coefficients, pi, sieve, sqrt, summation
 from diofant.core.add import Add
 from diofant.core.numbers import Integer, Rational
 from diofant.domains import QQ, ZZ
-from diofant.ntheory import (divisor_count, divisor_sigma, divisors, factorint,
-                             is_nthpow_residue, is_primitive_root,
-                             is_quad_residue, is_square, isprime,
-                             jacobi_symbol, legendre_symbol, mobius,
+from diofant.ntheory import (discrete_log, divisor_count, divisor_sigma,
+                             divisors, factorint, is_nthpow_residue,
+                             is_primitive_root, is_quad_residue, is_square,
+                             isprime, jacobi_symbol, legendre_symbol, mobius,
                              multiplicity, n_order, nextprime, npartitions,
                              nthroot_mod, perfect_power, pollard_pm1,
                              pollard_rho, prevprime, prime, primefactors,
@@ -39,7 +39,10 @@ from diofant.ntheory.modular import (crt, crt1, crt2,
                                      solve_congruence)
 from diofant.ntheory.multinomial import multinomial_coefficients_iterator
 from diofant.ntheory.primetest import _mr_safe_helper, mr
-from diofant.ntheory.residue_ntheory import _primitive_root_prime_iter
+from diofant.ntheory.residue_ntheory import (_discrete_log_pohlig_hellman,
+                                             _discrete_log_shanks_steps,
+                                             _discrete_log_trial_mul,
+                                             _primitive_root_prime_iter)
 from diofant.utilities.iterables import capture
 from diofant.utilities.randtest import random_complex_number
 
@@ -713,6 +716,33 @@ def test_residue():
     pytest.raises(TypeError, lambda: mobius(x))
     pytest.raises(ValueError, lambda: mobius(i))
     mobius(Symbol('p', positive=True, integer=True))
+
+    assert _discrete_log_trial_mul(41, 15, 7) == 3
+    assert _discrete_log_trial_mul(587, 2**7, 2) == 7
+    assert _discrete_log_trial_mul(941, 7**18, 7) == 18
+    assert _discrete_log_trial_mul(389, 3**81, 3) == 81
+    assert _discrete_log_trial_mul(191, 19**123, 19) == 123
+    pytest.raises(ValueError, lambda: _discrete_log_trial_mul(11, 7, 31))
+
+    assert _discrete_log_shanks_steps(41, 15, 7) == 3
+    assert _discrete_log_shanks_steps(442879, 7**2, 7) == 2
+    assert _discrete_log_shanks_steps(874323, 5**19, 5) == 19
+    assert _discrete_log_shanks_steps(6876342, 7**71, 7) == 71
+    assert _discrete_log_shanks_steps(2456747, 3**321, 3) == 321
+    pytest.raises(ValueError, lambda: _discrete_log_shanks_steps(11, 7, 31))
+
+    assert _discrete_log_pohlig_hellman(251, 210, 71) == 197
+    assert _discrete_log_pohlig_hellman(98376431, 11**9, 11) == 9
+    assert _discrete_log_pohlig_hellman(78723213, 11**31, 11) == 31
+    assert _discrete_log_pohlig_hellman(32942478, 11**98, 11) == 98
+    assert _discrete_log_pohlig_hellman(14789363, 11**444, 11) == 444
+    pytest.raises(ValueError, lambda: _discrete_log_pohlig_hellman(11, 7, 31))
+
+    assert discrete_log(587, 2**9, 2) == 9
+    assert discrete_log(2456747, 3**51, 3) == 51
+    assert discrete_log(32942478, 11**127, 11) == 127
+    assert discrete_log(432751500361, 7**324, 7) == 324
+    pytest.raises(ValueError, lambda: discrete_log(11, 7, 31))
 
 
 def test_crt():

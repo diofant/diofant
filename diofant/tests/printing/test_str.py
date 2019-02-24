@@ -62,7 +62,7 @@ def test_Add():
     assert str(x - 1*y*x*y) == "-x*y**2 + x"
     assert str(sin(x).series(x, 0, 15)) == "x - x**3/6 + x**5/120 - x**7/5040 + x**9/362880 - x**11/39916800 + x**13/6227020800 + O(x**15)"
     assert str(Add(0, 0, evaluate=False)) == "0 + 0"
-    assert str(Add(And(x, y), z)) == 'z + (And(x, y))'
+    assert str(Add(And(x, y), z)) == 'z + (x & y)'
 
 
 def test_Catalan():
@@ -510,6 +510,8 @@ def test_Float():
                                      '5028841971693993751058209749445923')
     assert str(pi.round(-1)) == '0.'
     assert str((pi**400 - (pi**400).round(1)).evalf(2, strict=False)) == '-0.e+9'
+    assert str(Float(+oo)) == 'inf'
+    assert str(Float(-oo)) == '-inf'
 
 
 def test_Relational():
@@ -670,14 +672,14 @@ def test_settings():
 
 def test_RandomDomain():
     X = Normal('x1', 0, 1)
-    assert str(where(X > 0)) == "Domain: And(0 < x1, x1 < oo)"
+    assert str(where(X > 0)) == "Domain: (0 < x1) & (x1 < oo)"
 
     D = Die('d1', 6)
-    assert str(where(D > 4)) == "Domain: Or(Eq(d1, 5), Eq(d1, 6))"
+    assert str(where(D > 4)) == "Domain: (Eq(d1, 5)) | (Eq(d1, 6))"
 
     A = Exponential('a', 1)
     B = Exponential('b', 1)
-    assert str(pspace(Tuple(A, B)).domain) == "Domain: And(0 <= a, 0 <= b, a < oo, b < oo)"
+    assert str(pspace(Tuple(A, B)).domain) == "Domain: (0 <= a) & (0 <= b) & (a < oo) & (b < oo)"
 
 
 def test_FiniteSet():

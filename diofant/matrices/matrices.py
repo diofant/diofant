@@ -3764,7 +3764,8 @@ class MatrixBase(DefaultPrinting):
         [0, 1, 0, 2]])
 
         """
-        return reduce(cls.row_join, args)
+        _cls = type(args[0])
+        return reduce(_cls.row_join, args)
 
     @classmethod
     def vstack(cls, *args):
@@ -3782,7 +3783,8 @@ class MatrixBase(DefaultPrinting):
         [0, 2]])
 
         """
-        return reduce(cls.col_join, args)
+        _cls = type(args[0])
+        return reduce(_cls.col_join, args)
 
     def row_join(self, rhs):
         """Concatenates two matrices along self's last and rhs's first column

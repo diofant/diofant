@@ -249,9 +249,9 @@ def reduce_piecewise_inequality(expr, rel, gen):
     >>> x = Symbol('x', real=True)
 
     >>> reduce_piecewise_inequality(Abs(x - 5) - 3, '<', x)
-    And(2 < x, x < 8)
+    (2 < x) & (x < 8)
     >>> reduce_piecewise_inequality(Abs(x + 2)*3 - 13, '<', x)
-    And(-19/3 < x, x < 7/3)
+    (-19/3 < x) & (x < 7/3)
 
     >>> reduce_piecewise_inequality(Piecewise((1, x < 1),
     ...                                       (3, True)) - 1, '>', x)
@@ -345,9 +345,9 @@ def reduce_piecewise_inequalities(exprs, gen):
 
     >>> reduce_piecewise_inequalities([(Abs(3*x - 5) - 7, '<'),
     ...                                (Abs(x + 25) - 13, '>')], x)
-    And(-2/3 < x, Or(-12 < x, x < -38), x < 4)
+    (-2/3 < x) & (x < 4) & ((-12 < x) | (x < -38))
     >>> reduce_piecewise_inequalities([(Abs(x - 4) + Abs(3*x - 5) - 7, '<')], x)
-    And(1/2 < x, x < 4)
+    (1/2 < x) & (x < 4)
 
     See Also
     ========
@@ -369,7 +369,7 @@ def solve_univariate_inequality(expr, gen, relational=True):
     >>> x = Symbol('x', real=True)
 
     >>> solve_univariate_inequality(x**2 >= 4, x)
-    Or(2 <= x, x <= -2)
+    (2 <= x) | (x <= -2)
     >>> solve_univariate_inequality(x**2 >= 4, x, relational=False)
     (-oo, -2] U [2, oo)
 

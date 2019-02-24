@@ -3,19 +3,25 @@ import pytest
 from diofant import (DiracDelta, Eq, Heaviside, I, Piecewise, Rational, Symbol,
                      adjoint, conjugate, nan, pi, sign, sqrt, symbols,
                      transpose)
+from diofant.abc import x, y, z
 from diofant.core.function import ArgumentIndexError
 
 
 __all__ = ()
 
-x, y = symbols('x y')
-
 
 def test_DiracDelta():
+    i = Symbol('i', nonzero=True)
+    j = Symbol('j', positive=True)
+    k = Symbol('k', negative=True)
+
     assert DiracDelta(1) == 0
     assert DiracDelta(5.1) == 0
     assert DiracDelta(-pi) == 0
     assert DiracDelta(5, 7) == 0
+    assert DiracDelta(i) == 0
+    assert DiracDelta(j) == 0
+    assert DiracDelta(k) == 0
     assert DiracDelta(nan) == nan
     assert isinstance(DiracDelta(0), DiracDelta)
     assert isinstance(DiracDelta(x), DiracDelta)
@@ -49,7 +55,6 @@ def test_DiracDelta():
 
 def test_heaviside():
     x, y = symbols('x, y', extended_real=True)
-    z = Symbol('z')
     assert Heaviside(0) == 0.5
     assert Heaviside(-5) == 0
     assert Heaviside(1) == 1
@@ -75,7 +80,7 @@ def test_heaviside():
 
 
 def test_rewrite():
-    x, y = Symbol('x', extended_real=True), Symbol('y')
+    x = Symbol('x', extended_real=True)
     assert Heaviside(x).rewrite(Piecewise) == \
         Piecewise((1, x > 0), (Rational(1, 2), Eq(x, 0)), (0, True))
     assert Heaviside(y).rewrite(Piecewise) == Heaviside(y)

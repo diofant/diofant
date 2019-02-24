@@ -151,8 +151,7 @@ from diofant.stats.frv_types import (BernoulliDistribution,
 from diofant.stats.rv import (ConditionalDomain, Density, ProductDomain,
                               ProductPSpace, PSpace, RandomDomain,
                               RandomSymbol, SingleDomain)
-from diofant.tensor.array import (ImmutableDenseNDimArray,
-                                  ImmutableSparseNDimArray)
+from diofant.tensor import ImmutableDenseNDimArray, ImmutableSparseNDimArray
 from diofant.tensor.tensor import (TensAdd, TensorHead, TensorIndex,
                                    TensorIndexType, TensorSymmetry, TensorType,
                                    get_symmetric_group_sgs, tensor_indices)

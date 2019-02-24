@@ -650,6 +650,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         respectively.
 
         """
+        from ..logic import false
         from ..series import limit, Limit
         if (a is None and b is None):
             raise ValueError('Both interval ends cannot be None.')
@@ -659,7 +660,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         else:
             A = self.subs({x: a})
             if A.has(nan, oo, -oo, zoo):
-                A = limit(self, x, a)
+                A = limit(self, x, a, '+' if (a < b) is not false else '-')
                 if isinstance(A, Limit):
                     raise NotImplementedError("Could not compute limit")
 
@@ -669,6 +670,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             B = self.subs({x: b})
             if B.has(nan, oo, -oo, zoo):
                 B = limit(self, x, b)
+                B = limit(self, x, b, '-' if (a < b) is not false else '+')
                 if isinstance(B, Limit):
                     raise NotImplementedError("Could not compute limit")
 
@@ -983,11 +985,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return [c, nc]
 
     def coeff(self, x, n=1, right=False):
-        """Returns the coefficient from the term(s) containing ``x**n`` or None. If ``n``
+        """Returns the coefficient from the term(s) containing ``x**n``. If ``n``
         is zero then all terms independent of ``x`` will be returned.
 
-        When x is noncommutative, the coeff to the left (default) or right of x
-        can be returned. The keyword 'right' is ignored when x is commutative.
+        When ``x`` is noncommutative, the coefficient to the left (default) or
+        right of ``x`` can be returned. The keyword 'right' is ignored when
+        ``x`` is commutative.
 
         See Also
         ========

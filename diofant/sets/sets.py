@@ -4,6 +4,7 @@ from mpmath import mpf, mpi
 
 from ..core import Basic, Eq, Expr, Mul, S, nan, oo, sympify, zoo
 from ..core.compatibility import iterable, ordered
+from ..core.decorators import _sympifyit
 from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
 from ..core.singleton import Singleton
@@ -198,6 +199,21 @@ class Set(Basic):
             return ret
 
     def symmetric_difference(self, other):
+        """
+        Returns symmetric difference of ``self`` and ``other``.
+
+        Examples
+        ========
+
+        >>> Interval(1, 3).symmetric_difference(Reals)
+        (-oo, 1) U (3, oo)
+
+        References
+        ==========
+
+        * https://en.wikipedia.org/wiki/Symmetric_difference
+
+        """
         return SymmetricDifference(self, other)
 
     def _symmetric_difference(self, other):
@@ -243,6 +259,7 @@ class Set(Basic):
     def _sup(self):
         raise NotImplementedError("(%s)._sup" % self)
 
+    @_sympifyit('other', false)
     def contains(self, other):
         """
         Returns True if 'other' is contained in 'self' as an element.
@@ -258,7 +275,6 @@ class Set(Basic):
         True
 
         """
-        other = sympify(other, strict=True)
         ret = self._contains(other)
         if ret is None:
             ret = Contains(other, self, evaluate=False)
@@ -443,14 +459,49 @@ class Set(Basic):
 
     @property
     def is_closed(self):
+        """
+        Test if a set is closed.
+
+        Examples
+        ========
+
+        >>> Interval(0, 1).is_closed
+        True
+
+        """
         return self.boundary.is_subset(self)
 
     @property
     def closure(self):
+        """
+        Return the closure of a set.
+
+        Examples
+        ========
+
+        >>> Interval(0, 1, right_open=True).closure
+        [0, 1]
+
+        """
         return self + self.boundary
 
     @property
     def interior(self):
+        """
+        Return the interior of a set.
+
+        The interior of a set consists all points of a set that do not
+        belong to its boundary.
+
+        Examples
+        ========
+
+        >>> Interval(0, 1).interior
+        (0, 1)
+        >>> Interval(0, 1).boundary.interior
+        EmptySet()
+
+        """
         return self - self.boundary
 
     @property
@@ -1323,7 +1374,7 @@ class Intersection(Set):
         args = flatten(args)
 
         if len(args) == 0:
-            raise TypeError("Intersection expected at least one argument")
+            return S.UniversalSet
 
         args = list(ordered(args, Set._infimum_key))
 

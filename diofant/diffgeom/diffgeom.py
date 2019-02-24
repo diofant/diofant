@@ -13,7 +13,7 @@ from ..solvers import solve
 # TODO dummy point, literal field
 # TODO too often one needs to call doit or simplify on the output, check the
 # tests and find out why
-from ..tensor.array import ImmutableDenseNDimArray
+from ..tensor import ImmutableDenseNDimArray
 
 
 class Manifold(Basic):

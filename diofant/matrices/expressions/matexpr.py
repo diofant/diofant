@@ -306,19 +306,20 @@ class MatrixElement(Expr):
     j = property(lambda self: self.args[2])
     _diff_wrt = True
 
+    def __new__(cls, name, n, m):
+        n, m = map(sympify, (n, m))
+        from .. import MatrixBase
+        if isinstance(name, MatrixBase):
+            if n.is_Integer and m.is_Integer:
+                return name[n, m]
+        name = sympify(name)
+        return Expr.__new__(cls, name, n, m)
+
     def xreplace(self, rule):
         if self in rule:
             return rule[self]
         else:
             return self
-
-    def doit(self, **kwargs):
-        deep = kwargs.get('deep', True)
-        if deep:
-            args = [arg.doit(**kwargs) for arg in self.args]
-        else:
-            args = self.args
-        return args[0][args[1], args[2]]
 
 
 class MatrixSymbol(MatrixExpr, AtomicExpr):

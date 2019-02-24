@@ -569,13 +569,13 @@ def test_as_independent():
     assert (n1*x*y).as_independent(x) == (n1*y, x)
     assert ((x + n1)*(x - y)).as_independent(x) == (1, (x + n1)*(x - y))
     assert ((x + n1)*(x - y)).as_independent(y) == (x + n1, x - y)
-    assert (DiracDelta(x - n1)*DiracDelta(x - y)).as_independent(x) \
-        == (1, DiracDelta(x - n1)*DiracDelta(x - y))
+    assert (DiracDelta(x - z)*DiracDelta(x - y)).as_independent(x) \
+        == (1, DiracDelta(x - z)*DiracDelta(x - y))
     assert (x*y*n1*n2*n3).as_independent(n2) == (x*y*n1, n2*n3)
     assert (x*y*n1*n2*n3).as_independent(n1) == (x*y, n1*n2*n3)
     assert (x*y*n1*n2*n3).as_independent(n3) == (x*y*n1*n2, n3)
-    assert (DiracDelta(x - n1)*DiracDelta(y - n1)*DiracDelta(x - n2)).as_independent(y) == \
-           (DiracDelta(x - n1)*DiracDelta(x - n2), DiracDelta(y - n1))
+    assert (DiracDelta(x - z)*DiracDelta(y - z)*DiracDelta(x - t)).as_independent(y) == \
+           (DiracDelta(x - z)*DiracDelta(x - t), DiracDelta(y - z))
 
     # issue sympy/sympy#5784
     assert (x + Integral(x, (x, 1, 2))).as_independent(x, strict=True) == \

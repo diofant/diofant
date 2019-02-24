@@ -17,11 +17,11 @@ You can build Boolean expressions with the standard python operators ``&``
 ``~`` (:class:`~diofant.logic.boolalg.Not`)::
 
     >>> y | (x & y)
-    Or(And(x, y), y)
+    y | (x & y)
     >>> x | y
-    Or(x, y)
+    x | y
     >>> ~x
-    Not(x)
+    ~x
 
 You can also form implications with ``>>`` and ``<<``::
 
