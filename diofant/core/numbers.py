@@ -62,7 +62,7 @@ def comp(z1, z2, tol=None):
 def mpf_norm(mpf, prec):
     """Return the mpf tuple normalized appropriately for the indicated
     precision after doing a check to see if zero should be returned or
-    not when the mantissa is 0. ``mpf_normlize`` always assumes that this
+    not when the mantissa is 0. ``mlib.normalize`` always assumes that this
     is zero, but it may not be since the mantissa for mpf's values "+inf",
     "-inf" and "nan" have a mantissa of zero, too.
 

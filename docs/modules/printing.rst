@@ -165,7 +165,7 @@ function.
           parameter (E = 2.718281828459045235360287d0)
           parameter (pi = 3.141592653589793238462643d0)
           x - pi**2 - E
-    >>> print(fcode(N(x - pi**2, 25, strict=False)))
+    >>> print(fcode(N(x - pi**2, 25)))
           x - 9.869604401089358618834491d0
 
 When some functions are not part of the Fortran standard, it might be desirable

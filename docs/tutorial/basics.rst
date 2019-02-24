@@ -117,6 +117,27 @@ But you can change that.  Let's compute the first 70 digits of `\pi`.
     >>> pi.evalf(70)
     3.141592653589793238462643383279502884197169399375105820974944592307816
 
+Complex numbers are supported:
+
+    >>> (1/(pi + I)).evalf()
+    0.289025482222236 - 0.0919996683503752⋅ⅈ
+
+If the expression contains symbols or for some other reason cannot be evaluated
+numerically, calling :meth:`~diofant.core.evalf.EvalfMixin.evalf` returns the
+original expression or a partially evaluated expression.
+
+    >>> (pi*x**2 + x/3).evalf()
+                      2
+    3.14159265358979⋅x  + 0.333333333333333⋅x
+
+You can also use the standard Python functions :class:`float` and
+:class:`complex` to convert symbolic expressions to regular Python numbers:
+
+    >>> float(pi)
+    3.141592653589793
+    >>> complex(pi + E*I)
+    (3.141592653589793+2.718281828459045j)
+
 Sometimes there are roundoff errors smaller than the desired precision
 that remain after an expression is evaluated.  Such numbers can be
 removed by setting the ``chop`` flag.
@@ -131,22 +152,14 @@ Discussed above method is not effective enough if you intend to
 evaluate an expression at many points, there are better ways,
 especially if you only care about machine precision.
 
-The easiest way to convert a Diofant expression to an expression that
-can be numerically evaluated with libraries like :mod:`numpy` --- use
-the :func:`~diofant.utilities.lambdify.lambdify` function.  It acts
-like a :keyword:`lambda` form, except it converts the Diofant names to
-the names of the given numerical library.
+The easiest way to convert an expression to the form that can be numerically
+evaluated with libraries like :mod:`numpy` or the standard library :mod:`math`
+module --- use the :func:`~diofant.utilities.lambdify.lambdify` function.
 
-    >>> import numpy
-    >>> a = numpy.arange(5)
     >>> expr = sin(x)
     >>> f = lambdify(x, expr, "numpy")
-    >>> f(a)
+    >>> f(range(5))
     [ 0.          0.84147098  0.90929743  0.14112001 -0.7568025 ]
-
-You can use other libraries than NumPy. For example, the standard
-library :mod:`math` module.
-
     >>> f = lambdify(x, expr, "math")
     >>> f(0.1)
     0.09983341664682815
