@@ -178,9 +178,9 @@ def test_DMP_functionality():
 
     u = DMP([[2], [2, 0]], ZZ)
 
-    assert f.diff(m=1, j=0) == u
-    assert f.diff(m=1, j=1) == u
-    pytest.raises(TypeError, lambda: f.diff(m='x', j=0))
+    assert f.diff(j=0, m=1) == u
+    assert f.diff(j=1, m=1) == u
+    pytest.raises(TypeError, lambda: f.diff(j=0, m='x'))
     pytest.raises(TypeError, lambda: f.diff(j="spam"))
 
     u = DMP([1, 2, 1], ZZ)

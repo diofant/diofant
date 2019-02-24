@@ -1514,7 +1514,7 @@ class Poly(Expr):
             return Derivative(self, *specs, **kwargs)
 
         if not specs:
-            return self.per(self.rep.diff(m=1))
+            return self.per(self.rep.diff())
 
         rep = self.rep
 
@@ -1524,7 +1524,7 @@ class Poly(Expr):
             else:
                 gen, m = spec, 1
 
-            rep = rep.diff(int(m), self._gen_to_level(gen))
+            rep = rep.diff(self._gen_to_level(gen), int(m))
 
         return self.per(rep)
 

@@ -296,7 +296,7 @@ class DMP(CantSympify):
 
         return self.per(dmp_integrate_in(self.rep, m, j, self.lev, self.domain))
 
-    def diff(self, m=1, j=0):
+    def diff(self, j=0, m=1):
         """Computes the ``m``-th order derivative of ``self`` in ``x_j``."""
         if not isinstance(m, int):
             raise TypeError("``int`` expected, got %s" % type(m))

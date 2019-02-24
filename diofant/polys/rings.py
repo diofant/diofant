@@ -2082,7 +2082,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return p, q
 
-    def diff(self, x, m=1):
+    def diff(self, x=0, m=1):
         """Computes partial derivative in ``x``.
 
         Examples
