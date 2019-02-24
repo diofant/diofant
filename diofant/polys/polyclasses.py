@@ -306,7 +306,7 @@ class DMP(CantSympify):
 
         return self.per(dmp_diff_in(self.rep, m, j, self.lev, self.domain))
 
-    def eval(self, a, j=0):
+    def eval(self, j=0, a=0):
         """Evaluates ``self`` at the given point ``a`` in ``x_j``."""
         if not isinstance(j, int):
             raise TypeError("``int`` expected, got %s" % type(j))

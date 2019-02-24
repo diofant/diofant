@@ -1584,7 +1584,7 @@ class Poly(Expr):
             j = f._gen_to_level(x)
 
         try:
-            result = f.rep.eval(a, j)
+            result = f.rep.eval(j, a)
         except CoercionFailed:
             if not auto:
                 raise DomainError("can't evaluate at %s in %s" % (a, f.domain))
@@ -1595,7 +1595,7 @@ class Poly(Expr):
                 f = f.set_domain(new_domain)
                 a = new_domain.convert(a, a_domain)
 
-                result = f.rep.eval(a, j)
+                result = f.rep.eval(j, a)
 
         return f.per(result, remove=j)
 
