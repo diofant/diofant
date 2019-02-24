@@ -1252,7 +1252,8 @@ class Poly(Expr):
         3
 
         """
-        return self.coeffs(order)[-1]
+        EM = self.EM(order)
+        return self.coeff_monomial(tuple(EM))
 
     def coeff_monomial(self, monom):
         """
@@ -1317,7 +1318,8 @@ class Poly(Expr):
         x**2*y**0
 
         """
-        return Monomial(self.monoms(order)[0], self.gens)
+        LM = (0,)*len(self.gens) if self.is_zero else self.monoms(order)[0]
+        return Monomial(LM, self.gens)
 
     def EM(self, order=None):
         """
@@ -1330,7 +1332,8 @@ class Poly(Expr):
         x**0*y**1
 
         """
-        return Monomial(self.monoms(order)[-1], self.gens)
+        EM = (0,)*len(self.gens) if self.is_zero else self.monoms(order)[-1]
+        return Monomial(EM, self.gens)
 
     def LT(self, order=None):
         """
@@ -1346,8 +1349,8 @@ class Poly(Expr):
         (x**2*y**0, 4)
 
         """
-        monom, coeff = self.terms(order)[0]
-        return Monomial(monom, self.gens), coeff
+        LM = self.LM(order)
+        return LM, self.coeff_monomial(tuple(LM))
 
     def ET(self, order=None):
         """
@@ -1360,8 +1363,8 @@ class Poly(Expr):
         (x**0*y**1, 3)
 
         """
-        monom, coeff = self.terms(order)[-1]
-        return Monomial(monom, self.gens), coeff
+        EM = self.EM(order)
+        return EM, self.coeff_monomial(tuple(EM))
 
     def max_norm(self):
         """
