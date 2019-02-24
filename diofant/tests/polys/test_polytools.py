@@ -872,7 +872,7 @@ def test_Poly_slice():
 
 
 def test_Poly_coeffs():
-    assert Poly(0, x).coeffs() == [0]
+    assert Poly(0, x).coeffs() == []
     assert Poly(1, x).coeffs() == [1]
 
     assert Poly(2*x + 1, x).coeffs() == [2, 1]
@@ -885,7 +885,7 @@ def test_Poly_coeffs():
 
 
 def test_Poly_monoms():
-    assert Poly(0, x).monoms() == [(0,)]
+    assert Poly(0, x).monoms() == []
     assert Poly(1, x).monoms() == [(0,)]
 
     assert Poly(2*x + 1, x).monoms() == [(1,), (0,)]
@@ -898,7 +898,7 @@ def test_Poly_monoms():
 
 
 def test_Poly_terms():
-    assert Poly(0, x).terms() == [((0,), 0)]
+    assert Poly(0, x).terms() == []
     assert Poly(1, x).terms() == [((0,), 1)]
 
     assert Poly(2*x + 1, x).terms() == [((1,), 2), ((0,), 1)]

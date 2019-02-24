@@ -605,7 +605,7 @@ def test_dmp_terms_gcd():
 
 
 def test_dmp_list_terms():
-    assert dmp_list_terms([[[]]], 2, ZZ) == [((0, 0, 0), 0)]
+    assert dmp_list_terms([[[]]], 2, ZZ) == []
     assert dmp_list_terms([[[1]]], 2, ZZ) == [((0, 0, 0), 1)]
 
     assert dmp_list_terms([1, 2, 4, 3, 5], 0, ZZ) == \

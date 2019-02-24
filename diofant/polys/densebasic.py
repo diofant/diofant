@@ -1030,9 +1030,6 @@ def dmp_list_terms(f, u, K, order=None):
 
     terms = list_terms(f, u, ())
 
-    if not terms:
-        return [((0,)*(u + 1), K.zero)]
-
     if order is None:
         return terms
     else:
