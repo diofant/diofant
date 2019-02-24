@@ -152,22 +152,14 @@ Discussed above method is not effective enough if you intend to
 evaluate an expression at many points, there are better ways,
 especially if you only care about machine precision.
 
-The easiest way to convert a Diofant expression to an expression that
-can be numerically evaluated with libraries like :mod:`numpy` --- use
-the :func:`~diofant.utilities.lambdify.lambdify` function.  It acts
-like a :keyword:`lambda` form, except it converts the Diofant names to
-the names of the given numerical library.
+The easiest way to convert an expression to the form that can be numerically
+evaluated with libraries like :mod:`numpy` or the standard library :mod:`math`
+module --- use the :func:`~diofant.utilities.lambdify.lambdify` function.
 
-    >>> import numpy
-    >>> a = numpy.arange(5)
     >>> expr = sin(x)
     >>> f = lambdify(x, expr, "numpy")
-    >>> f(a)
+    >>> f(range(5))
     [ 0.          0.84147098  0.90929743  0.14112001 -0.7568025 ]
-
-You can use other libraries than NumPy. For example, the standard
-library :mod:`math` module.
-
     >>> f = lambdify(x, expr, "math")
     >>> f(0.1)
     0.09983341664682815
