@@ -50,7 +50,7 @@ Function :func:`~diofant.core.evalf.N` (or
 :meth:`~diofant.core.evalf.EvalfMixin.evalf` method) can be used to
 change the precision of existing floating-point numbers:
 
-    >>> N(3.5, strict=False)
+    >>> N(3.5)
     3.50000000000000
     >>> N(3.5, 5)
     3.5000
