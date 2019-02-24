@@ -117,6 +117,27 @@ But you can change that.  Let's compute the first 70 digits of `\pi`.
     >>> pi.evalf(70)
     3.141592653589793238462643383279502884197169399375105820974944592307816
 
+Complex numbers are supported:
+
+    >>> (1/(pi + I)).evalf()
+    0.289025482222236 - 0.0919996683503752⋅ⅈ
+
+If the expression contains symbols or for some other reason cannot be evaluated
+numerically, calling :meth:`~diofant.core.evalf.EvalfMixin.evalf` returns the
+original expression or a partially evaluated expression.
+
+    >>> (pi*x**2 + x/3).evalf()
+                      2
+    3.14159265358979⋅x  + 0.333333333333333⋅x
+
+You can also use the standard Python functions :class:`float` and
+:class:`complex` to convert symbolic expressions to regular Python numbers:
+
+    >>> float(pi)
+    3.141592653589793
+    >>> complex(pi + E*I)
+    (3.141592653589793+2.718281828459045j)
+
 Sometimes there are roundoff errors smaller than the desired precision
 that remain after an expression is evaluated.  Such numbers can be
 removed by setting the ``chop`` flag.
