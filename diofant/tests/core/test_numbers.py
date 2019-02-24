@@ -4,7 +4,6 @@ from math import sqrt as _sqrt
 
 import mpmath
 import pytest
-from mpmath import mpf
 from mpmath.libmp.libmpf import finf, fninf
 
 from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
@@ -1442,8 +1441,8 @@ def test_sympyissue_6349():
 
 
 def test_mpf_norm():
-    assert mpf_norm((1, 0, 1, 0), 10) == mpf('0')._mpf_
-    assert Float._new((1, 0, 1, 0), 10)._mpf_ == mpf('0')._mpf_
+    assert mpf_norm((1, 0, 1, 0), 10) == mpmath.mpf('0')._mpf_
+    assert Float._new((1, 0, 1, 0), 10)._mpf_ == mpmath.mpf('0')._mpf_
 
 
 def test_latex():
