@@ -25,7 +25,6 @@ Minor changes
 
 * Support truncation for elements of :class:`~diofant.domains.RealAlgebraicField` to :class:`int`, see :pull:`788`.
 * :class:`~diofant.matrices.Matrix`'s and :class:`~diofant.tensor.array.Array`'s support symbolic indexes, see :pull:`785`.  Thanks to Francesco Bonazzi.
-* Support :class:`~diofant.polys.rings.PolynomialRing`'s without generators, see :pull:`785`.  Thanks to Kalevi Suominen.
 
 Developer changes
 =================

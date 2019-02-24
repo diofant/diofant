@@ -3,6 +3,7 @@
 from ..core import I, sympify
 from ..domains import EX, QQ, RR, ZZ
 from ..domains.realfield import RealField
+from .polyerrors import GeneratorsNeeded
 from .polyoptions import build_options
 from .polyutils import parallel_dict_from_basic
 
@@ -118,9 +119,9 @@ def _construct_composite(coeffs, opt):
         numers.append(numer)
         denoms.append(denom)
 
-    polys, gens = parallel_dict_from_basic(numers + denoms)  # XXX: sorting
-
-    if not gens:
+    try:
+        polys, gens = parallel_dict_from_basic(numers + denoms)  # XXX: sorting
+    except GeneratorsNeeded:
         return
 
     if opt.composite is None:

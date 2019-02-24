@@ -13,7 +13,7 @@ from diofant.polys.fields import field
 from diofant.polys.orderings import grlex, lex
 from diofant.polys.polyconfig import using
 from diofant.polys.polyerrors import (CoercionFailed, ExactQuotientFailed,
-                                      GeneratorsError,
+                                      GeneratorsError, GeneratorsNeeded,
                                       MultivariatePolynomialError,
                                       PolynomialError)
 from diofant.polys.rings import PolyElement, PolynomialRing, ring, sring
@@ -27,9 +27,8 @@ def test_PolynomialRing___init__():
     assert len(ZZ.poly_ring(x).gens) == 1
     assert len(ZZ.poly_ring("x", "y", "z").gens) == 3
     assert len(ZZ.poly_ring(x, y, z).gens) == 3
-    assert len(PolynomialRing(ZZ, "").gens) == 0
-    assert len(ZZ.poly_ring().gens) == 0
 
+    pytest.raises(GeneratorsNeeded, lambda: ZZ.poly_ring())
     pytest.raises(GeneratorsError, lambda: ZZ.poly_ring(0))
 
     assert ZZ.poly_ring(t).poly_ring("x").domain == ZZ.poly_ring(t)
@@ -98,10 +97,6 @@ def test_PolynomialRing_ring_new():
 
     assert R.ring_new({2: 1, 1: 0, 0: -1}) == x**2 - 1
 
-    R, = ring("", QQ)
-
-    assert R.ring_new({(): 7}) == R(7)
-
 
 def test_PolynomialRing_drop():
     R,  x, y, z = ring("x,y,z", ZZ)
@@ -155,21 +150,12 @@ def test_PolynomialRing_is_():
     assert R.is_univariate is False
     assert R.is_multivariate is True
 
-    R = QQ.poly_ring()
-
-    assert R.is_univariate is False
-    assert R.is_multivariate is False
-
 
 def test_PolynomialRing_add():
     R, x = ring("x", ZZ)
     F = [x**2 + 2*i + 3 for i in range(4)]
 
     assert functools.reduce(operator.add, F) == 4*x**2 + 24
-
-    R, = ring("", ZZ)
-
-    assert functools.reduce(operator.add, [2, 5, 7]) == 14
 
 
 def test_PolynomialRing_mul():
@@ -178,10 +164,6 @@ def test_PolynomialRing_mul():
 
     assert functools.reduce(operator.mul, F) == (x**8 + 24*x**6 +
                                                  206*x**4 + 744*x**2 + 945)
-
-    R, = ring("", ZZ)
-
-    assert functools.reduce(operator.mul, [2, 3, 5]) == 30
 
 
 def test_PolynomialRing_to_ground():
@@ -218,12 +200,6 @@ def test_sring():
 
     R = QQ.poly_ring("x", "y")
     assert sring(x + y, domain=QQ) == (R, R.x + R.y)
-
-    r = sqrt(2) - sqrt(3)
-    R, a = sring(r, extension=True)
-    assert R.domain == QQ.algebraic_field(r)
-    assert R.gens == ()
-    assert a == R.domain.from_expr(r)
 
 
 def test_PolyElement___hash__():
@@ -327,9 +303,6 @@ def test_PolyElement_as_expr():
 
     pytest.raises(ValueError, lambda: f.as_expr(X))
 
-    R, = ring("", ZZ)
-    assert R(3).as_expr() == 3
-
 
 def test_PolyElement_from_expr():
     x, y, z = symbols("x,y,z")
@@ -357,10 +330,6 @@ def test_PolyElement_from_expr():
     R,  X, Y = ring((2**x, y), ZZ)
     f = R.convert(2**(2*x) + 1)
     assert f == X**2 + 1
-
-    R, = ring("", ZZ)
-    f = R.from_expr(1)
-    assert f == 1 and isinstance(f, R.dtype)
 
 
 def test_PolyElement_degree():
@@ -398,11 +367,6 @@ def test_PolyElement_degree():
     assert (x*y**3 + z).degree(z) == 1
     assert (7*x**5*y**3 + z).degree(z) == 1
 
-    R, = ring("", ZZ)
-
-    assert R(0).degree() is None
-    assert R(1).degree() is None
-
 
 def test_PolyElement_tail_degree():
     R,  x, y, z = ring("x,y,z", ZZ)
@@ -435,11 +399,6 @@ def test_PolyElement_tail_degree():
     assert (x*y**3 + x**3*z).tail_degree(z) == 0
     assert (7*x**5*y**3 + x**3*z).tail_degree(z) == 0
 
-    R, = ring("", ZZ)
-
-    assert R(0).tail_degree() is None
-    assert R(1).tail_degree() is None
-
 
 def test_PolyElement_degree_list():
     R,  x, y, z = ring("x,y,z", ZZ)
@@ -447,11 +406,6 @@ def test_PolyElement_degree_list():
     assert R(0).degree_list() == (-oo, -oo, -oo)
     assert R(1).degree_list() == (0, 0, 0)
     assert (x**2*y + x**3*z**2).degree_list() == (3, 1, 2)
-
-    R, = ring("", ZZ)
-
-    assert R(0).degree_list() == ()
-    assert R(1).degree_list() == ()
 
 
 def test_PolyElement_tail_degrees():
@@ -496,10 +450,6 @@ def test_PolyElement_coeff():
     f = 2*x + 3*x*y + 4*z + 5
     assert f.coeff(1) == R.domain(5)
 
-    R, = ring("", ZZ)
-
-    assert R(3).coeff(1) == 3
-
 
 def test_PolyElement_LC():
     R,  x, y = ring("x,y", QQ)
@@ -520,10 +470,6 @@ def test_PolyElement_LT():
     assert R(0).LT == ((0, 0), QQ(0))
     assert (x/2).LT == ((1, 0), QQ(1, 2))
     assert (x*y/4 + x/2).LT == ((1, 1), QQ(1, 4))
-
-    R, = ring("", ZZ)
-    assert R(0).LT == ((), 0)
-    assert R(1).LT == ((), 1)
 
 
 def test_PolyElement_leading_monom():
@@ -556,9 +502,6 @@ def test_PolyElement_terms():
 
     assert f.terms() == f.terms(grlex) == f.terms('grlex') == [((1, 7), 1), ((2, 3), 2)]
     assert f.terms(lex) == f.terms('lex') == [((2, 3), 2), ((1, 7), 1)]
-
-    R, = ring("", ZZ)
-    assert R(3).terms() == [((), 3)]
 
 
 def test_PolyElement_monoms():
@@ -936,14 +879,6 @@ def test_PolyElement___floordiv__truediv__():
     assert R.zero.quo_term(((1, 0), 1)) == R.zero
     assert g.quo_term((R.zero_monom, 2)) == x - y
     assert f.quo_term(((1, 0), 2)) == x/2
-
-    R, = ring("", ZZ)
-
-    assert divmod(R(3), R(2)) == (0, 3)
-
-    R, = ring("", QQ)
-
-    assert divmod(R(3), R(2)) == (QQ(3, 2), 0)
 
 
 def test_PolyElement___pow__():
@@ -1561,11 +1496,6 @@ def test_PolyElement_is_():
     assert R.zero.is_homogeneous is True
     assert (x**2 + x*y).is_homogeneous is True
     assert (x**3 + x*y).is_homogeneous is False
-
-    R, = ring("", ZZ)
-
-    assert R(4).is_squarefree is True
-    assert R(6).is_irreducible is True
 
 
 def test_PolyElement_drop():
