@@ -178,19 +178,19 @@ def test_DMP_functionality():
 
     u = DMP([[2], [2, 0]], ZZ)
 
-    assert f.diff(m=1, j=0) == u
-    assert f.diff(m=1, j=1) == u
-    pytest.raises(TypeError, lambda: f.diff(m='x', j=0))
+    assert f.diff(j=0, m=1) == u
+    assert f.diff(j=1, m=1) == u
+    pytest.raises(TypeError, lambda: f.diff(j=0, m='x'))
     pytest.raises(TypeError, lambda: f.diff(j="spam"))
 
     u = DMP([1, 2, 1], ZZ)
     v = DMP([1, 2, 1], ZZ)
 
-    assert f.eval(a=1, j=0) == u
-    assert f.eval(a=1, j=1) == v
-    pytest.raises(TypeError, lambda: f.eval(a=1, j="spam"))
+    assert f.eval(j=0, a=1) == u
+    assert f.eval(j=1, a=1) == v
+    pytest.raises(TypeError, lambda: f.eval(j="spam", a=1))
 
-    assert f.eval(1).eval(1) == ZZ(4)
+    assert f.eval(a=1).eval(a=1) == ZZ(4)
 
     assert f.cofactors(g) == (g, g, h)
     assert f.gcd(g) == g

@@ -3792,16 +3792,10 @@ def _frobenius(n, m, p0, q0, p, q, x0, x, c, check=None):
     numsyms = [next(numsyms) for i in range(n + 1)]
     serlist = []
     for ser in [p, q]:
-        # Order term not present
-        if ser.is_polynomial(x) and Poly(ser, x).degree() <= n:
-            if x0:
-                ser = ser.subs({x: x + x0})
-            dict_ = Poly(ser, x).as_dict()
-        # Order term present
-        else:
+        if x0 != 0 or not ser.is_polynomial(x) or Poly(ser, x).degree() > n:
             tseries = series(ser, x=x, x0=x0, n=n + 1)
-            # Removing order
-            dict_ = Poly(list(ordered(tseries.args))[: -1], x).as_dict()
+            ser = tseries.removeO()
+        dict_ = Poly(ser, x).as_dict()
         # Fill in with zeros, if coefficients are zero.
         for i in range(n + 1):
             if (i,) not in dict_:

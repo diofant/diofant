@@ -1252,7 +1252,8 @@ class Poly(Expr):
         3
 
         """
-        return self.coeffs(order)[-1]
+        EM = self.EM(order)
+        return self.coeff_monomial(tuple(EM))
 
     def coeff_monomial(self, monom):
         """
@@ -1317,7 +1318,8 @@ class Poly(Expr):
         x**2*y**0
 
         """
-        return Monomial(self.monoms(order)[0], self.gens)
+        LM = (0,)*len(self.gens) if self.is_zero else self.monoms(order)[0]
+        return Monomial(LM, self.gens)
 
     def EM(self, order=None):
         """
@@ -1330,7 +1332,8 @@ class Poly(Expr):
         x**0*y**1
 
         """
-        return Monomial(self.monoms(order)[-1], self.gens)
+        EM = (0,)*len(self.gens) if self.is_zero else self.monoms(order)[-1]
+        return Monomial(EM, self.gens)
 
     def LT(self, order=None):
         """
@@ -1346,8 +1349,8 @@ class Poly(Expr):
         (x**2*y**0, 4)
 
         """
-        monom, coeff = self.terms(order)[0]
-        return Monomial(monom, self.gens), coeff
+        LM = self.LM(order)
+        return LM, self.coeff_monomial(tuple(LM))
 
     def ET(self, order=None):
         """
@@ -1360,8 +1363,8 @@ class Poly(Expr):
         (x**0*y**1, 3)
 
         """
-        monom, coeff = self.terms(order)[-1]
-        return Monomial(monom, self.gens), coeff
+        EM = self.EM(order)
+        return EM, self.coeff_monomial(tuple(EM))
 
     def max_norm(self):
         """
@@ -1511,7 +1514,7 @@ class Poly(Expr):
             return Derivative(self, *specs, **kwargs)
 
         if not specs:
-            return self.per(self.rep.diff(m=1))
+            return self.per(self.rep.diff())
 
         rep = self.rep
 
@@ -1521,7 +1524,7 @@ class Poly(Expr):
             else:
                 gen, m = spec, 1
 
-            rep = rep.diff(int(m), self._gen_to_level(gen))
+            rep = rep.diff(self._gen_to_level(gen), int(m))
 
         return self.per(rep)
 
@@ -1581,7 +1584,7 @@ class Poly(Expr):
             j = f._gen_to_level(x)
 
         try:
-            result = f.rep.eval(a, j)
+            result = f.rep.eval(j, a)
         except CoercionFailed:
             if not auto:
                 raise DomainError("can't evaluate at %s in %s" % (a, f.domain))
@@ -1592,7 +1595,7 @@ class Poly(Expr):
                 f = f.set_domain(new_domain)
                 a = new_domain.convert(a, a_domain)
 
-                result = f.rep.eval(a, j)
+                result = f.rep.eval(j, a)
 
         return f.per(result, remove=j)
 

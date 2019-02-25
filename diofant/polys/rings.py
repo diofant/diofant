@@ -2082,7 +2082,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return p, q
 
-    def diff(self, x, m=1):
+    def diff(self, x=0, m=1):
         """Computes partial derivative in ``x``.
 
         Examples
@@ -2114,10 +2114,10 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             raise ValueError("expected at least 1 and at most %s values, got %s" % (self.ring.ngens, len(values)))
 
-    def eval(self, x, a=None):
+    def eval(self, x=0, a=0):
         f = self
 
-        if isinstance(x, list) and a is None:
+        if isinstance(x, list) and not a:
             (X, a), x = x[0], x[1:]
             f = f.eval(X, a)
 

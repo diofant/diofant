@@ -11,9 +11,7 @@ from diofant.core.mul import _keep_coeff
 from diofant.domains import EX, FF, QQ, RR, ZZ
 from diofant.domains.realfield import RealField
 from diofant.matrices import MatrixSymbol
-from diofant.polys.fields import field
 from diofant.polys.orderings import grevlex, grlex, lex
-from diofant.polys.polyclasses import DMP
 from diofant.polys.polyerrors import (CoercionFailed, ComputationFailed,
                                       DomainError, ExactQuotientFailed,
                                       FlagError, GeneratorsError,
@@ -52,37 +50,37 @@ def _epsilon_eq(a, b):
 def test_Poly_from_dict():
     K = FF(3)
 
-    assert Poly.from_dict(
-        {0: 1, 1: 2}, gens=x, domain=K).rep == DMP([K(2), K(1)], K)
-    assert Poly.from_dict(
-        {0: 1, 1: 5}, gens=x, domain=K).rep == DMP([K(2), K(1)], K)
+    assert Poly.from_dict({0: 1, 1: 2}, gens=x,
+                          domain=K).rep.to_dense() == [K(2), K(1)]
+    assert Poly.from_dict({0: 1, 1: 5}, gens=x,
+                          domain=K).rep.to_dense() == [K(2), K(1)]
 
-    assert Poly.from_dict(
-        {(0,): 1, (1,): 2}, gens=x, domain=K).rep == DMP([K(2), K(1)], K)
-    assert Poly.from_dict(
-        {(0,): 1, (1,): 5}, gens=x, domain=K).rep == DMP([K(2), K(1)], K)
+    assert Poly.from_dict({(0,): 1, (1,): 2}, gens=x,
+                          domain=K).rep.to_dense() == [K(2), K(1)]
+    assert Poly.from_dict({(0,): 1, (1,): 5}, gens=x,
+                          domain=K).rep.to_dense() == [K(2), K(1)]
 
-    assert Poly.from_dict({(0, 0): 1, (1, 1): 2}, gens=(
-        x, y), domain=K).rep == DMP([[K(2), K(0)], [K(1)]], K)
+    assert Poly.from_dict({(0, 0): 1, (1, 1): 2}, gens=(x, y),
+                          domain=K).rep.to_dense() == [[K(2), K(0)], [K(1)]]
 
-    assert Poly.from_dict({0: 1, 1: 2}, gens=x).rep == DMP([ZZ(2), ZZ(1)], ZZ)
-    assert Poly.from_dict(
-        {0: 1, 1: 2}, gens=x, field=True).rep == DMP([QQ(2), QQ(1)], QQ)
+    assert Poly.from_dict({0: 1, 1: 2}, gens=x).rep.to_dense() == [ZZ(2), ZZ(1)]
+    assert Poly.from_dict({0: 1, 1: 2}, gens=x,
+                          field=True).rep.to_dense() == [QQ(2), QQ(1)]
 
-    assert Poly.from_dict(
-        {0: 1, 1: 2}, gens=x, domain=ZZ).rep == DMP([ZZ(2), ZZ(1)], ZZ)
-    assert Poly.from_dict(
-        {0: 1, 1: 2}, gens=x, domain=QQ).rep == DMP([QQ(2), QQ(1)], QQ)
+    assert Poly.from_dict({0: 1, 1: 2}, gens=x,
+                          domain=ZZ).rep.to_dense() == [ZZ(2), ZZ(1)]
+    assert Poly.from_dict({0: 1, 1: 2}, gens=x,
+                          domain=QQ).rep.to_dense() == [QQ(2), QQ(1)]
 
-    assert Poly.from_dict(
-        {(0,): 1, (1,): 2}, gens=x).rep == DMP([ZZ(2), ZZ(1)], ZZ)
-    assert Poly.from_dict(
-        {(0,): 1, (1,): 2}, gens=x, field=True).rep == DMP([QQ(2), QQ(1)], QQ)
+    assert Poly.from_dict({(0,): 1, (1,): 2},
+                          gens=x).rep.to_dense() == [ZZ(2), ZZ(1)]
+    assert Poly.from_dict({(0,): 1, (1,): 2}, gens=x,
+                          field=True).rep.to_dense() == [QQ(2), QQ(1)]
 
-    assert Poly.from_dict(
-        {(0,): 1, (1,): 2}, gens=x, domain=ZZ).rep == DMP([ZZ(2), ZZ(1)], ZZ)
-    assert Poly.from_dict(
-        {(0,): 1, (1,): 2}, gens=x, domain=QQ).rep == DMP([QQ(2), QQ(1)], QQ)
+    assert Poly.from_dict({(0,): 1, (1,): 2}, gens=x,
+                          domain=ZZ).rep.to_dense() == [ZZ(2), ZZ(1)]
+    assert Poly.from_dict({(0,): 1, (1,): 2}, gens=x,
+                          domain=QQ).rep.to_dense() == [QQ(2), QQ(1)]
 
     assert Poly.from_dict({(1,): sin(y)}, gens=x, composite=False) == \
         Poly(sin(y)*x, x, domain='EX')
@@ -97,17 +95,17 @@ def test_Poly_from_dict():
 def test_Poly_from_list():
     K = FF(3)
 
-    assert Poly.from_list([2, 1], gens=x, domain=K).rep == DMP([K(2), K(1)], K)
-    assert Poly.from_list([5, 1], gens=x, domain=K).rep == DMP([K(2), K(1)], K)
+    assert Poly.from_list([2, 1], gens=x, domain=K).rep.to_dense() == [K(2), K(1)]
+    assert Poly.from_list([5, 1], gens=x, domain=K).rep.to_dense() == [K(2), K(1)]
 
-    assert Poly.from_list([2, 1], gens=x).rep == DMP([ZZ(2), ZZ(1)], ZZ)
-    assert Poly.from_list([2, 1], gens=x, field=True).rep == DMP([QQ(2), QQ(1)], QQ)
+    assert Poly.from_list([2, 1], gens=x).rep.to_dense() == [ZZ(2), ZZ(1)]
+    assert Poly.from_list([2, 1], gens=x, field=True).rep.to_dense() == [QQ(2), QQ(1)]
 
-    assert Poly.from_list([2, 1], gens=x, domain=ZZ).rep == DMP([ZZ(2), ZZ(1)], ZZ)
-    assert Poly.from_list([2, 1], gens=x, domain=QQ).rep == DMP([QQ(2), QQ(1)], QQ)
+    assert Poly.from_list([2, 1], gens=x, domain=ZZ).rep.to_dense() == [ZZ(2), ZZ(1)]
+    assert Poly.from_list([2, 1], gens=x, domain=QQ).rep.to_dense() == [QQ(2), QQ(1)]
 
-    assert Poly.from_list([0, 1.0], gens=x).rep == DMP([RR(1.0)], RR)
-    assert Poly.from_list([1.0, 0], gens=x).rep == DMP([RR(1.0), RR(0.0)], RR)
+    assert Poly.from_list([0, 1.0], gens=x).rep.to_dense() == [RR(1.0)]
+    assert Poly.from_list([1.0, 0], gens=x).rep.to_dense() == [RR(1.0), RR(0.0)]
 
     pytest.raises(MultivariatePolynomialError, lambda: Poly.from_list([[]], gens=(x, y)))
 
@@ -120,14 +118,14 @@ def test_Poly_from_poly():
     K = FF(3)
 
     assert Poly.from_poly(f) == f
-    assert Poly.from_poly(f, domain=K).rep == DMP([K(1), K(1)], K)
-    assert Poly.from_poly(f, domain=ZZ).rep == DMP([1, 7], ZZ)
-    assert Poly.from_poly(f, domain=QQ).rep == DMP([1, 7], QQ)
+    assert Poly.from_poly(f, domain=K).rep.to_dense() == [K(1), K(1)]
+    assert Poly.from_poly(f, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(7)]
+    assert Poly.from_poly(f, domain=QQ).rep.to_dense() == [QQ(1), QQ(7)]
 
     assert Poly.from_poly(f, gens=x) == f
-    assert Poly.from_poly(f, gens=x, domain=K).rep == DMP([K(1), K(1)], K)
-    assert Poly.from_poly(f, gens=x, domain=ZZ).rep == DMP([1, 7], ZZ)
-    assert Poly.from_poly(f, gens=x, domain=QQ).rep == DMP([1, 7], QQ)
+    assert Poly.from_poly(f, gens=x, domain=K).rep.to_dense() == [K(1), K(1)]
+    assert Poly.from_poly(f, gens=x, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(7)]
+    assert Poly.from_poly(f, gens=x, domain=QQ).rep.to_dense() == [QQ(1), QQ(7)]
 
     assert Poly.from_poly(f, gens=y) == Poly(x + 7, y, domain='ZZ[x]')
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(f, gens=y, domain=K))
@@ -145,23 +143,21 @@ def test_Poly_from_poly():
     K = FF(2)
 
     assert Poly.from_poly(g) == g
-    assert Poly.from_poly(g, domain=ZZ).rep == DMP([1, 2], ZZ)
+    assert Poly.from_poly(g, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(2)]
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(g, domain=QQ))
-    assert Poly.from_poly(g, domain=K).rep == DMP([K(1), K(0)], K)
+    assert Poly.from_poly(g, domain=K).rep.to_dense() == [K(1), K(0)]
 
     assert Poly.from_poly(g, gens=x) == g
-    assert Poly.from_poly(g, gens=x, domain=ZZ).rep == DMP([1, 2], ZZ)
+    assert Poly.from_poly(g, gens=x, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(2)]
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(g, gens=x, domain=QQ))
-    assert Poly.from_poly(g, gens=x, domain=K).rep == DMP([K(1), K(0)], K)
+    assert Poly.from_poly(g, gens=x, domain=K).rep.to_dense() == [K(1), K(0)]
 
     K = FF(3)
 
     assert Poly.from_poly(h) == h
-    assert Poly.from_poly(
-        h, domain=ZZ).rep == DMP([[ZZ(1)], [ZZ(1), ZZ(0)]], ZZ)
-    assert Poly.from_poly(
-        h, domain=QQ).rep == DMP([[QQ(1)], [QQ(1), QQ(0)]], QQ)
-    assert Poly.from_poly(h, domain=K).rep == DMP([[K(1)], [K(1), K(0)]], K)
+    assert Poly.from_poly(h, domain=ZZ).rep.to_dense() == [[ZZ(1)], [ZZ(1), ZZ(0)]]
+    assert Poly.from_poly(h, domain=QQ).rep.to_dense() == [[QQ(1)], [QQ(1), QQ(0)]]
+    assert Poly.from_poly(h, domain=K).rep.to_dense() == [[K(1)], [K(1), K(0)]]
 
     assert Poly.from_poly(h, gens=x) == Poly(x + y, x, domain=ZZ.poly_ring(y))
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(h, gens=x, domain=ZZ))
@@ -182,26 +178,25 @@ def test_Poly_from_poly():
     pytest.raises(CoercionFailed, lambda: Poly.from_poly(h, gens=y, modulus=3))
 
     assert Poly.from_poly(h, gens=(x, y)) == h
-    assert Poly.from_poly(
-        h, gens=(x, y), domain=ZZ).rep == DMP([[ZZ(1)], [ZZ(1), ZZ(0)]], ZZ)
-    assert Poly.from_poly(
-        h, gens=(x, y), domain=QQ).rep == DMP([[QQ(1)], [QQ(1), QQ(0)]], QQ)
-    assert Poly.from_poly(
-        h, gens=(x, y), domain=K).rep == DMP([[K(1)], [K(1), K(0)]], K)
+    assert Poly.from_poly(h, gens=(x, y),
+                          domain=ZZ).rep.to_dense() == [[ZZ(1)], [ZZ(1), ZZ(0)]]
+    assert Poly.from_poly(h, gens=(x, y),
+                          domain=QQ).rep.to_dense() == [[QQ(1)], [QQ(1), QQ(0)]]
+    assert Poly.from_poly(h, gens=(x, y),
+                          domain=K).rep.to_dense() == [[K(1)], [K(1), K(0)]]
 
-    assert Poly.from_poly(
-        h, gens=(y, x)).rep == DMP([[ZZ(1)], [ZZ(1), ZZ(0)]], ZZ)
-    assert Poly.from_poly(
-        h, gens=(y, x), domain=ZZ).rep == DMP([[ZZ(1)], [ZZ(1), ZZ(0)]], ZZ)
-    assert Poly.from_poly(
-        h, gens=(y, x), domain=QQ).rep == DMP([[QQ(1)], [QQ(1), QQ(0)]], QQ)
-    assert Poly.from_poly(
-        h, gens=(y, x), domain=K).rep == DMP([[K(1)], [K(1), K(0)]], K)
+    assert Poly.from_poly(h, gens=(y, x)).rep.to_dense() == [[ZZ(1)], [ZZ(1), ZZ(0)]]
+    assert Poly.from_poly(h, gens=(y, x),
+                          domain=ZZ).rep.to_dense() == [[ZZ(1)], [ZZ(1), ZZ(0)]]
+    assert Poly.from_poly(h, gens=(y, x),
+                          domain=QQ).rep.to_dense() == [[QQ(1)], [QQ(1), QQ(0)]]
+    assert Poly.from_poly(h, gens=(y, x),
+                          domain=K).rep.to_dense() == [[K(1)], [K(1), K(0)]]
 
-    assert Poly.from_poly(
-        h, gens=(x, y), field=True).rep == DMP([[QQ(1)], [QQ(1), QQ(0)]], QQ)
-    assert Poly.from_poly(
-        h, gens=(x, y), field=True).rep == DMP([[QQ(1)], [QQ(1), QQ(0)]], QQ)
+    assert Poly.from_poly(h, gens=(x, y),
+                          field=True).rep.to_dense() == [[QQ(1)], [QQ(1), QQ(0)]]
+    assert Poly.from_poly(h, gens=(x, y),
+                          field=True).rep.to_dense() == [[QQ(1)], [QQ(1), QQ(0)]]
 
 
 def test_Poly_from_expr():
@@ -210,29 +205,29 @@ def test_Poly_from_expr():
 
     F3 = FF(3)
 
-    assert Poly.from_expr(x + 5, domain=F3).rep == DMP([F3(1), F3(2)], F3)
-    assert Poly.from_expr(y + 5, domain=F3).rep == DMP([F3(1), F3(2)], F3)
+    assert Poly.from_expr(x + 5, domain=F3).rep.to_dense() == [F3(1), F3(2)]
+    assert Poly.from_expr(y + 5, domain=F3).rep.to_dense() == [F3(1), F3(2)]
 
-    assert Poly.from_expr(x + 5, x, domain=F3).rep == DMP([F3(1), F3(2)], F3)
-    assert Poly.from_expr(y + 5, y, domain=F3).rep == DMP([F3(1), F3(2)], F3)
+    assert Poly.from_expr(x + 5, x, domain=F3).rep.to_dense() == [F3(1), F3(2)]
+    assert Poly.from_expr(y + 5, y, domain=F3).rep.to_dense() == [F3(1), F3(2)]
 
-    assert Poly.from_expr(x + y, domain=F3).rep == DMP([[F3(1)], [F3(1), F3(0)]], F3)
-    assert Poly.from_expr(x + y, x, y, domain=F3).rep == DMP([[F3(1)], [F3(1), F3(0)]], F3)
+    assert Poly.from_expr(x + y, domain=F3).rep.to_dense() == [[F3(1)], [F3(1), F3(0)]]
+    assert Poly.from_expr(x + y, x, y, domain=F3).rep.to_dense() == [[F3(1)], [F3(1), F3(0)]]
 
-    assert Poly.from_expr(x + 5).rep == DMP([1, 5], ZZ)
-    assert Poly.from_expr(y + 5).rep == DMP([1, 5], ZZ)
+    assert Poly.from_expr(x + 5).rep.to_dense() == [ZZ(1), ZZ(5)]
+    assert Poly.from_expr(y + 5).rep.to_dense() == [ZZ(1), ZZ(5)]
 
-    assert Poly.from_expr(x + 5, x).rep == DMP([1, 5], ZZ)
-    assert Poly.from_expr(y + 5, y).rep == DMP([1, 5], ZZ)
+    assert Poly.from_expr(x + 5, x).rep.to_dense() == [ZZ(1), ZZ(5)]
+    assert Poly.from_expr(y + 5, y).rep.to_dense() == [ZZ(1), ZZ(5)]
 
-    assert Poly.from_expr(x + 5, domain=ZZ).rep == DMP([1, 5], ZZ)
-    assert Poly.from_expr(y + 5, domain=ZZ).rep == DMP([1, 5], ZZ)
+    assert Poly.from_expr(x + 5, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(5)]
+    assert Poly.from_expr(y + 5, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(5)]
 
-    assert Poly.from_expr(x + 5, x, domain=ZZ).rep == DMP([1, 5], ZZ)
-    assert Poly.from_expr(y + 5, y, domain=ZZ).rep == DMP([1, 5], ZZ)
+    assert Poly.from_expr(x + 5, x, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(5)]
+    assert Poly.from_expr(y + 5, y, domain=ZZ).rep.to_dense() == [ZZ(1), ZZ(5)]
 
-    assert Poly.from_expr(x + 5, x, y, domain=ZZ).rep == DMP([[1], [5]], ZZ)
-    assert Poly.from_expr(y + 5, x, y, domain=ZZ).rep == DMP([[1, 5]], ZZ)
+    assert Poly.from_expr(x + 5, x, y, domain=ZZ).rep.to_dense() == [[ZZ(1)], [ZZ(5)]]
+    assert Poly.from_expr(y + 5, x, y, domain=ZZ).rep.to_dense() == [[ZZ(1), ZZ(5)]]
 
 
 def test_Poly__new__():
@@ -314,7 +309,7 @@ def test_Poly__new__():
 
 def test_Poly_new():
     pytest.raises(PolynomialError, lambda: Poly.new([1], x))
-    pytest.raises(PolynomialError, lambda: Poly.new(DMP([[1], [1]], QQ), x))
+    pytest.raises(PolynomialError, lambda: Poly.new(Poly(x + 1, x, y).rep, x))
 
 
 def test_Poly__args():
@@ -370,67 +365,90 @@ def test_Poly_one():
     assert Poly(x/2).one == Poly(1, x, domain=QQ)
 
 
-def test_Poly__unify():
-    pytest.raises(UnificationFailed, lambda: Poly(x)._unify(y))
-    pytest.raises(UnificationFailed, lambda: PurePoly(x)._unify(y))
-    pytest.raises(UnificationFailed, lambda: PurePoly(x)._unify(Poly(x, x, y)))
+def test_Poly_unify():
+    pytest.raises(UnificationFailed, lambda: Poly(x).unify(y))
+    pytest.raises(UnificationFailed, lambda: PurePoly(x).unify(y))
+    pytest.raises(UnificationFailed, lambda: PurePoly(x).unify(Poly(x, x, y)))
 
-    F3 = FF(3)
-
-    assert Poly(x, x, modulus=3)._unify(Poly(y, y, modulus=3))[2:] == (
-        DMP([[F3(1)], []], F3), DMP([[F3(1), F3(0)]], F3))
+    assert Poly(x, x, modulus=3).unify(Poly(y, y, modulus=3)) == \
+        (Poly(x, x, y, modulus=3), Poly(y, x, y, modulus=3))
     pytest.raises(NotImplementedError,
-                  lambda: Poly(x, x, modulus=3)._unify(Poly(y, y, modulus=5)))
+                  lambda: Poly(x, x, modulus=3).unify(Poly(y, y, modulus=5)))
 
-    assert Poly(y, x, y)._unify(Poly(x, x, modulus=3))[2:] == (DMP([[F3(1), F3(0)]], F3), DMP([[F3(1)], []], F3))
-    assert Poly(x, x, modulus=3)._unify(Poly(y, x, y))[2:] == (DMP([[F3(1)], []], F3), DMP([[F3(1), F3(0)]], F3))
+    assert Poly(y, x, y).unify(Poly(x, x, modulus=3)) == \
+        (Poly(y, x, y, modulus=3), Poly(x, x, y, modulus=3))
+    assert Poly(x, x, modulus=3).unify(Poly(y, x, y)) == \
+        (Poly(x, x, y, modulus=3), Poly(y, x, y, modulus=3))
 
-    assert Poly(x + 1, x)._unify(Poly(x + 2, x))[2:] == (DMP([1, 1], ZZ), DMP([1, 2], ZZ))
-    assert Poly(x + 1, x, domain='QQ')._unify(Poly(x + 2, x))[2:] == (DMP([1, 1], QQ), DMP([1, 2], QQ))
-    assert Poly(x + 1, x)._unify(Poly(x + 2, x, domain='QQ'))[2:] == (DMP([1, 1], QQ), DMP([1, 2], QQ))
+    assert Poly(x + 1, x).unify(Poly(x + 2, x)) == \
+        (Poly(x + 1, x, domain=ZZ), Poly(x + 2, x, domain=ZZ))
+    assert Poly(x + 1, x, domain=QQ).unify(Poly(x + 2, x)) == \
+        (Poly(x + 1, x, domain=QQ), Poly(x + 2, x, domain=QQ))
+    assert Poly(x + 1, x).unify(Poly(x + 2, x, domain=QQ)) == \
+        (Poly(x + 1, x, domain=QQ), Poly(x + 2, x, domain=QQ))
 
-    assert Poly(x + 1, x)._unify(Poly(x + 2, x, y))[2:] == (DMP([[1], [1]], ZZ), DMP([[1], [2]], ZZ))
-    assert Poly(x + 1, x, domain='QQ')._unify(Poly(x + 2, x, y))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
-    assert Poly(x + 1, x)._unify(Poly(x + 2, x, y, domain='QQ'))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
+    assert Poly(x + 1, x).unify(Poly(x + 2, x, y)) == \
+        (Poly(x + 1, x, y, domain=ZZ), Poly(x + 2, x, y, domain=ZZ))
+    assert Poly(x + 1, x, domain=QQ).unify(Poly(x + 2, x, y)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
+    assert Poly(x + 1, x).unify(Poly(x + 2, x, y, domain=QQ)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
 
-    assert Poly(x + 1, x, y)._unify(Poly(x + 2, x))[2:] == (DMP([[1], [1]], ZZ), DMP([[1], [2]], ZZ))
-    assert Poly(x + 1, x, y, domain='QQ')._unify(Poly(x + 2, x))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
-    assert Poly(x + 1, x, y)._unify(Poly(x + 2, x, domain='QQ'))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
+    assert Poly(x + 1, x, y).unify(Poly(x + 2, x)) == \
+        (Poly(x + 1, x, y, domain=ZZ), Poly(x + 2, x, y, domain=ZZ))
+    assert Poly(x + 1, x, y, domain=QQ).unify(Poly(x + 2, x)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
+    assert Poly(x + 1, x, y).unify(Poly(x + 2, x, domain=QQ)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
 
-    assert Poly(x + 1, x, y)._unify(Poly(x + 2, x, y))[2:] == (DMP([[1], [1]], ZZ), DMP([[1], [2]], ZZ))
-    assert Poly(x + 1, x, y, domain='QQ')._unify(Poly(x + 2, x, y))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
-    assert Poly(x + 1, x, y)._unify(Poly(x + 2, x, y, domain='QQ'))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
+    assert Poly(x + 1, x, y).unify(Poly(x + 2, x, y)) == \
+        (Poly(x + 1, x, y, domain=ZZ), Poly(x + 2, x, y, domain=ZZ))
+    assert Poly(x + 1, x, y, domain=QQ).unify(Poly(x + 2, x, y)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
+    assert Poly(x + 1, x, y).unify(Poly(x + 2, x, y, domain=QQ)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
 
-    assert Poly(x + 1, x)._unify(Poly(x + 2, y, x))[2:] == (DMP([[1, 1]], ZZ), DMP([[1, 2]], ZZ))
-    assert Poly(x + 1, x, domain='QQ')._unify(Poly(x + 2, y, x))[2:] == (DMP([[1, 1]], QQ), DMP([[1, 2]], QQ))
-    assert Poly(x + 1, x)._unify(Poly(x + 2, y, x, domain='QQ'))[2:] == (DMP([[1, 1]], QQ), DMP([[1, 2]], QQ))
+    assert Poly(x + 1, x).unify(Poly(x + 2, y, x)) == \
+        (Poly(x + 1, y, x, domain=ZZ), Poly(x + 2, y, x, domain=ZZ))
+    assert Poly(x + 1, x, domain=QQ).unify(Poly(x + 2, y, x)) == \
+        (Poly(x + 1, y, x, domain=QQ), Poly(x + 2, y, x, domain=QQ))
+    assert Poly(x + 1, x).unify(Poly(x + 2, y, x, domain=QQ)) == \
+        (Poly(x + 1, y, x, domain=QQ), Poly(x + 2, y, x, domain=QQ))
 
-    assert Poly(x + 1, y, x)._unify(Poly(x + 2, x))[2:] == (DMP([[1, 1]], ZZ), DMP([[1, 2]], ZZ))
-    assert Poly(x + 1, y, x, domain='QQ')._unify(Poly(x + 2, x))[2:] == (DMP([[1, 1]], QQ), DMP([[1, 2]], QQ))
-    assert Poly(x + 1, y, x)._unify(Poly(x + 2, x, domain='QQ'))[2:] == (DMP([[1, 1]], QQ), DMP([[1, 2]], QQ))
+    assert Poly(x + 1, y, x).unify(Poly(x + 2, x)) == \
+        (Poly(x + 1, y, x, domain=ZZ), Poly(x + 2, y, x, domain=ZZ))
+    assert Poly(x + 1, y, x, domain=QQ).unify(Poly(x + 2, x)) == \
+        (Poly(x + 1, y, x, domain=QQ), Poly(x + 2, y, x, domain=QQ))
+    assert Poly(x + 1, y, x).unify(Poly(x + 2, x, domain=QQ)) == \
+        (Poly(x + 1, y, x, domain=QQ), Poly(x + 2, y, x, domain=QQ))
 
-    assert Poly(x + 1, x, y)._unify(Poly(x + 2, y, x))[2:] == (DMP([[1], [1]], ZZ), DMP([[1], [2]], ZZ))
-    assert Poly(x + 1, x, y, domain='QQ')._unify(Poly(x + 2, y, x))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
-    assert Poly(x + 1, x, y)._unify(Poly(x + 2, y, x, domain='QQ'))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
+    assert Poly(x + 1, x, y).unify(Poly(x + 2, y, x)) == \
+        (Poly(x + 1, x, y, domain=ZZ), Poly(x + 2, x, y, domain=ZZ))
+    assert Poly(x + 1, x, y, domain=QQ).unify(Poly(x + 2, y, x)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
+    assert Poly(x + 1, x, y).unify(Poly(x + 2, y, x, domain=QQ)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
 
-    assert Poly(x + 1, y, x)._unify(Poly(x + 2, x, y))[2:] == (DMP([[1, 1]], ZZ), DMP([[1, 2]], ZZ))
-    assert Poly(x + 1, y, x, domain='QQ')._unify(Poly(x + 2, x, y))[2:] == (DMP([[1, 1]], QQ), DMP([[1, 2]], QQ))
-    assert Poly(x + 1, y, x)._unify(Poly(x + 2, x, y, domain='QQ'))[2:] == (DMP([[1, 1]], QQ), DMP([[1, 2]], QQ))
+    assert Poly(x + 1, y, x).unify(Poly(x + 2, x, y)) == \
+        (Poly(x + 1, y, x, domain=ZZ), Poly(x + 2, y, x, domain=ZZ))
+    assert Poly(x + 1, y, x, domain=QQ).unify(Poly(x + 2, x, y)) == \
+        (Poly(x + 1, y, x, domain=QQ), Poly(x + 2, y, x, domain=QQ))
+    assert Poly(x + 1, y, x).unify(Poly(x + 2, x, y, domain=QQ)) == \
+        (Poly(x + 1, y, x, domain=QQ), Poly(x + 2, y, x, domain=QQ))
 
-    F, A, B = field("a,b", ZZ)
+    assert Poly(a*x, x, domain=ZZ.poly_ring(a)).unify(Poly(a*b*x, x, domain=ZZ.frac_field(a, b))) == \
+        (Poly(a*x, x, domain=ZZ.frac_field(a, b)), Poly(a*b*x, x, domain=ZZ.frac_field(a, b)))
 
-    assert Poly(a*x, x, domain='ZZ[a]')._unify(Poly(a*b*x, x, domain='ZZ(a,b)'))[2:] == \
-        (DMP([A, F(0)], F), DMP([A*B, F(0)], F))
+    assert Poly(a*x, x, domain=ZZ.frac_field(a)).unify(Poly(a*b*x, x, domain=ZZ.frac_field(a, b))) == \
+        (Poly(a*x, x, domain=ZZ.frac_field(a, b)), Poly(a*b*x, x, domain=ZZ.frac_field(a, b)))
 
-    assert Poly(a*x, x, domain='ZZ(a)')._unify(Poly(a*b*x, x, domain='ZZ(a,b)'))[2:] == \
-        (DMP([A, F(0)], F), DMP([A*B, F(0)], F))
+    pytest.raises(CoercionFailed, lambda: Poly(Poly(x**2 + x**2*z, y, field=True),
+                                               domain=ZZ.frac_field(x)))
 
-    pytest.raises(CoercionFailed, lambda: Poly(Poly(x**2 + x**2*z, y, field=True), domain='ZZ(x)'))
+    f = Poly(t**2 + t/3 + x, t, domain=QQ.frac_field(x))
+    g = Poly(t**2 + t/3 + x, t, domain=QQ.poly_ring(x))
 
-    f = Poly(t**2 + t/3 + x, t, domain='QQ(x)')
-    g = Poly(t**2 + t/3 + x, t, domain='QQ[x]')
-
-    assert f._unify(g)[2:] == (f.rep, f.rep)
+    assert f.unify(g) == (f, f)
 
 
 def test_Poly_free_symbols():
@@ -872,7 +890,7 @@ def test_Poly_slice():
 
 
 def test_Poly_coeffs():
-    assert Poly(0, x).coeffs() == [0]
+    assert Poly(0, x).coeffs() == []
     assert Poly(1, x).coeffs() == [1]
 
     assert Poly(2*x + 1, x).coeffs() == [2, 1]
@@ -885,7 +903,7 @@ def test_Poly_coeffs():
 
 
 def test_Poly_monoms():
-    assert Poly(0, x).monoms() == [(0,)]
+    assert Poly(0, x).monoms() == []
     assert Poly(1, x).monoms() == [(0,)]
 
     assert Poly(2*x + 1, x).monoms() == [(1,), (0,)]
@@ -898,7 +916,7 @@ def test_Poly_monoms():
 
 
 def test_Poly_terms():
-    assert Poly(0, x).terms() == [((0,), 0)]
+    assert Poly(0, x).terms() == []
     assert Poly(1, x).terms() == [((0,), 1)]
 
     assert Poly(2*x + 1, x).terms() == [((1,), 2), ((0,), 1)]

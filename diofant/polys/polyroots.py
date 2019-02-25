@@ -628,6 +628,9 @@ def _integer_basis(poly):
     4
 
     """
+    if poly.is_zero:
+        return
+
     monoms, coeffs = list(zip(*poly.terms()))
 
     monoms, = list(zip(*monoms))
