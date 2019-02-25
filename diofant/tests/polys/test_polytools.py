@@ -12,7 +12,6 @@ from diofant.domains import EX, FF, QQ, RR, ZZ
 from diofant.domains.realfield import RealField
 from diofant.matrices import MatrixSymbol
 from diofant.polys.orderings import grevlex, grlex, lex
-from diofant.polys.polyclasses import DMP
 from diofant.polys.polyerrors import (CoercionFailed, ComputationFailed,
                                       DomainError, ExactQuotientFailed,
                                       FlagError, GeneratorsError,
@@ -310,7 +309,7 @@ def test_Poly__new__():
 
 def test_Poly_new():
     pytest.raises(PolynomialError, lambda: Poly.new([1], x))
-    pytest.raises(PolynomialError, lambda: Poly.new(DMP([[1], [1]], QQ), x))
+    pytest.raises(PolynomialError, lambda: Poly.new(Poly(x + 1, x, y).rep, x))
 
 
 def test_Poly__args():
