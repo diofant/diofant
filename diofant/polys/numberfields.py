@@ -785,7 +785,7 @@ def field_isomorphism_factor(a, b):
 
     for f, _ in factors:
         if f.degree() == 1:
-            tc = f.rep.TC()
+            tc = f.rep.to_dense()[-1]
             coeffs = [tc.domain.domain.to_expr(c) for c in tc.rep.to_dense()]
             d, terms = len(coeffs) - 1, []
 
