@@ -11,7 +11,6 @@ from diofant.core.mul import _keep_coeff
 from diofant.domains import EX, FF, QQ, RR, ZZ
 from diofant.domains.realfield import RealField
 from diofant.matrices import MatrixSymbol
-from diofant.polys.fields import field
 from diofant.polys.orderings import grevlex, grlex, lex
 from diofant.polys.polyclasses import DMP
 from diofant.polys.polyerrors import (CoercionFailed, ComputationFailed,
@@ -367,67 +366,90 @@ def test_Poly_one():
     assert Poly(x/2).one == Poly(1, x, domain=QQ)
 
 
-def test_Poly__unify():
-    pytest.raises(UnificationFailed, lambda: Poly(x)._unify(y))
-    pytest.raises(UnificationFailed, lambda: PurePoly(x)._unify(y))
-    pytest.raises(UnificationFailed, lambda: PurePoly(x)._unify(Poly(x, x, y)))
+def test_Poly_unify():
+    pytest.raises(UnificationFailed, lambda: Poly(x).unify(y))
+    pytest.raises(UnificationFailed, lambda: PurePoly(x).unify(y))
+    pytest.raises(UnificationFailed, lambda: PurePoly(x).unify(Poly(x, x, y)))
 
-    F3 = FF(3)
-
-    assert Poly(x, x, modulus=3)._unify(Poly(y, y, modulus=3))[2:] == (
-        DMP([[F3(1)], []], F3), DMP([[F3(1), F3(0)]], F3))
+    assert Poly(x, x, modulus=3).unify(Poly(y, y, modulus=3)) == \
+        (Poly(x, x, y, modulus=3), Poly(y, x, y, modulus=3))
     pytest.raises(NotImplementedError,
-                  lambda: Poly(x, x, modulus=3)._unify(Poly(y, y, modulus=5)))
+                  lambda: Poly(x, x, modulus=3).unify(Poly(y, y, modulus=5)))
 
-    assert Poly(y, x, y)._unify(Poly(x, x, modulus=3))[2:] == (DMP([[F3(1), F3(0)]], F3), DMP([[F3(1)], []], F3))
-    assert Poly(x, x, modulus=3)._unify(Poly(y, x, y))[2:] == (DMP([[F3(1)], []], F3), DMP([[F3(1), F3(0)]], F3))
+    assert Poly(y, x, y).unify(Poly(x, x, modulus=3)) == \
+        (Poly(y, x, y, modulus=3), Poly(x, x, y, modulus=3))
+    assert Poly(x, x, modulus=3).unify(Poly(y, x, y)) == \
+        (Poly(x, x, y, modulus=3), Poly(y, x, y, modulus=3))
 
-    assert Poly(x + 1, x)._unify(Poly(x + 2, x))[2:] == (DMP([1, 1], ZZ), DMP([1, 2], ZZ))
-    assert Poly(x + 1, x, domain='QQ')._unify(Poly(x + 2, x))[2:] == (DMP([1, 1], QQ), DMP([1, 2], QQ))
-    assert Poly(x + 1, x)._unify(Poly(x + 2, x, domain='QQ'))[2:] == (DMP([1, 1], QQ), DMP([1, 2], QQ))
+    assert Poly(x + 1, x).unify(Poly(x + 2, x)) == \
+        (Poly(x + 1, x, domain=ZZ), Poly(x + 2, x, domain=ZZ))
+    assert Poly(x + 1, x, domain=QQ).unify(Poly(x + 2, x)) == \
+        (Poly(x + 1, x, domain=QQ), Poly(x + 2, x, domain=QQ))
+    assert Poly(x + 1, x).unify(Poly(x + 2, x, domain=QQ)) == \
+        (Poly(x + 1, x, domain=QQ), Poly(x + 2, x, domain=QQ))
 
-    assert Poly(x + 1, x)._unify(Poly(x + 2, x, y))[2:] == (DMP([[1], [1]], ZZ), DMP([[1], [2]], ZZ))
-    assert Poly(x + 1, x, domain='QQ')._unify(Poly(x + 2, x, y))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
-    assert Poly(x + 1, x)._unify(Poly(x + 2, x, y, domain='QQ'))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
+    assert Poly(x + 1, x).unify(Poly(x + 2, x, y)) == \
+        (Poly(x + 1, x, y, domain=ZZ), Poly(x + 2, x, y, domain=ZZ))
+    assert Poly(x + 1, x, domain=QQ).unify(Poly(x + 2, x, y)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
+    assert Poly(x + 1, x).unify(Poly(x + 2, x, y, domain=QQ)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
 
-    assert Poly(x + 1, x, y)._unify(Poly(x + 2, x))[2:] == (DMP([[1], [1]], ZZ), DMP([[1], [2]], ZZ))
-    assert Poly(x + 1, x, y, domain='QQ')._unify(Poly(x + 2, x))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
-    assert Poly(x + 1, x, y)._unify(Poly(x + 2, x, domain='QQ'))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
+    assert Poly(x + 1, x, y).unify(Poly(x + 2, x)) == \
+        (Poly(x + 1, x, y, domain=ZZ), Poly(x + 2, x, y, domain=ZZ))
+    assert Poly(x + 1, x, y, domain=QQ).unify(Poly(x + 2, x)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
+    assert Poly(x + 1, x, y).unify(Poly(x + 2, x, domain=QQ)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
 
-    assert Poly(x + 1, x, y)._unify(Poly(x + 2, x, y))[2:] == (DMP([[1], [1]], ZZ), DMP([[1], [2]], ZZ))
-    assert Poly(x + 1, x, y, domain='QQ')._unify(Poly(x + 2, x, y))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
-    assert Poly(x + 1, x, y)._unify(Poly(x + 2, x, y, domain='QQ'))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
+    assert Poly(x + 1, x, y).unify(Poly(x + 2, x, y)) == \
+        (Poly(x + 1, x, y, domain=ZZ), Poly(x + 2, x, y, domain=ZZ))
+    assert Poly(x + 1, x, y, domain=QQ).unify(Poly(x + 2, x, y)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
+    assert Poly(x + 1, x, y).unify(Poly(x + 2, x, y, domain=QQ)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
 
-    assert Poly(x + 1, x)._unify(Poly(x + 2, y, x))[2:] == (DMP([[1, 1]], ZZ), DMP([[1, 2]], ZZ))
-    assert Poly(x + 1, x, domain='QQ')._unify(Poly(x + 2, y, x))[2:] == (DMP([[1, 1]], QQ), DMP([[1, 2]], QQ))
-    assert Poly(x + 1, x)._unify(Poly(x + 2, y, x, domain='QQ'))[2:] == (DMP([[1, 1]], QQ), DMP([[1, 2]], QQ))
+    assert Poly(x + 1, x).unify(Poly(x + 2, y, x)) == \
+        (Poly(x + 1, y, x, domain=ZZ), Poly(x + 2, y, x, domain=ZZ))
+    assert Poly(x + 1, x, domain=QQ).unify(Poly(x + 2, y, x)) == \
+        (Poly(x + 1, y, x, domain=QQ), Poly(x + 2, y, x, domain=QQ))
+    assert Poly(x + 1, x).unify(Poly(x + 2, y, x, domain=QQ)) == \
+        (Poly(x + 1, y, x, domain=QQ), Poly(x + 2, y, x, domain=QQ))
 
-    assert Poly(x + 1, y, x)._unify(Poly(x + 2, x))[2:] == (DMP([[1, 1]], ZZ), DMP([[1, 2]], ZZ))
-    assert Poly(x + 1, y, x, domain='QQ')._unify(Poly(x + 2, x))[2:] == (DMP([[1, 1]], QQ), DMP([[1, 2]], QQ))
-    assert Poly(x + 1, y, x)._unify(Poly(x + 2, x, domain='QQ'))[2:] == (DMP([[1, 1]], QQ), DMP([[1, 2]], QQ))
+    assert Poly(x + 1, y, x).unify(Poly(x + 2, x)) == \
+        (Poly(x + 1, y, x, domain=ZZ), Poly(x + 2, y, x, domain=ZZ))
+    assert Poly(x + 1, y, x, domain=QQ).unify(Poly(x + 2, x)) == \
+        (Poly(x + 1, y, x, domain=QQ), Poly(x + 2, y, x, domain=QQ))
+    assert Poly(x + 1, y, x).unify(Poly(x + 2, x, domain=QQ)) == \
+        (Poly(x + 1, y, x, domain=QQ), Poly(x + 2, y, x, domain=QQ))
 
-    assert Poly(x + 1, x, y)._unify(Poly(x + 2, y, x))[2:] == (DMP([[1], [1]], ZZ), DMP([[1], [2]], ZZ))
-    assert Poly(x + 1, x, y, domain='QQ')._unify(Poly(x + 2, y, x))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
-    assert Poly(x + 1, x, y)._unify(Poly(x + 2, y, x, domain='QQ'))[2:] == (DMP([[1], [1]], QQ), DMP([[1], [2]], QQ))
+    assert Poly(x + 1, x, y).unify(Poly(x + 2, y, x)) == \
+        (Poly(x + 1, x, y, domain=ZZ), Poly(x + 2, x, y, domain=ZZ))
+    assert Poly(x + 1, x, y, domain=QQ).unify(Poly(x + 2, y, x)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
+    assert Poly(x + 1, x, y).unify(Poly(x + 2, y, x, domain=QQ)) == \
+        (Poly(x + 1, x, y, domain=QQ), Poly(x + 2, x, y, domain=QQ))
 
-    assert Poly(x + 1, y, x)._unify(Poly(x + 2, x, y))[2:] == (DMP([[1, 1]], ZZ), DMP([[1, 2]], ZZ))
-    assert Poly(x + 1, y, x, domain='QQ')._unify(Poly(x + 2, x, y))[2:] == (DMP([[1, 1]], QQ), DMP([[1, 2]], QQ))
-    assert Poly(x + 1, y, x)._unify(Poly(x + 2, x, y, domain='QQ'))[2:] == (DMP([[1, 1]], QQ), DMP([[1, 2]], QQ))
+    assert Poly(x + 1, y, x).unify(Poly(x + 2, x, y)) == \
+        (Poly(x + 1, y, x, domain=ZZ), Poly(x + 2, y, x, domain=ZZ))
+    assert Poly(x + 1, y, x, domain=QQ).unify(Poly(x + 2, x, y)) == \
+        (Poly(x + 1, y, x, domain=QQ), Poly(x + 2, y, x, domain=QQ))
+    assert Poly(x + 1, y, x).unify(Poly(x + 2, x, y, domain=QQ)) == \
+        (Poly(x + 1, y, x, domain=QQ), Poly(x + 2, y, x, domain=QQ))
 
-    F, A, B = field("a,b", ZZ)
+    assert Poly(a*x, x, domain=ZZ.poly_ring(a)).unify(Poly(a*b*x, x, domain=ZZ.frac_field(a, b))) == \
+        (Poly(a*x, x, domain=ZZ.frac_field(a, b)), Poly(a*b*x, x, domain=ZZ.frac_field(a, b)))
 
-    assert Poly(a*x, x, domain='ZZ[a]')._unify(Poly(a*b*x, x, domain='ZZ(a,b)'))[2:] == \
-        (DMP([A, F(0)], F), DMP([A*B, F(0)], F))
+    assert Poly(a*x, x, domain=ZZ.frac_field(a)).unify(Poly(a*b*x, x, domain=ZZ.frac_field(a, b))) == \
+        (Poly(a*x, x, domain=ZZ.frac_field(a, b)), Poly(a*b*x, x, domain=ZZ.frac_field(a, b)))
 
-    assert Poly(a*x, x, domain='ZZ(a)')._unify(Poly(a*b*x, x, domain='ZZ(a,b)'))[2:] == \
-        (DMP([A, F(0)], F), DMP([A*B, F(0)], F))
+    pytest.raises(CoercionFailed, lambda: Poly(Poly(x**2 + x**2*z, y, field=True),
+                                               domain=ZZ.frac_field(x)))
 
-    pytest.raises(CoercionFailed, lambda: Poly(Poly(x**2 + x**2*z, y, field=True), domain='ZZ(x)'))
+    f = Poly(t**2 + t/3 + x, t, domain=QQ.frac_field(x))
+    g = Poly(t**2 + t/3 + x, t, domain=QQ.poly_ring(x))
 
-    f = Poly(t**2 + t/3 + x, t, domain='QQ(x)')
-    g = Poly(t**2 + t/3 + x, t, domain='QQ[x]')
-
-    assert f._unify(g)[2:] == (f.rep, f.rep)
+    assert f.unify(g) == (f, f)
 
 
 def test_Poly_free_symbols():
