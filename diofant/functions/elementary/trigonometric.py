@@ -939,7 +939,6 @@ class tan(TrigonometricFunction):
     def _eval_expand_trig(self, **hints):
         from .complexes import im, re
         arg = self.args[0]
-        x = None
         if arg.is_Add:
             from ...polys import symmetric_poly
             n = len(arg.args)
@@ -1377,7 +1376,6 @@ class cot(ReciprocalTrigonometricFunction):
     def _eval_expand_trig(self, **hints):
         from .complexes import im, re
         arg = self.args[0]
-        x = None
         if arg.is_Add:
             from ...polys import symmetric_poly
             n = len(arg.args)

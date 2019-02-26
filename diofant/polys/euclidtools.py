@@ -946,8 +946,7 @@ def dmp_zz_heu_gcd(f, g, u, K):
 
     ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
     f, g = map(ring.from_dense, (f, g))
-    h, cff, cfg = heugcd(f, g)
-    return tuple(map(ring.to_dense, f.cofactors(g)))
+    return tuple(map(ring.to_dense, heugcd(f, g)))
 
 
 def dmp_qq_heu_gcd(f, g, u, K0):
@@ -1002,8 +1001,7 @@ def _dmp_zz_modgcd(f, g, u, K):
     from .modulargcd import modgcd
     ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
     f, g = map(ring.from_dense, (f, g))
-    h, cff, cfg = modgcd(f, g)
-    return tuple(map(ring.to_dense, f.cofactors(g)))
+    return tuple(map(ring.to_dense, modgcd(f, g)))
 
 
 _gcd_zz_methods = {'modgcd': _dmp_zz_modgcd,
@@ -1014,8 +1012,7 @@ def _dmp_aa_modgcd(f, g, u, K):
     from .modulargcd import func_field_modgcd
     ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
     f, g = map(ring.from_dense, (f, g))
-    h, cff, cfg = func_field_modgcd(f, g)
-    return tuple(map(ring.to_dense, f.cofactors(g)))
+    return tuple(map(ring.to_dense, func_field_modgcd(f, g)))
 
 
 _gcd_aa_methods = {'modgcd': _dmp_aa_modgcd,
