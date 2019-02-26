@@ -828,9 +828,6 @@ def unrad(eq, *syms, **flags):
                 return _canonical(eq, cov)
             except NotImplementedError:  # pragma: no cover
                 pass
-        else:
-            # no longer consider integer powers as generators
-            gens = [g for g in gens if _Q(g) != 1]
 
         if len(rterms) == 2:
             if not others:
@@ -841,7 +838,7 @@ def unrad(eq, *syms, **flags):
                 r0, r1 = rterms
                 if flags.get('_reverse', False):
                     r1, r0 = r0, r1
-                i0 = _rads0, _bases0, lcm0 = _rads_bases_lcm(r0.as_poly())
+                i0 = _rads_bases_lcm(r0.as_poly())
                 i1 = _rads1, _bases1, lcm1 = _rads_bases_lcm(r1.as_poly())
                 for reverse in range(2):
                     if reverse:
