@@ -81,6 +81,11 @@ def test_dmp_integrate_in():
 
     pytest.raises(IndexError, lambda: R.dmp_integrate_in(f, 2, -1))
 
+    R, x, y = ring('x y', QQ)
+
+    # issue sympy/sympy#12325
+    pytest.raises(IndexError, lambda: R.dmp_integrate_in(x, 1, -1))
+
 
 def test_dmp_diff_in():
     R, x = ring('x', ZZ)
