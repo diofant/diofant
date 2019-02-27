@@ -1004,6 +1004,7 @@ def to_nnf(expr, simplify=True):
     (a | ~b | (a & ~b)) & (b | ~a | (b & ~a))
 
     """
+    expr = sympify(expr)
     if is_nnf(expr, simplify):
         return expr
     return expr.to_nnf(simplify)

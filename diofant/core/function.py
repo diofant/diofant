@@ -520,7 +520,7 @@ class Function(Application, Expr):
             # where 'logx' is given in the argument
             a = [t._eval_nseries(x, n, logx) for t in args]
             z = [r - r0 for (r, r0) in zip(a, a0)]
-            p = [Dummy() for t in z]
+            p = [Dummy()]*len(z)
             q = []
             v = None
             for ai, zi, pi in zip(a0, z, p):

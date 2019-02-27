@@ -1743,6 +1743,9 @@ class PolyElement(DomainElement, CantSympify, dict):
         for coeff in self.values():
             cont = gcd(cont, coeff)
 
+            if cont == domain.one:
+                break
+
         return cont
 
     def primitive(self):

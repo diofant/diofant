@@ -61,7 +61,6 @@ MPMATH_TRANSLATIONS = {
     "Chi": "chi",
     "Si": "si",
     "Ci": "ci",
-    "ceiling": "ceil",
     "Ynm": "spherharm",
     "RisingFactorial": "rf",
     "FallingFactorial": "ff",

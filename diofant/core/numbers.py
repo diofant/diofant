@@ -2273,7 +2273,7 @@ class Exp1(NumberSymbol, metaclass=SingletonWithManagedProperties):
 
             # but it can't be multiplied by oo
             if coeff in (oo, -oo):
-                return None
+                return
 
             coeffs, log_term = [coeff], None
             for term in Mul.make_args(terms):
@@ -2281,11 +2281,11 @@ class Exp1(NumberSymbol, metaclass=SingletonWithManagedProperties):
                     if log_term is None:
                         log_term = term.args[0]
                     else:
-                        return None
+                        return
                 elif term.is_comparable:
                     coeffs.append(term)
                 else:
-                    return None
+                    return
 
             return log_term**Mul(*coeffs) if log_term else None
         elif arg.is_Add:

@@ -263,7 +263,6 @@ def default_sort_key(item, order=None):
     """
     from . import S, Basic
     from .sympify import sympify, SympifyError
-    from .compatibility import iterable
 
     if isinstance(item, Basic):
         return item.sort_key(order=order)
