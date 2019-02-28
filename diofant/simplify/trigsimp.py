@@ -1131,16 +1131,16 @@ def _futrig(e, **kwargs):
                 TR3,  # canonical angles
                 TR1,  # sec-csc -> cos-sin
                 TR12,  # expand tan of sum
-                lambda x: _eapply(factor, x, trigs),
+                lambda x: _eapply(lambda e: factor(e, extension=False), x, trigs),
                 TR2,  # tan-cot -> sin-cos
                 [identity, lambda x: _eapply(_mexpand, x, trigs)],
                 TR2i,  # sin-cos ratio -> tan
-                lambda x: _eapply(lambda i: factor(i.normal()), x, trigs),
+                lambda x: _eapply(lambda i: factor(i.normal(), extension=False), x, trigs),
                 TR14,  # factored identities
                 TR5,  # sin-pow -> cos_pow
                 TR10,  # sin-cos of sums -> sin-cos prod
                 TR11, TR6,  # reduce double angles and rewrite cos pows
-                lambda x: _eapply(factor, x, trigs),
+                lambda x: _eapply(lambda e: factor(e, extension=False), x, trigs),
                 TR14,  # factored powers of identities
                 [identity, lambda x: _eapply(_mexpand, x, trigs)],
                 TRmorrie,

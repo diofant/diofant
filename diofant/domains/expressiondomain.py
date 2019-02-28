@@ -115,7 +115,7 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
 
         def gcd(self, other):
             from ..polys import gcd
-            return self.__class__(gcd(self.ex, self.__class__(other).ex))
+            return self.__class__(gcd(self.ex, self.__class__(other).ex, extension=False))
 
         def lcm(self, other):
             from ..polys import lcm
