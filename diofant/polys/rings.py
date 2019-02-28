@@ -620,8 +620,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             for k in self:
                 if not almosteq(self[k], other[k], tolerance):
                     return False
-            else:
-                return True
+            return True
         elif len(self) > 1:
             return False
         else:
@@ -2176,8 +2175,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             while len(x) > 1:
                 f = f.subs([x[0]])
                 del x[0]
-            else:
-                x, a = x[0]
+            x, a = x[0]
         else:
             raise ValueError("subs argument should be an iterable of pairs")
 

@@ -526,8 +526,8 @@ class LatexPrinter(Printer):
                 else:
                     multiplicity.append((current, i))
                     current, i = symbol, 1
-            else:
-                multiplicity.append((current, i))
+
+            multiplicity.append((current, i))
 
             for x, i in multiplicity:
                 if i == 1:

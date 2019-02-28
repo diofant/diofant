@@ -35,8 +35,7 @@ def dmp_sqf_p(f, u, K):
             g = dmp_gcd(g, dmp_diff_in(f, 1, i, u, K), u, K)
             if dmp_ground_p(g, None, u):
                 return True
-        else:
-            return False
+        return False
 
 
 def dmp_sqf_norm(f, u, K):

@@ -1201,8 +1201,7 @@ def _aresame(a, b):
                     return False
             else:
                 return False
-    else:
-        return True
+    return True
 
 
 class preorder_traversal:

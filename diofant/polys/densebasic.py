@@ -147,16 +147,14 @@ def dmp_strip(f, u):
         for i, c in enumerate(f):
             if c:
                 return f[i:]
-        else:
-            return dmp_zero(u)
+        return dmp_zero(u)
 
     v = u - 1
 
     for i, c in enumerate(f):
         if not dmp_zero_p(c, v):
             return f[i:]
-    else:
-        return dmp_zero(u)
+    return dmp_zero(u)
 
 
 def dmp_validate(f, K=None):
