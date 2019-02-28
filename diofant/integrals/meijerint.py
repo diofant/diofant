@@ -1422,7 +1422,7 @@ def _rewrite_single(f, x, recursive=True):
 
     if isinstance(f, meijerg):
         from ..polys import factor
-        coeff, m = factor(f.argument, x).as_coeff_mul(x)
+        coeff, m = factor(f.argument, x, extension=False).as_coeff_mul(x)
         if len(m) > 1:
             return
         m = m[0]

@@ -800,8 +800,8 @@ def test_M22():
 
 
 def test_M23():
-    assert solve(x - 1/sqrt(1 + x**2)) == [{x: -I*sqrt(Rational(1, 2) + sqrt(5)/2)},
-                                           {x: sqrt(Rational(-1, 2) + sqrt(5)/2)}]
+    assert solve(x - 1/sqrt(1 + x**2)) == [{x: sqrt(2)*sqrt(-1 + sqrt(5))/2},
+                                           {x: -sqrt(2)*I*sqrt(1 + sqrt(5))/2}]
 
 
 def test_M24():

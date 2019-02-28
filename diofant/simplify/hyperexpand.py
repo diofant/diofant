@@ -2017,7 +2017,7 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
         debug('  Recognised polynomial.')
         p = apply_operators(res, ops, lambda f: z0*f.diff(z0))
         p = apply_operators(p*premult, ops0, lambda f: z0*f.diff(z0))
-        return unpolarify(simplify(p).subs({z0: z}))
+        return unpolarify(simplify(unpolarify(p)).subs({z0: z}))
 
     # Try to recognise a shifted sum.
     p = Integer(0)
