@@ -339,7 +339,6 @@ def TR2i(rv, half=False):
                         d[k] = v
                     else:
                         ddone.append((k, v))
-                del newk
         factorize(n, ndone)
         factorize(d, ddone)
 
