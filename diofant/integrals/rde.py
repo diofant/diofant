@@ -718,9 +718,6 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
                 raise NotImplementedError("Other Poly (P)RDE cancellation "
                                           "cases are not yet implemented (%s)." % DE.case)
 
-        if parametric:
-            raise NotImplementedError("Remaining cases for Poly PRDE not yet "
-                                      "implemented.")
         raise NotImplementedError("Remaining cases for Poly RDE not yet "
                                   "implemented.")
 
