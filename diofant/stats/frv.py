@@ -291,8 +291,8 @@ class FinitePSpace(PSpace):
             if x < cum_prob:
                 # return dictionary mapping RandomSymbols to values
                 return dict(zip(expr, value))
-        else:  # pragma: no cover
-            assert False, "We should never have gotten to this point"
+
+        assert False, "We should never have gotten to this point"  # pragma: no cover
 
 
 class SingleFinitePSpace(SinglePSpace, FinitePSpace):

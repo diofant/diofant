@@ -1218,9 +1218,9 @@ def dmp_content(f, u, K):
             break
 
     if K.is_negative(dmp_ground_LC(cont, v, K)):
-        return dmp_neg(cont, v, K)
-    else:
-        return cont
+        cont = dmp_neg(cont, v, K)
+
+    return cont
 
 
 def dmp_primitive(f, u, K):
@@ -1241,7 +1241,7 @@ def dmp_primitive(f, u, K):
     if dmp_zero_p(f, u) or dmp_one_p(cont, v, K):
         return cont, f
     else:
-        return cont, [ dmp_quo(c, cont, v, K) for c in f ]
+        return cont, [dmp_quo(c, cont, v, K) for c in f]
 
 
 def dmp_cancel(f, g, u, K, include=True):

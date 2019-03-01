@@ -4,10 +4,8 @@ import string
 
 from ..logic.boolalg import Boolean
 from .assumptions import StdFactKB
-from .basic import Basic
 from .cache import cacheit
 from .expr import AtomicExpr, Expr
-from .function import FunctionClass
 from .logic import fuzzy_bool
 from .singleton import S
 from .sympify import sympify
@@ -639,29 +637,11 @@ def var(names, **args):
     symbols
 
     """
-    def traverse(symbols, frame):
-        """Recursively inject symbols to the global namespace."""
-        for symbol in symbols:
-            if isinstance(symbol, Basic):
-                frame.f_globals[symbol.name] = symbol
-            elif isinstance(symbol, FunctionClass):
-                frame.f_globals[symbol.__name__] = symbol
-            else:
-                traverse(symbol, frame)
+    from ..utilities import flatten
+    from ..utilities.magic import pollute
 
-    from inspect import currentframe
-    frame = currentframe().f_back
+    ret = symbols(names, **args)
+    syms = flatten([ret])
+    pollute([str(_) for _ in syms], syms)
 
-    try:
-        syms = symbols(names, **args)
-
-        if isinstance(syms, Basic):
-            frame.f_globals[syms.name] = syms
-        elif isinstance(syms, FunctionClass):
-            frame.f_globals[syms.__name__] = syms
-        else:
-            traverse(syms, frame)
-    finally:
-        del frame  # break cyclic dependencies as stated in inspect docs
-
-    return syms
+    return ret

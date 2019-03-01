@@ -66,7 +66,7 @@ def dup_sign_variations(f, K):
     prev, k = K.zero, 0
 
     for coeff in f:
-        if K.is_negative(coeff*prev):
+        if coeff*prev < 0:
             k += 1
 
         if coeff:
@@ -1818,8 +1818,7 @@ class ComplexInterval:
                 if len([1 for _ in r if ((not i.conj and i.ay < _[0][0]) or
                                          (i.conj and _[0][1] < i.by)) and l < i.bx]) != 1:
                     return False
-            else:
-                return True
+            return True
         else:
             return all(_count_roots(i.f1, i.f2, i.domain, (l, i.ay), (r, i.by)) == 1
                        for i in (self, other))

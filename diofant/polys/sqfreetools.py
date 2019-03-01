@@ -1,6 +1,6 @@
 """Square-free decomposition algorithms and related tools. """
 
-from .densearith import dmp_mul, dmp_neg, dmp_quo, dmp_sub
+from .densearith import dmp_mul, dmp_quo, dmp_sub
 from .densebasic import (dmp_convert, dmp_ground_LC, dmp_ground_p, dmp_inject,
                          dmp_one_p, dmp_raise, dmp_swap, dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff_in, dmp_ground_monic,
@@ -35,8 +35,7 @@ def dmp_sqf_p(f, u, K):
             g = dmp_gcd(g, dmp_diff_in(f, 1, i, u, K), u, K)
             if dmp_ground_p(g, None, u):
                 return True
-        else:
-            return False
+        return False
 
 
 def dmp_sqf_norm(f, u, K):
@@ -103,9 +102,6 @@ def dmp_sqf_part(f, u, K):
 
     if dmp_zero_p(f, u):
         return f
-
-    if K.is_negative(dmp_ground_LC(f, u, K)):
-        f = dmp_neg(f, u, K)
 
     gcd = f
     for i in range(u + 1):

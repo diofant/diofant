@@ -404,10 +404,10 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         # NOTE The following is simpler and has less assumptions on the
         #      groebner basis algorithm. If the above turns out to be broken,
         #      use this.
-        return Add(*[Mul(*[a**b for a, b in zip(freegens, monom)]) *
-                     ratsimpmodprime(coeff/denom, list(G), order=order,
-                                     gens=gens, quick=quick, domain=ZZ)
-                     for monom, coeff in num.terms()])
+        # return Add(*[Mul(*[a**b for a, b in zip(freegens, monom)]) *
+        #              ratsimpmodprime(coeff/denom, list(G), order=order,
+        #                              gens=gens, quick=quick, domain=ZZ)
+        #              for monom, coeff in num.terms()])
     else:
         return ratsimpmodprime(
             expr, list(G), order=order, gens=freegens+gens,

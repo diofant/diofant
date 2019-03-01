@@ -348,7 +348,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
 
     F = dup_sub(g, dup_lshift(h, 1, K), K)
 
-    if K.is_negative(dmp_LC(F, K)):
+    if dmp_LC(F, K) < 0:
         F = dmp_neg(F, 0, K)
 
     if F == f:
@@ -356,7 +356,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
 
     g = dup_mirror(f, K)
 
-    if K.is_negative(dmp_LC(g, K)):
+    if dmp_LC(g, K) < 0:
         g = dmp_neg(g, 0, K)
 
     if F == g and dup_cyclotomic_p(g, K):

@@ -620,8 +620,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             for k in self:
                 if not almosteq(self[k], other[k], tolerance):
                     return False
-            else:
-                return True
+            return True
         elif len(self) > 1:
             return False
         else:
@@ -1746,13 +1745,14 @@ class PolyElement(DomainElement, CantSympify, dict):
             if cont == domain.one:
                 break
 
+        if domain.is_negative(self.LC):
+            cont = -cont
+
         return cont
 
     def primitive(self):
         """Returns content and a primitive polynomial."""
         cont = self.content()
-        if self.ring.domain.is_negative(self.LC):
-            cont = -cont
         prim = self.copy()
         if not prim.is_zero:
             prim = prim.quo_ground(cont)
@@ -2176,8 +2176,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             while len(x) > 1:
                 f = f.subs([x[0]])
                 del x[0]
-            else:
-                x, a = x[0]
+            x, a = x[0]
         else:
             raise ValueError("subs argument should be an iterable of pairs")
 
