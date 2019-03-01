@@ -1745,13 +1745,14 @@ class PolyElement(DomainElement, CantSympify, dict):
             if cont == domain.one:
                 break
 
+        if domain.is_negative(self.LC):
+            cont = -cont
+
         return cont
 
     def primitive(self):
         """Returns content and a primitive polynomial."""
         cont = self.content()
-        if self.ring.domain.is_negative(self.LC):
-            cont = -cont
         prim = self.copy()
         if not prim.is_zero:
             prim = prim.quo_ground(cont)

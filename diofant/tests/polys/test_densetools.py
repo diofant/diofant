@@ -379,7 +379,7 @@ def test_dmp_ground_content():
 
     assert R.dmp_ground_content(0) == 0
     assert R.dmp_ground_content(+1) == 1
-    assert R.dmp_ground_content(-1) == 1
+    assert R.dmp_ground_content(-1) == -1
     assert R.dmp_ground_content(x + 1) == 1
     assert R.dmp_ground_content(2*x + 2) == 2
     assert R.dmp_ground_content(x**2 + 2*x + 1) == 1
@@ -397,7 +397,7 @@ def test_dmp_ground_content():
 
     assert R.dmp_ground_content(0) == 0
     assert R.dmp_ground_content(+1) == 1
-    assert R.dmp_ground_content(-1) == 1
+    assert R.dmp_ground_content(-1) == -1
     assert R.dmp_ground_content(x + 1) == 1
     assert R.dmp_ground_content(2*x + 2) == 2
     assert R.dmp_ground_content(x**2 + 2*x + 1) == 1
@@ -433,13 +433,13 @@ def test_dmp_ground_content():
 
     f = f_polys()[4]
 
-    assert R.dmp_ground_content(f) == 1
-    assert R.dmp_ground_content(6*f) == 6
+    assert R.dmp_ground_content(f) == -1
+    assert R.dmp_ground_content(6*f) == -6
 
     f = f_polys()[5]
 
-    assert R.dmp_ground_content(f) == 1
-    assert R.dmp_ground_content(7*f) == 7
+    assert R.dmp_ground_content(f) == -1
+    assert R.dmp_ground_content(7*f) == -7
 
     R, x, y, z, t = ring('x y, z t', ZZ)
 
