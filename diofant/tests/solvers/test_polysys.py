@@ -185,7 +185,7 @@ def test_solve_poly_system2():
               y: -sqrt(z**2/(z - 1)**2) - 1/(z - 1)}, {x: 0, y: 1, z: 1}])
     assert solve_poly_system((x, y - 1, z)) == [{x: 0, y: 1, z: 0}]
 
-    V = (A31, A32, A21, B1, B2, B3, C3, C2) = symbols('A31 A32 A21 B1 B2 B3 C3 C2')
+    V = A31, A32, A21, B1, B2, B3, C3, C2 = symbols('A31 A32 A21 B1 B2 B3 C3 C2')
     S = (C2 - A21, C3 - A31 - A32, B1 + B2 + B3 - 1,
          B2*C2 + B3*C3 - Rational(1, 2), B2*C2**2 + B3*C3**2 - Rational(1, 3),
          B3*A32*C2 - Rational(1, 6))
@@ -202,7 +202,7 @@ def test_solve_poly_system2():
               A31: (8*B3 - 3)/(12*B3), A32: 1/(4*B3), B1: Rational(1, 4),
               B2: -B3 + Rational(3, 4), C2: Rational(2, 3), C3: Rational(2, 3)}])
 
-    V = (ax, bx, cx, gx, jx, lx, mx, nx, q) = symbols('ax bx cx gx jx lx mx nx q')
+    V = ax, bx, cx, gx, jx, lx, mx, nx, q = symbols('ax bx cx gx jx lx mx nx q')
     S = (ax*q - lx*q - mx, ax - gx*q - lx, bx*q**2 + cx*q - jx*q - nx,
          q*(-ax*q + lx*q + mx), q*(-ax + gx*q + lx))
     assert solve_poly_system(S, *V) == [{ax: (lx*q + mx)/q,
