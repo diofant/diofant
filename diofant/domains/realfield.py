@@ -97,6 +97,9 @@ class RealField(Field, CharacteristicZero, SimpleDomain):
     def _from_GMPYRationalField(self, element, base):
         return self.dtype(int(element.numerator)) / int(element.denominator)
 
+    def _from_AlgebraicField(self, element, base):
+        return self.from_expr(base.to_expr(element))
+
     def _from_RealField(self, element, base):
         if self == base:
             return element
