@@ -36,14 +36,14 @@ Examples
 
 """
 
-from .rv_interface import (cdf, covariance, density, dependent, E, given,  # noqa: F401
+from .rv_interface import (cdf, covariance, density, dependent, E, given,
                            independent, P, pspace, random_symbols, sample,
                            sample_iter, skewness, std, variance, where,
                            correlation, moment, cmoment, smoment,
                            sampling_density)
-from .frv_types import (Bernoulli, Binomial, Coin, Die, DiscreteUniform,  # noqa: F401
+from .frv_types import (Bernoulli, Binomial, Coin, Die, DiscreteUniform,
                         FiniteRV, Hypergeometric, Rademacher)
-from .crv_types import (ContinuousRV, Arcsin, Benini, Beta, BetaPrime,  # noqa: F401
+from .crv_types import (ContinuousRV, Arcsin, Benini, Beta, BetaPrime,
                         Cauchy, Chi, ChiNoncentral, ChiSquared,
                         Dagum, Erlang, Exponential, FDistribution, FisherZ,
                         Frechet, Gamma, GammaInverse, Kumaraswamy, Laplace,
@@ -51,4 +51,4 @@ from .crv_types import (ContinuousRV, Arcsin, Benini, Beta, BetaPrime,  # noqa: 
                         Pareto, QuadraticU, RaisedCosine, Rayleigh,
                         StudentT, Triangular, Uniform, UniformSum,
                         VonMises, Weibull, WignerSemicircle)
-from .drv_types import Geometric, Poisson  # noqa: F401
+from .drv_types import Geometric, Poisson
