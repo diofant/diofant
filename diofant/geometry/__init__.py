@@ -11,12 +11,12 @@ and 3-dimensional Euclidean space.
 
 """
 
-from .point import Point, Point2D, Point3D
-from .line import Line, Ray, Segment
-from .line3d import Line3D, Segment3D, Ray3D
-from .plane import Plane
-from .ellipse import Ellipse, Circle
-from .polygon import Polygon, RegularPolygon, Triangle, rad, deg
-from .util import are_similar, centroid, convex_hull, idiff, intersection
-from .exceptions import GeometryError
 from .curve import Curve
+from .ellipse import Circle, Ellipse
+from .exceptions import GeometryError
+from .line import Line, Ray, Segment
+from .line3d import Line3D, Ray3D, Segment3D
+from .plane import Plane
+from .point import Point, Point2D, Point3D
+from .polygon import Polygon, RegularPolygon, Triangle, deg, rad
+from .util import are_similar, centroid, convex_hull, idiff, intersection

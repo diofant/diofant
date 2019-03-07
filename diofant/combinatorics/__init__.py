@@ -2,16 +2,16 @@
 Combinatorics package.
 """
 
-from .permutations import Permutation, Cycle
-from .prufer import Prufer
-from .generators import cyclic, alternating, symmetric, dihedral
-from .subsets import Subset
-from .partitions import (Partition, IntegerPartition, RGS_rank,
-                         RGS_unrank, RGS_enum)
-from .polyhedron import (Polyhedron, tetrahedron, cube, octahedron,
-                         dodecahedron, icosahedron)
-from .perm_groups import PermutationGroup
-from .group_constructs import DirectProduct
+from .generators import alternating, cyclic, dihedral, symmetric
 from .graycode import GrayCode
-from .named_groups import (SymmetricGroup, DihedralGroup, CyclicGroup,
-                           AlternatingGroup, AbelianGroup, RubikGroup)
+from .group_constructs import DirectProduct
+from .named_groups import (AbelianGroup, AlternatingGroup, CyclicGroup,
+                           DihedralGroup, RubikGroup, SymmetricGroup)
+from .partitions import (IntegerPartition, Partition, RGS_enum, RGS_rank,
+                         RGS_unrank)
+from .perm_groups import PermutationGroup
+from .permutations import Cycle, Permutation
+from .polyhedron import (Polyhedron, cube, dodecahedron, icosahedron,
+                         octahedron, tetrahedron)
+from .prufer import Prufer
+from .subsets import Subset

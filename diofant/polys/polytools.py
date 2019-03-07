@@ -3,7 +3,6 @@
 import mpmath
 from mpmath.libmp.libhyper import NoConvergence
 
-from . import polyoptions as options
 from ..core import (Add, Basic, Derivative, Dummy, E, Expr, I, Integer, Mul, S,
                     Tuple, oo, preorder_traversal, sympify)
 from ..core.compatibility import default_sort_key, iterable
@@ -13,6 +12,7 @@ from ..core.relational import Relational
 from ..domains import FF, QQ, ZZ
 from ..logic.boolalg import BooleanAtom
 from ..utilities import group, sift
+from . import polyoptions as options
 from .constructor import construct_domain
 from .fglmtools import matrix_fglm
 from .groebnertools import groebner as _groebner

@@ -1,10 +1,10 @@
-from .. import ShapeError
 from ...core import AtomicExpr, Expr, Integer, S, Symbol, Tuple, sympify
 from ...core.assumptions import StdFactKB
 from ...core.decorators import _sympifyit, call_highest_priority
 from ...core.logic import fuzzy_bool
 from ...functions import adjoint, conjugate
 from ...simplify import simplify
+from ..matrices import ShapeError
 
 
 class MatrixExpr(Expr):

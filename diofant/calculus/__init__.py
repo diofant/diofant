@@ -3,6 +3,6 @@ Diofant modules tree.
 """
 
 from .euler import euler_equations
+from .finite_diff import apply_finite_diff, as_finite_diff, finite_diff_weights
+from .optimization import maximize, minimize
 from .singularities import singularities
-from .finite_diff import finite_diff_weights, apply_finite_diff, as_finite_diff
-from .optimization import minimize, maximize

@@ -2,12 +2,10 @@
 Diofant.
 """
 
-from .iterables import (flatten, group, take, subsets,
-                        variations, numbered_symbols, capture, dict_merge,
-                        postorder_traversal, prefixes, postfixes, sift,
-                        topological_sort, unflatten, has_dups, has_variety,
-                        reshape, default_sort_key, ordered, cantor_product)
-
-from .misc import filldedent
-
+from .iterables import (cantor_product, capture, default_sort_key, dict_merge,
+                        flatten, group, has_dups, has_variety,
+                        numbered_symbols, ordered, postfixes,
+                        postorder_traversal, prefixes, reshape, sift, subsets,
+                        take, topological_sort, unflatten, variations)
 from .lambdify import lambdify
+from .misc import filldedent

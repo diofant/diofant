@@ -1,26 +1,21 @@
 """Implementation of mathematical domains. """
 
-from . import domain
-from . import finitefield
-from . import integerring
-from . import rationalfield
-from . import realfield
-from . import complexfield
-from . import algebraicfield
-from . import expressiondomain
-
-from .domain import Domain
-from .finitefield import (FiniteField, GMPYFiniteField as FF_gmpy,
-                          PythonFiniteField as FF_python)
-from .integerring import IntegerRing,  ZZ_gmpy, ZZ_python
-from .rationalfield import RationalField, QQ_gmpy, QQ_python
-from .realfield import RR, RealField
-from .complexfield import CC, ComplexField
+from ..core.compatibility import GROUND_TYPES
+from . import (algebraicfield, complexfield, domain, expressiondomain,
+               finitefield, integerring, rationalfield, realfield)
 from .algebraicfield import (AlgebraicField, ComplexAlgebraicField,
                              RealAlgebraicField)
+from .complexfield import CC, ComplexField
+from .domain import Domain
 from .expressiondomain import EX, ExpressionDomain
+from .finitefield import FiniteField
+from .finitefield import GMPYFiniteField as FF_gmpy
+from .finitefield import PythonFiniteField as FF_python
 from .groundtypes import PythonRational
-from ..core.compatibility import GROUND_TYPES
+from .integerring import IntegerRing, ZZ_gmpy, ZZ_python
+from .rationalfield import QQ_gmpy, QQ_python, RationalField
+from .realfield import RR, RealField
+
 
 _GROUND_TYPES_MAP = {'gmpy': (FF_gmpy, ZZ_gmpy, QQ_gmpy),
                      'python': (FF_python, ZZ_python, QQ_python)}

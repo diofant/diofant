@@ -1,4 +1,3 @@
-from ..calculus import singularities
 from ..core import Eq, Ge, Gt, Le, Lt, Ne, S, diff, nan, oo, sympify
 from ..core.compatibility import is_sequence, ordered
 from ..functions import Min
@@ -6,6 +5,7 @@ from ..matrices import eye, zeros
 from ..series import limit
 from ..sets import Interval
 from ..solvers import reduce_inequalities, solve
+from .singularities import singularities
 
 
 __all__ = 'minimize', 'maximize'
