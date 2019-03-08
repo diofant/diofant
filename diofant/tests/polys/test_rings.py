@@ -925,10 +925,10 @@ def test_PolyElement_div():
     _, u = ring("u", ZZ)
     R, t = ring("t", ZZ)
 
-    pytest.raises(ValueError, lambda: u.div(t))
-    pytest.raises(ZeroDivisionError, lambda: R.one.div(R.zero))
+    pytest.raises(ValueError, lambda: u.div([t]))
+    pytest.raises(ZeroDivisionError, lambda: R.one.div([R.zero]))
 
-    assert R.zero.div([t**2 + 1]) == ([], R.zero)
+    assert R.zero.div([t**2 + 1]) == ([R.zero], R.zero)
 
     R, x = ring("x", ZZ, grlex)
 

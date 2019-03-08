@@ -428,7 +428,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             return
 
     def _from_FractionField(self, a, K0):
-        q, r = a.numerator.div(a.denominator)
+        (q, *_), r = a.numerator.div([a.denominator])
 
         if r.is_zero:
             return self.convert(q, K0.field.ring)
@@ -1197,7 +1197,8 @@ class PolyElement(DomainElement, CantSympify, dict):
         if not other:
             raise ZeroDivisionError("polynomial division")
         elif isinstance(other, ring.dtype):
-            return self.div(other)
+            (q, *_), r = self.div([other])
+            return q, r
         elif isinstance(other, PolyElement):
             if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
                 pass
@@ -1299,8 +1300,6 @@ class PolyElement(DomainElement, CantSympify, dict):
                     monom = monomial_div(a_lm, b_lm)
                 if monom is not None:
                     return monom, domain_quo(a_lc, b_lc)
-                else:
-                    return
         else:
             def term_div(a_lm_a_lc, b_lm_b_lc):
                 a_lm, a_lc = a_lm_a_lc
@@ -1311,8 +1310,6 @@ class PolyElement(DomainElement, CantSympify, dict):
                     monom = monomial_div(a_lm, b_lm)
                 if not (monom is None or a_lc % b_lc):
                     return monom, domain_quo(a_lc, b_lc)
-                else:
-                    return
 
         return term_div
 
@@ -1342,20 +1339,12 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         ring = self.ring
-        ret_single = False
-        if isinstance(fv, PolyElement):
-            ret_single = True
-            fv = [fv]
         if any(not f for f in fv):
             raise ZeroDivisionError("polynomial division")
+        if any(f.ring != ring for f in fv):
+            raise ValueError('self and f must have the same ring')
         if not self:
-            if ret_single:
-                return ring.zero, ring.zero
-            else:
-                return [], ring.zero
-        for f in fv:
-            if f.ring != ring:
-                raise ValueError('self and f must have the same ring')
+            return [ring.zero], ring.zero
         s = len(fv)
         qv = [ring.zero for i in range(s)]
         p = self.copy()
@@ -1379,12 +1368,8 @@ class PolyElement(DomainElement, CantSympify, dict):
                 expv = p.leading_expv()
                 r = r._iadd_monom((expv, p[expv]))
                 del p[expv]
-        if expv == ring.zero_monom:
-            r += p
-        if ret_single:
-            return qv[0], r
-        else:
-            return qv, r
+        r._hash = None
+        return qv, r
 
     def exquo(self, other):
         q, r = divmod(self, other)
