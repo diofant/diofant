@@ -6,7 +6,6 @@ import numbers
 import mpmath
 import mpmath.libmp as mlib
 
-from ..utilities import filldedent
 from .cache import cacheit
 from .compatibility import GROUND_TYPES, HAS_GMPY, as_int, gmpy
 from .containers import Tuple
@@ -225,6 +224,7 @@ def mod_inverse(a, m):
     * https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
 
     """
+    from ..utilities import filldedent
     c = None
     try:
         a, m = as_int(a), as_int(m)

@@ -551,6 +551,8 @@ def test_Domain_convert():
     a2 = ALG2.convert(sqrt(2))
     a = ALG.convert(a2, ALG2)
     assert a.rep.to_dense() == [QQ(1, 2), 0, -QQ(9, 2), 0]
+    assert RR.convert(a) == RR(1.4142135623730951)
+    assert CC.convert(a) == CC(1.4142135623730951)
 
     assert ZZ_python.convert(3.0) == ZZ_python.dtype(3)
     pytest.raises(CoercionFailed, lambda: ZZ_python.convert(3.2))

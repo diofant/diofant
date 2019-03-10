@@ -8,7 +8,7 @@ from .basic import Atom, Basic
 from .cache import cacheit
 from .compatibility import as_int, default_sort_key
 from .decorators import _sympifyit, call_highest_priority
-from .evalf import EvalfMixin, pure_complex
+from .evalf import EvalfMixin, PrecisionExhausted, pure_complex
 from .singleton import S
 from .sympify import sympify
 
@@ -547,7 +547,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         # don't worry about doing simplification steps one at a time
         # because if the expression ever goes to 0 then the subsequent
         # simplification steps that are done will be very fast.
-        diff = factor_terms((self - other).simplify(), radical=True)
+        diff = self - other
+        try:
+            diff = factor_terms(diff.simplify(), radical=True)
+        except PrecisionExhausted:
+            pass
 
         if not diff:
             return True

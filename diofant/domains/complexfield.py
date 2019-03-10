@@ -78,7 +78,7 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
 
     def from_expr(self, expr):
         """Convert Diofant's number to ``dtype``. """
-        number = expr.evalf(self.dps, strict=False)
+        number = expr.evalf(self.dps)
         real, imag = number.as_real_imag()
 
         if real.is_Number and imag.is_Number:
@@ -97,6 +97,9 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
 
     def _from_GMPYRationalField(self, element, base):
         return self.dtype(int(element.numerator)) / int(element.denominator)
+
+    def _from_AlgebraicField(self, element, base):
+        return self.from_expr(base.to_expr(element))
 
     def _from_RealField(self, element, base):
         return self.dtype(element)

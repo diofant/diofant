@@ -1,9 +1,9 @@
 import random
 
-from . import rings
 from ..core import Dummy
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, integer_rational_reconstruction
+from . import rings
 from .galoistools import gf_div, gf_from_dict, gf_gcd, gf_gcdex, gf_lcm
 from .polyerrors import ModularGCDFailed
 

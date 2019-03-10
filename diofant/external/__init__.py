@@ -13,4 +13,4 @@ Otherwise, it will return the library. See the docstring of
 import_module() for more information.
 """
 
-from .importtools import import_module  # noqa: F401
+from .importtools import import_module

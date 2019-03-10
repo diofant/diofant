@@ -4,11 +4,11 @@ from functools import reduce
 
 import mpmath
 
-from .. import (acosh, acoth, asin, asinh, atan, atanh, cos, cosh, exp, log,
-                sin, sinh, sqrt)
 from ...core import (Derivative, Dummy, Expr, Function, I, Integer, Mod, Mul,
                      Ne, Rational, S, Tuple, ilcm, oo, pi, zoo)
 from ...core.function import ArgumentIndexError
+from .. import (acosh, acoth, asin, asinh, atan, atanh, cos, cosh, exp, log,
+                sin, sinh, sqrt)
 
 
 class TupleArg(Tuple):

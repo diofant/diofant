@@ -1,6 +1,6 @@
-from .. import Piecewise, piecewise_fold
 from ...core import S, sympify
 from ...sets import Interval
+from .. import Piecewise, piecewise_fold
 
 
 def _add_splines(c, b1, d, b2):
