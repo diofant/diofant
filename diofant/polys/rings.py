@@ -1314,7 +1314,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         return term_div
 
     def div(self, fv):
-        """Division algorithm, see [CLO] p64.
+        """Division algorithm, see :cite:`Cox2015ideals`, p. 64.
 
         fv array of polynomials
            return qv, r such that

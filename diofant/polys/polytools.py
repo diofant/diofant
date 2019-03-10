@@ -4997,7 +4997,7 @@ def groebner(F, *gens, **args):
     ==========
 
     * :cite:`Buchberger2001systems`
-    * :cite:`Cox1997ideals`
+    * :cite:`Cox2015ideals`
 
     See Also
     ========

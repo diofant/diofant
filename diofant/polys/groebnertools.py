@@ -74,7 +74,7 @@ def buchberger(f, ring):
     * :cite:`Bose03`
     * :cite:`Giovini1991sugar`
     * :cite:`Ajwa95groebner`
-    * :cite:`Cox1997ideals`
+    * :cite:`Cox2015ideals`
     * :cite:`BeckerWeispfenning93`, page 232
 
     Notes
@@ -723,7 +723,7 @@ def groebner_lcm(f, g):
     References
     ==========
 
-    * :cite:`Cox1997ideals`
+    * :cite:`Cox2015ideals`
 
     """
     if f.ring != g.ring:
