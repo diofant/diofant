@@ -328,7 +328,7 @@ def parallel_dict_from_expr(exprs, **args):
 def _parallel_dict_from_expr(exprs, opt):
     """Transform expressions into a multinomial form. """
     if opt.expand is not False:
-        exprs = [ expr.expand() for expr in exprs ]
+        exprs = [expr.expand() for expr in exprs]
 
     if opt.gens:
         reps, gens = _parallel_dict_from_expr_if_gens(exprs, opt)
@@ -384,7 +384,7 @@ def _dict_reorder(rep, gens, new_gens):
     monoms = rep.keys()
     coeffs = rep.values()
 
-    new_monoms = [ [] for _ in range(len(rep)) ]
+    new_monoms = [[] for _ in range(len(rep))]
     used_indices = set()
 
     for gen in new_gens:

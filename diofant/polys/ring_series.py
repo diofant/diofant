@@ -106,7 +106,7 @@ def rs_mul(p1, p2, x, prec):
             for exp2, v2 in items2:
                 exp = exp1[0] + exp2[0]
                 if exp < prec:
-                    exp = (exp, )
+                    exp = (exp,)
                     p[exp] = get(exp, 0) + v1*v2
                 else:
                     break

@@ -1070,11 +1070,11 @@ def test_Poly_exclude():
 def test_Poly__gen_to_level():
     assert Poly(1, x, y)._gen_to_level(-2) == 0
     assert Poly(1, x, y)._gen_to_level(-1) == 1
-    assert Poly(1, x, y)._gen_to_level( 0) == 0
-    assert Poly(1, x, y)._gen_to_level( 1) == 1
+    assert Poly(1, x, y)._gen_to_level(+0) == 0
+    assert Poly(1, x, y)._gen_to_level(+1) == 1
 
     pytest.raises(PolynomialError, lambda: Poly(1, x, y)._gen_to_level(-3))
-    pytest.raises(PolynomialError, lambda: Poly(1, x, y)._gen_to_level( 2))
+    pytest.raises(PolynomialError, lambda: Poly(1, x, y)._gen_to_level(+2))
 
     assert Poly(1, x, y)._gen_to_level(x) == 0
     assert Poly(1, x, y)._gen_to_level(y) == 1
@@ -1293,14 +1293,14 @@ def test_Poly_ET():
 
 def test_Poly_max_norm():
     assert Poly(-1, x).max_norm() == 1
-    assert Poly( 0, x).max_norm() == 0
-    assert Poly( 1, x).max_norm() == 1
+    assert Poly(+0, x).max_norm() == 0
+    assert Poly(+1, x).max_norm() == 1
 
 
 def test_Poly_l1_norm():
     assert Poly(-1, x).l1_norm() == 1
-    assert Poly( 0, x).l1_norm() == 0
-    assert Poly( 1, x).l1_norm() == 1
+    assert Poly(+0, x).l1_norm() == 0
+    assert Poly(+1, x).l1_norm() == 1
 
 
 def test_Poly_clear_denoms():
@@ -1520,7 +1520,7 @@ def test_pdiv():
     f, g = x**2 - y**2, x - y
     q, r = x + y, 0
 
-    F, G, Q, R = [ Poly(h, x, y) for h in (f, g, q, r) ]
+    F, G, Q, R = [Poly(h, x, y) for h in (f, g, q, r)]
 
     assert F.pdiv(G) == (Q, R)
     assert F.prem(G) == R
@@ -1569,7 +1569,7 @@ def test_div():
     f, g = x**2 - y**2, x - y
     q, r = x + y, 0
 
-    F, G, Q, R = [ Poly(h, x, y) for h in (f, g, q, r) ]
+    F, G, Q, R = [Poly(h, x, y) for h in (f, g, q, r)]
 
     assert F.div(G) == (Q, R)
     assert F.rem(G) == R
@@ -1684,7 +1684,7 @@ def test_gcdex():
     f, g = 2*x, x**2 - 16
     s, t, h = x/32, -Rational(1, 16), 1
 
-    F, G, S, T, H = [ Poly(u, x, domain='QQ') for u in (f, g, s, t, h) ]
+    F, G, S, T, H = [Poly(u, x, domain='QQ') for u in (f, g, s, t, h)]
 
     assert F.half_gcdex(G) == (S, H)
     assert F.gcdex(G) == (S, T, H)
@@ -1863,7 +1863,7 @@ def test_gcd():
     s, t = x**2 + x + 1, x + 1
     h, r = x - 1, x**4 + x**3 - x - 1
 
-    F, G, S, T, H, R = [ Poly(u) for u in (f, g, s, t, h, r) ]
+    F, G, S, T, H, R = [Poly(u) for u in (f, g, s, t, h, r)]
 
     assert F.cofactors(G) == (H, S, T)
     assert F.gcd(G) == H
@@ -2801,7 +2801,7 @@ def test_cancel():
     assert cancel((0, 1), x) == (1, 0, 1)
 
     f, g, p, q = 4*x**2 - 4, 2*x - 2, 2*x + 2, 1
-    F, G, P, Q = [ Poly(u, x) for u in (f, g, p, q) ]
+    F, G, P, Q = [Poly(u, x) for u in (f, g, p, q)]
 
     assert F.cancel(G) == (1, P, Q)
     assert cancel((f, g)) == (1, p, q)
@@ -3142,7 +3142,7 @@ def test_GroebnerBasis():
     assert G.args == ((y**3 - 2*y, x**2 - 2*y**2, x*y - 2*y), (x, y))
 
     H = [y**3 - 2*y, x**2 - 2*y**2, x*y - 2*y]
-    P = [ Poly(h, x, y) for h in H ]
+    P = [Poly(h, x, y) for h in H]
 
     assert isinstance(G, GroebnerBasis) is True
 
@@ -3266,7 +3266,7 @@ def test_noncommutative():
     class foo(Expr):
         is_commutative = False
     e = x/(x + x*y)
-    c = 1/( 1 + y)
+    c = 1/(1 + y)
     assert cancel(foo(e)) == foo(c)
     assert cancel(e + foo(e)) == c + foo(c)
     assert cancel(e*foo(c)) == c*foo(c)

@@ -108,8 +108,8 @@ def symmetrize(F, *gens, **args):
             for m1, m2 in zip(monom, monom[1:] + (0,)):
                 exponents.append(m1 - m2)
 
-            term = [ s**n for (s, _), n in zip(polys, exponents) ]
-            poly = [ p**n for (_, p), n in zip(polys, exponents) ]
+            term = [s**n for (s, _), n in zip(polys, exponents)]
+            poly = [p**n for (_, p), n in zip(polys, exponents)]
 
             symmetric.append(Mul(coeff, *term))
             product = poly[0]*coeff
@@ -121,7 +121,7 @@ def symmetrize(F, *gens, **args):
 
         result.append((Add(*symmetric), f.as_expr()))
 
-    polys = [ (s, p.as_expr()) for s, p in polys ]
+    polys = [(s, p.as_expr()) for s, p in polys]
 
     if not opt.formal:
         for i, (sym, non_sym) in enumerate(result):

@@ -256,7 +256,7 @@ def test_RootOf_evalf():
 
     re, im = RootOf(x**3 + x + 3, 1).evalf(20).as_real_imag()
 
-    assert re.epsilon_eq( Float("0.60670583138111481707"))
+    assert re.epsilon_eq(+Float("0.60670583138111481707"))
     assert im.epsilon_eq(-Float("1.45061224918844152650"))
 
     re, im = RootOf(x**3 + x + 3, 2).evalf(20).as_real_imag()

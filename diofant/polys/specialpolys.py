@@ -78,7 +78,7 @@ def symmetric_poly(n, *gens, **args):
     elif not n:
         poly = S.One
     else:
-        poly = Add(*[ Mul(*s) for s in subsets(gens, int(n)) ])
+        poly = Add(*[Mul(*s) for s in subsets(gens, int(n))])
 
     if not args.get('polys', False):
         return poly
@@ -122,7 +122,7 @@ def interpolating_poly(n, x, X='x', Y='y'):
 
         coeffs.append(numer/denom)
 
-    return Add(*[ coeff*y for coeff, y in zip(coeffs, Y) ])
+    return Add(*[coeff*y for coeff, y in zip(coeffs, Y)])
 
 
 def fateman_poly_F_1(n):

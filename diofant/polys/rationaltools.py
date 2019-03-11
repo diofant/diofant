@@ -70,6 +70,6 @@ def together(expr, deep=False):
 
             return expr.__class__(base, exp)
         else:
-            return expr.__class__(*[ _together(arg) for arg in expr.args ])
+            return expr.__class__(*[_together(arg) for arg in expr.args])
 
     return _together(sympify(expr))

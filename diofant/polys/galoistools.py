@@ -140,7 +140,7 @@ def gf_neg(f, p, K):
     [2, 3, 4, 0]
 
     """
-    return [ -coeff % p for coeff in f ]
+    return [-coeff % p for coeff in f]
 
 
 def gf_add_ground(f, a, p, K):
@@ -207,7 +207,7 @@ def gf_mul_ground(f, a, p, K):
     if not a:
         return []
     else:
-        return [ (a*b) % p for b in f ]
+        return [(a*b) % p for b in f]
 
 
 def gf_quo_ground(f, a, p, K):
@@ -253,7 +253,7 @@ def gf_add(f, g, p, K):
         else:
             h, g = g[:k], g[k:]
 
-        return h + [ (a + b) % p for a, b in zip(f, g) ]
+        return h + [(a + b) % p for a, b in zip(f, g)]
 
 
 def gf_sub(f, g, p, K):
@@ -285,7 +285,7 @@ def gf_sub(f, g, p, K):
         else:
             h, g = gf_neg(g[:k], p, K), g[k:]
 
-        return h + [ (a - b) % p for a, b in zip(f, g) ]
+        return h + [(a - b) % p for a, b in zip(f, g)]
 
 
 def gf_mul(f, g, p, K):
@@ -1021,7 +1021,7 @@ def gf_random(n, p, K):
     [1, 2, 3, 2, 1, 1, 1, 2, 0, 4, 2]
 
     """
-    return [K.one] + [ K(int(random.uniform(0, p))) for i in range(n) ]
+    return [K.one] + [K(int(random.uniform(0, p))) for i in range(n)]
 
 
 def gf_irreducible(n, p, K):
@@ -1110,7 +1110,7 @@ def gf_irred_p_rabin(f, p, K):
 
     x = [K.one, K.zero]
 
-    indices = { n//d for d in factorint(n) }
+    indices = {n//d for d in factorint(n)}
 
     b = gf_frobenius_monomial_base(f, p, K)
     h = b[1]
@@ -1279,7 +1279,7 @@ def gf_Qbasis(Q, p, K):
     [[1, 0]]
 
     """
-    Q, n = [ list(q) for q in Q ], len(Q)
+    Q, n = [list(q) for q in Q], len(Q)
 
     for k in range(n):
         Q[k][k] = (Q[k][k] - K.one) % p

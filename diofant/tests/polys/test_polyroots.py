@@ -352,16 +352,16 @@ def test_roots0():
     assert roots(x**4 - 1, x) == {I: 1, 1: 1, -1: 1, -I: 1}
     assert roots((x**4 - 1)**2, x) == {I: 2, 1: 2, -1: 2, -I: 2}
 
-    assert roots(((2*x - 3)**2).expand(), x) == { Rational(3, 2): 2}
+    assert roots(((2*x - 3)**2).expand(), x) == {+Rational(3, 2): 2}
     assert roots(((2*x + 3)**2).expand(), x) == {-Rational(3, 2): 2}
 
-    assert roots(((2*x - 3)**3).expand(), x) == { Rational(3, 2): 3}
+    assert roots(((2*x - 3)**3).expand(), x) == {+Rational(3, 2): 3}
     assert roots(((2*x + 3)**3).expand(), x) == {-Rational(3, 2): 3}
 
-    assert roots(((2*x - 3)**5).expand(), x) == { Rational(3, 2): 5}
+    assert roots(((2*x - 3)**5).expand(), x) == {+Rational(3, 2): 5}
     assert roots(((2*x + 3)**5).expand(), x) == {-Rational(3, 2): 5}
 
-    assert roots(((a*x - b)**5).expand(), x) == { b/a: 5}
+    assert roots(((a*x - b)**5).expand(), x) == {+b/a: 5}
     assert roots(((a*x + b)**5).expand(), x) == {-b/a: 5}
 
     assert roots(x**2 + (-a - 1)*x + a, x) == {a: 1, 1: 1}
@@ -394,7 +394,7 @@ def test_roots0():
     assert roots(x**3 + 2*x**2 + 4*x + 8, x) == {-2: 1, -2*I: 1, 2*I: 1}
     assert roots(x**3 + 2*x**2 + 4*x + 8, x, cubics=True) == \
         {-2*I: 1, 2*I: 1, -2: 1}
-    assert roots((x**2 - x)*(x**3 + 2*x**2 + 4*x + 8), x ) == \
+    assert roots((x**2 - x)*(x**3 + 2*x**2 + 4*x + 8), x) == \
         {1: 1, 0: 1, -2: 1, -2*I: 1, 2*I: 1}
 
     r1_2, r1_3 = Rational(1, 2), Rational(1, 3)
@@ -413,8 +413,7 @@ def test_roots0():
 
     f = (x**2 + 2*x + 3).subs({x: 2*x**2 + 3*x}).subs({x: 5*x - 4})
 
-    r13_20, r1_20 = [ Rational(*r)
-                      for r in ((13, 20), (1, 20)) ]
+    r13_20, r1_20 = [Rational(*r) for r in ((13, 20), (1, 20))]
 
     s2 = sqrt(2)
     assert roots(f, x) == {
@@ -426,7 +425,7 @@ def test_roots0():
 
     f = x**4 + x**3 + x**2 + x + 1
 
-    r1_4, r1_8, r5_8 = [ Rational(*r) for r in ((1, 4), (1, 8), (5, 8)) ]
+    r1_4, r1_8, r5_8 = [Rational(*r) for r in ((1, 4), (1, 8), (5, 8))]
 
     assert roots(f, x) == {
         -r1_4 + r1_4*5**r1_2 + I*(r5_8 + r1_8*5**r1_2)**r1_2: 1,
@@ -603,12 +602,11 @@ def test_roots_mixed():
     _nroots = nroots(f)
     _sroots = roots(f, multiple=True)
 
-    _re = [ Interval(a, b) for (a, b), _ in _re ]
-    _im = [ Interval(re(a), re(b))*Interval(im(a), im(b)) for (a, b),
-            _ in _im ]
+    _re = [Interval(a, b) for (a, b), _ in _re]
+    _im = [Interval(re(a), re(b))*Interval(im(a), im(b)) for (a, b), _ in _im]
 
     _intervals = _re + _im
-    _sroots = [ r.evalf() for r in _sroots ]
+    _sroots = [r.evalf() for r in _sroots]
 
     _nroots = sorted(_nroots, key=lambda x: x.sort_key())
     _sroots = sorted(_sroots, key=lambda x: x.sort_key())

@@ -60,7 +60,7 @@ def matrix_fglm(F, ring, O_to):
         L = [(k, l) for (k, l) in L if all(monomial_div(_incr_k(S[l], k), g.LM) is None for g in G)]
 
         if not L:
-            G = [ g.monic() for g in G ]
+            G = [g.monic() for g in G]
             return sorted(G, key=lambda g: O_to(g.LM), reverse=True)
 
         t = L.pop()

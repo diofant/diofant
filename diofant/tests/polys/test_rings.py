@@ -1077,7 +1077,7 @@ def test_PolyElement_clear_denoms():
          23339979742629593088000*T +
          3513592776846090240000]
 
-    assert [ f.clear_denoms()[1].set_ring(rZZ) for f in F ] == G
+    assert [f.clear_denoms()[1].set_ring(rZZ) for f in F] == G
 
 
 def test_PolyElement_cofactors():

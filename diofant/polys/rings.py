@@ -358,7 +358,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
     def drop(self, *gens):
         """Remove specified generators from this ring."""
         indices = set(map(self.index, gens))
-        symbols = [ s for i, s in enumerate(self.symbols) if i not in indices ]
+        symbols = [s for i, s in enumerate(self.symbols) if i not in indices]
 
         if not symbols:
             return self.domain
@@ -572,7 +572,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         for coeff in self.values():
             common = lcm(common, coeff.denominator)
 
-        poly = self.new([ (k, v*common) for k, v in self.items() ])
+        poly = self.new([(k, v*common) for k, v in self.items()])
         return common, poly
 
     def strip_zero(self):
@@ -1631,7 +1631,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         [1, 2]
 
         """
-        return [ coeff for _, coeff in self.terms(order) ]
+        return [coeff for _, coeff in self.terms(order)]
 
     def all_coeffs(self):
         if self.ring.is_univariate:
@@ -1662,7 +1662,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         [(1, 7), (2, 3)]
 
         """
-        return [ monom for monom, _ in self.terms(order) ]
+        return [monom for monom, _ in self.terms(order)]
 
     def terms(self, order=None):
         """Ordered list of polynomial terms.
@@ -2112,7 +2112,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             if not x:
                 return f
             else:
-                x = [ (Y.drop(X), a) for (Y, a) in x ]
+                x = [(Y.drop(X), a) for (Y, a) in x]
                 return f.eval(x)
 
         ring = f.ring

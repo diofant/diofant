@@ -39,7 +39,7 @@ def groebner(seq, ring, method=None):
     G = _groebner(seq, ring)
 
     if orig is not None:
-        G = [ g.clear_denoms()[1].set_ring(orig) for g in G ]
+        G = [g.clear_denoms()[1].set_ring(orig) for g in G]
 
     return G
 
@@ -745,9 +745,9 @@ def groebner_lcm(f, g):
 
     lcm = domain.lcm(fc, gc)
 
-    f_terms = [ ((1,) + monom, coeff) for monom, coeff in f.terms() ]
-    g_terms = [ ((0,) + monom, coeff) for monom, coeff in g.terms() ] \
-        + [ ((1,) + monom, -coeff) for monom, coeff in g.terms() ]
+    f_terms = [((1,) + monom, coeff) for monom, coeff in f.terms()]
+    g_terms = [((0,) + monom, coeff) for monom, coeff in g.terms()] \
+        + [((1,) + monom, -coeff) for monom, coeff in g.terms()]
 
     t = Dummy("t")
     t_ring = ring.clone(symbols=(t,) + ring.symbols, order=lex)
@@ -760,9 +760,9 @@ def groebner_lcm(f, g):
     def is_independent(h, j):
         return all(not monom[j] for monom in h.monoms())
 
-    H = [ h for h in basis if is_independent(h, 0) ]
+    H = [h for h in basis if is_independent(h, 0)]
 
-    h_terms = [ (monom[1:], coeff*lcm) for monom, coeff in H[0].terms() ]
+    h_terms = [(monom[1:], coeff*lcm) for monom, coeff in H[0].terms()]
     h = ring.from_terms(h_terms)
 
     return h
