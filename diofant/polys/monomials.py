@@ -49,7 +49,7 @@ def itermonomials(variables, degree):
         monoms = itermonomials(tail, degree)
 
         for i in range(1, degree + 1):
-            monoms |= { x**i * m for m in itermonomials(tail, degree - i) }
+            monoms |= {x**i * m for m in itermonomials(tail, degree - i)}
 
         return monoms
 
@@ -293,7 +293,7 @@ class Monomial:
 
     def __str__(self):
         if self.gens:
-            return "*".join([ "%s**%s" % (gen, exp) for gen, exp in zip(self.gens, self.exponents) ])
+            return "*".join(["%s**%s" % (gen, exp) for gen, exp in zip(self.gens, self.exponents)])
         else:
             return "%s(%s)" % (self.__class__.__name__, self.exponents)
 
@@ -305,7 +305,7 @@ class Monomial:
             raise ValueError(
                 "can't convert %s to an expression without generators" % self)
 
-        return Mul(*[ gen**exp for gen, exp in zip(gens, self.exponents) ])
+        return Mul(*[gen**exp for gen, exp in zip(gens, self.exponents)])
 
     def __eq__(self, other):
         if isinstance(other, Monomial):

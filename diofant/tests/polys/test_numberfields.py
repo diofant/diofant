@@ -22,9 +22,9 @@ __all__ = ()
 def test_minimal_polynomial():
     assert minimal_polynomial(-7)(x) == x + 7
     assert minimal_polynomial(-1)(x) == x + 1
-    assert minimal_polynomial( 0)(x) == x
-    assert minimal_polynomial( 1)(x) == x - 1
-    assert minimal_polynomial( 7)(x) == x - 7
+    assert minimal_polynomial(+0)(x) == x
+    assert minimal_polynomial(+1)(x) == x - 1
+    assert minimal_polynomial(+7)(x) == x - 7
 
     assert minimal_polynomial(Rational(1, 3), method='groebner')(x) == 3*x - 1
 

@@ -405,7 +405,7 @@ class IPolys:
 
     def dmp_trial_division(self, f, factors):
         factors = dmp_trial_division(self.to_dense(f), list(map(self.to_dense, factors)), self.ngens-1, self.domain)
-        return [ (self.from_dense(g), k) for g, k in factors ]
+        return [(self.from_dense(g), k) for g, k in factors]
 
     def dmp_zz_mignotte_bound(self, f):
         return dmp_zz_mignotte_bound(self.to_dense(f), self.ngens-1, self.domain)
@@ -448,7 +448,7 @@ class IPolys:
     # f: Poly, T: List[(Poly, int)], cs: ZZ, E: List[ZZ], H: List[Poly], A: List[ZZ]
     def dmp_zz_wang_lead_coeffs(self, f, T, cs, E, H, A):
         mv = self.drop(0)
-        T = [ (mv.to_dense(t), k) for t, k in T ]
+        T = [(mv.to_dense(t), k) for t, k in T]
         uv = self.drop(*range(1, self.ngens))
         H = list(map(uv.to_dense, H))
         f, HH, CC = dmp_zz_wang_lead_coeffs(self.to_dense(f), T, cs, E, H, A, self.ngens-1, self.domain)
@@ -465,7 +465,7 @@ class IPolys:
 
     def dmp_zz_wang(self, f, mod=None, seed=None):
         factors = dmp_zz_wang(self.to_dense(f), self.ngens-1, self.domain, mod=mod, seed=seed)
-        return [ self.from_dense(g) for g in factors ]
+        return [self.from_dense(g) for g in factors]
 
     def dup_zz_factor_sqf(self, f):
         coeff, factors = dup_zz_factor_sqf(self.to_dense(f), self.domain)
@@ -558,4 +558,4 @@ class IPolys:
 
     def gf_factor_sqf(self, f):
         coeff, factors = gf_factor_sqf(self.to_gf_dense(f), self.domain.mod, self.domain.domain)
-        return coeff, [ self.from_gf_dense(g) for g in factors ]
+        return coeff, [self.from_gf_dense(g) for g in factors]

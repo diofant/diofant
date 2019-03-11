@@ -358,7 +358,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
     def drop(self, *gens):
         """Remove specified generators from this ring."""
         indices = set(map(self.index, gens))
-        symbols = [ s for i, s in enumerate(self.symbols) if i not in indices ]
+        symbols = [s for i, s in enumerate(self.symbols) if i not in indices]
 
         if not symbols:
             return self.domain
@@ -428,7 +428,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             return
 
     def _from_FractionField(self, a, K0):
-        q, r = a.numerator.div(a.denominator)
+        (q, *_), r = a.numerator.div([a.denominator])
 
         if r.is_zero:
             return self.convert(q, K0.field.ring)
@@ -572,7 +572,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         for coeff in self.values():
             common = lcm(common, coeff.denominator)
 
-        poly = self.new([ (k, v*common) for k, v in self.items() ])
+        poly = self.new([(k, v*common) for k, v in self.items()])
         return common, poly
 
     def strip_zero(self):
@@ -1197,7 +1197,8 @@ class PolyElement(DomainElement, CantSympify, dict):
         if not other:
             raise ZeroDivisionError("polynomial division")
         elif isinstance(other, ring.dtype):
-            return self.div(other)
+            (q, *_), r = self.div([other])
+            return q, r
         elif isinstance(other, PolyElement):
             if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
                 pass
@@ -1299,8 +1300,6 @@ class PolyElement(DomainElement, CantSympify, dict):
                     monom = monomial_div(a_lm, b_lm)
                 if monom is not None:
                     return monom, domain_quo(a_lc, b_lc)
-                else:
-                    return
         else:
             def term_div(a_lm_a_lc, b_lm_b_lc):
                 a_lm, a_lc = a_lm_a_lc
@@ -1311,13 +1310,11 @@ class PolyElement(DomainElement, CantSympify, dict):
                     monom = monomial_div(a_lm, b_lm)
                 if not (monom is None or a_lc % b_lc):
                     return monom, domain_quo(a_lc, b_lc)
-                else:
-                    return
 
         return term_div
 
     def div(self, fv):
-        """Division algorithm, see [CLO] p64.
+        """Division algorithm, see :cite:`Cox2015ideals`, p. 64.
 
         fv array of polynomials
            return qv, r such that
@@ -1342,20 +1339,12 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         ring = self.ring
-        ret_single = False
-        if isinstance(fv, PolyElement):
-            ret_single = True
-            fv = [fv]
         if any(not f for f in fv):
             raise ZeroDivisionError("polynomial division")
+        if any(f.ring != ring for f in fv):
+            raise ValueError('self and f must have the same ring')
         if not self:
-            if ret_single:
-                return ring.zero, ring.zero
-            else:
-                return [], ring.zero
-        for f in fv:
-            if f.ring != ring:
-                raise ValueError('self and f must have the same ring')
+            return [ring.zero], ring.zero
         s = len(fv)
         qv = [ring.zero for i in range(s)]
         p = self.copy()
@@ -1379,12 +1368,8 @@ class PolyElement(DomainElement, CantSympify, dict):
                 expv = p.leading_expv()
                 r = r._iadd_monom((expv, p[expv]))
                 del p[expv]
-        if expv == ring.zero_monom:
-            r += p
-        if ret_single:
-            return qv[0], r
-        else:
-            return qv, r
+        r._hash = None
+        return qv, r
 
     def exquo(self, other):
         q, r = divmod(self, other)
@@ -1646,7 +1631,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         [1, 2]
 
         """
-        return [ coeff for _, coeff in self.terms(order) ]
+        return [coeff for _, coeff in self.terms(order)]
 
     def all_coeffs(self):
         if self.ring.is_univariate:
@@ -1677,7 +1662,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         [(1, 7), (2, 3)]
 
         """
-        return [ monom for monom, _ in self.terms(order) ]
+        return [monom for monom, _ in self.terms(order)]
 
     def terms(self, order=None):
         """Ordered list of polynomial terms.
@@ -2127,7 +2112,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             if not x:
                 return f
             else:
-                x = [ (Y.drop(X), a) for (Y, a) in x ]
+                x = [(Y.drop(X), a) for (Y, a) in x]
                 return f.eval(x)
 
         ring = f.ring

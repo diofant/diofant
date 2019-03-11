@@ -389,7 +389,7 @@ def _dup_cyclotomic_decompose(n, K):
         H.extend(Q)
 
         for i in range(1, k):
-            Q = [ dup_inflate(q, p, K) for q in Q ]
+            Q = [dup_inflate(q, p, K) for q in Q]
             H.extend(Q)
 
     return H
@@ -532,7 +532,7 @@ def dup_zz_factor(f, K):
 
 def dmp_zz_wang_non_divisors(E, cs, ct, K):
     """Wang/EEZ: Compute a set of valid divisors."""
-    result = [ cs*ct ]
+    result = [cs*ct]
 
     for q in E:
         q = abs(q)
@@ -564,7 +564,7 @@ def dmp_zz_wang_test_points(f, T, ct, A, u, K):
 
     v = u - 1
 
-    E = [ dmp_eval_tail(t, A, v, K) for t, _ in T ]
+    E = [dmp_eval_tail(t, A, v, K) for t, _ in T]
     D = dmp_zz_wang_non_divisors(E, c, ct, K)
 
     if D is not None:
@@ -674,7 +674,7 @@ def dup_zz_diophantine(F, m, p, K):
 def dmp_zz_diophantine(F, c, A, d, p, u, K):
     """Wang/EEZ: Solve multivariate Diophantine equations."""
     if not A:
-        S = [ [] for _ in F ]
+        S = [[] for _ in F]
         n = dmp_degree_in(c, 0, 0)
 
         for i, coeff in enumerate(c):
@@ -702,7 +702,7 @@ def dmp_zz_diophantine(F, c, A, d, p, u, K):
         v = u - 1
 
         S = dmp_zz_diophantine(G, C, A, d, p, v, K)
-        S = [ dmp_raise(s, 1, v, K) for s in S ]
+        S = [dmp_raise(s, 1, v, K) for s in S]
 
         for s, b in zip(S, B):
             c = dmp_sub_mul(c, s, b, u, K)
@@ -735,7 +735,7 @@ def dmp_zz_diophantine(F, c, A, d, p, u, K):
 
                 c = dmp_ground_trunc(c, p, u, K)
 
-        S = [ dmp_ground_trunc(s, p, u, K) for s in S ]
+        S = [dmp_ground_trunc(s, p, u, K) for s in S]
 
     return S
 
@@ -860,7 +860,7 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
 
     while len(configs) < eez_num_configs:
         for _ in range(eez_num_tries):
-            A = [ K(randint(-mod, mod)) for _ in range(u) ]
+            A = [K(randint(-mod, mod)) for _ in range(u)]
 
             if tuple(A) in history:
                 continue

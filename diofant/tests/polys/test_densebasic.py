@@ -24,7 +24,7 @@ from diofant.polys.specialpolys import f_polys
 
 __all__ = ()
 
-f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [ f.to_dense() for f in f_polys() ]
+f_0, f_1, f_2, f_3, f_4, f_5, f_6 = [f.to_dense() for f in f_polys()]
 
 
 def test_dmp_LC():
@@ -151,7 +151,7 @@ def test_dmp_degree_list():
     R, x, y, z, t = ring('x y z t', ZZ)
 
     assert R.dmp_degree_list(0) == (-oo, -oo, -oo, -oo)
-    assert R.dmp_degree_list(1) == ( 0, 0, 0, 0)
+    assert R.dmp_degree_list(1) == (0, 0, 0, 0)
 
     assert R.dmp_degree_list(R.from_dense(f_6)) == (4, 4, 6, 3)
 

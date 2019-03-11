@@ -372,7 +372,7 @@ def dmp_inner_subresultants(f, g, u, K):
                     dmp_pow(c, d, v, K), v, K)
 
         h = dmp_prem(f, g, u, K)
-        h = [ dmp_quo(ch, b, v, K) for ch in h ]
+        h = [dmp_quo(ch, b, v, K) for ch in h]
 
         lc = dmp_LC(g, K)
 
@@ -749,8 +749,8 @@ def _dmp_simplify_gcd(f, g, u, K):
     v = u - 1
     h = dmp_gcd(F, G, v, K)
 
-    cff = [ dmp_quo(cf, h, v, K) for cf in f ]
-    cfg = [ dmp_quo(cg, h, v, K) for cg in g ]
+    cff = [dmp_quo(cf, h, v, K) for cf in f]
+    cfg = [dmp_quo(cg, h, v, K) for cg in g]
 
     return [h], cff, cfg
 

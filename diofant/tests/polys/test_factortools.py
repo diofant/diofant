@@ -280,7 +280,7 @@ def test_dmp_zz_wang():
     K = [k_1, k_2, k_3, k_4]
     E = [e_1, e_2, e_3, e_4]
 
-    T = zip([ t.drop(x) for t in T ], K)
+    T = zip([t.drop(x) for t in T], K)
 
     A = [ZZ(-14), ZZ(3)]
 
@@ -301,7 +301,7 @@ def test_dmp_zz_wang():
 
     assert H == [h_1, h_2, h_3]
 
-    LC = [ lc.drop(x) for lc in [-4*y - 4*z, -y*z**2, y**2 - z**2] ]
+    LC = [lc.drop(x) for lc in [-4*y - 4*z, -y*z**2, y**2 - z**2]]
 
     assert R.dmp_zz_wang_lead_coeffs(w_1, T, cs, E, H, A) == (w_1, H, LC)
 

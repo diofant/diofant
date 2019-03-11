@@ -145,11 +145,9 @@ def roots_cubic(f, trig=False):
     if p is S.Zero:
         return [u1 - aon3, u2 - aon3, u3 - aon3]
 
-    soln = [
-        -u1 + pon3/u1 - aon3,
-        -u2 + pon3/u2 - aon3,
-        -u3 + pon3/u3 - aon3
-    ]
+    soln = [-u1 + pon3/u1 - aon3,
+            -u2 + pon3/u2 - aon3,
+            -u3 + pon3/u3 - aon3]
 
     return soln
 
@@ -400,7 +398,7 @@ def _inv_totient_estimate(m):
     (400, 1750)
 
     """
-    primes = [ d + 1 for d in divisors(m) if isprime(d + 1) ]
+    primes = [d + 1 for d in divisors(m) if isprime(d + 1)]
 
     a, b = 1, 1
 
@@ -539,7 +537,7 @@ def roots_quintic(f):
     # and hence the changed name
     from ..solvers import solve as _solve
     a, b = symbols('a b', cls=Dummy)
-    _sol = _solve( sol**5 - a - I*b, sol)
+    _sol = _solve(sol**5 - a - I*b, sol)
     for i in range(5):
         _sol[i] = factor(_sol[i][sol])
     R1 = R1.as_real_imag()
@@ -548,10 +546,10 @@ def roots_quintic(f):
     R4 = R4.as_real_imag()
 
     for i, root in enumerate(_sol):
-        Res[1][i] = _quintic_simplify(root.subs({ a: R1[0], b: R1[1] }))
-        Res[2][i] = _quintic_simplify(root.subs({ a: R2[0], b: R2[1] }))
-        Res[3][i] = _quintic_simplify(root.subs({ a: R3[0], b: R3[1] }))
-        Res[4][i] = _quintic_simplify(root.subs({ a: R4[0], b: R4[1] }))
+        Res[1][i] = _quintic_simplify(root.subs({a: R1[0], b: R1[1]}))
+        Res[2][i] = _quintic_simplify(root.subs({a: R2[0], b: R2[1]}))
+        Res[3][i] = _quintic_simplify(root.subs({a: R3[0], b: R3[1]}))
+        Res[4][i] = _quintic_simplify(root.subs({a: R4[0], b: R4[1]}))
 
     for i in range(1, 5):
         for j in range(5):
@@ -1014,6 +1012,6 @@ def root_factors(f, *gens, **args):
             factors.append(F.quo(G))
 
     if not isinstance(f, Poly):
-        factors = [ f.as_expr() for f in factors ]
+        factors = [f.as_expr() for f in factors]
 
     return factors

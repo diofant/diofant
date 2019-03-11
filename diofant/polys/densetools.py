@@ -758,9 +758,7 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
         return common
 
     common = clear_denoms(f, u, K0, K1)
-
-    if common != K1.one:
-        f = dmp_mul_ground(f, common, u, K0)
+    f = dmp_mul_ground(f, common, u, K0)
 
     if not convert:
         return common, f
