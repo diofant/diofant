@@ -39,8 +39,8 @@ only in the ring of polynomials with integer coefficients, you can specify an
 additional parameter::
 
     >>> div(f, g, field=False)
-    ⎛      2           ⎞
-    ⎝0, 5⋅x  + 10⋅x + 3⎠
+    ⎛      2    ⎞
+    ⎝5, 5⋅x  - 7⎠
 
 But be warned, that this ring is no longer Euclidean and that the degree of the
 remainder doesn't need to be smaller than that of ``f``. Since 2 doesn't divide 5,

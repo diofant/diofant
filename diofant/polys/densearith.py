@@ -4,7 +4,7 @@ from .densebasic import (dmp_degree_in, dmp_LC, dmp_one, dmp_one_p,
                          dmp_slice_in, dmp_strip, dmp_zero, dmp_zero_p,
                          dmp_zeros)
 from .polyconfig import query
-from .polyerrors import ExactQuotientFailed, PolynomialDivisionFailed
+from .polyerrors import ExactQuotientFailed
 
 
 def dup_add_term(f, c, i, K):
@@ -876,95 +876,6 @@ def dmp_pexquo(f, g, u, K):
         raise ExactQuotientFailed(f, g)
 
 
-def dmp_rr_div(f, g, u, K):
-    """
-    Multivariate division with remainder over a ring.
-
-    """
-    df = dmp_degree_in(f, 0, u)
-    dg = dmp_degree_in(g, 0, u)
-
-    if dg < 0:
-        raise ZeroDivisionError("polynomial division")
-
-    q, r, dr = dmp_zero(u), f, df
-
-    if df < dg:
-        return q, r
-
-    lc_g, v = dmp_LC(g, K), u - 1
-
-    while True:
-        lc_r = dmp_LC(r, K)
-
-        if v >= 0:
-            c, R = dmp_rr_div(lc_r, lc_g, v, K)
-            if not dmp_zero_p(R, v):
-                break
-        else:
-            if lc_r % lc_g:
-                break
-            c = K.exquo(lc_r, lc_g)
-
-        j = dr - dg
-
-        q = dmp_add_term(q, c, j, u, K)
-        h = dmp_mul_term(g, c, j, u, K)
-        r = dmp_sub(r, h, u, K)
-
-        _dr, dr = dr, dmp_degree_in(r, 0, u)
-
-        if dr < dg:
-            break
-        assert dr < _dr
-
-    return q, r
-
-
-def dmp_ff_div(f, g, u, K):
-    """
-    Polynomial division with remainder over a field.
-
-    """
-    df = dmp_degree_in(f, 0, u)
-    dg = dmp_degree_in(g, 0, u)
-
-    if dg < 0:
-        raise ZeroDivisionError("polynomial division")
-
-    q, r, dr = dmp_zero(u), f, df
-
-    if df < dg:
-        return q, r
-
-    lc_g, v = dmp_LC(g, K), u - 1
-
-    while True:
-        lc_r = dmp_LC(r, K)
-
-        if v >= 0:
-            c, R = dmp_ff_div(lc_r, lc_g, v, K)
-            if not dmp_zero_p(R, v):
-                break
-        else:
-            c = K.exquo(lc_r, lc_g)
-
-        j = dr - dg
-
-        q = dmp_add_term(q, c, j, u, K)
-        h = dmp_mul_term(g, c, j, u, K)
-        r = dmp_sub(r, h, u, K)
-
-        _dr, dr = dr, dmp_degree_in(r, 0, u)
-
-        if dr < dg:
-            break
-        elif not (dr < _dr):
-            raise PolynomialDivisionFailed(f, g, K)
-
-    return q, r
-
-
 def dmp_div(f, g, u, K):
     """
     Polynomial division with remainder in ``K[X]``.
@@ -981,10 +892,9 @@ def dmp_div(f, g, u, K):
     (1/2*x + 1/2*y - 1/2, -y + 1)
 
     """
-    if K.is_Field:
-        return dmp_ff_div(f, g, u, K)
-    else:
-        return dmp_rr_div(f, g, u, K)
+    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    f, g = map(ring.from_dense, (f, g))
+    return tuple(map(ring.to_dense, divmod(f, g)))
 
 
 def dmp_rem(f, g, u, K):
