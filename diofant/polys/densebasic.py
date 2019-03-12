@@ -1076,7 +1076,7 @@ def dmp_slice_in(f, m, n, j, u, K):
         M = k - m if k >= m else 0
         N = k - n if k >= n else 0
         f = f[N:M]
-        return f + [K.zero]*m if f else []
+        return dmp_strip(f + [K.zero]*m if f else [], u)
 
     f, g = dmp_to_dict(f, u), {}
 
