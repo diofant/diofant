@@ -880,14 +880,6 @@ def dmp_rr_div(f, g, u, K):
     """
     Multivariate division with remainder over a ring.
 
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> R.dmp_rr_div(x**2 + x*y, 2*x + 2)
-    (0, x**2 + x*y)
-
     """
     df = dmp_degree_in(f, 0, u)
     dg = dmp_degree_in(g, 0, u)
@@ -932,14 +924,6 @@ def dmp_rr_div(f, g, u, K):
 def dmp_ff_div(f, g, u, K):
     """
     Polynomial division with remainder over a field.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", QQ)
-
-    >>> R.dmp_ff_div(x**2 + x*y, 2*x + 2)
-    (1/2*x + 1/2*y - 1/2, -y + 1)
 
     """
     df = dmp_degree_in(f, 0, u)
