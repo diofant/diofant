@@ -26,7 +26,8 @@ from .orderings import lex
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
                          GeneratorsNeeded, HeuristicGCDFailed,
-                         MultivariatePolynomialError, PolynomialError)
+                         MultivariatePolynomialError, PolynomialDivisionFailed,
+                         PolynomialError)
 from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
 from .polyoptions import build_options
@@ -1339,6 +1340,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         ring = self.ring
+        order = ring.order
         if any(not f for f in fv):
             raise ZeroDivisionError("polynomial division")
         if any(f.ring != ring for f in fv):
@@ -1362,6 +1364,8 @@ class PolyElement(DomainElement, CantSympify, dict):
                     qv[i] = qv[i]._iadd_monom((expv1, c))
                     p = p._iadd_poly_monom(fv[i], (expv1, -c))
                     divoccurred = 1
+                    if p and order(p.LM) >= order(expv):
+                        raise PolynomialDivisionFailed(self, fv[i], self.ring)
                 else:
                     i += 1
             if not divoccurred:
