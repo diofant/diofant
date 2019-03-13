@@ -8,6 +8,7 @@ from ..ntheory import factorint
 from .densearith import dup_lshift
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_LC,
                          dmp_normal, dmp_strip)
+from .densetools import dmp_eval_in
 from .polyconfig import query
 from .polyerrors import ExactQuotientFailed
 from .polyutils import _sort_factors
@@ -387,31 +388,6 @@ def gf_sub_mul(f, g, h, p, K):
 
     """
     return gf_sub(f, gf_mul(g, h, p, K), p, K)
-
-
-def gf_expand(F, p, K):
-    """
-    Expand results of :func:`~diofant.polys.polytools.factor` in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_expand([([3, 2, 4], 1), ([2, 2], 2), ([3, 1], 3)], 5, ZZ)
-    [4, 3, 0, 3, 0, 1, 4, 1]
-
-    """
-    if type(F) is tuple:
-        lc, F = F
-    else:
-        lc = K.one
-
-    g = [lc]
-
-    for f, k in F:
-        f = gf_pow(f, k, p, K)
-        g = gf_mul(g, f, p, K)
-
-    return g
 
 
 def gf_div(f, g, p, K):
@@ -1729,24 +1705,6 @@ def gf_factor(f, p, K):
     return lc, _sort_factors(factors)
 
 
-def gf_value(f, a):
-    """
-    Value of polynomial 'f' at 'a' in field R.
-
-    Examples
-    ========
-
-    >>> gf_value([1, 7, 2, 4], 11)
-    2204
-
-    """
-    result = 0
-    for c in f:
-        result *= a
-        result += c
-    return result
-
-
 def linear_congruence(a, b, m):
     """
     Returns the values of x satisfying a*x congruent b mod(m)
@@ -1812,8 +1770,8 @@ def _raise_mod_power(x, s, p, f):
     """
     from ..domains import ZZ
     f_f = gf_diff(f, p, ZZ)
-    alpha = gf_value(f_f, x)
-    beta = - gf_value(f, x) // p**s
+    alpha = dmp_eval_in(f_f, x, 0, 0, ZZ)
+    beta = - dmp_eval_in(f, x, 0, 0, ZZ) // p**s
     return linear_congruence(alpha, beta, p)
 
 
