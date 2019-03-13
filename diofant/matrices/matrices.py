@@ -2908,15 +2908,17 @@ class MatrixBase(DefaultPrinting):
         >>> A.berkowitz_charpoly().as_expr()
         _lambda**2 - _lambda - 6
 
-        No test is done to see that ``x`` doesn't clash with an existing
-        symbol, so using the default (``lambda``) or your own Dummy symbol is
-        the safest option:
+        Be sure your provided ``x`` doesn't clash with existing symbols:
 
         >>> A = Matrix([[1, 2], [x, 0]])
         >>> A.charpoly().as_expr()
         -2*x + _lambda**2 - _lambda
         >>> A.charpoly(x).as_expr()
-        x**2 - 3*x
+        Traceback (most recent call last):
+        ...
+        GeneratorsError: polynomial ring and it's ground domain share generators
+        >>> A.charpoly(y).as_expr()
+        -2*x + y**2 - y
 
         See Also
         ========

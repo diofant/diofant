@@ -91,6 +91,9 @@ def test_Poly_from_dict():
     assert Poly.from_dict({(1, 0): y}, gens=(x, z), composite=False) == \
         Poly(y*x, x, z, domain='EX')
 
+    pytest.raises(GeneratorsError,
+                  lambda: Poly.from_dict({(1,): x, (0,): 1}, gens=(x,)))
+
 
 def test_Poly_from_list():
     K = FF(3)
@@ -108,6 +111,7 @@ def test_Poly_from_list():
     assert Poly.from_list([1.0, 0], gens=x).rep.to_dense() == [RR(1.0), RR(0.0)]
 
     pytest.raises(MultivariatePolynomialError, lambda: Poly.from_list([[]], gens=(x, y)))
+    pytest.raises(GeneratorsError, lambda: Poly.from_list([x, 1], gens=(x,)))
 
 
 def test_Poly_from_poly():
