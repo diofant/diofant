@@ -9,8 +9,8 @@ from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
                                        gf_crt1, gf_crt2, gf_csolve,
                                        gf_ddf_shoup, gf_ddf_zassenhaus,
                                        gf_diff, gf_div, gf_edf_shoup,
-                                       gf_edf_zassenhaus, gf_eval, gf_expand,
-                                       gf_exquo, gf_factor, gf_factor_sqf,
+                                       gf_edf_zassenhaus, gf_eval, gf_exquo,
+                                       gf_factor, gf_factor_sqf,
                                        gf_frobenius_map,
                                        gf_frobenius_monomial_base,
                                        gf_from_dict, gf_from_int_poly, gf_gcd,
@@ -188,13 +188,6 @@ def test_gf_division():
     pytest.raises(ExactQuotientFailed, lambda: gf_exquo(f, g, 7, ZZ))
 
     assert gf_quo([1, 2, 1], [1, 1], 11, ZZ) == [1, 1]
-
-
-def test_gf_expand():
-    F = [([1, 1], 2), ([1, 2], 3)]
-
-    assert gf_expand(F, 11, ZZ) == [1, 8, 3, 5, 6, 8]
-    assert gf_expand((4, F), 11, ZZ) == [4, 10, 1, 9, 2, 10]
 
 
 def test_gf_powering():
