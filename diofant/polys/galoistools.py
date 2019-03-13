@@ -8,6 +8,7 @@ from ..ntheory import factorint
 from .densearith import dup_lshift
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_LC,
                          dmp_normal, dmp_strip)
+from .densetools import dmp_eval_in
 from .polyconfig import query
 from .polyerrors import ExactQuotientFailed
 from .polyutils import _sort_factors
@@ -1704,24 +1705,6 @@ def gf_factor(f, p, K):
     return lc, _sort_factors(factors)
 
 
-def gf_value(f, a):
-    """
-    Value of polynomial 'f' at 'a' in field R.
-
-    Examples
-    ========
-
-    >>> gf_value([1, 7, 2, 4], 11)
-    2204
-
-    """
-    result = 0
-    for c in f:
-        result *= a
-        result += c
-    return result
-
-
 def linear_congruence(a, b, m):
     """
     Returns the values of x satisfying a*x congruent b mod(m)
@@ -1787,8 +1770,8 @@ def _raise_mod_power(x, s, p, f):
     """
     from ..domains import ZZ
     f_f = gf_diff(f, p, ZZ)
-    alpha = gf_value(f_f, x)
-    beta = - gf_value(f, x) // p**s
+    alpha = dmp_eval_in(f_f, x, 0, 0, ZZ)
+    beta = - dmp_eval_in(f, x, 0, 0, ZZ) // p**s
     return linear_congruence(alpha, beta, p)
 
 

@@ -21,7 +21,7 @@ from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
                                        gf_pow_mod, gf_Qbasis, gf_Qmatrix,
                                        gf_quo, gf_rem, gf_sqr, gf_sub,
                                        gf_sub_ground, gf_sub_mul, gf_trace_map,
-                                       gf_value, linear_congruence)
+                                       linear_congruence)
 from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.rings import ring
 
@@ -703,8 +703,6 @@ def test_gf_factor():
 
 
 def test_gf_csolve():
-    assert gf_value([1, 7, 2, 4], 11) == 2204
-
     assert linear_congruence(4, 3, 5) == [2]
     assert linear_congruence(0, 3, 5) == []
     assert linear_congruence(6, 1, 4) == []
