@@ -240,8 +240,7 @@ class AlgebraicElement(QuotientRingElement, CantSympify):
     @property
     def denominator(self):
         from . import ZZ
-        return self.__class__(functools.reduce(ZZ.lcm, (ZZ.convert(_.denominator)
-                                                        for _ in self.rep.to_dense()), ZZ.one))
+        return ZZ.convert(self.rep.content().denominator)
 
 
 class ComplexAlgebraicElement(AlgebraicElement):
