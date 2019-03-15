@@ -79,3 +79,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`10211` integrate((1/sqrt(((y-x)**2 + h**2))**3), (x,0,w), (y,0,w)) is wrong
 * :sympyissue:`11806` Incorrectly evaluating integral
 * :sympyissue:`12325` string formatting error in dmp_integrate_in
+* :sympyissue:`16222` Poly(E**100000000) is slow to create

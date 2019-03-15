@@ -2429,7 +2429,7 @@ class Poly(Expr):
         """
         dom, per, F, G = self._unify(other)
 
-        result = F.ring.dmp_cancel(F, G, include=include)
+        result = F.cancel(G, include=include)
 
         if not include:
             if dom.has_assoc_Ring:

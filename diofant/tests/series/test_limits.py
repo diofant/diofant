@@ -644,3 +644,9 @@ def test_sympyissue_15323():
 
 def test_sympyissue_15984():
     assert limit((-x + log(exp(x) + 1))/x, x, oo, dir='-') == 0
+
+
+def test_sympyissue_16222():
+    assert limit(exp(x), x, 10000000) == exp(10000000)
+    assert limit(exp(x), x, 100000000) == exp(100000000)
+    assert limit(exp(x), x, 1000000000) == exp(1000000000)

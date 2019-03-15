@@ -2018,7 +2018,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return G, f
 
-    def cancel(self, g):
+    def cancel(self, g, include=True):
         """
         Cancel common factors in a rational function ``f/g``.
 
@@ -2033,17 +2033,11 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         f = self
         ring = f.ring
-
-        if not f:
-            return f, ring.one
-
         domain = ring.domain
 
         if not (domain.is_Field and domain.has_assoc_Ring):
             _, p, q = f.cofactors(g)
-
-            if q.is_negative:
-                p, q = -p, -q
+            cp, cq = domain.one, domain.one
         else:
             new_ring = ring.clone(domain=domain.ring)
 
@@ -2059,18 +2053,21 @@ class PolyElement(DomainElement, CantSympify, dict):
             p = p.set_ring(ring)
             q = q.set_ring(ring)
 
-            p_neg = p.is_negative
-            q_neg = q.is_negative
+        p_neg = p.is_negative
+        q_neg = q.is_negative
 
-            if p_neg and q_neg:
-                p, q = -p, -q
-            elif p_neg:
-                cp, p = -cp, -p
-            elif q_neg:
-                cp, q = -cp, -q
+        if p_neg and q_neg:
+            p, q = -p, -q
+        elif p_neg:
+            cp, p = -cp, -p
+        elif q_neg:
+            cp, q = -cp, -q
 
-            p = p.mul_ground(cp)
-            q = q.mul_ground(cq)
+        if not include:
+            return cp, cq, p, q
+
+        p = p.mul_ground(cp)
+        q = q.mul_ground(cq)
 
         return p, q
 
