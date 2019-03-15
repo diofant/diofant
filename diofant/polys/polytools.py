@@ -130,6 +130,9 @@ class Poly(Expr):
             for monom, coeff in rep.items():
                 rep[monom] = domain.convert(coeff)
 
+        if domain.is_Composite and set(gens) & set(domain.symbols):
+            raise GeneratorsError("polynomial ring and it's ground domain share generators")
+
         return cls.new(DMP.from_dict(rep, level, domain), *gens)
 
     @classmethod
@@ -151,6 +154,9 @@ class Poly(Expr):
             domain, rep = construct_domain(rep, opt=opt)
         else:
             rep = list(map(domain.convert, rep))
+
+        if domain.is_Composite and set(gens) & set(domain.symbols):
+            raise GeneratorsError("polynomial ring and it's ground domain share generators")
 
         return cls.new(DMP.from_list(rep, level, domain), *gens)
 

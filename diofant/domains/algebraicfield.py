@@ -1,15 +1,14 @@
 """Implementation of :class:`AlgebraicField` class. """
 
 import functools
-import numbers
 
 from ..core import I, Integer, cacheit, sympify
 from ..core.sympify import CantSympify
 from ..polys.densetools import dmp_compose, dmp_diff_in, dmp_eval_in
 from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
 from .characteristiczero import CharacteristicZero
-from .domainelement import DomainElement
 from .field import Field
+from .quotientring import QuotientRingElement
 from .rationalfield import RationalField
 from .simpledomain import SimpleDomain
 
@@ -204,7 +203,7 @@ class RealAlgebraicField(ComplexAlgebraicField):
         return a < 0
 
 
-class AlgebraicElement(DomainElement, CantSympify):
+class AlgebraicElement(QuotientRingElement, CantSympify):
     """Dense Algebraic Number Polynomials over a field. """
 
     def __init__(self, rep):
@@ -221,14 +220,6 @@ class AlgebraicElement(DomainElement, CantSympify):
 
         self.rep = rep % self.mod
 
-    @property
-    def parent(self):
-        return self._parent
-
-    def __hash__(self):
-        return hash((self.__class__.__name__, self.rep, self.domain.domain,
-                     self.parent.ext))
-
     def to_dict(self):
         """Convert ``self`` to a dict representation with native coefficients. """
         return self.rep.to_dict()
@@ -242,78 +233,6 @@ class AlgebraicElement(DomainElement, CantSympify):
         """Returns ``True`` if ``self`` is an element of the ground domain. """
         return self.rep.is_ground
 
-    def __pos__(self):
-        return self
-
-    def __neg__(self):
-        return self.__class__(-self.rep)
-
-    def __add__(self, other):
-        try:
-            other = self.parent.convert(other)
-        except CoercionFailed:
-            return NotImplemented
-        return self.__class__(self.rep + other.rep)
-
-    def __radd__(self, other):
-        return self.__add__(other)
-
-    def __sub__(self, other):
-        try:
-            other = self.parent.convert(other)
-        except CoercionFailed:
-            return NotImplemented
-        return self.__class__(self.rep - other.rep)
-
-    def __rsub__(self, other):
-        return (-self).__add__(other)
-
-    def __mul__(self, other):
-        try:
-            other = self.parent.convert(other)
-        except CoercionFailed:
-            return NotImplemented
-        return self.__class__(self.rep * other.rep)
-
-    def __rmul__(self, other):
-        return self.__mul__(other)
-
-    def __pow__(self, exp):
-        if not isinstance(exp, numbers.Integral):
-            raise TypeError("Integer exponent expected, got %s" % type(exp))
-        if exp < 0:
-            rep, exp = self.domain.invert(self.rep, self.mod), -exp
-        else:
-            rep = self.rep
-        return self.__class__(rep**exp)
-
-    def __truediv__(self, other):
-        try:
-            other = self.parent.convert(other)
-        except CoercionFailed:
-            return NotImplemented
-        return self * other**-1
-
-    def __rtruediv__(self, other):
-        return (self**-1).__mul__(other)
-
-    def __eq__(self, other):
-        try:
-            other = self.parent.convert(other)
-        except CoercionFailed:
-            return False
-        return self.rep == other.rep
-
-    def __bool__(self):
-        return bool(self.rep)
-
-    def __int__(self):
-        try:
-            from . import QQ
-            return int(QQ.convert(self))
-        except CoercionFailed:
-            raise TypeError("Can't convert algebraic number to int")
-
     @property
     def numerator(self):
         return self*self.denominator
@@ -321,8 +240,7 @@ class AlgebraicElement(DomainElement, CantSympify):
     @property
     def denominator(self):
         from . import ZZ
-        return self.__class__(functools.reduce(ZZ.lcm, (ZZ.convert(_.denominator)
-                                                        for _ in self.rep.to_dense()), ZZ.one))
+        return ZZ.convert(self.rep.content().denominator)
 
 
 class ComplexAlgebraicElement(AlgebraicElement):

@@ -593,7 +593,7 @@ def gf_frobenius_map(f, g, b, p, K):
     Examples
     ========
 
-    >>> f = [2, 1 , 0, 1]
+    >>> f = [2, 1, 0, 1]
     >>> g = [1, 0, 2, 1]
     >>> p = 5
     >>> b = gf_frobenius_monomial_base(g, p, ZZ)
