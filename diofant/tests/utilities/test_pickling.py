@@ -53,7 +53,6 @@ from diofant.polys.fields import FractionField
 from diofant.polys.monomials import Monomial
 from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
                                      ProductOrder, ReversedGradedLexOrder)
-from diofant.polys.polyclasses import DMP
 from diofant.polys.polyerrors import (CoercionFailed, DomainError,
                                       EvaluationFailed, ExtraneousFactors,
                                       FlagError, GeneratorsError,
@@ -283,11 +282,6 @@ def test_pickling_polys_polytools():
         check(c)
 
     for c in (GroebnerBasis, GroebnerBasis([x**2 - 1], x)):
-        check(c)
-
-
-def test_pickling_polys_polyclasses():
-    for c in (DMP, DMP([[ZZ(1)], [ZZ(2)], [ZZ(3)]], ZZ)):
         check(c)
 
 

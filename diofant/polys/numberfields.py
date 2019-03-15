@@ -588,7 +588,7 @@ def minpoly_groebner(ex, x, domain):
     Examples
     ========
 
-    >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), method='groebner')(x)
+    >>> minimal_polynomial(sqrt(2) + 1, method='groebner')(x)
     x**2 - 2*x - 1
 
     References

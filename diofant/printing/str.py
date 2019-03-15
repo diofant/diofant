@@ -624,13 +624,6 @@ class StrPrinter(Printer):
     def _print_Zero(self, expr):
         return "0"
 
-    def _print_DMP(self, p):
-        cls = p.__class__.__name__
-        rep = self._print(p.rep)
-        dom = self._print(p.domain)
-
-        return "%s(%s, %s)" % (cls, rep, dom)
-
     def _print_BaseScalarField(self, field):
         return field._coord_sys._names[field._index]
 

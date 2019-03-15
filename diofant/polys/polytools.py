@@ -18,17 +18,15 @@ from .fglmtools import matrix_fglm
 from .groebnertools import groebner as _groebner
 from .monomials import Monomial
 from .orderings import monomial_key
-from .polyclasses import DMP
 from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
                          ExactQuotientFailed, GeneratorsError,
                          GeneratorsNeeded, MultivariatePolynomialError,
                          PolificationFailed, PolynomialError,
                          UnificationFailed)
 from .polyutils import (_dict_from_expr, _dict_reorder,
-                        _parallel_dict_from_expr, _sort_gens, _unify_gens,
-                        basic_from_dict)
+                        _parallel_dict_from_expr, _sort_gens, basic_from_dict)
 from .rationaltools import together
-from .rings import PolynomialRing, ring
+from .rings import PolyElement, PolynomialRing, ring
 from .rootisolation import dup_isolate_real_roots_list
 
 
@@ -75,10 +73,10 @@ class Poly(Expr):
     @classmethod
     def new(cls, rep, *gens):
         """Construct :class:`Poly` instance from raw representation."""
-        if not isinstance(rep, DMP):
+        if not isinstance(rep, PolyElement):
             raise PolynomialError(
                 "invalid polynomial representation: %s" % rep)
-        elif rep.lev != len(gens) - 1:
+        elif rep.ring.ngens != len(gens):
             raise PolynomialError("invalid arguments: %s, %s" % (rep, gens))
 
         obj = Expr.__new__(cls)
@@ -121,7 +119,6 @@ class Poly(Expr):
             raise GeneratorsNeeded(
                 "can't initialize from 'dict' without generators")
 
-        level = len(gens) - 1
         domain = opt.domain
 
         if domain is None:
@@ -130,10 +127,9 @@ class Poly(Expr):
             for monom, coeff in rep.items():
                 rep[monom] = domain.convert(coeff)
 
-        if domain.is_Composite and set(gens) & set(domain.symbols):
-            raise GeneratorsError("polynomial ring and it's ground domain share generators")
+        ring = domain.poly_ring(*gens)
 
-        return cls.new(DMP.from_dict(rep, level, domain), *gens)
+        return cls.new(ring.from_dict(rep), *gens)
 
     @classmethod
     def _from_list(cls, rep, opt):
@@ -147,7 +143,6 @@ class Poly(Expr):
             raise MultivariatePolynomialError(
                 "'list' representation not supported")
 
-        level = len(gens) - 1
         domain = opt.domain
 
         if domain is None:
@@ -155,10 +150,9 @@ class Poly(Expr):
         else:
             rep = list(map(domain.convert, rep))
 
-        if domain.is_Composite and set(gens) & set(domain.symbols):
-            raise GeneratorsError("polynomial ring and it's ground domain share generators")
+        ring = domain.poly_ring(*gens)
 
-        return cls.new(DMP.from_list(rep, level, domain), *gens)
+        return cls.new(ring.from_list(rep), *gens)
 
     @classmethod
     def _from_poly(cls, rep, opt):
@@ -281,17 +275,17 @@ class Poly(Expr):
     @property
     def domain(self):
         """Get the ground domain of ``self``."""
-        return self.rep.domain
+        return self.rep.ring.domain
 
     @property
     def zero(self):
         """Return zero polynomial with ``self``'s properties."""
-        return self.new(self.rep.zero(self.rep.lev, self.domain), *self.gens)
+        return self.new(self.rep.ring.zero, *self.gens)
 
     @property
     def one(self):
         """Return one polynomial with ``self``'s properties."""
-        return self.new(self.rep.one(self.rep.lev, self.domain), *self.gens)
+        return self.new(self.rep.ring.one, *self.gens)
 
     @property
     def unit(self):
@@ -329,37 +323,16 @@ class Poly(Expr):
         if not other.is_Poly:
             try:
                 return (self.domain, self.per, self.rep,
-                        self.rep.per(self.domain.convert(other)))
+                        self.rep.ring(self.domain.convert(other)))
             except CoercionFailed:
                 raise UnificationFailed("can't unify %s with %s" % (self, other))
 
-        gens = _unify_gens(self.gens, other.gens)
-
-        dom, lev = self.domain.unify(other.domain, gens), len(gens) - 1
-
-        if self.gens != gens:
-            self_monoms, self_coeffs = _dict_reorder(self.rep.to_dict(),
-                                                     self.gens, gens)
-
-            if self.domain != dom:
-                self_coeffs = [dom.convert(c, self.domain) for c in self_coeffs]
-
-            F = DMP(dict(zip(self_monoms, self_coeffs)), dom, lev)
-        else:
-            F = self.rep.convert(dom)
-
-        if other.gens != gens:
-            other_monoms, other_coeffs = _dict_reorder(other.rep.to_dict(),
-                                                       other.gens, gens)
-
-            if other.domain != dom:
-                other_coeffs = [dom.convert(c, other.domain) for c in other_coeffs]
-
-            G = DMP(dict(zip(other_monoms, other_coeffs)), dom, lev)
-        else:
-            G = other.rep.convert(dom)
+        newring = self.rep.ring.unify(other.rep.ring)
+        gens = newring.symbols
+        F, G = self.rep.set_ring(newring), other.rep.set_ring(newring)
 
         cls = self.__class__
+        dom = newring.domain
 
         def per(rep, dom=dom, gens=gens, remove=None):
             if remove is not None:
@@ -379,11 +352,10 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> from diofant.polys.polyclasses import DMP
-
         >>> a = Poly(x**2 + 1)
+        >>> R = ZZ.poly_ring(x)
 
-        >>> a.per(DMP([ZZ(1), ZZ(1)], ZZ), gens=[y])
+        >>> a.per(R.from_dense([ZZ(1), ZZ(1)]), gens=[y])
         Poly(y + 1, y, domain='ZZ')
 
         """
@@ -401,7 +373,8 @@ class Poly(Expr):
     def set_domain(self, domain):
         """Set the ground domain of ``self``."""
         opt = options.build_options(self.gens, {'domain': domain})
-        return self.per(self.rep.convert(opt.domain))
+        newrep = self.rep.set_domain(opt.domain)
+        return self.per(newrep)
 
     def set_modulus(self, modulus):
         """
@@ -459,14 +432,16 @@ class Poly(Expr):
         Poly(a + x, a, x, domain='ZZ')
 
         """
-        J, new = self.rep.exclude()
-        gens = []
+        rep = self.rep
+        if rep.is_ground:
+            return self
+        for x in rep.ring.symbols:
+            try:
+                rep = rep.drop(x)
+            except ValueError:
+                pass
 
-        for j in range(len(self.gens)):
-            if j not in J:
-                gens.append(self.gens[j])
-
-        return self.per(new, gens=gens)
+        return self.per(rep, gens=rep.ring.symbols)
 
     def replace(self, x, y=None):
         """
@@ -495,7 +470,8 @@ class Poly(Expr):
             if not dom.is_Composite or y not in dom.symbols:
                 gens = list(self.gens)
                 gens[gens.index(x)] = y
-                return self.per(self.rep, gens=gens)
+                rep = dom.poly_ring(*gens).from_dict(dict(self.rep))
+                return self.per(rep, gens=gens)
 
         raise PolynomialError("can't replace %s with %s in %s" % (x, y, self))
 
@@ -518,9 +494,12 @@ class Poly(Expr):
             raise PolynomialError(
                 "generators list can differ only up to order of elements")
 
-        rep = dict(zip(*_dict_reorder(self.rep.to_dict(), self.gens, gens)))
+        rep = dict(zip(*_dict_reorder(dict(self.rep), self.gens, gens)))
 
-        return self.per(DMP(rep, self.domain, len(gens) - 1), gens=gens)
+        newring = self.domain.poly_ring(*gens)
+        rep = newring.from_dict(rep)
+
+        return self.per(rep, gens=gens)
 
     def ltrim(self, gen):
         """
@@ -547,7 +526,10 @@ class Poly(Expr):
 
         gens = self.gens[j:]
 
-        return self.new(DMP.from_dict(terms, len(gens) - 1, self.domain), *gens)
+        newring = self.domain.poly_ring(*gens)
+        rep = newring.from_dict(terms)
+
+        return self.new(rep, *gens)
 
     def has_only_gens(self, *gens):
         """
@@ -591,8 +573,7 @@ class Poly(Expr):
         Poly(x**2 + 1, x, domain='ZZ')
 
         """
-        result = self.rep.to_ring()
-        return self.per(result)
+        return self.set_domain(self.domain.ring)
 
     def to_field(self):
         """
@@ -605,8 +586,7 @@ class Poly(Expr):
         Poly(x**2 + 1, x, domain='QQ')
 
         """
-        result = self.rep.to_field()
-        return self.per(result)
+        return self.set_domain(self.domain.field)
 
     def to_exact(self):
         """
@@ -619,8 +599,7 @@ class Poly(Expr):
         Poly(x**2 + 1, x, domain='QQ')
 
         """
-        result = self.rep.to_exact()
-        return self.per(result)
+        return self.set_domain(self.domain.get_exact())
 
     def retract(self, field=None):
         """
@@ -774,7 +753,7 @@ class Poly(Expr):
 
         """
         if native:
-            return self.rep.to_dict()
+            return dict(self.rep)
         else:
             return self.rep.as_expr_dict()
 
@@ -824,7 +803,7 @@ class Poly(Expr):
 
         """
         J, result = self.rep.deflate()
-        return J, self.per(result)
+        return J, self.per(result[0])
 
     def inject(self, front=False):
         """
@@ -846,12 +825,13 @@ class Poly(Expr):
         if dom.is_Numerical:
             return self
 
-        result = self.rep.inject(front=front)
-
         if front:
             gens = dom.symbols + self.gens
         else:
             gens = self.gens + dom.symbols
+
+        newring = dom.domain.poly_ring(*gens)
+        result = newring.from_expr(self.rep.as_expr())
 
         return self.new(result, *gens)
 
@@ -875,20 +855,10 @@ class Poly(Expr):
         if not dom.is_Numerical:
             raise DomainError("can't eject generators over %s" % dom)
 
-        k = len(gens)
+        result = self.rep.copy()
+        result = result.drop_to_ground(*gens)
 
-        if self.gens[:k] == gens:
-            _gens, front = self.gens[k:], True
-        elif self.gens[-k:] == gens:
-            _gens, front = self.gens[:-k], False
-        else:
-            raise NotImplementedError(
-                "can only eject front or back generators")
-
-        dom = dom.inject(*gens)
-
-        result = self.rep.eject(dom, front=front)
-        return self.new(result, *_gens)
+        return self.new(result, *result.ring.symbols)
 
     def terms_gcd(self):
         """
@@ -1034,14 +1004,14 @@ class Poly(Expr):
         retract = False
 
         if auto and dom.is_Ring and not dom.is_Field:
-            F, G = F.to_field(), G.to_field()
+            F, G = F.set_domain(F.ring.domain.field), G.set_domain(G.ring.domain.field)
             retract = True
 
         q, r = divmod(F, G)
 
         if retract:
             try:
-                Q, R = q.to_ring(), r.to_ring()
+                Q, R = q.set_domain(q.ring.domain.ring), r.set_domain(r.ring.domain.ring)
             except CoercionFailed:
                 pass
             else:
@@ -1067,14 +1037,14 @@ class Poly(Expr):
         retract = False
 
         if auto and dom.is_Ring and not dom.is_Field:
-            F, G = F.to_field(), G.to_field()
+            F, G = F.set_domain(F.ring.domain.field), G.set_domain(G.ring.domain.field)
             retract = True
 
         r = F % G
 
         if retract:
             try:
-                r = r.to_ring()
+                r = r.set_domain(r.ring.domain.ring)
             except CoercionFailed:
                 pass
 
@@ -1098,14 +1068,14 @@ class Poly(Expr):
         retract = False
 
         if auto and dom.is_Ring and not dom.is_Field:
-            F, G = F.to_field(), G.to_field()
+            F, G = F.set_domain(F.ring.domain.field), G.set_domain(G.ring.domain.field)
             retract = True
 
         q = F // G
 
         if retract:
             try:
-                q = q.to_ring()
+                q = q.set_domain(q.ring.domain.ring)
             except CoercionFailed:
                 pass
 
@@ -1131,7 +1101,7 @@ class Poly(Expr):
         retract = False
 
         if auto and dom.is_Ring and not dom.is_Field:
-            F, G = F.to_field(), G.to_field()
+            F, G = F.set_domain(F.ring.domain.field), G.set_domain(G.ring.domain.field)
             retract = True
 
         try:
@@ -1141,7 +1111,7 @@ class Poly(Expr):
 
         if retract:
             try:
-                q = q.to_ring()
+                q = q.set_domain(q.ring.domain.ring)
             except CoercionFailed:
                 pass
 
@@ -1230,7 +1200,7 @@ class Poly(Expr):
         if order is not None:
             return self.coeffs(order)[0]
 
-        result = self.rep.LC()
+        result = self.rep.LC
         return self.domain.to_expr(result)
 
     def TC(self):
@@ -1244,7 +1214,7 @@ class Poly(Expr):
         0
 
         """
-        result = self.rep.TC()
+        result = self.rep.ring.dmp_ground_TC(self.rep)
         return self.domain.to_expr(result)
 
     def EC(self, order=None):
@@ -1643,7 +1613,7 @@ class Poly(Expr):
         dom, per, F, G = self._unify(other)
 
         if auto and dom.is_Ring:
-            F, G = F.to_field(), G.to_field()
+            F, G = F.set_domain(F.ring.domain.field), G.set_domain(G.ring.domain.field)
 
         s, h = F.half_gcdex(G)
         return per(s), per(h)
@@ -1669,7 +1639,7 @@ class Poly(Expr):
         dom, per, F, G = self._unify(other)
 
         if auto and dom.is_Ring:
-            F, G = F.to_field(), G.to_field()
+            F, G = F.set_domain(F.ring.domain.field), G.set_domain(G.ring.domain.field)
 
         s, t, h = F.gcdex(G)
         return per(s), per(t), per(h)
@@ -1693,9 +1663,9 @@ class Poly(Expr):
         dom, per, F, G = self._unify(other)
 
         if auto and dom.is_Ring:
-            F, G = F.to_field(), G.to_field()
+            F, G = F.set_domain(F.ring.domain.field), G.set_domain(G.ring.domain.field)
 
-        result = F.invert(G)
+        result = F.ring.dup_invert(F, G)
         return per(result)
 
     def subresultants(self, other):
@@ -1739,9 +1709,9 @@ class Poly(Expr):
         _, per, F, G = self._unify(other)
 
         if includePRS:
-            result, R = F.resultant(G, includePRS=includePRS)
+            result, R = F.ring.dmp_resultant(F, G, includePRS=includePRS)
         else:
-            result = F.resultant(G)
+            result = F.ring.dmp_resultant(F, G)
 
         if includePRS:
             return per(result, remove=0), list(map(per, R))
@@ -1940,7 +1910,7 @@ class Poly(Expr):
         """
         _, per, F, G = self._unify(other)
 
-        result = F.compose(G)
+        result = F.compose(G.ring.gens[0], G)
         return per(result)
 
     def decompose(self):
@@ -2103,8 +2073,27 @@ class Poly(Expr):
         if sup is not None:
             sup = QQ.convert(sup)
 
-        result = self.rep.intervals(all=all, eps=eps, inf=inf,
-                                    sup=sup, fast=fast, sqf=sqf)
+        R = self.rep.ring
+
+        if self.is_univariate:
+            if not all:
+                if not sqf:
+                    result = R.dup_isolate_real_roots(self.rep, eps=eps,
+                                                      inf=inf, sup=sup, fast=fast)
+                else:
+                    result = R.dup_isolate_real_roots_sqf(self.rep,
+                                                          eps=eps, inf=inf,
+                                                          sup=sup, fast=fast)
+            else:
+                if not sqf:
+                    result = R.dup_isolate_all_roots(self.rep, eps=eps,
+                                                     inf=inf, sup=sup, fast=fast)
+                else:
+                    result = R.dup_isolate_all_roots_sqf(self.rep,
+                                                         eps=eps, inf=inf, sup=sup,
+                                                         fast=fast)
+        else:
+            raise MultivariatePolynomialError("can't isolate roots of a multivariate polynomial")
 
         if sqf:
             def _real(interval):
@@ -2166,7 +2155,7 @@ class Poly(Expr):
         elif eps is None:
             steps = 1
 
-        S, T = self.rep.refine_root(s, t, eps=eps, steps=steps, fast=fast)
+        S, T = self.rep.ring.dup_refine_real_root(self.rep, s, t, eps=eps, steps=steps, fast=fast)
         return QQ.to_expr(S), QQ.to_expr(T)
 
     def count_roots(self, inf=None, sup=None):
@@ -2211,7 +2200,7 @@ class Poly(Expr):
                     sup, sup_real = tuple(map(QQ.convert, (re, im))), False
 
         if inf_real and sup_real:
-            count = self.rep.count_real_roots(inf=inf, sup=sup)
+            count = self.rep.ring.dup_count_real_roots(self.rep, inf=inf, sup=sup)
         else:
             if inf_real and inf is not None:
                 inf = (inf, QQ.zero)
@@ -2219,7 +2208,7 @@ class Poly(Expr):
             if sup_real and sup is not None:
                 sup = (sup, QQ.zero)
 
-            count = self.rep.count_complex_roots(inf=inf, sup=sup)
+            count = self.rep.ring.dup_count_complex_roots(self.rep, inf=inf, sup=sup)
 
         return Integer(count)
 
@@ -2440,7 +2429,7 @@ class Poly(Expr):
         """
         dom, per, F, G = self._unify(other)
 
-        result = F.cancel(G, include=include)
+        result = F.ring.dmp_cancel(F, G, include=include)
 
         if not include:
             if dom.has_assoc_Ring:
@@ -2871,7 +2860,7 @@ class PurePoly(Poly):
 
     def _hashable_content(self):
         """Allow Diofant to hash Poly instances."""
-        return self.rep,
+        return self.domain, frozenset(self.rep.items())
 
     def __hash__(self):
         return super().__hash__()
@@ -2916,7 +2905,7 @@ class PurePoly(Poly):
             f = f.set_domain(dom)
             g = g.set_domain(dom)
 
-        return f.rep == g.rep
+        return f.rep.items() == g.rep.items()
 
     def _unify(self, other):
         other = sympify(other)
@@ -2924,20 +2913,19 @@ class PurePoly(Poly):
         if not other.is_Poly:
             try:
                 return (self.domain, self.per, self.rep,
-                        self.rep.per(self.domain.convert(other)))
+                        self.rep.ring(self.domain.convert(other)))
             except CoercionFailed:
                 raise UnificationFailed("can't unify %s with %s" % (self, other))
 
         if len(self.gens) != len(other.gens):
             raise UnificationFailed("can't unify %s with %s" % (self, other))
 
+        newring = self.rep.ring.unify(other.rep.ring)
+        gens = newring.symbols
+        F, G = self.rep.set_ring(newring), other.rep.set_ring(newring)
+
         cls = self.__class__
-        gens = self.gens
-
-        dom = self.domain.unify(other.domain, gens)
-
-        F = self.rep.convert(dom)
-        G = other.rep.convert(dom)
+        dom = newring.domain
 
         def per(rep, dom=dom, gens=gens, remove=None):
             if remove is not None:
@@ -4938,7 +4926,7 @@ def reduced(f, G, *gens, **args):
     _ring, *_ = ring(opt.gens, opt.domain, opt.order)
 
     for i, poly in enumerate(polys):
-        poly = poly.set_domain(opt.domain).rep.to_dict()
+        poly = dict(poly.set_domain(opt.domain).rep)
         polys[i] = _ring.from_dict(poly)
 
     Q, r = polys[0].div(polys[1:])
@@ -5031,7 +5019,7 @@ class GroebnerBasis(Basic):
         if not ring.domain.is_Exact:
             raise ValueError('Domain must be exact, got %s' % ring.domain)
 
-        polys = [ring.from_dict(_.rep.to_dict())
+        polys = [ring.from_dict(dict(_.rep))
                  for _ in polys if not _.is_zero]
 
         G = _groebner(polys, ring, method=opt.method)
@@ -5181,7 +5169,7 @@ class GroebnerBasis(Basic):
         _ring, *_ = ring(opt.gens, opt.domain, src_order)
 
         for i, poly in enumerate(polys):
-            poly = poly.set_domain(opt.domain).rep.to_dict()
+            poly = dict(poly.set_domain(opt.domain).rep)
             polys[i] = _ring.from_dict(poly)
 
         G = matrix_fglm(polys, _ring, dst_order)
@@ -5233,7 +5221,7 @@ class GroebnerBasis(Basic):
         _ring, *_ = ring(opt.gens, opt.domain, opt.order)
 
         for i, poly in enumerate(polys):
-            poly = poly.set_domain(opt.domain).rep.to_dict()
+            poly = dict(poly.set_domain(opt.domain).rep)
             polys[i] = _ring.from_dict(poly)
 
         Q, r = polys[0].div(polys[1:])
