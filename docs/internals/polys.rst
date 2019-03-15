@@ -4,18 +4,7 @@
 Internals of the Polynomial Manipulation Module
 ===============================================
 
-The implementation of the polynomials module is structured internally in
-"levels". There are four levels, called L0, L1, L2 and L3. The levels three
-and four contain the user-facing functionality and were described in the
-previous section. This section focuses on levels zero and one.
-
-Level zero provides core polynomial manipulation functionality with C-like,
-low-level interfaces. Level one wraps this low-level functionality into object
-oriented structures. These are *not* the classes seen by the user, but rather
-classes used internally throughout the polys module.
-
-There is one additional complication in the implementation. This comes from the
-fact that all polynomial manipulations are relative to a *ground domain*. For
+All polynomial manipulations are relative to a *ground domain*. For
 example, when factoring a polynomial like `x^{10} - 1`, one has to decide what
 ring the coefficients are supposed to belong to, or less trivially, what
 coefficients are allowed to appear in the factorization. This choice of
@@ -29,26 +18,14 @@ Thus the polynomial manipulation algorithms (both
 complicated ones like factoring, and simpler ones like addition or
 multiplication) have to rely on other code to manipulate the coefficients.
 In the polynomial manipulation module, such code is encapsulated in so-called
-"domains". A domain is basically a factory object: it takes various
+:mod:`~diofant.domains`.  A domain is basically a factory object: it takes various
 representations of data, and converts them into objects with unified interface.
 Every object created by a domain has to implement the arithmetic operations
 `+`, `-` and `\times`. Other operations are accessed through the domain, e.g.
 as in ``ZZ.quo(ZZ(4), ZZ(2))``.
 
-Note that there is some amount of *circularity*: the polynomial ring domains
-use the level one classes, the level one classes use the level zero functions,
-and level zero functions use domains. It is possible, in principle, but not in
-the current implementation, to work in rings like `k[X][Y]`. This would create
-even more layers. For this reason, working in the isomorphic ring `k[X, Y]`
-is preferred.
-
-Level Zero
-==========
-
-Level zero contains the bulk code of the polynomial manipulation module.
-
 Manipulation of dense, multivariate polynomials
-***********************************************
+===============================================
 
 These functions can be used to manipulate polynomials in `K[X_0, \ldots, X_u]`.
 Functions for manipulating multivariate polynomials in the dense representation
@@ -82,7 +59,7 @@ may be slightly more efficient.)
     :members:
 
 Manipulation of dense, univariate polynomials with finite field coefficients
-****************************************************************************
+============================================================================
 
 Functions in this module carry the prefix ``gf_``, referring to the classical
 name "Galois Fields" for finite fields. Note that many polynomial
@@ -95,7 +72,7 @@ fields.
     :members:
 
 Manipulation of sparse, distributed polynomials
-***********************************************
+===============================================
 
 Dense representations quickly require infeasible amounts of storage and
 computation time if the number of variables increases. For this reason,
@@ -113,7 +90,7 @@ Sparse polynomials are represented as dictionaries.
    :members:
 
 Polynomial factorization algorithms
-***********************************
+===================================
 
 Many variants of Euclid's algorithm:
 
@@ -369,7 +346,7 @@ Polynomial factorization in characteristic zero:
     :members:
 
 Gröbner basis algorithms
-************************
+========================
 
 Gröbner bases can be used to answer many problems in computational
 commutative algebra. Their computation in rather complicated, and very
@@ -384,38 +361,25 @@ manual for usage.
     :members:
 
 Algebraic number fields
-***********************
+=======================
 
 .. currentmodule:: diofant.polys.numberfields
 .. autofunction:: minpoly_groebner
 
-Exceptions
-==========
-
-These are exceptions defined by the polynomials module.
-
-.. TODO sort and explain
-
-.. automodule:: diofant.polys.polyerrors
-    :members:
-
-Reference
-=========
-
 Modular GCD
-***********
+===========
 
 .. automodule:: diofant.polys.modulargcd
     :members:
 
 Heuristic GCD
-*************
+=============
 
 .. automodule:: diofant.polys.heuristicgcd
     :members:
 
 Manipulation of power series
-****************************
+============================
 
 .. currentmodule:: diofant.polys.ring_series
 
@@ -436,4 +400,7 @@ documentation it is scarce. Please contribute!
     :members:
 
 .. automodule:: diofant.polys.polyconfig
+    :members:
+
+.. automodule:: diofant.polys.polyerrors
     :members:
