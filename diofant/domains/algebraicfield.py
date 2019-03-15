@@ -222,7 +222,7 @@ class AlgebraicElement(QuotientRingElement, CantSympify):
 
     def to_dict(self):
         """Convert ``self`` to a dict representation with native coefficients. """
-        return self.rep.to_dict()
+        return dict(self.rep)
 
     def LC(self):
         """Returns the leading coefficient of ``self``. """

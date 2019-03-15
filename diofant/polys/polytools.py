@@ -494,7 +494,7 @@ class Poly(Expr):
             raise PolynomialError(
                 "generators list can differ only up to order of elements")
 
-        rep = dict(zip(*_dict_reorder(self.rep.to_dict(), self.gens, gens)))
+        rep = dict(zip(*_dict_reorder(dict(self.rep), self.gens, gens)))
 
         newring = self.domain.poly_ring(*gens)
         rep = newring.from_dict(rep)
@@ -753,7 +753,7 @@ class Poly(Expr):
 
         """
         if native:
-            return self.rep.to_dict()
+            return dict(self.rep)
         else:
             return self.rep.as_expr_dict()
 
@@ -4926,7 +4926,7 @@ def reduced(f, G, *gens, **args):
     _ring, *_ = ring(opt.gens, opt.domain, opt.order)
 
     for i, poly in enumerate(polys):
-        poly = poly.set_domain(opt.domain).rep.to_dict()
+        poly = dict(poly.set_domain(opt.domain).rep)
         polys[i] = _ring.from_dict(poly)
 
     Q, r = polys[0].div(polys[1:])
@@ -5019,7 +5019,7 @@ class GroebnerBasis(Basic):
         if not ring.domain.is_Exact:
             raise ValueError('Domain must be exact, got %s' % ring.domain)
 
-        polys = [ring.from_dict(_.rep.to_dict())
+        polys = [ring.from_dict(dict(_.rep))
                  for _ in polys if not _.is_zero]
 
         G = _groebner(polys, ring, method=opt.method)
@@ -5169,7 +5169,7 @@ class GroebnerBasis(Basic):
         _ring, *_ = ring(opt.gens, opt.domain, src_order)
 
         for i, poly in enumerate(polys):
-            poly = poly.set_domain(opt.domain).rep.to_dict()
+            poly = dict(poly.set_domain(opt.domain).rep)
             polys[i] = _ring.from_dict(poly)
 
         G = matrix_fglm(polys, _ring, dst_order)
@@ -5221,7 +5221,7 @@ class GroebnerBasis(Basic):
         _ring, *_ = ring(opt.gens, opt.domain, opt.order)
 
         for i, poly in enumerate(polys):
-            poly = poly.set_domain(opt.domain).rep.to_dict()
+            poly = dict(poly.set_domain(opt.domain).rep)
             polys[i] = _ring.from_dict(poly)
 
         Q, r = polys[0].div(polys[1:])
