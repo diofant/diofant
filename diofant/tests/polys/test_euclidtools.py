@@ -833,6 +833,12 @@ def test_dmp_cancel():
     assert R.dmp_cancel(0, y) == (0, 1)
     assert R.dmp_cancel(0, y, include=False) == (1, 1, 0, 1)
 
+    assert R.dmp_cancel(y**2 - x**2, y - x) == (x + y, 1)
+
+    R, x = ring('x', QQ)
+
+    assert R.dmp_cancel(x**2/4 - 1, x/2 - 1) == (x + 2, 2)
+
 
 def test_dmp_zz_modular_resultant():
     R, x, y = ring("x y", ZZ)

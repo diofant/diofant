@@ -251,8 +251,12 @@ def term_div(a, b, domain):
     """Division of two terms in over a ring/field. """
     a_lm, a_lc = a
     b_lm, b_lc = b
+    zm = (0,)*len(a_lm)
 
-    monom = monomial_div(a_lm, b_lm)
+    if b_lm == zm:  # apparently this is a very common case
+        monom = a_lm
+    else:
+        monom = monomial_div(a_lm, b_lm)
 
     if domain.is_Field:
         if monom is not None:

@@ -21,7 +21,7 @@ from .densebasic import dmp_from_dict, dmp_to_dict
 from .heuristicgcd import heugcd
 from .modulargcd import func_field_modgcd, modgcd
 from .monomials import (monomial_div, monomial_ldiv, monomial_min,
-                        monomial_mul, monomial_pow)
+                        monomial_mul, monomial_pow, term_div)
 from .orderings import lex
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
@@ -1286,34 +1286,6 @@ class PolyElement(DomainElement, CantSympify, dict):
     def __rtruediv__(self, other):
         return NotImplemented
 
-    def _term_div(self):
-        zm = self.ring.zero_monom
-        domain = self.ring.domain
-        domain_quo = domain.quo
-
-        if domain.is_Field:
-            def term_div(a_lm_a_lc, b_lm_b_lc):
-                a_lm, a_lc = a_lm_a_lc
-                b_lm, b_lc = b_lm_b_lc
-                if b_lm == zm:  # apparently this is a very common case
-                    monom = a_lm
-                else:
-                    monom = monomial_div(a_lm, b_lm)
-                if monom is not None:
-                    return monom, domain_quo(a_lc, b_lc)
-        else:
-            def term_div(a_lm_a_lc, b_lm_b_lc):
-                a_lm, a_lc = a_lm_a_lc
-                b_lm, b_lc = b_lm_b_lc
-                if b_lm == zm:  # apparently this is a very common case
-                    monom = a_lm
-                else:
-                    monom = monomial_div(a_lm, b_lm)
-                if not (monom is None or a_lc % b_lc):
-                    return monom, domain_quo(a_lc, b_lc)
-
-        return term_div
-
     def div(self, fv):
         """Division algorithm, see :cite:`Cox2015ideals`, p. 64.
 
@@ -1351,14 +1323,13 @@ class PolyElement(DomainElement, CantSympify, dict):
         qv = [ring.zero for i in range(s)]
         p = self.copy()
         r = ring.zero
-        term_div = self._term_div()
         expvs = [fx.leading_expv() for fx in fv]
         while p:
             i = 0
             divoccurred = 0
             while i < s and divoccurred == 0:
                 expv = p.leading_expv()
-                term = term_div((expv, p[expv]), (expvs[i], fv[i][expvs[i]]))
+                term = term_div((expv, p[expv]), (expvs[i], fv[i][expvs[i]]), ring.domain)
                 if term is not None:
                     expv1, c = term
                     qv[i] = qv[i]._iadd_monom((expv1, c))
@@ -1818,9 +1789,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         elif monom == self.ring.zero_monom:
             return self.quo_ground(coeff)
 
-        term_div = self._term_div()
-
-        terms = [term_div(t, term) for t in self.items()]
+        terms = [term_div(t, term, self.ring.domain) for t in self.items()]
         return self.new([t for t in terms if t is not None])
 
     def trunc_ground(self, p):
@@ -1942,7 +1911,7 @@ class PolyElement(DomainElement, CantSympify, dict):
     def _gcd_zero(self, other):
         one, zero = self.ring.one, self.ring.zero
         if self.ring.domain.is_Field:
-            return other.monic(), zero, other.LC
+            return other.monic(), zero, self.ring.ground_new(other.LC)
         else:
             if other.is_nonnegative:
                 return other, zero, one
@@ -2018,7 +1987,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return G, f
 
-    def cancel(self, g):
+    def cancel(self, g, include=True):
         """
         Cancel common factors in a rational function ``f/g``.
 
@@ -2033,17 +2002,11 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         f = self
         ring = f.ring
-
-        if not f:
-            return f, ring.one
-
         domain = ring.domain
 
         if not (domain.is_Field and domain.has_assoc_Ring):
             _, p, q = f.cofactors(g)
-
-            if q.is_negative:
-                p, q = -p, -q
+            cp, cq = domain.one, domain.one
         else:
             new_ring = ring.clone(domain=domain.ring)
 
@@ -2059,18 +2022,21 @@ class PolyElement(DomainElement, CantSympify, dict):
             p = p.set_ring(ring)
             q = q.set_ring(ring)
 
-            p_neg = p.is_negative
-            q_neg = q.is_negative
+        p_neg = p.is_negative
+        q_neg = q.is_negative
 
-            if p_neg and q_neg:
-                p, q = -p, -q
-            elif p_neg:
-                cp, p = -cp, -p
-            elif q_neg:
-                cp, q = -cp, -q
+        if p_neg and q_neg:
+            p, q = -p, -q
+        elif p_neg:
+            cp, p = -cp, -p
+        elif q_neg:
+            cp, q = -cp, -q
 
-            p = p.mul_ground(cp)
-            q = q.mul_ground(cq)
+        if not include:
+            return cp, cq, p, q
+
+        p = p.mul_ground(cp)
+        q = q.mul_ground(cq)
 
         return p, q
 

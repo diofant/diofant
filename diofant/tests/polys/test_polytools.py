@@ -3331,3 +3331,8 @@ def test_sympyissue_15798():
     assert o1 == o2
     p = Poly(x + sqrt(2), x)
     assert p == p.copy()
+
+
+@pytest.mark.timeout(20)
+def test_sympyissue_16222():
+    Poly(x**100000000)
