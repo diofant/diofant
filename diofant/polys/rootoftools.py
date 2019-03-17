@@ -26,8 +26,22 @@ from .rootisolation import (dup_isolate_complex_roots_sqf,
 __all__ = 'RootOf', 'RootSum'
 
 
-_reals_cache = {}
-_complexes_cache = {}
+class _pure_key_dict(dict):
+    def __getitem__(self, k):
+        k = tuple(k.to_dense())
+        return super().__getitem__(k)
+
+    def __setitem__(self, k, v):
+        k = tuple(k.to_dense())
+        super().__setitem__(k, v)
+
+    def __contains__(self, k):
+        k = tuple(k.to_dense())
+        return super().__contains__(k)
+
+
+_reals_cache = _pure_key_dict()
+_complexes_cache = _pure_key_dict()
 
 
 class RootOf(Expr):
