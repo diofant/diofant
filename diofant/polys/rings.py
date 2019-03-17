@@ -482,9 +482,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     """
 
-    def new(self, init):
-        return self.__class__(init)
-
     @property
     def parent(self):
         return self.ring
@@ -525,7 +522,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         x**2 + 2*x*y + y**2 + 3
 
         """
-        return self.new(self)
+        return self.__class__(self)
 
     def set_ring(self, new_ring):
         if self.ring == new_ring:
@@ -573,7 +570,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         for coeff in self.values():
             common = lcm(common, coeff.denominator)
 
-        poly = self.new([(k, v*common) for k, v in self.items()])
+        poly = self.__class__([(k, v*common) for k, v in self.items()])
         return common, poly
 
     def strip_zero(self):
@@ -842,13 +839,13 @@ class PolyElement(DomainElement, CantSympify, dict):
         return True
 
     def __neg__(self):
-        return self.new([(monom, -coeff) for monom, coeff in self.items()])
+        return self.__class__([(monom, -coeff) for monom, coeff in self.items()])
 
     def __pos__(self):
         return self
 
     def __abs__(self):
-        return self.new([(monom, abs(coeff)) for monom, coeff in self.items()])
+        return self.__class__([(monom, abs(coeff)) for monom, coeff in self.items()])
 
     def __add__(self, other):
         """Add two polynomials.
@@ -1714,11 +1711,11 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self.ring.zero
 
         terms = [(monom, coeff*x) for monom, coeff in self.items()]
-        return self.new(terms)
+        return self.__class__(terms)
 
     def mul_monom(self, monom):
         terms = [(monomial_mul(f_monom, monom), f_coeff) for f_monom, f_coeff in self.items()]
-        return self.new(terms)
+        return self.__class__(terms)
 
     def mul_term(self, term):
         monom, coeff = term
@@ -1729,7 +1726,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self.mul_ground(coeff)
 
         terms = [(monomial_mul(f_monom, monom), f_coeff*coeff) for f_monom, f_coeff in self.items()]
-        return self.new(terms)
+        return self.__class__(terms)
 
     def quo_ground(self, x):
         domain = self.ring.domain
@@ -1745,7 +1742,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             terms = [(monom, coeff//x) for monom, coeff in self.items()]
 
-        p = self.new(terms)
+        p = self.__class__(terms)
         p.strip_zero()
         return p
 
@@ -1759,7 +1756,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         terms = [(monom, domain.exquo(coeff, x)) for monom, coeff in self.items()]
 
-        p = self.new(terms)
+        p = self.__class__(terms)
         p.strip_zero()
         return p
 
@@ -1774,7 +1771,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self.quo_ground(coeff)
 
         terms = [term_div(t, term, self.ring.domain) for t in self.items()]
-        return self.new([t for t in terms if t is not None])
+        return self.__class__([t for t in terms if t is not None])
 
     def trunc_ground(self, p):
         if self.ring.domain.is_IntegerRing:
@@ -1787,7 +1784,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             terms = [(monom, coeff % p) for monom, coeff in self.items()]
 
-        poly = self.new(terms)
+        poly = self.__class__(terms)
         poly.strip_zero()
         return poly
 
