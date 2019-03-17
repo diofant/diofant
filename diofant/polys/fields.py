@@ -568,7 +568,7 @@ class FracElement(DomainElement, CantSympify):
         if self._extract_ground(denom) == (1, 1, None):
             return numer
         if isinstance(numer, PolyElement):
-            field = numer.ring.to_field()
+            field = numer.ring.field
         else:
             field = self.field
         return field((field.ring(numer), field.ring(denom)))

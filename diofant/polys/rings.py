@@ -373,9 +373,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             raise ValueError("%s is not a composite or algebraic "
                              "domain" % self.domain)
 
-    def to_field(self):
-        return self.domain.frac_field(*self.symbols, order=self.order)
-
     @property
     def is_univariate(self):
         return len(self.gens) == 1
@@ -437,7 +434,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
     @property
     def field(self):
         """Returns a field associated with ``self``."""
-        return self.ring.to_field()
+        return self.domain.frac_field(*self.symbols, order=self.order)
 
     def is_positive(self, a):
         """Returns True if ``LC(a)`` is positive."""

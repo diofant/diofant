@@ -722,7 +722,7 @@ def _rational_function_reconstruction(c, p, m):
         a = (a*lcinv).trunc_ground(p)
         b = (b*lcinv).trunc_ground(p)
 
-    field = ring.to_field()
+    field = ring.field
 
     return field(a) / field(b)
 
@@ -1030,10 +1030,10 @@ def _func_field_modgcd_p(f, g, minpoly, p):
         return _euclidean_algorithm(f, g, minpoly, p)
 
     if k == 1:
-        qdomain = domain.ring.to_field()
+        qdomain = domain.ring.field
     else:
         qdomain = domain.ring.drop_to_ground(k - 1)
-        qdomain = qdomain.clone(domain=qdomain.domain.ring.to_field())
+        qdomain = qdomain.clone(domain=qdomain.domain.ring.field)
 
     qring = ring.clone(domain=qdomain)  # = Z(t_k)[t_1, ..., t_{k-1}][x, z]
 
