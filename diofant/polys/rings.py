@@ -628,24 +628,6 @@ class PolyElement(DomainElement, CantSympify, dict):
     def sort_key(self):
         return len(self), self.terms()
 
-    def _cmp(self, other, op):
-        if isinstance(other, self.ring.dtype):
-            return op(self.sort_key(), other.sort_key())
-        else:
-            return NotImplemented
-
-    def __lt__(self, other):
-        return self._cmp(other, operator.lt)
-
-    def __le__(self, other):
-        return self._cmp(other, operator.le)
-
-    def __gt__(self, other):
-        return self._cmp(other, operator.gt)
-
-    def __ge__(self, other):
-        return self._cmp(other, operator.ge)
-
     def _drop(self, gen):
         ring = self.ring
         i = ring.index(gen)
@@ -2098,7 +2080,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         a = None
 
         if isinstance(x, dict):
-            return f.subs(sorted(x.items()))
+            return f.subs(list(x.items()))
         elif isinstance(x, (set, frozenset)):
             return f.subs(sorted(x))
         elif isinstance(x, (list, tuple)):

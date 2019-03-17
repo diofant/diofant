@@ -243,18 +243,6 @@ def test_PolyElement___eq__():
     assert (t**3*x//x == t**4) is False
 
 
-def test_PolyElement__lt_le_gt_ge__():
-    R, x, y = ring("x,y", ZZ)
-
-    assert R(1) < x < x**2 < x**3
-    assert R(1) <= x <= x**2 <= x**3
-
-    assert x**3 > x**2 > x > R(1)
-    assert x**3 >= x**2 >= x >= R(1)
-
-    pytest.raises(TypeError, lambda: 1 < x)
-
-
 def test_PolyElement_copy():
     R,  x, y, z = ring("x,y,z", ZZ)
 
