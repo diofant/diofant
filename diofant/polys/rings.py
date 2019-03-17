@@ -780,22 +780,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         return len(self) <= 1
 
     @property
-    def is_negative(self):
-        return self.ring.domain.is_negative(self.LC)
-
-    @property
-    def is_positive(self):
-        return self.ring.domain.is_positive(self.LC)
-
-    @property
-    def is_nonnegative(self):
-        return self.ring.domain.is_nonnegative(self.LC)
-
-    @property
-    def is_nonpositive(self):
-        return self.ring.domain.is_nonpositive(self.LC)
-
-    @property
     def is_zero(self):
         return not self
 
@@ -1913,7 +1897,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.ring.domain.is_Field:
             return other.monic(), zero, self.ring.ground_new(other.LC)
         else:
-            if other.is_nonnegative:
+            if self.ring.is_nonnegative(other):
                 return other, zero, one
             else:
                 return -other, zero, -one
@@ -2022,8 +2006,8 @@ class PolyElement(DomainElement, CantSympify, dict):
             p = p.set_ring(ring)
             q = q.set_ring(ring)
 
-        p_neg = p.is_negative
-        q_neg = q.is_negative
+        p_neg = ring.is_negative(p)
+        q_neg = ring.is_negative(q)
 
         if p_neg and q_neg:
             p, q = -p, -q

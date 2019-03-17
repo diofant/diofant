@@ -1483,7 +1483,7 @@ def test_PolyElement_is_():
     assert (7*t + 3).is_irreducible
     assert (7*t**2 + 3*t + 1).is_irreducible is False
 
-    _, u = ring("u", ZZ)
+    R, u = ring("u", ZZ)
     f = u**16 + u**14 - u**10 - u**8 - u**6 + u**2
 
     assert f.is_cyclotomic is False
@@ -1491,10 +1491,10 @@ def test_PolyElement_is_():
 
     pytest.raises(MultivariatePolynomialError, lambda: x.is_cyclotomic)
 
-    assert f.is_positive is True
-    assert f.is_negative is False
-    assert f.is_nonnegative is True
-    assert f.is_nonpositive is False
+    assert R.is_positive(f) is True
+    assert R.is_negative(f) is False
+    assert R.is_nonnegative(f) is True
+    assert R.is_nonpositive(f) is False
 
     R, x, y = ring('x y', ZZ)
 
