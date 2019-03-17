@@ -20,7 +20,7 @@ from .polyconfig import query
 from .polyerrors import NotAlgebraic
 from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
                         parallel_poly_from_expr, poly_from_expr, resultant)
-from .polyutils import dict_from_expr, expr_from_dict
+from .polyutils import dict_from_expr
 from .ring_series import rs_compose_add
 from .rings import ring
 from .rootoftools import RootOf
@@ -233,7 +233,7 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
         r = resultant(mp1a, mp2, gens=[y, x])
     else:
         r = rs_compose_add(p1, p2)
-        r = expr_from_dict(r.as_expr_dict(), x)
+        r = r.as_expr(x)
 
     deg1 = degree(mp1, x)
     deg2 = degree(mp2, y)

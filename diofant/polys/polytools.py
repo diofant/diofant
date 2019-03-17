@@ -24,7 +24,7 @@ from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
                          PolificationFailed, PolynomialError,
                          UnificationFailed)
 from .polyutils import (_dict_from_expr, _dict_reorder,
-                        _parallel_dict_from_expr, _sort_gens, basic_from_dict)
+                        _parallel_dict_from_expr, _sort_gens, expr_from_dict)
 from .rationaltools import together
 from .rings import PolyElement, PolynomialRing, ring
 from .rootisolation import dup_isolate_real_roots_list
@@ -789,7 +789,7 @@ class Poly(Expr):
                 else:
                     gens[index] = value
 
-        return basic_from_dict(self.rep.as_expr_dict(), *gens)
+        return expr_from_dict(self.rep.as_expr_dict(), *gens)
 
     def deflate(self):
         """
