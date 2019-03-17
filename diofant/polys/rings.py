@@ -528,7 +528,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.ring == new_ring:
             return self
         elif self.ring.symbols != new_ring.symbols:
-            terms = list(zip(*_dict_reorder(self, self.ring.symbols, new_ring.symbols)))
+            terms = zip(*_dict_reorder(self, self.ring.symbols, new_ring.symbols))
             return new_ring.from_terms(terms)
         else:
             return new_ring.from_dict(self)
@@ -537,8 +537,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.ring.domain == new_domain:
             return self
         else:
-            new_ring = new_domain.poly_ring(*self.ring.symbols,
-                                            order=self.ring.order)
+            new_ring = self.ring.clone(domain=new_domain)
             return self.set_ring(new_ring)
 
     def as_expr(self, *symbols):
@@ -547,11 +546,8 @@ class PolyElement(DomainElement, CantSympify, dict):
         elif len(symbols) != self.ring.ngens:
             raise ValueError("not enough symbols, expected %s got %s" % (self.ring.ngens, len(symbols)))
 
-        return expr_from_dict(self.as_expr_dict(), *symbols)
-
-    def as_expr_dict(self):
         to_expr = self.ring.domain.to_expr
-        return {monom: to_expr(coeff) for monom, coeff in self.items()}
+        return expr_from_dict({monom: to_expr(coeff) for monom, coeff in self.items()}, *symbols)
 
     def clear_denoms(self):
         domain = self.ring.domain
