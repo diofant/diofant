@@ -5,7 +5,7 @@ from ..domains import EX, QQ, RR, ZZ
 from ..domains.realfield import RealField
 from .polyerrors import GeneratorsNeeded
 from .polyoptions import build_options
-from .polyutils import parallel_dict_from_basic
+from .polyutils import parallel_dict_from_expr
 
 
 __all__ = 'construct_domain',
@@ -120,7 +120,7 @@ def _construct_composite(coeffs, opt):
         denoms.append(denom)
 
     try:
-        polys, gens = parallel_dict_from_basic(numers + denoms)  # XXX: sorting
+        polys, gens = parallel_dict_from_expr(numers + denoms)  # XXX: sorting
     except GeneratorsNeeded:
         return
 
