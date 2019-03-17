@@ -628,26 +628,20 @@ class PolyElement(DomainElement, CantSympify, dict):
     def sort_key(self):
         return len(self), self.terms()
 
-    def _drop(self, gen):
+    def drop(self, gen):
         ring = self.ring
         i = ring.index(gen)
 
         if ring.is_univariate:
-            return i, ring.domain
-        else:
-            symbols = list(ring.symbols)
-            del symbols[i]
-            return i, ring.clone(symbols=symbols)
-
-    def drop(self, gen):
-        i, ring = self._drop(gen)
-
-        if self.ring.is_univariate:
             if self.is_ground:
                 return self.coeff(1)
             else:
                 raise ValueError("can't drop %s" % gen)
         else:
+            symbols = list(ring.symbols)
+            del symbols[i]
+            ring = ring.clone(symbols=symbols)
+
             poly = ring.zero
 
             for k, v in self.items():
@@ -660,22 +654,20 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             return poly
 
-    def _drop_to_ground(self, *gens):
+    def drop_to_ground(self, *gens):
         ring = self.ring
 
-        symbols = list(ring.symbols)
+        if ring.is_univariate:
+            raise ValueError("can't drop only generator to ground")
+
+        symbols = ring.symbols
         indexes = [ring.index(gen) for gen in gens]
 
         dropped = [symbols[i] for i in indexes]
         symbols = [symbols[i] for i in range(ring.ngens) if i not in indexes]
 
-        return indexes, ring.clone(symbols=symbols, domain=ring.clone(dropped))
+        ring = ring.clone(symbols=symbols, domain=ring.clone(dropped))
 
-    def drop_to_ground(self, *gens):
-        if self.ring.is_univariate:
-            raise ValueError("can't drop only generator to ground")
-
-        indexes, ring = self._drop_to_ground(*gens)
         poly = ring.zero
         gens = ring.domain.gens[0:len(indexes)]
 
