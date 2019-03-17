@@ -54,38 +54,6 @@ def itermonomials(variables, degree):
         return monoms
 
 
-def monomial_count(V, N):
-    r"""
-    Computes the number of monomials.
-
-    The number of monomials is given by the following formula:
-
-    .. math::
-
-        \frac{(\#V + N)!}{\#V! N!}
-
-    where `N` is a total degree and `V` is a set of variables.
-
-    Examples
-    ========
-
-    >>> from diofant.polys.orderings import monomial_key
-
-    >>> monomial_count(2, 2)
-    6
-
-    >>> M = itermonomials([x, y], 2)
-
-    >>> sorted(M, key=monomial_key('grlex', [y, x]))
-    [1, x, y, x**2, x*y, y**2]
-    >>> len(M)
-    6
-
-    """
-    from ..functions import factorial
-    return factorial(V + N) / factorial(V) / factorial(N)
-
-
 def monomial_mul(A, B):
     """
     Multiplication of tuples representing monomials.
@@ -193,27 +161,6 @@ def monomial_divides(A, B):
     return all(a <= b for a, b in zip(A, B))
 
 
-def monomial_max(*monoms):
-    """
-    Returns maximal degree for each variable in a set of monomials.
-
-    Consider monomials `x**3*y**4*z**5`, `y**5*z` and `x**6*y**3*z**9`.
-    We wish to find out what is the maximal degree for each of `x`, `y`
-    and `z` variables::
-
-        >>> monomial_max((3, 4, 5), (0, 5, 1), (6, 3, 9))
-        (6, 5, 9)
-
-    """
-    M = list(monoms[0])
-
-    for N in monoms[1:]:
-        for i, n in enumerate(N):
-            M[i] = max(M[i], n)
-
-    return tuple(M)
-
-
 def monomial_min(*monoms):
     """
     Returns minimal degree for each variable in a set of monomials.
@@ -233,18 +180,6 @@ def monomial_min(*monoms):
             M[i] = min(M[i], n)
 
     return tuple(M)
-
-
-def monomial_deg(M):
-    """
-    Returns the total degree of a monomial.
-
-    For example, the total degree of `xy^2` is 3:
-
-    >>> monomial_deg((1, 2))
-    3
-    """
-    return sum(M)
 
 
 def term_div(a, b, domain):
