@@ -859,39 +859,39 @@ class PolyElement(DomainElement, CantSympify, dict):
                 return NotImplemented
 
         try:
-            cp2 = ring.domain_new(other)
+            other = ring.domain_new(other)
         except CoercionFailed:
             return NotImplemented
         else:
             p = self.copy()
             zm = ring.zero_monom
             if zm not in self:
-                p[zm] = cp2
+                p[zm] = other
             else:
                 if other == -p[zm]:
                     del p[zm]
                 else:
-                    p[zm] += cp2
+                    p[zm] += other
             return p
 
-    def __radd__(self, n):
+    def __radd__(self, other):
         p = self.copy()
-        if not n:
+        if not other:
             return p
         ring = self.ring
         try:
-            n = ring.domain_new(n)
+            other = ring.domain_new(other)
         except CoercionFailed:
             return NotImplemented
         else:
             zm = ring.zero_monom
             if zm not in self:
-                p[zm] = n
+                p[zm] = other
             else:
-                if n == -p[zm]:
+                if other == -p[zm]:
                     del p[zm]
                 else:
-                    p[zm] += n
+                    p[zm] += other
             return p
 
     def __sub__(self, other):
@@ -945,7 +945,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                     p[zm] -= other
             return p
 
-    def __rsub__(self, n):
+    def __rsub__(self, other):
         """n - self with n convertible to the coefficient domain.
 
         Examples
@@ -959,14 +959,14 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         ring = self.ring
         try:
-            n = ring.domain_new(n)
+            other = ring.domain_new(other)
         except CoercionFailed:
             return NotImplemented
         else:
             p = ring.zero
             for expv in self:
                 p[expv] = -self[expv]
-            p += n
+            p += other
             return p
 
     def __mul__(self, other):
@@ -1162,8 +1162,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         elif isinstance(other, PolyElement):
             if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
                 pass
-            elif isinstance(other.ring.domain, PolynomialRing) and other.ring.domain.ring == ring:
-                return other.__rdivmod__(self)
             else:
                 return NotImplemented
 
@@ -1174,58 +1172,11 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             return self.quo_ground(other), self.trunc_ground(other)
 
-    def __rdivmod__(self, other):
-        return NotImplemented
-
     def __mod__(self, other):
-        ring = self.ring
-
-        if not other:
-            raise ZeroDivisionError("polynomial division")
-        elif isinstance(other, ring.dtype):
-            return divmod(self, other)[1]
-        elif isinstance(other, PolyElement):
-            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
-                pass
-            elif isinstance(other.ring.domain, PolynomialRing) and other.ring.domain.ring == ring:
-                return other.__rmod__(self)
-            else:
-                return NotImplemented
-
-        try:
-            other = ring.domain_new(other)
-        except CoercionFailed:
-            return NotImplemented
-        else:
-            return self.trunc_ground(other)
-
-    def __rmod__(self, other):
-        return NotImplemented
+        return divmod(self, other)[1]
 
     def __floordiv__(self, other):
-        ring = self.ring
-
-        if not other:
-            raise ZeroDivisionError("polynomial division")
-        elif isinstance(other, ring.dtype):
-            return divmod(self, other)[0]
-        elif isinstance(other, PolyElement):
-            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
-                pass
-            elif isinstance(other.ring.domain, PolynomialRing) and other.ring.domain.ring == ring:
-                return other.__rfloordiv__(self)
-            else:
-                return NotImplemented
-
-        try:
-            other = ring.domain_new(other)
-        except CoercionFailed:
-            return NotImplemented
-        else:
-            return self.quo_ground(other)
-
-    def __rfloordiv__(self, other):
-        return NotImplemented
+        return divmod(self, other)[0]
 
     def __truediv__(self, other):
         ring = self.ring
@@ -1241,9 +1192,6 @@ class PolyElement(DomainElement, CantSympify, dict):
             return NotImplemented
         else:
             return self.quo_ground(other)
-
-    def __rtruediv__(self, other):
-        return NotImplemented
 
     def div(self, fv):
         """Division algorithm, see :cite:`Cox2015ideals`, p. 64.

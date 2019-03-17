@@ -501,7 +501,7 @@ class FracElement(DomainElement, CantSympify):
                 if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
                     pass
                 else:
-                    return other.__rtruediv__(self)
+                    return NotImplemented
 
         op, other_numer, other_denom = self._extract_ground(other)
 
