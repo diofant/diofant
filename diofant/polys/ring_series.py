@@ -119,7 +119,7 @@ def rs_mul(p1, p2, x, prec):
                 else:
                     break
 
-    p.strip_zero()
+    p._strip_zero()
     return p
 
 
@@ -157,7 +157,7 @@ def rs_square(p1, x, prec):
         if 2*expv[iv] < prec:
             e2 = monomial_mul(expv, expv)
             p[e2] = get(e2, 0) + v**2
-    p.strip_zero()
+    p._strip_zero()
     return p
 
 

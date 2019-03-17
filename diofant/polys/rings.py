@@ -569,7 +569,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         poly = self.__class__([(k, v*common) for k, v in self.items()])
         return common, poly
 
-    def strip_zero(self):
+    def _strip_zero(self):
         """Eliminate monomials with zero coefficient."""
         for k, v in list(self.items()):
             if not v:
@@ -993,7 +993,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 for exp2, v2 in other.items():
                     exp = monomial_mul(exp1, exp2)
                     p[exp] = get(exp, zero) + v1*v2
-            p.strip_zero()
+            p._strip_zero()
             return p
         elif isinstance(other, PolyElement):
             if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
@@ -1148,7 +1148,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         for k, v in self.items():
             k2 = monomial_mul(k, k)
             p[k2] = get(k2, zero) + v**2
-        p.strip_zero()
+        p._strip_zero()
         return p
 
     def __divmod__(self, other):
@@ -1669,7 +1669,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             terms = [(monom, coeff//x) for monom, coeff in self.items()]
 
         p = self.__class__(terms)
-        p.strip_zero()
+        p._strip_zero()
         return p
 
     def exquo_ground(self, x):
@@ -1683,7 +1683,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         terms = [(monom, domain.exquo(coeff, x)) for monom, coeff in self.items()]
 
         p = self.__class__(terms)
-        p.strip_zero()
+        p._strip_zero()
         return p
 
     def quo_term(self, term):
@@ -1711,7 +1711,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             terms = [(monom, coeff % p) for monom, coeff in self.items()]
 
         poly = self.__class__(terms)
-        poly.strip_zero()
+        poly._strip_zero()
         return poly
 
     def extract_ground(self, g):
@@ -1970,7 +1970,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 for j in range(expv[i], expv[i] - m, -1):
                     coeff *= j
                 g[e] = coeff
-        g.strip_zero()
+        g._strip_zero()
         return g
 
     def __call__(self, *values):
