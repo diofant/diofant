@@ -90,8 +90,6 @@ def monomial_div(A, B):
 
     if all(c >= 0 for c in C):
         return tuple(C)
-    else:
-        return
 
 
 def monomial_ldiv(A, B):

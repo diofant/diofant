@@ -31,7 +31,6 @@ def _trivial_gcd(f, g):
             return -f, -ring.one, ring.zero
         else:
             return f, ring.one, ring.zero
-    return
 
 
 def _gf_gcd(fp, gp, p):
@@ -527,8 +526,6 @@ def _modgcd_p(f, g, p, degbound, contbound):
                 raise ModularGCDFailed
 
             return h
-
-    return
 
 
 def modgcd(f, g):
@@ -1142,8 +1139,6 @@ def _func_field_modgcd_p(f, g, minpoly, p):
 
         if not trial_division(f, h, minpoly, p) and not trial_division(g, h, minpoly, p):
             return h
-
-    return
 
 
 def _rational_reconstruction_int_coeffs(hm, m, ring):

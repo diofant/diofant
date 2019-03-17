@@ -3686,8 +3686,6 @@ def gcd_list(seq, *gens, **args):
 
                 return domain.to_expr(result)
 
-        return
-
     result = try_non_polynomial_gcd(seq)
 
     if result is not None:
@@ -3778,8 +3776,6 @@ def lcm_list(seq, *gens, **args):
                     result = domain.lcm(result, number)
 
                 return domain.to_expr(result)
-
-        return
 
     result = try_non_polynomial_lcm(seq)
 

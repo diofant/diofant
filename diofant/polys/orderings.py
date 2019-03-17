@@ -128,7 +128,6 @@ class ProductOrder(MonomialOrder):
             return True
         if all(o.is_global is False for o, _ in self.args):
             return False
-        return
 
 
 class InverseOrder(MonomialOrder):
