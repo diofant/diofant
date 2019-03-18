@@ -669,8 +669,6 @@ def _dup_decompose(f, K):
         if g is not None:
             return g, h
 
-    return
-
 
 def dup_decompose(f, K):
     """

@@ -243,18 +243,6 @@ def test_PolyElement___eq__():
     assert (t**3*x//x == t**4) is False
 
 
-def test_PolyElement__lt_le_gt_ge__():
-    R, x, y = ring("x,y", ZZ)
-
-    assert R(1) < x < x**2 < x**3
-    assert R(1) <= x <= x**2 <= x**3
-
-    assert x**3 > x**2 > x > R(1)
-    assert x**3 >= x**2 >= x >= R(1)
-
-    pytest.raises(TypeError, lambda: 1 < x)
-
-
 def test_PolyElement_copy():
     R,  x, y, z = ring("x,y,z", ZZ)
 
@@ -1483,7 +1471,7 @@ def test_PolyElement_is_():
     assert (7*t + 3).is_irreducible
     assert (7*t**2 + 3*t + 1).is_irreducible is False
 
-    _, u = ring("u", ZZ)
+    R, u = ring("u", ZZ)
     f = u**16 + u**14 - u**10 - u**8 - u**6 + u**2
 
     assert f.is_cyclotomic is False
@@ -1491,10 +1479,10 @@ def test_PolyElement_is_():
 
     pytest.raises(MultivariatePolynomialError, lambda: x.is_cyclotomic)
 
-    assert f.is_positive is True
-    assert f.is_negative is False
-    assert f.is_nonnegative is True
-    assert f.is_nonpositive is False
+    assert R.is_positive(f) is True
+    assert R.is_negative(f) is False
+    assert R.is_nonnegative(f) is True
+    assert R.is_nonpositive(f) is False
 
     R, x, y = ring('x y', ZZ)
 

@@ -31,7 +31,6 @@ def _trivial_gcd(f, g):
             return -f, -ring.one, ring.zero
         else:
             return f, ring.one, ring.zero
-    return
 
 
 def _gf_gcd(fp, gp, p):
@@ -528,8 +527,6 @@ def _modgcd_p(f, g, p, degbound, contbound):
 
             return h
 
-    return
-
 
 def modgcd(f, g):
     r"""
@@ -722,7 +719,7 @@ def _rational_function_reconstruction(c, p, m):
         a = (a*lcinv).trunc_ground(p)
         b = (b*lcinv).trunc_ground(p)
 
-    field = ring.to_field()
+    field = ring.field
 
     return field(a) / field(b)
 
@@ -1030,10 +1027,10 @@ def _func_field_modgcd_p(f, g, minpoly, p):
         return _euclidean_algorithm(f, g, minpoly, p)
 
     if k == 1:
-        qdomain = domain.ring.to_field()
+        qdomain = domain.ring.field
     else:
         qdomain = domain.ring.drop_to_ground(k - 1)
-        qdomain = qdomain.clone(domain=qdomain.domain.ring.to_field())
+        qdomain = qdomain.clone(domain=qdomain.domain.ring.field)
 
     qring = ring.clone(domain=qdomain)  # = Z(t_k)[t_1, ..., t_{k-1}][x, z]
 
@@ -1142,8 +1139,6 @@ def _func_field_modgcd_p(f, g, minpoly, p):
 
         if not trial_division(f, h, minpoly, p) and not trial_division(g, h, minpoly, p):
             return h
-
-    return
 
 
 def _rational_reconstruction_int_coeffs(hm, m, ring):

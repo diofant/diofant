@@ -372,11 +372,6 @@ def expr_from_dict(rep, *gens):
     return Add(*result)
 
 
-parallel_dict_from_basic = parallel_dict_from_expr
-dict_from_basic = dict_from_expr
-basic_from_dict = expr_from_dict
-
-
 def _dict_reorder(rep, gens, new_gens):
     """Reorder levels using dict representation. """
     gens = list(gens)

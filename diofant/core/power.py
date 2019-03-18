@@ -862,11 +862,11 @@ class Pow(Expr):
                 # so now it's easy to get the correct result -- we get the
                 # coefficients first:
                 from ..ntheory import multinomial_coefficients
-                from ..polys.polyutils import basic_from_dict
+                from ..polys.polyutils import expr_from_dict
                 expansion_dict = multinomial_coefficients(len(p), n)
                 # in our example: {(3, 0): 1, (1, 2): 3, (0, 3): 1, (2, 1): 3}
                 # and now construct the expression.
-                return basic_from_dict(expansion_dict, *p)
+                return expr_from_dict(expansion_dict, *p)
             else:
                 if n == 2:
                     return Add(*[f*g for f in base.args for g in base.args])

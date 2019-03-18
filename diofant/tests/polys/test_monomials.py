@@ -4,11 +4,10 @@ import pytest
 
 from diofant.abc import a, b, c, x, y, z
 from diofant.domains import QQ, ZZ
-from diofant.polys.monomials import (Monomial, itermonomials, monomial_count,
-                                     monomial_deg, monomial_div,
+from diofant.polys.monomials import (Monomial, itermonomials, monomial_div,
                                      monomial_divides, monomial_gcd,
-                                     monomial_lcm, monomial_max, monomial_min,
-                                     monomial_mul, monomial_pow, term_div)
+                                     monomial_lcm, monomial_min, monomial_mul,
+                                     monomial_pow, term_div)
 from diofant.polys.polyerrors import ExactQuotientFailed
 
 
@@ -32,11 +31,6 @@ def test_monomials():
     assert itermonomials([x, y], 3) == {1, x, y, x**2, x**3, y**2, y**3, x*y, x*y**2, y*x**2}
 
 
-def test_monomial_count():
-    assert monomial_count(2, 2) == 6
-    assert monomial_count(2, 3) == 10
-
-
 def test_monomial_mul():
     assert monomial_mul((3, 4, 1), (1, 2, 0)) == (4, 6, 1)
 
@@ -57,16 +51,8 @@ def test_monomial_lcm():
     assert monomial_lcm((3, 4, 1), (1, 2, 0)) == (3, 4, 1)
 
 
-def test_monomial_max():
-    assert monomial_max((3, 4, 5), (0, 5, 1), (6, 3, 9)) == (6, 5, 9)
-
-
 def test_monomial_min():
     assert monomial_min((3, 4, 5), (0, 5, 1), (6, 3, 9)) == (0, 3, 1)
-
-
-def test_monomial_deg():
-    assert monomial_deg((1, 2)) == 3
 
 
 def test_monomial_divides():

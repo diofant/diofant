@@ -95,9 +95,7 @@ def buchberger(f, ring):
     def normal(g, J):
         h = g.div([f[j] for j in J])[1]
 
-        if not h:
-            return
-        else:
+        if h:
             h = h.monic()
 
             if h not in I:
