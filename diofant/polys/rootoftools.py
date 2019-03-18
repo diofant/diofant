@@ -236,22 +236,22 @@ class RootOf(Expr):
     @classmethod
     def _get_reals_sqf(cls, factor):
         """Compute real root isolating intervals for a square-free polynomial."""
-        if factor.rep not in _reals_cache:
+        if factor not in _reals_cache:
             reals = dup_isolate_real_roots_sqf(factor.rep.to_dense(), factor.domain, blackbox=True)
             if not reals:
-                _reals_cache[factor.rep] = []
+                _reals_cache[factor] = []
             return reals
-        return _reals_cache[factor.rep]
+        return _reals_cache[factor]
 
     @classmethod
     def _get_complexes_sqf(cls, factor):
         """Compute complex root isolating intervals for a square-free polynomial."""
-        if factor.rep not in _complexes_cache:
+        if factor not in _complexes_cache:
             complexes = dup_isolate_complex_roots_sqf(factor.rep.to_dense(), factor.domain, blackbox=True)
             if not complexes:
-                _complexes_cache[factor.rep] = []
+                _complexes_cache[factor] = []
             return complexes
-        return _complexes_cache[factor.rep]
+        return _complexes_cache[factor]
 
     @classmethod
     def _get_reals(cls, factors):
@@ -279,7 +279,7 @@ class RootOf(Expr):
     def _reals_sorted(cls, reals):
         """Make real isolating intervals disjoint and sort roots."""
         factors = list({f for _, f, _ in reals})
-        if len(factors) == 1 and factors[0].rep in _reals_cache:
+        if len(factors) == 1 and factors[0] in _reals_cache:
             return reals
 
         cache = {}
@@ -301,7 +301,7 @@ class RootOf(Expr):
                 cache[factor] = [root]
 
         for factor, roots in cache.items():
-            _reals_cache[factor.rep] = roots
+            _reals_cache[factor] = roots
 
         return reals
 
@@ -309,7 +309,7 @@ class RootOf(Expr):
     def _complexes_sorted(cls, complexes):
         """Make complex isolating intervals disjoint and sort roots."""
         factors = list({f for _, f, _ in complexes})
-        if len(factors) == 1 and factors[0].rep in _complexes_cache:
+        if len(factors) == 1 and factors[0] in _complexes_cache:
             return complexes
 
         cache = {}
@@ -334,7 +334,7 @@ class RootOf(Expr):
                 cache[factor] = [root]
 
         for factor, roots in cache.items():
-            _complexes_cache[factor.rep] = roots
+            _complexes_cache[factor] = roots
 
         return complexes
 
@@ -512,6 +512,8 @@ class RootOf(Expr):
     def _get_roots(cls, method, poly, radicals):
         """Return postprocessed roots of specified kind."""
 
+        poly = PurePoly(poly)
+
         coeff, poly = cls._preprocess_roots(poly)
         roots = []
 
@@ -524,20 +526,20 @@ class RootOf(Expr):
     def interval(self):
         """Return isolation interval for the root."""
         if self.is_real:
-            return _reals_cache[self.poly.rep][self.index]
+            return _reals_cache[self.poly][self.index]
         else:
             reals_count = self.poly.count_roots()
-            return _complexes_cache[self.poly.rep][self.index - reals_count]
+            return _complexes_cache[self.poly][self.index - reals_count]
 
     def refine(self):
         """Refine isolation interval for the root."""
         if self.is_real:
-            root = _reals_cache[self.poly.rep][self.index]
-            _reals_cache[self.poly.rep][self.index] = root.refine()
+            root = _reals_cache[self.poly][self.index]
+            _reals_cache[self.poly][self.index] = root.refine()
         else:
             reals_count = self.poly.count_roots()
-            root = _complexes_cache[self.poly.rep][self.index - reals_count]
-            _complexes_cache[self.poly.rep][self.index - reals_count] = root.refine()
+            root = _complexes_cache[self.poly][self.index - reals_count]
+            _complexes_cache[self.poly][self.index - reals_count] = root.refine()
 
     def _eval_subs(self, old, new):
         if old in self.free_symbols:
