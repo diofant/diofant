@@ -3,11 +3,10 @@
 import pytest
 
 from diofant.abc import a, b, c, x, y, z
-from diofant.domains import QQ, ZZ
 from diofant.polys.monomials import (Monomial, itermonomials, monomial_div,
                                      monomial_divides, monomial_gcd,
                                      monomial_lcm, monomial_min, monomial_mul,
-                                     monomial_pow, term_div)
+                                     monomial_pow)
 from diofant.polys.polyerrors import ExactQuotientFailed
 
 
@@ -58,13 +57,6 @@ def test_monomial_min():
 def test_monomial_divides():
     assert monomial_divides((1, 2, 3), (4, 5, 6)) is True
     assert monomial_divides((1, 2, 3), (0, 5, 6)) is False
-
-
-def test_term_div():
-    assert term_div(((3, 4, 1), 1), ((1, 2, 0), 1), QQ) == ((2, 2, 1), 1)
-    assert term_div(((3, 4, 1), 1), ((1, 2, 0), 1), ZZ) == ((2, 2, 1), 1)
-    assert term_div(((3, 4, 1), 1), ((1, 2, 2), 1), ZZ) is None
-    assert term_div(((3, 4, 1), 1), ((1, 2, 2), 1), QQ) is None
 
 
 def test_Monomial():

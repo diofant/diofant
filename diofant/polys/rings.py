@@ -21,7 +21,7 @@ from .densebasic import dmp_from_dict, dmp_to_dict
 from .heuristicgcd import heugcd
 from .modulargcd import func_field_modgcd, modgcd
 from .monomials import (monomial_div, monomial_ldiv, monomial_min,
-                        monomial_mul, monomial_pow, term_div)
+                        monomial_mul, monomial_pow)
 from .orderings import lex
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
@@ -1220,14 +1220,14 @@ class PolyElement(DomainElement, CantSympify, dict):
             i = 0
             divoccurred = 0
             while i < s and divoccurred == 0:
-                expv = p.leading_expv()
-                term = term_div((expv, p[expv]), (expvs[i], fv[i][expvs[i]]), ring.domain)
-                if term is not None:
-                    expv1, c = term
+                lt = p.leading_term()
+                term = lt.quo_term((expvs[i], fv[i][expvs[i]]))
+                if term:
+                    expv1, c = term.LT
                     qv[i] = qv[i]._iadd_monom((expv1, c))
                     p = p._iadd_poly_monom(fv[i], (expv1, -c))
                     divoccurred = 1
-                    if p and order(p.LM) >= order(expv):
+                    if p and order(p.LM) >= order(lt.LM):
                         raise PolynomialDivisionFailed(self, fv[i], self.ring)
                 else:
                     i += 1
@@ -1675,11 +1675,20 @@ class PolyElement(DomainElement, CantSympify, dict):
             raise ZeroDivisionError("polynomial division")
         elif not self:
             return self.ring.zero
-        elif monom == self.ring.zero_monom:
-            return self.quo_ground(coeff)
 
-        terms = [term_div(t, term, self.ring.domain) for t in self.items()]
-        return self.__class__([t for t in terms if t is not None])
+        ring = self.ring
+        domain = ring.domain
+        p = ring.zero
+
+        for tm, tc in self.items():
+            if monom != self.ring.zero_monom:
+                tm = monomial_ldiv(tm, monom)
+            if any(_ < 0 for _ in tm):
+                continue
+            if domain.is_Field or not tc % coeff:
+                p[tm] = domain.quo(tc, coeff)
+
+        return p
 
     def trunc_ground(self, p):
         if self.ring.domain.is_IntegerRing:

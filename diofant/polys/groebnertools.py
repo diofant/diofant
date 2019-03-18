@@ -2,7 +2,7 @@
 
 from ..core import Dummy
 from .monomials import (monomial_div, monomial_divides, monomial_lcm,
-                        monomial_mul, term_div)
+                        monomial_mul)
 from .orderings import lex
 from .polyconfig import query
 
@@ -412,10 +412,10 @@ def critical_pair(f, g, ring):
 
     ltf = Polyn(f).LT
     ltg = Polyn(g).LT
-    lt = (monomial_lcm(ltf[0], ltg[0]), domain.one)
+    lt = ring.from_terms([(monomial_lcm(ltf[0], ltg[0]), domain.one)])
 
-    um = term_div(lt, ltf, domain)
-    vm = term_div(lt, ltg, domain)
+    um = lt.quo_term(ltf).LT
+    vm = lt.quo_term(ltg).LT
 
     # The full information is not needed (now), so only the product
     # with the leading term is considered:
@@ -497,7 +497,6 @@ def f5_reduce(f, B):
 
     """
     order = Polyn(f).ring.order
-    domain = Polyn(f).ring.domain
 
     if not Polyn(f):
         return f
@@ -507,7 +506,7 @@ def f5_reduce(f, B):
 
         for h in B:
             if Polyn(h) and monomial_divides(Polyn(h).LM, Polyn(f).LM):
-                t = term_div(Polyn(f).LT, Polyn(h).LT, domain)
+                t = Polyn(f).leading_term().quo_term(Polyn(h).LT).LT
                 if sig_cmp(sig_mult(Sign(h), t[0]), Sign(f), order) < 0:
                     # The following check need not be done and is in general slower than without.
                     # if not is_rewritable_or_comparable(Sign(gp), Num(gp), B):

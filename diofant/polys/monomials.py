@@ -180,25 +180,6 @@ def monomial_min(*monoms):
     return tuple(M)
 
 
-def term_div(a, b, domain):
-    """Division of two terms in over a ring/field. """
-    a_lm, a_lc = a
-    b_lm, b_lc = b
-    zm = (0,)*len(a_lm)
-
-    if b_lm == zm:  # apparently this is a very common case
-        monom = a_lm
-    else:
-        monom = monomial_div(a_lm, b_lm)
-
-    if domain.is_Field:
-        if monom is not None:
-            return monom, domain.quo(a_lc, b_lc)
-    else:
-        if not (monom is None or a_lc % b_lc):
-            return monom, domain.quo(a_lc, b_lc)
-
-
 class Monomial:
     """Class representing a monomial, i.e. a product of powers. """
 

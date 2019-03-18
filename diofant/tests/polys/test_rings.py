@@ -870,6 +870,22 @@ def test_PolyElement___floordiv__truediv__():
     assert f.quo_term(((1, 0), 2)) == x/2
 
 
+def test_PolyElement_quo_term():
+    R, x, y, z = ring('x y z', ZZ)
+
+    f = x**3*y**4*z
+
+    assert f.quo_term(((1, 2, 0), 1)) == x**2*y**2*z
+    assert f.quo_term(((1, 2, 2), 1)) == 0
+
+    R, x, y, z = ring('x y z', QQ)
+
+    f = x**3*y**4*z
+
+    assert f.quo_term(((1, 2, 0), 1)) == x**2*y**2*z
+    assert f.quo_term(((1, 2, 2), 1)) == 0
+
+
 def test_PolyElement___pow__():
     R, x = ring("x", ZZ, grlex)
 
