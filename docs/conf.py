@@ -52,6 +52,10 @@ html_theme = 'sphinx_rtd_theme'
 # The LaTeX engine to build the docs.
 latex_engine = 'xelatex'
 
+# If True, the PDF build from the LaTeX files created by Sphinx will use xindy
+# rather than makeindex.
+latex_use_xindy = False
+
 # This value determines how to group the document tree into LaTeX source
 # files. It must be a list of tuples (startdocname, targetname, title,
 # author, documentclass, toctree_only),
