@@ -891,7 +891,7 @@ def test_dup_isolate_complex_roots_sqf():
     assert R.dup_isolate_complex_roots_sqf(f, inf=QQ(1), sup=QQ(3)) == [((1, -3), (3, 0)), ((1, 0), (3, 3))]
     assert R.dup_isolate_complex_roots_sqf(f, inf=(QQ(1), QQ(0)), sup=QQ(3)) == [((1, 0), (3, 3))]
     assert R.dup_isolate_complex_roots_sqf(f, inf=(QQ(1), QQ(-1, 2)), sup=QQ(3)) == [((1, 0), (3, 3))]
-    assert R.dup_isolate_complex_roots_sqf(f, inf=(QQ(1), QQ(-3)), sup=(QQ(3), QQ(-1))) == [((1, -2), (3, -1))]
+    assert R.dup_isolate_complex_roots_sqf(f, inf=(QQ(1), QQ(-3)), sup=(QQ(3), QQ(-1))) == [((1, -3), (3, -1))]
     assert R.dup_isolate_complex_roots_sqf(f, inf=QQ(0), sup=QQ(1, 6)) == []
 
     assert R.dup_isolate_complex_roots_sqf(R.zero) == []

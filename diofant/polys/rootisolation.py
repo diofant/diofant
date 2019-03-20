@@ -1535,7 +1535,11 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     if not N:
         return []
 
-    rectangles, roots = [(N, a, b, I_L, Q_L, F1, F2)], []
+    rectangles, roots = [], []
+    if N == 1 and (v > 0 or t < 0):
+        roots.append(ComplexInterval(a, b, I_L, Q_L, F1, F2, f1, f2, K))
+    else:
+        rectangles.append((N, a, b, I_L, Q_L, F1, F2))
 
     while rectangles:
         N, (u, v), (s, t), I_L, Q_L, F1, F2 = _depth_first_select(rectangles)
