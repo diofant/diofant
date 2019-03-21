@@ -167,15 +167,8 @@ class Monomial:
     def __pow__(self, other):
         n = int(other)
 
-        if not n:
-            return self.rebuild([0]*len(self))
-        elif n > 0:
-            exponents = self.exponents
-
-            for i in range(1, n):
-                exponents = monomial_mul(exponents, self.exponents)
-
-            return self.rebuild(exponents)
+        if n >= 0:
+            return self.rebuild(monomial_pow(self.exponents, n))
         else:
             raise ValueError("a non-negative integer expected, got %s" % other)
 
@@ -186,8 +179,7 @@ class Monomial:
         elif isinstance(other, (tuple, Tuple)):
             exponents = other
         else:
-            raise TypeError(
-                "an instance of Monomial class expected, got %s" % other)
+            raise TypeError("an instance of Monomial class expected, got %s" % other)
 
         return self.rebuild(monomial_gcd(self.exponents, exponents))
 
@@ -198,7 +190,6 @@ class Monomial:
         elif isinstance(other, (tuple, Tuple)):
             exponents = other
         else:
-            raise TypeError(
-                "an instance of Monomial class expected, got %s" % other)
+            raise TypeError("an instance of Monomial class expected, got %s" % other)
 
         return self.rebuild(monomial_lcm(self.exponents, exponents))
