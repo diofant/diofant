@@ -20,7 +20,7 @@ from .constructor import construct_domain
 from .densebasic import dmp_from_dict, dmp_to_dict
 from .heuristicgcd import heugcd
 from .modulargcd import func_field_modgcd, modgcd
-from .monomials import (monomial_div, monomial_ldiv, monomial_min,
+from .monomials import (monomial_div, monomial_gcd, monomial_ldiv,
                         monomial_mul, monomial_pow)
 from .orderings import lex
 from .polyconfig import query
@@ -1872,7 +1872,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.is_zero:
             return (0,)*self.ring.ngens, self
 
-        G = monomial_min(*list(self))
+        G = functools.reduce(monomial_gcd, self)
 
         if all(g == 0 for g in G):
             return G, self

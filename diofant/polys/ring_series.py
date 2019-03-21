@@ -7,7 +7,7 @@ from mpmath.libmp.libintmath import giant_steps, ifac
 from ..core import Rational
 from ..core.compatibility import as_int
 from ..domains import QQ
-from .monomials import monomial_min, monomial_mul
+from .monomials import monomial_gcd, monomial_mul
 
 
 def _invert_monoms(p1):
@@ -227,7 +227,7 @@ def _has_constant_term(p, x):
     a[iv] = 1
     miv = tuple(a)
     for expv in p:
-        if monomial_min(expv, miv) == zm:
+        if monomial_gcd(expv, miv) == zm:
             return True
     return False
 

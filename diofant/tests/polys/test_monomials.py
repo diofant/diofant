@@ -1,12 +1,13 @@
 """Tests for tools and arithmetics for monomials of distributed polynomials. """
 
+import functools
+
 import pytest
 
 from diofant.abc import a, b, c, x, y, z
 from diofant.polys.monomials import (Monomial, itermonomials, monomial_div,
                                      monomial_divides, monomial_gcd,
-                                     monomial_lcm, monomial_min, monomial_mul,
-                                     monomial_pow)
+                                     monomial_lcm, monomial_mul, monomial_pow)
 from diofant.polys.polyerrors import ExactQuotientFailed
 
 
@@ -51,7 +52,8 @@ def test_monomial_lcm():
 
 
 def test_monomial_min():
-    assert monomial_min((3, 4, 5), (0, 5, 1), (6, 3, 9)) == (0, 3, 1)
+    assert functools.reduce(monomial_gcd, ((3, 4, 5), (0, 5, 1),
+                                           (6, 3, 9))) == (0, 3, 1)
 
 
 def test_monomial_divides():
