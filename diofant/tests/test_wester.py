@@ -12,8 +12,8 @@ import pytest
 from diofant import (ZZ, And, Complement, Derivative, DiracDelta, E,
                      EulerGamma, FiniteSet, Float, Function, GoldenRatio, I,
                      Integral, Lambda, LambertW, Le, Lt, Max, Mul, N, O, Or,
-                     Piecewise, Poly, Rational, RootOf, Subs, Symbol, acos,
-                     acot, apart, asin, asinh, assoc_legendre, atan, bernoulli,
+                     Piecewise, Poly, Rational, Subs, Symbol, acos, acot,
+                     apart, asin, asinh, assoc_legendre, atan, bernoulli,
                      besselj, binomial, cancel, cbrt, ceiling, chebyshevt,
                      combsimp, conjugate)
 from diofant import continued_fraction_convergents as cf_c
@@ -705,8 +705,8 @@ def test_M2():
 
 def test_M5():
     assert (solve(x**6 - 9*x**4 - 4*x**3 + 27*x**2 - 36*x - 23, x) ==
-            [{x: RootOf(x**6 - 9*x**4 - 4*x**3 + 27*x**2 - 36*x - 23, i)}
-             for i in range(6)])
+            [{x: r} for r in Poly(x**6 - 9*x**4 - 4*x**3 + 27*x**2 -
+                                  36*x - 23).all_roots()])
 
 
 def test_M6():

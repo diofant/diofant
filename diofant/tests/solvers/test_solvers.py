@@ -187,13 +187,10 @@ def test_solve_polynomial1():
             {sqrt(1 + sqrt(a)), -sqrt(1 + sqrt(a)),
              sqrt(1 - sqrt(a)), -sqrt(1 - sqrt(a))})
 
-    assert solve(x**3 - x + a, x,
-                 cubics=False) == [{x: RootOf(x**3 - x + a, x, 0)},
-                                   {x: RootOf(x**3 - x + a, x, 1)},
-                                   {x: RootOf(x**3 - x + a, x, 2)}]
-    assert solve(x**3 + 3*x**2 + x - 1,
-                 cubics=False) == [{x: -1}, {x: -1 + sqrt(2)},
-                                   {x: -sqrt(2) - 1}]
+    assert (solve(x**3 - x + a, x, cubics=False) ==
+            [{x: r} for r in Poly(x**3 - x + a, x).all_roots()])
+    assert (solve(x**3 + 3*x**2 + x - 1, cubics=False) ==
+            [{x: -1}, {x: -1 + sqrt(2)}, {x: -sqrt(2) - 1}])
 
     assert solve(x - y**2, x, y) == [{x: y**2}]
     assert solve(x**2 - y, y, x) == [{y: x**2}]
@@ -276,8 +273,7 @@ def test_solve_qubics():
              {x: -cbrt(3*sqrt(69)/2 + Rational(27, 2))/3 -
                  1/cbrt(3*sqrt(69)/2 + Rational(27, 2))}])
     assert (solve(x**3 - x + 1, cubics=False) ==
-            [{x: RootOf(x**3 - x + 1, 0)}, {x: RootOf(x**3 - x + 1, 1)},
-             {x: RootOf(x**3 - x + 1, 2)}])
+            [{x: r} for r in Poly(x**3 - x + 1).all_roots()])
 
 
 def test_quintics_1():
@@ -1148,10 +1144,8 @@ def test_sympyissue_6752():
 
 def test_sympyissue_6792():
     assert (solve(x*(x - 1)**2*(x + 1)*(x**6 - x + 1)) ==
-            [{x: -1}, {x: 0}, {x: 1}, {x: RootOf(x**6 - x + 1, 0)},
-             {x: RootOf(x**6 - x + 1, 1)}, {x: RootOf(x**6 - x + 1, 2)},
-             {x: RootOf(x**6 - x + 1, 3)}, {x: RootOf(x**6 - x + 1, 4)},
-             {x: RootOf(x**6 - x + 1, 5)}])
+            [{x: -1}, {x: 0}, {x: 1}] +
+            [{x: r} for r in Poly(x**6 - x + 1).all_roots()])
 
 
 def test_sympyissues_6819_6820_6821_6248_8692():
@@ -1413,16 +1407,12 @@ def test_high_order_multivariate():
     assert len(solve(a*x**3 - x + 1, x)) == 3
     assert len(solve(a*x**4 - x + 1, x)) == 4
     assert (solve(a*x**5 - x + 1, x) ==
-            [{x: RootOf(a*x**5 - x + 1, x, 0)},
-             {x: RootOf(a*x**5 - x + 1, x, 1)},
-             {x: RootOf(a*x**5 - x + 1, x, 2)},
-             {x: RootOf(a*x**5 - x + 1, x, 3)},
-             {x: RootOf(a*x**5 - x + 1, x, 4)}])
+            [{x: r} for r in Poly(a*x**5 - x + 1, x).all_roots()])
 
     # result checking must always consider the denominator and RootOf
     # must be checked, too
     d = x**5 - x + 1
-    assert solve(d*(1 + 1/d)) == [{x: RootOf(d + 1, i)} for i in range(5)]
+    assert solve(d*(1 + 1/d)) == [{x: r} for r in Poly(d + 1).all_roots()]
     d = x - 1
     assert solve(d*(2 + 1/d)) == [{x: Rational(1, 2)}]
 
