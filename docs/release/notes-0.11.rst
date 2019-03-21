@@ -80,3 +80,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`11806` Incorrectly evaluating integral
 * :sympyissue:`12325` string formatting error in dmp_integrate_in
 * :sympyissue:`16222` Poly(E**100000000) is slow to create
+* :sympyissue:`15413` rootof fails for polynomial with irrational coefficients
