@@ -100,9 +100,6 @@ class Monomial:
     def exponents(self):
         return self._exponents
 
-    def rebuild(self, exponents, gens=None):
-        return self.__class__(exponents, gens or self.gens)
-
     def __len__(self):
         return len(self._exponents)
 
@@ -149,7 +146,7 @@ class Monomial:
         else:
             return NotImplemented
 
-        return self.rebuild(monomial_mul(self, exponents))
+        return self.__class__(monomial_mul(self, exponents), self.gens)
 
     def __truediv__(self, other):
         if isinstance(other, Monomial):
@@ -162,7 +159,7 @@ class Monomial:
         result = monomial_div(self, exponents)
 
         if all(_ >= 0 for _ in result):
-            return self.rebuild(result)
+            return self.__class__(result, self.gens)
         else:
             raise ExactQuotientFailed(self, Monomial(other))
 
@@ -172,7 +169,7 @@ class Monomial:
         n = int(other)
 
         if n >= 0:
-            return self.rebuild(monomial_pow(self, n))
+            return self.__class__(monomial_pow(self, n), self.gens)
         else:
             raise ValueError("a non-negative integer expected, got %s" % other)
 
@@ -185,7 +182,7 @@ class Monomial:
         else:
             raise TypeError("an instance of Monomial class expected, got %s" % other)
 
-        return self.rebuild(monomial_gcd(self, exponents))
+        return self.__class__(monomial_gcd(self, exponents), self.gens)
 
     def lcm(self, other):
         """Least common multiple of monomials. """
@@ -196,4 +193,4 @@ class Monomial:
         else:
             raise TypeError("an instance of Monomial class expected, got %s" % other)
 
-        return self.rebuild(monomial_lcm(self, exponents))
+        return self.__class__(monomial_lcm(self, exponents), self.gens)
