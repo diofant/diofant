@@ -1153,25 +1153,25 @@ def _roots_bound(f, F):
         return F.domain(int(100*B) + 1)/F.domain(100)
 
 
-def _count_roots(f1, f2, F, inf, sup, exclude=None):
+def _get_rectangle(f1, f2, F, inf, sup, exclude=None):
     (u, v), (s, t) = inf, sup
 
-    f1L1F = dmp_eval_in(f1, v, 1, 1, F)
-    f2L1F = dmp_eval_in(f2, v, 1, 1, F)
+    f1L1 = dmp_eval_in(f1, v, 1, 1, F)
+    f2L1 = dmp_eval_in(f2, v, 1, 1, F)
 
-    f1L2F = dmp_eval_in(f1, s, 0, 1, F)
-    f2L2F = dmp_eval_in(f2, s, 0, 1, F)
+    f1L2 = dmp_eval_in(f1, s, 0, 1, F)
+    f2L2 = dmp_eval_in(f2, s, 0, 1, F)
 
-    f1L3F = dmp_eval_in(f1, t, 1, 1, F)
-    f2L3F = dmp_eval_in(f2, t, 1, 1, F)
+    f1L3 = dmp_eval_in(f1, t, 1, 1, F)
+    f2L3 = dmp_eval_in(f2, t, 1, 1, F)
 
-    f1L4F = dmp_eval_in(f1, u, 0, 1, F)
-    f2L4F = dmp_eval_in(f2, u, 0, 1, F)
+    f1L4 = dmp_eval_in(f1, u, 0, 1, F)
+    f2L4 = dmp_eval_in(f2, u, 0, 1, F)
 
-    S_L1 = [f1L1F, f2L1F]
-    S_L2 = [f1L2F, f2L2F]
-    S_L3 = [f1L3F, f2L3F]
-    S_L4 = [f1L4F, f2L4F]
+    S_L1 = [f1L1, f2L1]
+    S_L2 = [f1L2, f2L2]
+    S_L3 = [f1L3, f2L3]
+    S_L4 = [f1L4, f2L4]
 
     I_L1 = dup_isolate_real_roots_list(S_L1, F, inf=u, sup=s, fast=True, basis=True, strict=True)
     I_L2 = dup_isolate_real_roots_list(S_L2, F, inf=v, sup=t, fast=True, basis=True, strict=True)
@@ -1181,14 +1181,22 @@ def _count_roots(f1, f2, F, inf, sup, exclude=None):
     I_L3 = _reverse_intervals(I_L3)
     I_L4 = _reverse_intervals(I_L4)
 
-    Q_L1 = _intervals_to_quadrants(I_L1, f1L1F, f2L1F, u, s, F)
-    Q_L2 = _intervals_to_quadrants(I_L2, f1L2F, f2L2F, v, t, F)
-    Q_L3 = _intervals_to_quadrants(I_L3, f1L3F, f2L3F, s, u, F)
-    Q_L4 = _intervals_to_quadrants(I_L4, f1L4F, f2L4F, t, v, F)
+    Q_L1 = _intervals_to_quadrants(I_L1, f1L1, f2L1, u, s, F)
+    Q_L2 = _intervals_to_quadrants(I_L2, f1L2, f2L2, v, t, F)
+    Q_L3 = _intervals_to_quadrants(I_L3, f1L3, f2L3, s, u, F)
+    Q_L4 = _intervals_to_quadrants(I_L4, f1L4, f2L4, t, v, F)
 
     T = _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4, exclude=exclude)
 
-    return _winding_number(T, F)
+    N = _winding_number(T, F)
+
+    I_L = I_L1, I_L2, I_L3, I_L4
+    Q_L = Q_L1, Q_L2, Q_L3, Q_L4
+
+    F1 = f1L1, f1L2, f1L3, f1L4
+    F2 = f2L1, f2L2, f2L3, f2L4
+
+    return N, inf, sup, I_L, Q_L, F1, F2
 
 
 def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
@@ -1222,7 +1230,7 @@ def dup_count_complex_roots(f, K, inf=None, sup=None, exclude=None):
     if not (K.is_RationalField or K.is_RealAlgebraicField):
         K = K.domain
 
-    return _count_roots(f1, f2, K, (u, v), (s, t), exclude)
+    return _get_rectangle(f1, f2, K, (u, v), (s, t), exclude)[0]
 
 
 def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
@@ -1522,49 +1530,16 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
     if not (K.is_RationalField or K.is_RealAlgebraicField):
         K = K.domain
 
-    f1L1 = dmp_eval_in(f1, v, 1, 1, K)
-    f2L1 = dmp_eval_in(f2, v, 1, 1, K)
-
-    f1L2 = dmp_eval_in(f1, s, 0, 1, K)
-    f2L2 = dmp_eval_in(f2, s, 0, 1, K)
-
-    f1L3 = dmp_eval_in(f1, t, 1, 1, K)
-    f2L3 = dmp_eval_in(f2, t, 1, 1, K)
-
-    f1L4 = dmp_eval_in(f1, u, 0, 1, K)
-    f2L4 = dmp_eval_in(f2, u, 0, 1, K)
-
-    S_L1 = [f1L1, f2L1]
-    S_L2 = [f1L2, f2L2]
-    S_L3 = [f1L3, f2L3]
-    S_L4 = [f1L4, f2L4]
-
-    I_L1 = dup_isolate_real_roots_list(S_L1, K, inf=u, sup=s, fast=True, strict=True, basis=True)
-    I_L2 = dup_isolate_real_roots_list(S_L2, K, inf=v, sup=t, fast=True, strict=True, basis=True)
-    I_L3 = dup_isolate_real_roots_list(S_L3, K, inf=u, sup=s, fast=True, strict=True, basis=True)
-    I_L4 = dup_isolate_real_roots_list(S_L4, K, inf=v, sup=t, fast=True, strict=True, basis=True)
-
-    I_L3 = _reverse_intervals(I_L3)
-    I_L4 = _reverse_intervals(I_L4)
-
-    Q_L1 = _intervals_to_quadrants(I_L1, f1L1, f2L1, u, s, K)
-    Q_L2 = _intervals_to_quadrants(I_L2, f1L2, f2L2, v, t, K)
-    Q_L3 = _intervals_to_quadrants(I_L3, f1L3, f2L3, s, u, K)
-    Q_L4 = _intervals_to_quadrants(I_L4, f1L4, f2L4, t, v, K)
-
-    T = _traverse_quadrants(Q_L1, Q_L2, Q_L3, Q_L4)
-    N = _winding_number(T, K)
+    N, a, b, I_L, Q_L, F1, F2 = _get_rectangle(f1, f2, K, (u, v), (s, t))
 
     if not N:
         return []
 
-    I_L = I_L1, I_L2, I_L3, I_L4
-    Q_L = Q_L1, Q_L2, Q_L3, Q_L4
-
-    F1 = f1L1, f1L2, f1L3, f1L4
-    F2 = f2L1, f2L2, f2L3, f2L4
-
-    rectangles, roots = [(N, (u, v), (s, t), I_L, Q_L, F1, F2)], []
+    rectangles, roots = [], []
+    if N == 1 and (v > 0 or t < 0):
+        roots.append(ComplexInterval(a, b, I_L, Q_L, F1, F2, f1, f2, K))
+    else:
+        rectangles.append((N, a, b, I_L, Q_L, F1, F2))
 
     while rectangles:
         N, (u, v), (s, t), I_L, Q_L, F1, F2 = _depth_first_select(rectangles)
@@ -1820,7 +1795,7 @@ class ComplexInterval:
                     return False
             return True
         else:
-            return all(_count_roots(i.f1, i.f2, i.domain, (l, i.ay), (r, i.by)) == 1
+            return all(_get_rectangle(i.f1, i.f2, i.domain, (l, i.ay), (r, i.by))[0] == 1
                        for i in (self, other))
 
     def refine(self):

@@ -33,7 +33,6 @@ addons:
       - texlive-fonts-recommended
       - latexmk
       - lmodern
-      - xindy
 stages:
   - quality
   - test
