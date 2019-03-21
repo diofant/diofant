@@ -93,29 +93,33 @@ class Monomial:
             else:
                 raise ValueError("Expected a monomial got %s" % monom)
 
-        self.exponents = tuple(map(int, monom))
+        self._exponents = tuple(map(int, monom))
         self.gens = gens
+
+    @property
+    def exponents(self):
+        return self._exponents
 
     def rebuild(self, exponents, gens=None):
         return self.__class__(exponents, gens or self.gens)
 
     def __len__(self):
-        return len(self.exponents)
+        return len(self._exponents)
 
     def __iter__(self):
-        return iter(self.exponents)
+        return iter(self._exponents)
 
     def __getitem__(self, item):
-        return self.exponents[item]
+        return self._exponents[item]
 
     def __hash__(self):
-        return hash((self.__class__.__name__, self.exponents, self.gens))
+        return hash((self.__class__.__name__, self._exponents, self.gens))
 
     def __str__(self):
         if self.gens:
-            return "*".join(["%s**%s" % (gen, exp) for gen, exp in zip(self.gens, self.exponents)])
+            return "*".join(["%s**%s" % (gen, exp) for gen, exp in zip(self.gens, self)])
         else:
-            return "%s(%s)" % (self.__class__.__name__, self.exponents)
+            return "%s(%s)" % (self.__class__.__name__, self._exponents)
 
     def as_expr(self, *gens):
         """Convert a monomial instance to a Diofant expression. """
@@ -125,37 +129,37 @@ class Monomial:
             raise ValueError(
                 "can't convert %s to an expression without generators" % self)
 
-        return Mul(*[gen**exp for gen, exp in zip(gens, self.exponents)])
+        return Mul(*[gen**exp for gen, exp in zip(gens, self)])
 
     def __eq__(self, other):
         if isinstance(other, Monomial):
-            exponents = other.exponents
+            exponents = tuple(other)
         elif isinstance(other, (tuple, Tuple)):
             exponents = other
         else:
             return False
 
-        return self.exponents == exponents
+        return self._exponents == exponents
 
     def __mul__(self, other):
         if isinstance(other, Monomial):
-            exponents = other.exponents
+            exponents = tuple(other)
         elif isinstance(other, (tuple, Tuple)):
             exponents = other
         else:
             return NotImplemented
 
-        return self.rebuild(monomial_mul(self.exponents, exponents))
+        return self.rebuild(monomial_mul(self, exponents))
 
     def __truediv__(self, other):
         if isinstance(other, Monomial):
-            exponents = other.exponents
+            exponents = tuple(other)
         elif isinstance(other, (tuple, Tuple)):
             exponents = other
         else:
             return NotImplemented
 
-        result = monomial_div(self.exponents, exponents)
+        result = monomial_div(self, exponents)
 
         if all(_ >= 0 for _ in result):
             return self.rebuild(result)
@@ -168,28 +172,28 @@ class Monomial:
         n = int(other)
 
         if n >= 0:
-            return self.rebuild(monomial_pow(self.exponents, n))
+            return self.rebuild(monomial_pow(self, n))
         else:
             raise ValueError("a non-negative integer expected, got %s" % other)
 
     def gcd(self, other):
         """Greatest common divisor of monomials. """
         if isinstance(other, Monomial):
-            exponents = other.exponents
+            exponents = tuple(other)
         elif isinstance(other, (tuple, Tuple)):
             exponents = other
         else:
             raise TypeError("an instance of Monomial class expected, got %s" % other)
 
-        return self.rebuild(monomial_gcd(self.exponents, exponents))
+        return self.rebuild(monomial_gcd(self, exponents))
 
     def lcm(self, other):
         """Least common multiple of monomials. """
         if isinstance(other, Monomial):
-            exponents = other.exponents
+            exponents = tuple(other)
         elif isinstance(other, (tuple, Tuple)):
             exponents = other
         else:
             raise TypeError("an instance of Monomial class expected, got %s" % other)
 
-        return self.rebuild(monomial_lcm(self.exponents, exponents))
+        return self.rebuild(monomial_lcm(self, exponents))
