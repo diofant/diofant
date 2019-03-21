@@ -113,7 +113,7 @@ class Monomial:
 
     def __str__(self):
         if self.gens:
-            return "*".join(["%s**%s" % (gen, exp) for gen, exp in zip(self.gens, self)])
+            return "*".join(["%s**%s" % _ for _ in zip(self.gens, self)])
         else:
             return "%s(%s)" % (self.__class__.__name__, self._exponents)
 
@@ -122,8 +122,7 @@ class Monomial:
         gens = gens or self.gens
 
         if not gens:
-            raise ValueError(
-                "can't convert %s to an expression without generators" % self)
+            raise ValueError("can't convert %s to an expression without generators" % self)
 
         return Mul(*[gen**exp for gen, exp in zip(gens, self)])
 
