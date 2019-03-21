@@ -30,15 +30,13 @@ def itermonomials(variables, degree):
     Examples
     ========
 
-    Consider monomials in variables `x` and `y`::
+    >>> from diofant.polys.orderings import monomial_key
 
-        >>> from diofant.polys.orderings import monomial_key
+    >>> sorted(itermonomials([x, y], 2), key=monomial_key('grlex', [y, x]))
+    [1, x, y, x**2, x*y, y**2]
 
-        >>> sorted(itermonomials([x, y], 2), key=monomial_key('grlex', [y, x]))
-        [1, x, y, x**2, x*y, y**2]
-
-        >>> sorted(itermonomials([x, y], 3), key=monomial_key('grlex', [y, x]))
-        [1, x, y, x**2, x*y, y**2, x**3, x**2*y, x*y**2, y**3]
+    >>> sorted(itermonomials([x, y], 3), key=monomial_key('grlex', [y, x]))
+    [1, x, y, x**2, x*y, y**2, x**3, x**2*y, x*y**2, y**3]
 
     """
     if not variables:
@@ -55,37 +53,12 @@ def itermonomials(variables, degree):
 
 
 def monomial_mul(A, B):
-    """
-    Multiplication of tuples representing monomials.
-
-    Lets multiply `x**3*y**4*z` with `x*y**2`::
-
-        >>> monomial_mul((3, 4, 1), (1, 2, 0))
-        (4, 6, 1)
-
-    which gives `x**4*y**5*z`.
-
-    """
+    """Multiplication of tuples representing monomials."""
     return tuple(a + b for a, b in zip(A, B))
 
 
 def monomial_div(A, B):
-    """
-    Division of tuples representing monomials.
-
-    Lets divide `x**3*y**4*z` by `x*y**2`::
-
-        >>> monomial_div((3, 4, 1), (1, 2, 0))
-        (2, 2, 1)
-
-    which gives `x**2*y**2*z`.
-
-        >>> monomial_div((3, 4, 1), (1, 2, 2))
-        (2, 2, -1)
-
-    which gives `x**2*y**2*z**-1`.
-
-    """
+    """Division of tuples representing monomials."""
     return tuple(a - b for a, b in zip(A, B))
 
 
@@ -95,44 +68,17 @@ def monomial_pow(A, n):
 
 
 def monomial_gcd(A, B):
-    """
-    Greatest common divisor of tuples representing monomials.
-
-    Lets compute GCD of `x*y**4*z` and `x**3*y**2`::
-
-        >>> monomial_gcd((1, 4, 1), (3, 2, 0))
-        (1, 2, 0)
-
-    which gives `x*y**2`.
-
-    """
+    """Greatest common divisor of tuples representing monomials."""
     return tuple(min(a, b) for a, b in zip(A, B))
 
 
 def monomial_lcm(A, B):
-    """
-    Least common multiple of tuples representing monomials.
-
-    Lets compute LCM of `x*y**4*z` and `x**3*y**2`::
-
-        >>> monomial_lcm((1, 4, 1), (3, 2, 0))
-        (3, 4, 1)
-
-    which gives `x**3*y**4*z`.
-
-    """
+    """Least common multiple of tuples representing monomials."""
     return tuple(max(a, b) for a, b in zip(A, B))
 
 
 def monomial_divides(A, B):
-    """
-    Does there exist a monomial X such that XA == B?
-
-    >>> monomial_divides((1, 2), (3, 4))
-    True
-    >>> monomial_divides((1, 2), (0, 2))
-    False
-    """
+    """Does there exist a monomial X such that XA == B?"""
     return all(a <= b for a, b in zip(A, B))
 
 
