@@ -78,32 +78,9 @@ def monomial_div(A, B):
         >>> monomial_div((3, 4, 1), (1, 2, 0))
         (2, 2, 1)
 
-    which gives `x**2*y**2*z`. However::
-
-        >>> monomial_div((3, 4, 1), (1, 2, 2)) is None
-        True
-
-    `x*y**2*z**2` does not divide `x**3*y**4*z`.
-
-    """
-    C = monomial_ldiv(A, B)
-
-    if all(c >= 0 for c in C):
-        return tuple(C)
-
-
-def monomial_ldiv(A, B):
-    """
-    Division of tuples representing monomials.
-
-    Lets divide `x**3*y**4*z` by `x*y**2`::
-
-        >>> monomial_ldiv((3, 4, 1), (1, 2, 0))
-        (2, 2, 1)
-
     which gives `x**2*y**2*z`.
 
-        >>> monomial_ldiv((3, 4, 1), (1, 2, 2))
+        >>> monomial_div((3, 4, 1), (1, 2, 2))
         (2, 2, -1)
 
     which gives `x**2*y**2*z**-1`.
@@ -234,7 +211,7 @@ class Monomial:
 
         result = monomial_div(self.exponents, exponents)
 
-        if result is not None:
+        if all(_ >= 0 for _ in result):
             return self.rebuild(result)
         else:
             raise ExactQuotientFailed(self, Monomial(other))

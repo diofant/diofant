@@ -124,7 +124,7 @@ def buchberger(f, ring):
             def lcm_divides(ip):
                 # LCM(LM(h), LM(p)) divides LCM(LM(h), LM(g))
                 m = monomial_lcm(mh, f[ip].LM)
-                return monomial_div(LCMhg, m)
+                return monomial_divides(m, LCMhg)
 
             # HT(h) and HT(g) disjoint: mh*mg == LCMhg
             if monomial_mul(mh, mg) == LCMhg or (
@@ -154,7 +154,7 @@ def buchberger(f, ring):
             LCM12 = monomial_lcm(mg1, mg2)
 
             # if HT(h) does not divide lcm(HT(g1), HT(g2))
-            if not monomial_div(LCM12, mh) or \
+            if not monomial_divides(mh, LCM12) or \
                 monomial_lcm(mg1, mh) == LCM12 or \
                     monomial_lcm(mg2, mh) == LCM12:
                 B_new.add((ig1, ig2))
@@ -168,7 +168,7 @@ def buchberger(f, ring):
             ig = G.pop()
             mg = f[ig].LM
 
-            if not monomial_div(mg, mh):
+            if not monomial_divides(mh, mg):
                 G_new.add(ig)
 
         G_new.add(ih)
