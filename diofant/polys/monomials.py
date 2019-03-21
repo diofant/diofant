@@ -2,7 +2,6 @@
 
 from ..core import Mul, S, Tuple, sympify
 from ..core.compatibility import iterable
-from .polyerrors import ExactQuotientFailed
 from .polyutils import dict_from_expr
 
 
@@ -156,14 +155,7 @@ class Monomial:
         else:
             return NotImplemented
 
-        result = monomial_div(self, exponents)
-
-        if all(_ >= 0 for _ in result):
-            return self.__class__(result, self.gens)
-        else:
-            raise ExactQuotientFailed(self, Monomial(other))
-
-    __floordiv__ = __truediv__
+        return self.__class__(monomial_div(self, exponents), self.gens)
 
     def __pow__(self, other):
         n = int(other)

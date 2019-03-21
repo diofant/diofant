@@ -8,7 +8,6 @@ from diofant.abc import a, b, c, x, y, z
 from diofant.polys.monomials import (Monomial, itermonomials, monomial_div,
                                      monomial_divides, monomial_gcd,
                                      monomial_lcm, monomial_mul, monomial_pow)
-from diofant.polys.polyerrors import ExactQuotientFailed
 
 
 __all__ = ()
@@ -126,7 +125,7 @@ def test_Monomial():
 
     pytest.raises(ValueError, lambda: m**-3)
 
-    pytest.raises(ExactQuotientFailed, lambda: m/Monomial((5, 2, 0)))
+    assert m/Monomial((5, 2, 0)) == (-2, 2, 1)
 
     assert str(m) == "x**3*y**4*z**1"
     assert str(l) == "Monomial((3, 4, 1))"
