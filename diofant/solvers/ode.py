@@ -3944,7 +3944,7 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
             chareq += (r[i]*diff(x**symbol, x, i)*x**-symbol).expand()
 
     chareq = Poly(chareq, symbol)
-    chareqroots = [RootOf(chareq, k) for k in range(chareq.degree())]
+    chareqroots = chareq.all_roots()
 
     # A generator of constants
     constants = list(get_numbered_constants(eq, num=chareq.degree()*2))
@@ -6351,8 +6351,8 @@ def _linear_2eq_order1_type1(x, y, t, r, eq):
 
     l = Dummy('l')
     C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
-    l1 = RootOf(l**2 - (r['a']+r['d'])*l + r['a']*r['d'] - r['b']*r['c'], l, 0)
-    l2 = RootOf(l**2 - (r['a']+r['d'])*l + r['a']*r['d'] - r['b']*r['c'], l, 1)
+    l1, l2 = Poly(l**2 - (r['a']+r['d'])*l + r['a']*r['d'] - r['b']*r['c'],
+                  l).all_roots()
     D = (r['a'] - r['d'])**2 + 4*r['b']*r['c']
     if (r['a']*r['d'] - r['b']*r['c']) != 0:
         if D > 0:
@@ -6773,10 +6773,7 @@ def _linear_2eq_order2_type1(x, y, t, r, eq):
     l = Symbol('l')
     C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
     chara_eq = l**4 - (r['a']+r['d'])*l**2 + r['a']*r['d'] - r['b']*r['c']
-    l1 = RootOf(chara_eq, 0)
-    l2 = RootOf(chara_eq, 1)
-    l3 = RootOf(chara_eq, 2)
-    l4 = RootOf(chara_eq, 3)
+    l1, l2, l3, l4 = Poly(chara_eq, l).all_roots()
     D = (r['a'] - r['d'])**2 + 4*r['b']*r['c']
     if (r['a']*r['d'] - r['b']*r['c']) != 0:
         if D != 0:
@@ -6980,7 +6977,7 @@ def _linear_2eq_order2_type6(x, y, t, r, eq):
     a2 = den.coeff(x(t))
     b2 = den.coeff(y(t))
     chareq = k**2 - (a1 + b2)*k + a1*b2 - a2*b1
-    k1, k2 = [RootOf(chareq, k) for k in range(Poly(chareq).degree())]
+    k1, k2 = Poly(chareq, k).all_roots()
     z1 = dsolve(diff(z(t), t, t) - k1*f*z(t)).rhs
     z2 = dsolve(diff(z(t), t, t) - k2*f*z(t)).rhs
     sol1 = (k1*z2 - k2*z1 + a1*(z1 - z2))/(a2*(k1-k2))
@@ -7027,7 +7024,7 @@ def _linear_2eq_order2_type7(x, y, t, r, eq):
     a2 = den.coeff(x(t))
     b2 = den.coeff(y(t))
     chareq = k**2 - (a1 + b2)*k + a1*b2 - a2*b1
-    k1, k2 = [RootOf(chareq, k) for k in range(Poly(chareq).degree())]
+    k1, k2 = Poly(chareq, k).all_roots()
     F = Integral(f, t)
     z1 = C1*Integral(exp(k1*F), t) + C2
     z2 = C3*Integral(exp(k2*F), t) + C4

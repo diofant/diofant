@@ -1,13 +1,13 @@
 """Tests for tools and arithmetics for monomials of distributed polynomials. """
 
+import functools
+
 import pytest
 
 from diofant.abc import a, b, c, x, y, z
 from diofant.polys.monomials import (Monomial, itermonomials, monomial_div,
                                      monomial_divides, monomial_gcd,
-                                     monomial_lcm, monomial_min, monomial_mul,
-                                     monomial_pow)
-from diofant.polys.polyerrors import ExactQuotientFailed
+                                     monomial_lcm, monomial_mul, monomial_pow)
 
 
 __all__ = ()
@@ -44,19 +44,21 @@ def test_monomial_pow():
 
 def test_monomial_gcd():
     assert monomial_gcd((3, 4, 1), (1, 2, 0)) == (1, 2, 0)
+    assert monomial_gcd((1, 4, 1), (3, 2, 0)) == (1, 2, 0)
+    assert functools.reduce(monomial_gcd, ((3, 4, 5), (0, 5, 1),
+                                           (6, 3, 9))) == (0, 3, 1)
 
 
 def test_monomial_lcm():
     assert monomial_lcm((3, 4, 1), (1, 2, 0)) == (3, 4, 1)
-
-
-def test_monomial_min():
-    assert monomial_min((3, 4, 5), (0, 5, 1), (6, 3, 9)) == (0, 3, 1)
+    assert monomial_lcm((1, 4, 1), (3, 2, 0)) == (3, 4, 1)
 
 
 def test_monomial_divides():
     assert monomial_divides((1, 2, 3), (4, 5, 6)) is True
     assert monomial_divides((1, 2, 3), (0, 5, 6)) is False
+    assert monomial_divides((1, 2), (3, 4)) is True
+    assert monomial_divides((1, 2), (0, 2)) is False
 
 
 def test_Monomial():
@@ -123,7 +125,7 @@ def test_Monomial():
 
     pytest.raises(ValueError, lambda: m**-3)
 
-    pytest.raises(ExactQuotientFailed, lambda: m/Monomial((5, 2, 0)))
+    assert m/Monomial((5, 2, 0)) == (-2, 2, 1)
 
     assert str(m) == "x**3*y**4*z**1"
     assert str(l) == "Monomial((3, 4, 1))"

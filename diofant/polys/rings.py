@@ -20,8 +20,7 @@ from .constructor import construct_domain
 from .densebasic import dmp_from_dict, dmp_to_dict
 from .heuristicgcd import heugcd
 from .modulargcd import func_field_modgcd, modgcd
-from .monomials import (monomial_div, monomial_ldiv, monomial_min,
-                        monomial_mul, monomial_pow)
+from .monomials import monomial_div, monomial_gcd, monomial_mul, monomial_pow
 from .orderings import lex
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
@@ -1682,7 +1681,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         for tm, tc in self.items():
             if monom != self.ring.zero_monom:
-                tm = monomial_ldiv(tm, monom)
+                tm = monomial_div(tm, monom)
             if any(_ < 0 for _ in tm):
                 continue
             if domain.is_Field or not tc % coeff:
@@ -1872,7 +1871,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.is_zero:
             return (0,)*self.ring.ngens, self
 
-        G = monomial_min(*list(self))
+        G = functools.reduce(monomial_gcd, self)
 
         if all(g == 0 for g in G):
             return G, self
@@ -1956,7 +1955,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         g = ring.zero
         for expv, coeff in self.items():
             if expv[i]:
-                e = monomial_ldiv(expv, x)
+                e = monomial_div(expv, x)
                 for j in range(expv[i], expv[i] - m, -1):
                     coeff *= j
                 g[e] = coeff

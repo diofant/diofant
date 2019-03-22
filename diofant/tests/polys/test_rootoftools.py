@@ -603,3 +603,8 @@ def test_diofantissue_723():
     for i in range(20):
         for j in (1, 2):
             RootOf(p, j)
+
+
+def test_sympyissue_15413():
+    assert Poly(sqrt(2)*x**3 + x, x).all_roots() == [0, -I*root(2, -4),
+                                                     I*root(2, -4)]

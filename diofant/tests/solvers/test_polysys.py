@@ -5,7 +5,7 @@ import pytest
 from diofant import (I, Matrix, Mul, Poly, Rational, flatten, ordered, sqrt,
                      symbols)
 from diofant.abc import n, t, x, y, z
-from diofant.polys import ComputationFailed, PolynomialError, RootOf
+from diofant.polys import ComputationFailed, PolynomialError
 from diofant.solvers.polysys import solve_linear_system, solve_poly_system
 
 
@@ -73,9 +73,7 @@ def test_solve_poly_system():
     pytest.raises(PolynomialError, lambda: solve_poly_system([1/x], x))
 
     assert (solve_poly_system([x**6 + x - 1], x) ==
-            [{x: RootOf(x**6 + x - 1, 0)}, {x: RootOf(x**6 + x - 1, 1)},
-             {x: RootOf(x**6 + x - 1, 2)}, {x: RootOf(x**6 + x - 1, 3)},
-             {x: RootOf(x**6 + x - 1, 4)}, {x: RootOf(x**6 + x - 1, 5)}])
+            [{x: r} for r in Poly(x**6 + x - 1).all_roots()])
 
     # Arnold's problem on two walking old women
     eqs = (4*n + 9*t - y, n*(12 - x) - 9*t, -4*n + t*(12 - x))
@@ -95,9 +93,8 @@ def test_solve_poly_system():
 @pytest.mark.slow
 def test_solve_poly_system2():
     assert solve_poly_system((x, y)) == [{x: 0, y: 0}]
-    assert solve_poly_system((x**3 + y**2,)) == [{x: RootOf(x**3 + y**2, x, 0)},
-                                                 {x: RootOf(x**3 + y**2, x, 1)},
-                                                 {x: RootOf(x**3 + y**2, x, 2)}]
+    assert (solve_poly_system((x**3 + y**2,)) ==
+            [{x: r} for r in Poly(x**3 + y**2, x).all_roots()])
     assert solve_poly_system((x, y, z)) == [{x: 0, y: 0, z: 0}]
     assert solve_poly_system((x, y, z), x, y, z, t) == [{x: 0, y: 0, z: 0}]
     assert solve_poly_system((x*y - z, y*z - x,
@@ -108,9 +105,8 @@ def test_solve_poly_system2():
     assert solve_poly_system((x + y, x - y)) == [{x: 0, y: 0}]
     assert solve_poly_system((x + y, 2*x + 2*y)) == [{x: -y}]
     assert solve_poly_system((x**2 + y**2,)) == [{x: -I*y}, {x: I*y}]
-    assert solve_poly_system((x**3*y**2 - 1,)) == [{x: RootOf(x**3*y**2 - 1, x, 0)},
-                                                   {x: RootOf(x**3*y**2 - 1, x, 1)},
-                                                   {x: RootOf(x**3*y**2 - 1, x, 2)}]
+    assert (solve_poly_system((x**3*y**2 - 1,)) ==
+            [{x: r} for r in Poly(x**3*y**2 - 1, x).all_roots()])
     assert (solve_poly_system((x**3 - y**3,)) ==
             [{x: y}, {x: y*(Rational(-1, 2) - sqrt(3)*I/2)},
              {x: y*(Rational(-1, 2) + sqrt(3)*I/2)}])

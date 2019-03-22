@@ -1,10 +1,11 @@
 """Basic tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
+import functools
 import math
 import random
 
 from ..core import oo
-from .monomials import monomial_div, monomial_min
+from .monomials import monomial_div, monomial_gcd
 from .orderings import monomial_key
 
 
@@ -980,7 +981,7 @@ def dmp_terms_gcd(f, u, K):
         return (0,)*(u + 1), f
 
     F = dmp_to_dict(f, u)
-    G = monomial_min(*list(F))
+    G = functools.reduce(monomial_gcd, F)
 
     if all(g == 0 for g in G):
         return G, f

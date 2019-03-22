@@ -64,7 +64,7 @@ def roots_quadratic(f):
         if not dom.is_Numerical:
             r = _simplify(r)
 
-        R = sqrt(r)
+        R = sqrt(r).doit()
         r0 = -R
         r1 = R
     else:
