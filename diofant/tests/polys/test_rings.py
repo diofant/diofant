@@ -594,6 +594,8 @@ def test_PolyElement___add__():
 
     assert x._iadd_monom((m, 5)) == 5*x*y**2 + x
 
+    assert (x + y - 1) + 1 == x + y
+
 
 def test_PolyElement___sub__():
     Rt, t = ring("t", ZZ)
@@ -626,6 +628,10 @@ def test_PolyElement___sub__():
     Rxyz,  x, y, z = ring("x,y,z", EX)
 
     assert dict(-EX(pi) + x*y*z) == dict(x*y*z - EX(pi)) == {(1, 1, 1): EX(1), (0, 0, 0): -EX(pi)}
+
+    R, x, y = ring('x y', ZZ)
+
+    assert (x + y + 1) - 1 == x + y
 
 
 def test_PolyElement___mul__():

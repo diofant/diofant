@@ -22,6 +22,7 @@ Compatibility breaks
 * Removed ``log()`` helper from :class:`~diofant.domains.RationalField`, see :pull:`787`.
 * Removed ``seterr()`` function, see :pull:`794`.
 * Removed ``DMP`` class, see :pull:`795`.
+* Removed ``ring_series`` module, see :pull:`820`.
 
 Minor changes
 =============

@@ -378,18 +378,6 @@ Heuristic GCD
 .. automodule:: diofant.polys.heuristicgcd
     :members:
 
-Manipulation of power series
-============================
-
-.. currentmodule:: diofant.polys.ring_series
-
-Functions in this module carry the prefix ``rs_``, standing for "ring series".
-They manipulate finite power series in the sparse representation provided
-by ``polys.ring.ring``.
-
-.. automodule:: diofant.polys.ring_series
-    :members:
-
 Undocumented
 ============
 
