@@ -1,4 +1,4 @@
-from ...core import Dummy, Function, I, S, pi, sympify
+from ...core import Dummy, Function, I, pi, sympify
 from ...core.function import ArgumentIndexError
 from ..combinatorial.factorials import factorial
 from ..elementary.complexes import Abs
@@ -137,7 +137,7 @@ class Ynm(Function):
         # Handle negative index m and arguments theta, phi
         if m.could_extract_minus_sign():
             m = -m
-            return S.NegativeOne**m * exp(-2*I*m*phi) * Ynm(n, m, theta, phi)
+            return (-1)**m * exp(-2*I*m*phi) * Ynm(n, m, theta, phi)
         if theta.could_extract_minus_sign():
             theta = -theta
             return Ynm(n, m, theta, phi)
@@ -183,7 +183,7 @@ class Ynm(Function):
     def _eval_conjugate(self):
         # TODO: Make sure theta \in R and phi \in R
         n, m, theta, phi = self.args
-        return S.NegativeOne**m * self.func(n, -m, theta, phi)
+        return (-1)**m * self.func(n, -m, theta, phi)
 
     def as_real_imag(self, deep=True, **hints):
         # TODO: Handle deep and hints

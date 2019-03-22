@@ -1,4 +1,4 @@
-from ..core import AtomicExpr, Integer, Pow, S
+from ..core import AtomicExpr, Integer, Pow
 from ..matrices import ImmutableMatrix
 from .basisdependent import (BasisDependent, BasisDependentAdd,
                              BasisDependentMul, BasisDependentZero)
@@ -261,7 +261,7 @@ def _dyad_div(one, other):
     if isinstance(other, Dyadic):
         raise TypeError("Cannot divide two dyadics")
     else:
-        return DyadicMul(one, Pow(other, S.NegativeOne))
+        return DyadicMul(one, Pow(other, -1))
 
 
 Dyadic._expr_type = Dyadic

@@ -3,7 +3,7 @@
 import mpmath
 from mpmath.libmp.libhyper import NoConvergence
 
-from ..core import (Add, Basic, Derivative, Dummy, E, Expr, I, Integer, Mul, S,
+from ..core import (Add, Basic, Derivative, Dummy, E, Expr, I, Integer, Mul,
                     Tuple, oo, preorder_traversal, sympify)
 from ..core.compatibility import default_sort_key, iterable
 from ..core.decorators import _sympifyit
@@ -1328,7 +1328,7 @@ class Poly(Expr):
         f = self
 
         if not f.domain.is_Field:
-            return S.One, f
+            return Integer(1), f
 
         dom = f.domain
         if dom.has_assoc_Ring:
@@ -1976,7 +1976,7 @@ class Poly(Expr):
         try:
             coeff, factors = self.rep.factor_list()
         except DomainError:
-            return S.One, [(self, 1)]
+            return Integer(1), [(self, 1)]
 
         return (self.domain.to_expr(coeff),
                 [(self.per(g), k) for g, k in factors])
@@ -3560,7 +3560,7 @@ def gcd_list(seq, *gens, **args):
 
     if not polys:
         if not opt.polys:
-            return S.Zero
+            return Integer(0)
         else:
             return Poly(0, opt=opt)
 
@@ -3651,7 +3651,7 @@ def lcm_list(seq, *gens, **args):
 
     if not polys:
         if not opt.polys:
-            return S.One
+            return Integer(1)
         else:
             return Poly(1, opt=opt)
 
@@ -3788,7 +3788,7 @@ def terms_gcd(f, *gens, **args):
 
     term = Mul(*[x**j for x, j in zip(f.gens, J)])
     if coeff == 1:
-        coeff = S.One
+        coeff = Integer(1)
         if term == 1:
             return orig
 
@@ -4072,7 +4072,7 @@ def _factors_product(factors):
 
 def _symbolic_factor_list(expr, opt, method):
     """Helper function for :func:`_symbolic_factor`."""
-    coeff, factors = S.One, []
+    coeff, factors = Integer(1), []
 
     args = [i._eval_factor() if hasattr(i, '_eval_factor') else i
             for i in Mul.make_args(expr)]
@@ -4089,7 +4089,7 @@ def _symbolic_factor_list(expr, opt, method):
                 factors.append((base, exp))
                 continue
         else:
-            base, exp = arg, S.One
+            base, exp = arg, Integer(1)
 
         try:
             poly, _ = _poly_from_expr(base, opt)
@@ -4099,15 +4099,15 @@ def _symbolic_factor_list(expr, opt, method):
             func = getattr(poly, method + '_list')
 
             _coeff, _factors = func()
-            if _coeff is not S.One:
+            if _coeff != 1:
                 if exp.is_Integer:
                     coeff *= _coeff**exp
                 elif _coeff.is_positive:
                     factors.append((_coeff, exp))
                 else:
-                    _factors.append((_coeff, S.One))
+                    _factors.append((_coeff, Integer(1)))
 
-            if exp is S.One:
+            if exp == 1:
                 factors.extend(_factors)
             elif exp.is_integer:
                 factors.extend([(f, k*exp) for f, k in _factors])
@@ -4712,7 +4712,7 @@ def cancel(f, *gens, **args):
         if not isinstance(f, (tuple, Tuple)):
             return f
         else:
-            return S.One, p, q
+            return Integer(1), p, q
     except PolynomialError:
         assert not f.is_commutative or f.has(Piecewise)
         # Handling of noncommutative and/or piecewise expressions

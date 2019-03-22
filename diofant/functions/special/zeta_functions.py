@@ -1,7 +1,7 @@
 """ Riemann zeta and related function. """
 
-from ...core import (Add, Dummy, E, Function, I, Integer, S, expand_mul, oo,
-                     pi, sympify, zoo)
+from ...core import (Add, Dummy, E, Function, I, Integer, Rational, expand_mul,
+                     oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.numbers import bernoulli, factorial, harmonic
 from ..elementary.exponential import exp, exp_polar, log
@@ -277,7 +277,7 @@ class polylog(Function):
         elif z == -1:
             return -dirichlet_eta(s)
         elif z == 0:
-            return S.Zero
+            return Integer(0)
 
         # branch handling
         if (1 - abs(z)).is_nonnegative:
@@ -423,16 +423,16 @@ class zeta(Function):
             z, a = list(map(sympify, (z, a_)))
 
         if a.is_Number:
-            if a is S.One and a_ is not None:
+            if a == 1 and a_ is not None:
                 return cls(z)
             # TODO Should a == 0 return nan as well?
 
         if z.is_Number:
             if z is oo:
-                return S.One
-            elif z is S.Zero:
-                return S.Half - a
-            elif z is S.One:
+                return Integer(1)
+            elif z == 0:
+                return Rational(1, 2) - a
+            elif z == 1:
                 return zoo
             elif z.is_Integer:
                 if a.is_Integer:

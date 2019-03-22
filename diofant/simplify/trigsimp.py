@@ -5,8 +5,8 @@ from strategies.core import identity
 from strategies.tree import greedy
 
 from ..core import (Add, Basic, Dummy, E, Expr, FunctionClass, I, Integer, Mul,
-                    Pow, S, Wild, cacheit, count_ops, expand, expand_mul,
-                    factor_terms, igcd, symbols, sympify)
+                    Pow, Rational, Wild, cacheit, count_ops, expand,
+                    expand_mul, factor_terms, igcd, symbols, sympify)
 from ..core.compatibility import iterable
 from ..core.function import _mexpand
 from ..domains import ZZ
@@ -546,12 +546,12 @@ def exptrigsimp(expr, simplify=True):
 
     # sinh and cosh
     for ei in ex:
-        a = ei.exp if ei is not E else S.One
+        a = ei.exp if ei is not E else Integer(1)
         newexpr = newexpr.subs({ei + 1/ei: 2*cosh(a)})
         newexpr = newexpr.subs({ei - 1/ei: 2*sinh(a)})
         e2 = ei**-2
         if e2 in ex:
-            a = e2.exp/2 if e2 is not E else S.Half
+            a = e2.exp/2 if e2 is not E else Rational(1, 2)
             newexpr = newexpr.subs({(e2 + 1)*ei: 2*cosh(a)})
             newexpr = newexpr.subs({(e2 - 1)*ei: 2*sinh(a)})
 
@@ -560,7 +560,7 @@ def exptrigsimp(expr, simplify=True):
         n, d = ei - 1, ei + 1
         et = n/d
         etinv = d/n  # not 1/et or else recursion errors arise
-        a = ei.exp if ei.is_Pow and ei.base is E else S.One
+        a = ei.exp if ei.is_Pow and ei.base is E else Integer(1)
         if a.is_Mul or a is I:
             c = a.as_coefficient(I)
             if c:
@@ -760,15 +760,15 @@ def _trigpats():
         (a*(sin(b) + 1)**c*(sin(b) - 1)**c,
             a*(-cos(b)**2)**c, sin(b) + 1, sin(b) - 1),
 
-        (a*sinh(b)**c/cosh(b)**c, a*tanh(b)**c, S.One, S.One),
-        (a*tanh(b)**c*cosh(b)**c, a*sinh(b)**c, S.One, S.One),
-        (a*coth(b)**c*sinh(b)**c, a*cosh(b)**c, S.One, S.One),
-        (a*tanh(b)**c/sinh(b)**c, a/cosh(b)**c, S.One, S.One),
-        (a*coth(b)**c/cosh(b)**c, a/sinh(b)**c, S.One, S.One),
-        (a*coth(b)**c*tanh(b)**c, a, S.One, S.One),
+        (a*sinh(b)**c/cosh(b)**c, a*tanh(b)**c, Integer(1), Integer(1)),
+        (a*tanh(b)**c*cosh(b)**c, a*sinh(b)**c, Integer(1), Integer(1)),
+        (a*coth(b)**c*sinh(b)**c, a*cosh(b)**c, Integer(1), Integer(1)),
+        (a*tanh(b)**c/sinh(b)**c, a/cosh(b)**c, Integer(1), Integer(1)),
+        (a*coth(b)**c/cosh(b)**c, a/sinh(b)**c, Integer(1), Integer(1)),
+        (a*coth(b)**c*tanh(b)**c, a, Integer(1), Integer(1)),
 
         (c*(tanh(a) + tanh(b))/(1 + tanh(a)*tanh(b)),
-            tanh(a + b)*c, S.One, S.One),
+            tanh(a + b)*c, Integer(1), Integer(1)),
     )
 
     matchers_add = (
@@ -878,7 +878,7 @@ def _midn(x):
 
 
 def _one(x):
-    return S.One
+    return Integer(1)
 
 
 def _match_div_rewrite(expr, i):
@@ -988,7 +988,7 @@ def __trigsimp(expr, deep=False):
                 nc = Mul._from_args(nc)
                 term = Mul._from_args(com)
             else:
-                nc = S.One
+                nc = Integer(1)
             term = _trigsimp(term, deep)
             for pattern, result in matchers_identity:
                 res = term.match(pattern)
@@ -1039,7 +1039,7 @@ def __trigsimp(expr, deep=False):
                     break
                 expr = result.subs(m)
                 m = expr.match(pattern)
-                m.setdefault(c, S.Zero)
+                m.setdefault(c, Integer(0))
 
     elif expr.is_Mul or expr.is_Pow or deep and expr.args:
         expr = expr.func(*[_trigsimp(a, deep) for a in expr.args])
@@ -1118,7 +1118,7 @@ def _futrig(e, **kwargs):
     if e.is_Mul:
         coeff, e = e.as_independent(TrigonometricFunction)
     else:
-        coeff = S.One
+        coeff = Integer(1)
 
     def Lops(x):
         return L(x), x.count_ops(), _nodes(x), len(x.args), x.is_Add

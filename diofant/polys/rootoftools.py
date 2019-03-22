@@ -3,7 +3,7 @@
 from mpmath import findroot, mpc, mpf, workprec
 from mpmath.libmp.libmpf import prec_to_dps
 
-from ..core import (Add, Dummy, Expr, Float, I, Integer, Lambda, Rational, S,
+from ..core import (Add, Dummy, Expr, Float, I, Integer, Lambda, Rational,
                     cacheit, symbols, sympify)
 from ..core.compatibility import ordered
 from ..core.evaluate import global_evaluate
@@ -11,6 +11,7 @@ from ..core.function import AppliedUndef
 from ..domains import QQ
 from ..functions import root as _root
 from ..functions import sign
+from ..logic import false
 from ..utilities import lambdify, sift
 from .polyerrors import (DomainError, GeneratorsNeeded,
                          MultivariatePolynomialError, PolynomialError)
@@ -643,21 +644,21 @@ class RootOf(Expr):
         if type(self) == type(other):
             return sympify(self.__eq__(other))
         if not (other.is_number and not other.has(AppliedUndef)):
-            return S.false
+            return false
         if not other.is_finite:
-            return S.false
+            return false
         z = self.expr.subs({self.expr.free_symbols.pop(): other}).is_zero
-        if z is False:      # all roots will make z True but we don't know
-            return S.false  # whether this is the right root if z is True
+        if z is False:    # all roots will make z True but we don't know
+            return false  # whether this is the right root if z is True
         o = other.is_extended_real, other.is_imaginary
         s = self.is_extended_real, self.is_imaginary
         if o != s and None not in o and None not in s:
-            return S.false
+            return false
         i = self.interval
         re, im = other.as_real_imag()
         if self.is_extended_real:
             if im:
-                return S.false
+                return false
             else:
                 return sympify(i.a < other and other < i.b)
         return sympify((i.ax < re and re < i.bx) and (i.ay < im and im < i.by))
@@ -697,7 +698,7 @@ class RootSum(Expr):
 
         var, expr = func.variables[0], func.expr
 
-        if coeff is not S.One:
+        if coeff != 1:
             expr = expr.subs({var: coeff*var})
 
         deg = poly.degree()
@@ -708,12 +709,12 @@ class RootSum(Expr):
         if expr.is_Add:
             add_const, expr = expr.as_independent(var)
         else:
-            add_const = S.Zero
+            add_const = Integer(0)
 
         if expr.is_Mul:
             mul_const, expr = expr.as_independent(var)
         else:
-            mul_const = S.One
+            mul_const = Integer(1)
 
         func = Lambda(var, expr)
 

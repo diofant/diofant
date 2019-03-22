@@ -1,4 +1,4 @@
-from ..core import Add, Basic, Lambda, Mul, Pow, S, Symbol, sympify
+from ..core import Add, Basic, Integer, Lambda, Mul, Pow, Symbol, sympify
 from ..core.compatibility import default_sort_key
 from ..core.mul import _keep_coeff
 from ..core.relational import Relational
@@ -463,7 +463,7 @@ class CodePrinter(StrPrinter):
             else:
                 a.append(item)
 
-        a = a or [S.One]
+        a = a or [Integer(1)]
 
         a_str = [self.parenthesize(x, prec) for x in a]
         b_str = [self.parenthesize(x, prec) for x in b]

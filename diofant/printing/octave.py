@@ -11,8 +11,9 @@ complete source code files.
 
 from re import search
 
-from ..core import I, Mul, Pow, Rational, S, oo, pi
+from ..core import I, Integer, Mul, Pow, Rational, oo, pi
 from ..core.mul import _keep_coeff
+from ..logic import true
 from .codeprinter import Assignment, CodePrinter
 from .precedence import precedence
 
@@ -144,7 +145,7 @@ class OctaveCodePrinter(CodePrinter):
             else:
                 a.append(item)
 
-        a = a or [S.One]
+        a = a or [Integer(1)]
 
         a_str = [self.parenthesize(x, prec) for x in a]
         b_str = [self.parenthesize(x, prec) for x in b]
@@ -173,11 +174,11 @@ class OctaveCodePrinter(CodePrinter):
 
         PREC = precedence(expr)
 
-        if expr.exp == S.Half:
+        if expr.exp == Rational(1, 2):
             return "sqrt(%s)" % self._print(expr.base)
 
         if expr.is_commutative:
-            if expr.exp == -S.Half:
+            if expr.exp == -Rational(1, 2):
                 sym = '/' if expr.base.is_number else './'
                 return "1" + sym + "sqrt(%s)" % self._print(expr.base)
             if expr.exp == -1:
@@ -356,13 +357,13 @@ class OctaveCodePrinter(CodePrinter):
     def _print_jn(self, expr):
         from ..functions import sqrt, besselj
         x = expr.argument
-        expr2 = sqrt(pi/(2*x))*besselj(expr.order + S.Half, x)
+        expr2 = sqrt(pi/(2*x))*besselj(expr.order + Rational(1, 2), x)
         return self._print(expr2)
 
     def _print_yn(self, expr):
         from ..functions import sqrt, bessely
         x = expr.argument
-        expr2 = sqrt(pi/(2*x))*bessely(expr.order + S.Half, x)
+        expr2 = sqrt(pi/(2*x))*bessely(expr.order + Rational(1, 2), x)
         return self._print(expr2)
 
     def _print_airyai(self, expr):
@@ -389,7 +390,7 @@ class OctaveCodePrinter(CodePrinter):
             return self._print_not_supported(expr)
 
     def _print_Piecewise(self, expr):
-        if expr.args[-1].cond != S.true:
+        if expr.args[-1].cond != true:
             # We need the last conditional to be a True, otherwise the resulting
             # function may not return a result.
             raise ValueError("All Piecewise expressions must contain an "
@@ -414,7 +415,7 @@ class OctaveCodePrinter(CodePrinter):
             for i, (e, c) in enumerate(expr.args):
                 if i == 0:
                     lines.append("if (%s)" % self._print(c))
-                elif i == len(expr.args) - 1 and c == S.true:
+                elif i == len(expr.args) - 1 and c == true:
                     lines.append("else")
                 else:
                     lines.append("elseif (%s)" % self._print(c))

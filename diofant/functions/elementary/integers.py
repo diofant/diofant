@@ -1,5 +1,6 @@
 from ...core import (Add, Dummy, Function, Ge, Gt, I, Integer, Le, Lt,
-                     PrecisionExhausted, S, Symbol)
+                     PrecisionExhausted, Symbol)
+from ...logic import false, true
 
 
 ###############################################################################
@@ -28,7 +29,7 @@ class RoundFunction(Function):
             return v
 
         # Integral, numerical, symbolic part
-        ipart = npart = spart = S.Zero
+        ipart = npart = spart = Integer(0)
 
         # Extract integral (or complex integral) terms
         terms = Add.make_args(arg)
@@ -61,7 +62,7 @@ class RoundFunction(Function):
                             raise PrecisionExhausted
                         prec += 10
                 ipart += Integer(r) + Integer(i)*I
-                npart = S.Zero
+                npart = Integer(0)
             except (PrecisionExhausted, NotImplementedError):
                 pass
 
@@ -149,12 +150,12 @@ class floor(RoundFunction):
 
     def __le__(self, other):
         if self.args[0] == other and other.is_extended_real:
-            return S.true
+            return true
         return Le(self, other, evaluate=False)
 
     def __gt__(self, other):
         if self.args[0] == other and other.is_extended_real:
-            return S.false
+            return false
         return Gt(self, other, evaluate=False)
 
     def _eval_as_leading_term(self, arg):
@@ -225,10 +226,10 @@ class ceiling(RoundFunction):
 
     def __lt__(self, other):
         if self.args[0] == other and other.is_extended_real:
-            return S.false
+            return false
         return Lt(self, other, evaluate=False)
 
     def __ge__(self, other):
         if self.args[0] == other and other.is_extended_real:
-            return S.true
+            return true
         return Ge(self, other, evaluate=False)

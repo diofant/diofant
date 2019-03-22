@@ -7,7 +7,7 @@ from .assumptions import StdFactKB
 from .cache import cacheit
 from .expr import AtomicExpr, Expr
 from .logic import fuzzy_bool
-from .singleton import S
+from .numbers import Integer
 from .sympify import sympify
 
 
@@ -161,7 +161,7 @@ class BaseSymbol(AtomicExpr, Boolean):
     @cacheit
     def sort_key(self, order=None):
         """Return a sort key."""
-        return self.class_key(), (1, (str(self),)), S.One.sort_key(), S.One
+        return self.class_key(), (1, (str(self),)), Integer(1).sort_key(), Integer(1)
 
     def as_dummy(self):
         """Return a Dummy having the same name and same assumptions as self."""
@@ -281,7 +281,7 @@ class Dummy(BaseSymbol):
     def sort_key(self, order=None):
         """Return a sort key."""
         return self.class_key(), (
-            2, (str(self), self.dummy_index)), S.One.sort_key(), S.One
+            2, (str(self), self.dummy_index)), Integer(1).sort_key(), Integer(1)
 
     def _hashable_content(self):
         return BaseSymbol._hashable_content(self) + (self.dummy_index,)

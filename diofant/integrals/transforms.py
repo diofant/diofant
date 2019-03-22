@@ -3,10 +3,10 @@
 from functools import reduce, wraps
 from itertools import repeat
 
-from ..core import (Add, Dummy, E, Function, I, Integer, Mul, Rational, S,
-                    expand, expand_mul, oo, pi, sympify)
+from ..core import (Add, Dummy, E, Function, I, Integer, Mul, Rational, expand,
+                    expand_mul, oo, pi, sympify)
 from ..functions import cos, sin, sqrt
-from ..logic import And, Or, to_cnf
+from ..logic import And, Or, false, to_cnf, true
 from ..logic.boolalg import conjuncts, disjuncts
 from ..matrices import MatrixBase
 from ..simplify import simplify
@@ -90,7 +90,7 @@ class IntegralTransform(Function):
 
     def _collapse_extra(self, extra):
         cond = And(*extra)
-        if cond == S.false:
+        if cond == false:
             raise IntegralTransformError(self.__class__.name, None, '')
 
     def doit(self, **hints):
@@ -272,7 +272,7 @@ def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
         return a, b, aux
 
     conds = [process_conds(c) for c in disjuncts(cond)]
-    conds = [x for x in conds if x[2] is not S.false]
+    conds = [x for x in conds if x[2] != false]
     conds.sort(key=lambda x: (x[0] - x[1], count_ops(x[2])))
 
     if not conds:
@@ -312,7 +312,7 @@ class MellinTransform(IntegralTransform):
             b += [sb]
             cond += [c]
         res = (Max(*a), Min(*b)), And(*cond)
-        if (res[0][0] >= res[0][1]) is S.true or res[1] is S.false:
+        if (res[0][0] - res[0][1]).is_nonnegative or res[1] == false:
             raise IntegralTransformError(
                 'Mellin', None, 'no combined convergence.')
         return res
@@ -473,10 +473,10 @@ def _rewrite_gamma(f, s, a, b):
             return b_ >= c
         if b_ is None:
             return a_ >= c
-        if (c >= b_) is S.true:
-            return S.false
-        if (c <= a_) is S.true:
-            return S.true
+        if (c - b_).is_nonnegative:
+            return false
+        if (c - a_).is_nonpositive:
+            return true
         if is_numer:
             return
         if a_.free_symbols or b_.free_symbols or c.free_symbols:
@@ -620,8 +620,8 @@ def _rewrite_gamma(f, s, a, b):
         elif isinstance(fact, gamma):
             a, b = linear_arg(fact.args[0])
             if is_numer:
-                if (a > 0 and (left(-b/a, is_numer) is S.false)) or \
-                   (a < 0 and (left(-b/a, is_numer) is S.true)):
+                if (a > 0 and (left(-b/a, is_numer) == false)) or \
+                   (a < 0 and (left(-b/a, is_numer) == true)):
                     raise NotImplementedError(
                         'Gammas partially over the strip.')
             ugammas += [(a, b)]
@@ -750,7 +750,7 @@ def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
         cond += [And(Or(len(G.ap) != len(G.bq), 0 >= re(G.nu) + 1),
                      abs(arg(G.argument)) == G.delta*pi)]
         cond = Or(*cond)
-        if cond == S.false:
+        if cond == false:
             raise IntegralTransformError(
                 'Inverse Mellin', F, 'does not converge')
         return (h*fac).subs({x: x_}), cond
@@ -920,9 +920,9 @@ def _simplifyconds(expr, s, a):
         if n is None:
             return
         try:
-            if n > 0 and (abs(ex1) <= abs(a)**n) is S.true:
+            if n > 0 and (abs(ex1) - abs(a)**n).is_nonpositive:
                 return False
-            if n < 0 and (abs(ex1) >= abs(a)**n) is S.true:
+            if n < 0 and (abs(ex1) - abs(a)**n).is_nonnegative:
                 return True
         except TypeError:
             pass
@@ -944,7 +944,7 @@ def _simplifyconds(expr, s, a):
         return Unequality(x, y)
 
     def repl(ex, *args):
-        if ex == S.true or ex == S.false:
+        if ex in (true, false):
             return bool(ex)
         return ex.replace(*args)
     expr = repl(expr, StrictLessThan, replie)
@@ -1026,13 +1026,13 @@ def _laplace_transform(f, t, s_, simplify=True):
         return a, aux
 
     conds = [process_conds(c) for c in disjuncts(cond)]
-    conds2 = [x for x in conds if x[1] is not S.false and x[0] != -oo]
+    conds2 = [x for x in conds if x[1] != false and x[0] != -oo]
     if not conds2:
-        conds2 = [x for x in conds if x[1] is not S.false]
+        conds2 = [x for x in conds if x[1] != false]
     conds = conds2
 
     def cnt(expr):
-        if expr == S.true or expr == S.false:
+        if expr in (true, false):
             return 0
         return expr.count_ops()
     conds.sort(key=lambda x: (-x[0], cnt(x[1])))
@@ -1042,7 +1042,7 @@ def _laplace_transform(f, t, s_, simplify=True):
     a, aux = conds[0]
 
     def sbs(expr):
-        if expr == S.true or expr == S.false:
+        if expr in (true, false):
             return bool(expr)
         return expr.subs({s: s_})
     if simplify:
@@ -1081,7 +1081,7 @@ class LaplaceTransform(IntegralTransform):
             planes.append(plane)
         cond = And(*conds)
         plane = Max(*planes)
-        if cond == S.false:
+        if cond == false:
             raise IntegralTransformError(
                 'Laplace', None, 'No combined convergence.')
         return plane, cond

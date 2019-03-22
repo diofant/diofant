@@ -80,7 +80,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if expr.is_Pow:
             expr, exp = expr.args
         else:
-            expr, exp = expr, S.One
+            expr, exp = expr, Integer(1)
 
         if expr.is_Dummy:
             args = expr.sort_key(),
@@ -120,7 +120,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return self
 
     def __neg__(self):
-        return Mul(S.NegativeOne, self)
+        return Mul(-1, self)
 
     def __abs__(self):
         from ..functions import Abs
@@ -169,12 +169,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__rtruediv__')
     def __truediv__(self, other):
-        return Mul(self, Pow(other, S.NegativeOne))
+        return Mul(self, Pow(other, -1))
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__truediv__')
     def __rtruediv__(self, other):
-        return Mul(other, Pow(self, S.NegativeOne))
+        return Mul(other, Pow(self, -1))
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__rmod__')
@@ -905,15 +905,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         elif o.is_Order:
             o = o.expr
             if o is S.One:
-                return S.Zero
+                return Integer(0)
             elif o.is_Symbol:
-                return S.One
+                return Integer(1)
             elif o.is_Pow:
                 return o.args[1]
             elif o.is_Mul:  # x**n*log(x)**n or x**n/log(x)**n
                 for oi in o.args:
                     if oi.is_Symbol:
-                        return S.One
+                        return Integer(1)
                     elif oi.is_Pow:
                         syms = oi.atoms(Dummy, Symbol)
                         if len(syms) == 1:
@@ -978,7 +978,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             c[0].is_Number and
             c[0].is_negative and
                 c[0] is not S.NegativeOne):
-            c[:1] = [S.NegativeOne, -c[0]]
+            c[:1] = [Integer(-1), -c[0]]
 
         if cset:
             clen = len(c)
@@ -1095,18 +1095,18 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         n = as_int(n)
 
         if not x:
-            return S.Zero
+            return Integer(0)
 
         if x == self:
             if n == 1:
-                return S.One
-            return S.Zero
+                return Integer(1)
+            return Integer(0)
 
         if x is S.One:
             co = [a for a in Add.make_args(self)
                   if a.as_coeff_Mul()[0] is S.One]
             if not co:
-                return S.Zero
+                return Integer(0)
             return Add(*co)
 
         if n == 0:
@@ -1161,7 +1161,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         self_c = self.is_commutative
         x_c = x.is_commutative
         if self_c and not x_c:
-            return S.Zero
+            return Integer(0)
 
         if self_c:
             xargs = x.args_cnc(cset=True, warn=False)[0]
@@ -1173,7 +1173,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 if len(resid) + len(xargs) == len(margs):
                     co.append(Mul(*resid))
             if co == []:
-                return S.Zero
+                return Integer(0)
             else:
                 return Add(*co)
         elif x_c:
@@ -1186,7 +1186,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 if len(resid) + len(xargs) == len(margs):
                     co.append(Mul(*(list(resid) + nc)))
             if co == []:
-                return S.Zero
+                return Integer(0)
             else:
                 return Add(*co)
         else:  # both nc
@@ -1201,7 +1201,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     co.append((resid, nc))
             # now check the non-comm parts
             if not co:
-                return S.Zero
+                return Integer(0)
             if all(n == co[0][1] for r, n in co):
                 ii = find(co[0][1], nx, right)
                 if ii is not None:
@@ -1249,7 +1249,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     else:
                         return Mul(*n[ii + len(nx):])
 
-            return S.Zero
+            return Integer(0)
 
     def as_expr(self, *gens):
         """Convert a polynomial to a Diofant expression.
@@ -1369,7 +1369,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         * d will be 1 or else have terms that contain variables that are in deps
         * if self is an Add then self = i + d
         * if self is a Mul then self = i*d
-        * if self is anything else, either tuple (self, S.One) or (S.One, self)
+        * if self is anything else, either tuple (self, Integer(1)) or (Integer(1), self)
           is returned.
 
         To force the expression to be treated as an Add, use the hint as_Add=True
@@ -1589,7 +1589,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         """
         c, m = self.as_coeff_Mul()
         if not c.is_Rational:
-            c = S.One
+            c = Integer(1)
             m = self
         d = defaultdict(int)
         d.update({m: c})
@@ -1604,7 +1604,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.core.power.Pow.as_base_exp
 
         """
-        return self, S.One
+        return self, Integer(1)
 
     def as_coeff_mul(self, *deps, **kwargs):
         """Return the tuple (c, args) where self is written as a Mul, ``m``.
@@ -1638,7 +1638,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if deps:
             if not self.has(*deps):
                 return self, ()
-        return S.One, (self,)
+        return Integer(1), (self,)
 
     def as_coeff_add(self, *deps):
         """Return the tuple (c, args) where self is written as an Add, ``a``.
@@ -1672,7 +1672,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if deps:
             if not self.has(*deps):
                 return self, ()
-        return S.Zero, (self,)
+        return Integer(0), (self,)
 
     def primitive(self):
         """Return the positive Rational that can be extracted non-recursively
@@ -1694,7 +1694,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         """
         if not self:
-            return S.One, S.Zero
+            return Integer(1), Integer(0)
         c, r = self.as_coeff_Mul(rational=True)
         if c.is_negative:
             c, r = -c, -r
@@ -1744,7 +1744,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         (2, sqrt(2)*(1 + 2*sqrt(5)))
 
         """
-        return S.One, self
+        return Integer(1), self
 
     def as_numer_denom(self):
         """expression -> a/b -> a, b
@@ -1762,7 +1762,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         try:
             return self._eval_as_numer_denom()
         except AttributeError:
-            return self, S.One
+            return self, Integer(1)
 
     def normal(self):
         """canonicalize ratio, i.e. return numerator if denominator is 1."""
@@ -1798,7 +1798,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if c is S.One:
             return self
         elif c == self:
-            return S.One
+            return Integer(1)
         if c.is_Add:
             cc, pc = c.primitive()
             if cc is not S.One:
@@ -1909,7 +1909,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if c is S.Zero:
             return self
         elif c == self:
-            return S.Zero
+            return Integer(0)
         elif self is S.Zero:
             return
 
@@ -2442,7 +2442,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 cur_order = s1.getO()
 
             if (s1 + target_order).removeO() == s1:
-                target_order = S.Zero
+                target_order = Integer(0)
 
             try:
                 return collect(s1.removeO(), x) + target_order
@@ -2712,7 +2712,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         o = s.getO()
         terms = sorted(Add.make_args(s.removeO()), key=lambda i: int(i.as_coeff_exponent(d)[1]))
-        s = S.Zero
+        s = Integer(0)
         gotO = False
 
         for t in terms:
@@ -2811,15 +2811,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return c, e
         if s.has(x):
             s = s.simplify()
-        return s, S.Zero
+        return s, Integer(0)
 
     def as_coeff_Mul(self, rational=False):
         """Efficiently extract the coefficient of a product."""
-        return S.One, self
+        return Integer(1), self
 
     def as_coeff_Add(self, rational=False):
         """Efficiently extract the coefficient of a summation."""
-        return S.Zero, self
+        return Integer(0), self
 
     @property
     def canonical_variables(self):
@@ -3179,8 +3179,8 @@ class AtomicExpr(Atom, Expr):
 
     def _eval_derivative(self, s):
         if self == s:
-            return S.One
-        return S.Zero
+            return Integer(1)
+        return Integer(0)
 
     def _eval_is_polynomial(self, syms):
         return True
@@ -3213,7 +3213,7 @@ def _mag(x):
     from .numbers import Float
     xpos = abs(x.evalf(strict=False))
     if not xpos:
-        return S.Zero
+        return Integer(0)
     try:
         mag_first_dig = ceil(log10(xpos))
     except (ValueError, OverflowError):

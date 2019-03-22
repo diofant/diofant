@@ -37,7 +37,7 @@ import operator
 from functools import reduce
 from itertools import combinations_with_replacement
 
-from ..core import (Add, Eq, Equality, Function, S, Subs, Symbol, Wild, expand,
+from ..core import (Add, Eq, Equality, Function, Subs, Symbol, Wild, expand,
                     symbols)
 from ..core.compatibility import is_sequence
 from ..functions import exp
@@ -432,7 +432,7 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     if sol.lhs == func:
         pde = pde.lhs - pde.rhs
         s = simplify(pde.subs({func: sol.rhs}).doit())
-        return s is S.Zero, s
+        return s == 0, s
 
     raise NotImplementedError(filldedent('''
         Unable to test if %s is a solution to %s.''' % (sol, pde)))

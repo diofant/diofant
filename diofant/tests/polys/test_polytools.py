@@ -3256,10 +3256,7 @@ def test_to_rational_coeffs():
 
 
 def test_sympyissue_9607():
-    assert (factor(1e-20*x - 7.292115e-5) ==
-            Mul(Float('1.0'),
-                Float('9.9999999999999995e-21', 15)*x +
-                Float('-7.2921149999999999e-5', 15), evaluate=False))
+    assert factor(1e-20*x - 7.292115e-5) == 1e-20*x - 7.292115e-5
 
 
 def test_sympyissue_8754():

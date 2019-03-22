@@ -1,4 +1,4 @@
-from ..core import Dummy, Rational, S, pi
+from ..core import Dummy, Integer, Rational, pi
 from ..functions import cos, factorial, gamma, sin, sqrt
 from ..polys.orthopolys import (hermite_poly, jacobi_poly, laguerre_poly,
                                 legendre_poly)
@@ -365,7 +365,7 @@ def gauss_chebyshev_t(n, n_digits):
     xi = []
     w = []
     for i in range(1, n + 1):
-        xi.append((cos((2*i-S.One)/(2*n)*pi)).evalf(n_digits))
+        xi.append((cos((2*i-Integer(1))/(2*n)*pi)).evalf(n_digits))
         w.append((pi/n).evalf(n_digits))
     return xi, w
 
@@ -434,8 +434,8 @@ def gauss_chebyshev_u(n, n_digits):
     xi = []
     w = []
     for i in range(1, n + 1):
-        xi.append((cos(i/(n+S.One)*pi)).evalf(n_digits))
-        w.append((pi/(n+S.One)*sin(i*pi/(n+S.One))**2).evalf(n_digits))
+        xi.append((cos(i/(n+Integer(1))*pi)).evalf(n_digits))
+        w.append((pi/(n+Integer(1))*sin(i*pi/(n+1))**2).evalf(n_digits))
     return xi, w
 
 
@@ -516,8 +516,8 @@ def gauss_jacobi(n, alpha, beta, n_digits):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
         xi.append(r.evalf(n_digits))
         w.append((
-            - (2*n+alpha+beta+2) / (n+alpha+beta+S.One)
-            * (gamma(n+alpha+1)*gamma(n+beta+1)) / (gamma(n+alpha+beta+S.One)*gamma(n+2))
+            - (2*n+alpha+beta+2) / (n+alpha+beta+Integer(1))
+            * (gamma(n+alpha+1)*gamma(n+beta+1)) / (gamma(n+alpha+beta+1)*gamma(n+2))
             * 2**(alpha+beta) / (pd.subs({x: r}) * pn.subs({x: r}))
         ).evalf(n_digits))
     return xi, w

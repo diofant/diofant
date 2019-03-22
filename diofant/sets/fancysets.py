@@ -2,6 +2,7 @@ from ..core import Basic, Expr, Integer, Lambda, Rational, S, oo
 from ..core.compatibility import as_int
 from ..core.singleton import Singleton
 from ..core.sympify import converter, sympify
+from ..logic import false, true
 from ..utilities.iterables import cantor_product
 from .sets import EmptySet, FiniteSet, Intersection, Interval, Set
 
@@ -37,7 +38,7 @@ class Naturals(Set, metaclass=Singleton):
     """
 
     is_iterable = True
-    _inf = S.One
+    _inf = Integer(1)
     _sup = oo
 
     def _intersection(self, other):
@@ -47,11 +48,11 @@ class Naturals(Set, metaclass=Singleton):
 
     def _contains(self, other):
         if not isinstance(other, Expr):
-            return S.false
+            return false
         elif other.is_positive and other.is_integer:
-            return S.true
+            return true
         elif other.is_integer is False or other.is_positive is False:
-            return S.false
+            return false
 
     def __iter__(self):
         i = self._inf
@@ -78,15 +79,15 @@ class Naturals0(Naturals):
 
     """
 
-    _inf = S.Zero
+    _inf = Integer(0)
 
     def _contains(self, other):
         if not isinstance(other, Expr):
-            return S.false
+            return false
         elif other.is_integer and other.is_nonnegative:
-            return S.true
+            return true
         elif other.is_integer is False or other.is_nonnegative is False:
-            return S.false
+            return false
 
 
 class Integers(Set, metaclass=Singleton):
@@ -133,14 +134,14 @@ class Integers(Set, metaclass=Singleton):
 
     def _contains(self, other):
         if not isinstance(other, Expr):
-            return S.false
+            return false
         elif other.is_integer:
-            return S.true
+            return true
         elif other.is_integer is False:
-            return S.false
+            return false
 
     def __iter__(self):
-        yield S.Zero
+        yield Integer(0)
         i = Integer(1)
         while True:
             yield i
@@ -174,7 +175,7 @@ class Integers(Set, metaclass=Singleton):
             expr = -expr
 
         match = expr.match(a*n + b)
-        if match[a] is S.One and match[b].is_integer:
+        if match[a] == 1 and match[b].is_integer:
             expr = expr - match[b]
 
         return ImageSet(Lambda(n, expr), S.Integers)
@@ -185,9 +186,9 @@ class Rationals(Set, metaclass=Singleton):
 
     def _contains(self, other):
         if other.is_rational:
-            return S.true
+            return true
         elif other.is_rational is False:
-            return S.false
+            return false
 
     @property
     def _inf(self):
@@ -245,7 +246,7 @@ class ImageSet(Set):
 
     >>> squares.lamda(2)
     4
-    >>> squares.lamda(S.One/2)
+    >>> squares.lamda(Rational(1, 2))
     1/4
 
     """
@@ -277,8 +278,8 @@ class ImageSet(Set):
 
         for soln in solns:
             if soln[L.variables[0]] in self.base_set:
-                return S.true
-        return S.false
+                return true
+        return false
 
     @property
     def is_iterable(self):
@@ -417,7 +418,7 @@ class Range(Set):
             if inf.is_finite and self.inf.is_finite:
                 off = (inf - self.inf) % self.step
             else:
-                off = S.Zero
+                off = Integer(0)
             if off:
                 inf += self.step - off
 
@@ -434,7 +435,7 @@ class Range(Set):
                 ((self.stop - other)/self.step).is_integer):
             return sympify(other >= self.inf and other <= self.sup, strict=True)
         else:
-            return S.false
+            return false
 
     def __iter__(self):
         if self.start == -oo:

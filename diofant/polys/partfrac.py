@@ -1,7 +1,7 @@
 """Algorithms for partial fraction decomposition of rational functions. """
 
-from ..core import (Add, Dummy, Function, Integer, Lambda, S,
-                    preorder_traversal, sympify)
+from ..core import (Add, Dummy, Function, Integer, Lambda, preorder_traversal,
+                    sympify)
 from ..utilities import numbered_symbols, take
 from . import Poly, RootSum, cancel, factor
 from .polyerrors import PolynomialError
@@ -127,7 +127,7 @@ def apart(f, x=None, full=False, **options):
         else:
             partial = apart_full_decomposition(P, Q)
 
-    terms = S.Zero
+    terms = Integer(0)
 
     for term in Add.make_args(partial):
         if term.has(RootSum):

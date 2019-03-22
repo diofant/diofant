@@ -6,10 +6,10 @@ from ..core import Dummy, Eq, Ge, Integer, Lt, S, Symbol, oo
 from ..core.compatibility import iterable
 from ..core.relational import Relational
 from ..functions import Abs, Piecewise
-from ..logic import And
+from ..logic import And, false, true
 from ..polys import Poly, parallel_poly_from_expr
 from ..polys.polyutils import _nsort
-from ..sets import FiniteSet, Interval, Union
+from ..sets import FiniteSet, Interval, Reals, Union
 from ..utilities import filldedent
 
 
@@ -42,9 +42,9 @@ def solve_poly_inequality(poly, rel):
         raise ValueError("Invalid relational operator symbol: %r" % rel)
     if poly.is_number:
         t = Relational(poly.as_expr(), 0, rel)
-        if t is S.true:
-            return [S.Reals]
-        elif t is S.false:
+        if t == true:
+            return [Reals]
+        elif t == false:
             return [S.EmptySet]
         else:
             raise NotImplementedError("Couldn't determine truth value of %s" % t)
@@ -135,7 +135,7 @@ def solve_rational_inequalities(eqs):
     result = S.EmptySet
 
     for eq in eqs:
-        global_intervals = [S.Reals]
+        global_intervals = [Reals]
 
         for (numer, denom), rel in eq:
             intervals = []
@@ -190,7 +190,7 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
     """
     exact = True
     eqs = []
-    solution = S.Reals if exprs else S.EmptySet
+    solution = Reals if exprs else S.EmptySet
     for _exprs in exprs:
         _eqs = []
 
@@ -203,10 +203,10 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
                 else:
                     expr, rel = expr, '=='
 
-            if expr is S.true:
-                numer, denom, rel = S.Zero, S.One, '=='
-            elif expr is S.false:
-                numer, denom, rel = S.One, S.One, '=='
+            if expr == true:
+                numer, denom, rel = Integer(0), Integer(1), '=='
+            elif expr == false:
+                numer, denom, rel = Integer(1), Integer(1), '=='
             else:
                 numer, denom = expr.together().as_numer_denom()
 
@@ -308,10 +308,10 @@ def reduce_piecewise_inequality(expr, rel, gen):
                 _exprs = _bottom_up_scan(a.expr)
 
                 for ex, conds in _exprs:
-                    if a.cond is not S.true:
+                    if a.cond != true:
                         exprs.append((ex, conds + [a.cond]))
                     else:
-                        oconds = [c[1] for c in expr.args if c[1] is not S.true]
+                        oconds = [c[1] for c in expr.args if c[1] != true]
                         exprs.append((ex, conds + [And(*[~c for c in oconds])]))
         else:
             exprs = [(expr, [])]
@@ -397,9 +397,9 @@ def solve_univariate_inequality(expr, gen, relational=True):
         try:
             r = expr.func(v, 0)
         except TypeError:
-            r = S.false
+            r = false
         r = simplify(r)
-        if r in (S.true, S.false):
+        if r in (true, false):
             return r
         elif v.is_comparable is False:
             return False
@@ -443,10 +443,10 @@ def _reduce_inequalities(inequalities, symbols):
     other = []
 
     for inequality in inequalities:
-        if inequality is S.true:
+        if inequality == true:
             continue
-        elif inequality is S.false:
-            return S.false
+        elif inequality == false:
+            return false
 
         expr, rel = inequality.lhs, inequality.rel_op  # rhs is 0
 
@@ -522,10 +522,10 @@ def reduce_inequalities(inequalities, symbols=[]):
             i = i.func(i.lhs.as_expr() - i.rhs.as_expr(), 0)
         elif i not in (True, False):
             i = Eq(i, 0)
-        if i == S.true:
+        if i == true:
             continue
-        elif i == S.false:
-            return S.false
+        elif i == false:
+            return false
         keep.append(i)
     inequalities = keep
     del keep

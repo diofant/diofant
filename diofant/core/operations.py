@@ -72,7 +72,7 @@ class AssocOp(Expr):
            expression's numerators and denominators) they will not show up in
            the result but a Mul will be returned nonetheless:
 
-               >>> m = (x*y)._new_rawargs(S.One, x); m
+               >>> m = (x*y)._new_rawargs(Integer(1), x); m
                x
                >>> m == x
                False

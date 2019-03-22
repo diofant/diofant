@@ -1,5 +1,5 @@
-from ...core import (Add, Derivative, Dummy, E, Eq, Expr, Function, I, Mul,
-                     Rational, S, Symbol, Tuple, factor_terms, nan, oo, pi,
+from ...core import (Add, Derivative, Dummy, E, Eq, Expr, Function, I, Integer,
+                     Mul, Rational, Symbol, Tuple, factor_terms, nan, oo, pi,
                      sympify, zoo)
 from ...core.function import AppliedUndef, ArgumentIndexError
 from ...logic.boolalg import BooleanAtom
@@ -51,7 +51,7 @@ class re(Function):
         elif arg.is_extended_real:
             return arg
         elif arg.is_imaginary or (I*arg).is_extended_real:
-            return S.Zero
+            return Integer(0)
         elif arg.is_Function and isinstance(arg, conjugate):
             return re(arg.args[0])
         else:
@@ -83,7 +83,7 @@ class re(Function):
 
     def as_real_imag(self, deep=True, **hints):
         """Returns the real number with a zero imaginary part."""
-        return self, S.Zero
+        return self, Integer(0)
 
     def _eval_derivative(self, x):
         if x.is_extended_real or self.args[0].is_extended_real:
@@ -133,7 +133,7 @@ class im(Function):
         if arg is zoo:
             return nan
         elif arg.is_extended_real:
-            return S.Zero
+            return Integer(0)
         elif arg.is_imaginary or (I*arg).is_extended_real:
             return -I * arg
         elif arg.is_Function and isinstance(arg, conjugate):
@@ -175,7 +175,7 @@ class im(Function):
         (3, 0)
 
         """
-        return self, S.Zero
+        return self, Integer(0)
 
     def _eval_derivative(self, x):
         if x.is_extended_real or self.args[0].is_extended_real:
@@ -256,20 +256,20 @@ class sign(Function):
                     s *= sign(a)
                 else:
                     unk.append(a)
-            if c is S.One and len(unk) == len(args):
+            if c == 1 and len(unk) == len(args):
                 return
             return s * cls(arg._new_rawargs(*unk))
         if arg.is_zero:  # it may be an Expr that is zero
-            return S.Zero
+            return Integer(0)
         if arg.is_positive:
-            return S.One
+            return Integer(1)
         if arg.is_negative:
-            return S.NegativeOne
+            return Integer(-1)
         if arg.is_Function:
             if isinstance(arg, sign):
                 return arg
         if arg.is_imaginary:
-            if arg.is_Pow and arg.exp is S.Half:
+            if arg.is_Pow and arg.exp == Rational(1, 2):
                 # we catch this because non-trivial sqrt args are not expanded
                 # e.g. sqrt(1-sqrt(2)) --x-->  to I*sqrt(sqrt(2) - 1)
                 return I
@@ -279,7 +279,7 @@ class sign(Function):
 
     def _eval_Abs(self):
         if self.args[0].is_nonzero:
-            return S.One
+            return Integer(1)
 
     def _eval_conjugate(self):
         return sign(conjugate(self.args[0]))
@@ -318,7 +318,7 @@ class sign(Function):
             other.is_integer and
             other.is_even
         ):
-            return S.One
+            return Integer(1)
 
     def _eval_rewrite_as_Piecewise(self, arg):
         if arg.is_extended_real:
@@ -361,12 +361,12 @@ class Abs(Function):
     Abs(x)
 
     Note that the Python built-in will return either an Expr or int depending on
-    the argument::
+    the argument:
 
-        >>> type(abs(-1))
-        <... 'int'>
-        >>> type(abs(S.NegativeOne))
-        <class 'diofant.core.numbers.One'>
+    >>> type(abs(-1))
+    <... 'int'>
+    >>> type(abs(Integer(-1)))
+    <class 'diofant.core.numbers.One'>
 
     Abs will always return a diofant object.
 
@@ -419,7 +419,7 @@ class Abs(Function):
                 else:
                     known.append(tnew)
             known = Mul(*known)
-            unk = cls(Mul(*unk), evaluate=False) if unk else S.One
+            unk = cls(Mul(*unk), evaluate=False) if unk else Integer(1)
             return known*unk
         if arg.is_Pow:
             base, exponent = arg.as_base_exp()
@@ -427,9 +427,9 @@ class Abs(Function):
                 if exponent.is_integer:
                     if exponent.is_even:
                         return arg
-                    if base is S.NegativeOne:
-                        return S.One
-                    if isinstance(base, cls) and exponent is S.NegativeOne:
+                    if base == -1:
+                        return Integer(1)
+                    if isinstance(base, cls) and exponent == -1:
                         return arg
                     return Abs(base)**exponent
                 if base.is_nonnegative:
@@ -437,7 +437,7 @@ class Abs(Function):
                 if base.is_negative:
                     return (-base)**re(exponent)*exp(-pi*im(exponent))
         if arg.is_zero:  # it may be an Expr that is zero
-            return S.Zero
+            return Integer(0)
         if arg.is_nonnegative:
             return arg
         if arg.is_nonpositive:
@@ -492,7 +492,7 @@ class Abs(Function):
         if self.args[0].is_extended_real and exponent.is_integer:
             if exponent.is_even:
                 return self.args[0]**exponent
-            elif exponent is not S.NegativeOne and exponent.is_Integer:
+            elif exponent != -1 and exponent.is_Integer:
                 return self.args[0]**(exponent - 1)*self
         return
 
@@ -558,7 +558,7 @@ class arg(Function):
         else:
             arg_ = arg
         if arg_.is_zero:
-            return S.Zero
+            return Integer(0)
         x, y = re(arg_), im(arg_)
         rv = atan2(y, x)
         if rv.is_number and not rv.atoms(AppliedUndef):
@@ -910,7 +910,7 @@ class principal_branch(Function):
             if arg == 0:
                 return abs(c)*principal_branch(Mul(*m), period)
             return principal_branch(exp_polar(I*arg)*Mul(*m), period)*abs(c)
-        if arg.is_number and ((abs(arg) < period/2) is S.true or arg == period/2) \
+        if arg.is_number and ((abs(arg) - period/2).is_negative or arg == period/2) \
                 and m == ():
             return exp_polar(arg*I)*abs(c)
 

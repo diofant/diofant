@@ -1,7 +1,7 @@
 import itertools
 import random
 
-from ..core import Basic, Expr, S, Symbol, count_ops, sympify
+from ..core import Basic, Expr, Integer, Symbol, count_ops, sympify
 from ..core.compatibility import as_int, is_sequence
 from ..core.decorators import call_highest_priority
 from ..functions import cos, sin, sqrt
@@ -1142,7 +1142,7 @@ def ones(r, c=None):
     c = r if c is None else c
     r = as_int(r)
     c = as_int(c)
-    return Matrix(r, c, [S.One]*r*c)
+    return Matrix(r, c, [Integer(1)]*r*c)
 
 
 def zeros(r, c=None, cls=None):
@@ -1334,7 +1334,7 @@ def jordan_cell(eigenval, n):
     out = zeros(n)
     for i in range(n - 1):
         out[i, i] = eigenval
-        out[i, i + 1] = S.One
+        out[i, i + 1] = Integer(1)
     out[n - 1, n - 1] = eigenval
     return out
 
@@ -1579,6 +1579,6 @@ def randMatrix(r, c=None, min=0, max=99, seed=None, symmetric=False, percent=100
         return m
     else:
         z = int(r*c*percent // 100)
-        m._mat[:z] = [S.Zero]*z
+        m._mat[:z] = [Integer(0)]*z
         prng.shuffle(m._mat)
     return m

@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from ..core import Add, Function, Integer, Mul, Pow, Rational, S, pi
+from ..core import Add, Function, Integer, Mul, Pow, Rational, pi
 from ..core.compatibility import default_sort_key, ordered
 from ..functions import binomial, factorial, gamma, sin, sqrt
 from ..polys import cancel, factor
@@ -76,7 +76,7 @@ def combsimp(expr):
                             lambda a, b: binomial(a + b - 1, b)*gamma(b + 1))
 
     def rule(n, k):
-        coeff, rewrite = S.One, False
+        coeff, rewrite = Integer(1), False
 
         cn, _n = n.as_coeff_Add()
 
@@ -182,7 +182,7 @@ def combsimp(expr):
         denom_others = []
 
         def explicate(p):
-            if p is S.One:
+            if p == 1:
                 return None, []
             b, e = p.as_base_exp()
             if e.is_Integer:
@@ -278,7 +278,7 @@ def combsimp(expr):
         #
         # run of 2 with args differing by 1/2
         #
-        # >>> combsimp(gamma(x)*gamma(x+S.Half))
+        # >>> combsimp(gamma(x)*gamma(x+Rational(1, 2)))
         # 2*sqrt(2)*2**(-2*x - 1/2)*sqrt(pi)*gamma(2*x)
         #
         # run of 3 args differing by 1/3 (mod 1)
@@ -469,9 +469,9 @@ class _rf(Function):
     def eval(cls, a, b):
         if b.is_Integer:
             if not b:
-                return S.One
+                return Integer(1)
 
-            n, result = int(b), S.One
+            n, result = int(b), Integer(1)
 
             if n > 0:
                 for i in range(n):

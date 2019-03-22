@@ -7,9 +7,10 @@ Contains
 
 import random
 
-from ..core import Dummy, Rational, S, oo, pi, sympify
+from ..core import Dummy, Rational, oo, pi, sympify
 from ..core.logic import fuzzy_bool
 from ..functions import cos, sin, sqrt
+from ..logic import false, true
 from ..polys import DomainError, Poly, PolynomialError
 from ..polys.polyutils import _not_a_coeff, _nsort
 from ..simplify import simplify, trigsimp
@@ -239,9 +240,9 @@ class Ellipse(GeometrySet):
             return ab[0]
         a, b = ab
         o = a - b < 0
-        if o == S.true:
+        if o == true:
             return a
-        elif o == S.false:
+        elif o == false:
             return b
         return self.vradius
 
@@ -285,9 +286,9 @@ class Ellipse(GeometrySet):
             return ab[0]
         a, b = ab
         o = b - a < 0
-        if o == S.true:
+        if o == true:
             return a
-        elif o == S.false:
+        elif o == false:
             return b
         return self.hradius
 
@@ -592,7 +593,7 @@ class Ellipse(GeometrySet):
         >>> e = Ellipse((0, 0), 3, 2)
         >>> e.encloses_point((0, 0))
         True
-        >>> e.encloses_point(e.arbitrary_point(t).subs({t: S.Half}))
+        >>> e.encloses_point(e.arbitrary_point(t).subs({t: Rational(1, 2)}))
         False
         >>> e.encloses_point((4, 0))
         False
@@ -1035,7 +1036,7 @@ class Ellipse(GeometrySet):
             t = -b / a
             result.append(lp[0] + (lp[1] - lp[0]) * t)
         # Definite and potential symbolic intersections are allowed.
-        elif (det > 0) is not S.false:
+        elif det.is_positive is not False:
             root = sqrt(det)
             t_a = (-b - root) / a
             t_b = (-b + root) / a
@@ -1179,7 +1180,7 @@ class Ellipse(GeometrySet):
             y = Dummy('y', extended_real=True)
 
             res = self.equation(x, y).subs({x: o.x, y: o.y})
-            return trigsimp(simplify(res)) is S.Zero
+            return trigsimp(simplify(res)) == 0
         elif isinstance(o, Ellipse):
             return self == o
         return False

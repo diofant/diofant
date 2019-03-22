@@ -1,6 +1,6 @@
 """This module implements tools for integrating rational functions. """
 
-from ..core import Dummy, I, Integer, Lambda, S, Symbol, symbols
+from ..core import Dummy, I, Integer, Lambda, Symbol, symbols
 from ..domains import ZZ
 from ..functions import atan, log
 from ..polys import Poly, RootSum, cancel, resultant, roots
@@ -210,7 +210,7 @@ def ratint_logpart(f, g, x, t=None):
         R_map[r.degree()] = r
 
     def _include_sign(c, sqf):
-        if (c < 0) is S.true:
+        if c.is_negative:
             h, k = sqf[0]
             sqf[0] = h*c, k
 

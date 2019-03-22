@@ -1,8 +1,8 @@
 from collections import defaultdict
 
 from .. import DIOFANT_DEBUG
-from ..core import (Add, Derivative, I, Mul, Pow, Rational, S, expand_mul,
-                    expand_power_base, gcd_terms, symbols, sympify)
+from ..core import (Add, Derivative, I, Integer, Mul, Pow, Rational,
+                    expand_mul, expand_power_base, gcd_terms, symbols, sympify)
 from ..core.compatibility import default_sort_key, iterable, ordered
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
@@ -162,7 +162,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
                     term, order = Derivative(term, var), order - 1
 
             if sym is None:
-                if rat is S.One:
+                if rat == 1:
                     product.append(term)
                 else:
                     product.append(Pow(term, rat))
@@ -211,7 +211,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
          the output of 2**x would be (2, 1, x, None)
 
         """
-        rat_expo, sym_expo = S.One, None
+        rat_expo, sym_expo = Integer(1), None
         sexpr, deriv = expr, None
 
         if expr.is_Pow:
@@ -336,7 +336,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
 
     summa = [expand_power_base(i, deep=False) for i in Add.make_args(expr)]
 
-    collected, disliked = defaultdict(list), S.Zero
+    collected, disliked = defaultdict(list), Integer(0)
     for product in summa:
         terms = [parse_term(i) for i in Mul.make_args(product)]
 
@@ -375,8 +375,8 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
     # add terms now for each key
     collected = {k: Add(*v) for k, v in collected.items()}
 
-    if disliked is not S.Zero:
-        collected[S.One] = disliked
+    if disliked != 0:
+        collected[Integer(1)] = disliked
 
     if order_term is not None:
         for key, val in collected.items():
@@ -565,13 +565,13 @@ def collect_const(expr, *vars, **kwargs):
                            fnow[k].is_Integer for k in fnow):
                     terms[v].append(q.as_expr())
                     continue
-            terms[S.One].append(m)
+            terms[Integer(1)].append(m)
 
         args = []
         hit = False
         for k in ordered(terms):
             v = terms[k]
-            if k is S.One:
+            if k == 1:
                 args.extend(v)
                 continue
 
@@ -727,7 +727,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
         elif not n.is_Atom:
             n = n.func(*[handle(a) for a in n.args])
             return _unevaluated_Mul(n, handle(1/d))
-        elif n is not S.One:
+        elif n != 1:
             return _unevaluated_Mul(n, handle(1/d))
         elif d.is_Mul:
             return _unevaluated_Mul(*[handle(1/d) for d in d.args])
@@ -773,15 +773,15 @@ def radsimp(expr, symbolic=True, max_terms=4):
                 other = []
                 for i in Mul.make_args(m):
                     if ispow2(i, log2=True):
-                        p2.append(i.base if i.exp is S.Half else i.base**(2*i.exp))
+                        p2.append(i.base if i.exp == Rational(1, 2) else i.base**(2*i.exp))
                     elif i is I:
-                        p2.append(S.NegativeOne)
+                        p2.append(Integer(-1))
                     else:
                         other.append(i)
                 collected[tuple(ordered(p2))].append(Mul(*other))
             rterms = list(ordered(list(collected.items())))
             rterms = [(Mul(*i), Add(*j)) for i, j in rterms]
-            nrad = len(rterms) - (1 if rterms[0][0] is S.One else 0)
+            nrad = len(rterms) - (1 if rterms[0][0] == 1 else 0)
             if nrad < 1:
                 break
             elif nrad > max_terms:
@@ -797,7 +797,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
                 # but other considerations can guide selection of radical terms
                 # so that radicals are removed
                 if all(x.is_Integer and (y**2).is_Rational for x, y in rterms):
-                    nd, d = rad_rationalize(S.One, Add._from_args(
+                    nd, d = rad_rationalize(Integer(1), Add._from_args(
                         [sqrt(x)*y for x, y in rterms]))
                     n *= nd
                 else:
@@ -917,7 +917,7 @@ def fraction(expr, exact=False):
         if term.is_Pow and term.is_commutative:
             b, ex = term.as_base_exp()
             if ex.is_negative:
-                if ex is S.NegativeOne:
+                if ex == -1:
                     denom.append(b)
                 else:
                     denom.append(Pow(b, -ex))
@@ -993,7 +993,7 @@ def split_surds(expr):
         g2 = g*g1
     a1v, a2v = [], []
     for c, s in coeff_muls:
-        if s.is_Pow and s.exp == S.Half:
+        if s.is_Pow and s.exp == Rational(1, 2):
             s1 = s.base
             if s1 in b1:
                 a1v.append(c*sqrt(s1/g2))

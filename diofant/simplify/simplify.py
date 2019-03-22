@@ -3,7 +3,7 @@ from collections import defaultdict
 import mpmath
 
 from ..core import (Add, Basic, Dummy, E, Expr, Float, I, Integer, Mul, Pow,
-                    Rational, S, Symbol, count_ops, expand_func, expand_log,
+                    Rational, Symbol, count_ops, expand_func, expand_log,
                     expand_mul, expand_power_exp, factor_terms, oo, pi,
                     sympify)
 from ..core.compatibility import as_int, iterable, ordered
@@ -253,9 +253,9 @@ def nthroot(expr, n, max_len=4, prec=15):
     for x, y in coeff_muls:
         if not x.is_rational:
             return p
-        if y is S.One:
+        if y == 1:
             continue
-        if not (y.is_Pow and y.exp == S.Half and y.base.is_integer):
+        if not (y.is_Pow and y.exp == Rational(1, 2) and y.base.is_integer):
             return p
         surds.append(y)
     surds.sort()
@@ -562,7 +562,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     ...     # Discourage powers by giving POW a weight of 10
     ...     count = count_ops(expr, visual=True).subs({POW: 10})
     ...     # Every other operation gets a weight of 1 (the default)
-    ...     count = count.replace(Symbol, type(S.One))
+    ...     count = count.replace(Symbol, type(Integer(1)))
     ...     return count
     >>> my_measure(g)
     8
@@ -671,7 +671,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     numer, denom = expr.as_numer_denom()
     if denom.is_Add:
         n, d = fraction(radsimp(1/denom, symbolic=False, max_terms=1))
-        if n is not S.One:
+        if n != 1:
             expr = (numer*n).expand()/d
 
     if expr.could_extract_minus_sign():
@@ -895,7 +895,7 @@ def logcombine(expr, force=False):
         def gooda(a):
             # bool to tell whether the leading ``a`` in ``a*log(x)``
             # could appear as log(x**a)
-            return (a is not S.NegativeOne and  # -1 *could* go, but we disallow
+            return (a != -1 and  # -1 *could* go, but we disallow
                     (a.is_extended_real or force and a.is_extended_real is not False))
 
         def goodlog(l):
@@ -917,7 +917,7 @@ def logcombine(expr, force=False):
                 lo = []
                 for ai in a.args:
                     if ai.is_Rational and ai < 0:
-                        ot.append(S.NegativeOne)
+                        ot.append(Integer(-1))
                         co.append(-ai)
                     elif isinstance(ai, log) and goodlog(ai):
                         lo.append(ai)
