@@ -931,6 +931,11 @@ def test_PolyElement___pow__():
     f = x**3*y - 2*x*y**2 - 3*z + x + y + 1
     assert f**4 == f._pow_generic(4)
 
+    R, x = ring("x", FF(11))
+
+    f = x + 1
+    assert f**11 == x**11 + 1
+
 
 def test_PolyElement_div():
     _, u = ring("u", ZZ)

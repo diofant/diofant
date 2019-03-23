@@ -1098,7 +1098,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             if coeff:
                 poly[monom] = coeff
-            else:
+            elif monom in poly:
                 del poly[monom]
 
         return poly
