@@ -1833,7 +1833,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 pass
 
         _gcd_zz_methods = {'modgcd': modgcd,
-                           'prs': lambda f, g: self.ring.dmp_rr_prs_gcd(f, g)}
+                           'prs': self.ring.dmp_rr_prs_gcd}
 
         method = _gcd_zz_methods[query('FALLBACK_GCD_ZZ_METHOD')]
         return method(self, other)
@@ -1861,7 +1861,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def _gcd_AA(self, g):
         _gcd_aa_methods = {'modgcd': func_field_modgcd,
-                           'prs': lambda f, g: self.ring.dmp_ff_prs_gcd(f, g)}
+                           'prs': self.ring.dmp_ff_prs_gcd}
 
         method = _gcd_aa_methods[query('GCD_AA_METHOD')]
         return method(self, g)
