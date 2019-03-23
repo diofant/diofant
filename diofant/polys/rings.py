@@ -791,10 +791,9 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.is_zero:
             return True
 
-        monoms = iter(self.keys())
-        tdeg = sum(next(monoms))
+        tdeg = sum(self.LM)
 
-        for monom in monoms:
+        for monom in self:
             _tdeg = sum(monom)
 
             if _tdeg != tdeg:

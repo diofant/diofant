@@ -1582,7 +1582,7 @@ def _finger(eq):
                     d[ai.args[0]][3] += 1
                     d[ai.args[0]][-1] += o
     inv = defaultdict(list)
-    for k, v in ordered(iter(d.items())):
+    for k, v in ordered(d.items()):
         inv[tuple(v)].append(k)
     return inv
 
