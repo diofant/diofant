@@ -20,9 +20,6 @@ from .polyconfig import query
 from .polyerrors import NotAlgebraic
 from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
                         parallel_poly_from_expr, poly_from_expr, resultant)
-from .polyutils import dict_from_expr
-from .ring_series import rs_compose_add
-from .rings import ring
 from .rootoftools import RootOf
 from .specialpolys import cyclotomic_poly
 
@@ -215,25 +212,16 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
 
     if op is Add:
         # mp1a = mp1.subs({x: x - y})
-        if dom == QQ:
-            R, X = ring('X', QQ)
-            p1 = R(dict_from_expr(mp1)[0])
-            p2 = R(dict_from_expr(mp2)[0])
-        else:
-            (p1, p2), _ = parallel_poly_from_expr((mp1, x - y), x, y)
-            r = p1.compose(p2)
-            mp1a = r.as_expr()
+        (p1, p2), _ = parallel_poly_from_expr((mp1, x - y), x, y)
+        r = p1.compose(p2)
+        mp1a = r.as_expr()
 
     elif op is Mul:
         mp1a = _muly(mp1, x, y)
     else:
         raise NotImplementedError('option not available')
 
-    if op is Mul or dom != QQ:
-        r = resultant(mp1a, mp2, gens=[y, x])
-    else:
-        r = rs_compose_add(p1, p2)
-        r = r.as_expr(x)
+    r = resultant(mp1a, mp2, gens=[y, x])
 
     deg1 = degree(mp1, x)
     deg2 = degree(mp2, y)
