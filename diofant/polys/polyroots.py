@@ -407,7 +407,7 @@ def _inv_totient_estimate(m):
         b *= p - 1
 
     L = m
-    U = int(math.ceil(m*(float(a)/b)))
+    U = math.ceil(m*(float(a)/b))
 
     P = p = 2
     primes = []
@@ -423,7 +423,7 @@ def _inv_totient_estimate(m):
     for p in primes[:-1]:
         b *= p - 1
 
-    U = int(math.ceil(m*(float(P)/b)))
+    U = math.ceil(m*(float(P)/b))
 
     return L, U
 
