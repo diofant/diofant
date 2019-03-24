@@ -352,21 +352,18 @@ def test_gf_irreducible_p():
     assert gf_irred_p_ben_or([2, 3, 4, 5, 6], 13, ZZ) is False
     assert gf_irred_p_ben_or([2, 3, 4, 5, 8], 13, ZZ) is True
 
-    config.setup('GF_IRRED_METHOD', 'ben-or')
+    with config.using(gf_irred_method='ben-or'):
+        assert gf_irreducible_p([7], 11, ZZ) is True
+        assert gf_irreducible_p([7, 3], 11, ZZ) is True
+        assert gf_irreducible_p([7, 3, 1], 11, ZZ) is False
 
-    assert gf_irreducible_p([7], 11, ZZ) is True
-    assert gf_irreducible_p([7, 3], 11, ZZ) is True
-    assert gf_irreducible_p([7, 3, 1], 11, ZZ) is False
+    with config.using(gf_irred_method='rabin'):
+        assert gf_irreducible_p([7], 11, ZZ) is True
+        assert gf_irreducible_p([7, 3], 11, ZZ) is True
+        assert gf_irreducible_p([7, 3, 1], 11, ZZ) is False
 
-    config.setup('GF_IRRED_METHOD', 'rabin')
-
-    assert gf_irreducible_p([7], 11, ZZ) is True
-    assert gf_irreducible_p([7, 3], 11, ZZ) is True
-    assert gf_irreducible_p([7, 3, 1], 11, ZZ) is False
-
-    config.setup('GF_IRRED_METHOD', 'other')
-    pytest.raises(KeyError, lambda: gf_irreducible_p([7], 11, ZZ))
-    config.setup('GF_IRRED_METHOD')
+    with config.using(gf_irred_method='other'):
+        pytest.raises(KeyError, lambda: gf_irreducible_p([7], 11, ZZ))
 
     f = [1, 9, 9, 13, 16, 15, 6, 7, 7, 7, 10]
     g = [1, 7, 16, 7, 15, 13, 13, 11, 16, 10, 9]
