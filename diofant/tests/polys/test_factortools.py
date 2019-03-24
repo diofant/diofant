@@ -513,149 +513,149 @@ def test_sympyissue_5786():
 
 def test_dmp_factor_list():
     R, x = ring("x", ZZ)
-    assert R.dmp_factor_list(0) == (0, [])
-    assert R.dmp_factor_list(7) == (7, [])
+    assert R(0).factor_list() == (0, [])
+    assert R(7).factor_list() == (7, [])
 
     R, x = ring("x", QQ)
-    assert R.dmp_factor_list(0) == (0, [])
-    assert R.dmp_factor_list(QQ(1, 7)) == (QQ(1, 7), [])
+    assert R(0).factor_list() == (0, [])
+    assert R(QQ(1, 7)).factor_list() == (QQ(1, 7), [])
 
     R, x = ring("x", ZZ.poly_ring('t'))
-    assert R.dmp_factor_list(0) == (0, [])
-    assert R.dmp_factor_list(7) == (7, [])
+    assert R(0).factor_list() == (0, [])
+    assert R(7).factor_list() == (7, [])
 
     R, x = ring("x", QQ.poly_ring('t'))
-    assert R.dmp_factor_list(0) == (0, [])
-    assert R.dmp_factor_list(QQ(1, 7)) == (QQ(1, 7), [])
+    assert R(0).factor_list() == (0, [])
+    assert R(QQ(1, 7)).factor_list() == (QQ(1, 7), [])
 
     R, x = ring("x", ZZ)
 
-    assert R.dmp_factor_list(x**2 + 2*x + 1) == (1, [(x + 1, 2)])
+    assert (x**2 + 2*x + 1).factor_list() == (1, [(x + 1, 2)])
     # issue sympy/sympy#8037
-    assert R.dmp_factor_list(6*x**2 - 5*x - 6) == (1, [(2*x - 3, 1), (3*x + 2, 1)])
+    assert (6*x**2 - 5*x - 6).factor_list() == (1, [(2*x - 3, 1), (3*x + 2, 1)])
 
     R, x = ring("x", QQ)
-    assert R.dmp_factor_list(x**2/2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
+    assert (x**2/2 + x + QQ(1, 2)).factor_list() == (QQ(1, 2), [(x + 1, 2)])
 
     R, x = ring("x", FF(2))
-    assert R.dmp_factor_list(x**2 + 1) == (1, [(x + 1, 2)])
+    assert (x**2 + 1).factor_list() == (1, [(x + 1, 2)])
 
     R, x = ring("x", RR)
-    assert R.dmp_factor_list(1.0*x**2 + 2.0*x + 1.0) == (1.0, [(1.0*x + 1.0, 2)])
-    assert R.dmp_factor_list(2.0*x**2 + 4.0*x + 2.0) == (2.0, [(1.0*x + 1.0, 2)])
+    assert (1.0*x**2 + 2.0*x + 1.0).factor_list() == (1.0, [(1.0*x + 1.0, 2)])
+    assert (2.0*x**2 + 4.0*x + 2.0).factor_list() == (2.0, [(1.0*x + 1.0, 2)])
 
     f = 6.7225336055071*x**2 - 10.6463972754741*x - 0.33469524022264
-    coeff, factors = R.dmp_factor_list(f)
-    assert coeff == RR(1.0) and len(factors) == 1 and factors[0][0].almosteq(f, 1e-10) and factors[0][1] == 1
+    coeff, factors = f.factor_list()
+    assert coeff == 1.0 and len(factors) == 1 and factors[0][0].almosteq(f, 1e-10) and factors[0][1] == 1
 
     # issue diofant/diofant#238
     f = 0.1*x**2 + 1.1*x + 1.0
-    assert R.dmp_factor_list(f) == (10.0, [(0.1*x + 0.1, 1), (0.1*x + 1.0, 1)])
+    assert f.factor_list() == (10.0, [(0.1*x + 0.1, 1), (0.1*x + 1.0, 1)])
     f = 0.25 + 1.0*x + 1.0*x**2
-    assert R.dmp_factor_list(f) == (4.0, [(0.25 + 0.5*x, 2)])
+    assert f.factor_list() == (4.0, [(0.25 + 0.5*x, 2)])
 
     Rt, t = ring("t", ZZ)
     R, x = ring("x", Rt)
 
     f = 4*t*x**2 + 4*t**2*x
 
-    assert R.dmp_factor_list(f) == (4*t, [(x, 1), (x + t, 1)])
+    assert f.factor_list() == (4*t, [(x, 1), (x + t, 1)])
 
     Rt, t = ring("t", QQ)
     R, x = ring("x", Rt)
 
     f = t*x**2/2 + t**2*x/2
 
-    assert R.dmp_factor_list(f) == (t/2, [(x, 1), (x + t, 1)])
+    assert f.factor_list() == (t/2, [(x, 1), (x + t, 1)])
 
     R, x = ring("x", QQ.algebraic_field(I))
 
     f = x**4 + 2*x**2
 
-    assert R.dmp_factor_list(f) == (R.domain(1), [(x, 2), (x**2 + 2, 1)])
+    assert f.factor_list() == (1, [(x, 2), (x**2 + 2, 1)])
 
     R, x = ring("x", EX)
-    pytest.raises(DomainError, lambda: R.dmp_factor_list(EX(sin(1))))
+    pytest.raises(DomainError, lambda: R(EX(sin(1))).factor_list())
 
     R, x, y = ring("x,y", ZZ)
-    assert R.dmp_factor_list(0) == (ZZ(0), [])
-    assert R.dmp_factor_list(7) == (7, [])
+    assert R(0).factor_list() == (0, [])
+    assert R(7).factor_list() == (7, [])
 
     R, x, y = ring("x,y", QQ)
-    assert R.dmp_factor_list(0) == (QQ(0), [])
-    assert R.dmp_factor_list(QQ(1, 7)) == (QQ(1, 7), [])
+    assert R(0).factor_list() == (0, [])
+    assert R(QQ(1, 7)).factor_list() == (QQ(1, 7), [])
 
     Rt, t = ring("t", ZZ)
     R, x, y = ring("x,y", Rt)
-    assert R.dmp_factor_list(0) == (0, [])
-    assert R.dmp_factor_list(7) == (ZZ(7), [])
+    assert R(0).factor_list() == (0, [])
+    assert R(7).factor_list() == (7, [])
 
     Rt, t = ring("t", QQ)
     R, x, y = ring("x,y", Rt)
-    assert R.dmp_factor_list(0) == (0, [])
-    assert R.dmp_factor_list(QQ(1, 7)) == (QQ(1, 7), [])
+    assert R(0).factor_list() == (0, [])
+    assert R(QQ(1, 7)).factor_list() == (QQ(1, 7), [])
 
     R, *X = ring("x:200", ZZ)
 
     f, g = X[0]**2 + 2*X[0] + 1, X[0] + 1
-    assert R.dmp_factor_list(f) == (1, [(g, 2)])
+    assert f.factor_list() == (1, [(g, 2)])
 
     f, g = X[-1]**2 + 2*X[-1] + 1, X[-1] + 1
-    assert R.dmp_factor_list(f) == (1, [(g, 2)])
+    assert f.factor_list() == (1, [(g, 2)])
 
     R, x = ring("x", ZZ)
-    assert R.dmp_factor_list(x**2 + 2*x + 1) == (1, [(x + 1, 2)])
+    assert (x**2 + 2*x + 1).factor_list() == (1, [(x + 1, 2)])
     R, x = ring("x", QQ)
-    assert R.dmp_factor_list(x**2/2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
+    assert (x**2/2 + x + QQ(1, 2)).factor_list() == (QQ(1, 2), [(x + 1, 2)])
 
     R, x, y = ring("x,y", ZZ)
-    assert R.dmp_factor_list(x**2 + 2*x + 1) == (1, [(x + 1, 2)])
+    assert (x**2 + 2*x + 1).factor_list() == (1, [(x + 1, 2)])
     R, x, y = ring("x,y", QQ)
-    assert R.dmp_factor_list(x**2/2 + x + QQ(1, 2)) == (QQ(1, 2), [(x + 1, 2)])
+    assert (x**2/2 + x + QQ(1, 2)).factor_list() == (QQ(1, 2), [(x + 1, 2)])
 
     R, x, y = ring("x,y", ZZ)
     f = 4*x**2*y + 4*x*y**2
 
-    assert R.dmp_factor_list(f) == (4, [(y, 1), (x, 1), (x + y, 1)])
+    assert f.factor_list() == (4, [(y, 1), (x, 1), (x + y, 1)])
 
     R,  x, y = ring("x,y", QQ)
     f = x**2*y/2 + x*y**2/2
 
-    assert R.dmp_factor_list(f) == (QQ(1, 2), [(y, 1), (x, 1), (x + y, 1)])
+    assert f.factor_list() == (QQ(1, 2), [(y, 1), (x, 1), (x + y, 1)])
 
     R,  x, y = ring("x,y", RR)
     f = 2.0*x**2 - 8.0*y**2
 
-    assert R.dmp_factor_list(f) == (RR(2.0), [(1.0*x - 2.0*y, 1), (1.0*x + 2.0*y, 1)])
+    assert f.factor_list() == (2.0, [(1.0*x - 2.0*y, 1), (1.0*x + 2.0*y, 1)])
 
     f = 6.7225336055071*x**2*y**2 - 10.6463972754741*x*y - 0.33469524022264
-    coeff, factors = R.dmp_factor_list(f)
-    assert coeff == RR(1.0) and len(factors) == 1 and factors[0][0].almosteq(f, 1e-10) and factors[0][1] == 1
+    coeff, factors = f.factor_list()
+    assert coeff == 1.0 and len(factors) == 1 and factors[0][0].almosteq(f, 1e-10) and factors[0][1] == 1
 
     # issue diofant/diofant#238
     R,  x, y, z = ring("x,y,z", RR)
     f = x*y + x*z + 0.1*y + 0.1*z
-    assert R.dmp_factor_list(f) == (10.0, [(0.1*y + 0.1*z, 1), (x + 0.1, 1)])
+    assert f.factor_list() == (10.0, [(0.1*y + 0.1*z, 1), (x + 0.1, 1)])
     f = 0.25*x**2 + 1.0*x*y*z + 1.0*y**2*z**2
-    assert R.dmp_factor_list(f) == (4.0, [(0.25*x + 0.5*y*z, 2)])
+    assert f.factor_list() == (4.0, [(0.25*x + 0.5*y*z, 2)])
 
     Rt, t = ring("t", ZZ)
     R, x, y = ring("x,y", Rt)
     f = 4*t*x**2 + 4*t**2*x
 
-    assert R.dmp_factor_list(f) == (4*t, [(x, 1), (x + t, 1)])
+    assert f.factor_list() == (4*t, [(x, 1), (x + t, 1)])
 
     Rt, t = ring("t", QQ)
     R, x, y = ring("x,y", Rt)
     f = t*x**2/2 + t**2*x/2
 
-    assert R.dmp_factor_list(f) == (t/2, [(x, 1), (x + t, 1)])
+    assert f.factor_list() == (t/2, [(x, 1), (x + t, 1)])
 
     R, x, y = ring("x,y", FF(2))
-    pytest.raises(NotImplementedError, lambda: R.dmp_factor_list(x**2 + y**2))
+    pytest.raises(NotImplementedError, lambda: (x**2 + y**2).factor_list())
 
     R, x, y = ring("x,y", EX)
-    pytest.raises(DomainError, lambda: R.dmp_factor_list(EX(sin(1))))
+    pytest.raises(DomainError, lambda: R(EX(sin(1))).factor_list())
 
 
 def test_dmp_irreducible_p():
