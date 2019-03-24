@@ -1102,16 +1102,3 @@ def dmp_factor_list(f, u, K0):
         factors.insert(0, (dmp_from_dict(term, u, K0), j))
 
     return coeff*cont, _sort_factors(factors)
-
-
-def dmp_irreducible_p(f, u, K):
-    """Returns ``True`` if ``f`` has no factors over its domain."""
-    _, factors = dmp_factor_list(f, u, K)
-
-    if not factors:
-        return True
-    elif len(factors) > 1:
-        return False
-    else:
-        _, k = factors[0]
-        return k == 1
