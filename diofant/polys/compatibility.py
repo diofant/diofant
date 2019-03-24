@@ -18,7 +18,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dup_shift, dup_transform)
 from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
-                          dmp_inner_subresultants, dmp_lcm, dmp_primitive,
+                          dmp_inner_subresultants, dmp_primitive,
                           dmp_prs_resultant, dmp_qq_collins_resultant,
                           dmp_qq_heu_gcd, dmp_resultant, dmp_rr_prs_gcd,
                           dmp_subresultants, dmp_zz_collins_resultant,
@@ -353,10 +353,6 @@ class IPolys:
 
     def dmp_gcd(self, f, g):
         H = dmp_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(H)
-
-    def dmp_lcm(self, f, g):
-        H = dmp_lcm(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.from_dense(H)
 
     def dmp_content(self, f):

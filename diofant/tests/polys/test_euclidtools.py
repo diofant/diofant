@@ -681,42 +681,56 @@ def test_dmp_gcd():
         assert R.dmp_gcd(f, g) == g
 
 
-def test_dmp_lcm():
+def test_PolyElement_lcm():
     R, x = ring("x", ZZ)
 
-    assert R.dmp_lcm(2, 6) == 6
+    assert R(2).lcm(R(6)) == 6
 
-    assert R.dmp_lcm(2*x**3, 6*x) == 6*x**3
-    assert R.dmp_lcm(2*x**3, 3*x) == 6*x**3
+    assert (2*x**3).lcm(6*x) == 6*x**3
+    assert (2*x**3).lcm(3*x) == 6*x**3
 
-    assert R.dmp_lcm(x**2 + x, x) == x**2 + x
-    assert R.dmp_lcm(x**2 + x, 2*x) == 2*x**2 + 2*x
-    assert R.dmp_lcm(x**2 + 2*x, x) == x**2 + 2*x
-    assert R.dmp_lcm(2*x**2 + x, x) == 2*x**2 + x
-    assert R.dmp_lcm(2*x**2 + x, 2*x) == 4*x**2 + 2*x
-    assert R.dmp_lcm(x**2 - 1, x**2 - 3*x + 2) == x**3 - 2*x**2 - x + 2
+    assert (x**2 + x).lcm(x) == x**2 + x
+    assert (x**2 + x).lcm(2*x) == 2*x**2 + 2*x
+    assert (x**2 + 2*x).lcm(x) == x**2 + 2*x
+    assert (2*x**2 + x).lcm(x) == 2*x**2 + x
+    assert (2*x**2 + x).lcm(2*x) == 4*x**2 + 2*x
+    assert (x**2 - 1).lcm(x**2 - 3*x + 2) == x**3 - 2*x**2 - x + 2
 
     R,  x, y = ring("x,y", ZZ)
 
-    assert R.dmp_lcm(2, 6) == 6
-    assert R.dmp_lcm(x, y) == x*y
+    assert R(2).lcm(R(6)) == 6
+    assert x.lcm(y) == x*y
 
-    assert R.dmp_lcm(2*x**3, 6*x*y**2) == 6*x**3*y**2
-    assert R.dmp_lcm(2*x**3, 3*x*y**2) == 6*x**3*y**2
+    assert (2*x**3).lcm(6*x*y**2) == 6*x**3*y**2
+    assert (2*x**3).lcm(3*x*y**2) == 6*x**3*y**2
 
-    assert R.dmp_lcm(x**2*y, x*y**2) == x**2*y**2
+    assert (x**2*y).lcm(x*y**2) == x**2*y**2
 
     f = 2*x*y**5 - 3*x*y**4 - 2*x*y**3 + 3*x*y**2
     g = y**5 - 2*y**3 + y
     h = 2*x*y**7 - 3*x*y**6 - 4*x*y**5 + 6*x*y**4 + 2*x*y**3 - 3*x*y**2
 
-    assert R.dmp_lcm(f, g) == h
+    assert f.lcm(g) == h
 
     f = x**3 - 3*x**2*y - 9*x*y**2 - 5*y**3
     g = x**4 + 6*x**3*y + 12*x**2*y**2 + 10*x*y**3 + 3*y**4
     h = x**5 + x**4*y - 18*x**3*y**2 - 50*x**2*y**3 - 47*x*y**4 - 15*y**5
 
-    assert R.dmp_lcm(f, g) == h
+    assert f.lcm(g) == h
+
+    f = x**2 + 2*x*y + y**2
+    g = x**2 + x*y
+    h = x**3 + 2*x**2*y + x*y**2
+
+    assert f.lcm(g) == h
+
+    R, x = ring('x', QQ)
+
+    f = (x**2 + 7*x/2 + 3)/2
+    g = x**2/2 + x
+    h = x**3 + 7/2*x**2 + 3*x
+
+    assert f.lcm(g) == h
 
     R,  x, y = ring("x,y", QQ)
 
@@ -725,7 +739,13 @@ def test_dmp_lcm():
     h = (x**5 - 4*x**4*y - x**3*y**2/3 - 2*x**3/3 + 4*x**2*y**3/3 -
          x**2/6 + 2*x*y**2/9 + 2*x*y/3 + QQ(1, 9))
 
-    assert R.dmp_lcm(f, g) == h
+    assert f.lcm(g) == h
+
+    f = x**2/4 + x*y + y**2
+    g = x**2/2 + x*y
+    h = x**3 + 4*x**2*y + 4*x*y**2
+
+    assert f.lcm(g) == h
 
 
 def test_dmp_content():
