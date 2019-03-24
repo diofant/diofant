@@ -35,7 +35,7 @@ def dup_half_gcdex(f, g, K):
     >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
     >>> g = x**3 + x**2 - 4*x - 4
 
-    >>> R.dup_half_gcdex(f, g)
+    >>> f.half_gcdex(g)
     (-1/5*x + 3/5, x + 1)
 
     """
