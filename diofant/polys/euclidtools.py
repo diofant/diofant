@@ -291,24 +291,6 @@ def dup_prs_resultant(f, g, K):
     return S[-1], R
 
 
-def dup_resultant(f, g, K, includePRS=False):
-    """
-    Computes resultant of two polynomials in `K[x]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dmp_resultant(x**2 + 1, x**2 - 1)
-    4
-
-    """
-    if includePRS:
-        return dup_prs_resultant(f, g, K)
-    return dup_prs_resultant(f, g, K)[0]
-
-
 def dmp_inner_subresultants(f, g, u, K):
     """
     Subresultant PRS algorithm in `K[X]`.
@@ -639,9 +621,6 @@ def dmp_resultant(f, g, u, K, includePRS=False):
     -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
 
     """
-    if not u:
-        return dup_resultant(f, g, K, includePRS=includePRS)
-
     if includePRS:
         return dmp_prs_resultant(f, g, u, K)
 
