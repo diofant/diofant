@@ -823,36 +823,6 @@ def dmp_prem(f, g, u, K):
     return dmp_mul_term(r, c, 0, u, K)
 
 
-def dmp_pexquo(f, g, u, K):
-    """
-    Polynomial pseudo-quotient in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> f = x**2 + x*y
-    >>> g = 2*x + 2*y
-    >>> h = 2*x + 2
-
-    >>> R.dmp_pexquo(f, g)
-    2*x
-
-    >>> R.dmp_pexquo(f, h)
-    Traceback (most recent call last):
-    ...
-    ExactQuotientFailed: [[2], [2]] does not divide [[1], [1, 0], []]
-
-    """
-    q, r = dmp_pdiv(f, g, u, K)
-
-    if dmp_zero_p(r, u):
-        return q
-    else:
-        raise ExactQuotientFailed(f, g)
-
-
 def dmp_div(f, g, u, K):
     """
     Polynomial division with remainder in ``K[X]``.

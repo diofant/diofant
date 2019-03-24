@@ -2103,9 +2103,6 @@ class PolyElement(DomainElement, CantSympify, dict):
     def prem(self, other):
         return self.ring.dmp_prem(self, other)
 
-    def pexquo(self, other):
-        return self.ring.dmp_pexquo(self, other)
-
     def half_gcdex(self, other):
         if self.ring.is_univariate:
             return self.ring.dup_half_gcdex(self, other)

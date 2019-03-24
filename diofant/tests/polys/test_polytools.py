@@ -28,9 +28,9 @@ from diofant.polys.polytools import (LC, LM, LT, GroebnerBasis, Poly, PurePoly,
                                      groebner, ground_roots, half_gcdex,
                                      intervals, invert, lcm, lcm_list, monic,
                                      nroots, nth_power_roots_poly,
-                                     parallel_poly_from_expr, pdiv, pexquo,
-                                     poly, prem, primitive, quo, real_roots,
-                                     reduced, refine_root, rem, resultant, sqf,
+                                     parallel_poly_from_expr, pdiv, poly, prem,
+                                     primitive, quo, real_roots, reduced,
+                                     refine_root, rem, resultant, sqf,
                                      sqf_list, sqf_norm, sqf_part, sturm,
                                      subresultants, terms_gcd,
                                      to_rational_coeffs, trunc)
@@ -1529,37 +1529,27 @@ def test_pdiv():
 
     assert F.pdiv(G) == (Q, R)
     assert F.prem(G) == R
-    assert F.pexquo(G) == Q
 
     assert pdiv(f, g) == (q, r)
     assert prem(f, g) == r
-    assert pexquo(f, g) == q
 
     assert pdiv(f, g, x, y) == (q, r)
     assert prem(f, g, x, y) == r
-    assert pexquo(f, g, x, y) == q
 
     assert pdiv(f, g, (x, y)) == (q, r)
     assert prem(f, g, (x, y)) == r
-    assert pexquo(f, g, (x, y)) == q
 
     assert pdiv(F, G) == (Q, R)
     assert prem(F, G) == R
-    assert pexquo(F, G) == Q
 
     assert pdiv(f, g, polys=True) == (Q, R)
     assert prem(f, g, polys=True) == R
-    assert pexquo(f, g, polys=True) == Q
 
     assert pdiv(F, G, polys=False) == (q, r)
     assert prem(F, G, polys=False) == r
-    assert pexquo(F, G, polys=False) == q
 
     pytest.raises(ComputationFailed, lambda: pdiv(4, 2))
     pytest.raises(ComputationFailed, lambda: prem(4, 2))
-    pytest.raises(ComputationFailed, lambda: pexquo(4, 2))
-    pytest.raises(ExactQuotientFailed,
-                  lambda: Poly(x**2 + 1).pexquo(Poly(2*x - 4)))
 
 
 def test_div():
