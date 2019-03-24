@@ -1550,39 +1550,13 @@ def gf_factor_sqf(f, p, K):
     """
     Factor a square-free polynomial ``f`` in ``GF(p)[x]``.
 
-    Examples
-    ========
+    Returns its complete factorization into irreducibles::
 
-    >>> gf_factor_sqf([3, 2, 4], 5, ZZ)
-    (3, [[1, 1], [1, 3]])
-
-    """
-    lc, f = gf_monic(f, p, K)
-
-    if dmp_degree_in(f, 0, 0) < 1:
-        return lc, []
-
-    method = query('GF_FACTOR_METHOD')
-
-    return lc, _factor_methods[method](f, p, K)
-
-
-def gf_factor(f, p, K):
-    """
-    Factor (non square-free) polynomials in ``GF(p)[x]``.
-
-    Given a possibly non square-free polynomial ``f`` in ``GF(p)[x]``,
-    returns its complete factorization into irreducibles::
-
-                 f_1(x)**e_1 f_2(x)**e_2 ... f_d(x)**e_d
+                 f_1(x) f_2(x) ... f_d(x)
 
     where each ``f_i`` is a monic polynomial and ``gcd(f_i, f_j) == 1``,
     for ``i != j``.  The result is given as a tuple consisting of the
-    leading coefficient of ``f`` and a list of factors of ``f`` with
-    their multiplicities.
-
-    The algorithm proceeds by first computing square-free decomposition
-    of ``f`` and then iteratively factoring each of square-free factors.
+    leading coefficient of ``f`` and a list of factors of ``f``.
 
     Square-free factors of ``f`` can be factored into irreducibles over
     ``GF(p)`` using three very different methods:
@@ -1601,12 +1575,8 @@ def gf_factor(f, p, K):
     Examples
     ========
 
-    >>> gf_factor([5, 2, 7, 2], 11, ZZ)
-    (5, [([1, 2], 1), ([1, 8], 2)])
-
-    We arrived with factorization ``f = 5 (x + 2) (x + 8)**2``. We didn't
-    recover the exact form of the input polynomial because we requested to
-    get monic factors of ``f`` and its leading coefficient separately.
+    >>> gf_factor_sqf([3, 2, 4], 5, ZZ)
+    (3, [[1, 1], [1, 3]])
 
     References
     ==========
@@ -1614,24 +1584,14 @@ def gf_factor(f, p, K):
     * :cite:`Gathen1999modern`
 
     """
-    from .sqfreetools import dmp_sqf_list
-
     lc, f = gf_monic(f, p, K)
 
     if dmp_degree_in(f, 0, 0) < 1:
         return lc, []
 
-    factors = []
+    method = query('GF_FACTOR_METHOD')
 
-    Kp = K.finite_field(p)
-    f = dmp_normal(f, 0, Kp)
-
-    for g, n in dmp_sqf_list(f, 0, Kp)[1]:
-        g = dmp_normal(g, 0, K)
-        for h in gf_factor_sqf(g, p, K)[1]:
-            factors.append((h, n))
-
-    return lc, _sort_factors(factors)
+    return lc, _factor_methods[method](f, p, K)
 
 
 def linear_congruence(a, b, m):

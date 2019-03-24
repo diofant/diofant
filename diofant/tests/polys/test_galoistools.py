@@ -485,7 +485,7 @@ def test_gf_edf():
     assert gf_edf_shoup(f, 2, 3, ZZ) == g
 
 
-def test_gf_factor():
+def test_gf_factor_sqf():
     assert gf_factor_sqf([], 11, ZZ) == (0, [])
     assert gf_factor_sqf([1], 11, ZZ) == (1, [])
     assert gf_factor_sqf([1, 1], 11, ZZ) == (1, [[1, 1]])

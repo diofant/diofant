@@ -21,13 +21,13 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dup_mirror)
 from .euclidtools import dmp_inner_gcd, dmp_primitive
-from .galoistools import (gf_add_mul, gf_div, gf_factor, gf_factor_sqf,
-                          gf_from_int_poly, gf_gcdex, gf_mul, gf_rem)
+from .galoistools import (gf_add_mul, gf_div, gf_factor_sqf, gf_from_int_poly,
+                          gf_gcdex, gf_mul, gf_rem)
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-from .sqfreetools import dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
+from .sqfreetools import dmp_sqf_list, dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
 
 
 def dmp_trial_division(f, factors, u, K):
@@ -1022,17 +1022,24 @@ def dmp_ext_factor(f, u, K):
 
 def dmp_gf_factor(f, u, K):
     """Factor multivariate polynomials over finite fields."""
-    if u == 0:
-        f = dmp_convert(f, 0, K, K.domain)
-
-        coeff, factors = gf_factor(f, K.mod, K.domain)
-
-        for i, (f, k) in enumerate(factors):
-            factors[i] = (dmp_convert(f, 0, K.domain, K), k)
-
-        return K.convert(coeff, K.domain), factors
-    else:
+    if u:
         raise NotImplementedError('multivariate polynomials over finite fields')
+    else:
+        lc = dmp_ground_LC(f, u, K)
+        f = dmp_ground_monic(f, u, K)
+
+        if dmp_degree_in(f, 0, 0) < 1:
+            return lc, []
+
+        factors = []
+
+        for g, n in dmp_sqf_list(f, 0, K)[1]:
+            g = dmp_normal(g, 0, K.domain)
+            for h in gf_factor_sqf(g, K.characteristic, K.domain)[1]:
+                h = dmp_normal(h, 0, K)
+                factors.append((h, n))
+
+        return lc, factors
 
 
 def dmp_factor_list(f, u, K0):

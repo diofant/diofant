@@ -663,6 +663,9 @@ def test_gf_factor():
     assert R(1).factor_list() == (1, [])
     assert (x + 1).factor_list() == (1, [(x + 1, 1)])
 
+    assert (5*x**3 + 2*x**2 + 7*x +
+            2).factor_list() == (5, [(x + 2, 1), (x + 8, 2)])
+
     f = x**6 + 8*x**5 + x**4 + 8*x**3 + 10*x**2 + 8*x + 1
     g = (1, [(x + 1, 1),
              (x**2 + 5*x + 3, 1),
