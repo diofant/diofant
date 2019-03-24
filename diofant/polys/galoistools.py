@@ -1127,83 +1127,6 @@ def gf_irreducible_p(f, p, K):
     return _irred_methods[method](f, p, K)
 
 
-def gf_sqf_list(f, p, K):
-    """
-    Return the square-free decomposition of a ``GF(p)[x]`` polynomial.
-
-    Given a polynomial ``f`` in ``GF(p)[x]``, returns the leading coefficient
-    of ``f`` and a square-free decomposition ``f_1**e_1 f_2**e_2 ... f_k**e_k``
-    such that all ``f_i`` are monic polynomials and ``(f_i, f_j)`` for ``i != j``
-    are co-prime and ``e_1 ... e_k`` are given in increasing order. All trivial
-    terms (i.e. ``f_i = 1``) aren't included in the output.
-
-    Examples
-    ========
-
-    >>> f = gf_from_dict({11: ZZ(1), 0: ZZ(1)}, 11, ZZ)
-
-    Note that:
-
-    >>> gf_diff(f, 11, ZZ)
-    []
-
-    This phenomenon doesn't happen in characteristic zero. However we can
-    still compute square-free decomposition of ``f``:
-
-    >>> gf_sqf_list(f, 11, ZZ)
-    (1, [([1, 1], 11)])
-    >>> gf_pow(*_[1][0], 11, ZZ) == f
-    True
-
-    References
-    ==========
-
-    * :cite:`Geddes1992algorithms`
-
-    """
-    n, sqf, factors, r = 1, False, [], int(p)
-
-    lc, f = gf_monic(f, p, K)
-
-    if dmp_degree_in(f, 0, 0) < 1:
-        return lc, []
-
-    while True:
-        F = gf_diff(f, p, K)
-
-        if F != []:
-            g = gf_gcd(f, F, p, K)
-            h = gf_quo(f, g, p, K)
-
-            i = 1
-
-            while h != [K.one]:
-                G = gf_gcd(g, h, p, K)
-                H = gf_quo(h, G, p, K)
-
-                if dmp_degree_in(H, 0, 0) > 0:
-                    factors.append((H, i*n))
-
-                g, h, i = gf_quo(g, G, p, K), G, i + 1
-
-            if g == [K.one]:
-                sqf = True
-            else:
-                f = g
-
-        if not sqf:
-            d = dmp_degree_in(f, 0, 0) // r
-
-            for i in range(d + 1):
-                f[i] = f[i*r]
-
-            f, n = f[:d + 1], n*r
-        else:
-            break
-
-    return lc, factors
-
-
 def gf_Qmatrix(f, p, K):
     """
     Calculate Berlekamp's ``Q`` matrix.
@@ -1691,6 +1614,8 @@ def gf_factor(f, p, K):
     * :cite:`Gathen1999modern`
 
     """
+    from .sqfreetools import dmp_sqf_list
+
     lc, f = gf_monic(f, p, K)
 
     if dmp_degree_in(f, 0, 0) < 1:
@@ -1698,7 +1623,11 @@ def gf_factor(f, p, K):
 
     factors = []
 
-    for g, n in gf_sqf_list(f, p, K)[1]:
+    Kp = K.finite_field(p)
+    f = dmp_normal(f, 0, Kp)
+
+    for g, n in dmp_sqf_list(f, 0, Kp)[1]:
+        g = dmp_normal(g, 0, K)
         for h in gf_factor_sqf(g, p, K)[1]:
             factors.append((h, n))
 
