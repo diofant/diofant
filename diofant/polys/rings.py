@@ -2097,9 +2097,6 @@ class PolyElement(DomainElement, CantSympify, dict):
     # TODO: following methods should point to polynomial
     # representation independent algorithm implementations.
 
-    def pdiv(self, other):
-        return self.ring.dmp_pdiv(self, other)
-
     def prem(self, other):
         return self.ring.dmp_prem(self, other)
 

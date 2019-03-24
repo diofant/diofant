@@ -806,27 +806,22 @@ def test_dmp_pow():
     assert R.dmp_pow(QQ(3, 7), 7) == QQ(2187, 823543)
 
 
-def test_dmp_pdiv():
+def test_dmp_prem():
     R, x = ring('x', ZZ)
 
     f = 3*x**3 + x**2 + x + 5
     g = 5*x**2 - 3*x + 1
 
-    q = 15*x + 14
     r = 52*x + 111
 
-    assert R.dmp_pdiv(f, g) == (q, r)
     assert R.dmp_prem(f, g) == r
 
-    pytest.raises(ZeroDivisionError, lambda: R.dmp_pdiv(f, 0))
     pytest.raises(ZeroDivisionError, lambda: R.dmp_prem(f, 0))
 
     f = x**2 + 1
     g = 2*x - 4
-    q = 2*x + 4
     r = 20
 
-    assert R.dmp_pdiv(f, g) == (q, r)
     assert R.dmp_prem(f, g) == r
 
     R, x = ring('x', QQ)
@@ -834,11 +829,8 @@ def test_dmp_pdiv():
     f = 3*x**3 + x**2 + x + 5
     g = 5*x**2 - 3*x + 1
 
-    q = 15*x + 14
     r = 52*x + 111
 
-    assert R.dmp_pdiv(f, g) == (q, r)
-    assert R.dmp_pdiv(g, f) == (0, g)
     assert R.dmp_prem(g, f) == g
     assert R.dmp_prem(f, g) == r
 
@@ -847,22 +839,16 @@ def test_dmp_pdiv():
     f = x**2 + y**2
     g = x - y
 
-    q = x + y
     r = 2*y**2
 
-    assert R.dmp_pdiv(f, g) == (q, r)
     assert R.dmp_prem(f, g) == r
 
-    pytest.raises(ZeroDivisionError, lambda: R.dmp_pdiv(f, 0))
     pytest.raises(ZeroDivisionError, lambda: R.dmp_prem(f, 0))
 
     g = 2*x - 2*y
 
-    q = 2*x + 2*y
     r = 8*y**2
 
-    assert R.dmp_pdiv(f, g) == (q, r)
-    assert R.dmp_pdiv(g, f) == (0, g)
     assert R.dmp_prem(g, f) == g
     assert R.dmp_prem(f, g) == r
 

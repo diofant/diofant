@@ -31,7 +31,7 @@ from .rootisolation import dup_isolate_real_roots_list
 
 
 __all__ = ('Poly', 'PurePoly', 'poly_from_expr', 'parallel_poly_from_expr',
-           'degree', 'degree_list', 'LC', 'LM', 'LT', 'pdiv', 'prem',
+           'degree', 'degree_list', 'LC', 'LM', 'LT', 'prem',
            'div', 'rem', 'quo', 'exquo', 'half_gcdex', 'gcdex',
            'invert', 'subresultants', 'resultant', 'discriminant', 'cofactors',
            'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
@@ -909,22 +909,6 @@ class Poly(Expr):
         """
         result = self.rep.exquo_ground(coeff)
         return self.per(result)
-
-    def pdiv(self, other):
-        """
-        Polynomial pseudo-division of ``self`` by ``other``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + 1, x).pdiv(Poly(2*x - 4, x))
-        (Poly(2*x + 4, x, domain='ZZ'), Poly(20, x, domain='ZZ'))
-
-        """
-        _, per, F, G = self._unify(other)
-
-        q, r = F.pdiv(G)
-        return per(q), per(r)
 
     def prem(self, other):
         """
@@ -3157,32 +3141,6 @@ def LT(f, *gens, **args):
 
     monom, coeff = F.LT(order=opt.order)
     return coeff*monom.as_expr()
-
-
-def pdiv(f, g, *gens, **args):
-    """
-    Compute polynomial pseudo-division of ``f`` and ``g``.
-
-    Examples
-    ========
-
-    >>> pdiv(x**2 + 1, 2*x - 4)
-    (2*x + 4, 20)
-
-    """
-    options.allowed_flags(args, ['polys'])
-
-    try:
-        (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('pdiv', 2, exc)
-
-    q, r = F.pdiv(G)
-
-    if not opt.polys:
-        return q.as_expr(), r.as_expr()
-    else:
-        return q, r
 
 
 def prem(f, g, *gens, **args):

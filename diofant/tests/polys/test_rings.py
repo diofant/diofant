@@ -1544,14 +1544,12 @@ def test_PolyElement_drop():
     pytest.raises(ValueError, lambda: R3.x.drop_to_ground(R3.x))
 
 
-def test_PolyElement_pdiv():
+def test_PolyElement_prem():
     _,  x, y = ring("x,y", ZZ)
 
     f, g = x**2 - y**2, x - y
-    q, r = x + y, 0
 
-    assert f.pdiv(g) == (q, r)
-    assert f.prem(g) == r
+    assert f.prem(g) == 0
 
 
 def test_PolyElement_gcdex():
