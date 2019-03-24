@@ -426,89 +426,87 @@ def test_dmp_zz_factor():
 def test_dmp_ext_factor():
     R, x = ring("x", QQ.algebraic_field(I))
 
-    assert R.dmp_ext_factor(0) == (R.domain(0), [])
+    assert R(0).factor_list() == (0, [])
 
     f = x + 1
 
-    assert R.dmp_ext_factor(f) == (R.domain(1), [(f, 1)])
+    assert f.factor_list() == (1, [(f, 1)])
 
     g = 2*x + 2
 
-    assert R.dmp_ext_factor(g) == (R.domain(2), [(f, 1)])
+    assert g.factor_list() == (2, [(f, 1)])
 
     f = 7*x**4 + 1
     g = x**4 + QQ(1, 7)
 
-    assert R.dmp_ext_factor(f) == (R.domain(7), [(g, 1)])
+    assert f.factor_list() == (7, [(g, 1)])
 
     f = x**4 + 1
 
-    assert R.dmp_ext_factor(f) == (R.domain(1), [(x**2 - I, 1), (x**2 + I, 1)])
+    assert f.factor_list() == (1, [(x**2 - I, 1), (x**2 + I, 1)])
 
     f = 4*x**2 + 9
 
-    assert R.dmp_ext_factor(f) == (R.domain(4), [(x - 3*I/2, 1), (x + 3*I/2, 1)])
+    assert f.factor_list() == (4, [(x - 3*I/2, 1), (x + 3*I/2, 1)])
 
     f = 4*x**4 + 8*x**3 + 77*x**2 + 18*x + 153
 
-    assert R.dmp_ext_factor(f) == (4, [(x - 3*I/2, 1), (x + 1 + 4*I, 1),
-                                       (x + 1 - 4*I, 1), (x + 3*I/2, 1)])
+    assert f.factor_list() == (4, [(x - 3*I/2, 1), (x + 1 + 4*I, 1),
+                                   (x + 1 - 4*I, 1), (x + 3*I/2, 1)])
 
     R, x = ring("x", QQ.algebraic_field(sqrt(2)))
 
     f = x**4 + 1
 
-    assert R.dmp_ext_factor(f) == (R.domain(1), [(x**2 - sqrt(2)*x + 1, 1),
-                                                 (x**2 + sqrt(2)*x + 1, 1)])
+    assert f.factor_list() == (1, [(x**2 - sqrt(2)*x + 1, 1),
+                                   (x**2 + sqrt(2)*x + 1, 1)])
 
     f = x**2 + 2*sqrt(2)*x + 2
 
-    assert R.dmp_ext_factor(f) == (R.domain(1), [(x + sqrt(2), 2)])
-    assert R.dmp_ext_factor(f**3) == (R.domain(1), [(x + sqrt(2), 6)])
+    assert f.factor_list() == (1, [(x + sqrt(2), 2)])
+    assert (f**3).factor_list() == (1, [(x + sqrt(2), 6)])
 
     f *= 2
 
-    assert R.dmp_ext_factor(f) == (R.domain(2), [(x + sqrt(2), 2)])
-    assert R.dmp_ext_factor(f**3) == (R.domain(8), [(x + sqrt(2), 6)])
+    assert f.factor_list() == (2, [(x + sqrt(2), 2)])
+    assert (f**3).factor_list() == (8, [(x + sqrt(2), 6)])
 
     R,  x, y = ring("x,y", QQ.algebraic_field(sqrt(2)))
 
-    assert R.dmp_ext_factor(0) == (R.domain(0), [])
+    assert R(0).factor_list() == (0, [])
 
     f = x + 1
 
-    assert R.dmp_ext_factor(f) == (R.domain(1), [(f, 1)])
+    assert f.factor_list() == (1, [(f, 1)])
 
     g = 2*x + 2
 
-    assert R.dmp_ext_factor(g) == (R.domain(2), [(f, 1)])
+    assert g.factor_list() == (2, [(f, 1)])
 
     f = x**2 - 2*y**2
 
-    assert R.dmp_ext_factor(f) == (R.domain(1), [(x - sqrt(2)*y, 1),
-                                                 (x + sqrt(2)*y, 1)])
+    assert f.factor_list() == (1, [(x - sqrt(2)*y, 1), (x + sqrt(2)*y, 1)])
 
     f = 2*x**2 - 4*y**2
 
-    assert R.dmp_ext_factor(f) == (R.domain(2), [(x - sqrt(2)*y, 1),
-                                                 (x + sqrt(2)*y, 1)])
+    assert f.factor_list() == (2, [(x - sqrt(2)*y, 1), (x + sqrt(2)*y, 1)])
 
     R,  x = ring("x", QQ.algebraic_field(I))
     f = x**2 + 1
-    assert R.dmp_ext_factor(f) == (R.domain(1), [(x - I, 1), (x + I, 1)])
+    assert f.factor_list() == (1, [(x - I, 1), (x + I, 1)])
 
 
 def test_sympyissue_5786():
     R,  x, y, z, t = ring("x, y, z, t", QQ.algebraic_field(I))
 
     f = (z - I*t)*(x - I*y)
-    assert (R.dmp_ext_factor(f) == (R.domain(1), [(z - I*t, 1), (x - I*y, 1)]))
+    assert f.factor_list() == (1, [(z - I*t, 1), (x - I*y, 1)])
 
     f = (z - I*t)**2*(x - I*y)
-    assert (R.dmp_ext_factor(f) == (R.domain(1), [(z - I*t, 2), (x - I*y, 1)]))
+    assert f.factor_list() == (1, [(z - I*t, 2), (x - I*y, 1)])
 
     f = (z - I*t)*(x - I*y)**3
-    assert (R.dmp_ext_factor(f) == (R.domain(1), [(z - I*t, 1), (x - I*y, 3)]))
+    assert f.factor_list() == (1, [(z - I*t, 1), (x - I*y, 3)])
 
 
 def test_dmp_factor_list():
