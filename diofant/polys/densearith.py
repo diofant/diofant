@@ -823,29 +823,6 @@ def dmp_prem(f, g, u, K):
     return dmp_mul_term(r, c, 0, u, K)
 
 
-def dmp_pquo(f, g, u, K):
-    """
-    Polynomial exact pseudo-quotient in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> f = x**2 + x*y
-    >>> g = 2*x + 2*y
-    >>> h = 2*x + 2
-
-    >>> R.dmp_pquo(f, g)
-    2*x
-
-    >>> R.dmp_pquo(f, h)
-    2*x + 2*y - 2
-
-    """
-    return dmp_pdiv(f, g, u, K)[0]
-
-
 def dmp_pexquo(f, g, u, K):
     """
     Polynomial pseudo-quotient in ``K[X]``.

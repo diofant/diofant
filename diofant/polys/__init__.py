@@ -2,7 +2,7 @@
 
 from .polytools import (Poly, PurePoly, poly_from_expr,
                         parallel_poly_from_expr, degree, degree_list, LC,
-                        LM, LT, pdiv, prem, pquo, pexquo, div, rem, quo,
+                        LM, LT, pdiv, prem, pexquo, div, rem, quo,
                         exquo, half_gcdex, gcdex, invert, subresultants,
                         resultant, discriminant, cofactors, gcd_list, gcd,
                         lcm_list, lcm, terms_gcd, trunc, monic, content,

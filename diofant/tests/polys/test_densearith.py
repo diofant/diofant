@@ -816,7 +816,6 @@ def test_dmp_pdiv():
     r = 52*x + 111
 
     assert R.dmp_pdiv(f, g) == (q, r)
-    assert R.dmp_pquo(f, g) == q
     assert R.dmp_prem(f, g) == r
 
     pytest.raises(ExactQuotientFailed, lambda: R.dmp_pexquo(f, g))
@@ -828,14 +827,12 @@ def test_dmp_pdiv():
     q = 2*x + 2
 
     assert R.dmp_pexquo(f, g) == q
-    assert R.dmp_pquo(f, g) == q
 
     f = x**2 + 1
     g = 2*x - 4
     q = 2*x + 4
     r = 20
 
-    assert R.dmp_pquo(f, g) == q
     assert R.dmp_pdiv(f, g) == (q, r)
     assert R.dmp_prem(f, g) == r
 
@@ -852,7 +849,6 @@ def test_dmp_pdiv():
     assert R.dmp_pdiv(f, g) == (q, r)
     assert R.dmp_pdiv(g, f) == (0, g)
     assert R.dmp_prem(g, f) == g
-    assert R.dmp_pquo(f, g) == q
     assert R.dmp_prem(f, g) == r
 
     pytest.raises(ExactQuotientFailed, lambda: R.dmp_pexquo(f, g))
@@ -866,7 +862,6 @@ def test_dmp_pdiv():
     r = 2*y**2
 
     assert R.dmp_pdiv(f, g) == (q, r)
-    assert R.dmp_pquo(f, g) == q
     assert R.dmp_prem(f, g) == r
 
     pytest.raises(ZeroDivisionError, lambda: R.dmp_pdiv(f, 0))
@@ -881,7 +876,6 @@ def test_dmp_pdiv():
     assert R.dmp_pdiv(f, g) == (q, r)
     assert R.dmp_pdiv(g, f) == (0, g)
     assert R.dmp_prem(g, f) == g
-    assert R.dmp_pquo(f, g) == q
     assert R.dmp_prem(f, g) == r
 
     pytest.raises(ExactQuotientFailed, lambda: R.dmp_pexquo(f, g))

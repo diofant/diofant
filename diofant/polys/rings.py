@@ -2103,9 +2103,6 @@ class PolyElement(DomainElement, CantSympify, dict):
     def prem(self, other):
         return self.ring.dmp_prem(self, other)
 
-    def pquo(self, other):
-        return self.ring.dmp_pquo(self, other)
-
     def pexquo(self, other):
         return self.ring.dmp_pexquo(self, other)
 

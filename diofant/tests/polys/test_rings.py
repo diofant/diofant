@@ -1552,7 +1552,6 @@ def test_PolyElement_pdiv():
 
     assert f.pdiv(g) == (q, r)
     assert f.prem(g) == r
-    assert f.pquo(g) == q
     assert f.pexquo(g) == q
 
 

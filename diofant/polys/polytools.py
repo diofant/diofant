@@ -31,7 +31,7 @@ from .rootisolation import dup_isolate_real_roots_list
 
 
 __all__ = ('Poly', 'PurePoly', 'poly_from_expr', 'parallel_poly_from_expr',
-           'degree', 'degree_list', 'LC', 'LM', 'LT', 'pdiv', 'prem', 'pquo',
+           'degree', 'degree_list', 'LC', 'LM', 'LT', 'pdiv', 'prem',
            'pexquo', 'div', 'rem', 'quo', 'exquo', 'half_gcdex', 'gcdex',
            'invert', 'subresultants', 'resultant', 'discriminant', 'cofactors',
            'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
@@ -940,25 +940,6 @@ class Poly(Expr):
         _, per, F, G = self._unify(other)
 
         result = F.prem(G)
-        return per(result)
-
-    def pquo(self, other):
-        """
-        Polynomial pseudo-quotient of ``self`` by ``other``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + 1, x).pquo(Poly(2*x - 4, x))
-        Poly(2*x + 4, x, domain='ZZ')
-
-        >>> Poly(x**2 - 1, x).pquo(Poly(2*x - 2, x))
-        Poly(2*x + 2, x, domain='ZZ')
-
-        """
-        _, per, F, G = self._unify(other)
-
-        result = F.pquo(G)
         return per(result)
 
     def pexquo(self, other):
@@ -3253,34 +3234,6 @@ def prem(f, g, *gens, **args):
         return r.as_expr()
     else:
         return r
-
-
-def pquo(f, g, *gens, **args):
-    """
-    Compute polynomial pseudo-quotient of ``f`` and ``g``.
-
-    Examples
-    ========
-
-    >>> pquo(x**2 + 1, 2*x - 4)
-    2*x + 4
-    >>> pquo(x**2 - 1, 2*x - 1)
-    2*x + 1
-
-    """
-    options.allowed_flags(args, ['polys'])
-
-    try:
-        (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('pquo', 2, exc)
-
-    q = F.pquo(G)
-
-    if not opt.polys:
-        return q.as_expr()
-    else:
-        return q
 
 
 def pexquo(f, g, *gens, **args):
