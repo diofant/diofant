@@ -1,8 +1,7 @@
 """Arithmetics for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from .densebasic import (dmp_degree_in, dmp_LC, dmp_one, dmp_one_p,
-                         dmp_slice_in, dmp_strip, dmp_zero, dmp_zero_p,
-                         dmp_zeros)
+from .densebasic import (dmp_degree_in, dmp_one, dmp_one_p, dmp_slice_in,
+                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
 from .polyconfig import query
 from .polyerrors import ExactQuotientFailed
 
@@ -717,55 +716,6 @@ def dmp_pow(f, n, u, K):
         f = dmp_sqr(f, u, K)
 
     return g
-
-
-def dmp_prem(f, g, u, K):
-    """
-    Polynomial pseudo-remainder in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> (x**2 + x*y).prem(2*x + 2)
-    -4*y + 4
-
-    """
-    df = dmp_degree_in(f, 0, u)
-    dg = dmp_degree_in(g, 0, u)
-
-    if dg < 0:
-        raise ZeroDivisionError("polynomial division")
-
-    r, dr = f, df
-
-    if df < dg:
-        return r
-
-    N = df - dg + 1
-    lc_g = dmp_LC(g, K)
-
-    while True:
-        lc_r = dmp_LC(r, K)
-        j, N = dr - dg, N - 1
-
-        R = dmp_mul_term(r, lc_g, 0, u, K)
-        G = dmp_mul_term(g, lc_r, j, u, K)
-        r = dmp_sub(R, G, u, K)
-
-        _dr, dr = dr, dmp_degree_in(r, 0, u)
-
-        if dr < dg:
-            break
-        assert dr < _dr
-
-    if u:
-        c = dmp_pow(lc_g, N, u - 1, K)
-    else:
-        c = lc_g**N
-
-    return dmp_mul_term(r, c, 0, u, K)
 
 
 def dmp_div(f, g, u, K):

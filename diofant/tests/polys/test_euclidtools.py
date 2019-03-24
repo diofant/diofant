@@ -56,6 +56,60 @@ def test_dup_invert():
     pytest.raises(NotInvertible, lambda: R.dup_invert(x**2 - 1, x - 1))
 
 
+def test_dmp_prem():
+    R, x = ring('x', ZZ)
+
+    f = 3*x**3 + x**2 + x + 5
+    g = 5*x**2 - 3*x + 1
+
+    r = 52*x + 111
+
+    assert f.prem(g) == r
+
+    pytest.raises(ZeroDivisionError, lambda: f.prem(0))
+
+    f = x**2 + 1
+    g = 2*x - 4
+    r = 20
+
+    assert f.prem(g) == r
+
+    R, x = ring('x', QQ)
+
+    f = 3*x**3 + x**2 + x + 5
+    g = 5*x**2 - 3*x + 1
+
+    r = 52*x + 111
+
+    assert g.prem(f) == g
+    assert f.prem(g) == r
+
+    R, x, y = ring('x y', ZZ)
+
+    f = x**2 + y**2
+    g = x - y
+
+    r = 2*y**2
+
+    assert f.prem(g) == r
+
+    pytest.raises(ZeroDivisionError, lambda: f.prem(0))
+
+    g = 2*x - 2*y
+
+    r = 8*y**2
+
+    assert g.prem(f) == g
+    assert f.prem(g) == r
+
+    f = x**2 + x*y
+    g = 2*x + 2
+
+    r = -4*y + 4
+
+    assert f.prem(g) == r
+
+
 def test_dup_euclidean_prs():
     R, x = ring("x", QQ)
 
