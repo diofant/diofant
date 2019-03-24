@@ -13,66 +13,66 @@ from diofant.polys.specialpolys import f_polys
 __all__ = ()
 
 
-def test_dmp_integrate_in():
+def test_PolyElement_integrate():
     R, x = ring('x', QQ)
 
-    assert R.dmp_integrate_in(0, 1, 0) == 0
-    assert R.dmp_integrate_in(0, 2, 0) == 0
+    assert R(0).integrate() == 0
+    assert R(0).integrate(2) == 0
 
-    assert R.dmp_integrate_in(1, 1, 0) == x
-    assert R.dmp_integrate_in(1, 2, 0) == x**2/2
+    assert R(1).integrate() == x
+    assert R(1).integrate(2) == x**2/2
 
-    assert R.dmp_integrate_in(x**2 + 2*x + 3, 0, 0) == x**2 + 2*x + 3
-    assert R.dmp_integrate_in(x**2 + 2*x + 3, 1, 0) == x**3/3 + x**2 + 3*x
-    assert R.dmp_integrate_in(x**2 + 2*x + 3, 2, 0) == x**4/12 + x**3/3 + 3*x**2/2
-    assert R.dmp_integrate_in(x**2 + 2*x + 3, 3, 0) == x**5/60 + x**4/12 + x**3/2
+    assert (x**2 + 2*x + 3).integrate(0) == x**2 + 2*x + 3
+    assert (x**2 + 2*x + 3).integrate() == x**3/3 + x**2 + 3*x
+    assert (x**2 + 2*x + 3).integrate(2) == x**4/12 + x**3/3 + 3*x**2/2
+    assert (x**2 + 2*x + 3).integrate(3) == x**5/60 + x**4/12 + x**3/2
 
-    assert R.dmp_integrate_in(x**2 + 2*x, 1, 0) == x**3/3 + x**2
-    assert R.dmp_integrate_in(x**2 + 2*x, 2, 0) == x**4/12 + x**3/3
+    assert (x**2 + 2*x).integrate() == x**3/3 + x**2
+    assert (x**2 + 2*x).integrate(2) == x**4/12 + x**3/3
 
-    assert R.dmp_integrate_in(17*x**29, 3, 0) == 17*x**32/29760
+    assert (17*x**29).integrate(3) == 17*x**32/29760
 
-    assert R.dmp_integrate_in(17*x**29 + x**5/2, 3, 0) == 17*x**32/29760 + x**8/672
+    assert (17*x**29 + x**5/2).integrate(3) == 17*x**32/29760 + x**8/672
 
     R, x, y, z = ring('x y z', QQ)
 
-    assert R.dmp_integrate_in(0, 1, 0) == 0
-    assert R.dmp_integrate_in(0, 2, 0) == 0
+    assert R(0).integrate() == 0
+    assert R(0).integrate(2) == 0
 
-    assert R.dmp_integrate_in(1, 1, 0) == x
-    assert R.dmp_integrate_in(1, 2, 0) == x**2/2
+    assert R(1).integrate() == x
+    assert R(1).integrate(2) == x**2/2
 
     R, x, y = ring('x y', QQ)
 
-    assert R.dmp_integrate_in(x**2 + 2*x + 3, 0, 0) == x**2 + 2*x + 3
-    assert R.dmp_integrate_in(x**2 + 2*x + 3, 1, 0) == x**3/3 + x**2 + 3*x
-    assert R.dmp_integrate_in(x**2 + 2*x + 3, 2, 0) == x**4/12 + x**3/3 + 3*x**2/2
-    assert R.dmp_integrate_in(x**2 + 2*x + 3, 3, 0) == x**5/60 + x**4/12 + x**3/2
+    assert (x**2 + 2*x + 3).integrate(0) == x**2 + 2*x + 3
+    assert (x**2 + 2*x + 3).integrate(1) == x**3/3 + x**2 + 3*x
+    assert (x**2 + 2*x + 3).integrate(2) == x**4/12 + x**3/3 + 3*x**2/2
+    assert (x**2 + 2*x + 3).integrate(3) == x**5/60 + x**4/12 + x**3/2
 
-    assert R.dmp_integrate_in(x + 2*y, 1, 0) == x**2/2 + 2*x*y
-    assert R.dmp_integrate_in(x + 2*y, 2, 0) == x**3/6 + x**2*y
+    assert (x + 2*y).integrate(1) == x**2/2 + 2*x*y
+    assert (x + 2*y).integrate(2) == x**3/6 + x**2*y
 
     R, x, y, z, t = ring('x y, z, t', QQ)
 
     f = R.from_dense(f_polys()[6].to_dense())
 
-    assert (R.dmp_integrate_in(f, 2, 1) ==
+    assert (f.integrate(2, 1) ==
             705*x**4*y**3/2 + 45*x**3*y**2*z**3*t**2/2 - 45*x**3*y**2*t**2/2 -
             141*x*y**6/10 - 47*x*y**5/20 + 47*x*y**3*z**3/2 + 47*x*y**3*z*t/3 -
             9*y**5*z**3*t**2/20 + 9*y**5*t**2/20 - y**4*z**3*t**2/12 + y**4*t**2/12 +
             3*y**2*z**6*t**2/2 + y**2*z**4*t**3 - 3*y**2*z**3*t**2/2 - y**2*z*t**3)
-    assert (R.dmp_integrate_in(f, 3, 1) ==
+    assert (f.integrate(3, 1) ==
             705*x**4*y**4/8 + 15*x**3*y**3*z**3*t**2/2 - 15*x**3*y**3*t**2/2 -
             141*x*y**7/70 - 47*x*y**6/120 + 47*x*y**4*z**3/8 + 47*x*y**4*z*t/12 -
             3*y**6*z**3*t**2/40 + 3*y**6*t**2/40 - y**5*z**3*t**2/60 + y**5*t**2/60 +
             y**3*z**6*t**2/2 + y**3*z**4*t**3/3 - y**3*z**3*t**2/2 - y**3*z*t**3/3)
-    assert (R.dmp_integrate_in(f, 2, 2) ==
+    assert (f.integrate(2, 2) ==
             2115*x**4*y*z**2/2 + 9*x**3*z**5*t**2/4 - 45*x**3*z**2*t**2/2 -
             423*x*y**4*z**2/2 - 47*x*y**3*z**2/2 + 141*x*y*z**5/20 + 47*x*y*z**3*t/3 -
             9*y**3*z**5*t**2/20 + 9*y**3*z**2*t**2/2 - y**2*z**5*t**2/20 +
             y**2*z**2*t**2/2 + 3*z**8*t**2/56 + z**6*t**3/15 - 3*z**5*t**2/20 -
             z**3*t**3/3)
-    assert (R.dmp_integrate_in(f, 3, 2) ==
+    assert (f.integrate(3, 2) ==
             705*x**4*y*z**3/2 + 3*x**3*z**6*t**2/8 - 15*x**3*z**3*t**2/2 -
             141*x*y**4*z**3/2 - 47*x*y**3*z**3/6 + 47*x*y*z**6/40 + 47*x*y*z**4*t/12 -
             3*y**3*z**6*t**2/40 + 3*y**3*z**3*t**2/2 - y**2*z**6*t**2/120 +
