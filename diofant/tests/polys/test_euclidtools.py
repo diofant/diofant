@@ -28,18 +28,16 @@ def test_dup_gcdex():
     h = x + 1
 
     assert R.dup_half_gcdex(f, g) == (s, h)
-    assert R.dup_gcdex(f, g) == (s, t, h)
+    assert f.gcdex(g) == (s, t, h)
 
     f = x**4 + 4*x**3 - x + 1
     g = x**3 - x + 1
 
-    s, t, h = R.dup_gcdex(f, g)
-    S, T, H = R.dup_gcdex(g, f)
+    s, t, h = f.gcdex(g)
+    S, T, H = g.gcdex(f)
 
-    assert R.dmp_add(R.dmp_mul(s, f),
-                     R.dmp_mul(t, g)) == h
-    assert R.dmp_add(R.dmp_mul(S, g),
-                     R.dmp_mul(T, f)) == H
+    assert s*f + t*g == h
+    assert S*g + T*f == H
 
     f = 2*x
     g = x**2 - 16
@@ -49,7 +47,7 @@ def test_dup_gcdex():
     h = 1
 
     assert R.dup_half_gcdex(f, g) == (s, h)
-    assert R.dup_gcdex(f, g) == (s, t, h)
+    assert f.gcdex(g) == (s, t, h)
 
 
 def test_dup_invert():
