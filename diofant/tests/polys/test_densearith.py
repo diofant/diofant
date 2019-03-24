@@ -814,15 +814,15 @@ def test_dmp_prem():
 
     r = 52*x + 111
 
-    assert R.dmp_prem(f, g) == r
+    assert f.prem(g) == r
 
-    pytest.raises(ZeroDivisionError, lambda: R.dmp_prem(f, 0))
+    pytest.raises(ZeroDivisionError, lambda: f.prem(0))
 
     f = x**2 + 1
     g = 2*x - 4
     r = 20
 
-    assert R.dmp_prem(f, g) == r
+    assert f.prem(g) == r
 
     R, x = ring('x', QQ)
 
@@ -831,8 +831,8 @@ def test_dmp_prem():
 
     r = 52*x + 111
 
-    assert R.dmp_prem(g, f) == g
-    assert R.dmp_prem(f, g) == r
+    assert g.prem(f) == g
+    assert f.prem(g) == r
 
     R, x, y = ring('x y', ZZ)
 
@@ -841,16 +841,16 @@ def test_dmp_prem():
 
     r = 2*y**2
 
-    assert R.dmp_prem(f, g) == r
+    assert f.prem(g) == r
 
-    pytest.raises(ZeroDivisionError, lambda: R.dmp_prem(f, 0))
+    pytest.raises(ZeroDivisionError, lambda: f.prem(0))
 
     g = 2*x - 2*y
 
     r = 8*y**2
 
-    assert R.dmp_prem(g, f) == g
-    assert R.dmp_prem(f, g) == r
+    assert g.prem(f) == g
+    assert f.prem(g) == r
 
 
 def test_dmp_div():

@@ -728,7 +728,7 @@ def dmp_prem(f, g, u, K):
 
     >>> R, x, y = ring("x y", ZZ)
 
-    >>> R.dmp_prem(x**2 + x*y, 2*x + 2)
+    >>> (x**2 + x*y).prem(2*x + 2)
     -4*y + 4
 
     """
