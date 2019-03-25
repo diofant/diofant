@@ -524,6 +524,7 @@ def test_other_symbol():
     x = Symbol('x', integer=True)
     assert x.is_integer is True
     assert x.is_extended_real is True
+    assert x.is_finite is True
 
     x = Symbol('x', integer=True, nonnegative=True)
     assert x.is_integer is True
@@ -551,11 +552,13 @@ def test_other_symbol():
     assert x.is_even is True
     assert x.is_odd is False
     assert x.is_integer is True
+    assert x.is_finite is True
 
     x = Symbol('x', even=False)
     assert x.is_even is False
     assert x.is_odd is None
     assert x.is_integer is None
+    assert x.is_finite is None  # issue sympy/sympy#16432
 
     x = Symbol('x', integer=True, nonnegative=True)
     assert x.is_integer is True
