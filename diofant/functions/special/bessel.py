@@ -155,7 +155,7 @@ class besselj(BesselBase):
         if z.is_zero:
             if nu.is_zero:
                 return Integer(1)
-            elif (nu.is_integer and nu.is_zero is False) or re(nu).is_positive:
+            elif (nu.is_integer and nu.is_nonzero) or re(nu).is_positive:
                 return Integer(0)
             elif re(nu).is_negative and not (nu.is_integer is True):
                 return zoo
@@ -248,7 +248,7 @@ class bessely(BesselBase):
         if z.is_zero:
             if nu.is_zero:
                 return -oo
-            elif re(nu).is_zero is False:
+            elif re(nu).is_nonzero:
                 return zoo
             elif re(nu).is_zero:
                 return nan
@@ -320,7 +320,7 @@ class besseli(BesselBase):
         if z.is_zero:
             if nu.is_zero:
                 return Integer(1)
-            elif (nu.is_integer and nu.is_zero is False) or re(nu).is_positive:
+            elif (nu.is_integer and nu.is_nonzero) or re(nu).is_positive:
                 return Integer(0)
             elif re(nu).is_negative and not (nu.is_integer is True):
                 return zoo
@@ -410,7 +410,7 @@ class besselk(BesselBase):
         if z.is_zero:
             if nu.is_zero:
                 return oo
-            elif re(nu).is_zero is False:
+            elif re(nu).is_nonzero:
                 return zoo
             elif re(nu).is_zero:
                 return nan

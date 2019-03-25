@@ -656,7 +656,7 @@ class binomial(CombinatorialFunction):
         d = n - k
         if d.is_zero or k.is_zero:
             return Integer(1)
-        elif d.is_zero is False:
+        elif d.is_nonzero:
             if (k - 1).is_zero:
                 return n
             elif k.is_negative:

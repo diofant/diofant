@@ -2750,7 +2750,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             t = t.cancel()
 
             is_zero = t.equals(0)
-            if is_zero is True:
+            if is_zero:
                 continue
             elif is_zero is False:
                 break

@@ -350,7 +350,7 @@ class Pow(Expr):
                 m = self.exp % 4
                 if m.is_zero:
                     return True
-                if m.is_integer and m.is_zero is False:
+                if m.is_integer and m.is_nonzero:
                     return False
             if self.exp.is_imaginary:
                 return log(self.base).is_imaginary

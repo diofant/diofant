@@ -83,3 +83,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`16222` Poly(E**100000000) is slow to create
 * :sympyissue:`15413` rootof fails for polynomial with irrational coefficients
 * :sympyissue:`16432` a.is_even does not imply a.is_finite
+* :sympyissue:`16431` a.is_zero is False does not imply a.is_nonzero is True
