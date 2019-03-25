@@ -98,7 +98,7 @@ def integer_powers(exprs):
         newmults = [(i, j*common_denom) for i, j in terms[term]]
         newterms[newterm] = newmults
 
-    return sorted(iter(newterms.items()), key=lambda item: item[0].sort_key())
+    return sorted(newterms.items(), key=lambda item: item[0].sort_key())
 
 
 class DifferentialExtension:

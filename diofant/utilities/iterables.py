@@ -1500,7 +1500,7 @@ def binary_partitions(n):
 
     """
     from math import ceil, log
-    pow = int(2**(ceil(log(n, 2))))
+    pow = 2**ceil(log(n, 2))
     sum = 0
     partition = []
     while pow:

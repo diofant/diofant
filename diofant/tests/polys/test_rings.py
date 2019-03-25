@@ -931,6 +931,11 @@ def test_PolyElement___pow__():
     f = x**3*y - 2*x*y**2 - 3*z + x + y + 1
     assert f**4 == f._pow_generic(4)
 
+    R, x = ring("x", FF(11))
+
+    f = x + 1
+    assert f**11 == x**11 + 1
+
 
 def test_PolyElement_div():
     _, u = ring("u", ZZ)
@@ -1539,16 +1544,12 @@ def test_PolyElement_drop():
     pytest.raises(ValueError, lambda: R3.x.drop_to_ground(R3.x))
 
 
-def test_PolyElement_pdiv():
+def test_PolyElement_prem():
     _,  x, y = ring("x,y", ZZ)
 
     f, g = x**2 - y**2, x - y
-    q, r = x + y, 0
 
-    assert f.pdiv(g) == (q, r)
-    assert f.prem(g) == r
-    assert f.pquo(g) == q
-    assert f.pexquo(g) == q
+    assert f.prem(g) == 0
 
 
 def test_PolyElement_gcdex():

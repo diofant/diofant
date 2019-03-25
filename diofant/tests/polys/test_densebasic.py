@@ -660,30 +660,30 @@ def test_dmp_slice_in():
 
     f = x**3 + 2*x**2 + 3*x + 4
 
-    assert R.dmp_slice_in(f, 0, 0, 0) == 0
-    assert R.dmp_slice_in(f, 0, 1, 0) == 4
-    assert R.dmp_slice_in(f, 0, 2, 0) == 3*x + 4
-    assert R.dmp_slice_in(f, 0, 3, 0) == 2*x**2 + 3*x + 4
+    assert f.slice(0, 0) == 0
+    assert f.slice(0, 1) == 4
+    assert f.slice(0, 2) == 3*x + 4
+    assert f.slice(0, 3) == 2*x**2 + 3*x + 4
 
-    assert R.dmp_slice_in(f, 0, 4, 0) == f
-    assert R.dmp_slice_in(f, 0, 9, 0) == f
+    assert f.slice(0, 4) == f
+    assert f.slice(0, 9) == f
 
-    assert R.dmp_slice_in(f, 1, 0, 0) == 0
-    assert R.dmp_slice_in(f, 1, 1, 0) == 0
-    assert R.dmp_slice_in(f, 1, 2, 0) == 3*x
-    assert R.dmp_slice_in(f, 1, 3, 0) == 2*x**2 + 3*x
-    assert R.dmp_slice_in(f, 1, 4, 0) == x**3 + 2*x**2 + 3*x
+    assert f.slice(1, 0) == 0
+    assert f.slice(1, 1) == 0
+    assert f.slice(1, 2) == 3*x
+    assert f.slice(1, 3) == 2*x**2 + 3*x
+    assert f.slice(1, 4) == x**3 + 2*x**2 + 3*x
 
     pytest.raises(IndexError, lambda: R.dmp_slice_in(f, 0, 0, -1))
 
-    assert R.dmp_slice_in(x + 2, 0, 3, 0) == x + 2
+    assert (x + 2).slice(0, 3) == x + 2
 
     R, x, y = ring('x y', ZZ)
 
     f = x + 2*y**2 + 3*y + 4
 
-    assert R.dmp_slice_in(f, 1, 2, 0) == f
-    assert R.dmp_slice_in(f, 2, 1, 0) == 2*y**2 + 3*y + 5
+    assert f.slice(1, 2) == f
+    assert f.slice(2, 1) == 2*y**2 + 3*y + 5
 
 
 def test_dup_random():

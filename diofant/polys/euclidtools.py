@@ -5,7 +5,7 @@ from ..ntheory import nextprime
 from ..ntheory.modular import symmetric_residue
 from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
-                         dmp_prem, dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
+                         dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
                          dmp_sub_mul, dup_mul)
 from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
                          dmp_ground, dmp_ground_LC, dmp_inflate, dmp_LC,
@@ -35,7 +35,7 @@ def dup_half_gcdex(f, g, K):
     >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
     >>> g = x**3 + x**2 - 4*x - 4
 
-    >>> R.dup_half_gcdex(f, g)
+    >>> f.half_gcdex(g)
     (-1/5*x + 3/5, x + 1)
 
     """
@@ -69,7 +69,7 @@ def dup_gcdex(f, g, K):
     >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
     >>> g = x**3 + x**2 - 4*x - 4
 
-    >>> R.dup_gcdex(f, g)
+    >>> f.gcdex(g)
     (-1/5*x + 3/5, 1/5*x**2 - 6/5*x + 2, x + 1)
 
     """
@@ -109,6 +109,60 @@ def dup_invert(f, g, K):
         return dmp_rem(s, g, 0, K)
     else:
         raise NotInvertible("zero divisor")
+
+
+def dmp_prem(f, g, u, K):
+    """
+    Polynomial pseudo-remainder in ``K[X]``.
+
+    Examples
+    ========
+
+    >>> R, x, y = ring("x y", ZZ)
+
+    >>> (x**2 + x*y).prem(2*x + 2)
+    -4*y + 4
+
+    References
+    ==========
+
+    * :cite:`Knuth1985seminumerical`, p. 407.
+
+    """
+    df = dmp_degree_in(f, 0, u)
+    dg = dmp_degree_in(g, 0, u)
+
+    if dg < 0:
+        raise ZeroDivisionError("polynomial division")
+
+    r, dr = f, df
+
+    if df < dg:
+        return r
+
+    N = df - dg + 1
+    lc_g = dmp_LC(g, K)
+
+    while True:
+        lc_r = dmp_LC(r, K)
+        j, N = dr - dg, N - 1
+
+        R = dmp_mul_term(r, lc_g, 0, u, K)
+        G = dmp_mul_term(g, lc_r, j, u, K)
+        r = dmp_sub(R, G, u, K)
+
+        _dr, dr = dr, dmp_degree_in(r, 0, u)
+
+        if dr < dg:
+            break
+        assert dr < _dr
+
+    if u:
+        c = dmp_pow(lc_g, N, u - 1, K)
+    else:
+        c = lc_g**N
+
+    return dmp_mul_term(r, c, 0, u, K)
 
 
 def dup_euclidean_prs(f, g, K):
@@ -289,24 +343,6 @@ def dup_prs_resultant(f, g, K):
         return K.zero, R
 
     return S[-1], R
-
-
-def dup_resultant(f, g, K, includePRS=False):
-    """
-    Computes resultant of two polynomials in `K[x]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dmp_resultant(x**2 + 1, x**2 - 1)
-    4
-
-    """
-    if includePRS:
-        return dup_prs_resultant(f, g, K)
-    return dup_prs_resultant(f, g, K)[0]
 
 
 def dmp_inner_subresultants(f, g, u, K):
@@ -639,9 +675,6 @@ def dmp_resultant(f, g, u, K, includePRS=False):
     -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
 
     """
-    if not u:
-        return dup_resultant(f, g, K, includePRS=includePRS)
-
     if includePRS:
         return dmp_prs_resultant(f, g, u, K)
 
@@ -1107,90 +1140,6 @@ def dmp_gcd(f, g, u, K):
 
     """
     return dmp_inner_gcd(f, g, u, K)[0]
-
-
-def dmp_rr_lcm(f, g, u, K):
-    """
-    Computes polynomial LCM over a ring in `K[X]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dmp_lcm(x**2 - 1, x**2 - 3*x + 2)
-    x**3 - 2*x**2 - x + 2
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> f = x**2 + 2*x*y + y**2
-    >>> g = x**2 + x*y
-
-    >>> R.dmp_lcm(f, g)
-    x**3 + 2*x**2*y + x*y**2
-
-    """
-    fc, f = dmp_ground_primitive(f, u, K)
-    gc, g = dmp_ground_primitive(g, u, K)
-
-    c = K.lcm(fc, gc)
-
-    h = dmp_quo(dmp_mul(f, g, u, K),
-                dmp_gcd(f, g, u, K), u, K)
-
-    return dmp_mul_ground(h, c, u, K)
-
-
-def dmp_ff_lcm(f, g, u, K):
-    """
-    Computes polynomial LCM over a field in `K[X]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", QQ)
-
-    >>> f = (x**2 + 7*x/2 + 3)/2
-    >>> g = x**2/2 + x
-
-    >>> R.dmp_lcm(f, g)
-    x**3 + 7/2*x**2 + 3*x
-
-    >>> R, x, y = ring("x y", QQ)
-
-    >>> f = x**2/4 + x*y + y**2
-    >>> g = x**2/2 + x*y
-
-    >>> R.dmp_lcm(f, g)
-    x**3 + 4*x**2*y + 4*x*y**2
-
-    """
-    h = dmp_quo(dmp_mul(f, g, u, K),
-                dmp_gcd(f, g, u, K), u, K)
-
-    return dmp_ground_monic(h, u, K)
-
-
-def dmp_lcm(f, g, u, K):
-    """
-    Computes polynomial LCM of `f` and `g` in `K[X]`.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> f = x**2 + 2*x*y + y**2
-    >>> g = x**2 + x*y
-
-    >>> R.dmp_lcm(f, g)
-    x**3 + 2*x**2*y + x*y**2
-
-    """
-    if K.is_Field:
-        return dmp_ff_lcm(f, g, u, K)
-    else:
-        return dmp_rr_lcm(f, g, u, K)
 
 
 def dmp_content(f, u, K):

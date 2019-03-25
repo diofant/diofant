@@ -155,7 +155,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                 nc_part.append(term)
 
         # add up exponents of common bases
-        for b, e in ordered(iter(c_powers.items())):
+        for b, e in ordered(c_powers.items()):
             # allow 2**x/4 -> 2**(x - 2); don't do this when b and e are
             # Numbers since autoevaluation will undo it, e.g.
             # 2**(1/3)/4 -> 2**(1/3 - 2) -> 2**(1/3)/4

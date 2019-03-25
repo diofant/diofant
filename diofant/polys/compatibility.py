@@ -3,10 +3,9 @@
 from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term, dmp_div,
                          dmp_expand, dmp_exquo, dmp_exquo_ground, dmp_l1_norm,
                          dmp_max_norm, dmp_mul, dmp_mul_ground, dmp_mul_term,
-                         dmp_neg, dmp_pdiv, dmp_pexquo, dmp_pow, dmp_pquo,
-                         dmp_prem, dmp_quo, dmp_quo_ground, dmp_rem, dmp_sqr,
-                         dmp_sub, dmp_sub_mul, dmp_sub_term, dup_lshift,
-                         dup_rshift)
+                         dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_rem,
+                         dmp_sqr, dmp_sub, dmp_sub_mul, dmp_sub_term,
+                         dup_lshift, dup_rshift)
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
                          dmp_ground_TC, dmp_LC, dmp_slice_in, dmp_strip,
                          dmp_TC, dmp_to_dict)
@@ -19,7 +18,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dup_shift, dup_transform)
 from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
-                          dmp_inner_subresultants, dmp_lcm, dmp_primitive,
+                          dmp_inner_subresultants, dmp_prem, dmp_primitive,
                           dmp_prs_resultant, dmp_qq_collins_resultant,
                           dmp_qq_heu_gcd, dmp_resultant, dmp_rr_prs_gcd,
                           dmp_subresultants, dmp_zz_collins_resultant,
@@ -27,8 +26,8 @@ from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
                           dup_euclidean_prs, dup_ff_prs_gcd, dup_gcdex,
                           dup_half_gcdex, dup_inner_subresultants, dup_invert,
                           dup_primitive_prs, dup_rr_prs_gcd)
-from .factortools import (dmp_ext_factor, dmp_factor_list, dmp_trial_division,
-                          dmp_zz_factor, dmp_zz_mignotte_bound, dmp_zz_wang,
+from .factortools import (dmp_factor_list, dmp_trial_division, dmp_zz_factor,
+                          dmp_zz_mignotte_bound, dmp_zz_wang,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
                           dmp_zz_wang_non_divisors, dup_cyclotomic_p,
                           dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
@@ -133,18 +132,8 @@ class IPolys:
     def dmp_pow(self, f, n):
         return self.from_dense(dmp_pow(self.to_dense(f), n, self.ngens-1, self.domain))
 
-    def dmp_pdiv(self, f, g):
-        q, r = dmp_pdiv(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(q), self.from_dense(r)
-
     def dmp_prem(self, f, g):
         return self.from_dense(dmp_prem(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain))
-
-    def dmp_pquo(self, f, g):
-        return self.from_dense(dmp_pquo(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain))
-
-    def dmp_pexquo(self, f, g):
-        return self.from_dense(dmp_pexquo(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain))
 
     def dmp_div(self, f, g):
         q, r = dmp_div(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
@@ -366,10 +355,6 @@ class IPolys:
         H = dmp_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.from_dense(H)
 
-    def dmp_lcm(self, f, g):
-        H = dmp_lcm(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(H)
-
     def dmp_content(self, f):
         cont = dmp_content(self.to_dense(f), self.ngens-1, self.domain)
         return self.drop(0).from_dense(cont)
@@ -469,10 +454,6 @@ class IPolys:
 
     def dmp_zz_factor(self, f):
         coeff, factors = dmp_zz_factor(self.to_dense(f), self.ngens-1, self.domain)
-        return coeff, [(self.from_dense(g), k) for g, k in factors]
-
-    def dmp_ext_factor(self, f):
-        coeff, factors = dmp_ext_factor(self.to_dense(f), self.ngens-1, self.domain)
         return coeff, [(self.from_dense(g), k) for g, k in factors]
 
     def dmp_factor_list(self, f):

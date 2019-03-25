@@ -1127,83 +1127,6 @@ def gf_irreducible_p(f, p, K):
     return _irred_methods[method](f, p, K)
 
 
-def gf_sqf_list(f, p, K):
-    """
-    Return the square-free decomposition of a ``GF(p)[x]`` polynomial.
-
-    Given a polynomial ``f`` in ``GF(p)[x]``, returns the leading coefficient
-    of ``f`` and a square-free decomposition ``f_1**e_1 f_2**e_2 ... f_k**e_k``
-    such that all ``f_i`` are monic polynomials and ``(f_i, f_j)`` for ``i != j``
-    are co-prime and ``e_1 ... e_k`` are given in increasing order. All trivial
-    terms (i.e. ``f_i = 1``) aren't included in the output.
-
-    Examples
-    ========
-
-    >>> f = gf_from_dict({11: ZZ(1), 0: ZZ(1)}, 11, ZZ)
-
-    Note that:
-
-    >>> gf_diff(f, 11, ZZ)
-    []
-
-    This phenomenon doesn't happen in characteristic zero. However we can
-    still compute square-free decomposition of ``f``:
-
-    >>> gf_sqf_list(f, 11, ZZ)
-    (1, [([1, 1], 11)])
-    >>> gf_pow(*_[1][0], 11, ZZ) == f
-    True
-
-    References
-    ==========
-
-    * :cite:`Geddes1992algorithms`
-
-    """
-    n, sqf, factors, r = 1, False, [], int(p)
-
-    lc, f = gf_monic(f, p, K)
-
-    if dmp_degree_in(f, 0, 0) < 1:
-        return lc, []
-
-    while True:
-        F = gf_diff(f, p, K)
-
-        if F != []:
-            g = gf_gcd(f, F, p, K)
-            h = gf_quo(f, g, p, K)
-
-            i = 1
-
-            while h != [K.one]:
-                G = gf_gcd(g, h, p, K)
-                H = gf_quo(h, G, p, K)
-
-                if dmp_degree_in(H, 0, 0) > 0:
-                    factors.append((H, i*n))
-
-                g, h, i = gf_quo(g, G, p, K), G, i + 1
-
-            if g == [K.one]:
-                sqf = True
-            else:
-                f = g
-
-        if not sqf:
-            d = dmp_degree_in(f, 0, 0) // r
-
-            for i in range(d + 1):
-                f[i] = f[i*r]
-
-            f, n = f[:d + 1], n*r
-        else:
-            break
-
-    return lc, factors
-
-
 def gf_Qmatrix(f, p, K):
     """
     Calculate Berlekamp's ``Q`` matrix.
@@ -1474,7 +1397,7 @@ def gf_ddf_shoup(f, p, K):
 
     """
     n = dmp_degree_in(f, 0, 0)
-    k = int(math.ceil(math.sqrt(n//2)))
+    k = math.ceil(math.sqrt(n//2))
     b = gf_frobenius_monomial_base(f, p, K)
     h = gf_frobenius_map([K.one, K.zero], f, b, p, K)
     # U[i] = x**(p**i)
@@ -1627,39 +1550,13 @@ def gf_factor_sqf(f, p, K):
     """
     Factor a square-free polynomial ``f`` in ``GF(p)[x]``.
 
-    Examples
-    ========
+    Returns its complete factorization into irreducibles::
 
-    >>> gf_factor_sqf([3, 2, 4], 5, ZZ)
-    (3, [[1, 1], [1, 3]])
-
-    """
-    lc, f = gf_monic(f, p, K)
-
-    if dmp_degree_in(f, 0, 0) < 1:
-        return lc, []
-
-    method = query('GF_FACTOR_METHOD')
-
-    return lc, _factor_methods[method](f, p, K)
-
-
-def gf_factor(f, p, K):
-    """
-    Factor (non square-free) polynomials in ``GF(p)[x]``.
-
-    Given a possibly non square-free polynomial ``f`` in ``GF(p)[x]``,
-    returns its complete factorization into irreducibles::
-
-                 f_1(x)**e_1 f_2(x)**e_2 ... f_d(x)**e_d
+                 f_1(x) f_2(x) ... f_d(x)
 
     where each ``f_i`` is a monic polynomial and ``gcd(f_i, f_j) == 1``,
     for ``i != j``.  The result is given as a tuple consisting of the
-    leading coefficient of ``f`` and a list of factors of ``f`` with
-    their multiplicities.
-
-    The algorithm proceeds by first computing square-free decomposition
-    of ``f`` and then iteratively factoring each of square-free factors.
+    leading coefficient of ``f`` and a list of factors of ``f``.
 
     Square-free factors of ``f`` can be factored into irreducibles over
     ``GF(p)`` using three very different methods:
@@ -1678,12 +1575,8 @@ def gf_factor(f, p, K):
     Examples
     ========
 
-    >>> gf_factor([5, 2, 7, 2], 11, ZZ)
-    (5, [([1, 2], 1), ([1, 8], 2)])
-
-    We arrived with factorization ``f = 5 (x + 2) (x + 8)**2``. We didn't
-    recover the exact form of the input polynomial because we requested to
-    get monic factors of ``f`` and its leading coefficient separately.
+    >>> gf_factor_sqf([3, 2, 4], 5, ZZ)
+    (3, [[1, 1], [1, 3]])
 
     References
     ==========
@@ -1696,13 +1589,9 @@ def gf_factor(f, p, K):
     if dmp_degree_in(f, 0, 0) < 1:
         return lc, []
 
-    factors = []
+    method = query('GF_FACTOR_METHOD')
 
-    for g, n in gf_sqf_list(f, p, K)[1]:
-        for h in gf_factor_sqf(g, p, K)[1]:
-            factors.append((h, n))
-
-    return lc, _sort_factors(factors)
+    return lc, _factor_methods[method](f, p, K)
 
 
 def linear_congruence(a, b, m):

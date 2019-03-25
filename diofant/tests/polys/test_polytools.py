@@ -28,11 +28,11 @@ from diofant.polys.polytools import (LC, LM, LT, GroebnerBasis, Poly, PurePoly,
                                      groebner, ground_roots, half_gcdex,
                                      intervals, invert, lcm, lcm_list, monic,
                                      nroots, nth_power_roots_poly,
-                                     parallel_poly_from_expr, pdiv, pexquo,
-                                     poly, pquo, prem, primitive, quo,
-                                     real_roots, reduced, refine_root, rem,
-                                     resultant, sqf, sqf_list, sqf_norm,
-                                     sqf_part, sturm, subresultants, terms_gcd,
+                                     parallel_poly_from_expr, poly, prem,
+                                     primitive, quo, real_roots, reduced,
+                                     refine_root, rem, resultant, sqf,
+                                     sqf_list, sqf_norm, sqf_part, sturm,
+                                     subresultants, terms_gcd,
                                      to_rational_coeffs, trunc)
 from diofant.polys.rings import ring
 
@@ -1521,53 +1521,22 @@ def test_parallel_poly_from_expr():
               'polys': False}))
 
 
-def test_pdiv():
+def test_prem():
     f, g = x**2 - y**2, x - y
     q, r = x + y, 0
 
     F, G, Q, R = [Poly(h, x, y) for h in (f, g, q, r)]
 
-    assert F.pdiv(G) == (Q, R)
     assert F.prem(G) == R
-    assert F.pquo(G) == Q
-    assert F.pexquo(G) == Q
 
-    assert pdiv(f, g) == (q, r)
     assert prem(f, g) == r
-    assert pquo(f, g) == q
-    assert pexquo(f, g) == q
-
-    assert pdiv(f, g, x, y) == (q, r)
     assert prem(f, g, x, y) == r
-    assert pquo(f, g, x, y) == q
-    assert pexquo(f, g, x, y) == q
-
-    assert pdiv(f, g, (x, y)) == (q, r)
     assert prem(f, g, (x, y)) == r
-    assert pquo(f, g, (x, y)) == q
-    assert pexquo(f, g, (x, y)) == q
-
-    assert pdiv(F, G) == (Q, R)
     assert prem(F, G) == R
-    assert pquo(F, G) == Q
-    assert pexquo(F, G) == Q
-
-    assert pdiv(f, g, polys=True) == (Q, R)
     assert prem(f, g, polys=True) == R
-    assert pquo(f, g, polys=True) == Q
-    assert pexquo(f, g, polys=True) == Q
-
-    assert pdiv(F, G, polys=False) == (q, r)
     assert prem(F, G, polys=False) == r
-    assert pquo(F, G, polys=False) == q
-    assert pexquo(F, G, polys=False) == q
 
-    pytest.raises(ComputationFailed, lambda: pdiv(4, 2))
     pytest.raises(ComputationFailed, lambda: prem(4, 2))
-    pytest.raises(ComputationFailed, lambda: pquo(4, 2))
-    pytest.raises(ComputationFailed, lambda: pexquo(4, 2))
-    pytest.raises(ExactQuotientFailed,
-                  lambda: Poly(x**2 + 1).pexquo(Poly(2*x - 4)))
 
 
 def test_div():

@@ -103,7 +103,7 @@ def _primitive(f, p):
         coeffs[monom[:-1]][monom[-1]] = coeff
 
     cont = []
-    for coeff in iter(coeffs.values()):
+    for coeff in coeffs.values():
         cont = gf_gcd(cont, gf_from_dict(coeff, p, dom), p, dom)
 
     yring = ring.clone(symbols=ring.symbols[k-1])

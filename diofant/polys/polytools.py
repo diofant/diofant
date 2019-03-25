@@ -31,8 +31,8 @@ from .rootisolation import dup_isolate_real_roots_list
 
 
 __all__ = ('Poly', 'PurePoly', 'poly_from_expr', 'parallel_poly_from_expr',
-           'degree', 'degree_list', 'LC', 'LM', 'LT', 'pdiv', 'prem', 'pquo',
-           'pexquo', 'div', 'rem', 'quo', 'exquo', 'half_gcdex', 'gcdex',
+           'degree', 'degree_list', 'LC', 'LM', 'LT', 'prem',
+           'div', 'rem', 'quo', 'exquo', 'half_gcdex', 'gcdex',
            'invert', 'subresultants', 'resultant', 'discriminant', 'cofactors',
            'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
            'monic', 'content', 'primitive', 'compose', 'decompose', 'sturm',
@@ -910,22 +910,6 @@ class Poly(Expr):
         result = self.rep.exquo_ground(coeff)
         return self.per(result)
 
-    def pdiv(self, other):
-        """
-        Polynomial pseudo-division of ``self`` by ``other``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + 1, x).pdiv(Poly(2*x - 4, x))
-        (Poly(2*x + 4, x, domain='ZZ'), Poly(20, x, domain='ZZ'))
-
-        """
-        _, per, F, G = self._unify(other)
-
-        q, r = F.pdiv(G)
-        return per(q), per(r)
-
     def prem(self, other):
         """
         Polynomial pseudo-remainder of ``self`` by ``other``.
@@ -940,50 +924,6 @@ class Poly(Expr):
         _, per, F, G = self._unify(other)
 
         result = F.prem(G)
-        return per(result)
-
-    def pquo(self, other):
-        """
-        Polynomial pseudo-quotient of ``self`` by ``other``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 + 1, x).pquo(Poly(2*x - 4, x))
-        Poly(2*x + 4, x, domain='ZZ')
-
-        >>> Poly(x**2 - 1, x).pquo(Poly(2*x - 2, x))
-        Poly(2*x + 2, x, domain='ZZ')
-
-        """
-        _, per, F, G = self._unify(other)
-
-        result = F.pquo(G)
-        return per(result)
-
-    def pexquo(self, other):
-        """
-        Polynomial exact pseudo-quotient of ``self`` by ``other``.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 - 1, x).pexquo(Poly(2*x - 2, x))
-        Poly(2*x + 2, x, domain='ZZ')
-
-        >>> Poly(x**2 + 1, x).pexquo(Poly(2*x - 4, x))
-        Traceback (most recent call last):
-        ...
-        ExactQuotientFailed: 2*x - 4 does not divide x**2 + 1
-
-        """
-        _, per, F, G = self._unify(other)
-
-        try:
-            result = F.pexquo(G)
-        except ExactQuotientFailed as exc:
-            raise exc.new(self.as_expr(), other.as_expr())
-
         return per(result)
 
     def div(self, other, auto=True):
@@ -3203,32 +3143,6 @@ def LT(f, *gens, **args):
     return coeff*monom.as_expr()
 
 
-def pdiv(f, g, *gens, **args):
-    """
-    Compute polynomial pseudo-division of ``f`` and ``g``.
-
-    Examples
-    ========
-
-    >>> pdiv(x**2 + 1, 2*x - 4)
-    (2*x + 4, 20)
-
-    """
-    options.allowed_flags(args, ['polys'])
-
-    try:
-        (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('pdiv', 2, exc)
-
-    q, r = F.pdiv(G)
-
-    if not opt.polys:
-        return q.as_expr(), r.as_expr()
-    else:
-        return q, r
-
-
 def prem(f, g, *gens, **args):
     """
     Compute polynomial pseudo-remainder of ``f`` and ``g``.
@@ -3253,65 +3167,6 @@ def prem(f, g, *gens, **args):
         return r.as_expr()
     else:
         return r
-
-
-def pquo(f, g, *gens, **args):
-    """
-    Compute polynomial pseudo-quotient of ``f`` and ``g``.
-
-    Examples
-    ========
-
-    >>> pquo(x**2 + 1, 2*x - 4)
-    2*x + 4
-    >>> pquo(x**2 - 1, 2*x - 1)
-    2*x + 1
-
-    """
-    options.allowed_flags(args, ['polys'])
-
-    try:
-        (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('pquo', 2, exc)
-
-    q = F.pquo(G)
-
-    if not opt.polys:
-        return q.as_expr()
-    else:
-        return q
-
-
-def pexquo(f, g, *gens, **args):
-    """
-    Compute polynomial exact pseudo-quotient of ``f`` and ``g``.
-
-    Examples
-    ========
-
-    >>> pexquo(x**2 - 1, 2*x - 2)
-    2*x + 2
-
-    >>> pexquo(x**2 + 1, 2*x - 4)
-    Traceback (most recent call last):
-    ...
-    ExactQuotientFailed: 2*x - 4 does not divide x**2 + 1
-
-    """
-    options.allowed_flags(args, ['polys'])
-
-    try:
-        (F, G), opt = parallel_poly_from_expr((f, g), *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('pexquo', 2, exc)
-
-    q = F.pexquo(G)
-
-    if not opt.polys:
-        return q.as_expr()
-    else:
-        return q
 
 
 def div(f, g, *gens, **args):

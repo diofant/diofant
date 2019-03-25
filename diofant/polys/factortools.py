@@ -21,13 +21,13 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dup_mirror)
 from .euclidtools import dmp_inner_gcd, dmp_primitive
-from .galoistools import (gf_add_mul, gf_div, gf_factor, gf_factor_sqf,
-                          gf_from_int_poly, gf_gcdex, gf_mul, gf_rem)
+from .galoistools import (gf_add_mul, gf_div, gf_factor_sqf, gf_from_int_poly,
+                          gf_gcdex, gf_mul, gf_rem)
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-from .sqfreetools import dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
+from .sqfreetools import dmp_sqf_list, dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
 
 
 def dmp_trial_division(f, factors, u, K):
@@ -148,7 +148,7 @@ def dup_zz_hensel_lift(p, f, f_list, l, K):
 
     m = p
     k = r // 2
-    d = int(math.ceil(math.log(l, 2)))
+    d = math.ceil(math.log(l, 2))
 
     g = gf_from_int_poly([lc], p)
 
@@ -188,7 +188,7 @@ def dup_zz_zassenhaus(f, K):
     b = dmp_LC(f, K)
     B = int(abs(K.sqrt(K(n + 1))*2**n*A*b))
     C = int((n + 1)**(2*n)*A**(2*n - 1))
-    gamma = int(math.ceil(2*math.log(C, 2)))
+    gamma = math.ceil(2*math.log(C, 2))
     bound = int(2*gamma*math.log(gamma))
     a = []
     # choose a prime number `p` such that `f` be square free in Z_p
@@ -211,7 +211,7 @@ def dup_zz_zassenhaus(f, K):
             break
     p, fsqf = min(a, key=lambda x: len(x[1]))
 
-    l = int(math.ceil(math.log(2*B + 1, p)))
+    l = math.ceil(math.log(2*B + 1, p))
 
     modular = fsqf
 
@@ -1022,17 +1022,24 @@ def dmp_ext_factor(f, u, K):
 
 def dmp_gf_factor(f, u, K):
     """Factor multivariate polynomials over finite fields."""
-    if u == 0:
-        f = dmp_convert(f, 0, K, K.domain)
-
-        coeff, factors = gf_factor(f, K.mod, K.domain)
-
-        for i, (f, k) in enumerate(factors):
-            factors[i] = (dmp_convert(f, 0, K.domain, K), k)
-
-        return K.convert(coeff, K.domain), factors
-    else:
+    if u:
         raise NotImplementedError('multivariate polynomials over finite fields')
+    else:
+        lc = dmp_ground_LC(f, u, K)
+        f = dmp_ground_monic(f, u, K)
+
+        if dmp_degree_in(f, 0, 0) < 1:
+            return lc, []
+
+        factors = []
+
+        for g, n in dmp_sqf_list(f, 0, K)[1]:
+            g = dmp_normal(g, 0, K.domain)
+            for h in gf_factor_sqf(g, K.characteristic, K.domain)[1]:
+                h = dmp_normal(h, 0, K)
+                factors.append((h, n))
+
+        return lc, factors
 
 
 def dmp_factor_list(f, u, K0):
@@ -1102,16 +1109,3 @@ def dmp_factor_list(f, u, K0):
         factors.insert(0, (dmp_from_dict(term, u, K0), j))
 
     return coeff*cont, _sort_factors(factors)
-
-
-def dmp_irreducible_p(f, u, K):
-    """Returns ``True`` if ``f`` has no factors over its domain."""
-    _, factors = dmp_factor_list(f, u, K)
-
-    if not factors:
-        return True
-    elif len(factors) > 1:
-        return False
-    else:
-        _, k = factors[0]
-        return k == 1

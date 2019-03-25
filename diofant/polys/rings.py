@@ -791,10 +791,9 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.is_zero:
             return True
 
-        monoms = iter(self.keys())
-        tdeg = sum(next(monoms))
+        tdeg = sum(self.LM)
 
-        for monom in monoms:
+        for monom in self:
             _tdeg = sum(monom)
 
             if _tdeg != tdeg:
@@ -1098,7 +1097,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             if coeff:
                 poly[monom] = coeff
-            else:
+            elif monom in poly:
                 del poly[monom]
 
         return poly
@@ -1834,7 +1833,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 pass
 
         _gcd_zz_methods = {'modgcd': modgcd,
-                           'prs': lambda f, g: self.ring.dmp_rr_prs_gcd(f, g)}
+                           'prs': self.ring.dmp_rr_prs_gcd}
 
         method = _gcd_zz_methods[query('FALLBACK_GCD_ZZ_METHOD')]
         return method(self, other)
@@ -1862,7 +1861,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def _gcd_AA(self, g):
         _gcd_aa_methods = {'modgcd': func_field_modgcd,
-                           'prs': lambda f, g: self.ring.dmp_ff_prs_gcd(f, g)}
+                           'prs': self.ring.dmp_ff_prs_gcd}
 
         method = _gcd_aa_methods[query('GCD_AA_METHOD')]
         return method(self, g)
@@ -2098,17 +2097,8 @@ class PolyElement(DomainElement, CantSympify, dict):
     # TODO: following methods should point to polynomial
     # representation independent algorithm implementations.
 
-    def pdiv(self, other):
-        return self.ring.dmp_pdiv(self, other)
-
     def prem(self, other):
         return self.ring.dmp_prem(self, other)
-
-    def pquo(self, other):
-        return self.ring.dmp_pquo(self, other)
-
-    def pexquo(self, other):
-        return self.ring.dmp_pexquo(self, other)
 
     def half_gcdex(self, other):
         if self.ring.is_univariate:

@@ -1,12 +1,12 @@
 """Square-free decomposition algorithms and related tools. """
 
 from .densearith import dmp_mul, dmp_quo, dmp_sub
-from .densebasic import (dmp_convert, dmp_ground_LC, dmp_ground_p, dmp_inject,
-                         dmp_one_p, dmp_raise, dmp_swap, dmp_zero_p)
+from .densebasic import (dmp_degree_in, dmp_ground_LC, dmp_ground_p,
+                         dmp_inject, dmp_one_p, dmp_raise, dmp_swap,
+                         dmp_zero_p)
 from .densetools import (dmp_compose, dmp_diff_in, dmp_ground_monic,
                          dmp_ground_primitive)
 from .euclidtools import dmp_gcd, dmp_resultant
-from .galoistools import gf_sqf_list
 from .polyerrors import DomainError
 
 
@@ -115,19 +115,79 @@ def dmp_sqf_part(f, u, K):
 
 
 def dmp_gf_sqf_list(f, u, K):
-    """Compute square-free decomposition of ``f`` in ``GF(p)[X]``."""
-    if not u:
-        f = dmp_convert(f, u, K, K.domain)
+    """Compute square-free decomposition of ``f`` in ``GF(p)[X]``.
 
-        coeff, factors = gf_sqf_list(f, K.mod, K.domain)
+    Returns the leading coefficient of ``f`` and a square-free decomposition
+    ``f_1**e_1 f_2**e_2 ... f_k**e_k`` such that all ``f_i`` are monic
+    polynomials and ``(f_i, f_j)`` for ``i != j`` are co-prime.
 
-        for i, (f, k) in enumerate(factors):
-            factors[i] = (dmp_convert(f, u, K.domain, K), k)
+    Examples
+    ========
 
-        return K.convert(coeff, K.domain), factors
+    >>> R, x = ring('x', FF(11))
+    >>> f = x**11 + 1
 
-    else:
+    Note that:
+
+    >>> f.diff()
+    0 mod 11
+
+    This phenomenon doesn't happen in characteristic zero. However we can
+    still compute square-free decomposition of ``f``:
+
+    >>> R.dmp_sqf_list(f)
+    (1 mod 11, [(x + 1 mod 11, 11)])
+
+    References
+    ==========
+
+    * :cite:`Geddes1992algorithms`
+
+    """
+    if u:
         raise NotImplementedError('multivariate polynomials over finite fields')
+
+    n, sqf, factors, r = 1, False, [], int(K.characteristic)
+
+    lc, f = dmp_ground_primitive(f, 0, K)
+
+    if dmp_degree_in(f, 0, 0) < 1:
+        return lc, []
+
+    while True:
+        F = dmp_diff_in(f, 1, 0, 0, K)
+
+        if F != []:
+            g = dmp_gcd(f, F, 0, K)
+            h = dmp_quo(f, g, 0, K)
+
+            i = 1
+
+            while h != [K.one]:
+                G = dmp_gcd(g, h, 0, K)
+                H = dmp_quo(h, G, 0, K)
+
+                if dmp_degree_in(H, 0, 0) > 0:
+                    factors.append((H, i*n))
+
+                g, h, i = dmp_quo(g, G, 0, K), G, i + 1
+
+            if g == [K.one]:
+                sqf = True
+            else:
+                f = g
+
+        if not sqf:
+            d = dmp_degree_in(f, 0, 0) // r
+
+            for i in range(d + 1):
+                f[i] = f[i*r]
+
+            f, n = f[:d + 1], n*r
+        else:
+            break
+
+    return lc, factors
 
 
 def dmp_rr_yun0_sqf_list(f, u, K):
@@ -180,13 +240,13 @@ def dmp_sqf_list(f, u, K):
     (1, [(x + y, 2), (x, 3)])
 
     """
-    if K.is_FiniteField:
-        return dmp_gf_sqf_list(f, u, K)
-
     if K.is_Field:
         coeff = dmp_ground_LC(f, u, K)
         f = dmp_ground_monic(f, u, K)
     else:
         coeff, f = dmp_ground_primitive(f, u, K)
+
+    if K.is_FiniteField:
+        return coeff, dmp_gf_sqf_list(f, u, K)[1]
 
     return coeff, dmp_rr_yun0_sqf_list(f, u, K)
