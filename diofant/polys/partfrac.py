@@ -1,8 +1,10 @@
 """Algorithms for partial fraction decomposition of rational functions. """
 
+import itertools
+
 from ..core import (Add, Dummy, Function, Integer, Lambda, preorder_traversal,
                     sympify)
-from ..utilities import numbered_symbols, take
+from ..utilities import numbered_symbols
 from . import Poly, RootSum, cancel, factor
 from .polyerrors import PolynomialError
 from .polyoptions import allowed_flags, set_defaults
@@ -149,7 +151,7 @@ def apart_undetermined_coeffs(P, Q):
         n, q = f.degree(), Q
 
         for i in range(1, k + 1):
-            coeffs, q = take(X, n), q.quo(f)
+            coeffs, q = list(itertools.islice(X, n)), q.quo(f)
             partial.append((coeffs, q, f, i))
             symbols.extend(coeffs)
 

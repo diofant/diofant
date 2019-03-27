@@ -555,11 +555,6 @@ def sift(seq, keyfunc):
     return m
 
 
-def take(iter, n):
-    """Return ``n`` items from ``iter`` iterator."""
-    return [ value for _, value in zip(range(n), iter) ]
-
-
 def dict_merge(*dicts):
     """Merge dictionaries into a single dictionary."""
     merged = {}

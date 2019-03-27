@@ -1,5 +1,6 @@
+import collections
+import itertools
 import random
-from collections import defaultdict
 
 import hypothesis
 import pytest
@@ -567,7 +568,7 @@ def test_residue():
     assert sqrt_mod(9, 18) == 3
 
     for p in range(3, 100):
-        d = defaultdict(list)
+        d = collections.defaultdict(list)
         for i in range(p):
             d[pow(i, 2, p)].append(i)
         for i in range(1, p):
@@ -674,7 +675,7 @@ def test_residue():
     for p in primerange(5, 100):
         qv = range(3, p, 4)
         for q in qv:
-            d = defaultdict(list)
+            d = collections.defaultdict(list)
             for i in range(p):
                 d[pow(i, q, p)].append(i)
             for a in range(1, p - 1):
@@ -985,16 +986,8 @@ def test_continued_fraction():
     assert cf_p(1932, 2568) == [0, 1, 3, 26, 2]
     assert cf_p(6589, 2569) == [2, 1, 1, 3, 2, 1, 3, 1, 23]
 
-    def take(iterator, n=7):
-        res = []
-        for i, t in enumerate(cf_i(iterator)):
-            if i >= n:
-                break
-            res.append(t)
-        return res
-
-    assert take(Phi) == [1, 1, 1, 1, 1, 1, 1]
-    assert take(pi) == [3, 7, 15, 1, 292, 1, 1]
+    assert list(itertools.islice(cf_i(Phi), 7)) == [1, 1, 1, 1, 1, 1, 1]
+    assert list(itertools.islice(cf_i(pi), 7)) == [3, 7, 15, 1, 292, 1, 1]
 
     assert list(cf_i(Rational(17, 12))) == [1, 2, 2, 2]
     assert list(cf_i(Rational(-17, 12))) == [-2, 1, 1, 2, 2]

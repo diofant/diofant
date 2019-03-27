@@ -225,11 +225,6 @@ def test_reals():
     assert sqrt(-1) not in S.Reals
 
 
-def take(n, iterable):
-    """Return first n items of the iterable as a list"""
-    return list(itertools.islice(iterable, n))
-
-
 def test_intersections():
     assert S.Integers.intersection(S.Reals) == S.Integers
     assert 5 in S.Integers.intersection(S.Reals)
@@ -239,7 +234,7 @@ def test_intersections():
     assert 5 in S.Integers.intersection(Interval(3, oo))
     assert -5 in S.Integers.intersection(Interval(-oo, 3))
     assert all(x.is_Integer
-               for x in take(10, S.Integers.intersection(Interval(3, oo))))
+               for x in itertools.islice(S.Integers.intersection(Interval(3, oo)), 10))
 
 
 def test_infinitely_indexed_set_1():

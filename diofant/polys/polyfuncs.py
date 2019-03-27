@@ -1,7 +1,9 @@
 """High-level polynomials manipulation functions. """
 
+import itertools
+
 from ..core import Add, Integer, Mul
-from ..utilities import numbered_symbols, take
+from ..utilities import numbered_symbols
 from .polyerrors import (ComputationFailed, MultivariatePolynomialError,
                          PolificationFailed)
 from .polyoptions import allowed_flags
@@ -268,7 +270,7 @@ def viete(f, roots=None, *gens, **args):
     if roots is None:
         roots = numbered_symbols('r', start=1)
 
-    roots = take(roots, n)
+    roots = list(itertools.islice(roots, n))
 
     if n != len(roots):
         raise ValueError("required %s roots, got %s" % (n, len(roots)))
