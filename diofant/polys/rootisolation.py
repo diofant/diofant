@@ -6,9 +6,9 @@ import math
 from ..core import I
 from .densearith import (dmp_add, dmp_mul_ground, dmp_neg, dmp_pow, dmp_quo,
                          dmp_rem, dup_rshift)
-from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
-                         dmp_strip, dmp_TC, dmp_terms_gcd, dmp_to_tuple,
-                         dup_reverse)
+from .densebasic import (dmp_convert, dmp_deflate, dmp_degree_in, dmp_LC,
+                         dmp_permute, dmp_strip, dmp_TC, dmp_terms_gcd,
+                         dmp_to_tuple, dup_reverse)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_primitive, dup_mirror,
                          dup_real_imag, dup_scale, dup_shift, dup_transform)
@@ -1531,6 +1531,13 @@ def dup_isolate_complex_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=F
         return roots if blackbox else [r.as_tuple() for r in roots]
 
     f1, f2 = dup_real_imag(f, K)
+
+    if v >= 0 and (K.is_RationalField or K.is_RealAlgebraicField):
+        v, t = v**2, t**2
+        f2 = dmp_quo(f2, [[K.one, K.zero]], 1, K)
+        f1, f2 = map(lambda f: dmp_deflate((f, [[K.one], [K.zero]],
+                                            [[K.one, K.zero, K.zero]]),
+                                           1, K)[1][0], (f1, f2))
 
     if not (K.is_RationalField or K.is_RealAlgebraicField):
         K = K.domain
