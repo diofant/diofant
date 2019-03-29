@@ -1131,7 +1131,8 @@ class Line(LinearEntity):
         Raises
         ======
 
-        NotImplementedError is raised if o is not a Point
+        NotImplementedError
+            if o is not a Point
 
         Examples
         ========
@@ -1370,7 +1371,8 @@ class Ray(LinearEntity):
         Raises
         ======
 
-        NotImplementedError is raised if o is not a Point
+        NotImplementedError
+            if o is not a Point
 
         Examples
         ========
@@ -1668,7 +1670,8 @@ class Segment(LinearEntity):
         Raises
         ======
 
-        NotImplementedError is raised if o is not a Point
+        NotImplementedError
+            if o is not a Point
 
         Examples
         ========

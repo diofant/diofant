@@ -943,7 +943,8 @@ class Line3D(LinearEntity3D):
         Raises
         ======
 
-        NotImplementedError is raised if o is not an instance of Point3D
+        NotImplementedError
+            if o is not an instance of Point3D
 
         Examples
         ========
@@ -1156,7 +1157,8 @@ class Ray3D(LinearEntity3D):
         Raises
         ======
 
-        NotImplementedError is raised if o is not a Point
+        NotImplementedError
+            if o is not a Point
 
         Examples
         ========
@@ -1382,7 +1384,8 @@ class Segment3D(LinearEntity3D):
         Raises
         ======
 
-        NotImplementedError is raised if o is not a Point3D
+        NotImplementedError
+            if o is not a Point3D
 
         Examples
         ========
