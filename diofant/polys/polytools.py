@@ -1649,13 +1649,11 @@ class Poly(Expr):
         _, per, F, G = self._unify(other)
 
         if includePRS:
-            result, R = F.ring.dmp_resultant(F, G, includePRS=includePRS)
-        else:
-            result = F.ring.dmp_resultant(F, G)
-
-        if includePRS:
+            result, R = F.resultant(G, includePRS=includePRS)
             return per(result, remove=0), list(map(per, R))
-        return per(result, remove=0)
+        else:
+            result = F.resultant(G)
+            return per(result, remove=0)
 
     def discriminant(self):
         """

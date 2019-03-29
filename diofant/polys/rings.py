@@ -2118,8 +2118,8 @@ class PolyElement(DomainElement, CantSympify, dict):
     def subresultants(self, other):
         return self.ring.dmp_subresultants(self, other)
 
-    def resultant(self, other):
-        return self.ring.dmp_resultant(self, other)
+    def resultant(self, other, includePRS=False):
+        return self.ring.dmp_resultant(self, other, includePRS=includePRS)
 
     def discriminant(self):
         """Computes discriminant of a polynomial."""

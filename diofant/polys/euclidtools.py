@@ -329,7 +329,7 @@ def dup_prs_resultant(f, g, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dmp_resultant(x**2 + 1, x**2 - 1, includePRS=True)
+    >>> (x**2 + 1).resultant(x**2 - 1, includePRS=True)
     (4, [x**2 + 1, x**2 - 1, -2])
 
     """
@@ -670,7 +670,7 @@ def dmp_resultant(f, g, u, K, includePRS=False):
     >>> f = 3*x**2*y - y**3 - 4
     >>> g = x**2 + x*y**3 - 9
 
-    >>> R.dmp_resultant(f, g)
+    >>> f.resultant(g)
     -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
 
     """
