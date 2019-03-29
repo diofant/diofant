@@ -11,9 +11,8 @@ from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
                          dmp_ground, dmp_ground_LC, dmp_inflate, dmp_LC,
                          dmp_multi_deflate, dmp_one, dmp_one_p, dmp_raise,
                          dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
-from .densetools import (dmp_clear_denoms, dmp_diff_in, dmp_eval_in,
-                         dmp_ground_monic, dmp_ground_primitive,
-                         dmp_ground_trunc)
+from .densetools import (dmp_clear_denoms, dmp_eval_in, dmp_ground_monic,
+                         dmp_ground_primitive, dmp_ground_trunc)
 from .galoistools import gf_crt
 from .heuristicgcd import heugcd
 from .polyconfig import query
@@ -686,36 +685,6 @@ def dmp_resultant(f, g, u, K, includePRS=False):
             return dmp_zz_collins_resultant(f, g, u, K)
 
     return dmp_prs_resultant(f, g, u, K)[0]
-
-
-def dmp_discriminant(f, u, K):
-    """
-    Computes discriminant of a polynomial in `K[X]`.
-
-    Examples
-    ========
-
-    >>> R, x, y, z, t = ring("x y z t", ZZ)
-
-    >>> R.dmp_discriminant(x**2*y + x*z + t)
-    -4*y*t + z**2
-
-    """
-    d, v = dmp_degree_in(f, 0, u), u - 1
-
-    if d <= 0:
-        return dmp_zero(v) if u else K.zero
-    else:
-        s = (-1)**((d*(d - 1)) // 2)
-        c = dmp_LC(f, K)
-
-        r = dmp_resultant(f, dmp_diff_in(f, 1, 0, u, K), u, K)
-
-        if u:
-            c = dmp_mul_ground(c, K(s), v, K)
-            return dmp_quo(r, c, v, K)
-        else:
-            return K.quo(r, c*K(s))
 
 
 def _dmp_rr_trivial_gcd(f, g, u, K):
