@@ -337,7 +337,6 @@ including the last one which is the resultant if this does not vanish.
 .. autofunction:: dmp_gcd
 .. autofunction:: dmp_content
 .. autofunction:: dmp_primitive
-.. autofunction:: dmp_cancel
 
 Polynomial factorization in characteristic zero:
 

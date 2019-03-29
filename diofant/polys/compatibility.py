@@ -16,15 +16,15 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_ground_trunc, dmp_integrate_in, dmp_trunc,
                          dup_decompose, dup_mirror, dup_real_imag, dup_scale,
                          dup_shift, dup_transform)
-from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
-                          dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
-                          dmp_inner_subresultants, dmp_prem, dmp_primitive,
-                          dmp_prs_resultant, dmp_qq_collins_resultant,
-                          dmp_qq_heu_gcd, dmp_resultant, dmp_rr_prs_gcd,
-                          dmp_subresultants, dmp_zz_collins_resultant,
-                          dmp_zz_heu_gcd, dmp_zz_modular_resultant,
-                          dup_euclidean_prs, dup_ff_prs_gcd, dup_gcdex,
-                          dup_half_gcdex, dup_inner_subresultants, dup_invert,
+from .euclidtools import (dmp_content, dmp_discriminant, dmp_ff_prs_gcd,
+                          dmp_gcd, dmp_inner_gcd, dmp_inner_subresultants,
+                          dmp_prem, dmp_primitive, dmp_prs_resultant,
+                          dmp_qq_collins_resultant, dmp_qq_heu_gcd,
+                          dmp_resultant, dmp_rr_prs_gcd, dmp_subresultants,
+                          dmp_zz_collins_resultant, dmp_zz_heu_gcd,
+                          dmp_zz_modular_resultant, dup_euclidean_prs,
+                          dup_ff_prs_gcd, dup_gcdex, dup_half_gcdex,
+                          dup_inner_subresultants, dup_invert,
                           dup_primitive_prs, dup_rr_prs_gcd)
 from .factortools import (dmp_factor_list, dmp_trial_division, dmp_zz_factor,
                           dmp_zz_mignotte_bound, dmp_zz_wang,
@@ -370,15 +370,6 @@ class IPolys:
     def dmp_ground_primitive(self, f):
         cont, prim = dmp_ground_primitive(self.to_dense(f), self.ngens-1, self.domain)
         return cont, self.from_dense(prim)
-
-    def dmp_cancel(self, f, g, include=True):
-        result = dmp_cancel(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain, include=include)
-        if not include:
-            cf, cg, F, G = result
-            return cf, cg, self.from_dense(F), self.from_dense(G)
-        else:
-            F, G = result
-            return self.from_dense(F), self.from_dense(G)
 
     def dmp_trial_division(self, f, factors):
         factors = dmp_trial_division(self.to_dense(f), list(map(self.to_dense, factors)), self.ngens-1, self.domain)

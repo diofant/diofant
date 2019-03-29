@@ -849,7 +849,7 @@ def test_dmp_primitive():
     assert cont == 1 and f == f_6
 
 
-def test_dmp_cancel():
+def test_PolyElement_cancel():
     R, x = ring("x", ZZ)
 
     f = 2*x**2 - 2
@@ -858,8 +858,8 @@ def test_dmp_cancel():
     p = 2*x + 2
     q = x - 1
 
-    assert R.dmp_cancel(f, g) == (p, q)
-    assert R.dmp_cancel(f, g, include=False) == (1, 1, p, q)
+    assert f.cancel(g) == (p, q)
+    assert f.cancel(g, include=False) == (1, 1, p, q)
 
     f = -x - 2
     g = 3*x - 4
@@ -867,23 +867,23 @@ def test_dmp_cancel():
     F = x + 2
     G = -3*x + 4
 
-    assert R.dmp_cancel(f, g) == (f, g)
-    assert R.dmp_cancel(F, G) == (f, g)
+    assert f.cancel(g) == (f, g)
+    assert F.cancel(G) == (f, g)
 
-    assert R.dmp_cancel(0, 0) == (0, 0)
-    assert R.dmp_cancel(0, 0, include=False) == (1, 1, 0, 0)
+    assert R(0).cancel(R(0)) == (0, 0)
+    assert R(0).cancel(R(0), include=False) == (1, 1, 0, 0)
 
-    assert R.dmp_cancel(x, 0) == (1, 0)
-    assert R.dmp_cancel(x, 0, include=False) == (1, 1, 1, 0)
+    assert x.cancel(R(0)) == (1, 0)
+    assert x.cancel(R(0), include=False) == (1, 1, 1, 0)
 
-    assert R.dmp_cancel(0, x) == (0, 1)
-    assert R.dmp_cancel(0, x, include=False) == (1, 1, 0, 1)
+    assert R(0).cancel(x) == (0, 1)
+    assert R(0).cancel(x, include=False) == (1, 1, 0, 1)
 
-    f = 0
+    f = R(0)
     g = x
     one = 1
 
-    assert R.dmp_cancel(f, g, include=True) == (f, one)
+    assert f.cancel(g, include=True) == (f, one)
 
     R, x, y = ring("x,y", ZZ)
 
@@ -893,23 +893,23 @@ def test_dmp_cancel():
     p = 2*x + 2
     q = x - 1
 
-    assert R.dmp_cancel(f, g) == (p, q)
-    assert R.dmp_cancel(f, g, include=False) == (1, 1, p, q)
+    assert f.cancel(g) == (p, q)
+    assert f.cancel(g, include=False) == (1, 1, p, q)
 
-    assert R.dmp_cancel(0, 0) == (0, 0)
-    assert R.dmp_cancel(0, 0, include=False) == (1, 1, 0, 0)
+    assert R(0).cancel(R(0)) == (0, 0)
+    assert R(0).cancel(R(0), include=False) == (1, 1, 0, 0)
 
-    assert R.dmp_cancel(y, 0) == (1, 0)
-    assert R.dmp_cancel(y, 0, include=False) == (1, 1, 1, 0)
+    assert y.cancel(R(0)) == (1, 0)
+    assert y.cancel(R(0), include=False) == (1, 1, 1, 0)
 
-    assert R.dmp_cancel(0, y) == (0, 1)
-    assert R.dmp_cancel(0, y, include=False) == (1, 1, 0, 1)
+    assert R(0).cancel(y) == (0, 1)
+    assert R(0).cancel(y, include=False) == (1, 1, 0, 1)
 
-    assert R.dmp_cancel(y**2 - x**2, y - x) == (x + y, 1)
+    assert (y**2 - x**2).cancel(y - x) == (x + y, 1)
 
     R, x = ring('x', QQ)
 
-    assert R.dmp_cancel(x**2/4 - 1, x/2 - 1) == (x + 2, 2)
+    assert (x**2/4 - 1).cancel(x/2 - 1) == (x + 2, 2)
 
 
 def test_dmp_zz_modular_resultant():
