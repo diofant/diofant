@@ -1,6 +1,7 @@
 """Real and complex root isolation and refinement algorithms."""
 
 import collections
+import concurrent.futures
 import math
 import operator
 
@@ -768,19 +769,6 @@ def _horizontal_bisection(N, a, b, I, Q, F1, F2, f1, f2):
     return D_B, D_U
 
 
-def _depth_first_select(rectangles):
-    """Find a rectangle of minimum area for bisection."""
-    min_area, j = None, None
-
-    for i, (_, (u, v), (s, t), _, _, _, _) in enumerate(rectangles):
-        area = (s - u)*(t - v)
-
-        if min_area is None or area < min_area:
-            min_area, j = area, i
-
-    return rectangles.pop(j)
-
-
 def _rectangle_small_p(a, b, eps):
     """Return ``True`` if the given rectangle is small enough."""
     (u, v), (s, t) = a, b
@@ -789,6 +777,48 @@ def _rectangle_small_p(a, b, eps):
         return s - u < eps and t - v < eps
     else:
         return True
+
+
+def _job(rectangle):
+    N, (u, v), (s, t), I_L, Q_L, F1, F2, f1, f2, eps = rectangle
+    rectangles, roots = [], []
+
+    if s - u > t - v:
+        D_L, D_R = _vertical_bisection(N, (u, v), (s, t), I_L, Q_L, F1, F2, f1, f2)
+
+        N_L, a, b, I_L, Q_L, F1_L, F2_L = D_L
+        N_R, c, d, I_R, Q_R, F1_R, F2_R = D_R
+
+        if N_L >= 1:
+            if N_L == 1 and _rectangle_small_p(a, b, eps):
+                roots.append(ComplexInterval(a, b, I_L, Q_L, F1_L, F2_L, f1, f2))
+            else:
+                rectangles.append(D_L + (f1, f2, eps))
+
+        if N_R >= 1:
+            if N_R == 1 and _rectangle_small_p(c, d, eps):
+                roots.append(ComplexInterval(c, d, I_R, Q_R, F1_R, F2_R, f1, f2))
+            else:
+                rectangles.append(D_R + (f1, f2, eps))
+    else:
+        D_B, D_U = _horizontal_bisection(N, (u, v), (s, t), I_L, Q_L, F1, F2, f1, f2)
+
+        N_B, a, b, I_B, Q_B, F1_B, F2_B = D_B
+        N_U, c, d, I_U, Q_U, F1_U, F2_U = D_U
+
+        if N_B >= 1:
+            if N_B == 1 and _rectangle_small_p(a, b, eps):
+                roots.append(ComplexInterval(a, b, I_B, Q_B, F1_B, F2_B, f1, f2))
+            else:
+                rectangles.append(D_B + (f1, f2, eps))
+
+        if N_U >= 1:
+            if N_U == 1 and _rectangle_small_p(c, d, eps):
+                roots.append(ComplexInterval(c, d, I_U, Q_U, F1_U, F2_U, f1, f2))
+            else:
+                rectangles.append(D_U + (f1, f2, eps))
+
+    return rectangles, roots
 
 
 class RealInterval:
@@ -1853,49 +1883,25 @@ class _FindRoot:
         if not N:
             return []
 
+        pool = concurrent.futures.ProcessPoolExecutor()
+
         rectangles, roots = [], []
         if N == 1 and (v > 0 or t < 0):
             roots.append(ComplexInterval(a, b, I_L, Q_L, F1, F2, f1, f2))
         else:
-            rectangles.append((N, a, b, I_L, Q_L, F1, F2))
+            rectangles.append((N, a, b, I_L, Q_L, F1, F2, f1, f2, eps))
 
         while rectangles:
-            N, (u, v), (s, t), I_L, Q_L, F1, F2 = _depth_first_select(rectangles)
+            rectangles = sorted(rectangles,
+                                key=lambda x: (x[2][0] - x[1][0])*(x[2][1] - x[1][1]))
 
-            if s - u > t - v:
-                D_L, D_R = _vertical_bisection(N, (u, v), (s, t), I_L, Q_L, F1, F2, f1, f2)
+            futures = [pool.submit(_job, r) for r in rectangles]
+            rectangles = []
 
-                N_L, a, b, I_L, Q_L, F1_L, F2_L = D_L
-                N_R, c, d, I_R, Q_R, F1_R, F2_R = D_R
-
-                if N_L >= 1:
-                    if N_L == 1 and _rectangle_small_p(a, b, eps):
-                        roots.append(ComplexInterval(a, b, I_L, Q_L, F1_L, F2_L, f1, f2))
-                    else:
-                        rectangles.append(D_L)
-
-                if N_R >= 1:
-                    if N_R == 1 and _rectangle_small_p(c, d, eps):
-                        roots.append(ComplexInterval(c, d, I_R, Q_R, F1_R, F2_R, f1, f2))
-                    else:
-                        rectangles.append(D_R)
-            else:
-                D_B, D_U = _horizontal_bisection(N, (u, v), (s, t), I_L, Q_L, F1, F2, f1, f2)
-
-                N_B, a, b, I_B, Q_B, F1_B, F2_B = D_B
-                N_U, c, d, I_U, Q_U, F1_U, F2_U = D_U
-
-                if N_B >= 1:
-                    if N_B == 1 and _rectangle_small_p(a, b, eps):
-                        roots.append(ComplexInterval(a, b, I_B, Q_B, F1_B, F2_B, f1, f2))
-                    else:
-                        rectangles.append(D_B)
-
-                if N_U >= 1:
-                    if N_U == 1 and _rectangle_small_p(c, d, eps):
-                        roots.append(ComplexInterval(c, d, I_U, Q_U, F1_U, F2_U, f1, f2))
-                    else:
-                        rectangles.append(D_U)
+            for future in concurrent.futures.as_completed(futures):
+                new_rectangles, new_roots = future.result()
+                rectangles.extend(new_rectangles)
+                roots.extend(new_roots)
 
         roots = sorted(roots, key=lambda r: (r.ax, r.ay))
         return roots if blackbox else [r.as_tuple() for r in roots]
