@@ -94,7 +94,7 @@ def check(a, exclude=[], check_attr=True):
     # Python 2.6+ warns about BasicException.message, for example.
     warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-    protocols = [0, 1, 2, copy.copy, copy.deepcopy, 3]
+    protocols = list(range(5)) + [copy.copy, copy.deepcopy]
     for protocol in protocols:
         if protocol in exclude:
             continue
