@@ -202,6 +202,9 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
 
         return obj
 
+    def __reduce_ex__(self, protocol):
+        return self.__class__, (self.domain, self.symbols, self.order)
+
     def _gens(self):
         """Return a list of polynomial generators."""
         one = self.domain.one
@@ -472,6 +475,10 @@ class PolyElement(DomainElement, CantSympify, dict):
     @property
     def parent(self):
         return self.ring
+
+    def __reduce_ex__(self, protocol):
+        return PolyElement, (dict(self),), {'ring': self.ring, '_hash': self._hash,
+                                            '__doc__': self.__class__.__doc__}
 
     _hash = None
 
@@ -783,7 +790,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.ring.is_univariate:
             return self.ring.dup_cyclotomic_p(self)
         else:
-            raise MultivariatePolynomialError("cyclotomic polynomial")
+            raise AttributeError("cyclotomic polynomial")
 
     @property
     def is_homogeneous(self):
