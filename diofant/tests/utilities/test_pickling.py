@@ -26,6 +26,7 @@ from diofant.core.relational import (Equality, GreaterThan, LessThan,
 from diofant.core.singleton import S, SingletonRegistry
 from diofant.core.symbol import Dummy, Symbol, Wild
 from diofant.domains.expressiondomain import ExpressionDomain
+from diofant.domains.finitefield import GMPYFiniteField, PythonFiniteField
 from diofant.domains.groundtypes import PythonRational
 from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing
 from diofant.domains.rationalfield import (GMPYRationalField,
@@ -285,18 +286,16 @@ def test_pickling_polys_polytools():
         check(c)
 
 
-@pytest.mark.xfail
 def test_pickling_polys_rings():
+    ring = PolynomialRing(ZZ, "x,y,z")
+    x, y, z = ring.gens
+
+    for c in (PolynomialRing, ring, ring.one, x**2 + x*y - z):
+        check(c)
+
     # NOTE: can't use protocols < 2 because we have to execute __new__ to
     # make sure caching of rings works properly.
-
-    ring = PolynomialRing(ZZ, "x,y,z")
-
-    for c in (PolynomialRing, ring):
-        check(c, exclude=[0, 1])
-
-    for c in (ring.dtype, ring.one):
-        check(c, exclude=[0, 1], check_attr=False)  # TODO: Py3k
+    check(ring.dtype, exclude=[0, 1, 2])
 
 
 @pytest.mark.xfail
@@ -316,6 +315,20 @@ def test_pickling_polys_fields():
 def test_pickling_polys_elements():
     for c in (PythonRational, PythonRational(1, 7)):
         check(c)
+
+    F17 = PythonFiniteField(17)
+    F9 = PythonFiniteField(3, [1, 0, 1])
+
+    for c in (F17, F17(5)):
+        check(c)
+
+    for c in (F9, F9(5)):
+        check(c)
+
+    if HAS_GMPY:
+        F17 = GMPYFiniteField(17)
+        for c in (F17, F17(5)):
+            check(c)
 
 
 def test_pickling_polys_domains():
