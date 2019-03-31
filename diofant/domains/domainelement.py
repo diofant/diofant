@@ -1,14 +1,12 @@
 """Trait for implementing domain elements. """
 
-import abc
-
 from ..printing.defaults import DefaultPrinting
 
 
 __all__ = 'DomainElement',
 
 
-class DomainElement(abc.ABC, DefaultPrinting):
+class DomainElement(DefaultPrinting):
     """
     Represents an element of a domain.
 
@@ -17,6 +15,5 @@ class DomainElement(abc.ABC, DefaultPrinting):
     """
 
     @property
-    @abc.abstractmethod
     def parent(self):
-        raise NotImplementedError
+        raise TypeError
