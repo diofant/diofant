@@ -84,6 +84,10 @@ class FiniteField(Field, SimpleDomain):
 
         return obj
 
+    def __reduce_ex__(self, protocol):
+        return self.__class__, (self.characteristic,
+                                self.dtype.mod.to_dense() if self.order != self.characteristic else None)
+
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype, self.order, self.domain))
 
@@ -162,6 +166,11 @@ class GMPYFiniteField(FiniteField):
 class ModularInteger(QuotientRingElement):
     """A class representing a modular integer. """
 
+    def __reduce_ex__(self, protocol):
+        return ModularInteger, (), {'rep': self.rep, 'domain': self.domain,
+                                    '_parent': self._parent, 'mod': self.mod,
+                                    '__doc__': self.__class__.__doc__}
+
 
 class GaloisFieldElement(ModularInteger):
     def __init__(self, rep):
@@ -175,7 +184,8 @@ class GaloisFieldElement(ModularInteger):
         else:
             super().__init__(rep)
 
-        self._int_rep = self.parent.domain.poly_ring(*self.rep.parent.symbols)(dict(self.rep))
-
     def __int__(self):
-        return int(self._int_rep.eval(0, self.parent.mod))
+        parent = self.parent
+        rep = self.rep
+        _int_rep = parent.domain.poly_ring(*rep.parent.symbols)(dict(rep))
+        return int(_int_rep.eval(0, parent.mod))
