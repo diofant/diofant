@@ -621,7 +621,7 @@ class Poly(Expr):
         dom, rep = construct_domain(self.as_dict(),
                                     field=field,
                                     composite=self.domain.is_Composite or None,
-                                    extension=False if self.domain.is_EX else True)
+                                    extension=False if self.domain.is_SymbolicDomain else True)
         return self.from_dict(rep, self.gens, domain=dom)
 
     def slice(self, x, m, n=None):
