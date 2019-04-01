@@ -332,7 +332,8 @@ def test_pickling_polys_domains():
         for c in (GMPYRationalField, GMPYRationalField()):
             check(c)
 
-    for c in (ExpressionDomain, ExpressionDomain()):
+    EX = ExpressionDomain()
+    for c in (ExpressionDomain, EX, EX(sin(x))):
         check(c)
 
 
