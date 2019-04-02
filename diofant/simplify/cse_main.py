@@ -1,7 +1,6 @@
 """ Tools for doing common subexpression elimination."""
 
-from ..core import (Add, Basic, Mul, Pow, S, Symbol, Tuple, factor_terms,
-                    sympify)
+from ..core import Add, Basic, Mul, Pow, Symbol, Tuple, factor_terms, sympify
 from ..core.compatibility import iterable
 from ..core.function import _coeff_isneg
 from ..utilities.iterables import (filter_symbols, numbered_symbols, ordered,
@@ -182,7 +181,7 @@ def opt_cse(exprs, order='canonical'):
         if _coeff_isneg(expr):
             neg_expr = -expr
             if not neg_expr.is_Atom:
-                opt_subs[expr] = Mul(S.NegativeOne, neg_expr, evaluate=False)
+                opt_subs[expr] = Mul(-1, neg_expr, evaluate=False)
                 seen_subexp.add(neg_expr)
                 expr = neg_expr
 
@@ -194,8 +193,7 @@ def opt_cse(exprs, order='canonical'):
 
         elif expr.is_Pow:
             if _coeff_isneg(expr.exp):
-                opt_subs[expr] = Pow(Pow(expr.base, -expr.exp), S.NegativeOne,
-                                     evaluate=False)
+                opt_subs[expr] = Pow(Pow(expr.base, -expr.exp), -1, evaluate=False)
 
     for e in exprs:
         assert isinstance(e, Basic)

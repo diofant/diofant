@@ -44,7 +44,7 @@ from .evalf import PrecisionExhausted
 from .evaluate import global_evaluate
 from .expr import AtomicExpr, Expr
 from .logic import fuzzy_and
-from .numbers import Float, Rational, nan
+from .numbers import Float, Integer, Rational, nan
 from .operations import LatticeOp
 from .rules import Transform
 from .singleton import S
@@ -287,10 +287,10 @@ class Function(Application, Expr):
     ...     @classmethod
     ...     def eval(cls, x):
     ...         if x.is_Number:
-    ...             if x is S.Zero:
-    ...                 return S.One
+    ...             if x == 0:
+    ...                 return Integer(1)
     ...             elif x is oo:
-    ...                 return S.Zero
+    ...                 return Integer(0)
     ...
     ...     def _eval_is_real(self):
     ...         return self.args[0].is_real
@@ -451,7 +451,7 @@ class Function(Application, Expr):
         for a in self.args:
             i += 1
             da = a.diff(s)
-            if da is S.Zero:
+            if da == 0:
                 continue
             try:
                 df = self.fdiff(i)
@@ -465,7 +465,7 @@ class Function(Application, Expr):
 
     def as_base_exp(self):
         """Returns the method as the 2-tuple (base, exponent)."""
-        return self, S.One
+        return self, Integer(1)
 
     def _eval_aseries(self, n, args0, x, logx):
         """
@@ -550,7 +550,7 @@ class Function(Application, Expr):
                 if term.is_finite is False:
                     raise PoleError("Cannot expand %s around 0" % self)
                 series = term
-                fact = S.One
+                fact = Integer(1)
                 _x = Dummy('x', real=True, positive=True)
                 e = e.subs({x: _x})
                 for i in range(n - 1):
@@ -564,7 +564,7 @@ class Function(Application, Expr):
                 return series + Order(x**n, x)
             return e1.nseries(x, n=n, logx=logx)
         arg = self.args[0]
-        f_series = order = S.Zero
+        f_series = order = Integer(0)
         i, terms = 0, []
         while order == 0 or i <= n:
             term = self.taylor_term(i, arg, *terms)
@@ -935,7 +935,7 @@ class Derivative(Expr):
         # count of 1 if there is only one variable: diff(e,x)->diff(e,x,1).
         variables = list(sympify(variables))
         if not variables[-1].is_Integer or len(variables) == 1:
-            variables.append(S.One)
+            variables.append(Integer(1))
 
         # Split the list of variables into a list of the variables we are diff
         # wrt, where each element of the list has the form (s, count) where
@@ -986,7 +986,7 @@ class Derivative(Expr):
         if evaluate:
             symbol_set = {sc[0] for sc in variable_count if sc[0].is_Symbol}
             if symbol_set.difference(expr.free_symbols):
-                return S.Zero
+                return Integer(0)
 
         # We make a generator so as to only generate a variable when necessary.
         # If a high order of derivative is requested and the expr becomes 0
@@ -1051,8 +1051,8 @@ class Derivative(Expr):
                 unhandled_variables.append(v)
                 if not is_symbol:
                     unhandled_non_symbol = True
-            elif obj is S.Zero:
-                return S.Zero
+            elif obj == 0:
+                return Integer(0)
             else:
                 expr = obj
 
@@ -1143,8 +1143,8 @@ class Derivative(Expr):
         # assume that we might be able to take the derivative.
         if v not in self.variables:
             obj = self.expr.diff(v)
-            if obj is S.Zero:
-                return S.Zero
+            if obj == 0:
+                return Integer(0)
             if isinstance(obj, Derivative):
                 return obj.func(obj.expr, *(self.variables + obj.variables))
             # The derivative wrt s could have simplified things such that the
@@ -1524,7 +1524,7 @@ class Subs(Expr):
 
     def _eval_derivative(self, s):
         return Add((self.func(self.expr.diff(s), *self.args[1:]).doit()
-                    if s not in self.variables else S.Zero),
+                    if s not in self.variables else Integer(0)),
                    *[p.diff(s)*self.func(self.expr.diff(v), *self.args[1:]).doit()
                      for v, p in zip(self.variables, self.point)])
 
@@ -2192,7 +2192,7 @@ def count_ops(expr, visual=False):
 
             if a.is_Rational:
                 # -1/3 = NEG + DIV
-                if a is not S.One:
+                if a != 1:
                     if a.numerator < 0:
                         ops.append(NEG)
                     if a.denominator != 1:
@@ -2203,7 +2203,7 @@ def count_ops(expr, visual=False):
             elif a.is_Mul:
                 if _coeff_isneg(a):
                     ops.append(NEG)
-                    if a.args[0] is S.NegativeOne:
+                    if a.args[0] == -1:
                         a = a.as_two_terms()[1]
                     else:
                         a = -a
@@ -2212,7 +2212,7 @@ def count_ops(expr, visual=False):
                     ops.append(DIV)
                     args.append(d)
                     continue  # won't be -Mul but could be Add
-                elif d is not S.One:
+                elif d != 1:
                     if not d.is_Integer:
                         args.append(d)
                     ops.append(DIV)
@@ -2245,7 +2245,7 @@ def count_ops(expr, visual=False):
                 o = Symbol(expr.func.__name__.upper())
                 ops.append(o)
                 continue
-            if a.is_Pow and a.exp is S.NegativeOne:
+            if a.is_Pow and a.exp == -1:
                 ops.append(DIV)
                 args.append(a.base)  # won't be -Mul but could be Add
                 continue
@@ -2278,7 +2278,7 @@ def count_ops(expr, visual=False):
 
     if not ops:
         if visual:
-            return S.Zero
+            return Integer(0)
         return 0
 
     ops = Add(*ops)

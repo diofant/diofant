@@ -1,5 +1,5 @@
-from ...core import (Add, E, Function, I, Integer, Mul, Pow, S, expand_log,
-                     nan, oo, pi, sympify, zoo)
+from ...core import (Add, E, Function, I, Integer, Mul, Pow, expand_log, nan,
+                     oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ...ntheory import multiplicity, perfect_power
 from .miscellaneous import sqrt
@@ -61,8 +61,8 @@ class exp_polar(Function):
         if not neg_exp and not (-exp).is_negative:
             neg_exp = _coeff_isneg(exp)
         if neg_exp:
-            return S.One, self.func(-exp)
-        return self, S.One
+            return Integer(1), self.func(-exp)
+        return self, Integer(1)
 
     @property
     def exp(self):
@@ -83,7 +83,7 @@ class exp_polar(Function):
             return True
 
     def _eval_is_rational(self):
-        if self.exp is S.Zero:
+        if self.exp == 0:
             return True
         elif self.exp.is_rational and self.exp.is_nonzero:
             return False
@@ -204,10 +204,10 @@ class log(Function):
                 return cls(arg)
 
         if arg.is_Number:
-            if arg is S.Zero:
+            if arg == 0:
                 return zoo
-            elif arg is S.One:
-                return S.Zero
+            elif arg == 1:
+                return Integer(0)
             elif arg in (oo, -oo):
                 return oo
             elif arg.is_Rational:
@@ -225,7 +225,7 @@ class log(Function):
             elif arg is zoo:
                 return zoo
             elif arg is E:
-                return S.One
+                return Integer(1)
 
         # don't autoexpand Pow or Mul (see the issue sympy/sympy#3351):
         if not arg.is_Add:
@@ -236,13 +236,13 @@ class log(Function):
                     return oo
                 elif coeff.is_Rational:
                     if coeff.is_nonnegative:
-                        return pi * I * S.Half + cls(coeff)
+                        return +pi*I/2 + cls(+coeff)
                     else:
-                        return -pi * I * S.Half + cls(-coeff)
+                        return -pi*I/2 + cls(-coeff)
 
     def as_base_exp(self):
         """Returns this function in the form (base, exponent)."""
-        return self, S.One
+        return self, Integer(1)
 
     def _eval_expand_log(self, deep=True, **hints):
         from .complexes import unpolarify
@@ -269,7 +269,7 @@ class log(Function):
                 elif x.is_negative:
                     a = self.func(-x)
                     expr.append(a)
-                    nonpos.append(S.NegativeOne)
+                    nonpos.append(Integer(-1))
                 else:
                     nonpos.append(x)
             return Add(*expr) + log(Mul(*nonpos))
@@ -396,7 +396,7 @@ class log(Function):
 
     def _eval_as_leading_term(self, x):
         arg = self.args[0].as_leading_term(x)
-        if arg is S.One:
+        if arg == 1:
             return (self.args[0] - 1).as_leading_term(x)
         return self.func(arg)
 
@@ -436,31 +436,31 @@ class LambertW(Function):
 
     @classmethod
     def eval(cls, x, k=None):
-        if k is S.Zero:
+        if k == 0:
             return cls(x)
         elif k is None:
-            k = S.Zero
+            k = Integer(0)
 
-        if k is S.Zero:
-            if x is S.Zero:
-                return S.Zero
+        if k == 0:
+            if x == 0:
+                return Integer(0)
             if x is E:
-                return S.One
+                return Integer(1)
             if x == -1/E:
-                return S.NegativeOne
+                return Integer(-1)
             if x == -log(2)/2:
                 return -log(2)
             if x is oo:
                 return oo
 
         if k.is_nonzero:
-            if x is S.Zero:
+            if x == 0:
                 return -oo
-        if k is S.NegativeOne:
+        if k == -1:
             if x == -pi/2:
                 return -I*pi/2
             elif x == -1/E:
-                return S.NegativeOne
+                return Integer(-1)
             elif x == -2*exp(-2):
                 return -Integer(2)
 
@@ -483,7 +483,7 @@ class LambertW(Function):
     def _eval_is_extended_real(self):
         x = self.args[0]
         if len(self.args) == 1:
-            k = S.Zero
+            k = Integer(0)
         else:
             k = self.args[1]
         if k.is_zero:
@@ -511,7 +511,7 @@ class LambertW(Function):
             from .. import factorial
             x = self.args[0]
             o = Order(x**n, x)
-            l = S.Zero
+            l = Integer(0)
             if n > 0:
                 l += Add(*[Integer(-k)**(k - 1)*x**k/factorial(k)
                            for k in range(1, n)])

@@ -1,6 +1,6 @@
 """Functions for generating interesting polynomials, e.g. for benchmarking. """
 
-from ..core import Add, Dummy, Mul, S, Symbol, symbols, sympify
+from ..core import Add, Dummy, Integer, Mul, Symbol, symbols, sympify
 from ..domains import ZZ
 from ..functions import sqrt
 from ..ntheory import nextprime
@@ -76,7 +76,7 @@ def symmetric_poly(n, *gens, **args):
     if n < 0 or n > len(gens) or not gens:
         raise ValueError("can't generate symmetric polynomial of order %s for %s" % (n, gens))
     elif not n:
-        poly = S.One
+        poly = Integer(1)
     else:
         poly = Add(*[Mul(*s) for s in subsets(gens, int(n))])
 

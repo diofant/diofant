@@ -2,7 +2,7 @@
 A MathML printer.
 """
 
-from ..core import Mul, S
+from ..core import Mul
 from ..core.function import _coeff_isneg
 from .conventions import requires_partial, split_super_sub
 from .pretty.pretty_symbology import greek_unicode
@@ -92,7 +92,7 @@ class MathMLPrinter(Printer):
         from ..simplify import fraction
         numer, denom = fraction(expr)
 
-        if denom is not S.One:
+        if denom != 1:
             x = self.dom.createElement('apply')
             x.appendChild(self.dom.createElement('divide'))
             x.appendChild(self._print(numer))

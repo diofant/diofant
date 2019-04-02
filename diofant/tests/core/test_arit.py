@@ -1136,20 +1136,20 @@ def test_Pow_is_zero():
     assert e.is_positive is False
     assert e.is_negative is False
 
-    assert Pow(0, 0, evaluate=False).is_zero is False
+    assert Pow(0, 0, evaluate=False).is_nonzero
     assert Pow(0, 3, evaluate=False).is_zero
     assert Pow(0, oo, evaluate=False).is_zero
-    assert Pow(0, -3, evaluate=False).is_zero is False
-    assert Pow(0, -oo, evaluate=False).is_zero is False
-    assert Pow(2, 2, evaluate=False).is_zero is False
+    assert Pow(0, -3, evaluate=False).is_nonzero
+    assert Pow(0, -oo, evaluate=False).is_nonzero
+    assert Pow(2, 2, evaluate=False).is_nonzero
 
     a = Symbol('a', zero=False)
-    assert Pow(a, 3).is_zero is False  # issue sympy/sympy#7965
+    assert Pow(a, 3).is_nonzero is True  # issue sympy/sympy#7965
 
-    assert Pow(2, oo, evaluate=False).is_zero is False
+    assert Pow(2, oo, evaluate=False).is_nonzero
     assert Pow(2, -oo, evaluate=False).is_zero
     assert Pow(Rational(1, 2), oo, evaluate=False).is_zero
-    assert Pow(Rational(1, 2), -oo, evaluate=False).is_zero is False
+    assert Pow(Rational(1, 2), -oo, evaluate=False).is_nonzero
 
     n = Symbol('n', nonzero=True)
     assert Pow(n, oo).is_zero is None
@@ -1835,7 +1835,7 @@ def test_mul_zero_detection():
                 if z.is_zero is None:
                     assert e.is_zero is None
                 else:
-                    assert e.is_zero is False
+                    assert e.is_nonzero
 
     for iz, ib in itertools.product(*[[True, False, None]]*2):
         z = Dummy('z', nonzero=iz)

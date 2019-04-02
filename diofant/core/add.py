@@ -4,16 +4,15 @@ from functools import reduce
 from .cache import cacheit
 from .compatibility import default_sort_key, is_sequence
 from .logic import _fuzzy_group
-from .numbers import I, igcd, ilcm, nan, oo, zoo
+from .numbers import I, Integer, igcd, ilcm, nan, oo, zoo
 from .operations import AssocOp
-from .singleton import S
 
 
 class Add(AssocOp):
 
     is_Add = True
 
-    identity = S.Zero
+    identity = Integer(0)
 
     @classmethod
     def flatten(cls, seq):
@@ -52,7 +51,7 @@ class Add(AssocOp):
         terms = {}
 
         # coefficient (Number or zoo) to always be in slot 0, e.g. 3 + ...
-        coeff = S.Zero
+        coeff = Integer(0)
 
         order_factors = []
 
@@ -98,7 +97,7 @@ class Add(AssocOp):
                 continue
 
             elif o.has(Order):
-                c, s = S.One, o
+                c, s = Integer(1), o
 
             # Mul([...])
             elif o.is_Mul:
@@ -111,11 +110,11 @@ class Add(AssocOp):
                                     (e.is_Rational and e.is_negative)):
                     seq.append(b**e)
                     continue
-                c, s = S.One, o
+                c, s = Integer(1), o
 
             else:
                 # everything else
-                c = S.One
+                c = Integer(1)
                 s = o
 
             # now we have:
@@ -139,10 +138,10 @@ class Add(AssocOp):
         noncommutative = False
         for s, c in terms.items():
             # 0*s
-            if c is S.Zero:
+            if c == 0:
                 continue
             # 1*s
-            elif c is S.One:
+            elif c == 1 and not c.is_Float:
                 newseq.append(s)
             # c*s
             else:
@@ -198,14 +197,14 @@ class Add(AssocOp):
             # 1 + O(1) -> O(1)
             for o in order_factors:
                 if o.contains(coeff):
-                    coeff = S.Zero
+                    coeff = Integer(0)
                     break
 
         # order args canonically
         newseq.sort(key=default_sort_key)
 
         # current code expects coeff to be first
-        if coeff is not S.Zero:
+        if coeff != 0:
             newseq.insert(0, coeff)
 
         # we are done
@@ -276,9 +275,9 @@ class Add(AssocOp):
                     l1.append(f)
             return self._new_rawargs(*l1), tuple(l2)
         coeff, notrat = self.args[0].as_coeff_add()
-        if coeff is not S.Zero:
+        if coeff != 0:
             return coeff, notrat + self.args[1:]
-        return S.Zero, self.args
+        return Integer(0), self.args
 
     def as_coeff_Add(self, rational=False):
         """Efficiently extract the coefficient of a summation."""
@@ -286,10 +285,10 @@ class Add(AssocOp):
 
         if coeff.is_Number and not rational or coeff.is_Rational:
             return coeff, self._new_rawargs(*args)
-        return S.Zero, self
+        return Integer(0), self
 
     # Note, we intentionally do not implement Add.as_coeff_mul().  Rather, we
-    # let Expr.as_coeff_mul() just always return (S.One, self) for an Add.  See
+    # let Expr.as_coeff_mul() just always return (Integer(1), self) for an Add.  See
     # issue sympy/sympy#5524.
 
     @cacheit
@@ -328,7 +327,7 @@ class Add(AssocOp):
         from . import oo, I
         from ..simplify import signsimp
         if lhs == oo and rhs == oo or lhs == oo*I and rhs == oo*I:
-            return S.Zero
+            return Integer(0)
         return signsimp(lhs - rhs)
 
     @cacheit
@@ -650,7 +649,7 @@ class Add(AssocOp):
             # if it simplifies to an x-free expression, return that;
             # tests don't fail if we don't but it seems nicer to do this
             if x not in rv_simplify.free_symbols:
-                if rv_simplify.is_zero and plain.is_zero is not True:
+                if rv_simplify.is_zero and not plain.is_zero:
                     return (expr - plain)._eval_as_leading_term(x)
                 return rv_simplify
             return rv
@@ -710,7 +709,7 @@ class Add(AssocOp):
         for a in self.args:
             c, m = a.as_coeff_Mul()
             if not c.is_Rational:
-                c = S.One
+                c = Integer(1)
                 m = a
             inf = inf or m is zoo
             terms.append((c.numerator, c.denominator, m))
@@ -723,7 +722,7 @@ class Add(AssocOp):
             dlcm = reduce(ilcm, [t[1] for t in terms if t[1]], 1)
 
         if ngcd == dlcm == 1:
-            return S.One, self
+            return Integer(1), self
         for i, (p, q, term) in enumerate(terms):
             terms[i] = _keep_coeff(Rational((p//ngcd)*(dlcm//q)), term)
 

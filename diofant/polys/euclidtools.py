@@ -11,9 +11,8 @@ from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
                          dmp_ground, dmp_ground_LC, dmp_inflate, dmp_LC,
                          dmp_multi_deflate, dmp_one, dmp_one_p, dmp_raise,
                          dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
-from .densetools import (dmp_clear_denoms, dmp_diff_in, dmp_eval_in,
-                         dmp_ground_monic, dmp_ground_primitive,
-                         dmp_ground_trunc)
+from .densetools import (dmp_clear_denoms, dmp_eval_in, dmp_ground_monic,
+                         dmp_ground_primitive, dmp_ground_trunc)
 from .galoistools import gf_crt
 from .heuristicgcd import heugcd
 from .polyconfig import query
@@ -330,7 +329,7 @@ def dup_prs_resultant(f, g, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dmp_resultant(x**2 + 1, x**2 - 1, includePRS=True)
+    >>> (x**2 + 1).resultant(x**2 - 1, includePRS=True)
     (4, [x**2 + 1, x**2 - 1, -2])
 
     """
@@ -671,7 +670,7 @@ def dmp_resultant(f, g, u, K, includePRS=False):
     >>> f = 3*x**2*y - y**3 - 4
     >>> g = x**2 + x*y**3 - 9
 
-    >>> R.dmp_resultant(f, g)
+    >>> f.resultant(g)
     -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
 
     """
@@ -686,36 +685,6 @@ def dmp_resultant(f, g, u, K, includePRS=False):
             return dmp_zz_collins_resultant(f, g, u, K)
 
     return dmp_prs_resultant(f, g, u, K)[0]
-
-
-def dmp_discriminant(f, u, K):
-    """
-    Computes discriminant of a polynomial in `K[X]`.
-
-    Examples
-    ========
-
-    >>> R, x, y, z, t = ring("x y z t", ZZ)
-
-    >>> R.dmp_discriminant(x**2*y + x*z + t)
-    -4*y*t + z**2
-
-    """
-    d, v = dmp_degree_in(f, 0, u), u - 1
-
-    if d <= 0:
-        return dmp_zero(v) if u else K.zero
-    else:
-        s = (-1)**((d*(d - 1)) // 2)
-        c = dmp_LC(f, K)
-
-        r = dmp_resultant(f, dmp_diff_in(f, 1, 0, u, K), u, K)
-
-        if u:
-            c = dmp_mul_ground(c, K(s), v, K)
-            return dmp_quo(r, c, v, K)
-        else:
-            return K.quo(r, c*K(s))
 
 
 def _dmp_rr_trivial_gcd(f, g, u, K):
@@ -1191,55 +1160,3 @@ def dmp_primitive(f, u, K):
         return cont, f
     else:
         return cont, [dmp_quo(c, cont, v, K) for c in f]
-
-
-def dmp_cancel(f, g, u, K, include=True):
-    """
-    Cancel common factors in a rational function `f/g`.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> R.dmp_cancel(2*x**2 - 2, x**2 - 2*x + 1)
-    (2*x + 2, x - 1)
-
-    """
-    K0 = None
-
-    if K.is_Field and K.has_assoc_Ring:
-        K0, K = K, K.ring
-
-        cq, f = dmp_clear_denoms(f, u, K0, K, convert=True)
-        cp, g = dmp_clear_denoms(g, u, K0, K, convert=True)
-    else:
-        cp, cq = K.one, K.one
-
-    _, p, q = dmp_inner_gcd(f, g, u, K)
-
-    if K0 is not None:
-        _, cp, cq = K.cofactors(cp, cq)
-
-        p = dmp_convert(p, u, K, K0)
-        q = dmp_convert(q, u, K, K0)
-
-        K = K0
-
-    p_neg = K.is_negative(dmp_ground_LC(p, u, K))
-    q_neg = K.is_negative(dmp_ground_LC(q, u, K))
-
-    if p_neg and q_neg:
-        p, q = dmp_neg(p, u, K), dmp_neg(q, u, K)
-    elif p_neg:
-        cp, p = -cp, dmp_neg(p, u, K)
-    elif q_neg:
-        cp, q = -cp, dmp_neg(q, u, K)
-
-    if not include:
-        return cp, cq, p, q
-
-    p = dmp_mul_ground(p, cp, u, K)
-    q = dmp_mul_ground(q, cq, u, K)
-
-    return p, q

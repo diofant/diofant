@@ -1,4 +1,4 @@
-from ..core import Add, Dummy, Pow, S, expand_log
+from ..core import Add, Dummy, Pow, expand_log
 from ..core.compatibility import ordered
 from ..core.function import _mexpand
 from ..functions import LambertW, exp, log, root
@@ -23,7 +23,7 @@ def _filtered_gens(poly, symbol):
     for g in list(gens):
         ag = 1/g
         if g in gens and ag in gens:
-            if ag.as_numer_denom()[1] is not S.One:
+            if ag.as_numer_denom()[1] != 1:
                 g = ag
             gens.remove(g)
     return gens

@@ -1,5 +1,6 @@
-from ...core import Expr, S, Tuple
+from ...core import Expr, Integer, Tuple
 from ...functions import floor
+from ...logic import true
 from .matexpr import MatrixExpr
 
 
@@ -7,7 +8,7 @@ def normalize(i, parentsize):
     if isinstance(i, slice):
         i = (i.start, i.stop, i.step)
     if not isinstance(i, (tuple, list, Tuple)):
-        if (i < S.Zero) is S.true:
+        if (i < Integer(0)) == true:
             i += parentsize
         i = (i, i + 1, 1)
     i = list(i)
@@ -17,13 +18,13 @@ def normalize(i, parentsize):
     start = start or 0
     if stop is None:
         stop = parentsize
-    if (start < S.Zero) is S.true:
+    if (start < Integer(0)) == true:
         start += parentsize
-    if (stop < S.Zero) is S.true:
+    if (stop < Integer(0)) == true:
         stop += parentsize
     step = step or 1
 
-    if ((stop - start) * step < S.One) is S.true:
+    if ((stop - start) * step < Integer(1)) == true:
         raise IndexError()
 
     return start, stop, step
@@ -58,10 +59,10 @@ class MatrixSlice(MatrixExpr):
     def __new__(cls, parent, rowslice, colslice):
         rowslice = normalize(rowslice, parent.shape[0])
         colslice = normalize(colslice, parent.shape[1])
-        if ((0 > rowslice[0]) is S.true or
-                (parent.shape[0] < rowslice[1]) is S.true or
-                (0 > colslice[0]) is S.true or
-                (parent.shape[1] < colslice[1]) is S.true):
+        if ((0 > rowslice[0]) == true or
+                (parent.shape[0] < rowslice[1]) == true or
+                (0 > colslice[0]) == true or
+                (parent.shape[1] < colslice[1]) == true):
             raise IndexError()
         if isinstance(parent, MatrixSlice):
             return mat_slice_of_slice(parent, rowslice, colslice)

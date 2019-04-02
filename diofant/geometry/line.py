@@ -8,11 +8,11 @@ Ray
 Segment
 """
 
-from ..core import Dummy, Eq, S, factor_terms, oo, pi, sympify
+from ..core import Dummy, Eq, Integer, factor_terms, oo, pi, sympify
 from ..core.compatibility import is_sequence
 from ..functions import Piecewise, acos, sqrt, tan
 from ..functions.elementary.trigonometric import _pi_coeff as pi_coeff
-from ..logic import And
+from ..logic import And, false, true
 from ..simplify import simplify
 from ..solvers import solve
 from .entity import GeometryEntity, GeometrySet
@@ -136,9 +136,9 @@ class LinearEntity(GeometrySet):
         """
         p1, p2 = self.points
         if p1.x == p2.x:
-            return S.One, S.Zero, -p1.x
+            return Integer(1), Integer(0), -p1.x
         elif p1.y == p2.y:
-            return S.Zero, S.One, -p1.y
+            return Integer(0), Integer(1), -p1.y
         return tuple(simplify(i)
                      for i in (self.p1.y - self.p2.y,
                                self.p2.x - self.p1.x,
@@ -1131,7 +1131,8 @@ class Line(LinearEntity):
         Raises
         ======
 
-        NotImplementedError is raised if o is not a Point
+        NotImplementedError
+            if o is not a Point
 
         Examples
         ========
@@ -1328,7 +1329,7 @@ class Ray(LinearEntity):
         if self.p1.x < self.p2.x:
             return oo
         elif self.p1.x == self.p2.x:
-            return S.Zero
+            return Integer(0)
         else:
             return -oo
 
@@ -1359,7 +1360,7 @@ class Ray(LinearEntity):
         if self.p1.y < self.p2.y:
             return oo
         elif self.p1.y == self.p2.y:
-            return S.Zero
+            return Integer(0)
         else:
             return -oo
 
@@ -1370,7 +1371,8 @@ class Ray(LinearEntity):
         Raises
         ======
 
-        NotImplementedError is raised if o is not a Point
+        NotImplementedError
+            if o is not a Point
 
         Examples
         ========
@@ -1389,7 +1391,7 @@ class Ray(LinearEntity):
         s = self.perpendicular_segment(o)
         if isinstance(s, Point):
             if self.contains(s):
-                return S.Zero
+                return Integer(0)
         else:
             # since arg-order is arbitrary, find the non-o point
             non_o = s.p1 if s.p1 != o else s.p2
@@ -1479,7 +1481,7 @@ class Ray(LinearEntity):
                     rv = o.y >= self.source.y
                 else:
                     rv = o.y <= self.source.y
-                if rv == S.true or rv == S.false:
+                if rv in (true, false):
                     return bool(rv)
                 raise Undecidable(
                     'Cannot determine if %s is in %s' % (o, self))
@@ -1546,9 +1548,9 @@ class Segment(LinearEntity):
         p2 = Point(p2)
         if p1 == p2:
             return Point(p1)
-        if (p1.x > p2.x) is S.true:
+        if (p1.x - p2.x).is_positive:
             p1, p2 = p2, p1
-        elif (p1.x == p2.x) and (p1.y > p2.y) is S.true:
+        elif (p1.x == p2.x) and (p1.y - p2.y).is_positive:
             p1, p2 = p2, p1
         return LinearEntity.__new__(cls, p1, p2, **kwargs)
 
@@ -1668,7 +1670,8 @@ class Segment(LinearEntity):
         Raises
         ======
 
-        NotImplementedError is raised if o is not a Point
+        NotImplementedError
+            if o is not a Point
 
         Examples
         ========

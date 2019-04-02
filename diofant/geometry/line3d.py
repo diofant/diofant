@@ -8,9 +8,10 @@ Ray3D
 Segment3D
 """
 
-from ..core import Dummy, S, nan, oo
+from ..core import Dummy, Integer, nan, oo
 from ..core.compatibility import is_sequence
 from ..functions import acos
+from ..logic import false, true
 from ..simplify import simplify
 from ..solvers import solve
 from .entity import GeometryEntity
@@ -942,7 +943,8 @@ class Line3D(LinearEntity3D):
         Raises
         ======
 
-        NotImplementedError is raised if o is not an instance of Point3D
+        NotImplementedError
+            if o is not an instance of Point3D
 
         Examples
         ========
@@ -959,7 +961,7 @@ class Line3D(LinearEntity3D):
             if is_sequence(o):
                 o = Point3D(o)
         if o in self:
-            return S.Zero
+            return Integer(0)
         a = self.perpendicular_segment(o).length
         return a
 
@@ -1080,7 +1082,7 @@ class Ray3D(LinearEntity3D):
         if self.p1.x < self.p2.x:
             return oo
         elif self.p1.x == self.p2.x:
-            return S.Zero
+            return Integer(0)
         else:
             return -oo
 
@@ -1111,7 +1113,7 @@ class Ray3D(LinearEntity3D):
         if self.p1.y < self.p2.y:
             return oo
         elif self.p1.y == self.p2.y:
-            return S.Zero
+            return Integer(0)
         else:
             return -oo
 
@@ -1144,7 +1146,7 @@ class Ray3D(LinearEntity3D):
         if self.p1.z < self.p2.z:
             return oo
         elif self.p1.z == self.p2.z:
-            return S.Zero
+            return Integer(0)
         else:
             return -oo
 
@@ -1155,7 +1157,8 @@ class Ray3D(LinearEntity3D):
         Raises
         ======
 
-        NotImplementedError is raised if o is not a Point
+        NotImplementedError
+            if o is not a Point
 
         Examples
         ========
@@ -1172,7 +1175,7 @@ class Ray3D(LinearEntity3D):
             if is_sequence(o):
                 o = Point3D(o)
         if o in self:
-            return S.Zero
+            return Integer(0)
         s = self.perpendicular_segment(o)
         if not isinstance(s, Point3D):
             non_o = s.p1 if s.p1 == o else s.p2
@@ -1234,7 +1237,7 @@ class Ray3D(LinearEntity3D):
                     rv = o.z <= self.source.z
                 else:
                     rv = o.z <= self.source.z
-                if rv == S.true or rv == S.false:
+                if rv in (true, false):
                     return bool(rv)
                 raise Undecidable(
                     'Cannot determine if %s is in %s' % (o, self))
@@ -1300,9 +1303,9 @@ class Segment3D(LinearEntity3D):
         p2 = Point3D(p2)
         if p1 == p2:
             return Point3D(p1)
-        if (p1.x > p2.x) is S.true:
+        if (p1.x - p2.x).is_positive:
             p1, p2 = p2, p1
-        elif (p1.x == p2.x) and (p1.y > p2.y) is S.true:
+        elif (p1.x == p2.x) and (p1.y - p2.y).is_positive:
             p1, p2 = p2, p1
         return LinearEntity3D.__new__(cls, p1, p2, **kwargs)
 
@@ -1381,7 +1384,8 @@ class Segment3D(LinearEntity3D):
         Raises
         ======
 
-        NotImplementedError is raised if o is not a Point3D
+        NotImplementedError
+            if o is not a Point3D
 
         Examples
         ========

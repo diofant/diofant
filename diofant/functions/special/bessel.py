@@ -1,7 +1,7 @@
 from mpmath import besseljzero, mp, workprec
 from mpmath.libmp.libmpf import dps_to_prec
 
-from ...core import (Add, Expr, Function, I, Integer, Pow, Rational, S, Wild,
+from ...core import (Add, Expr, Function, I, Integer, Pow, Rational, Wild,
                      cacheit, nan, oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ...polys.orthopolys import spherical_bessel_fn as fn
@@ -147,22 +147,22 @@ class besselj(BesselBase):
 
     """
 
-    _a = S.One
-    _b = S.One
+    _a = Integer(1)
+    _b = Integer(1)
 
     @classmethod
     def eval(cls, nu, z):
         if z.is_zero:
             if nu.is_zero:
-                return S.One
-            elif (nu.is_integer and nu.is_zero is False) or re(nu).is_positive:
-                return S.Zero
+                return Integer(1)
+            elif (nu.is_integer and nu.is_nonzero) or re(nu).is_positive:
+                return Integer(0)
             elif re(nu).is_negative and not (nu.is_integer is True):
                 return zoo
             elif nu.is_imaginary:
                 return nan
         if z in (oo, -oo):
-            return S.Zero
+            return Integer(0)
 
         if z.could_extract_minus_sign():
             return z**nu*(-z)**(-nu)*besselj(nu, -z)
@@ -196,7 +196,7 @@ class besselj(BesselBase):
             return csc(pi*nu)*bessely(-nu, z) - cot(pi*nu)*bessely(nu, z)
 
     def _eval_rewrite_as_jn(self, nu, z):
-        return sqrt(2*z/pi)*jn(nu - S.Half, self.argument)
+        return sqrt(2*z/pi)*jn(nu - Rational(1, 2), self.argument)
 
     def _eval_is_extended_real(self):
         nu, z = self.args
@@ -240,20 +240,20 @@ class bessely(BesselBase):
 
     """
 
-    _a = S.One
-    _b = S.One
+    _a = Integer(1)
+    _b = Integer(1)
 
     @classmethod
     def eval(cls, nu, z):
         if z.is_zero:
             if nu.is_zero:
                 return -oo
-            elif re(nu).is_zero is False:
+            elif re(nu).is_nonzero:
                 return zoo
             elif re(nu).is_zero:
                 return nan
         if z in (oo, -oo):
-            return S.Zero
+            return Integer(0)
 
         if nu.is_integer:
             if nu.could_extract_minus_sign():
@@ -269,7 +269,7 @@ class bessely(BesselBase):
             return aj.rewrite(besseli)
 
     def _eval_rewrite_as_yn(self, nu, z):
-        return sqrt(2*z/pi) * yn(nu - S.Half, self.argument)
+        return sqrt(2*z/pi) * yn(nu - Rational(1, 2), self.argument)
 
     def _eval_is_extended_real(self):
         nu, z = self.args
@@ -312,22 +312,22 @@ class besseli(BesselBase):
 
     """
 
-    _a = -S.One
-    _b = S.One
+    _a = -Integer(1)
+    _b = Integer(1)
 
     @classmethod
     def eval(cls, nu, z):
         if z.is_zero:
             if nu.is_zero:
-                return S.One
-            elif (nu.is_integer and nu.is_zero is False) or re(nu).is_positive:
-                return S.Zero
+                return Integer(1)
+            elif (nu.is_integer and nu.is_nonzero) or re(nu).is_positive:
+                return Integer(0)
             elif re(nu).is_negative and not (nu.is_integer is True):
                 return zoo
             elif nu.is_imaginary:
                 return nan
         if im(z) in (oo, -oo):
-            return S.Zero
+            return Integer(0)
 
         if z.could_extract_minus_sign():
             return z**nu*(-z)**(-nu)*besseli(nu, -z)
@@ -402,20 +402,20 @@ class besselk(BesselBase):
 
     """
 
-    _a = S.One
-    _b = -S.One
+    _a = Integer(1)
+    _b = -Integer(1)
 
     @classmethod
     def eval(cls, nu, z):
         if z.is_zero:
             if nu.is_zero:
                 return oo
-            elif re(nu).is_zero is False:
+            elif re(nu).is_nonzero:
                 return zoo
             elif re(nu).is_zero:
                 return nan
         if im(z) in (oo, -oo):
-            return S.Zero
+            return Integer(0)
 
         if nu.is_integer:
             if nu.could_extract_minus_sign():
@@ -473,8 +473,8 @@ class hankel1(BesselBase):
 
     """
 
-    _a = S.One
-    _b = S.One
+    _a = Integer(1)
+    _b = Integer(1)
 
     def _eval_conjugate(self):
         z = self.argument
@@ -515,8 +515,8 @@ class hankel2(BesselBase):
 
     """
 
-    _a = S.One
-    _b = S.One
+    _a = Integer(1)
+    _b = Integer(1)
 
     def _eval_conjugate(self):
         z = self.argument
@@ -745,16 +745,16 @@ class AiryBase(Function):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return self.expand(deep, **hints), S.Zero
+                return self.expand(deep, **hints), Integer(0)
             else:
-                return self, S.Zero
+                return self, Integer(0)
         if deep:
             x, y = self.args[0].expand(deep, **hints).as_real_imag()
         else:
             x, y = self.args[0].as_real_imag()
 
         sq = -y**2/x**2
-        re = S.Half*(self.func(x+x*sqrt(sq))+self.func(x-x*sqrt(sq)))
+        re = (self.func(x+x*sqrt(sq)) + self.func(x-x*sqrt(sq)))/2
         im = x/(2*y) * sqrt(sq) * (self.func(x-x*sqrt(sq)) - self.func(x+x*sqrt(sq)))
         return re, im
 
@@ -843,9 +843,9 @@ class airyai(AiryBase):
     def eval(cls, arg):
         if arg.is_Number:
             if arg in (oo, -oo):
-                return S.Zero
-            elif arg is S.Zero:
-                return S.One / (3**Rational(2, 3) * gamma(Rational(2, 3)))
+                return Integer(0)
+            elif arg == 0:
+                return 1/(3**Rational(2, 3) * gamma(Rational(2, 3)))
 
     def fdiff(self, argindex=1):
         if argindex == 1:
@@ -857,7 +857,7 @@ class airyai(AiryBase):
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n < 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
             return 1/(3**Rational(2, 3)*pi) * gamma(Rational(n+1, 3)) * sin(2*pi*(n+1)/3) / factorial(n) * (root(3, 3)*x)**n
@@ -879,7 +879,7 @@ class airyai(AiryBase):
             return ot*(Pow(a, ot)*besseli(-ot, tt*a) - z*Pow(a, -ot)*besseli(ot, tt*a))
 
     def _eval_rewrite_as_hyper(self, z):
-        pf1 = S.One / (3**Rational(2, 3)*gamma(Rational(2, 3)))
+        pf1 = 1/(3**Rational(2, 3)*gamma(Rational(2, 3)))
         pf2 = z / (root(3, 3)*gamma(Rational(1, 3)))
         return pf1 * hyper([], [Rational(2, 3)], z**3/9) - pf2 * hyper([], [Rational(4, 3)], z**3/9)
 
@@ -907,7 +907,7 @@ class airyai(AiryBase):
                     n = M[n]
                     pf = (d * z**n)**m / (d**m * z**(m*n))
                     newarg = c * d**m * z**(m*n)
-                    return S.Half * ((pf + S.One)*airyai(newarg) - (pf - S.One)/sqrt(3)*airybi(newarg))
+                    return ((pf + 1)*airyai(newarg) - (pf - 1)/sqrt(3)*airybi(newarg))/2
         return self.func(*self.args)
 
 
@@ -999,8 +999,8 @@ class airybi(AiryBase):
             if arg is oo:
                 return oo
             elif arg == -oo:
-                return S.Zero
-            elif arg is S.Zero:
+                return Integer(0)
+            elif arg == 0:
                 return 1/(root(3, 6)*gamma(Rational(2, 3)))
 
     def fdiff(self, argindex=1):
@@ -1013,7 +1013,7 @@ class airybi(AiryBase):
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n < 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
             return 1/(root(3, 6)*pi) * gamma(Rational(n + 1, 3)) * Abs(sin(2*pi*(n + 1)/3)) / factorial(n) * (root(3, 3)*x)**n
@@ -1037,7 +1037,7 @@ class airybi(AiryBase):
             return sqrt(ot)*(b*besseli(-ot, tt*a) + z*c*besseli(ot, tt*a))
 
     def _eval_rewrite_as_hyper(self, z):
-        pf1 = S.One / (root(3, 6)*gamma(Rational(2, 3)))
+        pf1 = 1/(root(3, 6)*gamma(Rational(2, 3)))
         pf2 = z*root(3, 6) / gamma(Rational(1, 3))
         return pf1 * hyper([], [Rational(2, 3)], z**3/9) + pf2 * hyper([], [Rational(4, 3)], z**3/9)
 
@@ -1065,7 +1065,7 @@ class airybi(AiryBase):
                     n = M[n]
                     pf = (d * z**n)**m / (d**m * z**(m*n))
                     newarg = c * d**m * z**(m*n)
-                    return S.Half * (sqrt(3)*(S.One - pf)*airyai(newarg) + (S.One + pf)*airybi(newarg))
+                    return (sqrt(3)*(1 - pf)*airyai(newarg) + (1 + pf)*airybi(newarg))/2
         return self.func(*self.args)
 
 
@@ -1092,7 +1092,7 @@ class _airyais(Function):
 
     def _eval_nseries(self, x, n, logx):
         x0 = self.args[0].limit(x, 0)
-        if x0 is S.Zero:
+        if x0 == 0:
             return self.rewrite('intractable')._eval_nseries(x, n, logx)
         else:
             return super()._eval_nseries(x, n, logx)
@@ -1121,7 +1121,7 @@ class _airybis(Function):
 
     def _eval_nseries(self, x, n, logx):
         x0 = self.args[0].limit(x, 0)
-        if x0 is S.Zero:
+        if x0 == 0:
             return self.rewrite('intractable')._eval_nseries(x, n, logx)
         else:
             return super()._eval_nseries(x, n, logx)
@@ -1202,9 +1202,9 @@ class airyaiprime(AiryBase):
     def eval(cls, arg):
         if arg.is_Number:
             if arg is oo:
-                return S.Zero
-            elif arg is S.Zero:
-                return -S.One / (cbrt(3) * gamma(Rational(1, 3)))
+                return Integer(0)
+            elif arg == 0:
+                return -1/(cbrt(3) * gamma(Rational(1, 3)))
 
     def fdiff(self, argindex=1):
         if argindex == 1:
@@ -1264,7 +1264,7 @@ class airyaiprime(AiryBase):
                     n = M[n]
                     pf = (d**m * z**(n*m)) / (d * z**n)**m
                     newarg = c * d**m * z**(n*m)
-                    return S.Half * ((pf + S.One)*airyaiprime(newarg) + (pf - S.One)/sqrt(3)*airybiprime(newarg))
+                    return ((pf + 1)*airyaiprime(newarg) + (pf - 1)/sqrt(3)*airybiprime(newarg))/2
         return self.func(*self.args)
 
 
@@ -1347,8 +1347,8 @@ class airybiprime(AiryBase):
             if arg is oo:
                 return oo
             elif arg == -oo:
-                return S.Zero
-            elif arg is S.Zero:
+                return Integer(0)
+            elif arg == 0:
                 return root(3, 6)/gamma(Rational(1, 3))
 
     def fdiff(self, argindex=1):
@@ -1409,5 +1409,5 @@ class airybiprime(AiryBase):
                     n = M[n]
                     pf = (d**m * z**(n*m)) / (d * z**n)**m
                     newarg = c * d**m * z**(n*m)
-                    return S.Half * (sqrt(3)*(pf - S.One)*airyaiprime(newarg) + (pf + S.One)*airybiprime(newarg))
+                    return (sqrt(3)*(pf - 1)*airyaiprime(newarg) + (pf + 1)*airybiprime(newarg))/2
         return self.func(*self.args)

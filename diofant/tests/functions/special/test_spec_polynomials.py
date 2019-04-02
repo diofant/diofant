@@ -49,7 +49,7 @@ def test_jacobi():
 
     assert diff(jacobi(n, a, b, x), n) == Derivative(jacobi(n, a, b, x), n)
     assert diff(jacobi(n, a, b, x), x) == \
-        (a/2 + b/2 + n/2 + Rational(1, 2))*jacobi(n - 1, a + 1, b + 1, x)
+        (a + b + n + 1)*jacobi(n - 1, a + 1, b + 1, x)/2
 
     # XXX see issue sympy/sympy#5539
     assert str(jacobi(n, a, b, x).diff(a)) == \

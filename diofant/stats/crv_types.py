@@ -42,7 +42,7 @@ WignerSemicircle
 import random
 
 from ..concrete import Sum
-from ..core import Dummy, Eq, Expr, Lambda, Rational, S, oo, pi, sympify
+from ..core import Dummy, Eq, Expr, Lambda, Rational, oo, pi, sympify
 from ..functions import Abs, Piecewise, besseli
 from ..functions import beta as beta_fn
 from ..functions import binomial, cos, exp, factorial, floor, gamma, log, sqrt
@@ -1792,7 +1792,7 @@ class QuadraticUDistribution(SingleContinuousDistribution):
         alpha = 12/(b - a)**3
         beta = (a + b)/2
         return Piecewise((alpha*(x - beta)**2, And(a <= x, x <= b)),
-                         (S.Zero, True))
+                         (0, True))
 
 
 def QuadraticU(name, a, b):
@@ -1866,7 +1866,7 @@ class RaisedCosineDistribution(SingleContinuousDistribution):
         mu, s = self.mu, self.s
         return Piecewise(
             ((1 + cos(pi*(x - mu)/s))/(2*s), And(mu - s <= x, x <= mu + s)),
-            (S.Zero, True))
+            (0, True))
 
 
 def RaisedCosine(name, mu, s):
@@ -2064,7 +2064,7 @@ class TriangularDistribution(SingleContinuousDistribution):
             (2*(x - a)/((b - a)*(c - a)), And(a <= x, x < c)),
             (2/(b - a), Eq(x, c)),
             (2*(b - x)/((b - a)*(b - c)), And(c < x, x <= b)),
-            (S.Zero, True))
+            (0, True))
 
 
 def Triangular(name, a, b, c):
@@ -2141,8 +2141,8 @@ class UniformDistribution(SingleContinuousDistribution):
     def pdf(self, x):
         left, right = self.left, self.right
         return Piecewise(
-            (S.One/(right - left), And(left <= x, x <= right)),
-            (S.Zero, True))
+            (1/(right - left), And(left <= x, x <= right)),
+            (0, True))
 
     def compute_cdf(self, **kwargs):
         from ..functions import Min

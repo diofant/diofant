@@ -761,12 +761,12 @@ def test_is_zero():
     assert Integral(0, (x, 1, x)).is_zero
     assert Integral(1, (x, 1, 1)).is_zero
     assert Integral(1, (x, m)).is_zero is None
-    assert Integral(1, (x, 1, 2), (y, 2)).is_zero is False
+    assert Integral(1, (x, 1, 2), (y, 2)).is_nonzero
     assert Integral(x, (m, 0)).is_zero
     assert Integral(x + m, (m, 0)).is_zero is None
     i = Integral(m, (m, 1, exp(x)), (x, 0))
     assert i.is_zero is None
-    assert Integral(m, (x, 0), (m, 1, exp(x))).is_zero is True
+    assert Integral(m, (x, 0), (m, 1, exp(x))).is_zero
 
     assert Integral(x, (x, oo, oo)).is_zero  # issue sympy/sympy#8171
     assert Integral(x, (x, -oo, -oo)).is_zero

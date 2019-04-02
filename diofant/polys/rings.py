@@ -652,6 +652,9 @@ class PolyElement(DomainElement, CantSympify, dict):
     def drop_to_ground(self, *gens):
         ring = self.ring
 
+        if not gens:
+            return self
+
         if ring.is_univariate:
             raise ValueError("can't drop only generator to ground")
 
@@ -2115,11 +2118,22 @@ class PolyElement(DomainElement, CantSympify, dict):
     def subresultants(self, other):
         return self.ring.dmp_subresultants(self, other)
 
-    def resultant(self, other):
-        return self.ring.dmp_resultant(self, other)
+    def resultant(self, other, includePRS=False):
+        return self.ring.dmp_resultant(self, other, includePRS=includePRS)
 
     def discriminant(self):
-        return self.ring.dmp_discriminant(self)
+        """Computes discriminant of a polynomial."""
+        ring = self.ring
+
+        d = self.degree()
+
+        if d <= 0:
+            return ring.zero.drop(0)
+        else:
+            s = (-1)**((d*(d - 1)) // 2)
+            c = self.drop_to_ground(*ring.gens[1:]).LC
+
+            return self.resultant(self.diff()) // (c*s)
 
     def decompose(self):
         if self.ring.is_univariate:

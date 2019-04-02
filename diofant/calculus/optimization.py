@@ -1,4 +1,4 @@
-from ..core import Eq, Ge, Gt, Le, Lt, Ne, S, diff, nan, oo, sympify
+from ..core import Eq, Ge, Gt, Integer, Le, Lt, Ne, diff, nan, oo, sympify
 from ..core.compatibility import is_sequence, ordered
 from ..functions import Min
 from ..matrices import eye, zeros
@@ -265,7 +265,7 @@ def simplex(c, m, b):
     if status == 1:
         return oo, (oo,)*cols
 
-    ans = [S.Zero]*cols
+    ans = [Integer(0)]*cols
     for c, b in enumerate(basis):
         if b < cols:
             ans[b] = tableau[:-1, -1][c]

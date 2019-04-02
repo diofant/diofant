@@ -1,13 +1,14 @@
 from collections import defaultdict
 from functools import reduce
 
-from ..core import (Add, Basic, Dummy, E, Integer, Mul, Pow, Rational, S,
-                    cacheit, count_ops, expand_log, expand_mul, factor_terms,
-                    prod, sympify)
+from ..core import (Add, Basic, Dummy, E, Integer, Mul, Pow, Rational, cacheit,
+                    count_ops, expand_log, expand_mul, factor_terms, prod,
+                    sympify)
 from ..core.compatibility import default_sort_key, ordered
 from ..core.mul import _keep_coeff
 from ..core.rules import Transform
 from ..functions import exp, exp_polar, log, polarify, root, unpolarify
+from ..logic import true
 from ..ntheory import multiplicity
 from ..polys import gcd, lcm_list
 
@@ -126,7 +127,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
         c_powers = defaultdict(list)
         nc_part = []
         newexpr = []
-        coeff = S.One
+        coeff = Integer(1)
         for term in expr.args:
             if term.is_Rational:
                 coeff *= term
@@ -140,7 +141,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                 if b.is_Pow:
                     # don't let smthg like sqrt(x**a) split into x**a, 1/2
                     # or else it will be joined as x**(a/2) later
-                    b, e = b**e, S.One
+                    b, e = b**e, Integer(1)
                 c_powers[b].append(e)
             else:
                 # This is the logic that combines exponents for equal,
@@ -160,17 +161,17 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
             # Numbers since autoevaluation will undo it, e.g.
             # 2**(1/3)/4 -> 2**(1/3 - 2) -> 2**(1/3)/4
             if (b and b.is_Number and not all(ei.is_Number for ei in e) and
-                    coeff is not S.One and b not in (1, -1)):
+                    coeff != 1 and b not in (1, -1)):
                 m = multiplicity(abs(b), abs(coeff))
                 if m:
                     e.append(m)
                     coeff /= b**m
             c_powers[b] = Add(*e)
-        if coeff is not S.One:
+        if coeff != 1:
             if coeff in c_powers:
-                c_powers[coeff] += S.One
+                c_powers[coeff] += Integer(1)
             else:
-                c_powers[coeff] = S.One
+                c_powers[coeff] = Integer(1)
 
         # convert to plain dictionary
         c_powers = dict(c_powers)
@@ -185,7 +186,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
             if bpos:
                 binv = 1/b
                 if b != binv and binv in c_powers:
-                    if b.as_numer_denom()[0] is S.One:
+                    if b.as_numer_denom()[0] == 1:
                         c_powers.pop(b)
                         c_powers[binv] -= e
                     else:
@@ -195,7 +196,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
 
         # check for base and negated base pairs
         be = list(c_powers.items())
-        _n = S.NegativeOne
+        _n = Integer(-1)
         for i, (b, e) in enumerate(be):
             if ((-b).is_Symbol or b.is_Add) and -b in c_powers:
                 if (b.is_positive in (0, 1) or e.is_integer):
@@ -230,15 +231,15 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
             """
             if e is not None:  # coming from c_powers or from below
                 if e.is_Integer:
-                    return (b, S.One), e
+                    return (b, Integer(1)), e
                 elif e.is_Rational:
                     return (b, Integer(e.denominator)), Integer(e.numerator)
                 else:
                     c, m = e.as_coeff_Mul(rational=True)
-                    if c is not S.One and b.is_positive:
+                    if c != 1 and b.is_positive:
                         return (b**m, Integer(c.denominator)), Integer(c.numerator)
                     else:
-                        return (b**e, S.One), S.One
+                        return (b**e, Integer(1)), Integer(1)
             else:
                 return bkey(*b.as_base_exp())
 
@@ -343,7 +344,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
         # there may be terms still in common_b that were bases that were
         # identified as needing processing, so remove those, too
         for (b, q), e in common_b.items():
-            if b.is_Pow and q is not S.One and not b.exp.is_Rational:
+            if b.is_Pow and q != 1 and not b.exp.is_Rational:
                 b, be = b.as_base_exp()
                 b = b**(be/q)
             else:
@@ -381,7 +382,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
             if not (all(x.is_nonnegative for x in b.as_numer_denom()) or e.is_integer or force or b.is_polar):
                 continue
             exp_c, exp_t = e.as_coeff_Mul(rational=True)
-            if exp_c is not S.One and exp_t is not S.One:
+            if exp_c != 1 and exp_t != 1:
                 c_powers[i] = [Pow(b, exp_c), exp_t]
 
         # Combine bases whenever they have the same exponent and
@@ -436,7 +437,7 @@ def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
                             israt = True
                     if israt:
                         neg = [-w for w in neg]
-                        unk.extend([S.NegativeOne]*len(neg))
+                        unk.extend([Integer(-1)]*len(neg))
                     else:
                         unk.extend(neg)
                         neg = []
@@ -606,9 +607,9 @@ def _denest_pow(eq):
         return Pow(exp(logs), Mul(*other))
 
     _, be = b.as_base_exp()
-    if be is S.One and not (b.is_Mul or
-                            b.is_Rational and b.denominator != 1 or
-                            b.is_positive):
+    if be == 1 and not (b.is_Mul or
+                        b.is_Rational and b.denominator != 1 or
+                        b.is_positive):
         return eq
 
     # denest eq which is either pos**e or Pow**e or Mul**e or
@@ -666,7 +667,7 @@ def _denest_pow(eq):
     if isinstance(glogb, log) or not glogb.is_Mul:
         if glogb.args[0].is_Pow:
             glogb = _denest_pow(glogb.args[0])
-            if (abs(glogb.exp) < 1) is S.true:
+            if (abs(glogb.exp) < 1) == true:
                 return Pow(glogb.base, glogb.exp*e)
         return eq
 

@@ -1,5 +1,6 @@
-from ..core import Basic, Dict, Expr, Integer, S, Tuple, sympify
+from ..core import Basic, Dict, Expr, Integer, Tuple, sympify
 from ..core.sympify import converter as sympify_converter
+from ..logic import false
 from .dense import DenseMatrix
 from .expressions import MatrixExpr
 from .matrices import MatrixBase
@@ -73,7 +74,7 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
 
         """
         if not hasattr(other, 'shape') or self.shape != other.shape:
-            return S.false
+            return false
         if isinstance(other, MatrixExpr) and not isinstance(
                 other, ImmutableMatrix):
             return

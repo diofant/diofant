@@ -2,7 +2,7 @@ import collections
 import math
 import random
 
-from ..core import Function, S
+from ..core import Function, Integer
 from ..core.compatibility import as_int
 from ..core.numbers import igcdex, mod_inverse
 from ..core.power import isqrt
@@ -958,14 +958,14 @@ class mobius(Function):
         else:
             raise TypeError("n should be an integer")
         if n.is_prime:
-            return S.NegativeOne
-        elif n is S.One:
-            return S.One
+            return Integer(-1)
+        elif n == 1:
+            return Integer(1)
         elif n.is_Integer:
             a = factorint(n)
             if any(i > 1 for i in a.values()):
-                return S.Zero
-            return S.NegativeOne**len(a)
+                return Integer(0)
+            return Integer(-1)**len(a)
 
 
 def _discrete_log_trial_mul(n, a, b, order=None):

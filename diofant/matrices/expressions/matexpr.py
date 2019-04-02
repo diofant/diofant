@@ -1,8 +1,9 @@
-from ...core import AtomicExpr, Expr, Integer, S, Symbol, Tuple, sympify
+from ...core import AtomicExpr, Expr, Integer, Symbol, Tuple, sympify
 from ...core.assumptions import StdFactKB
 from ...core.decorators import _sympifyit, call_highest_priority
 from ...core.logic import fuzzy_bool
 from ...functions import adjoint, conjugate
+from ...logic import false
 from ...simplify import simplify
 from ..matrices import ShapeError
 
@@ -48,7 +49,7 @@ class MatrixExpr(Expr):
     # The following is adapted from the core Expr object
     def __neg__(self):
         from .matmul import MatMul
-        return MatMul(S.NegativeOne, self).doit()
+        return MatMul(-1, self).doit()
 
     def __abs__(self):
         raise NotImplementedError
@@ -98,11 +99,11 @@ class MatrixExpr(Expr):
             raise ShapeError("Power of non-square matrix %s" % self)
         elif self.is_Identity:
             return self
-        elif other is S.NegativeOne:
+        elif other == -1:
             return Inverse(self)
-        elif other is S.Zero:
+        elif other == 0:
             return Identity(self.rows)
-        elif other is S.One:
+        elif other == 1:
             return self
         return MatPow(self, other)
 
@@ -114,13 +115,13 @@ class MatrixExpr(Expr):
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__rtruediv__')
     def __truediv__(self, other):
-        return self * other**S.NegativeOne
+        return self * other**Integer(-1)
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__truediv__')
     def __rtruediv__(self, other):
         raise NotImplementedError()
-        # return MatMul(other, Pow(self, S.NegativeOne))
+        # return MatMul(other, Pow(self, -1))
 
     @property
     def rows(self):
@@ -184,8 +185,8 @@ class MatrixExpr(Expr):
         def is_valid(idx):
             return isinstance(idx, (int, Integer, Symbol, Expr))
         return (is_valid(i) and is_valid(j) and
-                (0 <= i) is not S.false and (i < self.rows) is not S.false and
-                (0 <= j) is not S.false and (j < self.cols) is not S.false)
+                (0 <= i) != false and (i < self.rows) != false and
+                (0 <= j) != false and (j < self.cols) != false)
 
     def __getitem__(self, key):
         if not isinstance(key, tuple) and isinstance(key, slice):
@@ -429,12 +430,12 @@ class Identity(MatrixExpr):
 
     def _entry(self, i, j):
         if i == j:
-            return S.One
+            return Integer(1)
         else:
-            return S.Zero
+            return Integer(0)
 
     def _eval_determinant(self):
-        return S.One
+        return Integer(1)
 
 
 class ZeroMatrix(MatrixExpr):
@@ -473,16 +474,16 @@ class ZeroMatrix(MatrixExpr):
         return ZeroMatrix(self.cols, self.rows)
 
     def _eval_trace(self):
-        return S.Zero
+        return Integer(0)
 
     def _eval_determinant(self):
-        return S.Zero
+        return Integer(0)
 
     def conjugate(self):
         return self
 
     def _entry(self, i, j):
-        return S.Zero
+        return Integer(0)
 
     def __bool__(self):
         return False

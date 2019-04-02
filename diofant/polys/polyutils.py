@@ -3,7 +3,7 @@
 import collections
 import re
 
-from ..core import Add, Mul, Pow, S, nan, oo, zoo
+from ..core import Add, Mul, Pow, nan, oo, zoo
 from ..core.compatibility import default_sort_key
 from ..core.exprtools import decompose_power
 from .polyerrors import GeneratorsError, GeneratorsNeeded, PolynomialError
@@ -204,7 +204,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
                         base, exp = decompose_power(factor)
 
                         if exp < 0:
-                            exp, base = -exp, Pow(base, -S.One)
+                            exp, base = -exp, Pow(base, -1)
 
                         monom[indices[base]] += exp
                     except KeyError:
@@ -261,7 +261,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
                     base, exp = decompose_power(factor)
 
                     if exp < 0:
-                        exp, base = -exp, Pow(base, -S.One)
+                        exp, base = -exp, Pow(base, -1)
 
                     elements[base] += exp
                     gens.add(base)

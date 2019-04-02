@@ -1,7 +1,8 @@
 import itertools
 
-from ...core import Add, Equality, Mul, Pow, Rational, S, Symbol, oo
+from ...core import Add, Equality, Integer, Mul, Pow, Rational, S, Symbol, oo
 from ...core.function import _coeff_isneg
+from ...logic import true
 from ...utilities import default_sort_key, group
 from ..conventions import requires_partial
 from ..printer import Printer
@@ -774,7 +775,7 @@ class PrettyPrinter(Printer):
         P = {}
         for n, ec in enumerate(pexpr.args):
             P[n, 0] = self._print(ec.expr)
-            if ec.cond == S.true:
+            if ec.cond == true:
                 P[n, 1] = prettyForm('otherwise')
             else:
                 P[n, 1] = prettyForm(
@@ -1280,7 +1281,7 @@ class PrettyPrinter(Printer):
             return prettyForm.__mul__(*a)
         else:
             if len(a) == 0:
-                a.append( self._print(S.One) )
+                a.append( self._print(Integer(1)) )
             return prettyForm.__mul__(*a)/prettyForm.__mul__(*b)
 
     # A helper function for _print_Pow to print x**(1/n)
@@ -1326,11 +1327,11 @@ class PrettyPrinter(Printer):
         from ...simplify import fraction
         from ...series import Limit
         b, e = power.as_base_exp()
-        if power.is_commutative:
-            if e is S.NegativeOne:
+        if power.is_commutative and not e.is_Float:
+            if e == -1:
                 return prettyForm("1")/self._print(b)
             n, d = fraction(e)
-            if n is S.One and d.is_Atom and not e.is_Integer:
+            if n == 1 and d.is_Atom and not e.is_Integer:
                 return self._print_nth_root(b, e)
             if e.is_Rational and e < 0:
                 return prettyForm("1")/self._print(Pow(b, -e, evaluate=False))

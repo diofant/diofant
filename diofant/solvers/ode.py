@@ -230,7 +230,7 @@ from collections import defaultdict
 from itertools import islice
 
 from ..core import (Add, AtomicExpr, Derivative, Dummy, E, Eq, Equality, Expr,
-                    Function, I, Integer, Mul, Number, Pow, S, Subs, Symbol,
+                    Function, I, Integer, Mul, Number, Pow, Subs, Symbol,
                     Tuple, Wild, diff, expand, expand_mul, factor_terms, nan,
                     oo, symbols, sympify, zoo)
 from ..core.compatibility import is_sequence, iterable, ordered
@@ -1239,7 +1239,7 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
         r = collect(eq, [df, f(x)]).match(e*df + d)
         if r:
             r2 = r.copy()
-            r2[c] = S.Zero
+            r2[c] = Integer(0)
             if r2[d].is_Add:
                 # Separate the terms having f(x) to r[d] and
                 # remaining to r[c]
@@ -1818,7 +1818,7 @@ def check_linear_neq_order1(eq, func, func_coef):
     except ValueError:  # pragma: no cover
         return
 
-    r['forcing'] = [S.Zero]*n
+    r['forcing'] = [Integer(0)]*n
     for i in range(n):
         for j in Add.make_args(eq[i]):
             if not j.has(*func):
@@ -2380,7 +2380,7 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
 
                     if isinstance(ode_or_bool, (bool, BooleanAtom)):
                         if ode_or_bool:
-                            lhs = rhs = S.Zero
+                            lhs = rhs = Integer(0)
                     else:
                         lhs = ode_or_bool.lhs
                         rhs = ode_or_bool.rhs
@@ -2793,10 +2793,10 @@ def constant_renumber(expr, symbolname, startnumber, endnumber):
         symbolname + "%d" % t) for t in range(startnumber,
                                               endnumber + 1)]
 
-    # make a mapping to send all constantsymbols to S.One and use
+    # make a mapping to send all constantsymbols to Integer(1) and use
     # that to make sure that term ordering is not dependent on
     # the indexed value of C
-    C_1 = [(ci, S.One) for ci in constantsymbols]
+    C_1 = [(ci, Integer(1)) for ci in constantsymbols]
 
     def sort_key(arg):
         return default_sort_key(arg.subs(C_1))
@@ -3231,7 +3231,7 @@ def homogeneous_order(eq, *symbols):
 
     # These are all constants
     if eq.is_Number or eq.is_NumberSymbol or eq.is_number:
-        return S.Zero
+        return Integer(0)
 
     # Replace all functions with dummy variables
     dum = numbered_symbols(prefix='d', cls=Dummy)
@@ -3253,13 +3253,13 @@ def homogeneous_order(eq, *symbols):
     # assuming order of a nested function can only be equal to zero
     if isinstance(eq, Function):
         return None if homogeneous_order(
-            eq.args[0], *tuple(symset)) != 0 else S.Zero
+            eq.args[0], *tuple(symset)) != 0 else Integer(0)
 
     # make the replacement of x with x*t and see if t can be factored out
     t = Dummy('t', positive=True)  # It is sufficient that t > 0
     eqs = separatevars(eq.subs({i: t*i for i in symset}), [t], dict=True)[t]
-    if eqs is S.One:
-        return S.Zero  # there was no term with only t
+    if eqs == 1:
+        return Integer(0)  # there was no term with only t
     i, d = eqs.as_independent(t, as_Add=False)
     b, e = d.as_base_exp()
     if b == t:
@@ -3854,7 +3854,7 @@ def _nth_linear_match(eq, func, order):
     """
     x = func.args[0]
     one_x = {x}
-    terms = {i: S.Zero for i in range(-1, order + 1)}
+    terms = {i: Integer(0) for i in range(-1, order + 1)}
     for i in Add.make_args(eq):
         if not i.has(func):
             terms[-1] += i
@@ -3937,7 +3937,7 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
     r = match
 
     # First, set up characteristic equation.
-    chareq, symbol = S.Zero, Dummy('x')
+    chareq, symbol = Integer(0), Dummy('x')
 
     for i in r:
         if not isinstance(i, str) and i >= 0:
@@ -4051,7 +4051,7 @@ def ode_nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients(eq, func, o
     f = func.func
     r = match
 
-    chareq, eq, symbol = S.Zero, S.Zero, Dummy('x')
+    chareq, eq, symbol = Integer(0), Integer(0), Dummy('x')
 
     for i in r:
         if not isinstance(i, str) and i >= 0:
@@ -4552,7 +4552,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
     r = match
 
     # First, set up characteristic equation.
-    chareq, symbol = S.Zero, Dummy('x')
+    chareq, symbol = Integer(0), Dummy('x')
 
     for i in r:
         if type(i) == str or i < 0:
@@ -4887,7 +4887,7 @@ def _undetermined_coefficients_match(expr, x):
             multiplicatively.
 
             """
-            term = S.One
+            term = Integer(1)
             if expr.is_Mul:
                 for i in expr.args:
                     if i.has(x):

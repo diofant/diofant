@@ -143,10 +143,10 @@ def test_dup_primitive_prs():
 def test_dmp_subresultants():
     R, x = ring("x", ZZ)
 
-    assert R.dmp_resultant(0, 0) == 0
+    assert R(0).resultant(R(0)) == 0
 
-    assert R.dmp_resultant(1, 0) == 0
-    assert R.dmp_resultant(0, 1) == 0
+    assert R(1).resultant(R(0)) == 0
+    assert R(0).resultant(R(1)) == 0
 
     f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
     g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
@@ -157,7 +157,7 @@ def test_dmp_subresultants():
     d = 260708
 
     assert R.dmp_subresultants(f, g) == [f, g, a, b, c, d]
-    assert R.dmp_resultant(f, g) == R.dmp_LC(d)
+    assert f.resultant(g) == R.dmp_LC(d)
 
     f = x**2 - 2*x + 1
     g = x**2 - 1
@@ -165,7 +165,7 @@ def test_dmp_subresultants():
     a = 2*x - 2
 
     assert R.dmp_subresultants(f, g) == [f, g, a]
-    assert R.dmp_resultant(f, g) == 0
+    assert f.resultant(g) == 0
 
     f = x**2 + 1
     g = x**2 - 1
@@ -173,59 +173,57 @@ def test_dmp_subresultants():
     a = -2
 
     assert R.dmp_subresultants(f, g) == [f, g, a]
-    assert R.dmp_resultant(f, g) == 4
-    assert R.dmp_resultant(f, g, includePRS=True) == (4, [x**2 + 1, x**2 - 1, -2])
+    assert f.resultant(g) == 4
+    assert f.resultant(g, includePRS=True) == (4, [x**2 + 1, x**2 - 1, -2])
 
     f = x**2 - 1
     g = x**3 - x**2 + 2
 
-    assert R.dmp_resultant(f, g) == 0
+    assert f.resultant(g) == 0
 
     f = 3*x**3 - x
     g = 5*x**2 + 1
 
-    assert R.dmp_resultant(f, g) == 64
+    assert f.resultant(g) == 64
 
     f = x**2 - 2*x + 7
     g = x**3 - x + 5
 
-    assert R.dmp_resultant(f, g) == 265
+    assert f.resultant(g) == 265
 
     f = x**3 - 6*x**2 + 11*x - 6
     g = x**3 - 15*x**2 + 74*x - 120
 
-    assert R.dmp_resultant(f, g) == -8640
+    assert f.resultant(g) == -8640
 
     f = x**3 - 6*x**2 + 11*x - 6
     g = x**3 - 10*x**2 + 29*x - 20
 
-    assert R.dmp_resultant(f, g) == 0
+    assert f.resultant(g) == 0
 
     f = x**3 - 1
     g = x**3 + 2*x**2 + 2*x - 1
 
-    assert R.dmp_resultant(f, g) == 16
+    assert f.resultant(g) == 16
 
     f = x**8 - 2
     g = x - 1
 
-    assert R.dmp_resultant(f, g) == -1
+    assert f.resultant(g) == -1
 
     assert R.dup_inner_subresultants(0, 0) == ([], [])
     assert R.dup_inner_subresultants(0, 1) == ([1], [1])
 
     R, x, y = ring("x,y", ZZ)
 
-    assert R.dmp_resultant(0, 0) == 0
+    assert R(0).resultant(R(0)) == 0
     assert R.dmp_prs_resultant(0, 0)[0] == 0
     assert R.dmp_zz_collins_resultant(0, 0) == 0
     assert R.dmp_qq_collins_resultant(0, 0) == 0
 
-    assert R.dmp_resultant(1, 0) == 0
-    assert R.dmp_resultant(1, 0) == 0
-    assert R.dmp_resultant(1, 0) == 0
+    assert R(1).resultant(R(0)) == 0
 
-    assert R.dmp_resultant(0, 1) == 0
+    assert R(0).resultant(R(1)) == 0
     assert R.dmp_prs_resultant(0, 1)[0] == 0
     assert R.dmp_zz_collins_resultant(0, 1) == 0
     assert R.dmp_qq_collins_resultant(0, 1) == 0
@@ -247,8 +245,8 @@ def test_dmp_subresultants():
 
     assert R.dmp_subresultants(f, g) == [f, g, a, b]
 
-    assert R.dmp_resultant(f, g) == r
-    assert R.dmp_resultant(f, g, includePRS=True) == rr
+    assert f.resultant(g) == r
+    assert f.resultant(g, includePRS=True) == rr
     assert R.dmp_prs_resultant(f, g)[0] == r
     assert R.dmp_zz_collins_resultant(f, g) == r
     assert R.dmp_qq_collins_resultant(f, g) == r
@@ -262,7 +260,7 @@ def test_dmp_subresultants():
     r = R.dmp_LC(b)
 
     assert R.dmp_subresultants(f, g) == [f, g, a]
-    assert R.dmp_resultant(f, g) == r
+    assert f.resultant(g) == r
     assert R.dmp_prs_resultant(f, g)[0] == r
     assert R.dmp_zz_collins_resultant(f, g) == r
     assert R.dmp_qq_collins_resultant(f, g) == r
@@ -296,7 +294,7 @@ def test_dmp_subresultants():
     f = x**6 - 5*x**4 + 5*x**2 + 4
     g = -6*t*x**5 + x**4 + 20*t*x**3 - 3*x**2 - 10*t*x + 6
 
-    assert Rx.dmp_resultant(f, g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
+    assert f.resultant(g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
 
     assert Rx.dmp_prs_resultant(x - 1, x + 1) == (2, [x - 1, x + 1, 2])
 
@@ -305,11 +303,11 @@ def test_dmp_subresultants():
     f = x + y
     g = x**2 - x*y + 1
 
-    assert R.dmp_resultant(f, g) == (1 + 2*y**2).drop(x)
+    assert f.resultant(g) == (1 + 2*y**2).drop(x)
 
     g += 1
     with using(use_collins_resultant=True):
-        assert R.dmp_resultant(f, g) == (2 + 2*y**2).drop(x)
+        assert f.resultant(g) == (2 + 2*y**2).drop(x)
 
     R, x, y = ring("x,y", QQ)
 
@@ -317,7 +315,7 @@ def test_dmp_subresultants():
     g = x**2 - x*y + 1
 
     with using(use_collins_resultant=True):
-        assert R.dmp_resultant(f, g) == (1 + 2*y**2).drop(x)
+        assert f.resultant(g) == (1 + 2*y**2).drop(x)
 
     R, x, y = ring("x y", ZZ)
 
@@ -326,40 +324,40 @@ def test_dmp_subresultants():
     assert R.dmp_zz_collins_resultant(f, g) == (-2*y**2 - 5*y + 1).drop(x)
 
 
-def test_dmp_discriminant():
+def test_PolyElement_discriminant():
     R, x = ring("x", ZZ)
 
-    assert R.dmp_discriminant(0) == 0
-    assert R.dmp_discriminant(x) == 1
+    assert R(0).discriminant() == 0
+    assert x.discriminant() == 1
 
-    assert R.dmp_discriminant(x**3 + 3*x**2 + 9*x - 13) == -11664
-    assert R.dmp_discriminant(5*x**5 + x**3 + 2) == 31252160
-    assert R.dmp_discriminant(x**4 + 2*x**3 + 6*x**2 - 22*x + 13) == 0
-    assert R.dmp_discriminant(12*x**7 + 15*x**4 + 30*x**3 + x**2 + 1) == -220289699947514112
+    assert (x**3 + 3*x**2 + 9*x - 13).discriminant() == -11664
+    assert (5*x**5 + x**3 + 2).discriminant() == 31252160
+    assert (x**4 + 2*x**3 + 6*x**2 - 22*x + 13).discriminant() == 0
+    assert (12*x**7 + 15*x**4 + 30*x**3 + x**2 + 1).discriminant() == -220289699947514112
 
-    assert R.dmp_discriminant(x**2 + 2*x + 3) == -8
+    assert (x**2 + 2*x + 3).discriminant() == -8
 
     R, x, y = ring("x,y", ZZ)
 
-    assert R.dmp_discriminant(0) == 0
-    assert R.dmp_discriminant(y) == 0
+    assert R(0).discriminant() == 0
+    assert y.discriminant() == 0
 
-    assert R.dmp_discriminant(x**3 + 3*x**2 + 9*x - 13) == -11664
-    assert R.dmp_discriminant(5*x**5 + x**3 + 2) == 31252160
-    assert R.dmp_discriminant(x**4 + 2*x**3 + 6*x**2 - 22*x + 13) == 0
-    assert R.dmp_discriminant(12*x**7 + 15*x**4 + 30*x**3 + x**2 + 1) == -220289699947514112
+    assert (x**3 + 3*x**2 + 9*x - 13).discriminant() == -11664
+    assert (5*x**5 + x**3 + 2).discriminant() == 31252160
+    assert (x**4 + 2*x**3 + 6*x**2 - 22*x + 13).discriminant() == 0
+    assert (12*x**7 + 15*x**4 + 30*x**3 + x**2 + 1).discriminant() == -220289699947514112
 
-    assert R.dmp_discriminant(x**2*y + 2*y) == (-8*y**2).drop(x)
-    assert R.dmp_discriminant(x*y**2 + 2*x) == 1
+    assert (x**2*y + 2*y).discriminant() == (-8*y**2).drop(x)
+    assert (x*y**2 + 2*x).discriminant() == 1
 
     R, x, y, z = ring("x,y,z", ZZ)
-    assert R.dmp_discriminant(x*y + z) == 1
+    assert (x*y + z).discriminant() == 1
 
     R, x, y, z, u = ring("x,y,z,u", ZZ)
-    assert R.dmp_discriminant(x**2*y + x*z + u) == (-4*y*u + z**2).drop(x)
+    assert (x**2*y + x*z + u).discriminant() == (-4*y*u + z**2).drop(x)
 
     R, x, y, z, u, v = ring("x,y,z,u,v", ZZ)
-    assert R.dmp_discriminant(x**3*y + x**2*z + x*u + v) == \
+    assert (x**3*y + x**2*z + x*u + v).discriminant() == \
         (-27*y**2*v**2 + 18*y*z*u*v - 4*y*u**3 - 4*z**3*v + z**2*u**2).drop(x)
 
 
@@ -849,7 +847,7 @@ def test_dmp_primitive():
     assert cont == 1 and f == f_6
 
 
-def test_dmp_cancel():
+def test_PolyElement_cancel():
     R, x = ring("x", ZZ)
 
     f = 2*x**2 - 2
@@ -858,8 +856,8 @@ def test_dmp_cancel():
     p = 2*x + 2
     q = x - 1
 
-    assert R.dmp_cancel(f, g) == (p, q)
-    assert R.dmp_cancel(f, g, include=False) == (1, 1, p, q)
+    assert f.cancel(g) == (p, q)
+    assert f.cancel(g, include=False) == (1, 1, p, q)
 
     f = -x - 2
     g = 3*x - 4
@@ -867,23 +865,23 @@ def test_dmp_cancel():
     F = x + 2
     G = -3*x + 4
 
-    assert R.dmp_cancel(f, g) == (f, g)
-    assert R.dmp_cancel(F, G) == (f, g)
+    assert f.cancel(g) == (f, g)
+    assert F.cancel(G) == (f, g)
 
-    assert R.dmp_cancel(0, 0) == (0, 0)
-    assert R.dmp_cancel(0, 0, include=False) == (1, 1, 0, 0)
+    assert R(0).cancel(R(0)) == (0, 0)
+    assert R(0).cancel(R(0), include=False) == (1, 1, 0, 0)
 
-    assert R.dmp_cancel(x, 0) == (1, 0)
-    assert R.dmp_cancel(x, 0, include=False) == (1, 1, 1, 0)
+    assert x.cancel(R(0)) == (1, 0)
+    assert x.cancel(R(0), include=False) == (1, 1, 1, 0)
 
-    assert R.dmp_cancel(0, x) == (0, 1)
-    assert R.dmp_cancel(0, x, include=False) == (1, 1, 0, 1)
+    assert R(0).cancel(x) == (0, 1)
+    assert R(0).cancel(x, include=False) == (1, 1, 0, 1)
 
-    f = 0
+    f = R(0)
     g = x
     one = 1
 
-    assert R.dmp_cancel(f, g, include=True) == (f, one)
+    assert f.cancel(g, include=True) == (f, one)
 
     R, x, y = ring("x,y", ZZ)
 
@@ -893,23 +891,23 @@ def test_dmp_cancel():
     p = 2*x + 2
     q = x - 1
 
-    assert R.dmp_cancel(f, g) == (p, q)
-    assert R.dmp_cancel(f, g, include=False) == (1, 1, p, q)
+    assert f.cancel(g) == (p, q)
+    assert f.cancel(g, include=False) == (1, 1, p, q)
 
-    assert R.dmp_cancel(0, 0) == (0, 0)
-    assert R.dmp_cancel(0, 0, include=False) == (1, 1, 0, 0)
+    assert R(0).cancel(R(0)) == (0, 0)
+    assert R(0).cancel(R(0), include=False) == (1, 1, 0, 0)
 
-    assert R.dmp_cancel(y, 0) == (1, 0)
-    assert R.dmp_cancel(y, 0, include=False) == (1, 1, 1, 0)
+    assert y.cancel(R(0)) == (1, 0)
+    assert y.cancel(R(0), include=False) == (1, 1, 1, 0)
 
-    assert R.dmp_cancel(0, y) == (0, 1)
-    assert R.dmp_cancel(0, y, include=False) == (1, 1, 0, 1)
+    assert R(0).cancel(y) == (0, 1)
+    assert R(0).cancel(y, include=False) == (1, 1, 0, 1)
 
-    assert R.dmp_cancel(y**2 - x**2, y - x) == (x + y, 1)
+    assert (y**2 - x**2).cancel(y - x) == (x + y, 1)
 
     R, x = ring('x', QQ)
 
-    assert R.dmp_cancel(x**2/4 - 1, x/2 - 1) == (x + 2, 2)
+    assert (x**2/4 - 1).cancel(x/2 - 1) == (x + 2, 2)
 
 
 def test_dmp_zz_modular_resultant():

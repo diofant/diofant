@@ -1,5 +1,6 @@
-from ..core import S, sympify
+from ..core import sympify
 from ..functions import exp, factorial
+from ..sets import Naturals, Naturals0
 from .drv import SingleDiscreteDistribution, SingleDiscretePSpace
 from .rv import _value_check
 
@@ -17,7 +18,7 @@ def rv(symbol, cls, *args):
 class PoissonDistribution(SingleDiscreteDistribution):
     _argnames = 'lamda',
 
-    set = S.Naturals0
+    set = Naturals0
 
     @staticmethod
     def check(lamda):
@@ -77,7 +78,7 @@ def Poisson(name, lamda):
 
 class GeometricDistribution(SingleDiscreteDistribution):
     _argnames = 'p',
-    set = S.Naturals
+    set = Naturals
 
     @staticmethod
     def check(p):
@@ -111,7 +112,7 @@ def Geometric(name, p):
 
     >>> from diofant.stats import density, E, variance
 
-    >>> p = S.One / 5
+    >>> p = Rational(1, 5)
     >>> z = Symbol("z")
 
     >>> X = Geometric("x", p)

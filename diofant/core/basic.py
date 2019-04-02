@@ -6,7 +6,6 @@ from itertools import zip_longest
 from .cache import cacheit
 from .compatibility import iterable, ordered
 from .decorators import _sympifyit
-from .singleton import S
 from .sympify import SympifyError, sympify
 
 
@@ -106,16 +105,16 @@ class Basic:
         >>> sorted([Rational(1, 2), I, -I], key=lambda x: x.sort_key())
         [1/2, -I, I]
 
-        >>> [x, 1/x, 1/x**2, x**2, x**S.Half, x**Rational(1, 4), x**Rational(3, 2)]
+        >>> [x, 1/x, 1/x**2, x**2, sqrt(x), root(x, 4), x**Rational(3, 2)]
         [x, 1/x, x**(-2), x**2, sqrt(x), x**(1/4), x**(3/2)]
         >>> sorted(_, key=lambda x: x.sort_key())
         [x**(-2), 1/x, x**(1/4), sqrt(x), x, x**(3/2), x**2]
 
         """
-
+        from .numbers import Integer
         args = len(self.args), tuple(arg.sort_key(order)
                                      for arg in self._sorted_args)
-        return self.class_key(), args, S.One.sort_key(), S.One
+        return self.class_key(), args, Integer(1).sort_key(), Integer(1)
 
     @_sympifyit('other', NotImplemented)
     def __eq__(self, other):
@@ -431,6 +430,7 @@ class Basic:
 
         """
         from ..utilities import default_sort_key
+        from .numbers import Integer
         from .symbol import Dummy
 
         unordered = False
@@ -481,7 +481,7 @@ class Basic:
                 # is both free and bound
                 rv = rv._subs(old, d*m, **kwargs)
                 reps[d] = new
-            reps[m] = S.One  # get rid of m
+            reps[m] = Integer(1)  # get rid of m
             return rv.xreplace(reps)
         else:
             rv = self
@@ -1158,8 +1158,8 @@ class Atom(Basic):
     @cacheit
     def sort_key(self, order=None):
         """Return a sort key."""
-        from . import S
-        return self.class_key(), (1, (str(self),)), S.One.sort_key(), S.One
+        from . import Integer
+        return self.class_key(), (1, (str(self),)), Integer(1).sort_key(), Integer(1)
 
     def _eval_simplify(self, ratio, measure):
         return self

@@ -1072,7 +1072,7 @@ def dmp_factor_list(f, u, K0):
 
             for i, (f, k) in enumerate(factors):
                 factors[i] = (dmp_include(f, levels, v, K), k)
-        elif K.is_Poly:
+        elif K.is_PolynomialRing:
             f, v = dmp_inject(f, u, K)
 
             coeff, factors = dmp_factor_list(f, v, K.domain)

@@ -329,7 +329,7 @@ def test_symbol_real():
     assert a.is_positive is False
     assert a.is_nonnegative is False
     assert a.is_nonpositive is False
-    assert a.is_zero is False
+    assert a.is_nonzero is True
 
 
 def test_symbol_zero():
@@ -524,6 +524,7 @@ def test_other_symbol():
     x = Symbol('x', integer=True)
     assert x.is_integer is True
     assert x.is_extended_real is True
+    assert x.is_finite is True
 
     x = Symbol('x', integer=True, nonnegative=True)
     assert x.is_integer is True
@@ -551,11 +552,13 @@ def test_other_symbol():
     assert x.is_even is True
     assert x.is_odd is False
     assert x.is_integer is True
+    assert x.is_finite is True
 
     x = Symbol('x', even=False)
     assert x.is_even is False
     assert x.is_odd is None
     assert x.is_integer is None
+    assert x.is_finite is None  # issue sympy/sympy#16432
 
     x = Symbol('x', integer=True, nonnegative=True)
     assert x.is_integer is True
@@ -574,6 +577,9 @@ def test_other_symbol():
     assert x.is_algebraic is False
     assert x.is_rational is False
     assert x.is_integer is False
+
+    x = Symbol('x', zero=False)
+    assert x.is_nonzero is True  # issue sympy/sympy#16431
 
 
 def test_sympyissue_3825():
@@ -870,7 +876,7 @@ def test_sympyissue_7899():
 def test_sympyissue_7993():
     x = Symbol('x', integer=True)
     y = Symbol('y', noninteger=True)
-    assert (x - y).is_zero is False
+    assert (x - y).is_nonzero is True
 
 
 def test_sympyissue_8075():

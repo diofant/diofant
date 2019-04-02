@@ -1,7 +1,7 @@
 from functools import reduce
 from itertools import permutations
 
-from ..core import Add, Basic, Dummy, E, Eq, Mul, S, Wild, pi, sympify
+from ..core import Add, Basic, Dummy, E, Eq, Integer, Mul, Wild, pi, sympify
 from ..core.compatibility import ordered
 from ..functions import (Ei, LambertW, Piecewise, acosh, asin, asinh, atan,
                          cos, cosh, cot, coth, erf, erfi, exp, li, log, root,
@@ -216,7 +216,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     if not f.is_Add:
         indep, f = f.as_independent(x)
     else:
-        indep = S.One
+        indep = Integer(1)
 
     rewritables = {
         (sin, cos, cot): tan,
@@ -346,7 +346,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             if not p.has(y):
                 continue
 
-            if _derivation(p) is not S.Zero:
+            if _derivation(p) != 0:
                 c, q = p.as_poly(y).primitive()
                 return _deflation(c)*gcd(q, q.diff(y)).as_expr()
 
@@ -357,7 +357,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             if not p.has(y):
                 continue
 
-            if _derivation(y) is not S.Zero:
+            if _derivation(y) != 0:
                 c, q = p.as_poly(y).primitive()
 
                 q = q.as_expr()
@@ -374,7 +374,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
                 return c_split[0]*q_split[0]*s, c_split[1]*q_split[1]
 
-        return S.One, p
+        return Integer(1), p
 
     special = {}
 
@@ -524,7 +524,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             solution = [(coeff_ring.symbols[coeff_ring.index(k)],
                          v.as_expr()) for k, v in solution.items()]
             return candidate.subs(solution).subs(
-                list(zip(poly_coeffs, [S.Zero]*len(poly_coeffs))))
+                list(zip(poly_coeffs, [Integer(0)]*len(poly_coeffs))))
 
     if not (F.free_symbols - set(V)):
         solution = _integrate('Q')

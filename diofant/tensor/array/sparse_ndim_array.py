@@ -1,7 +1,7 @@
 import functools
 import itertools
 
-from ...core import Dict, Expr, S, Tuple
+from ...core import Dict, Expr, Integer, Tuple
 from ...core.sympify import sympify
 from ...matrices import SparseMatrix
 from ...utilities import flatten
@@ -54,19 +54,19 @@ class SparseNDimArray(NDimArray):
 
             sl_factors = [slice_expand(i, dim) for (i, dim) in zip(index, self.shape)]
             eindices = itertools.product(*sl_factors)
-            array = [self._sparse_array.get(self._parse_index(i), S.Zero) for i in eindices]
+            array = [self._sparse_array.get(self._parse_index(i), Integer(0)) for i in eindices]
             nshape = [len(el) for i, el in enumerate(sl_factors) if isinstance(index[i], slice)]
             return type(self)(array, nshape)
         else:
             # `index` is a single slice:
             if isinstance(index, slice):
                 start, stop, step = index.indices(self._loop_size)
-                retvec = [self._sparse_array.get(ind, S.Zero) for ind in range(start, stop, step)]
+                retvec = [self._sparse_array.get(ind, Integer(0)) for ind in range(start, stop, step)]
                 return retvec
             # `index` is a number or a tuple without any slice:
             else:
                 index = self._parse_index(index)
-                return self._sparse_array.get(index, S.Zero)
+                return self._sparse_array.get(index, Integer(0))
 
     @classmethod
     def zeros(cls, *shape):

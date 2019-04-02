@@ -89,7 +89,7 @@ class BooleanAtom(Atom, Boolean):
 
 
 class BooleanTrue(BooleanAtom, metaclass=Singleton):
-    """Diofant version of True, a singleton that can be accessed via S.true.
+    """Diofant version of True, a singleton that can be accessed via ``true``.
 
     This is the Diofant version of True, for use in the logic module. The
     primary advantage of using true instead of True is that shorthand boolean
@@ -101,23 +101,23 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
     =====
 
     There is liable to be some confusion as to when ``True`` should
-    be used and when ``S.true`` should be used in various contexts
+    be used and when ``true`` should be used in various contexts
     throughout Diofant. An important thing to remember is that
-    ``sympify(True)`` returns ``S.true``. This means that for the most
+    ``sympify(True)`` returns ``true``. This means that for the most
     part, you can just use ``True`` and it will automatically be converted
-    to ``S.true`` when necessary, similar to how you can generally use 1
-    instead of ``S.One``.
+    to ``true`` when necessary, similar to how you can generally use 1
+    instead of ``Integer(1)``.
 
     The rule of thumb is:
 
     "If the boolean in question can be replaced by an arbitrary symbolic
-    ``Boolean``, like ``Or(x, y)`` or ``x > 1``, use ``S.true``.
+    ``Boolean``, like ``Or(x, y)`` or ``x > 1``, use ``true``.
     Otherwise, use ``True``".
 
-    In other words, use ``S.true`` only on those contexts where the
+    In other words, use ``true`` only on those contexts where the
     boolean is being used as a symbolic representation of truth.
     For example, if the object ends up in the ``.args`` of any expression,
-    then it must necessarily be ``S.true`` instead of ``True``, as
+    then it must necessarily be ``true`` instead of ``True``, as
     elements of ``.args`` must be ``Basic``. On the other hand,
     ``==`` is not a symbolic operation in Diofant, since it always returns
     ``True`` or ``False``, and does so in terms of structural equality
@@ -125,14 +125,14 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
     system should use ``True`` and ``False``. Aside from not satisfying
     the above rule of thumb, the
     assumptions system uses a three-valued logic (``True``, ``False``, ``None``),
-    whereas ``S.true`` and ``S.false`` represent a two-valued logic. When in
+    whereas ``true`` and ``false`` represent a two-valued logic. When in
     doubt, use ``True``.
 
-    "``S.true == True is True``."
+    "``true == True is True``."
 
-    While "``S.true is True``" is ``False``, "``S.true == True``"
+    While "``true is True``" is ``False``, "``true == True``"
     is ``True``, so if there is any doubt over whether a function or
-    expression will return ``S.true`` or ``True``, just use ``==``
+    expression will return ``true`` or ``True``, just use ``==``
     instead of ``is`` to do the comparison, and it will work in either
     case.  Finally, for boolean flags, it's better to just use ``if x``
     instead of ``if x is True``. To quote PEP 8:
@@ -184,7 +184,7 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
 
 
 class BooleanFalse(BooleanAtom, metaclass=Singleton):
-    """Diofant version of False, a singleton that can be accessed via S.false.
+    """Diofant version of False, a singleton that can be accessed via ``false``.
 
     This is the Diofant version of False, for use in the logic module. The
     primary advantage of using false instead of False is that shorthand boolean
@@ -246,7 +246,7 @@ false = BooleanFalse()
 S.true = true
 S.false = false
 
-converter[bool] = lambda x: S.true if x else S.false
+converter[bool] = lambda x: true if x else false
 
 
 class BooleanFunction(Application, Boolean):
@@ -330,7 +330,7 @@ class And(LatticeOp, BooleanFunction):
                     continue
                 nc = (~c).canonical
                 if any(r == nc for r in rel):
-                    return [S.false]
+                    return [false]
                 rel.append(c)
             newargs.append(x)
         return LatticeOp._new_args_filter(newargs, And)
@@ -398,7 +398,7 @@ class Or(LatticeOp, BooleanFunction):
                     continue
                 nc = (~c).canonical
                 if any(r == nc for r in rel):
-                    return [S.true]
+                    return [true]
                 rel.append(c)
             newargs.append(x)
         return LatticeOp._new_args_filter(newargs, Or)
@@ -758,13 +758,13 @@ class Implies(BooleanFunction):
             raise ValueError(
                 "%d operand(s) used for an Implies "
                 "(pairs are required): %s" % (len(args), str(args)))
-        if A == S.true or A == S.false or B == S.true or B == S.false:
+        if A == true or A == false or B == true or B == false:
             return Or(Not(A), B)
         elif A == B:
-            return S.true
+            return true
         elif A.is_Relational and B.is_Relational:
             if A.canonical == B.canonical:
-                return S.true
+                return true
             elif (~A).canonical == B.canonical:
                 return B
         else:
@@ -879,15 +879,15 @@ class ITE(BooleanFunction):
             a, b, c = args
         except ValueError:
             raise ValueError("ITE expects exactly 3 arguments")
-        if a == S.true:
+        if a == true:
             return b
-        elif a == S.false:
+        elif a == false:
             return c
         elif b == c:
             return b
-        elif b == S.true and c == S.false:
+        elif b == true and c == false:
             return a
-        elif b == S.false and c == S.true:
+        elif b == false and c == true:
             return Not(a)
 
     def to_nnf(self, simplify=True):

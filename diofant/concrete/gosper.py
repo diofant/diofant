@@ -1,6 +1,6 @@
 """Gosper's algorithm for hypergeometric summation. """
 
-from ..core import Dummy, Integer, S, nan, symbols
+from ..core import Dummy, Integer, nan, symbols
 from ..core.compatibility import is_sequence
 from ..polys import Poly, factor, parallel_poly_from_expr
 from ..simplify import hypersimp
@@ -131,7 +131,7 @@ def gosper_term(f, n):
         if coeff not in solution:
             x = x.subs({coeff: 0})
 
-    if x is S.Zero:
+    if x == 0:
         return  # 'f(n)' is *not* Gosper-summable
     else:
         return B.as_expr()*x/C.as_expr()

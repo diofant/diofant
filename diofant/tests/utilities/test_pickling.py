@@ -94,7 +94,7 @@ def check(a, exclude=[], check_attr=True):
     # Python 2.6+ warns about BasicException.message, for example.
     warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-    protocols = [0, 1, 2, copy.copy, copy.deepcopy, 3]
+    protocols = list(range(5)) + [copy.copy, copy.deepcopy]
     for protocol in protocols:
         if protocol in exclude:
             continue
@@ -332,7 +332,8 @@ def test_pickling_polys_domains():
         for c in (GMPYRationalField, GMPYRationalField()):
             check(c)
 
-    for c in (ExpressionDomain, ExpressionDomain()):
+    EX = ExpressionDomain()
+    for c in (ExpressionDomain, EX, EX(sin(x))):
         check(c)
 
 

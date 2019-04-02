@@ -1,6 +1,6 @@
 import math
 
-from ..core import (Add, Eq, Integer, Mul, Rational, S, Symbol, factor_terms,
+from ..core import (Add, Eq, Integer, Mul, Rational, Symbol, factor_terms,
                     igcd, ilcm, integer_nthroot, oo, symbols, sympify)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import as_int, is_sequence
@@ -195,7 +195,7 @@ def diophantine(eq, param=symbols("t", integer=True), syms=None):
 
     null = tuple([0]*len(var))
     # if there is no solution, return trivial solution
-    if not sols and eq.subs(zip(var, null)) is S.Zero:
+    if not sols and eq.subs(zip(var, null)) == 0:
         sols.add(null)
 
     return {sympify(i) for i in sols}
@@ -619,7 +619,7 @@ def _diop_linear(var, coeff, param):
         for j, arg in enumerate(Add.make_args(c)):
             if arg.is_Integer:
                 # example: 5 -> k = 5
-                k, p = arg, S.One
+                k, p = arg, Integer(1)
                 pnew = params[0]
             else:  # arg is a Mul or Symbol
                 # example: 3*t_1 -> k = 3
@@ -629,7 +629,7 @@ def _diop_linear(var, coeff, param):
 
             sol = sol_x, sol_y = base_solution_linear(k, A[i], B[i], pnew)
 
-            if p is S.One:
+            if p == 1:
                 if None in sol:
                     return tuple([None]*len(var))
             else:
@@ -2403,12 +2403,12 @@ def holzer(x, y, z, a, b, c):
         r = Rational(p, q)
         if _even(c):
             w = _nint_or_floor(p, q)
-            assert abs(w - r) <= S.Half
+            assert abs(w - r) <= Rational(1, 2)
         else:
             w = p//q  # floor
             if _odd(a*u + b*v + c*w):
                 w += 1
-            assert abs(w - r) <= S.One
+            assert abs(w - r) <= 1
 
         A = a*u**2 + b*v**2 + c*w**2
         B = a*u*x_0 + b*v*y_0 + c*w*z_0

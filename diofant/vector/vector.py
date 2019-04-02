@@ -1,4 +1,4 @@
-from ..core import AtomicExpr, Integer, Pow, S, Symbol, diff
+from ..core import AtomicExpr, Integer, Pow, Symbol, diff
 from ..core.assumptions import StdFactKB
 from ..functions import sqrt
 from ..matrices import ImmutableMatrix
@@ -411,7 +411,7 @@ def _vect_div(one, other):
     else:
         if other == 0:
             raise ValueError("Cannot divide a vector by zero")
-        return VectorMul(one, Pow(other, S.NegativeOne))
+        return VectorMul(one, Pow(other, -1))
 
 
 Vector._expr_type = Vector

@@ -142,7 +142,7 @@ def test_dmp_sqf():
     D = x**6 - 5*x**4 + 5*x**2 + 4
 
     f, g = D, R.dmp_sub(A, R.dmp_mul(R.dmp_diff_in(D, 1, 0), y))
-    res = R.dmp_resultant(f, g)
+    res = f.resultant(g)
     h = (4*y**2 + 1).drop(x)
 
     assert res.sqf_list() == (45796, [(h, 3)])

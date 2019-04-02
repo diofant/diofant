@@ -1,4 +1,4 @@
-from ..core import Mul, S, nan
+from ..core import Integer, Mul, nan
 from ..functions import exp, log
 from ..polys import quo, roots
 from ..simplify import powsimp
@@ -228,7 +228,7 @@ class Product(ExprWithIntLimits):
 
         if k not in term.free_symbols:
             if (term - 1).is_zero:
-                return S.One
+                return Integer(1)
             return term**(n - a + 1)
 
         if a == n:
@@ -244,7 +244,7 @@ class Product(ExprWithIntLimits):
         elif term.is_polynomial(k):
             poly = term.as_poly(k)
 
-            A = B = Q = S.One
+            A = B = Q = Integer(1)
 
             all_roots = roots(poly)
 
@@ -347,14 +347,14 @@ class Product(ExprWithIntLimits):
         to reverse, the index counting notation comes in handy in case there
         are several symbols with the same name.
 
-        >>> S = Sum(x*y, (x, a, b), (y, c, d))
-        >>> S
+        >>> s = Sum(x*y, (x, a, b), (y, c, d))
+        >>> s
         Sum(x*y, (x, a, b), (y, c, d))
-        >>> S0 = S.reverse_order(0)
-        >>> S0
+        >>> s0 = s.reverse_order(0)
+        >>> s0
         Sum(-x*y, (x, b + 1, a - 1), (y, c, d))
-        >>> S1 = S0.reverse_order(1)
-        >>> S1
+        >>> s1 = s0.reverse_order(1)
+        >>> s1
         Sum(x*y, (x, b + 1, a - 1), (y, d + 1, c - 1))
 
         Of course we can mix both notations:

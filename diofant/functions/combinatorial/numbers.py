@@ -13,7 +13,7 @@ from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
 
 from ...core import (Add, Dummy, E, Expr, Function, GoldenRatio, Integer,
-                     Rational, S, cacheit, expand_mul, nan, oo, pi, prod)
+                     Rational, cacheit, expand_mul, nan, oo, pi, prod)
 from ...core.compatibility import as_int
 from ...utilities.memoization import recurrence_memo
 from ..elementary.exponential import log
@@ -89,7 +89,7 @@ class fibonacci(Function):
         return _ifib(n)
 
     @staticmethod
-    @recurrence_memo([None, S.One, _sym])
+    @recurrence_memo([None, Integer(1), _sym])
     def _fibpoly(n, prev):
         return (prev[-2] + _sym*prev[-1]).expand()
 
@@ -99,7 +99,7 @@ class fibonacci(Function):
             n = int(n)
             if sym is None:
                 if n < 0:
-                    return S.NegativeOne**(n + 1) * fibonacci(-n)
+                    return (-1)**(n + 1) * fibonacci(-n)
                 else:
                     return Integer(cls._fib(n))
             else:
@@ -262,24 +262,24 @@ class bernoulli(Function):
 
     # We implement a specialized memoization scheme to handle each
     # case modulo 6 separately
-    _cache = {0: S.One, 2: Rational(1, 6), 4: Rational(-1, 30)}
+    _cache = {0: Integer(1), 2: Rational(1, 6), 4: Rational(-1, 30)}
     _highest = {0: 0, 2: 2, 4: 4}
 
     @classmethod
     def eval(cls, n, sym=None):
         if n.is_Number:
             if n.is_Integer and n.is_nonnegative:
-                if n is S.Zero:
-                    return S.One
-                elif n is S.One:
+                if n == 0:
+                    return Integer(1)
+                elif n == 1:
                     if sym is None:
-                        return -S.Half
+                        return -Rational(1, 2)
                     else:
-                        return sym - S.Half
+                        return sym - Rational(1, 2)
                 # Bernoulli numbers
                 elif sym is None:
                     if n.is_odd:
-                        return S.Zero
+                        return Integer(0)
                     n = int(n)
                     # Use mpmath for enormous Bernoulli numbers
                     if n > 500:
@@ -309,7 +309,7 @@ class bernoulli(Function):
 
         if sym is None:
             if n.is_odd and (n - 1).is_positive:
-                return S.Zero
+                return Integer(0)
 
 
 ############################################################################
@@ -397,7 +397,7 @@ class bell(Function):
         return s
 
     @staticmethod
-    @recurrence_memo([S.One, _sym])
+    @recurrence_memo([Integer(1), _sym])
     def _bell_poly(n, prev):
         s = 1
         a = 1
@@ -424,11 +424,11 @@ class bell(Function):
 
         """
         if (n == 0) and (k == 0):
-            return S.One
+            return Integer(1)
         elif (n == 0) or (k == 0):
-            return S.Zero
-        s = S.Zero
-        a = S.One
+            return Integer(0)
+        s = Integer(0)
+        a = Integer(1)
         for m in range(1, n - k + 2):
             s += a * bell._bell_incomplete_poly(
                 n - m, k - 1, symbols) * symbols[m - 1]
@@ -590,10 +590,10 @@ class harmonic(Function):
     @classmethod
     def eval(cls, n, m=None):
         from .. import zeta
-        if m is S.One:
+        if m == 1:
             return cls(n)
         if m is None:
-            m = S.One
+            m = Integer(1)
 
         if m.is_zero:
             return n
@@ -608,17 +608,17 @@ class harmonic(Function):
 
         if n.is_Integer and n.is_nonnegative and m.is_Integer:
             if n == 0:
-                return S.Zero
+                return Integer(0)
             if m not in cls._functions:
                 @recurrence_memo([0])
                 def f(n, prev):
-                    return prev[-1] + S.One / n**m
+                    return prev[-1] + 1/n**m
                 cls._functions[m] = f
             return cls._functions[m](int(n))
 
     def _eval_rewrite_as_polygamma(self, n, m=1):
         from .. import polygamma
-        return S.NegativeOne**m/factorial(m - 1) * (polygamma(m - 1, 1) - polygamma(m - 1, n + 1))
+        return (-1)**m/factorial(m - 1) * (polygamma(m - 1, 1) - polygamma(m - 1, n + 1))
 
     def _eval_rewrite_as_digamma(self, n, m=1):
         from .. import polygamma
@@ -632,7 +632,7 @@ class harmonic(Function):
         from ...concrete import Sum
         k = Dummy("k", integer=True)
         if m is None:
-            m = S.One
+            m = Integer(1)
         return Sum(k**(-m), (k, 1, n))
 
     def _eval_expand_func(self, **hints):
@@ -645,10 +645,10 @@ class harmonic(Function):
                 off = n.args[0]
                 nnew = n - off
                 if off.is_Integer and off.is_positive:
-                    result = [S.One/(nnew + i) for i in range(off, 0, -1)] + [harmonic(nnew)]
+                    result = [1/(nnew + i) for i in range(off, 0, -1)] + [harmonic(nnew)]
                     return Add(*result)
                 elif off.is_Integer and off.is_negative:
-                    result = [-S.One/(nnew + i) for i in range(0, off, -1)] + [harmonic(nnew)]
+                    result = [-1/(nnew + i) for i in range(0, off, -1)] + [harmonic(nnew)]
                     return Add(*result)
 
             if n.is_Rational:
@@ -735,7 +735,7 @@ class euler(Function):
     @classmethod
     def eval(cls, m):
         if m.is_odd:
-            return S.Zero
+            return Integer(0)
         if m.is_Integer and m.is_nonnegative:
             m = m._to_mpmath(mp.prec)
             res = mp.eulernum(m, exact=True)
@@ -844,13 +844,13 @@ class catalan(Function):
         from .. import gamma
         if (n.is_Integer and n.is_nonnegative) or \
            (n.is_noninteger and n.is_negative):
-            return 4**n*gamma(n + S.Half)/(gamma(S.Half)*gamma(n + 2))
+            return 4**n*gamma(n + Rational(1, 2))/(gamma(Rational(1, 2))*gamma(n + 2))
 
         if n.is_integer and n.is_negative:
             if (n + 1).is_negative:
-                return S.Zero
+                return Integer(0)
             else:
-                return -S.Half
+                return -Rational(1, 2)
 
     def fdiff(self, argindex=1):
         from .. import polygamma, log
@@ -866,7 +866,7 @@ class catalan(Function):
     def _eval_rewrite_as_gamma(self, n):
         from .. import gamma
         # The gamma function allows to generalize Catalan numbers to complex n
-        return 4**n*gamma(n + S.Half)/(gamma(S.Half)*gamma(n + 2))
+        return 4**n*gamma(n + Rational(1, 2))/(gamma(Rational(1, 2))*gamma(n + 2))
 
     def _eval_rewrite_as_hyper(self, n):
         from .. import hyper
@@ -946,10 +946,10 @@ class genocchi(Function):
             return 2*(1 - 2**n)*bernoulli(n)
 
         if n.is_odd and (n - 1).is_positive:
-            return S.Zero
+            return Integer(0)
 
         if (n - 1).is_zero:
-            return S.One
+            return Integer(1)
 
     def _eval_rewrite_as_bernoulli(self, n):
         if n.is_integer and n.is_nonnegative:
@@ -1280,14 +1280,14 @@ def nC(n, k=None, replacement=False):
 @cacheit
 def _stirling1(n, k):
     if n == k == 0:
-        return S.One
+        return Integer(1)
     if 0 in (n, k):
-        return S.Zero
+        return Integer(0)
     n1 = n - 1
 
     # some special values
     if n == k:
-        return S.One
+        return Integer(1)
     elif k == 1:
         return factorial(n1)
     elif k == n1:
@@ -1304,9 +1304,9 @@ def _stirling1(n, k):
 @cacheit
 def _stirling2(n, k):
     if n == k == 0:
-        return S.One
+        return Integer(1)
     if 0 in (n, k):
-        return S.Zero
+        return Integer(0)
     n1 = n - 1
 
     # some special values
@@ -1409,7 +1409,7 @@ def stirling(n, k, d=None, kind=2, signed=False):
     if n < 0:
         raise ValueError('n must be nonnegative')
     if k > n:
-        return S.Zero
+        return Integer(0)
     if d:
         # assert k >= d
         # kind is ignored -- only kind=2 is supported

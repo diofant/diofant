@@ -2794,7 +2794,7 @@ def test_diofantissue_309():
 def test_sympyissue_10379():
     t, y = symbols('t,y')
     sol = dsolve(f(t).diff(t) - (1 - 51.05*y*f(t)))
-    ans = Eq(0.019588638589618*log(51.05*y*f(t) - 1.0)/y, C1 - t)
+    ans = Eq(f(t), (0.019588638589618 + 0.019588638589618*E**(-1.0*y*(-1.0*C1 + 51.05*t)))/y)
     assert str(sol) == str(ans)
 
 

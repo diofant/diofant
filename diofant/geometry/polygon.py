@@ -1,6 +1,6 @@
 import warnings
 
-from ..core import Expr, S, Symbol, oo, pi, sympify
+from ..core import Expr, Integer, Symbol, oo, pi, sympify
 from ..core.compatibility import as_int
 from ..functions import Piecewise, cos, sign, sin, tan
 from ..logic import And, true
@@ -682,7 +682,7 @@ class Polygon(GeometrySet):
             for side in self.sides:
                 current = side.distance(o)
                 if current == 0:
-                    return S.Zero
+                    return Integer(0)
                 elif current < dist:
                     dist = current
             return dist
@@ -733,8 +733,7 @@ class Polygon(GeometrySet):
         '''Tests for a possible intersection between the polygons and outputs a warning'''
         e1_center = e1.centroid
         e2_center = e2.centroid
-        e1_max_radius = S.Zero
-        e2_max_radius = S.Zero
+        e1_max_radius = e2_max_radius = Integer(0)
         for vertex in e1.vertices:
             r = Point.distance(e1_center, vertex)
             if e1_max_radius < r:
@@ -792,7 +791,7 @@ class Polygon(GeometrySet):
 
         e1_current = e1_ymax
         e2_current = e2_ymin
-        support_line = Line(Point(S.Zero, S.Zero), Point(S.One, S.Zero))
+        support_line = Line(Point(0, 0), Point(1, 0))
 
         '''
         Determine which point in e1 and e2 will be selected after e2_ymin and e1_ymax,
@@ -1405,7 +1404,7 @@ class RegularPolygon(Polygon):
         >>> p.encloses_point(Point(R/2, R/2 + (R - r)/10))
         False
         >>> t = Symbol('t', extended_real=True)
-        >>> p.encloses_point(p.arbitrary_point().subs({t: S.Half}))
+        >>> p.encloses_point(p.arbitrary_point().subs({t: Rational(1, 2)}))
         False
         >>> p.encloses_point(Point(5, 5))
         False

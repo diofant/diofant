@@ -14,11 +14,11 @@ diofant.stats.rv_interface
 """
 
 from ..abc import x
-from ..core import (Add, Eq, Equality, Expr, Integer, Lambda, S, Symbol, Tuple,
+from ..core import (Add, Eq, Equality, Expr, Integer, Lambda, Symbol, Tuple,
                     oo, sympify)
 from ..core.relational import Relational
 from ..functions import DiracDelta
-from ..logic.boolalg import Boolean
+from ..logic.boolalg import Boolean, false, true
 from ..sets import FiniteSet, ProductSet
 from ..solvers import solve
 from ..utilities import lambdify
@@ -371,7 +371,7 @@ class ProductDomain(RandomDomain):
         for domain in self.domains:
             # Collect the parts of this event which associate to this domain
             elem = frozenset(item for item in other
-                             if domain.symbols.contains(item[0]) == S.true)
+                             if domain.symbols.contains(item[0]) == true)
             # Test this sub-event
             if elem not in domain:
                 return False
@@ -593,15 +593,15 @@ def probability(condition, given_condition=None, numsamples=None,
             not isinstance(given_condition, (Relational, Boolean)):
         raise ValueError("%s is not a relational or combination of relationals"
                          % (given_condition))
-    if given_condition is S.false:
-        return S.Zero
+    if given_condition == false:
+        return Integer(0)
     if not isinstance(condition, (Relational, Boolean)):
         raise ValueError("%s is not a relational or combination of relationals"
                          % condition)
-    if condition is S.true:
-        return S.One
-    if condition is S.false:
-        return S.Zero
+    if condition == true:
+        return Integer(1)
+    if condition == false:
+        return Integer(0)
 
     if numsamples:
         return sampling_P(condition, given_condition, numsamples=numsamples,
@@ -1033,5 +1033,5 @@ def _value_check(condition, message):
     Raises ValueError with message if condition is not True
 
     """
-    if condition != S.true:
+    if condition != true:
         raise ValueError(message)

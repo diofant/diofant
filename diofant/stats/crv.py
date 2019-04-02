@@ -11,7 +11,8 @@ diofant.stats.frv
 
 import random
 
-from ..core import Dummy, Expr, Lambda, Mul, S, cacheit, oo, symbols, sympify
+from ..core import (Dummy, Expr, Integer, Lambda, Mul, S, cacheit, oo, symbols,
+                    sympify)
 from ..functions import DiracDelta, Piecewise
 from ..integrals import Integral, integrate
 from ..logic import And, Or
@@ -289,9 +290,8 @@ class ContinuousPSpace(PSpace):
         rv = [rv for rv in self.values if rv.symbol == domain.symbol][0]
         # Integrate out all other random variables
         pdf = self.compute_density(rv, **kwargs)
-        # return S.Zero if `domain` is empty set
         if domain.set is S.EmptySet:
-            return S.Zero
+            return Integer(0)
         # Integrate out the last variable over the special domain
         return Integral(pdf(z), (z, domain.set), **kwargs)
 

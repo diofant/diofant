@@ -1,7 +1,9 @@
 """High-level polynomials manipulation functions. """
 
-from ..core import Add, Mul, S
-from ..utilities import numbered_symbols, take
+import itertools
+
+from ..core import Add, Integer, Mul
+from ..utilities import numbered_symbols
 from .polyerrors import (ComputationFailed, MultivariatePolynomialError,
                          PolificationFailed)
 from .polyoptions import allowed_flags
@@ -56,7 +58,7 @@ def symmetrize(F, *gens, **args):
 
         for expr in exc.exprs:
             assert expr.is_Number
-            result.append((expr, S.Zero))
+            result.append((expr, Integer(0)))
 
         if not iterable:
             result, = result
@@ -178,7 +180,7 @@ def horner(f, *gens, **args):
     except PolificationFailed as exc:
         return exc.expr
 
-    form, gen = S.Zero, F.gen
+    form, gen = Integer(0), F.gen
 
     if F.is_univariate:
         for coeff in F.all_coeffs():
@@ -268,7 +270,7 @@ def viete(f, roots=None, *gens, **args):
     if roots is None:
         roots = numbered_symbols('r', start=1)
 
-    roots = take(roots, n)
+    roots = list(itertools.islice(roots, n))
 
     if n != len(roots):
         raise ValueError("required %s roots, got %s" % (n, len(roots)))

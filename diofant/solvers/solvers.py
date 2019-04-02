@@ -8,9 +8,9 @@ from collections import defaultdict
 from types import GeneratorType
 
 from ..core import (Add, Dummy, E, Equality, Expr, Float, Function, Ge, I,
-                    Integer, Lambda, Mul, Pow, S, Symbol, expand_log,
-                    expand_mul, expand_multinomial, expand_power_exp, nan,
-                    nfloat, oo, pi, preorder_traversal, sympify, zoo)
+                    Integer, Lambda, Mul, Pow, Symbol, expand_log, expand_mul,
+                    expand_multinomial, expand_power_exp, nan, nfloat, oo, pi,
+                    preorder_traversal, sympify, zoo)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import (default_sort_key, is_sequence, iterable,
                                   ordered)
@@ -22,6 +22,7 @@ from ..functions import (Abs, Max, Min, Piecewise, acos, arg, asin, atan,
                          sqrt, tan)
 from ..functions.elementary.hyperbolic import HyperbolicFunction
 from ..functions.elementary.trigonometric import TrigonometricFunction
+from ..logic import false, true
 from ..matrices import Matrix, zeros
 from ..polys import Poly, RootOf, factor, roots
 from ..polys.polyerrors import PolynomialError
@@ -60,7 +61,7 @@ def denoms(eq, symbols=None):
     dens = set()
     for p in pot:
         den = denom(p)
-        if den is S.One:
+        if den == 1:
             continue
         for d in Mul.make_args(den):
             dens.add(d)
@@ -331,7 +332,7 @@ def solve(f, *symbols, **flags):
         if f[i].is_Matrix:
             bare_f = False
             f.extend(list(f[i]))
-            f[i] = S.Zero
+            f[i] = Integer(0)
 
         # if we can split it into real and imaginary parts then do so
         freei = f[i].free_symbols
@@ -586,10 +587,10 @@ def _solve(f, symbol, **flags):
                 if candidate in result:
                     continue
                 try:
-                    v = (cond == S.true) or cond.subs({symbol: candidate})
+                    v = (cond == true) or cond.subs({symbol: candidate})
                 except TypeError:
                     v = False
-                if v != S.false:
+                if v != false:
                     # Only include solutions that do not match the condition
                     # of any previous pieces.
                     matches_other_piece = False
@@ -597,13 +598,13 @@ def _solve(f, symbol, **flags):
                         if other_n == n:
                             break
                         try:
-                            if other_cond.subs({symbol: candidate}) == S.true:
+                            if other_cond.subs({symbol: candidate}) == true:
                                 matches_other_piece = True
                                 break
                         except TypeError:
                             pass
                     if not matches_other_piece:
-                        v = v == S.true or v.doit()
+                        v = v == true or v.doit()
                         if isinstance(v, Relational):
                             v = v.canonical
                         result.add(Piecewise(
@@ -649,7 +650,7 @@ def _solve(f, symbol, **flags):
             if not e.is_Mul:
                 return x, 1
             c, ee = e.as_coeff_Mul()
-            if c.is_Rational and c is not S.One:  # c could be a Float
+            if c.is_Rational and c != 1:  # c could be a Float
                 return b**ee, c.denominator
             return x, 1
 
@@ -1035,9 +1036,9 @@ def solve_linear(f, x):
         if a != 0 and d.subs({x: -b/a}) != 0:
             res = (x, -b/a)
     if not n.simplify().has(x):
-        res = S.Zero, S.One
+        res = Integer(0), Integer(1)
     if x == res[0] and any(checksol(_, {x: res[1]}) for _ in denoms(f, [x])):
-        res = S.Zero, S.Zero
+        res = Integer(0), Integer(0)
     return res
 
 
@@ -1206,7 +1207,7 @@ def _tsolve(eq, sym, **flags):
                 sol_base = _solve(lhs.base, sym, **flags)
                 return list(ordered(set(sol_base) -
                                     set(_solve(lhs.exp, sym, **flags))))
-            elif (rhs is not S.Zero and
+            elif (rhs != 0 and
                   lhs.base.is_positive and
                   lhs.exp.is_extended_real):
                 return _solve(lhs.exp*log(lhs.base) - log(rhs), sym, **flags)
@@ -1338,12 +1339,12 @@ def _invert(eq, *symbols, **kwargs):
     if not symbols:
         symbols = free
     if not free & set(symbols):
-        return eq, S.Zero
+        return eq, Integer(0)
 
     dointpow = bool(kwargs.get('integer_power', False))
 
     lhs = eq
-    rhs = S.Zero
+    rhs = Integer(0)
     while True:
         was = lhs
         while True:
@@ -1352,7 +1353,7 @@ def _invert(eq, *symbols, **kwargs):
             # dep + indep == rhs
             if lhs.is_Add:
                 # this indicates we have done it all
-                if indep is S.Zero:
+                if indep == 0:
                     break
 
                 lhs = dep
@@ -1361,7 +1362,7 @@ def _invert(eq, *symbols, **kwargs):
             # dep * indep == rhs
             else:
                 # this indicates we have done it all
-                if indep is S.One:
+                if indep == 1:
                     break
 
                 lhs = dep
@@ -1402,7 +1403,7 @@ def _invert(eq, *symbols, **kwargs):
                     if _lhs != rat:
                         lhs = _lhs
                         rhs = -bi/ai
-            if ai*bi is S.NegativeOne:
+            if ai*bi == -1:
                 if all(
                         isinstance(i, Function) for i in (ad, bd)) and \
                         ad.func == bd.func and len(ad.args) == len(bd.args):

@@ -190,10 +190,10 @@ class Set(Basic):
 
         elif isinstance(other, FiniteSet):
             unks = FiniteSet(*[el for el in other
-                               if self.contains(el) not in [S.true, S.false]])
+                               if self.contains(el) not in [true, false]])
             other = FiniteSet(*[el for el in other
-                                if self.contains(el) is not S.true])
-            ret = FiniteSet(*[el for el in other if self.contains(el) is S.false])
+                                if self.contains(el) != true])
+            ret = FiniteSet(*[el for el in other if self.contains(el) == false])
             if unks:
                 ret |= Complement(FiniteSet(*unks), self, evaluate=False)
             return ret
@@ -865,7 +865,7 @@ class Interval(Set, EvalfMixin):
             return
 
         # handle (-oo, oo)
-        if Eq(self, S.Reals) is S.true:
+        if Eq(self, S.Reals) == true:
             return other
 
         # We can't intersect [0,3] with [x,6] -- we don't know if x>0 or x<0
@@ -993,7 +993,7 @@ class Interval(Set, EvalfMixin):
             result = S.EmptySet
             domain_set = self
             for (p_expr, p_cond) in expr.args:
-                if p_cond is S.true:
+                if p_cond == true:
                     intrvl = domain_set
                 else:
                     intrvl = p_cond.as_set()
@@ -1424,10 +1424,10 @@ class Intersection(Set):
             if s.is_FiniteSet:
                 args = [a for a in args if a != s]
                 res = s.func(*[x for x in s
-                               if all(other.contains(x) is S.true
+                               if all(other.contains(x) == true
                                       for other in args)])
                 unk = [x for x in s
-                       if any(other.contains(x) not in (S.true, S.false)
+                       if any(other.contains(x) not in (true, false)
                               for other in args)]
                 if unk:
                     res += Intersection(*([s.func(*unk)] + args), evaluate=False)
@@ -1724,15 +1724,15 @@ class FiniteSet(Set, EvalfMixin):
 
         elif other.is_FiniteSet:
             common = FiniteSet(*[el for el in other
-                                 if self.contains(el) is S.true])
+                                 if self.contains(el) == true])
             self2 = FiniteSet(*[el for el in self
-                                if common.contains(el) is not S.true])
+                                if common.contains(el) != true])
             if self2.is_EmptySet:
                 self2 = common
             other = FiniteSet(*[el for el in other
-                                if common.contains(el) is not S.true])
+                                if common.contains(el) != true])
             return Set._complement(FiniteSet(*[el for el in self2
-                                               if other.contains(el) is not S.false]),
+                                               if other.contains(el) != false]),
                                    other)
 
         return Set._complement(self, other)

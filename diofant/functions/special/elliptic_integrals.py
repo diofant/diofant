@@ -1,6 +1,6 @@
 """ Elliptic integrals. """
 
-from ...core import Function, I, Rational, S, oo, pi, zoo
+from ...core import Function, I, Integer, Rational, oo, pi, zoo
 from ...core.function import ArgumentIndexError
 from ..elementary.complexes import sign
 from ..elementary.hyperbolic import atanh
@@ -47,16 +47,16 @@ class elliptic_k(Function):
 
     @classmethod
     def eval(cls, m):
-        if m is S.Zero:
+        if m == 0:
             return pi/2
-        elif m is S.Half:
+        elif m == Rational(1, 2):
             return 8*pi**Rational(3, 2)/gamma(-Rational(1, 4))**2
-        elif m is S.One:
+        elif m == 1:
             return zoo
-        elif m is S.NegativeOne:
+        elif m == -1:
             return gamma(Rational(1, 4))**2/(4*sqrt(2*pi))
         elif m in (oo, -oo, I*oo, I*-oo, zoo):
-            return S.Zero
+            return Integer(0)
 
     def fdiff(self, argindex=1):
         m = self.args[0]
@@ -75,10 +75,10 @@ class elliptic_k(Function):
         return hyperexpand(self.rewrite(hyper)._eval_nseries(x, n=n, logx=logx))
 
     def _eval_rewrite_as_hyper(self, m):
-        return (pi/2)*hyper((S.Half, S.Half), (S.One,), m)
+        return (pi/2)*hyper((Rational(1, 2), Rational(1, 2)), (1,), m)
 
     def _eval_rewrite_as_meijerg(self, m):
-        return meijerg(((S.Half, S.Half), []), ((S.Zero,), (S.Zero,)), -m)/2
+        return meijerg(((Rational(1, 2), Rational(1, 2)), []), ((0,), (0,)), -m)/2
 
 
 class elliptic_f(Function):
@@ -119,11 +119,11 @@ class elliptic_f(Function):
         if m.is_zero:
             return z
         elif z.is_zero:
-            return S.Zero
+            return Integer(0)
         elif k.is_integer:
             return k*elliptic_k(m)
         elif m in (oo, -oo):
-            return S.Zero
+            return Integer(0)
         elif z.could_extract_minus_sign():
             return -elliptic_f(-z, m)
 
@@ -189,7 +189,7 @@ class elliptic_e(Function):
             if m.is_zero:
                 return z
             if z.is_zero:
-                return S.Zero
+                return Integer(0)
             elif k.is_integer:
                 return k*elliptic_e(m)
             elif m in (oo, -oo):
@@ -200,8 +200,8 @@ class elliptic_e(Function):
             m = z
             if m.is_zero:
                 return pi/2
-            elif m is S.One:
-                return S.One
+            elif m == 1:
+                return Integer(1)
             elif m is oo:
                 return I*oo
             elif m == -oo:
@@ -244,13 +244,13 @@ class elliptic_e(Function):
     def _eval_rewrite_as_hyper(self, *args):
         if len(args) == 1:
             m = args[0]
-            return (pi/2)*hyper((-S.Half, S.Half), (S.One,), m)
+            return (pi/2)*hyper((-Rational(1, 2), Rational(1, 2)), (1,), m)
 
     def _eval_rewrite_as_meijerg(self, *args):
         if len(args) == 1:
             m = args[0]
-            return -meijerg(((S.Half, Rational(3, 2)), []),
-                            ((S.Zero,), (S.Zero,)), -m)/4
+            return -meijerg(((Rational(1, 2), Rational(3, 2)), []),
+                            ((0,), (0,)), -m)/4
 
 
 class elliptic_pi(Function):
@@ -307,9 +307,9 @@ class elliptic_pi(Function):
                 return (elliptic_f(z, n) - elliptic_pi(1, z, n) +
                         tan(z)/sqrt(1 - n*sin(z)**2))
             elif n in (oo, -oo):
-                return S.Zero
+                return Integer(0)
             elif m in (oo, -oo):
-                return S.Zero
+                return Integer(0)
             elif z.could_extract_minus_sign():
                 return -elliptic_pi(n, -z, m)
         else:
@@ -324,9 +324,9 @@ class elliptic_pi(Function):
             elif n == m:
                 return elliptic_e(n)/(1 - n)
             elif n in (oo, -oo):
-                return S.Zero
+                return Integer(0)
             elif m in (oo, -oo):
-                return S.Zero
+                return Integer(0)
 
     def _eval_conjugate(self):
         if len(self.args) == 3:

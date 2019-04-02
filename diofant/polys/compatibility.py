@@ -16,8 +16,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_ground_trunc, dmp_integrate_in, dmp_trunc,
                          dup_decompose, dup_mirror, dup_real_imag, dup_scale,
                          dup_shift, dup_transform)
-from .euclidtools import (dmp_cancel, dmp_content, dmp_discriminant,
-                          dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
+from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
                           dmp_inner_subresultants, dmp_prem, dmp_primitive,
                           dmp_prs_resultant, dmp_qq_collins_resultant,
                           dmp_qq_heu_gcd, dmp_resultant, dmp_rr_prs_gcd,
@@ -316,13 +315,6 @@ class IPolys:
         else:
             return res0
 
-    def dmp_discriminant(self, f):
-        disc = dmp_discriminant(self.to_dense(f), self.ngens-1, self.domain)
-        if isinstance(disc, list):
-            return self.drop(0).from_dense(disc)
-        else:
-            return disc
-
     def dup_rr_prs_gcd(self, f, g):
         H, F, G = dup_rr_prs_gcd(self.to_dense(f), self.to_dense(g), self.domain)
         return self.from_dense(H), self.from_dense(F), self.from_dense(G)
@@ -370,15 +362,6 @@ class IPolys:
     def dmp_ground_primitive(self, f):
         cont, prim = dmp_ground_primitive(self.to_dense(f), self.ngens-1, self.domain)
         return cont, self.from_dense(prim)
-
-    def dmp_cancel(self, f, g, include=True):
-        result = dmp_cancel(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain, include=include)
-        if not include:
-            cf, cg, F, G = result
-            return cf, cg, self.from_dense(F), self.from_dense(G)
-        else:
-            F, G = result
-            return self.from_dense(F), self.from_dense(G)
 
     def dmp_trial_division(self, f, factors):
         factors = dmp_trial_division(self.to_dense(f), list(map(self.to_dense, factors)), self.ngens-1, self.domain)

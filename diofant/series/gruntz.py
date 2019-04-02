@@ -62,7 +62,7 @@ for proof of the termination (pp. 52-60).
 
 from functools import reduce
 
-from ..core import Add, Dummy, E, Float, Mul, S, cacheit, evaluate, oo
+from ..core import Add, Dummy, E, Float, Integer, Mul, cacheit, evaluate, oo
 from ..core.compatibility import ordered
 from ..functions import Abs, exp, log
 from ..functions import sign as sgn
@@ -231,7 +231,7 @@ def limitinf(e, x):
     c0, e0 = mrv_leadterm(e, x)
     sig = sign(e0, x)
     if sig == 1:
-        return S.Zero
+        return Integer(0)
     elif sig == -1:
         s = sign(c0, x)
         assert s != 0
@@ -265,7 +265,7 @@ def mrv_leadterm(e, x):
 
     """
     if not e.has(x):
-        return e, S.Zero
+        return e, Integer(0)
 
     e = e.replace(lambda f: f.is_Pow and f.exp.has(x),
                   lambda f: exp(log(f.base)*f.exp))

@@ -1,4 +1,5 @@
-from ...core import Function, I, S, cacheit, nan, oo, pi, sympify, zoo
+from ...core import (Function, I, Integer, Rational, cacheit, nan, oo, pi,
+                     sympify, zoo)
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
@@ -102,7 +103,7 @@ class sinh(HyperbolicFunction):
     def taylor_term(n, x, *previous_terms):
         """Returns the next term in the Taylor series expansion."""
         if n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
             if len(previous_terms) >= 2:
@@ -120,9 +121,9 @@ class sinh(HyperbolicFunction):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return self.expand(deep, **hints), S.Zero
+                return self.expand(deep, **hints), Integer(0)
             else:
-                return self, S.Zero
+                return self, Integer(0)
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -140,7 +141,7 @@ class sinh(HyperbolicFunction):
             x, y = arg.as_two_terms()
         else:
             coeff, terms = arg.as_coeff_Mul(rational=True)
-            if coeff is not S.One and coeff.is_Integer and terms is not S.One:
+            if coeff != 1 and coeff.is_Integer and terms != 1:
                 x = terms
                 y = (coeff - 1)*x
         if x is not None:
@@ -157,11 +158,11 @@ class sinh(HyperbolicFunction):
         return -I*cosh(arg + pi*I/2)
 
     def _eval_rewrite_as_tanh(self, arg):
-        tanh_half = tanh(S.Half*arg)
+        tanh_half = tanh(arg/2)
         return 2*tanh_half/(1 - tanh_half**2)
 
     def _eval_rewrite_as_coth(self, arg):
-        coth_half = coth(S.Half*arg)
+        coth_half = coth(arg/2)
         return 2*coth_half/(coth_half**2 - 1)
 
     def _eval_as_leading_term(self, x):
@@ -211,8 +212,8 @@ class cosh(HyperbolicFunction):
         if arg.is_Number:
             if arg in (oo, -oo):
                 return oo
-            elif arg is S.Zero:
-                return S.One
+            elif arg == 0:
+                return Integer(1)
             elif arg.is_negative:
                 return cls(-arg)
         else:
@@ -244,7 +245,7 @@ class cosh(HyperbolicFunction):
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n < 0 or n % 2 == 1:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
 
@@ -262,9 +263,9 @@ class cosh(HyperbolicFunction):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return self.expand(deep, **hints), S.Zero
+                return self.expand(deep, **hints), Integer(0)
             else:
-                return self, S.Zero
+                return self, Integer(0)
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -283,7 +284,7 @@ class cosh(HyperbolicFunction):
             x, y = arg.as_two_terms()
         else:
             coeff, terms = arg.as_coeff_Mul(rational=True)
-            if coeff is not S.One and coeff.is_Integer and terms is not S.One:
+            if coeff != 1 and coeff.is_Integer and terms != 1:
                 x = terms
                 y = (coeff - 1)*x
         if x is not None:
@@ -300,11 +301,11 @@ class cosh(HyperbolicFunction):
         return -I*sinh(arg + pi*I/2)
 
     def _eval_rewrite_as_tanh(self, arg):
-        tanh_half = tanh(S.Half*arg)**2
+        tanh_half = tanh(arg/2)**2
         return (1 + tanh_half)/(1 - tanh_half)
 
     def _eval_rewrite_as_coth(self, arg):
-        coth_half = coth(S.Half*arg)**2
+        coth_half = coth(arg/2)**2
         return (coth_half + 1)/(coth_half - 1)
 
     def _eval_as_leading_term(self, x):
@@ -312,7 +313,7 @@ class cosh(HyperbolicFunction):
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
-            return S.One
+            return Integer(1)
         else:
             return self.func(arg)
 
@@ -342,7 +343,7 @@ class tanh(HyperbolicFunction):
 
     def fdiff(self, argindex=1):
         if argindex == 1:
-            return S.One - tanh(self.args[0])**2
+            return 1 - tanh(self.args[0])**2
         else:
             raise ArgumentIndexError(self, argindex)
 
@@ -357,11 +358,11 @@ class tanh(HyperbolicFunction):
 
         if arg.is_Number:
             if arg is oo:
-                return S.One
+                return Integer(1)
             elif arg == -oo:
-                return S.NegativeOne
-            elif arg is S.Zero:
-                return S.Zero
+                return Integer(-1)
+            elif arg == 0:
+                return Integer(0)
             elif arg.is_negative:
                 return -cls(-arg)
         else:
@@ -397,7 +398,7 @@ class tanh(HyperbolicFunction):
     def taylor_term(n, x, *previous_terms):
         from .. import bernoulli
         if n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
 
@@ -416,9 +417,9 @@ class tanh(HyperbolicFunction):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return self.expand(deep, **hints), S.Zero
+                return self.expand(deep, **hints), Integer(0)
             else:
-                return self, S.Zero
+                return self, Integer(0)
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -486,10 +487,10 @@ class coth(HyperbolicFunction):
 
         if arg.is_Number:
             if arg is oo:
-                return S.One
+                return Integer(1)
             elif arg == -oo:
-                return S.NegativeOne
-            elif arg is S.Zero:
+                return Integer(-1)
+            elif arg == 0:
                 return zoo
             elif arg.is_negative:
                 return -cls(-arg)
@@ -528,7 +529,7 @@ class coth(HyperbolicFunction):
         if n == 0:
             return 1 / sympify(x)
         elif n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
 
@@ -545,9 +546,9 @@ class coth(HyperbolicFunction):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return self.expand(deep, **hints), S.Zero
+                return self.expand(deep, **hints), Integer(0)
             else:
-                return self, S.Zero
+                return self, Integer(0)
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -681,7 +682,7 @@ class csch(ReciprocalHyperbolicFunction):
         if n == 0:
             return 1/sympify(x)
         elif n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
 
@@ -727,7 +728,7 @@ class sech(ReciprocalHyperbolicFunction):
     def taylor_term(n, x, *previous_terms):
         from ..combinatorial.numbers import euler
         if n < 0 or n % 2 == 1:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
             return euler(n) / factorial(n) * x**n
@@ -769,9 +770,9 @@ class asinh(Function):
         if arg.is_Number:
             if arg in (oo, -oo, 0):
                 return arg
-            elif arg is S.One:
+            elif arg == 1:
                 return log(sqrt(2) + 1)
-            elif arg is S.NegativeOne:
+            elif arg == -1:
                 return log(sqrt(2) - 1)
             elif arg.is_negative:
                 return -cls(-arg)
@@ -791,7 +792,7 @@ class asinh(Function):
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
             if len(previous_terms) >= 2 and n > 2:
@@ -799,7 +800,7 @@ class asinh(Function):
                 return -p * (n - 2)**2/(n*(n - 1)) * x**2
             else:
                 k = (n - 1) // 2
-                R = RisingFactorial(S.Half, k)
+                R = RisingFactorial(Rational(1, 2), k)
                 F = factorial(k)
                 return (-1)**k * R / F * x**n / n
 
@@ -848,19 +849,19 @@ class acosh(Function):
         if arg.is_Number:
             if arg in (oo, -oo):
                 return oo
-            elif arg is S.Zero:
+            elif arg == 0:
                 return pi*I / 2
-            elif arg is S.One:
-                return S.Zero
-            elif arg is S.NegativeOne:
+            elif arg == 1:
+                return Integer(0)
+            elif arg == -1:
                 return pi*I
 
         if arg.is_number:
             cst_table = {
                 I: log(I*(1 + sqrt(2))),
                 -I: log(-I*(1 + sqrt(2))),
-                S.Half: pi/3,
-                -S.Half: 2*pi/3,
+                Rational(+1, 2): pi/3,
+                Rational(-1, 2): 2*pi/3,
                 sqrt(2)/2: pi/4,
                 -sqrt(2)/2: 3*pi/4,
                 1/sqrt(2): pi/4,
@@ -893,7 +894,7 @@ class acosh(Function):
         if n == 0:
             return pi*I / 2
         elif n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
             if len(previous_terms) >= 2 and n > 2:
@@ -901,7 +902,7 @@ class acosh(Function):
                 return p * (n - 2)**2/(n*(n - 1)) * x**2
             else:
                 k = (n - 1) // 2
-                R = RisingFactorial(S.Half, k)
+                R = RisingFactorial(Rational(1, 2), k)
                 F = factorial(k)
                 return -R / F * I * x**n / n
 
@@ -946,11 +947,11 @@ class atanh(Function):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Zero:
-                return S.Zero
-            elif arg is S.One:
+            if arg == 0:
+                return Integer(0)
+            elif arg == 1:
                 return oo
-            elif arg is S.NegativeOne:
+            elif arg == -1:
                 return -oo
             elif arg is oo:
                 return -I * atan(arg)
@@ -974,7 +975,7 @@ class atanh(Function):
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
             return x**n / n
@@ -1014,12 +1015,12 @@ class acoth(Function):
 
         if arg.is_Number:
             if arg in (oo, -oo):
-                return S.Zero
-            elif arg is S.Zero:
+                return Integer(0)
+            elif arg == 0:
                 return pi*I / 2
-            elif arg is S.One:
+            elif arg == 1:
                 return oo
-            elif arg is S.NegativeOne:
+            elif arg == -1:
                 return -oo
             elif arg.is_negative:
                 return -cls(-arg)
@@ -1041,7 +1042,7 @@ class acoth(Function):
         if n == 0:
             return pi*I / 2
         elif n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
             return x**n / n

@@ -6,7 +6,7 @@ Plane
 
 """
 
-from ..core import Dummy, Rational, S, Symbol
+from ..core import Dummy, Integer, Rational, Symbol
 from ..core.compatibility import is_sequence
 from ..functions import acos, asin, sqrt
 from ..matrices import Matrix
@@ -328,7 +328,7 @@ class Plane(GeometryEntity):
         from .line3d import LinearEntity3D
         x, y, z = map(Dummy, 'xyz')
         if self.intersection(o) != []:
-            return S.Zero
+            return Integer(0)
 
         if isinstance(o, Point3D):
             x, y, z = map(Dummy, 'xyz')

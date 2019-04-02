@@ -13,7 +13,7 @@ Hypergeometric
 """
 
 from ..concrete import Sum
-from ..core import Dict, Dummy, Expr, Integer, Rational, S, cacheit, sympify
+from ..core import Dict, Dummy, Expr, Integer, Rational, cacheit, sympify
 from ..core.compatibility import as_int
 from ..core.logic import fuzzy_and, fuzzy_not
 from ..functions import KroneckerDelta, binomial
@@ -77,7 +77,7 @@ class DiscreteUniformDistribution(SingleFiniteDistribution):
         if x in self.args:
             return self.p
         else:
-            return S.Zero
+            return Integer(0)
 
 
 def DiscreteUniform(name, items):
@@ -129,7 +129,7 @@ class DieDistribution(SingleFiniteDistribution):
         if x.is_number:
             if x.is_Integer and x >= 1 and x <= self.sides:
                 return Rational(1, self.sides)
-            return S.Zero
+            return Integer(0)
         if x.is_Symbol:
             i = Dummy('i', integer=True, positive=True)
             return Sum(KroneckerDelta(x, i)/self.sides, (i, 1, self.sides))
@@ -179,7 +179,7 @@ def Bernoulli(name, p, succ=1, fail=0):
     >>> density(X).dict
     {0: 1/4, 1: 3/4}
 
-    >>> X = Bernoulli('X', S.Half, 'Heads', 'Tails') # A fair coin toss
+    >>> X = Bernoulli('X', Rational(1, 2), 'Heads', 'Tails') # A fair coin toss
     >>> density(X).dict
     {Heads: 1/2, Tails: 1/2}
 
@@ -188,7 +188,7 @@ def Bernoulli(name, p, succ=1, fail=0):
     return rv(name, BernoulliDistribution, p, succ, fail)
 
 
-def Coin(name, p=S.Half):
+def Coin(name, p=Rational(1, 2)):
     """
     Create a Finite Random Variable representing a Coin toss.
 
@@ -252,7 +252,7 @@ def Binomial(name, n, p, succ=1, fail=0):
 
     >>> from diofant.stats import density
 
-    >>> X = Binomial('X', 4, S.Half) # Four "coin flips"
+    >>> X = Binomial('X', 4, Rational(1, 2)) # Four "coin flips"
     >>> density(X).dict
     {0: 1/16, 1: 1/4, 2: 3/8, 3: 1/4, 4: 1/16}
 
@@ -303,7 +303,7 @@ class RademacherDistribution(SingleFiniteDistribution):
     @property
     @cacheit
     def dict(self):
-        return {-1: S.Half, 1: S.Half}
+        return {-1: Rational(1, 2), 1: Rational(1, 2)}
 
 
 def Rademacher(name):
