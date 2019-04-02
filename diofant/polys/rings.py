@@ -1066,12 +1066,10 @@ class PolyElement(DomainElement, CantSympify, dict):
         p = self.ring.one
         c = self
 
-        while True:
+        while n:
             if n & 1:
                 p *= c
                 n -= 1
-                if not n:
-                    break
 
             c = c._square()
             n //= 2
