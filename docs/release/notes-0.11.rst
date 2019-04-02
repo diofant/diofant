@@ -84,3 +84,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`15413` rootof fails for polynomial with irrational coefficients
 * :sympyissue:`16432` a.is_even does not imply a.is_finite
 * :sympyissue:`16431` a.is_zero is False does not imply a.is_nonzero is True
+* :sympyissue:`16530` (1/x).is_real should be None if x can be zero

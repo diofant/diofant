@@ -900,3 +900,10 @@ def test_sympyissue_9165():
 def test_sympyissue_10024():
     x = Dummy('x')
     assert Mod(x, 2*pi).is_zero is None
+
+
+def test_sympyissue_16530():
+    x = Symbol('x')
+    e = 1/abs(x)
+    assert e.is_real is None
+    assert e.is_extended_real is None
