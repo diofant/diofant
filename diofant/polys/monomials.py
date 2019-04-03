@@ -39,16 +39,13 @@ def itermonomials(variables, degree):
 
     """
     if not variables:
-        return {S.One}
+        yield S.One
     else:
         x, tail = variables[0], variables[1:]
 
-        monoms = itermonomials(tail, degree)
-
-        for i in range(1, degree + 1):
-            monoms |= {x**i * m for m in itermonomials(tail, degree - i)}
-
-        return monoms
+        for i in range(degree + 1):
+            for m in itermonomials(tail, degree - i):
+                yield m*x**i
 
 
 def monomial_mul(A, B):
