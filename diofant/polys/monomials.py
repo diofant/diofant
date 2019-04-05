@@ -12,30 +12,11 @@ def itermonomials(variables, degree):
     r"""
     Generate a set of monomials of the given total degree or less.
 
-    Given a set of variables `V` and a total degree `N` generate
-    a set of monomials of degree at most `N`. The total number of
-    monomials is huge and is given by the following formula:
-
-    .. math::
-
-        \frac{(\#V + N)!}{\#V! N!}
-
-    For example if we would like to generate a dense polynomial of
-    a total degree `N = 50` in 5 variables, assuming that exponents
-    and all of coefficients are 32-bit long and stored in an array we
-    would need almost 80 GiB of memory! Fortunately most polynomials,
-    that we will encounter, are sparse.
-
     Examples
     ========
 
-    >>> from diofant.polys.orderings import monomial_key
-
-    >>> sorted(itermonomials([x, y], 2), key=monomial_key('grlex', [y, x]))
-    [1, x, y, x**2, x*y, y**2]
-
-    >>> sorted(itermonomials([x, y], 3), key=monomial_key('grlex', [y, x]))
-    [1, x, y, x**2, x*y, y**2, x**3, x**2*y, x*y**2, y**3]
+    >>> set(itermonomials([x, y], 2))
+    {1, x, x**2, y, y**2, x*y}
 
     """
     if not variables:
