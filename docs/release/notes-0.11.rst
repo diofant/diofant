@@ -23,6 +23,7 @@ Compatibility breaks
 * Removed ``seterr()`` function, see :pull:`794`.
 * Removed ``DMP`` class, see :pull:`795`.
 * Removed ``ring_series`` module, see :pull:`820`.
+* :class:`~diofant.core.relational.Equality` doesn't support single-argument call, see :pull:`828`.
 
 Minor changes
 =============
@@ -85,3 +86,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`16432` a.is_even does not imply a.is_finite
 * :sympyissue:`16431` a.is_zero is False does not imply a.is_nonzero is True
 * :sympyissue:`16530` (1/x).is_real should be None if x can be zero
+* :sympyissue:`16562` Eq with 1 argument is allowed?

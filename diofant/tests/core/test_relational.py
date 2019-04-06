@@ -87,8 +87,10 @@ def test_wrappers():
 
 
 def test_Eq():
-    assert Eq(x**2) == Eq(x**2, 0)
-    assert Eq(x**2) != Eq(x**2, 1)
+    assert Eq(x**2, 0) == Eq(x**2, 0)
+    assert Eq(x**2, 0) != Eq(x**2, 1)
+
+    pytest.raises(TypeError, lambda: Eq(x))
 
     assert Eq(x, x)  # issue sympy/sympy#5719
 
@@ -178,18 +180,18 @@ def test_doit():
 
 
 def test_new_relational():
-    assert Eq(x) == Relational(x, 0)       # None ==> Equality
-    assert Eq(x) == Relational(x, 0, '==')
-    assert Eq(x) == Relational(x, 0, 'eq')
-    assert Eq(x) == Equality(x, 0)
+    assert Eq(x, 0) == Relational(x, 0)       # None ==> Equality
+    assert Eq(x, 0) == Relational(x, 0, '==')
+    assert Eq(x, 0) == Relational(x, 0, 'eq')
+    assert Eq(x, 0) == Equality(x, 0)
     assert Eq(x, -1) == Relational(x, -1)       # None ==> Equality
     assert Eq(x, -1) == Relational(x, -1, '==')
     assert Eq(x, -1) == Relational(x, -1, 'eq')
     assert Eq(x, -1) == Equality(x, -1)
-    assert Eq(x) != Relational(x, 1)       # None ==> Equality
-    assert Eq(x) != Relational(x, 1, '==')
-    assert Eq(x) != Relational(x, 1, 'eq')
-    assert Eq(x) != Equality(x, 1)
+    assert Eq(x, 0) != Relational(x, 1)       # None ==> Equality
+    assert Eq(x, 0) != Relational(x, 1, '==')
+    assert Eq(x, 0) != Relational(x, 1, 'eq')
+    assert Eq(x, 0) != Equality(x, 1)
     assert Eq(x, -1) != Relational(x, 1)       # None ==> Equality
     assert Eq(x, -1) != Relational(x, 1, '==')
     assert Eq(x, -1) != Relational(x, 1, 'eq')
