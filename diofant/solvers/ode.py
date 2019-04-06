@@ -4149,7 +4149,7 @@ def ode_almost_linear(eq, func, order, match):
     The general solution is
 
         >>> f, g, k, l = map(Function, ['f', 'g', 'k', 'l'])
-        >>> genform = Eq(f(x)*(l(y).diff(y)) + k(x)*l(y) + g(x))
+        >>> genform = Eq(f(x)*(l(y).diff(y)) + k(x)*l(y) + g(x), 0)
         >>> pprint(genform, use_unicode=False)
              d
         f(x)*--(l(y)) + g(x) + k(x)*l(y) = 0

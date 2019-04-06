@@ -274,7 +274,7 @@ class Equality(Relational):
 
     is_Equality = True
 
-    def __new__(cls, lhs, rhs=0, **options):
+    def __new__(cls, lhs, rhs, **options):
         lhs = sympify(lhs, strict=True)
         rhs = sympify(rhs, strict=True)
 
