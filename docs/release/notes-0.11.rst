@@ -87,3 +87,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`16431` a.is_zero is False does not imply a.is_nonzero is True
 * :sympyissue:`16530` (1/x).is_real should be None if x can be zero
 * :sympyissue:`16562` Eq with 1 argument is allowed?
+* :sympyissue:`16589` roots gives incorrect result
