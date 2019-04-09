@@ -15,7 +15,6 @@ from diofant.polys.polyconfig import using
 from diofant.polys.polyerrors import (CoercionFailed, ExactQuotientFailed,
                                       GeneratorsError, GeneratorsNeeded,
                                       MultivariatePolynomialError,
-                                      PolynomialDivisionFailed,
                                       PolynomialError)
 from diofant.polys.rings import PolyElement, PolynomialRing, ring, sring
 
@@ -999,8 +998,8 @@ def test_PolyElement_div():
     assert f.div(G) == (Q, r)
 
     R, x = ring('x', RR)
-    pytest.raises(PolynomialDivisionFailed,
-                  lambda: divmod(R(2.0), R(-1.8438812457236466e-19)))
+
+    assert divmod(R(2.0), R(-1.8438812457236466e-19)) == (-1.0846685515341218e+19, 0)
 
 
 def test_PolyElement_monic():

@@ -3,8 +3,7 @@
 import pytest
 
 from diofant.domains import FF, QQ, RR, ZZ
-from diofant.polys.polyerrors import (ExactQuotientFailed,
-                                      PolynomialDivisionFailed)
+from diofant.polys.polyerrors import ExactQuotientFailed
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -906,8 +905,8 @@ def test_dmp_div():
     assert R.dmp_div(f, g) == (q, r)
 
     R, x = ring('x', RR)
-    pytest.raises(PolynomialDivisionFailed,
-                  lambda: R.dmp_div(2.0, -1.8438812457236466e-19))
+
+    assert R.dmp_div(2.0, -1.8438812457236466e-19) == (-1.0846685515341218e+19, 0)
 
     R, x = ring('x', ZZ)
 

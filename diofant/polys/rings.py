@@ -1304,6 +1304,8 @@ class PolyElement(DomainElement, CantSympify, dict):
         x**4 + 3*x*y**3*z**3 + 3*x*y**2*z**4 + 2*y
 
         """
+        ring = self.ring
+        domain = ring.domain
         p1 = self
         if p1 in p1.ring._gens_set:
             p1 = p1.copy()
@@ -1313,7 +1315,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         for k, v in p2.items():
             ka = monomial_mul(k, m)
             coeff = get(ka, zero) + v*c
-            if coeff:
+            if coeff and (domain.is_Exact or not domain.almosteq(coeff, 0)):
                 p1[ka] = coeff
             else:
                 del p1[ka]

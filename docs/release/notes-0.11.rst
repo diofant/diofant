@@ -88,3 +88,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`16530` (1/x).is_real should be None if x can be zero
 * :sympyissue:`16562` Eq with 1 argument is allowed?
 * :sympyissue:`16589` roots gives incorrect result
+* :sympyissue:`7864` div hangs for a certain input
