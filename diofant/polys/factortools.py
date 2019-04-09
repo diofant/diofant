@@ -79,7 +79,7 @@ def dup_zz_hensel_step(m, f, g, h, s, t, K):
     returns polynomials `G`, `H`, `S` and `T`, such that::
 
         f == G*H (mod m**2)
-        S*G + T**H == 1 (mod m**2)
+        S*G + T*H == 1 (mod m**2)
 
     References
     ==========
@@ -403,7 +403,7 @@ def dup_zz_cyclotomic_factor(f, K):
     of `f`, provided that `f` is in the form `x**n - 1` or `x**n + 1` for
     `n >= 1`. Otherwise returns None.
 
-    Factorization is performed using using cyclotomic decomposition of `f`,
+    Factorization is performed using cyclotomic decomposition of `f`,
     which makes this method much faster that any other direct factorization
     approach (e.g. Zassenhaus's).
 

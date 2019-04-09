@@ -690,3 +690,10 @@ def test_sympyissue_7724():
 def test_sympyissue_14291():
     p = Poly(((x - 1)**2 + 1)*((x - 1)**2 + 2)*(x - 1))
     assert set(p.all_roots()) == {1, 1 - I, 1 + I, 1 - I*sqrt(2), 1 + sqrt(2)*I}
+
+
+def test_sympyissue_16589():
+    e = x**4 - 8*sqrt(2)*x**3 + 4*x**3 - 64*sqrt(2)*x**2 + 1024*x
+    rs = roots(e, x)
+    assert 0 in rs
+    assert all(not e.evalf(chop=True, subs={x: r}) for r in rs)

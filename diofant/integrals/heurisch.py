@@ -4,8 +4,8 @@ from itertools import permutations
 from ..core import Add, Basic, Dummy, E, Eq, Integer, Mul, Wild, pi, sympify
 from ..core.compatibility import ordered
 from ..functions import (Ei, LambertW, Piecewise, acosh, asin, asinh, atan,
-                         cos, cosh, cot, coth, erf, erfi, exp, li, log, root,
-                         sin, sinh, sqrt, tan, tanh)
+                         binomial, cos, cosh, cot, coth, erf, erfi, exp, li,
+                         log, root, sin, sinh, sqrt, tan, tanh)
 from ..logic import And
 from ..polys import PolynomialError, cancel, factor, gcd, lcm, quo
 from ..polys.constructor import construct_domain
@@ -424,13 +424,12 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     A, B = _exponent(f), a + max(b, c)
 
+    degree = A + B + degree_offset
     if A > 1 and B > 1:
-        monoms = itermonomials(V, A + B - 1 + degree_offset)
-    else:
-        monoms = itermonomials(V, A + B + degree_offset)
+        degree -= 1
 
-    poly_coeffs = _symbols('A', len(monoms))
-
+    monoms = itermonomials(V, degree)
+    poly_coeffs = _symbols('A', binomial(len(V) + degree, degree))
     poly_part = Add(*[ poly_coeffs[i]*monomial
                        for i, monomial in enumerate(ordered(monoms)) ])
 
