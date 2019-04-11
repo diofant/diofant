@@ -1800,7 +1800,7 @@ class ComplexInterval:
 
     def refine(self):
         """Perform one step of complex root refinement algorithm."""
-        (u, v), (s, t) = self.a, self.b
+        a, b = (u, v), (s, t) = self.a, self.b
 
         I, Q = self.I, self.Q
 
@@ -1810,14 +1810,14 @@ class ComplexInterval:
         dom = self.domain
 
         if s - u > t - v:
-            D_L, D_R = _vertical_bisection(1, (u, v), (s, t), I, Q, F1, F2, f1, f2, dom)
+            D_L, D_R = _vertical_bisection(1, a, b, I, Q, F1, F2, f1, f2, dom)
 
             if D_L[0] == 1:
                 _, a, b, I, Q, F1, F2 = D_L
             else:
                 _, a, b, I, Q, F1, F2 = D_R
         else:
-            D_B, D_U = _horizontal_bisection(1, (u, v), (s, t), I, Q, F1, F2, f1, f2, dom)
+            D_B, D_U = _horizontal_bisection(1, a, b, I, Q, F1, F2, f1, f2, dom)
 
             if D_B[0] == 1:
                 _, a, b, I, Q, F1, F2 = D_B
