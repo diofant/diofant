@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import nextprime, pi
-from diofant.domains import FF, ZZ
+from diofant.domains import ZZ
 from diofant.polys import polyconfig as config
 from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
                                        gf_add_mul, gf_berlekamp, gf_cofactors,
@@ -22,7 +22,6 @@ from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
                                        gf_sub_ground, gf_sub_mul, gf_trace_map,
                                        linear_congruence)
 from diofant.polys.polyerrors import ExactQuotientFailed
-from diofant.polys.rings import ring
 
 
 __all__ = ()
@@ -486,6 +485,7 @@ def test_gf_factor_sqf():
     assert gf_factor_sqf([], 11, ZZ) == (0, [])
     assert gf_factor_sqf([1], 11, ZZ) == (1, [])
     assert gf_factor_sqf([1, 1], 11, ZZ) == (1, [[1, 1]])
+    assert gf_factor_sqf([2, 3], 11, ZZ) == (2, [[1, 7]])
 
     with config.using(gf_factor_method='berlekamp'):
         assert gf_factor_sqf([], 11, ZZ) == (0, [])
@@ -548,10 +548,6 @@ def test_gf_factor_sqf():
 
     with config.using(gf_factor_method='shoup'):
         assert gf_factor_sqf(f, p, ZZ) == g
-
-    # IPoly interface:
-    R, t = ring("t", FF(11))
-    assert R.gf_factor_sqf(2*t + 3) == (2, [t + 7])
 
 
 def test_gf_csolve():
