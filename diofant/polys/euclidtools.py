@@ -2,7 +2,7 @@
 
 from ..core import cacheit
 from ..ntheory import nextprime
-from ..ntheory.modular import symmetric_residue
+from ..ntheory.modular import crt, symmetric_residue
 from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
@@ -13,7 +13,6 @@ from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
                          dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
 from .densetools import (dmp_clear_denoms, dmp_eval_in, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc)
-from .galoistools import gf_crt
 from .heuristicgcd import heugcd
 from .polyconfig import query
 from .polyerrors import (DomainError, HeuristicGCDFailed, HomomorphismFailed,
@@ -558,7 +557,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
 
 def _collins_crt(r, R, P, p, K):
     """Wrapper of CRT for Collins's resultant algorithm."""
-    return symmetric_residue(gf_crt([r, R], [P, p], K), P*p)
+    return K(crt([P, p], [r, R], check=False, symmetric=True)[0])
 
 
 def dmp_zz_collins_resultant(f, g, u, K):
