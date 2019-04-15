@@ -1,7 +1,6 @@
 """User-friendly public interface to polynomial functions. """
 
 import mpmath
-from mpmath.libmp.libhyper import NoConvergence
 
 from ..core import (Add, Basic, Derivative, Dummy, E, Expr, I, Integer, Mul,
                     Tuple, oo, preorder_traversal, sympify)
@@ -26,8 +25,7 @@ from .polyerrors import (CoercionFailed, ComputationFailed, DomainError,
 from .polyutils import (_dict_from_expr, _dict_reorder,
                         _parallel_dict_from_expr, _sort_gens)
 from .rationaltools import together
-from .rings import PolyElement, PolynomialRing, ring
-from .rootisolation import dup_isolate_real_roots_list
+from .rings import PolyElement
 
 
 __all__ = ('Poly', 'PurePoly', 'poly_from_expr', 'parallel_poly_from_expr',
@@ -2282,8 +2280,8 @@ class Poly(Expr):
             # so we make sure this convention holds here, too.
             roots = list(map(sympify,
                              sorted(roots, key=lambda r: (1 if r.imag else 0, r.real, r.imag))))
-        except NoConvergence:
-            raise NoConvergence(
+        except mpmath.libmp.NoConvergence:
+            raise mpmath.libmp.NoConvergence(
                 'convergence to root failed; try n < %s or maxsteps > %s' % (
                     n, maxsteps))
         finally:
@@ -4504,8 +4502,8 @@ def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, fast=Fal
         if len(opt.gens) > 1:
             raise MultivariatePolynomialError
 
-        for i, poly in enumerate(polys):
-            polys[i] = poly.rep.to_dense()
+        R = polys[0].rep.ring
+        polys = [p.rep for p in polys]
 
         if eps is not None:
             eps = opt.domain.convert(eps)
@@ -4518,8 +4516,8 @@ def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, fast=Fal
         if sup is not None:
             sup = opt.domain.convert(sup)
 
-        intervals = dup_isolate_real_roots_list(polys, opt.domain,
-                                                eps=eps, inf=inf, sup=sup, strict=strict, fast=fast)
+        intervals = R.dup_isolate_real_roots_list(polys, eps=eps, inf=inf, sup=sup,
+                                                  strict=strict, fast=fast)
 
         result = []
 
@@ -4772,7 +4770,7 @@ def reduced(f, G, *gens, **args):
         opt = opt.clone({'domain': domain.field})
         retract = True
 
-    _ring, *_ = ring(opt.gens, opt.domain, opt.order)
+    _ring = opt.domain.poly_ring(*opt.gens, order=opt.order)
 
     for i, poly in enumerate(polys):
         poly = dict(poly.set_domain(opt.domain).rep)
@@ -4863,7 +4861,7 @@ class GroebnerBasis(Basic):
         except PolificationFailed as exc:
             raise ComputationFailed('groebner', len(F), exc)
 
-        ring = PolynomialRing(opt.domain, opt.gens, opt.order)
+        ring = opt.domain.poly_ring(*opt.gens, order=opt.order)
 
         if not ring.domain.is_Exact:
             raise ValueError('Domain must be exact, got %s' % ring.domain)
@@ -5015,7 +5013,7 @@ class GroebnerBasis(Basic):
         opt = self._options.clone({'domain': domain.field,
                                    'order': dst_order})
 
-        _ring, *_ = ring(opt.gens, opt.domain, src_order)
+        _ring = opt.domain.poly_ring(*opt.gens, order=src_order)
 
         for i, poly in enumerate(polys):
             poly = dict(poly.set_domain(opt.domain).rep)
@@ -5067,7 +5065,7 @@ class GroebnerBasis(Basic):
             opt = self._options.clone({'domain': domain.field})
             retract = True
 
-        _ring, *_ = ring(opt.gens, opt.domain, opt.order)
+        _ring = opt.domain.poly_ring(*opt.gens, order=opt.order)
 
         for i, poly in enumerate(polys):
             poly = dict(poly.set_domain(opt.domain).rep)
