@@ -1036,6 +1036,12 @@ def test_ComplexInterval():
 
     assert r1.is_disjoint(r2, check_re_refinement=True) is True
 
+    (u1, v1), (s1, t1) = r1.as_tuple()
+    (u2, v2), (s2, t2) = r1.refine(vertical=True).as_tuple()
+
+    assert v1 == v2 and t1 == t2
+    assert u1 <= u2 < s2 < s1
+
 
 def test_diofantissue_745():
     D, y = ring('y', ZZ)

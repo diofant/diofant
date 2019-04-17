@@ -7,8 +7,8 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term, dmp_div,
                          dmp_sqr, dmp_sub, dmp_sub_mul, dmp_sub_term,
                          dup_lshift, dup_rshift)
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
-                         dmp_ground_TC, dmp_LC, dmp_slice_in, dmp_strip,
-                         dmp_TC, dmp_to_dict)
+                         dmp_ground_TC, dmp_LC, dmp_slice_in, dmp_TC,
+                         dmp_to_dict)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_diff_in, dmp_eval_in, dmp_eval_tail,
                          dmp_ground_content, dmp_ground_extract,
@@ -32,7 +32,6 @@ from .factortools import (dmp_factor_list, dmp_trial_division, dmp_zz_factor,
                           dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
                           dup_zz_factor, dup_zz_factor_sqf, dup_zz_hensel_lift,
                           dup_zz_hensel_step, dup_zz_irreducible_p)
-from .galoistools import gf_factor_sqf
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -505,13 +504,3 @@ class IPolys:
     def fateman_poly_F_3(self):
         from .specialpolys import dmp_fateman_poly_F_3
         return tuple(map(self.from_dense, dmp_fateman_poly_F_3(self.ngens-1, self.domain)))
-
-    def to_gf_dense(self, element):
-        return dmp_strip([self.domain.domain.convert(c, self.domain) for c in self.wrap(element).to_dense()], 0)
-
-    def from_gf_dense(self, element):
-        return self.from_dict(dmp_to_dict(element, self.ngens-1))
-
-    def gf_factor_sqf(self, f):
-        coeff, factors = gf_factor_sqf(self.to_gf_dense(f), self.domain.mod, self.domain.domain)
-        return coeff, [self.from_gf_dense(g) for g in factors]

@@ -1798,9 +1798,9 @@ class ComplexInterval:
             return all(_get_rectangle(i.f1, i.f2, i.domain, (l, i.ay), (r, i.by))[0] == 1
                        for i in (self, other))
 
-    def refine(self):
+    def refine(self, vertical=False):
         """Perform one step of complex root refinement algorithm."""
-        (u, v), (s, t) = self.a, self.b
+        a, b = (u, v), (s, t) = self.a, self.b
 
         I, Q = self.I, self.Q
 
@@ -1809,15 +1809,15 @@ class ComplexInterval:
 
         dom = self.domain
 
-        if s - u > t - v:
-            D_L, D_R = _vertical_bisection(1, (u, v), (s, t), I, Q, F1, F2, f1, f2, dom)
+        if s - u > t - v or vertical:
+            D_L, D_R = _vertical_bisection(1, a, b, I, Q, F1, F2, f1, f2, dom)
 
             if D_L[0] == 1:
                 _, a, b, I, Q, F1, F2 = D_L
             else:
                 _, a, b, I, Q, F1, F2 = D_R
         else:
-            D_B, D_U = _horizontal_bisection(1, (u, v), (s, t), I, Q, F1, F2, f1, f2, dom)
+            D_B, D_U = _horizontal_bisection(1, a, b, I, Q, F1, F2, f1, f2, dom)
 
             if D_B[0] == 1:
                 _, a, b, I, Q, F1, F2 = D_B
