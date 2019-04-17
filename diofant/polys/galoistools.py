@@ -115,20 +115,6 @@ def gf_from_dict(f, p, K):
     return dmp_convert(f, 0, K.finite_field(p), K)
 
 
-def gf_from_int_poly(f, p):
-    """
-    Create a ``GF(p)[x]`` polynomial from ``Z[x]``.
-
-    Examples
-    ========
-
-    >>> gf_from_int_poly([7, -2, 3], 5)
-    [2, 3, 3]
-
-    """
-    return dmp_strip([a % p for a in f], 0)
-
-
 def gf_neg(f, p, K):
     """
     Negate a polynomial in ``GF(p)[x]``.
@@ -361,34 +347,6 @@ def gf_sqr(f, p, K):
     return dmp_strip(h, 0)
 
 
-def gf_add_mul(f, g, h, p, K):
-    """
-    Returns ``f + g*h`` where ``f``, ``g``, ``h`` in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_add_mul([3, 2, 4], [2, 2, 2], [1, 4], 5, ZZ)
-    [2, 3, 2, 2]
-
-    """
-    return gf_add(f, gf_mul(g, h, p, K), p, K)
-
-
-def gf_sub_mul(f, g, h, p, K):
-    """
-    Compute ``f - g*h`` where ``f``, ``g``, ``h`` in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_sub_mul([3, 2, 4], [2, 2, 2], [1, 4], 5, ZZ)
-    [3, 3, 2, 1]
-
-    """
-    return gf_sub(f, gf_mul(g, h, p, K), p, K)
-
-
 def gf_div(f, g, p, K):
     """
     Division with remainder in ``GF(p)[x]``.
@@ -402,8 +360,6 @@ def gf_div(f, g, p, K):
 
     >>> gf_div([1, 0, 1, 1], [1, 1, 0], 2, ZZ)
     ([1, 1], [1])
-    >>> gf_add_mul(_[1], _[0], [1, 1, 0], 2, ZZ)
-    [1, 0, 1, 1]
 
     References
     ==========
@@ -659,85 +615,6 @@ def gf_gcd(f, g, p, K):
         f, g = g, gf_rem(f, g, p, K)
 
     return gf_monic(f, p, K)[1]
-
-
-def gf_lcm(f, g, p, K):
-    """
-    Compute polynomial LCM in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_lcm([3, 2, 4], [2, 2, 3], 5, ZZ)
-    [1, 2, 0, 4]
-
-    """
-    if not f or not g:
-        return []
-
-    h = gf_quo(gf_mul(f, g, p, K),
-               gf_gcd(f, g, p, K), p, K)
-
-    return gf_monic(h, p, K)[1]
-
-
-def gf_gcdex(f, g, p, K):
-    """
-    Extended Euclidean Algorithm in ``GF(p)[x]``.
-
-    Given polynomials ``f`` and ``g`` in ``GF(p)[x]``, computes polynomials
-    ``s``, ``t`` and ``h``, such that ``h = gcd(f, g)`` and ``s*f + t*g = h``.
-    The typical application of EEA is solving polynomial diophantine equations.
-
-    Examples
-    ========
-
-    >>> s, t, g = gf_gcdex([1, 8, 7], [1, 7, 1, 7], 11, ZZ)
-    >>> (s, t, g)
-    ([5, 6], [6], [1, 7])
-
-    >>> S = gf_mul(s, [1, 8, 7], 11, ZZ)
-    >>> T = gf_mul(t, [1, 7, 1, 7], 11, ZZ)
-    >>> gf_add(S, T, 11, ZZ)
-    [1, 7]
-
-    References
-    ==========
-
-    * :cite:`Gathen1999modern`
-
-    """
-    if not (f or g):
-        return [K.one], [], []
-
-    p0, r0 = gf_monic(f, p, K)
-    p1, r1 = gf_monic(g, p, K)
-
-    if not f:
-        return [], [K.invert(p1, p)], r1
-    if not g:
-        return [K.invert(p0, p)], [], r0
-
-    s0, s1 = [K.invert(p0, p)], []
-    t0, t1 = [], [K.invert(p1, p)]
-
-    while True:
-        Q, R = gf_div(r0, r1, p, K)
-
-        if not R:
-            break
-
-        (lc, r1), r0 = gf_monic(R, p, K), r1
-
-        inv = K.invert(lc, p)
-
-        s = gf_sub_mul(s0, s1, Q, p, K)
-        t = gf_sub_mul(t0, t1, Q, p, K)
-
-        s1, s0 = gf_mul_ground(s, inv, p, K), s1
-        t1, t0 = gf_mul_ground(t, inv, p, K), t1
-
-    return s1, t1, r1
 
 
 def gf_monic(f, p, K):

@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant.domains import CC, QQ, RR, ZZ
+from diofant.domains import CC, FF, QQ, RR, ZZ
 from diofant.functions import sqrt
 from diofant.polys.polyconfig import using
 from diofant.polys.polyerrors import HeuristicGCDFailed, NotInvertible
@@ -48,6 +48,17 @@ def test_dup_gcdex():
 
     assert f.half_gcdex(g) == (s, h)
     assert f.gcdex(g) == (s, t, h)
+
+    R, x = ring("x", FF(11))
+
+    assert R.zero.gcdex(R(2)) == (0, 6, 1)
+    assert R(2).gcdex(R(2)) == (0, 6, 1)
+
+    assert R.zero.gcdex(3*x) == (0, 4, x)
+
+    assert (3*x).gcdex(3*x) == (0, 4, x)
+
+    assert (x**2 + 8*x + 7).gcdex(x**3 + 7*x**2 + x + 7) == (5*x + 6, 6, x + 7)
 
 
 def test_dup_invert():
@@ -796,6 +807,21 @@ def test_PolyElement_lcm():
     h = x**3 + 4*x**2*y + 4*x*y**2
 
     assert f.lcm(g) == h
+
+    R, x = ring("x", FF(11))
+
+    assert R.zero.lcm(R(2)) == 0
+    assert R(2).lcm(R(2)) == 1
+
+    assert R.zero.lcm(x) == 0
+
+    assert (3*x).lcm(3*x) == x
+    assert (x**2 + 8*x + 7).lcm(x**3 + 7*x**2 + x + 7) == (x**4 + 8*x**3 +
+                                                           8*x**2 + 8*x + 7)
+
+    R, x = ring("x", FF(5))
+
+    assert (3*x**2 + 2*x + 4).lcm(2*x**2 + 2*x + 3) == x**3 + 2*x**2 + 4
 
 
 def test_dmp_content():
