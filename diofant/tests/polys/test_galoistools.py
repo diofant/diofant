@@ -3,24 +3,21 @@ import pytest
 from diofant import nextprime, pi
 from diofant.domains import ZZ
 from diofant.polys import polyconfig as config
-from diofant.polys.galoistools import (csolve_prime, gf_add, gf_add_ground,
-                                       gf_add_mul, gf_berlekamp, gf_cofactors,
-                                       gf_compose, gf_compose_mod, gf_crt,
-                                       gf_crt1, gf_crt2, gf_csolve,
-                                       gf_ddf_shoup, gf_ddf_zassenhaus,
-                                       gf_diff, gf_div, gf_edf_shoup,
-                                       gf_edf_zassenhaus, gf_eval, gf_exquo,
+from diofant.polys.galoistools import (gf_add, gf_add_ground, gf_add_mul,
+                                       gf_berlekamp, gf_compose_mod, gf_crt,
+                                       gf_crt1, gf_crt2, gf_ddf_shoup,
+                                       gf_ddf_zassenhaus, gf_div, gf_edf_shoup,
+                                       gf_edf_zassenhaus, gf_exquo,
                                        gf_factor_sqf, gf_frobenius_map,
                                        gf_frobenius_monomial_base,
                                        gf_from_dict, gf_from_int_poly, gf_gcd,
                                        gf_gcdex, gf_irred_p_ben_or,
                                        gf_irred_p_rabin, gf_irreducible,
                                        gf_irreducible_p, gf_lcm, gf_monic,
-                                       gf_mul, gf_mul_ground, gf_neg, gf_pow,
+                                       gf_mul, gf_mul_ground, gf_neg,
                                        gf_pow_mod, gf_Qbasis, gf_Qmatrix,
                                        gf_quo, gf_rem, gf_sqr, gf_sub,
-                                       gf_sub_ground, gf_sub_mul, gf_trace_map,
-                                       linear_congruence)
+                                       gf_sub_ground, gf_sub_mul, gf_trace_map)
 from diofant.polys.polyerrors import ExactQuotientFailed
 
 
@@ -189,28 +186,6 @@ def test_gf_division():
 
 
 def test_gf_powering():
-    assert gf_pow([1, 0, 0, 1, 8], 0, 11, ZZ) == [1]
-    assert gf_pow([1, 0, 0, 1, 8], 1, 11, ZZ) == [1, 0, 0, 1, 8]
-    assert gf_pow([1, 0, 0, 1, 8], 2, 11, ZZ) == [1, 0, 0, 2, 5, 0, 1, 5, 9]
-
-    assert gf_pow([1, 0, 0, 1, 8], 5, 11, ZZ) == \
-        [1, 0, 0, 5, 7, 0, 10, 6, 2, 10, 9, 6, 10, 6, 6, 0, 5, 2, 5, 9, 10]
-
-    assert gf_pow([1, 0, 0, 1, 8], 8, 11, ZZ) == \
-        [1, 0, 0, 8, 9, 0, 6, 8, 10, 1, 2, 5, 10, 7, 7, 9, 1, 2, 0, 0, 6, 2,
-         5, 2, 5, 7, 7, 9, 10, 10, 7, 5, 5]
-
-    assert gf_pow([1, 0, 0, 1, 8], 45, 11, ZZ) == \
-        [1, 0, 0,  1,  8, 0, 0, 0, 0, 0, 0,  0, 0, 0,  0,  0, 0, 0, 0, 0, 0, 0,
-         0, 0, 0,  0,  0, 0, 0, 0, 0, 0, 0,  4, 0, 0,  4, 10, 0, 0, 0, 0, 0, 0,
-         10, 0, 0, 10,  3, 0, 0, 0, 0, 0, 0,  0, 0, 0,  0,  0, 0, 0, 0, 0, 0, 0,
-         6, 0, 0,  6,  4, 0, 0, 0, 0, 0, 0,  8, 0, 0,  8,  9, 0, 0, 0, 0, 0, 0,
-         10, 0, 0, 10,  3, 0, 0, 0, 0, 0, 0,  4, 0, 0,  4, 10, 0, 0, 0, 0, 0, 0,
-         8, 0, 0,  8,  9, 0, 0, 0, 0, 0, 0,  9, 0, 0,  9,  6, 0, 0, 0, 0, 0, 0,
-         3, 0, 0,  3,  2, 0, 0, 0, 0, 0, 0, 10, 0, 0, 10,  3, 0, 0, 0, 0, 0, 0,
-         10, 0, 0, 10,  3, 0, 0, 0, 0, 0, 0,  2, 0, 0,  2,  5, 0, 0, 0, 0, 0, 0,
-         4, 0, 0,  4, 10]
-
     assert gf_pow_mod([1, 0, 0, 1, 8], 0, [2, 0, 7], 11, ZZ) == [1]
     assert gf_pow_mod([1, 0, 0, 1, 8], 1, [2, 0, 7], 11, ZZ) == [1, 1]
     assert gf_pow_mod([1, 0, 0, 1, 8], 2, [2, 0, 7], 11, ZZ) == [2, 3]
@@ -259,58 +234,13 @@ def test_gf_lcm():
     assert gf_lcm([1, 8, 7], [1, 7, 1, 7], 11, ZZ) == [1, 8, 8, 8, 7]
 
 
-def test_gf_cofactors():
-    assert gf_cofactors([], [], 11, ZZ) == ([], [], [])
-    assert gf_cofactors([2], [], 11, ZZ) == ([1], [2], [])
-    assert gf_cofactors([], [2], 11, ZZ) == ([1], [], [2])
-    assert gf_cofactors([2], [2], 11, ZZ) == ([1], [2], [2])
-
-    assert gf_cofactors([], [1, 0], 11, ZZ) == ([1, 0], [], [1])
-    assert gf_cofactors([1, 0], [], 11, ZZ) == ([1, 0], [1], [])
-
-    assert gf_cofactors([3, 0], [3, 0], 11, ZZ) == ([1, 0], [3], [3])
-    assert gf_cofactors([1, 8, 7], [1, 7, 1, 7], 11, ZZ) == (([1, 7], [1, 1],
-                                                              [1, 0, 1]))
-
-
-def test_gf_diff():
-    assert gf_diff([], 11, ZZ) == []
-    assert gf_diff([7], 11, ZZ) == []
-
-    assert gf_diff([7, 3], 11, ZZ) == [7]
-    assert gf_diff([7, 3, 1], 11, ZZ) == [3, 3]
-
-    assert gf_diff([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], 11, ZZ) == []
-
-
-def test_gf_eval():
-    assert gf_eval([], 4, 11, ZZ) == 0
-    assert gf_eval([], 27, 11, ZZ) == 0
-    assert gf_eval([7], 4, 11, ZZ) == 7
-    assert gf_eval([7], 27, 11, ZZ) == 7
-
-    assert gf_eval([1, 0, 3, 2, 4, 3, 1, 2, 0], 0, 11, ZZ) == 0
-    assert gf_eval([1, 0, 3, 2, 4, 3, 1, 2, 0], 4, 11, ZZ) == 9
-    assert gf_eval([1, 0, 3, 2, 4, 3, 1, 2, 0], 27, 11, ZZ) == 5
-
-    assert gf_eval([4, 0, 0, 4, 6, 0, 1, 3, 5], 0, 11, ZZ) == 5
-    assert gf_eval([4, 0, 0, 4, 6, 0, 1, 3, 5], 4, 11, ZZ) == 3
-    assert gf_eval([4, 0, 0, 4, 6, 0, 1, 3, 5], 27, 11, ZZ) == 9
-
-
-def test_gf_compose():
-    assert gf_compose([], [1, 0], 11, ZZ) == []
+def test_gf_compose_mod():
     assert gf_compose_mod([], [1, 0], [1, 0], 11, ZZ) == []
-
-    assert gf_compose([1], [], 11, ZZ) == [1]
-    assert gf_compose([1, 0], [], 11, ZZ) == []
-    assert gf_compose([1, 0], [1, 0], 11, ZZ) == [1, 0]
 
     f = [1, 1, 4, 9, 1]
     g = [1, 1, 1]
     h = [1, 0, 0, 2]
 
-    assert gf_compose(g, h, 11, ZZ) == [1, 0, 0, 5, 0, 0, 7]
     assert gf_compose_mod(g, h, f, 11, ZZ) == [3, 9, 6, 10]
 
 
@@ -548,25 +478,3 @@ def test_gf_factor_sqf():
 
     with config.using(gf_factor_method='shoup'):
         assert gf_factor_sqf(f, p, ZZ) == g
-
-
-def test_gf_csolve():
-    assert linear_congruence(4, 3, 5) == [2]
-    assert linear_congruence(0, 3, 5) == []
-    assert linear_congruence(6, 1, 4) == []
-    assert linear_congruence(0, 5, 5) == [0, 1, 2, 3, 4]
-    assert linear_congruence(3, 12, 15) == [4, 9, 14]
-    assert linear_congruence(6, 0, 18) == [0, 3, 6, 9, 12, 15]
-    # with power = 1
-    assert csolve_prime([1, 3, 2, 17], 7) == [3]
-    assert csolve_prime([1, 3, 1, 5], 5) == [0, 1]
-    assert csolve_prime([3, 6, 9, 3], 3) == [0, 1, 2]
-    # with power > 1
-    assert csolve_prime(
-        [1, 1, 223], 3, 4) == [4, 13, 22, 31, 40, 49, 58, 67, 76]
-    assert csolve_prime([3, 5, 2, 25], 5, 3) == [16, 50, 99]
-    assert csolve_prime([3, 2, 2, 49], 7, 3) == [147, 190, 234]
-
-    assert gf_csolve([1, 1, 7], 189) == [13, 49, 76, 112, 139, 175]
-    assert gf_csolve([1, 3, 4, 1, 30], 60) == [10, 30]
-    assert gf_csolve([1, 1, 7], 15) == []

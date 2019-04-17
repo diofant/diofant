@@ -6,9 +6,8 @@ import random
 from ..core import prod
 from ..ntheory import factorint
 from .densearith import dup_lshift
-from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_LC,
-                         dmp_normal, dmp_strip)
-from .densetools import dmp_eval_in
+from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_normal,
+                         dmp_strip)
 from .polyconfig import query
 from .polyerrors import ExactQuotientFailed
 from .polyutils import _sort_factors
@@ -513,41 +512,6 @@ def gf_exquo(f, g, p, K):
         raise ExactQuotientFailed(f, g)
 
 
-def gf_pow(f, n, p, K):
-    """
-    Compute ``f**n`` in ``GF(p)[x]`` using repeated squaring.
-
-    Examples
-    ========
-
-    >>> gf_pow([3, 2, 4], 3, 5, ZZ)
-    [2, 4, 4, 2, 2, 1, 4]
-
-    """
-    if not n:
-        return [K.one]
-    elif n == 1:
-        return f
-    elif n == 2:
-        return gf_sqr(f, p, K)
-
-    h = [K.one]
-
-    while True:
-        if n & 1:
-            h = gf_mul(h, f, p, K)
-            n -= 1
-
-        n >>= 1
-
-        if not n:
-            break
-
-        f = gf_sqr(f, p, K)
-
-    return h
-
-
 def gf_frobenius_monomial_base(g, p, K):
     """
     return the list of ``x**(i*p) mod g in Z_p`` for ``i = 0, .., n - 1``
@@ -717,26 +681,6 @@ def gf_lcm(f, g, p, K):
     return gf_monic(h, p, K)[1]
 
 
-def gf_cofactors(f, g, p, K):
-    """
-    Compute polynomial GCD and cofactors in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_cofactors([3, 2, 4], [2, 2, 3], 5, ZZ)
-    ([1, 3], [3, 3], [2, 1])
-
-    """
-    if not f and not g:
-        return [], [], []
-
-    h = gf_gcd(f, g, p, K)
-
-    return (h, gf_quo(f, h, p, K),
-            gf_quo(g, h, p, K))
-
-
 def gf_gcdex(f, g, p, K):
     """
     Extended Euclidean Algorithm in ``GF(p)[x]``.
@@ -816,82 +760,6 @@ def gf_monic(f, p, K):
             return lc, list(f)
         else:
             return lc, gf_quo_ground(f, lc, p, K)
-
-
-def gf_diff(f, p, K):
-    """
-    Differentiate polynomial in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_diff([3, 2, 4], 5, ZZ)
-    [1, 2]
-
-    """
-    df = dmp_degree_in(f, 0, 0)
-    if df < 0:
-        return []
-
-    h, n = [K.zero]*df, df
-
-    for coeff in f[:-1]:
-        coeff *= K(n)
-        coeff %= p
-
-        if coeff:
-            h[df - n] = coeff
-
-        n -= 1
-
-    return dmp_strip(h, 0)
-
-
-def gf_eval(f, a, p, K):
-    """
-    Evaluate ``f(a)`` in ``GF(p)`` using Horner scheme.
-
-    Examples
-    ========
-
-    >>> gf_eval([3, 2, 4], 2, 5, ZZ)
-    0
-
-    """
-    result = K.zero
-
-    for c in f:
-        result *= a
-        result += c
-        result %= p
-
-    return result
-
-
-def gf_compose(f, g, p, K):
-    """
-    Compute polynomial composition ``f(g)`` in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_compose([3, 2, 4], [2, 2, 2], 5, ZZ)
-    [2, 4, 0, 3, 0]
-
-    """
-    if len(g) <= 1:
-        return dmp_strip([gf_eval(f, dmp_LC(g, K), p, K)], 0)
-
-    if not f:
-        return []
-
-    h = [f[0]]
-
-    for c in f[1:]:
-        h = gf_mul(h, g, p, K)
-        h = gf_add_ground(h, c, p, K)
-
-    return h
 
 
 def gf_compose_mod(g, h, f, p, K):
@@ -1592,134 +1460,3 @@ def gf_factor_sqf(f, p, K):
     method = query('GF_FACTOR_METHOD')
 
     return lc, _factor_methods[method](f, p, K)
-
-
-def linear_congruence(a, b, m):
-    """
-    Returns the values of x satisfying a*x congruent b mod(m)
-
-    Here m is positive integer and a, b are natural numbers.
-    This function returns only those values of x which are distinct mod(m).
-
-    Examples
-    ========
-
-    >>> linear_congruence(3, 12, 15)
-    [4, 9, 14]
-
-    There are 3 solutions distinct mod(15) since gcd(a, m) = gcd(3, 15) = 3.
-
-    References
-    ==========
-
-    * https://en.wikipedia.org/wiki/Linear_congruence_theorem
-
-    """
-    from .polytools import gcdex
-    if a % m == 0:
-        if b % m == 0:
-            return list(range(m))
-        else:
-            return []
-    r, _, g = gcdex(a, m)
-    if b % g != 0:
-        return []
-    return [(r * b // g + t * m // g) % m for t in range(g)]
-
-
-def _raise_mod_power(x, s, p, f):
-    """
-    Used in gf_csolve to generate solutions of f(x) cong 0 mod(p**(s + 1))
-    from the solutions of f(x) cong 0 mod(p**s).
-
-    Examples
-    ========
-
-    These is the solutions of f(x) = x**2 + x + 7 cong 0 mod(3)
-
-    >>> f = [1, 1, 7]
-    >>> csolve_prime(f, 3)
-    [1]
-    >>> [i for i in range(3) if not (i**2 + i + 7) % 3]
-    [1]
-
-    The solutions of f(x) cong 0 mod(9) are constructed from the
-    values returned from _raise_mod_power:
-
-    >>> x, s, p = 1, 1, 3
-    >>> V = _raise_mod_power(x, s, p, f)
-    >>> [x + v * p**s for v in V]
-    [1, 4, 7]
-
-    And these are confirmed with the following:
-
-    >>> [i for i in range(3**2) if not (i**2 + i + 7) % 3**2]
-    [1, 4, 7]
-
-    """
-    from ..domains import ZZ
-    f_f = gf_diff(f, p, ZZ)
-    alpha = dmp_eval_in(f_f, x, 0, 0, ZZ)
-    beta = - dmp_eval_in(f, x, 0, 0, ZZ) // p**s
-    return linear_congruence(alpha, beta, p)
-
-
-def csolve_prime(f, p, e=1):
-    """
-    Solutions of f(x) congruent 0 mod(p**e).
-
-    Examples
-    ========
-
-    >>> csolve_prime([1, 1, 7], 3, 1)
-    [1]
-    >>> csolve_prime([1, 1, 7], 3, 2)
-    [1, 4, 7]
-
-    """
-    from ..domains import ZZ
-    X1 = [i for i in range(p) if gf_eval(f, i, p, ZZ) == 0]
-    if e == 1:
-        return X1
-    X = []
-    S = list(zip(X1, [1]*len(X1)))
-    while S:
-        x, s = S.pop()
-        if s == e:
-            X.append(x)
-        else:
-            s1 = s + 1
-            ps = p**s
-            S.extend([(x + v*ps, s1) for v in _raise_mod_power(x, s, p, f)])
-    return sorted(X)
-
-
-def gf_csolve(f, n):
-    """
-    To solve f(x) congruent 0 mod(n).
-
-    n is divided into canonical factors and f(x) cong 0 mod(p**e) will be
-    solved for each factor. Applying the Chinese Remainder Theorem to the
-    results returns the final answers.
-
-    Examples
-    ========
-
-    >>> gf_csolve([1, 1, 7], 189)
-    [13, 49, 76, 112, 139, 175]
-
-    References
-    ==========
-
-    * :cite:`NivenZuckerman`
-
-    """
-    from ..domains import ZZ
-    P = factorint(n)
-    X = [csolve_prime(f, p, e) for p, e in P.items()]
-    pools = list(map(tuple, X))
-    perms = [[]]
-    for pool in pools:
-        perms = [x + [y] for x in perms for y in pool]
-    dist_factors = [pow(p, e) for p, e in P.items()]
-    return sorted(gf_crt(per, dist_factors, ZZ) for per in perms)
