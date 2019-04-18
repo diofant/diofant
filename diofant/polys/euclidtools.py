@@ -694,15 +694,15 @@ def _dmp_rr_trivial_gcd(f, g, u, K):
     if zero_f and zero_g:
         return tuple(dmp_zeros(3, u, K))
     elif zero_f:
-        if K.is_nonnegative(dmp_ground_LC(g, u, K)):
-            return g, dmp_zero(u), dmp_one(u, K)
-        else:
+        if K.is_negative(dmp_ground_LC(g, u, K)):
             return dmp_neg(g, u, K), dmp_zero(u), dmp_ground(-K.one, u)
-    elif zero_g:
-        if K.is_nonnegative(dmp_ground_LC(f, u, K)):
-            return f, dmp_one(u, K), dmp_zero(u)
         else:
+            return g, dmp_zero(u), dmp_one(u, K)
+    elif zero_g:
+        if K.is_negative(dmp_ground_LC(f, u, K)):
             return dmp_neg(f, u, K), dmp_ground(-K.one, u), dmp_zero(u)
+        else:
+            return f, dmp_one(u, K), dmp_zero(u)
     elif dmp_one_p(f, u, K) or dmp_one_p(g, u, K):
         return dmp_one(u, K), f, g
     elif u and query('USE_SIMPLIFY_GCD'):

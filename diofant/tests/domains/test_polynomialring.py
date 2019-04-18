@@ -102,7 +102,7 @@ def test_methods():
     R = QQ.poly_ring(x)
     X = R.convert(x)
 
-    assert R.is_nonpositive(-X) is True
+    assert R.is_negative(-X) is True
     assert R.is_positive(X) is True
 
     assert R.gcdex(X**3 - X, X**2) == (-1, X, X)
@@ -111,7 +111,7 @@ def test_methods():
 
     F = QQ.frac_field(y)
     Y = F.convert(y)
-    assert F.is_nonpositive(-Y) is True
-    assert F.is_nonnegative(Y) is True
+    assert F.is_negative(-Y) is True
+    assert F.is_positive(Y) is True
 
     assert F.factorial(3) == 6

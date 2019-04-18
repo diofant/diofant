@@ -442,14 +442,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         """Returns True if ``LC(a)`` is negative."""
         return self.domain.is_negative(a.LC)
 
-    def is_nonpositive(self, a):
-        """Returns True if ``LC(a)`` is non-positive."""
-        return self.domain.is_nonpositive(a.LC)
-
-    def is_nonnegative(self, a):
-        """Returns True if ``LC(a)`` is non-negative."""
-        return self.domain.is_nonnegative(a.LC)
-
     def gcdex(self, a, b):
         """Extended GCD of ``a`` and ``b``."""
         return a.gcdex(b)
@@ -1808,10 +1800,10 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.ring.domain.is_Field:
             return other.monic(), zero, self.ring.ground_new(other.LC)
         else:
-            if self.ring.is_nonnegative(other):
-                return other, zero, one
-            else:
+            if self.ring.is_negative(other):
                 return -other, zero, -one
+            else:
+                return other, zero, one
 
     def _gcd(self, other):
         ring = self.ring

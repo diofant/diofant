@@ -1611,8 +1611,6 @@ def test_PolyElement_is_():
 
     assert R.is_positive(f) is True
     assert R.is_negative(f) is False
-    assert R.is_nonnegative(f) is True
-    assert R.is_nonpositive(f) is False
 
     R, x, y = ring('x y', ZZ)
 

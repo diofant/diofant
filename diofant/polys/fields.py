@@ -219,14 +219,6 @@ class FractionField(Field, CompositeDomain):
         """Returns True if ``LC(a)`` is negative."""
         return self.domain.is_negative(a.numer.LC)
 
-    def is_nonpositive(self, a):
-        """Returns True if ``LC(a)`` is non-positive."""
-        return self.domain.is_nonpositive(a.numer.LC)
-
-    def is_nonnegative(self, a):
-        """Returns True if ``LC(a)`` is non-negative."""
-        return self.domain.is_nonnegative(a.numer.LC)
-
     def factorial(self, a):
         """Returns factorial of ``a``."""
         return self.dtype(self.domain.factorial(a))
