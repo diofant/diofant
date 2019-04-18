@@ -83,8 +83,6 @@ def dup_root_upper_bound(f, K):
 
     """
     n, P = len(f), []
-    if K.is_AlgebraicField:
-        return
     t = n * [1]
     if dmp_LC(f, K) < 0:
         f = dmp_neg(f, 0, K)
