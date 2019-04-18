@@ -292,8 +292,12 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
     def from_list(self, element):
         return self.from_dict(dmp_to_dict(element, self.ngens-1))
 
-    def _rebuild_expr(self, expr, mapping):
+    def from_expr(self, expr):
+        """Convert an Expr instance to ``dtype``."""
+        expr = sympify(expr)
+
         domain = self.domain
+        mapping = dict(zip(self.symbols, self.gens))
 
         def _rebuild(expr):
             generator = mapping.get(expr)
@@ -301,9 +305,9 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             if generator is not None:
                 return generator
             elif expr.is_Add:
-                return functools.reduce(operator.add, list(map(_rebuild, expr.args)))
+                return functools.reduce(operator.add, map(_rebuild, expr.args))
             elif expr.is_Mul:
-                return functools.reduce(operator.mul, list(map(_rebuild, expr.args)))
+                return functools.reduce(operator.mul, map(_rebuild, expr.args))
             elif expr.is_Pow:
                 c, a = expr.exp.as_coeff_Mul(rational=True)
                 if c.is_Integer and c > 1:
@@ -311,16 +315,11 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
 
             return domain.convert(expr)
 
-        return _rebuild(sympify(expr))
-
-    def from_expr(self, expr):
-        """Convert Diofant's expression to ``dtype``."""
-        mapping = dict(zip(self.symbols, self.gens))
-
         try:
-            poly = self._rebuild_expr(expr, mapping)
+            poly = _rebuild(expr)
         except CoercionFailed:
-            raise ValueError("expected an expression convertible to a polynomial in %s, got %s" % (self, expr))
+            raise ValueError("expected an expression convertible to a "
+                             "polynomial in %s, got %s" % (self, expr))
         else:
             return self.ring_new(poly)
 
