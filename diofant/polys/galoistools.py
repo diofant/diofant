@@ -3,7 +3,6 @@
 import math
 import random
 
-from ..core import prod
 from ..ntheory import factorint
 from .densearith import dup_lshift
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_normal,
@@ -11,91 +10,6 @@ from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_normal,
 from .polyconfig import query
 from .polyerrors import ExactQuotientFailed
 from .polyutils import _sort_factors
-
-
-def gf_crt(U, M, K=None):
-    """
-    Chinese Remainder Theorem.
-
-    Given a set of integer residues ``u_0,...,u_n`` and a set of
-    co-prime integer moduli ``m_0,...,m_n``, returns an integer
-    ``u``, such that ``u = u_i mod m_i`` for ``i = ``0,...,n``.
-
-    Examples
-    ========
-
-    >>> gf_crt([49, 76, 65], [99, 97, 95], ZZ)
-    639985
-    >>> [_ % m for m in [99, 97, 95]]
-    [49, 76, 65]
-
-    Notes
-    =====
-
-    This is a low-level routine with no error checking.
-
-    See Also
-    ========
-
-    diofant.ntheory.modular.crt : a higher level crt routine
-    diofant.ntheory.modular.solve_congruence
-
-    """
-    p = prod(M, start=K.one)
-    v = K.zero
-
-    for u, m in zip(U, M):
-        e = p // m
-        s, _, _ = K.gcdex(e, m)
-        v += e*(u*s % m)
-
-    return v % p
-
-
-def gf_crt1(M, K):
-    """
-    First part of the Chinese Remainder Theorem.
-
-    Examples
-    ========
-
-    >>> gf_crt1([99, 97, 95], ZZ)
-    (912285, [9215, 9405, 9603], [62, 24, 12])
-
-    """
-    E, S = [], []
-    p = prod(M, start=K.one)
-
-    for m in M:
-        E.append(p // m)
-        S.append(K.gcdex(E[-1], m)[0] % m)
-
-    return p, E, S
-
-
-def gf_crt2(U, M, p, E, S, K):
-    """
-    Second part of the Chinese Remainder Theorem.
-
-    Examples
-    ========
-
-    >>> U = [49, 76, 65]
-    >>> M = [99, 97, 95]
-    >>> p = 912285
-    >>> E = [9215, 9405, 9603]
-    >>> S = [62, 24, 12]
-
-    >>> gf_crt2(U, M, p, E, S, ZZ)
-    639985
-
-    """
-    v = K.zero
-
-    for u, m, e, s in zip(U, M, E, S):
-        v += e*(u*s % m)
-
-    return v % p
 
 
 def gf_from_dict(f, p, K):

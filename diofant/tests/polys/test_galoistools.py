@@ -4,8 +4,7 @@ from diofant import nextprime, pi
 from diofant.domains import ZZ
 from diofant.polys import polyconfig as config
 from diofant.polys.galoistools import (gf_add, gf_add_ground, gf_berlekamp,
-                                       gf_compose_mod, gf_crt, gf_crt1,
-                                       gf_crt2, gf_ddf_shoup,
+                                       gf_compose_mod, gf_ddf_shoup,
                                        gf_ddf_zassenhaus, gf_div, gf_edf_shoup,
                                        gf_edf_zassenhaus, gf_exquo,
                                        gf_factor_sqf, gf_frobenius_map,
@@ -21,22 +20,6 @@ from diofant.polys.polyerrors import ExactQuotientFailed
 
 
 __all__ = ()
-
-
-def test_gf_crt():
-    U = [49, 76, 65]
-    M = [99, 97, 95]
-
-    p = 912285
-    u = 639985
-
-    assert gf_crt(U, M, ZZ) == u
-
-    E = [9215, 9405, 9603]
-    S = [62, 24, 12]
-
-    assert gf_crt1(M, ZZ) == (p, E, S)
-    assert gf_crt2(U, M, p, E, S, ZZ) == u
 
 
 def test_gf_from_dict():
