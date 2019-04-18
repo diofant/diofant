@@ -3,7 +3,6 @@
 import math
 import random
 
-from ..core import prod
 from ..ntheory import factorint
 from .densearith import dup_lshift
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_normal,
@@ -11,91 +10,6 @@ from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_normal,
 from .polyconfig import query
 from .polyerrors import ExactQuotientFailed
 from .polyutils import _sort_factors
-
-
-def gf_crt(U, M, K=None):
-    """
-    Chinese Remainder Theorem.
-
-    Given a set of integer residues ``u_0,...,u_n`` and a set of
-    co-prime integer moduli ``m_0,...,m_n``, returns an integer
-    ``u``, such that ``u = u_i mod m_i`` for ``i = ``0,...,n``.
-
-    Examples
-    ========
-
-    >>> gf_crt([49, 76, 65], [99, 97, 95], ZZ)
-    639985
-    >>> [_ % m for m in [99, 97, 95]]
-    [49, 76, 65]
-
-    Notes
-    =====
-
-    This is a low-level routine with no error checking.
-
-    See Also
-    ========
-
-    diofant.ntheory.modular.crt : a higher level crt routine
-    diofant.ntheory.modular.solve_congruence
-
-    """
-    p = prod(M, start=K.one)
-    v = K.zero
-
-    for u, m in zip(U, M):
-        e = p // m
-        s, _, _ = K.gcdex(e, m)
-        v += e*(u*s % m)
-
-    return v % p
-
-
-def gf_crt1(M, K):
-    """
-    First part of the Chinese Remainder Theorem.
-
-    Examples
-    ========
-
-    >>> gf_crt1([99, 97, 95], ZZ)
-    (912285, [9215, 9405, 9603], [62, 24, 12])
-
-    """
-    E, S = [], []
-    p = prod(M, start=K.one)
-
-    for m in M:
-        E.append(p // m)
-        S.append(K.gcdex(E[-1], m)[0] % m)
-
-    return p, E, S
-
-
-def gf_crt2(U, M, p, E, S, K):
-    """
-    Second part of the Chinese Remainder Theorem.
-
-    Examples
-    ========
-
-    >>> U = [49, 76, 65]
-    >>> M = [99, 97, 95]
-    >>> p = 912285
-    >>> E = [9215, 9405, 9603]
-    >>> S = [62, 24, 12]
-
-    >>> gf_crt2(U, M, p, E, S, ZZ)
-    639985
-
-    """
-    v = K.zero
-
-    for u, m, e, s in zip(U, M, E, S):
-        v += e*(u*s % m)
-
-    return v % p
 
 
 def gf_from_dict(f, p, K):
@@ -113,20 +27,6 @@ def gf_from_dict(f, p, K):
     f = dmp_normal(f, 0, K.finite_field(p))
 
     return dmp_convert(f, 0, K.finite_field(p), K)
-
-
-def gf_from_int_poly(f, p):
-    """
-    Create a ``GF(p)[x]`` polynomial from ``Z[x]``.
-
-    Examples
-    ========
-
-    >>> gf_from_int_poly([7, -2, 3], 5)
-    [2, 3, 3]
-
-    """
-    return dmp_strip([a % p for a in f], 0)
 
 
 def gf_neg(f, p, K):
@@ -361,34 +261,6 @@ def gf_sqr(f, p, K):
     return dmp_strip(h, 0)
 
 
-def gf_add_mul(f, g, h, p, K):
-    """
-    Returns ``f + g*h`` where ``f``, ``g``, ``h`` in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_add_mul([3, 2, 4], [2, 2, 2], [1, 4], 5, ZZ)
-    [2, 3, 2, 2]
-
-    """
-    return gf_add(f, gf_mul(g, h, p, K), p, K)
-
-
-def gf_sub_mul(f, g, h, p, K):
-    """
-    Compute ``f - g*h`` where ``f``, ``g``, ``h`` in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_sub_mul([3, 2, 4], [2, 2, 2], [1, 4], 5, ZZ)
-    [3, 3, 2, 1]
-
-    """
-    return gf_sub(f, gf_mul(g, h, p, K), p, K)
-
-
 def gf_div(f, g, p, K):
     """
     Division with remainder in ``GF(p)[x]``.
@@ -402,8 +274,6 @@ def gf_div(f, g, p, K):
 
     >>> gf_div([1, 0, 1, 1], [1, 1, 0], 2, ZZ)
     ([1, 1], [1])
-    >>> gf_add_mul(_[1], _[0], [1, 1, 0], 2, ZZ)
-    [1, 0, 1, 1]
 
     References
     ==========
@@ -659,85 +529,6 @@ def gf_gcd(f, g, p, K):
         f, g = g, gf_rem(f, g, p, K)
 
     return gf_monic(f, p, K)[1]
-
-
-def gf_lcm(f, g, p, K):
-    """
-    Compute polynomial LCM in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_lcm([3, 2, 4], [2, 2, 3], 5, ZZ)
-    [1, 2, 0, 4]
-
-    """
-    if not f or not g:
-        return []
-
-    h = gf_quo(gf_mul(f, g, p, K),
-               gf_gcd(f, g, p, K), p, K)
-
-    return gf_monic(h, p, K)[1]
-
-
-def gf_gcdex(f, g, p, K):
-    """
-    Extended Euclidean Algorithm in ``GF(p)[x]``.
-
-    Given polynomials ``f`` and ``g`` in ``GF(p)[x]``, computes polynomials
-    ``s``, ``t`` and ``h``, such that ``h = gcd(f, g)`` and ``s*f + t*g = h``.
-    The typical application of EEA is solving polynomial diophantine equations.
-
-    Examples
-    ========
-
-    >>> s, t, g = gf_gcdex([1, 8, 7], [1, 7, 1, 7], 11, ZZ)
-    >>> (s, t, g)
-    ([5, 6], [6], [1, 7])
-
-    >>> S = gf_mul(s, [1, 8, 7], 11, ZZ)
-    >>> T = gf_mul(t, [1, 7, 1, 7], 11, ZZ)
-    >>> gf_add(S, T, 11, ZZ)
-    [1, 7]
-
-    References
-    ==========
-
-    * :cite:`Gathen1999modern`
-
-    """
-    if not (f or g):
-        return [K.one], [], []
-
-    p0, r0 = gf_monic(f, p, K)
-    p1, r1 = gf_monic(g, p, K)
-
-    if not f:
-        return [], [K.invert(p1, p)], r1
-    if not g:
-        return [K.invert(p0, p)], [], r0
-
-    s0, s1 = [K.invert(p0, p)], []
-    t0, t1 = [], [K.invert(p1, p)]
-
-    while True:
-        Q, R = gf_div(r0, r1, p, K)
-
-        if not R:
-            break
-
-        (lc, r1), r0 = gf_monic(R, p, K), r1
-
-        inv = K.invert(lc, p)
-
-        s = gf_sub_mul(s0, s1, Q, p, K)
-        t = gf_sub_mul(t0, t1, Q, p, K)
-
-        s1, s0 = gf_mul_ground(s, inv, p, K), s1
-        t1, t0 = gf_mul_ground(t, inv, p, K), t1
-
-    return s1, t1, r1
 
 
 def gf_monic(f, p, K):

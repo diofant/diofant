@@ -8,7 +8,7 @@ from ..core.numbers import igcdex, mod_inverse
 from ..core.power import isqrt
 from ..utilities.iterables import cantor_product
 from .factor_ import factorint, multiplicity, totient, trailing
-from .modular import crt
+from .modular import crt, crt1, crt2
 from .primetest import isprime
 
 
@@ -273,7 +273,6 @@ def sqrt_mod_iter(a, p, domain=int):
     [21, 22]
 
     """
-    from ..polys.galoistools import gf_crt1, gf_crt2
     from ..domains import ZZ
     a, p = as_int(a), abs(as_int(p))
     if isprime(p):
@@ -304,14 +303,14 @@ def sqrt_mod_iter(a, p, domain=int):
                     return
             v.append(rx)
             pv.append(px**ex)
-        mm, e, s = gf_crt1(pv, ZZ)
+        mm, e, s = crt1(pv)
         if domain is ZZ:
             for vx in cantor_product(*v):
-                r = gf_crt2(vx, pv, mm, e, s, ZZ)
+                r = crt2(pv, vx, mm, e, s)[0]
                 yield r
         else:
             for vx in cantor_product(*v):
-                r = gf_crt2(vx, pv, mm, e, s, ZZ)
+                r = crt2(pv, vx, mm, e, s)[0]
                 yield domain(r)
 
 

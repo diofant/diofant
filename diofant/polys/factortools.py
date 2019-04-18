@@ -7,9 +7,9 @@ from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
 from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
                          dmp_l1_norm, dmp_max_norm, dmp_mul, dmp_mul_ground,
-                         dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_sub,
-                         dmp_sub_mul, dup_add, dup_lshift, dup_mul, dup_sqr,
-                         dup_sub)
+                         dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_rem,
+                         dmp_sub, dmp_sub_mul, dup_add, dup_lshift, dup_mul,
+                         dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
                          dmp_eject, dmp_exclude, dmp_from_dict, dmp_ground_LC,
                          dmp_ground_p, dmp_include, dmp_inject, dmp_LC,
@@ -20,9 +20,8 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dup_mirror)
-from .euclidtools import dmp_inner_gcd, dmp_primitive
-from .galoistools import (gf_add_mul, gf_div, gf_factor_sqf, gf_from_int_poly,
-                          gf_gcdex, gf_mul, gf_rem)
+from .euclidtools import dmp_inner_gcd, dmp_primitive, dup_gcdex
+from .galoistools import gf_factor_sqf
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
@@ -149,18 +148,21 @@ def dup_zz_hensel_lift(p, f, f_list, l, K):
     m = p
     k = r // 2
     d = math.ceil(math.log(l, 2))
+    Kp = K.finite_field(p)
 
-    g = gf_from_int_poly([lc], p)
+    g = dmp_normal([lc], 0, Kp)
 
     for f_i in f_list[:k]:
-        g = gf_mul(g, gf_from_int_poly(f_i, p), p, K)
+        g = dmp_mul(g, f_i, 0, Kp)
 
-    h = gf_from_int_poly(f_list[k], p)
+    h = dmp_normal(f_list[k], 0, Kp)
 
     for f_i in f_list[k + 1:]:
-        h = gf_mul(h, gf_from_int_poly(f_i, p), p, K)
+        h = dmp_mul(h, f_i, 0, Kp)
 
-    s, t, _ = gf_gcdex(g, h, p, K)
+    s, t, _ = dup_gcdex(g, h, Kp)
+
+    g, h, s, t = map(lambda x: dmp_normal(x, 0, K), (g, h, s, t))
 
     for _ in range(1, d + 1):
         (g, h, s, t), m = dup_zz_hensel_step(m, f, g, h, s, t, K), m**2
@@ -199,13 +201,14 @@ def dup_zz_zassenhaus(f, K):
             continue
 
         px = K.convert(px)
-        F = dmp_normal(f, 0, K.finite_field(px))
+        Kpx = K.finite_field(px)
 
-        if not dmp_sqf_p(F, 0, K.finite_field(px)):
+        F = dmp_normal(f, 0, Kpx)
+
+        if not dmp_sqf_p(F, 0, Kpx):
             continue
 
-        F = gf_from_int_poly(f, px)
-        fsqfx = gf_factor_sqf(F, px, K)[1]
+        fsqfx = gf_factor_sqf(f, px, K)[1]
         a.append((px, fsqfx))
         if len(fsqfx) < 15 or len(a) > 4:
             break
@@ -630,19 +633,19 @@ def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
 def dup_zz_diophantine(F, m, p, K):
     """Wang/EEZ: Solve univariate Diophantine equations."""
     if len(F) == 2:
-        a, b = F
+        Kp = K.finite_field(p)
+        f, g = map(lambda x: dmp_normal(x, 0, Kp), F)
 
-        f = gf_from_int_poly(a, p)
-        g = gf_from_int_poly(b, p)
+        s, t, _ = dup_gcdex(g, f, Kp)
 
-        s, t, G = gf_gcdex(g, f, p, K)
+        s = dup_lshift(s, m, Kp)
+        t = dup_lshift(t, m, Kp)
 
-        s = dup_lshift(s, m, K)
-        t = dup_lshift(t, m, K)
+        q, s = dmp_div(s, f, 0, Kp)
+        s = dmp_normal(s, 0, K)
 
-        q, s = gf_div(s, f, p, K)
-
-        t = gf_add_mul(t, q, g, p, K)
+        t = dmp_add_mul(t, q, g, 0, Kp)
+        t = dmp_normal(t, 0, K)
 
         result = [s, t]
     else:
@@ -659,12 +662,11 @@ def dup_zz_diophantine(F, m, p, K):
             S.append(s)
 
         result, S = [], S + [T[-1]]
+        Kp = K.finite_field(p)
 
         for s, f in zip(S, F):
-            s = gf_from_int_poly(s, p)
-            f = gf_from_int_poly(f, p)
-
-            s = gf_rem(dup_lshift(s, m, K), f, p, K)
+            s = dmp_rem(dup_lshift(s, m, K), f, 0, Kp)
+            s = dmp_normal(s, 0, K)
 
             result.append(s)
 

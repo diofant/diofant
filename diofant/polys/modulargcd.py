@@ -4,7 +4,8 @@ from ..core import Dummy
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, integer_rational_reconstruction
 from . import rings
-from .galoistools import gf_div, gf_from_dict, gf_gcd, gf_gcdex, gf_lcm
+from .densebasic import dmp_from_dict, dmp_normal
+from .euclidtools import dmp_gcd
 from .polyerrors import ModularGCDFailed
 
 
@@ -102,9 +103,13 @@ def _primitive(f, p):
             coeffs[monom[:-1]] = {}
         coeffs[monom[:-1]][monom[-1]] = coeff
 
+    domp = dom.finite_field(p)
     cont = []
     for coeff in coeffs.values():
-        cont = gf_gcd(cont, gf_from_dict(coeff, p, dom), p, dom)
+        coeff = dmp_from_dict(coeff, 0, dom)
+        coeff = dmp_normal(coeff, 0, domp)
+        cont = dmp_gcd(cont, coeff, 0, domp)
+    cont = dmp_normal(cont, 0, dom)
 
     yring = ring.clone(symbols=ring.symbols[k-1])
     contf = yring.from_dense(cont).trunc_ground(p)
@@ -654,8 +659,10 @@ def _gf_div(f, g, p):
 
     """
     ring = f.ring
-    densequo, denserem = gf_div(f.to_dense(), g.to_dense(), p, ring.domain)
-    return ring.from_dense(densequo), ring.from_dense(denserem)
+    dom = ring.domain
+    domp = dom.finite_field(p)
+    f, g = map(lambda x: x.set_domain(domp), (f, g))
+    return tuple(map(lambda x: x.set_domain(dom), divmod(f, g)))
 
 
 def _rational_function_reconstruction(c, p, m):
@@ -804,8 +811,10 @@ def _gf_gcdex(f, g, p):
 
     """
     ring = f.ring
-    s, t, h = gf_gcdex(f.to_dense(), g.to_dense(), p, ring.domain)
-    return ring.from_dense(s), ring.from_dense(t), ring.from_dense(h)
+    dom = ring.domain
+    domp = dom.finite_field(p)
+    f, g = map(lambda x: x.set_domain(domp), (f, g))
+    return tuple(map(lambda x: x.set_domain(dom), f.gcdex(g)))
 
 
 def _trunc(f, minpoly, p):
@@ -1121,18 +1130,28 @@ def _func_field_modgcd_p(f, g, minpoly, p):
             dom = qring.domain.field
             den = dom.ring.one
 
+            domp = dom.ring.domain.finite_field(p)
+            den = den.set_domain(domp)
+
             for coeff in h.values():
-                den = dom.ring.from_dense(gf_lcm(den.to_dense(), coeff.denom.to_dense(),
-                                                 p, dom.domain))
+                coeff = coeff.denom.set_domain(domp)
+                den = den.lcm(coeff)
+
+            den = den.set_ring(dom.ring)
 
         else:
             dom = qring.domain.domain.field
             den = dom.ring.one
 
+            domp = dom.ring.domain.finite_field(p)
+            den = den.set_domain(domp)
+
             for coeff in h.values():
                 for c in coeff.values():
-                    den = dom.ring.from_dense(gf_lcm(den.to_dense(), c.denom.to_dense(),
-                                                     p, dom.domain))
+                    c = c.denom.set_domain(domp)
+                    den = den.lcm(c)
+
+            den = den.set_ring(dom.ring)
 
         den = qring.domain_new(den.trunc_ground(p))
         h = ring((h*den).as_expr()).trunc_ground(p)
