@@ -16,12 +16,12 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dup_transform)
 from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
                           dmp_inner_subresultants, dmp_prem, dmp_primitive,
-                          dmp_prs_resultant, dmp_qq_collins_resultant,
-                          dmp_qq_heu_gcd, dmp_resultant, dmp_rr_prs_gcd,
-                          dmp_subresultants, dmp_zz_collins_resultant,
-                          dmp_zz_heu_gcd, dmp_zz_modular_resultant,
-                          dup_ff_prs_gcd, dup_gcdex, dup_half_gcdex,
-                          dup_inner_subresultants, dup_invert, dup_rr_prs_gcd)
+                          dmp_qq_collins_resultant, dmp_qq_heu_gcd,
+                          dmp_resultant, dmp_rr_prs_gcd, dmp_subresultants,
+                          dmp_zz_collins_resultant, dmp_zz_heu_gcd,
+                          dmp_zz_modular_resultant, dup_ff_prs_gcd, dup_gcdex,
+                          dup_half_gcdex, dup_inner_subresultants, dup_invert,
+                          dup_rr_prs_gcd)
 from .factortools import (dmp_factor_list, dmp_trial_division, dmp_zz_factor,
                           dmp_zz_mignotte_bound, dmp_zz_wang,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
@@ -257,12 +257,6 @@ class IPolys:
     def dmp_subresultants(self, f, g):
         prs = dmp_subresultants(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return list(map(self.from_dense, prs))
-
-    def dmp_prs_resultant(self, f, g):
-        res, prs = dmp_prs_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        if isinstance(res, list):
-            res = self.drop(0).from_dense(res)
-        return res, list(map(self.from_dense, prs))
 
     def dmp_zz_modular_resultant(self, f, g, p):
         res = dmp_zz_modular_resultant(self.to_dense(f), self.to_dense(g), self.domain_new(p), self.ngens-1, self.domain)

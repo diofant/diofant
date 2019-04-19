@@ -381,7 +381,7 @@ def dmp_prs_resultant(f, g, u, K):
     >>> a = 3*x*y**4 + y**3 - 27*y + 4
     >>> b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
 
-    >>> res, prs = R.dmp_prs_resultant(f, g)
+    >>> res, prs = R.dmp_resultant(f, g, includePRS=True)
 
     >>> res == b             # resultant has n-1 variables
     False

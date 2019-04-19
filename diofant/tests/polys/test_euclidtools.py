@@ -198,14 +198,14 @@ def test_dmp_subresultants():
     R, x, y = ring("x,y", ZZ)
 
     assert R(0).resultant(R(0)) == 0
-    assert R.dmp_prs_resultant(0, 0)[0] == 0
+    assert R(0).resultant(R(0), includePRS=True)[0] == 0
     assert R.dmp_zz_collins_resultant(0, 0) == 0
     assert R.dmp_qq_collins_resultant(0, 0) == 0
 
     assert R(1).resultant(R(0)) == 0
 
     assert R(0).resultant(R(1)) == 0
-    assert R.dmp_prs_resultant(0, 1)[0] == 0
+    assert R(0).resultant(R(1), includePRS=True)[0] == 0
     assert R.dmp_zz_collins_resultant(0, 1) == 0
     assert R.dmp_qq_collins_resultant(0, 1) == 0
 
@@ -219,16 +219,13 @@ def test_dmp_subresultants():
     b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
 
     r = R.dmp_LC(b)
-    Y = R.drop(x).y
-    rr = (-3*Y**10 - 12*Y**7 + Y**6 - 54*Y**4 + 8*Y**3 + 729*Y**2 - 216*Y + 16,
-          [3*x**2*y - y**3 - 4, x**2 + x*y**3 - 9, 3*x*y**4 + y**3 - 27*y + 4,
-           -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16])
+    rr = (r, [3*x**2*y - y**3 - 4, x**2 + x*y**3 - 9, 3*x*y**4 + y**3 - 27*y + 4,
+              -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16])
 
     assert R.dmp_subresultants(f, g) == [f, g, a, b]
 
     assert f.resultant(g) == r
     assert f.resultant(g, includePRS=True) == rr
-    assert R.dmp_prs_resultant(f, g)[0] == r
     assert R.dmp_zz_collins_resultant(f, g) == r
     assert R.dmp_qq_collins_resultant(f, g) == r
 
@@ -242,7 +239,7 @@ def test_dmp_subresultants():
 
     assert R.dmp_subresultants(f, g) == [f, g, a]
     assert f.resultant(g) == r
-    assert R.dmp_prs_resultant(f, g)[0] == r
+    assert f.resultant(g, includePRS=True)[0] == r
     assert R.dmp_zz_collins_resultant(f, g) == r
     assert R.dmp_qq_collins_resultant(f, g) == r
 
@@ -277,7 +274,7 @@ def test_dmp_subresultants():
 
     assert f.resultant(g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
 
-    assert Rx.dmp_prs_resultant(x - 1, x + 1) == (2, [x - 1, x + 1, 2])
+    assert (x - 1).resultant(x + 1, includePRS=True) == (2, [x - 1, x + 1, 2])
 
     R, x, y = ring("x,y", ZZ)
 
