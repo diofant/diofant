@@ -6,7 +6,6 @@ import random
 
 from ..core import oo
 from .monomials import monomial_div, monomial_gcd
-from .orderings import monomial_key
 
 
 def dmp_LC(f, K):
@@ -158,56 +157,6 @@ def dmp_strip(f, u):
     return dmp_zero(u)
 
 
-def dmp_validate(f, K=None):
-    """
-    Return the number of levels in ``f`` and recursively strip it.
-
-    Examples
-    ========
-
-    >>> dmp_validate([[], [ZZ(0), ZZ(1), ZZ(2)], [ZZ(1)]])
-    ([[1, 2], [1]], 1)
-
-    >>> dmp_validate([[ZZ(1)], ZZ(1)])
-    Traceback (most recent call last):
-    ...
-    ValueError: invalid data structure for a multivariate polynomial
-
-    """
-    def validate(f, g, i, K):
-        if type(g) is not list:
-            if K is not None and not isinstance(g, K.dtype):
-                raise TypeError("%s in %s in not of type %s" % (g, f, K.dtype))
-
-            return {i - 1}
-        elif not g:
-            return {i}
-        else:
-            levels = set()
-
-            for c in g:
-                levels |= validate(f, c, i + 1, K)
-
-            return levels
-
-    levels = validate(f, f, 0, K)
-
-    u = levels.pop()
-
-    def strip(g, v):
-        if not v:
-            return dmp_strip(g, 0)
-
-        w = v - 1
-
-        return dmp_strip([strip(c, w) for c in g], v)
-
-    if not levels:
-        return strip(f, u), u
-    else:
-        raise ValueError("invalid data structure for a multivariate polynomial")
-
-
 def dup_reverse(f):
     """
     Compute ``x**n * f(1/x)``, i.e.: reverse ``f`` in ``K[x]``.
@@ -220,24 +169,6 @@ def dup_reverse(f):
 
     """
     return dmp_strip(list(reversed(f)), 0)
-
-
-def dmp_copy(f, u):
-    """
-    Create a new copy of a polynomial ``f`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> dmp_copy([[ZZ(1)], [ZZ(1), ZZ(2)]], 1)
-    [[1], [1, 2]]
-
-    """
-    if not u:
-        return list(f)
-
-    v = u - 1
-    return [dmp_copy(c, v) for c in f]
 
 
 def dmp_to_tuple(f, u):
@@ -254,11 +185,6 @@ def dmp_to_tuple(f, u):
 
     >>> dmp_to_tuple([[ZZ(1)], [ZZ(1), ZZ(2)]], 1)
     ((1,), (1, 2))
-
-    See Also
-    ========
-
-    dmp_copy
 
     """
     if not u:
@@ -313,33 +239,6 @@ def dmp_convert(f, u, K0, K1):
         r = [dmp_convert(c, v, K0, K1) for c in f]
 
     return dmp_strip(r, u)
-
-
-def dmp_ground_nth(f, N, u, K):
-    """
-    Return the ground ``n``-th coefficient of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> dmp_ground_nth([[ZZ(1)], [ZZ(2), ZZ(3)]], (0, 1), 1, ZZ)
-    2
-
-    """
-    v = u
-
-    for n in N:
-        if n < 0:
-            raise IndexError("`n` must be non-negative, got %i" % n)
-        elif n >= len(f):
-            return K.zero
-        else:
-            d = dmp_degree_in(f, 0, v)
-            if d == -oo:
-                d = -1
-            f, v = f[d - n], v - 1
-
-    return f
 
 
 def dmp_zero_p(f, u):
@@ -992,47 +891,6 @@ def dmp_terms_gcd(f, u, K):
         f[monomial_div(monom, G)] = coeff
 
     return G, dmp_from_dict(f, u, K)
-
-
-def dmp_list_terms(f, u, K, order=None):
-    """
-    List all non-zero terms from ``f`` in the given order ``order``.
-
-    Examples
-    ========
-
-    >>> dmp_list_terms([[ZZ(1), ZZ(1)], [ZZ(2), ZZ(3)]], 1, ZZ)
-    [((1, 1), 1), ((1, 0), 1), ((0, 1), 2), ((0, 0), 3)]
-    >>> dmp_list_terms([[ZZ(1), ZZ(1)], [ZZ(2), ZZ(3)]], 1, ZZ, order='grevlex')
-    [((1, 1), 1), ((1, 0), 1), ((0, 1), 2), ((0, 0), 3)]
-
-    """
-    def sort(terms, O):
-        return sorted(terms, key=lambda term: O(term[0]), reverse=True)
-
-    def list_terms(g, v, monom):
-        d, terms = dmp_degree_in(g, 0, v), []
-
-        if not v:
-            for i, c in enumerate(g):
-                if not c:
-                    continue
-
-                terms.append((monom + (d - i,), c))
-        else:
-            w = v - 1
-
-            for i, c in enumerate(g):
-                terms.extend(list_terms(c, w, monom + (d - i,)))
-
-        return terms
-
-    terms = list_terms(f, u, ())
-
-    if order is None:
-        return terms
-    else:
-        return sort(terms, monomial_key(order))
 
 
 def dmp_apply_pairs(f, g, h, args, u, K):

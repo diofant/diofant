@@ -195,8 +195,6 @@ It is an example of *general polynomial remainder sequences* where
 the computed remainders are modified by constant multipliers (or divisors)
 in order to simplify the results.
 
-.. autofunction:: dup_primitive_prs
-
 Subresultant sequence
 ---------------------
 

@@ -48,54 +48,6 @@ def test_dmp_add_term():
     assert R.dmp_add_term(f, 0, 3) == f
 
 
-def test_dmp_sub_term():
-    R, x = ring('x', ZZ)
-
-    f = 0
-
-    assert R.dmp_sub_term(f, 0, 0) == 0
-
-    assert R.dmp_sub_term(f, 1, 0) == -1
-    assert R.dmp_sub_term(f, 1, 1) == -x
-    assert R.dmp_sub_term(f, 1, 2) == -x**2
-
-    f = x**2 + x + 1
-
-    assert R.dmp_sub_term(f, 2, 0) == x**2 + x - 1
-    assert R.dmp_sub_term(f, 2, 1) == x**2 - x + 1
-    assert R.dmp_sub_term(f, 2, 2) == -x**2 + x + 1
-
-    assert R.dmp_sub_term(f, 1, 3) == -x**3 + x**2 + x + 1
-    assert R.dmp_sub_term(f, 1, 4) == -x**4 + x**2 + x + 1
-    assert R.dmp_sub_term(f, 1, 5) == -x**5 + x**2 + x + 1
-    assert R.dmp_sub_term(f, 1, 6) == -x**6 + x**2 + x + 1
-
-    assert R.dmp_sub_term(f, 1, 2) == x + 1
-
-    assert R.dmp_sub_term(2*x**4 + x**2 - 1, ZZ(2), 4) == x**2 - 1
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    f = f_polys()[0]
-
-    assert R.dmp_sub_term(f, 0, 3) == f
-
-    R, x, y, z = ring('x y z', QQ)
-
-    f = f.set_ring(R)/7
-
-    assert R.dmp_sub_term(f, 0, 3) == f
-
-    R, x, y = ring('x y', ZZ)
-
-    f = 2*x**2 + x*y + 1
-
-    assert R.dmp_sub_term(f, 2, 3) == -2*x**3 + 2*x**2 + x*y + 1
-    assert R.dmp_sub_term(f, 2, 1) == 2*x**2 + x*y - 2*x + 1
-
-    assert R.dmp_sub_term(f, 2, 2) == x*y + 1
-
-
 def test_dmp_mul_term():
     R, x = ring('x', ZZ)
 
@@ -923,23 +875,11 @@ def test_dmp_div():
     assert R.dmp_quo(f, g) == q
     assert R.dmp_rem(f, g) == r
 
-    pytest.raises(ExactQuotientFailed, lambda: R.dmp_exquo(f, g))
-
     f, g, q, r = 5*x**5 + 4*x**4 + 3*x**3 + 2*x**2 + x, x**4 + 2*x**3 + 9, 5*x - 6, 15*x**3 + 2*x**2 - 44*x + 54
 
     assert R.dmp_div(f, g) == (q, r)
     assert R.dmp_quo(f, g) == q
     assert R.dmp_rem(f, g) == r
-
-    pytest.raises(ExactQuotientFailed, lambda: R.dmp_exquo(f, g))
-
-    f, g, e = x**2 - 1, x - 1, x + 1
-
-    assert R.dmp_exquo(f, g) == e
-
-    f, g = x**2 + 1, 2*x - 4
-
-    pytest.raises(ExactQuotientFailed, lambda: R.dmp_exquo(f, g))
 
     R, x = ring('x', QQ)
 
@@ -956,8 +896,6 @@ def test_dmp_div():
     assert R.dmp_div(f, g) == (q, r)
     assert R.dmp_quo(f, g) == q
     assert R.dmp_rem(f, g) == r
-
-    pytest.raises(ExactQuotientFailed, lambda: R.dmp_exquo(f, g))
 
 
 def test_dmp_max_norm():

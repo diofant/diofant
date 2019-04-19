@@ -2,7 +2,7 @@
 
 from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_exquo_ground,
                          dmp_mul, dmp_mul_ground, dmp_neg, dmp_quo_ground,
-                         dmp_rem, dmp_sub, dup_add, dup_mul)
+                         dmp_sub, dup_add, dup_mul)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p, dmp_zeros)
@@ -267,25 +267,6 @@ def dup_trunc(f, p, K):
     return dmp_strip(g, 0)
 
 
-def dmp_trunc(f, p, u, K):
-    """
-    Reduce a ``K[X]`` polynomial modulo a polynomial ``p`` in ``K[Y]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
-    >>> g = (y - 1).drop(x)
-
-    >>> R.dmp_trunc(f, g)
-    11*x**2 + 11*x + 5
-
-    """
-    return dmp_strip([dmp_rem(c, p, u - 1, K) for c in f], u)
-
-
 def dmp_ground_trunc(f, p, u, K):
     """
     Reduce a ``K[X]`` polynomial modulo a constant ``p`` in ``K``.
@@ -413,31 +394,6 @@ def dmp_ground_primitive(f, u, K):
         f = dmp_quo_ground(f, cont, u, K)
 
     return cont, f
-
-
-def dmp_ground_extract(f, g, u, K):
-    """
-    Extract common content from a pair of polynomials in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> R.dmp_ground_extract(6*x*y + 12*x + 18, 4*x*y + 8*x + 12)
-    (2, 3*x*y + 6*x + 9, 2*x*y + 4*x + 6)
-
-    """
-    fc = dmp_ground_content(f, u, K)
-    gc = dmp_ground_content(g, u, K)
-
-    gcd = K.gcd(fc, gc)
-
-    if gcd != K.one:
-        f = dmp_quo_ground(f, gcd, u, K)
-        g = dmp_quo_ground(g, gcd, u, K)
-
-    return gcd, f, g
 
 
 def dup_real_imag(f, K):

@@ -121,36 +121,6 @@ def test_dmp_prem():
     assert f.prem(g) == r
 
 
-def test_dup_euclidean_prs():
-    R, x = ring("x", QQ)
-
-    f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
-    g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
-
-    assert R.dup_euclidean_prs(f, g) == [
-        f,
-        g,
-        -5*x**4/9 + x**2/9 - QQ(1, 3),
-        -117*x**2/25 - 9*x + QQ(441, 25),
-        233150*x/19773 - QQ(102500, 6591),
-        -QQ(1288744821, 543589225)]
-
-
-def test_dup_primitive_prs():
-    R, x = ring("x", ZZ)
-
-    f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
-    g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
-
-    assert R.dup_primitive_prs(f, g) == [
-        f,
-        g,
-        5*x**4 - x**2 + 3,
-        13*x**2 + 25*x - 49,
-        4663*x - 6150,
-        1]
-
-
 def test_dmp_subresultants():
     R, x = ring("x", ZZ)
 

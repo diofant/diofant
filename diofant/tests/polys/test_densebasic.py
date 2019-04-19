@@ -5,19 +5,18 @@ import random
 import pytest
 
 from diofant import oo
-from diofant.domains import FF, QQ, ZZ
-from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert, dmp_copy,
+from diofant.domains import FF, ZZ
+from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert,
                                       dmp_deflate, dmp_degree_in, dmp_eject,
                                       dmp_exclude, dmp_from_dict, dmp_ground,
-                                      dmp_ground_nth, dmp_ground_p,
-                                      dmp_include, dmp_inflate, dmp_inject,
-                                      dmp_list_terms, dmp_multi_deflate,
-                                      dmp_nest, dmp_normal, dmp_one, dmp_one_p,
+                                      dmp_ground_p, dmp_include, dmp_inflate,
+                                      dmp_inject, dmp_multi_deflate, dmp_nest,
+                                      dmp_normal, dmp_one, dmp_one_p,
                                       dmp_permute, dmp_raise, dmp_strip,
                                       dmp_swap, dmp_terms_gcd, dmp_to_dict,
-                                      dmp_validate, dmp_zero, dmp_zero_p,
-                                      dmp_zeros, dup_from_dict, dup_inflate,
-                                      dup_random, dup_reverse)
+                                      dmp_zero, dmp_zero_p, dmp_zeros,
+                                      dup_from_dict, dup_inflate, dup_random,
+                                      dup_reverse)
 from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
@@ -188,47 +187,9 @@ def test_dmp_strip():
     assert dmp_strip([[[]], [[1]], [[]]], 2) == [[[1]], [[]]]
 
 
-def test_dmp_validate():
-    assert dmp_validate([]) == ([], 0)
-    assert dmp_validate([0, 0, 0, 1, 0]) == ([1, 0], 0)
-
-    assert dmp_validate([[[]]]) == ([[[]]], 2)
-    assert dmp_validate([[0], [], [0], [1], [0]]) == ([[1], []], 1)
-
-    pytest.raises(ValueError, lambda: dmp_validate([[0], 0, [0], [1], [0]]))
-    pytest.raises(TypeError, lambda: dmp_validate([[], [0, QQ(1, 2)],
-                                                   [1]], ZZ))
-
-
 def test_dup_reverse():
     assert dup_reverse([1, 2, 0, 3]) == [3, 0, 2, 1]
     assert dup_reverse([1, 2, 3, 0]) == [3, 2, 1]
-
-
-def test_dmp_copy():
-    f = [ZZ(1), ZZ(2), ZZ(3), ZZ(0)]
-    g = dmp_copy(f, 0)
-    assert f is not g
-    assert f == g
-
-    g[0], g[2] = ZZ(7), ZZ(0)
-    assert f != g
-
-    f = [ZZ(1), ZZ(0), ZZ(2)]
-    g = dmp_copy(f, 0)
-    assert f is not g
-    assert f == g
-
-    g[0], g[2] = ZZ(7), ZZ(0)
-    assert f != g
-
-    f = [[ZZ(1)], [ZZ(2), ZZ(0)]]
-    g = dmp_copy(f, 1)
-    assert f is not g
-    assert f == g
-
-    g[0][0], g[1][1] = ZZ(7), ZZ(1)
-    assert f != g
 
 
 def test_dmp_normal():
@@ -259,18 +220,6 @@ def test_dmp_convert():
     f = [[K0(1)], [K0(2)], [], [K0(3)]]
 
     assert dmp_convert(f, 1, K0, K1) == [[ZZ(1)], [ZZ(2)], [], [ZZ(3)]]
-
-
-def test_dmp_ground_nth():
-    assert dmp_ground_nth([[]], (0, 0), 1, ZZ) == 0
-    assert dmp_ground_nth([[1], [2], [3]], (0, 0), 1, ZZ) == 3
-    assert dmp_ground_nth([[1], [2], [3]], (1, 0), 1, ZZ) == 2
-    assert dmp_ground_nth([[1], [2], [3]], (2, 0), 1, ZZ) == 1
-
-    assert dmp_ground_nth([[1], [2], [3]], (2, 1), 1, ZZ) == 0
-    assert dmp_ground_nth([[1], [2], [3]], (3, 0), 1, ZZ) == 0
-
-    pytest.raises(IndexError, lambda: dmp_ground_nth([[3], [4], [5]], (2, -1), 1, ZZ))
 
 
 def test_dmp_zero_p():
@@ -602,29 +551,6 @@ def test_dmp_terms_gcd():
 
     assert dmp_terms_gcd([[1, 0], [], [1]], 1, ZZ) == ((0, 0), [[1, 0], [], [1]])
     assert dmp_terms_gcd([[1, 0], [1, 0, 0], [], []], 1, ZZ) == ((2, 1), [[1], [1, 0]])
-
-
-def test_dmp_list_terms():
-    assert dmp_list_terms([[[]]], 2, ZZ) == []
-    assert dmp_list_terms([[[1]]], 2, ZZ) == [((0, 0, 0), 1)]
-
-    assert dmp_list_terms([1, 2, 4, 3, 5], 0, ZZ) == \
-        [((4,), 1), ((3,), 2), ((2,), 4), ((1,), 3), ((0,), 5)]
-
-    assert dmp_list_terms([[1], [2, 4], [3, 5, 0]], 1, ZZ) == \
-        [((2, 0), 1), ((1, 1), 2), ((1, 0), 4), ((0, 2), 3), ((0, 1), 5)]
-
-    f = [[2, 0, 0, 0], [1, 0, 0], []]
-
-    assert dmp_list_terms(f, 1, ZZ, order='lex') == [((2, 3), 2), ((1, 2), 1)]
-    assert dmp_list_terms(
-        f, 1, ZZ, order='grlex') == [((2, 3), 2), ((1, 2), 1)]
-
-    f = [[2, 0, 0, 0], [1, 0, 0, 0, 0, 0], []]
-
-    assert dmp_list_terms(f, 1, ZZ, order='lex') == [((2, 3), 2), ((1, 5), 1)]
-    assert dmp_list_terms(
-        f, 1, ZZ, order='grlex') == [((1, 5), 1), ((2, 3), 2)]
 
 
 def test_dmp_apply_pairs():

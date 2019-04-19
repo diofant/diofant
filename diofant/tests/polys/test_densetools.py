@@ -313,19 +313,6 @@ def test_dmp_diff_eval_in():
     pytest.raises(IndexError, lambda: R.dmp_diff_eval_in(f, 2, 7, 4))
 
 
-def test_dmp_trunc():
-    R, x, y = ring('x y', ZZ)
-    R0 = R.drop(x)
-
-    assert R.dmp_trunc(x**2*y + 2*x**2 + x*y**2 +
-                       4*x*y + x + 1, R0.y + 2) == 1 - 3*x
-
-    R, x, y, z = ring('x y z', ZZ)
-    R0 = R.drop(x)
-
-    assert R.dmp_trunc(0, R0.y + 2) == 0
-
-
 def test_dmp_ground_trunc():
     R, x = ring('x', ZZ)
 
@@ -523,37 +510,6 @@ def test_dmp_ground_primitive():
 
     assert R.dmp_ground_primitive(2*x/3 + QQ(4, 9)) == (QQ(2, 9), 3*x + 2)
     assert R.dmp_ground_primitive(2*x/3 + QQ(4, 5)) == (QQ(2, 15), 5*x + 6)
-
-
-def test_dmp_ground_extract():
-    R, x = ring('x', ZZ)
-
-    f = 2930944*x**6 + 2198208*x**4 + 549552*x**2 + 45796
-    g = 17585664*x**5 + 8792832*x**3 + 1099104*x
-
-    F = 64*x**6 + 48*x**4 + 12*x**2 + 1
-    G = 384*x**5 + 192*x**3 + 24*x
-
-    assert R.dmp_ground_extract(f, g) == (45796, F, G)
-
-    f, g = 6*x**2 + 12*x + 18, 4*x**2 + 8*x + 12
-    F, G = 3*x**2 + 6*x + 9, 2*x**2 + 4*x + 6
-
-    assert R.dmp_ground_extract(f, g) == (2, F, G)
-
-    f, g = x + 2, 3*x + 4
-
-    assert R.dmp_ground_extract(f, g) == (1, f, g)
-
-    R, x, y = ring('x y', ZZ)
-
-    f = 2930944*x**6 + 2198208*x**4 + 549552*x**2 + 45796
-    g = 17585664*x**5 + 8792832*x**3 + 1099104*x
-
-    F = 64*x**6 + 48*x**4 + 12*x**2 + 1
-    G = 384*x**5 + 192*x**3 + 24*x
-
-    assert R.dmp_ground_extract(f, g) == (45796, F, G)
 
 
 def test_dup_real_imag():
