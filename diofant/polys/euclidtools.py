@@ -359,7 +359,7 @@ def dmp_subresultants(f, g, u, K):
     >>> a = 3*x*y**4 + y**3 - 27*y + 4
     >>> b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
 
-    >>> R.dmp_subresultants(f, g) == [f, g, a, b]
+    >>> f.subresultants(g) == [f, g, a, b]
     True
 
     """

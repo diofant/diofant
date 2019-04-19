@@ -2120,7 +2120,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             raise MultivariatePolynomialError("extended Euclidean algorithm")
 
     def subresultants(self, other):
-        return self.ring.dmp_subresultants(self, other)
+        return self.ring.dmp_inner_subresultants(self, other)[0]
 
     def resultant(self, other, includePRS=False):
         return self.ring.dmp_resultant(self, other, includePRS=includePRS)

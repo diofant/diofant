@@ -121,7 +121,7 @@ def test_dmp_prem():
     assert f.prem(g) == r
 
 
-def test_dmp_subresultants():
+def test_PolyElement_subresultants():
     R, x = ring("x", ZZ)
 
     assert R(0).resultant(R(0)) == 0
@@ -137,7 +137,7 @@ def test_dmp_subresultants():
     c = 9326*x - 12300
     d = 260708
 
-    assert R.dmp_subresultants(f, g) == [f, g, a, b, c, d]
+    assert f.subresultants(g) == [f, g, a, b, c, d]
     assert f.resultant(g) == R.dmp_LC(d)
 
     f = x**2 - 2*x + 1
@@ -145,7 +145,7 @@ def test_dmp_subresultants():
 
     a = 2*x - 2
 
-    assert R.dmp_subresultants(f, g) == [f, g, a]
+    assert f.subresultants(g) == [f, g, a]
     assert f.resultant(g) == 0
 
     f = x**2 + 1
@@ -153,7 +153,7 @@ def test_dmp_subresultants():
 
     a = -2
 
-    assert R.dmp_subresultants(f, g) == [f, g, a]
+    assert f.subresultants(g) == [f, g, a]
     assert f.resultant(g) == 4
     assert f.resultant(g, includePRS=True) == (4, [x**2 + 1, x**2 - 1, -2])
 
@@ -222,7 +222,7 @@ def test_dmp_subresultants():
     rr = (r, [3*x**2*y - y**3 - 4, x**2 + x*y**3 - 9, 3*x*y**4 + y**3 - 27*y + 4,
               -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16])
 
-    assert R.dmp_subresultants(f, g) == [f, g, a, b]
+    assert f.subresultants(g) == [f, g, a, b]
 
     assert f.resultant(g) == r
     assert f.resultant(g, includePRS=True) == rr
@@ -237,7 +237,7 @@ def test_dmp_subresultants():
 
     r = R.dmp_LC(b)
 
-    assert R.dmp_subresultants(f, g) == [f, g, a]
+    assert f.subresultants(g) == [f, g, a]
     assert f.resultant(g) == r
     assert f.resultant(g, includePRS=True)[0] == r
     assert R.dmp_zz_collins_resultant(f, g) == r
