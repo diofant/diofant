@@ -463,20 +463,20 @@ class IPolys:
     def dup_root_upper_bound(self, f):
         return dup_root_upper_bound(self.to_dense(f), self.domain)
 
-    def dup_refine_real_root(self, f, s, t, eps=None, steps=None, disjoint=None, fast=False):
-        return dup_refine_real_root(self.to_dense(f), s, t, self.domain, eps=eps, steps=steps, disjoint=disjoint, fast=fast)
+    def dup_refine_real_root(self, f, s, t, eps=None, steps=None, disjoint=None):
+        return dup_refine_real_root(self.to_dense(f), s, t, self.domain, eps=eps, steps=steps, disjoint=disjoint)
 
-    def dup_isolate_real_roots_sqf(self, f, eps=None, inf=None, sup=None, fast=False, blackbox=False):
-        return dup_isolate_real_roots_sqf(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup, fast=fast, blackbox=blackbox)
+    def dup_isolate_real_roots_sqf(self, f, eps=None, inf=None, sup=None, blackbox=False):
+        return dup_isolate_real_roots_sqf(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup, blackbox=blackbox)
 
-    def dup_isolate_real_roots(self, f, eps=None, inf=None, sup=None, fast=False):
-        return dup_isolate_real_roots(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup, fast=fast)
+    def dup_isolate_real_roots(self, f, eps=None, inf=None, sup=None):
+        return dup_isolate_real_roots(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup)
 
-    def dup_isolate_imaginary_roots(self, f, eps=None, inf=None, sup=None, fast=False):
-        return dup_isolate_imaginary_roots(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup, fast=fast)
+    def dup_isolate_imaginary_roots(self, f, eps=None, inf=None, sup=None):
+        return dup_isolate_imaginary_roots(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup)
 
-    def dup_isolate_real_roots_list(self, polys, eps=None, inf=None, sup=None, strict=False, basis=False, fast=False):
-        return dup_isolate_real_roots_list(list(map(self.to_dense, polys)), self.domain, eps=eps, inf=inf, sup=sup, strict=strict, basis=basis, fast=fast)
+    def dup_isolate_real_roots_list(self, polys, eps=None, inf=None, sup=None, strict=False, basis=False):
+        return dup_isolate_real_roots_list(list(map(self.to_dense, polys)), self.domain, eps=eps, inf=inf, sup=sup, strict=strict, basis=basis)
 
     def dup_count_real_roots(self, f, inf=None, sup=None):
         return dup_count_real_roots(self.to_dense(f), self.domain, inf=inf, sup=sup)
@@ -487,11 +487,11 @@ class IPolys:
     def dup_isolate_complex_roots_sqf(self, f, eps=None, inf=None, sup=None, blackbox=False):
         return dup_isolate_complex_roots_sqf(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup, blackbox=blackbox)
 
-    def dup_isolate_all_roots_sqf(self, f, eps=None, inf=None, sup=None, fast=False, blackbox=False):
-        return dup_isolate_all_roots_sqf(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup, fast=fast, blackbox=blackbox)
+    def dup_isolate_all_roots_sqf(self, f, eps=None, inf=None, sup=None, blackbox=False):
+        return dup_isolate_all_roots_sqf(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup, blackbox=blackbox)
 
-    def dup_isolate_all_roots(self, f, eps=None, inf=None, sup=None, fast=False):
-        return dup_isolate_all_roots(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup, fast=fast)
+    def dup_isolate_all_roots(self, f, eps=None, inf=None, sup=None):
+        return dup_isolate_all_roots(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup)
 
     def fateman_poly_F_1(self):
         from .specialpolys import dmp_fateman_poly_F_1

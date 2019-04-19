@@ -1977,7 +1977,7 @@ class Poly(Expr):
         return (self.domain.to_expr(coeff),
                 [(self.per(g), k) for g, k in factors])
 
-    def intervals(self, all=False, eps=None, inf=None, sup=None, fast=False, sqf=False):
+    def intervals(self, all=False, eps=None, inf=None, sup=None, sqf=False):
         """
         Compute isolating intervals for roots of ``self``.
 
@@ -2015,19 +2015,18 @@ class Poly(Expr):
             if not all:
                 if not sqf:
                     result = R.dup_isolate_real_roots(self.rep, eps=eps,
-                                                      inf=inf, sup=sup, fast=fast)
+                                                      inf=inf, sup=sup)
                 else:
                     result = R.dup_isolate_real_roots_sqf(self.rep,
                                                           eps=eps, inf=inf,
-                                                          sup=sup, fast=fast)
+                                                          sup=sup)
             else:
                 if not sqf:
                     result = R.dup_isolate_all_roots(self.rep, eps=eps,
-                                                     inf=inf, sup=sup, fast=fast)
+                                                     inf=inf, sup=sup)
                 else:
                     result = R.dup_isolate_all_roots_sqf(self.rep,
-                                                         eps=eps, inf=inf, sup=sup,
-                                                         fast=fast)
+                                                         eps=eps, inf=inf, sup=sup)
         else:
             raise MultivariatePolynomialError("can't isolate roots of a multivariate polynomial")
 
@@ -2064,7 +2063,7 @@ class Poly(Expr):
 
             return list(map(_real, real_part)), list(map(_complex, complex_part))
 
-    def refine_root(self, s, t, eps=None, steps=None, fast=False, check_sqf=False):
+    def refine_root(self, s, t, eps=None, steps=None, check_sqf=False):
         """
         Refine an isolating interval of a root to the given precision.
 
@@ -2091,7 +2090,7 @@ class Poly(Expr):
         elif eps is None:
             steps = 1
 
-        S, T = self.rep.ring.dup_refine_real_root(self.rep, s, t, eps=eps, steps=steps, fast=fast)
+        S, T = self.rep.ring.dup_refine_real_root(self.rep, s, t, eps=eps, steps=steps)
         return QQ.to_expr(S), QQ.to_expr(T)
 
     def count_roots(self, inf=None, sup=None):
@@ -4476,7 +4475,7 @@ def factor(f, *gens, **args):
             raise PolynomialError(msg)
 
 
-def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, fast=False, sqf=False):
+def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, sqf=False):
     """
     Compute isolating intervals for roots of ``f``.
 
@@ -4495,7 +4494,7 @@ def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, fast=Fal
         except GeneratorsNeeded:
             return []
 
-        return F.intervals(all=all, eps=eps, inf=inf, sup=sup, fast=fast, sqf=sqf)
+        return F.intervals(all=all, eps=eps, inf=inf, sup=sup, sqf=sqf)
     else:
         polys, opt = parallel_poly_from_expr(F, domain='QQ')
 
@@ -4517,7 +4516,7 @@ def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, fast=Fal
             sup = opt.domain.convert(sup)
 
         intervals = R.dup_isolate_real_roots_list(polys, eps=eps, inf=inf, sup=sup,
-                                                  strict=strict, fast=fast)
+                                                  strict=strict)
 
         result = []
 
@@ -4528,7 +4527,7 @@ def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, fast=Fal
         return result
 
 
-def refine_root(f, s, t, eps=None, steps=None, fast=False, check_sqf=False):
+def refine_root(f, s, t, eps=None, steps=None, check_sqf=False):
     """
     Refine an isolating interval of a root to the given precision.
 
@@ -4545,7 +4544,7 @@ def refine_root(f, s, t, eps=None, steps=None, fast=False, check_sqf=False):
         raise PolynomialError(
             "can't refine a root of %s, not a polynomial" % f)
 
-    return F.refine_root(s, t, eps=eps, steps=steps, fast=fast, check_sqf=check_sqf)
+    return F.refine_root(s, t, eps=eps, steps=steps, check_sqf=check_sqf)
 
 
 def count_roots(f, inf=None, sup=None):
