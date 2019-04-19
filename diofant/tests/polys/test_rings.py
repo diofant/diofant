@@ -1367,8 +1367,8 @@ def test_PolyElement_integrate():
 
     assert f.integrate(x=x) == x**2*y/2 + x
     assert f.integrate(x=y) == x*y**2/2 + y
-    assert f.integrate(2, x) == x**3*y/6 + x**2/2
-    assert f.integrate(2, y) == x*y**3/6 + y**2/2
+    assert f.integrate(x=x, m=2) == x**3*y/6 + x**2/2
+    assert f.integrate(x=y, m=2) == x*y**3/6 + y**2/2
 
     assert f.integrate(x=x).integrate(x=y) == x**2*y**2/4 + x*y
     assert f.integrate(x=y).integrate(x=x) == x**2*y**2/4 + x*y

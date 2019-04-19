@@ -1953,6 +1953,21 @@ class PolyElement(DomainElement, CantSympify, dict):
         g._strip_zero()
         return g
 
+    def integrate(self, x=0, m=1):
+        """Computes indefinite integral in ``x``."""
+        ring = self.ring
+        i = ring.index(x)
+        x = ring.monomial_basis(i)
+        x = monomial_pow(x, m)
+        g = ring.zero
+        for expv, coeff in self.items():
+            e = monomial_mul(expv, x)
+            for j in range(expv[i] + m, expv[i], -1):
+                coeff /= j
+            g[e] = coeff
+        g._strip_zero()
+        return g
+
     def __call__(self, *values):
         if 0 < len(values) <= self.ring.ngens:
             return self.eval(list(zip(self.ring.gens, values)))
@@ -2153,11 +2168,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def factor_list(self):
         return self.ring.dmp_factor_list(self)
-
-    def integrate(self, m=1, x=0):
-        ring = self.ring
-        i = ring.index(x)
-        return ring.dmp_integrate_in(self, m, i)
 
     def slice(self, m, n, x=0):
         ring = self.ring

@@ -1406,7 +1406,7 @@ class Poly(Expr):
             else:
                 gen, m = spec, 1
 
-            rep = rep.integrate(int(m), f._gen_to_level(gen))
+            rep = rep.integrate(f._gen_to_level(gen), int(m))
 
         return f.per(rep)
 

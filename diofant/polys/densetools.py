@@ -5,55 +5,8 @@ from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_exquo_ground,
                          dmp_sub, dup_add, dup_mul)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
-                         dmp_zero, dmp_zero_p, dmp_zeros)
+                         dmp_zero, dmp_zero_p)
 from .polyerrors import DomainError
-
-
-def dmp_integrate_in(f, m, j, u, K):
-    """
-    Compute the indefinite integral of ``f`` in ``x_j`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", QQ)
-
-    >>> R.dmp_integrate_in(x + 2*y, 1, 0)
-    1/2*x**2 + 2*x*y
-    >>> R.dmp_integrate_in(x + 2*y, 1, 1)
-    x*y + y**2
-
-    """
-    if j < 0 or j > u:
-        raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
-
-    if not j:
-        if m <= 0 or dmp_zero_p(f, u):
-            return f
-
-        v = u - 1
-        g = dmp_zeros(m, v, K) if u else [K.zero]*m
-
-        for i, c in enumerate(reversed(f)):
-            n = i + 1
-
-            for j in range(1, m):
-                n *= i + j + 1
-
-            t = dmp_quo_ground(c, K(n), v, K) if u else K.exquo(c, K(n))
-            g.insert(0, t)
-
-        return g
-
-    def integrate_in(f, m, u, i, j, K):
-        if i == j:
-            return dmp_integrate_in(f, m, 0, u, K)
-
-        v, i = u - 1, i + 1
-
-        return dmp_strip([integrate_in(c, m, v, i, j, K) for c in f], u)
-
-    return integrate_in(f, m, u, 0, j, K)
 
 
 def dmp_diff_in(f, m, j, u, K):

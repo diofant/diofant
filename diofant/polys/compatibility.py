@@ -11,9 +11,9 @@ from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_diff_in, dmp_eval_in, dmp_eval_tail,
                          dmp_ground_content, dmp_ground_monic,
-                         dmp_ground_primitive, dmp_ground_trunc,
-                         dmp_integrate_in, dup_decompose, dup_mirror,
-                         dup_real_imag, dup_scale, dup_shift, dup_transform)
+                         dmp_ground_primitive, dmp_ground_trunc, dup_decompose,
+                         dup_mirror, dup_real_imag, dup_scale, dup_shift,
+                         dup_transform)
 from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
                           dmp_inner_subresultants, dmp_prem, dmp_primitive,
                           dmp_prs_resultant, dmp_qq_collins_resultant,
@@ -170,9 +170,6 @@ class IPolys:
 
     def dmp_slice_in(self, f, m, n, j=0):
         return self.from_dense(dmp_slice_in(self.to_dense(f), m, n, j, self.ngens-1, self.domain))
-
-    def dmp_integrate_in(self, f, m, j):
-        return self.from_dense(dmp_integrate_in(self.to_dense(f), m, j, self.ngens-1, self.domain))
 
     def dmp_eval_in(self, f, a, j):
         result = dmp_eval_in(self.to_dense(f), a, j, self.ngens-1, self.domain)
