@@ -20,8 +20,7 @@ from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
                           dmp_resultant, dmp_rr_prs_gcd,
                           dmp_zz_collins_resultant, dmp_zz_heu_gcd,
                           dmp_zz_modular_resultant, dup_ff_prs_gcd, dup_gcdex,
-                          dup_half_gcdex, dup_inner_subresultants, dup_invert,
-                          dup_rr_prs_gcd)
+                          dup_half_gcdex, dup_invert, dup_rr_prs_gcd)
 from .factortools import (dmp_factor_list, dmp_trial_division, dmp_zz_factor,
                           dmp_zz_mignotte_bound, dmp_zz_wang,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
@@ -245,10 +244,6 @@ class IPolys:
 
     def dup_invert(self, f, g):
         return self.from_dense(dup_invert(self.to_dense(f), self.to_dense(g), self.domain))
-
-    def dup_inner_subresultants(self, f, g):
-        prs, sres = dup_inner_subresultants(self.to_dense(f), self.to_dense(g), self.domain)
-        return list(map(self.from_dense, prs)), sres
 
     def dmp_inner_subresultants(self, f, g):
         prs, sres = dmp_inner_subresultants(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)

@@ -180,7 +180,7 @@ def dup_inner_subresultants(f, g, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_inner_subresultants(x**2 + 1, x**2 - 1)
+    >>> R.dmp_inner_subresultants(x**2 + 1, x**2 - 1)
     ([x**2 + 1, x**2 - 1, -2], [1, 1, 4])
 
     References

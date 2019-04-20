@@ -192,8 +192,8 @@ def test_PolyElement_subresultants():
 
     assert f.resultant(g) == -1
 
-    assert R.dup_inner_subresultants(0, 0) == ([], [])
-    assert R.dup_inner_subresultants(0, 1) == ([1], [1])
+    assert R.dmp_inner_subresultants(0, 0) == ([], [])
+    assert R.dmp_inner_subresultants(0, 1) == ([1], [1])
 
     R, x, y = ring("x,y", ZZ)
 
