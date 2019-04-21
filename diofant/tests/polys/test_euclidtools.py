@@ -121,37 +121,7 @@ def test_dmp_prem():
     assert f.prem(g) == r
 
 
-def test_dup_euclidean_prs():
-    R, x = ring("x", QQ)
-
-    f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
-    g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
-
-    assert R.dup_euclidean_prs(f, g) == [
-        f,
-        g,
-        -5*x**4/9 + x**2/9 - QQ(1, 3),
-        -117*x**2/25 - 9*x + QQ(441, 25),
-        233150*x/19773 - QQ(102500, 6591),
-        -QQ(1288744821, 543589225)]
-
-
-def test_dup_primitive_prs():
-    R, x = ring("x", ZZ)
-
-    f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
-    g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
-
-    assert R.dup_primitive_prs(f, g) == [
-        f,
-        g,
-        5*x**4 - x**2 + 3,
-        13*x**2 + 25*x - 49,
-        4663*x - 6150,
-        1]
-
-
-def test_dmp_subresultants():
+def test_PolyElement_subresultants():
     R, x = ring("x", ZZ)
 
     assert R(0).resultant(R(0)) == 0
@@ -167,7 +137,7 @@ def test_dmp_subresultants():
     c = 9326*x - 12300
     d = 260708
 
-    assert R.dmp_subresultants(f, g) == [f, g, a, b, c, d]
+    assert f.subresultants(g) == [f, g, a, b, c, d]
     assert f.resultant(g) == R.dmp_LC(d)
 
     f = x**2 - 2*x + 1
@@ -175,7 +145,7 @@ def test_dmp_subresultants():
 
     a = 2*x - 2
 
-    assert R.dmp_subresultants(f, g) == [f, g, a]
+    assert f.subresultants(g) == [f, g, a]
     assert f.resultant(g) == 0
 
     f = x**2 + 1
@@ -183,7 +153,7 @@ def test_dmp_subresultants():
 
     a = -2
 
-    assert R.dmp_subresultants(f, g) == [f, g, a]
+    assert f.subresultants(g) == [f, g, a]
     assert f.resultant(g) == 4
     assert f.resultant(g, includePRS=True) == (4, [x**2 + 1, x**2 - 1, -2])
 
@@ -222,20 +192,20 @@ def test_dmp_subresultants():
 
     assert f.resultant(g) == -1
 
-    assert R.dup_inner_subresultants(0, 0) == ([], [])
-    assert R.dup_inner_subresultants(0, 1) == ([1], [1])
+    assert R.dmp_inner_subresultants(0, 0) == ([], [])
+    assert R.dmp_inner_subresultants(0, 1) == ([1], [1])
 
     R, x, y = ring("x,y", ZZ)
 
     assert R(0).resultant(R(0)) == 0
-    assert R.dmp_prs_resultant(0, 0)[0] == 0
+    assert R(0).resultant(R(0), includePRS=True)[0] == 0
     assert R.dmp_zz_collins_resultant(0, 0) == 0
     assert R.dmp_qq_collins_resultant(0, 0) == 0
 
     assert R(1).resultant(R(0)) == 0
 
     assert R(0).resultant(R(1)) == 0
-    assert R.dmp_prs_resultant(0, 1)[0] == 0
+    assert R(0).resultant(R(1), includePRS=True)[0] == 0
     assert R.dmp_zz_collins_resultant(0, 1) == 0
     assert R.dmp_qq_collins_resultant(0, 1) == 0
 
@@ -249,16 +219,13 @@ def test_dmp_subresultants():
     b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
 
     r = R.dmp_LC(b)
-    Y = R.drop(x).y
-    rr = (-3*Y**10 - 12*Y**7 + Y**6 - 54*Y**4 + 8*Y**3 + 729*Y**2 - 216*Y + 16,
-          [3*x**2*y - y**3 - 4, x**2 + x*y**3 - 9, 3*x*y**4 + y**3 - 27*y + 4,
-           -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16])
+    rr = (r, [3*x**2*y - y**3 - 4, x**2 + x*y**3 - 9, 3*x*y**4 + y**3 - 27*y + 4,
+              -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16])
 
-    assert R.dmp_subresultants(f, g) == [f, g, a, b]
+    assert f.subresultants(g) == [f, g, a, b]
 
     assert f.resultant(g) == r
     assert f.resultant(g, includePRS=True) == rr
-    assert R.dmp_prs_resultant(f, g)[0] == r
     assert R.dmp_zz_collins_resultant(f, g) == r
     assert R.dmp_qq_collins_resultant(f, g) == r
 
@@ -270,9 +237,9 @@ def test_dmp_subresultants():
 
     r = R.dmp_LC(b)
 
-    assert R.dmp_subresultants(f, g) == [f, g, a]
+    assert f.subresultants(g) == [f, g, a]
     assert f.resultant(g) == r
-    assert R.dmp_prs_resultant(f, g)[0] == r
+    assert f.resultant(g, includePRS=True)[0] == r
     assert R.dmp_zz_collins_resultant(f, g) == r
     assert R.dmp_qq_collins_resultant(f, g) == r
 
@@ -307,7 +274,7 @@ def test_dmp_subresultants():
 
     assert f.resultant(g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
 
-    assert Rx.dmp_prs_resultant(x - 1, x + 1) == (2, [x - 1, x + 1, 2])
+    assert (x - 1).resultant(x + 1, includePRS=True) == (2, [x - 1, x + 1, 2])
 
     R, x, y = ring("x,y", ZZ)
 

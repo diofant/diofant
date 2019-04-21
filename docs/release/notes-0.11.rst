@@ -24,6 +24,9 @@ Compatibility breaks
 * Removed ``DMP`` class, see :pull:`795`.
 * Removed ``ring_series`` module, see :pull:`820`.
 * :class:`~diofant.core.relational.Equality` doesn't support single-argument call, see :pull:`828`.
+* Removed ``is_nonnegative()`` and ``is_nonpositive()`` methods of :class:`~diofant.domains.domain.Domain` subclasses, see :pull:`834`.
+* Former ``fast=True`` option is now a default for :meth:`~diofant.polys.polytools.Poly.intervals` and :meth:`~diofant.polys.polytools.Poly.refine_root`, see :pull:`834`.
+* Change order of keyword arguments for :meth:`~diofant.polys.rings.PolyElement.integrate`, see :pull:`834`.
 
 Minor changes
 =============

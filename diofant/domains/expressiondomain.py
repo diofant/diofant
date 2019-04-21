@@ -176,14 +176,6 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         """Returns True if ``a`` is negative. """
         return a.ex.as_coeff_mul()[0].is_negative
 
-    def is_nonpositive(self, a):
-        """Returns True if ``a`` is non-positive. """
-        return a.ex.as_coeff_mul()[0].is_nonpositive
-
-    def is_nonnegative(self, a):
-        """Returns True if ``a`` is non-negative. """
-        return a.ex.as_coeff_mul()[0].is_nonnegative
-
     def gcd(self, a, b):
         return a.gcd(b)
 

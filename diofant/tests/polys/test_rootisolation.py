@@ -265,36 +265,31 @@ def test_dup_isolate_real_roots_sqf():
     assert R.dup_isolate_real_roots_sqf(f, eps=QQ(1, 1000000)) == \
         [(QQ(-1121, 2378), QQ(-272, 577)), (QQ(272, 577), QQ(1121, 2378))]
 
-    f = 200100012*x**5 - 700390052*x**4 + 700490079*x**3 - 200240054*x**2 + 40017*x - 2
+    f = (x - 2)*(x - 1)*(2*x - 1)*(10002*x - 1)*(10003*x - 1)
 
     assert R.dup_isolate_real_roots_sqf(f) == \
-        [(0, QQ(1, 10002)), (QQ(1, 10002), QQ(1, 10002)),
+        [(QQ(15, 150046), QQ(47, 470110)), (QQ(47, 470110), QQ(17, 170018)),
          (QQ(1, 2), QQ(1, 2)), (1, 1), (2, 2)]
 
-    assert R.dup_isolate_real_roots_sqf(f, eps=QQ(1, 100000)) == \
+    assert R.dup_isolate_real_roots_sqf(f, eps=QQ(1, 100000000000)) == \
         [(QQ(1, 10003), QQ(1, 10003)), (QQ(1, 10002), QQ(1, 10002)),
          (QQ(1, 2), QQ(1, 2)), (1, 1), (2, 2)]
 
     a, b, c, d = 10000090000001, 2000100003, 10000300007, 10000005000008
-
-    f = 20001600074001600021*x**4 \
-        + 1700135866278935491773999857*x**3 \
-        - 2000179008931031182161141026995283662899200197*x**2 \
-        - 800027600594323913802305066986600025*x \
-        + 100000950000540000725000008
+    f = (x - d)*(x + a)*(b*x + 1)*(c*x - 1)
 
     assert R.dup_isolate_real_roots_sqf(f) == \
-        [(-a, -a), (-1, 0), (0, 1), (d, d)]
+        [(-13194139533313, -8796093022209), (-1, 0), (0, 1),
+         (8796093022209, 13194139533313)]
 
     assert R.dup_isolate_real_roots_sqf(f, eps=QQ(1, 100000000000)) == \
-        [(-QQ(a), -QQ(a)), (-QQ(1, b), -QQ(1, b)), (QQ(1, c), QQ(1, c)), (QQ(d), QQ(d))]
+        [(-a, -a), (QQ(-7, 13958643719), QQ(-1, 2013265921)),
+         (QQ(3, 30064771075), QQ(1, 9663676417)),
+         (QQ(1328823874562668133568119, 132882321015),
+          QQ(37336367728494399224248237, 3733634906029))]
 
-    (u, v), B, C, (s, t) = R.dup_isolate_real_roots_sqf(f, fast=True)
-
-    assert u < -a < v and B == (-1, 0) and C == (0, 1) and s < d < t
-
-    assert R.dup_isolate_real_roots_sqf(f, fast=True, eps=QQ(1, 100000000000000000000000000000)) == \
-        [(-QQ(a), -QQ(a)), (-QQ(1, b), -QQ(1, b)), (QQ(1, c), QQ(1, c)), (QQ(d), QQ(d))]
+    assert R.dup_isolate_real_roots_sqf(f, eps=QQ(1, 100000000000000000000000000000)) == \
+        [(-a, -a), (-QQ(1, b), -QQ(1, b)), (QQ(1, c), QQ(1, c)), (d, d)]
 
     f = -10*x**4 + 8*x**3 + 80*x**2 - 32*x - 160
 
@@ -364,7 +359,7 @@ def test_dup_isolate_real_roots_sqf():
     f = (-x**3 + sqrt(2)*x - 1)*(x**2 + 1)
 
     assert R.dup_isolate_real_roots_sqf(f) == [(-2, -1)]
-    assert R.dup_isolate_real_roots_sqf(f, eps=QQ(1, 1000)) == [(QQ(-74, 51), QQ(-29, 20))]
+    assert R.dup_isolate_real_roots_sqf(f, eps=QQ(1, 1000)) == [(QQ(-132, 91), QQ(-29, 20))]
 
     f = (x - sqrt(2))*(x + 2*sqrt(2))*(x - 7 + sqrt(2))*(x + 3*sqrt(2))*(x - 1)*(x + 1 - sqrt(2))
 
@@ -379,7 +374,7 @@ def test_dup_isolate_real_roots_sqf():
                                                (2, 3), (4, 5)]
     assert (R.dup_isolate_real_roots_sqf(f, eps=QQ(1, 1000)) ==
             [(QQ(41, 29), QQ(58, 41)), (QQ(71, 41), QQ(97, 56)),
-             (QQ(169, 69), QQ(49, 20)), (QQ(436, 89), QQ(485, 99))])
+             (QQ(218, 89), QQ(49, 20)), (QQ(436, 89), QQ(485, 99))])
 
 
 def test_dup_isolate_real_roots():

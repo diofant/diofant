@@ -256,11 +256,3 @@ class Domain(DefaultPrinting, abc.ABC):
     def is_negative(self, a):
         """Returns True if ``a`` is negative. """
         return a < 0
-
-    def is_nonpositive(self, a):
-        """Returns True if ``a`` is non-positive. """
-        return a <= 0
-
-    def is_nonnegative(self, a):
-        """Returns True if ``a`` is non-negative. """
-        return a >= 0
