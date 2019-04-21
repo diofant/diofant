@@ -7,10 +7,10 @@ from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
                          dmp_sub_mul, dup_mul)
-from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
-                         dmp_ground, dmp_ground_LC, dmp_inflate, dmp_LC,
-                         dmp_multi_deflate, dmp_one, dmp_one_p, dmp_raise,
-                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
+from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_deflate,
+                         dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
+                         dmp_LC, dmp_one, dmp_one_p, dmp_raise, dmp_strip,
+                         dmp_zero, dmp_zero_p, dmp_zeros)
 from .densetools import (dmp_clear_denoms, dmp_eval_in, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc)
 from .heuristicgcd import heugcd
@@ -1005,7 +1005,7 @@ def dmp_inner_gcd(f, g, u, K):
     (x + y, x + y, x)
 
     """
-    J, (f, g) = dmp_multi_deflate((f, g), u, K)
+    J, (f, g) = dmp_deflate((f, g), u, K)
     h, cff, cfg = _dmp_inner_gcd(f, g, u, K)
 
     return (dmp_inflate(h, J, u, K),

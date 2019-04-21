@@ -1058,9 +1058,32 @@ def test_PolyElement_primitive():
 def test_PolyElement_deflate():
     R, x = ring("x", ZZ)
 
+    assert R(0).deflate() == ((1,), [0])
+    assert R(2).deflate() == ((1,), [2])
+
+    f = x**2 + 2*x + 3
+
+    assert f.deflate() == ((1,), [f])
+    assert f.inflate([2]).deflate() == ((2,), [f])
+    assert f.inflate([3]).deflate() == ((3,), [f])
+
+    assert (x**7 + x).deflate() == ((1,), [x**7 + x])
+    assert (x**7 + 1).deflate() == ((7,), [x + 1])
+    assert (x**7 + x**3).deflate() == ((1,), [x**7 + x**3])
+
+    assert (x**7 + x**4).deflate() == ((1,), [x**7 + x**4])
+    assert (x**8 + x**4).deflate() == ((4,), [x**2 + x])
+
+    assert (x**8).deflate() == ((8,), [x])
+    assert (x**7).deflate() == ((7,), [x])
+    assert (x).deflate() == ((1,), [x])
+
     assert (2*x**2).deflate(x**4 + 4*x**2 + 1) == ((2,), [2*x, x**2 + 4*x + 1])
 
     R,  x, y = ring("x,y", ZZ)
+
+    assert R(0).deflate() == ((1, 1), [0])
+    assert R(2).deflate() == ((1, 1), [2])
 
     assert R(0).deflate(R(0)) == ((1, 1), [0, 0])
     assert R(1).deflate(R(0)) == ((1, 1), [1, 0])
@@ -1073,7 +1096,12 @@ def test_PolyElement_deflate():
     f = x**4*y**2 + x**2*y + 1
     g = x**2*y**3 + x**2*y + 1
 
+    assert f.deflate() == ((2, 1), [x**2*y**2 + x*y + 1])
     assert f.deflate(g) == ((2, 1), [x**2*y**2 + x*y + 1, x*y**3 + x*y + 1])
+
+    f = x**2*y**3 + 2*x**2 + 3*y**3 + 4
+
+    assert f.deflate() == ((2, 3), [x*y + 2*x + 3*y + 4])
 
 
 def test_PolyElement_clear_denoms():

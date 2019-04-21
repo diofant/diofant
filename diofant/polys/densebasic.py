@@ -573,47 +573,7 @@ def dmp_raise(f, l, u, K):
     return [dmp_raise(c, l, v, K) for c in f]
 
 
-def dmp_deflate(f, u, K):
-    """
-    Map ``x_i**m_i`` to ``y_i`` in a polynomial in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> dmp_deflate([[ZZ(1), ZZ(0), ZZ(0), ZZ(2)], [],
-    ...              [ZZ(3), ZZ(0), ZZ(0), ZZ(4)]], 1, ZZ)
-    ((2, 3), [[1, 2], [3, 4]])
-
-    """
-    if dmp_zero_p(f, u):
-        return (1,)*(u + 1), f
-
-    F = dmp_to_dict(f, u)
-    B = [0]*(u + 1)
-
-    for M in F:
-        for i, m in enumerate(M):
-            B[i] = math.gcd(B[i], m)
-
-    for i, b in enumerate(B):
-        if not b:
-            B[i] = 1
-
-    B = tuple(B)
-
-    if all(b == 1 for b in B):
-        return B, f
-
-    H = {}
-
-    for A, coeff in F.items():
-        N = [a // b for a, b in zip(A, B)]
-        H[tuple(N)] = coeff
-
-    return B, dmp_from_dict(H, u, K)
-
-
-def dmp_multi_deflate(polys, u, K):
+def dmp_deflate(polys, u, K):
     """
     Map ``x_i**m_i`` to ``y_i`` in a set of polynomials in ``K[X]``.
 
@@ -623,7 +583,7 @@ def dmp_multi_deflate(polys, u, K):
     >>> f = [[ZZ(1), ZZ(0), ZZ(0), ZZ(2)], [], [ZZ(3), ZZ(0), ZZ(0), ZZ(4)]]
     >>> g = [[ZZ(1), ZZ(0), ZZ(2)], [], [ZZ(3), ZZ(0), ZZ(4)]]
 
-    >>> dmp_multi_deflate((f, g), 1, ZZ)
+    >>> dmp_deflate((f, g), 1, ZZ)
     ((2, 1), ([[1, 0, 0, 2], [3, 0, 0, 4]], [[1, 0, 2], [3, 0, 4]]))
 
     """
