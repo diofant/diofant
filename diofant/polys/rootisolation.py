@@ -1,5 +1,6 @@
 """Real and complex root isolation and refinement algorithms. """
 
+import collections
 import math
 
 from ..core import I
@@ -8,8 +9,8 @@ from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dmp_to_tuple,
                          dup_reverse)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
-                         dmp_eval_in, dup_mirror, dup_real_imag, dup_scale,
-                         dup_shift, dup_transform)
+                         dmp_eval_in, dmp_ground_primitive, dup_mirror,
+                         dup_real_imag, dup_scale, dup_shift, dup_transform)
 from .euclidtools import dmp_gcd, dmp_resultant
 from .factortools import dmp_factor_list
 from .polyerrors import DomainError, RefinementFailed
@@ -509,43 +510,35 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None):
 def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=False, basis=False):
     """Isolate real roots of a list of polynomials."""
     R, K = K, K.field
-    for i, p in enumerate(polys):
-        p = dmp_convert(p, 0, R, K)
-        polys[i] = dmp_clear_denoms(p, 0, K)[1]
 
     if not (K.is_RationalField or K.is_RealAlgebraicField):
         raise DomainError("isolation of real roots not supported over %s" % K)
 
-    zeros, factors_dict = False, {}
-
     if (inf is None or inf <= 0) and (sup is None or 0 <= sup):
         zeros, zero_indices = True, {}
+    else:
+        zeros = False
 
     for i, p in enumerate(polys):
-        (j,), p = dmp_terms_gcd(p, 0, K)
+        p = dmp_convert(p, 0, R, K)
+        p = dmp_clear_denoms(p, 0, K)[1]
+        (j,), polys[i] = dmp_terms_gcd(p, 0, K)
 
         if zeros and j > 0:
             zero_indices[i] = j
 
+    factors_dict = collections.defaultdict(dict)
+
+    for i, p in enumerate(polys):
         for f, k in dmp_factor_list(p, 0, K)[1]:
-            f = tuple(f)
+            factors_dict[tuple(f)][i] = k
 
-            if f not in factors_dict:
-                factors_dict[f] = {i: k}
-            else:
-                factors_dict[f][i] = k
+    I_neg, I_pos = _real_isolate_and_disjoin(factors_dict.items(), K, eps=eps,
+                                             inf=inf, sup=sup, strict=strict,
+                                             basis=basis)
+    I_zero = []
 
-    factors_list = []
-
-    for f, indices in factors_dict.items():
-        factors_list.append((list(f), indices))
-
-    I_neg, I_pos = _real_isolate_and_disjoin(factors_list, K, eps=eps,
-                                             inf=inf, sup=sup, strict=strict, basis=basis)
-
-    if not zeros or not zero_indices:
-        I_zero = []
-    else:
+    if zeros and zero_indices:
         if not basis:
             I_zero = [((K.zero, K.zero), zero_indices)]
         else:
@@ -582,6 +575,7 @@ def _real_isolate_and_disjoin(factors, K, eps=None, inf=None, sup=None, strict=F
     I_pos, I_neg = [], []
 
     for i, (f, k) in enumerate(factors):
+        f = dmp_ground_primitive(f, 0, K)[1]
         for F, M in dup_inner_isolate_positive_roots(f, K, eps=eps, inf=inf, sup=sup, mobius=True):
             I_pos.append((F, M, k, f))
 
