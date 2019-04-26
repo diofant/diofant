@@ -4,7 +4,8 @@ import collections
 import math
 
 from ..core import I
-from .densearith import dmp_add, dmp_mul_ground, dmp_neg, dmp_rem, dup_rshift
+from .densearith import (dmp_add, dmp_mul_ground, dmp_neg, dmp_pow, dmp_quo,
+                         dmp_rem, dup_rshift)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dmp_to_tuple,
                          dup_reverse)
@@ -12,7 +13,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_primitive, dup_mirror,
                          dup_real_imag, dup_scale, dup_shift, dup_transform)
 from .euclidtools import dmp_gcd, dmp_resultant
-from .factortools import dmp_factor_list
+from .factortools import dmp_trial_division
 from .polyerrors import DomainError, RefinementFailed
 from .sqfreetools import dmp_sqf_list, dmp_sqf_part
 
@@ -519,6 +520,8 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
     else:
         zeros = False
 
+    gcd = []
+
     for i, p in enumerate(polys):
         p = dmp_convert(p, 0, R, K)
         p = dmp_clear_denoms(p, 0, K)[1]
@@ -527,13 +530,31 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
         if zeros and j > 0:
             zero_indices[i] = j
 
-    factors_dict = collections.defaultdict(dict)
+        gcd = dmp_gcd(gcd, polys[i], 0, K)
+
+    polys = [dmp_quo(p, gcd, 0, K) for p in polys]
+
+    if len(polys) != 2:
+        raise NotImplementedError
+
+    factors = collections.defaultdict(dict)
 
     for i, p in enumerate(polys):
-        for f, k in dmp_factor_list(p, 0, K)[1]:
-            factors_dict[tuple(f)][i] = k
+        for f, _ in dmp_sqf_list(dmp_gcd(p, gcd, 0, K), 0, K)[1]:
+            k1 = dmp_trial_division(gcd, [f], 0, K)[0][1]
+            k2 = dmp_trial_division(p, [f], 0, K)[0][1]
+            factors[tuple(f)] = {i: k1 + k2, (i + 1) % 2: k1}
 
-    I_neg, I_pos = _real_isolate_and_disjoin(factors_dict.items(), K, eps=eps,
+            gcd = dmp_quo(gcd, dmp_pow(f, k1, 0, K), 0, K)
+            p = dmp_quo(p, dmp_pow(f, k2, 0, K), 0, K)
+
+        for f, k in dmp_sqf_list(p, 0, K)[1]:
+            factors[tuple(f)] = {i: k}
+
+    for f, k in dmp_sqf_list(gcd, 0, K)[1]:
+        factors[tuple(f)] = {0: k, 1: k}
+
+    I_neg, I_pos = _real_isolate_and_disjoin(factors.items(), K, eps=eps,
                                              inf=inf, sup=sup, strict=strict,
                                              basis=basis)
     I_zero = []

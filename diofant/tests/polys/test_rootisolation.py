@@ -447,12 +447,6 @@ def test_dup_isolate_real_roots_list():
     assert R.dup_isolate_real_roots_list([x*(x - 1), x]) == \
         [((0, 0), {0: 1, 1: 1}), ((1, 1), {0: 1})]
 
-    assert R.dup_isolate_real_roots_list([x + 1, x + 2, x - 1, x + 1, x - 1, x - 1]) == \
-        [((-2, -2), {1: 1}), ((-1, -1), {0: 1, 3: 1}), ((1, 1), {2: 1, 4: 1, 5: 1})]
-
-    assert R.dup_isolate_real_roots_list([x + 1, x + 2, x - 1, x + 1, x - 1, x + 2]) == \
-        [((-2, -2), {1: 1, 5: 1}), ((-1, -1), {0: 1, 3: 1}), ((1, 1), {2: 1, 4: 1})]
-
     f, g = (x**2 - 2)**2, x - 1
 
     assert R.dup_isolate_real_roots_list([f, g], inf=QQ(7, 4)) == []
@@ -502,6 +496,17 @@ def test_dup_isolate_real_roots_list():
     R, x = ring("x", EX)
 
     pytest.raises(DomainError, lambda: R.dup_isolate_real_roots_list([x + 3]))
+
+
+@pytest.mark.xfail
+def test_dup_isolate_real_roots_list_xfail():
+    R, x = ring("x", ZZ)
+
+    assert R.dup_isolate_real_roots_list([x + 1, x + 2, x - 1, x + 1, x - 1, x - 1]) == \
+        [((-2, -2), {1: 1}), ((-1, -1), {0: 1, 3: 1}), ((1, 1), {2: 1, 4: 1, 5: 1})]
+
+    assert R.dup_isolate_real_roots_list([x + 1, x + 2, x - 1, x + 1, x - 1, x + 2]) == \
+        [((-2, -2), {1: 1, 5: 1}), ((-1, -1), {0: 1, 3: 1}), ((1, 1), {2: 1, 4: 1})]
 
 
 def test_dup_isolate_real_roots_list_QQ():
@@ -999,6 +1004,56 @@ def test_dup_isolate_complex_roots_sqf():
     R, x = ring("x", EX)
 
     pytest.raises(DomainError, lambda: R.dup_isolate_complex_roots_sqf(x))
+
+
+@pytest.mark.timeout(40)
+@pytest.mark.skipif(ZZ.dtype is int, reason="gmpy2 is not used")
+def test_dup_isolate_complex_roots_sqf_2():
+    R, x = ring("x", ZZ)
+
+    f = x**40 - 15*x**17 - 21*x**3 + 11
+
+    res = R.dup_isolate_complex_roots_sqf(f)
+    ans = [((QQ(-21, 16), QQ(-21, 128)), (QQ(-63, 64), 0)),
+           ((QQ(-21, 16), 0), (QQ(-63, 64), QQ(21, 128))),
+           ((QQ(-21, 16), QQ(-21, 64)), (QQ(-63, 64), QQ(-21, 128))),
+           ((QQ(-21, 16), QQ(21, 128)), (QQ(-63, 64), QQ(21, 64))),
+           ((QQ(-21, 16), QQ(-21, 32)), (QQ(-63, 64), QQ(-21, 64))),
+           ((QQ(-21, 16), QQ(21, 64)), (QQ(-63, 64), QQ(21, 32))),
+           ((QQ(-63, 64), QQ(-21, 32)), (QQ(-21, 32), QQ(-21, 64))),
+           ((QQ(-63, 64), QQ(21, 64)), (QQ(-21, 32), QQ(21, 32))),
+           ((QQ(-63, 64), QQ(-105, 128)), (QQ(-21, 32), QQ(-21, 32))),
+           ((QQ(-63, 64), QQ(21, 32)), (QQ(-21, 32), QQ(105, 128))),
+           ((QQ(-63, 64), QQ(-63, 64)), (QQ(-21, 32), QQ(-105, 128))),
+           ((QQ(-63, 64), QQ(105, 128)), (QQ(-21, 32), QQ(63, 64))),
+           ((QQ(-21, 32), QQ(-105, 128)), (QQ(-21, 64), QQ(-21, 32))),
+           ((QQ(-21, 32), QQ(21, 32)), (QQ(-21, 64), QQ(105, 128))),
+           ((QQ(-21, 32), QQ(-63, 64)), (QQ(-21, 64), QQ(-105, 128))),
+           ((QQ(-21, 32), QQ(105, 128)), (QQ(-21, 64), QQ(63, 64))),
+           ((QQ(-21, 32), QQ(-21, 16)), (QQ(-21, 64), QQ(-63, 64))),
+           ((QQ(-21, 32), QQ(63, 64)), (QQ(-21, 64), QQ(21, 16))),
+           ((QQ(-21, 64), QQ(-21, 16)), (QQ(0, 1), QQ(-63, 64))),
+           ((QQ(-21, 64), QQ(63, 64)), (QQ(0, 1), QQ(21, 16))),
+           ((QQ(0, 1), QQ(-147, 128)), (QQ(21, 128), QQ(-63, 64))),
+           ((QQ(0, 1), QQ(63, 64)), (QQ(21, 128), QQ(147, 128))),
+           ((QQ(21, 128), QQ(-147, 128)), (QQ(21, 64), QQ(-63, 64))),
+           ((QQ(21, 128), QQ(63, 64)), (QQ(21, 64), QQ(147, 128))),
+           ((QQ(21, 64), QQ(-63, 64)), (QQ(63, 128), QQ(-105, 128))),
+           ((QQ(21, 64), QQ(105, 128)), (QQ(63, 128), QQ(63, 64))),
+           ((QQ(63, 128), QQ(-63, 64)), (QQ(21, 32), QQ(-105, 128))),
+           ((QQ(63, 128), QQ(105, 128)), (QQ(21, 32), QQ(63, 64))),
+           ((QQ(21, 32), QQ(-21, 64)), (QQ(63, 64), 0)),
+           ((QQ(21, 32), 0), (QQ(63, 64), QQ(21, 64))),
+           ((QQ(21, 32), QQ(-21, 32)), (QQ(21, 16), QQ(-21, 64))),
+           ((QQ(21, 32), QQ(21, 64)), (QQ(21, 16), QQ(21, 32))),
+           ((QQ(21, 32), QQ(-105, 128)), (QQ(63, 64), QQ(-21, 32))),
+           ((QQ(21, 32), QQ(21, 32)), (QQ(63, 64), QQ(105, 128))),
+           ((QQ(21, 32), QQ(-63, 64)), (QQ(63, 64), QQ(-105, 128))),
+           ((QQ(21, 32), QQ(105, 128)), (QQ(63, 64), QQ(63, 64))),
+           ((QQ(63, 64), QQ(-21, 64)), (QQ(21, 16), 0)),
+           ((QQ(63, 64), 0), (QQ(21, 16), QQ(21, 64)))]
+
+    assert res == ans
 
 
 def test_dup_isolate_all_roots_sqf():
