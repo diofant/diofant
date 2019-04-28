@@ -688,13 +688,6 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
     return count
 
 
-def dup_isolate_imaginary_roots(f, K, eps=None, inf=None, sup=None):
-    """Isolate imaginary roots."""
-    F = K.algebraic_field(I)
-    f = dmp_compose(dmp_convert(f, 0, K, F), [F.unit, 0], 0, F)
-    return dup_isolate_real_roots(f, F, eps=eps, inf=inf, sup=sup)
-
-
 OO = 'OO'  # Origin of (re, im) coordinate system
 
 Q1 = 'Q1'  # Quadrant #1 (++): re > 0 and im > 0

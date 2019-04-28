@@ -431,14 +431,6 @@ def test_dup_isolate_real_roots():
     pytest.raises(DomainError, lambda: R.dup_isolate_real_roots((x + 2)*(x + 3)**2))
 
 
-def test_dup_isolate_imaginary_roots():
-    R, x = ring("x", ZZ)
-
-    f = x**2 + 1
-
-    assert R.dup_isolate_imaginary_roots(f) == [((-1, -1), 1), ((1, 1), 1)]
-
-
 def test_dup_isolate_real_roots_list():
     R, x = ring("x", ZZ)
 
