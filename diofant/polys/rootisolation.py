@@ -1248,7 +1248,7 @@ def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
     f1L1F, f1L2F, f1L3F, f1L4F = F1
     f2L1F, f2L2F, f2L3F, f2L4F = F2
 
-    x = (u + s) / 2
+    x = (u + s) / F(2)
 
     f1V = dmp_eval_in(f1, x, 0, 1, F)
     f2V = dmp_eval_in(f2, x, 0, 1, F)
@@ -1355,7 +1355,7 @@ def _horizontal_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
     f1L1F, f1L2F, f1L3F, f1L4F = F1
     f2L1F, f2L2F, f2L3F, f2L4F = F2
 
-    y = (v + t) / 2
+    y = (v + t) / F(2)
 
     f1H = dmp_eval_in(f1, y, 1, 1, F)
     f2H = dmp_eval_in(f2, y, 1, 1, F)
