@@ -339,14 +339,14 @@ def dmp_ground_primitive(f, u, K):
 
     """
     if dmp_zero_p(f, u):
-        return K.zero, f
+        return K.zero, list(f)
 
     cont = dmp_ground_content(f, u, K)
 
     if cont != K.one:
         f = dmp_quo_ground(f, cont, u, K)
 
-    return cont, f
+    return cont, list(f)
 
 
 def dup_real_imag(f, K):
