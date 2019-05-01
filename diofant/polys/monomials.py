@@ -1,4 +1,4 @@
-"""Tools and arithmetics for monomials of distributed polynomials. """
+"""Tools and arithmetics for monomials of distributed polynomials."""
 
 from ..core import Mul, S, Tuple, sympify
 from ..core.compatibility import iterable
@@ -26,7 +26,7 @@ def itermonomials(variables, degree):
 
         for i in range(degree + 1):
             for m in itermonomials(tail, degree - i):
-                yield m*x**i
+                yield m * x**i
 
 
 def monomial_mul(A, B):
@@ -40,8 +40,8 @@ def monomial_div(A, B):
 
 
 def monomial_pow(A, n):
-    """Return the n-th pow of the monomial. """
-    return tuple(a*n for a in A)
+    """Return the n-th pow of the monomial."""
+    return tuple(a * n for a in A)
 
 
 def monomial_gcd(A, B):
@@ -60,7 +60,7 @@ def monomial_divides(A, B):
 
 
 class Monomial:
-    """Class representing a monomial, i.e. a product of powers. """
+    """Class representing a monomial, i.e. a product of powers."""
 
     def __init__(self, monom, gens=None):
         if not iterable(monom):
@@ -96,7 +96,7 @@ class Monomial:
             return "%s(%s)" % (self.__class__.__name__, self._exponents)
 
     def as_expr(self, *gens):
-        """Convert a monomial instance to a Diofant expression. """
+        """Convert a monomial instance to a Diofant expression."""
         gens = gens or self.gens
 
         if not gens:
@@ -143,7 +143,7 @@ class Monomial:
             raise ValueError("a non-negative integer expected, got %s" % other)
 
     def gcd(self, other):
-        """Greatest common divisor of monomials. """
+        """Greatest common divisor of monomials."""
         if isinstance(other, Monomial):
             exponents = tuple(other)
         elif isinstance(other, (tuple, Tuple)):
@@ -154,7 +154,7 @@ class Monomial:
         return self.__class__(monomial_gcd(self, exponents), self.gens)
 
     def lcm(self, other):
-        """Least common multiple of monomials. """
+        """Least common multiple of monomials."""
         if isinstance(other, Monomial):
             exponents = tuple(other)
         elif isinstance(other, (tuple, Tuple)):
