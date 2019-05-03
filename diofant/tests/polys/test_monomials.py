@@ -75,10 +75,10 @@ def test_Monomial():
 
     pytest.raises(ValueError, lambda: l.as_expr())
 
-    assert m.exponents == (3, 4, 1)
+    assert tuple(m) == (3, 4, 1)
     assert m.gens == (x, y, z)
 
-    assert n.exponents == (1, 2, 0)
+    assert tuple(n) == (1, 2, 0)
     assert n.gens == (x, y, z)
 
     assert m == (3, 4, 1)
@@ -129,4 +129,4 @@ def test_Monomial():
     assert m/Monomial((5, 2, 0)) == (-2, 2, 1)
 
     assert str(m) == "x**3*y**4*z**1"
-    assert str(l) == "Monomial((3, 4, 1))"
+    assert str(l) == "(3, 4, 1)"
