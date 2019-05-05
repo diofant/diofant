@@ -31,36 +31,6 @@ def itermonomials(variables, degree):
                 yield m * x**i
 
 
-def monomial_mul(A, B):
-    """Multiplication of tuples representing monomials."""
-    return tuple(a + b for a, b in zip(A, B))
-
-
-def monomial_div(A, B):
-    """Division of tuples representing monomials."""
-    return tuple(a - b for a, b in zip(A, B))
-
-
-def monomial_pow(A, n):
-    """Return the n-th pow of the monomial."""
-    return tuple(a * n for a in A)
-
-
-def monomial_gcd(A, B):
-    """Greatest common divisor of tuples representing monomials."""
-    return tuple(min(a, b) for a, b in zip(A, B))
-
-
-def monomial_lcm(A, B):
-    """Least common multiple of tuples representing monomials."""
-    return tuple(max(a, b) for a, b in zip(A, B))
-
-
-def monomial_divides(A, B):
-    """Does there exist a monomial X such that XA == B?"""
-    return all(a <= b for a, b in zip(A, B))
-
-
 class Monomial(tuple, DefaultPrinting):
     """Class representing a monomial, i.e. a product of powers."""
 
@@ -111,6 +81,14 @@ class Monomial(tuple, DefaultPrinting):
             return self.__class__((a - b for a, b in zip(self, other)), self.gens)
         else:
             return NotImplemented
+
+    def divides(self, other):
+        """Check if self divides other."""
+        other, orig = self._get_val(other), other
+        if other is not None:
+            return all(a <= b for a, b in zip(self, other))
+        else:
+            raise TypeError("an instance of Monomial expected, got %s" % orig)
 
     def __pow__(self, other):
         """Return pow(self, other)."""

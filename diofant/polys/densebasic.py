@@ -5,7 +5,7 @@ import math
 import random
 
 from ..core import oo
-from .monomials import monomial_div, monomial_gcd
+from .monomials import Monomial
 
 
 def dmp_LC(f, K):
@@ -471,9 +471,9 @@ def dmp_to_dict(f, u):
             if u:
                 h = dmp_to_dict(f[n - k], v)
                 for exp, coeff in h.items():
-                    result[(k,) + exp] = coeff
+                    result[Monomial((k,) + exp)] = coeff
             else:
-                result[(k,)] = f[n - k]
+                result[Monomial((k,))] = f[n - k]
 
     return result
 
@@ -840,7 +840,7 @@ def dmp_terms_gcd(f, u, K):
         return (0,)*(u + 1), f
 
     F = dmp_to_dict(f, u)
-    G = functools.reduce(monomial_gcd, F)
+    G = functools.reduce(Monomial.gcd, F)
 
     if all(g == 0 for g in G):
         return G, f
@@ -848,7 +848,7 @@ def dmp_terms_gcd(f, u, K):
     f = {}
 
     for monom, coeff in F.items():
-        f[monomial_div(monom, G)] = coeff
+        f[monom/G] = coeff
 
     return G, dmp_from_dict(f, u, K)
 

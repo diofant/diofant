@@ -1,6 +1,6 @@
 """Implementation of matrix FGLM Gröbner basis conversion algorithm. """
 
-from .monomials import monomial_divides, monomial_mul
+from .monomials import Monomial
 
 
 def matrix_fglm(F, ring, O_to):
@@ -57,7 +57,7 @@ def matrix_fglm(F, ring, O_to):
             L = list(set(L))
             L.sort(key=lambda k_l: O_to(_incr_k(S[k_l[1]], k_l[0])), reverse=True)
 
-        L = [(k, l) for (k, l) in L if all(not monomial_divides(g.LM, _incr_k(S[l], k)) for g in G)]
+        L = [(k, l) for (k, l) in L if all(not g.LM.divides(_incr_k(S[l], k)) for g in G)]
 
         if not L:
             G = [g.monic() for g in G]
@@ -107,13 +107,13 @@ def _representing_matrices(basis, G, ring):
     u = ring.ngens-1
 
     def var(i):
-        return tuple([0] * i + [1] + [0] * (u - i))
+        return Monomial([0] * i + [1] + [0] * (u - i))
 
     def representing_matrix(m):
         M = [[domain.zero] * len(basis) for _ in range(len(basis))]
 
         for i, v in enumerate(basis):
-            r = ring.term_new(monomial_mul(m, v), domain.one).div(G)[1]
+            r = ring.term_new(m*v, domain.one).div(G)[1]
 
             for monom, coeff in r.terms():
                 j = basis.index(monom)
@@ -142,7 +142,7 @@ def _basis(G, ring):
         basis.append(t)
 
         new_candidates = [_incr_k(t, k) for k in range(ring.ngens)
-                          if all(not monomial_divides(lmg, _incr_k(t, k))
+                          if all(not lmg.divides(_incr_k(t, k))
                                  for lmg in leading_monomials)]
         candidates.extend(new_candidates)
         candidates.sort(key=lambda m: order(m), reverse=True)
