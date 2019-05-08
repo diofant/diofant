@@ -93,11 +93,7 @@ def _str_to_Decimal_dps(s):
     except decimal.InvalidOperation:
         raise ValueError('string-float not recognized: %s' % s)
     else:
-        dps = len(num.as_tuple().digits)
-        if num.is_finite():
-            if num.as_integer_ratio()[1] == 1 and '.' not in s:
-                dps = max(dps, num.adjusted() + 1)
-        return num, dps
+        return num, len(num.as_tuple().digits)
 
 
 @cacheit
@@ -453,7 +449,7 @@ class Float(Number):
     >>> Float(10**20)
     100000000000000000000.
     >>> Float('1e20')
-    100000000000000000000.
+    1.00000000000000e+20
 
     However, *floating-point* numbers (Python ``float`` types) retain
     only 15 digits of precision:
@@ -483,14 +479,9 @@ class Float(Number):
     0.012
     >>> Float(3, '')
     3.
-
-    If a number is written in scientific notation, only the digits before the
-    exponent are considered significant if a decimal appears, otherwise the
-    "e" signifies only how to move the decimal:
-
     >>> Float('60.e2', '')  # 2 digits significant
     6.0e+3
-    >>> Float('60e2', '')  # 4 digits significant
+    >>> Float('6000.', '')  # 4 digits significant
     6000.
     >>> Float('600e-2', '')  # 3 digits significant
     6.00
@@ -580,12 +571,13 @@ class Float(Number):
             num = 'nan'
 
         if dps is None:
-            dps = 15
             if isinstance(num, Float):
                 return num
             elif isinstance(num, (str, numbers.Integral)):
                 num, dps = _str_to_Decimal_dps(str(num))
                 dps = max(15, dps)
+            else:
+                dps = 15
         elif dps == '':
             if not isinstance(num, (str, numbers.Integral)):
                 raise ValueError('The null string can only be used when '
