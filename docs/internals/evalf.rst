@@ -133,7 +133,7 @@ imaginary portions of a number with exact zeros:
 In situations where you wish to remove meaningless digits, re-evaluation or
 the use of the ``round`` method are useful:
 
-    >>> Float('.1', '')*Float('.12345', '')
+    >>> Float('.1')*Float('.12345')
     0.012297
     >>> ans = _
     >>> N(ans, 1)

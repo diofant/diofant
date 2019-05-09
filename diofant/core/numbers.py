@@ -438,18 +438,18 @@ class Float(Number):
     >>> Float(3.5)
     3.50000000000000
     >>> Float(3)
-    3.00000000000000
+    3.
 
     Creating Floats from strings (and Python ``int`` type) will
     give a minimum precision of 15 digits, but the precision
     will automatically increase to capture all digits entered.
 
     >>> Float(1)
-    1.00000000000000
+    1.
     >>> Float(10**20)
     100000000000000000000.
     >>> Float('1e20')
-    1.00000000000000e+20
+    1.e+20
 
     However, *floating-point* numbers (Python ``float`` types) retain
     only 15 digits of precision:
@@ -472,18 +472,18 @@ class Float(Number):
     >>> Float(100, 4)
     100.0
 
-    Float can automatically count significant figures if a null string is sent
-    for the precision. (Auto-counting is only allowed for strings and ints).
+    Float can automatically count significant figures if decimal precision
+    argument is omitted. (Auto-counting is only allowed for strings and ints).
 
-    >>> Float('12e-3', '')
+    >>> Float('12e-3')
     0.012
-    >>> Float(3, '')
+    >>> Float(3)
     3.
-    >>> Float('60.e2', '')  # 2 digits significant
+    >>> Float('60.e2')  # 2 digits significant
     6.0e+3
-    >>> Float('6000.', '')  # 4 digits significant
+    >>> Float('6000.')  # 4 digits significant
     6000.
-    >>> Float('600e-2', '')  # 3 digits significant
+    >>> Float('600e-2')  # 3 digits significant
     6.00
 
     Notes
@@ -575,14 +575,8 @@ class Float(Number):
                 return num
             elif isinstance(num, (str, numbers.Integral)):
                 num, dps = _str_to_Decimal_dps(str(num))
-                dps = max(15, dps)
             else:
                 dps = 15
-        elif dps == '':
-            if not isinstance(num, (str, numbers.Integral)):
-                raise ValueError('The null string can only be used when '
-                                 'the number to Float is passed as a string or an integer.')
-            num, dps = _str_to_Decimal_dps(str(num))
 
         prec = mlib.libmpf.dps_to_prec(dps)
 

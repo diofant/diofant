@@ -149,8 +149,8 @@ def test_bool():
     pytest.raises(TypeError, lambda: Ge(I, 2))
     pytest.raises(TypeError, lambda: Lt(I, 2))
     pytest.raises(TypeError, lambda: Le(I, 2))
-    a = Float('.000000000000000000001', '')
-    b = Float('.0000000000000000000001', '')
+    a = Float('.000000000000000000001')
+    b = Float('.0000000000000000000001')
     assert Eq(pi + a, pi + b) is false
 
 

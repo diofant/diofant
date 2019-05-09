@@ -1729,33 +1729,33 @@ def test_sympyissue_5160_6087_6089_6090():
 def test_float_int():
     assert int(float(sqrt(10))) == int(sqrt(10))
     assert int(pi**1000) % 10 == 2
-    assert int(Float('1.123456789012345678901234567890e20', '')) == \
+    assert int(Float('1.123456789012345678901234567890e20')) == \
         int(112345678901234567890)
-    assert int(Float('1.123456789012345678901234567890e25', '')) == \
+    assert int(Float('1.123456789012345678901234567890e25')) == \
         int(11234567890123456789012345)
     # decimal forces float so it's not an exact integer ending in 000000
-    assert int(Float('1.123456789012345678901234567890e35', '')) == \
+    assert int(Float('1.123456789012345678901234567890e35')) == \
         112345678901234567890123456789000192
-    assert int(Float('123456789012345678901234567890e5', '')) == \
+    assert int(Float('123456789012345678901234567890e5')) == \
         12345678901234567890123456789000192
-    assert Integer(Float('1.123456789012345678901234567890e20', '')) == \
+    assert Integer(Float('1.123456789012345678901234567890e20')) == \
         112345678901234567890
-    assert Integer(Float('1.123456789012345678901234567890e25', '')) == \
+    assert Integer(Float('1.123456789012345678901234567890e25')) == \
         11234567890123456789012345
     # decimal forces float so it's not an exact integer ending in 000000
-    assert Integer(Float('1.123456789012345678901234567890e35', '')) == \
+    assert Integer(Float('1.123456789012345678901234567890e35')) == \
         112345678901234567890123456789000192
-    assert Integer(Float('123456789012345678901234567890e5', '')) == \
+    assert Integer(Float('123456789012345678901234567890e5')) == \
         12345678901234567890123456789000192
-    assert same_and_same_prec(Float('123000e-2', ''), Float('1230.00', ''))
-    assert same_and_same_prec(Float('123000e2', ''), Float('123000.e2', ''))
+    assert same_and_same_prec(Float('123000e-2'), Float('1230.00'))
+    assert same_and_same_prec(Float('123000e2'), Float('123000.e2'))
 
     assert int(1 + Rational('.9999999999999999999999999')) == 1
     assert int(pi/1e20) == 0
     assert int(1 + pi/1e20) == 1
     assert int(Add(1.2, -2, evaluate=False)) == int(1.2 - 2)
     assert int(Add(1.2, +2, evaluate=False)) == int(1.2 + 2)
-    assert int(Add(1 + Float('.99999999999999999', ''), evaluate=False)) == 1
+    assert int(Add(1 + Float('.99999999999999999'), evaluate=False)) == 1
     pytest.raises(TypeError, lambda: float(x))
     pytest.raises(TypeError, lambda: float(sqrt(-1)))
 

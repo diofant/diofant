@@ -588,7 +588,7 @@ def test_sympyissue_9398():
     assert simplify(1e-100) != 0
     assert simplify(1e-100*I) != 0
 
-    f = Float("1e-1000")
+    f = Float("1e-1000", 15)
     assert cancel(f) != 0
     assert cancel(f*I) != 0
 
