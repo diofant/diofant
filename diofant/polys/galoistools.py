@@ -4,7 +4,8 @@ import math
 import random
 
 from ..ntheory import factorint
-from .densearith import dup_lshift
+from .densearith import (dmp_add, dmp_add_term, dmp_mul, dmp_mul_ground,
+                         dmp_neg, dmp_sqr, dmp_sub, dup_lshift)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_normal,
                          dmp_strip)
 from .polyconfig import query
@@ -29,6 +30,20 @@ def gf_from_dict(f, p, K):
     return dmp_convert(f, 0, K.finite_field(p), K)
 
 
+def gf_trunc(f, p):
+    """
+    Reduce all coefficients modulo ``p``.
+
+    Examples
+    ========
+
+    >>> gf_trunc([7, -2, 3], 5)
+    [2, 3, 3]
+
+    """
+    return dmp_strip([a % p for a in f], 0)
+
+
 def gf_neg(f, p, K):
     """
     Negate a polynomial in ``GF(p)[x]``.
@@ -40,7 +55,7 @@ def gf_neg(f, p, K):
     [2, 3, 4, 0]
 
     """
-    return [-coeff % p for coeff in f]
+    return gf_trunc(dmp_neg(f, 0, K), p)
 
 
 def gf_add_ground(f, a, p, K):
@@ -54,18 +69,7 @@ def gf_add_ground(f, a, p, K):
     [3, 2, 1]
 
     """
-    if not f:
-        a = a % p
-    else:
-        a = (f[-1] + a) % p
-
-        if len(f) > 1:
-            return f[:-1] + [a]
-
-    if not a:
-        return []
-    else:
-        return [a]
+    return gf_trunc(dmp_add_term(f, a, 0, 0, K), p)
 
 
 def gf_sub_ground(f, a, p, K):
@@ -79,18 +83,7 @@ def gf_sub_ground(f, a, p, K):
     [3, 2, 2]
 
     """
-    if not f:
-        a = -a % p
-    else:
-        a = (f[-1] - a) % p
-
-        if len(f) > 1:
-            return f[:-1] + [a]
-
-    if not a:
-        return []
-    else:
-        return [a]
+    return gf_trunc(dmp_add_term(f, -a, 0, 0, K), p)
 
 
 def gf_mul_ground(f, a, p, K):
@@ -104,10 +97,7 @@ def gf_mul_ground(f, a, p, K):
     [1, 4, 3]
 
     """
-    if not a:
-        return []
-    else:
-        return [(a*b) % p for b in f]
+    return gf_trunc(dmp_mul_ground(f, a, 0, K), p)
 
 
 def gf_quo_ground(f, a, p, K):
@@ -135,25 +125,7 @@ def gf_add(f, g, p, K):
     [4, 1]
 
     """
-    if not f:
-        return g
-    if not g:
-        return f
-
-    df = dmp_degree_in(f, 0, 0)
-    dg = dmp_degree_in(g, 0, 0)
-
-    if df == dg:
-        return dmp_strip([(a + b) % p for a, b in zip(f, g)], 0)
-    else:
-        k = abs(df - dg)
-
-        if df > dg:
-            h, f = f[:k], f[k:]
-        else:
-            h, g = g[:k], g[k:]
-
-        return h + [(a + b) % p for a, b in zip(f, g)]
+    return gf_trunc(dmp_add(f, g, 0, K), p)
 
 
 def gf_sub(f, g, p, K):
@@ -167,25 +139,7 @@ def gf_sub(f, g, p, K):
     [1, 0, 2]
 
     """
-    if not g:
-        return f
-    if not f:
-        return gf_neg(g, p, K)
-
-    df = dmp_degree_in(f, 0, 0)
-    dg = dmp_degree_in(g, 0, 0)
-
-    if df == dg:
-        return dmp_strip([(a - b) % p for a, b in zip(f, g)], 0)
-    else:
-        k = abs(df - dg)
-
-        if df > dg:
-            h, f = f[:k], f[k:]
-        else:
-            h, g = gf_neg(g[:k], p, K), g[k:]
-
-        return h + [(a - b) % p for a, b in zip(f, g)]
+    return gf_trunc(dmp_sub(f, g, 0, K), p)
 
 
 def gf_mul(f, g, p, K):
@@ -199,24 +153,7 @@ def gf_mul(f, g, p, K):
     [1, 0, 3, 2, 3]
 
     """
-    df = dmp_degree_in(f, 0, 0)
-    dg = dmp_degree_in(g, 0, 0)
-
-    dh = df + dg
-    if dh < 0:
-        return []
-
-    h = [0]*(dh + 1)
-
-    for i in range(dh + 1):
-        coeff = K.zero
-
-        for j in range(max(0, i - dg), min(i, df) + 1):
-            coeff += f[j]*g[i - j]
-
-        h[i] = coeff % p
-
-    return dmp_strip(h, 0)
+    return gf_trunc(dmp_mul(f, g, 0, K), p)
 
 
 def gf_sqr(f, p, K):
@@ -230,35 +167,7 @@ def gf_sqr(f, p, K):
     [4, 2, 3, 1, 1]
 
     """
-    df = dmp_degree_in(f, 0, 0)
-    if df < 0:
-        return []
-
-    dh = 2*df
-    h = [0]*(dh + 1)
-
-    for i in range(dh + 1):
-        coeff = K.zero
-
-        jmin = max(0, i - df)
-        jmax = min(i, df)
-
-        n = jmax - jmin + 1
-
-        jmax = jmin + n // 2 - 1
-
-        for j in range(jmin, jmax + 1):
-            coeff += f[j]*f[i - j]
-
-        coeff += coeff
-
-        if n & 1:
-            elem = f[jmax + 1]
-            coeff += elem**2
-
-        h[i] = coeff % p
-
-    return dmp_strip(h, 0)
+    return gf_trunc(dmp_sqr(f, 0, K), p)
 
 
 def gf_div(f, g, p, K):
@@ -335,27 +244,7 @@ def gf_quo(f, g, p, K):
     [3, 2, 4]
 
     """
-    df = dmp_degree_in(f, 0, 0)
-    dg = dmp_degree_in(g, 0, 0)
-
-    if not g:
-        raise ZeroDivisionError("polynomial division")
-    elif df < dg:
-        return []
-
-    inv = K.invert(g[0], p)
-
-    h, dq, dr = f[:], df - dg, dg - 1
-
-    for i in range(dq + 1):
-        coeff = h[i]
-
-        for j in range(max(0, dg - i), min(df - i, dr) + 1):
-            coeff -= h[i + j - dg] * g[dg - j]
-
-        h[i] = (coeff * inv) % p
-
-    return h[:dq + 1]
+    return gf_div(f, g, p, K)[0]
 
 
 def gf_exquo(f, g, p, K):
