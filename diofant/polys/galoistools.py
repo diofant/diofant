@@ -5,11 +5,10 @@ import random
 
 from ..ntheory import factorint
 from .densearith import (dmp_add, dmp_add_term, dmp_mul, dmp_mul_ground,
-                         dmp_neg, dmp_sqr, dmp_sub, dup_lshift)
+                         dmp_sqr, dmp_sub, dup_lshift)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_normal,
                          dmp_strip)
 from .polyconfig import query
-from .polyerrors import ExactQuotientFailed
 from .polyutils import _sort_factors
 
 
@@ -42,20 +41,6 @@ def gf_trunc(f, p):
 
     """
     return dmp_strip([a % p for a in f], 0)
-
-
-def gf_neg(f, p, K):
-    """
-    Negate a polynomial in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_neg([3, 2, 1, 0], 5, ZZ)
-    [2, 3, 4, 0]
-
-    """
-    return gf_trunc(dmp_neg(f, 0, K), p)
 
 
 def gf_add_ground(f, a, p, K):
@@ -245,30 +230,6 @@ def gf_quo(f, g, p, K):
 
     """
     return gf_div(f, g, p, K)[0]
-
-
-def gf_exquo(f, g, p, K):
-    """
-    Compute polynomial quotient in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_exquo([1, 0, 3, 2, 3], [2, 2, 2], 5, ZZ)
-    [3, 2, 4]
-
-    >>> gf_exquo([1, 0, 1, 1], [1, 1, 0], 2, ZZ)
-    Traceback (most recent call last):
-    ...
-    ExactQuotientFailed: [1, 1, 0] does not divide [1, 0, 1, 1]
-
-    """
-    q, r = gf_div(f, g, p, K)
-
-    if not r:
-        return q
-    else:
-        raise ExactQuotientFailed(f, g)
 
 
 def gf_frobenius_monomial_base(g, p, K):
