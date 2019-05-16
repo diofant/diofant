@@ -86,8 +86,7 @@ class ProductOrder(MonomialOrder):
 
     >>> P = ProductOrder(
     ...     (lex, lambda m: m[:2]), # lex order on x_1 and x_2 of monomial
-    ...     (grlex, lambda m: m[2:]) # grlex on y_1, y_2, y_3
-    ... )
+    ...     (grlex, lambda m: m[2:]))  # grlex on y_1, y_2, y_3
     >>> P((2, 1, 1, 0, 0)) > P((1, 10, 0, 2, 0))
     True
 
@@ -129,7 +128,6 @@ class ProductOrder(MonomialOrder):
             return True
         if all(o.is_global is False for o, _ in self.args):
             return False
-        return
 
 
 class InverseOrder(MonomialOrder):

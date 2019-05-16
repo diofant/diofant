@@ -1,5 +1,5 @@
-from ...core import (Add, Dummy, Equality, Expr, Lambda, Mul, Pow, Rational, S,
-                     Tuple, oo, sympify, zoo)
+from ...core import (Add, Dummy, Equality, Expr, Integer, Lambda, Mul, Pow,
+                     Rational, Tuple, oo, sympify, zoo)
 from ...core.compatibility import as_int
 from ...core.function import Application, ArgumentIndexError
 from ...core.logic import fuzzy_and
@@ -32,7 +32,7 @@ class IdentityFunction(Lambda, metaclass=Singleton):
         return obj
 
 
-Id = S.IdentityFunction
+Id = IdentityFunction()
 
 ###############################################################################
 # ########################### ROOT and SQUARE ROOT FUNCTION ################# #
@@ -100,7 +100,7 @@ def sqrt(arg, **kwargs):
 
     """
     # arg = sympify(arg) is handled by Pow
-    return Pow(arg, S.Half, **kwargs)
+    return Pow(arg, Rational(1, 2), **kwargs)
 
 
 def cbrt(arg, **kwargs):
@@ -232,7 +232,7 @@ def root(arg, n, k=0, **kwargs):
     """
     n = sympify(n)
     if k:
-        return Pow(arg, S.One/n, **kwargs)*S.NegativeOne**(2*k/n)
+        return Pow(arg, 1/n, **kwargs)*(-1)**(2*k/n)
     return Pow(arg, 1/n, **kwargs)
 
 
@@ -282,11 +282,11 @@ def real_root(arg, n=None):
                 raise ValueError
         except ValueError:
             return root(arg, n)*Piecewise(
-                (S.One, ~Equality(im(arg), 0)),
-                (Pow(S.NegativeOne, S.One/n)**(2*floor(n/2)), And(
+                (1, ~Equality(im(arg), 0)),
+                (Pow(-1, Integer(1)/n)**(2*floor(n/2)), And(
                     Equality(n % 2, 1),
                     arg < 0)),
-                (S.One, True))
+                (1, True))
     else:
         rv = sympify(arg)
     n1pow = Transform(lambda x: -(-x.base)**x.exp,
@@ -408,7 +408,7 @@ class MinMaxBase(LatticeOp):
         for a in self.args:
             i += 1
             da = a.diff(s)
-            if da is S.Zero:
+            if da == 0:
                 continue
             df = self.fdiff(i)
             l.append(df * da)

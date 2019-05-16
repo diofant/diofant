@@ -4,11 +4,11 @@ from functools import reduce
 
 import mpmath
 
+from ...core import (Derivative, Dummy, Expr, Function, I, Integer, Mod, Mul,
+                     Ne, Rational, Tuple, ilcm, oo, pi, zoo)
+from ...core.function import ArgumentIndexError
 from .. import (acosh, acoth, asin, asinh, atan, atanh, cos, cosh, exp, log,
                 sin, sinh, sqrt)
-from ...core import (Derivative, Dummy, Expr, Function, I, Integer, Mod, Mul,
-                     Ne, Rational, S, Tuple, ilcm, oo, pi, zoo)
-from ...core.function import ArgumentIndexError
 
 
 class TupleArg(Tuple):
@@ -256,9 +256,9 @@ class hyper(TupleParametersBase):
         oo
 
         """
-        if any(a.is_integer and (a <= 0) is S.true for a in self.ap + self.bq):
-            aints = [a for a in self.ap if a.is_Integer and (a <= 0) is S.true]
-            bints = [a for a in self.bq if a.is_Integer and (a <= 0) is S.true]
+        if any(a.is_integer and a.is_nonpositive for a in self.ap + self.bq):
+            aints = [a for a in self.ap if a.is_Integer and a.is_nonpositive]
+            bints = [a for a in self.bq if a.is_Integer and a.is_nonpositive]
             if len(aints) < len(bints):
                 return Integer(0)
             popped = False
@@ -473,7 +473,7 @@ class meijerg(TupleParametersBase):
             G = meijerg(self.an, self.aother, b, self.bother, self.argument)
             return 1/self.argument * (self.bm[0]*self - G)
         else:
-            return S.Zero
+            return Integer(0)
 
     def _diff_wrt_parameter(self, idx):
         # Differentiation wrt a parameter can only be done in very special

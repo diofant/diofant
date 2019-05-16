@@ -29,14 +29,14 @@ The main references for this are:
 from collections import defaultdict
 
 from ..core import (Add, Dummy, E, Eq, Expr, Function, I, Integer, Mul, Ne,
-                    Pow, Rational, S, Tuple, Wild, cacheit, expand, expand_mul,
+                    Pow, Rational, Tuple, Wild, cacheit, expand, expand_mul,
                     expand_power_base, factor_terms, nan, oo, pi, symbols,
                     sympify, zoo)
 from ..core.compatibility import default_sort_key, ordered
 from ..functions import Heaviside, Piecewise, cos, meijerg, piecewise_fold, sin
 from ..functions.elementary.hyperbolic import (HyperbolicFunction,
                                                _rewrite_hyperbolics_as_exp)
-from ..logic import And, Not, Or
+from ..logic import And, Not, Or, false
 from ..logic.boolalg import BooleanAtom
 from ..simplify import collect, hyperexpand, powdenest
 from ..simplify.fu import sincos_to_sum
@@ -268,8 +268,8 @@ def _create_lookup_table(table):
 
     # Complete elliptic integrals K(z) and E(z)
     from ..functions import elliptic_k, elliptic_e
-    add(elliptic_k(t), [S.Half, S.Half], [], [0], [0], -t, S.Half)
-    add(elliptic_e(t), [S.Half, 3*S.Half], [], [0], [0], -t, -S.Half/2)
+    add(elliptic_k(t), [Rational(1, 2), Rational(1, 2)], [], [0], [0], -t, Rational(1, 2))
+    add(elliptic_e(t), [Rational(1, 2), 3*Rational(1, 2)], [], [0], [0], -t, -Rational(1, 2)/2)
 
 
 ####################################################################
@@ -890,10 +890,10 @@ def _rewrite_saxena(fac, po, g1, g2, x, full_pb=False):
     _, s = _get_coeff_exp(po, x)
     _, b1 = _get_coeff_exp(g1.argument, x)
     _, b2 = _get_coeff_exp(g2.argument, x)
-    if (b1 < 0) is S.true:
+    if b1.is_negative:
         b1 = -b1
         g1 = _flip_g(g1)
-    if (b2 < 0) is S.true:
+    if b2.is_negative:
         b2 = -b2
         g2 = _flip_g(g2)
     if not b1.is_Rational or not b2.is_Rational:
@@ -1045,7 +1045,7 @@ def _check_antecedents(g1, g2, x):
         lambda_c = (q - p)*abs(omega)**(1/(q - p))*cos(psi) \
             + (v - u)*abs(sigma)**(1/(v - u))*cos(theta)
         # the TypeError might be raised here, e.g. if lambda_c is NaN
-        if _eval_cond(lambda_c > 0) is not S.false:
+        if _eval_cond(lambda_c > 0) != false:
             c15 = (lambda_c > 0)
         else:
             def lambda_s0(c1, c2):
@@ -1163,7 +1163,7 @@ def _check_antecedents(g1, g2, x):
     # Let's short-circuit if this worked ...
     # the rest is corner-cases and terrible to read.
     r = Or(*conds)
-    if _eval_cond(r) is not S.false:
+    if _eval_cond(r) != false:
         return r
 
     conds += [And(m + n > p, Eq(t, 0), Eq(phi, 0), s.is_positive is True, bstar.is_positive is True, cstar.is_negative is True,
@@ -1448,11 +1448,11 @@ def _rewrite_single(f, x, recursive=True):
                 subs = subs_
                 if not isinstance(hint, bool):
                     hint = hint.subs(subs)
-                if hint == S.false:
+                if hint == false:
                     continue
                 if not isinstance(cond, (bool, BooleanAtom)):
                     cond = unpolarify(cond.subs(subs))
-                if _eval_cond(cond) is S.false:
+                if _eval_cond(cond) == false:
                     continue
                 if not isinstance(terms, list):
                     terms = terms(subs)
@@ -1593,7 +1593,7 @@ def _rewrite2(f, x):
             g2 = _rewrite_single(fac2, x, recursive)
             if g1 and g2:
                 cond = And(g1[1], g2[1])
-                if cond != S.false:
+                if cond != false:
                     return fac, po, g1[0], g2[0], cond
 
 
@@ -1668,7 +1668,7 @@ def _meijerint_indefinite_1(f, x):
 
         def tr(p):
             return [a + rho + 1 for a in p]
-        if any(b.is_integer and (b <= 0) is S.true for b in tr(g.bm)):
+        if any(b.is_integer and b.is_nonpositive for b in tr(g.bm)):
             r = -meijerg(
                 tr(g.an), tr(g.aother) + [1], tr(g.bm) + [0], tr(g.bother), t)
         else:
@@ -1764,7 +1764,7 @@ def meijerint_definite(f, x, a, b):
     x = d
 
     if a == b:
-        return S.Zero, True
+        return Integer(0), True
 
     results = []
     if a == -oo and b != oo:
@@ -1791,7 +1791,7 @@ def meijerint_definite(f, x, a, b):
             res1, cond1 = res1
             res2, cond2 = res2
             cond = _condsimp(And(cond1, cond2))
-            if cond == S.false:
+            if cond == false:
                 _debug('  But combined condition is always false.')
                 continue
             res = res1 + res2
@@ -1813,7 +1813,7 @@ def meijerint_definite(f, x, a, b):
     else:
         if b == oo:
             for split in _find_splitting_points(f, x):
-                if (a - split >= 0) is S.true:
+                if (a - split).is_nonnegative:
                     _debug('Trying x -> x + %s' % split)
                     res = _meijerint_definite_2(f.subs({x: x + split})
                                                 * Heaviside(x + split - a), x)
@@ -1928,7 +1928,7 @@ def _meijerint_definite_3(f, x):
 
     """
     res = _meijerint_definite_4(f, x)
-    if res and res[1] is not S.false:
+    if res and res[1] != false:
         return res
     if f.is_Add:
         _debug('Expanding and evaluating all terms.')
@@ -1940,7 +1940,7 @@ def _meijerint_definite_3(f, x):
                 res += r
                 conds += [c]
             c = And(*conds)
-            if c != S.false:
+            if c != false:
                 return res, c
 
 
@@ -1975,10 +1975,10 @@ def _meijerint_definite_4(f, x, only_double=False):
                 C, f = _rewrite_saxena_1(fac*C, po*x**s, f, x)
                 res += C*_int0oo_1(f, x)
                 cond = And(cond, _check_antecedents_1(f, x))
-                if cond == S.false:
+                if cond == false:
                     break
             cond = _my_unpolarify(cond)
-            if cond == S.false:
+            if cond == false:
                 _debug('But cond is always False.')
             else:
                 _debug('Result before branch substitutions is:', res)
@@ -2001,14 +2001,14 @@ def _meijerint_definite_4(f, x, only_double=False):
                     C, f1_, f2_ = r
                     _debug('Saxena subst for yielded:', C, f1_, f2_)
                     cond = And(cond, _check_antecedents(f1_, f2_, x))
-                    if cond == S.false:
+                    if cond == false:
                         break
                     res += C*_int0oo(f1_, f2_, x)
                 else:
                     continue
                 break
             cond = _my_unpolarify(cond)
-            if cond == S.false:
+            if cond == false:
                 _debug('But cond is always False (full_pb=%s).' % full_pb)
             else:
                 _debug('Result before branch substitutions is:', res)
@@ -2094,10 +2094,10 @@ def meijerint_inversion(f, x, t):
             C, f = _rewrite_inversion(fac*C, po*x**s, f, x)
             res += C*_int_inversion(f, x, t)
             cond = And(cond, _check_antecedents_inversion(f, x))
-            if cond == S.false:
+            if cond == false:
                 break
         cond = _my_unpolarify(cond)
-        if cond == S.false:
+        if cond == false:
             _debug('But cond is always False.')
         else:
             _debug('Result before branch substitution:', res)

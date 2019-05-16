@@ -1,5 +1,5 @@
-from ..core import (Add, Dummy, Expr, Mul, S, count_ops, expand_mul,
-                    factor_terms, ilcm, sympify)
+from ..core import (Add, Dummy, Expr, Integer, Mul, Rational, count_ops,
+                    expand_mul, factor_terms, ilcm, sympify)
 from ..core.compatibility import ordered
 from ..core.function import _mexpand
 from ..functions import log, root, sign, sqrt
@@ -11,7 +11,7 @@ from .powsimp import powdenest
 def is_sqrt(expr):
     """Return True if expr is a sqrt, otherwise False."""
 
-    return expr.is_Pow and expr.exp.is_Rational and abs(expr.exp) is S.Half
+    return expr.is_Pow and expr.exp.is_Rational and abs(expr.exp) == Rational(1, 2)
 
 
 def sqrt_depth(p):
@@ -144,7 +144,7 @@ def _sqrt_match(p):
 
     p = _mexpand(p)
     if p.is_Number:
-        res = (p, S.Zero, S.Zero)
+        res = (p, Integer(0), Integer(0))
     elif p.is_Add:
         pargs = sorted(p.args, key=default_sort_key)
         if all((x**2).is_Rational for x in pargs):
@@ -163,7 +163,7 @@ def _sqrt_match(p):
             depth, _, i = nmax
             r = pargs.pop(i)
             v.pop(i)
-            b = S.One
+            b = Integer(1)
             if r.is_Mul:
                 bv = []
                 rv = []
@@ -200,7 +200,7 @@ def _sqrt_match(p):
     else:
         b, r = p.as_coeff_Mul()
         if is_sqrt(r):
-            res = (S.Zero, b, r**2)
+            res = (Integer(0), b, r**2)
         else:
             res = []
     return list(res)
@@ -215,7 +215,7 @@ def _sqrtdenest0(expr):
 
     if is_sqrt(expr):
         n, d = expr.as_numer_denom()
-        if d is S.One:  # n is a square root
+        if d == 1:  # n is a square root
             if n.base.is_Add:
                 args = sorted(n.base.args, key=default_sort_key)
                 if len(args) > 2 and all((x**2).is_Integer for x in args):
@@ -704,7 +704,7 @@ def unrad(eq, *syms, **flags):
         # return leading Rational of denominator of Pow's exponent
         c = pow.as_base_exp()[1].as_coeff_Mul()[0]
         if not c.is_Rational:
-            return S.One
+            return Integer(1)
         return c.denominator
 
     # define the _take method that will determine whether a term is of interest

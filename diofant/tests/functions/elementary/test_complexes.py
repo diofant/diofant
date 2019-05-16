@@ -214,7 +214,7 @@ def test_sign():
     assert sign(x).is_imaginary is None
     assert sign(x).is_integer is None
     assert sign(x).is_extended_real is None
-    assert sign(x).is_zero is False
+    assert sign(x).is_nonzero is True
     assert sign(x).doit() == x / Abs(x)
     assert sign(Abs(x)) == 1
     assert Abs(sign(x)) == 1
@@ -223,7 +223,7 @@ def test_sign():
     assert sign(x).is_imaginary is False
     assert sign(x).is_integer is True
     assert sign(x).is_extended_real is True
-    assert sign(x).is_zero is False
+    assert sign(x).is_nonzero is True
     assert sign(x).doit() == x / Abs(x)
     assert sign(Abs(x)) == 1
     assert Abs(sign(x)) == 1
@@ -241,7 +241,7 @@ def test_sign():
     assert sign(nz).is_imaginary is False
     assert sign(nz).is_integer is True
     assert sign(nz).is_extended_real is True
-    assert sign(nz).is_zero is False
+    assert sign(nz).is_nonzero is True
     assert sign(nz)**2 == 1
     assert (sign(nz)**3).args == (sign(nz), 3)
 
@@ -437,27 +437,27 @@ def test_Abs_properties():
     assert Abs(z).is_extended_real is True
     assert Abs(z).is_rational is None
     assert Abs(z).is_positive is True
-    assert Abs(z).is_zero is False
-    assert Abs(z).is_finite
+    assert Abs(z).is_nonzero is True
+    assert Abs(z).is_finite is True
 
     p = Symbol('p', positive=True)
     assert Abs(p).is_extended_real is True
     assert Abs(p).is_rational is None
     assert Abs(p).is_positive is True
-    assert Abs(p).is_zero is False
+    assert Abs(p).is_nonzero is True
 
     q = Symbol('q', rational=True)
     assert Abs(q).is_rational is True
     assert Abs(q).is_integer is None
     assert Abs(q).is_positive is None
     assert Abs(q).is_nonnegative is True
-    assert Abs(q).is_finite
+    assert Abs(q).is_finite is True
 
     i = Symbol('i', integer=True)
     assert Abs(i).is_integer is True
     assert Abs(i).is_positive is None
     assert Abs(i).is_nonnegative is True
-    assert Abs(i).is_finite
+    assert Abs(i).is_finite is True
 
     e = Symbol('n', even=True)
     ne = Symbol('ne', extended_real=True, even=False)

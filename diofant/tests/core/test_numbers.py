@@ -370,13 +370,13 @@ def test_Float():
     assert Float('+inf').is_negative is False
     assert Float('+inf').is_positive is True
     assert Float('+inf').is_infinite is True
-    assert Float('+inf').is_zero is False
+    assert Float('+inf').is_nonzero is True
 
     assert Float('-inf').is_finite is False
     assert Float('-inf').is_negative is True
     assert Float('-inf').is_positive is False
     assert Float('-inf').is_infinite is True
-    assert Float('-inf').is_zero is False
+    assert Float('-inf').is_nonzero is True
 
     assert Float('0.0').is_finite is True
     assert Float('0.0').is_negative is False
@@ -1428,8 +1428,8 @@ def test_approximation_interval():
 def test_sympyissue_6640():
     # fnan is not included because Float no longer returns fnan,
     # but otherwise, the same sort of test could apply
-    assert Float(finf).is_zero is False
-    assert Float(fninf).is_zero is False
+    assert Float(finf).is_nonzero is True
+    assert Float(fninf).is_nonzero is True
     assert bool(Float(0)) is False
 
 

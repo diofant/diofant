@@ -12,6 +12,8 @@ New features
 Major changes
 =============
 
+* :class:`~diofant.polys.polytools.Poly` now use sparse polynomial representation (via :class:`~diofant.polys.rings.PolyElement`) internally, see :pull:`795`.
+
 Compatibility breaks
 ====================
 
@@ -19,6 +21,12 @@ Compatibility breaks
 * ``is_monomial`` attribute of :class:`~diofant.polys.polytools.Poly` renamed to :attr:`~diofant.polys.polytools.Poly.is_term`, see :pull:`780`.
 * Removed ``log()`` helper from :class:`~diofant.domains.RationalField`, see :pull:`787`.
 * Removed ``seterr()`` function, see :pull:`794`.
+* Removed ``DMP`` class, see :pull:`795`.
+* Removed ``ring_series`` module, see :pull:`820`.
+* :class:`~diofant.core.relational.Equality` doesn't support single-argument call, see :pull:`828`.
+* Removed ``is_nonnegative()`` and ``is_nonpositive()`` methods of :class:`~diofant.domains.domain.Domain` subclasses, see :pull:`834`.
+* Former ``fast=True`` option is now a default for :meth:`~diofant.polys.polytools.Poly.intervals` and :meth:`~diofant.polys.polytools.Poly.refine_root`, see :pull:`834`.
+* Change order of keyword arguments for :meth:`~diofant.polys.rings.PolyElement.integrate`, see :pull:`834`.
 
 Minor changes
 =============
@@ -76,3 +84,10 @@ These Sympy issues also were addressed:
 * :sympyissue:`10211` integrate((1/sqrt(((y-x)**2 + h**2))**3), (x,0,w), (y,0,w)) is wrong
 * :sympyissue:`11806` Incorrectly evaluating integral
 * :sympyissue:`12325` string formatting error in dmp_integrate_in
+* :sympyissue:`16222` Poly(E**100000000) is slow to create
+* :sympyissue:`15413` rootof fails for polynomial with irrational coefficients
+* :sympyissue:`16432` a.is_even does not imply a.is_finite
+* :sympyissue:`16431` a.is_zero is False does not imply a.is_nonzero is True
+* :sympyissue:`16530` (1/x).is_real should be None if x can be zero
+* :sympyissue:`16562` Eq with 1 argument is allowed?
+* :sympyissue:`16589` roots gives incorrect result

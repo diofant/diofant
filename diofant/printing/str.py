@@ -5,7 +5,7 @@ A Printer for generating readable representation of most diofant classes.
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from ..core import Mul, Pow, Rational, S, oo
+from ..core import Integer, Mul, Pow, Rational, S, oo
 from ..core.mul import _keep_coeff
 from ..utilities import default_sort_key
 from .defaults import DefaultPrinting
@@ -264,7 +264,7 @@ class StrPrinter(Printer):
             else:
                 a.append(item)
 
-        a = a or [S.One]
+        a = a or [Integer(1)]
 
         a_str = [self.parenthesize(x, prec) for x in a]
         b_str = [self.parenthesize(x, prec) for x in b]
@@ -295,7 +295,7 @@ class StrPrinter(Printer):
         return '-oo'
 
     def _print_Order(self, expr):
-        if all(p is S.Zero for p in expr.point) or not len(expr.variables):
+        if all(p == 0 for p in expr.point) or not len(expr.variables):
             if len(expr.variables) <= 1:
                 return 'O(%s)' % self._print(expr.expr)
             else:
@@ -396,11 +396,11 @@ class StrPrinter(Printer):
                     s_coeff = self._print(coeff)
             else:
                 if s_monom:
-                    if coeff is S.One:
+                    if coeff == 1:
                         terms.extend(['+', s_monom])
                         continue
 
-                    if coeff is S.NegativeOne:
+                    if coeff == -1:
                         terms.extend(['-', s_monom])
                         continue
 
@@ -450,16 +450,13 @@ class StrPrinter(Printer):
     def _print_Pow(self, expr, rational=False):
         PREC = precedence(expr)
 
-        if expr.exp is S.Half and not rational:
+        if not expr.exp.is_Float and expr.exp == Rational(1, 2) and not rational:
             return "sqrt(%s)" % self._print(expr.base)
 
-        if expr.is_commutative:
-            if -expr.exp is S.Half and not rational:
-                # Note: Don't test "expr.exp == -S.Half" here, because that will
-                # match -0.5, which we don't want.
+        if expr.is_commutative and not expr.exp.is_Float:
+            if -expr.exp == Rational(1, 2) and not rational:
                 return "1/sqrt(%s)" % self._print(expr.base)
-            if expr.exp is -S.One:
-                # Similarly to the S.Half case, don't test with "==" here.
+            if expr.exp == -1:
                 return '1/%s' % self.parenthesize(expr.base, PREC)
 
         e = self.parenthesize(expr.exp, PREC)
@@ -623,13 +620,6 @@ class StrPrinter(Printer):
 
     def _print_Zero(self, expr):
         return "0"
-
-    def _print_DMP(self, p):
-        cls = p.__class__.__name__
-        rep = self._print(p.rep)
-        dom = self._print(p.domain)
-
-        return "%s(%s, %s)" % (cls, rep, dom)
 
     def _print_BaseScalarField(self, field):
         return field._coord_sys._names[field._index]

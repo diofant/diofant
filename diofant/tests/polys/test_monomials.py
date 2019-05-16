@@ -1,40 +1,34 @@
 """Tests for tools and arithmetics for monomials of distributed polynomials. """
 
+import functools
+
 import pytest
 
 from diofant.abc import a, b, c, x, y, z
-from diofant.domains import QQ, ZZ
-from diofant.polys.monomials import (Monomial, itermonomials, monomial_count,
-                                     monomial_deg, monomial_div,
+from diofant.polys.monomials import (Monomial, itermonomials, monomial_div,
                                      monomial_divides, monomial_gcd,
-                                     monomial_lcm, monomial_max, monomial_min,
-                                     monomial_mul, monomial_pow, term_div)
-from diofant.polys.polyerrors import ExactQuotientFailed
+                                     monomial_lcm, monomial_mul, monomial_pow)
 
 
 __all__ = ()
 
 
 def test_monomials():
-    assert itermonomials([], 0) == {1}
-    assert itermonomials([], 1) == {1}
-    assert itermonomials([], 2) == {1}
-    assert itermonomials([], 3) == {1}
+    assert set(itermonomials([], 0)) == {1}
+    assert set(itermonomials([], 1)) == {1}
+    assert set(itermonomials([], 2)) == {1}
+    assert set(itermonomials([], 3)) == {1}
 
-    assert itermonomials([x], 0) == {1}
-    assert itermonomials([x], 1) == {1, x}
-    assert itermonomials([x], 2) == {1, x, x**2}
-    assert itermonomials([x], 3) == {1, x, x**2, x**3}
+    assert set(itermonomials([x], 0)) == {1}
+    assert set(itermonomials([x], 1)) == {1, x}
+    assert set(itermonomials([x], 2)) == {1, x, x**2}
+    assert set(itermonomials([x], 3)) == {1, x, x**2, x**3}
 
-    assert itermonomials([x, y], 0) == {1}
-    assert itermonomials([x, y], 1) == {1, x, y}
-    assert itermonomials([x, y], 2) == {1, x, y, x**2, y**2, x*y}
-    assert itermonomials([x, y], 3) == {1, x, y, x**2, x**3, y**2, y**3, x*y, x*y**2, y*x**2}
-
-
-def test_monomial_count():
-    assert monomial_count(2, 2) == 6
-    assert monomial_count(2, 3) == 10
+    assert set(itermonomials([x, y], 0)) == {1}
+    assert set(itermonomials([x, y], 1)) == {1, x, y}
+    assert set(itermonomials([x, y], 2)) == {1, x, y, x**2, y**2, x*y}
+    assert set(itermonomials([x, y], 3)) == {1, x, y, x**2, x**3, y**2,
+                                             y**3, x*y, x*y**2, y*x**2}
 
 
 def test_monomial_mul():
@@ -51,34 +45,21 @@ def test_monomial_pow():
 
 def test_monomial_gcd():
     assert monomial_gcd((3, 4, 1), (1, 2, 0)) == (1, 2, 0)
+    assert monomial_gcd((1, 4, 1), (3, 2, 0)) == (1, 2, 0)
+    assert functools.reduce(monomial_gcd, ((3, 4, 5), (0, 5, 1),
+                                           (6, 3, 9))) == (0, 3, 1)
 
 
 def test_monomial_lcm():
     assert monomial_lcm((3, 4, 1), (1, 2, 0)) == (3, 4, 1)
-
-
-def test_monomial_max():
-    assert monomial_max((3, 4, 5), (0, 5, 1), (6, 3, 9)) == (6, 5, 9)
-
-
-def test_monomial_min():
-    assert monomial_min((3, 4, 5), (0, 5, 1), (6, 3, 9)) == (0, 3, 1)
-
-
-def test_monomial_deg():
-    assert monomial_deg((1, 2)) == 3
+    assert monomial_lcm((1, 4, 1), (3, 2, 0)) == (3, 4, 1)
 
 
 def test_monomial_divides():
     assert monomial_divides((1, 2, 3), (4, 5, 6)) is True
     assert monomial_divides((1, 2, 3), (0, 5, 6)) is False
-
-
-def test_term_div():
-    assert term_div(((3, 4, 1), 1), ((1, 2, 0), 1), QQ) == ((2, 2, 1), 1)
-    assert term_div(((3, 4, 1), 1), ((1, 2, 0), 1), ZZ) == ((2, 2, 1), 1)
-    assert term_div(((3, 4, 1), 1), ((1, 2, 2), 1), ZZ) is None
-    assert term_div(((3, 4, 1), 1), ((1, 2, 2), 1), QQ) is None
+    assert monomial_divides((1, 2), (3, 4)) is True
+    assert monomial_divides((1, 2), (0, 2)) is False
 
 
 def test_Monomial():
@@ -145,7 +126,7 @@ def test_Monomial():
 
     pytest.raises(ValueError, lambda: m**-3)
 
-    pytest.raises(ExactQuotientFailed, lambda: m/Monomial((5, 2, 0)))
+    assert m/Monomial((5, 2, 0)) == (-2, 2, 1)
 
     assert str(m) == "x**3*y**4*z**1"
     assert str(l) == "Monomial((3, 4, 1))"

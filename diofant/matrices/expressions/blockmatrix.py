@@ -2,8 +2,9 @@ from strategies import condition, do_one, exhaust
 from strategies.core import typed
 from strategies.traverse import bottom_up
 
-from ...core import Add, Expr, S, sympify
+from ...core import Add, Expr, Integer, sympify
 from ...core.strategies import unpack
+from ...logic import false
 from ...utilities import sift
 from .determinant import Determinant
 from .inverse import Inverse
@@ -50,7 +51,7 @@ class BlockMatrix(MatrixExpr):
 
     @property
     def shape(self):
-        numrows = numcols = S.Zero
+        numrows = numcols = Integer(0)
         M = self.blocks
         for i in range(M.shape[0]):
             numrows += M[i, 0].shape[0]
@@ -141,12 +142,12 @@ class BlockMatrix(MatrixExpr):
     def _entry(self, i, j):
         # Find row entry
         for row_block, numrows in enumerate(self.rowblocksizes):  # pragma: no branch
-            if (i < numrows) is not S.false:
+            if (i < numrows) != false:
                 break
             else:
                 i -= numrows
         for col_block, numcols in enumerate(self.colblocksizes):  # pragma: no branch
-            if (j < numcols) is not S.false:
+            if (j < numcols) != false:
                 break
             else:
                 j -= numcols

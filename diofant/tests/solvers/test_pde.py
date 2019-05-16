@@ -44,7 +44,7 @@ def test_pde_separate_mul():
     r, theta, z = symbols('r,theta,z')
 
     # Something simple :)
-    eq = Eq(diff(F(x, y, z), x) + diff(F(x, y, z), y) + diff(F(x, y, z), z))
+    eq = Eq(diff(F(x, y, z), x) + diff(F(x, y, z), y) + diff(F(x, y, z), z), 0)
 
     # Duplicate arguments in functions
     pytest.raises(ValueError, lambda: pde_separate_mul(eq, F(x, y, z), [X(x), u(z, z)]))
@@ -65,7 +65,7 @@ def test_pde_separate_mul():
 
     # Laplace equation in cylindrical coords
     eq = Eq(1/r * diff(Phi(r, theta, z), r) + diff(Phi(r, theta, z), r, 2) +
-            1/r**2 * diff(Phi(r, theta, z), theta, 2) + diff(Phi(r, theta, z), z, 2))
+            1/r**2 * diff(Phi(r, theta, z), theta, 2) + diff(Phi(r, theta, z), z, 2), 0)
     # Separate z
     res = pde_separate_mul(eq, Phi(r, theta, z), [Z(z), u(theta, r)])
     assert res == [diff(Z(z), z, z)/Z(z),
@@ -90,7 +90,7 @@ def test_pde_separate_mul():
     eq = Eq(diff(Xi(r, phi, theta), r, 2) + 2/r * diff(Xi(r, phi, theta), r) +
             1/(r**2 * sin(phi)**2) * diff(Xi(r, phi, theta), theta, 2) +
             cos(phi)/(r**2 * sin(phi)) * diff(Xi(r, phi, theta), phi) +
-            1/r**2 * diff(Xi(r, phi, theta), phi, 2))
+            1/r**2 * diff(Xi(r, phi, theta), phi, 2), 0)
     res_theta = pde_separate(eq, Xi(r, phi, theta), [Theta(theta), u(r, phi)])
     eq_left = Eq(res_theta[1], -C1)
     res_theta = pde_separate(eq_left, u(r, phi), [Phi(phi), R(r)])
@@ -136,7 +136,7 @@ def test_pde_classify():
                                        'order': 1}
     assert classify_pde(2*u.diff(x, y, y)) == ()
 
-    eq = Eq(1 + (2*(u.diff(x)/u)) + (3*(u.diff(y)/u)))
+    eq = Eq(1 + (2*(u.diff(x)/u)) + (3*(u.diff(y)/u)), 0)
     assert classify_pde(eq) == ('1st_linear_constant_coeff_homogeneous',)
 
 

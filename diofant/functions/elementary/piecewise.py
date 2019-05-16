@@ -1,8 +1,10 @@
-from ...core import Basic, Dummy, Equality, Expr, Function, S, Tuple, diff, oo
+from ...core import (Basic, Dummy, Equality, Expr, Function, Integer, Tuple,
+                     diff, oo)
 from ...core.compatibility import default_sort_key
 from ...core.relational import Relational
 from ...logic import And, Not, Or, false, true
 from ...logic.boolalg import Boolean, distribute_and_over_or
+from ...sets import Reals
 from .miscellaneous import Max, Min
 
 
@@ -10,9 +12,9 @@ class ExprCondPair(Tuple):
     """Represents an expression, condition pair."""
 
     def __new__(cls, expr, cond):
-        if cond == S.true:
+        if cond == true:
             return Tuple.__new__(cls, expr, true)
-        elif cond == S.false:
+        elif cond == false:
             return Tuple.__new__(cls, expr, false)
         return Tuple.__new__(cls, expr, cond)
 
@@ -85,7 +87,7 @@ class Piecewise(Function):
                     "Cond %s is of type %s, but must be a Relational,"
                     " Boolean, or a built-in bool." % (cond, type(cond)))
             newargs.append(pair)
-            if cond == S.true:
+            if cond == true:
                 break
 
         if options.pop('evaluate', True):
@@ -158,7 +160,7 @@ class Piecewise(Function):
 
     def _eval_as_leading_term(self, x):
         for e, c in self.args:  # pragma: no branch
-            if c == S.true or c.subs({x: 0}) == S.true:
+            if c == true or c.subs({x: 0}) == true:
                 return e.as_leading_term(x)
 
     def _eval_adjoint(self):
@@ -199,40 +201,40 @@ class Piecewise(Function):
 
         mul = 1
         if a == b:
-            return S.Zero
-        elif (a > b) is S.true:
+            return Integer(0)
+        elif (a > b) == true:
             a, b, mul = b, a, -1
-        elif (a <= b) is not S.true:
+        elif (a <= b) != true:
             newargs = []
             for e, c in self.args:
                 intervals = self._sort_expr_cond(
                     sym, -oo, oo, c)
                 values = []
                 for lower, upper, expr in intervals:
-                    if (a < lower) is S.true:
+                    if (a < lower) == true:
                         mid = lower
                         rep = b
                         val = e._eval_interval(sym, mid, b)
                         val += self._eval_interval(sym, a, mid)
-                    elif (a > upper) is S.true:
+                    elif (a > upper) == true:
                         mid = upper
                         rep = b
                         val = e._eval_interval(sym, mid, b)
                         val += self._eval_interval(sym, a, mid)
-                    elif (a >= lower) is S.true and (a <= upper) is S.true:
+                    elif (a >= lower) == true and (a <= upper) == true:
                         rep = b
                         val = e._eval_interval(sym, a, b)
-                    elif (b < lower) is S.true:
+                    elif (b < lower) == true:
                         mid = lower
                         rep = a
                         val = e._eval_interval(sym, a, mid)
                         val += self._eval_interval(sym, mid, b)
-                    elif (b > upper) is S.true:
+                    elif (b > upper) == true:
                         mid = upper
                         rep = a
                         val = e._eval_interval(sym, a, mid)
                         val += self._eval_interval(sym, mid, b)
-                    elif ((b >= lower) is S.true) and ((b <= upper) is S.true):
+                    elif ((b >= lower) == true) and ((b <= upper) == true):
                         rep = a
                         val = e._eval_interval(sym, a, b)
                     else:
@@ -246,7 +248,7 @@ class Piecewise(Function):
                     newargs.append((e, c))
                 else:
                     for i in range(len(values)):
-                        newargs.append((values[i], (c == S.true and i == len(values) - 1) or
+                        newargs.append((values[i], (c == true and i == len(values) - 1) or
                                         And(rep >= intervals[i][0], rep <= intervals[i][1])))
             return self.func(*newargs)
 
@@ -299,10 +301,10 @@ class Piecewise(Function):
                     expr_cond.append((expr, cond2))
             else:
                 expr_cond.append((expr, cond))
-            if cond == S.true:
+            if cond == true:
                 break
         for expr, cond in expr_cond:
-            if cond == S.true:
+            if cond == true:
                 independent_expr_cond.append((expr, cond))
                 default = self.func(*independent_expr_cond)
                 break
@@ -355,7 +357,7 @@ class Piecewise(Function):
                         self.__eval_cond(upper == int_expr[n][1]):
                     upper = Min(upper, int_expr[n][0])
                 elif len(int_expr[n][1].free_symbols) and \
-                        (lower >= int_expr[n][0]) is not S.true and \
+                        (lower >= int_expr[n][0]) != true and \
                         (int_expr[n][1] == Min(lower, upper)) is not True:
                     upper = Min(upper, int_expr[n][0])
                 elif self.__eval_cond(upper > int_expr[n][0]) and \
@@ -399,19 +401,19 @@ class Piecewise(Function):
         holes = []
         curr_low = a
         for int_a, int_b, expr in int_expr:
-            if (curr_low < int_a) is S.true:
+            if (curr_low < int_a) == true:
                 holes.append([curr_low, Min(b, int_a), default])
-            elif (curr_low >= int_a) is not S.true:
+            elif (curr_low >= int_a) != true:
                 holes.append([curr_low, Min(b, int_a), default])
             curr_low = Min(b, int_b)
-        if (curr_low < b) is S.true:
+        if (curr_low < b) == true:
             holes.append([Min(b, curr_low), b, default])
-        elif (curr_low >= b) is not S.true:
+        elif (curr_low >= b) != true:
             holes.append([Min(b, curr_low), b, default])
 
         if holes and default is not None:
             int_expr.extend(holes)
-            if targetcond == S.true:
+            if targetcond == true:
                 return [(h[0], h[1], None) for h in holes]
         elif holes and default is None:
             raise ValueError("Called interval evaluation over piecewise "
@@ -433,10 +435,10 @@ class Piecewise(Function):
         args = list(self.args)
         for i, (e, c) in enumerate(args):
             c = c._subs(old, new)
-            if c != S.false:
+            if c != false:
                 e = e._subs(old, new)
             args[i] = e, c
-            if c == S.true:
+            if c == true:
                 return self.func(*args)
 
         return self.func(*args)
@@ -504,7 +506,7 @@ class Piecewise(Function):
     @classmethod
     def __eval_cond(cls, cond):
         """Return the truth value of the condition."""
-        if cond == S.true:
+        if cond == true:
             return True
         if isinstance(cond, Equality):
             diff = cond.lhs - cond.rhs
@@ -514,7 +516,7 @@ class Piecewise(Function):
 
     def as_expr_set_pairs(self):
         exp_sets = []
-        U = S.Reals
+        U = Reals
         for expr, cond in self.args:
             cond_int = U.intersection(cond.as_set())
             U = U - cond_int

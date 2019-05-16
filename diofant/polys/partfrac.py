@@ -1,9 +1,11 @@
 """Algorithms for partial fraction decomposition of rational functions. """
 
+import itertools
+
+from ..core import (Add, Dummy, Function, Integer, Lambda, preorder_traversal,
+                    sympify)
+from ..utilities import numbered_symbols
 from . import Poly, RootSum, cancel, factor
-from ..core import (Add, Dummy, Function, Integer, Lambda, S,
-                    preorder_traversal, sympify)
-from ..utilities import numbered_symbols, take
 from .polyerrors import PolynomialError
 from .polyoptions import allowed_flags, set_defaults
 from .polytools import parallel_poly_from_expr
@@ -127,7 +129,7 @@ def apart(f, x=None, full=False, **options):
         else:
             partial = apart_full_decomposition(P, Q)
 
-    terms = S.Zero
+    terms = Integer(0)
 
     for term in Add.make_args(partial):
         if term.has(RootSum):
@@ -149,7 +151,7 @@ def apart_undetermined_coeffs(P, Q):
         n, q = f.degree(), Q
 
         for i in range(1, k + 1):
-            coeffs, q = take(X, n), q.quo(f)
+            coeffs, q = list(itertools.islice(X, n)), q.quo(f)
             partial.append((coeffs, q, f, i))
             symbols.extend(coeffs)
 
@@ -369,17 +371,17 @@ def apart_list_full_decomposition(P, Q, dummygen):
 
     for d, n in Q_sqf:
         b = d.as_expr()
-        U += [ u.diff(x, n - 1) ]
+        U += [u.diff(x, n - 1)]
 
         h = cancel(f*b**n) / u**n
 
         H, subs = [h], []
 
         for j in range(1, n):
-            H += [ H[-1].diff(x) / j ]
+            H += [H[-1].diff(x) / j]
 
         for j in range(1, n + 1):
-            subs += [ (U[j - 1], b.diff(x, j) / j) ]
+            subs += [(U[j - 1], b.diff(x, j) / j)]
 
         for j in range(n):
             P, Q = cancel(H[j]).as_numer_denom()

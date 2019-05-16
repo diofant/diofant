@@ -1,5 +1,5 @@
-from ..core import (Dummy, Expr, Float, PoleError, Rational, S, Symbol, nan,
-                    oo, sympify)
+from ..core import (Dummy, Expr, Float, Integer, PoleError, Rational, Symbol,
+                    nan, oo, sympify)
 from ..functions.elementary.trigonometric import cos, sin
 from .gruntz import limitinf
 from .order import Order
@@ -35,7 +35,7 @@ def heuristics(e, z, z0, dir):
     rv = None
 
     if abs(z0) is oo:
-        rv = limit(e.subs({z: 1/z}), z, S.Zero, "+" if z0 is oo else "-")
+        rv = limit(e.subs({z: 1/z}), z, Integer(0), "+" if z0 is oo else "-")
         if isinstance(rv, Limit):
             return
     elif e.is_Mul or e.is_Add or e.is_Pow or e.is_Function:

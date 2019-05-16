@@ -7,7 +7,7 @@ Point2D
 Point3D
 """
 
-from ..core import Add, Float, S, Tuple, sympify
+from ..core import Add, Float, Integer, Tuple, sympify
 from ..core.compatibility import iterable
 from ..core.evaluate import global_evaluate
 from ..functions import im, sqrt
@@ -199,7 +199,7 @@ class Point(GeometryEntity):
         0
 
         """
-        return S.Zero
+        return Integer(0)
 
     @property
     def origin(self):
@@ -284,7 +284,7 @@ class Point(GeometryEntity):
         Point2D(7, 3)
 
         """
-        return Point([simplify((a + b)*S.Half) for a, b in zip(self.args, p.args)])
+        return Point([simplify((a + b)/2) for a, b in zip(self.args, p.args)])
 
     def evalf(self, dps=15, **options):
         """Evaluate the coordinates of the point.
@@ -762,7 +762,7 @@ class Point3D(Point):
                     "Enter a 2 or 3 dimensional point")
         coords = Tuple(*args)
         if len(coords) == 2:
-            coords += S.Zero,
+            coords += Integer(0),
         if eval:
             coords = coords.xreplace({f: simplify(nsimplify(f, rational=True))
                                       for f in coords.atoms(Float)})

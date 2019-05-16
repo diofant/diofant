@@ -3,7 +3,7 @@
 import collections
 import re
 
-from ..core import Add, Mul, Pow, S, nan, oo, zoo
+from ..core import Add, Mul, Pow, nan, oo, zoo
 from ..core.compatibility import default_sort_key
 from ..core.exprtools import decompose_power
 from .polyerrors import GeneratorsError, GeneratorsNeeded, PolynomialError
@@ -204,7 +204,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
                         base, exp = decompose_power(factor)
 
                         if exp < 0:
-                            exp, base = -exp, Pow(base, -S.One)
+                            exp, base = -exp, Pow(base, -1)
 
                         monom[indices[base]] += exp
                     except KeyError:
@@ -261,7 +261,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
                     base, exp = decompose_power(factor)
 
                     if exp < 0:
-                        exp, base = -exp, Pow(base, -S.One)
+                        exp, base = -exp, Pow(base, -1)
 
                     elements[base] += exp
                     gens.add(base)
@@ -328,7 +328,7 @@ def parallel_dict_from_expr(exprs, **args):
 def _parallel_dict_from_expr(exprs, opt):
     """Transform expressions into a multinomial form. """
     if opt.expand is not False:
-        exprs = [ expr.expand() for expr in exprs ]
+        exprs = [expr.expand() for expr in exprs]
 
     if opt.gens:
         reps, gens = _parallel_dict_from_expr_if_gens(exprs, opt)
@@ -372,11 +372,6 @@ def expr_from_dict(rep, *gens):
     return Add(*result)
 
 
-parallel_dict_from_basic = parallel_dict_from_expr
-dict_from_basic = dict_from_expr
-basic_from_dict = expr_from_dict
-
-
 def _dict_reorder(rep, gens, new_gens):
     """Reorder levels using dict representation. """
     gens = list(gens)
@@ -384,7 +379,7 @@ def _dict_reorder(rep, gens, new_gens):
     monoms = rep.keys()
     coeffs = rep.values()
 
-    new_monoms = [ [] for _ in range(len(rep)) ]
+    new_monoms = [[] for _ in range(len(rep))]
     used_indices = set()
 
     for gen in new_gens:

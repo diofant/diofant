@@ -53,7 +53,6 @@ from diofant.polys.fields import FractionField
 from diofant.polys.monomials import Monomial
 from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
                                      ProductOrder, ReversedGradedLexOrder)
-from diofant.polys.polyclasses import DMP
 from diofant.polys.polyerrors import (CoercionFailed, DomainError,
                                       EvaluationFailed, ExtraneousFactors,
                                       FlagError, GeneratorsError,
@@ -95,7 +94,7 @@ def check(a, exclude=[], check_attr=True):
     # Python 2.6+ warns about BasicException.message, for example.
     warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-    protocols = [0, 1, 2, copy.copy, copy.deepcopy, 3]
+    protocols = list(range(5)) + [copy.copy, copy.deepcopy]
     for protocol in protocols:
         if protocol in exclude:
             continue
@@ -286,11 +285,6 @@ def test_pickling_polys_polytools():
         check(c)
 
 
-def test_pickling_polys_polyclasses():
-    for c in (DMP, DMP([[ZZ(1)], [ZZ(2)], [ZZ(3)]], ZZ)):
-        check(c)
-
-
 @pytest.mark.xfail
 def test_pickling_polys_rings():
     # NOTE: can't use protocols < 2 because we have to execute __new__ to
@@ -338,7 +332,8 @@ def test_pickling_polys_domains():
         for c in (GMPYRationalField, GMPYRationalField()):
             check(c)
 
-    for c in (ExpressionDomain, ExpressionDomain()):
+    EX = ExpressionDomain()
+    for c in (ExpressionDomain, EX, EX(sin(x))):
         check(c)
 
 

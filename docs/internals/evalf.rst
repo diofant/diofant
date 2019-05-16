@@ -159,8 +159,6 @@ Sums and integrals
 Sums (in particular, infinite series) and integrals can be used like regular
 closed-form expressions, and support arbitrary-precision evaluation:
 
-    >>> var('n x')
-    (n, x)
     >>> Sum(1/n**n, (n, 1, oo)).evalf()
     1.29128599706266
     >>> Integral(x**(-x), (x, 0, 1)).evalf()
@@ -238,8 +236,6 @@ Otherwise, extrapolation methods (generally the Euler-Maclaurin formula but
 also Richardson extrapolation) are used to speed up convergence. This allows
 high-precision evaluation of slowly convergent series:
 
-    >>> var('k')
-    k
     >>> Sum(1/k**2, (k, 1, oo)).evalf(strict=False)
     1.64493406684823
     >>> zeta(2).evalf()

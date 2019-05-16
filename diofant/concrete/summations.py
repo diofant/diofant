@@ -1,5 +1,6 @@
-from ..core import Derivative, Dummy, Eq, Function, Integer, S, Wild, nan, oo
+from ..core import Derivative, Dummy, Eq, Function, Integer, Wild, nan, oo
 from ..functions import Piecewise
+from ..logic import false
 from ..polys import PolynomialError, apart
 from ..solvers import solve
 from .expr_with_intlimits import ExprWithIntLimits
@@ -94,10 +95,10 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     convention allows us to give a perfectly valid interpretation to
     those sums by interchanging the limits according to the above rules:
 
-    >>> S = Sum(i, (i, 1, n)).doit()
-    >>> S
+    >>> s = Sum(i, (i, 1, n)).doit()
+    >>> s
     n**2/2 + n/2
-    >>> S.subs({n: -4})
+    >>> s.subs({n: -4})
     6
     >>> Sum(i, (i, 1, -4)).doit()
     6
@@ -106,16 +107,16 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
     An explicit example of the Karr summation convention:
 
-    >>> S1 = Sum(i**2, (i, m, m+n-1)).doit()
-    >>> S1
+    >>> s1 = Sum(i**2, (i, m, m+n-1)).doit()
+    >>> s1
     m**2*n + m*n**2 - m*n + n**3/3 - n**2/2 + n/6
-    >>> S2 = Sum(i**2, (i, m+n, m-1)).doit()
-    >>> S2
+    >>> s2 = Sum(i**2, (i, m+n, m-1)).doit()
+    >>> s2
     -m**2*n - m*n**2 + m*n - n**3/3 + n**2/2 - n/6
-    >>> S1 + S2
+    >>> s1 + s2
     0
-    >>> S3 = Sum(i, (i, m, m-1)).doit()
-    >>> S3
+    >>> s3 = Sum(i, (i, m, m-1)).doit()
+    >>> s3
     0
 
     See Also
@@ -155,7 +156,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         for n, limit in enumerate(self.limits):
             i, a, b = limit
             dif = b - a
-            if dif.is_integer and (dif < 0) is S.true:
+            if dif.is_integer and dif.is_negative:
                 a, b = b + 1, a - 1
                 f = -f
 
@@ -261,12 +262,12 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         if len(self.limits) != 1:
             raise ValueError("More than 1 limit")
         i, a, b = self.limits[0]
-        if (a > b) is S.true:
+        if (a - b).is_positive:
             if a - b == 1:
-                return S.Zero, S.Zero
+                return Integer(0), Integer(0)
             a, b = b + 1, a - 1
             f = -f
-        s = S.Zero
+        s = Integer(0)
         if m:
             if b.is_Integer and a.is_Integer:
                 m = min(m, b - a + 1)
@@ -277,9 +278,9 @@ class Sum(AddWithLimits, ExprWithIntLimits):
                 term = f.subs({i: a})
                 if term:
                     test = abs(term.evalf(3)) < eps
-                    if not (test == S.false):
+                    if not (test == false):
                         # a symbolic Relational class, can't go further
-                        return term, S.Zero
+                        return term, Integer(0)
                 s += term
                 for k in range(1, m):
                     term = f.subs({i: a + k})
@@ -287,7 +288,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
                         return s, abs(term)
                     s += term
             if b - a + 1 == m:
-                return s, S.Zero
+                return s, Integer(0)
             a += m
         x = Dummy('x')
         I = Integral(f.subs({i: x}), (x, a, b))
@@ -339,14 +340,14 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         to reverse, the index counting notation comes in handy in case there
         are several symbols with the same name.
 
-        >>> S = Sum(x**2, (x, a, b), (x, c, d))
-        >>> S
+        >>> s = Sum(x**2, (x, a, b), (x, c, d))
+        >>> s
         Sum(x**2, (x, a, b), (x, c, d))
-        >>> S0 = S.reverse_order(0)
-        >>> S0
+        >>> s0 = s.reverse_order(0)
+        >>> s0
         Sum(-x**2, (x, b + 1, a - 1), (x, c, d))
-        >>> S1 = S0.reverse_order(1)
-        >>> S1
+        >>> s1 = s0.reverse_order(1)
+        >>> s1
         Sum(x**2, (x, b + 1, a - 1), (x, d + 1, c - 1))
 
         Of course we can mix both notations:
@@ -433,7 +434,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
             return self.function.subs({n: i, k: j})
 
         I, J, step = 0, 1, 1
-        y, x, sols = S.Zero, [], {}
+        y, x, sols = Integer(0), [], {}
 
         while not any(v for a, v in sols.items()):
             if step % 2 != 0:
@@ -559,8 +560,8 @@ def eval_sum(f, limits):
     from ..functions import KroneckerDelta
 
     (i, a, b) = limits
-    if f is S.Zero:
-        return S.Zero
+    if f == 0:
+        return Integer(0)
     if i not in f.free_symbols:
         return f*(b - a + 1)
     if a == b:
@@ -672,7 +673,7 @@ def eval_sum_symbolic(f, limits):
             r = p*(q**a - q**(b + 1))/(1 - q)
             l = p*(b - a + 1)
 
-            return Piecewise((l, Eq(q, S.One)), (r, True))
+            return Piecewise((l, Eq(q, 1)), (r, True))
 
     r = gosper_sum(f, (i, a, b))
     if r is not None and r.is_finite:
@@ -757,7 +758,7 @@ def eval_sum_hyper(f, i_a_b):
                 return
             (res1, cond1), (res2, cond2) = res1, res2
             cond = And(cond1, cond2)
-            if cond == S.false:
+            if cond == false:
                 return
             return Piecewise((res1 - res2, cond), (old_sum, True))
 
@@ -766,7 +767,7 @@ def eval_sum_hyper(f, i_a_b):
         res = _eval_sum_hyper(f, i, a)
         if res is not None:
             r, c = res
-            if c == S.false:
+            if c == false:
                 f = f.subs({i: Dummy('i', integer=True, positive=True) + a})
                 if f.is_nonnegative:
                     return oo

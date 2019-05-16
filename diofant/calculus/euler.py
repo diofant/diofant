@@ -1,6 +1,6 @@
 from itertools import combinations_with_replacement
 
-from ..core import Derivative, Eq, Function, S, Symbol, diff, sympify
+from ..core import Derivative, Eq, Function, Symbol, diff, sympify
 from ..core.compatibility import iterable
 
 
@@ -92,7 +92,7 @@ def euler_equations(L, funcs=(), vars=()):
         eq = diff(L, f)
         for i in range(1, order + 1):
             for p in combinations_with_replacement(vars, i):
-                eq += S.NegativeOne**i * diff(L, diff(f, *p), *p)
-        eqns.append(Eq(eq))
+                eq += (-1)**i * diff(L, diff(f, *p), *p)
+        eqns.append(Eq(eq, 0))
 
     return eqns

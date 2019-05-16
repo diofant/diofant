@@ -1,6 +1,7 @@
 from ..concrete import Sum, summation
-from ..core import Dummy, Expr, Lambda, S, cacheit, symbols, sympify
+from ..core import Dummy, Expr, Lambda, cacheit, symbols, sympify
 from ..functions import Piecewise
+from ..sets import Integers
 from .rv import NamedArgsMixin, SingleDomain, SinglePSpace
 
 
@@ -16,7 +17,7 @@ class SingleDiscreteDistribution(Expr, NamedArgsMixin):
 
     """
 
-    set = S.Integers
+    set = Integers
 
     def __new__(cls, *args):
         args = list(map(sympify, args))

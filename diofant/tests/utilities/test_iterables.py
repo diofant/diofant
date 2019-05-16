@@ -30,9 +30,8 @@ from diofant.utilities.iterables import (_partition, _set_partitions,
                                          permutations, postfixes,
                                          postorder_traversal, prefixes,
                                          reshape, rotate_left, rotate_right,
-                                         runs, sift, subsets, take,
-                                         topological_sort, unflatten, uniq,
-                                         variations)
+                                         runs, sift, subsets, topological_sort,
+                                         unflatten, uniq, variations)
 
 
 __all__ = ()
@@ -176,7 +175,7 @@ def test_variations():
 def test_filter_symbols():
     s = numbered_symbols()
     filtered = filter_symbols(s, symbols("x0 x2 x3"))
-    assert take(filtered, 3) == list(symbols("x1 x4 x5"))
+    assert list(itertools.islice(filtered, 3)) == list(symbols("x1 x4 x5"))
 
     assert set(filter_symbols((), set())) == set()
 
@@ -192,15 +191,6 @@ def test_sift():
     assert sift(list(range(5)), lambda _: _ % 2) == {1: [1, 3], 0: [0, 2, 4]}
     assert sift([x, y], lambda _: _.has(x)) == {False: [y], True: [x]}
     assert sift([Integer(1)], lambda _: _.has(x)) == {False: [1]}
-
-
-def test_take():
-    X = numbered_symbols()
-
-    assert take(X, 5) == list(symbols('x0:5'))
-    assert take(X, 5) == list(symbols('x5:10'))
-
-    assert take([1, 2, 3, 4, 5], 5) == [1, 2, 3, 4, 5]
 
 
 def test_dict_merge():

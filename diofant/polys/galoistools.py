@@ -3,99 +3,13 @@
 import math
 import random
 
-from ..core import prod
 from ..ntheory import factorint
 from .densearith import dup_lshift
-from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_LC,
-                         dmp_normal, dmp_strip)
+from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_normal,
+                         dmp_strip)
 from .polyconfig import query
 from .polyerrors import ExactQuotientFailed
 from .polyutils import _sort_factors
-
-
-def gf_crt(U, M, K=None):
-    """
-    Chinese Remainder Theorem.
-
-    Given a set of integer residues ``u_0,...,u_n`` and a set of
-    co-prime integer moduli ``m_0,...,m_n``, returns an integer
-    ``u``, such that ``u = u_i mod m_i`` for ``i = ``0,...,n``.
-
-    Examples
-    ========
-
-    >>> gf_crt([49, 76, 65], [99, 97, 95], ZZ)
-    639985
-    >>> [_ % m for m in [99, 97, 95]]
-    [49, 76, 65]
-
-    Notes
-    =====
-
-    This is a low-level routine with no error checking.
-
-    See Also
-    ========
-
-    diofant.ntheory.modular.crt : a higher level crt routine
-    diofant.ntheory.modular.solve_congruence
-
-    """
-    p = prod(M, start=K.one)
-    v = K.zero
-
-    for u, m in zip(U, M):
-        e = p // m
-        s, _, _ = K.gcdex(e, m)
-        v += e*(u*s % m)
-
-    return v % p
-
-
-def gf_crt1(M, K):
-    """
-    First part of the Chinese Remainder Theorem.
-
-    Examples
-    ========
-
-    >>> gf_crt1([99, 97, 95], ZZ)
-    (912285, [9215, 9405, 9603], [62, 24, 12])
-
-    """
-    E, S = [], []
-    p = prod(M, start=K.one)
-
-    for m in M:
-        E.append(p // m)
-        S.append(K.gcdex(E[-1], m)[0] % m)
-
-    return p, E, S
-
-
-def gf_crt2(U, M, p, E, S, K):
-    """
-    Second part of the Chinese Remainder Theorem.
-
-    Examples
-    ========
-
-    >>> U = [49, 76, 65]
-    >>> M = [99, 97, 95]
-    >>> p = 912285
-    >>> E = [9215, 9405, 9603]
-    >>> S = [62, 24, 12]
-
-    >>> gf_crt2(U, M, p, E, S, ZZ)
-    639985
-
-    """
-    v = K.zero
-
-    for u, m, e, s in zip(U, M, E, S):
-        v += e*(u*s % m)
-
-    return v % p
 
 
 def gf_from_dict(f, p, K):
@@ -115,20 +29,6 @@ def gf_from_dict(f, p, K):
     return dmp_convert(f, 0, K.finite_field(p), K)
 
 
-def gf_from_int_poly(f, p):
-    """
-    Create a ``GF(p)[x]`` polynomial from ``Z[x]``.
-
-    Examples
-    ========
-
-    >>> gf_from_int_poly([7, -2, 3], 5)
-    [2, 3, 3]
-
-    """
-    return dmp_strip([a % p for a in f], 0)
-
-
 def gf_neg(f, p, K):
     """
     Negate a polynomial in ``GF(p)[x]``.
@@ -140,7 +40,7 @@ def gf_neg(f, p, K):
     [2, 3, 4, 0]
 
     """
-    return [ -coeff % p for coeff in f ]
+    return [-coeff % p for coeff in f]
 
 
 def gf_add_ground(f, a, p, K):
@@ -207,7 +107,7 @@ def gf_mul_ground(f, a, p, K):
     if not a:
         return []
     else:
-        return [ (a*b) % p for b in f ]
+        return [(a*b) % p for b in f]
 
 
 def gf_quo_ground(f, a, p, K):
@@ -253,7 +153,7 @@ def gf_add(f, g, p, K):
         else:
             h, g = g[:k], g[k:]
 
-        return h + [ (a + b) % p for a, b in zip(f, g) ]
+        return h + [(a + b) % p for a, b in zip(f, g)]
 
 
 def gf_sub(f, g, p, K):
@@ -285,7 +185,7 @@ def gf_sub(f, g, p, K):
         else:
             h, g = gf_neg(g[:k], p, K), g[k:]
 
-        return h + [ (a - b) % p for a, b in zip(f, g) ]
+        return h + [(a - b) % p for a, b in zip(f, g)]
 
 
 def gf_mul(f, g, p, K):
@@ -361,59 +261,6 @@ def gf_sqr(f, p, K):
     return dmp_strip(h, 0)
 
 
-def gf_add_mul(f, g, h, p, K):
-    """
-    Returns ``f + g*h`` where ``f``, ``g``, ``h`` in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_add_mul([3, 2, 4], [2, 2, 2], [1, 4], 5, ZZ)
-    [2, 3, 2, 2]
-
-    """
-    return gf_add(f, gf_mul(g, h, p, K), p, K)
-
-
-def gf_sub_mul(f, g, h, p, K):
-    """
-    Compute ``f - g*h`` where ``f``, ``g``, ``h`` in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_sub_mul([3, 2, 4], [2, 2, 2], [1, 4], 5, ZZ)
-    [3, 3, 2, 1]
-
-    """
-    return gf_sub(f, gf_mul(g, h, p, K), p, K)
-
-
-def gf_expand(F, p, K):
-    """
-    Expand results of :func:`~diofant.polys.polytools.factor` in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_expand([([3, 2, 4], 1), ([2, 2], 2), ([3, 1], 3)], 5, ZZ)
-    [4, 3, 0, 3, 0, 1, 4, 1]
-
-    """
-    if type(F) is tuple:
-        lc, F = F
-    else:
-        lc = K.one
-
-    g = [lc]
-
-    for f, k in F:
-        f = gf_pow(f, k, p, K)
-        g = gf_mul(g, f, p, K)
-
-    return g
-
-
 def gf_div(f, g, p, K):
     """
     Division with remainder in ``GF(p)[x]``.
@@ -427,8 +274,6 @@ def gf_div(f, g, p, K):
 
     >>> gf_div([1, 0, 1, 1], [1, 1, 0], 2, ZZ)
     ([1, 1], [1])
-    >>> gf_add_mul(_[1], _[0], [1, 1, 0], 2, ZZ)
-    [1, 0, 1, 1]
 
     References
     ==========
@@ -537,41 +382,6 @@ def gf_exquo(f, g, p, K):
         raise ExactQuotientFailed(f, g)
 
 
-def gf_pow(f, n, p, K):
-    """
-    Compute ``f**n`` in ``GF(p)[x]`` using repeated squaring.
-
-    Examples
-    ========
-
-    >>> gf_pow([3, 2, 4], 3, 5, ZZ)
-    [2, 4, 4, 2, 2, 1, 4]
-
-    """
-    if not n:
-        return [K.one]
-    elif n == 1:
-        return f
-    elif n == 2:
-        return gf_sqr(f, p, K)
-
-    h = [K.one]
-
-    while True:
-        if n & 1:
-            h = gf_mul(h, f, p, K)
-            n -= 1
-
-        n >>= 1
-
-        if not n:
-            break
-
-        f = gf_sqr(f, p, K)
-
-    return h
-
-
 def gf_frobenius_monomial_base(g, p, K):
     """
     return the list of ``x**(i*p) mod g in Z_p`` for ``i = 0, .., n - 1``
@@ -617,7 +427,7 @@ def gf_frobenius_map(f, g, b, p, K):
     Examples
     ========
 
-    >>> f = [2, 1 , 0, 1]
+    >>> f = [2, 1, 0, 1]
     >>> g = [1, 0, 2, 1]
     >>> p = 5
     >>> b = gf_frobenius_monomial_base(g, p, ZZ)
@@ -721,105 +531,6 @@ def gf_gcd(f, g, p, K):
     return gf_monic(f, p, K)[1]
 
 
-def gf_lcm(f, g, p, K):
-    """
-    Compute polynomial LCM in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_lcm([3, 2, 4], [2, 2, 3], 5, ZZ)
-    [1, 2, 0, 4]
-
-    """
-    if not f or not g:
-        return []
-
-    h = gf_quo(gf_mul(f, g, p, K),
-               gf_gcd(f, g, p, K), p, K)
-
-    return gf_monic(h, p, K)[1]
-
-
-def gf_cofactors(f, g, p, K):
-    """
-    Compute polynomial GCD and cofactors in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_cofactors([3, 2, 4], [2, 2, 3], 5, ZZ)
-    ([1, 3], [3, 3], [2, 1])
-
-    """
-    if not f and not g:
-        return [], [], []
-
-    h = gf_gcd(f, g, p, K)
-
-    return (h, gf_quo(f, h, p, K),
-            gf_quo(g, h, p, K))
-
-
-def gf_gcdex(f, g, p, K):
-    """
-    Extended Euclidean Algorithm in ``GF(p)[x]``.
-
-    Given polynomials ``f`` and ``g`` in ``GF(p)[x]``, computes polynomials
-    ``s``, ``t`` and ``h``, such that ``h = gcd(f, g)`` and ``s*f + t*g = h``.
-    The typical application of EEA is solving polynomial diophantine equations.
-
-    Examples
-    ========
-
-    >>> s, t, g = gf_gcdex([1, 8, 7], [1, 7, 1, 7], 11, ZZ)
-    >>> (s, t, g)
-    ([5, 6], [6], [1, 7])
-
-    >>> S = gf_mul(s, [1, 8, 7], 11, ZZ)
-    >>> T = gf_mul(t, [1, 7, 1, 7], 11, ZZ)
-    >>> gf_add(S, T, 11, ZZ)
-    [1, 7]
-
-    References
-    ==========
-
-    * :cite:`Gathen1999modern`
-
-    """
-    if not (f or g):
-        return [K.one], [], []
-
-    p0, r0 = gf_monic(f, p, K)
-    p1, r1 = gf_monic(g, p, K)
-
-    if not f:
-        return [], [K.invert(p1, p)], r1
-    if not g:
-        return [K.invert(p0, p)], [], r0
-
-    s0, s1 = [K.invert(p0, p)], []
-    t0, t1 = [], [K.invert(p1, p)]
-
-    while True:
-        Q, R = gf_div(r0, r1, p, K)
-
-        if not R:
-            break
-
-        (lc, r1), r0 = gf_monic(R, p, K), r1
-
-        inv = K.invert(lc, p)
-
-        s = gf_sub_mul(s0, s1, Q, p, K)
-        t = gf_sub_mul(t0, t1, Q, p, K)
-
-        s1, s0 = gf_mul_ground(s, inv, p, K), s1
-        t1, t0 = gf_mul_ground(t, inv, p, K), t1
-
-    return s1, t1, r1
-
-
 def gf_monic(f, p, K):
     """
     Compute LC and a monic polynomial in ``GF(p)[x]``.
@@ -840,82 +551,6 @@ def gf_monic(f, p, K):
             return lc, list(f)
         else:
             return lc, gf_quo_ground(f, lc, p, K)
-
-
-def gf_diff(f, p, K):
-    """
-    Differentiate polynomial in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_diff([3, 2, 4], 5, ZZ)
-    [1, 2]
-
-    """
-    df = dmp_degree_in(f, 0, 0)
-    if df < 0:
-        return []
-
-    h, n = [K.zero]*df, df
-
-    for coeff in f[:-1]:
-        coeff *= K(n)
-        coeff %= p
-
-        if coeff:
-            h[df - n] = coeff
-
-        n -= 1
-
-    return dmp_strip(h, 0)
-
-
-def gf_eval(f, a, p, K):
-    """
-    Evaluate ``f(a)`` in ``GF(p)`` using Horner scheme.
-
-    Examples
-    ========
-
-    >>> gf_eval([3, 2, 4], 2, 5, ZZ)
-    0
-
-    """
-    result = K.zero
-
-    for c in f:
-        result *= a
-        result += c
-        result %= p
-
-    return result
-
-
-def gf_compose(f, g, p, K):
-    """
-    Compute polynomial composition ``f(g)`` in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_compose([3, 2, 4], [2, 2, 2], 5, ZZ)
-    [2, 4, 0, 3, 0]
-
-    """
-    if len(g) <= 1:
-        return dmp_strip([gf_eval(f, dmp_LC(g, K), p, K)], 0)
-
-    if not f:
-        return []
-
-    h = [f[0]]
-
-    for c in f[1:]:
-        h = gf_mul(h, g, p, K)
-        h = gf_add_ground(h, c, p, K)
-
-    return h
 
 
 def gf_compose_mod(g, h, f, p, K):
@@ -1021,7 +656,7 @@ def gf_random(n, p, K):
     [1, 2, 3, 2, 1, 1, 1, 2, 0, 4, 2]
 
     """
-    return [K.one] + [ K(int(random.uniform(0, p))) for i in range(n) ]
+    return [K.one] + [K(int(random.uniform(0, p))) for i in range(n)]
 
 
 def gf_irreducible(n, p, K):
@@ -1110,7 +745,7 @@ def gf_irred_p_rabin(f, p, K):
 
     x = [K.one, K.zero]
 
-    indices = { n//d for d in factorint(n) }
+    indices = {n//d for d in factorint(n)}
 
     b = gf_frobenius_monomial_base(f, p, K)
     h = b[1]
@@ -1149,83 +784,6 @@ def gf_irreducible_p(f, p, K):
     method = query('GF_IRRED_METHOD')
 
     return _irred_methods[method](f, p, K)
-
-
-def gf_sqf_list(f, p, K):
-    """
-    Return the square-free decomposition of a ``GF(p)[x]`` polynomial.
-
-    Given a polynomial ``f`` in ``GF(p)[x]``, returns the leading coefficient
-    of ``f`` and a square-free decomposition ``f_1**e_1 f_2**e_2 ... f_k**e_k``
-    such that all ``f_i`` are monic polynomials and ``(f_i, f_j)`` for ``i != j``
-    are co-prime and ``e_1 ... e_k`` are given in increasing order. All trivial
-    terms (i.e. ``f_i = 1``) aren't included in the output.
-
-    Examples
-    ========
-
-    >>> f = gf_from_dict({11: ZZ(1), 0: ZZ(1)}, 11, ZZ)
-
-    Note that:
-
-    >>> gf_diff(f, 11, ZZ)
-    []
-
-    This phenomenon doesn't happen in characteristic zero. However we can
-    still compute square-free decomposition of ``f``:
-
-    >>> gf_sqf_list(f, 11, ZZ)
-    (1, [([1, 1], 11)])
-    >>> gf_pow(*_[1][0], 11, ZZ) == f
-    True
-
-    References
-    ==========
-
-    * :cite:`Geddes1992algorithms`
-
-    """
-    n, sqf, factors, r = 1, False, [], int(p)
-
-    lc, f = gf_monic(f, p, K)
-
-    if dmp_degree_in(f, 0, 0) < 1:
-        return lc, []
-
-    while True:
-        F = gf_diff(f, p, K)
-
-        if F != []:
-            g = gf_gcd(f, F, p, K)
-            h = gf_quo(f, g, p, K)
-
-            i = 1
-
-            while h != [K.one]:
-                G = gf_gcd(g, h, p, K)
-                H = gf_quo(h, G, p, K)
-
-                if dmp_degree_in(H, 0, 0) > 0:
-                    factors.append((H, i*n))
-
-                g, h, i = gf_quo(g, G, p, K), G, i + 1
-
-            if g == [K.one]:
-                sqf = True
-            else:
-                f = g
-
-        if not sqf:
-            d = dmp_degree_in(f, 0, 0) // r
-
-            for i in range(d + 1):
-                f[i] = f[i*r]
-
-            f, n = f[:d + 1], n*r
-        else:
-            break
-
-    return lc, factors
 
 
 def gf_Qmatrix(f, p, K):
@@ -1279,7 +837,7 @@ def gf_Qbasis(Q, p, K):
     [[1, 0]]
 
     """
-    Q, n = [ list(q) for q in Q ], len(Q)
+    Q, n = [list(q) for q in Q], len(Q)
 
     for k in range(n):
         Q[k][k] = (Q[k][k] - K.one) % p
@@ -1498,7 +1056,7 @@ def gf_ddf_shoup(f, p, K):
 
     """
     n = dmp_degree_in(f, 0, 0)
-    k = int(math.ceil(math.sqrt(n//2)))
+    k = math.ceil(math.sqrt(n//2))
     b = gf_frobenius_monomial_base(f, p, K)
     h = gf_frobenius_map([K.one, K.zero], f, b, p, K)
     # U[i] = x**(p**i)
@@ -1651,39 +1209,13 @@ def gf_factor_sqf(f, p, K):
     """
     Factor a square-free polynomial ``f`` in ``GF(p)[x]``.
 
-    Examples
-    ========
+    Returns its complete factorization into irreducibles::
 
-    >>> gf_factor_sqf([3, 2, 4], 5, ZZ)
-    (3, [[1, 1], [1, 3]])
-
-    """
-    lc, f = gf_monic(f, p, K)
-
-    if dmp_degree_in(f, 0, 0) < 1:
-        return lc, []
-
-    method = query('GF_FACTOR_METHOD')
-
-    return lc, _factor_methods[method](f, p, K)
-
-
-def gf_factor(f, p, K):
-    """
-    Factor (non square-free) polynomials in ``GF(p)[x]``.
-
-    Given a possibly non square-free polynomial ``f`` in ``GF(p)[x]``,
-    returns its complete factorization into irreducibles::
-
-                 f_1(x)**e_1 f_2(x)**e_2 ... f_d(x)**e_d
+                 f_1(x) f_2(x) ... f_d(x)
 
     where each ``f_i`` is a monic polynomial and ``gcd(f_i, f_j) == 1``,
     for ``i != j``.  The result is given as a tuple consisting of the
-    leading coefficient of ``f`` and a list of factors of ``f`` with
-    their multiplicities.
-
-    The algorithm proceeds by first computing square-free decomposition
-    of ``f`` and then iteratively factoring each of square-free factors.
+    leading coefficient of ``f`` and a list of factors of ``f``.
 
     Square-free factors of ``f`` can be factored into irreducibles over
     ``GF(p)`` using three very different methods:
@@ -1702,12 +1234,8 @@ def gf_factor(f, p, K):
     Examples
     ========
 
-    >>> gf_factor([5, 2, 7, 2], 11, ZZ)
-    (5, [([1, 2], 1), ([1, 8], 2)])
-
-    We arrived with factorization ``f = 5 (x + 2) (x + 8)**2``. We didn't
-    recover the exact form of the input polynomial because we requested to
-    get monic factors of ``f`` and its leading coefficient separately.
+    >>> gf_factor_sqf([3, 2, 4], 5, ZZ)
+    (3, [[1, 1], [1, 3]])
 
     References
     ==========
@@ -1720,159 +1248,6 @@ def gf_factor(f, p, K):
     if dmp_degree_in(f, 0, 0) < 1:
         return lc, []
 
-    factors = []
+    method = query('GF_FACTOR_METHOD')
 
-    for g, n in gf_sqf_list(f, p, K)[1]:
-        for h in gf_factor_sqf(g, p, K)[1]:
-            factors.append((h, n))
-
-    return lc, _sort_factors(factors)
-
-
-def gf_value(f, a):
-    """
-    Value of polynomial 'f' at 'a' in field R.
-
-    Examples
-    ========
-
-    >>> gf_value([1, 7, 2, 4], 11)
-    2204
-
-    """
-    result = 0
-    for c in f:
-        result *= a
-        result += c
-    return result
-
-
-def linear_congruence(a, b, m):
-    """
-    Returns the values of x satisfying a*x congruent b mod(m)
-
-    Here m is positive integer and a, b are natural numbers.
-    This function returns only those values of x which are distinct mod(m).
-
-    Examples
-    ========
-
-    >>> linear_congruence(3, 12, 15)
-    [4, 9, 14]
-
-    There are 3 solutions distinct mod(15) since gcd(a, m) = gcd(3, 15) = 3.
-
-    References
-    ==========
-
-    * https://en.wikipedia.org/wiki/Linear_congruence_theorem
-
-    """
-    from .polytools import gcdex
-    if a % m == 0:
-        if b % m == 0:
-            return list(range(m))
-        else:
-            return []
-    r, _, g = gcdex(a, m)
-    if b % g != 0:
-        return []
-    return [(r * b // g + t * m // g) % m for t in range(g)]
-
-
-def _raise_mod_power(x, s, p, f):
-    """
-    Used in gf_csolve to generate solutions of f(x) cong 0 mod(p**(s + 1))
-    from the solutions of f(x) cong 0 mod(p**s).
-
-    Examples
-    ========
-
-    These is the solutions of f(x) = x**2 + x + 7 cong 0 mod(3)
-
-    >>> f = [1, 1, 7]
-    >>> csolve_prime(f, 3)
-    [1]
-    >>> [i for i in range(3) if not (i**2 + i + 7) % 3]
-    [1]
-
-    The solutions of f(x) cong 0 mod(9) are constructed from the
-    values returned from _raise_mod_power:
-
-    >>> x, s, p = 1, 1, 3
-    >>> V = _raise_mod_power(x, s, p, f)
-    >>> [x + v * p**s for v in V]
-    [1, 4, 7]
-
-    And these are confirmed with the following:
-
-    >>> [i for i in range(3**2) if not (i**2 + i + 7) % 3**2]
-    [1, 4, 7]
-
-    """
-    from ..domains import ZZ
-    f_f = gf_diff(f, p, ZZ)
-    alpha = gf_value(f_f, x)
-    beta = - gf_value(f, x) // p**s
-    return linear_congruence(alpha, beta, p)
-
-
-def csolve_prime(f, p, e=1):
-    """
-    Solutions of f(x) congruent 0 mod(p**e).
-
-    Examples
-    ========
-
-    >>> csolve_prime([1, 1, 7], 3, 1)
-    [1]
-    >>> csolve_prime([1, 1, 7], 3, 2)
-    [1, 4, 7]
-
-    """
-    from ..domains import ZZ
-    X1 = [i for i in range(p) if gf_eval(f, i, p, ZZ) == 0]
-    if e == 1:
-        return X1
-    X = []
-    S = list(zip(X1, [1]*len(X1)))
-    while S:
-        x, s = S.pop()
-        if s == e:
-            X.append(x)
-        else:
-            s1 = s + 1
-            ps = p**s
-            S.extend([(x + v*ps, s1) for v in _raise_mod_power(x, s, p, f)])
-    return sorted(X)
-
-
-def gf_csolve(f, n):
-    """
-    To solve f(x) congruent 0 mod(n).
-
-    n is divided into canonical factors and f(x) cong 0 mod(p**e) will be
-    solved for each factor. Applying the Chinese Remainder Theorem to the
-    results returns the final answers.
-
-    Examples
-    ========
-
-    >>> gf_csolve([1, 1, 7], 189)
-    [13, 49, 76, 112, 139, 175]
-
-    References
-    ==========
-
-    * :cite:`NivenZuckerman`
-
-    """
-    from ..domains import ZZ
-    P = factorint(n)
-    X = [csolve_prime(f, p, e) for p, e in P.items()]
-    pools = list(map(tuple, X))
-    perms = [[]]
-    for pool in pools:
-        perms = [x + [y] for x in perms for y in pool]
-    dist_factors = [pow(p, e) for p, e in P.items()]
-    return sorted(gf_crt(per, dist_factors, ZZ) for per in perms)
+    return lc, _factor_methods[method](f, p, K)

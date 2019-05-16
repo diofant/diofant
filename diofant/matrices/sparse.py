@@ -1,7 +1,7 @@
 import collections
 import copy
 
-from ..core import Dict, Expr, S
+from ..core import Dict, Expr, Integer
 from ..core.compatibility import as_int, is_sequence
 from ..core.logic import fuzzy_and
 from ..functions import sqrt
@@ -73,7 +73,7 @@ class SparseMatrixBase(MatrixBase):
             i, j = key
             try:
                 i, j = self.key2ij(key)
-                return self._smat.get((i, j), S.Zero)
+                return self._smat.get((i, j), Integer(0))
             except (TypeError, IndexError):
                 if any(isinstance(_, Expr) and not _.is_number for _ in (i, j)):
                     if ((j < 0) == true) or ((j >= self.shape[1]) == true) or \
@@ -106,11 +106,11 @@ class SparseMatrixBase(MatrixBase):
             L = []
             for i in range(lo, hi):
                 m, n = divmod(i, self.cols)
-                L.append(self._smat.get((m, n), S.Zero))
+                L.append(self._smat.get((m, n), Integer(0)))
             return L
 
         i, j = divmod(a2idx(key, len(self)), self.cols)
-        return self._smat.get((i, j), S.Zero)
+        return self._smat.get((i, j), Integer(0))
 
     def __setitem__(self, key, value):
         raise NotImplementedError
@@ -208,7 +208,7 @@ class SparseMatrixBase(MatrixBase):
         3
 
         """
-        trace = S.Zero
+        trace = Integer(0)
         for i in range(self.cols):
             trace += self._smat.get((i, i), 0)
         return trace
@@ -1059,7 +1059,7 @@ class SparseMatrixBase(MatrixBase):
     def eye(cls, n):
         """Return an n x n identity matrix."""
         n = as_int(n)
-        return cls(n, n, {(i, i): S.One for i in range(n)})
+        return cls(n, n, {(i, i): Integer(1) for i in range(n)})
 
 
 class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
@@ -1453,7 +1453,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
 
         """
         for j in range(self.cols):
-            v = self._smat.get((i, j), S.Zero)
+            v = self._smat.get((i, j), Integer(0))
             fv = f(v, j)
             if fv:
                 self._smat[(i, j)] = fv
@@ -1477,7 +1477,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
 
         """
         for i in range(self.rows):
-            v = self._smat.get((i, j), S.Zero)
+            v = self._smat.get((i, j), Integer(0))
             fv = f(v, i)
             if fv:
                 self._smat[(i, j)] = fv

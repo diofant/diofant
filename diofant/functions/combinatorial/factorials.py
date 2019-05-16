@@ -1,7 +1,7 @@
 from functools import reduce
 from math import sqrt as _sqrt
 
-from ...core import Dummy, E, Function, Integer, S, cacheit, oo, sympify, zoo
+from ...core import Dummy, E, Function, Integer, cacheit, oo, sympify, zoo
 from ...core.function import ArgumentIndexError
 from ...ntheory import sieve
 
@@ -132,8 +132,8 @@ class factorial(CombinatorialFunction):
         n = sympify(n)
 
         if n.is_Number:
-            if n is S.Zero:
-                return S.One
+            if n == 0:
+                return Integer(1)
             elif n is oo:
                 return oo
             elif n.is_Integer:
@@ -246,9 +246,9 @@ class subfactorial(CombinatorialFunction):
     @cacheit
     def _eval(cls, n):
         if not n:
-            return S.One
+            return Integer(1)
         elif n == 1:
-            return S.Zero
+            return Integer(0)
         return (n - 1)*(cls._eval(n - 1) + cls._eval(n - 2))
 
     @classmethod
@@ -332,7 +332,7 @@ class factorial2(CombinatorialFunction):
 
             if n.is_negative:
                 if n.is_odd:
-                    return n * (S.NegativeOne) ** ((1 - n) / 2) / factorial2(-n)
+                    return n * (-1)**((1 - n) / 2) / factorial2(-n)
                 elif n.is_even:
                     raise ValueError("argument must be nonnegative or odd")
             else:
@@ -414,11 +414,11 @@ class RisingFactorial(CombinatorialFunction):
         x = sympify(x)
         k = sympify(k)
 
-        if x is S.One:
+        if x == 1:
             return factorial(k)
         elif k.is_Integer:
-            if k is S.Zero:
-                return S.One
+            if k == 0:
+                return Integer(1)
             else:
                 if k.is_positive:
                     if x is oo:
@@ -487,8 +487,8 @@ class FallingFactorial(CombinatorialFunction):
         k = sympify(k)
 
         if k.is_Integer:
-            if k is S.Zero:
-                return S.One
+            if k == 0:
+                return Integer(1)
             else:
                 if k.is_positive:
                     if x is oo:
@@ -655,14 +655,14 @@ class binomial(CombinatorialFunction):
         n, k = map(sympify, (n, k))
         d = n - k
         if d.is_zero or k.is_zero:
-            return S.One
-        elif d.is_zero is False:
+            return Integer(1)
+        elif d.is_nonzero:
             if (k - 1).is_zero:
                 return n
             elif k.is_negative:
-                return S.Zero
+                return Integer(0)
             elif n.is_integer and n.is_nonnegative and d.is_negative:
-                return S.Zero
+                return Integer(0)
         if k.is_Integer and k > 0 and n.is_Number:
             return cls._eval(n, k)
 
@@ -678,7 +678,7 @@ class binomial(CombinatorialFunction):
 
         if k.is_Integer:
             if k == 0:
-                return S.One
+                return Integer(1)
             elif k > 0:
                 n = self.args[0]
                 result = n - k + 1

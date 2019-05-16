@@ -1,6 +1,6 @@
-from .. import Piecewise, piecewise_fold
-from ...core import S, sympify
+from ...core import Integer, sympify
 from ...sets import Interval
+from .. import Piecewise, piecewise_fold
 
 
 def _add_splines(c, b1, d, b2):
@@ -92,8 +92,8 @@ def bspline_basis(d, knots, n, x, close=True):
         raise ValueError('n + d + 1 must not exceed len(knots) - 1')
     if d == 0:
         result = Piecewise(
-            (S.One, Interval(knots[n], knots[n + 1], False,
-                             not close).contains(x)),
+            (1, Interval(knots[n], knots[n + 1], False,
+                         not close).contains(x)),
             (0, True)
         )
     elif d > 0:
@@ -102,7 +102,7 @@ def bspline_basis(d, knots, n, x, close=True):
             B = (knots[n + d + 1] - x)/denom
             b2 = bspline_basis(d - 1, knots, n + 1, x, close)
         else:
-            b2 = B = S.Zero
+            b2 = B = Integer(0)
 
         denom = knots[n + d] - knots[n]
         if denom != 0:
@@ -110,7 +110,7 @@ def bspline_basis(d, knots, n, x, close=True):
             b1 = bspline_basis(
                 d - 1, knots, n, x, close and (B == 0 or b2 == 0))
         else:
-            b1 = A = S.Zero
+            b1 = A = Integer(0)
 
         result = _add_splines(A, b1, B, b2)
     else:

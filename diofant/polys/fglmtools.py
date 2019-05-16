@@ -1,6 +1,6 @@
 """Implementation of matrix FGLM Gröbner basis conversion algorithm. """
 
-from .monomials import monomial_div, monomial_mul
+from .monomials import monomial_divides, monomial_mul
 
 
 def matrix_fglm(F, ring, O_to):
@@ -57,10 +57,10 @@ def matrix_fglm(F, ring, O_to):
             L = list(set(L))
             L.sort(key=lambda k_l: O_to(_incr_k(S[k_l[1]], k_l[0])), reverse=True)
 
-        L = [(k, l) for (k, l) in L if all(monomial_div(_incr_k(S[l], k), g.LM) is None for g in G)]
+        L = [(k, l) for (k, l) in L if all(not monomial_divides(g.LM, _incr_k(S[l], k)) for g in G)]
 
         if not L:
-            G = [ g.monic() for g in G ]
+            G = [g.monic() for g in G]
             return sorted(G, key=lambda g: O_to(g.LM), reverse=True)
 
         t = L.pop()
@@ -142,7 +142,7 @@ def _basis(G, ring):
         basis.append(t)
 
         new_candidates = [_incr_k(t, k) for k in range(ring.ngens)
-                          if all(monomial_div(_incr_k(t, k), lmg) is None
+                          if all(not monomial_divides(lmg, _incr_k(t, k))
                                  for lmg in leading_monomials)]
         candidates.extend(new_candidates)
         candidates.sort(key=lambda m: order(m), reverse=True)

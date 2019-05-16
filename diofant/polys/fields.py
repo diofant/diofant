@@ -219,14 +219,6 @@ class FractionField(Field, CompositeDomain):
         """Returns True if ``LC(a)`` is negative."""
         return self.domain.is_negative(a.numer.LC)
 
-    def is_nonpositive(self, a):
-        """Returns True if ``LC(a)`` is non-positive."""
-        return self.domain.is_nonpositive(a.numer.LC)
-
-    def is_nonnegative(self, a):
-        """Returns True if ``LC(a)`` is non-negative."""
-        return self.domain.is_nonnegative(a.numer.LC)
-
     def factorial(self, a):
         """Returns factorial of ``a``."""
         return self.dtype(self.domain.factorial(a))
@@ -501,7 +493,7 @@ class FracElement(DomainElement, CantSympify):
                 if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
                     pass
                 else:
-                    return other.__rtruediv__(self)
+                    return NotImplemented
 
         op, other_numer, other_denom = self._extract_ground(other)
 
@@ -568,7 +560,7 @@ class FracElement(DomainElement, CantSympify):
         if self._extract_ground(denom) == (1, 1, None):
             return numer
         if isinstance(numer, PolyElement):
-            field = numer.ring.to_field()
+            field = numer.ring.field
         else:
             field = self.field
         return field((field.ring(numer), field.ring(denom)))

@@ -37,7 +37,7 @@ import operator
 from functools import reduce
 from itertools import combinations_with_replacement
 
-from ..core import (Add, Eq, Equality, Function, S, Subs, Symbol, Wild, expand,
+from ..core import (Add, Eq, Equality, Function, Subs, Symbol, Wild, expand,
                     symbols)
 from ..core.compatibility import is_sequence
 from ..functions import exp
@@ -147,7 +147,7 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
     >>> u = f(x, y)
     >>> ux = u.diff(x)
     >>> uy = u.diff(y)
-    >>> eq = Eq(1 + (2*(ux/u)) + (3*(uy/u)))
+    >>> eq = Eq(1 + (2*(ux/u)) + (3*(uy/u)), 0)
     >>> pdsolve(eq)
     Eq(f(x, y), E**(-2*x/13 - 3*y/13)*F(3*x - 2*y))
 
@@ -250,7 +250,7 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
     >>> u = f(x, y)
     >>> ux = u.diff(x)
     >>> uy = u.diff(y)
-    >>> eq = Eq(1 + (2*(ux/u)) + (3*(uy/u)))
+    >>> eq = Eq(1 + (2*(ux/u)) + (3*(uy/u)), 0)
     >>> classify_pde(eq)
     ('1st_linear_constant_coeff_homogeneous',)
 
@@ -432,7 +432,7 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     if sol.lhs == func:
         pde = pde.lhs - pde.rhs
         s = simplify(pde.subs({func: sol.rhs}).doit())
-        return s is S.Zero, s
+        return s == 0, s
 
     raise NotImplementedError(filldedent('''
         Unable to test if %s is a solution to %s.''' % (sol, pde)))
@@ -776,9 +776,9 @@ def pde_separate(eq, fun, sep, strategy='mul'):
 
     if isinstance(eq, Equality):
         if eq.rhs != 0:
-            return pde_separate(Eq(eq.lhs - eq.rhs), fun, sep, strategy)
+            return pde_separate(Eq(eq.lhs - eq.rhs, 0), fun, sep, strategy)
     else:
-        eq = Eq(eq)
+        eq = Eq(eq, 0)
 
     # Handle arguments
     orig_args = list(fun.args)

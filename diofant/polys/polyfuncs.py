@@ -1,7 +1,9 @@
 """High-level polynomials manipulation functions. """
 
-from ..core import Add, Mul, S
-from ..utilities import numbered_symbols, take
+import itertools
+
+from ..core import Add, Integer, Mul
+from ..utilities import numbered_symbols
 from .polyerrors import (ComputationFailed, MultivariatePolynomialError,
                          PolificationFailed)
 from .polyoptions import allowed_flags
@@ -56,18 +58,18 @@ def symmetrize(F, *gens, **args):
 
         for expr in exc.exprs:
             assert expr.is_Number
-            result.append((expr, S.Zero))
-        else:
-            if not iterable:
-                result, = result
+            result.append((expr, Integer(0)))
 
-            if not exc.opt.formal:
-                return result
+        if not iterable:
+            result, = result
+
+        if not exc.opt.formal:
+            return result
+        else:
+            if iterable:
+                return result, []
             else:
-                if iterable:
-                    return result, []
-                else:
-                    return result + ([],)
+                return result + ([],)
 
     polys, symbols = [], opt.symbols
     gens, dom = opt.gens, opt.domain
@@ -108,8 +110,8 @@ def symmetrize(F, *gens, **args):
             for m1, m2 in zip(monom, monom[1:] + (0,)):
                 exponents.append(m1 - m2)
 
-            term = [ s**n for (s, _), n in zip(polys, exponents) ]
-            poly = [ p**n for (_, p), n in zip(polys, exponents) ]
+            term = [s**n for (s, _), n in zip(polys, exponents)]
+            poly = [p**n for (_, p), n in zip(polys, exponents)]
 
             symmetric.append(Mul(coeff, *term))
             product = poly[0]*coeff
@@ -121,7 +123,7 @@ def symmetrize(F, *gens, **args):
 
         result.append((Add(*symmetric), f.as_expr()))
 
-    polys = [ (s, p.as_expr()) for s, p in polys ]
+    polys = [(s, p.as_expr()) for s, p in polys]
 
     if not opt.formal:
         for i, (sym, non_sym) in enumerate(result):
@@ -178,7 +180,7 @@ def horner(f, *gens, **args):
     except PolificationFailed as exc:
         return exc.expr
 
-    form, gen = S.Zero, F.gen
+    form, gen = Integer(0), F.gen
 
     if F.is_univariate:
         for coeff in F.all_coeffs():
@@ -268,7 +270,7 @@ def viete(f, roots=None, *gens, **args):
     if roots is None:
         roots = numbered_symbols('r', start=1)
 
-    roots = take(roots, n)
+    roots = list(itertools.islice(roots, n))
 
     if n != len(roots):
         raise ValueError("required %s roots, got %s" % (n, len(roots)))

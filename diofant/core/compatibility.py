@@ -183,7 +183,7 @@ def default_sort_key(item, order=None):
         (0, ()), (), 1), 1)
     >>> default_sort_key('1')
     ((0, 0, 'str'), (1, ('1',)), ((1, 0, 'Number'), (0, ()), (), 1), 1)
-    >>> default_sort_key(S.One)
+    >>> default_sort_key(Integer(1))
     ((1, 0, 'Number'), (0, ()), (), 1)
     >>> default_sort_key(2)
     ((1, 0, 'Number'), (0, ()), (), 2)
@@ -261,7 +261,7 @@ def default_sort_key(item, order=None):
     diofant.core.expr.Expr.as_ordered_terms
 
     """
-    from . import S, Basic
+    from . import Integer, Basic
     from .sympify import sympify, SympifyError
 
     if isinstance(item, Basic):
@@ -302,7 +302,7 @@ def default_sort_key(item, order=None):
         cls_index, args = 0, (1, (str(item),))
 
     return (cls_index, 0, item.__class__.__name__
-            ), args, S.One.sort_key(), S.One
+            ), args, Integer(1).sort_key(), Integer(1)
 
 
 def _nodes(e):

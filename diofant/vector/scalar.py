@@ -1,4 +1,4 @@
-from ..core import Expr, S, Symbol, sympify
+from ..core import Expr, Integer, Symbol, sympify
 from ..printing.pretty.stringpict import prettyForm
 
 
@@ -36,7 +36,7 @@ class BaseScalar(Expr):
 
     def _eval_derivative(self, s):
         assert self != s  # == case handled in Symbol._eval_derivative
-        return S.Zero
+        return Integer(0)
 
     def _latex(self, printer=None):
         return self._latex_form

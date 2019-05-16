@@ -509,14 +509,14 @@ def test_limit_subs():
 
 def test_function_subs():
     f = Function("f")
-    S = Sum(x*f(y), (x, 0, oo), (y, 0, oo))
-    assert S.subs({f(y): y}) == Sum(x*y, (x, 0, oo), (y, 0, oo))
-    assert S.subs({f(x): x}) == S
-    pytest.raises(ValueError, lambda: S.subs({f(y): x + y}))
-    S = Sum(x*log(y), (x, 0, oo), (y, 0, oo))
-    assert S.subs({log(y): y}) == S
-    S = Sum(x*f(y), (x, 0, oo), (y, 0, oo))
-    assert S.subs({f(y): y}) == Sum(x*y, (x, 0, oo), (y, 0, oo))
+    s = Sum(x*f(y), (x, 0, oo), (y, 0, oo))
+    assert s.subs({f(y): y}) == Sum(x*y, (x, 0, oo), (y, 0, oo))
+    assert s.subs({f(x): x}) == s
+    pytest.raises(ValueError, lambda: s.subs({f(y): x + y}))
+    s = Sum(x*log(y), (x, 0, oo), (y, 0, oo))
+    assert s.subs({log(y): y}) == s
+    s = Sum(x*f(y), (x, 0, oo), (y, 0, oo))
+    assert s.subs({f(y): y}) == Sum(x*y, (x, 0, oo), (y, 0, oo))
 
 
 def test_equality():
@@ -752,8 +752,8 @@ def test_change_index():
     assert Sum(x, (x, a, b)).change_index( x, -x - v) == \
         Sum(-v - x, (x, -b - v, -a - v))
 
-    S = Sum(x, (x, a, b))
-    assert S.change_index(x, u*x+v, y) == Sum((-v + y)/u, (y, b*u + v, a*u + v))
+    s = Sum(x, (x, a, b))
+    assert s.change_index(x, u*x+v, y) == Sum((-v + y)/u, (y, b*u + v, a*u + v))
 
 
 def test_reorder():

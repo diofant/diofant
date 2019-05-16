@@ -19,7 +19,8 @@ the responsibility for generating properly cased Fortran code to the user.
 
 import string
 
-from ..core import Add, Function, I, N, S
+from ..core import Add, Function, I, N
+from ..logic import true
 from .codeprinter import Assignment, CodePrinter
 from .precedence import precedence
 
@@ -126,7 +127,7 @@ class FCodePrinter(CodePrinter):
         return open_lines, close_lines
 
     def _print_Piecewise(self, expr):
-        if expr.args[-1].cond != S.true:
+        if expr.args[-1].cond != true:
             # We need the last conditional to be a True, otherwise the resulting
             # function may not return a result.
             raise ValueError("All Piecewise expressions must contain an "
@@ -139,7 +140,7 @@ class FCodePrinter(CodePrinter):
             for i, (e, c) in enumerate(expr.args):
                 if i == 0:
                     lines.append("if (%s) then" % self._print(c))
-                elif i == len(expr.args) - 1 and c == S.true:
+                elif i == len(expr.args) - 1 and c == true:
                     lines.append("else")
                 else:
                     lines.append("else if (%s) then" % self._print(c))

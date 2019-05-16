@@ -3,7 +3,7 @@
 from mpmath import findroot, mpc, mpf, workprec
 from mpmath.libmp.libmpf import prec_to_dps
 
-from ..core import (Add, Dummy, Expr, Float, I, Integer, Lambda, Rational, S,
+from ..core import (Add, Dummy, Expr, Float, I, Integer, Lambda, Rational,
                     cacheit, symbols, sympify)
 from ..core.compatibility import ordered
 from ..core.evaluate import global_evaluate
@@ -11,6 +11,7 @@ from ..core.function import AppliedUndef
 from ..domains import QQ
 from ..functions import root as _root
 from ..functions import sign
+from ..logic import false
 from ..utilities import lambdify, sift
 from .polyerrors import (DomainError, GeneratorsNeeded,
                          MultivariatePolynomialError, PolynomialError)
@@ -236,22 +237,22 @@ class RootOf(Expr):
     @classmethod
     def _get_reals_sqf(cls, factor):
         """Compute real root isolating intervals for a square-free polynomial."""
-        if factor.rep not in _reals_cache:
+        if factor not in _reals_cache:
             reals = dup_isolate_real_roots_sqf(factor.rep.to_dense(), factor.domain, blackbox=True)
             if not reals:
-                _reals_cache[factor.rep] = []
+                _reals_cache[factor] = []
             return reals
-        return _reals_cache[factor.rep]
+        return _reals_cache[factor]
 
     @classmethod
     def _get_complexes_sqf(cls, factor):
         """Compute complex root isolating intervals for a square-free polynomial."""
-        if factor.rep not in _complexes_cache:
+        if factor not in _complexes_cache:
             complexes = dup_isolate_complex_roots_sqf(factor.rep.to_dense(), factor.domain, blackbox=True)
             if not complexes:
-                _complexes_cache[factor.rep] = []
+                _complexes_cache[factor] = []
             return complexes
-        return _complexes_cache[factor.rep]
+        return _complexes_cache[factor]
 
     @classmethod
     def _get_reals(cls, factors):
@@ -279,7 +280,7 @@ class RootOf(Expr):
     def _reals_sorted(cls, reals):
         """Make real isolating intervals disjoint and sort roots."""
         factors = list({f for _, f, _ in reals})
-        if len(factors) == 1 and factors[0].rep in _reals_cache:
+        if len(factors) == 1 and factors[0] in _reals_cache:
             return reals
 
         cache = {}
@@ -301,7 +302,7 @@ class RootOf(Expr):
                 cache[factor] = [root]
 
         for factor, roots in cache.items():
-            _reals_cache[factor.rep] = roots
+            _reals_cache[factor] = roots
 
         return reals
 
@@ -309,7 +310,7 @@ class RootOf(Expr):
     def _complexes_sorted(cls, complexes):
         """Make complex isolating intervals disjoint and sort roots."""
         factors = list({f for _, f, _ in complexes})
-        if len(factors) == 1 and factors[0].rep in _complexes_cache:
+        if len(factors) == 1 and factors[0] in _complexes_cache:
             return complexes
 
         cache = {}
@@ -334,7 +335,7 @@ class RootOf(Expr):
                 cache[factor] = [root]
 
         for factor, roots in cache.items():
-            _complexes_cache[factor.rep] = roots
+            _complexes_cache[factor] = roots
 
         return complexes
 
@@ -512,6 +513,8 @@ class RootOf(Expr):
     def _get_roots(cls, method, poly, radicals):
         """Return postprocessed roots of specified kind."""
 
+        poly = PurePoly(poly)
+
         coeff, poly = cls._preprocess_roots(poly)
         roots = []
 
@@ -524,20 +527,20 @@ class RootOf(Expr):
     def interval(self):
         """Return isolation interval for the root."""
         if self.is_real:
-            return _reals_cache[self.poly.rep][self.index]
+            return _reals_cache[self.poly][self.index]
         else:
             reals_count = self.poly.count_roots()
-            return _complexes_cache[self.poly.rep][self.index - reals_count]
+            return _complexes_cache[self.poly][self.index - reals_count]
 
     def refine(self):
         """Refine isolation interval for the root."""
         if self.is_real:
-            root = _reals_cache[self.poly.rep][self.index]
-            _reals_cache[self.poly.rep][self.index] = root.refine()
+            root = _reals_cache[self.poly][self.index]
+            _reals_cache[self.poly][self.index] = root.refine()
         else:
             reals_count = self.poly.count_roots()
-            root = _complexes_cache[self.poly.rep][self.index - reals_count]
-            _complexes_cache[self.poly.rep][self.index - reals_count] = root.refine()
+            root = _complexes_cache[self.poly][self.index - reals_count]
+            _complexes_cache[self.poly][self.index - reals_count] = root.refine()
 
     def _eval_subs(self, old, new):
         if old in self.free_symbols:
@@ -641,21 +644,21 @@ class RootOf(Expr):
         if type(self) == type(other):
             return sympify(self.__eq__(other))
         if not (other.is_number and not other.has(AppliedUndef)):
-            return S.false
+            return false
         if not other.is_finite:
-            return S.false
+            return false
         z = self.expr.subs({self.expr.free_symbols.pop(): other}).is_zero
-        if z is False:      # all roots will make z True but we don't know
-            return S.false  # whether this is the right root if z is True
+        if z is False:    # all roots will make z True but we don't know
+            return false  # whether this is the right root if z is True
         o = other.is_extended_real, other.is_imaginary
         s = self.is_extended_real, self.is_imaginary
         if o != s and None not in o and None not in s:
-            return S.false
+            return false
         i = self.interval
         re, im = other.as_real_imag()
         if self.is_extended_real:
             if im:
-                return S.false
+                return false
             else:
                 return sympify(i.a < other and other < i.b)
         return sympify((i.ax < re and re < i.bx) and (i.ay < im and im < i.by))
@@ -695,7 +698,7 @@ class RootSum(Expr):
 
         var, expr = func.variables[0], func.expr
 
-        if coeff is not S.One:
+        if coeff != 1:
             expr = expr.subs({var: coeff*var})
 
         deg = poly.degree()
@@ -706,12 +709,12 @@ class RootSum(Expr):
         if expr.is_Add:
             add_const, expr = expr.as_independent(var)
         else:
-            add_const = S.Zero
+            add_const = Integer(0)
 
         if expr.is_Mul:
             mul_const, expr = expr.as_independent(var)
         else:
-            mul_const = S.One
+            mul_const = Integer(1)
 
         func = Lambda(var, expr)
 

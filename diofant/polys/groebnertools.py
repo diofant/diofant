@@ -2,7 +2,7 @@
 
 from ..core import Dummy
 from .monomials import (monomial_div, monomial_divides, monomial_lcm,
-                        monomial_mul, term_div)
+                        monomial_mul)
 from .orderings import lex
 from .polyconfig import query
 
@@ -39,7 +39,7 @@ def groebner(seq, ring, method=None):
     G = _groebner(seq, ring)
 
     if orig is not None:
-        G = [ g.clear_denoms()[1].set_ring(orig) for g in G ]
+        G = [g.clear_denoms()[1].set_ring(orig) for g in G]
 
     return G
 
@@ -74,7 +74,7 @@ def buchberger(f, ring):
     * :cite:`Bose03`
     * :cite:`Giovini1991sugar`
     * :cite:`Ajwa95groebner`
-    * :cite:`Cox1997ideals`
+    * :cite:`Cox2015ideals`
     * :cite:`BeckerWeispfenning93`, page 232
 
     Notes
@@ -95,9 +95,7 @@ def buchberger(f, ring):
     def normal(g, J):
         h = g.div([f[j] for j in J])[1]
 
-        if not h:
-            return
-        else:
+        if h:
             h = h.monic()
 
             if h not in I:
@@ -126,7 +124,7 @@ def buchberger(f, ring):
             def lcm_divides(ip):
                 # LCM(LM(h), LM(p)) divides LCM(LM(h), LM(g))
                 m = monomial_lcm(mh, f[ip].LM)
-                return monomial_div(LCMhg, m)
+                return monomial_divides(m, LCMhg)
 
             # HT(h) and HT(g) disjoint: mh*mg == LCMhg
             if monomial_mul(mh, mg) == LCMhg or (
@@ -156,7 +154,7 @@ def buchberger(f, ring):
             LCM12 = monomial_lcm(mg1, mg2)
 
             # if HT(h) does not divide lcm(HT(g1), HT(g2))
-            if not monomial_div(LCM12, mh) or \
+            if not monomial_divides(mh, LCM12) or \
                 monomial_lcm(mg1, mh) == LCM12 or \
                     monomial_lcm(mg2, mh) == LCM12:
                 B_new.add((ig1, ig2))
@@ -170,7 +168,7 @@ def buchberger(f, ring):
             ig = G.pop()
             mg = f[ig].LM
 
-            if not monomial_div(mg, mh):
+            if not monomial_divides(mh, mg):
                 G_new.add(ig)
 
         G_new.add(ih)
@@ -414,10 +412,10 @@ def critical_pair(f, g, ring):
 
     ltf = Polyn(f).LT
     ltg = Polyn(g).LT
-    lt = (monomial_lcm(ltf[0], ltg[0]), domain.one)
+    lt = ring.from_terms([(monomial_lcm(ltf[0], ltg[0]), domain.one)])
 
-    um = term_div(lt, ltf, domain)
-    vm = term_div(lt, ltg, domain)
+    um = lt.quo_term(ltf).LT
+    vm = lt.quo_term(ltg).LT
 
     # The full information is not needed (now), so only the product
     # with the leading term is considered:
@@ -499,7 +497,6 @@ def f5_reduce(f, B):
 
     """
     order = Polyn(f).ring.order
-    domain = Polyn(f).ring.domain
 
     if not Polyn(f):
         return f
@@ -509,7 +506,7 @@ def f5_reduce(f, B):
 
         for h in B:
             if Polyn(h) and monomial_divides(Polyn(h).LM, Polyn(f).LM):
-                t = term_div(Polyn(f).LT, Polyn(h).LT, domain)
+                t = Polyn(f).leading_term().quo_term(Polyn(h).LT).LT
                 if sig_cmp(sig_mult(Sign(h), t[0]), Sign(f), order) < 0:
                     # The following check need not be done and is in general slower than without.
                     # if not is_rewritable_or_comparable(Sign(gp), Num(gp), B):
@@ -723,7 +720,7 @@ def groebner_lcm(f, g):
     References
     ==========
 
-    * :cite:`Cox1997ideals`
+    * :cite:`Cox2015ideals`
 
     """
     if f.ring != g.ring:
@@ -745,9 +742,9 @@ def groebner_lcm(f, g):
 
     lcm = domain.lcm(fc, gc)
 
-    f_terms = [ ((1,) + monom, coeff) for monom, coeff in f.terms() ]
-    g_terms = [ ((0,) + monom, coeff) for monom, coeff in g.terms() ] \
-        + [ ((1,) + monom, -coeff) for monom, coeff in g.terms() ]
+    f_terms = [((1,) + monom, coeff) for monom, coeff in f.terms()]
+    g_terms = [((0,) + monom, coeff) for monom, coeff in g.terms()] \
+        + [((1,) + monom, -coeff) for monom, coeff in g.terms()]
 
     t = Dummy("t")
     t_ring = ring.clone(symbols=(t,) + ring.symbols, order=lex)
@@ -760,9 +757,9 @@ def groebner_lcm(f, g):
     def is_independent(h, j):
         return all(not monom[j] for monom in h.monoms())
 
-    H = [ h for h in basis if is_independent(h, 0) ]
+    H = [h for h in basis if is_independent(h, 0)]
 
-    h_terms = [ (monom[1:], coeff*lcm) for monom, coeff in H[0].terms() ]
+    h_terms = [(monom[1:], coeff*lcm) for monom, coeff in H[0].terms()]
     h = ring.from_terms(h_terms)
 
     return h

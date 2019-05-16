@@ -1,60 +1,12 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from ..ntheory.modular import symmetric_residue
 from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_exquo_ground,
                          dmp_mul, dmp_mul_ground, dmp_neg, dmp_quo_ground,
-                         dmp_rem, dmp_sub, dup_add, dup_mul)
+                         dmp_sub, dup_add, dup_mul)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
-                         dmp_zero, dmp_zero_p, dmp_zeros)
+                         dmp_zero, dmp_zero_p)
 from .polyerrors import DomainError
-
-
-def dmp_integrate_in(f, m, j, u, K):
-    """
-    Compute the indefinite integral of ``f`` in ``x_j`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", QQ)
-
-    >>> R.dmp_integrate_in(x + 2*y, 1, 0)
-    1/2*x**2 + 2*x*y
-    >>> R.dmp_integrate_in(x + 2*y, 1, 1)
-    x*y + y**2
-
-    """
-    if j < 0 or j > u:
-        raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
-
-    if not j:
-        if m <= 0 or dmp_zero_p(f, u):
-            return f
-
-        v = u - 1
-        g = dmp_zeros(m, v, K) if u else [K.zero]*m
-
-        for i, c in enumerate(reversed(f)):
-            n = i + 1
-
-            for j in range(1, m):
-                n *= i + j + 1
-
-            t = dmp_quo_ground(c, K(n), v, K) if u else K.exquo(c, K(n))
-            g.insert(0, t)
-
-        return g
-
-    def integrate_in(f, m, u, i, j, K):
-        if i == j:
-            return dmp_integrate_in(f, m, 0, u, K)
-
-        v, i = u - 1, i + 1
-
-        return dmp_strip([integrate_in(c, m, v, i, j, K) for c in f], u)
-
-    return integrate_in(f, m, u, 0, j, K)
 
 
 def dmp_diff_in(f, m, j, u, K):
@@ -253,6 +205,8 @@ def dup_trunc(f, p, K):
     -x**3 - x + 1
 
     """
+    from ..ntheory.modular import symmetric_residue
+
     if K.is_IntegerRing:
         g = []
 
@@ -264,25 +218,6 @@ def dup_trunc(f, p, K):
         g = [c % p for c in f]
 
     return dmp_strip(g, 0)
-
-
-def dmp_trunc(f, p, u, K):
-    """
-    Reduce a ``K[X]`` polynomial modulo a polynomial ``p`` in ``K[Y]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
-    >>> g = (y - 1).drop(x)
-
-    >>> R.dmp_trunc(f, g)
-    11*x**2 + 11*x + 5
-
-    """
-    return dmp_strip([dmp_rem(c, p, u - 1, K) for c in f], u)
 
 
 def dmp_ground_trunc(f, p, u, K):
@@ -377,6 +312,9 @@ def dmp_ground_content(f, u, K):
             if cont == K.one:
                 break
 
+    if K.is_negative(dmp_ground_LC(f, u, K)):
+        cont = -cont
+
     return cont
 
 
@@ -408,36 +346,7 @@ def dmp_ground_primitive(f, u, K):
     if cont != K.one:
         f = dmp_quo_ground(f, cont, u, K)
 
-    if K.is_negative(dmp_ground_LC(f, u, K)):
-        f = dmp_neg(f, u, K)
-        cont = -cont
-
     return cont, f
-
-
-def dmp_ground_extract(f, g, u, K):
-    """
-    Extract common content from a pair of polynomials in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> R.dmp_ground_extract(6*x*y + 12*x + 18, 4*x*y + 8*x + 12)
-    (2, 3*x*y + 6*x + 9, 2*x*y + 4*x + 6)
-
-    """
-    fc = dmp_ground_content(f, u, K)
-    gc = dmp_ground_content(g, u, K)
-
-    gcd = K.gcd(fc, gc)
-
-    if gcd != K.one:
-        f = dmp_quo_ground(f, gcd, u, K)
-        g = dmp_quo_ground(g, gcd, u, K)
-
-    return gcd, f, g
 
 
 def dup_real_imag(f, K):
@@ -669,8 +578,6 @@ def _dup_decompose(f, K):
         if g is not None:
             return g, h
 
-    return
-
 
 def dup_decompose(f, K):
     """
@@ -759,9 +666,7 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
         return common
 
     common = clear_denoms(f, u, K0, K1)
-
-    if common != K1.one:
-        f = dmp_mul_ground(f, common, u, K0)
+    f = dmp_mul_ground(f, common, u, K0)
 
     if not convert:
         return common, f

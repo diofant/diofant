@@ -1,11 +1,11 @@
 from functools import reduce
 from itertools import permutations
 
-from ..core import Add, Basic, Dummy, E, Eq, Mul, S, Wild, pi, sympify
+from ..core import Add, Basic, Dummy, E, Eq, Integer, Mul, Wild, pi, sympify
 from ..core.compatibility import ordered
 from ..functions import (Ei, LambertW, Piecewise, acosh, asin, asinh, atan,
-                         cos, cosh, cot, coth, erf, erfi, exp, li, log, root,
-                         sin, sinh, sqrt, tan, tanh)
+                         binomial, cos, cosh, cot, coth, erf, erfi, exp, li,
+                         log, root, sin, sinh, sqrt, tan, tanh)
 from ..logic import And
 from ..polys import PolynomialError, cancel, factor, gcd, lcm, quo
 from ..polys.constructor import construct_domain
@@ -216,7 +216,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     if not f.is_Add:
         indep, f = f.as_independent(x)
     else:
-        indep = S.One
+        indep = Integer(1)
 
     rewritables = {
         (sin, cos, cot): tan,
@@ -346,18 +346,18 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             if not p.has(y):
                 continue
 
-            if _derivation(p) is not S.Zero:
+            if _derivation(p) != 0:
                 c, q = p.as_poly(y).primitive()
                 return _deflation(c)*gcd(q, q.diff(y)).as_expr()
-        else:
-            return p
+
+        return p
 
     def _splitter(p):
         for y in V:
             if not p.has(y):
                 continue
 
-            if _derivation(y) is not S.Zero:
+            if _derivation(y) != 0:
                 c, q = p.as_poly(y).primitive()
 
                 q = q.as_expr()
@@ -373,8 +373,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                 q_split = _splitter(cancel(q / s))
 
                 return c_split[0]*q_split[0]*s, c_split[1]*q_split[1]
-        else:
-            return S.One, p
+
+        return Integer(1), p
 
     special = {}
 
@@ -424,13 +424,12 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     A, B = _exponent(f), a + max(b, c)
 
+    degree = A + B + degree_offset
     if A > 1 and B > 1:
-        monoms = itermonomials(V, A + B - 1 + degree_offset)
-    else:
-        monoms = itermonomials(V, A + B + degree_offset)
+        degree -= 1
 
-    poly_coeffs = _symbols('A', len(monoms))
-
+    monoms = itermonomials(V, degree)
+    poly_coeffs = _symbols('A', binomial(len(V) + degree, degree))
     poly_part = Add(*[ poly_coeffs[i]*monomial
                        for i, monomial in enumerate(ordered(monoms)) ])
 
@@ -524,7 +523,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             solution = [(coeff_ring.symbols[coeff_ring.index(k)],
                          v.as_expr()) for k, v in solution.items()]
             return candidate.subs(solution).subs(
-                list(zip(poly_coeffs, [S.Zero]*len(poly_coeffs))))
+                list(zip(poly_coeffs, [Integer(0)]*len(poly_coeffs))))
 
     if not (F.free_symbols - set(V)):
         solution = _integrate('Q')

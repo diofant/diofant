@@ -1,26 +1,21 @@
 """Implementation of mathematical domains. """
 
-from . import domain  # noqa: F401
-from . import finitefield  # noqa: F401
-from . import integerring  # noqa: F401
-from . import rationalfield  # noqa: F401
-from . import realfield  # noqa: F401
-from . import complexfield  # noqa: F401
-from . import algebraicfield  # noqa: F401
-from . import expressiondomain  # noqa: F401
-
-from .domain import Domain  # noqa: F401
-from .finitefield import (FiniteField, GMPYFiniteField as FF_gmpy,  # noqa: F401
-                          PythonFiniteField as FF_python)
-from .integerring import IntegerRing,  ZZ_gmpy, ZZ_python  # noqa: F401
-from .rationalfield import RationalField, QQ_gmpy, QQ_python  # noqa: F401
-from .realfield import RR, RealField  # noqa: F401
-from .complexfield import CC, ComplexField  # noqa: F401
-from .algebraicfield import (AlgebraicField, ComplexAlgebraicField,  # noqa: F401
-                             RealAlgebraicField)
-from .expressiondomain import EX, ExpressionDomain  # noqa: F401
-from .groundtypes import PythonRational  # noqa: F401
 from ..core.compatibility import GROUND_TYPES
+from . import (algebraicfield, complexfield, domain, expressiondomain,
+               finitefield, integerring, rationalfield, realfield)
+from .algebraicfield import (AlgebraicField, ComplexAlgebraicField,
+                             RealAlgebraicField)
+from .complexfield import CC, ComplexField
+from .domain import Domain
+from .expressiondomain import EX, ExpressionDomain
+from .finitefield import FiniteField
+from .finitefield import GMPYFiniteField as FF_gmpy
+from .finitefield import PythonFiniteField as FF_python
+from .groundtypes import PythonRational
+from .integerring import IntegerRing, ZZ_gmpy, ZZ_python
+from .rationalfield import QQ_gmpy, QQ_python, RationalField
+from .realfield import RR, RealField
+
 
 _GROUND_TYPES_MAP = {'gmpy': (FF_gmpy, ZZ_gmpy, QQ_gmpy),
                      'python': (FF_python, ZZ_python, QQ_python)}

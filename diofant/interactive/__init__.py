@@ -7,9 +7,8 @@ in IPython to reduce boilerplate while interacting with Diofant
 due to the Python language syntax.
 """
 
-from . import printing  # noqa: F401
-from . import session  # noqa: F401
-
+from . import printing, session
 from .printing import init_printing
+
 
 init_printing()

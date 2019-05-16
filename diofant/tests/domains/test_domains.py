@@ -551,6 +551,8 @@ def test_Domain_convert():
     a2 = ALG2.convert(sqrt(2))
     a = ALG.convert(a2, ALG2)
     assert a.rep.to_dense() == [QQ(1, 2), 0, -QQ(9, 2), 0]
+    assert RR.convert(a) == RR(1.4142135623730951)
+    assert CC.convert(a) == CC(1.4142135623730951)
 
     assert ZZ_python.convert(3.0) == ZZ_python.dtype(3)
     pytest.raises(CoercionFailed, lambda: ZZ_python.convert(3.2))
@@ -664,9 +666,6 @@ def test_Domain__algebraic_field():
     alg = QQ.algebraic_field(sqrt(2), sqrt(3))
     assert alg.minpoly == Poly(x**4 - 10*x**2 + 1)
     assert alg.domain == QQ
-
-    assert alg.is_nonpositive(alg([-1, 1])) is True
-    assert alg.is_nonnegative(alg([2, -1])) is True
 
     assert alg(1).numerator == alg(1)
     assert alg.from_expr(sqrt(3)/2).numerator == alg.from_expr(2*sqrt(3))
@@ -1134,9 +1133,7 @@ def test_to_expr():
 
 def test_EX():
     assert EX.is_positive(EX(2))
-    assert EX.is_nonnegative(EX(2))
     assert EX.is_negative(EX(-1))
-    assert EX.is_nonpositive(EX(-1))
 
     assert (EX(1)/2).numerator == 1
     assert (EX(1)/2).denominator == 2

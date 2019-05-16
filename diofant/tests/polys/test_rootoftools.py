@@ -256,7 +256,7 @@ def test_RootOf_evalf():
 
     re, im = RootOf(x**3 + x + 3, 1).evalf(20).as_real_imag()
 
-    assert re.epsilon_eq( Float("0.60670583138111481707"))
+    assert re.epsilon_eq(+Float("0.60670583138111481707"))
     assert im.epsilon_eq(-Float("1.45061224918844152650"))
 
     re, im = RootOf(x**3 + x + 3, 2).evalf(20).as_real_imag()
@@ -603,3 +603,8 @@ def test_diofantissue_723():
     for i in range(20):
         for j in (1, 2):
             RootOf(p, j)
+
+
+def test_sympyissue_15413():
+    assert Poly(sqrt(2)*x**3 + x, x).all_roots() == [0, -I*root(2, -4),
+                                                     I*root(2, -4)]

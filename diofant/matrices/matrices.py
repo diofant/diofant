@@ -2,7 +2,7 @@ import collections
 from functools import reduce
 from types import FunctionType
 
-from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow, S,
+from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow,
                     Symbol, count_ops, ilcm, oo, symbols, sympify)
 from ..core.compatibility import (NotIterable, as_int, default_sort_key,
                                   is_sequence)
@@ -151,7 +151,7 @@ class MatrixBase(DefaultPrinting):
                     return rows, cols, flat_list
                 elif len(arr.shape) == 1:
                     rows, cols = arr.shape[0], 1
-                    flat_list = [S.Zero]*rows
+                    flat_list = [Integer(0)]*rows
                     for i in range(len(arr)):
                         flat_list[i] = cls._sympify(arr[i])
                     return rows, cols, flat_list
@@ -590,7 +590,7 @@ class MatrixBase(DefaultPrinting):
                 raise ShapeError("Matrix size mismatch.")
             alst = A.tolist()
             blst = B.tolist()
-            ret = [S.Zero]*A.rows
+            ret = [Integer(0)]*A.rows
             for i in range(A.shape[0]):
                 ret[i] = [j + k for j, k in zip(alst[i], blst[i])]
             rv = classof(A, B)._new(ret)
@@ -603,7 +603,7 @@ class MatrixBase(DefaultPrinting):
         return self + other
 
     def __truediv__(self, other):
-        return self*(S.One / other)
+        return self*(Integer(1)/other)
 
     def __neg__(self):
         return -1*self
@@ -1866,7 +1866,7 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> V = Matrix([sqrt(3)/2, S.Half])
+        >>> V = Matrix([sqrt(3)/2, Rational(1, 2)])
         >>> x = Matrix([[1, 0]])
         >>> V.project(x)
         Matrix([[sqrt(3)/2, 0]])
@@ -2010,7 +2010,7 @@ class MatrixBase(DefaultPrinting):
         >>> e.is_zero
 
         """
-        if any(i.is_zero is False for i in self):
+        if any(i.is_nonzero for i in self):
             return False
         if any(i.is_zero is None for i in self):
             return
@@ -2060,7 +2060,7 @@ class MatrixBase(DefaultPrinting):
         >>> m.is_upper
         True
 
-        >>> m = Matrix(4, 3, [5, 1, 9, 0, 4 , 6, 0, 0, 5, 0, 0, 0])
+        >>> m = Matrix(4, 3, [5, 1, 9, 0, 4, 6, 0, 0, 5, 0, 0, 0])
         >>> m
         Matrix([
         [5, 1, 9],
@@ -2106,7 +2106,7 @@ class MatrixBase(DefaultPrinting):
         >>> m.is_lower
         True
 
-        >>> m = Matrix(4, 3, [0, 0, 0, 2, 0, 0, 1, 4 , 0, 6, 6, 5])
+        >>> m = Matrix(4, 3, [0, 0, 0, 2, 0, 0, 1, 4, 0, 6, 6, 5])
         >>> m
         Matrix([
         [0, 0, 0],
@@ -2283,7 +2283,7 @@ class MatrixBase(DefaultPrinting):
         >>> m.is_symmetric()
         False
 
-        >>> m = Matrix(3, 3, [1, x**2 + 2*x + 1, y, (x + 1)**2 , 2, 0, y, 0, 3])
+        >>> m = Matrix(3, 3, [1, x**2 + 2*x + 1, y, (x + 1)**2, 2, 0, y, 0, 3])
         >>> m
         Matrix([
         [         1, x**2 + 2*x + 1, y],
@@ -2343,7 +2343,7 @@ class MatrixBase(DefaultPrinting):
         False
 
         >>> m = Matrix(3, 3, [0, x**2 + 2*x + 1, y,
-        ...                   -(x + 1)**2 , 0, x*y,
+        ...                   -(x + 1)**2, 0, x*y,
         ...                   -y, -x*y, 0])
 
         Simplification of matrix elements is done by default so even
@@ -2467,7 +2467,7 @@ class MatrixBase(DefaultPrinting):
         if not self.is_square:
             raise NonSquareMatrixError()
         if not self:
-            return S.One
+            return Integer(1)
         if method == "bareis":
             return self.det_bareis()
         elif method == "berkowitz":
@@ -2501,7 +2501,7 @@ class MatrixBase(DefaultPrinting):
         if not self.is_square:
             raise NonSquareMatrixError()
         if not self:
-            return S.One
+            return Integer(1)
 
         M, n = self.copy().as_mutable(), self.rows
 
@@ -2525,7 +2525,7 @@ class MatrixBase(DefaultPrinting):
                             sign *= -1
                             break
                     else:
-                        return S.Zero
+                        return Integer(0)
 
                 # proceed with Bareis' fraction-free (FF)
                 # form of Gaussian elimination algorithm
@@ -2569,7 +2569,7 @@ class MatrixBase(DefaultPrinting):
         if not self.is_square:
             raise NonSquareMatrixError()
         if not self:
-            return S.One
+            return Integer(1)
 
         M, n = self.copy(), self.rows
         p, prod = [], 1
@@ -2840,14 +2840,14 @@ class MatrixBase(DefaultPrinting):
             for i, B in enumerate(items):
                 items[i] = (R*B)[0, 0]
 
-            items = [S.One, a] + items
+            items = [Integer(1), a] + items
 
             for i in range(n):
                 T[i:, i] = items[:n - i + 1]
 
             transforms[k - 1] = T
 
-        polys = [self._new([S.One, -A[0, 0]])]
+        polys = [self._new([Integer(1), -A[0, 0]])]
 
         for i, T in enumerate(transforms):
             polys.append(T*polys[i])
@@ -2867,7 +2867,7 @@ class MatrixBase(DefaultPrinting):
         if not self.is_square:
             raise NonSquareMatrixError()
         if not self:
-            return S.One
+            return Integer(1)
         poly = self.berkowitz()[-1]
         sign = (-1)**(len(poly) - 1)
         return sign*poly[-1]
@@ -2881,7 +2881,7 @@ class MatrixBase(DefaultPrinting):
         berkowitz
 
         """
-        sign, minors = S.NegativeOne, []
+        sign, minors = Integer(-1), []
 
         for poly in self.berkowitz():
             minors.append(sign*poly[-1])
@@ -2908,15 +2908,17 @@ class MatrixBase(DefaultPrinting):
         >>> A.berkowitz_charpoly().as_expr()
         _lambda**2 - _lambda - 6
 
-        No test is done to see that ``x`` doesn't clash with an existing
-        symbol, so using the default (``lambda``) or your own Dummy symbol is
-        the safest option:
+        Be sure your provided ``x`` doesn't clash with existing symbols:
 
         >>> A = Matrix([[1, 2], [x, 0]])
         >>> A.charpoly().as_expr()
         -2*x + _lambda**2 - _lambda
         >>> A.charpoly(x).as_expr()
-        x**2 - 3*x
+        Traceback (most recent call last):
+        ...
+        GeneratorsError: polynomial ring and it's ground domain share generators
+        >>> A.charpoly(y).as_expr()
+        -2*x + y**2 - y
 
         See Also
         ========
@@ -3013,7 +3015,7 @@ class MatrixBase(DefaultPrinting):
                 l = 1
                 for i, b in enumerate(basis[0]):
                     c, p = signsimp(b).as_content_primitive()
-                    if c is not S.One:
+                    if c != 1:
                         b = c*p
                         l = ilcm(l, c.denominator)
                     basis[0][i] = b
@@ -3064,7 +3066,7 @@ class MatrixBase(DefaultPrinting):
         Examples
         ========
 
-        >>> A = Matrix([[1, 0, 0], [0, 10, 0], [0, 0, S.One/10]])
+        >>> A = Matrix([[1, 0, 0], [0, 10, 0], [0, 0, Rational(1, 10)]])
         >>> A.condition_number()
         100
 
@@ -3076,7 +3078,7 @@ class MatrixBase(DefaultPrinting):
         """
 
         if not self:
-            return S.Zero
+            return Integer(0)
         singularvalues = self.singular_values()
         return Max(*singularvalues) / Min(*singularvalues)
 

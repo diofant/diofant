@@ -8,7 +8,7 @@ import re
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from ..core import Add, Mod, S, Symbol, oo
+from ..core import Add, Integer, Mod, Symbol, oo
 from ..core.alphabets import greeks
 from ..core.compatibility import default_sort_key
 from ..core.function import _coeff_isneg
@@ -342,7 +342,7 @@ class LatexPrinter(Printer):
                     last_term_tex = term_tex
                 return _tex
 
-        if denom is S.One:
+        if denom == 1:
             # use the original expression here, since fraction() may have
             # altered it when producing numer and denom
             tex += convert(expr)
@@ -365,8 +365,8 @@ class LatexPrinter(Printer):
                         % (sdenom, separator, snumer)
                 elif numer.is_Mul:
                     # split a long numerator
-                    a = S.One
-                    b = S.One
+                    a = Integer(1)
+                    b = Integer(1)
                     for x in numer.args:
                         if self._needs_mul_brackets(x, last=False) or \
                                 len(convert(a*x).split()) > ratio*ldenom or \
@@ -526,8 +526,8 @@ class LatexPrinter(Printer):
                 else:
                     multiplicity.append((current, i))
                     current, i = symbol, 1
-            else:
-                multiplicity.append((current, i))
+
+            multiplicity.append((current, i))
 
             for x, i in multiplicity:
                 if i == 1:

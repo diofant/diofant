@@ -6,7 +6,8 @@ import math
 import numbers
 import random
 
-from ..core import Function, Mul, Pow, Rational, S, integer_nthroot, sympify
+from ..core import (Function, Integer, Mul, Pow, Rational, integer_nthroot,
+                    sympify)
 from ..core.compatibility import as_int
 from ..core.evalf import bitcount
 from .generate import nextprime, primerange, sieve
@@ -203,7 +204,7 @@ def multiplicity(p, n):
             if p.denominator == 1:
                 if n.numerator == 1:
                     return -multiplicity(p.numerator, n.denominator)
-                return S.Zero
+                return Integer(0)
             elif p.numerator == 1:
                 return multiplicity(p.denominator, n.denominator)
             else:
@@ -343,8 +344,7 @@ def perfect_power(n, candidates=None, big=True, factor=True):
                 if m is not False:
                     r, e = m[0], e*m[1]
             return int(r), e
-    else:
-        return False
+    return False
 
 
 def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
@@ -944,10 +944,10 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
                   visual is not True and
                   visual is not False):
         if factordict == {}:
-            return S.One
+            return Integer(1)
         if -1 in factordict:
             factordict.pop(-1)
-            args = [S.NegativeOne]
+            args = [Integer(-1)]
         else:
             args = []
         args.extend([Pow(*i, evaluate=False)
@@ -1191,7 +1191,7 @@ def factorrat(rat, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     else:
         if -1 in f:
             f.pop(-1)
-            args = [S.NegativeOne]
+            args = [Integer(-1)]
         else:
             args = []
         args.extend([Pow(*i, evaluate=False)

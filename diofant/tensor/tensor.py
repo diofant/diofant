@@ -34,7 +34,8 @@ from functools import reduce
 
 from ..combinatorics.tensor_can import (bsgs_direct_product, canonicalize,
                                         get_symmetric_group_sgs, riemann_bsgs)
-from ..core import Add, Basic, Rational, S, Symbol, Tuple, symbols, sympify
+from ..core import (Add, Basic, Integer, Rational, Symbol, Tuple, symbols,
+                    sympify)
 from ..core.sympify import CantSympify
 from ..external import import_module
 from ..matrices import Matrix, eye
@@ -817,7 +818,7 @@ class _TensorDataLazyEvaluator(CantSympify):
             return data_result
 
         if isinstance(key, TensAdd):
-            sumvar = S.Zero
+            sumvar = Integer(0)
             data_list = []
             free_args_list = []
             for arg in key.args:
@@ -898,7 +899,7 @@ class _TensorDataLazyEvaluator(CantSympify):
             data = _TensorDataLazyEvaluator._contract_ndarray(tensmul1.free, tensmul2.free, data1, data2)
             # TODO: do this more efficiently... maybe by just passing an index list
             # to .data_product_tensor(...)
-            return data, TensMul.from_TIDS(S.One, TIDS(components, free, dum))
+            return data, TensMul.from_TIDS(Integer(1), TIDS(components, free, dum))
 
         return reduce(data_mul, zip(data_list, tensmul_list))
 
@@ -1383,7 +1384,7 @@ class TensorIndexType(Basic):
 
         if isinstance(name, str):
             name = Symbol(name)
-        obj = Basic.__new__(cls, name, S.One if metric else S.Zero)
+        obj = Basic.__new__(cls, name, Integer(1) if metric else Integer(0))
         obj._name = str(name)
         if not dummy_fmt:
             obj._dummy_fmt = '%s_%%d' % obj.name
@@ -1580,7 +1581,7 @@ class TensorIndex(Basic):
         else:
             raise ValueError("invalid name")
 
-        obj = Basic.__new__(cls, name_symbol, tensortype, S.One if is_up else S.Zero)
+        obj = Basic.__new__(cls, name_symbol, tensortype, Integer(1) if is_up else Integer(0))
         obj._name = str(name)
         obj._tensortype = tensortype
         obj._is_up = is_up
@@ -2346,7 +2347,7 @@ class TensExpr(Basic):
     is_commutative = False
 
     def __neg__(self):
-        return self*S.NegativeOne
+        return self*Integer(-1)
 
     def __abs__(self):
         raise NotImplementedError
@@ -2518,7 +2519,7 @@ class TensAdd(TensExpr):
         args = TensAdd._tensAdd_flatten(args)
 
         if not args:
-            return S.Zero
+            return Integer(0)
 
         if len(args) == 1 and not isinstance(args[0], TensExpr):
             return args[0]
@@ -2545,7 +2546,7 @@ class TensAdd(TensExpr):
         # if there are no more args (i.e. have cancelled out),
         # just return zero:
         if not args:
-            return S.Zero
+            return Integer(0)
 
         if len(args) == 1:
             return args[0]
@@ -2557,7 +2558,7 @@ class TensAdd(TensExpr):
         args.sort(key=sort_key)
         args = TensAdd._tensAdd_collect_terms(args)
         if not args:
-            return S.Zero
+            return Integer(0)
         # it there is only a component tensor return it
         if len(args) == 1:
             return args[0]
@@ -2997,7 +2998,7 @@ class Tensor(TensExpr):
         g, dummies, msym, v = self._tids.canon_args()
         can = canonicalize(g, dummies, msym, *v)
         if can == 0:
-            return S.Zero
+            return Integer(0)
         tensor = self.perm2tensor(can, True)
         return tensor
 
@@ -3007,7 +3008,7 @@ class Tensor(TensExpr):
 
     @property
     def coeff(self):
-        return S.One
+        return Integer(1)
 
     @property
     def component(self):
@@ -3100,7 +3101,7 @@ class Tensor(TensExpr):
     def __truediv__(self, other):
         if isinstance(other, TensExpr):
             raise ValueError('cannot divide by a tensor')
-        return TensMul(self, S.One/other, is_canon_bp=self.is_canon_bp)
+        return TensMul(self, Integer(1)/other, is_canon_bp=self.is_canon_bp)
 
     def __rtruediv__(self, other):
         raise ValueError('cannot divide by a tensor')
@@ -3115,7 +3116,7 @@ class Tensor(TensExpr):
         return TensAdd(self, -other)
 
     def __neg__(self):
-        return TensMul(S.NegativeOne, self)
+        return TensMul(Integer(-1), self)
 
     def _print(self):
         indices = [str(ind) for ind in self.indices]
@@ -3131,7 +3132,7 @@ class Tensor(TensExpr):
         other = sympify(other)
         if not isinstance(other, TensExpr):
             assert not self.components
-            return S.One == other
+            return Integer(1) == other
 
         def _get_compar_comp(self):
             t = self.canon_bp()
@@ -3210,7 +3211,7 @@ class TensMul(TensExpr):
                     is_canon_bp = kw_args.get('is_canon_bp', arg._is_canon_bp)
             tids = reduce(lambda a, b: a*b, tids_list)
 
-        coeff = reduce(lambda a, b: a*b, [S.One] + [arg for arg in args if not isinstance(arg, TensExpr)])
+        coeff = reduce(lambda a, b: a*b, [Integer(1)] + [arg for arg in args if not isinstance(arg, TensExpr)])
         args = tids.get_tensors()
         if coeff != 1:
             args = [coeff] + args
@@ -3455,7 +3456,7 @@ class TensMul(TensExpr):
         g, dummies, msym, v = t._tids.canon_args()
         can = canonicalize(g, dummies, msym, *v)
         if can == 0:
-            return S.Zero
+            return Integer(0)
         tmul = t.perm2tensor(can, True)
         return tmul
 
@@ -3601,7 +3602,7 @@ def canon_bp(p):
 def tensor_mul(*a):
     """Product of tensors."""
     if not a:
-        return TensMul.from_data(S.One, [], [], [])
+        return TensMul.from_data(Integer(1), [], [], [])
     t = a[0]
     for tx in a[1:]:
         t = t*tx
@@ -3669,7 +3670,7 @@ def get_tids(t):
 
 def get_coeff(t):
     if isinstance(t, Tensor):
-        return S.One
+        return Integer(1)
     if isinstance(t, TensMul):
         return t.coeff
     if isinstance(t, TensExpr):

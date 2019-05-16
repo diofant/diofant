@@ -90,7 +90,7 @@ def solve_poly_system(eqs, *gens, **args):
     References
     ==========
 
-    * :cite:`Cox1997ideals`, pp. 112
+    * :cite:`Cox2015ideals`, p. 98
 
     Examples
     ========

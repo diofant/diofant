@@ -1,5 +1,4 @@
-from ..logic.boolalg import Boolean, BooleanAtom
-from .basic import S
+from ..logic.boolalg import Boolean, BooleanAtom, false, true
 from .compatibility import ordered
 from .evalf import EvalfMixin
 from .evaluate import global_evaluate
@@ -275,7 +274,7 @@ class Equality(Relational):
 
     is_Equality = True
 
-    def __new__(cls, lhs, rhs=0, **options):
+    def __new__(cls, lhs, rhs, **options):
         lhs = sympify(lhs, strict=True)
         rhs = sympify(rhs, strict=True)
 
@@ -293,9 +292,9 @@ class Equality(Relational):
                     return r
             # If expressions have the same structure, they must be equal.
             if lhs == rhs:
-                return S.true
+                return true
             elif all(isinstance(i, BooleanAtom) for i in (rhs, lhs)):
-                return S.false  # equal args already evaluated
+                return false  # equal args already evaluated
 
             # If appropriate, check if the difference evaluates.  Detect
             # incompatibility such as lhs real and rhs not real.
@@ -349,7 +348,7 @@ class Unequality(Relational):
 
         if evaluate:
             is_equal = Equality(lhs, rhs)
-            if is_equal == S.true or is_equal == S.false:
+            if is_equal == true or is_equal == false:
                 return ~is_equal
 
         return Relational.__new__(cls, lhs, rhs, **options)

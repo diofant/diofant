@@ -2,7 +2,7 @@ import collections
 import itertools
 
 from ...combinatorics import Permutation
-from ...core import S, Tuple, diff
+from ...core import Integer, Tuple, diff
 from ...matrices import MatrixBase
 from .dense_ndim_array import ImmutableDenseNDimArray
 from .ndim_array import NDimArray
@@ -44,7 +44,7 @@ def tensorproduct(*args):
 
     """
     if len(args) == 0:
-        return S.One
+        return Integer(1)
     if len(args) == 1:
         return _arrayfy(args[0])
     if len(args) > 2:
@@ -152,7 +152,7 @@ def tensorcontraction(array, *contraction_axes):
     contracted_array = []
     for icontrib in itertools.product(*remaining_indices):
         index_base_position = sum(icontrib)
-        isum = S.Zero
+        isum = Integer(0)
         for sum_to_index in itertools.product(*summed_deltas):
             isum += array[index_base_position + sum(sum_to_index)]
 

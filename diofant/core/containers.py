@@ -8,9 +8,8 @@ They are supposed to work seamlessly within the Diofant framework.
 
 from collections import Mapping
 
-from ..utilities.iterables import iterable
 from .basic import Basic
-from .compatibility import as_int
+from .compatibility import as_int, iterable
 from .sympify import converter, sympify
 
 

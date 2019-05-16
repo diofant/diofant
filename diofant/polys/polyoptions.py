@@ -297,7 +297,7 @@ class Wrt(Option, metaclass=OptionType):
                 raise OptionError('Bad input: missing parameter.')
             if not wrt:
                 return []
-            return [ gen for gen in cls._re_split.split(wrt) ]
+            return [gen for gen in cls._re_split.split(wrt)]
         elif hasattr(wrt, '__getitem__'):
             return list(map(str, wrt))
         else:
@@ -319,7 +319,7 @@ class Sort(Option, metaclass=OptionType):
     @classmethod
     def preprocess(cls, sort):
         if isinstance(sort, str):
-            return [ gen.strip() for gen in sort.split('>') ]
+            return [gen.strip() for gen in sort.split('>')]
         elif hasattr(sort, '__getitem__'):
             return list(map(str, sort))
         else:

@@ -3,7 +3,7 @@ from itertools import (combinations, combinations_with_replacement,
                        permutations, product)
 from operator import gt
 
-from ..core import Basic, S
+from ..core import Basic
 # this is the logical location of these functions
 from ..core.compatibility import (as_int, default_sort_key, is_sequence,
                                   iterable, ordered)
@@ -248,7 +248,7 @@ def postorder_traversal(node, keys=None):
     if isinstance(node, Basic):
         args = node.args
         if keys:
-            if keys != S.true:
+            if keys != 1:
                 args = ordered(args, keys, default=False)
             else:
                 args = ordered(args)
@@ -553,11 +553,6 @@ def sift(seq, keyfunc):
     for i in seq:
         m[keyfunc(i)].append(i)
     return m
-
-
-def take(iter, n):
-    """Return ``n`` items from ``iter`` iterator."""
-    return [ value for _, value in zip(range(n), iter) ]
 
 
 def dict_merge(*dicts):
@@ -1500,7 +1495,7 @@ def binary_partitions(n):
 
     """
     from math import ceil, log
-    pow = int(2**(ceil(log(n, 2))))
+    pow = 2**ceil(log(n, 2))
     sum = 0
     partition = []
     while pow:

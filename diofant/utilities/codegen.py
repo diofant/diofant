@@ -81,7 +81,7 @@ import textwrap
 from io import StringIO
 
 from .. import __version__ as diofant_version
-from ..core import Dummy, Equality, Expr, Function, S, Symbol, Tuple
+from ..core import Dummy, Equality, Expr, Function, Integer, Symbol, Tuple
 from ..core.compatibility import is_sequence
 from ..matrices import (ImmutableMatrix, MatrixBase, MatrixExpr, MatrixSlice,
                         MatrixSymbol)
@@ -508,13 +508,13 @@ class CodeGen:
                 out_arg = expr.lhs
                 expr = expr.rhs
                 if isinstance(out_arg, Indexed):
-                    dims = tuple((S.Zero, dim - 1) for dim in out_arg.shape)
+                    dims = tuple((Integer(0), dim - 1) for dim in out_arg.shape)
                     symbol = out_arg.base.label
                 elif isinstance(out_arg, Symbol):
                     dims = []
                     symbol = out_arg
                 elif isinstance(out_arg, MatrixSymbol):
-                    dims = tuple((S.Zero, dim - 1) for dim in out_arg.shape)
+                    dims = tuple((Integer(0), dim - 1) for dim in out_arg.shape)
                     symbol = out_arg
                 else:
                     raise CodeGenError("Only Indexed, Symbol, or MatrixSymbol "
@@ -532,7 +532,7 @@ class CodeGen:
             elif isinstance(expr, (ImmutableMatrix, MatrixSlice)):
                 # Create a "dummy" MatrixSymbol to use as the Output arg
                 out_arg = MatrixSymbol('out_%s' % abs(hash(expr)), *expr.shape)
-                dims = tuple((S.Zero, dim - 1) for dim in out_arg.shape)
+                dims = tuple((Integer(0), dim - 1) for dim in out_arg.shape)
                 output_args.append(
                     OutputArgument(out_arg, out_arg, expr, dimensions=dims))
             else:
@@ -552,7 +552,7 @@ class CodeGen:
                 dims = []
                 array = array_symbols[symbol]
                 for dim in array.shape:
-                    dims.append((S.Zero, dim - 1))
+                    dims.append((Integer(0), dim - 1))
                 metadata = {'dimensions': dims}
             else:
                 metadata = {}
@@ -1298,7 +1298,6 @@ class OctaveCodeGen(CodeGen):
         # statement-by-statement by OctavePrinter then again here.
         p = OctaveCodePrinter({'human': False})
         return p.indent_code(codelines)
-        return codelines
 
     def dump_m(self, routines, f, prefix, header=True, empty=True, inline=True):
         # Note used to call self.dump_code() but we need more control for header

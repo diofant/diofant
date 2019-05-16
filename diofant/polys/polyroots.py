@@ -3,7 +3,7 @@
 import functools
 import math
 
-from ..core import (Dummy, Eq, Float, I, Integer, Rational, S, Symbol, comp,
+from ..core import (Dummy, Eq, Float, I, Integer, Rational, Symbol, comp,
                     factor_terms, pi, symbols, sympify)
 from ..core.compatibility import ordered
 from ..core.mul import expand_2arg
@@ -52,19 +52,19 @@ def roots_quadratic(f):
         else:
             return simplify(expr)
 
-    if c is S.Zero:
-        r0, r1 = S.Zero, -b/a
+    if c == 0:
+        r0, r1 = Integer(0), -b/a
 
         if not dom.is_Numerical:
             r1 = _simplify(r1)
         elif r1.is_negative:
             r0, r1 = r1, r0
-    elif b is S.Zero:
+    elif b == 0:
         r = -c/a
         if not dom.is_Numerical:
             r = _simplify(r)
 
-        R = sqrt(r)
+        R = sqrt(r).doit()
         r0 = -R
         r1 = R
     else:
@@ -99,7 +99,7 @@ def roots_cubic(f, trig=False):
         p = (3*a*c - b**2)/3/a**2
         q = (2*b**3 - 9*a*b*c + 27*a**2*d)/(27*a**3)
         D = 18*a*b*c*d - 4*b**3*d + b**2*c**2 - 4*a*c**3 - 27*a**2*d**2
-        if (D > 0) is S.true:
+        if D.is_positive:
             rv = []
             for k in range(3):
                 rv.append(2*sqrt(-p/3)*cos(acos(3*q/2/p*sqrt(-3/p))/3 - k*2*pi/3))
@@ -107,9 +107,9 @@ def roots_cubic(f, trig=False):
 
     _, a, b, c = f.monic().all_coeffs()
 
-    if c is S.Zero:
+    if c == 0:
         x1, x2 = roots([1, a, b], multiple=True)
-        return [x1, S.Zero, x2]
+        return [x1, Integer(0), x2]
 
     p = b - a**2/3
     q = c - a*b/3 + 2*a**3/27
@@ -118,8 +118,8 @@ def roots_cubic(f, trig=False):
     aon3 = a/3
 
     u1 = None
-    if p is S.Zero:
-        if q is S.Zero:
+    if p == 0:
+        if q == 0:
             return [-aon3]*3
         elif q.is_positive:
             u1 = -root(q, 3)
@@ -131,25 +131,23 @@ def roots_cubic(f, trig=False):
     coeff = I*sqrt(3)/2
     if u1 is None:
         u1 = Integer(1)
-        u2 = -S.Half + coeff
-        u3 = -S.Half - coeff
+        u2 = -Rational(1, 2) + coeff
+        u3 = -Rational(1, 2) - coeff
         a, b, c, d = Integer(1), a, b, c
         D0 = b**2 - 3*a*c
         D1 = 2*b**3 - 9*a*b*c + 27*a**2*d
         C = root((D1 + sqrt(D1**2 - 4*D0**3))/2, 3)
         return [-(b + uk*C + D0/C/uk)/3/a for uk in [u1, u2, u3]]
 
-    u2 = u1*(-S.Half + coeff)
-    u3 = u1*(-S.Half - coeff)
+    u2 = u1*(-Rational(1, 2) + coeff)
+    u3 = u1*(-Rational(1, 2) - coeff)
 
-    if p is S.Zero:
+    if p == 0:
         return [u1 - aon3, u2 - aon3, u3 - aon3]
 
-    soln = [
-        -u1 + pon3/u1 - aon3,
-        -u2 + pon3/u2 - aon3,
-        -u3 + pon3/u3 - aon3
-    ]
+    soln = [-u1 + pon3/u1 - aon3,
+            -u2 + pon3/u2 - aon3,
+            -u3 + pon3/u3 - aon3]
 
     return soln
 
@@ -256,7 +254,7 @@ def roots_quartic(f):
     _, a, b, c, d = f.monic().all_coeffs()
 
     if not d:
-        return [S.Zero] + roots([1, a, b, c], multiple=True)
+        return [Integer(0)] + roots([1, a, b, c], multiple=True)
     elif (c/a)**2 == d:
         x, m = f.gen, c/a
 
@@ -278,12 +276,12 @@ def roots_quartic(f):
         g = d - a*(a*(3*a2/256 - b/16) + c/4)
         aon4 = a/4
 
-        if f is S.Zero:
+        if f == 0:
             y1, y2 = [sqrt(tmp) for tmp in
                       roots([1, e, g], multiple=True)]
             return [tmp - aon4 for tmp in [-y1, -y2, y1, y2]]
-        if g is S.Zero:
-            y = [S.Zero] + roots([1, 0, e, f], multiple=True)
+        if g == 0:
+            y = [Integer(0)] + roots([1, 0, e, f], multiple=True)
             return [tmp - aon4 for tmp in y]
         else:
             # Descartes-Euler method, see [7]
@@ -400,7 +398,7 @@ def _inv_totient_estimate(m):
     (400, 1750)
 
     """
-    primes = [ d + 1 for d in divisors(m) if isprime(d + 1) ]
+    primes = [d + 1 for d in divisors(m) if isprime(d + 1)]
 
     a, b = 1, 1
 
@@ -409,7 +407,7 @@ def _inv_totient_estimate(m):
         b *= p - 1
 
     L = m
-    U = int(math.ceil(m*(float(a)/b)))
+    U = math.ceil(m*(float(a)/b))
 
     P = p = 2
     primes = []
@@ -425,7 +423,7 @@ def _inv_totient_estimate(m):
     for p in primes[:-1]:
         b *= p - 1
 
-    U = int(math.ceil(m*(float(P)/b)))
+    U = math.ceil(m*(float(P)/b))
 
     return L, U
 
@@ -539,7 +537,7 @@ def roots_quintic(f):
     # and hence the changed name
     from ..solvers import solve as _solve
     a, b = symbols('a b', cls=Dummy)
-    _sol = _solve( sol**5 - a - I*b, sol)
+    _sol = _solve(sol**5 - a - I*b, sol)
     for i in range(5):
         _sol[i] = factor(_sol[i][sol])
     R1 = R1.as_real_imag()
@@ -548,10 +546,10 @@ def roots_quintic(f):
     R4 = R4.as_real_imag()
 
     for i, root in enumerate(_sol):
-        Res[1][i] = _quintic_simplify(root.subs({ a: R1[0], b: R1[1] }))
-        Res[2][i] = _quintic_simplify(root.subs({ a: R2[0], b: R2[1] }))
-        Res[3][i] = _quintic_simplify(root.subs({ a: R3[0], b: R3[1] }))
-        Res[4][i] = _quintic_simplify(root.subs({ a: R4[0], b: R4[1] }))
+        Res[1][i] = _quintic_simplify(root.subs({a: R1[0], b: R1[1]}))
+        Res[2][i] = _quintic_simplify(root.subs({a: R2[0], b: R2[1]}))
+        Res[3][i] = _quintic_simplify(root.subs({a: R3[0], b: R3[1]}))
+        Res[4][i] = _quintic_simplify(root.subs({a: R4[0], b: R4[1]}))
 
     for i in range(1, 5):
         for j in range(5):
@@ -668,7 +666,7 @@ def _integer_basis(poly):
 
 def preprocess_roots(poly):
     """Try to get rid of symbolic coefficients from ``poly``."""
-    coeff = S.One
+    coeff = Integer(1)
 
     _, poly = poly.clear_denoms(convert=True)
 
@@ -676,7 +674,7 @@ def preprocess_roots(poly):
     poly = poly.retract()
 
     # TODO: This is fragile. Figure out how to make this independent of construct_domain().
-    if poly.domain.is_Poly and all(c.is_term for c in poly.rep.coeffs()):
+    if poly.domain.is_PolynomialRing and all(c.is_term for c in poly.rep.coeffs()):
         poly = poly.inject()
 
         strips = list(zip(*poly.monoms()))
@@ -927,7 +925,7 @@ def roots(f, *gens, **flags):
                         for r in _try_heuristics(Poly(factor, f.gen, field=True)):
                             _update_dict(result, r, k)
 
-    if coeff is not S.One:
+    if coeff != 1:
         _result, result, = result, {}
 
         for root, k in _result.items():
@@ -1014,6 +1012,6 @@ def root_factors(f, *gens, **args):
             factors.append(F.quo(G))
 
     if not isinstance(f, Poly):
-        factors = [ f.as_expr() for f in factors ]
+        factors = [f.as_expr() for f in factors]
 
     return factors

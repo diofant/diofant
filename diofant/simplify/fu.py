@@ -190,8 +190,8 @@ from strategies.core import debug, identity
 from strategies.tree import greedy
 
 from .. import DIOFANT_DEBUG
-from ..core import (Add, Dummy, Expr, I, Integer, Mul, Pow, S, expand_mul,
-                    factor_terms, gcd_terms, pi, sympify)
+from ..core import (Add, Dummy, Expr, I, Integer, Mul, Pow, Rational,
+                    expand_mul, factor_terms, gcd_terms, pi, sympify)
 from ..core.compatibility import ordered
 from ..core.exprtools import Factors
 from ..functions import (binomial, cos, cosh, cot, coth, csc, sec, sin, sinh,
@@ -230,10 +230,10 @@ def TR1(rv):
     def f(rv):
         if isinstance(rv, sec):
             a = rv.args[0]
-            return S.One/cos(a)
+            return 1/cos(a)
         elif isinstance(rv, csc):
             a = rv.args[0]
-            return S.One/sin(a)
+            return 1/sin(a)
         return rv
 
     return bottom_up(rv, f)
@@ -339,7 +339,6 @@ def TR2i(rv, half=False):
                         d[k] = v
                     else:
                         ddone.append((k, v))
-                del newk
         factorize(n, ndone)
         factorize(d, ddone)
 
@@ -361,7 +360,7 @@ def TR2i(rv, half=False):
                 if a in d and d[a] == n[k]:
                     t.append(tan(k.args[0])**-n[k])
                     n[k] = d[a] = None
-            elif (half and k.is_Add and k.args[0] is S.One and
+            elif (half and k.is_Add and k.args[0] == 1 and
                   isinstance(k.args[1], cos)):
                 a = sin(k.args[1].args[0], evaluate=False)
                 if a in d and d[a] == n[k] and (d[a].is_integer or
@@ -473,9 +472,9 @@ def _TR56(rv, f, g, h, max, pow):
         if not (rv.is_Pow and rv.base.func == f):
             return rv
 
-        if (rv.exp < 0) is S.true:
+        if rv.exp.is_negative:
             return rv
-        if (rv.exp > max) is S.true:
+        if (rv.exp - max).is_positive:
             return rv
         if rv.exp == 2:
             return h(g(rv.base.args[0])**2)
@@ -854,13 +853,13 @@ def TR10i(rv):
                 hit = 0
                 if a.is_Mul:
                     for ai in a.args:
-                        if ai.is_Pow and ai.exp is S.Half and \
+                        if ai.is_Pow and ai.exp == Rational(1, 2) and \
                                 ai.base.is_Integer:
                             byrad[ai].append(a)
                             hit = 1
                             break
                 if not hit:
-                    byrad[S.One].append(a)
+                    byrad[Integer(1)].append(a)
 
             # no need to check all pairs -- just check for the onees
             # that have the right ratio
@@ -939,7 +938,7 @@ def TR11(rv, base=None):
         if base:
             f = rv.func
             t = f(base*2)
-            co = S.One
+            co = Integer(1)
             if t.is_Mul:
                 co, t = t.as_coeff_Mul()
             if t.func not in (cos, sin):
@@ -1038,7 +1037,7 @@ def TR12i(rv):
             m = as_f_sign_1(di)
             if m:
                 g, f, s = m
-                if s is S.NegativeOne and f.is_Mul and len(f.args) == 2 and \
+                if s == -1 and f.is_Mul and len(f.args) == 2 and \
                         all(isinstance(fi, tan) for fi in f.args):
                     return g, f
 
@@ -1048,14 +1047,14 @@ def TR12i(rv):
             if m:
                 g, t = m
                 s = Add(*[_.args[0] for _ in t.args])
-                dok[s] = S.One
+                dok[s] = Integer(1)
                 d_args[i] = g
                 continue
             if di.is_Add:
                 di = factor(di)
                 if di.is_Mul:
                     d_args.extend(di.args)
-                    d_args[i] = S.One
+                    d_args[i] = Integer(1)
             elif di.is_Pow and (di.exp.is_integer or di.base.is_positive):
                 m = ok(di.base)
                 if m:
@@ -1067,7 +1066,7 @@ def TR12i(rv):
                     di = factor(di)
                     if di.is_Mul:
                         d_args.extend(di.args)
-                        d_args[i] = S.One
+                        d_args[i] = Integer(1)
         if not dok:
             return rv
 
@@ -1083,33 +1082,33 @@ def TR12i(rv):
             if not m:
                 m = ok(-ni)
                 if m:
-                    n_args[i] = S.NegativeOne
+                    n_args[i] = Integer(-1)
                 else:
                     if ni.is_Add:
                         ni = factor(ni)
                         if ni.is_Mul:
                             n_args.extend(ni.args)
-                            n_args[i] = S.One
+                            n_args[i] = Integer(1)
                         continue
                     elif ni.is_Pow and (
                             ni.exp.is_integer or ni.base.is_positive):
                         m = ok(ni.base)
                         if m:
-                            n_args[i] = S.One
+                            n_args[i] = Integer(1)
                         else:
                             ni = factor(ni)
                             if ni.is_Mul:
                                 n_args.extend(ni.args)
-                                n_args[i] = S.One
+                                n_args[i] = Integer(1)
                             continue
                     else:
                         continue
             else:
-                n_args[i] = S.One
+                n_args[i] = Integer(1)
             hit = True
             s = Add(*[_.args[0] for _ in m])
             ed = dok[s]
-            newed = ed.extract_additively(S.One)
+            newed = ed.extract_additively(1)
             if newed is not None:
                 if newed:
                     dok[s] = newed
@@ -1313,7 +1312,7 @@ def TR14(rv, first=True):
             # sort them by location in numerator and denominator
             # so the code below can just deal with positive exponents
             n, d = rv.as_numer_denom()
-            if d is not S.One:
+            if d != 1:
                 newn = TR14(n, first=False)
                 newd = TR14(d, first=False)
                 if newn != n or newd != d:
@@ -1330,10 +1329,10 @@ def TR14(rv, first=True):
                     continue
                 a = b
             else:
-                e = S.One
+                e = Integer(1)
             m = as_f_sign_1(a)
             if not m or m[1].func not in (cos, sin):
-                if e is S.One:
+                if e == 1:
                     other.append(a)
                 else:
                     other.append(a**e)
@@ -1631,7 +1630,7 @@ def fu(rv, measure=lambda x: (L(x), x.count_ops())):
 
     CTR2 example
 
-    >>> fu(S.Half - cos(2*x)/2)
+    >>> fu(Rational(1, 2) - cos(2*x)/2)
     sin(x)**2
 
     CTR3 example
@@ -1714,7 +1713,7 @@ def process_common_addends(rv, do, key2=None, key1=True):
             absc[(c, key2(a) if key2 else 1)].append(a)
     elif key2:
         for a in rv.args:
-            absc[(S.One, key2(a))].append(a)
+            absc[(Integer(1), key2(a))].append(a)
     else:
         raise ValueError('must have at least one key')
 
@@ -1809,11 +1808,11 @@ def trig_split(a, b, two=False):
     ua, ub = a.normal(b)
     gcd = a.gcd(b).as_expr()
     n1 = n2 = 1
-    if S.NegativeOne in ua.factors:
-        ua = ua.quo(S.NegativeOne)
+    if -1 in ua.factors:
+        ua = ua.quo(Integer(-1))
         n1 = -n1
-    elif S.NegativeOne in ub.factors:
-        ub = ub.quo(S.NegativeOne)
+    elif -1 in ub.factors:
+        ub = ub.quo(Integer(-1))
         n2 = -n2
     a, b = [i.as_expr() for i in (ua, ub)]
 
@@ -1839,7 +1838,7 @@ def trig_split(a, b, two=False):
 
         """
         c = s = None
-        co = S.One
+        co = Integer(1)
         if a.is_Mul:
             co, a = a.as_coeff_Mul()
             if len(a.args) > 2 or not two:
@@ -1853,7 +1852,7 @@ def trig_split(a, b, two=False):
                 c = a
             elif isinstance(a, sin):
                 s = a
-            elif a.is_Pow and a.exp is S.Half:  # autoeval doesn't allow -1/2
+            elif a.is_Pow and a.exp == Rational(1, 2):  # autoeval doesn't allow -1/2
                 co *= a
             else:
                 return
@@ -1869,18 +1868,18 @@ def trig_split(a, b, two=False):
                         c = b
                     else:
                         s = b
-                elif b.is_Pow and b.exp is S.Half:
+                elif b.is_Pow and b.exp == Rational(1, 2):
                     co *= b
                 else:
                     return
-            return co if co is not S.One else None, c, s
+            return co if co != 1 else None, c, s
         elif isinstance(a, cos):
             c = a
         elif isinstance(a, sin):
             s = a
         if c is None and s is None:
             return
-        co = co if co is not S.One else None
+        co = co if co != 1 else None
         return co, c, s
 
     # get the parts
@@ -1920,9 +1919,9 @@ def trig_split(a, b, two=False):
         if c.args != s.args:
             return
         if not coa:
-            coa = S.One
+            coa = Integer(1)
         if not cob:
-            cob = S.One
+            cob = Integer(1)
         if coa is cob:
             gcd *= _ROOT2
             return gcd, n1, n2, c.args[0], pi/4, False
@@ -1959,7 +1958,7 @@ def as_f_sign_1(e):
     # exact match
     a, b = e.args
     if a in (-1, 1):
-        g = S.One
+        g = Integer(1)
         if b.is_Mul and b.args[0].is_Number and b.args[0] < 0:
             a, b = -a, -b
             g = -g
@@ -1968,25 +1967,25 @@ def as_f_sign_1(e):
     a, b = [Factors(i) for i in e.args]
     ua, ub = a.normal(b)
     gcd = a.gcd(b).as_expr()
-    if S.NegativeOne in ua.factors:
-        ua = ua.quo(S.NegativeOne)
+    if -1 in ua.factors:
+        ua = ua.quo(Integer(-1))
         n1 = -1
         n2 = 1
-    elif S.NegativeOne in ub.factors:
-        ub = ub.quo(S.NegativeOne)
+    elif -1 in ub.factors:
+        ub = ub.quo(Integer(-1))
         n1 = 1
         n2 = -1
     else:
         n1 = n2 = 1
     a, b = [i.as_expr() for i in (ua, ub)]
-    if a is S.One:
+    if a == 1:
         a, b = b, a
         n1, n2 = n2, n1
     if n1 == -1:
         gcd = -gcd
         n2 = -n2
 
-    if b is S.One:
+    if b == 1:
         return gcd, a, n2
 
 
@@ -2047,7 +2046,7 @@ def _osbornei(e, d):
     def f(rv):
         if not isinstance(rv, TrigonometricFunction):
             return rv
-        a = rv.args[0].xreplace({d: S.One})
+        a = rv.args[0].xreplace({d: Integer(1)})
         if isinstance(rv, sin):
             return sinh(a)/I
         elif isinstance(rv, cos):

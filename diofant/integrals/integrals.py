@@ -1,8 +1,9 @@
 from ..concrete.expr_with_limits import AddWithLimits
-from ..core import (Add, Basic, Dummy, Eq, Expr, Mul, S, Symbol, Tuple, Wild,
-                    diff, nan, oo, sympify)
+from ..core import (Add, Basic, Dummy, Eq, Expr, Integer, Mul, Symbol, Tuple,
+                    Wild, diff, nan, oo, sympify)
 from ..core.compatibility import is_sequence
 from ..functions import Piecewise, log, piecewise_fold, sign, sqrt
+from ..logic import false, true
 from ..matrices import MatrixBase
 from ..polys import Poly, PolynomialError
 from ..series import Order, limit
@@ -108,9 +109,9 @@ class Integral(AddWithLimits):
         for xab in self.limits:
             if len(xab) == 3:
                 z = Eq(xab[1], xab[2])
-                if z is S.true:
+                if z == true:
                     return True
-                elif z is S.false:
+                elif z == false:
                     got_false = True
             elif len(xab) == 2 and xab[0] not in free:
                 if xab[1].is_zero:
@@ -385,7 +386,7 @@ class Integral(AddWithLimits):
 
         # check for the trivial zero
         if self.is_zero:
-            return S.Zero
+            return Integer(0)
 
         # now compute and check the function
         function = self.function
@@ -396,7 +397,7 @@ class Integral(AddWithLimits):
         if deep:
             function = function.doit(**hints)
         if function.is_zero:
-            return S.Zero
+            return Integer(0)
 
         # There is no trivial answer, so continue
 
@@ -635,7 +636,7 @@ class Integral(AddWithLimits):
         def _do(f, ab):
             dab_dsym = diff(ab, sym)
             if not dab_dsym:
-                return S.Zero
+                return Integer(0)
             if isinstance(f, Integral):
                 limits = [(x, x) if (len(l) == 1 and l[0] == x) else l
                           for l in f.limits]
@@ -793,7 +794,7 @@ class Integral(AddWithLimits):
             coeff, g = g.as_independent(x)
 
             # g(x) = const
-            if g is S.One and not meijerg:
+            if g == 1 and not meijerg:
                 parts.append(coeff*x)
                 continue
 

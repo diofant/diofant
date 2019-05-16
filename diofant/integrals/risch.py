@@ -98,7 +98,7 @@ def integer_powers(exprs):
         newmults = [(i, j*common_denom) for i, j in terms[term]]
         newterms[newterm] = newmults
 
-    return sorted(iter(newterms.items()), key=lambda item: item[0].sort_key())
+    return sorted(newterms.items(), key=lambda item: item[0].sort_key())
 
 
 class DifferentialExtension:
@@ -694,7 +694,7 @@ def gcdex_diophantine(a, b, c):
     q = c.exquo(g)  # Inexact division means c is not in (a, b)
     s = q*s
 
-    if not s.is_zero and b.degree() >= b.degree():
+    if not s.is_zero and s.degree() >= b.degree():
         q, s = s.div(b)
 
     t = (c - s*a).exquo(b)
@@ -762,8 +762,9 @@ def as_poly_1t(p, t, z):
         # issue sympy/sympy#4950
         raise NotImplementedError(e)
     # Compute the negative degree parts.
-    one_t_part = Poly.from_list(reversed(one_t_part.rep.rep), *one_t_part.gens,
-                                domain=one_t_part.domain)
+    od = max(-r - one_t_part.degree() if r < 0 and d > 0 else 0, 0)
+    one_t_part = Poly(list(reversed(one_t_part.rep.to_dense())) + [0]*od,
+                      *one_t_part.gens, domain=one_t_part.domain)
     if 0 < r < oo:
         one_t_part *= Poly(t**r, t)
 
@@ -1452,7 +1453,7 @@ def integrate_hyperexponential(a, d, DE, z=None, conds='piecewise'):
     qas = qa.as_expr().subs(s)
     qds = qd.as_expr().subs(s)
     if conds == 'piecewise' and DE.x not in qds.free_symbols:
-        # We have to be careful if the exponent is S.Zero!
+        # We have to be careful if the exponent is Integer(0)!
 
         # XXX: Does qd = 0 always necessarily correspond to the exponential
         # equaling 1?

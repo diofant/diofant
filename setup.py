@@ -8,4 +8,4 @@ This script uses Setuptools (https://setuptools.readthedocs.io/en/latest/).
 import setuptools
 
 
-setuptools.setup(use_scm_version=True)
+setuptools.setup()

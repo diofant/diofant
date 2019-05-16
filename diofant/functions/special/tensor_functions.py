@@ -1,4 +1,4 @@
-from ...core import Function, Integer, S, prod
+from ...core import Function, Integer, prod
 from ...utilities import default_sort_key, has_dups
 
 
@@ -69,7 +69,7 @@ class LeviCivita(Function):
         if all(isinstance(a, (int, Integer)) for a in args):
             return eval_levicivita(*args)
         if has_dups(args):
-            return S.Zero
+            return Integer(0)
 
     def doit(self, **hints):
         return eval_levicivita(*self.args)
@@ -148,16 +148,16 @@ class KroneckerDelta(Function):
         """
         diff = i - j
         if diff.is_zero:
-            return S.One
+            return Integer(1)
         elif diff.is_nonzero:
-            return S.Zero
+            return Integer(0)
 
         if i._assumptions.get("below_fermi") and \
                 j._assumptions.get("above_fermi"):
-            return S.Zero
+            return Integer(0)
         if j._assumptions.get("below_fermi") and \
                 i._assumptions.get("above_fermi"):
-            return S.Zero
+            return Integer(0)
         # to make KroneckerDelta canonical
         # following lines will check if inputs are in order
         # if not, will return KroneckerDelta with correct order
@@ -167,7 +167,7 @@ class KroneckerDelta(Function):
     def _eval_power(self, expt):
         if expt.is_positive:
             return self
-        if expt.is_negative and -expt is not S.One:
+        if expt.is_negative and -expt != 1:
             return 1/self
 
     @property

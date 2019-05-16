@@ -1,9 +1,9 @@
 import collections
 
-from .. import Indexed
 from ...core import Expr, Integer, sympify
 from ...logic import true
 from ...matrices import MatrixBase
+from ..indexed import Indexed
 
 
 class NDimArray:

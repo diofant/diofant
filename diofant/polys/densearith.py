@@ -1,10 +1,8 @@
 """Arithmetics for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from .densebasic import (dmp_degree_in, dmp_LC, dmp_one, dmp_one_p,
-                         dmp_slice_in, dmp_strip, dmp_zero, dmp_zero_p,
-                         dmp_zeros)
+from .densebasic import (dmp_degree_in, dmp_one, dmp_one_p, dmp_slice_in,
+                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
 from .polyconfig import query
-from .polyerrors import ExactQuotientFailed, PolynomialDivisionFailed
 
 
 def dup_add_term(f, c, i, K):
@@ -66,39 +64,6 @@ def dmp_add_term(f, c, i, u, K):
             return [c] + dmp_zeros(i - n, v, K) + f
         else:
             return f[:m] + [dmp_add(f[m], c, v, K)] + f[m + 1:]
-
-
-def dmp_sub_term(f, c, i, u, K):
-    """
-    Subtract ``c(x_2..x_u)*x_0**i`` from ``f`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> R.dmp_sub_term(2*x**2 + x*y + 1, 2, 2)
-    x*y + 1
-
-    """
-    if not u:
-        return dup_add_term(f, -c, i, K)
-
-    v = u - 1
-
-    if dmp_zero_p(c, v):
-        return f
-
-    n = len(f)
-    m = n - i - 1
-
-    if i == n - 1:
-        return dmp_strip([dmp_sub(f[0], c, v, K)] + f[1:], u)
-    else:
-        if i >= n:
-            return [dmp_neg(c, v, K)] + dmp_zeros(i - n, v, K) + f
-        else:
-            return f[:m] + [dmp_sub(f[m], c, v, K)] + f[m + 1:]
 
 
 def dup_mul_term(f, c, i, K):
@@ -719,268 +684,6 @@ def dmp_pow(f, n, u, K):
     return g
 
 
-def dmp_pdiv(f, g, u, K):
-    """
-    Polynomial pseudo-division in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> R.dmp_pdiv(x**2 + x*y, 2*x + 2)
-    (2*x + 2*y - 2, -4*y + 4)
-
-    """
-    df = dmp_degree_in(f, 0, u)
-    dg = dmp_degree_in(g, 0, u)
-
-    if dg < 0:
-        raise ZeroDivisionError("polynomial division")
-
-    q, r, dr = dmp_zero(u), f, df
-
-    if df < dg:
-        return q, r
-
-    N = df - dg + 1
-    lc_g = dmp_LC(g, K)
-
-    while True:
-        lc_r = dmp_LC(r, K)
-        j, N = dr - dg, N - 1
-
-        Q = dmp_mul_term(q, lc_g, 0, u, K)
-        q = dmp_add_term(Q, lc_r, j, u, K)
-
-        R = dmp_mul_term(r, lc_g, 0, u, K)
-        G = dmp_mul_term(g, lc_r, j, u, K)
-        r = dmp_sub(R, G, u, K)
-
-        _dr, dr = dr, dmp_degree_in(r, 0, u)
-
-        if dr < dg:
-            break
-        assert dr < _dr
-
-    if u:
-        c = dmp_pow(lc_g, N, u - 1, K)
-    else:
-        c = lc_g**N
-
-    q = dmp_mul_term(q, c, 0, u, K)
-    r = dmp_mul_term(r, c, 0, u, K)
-
-    return q, r
-
-
-def dmp_prem(f, g, u, K):
-    """
-    Polynomial pseudo-remainder in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> R.dmp_prem(x**2 + x*y, 2*x + 2)
-    -4*y + 4
-
-    """
-    df = dmp_degree_in(f, 0, u)
-    dg = dmp_degree_in(g, 0, u)
-
-    if dg < 0:
-        raise ZeroDivisionError("polynomial division")
-
-    r, dr = f, df
-
-    if df < dg:
-        return r
-
-    N = df - dg + 1
-    lc_g = dmp_LC(g, K)
-
-    while True:
-        lc_r = dmp_LC(r, K)
-        j, N = dr - dg, N - 1
-
-        R = dmp_mul_term(r, lc_g, 0, u, K)
-        G = dmp_mul_term(g, lc_r, j, u, K)
-        r = dmp_sub(R, G, u, K)
-
-        _dr, dr = dr, dmp_degree_in(r, 0, u)
-
-        if dr < dg:
-            break
-        assert dr < _dr
-
-    if u:
-        c = dmp_pow(lc_g, N, u - 1, K)
-    else:
-        c = lc_g**N
-
-    return dmp_mul_term(r, c, 0, u, K)
-
-
-def dmp_pquo(f, g, u, K):
-    """
-    Polynomial exact pseudo-quotient in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> f = x**2 + x*y
-    >>> g = 2*x + 2*y
-    >>> h = 2*x + 2
-
-    >>> R.dmp_pquo(f, g)
-    2*x
-
-    >>> R.dmp_pquo(f, h)
-    2*x + 2*y - 2
-
-    """
-    return dmp_pdiv(f, g, u, K)[0]
-
-
-def dmp_pexquo(f, g, u, K):
-    """
-    Polynomial pseudo-quotient in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> f = x**2 + x*y
-    >>> g = 2*x + 2*y
-    >>> h = 2*x + 2
-
-    >>> R.dmp_pexquo(f, g)
-    2*x
-
-    >>> R.dmp_pexquo(f, h)
-    Traceback (most recent call last):
-    ...
-    ExactQuotientFailed: [[2], [2]] does not divide [[1], [1, 0], []]
-
-    """
-    q, r = dmp_pdiv(f, g, u, K)
-
-    if dmp_zero_p(r, u):
-        return q
-    else:
-        raise ExactQuotientFailed(f, g)
-
-
-def dmp_rr_div(f, g, u, K):
-    """
-    Multivariate division with remainder over a ring.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> R.dmp_rr_div(x**2 + x*y, 2*x + 2)
-    (0, x**2 + x*y)
-
-    """
-    df = dmp_degree_in(f, 0, u)
-    dg = dmp_degree_in(g, 0, u)
-
-    if dg < 0:
-        raise ZeroDivisionError("polynomial division")
-
-    q, r, dr = dmp_zero(u), f, df
-
-    if df < dg:
-        return q, r
-
-    lc_g, v = dmp_LC(g, K), u - 1
-
-    while True:
-        lc_r = dmp_LC(r, K)
-
-        if v >= 0:
-            c, R = dmp_rr_div(lc_r, lc_g, v, K)
-            if not dmp_zero_p(R, v):
-                break
-        else:
-            if lc_r % lc_g:
-                break
-            c = K.exquo(lc_r, lc_g)
-
-        j = dr - dg
-
-        q = dmp_add_term(q, c, j, u, K)
-        h = dmp_mul_term(g, c, j, u, K)
-        r = dmp_sub(r, h, u, K)
-
-        _dr, dr = dr, dmp_degree_in(r, 0, u)
-
-        if dr < dg:
-            break
-        assert dr < _dr
-
-    return q, r
-
-
-def dmp_ff_div(f, g, u, K):
-    """
-    Polynomial division with remainder over a field.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", QQ)
-
-    >>> R.dmp_ff_div(x**2 + x*y, 2*x + 2)
-    (1/2*x + 1/2*y - 1/2, -y + 1)
-
-    """
-    df = dmp_degree_in(f, 0, u)
-    dg = dmp_degree_in(g, 0, u)
-
-    if dg < 0:
-        raise ZeroDivisionError("polynomial division")
-
-    q, r, dr = dmp_zero(u), f, df
-
-    if df < dg:
-        return q, r
-
-    lc_g, v = dmp_LC(g, K), u - 1
-
-    while True:
-        lc_r = dmp_LC(r, K)
-
-        if v >= 0:
-            c, R = dmp_ff_div(lc_r, lc_g, v, K)
-            if not dmp_zero_p(R, v):
-                break
-        else:
-            c = K.exquo(lc_r, lc_g)
-
-        j = dr - dg
-
-        q = dmp_add_term(q, c, j, u, K)
-        h = dmp_mul_term(g, c, j, u, K)
-        r = dmp_sub(r, h, u, K)
-
-        _dr, dr = dr, dmp_degree_in(r, 0, u)
-
-        if dr < dg:
-            break
-        elif not (dr < _dr):
-            raise PolynomialDivisionFailed(f, g, K)
-
-    return q, r
-
-
 def dmp_div(f, g, u, K):
     """
     Polynomial division with remainder in ``K[X]``.
@@ -997,10 +700,9 @@ def dmp_div(f, g, u, K):
     (1/2*x + 1/2*y - 1/2, -y + 1)
 
     """
-    if K.is_Field:
-        return dmp_ff_div(f, g, u, K)
-    else:
-        return dmp_rr_div(f, g, u, K)
+    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    f, g = map(ring.from_dense, (f, g))
+    return tuple(map(ring.to_dense, divmod(f, g)))
 
 
 def dmp_rem(f, g, u, K):
@@ -1039,36 +741,6 @@ def dmp_quo(f, g, u, K):
 
     """
     return dmp_div(f, g, u, K)[0]
-
-
-def dmp_exquo(f, g, u, K):
-    """
-    Return polynomial quotient in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> f = x**2 + x*y
-    >>> g = x + y
-    >>> h = 2*x + 2
-
-    >>> R.dmp_exquo(f, g)
-    x
-
-    >>> R.dmp_exquo(f, h)
-    Traceback (most recent call last):
-    ...
-    ExactQuotientFailed: [[2], [2]] does not divide [[1], [1, 0], []]
-
-    """
-    q, r = dmp_div(f, g, u, K)
-
-    if dmp_zero_p(r, u):
-        return q
-    else:
-        raise ExactQuotientFailed(f, g)
 
 
 def dmp_max_norm(f, u, K):

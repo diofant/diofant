@@ -2,9 +2,10 @@
 This module implements sums and products containing the Kronecker Delta function.
 """
 
-from ..core import Add, Dummy, Integer, Mul, S, cacheit
+from ..core import Add, Dummy, Integer, Mul, cacheit
 from ..core.compatibility import default_sort_key
 from ..functions import KroneckerDelta, Piecewise, piecewise_fold
+from ..logic import true
 from ..polys import factor
 from ..sets import Interval
 
@@ -124,7 +125,7 @@ def _remove_multiple_delta(expr):
         return expr
     solns = solve(eqs)
     if len(solns) == 0:
-        return S.Zero
+        return Integer(0)
     elif len(solns) == 1:
         for key in solns[0]:
             newargs.append(KroneckerDelta(key, solns[0][key]))
@@ -160,8 +161,8 @@ def deltaproduct(f, limit):
     """
     from .products import product
 
-    if ((limit[2] - limit[1]) < 0) == S.true:
-        return S.One
+    if (limit[2] - limit[1] < 0) == true:
+        return Integer(1)
 
     if not f.has(KroneckerDelta):
         return product(f, limit)
@@ -275,8 +276,8 @@ def deltasummation(f, limit, no_piecewise=False):
     from .summations import summation
     from ..solvers import solve
 
-    if ((limit[2] - limit[1]) < 0) == S.true:
-        return S.Zero
+    if (limit[2] - limit[1] < 0) == true:
+        return Integer(0)
 
     if not f.has(KroneckerDelta):
         return summation(f, limit)
@@ -301,4 +302,4 @@ def deltasummation(f, limit, no_piecewise=False):
         return expr.subs({x: value})
     return Piecewise((expr.subs({x: value}),
                       Interval(*limit[1:3]).as_relational(value)),
-                     (S.Zero, True))
+                     (0, True))

@@ -297,11 +297,9 @@ class And(AndOr_Base):
                     if isinstance(orterms[j], Logic):
                         orterms[j] = orterms[j].expand()
 
-                res = Or(*orterms)
-                return res
+                return Or(*orterms)
 
-        else:
-            return self
+        return self
 
 
 class Or(AndOr_Base):

@@ -4,8 +4,8 @@ import functools
 
 import mpmath
 
-from ..core import (Add, Dummy, E, GoldenRatio, I, Mul, Rational, S, pi, prod,
-                    sympify)
+from ..core import (Add, Dummy, E, GoldenRatio, I, Integer, Mul, Rational, pi,
+                    prod, sympify)
 from ..core.exprtools import Factors
 from ..core.function import _mexpand, count_ops
 from ..domains import QQ, ZZ, AlgebraicField
@@ -20,9 +20,6 @@ from .polyconfig import query
 from .polyerrors import NotAlgebraic
 from .polytools import (Poly, PurePoly, degree, factor_list, groebner, lcm,
                         parallel_poly_from_expr, poly_from_expr, resultant)
-from .polyutils import dict_from_expr, expr_from_dict
-from .ring_series import rs_compose_add
-from .rings import ring
 from .rootoftools import RootOf
 from .specialpolys import cyclotomic_poly
 
@@ -93,7 +90,7 @@ def _separate_sq(p):
 
     """
     def is_sqrt(expr):
-        return expr.is_Pow and expr.exp is S.Half
+        return expr.is_Pow and expr.exp == Rational(1, 2)
 
     p = p.doit()
 
@@ -102,16 +99,16 @@ def _separate_sq(p):
     for y in p.args:
         if not y.is_Mul:
             if is_sqrt(y):
-                a.append((S.One, y**2))
+                a.append((Integer(1), y**2))
             elif y.is_Atom:
-                a.append((y, S.One))
+                a.append((y, Integer(1)))
             else:
                 raise NotImplementedError
         else:
             sifted = sift(y.args, is_sqrt)
             a.append((Mul(*sifted[False]), Mul(*sifted[True])**2))
     a.sort(key=lambda z: z[1])
-    if a[-1][1] is S.One:
+    if a[-1][1] == 1:
         # there are no surds
         return p
     surds = [z for y, z in a]
@@ -123,9 +120,9 @@ def _separate_sq(p):
     a2 = []
     for y, z in a:
         if z in b1:
-            a1.append(y*z**S.Half)
+            a1.append(y*sqrt(z))
         else:
-            a2.append(y*z**S.Half)
+            a2.append(y*sqrt(z))
     p1 = Add(*a1)
     p2 = Add(*a2)
     return _mexpand(p1**2) - _mexpand(p2**2)
@@ -215,25 +212,16 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
 
     if op is Add:
         # mp1a = mp1.subs({x: x - y})
-        if dom == QQ:
-            R, X = ring('X', QQ)
-            p1 = R(dict_from_expr(mp1)[0])
-            p2 = R(dict_from_expr(mp2)[0])
-        else:
-            (p1, p2), _ = parallel_poly_from_expr((mp1, x - y), x, y)
-            r = p1.compose(p2)
-            mp1a = r.as_expr()
+        (p1, p2), _ = parallel_poly_from_expr((mp1, x - y), x, y)
+        r = p1.compose(p2)
+        mp1a = r.as_expr()
 
     elif op is Mul:
         mp1a = _muly(mp1, x, y)
     else:
         raise NotImplementedError('option not available')
 
-    if op is Mul or dom != QQ:
-        r = resultant(mp1a, mp2, gens=[y, x])
-    else:
-        r = rs_compose_add(p1, p2)
-        r = expr_from_dict(r.as_expr_dict(), x)
+    r = resultant(mp1a, mp2, gens=[y, x])
 
     deg1 = degree(mp1, x)
     deg2 = degree(mp2, y)
@@ -365,7 +353,7 @@ def _minpoly_sin(ex, x):
             res = _choose_factor(factors, x, ex)
             return res
 
-        expr = ((1 - cos(2*c*pi))/2)**S.Half
+        expr = sqrt((1 - cos(2*c*pi))/2)
         return _minpoly_compose(expr, x, QQ)
 
     raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
@@ -588,7 +576,7 @@ def minpoly_groebner(ex, x, domain):
     Examples
     ========
 
-    >>> minimal_polynomial(sqrt(2) + 3*Rational(1, 3), method='groebner')(x)
+    >>> minimal_polynomial(sqrt(2) + 1, method='groebner')(x)
     x**2 - 2*x - 1
 
     References
@@ -651,9 +639,9 @@ def minpoly_groebner(ex, x, domain):
         raise NotAlgebraic("%s doesn't seem to be an algebraic number" % ex)
 
     if ex.is_Pow and ex.exp.is_negative:
-        n, d = S.One, bottom_up_scan(1/ex)
+        n, d = Integer(1), bottom_up_scan(1/ex)
     else:
-        n, d = bottom_up_scan(ex), S.One
+        n, d = bottom_up_scan(ex), Integer(1)
 
     F = [d*x - n] + list(mapping.values())
     G = groebner(F, list(symbols.values()) + [x], order='lex', domain=domain)
@@ -698,7 +686,7 @@ def primitive_element(extension, **args):
             break
     else:
         if len(F) == 1:
-            g, coeffs, H = F[0].replace(x), [S.One], [Poly(x, domain=domain)]
+            g, coeffs, H = F[0].replace(x), [Integer(1)], [Poly(x, domain=domain)]
         else:  # pragma: no cover
             raise RuntimeError("run out of coefficient configurations")
 

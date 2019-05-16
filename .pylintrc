@@ -4,6 +4,8 @@
 # number of processors available to use.
 jobs=0
 
+# workaround https://github.com/PyCQA/pylint/issues/2388
+init-hook="import sys; sys.setrecursionlimit(2000)"
 
 [MESSAGES CONTROL]
 

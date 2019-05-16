@@ -1,4 +1,4 @@
-from ...core import Eq, Function, Rational, S, diff, sympify
+from ...core import Eq, Function, Integer, Rational, diff, sympify
 from ...core.function import ArgumentIndexError
 from ...polys.polyerrors import PolynomialError
 from ..elementary.complexes import im, sign
@@ -62,7 +62,7 @@ class DiracDelta(Function):
             a non-negative integer, %s given instead." % (k,))
         arg = sympify(arg)
         if arg.is_nonzero:
-            return S.Zero
+            return Integer(0)
 
     def simplify(self, x):
         """simplify(self, x)
@@ -202,11 +202,11 @@ class Heaviside(Function):
         if im(arg).is_nonzero:
             raise ValueError("Function defined only for Real Values. Complex part: %s  found in %s ." % (repr(im(arg)), repr(arg)) )
         elif arg.is_negative:
-            return S.Zero
+            return Integer(0)
         elif arg.is_zero:
-            return S.Half
+            return Rational(1, 2)
         elif arg.is_positive:
-            return S.One
+            return Integer(1)
 
     def _eval_rewrite_as_Piecewise(self, arg):
         if arg.is_extended_real:

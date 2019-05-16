@@ -62,8 +62,8 @@ from itertools import chain, product
 
 from .. import DIOFANT_DEBUG
 from ..core import (Add, Dummy, EulerGamma, Expr, I, Integer, Mod, Mul,
-                    Rational, S, Tuple, expand, expand_func, nan, oo, pi,
-                    symbols, sympify, zoo)
+                    Rational, Tuple, expand, expand_func, nan, oo, pi, symbols,
+                    sympify, zoo)
 from ..core.compatibility import default_sort_key
 from ..functions import (Chi, Ci, Ei, Piecewise, Shi, Si, besseli, besselj,
                          ceiling, cos, cosh, elliptic_e, elliptic_k, erf, exp,
@@ -127,73 +127,73 @@ def add_formulae(formulae):
     add((a, ), (), HyperRep_power1(-a, z))
 
     # 2F1
-    addb((a, a - S.Half), (2*a, ),
+    addb((a, a - Rational(1, 2)), (2*a, ),
          Matrix([HyperRep_power2(a, z),
                  HyperRep_power2(a + Rational(1, 2), z)/2]),
          Matrix([[1, 0]]),
-         Matrix([[(a - S.Half)*z/(1 - z), (S.Half - a)*z/(1 - z)],
+         Matrix([[(a - Rational(1, 2))*z/(1 - z), (Rational(1, 2) - a)*z/(1 - z)],
                  [a/(1 - z), a*(z - 2)/(1 - z)]]))
     addb((1, 1), (2, ),
          Matrix([HyperRep_log1(z), 1]), Matrix([[-1/z, 0]]),
          Matrix([[0, z/(z - 1)], [0, 0]]))
-    addb((S.Half, 1), (Rational(3, 2), ),
+    addb((Rational(1, 2), 1), (Rational(3, 2), ),
          Matrix([HyperRep_atanh(z), 1]),
          Matrix([[1, 0]]),
          Matrix([[-Rational(1, 2), 1/(1 - z)/2], [0, 0]]))
-    addb((S.Half, S.Half), (Rational(3, 2), ),
+    addb((Rational(1, 2), Rational(1, 2)), (Rational(3, 2), ),
          Matrix([HyperRep_asin1(z), HyperRep_power1(-Rational(1, 2), z)]),
          Matrix([[1, 0]]),
          Matrix([[-Rational(1, 2), Rational(1, 2)], [0, z/(1 - z)/2]]))
-    addb((a, S.Half + a), (S.Half, ),
+    addb((a, Rational(1, 2) + a), (Rational(1, 2), ),
          Matrix([HyperRep_sqrts1(-a, z), -HyperRep_sqrts2(-a - Rational(1, 2), z)]),
          Matrix([[1, 0]]),
          Matrix([[0, -a],
-                 [z*(-2*a - 1)/2/(1 - z), S.Half - z*(-2*a - 1)/(1 - z)]]))
+                 [z*(-2*a - 1)/2/(1 - z), Rational(1, 2) - z*(-2*a - 1)/(1 - z)]]))
 
     # A. P. Prudnikov, Yu. A. Brychkov and O. I. Marichev (1990).
     # Integrals and Series: More Special Functions, Vol. 3,.
     # Gordon and Breach Science Publisher
-    addb([a, -a], [S.Half],
+    addb([a, -a], [Rational(1, 2)],
          Matrix([HyperRep_cosasin(a, z), HyperRep_sinasin(a, z)]),
          Matrix([[1, 0]]),
          Matrix([[0, -a], [a*z/(1 - z), 1/(1 - z)/2]]))
-    addb([1, 1], [3*S.Half],
+    addb([1, 1], [3*Rational(1, 2)],
          Matrix([HyperRep_asin2(z), 1]), Matrix([[1, 0]]),
-         Matrix([[(z - S.Half)/(1 - z), 1/(1 - z)/2], [0, 0]]))
+         Matrix([[(z - Rational(1, 2))/(1 - z), 1/(1 - z)/2], [0, 0]]))
 
     # Complete elliptic integrals K(z) and E(z), both a 2F1 function
-    addb([S.Half, S.Half], [S.One],
+    addb([Rational(1, 2), Rational(1, 2)], [Integer(1)],
          Matrix([elliptic_k(z), elliptic_e(z)]),
          Matrix([[2/pi, 0]]),
-         Matrix([[-S.Half, -1/(2*z-2)],
-                 [-S.Half, S.Half]]))
-    addb([-S.Half, S.Half], [S.One],
+         Matrix([[-Rational(1, 2), -1/(2*z-2)],
+                 [-Rational(1, 2), Rational(1, 2)]]))
+    addb([-Rational(1, 2), Rational(1, 2)], [Integer(1)],
          Matrix([elliptic_k(z), elliptic_e(z)]),
          Matrix([[0, 2/pi]]),
-         Matrix([[-S.Half, -1/(2*z-2)],
-                 [-S.Half, S.Half]]))
+         Matrix([[-Rational(1, 2), -1/(2*z-2)],
+                 [-Rational(1, 2), Rational(1, 2)]]))
 
     # 3F2
-    addb([-S.Half, 1, 1], [S.Half, 2],
+    addb([-Rational(1, 2), 1, 1], [Rational(1, 2), 2],
          Matrix([z*HyperRep_atanh(z), HyperRep_log1(z), 1]),
          Matrix([[-Rational(2, 3), -1/(3*z), Rational(2, 3)]]),
          Matrix([[Rational(1, 2), 0, z/(1 - z)/2],
                  [0, 0, z/(z - 1)],
                  [0, 0, 0]]))
     # actually the formula for 3/2 is much nicer ...
-    addb([-S.Half, 1, 1], [2, 2],
+    addb([-Rational(1, 2), 1, 1], [2, 2],
          Matrix([HyperRep_power1(Rational(1, 2), z), HyperRep_log2(z), 1]),
          Matrix([[Rational(4, 9) - 16/(9*z), 4/(3*z), 16/(9*z)]]),
-         Matrix([[z/2/(z - 1), 0, 0], [1/(2*(z - 1)), 0, S.Half], [0, 0, 0]]))
+         Matrix([[z/2/(z - 1), 0, 0], [1/(2*(z - 1)), 0, Rational(1, 2)], [0, 0, 0]]))
 
     # 1F1
     addb([1], [b], Matrix([z**(1 - b) * exp(z) * lowergamma(b - 1, z), 1]),
          Matrix([[b - 1, 0]]), Matrix([[1 - b + z, 1], [0, 0]]))
     addb([a], [2*a],
-         Matrix([z**(S.Half - a)*exp(z/2)*besseli(a - S.Half, z/2)
-                 * gamma(a + S.Half)/4**(S.Half - a),
-                 z**(S.Half - a)*exp(z/2)*besseli(a + S.Half, z/2)
-                 * gamma(a + S.Half)/4**(S.Half - a)]),
+         Matrix([z**(Rational(1, 2) - a)*exp(z/2)*besseli(a - Rational(1, 2), z/2)
+                 * gamma(a + Rational(1, 2))/4**(Rational(1, 2) - a),
+                 z**(Rational(1, 2) - a)*exp(z/2)*besseli(a + Rational(1, 2), z/2)
+                 * gamma(a + Rational(1, 2))/4**(Rational(1, 2) - a)]),
          Matrix([[1, 0]]),
          Matrix([[z/2, z/2], [z/2, (z/2 - 2*a)]]))
     mz = polar_lift(-1)*z
@@ -202,7 +202,7 @@ def add_formulae(formulae):
          Matrix([[1, 0]]),
          Matrix([[-a, 1], [0, z]]))
     # This one is redundant.
-    add([-S.Half], [S.Half], exp(z) - sqrt(pi*z)*(-I)*erf(I*sqrt(z)))
+    add([-Rational(1, 2)], [Rational(1, 2)], exp(z) - sqrt(pi*z)*(-I)*erf(I*sqrt(z)))
 
     # Added to get nice results for Laplace transform of Fresnel functions
     # http://functions.wolfram.com/07.22.03.6437.01
@@ -226,13 +226,13 @@ def add_formulae(formulae):
                  [ 0,      0,      0     ]]))
 
     # 2F2
-    addb([S.Half, a], [Rational(3, 2), a + 1],
+    addb([Rational(1, 2), a], [Rational(3, 2), a + 1],
          Matrix([a/(2*a - 1)*(-I)*sqrt(pi/z)*erf(I*sqrt(z)),
                  a/(2*a - 1)*(polar_lift(-1)*z)**(-a) *
                  lowergamma(a, polar_lift(-1)*z),
                  a/(2*a - 1)*exp(z)]),
          Matrix([[1, -1, 0]]),
-         Matrix([[-S.Half, 0, 1], [0, -a, 1], [0, 0, z]]))
+         Matrix([[-Rational(1, 2), 0, 1], [0, -a, 1], [0, 0, z]]))
     # We make a "basis" of four functions instead of three, and give EulerGamma
     # an extra slot (it could just be a coefficient to 1). The advantage is
     # that this way Polys will not see multivariate polynomials (it treats
@@ -243,7 +243,7 @@ def add_formulae(formulae):
          Matrix([[0, 1, -1, 0], [0, z, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]))
 
     # 0F1
-    add((), (S.Half, ), cosh(2*sqrt(z)))
+    add((), (Rational(1, 2), ), cosh(2*sqrt(z)))
     addb([], [b],
          Matrix([gamma(b)*z**((1 - b)/2)*besseli(b - 1, 2*sqrt(z)),
                  gamma(b)*z**(1 - b/2)*besseli(b, 2*sqrt(z))]),
@@ -259,7 +259,7 @@ def add_formulae(formulae):
         return besseli(a, x) - besselj(a, x)
 
     # TODO branching
-    addb([], [S.Half, a, a + S.Half],
+    addb([], [Rational(1, 2), a, a + Rational(1, 2)],
          Matrix([fp(2*a - 1, z), fm(2*a, z)*root(z, 4),
                  fm(2*a - 1, z)*sqrt(z), fp(2*a, z)*z**Rational(3, 4)])
          * 2**(-2*a)*gamma(2*a)*z**((1 - 2*a)/4),
@@ -269,7 +269,7 @@ def add_formulae(formulae):
                  [0, 0, Rational(1, 2), 1],
                  [z, 0, 0, 1 - a]]))
     x = 2*root(4*z, 4)*exp_polar(I*pi/4)
-    addb([], [a, a + S.Half, 2*a],
+    addb([], [a, a + Rational(1, 2), 2*a],
          (2*sqrt(polar_lift(-1)*z))**(1 - 2*a)*gamma(2*a)**2 *
          Matrix([besselj(2*a - 1, x)*besseli(2*a - 1, x),
                  x*(besseli(2*a, x)*besselj(2*a - 1, x)
@@ -284,16 +284,16 @@ def add_formulae(formulae):
                  [-32*z, 0, 0, 1 - a]]))
 
     # 1F2
-    addb([a], [a - S.Half, 2*a],
-         Matrix([z**(S.Half - a)*besseli(a - S.Half, sqrt(z))**2,
-                 z**(1 - a)*besseli(a - S.Half, sqrt(z))
+    addb([a], [a - Rational(1, 2), 2*a],
+         Matrix([z**(Rational(1, 2) - a)*besseli(a - Rational(1, 2), sqrt(z))**2,
+                 z**(1 - a)*besseli(a - Rational(1, 2), sqrt(z))
                  * besseli(a - Rational(3, 2), sqrt(z)),
                  z**(Rational(3, 2) - a)*besseli(a - Rational(3, 2), sqrt(z))**2]),
-         Matrix([[-gamma(a + S.Half)**2/4**(S.Half - a),
-                  2*gamma(a - S.Half)*gamma(a + S.Half)/4**(1 - a),
+         Matrix([[-gamma(a + Rational(1, 2))**2/4**(Rational(1, 2) - a),
+                  2*gamma(a - Rational(1, 2))*gamma(a + Rational(1, 2))/4**(1 - a),
                   0]]),
-         Matrix([[1 - 2*a, 1, 0], [z/2, S.Half - a, S.Half], [0, z, 0]]))
-    addb([S.Half], [b, 2 - b],
+         Matrix([[1 - 2*a, 1, 0], [z/2, Rational(1, 2) - a, Rational(1, 2)], [0, z, 0]]))
+    addb([Rational(1, 2)], [b, 2 - b],
          pi*(1 - b)/sin(pi*b) *
          Matrix([besseli(1 - b, sqrt(z))*besseli(b - 1, sqrt(z)),
                  sqrt(z)*(besseli(-b, sqrt(z))*besseli(b - 1, sqrt(z))
@@ -307,7 +307,7 @@ def add_formulae(formulae):
          Matrix([Shi(2*sqrt(z))/2/sqrt(z), sinh(2*sqrt(z))/2/sqrt(z),
                  cosh(2*sqrt(z))]),
          Matrix([[1, 0, 0]]),
-         Matrix([[-S.Half, S.Half, 0], [0, -S.Half, S.Half], [0, 2*z, 0]]))
+         Matrix([[-Rational(1, 2), Rational(1, 2), 0], [0, -Rational(1, 2), Rational(1, 2)], [0, 2*z, 0]]))
 
     # FresnelS
     # Basic rule
@@ -349,7 +349,7 @@ def add_formulae(formulae):
     # XXX with this five-parameter formula is pretty slow with the current
     #     Formula.find_instantiations (creates 2!*3!*3**(2+3) ~ 3000
     #     instantiations ... But it's not too bad.
-    addb([a, a + S.Half], [2*a, b, 2*a - b + 1],
+    addb([a, a + Rational(1, 2)], [2*a, b, 2*a - b + 1],
          gamma(b)*gamma(2*a - b + 1) * (sqrt(z)/2)**(1 - 2*a) *
          Matrix([besseli(b - 1, sqrt(z))*besseli(2*a - b, sqrt(z)),
                  sqrt(z)*besseli(b, sqrt(z))*besseli(2*a - b, sqrt(z)),
@@ -826,7 +826,7 @@ class FormulaCollection:
         >>> f.lookup_origin(Hyper_Function([1], ())).closed_form
         HyperRep_power1(-1, _z)
 
-        >>> i = Hyper_Function([Rational(1, 4), Rational(3, 4) + 4], [S.Half])
+        >>> i = Hyper_Function([Rational(1, 4), Rational(3, 4) + 4], [Rational(1, 2)])
         >>> f.lookup_origin(i).closed_form
         HyperRep_sqrts1(-1/4, _z)
 
@@ -860,8 +860,6 @@ class FormulaCollection:
                          f.C.subs(repl), f.M.subs(repl))
             if not any(e.has(nan, oo, -oo, zoo) for e in [f2.B, f2.M, f2.C]):
                 return f2
-        else:
-            return
 
 
 class MeijerFormula:
@@ -1524,7 +1522,7 @@ def devise_plan(target, origin, z):
 
     Several buckets:
 
-    >>> for i in devise_plan(Hyper_Function((1, S.Half), ()),
+    >>> for i in devise_plan(Hyper_Function((1, Rational(1, 2)), ()),
     ...             Hyper_Function((2, Rational(3, 2)), ()), z):
     ...     i
     <Decrement upper index #0 of [3/2, 1], [].>
@@ -1929,7 +1927,7 @@ def hyperexpand_special(ap, bq, z):
     z_ = z
     z = unpolarify(z)
     if z == 0:
-        return S.One
+        return Integer(1)
     if p == 2 and q == 1:
         # 2F1
         a, b, c = ap + bq
@@ -2326,7 +2324,7 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default', place=None):
                 integrand = z**s
                 for b in bm:
                     if not Mod(b, 1):
-                        b = int(round(b))
+                        b = round(b)
                     integrand *= gamma(b - s)
                 for a in an:
                     integrand *= gamma(1 - a + s)
@@ -2338,7 +2336,7 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default', place=None):
                 # Now sum the finitely many residues:
                 # XXX This speeds up some cases - is it a good idea?
                 integrand = expand_func(integrand)
-                for r in range(int(round(lu))):
+                for r in range(round(lu)):
                     resid = residue(integrand, s, b_ + r)
                     resid = apply_operators(resid, ops, lambda f: z*f.diff(z))
                     res -= resid
@@ -2430,8 +2428,8 @@ def _meijergexpand(func, z0, allow_hyper=False, rewrite='default', place=None):
             c0 = 2
         if expr.has(oo, zoo, -oo, nan):
             # XXX this actually should not happen, but consider
-            # meijerg(((0, -S.Half, 0, -S.Half, S.Half), ()),
-            #          ((0,), (-S.Half, -S.Half, -S.Half, -1)),
+            # meijerg(((0, -Rational(1, 2), 0, -Rational(1, 2), Rational(1, 2)), ()),
+            #          ((0,), (-Rational(1, 2), -Rational(1, 2), -Rational(1, 2), -1)),
             #          exp_polar(I*pi))/4
             c0 = 3
         return c0, expr.count(hyper), expr.count_ops()
