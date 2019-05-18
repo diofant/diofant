@@ -31,7 +31,6 @@ from .factortools import (dmp_factor_list, dmp_trial_division, dmp_zz_factor,
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
-                            dup_isolate_imaginary_roots,
                             dup_isolate_real_roots,
                             dup_isolate_real_roots_list,
                             dup_isolate_real_roots_sqf, dup_refine_real_root,
@@ -424,9 +423,6 @@ class IPolys:
 
     def dup_isolate_real_roots(self, f, eps=None, inf=None, sup=None):
         return dup_isolate_real_roots(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup)
-
-    def dup_isolate_imaginary_roots(self, f, eps=None, inf=None, sup=None):
-        return dup_isolate_imaginary_roots(self.to_dense(f), self.domain, eps=eps, inf=inf, sup=sup)
 
     def dup_isolate_real_roots_list(self, polys, eps=None, inf=None, sup=None, strict=False, basis=False):
         return dup_isolate_real_roots_list(list(map(self.to_dense, polys)), self.domain, eps=eps, inf=inf, sup=sup, strict=strict, basis=basis)
