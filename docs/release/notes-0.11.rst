@@ -91,3 +91,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`16530` (1/x).is_real should be None if x can be zero
 * :sympyissue:`16562` Eq with 1 argument is allowed?
 * :sympyissue:`16589` roots gives incorrect result
+* :sympyissue:`16714` Limit ((n**(n+1) + (n+1)**n) / n**(n+1))**n recursion error
+* :sympyissue:`16774` square proportion match has no result

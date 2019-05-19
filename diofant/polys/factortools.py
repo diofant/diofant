@@ -36,7 +36,7 @@ def dmp_trial_division(f, factors, u, K):
     for factor in factors:
         k = 0
 
-        while True:
+        while f:
             q, r = dmp_div(f, factor, u, K)
 
             if dmp_zero_p(r, u):

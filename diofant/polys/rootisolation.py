@@ -1,17 +1,19 @@
 """Real and complex root isolation and refinement algorithms. """
 
+import collections
 import math
 
 from ..core import I
-from .densearith import dmp_add, dmp_mul_ground, dmp_neg, dmp_rem, dup_rshift
+from .densearith import (dmp_add, dmp_mul_ground, dmp_neg, dmp_pow, dmp_quo,
+                         dmp_rem, dup_rshift)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dmp_to_tuple,
                          dup_reverse)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
-                         dmp_eval_in, dup_mirror, dup_real_imag, dup_scale,
-                         dup_shift, dup_transform)
+                         dmp_eval_in, dmp_ground_primitive, dup_mirror,
+                         dup_real_imag, dup_scale, dup_shift, dup_transform)
 from .euclidtools import dmp_gcd, dmp_resultant
-from .factortools import dmp_factor_list
+from .factortools import dmp_trial_division
 from .polyerrors import DomainError, RefinementFailed
 from .sqfreetools import dmp_sqf_list, dmp_sqf_part
 
@@ -509,43 +511,55 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None):
 def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=False, basis=False):
     """Isolate real roots of a list of polynomials."""
     R, K = K, K.field
-    for i, p in enumerate(polys):
-        p = dmp_convert(p, 0, R, K)
-        polys[i] = dmp_clear_denoms(p, 0, K)[1]
 
     if not (K.is_RationalField or K.is_RealAlgebraicField):
         raise DomainError("isolation of real roots not supported over %s" % K)
 
-    zeros, factors_dict = False, {}
-
     if (inf is None or inf <= 0) and (sup is None or 0 <= sup):
         zeros, zero_indices = True, {}
+    else:
+        zeros = False
+
+    gcd = []
 
     for i, p in enumerate(polys):
-        (j,), p = dmp_terms_gcd(p, 0, K)
+        p = dmp_convert(p, 0, R, K)
+        p = dmp_clear_denoms(p, 0, K)[1]
+        (j,), polys[i] = dmp_terms_gcd(p, 0, K)
 
         if zeros and j > 0:
             zero_indices[i] = j
 
-        for f, k in dmp_factor_list(p, 0, K)[1]:
-            f = tuple(f)
+        gcd = dmp_gcd(gcd, polys[i], 0, K)
 
-            if f not in factors_dict:
-                factors_dict[f] = {i: k}
-            else:
-                factors_dict[f][i] = k
+    polys = [dmp_quo(p, gcd, 0, K) for p in polys]
 
-    factors_list = []
+    if len(polys) != 2:
+        raise NotImplementedError
 
-    for f, indices in factors_dict.items():
-        factors_list.append((list(f), indices))
+    factors = collections.defaultdict(dict)
 
-    I_neg, I_pos = _real_isolate_and_disjoin(factors_list, K, eps=eps,
-                                             inf=inf, sup=sup, strict=strict, basis=basis)
+    for i, p in enumerate(polys):
+        for f, _ in dmp_sqf_list(dmp_gcd(p, gcd, 0, K), 0, K)[1]:
+            k1 = dmp_trial_division(gcd, [f], 0, K)[0][1]
+            k2 = dmp_trial_division(p, [f], 0, K)[0][1]
+            factors[tuple(f)] = {i: k1 + k2, (i + 1) % 2: k1}
 
-    if not zeros or not zero_indices:
-        I_zero = []
-    else:
+            gcd = dmp_quo(gcd, dmp_pow(f, k1, 0, K), 0, K)
+            p = dmp_quo(p, dmp_pow(f, k2, 0, K), 0, K)
+
+        for f, k in dmp_sqf_list(p, 0, K)[1]:
+            factors[tuple(f)] = {i: k}
+
+    for f, k in dmp_sqf_list(gcd, 0, K)[1]:
+        factors[tuple(f)] = {0: k, 1: k}
+
+    I_neg, I_pos = _real_isolate_and_disjoin(factors.items(), K, eps=eps,
+                                             inf=inf, sup=sup, strict=strict,
+                                             basis=basis)
+    I_zero = []
+
+    if zeros and zero_indices:
         if not basis:
             I_zero = [((K.zero, K.zero), zero_indices)]
         else:
@@ -582,6 +596,7 @@ def _real_isolate_and_disjoin(factors, K, eps=None, inf=None, sup=None, strict=F
     I_pos, I_neg = [], []
 
     for i, (f, k) in enumerate(factors):
+        f = dmp_ground_primitive(f, 0, K)[1]
         for F, M in dup_inner_isolate_positive_roots(f, K, eps=eps, inf=inf, sup=sup, mobius=True):
             I_pos.append((F, M, k, f))
 
@@ -671,13 +686,6 @@ def dup_count_real_roots(f, K, inf=None, sup=None):
         count += 1
 
     return count
-
-
-def dup_isolate_imaginary_roots(f, K, eps=None, inf=None, sup=None):
-    """Isolate imaginary roots."""
-    F = K.algebraic_field(I)
-    f = dmp_compose(dmp_convert(f, 0, K, F), [F.unit, 0], 0, F)
-    return dup_isolate_real_roots(f, F, eps=eps, inf=inf, sup=sup)
 
 
 OO = 'OO'  # Origin of (re, im) coordinate system
@@ -1240,7 +1248,7 @@ def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
     f1L1F, f1L2F, f1L3F, f1L4F = F1
     f2L1F, f2L2F, f2L3F, f2L4F = F2
 
-    x = (u + s) / 2
+    x = (u + s) / F(2)
 
     f1V = dmp_eval_in(f1, x, 0, 1, F)
     f2V = dmp_eval_in(f2, x, 0, 1, F)
@@ -1347,7 +1355,7 @@ def _horizontal_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
     f1L1F, f1L2F, f1L3F, f1L4F = F1
     f2L1F, f2L2F, f2L3F, f2L4F = F2
 
-    y = (v + t) / 2
+    y = (v + t) / F(2)
 
     f1H = dmp_eval_in(f1, y, 1, 1, F)
     f2H = dmp_eval_in(f2, y, 1, 1, F)
