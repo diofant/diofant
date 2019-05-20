@@ -2,10 +2,9 @@ import functools
 
 import mpmath
 
+from ..core import igcd, prod
 from ..core.compatibility import as_int
-from ..core.mul import prod
-from ..core.numbers import igcd, igcdex
-from ..polys.galoistools import gf_crt, gf_crt1, gf_crt2
+from ..core.numbers import igcdex
 from .primetest import isprime
 
 
@@ -23,12 +22,12 @@ def symmetric_residue(a, m):
     return a - m
 
 
-def crt(m, v, symmetric=False, check=True):
+def crt(M, U, symmetric=False, check=True):
     r"""Chinese Remainder Theorem.
 
-    The moduli in m are assumed to be pairwise coprime.  The output
-    is then an integer f, such that f = v_i mod m_i for each pair out
-    of v and m. If ``symmetric`` is False a positive integer will be
+    The moduli in M are assumed to be pairwise coprime.  The output
+    is then an integer f, such that f = u_i mod m_i for each pair out
+    of U and M. If ``symmetric`` is False a positive integer will be
     returned, else \|f\| will be less than or equal to the LCM of the
     moduli, and thus f may be negative.
 
@@ -39,33 +38,33 @@ def crt(m, v, symmetric=False, check=True):
     The keyword ``check`` can be set to False if it is known that the moduli
     are coprime.
 
-    As an example consider a set of residues ``U = [49, 76, 65]``
-    and a set of moduli ``M = [99, 97, 95]``. Then we have::
+    Examples
+    ========
 
-       >>> crt([99, 97, 95], [49, 76, 65])
-       (639985, 912285)
+    >>> crt([99, 97, 95], [49, 76, 65])
+    (639985, 912285)
 
-    This is the correct result because::
+    This is the correct result because:
 
-       >>> [639985 % m for m in [99, 97, 95]]
-       [49, 76, 65]
+    >>> [639985 % m for m in [99, 97, 95]]
+    [49, 76, 65]
 
     If the moduli are not co-prime, you may receive an incorrect result
     if you use ``check=False``:
 
-       >>> crt([12, 6, 17], [3, 4, 2], check=False)
-       (954, 1224)
-       >>> [954 % m for m in [12, 6, 17]]
-       [6, 0, 2]
-       >>> crt([12, 6, 17], [3, 4, 2]) is None
-       True
-       >>> crt([3, 6], [2, 5])
-       (5, 6)
+    >>> crt([12, 6, 17], [3, 4, 2], check=False)
+    (954, 1224)
+    >>> [954 % m for m in [12, 6, 17]]
+    [6, 0, 2]
+    >>> crt([12, 6, 17], [3, 4, 2]) is None
+    True
+    >>> crt([3, 6], [2, 5])
+    (5, 6)
 
-    Note: the order of gf_crt's arguments is reversed relative to crt,
-    and that solve_congruence takes residue, modulus pairs.
+    Notes
+    =====
 
-    Programmer's note: rather than checking that all pairs of moduli share
+    Rather than checking that all pairs of moduli share
     no GCD (an O(n**2) test) and rather than factoring all moduli and seeing
     that there is no factor in common, a check that the result gives the
     indicated residuals is performed -- an O(n) operation.
@@ -74,21 +73,28 @@ def crt(m, v, symmetric=False, check=True):
     ========
 
     solve_congruence
-    diofant.polys.galoistools.gf_crt : low level crt routine used by this routine
 
     """
     from ..domains import ZZ
 
     if check:
-        m = list(map(as_int, m))
-        v = list(map(as_int, v))
+        M = list(map(as_int, M))
+        U = list(map(as_int, U))
 
-    result = gf_crt(v, m, ZZ)
-    mm = prod(m)
+    p = prod(M, start=ZZ.one)
+    v = ZZ.zero
+
+    for u, m in zip(U, M):
+        e = p // m
+        s, _, _ = ZZ.gcdex(e, m)
+        v += e*(u*s % m)
+
+    result = v % p
+    mm = prod(M)
 
     if check:
-        if not all(v % m == result % m for v, m in zip(v, m)):
-            result = solve_congruence(*list(zip(v, m)),
+        if not all(v % m == result % m for v, m in zip(U, M)):
+            result = solve_congruence(*list(zip(U, M)),
                                       check=False, symmetric=symmetric)
             if result is None:
                 return result
@@ -99,7 +105,7 @@ def crt(m, v, symmetric=False, check=True):
     return result, mm
 
 
-def crt1(m):
+def crt1(M):
     """First part of Chinese Remainder Theorem, for multiple application.
 
     Examples
@@ -111,10 +117,17 @@ def crt1(m):
     """
     from ..domains import ZZ
 
-    return gf_crt1(m, ZZ)
+    E, S = [], []
+    p = prod(M, start=ZZ.one)
+
+    for m in M:
+        E.append(p // m)
+        S.append(ZZ.gcdex(E[-1], m)[0] % m)
+
+    return p, E, S
 
 
-def crt2(m, v, mm, e, s, symmetric=False):
+def crt2(M, U, p, E, S, symmetric=False):
     """Second part of Chinese Remainder Theorem, for multiple application.
 
     Examples
@@ -127,11 +140,16 @@ def crt2(m, v, mm, e, s, symmetric=False):
     """
     from ..domains import ZZ
 
-    result = gf_crt2(v, m, mm, e, s, ZZ)
+    v = ZZ.zero
+
+    for u, m, e, s in zip(U, M, E, S):
+        v += e*(u*s % m)
+
+    result = v % p
 
     if symmetric:
-        return symmetric_residue(result, mm), mm
-    return result, mm
+        result = symmetric_residue(result, p)
+    return result, p
 
 
 def solve_congruence(*remainder_modulus_pairs, **hint):
@@ -214,7 +232,7 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
         rm = [(as_int(r), as_int(m)) for r, m in rm]
 
         # ignore redundant pairs but raise an error otherwise; also
-        # make sure that a unique set of bases is sent to gf_crt if
+        # make sure that a unique set of bases is sent to crt() if
         # they are all prime.
         #
         # The routine will work out less-trivial violations and

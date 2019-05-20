@@ -620,3 +620,12 @@ def test_diofantissue_462():
     tmpl = a11*x**2 + 2*a12*x*y + a22*y**2 + 2*a13*x + 2*a23*y + a33
     assert eq.match(tmpl) == {a11: -1, a12: 6, a22: -36, a13: -4,
                               a23: Rational(-1, 2), a33: -4}
+
+
+def test_sympyissue_16774():
+    a1, b1, c1, d1, a2, b2, c2, d2 = symbols('a1 b1 c1 d1 a2 b2 c2 d2',
+                                             cls=Wild, exclude=[a])
+    e = (4*a + 3)/(5*a + 12) - (2*a + 9)/(a + 4)
+    t = (a*a1 + b1)/(a*c1 + d1) + (a*a2 + b2)/(a*c2 + d2)
+    assert e.match(t) == {a1: -2, a2: 4, b1: -9, b2: 3, c1: 1,
+                          c2: 5, d1: 4, d2: 12}

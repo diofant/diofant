@@ -2,18 +2,17 @@
 
 from ..core import cacheit
 from ..ntheory import nextprime
-from ..ntheory.modular import symmetric_residue
+from ..ntheory.modular import crt, symmetric_residue
 from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
                          dmp_sub_mul, dup_mul)
-from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
-                         dmp_ground, dmp_ground_LC, dmp_inflate, dmp_LC,
-                         dmp_multi_deflate, dmp_one, dmp_one_p, dmp_raise,
-                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
+from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_deflate,
+                         dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
+                         dmp_LC, dmp_one, dmp_one_p, dmp_raise, dmp_strip,
+                         dmp_zero, dmp_zero_p, dmp_zeros)
 from .densetools import (dmp_clear_denoms, dmp_eval_in, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc)
-from .galoistools import gf_crt
 from .heuristicgcd import heugcd
 from .polyconfig import query
 from .polyerrors import (DomainError, HeuristicGCDFailed, HomomorphismFailed,
@@ -164,84 +163,6 @@ def dmp_prem(f, g, u, K):
     return dmp_mul_term(r, c, 0, u, K)
 
 
-def dup_euclidean_prs(f, g, K):
-    """
-    Euclidean polynomial remainder sequence (PRS) in `K[x]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", QQ)
-
-    >>> f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
-    >>> g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
-
-    >>> prs = R.dup_euclidean_prs(f, g)
-
-    >>> prs[0]
-    x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
-    >>> prs[1]
-    3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
-    >>> prs[2]
-    -5/9*x**4 + 1/9*x**2 - 1/3
-    >>> prs[3]
-    -117/25*x**2 - 9*x + 441/25
-    >>> prs[4]
-    233150/19773*x - 102500/6591
-    >>> prs[5]
-    -1288744821/543589225
-
-    """
-    prs = [f, g]
-    h = dmp_rem(f, g, 0, K)
-
-    while h:
-        prs.append(h)
-        f, g = g, h
-        h = dmp_rem(f, g, 0, K)
-
-    return prs
-
-
-def dup_primitive_prs(f, g, K):
-    """
-    Primitive polynomial remainder sequence (PRS) in `K[x]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
-    >>> g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
-
-    >>> prs = R.dup_primitive_prs(f, g)
-
-    >>> prs[0]
-    x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
-    >>> prs[1]
-    3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
-    >>> prs[2]
-    5*x**4 - x**2 + 3
-    >>> prs[3]
-    13*x**2 + 25*x - 49
-    >>> prs[4]
-    4663*x - 6150
-    >>> prs[5]
-    1
-
-    """
-    prs = [f, g]
-    _, h = dmp_ground_primitive(dmp_prem(f, g, 0, K), 0, K)
-
-    while h:
-        prs.append(h)
-        f, g = g, h
-        _, h = dmp_ground_primitive(dmp_prem(f, g, 0, K), 0, K)
-
-    return prs
-
-
 def dup_inner_subresultants(f, g, K):
     """
     Subresultant PRS algorithm in `K[x]`.
@@ -259,7 +180,7 @@ def dup_inner_subresultants(f, g, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_inner_subresultants(x**2 + 1, x**2 - 1)
+    >>> R.dmp_inner_subresultants(x**2 + 1, x**2 - 1)
     ([x**2 + 1, x**2 - 1, -2], [1, 1, 4])
 
     References
@@ -438,7 +359,7 @@ def dmp_subresultants(f, g, u, K):
     >>> a = 3*x*y**4 + y**3 - 27*y + 4
     >>> b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
 
-    >>> R.dmp_subresultants(f, g) == [f, g, a, b]
+    >>> f.subresultants(g) == [f, g, a, b]
     True
 
     """
@@ -460,7 +381,7 @@ def dmp_prs_resultant(f, g, u, K):
     >>> a = 3*x*y**4 + y**3 - 27*y + 4
     >>> b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
 
-    >>> res, prs = R.dmp_prs_resultant(f, g)
+    >>> res, prs = R.dmp_resultant(f, g, includePRS=True)
 
     >>> res == b             # resultant has n-1 variables
     False
@@ -558,7 +479,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
 
 def _collins_crt(r, R, P, p, K):
     """Wrapper of CRT for Collins's resultant algorithm."""
-    return symmetric_residue(gf_crt([r, R], [P, p], K), P*p)
+    return K(crt([P, p], [r, R], check=False, symmetric=True)[0])
 
 
 def dmp_zz_collins_resultant(f, g, u, K):
@@ -695,15 +616,15 @@ def _dmp_rr_trivial_gcd(f, g, u, K):
     if zero_f and zero_g:
         return tuple(dmp_zeros(3, u, K))
     elif zero_f:
-        if K.is_nonnegative(dmp_ground_LC(g, u, K)):
-            return g, dmp_zero(u), dmp_one(u, K)
-        else:
+        if K.is_negative(dmp_ground_LC(g, u, K)):
             return dmp_neg(g, u, K), dmp_zero(u), dmp_ground(-K.one, u)
-    elif zero_g:
-        if K.is_nonnegative(dmp_ground_LC(f, u, K)):
-            return f, dmp_one(u, K), dmp_zero(u)
         else:
+            return g, dmp_zero(u), dmp_one(u, K)
+    elif zero_g:
+        if K.is_negative(dmp_ground_LC(f, u, K)):
             return dmp_neg(f, u, K), dmp_ground(-K.one, u), dmp_zero(u)
+        else:
+            return f, dmp_one(u, K), dmp_zero(u)
     elif dmp_one_p(f, u, K) or dmp_one_p(g, u, K):
         return dmp_one(u, K), f, g
     elif u and query('USE_SIMPLIFY_GCD'):
@@ -1084,7 +1005,7 @@ def dmp_inner_gcd(f, g, u, K):
     (x + y, x + y, x)
 
     """
-    J, (f, g) = dmp_multi_deflate((f, g), u, K)
+    J, (f, g) = dmp_deflate((f, g), u, K)
     h, cff, cfg = _dmp_inner_gcd(f, g, u, K)
 
     return (dmp_inflate(h, J, u, K),

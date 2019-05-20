@@ -336,9 +336,15 @@ def test_modgcd_algebraic_field():
 def test_modgcd_algebraic_field_random():
     A = QQ.algebraic_field(sqrt(2), sqrt(3))
     R, x, y, z = ring("x, y, z", A)
+
     h = x**2*y**3 + 1111*sqrt(6)/12*z
-    f, g = h*(11*y**3 + 2), h**2*(y + x - 1)
-    assert func_field_modgcd(f, g) == (h, 11*y**3 + 2, h*(y + x - 1))
+    a, b = 11*y**3 + 2, (y + x - 1)*h
+
+    assert func_field_modgcd(h*a, h*b) == (h, a, b)
+
+    a, b = 12*y + 2*x - 1, (y + x - 1)*h
+
+    assert func_field_modgcd(h*a, h*b) == (h, a, b)
 
 
 # when func_field_modgcd suppors function fields, this test can be changed

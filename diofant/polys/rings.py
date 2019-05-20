@@ -292,8 +292,12 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
     def from_list(self, element):
         return self.from_dict(dmp_to_dict(element, self.ngens-1))
 
-    def _rebuild_expr(self, expr, mapping):
+    def from_expr(self, expr):
+        """Convert an Expr instance to ``dtype``."""
+        expr = sympify(expr)
+
         domain = self.domain
+        mapping = dict(zip(self.symbols, self.gens))
 
         def _rebuild(expr):
             generator = mapping.get(expr)
@@ -301,9 +305,9 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             if generator is not None:
                 return generator
             elif expr.is_Add:
-                return functools.reduce(operator.add, list(map(_rebuild, expr.args)))
+                return functools.reduce(operator.add, map(_rebuild, expr.args))
             elif expr.is_Mul:
-                return functools.reduce(operator.mul, list(map(_rebuild, expr.args)))
+                return functools.reduce(operator.mul, map(_rebuild, expr.args))
             elif expr.is_Pow:
                 c, a = expr.exp.as_coeff_Mul(rational=True)
                 if c.is_Integer and c > 1:
@@ -311,16 +315,11 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
 
             return domain.convert(expr)
 
-        return _rebuild(sympify(expr))
-
-    def from_expr(self, expr):
-        """Convert Diofant's expression to ``dtype``."""
-        mapping = dict(zip(self.symbols, self.gens))
-
         try:
-            poly = self._rebuild_expr(expr, mapping)
+            poly = _rebuild(expr)
         except CoercionFailed:
-            raise ValueError("expected an expression convertible to a polynomial in %s, got %s" % (self, expr))
+            raise ValueError("expected an expression convertible to a "
+                             "polynomial in %s, got %s" % (self, expr))
         else:
             return self.ring_new(poly)
 
@@ -442,14 +441,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
     def is_negative(self, a):
         """Returns True if ``LC(a)`` is negative."""
         return self.domain.is_negative(a.LC)
-
-    def is_nonpositive(self, a):
-        """Returns True if ``LC(a)`` is non-positive."""
-        return self.domain.is_nonpositive(a.LC)
-
-    def is_nonnegative(self, a):
-        """Returns True if ``LC(a)`` is non-negative."""
-        return self.domain.is_nonnegative(a.LC)
 
     def gcdex(self, a, b):
         """Extended GCD of ``a`` and ``b``."""
@@ -1811,10 +1802,10 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.ring.domain.is_Field:
             return other.monic(), zero, self.ring.ground_new(other.LC)
         else:
-            if self.ring.is_nonnegative(other):
-                return other, zero, one
-            else:
+            if self.ring.is_negative(other):
                 return -other, zero, -one
+            else:
+                return other, zero, one
 
     def _gcd(self, other):
         ring = self.ring
@@ -1961,6 +1952,21 @@ class PolyElement(DomainElement, CantSympify, dict):
                 for j in range(expv[i], expv[i] - m, -1):
                     coeff *= j
                 g[e] = coeff
+        g._strip_zero()
+        return g
+
+    def integrate(self, x=0, m=1):
+        """Computes indefinite integral in ``x``."""
+        ring = self.ring
+        i = ring.index(x)
+        x = ring.monomial_basis(i)
+        x = monomial_pow(x, m)
+        g = ring.zero
+        for expv, coeff in self.items():
+            e = monomial_mul(expv, x)
+            for j in range(expv[i] + m, expv[i], -1):
+                coeff /= j
+            g[e] = coeff
         g._strip_zero()
         return g
 
@@ -2116,7 +2122,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             raise MultivariatePolynomialError("extended Euclidean algorithm")
 
     def subresultants(self, other):
-        return self.ring.dmp_subresultants(self, other)
+        return self.ring.dmp_inner_subresultants(self, other)[0]
 
     def resultant(self, other, includePRS=False):
         return self.ring.dmp_resultant(self, other, includePRS=includePRS)
@@ -2164,11 +2170,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def factor_list(self):
         return self.ring.dmp_factor_list(self)
-
-    def integrate(self, m=1, x=0):
-        ring = self.ring
-        i = ring.index(x)
-        return ring.dmp_integrate_in(self, m, i)
 
     def slice(self, m, n, x=0):
         ring = self.ring
