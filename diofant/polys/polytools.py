@@ -1199,7 +1199,7 @@ class Poly(Expr):
         24*E**8
 
         """
-        N = Monomial(monom, self.gens).exponents
+        N = Monomial(monom, self.gens)
         if len(N) != len(self.gens):
             raise ValueError('exponent of each generator must be specified')
 

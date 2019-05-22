@@ -20,7 +20,7 @@ from .constructor import construct_domain
 from .densebasic import dmp_from_dict, dmp_to_dict
 from .heuristicgcd import heugcd
 from .modulargcd import func_field_modgcd, modgcd
-from .monomials import monomial_div, monomial_gcd, monomial_mul, monomial_pow
+from .monomials import Monomial
 from .orderings import lex
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
@@ -181,13 +181,13 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             obj.domain = domain
             obj.order = order
 
-            obj.zero_monom = (0,)*ngens
+            obj.zero_monom = Monomial((0,)*ngens)
             obj.gens = obj._gens()
             obj._gens_set = set(obj.gens)
 
             obj._one = [(obj.zero_monom, domain.one)]
 
-            obj.leading_expv = lambda f: max(f, key=order)
+            obj.leading_expv = lambda f: Monomial(max(f, key=order))
 
             obj.rep = str(domain) + '[' + ','.join(map(str, symbols)) + ']'
 
@@ -226,7 +226,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         """Return the ith-basis element."""
         basis = [0]*self.ngens
         basis[i] = 1
-        return tuple(basis)
+        return Monomial(basis)
 
     @property
     def zero(self):
@@ -561,6 +561,11 @@ class PolyElement(DomainElement, CantSympify, dict):
             if not v:
                 del self[k]
 
+    def __setitem__(self, key, item):
+        if not isinstance(key, Monomial):
+            key = Monomial(key)
+        super().__setitem__(key, item)
+
     def __eq__(self, other):
         """Equality test for polynomials.
 
@@ -634,7 +639,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 if k[i] == 0:
                     K = list(k)
                     del K[i]
-                    poly[tuple(K)] = v
+                    poly[K] = v
                 else:
                     raise ValueError("can't drop %s" % gen)
 
@@ -970,7 +975,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             zero = ring.domain.zero
             for exp1, v1 in self.items():
                 for exp2, v2 in other.items():
-                    exp = monomial_mul(exp1, exp2)
+                    exp = exp1*exp2
                     p[exp] = get(exp, zero) + v1*v2
             p._strip_zero()
             return p
@@ -1040,7 +1045,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         elif len(self) == 1:
             monom, coeff = list(self.items())[0]
             p = ring.zero
-            p[monomial_pow(monom, n)] = coeff**n
+            p[monom**n] = coeff**n
             return p
         elif n == 1:
             return self.copy()
@@ -1080,11 +1085,10 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             for exp, (monom, coeff) in zip(multinomial, terms):
                 if exp:
-                    product_monom = monomial_mul(product_monom,
-                                                 monomial_pow(monom, exp))
+                    product_monom *= monom**exp
                     product_coeff *= coeff**exp
 
-            monom = tuple(product_monom)
+            monom = product_monom
             coeff = poly.get(monom, zero) + product_coeff
 
             if coeff:
@@ -1116,12 +1120,12 @@ class PolyElement(DomainElement, CantSympify, dict):
             pk = self[k1]
             for j in range(i):
                 k2 = keys[j]
-                exp = monomial_mul(k1, k2)
+                exp = k1*k2
                 p[exp] = get(exp, zero) + pk*self[k2]
         p = p._imul_num(2)
         get = p.get
         for k, v in self.items():
-            k2 = monomial_mul(k, k)
+            k2 = k**2
             p[k2] = get(k2, zero) + v**2
         p._strip_zero()
         return p
@@ -1302,7 +1306,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         get = p1.get
         zero = p1.ring.domain.zero
         for k, v in p2.items():
-            ka = monomial_mul(k, m)
+            ka = k*m
             coeff = get(ka, zero) + v*c
             if coeff:
                 p1[ka] = coeff
@@ -1612,7 +1616,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         return self.__class__({monom: self[monom]*x for monom in self})
 
     def mul_monom(self, monom):
-        terms = {monomial_mul(f_monom, monom): self[f_monom] for f_monom in self}
+        terms = {f_monom*monom: self[f_monom] for f_monom in self}
         return self.__class__(terms)
 
     def mul_term(self, term):
@@ -1623,7 +1627,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         elif monom == self.ring.zero_monom:
             return self.mul_ground(coeff)
 
-        terms = {monomial_mul(f_monom, monom): self[f_monom]*coeff for f_monom in self}
+        terms = {f_monom*monom: self[f_monom]*coeff for f_monom in self}
         return self.__class__(terms)
 
     def quo_ground(self, x):
@@ -1672,7 +1676,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         for tm, tc in self.items():
             if monom != self.ring.zero_monom:
-                tm = monomial_div(tm, monom)
+                tm /= monom
             if any(_ < 0 for _ in tm):
                 continue
             if domain.is_Field or not tc % coeff:
@@ -1745,7 +1749,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             for I, coeff in p.items():
                 N = [i//j for i, j in zip(I, J)]
-                h[tuple(N)] = coeff
+                h[N] = coeff
 
             H.append(h)
 
@@ -1756,7 +1760,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         for I, coeff in self.items():
             N = [i*j for i, j in zip(I, J)]
-            poly[tuple(N)] = coeff
+            poly[N] = coeff
 
         return poly
 
@@ -1862,7 +1866,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.is_zero:
             return (0,)*self.ring.ngens, self
 
-        G = functools.reduce(monomial_gcd, self)
+        G = functools.reduce(Monomial.gcd, self)
 
         if all(g == 0 for g in G):
             return G, self
@@ -1870,7 +1874,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         f = self.ring.zero
 
         for monom, coeff in self.items():
-            f[monomial_div(monom, G)] = coeff
+            f[monom/G] = coeff
 
         return G, f
 
@@ -1942,11 +1946,11 @@ class PolyElement(DomainElement, CantSympify, dict):
         ring = self.ring
         i = ring.index(x)
         x = ring.monomial_basis(i)
-        x = monomial_pow(x, m)
+        x = x**m
         g = ring.zero
         for expv, coeff in self.items():
             if expv[i]:
-                e = monomial_div(expv, x)
+                e = expv/x
                 for j in range(expv[i], expv[i] - m, -1):
                     coeff *= j
                 g[e] = coeff
@@ -1958,10 +1962,10 @@ class PolyElement(DomainElement, CantSympify, dict):
         ring = self.ring
         i = ring.index(x)
         x = ring.monomial_basis(i)
-        x = monomial_pow(x, m)
+        x = x**m
         g = ring.zero
         for expv, coeff in self.items():
-            e = monomial_mul(expv, x)
+            e = expv*x
             for j in range(expv[i] + m, expv[i], -1):
                 coeff /= j
             g[e] = coeff
@@ -2096,7 +2100,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 if n:
                     subpoly *= g**n
 
-            subpoly = subpoly.mul_term((tuple(monom), coeff))
+            subpoly = subpoly.mul_term((monom, coeff))
             poly += subpoly
 
         return poly

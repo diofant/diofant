@@ -1,8 +1,7 @@
 """Gröbner bases algorithms. """
 
 from ..core import Dummy
-from .monomials import (monomial_div, monomial_divides, monomial_lcm,
-                        monomial_mul)
+from .monomials import Monomial
 from .orderings import lex
 from .polyconfig import query
 
@@ -89,7 +88,7 @@ def buchberger(f, ring):
     def select(P):
         # normal selection strategy
         # select the pair with minimum LCM(LM(f), LM(g))
-        pr = min(P, key=lambda pair: order(monomial_lcm(f[pair[0]].LM, f[pair[1]].LM)))
+        pr = min(P, key=lambda pair: order(f[pair[0]].LM.lcm(f[pair[1]].LM)))
         return pr
 
     def normal(g, J):
@@ -119,15 +118,15 @@ def buchberger(f, ring):
             ig = C.pop()
             g = f[ig]
             mg = g.LM
-            LCMhg = monomial_lcm(mh, mg)
+            LCMhg = mh.lcm(mg)
 
             def lcm_divides(ip):
                 # LCM(LM(h), LM(p)) divides LCM(LM(h), LM(g))
-                m = monomial_lcm(mh, f[ip].LM)
-                return monomial_divides(m, LCMhg)
+                m = mh.lcm(f[ip].LM)
+                return m.divides(LCMhg)
 
             # HT(h) and HT(g) disjoint: mh*mg == LCMhg
-            if monomial_mul(mh, mg) == LCMhg or (
+            if mh*mg == LCMhg or (
                 not any(lcm_divides(ipx) for ipx in C) and
                     not any(lcm_divides(pr[1]) for pr in D)):
                 D.add((ih, ig))
@@ -138,9 +137,9 @@ def buchberger(f, ring):
             # select h, g from D (h the same as above)
             ih, ig = D.pop()
             mg = f[ig].LM
-            LCMhg = monomial_lcm(mh, mg)
+            LCMhg = mh.lcm(mg)
 
-            if not monomial_mul(mh, mg) == LCMhg:
+            if not mh*mg == LCMhg:
                 E.add((ih, ig))
 
         # filter old pairs
@@ -151,12 +150,10 @@ def buchberger(f, ring):
             ig1, ig2 = B.pop()
             mg1 = f[ig1].LM
             mg2 = f[ig2].LM
-            LCM12 = monomial_lcm(mg1, mg2)
+            LCM12 = mg1.lcm(mg2)
 
             # if HT(h) does not divide lcm(HT(g1), HT(g2))
-            if not monomial_divides(mh, LCM12) or \
-                monomial_lcm(mg1, mh) == LCM12 or \
-                    monomial_lcm(mg2, mh) == LCM12:
+            if not mh.divides(LCM12) or mg1.lcm(mh) == LCM12 or mg2.lcm(mh) == LCM12:
                 B_new.add((ig1, ig2))
 
         B_new |= E
@@ -168,7 +165,7 @@ def buchberger(f, ring):
             ig = G.pop()
             mg = f[ig].LM
 
-            if not monomial_divides(mh, mg):
+            if not mh.divides(mg):
                 G_new.add(ig)
 
         G_new.add(ih)
@@ -259,9 +256,9 @@ def spoly(p1, p2):
     """
     LM1 = p1.LM
     LM2 = p2.LM
-    LCM12 = monomial_lcm(LM1, LM2)
-    m1 = monomial_div(LCM12, LM1)
-    m2 = monomial_div(LCM12, LM2)
+    LCM12 = LM1.lcm(LM2)
+    m1 = LCM12/LM1
+    m2 = LCM12/LM2
     s1 = p1.mul_monom(m1)
     s2 = p2.mul_monom(m2)
     s = s1 - s2
@@ -334,7 +331,7 @@ def sig_mult(s, m):
     (m * t, i).
 
     """
-    return sig(monomial_mul(s[0], m), s[1])
+    return sig(Monomial(s[0])*m, s[1])
 
 # labeled polynomial functions
 
@@ -412,7 +409,7 @@ def critical_pair(f, g, ring):
 
     ltf = Polyn(f).LT
     ltg = Polyn(g).LT
-    lt = ring.from_terms([(monomial_lcm(ltf[0], ltg[0]), domain.one)])
+    lt = ring.from_terms([(Monomial(ltf[0]).lcm(ltg[0]), domain.one)])
 
     um = lt.quo_term(ltf).LT
     vm = lt.quo_term(ltg).LT
@@ -461,13 +458,13 @@ def is_rewritable_or_comparable(sign, num, B):
     for h in B:
         # comparable
         if sign[1] < Sign(h)[1]:
-            if monomial_divides(Polyn(h).LM, sign[0]):
+            if Polyn(h).LM.divides(sign[0]):
                 return True
 
         # rewritable
         if sign[1] == Sign(h)[1]:
             if num < Num(h):
-                if monomial_divides(Sign(h)[0], sign[0]):
+                if Monomial(Sign(h)[0]).divides(sign[0]):
                     return True
     return False
 
@@ -487,8 +484,8 @@ def f5_reduce(f, B):
 
     >>> R, x, y, z = ring("x y z", QQ, lex)
 
-    >>> f = lbp(sig((1, 1, 1), 4), x, 3)
-    >>> g = lbp(sig((0, 0, 0), 2), x, 2)
+    >>> f = lbp(sig(Monomial((1, 1, 1)), 4), x, 3)
+    >>> g = lbp(sig(Monomial((0, 0, 0)), 2), x, 2)
 
     >>> Polyn(f).div([Polyn(g)])[1]
     0
@@ -505,7 +502,7 @@ def f5_reduce(f, B):
         g = f
 
         for h in B:
-            if Polyn(h) and monomial_divides(Polyn(h).LM, Polyn(f).LM):
+            if Polyn(h) and Polyn(h).LM.divides(Polyn(f).LM):
                 t = Polyn(f).leading_term().quo_term(Polyn(h).LT).LT
                 if sig_cmp(sig_mult(Sign(h), t[0]), Sign(f), order) < 0:
                     # The following check need not be done and is in general slower than without.
@@ -670,7 +667,7 @@ def red_groebner(G, ring):
     while F:
         f0 = F.pop()
 
-        if not any(monomial_divides(f.LM, f0.LM) for f in F + H):
+        if not any(f.LM.divides(f0.LM) for f in F + H):
             H.append(f0)
 
     # Becker, Weispfenning, p. 217: H is Gröbner basis of the ideal generated by G.
@@ -701,7 +698,7 @@ def is_minimal(G, ring):
             return False
 
         for h in G[:i] + G[i + 1:]:
-            if monomial_divides(h.LM, g.LM):
+            if h.LM.divides(g.LM):
                 return False
 
     return True
@@ -733,7 +730,7 @@ def groebner_lcm(f, g):
         return ring.zero
 
     if len(f) <= 1 and len(g) <= 1:
-        monom = monomial_lcm(f.LM, g.LM)
+        monom = f.LM.lcm(g.LM)
         coeff = domain.lcm(f.LC, g.LC)
         return ring.term_new(monom, coeff)
 

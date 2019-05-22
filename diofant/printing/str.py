@@ -603,6 +603,13 @@ class StrPrinter(Printer):
     def _print_Tuple(self, expr):
         return self._print_tuple(expr)
 
+    def _print_Monomial(self, expr):
+        if expr.gens:
+            return "*".join(["%s**%s" % (gen, exp)
+                             for gen, exp in zip(expr.gens, expr)])
+        else:
+            return self._print_tuple(expr)
+
     def _print_Transpose(self, T):
         return "%s.T" % self.parenthesize(T.arg, PRECEDENCE["Pow"])
 

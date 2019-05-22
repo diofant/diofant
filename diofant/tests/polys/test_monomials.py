@@ -5,9 +5,7 @@ import functools
 import pytest
 
 from diofant.abc import a, b, c, x, y, z
-from diofant.polys.monomials import (Monomial, itermonomials, monomial_div,
-                                     monomial_divides, monomial_gcd,
-                                     monomial_lcm, monomial_mul, monomial_pow)
+from diofant.polys.monomials import Monomial, itermonomials
 
 
 __all__ = ()
@@ -31,35 +29,31 @@ def test_monomials():
                                              y**3, x*y, x*y**2, y*x**2}
 
 
-def test_monomial_mul():
-    assert monomial_mul((3, 4, 1), (1, 2, 0)) == (4, 6, 1)
+def test_monomial_ops():
+    m1 = Monomial((3, 4, 1))
+    assert m1*(1, 2, 0) == (4, 6, 1)
+    assert m1/(1, 2, 0) == (2, 2, 1)
+    assert m1**2 == (6, 8, 2)
 
-
-def test_monomial_div():
-    assert monomial_div((3, 4, 1), (1, 2, 0)) == (2, 2, 1)
-
-
-def test_monomial_pow():
-    assert monomial_pow((3, 4, 1), 2) == (6, 8, 2)
-
-
-def test_monomial_gcd():
-    assert monomial_gcd((3, 4, 1), (1, 2, 0)) == (1, 2, 0)
-    assert monomial_gcd((1, 4, 1), (3, 2, 0)) == (1, 2, 0)
-    assert functools.reduce(monomial_gcd, ((3, 4, 5), (0, 5, 1),
+    assert m1.gcd((1, 2, 0)) == (1, 2, 0)
+    m2 = Monomial((1, 4, 1))
+    assert m2.gcd((3, 2, 0)) == (1, 2, 0)
+    m3 = Monomial((3, 4, 5))
+    assert functools.reduce(Monomial.gcd, (m3, (0, 5, 1),
                                            (6, 3, 9))) == (0, 3, 1)
 
+    assert m1.lcm((1, 2, 0)) == (3, 4, 1)
+    m4 = Monomial((1, 4, 1))
+    assert m4.lcm((3, 2, 0)) == (3, 4, 1)
 
-def test_monomial_lcm():
-    assert monomial_lcm((3, 4, 1), (1, 2, 0)) == (3, 4, 1)
-    assert monomial_lcm((1, 4, 1), (3, 2, 0)) == (3, 4, 1)
+    m5 = Monomial((1, 2, 3))
+    assert m5.divides((4, 5, 6)) is True
+    assert m5.divides((0, 5, 6)) is False
+    m6 = Monomial((1, 2))
+    assert m6.divides((3, 4)) is True
+    assert m6.divides((0, 2)) is False
 
-
-def test_monomial_divides():
-    assert monomial_divides((1, 2, 3), (4, 5, 6)) is True
-    assert monomial_divides((1, 2, 3), (0, 5, 6)) is False
-    assert monomial_divides((1, 2), (3, 4)) is True
-    assert monomial_divides((1, 2), (0, 2)) is False
+    pytest.raises(TypeError, lambda: m6.divides(2*x))
 
 
 def test_Monomial():
@@ -75,10 +69,10 @@ def test_Monomial():
 
     pytest.raises(ValueError, lambda: l.as_expr())
 
-    assert m.exponents == (3, 4, 1)
+    assert tuple(m) == (3, 4, 1)
     assert m.gens == (x, y, z)
 
-    assert n.exponents == (1, 2, 0)
+    assert tuple(n) == (1, 2, 0)
     assert n.gens == (x, y, z)
 
     assert m == (3, 4, 1)
@@ -129,4 +123,4 @@ def test_Monomial():
     assert m/Monomial((5, 2, 0)) == (-2, 2, 1)
 
     assert str(m) == "x**3*y**4*z**1"
-    assert str(l) == "Monomial((3, 4, 1))"
+    assert str(l) == "(3, 4, 1)"

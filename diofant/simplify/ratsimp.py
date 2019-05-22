@@ -3,7 +3,7 @@ from itertools import combinations_with_replacement
 from ..core import Add, Dummy, Rational, symbols
 from ..polys import (ComputationFailed, Poly, cancel, parallel_poly_from_expr,
                      reduced)
-from ..polys.monomials import Monomial, monomial_divides
+from ..polys.monomials import Monomial
 from ..utilities.misc import debug
 
 
@@ -87,7 +87,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
             m = [0]*len(opt.gens)
             for i in mi:
                 m[i] += 1
-            if all(not monomial_divides(lmg, m) for lmg in leading_monomials):
+            if all(not lmg.divides(m) for lmg in leading_monomials):
                 S.append(m)
 
         return [Monomial(s).as_expr(*opt.gens) for s in S] + staircase(n - 1)
