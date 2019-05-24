@@ -1498,9 +1498,8 @@ def _primitive_in_x0(f):
 
     """
     fring = f.ring
-    ring = fring.drop_to_ground(*range(1, fring.ngens))
-    dom = ring.domain.ring
-    f_ = ring(f.as_expr())
+    f_ = f.drop_to_ground(*range(1, fring.ngens))
+    dom = f_.ring.domain.ring
     cont = dom.zero
 
     for coeff in f_.values():
