@@ -266,13 +266,14 @@ def test_pmint_besselj():
     assert simplify(heurisch(f, x) - g) == 0
 
 
+@pytest.mark.timeout(800)
 @pytest.mark.slow
 def test_pmint_WrightOmega():
     def omega(x):
         return LambertW(exp(x))
 
     f = (1 + omega(x) * (2 + cos(omega(x)) * (x + omega(x))))/(1 + omega(x))/(x + omega(x))
-    g = log(x + LambertW(exp(x))) + sin(LambertW(exp(x)))
+    g = log(x + omega(x)) + sin(omega(x))
 
     assert heurisch(f, x) == g
 
