@@ -386,3 +386,7 @@ documentation it is scarce. Please contribute!
 
 .. automodule:: diofant.polys.polyerrors
     :members:
+
+.. currentmodule:: diofant.polys.fields
+.. autoclass:: FracElement
+    :members:
