@@ -1635,11 +1635,11 @@ class LatexPrinter(Printer):
         return poly.str(self, PRECEDENCE, "{%s}^{%d}", mul_symbol)
 
     def _print_FracElement(self, frac):
-        if frac.denom == 1:
-            return self._print(frac.numer)
+        if frac.denominator == 1:
+            return self._print(frac.numerator)
         else:
-            numer = self._print(frac.numer)
-            denom = self._print(frac.denom)
+            numer = self._print(frac.numerator)
+            denom = self._print(frac.denominator)
             return r"\frac{%s}{%s}" % (numer, denom)
 
     def _print_euler(self, expr):

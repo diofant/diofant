@@ -1134,7 +1134,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
             den = den.set_domain(domp)
 
             for coeff in h.values():
-                coeff = coeff.denom.set_domain(domp)
+                coeff = coeff.denominator.set_domain(domp)
                 den = den.lcm(coeff)
 
             den = den.set_ring(dom.ring)
@@ -1148,7 +1148,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
 
             for coeff in h.values():
                 for c in coeff.values():
-                    c = c.denom.set_domain(domp)
+                    c = c.denominator.set_domain(domp)
                     den = den.lcm(c)
 
             den = den.set_ring(dom.ring)

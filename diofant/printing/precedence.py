@@ -91,8 +91,8 @@ def precedence_PolyElement(item):
 
 
 def precedence_FracElement(item):
-    if item.denom == 1:
-        return precedence_PolyElement(item.numer)
+    if item.denominator == 1:
+        return precedence_PolyElement(item.numerator)
     else:
         return PRECEDENCE["Mul"]
 
