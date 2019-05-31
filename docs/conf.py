@@ -122,6 +122,7 @@ html_show_sphinx = False
 # Paths to the logo and favicon.ico, relative to the conf.py's directory.
 html_logo = '_static/logo.svg'
 html_favicon = '_static/favicon.ico'
+latex_logo = '_static/logo.png'
 
 # Theme-specific options.
 html_theme_options = {
