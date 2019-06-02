@@ -2707,7 +2707,7 @@ class MatrixBase(DefaultPrinting):
                 if j == pivot:
                     continue
                 scale = r[j, i]
-                r.zip_row_op(j, pivot, lambda x, y: x - scale*y)
+                r.zip_row_op(j, pivot, lambda x, y: x - y*scale)
             pivotlist.append(i)
             pivot += 1
         return self._new(r), pivotlist
