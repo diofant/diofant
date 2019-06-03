@@ -997,7 +997,7 @@ def test_dup_isolate_complex_roots_sqf():
     pytest.raises(DomainError, lambda: R.dup_isolate_complex_roots_sqf(x))
 
 
-@pytest.mark.timeout(40)
+@pytest.mark.timeout(60)
 @pytest.mark.skipif(ZZ.dtype is int, reason="gmpy2 is not used")
 def test_dup_isolate_complex_roots_sqf_2():
     R, x = ring("x", ZZ)
