@@ -56,7 +56,7 @@ def heugcd(f, g):
 
     x = max(min(B, 99*domain.sqrt(B)),
             2*min(f_norm // abs(f.LC),
-                  g_norm // abs(g.LC)) + 2)
+                  g_norm // abs(g.LC)) + 4)
 
     cofactors = domain.cofactors if ring.is_univariate else heugcd
 
