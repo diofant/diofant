@@ -3266,8 +3266,9 @@ def test_sympyissue_8754():
     z = 0.0001*(x*(x + (4.0*y))) + 0.0001*(y*(x + (4.0*y)))
     w = expand(z)
     v = factor(w)
-    assert v == Mul(Float('10000.0'), Float('0.0001')*x + Float('0.0001')*y,
-                    Float('0.0001')*x + Float('0.00040000000000000002', 15)*y,
+    assert v == Mul(Float('10000.0', 15),
+                    Float('0.0001', 15)*x + Float('0.0001', 15)*y,
+                    Float('0.0001', 15)*x + Float('0.00040000000000000002', 15)*y,
                     evaluate=False)
     assert expand(v) == w
 

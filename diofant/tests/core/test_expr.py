@@ -1545,12 +1545,12 @@ def test_round():
 
     assert Integer(0).round() == 0
 
-    a = (Add(1, Float('1.' + '9'*27, ''), evaluate=0))
-    assert a.round(10) == Float('3.0000000000', '')
-    assert a.round(25) == Float('3.0000000000000000000000000', '')
-    assert a.round(26) == Float('3.00000000000000000000000000', '')
-    assert a.round(27) == Float('2.999999999999999999999999999', '')
-    assert a.round(30) == Float('2.999999999999999999999999999', '')
+    a = (Add(1, Float('1.' + '9'*27), evaluate=0))
+    assert a.round(10) == Float('3.0000000000')
+    assert a.round(25) == Float('3.0000000000000000000000000')
+    assert a.round(26) == Float('3.00000000000000000000000000')
+    assert a.round(27) == Float('2.999999999999999999999999999')
+    assert a.round(30) == Float('2.999999999999999999999999999')
 
     pytest.raises(TypeError, lambda: x.round())
 
@@ -1572,7 +1572,7 @@ def test_round():
     assert (pi/10 + E*I).round(2) == Float(0.31, 2) + I*Float(2.72, 3)
 
     # issue sympy/sympy#6914
-    assert (I**(I + 3)).round(3) == Float('-0.208', '')*I
+    assert (I**(I + 3)).round(3) == Float('-0.208')*I
 
     # issue sympy/sympy#8720
     assert Float(-123.6).round() == -124.
