@@ -28,6 +28,8 @@ _default_config = {
     'GF_IRRED_METHOD':            'rabin',
     'GF_FACTOR_METHOD':           'zassenhaus',
 
+    'AA_FACTOR_METHOD':           'trager',
+
     'GROEBNER':                   'buchberger',
     'MINPOLY_METHOD':             'compose',
 

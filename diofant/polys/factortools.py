@@ -1044,6 +1044,9 @@ def dmp_gf_factor(f, u, K):
         return lc, factors
 
 
+_factor_aa_methods = {'trager': dmp_ext_factor}
+
+
 def dmp_factor_list(f, u, K0):
     """Factor polynomials into irreducibles in `K[X]`."""
     J, f = dmp_terms_gcd(f, u, K0)
@@ -1052,7 +1055,8 @@ def dmp_factor_list(f, u, K0):
     if K0.is_FiniteField:
         coeff, factors = dmp_gf_factor(f, u, K0)
     elif K0.is_AlgebraicField:
-        coeff, factors = dmp_ext_factor(f, u, K0)
+        method = _factor_aa_methods[query('AA_FACTOR_METHOD')]
+        coeff, factors = method(f, u, K0)
     else:
         if not K0.is_Exact:
             K0_inexact, K0 = K0, K0.get_exact()

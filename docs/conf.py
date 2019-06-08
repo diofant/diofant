@@ -125,6 +125,12 @@ html_theme_options = {
     'display_version': False,
 }
 
+mathjax_config = {
+    'CommonHTML': {'linebreaks': {'automatic': True}},
+    'HTML-CSS': {'linebreaks': {'automatic': True}},
+    'SVG': {'linebreaks': {'automatic': True}},
+}
+
 
 # https://docs.readthedocs.io/en/latest/guides/adding-custom-css.html
 def setup(app):
