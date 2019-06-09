@@ -64,8 +64,9 @@ matrix:
         - git clone https://github.com/diofant/diofant.github.io.git sphinx_docs
         - rm -rf sphinx_docs/.git
         - rsync -a --delete build/sphinx/html/ sphinx_docs/en/latest/
+        - python setup.py sdist bdist_wheel
         - VERSION=$(python -c 'import diofant;print(diofant.__version__)')
-        - mkdir gdist
+        - cp -a dist gdist
         - cp -a build/sphinx/html diofant-docs-html-${VERSION}
         - zip -r gdist/diofant-docs-html-${VERSION}.zip diofant-docs-html-${VERSION}
         - cp -a build/sphinx/latex/diofant.pdf gdist/diofant-docs-${VERSION}.pdf
@@ -96,9 +97,7 @@ matrix:
           skip_cleanup: true
           draft: true
           file_glob: true
-          file:
-            - dist/*
-            - gdist/*
+          file: gdist/*
           name: "Diofant ${VERSION}"
           body: "See [release notes](https://diofant.readthedocs.io/\
                  en/latest/release/notes-${SHORT_VERSION}.html)."
