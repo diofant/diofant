@@ -57,7 +57,7 @@ matrix:
         - travis_wait py.test diofant/tests/polys
     - stage: deploy
       env:
-        - SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
+        -
       script:
         - python setup.py build_sphinx -W -b html,latex
         - make -C build/sphinx/latex all-pdf
