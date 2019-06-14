@@ -255,6 +255,9 @@ class MpmathPrinter(LambdaPrinter):
         args = str(tuple(map(int, e._mpf_)))
         return 'mpf(%s)' % args
 
+    def _print_GoldenRatio(self, expr):
+        return "phi"
+
 
 def lambdarepr(expr, **settings):
     """

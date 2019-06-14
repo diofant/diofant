@@ -1,9 +1,15 @@
-from diofant import QQ, RootOf, Sum, oo
+from diofant import QQ, GoldenRatio, RootOf, Sum, oo
 from diofant.abc import n, x
 from diofant.printing.lambdarepr import MpmathPrinter
 
 
 __all__ = ()
+
+
+def test_basic():
+    p = MpmathPrinter()
+
+    assert p.doprint(GoldenRatio) == "phi"
 
 
 def test_RootOf():
