@@ -6,17 +6,15 @@ from diofant.polys import polyconfig as config
 from diofant.polys.galoistools import (gf_add, gf_add_ground, gf_berlekamp,
                                        gf_compose_mod, gf_ddf_shoup,
                                        gf_ddf_zassenhaus, gf_div, gf_edf_shoup,
-                                       gf_edf_zassenhaus, gf_exquo,
-                                       gf_factor_sqf, gf_frobenius_map,
+                                       gf_edf_zassenhaus, gf_factor_sqf,
+                                       gf_frobenius_map,
                                        gf_frobenius_monomial_base,
                                        gf_from_dict, gf_gcd, gf_irred_p_ben_or,
                                        gf_irred_p_rabin, gf_irreducible,
                                        gf_irreducible_p, gf_monic, gf_mul,
-                                       gf_mul_ground, gf_neg, gf_pow_mod,
-                                       gf_Qbasis, gf_Qmatrix, gf_quo, gf_rem,
-                                       gf_sqr, gf_sub, gf_sub_ground,
-                                       gf_trace_map)
-from diofant.polys.polyerrors import ExactQuotientFailed
+                                       gf_mul_ground, gf_pow_mod, gf_Qbasis,
+                                       gf_Qmatrix, gf_quo, gf_rem, gf_sqr,
+                                       gf_sub, gf_sub_ground, gf_trace_map)
 
 
 __all__ = ()
@@ -45,10 +43,6 @@ def test_gf_monic():
 
 
 def test_gf_arith():
-    assert gf_neg([], 11, ZZ) == []
-    assert gf_neg([1], 11, ZZ) == [10]
-    assert gf_neg([1, 2, 3], 11, ZZ) == [10, 9, 8]
-
     assert gf_add_ground([], 0, 11, ZZ) == []
     assert gf_sub_ground([], 0, 11, ZZ) == []
 
@@ -136,14 +130,6 @@ def test_gf_division():
     assert gf_rem(f, g, 7, ZZ) == r
     assert gf_quo(f, g, 7, ZZ) == q
 
-    pytest.raises(ExactQuotientFailed, lambda: gf_exquo(f, g, 7, ZZ))
-
-    f = [1, 0, 3, 2, 3]
-    g = [2, 2, 2]
-    q = [3, 2, 4]
-
-    assert gf_exquo(f, g, 5, ZZ) == q
-
     f = [5, 4, 3, 2, 1, 0]
     g = [1, 2, 3, 0]
     q = [5, 1, 0]
@@ -152,8 +138,6 @@ def test_gf_division():
     assert gf_div(f, g, 7, ZZ) == (q, r)
     assert gf_rem(f, g, 7, ZZ) == r
     assert gf_quo(f, g, 7, ZZ) == q
-
-    pytest.raises(ExactQuotientFailed, lambda: gf_exquo(f, g, 7, ZZ))
 
     assert gf_quo([1, 2, 1], [1, 1], 11, ZZ) == [1, 1]
 
