@@ -4,11 +4,12 @@ from ..core import Symbol, Tuple
 from ..core.compatibility import iterable
 
 
-__all__ = ("lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex")
+__all__ = ("lex", "grlex", "grevlex", "ilex", "igrlex", "igrevlex",
+           "LexOrder", "GradedLexOrder", "ReversedGradedLexOrder")
 
 
 class MonomialOrder:
-    """Base class for monomial orderings. """
+    """Base class for monomial orderings."""
 
     alias = None
     is_global = None
@@ -18,7 +19,7 @@ class MonomialOrder:
         return self.alias
 
     def __call__(self, monomial):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def __eq__(self, other):
         return self.__class__ == other.__class__
@@ -31,7 +32,7 @@ class MonomialOrder:
 
 
 class LexOrder(MonomialOrder):
-    """Lexicographic order of monomials. """
+    """Lexicographic order of monomials."""
 
     alias = 'lex'
     is_global = True
@@ -42,7 +43,7 @@ class LexOrder(MonomialOrder):
 
 
 class GradedLexOrder(MonomialOrder):
-    """Graded lexicographic order of monomials. """
+    """Graded lexicographic order of monomials."""
 
     alias = 'grlex'
     is_global = True
@@ -52,7 +53,7 @@ class GradedLexOrder(MonomialOrder):
 
 
 class ReversedGradedLexOrder(MonomialOrder):
-    """Reversed graded lexicographic order of monomials. """
+    """Reversed graded lexicographic order of monomials."""
 
     alias = 'grevlex'
     is_global = True
@@ -85,8 +86,7 @@ class ProductOrder(MonomialOrder):
 
     >>> P = ProductOrder(
     ...     (lex, lambda m: m[:2]), # lex order on x_1 and x_2 of monomial
-    ...     (grlex, lambda m: m[2:]) # grlex on y_1, y_2, y_3
-    ... )
+    ...     (grlex, lambda m: m[2:]))  # grlex on y_1, y_2, y_3
     >>> P((2, 1, 1, 0, 0)) > P((1, 10, 0, 2, 0))
     True
 
@@ -102,6 +102,7 @@ class ProductOrder(MonomialOrder):
     `y_1, y_2, y_3` is used to decide the ordering. In this case the monomial
     `y_2^2` is ordered larger than `y_1`, since for the grlex order the degree
     of the monomial is most important.
+
     """
 
     def __init__(self, *args):
@@ -127,7 +128,6 @@ class ProductOrder(MonomialOrder):
             return True
         if all(o.is_global is False for o, _ in self.args):
             return False
-        return
 
 
 class InverseOrder(MonomialOrder):
@@ -146,6 +146,7 @@ class InverseOrder(MonomialOrder):
     >>> ilex = InverseOrder(lex)
     >>> ilex([5]) < ilex([0])
     True
+
     """
 
     def __init__(self, O):
@@ -213,6 +214,7 @@ def monomial_key(order=None, gens=None):
 
     If the ``gens`` input argument contains a list of generators, the
     resulting key function can be used to sort Diofant ``Expr`` objects.
+
     """
     if order is None:
         order = lex
@@ -262,11 +264,10 @@ def build_product_order(arg, gens):
 
     For example, build a product of two grlex orders:
 
-    >>> from diofant.abc import t
-
     >>> O = build_product_order((("grlex", x, y), ("grlex", z, t)), [x, y, z, t])
     >>> O((1, 2, 3, 4))
     ((3, (1, 2)), (7, (3, 4)))
+
     """
     gens2idx = {}
     for i, g in enumerate(gens):

@@ -7,6 +7,7 @@ See Also
 ========
 
 diofant.plotting.plot
+
 """
 
 from ..core import Dummy, Eq, Symbol, Tuple, sympify
@@ -20,14 +21,14 @@ from .plot import BaseSeries, Plot
 
 
 class ImplicitSeries(BaseSeries):
-    """ Representation for Implicit plot """
+    """Representation for Implicit plot."""
 
     is_implicit = True
 
     def __init__(self, expr, var_start_end_x, var_start_end_y,
                  has_equality, use_interval_math, depth, nb_of_points,
                  line_color):
-        super(ImplicitSeries, self).__init__()
+        super().__init__()
         self.expr = sympify(expr)
         self.var_x = sympify(var_start_end_x[0])
         self.start_x = float(var_start_end_x[1])
@@ -53,6 +54,7 @@ class ImplicitSeries(BaseSeries):
 
         In the case of equality, ``contour`` function of matplotlib can
         be used. In other cases, matplotlib's ``contourf`` is used.
+
         """
         equal = False
         if isinstance(self.expr, Equality):
@@ -176,6 +178,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
 
     >>> p8 = plot_implicit(y - 1, y_var=y)
     >>> p9 = plot_implicit(x - 1, x_var=x)
+
     """
 
     # Represents whether the expression contains an Equality,
@@ -183,9 +186,7 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     has_equality = False
 
     def arg_expand(bool_expr):
-        """
-        Recursively expands the arguments of an Boolean Function
-        """
+        """Recursively expands the arguments of an Boolean Function."""
         for arg in bool_expr.args:
             if isinstance(arg, BooleanFunction):
                 arg_expand(arg)

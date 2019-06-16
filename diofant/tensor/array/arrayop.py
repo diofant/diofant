@@ -2,7 +2,7 @@ import collections
 import itertools
 
 from ...combinatorics import Permutation
-from ...core import S, Tuple, diff
+from ...core import Integer, Tuple, diff
 from ...matrices import MatrixBase
 from .dense_ndim_array import ImmutableDenseNDimArray
 from .ndim_array import NDimArray
@@ -23,8 +23,6 @@ def tensorproduct(*args):
     Examples
     ========
 
-    >>> from diofant.tensor.array import Array
-    >>> from diofant.abc import t
     >>> A = Array([[1, 2], [3, 4]])
     >>> B = Array([x, y])
     >>> tensorproduct(A, B)
@@ -43,9 +41,10 @@ def tensorproduct(*args):
     [[[[x, y], [z, t]], [[0, 0], [0, 0]], [[0, 0], [0, 0]]],
      [[[0, 0], [0, 0]], [[x, y], [z, t]], [[0, 0], [0, 0]]],
      [[[0, 0], [0, 0]], [[0, 0], [0, 0]], [[x, y], [z, t]]]]
+
     """
     if len(args) == 0:
-        return S.One
+        return Integer(1)
     if len(args) == 1:
         return _arrayfy(args[0])
     if len(args) > 2:
@@ -71,7 +70,6 @@ def tensorcontraction(array, *contraction_axes):
     Examples
     ========
 
-    >>> from diofant.tensor.array import Array
     >>> tensorcontraction(eye(3), (0, 1))
     3
     >>> A = Array(range(18), (3, 2, 3))
@@ -84,7 +82,7 @@ def tensorcontraction(array, *contraction_axes):
     Matrix multiplication may be emulated with a proper combination of
     ``tensorcontraction`` and ``tensorproduct``
 
-    >>> from diofant.abc import a, b, c, d, e, f, g, h
+    >>> from diofant.abc import e, f, g, h
     >>> m1 = Matrix([[a, b], [c, d]])
     >>> m2 = Matrix([[e, f], [g, h]])
     >>> p = tensorproduct(m1, m2)
@@ -97,13 +95,14 @@ def tensorcontraction(array, *contraction_axes):
     Matrix([
     [a*e + b*g, a*f + b*h],
     [c*e + d*g, c*f + d*h]])
+
     """
     array = _arrayfy(array)
 
     # Verify contraction_axes:
     taken_dims = set()
     for axes_group in contraction_axes:
-        if not isinstance(axes_group, collections.Iterable):
+        if not isinstance(axes_group, collections.abc.Iterable):
             raise ValueError("collections of contraction axes expected")
 
         dim = array.shape[axes_group[0]]
@@ -153,7 +152,7 @@ def tensorcontraction(array, *contraction_axes):
     contracted_array = []
     for icontrib in itertools.product(*remaining_indices):
         index_base_position = sum(icontrib)
-        isum = S.Zero
+        isum = Integer(0)
         for sum_to_index in itertools.product(*summed_deltas):
             isum += array[index_base_position + sum(sum_to_index)]
 
@@ -178,7 +177,6 @@ def derive_by_array(expr, dx):
     Examples
     ========
 
-    >>> from diofant.abc import t
     >>> derive_by_array(cos(x*t), x)
     -t*sin(t*x)
     >>> derive_by_array(cos(x*t), [x, y, z, t])
@@ -187,7 +185,7 @@ def derive_by_array(expr, dx):
     [[[1, 0], [0, 2*y*z]], [[0, y**2], [0, 0]]]
 
     """
-    array_types = (collections.Iterable, MatrixBase, NDimArray)
+    array_types = (collections.abc.Iterable, MatrixBase, NDimArray)
 
     if isinstance(dx, array_types):
         dx = ImmutableDenseNDimArray(dx)
@@ -215,8 +213,6 @@ def permutedims(expr, perm):
     Examples
     ========
 
-    >>> from diofant.abc import t
-    >>> from diofant.tensor.array import Array
     >>> a = Array([[x, y, z], [t, sin(x), 0]])
     >>> a
     [[x, y, z], [t, sin(x), 0]]
@@ -240,6 +236,7 @@ def permutedims(expr, perm):
 
     >>> permutedims(b, Permutation([1, 2, 0]))
     [[[1, 5], [2, 6]], [[3, 7], [4, 8]]]
+
     """
     if not isinstance(expr, NDimArray):
         raise TypeError("expression has to be an N-dim array")

@@ -1,5 +1,6 @@
-from ..core import Basic, Dict, Expr, Integer, S, Tuple, sympify
+from ..core import Basic, Dict, Expr, Integer, Tuple, sympify
 from ..core.sympify import converter as sympify_converter
+from ..logic import false
 from .dense import DenseMatrix
 from .expressions import MatrixExpr
 from .matrices import MatrixBase
@@ -28,6 +29,7 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
     Traceback (most recent call last):
     ...
     TypeError: Cannot set values of ImmutableDenseMatrix
+
     """
 
     _class_priority = 8
@@ -72,7 +74,7 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
 
         """
         if not hasattr(other, 'shape') or self.shape != other.shape:
-            return S.false
+            return false
         if isinstance(other, MatrixExpr) and not isinstance(
                 other, ImmutableMatrix):
             return
@@ -137,6 +139,7 @@ class ImmutableSparseMatrix(Basic, SparseMatrixBase):
     TypeError: Cannot set values of ImmutableSparseMatrix
     >>> _.shape
     (3, 3)
+
     """
 
     _class_priority = 9

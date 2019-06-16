@@ -2,7 +2,7 @@ r"""
 The Gruntz Algorithm
 ====================
 
-This section explains the basics of the algorithm [1]_ used for computing
+This section explains the basics of the algorithm :cite:`Gruntz1996limits` used for computing
 limits.  Most of the time the :py:func:`~diofant.series.limits.limit` function
 should just work.  However it is still useful to keep in mind how it is
 implemented in case something does not work as expected.
@@ -54,20 +54,15 @@ computing `\lim_{x \to \infty} f(x)`:
 
 Notes
 -----
-
 This exposition glossed over several details.  For example, limits could be
-computed recursively (steps 1 and 4).  Please address to the Gruntz thesis [1]_
+computed recursively (steps 1 and 4).  Please address to the Gruntz thesis :cite:`Gruntz1996limits`
 for proof of the termination (pp. 52-60).
 
-References
-----------
-
-.. [1] `Gruntz Thesis <http://www.cybertester.com/data/gruntz.pdf>`_
 """
 
 from functools import reduce
 
-from ..core import Add, Dummy, E, Float, Mul, S, cacheit, evaluate, oo
+from ..core import Add, Dummy, E, Float, Integer, Mul, cacheit, evaluate, oo
 from ..core.compatibility import ordered
 from ..functions import Abs, exp, log
 from ..functions import sign as sgn
@@ -98,6 +93,7 @@ def compare(a, b, x):
     -1
     >>> compare(exp(x), x**5, x)
     1
+
     """
     # The log(exp(...)) must always be simplified here for termination.
     la = a.exp if a.is_Pow and a.base is E else log(a)
@@ -125,6 +121,7 @@ def mrv(e, x):
     {x}
     >>> mrv(exp(x + exp(-x)), x)
     {E**(-x), E**(x + E**(-x))}
+
     """
     if not e.has(x):
         return set()
@@ -177,6 +174,7 @@ def sign(e, x):
 
         The result of this function is currently undefined if `e` changes
         sign arbitrarily often at infinity (e.g. `\sin(x)`).
+
     """
     if not e.has(x):
         return sgn(e).simplify()
@@ -208,6 +206,7 @@ def limitinf(e, x):
     -1
     >>> limitinf(x/log(x**(log(x**(log(2)/log(x))))), x)
     oo
+
     """
     assert x.is_real and x.is_positive
     assert not e.has(Float)
@@ -232,7 +231,7 @@ def limitinf(e, x):
     c0, e0 = mrv_leadterm(e, x)
     sig = sign(e0, x)
     if sig == 1:
-        return S.Zero
+        return Integer(0)
     elif sig == -1:
         s = sign(c0, x)
         assert s != 0
@@ -263,9 +262,10 @@ def mrv_leadterm(e, x):
 
     >>> mrv_leadterm(1/exp(-x + exp(-x)) - exp(x), x)
     (-1, 0)
+
     """
     if not e.has(x):
-        return e, S.Zero
+        return e, Integer(0)
 
     e = e.replace(lambda f: f.is_Pow and f.exp.has(x),
                   lambda f: exp(log(f.base)*f.exp))
@@ -319,6 +319,7 @@ def rewrite(e, x, w):
     (1/m, -x)
     >>> rewrite(exp(x)*log(log(exp(x))), x, m)
     (log(x)/m, -x)
+
     """
     Omega = mrv(e, x)
     if not Omega:

@@ -1,16 +1,15 @@
 """Implementation of :class:`Field` class. """
 
-from ..polys.polyerrors import NotReversible
 from .ring import Ring
 
 
-__all__ = ('Field',)
+__all__ = 'Field',
 
 
 class Field(Ring):
     """Represents a field domain. """
 
-    has_Field = True
+    is_Field = True
 
     @property
     def ring(self):
@@ -81,10 +80,3 @@ class Field(Ring):
         q = ring.gcd(a.denominator, b.denominator)
 
         return self.convert(p, ring)/q
-
-    def revert(self, a):
-        """Returns ``a**(-1)`` if possible. """
-        if a:
-            return 1/a
-        else:
-            raise NotReversible('zero is not reversible')

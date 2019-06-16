@@ -4,12 +4,10 @@ import string
 
 from ..logic.boolalg import Boolean
 from .assumptions import StdFactKB
-from .basic import Basic
 from .cache import cacheit
 from .expr import AtomicExpr, Expr
-from .function import FunctionClass
 from .logic import fuzzy_bool
-from .singleton import S
+from .numbers import Integer
 from .sympify import sympify
 
 
@@ -59,7 +57,8 @@ class BaseSymbol(AtomicExpr, Boolean):
     References
     ==========
 
-    .. [1] https://docs.python.org/3/reference/datamodel.html#object.__lt__
+    * https://docs.python.org/3/reference/datamodel.html#object.__lt__
+
     """
 
     is_comparable = False
@@ -76,12 +75,14 @@ class BaseSymbol(AtomicExpr, Boolean):
             >>> x = Symbol('x')
             >>> x._diff_wrt
             True
+
         """
         return True
 
     @staticmethod
     def _sanitize(assumptions, obj=None):
         """Remove None, covert values to bool, check commutativity *in place*.
+
         """
 
         # be strict about commutativity: cannot be None
@@ -160,7 +161,7 @@ class BaseSymbol(AtomicExpr, Boolean):
     @cacheit
     def sort_key(self, order=None):
         """Return a sort key."""
-        return self.class_key(), (1, (str(self),)), S.One.sort_key(), S.One
+        return self.class_key(), (1, (str(self),)), Integer(1).sort_key(), Integer(1)
 
     def as_dummy(self):
         """Return a Dummy having the same name and same assumptions as self."""
@@ -173,6 +174,7 @@ class BaseSymbol(AtomicExpr, Boolean):
         ========
 
         diofant.core.expr.Expr.is_constant
+
         """
         if not wrt:
             return False
@@ -186,6 +188,7 @@ class BaseSymbol(AtomicExpr, Boolean):
         ========
 
         diofant.core.basic.Basic.free_symbols
+
         """
         return {self}
 
@@ -225,6 +228,7 @@ class Symbol(BaseSymbol):
     :mod:`diofant.core.assumptions`
     Dummy
     Wild
+
     """
 
     pass
@@ -247,6 +251,7 @@ class Dummy(BaseSymbol):
     ========
 
     Symbol
+
     """
 
     _count = 0
@@ -276,7 +281,7 @@ class Dummy(BaseSymbol):
     def sort_key(self, order=None):
         """Return a sort key."""
         return self.class_key(), (
-            2, (str(self), self.dummy_index)), S.One.sort_key(), S.One
+            2, (str(self), self.dummy_index)), Integer(1).sort_key(), Integer(1)
 
     def _hashable_content(self):
         return BaseSymbol._hashable_content(self) + (self.dummy_index,)
@@ -348,6 +353,7 @@ class Wild(BaseSymbol):
     ========
 
     Symbol
+
     """
 
     is_Wild = True
@@ -370,7 +376,7 @@ class Wild(BaseSymbol):
         return obj
 
     def _hashable_content(self):
-        return super(Wild, self)._hashable_content() + (self.exclude, self.properties)
+        return super()._hashable_content() + (self.exclude, self.properties)
 
     # TODO add check against another Wild
     def _matches(self, expr, repl_dict={}):
@@ -380,6 +386,7 @@ class Wild(BaseSymbol):
         ========
 
         diofant.core.basic.Basic.matches
+
         """
         if any(expr.has(x) for x in self.exclude):
             return
@@ -504,6 +511,7 @@ def symbols(names, **args):
 
         >>> type(_[0])
         <class 'diofant.core.function.UndefinedFunction'>
+
     """
     result = []
 
@@ -627,30 +635,13 @@ def var(names, **args):
     ========
 
     symbols
+
     """
-    def traverse(symbols, frame):
-        """Recursively inject symbols to the global namespace. """
-        for symbol in symbols:
-            if isinstance(symbol, Basic):
-                frame.f_globals[symbol.name] = symbol
-            elif isinstance(symbol, FunctionClass):
-                frame.f_globals[symbol.__name__] = symbol
-            else:
-                traverse(symbol, frame)
+    from ..utilities import flatten
+    from ..utilities.magic import pollute
 
-    from inspect import currentframe
-    frame = currentframe().f_back
+    ret = symbols(names, **args)
+    syms = flatten([ret])
+    pollute([str(_) for _ in syms], syms)
 
-    try:
-        syms = symbols(names, **args)
-
-        if isinstance(syms, Basic):
-            frame.f_globals[syms.name] = syms
-        elif isinstance(syms, FunctionClass):
-            frame.f_globals[syms.__name__] = syms
-        else:
-            traverse(syms, frame)
-    finally:
-        del frame  # break cyclic dependencies as stated in inspect docs
-
-    return syms
+    return ret

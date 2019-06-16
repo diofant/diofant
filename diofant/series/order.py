@@ -1,4 +1,4 @@
-from ..core import (Add, Dummy, Expr, Mul, S, Symbol, Tuple, cacheit,
+from ..core import (Add, Dummy, Expr, Integer, Mul, Symbol, Tuple, cacheit,
                     expand_log, expand_power_base, nan, oo, sympify)
 from ..core.compatibility import default_sort_key, is_sequence
 from ..utilities.iterables import uniq
@@ -7,7 +7,7 @@ from ..utilities.iterables import uniq
 class Order(Expr):
     r"""Represents the limiting behavior of function.
 
-    The formal definition [1]_ for order symbol `O(f(x))` (Big O) is
+    The formal definition for order symbol `O(f(x))` (Big O) is
     that `g(x) \in O(f(x))` as `x\to a` iff
 
     .. math:: \lim\limits_{x \rightarrow a} \sup
@@ -81,7 +81,8 @@ class Order(Expr):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Big_O_notation
+    * https://en.wikipedia.org/wiki/Big_O_notation
+
     """
 
     is_Order = True
@@ -96,7 +97,7 @@ class Order(Expr):
                 point = expr.point
             else:
                 variables = list(expr.free_symbols)
-                point = [S.Zero]*len(variables)
+                point = [Integer(0)]*len(variables)
         else:
             args = list(args if is_sequence(args) else [args])
             variables, point = [], []
@@ -107,7 +108,7 @@ class Order(Expr):
                     point.append(p)
             else:
                 variables = list(map(sympify, args))
-                point = [S.Zero]*len(variables)
+                point = [Integer(0)]*len(variables)
 
         if not all(isinstance(v, (Dummy, Symbol)) for v in variables):
             raise TypeError('Variables are not symbols, got %s' % variables)
@@ -144,7 +145,7 @@ class Order(Expr):
             if point[0] in [oo, -oo]:
                 s = {k: 1/Dummy() for k in variables}
                 rs = {1/v: 1/k for k, v in s.items()}
-            elif point[0] is not S.Zero:
+            elif point[0] != 0:
                 s = {k: Dummy() + point[0] for k in variables}
                 rs = {v - point[0]: k - point[0] for k, v in s.items()}
             else:
@@ -200,7 +201,7 @@ class Order(Expr):
                                 b, r = b.args
                                 if b in (x, -x) and r.is_extended_real:
                                     margs[i] = x**(r*q)
-                            elif b.is_Mul and b.args[0] is S.NegativeOne:
+                            elif b.is_Mul and b.args[0] == -1:
                                 b = -b
                                 if b.is_Pow and not b.exp.has(x):
                                     b, r = b.args
@@ -211,14 +212,14 @@ class Order(Expr):
 
             expr = expr.subs(rs)
 
-        if expr is S.Zero:
+        if expr == 0:
             return expr
 
         if expr.is_Order:
             expr = expr.expr
 
         if not expr.has(*variables):
-            expr = S.One
+            expr = Integer(1)
 
         # create Order instance:
         vp = dict(zip(variables, point))
@@ -279,7 +280,7 @@ class Order(Expr):
         return self.expr, tuple(order_symbols)
 
     def removeO(self):
-        return S.Zero
+        return Integer(0)
 
     def getO(self):
         return self
@@ -295,10 +296,11 @@ class Order(Expr):
             Return True if ``expr`` belongs to ``self``.  Return False if
             ``self`` belongs to ``expr``.  Return None if the inclusion
             relation cannot be determined.
+
         """
         from ..simplify import powsimp
         from .limits import Limit
-        if expr is S.Zero:
+        if expr == 0:
             return True
         if expr is nan:
             return False
@@ -314,7 +316,7 @@ class Order(Expr):
                     if point:
                         point = point[0]
                     else:
-                        point = S.Zero
+                        point = Integer(0)
                 else:
                     point = self.point[0]
             if expr.expr == self.expr:
@@ -359,7 +361,7 @@ class Order(Expr):
 
     def _eval_subs(self, old, new):
         if old in self.variables:
-            newexpr = self.expr.subs(old, new)
+            newexpr = self.expr.subs({old: new})
             i = self.variables.index(old)
             newvars = list(self.variables)
             newpt = list(self.point)
@@ -374,12 +376,12 @@ class Order(Expr):
                         var = syms.pop()
                     # First, try to substitute self.point in the "new"
                     # expr to see if this is a fixed point.
-                    # E.g.  O(y).subs(y, sin(x))
-                    point = new.subs(var, self.point[i])
+                    # E.g.  O(y).subs({y: sin(x)})
+                    point = new.subs({var: self.point[i]})
                     if point != self.point[i]:
                         from ..solvers import solve
                         d = Dummy()
-                        res = solve(old - new.subs(var, d), d)
+                        res = solve(old - new.subs({var: d}), d)
                         point = d.subs(res[0]).limit(old, self.point[i])
                     newvars[i] = var
                     newpt[i] = point
@@ -387,7 +389,7 @@ class Order(Expr):
                     del newvars[i], newpt[i]
                     if not syms and new == self.point[i]:
                         newvars.extend(syms)
-                        newpt.extend([S.Zero]*len(syms))
+                        newpt.extend([Integer(0)]*len(syms))
             return Order(newexpr, *zip(newvars, newpt))
 
     def _eval_conjugate(self):

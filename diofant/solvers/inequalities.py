@@ -6,14 +6,14 @@ from ..core import Dummy, Eq, Ge, Integer, Lt, S, Symbol, oo
 from ..core.compatibility import iterable
 from ..core.relational import Relational
 from ..functions import Abs, Piecewise
-from ..logic import And
+from ..logic import And, false, true
 from ..polys import Poly, parallel_poly_from_expr
 from ..polys.polyutils import _nsort
-from ..sets import FiniteSet, Interval, Union
+from ..sets import FiniteSet, Interval, Reals, Union
 from ..utilities import filldedent
 
 
-__all__ = ('reduce_inequalities',)
+__all__ = 'reduce_inequalities',
 
 
 def solve_poly_inequality(poly, rel):
@@ -23,17 +23,18 @@ def solve_poly_inequality(poly, rel):
     Examples
     ========
 
-    >>> solve_poly_inequality(Poly(x, x, domain='ZZ'), '==')
+    >>> solve_poly_inequality(Poly(x), '==')
     [{0}]
-    >>> solve_poly_inequality(Poly(x**2 - 1, x, domain='ZZ'), '!=')
+    >>> solve_poly_inequality(Poly(x**2 - 1), '!=')
     [(-oo, -1), (-1, 1), (1, oo)]
-    >>> solve_poly_inequality(Poly(x**2 - 1, x, domain='ZZ'), '==')
+    >>> solve_poly_inequality(Poly(x**2 - 1), '==')
     [{-1}, {1}]
 
     See Also
     ========
 
     solve_poly_inequalities
+
     """
     if not isinstance(poly, Poly):
         raise ValueError('`poly` should be a Poly instance')
@@ -41,11 +42,11 @@ def solve_poly_inequality(poly, rel):
         raise ValueError("Invalid relational operator symbol: %r" % rel)
     if poly.is_number:
         t = Relational(poly.as_expr(), 0, rel)
-        if t is S.true:
-            return [S.Reals]
-        elif t is S.false:
+        if t == true:
+            return [Reals]
+        elif t == false:
             return [S.EmptySet]
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError("Couldn't determine truth value of %s" % t)
 
     reals, intervals = poly.real_roots(multiple=False), []
@@ -105,6 +106,7 @@ def solve_poly_inequalities(polys):
     >>> solve_poly_inequalities(((Poly(x**2 - 3), ">"),
     ...                          (Poly(-x**2 + 1), ">")))
     (-oo, -sqrt(3)) U (-1, 1) U (sqrt(3), oo)
+
     """
     return Union(*[solve_poly_inequality(*p) for p in polys])
 
@@ -128,11 +130,12 @@ def solve_rational_inequalities(eqs):
     ========
 
     solve_poly_inequality
+
     """
     result = S.EmptySet
 
     for eq in eqs:
-        global_intervals = [S.Reals]
+        global_intervals = [Reals]
 
         for (numer, denom), rel in eq:
             intervals = []
@@ -183,10 +186,11 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
     -2 < x
     >>> reduce_rational_inequalities([[x + 2]], x)
     Eq(x, -2)
+
     """
     exact = True
     eqs = []
-    solution = S.Reals if exprs else S.EmptySet
+    solution = Reals if exprs else S.EmptySet
     for _exprs in exprs:
         _eqs = []
 
@@ -199,10 +203,10 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
                 else:
                     expr, rel = expr, '=='
 
-            if expr is S.true:
-                numer, denom, rel = S.Zero, S.One, '=='
-            elif expr is S.false:
-                numer, denom, rel = S.One, S.One, '=='
+            if expr == true:
+                numer, denom, rel = Integer(0), Integer(1), '=='
+            elif expr == false:
+                numer, denom, rel = Integer(1), Integer(1), '=='
             else:
                 numer, denom = expr.together().as_numer_denom()
 
@@ -245,9 +249,9 @@ def reduce_piecewise_inequality(expr, rel, gen):
     >>> x = Symbol('x', real=True)
 
     >>> reduce_piecewise_inequality(Abs(x - 5) - 3, '<', x)
-    And(2 < x, x < 8)
+    (2 < x) & (x < 8)
     >>> reduce_piecewise_inequality(Abs(x + 2)*3 - 13, '<', x)
-    And(-19/3 < x, x < 7/3)
+    (-19/3 < x) & (x < 7/3)
 
     >>> reduce_piecewise_inequality(Piecewise((1, x < 1),
     ...                                       (3, True)) - 1, '>', x)
@@ -257,6 +261,7 @@ def reduce_piecewise_inequality(expr, rel, gen):
     ========
 
     reduce_piecewise_inequalities
+
     """
     if gen.is_extended_real is False:
         raise TypeError(filldedent('''
@@ -303,10 +308,10 @@ def reduce_piecewise_inequality(expr, rel, gen):
                 _exprs = _bottom_up_scan(a.expr)
 
                 for ex, conds in _exprs:
-                    if a.cond is not S.true:
+                    if a.cond != true:
                         exprs.append((ex, conds + [a.cond]))
                     else:
-                        oconds = [c[1] for c in expr.args if c[1] is not S.true]
+                        oconds = [c[1] for c in expr.args if c[1] != true]
                         exprs.append((ex, conds + [And(*[~c for c in oconds])]))
         else:
             exprs = [(expr, [])]
@@ -340,14 +345,15 @@ def reduce_piecewise_inequalities(exprs, gen):
 
     >>> reduce_piecewise_inequalities([(Abs(3*x - 5) - 7, '<'),
     ...                                (Abs(x + 25) - 13, '>')], x)
-    And(-2/3 < x, Or(-12 < x, x < -38), x < 4)
+    (-2/3 < x) & (x < 4) & ((-12 < x) | (x < -38))
     >>> reduce_piecewise_inequalities([(Abs(x - 4) + Abs(3*x - 5) - 7, '<')], x)
-    And(1/2 < x, x < 4)
+    (1/2 < x) & (x < 4)
 
     See Also
     ========
 
     reduce_piecewise_inequality
+
     """
     return And(*[reduce_piecewise_inequality(expr, rel, gen)
                  for expr, rel in exprs])
@@ -363,9 +369,10 @@ def solve_univariate_inequality(expr, gen, relational=True):
     >>> x = Symbol('x', real=True)
 
     >>> solve_univariate_inequality(x**2 >= 4, x)
-    Or(2 <= x, x <= -2)
+    (2 <= x) | (x <= -2)
     >>> solve_univariate_inequality(x**2 >= 4, x, relational=False)
     (-oo, -2] U [2, oo)
+
     """
     from ..simplify import simplify
     from .solvers import solve, denoms
@@ -386,17 +393,17 @@ def solve_univariate_inequality(expr, gen, relational=True):
     include_x = expr.func(0, 0)
 
     def valid(x):
-        v = e.subs(gen, x)
+        v = e.subs({gen: x})
         try:
             r = expr.func(v, 0)
         except TypeError:
-            r = S.false
+            r = false
         r = simplify(r)
-        if r in (S.true, S.false):
+        if r in (true, false):
             return r
         elif v.is_comparable is False:
             return False
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
     start = -oo
@@ -436,10 +443,10 @@ def _reduce_inequalities(inequalities, symbols):
     other = []
 
     for inequality in inequalities:
-        if inequality is S.true:
+        if inequality == true:
             continue
-        elif inequality is S.false:
-            return S.false
+        elif inequality == false:
+            return false
 
         expr, rel = inequality.lhs, inequality.rel_op  # rhs is 0
 
@@ -503,6 +510,7 @@ def reduce_inequalities(inequalities, symbols=[]):
     ========
 
     diofant.solvers.solvers.solve : solve algebraic equations
+
     """
     if not iterable(inequalities):
         inequalities = [inequalities]
@@ -514,10 +522,10 @@ def reduce_inequalities(inequalities, symbols=[]):
             i = i.func(i.lhs.as_expr() - i.rhs.as_expr(), 0)
         elif i not in (True, False):
             i = Eq(i, 0)
-        if i == S.true:
+        if i == true:
             continue
-        elif i == S.false:
-            return S.false
+        elif i == false:
+            return false
         keep.append(i)
     inequalities = keep
     del keep

@@ -3,9 +3,9 @@ Logic expressions handling
 
 Notes
 -----
-
 At present this is mainly needed for facts.py, feel free however to improve
 this stuff for general purpose.
+
 """
 
 
@@ -42,6 +42,7 @@ def _fuzzy_group(args, quick_exit=False):
 
     >>> _fuzzy_group([False, True, True], quick_exit=True)
     False
+
     """
     saw_other = False
     for a in args:
@@ -61,6 +62,7 @@ def fuzzy_bool(x):
 
     Whereas bool(x) returns True or False, fuzzy_bool allows
     for the None value.
+
     """
     if x is None:
         return
@@ -89,6 +91,7 @@ def fuzzy_and(args):
 
     >>> fuzzy_and([s.is_commutative for s in syms])
     False
+
     """
 
     rv = True
@@ -115,6 +118,7 @@ def fuzzy_not(v):
     >>> fuzzy_not(None)
     >>> fuzzy_not(False)
     True
+
     """
     if v is None:
         return v
@@ -142,12 +146,13 @@ def fuzzy_or(args):
     ========
 
     fuzzy_and, fuzzy_not
+
     """
     return fuzzy_not(fuzzy_and(fuzzy_not(i) for i in args))
 
 
 class Logic:
-    """Logical expression"""
+    """Logical expression."""
 
     # {} 'op' -> LogicClass
     op_2class = {}
@@ -182,6 +187,7 @@ class Logic:
         e.g.
 
         ~a & b | c
+
         """
         lexpr = None  # current logical expression
         schedop = None  # scheduled operation
@@ -291,11 +297,9 @@ class And(AndOr_Base):
                     if isinstance(orterms[j], Logic):
                         orterms[j] = orterms[j].expand()
 
-                res = Or(*orterms)
-                return res
+                return Or(*orterms)
 
-        else:
-            return self
+        return self
 
 
 class Or(AndOr_Base):

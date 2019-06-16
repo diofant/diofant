@@ -4,14 +4,15 @@ from functools import reduce
 from .cache import cacheit
 from .compatibility import default_sort_key, is_sequence
 from .logic import _fuzzy_group
-from .numbers import I, igcd, ilcm, nan, oo, zoo
+from .numbers import I, Integer, igcd, ilcm, nan, oo, zoo
 from .operations import AssocOp
-from .singleton import S
 
 
 class Add(AssocOp):
 
     is_Add = True
+
+    identity = Integer(0)
 
     @classmethod
     def flatten(cls, seq):
@@ -50,7 +51,7 @@ class Add(AssocOp):
         terms = {}
 
         # coefficient (Number or zoo) to always be in slot 0, e.g. 3 + ...
-        coeff = S.Zero
+        coeff = Integer(0)
 
         order_factors = []
 
@@ -96,7 +97,7 @@ class Add(AssocOp):
                 continue
 
             elif o.has(Order):
-                c, s = S.One, o
+                c, s = Integer(1), o
 
             # Mul([...])
             elif o.is_Mul:
@@ -109,11 +110,11 @@ class Add(AssocOp):
                                     (e.is_Rational and e.is_negative)):
                     seq.append(b**e)
                     continue
-                c, s = S.One, o
+                c, s = Integer(1), o
 
             else:
                 # everything else
-                c = S.One
+                c = Integer(1)
                 s = o
 
             # now we have:
@@ -137,10 +138,10 @@ class Add(AssocOp):
         noncommutative = False
         for s, c in terms.items():
             # 0*s
-            if c is S.Zero:
+            if c == 0:
                 continue
             # 1*s
-            elif c is S.One:
+            elif c == 1 and not c.is_Float:
                 newseq.append(s)
             # c*s
             else:
@@ -196,14 +197,14 @@ class Add(AssocOp):
             # 1 + O(1) -> O(1)
             for o in order_factors:
                 if o.contains(coeff):
-                    coeff = S.Zero
+                    coeff = Integer(0)
                     break
 
         # order args canonically
         newseq.sort(key=default_sort_key)
 
         # current code expects coeff to be first
-        if coeff is not S.Zero:
+        if coeff != 0:
             newseq.insert(0, coeff)
 
         # we are done
@@ -214,7 +215,7 @@ class Add(AssocOp):
 
     @classmethod
     def class_key(cls):
-        """Nice order of classes"""
+        """Nice order of classes."""
         return 4, 1, cls.__name__
 
     def as_coefficients_dict(self):
@@ -233,6 +234,7 @@ class Add(AssocOp):
         0
         >>> (3*y*x).as_coefficients_dict()
         {x*y: 3}
+
         """
 
         d = defaultdict(list)
@@ -261,6 +263,7 @@ class Add(AssocOp):
         (7, (3*x,))
         >>> (7*x).as_coeff_add()
         (0, (7*x,))
+
         """
         if deps:
             l1 = []
@@ -272,20 +275,20 @@ class Add(AssocOp):
                     l1.append(f)
             return self._new_rawargs(*l1), tuple(l2)
         coeff, notrat = self.args[0].as_coeff_add()
-        if coeff is not S.Zero:
+        if coeff != 0:
             return coeff, notrat + self.args[1:]
-        return S.Zero, self.args
+        return Integer(0), self.args
 
     def as_coeff_Add(self, rational=False):
-        """Efficiently extract the coefficient of a summation. """
+        """Efficiently extract the coefficient of a summation."""
         coeff, args = self.args[0], self.args[1:]
 
         if coeff.is_Number and not rational or coeff.is_Rational:
             return coeff, self._new_rawargs(*args)
-        return S.Zero, self
+        return Integer(0), self
 
     # Note, we intentionally do not implement Add.as_coeff_mul().  Rather, we
-    # let Expr.as_coeff_mul() just always return (S.One, self) for an Add.  See
+    # let Expr.as_coeff_mul() just always return (Integer(1), self) for an Add.  See
     # issue sympy/sympy#5524.
 
     @cacheit
@@ -310,6 +313,7 @@ class Add(AssocOp):
         ========
 
         diofant.core.basic.Basic.matches
+
         """
         return AssocOp._matches_commutative(self, expr, repl_dict)
 
@@ -318,11 +322,12 @@ class Add(AssocOp):
         """
         Returns lhs - rhs, but treats arguments like symbols, so things like
         oo - oo return 0, instead of a nan.
+
         """
         from . import oo, I
         from ..simplify import signsimp
         if lhs == oo and rhs == oo or lhs == oo*I and rhs == oo*I:
-            return S.Zero
+            return Integer(0)
         return signsimp(lhs - rhs)
 
     @cacheit
@@ -341,6 +346,7 @@ class Add(AssocOp):
 
         >>> (3*x*y).as_two_terms()
         (3, x*y)
+
         """
         return self.args[0], self._new_rawargs(*self.args[1:])
 
@@ -351,6 +357,7 @@ class Add(AssocOp):
         ========
 
         diofant.core.expr.Expr.as_numer_denom
+
         """
         from .mul import Mul, _keep_coeff
 
@@ -378,7 +385,7 @@ class Add(AssocOp):
                 nd[d] = self.func(*n)
 
         # assemble single numerator and denominator
-        denoms, numers = [list(i) for i in zip(*iter(nd.items()))]
+        denoms, numers = [list(i) for i in zip(*nd.items())]
         n, d = self.func(*[Mul(*(denoms[:i] + [numers[i]] + denoms[i + 1:]))
                            for i in range(len(numers))]), Mul(*denoms)
 
@@ -452,7 +459,7 @@ class Add(AssocOp):
 
     def _eval_is_positive(self):
         if self.is_number:
-            n = super(Add, self)._eval_is_positive()
+            n = super()._eval_is_positive()
             if n is not None:
                 return n
 
@@ -481,7 +488,7 @@ class Add(AssocOp):
 
     def _eval_is_negative(self):
         if self.is_number:
-            n = super(Add, self)._eval_is_negative()
+            n = super()._eval_is_negative()
             if n is not None:
                 return n
 
@@ -516,16 +523,16 @@ class Add(AssocOp):
         coeff_old, terms_old = old.as_coeff_Add()
 
         if coeff_self.is_Rational and coeff_old.is_Rational:
-            if terms_self == terms_old:   # (2 + a).subs( 3 + a, y) -> -1 + y
+            if terms_self == terms_old:   # (2 + a).subs({+3 + a: y}) -> -1 + y
                 return self.func(new, coeff_self, -coeff_old)
-            if terms_self == -terms_old:  # (2 + a).subs(-3 - a, y) -> -1 - y
+            if terms_self == -terms_old:  # (2 + a).subs({-3 - a: y}) -> -1 - y
                 return self.func(-new, coeff_self, coeff_old)
 
         if coeff_self.is_Rational and coeff_old.is_Rational \
                 or coeff_self == coeff_old:
             args_old, args_self = self.func.make_args(
                 terms_old), self.func.make_args(terms_self)
-            if len(args_old) < len(args_self):  # (a+b+c).subs(b+c,x) -> a+x
+            if len(args_old) < len(args_self):  # (a+b+c).subs({b+c: x}) -> a+x
                 self_set = set(args_self)
                 old_set = set(args_old)
 
@@ -535,7 +542,7 @@ class Add(AssocOp):
                                      *[s._subs(old, new) for s in ret_set])
 
                 args_old = self.func.make_args(
-                    -terms_old)     # (a+b+c+d).subs(-b-c,x) -> a-x+d
+                    -terms_old)     # (a+b+c+d).subs({-b-c: x}) -> a-x+d
                 old_set = set(args_old)
                 if old_set < self_set:
                     ret_set = self_set - old_set
@@ -549,6 +556,7 @@ class Add(AssocOp):
         ========
 
         diofant.core.expr.Expr.removeO
+
         """
         args = [a for a in self.args if not a.is_Order]
         return self._new_rawargs(*args)
@@ -560,6 +568,7 @@ class Add(AssocOp):
         ========
 
         diofant.core.expr.Expr.getO
+
         """
         args = [a for a in self.args if a.is_Order]
         if args:
@@ -578,6 +587,7 @@ class Add(AssocOp):
         ((1, O(1)),)
         >>> (x + x**2).extract_leading_order(x)
         ((x, O(x)),)
+
         """
         from ..series import Order
         lst = []
@@ -612,6 +622,7 @@ class Add(AssocOp):
         (0, 1)
         >>> ((1 + 2*I)*(1 + 3*I)).as_real_imag()
         (-5, 5)
+
         """
         sargs = self.args
         re_part, im_part = [], []
@@ -638,7 +649,7 @@ class Add(AssocOp):
             # if it simplifies to an x-free expression, return that;
             # tests don't fail if we don't but it seems nicer to do this
             if x not in rv_simplify.free_symbols:
-                if rv_simplify.is_zero and plain.is_zero is not True:
+                if rv_simplify.is_zero and not plain.is_zero:
                     return (expr - plain)._eval_as_leading_term(x)
                 return rv_simplify
             return rv
@@ -657,7 +668,7 @@ class Add(AssocOp):
 
     def primitive(self):
         """
-        Return ``(R, self/R)`` where ``R``` is the Rational GCD of ``self```.
+        Return ``(R, self/R)`` where ``R`` is the Rational GCD of ``self``.
 
         ``R`` is collected only from the leading coefficient of each term.
 
@@ -688,6 +699,7 @@ class Add(AssocOp):
         ========
 
         diofant.polys.polytools.primitive
+
         """
         from .mul import _keep_coeff
         from .numbers import Rational
@@ -697,7 +709,7 @@ class Add(AssocOp):
         for a in self.args:
             c, m = a.as_coeff_Mul()
             if not c.is_Rational:
-                c = S.One
+                c = Integer(1)
                 m = a
             inf = inf or m is zoo
             terms.append((c.numerator, c.denominator, m))
@@ -710,7 +722,7 @@ class Add(AssocOp):
             dlcm = reduce(ilcm, [t[1] for t in terms if t[1]], 1)
 
         if ngcd == dlcm == 1:
-            return S.One, self
+            return Integer(1), self
         for i, (p, q, term) in enumerate(terms):
             terms[i] = _keep_coeff(Rational((p//ngcd)*(dlcm//q)), term)
 
@@ -751,6 +763,7 @@ class Add(AssocOp):
         ========
 
         diofant.core.expr.Expr.as_content_primitive
+
         """
         from .mul import Mul, _keep_coeff, prod
         from ..functions import root

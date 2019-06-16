@@ -1,6 +1,6 @@
 """Implementation of matrix FGLM Gröbner basis conversion algorithm. """
 
-from .monomials import monomial_div, monomial_mul
+from .monomials import Monomial
 
 
 def matrix_fglm(F, ring, O_to):
@@ -12,9 +12,8 @@ def matrix_fglm(F, ring, O_to):
     References
     ==========
 
-    .. [1] J.C. Faugère, P. Gianni, D. Lazard, T. Mora (1994). Efficient
-           Computation of Zero-dimensional Gröbner Bases by Change
-           of Ordering.
+    * :cite:`Faugere1993groebner`
+
     """
     domain = ring.domain
     ngens = ring.ngens
@@ -58,10 +57,10 @@ def matrix_fglm(F, ring, O_to):
             L = list(set(L))
             L.sort(key=lambda k_l: O_to(_incr_k(S[k_l[1]], k_l[0])), reverse=True)
 
-        L = [(k, l) for (k, l) in L if all(monomial_div(_incr_k(S[l], k), g.LM) is None for g in G)]
+        L = [(k, l) for (k, l) in L if all(not g.LM.divides(_incr_k(S[l], k)) for g in G)]
 
         if not L:
-            G = [ g.monic() for g in G ]
+            G = [g.monic() for g in G]
             return sorted(G, key=lambda g: O_to(g.LM), reverse=True)
 
         t = L.pop()
@@ -85,9 +84,7 @@ def _matrix_mul(M, v):
 
 
 def _update(s, _lambda, P):
-    """
-    Update ``P`` such that for the updated `P'` `P' v = e_{s}`.
-    """
+    """Update ``P`` such that for the updated `P'` `P' v = e_{s}`."""
     k = min(j for j in range(s, len(_lambda)) if _lambda[j] != 0)
 
     for r in range(len(_lambda)):
@@ -104,18 +101,19 @@ def _representing_matrices(basis, G, ring):
     r"""
     Compute the matrices corresponding to the linear maps `m \mapsto
     x_i m` for all variables `x_i`.
+
     """
     domain = ring.domain
     u = ring.ngens-1
 
     def var(i):
-        return tuple([0] * i + [1] + [0] * (u - i))
+        return Monomial([0] * i + [1] + [0] * (u - i))
 
     def representing_matrix(m):
         M = [[domain.zero] * len(basis) for _ in range(len(basis))]
 
         for i, v in enumerate(basis):
-            r = ring.term_new(monomial_mul(m, v), domain.one).rem(G)
+            r = ring.term_new(m*v, domain.one).div(G)[1]
 
             for monom, coeff in r.terms():
                 j = basis.index(monom)
@@ -131,6 +129,7 @@ def _basis(G, ring):
     Computes a list of monomials which are not divisible by the leading
     monomials wrt to ``O`` of ``G``. These monomials are a basis of
     `K[X_1, \ldots, X_n]/(G)`.
+
     """
     order = ring.order
 
@@ -143,7 +142,7 @@ def _basis(G, ring):
         basis.append(t)
 
         new_candidates = [_incr_k(t, k) for k in range(ring.ngens)
-                          if all(monomial_div(_incr_k(t, k), lmg) is None
+                          if all(not lmg.divides(_incr_k(t, k))
                                  for lmg in leading_monomials)]
         candidates.extend(new_candidates)
         candidates.sort(key=lambda m: order(m), reverse=True)

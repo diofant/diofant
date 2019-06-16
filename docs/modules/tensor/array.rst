@@ -8,6 +8,11 @@ N-dim array
 Classes
 -------
 
+.. class:: Array
+    :module: diofant.tensor.array
+
+    alias of :class:`~diofant.tensor.array.ImmutableDenseNDimArray`
+
 .. autoclass:: ImmutableDenseNDimArray
    :members:
 

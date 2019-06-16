@@ -4,16 +4,16 @@ from ..core import Dummy
 from ..domains import QQ, ZZ
 from .constructor import construct_domain
 from .densearith import dmp_mul_ground, dup_add, dup_lshift, dup_mul, dup_sub
-from .polyclasses import DMP
 from .polytools import Poly, PurePoly
 
 
 __all__ = ('jacobi_poly', 'chebyshevt_poly', 'chebyshevu_poly', 'hermite_poly',
-           'legendre_poly', 'laguerre_poly', 'spherical_bessel_fn')
+           'legendre_poly', 'laguerre_poly', 'spherical_bessel_fn',
+           'gegenbauer_poly')
 
 
 def dup_jacobi(n, a, b, K):
-    """Low-level implementation of Jacobi polynomials. """
+    """Low-level implementation of Jacobi polynomials."""
     seq = [[K.one], [(a + b + K(2))/K(2), (a - b)/K(2)]]
 
     for i in range(2, n + 1):
@@ -30,17 +30,17 @@ def dup_jacobi(n, a, b, K):
 
 
 def jacobi_poly(n, a, b, x=None, **args):
-    """Generates Jacobi polynomial of degree `n` in `x`. """
+    """Generates Jacobi polynomial of degree `n` in `x`."""
     if n < 0:
         raise ValueError("can't generate Jacobi polynomial of degree %s" % n)
 
     K, v = construct_domain([a, b], field=True)
-    poly = DMP(dup_jacobi(int(n), v[0], v[1], K), K)
+    poly = dup_jacobi(int(n), v[0], v[1], K)
 
     if x is not None:
-        poly = Poly.new(poly, x)
+        poly = Poly(poly, x, domain=K)
     else:
-        poly = PurePoly.new(poly, Dummy('x'))
+        poly = PurePoly(poly, Dummy('x'), domain=K)
 
     if not args.get('polys', False):
         return poly.as_expr()
@@ -49,7 +49,7 @@ def jacobi_poly(n, a, b, x=None, **args):
 
 
 def dup_gegenbauer(n, a, K):
-    """Low-level implementation of Gegenbauer polynomials. """
+    """Low-level implementation of Gegenbauer polynomials."""
     seq = [[K.one], [K(2)*a, K.zero]]
 
     for i in range(2, n + 1):
@@ -63,18 +63,18 @@ def dup_gegenbauer(n, a, K):
 
 
 def gegenbauer_poly(n, a, x=None, **args):
-    """Generates Gegenbauer polynomial of degree `n` in `x`. """
+    """Generates Gegenbauer polynomial of degree `n` in `x`."""
     if n < 0:
         raise ValueError(
             "can't generate Gegenbauer polynomial of degree %s" % n)
 
     K, a = construct_domain(a, field=True)
-    poly = DMP(dup_gegenbauer(int(n), a, K), K)
+    poly = dup_gegenbauer(int(n), a, K)
 
     if x is not None:
-        poly = Poly.new(poly, x)
+        poly = Poly(poly, x, domain=K)
     else:
-        poly = PurePoly.new(poly, Dummy('x'))
+        poly = PurePoly(poly, Dummy('x'), domain=K)
 
     if not args.get('polys', False):
         return poly.as_expr()
@@ -83,7 +83,7 @@ def gegenbauer_poly(n, a, x=None, **args):
 
 
 def dup_chebyshevt(n, K):
-    """Low-level implementation of Chebyshev polynomials of the 1st kind. """
+    """Low-level implementation of Chebyshev polynomials of the 1st kind."""
     seq = [[K.one], [K.one, K.zero]]
 
     for i in range(2, n + 1):
@@ -94,17 +94,17 @@ def dup_chebyshevt(n, K):
 
 
 def chebyshevt_poly(n, x=None, **args):
-    """Generates Chebyshev polynomial of the first kind of degree `n` in `x`. """
+    """Generates Chebyshev polynomial of the first kind of degree `n` in `x`."""
     if n < 0:
         raise ValueError(
             "can't generate 1st kind Chebyshev polynomial of degree %s" % n)
 
-    poly = DMP(dup_chebyshevt(int(n), ZZ), ZZ)
+    poly = dup_chebyshevt(int(n), ZZ)
 
     if x is not None:
-        poly = Poly.new(poly, x)
+        poly = Poly(poly, x, domain=ZZ)
     else:
-        poly = PurePoly.new(poly, Dummy('x'))
+        poly = PurePoly(poly, Dummy('x'), domain=ZZ)
 
     if not args.get('polys', False):
         return poly.as_expr()
@@ -113,7 +113,7 @@ def chebyshevt_poly(n, x=None, **args):
 
 
 def dup_chebyshevu(n, K):
-    """Low-level implementation of Chebyshev polynomials of the 2nd kind. """
+    """Low-level implementation of Chebyshev polynomials of the 2nd kind."""
     seq = [[K.one], [K(2), K.zero]]
 
     for i in range(2, n + 1):
@@ -124,17 +124,17 @@ def dup_chebyshevu(n, K):
 
 
 def chebyshevu_poly(n, x=None, **args):
-    """Generates Chebyshev polynomial of the second kind of degree `n` in `x`. """
+    """Generates Chebyshev polynomial of the second kind of degree `n` in `x`."""
     if n < 0:
         raise ValueError(
             "can't generate 2nd kind Chebyshev polynomial of degree %s" % n)
 
-    poly = DMP(dup_chebyshevu(int(n), ZZ), ZZ)
+    poly = dup_chebyshevu(int(n), ZZ)
 
     if x is not None:
-        poly = Poly.new(poly, x)
+        poly = Poly(poly, x, domain=ZZ)
     else:
-        poly = PurePoly.new(poly, Dummy('x'))
+        poly = PurePoly(poly, Dummy('x'), domain=ZZ)
 
     if not args.get('polys', False):
         return poly.as_expr()
@@ -143,7 +143,7 @@ def chebyshevu_poly(n, x=None, **args):
 
 
 def dup_hermite(n, K):
-    """Low-level implementation of Hermite polynomials. """
+    """Low-level implementation of Hermite polynomials."""
     seq = [[K.one], [K(2), K.zero]]
 
     for i in range(2, n + 1):
@@ -158,16 +158,16 @@ def dup_hermite(n, K):
 
 
 def hermite_poly(n, x=None, **args):
-    """Generates Hermite polynomial of degree `n` in `x`. """
+    """Generates Hermite polynomial of degree `n` in `x`."""
     if n < 0:
         raise ValueError("can't generate Hermite polynomial of degree %s" % n)
 
-    poly = DMP(dup_hermite(int(n), ZZ), ZZ)
+    poly = dup_hermite(int(n), ZZ)
 
     if x is not None:
-        poly = Poly.new(poly, x)
+        poly = Poly(poly, x, domain=ZZ)
     else:
-        poly = PurePoly.new(poly, Dummy('x'))
+        poly = PurePoly(poly, Dummy('x'), domain=ZZ)
 
     if not args.get('polys', False):
         return poly.as_expr()
@@ -176,7 +176,7 @@ def hermite_poly(n, x=None, **args):
 
 
 def dup_legendre(n, K):
-    """Low-level implementation of Legendre polynomials. """
+    """Low-level implementation of Legendre polynomials."""
     seq = [[K.one], [K.one, K.zero]]
 
     for i in range(2, n + 1):
@@ -189,16 +189,16 @@ def dup_legendre(n, K):
 
 
 def legendre_poly(n, x=None, **args):
-    """Generates Legendre polynomial of degree `n` in `x`. """
+    """Generates Legendre polynomial of degree `n` in `x`."""
     if n < 0:
         raise ValueError("can't generate Legendre polynomial of degree %s" % n)
 
-    poly = DMP(dup_legendre(int(n), QQ), QQ)
+    poly = dup_legendre(int(n), QQ)
 
     if x is not None:
-        poly = Poly.new(poly, x)
+        poly = Poly(poly, x, domain=QQ)
     else:
-        poly = PurePoly.new(poly, Dummy('x'))
+        poly = PurePoly(poly, Dummy('x'), domain=QQ)
 
     if not args.get('polys', False):
         return poly.as_expr()
@@ -207,7 +207,7 @@ def legendre_poly(n, x=None, **args):
 
 
 def dup_laguerre(n, alpha, K):
-    """Low-level implementation of Laguerre polynomials. """
+    """Low-level implementation of Laguerre polynomials."""
     seq = [[K.zero], [K.one]]
 
     for i in range(1, n + 1):
@@ -220,7 +220,7 @@ def dup_laguerre(n, alpha, K):
 
 
 def laguerre_poly(n, x=None, alpha=None, **args):
-    """Generates Laguerre polynomial of degree `n` in `x`. """
+    """Generates Laguerre polynomial of degree `n` in `x`."""
     if n < 0:
         raise ValueError("can't generate Laguerre polynomial of degree %s" % n)
 
@@ -230,12 +230,12 @@ def laguerre_poly(n, x=None, alpha=None, **args):
     else:
         K, alpha = QQ, QQ(0)
 
-    poly = DMP(dup_laguerre(int(n), alpha, K), K)
+    poly = dup_laguerre(int(n), alpha, K)
 
     if x is not None:
-        poly = Poly.new(poly, x)
+        poly = Poly(poly, x, domain=K)
     else:
-        poly = PurePoly.new(poly, Dummy('x'))
+        poly = PurePoly(poly, Dummy('x'), domain=K)
 
     if not args.get('polys', False):
         return poly.as_expr()
@@ -244,7 +244,7 @@ def laguerre_poly(n, x=None, alpha=None, **args):
 
 
 def dup_spherical_bessel_fn(n, K):
-    """ Low-level implementation of fn(n, x) """
+    """Low-level implementation of fn(n, x)."""
     seq = [[K.one], [K.one, K.zero]]
 
     for i in range(2, n + 1):
@@ -255,7 +255,7 @@ def dup_spherical_bessel_fn(n, K):
 
 
 def dup_spherical_bessel_fn_minus(n, K):
-    """ Low-level implementation of fn(-n, x) """
+    """Low-level implementation of fn(-n, x)."""
     seq = [[K.one, K.zero], [K.zero]]
 
     for i in range(2, n + 1):
@@ -288,19 +288,18 @@ def spherical_bessel_fn(n, x=None, **args):
     -6/z**2 + 15/z**4
     >>> spherical_bessel_fn(4, z)
     1/z - 45/z**3 + 105/z**5
+
     """
 
     if n < 0:
-        dup = dup_spherical_bessel_fn_minus(-int(n), ZZ)
+        poly = dup_spherical_bessel_fn_minus(-int(n), ZZ)
     else:
-        dup = dup_spherical_bessel_fn(int(n), ZZ)
-
-    poly = DMP(dup, ZZ)
+        poly = dup_spherical_bessel_fn(int(n), ZZ)
 
     if x is not None:
-        poly = Poly.new(poly, 1/x)
+        poly = Poly(poly, 1/x, domain=ZZ)
     else:
-        poly = PurePoly.new(poly, 1/Dummy('x'))
+        poly = PurePoly(poly, 1/Dummy('x'), domain=ZZ)
 
     if not args.get('polys', False):
         return poly.as_expr()

@@ -1,5 +1,5 @@
-from . import Poly
 from ..core import oo
+from . import Poly
 
 
 def dispersionset(p, q=None, *gens, **args):
@@ -18,17 +18,9 @@ def dispersionset(p, q=None, *gens, **args):
     Examples
     ========
 
-    Dispersion set and dispersion of a simple polynomial:
-
-    >>> fp = poly((x - 3)*(x + 3), x)
-    >>> sorted(dispersionset(fp))
-    [0, 6]
-    >>> dispersion(fp)
-    6
-
     Note that the definition of the dispersion is not symmetric:
 
-    >>> fp = poly(x**4 - 3*x**2 + 1, x)
+    >>> fp = Poly(x**4 - 3*x**2 + 1)
     >>> gp = fp.shift(-3)
     >>> sorted(dispersionset(fp, gp))
     [2, 3, 4]
@@ -41,8 +33,8 @@ def dispersionset(p, q=None, *gens, **args):
 
     Computing the dispersion also works over field extensions:
 
-    >>> fp = poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
-    >>> gp = poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
+    >>> fp = Poly(x**2 + sqrt(5)*x - 1, x)
+    >>> gp = Poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x)
     >>> sorted(dispersionset(fp, gp))
     [2]
     >>> sorted(dispersionset(gp, fp))
@@ -51,23 +43,23 @@ def dispersionset(p, q=None, *gens, **args):
     We can even perform the computations for polynomials
     having symbolic coefficients:
 
-    >>> from diofant.abc import a
-    >>> fp = poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
+    >>> fp = Poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
     >>> sorted(dispersionset(fp))
     [0, 1]
 
     See Also
     ========
 
-    diofant.polys.dispersion.dispersion
+    dispersion
 
     References
     ==========
 
-    .. [1] [ManWright94]_
-    .. [2] [Koepf98]_
-    .. [3] [Abramov71]_
-    .. [4] [Man93]_
+    * :cite:`Man1994disp`
+    * :cite:`Koepf98`
+    * :cite:`Abramov71rat`
+    * :cite:`Man1993indefsum`
+
     """
     # Check for valid input
     same = False if q is not None else True
@@ -136,62 +128,19 @@ def dispersion(p, q=None, *gens, **args):
     and for a single polynomial `\operatorname{dis}(f) := \operatorname{dis}(f, f)`.
     Note that we make the definition `\max\{\} := -\infty`.
 
-    Examples
-    ========
-
-    Dispersion set and dispersion of a simple polynomial:
-
-    >>> fp = poly((x - 3)*(x + 3), x)
-    >>> sorted(dispersionset(fp))
-    [0, 6]
-    >>> dispersion(fp)
-    6
-
-    Note that the definition of the dispersion is not symmetric:
-
-    >>> fp = poly(x**4 - 3*x**2 + 1, x)
-    >>> gp = fp.shift(-3)
-    >>> sorted(dispersionset(fp, gp))
-    [2, 3, 4]
-    >>> dispersion(fp, gp)
-    4
-    >>> sorted(dispersionset(gp, fp))
-    []
-    >>> dispersion(gp, fp)
-    -oo
-
-    The maximum of an empty set is defined to be `-\infty`
-    as seen in this example.
-
-    Computing the dispersion also works over field extensions:
-
-    >>> fp = poly(x**2 + sqrt(5)*x - 1, x, domain='QQ<sqrt(5)>')
-    >>> gp = poly(x**2 + (2 + sqrt(5))*x + sqrt(5), x, domain='QQ<sqrt(5)>')
-    >>> sorted(dispersionset(fp, gp))
-    [2]
-    >>> sorted(dispersionset(gp, fp))
-    [1, 4]
-
-    We can even perform the computations for polynomials
-    having symbolic coefficients:
-
-    >>> from diofant.abc import a
-    >>> fp = poly(4*x**4 + (4*a + 8)*x**3 + (a**2 + 6*a + 4)*x**2 + (a**2 + 2*a)*x, x)
-    >>> sorted(dispersionset(fp))
-    [0, 1]
-
     See Also
     ========
 
-    diofant.polys.dispersion.dispersionset
+    dispersionset
 
     References
     ==========
 
-    .. [1] [ManWright94]_
-    .. [2] [Koepf98]_
-    .. [3] [Abramov71]_
-    .. [4] [Man93]_
+    * :cite:`Man1994disp`
+    * :cite:`Koepf98`
+    * :cite:`Abramov71rat`
+    * :cite:`Man1993indefsum`
+
     """
     J = dispersionset(p, q, *gens, **args)
     if not J:

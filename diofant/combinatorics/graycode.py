@@ -28,10 +28,10 @@ class GrayCode(Basic):
     References
     ==========
 
-    .. [1] Nijenhuis,A. and Wilf,H.S.(1978).
-           Combinatorial Algorithms. Academic Press.
-    .. [2] Knuth, D. (2011). The Art of Computer Programming, Vol 4
-           Addison Wesley
+    * Nijenhuis,A. and Wilf,H.S.(1978).
+      Combinatorial Algorithms. Academic Press.
+    * Knuth, D. (2011). The Art of Computer Programming, Vol 4
+      Addison Wesley
 
     Examples
     ========
@@ -43,6 +43,7 @@ class GrayCode(Basic):
     >>> list(a.generate_gray())
     ['0000', '0001', '0011', '0010', '0110', '0111', '0101', '0100',
      '1100', '1101', '1111', '1110', '1010', '1011', '1001', '1000']
+
     """
 
     _skip = False
@@ -112,6 +113,7 @@ class GrayCode(Basic):
         '111'
         >>> a.next(-1).current
         '010'
+
         """
         return GrayCode(self.n, rank=(self.rank + delta) % self.selections)
 
@@ -126,6 +128,7 @@ class GrayCode(Basic):
         >>> a = GrayCode(3)
         >>> a.selections
         8
+
         """
         return 2**self.n
 
@@ -140,6 +143,7 @@ class GrayCode(Basic):
         >>> a = GrayCode(5)
         >>> a.n
         5
+
         """
         return int(self.args[0])
 
@@ -164,6 +168,7 @@ class GrayCode(Basic):
         See Also
         ========
         skip
+
         """
         bits = self.n
         start = None
@@ -214,6 +219,7 @@ class GrayCode(Basic):
         See Also
         ========
         generate_gray
+
         """
         self._skip = True
 
@@ -232,7 +238,7 @@ class GrayCode(Basic):
         References
         ==========
 
-        .. [1] http://statweb.stanford.edu/~susan/courses/s208/node12.html
+        * http://statweb.stanford.edu/~susan/courses/s208/node12.html
 
         Examples
         ========
@@ -248,6 +254,7 @@ class GrayCode(Basic):
         See Also
         ========
         unrank
+
         """
         if self._rank is None:
             self._rank = int(gray_to_bin(self.current), 2)
@@ -263,6 +270,7 @@ class GrayCode(Basic):
 
         >>> GrayCode(3, start='100').current
         '100'
+
         """
         rv = self._current or '0'
         if type(rv) is not str:
@@ -290,6 +298,7 @@ class GrayCode(Basic):
         See Also
         ========
         rank
+
         """
         def _unrank(k, n):
             if n == 1:
@@ -310,6 +319,7 @@ def random_bitstring(n):
 
     >>> random_bitstring(3) # doctest: +SKIP
     100
+
     """
     return ''.join([random.choice('01') for i in range(n)])
 
@@ -329,6 +339,7 @@ def gray_to_bin(bin_list):
     See Also
     ========
     bin_to_gray
+
     """
     b = [bin_list[0]]
     for i in range(1, len(bin_list)):
@@ -351,6 +362,7 @@ def bin_to_gray(bin_list):
     See Also
     ========
     gray_to_bin
+
     """
     b = [bin_list[0]]
     for i in range(len(bin_list) - 1):
@@ -373,6 +385,7 @@ def get_subset_from_bitstring(super_set, bitstring):
     See Also
     ========
     graycode_subsets
+
     """
     if len(super_set) != len(bitstring):
         raise ValueError("The sizes of the lists are not equal")
@@ -399,6 +412,7 @@ def graycode_subsets(gray_code_set):
     ========
 
     get_subset_from_bitstring
+
     """
     for bitstring in list(GrayCode(len(gray_code_set)).generate_gray()):
         yield get_subset_from_bitstring(gray_code_set, bitstring)

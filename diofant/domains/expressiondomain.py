@@ -6,7 +6,7 @@ from .field import Field
 from .simpledomain import SimpleDomain
 
 
-__all__ = ('ExpressionDomain',)
+__all__ = 'ExpressionDomain',
 
 
 class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
@@ -131,9 +131,6 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
     has_assoc_Ring = False
     has_assoc_Field = True
 
-    def __init__(self):
-        pass
-
     def to_expr(self, a):
         """Convert ``a`` to a Diofant object. """
         return a.as_expr()
@@ -163,9 +160,6 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
     def _from_FractionField(self, a, K0):
         return self(K0.to_expr(a))
 
-    def _from_ExpressionDomain(self, a, K0):
-        return a
-
     def _from_AlgebraicField(self, a, K0):
         return self(K0.to_expr(a))
 
@@ -182,16 +176,11 @@ class ExpressionDomain(Field, CharacteristicZero, SimpleDomain):
         """Returns True if ``a`` is negative. """
         return a.ex.as_coeff_mul()[0].is_negative
 
-    def is_nonpositive(self, a):
-        """Returns True if ``a`` is non-positive. """
-        return a.ex.as_coeff_mul()[0].is_nonpositive
-
-    def is_nonnegative(self, a):
-        """Returns True if ``a`` is non-negative. """
-        return a.ex.as_coeff_mul()[0].is_nonnegative
-
     def gcd(self, a, b):
         return a.gcd(b)
 
     def lcm(self, a, b):
         return a.lcm(b)
+
+
+EX = ExpressionDomain()

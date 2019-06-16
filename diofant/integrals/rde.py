@@ -127,6 +127,7 @@ def weak_normalizer(a, d, DE, z=None):
 
     q = reduce(mul, [gcd(a - Poly(n, DE.t)*derivation(d1, DE), d1) for n in N],
                Poly(1, DE.t))
+    q = q.monic()
 
     dq = derivation(q, DE)
     sn = q*a - d*dq
@@ -318,9 +319,9 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
 
             elif db == da:
                 # if alpha == Dz/z for z in k*:
-                    # beta = -lc(a*Dz + b*z)/(z*lc(a))
-                    # if beta == m*Dt + Dw for w in k and m in ZZ:
-                        # n = max(n, m)
+                #     beta = -lc(a*Dz + b*z)/(z*lc(a))
+                # if beta == m*Dt + Dw for w in k and m in ZZ:
+                #     n = max(n, m)
                 A = is_log_deriv_k_t_radical_in_field(alphaa, alphad, DE)
                 if A is not None:
                     aa, z = A
@@ -347,7 +348,7 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
                 A = parametric_log_deriv(alphaa, alphad, etaa, etad, DE)
                 if A is not None:
                     # if alpha == m*Dt/t + Dz/z for z in k* and m in ZZ:
-                        # n = max(n, m)
+                    #     n = max(n, m)
                     a, m, z = A
                     if a == 1:
                         n = max(n, m)
@@ -717,9 +718,6 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
                 raise NotImplementedError("Other Poly (P)RDE cancellation "
                                           "cases are not yet implemented (%s)." % DE.case)
 
-        if parametric:
-            raise NotImplementedError("Remaining cases for Poly PRDE not yet "
-                                      "implemented.")
         raise NotImplementedError("Remaining cases for Poly RDE not yet "
                                   "implemented.")
 

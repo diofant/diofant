@@ -1,5 +1,5 @@
-from ..core import (Add, Dummy, Expr, Mul, S, count_ops, expand_mul,
-                    factor_terms, ilcm, sympify)
+from ..core import (Add, Dummy, Expr, Integer, Mul, Rational, count_ops,
+                    expand_mul, factor_terms, ilcm, sympify)
 from ..core.compatibility import ordered
 from ..core.function import _mexpand
 from ..functions import log, root, sign, sqrt
@@ -11,7 +11,7 @@ from .powsimp import powdenest
 def is_sqrt(expr):
     """Return True if expr is a sqrt, otherwise False."""
 
-    return expr.is_Pow and expr.exp.is_Rational and abs(expr.exp) is S.Half
+    return expr.is_Pow and expr.exp.is_Rational and abs(expr.exp) == Rational(1, 2)
 
 
 def sqrt_depth(p):
@@ -28,6 +28,7 @@ def sqrt_depth(p):
 
     >>> sqrt_depth(1 + sqrt(2)*sqrt(1 + sqrt(3)))
     2
+
     """
 
     if p.is_Atom:
@@ -51,6 +52,7 @@ def is_algebraic(p):
     True
     >>> is_algebraic(sqrt(2)*(3/(sqrt(7) + sqrt(5)*cos(2))))
     False
+
     """
 
     if p.is_Rational:
@@ -112,10 +114,11 @@ def sqrtdenest(expr, max_iter=3):
     References
     ==========
 
-    .. [1] https://researcher.watson.ibm.com/researcher/files/us-fagin/symb85.pdf
+    * https://researcher.watson.ibm.com/researcher/files/us-fagin/symb85.pdf
 
-    .. [2] D. J. Jeffrey and A. D. Rich, 'Symplifying Square Roots of Square Roots
-           by Denesting' (available at http://www.cybertester.com/data/denest.pdf)
+    * D. J. Jeffrey and A. D. Rich, 'Symplifying Square Roots of Square Roots
+      by Denesting' (available at http://www.cybertester.com/data/denest.pdf)
+
     """
     expr = expand_mul(sympify(expr))
     for i in range(max_iter):
@@ -135,12 +138,13 @@ def _sqrt_match(p):
 
     >>> _sqrt_match(1 + sqrt(2) + sqrt(2)*sqrt(3) +  2*sqrt(1+sqrt(5)))
     [1 + sqrt(2) + sqrt(6), 2, 1 + sqrt(5)]
+
     """
     from .radsimp import split_surds
 
     p = _mexpand(p)
     if p.is_Number:
-        res = (p, S.Zero, S.Zero)
+        res = (p, Integer(0), Integer(0))
     elif p.is_Add:
         pargs = sorted(p.args, key=default_sort_key)
         if all((x**2).is_Rational for x in pargs):
@@ -159,7 +163,7 @@ def _sqrt_match(p):
             depth, _, i = nmax
             r = pargs.pop(i)
             v.pop(i)
-            b = S.One
+            b = Integer(1)
             if r.is_Mul:
                 bv = []
                 rv = []
@@ -196,7 +200,7 @@ def _sqrt_match(p):
     else:
         b, r = p.as_coeff_Mul()
         if is_sqrt(r):
-            res = (S.Zero, b, r**2)
+            res = (Integer(0), b, r**2)
         else:
             res = []
     return list(res)
@@ -211,7 +215,7 @@ def _sqrtdenest0(expr):
 
     if is_sqrt(expr):
         n, d = expr.as_numer_denom()
-        if d is S.One:  # n is a square root
+        if d == 1:  # n is a square root
             if n.base.is_Add:
                 args = sorted(n.base.args, key=default_sort_key)
                 if len(args) > 2 and all((x**2).is_Integer for x in args):
@@ -251,6 +255,7 @@ def _sqrtdenest_rec(expr):
     >>> w = -6*sqrt(55)-6*sqrt(35)-2*sqrt(22)-2*sqrt(14)+2*sqrt(77)+6*sqrt(10)+65
     >>> _sqrtdenest_rec(sqrt(w))
     -sqrt(11) - sqrt(7) + sqrt(2) + 3*sqrt(5)
+
     """
     from .radsimp import radsimp, rad_rationalize, split_surds
     if not expr.is_Pow:
@@ -293,6 +298,7 @@ def _sqrtdenest_rec(expr):
 def _sqrtdenest1(expr, denester=True):
     """Return denested expr after denesting with simpler methods or, that
     failing, using the denester.
+
     """
 
     from .simplify import radsimp
@@ -375,15 +381,16 @@ def _sqrt_symbolic_denest(a, b, r):
 
     Otherwise, it will only be simplified if assumptions allow:
 
-    >>> w = w.subs(sqrt(3), sqrt(x + 3))
+    >>> w = w.subs({sqrt(3): sqrt(x + 3)})
     >>> sqrtdenest(sqrt((w**2).expand()))
     sqrt((sqrt(sqrt(sqrt(x + 3) + 1) + 1) + 1 + sqrt(2))**2)
 
     Notice that the argument of the sqrt is a square. If x is made positive
     then the sqrt of the square is resolved:
 
-    >>> _.subs(x, Symbol('x', positive=True))
+    >>> _.subs({x: Symbol('x', positive=True)})
     sqrt(sqrt(sqrt(x + 3) + 1) + 1) + 1 + sqrt(2)
+
     """
 
     a, b, r = map(sympify, (a, b, r))
@@ -394,7 +401,7 @@ def _sqrt_symbolic_denest(a, b, r):
     if rb:
         y = Dummy('y', positive=True)
         try:
-            newa = Poly(a.subs(sqrt(rr), (y**2 - ra)/rb), y)
+            newa = Poly(a.subs({sqrt(rr): (y**2 - ra)/rb}), y)
         except PolynomialError:
             return
         if newa.degree() == 2:
@@ -410,6 +417,7 @@ def _sqrt_symbolic_denest(a, b, r):
 def _sqrt_numeric_denest(a, b, r, d2):
     """Helper that denest expr = a + b*sqrt(r), with d2 = a**2 - b**2*r > 0
     or returns None if not denested.
+
     """
     from .simplify import radsimp
     depthr = sqrt_depth(r)
@@ -467,6 +475,7 @@ def sqrt_biquadratic_denest(expr, a, b, r, d2):
     >>> d2 = a**2 - b**2*r
     >>> sqrt_biquadratic_denest(z, a, b, r, d2)
     sqrt(2) + sqrt(sqrt(2) + 2) + 2
+
     """
     from .radsimp import radsimp, rad_rationalize
     if r <= 0 or d2 < 0 or not b or sqrt_depth(expr.base) < 2:
@@ -513,6 +522,7 @@ def _denester(nested, av0, h, max_depth_level):
     exponential complexity.
 
     This is discussed in the paper in the middle paragraph of page 179.
+
     """
     from .simplify import radsimp
     if h > max_depth_level:
@@ -645,6 +655,7 @@ def unrad(eq, *syms, **flags):
     >>> eq = sqrt(x) + root(x, 3) - 2
     >>> unrad(eq)
     (_p**3 + _p**2 - 2, [_p, -x + _p**6])
+
     """
     from ..polys.rootoftools import RootOf
     from ..solvers import solve
@@ -654,7 +665,7 @@ def unrad(eq, *syms, **flags):
     def _cov(p, e):
         if not cov:
             cov[:] = [p, e]
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
     def _canonical(eq, cov):
@@ -693,7 +704,7 @@ def unrad(eq, *syms, **flags):
         # return leading Rational of denominator of Pow's exponent
         c = pow.as_base_exp()[1].as_coeff_Mul()[0]
         if not c.is_Rational:
-            return S.One
+            return Integer(1)
         return c.denominator
 
     # define the _take method that will determine whether a term is of interest
@@ -812,14 +823,11 @@ def unrad(eq, *syms, **flags):
                 if not inv or any(isinstance(s[x], RootOf)
                                   for s in inv):  # pragma: no cover
                     raise NotImplementedError
-                eq = poly.as_expr().subs(b, covsym**lcm).subs(inv[0])
+                eq = poly.as_expr().subs({b: covsym**lcm}).subs(inv[0])
                 _cov(covsym, covsym**lcm - b)
                 return _canonical(eq, cov)
             except NotImplementedError:  # pragma: no cover
                 pass
-        else:
-            # no longer consider integer powers as generators
-            gens = [g for g in gens if _Q(g) != 1]
 
         if len(rterms) == 2:
             if not others:
@@ -830,7 +838,7 @@ def unrad(eq, *syms, **flags):
                 r0, r1 = rterms
                 if flags.get('_reverse', False):
                     r1, r0 = r0, r1
-                i0 = _rads0, _bases0, lcm0 = _rads_bases_lcm(r0.as_poly())
+                i0 = _rads_bases_lcm(r0.as_poly())
                 i1 = _rads1, _bases1, lcm1 = _rads_bases_lcm(r1.as_poly())
                 for reverse in range(2):
                     if reverse:
@@ -852,7 +860,7 @@ def unrad(eq, *syms, **flags):
                                 eq, newcov = tmp
                                 if not newcov:
                                     _cov(covsym, c)
-                                else:  # pragma: no cover
+                                else:
                                     raise NotImplementedError
                             else:
                                 eq = neweq

@@ -4,7 +4,7 @@ from ..polys.polyerrors import GeneratorsError
 from .domain import Domain
 
 
-__all__ = ('CompositeDomain',)
+__all__ = 'CompositeDomain',
 
 
 class CompositeDomain(Domain):

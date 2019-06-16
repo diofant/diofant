@@ -1,5 +1,7 @@
 """Implementation of :class:`IntegerRing` class. """
 
+import abc
+
 from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
 from .groundtypes import (DiofantInteger, GMPYInteger, PythonInteger,
@@ -10,7 +12,7 @@ from .ring import Ring
 from .simpledomain import SimpleDomain
 
 
-__all__ = ('GMPYIntegerRing', 'IntegerRing', 'PythonIntegerRing')
+__all__ = 'GMPYIntegerRing', 'IntegerRing', 'PythonIntegerRing'
 
 
 class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
@@ -51,14 +53,12 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
         return self.dtype(a)
 
     def _from_PythonFiniteField(self, a, K0):
-        return self.dtype(a.to_int())
+        return self.dtype(int(a))
+    _from_GMPYFiniteField = _from_PythonFiniteField
 
     def _from_PythonRationalField(self, a, K0):
         if a.denominator == 1:
             return self.dtype(a.numerator)
-
-    def _from_GMPYFiniteField(self, a, K0):
-        return self.dtype(a.to_int())
 
     def _from_GMPYIntegerRing(self, a, K0):
         return self.dtype(a)
@@ -77,6 +77,11 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
         if a.is_ground:
             return self.convert(a.LC(), K0.domain)
 
+    @abc.abstractmethod
+    def finite_field(self, p):
+        """Returns a finite field. """
+        raise NotImplementedError
+
 
 class PythonIntegerRing(IntegerRing):
     """Integer ring based on Python's integers. """
@@ -84,9 +89,6 @@ class PythonIntegerRing(IntegerRing):
     dtype = PythonInteger
     zero = dtype(0)
     one = dtype(1)
-
-    def __init__(self):
-        """Allow instantiation of this domain. """
 
     def gcdex(self, a, b):
         """Compute extended GCD of ``a`` and ``b``. """
@@ -108,6 +110,11 @@ class PythonIntegerRing(IntegerRing):
         """Compute factorial of ``a``. """
         return python_factorial(a)
 
+    def finite_field(self, p):
+        """Returns a finite field. """
+        from .finitefield import PythonFiniteField
+        return PythonFiniteField(p)
+
 
 class GMPYIntegerRing(IntegerRing):
     """Integer ring based on GMPY's integers. """
@@ -115,9 +122,6 @@ class GMPYIntegerRing(IntegerRing):
     dtype = GMPYInteger
     zero = dtype(0)
     one = dtype(1)
-
-    def __init__(self):
-        """Allow instantiation of this domain. """
 
     def gcdex(self, a, b):
         """Compute extended GCD of ``a`` and ``b``. """
@@ -139,3 +143,12 @@ class GMPYIntegerRing(IntegerRing):
     def factorial(self, a):
         """Compute factorial of ``a``. """
         return gmpy_factorial(a)
+
+    def finite_field(self, p):
+        """Returns a finite field. """
+        from .finitefield import GMPYFiniteField
+        return GMPYFiniteField(p)
+
+
+ZZ_python = PythonIntegerRing()
+ZZ_gmpy = GMPYIntegerRing()

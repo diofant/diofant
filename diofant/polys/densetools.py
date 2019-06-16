@@ -1,194 +1,12 @@
-"""Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``. """
+"""Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-import math
-
-from ..core import I
-from ..utilities import variations
-from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_expand,
-                         dmp_exquo_ground, dmp_mul, dmp_mul_ground, dmp_neg,
-                         dmp_quo_ground, dmp_rem, dmp_sub, dup_add, dup_lshift,
-                         dup_mul, dup_sqr, dup_sub)
-from .densebasic import (dmp_convert, dmp_degree, dmp_from_dict, dmp_ground,
+from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_exquo_ground,
+                         dmp_mul, dmp_mul_ground, dmp_neg, dmp_quo_ground,
+                         dmp_sub, dup_add, dup_mul)
+from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
-                         dmp_zero, dmp_zero_p, dmp_zeros, dup_from_dict)
+                         dmp_zero, dmp_zero_p)
 from .polyerrors import DomainError
-
-
-def dup_integrate(f, m, K):
-    """
-    Computes the indefinite integral of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", QQ)
-
-    >>> R.dup_integrate(x**2 + 2*x, 1)
-    1/3*x**3 + x**2
-    >>> R.dup_integrate(x**2 + 2*x, 2)
-    1/12*x**4 + 1/3*x**3
-    """
-    if m <= 0 or not f:
-        return f
-
-    g = [K.zero]*m
-
-    for i, c in enumerate(reversed(f)):
-        n = i + 1
-
-        for j in range(1, m):
-            n *= i + j + 1
-
-        g.insert(0, K.exquo(c, K(n)))
-
-    return g
-
-
-def dmp_integrate(f, m, u, K):
-    """
-    Computes the indefinite integral of ``f`` in ``x_0`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", QQ)
-
-    >>> R.dmp_integrate(x + 2*y, 1)
-    1/2*x**2 + 2*x*y
-    >>> R.dmp_integrate(x + 2*y, 2)
-    1/6*x**3 + x**2*y
-    """
-    if not u:
-        return dup_integrate(f, m, K)
-
-    if m <= 0 or dmp_zero_p(f, u):
-        return f
-
-    g, v = dmp_zeros(m, u - 1, K), u - 1
-
-    for i, c in enumerate(reversed(f)):
-        n = i + 1
-
-        for j in range(1, m):
-            n *= i + j + 1
-
-        g.insert(0, dmp_quo_ground(c, K(n), v, K))
-
-    return g
-
-
-def dmp_integrate_in(f, m, j, u, K):
-    """
-    Computes the indefinite integral of ``f`` in ``x_j`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", QQ)
-
-    >>> R.dmp_integrate_in(x + 2*y, 1, 0)
-    1/2*x**2 + 2*x*y
-    >>> R.dmp_integrate_in(x + 2*y, 1, 1)
-    x*y + y**2
-    """
-    if j < 0 or j > u:
-        raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
-
-    def integrate_in(g, m, v, i, j, K):
-        if i == j:
-            return dmp_integrate(g, m, v, K)
-
-        w, i = v - 1, i + 1
-
-        return dmp_strip([integrate_in(c, m, w, i, j, K) for c in g], v)
-
-    return integrate_in(f, m, u, 0, j, K)
-
-
-def dup_diff(f, m, K):
-    """
-    ``m``-th order derivative of a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_diff(x**3 + 2*x**2 + 3*x + 4, 1)
-    3*x**2 + 4*x + 3
-    >>> R.dup_diff(x**3 + 2*x**2 + 3*x + 4, 2)
-    6*x + 4
-    """
-    if m <= 0:
-        return f
-
-    n = dmp_degree(f, 0)
-
-    if n < m:
-        return []
-
-    deriv = []
-
-    if m == 1:
-        for coeff in f[:-m]:
-            deriv.append(K(n)*coeff)
-            n -= 1
-    else:
-        for coeff in f[:-m]:
-            k = n
-
-            for i in range(n - 1, n - m, -1):
-                k *= i
-
-            deriv.append(K(k)*coeff)
-            n -= 1
-
-    return dmp_strip(deriv, 0)
-
-
-def dmp_diff(f, m, u, K):
-    """
-    ``m``-th order derivative in ``x_0`` of a polynomial in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
-
-    >>> R.dmp_diff(f, 1)
-    y**2 + 2*y + 3
-    >>> R.dmp_diff(f, 2)
-    0
-    """
-    if not u:
-        return dup_diff(f, m, K)
-    if m <= 0:
-        return f
-
-    n = dmp_degree(f, u)
-
-    if n < m:
-        return dmp_zero(u)
-
-    deriv, v = [], u - 1
-
-    if m == 1:
-        for coeff in f[:-m]:
-            deriv.append(dmp_mul_ground(coeff, K(n), v, K))
-            n -= 1
-    else:
-        for coeff in f[:-m]:
-            k = n
-
-            for i in range(n - 1, n - m, -1):
-                k *= i
-
-            deriv.append(dmp_mul_ground(coeff, K(k), v, K))
-            n -= 1
-
-    return dmp_strip(deriv, u)
 
 
 def dmp_diff_in(f, m, j, u, K):
@@ -206,70 +24,49 @@ def dmp_diff_in(f, m, j, u, K):
     y**2 + 2*y + 3
     >>> R.dmp_diff_in(f, 1, 1)
     2*x*y + 2*x + 4*y + 3
+
     """
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
 
-    def diff_in(g, m, v, i, j, K):
+    if not j:
+        if m <= 0:
+            return f
+
+        n = dmp_degree_in(f, 0, u)
+
+        if n < m:
+            return dmp_zero(u)
+
+        deriv, v = [], u - 1
+
+        if m == 1:
+            for coeff in f[:-m]:
+                d = dmp_mul_ground(coeff, K(n), v, K) if u else K(n)*coeff
+                deriv.append(d)
+                n -= 1
+        else:
+            for coeff in f[:-m]:
+                k = n
+
+                for i in range(n - 1, n - m, -1):
+                    k *= i
+
+                d = dmp_mul_ground(coeff, K(k), v, K) if u else K(k)*coeff
+                deriv.append(d)
+                n -= 1
+
+        return dmp_strip(deriv, u)
+
+    def diff_in(f, m, u, i, j, K):
         if i == j:
-            return dmp_diff(g, m, v, K)
+            return dmp_diff_in(f, m, 0, u, K)
 
-        w, i = v - 1, i + 1
+        v, i = u - 1, i + 1
 
-        return dmp_strip([diff_in(c, m, w, i, j, K) for c in g], v)
+        return dmp_strip([diff_in(c, m, v, i, j, K) for c in f], u)
 
     return diff_in(f, m, u, 0, j, K)
-
-
-def dup_eval(f, a, K):
-    """
-    Evaluate a polynomial at ``x = a`` in ``K[x]`` using Horner scheme.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_eval(x**2 + 2*x + 3, 2)
-    11
-    """
-    if not a:
-        return dmp_TC(f, K)
-
-    result = K.zero
-
-    for c in f:
-        result *= a
-        result += c
-
-    return result
-
-
-def dmp_eval(f, a, u, K):
-    """
-    Evaluate a polynomial at ``x_0 = a`` in ``K[X]`` using the Horner scheme.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> R.dmp_eval(2*x*y + 3*x + y + 2, 2)
-    5*y + 8
-    """
-    if not u:
-        return dup_eval(f, a, K)
-
-    if not a:
-        return dmp_TC(f, K)
-
-    result, v = dmp_LC(f, K), u - 1
-
-    for coeff in f[1:]:
-        result = dmp_mul_ground(result, a, v, K)
-        result = dmp_add(result, coeff, v, K)
-
-    return result
 
 
 def dmp_eval_in(f, a, j, u, K):
@@ -287,13 +84,31 @@ def dmp_eval_in(f, a, j, u, K):
     5*y + 8
     >>> R.dmp_eval_in(f, 2, 1)
     7*x + 4
+
     """
     if j < 0 or j > u:
         raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
 
+    if not j:
+        if not a:
+            return dmp_TC(f, K)
+
+        result, v = dmp_LC(f, K), u - 1
+
+        if u:
+            for coeff in f[1:]:
+                result = dmp_mul_ground(result, a, v, K)
+                result = dmp_add(result, coeff, v, K)
+        else:
+            for coeff in f[1:]:
+                result *= a
+                result += coeff
+
+        return result
+
     def eval_in(g, a, v, i, j, K):
         if i == j:
-            return dmp_eval(g, a, v, K)
+            return dmp_eval_in(g, a, 0, v, K)
 
         v, i = v - 1, i + 1
 
@@ -317,6 +132,7 @@ def dmp_eval_tail(f, A, u, K):
     7*x + 4
     >>> R.dmp_eval_tail(f, [2, 2])
     18
+
     """
     if not A:
         return f
@@ -326,14 +142,14 @@ def dmp_eval_tail(f, A, u, K):
 
     def eval_tail(g, i, A, u, K):
         if i == u:
-            return dup_eval(g, A[-1], K)
+            return dmp_eval_in(g, A[-1], 0, 0, K)
         else:
             h = [eval_tail(c, i + 1, A, u, K) for c in g]
 
             if i < u - len(A) + 1:
                 return h
             else:
-                return dup_eval(h, A[-u + i - 1], K)
+                return dmp_eval_in(h, A[-u + i - 1], 0, 0, K)
 
     e = eval_tail(f, 0, A, u, K)
 
@@ -358,15 +174,16 @@ def dmp_diff_eval_in(f, m, a, j, u, K):
     y**2 + 2*y + 3
     >>> R.dmp_diff_eval_in(f, 1, 2, 1)
     6*x + 11
+
     """
     if j > u:
         raise IndexError("-%s <= j < %s expected, got %s" % (u, u, j))
     if not j:
-        return dmp_eval(dmp_diff(f, m, u, K), a, u, K)
+        return dmp_eval_in(dmp_diff_in(f, m, 0, u, K), a, 0, u, K)
 
     def diff_eval(g, m, a, v, i, j, K):
         if i == j:
-            return dmp_eval(dmp_diff(g, m, v, K), a, v, K)
+            return dmp_eval_in(dmp_diff_in(g, m, 0, v, K), a, 0, v, K)
 
         v, i = v - 1, i + 1
 
@@ -384,41 +201,23 @@ def dup_trunc(f, p, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_trunc(2*x**3 + 3*x**2 + 5*x + 7, ZZ(3))
+    >>> R.dmp_ground_trunc(2*x**3 + 3*x**2 + 5*x + 7, ZZ(3))
     -x**3 - x + 1
+
     """
+    from ..ntheory.modular import symmetric_residue
+
     if K.is_IntegerRing:
         g = []
 
         for c in f:
             c = c % p
-
-            if c > p // 2:
-                g.append(c - p)
-            else:
-                g.append(c)
+            c = symmetric_residue(c, p)
+            g.append(c)
     else:
-        g = [ c % p for c in f ]
+        g = [c % p for c in f]
 
     return dmp_strip(g, 0)
-
-
-def dmp_trunc(f, p, u, K):
-    """
-    Reduce a ``K[X]`` polynomial modulo a polynomial ``p`` in ``K[Y]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
-    >>> g = (y - 1).drop(x)
-
-    >>> R.dmp_trunc(f, g)
-    11*x**2 + 11*x + 5
-    """
-    return dmp_strip([ dmp_rem(c, p, u - 1, K) for c in f ], u)
 
 
 def dmp_ground_trunc(f, p, u, K):
@@ -434,13 +233,14 @@ def dmp_ground_trunc(f, p, u, K):
 
     >>> R.dmp_ground_trunc(f, ZZ(3))
     -x**2 - x*y - y
+
     """
     if not u:
         return dup_trunc(f, p, K)
 
     v = u - 1
 
-    return dmp_strip([ dmp_ground_trunc(c, p, v, K) for c in f ], u)
+    return dmp_strip([dmp_ground_trunc(c, p, v, K) for c in f], u)
 
 
 def dmp_ground_monic(f, u, K):
@@ -461,6 +261,7 @@ def dmp_ground_monic(f, u, K):
 
     >>> R.dmp_ground_monic(f)
     x**2*y + 8/3*x**2 + 5/3*x*y + 2*x + 2/3*y + 1
+
     """
     if dmp_zero_p(f, u):
         return f
@@ -491,6 +292,7 @@ def dmp_ground_content(f, u, K):
 
     >>> R.dmp_ground_content(f)
     2
+
     """
     if u < 0:
         return f
@@ -509,6 +311,9 @@ def dmp_ground_content(f, u, K):
 
             if cont == K.one:
                 break
+
+    if K.is_negative(dmp_ground_LC(f, u, K)):
+        cont = -cont
 
     return cont
 
@@ -531,40 +336,17 @@ def dmp_ground_primitive(f, u, K):
 
     >>> R.dmp_ground_primitive(f)
     (2, x*y + 3*x + 2*y + 6)
+
     """
     if dmp_zero_p(f, u):
-        return K.zero, f
+        return K.zero, list(f)
 
     cont = dmp_ground_content(f, u, K)
 
-    if cont == K.one:
-        return cont, f
-    else:
-        return cont, dmp_quo_ground(f, cont, u, K)
+    if cont != K.one:
+        f = dmp_quo_ground(f, cont, u, K)
 
-
-def dmp_ground_extract(f, g, u, K):
-    """
-    Extract common content from a pair of polynomials in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> R.dmp_ground_extract(6*x*y + 12*x + 18, 4*x*y + 8*x + 12)
-    (2, 3*x*y + 6*x + 9, 2*x*y + 4*x + 6)
-    """
-    fc = dmp_ground_content(f, u, K)
-    gc = dmp_ground_content(g, u, K)
-
-    gcd = K.gcd(fc, gc)
-
-    if gcd != K.one:
-        f = dmp_quo_ground(f, gcd, u, K)
-        g = dmp_quo_ground(g, gcd, u, K)
-
-    return gcd, f, g
+    return cont, list(f)
 
 
 def dup_real_imag(f, K):
@@ -578,13 +360,19 @@ def dup_real_imag(f, K):
 
     >>> R.dup_real_imag(x**3 + x**2 + x + 1)
     (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1, 3*x**2*y + 2*x*y - y**3 + y)
+
+    >>> R, x, y = ring("x y", QQ.algebraic_field(I))
+
+    >>> R.dup_real_imag(x**2 + I*x - 1)
+    (x**2 - y**2 - y - 1, 2*x*y + x)
+
     """
-    if K.is_Algebraic and K.ext.as_expr() == I:
+    if K.is_ComplexAlgebraicField:
         K0 = K.domain
-        r1, i1 = dup_real_imag([_.to_dict().get((0,), K0.zero) for _ in f], K0)
-        r2, i2 = dup_real_imag([_.to_dict().get((1,), K0.zero) for _ in f], K0)
+        r1, i1 = dup_real_imag([_.real for _ in f], K0)
+        r2, i2 = dup_real_imag([_.imag for _ in f], K0)
         return dmp_add(r1, dmp_neg(i2, 1, K0), 1, K0), dmp_add(r2, i1, 1, K0)
-    elif not K.is_IntegerRing and not K.is_RationalField:
+    elif not K.is_IntegerRing and not K.is_RationalField and not K.is_RealAlgebraicField:
         raise DomainError("computing real and imaginary parts is not supported over %s" % K)
 
     f1 = dmp_zero(1)
@@ -628,6 +416,7 @@ def dup_mirror(f, K):
 
     >>> R.dup_mirror(x**3 + 2*x**2 - 4*x + 2)
     -x**3 + 2*x**2 + 4*x + 2
+
     """
     f = list(f)
 
@@ -648,6 +437,7 @@ def dup_scale(f, a, K):
 
     >>> R.dup_scale(x**2 - 2*x + 1, ZZ(2))
     4*x**2 - 4*x + 1
+
     """
     f, n, b = list(f), len(f) - 1, a
 
@@ -668,6 +458,7 @@ def dup_shift(f, a, K):
 
     >>> R.dup_shift(x**2 - 2*x + 1, ZZ(2))
     x**2 + 2*x + 1
+
     """
     f, n = list(f), len(f) - 1
 
@@ -689,6 +480,7 @@ def dup_transform(f, p, q, K):
 
     >>> R.dup_transform(x**2 - 2*x + 1, x**2 + 1, x - 1)
     x**4 - 2*x**3 + 5*x**2 - 4*x + 4
+
     """
     if not f:
         return []
@@ -718,6 +510,7 @@ def dmp_compose(f, g, u, K):
 
     >>> R.dmp_compose(x*y + 2*x + y, y)
     y**2 + 3*y
+
     """
     if dmp_zero_p(f, u):
         return f
@@ -732,7 +525,6 @@ def dmp_compose(f, g, u, K):
 
 
 def _dup_right_decompose(f, s, K):
-    """Helper function for :func:`_dup_decompose`."""
     n = len(f) - 1
     lc = dmp_LC(f, K)
 
@@ -755,27 +547,25 @@ def _dup_right_decompose(f, s, K):
 
         g[(s - i,)] = K.quo(coeff, i*r*lc)
 
-    return dup_from_dict(g, K)
+    return dmp_from_dict(g, 0, K)
 
 
 def _dup_left_decompose(f, h, K):
-    """Helper function for :func:`_dup_decompose`."""
     g, i = {}, 0
 
     while f:
         q, r = dmp_div(f, h, 0, K)
 
-        if dmp_degree(r, 0) > 0:
+        if dmp_degree_in(r, 0, 0) > 0:
             return
         else:
             g[(i,)] = dmp_LC(r, K)
             f, i = q, i + 1
 
-    return dup_from_dict(g, K)
+    return dmp_from_dict(g, 0, K)
 
 
 def _dup_decompose(f, K):
-    """Helper function for :func:`dup_decompose`."""
     df = len(f) - 1
 
     for s in range(2, df):
@@ -788,12 +578,10 @@ def _dup_decompose(f, K):
         if g is not None:
             return g, h
 
-    return
-
 
 def dup_decompose(f, K):
     """
-    Computes functional decomposition of ``f`` in ``K[x]``.
+    Compute functional decomposition of ``f`` in ``K[x]``.
 
     Given a univariate polynomial ``f`` with coefficients in a field of
     characteristic zero, returns list ``[f_1, f_2, ..., f_n]``, where::
@@ -823,7 +611,8 @@ def dup_decompose(f, K):
     References
     ==========
 
-    .. [1] [Kozen89]_
+    * :cite:`Kozen1989decomposition`
+
     """
     F = []
 
@@ -837,105 +626,6 @@ def dup_decompose(f, K):
             break
 
     return [f] + F
-
-
-def dmp_lift(f, u, K):
-    """
-    Convert algebraic coefficients to integers in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> K = QQ.algebraic_field(I)
-    >>> R, x = ring("x", K)
-
-    >>> f = x**2 + I*x + 2*I
-
-    >>> R.dmp_lift(f)
-    x**8 + 2*x**6 + 9*x**4 - 8*x**2 + 16
-    """
-    if not K.is_Algebraic:
-        raise DomainError(
-            'computation can be done only in an algebraic domain')
-
-    F, monoms, polys = dmp_to_dict(f, u), [], []
-
-    for monom, coeff in F.items():
-        if not coeff.is_ground:
-            monoms.append(monom)
-
-    perms = variations([-1, 1], len(monoms), repetition=True)
-
-    for perm in perms:
-        G = dict(F)
-
-        for sign, monom in zip(perm, monoms):
-            if sign == -1:
-                G[monom] = -G[monom]
-
-        polys.append(dmp_from_dict(G, u, K))
-
-    return dmp_convert(dmp_expand(polys, u, K), u, K, K.domain)
-
-
-def dup_sign_variations(f, K):
-    """
-    Compute the number of sign variations of ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", ZZ)
-
-    >>> R.dup_sign_variations(x**4 - x**2 - x + 1)
-    2
-    """
-    prev, k = K.zero, 0
-
-    for coeff in f:
-        if K.is_negative(coeff*prev):
-            k += 1
-
-        if coeff:
-            prev = coeff
-
-    return k
-
-
-def dup_clear_denoms(f, K0, K1=None, convert=False):
-    """
-    Clear denominators, i.e. transform ``K_0`` to ``K_1``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", QQ)
-
-    >>> f = x/2 + QQ(1, 3)
-
-    >>> R.dup_clear_denoms(f, convert=False)
-    (6, 3*x + 2)
-    >>> R.dup_clear_denoms(f, convert=True)
-    (6, 3*x + 2)
-    """
-    if K1 is None:
-        if K0.has_assoc_Ring:
-            K1 = K0.ring
-        else:
-            K1 = K0
-
-    common = K1.one
-
-    for c in f:
-        common = K1.lcm(common, c.denominator)
-
-    if common != K1.one:
-        f = dmp_mul_ground(f, common, 0, K0)
-
-    if not convert:
-        return common, f
-    else:
-        return common, dmp_convert(f, 0, K0, K1)
 
 
 def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
@@ -953,10 +643,8 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
     (6, 3*x + 2*y + 6)
     >>> R.dmp_clear_denoms(f, convert=True)
     (6, 3*x + 2*y + 6)
-    """
-    if not u:
-        return dup_clear_denoms(f, K0, K1, convert=convert)
 
+    """
     if K1 is None:
         if K0.has_assoc_Ring:
             K1 = K0.ring
@@ -978,43 +666,9 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
         return common
 
     common = clear_denoms(f, u, K0, K1)
-
-    if common != K1.one:
-        f = dmp_mul_ground(f, common, u, K0)
+    f = dmp_mul_ground(f, common, u, K0)
 
     if not convert:
         return common, f
     else:
         return common, dmp_convert(f, u, K0, K1)
-
-
-def dup_revert(f, n, K):
-    """
-    Compute ``f**(-1)`` mod ``x**n`` using Newton iteration.
-
-    This function computes first ``2**n`` terms of a polynomial that
-    is a result of inversion of a polynomial modulo ``x**n``. This is
-    useful to efficiently compute series expansion of ``1/f``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", QQ)
-
-    >>> f = -x**6/720 + x**4/24 - x**2/2 + 1
-
-    >>> R.dup_revert(f, 8)
-    61/720*x**6 + 5/24*x**4 + 1/2*x**2 + 1
-    """
-    g = [K.revert(dmp_TC(f, K))]
-    h = [K.one, K.zero, K.zero]
-
-    N = int(math.ceil(math.log(n, 2)))
-
-    for i in range(1, N + 1):
-        a = dmp_mul_ground(g, K(2), 0, K)
-        b = dup_mul(f, dup_sqr(g, K), K)
-        g = dmp_rem(dup_sub(a, b, K), h, 0, K)
-        h = dup_lshift(h, dmp_degree(h, 0), K)
-
-    return g

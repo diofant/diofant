@@ -1,15 +1,17 @@
 """Algorithms for partial fraction decomposition of rational functions. """
 
+import itertools
+
+from ..core import (Add, Dummy, Function, Integer, Lambda, preorder_traversal,
+                    sympify)
+from ..utilities import numbered_symbols
 from . import Poly, RootSum, cancel, factor
-from ..core import (Add, Dummy, Function, Integer, Lambda, S,
-                    preorder_traversal, sympify)
-from ..utilities import numbered_symbols, take
 from .polyerrors import PolynomialError
 from .polyoptions import allowed_flags, set_defaults
 from .polytools import parallel_poly_from_expr
 
 
-__all__ = ('apart', 'apart_list', 'assemble_partfrac_list')
+__all__ = 'apart', 'apart_list', 'assemble_partfrac_list'
 
 
 def apart(f, x=None, full=False, **options):
@@ -61,6 +63,7 @@ def apart(f, x=None, full=False, **options):
     ========
 
     apart_list, assemble_partfrac_list
+
     """
     allowed_flags(options, [])
 
@@ -126,7 +129,7 @@ def apart(f, x=None, full=False, **options):
         else:
             partial = apart_full_decomposition(P, Q)
 
-    terms = S.Zero
+    terms = Integer(0)
 
     for term in Add.make_args(partial):
         if term.has(RootSum):
@@ -138,7 +141,7 @@ def apart(f, x=None, full=False, **options):
 
 
 def apart_undetermined_coeffs(P, Q):
-    """Partial fractions via method of undetermined coefficients. """
+    """Partial fractions via method of undetermined coefficients."""
     X = numbered_symbols(cls=Dummy)
     partial, symbols = [], []
 
@@ -148,7 +151,7 @@ def apart_undetermined_coeffs(P, Q):
         n, q = f.degree(), Q
 
         for i in range(1, k + 1):
-            coeffs, q = take(X, n), q.quo(f)
+            coeffs, q = list(itertools.islice(X, n)), q.quo(f)
             partial.append((coeffs, q, f, i))
             symbols.extend(coeffs)
 
@@ -164,7 +167,7 @@ def apart_undetermined_coeffs(P, Q):
     system, result = [], Integer(0)
 
     for (k,), coeff in F.terms():
-        system.append(coeff - P.nth(k))
+        system.append(coeff - P.coeff_monomial((k,)))
 
     from ..solvers import solve
     solution = solve(system, symbols)[0]
@@ -192,7 +195,8 @@ def apart_full_decomposition(P, Q):
     References
     ==========
 
-    .. [1] [Bronstein93]_
+    * :cite:`Bronstein1993partial`
+
     """
     return assemble_partfrac_list(apart_list(P/Q, P.gens[0]))
 
@@ -236,8 +240,6 @@ def apart_list(f, x=None, dummies=None, **options):
     ========
 
     A first example:
-
-    >>> from diofant.abc import t
 
     >>> f = (2*x**3 - 2*x) / (x**2 - 2*x + 1)
     >>> pfd = apart_list(f)
@@ -296,7 +298,8 @@ def apart_list(f, x=None, dummies=None, **options):
     References
     ==========
 
-    .. [1] [Bronstein93]_
+    * :cite:`Bronstein1993partial`
+
     """
     allowed_flags(options, [])
 
@@ -349,36 +352,44 @@ def apart_list_full_decomposition(P, Q, dummygen):
     References
     ==========
 
-    .. [1] [Bronstein93]_
+    * :cite:`Bronstein1993partial`
+
     """
     f, x, U = P/Q, P.gen, []
 
     u = Function('u')(x)
     a = Dummy('a')
 
+    Q_c, Q_sqf = Q.sqf_list()
+    if Q_c != 1 and Q_sqf:
+        if Q_sqf[0][1] == 1:
+            Q_sqf[0] = Q_c*Q_sqf[0][0], 1
+        else:
+            Q_sqf.insert(0, (Poly(Q_c, x), 1))
+
     partial = []
 
-    for d, n in Q.sqf_list_include(all=True):
+    for d, n in Q_sqf:
         b = d.as_expr()
-        U += [ u.diff(x, n - 1) ]
+        U += [u.diff(x, n - 1)]
 
         h = cancel(f*b**n) / u**n
 
         H, subs = [h], []
 
         for j in range(1, n):
-            H += [ H[-1].diff(x) / j ]
+            H += [H[-1].diff(x) / j]
 
         for j in range(1, n + 1):
-            subs += [ (U[j - 1], b.diff(x, j) / j) ]
+            subs += [(U[j - 1], b.diff(x, j) / j)]
 
         for j in range(n):
             P, Q = cancel(H[j]).as_numer_denom()
 
             for i in range(j + 1):
-                P = P.subs(*subs[j - i])
+                P = P.subs([subs[j - i]])
 
-            Q = Q.subs(*subs[0])
+            Q = Q.subs([subs[0]])
 
             P = Poly(P, x)
             Q = Poly(Q, x)
@@ -389,8 +400,8 @@ def apart_list_full_decomposition(P, Q, dummygen):
             B, g = Q.half_gcdex(D)
             b = (P * B.quo(g)).rem(D)
 
-            Dw = D.subs(x, next(dummygen))
-            numer = Lambda(a, b.as_expr().subs(x, a))
+            Dw = D.subs({x: next(dummygen)})
+            numer = Lambda(a, b.as_expr().subs({x: a}))
             denom = Lambda(a, (x - a))
             exponent = n-j
 
@@ -438,7 +449,7 @@ def assemble_partfrac_list(partial_list):
     -sqrt(2)/(2*(x + sqrt(2))) + sqrt(2)/(2*(x - sqrt(2)))
 
     >>> a = Dummy("a")
-    >>> pfd = (1, Poly(0, x, domain='ZZ'), [([sqrt(2), -sqrt(2)], Lambda(a, a/2), Lambda(a, -a + x), 1)])
+    >>> pfd = (1, Poly(0, x), [([sqrt(2), -sqrt(2)], Lambda(a, a/2), Lambda(a, -a + x), 1)])
 
     >>> assemble_partfrac_list(pfd)
     -sqrt(2)/(2*(x + sqrt(2))) + sqrt(2)/(2*(x - sqrt(2)))
@@ -447,6 +458,7 @@ def assemble_partfrac_list(partial_list):
     ========
 
     apart, apart_list
+
     """
     # Common factor
     common = partial_list[0]
@@ -462,7 +474,7 @@ def assemble_partfrac_list(partial_list):
             an, nu = nf.variables, nf.expr
             ad, de = df.variables, df.expr
             # Hack to make dummies equal because Lambda created new Dummies
-            de = de.subs(ad[0], an[0])
+            de = de.subs({ad[0]: an[0]})
             func = Lambda(an, nu/de**ex)
             pfd += RootSum(r, func, auto=False, quadratic=False)
         else:

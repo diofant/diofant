@@ -3,7 +3,7 @@
 from ..core import Add, gcd_terms, sympify
 
 
-__all__ = ('together',)
+__all__ = 'together',
 
 
 def together(expr, deep=False):
@@ -53,6 +53,7 @@ def together(expr, deep=False):
 
     >>> together(1/exp(2*x) + 1/(x*exp(3*x)))
     E**(-3*x)*(E**x*x + 1)/x
+
     """
     def _together(expr):
         if expr.is_Atom or (expr.is_Function and not deep):
@@ -69,6 +70,6 @@ def together(expr, deep=False):
 
             return expr.__class__(base, exp)
         else:
-            return expr.__class__(*[ _together(arg) for arg in expr.args ])
+            return expr.__class__(*[_together(arg) for arg in expr.args])
 
     return _together(sympify(expr))

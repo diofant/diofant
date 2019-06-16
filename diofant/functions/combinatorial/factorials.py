@@ -1,13 +1,13 @@
 from functools import reduce
 from math import sqrt as _sqrt
 
-from ...core import Dummy, E, Function, Integer, S, cacheit, oo, sympify, zoo
+from ...core import Dummy, E, Function, Integer, cacheit, oo, sympify, zoo
 from ...core.function import ArgumentIndexError
 from ...ntheory import sieve
 
 
 class CombinatorialFunction(Function):
-    """Base class for combinatorial functions. """
+    """Base class for combinatorial functions."""
 
     def _eval_simplify(self, ratio, measure):
         from ...simplify import combsimp
@@ -68,6 +68,7 @@ class factorial(CombinatorialFunction):
     diofant.functions.combinatorial.factorials.factorial2
     diofant.functions.combinatorial.factorials.RisingFactorial
     diofant.functions.combinatorial.factorials.FallingFactorial
+
     """
 
     def fdiff(self, argindex=1):
@@ -131,8 +132,8 @@ class factorial(CombinatorialFunction):
         n = sympify(n)
 
         if n.is_Number:
-            if n is S.Zero:
-                return S.One
+            if n == 0:
+                return Integer(1)
             elif n is oo:
                 return oo
             elif n.is_Integer:
@@ -209,7 +210,7 @@ class subfactorial(CombinatorialFunction):
     It can also be written as int(round(n!/exp(1))) but the recursive
     definition with caching is implemented for this function.
 
-    An interesting analytic expression is the following [2]_
+    An interesting analytic expression is the following
 
     .. math:: !x = \Gamma(x + 1, -1)/e
 
@@ -221,8 +222,8 @@ class subfactorial(CombinatorialFunction):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Subfactorial
-    .. [2] http://mathworld.wolfram.com/Subfactorial.html
+    * https://en.wikipedia.org/wiki/Subfactorial
+    * http://mathworld.wolfram.com/Subfactorial.html
 
     Examples
     ========
@@ -238,15 +239,16 @@ class subfactorial(CombinatorialFunction):
     diofant.functions.combinatorial.factorials.factorial,
     diofant.utilities.iterables.generate_derangements,
     diofant.functions.special.gamma_functions.uppergamma
+
     """
 
     @classmethod
     @cacheit
     def _eval(cls, n):
         if not n:
-            return S.One
+            return Integer(1)
         elif n == 1:
-            return S.Zero
+            return Integer(0)
         return (n - 1)*(cls._eval(n - 1) + cls._eval(n - 2))
 
     @classmethod
@@ -298,7 +300,7 @@ class factorial2(CombinatorialFunction):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Double_factorial
+    * https://en.wikipedia.org/wiki/Double_factorial
 
     Examples
     ========
@@ -318,6 +320,7 @@ class factorial2(CombinatorialFunction):
     diofant.functions.combinatorial.factorials.factorial
     diofant.functions.combinatorial.factorials.RisingFactorial
     diofant.functions.combinatorial.factorials.FallingFactorial
+
     """
 
     @classmethod
@@ -329,7 +332,7 @@ class factorial2(CombinatorialFunction):
 
             if n.is_negative:
                 if n.is_odd:
-                    return n * (S.NegativeOne) ** ((1 - n) / 2) / factorial2(-n)
+                    return n * (-1)**((1 - n) / 2) / factorial2(-n)
                 elif n.is_even:
                     raise ValueError("argument must be nonnegative or odd")
             else:
@@ -403,6 +406,7 @@ class RisingFactorial(CombinatorialFunction):
     diofant.functions.combinatorial.factorials.factorial
     diofant.functions.combinatorial.factorials.factorial2
     diofant.functions.combinatorial.factorials.FallingFactorial
+
     """
 
     @classmethod
@@ -410,11 +414,11 @@ class RisingFactorial(CombinatorialFunction):
         x = sympify(x)
         k = sympify(k)
 
-        if x is S.One:
+        if x == 1:
             return factorial(k)
         elif k.is_Integer:
-            if k is S.Zero:
-                return S.One
+            if k == 0:
+                return Integer(1)
             else:
                 if k.is_positive:
                     if x is oo:
@@ -474,6 +478,7 @@ class FallingFactorial(CombinatorialFunction):
     diofant.functions.combinatorial.factorials.factorial
     diofant.functions.combinatorial.factorials.factorial2
     diofant.functions.combinatorial.factorials.RisingFactorial
+
     """
 
     @classmethod
@@ -482,8 +487,8 @@ class FallingFactorial(CombinatorialFunction):
         k = sympify(k)
 
         if k.is_Integer:
-            if k is S.Zero:
-                return S.One
+            if k == 0:
+                return Integer(1)
             else:
                 if k.is_positive:
                     if x is oo:
@@ -650,21 +655,19 @@ class binomial(CombinatorialFunction):
         n, k = map(sympify, (n, k))
         d = n - k
         if d.is_zero or k.is_zero:
-            return S.One
-        elif d.is_zero is False:
+            return Integer(1)
+        elif d.is_nonzero:
             if (k - 1).is_zero:
                 return n
             elif k.is_negative:
-                return S.Zero
+                return Integer(0)
             elif n.is_integer and n.is_nonnegative and d.is_negative:
-                return S.Zero
+                return Integer(0)
         if k.is_Integer and k > 0 and n.is_Number:
             return cls._eval(n, k)
 
     def _eval_expand_func(self, **hints):
-        """
-        Function to expand binomial(n,k) when n is positive integer
-        """
+        """Function to expand binomial(n,k) when n is positive integer."""
         n = self.args[0]
         if n.is_Number:
             return self.func(*self.args)
@@ -675,7 +678,7 @@ class binomial(CombinatorialFunction):
 
         if k.is_Integer:
             if k == 0:
-                return S.One
+                return Integer(1)
             elif k > 0:
                 n = self.args[0]
                 result = n - k + 1

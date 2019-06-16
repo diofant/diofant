@@ -24,10 +24,11 @@ class EPath:
     ========
 
     epath
+
     """
 
     def __new__(cls, path):
-        """Construct new EPath. """
+        """Construct new EPath."""
         if isinstance(path, EPath):
             return path
 
@@ -117,7 +118,7 @@ class EPath:
         return "%s(%r)" % (self.__class__.__name__, self._path)
 
     def _get_ordered_args(self, expr):
-        """Sort ``expr.args`` using printing order. """
+        """Sort ``expr.args`` using printing order."""
         if expr.is_Add:
             return expr.as_ordered_terms()
         elif expr.is_Mul:
@@ -126,7 +127,7 @@ class EPath:
             return expr.args
 
     def _hasattrs(self, expr, attrs):
-        """Check if ``expr`` has any of ``attrs``. """
+        """Check if ``expr`` has any of ``attrs``."""
         for attr in attrs:
             if not hasattr(expr, attr):
                 return False
@@ -134,12 +135,12 @@ class EPath:
         return True
 
     def _hastypes(self, expr, types):
-        """Check if ``expr`` is any of ``types``. """
+        """Check if ``expr`` is any of ``types``."""
         _types = [ cls.__name__ for cls in expr.__class__.mro() ]
         return bool(set(_types).intersection(types))
 
     def _has(self, expr, attrs, types):
-        """Apply ``_hasattrs`` and ``_hastypes`` to ``expr``. """
+        """Apply ``_hasattrs`` and ``_hastypes`` to ``expr``."""
         if not (attrs or types):
             return True
 
@@ -157,8 +158,6 @@ class EPath:
 
         Examples
         ========
-
-        >>> from diofant.abc import t
 
         >>> path = EPath("/*/[0]/Symbol")
         >>> expr = [((x, 1), 2), ((3, y), z)]
@@ -227,8 +226,6 @@ class EPath:
 
         Examples
         ========
-
-        >>> from diofant.abc import t
 
         >>> path = EPath("/*/[0]/Symbol")
         >>> expr = [((x, 1), 2), ((3, y), z)]
@@ -319,8 +316,6 @@ def epath(path, expr=None, func=None, args=None, kwargs=None):
 
     Examples
     ========
-
-    >>> from diofant.abc import t
 
     >>> path = "/*/[0]/Symbol"
     >>> expr = [((x, 1), 2), ((3, y), z)]

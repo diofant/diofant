@@ -4,6 +4,7 @@ for mathematical functions.
 """
 
 import math
+import numbers
 
 import mpmath.libmp as libmp
 from mpmath import inf as mpmath_inf
@@ -22,7 +23,7 @@ from mpmath.libmp.libmpc import _infs_nan
 from mpmath.libmp.libmpf import dps_to_prec, prec_to_dps
 
 from ..utilities.misc import debug
-from .compatibility import DIOFANT_INTS, is_sequence
+from .compatibility import is_sequence
 from .singleton import S
 from .sympify import sympify
 
@@ -101,6 +102,7 @@ def fastlog(x):
     >>> n = [1, -1][s]*m*2**e
     >>> n, (log(n)/log(2)).evalf(2), fastlog((s, m, e, bc))
     (10, 3.3, 4)
+
     """
 
     if not x or x == fzero:
@@ -118,6 +120,7 @@ def pure_complex(v):
     (2, 3)
     >>> pure_complex(I)
     (0, 1)
+
     """
     from .numbers import I
     h, t = v.as_coeff_Add()
@@ -148,10 +151,11 @@ def scaled_zero(mag, sign=1):
     >>> ok, p = scaled_zero(100, -1)
     >>> Float(scaled_zero(ok), p)
     -0.e+30
+
     """
     if type(mag) is tuple and len(mag) == 4 and iszero(mag, scaled=True):
         return (mag[0][0],) + mag[1:]
-    elif isinstance(mag, DIOFANT_INTS):
+    elif isinstance(mag, numbers.Integral):
         if sign not in [-1, 1]:
             raise ValueError('sign must be +/-1')
         rv, p = mpf_shift(fone, mag), -1
@@ -180,6 +184,7 @@ def complex_accuracy(result):
 
     In the worst case (re and im equal), this is wrong by a factor
     sqrt(2), or by log2(sqrt(2)) = 0.5 bit.
+
     """
     re, im, re_acc, im_acc = result
     if not im:
@@ -208,7 +213,7 @@ def get_abs(expr, prec, options):
 
 
 def get_complex_part(expr, no, prec, options):
-    """no = 0 for real part, no = 1 for imaginary part"""
+    """no = 0 for real part, no = 1 for imaginary part."""
     workprec = prec
     i = 0
     while 1:
@@ -252,9 +257,7 @@ def finalize_complex(re, im, prec):
 
 
 def chop_parts(value, prec):
-    """
-    Chop off tiny real or complex parts.
-    """
+    """Chop off tiny real or complex parts."""
     re, im, re_acc, im_acc = value
     # chop based on absolute value
     if re and re not in _infs_nan and (fastlog(re) < -prec + 4):
@@ -284,7 +287,7 @@ def add_terms(terms, prec, target_prec):
     Helper for evalf_add. Adds a list of (mpfval, accuracy) terms.
 
     Returns
-    -------
+    =======
 
     - None, None if there are no non-zero terms;
     - terms[0] if there is only 1 term;
@@ -300,6 +303,7 @@ def add_terms(terms, prec, target_prec):
     prec is used to define the working precision.
 
     XXX explain why this is needed and why one can't just loop using mpf_add
+
     """
 
     terms = [t for t in terms if not iszero(t)]
@@ -630,13 +634,14 @@ def evalf_trig(v, prec, options):
     This function handles sin and cos of complex arguments.
 
     TODO: should also handle tan of complex arguments.
+
     """
     from ..functions import cos, sin
     if isinstance(v, cos):
         func = mpf_cos
     elif isinstance(v, sin):
         func = mpf_sin
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError
     arg = v.args[0]
     # 20 extra bits is possibly overkill. It does make the need
@@ -652,7 +657,7 @@ def evalf_trig(v, prec, options):
             return fone, None, prec, None
         elif isinstance(v, sin):
             return None, None, None, None
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
     # For trigonometric functions, we are interested in the
     # fixed-point (absolute) accuracy of the argument.
@@ -735,7 +740,7 @@ def evalf_atan(v, prec, options):
 
 
 def evalf_subs(prec, subs):
-    """ Change all Float entries in `subs` to have precision prec. """
+    """Change all Float entries in `subs` to have precision prec."""
     newsubs = {}
     for a, b in subs.items():
         b = sympify(b)
@@ -774,13 +779,13 @@ def evalf_bernoulli(expr, prec, options):
 
 
 def as_mpmath(x, prec, options):
-    from .numbers import Infinity, NegativeInfinity, Zero
+    from .numbers import oo
     x = sympify(x)
-    if isinstance(x, Zero) or x == 0:
+    if x == 0:
         return mpf(0)
-    if isinstance(x, Infinity):
+    if x == oo:
         return mpf('inf')
-    if isinstance(x, NegativeInfinity):
+    if x == -oo:
         return mpf('-inf')
     # XXX
     re, im, _, _ = evalf(x, prec, options)
@@ -889,7 +894,7 @@ def do_integral(expr, prec, options):
 def evalf_integral(expr, prec, options):
     limits = expr.limits
     if len(limits) != 1 or len(limits[0]) != 3:
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
     workprec = prec
     i = 0
     maxprec = options.get('maxprec', INF)
@@ -956,6 +961,7 @@ def hypsum(expr, n, start, prec):
     given general term, e.g. e = hypsum(1/factorial(n), n). The
     quotient between successive terms must be a quotient of integer
     polynomials.
+
     """
     from .numbers import Float
     from ..simplify import hypersimp
@@ -965,7 +971,7 @@ def hypsum(expr, n, start, prec):
         raise NotImplementedError('does not support inf prec')
 
     if start:
-        expr = expr.subs(n, n + start)
+        expr = expr.subs({n: n + start})
     hs = hypersimp(expr, n)
     if hs is None:
         raise NotImplementedError("a hypergeometric series is required")
@@ -979,7 +985,7 @@ def hypsum(expr, n, start, prec):
     if h < 0:
         raise ValueError("Sum diverges like (n!)^%i" % (-h))
 
-    term = expr.subs(n, 0)
+    term = expr.subs({n: 0})
     if not term.is_Rational:
         raise NotImplementedError("Non rational term functionality is not implemented.")
 
@@ -1199,7 +1205,7 @@ def evalf(x, prec, options):
             # convert (approximately) from given tolerance;
             # the formula here will will make 1e-i rounds to 0 for
             # i in the range +/-27 while 2e-i will not be chopped
-            chop_prec = int(round(-3.321*math.log10(chop) + 2.5))
+            chop_prec = round(-3.321*math.log10(chop) + 2.5)
         r = chop_parts(r, chop_prec)
     if options.get("strict"):
         check_target(x, r, prec)
@@ -1236,6 +1242,7 @@ class EvalfMixin:
                 Choose algorithm for numerical quadrature. By default,
                 tanh-sinh quadrature is used. For oscillatory
                 integrals on an infinite interval, try quad='osc'.
+
         """
         from .numbers import Float, I
 
@@ -1283,7 +1290,7 @@ class EvalfMixin:
     n = evalf
 
     def _evalf(self, prec):
-        """Helper for evalf. Does the same thing but takes binary precision"""
+        """Helper for evalf. Does the same thing but takes binary precision."""
         r = self._eval_evalf(prec)
         if r is None:
             r = self
@@ -1339,5 +1346,6 @@ def N(x, dps=15, **options):
     ========
 
     diofant.core.evalf.EvalfMixin.evalf
+
     """
     return sympify(x).evalf(dps, **options)

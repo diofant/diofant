@@ -1,4 +1,4 @@
-"""Base class for all the objects in Diofant"""
+"""Base class for all the objects in Diofant."""
 
 from collections import Mapping, defaultdict
 from itertools import zip_longest
@@ -6,15 +6,15 @@ from itertools import zip_longest
 from .cache import cacheit
 from .compatibility import iterable, ordered
 from .decorators import _sympifyit
-from .singleton import S
 from .sympify import SympifyError, sympify
 
 
-class Basic(object):
+class Basic:
     """
     Base class for all objects in Diofant.
 
     Always use ``args`` property, when accessing parameters of some instance.
+
     """
 
     # To be overridden with True in the appropriate subclasses
@@ -52,11 +52,11 @@ class Basic(object):
         return obj
 
     def copy(self):
-        """Return swallow copy of self. """
+        """Return swallow copy of self."""
         return self.func(*self.args)
 
     def __reduce_ex__(self, proto):
-        """ Pickling support."""
+        """Pickling support."""
         return type(self), self.__getnewargs__(), self.__getstate__()
 
     def __getnewargs__(self):
@@ -86,12 +86,13 @@ class Basic(object):
 
         Defining more than _hashable_content is necessary if __eq__ has
         been defined by a class. See note about this in Basic.__eq__.
+
         """
         return self._args
 
     @classmethod
     def class_key(cls):
-        """Nice order of classes. """
+        """Nice order of classes."""
         return 5, 0, cls.__name__
 
     @cacheit
@@ -104,15 +105,16 @@ class Basic(object):
         >>> sorted([Rational(1, 2), I, -I], key=lambda x: x.sort_key())
         [1/2, -I, I]
 
-        >>> [x, 1/x, 1/x**2, x**2, x**S.Half, x**Rational(1, 4), x**Rational(3, 2)]
+        >>> [x, 1/x, 1/x**2, x**2, sqrt(x), root(x, 4), x**Rational(3, 2)]
         [x, 1/x, x**(-2), x**2, sqrt(x), x**(1/4), x**(3/2)]
         >>> sorted(_, key=lambda x: x.sort_key())
         [x**(-2), 1/x, x**(1/4), sqrt(x), x, x**(3/2), x**2]
-        """
 
+        """
+        from .numbers import Integer
         args = len(self.args), tuple(arg.sort_key(order)
                                      for arg in self._sorted_args)
-        return self.class_key(), args, S.One.sort_key(), S.One
+        return self.class_key(), args, Integer(1).sort_key(), Integer(1)
 
     @_sympifyit('other', NotImplemented)
     def __eq__(self, other):
@@ -132,7 +134,8 @@ class Basic(object):
         References
         ==========
 
-        .. [1] http://docs.python.org/dev/reference/datamodel.html#object.__hash__
+        * http://docs.python.org/dev/reference/datamodel.html#object.__hash__
+
         """
         if self is other:
             return True
@@ -141,50 +144,6 @@ class Basic(object):
             return False
 
         return self._hashable_content() == other._hashable_content()
-
-    def dummy_eq(self, other, symbol=None):
-        """
-        Compare two expressions and handle dummy symbols.
-
-        Examples
-        ========
-
-        >>> u = Dummy('u')
-
-        >>> (u**2 + 1).dummy_eq(x**2 + 1)
-        True
-        >>> (u**2 + 1) == (x**2 + 1)
-        False
-
-        >>> (u**2 + y).dummy_eq(x**2 + y, x)
-        True
-        >>> (u**2 + y).dummy_eq(x**2 + y, y)
-        False
-        """
-        other = sympify(other)
-        dummy_symbols = [s for s in self.free_symbols if s.is_Dummy]
-
-        if not dummy_symbols:
-            return self == other
-        elif len(dummy_symbols) == 1:
-            dummy = dummy_symbols.pop()
-        else:  # pragma: no cover
-            raise NotImplementedError(
-                "only one dummy symbol allowed on the left-hand side")
-
-        if symbol is None:
-            symbols = other.free_symbols
-
-            if not symbols:
-                return self == other
-            elif len(symbols) == 1:
-                symbol = symbols.pop()
-            else:  # pragma: no cover
-                raise NotImplementedError(
-                    "specify a symbol in which expressions should be compared")
-
-        tmp = dummy.__class__()
-        return self.subs(dummy, tmp) == other.subs(symbol, tmp)
 
     # Note, we always use the default ordering (lex) in __str__ and __repr__,
     # regardless of the global setting.  See issue sympy/sympy#5487.
@@ -268,11 +227,12 @@ class Basic(object):
         {f(x), sin(y + I*pi)}
         >>> (1 + f(x) + 2*sin(y + I*pi)).atoms(AppliedUndef)
         {f(x)}
+
         """
         if types:
             types = tuple(t if isinstance(t, type) else type(t) for t in types)
         else:
-            types = (Atom,)
+            types = Atom,
         return set().union(*[self.find(t) for t in types])
 
     @property
@@ -288,6 +248,7 @@ class Basic(object):
 
         Any other method that uses bound variables should implement a
         free_symbols method.
+
         """
         return set().union(*[a.free_symbols for a in self.args])
 
@@ -303,6 +264,7 @@ class Basic(object):
 
         >>> (x + Lambda(y, 2*y)).rcall(z)
         x + 2*z
+
         """
         if callable(self) and hasattr(self, '__call__'):
             return self(*args)
@@ -332,6 +294,7 @@ class Basic(object):
         2*x
         >>> a == a.func(*a.args)
         True
+
         """
         return self.__class__
 
@@ -346,6 +309,7 @@ class Basic(object):
         (x,)
         >>> (x*y).args
         (x, y)
+
         """
         return self._args
 
@@ -355,6 +319,7 @@ class Basic(object):
         The same as ``args``.  Derived classes which don't fix an
         order on their arguments should override this method to
         produce the sorted representation.
+
         """
         return self.args
 
@@ -363,7 +328,6 @@ class Basic(object):
         Substitutes old for new in an expression after sympifying args.
 
         `args` is either:
-          - two arguments, e.g. foo.subs(old, new)
           - one iterable argument, e.g. foo.subs(iterable). The iterable may be
              o an iterable container with (old, new) pairs. In this case the
                replacements are processed in the order given with successive
@@ -380,7 +344,7 @@ class Basic(object):
         Examples
         ========
 
-        >>> (1 + x*y).subs(x, pi)
+        >>> (1 + x*y).subs({x: pi})
         pi*y + 1
         >>> (1 + x*y).subs({x: pi, y: 2})
         1 + 2*pi
@@ -392,7 +356,7 @@ class Basic(object):
         >>> (x + y).subs(reversed(reps))
         x**2 + 2
 
-        >>> (x**2 + x**4).subs(x**2, y)
+        >>> (x**2 + x**4).subs({x**2: y})
         y**2 + y
 
         To replace only the x**2 but not the x**4, use xreplace:
@@ -421,7 +385,7 @@ class Basic(object):
         default_sort_key to break any ties. All other iterables are left
         unsorted.
 
-        >>> from diofant.abc import a, b, c, d, e
+        >>> from diofant.abc import e
 
         >>> expr = sqrt(sin(2*x))*sin(exp(x)*x)*cos(2*x) + sin(2*x)
 
@@ -463,8 +427,10 @@ class Basic(object):
                   using matching rules
         diofant.core.evalf.EvalfMixin.evalf: calculates the given formula to
                                            a desired level of precision
+
         """
         from ..utilities import default_sort_key
+        from .numbers import Integer
         from .symbol import Dummy
 
         unordered = False
@@ -476,25 +442,13 @@ class Basic(object):
                 unordered = True
                 sequence = sequence.items()
             elif not iterable(sequence):
-                from ..utilities.misc import filldedent
-                raise ValueError(filldedent("""
-                   When a single argument is passed to subs
-                   it should be a dictionary of old: new pairs or an iterable
-                   of (old, new) tuples."""))
-        elif len(args) == 2:
-            sequence = [args]
+                raise ValueError("Expected a mapping or iterable "
+                                 "of (old, new) tuples.")
+            sequence = list(sequence)
         else:
-            raise ValueError("subs accepts either 1 or 2 arguments")
+            raise ValueError("subs accepts one argument")
 
-        sequence = list(sequence)
-        for i in range(len(sequence)):
-            o, n = sequence[i]
-            so, sn = sympify(o), sympify(n)
-            sequence[i] = (so, sn)
-            if _aresame(so, sn):
-                sequence[i] = None
-                continue
-        sequence = list(filter(None, sequence))
+        sequence = [_ for _ in sympify(sequence) if not _aresame(*_)]
 
         if unordered:
             sequence = dict(sequence)
@@ -519,7 +473,6 @@ class Basic(object):
         if kwargs.pop('simultaneous', False):  # XXX should this be the default for dict subs?
             reps = {}
             rv = self
-            kwargs['hack2'] = True
             m = Dummy()
             for old, new in sequence:
                 d = Dummy(commutative=new.is_commutative)
@@ -528,7 +481,7 @@ class Basic(object):
                 # is both free and bound
                 rv = rv._subs(old, d*m, **kwargs)
                 reps[d] = new
-            reps[m] = S.One  # get rid of m
+            reps[m] = Integer(1)  # get rid of m
             return rv.xreplace(reps)
         else:
             rv = self
@@ -554,7 +507,7 @@ class Basic(object):
         Add's _eval_subs knows how to target x + y in the following
         so it makes the change:
 
-            >>> (x + y + z).subs(x + y, 1)
+            >>> (x + y + z).subs({x + y: 1})
             z + 1
 
         Add's _eval_subs doesn't need to know how to find x + y in
@@ -567,7 +520,7 @@ class Basic(object):
         pass the z*(x + y) arg to Mul where the change will take place and the
         substitution will succeed:
 
-            >>> (z*(x + y) + 3).subs(x + y, 1)
+            >>> (z*(x + y) + 3).subs({x + y: 1})
             z + 3
 
         ** Developers Notes **
@@ -605,12 +558,11 @@ class Basic(object):
               substitution of old -> new is attempted.) Sum's _eval_subs
               routine uses this strategy when a substitution is attempted
               on any of its summation variables.
+
         """
 
         def fallback(self, old, new):
-            """
-            Try to replace old with new in any of self's arguments.
-            """
+            """Try to replace old with new in any of self's arguments."""
             hit = False
             args = list(self.args)
             for i, arg in enumerate(args):
@@ -619,24 +571,7 @@ class Basic(object):
                     hit = True
                     args[i] = arg
             if hit:
-                rv = self.func(*args)
-                hack2 = hints.get('hack2', False)
-                if hack2 and self.is_Mul and not rv.is_Mul:  # 2-arg hack
-                    coeff = S.One
-                    nonnumber = []
-                    for i in args:
-                        if i.is_Number:
-                            coeff *= i
-                        else:
-                            nonnumber.append(i)
-                    nonnumber = self.func(*nonnumber)
-                    if coeff is S.One:
-                        return nonnumber
-                    elif nonnumber is S.One:
-                        return coeff
-                    else:
-                        return self.func(coeff, nonnumber, evaluate=False)
-                return rv
+                return self.func(*args)
             return self
 
         if _aresame(self, old):
@@ -651,7 +586,11 @@ class Basic(object):
         """Override this stub if you want to do anything more than
         attempt a replacement of old with new in the arguments of self.
 
-        See also: _subs
+        See also
+        ========
+
+        _subs
+
         """
         return
 
@@ -673,7 +612,6 @@ class Basic(object):
         Examples
         ========
 
-        >>> x, y, z = symbols('x y z')
         >>> (1 + x*y).xreplace({x: pi})
         pi*y + 1
         >>> (1 + x*y).xreplace({x: pi, y: 2})
@@ -716,6 +654,7 @@ class Basic(object):
                  parsing of match, and conditional replacements
         subs: substitution of subexpressions as defined by the objects
               themselves.
+
         """
         if self in rule:
             return rule[self]
@@ -752,6 +691,7 @@ class Basic(object):
         True
         >>> x.has()
         False
+
         """
         from .function import UndefinedFunction, Function
 
@@ -770,7 +710,7 @@ class Basic(object):
                 return any(match(arg) for arg in preorder_traversal(self))
 
     def _has_matcher(self):
-        """Helper for .has()"""
+        """Helper for .has()."""
         return lambda x: self == x
 
     def replace(self, query, value, exact=False):
@@ -882,6 +822,7 @@ class Basic(object):
               themselves.
         xreplace: exact node replacement in expr tree; also capable of
                   using matching rules
+
         """
         from ..simplify.simplify import bottom_up
 
@@ -965,7 +906,7 @@ class Basic(object):
         return bottom_up(self, rec_replace, atoms=True)
 
     def find(self, query):
-        """Find all subexpressions matching a query. """
+        """Find all subexpressions matching a query."""
         try:
             query = sympify(query)
         except SympifyError:
@@ -985,7 +926,7 @@ class Basic(object):
         return dict(groups)
 
     def count(self, query):
-        """Count the number of matching subexpressions. """
+        """Count the number of matching subexpressions."""
         return sum(self.find(query).values())
 
     def _matches(self, expr, repl_dict={}):
@@ -995,12 +936,12 @@ class Basic(object):
         Examples
         ========
 
-        >>> a, b, c = symbols('a b c')
         >>> x = Wild('x')
         >>> Basic(a + x, x)._matches(Basic(a + b, c)) is None
         True
         >>> Basic(a + x, x)._matches(Basic(a + b + c, b + c))
         {x_: b + c}
+
         """
         expr = sympify(expr)
         if not isinstance(expr, self.func):
@@ -1062,6 +1003,7 @@ class Basic(object):
 
         xreplace
         diofant.core.symbol.Wild
+
         """
         from ..simplify import signsimp
         pattern = sympify(pattern)
@@ -1098,6 +1040,7 @@ class Basic(object):
 
         >>> (2*Integral(x, x)).doit(deep=False)
         2*Integral(x, x)
+
         """
         if hints.get('deep', True):
             terms = [term.doit(**hints) if isinstance(term, Basic) else term
@@ -1119,7 +1062,7 @@ class Basic(object):
         else:
             args = self.args
 
-        if pattern is None or isinstance(self.func, pattern):
+        if pattern is None or isinstance(self, pattern):
             if hasattr(self, rule):
                 rewritten = getattr(self, rule)(*args)
                 if rewritten is not None:
@@ -1161,6 +1104,7 @@ class Basic(object):
 
         >>> sin(x).rewrite([sin], exp)
         -I*(E**(I*x) - E**(-I*x))/2
+
         """
         if not args:
             return self
@@ -1177,7 +1121,7 @@ class Basic(object):
                 if iterable(pattern[0]):
                     pattern = pattern[0]
 
-                pattern = [p.__class__ for p in pattern if self.has(p)]
+                pattern = [p for p in pattern if self.has(p)]
 
                 if pattern:
                     return self._eval_rewrite(tuple(pattern), rule, **hints)
@@ -1190,6 +1134,7 @@ class Atom(Basic):
 
     An atom is an expression with no subexpressions, for example Symbol,
     Number, Rational or Integer, but not Add, Mul, Pow.
+
     """
 
     is_Atom = True
@@ -1201,6 +1146,7 @@ class Atom(Basic):
         ========
 
         Basic.doit
+
         """
         return self
 
@@ -1212,8 +1158,8 @@ class Atom(Basic):
     @cacheit
     def sort_key(self, order=None):
         """Return a sort key."""
-        from . import S
-        return self.class_key(), (1, (str(self),)), S.One.sort_key(), S.One
+        from . import Integer
+        return self.class_key(), (1, (str(self),)), Integer(1).sort_key(), Integer(1)
 
     def _eval_simplify(self, ratio, measure):
         return self
@@ -1244,6 +1190,7 @@ def _aresame(a, b):
 
     >>> _aresame(Float(2.0), Integer(2))
     False
+
     """
     from .function import AppliedUndef, UndefinedFunction as UndefFunc
     for i, j in zip_longest(preorder_traversal(a), preorder_traversal(b)):
@@ -1254,8 +1201,7 @@ def _aresame(a, b):
                     return False
             else:
                 return False
-    else:
-        return True
+    return True
 
 
 class preorder_traversal:
@@ -1290,14 +1236,13 @@ class preorder_traversal:
     Examples
     ========
 
-    >>> x, y, z = symbols('x y z')
-
     The nodes are returned in the order that they are encountered unless key
     is given; simply passing key=True will guarantee that the traversal is
     unique.
 
     >>> list(preorder_traversal((x + y)*z, keys=True))
     [z*(x + y), z, x + y, x, y]
+
     """
 
     def __init__(self, node, keys=None):
@@ -1336,6 +1281,7 @@ class preorder_traversal:
         z*(x + y*z)
         z
         x + y*z
+
         """
         self._skip_flag = True
 

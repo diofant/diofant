@@ -11,14 +11,14 @@ class Contains(BooleanFunction):
     true
     >>> Contains(Integer(-2), S.Naturals)
     false
-    >>> i = Symbol('i', integer=True)
-    >>> Contains(i, S.Naturals)
-    Contains(i, Naturals())
+    >>> Contains(n, S.Naturals)
+    Contains(n, Naturals())
 
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Element_%28mathematics%29
+    * https://en.wikipedia.org/wiki/Element_%28mathematics%29
+
     """
 
     @classmethod

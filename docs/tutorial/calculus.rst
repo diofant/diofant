@@ -260,7 +260,7 @@ rate of growth.  Also, things like `\infty - \infty` and
 `\frac{\infty}{\infty}` return `\mathrm{nan}` (not-a-number).  For example
 
     >>> expr = x**2/exp(x)
-    >>> expr.subs(x, oo)
+    >>> expr.subs({x: oo})
     nan
     >>> limit(expr, x, oo)
     0

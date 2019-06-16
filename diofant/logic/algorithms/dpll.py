@@ -6,8 +6,9 @@ efficient unit propagation.
 References
 ==========
 
-.. [1] https://en.wikipedia.org/wiki/DPLL_algorithm
-.. [2] https://www.researchgate.net/publication/242384772
+* https://en.wikipedia.org/wiki/DPLL_algorithm
+* https://www.researchgate.net/publication/242384772
+
 """
 
 from ...core.compatibility import default_sort_key
@@ -19,11 +20,11 @@ def dpll_satisfiable(expr):
 
     It returns a model rather than True when it succeeds
 
-    >>> from diofant.abc import A, B
-    >>> dpll_satisfiable(A & ~B)
-    {A: True, B: False}
-    >>> dpll_satisfiable(A & ~A)
+    >>> dpll_satisfiable(a & ~b)
+    {a: True, b: False}
+    >>> dpll_satisfiable(a & ~a)
     False
+
     """
     clauses = conjuncts(to_cnf(expr))
     if False in clauses:
@@ -48,6 +49,7 @@ def dpll(clauses, symbols, model):
 
     >>> dpll([{1}, {2}, {3}], {1, 2}, {3: False})
     False
+
     """
     # compute DP kernel
     P, value = find_unit_clause(clauses, model)
@@ -94,6 +96,7 @@ def pl_true_int_repr(clause, model={}):
     >>> pl_true_int_repr({1, 2}, {1: False})
     >>> pl_true_int_repr({1, 2}, {1: False, 2: False})
     False
+
     """
     result = False
     for lit in clause:
@@ -123,6 +126,7 @@ def unit_propagate(clauses, s):
 
     >>> unit_propagate([{1, 2}, {3, -2}, {2}], 2)
     [{3}]
+
     """
     negated = {-s}
     return [clause - negated for clause in clauses if s not in clause]
@@ -137,6 +141,7 @@ def find_pure_symbol(symbols, unknown_clauses):
 
     >>> find_pure_symbol({1, 2, 3}, [{1, -2}, {-2, -3}, {3, 1}])
     (1, True)
+
     """
     all_symbols = set().union(*unknown_clauses)
     found_pos = all_symbols.intersection(symbols)
@@ -157,6 +162,7 @@ def find_unit_clause(clauses, model):
 
     >>> find_unit_clause([{1, 2, 3}, {2, -3}, {1, -2}], {1: True})
     (2, False)
+
     """
     bound = set(model) | {-sym for sym in model}
     for clause in clauses:

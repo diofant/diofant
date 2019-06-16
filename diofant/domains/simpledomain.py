@@ -3,7 +3,7 @@
 from .domain import Domain
 
 
-__all__ = ('SimpleDomain',)
+__all__ = 'SimpleDomain',
 
 
 class SimpleDomain(Domain):

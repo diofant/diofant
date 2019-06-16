@@ -5,18 +5,20 @@
 ..
    >>> init_printing(pretty_print=True, use_unicode=True)
 
-In this section, we discuss some ways that we can perform advanced
-manipulation of expressions.
-
 Most generic interface to represent a mathematical expression in Diofant is a
-tree.  Let us take the expression `x y + x^2`.  We can see what this expression
-looks like internally by using :func:`repr`
+tree.  Let us take the expression
 
-    >>> repr(x*y + x**2)
+    >>> x*y + x**2
+     2
+    x  + x⋅y
+
+We can see what this expression looks like internally by using :func:`repr`
+
+    >>> repr(_)
     "Add(Pow(Symbol('x'), Integer(2)), Mul(Symbol('x'), Symbol('y')))"
 
 The easiest way to tear this apart is to look at a diagram of the
-expression tree:
+expression tree
 
 .. This comes from dotprint(x**2 + x*y, labelfunc=repr)
 
@@ -61,7 +63,7 @@ input integer literal ``2``.
 
 What about ``x*y``?  As we might expect, this is the multiplication of
 ``x`` and ``y``.  The Diofant class for multiplication is
-:class:`~diofant.core.mul.Mul`.
+:class:`~diofant.core.mul.Mul`
 
     >>> repr(x*y)
     "Mul(Symbol('x'), Symbol('y'))"
@@ -72,7 +74,7 @@ Thus, we could have created the same object by writing
     x⋅y
 
 When we write ``x**2``, this creates a
-:class:`~diofant.core.power.Pow` class instance.
+:class:`~diofant.core.power.Pow` class instance
 
     >>> repr(x**2)
     "Pow(Symbol('x'), Integer(2))"
@@ -86,23 +88,17 @@ We could have created the same object by calling
 Now we get to our final expression, ``x*y + x**2``.  This is the
 addition of our last two objects.  The Diofant class for addition is
 :class:`~diofant.core.add.Add`, so, as you might expect, to create
-this object, we could use
+this object, we also could use
 
     >>> Add(Pow(x, 2), Mul(x, y))
-     2
-    x  + x⋅y
-    >>> x*y + x**2
      2
     x  + x⋅y
 
 .. note::
 
-   You may have noticed that the order we entered our expression and
-   the order that it came out from printers like :func:`repr` or in
-   the graph were different.  This because the arguments
-   of :class:`~diofant.core.add.Add` and the commutative arguments of
-   :class:`~diofant.core.mul.Mul` are stored in an arbitrary (but
-   consistent!) order, which is independent of the order inputted.
+   The arguments of :class:`~diofant.core.add.Add` and the commutative
+   arguments of :class:`~diofant.core.mul.Mul` are stored in an order,
+   which is independent of the order inputted.
 
 There is no subtraction class.  ``x - y`` is represented as
 ``x + (-1)*y``
@@ -141,7 +137,7 @@ There is no subtraction class.  ``x - y`` is represented as
     "Mul(Integer(-1), Symbol('y'))_(1,)" -> "Symbol('y')_(1, 1)";
     }
 
-Similarly to subtraction, there is no division class.
+Similarly to subtraction, there is no division class
 
     >>> repr(x/y)
     "Mul(Symbol('x'), Pow(Symbol('y'), Integer(-1)))"
@@ -193,25 +189,19 @@ multiplying by 1/2.
 Walking the Tree
 ================
 
-Let's look at how to dig our way through an expression tree.  For this
-every object in Diofant has a very generic interface --- two important
-attributes, :attr:`~diofant.core.basic.Basic.func`, and
+Let's look at how to dig our way through an expression tree, using a very
+generic interface --- attributes :attr:`~diofant.core.basic.Basic.func` and
 :attr:`~diofant.core.basic.Basic.args`.
 
-The head of the object is encoded in the
-:attr:`~diofant.core.basic.Basic.func` attribute.  Usually it is the
-same as the class of the object, but not always.
+The head of the object is encoded in the :attr:`~diofant.core.basic.Basic.func`
+attribute
 
-    >>> expr = 2 + x*y
-    >>> expr
+    >>> expr = 2 + x*y; expr
     x⋅y + 2
     >>> expr.func
     <class 'diofant.core.add.Add'>
-    >>> type(expr)
-    <class 'diofant.core.add.Add'>
 
-The class of an object need not be the same as the one used to create
-it.
+The class of an object need not be the same as the one used to create it
 
     >>> Add(x, x)
     2⋅x
@@ -220,33 +210,26 @@ it.
 
 .. note::
 
-   Diofant classes make heavy use of the :meth:`~object.__new__` class
+   Diofant classes heavy use of the :meth:`~object.__new__` class
    constructor, which, unlike :meth:`~object.__init__`, allows a
    different class to be returned from the constructor.
 
 The children of a node in the tree are held in the
-:attr:`~diofant.core.basic.Basic.args` attribute.
+:attr:`~diofant.core.basic.Basic.args` attribute
 
     >>> expr.args
     (2, x⋅y)
 
-From this, we can see ``expr`` can be completely reconstructed from
-its :attr:`~diofant.core.basic.Basic.func` and its
-:attr:`~diofant.core.basic.Basic.args`.
-
-    >>> expr.func(*expr.args)
-    x⋅y + 2
-
 .. note::
 
-   Every well-formed expression must either have empty
-   :attr:`~diofant.core.basic.Basic.args` or satisfy invariant
+   Every expression with non-empty :attr:`~diofant.core.basic.Basic.args` can
+   be reconstructed, using
 
-       >>> expr == expr.func(*expr.args)
-       True
+       >>> expr.func(*expr.args)
+       x⋅y + 2
 
 Empty :attr:`~diofant.core.basic.Basic.args` signal that
-we have hit a leaf of the expression tree.
+we have hit a leaf of the expression tree
 
     >>> x.args
     ()
@@ -254,14 +237,10 @@ we have hit a leaf of the expression tree.
     ()
 
 This interface allows us to write recursive generators that walk expression
-trees either in post-order or pre-order fashion.
+trees either in post-order or pre-order fashion
 
 
-    >>> expr = x*y + 2
-    >>> for term in preorder_traversal(expr):
-    ...     print(term)
-    x*y + 2
-    2
-    x*y
-    x
-    y
+    >>> tuple(preorder_traversal(expr))
+    (x⋅y + 2, 2, x⋅y, x, y)
+    >>> tuple(postorder_traversal(expr))
+    (2, x, y, x⋅y, x⋅y + 2)

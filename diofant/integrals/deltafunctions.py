@@ -34,6 +34,7 @@ def change_mul(node, x):
 
     diofant.functions.special.delta_functions.DiracDelta
     deltaintegrate
+
     """
     if not (node.is_Mul or node.is_Pow):
         return node
@@ -122,6 +123,7 @@ def deltaintegrate(f, x):
 
     diofant.functions.special.delta_functions.DiracDelta
     diofant.integrals.integrals.Integral
+
     """
     if not f.has(DiracDelta):
         return
@@ -164,5 +166,5 @@ def deltaintegrate(f, x):
                     dg, rest_mult_2 = change_mul(dg, x)
                     rest_mult = rest_mult*rest_mult_2
                 point = solve(dg.args[0], x)[0][x]
-                return (rest_mult.subs(x, point)*Heaviside(x - point))
+                return (rest_mult.subs({x: point})*Heaviside(x - point))
     return

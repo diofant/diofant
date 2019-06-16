@@ -1,11 +1,13 @@
 from ..concrete.expr_with_limits import AddWithLimits
-from ..core import (Add, Basic, Dummy, Eq, Expr, Mul, S, Symbol, Tuple, Wild,
-                    diff, nan, oo, sympify)
+from ..core import (Add, Basic, Dummy, Eq, Expr, Integer, Mul, Symbol, Tuple,
+                    Wild, diff, nan, oo, sympify)
 from ..core.compatibility import is_sequence
 from ..functions import Piecewise, log, piecewise_fold, sign, sqrt
+from ..logic import false, true
 from ..matrices import MatrixBase
 from ..polys import Poly, PolynomialError
 from ..series import Order, limit
+from ..simplify.fu import sincos_to_sum
 from ..utilities import filldedent
 from .meijerint import meijerint_definite, meijerint_indefinite
 from .trigonometry import trigintegrate
@@ -80,6 +82,7 @@ class Integral(AddWithLimits):
         diofant.concrete.expr_with_limits.ExprWithLimits.function
         diofant.concrete.expr_with_limits.ExprWithLimits.limits
         diofant.concrete.expr_with_limits.ExprWithLimits.variables
+
         """
         return AddWithLimits.free_symbols.fget(self)
 
@@ -106,9 +109,9 @@ class Integral(AddWithLimits):
         for xab in self.limits:
             if len(xab) == 3:
                 z = Eq(xab[1], xab[2])
-                if z is S.true:
+                if z == true:
                     return True
-                elif z is S.false:
+                elif z == false:
                     got_false = True
             elif len(xab) == 2 and xab[0] not in free:
                 if xab[1].is_zero:
@@ -171,7 +174,7 @@ class Integral(AddWithLimits):
         Examples
         ========
 
-        >>> from diofant.abc import a, b, c, d, u
+        >>> from diofant.abc import u
 
         >>> i = Integral(x*cos(x**2 - 1), (x, 0, 1))
 
@@ -228,6 +231,7 @@ class Integral(AddWithLimits):
 
         diofant.concrete.expr_with_limits.ExprWithLimits.variables : Lists the integration variables
         diofant.concrete.expr_with_limits.ExprWithLimits.as_dummy : Replace integration variables with dummy ones
+
         """
 
         from ..solvers import solve
@@ -270,7 +274,7 @@ class Integral(AddWithLimits):
             raise ValueError('either x or u must be a symbol')
 
         if uvar == xvar:
-            return self.transform(x, (u.subs(uvar, d), d)).xreplace({d: uvar})
+            return self.transform(x, (u.subs({uvar: d}), d)).xreplace({d: uvar})
 
         if uvar in self.limits:
             raise ValueError(filldedent('''
@@ -278,21 +282,21 @@ class Integral(AddWithLimits):
             or a variable that is not already an integration variable'''))
 
         if not x.is_Symbol:
-            F = [x.subs(xvar, d)]
+            F = [x.subs({xvar: d})]
             soln = solve(u - x, xvar, check=False)
             if not soln:
                 raise ValueError('no solution for solve(F(x) - f(u), x)')
-            f = [fi[xvar].subs(uvar, d) for fi in soln]
+            f = [fi[xvar].subs({uvar: d}) for fi in soln]
         else:
-            f = [u.subs(uvar, d)]
+            f = [u.subs({uvar: d})]
             pdiff, reps = posify(u - x)
             puvar = uvar.subs([(v, k) for k, v in reps.items()])
             soln = [s[puvar].subs(reps) for s in solve(pdiff, puvar)]
             if not soln:
                 raise ValueError('no solution for solve(F(x) - f(u), u)')
-            F = [fi.subs(xvar, d) for fi in soln]
+            F = [fi.subs({xvar: d}) for fi in soln]
 
-        newfuncs = {(self.function.subs(xvar, fi)*fi.diff(d)).subs(d, uvar)
+        newfuncs = {(self.function.subs({xvar: fi})*fi.diff(d)).subs({d: uvar})
                     for fi in f}
         if len(newfuncs) > 1:
             raise ValueError(filldedent('''
@@ -304,8 +308,9 @@ class Integral(AddWithLimits):
             """
             replace d with a, using subs if possible, otherwise limit
             where sign of b is considered
+
             """
-            wok = F.subs(d, a)
+            wok = F.subs({d: a})
             if wok is nan or wok.is_finite is False and a.is_finite:
                 return limit(sign(b)*F, d, a)
             return wok
@@ -314,6 +319,7 @@ class Integral(AddWithLimits):
             """
             replace d with a, using subs if possible, otherwise limit
             where sign of b is considered
+
             """
             avals = list({_calc_limit_1(Fi, a, b) for Fi in F})
             if len(avals) > 1:
@@ -361,6 +367,7 @@ class Integral(AddWithLimits):
         diofant.integrals.heurisch.heurisch
         diofant.integrals.rationaltools.ratint
         diofant.integrals.integrals.Integral.as_sum : Approximate the integral using a sum
+
         """
         if not hints.get('integrals', True):
             return self
@@ -379,7 +386,7 @@ class Integral(AddWithLimits):
 
         # check for the trivial zero
         if self.is_zero:
-            return S.Zero
+            return Integer(0)
 
         # now compute and check the function
         function = self.function
@@ -390,7 +397,7 @@ class Integral(AddWithLimits):
         if deep:
             function = function.doit(**hints)
         if function.is_zero:
-            return S.Zero
+            return Integer(0)
 
         # There is no trivial answer, so continue
 
@@ -451,9 +458,10 @@ class Integral(AddWithLimits):
                 return ret
 
             meijerg1 = meijerg
-            if len(xab) == 3 and xab[1].is_extended_real and xab[2].is_extended_real \
-                and not function.is_Poly and \
-                    (xab[1].has(oo, -oo) or xab[2].has(oo, -oo)):
+            if len(xab) == 3 and all(_.is_extended_real for _ in xab[1:]) and \
+                    not function.is_Poly and \
+                    (any(_.has(-oo, oo) for _ in xab[1:]) or
+                     len(self.limits) == 1 and all(_.is_number for _ in xab[1:])):
                 ret = try_meijerg(function, xab)
                 if ret is not None:
                     function = ret
@@ -476,14 +484,14 @@ class Integral(AddWithLimits):
                     if (any(b.is_extended_real for b in xab[1:]) and
                             not any(b.is_extended_real is False for b in xab[1:])):
                         r = Dummy('r', extended_real=True)
-                        function = function.subs(xab[0], r)
+                        function = function.subs({xab[0]: r})
                         function = function.rewrite(Piecewise)
-                        function = function.subs(r, xab[0])
+                        function = function.subs({r: xab[0]})
                         function = piecewise_fold(function)
 
                 antideriv = self._eval_integral(
                     function, xab[0],
-                    meijerg=meijerg1, risch=risch,
+                    meijerg=meijerg, risch=risch,
                     conds=conds)
                 if antideriv is None and meijerg1 is True:
                     ret = try_meijerg(function, xab)
@@ -580,8 +588,8 @@ class Integral(AddWithLimits):
         References
         ==========
 
-        .. [1] https//en.wikipedia.org/wiki/Differentiation_under_the_integral_sign
-        .. [2] https//en.wikipedia.org/wiki/Fundamental_theorem_of_calculus
+        * https://en.wikipedia.org/wiki/Differentiation_under_the_integral_sign
+        * https://en.wikipedia.org/wiki/Fundamental_theorem_of_calculus
 
         Examples
         ========
@@ -600,6 +608,7 @@ class Integral(AddWithLimits):
         {x}
         >>> i.doit()
         2*x**3/3 - x/2 - 1/6
+
         """
 
         # differentiate under the integral sign; we do not
@@ -627,12 +636,12 @@ class Integral(AddWithLimits):
         def _do(f, ab):
             dab_dsym = diff(ab, sym)
             if not dab_dsym:
-                return S.Zero
+                return Integer(0)
             if isinstance(f, Integral):
                 limits = [(x, x) if (len(l) == 1 and l[0] == x) else l
                           for l in f.limits]
                 f = self.func(f.function, *limits)
-            return f.subs(x, ab)*dab_dsym
+            return f.subs({x: ab})*dab_dsym
         rv = 0
         if b is not None:
             rv += _do(f, b)
@@ -648,7 +657,7 @@ class Integral(AddWithLimits):
             # by the limits, so mask off the variable of integration
             # while differentiating
             u = Dummy('u')
-            arg = f.subs(x, u).diff(sym).subs(u, x)
+            arg = f.subs({x: u}).diff(sym).subs({u: x})
             rv += self.func(arg, Tuple(x, a, b))
         return rv
 
@@ -719,6 +728,7 @@ class Integral(AddWithLimits):
              integrals that can only be computed using this method.  The goal
              is to implement enough of the Risch and Meijer G-function methods
              so that this can be deleted.
+
         """
         from .deltafunctions import deltaintegrate
         from .heurisch import heurisch, heurisch_wrapper
@@ -784,7 +794,7 @@ class Integral(AddWithLimits):
             coeff, g = g.as_independent(x)
 
             # g(x) = const
-            if g is S.One and not meijerg:
+            if g == 1 and not meijerg:
                 parts.append(coeff*x)
                 continue
 
@@ -893,7 +903,7 @@ class Integral(AddWithLimits):
             # collection on the expressions if they are already
             # in an expanded form
             if not h and len(args) == 1:
-                f = f.expand(mul=True, deep=False)
+                f = sincos_to_sum(f).expand(mul=True, deep=False)
                 if f.is_Add:
                     # Note: risch will be identical on the expanded
                     # expression, but maybe it will be able to pick out parts,
@@ -941,7 +951,7 @@ class Integral(AddWithLimits):
         References
         ==========
 
-        .. [1] https//en.wikipedia.org/wiki/Rectangle_method
+        * https://en.wikipedia.org/wiki/Rectangle_method
 
         Examples
         ========
@@ -984,11 +994,11 @@ class Integral(AddWithLimits):
         by using the midpoint or right-hand method:
 
         >>> e = Integral(1/sqrt(x), (x, 0, 1))
-        >>> e.as_sum(5).n(4)
+        >>> e.as_sum(5).evalf(4)
         1.730
-        >>> e.as_sum(10).n(4)
+        >>> e.as_sum(10).evalf(4)
         1.809
-        >>> e.doit().n(4)  # the actual value is 2
+        >>> e.doit().evalf(4)  # the actual value is 2
         2.000
 
         The left- or trapezoid method will encounter the discontinuity and
@@ -1003,6 +1013,7 @@ class Integral(AddWithLimits):
         ========
 
         diofant.integrals.integrals.Integral.doit : Perform the integration using any hints
+
         """
 
         limits = self.limits
@@ -1026,7 +1037,7 @@ class Integral(AddWithLimits):
             result = (l + r)/2
             for i in range(1, n):
                 x = lower_limit + i*dx
-                result += self.function.subs(sym, x)
+                result += self.function.subs({sym: x})
             return result*dx
         elif method not in ('left', 'right', 'midpoint'):
             raise NotImplementedError("Unknown method %s" % method)
@@ -1045,7 +1056,7 @@ class Integral(AddWithLimits):
                 if i == n:
                     result += self.function.limit(sym, upper_limit, "-")
                     continue
-            result += self.function.subs(sym, xi)
+            result += self.function.subs({sym: xi})
         return result*dx
 
 
@@ -1145,8 +1156,6 @@ def integrate(*args, **kwargs):
     Examples
     ========
 
-    >>> from diofant.abc import a
-
     >>> integrate(x*y, x)
     x**2*y/2
 
@@ -1189,6 +1198,7 @@ def integrate(*args, **kwargs):
 
     diofant.integrals.integrals.Integral
     diofant.integrals.integrals.Integral.doit
+
     """
     meijerg = kwargs.pop('meijerg', None)
     conds = kwargs.pop('conds', 'piecewise')
@@ -1210,7 +1220,6 @@ def line_integrate(field, curve, vars):
     Examples
     ========
 
-    >>> from diofant.abc import t
     >>> C = Curve([E**t + 1, E**t - 1], (t, 0, ln(2)))
     >>> line_integrate(x + y, C, [x, y])
     3*sqrt(2)
@@ -1220,6 +1229,7 @@ def line_integrate(field, curve, vars):
 
     diofant.integrals.integrals.integrate
     diofant.integrals.integrals.Integral
+
     """
     from ..geometry import Curve
     F = sympify(field)
@@ -1245,7 +1255,7 @@ def line_integrate(field, curve, vars):
         _dn = diff(_f, curve.parameter)
         # ...arc length
         dldt = dldt + (_dn * _dn)
-        Ft = Ft.subs(var, _f)
+        Ft = Ft.subs({var: _f})
     Ft = Ft * sqrt(dldt)
 
     integral = Integral(Ft, curve.limits).doit(deep=False)

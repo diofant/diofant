@@ -1,10 +1,10 @@
-from functools import reduce
+import functools
 
+import mpmath
+
+from ..core import igcd, prod
 from ..core.compatibility import as_int
-from ..core.mul import prod
-from ..core.numbers import igcd, igcdex
-from ..domains import ZZ
-from ..polys.galoistools import gf_crt, gf_crt1, gf_crt2
+from ..core.numbers import igcdex
 from .primetest import isprime
 
 
@@ -15,18 +15,19 @@ def symmetric_residue(a, m):
     1
     >>> symmetric_residue(4, 6)
     -2
+
     """
     if a <= m // 2:
         return a
     return a - m
 
 
-def crt(m, v, symmetric=False, check=True):
+def crt(M, U, symmetric=False, check=True):
     r"""Chinese Remainder Theorem.
 
-    The moduli in m are assumed to be pairwise coprime.  The output
-    is then an integer f, such that f = v_i mod m_i for each pair out
-    of v and m. If ``symmetric`` is False a positive integer will be
+    The moduli in M are assumed to be pairwise coprime.  The output
+    is then an integer f, such that f = u_i mod m_i for each pair out
+    of U and M. If ``symmetric`` is False a positive integer will be
     returned, else \|f\| will be less than or equal to the LCM of the
     moduli, and thus f may be negative.
 
@@ -37,33 +38,33 @@ def crt(m, v, symmetric=False, check=True):
     The keyword ``check`` can be set to False if it is known that the moduli
     are coprime.
 
-    As an example consider a set of residues ``U = [49, 76, 65]``
-    and a set of moduli ``M = [99, 97, 95]``. Then we have::
+    Examples
+    ========
 
-       >>> crt([99, 97, 95], [49, 76, 65])
-       (639985, 912285)
+    >>> crt([99, 97, 95], [49, 76, 65])
+    (639985, 912285)
 
-    This is the correct result because::
+    This is the correct result because:
 
-       >>> [639985 % m for m in [99, 97, 95]]
-       [49, 76, 65]
+    >>> [639985 % m for m in [99, 97, 95]]
+    [49, 76, 65]
 
     If the moduli are not co-prime, you may receive an incorrect result
     if you use ``check=False``:
 
-       >>> crt([12, 6, 17], [3, 4, 2], check=False)
-       (954, 1224)
-       >>> [954 % m for m in [12, 6, 17]]
-       [6, 0, 2]
-       >>> crt([12, 6, 17], [3, 4, 2]) is None
-       True
-       >>> crt([3, 6], [2, 5])
-       (5, 6)
+    >>> crt([12, 6, 17], [3, 4, 2], check=False)
+    (954, 1224)
+    >>> [954 % m for m in [12, 6, 17]]
+    [6, 0, 2]
+    >>> crt([12, 6, 17], [3, 4, 2]) is None
+    True
+    >>> crt([3, 6], [2, 5])
+    (5, 6)
 
-    Note: the order of gf_crt's arguments is reversed relative to crt,
-    and that solve_congruence takes residue, modulus pairs.
+    Notes
+    =====
 
-    Programmer's note: rather than checking that all pairs of moduli share
+    Rather than checking that all pairs of moduli share
     no GCD (an O(n**2) test) and rather than factoring all moduli and seeing
     that there is no factor in common, a check that the result gives the
     indicated residuals is performed -- an O(n) operation.
@@ -72,18 +73,28 @@ def crt(m, v, symmetric=False, check=True):
     ========
 
     solve_congruence
-    diofant.polys.galoistools.gf_crt : low level crt routine used by this routine
+
     """
-    if check:
-        m = list(map(as_int, m))
-        v = list(map(as_int, v))
-
-    result = gf_crt(v, m, ZZ)
-    mm = prod(m)
+    from ..domains import ZZ
 
     if check:
-        if not all(v % m == result % m for v, m in zip(v, m)):
-            result = solve_congruence(*list(zip(v, m)),
+        M = list(map(as_int, M))
+        U = list(map(as_int, U))
+
+    p = prod(M, start=ZZ.one)
+    v = ZZ.zero
+
+    for u, m in zip(U, M):
+        e = p // m
+        s, _, _ = ZZ.gcdex(e, m)
+        v += e*(u*s % m)
+
+    result = v % p
+    mm = prod(M)
+
+    if check:
+        if not all(v % m == result % m for v, m in zip(U, M)):
+            result = solve_congruence(*list(zip(U, M)),
                                       check=False, symmetric=symmetric)
             if result is None:
                 return result
@@ -94,7 +105,7 @@ def crt(m, v, symmetric=False, check=True):
     return result, mm
 
 
-def crt1(m):
+def crt1(M):
     """First part of Chinese Remainder Theorem, for multiple application.
 
     Examples
@@ -102,12 +113,21 @@ def crt1(m):
 
     >>> crt1([18, 42, 6])
     (4536, [252, 108, 756], [0, 2, 0])
+
     """
+    from ..domains import ZZ
 
-    return gf_crt1(m, ZZ)
+    E, S = [], []
+    p = prod(M, start=ZZ.one)
+
+    for m in M:
+        E.append(p // m)
+        S.append(ZZ.gcdex(E[-1], m)[0] % m)
+
+    return p, E, S
 
 
-def crt2(m, v, mm, e, s, symmetric=False):
+def crt2(M, U, p, E, S, symmetric=False):
     """Second part of Chinese Remainder Theorem, for multiple application.
 
     Examples
@@ -116,13 +136,20 @@ def crt2(m, v, mm, e, s, symmetric=False):
     >>> mm, e, s = crt1([18, 42, 6])
     >>> crt2([18, 42, 6], [0, 0, 0], mm, e, s)
     (0, 4536)
-    """
 
-    result = gf_crt2(v, m, mm, e, s, ZZ)
+    """
+    from ..domains import ZZ
+
+    v = ZZ.zero
+
+    for u, m, e, s in zip(U, M, E, S):
+        v += e*(u*s % m)
+
+    result = v % p
 
     if symmetric:
-        return symmetric_residue(result, mm), mm
-    return result, mm
+        result = symmetric_residue(result, p)
+    return result, p
 
 
 def solve_congruence(*remainder_modulus_pairs, **hint):
@@ -173,6 +200,7 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
     ========
 
     crt : high level routine implementing the Chinese Remainder Theorem
+
     """
     def combine(c1, c2):
         """Return the tuple (a, m) which satisfies the requirement
@@ -181,12 +209,13 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
         References
         ==========
 
-        .. [1] https//en.wikipedia.org/wiki/Method_of_successive_substitution
+        * https://en.wikipedia.org/wiki/Method_of_successive_substitution
+
         """
         a1, m1 = c1
         a2, m2 = c2
         a, b, c = m1, a2 - a1, m2
-        g = reduce(igcd, [a, b, c])
+        g = functools.reduce(igcd, [a, b, c])
         a, b, c = [i//g for i in [a, b, c]]
         if a != 1:
             inv_a, _, g = igcdex(a, c)
@@ -203,7 +232,7 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
         rm = [(as_int(r), as_int(m)) for r, m in rm]
 
         # ignore redundant pairs but raise an error otherwise; also
-        # make sure that a unique set of bases is sent to gf_crt if
+        # make sure that a unique set of bases is sent to crt() if
         # they are all prime.
         #
         # The routine will work out less-trivial violations and
@@ -242,3 +271,63 @@ def solve_congruence(*remainder_modulus_pairs, **hint):
         if symmetric:
             return symmetric_residue(n, m), m
         return n, m
+
+
+def integer_rational_reconstruction(c, m, domain):
+    r"""
+    Reconstruct a rational number `\frac a b` from
+
+    .. math::
+
+        c = \frac a b \; \mathrm{mod} \, m,
+
+    where `c` and `m` are integers.
+
+    The algorithm is based on the Euclidean Algorithm. In general, `m` is
+    not a prime number, so it is possible that `b` is not invertible modulo
+    `m`. In that case ``None`` is returned.
+
+    Parameters
+    ==========
+
+    c : Integer
+        `c = \frac a b \; \mathrm{mod} \, m`
+    m : Integer
+        modulus, not necessarily prime
+    domain : IntegerRing
+        `a, b, c` are elements of ``domain``
+
+    Returns
+    =======
+
+    frac : Rational
+        either `\frac a b` in `\mathbb Q` or ``None``
+
+    References
+    ==========
+
+    * :cite:`Wang1981partial`
+
+    """
+    if c < 0:
+        c += m
+
+    r0, s0 = m, domain.zero
+    r1, s1 = c, domain.one
+
+    bound = mpmath.sqrt(m / 2)  # still correct if replaced by ZZ.sqrt(m // 2) ?
+
+    while r1 >= bound:
+        quo = r0 // r1
+        r0, r1 = r1, r0 - quo*r1
+        s0, s1 = s1, s0 - quo*s1
+
+    if abs(s1) >= bound:
+        return
+
+    if s1 < 0:
+        r1, s1 = -r1, -s1
+
+    field = domain.field
+
+    return field(r1) / field(s1)

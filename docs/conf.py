@@ -19,23 +19,19 @@ warnings.simplefilter('error', UserWarning)
 
 # Add any Sphinx extension module names here, as strings.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax',
-              'numpydoc', 'sphinx.ext.graphviz', 'sphinx.ext.autosummary',
-              'sphinx.ext.intersphinx', 'sphinx.ext.extlinks',
-              'sphinxcontrib.autoprogram']
+              'sphinx.ext.graphviz', 'sphinx.ext.intersphinx',
+              'sphinx.ext.extlinks', 'sphinx.ext.napoleon',
+              'sphinxcontrib.bibtex', 'sphinxcontrib.autoprogram']
 
-# Whether to show all members of a class in the Methods and Attributes
-# sections automatically.
-numpydoc_show_class_members = False
-
-# Whether to create a Sphinx table of contents for the lists
-# of class methods and attributes.
-numpydoc_class_members_toctree = False
+napoleon_google_docstring = False
+napoleon_use_param = False
+napoleon_use_rtype = False
 
 # Sphinx will warn about all references where the target cannot be found.
 nitpicky = True
 
 # Glob-style patterns that should be excluded when looking for sources.
-exclude_patterns = ['CONTRIBUTING.rst', 'README.rst']
+exclude_patterns = ['README.rst']
 
 # The document name of the "master" document, that is, the document
 # that contains the root toctree directive.
@@ -43,7 +39,7 @@ master_doc = 'index'
 
 # Project information.
 project = 'Diofant'
-copyright = '2006-2017 SymPy Development Team, 2013-2018 Sergey B Kirpichev'
+copyright = '2006-2018 SymPy Development Team, 2013-2019 Sergey B Kirpichev'
 version = diofant.__version__
 release = version
 
@@ -55,6 +51,10 @@ html_theme = 'sphinx_rtd_theme'
 
 # The LaTeX engine to build the docs.
 latex_engine = 'xelatex'
+
+# If True, the PDF build from the LaTeX files created by Sphinx will use xindy
+# rather than makeindex.
+latex_use_xindy = False
 
 # This value determines how to group the document tree into LaTeX source
 # files. It must be a list of tuples (startdocname, targetname, title,
@@ -100,3 +100,38 @@ extlinks = {
 # The number of times the linkcheck builder will attempt to check a URL
 # before declaring it broken.
 linkcheck_retries = 3
+
+# A list of regular expressions that match URIs that should not be checked.
+linkcheck_ignore = [r'https://primes.utm.edu/notes/gaps.html',
+                    r'https://primes.utm.edu/glossary/xpage/BertrandsPostulate.html',
+                    r'https://primes.utm.edu/prove/prove2_3.html',
+                    r'https://primes.utm.edu/glossary/xpage/Pseudoprime.html']
+
+# This value controls if docstring for classes or methods, if not explicitly
+# set, is inherited form parents.
+autodoc_inherit_docstrings = False
+
+# A list of paths that contain custom static files. Relative paths are taken as
+# relative to the configuration directory. They are copied to the output’s
+# _static directory.
+html_static_path = ['_static']
+
+# Should we show "Created using Sphinx" in the HTML footer?
+html_show_sphinx = False
+
+# Theme-specific options.
+html_theme_options = {
+    'logo_only': True,
+    'display_version': False,
+}
+
+mathjax_config = {
+    'CommonHTML': {'linebreaks': {'automatic': True}},
+    'HTML-CSS': {'linebreaks': {'automatic': True}},
+    'SVG': {'linebreaks': {'automatic': True}},
+}
+
+
+# https://docs.readthedocs.io/en/latest/guides/adding-custom-css.html
+def setup(app):
+    app.add_stylesheet('custom.css')

@@ -47,6 +47,7 @@ def dummy_sgs(dummies, sym, n):
     [[0, 1, 3, 2, 4, 5, 6, 7, 8, 9], [0, 1, 2, 3, 5, 4, 6, 7, 8, 9],
      [0, 1, 2, 3, 4, 5, 7, 6, 8, 9], [0, 1, 4, 5, 2, 3, 6, 7, 8, 9],
      [0, 1, 2, 3, 6, 7, 4, 5, 8, 9]]
+
     """
     if len(dummies) > n:
         raise ValueError("List too large")
@@ -79,6 +80,7 @@ def _min_dummies(dummies, sym, indices):
 
     >>> _min_dummies([list(range(2, 8))], [0], list(range(10)))
     [0, 1, 2, 2, 2, 2, 2, 2, 8, 9]
+
     """
     num_types = len(sym)
     m = []
@@ -102,6 +104,7 @@ def _trace_S(s, j, b, S_cosets):
     Return the representative h satisfying s[h[b]] == j
 
     If there is not such a representative return None
+
     """
     for h in S_cosets[b]:
         if s[h[b]] == j:
@@ -114,6 +117,7 @@ def _trace_D(gj, p_i, Dxtrav):
     Return the representative h satisfying h[gj] == p_i
 
     If there is not such a representative return None
+
     """
     for h in Dxtrav:
         if h[gj] == p_i:
@@ -122,9 +126,7 @@ def _trace_D(gj, p_i, Dxtrav):
 
 
 def _dumx_remove(dumx, dumx_flat, p0):
-    """
-    remove p0 from dumx
-    """
+    """remove p0 from dumx"""
     res = []
     for dx in dumx:
         if p0 not in dx:
@@ -380,6 +382,7 @@ def double_coset_can_rep(dummies, sym, b_S, sgens, S_transversals, g):
     >>> g = Permutation([4, 1, 3, 0, 5, 2, 6, 7])
     >>> double_coset_can_rep([list(range(6))], [0], base, gens, transversals, g)
     0
+
     """
     size = g.size
     g = g.array_form
@@ -558,6 +561,7 @@ def canonical_free(base, gens, g, num_free):
     >>> g = Permutation([0, 3, 4, 6, 7, 5, 2, 1, 8, 9])
     >>> canonical_free(sbase, [Permutation(h) for h in sgens], g, 2)
     [0, 3, 4, 6, 1, 2, 7, 5, 9, 8]
+
     """
     g = g.array_form
     size = len(g)
@@ -732,6 +736,7 @@ def canonicalize(g, dummies, msym, *v):
     >>> g = Permutation([0, 7, 3, 1, 9, 5, 11, 6, 10, 4, 13, 2, 12, 8, 14, 15])
     >>> canonicalize(g, dummies, [0, 0], t0, t1)
     [0, 2, 4, 1, 6, 8, 10, 3, 11, 7, 12, 5, 13, 9, 15, 14]
+
     """
     from .testutil import canonicalize_naive
     if not isinstance(msym, list):
@@ -849,6 +854,7 @@ def perm_af_direct_product(gens1, gens2, signed=True):
     >>> gens2 = [[1, 0, 2, 3]]
     >>> perm_af_direct_product(gens1, gens2, True)
     [[1, 0, 2, 3, 4, 5, 7, 6], [0, 1, 3, 2, 4, 5, 6, 7], [0, 1, 2, 3, 5, 4, 6, 7]]
+
     """
     gens1 = [list(x) for x in gens1]
     gens2 = [list(x) for x in gens2]
@@ -890,6 +896,7 @@ def bsgs_direct_product(base1, gens1, base2, gens2, signed=True):
     >>> base2, gens2 = get_symmetric_group_sgs(2)
     >>> bsgs_direct_product(base1, gens1, base2, gens2)
     ([1], [Permutation(4)(1, 2)])
+
     """
     s = 2 if signed else 0
     n1 = gens1[0].size - s
@@ -921,6 +928,7 @@ def get_symmetric_group_sgs(n, antisym=False):
     >>> Permutation.print_cyclic = True
     >>> get_symmetric_group_sgs(3)
     ([0, 1], [Permutation(4)(0, 1), Permutation(4)(1, 2)])
+
     """
     if n == 1:
         return [], [_af_new(list(range(3)))]
@@ -938,9 +946,7 @@ riemann_bsgs = [0, 2], [Permutation(0, 1)(4, 5), Permutation(2, 3)(4, 5),
 
 
 def get_transversals(base, gens):
-    """
-    Return transversals for the group with BSGS base, gens
-    """
+    """Return transversals for the group with BSGS base, gens."""
     if not base:
         return []
     stabs = _distribute_gens_by_base(base, gens)
@@ -964,6 +970,7 @@ def _is_minimal_bsgs(base, gens):
     >>> riemann_bsgs1 = ([2, 0], ([Permutation(5)(0, 1)(4, 5), Permutation(5)(0, 2)(1, 3)]))
     >>> _is_minimal_bsgs(*riemann_bsgs1)
     False
+
     """
     base1 = []
     sgs1 = gens[:]
@@ -994,6 +1001,7 @@ def get_minimal_bsgs(base, gens):
     >>> riemann_bsgs1 = ([2, 0], ([Permutation(5)(0, 1)(4, 5), Permutation(5)(0, 2)(1, 3)]))
     >>> get_minimal_bsgs(*riemann_bsgs1)
     ([0, 2], [Permutation(0, 1)(4, 5), Permutation(5)(0, 2)(1, 3), Permutation(2, 3)(4, 5)])
+
     """
     G = PermutationGroup(gens)
     base, gens = G.schreier_sims_incremental()
@@ -1035,9 +1043,7 @@ def tensor_gens(base, gens, list_free_indices, sym=0):
 
     """
     def _get_bsgs(G, base, gens, free_indices):
-        """
-        return the BSGS for G.pointwise_stabilizer(free_indices)
-        """
+        """Return the BSGS for G.pointwise_stabilizer(free_indices)."""
         if not free_indices:
             return base[:], gens[:]
         else:
@@ -1139,6 +1145,7 @@ def gens_products(*v):
     (6, [0, 2], [Permutation(5)(0, 1), Permutation(5)(2, 3), Permutation(5)(0, 2)(1, 3)])
     >>> gens_products((base, gens, [[1], []], 0))
     (6, [2], [Permutation(5)(2, 3)])
+
     """
     res_size, res_base, res_gens = tensor_gens(*v[0])
     for i in range(1, len(v)):

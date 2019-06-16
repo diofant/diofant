@@ -1,7 +1,7 @@
 from mpmath import mp, workprec
 
 from ...core import (Add, Dummy, EulerGamma, Expr, Function, I, Integer, Pow,
-                     Rational, S, oo, pi, sympify, zoo)
+                     Rational, oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.factorials import RisingFactorial, factorial, rf
 from ..combinatorial.numbers import bernoulli, harmonic
@@ -77,10 +77,11 @@ class gamma(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gamma_function
-    .. [2] https://dlmf.nist.gov/5
-    .. [3] http://mathworld.wolfram.com/GammaFunction.html
-    .. [4] http://functions.wolfram.com/GammaBetaErf/Gamma/
+    * https://en.wikipedia.org/wiki/Gamma_function
+    * https://dlmf.nist.gov/5
+    * http://mathworld.wolfram.com/GammaFunction.html
+    * http://functions.wolfram.com/GammaBetaErf/Gamma/
+
     """
 
     unbranched = True
@@ -106,14 +107,14 @@ class gamma(Function):
                     n = abs(arg.numerator) // arg.denominator
 
                     if arg.is_positive:
-                        k, coeff = n, S.One
+                        k, coeff = n, Integer(1)
                     else:
                         n = k = n + 1
 
                         if n & 1 == 0:
-                            coeff = S.One
+                            coeff = Integer(1)
                         else:
-                            coeff = S.NegativeOne
+                            coeff = Integer(-1)
 
                     for i in range(3, 2*k, 2):
                         coeff *= i
@@ -133,7 +134,7 @@ class gamma(Function):
                 x = Dummy('x')
                 n = arg.numerator // arg.denominator
                 p = arg.numerator - n*arg.denominator
-                return self.func(x + n)._eval_expand_func().subs(x, Rational(p, arg.denominator))
+                return self.func(x + n)._eval_expand_func().subs({x: Rational(p, arg.denominator)})
 
         if arg.is_Add:
             coeff, tail = arg.as_coeff_add()
@@ -170,7 +171,7 @@ class gamma(Function):
     def _eval_nseries(self, x, n, logx):
         x0 = self.args[0].limit(x, 0)
         if not (x0.is_Integer and x0 <= 0):
-            return super(gamma, self)._eval_nseries(x, n, logx)
+            return super()._eval_nseries(x, n, logx)
         t = self.args[0] - x0
         return (self.func(t + 1)/rf(self.args[0], -x0 + 1))._eval_nseries(x, n, logx)
 
@@ -231,12 +232,13 @@ class lowergamma(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Incomplete_gamma_function#Lower_incomplete_Gamma_function
-    .. [2] Abramowitz, Milton; Stegun, Irene A., eds. (1965), Chapter 6, Section 5,
-           Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables
-    .. [3] https://dlmf.nist.gov/8
-    .. [4] http://functions.wolfram.com/GammaBetaErf/Gamma2/
-    .. [5] http://functions.wolfram.com/GammaBetaErf/Gamma3/
+    * https://en.wikipedia.org/wiki/Incomplete_gamma_function#Lower_incomplete_Gamma_function
+    * Abramowitz, Milton; Stegun, Irene A., eds. (1965), Chapter 6, Section 5,
+      Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables
+    * https://dlmf.nist.gov/8
+    * http://functions.wolfram.com/GammaBetaErf/Gamma2/
+    * http://functions.wolfram.com/GammaBetaErf/Gamma3/
+
     """
 
     def fdiff(self, argindex=2):
@@ -285,9 +287,9 @@ class lowergamma(Function):
         # Special values.
         if a.is_Number:
             # TODO this should be non-recursive
-            if a is S.One:
-                return S.One - exp(-x)
-            elif a is S.Half:
+            if a == 1:
+                return 1 - exp(-x)
+            elif a == Rational(1, 2):
                 return sqrt(pi)*erf(sqrt(x))
             elif a.is_Integer or (2*a).is_Integer:
                 b = a - 1
@@ -373,13 +375,14 @@ class uppergamma(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Incomplete_gamma_function#Upper_incomplete_Gamma_function
-    .. [2] Abramowitz, Milton; Stegun, Irene A., eds. (1965), Chapter 6, Section 5,
-           Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables
-    .. [3] https://dlmf.nist.gov/8
-    .. [4] http://functions.wolfram.com/GammaBetaErf/Gamma2/
-    .. [5] http://functions.wolfram.com/GammaBetaErf/Gamma3/
-    .. [6] https//en.wikipedia.org/wiki/Exponential_integral#Relation_with_other_functions
+    * https://en.wikipedia.org/wiki/Incomplete_gamma_function#Upper_incomplete_Gamma_function
+    * Abramowitz, Milton; Stegun, Irene A., eds. (1965), Chapter 6, Section 5,
+      Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables
+    * https://dlmf.nist.gov/8
+    * http://functions.wolfram.com/GammaBetaErf/Gamma2/
+    * http://functions.wolfram.com/GammaBetaErf/Gamma3/
+    * https://en.wikipedia.org/wiki/Exponential_integral#Relation_with_other_functions
+
     """
 
     def fdiff(self, argindex=2):
@@ -407,18 +410,18 @@ class uppergamma(Function):
         from .. import unpolarify
         if z.is_Number:
             if z is oo:
-                return S.Zero
-            elif z is S.Zero:
+                return Integer(0)
+            elif z == 0:
                 # TODO: Holds only for Re(a) > 0:
                 return gamma(a)
 
         # We extract branching information here. C/f lowergamma.
         nx, n = z.extract_branch_factor()
-        if a.is_integer and (a > 0) is S.true:
+        if a.is_integer and a.is_positive:
             nx = unpolarify(z)
             if z != nx:
                 return uppergamma(a, nx)
-        elif a.is_integer and (a <= 0) is S.true:
+        elif a.is_integer and a.is_nonpositive:
             if n != 0:
                 return -2*pi*I*n*(-1)**(-a)/factorial(-a) + uppergamma(a, nx)
         elif n != 0:
@@ -427,9 +430,9 @@ class uppergamma(Function):
         # Special values.
         if a.is_Number:
             # TODO this should be non-recursive
-            if a is S.One:
+            if a == 1:
                 return exp(-z)
-            elif a is S.Half:
+            elif a == Rational(1, 2):
                 return sqrt(pi)*(1 - erf(sqrt(z)))  # TODO could use erfc...
             elif a.is_Integer or (2*a).is_Integer:
                 b = a - 1
@@ -474,11 +477,11 @@ class polygamma(Function):
 
     >>> polygamma(0, 1)
     -EulerGamma
-    >>> polygamma(0, 1/Integer(2))
+    >>> polygamma(0, Rational(1, 2))
     -2*log(2) - EulerGamma
-    >>> polygamma(0, 1/Integer(3))
+    >>> polygamma(0, Rational(1, 3))
     -3*log(3)/2 - sqrt(3)*pi/6 - EulerGamma
-    >>> polygamma(0, 1/Integer(4))
+    >>> polygamma(0, Rational(1, 4))
     -3*log(2) - pi/2 - EulerGamma
     >>> polygamma(0, 2)
     -EulerGamma + 1
@@ -540,10 +543,11 @@ class polygamma(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Polygamma_function
-    .. [2] http://mathworld.wolfram.com/PolygammaFunction.html
-    .. [3] http://functions.wolfram.com/GammaBetaErf/PolyGamma/
-    .. [4] http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
+    * https://en.wikipedia.org/wiki/Polygamma_function
+    * http://mathworld.wolfram.com/PolygammaFunction.html
+    * http://functions.wolfram.com/GammaBetaErf/PolyGamma/
+    * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
+
     """
 
     def fdiff(self, argindex=2):
@@ -562,7 +566,7 @@ class polygamma(Function):
         from ...series import Order
         if args0[1] != oo or not \
                 (self.args[0].is_Integer and self.args[0].is_nonnegative):
-            return super(polygamma, self)._eval_aseries(n, args0, x, logx)
+            return super()._eval_aseries(n, args0, x, logx)
         z = self.args[1]
         N = self.args[0]
 
@@ -616,15 +620,15 @@ class polygamma(Function):
                 if z.is_Number:
                     if z is oo:
                         if n.is_Number:
-                            if n is S.Zero:
+                            if n == 0:
                                 return oo
                             else:
-                                return S.Zero
+                                return Integer(0)
                     elif z.is_Integer:
                         if z.is_nonpositive:
                             return zoo
                         else:
-                            if n is S.Zero:
+                            if n == 0:
                                 return -EulerGamma + harmonic(z - 1, 1)
                             elif n.is_odd:
                                 return (-1)**(n + 1)*factorial(n)*zeta(n + 1, z)
@@ -686,7 +690,7 @@ class polygamma(Function):
         return polygamma(n, z)
 
     def _eval_rewrite_as_zeta(self, n, z):
-        if n >= S.One:
+        if (n - 1).is_nonnegative:
             return (-1)**(n + 1)*factorial(n)*zeta(n + 1, z)
         else:
             return self
@@ -696,7 +700,7 @@ class polygamma(Function):
             if n == 0:
                 return harmonic(z - 1) - EulerGamma
             else:
-                return S.NegativeOne**(n+1) * factorial(n) * (zeta(n+1) - harmonic(z-1, n+1))
+                return (-1)**(n+1) * factorial(n) * (zeta(n+1) - harmonic(z-1, n+1))
 
     def _eval_as_leading_term(self, x):
         from ...series import Order
@@ -803,10 +807,11 @@ class loggamma(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gamma_function
-    .. [2] https://dlmf.nist.gov/5
-    .. [3] http://mathworld.wolfram.com/LogGammaFunction.html
-    .. [4] http://functions.wolfram.com/GammaBetaErf/LogGamma/
+    * https://en.wikipedia.org/wiki/Gamma_function
+    * https://dlmf.nist.gov/5
+    * http://mathworld.wolfram.com/LogGammaFunction.html
+    * http://functions.wolfram.com/GammaBetaErf/LogGamma/
+
     """
 
     @classmethod
@@ -822,7 +827,7 @@ class loggamma(Function):
             p, q = z.as_numer_denom()
             # Half-integral values:
             if p.is_positive and q == 2:
-                return log(sqrt(pi) * 2**(1 - p) * gamma(p) / gamma((p + 1)*S.Half))
+                return log(sqrt(pi) * 2**(1 - p) * gamma(p) / gamma((p + 1) / 2))
 
         if z is oo:
             return oo
@@ -850,17 +855,17 @@ class loggamma(Function):
 
     def _eval_nseries(self, x, n, logx=None):
         x0 = self.args[0].limit(x, 0)
-        if x0 is S.Zero:
+        if x0 == 0:
             f = self._eval_rewrite_as_intractable(*self.args)
             return f._eval_nseries(x, n, logx)
-        return super(loggamma, self)._eval_nseries(x, n, logx)
+        return super()._eval_nseries(x, n, logx)
 
     def _eval_aseries(self, n, args0, x, logx):
         from ...series import Order
         if args0[0] != oo:
-            return super(loggamma, self)._eval_aseries(n, args0, x, logx)
+            return super()._eval_aseries(n, args0, x, logx)
         z = self.args[0]
-        m = min(n, ceiling((n + Integer(1))/2))
+        m = min(n, ceiling(Rational(n + 1, 2)))
         r = log(z)*(z - Rational(1, 2)) - z + log(2*pi)/2
         l = [bernoulli(2*k) / (2*k*(2*k - 1)*z**(2*k - 1)) for k in range(1, m)]
         o = None
@@ -914,9 +919,10 @@ def digamma(x):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Digamma_function
-    .. [2] http://mathworld.wolfram.com/DigammaFunction.html
-    .. [3] http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
+    * https://en.wikipedia.org/wiki/Digamma_function
+    * http://mathworld.wolfram.com/DigammaFunction.html
+    * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
+
     """
     return polygamma(0, x)
 
@@ -944,8 +950,9 @@ def trigamma(x):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Trigamma_function
-    .. [2] http://mathworld.wolfram.com/TrigammaFunction.html
-    .. [3] http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
+    * https://en.wikipedia.org/wiki/Trigamma_function
+    * http://mathworld.wolfram.com/TrigammaFunction.html
+    * http://functions.wolfram.com/GammaBetaErf/PolyGamma2/
+
     """
     return polygamma(1, x)

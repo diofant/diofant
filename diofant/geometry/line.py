@@ -8,11 +8,11 @@ Ray
 Segment
 """
 
-from ..core import Dummy, Eq, S, factor_terms, oo, pi, sympify
+from ..core import Dummy, Eq, Integer, factor_terms, oo, pi, sympify
 from ..core.compatibility import is_sequence
 from ..functions import Piecewise, acos, sqrt, tan
 from ..functions.elementary.trigonometric import _pi_coeff as pi_coeff
-from ..logic import And
+from ..logic import And, false, true
 from ..simplify import simplify
 from ..solvers import solve
 from .entity import GeometryEntity, GeometrySet
@@ -136,9 +136,9 @@ class LinearEntity(GeometrySet):
         """
         p1, p2 = self.points
         if p1.x == p2.x:
-            return S.One, S.Zero, -p1.x
+            return Integer(1), Integer(0), -p1.x
         elif p1.y == p2.y:
-            return S.Zero, S.One, -p1.y
+            return Integer(0), Integer(1), -p1.y
         return tuple(simplify(i)
                      for i in (self.p1.y - self.p2.y,
                                self.p2.x - self.p1.x,
@@ -344,7 +344,7 @@ class LinearEntity(GeometrySet):
         Parameters
         ==========
 
-        p : Point
+        p : diofant.geometry.point.Point
 
         Returns
         =======
@@ -379,7 +379,7 @@ class LinearEntity(GeometrySet):
         Parameters
         ==========
 
-        p : Point
+        p : diofant.geometry.point.Point
 
         Returns
         =======
@@ -425,7 +425,7 @@ class LinearEntity(GeometrySet):
         Parameters
         ==========
 
-        p : Point
+        p : diofant.geometry.point.Point
 
         Returns
         =======
@@ -487,6 +487,7 @@ class LinearEntity(GeometrySet):
         >>> l1 = Line(p1, p2)
         >>> l1.length
         oo
+
         """
         return oo
 
@@ -497,7 +498,7 @@ class LinearEntity(GeometrySet):
         Returns
         =======
 
-        slope : number or diofant expression
+        slope : Expr
 
         See Also
         ========
@@ -554,18 +555,18 @@ class LinearEntity(GeometrySet):
         Parameters
         ==========
 
-        other : Point or LinearEntity (Line, Ray, Segment)
+        other : diofant.geometry.point.Point or LinearEntity
 
         Returns
         =======
 
-        projection : Point or LinearEntity (Line, Ray, Segment)
+        projection : diofant.geometry.point.Point or LinearEntity
             The return type matches the type of the parameter ``other``.
 
         Raises
         ======
 
-        GeometryError
+        diofant.geometry.exceptions.GeometryError
             When method is unable to perform projection.
 
         Notes
@@ -633,7 +634,7 @@ class LinearEntity(GeometrySet):
         Parameters
         ==========
 
-        o : Point or LinearEntity
+        o : diofant.geometry.point.Point or LinearEntity
 
         Returns
         =======
@@ -803,7 +804,7 @@ class LinearEntity(GeometrySet):
         Returns
         =======
 
-        point : Point
+        point : diofant.geometry.point.Point
 
         Raises
         ======
@@ -839,7 +840,7 @@ class LinearEntity(GeometrySet):
         Returns
         =======
 
-        point : Point
+        point : diofant.geometry.point.Point
 
         See Also
         ========
@@ -853,7 +854,7 @@ class LinearEntity(GeometrySet):
         >>> l1 = Line(p1, p2)
         >>> p3 = l1.random_point()
         >>> # random point - don't know its coords in advance
-        >>> p3 # doctest: +ELLIPSIS
+        >>> p3
         Point2D(...)
         >>> # point should belong to the line
         >>> p3 in l1
@@ -904,6 +905,7 @@ class LinearEntity(GeometrySet):
         >>> l2 = Line(p1, p3)
         >>> l1.is_similar(l2)
         True
+
         """
         def _norm(a, b, c):
             if a != 0:
@@ -917,6 +919,7 @@ class LinearEntity(GeometrySet):
     def __contains__(self, other):
         """Return a definitive answer or else raise an error if it cannot
         be determined that other is on the boundaries of self.
+
         """
         result = self.contains(other)
 
@@ -931,8 +934,9 @@ class LinearEntity(GeometrySet):
         True if other is on the boundaries of self;
         False if not on the boundaries of self;
         None if a determination cannot be made.
+
         """
-        raise NotImplementedError()  # pragma: no cover
+        raise NotImplementedError()
 
 
 class Line(LinearEntity):
@@ -950,9 +954,9 @@ class Line(LinearEntity):
     Parameters
     ==========
 
-    p1 : Point
-    pt : Point
-    slope : diofant expression
+    p1 : diofant.geometry.point.Point
+    pt : diofant.geometry.point.Point
+    slope : Expr
 
     See Also
     ========
@@ -983,6 +987,7 @@ class Line(LinearEntity):
     >>> s = Segment((0, 0), (0, 1))
     >>> Line(s).equation()
     x
+
     """
 
     def __new__(cls, p1, pt=None, slope=None, **kwargs):
@@ -1097,6 +1102,7 @@ class Line(LinearEntity):
         True
         >>> l.contains((0, 0))
         False
+
         """
         if is_sequence(o):
             o = Point(o)
@@ -1108,7 +1114,7 @@ class Line(LinearEntity):
                 return (solve(eq, x)[0][x] - o.x).equals(0)
             if not eq.has(x):
                 return (solve(eq, y)[0][y] - o.y).equals(0)
-            return (solve(eq.subs(x, o.x), y)[0][y] - o.y).equals(0)
+            return (solve(eq.subs({x: o.x}), y)[0][y] - o.y).equals(0)
         elif not isinstance(o, LinearEntity):
             return False
         elif isinstance(o, Line):
@@ -1125,7 +1131,8 @@ class Line(LinearEntity):
         Raises
         ======
 
-        NotImplementedError is raised if o is not a Point
+        NotImplementedError
+            if o is not a Point
 
         Examples
         ========
@@ -1136,6 +1143,7 @@ class Line(LinearEntity):
         sqrt(2)
         >>> s.distance((-1, 2))
         3*sqrt(2)/2
+
         """
         if not isinstance(o, Point):
             if is_sequence(o):
@@ -1149,7 +1157,7 @@ class Line(LinearEntity):
         return abs(factor_terms(o.y - y))/sqrt(1 + m**2)
 
     def equal(self, other):
-        """Returns True if self and other are the same mathematical entities"""
+        """Returns True if self and other are the same mathematical entities."""
         if not isinstance(other, Line):
             return False
         return Point.is_collinear(self.p1, other.p1, self.p2, other.p2)
@@ -1162,9 +1170,9 @@ class Ray(LinearEntity):
     Parameters
     ==========
 
-    p1 : Point
+    p1 : diofant.geometry.point.Point
         The source of the Ray
-    p2 : Point or radian value
+    p2 : diofant.geometry.point.Point or Expr
         This point determines the direction in which the Ray propagates.
         If given as an angle it is interpreted in radians with the positive
         direction being ccw.
@@ -1321,7 +1329,7 @@ class Ray(LinearEntity):
         if self.p1.x < self.p2.x:
             return oo
         elif self.p1.x == self.p2.x:
-            return S.Zero
+            return Integer(0)
         else:
             return -oo
 
@@ -1352,7 +1360,7 @@ class Ray(LinearEntity):
         if self.p1.y < self.p2.y:
             return oo
         elif self.p1.y == self.p2.y:
-            return S.Zero
+            return Integer(0)
         else:
             return -oo
 
@@ -1363,7 +1371,8 @@ class Ray(LinearEntity):
         Raises
         ======
 
-        NotImplementedError is raised if o is not a Point
+        NotImplementedError
+            if o is not a Point
 
         Examples
         ========
@@ -1374,6 +1383,7 @@ class Ray(LinearEntity):
         sqrt(2)
         >>> s.distance((-1, 2))
         3*sqrt(2)/2
+
         """
         if not isinstance(o, Point):
             if is_sequence(o):
@@ -1381,7 +1391,7 @@ class Ray(LinearEntity):
         s = self.perpendicular_segment(o)
         if isinstance(s, Point):
             if self.contains(s):
-                return S.Zero
+                return Integer(0)
         else:
             # since arg-order is arbitrary, find the non-o point
             non_o = s.p1 if s.p1 != o else s.p2
@@ -1419,7 +1429,7 @@ class Ray(LinearEntity):
         return [t, 0, 10]
 
     def equals(self, other):
-        """Returns True if self and other are the same mathematical entities"""
+        """Returns True if self and other are the same mathematical entities."""
         if not isinstance(other, Ray):
             return False
         return self.source == other.source and other.p2 in self
@@ -1451,6 +1461,7 @@ class Ray(LinearEntity):
         >>> r1 = Ray((2, 2), (3, 5))
         >>> r.contains(r1)
         False
+
         """
         if isinstance(o, Ray):
             return (Point.is_collinear(self.p1, self.p2, o.p1, o.p2) and
@@ -1470,7 +1481,7 @@ class Ray(LinearEntity):
                     rv = o.y >= self.source.y
                 else:
                     rv = o.y <= self.source.y
-                if rv == S.true or rv == S.false:
+                if rv in (true, false):
                     return bool(rv)
                 raise Undecidable(
                     'Cannot determine if %s is in %s' % (o, self))
@@ -1489,14 +1500,14 @@ class Segment(LinearEntity):
     Parameters
     ==========
 
-    p1 : Point
-    p2 : Point
+    p1 : diofant.geometry.point.Point
+    p2 : diofant.geometry.point.Point
 
     Attributes
     ==========
 
-    length : number or diofant expression
-    midpoint : Point
+    length : Expr
+    midpoint : diofant.geometry.point.Point
 
     See Also
     ========
@@ -1537,9 +1548,9 @@ class Segment(LinearEntity):
         p2 = Point(p2)
         if p1 == p2:
             return Point(p1)
-        if (p1.x > p2.x) is S.true:
+        if (p1.x - p2.x).is_positive:
             p1, p2 = p2, p1
-        elif (p1.x == p2.x) and (p1.y > p2.y) is S.true:
+        elif (p1.x == p2.x) and (p1.y - p2.y).is_positive:
             p1, p2 = p2, p1
         return LinearEntity.__new__(cls, p1, p2, **kwargs)
 
@@ -1582,7 +1593,7 @@ class Segment(LinearEntity):
         Parameters
         ==========
 
-        p : Point
+        p : diofant.geometry.point.Point
 
         Returns
         =======
@@ -1659,7 +1670,8 @@ class Segment(LinearEntity):
         Raises
         ======
 
-        NotImplementedError is raised if o is not a Point
+        NotImplementedError
+            if o is not a Point
 
         Examples
         ========
@@ -1670,6 +1682,7 @@ class Segment(LinearEntity):
         sqrt(170)
         >>> s.distance((0, 12))
         sqrt(73)
+
         """
         if is_sequence(o):
             o = Point(o)
@@ -1699,6 +1712,7 @@ class Segment(LinearEntity):
         >>> s2 = Segment(p2, p1)
         >>> s.contains(s2)
         True
+
         """
         if isinstance(other, Segment):
             return other.p1 in self and other.p2 in self

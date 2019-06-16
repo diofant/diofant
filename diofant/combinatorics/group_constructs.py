@@ -30,6 +30,7 @@ def DirectProduct(*groups):
     ========
 
     diofant.combinatorics.perm_groups.PermutationGroup.__mul__
+
     """
     degrees = []
     gens_count = []

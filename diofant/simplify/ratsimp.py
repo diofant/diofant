@@ -3,7 +3,7 @@ from itertools import combinations_with_replacement
 from ..core import Add, Dummy, Rational, symbols
 from ..polys import (ComputationFailed, Poly, cancel, parallel_poly_from_expr,
                      reduced)
-from ..polys.monomials import Monomial, monomial_div
+from ..polys.monomials import Monomial
 from ..utilities.misc import debug
 
 
@@ -16,6 +16,7 @@ def ratsimp(expr):
 
     >>> ratsimp(1/x + 1/y)
     (x + y)/(x*y)
+
     """
 
     f, g = cancel(expr).as_numer_denom()
@@ -52,6 +53,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
     Ideal,
     http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.163.6984
     (specifically, the second algorithm)
+
     """
     from ..matrices import Matrix, zeros
     from ..solvers.solvers import minsolve_linear_system
@@ -76,6 +78,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
         """
         Compute all monomials with degree less than ``n`` that are
         not divisible by any element of ``leading_monomials``.
+
         """
         if n == 0:
             return [1]
@@ -84,7 +87,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
             m = [0]*len(opt.gens)
             for i in mi:
                 m[i] += 1
-            if all(monomial_div(m, lmg) is None for lmg in leading_monomials):
+            if all(not lmg.divides(m) for lmg in leading_monomials):
                 S.append(m)
 
         return [Monomial(s).as_expr(*opt.gens) for s in S] + staircase(n - 1)
@@ -114,6 +117,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
         that the total degree is less than *or equal to* the best current
         solution. We retain a list of all solutions of minimal degree, and try
         to find the best one at the end.
+
         """
         c, d = a, b
         steps = 0
@@ -190,7 +194,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
         return (num/denom).cancel()
 
     c, d, allsol = _ratsimpmodprime(
-        Poly(num, opt.gens), Poly(denom, opt.gens), [])
+        Poly(num, opt.gens, domain=opt.domain), Poly(denom, opt.gens, domain=opt.domain), [])
     if not quick and allsol:
         debug('Looking for best minimal solution. Got: %s' % len(allsol))
         newsol = []
@@ -201,7 +205,7 @@ def ratsimpmodprime(expr, G, *gens, **args):
             newsol.append((c_hat.subs(sol), d_hat.subs(sol)))
         c, d = min(newsol, key=lambda x: len(x[0].terms()) + len(x[1].terms()))
 
-    if not domain.has_Field:
+    if not domain.is_Field:
         cn, c = c.clear_denoms(convert=True)
         dn, d = d.clear_denoms(convert=True)
     else:

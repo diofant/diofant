@@ -30,12 +30,29 @@ known_functions = {
     "hyper": [(lambda *x: True, "HypergeometricPFQ")],
     "binomial": [(lambda n, k: True, "Binomial")],
     "erfc": [(lambda x: True, "Erfc")],
+    "conjugate": [(lambda x: True, "Conjugate")],
+    "re": [(lambda x: True, "Re")],
+    "im": [(lambda x: True, "Im")],
+    "polygamma": [(lambda n, x: True, "PolyGamma")],
+    "Max": [(lambda *x: True, "Max")],
+    "Min": [(lambda *x: True, "Min")],
+    "factorial": [(lambda x: True, "Factorial")],
+    "factorial2": [(lambda *x: True, "Factorial2")],
+    "RisingFactorial": [(lambda x, k: True, "Pochhammer")],
+    "gamma": [(lambda x: True, "Gamma")],
+    "asinh": [(lambda x: True, "ArcSinh")],
+    "zeta": [(lambda x: True, "Zeta")],
+    "Heaviside": [(lambda x: True, "UnitStep")],
+    "fibonacci": [(lambda x: True, "Fibonacci")],
+    "polylog": [(lambda x, y: True, "PolyLog")],
+    "atanh": [(lambda x: True, "ArcTanh")],
 }
 
 
 class MCodePrinter(CodePrinter):
     """A printer to convert python expressions to
-    strings of the Wolfram's Mathematica code
+    strings of the Wolfram's Mathematica code.
+
     """
 
     printmethod = "_mcode"
@@ -52,7 +69,7 @@ class MCodePrinter(CodePrinter):
     _not_supported = set()
 
     def __init__(self, settings={}):
-        """Register function mappings supplied by user"""
+        """Register function mappings supplied by user."""
         CodePrinter.__init__(self, settings)
         self.known_functions = dict(known_functions)
         userfuncs = settings.get('user_functions', {})
@@ -78,7 +95,7 @@ class MCodePrinter(CodePrinter):
     def _print_Mul(self, expr):
         PREC = precedence(expr)
         c, nc = expr.args_cnc()
-        res = super(MCodePrinter, self)._print_Mul(expr.func(*c))
+        res = super()._print_Mul(expr.func(*c))
         if nc:
             res += '*'
             res += '**'.join(self.parenthesize(a, PREC) for a in nc)
@@ -106,10 +123,7 @@ class MCodePrinter(CodePrinter):
             if cond(*expr.args):
                 return "%s[%s]" % (mfunc, self.stringify(expr.args, ", "))
         return fname + "[%s]" % self.stringify(expr.args, ", ")
-
-    def _print_Min(self, expr):
-        return expr.func.__name__ + "[%s]" % self.stringify(expr.args, ", ")
-    _print_Max = _print_Min
+    _print_MinMaxBase = _print_Function
 
     def _print_Piecewise(self, expr):
         return expr.func.__name__ + "[{%s}]" % self.stringify(expr.args, ", ")
@@ -121,8 +135,8 @@ class MCodePrinter(CodePrinter):
         return "False"
 
     def _print_Derivative(self, expr):
-        return 'D[%s, %s]' % (self.doprint(expr.expr),
-                              ', '.join(self.doprint(a) for a in expr.variables))
+        return 'Hold[D[%s, %s]]' % (self.doprint(expr.expr),
+                                    ', '.join(self.doprint(a) for a in expr.variables))
 
     def _print_Integral(self, expr):
         if len(expr.variables) == 1 and not expr.limits[0][1:]:
@@ -139,7 +153,7 @@ class MCodePrinter(CodePrinter):
             direction = "1"
         elif direction == "real":
             direction = "Reals"
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
         e, x, x0 = [self.doprint(a) for a in expr.args[:-1]]
         return ("Hold[Limit[%s, %s -> %s, Direction -> %s]]" % (e, x, x0,
@@ -149,14 +163,12 @@ class MCodePrinter(CodePrinter):
         return "Hold[Sum[" + ', '.join(self.doprint(a) for a in expr.args) + "]]"
 
     def _print_MatrixBase(self, A):
-        res = []
-        for i in range(A.rows):
-            res.append("{" +
-                       ", ".join([self.doprint(e) for e in A.row(i)]) +
-                       "}")
-        return "{" + ", ".join(res) + "}"
+        return self.doprint(A.tolist())
 
     _print_Matrix = \
+        _print_SparseMatrix = \
+        _print_MutableSparseMatrix = \
+        _print_ImmutableSparseMatrix = \
         _print_DenseMatrix = \
         _print_MutableDenseMatrix = \
         _print_ImmutableMatrix = \
@@ -172,8 +184,8 @@ class MCodePrinter(CodePrinter):
     def _print_RootOf(self, expr):
         from ..core import Symbol
 
-        return 'Root[%s &, %s]' % (self.doprint(expr.expr.subs(expr.poly.gen,
-                                                               Symbol('#'))),
+        return 'Root[%s &, %s]' % (self.doprint(expr.expr.subs({expr.poly.gen:
+                                                                Symbol('#')})),
                                    self.doprint(expr.index + 1))
 
     def _print_Lambda(self, expr):
@@ -187,7 +199,7 @@ class MCodePrinter(CodePrinter):
                                     self.doprint(f))
 
     def _print_AlgebraicElement(self, expr):
-        coeffs = list(reversed(expr.rep))
+        coeffs = list(reversed(expr.rep.to_dense()))
         return "AlgebraicNumber[%s, %s]" % (self.doprint(expr.parent.ext),
                                             self.doprint(coeffs))
 
@@ -203,5 +215,6 @@ def mathematica_code(expr, **settings):
 
     >>> mathematica_code(sin(x).series(x).removeO())
     '(1/120)*x^5 - 1/6*x^3 + x'
+
     """
     return MCodePrinter(settings).doprint(expr)

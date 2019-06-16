@@ -1,10 +1,14 @@
-from random import randint
+import collections
+import math
+import random
 
-from ..core import Function, S, igcd
+from ..core import Function, Integer
 from ..core.compatibility import as_int
-from ..core.numbers import igcdex
+from ..core.numbers import igcdex, mod_inverse
+from ..core.power import isqrt
 from ..utilities.iterables import cantor_product
 from .factor_ import factorint, multiplicity, totient, trailing
+from .modular import crt, crt1, crt2
 from .primetest import isprime
 
 
@@ -21,12 +25,12 @@ def n_order(a, n):
     6
     >>> n_order(4, 7)
     3
+
     """
-    from collections import defaultdict
     a, n = as_int(a), as_int(n)
-    if igcd(a, n) != 1:
+    if math.gcd(a, n) != 1:
         raise ValueError("The two numbers should be relatively prime")
-    factors = defaultdict(int)
+    factors = collections.defaultdict(int)
     f = factorint(n)
     for px, kx in f.items():
         if kx > 1:
@@ -56,13 +60,14 @@ def _primitive_root_prime_iter(p):
     References
     ==========
 
-    .. [1] W. Stein "Elementary Number Theory" (2011), page 44
+    * W. Stein "Elementary Number Theory" (2011), page 44
 
     Examples
     ========
 
     >>> list(_primitive_root_prime_iter(19))
     [2, 3, 10, 13, 14, 15]
+
     """
     p = as_int(p)
     v = [(p - 1) // i for i in factorint(p - 1)]
@@ -82,8 +87,8 @@ def primitive_root(p):
     References
     ==========
 
-    .. [1] W. Stein "Elementary Number Theory" (2011), page 44
-    .. [2] P. Hackman "Elementary Number Theory" (2009),  Chapter C
+    * W. Stein "Elementary Number Theory" (2011), page 44
+    * P. Hackman "Elementary Number Theory" (2009),  Chapter C
 
     Parameters
     ==========
@@ -95,6 +100,7 @@ def primitive_root(p):
 
     >>> primitive_root(19)
     2
+
     """
     p = as_int(p)
     if p < 1:
@@ -133,7 +139,7 @@ def primitive_root(p):
                 return g
             else:
                 for i in range(2, g + p1 + 1):  # pragma: no branch
-                    if igcd(i, p) == 1 and is_primitive_root(i, p):
+                    if math.gcd(i, p) == 1 and is_primitive_root(i, p):
                         return i
 
     return next(_primitive_root_prime_iter(p))
@@ -158,9 +164,10 @@ def is_primitive_root(a, p):
     True
     >>> n_order(9, 10) == totient(10)
     False
+
     """
     a, p = as_int(a), as_int(p)
-    if igcd(a, p) != 1:
+    if math.gcd(a, p) != 1:
         raise ValueError("The two numbers should be relatively prime")
     if a > p:
         a = a % p
@@ -173,13 +180,14 @@ def _sqrt_mod_tonelli_shanks(a, p):
     References
     ==========
 
-    .. [1] R. Crandall and C. Pomerance "Prime Numbers", 2nt Ed., page 101
+    * R. Crandall and C. Pomerance "Prime Numbers", 2nt Ed., page 101
+
     """
     s = trailing(p - 1)
     t = p >> s
     # find a non-quadratic residue
     while 1:
-        d = randint(2, p - 1)
+        d = random.randint(2, p - 1)
         r = legendre_symbol(d, p)
         if r == -1:
             break
@@ -224,6 +232,7 @@ def sqrt_mod(a, p, all_roots=False):
     21
     >>> sqrt_mod(17, 32, True)
     [7, 9, 23, 25]
+
     """
     if all_roots:
         return sorted(sqrt_mod_iter(a, p))
@@ -262,8 +271,8 @@ def sqrt_mod_iter(a, p, domain=int):
 
     >>> list(sqrt_mod_iter(11, 43))
     [21, 22]
+
     """
-    from ..polys.galoistools import gf_crt1, gf_crt2
     from ..domains import ZZ
     a, p = as_int(a), abs(as_int(p))
     if isprime(p):
@@ -294,14 +303,14 @@ def sqrt_mod_iter(a, p, domain=int):
                     return
             v.append(rx)
             pv.append(px**ex)
-        mm, e, s = gf_crt1(pv, ZZ)
+        mm, e, s = crt1(pv)
         if domain is ZZ:
             for vx in cantor_product(*v):
-                r = gf_crt2(vx, pv, mm, e, s, ZZ)
+                r = crt2(pv, vx, mm, e, s)[0]
                 yield r
         else:
             for vx in cantor_product(*v):
-                r = gf_crt2(vx, pv, mm, e, s, ZZ)
+                r = crt2(pv, vx, mm, e, s)[0]
                 yield domain(r)
 
 
@@ -318,15 +327,16 @@ def _sqrt_mod_prime_power(a, p, k):
     References
     ==========
 
-    .. [1] P. Hackman "Elementary Number Theory" (2009),  page 160
-    .. [2] http://www.numbertheory.org/php/squareroot.html
-    .. [3] [Gathen99]_
+    * P. Hackman "Elementary Number Theory" (2009),  page 160
+    * http://www.numbertheory.org/php/squareroot.html
+    * :cite:`Gathen1999modern`
 
     Examples
     ========
 
     >>> _sqrt_mod_prime_power(11, 43, 1)
     [21, 22]
+
     """
     from ..domains import ZZ
 
@@ -425,7 +435,8 @@ def _sqrt_mod1(a, p, n):
     References
     ==========
 
-    .. [1] http://www.numbertheory.org/php/squareroot.html
+    * http://www.numbertheory.org/php/squareroot.html
+
     """
     pn = p**n
     a = a % pn
@@ -547,6 +558,7 @@ def is_quad_residue(a, p):
     ========
 
     legendre_symbol, jacobi_symbol
+
     """
     a, p = as_int(a), as_int(p)
     if p < 1:
@@ -573,7 +585,8 @@ def is_nthpow_residue(a, n, m):
     References
     ==========
 
-    .. [1] P. Hackman "Elementary Number Theory" (2009),  page 76
+    * P. Hackman "Elementary Number Theory" (2009),  page 76
+
     """
     a, n, m = [as_int(i) for i in (a, n, m)]
     if m <= 0:
@@ -603,13 +616,14 @@ def _is_nthpow_residue_bign(a, n, m):
                 return False
         return True
     f = totient(m)
-    k = f // igcd(f, n)
+    k = f // math.gcd(f, n)
     return pow(a, k, m) == 1
 
 
 def _is_nthpow_residue_bign_prime_power(a, n, p, k):
     """Returns True/False if a solution for ``x**n == a (mod(p**k))``
     does/doesn't exist.
+
     """
     assert a >= 0 and n > 2 and isprime(p) and k > 0
     if a % p:
@@ -646,7 +660,8 @@ def _nthroot_mod1(s, q, p, all_roots):
     References
     ==========
 
-    .. [1] A. M. Johnston "A Generalized qth Root Algorithm"
+    * A. M. Johnston "A Generalized qth Root Algorithm"
+
     """
     g = primitive_root(p)
     if not isprime(q):
@@ -666,15 +681,7 @@ def _nthroot_mod1(s, q, p, all_roots):
         r1 = pow(s, x, p)
         s1 = pow(s, f, p)
         h = pow(g, f*q, p)
-        # find t discrete log of s1 base h, h**x = s1 mod p
-        # used a naive implementation
-        # TODO implement using Ref [1]
-        pr = 1
-        for t in range(p):  # pragma: no branch
-            if pr == s1:
-                break
-            pr = pr*h % p
-
+        t = discrete_log(p, s1, h)
         g2 = pow(g, z*t, p)
         g3 = igcdex(g2, p)[0]
         r = r1*g3 % p
@@ -712,6 +719,7 @@ def nthroot_mod(a, n, p, all_roots=False):
     [8, 11]
     >>> nthroot_mod(68, 3, 109)
     23
+
     """
     if n == 2:
         return sqrt_mod(a, p, all_roots)
@@ -760,6 +768,7 @@ def quadratic_residues(p):
 
     >>> quadratic_residues(7)
     [0, 1, 2, 4]
+
     """
     r = set()
     for i in range(p // 2 + 1):
@@ -802,7 +811,8 @@ def legendre_symbol(a, p):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Legendre_symbol
+    * https://en.wikipedia.org/wiki/Legendre_symbol
+
     """
     a, p = as_int(a), as_int(p)
     if not isprime(p) or p == 2:
@@ -869,6 +879,7 @@ def jacobi_symbol(m, n):
     ========
 
     is_quad_residue, legendre_symbol
+
     """
     m, n = as_int(m), as_int(n)
     if not n % 2:
@@ -879,7 +890,7 @@ def jacobi_symbol(m, n):
         return int(n == 1)
     if n == 1 or m == 1:
         return 1
-    if igcd(m, n) != 1:
+    if math.gcd(m, n) != 1:
         return 0
 
     j = 1
@@ -933,8 +944,9 @@ class mobius(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/M%C3%B6bius_function
-    .. [2] Thomas Koshy "Elementary Number Theory with Applications"
+    * https://en.wikipedia.org/wiki/M%C3%B6bius_function
+    * Thomas Koshy "Elementary Number Theory with Applications"
+
     """
 
     @classmethod
@@ -945,11 +957,138 @@ class mobius(Function):
         else:
             raise TypeError("n should be an integer")
         if n.is_prime:
-            return S.NegativeOne
-        elif n is S.One:
-            return S.One
+            return Integer(-1)
+        elif n == 1:
+            return Integer(1)
         elif n.is_Integer:
             a = factorint(n)
             if any(i > 1 for i in a.values()):
-                return S.Zero
-            return S.NegativeOne**len(a)
+                return Integer(0)
+            return Integer(-1)**len(a)
+
+
+def _discrete_log_trial_mul(n, a, b, order=None):
+    """
+    Trial multiplication algorithm for computing the discrete logarithm of
+    ``a`` to the base ``b`` modulo ``n``.
+
+    The algorithm finds the discrete logarithm using exhaustive search. This
+    naive method is used as fallback algorithm of ``discrete_log`` when the
+    group order is very small.
+
+    """
+    a %= n
+    b %= n
+    if order is None:
+        order = n
+    x = 1
+    for i in range(order):
+        if x == a:
+            return i
+        x = x * b % n
+    raise ValueError("Log does not exist")
+
+
+def _discrete_log_shanks_steps(n, a, b, order=None):
+    """
+    Baby-step giant-step algorithm for computing the discrete logarithm of
+    ``a`` to the base ``b`` modulo ``n``.
+
+    The algorithm is a time-memory trade-off of the method of exhaustive
+    search. It uses `O(sqrt(m))` memory, where `m` is the group order.
+
+    """
+    a %= n
+    b %= n
+    if order is None:
+        order = n_order(b, n)
+    m = isqrt(order) + 1
+    T = {}
+    x = 1
+    for i in range(m):
+        T[x] = i
+        x = x * b % n
+    z = mod_inverse(b, n)
+    z = pow(z, m, n)
+    x = a
+    for i in range(m):
+        if x in T:
+            return i * m + T[x]
+        x = x * z % n
+    raise ValueError("Log does not exist")
+
+
+def _discrete_log_pohlig_hellman(n, a, b, order=None):
+    """
+    Pohlig-Hellman algorithm for computing the discrete logarithm of ``a`` to
+    the base ``b`` modulo ``n``.
+
+    In order to compute the discrete logarithm, the algorithm takes advantage
+    of the factorization of the group order. It is more efficient when the
+    group order factors into many small primes.
+
+    """
+    a %= n
+    b %= n
+
+    if order is None:
+        order = n_order(b, n)
+
+    f = factorint(order)
+    l = [0] * len(f)
+
+    for i, (pi, ri) in enumerate(f.items()):
+        for j in range(ri):
+            gj = pow(b, l[i], n)
+            aj = pow(a * mod_inverse(gj, n), order // pi**(j + 1), n)
+            bj = pow(b, order // pi, n)
+            cj = discrete_log(n, aj, bj, pi, True)
+            l[i] += cj * pi**j
+
+    d, _ = crt([pi**ri for pi, ri in f.items()], l)
+    return d
+
+
+def discrete_log(n, a, b, order=None, prime_order=None):
+    """
+    Compute the discrete logarithm of ``a`` to the base ``b`` modulo ``n``.
+
+    This is a recursive function to reduce the discrete logarithm problem in
+    cyclic groups of composite order to the problem in cyclic groups of
+    prime order.
+
+    Notes
+    =====
+
+    It employs different algorithms depending on the problem (subgroup order
+    size, prime order or not):
+
+    * Trial multiplication
+    * Baby-step giant-step
+    * Pohlig-Hellman
+
+    References
+    ==========
+
+    * http://mathworld.wolfram.com/DiscreteLogarithm.html
+    * :cite:`Menezes97`
+
+    Examples
+    ========
+
+    >>> discrete_log(41, 15, 7)
+    3
+
+    """
+    if order is None:
+        order = n_order(b, n)
+
+    if prime_order is None:
+        prime_order = isprime(order)
+
+    if order < 1000:
+        return _discrete_log_trial_mul(n, a, b, order)
+    elif prime_order:
+        return _discrete_log_shanks_steps(n, a, b, order)
+
+    return _discrete_log_pohlig_hellman(n, a, b, order)

@@ -1,5 +1,6 @@
-from ..core import Derivative, Dummy, Eq, Function, Integer, S, Wild, nan, oo
+from ..core import Derivative, Dummy, Eq, Function, Integer, Wild, nan, oo
 from ..functions import Piecewise
+from ..logic import false
 from ..polys import PolynomialError, apart
 from ..solvers import solve
 from .expr_with_intlimits import ExprWithIntLimits
@@ -18,7 +19,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     summation.
 
     For finite sums (and sums with symbolic limits assumed to be finite) we
-    follow the summation convention described by Karr [1], especially
+    follow the summation convention described by Karr :cite:`Karr1981summation`, especially
     definition 3 of section 1.4. The sum:
 
     .. math::
@@ -94,10 +95,10 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     convention allows us to give a perfectly valid interpretation to
     those sums by interchanging the limits according to the above rules:
 
-    >>> S = Sum(i, (i, 1, n)).doit()
-    >>> S
+    >>> s = Sum(i, (i, 1, n)).doit()
+    >>> s
     n**2/2 + n/2
-    >>> S.subs(n, -4)
+    >>> s.subs({n: -4})
     6
     >>> Sum(i, (i, 1, -4)).doit()
     6
@@ -106,16 +107,16 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
     An explicit example of the Karr summation convention:
 
-    >>> S1 = Sum(i**2, (i, m, m+n-1)).doit()
-    >>> S1
+    >>> s1 = Sum(i**2, (i, m, m+n-1)).doit()
+    >>> s1
     m**2*n + m*n**2 - m*n + n**3/3 - n**2/2 + n/6
-    >>> S2 = Sum(i**2, (i, m+n, m-1)).doit()
-    >>> S2
+    >>> s2 = Sum(i**2, (i, m+n, m-1)).doit()
+    >>> s2
     -m**2*n - m*n**2 + m*n - n**3/3 + n**2/2 - n/6
-    >>> S1 + S2
+    >>> s1 + s2
     0
-    >>> S3 = Sum(i, (i, m, m-1)).doit()
-    >>> S3
+    >>> s3 = Sum(i, (i, m, m-1)).doit()
+    >>> s3
     0
 
     See Also
@@ -128,11 +129,9 @@ class Sum(AddWithLimits, ExprWithIntLimits):
     References
     ==========
 
-    .. [1] Michael Karr, "Summation in Finite Terms", Journal of the ACM,
-           Volume 28 Issue 2, April 1981, Pages 305-350
-           https://dl.acm.org/citation.cfm?doid=322248.322255
-    .. [2] https://en.wikipedia.org/wiki/Summation#Capital-sigma_notation
-    .. [3] https://en.wikipedia.org/wiki/Empty_sum
+    * https://en.wikipedia.org/wiki/Summation#Capital-sigma_notation
+    * https://en.wikipedia.org/wiki/Empty_sum
+
     """
 
     def __new__(cls, function, *symbols, **assumptions):
@@ -157,7 +156,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         for n, limit in enumerate(self.limits):
             i, a, b = limit
             dif = b - a
-            if dif.is_integer and (dif < 0) is S.true:
+            if dif.is_integer and dif.is_negative:
                 a, b = b + 1, a - 1
                 f = -f
 
@@ -186,6 +185,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         Sum(a*b*x, (x, 1, a)) can be differentiated wrt x or b but not `a`
         since the value of the sum is discontinuous in `a`. In a case
         involving a limit variable, the unevaluated derivative is returned.
+
         """
 
         # get limits and the function
@@ -205,8 +205,8 @@ class Sum(AddWithLimits, ExprWithIntLimits):
             if limit[0] not in df.free_symbols:
                 rv = rv.doit()
             return rv
-        else:  # pragma: no cover
-            return NotImplementedError('Lower and upper bound expected.')
+        else:
+            raise NotImplementedError('Lower and upper bound expected.')
 
     def _eval_simplify(self, ratio, measure):
         from ..simplify.simplify import sum_simplify
@@ -224,8 +224,6 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         Returns (s, e) where s is the Euler-Maclaurin approximation
         and e is the estimated error (taken to be the magnitude of
         the first omitted term in the tail):
-
-            >>> from diofant.abc import a, b
 
             >>> Sum(1/k, (k, 2, 5)).doit().evalf()
             1.28333333333333
@@ -253,6 +251,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
 
         With a nonzero `eps` specified, the summation is ended
         as soon as the remainder term is less than the epsilon.
+
         """
         from ..functions import bernoulli, factorial
         from ..integrals import Integral
@@ -263,44 +262,44 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         if len(self.limits) != 1:
             raise ValueError("More than 1 limit")
         i, a, b = self.limits[0]
-        if (a > b) is S.true:
+        if (a - b).is_positive:
             if a - b == 1:
-                return S.Zero, S.Zero
+                return Integer(0), Integer(0)
             a, b = b + 1, a - 1
             f = -f
-        s = S.Zero
+        s = Integer(0)
         if m:
             if b.is_Integer and a.is_Integer:
                 m = min(m, b - a + 1)
             if not eps or f.is_polynomial(i):
                 for k in range(m):
-                    s += f.subs(i, a + k)
+                    s += f.subs({i: a + k})
             else:
-                term = f.subs(i, a)
+                term = f.subs({i: a})
                 if term:
                     test = abs(term.evalf(3)) < eps
-                    if not (test == S.false):
+                    if not (test == false):
                         # a symbolic Relational class, can't go further
-                        return term, S.Zero
+                        return term, Integer(0)
                 s += term
                 for k in range(1, m):
-                    term = f.subs(i, a + k)
+                    term = f.subs({i: a + k})
                     if abs(term.evalf(3)) < eps and term != 0:
                         return s, abs(term)
                     s += term
             if b - a + 1 == m:
-                return s, S.Zero
+                return s, Integer(0)
             a += m
         x = Dummy('x')
-        I = Integral(f.subs(i, x), (x, a, b))
+        I = Integral(f.subs({i: x}), (x, a, b))
         if eval_integral:
             I = I.doit()
         s += I
 
         def fpoint(expr):
             if b is oo:
-                return expr.subs(i, a), 0
-            return expr.subs(i, a), expr.subs(i, b)
+                return expr.subs({i: a}), 0
+            return expr.subs({i: a}), expr.subs({i: b})
         fa, fb = fpoint(f)
         iterm = (fa + fb)/2
         g = f.diff(i)
@@ -328,8 +327,6 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         Examples
         ========
 
-        >>> from diofant.abc import a, b, c, d
-
         >>> Sum(x, (x, 0, 3)).reverse_order(x)
         Sum(-x, (x, 4, -1))
         >>> Sum(x*y, (x, 1, 5), (y, 0, 6)).reverse_order(x, y)
@@ -343,14 +340,14 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         to reverse, the index counting notation comes in handy in case there
         are several symbols with the same name.
 
-        >>> S = Sum(x**2, (x, a, b), (x, c, d))
-        >>> S
+        >>> s = Sum(x**2, (x, a, b), (x, c, d))
+        >>> s
         Sum(x**2, (x, a, b), (x, c, d))
-        >>> S0 = S.reverse_order(0)
-        >>> S0
+        >>> s0 = s.reverse_order(0)
+        >>> s0
         Sum(-x**2, (x, b + 1, a - 1), (x, c, d))
-        >>> S1 = S0.reverse_order(1)
-        >>> S1
+        >>> s1 = s0.reverse_order(1)
+        >>> s1
         Sum(x**2, (x, b + 1, a - 1), (x, d + 1, c - 1))
 
         Of course we can mix both notations:
@@ -370,9 +367,8 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         References
         ==========
 
-        .. [1] Michael Karr, "Summation in Finite Terms", Journal of the ACM,
-               Volume 28 Issue 2, April 1981, Pages 305-350
-               https://dl.acm.org/citation.cfm?doid=322248.322255
+        * :cite:`Karr1981summation`
+
         """
         l_indices = list(indices)
 
@@ -411,12 +407,8 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         Notes
         =====
 
-        We use Sister Celine's algorithm, see [1]_.
+        We use Sister Celine's algorithm, see :cite:`Petkovsek1997AeqB`, Ch. 4.
 
-        References
-        ==========
-
-        .. [1] M. Petkovšek, H. S. Wilf, D. Zeilberger, A = B, 1996, Ch. 4.
         """
         from ..core import expand_func, Mul
         from ..functions import gamma
@@ -439,10 +431,10 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         a = Function('a')
 
         def f(i, j):
-            return self.function.subs([(n, i), (k, j)])
+            return self.function.subs({n: i, k: j})
 
         I, J, step = 0, 1, 1
-        y, x, sols = S.Zero, [], {}
+        y, x, sols = Integer(0), [], {}
 
         while not any(v for a, v in sols.items()):
             if step % 2 != 0:
@@ -469,7 +461,7 @@ class Sum(AddWithLimits, ExprWithIntLimits):
             sols = solve(eq, *x)[0]
 
         y = sum(a(i, j)*F(n - j, k - i) for i in range(I) for j in range(J))
-        y = y.subs(sols).subs(map(lambda a: (a, 1), x))
+        y = y.subs(sols).subs({_: 1 for _ in x})
 
         return y if y else None
 
@@ -513,6 +505,7 @@ def summation(f, *symbols, **kwargs):
     diofant.concrete.summations.Sum
     diofant.concrete.products.Product
     diofant.concrete.products.product
+
     """
     return Sum(f, *symbols, **kwargs).doit(deep=False)
 
@@ -526,7 +519,6 @@ def telescopic_direct(L, R, n, limits):
 
     For example:
 
-    >>> from diofant.abc import a, b
     >>> telescopic_direct(1/k, -1/(k+2), 2, (k, a, b))
     -1/(b + 2) - 1/(b + 1) + 1/(a + 1) + 1/a
 
@@ -534,7 +526,7 @@ def telescopic_direct(L, R, n, limits):
     (i, a, b) = limits
     s = 0
     for m in range(n):
-        s += L.subs(i, a + m) + R.subs(i, b - m)
+        s += L.subs({i: a + m}) + R.subs({i: b - m})
     return s
 
 
@@ -542,13 +534,14 @@ def telescopic(L, R, limits):
     """Tries to perform the summation using the telescopic property
 
     return None if not possible
+
     """
     (i, a, b) = limits
     if L.is_Add or R.is_Add:
         return
 
     k = Wild("k")
-    sol = (-R).match(L.subs(i, i + k))
+    sol = (-R).match(L.subs({i: i + k}))
     if sol:
         s = sol[k]
     else:
@@ -567,12 +560,12 @@ def eval_sum(f, limits):
     from ..functions import KroneckerDelta
 
     (i, a, b) = limits
-    if f is S.Zero:
-        return S.Zero
+    if f == 0:
+        return Integer(0)
     if i not in f.free_symbols:
         return f*(b - a + 1)
     if a == b:
-        return f.subs(i, a)
+        return f.subs({i: a})
 
     if f.has(KroneckerDelta) and _has_simple_delta(f, limits[0]):
         return deltasummation(f, limits)
@@ -600,7 +593,7 @@ def eval_sum_direct(expr, limits):
     (i, a, b) = limits
 
     dif = b - a
-    return Add(*[expr.subs(i, a + j) for j in range(dif + 1)])
+    return Add(*[expr.subs({i: a + j}) for j in range(dif + 1)])
 
 
 def eval_sum_symbolic(f, limits):
@@ -680,7 +673,7 @@ def eval_sum_symbolic(f, limits):
             r = p*(q**a - q**(b + 1))/(1 - q)
             l = p*(b - a + 1)
 
-            return Piecewise((l, Eq(q, S.One)), (r, True))
+            return Piecewise((l, Eq(q, 1)), (r, True))
 
     r = gosper_sum(f, (i, a, b))
     if r is not None and r.is_finite:
@@ -690,18 +683,18 @@ def eval_sum_symbolic(f, limits):
 
 
 def _eval_sum_hyper(f, i, a):
-    """ Returns (res, cond). Sums from a to oo. """
+    """Returns (res, cond). Sums from a to oo."""
     from ..functions import hyper
     from ..simplify import hyperexpand, hypersimp, fraction, simplify
     from ..polys import Poly, factor
 
     if a != 0:
-        return _eval_sum_hyper(f.subs(i, i + a), i, 0)
+        return _eval_sum_hyper(f.subs({i: i + a}), i, 0)
 
-    if f.subs(i, 0) == 0:
-        if simplify(f.subs(i, Dummy('i', integer=True, positive=True))) == 0:
+    if f.subs({i: 0}) == 0:
+        if simplify(f.subs({i: Dummy('i', integer=True, positive=True)})) == 0:
             return Integer(0), True
-        return _eval_sum_hyper(f.subs(i, i + 1), i, 0)
+        return _eval_sum_hyper(f.subs({i: i + 1}), i, 0)
 
     hs = hypersimp(f, i)
     if hs is None:
@@ -739,7 +732,7 @@ def _eval_sum_hyper(f, i, a):
     except PolynomialError:
         pass
 
-    return f.subs(i, 0)*e, h.convergence_statement
+    return f.limit(i, 0)*e, h.convergence_statement
 
 
 def eval_sum_hyper(f, i_a_b):
@@ -755,7 +748,7 @@ def eval_sum_hyper(f, i_a_b):
 
     if b != oo:
         if a == -oo:
-            res = _eval_sum_hyper(f.subs(i, -i), i, -b)
+            res = _eval_sum_hyper(f.subs({i: -i}), i, -b)
             if res is not None:
                 return Piecewise(res, (old_sum, True))
         else:
@@ -765,7 +758,7 @@ def eval_sum_hyper(f, i_a_b):
                 return
             (res1, cond1), (res2, cond2) = res1, res2
             cond = And(cond1, cond2)
-            if cond == S.false:
+            if cond == false:
                 return
             return Piecewise((res1 - res2, cond), (old_sum, True))
 
@@ -774,8 +767,8 @@ def eval_sum_hyper(f, i_a_b):
         res = _eval_sum_hyper(f, i, a)
         if res is not None:
             r, c = res
-            if c == S.false:
-                f = f.subs(i, Dummy('i', integer=True, positive=True) + a)
+            if c == false:
+                f = f.subs({i: Dummy('i', integer=True, positive=True) + a})
                 if f.is_nonnegative:
                     return oo
                 else:

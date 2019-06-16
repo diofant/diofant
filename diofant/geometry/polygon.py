@@ -1,6 +1,6 @@
 import warnings
 
-from ..core import Expr, S, Symbol, oo, pi, sympify
+from ..core import Expr, Integer, Symbol, oo, pi, sympify
 from ..core.compatibility import as_int
 from ..functions import Piecewise, cos, sign, sin, tan
 from ..logic import And, true
@@ -40,7 +40,7 @@ class Polygon(GeometrySet):
     Raises
     ======
 
-    GeometryError
+    diofant.geometry.exceptions.GeometryError
         If all parameters are not Points.
 
         If the Polygon has intersecting sides.
@@ -300,6 +300,7 @@ class Polygon(GeometrySet):
         >>> poly = Polygon(p1, p2, p3, p4)
         >>> poly.perimeter
         sqrt(17) + 7
+
         """
         p = 0
         args = self.vertices
@@ -478,7 +479,6 @@ class Polygon(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.abc import t
         >>> p = Polygon((0, 0), (4, 0), (4, 4))
         >>> p.encloses_point(Point(2, 1))
         True
@@ -490,7 +490,7 @@ class Polygon(GeometrySet):
         References
         ==========
 
-        .. [1] http://paulbourke.net/geometry/polygonmesh/#insidepoly
+        * http://paulbourke.net/geometry/polygonmesh/#insidepoly
 
         """
         p = Point(p)
@@ -576,7 +576,7 @@ class Polygon(GeometrySet):
         >>> p = tri.arbitrary_point('t')
         >>> perimeter = tri.perimeter
         >>> s1, s2 = [s.length for s in tri.sides[:2]]
-        >>> p.subs(t, (s1 + s2/2)/perimeter)
+        >>> p.subs({t: (s1 + s2/2)/perimeter})
         Point2D(1, 1/2)
 
         """
@@ -589,8 +589,7 @@ class Polygon(GeometrySet):
         for s in self.sides:
             side_perim_fraction = s.length/perimeter
             perim_fraction_end = perim_fraction_start + side_perim_fraction
-            pt = s.arbitrary_point(parameter).subs(
-                t, (t - perim_fraction_start)/side_perim_fraction)
+            pt = s.arbitrary_point(parameter).subs({t: (t - perim_fraction_start)/side_perim_fraction})
             sides.append(
                 (pt, (And(perim_fraction_start <= t, t < perim_fraction_end))))
             perim_fraction_start = perim_fraction_end
@@ -676,19 +675,21 @@ class Polygon(GeometrySet):
         >>> poly = Polygon(*RegularPolygon(p1, 1, 3).vertices)
         >>> poly.distance(p2)
         sqrt(61)
+
         """
         if isinstance(o, Point):
             dist = oo
             for side in self.sides:
                 current = side.distance(o)
                 if current == 0:
-                    return S.Zero
+                    return Integer(0)
                 elif current < dist:
                     dist = current
             return dist
         elif isinstance(o, Polygon) and self.is_convex() and o.is_convex():
             return self._do_poly_distance(o)
-        raise NotImplementedError()
+        else:
+            raise NotImplementedError
 
     def _do_poly_distance(self, e2):
         """
@@ -722,17 +723,17 @@ class Polygon(GeometrySet):
         Method:
         [1] http://cgm.cs.mcgill.ca/~orm/mind2p.html
         Uses rotating calipers:
-        [2] https//en.wikipedia.org/wiki/Rotating_calipers
+        [2] https://en.wikipedia.org/wiki/Rotating_calipers
         and antipodal points:
-        [3] https//en.wikipedia.org/wiki/Antipodal_point
+        [3] https://en.wikipedia.org/wiki/Antipodal_point
+
         """
         e1 = self
 
         '''Tests for a possible intersection between the polygons and outputs a warning'''
         e1_center = e1.centroid
         e2_center = e2.centroid
-        e1_max_radius = S.Zero
-        e2_max_radius = S.Zero
+        e1_max_radius = e2_max_radius = Integer(0)
         for vertex in e1.vertices:
             r = Point.distance(e1_center, vertex)
             if e1_max_radius < r:
@@ -790,7 +791,7 @@ class Polygon(GeometrySet):
 
         e1_current = e1_ymax
         e2_current = e2_ymin
-        support_line = Line(Point(S.Zero, S.Zero), Point(S.One, S.Zero))
+        support_line = Line(Point(0, 0), Point(1, 0))
 
         '''
         Determine which point in e1 and e2 will be selected after e2_ymin and e1_ymax,
@@ -907,7 +908,7 @@ class Polygon(GeometrySet):
         return False
 
     def __hash__(self):
-        return super(Polygon, self).__hash__()
+        return super().__hash__()
 
     def __contains__(self, o):
         """
@@ -993,7 +994,7 @@ class RegularPolygon(Polygon):
     Raises
     ======
 
-    GeometryError
+    diofant.geometry.exceptions.GeometryError
         If the `center` is not a Point, or the `radius` is not a number or Basic
         instance, or the number of sides, `n`, is less than three.
 
@@ -1051,6 +1052,7 @@ class RegularPolygon(Polygon):
         >>> r = RegularPolygon(Point(0, 0), 5, 3)
         >>> r.args
         (Point2D(0, 0), 5, 3, 0)
+
         """
         return self._center, self._radius, self._n, self._rot
 
@@ -1072,6 +1074,7 @@ class RegularPolygon(Polygon):
         2
         >>> _ == square.length**2
         True
+
         """
         c, r, n, rot = self.args
         return sign(r)*n*self.length**2/(4*tan(pi/n))
@@ -1118,6 +1121,7 @@ class RegularPolygon(Polygon):
         >>> rp = RegularPolygon(Point(0, 0), 5, 4)
         >>> rp.center
         Point2D(0, 0)
+
         """
         return self._center
 
@@ -1134,6 +1138,7 @@ class RegularPolygon(Polygon):
         >>> rp = RegularPolygon(Point(0, 0), 5, 4)
         >>> rp.circumcenter
         Point2D(0, 0)
+
         """
         return self.center
 
@@ -1176,6 +1181,7 @@ class RegularPolygon(Polygon):
         >>> rp = RegularPolygon(Point(0, 0), radius, 4)
         >>> rp.circumradius
         r
+
         """
         return self.radius
 
@@ -1236,6 +1242,7 @@ class RegularPolygon(Polygon):
         >>> rp = RegularPolygon(Point(0, 0), radius, 4)
         >>> rp.inradius
         sqrt(2)*r/2
+
         """
         return self.apothem
 
@@ -1349,6 +1356,7 @@ class RegularPolygon(Polygon):
         {Point2D(-5/2, -5*sqrt(3)/2): pi/3,
          Point2D(-5/2, 5*sqrt(3)/2): pi/3,
          Point2D(5, 0): pi/3}
+
         """
         ret = {}
         ang = self.interior_angle
@@ -1396,7 +1404,7 @@ class RegularPolygon(Polygon):
         >>> p.encloses_point(Point(R/2, R/2 + (R - r)/10))
         False
         >>> t = Symbol('t', extended_real=True)
-        >>> p.encloses_point(p.arbitrary_point().subs(t, S.Half))
+        >>> p.encloses_point(p.arbitrary_point().subs({t: Rational(1, 2)}))
         False
         >>> p.encloses_point(Point(5, 5))
         False
@@ -1536,7 +1544,7 @@ class RegularPolygon(Polygon):
         return self.args == o.args
 
     def __hash__(self):
-        return super(RegularPolygon, self).__hash__()
+        return super().__hash__()
 
 
 class Triangle(Polygon):
@@ -1566,7 +1574,7 @@ class Triangle(Polygon):
     Raises
     ======
 
-    GeometryError
+    diofant.geometry.exceptions.GeometryError
         If the number of vertices is not equal to three, or one of the vertices
         is not a Point, or a valid keyword is not given.
 
@@ -1903,6 +1911,7 @@ class Triangle(Polygon):
         >>> t = Triangle(p1, p2, p3)
         >>> t.circumcenter
         Point2D(1/2, 1/2)
+
         """
         a, b, c = [x.perpendicular_bisector() for x in self.sides]
         return a.intersection(b)[0]
@@ -1929,6 +1938,7 @@ class Triangle(Polygon):
         >>> t = Triangle(p1, p2, p3)
         >>> t.circumradius
         sqrt(a**2/4 + 1/4)
+
         """
         return Point.distance(self.circumcenter, self.vertices[0])
 

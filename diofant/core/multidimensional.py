@@ -14,6 +14,7 @@ def apply_on_element(f, args, kwargs, n):
     Returns a structure with the same dimension as the specified argument,
     where each basic element is replaced by the function f applied on it. All
     other arguments stay the same.
+
     """
     # Get the specified argument.
     if isinstance(n, (int, Integer)):
@@ -22,7 +23,7 @@ def apply_on_element(f, args, kwargs, n):
     elif isinstance(n, str):
         structure = kwargs[n]
         is_arg = False
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError
 
     # Define reduced function that is only dependend of the specified argument.
@@ -41,6 +42,7 @@ def apply_on_element(f, args, kwargs, n):
 def iter_copy(structure):
     """
     Returns a copy of an iterable object (also copying all embedded iterables).
+
     """
     l = []
     for i in structure:
@@ -54,6 +56,7 @@ def iter_copy(structure):
 def structure_copy(structure):
     """
     Returns a copy of the given structure (numpy-array, list, iterable, ..).
+
     """
     if hasattr(structure, "copy"):
         return structure.copy()
@@ -81,6 +84,7 @@ class vectorize:
     >>> vdiff([f(x, y), g(x, y)], [x, y])
     [[Derivative(f(x, y), x), Derivative(f(x, y), y)],
      [Derivative(g(x, y), x), Derivative(g(x, y), y)]]
+
     """
 
     def __init__(self, *mdargs):
@@ -89,6 +93,7 @@ class vectorize:
         treated as data structures, where the decorated function will be applied
         to every single element.
         If no argument is given, everything is treated multidimensional.
+
         """
         for a in mdargs:
             if not isinstance(a, (int, Integer, str)):
@@ -99,6 +104,7 @@ class vectorize:
         """
         Returns a wrapper for the one-dimensional function that can handle
         multidimensional arguments.
+
         """
         @wraps(f)
         def wrapper(*args, **kwargs):
@@ -122,7 +128,7 @@ class vectorize:
                     except KeyError:
                         continue
                     is_arg = False
-                else:  # pragma: no cover
+                else:
                     raise NotImplementedError
 
                 if hasattr(entry, "__iter__"):

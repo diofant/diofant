@@ -3,16 +3,16 @@ Generating and counting primes.
 
 """
 
+import array
+import bisect
 import random
-from array import array as _array
-from bisect import bisect
 
 from ..core.compatibility import as_int
 from .primetest import isprime
 
 
 def _arange(a, b):
-    ar = _array('l', [0]*(b - a))
+    ar = array.array('l', [0]*(b - a))
     for i, e in enumerate(range(a, b)):
         ar[i] = e
     return ar
@@ -31,10 +31,11 @@ class Sieve:
     False
     >>> sieve._list
     array('l', [2, 3, 5, 7, 11, 13, 17, 19, 23])
+
     """
 
     # data shared (and updated) by all Sieve instances
-    _list = _array('l', [2, 3, 5, 7, 11, 13])
+    _list = array.array('l', [2, 3, 5, 7, 11, 13])
 
     def __repr__(self):
         return "<Sieve with %i primes sieved: 2, 3, 5, ... %i, %i>" % \
@@ -52,6 +53,7 @@ class Sieve:
         >>> sieve.extend(30)
         >>> sieve[10] == 29
         True
+
         """
         n = int(n)
         if n <= self._list[-1]:
@@ -76,7 +78,7 @@ class Sieve:
                 newsieve[i] = 0
 
         # Merge the sieves
-        self._list += _array('l', [x for x in newsieve if x])
+        self._list += array.array('l', [x for x in newsieve if x])
 
     def extend_to_no(self, i):
         """Extend to include the ith prime number.
@@ -95,6 +97,7 @@ class Sieve:
         >>> sieve.extend_to_no(9)
         >>> sieve._list
         array('l', [2, 3, 5, 7, 11, 13, 17, 19, 23])
+
         """
         i = as_int(i)
         while len(self._list) < i:
@@ -108,6 +111,7 @@ class Sieve:
 
         >>> print([i for i in sieve.primerange(7, 18)])
         [7, 11, 13, 17]
+
         """
         from ..functions import ceiling
 
@@ -143,6 +147,7 @@ class Sieve:
         (9, 10)
         >>> sieve.search(23)
         (9, 9)
+
         """
         from ..functions import ceiling
 
@@ -154,7 +159,7 @@ class Sieve:
             raise ValueError("n should be >= 2 but got: %s" % n)
         if n > self._list[-1]:
             self.extend(n)
-        b = bisect(self._list, n)
+        b = bisect.bisect(self._list, n)
         if self._list[b - 1] == test:
             return b, b
         else:
@@ -172,7 +177,7 @@ class Sieve:
         return a == b
 
     def __getitem__(self, n):
-        """Return the nth prime number"""
+        """Return the nth prime number."""
         if isinstance(n, slice):
             self.extend_to_no(n.stop)
             return self._list[n.start - 1:n.stop - 1:n.step]
@@ -194,7 +199,7 @@ def prime(nth):
     References
     ==========
 
-    .. [1] http://primes.utm.edu/glossary/xpage/BertrandsPostulate.html
+    * https://primes.utm.edu/glossary/xpage/BertrandsPostulate.html
 
     Examples
     ========
@@ -210,6 +215,7 @@ def prime(nth):
     diofant.ntheory.primetest.isprime : Test if n is prime
     primerange : Generate all primes in a given range
     primepi : Return the number of primes less than or equal to n
+
     """
     n = as_int(nth)
     if n < 1:
@@ -233,6 +239,7 @@ def primepi(n):
     diofant.ntheory.primetest.isprime : Test if n is prime
     primerange : Generate all primes in a given range
     prime : Return the nth prime
+
     """
     n = int(n)
     if n < 2:
@@ -262,6 +269,7 @@ def nextprime(n, ith=1):
 
     prevprime : Return the largest prime smaller than n
     primerange : Generate all primes in a given range
+
     """
     n = int(n)
     i = as_int(ith)
@@ -318,6 +326,7 @@ def prevprime(n):
 
     nextprime : Return the ith prime greater than n
     primerange : Generates all primes in a given range
+
     """
     from ..functions import ceiling
 
@@ -356,7 +365,7 @@ def primerange(a, b):
     =====
 
     Some famous conjectures about the occurrence of primes in a given
-    range are [1]_:
+    range are:
 
     - Twin primes: though often not, the following will give 2 primes
                    an infinite number of times: primerange(6*n - 1, 6*n + 2)
@@ -367,7 +376,7 @@ def primerange(a, b):
     - Brocard's: there are at least four primes in the range
                    primerange(prime(n)**2, prime(n+1)**2)
 
-    The average gap between primes is log(n) [2]_; the gap between
+    The average gap between primes is log(n); the gap between
     primes can be arbitrarily large since sequences of composite
     numbers are arbitrarily large, e.g. the numbers in the sequence
     n! + 2, n! + 3 ... n! + n are all composite.
@@ -375,8 +384,8 @@ def primerange(a, b):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Prime_number
-    .. [2] http://primes.utm.edu/notes/gaps.html
+    * https://en.wikipedia.org/wiki/Prime_number
+    * https://primes.utm.edu/notes/gaps.html
 
     Examples
     ========
@@ -400,6 +409,7 @@ def primerange(a, b):
     primorial : Returns the product of primes based on condition
     Sieve.primerange : return range from already computed primes
                        or extend the sieve to contain the requested range.
+
     """
     from ..functions import ceiling
 
@@ -432,7 +442,7 @@ def randprime(a, b):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Bertrand's_postulate
+    * https://en.wikipedia.org/wiki/Bertrand's_postulate
 
     Examples
     ========
@@ -446,6 +456,7 @@ def randprime(a, b):
     ========
 
     primerange : Generate all primes in a given range
+
     """
     if a >= b:
         return
@@ -501,6 +512,7 @@ def primorial(n, nth=True):
     ========
 
     primerange : Generate all primes in a given range
+
     """
     if nth:
         n = as_int(n)
@@ -567,7 +579,8 @@ def cycle_length(f, x0, nmax=None, values=False):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Cycle_detection.
+    * https://en.wikipedia.org/wiki/Cycle_detection.
+
     """
 
     nmax = int(nmax or 0)

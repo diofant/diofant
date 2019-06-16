@@ -12,8 +12,6 @@ All functions support the methods documented below, inherited from
    :noindex:
    :members:
 
-.. _functions-contents:
-
 .. toctree::
    :caption: Contents
    :maxdepth: 2

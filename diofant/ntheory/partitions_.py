@@ -5,11 +5,10 @@ from mpmath.libmp import (bitcount, fhalf, fone, from_int, from_man_exp,
                           mpf_cosh_sinh, mpf_div, mpf_mul, mpf_pi, mpf_sqrt,
                           mpf_sub, pi_fixed, to_int, to_str)
 
-from ..core.numbers import igcd
 from ..utilities.misc import debug
 
 
-__all__ = ('npartitions')
+__all__ = 'npartitions',
 
 
 def _a(n, j, prec):
@@ -20,7 +19,7 @@ def _a(n, j, prec):
     s = fzero
     pi = pi_fixed(prec)
     for h in range(1, j):
-        if igcd(h, j) != 1:
+        if math.gcd(h, j) != 1:
             continue
         # & with mask to compute fractional part of fixed-point number
         one = 1 << prec
@@ -41,6 +40,7 @@ def _d(n, j, prec, sq23pi, sqrt8):
     """Compute the sinh term in the outer sum of the HRR formula.
 
     The constants sqrt(2/3*pi) and sqrt(8) must be precomputed.
+
     """
     j = from_int(j)
     pi = mpf_pi(prec)
@@ -57,7 +57,7 @@ def npartitions(n):
     """Calculate the partition function P(n), i.e. the number of ways that
     n can be written as a sum of positive integers.
 
-    P(n) is computed using the Hardy-Ramanujan-Rademacher formula [1]_.
+    P(n) is computed using the Hardy-Ramanujan-Rademacher formula.
 
     The correctness of this implementation has been tested for 10**n
     up to n = 8.
@@ -71,7 +71,8 @@ def npartitions(n):
     References
     ==========
 
-    .. [1] http://mathworld.wolfram.com/PartitionFunctionP.html
+    * http://mathworld.wolfram.com/PartitionFunctionP.html
+
     """
     n = int(n)
     if n < 0:

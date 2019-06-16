@@ -1,6 +1,7 @@
 from ..concrete import Sum, summation
-from ..core import Dummy, Expr, Lambda, S, cacheit, symbols, sympify
+from ..core import Dummy, Expr, Lambda, cacheit, symbols, sympify
 from ..functions import Piecewise
+from ..sets import Integers
 from .rv import NamedArgsMixin, SingleDomain, SinglePSpace
 
 
@@ -13,9 +14,10 @@ class SingleDiscreteDistribution(Expr, NamedArgsMixin):
 
     See Also:
         diofant.stats.crv_types.*
+
     """
 
-    set = S.Integers
+    set = Integers
 
     def __new__(cls, *args):
         args = list(map(sympify, args))
@@ -26,6 +28,7 @@ class SingleDiscreteDistribution(Expr, NamedArgsMixin):
         """ Compute the CDF from the PDF
 
         Returns a Lambda
+
         """
         x, z = symbols('x, z', integer=True, finite=True, cls=Dummy)
         left_bound = self.set.inf
@@ -38,11 +41,11 @@ class SingleDiscreteDistribution(Expr, NamedArgsMixin):
         return Lambda(z, cdf)
 
     def cdf(self, x, **kwargs):
-        """ Cumulative density function """
+        """Cumulative density function."""
         return self.compute_cdf(**kwargs)(x)
 
     def expectation(self, expr, var, evaluate=True, **kwargs):
-        """ Expectation of expression over distribution """
+        """Expectation of expression over distribution."""
         # TODO: support discrete sets with non integer stepsizes
         if evaluate:
             return summation(expr * self.pdf(var),
@@ -60,7 +63,7 @@ class SingleDiscreteDomain(SingleDomain):
 
 
 class SingleDiscretePSpace(SinglePSpace):
-    """ Discrete probability space over a single univariate variable """
+    """Discrete probability space over a single univariate variable."""
 
     @property
     def set(self):

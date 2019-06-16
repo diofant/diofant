@@ -1,8 +1,7 @@
 """Gröbner bases algorithms. """
 
 from ..core import Dummy
-from .monomials import (monomial_div, monomial_divides, monomial_lcm,
-                        monomial_mul, term_div)
+from .monomials import Monomial
 from .orderings import lex
 from .polyconfig import query
 
@@ -32,14 +31,14 @@ def groebner(seq, ring, method=None):
 
     domain, orig = ring.domain, None
 
-    if not domain.has_Field or not domain.has_assoc_Field:
+    if not domain.is_Field or not domain.has_assoc_Field:
         orig, ring = ring, ring.clone(domain=domain.field)
         seq = [s.set_ring(ring) for s in seq]
 
     G = _groebner(seq, ring)
 
     if orig is not None:
-        G = [ g.clear_denoms()[1].set_ring(orig) for g in G ]
+        G = [g.clear_denoms()[1].set_ring(orig) for g in G]
 
     return G
 
@@ -71,32 +70,31 @@ def buchberger(f, ring):
     References
     ==========
 
-    .. [1] [Bose03]_
-    .. [2] [Giovini91]_
-    .. [3] [Ajwa95]_
-    .. [4] [Cox97]_
-    .. [5] [BeckerWeispfenning93]_, page 232
+    * :cite:`Bose03`
+    * :cite:`Giovini1991sugar`
+    * :cite:`Ajwa95groebner`
+    * :cite:`Cox2015ideals`
+    * :cite:`BeckerWeispfenning93`, page 232
 
     Notes
     =====
 
     Used an improved version of Buchberger's algorithm
-    as presented in [5]_.
+    as presented in :cite:`BeckerWeispfenning93`.
+
     """
     order = ring.order
 
     def select(P):
         # normal selection strategy
         # select the pair with minimum LCM(LM(f), LM(g))
-        pr = min(P, key=lambda pair: order(monomial_lcm(f[pair[0]].LM, f[pair[1]].LM)))
+        pr = min(P, key=lambda pair: order(f[pair[0]].LM.lcm(f[pair[1]].LM)))
         return pr
 
     def normal(g, J):
-        h = g.rem([ f[j] for j in J ])
+        h = g.div([f[j] for j in J])[1]
 
-        if not h:
-            return
-        else:
+        if h:
             h = h.monic()
 
             if h not in I:
@@ -120,15 +118,15 @@ def buchberger(f, ring):
             ig = C.pop()
             g = f[ig]
             mg = g.LM
-            LCMhg = monomial_lcm(mh, mg)
+            LCMhg = mh.lcm(mg)
 
             def lcm_divides(ip):
                 # LCM(LM(h), LM(p)) divides LCM(LM(h), LM(g))
-                m = monomial_lcm(mh, f[ip].LM)
-                return monomial_div(LCMhg, m)
+                m = mh.lcm(f[ip].LM)
+                return m.divides(LCMhg)
 
             # HT(h) and HT(g) disjoint: mh*mg == LCMhg
-            if monomial_mul(mh, mg) == LCMhg or (
+            if mh*mg == LCMhg or (
                 not any(lcm_divides(ipx) for ipx in C) and
                     not any(lcm_divides(pr[1]) for pr in D)):
                 D.add((ih, ig))
@@ -139,9 +137,9 @@ def buchberger(f, ring):
             # select h, g from D (h the same as above)
             ih, ig = D.pop()
             mg = f[ig].LM
-            LCMhg = monomial_lcm(mh, mg)
+            LCMhg = mh.lcm(mg)
 
-            if not monomial_mul(mh, mg) == LCMhg:
+            if not mh*mg == LCMhg:
                 E.add((ih, ig))
 
         # filter old pairs
@@ -152,12 +150,10 @@ def buchberger(f, ring):
             ig1, ig2 = B.pop()
             mg1 = f[ig1].LM
             mg2 = f[ig2].LM
-            LCM12 = monomial_lcm(mg1, mg2)
+            LCM12 = mg1.lcm(mg2)
 
             # if HT(h) does not divide lcm(HT(g1), HT(g2))
-            if not monomial_div(LCM12, mh) or \
-                monomial_lcm(mg1, mh) == LCM12 or \
-                    monomial_lcm(mg2, mh) == LCM12:
+            if not mh.divides(LCM12) or mg1.lcm(mh) == LCM12 or mg2.lcm(mh) == LCM12:
                 B_new.add((ig1, ig2))
 
         B_new |= E
@@ -169,7 +165,7 @@ def buchberger(f, ring):
             ig = G.pop()
             mg = f[ig].LM
 
-            if not monomial_div(mg, mh):
+            if not mh.divides(mg):
                 G_new.add(ig)
 
         G_new.add(ih)
@@ -189,7 +185,7 @@ def buchberger(f, ring):
 
         for i in range(len(f)):
             p = f[i]
-            r = p.rem(f[:i])
+            r = p.div(f[:i])[1]
 
             if r:
                 f1.append(r.monic())
@@ -256,12 +252,13 @@ def spoly(p1, p2):
     Compute LCM(LM(p1), LM(p2))/LM(p1)*p1 - LCM(LM(p1), LM(p2))/LM(p2)*p2.
 
     This is the S-poly, provided p1 and p2 are monic
+
     """
     LM1 = p1.LM
     LM2 = p2.LM
-    LCM12 = monomial_lcm(LM1, LM2)
-    m1 = monomial_div(LCM12, LM1)
-    m2 = monomial_div(LCM12, LM2)
+    LCM12 = LM1.lcm(LM2)
+    m1 = LCM12/LM1
+    m2 = LCM12/LM2
     s1 = p1.mul_monom(m1)
     s2 = p2.mul_monom(m2)
     s = s1 - s2
@@ -304,14 +301,12 @@ def sig_cmp(u, v, order):
         - the index of v is equal to the index of u and u[0] < v[0] w.r.t. order
 
     u > v otherwise
+
     """
     if u[1] > v[1]:
         return -1
-    if u[1] == v[1]:
-        # if u[0] == v[0]:
-        #    return 0
-        if order(u[0]) < order(v[0]):
-            return -1
+    if u[1] == v[1] and order(u[0]) < order(v[0]):
+        return -1
     return 1
 
 
@@ -323,6 +318,7 @@ def sig_key(s, order):
 
     s < t iff [k > l] or [k == l and m < n]
     s > t otherwise
+
     """
     return -s[1], order(s[0])
 
@@ -333,8 +329,9 @@ def sig_mult(s, m):
 
     The product of a signature (m, i) and a monomial n is defined as
     (m * t, i).
+
     """
-    return sig(monomial_mul(s[0], m), s[1])
+    return sig(Monomial(s[0])*m, s[1])
 
 # labeled polynomial functions
 
@@ -345,8 +342,9 @@ def lbp_sub(f, g):
 
     The signature and number of the difference of f and g are signature
     and number of the maximum of f and g, w.r.t. lbp_cmp.
+
     """
-    if sig_cmp(Sign(f), Sign(g), Polyn(f).ring.order) < 0:
+    if lbp_cmp(f, g) < 0:
         max_poly = g
     else:
         max_poly = f
@@ -362,6 +360,7 @@ def lbp_mul_term(f, cx):
 
     The product of a labeled polynomial (s, p, k) by a monomial is
     defined as (m * s, m * p, k).
+
     """
     return lbp(sig_mult(Sign(f), cx[0]), Polyn(f).mul_term(cx), Num(f))
 
@@ -376,6 +375,7 @@ def lbp_cmp(f, g):
         - Sign(f) == Sign(g) and Num(f) > Num(g)
 
     f > g otherwise
+
     """
     if sig_cmp(Sign(f), Sign(g), Polyn(f).ring.order) == -1:
         return -1
@@ -385,9 +385,7 @@ def lbp_cmp(f, g):
 
 
 def lbp_key(f):
-    """
-    Key for comparing two labeled polynomials.
-    """
+    """Key for comparing two labeled polynomials."""
     return sig_key(Sign(f), Polyn(f).ring.order), -Num(f)
 
 # algorithm and helper functions
@@ -405,15 +403,16 @@ def critical_pair(f, g, ring):
     a new, relatively expensive object in memory, whereas Sign(um *
     f) and um are lightweight and f (in the tuple) is a reference to
     an already existing object in memory.
+
     """
     domain = ring.domain
 
     ltf = Polyn(f).LT
     ltg = Polyn(g).LT
-    lt = (monomial_lcm(ltf[0], ltg[0]), domain.one)
+    lt = ring.from_terms([(Monomial(ltf[0]).lcm(ltg[0]), domain.one)])
 
-    um = term_div(lt, ltf, domain)
-    vm = term_div(lt, ltg, domain)
+    um = lt.quo_term(ltf).LT
+    vm = lt.quo_term(ltg).LT
 
     # The full information is not needed (now), so only the product
     # with the leading term is considered:
@@ -429,17 +428,15 @@ def critical_pair(f, g, ring):
 
 
 def cp_key(c, ring):
-    """
-    Key for comparing critical pairs.
-    """
+    """Key for comparing critical pairs."""
     return lbp_key(lbp(c[0], ring.zero, Num(c[2]))), lbp_key(lbp(c[3], ring.zero, Num(c[5])))
 
 
 def s_poly(cp):
-    """
-    Compute the S-polynomial of a critical pair.
+    """Compute the S-polynomial of a critical pair.
 
     The S-polynomial of a critical pair cp is cp[1] * cp[2] - cp[4] * cp[5].
+
     """
     return lbp_sub(lbp_mul_term(cp[2], cp[1]), lbp_mul_term(cp[5], cp[4]))
 
@@ -456,17 +453,18 @@ def is_rewritable_or_comparable(sign, num, B):
     (sign, num) is rewritable if there exists a labeled polynomial
     h in B, such thatsign[1] is equal to Sign(h)[1], num < Num(h)
     and sign[0] is divisible by Sign(h)[0].
+
     """
     for h in B:
         # comparable
         if sign[1] < Sign(h)[1]:
-            if monomial_divides(Polyn(h).LM, sign[0]):
+            if Polyn(h).LM.divides(sign[0]):
                 return True
 
         # rewritable
         if sign[1] == Sign(h)[1]:
             if num < Num(h):
-                if monomial_divides(Sign(h)[0], sign[0]):
+                if Monomial(Sign(h)[0]).divides(sign[0]):
                     return True
     return False
 
@@ -486,17 +484,16 @@ def f5_reduce(f, B):
 
     >>> R, x, y, z = ring("x y z", QQ, lex)
 
-    >>> f = lbp(sig((1, 1, 1), 4), x, 3)
-    >>> g = lbp(sig((0, 0, 0), 2), x, 2)
+    >>> f = lbp(sig(Monomial((1, 1, 1)), 4), x, 3)
+    >>> g = lbp(sig(Monomial((0, 0, 0)), 2), x, 2)
 
-    >>> Polyn(f).rem([Polyn(g)])
+    >>> Polyn(f).div([Polyn(g)])[1]
     0
     >>> f5_reduce(f, [g])
     (((1, 1, 1), 4), x, 3)
 
     """
     order = Polyn(f).ring.order
-    domain = Polyn(f).ring.domain
 
     if not Polyn(f):
         return f
@@ -505,8 +502,8 @@ def f5_reduce(f, B):
         g = f
 
         for h in B:
-            if Polyn(h) and monomial_divides(Polyn(h).LM, Polyn(f).LM):
-                t = term_div(Polyn(f).LT, Polyn(h).LT, domain)
+            if Polyn(h) and Polyn(h).LM.divides(Polyn(f).LM):
+                t = Polyn(f).leading_term().quo_term(Polyn(h).LT).LT
                 if sig_cmp(sig_mult(Sign(h), t[0]), Sign(f), order) < 0:
                     # The following check need not be done and is in general slower than without.
                     # if not is_rewritable_or_comparable(Sign(gp), Num(gp), B):
@@ -545,10 +542,9 @@ def f5b(F, ring):
     References
     ==========
 
-    .. [1] Yao Sun, Dingkang Wang: "A New Proof for the Correctness of F5
-           (F5-Like) Algorithm", https://arxiv.org/abs/1004.0084
-           (specifically v4).
-    .. [2] [BeckerWeispfenning93]_, pp. 203, 216.
+    * :cite:`SunWang2010f5`
+    * :cite:`BeckerWeispfenning93`, pp. 203, 216.
+
     """
     order = ring.order
 
@@ -560,7 +556,7 @@ def f5b(F, ring):
 
         for i in range(len(F)):
             p = F[i]
-            r = p.rem(F[:i])
+            r = p.div(F[:i])[1]
 
             if r:
                 B.append(r)
@@ -584,9 +580,8 @@ def f5b(F, ring):
         cp = CP.pop()
 
         # discard redundant critical pairs:
-        if is_rewritable_or_comparable(cp[0], Num(cp[2]), B):
-            continue
-        if is_rewritable_or_comparable(cp[3], Num(cp[5]), B):
+        if any(is_rewritable_or_comparable(x, Num(y), B)
+               for x, y in [(cp[0], cp[2]), (cp[3], cp[5])]):
             continue
 
         s = s_poly(cp)
@@ -609,14 +604,14 @@ def f5b(F, ring):
 
             # only add new critical pairs that are not made redundant by p:
             for g in B:
-                if Polyn(g):
-                    cp = critical_pair(p, g, ring)
-                    if is_rewritable_or_comparable(cp[0], Num(cp[2]), [p]):
-                        continue
-                    elif is_rewritable_or_comparable(cp[3], Num(cp[5]), [p]):
-                        continue
+                assert Polyn(g)
+                cp = critical_pair(p, g, ring)
+                if is_rewritable_or_comparable(cp[0], Num(cp[2]), [p]):
+                    continue
+                elif is_rewritable_or_comparable(cp[3], Num(cp[5]), [p]):
+                    continue
 
-                    CP.append(cp)
+                CP.append(cp)
 
             # sort (other sorting methods/selection strategies were not as successful)
             CP.sort(key=lambda cp: cp_key(cp, ring), reverse=True)
@@ -633,7 +628,6 @@ def f5b(F, ring):
 
             k += 1
 
-            # print(len(B), len(CP), "%d critical pairs removed" % len(indices))
         else:
             reductions_to_zero += 1
 
@@ -646,7 +640,7 @@ def f5b(F, ring):
 
 def red_groebner(G, ring):
     """
-    Compute reduced Gröbner basis [1]_.
+    Compute reduced Gröbner basis.
 
     Selects a subset of generators, that already generate the ideal
     and computes a reduced Gröbner basis for them.
@@ -654,17 +648,16 @@ def red_groebner(G, ring):
     References
     ==========
 
-    .. [1] [BeckerWeispfenning93], page 216.
+    * :cite:`BeckerWeispfenning93`, page 216.
+
     """
     def reduction(P):
-        """
-        The actual reduction algorithm.
-        """
+        """The actual reduction algorithm."""
         Q = []
         for i, p in enumerate(P):
-            h = p.rem(P[:i] + P[i + 1:])
-            if h:
-                Q.append(h)
+            h = p.div(P[:i] + P[i + 1:])[1]
+            assert h
+            Q.append(h)
 
         return [p.monic() for p in Q]
 
@@ -674,7 +667,7 @@ def red_groebner(G, ring):
     while F:
         f0 = F.pop()
 
-        if not any(monomial_divides(f.LM, f0.LM) for f in F + H):
+        if not any(f.LM.divides(f0.LM) for f in F + H):
             H.append(f0)
 
     # Becker, Weispfenning, p. 217: H is Gröbner basis of the ideal generated by G.
@@ -682,13 +675,11 @@ def red_groebner(G, ring):
 
 
 def is_groebner(G):
-    """
-    Check if G is a Gröbner basis.
-    """
+    """Check if G is a Gröbner basis."""
     for i in range(len(G)):
         for j in range(i + 1, len(G)):
             s = spoly(G[i], G[j])
-            s = s.rem(G)
+            s = s.div(G)[1]
             if s:
                 return False
 
@@ -696,9 +687,7 @@ def is_groebner(G):
 
 
 def is_minimal(G, ring):
-    """
-    Checks if G is a minimal Gröbner basis.
-    """
+    """Checks if G is a minimal Gröbner basis."""
     order = ring.order
     domain = ring.domain
 
@@ -709,7 +698,7 @@ def is_minimal(G, ring):
             return False
 
         for h in G[:i] + G[i + 1:]:
-            if monomial_divides(h.LM, g.LM):
+            if h.LM.divides(g.LM):
                 return False
 
     return True
@@ -728,7 +717,8 @@ def groebner_lcm(f, g):
     References
     ==========
 
-    .. [1] [Cox97]_
+    * :cite:`Cox2015ideals`
+
     """
     if f.ring != g.ring:
         raise ValueError("Values should be equal")
@@ -740,7 +730,7 @@ def groebner_lcm(f, g):
         return ring.zero
 
     if len(f) <= 1 and len(g) <= 1:
-        monom = monomial_lcm(f.LM, g.LM)
+        monom = f.LM.lcm(g.LM)
         coeff = domain.lcm(f.LC, g.LC)
         return ring.term_new(monom, coeff)
 
@@ -749,9 +739,9 @@ def groebner_lcm(f, g):
 
     lcm = domain.lcm(fc, gc)
 
-    f_terms = [ ((1,) + monom, coeff) for monom, coeff in f.terms() ]
-    g_terms = [ ((0,) + monom, coeff) for monom, coeff in g.terms() ] \
-        + [ ((1,) + monom, -coeff) for monom, coeff in g.terms() ]
+    f_terms = [((1,) + monom, coeff) for monom, coeff in f.terms()]
+    g_terms = [((0,) + monom, coeff) for monom, coeff in g.terms()] \
+        + [((1,) + monom, -coeff) for monom, coeff in g.terms()]
 
     t = Dummy("t")
     t_ring = ring.clone(symbols=(t,) + ring.symbols, order=lex)
@@ -764,32 +754,28 @@ def groebner_lcm(f, g):
     def is_independent(h, j):
         return all(not monom[j] for monom in h.monoms())
 
-    H = [ h for h in basis if is_independent(h, 0) ]
+    H = [h for h in basis if is_independent(h, 0)]
 
-    h_terms = [ (monom[1:], coeff*lcm) for monom, coeff in H[0].terms() ]
+    h_terms = [(monom[1:], coeff*lcm) for monom, coeff in H[0].terms()]
     h = ring.from_terms(h_terms)
 
     return h
 
 
 def groebner_gcd(f, g):
-    """Computes GCD of two polynomials using Gröbner bases. """
+    """Computes GCD of two polynomials using Gröbner bases."""
     if f.ring != g.ring:
         raise ValueError("Values should be equal")
     domain = f.ring.domain
 
-    if not domain.has_Field:
+    if not domain.is_Field:
         fc, f = f.primitive()
         gc, g = g.primitive()
         gcd = domain.gcd(fc, gc)
 
-    H = (f*g).quo([groebner_lcm(f, g)])
+    h = (f*g)//groebner_lcm(f, g)
 
-    if len(H) != 1:
-        raise ValueError("Length should be 1")
-    h = H[0]
-
-    if not domain.has_Field:
+    if not domain.is_Field:
         return gcd*h
     else:
         return h.monic()

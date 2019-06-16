@@ -81,7 +81,7 @@ import textwrap
 from io import StringIO
 
 from .. import __version__ as diofant_version
-from ..core import Dummy, Equality, Expr, Function, S, Symbol, Tuple
+from ..core import Dummy, Equality, Expr, Function, Integer, Symbol, Tuple
 from ..core.compatibility import is_sequence
 from ..matrices import (ImmutableMatrix, MatrixBase, MatrixExpr, MatrixSlice,
                         MatrixSymbol)
@@ -204,6 +204,7 @@ class Routine:
         """Returns a list of OutputArgument, InOutArgument and Result.
 
         If return values are present, they are at the end ot the list.
+
         """
         args = [arg for arg in self.arguments if isinstance(
             arg, (OutputArgument, InOutArgument))]
@@ -313,6 +314,7 @@ class Argument(Variable):
     """An abstract Argument data structure: a name and a data type.
 
     This structure is refined in the descendants below.
+
     """
 
     pass
@@ -328,6 +330,7 @@ class ResultBase:
     Objects of this class stores a diofant expression, and a diofant object
     representing a result variable that will be used in the generated code
     only if necessary.
+
     """
 
     def __init__(self, expr, result_var):
@@ -505,13 +508,13 @@ class CodeGen:
                 out_arg = expr.lhs
                 expr = expr.rhs
                 if isinstance(out_arg, Indexed):
-                    dims = tuple((S.Zero, dim - 1) for dim in out_arg.shape)
+                    dims = tuple((Integer(0), dim - 1) for dim in out_arg.shape)
                     symbol = out_arg.base.label
                 elif isinstance(out_arg, Symbol):
                     dims = []
                     symbol = out_arg
                 elif isinstance(out_arg, MatrixSymbol):
-                    dims = tuple((S.Zero, dim - 1) for dim in out_arg.shape)
+                    dims = tuple((Integer(0), dim - 1) for dim in out_arg.shape)
                     symbol = out_arg
                 else:
                     raise CodeGenError("Only Indexed, Symbol, or MatrixSymbol "
@@ -529,7 +532,7 @@ class CodeGen:
             elif isinstance(expr, (ImmutableMatrix, MatrixSlice)):
                 # Create a "dummy" MatrixSymbol to use as the Output arg
                 out_arg = MatrixSymbol('out_%s' % abs(hash(expr)), *expr.shape)
-                dims = tuple((S.Zero, dim - 1) for dim in out_arg.shape)
+                dims = tuple((Integer(0), dim - 1) for dim in out_arg.shape)
                 output_args.append(
                     OutputArgument(out_arg, out_arg, expr, dimensions=dims))
             else:
@@ -549,7 +552,7 @@ class CodeGen:
                 dims = []
                 array = array_symbols[symbol]
                 for dim in array.shape:
-                    dims.append((S.Zero, dim - 1))
+                    dims.append((Integer(0), dim - 1))
                 metadata = {'dimensions': dims}
             else:
                 metadata = {}
@@ -730,7 +733,7 @@ class CCodeGen(CodeGen):
         If the routine has multiple result objects, an CodeGenError is
         raised.
 
-        See: https//en.wikipedia.org/wiki/Function_prototype
+        See: https://en.wikipedia.org/wiki/Function_prototype
 
         """
         if len(routine.results) > 1:
@@ -998,7 +1001,7 @@ class FCodeGen(CodeGen):
         If the routine has multiple result objects, a CodeGenError is
         raised.
 
-        See: https//en.wikipedia.org/wiki/Function_prototype
+        See: https://en.wikipedia.org/wiki/Function_prototype
 
         """
         prototype = [ "interface\n" ]
@@ -1295,7 +1298,6 @@ class OctaveCodeGen(CodeGen):
         # statement-by-statement by OctavePrinter then again here.
         p = OctaveCodePrinter({'human': False})
         return p.indent_code(codelines)
-        return codelines
 
     def dump_m(self, routines, f, prefix, header=True, empty=True, inline=True):
         # Note used to call self.dump_code() but we need more control for header
@@ -1560,6 +1562,7 @@ def make_routine(name, expr, argument_sequence=None,
     [g]
     >>> [a.expr for a in r.arguments if isinstance(a, InOutArgument)]
     [g + x]
+
     """
 
     # initialize a new code generator

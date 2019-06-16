@@ -1,4 +1,4 @@
-from ..core import AtomicExpr, Integer, Pow, S
+from ..core import AtomicExpr, Integer, Pow
 from ..matrices import ImmutableMatrix
 from .basisdependent import (BasisDependent, BasisDependentAdd,
                              BasisDependentMul, BasisDependentZero)
@@ -11,8 +11,9 @@ class Dyadic(BasisDependent):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Dyadic_tensor
-    .. [2] Kane, T., Levinson, D. Dynamics Theory and Applications. 1985 McGraw-Hill
+    * https://en.wikipedia.org/wiki/Dyadic_tensor
+    * Kane, T., Levinson, D. Dynamics Theory and Applications. 1985 McGraw-Hill
+
     """
 
     _op_priority = 13.0
@@ -53,6 +54,7 @@ class Dyadic(BasisDependent):
         (N.i|N.j)
         >>> D1.dot(N.j)
         N.i
+
         """
 
         from .vector import Vector
@@ -100,6 +102,7 @@ class Dyadic(BasisDependent):
         >>> d = N.i.outer(N.i)
         >>> d.cross(N.j)
         (N.i|N.k)
+
         """
 
         from .vector import Vector
@@ -167,9 +170,7 @@ class Dyadic(BasisDependent):
 
 
 class BaseDyadic(Dyadic, AtomicExpr):
-    """
-    Class to denote a base dyadic tensor component.
-    """
+    """Class to denote a base dyadic tensor component."""
 
     def __new__(cls, vector1, vector2):
         from .vector import Vector, BaseVector, VectorZero
@@ -183,7 +184,7 @@ class BaseDyadic(Dyadic, AtomicExpr):
         elif vector1 == Vector.zero or vector2 == Vector.zero:
             return Dyadic.zero
         # Initialize instance
-        obj = super(BaseDyadic, cls).__new__(cls, vector1, vector2)
+        obj = super().__new__(cls, vector1, vector2)
         obj._base_instance = obj
         obj._measure_number = 1
         obj._components = {obj: Integer(1)}
@@ -203,7 +204,7 @@ class BaseDyadic(Dyadic, AtomicExpr):
 
 
 class DyadicMul(BasisDependentMul, Dyadic):
-    """ Products of scalars and BaseDyadics """
+    """Products of scalars and BaseDyadics."""
 
     def __new__(cls, *args, **options):
         obj = BasisDependentMul.__new__(cls, *args, **options)
@@ -211,19 +212,20 @@ class DyadicMul(BasisDependentMul, Dyadic):
 
     @property
     def base_dyadic(self):
-        """ The BaseDyadic involved in the product. """
+        """The BaseDyadic involved in the product."""
         return self._base_instance
 
     @property
     def measure_number(self):
         """ The scalar expression involved in the definition of
         this DyadicMul.
+
         """
         return self._measure_number
 
 
 class DyadicAdd(BasisDependentAdd, Dyadic):
-    """ Class to hold dyadic sums """
+    """Class to hold dyadic sums."""
 
     def __new__(cls, *args, **options):
         obj = BasisDependentAdd.__new__(cls, *args, **options)
@@ -243,9 +245,7 @@ class DyadicAdd(BasisDependentAdd, Dyadic):
 
 
 class DyadicZero(BasisDependentZero, Dyadic):
-    """
-    Class to denote a zero dyadic
-    """
+    """Class to denote a zero dyadic."""
 
     _op_priority = 13.1
     _pretty_form = '(0|0)'
@@ -257,11 +257,11 @@ class DyadicZero(BasisDependentZero, Dyadic):
 
 
 def _dyad_div(one, other):
-    """ Helper for division involving dyadics """
+    """Helper for division involving dyadics."""
     if isinstance(other, Dyadic):
         raise TypeError("Cannot divide two dyadics")
     else:
-        return DyadicMul(one, Pow(other, S.NegativeOne))
+        return DyadicMul(one, Pow(other, -1))
 
 
 Dyadic._expr_type = Dyadic

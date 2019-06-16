@@ -1,18 +1,13 @@
-"""A module for solving all kinds of equations.
-
-Examples
-========
-
->>> solve(x**5 + 5*x**4 + 10*x**3 + 10*x**2 + 5*x + 1, x)
-[{x: -1}]
+"""
+This module implements methods for solving equations and inequalities.
 """
 
-from .solvers import solve, solve_linear, checksol  # noqa: F401
-from .diophantine import diophantine  # noqa: F401
-from .recurr import rsolve, rsolve_poly, rsolve_ratio, rsolve_hyper  # noqa: F401
-from .ode import checkodesol, classify_ode, dsolve, homogeneous_order  # noqa: F401
-from .polysys import solve_poly_system, solve_linear_system  # noqa: F401
-from .pde import (pde_separate, pde_separate_add, pde_separate_mul,  # noqa: F401
-                  pdsolve, classify_pde, checkpdesol)
-from .deutils import ode_order  # noqa: F401
-from .inequalities import reduce_inequalities  # noqa: F401
+from .deutils import ode_order
+from .diophantine import diophantine
+from .inequalities import reduce_inequalities
+from .ode import checkodesol, classify_ode, dsolve, homogeneous_order
+from .pde import (checkpdesol, classify_pde, pde_separate, pde_separate_add,
+                  pde_separate_mul, pdsolve)
+from .polysys import solve_linear_system, solve_poly_system
+from .recurr import rsolve, rsolve_hyper, rsolve_poly, rsolve_ratio
+from .solvers import checksol, solve, solve_linear

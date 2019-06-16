@@ -5,11 +5,17 @@ import contextlib
 import os
 
 
+__all__ = ('setup',)
+
+
 _default_config = {
     'USE_COLLINS_RESULTANT':      False,
     'USE_SIMPLIFY_GCD':           True,
     'USE_HEU_GCD':                True,
     'HEU_GCD_MAX':                6,
+
+    'FALLBACK_GCD_ZZ_METHOD':     'prs',
+    'GCD_AA_METHOD':              'prs',
 
     'USE_IRREDUCIBLE_IN_FACTOR':  False,
     'USE_CYCLOTOMIC_FACTOR':      True,
@@ -22,8 +28,12 @@ _default_config = {
     'GF_IRRED_METHOD':            'rabin',
     'GF_FACTOR_METHOD':           'zassenhaus',
 
+    'AA_FACTOR_METHOD':           'trager',
+
     'GROEBNER':                   'buchberger',
     'MINPOLY_METHOD':             'compose',
+
+    'KARATSUBA_CUTOFF':           100,
 }
 
 _current_config = {}

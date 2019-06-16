@@ -1,6 +1,7 @@
 """Implementation of :class:`Domain` class. """
 
 import abc
+import inspect
 
 from ..core import Expr
 from ..core.compatibility import HAS_GMPY
@@ -11,7 +12,7 @@ from ..printing.defaults import DefaultPrinting
 from .domainelement import DomainElement
 
 
-__all__ = ('Domain',)
+__all__ = 'Domain',
 
 
 class Domain(DefaultPrinting, abc.ABC):
@@ -21,8 +22,8 @@ class Domain(DefaultPrinting, abc.ABC):
     zero = None
     one = None
 
-    has_Ring = False
-    has_Field = False
+    is_Ring = False
+    is_Field = False
 
     has_assoc_Ring = False
     has_assoc_Field = False
@@ -33,6 +34,8 @@ class Domain(DefaultPrinting, abc.ABC):
     is_RealField = is_RR = False
     is_ComplexField = is_CC = False
     is_AlgebraicField = is_Algebraic = False
+    is_RealAlgebraicField = False
+    is_ComplexAlgebraicField = False
     is_PolynomialRing = is_Poly = False
     is_FractionField = is_Frac = False
     is_SymbolicDomain = is_EX = False
@@ -48,39 +51,35 @@ class Domain(DefaultPrinting, abc.ABC):
     def __hash__(self):
         return hash((self.__class__.__name__, self.dtype))
 
-    def new(self, *args):
-        return self.dtype(*args)
-
     def __call__(self, *args):
         """Construct an element of ``self`` domain from ``args``. """
-        return self.new(*args)
-
-    def normal(self, *args):
         return self.dtype(*args)
 
     @abc.abstractmethod
     def from_expr(self, element):
         """Convert Diofant's expression to ``dtype``. """
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     @abc.abstractmethod
     def to_expr(self, element):
         """Convert ``element`` to Diofant expression. """
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def convert_from(self, element, base):
         """Convert ``element`` to ``self.dtype`` given the base domain. """
-        method = "_from_" + base.__class__.__name__
+        for superclass in inspect.getmro(base.__class__):
+            method = "_from_" + superclass.__name__
 
-        convert = getattr(self, method, None)
+            convert = getattr(self, method, None)
 
-        if convert:
-            result = convert(element, base)
+            if convert:
+                result = convert(element, base)
 
-            if result is not None:
-                return result
+                if result is not None:
+                    return result
 
-        raise CoercionFailed("can't convert %s of type %s from %s to %s" % (element, type(element), base, self))
+        raise CoercionFailed("can't convert %s of type %s from %s "
+                             "to %s" % (element, type(element), base, self))
 
     def convert(self, element, base=None):
         """Convert ``element`` to ``self.dtype``. """
@@ -90,9 +89,9 @@ class Domain(DefaultPrinting, abc.ABC):
         if isinstance(element, self.dtype):
             return element
 
-        from . import (PythonIntegerRing, GMPYIntegerRing, GMPYRationalField,
-                       RealField, ComplexField, PythonRationalField,
-                       PythonRational)
+        from .integerring import PythonIntegerRing, GMPYIntegerRing
+        from .rationalfield import PythonRationalField, GMPYRationalField
+        from . import RealField, ComplexField, PythonRational
 
         if isinstance(element, int):
             return self.convert_from(element, PythonIntegerRing())
@@ -185,7 +184,7 @@ class Domain(DefaultPrinting, abc.ABC):
 
             if ((self.is_FractionField and K1.is_PolynomialRing or
                  K1.is_FractionField and self.is_PolynomialRing) and
-                    (not self_ground.has_Field or not K1_ground.has_Field) and domain.has_Field):
+                    (not self_ground.is_Field or not K1_ground.is_Field) and domain.has_assoc_Ring):
                 domain = domain.ring
 
             if self.is_Composite and (not K1.is_Composite or self.is_FractionField or K1.is_PolynomialRing):
@@ -236,18 +235,6 @@ class Domain(DefaultPrinting, abc.ABC):
         """Returns ``True`` if two domains are equivalent. """
         return isinstance(other, Domain) and self.dtype == other.dtype
 
-    def map(self, seq):
-        """Rersively apply ``self`` to all elements of ``seq``. """
-        result = []
-
-        for elt in seq:
-            if isinstance(elt, list):
-                result.append(self.map(elt))
-            else:
-                result.append(self(elt))
-
-        return result
-
     def get_exact(self):
         """Returns an exact domain associated with ``self``. """
         return self
@@ -269,23 +256,3 @@ class Domain(DefaultPrinting, abc.ABC):
     def is_negative(self, a):
         """Returns True if ``a`` is negative. """
         return a < 0
-
-    def is_nonpositive(self, a):
-        """Returns True if ``a`` is non-positive. """
-        return a <= 0
-
-    def is_nonnegative(self, a):
-        """Returns True if ``a`` is non-negative. """
-        return a >= 0
-
-    def half_gcdex(self, a, b):
-        """Half extended GCD of ``a`` and ``b``. """
-        s, t, h = self.gcdex(a, b)
-        return s, h
-
-    def cofactors(self, a, b):
-        """Returns GCD and cofactors of ``a`` and ``b``. """
-        gcd = self.gcd(a, b)
-        cfa = self.quo(a, gcd)
-        cfb = self.quo(b, gcd)
-        return gcd, cfa, cfb

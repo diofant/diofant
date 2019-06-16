@@ -1,14 +1,14 @@
-from ..calculus import singularities
-from ..core import Eq, Ge, Gt, Le, Lt, Ne, S, diff, nan, oo, sympify
+from ..core import Eq, Ge, Gt, Integer, Le, Lt, Ne, diff, nan, oo, sympify
 from ..core.compatibility import is_sequence, ordered
 from ..functions import Min
 from ..matrices import eye, zeros
 from ..series import limit
 from ..sets import Interval
 from ..solvers import reduce_inequalities, solve
+from .singularities import singularities
 
 
-__all__ = ('minimize', 'maximize')
+__all__ = 'minimize', 'maximize'
 
 
 def minimize(f, *v):
@@ -29,6 +29,7 @@ def minimize(f, *v):
     ========
 
     maximize
+
     """
     f = set(map(sympify, f if is_sequence(f) else [f]))
 
@@ -95,7 +96,7 @@ def minimize(f, *v):
 
         return -res, dict(zip(v, sol))
 
-    raise NotImplementedError  # pragma: no cover
+    raise NotImplementedError
 
 
 def maximize(f, *v):
@@ -106,6 +107,7 @@ def maximize(f, *v):
     ========
 
     minimize
+
     """
     f = set(map(sympify, f if is_sequence(f) else [f]))
 
@@ -136,11 +138,11 @@ def minimize_univariate(f, x, dom):
         for p in solve(diff(f, x), x):
             p = p[x]
             if p in dom:
-                extr[p] = f.subs(x, p)
+                extr[p] = f.subs({x: p})
     elif dom.is_FiniteSet:
         for p in dom.args:
-            extr[p] = f.subs(x, p)
-    else:  # pragma: no cover
+            extr[p] = f.subs({x: p})
+    else:
         raise NotImplementedError
 
     if extr:
@@ -171,8 +173,9 @@ def simplex(c, m, b):
     References
     ==========
 
-    .. [1] Paul R. Thie, Gerard E. Keough, An Introduction to Linear
-           Programming and Game Theory, Third edition, 2008, Ch. 3.
+    * Paul R. Thie, Gerard E. Keough, An Introduction to Linear
+      Programming and Game Theory, Third edition, 2008, Ch. 3.
+
     """
 
     rows, cols = len(b), len(c)
@@ -244,9 +247,9 @@ def simplex(c, m, b):
         if tableau[-1, -1].is_nonzero:
             raise InfeasibleProblem
 
-        tableau.row_del(-1)
+        del tableau[-1, :]
         for i in range(nneg):
-            tableau.col_del(-2)
+            del tableau[:, -2]
 
         for row in [_ for _ in range(rows) if basis[_] > cols + rows - 1]:
             for col in range(tableau.cols - 1):  # pragma: no branch
@@ -262,7 +265,7 @@ def simplex(c, m, b):
     if status == 1:
         return oo, (oo,)*cols
 
-    ans = [S.Zero]*cols
+    ans = [Integer(0)]*cols
     for c, b in enumerate(basis):
         if b < cols:
             ans[b] = tableau[:-1, -1][c]

@@ -1,4 +1,4 @@
-from ..core import Mul, S, nan
+from ..core import Integer, Mul, nan
 from ..functions import exp, log
 from ..polys import quo, roots
 from ..simplify import powsimp
@@ -16,8 +16,8 @@ class Product(ExprWithIntLimits):
     the product.
 
     For finite products (and products with symbolic limits assumed to be finite)
-    we follow the analogue of the summation convention described by Karr [1],
-    especially definition 3 of section 1.4. The product:
+    we follow the analogue of the summation convention described by
+    Karr :cite:`Karr1981summation`, especially definition 3 of section 1.4. The product:
 
     .. math::
 
@@ -57,7 +57,7 @@ class Product(ExprWithIntLimits):
     Examples
     ========
 
-    >>> from diofant.abc import a, b, i
+    >>> from diofant.abc import i
 
     >>> Product(k, (k, 1, m))
     Product(k, (k, 1, m))
@@ -93,7 +93,7 @@ class Product(ExprWithIntLimits):
     By the same formula we can compute sin(pi/2):
 
     >>> P = pi * x * Product(1 - x**2/k**2, (k, 1, n))
-    >>> P = P.subs(x, pi/2)
+    >>> P = P.subs({x: pi/2})
     >>> P
     pi**2*Product(1 - pi**2/(4*k**2), (k, 1, n))/2
     >>> Pe = P.doit()
@@ -128,7 +128,7 @@ class Product(ExprWithIntLimits):
     >>> P = Product(2, (i, 10, n)).doit()
     >>> P
     2**(n - 9)
-    >>> P.subs(n, 5)
+    >>> P.subs({n: 5})
     1/16
     >>> Product(2, (i, 10, 5)).doit()
     1/16
@@ -169,11 +169,9 @@ class Product(ExprWithIntLimits):
     References
     ==========
 
-    .. [1] Michael Karr, "Summation in Finite Terms", Journal of the ACM,
-           Volume 28 Issue 2, April 1981, Pages 305-350
-           https://dl.acm.org/citation.cfm?doid=322248.322255
-    .. [2] https://en.wikipedia.org/wiki/Multiplication#Capital_Pi_notation
-    .. [3] https://en.wikipedia.org/wiki/Empty_product
+    * https://en.wikipedia.org/wiki/Multiplication#Capital_Pi_notation
+    * https://en.wikipedia.org/wiki/Empty_product
+
     """
 
     def __new__(cls, function, *symbols, **assumptions):
@@ -195,7 +193,6 @@ class Product(ExprWithIntLimits):
 
     def doit(self, **hints):
         f = self.function
-
         for index, limit in enumerate(self.limits):
             i, a, b = limit
             dif = b - a
@@ -231,23 +228,23 @@ class Product(ExprWithIntLimits):
 
         if k not in term.free_symbols:
             if (term - 1).is_zero:
-                return S.One
+                return Integer(1)
             return term**(n - a + 1)
 
         if a == n:
-            return term.subs(k, a)
+            return term.subs({k: a})
 
         if term.has(KroneckerDelta) and _has_simple_delta(term, limits[0]):
             return deltaproduct(term, limits)
 
         dif = n - a
         if dif.is_Integer:
-            return Mul(*[term.subs(k, a + i) for i in range(dif + 1)])
+            return Mul(*[term.subs({k: a + i}) for i in range(dif + 1)])
 
         elif term.is_polynomial(k):
             poly = term.as_poly(k)
 
-            A = B = Q = S.One
+            A = B = Q = Integer(1)
 
             all_roots = roots(poly)
 
@@ -268,10 +265,13 @@ class Product(ExprWithIntLimits):
 
         elif term.is_Add:
             p, q = term.as_numer_denom()
-
-            p = self._eval_product(p, (k, a, n))
             q = self._eval_product(q, (k, a, n))
-
+            if q.is_Number:
+                # There is expression, which couldn't change by
+                # as_numer_denom(). E.g. n**(2/3) + 1 --> (n**(2/3) + 1, 1).
+                p = sum(self._eval_product(i, (k, a, n)) for i in p.as_coeff_Add())
+            else:
+                p = self._eval_product(p, (k, a, n))
             return p / q
 
         elif term.is_Mul:
@@ -328,8 +328,6 @@ class Product(ExprWithIntLimits):
         Examples
         ========
 
-        >>> from diofant.abc import a, b, c, d
-
         >>> P = Product(x, (x, a, b))
         >>> Pr = P.reverse_order(x)
         >>> Pr
@@ -349,14 +347,14 @@ class Product(ExprWithIntLimits):
         to reverse, the index counting notation comes in handy in case there
         are several symbols with the same name.
 
-        >>> S = Sum(x*y, (x, a, b), (y, c, d))
-        >>> S
+        >>> s = Sum(x*y, (x, a, b), (y, c, d))
+        >>> s
         Sum(x*y, (x, a, b), (y, c, d))
-        >>> S0 = S.reverse_order(0)
-        >>> S0
+        >>> s0 = s.reverse_order(0)
+        >>> s0
         Sum(-x*y, (x, b + 1, a - 1), (y, c, d))
-        >>> S1 = S0.reverse_order(1)
-        >>> S1
+        >>> s1 = s0.reverse_order(1)
+        >>> s1
         Sum(x*y, (x, b + 1, a - 1), (y, d + 1, c - 1))
 
         Of course we can mix both notations:
@@ -376,9 +374,8 @@ class Product(ExprWithIntLimits):
         References
         ==========
 
-        .. [1] Michael Karr, "Summation in Finite Terms", Journal of the ACM,
-               Volume 28 Issue 2, April 1981, Pages 305-350
-               https://dl.acm.org/citation.cfm?doid=322248.322255
+        * :cite:`Karr1981summation`
+
         """
         l_indices = list(indices)
 
@@ -424,6 +421,7 @@ def product(*args, **kwargs):
     m**k
     >>> product(i, (i, 1, k), (k, 1, n))
     Product(factorial(k), (k, 1, n))
+
     """
 
     prod = Product(*args, **kwargs)

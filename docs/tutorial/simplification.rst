@@ -319,7 +319,7 @@ Special Functions
 =================
 
 Diofant implements dozens of :ref:`special functions
-<functions-contents>`, ranging from functions in combinatorics to
+<special-functions>`, ranging from functions in combinatorics to
 mathematical physics.
 
 To expand special functions in terms of some identities, use

@@ -5,9 +5,10 @@ A Printer for generating readable representation of most diofant classes.
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from ..core import Mul, Pow, Rational, S, oo
+from ..core import Integer, Mul, Pow, Rational, S, oo
 from ..core.mul import _keep_coeff
 from ..utilities import default_sort_key
+from .defaults import DefaultPrinting
 from .precedence import PRECEDENCE, precedence
 from .printer import Printer
 
@@ -33,8 +34,11 @@ class StrPrinter(Printer):
     def emptyPrinter(self, expr):
         if isinstance(expr, str):
             return expr
-        else:
+        elif hasattr(expr, '__str__') and not issubclass(expr.__class__,
+                                                         DefaultPrinting):
             return str(expr)
+        else:
+            return repr(expr)
 
     def _print_Add(self, expr, order=None):
         if self.order == 'none':
@@ -66,13 +70,14 @@ class StrPrinter(Printer):
     def _print_BooleanFalse(self, expr):
         return "false"
 
+    def _print_Not(self, expr):
+        return '~%s' % self.parenthesize(expr.args[0], PRECEDENCE["Not"])
+
     def _print_And(self, expr):
-        return '%s(%s)' % (expr.func, ', '.join(sorted(self._print(a) for a in
-                                                       expr.args)))
+        return self.stringify(expr.args, " & ", PRECEDENCE["BitwiseAnd"])
 
     def _print_Or(self, expr):
-        return '%s(%s)' % (expr.func, ', '.join(sorted(self._print(a) for a in
-                                                       expr.args)))
+        return self.stringify(expr.args, " | ", PRECEDENCE["BitwiseOr"])
 
     def _print_Basic(self, expr):
         l = [self._print(o) for o in expr.args]
@@ -259,7 +264,7 @@ class StrPrinter(Printer):
             else:
                 a.append(item)
 
-        a = a or [S.One]
+        a = a or [Integer(1)]
 
         a_str = [self.parenthesize(x, prec) for x in a]
         b_str = [self.parenthesize(x, prec) for x in b]
@@ -290,7 +295,7 @@ class StrPrinter(Printer):
         return '-oo'
 
     def _print_Order(self, expr):
-        if all(p is S.Zero for p in expr.point) or not len(expr.variables):
+        if all(p == 0 for p in expr.point) or not len(expr.variables):
             if len(expr.variables) <= 1:
                 return 'O(%s)' % self._print(expr.expr)
             else:
@@ -307,6 +312,7 @@ class StrPrinter(Printer):
 
         >>> Cycle(1, 2) # will print as a dict without this method
         Cycle(1, 2)
+
         """
         return expr.__repr__()
 
@@ -390,11 +396,11 @@ class StrPrinter(Printer):
                     s_coeff = self._print(coeff)
             else:
                 if s_monom:
-                    if coeff is S.One:
+                    if coeff == 1:
                         terms.extend(['+', s_monom])
                         continue
 
-                    if coeff is S.NegativeOne:
+                    if coeff == -1:
                         terms.extend(['-', s_monom])
                         continue
 
@@ -409,6 +415,9 @@ class StrPrinter(Printer):
                 terms.extend(['-', s_term[1:]])
             else:
                 terms.extend(['+', s_term])
+
+        if not terms:
+            terms.extend(['+', '0'])
 
         modifier = terms.pop(0)
 
@@ -434,19 +443,20 @@ class StrPrinter(Printer):
     def _print_AlgebraicElement(self, expr):
         return self._print(expr.parent.to_expr(expr))
 
+    def _print_ModularInteger(self, expr):
+        return "%s mod %s" % (expr.rep, expr.mod)
+    _print_GaloisFieldElement = emptyPrinter
+
     def _print_Pow(self, expr, rational=False):
         PREC = precedence(expr)
 
-        if expr.exp is S.Half and not rational:
+        if not expr.exp.is_Float and expr.exp == Rational(1, 2) and not rational:
             return "sqrt(%s)" % self._print(expr.base)
 
-        if expr.is_commutative:
-            if -expr.exp is S.Half and not rational:
-                # Note: Don't test "expr.exp == -S.Half" here, because that will
-                # match -0.5, which we don't want.
+        if expr.is_commutative and not expr.exp.is_Float:
+            if -expr.exp == Rational(1, 2) and not rational:
                 return "1/sqrt(%s)" % self._print(expr.base)
-            if expr.exp is -S.One:
-                # Similarly to the S.Half case, don't test with "==" here.
+            if expr.exp == -1:
                 return '1/%s' % self.parenthesize(expr.base, PREC)
 
         e = self.parenthesize(expr.exp, PREC)
@@ -477,23 +487,7 @@ class StrPrinter(Printer):
     def _print_Integer(self, expr):
         return str(expr.numerator)
 
-    def _print_int(self, expr):
-        return str(expr)
-
-    def _print_mpz(self, expr):
-        return str(expr)
-
     def _print_Rational(self, expr):
-        return "%s/%s" % (expr.numerator, expr.denominator)
-
-    def _print_Fraction(self, expr):
-        if expr.denominator == 1:
-            return str(expr.numerator)
-        else:
-            return "%s/%s" % (expr.numerator, expr.denominator)
-    _print_PythonRational = _print_Fraction
-
-    def _print_mpq(self, expr):
         if expr.denominator == 1:
             return str(expr.numerator)
         else:
@@ -511,13 +505,15 @@ class StrPrinter(Printer):
             strip = True
         elif self._settings["full_prec"] == "auto":
             strip = self._print_level > 1
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
         rv = mlib.to_str(expr._mpf_, dps, strip_zeros=strip)
         if rv.startswith('-.0'):
             rv = '-0.' + rv[3:]
         elif rv.startswith('.0'):
             rv = '0.' + rv[2:]
+        elif rv.startswith('+'):
+            rv = rv[1:]
         return rv
 
     def _print_Relational(self, expr):
@@ -607,6 +603,13 @@ class StrPrinter(Printer):
     def _print_Tuple(self, expr):
         return self._print_tuple(expr)
 
+    def _print_Monomial(self, expr):
+        if expr.gens:
+            return "*".join(["%s**%s" % (gen, exp)
+                             for gen, exp in zip(expr.gens, expr)])
+        else:
+            return self._print_tuple(expr)
+
     def _print_Transpose(self, T):
         return "%s.T" % self.parenthesize(T.arg, PRECEDENCE["Pow"])
 
@@ -624,13 +627,6 @@ class StrPrinter(Printer):
 
     def _print_Zero(self, expr):
         return "0"
-
-    def _print_DMP(self, p):
-        cls = p.__class__.__name__
-        rep = self._print(p.rep)
-        dom = self._print(p.domain)
-
-        return "%s(%s, %s)" % (cls, rep, dom)
 
     def _print_BaseScalarField(self, field):
         return field._coord_sys._names[field._index]
@@ -662,9 +658,9 @@ def sstr(expr, **settings):
     Examples
     ========
 
-    >>> a, b = symbols('a b')
     >>> sstr(Eq(a + b, 0))
     'Eq(a + b, 0)'
+
     """
 
     p = StrPrinter(settings)

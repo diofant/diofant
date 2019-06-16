@@ -7,12 +7,14 @@ Factorials, binomial coefficients and related functions are located in
 the separate 'factorials' module.
 """
 
+import numbers
+
 from mpmath import bernfrac, mp, workprec
 from mpmath.libmp import ifib as _ifib
 
 from ...core import (Add, Dummy, E, Expr, Function, GoldenRatio, Integer,
-                     Rational, S, cacheit, expand_mul, nan, oo, pi, prod)
-from ...core.compatibility import DIOFANT_INTS, as_int
+                     Rational, cacheit, expand_mul, nan, oo, pi, prod)
+from ...core.compatibility import as_int
 from ...utilities.memoization import recurrence_memo
 from ..elementary.exponential import log
 from ..elementary.integers import floor
@@ -67,8 +69,8 @@ class fibonacci(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Fibonacci_number
-    .. [2] http://mathworld.wolfram.com/FibonacciNumber.html
+    * https://en.wikipedia.org/wiki/Fibonacci_number
+    * http://mathworld.wolfram.com/FibonacciNumber.html
 
     See Also
     ========
@@ -79,6 +81,7 @@ class fibonacci(Function):
     diofant.functions.combinatorial.numbers.euler
     diofant.functions.combinatorial.numbers.harmonic
     diofant.functions.combinatorial.numbers.lucas
+
     """
 
     @staticmethod
@@ -86,7 +89,7 @@ class fibonacci(Function):
         return _ifib(n)
 
     @staticmethod
-    @recurrence_memo([None, S.One, _sym])
+    @recurrence_memo([None, Integer(1), _sym])
     def _fibpoly(n, prev):
         return (prev[-2] + _sym*prev[-1]).expand()
 
@@ -96,14 +99,14 @@ class fibonacci(Function):
             n = int(n)
             if sym is None:
                 if n < 0:
-                    return S.NegativeOne**(n + 1) * fibonacci(-n)
+                    return (-1)**(n + 1) * fibonacci(-n)
                 else:
                     return Integer(cls._fib(n))
             else:
                 if n < 1:
                     raise ValueError("Fibonacci polynomials are defined "
                                      "only for positive integer indices.")
-                return cls._fibpoly(n).subs(_sym, sym)
+                return cls._fibpoly(n).subs({_sym: sym})
 
     def _eval_rewrite_as_sqrt(self, n, sym=None):
         from .. import sqrt
@@ -133,8 +136,8 @@ class lucas(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Lucas_number
-    .. [2] http://mathworld.wolfram.com/LucasNumber.html
+    * https://en.wikipedia.org/wiki/Lucas_number
+    * http://mathworld.wolfram.com/LucasNumber.html
 
     See Also
     ========
@@ -145,6 +148,7 @@ class lucas(Function):
     diofant.functions.combinatorial.numbers.euler
     diofant.functions.combinatorial.numbers.fibonacci
     diofant.functions.combinatorial.numbers.harmonic
+
     """
 
     @classmethod
@@ -223,10 +227,10 @@ class bernoulli(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Bernoulli_number
-    .. [2] https//en.wikipedia.org/wiki/Bernoulli_polynomial
-    .. [3] http://mathworld.wolfram.com/BernoulliNumber.html
-    .. [4] http://mathworld.wolfram.com/BernoulliPolynomial.html
+    * https://en.wikipedia.org/wiki/Bernoulli_number
+    * https://en.wikipedia.org/wiki/Bernoulli_polynomial
+    * http://mathworld.wolfram.com/BernoulliNumber.html
+    * http://mathworld.wolfram.com/BernoulliPolynomial.html
 
     See Also
     ========
@@ -237,6 +241,7 @@ class bernoulli(Function):
     diofant.functions.combinatorial.numbers.fibonacci
     diofant.functions.combinatorial.numbers.harmonic
     diofant.functions.combinatorial.numbers.lucas
+
     """
 
     # Calculates B_n for positive even n
@@ -257,24 +262,24 @@ class bernoulli(Function):
 
     # We implement a specialized memoization scheme to handle each
     # case modulo 6 separately
-    _cache = {0: S.One, 2: Rational(1, 6), 4: Rational(-1, 30)}
+    _cache = {0: Integer(1), 2: Rational(1, 6), 4: Rational(-1, 30)}
     _highest = {0: 0, 2: 2, 4: 4}
 
     @classmethod
     def eval(cls, n, sym=None):
         if n.is_Number:
             if n.is_Integer and n.is_nonnegative:
-                if n is S.Zero:
-                    return S.One
-                elif n is S.One:
+                if n == 0:
+                    return Integer(1)
+                elif n == 1:
                     if sym is None:
-                        return -S.Half
+                        return -Rational(1, 2)
                     else:
-                        return sym - S.Half
+                        return sym - Rational(1, 2)
                 # Bernoulli numbers
                 elif sym is None:
                     if n.is_odd:
-                        return S.Zero
+                        return Integer(0)
                     n = int(n)
                     # Use mpmath for enormous Bernoulli numbers
                     if n > 500:
@@ -304,7 +309,7 @@ class bernoulli(Function):
 
         if sym is None:
             if n.is_odd and (n - 1).is_positive:
-                return S.Zero
+                return Integer(0)
 
 
 ############################################################################
@@ -365,9 +370,9 @@ class bell(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Bell_number
-    .. [2] http://mathworld.wolfram.com/BellNumber.html
-    .. [3] http://mathworld.wolfram.com/BellPolynomial.html
+    * https://en.wikipedia.org/wiki/Bell_number
+    * http://mathworld.wolfram.com/BellNumber.html
+    * http://mathworld.wolfram.com/BellPolynomial.html
 
     See Also
     ========
@@ -378,6 +383,7 @@ class bell(Function):
     diofant.functions.combinatorial.numbers.fibonacci
     diofant.functions.combinatorial.numbers.harmonic
     diofant.functions.combinatorial.numbers.lucas
+
     """
 
     @staticmethod
@@ -391,7 +397,7 @@ class bell(Function):
         return s
 
     @staticmethod
-    @recurrence_memo([S.One, _sym])
+    @recurrence_memo([Integer(1), _sym])
     def _bell_poly(n, prev):
         s = 1
         a = 1
@@ -418,11 +424,11 @@ class bell(Function):
 
         """
         if (n == 0) and (k == 0):
-            return S.One
+            return Integer(1)
         elif (n == 0) or (k == 0):
-            return S.Zero
-        s = S.Zero
-        a = S.One
+            return Integer(0)
+        s = Integer(0)
+        a = Integer(1)
         for m in range(1, n - k + 2):
             s += a * bell._bell_incomplete_poly(
                 n - m, k - 1, symbols) * symbols[m - 1]
@@ -435,7 +441,7 @@ class bell(Function):
             if k_sym is None:
                 return Integer(cls._bell(int(n)))
             elif symbols is None:
-                return cls._bell_poly(int(n)).subs(_sym, k_sym)
+                return cls._bell_poly(int(n)).subs({_sym: k_sym})
             else:
                 r = cls._bell_incomplete_poly(int(n), int(k_sym), symbols)
                 return r
@@ -499,7 +505,7 @@ class harmonic(Function):
     >>> harmonic(11)
     83711/27720
 
-    >>> H = harmonic(1/Integer(3))
+    >>> H = harmonic(Rational(1, 3))
     >>> H
     harmonic(1/3)
     >>> He = expand_func(H)
@@ -508,14 +514,14 @@ class harmonic(Function):
                            + 3*Sum(1/(3*_k + 1), (_k, 0, 0))
     >>> He.doit()
     -log(6) - sqrt(3)*pi/6 - log(sqrt(3)/2) + 3
-    >>> H = harmonic(25/Integer(7))
+    >>> H = harmonic(Rational(25, 7))
     >>> He = simplify(expand_func(H).doit())
     >>> He
     log(sin(pi/7)**(-2*cos(pi/7))*sin(2*pi/7)**(2*cos(16*pi/7))*cos(pi/14)**(-2*sin(pi/14))/14)
     + pi*tan(pi/14)/2 + 30247/9900
-    >>> He.n(40)
+    >>> He.evalf(40)
     1.983697455232980674869851942390639915940
-    >>> harmonic(25/Integer(7)).n(40)
+    >>> harmonic(Rational(25, 7)).evalf(40)
     1.983697455232980674869851942390639915940
 
     We can rewrite harmonic numbers in terms of polygamma functions:
@@ -561,9 +567,9 @@ class harmonic(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Harmonic_number
-    .. [2] http://functions.wolfram.com/GammaBetaErf/HarmonicNumber/
-    .. [3] http://functions.wolfram.com/GammaBetaErf/HarmonicNumber2/
+    * https://en.wikipedia.org/wiki/Harmonic_number
+    * http://functions.wolfram.com/GammaBetaErf/HarmonicNumber/
+    * http://functions.wolfram.com/GammaBetaErf/HarmonicNumber2/
 
     See Also
     ========
@@ -574,6 +580,7 @@ class harmonic(Function):
     diofant.functions.combinatorial.numbers.euler
     diofant.functions.combinatorial.numbers.fibonacci
     diofant.functions.combinatorial.numbers.lucas
+
     """
 
     # Generate one memoized Harmonic number-generating function for each
@@ -583,36 +590,35 @@ class harmonic(Function):
     @classmethod
     def eval(cls, n, m=None):
         from .. import zeta
-        if m is S.One:
+        if m == 1:
             return cls(n)
         if m is None:
-            m = S.One
+            m = Integer(1)
 
         if m.is_zero:
             return n
 
-        if n is oo and m.is_Number:
-            # TODO: Fix for symbolic values of m
+        if n is oo:
             if m.is_negative:
                 return nan
-            elif m <= 1:
+            elif (m - 1).is_nonpositive and m.is_nonnegative:
                 return oo
-            else:
+            elif (m - 1).is_positive:
                 return zeta(m)
 
         if n.is_Integer and n.is_nonnegative and m.is_Integer:
             if n == 0:
-                return S.Zero
+                return Integer(0)
             if m not in cls._functions:
                 @recurrence_memo([0])
                 def f(n, prev):
-                    return prev[-1] + S.One / n**m
+                    return prev[-1] + 1/n**m
                 cls._functions[m] = f
             return cls._functions[m](int(n))
 
     def _eval_rewrite_as_polygamma(self, n, m=1):
         from .. import polygamma
-        return S.NegativeOne**m/factorial(m - 1) * (polygamma(m - 1, 1) - polygamma(m - 1, n + 1))
+        return (-1)**m/factorial(m - 1) * (polygamma(m - 1, 1) - polygamma(m - 1, n + 1))
 
     def _eval_rewrite_as_digamma(self, n, m=1):
         from .. import polygamma
@@ -626,7 +632,7 @@ class harmonic(Function):
         from ...concrete import Sum
         k = Dummy("k", integer=True)
         if m is None:
-            m = S.One
+            m = Integer(1)
         return Sum(k**(-m), (k, 1, n))
 
     def _eval_expand_func(self, **hints):
@@ -639,10 +645,10 @@ class harmonic(Function):
                 off = n.args[0]
                 nnew = n - off
                 if off.is_Integer and off.is_positive:
-                    result = [S.One/(nnew + i) for i in range(off, 0, -1)] + [harmonic(nnew)]
+                    result = [1/(nnew + i) for i in range(off, 0, -1)] + [harmonic(nnew)]
                     return Add(*result)
                 elif off.is_Integer and off.is_negative:
-                    result = [-S.One/(nnew + i) for i in range(0, off, -1)] + [harmonic(nnew)]
+                    result = [-1/(nnew + i) for i in range(0, off, -1)] + [harmonic(nnew)]
                     return Add(*result)
 
             if n.is_Rational:
@@ -656,7 +662,7 @@ class harmonic(Function):
                     t1 = q * Sum(1 / (q * k + p), (k, 0, u))
                     t2 = 2 * Sum(cos((2 * pi * p * k) / q) *
                                  log(sin((pi * k) / q)),
-                                 (k, 1, floor((q - 1) / Integer(2))))
+                                 (k, 1, floor(Rational(q - 1, 2))))
                     t3 = (pi / 2) * cot((pi * p) / q) + log(2 * q)
                     return t1 + t2 - t3
 
@@ -710,10 +716,10 @@ class euler(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Euler_numbers
-    .. [2] http://mathworld.wolfram.com/EulerNumber.html
-    .. [3] https//en.wikipedia.org/wiki/Alternating_permutation
-    .. [4] http://mathworld.wolfram.com/AlternatingPermutation.html
+    * https://en.wikipedia.org/wiki/Euler_numbers
+    * http://mathworld.wolfram.com/EulerNumber.html
+    * https://en.wikipedia.org/wiki/Alternating_permutation
+    * http://mathworld.wolfram.com/AlternatingPermutation.html
 
     See Also
     ========
@@ -723,12 +729,13 @@ class euler(Function):
     diofant.functions.combinatorial.numbers.fibonacci
     diofant.functions.combinatorial.numbers.harmonic
     diofant.functions.combinatorial.numbers.lucas
+
     """
 
     @classmethod
     def eval(cls, m):
         if m.is_odd:
-            return S.Zero
+            return Integer(0)
         if m.is_Integer and m.is_nonnegative:
             m = m._to_mpmath(mp.prec)
             res = mp.eulernum(m, exact=True)
@@ -814,10 +821,10 @@ class catalan(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Catalan_number
-    .. [2] http://mathworld.wolfram.com/CatalanNumber.html
-    .. [3] http://functions.wolfram.com/GammaBetaErf/CatalanNumber/
-    .. [4] http://geometer.org/mathcircles/catalan.pdf
+    * https://en.wikipedia.org/wiki/Catalan_number
+    * http://mathworld.wolfram.com/CatalanNumber.html
+    * http://functions.wolfram.com/GammaBetaErf/CatalanNumber/
+    * http://geometer.org/mathcircles/catalan.pdf
 
     See Also
     ========
@@ -829,6 +836,7 @@ class catalan(Function):
     diofant.functions.combinatorial.numbers.harmonic
     diofant.functions.combinatorial.numbers.lucas
     diofant.functions.combinatorial.factorials.binomial
+
     """
 
     @classmethod
@@ -836,13 +844,13 @@ class catalan(Function):
         from .. import gamma
         if (n.is_Integer and n.is_nonnegative) or \
            (n.is_noninteger and n.is_negative):
-            return 4**n*gamma(n + S.Half)/(gamma(S.Half)*gamma(n + 2))
+            return 4**n*gamma(n + Rational(1, 2))/(gamma(Rational(1, 2))*gamma(n + 2))
 
         if n.is_integer and n.is_negative:
             if (n + 1).is_negative:
-                return S.Zero
+                return Integer(0)
             else:
-                return -S.Half
+                return -Rational(1, 2)
 
     def fdiff(self, argindex=1):
         from .. import polygamma, log
@@ -858,7 +866,7 @@ class catalan(Function):
     def _eval_rewrite_as_gamma(self, n):
         from .. import gamma
         # The gamma function allows to generalize Catalan numbers to complex n
-        return 4**n*gamma(n + S.Half)/(gamma(S.Half)*gamma(n + 2))
+        return 4**n*gamma(n + Rational(1, 2))/(gamma(Rational(1, 2))*gamma(n + 2))
 
     def _eval_rewrite_as_hyper(self, n):
         from .. import hyper
@@ -913,8 +921,8 @@ class genocchi(Function):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Genocchi_number
-    .. [2] http://mathworld.wolfram.com/GenocchiNumber.html
+    * https://en.wikipedia.org/wiki/Genocchi_number
+    * http://mathworld.wolfram.com/GenocchiNumber.html
 
     See Also
     ========
@@ -926,6 +934,7 @@ class genocchi(Function):
     diofant.functions.combinatorial.numbers.fibonacci
     diofant.functions.combinatorial.numbers.harmonic
     diofant.functions.combinatorial.numbers.lucas
+
     """
 
     @classmethod
@@ -934,17 +943,17 @@ class genocchi(Function):
             if (not n.is_Integer) or n.is_nonpositive:
                 raise ValueError("Genocchi numbers are defined only for " +
                                  "positive integers")
-            return 2*(1 - Integer(2)**n)*bernoulli(n)
+            return 2*(1 - 2**n)*bernoulli(n)
 
         if n.is_odd and (n - 1).is_positive:
-            return S.Zero
+            return Integer(0)
 
         if (n - 1).is_zero:
-            return S.One
+            return Integer(1)
 
     def _eval_rewrite_as_bernoulli(self, n):
         if n.is_integer and n.is_nonnegative:
-            return 2*(1 - Integer(2)**n)*bernoulli(n)
+            return 2*(1 - 2**n)*bernoulli(n)
 
     def _eval_is_negative(self):
         n = self.args[0]
@@ -982,6 +991,7 @@ def _multiset_histogram(n):
 
     The data is stored in a class deriving from tuple so it is easily
     recognized and so it can be converted easily to a list.
+
     """
     if type(n) is dict:  # item: count
         if not all(isinstance(v, int) and v >= 0 for v in n.values()):
@@ -1052,7 +1062,7 @@ def nP(n, k=None, replacement=False):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Permutation
+    * https://en.wikipedia.org/wiki/Permutation
 
     See Also
     ========
@@ -1072,7 +1082,7 @@ def _nP(n, k=None, replacement=False):
 
     if k == 0:
         return 1
-    if isinstance(n, DIOFANT_INTS):  # n different items
+    if isinstance(n, numbers.Integral):  # n different items
         # assert n >= 0
         if k is None:
             return sum(_nP(n, i, replacement) for i in range(n + 1))
@@ -1146,7 +1156,8 @@ def _AOP_product(n):
     References
     ==========
 
-    .. [1] https://math.stackexchange.com/questions/4643/an-efficient-method-for-computing-the-number-of-submultisets-of-size-n-of-a-giv/4654
+    * https://math.stackexchange.com/questions/4643/an-efficient-method-for-computing-the-number-of-submultisets-of-size-n-of-a-giv/4654
+
     """
     from collections import defaultdict
 
@@ -1227,17 +1238,18 @@ def nC(n, k=None, replacement=False):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Combination
-    .. [2] https://math.stackexchange.com/questions/4643/an-efficient-method-for-computing-the-number-of-submultisets-of-size-n-of-a-giv/4654
+    * https://en.wikipedia.org/wiki/Combination
+    * https://math.stackexchange.com/questions/4643/an-efficient-method-for-computing-the-number-of-submultisets-of-size-n-of-a-giv/4654
 
     See Also
     ========
 
     diofant.utilities.iterables.multiset_combinations
+
     """
     from .factorials import binomial
 
-    if isinstance(n, DIOFANT_INTS):
+    if isinstance(n, numbers.Integral):
         if k is None:
             if not replacement:
                 return 2**n
@@ -1268,14 +1280,14 @@ def nC(n, k=None, replacement=False):
 @cacheit
 def _stirling1(n, k):
     if n == k == 0:
-        return S.One
+        return Integer(1)
     if 0 in (n, k):
-        return S.Zero
+        return Integer(0)
     n1 = n - 1
 
     # some special values
     if n == k:
-        return S.One
+        return Integer(1)
     elif k == 1:
         return factorial(n1)
     elif k == n1:
@@ -1292,9 +1304,9 @@ def _stirling1(n, k):
 @cacheit
 def _stirling2(n, k):
     if n == k == 0:
-        return S.One
+        return Integer(1)
     if 0 in (n, k):
-        return S.Zero
+        return Integer(0)
     n1 = n - 1
 
     # some special values
@@ -1381,8 +1393,8 @@ def stirling(n, k, d=None, kind=2, signed=False):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Stirling_numbers_of_the_first_kind
-    .. [2] https//en.wikipedia.org/wiki/Stirling_numbers_of_the_second_kind
+    * https://en.wikipedia.org/wiki/Stirling_numbers_of_the_first_kind
+    * https://en.wikipedia.org/wiki/Stirling_numbers_of_the_second_kind
 
     See Also
     ========
@@ -1397,7 +1409,7 @@ def stirling(n, k, d=None, kind=2, signed=False):
     if n < 0:
         raise ValueError('n must be nonnegative')
     if k > n:
-        return S.Zero
+        return Integer(0)
     if d:
         # assert k >= d
         # kind is ignored -- only kind=2 is supported
@@ -1418,6 +1430,7 @@ def stirling(n, k, d=None, kind=2, signed=False):
 def _nT(n, k):
     """Return the partitions of ``n`` items into ``k`` parts. This
     is used by ``nT`` for the case when ``n`` is an integer.
+
     """
     if k == 0:
         return 1 if k == n else 0
@@ -1472,7 +1485,7 @@ def nT(n, k=None):
     References
     ==========
 
-    .. [1] http://teaching.csse.uwa.edu.au/units/CITS7209/partition.pdf
+    * http://teaching.csse.uwa.edu.au/units/CITS7209/partition.pdf
 
     See Also
     ========
@@ -1483,7 +1496,7 @@ def nT(n, k=None):
     """
     from ...utilities.enumerative import MultisetPartitionTraverser
 
-    if isinstance(n, DIOFANT_INTS):
+    if isinstance(n, numbers.Integral):
         # assert n >= 0
         # all the same
         if k is None:

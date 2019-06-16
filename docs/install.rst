@@ -3,19 +3,27 @@
 Installation
 ------------
 
-The Diofant can be installed on any computer with Python 3.5
+The Diofant can be installed on any computer with Python 3.7
 or above.  You can install latest release with pip::
 
-    $ pip install diofant
+    pip install diofant
 
 or to install also extra dependencies::
 
-    $ pip install diofant[gmpy,plot]
+    pip install diofant[gmpy,plot]
 
 .. tip::
 
-    Use `venv`_ to create isolated Python environment first,
+    Use :mod:`venv` to create isolated Python environment first,
     instead of installing everything system-wide.
+
+To use :ref:`Unicode pretty printing <d-pretty-printer>` --- configure your
+system to have good TTF fonts.  The `DejaVu Sans Mono
+<https://dejavu-fonts.github.io/>`_ seems to be an acceptable choice.  On
+Debian you can install this `font package
+<https://packages.debian.org/sid/fonts-dejavu>`_ with::
+
+    apt install fonts-dejavu
 
 .. _installation-src:
 
@@ -25,9 +33,9 @@ From Sources
 If you are a developer or like to get the latest updates as they come,
 be sure to install from git::
 
-    $ git clone git://github.com/diofant/diofant.git
-    $ cd diofant
-    $ pip install -e .[develop,docs]
+    git clone git://github.com/diofant/diofant.git
+    cd diofant
+    pip install -e .[develop,docs]
 
 .. note::
 
@@ -47,18 +55,30 @@ ones below::
 .. tip::
 
     Use `IPython`_ for interactive work.  Please refer to the
-    documentation of module :mod:`diofant.interactive` for details
+    documentation of module :mod:`~diofant.interactive` for details
     of available configuration settings.
 
 For a starter guide on using Diofant, refer to the :ref:`tutorial`.
+
+Also, you may want to run full set of unit tests to make
+sure everything works::
+
+    py.test --pyargs diofant
+
+`pytest`_ and some other packages are required for testing, so be sure to
+install the Diofant first with extra dependecies::
+
+    pip install diofant[tests]
 
 Feedback
 ========
 
 If you think there's a bug, you have a question or you would like to
 request a feature, please :ref:`open an issue ticket
-<reporting-issues>`.
+<reporting-issues>`.  General questions and comments can be `sent
+<mailto:diofant@googlegroups.com>`_ to the `Diofant mailing list`_.
 
 .. _setuptools: https://setuptools.readthedocs.io/en/latest/
-.. _venv: https://docs.python.org/3/library/venv.html
-.. _IPython: http://ipython.readthedocs.io/en/stable/
+.. _IPython: https://ipython.readthedocs.io/en/stable/
+.. _pytest: https://docs.pytest.org/en/latest/
+.. _Diofant mailing list: https://groups.google.com/forum/#!forum/diofant

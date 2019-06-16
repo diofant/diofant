@@ -1,26 +1,26 @@
 """Tools for constructing domains for expressions. """
 
-from ..core import sympify
+from ..core import I, sympify
 from ..domains import EX, QQ, RR, ZZ
 from ..domains.realfield import RealField
 from .polyerrors import GeneratorsNeeded
 from .polyoptions import build_options
-from .polyutils import parallel_dict_from_basic
+from .polyutils import parallel_dict_from_expr
 
 
-__all__ = ('construct_domain',)
+__all__ = 'construct_domain',
 
 
 def _construct_simple(coeffs, opt):
     """Handle simple domains, e.g.: ZZ, QQ, RR and algebraic domains. """
     result, rationals, reals, algebraics = {}, False, False, False
 
-    if opt.extension is True:
+    if opt.extension is False:
         def is_algebraic(coeff):
-            return coeff.is_number and coeff.is_algebraic
+            return False
     else:
         def is_algebraic(coeff):
-            return all(_.is_Rational for _ in coeff.as_real_imag())
+            return coeff.is_number and coeff.is_algebraic and not coeff.is_rational
 
     for coeff in coeffs:
         if coeff.is_Rational:
@@ -66,7 +66,6 @@ def _construct_simple(coeffs, opt):
 
 def _construct_algebraic(coeffs, opt):
     """We know that coefficients are algebraic so construct the extension. """
-    from .numberfields import primitive_element
 
     result, exts = [], set()
 
@@ -91,16 +90,19 @@ def _construct_algebraic(coeffs, opt):
 
     exts = list(exts)
 
-    g, span, H = primitive_element(exts)
-    root = sum(s*ext for s, ext in zip(span, exts))
+    if all(e.is_real for e in exts):
+        domain = QQ.algebraic_field(*exts)
+    else:
+        ground_exts = list(set().union(*[_.as_real_imag() for _ in exts]))
+        domain = QQ.algebraic_field(*ground_exts).algebraic_field(I)
 
-    domain, g = QQ.algebraic_field(root), g.rep.rep
+    H = [domain.from_expr(e).rep for e in exts]
 
     for i, (coeff, a, b) in enumerate(result):
         if coeff is not None:
-            coeff = a*domain.dtype.from_list(H[exts.index(coeff)]) + b
+            coeff = a*domain.dtype(H[exts.index(coeff)]) + b
         else:
-            coeff = domain.dtype.from_list([b])
+            coeff = domain.dtype([b])
 
         result[i] = coeff
 
@@ -118,7 +120,7 @@ def _construct_composite(coeffs, opt):
         denoms.append(denom)
 
     try:
-        polys, gens = parallel_dict_from_basic(numers + denoms)  # XXX: sorting
+        polys, gens = parallel_dict_from_expr(numers + denoms)  # XXX: sorting
     except GeneratorsNeeded:
         return
 
@@ -176,7 +178,7 @@ def _construct_composite(coeffs, opt):
         elif coeff.is_Float:
             reals = True
             break
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
     if reals:

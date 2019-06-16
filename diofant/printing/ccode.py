@@ -9,7 +9,8 @@ diofant.utilities.codegen. The codegen module can be used to generate complete
 source code files that are compilable without further modifications.
 """
 
-from ..core import S
+from ..core import Integer
+from ..logic import true
 from .codeprinter import Assignment, CodePrinter
 from .precedence import precedence
 
@@ -78,7 +79,7 @@ reserved_words = ['auto',
 
 
 class CCodePrinter(CodePrinter):
-    """A printer to convert python expressions to strings of c code"""
+    """A printer to convert python expressions to strings of c code."""
 
     printmethod = "_ccode"
     language = "C"
@@ -154,8 +155,8 @@ class CCodePrinter(CodePrinter):
     def _print_Indexed(self, expr):
         # calculate index for 1d array
         dims = expr.shape
-        elem = S.Zero
-        offset = S.One
+        elem = Integer(0)
+        offset = Integer(1)
         for i in reversed(range(expr.rank)):
             elem += expr.indices[i]*offset
             offset *= dims[i]
@@ -177,7 +178,7 @@ class CCodePrinter(CodePrinter):
         return '-HUGE_VAL'
 
     def _print_Piecewise(self, expr):
-        if expr.args[-1].cond != S.true:
+        if expr.args[-1].cond != true:
             # We need the last conditional to be a True, otherwise the resulting
             # function may not return a result.
             raise ValueError("All Piecewise expressions must contain an "
@@ -190,7 +191,7 @@ class CCodePrinter(CodePrinter):
             for i, (e, c) in enumerate(expr.args):
                 if i == 0:
                     lines.append("if (%s) {" % self._print(c))
-                elif i == len(expr.args) - 1 and c == S.true:
+                elif i == len(expr.args) - 1 and c == true:
                     lines.append("else {")
                 else:
                     lines.append("else if (%s) {" % self._print(c))
@@ -219,7 +220,7 @@ class CCodePrinter(CodePrinter):
 
     def _print_Symbol(self, expr):
 
-        name = super(CCodePrinter, self)._print_Symbol(expr)
+        name = super()._print_Symbol(expr)
 
         if expr in self._dereference:
             return '(*{0})'.format(name)
@@ -230,7 +231,7 @@ class CCodePrinter(CodePrinter):
         return '((({0}) > 0) - (({0}) < 0))'.format(self._print(func.args[0]))
 
     def indent_code(self, code):
-        """Accepts a string of code or a list of code lines"""
+        """Accepts a string of code or a list of code lines."""
 
         if isinstance(code, str):
             code_lines = self.indent_code(code.splitlines(True))
@@ -373,6 +374,7 @@ def ccode(expr, assign_to=None, **settings):
        A[1] = x;
     }
     A[2] = sin(x);
+
     """
 
     return CCodePrinter(settings).doprint(expr, assign_to)

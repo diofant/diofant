@@ -12,6 +12,7 @@ class BasisDependent(Expr):
     dyadics.
     Named so because the representation of these quantities in
     diofant.vector is dependent on the basis they are expressed in.
+
     """
 
     @call_highest_priority('__radd__')
@@ -41,9 +42,7 @@ class BasisDependent(Expr):
         return self._div_helper(other)
 
     def evalf(self, dps=15, **options):
-        """
-        Implements the Diofant evalf routine for this quantity.
-        """
+        """Implements the Diofant evalf routine for this quantity."""
         vec = self.zero
         for k, v in self.components.items():
             vec += v.evalf(dps, **options) * k
@@ -60,6 +59,7 @@ class BasisDependent(Expr):
         ========
 
         diofant.simplify.simplify.simplify
+
         """
         simp_components = [simplify(v, ratio, measure) * k for
                            k, v in self.components.items()]
@@ -73,6 +73,7 @@ class BasisDependent(Expr):
         ========
 
         diofant.simplify.trigsimp.trigsimp
+
         """
         trig_components = [trigsimp(v, **opts) * k for
                            k, v in self.components.items()]
@@ -101,13 +102,14 @@ class BasisDependent(Expr):
         ========
 
         diofant.polys.polytools.factor
+
         """
         fctr_components = [factor(v, *args, **kwargs) * k for
                            k, v in self.components.items()]
         return self._add_func(*fctr_components)
 
     def as_coeff_Mul(self, rational=False):
-        """Efficiently extract the coefficient of a product. """
+        """Efficiently extract the coefficient of a product."""
         return Integer(1), self
 
     def diff(self, *args, **kwargs):
@@ -118,6 +120,7 @@ class BasisDependent(Expr):
         ========
 
         diofant.core.function.diff
+
         """
         for x in args:
             if isinstance(x, BasisDependent):
@@ -127,7 +130,7 @@ class BasisDependent(Expr):
         return self._add_func(*diff_components)
 
     def doit(self, **hints):
-        """Calls .doit() on each term in the Dyadic"""
+        """Calls .doit() on each term in the Dyadic."""
         doit_components = [self.components[x].doit(**hints) * x
                            for x in self.components]
         return self._add_func(*doit_components)
@@ -137,6 +140,7 @@ class BasisDependentAdd(BasisDependent, Add):
     """
     Denotes sum of basis dependent quantities such that they cannot
     be expressed as base or Mul instances.
+
     """
 
     def __new__(cls, *args, **options):
@@ -170,8 +174,7 @@ class BasisDependentAdd(BasisDependent, Add):
 
         # Build object
         newargs = [x*components[x] for x in components]
-        obj = super(BasisDependentAdd, cls).__new__(cls,
-                                                    *newargs, **options)
+        obj = super().__new__(cls, *newargs, **options)
         if isinstance(obj, Mul):
             return cls._mul_func(*obj.args)
         assumptions = {}
@@ -184,9 +187,7 @@ class BasisDependentAdd(BasisDependent, Add):
 
 
 class BasisDependentMul(BasisDependent, Mul):
-    """
-    Denotes product of base- basis dependent quantity with a scalar.
-    """
+    """Denotes product of base- basis dependent quantity with a scalar."""
 
     def __new__(cls, *args, **options):
         count = 0
@@ -227,9 +228,7 @@ class BasisDependentMul(BasisDependent, Mul):
                        x in expr.args]
             return cls._add_func(*newargs)
 
-        obj = super(BasisDependentMul, cls).__new__(cls, measure_number,
-                                                    expr._base_instance,
-                                                    **options)
+        obj = super().__new__(cls, measure_number, expr._base_instance, **options)
         obj._base_instance = expr._base_instance
         obj._measure_number = measure_number
         assumptions = {}
@@ -252,14 +251,12 @@ class BasisDependentMul(BasisDependent, Mul):
 
 
 class BasisDependentZero(BasisDependent):
-    """
-    Class to denote a zero basis dependent instance.
-    """
+    """Class to denote a zero basis dependent instance."""
 
     components = {}
 
     def __new__(cls):
-        obj = super(BasisDependentZero, cls).__new__(cls)
+        obj = super().__new__(cls)
         # Pre-compute a specific hash value for the zero vector
         # Use the same one always
         obj._hash = (Integer(0), cls).__hash__()
@@ -278,37 +275,35 @@ class BasisDependentZero(BasisDependent):
     def __add__(self, other):
         if isinstance(other, self._expr_type):
             return other
-        else:  # pragma: no cover
+        else:
             return NotImplemented
 
     @call_highest_priority('__add__')
     def __radd__(self, other):
         if isinstance(other, self._expr_type):
             return other
-        else:  # pragma: no cover
+        else:
             return NotImplemented
 
     @call_highest_priority('__rsub__')
     def __sub__(self, other):
         if isinstance(other, self._expr_type):
             return -other
-        else:  # pragma: no cover
+        else:
             return NotImplemented
 
     @call_highest_priority('__sub__')
     def __rsub__(self, other):
         if isinstance(other, self._expr_type):
             return other
-        else:  # pragma: no cover
+        else:
             return NotImplemented
 
     def __neg__(self):
         return self
 
     def normalize(self):
-        """
-        Returns the normalized version of this vector.
-        """
+        """Returns the normalized version of this vector."""
         return self
 
     def __str__(self, printer=None):

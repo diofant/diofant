@@ -1,5 +1,6 @@
 from ...core import (Add, Dummy, Function, Ge, Gt, I, Integer, Le, Lt,
-                     PrecisionExhausted, S, Symbol)
+                     PrecisionExhausted, Symbol)
+from ...logic import false, true
 
 
 ###############################################################################
@@ -28,7 +29,7 @@ class RoundFunction(Function):
             return v
 
         # Integral, numerical, symbolic part
-        ipart = npart = spart = S.Zero
+        ipart = npart = spart = Integer(0)
 
         # Extract integral (or complex integral) terms
         terms = Add.make_args(arg)
@@ -61,7 +62,7 @@ class RoundFunction(Function):
                             raise PrecisionExhausted
                         prec += 10
                 ipart += Integer(r) + Integer(i)*I
-                npart = S.Zero
+                npart = Integer(0)
             except (PrecisionExhausted, NotImplementedError):
                 pass
 
@@ -113,8 +114,9 @@ class floor(RoundFunction):
     References
     ==========
 
-    .. [1] "Concrete mathematics" by Graham, pp. 87
-    .. [2] http://mathworld.wolfram.com/FloorFunction.html
+    * "Concrete mathematics" by Graham, pp. 87
+    * http://mathworld.wolfram.com/FloorFunction.html
+
     """
 
     _dir = -1
@@ -134,9 +136,9 @@ class floor(RoundFunction):
             return arg.approximation_interval(Integer)[0]
 
     def _eval_nseries(self, x, n, logx):
-        r = self.subs(x, 0)
+        r = self.subs({x: 0})
         args = self.args[0]
-        args0 = args.subs(x, 0)
+        args0 = args.subs({x: 0})
         if args0 == r:
             direction = (args - args0).as_leading_term(x).as_coeff_exponent(x)[0]
             if direction.is_positive:
@@ -148,12 +150,12 @@ class floor(RoundFunction):
 
     def __le__(self, other):
         if self.args[0] == other and other.is_extended_real:
-            return S.true
+            return true
         return Le(self, other, evaluate=False)
 
     def __gt__(self, other):
         if self.args[0] == other and other.is_extended_real:
-            return S.false
+            return false
         return Gt(self, other, evaluate=False)
 
     def _eval_as_leading_term(self, arg):
@@ -188,8 +190,9 @@ class ceiling(RoundFunction):
     References
     ==========
 
-    .. [1] "Concrete mathematics" by Graham, pp. 87
-    .. [2] http://mathworld.wolfram.com/CeilingFunction.html
+    * "Concrete mathematics" by Graham, pp. 87
+    * http://mathworld.wolfram.com/CeilingFunction.html
+
     """
 
     _dir = 1
@@ -209,9 +212,9 @@ class ceiling(RoundFunction):
             return arg.approximation_interval(Integer)[1]
 
     def _eval_nseries(self, x, n, logx):
-        r = self.subs(x, 0)
+        r = self.subs({x: 0})
         args = self.args[0]
-        args0 = args.subs(x, 0)
+        args0 = args.subs({x: 0})
         if args0 == r:
             direction = (args - args0).as_leading_term(x).as_coeff_exponent(x)[0]
             if direction.is_positive:
@@ -223,10 +226,10 @@ class ceiling(RoundFunction):
 
     def __lt__(self, other):
         if self.args[0] == other and other.is_extended_real:
-            return S.false
+            return false
         return Lt(self, other, evaluate=False)
 
     def __ge__(self, other):
         if self.args[0] == other and other.is_extended_real:
-            return S.true
+            return true
         return Ge(self, other, evaluate=False)

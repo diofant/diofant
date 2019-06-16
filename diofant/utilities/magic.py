@@ -11,3 +11,5 @@ def pollute(names, objects):
             frame.f_globals[name] = obj
     finally:
         del frame  # break cyclic dependencies as stated in inspect docs
+
+    return objects

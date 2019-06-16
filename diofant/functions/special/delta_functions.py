@@ -1,4 +1,4 @@
-from ...core import Eq, Function, Rational, S, diff, sympify
+from ...core import Eq, Function, Integer, Rational, diff, sympify
 from ...core.function import ArgumentIndexError
 from ...polys.polyerrors import PolynomialError
 from ..elementary.complexes import im, sign
@@ -38,7 +38,8 @@ class DiracDelta(Function):
     References
     ==========
 
-    .. [1] http://mathworld.wolfram.com/DeltaFunction.html
+    * http://mathworld.wolfram.com/DeltaFunction.html
+
     """
 
     is_commutative = True
@@ -60,8 +61,8 @@ class DiracDelta(Function):
             raise ValueError("Error: the second argument of DiracDelta must be \
             a non-negative integer, %s given instead." % (k,))
         arg = sympify(arg)
-        if arg.is_positive or arg.is_negative:
-            return S.Zero
+        if arg.is_nonzero:
+            return Integer(0)
 
     def simplify(self, x):
         """simplify(self, x)
@@ -89,6 +90,7 @@ class DiracDelta(Function):
 
         diofant.functions.special.delta_functions.DiracDelta.is_simple
         diofant.functions.special.delta_functions.DiracDelta
+
         """
         from ...polys import roots
 
@@ -101,7 +103,7 @@ class DiracDelta(Function):
             darg = abs(diff(self.args[0], x))
             for r, m in argroots.items():
                 if r.is_extended_real is not False and m == 1:
-                    result += self.func(x - r)/darg.subs(x, r)
+                    result += self.func(x - r)/darg.subs({x: r})
                 else:
                     # don't handle non-real and if m != 1 then
                     # a polynomial will have a zero in the derivative (darg)
@@ -143,6 +145,7 @@ class DiracDelta(Function):
 
         diofant.simplify.simplify.simplify
         diofant.functions.special.delta_functions.DiracDelta
+
         """
         p = self.args[0].as_poly(x)
         if p:
@@ -169,7 +172,7 @@ class DiracDelta(Function):
 
 
 class Heaviside(Function):
-    r"""Heaviside step function [1]_
+    r"""Heaviside step function
 
     .. math ::
         H(x) = \left\{\begin{matrix}0, x < 0\\
@@ -183,7 +186,8 @@ class Heaviside(Function):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Heaviside_step_function
+    * https://en.wikipedia.org/wiki/Heaviside_step_function
+
     """
 
     def fdiff(self, argindex=1):
@@ -198,11 +202,11 @@ class Heaviside(Function):
         if im(arg).is_nonzero:
             raise ValueError("Function defined only for Real Values. Complex part: %s  found in %s ." % (repr(im(arg)), repr(arg)) )
         elif arg.is_negative:
-            return S.Zero
+            return Integer(0)
         elif arg.is_zero:
-            return S.Half
+            return Rational(1, 2)
         elif arg.is_positive:
-            return S.One
+            return Integer(1)
 
     def _eval_rewrite_as_Piecewise(self, arg):
         if arg.is_extended_real:

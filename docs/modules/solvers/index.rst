@@ -3,9 +3,6 @@ Solvers
 
 .. automodule:: diofant.solvers
 
-The *solvers* module in Diofant implements methods for
-solving equations and inequalities.
-
 .. toctree::
    :caption: Contents
    :name: solverstoc

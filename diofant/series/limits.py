@@ -1,5 +1,5 @@
-from ..core import (Dummy, Expr, Float, PoleError, Rational, S, Symbol, nan,
-                    oo, sympify)
+from ..core import (Dummy, Expr, Float, Integer, PoleError, Rational, Symbol,
+                    nan, oo, sympify)
 from ..functions.elementary.trigonometric import cos, sin
 from .gruntz import limitinf
 from .order import Order
@@ -25,6 +25,7 @@ def limit(expr, z, z0, dir="+"):
     ========
 
     Limit
+
     """
 
     return Limit(expr, z, z0, dir).doit(deep=False)
@@ -34,7 +35,7 @@ def heuristics(e, z, z0, dir):
     rv = None
 
     if abs(z0) is oo:
-        rv = limit(e.subs(z, 1/z), z, S.Zero, "+" if z0 is oo else "-")
+        rv = limit(e.subs({z: 1/z}), z, Integer(0), "+" if z0 is oo else "-")
         if isinstance(rv, Limit):
             return
     elif e.is_Mul or e.is_Add or e.is_Pow or e.is_Function:
@@ -81,6 +82,7 @@ class Limit(Expr):
     Limit(sin(x)/x, x, 0)
     >>> Limit(1/x, x, 0, dir="-")
     Limit(1/x, x, 0, dir='-')
+
     """
 
     def __new__(cls, e, z, z0, dir="+"):
@@ -118,6 +120,7 @@ class Limit(Expr):
 
         First we handle some trivial cases (i.e. constant), then try
         Gruntz algorithm (see the :py:mod:`~diofant.series.gruntz` module).
+
         """
         e, z, z0, dir = self.args
 
@@ -144,9 +147,9 @@ class Limit(Expr):
 
         if z0.has(z):
             newz = z.as_dummy()
-            r = limit(e.subs(z, newz), newz, z0, dir)
+            r = limit(e.subs({z: newz}), newz, z0, dir)
             if isinstance(r, Limit):
-                r = r.subs(newz, z)
+                r = r.subs({newz: z})
             return r
 
         if e == z:
@@ -179,17 +182,17 @@ class Limit(Expr):
             # Convert to the limit z->oo and use Gruntz algorithm.
             newe, newz = e, z
             if z0 == -oo:
-                newe = e.subs(z, -z)
+                newe = e.subs({z: -z})
             elif z0 != oo:
                 if str(dir) == "+":
-                    newe = e.subs(z, z0 + 1/z)
+                    newe = e.subs({z: z0 + 1/z})
                 else:
-                    newe = e.subs(z, z0 - 1/z)
+                    newe = e.subs({z: z0 - 1/z})
 
             if not z.is_positive or not z.is_finite:
                 # We need a fresh variable here to simplify expression further.
                 newz = Dummy(z.name, positive=True, finite=True)
-                newe = newe.subs(z, newz)
+                newe = newe.subs({z: newz})
 
             r = limitinf(newe, newz)
         except (PoleError, ValueError, NotImplementedError):

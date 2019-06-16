@@ -1,4 +1,4 @@
-from ..core import AtomicExpr, Integer, Pow, S, Symbol, diff
+from ..core import AtomicExpr, Integer, Pow, Symbol, diff
 from ..core.assumptions import StdFactKB
 from ..functions import sqrt
 from ..matrices import ImmutableMatrix
@@ -13,6 +13,7 @@ class Vector(BasisDependent):
     Super class for all Vector classes.
     Ideally, neither this class nor any of its subclasses should be
     instantiated by the user.
+
     """
 
     is_Vector = True
@@ -39,15 +40,11 @@ class Vector(BasisDependent):
         return self._components
 
     def magnitude(self):
-        """
-        Returns the magnitude of this vector.
-        """
+        """Returns the magnitude of this vector."""
         return sqrt(self & self)
 
     def normalize(self):
-        """
-        Returns the normalized version of this vector.
-        """
+        """Returns the normalized version of this vector."""
         return self / self.magnitude()
 
     def dot(self, other):
@@ -263,7 +260,6 @@ class Vector(BasisDependent):
         ========
 
         >>> C = CoordSysCartesian('C')
-        >>> from diofant.abc import a, b, c
         >>> v = a*C.i + b*C.j + c*C.k
         >>> v.to_matrix(C)
         Matrix([
@@ -292,6 +288,7 @@ class Vector(BasisDependent):
         >>> v = R1.i + R2.i
         >>> v.separate()
         {R1: R1.i, R2: R2.i}
+
         """
 
         parts = {}
@@ -302,9 +299,7 @@ class Vector(BasisDependent):
 
 
 class BaseVector(Vector, AtomicExpr):
-    """
-    Class to denote a base vector.
-    """
+    """Class to denote a base vector."""
 
     def __new__(cls, name, index, system, pretty_str, latex_str):
         name = str(name)
@@ -316,9 +311,8 @@ class BaseVector(Vector, AtomicExpr):
         if not isinstance(system, CoordSysCartesian):
             raise TypeError("system should be a CoordSysCartesian")
         # Initialize an object
-        obj = super(BaseVector, cls).__new__(cls, Symbol(name), Integer(index),
-                                             system, Symbol(pretty_str),
-                                             Symbol(latex_str))
+        obj = super().__new__(cls, Symbol(name), Integer(index),
+                              system, Symbol(pretty_str), Symbol(latex_str))
         # Assign important attributes
         obj._base_instance = obj
         obj._components = {obj: Integer(1)}
@@ -355,9 +349,7 @@ class BaseVector(Vector, AtomicExpr):
 
 
 class VectorAdd(BasisDependentAdd, Vector):
-    """
-    Class to denote sum of Vector instances.
-    """
+    """Class to denote sum of Vector instances."""
 
     def __new__(cls, *args, **options):
         obj = BasisDependentAdd.__new__(cls, *args, **options)
@@ -380,9 +372,7 @@ class VectorAdd(BasisDependentAdd, Vector):
 
 
 class VectorMul(BasisDependentMul, Vector):
-    """
-    Class to denote products of scalars and BaseVectors.
-    """
+    """Class to denote products of scalars and BaseVectors."""
 
     def __new__(cls, *args, **options):
         obj = BasisDependentMul.__new__(cls, *args, **options)
@@ -390,21 +380,20 @@ class VectorMul(BasisDependentMul, Vector):
 
     @property
     def base_vector(self):
-        """ The BaseVector involved in the product. """
+        """The BaseVector involved in the product."""
         return self._base_instance
 
     @property
     def measure_number(self):
         """ The scalar expression involved in the defition of
         this VectorMul.
+
         """
         return self._measure_number
 
 
 class VectorZero(BasisDependentZero, Vector):
-    """
-    Class to denote a zero vector
-    """
+    """Class to denote a zero vector."""
 
     _op_priority = 12.1
     _pretty_form = '0'
@@ -416,13 +405,13 @@ class VectorZero(BasisDependentZero, Vector):
 
 
 def _vect_div(one, other):
-    """ Helper for division involving vectors. """
+    """Helper for division involving vectors."""
     if isinstance(other, Vector):
         raise TypeError("Cannot divide two vectors")
     else:
         if other == 0:
             raise ValueError("Cannot divide a vector by zero")
-        return VectorMul(one, Pow(other, S.NegativeOne))
+        return VectorMul(one, Pow(other, -1))
 
 
 Vector._expr_type = Vector

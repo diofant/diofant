@@ -27,7 +27,8 @@ def singularities(f, x):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Mathematical_singularity
+    * https://en.wikipedia.org/wiki/Mathematical_singularity
+
     """
     f, x = sympify(f), sympify(x)
     guess, res = set(), set()
@@ -48,14 +49,14 @@ def singularities(f, x):
     elif f.func in (log, sign) and len(f.args) == 1:
         guess |= singularities(f.args[0], x)
         guess |= {s[x] for s in solve(f.args[0], x) if s[x].is_real}
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError
 
     for s in guess:
         l = Limit(f, x, s, dir="real")
         try:
             r = l.doit()
-            if r == l or f.subs(x, s) != r:  # pragma: no cover
+            if r == l or f.subs({x: s}) != r:  # pragma: no cover
                 raise NotImplementedError
         except PoleError:
             res.add(s)

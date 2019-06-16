@@ -14,12 +14,20 @@ sp = re.compile(r'([0-9]+)/([1-9][0-9]*)')
 
 hypothesis.settings.register_profile("default",
                                      hypothesis.settings(max_examples=100))
-hypothesis.settings.register_profile("debug",
-                                     hypothesis.settings(max_examples=100,
-                                                         verbosity=hypothesis.Verbosity.verbose))
 
 
-def process_split(session, config, items):
+def pytest_report_header(config):
+    return """
+cache: %s
+ground types: %s
+""" % (diofant.core.cache.USE_CACHE, diofant.core.compatibility.GROUND_TYPES)
+
+
+def pytest_addoption(parser):
+    parser.addoption("--split", action="store", default="", help="split tests")
+
+
+def pytest_collection_modifyitems(session, config, items):
     split = config.getoption("--split")
     if not split:
         return
@@ -35,30 +43,9 @@ def process_split(session, config, items):
     del items[:start]
 
 
-def pytest_report_header(config):
-    return """
-cache: %s
-ground types: %s
-""" % (diofant.core.cache.USE_CACHE, diofant.core.compatibility.GROUND_TYPES)
-
-
-def pytest_addoption(parser):
-    parser.addoption("--split", action="store", default="", help="split tests")
-
-
-def pytest_collection_modifyitems(session, config, items):
-    process_split(session, config, items)
-
-
 @pytest.fixture(autouse=True, scope='module')
 def file_clear_cache():
     diofant.core.cache.clear_cache()
-
-
-@pytest.fixture(autouse=True, scope='module')
-def check_disabled(request):
-    if getattr(request.module, 'disabled', False):
-        pytest.skip("test requirements not met.")
 
 
 @pytest.fixture(autouse=True, scope='session')
@@ -67,23 +54,19 @@ def set_displayhook():
 
 
 @pytest.fixture(autouse=True, scope='session')
-def enable_deprecationwarnings():
-    warnings.simplefilter('error', DeprecationWarning)
-
-
-@pytest.fixture(autouse=True, scope='session')
 def enable_mpl_agg_backend():
     try:
-        import matplotlib as mpl
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', DeprecationWarning)
+            import matplotlib as mpl
         mpl.use('Agg')
-        del mpl
     except ImportError:
         pass
 
 
 @pytest.fixture(autouse=True)
 def add_np(doctest_namespace):
-    for sym in (diofant.symbols('x y z t') +
+    for sym in (diofant.symbols('a b c d x y z t') +
                 diofant.symbols('k m n', integer=True) +
                 diofant.symbols('f g h', cls=diofant.Function)):
         doctest_namespace[str(sym)] = sym

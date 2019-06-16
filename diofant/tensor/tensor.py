@@ -34,7 +34,8 @@ from functools import reduce
 
 from ..combinatorics.tensor_can import (bsgs_direct_product, canonicalize,
                                         get_symmetric_group_sgs, riemann_bsgs)
-from ..core import Add, Basic, Rational, S, Symbol, Tuple, symbols, sympify
+from ..core import (Add, Basic, Integer, Rational, Symbol, Tuple, symbols,
+                    sympify)
 from ..core.sympify import CantSympify
 from ..external import import_module
 from ..matrices import Matrix, eye
@@ -106,6 +107,7 @@ class TIDS(CantSympify):
         """
         Get a list of ``Tensor`` objects having the same ``TIDS`` if multiplied
         by one another.
+
         """
         indices = self.get_indices()
         components = self.components
@@ -143,6 +145,7 @@ class TIDS(CantSympify):
         >>> t5 = (A(m0)*A(m1)*A(m2))._tids
         >>> t5.get_components_with_free_indices()
         [(A(Lorentz), [(m0, 0, 0)]), (A(Lorentz), [(m1, 0, 1)]), (A(Lorentz), [(m2, 0, 2)])]
+
         """
         components = self.components
         ret_comp = []
@@ -192,6 +195,7 @@ class TIDS(CantSympify):
         >>> A = tensorhead('A', [Lorentz], [[1]])
         >>> TIDS.from_components_and_indices([A]*4, [m0, m1, -m1, m3])
         TIDS([A(Lorentz), A(Lorentz), A(Lorentz), A(Lorentz)], [(m0, 0, 0), (m3, 0, 3)], [(0, 0, 1, 2)])
+
         """
         tids = None
         cur_pos = 0
@@ -229,6 +233,7 @@ class TIDS(CantSympify):
         >>> m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
         >>> TIDS.free_dum_from_indices(m0, m1, -m1, m3)
         ([(m0, 0, 0), (m3, 3, 0)], [(1, 2, 0, 0)])
+
         """
         n = len(indices)
         if n == 1:
@@ -361,6 +366,7 @@ class TIDS(CantSympify):
         >>> tids_4 = TIDS.from_components_and_indices([A], [m3])
         >>> # This raises an exception:
         >>> # tids_1 * tids_4
+
         """
         def index_up(u):
             return u if u.is_up else -u
@@ -407,6 +413,7 @@ class TIDS(CantSympify):
 
         The sorting is done taking into account the commutation group
         of the component tensors.
+
         """
         from ..combinatorics.permutations import _af_invert
         cv = list(zip(self.components, range(len(self.components))))
@@ -447,6 +454,7 @@ class TIDS(CantSympify):
         Returns ``(g, dummies, msym, v)``, the entries of ``canonicalize``
 
         see ``canonicalize`` in ``tensor_can.py``
+
         """
         # to be called after sorted_components
         from ..combinatorics.permutations import _af_new
@@ -517,6 +525,7 @@ class TIDS(CantSympify):
 
         ``canon_bp``   if True, then ``g`` is the permutation
         corresponding to the canonical form of the tensor
+
         """
         vpos = []
         components = self.components
@@ -555,6 +564,7 @@ class TIDS(CantSympify):
     def get_indices(self):
         """
         Get a list of indices, creating new tensor indices to complete dummy indices.
+
         """
         components = self.components
         free = self.free
@@ -593,6 +603,7 @@ class TIDS(CantSympify):
 
         Sign is either 1 or -1, to correct the sign after metric contraction
         (for spinor indices).
+
         """
         components = self.components
         antisym = g.index_types[0].metric_antisym
@@ -736,6 +747,7 @@ class _TensorDataLazyEvaluator(CantSympify):
     contractions, tensor products, and additions, components data are not
     computed until they are accessed by reading the ``.data`` property
     associated to the tensor expression.
+
     """
 
     _substitutions_dict = {}
@@ -768,6 +780,7 @@ class _TensorDataLazyEvaluator(CantSympify):
 
         Metric tensor is handled in a different manner: it is pre-computed in
         ``self._substitutions_dict_tensmul``.
+
         """
         if key in self._substitutions_dict:
             return self._substitutions_dict[key]
@@ -805,7 +818,7 @@ class _TensorDataLazyEvaluator(CantSympify):
             return data_result
 
         if isinstance(key, TensAdd):
-            sumvar = S.Zero
+            sumvar = Integer(0)
             data_list = []
             free_args_list = []
             for arg in key.args:
@@ -838,6 +851,7 @@ class _TensorDataLazyEvaluator(CantSympify):
         This method is used when assigning components data to a ``TensMul``
         object, it converts components data to a fully contravariant ndarray,
         which is then stored according to the ``TensorHead`` key.
+
         """
         if data is None:
             return
@@ -854,6 +868,7 @@ class _TensorDataLazyEvaluator(CantSympify):
         This method corrects the components data to the right signature
         (covariant/contravariant) using the metric associated with each
         ``TensorIndexType``.
+
         """
         if tensorhead.data is None:
             return
@@ -869,12 +884,14 @@ class _TensorDataLazyEvaluator(CantSympify):
         Given a ``data_list``, list of ``ndarray``'s and a ``tensmul_list``,
         list of ``TensMul`` instances, compute the resulting ``ndarray``,
         after tensor products and contractions.
+
         """
         def data_mul(f, g):
             """
             Multiplies two ``ndarray`` objects, it first calls ``TIDS.mul``,
             then checks which indices have been contracted, and finally
             contraction operation on data, according to the contracted indices.
+
             """
             data1, tensmul1 = f
             data2, tensmul2 = g
@@ -882,7 +899,7 @@ class _TensorDataLazyEvaluator(CantSympify):
             data = _TensorDataLazyEvaluator._contract_ndarray(tensmul1.free, tensmul2.free, data1, data2)
             # TODO: do this more efficiently... maybe by just passing an index list
             # to .data_product_tensor(...)
-            return data, TensMul.from_TIDS(S.One, TIDS(components, free, dum))
+            return data, TensMul.from_TIDS(Integer(1), TIDS(components, free, dum))
 
         return reduce(data_mul, zip(data_list, tensmul_list))
 
@@ -933,6 +950,7 @@ class _TensorDataLazyEvaluator(CantSympify):
         Components data are transformed to the all-contravariant form and stored
         with the corresponding ``TensorHead`` object. If a ``TensorHead`` object
         cannot be uniquely identified, it will raise an error.
+
         """
         data = _TensorDataLazyEvaluator.parse_data(value)
         self._check_permutations_on_data(key, data)
@@ -998,6 +1016,7 @@ class _TensorDataLazyEvaluator(CantSympify):
         contravariant metric (it is meant matrix inverse). If the metric is
         symmetric, the transpose is not necessary and mixed
         covariant/contravariant metrics are Kronecker deltas.
+
         """
         # hard assignment, data should not be added to `TensorHead` for metric:
         # the problem with `TensorHead` is that the metric is anomalous, i.e.
@@ -1043,6 +1062,7 @@ class _TensorDataLazyEvaluator(CantSympify):
         ndarray according to whether indices are covariant or contravariant.
 
         It uses the metric matrix to lower values of covariant indices.
+
         """
         numpy = import_module('numpy')
         # change the ndarray values according covariantness/contravariantness of the indices
@@ -1090,6 +1110,7 @@ class _TensorDataLazyEvaluator(CantSympify):
         >>> print(sstr(_TensorDataLazyEvaluator.parse_data([[1, 2], [4, 7]])))
         [[1 2]
          [4 7]]
+
         """
         numpy = import_module('numpy')
 
@@ -1121,6 +1142,7 @@ class _TensorManager:
     Other groups can be defined using ``set_comm``; tensors in those
     groups commute with those with ``comm=0``; by default they
     do not commute with any other group.
+
     """
 
     def __init__(self):
@@ -1149,6 +1171,7 @@ class _TensorManager:
 
         If ``i`` is not already defined its commutation group number
         is set.
+
         """
         if i not in self._comm_symbols2i:
             n = len(self._comm)
@@ -1161,9 +1184,7 @@ class _TensorManager:
         return self._comm_symbols2i[i]
 
     def comm_i2symbol(self, i):
-        """
-        Returns the symbol corresponding to the commutation group number.
-        """
+        """Returns the symbol corresponding to the commutation group number."""
         return self._comm_i2symbol[i]
 
     def set_comm(self, i, j, c):
@@ -1214,6 +1235,7 @@ class _TensorManager:
         G(i1)*G(i0)
         >>> (G(i1)*A(i0)).canon_bp()
         A(i0)*G(i1)
+
         """
         if c not in (0, 1, None):
             raise ValueError('`c` can assume only the values 0, 1 or None')
@@ -1245,6 +1267,7 @@ class _TensorManager:
         ==========
 
         args : sequence of ``(i, j, c)``
+
         """
         for i, j, c in args:
             self.set_comm(i, j, c)
@@ -1254,13 +1277,12 @@ class _TensorManager:
         Return the commutation parameter for commutation group numbers ``i, j``
 
         see ``_TensorManager.set_comm``
+
         """
         return self._comm[i].get(j, 0 if i == 0 or j == 0 else None)
 
     def clear(self):
-        """
-        Clear the TensorManager.
-        """
+        """Clear the TensorManager."""
         self._comm_init()
 
 
@@ -1290,9 +1312,11 @@ class TensorIndexType(Basic):
     ==========
 
     ``name``
-    ``metric_name`` : it is 'metric' or metric.name
+    ``metric_name`` : str
+        it is 'metric' or metric.name
     ``metric_antisym``
-    ``metric`` : the metric tensor
+    ``metric`` : TensorType
+        the metric tensor
     ``delta`` : ``Kronecker delta``
     ``epsilon`` : the ``Levi-Civita epsilon`` tensor
     ``dim``
@@ -1352,6 +1376,7 @@ class TensorIndexType(Basic):
     [0 -1 0 0]
     [0 0 -1 0]
     [0 0 0 -1]]
+
     """
 
     def __new__(cls, name, metric=False, dim=None, eps_dim=None,
@@ -1359,7 +1384,7 @@ class TensorIndexType(Basic):
 
         if isinstance(name, str):
             name = Symbol(name)
-        obj = Basic.__new__(cls, name, S.One if metric else S.Zero)
+        obj = Basic.__new__(cls, name, Integer(1) if metric else Integer(0))
         obj._name = str(name)
         if not dummy_fmt:
             obj._dummy_fmt = '%s_%%d' % obj.name
@@ -1541,6 +1566,7 @@ class TensorIndex(Basic):
     A(_i0)*B(-_i1)
     >>> A(i0)*B(-i0)
     A(L_0)*B(-L_0)
+
     """
 
     def __new__(cls, name, tensortype, is_up=True):
@@ -1555,7 +1581,7 @@ class TensorIndex(Basic):
         else:
             raise ValueError("invalid name")
 
-        obj = Basic.__new__(cls, name_symbol, tensortype, S.One if is_up else S.Zero)
+        obj = Basic.__new__(cls, name_symbol, tensortype, Integer(1) if is_up else Integer(0))
         obj._name = str(name)
         obj._tensortype = tensortype
         obj._is_up = is_up
@@ -1604,6 +1630,7 @@ def tensor_indices(s, typ):
 
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> a, b, c, d = tensor_indices('a b c d', Lorentz)
+
     """
     if isinstance(s, str):
         a = [x.name for x in symbols(s, seq=True)]
@@ -1629,9 +1656,12 @@ class TensorSymmetry(Basic):
     Attributes
     ==========
 
-    ``base`` : base of the BSGS
-    ``generators`` : generators of the BSGS
-    ``rank`` : rank of the tensor
+    ``base`` : Tuple
+        base of the BSGS
+    ``generators`` : Tuple
+        generators of the BSGS
+    ``rank`` : Tuple
+        rank of the tensor
 
     Notes
     =====
@@ -1654,6 +1684,7 @@ class TensorSymmetry(Basic):
     >>> sym2 = TensorSymmetry(get_symmetric_group_sgs(2))
     >>> S2 = TensorType([Lorentz]*2, sym2)
     >>> V = S2('V')
+
     """
 
     def __new__(cls, *args, **kw_args):
@@ -1731,6 +1762,7 @@ def tensorsymmetry(*args):
     >>> sym2 = tensorsymmetry(*get_symmetric_group_sgs(2))
     >>> S2 = TensorType([Lorentz]*2, sym2)
     >>> V = S2('V')
+
     """
     from ..combinatorics import Permutation
 
@@ -1789,6 +1821,7 @@ class TensorType(Basic):
     >>> sym2 = tensorsymmetry([1, 1])
     >>> S2 = TensorType([Lorentz]*2, sym2)
     >>> V = S2('V')
+
     """
 
     is_commutative = False
@@ -1839,6 +1872,7 @@ class TensorType(Basic):
         V(L_0, L_1)*V(-L_0, -L_1)
         >>> canon_bp(W(a, b)*W(-b, -a))
         0
+
         """
         if isinstance(s, str):
             names = [x.name for x in symbols(s, seq=True)]
@@ -1905,7 +1939,8 @@ class TensorHead(Basic):
     ``rank``
     ``types``  :  equal to ``typ.types``
     ``symmetry`` : equal to ``typ.symmetry``
-    ``comm`` : commutation group
+    ``comm`` : int
+        commutation group
 
     Notes
     =====
@@ -2058,6 +2093,7 @@ class TensorHead(Basic):
 
     >>> P**2
     E**2 - p_x**2 - p_y**2 - p_z**2
+
     """
 
     is_commutative = False
@@ -2119,6 +2155,7 @@ class TensorHead(Basic):
         Returns ``0`` if ``self`` and ``other`` commute, ``1`` if they anticommute.
 
         Returns ``None`` if ``self`` and ``other`` neither commute nor anticommute.
+
         """
         r = TensorManager.get_comm(self._comm, other._comm)
         return r
@@ -2303,13 +2340,14 @@ class TensExpr(Basic):
     slot which the index occupies in that component tensor.
 
     Contracted indices are therefore nameless in the internal representation.
+
     """
 
     _op_priority = 11.0
     is_commutative = False
 
     def __neg__(self):
-        return self*S.NegativeOne
+        return self*Integer(-1)
 
     def __abs__(self):
         raise NotImplementedError
@@ -2399,6 +2437,7 @@ class TensExpr(Basic):
         [18]])
 
         >>> del A.data
+
         """
         if 0 < self.rank <= 2:
             rows = self.data.shape[0]
@@ -2414,7 +2453,7 @@ class TensExpr(Basic):
                 for i in range(rows):
                     mat_list[i] = self[i]
             return Matrix(mat_list)
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError(
                 "missing multidimensional reduction to matrix.")
 
@@ -2432,9 +2471,12 @@ class TensAdd(TensExpr):
     Attributes
     ==========
 
-    ``args`` : tuple of addends
-    ``rank`` : rank of the tensor
-    ``free_args`` : list of the free indices in sorted order
+    ``args`` : tuple
+        of addends
+    ``rank`` : tuple
+        rank of the tensor
+    ``free_args`` : list
+        of the free indices in sorted order
 
     Notes
     =====
@@ -2469,6 +2511,7 @@ class TensAdd(TensExpr):
     -58
     >>> p(a)**2
     -58
+
     """
 
     def __new__(cls, *args, **kw_args):
@@ -2476,7 +2519,7 @@ class TensAdd(TensExpr):
         args = TensAdd._tensAdd_flatten(args)
 
         if not args:
-            return S.Zero
+            return Integer(0)
 
         if len(args) == 1 and not isinstance(args[0], TensExpr):
             return args[0]
@@ -2503,7 +2546,7 @@ class TensAdd(TensExpr):
         # if there are no more args (i.e. have cancelled out),
         # just return zero:
         if not args:
-            return S.Zero
+            return Integer(0)
 
         if len(args) == 1:
             return args[0]
@@ -2515,7 +2558,7 @@ class TensAdd(TensExpr):
         args.sort(key=sort_key)
         args = TensAdd._tensAdd_collect_terms(args)
         if not args:
-            return S.Zero
+            return Integer(0)
         # it there is only a component tensor return it
         if len(args) == 1:
             return args[0]
@@ -2668,6 +2711,7 @@ class TensAdd(TensExpr):
         metric(i0, i2)*q(L_0)*q(-L_0) + p(i0)*p(i2)
         >>> t(i0, i1) - t(i1, i0)
         0
+
         """
         free_args = self.free_args
         indices = list(indices)
@@ -2685,6 +2729,7 @@ class TensAdd(TensExpr):
         """
         canonicalize using the Butler-Portugal algorithm for canonicalization
         under monoterm symmetries.
+
         """
         args = [x.canon_bp() for x in self.args]
         res = TensAdd(*args)
@@ -2764,6 +2809,7 @@ class TensAdd(TensExpr):
         ========
 
         TensorIndexType
+
         """
 
         args = [contract_metric(x, g) for x in self.args]
@@ -2788,6 +2834,7 @@ class TensAdd(TensExpr):
         >>> t = A(i, k)*B(-k, -j) + A(i, -j)
         >>> t.fun_eval((i, k), (-j, l))
         A(k, L_0)*B(l, -L_0) + A(k, l)
+
         """
         args = self.args
         args1 = []
@@ -2815,6 +2862,7 @@ class TensAdd(TensExpr):
         A(i, L_0)*B(-L_0, -j)
         >>> t.substitute_indices((i, j), (j, k))
         A(j, L_0)*B(-L_0, -k)
+
         """
         args = self.args
         args1 = []
@@ -2940,6 +2988,7 @@ class Tensor(TensExpr):
         Returns the tensor corresponding to the permutation ``g``
 
         For further details, see the method in ``TIDS`` with the same name.
+
         """
         return perm2tensor(self, g, canon_bp)
 
@@ -2949,7 +2998,7 @@ class Tensor(TensExpr):
         g, dummies, msym, v = self._tids.canon_args()
         can = canonicalize(g, dummies, msym, *v)
         if can == 0:
-            return S.Zero
+            return Integer(0)
         tensor = self.perm2tensor(can, True)
         return tensor
 
@@ -2959,7 +3008,7 @@ class Tensor(TensExpr):
 
     @property
     def coeff(self):
-        return S.One
+        return Integer(1)
 
     @property
     def component(self):
@@ -2973,9 +3022,7 @@ class Tensor(TensExpr):
         return [self]
 
     def get_indices(self):
-        """
-        Get a list of indices, corresponding to those of the tensor.
-        """
+        """Get a list of indices, corresponding to those of the tensor."""
         return self._tids.get_indices()
 
     def substitute_indices(self, *index_tuples):
@@ -2995,6 +3042,7 @@ class Tensor(TensExpr):
         A(L_0, i1, -L_0, -i3, i4)
         >>> t(i1, i2, i3)
         A(L_0, i1, -L_0, i2, i3)
+
         """
 
         free_args = self.free_args
@@ -3053,7 +3101,7 @@ class Tensor(TensExpr):
     def __truediv__(self, other):
         if isinstance(other, TensExpr):
             raise ValueError('cannot divide by a tensor')
-        return TensMul(self, S.One/other, is_canon_bp=self.is_canon_bp)
+        return TensMul(self, Integer(1)/other, is_canon_bp=self.is_canon_bp)
 
     def __rtruediv__(self, other):
         raise ValueError('cannot divide by a tensor')
@@ -3068,7 +3116,7 @@ class Tensor(TensExpr):
         return TensAdd(self, -other)
 
     def __neg__(self):
-        return TensMul(S.NegativeOne, self)
+        return TensMul(Integer(-1), self)
 
     def _print(self):
         indices = [str(ind) for ind in self.indices]
@@ -3084,7 +3132,7 @@ class Tensor(TensExpr):
         other = sympify(other)
         if not isinstance(other, TensExpr):
             assert not self.components
-            return S.One == other
+            return Integer(1) == other
 
         def _get_compar_comp(self):
             t = self.canon_bp()
@@ -3117,10 +3165,14 @@ class TensMul(TensExpr):
     ``types`` : list of nonrepeated ``TensorIndexType``
     ``free`` : list of ``(ind, ipos, icomp)``, see Notes
     ``dum`` : list of ``(ipos1, ipos2, icomp1, icomp2)``, see Notes
-    ``ext_rank`` : rank of the tensor counting the dummy indices
-    ``rank`` : rank of the tensor
-    ``coeff`` : Diofant coefficient of the tensor
-    ``free_args`` : list of the free indices in sorted order
+    ``ext_rank`` : tuple
+        rank of the tensor counting the dummy indices
+    ``rank`` : tuple
+        rank of the tensor
+    ``coeff`` : Expr
+        Diofant coefficient of the tensor
+    ``free_args`` : list
+        list of the free indices in sorted order
     ``is_canon_bp`` : ``True`` if the tensor in in canonical form
 
     Notes
@@ -3159,7 +3211,7 @@ class TensMul(TensExpr):
                     is_canon_bp = kw_args.get('is_canon_bp', arg._is_canon_bp)
             tids = reduce(lambda a, b: a*b, tids_list)
 
-        coeff = reduce(lambda a, b: a*b, [S.One] + [arg for arg in args if not isinstance(arg, TensExpr)])
+        coeff = reduce(lambda a, b: a*b, [Integer(1)] + [arg for arg in args if not isinstance(arg, TensExpr)])
         args = tids.get_tensors()
         if coeff != 1:
             args = [coeff] + args
@@ -3258,6 +3310,7 @@ class TensMul(TensExpr):
         >>> t = p(m1)*g(m0, m2)
         >>> t.get_indices()
         [m1, m0, m2]
+
         """
         return self._tids.get_indices()
 
@@ -3280,6 +3333,7 @@ class TensMul(TensExpr):
         A(a, L_0)*B(-L_0, c)
         >>> t.split()
         [A(a, L_0), B(-L_0, c)]
+
         """
         if self.args == ():
             return [self]
@@ -3323,6 +3377,7 @@ class TensMul(TensExpr):
         >>> t2 = q(-m0)
         >>> t1*t2
         p(L_0)*q(-L_0)
+
         """
         other = sympify(other)
         if not isinstance(other, TensExpr):
@@ -3358,6 +3413,7 @@ class TensMul(TensExpr):
         """
         Returns a tensor with sorted components
         calling the corresponding method in a ``TIDS`` object.
+
         """
         new_tids, sign = self._tids.sorted_components()
         coeff = -self.coeff if sign == -1 else self.coeff
@@ -3369,6 +3425,7 @@ class TensMul(TensExpr):
         Returns the tensor corresponding to the permutation ``g``
 
         For further details, see the method in ``TIDS`` with the same name.
+
         """
         return perm2tensor(self, g, canon_bp)
 
@@ -3389,6 +3446,7 @@ class TensMul(TensExpr):
         >>> t = A(m0, -m1)*A(m1, -m2)*A(m2, -m0)
         >>> t.canon_bp()
         0
+
         """
         if self._is_canon_bp:
             return self
@@ -3398,7 +3456,7 @@ class TensMul(TensExpr):
         g, dummies, msym, v = t._tids.canon_args()
         can = canonicalize(g, dummies, msym, *v)
         if can == 0:
-            return S.Zero
+            return Integer(0)
         tmul = t.perm2tensor(can, True)
         return tmul
 
@@ -3435,6 +3493,7 @@ class TensMul(TensExpr):
         metric(L_0, L_1)*p(-L_0)*q(-L_1)
         >>> t.contract_metric(g).canon_bp()
         p(L_0)*q(-L_0)
+
         """
         tids, sign = get_tids(self).contract_metric(g)
         res = TensMul.from_TIDS(sign*self.coeff, tids)
@@ -3459,6 +3518,7 @@ class TensMul(TensExpr):
         A(i, L_0)*B(-L_0, -j)
         >>> t.fun_eval((i, k), (-j, l))
         A(k, L_0)*B(-L_0, l)
+
         """
         free = self.free
         free1 = []
@@ -3486,6 +3546,7 @@ class TensMul(TensExpr):
         >>> t = p(i0)*q(i1)*q(-i1)
         >>> t(i1)
         p(i1)*q(L_0)*q(-L_0)
+
         """
         free_args = self.free_args
         indices = list(indices)
@@ -3532,20 +3593,16 @@ class TensMul(TensExpr):
 
 
 def canon_bp(p):
-    """
-    Butler-Portugal canonicalization
-    """
+    """Butler-Portugal canonicalization."""
     if isinstance(p, TensExpr):
         return p.canon_bp()
     return p
 
 
 def tensor_mul(*a):
-    """
-    product of tensors
-    """
+    """Product of tensors."""
     if not a:
-        return TensMul.from_data(S.One, [], [], [])
+        return TensMul.from_data(Integer(1), [], [], [])
     t = a[0]
     for tx in a[1:]:
         t = t*tx
@@ -3553,8 +3610,7 @@ def tensor_mul(*a):
 
 
 def riemann_cyclic_replace(t_r):
-    """
-    replace Riemann tensor with an equivalent expression
+    """Replace Riemann tensor with an equivalent expression.
 
     ``R(m,n,p,q) -> 2/3*R(m,n,p,q) - 1/3*R(m,q,n,p) + 1/3*R(m,p,n,q)``
 
@@ -3584,6 +3640,7 @@ def riemann_cyclic(t2):
     >>> t = R(i, j, k, l)*(R(-i, -j, -k, -l) - 2*R(-i, -k, -j, -l))
     >>> riemann_cyclic(t)
     0
+
     """
     if isinstance(t2, (TensMul, Tensor)):
         args = [t2]
@@ -3613,7 +3670,7 @@ def get_tids(t):
 
 def get_coeff(t):
     if isinstance(t, Tensor):
-        return S.One
+        return Integer(1)
     if isinstance(t, TensMul):
         return t.coeff
     if isinstance(t, TensExpr):
@@ -3632,6 +3689,7 @@ def perm2tensor(t, g, canon_bp=False):
     Returns the tensor corresponding to the permutation ``g``
 
     For further details, see the method in ``TIDS`` with the same name.
+
     """
     if not isinstance(t, TensExpr):
         return t
@@ -3661,6 +3719,7 @@ def substitute_indices(t, *index_tuples):
     A(i, L_0)*B(-L_0, -j)
     >>> t.substitute_indices((i, j), (j, k))
     A(j, L_0)*B(-L_0, -k)
+
     """
     if not isinstance(t, TensExpr):
         return t

@@ -132,7 +132,6 @@ and ``factor`` work on ``Vector`` objects, with the standard Diofant API.
 In essence, the methods work on the measure numbers(The coefficients
 of the basis vectors) present in the provided vectorial expression.
 
-  >>> from diofant.abc import a, b, c
   >>> v = (a*b + a*c + b**2 + b*c)*N.i + N.j
   >>> v.factor()
   ((a + b)*(b + c))*N.i + N.j
@@ -177,7 +176,6 @@ method of ``Point``. The arguments include the name(string) of the
 new ``Point``, and its position vector with respect to the
 'parent' ``Point``.
 
-  >>> from diofant.abc import a, b, c
   >>> P = N.origin.locate_new('P', a*N.i + b*N.j + c*N.k)
   >>> Q = P.locate_new('Q', -b*N.j)
 

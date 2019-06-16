@@ -13,11 +13,11 @@ class SympifyError(ValueError):
 
     def __str__(self):
         if self.base_exc is None:
-            return "SympifyError: %r" % (self.expr,)
+            return "SympifyError: %r" % self.expr,
 
         try:
             s = str(self.expr)
-        except Exception:
+        except TypeError:
             s = repr(self.expr)
 
         return ("Sympify of expression '%s' failed, because of exception being "
@@ -48,6 +48,7 @@ class CantSympify:
     Traceback (most recent call last):
     ...
     SympifyError: SympifyError: {}
+
     """
 
     pass
@@ -139,7 +140,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     >>> _clash1
     {'E': E, 'I': I, 'N': N, 'O': O, 'S': S}
     >>> sympify('E & O', _clash1)
-    And(E, O)
+    E & O
 
     *Strict*
 
@@ -215,6 +216,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     Matrix([
     [1],
     [2]])
+
     """
     from .basic import Basic
 
@@ -289,9 +291,9 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     transformations = standard_transformations
 
     if rational:
-        transformations += (t_rationalize,)
+        transformations += t_rationalize,
     if convert_xor:
-        transformations += (t_convert_xor,)
+        transformations += t_convert_xor,
 
     try:
         a = a.replace('\n', '')

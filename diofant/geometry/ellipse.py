@@ -7,9 +7,10 @@ Contains
 
 import random
 
-from ..core import Dummy, Rational, S, oo, pi, sympify
+from ..core import Dummy, Rational, oo, pi, sympify
 from ..core.logic import fuzzy_bool
 from ..functions import cos, sin, sqrt
+from ..logic import false, true
 from ..polys import DomainError, Poly, PolynomialError
 from ..polys.polyutils import _not_a_coeff, _nsort
 from ..simplify import simplify, trigsimp
@@ -54,7 +55,7 @@ class Ellipse(GeometrySet):
     Raises
     ======
 
-    GeometryError
+    diofant.geometry.exceptions.GeometryError
         When `hradius`, `vradius` and `eccentricity` are incorrectly supplied
         as parameters.
     TypeError
@@ -85,6 +86,7 @@ class Ellipse(GeometrySet):
     >>> e2 = Ellipse(Point(3, 1), hradius=3, eccentricity=Rational(4, 5))
     >>> e2
     Ellipse(Point2D(3, 1), 3, 9/5)
+
     """
 
     def __new__(
@@ -110,7 +112,8 @@ class Ellipse(GeometrySet):
         if eccentricity is not None:
             if hradius is None:
                 hradius = vradius / sqrt(1 - eccentricity**2)
-            elif vradius is None:
+            else:
+                assert vradius is None
                 vradius = hradius * sqrt(1 - eccentricity**2)
 
         if hradius == vradius:
@@ -237,9 +240,9 @@ class Ellipse(GeometrySet):
             return ab[0]
         a, b = ab
         o = a - b < 0
-        if o == S.true:
+        if o == true:
             return a
-        elif o == S.false:
+        elif o == false:
             return b
         return self.vradius
 
@@ -283,9 +286,9 @@ class Ellipse(GeometrySet):
             return ab[0]
         a, b = ab
         o = b - a < 0
-        if o == S.true:
+        if o == true:
             return a
-        elif o == S.false:
+        elif o == false:
             return b
         return self.hradius
 
@@ -406,7 +409,7 @@ class Ellipse(GeometrySet):
 
     @property
     def focus_distance(self):
-        """The focale distance of the ellipse.
+        """The focal distance of the ellipse.
 
         The distance between the center and one focus.
 
@@ -488,11 +491,12 @@ class Ellipse(GeometrySet):
         Ellipse(Point2D(0, 1), 1, 2)
         >>> Ellipse((1, 0), 2, 1).rotate(pi)
         Ellipse(Point2D(-1, 0), 2, 1)
+
         """
         if self.hradius == self.vradius:
             return self.func(self.center.rotate(angle, pt), self.hradius)
         if (angle/pi).is_integer:
-            return super(Ellipse, self).rotate(angle, pt)
+            return super().rotate(angle, pt)
         if (2*angle/pi).is_integer:
             return self.func(self.center.rotate(angle, pt), self.vradius, self.hradius)
         # XXX see https://github.com/sympy/sympy/issues/2815 for general ellipes
@@ -509,6 +513,7 @@ class Ellipse(GeometrySet):
         Circle(Point2D(0, 0), 4)
         >>> Ellipse((0, 0), 2, 1).scale(2)
         Ellipse(Point2D(0, 0), 4, 1)
+
         """
         c = self.center
         if pt:
@@ -585,11 +590,10 @@ class Ellipse(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.abc import t
         >>> e = Ellipse((0, 0), 3, 2)
         >>> e.encloses_point((0, 0))
         True
-        >>> e.encloses_point(e.arbitrary_point(t).subs(t, S.Half))
+        >>> e.encloses_point(e.arbitrary_point(t).subs({t: Rational(1, 2)}))
         False
         >>> e.encloses_point((4, 0))
         False
@@ -645,6 +649,7 @@ class Ellipse(GeometrySet):
         >>> e1 = Ellipse(Point(0, 0), 3, 2)
         >>> e1.tangent_lines(Point(3, 0))
         [Line(Point2D(3, 0), Point2D(3, -12))]
+
         """
         p = Point(p)
         if self.encloses_point(p):
@@ -781,6 +786,7 @@ class Ellipse(GeometrySet):
 
         Whereas the above solution has an operation count of 12, the exact
         solution has an operation count of 2020.
+
         """
         p = Point(p)
 
@@ -807,7 +813,7 @@ class Ellipse(GeometrySet):
         slope = Line(p, (x, y)).slope
         seq = slope - norm
         yis = solve(seq, y)[0][y]
-        xeq = eq.subs(y, yis).as_numer_denom()[0].expand()
+        xeq = eq.subs({y: yis}).as_numer_denom()[0].expand()
         if len(xeq.free_symbols) == 1:
             try:
                 # this is so much faster, it's worth a try
@@ -815,15 +821,15 @@ class Ellipse(GeometrySet):
             except (DomainError, PolynomialError, NotImplementedError):
                 xsol = _nsort([s[x] for s in solve(xeq, x)],
                               separated=True)[0]
-            points = [Point(i, solve(eq.subs(x, i), y)[0][y])
+            points = [Point(i, solve(eq.subs({x: i}), y)[0][y])
                       for i in xsol]
         else:
             raise NotImplementedError(
                 'intersections for the general ellipse are not supported')
         slopes = [norm.subs(zip((x, y), pt.args)) for pt in points]
         if prec is not None:
-            points = [pt.n(prec) for pt in points]
-            slopes = [i if _not_a_coeff(i) else i.n(prec) for i in slopes]
+            points = [pt.evalf(prec) for pt in points]
+            slopes = [i if _not_a_coeff(i) else i.evalf(prec) for i in slopes]
         return [Line(pt, slope=s) for pt, s in zip(points, slopes)]
 
     def arbitrary_point(self, parameter='t'):
@@ -912,7 +918,7 @@ class Ellipse(GeometrySet):
         >>> e1 = Ellipse(Point(0, 0), 3, 2)
         >>> e1.random_point() # gives some random point
         Point2D(...)
-        >>> p1 = e1.random_point(seed=0); p1.n(2)
+        >>> p1 = e1.random_point(seed=0); p1.evalf(2)
         Point2D(2.1, 1.4)
 
         The random_point method assures that the point will test as being
@@ -935,10 +941,9 @@ class Ellipse(GeometrySet):
         a point is on the ellipse doesn't simplify to zero and doesn't evaluate
         exactly to zero:
 
-        >>> from diofant.abc import t
         >>> e1.arbitrary_point(t)
         Point2D(3*cos(t), 2*sin(t))
-        >>> p2 = _.subs(t, 0.1)
+        >>> p2 = _.subs({t: 0.1})
         >>> p2 in e1
         False
 
@@ -962,7 +967,7 @@ class Ellipse(GeometrySet):
             # simplify this now or else the Float will turn s into a Float
             c = 2*Rational(rng.random()) - 1
             s = sqrt(1 - c**2)
-            p1 = Point(x.subs(cos(t), c), y.subs(sin(t), s))
+            p1 = Point(x.subs({cos(t): c}), y.subs({sin(t): s}))
             if p1 in self:
                 return p1
         raise GeometryError(
@@ -1031,7 +1036,7 @@ class Ellipse(GeometrySet):
             t = -b / a
             result.append(lp[0] + (lp[1] - lp[0]) * t)
         # Definite and potential symbolic intersections are allowed.
-        elif (det > 0) is not S.false:
+        elif det.is_positive is not False:
             root = sqrt(det)
             t_a = (-b - root) / a
             t_b = (-b + root) / a
@@ -1104,6 +1109,7 @@ class Ellipse(GeometrySet):
 
         >>> e.intersection(Ellipse(Point(-1, 0), 3, 4))
         [Point2D(-17/5, -12/5), Point2D(-17/5, 12/5), Point2D(7/5, -12/5), Point2D(7/5, 12/5)]
+
         """
         if isinstance(o, Point):
             if o in self:
@@ -1149,6 +1155,7 @@ class Ellipse(GeometrySet):
         >>> e1 = Ellipse(Point(1, 0), 3, 2)
         >>> e1.evolute()
         2**(2/3)*y**(2/3) + (3*x - 3)**(2/3) - 5**(2/3)
+
         """
         if len(self.args) != 3:
             raise NotImplementedError('Evolute of arbitrary Ellipse is not supported.')
@@ -1165,7 +1172,7 @@ class Ellipse(GeometrySet):
                                                   self.vradius == o.vradius)
 
     def __hash__(self):
-        return super(Ellipse, self).__hash__()
+        return super().__hash__()
 
     def __contains__(self, o):
         if isinstance(o, Point):
@@ -1173,7 +1180,7 @@ class Ellipse(GeometrySet):
             y = Dummy('y', extended_real=True)
 
             res = self.equation(x, y).subs({x: o.x, y: o.y})
-            return trigsimp(simplify(res)) is S.Zero
+            return trigsimp(simplify(res)) == 0
         elif isinstance(o, Ellipse):
             return self == o
         return False
@@ -1202,7 +1209,7 @@ class Circle(Ellipse):
     Raises
     ======
 
-    GeometryError
+    diofant.geometry.exceptions.GeometryError
         When trying to construct circle from three collinear points.
         When trying to construct circle from incorrect parameters.
 
@@ -1219,7 +1226,7 @@ class Circle(Ellipse):
     >>> c1.hradius, c1.vradius, c1.radius
     (5, 5, 5)
 
-    >>> # a circle costructed from three points
+    >>> # a circle constructed from three points
     >>> c2 = Circle(Point(0, 0), Point(1, 1), Point(1, 0))
     >>> c2.hradius, c2.vradius, c2.radius, c2.center
     (sqrt(2)/2, sqrt(2)/2, sqrt(2)/2, Point2D(1/2, 1/2))
@@ -1288,6 +1295,7 @@ class Circle(Ellipse):
         >>> c1 = Circle(Point(3, 4), 6)
         >>> c1.vradius
         6
+
         """
         return abs(self.radius)
 
@@ -1412,6 +1420,7 @@ class Circle(Ellipse):
         Circle(Point2D(0, 0), 2)
         >>> Circle((0, 0), 1).scale(2, 4)
         Ellipse(Point2D(0, 0), 2, 4)
+
         """
         c = self.center
         if pt:
@@ -1433,6 +1442,7 @@ class Circle(Ellipse):
 
         >>> Circle((0, 1), 1).reflect(Line((0, 0), (1, 1)))
         Circle(Point2D(1, 0), -1)
+
         """
         c = self.center
         c = c.reflect(line)

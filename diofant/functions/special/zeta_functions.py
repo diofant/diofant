@@ -1,7 +1,7 @@
 """ Riemann zeta and related function. """
 
-from ...core import (Add, Dummy, E, Function, I, Integer, S, expand_mul, oo,
-                     pi, sympify, zoo)
+from ...core import (Add, Dummy, E, Function, I, Integer, Rational, expand_mul,
+                     oo, pi, sympify, zoo)
 from ...core.function import ArgumentIndexError
 from ..combinatorial.numbers import bernoulli, factorial, harmonic
 from ..elementary.exponential import exp, exp_polar, log
@@ -64,10 +64,10 @@ class lerchphi(Function):
     References
     ==========
 
-    .. [1] Bateman, H.; Erdélyi, A. (1953), Higher Transcendental Functions,
-           Vol. I, New York: McGraw-Hill. Section 1.11.
-    .. [2] https://dlmf.nist.gov/25.14
-    .. [3] https//en.wikipedia.org/wiki/Lerch_transcendent
+    * Bateman, H.; Erdélyi, A. (1953), Higher Transcendental Functions,
+      Vol. I, New York: McGraw-Hill. Section 1.11.
+    * https://dlmf.nist.gov/25.14
+    * https://en.wikipedia.org/wiki/Lerch_transcendent
 
     Examples
     ========
@@ -78,7 +78,7 @@ class lerchphi(Function):
 
     If `z=1`, the Lerch transcendent reduces to the Hurwitz zeta function:
 
-    >>> from diofant.abc import s, a
+    >>> from diofant.abc import s
     >>> expand_func(lerchphi(1, s, a))
     zeta(s, a)
 
@@ -110,6 +110,7 @@ class lerchphi(Function):
     (-a*lerchphi(z, s, a) + lerchphi(z, s - 1, a))/z
     >>> lerchphi(z, s, a).diff(a)
     -s*lerchphi(z, s + 1, a)
+
     """
 
     def _eval_expand_func(self, **hints):
@@ -126,7 +127,7 @@ class lerchphi(Function):
             for c in reversed(p.all_coeffs()):
                 res += c*start
                 start = t*start.diff(t)
-            return res.subs(t, z)
+            return res.subs({t: z})
 
         if a.is_Rational:
             # See section 18 of
@@ -263,8 +264,9 @@ class polylog(Function):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Polylogarithm
-    .. [2] http://mathworld.wolfram.com/Polylogarithm.html
+    * https://en.wikipedia.org/wiki/Polylogarithm
+    * http://mathworld.wolfram.com/Polylogarithm.html
+
     """
 
     @classmethod
@@ -275,7 +277,7 @@ class polylog(Function):
         elif z == -1:
             return -dirichlet_eta(s)
         elif z == 0:
-            return S.Zero
+            return Integer(0)
 
         # branch handling
         if (1 - abs(z)).is_nonnegative:
@@ -301,7 +303,7 @@ class polylog(Function):
             start = u/(1 - u)
             for _ in range(-s):
                 start = u*start.diff(u)
-            return expand_mul(start).subs(u, z)
+            return expand_mul(start).subs({u: z})
         return polylog(s, z)
 
 ###############################################################################
@@ -344,8 +346,8 @@ class zeta(Function):
     References
     ==========
 
-    .. [1] https://dlmf.nist.gov/25.11
-    .. [2] https//en.wikipedia.org/wiki/Hurwitz_zeta_function
+    * https://dlmf.nist.gov/25.11
+    * https://en.wikipedia.org/wiki/Hurwitz_zeta_function
 
     Examples
     ========
@@ -390,13 +392,12 @@ class zeta(Function):
     No closed-form expressions are known at positive odd integers, but
     numerical evaluation is possible:
 
-    >>> zeta(3).n()
+    >>> zeta(3).evalf()
     1.20205690315959
 
     The derivative of `\zeta(s, a)` with respect to `a` is easily
     computed:
 
-    >>> from diofant.abc import a
     >>> zeta(s, a).diff(a)
     -s*zeta(s + 1, a)
 
@@ -422,16 +423,16 @@ class zeta(Function):
             z, a = list(map(sympify, (z, a_)))
 
         if a.is_Number:
-            if a is S.One and a_ is not None:
+            if a == 1 and a_ is not None:
                 return cls(z)
             # TODO Should a == 0 return nan as well?
 
         if z.is_Number:
             if z is oo:
-                return S.One
-            elif z is S.Zero:
-                return S.Half - a
-            elif z is S.One:
+                return Integer(1)
+            elif z == 0:
+                return Rational(1, 2) - a
+            elif z == 1:
                 return zoo
             elif z.is_Integer:
                 if a.is_Integer:
@@ -490,7 +491,7 @@ class _zetas(Function):
             return (Add(*l))._eval_nseries(x, n, logx) + o
 
         # All other points are not handled
-        return super(_zetas, self)._eval_aseries(n, args0, x, logx)
+        return super()._eval_aseries(n, args0, x, logx)
 
 
 class dirichlet_eta(Function):
@@ -512,8 +513,8 @@ class dirichlet_eta(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Dirichlet_eta_function
-    .. [2] http://mathworld.wolfram.com/DirichletEtaFunction.html
+    * https://en.wikipedia.org/wiki/Dirichlet_eta_function
+    * http://mathworld.wolfram.com/DirichletEtaFunction.html
 
     Examples
     ========
@@ -523,6 +524,7 @@ class dirichlet_eta(Function):
     >>> from diofant.abc import s
     >>> dirichlet_eta(s).rewrite(zeta)
     (-2**(-s + 1) + 1)*zeta(s)
+
     """
 
     @classmethod

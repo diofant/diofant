@@ -1,4 +1,5 @@
-from ...core import Function, I, S, cacheit, nan, oo, pi, sympify, zoo
+from ...core import (Function, I, Integer, Rational, cacheit, nan, oo, pi,
+                     sympify, zoo)
 from ...core.function import ArgumentIndexError, _coeff_isneg
 from ..combinatorial.factorials import RisingFactorial, factorial
 from .exponential import exp, log
@@ -27,6 +28,7 @@ class HyperbolicFunction(Function):
     diofant.functions.elementary.hyperbolic.cosh
     diofant.functions.elementary.hyperbolic.tanh
     diofant.functions.elementary.hyperbolic.coth
+
     """
 
     unbranched = True
@@ -44,21 +46,18 @@ class sinh(HyperbolicFunction):
     diofant.functions.elementary.hyperbolic.cosh
     diofant.functions.elementary.hyperbolic.tanh
     diofant.functions.elementary.hyperbolic.asinh
+
     """
 
     def fdiff(self, argindex=1):
-        """
-        Returns the first derivative of this function.
-        """
+        """Returns the first derivative of this function."""
         if argindex == 1:
             return cosh(self.args[0])
         else:
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return asinh
 
     @classmethod
@@ -102,11 +101,9 @@ class sinh(HyperbolicFunction):
     @staticmethod
     @cacheit
     def taylor_term(n, x, *previous_terms):
-        """
-        Returns the next term in the Taylor series expansion.
-        """
+        """Returns the next term in the Taylor series expansion."""
         if n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
             if len(previous_terms) >= 2:
@@ -119,16 +116,14 @@ class sinh(HyperbolicFunction):
         return self.func(self.args[0].conjugate())
 
     def as_real_imag(self, deep=True, **hints):
-        """
-        Returns this function as a complex coordinate.
-        """
+        """Returns this function as a complex coordinate."""
         from .trigonometric import cos, sin
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return self.expand(deep, **hints), S.Zero
+                return self.expand(deep, **hints), Integer(0)
             else:
-                return self, S.Zero
+                return self, Integer(0)
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -146,7 +141,7 @@ class sinh(HyperbolicFunction):
             x, y = arg.as_two_terms()
         else:
             coeff, terms = arg.as_coeff_Mul(rational=True)
-            if coeff is not S.One and coeff.is_Integer and terms is not S.One:
+            if coeff != 1 and coeff.is_Integer and terms != 1:
                 x = terms
                 y = (coeff - 1)*x
         if x is not None:
@@ -163,11 +158,11 @@ class sinh(HyperbolicFunction):
         return -I*cosh(arg + pi*I/2)
 
     def _eval_rewrite_as_tanh(self, arg):
-        tanh_half = tanh(S.Half*arg)
+        tanh_half = tanh(arg/2)
         return 2*tanh_half/(1 - tanh_half**2)
 
     def _eval_rewrite_as_coth(self, arg):
-        coth_half = coth(S.Half*arg)
+        coth_half = coth(arg/2)
         return 2*coth_half/(coth_half**2 - 1)
 
     def _eval_as_leading_term(self, x):
@@ -200,6 +195,7 @@ class cosh(HyperbolicFunction):
     diofant.functions.elementary.hyperbolic.sinh
     diofant.functions.elementary.hyperbolic.tanh
     diofant.functions.elementary.hyperbolic.acosh
+
     """
 
     def fdiff(self, argindex=1):
@@ -216,8 +212,8 @@ class cosh(HyperbolicFunction):
         if arg.is_Number:
             if arg in (oo, -oo):
                 return oo
-            elif arg is S.Zero:
-                return S.One
+            elif arg == 0:
+                return Integer(1)
             elif arg.is_negative:
                 return cls(-arg)
         else:
@@ -249,7 +245,7 @@ class cosh(HyperbolicFunction):
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n < 0 or n % 2 == 1:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
 
@@ -267,9 +263,9 @@ class cosh(HyperbolicFunction):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return self.expand(deep, **hints), S.Zero
+                return self.expand(deep, **hints), Integer(0)
             else:
-                return self, S.Zero
+                return self, Integer(0)
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -288,7 +284,7 @@ class cosh(HyperbolicFunction):
             x, y = arg.as_two_terms()
         else:
             coeff, terms = arg.as_coeff_Mul(rational=True)
-            if coeff is not S.One and coeff.is_Integer and terms is not S.One:
+            if coeff != 1 and coeff.is_Integer and terms != 1:
                 x = terms
                 y = (coeff - 1)*x
         if x is not None:
@@ -305,11 +301,11 @@ class cosh(HyperbolicFunction):
         return -I*sinh(arg + pi*I/2)
 
     def _eval_rewrite_as_tanh(self, arg):
-        tanh_half = tanh(S.Half*arg)**2
+        tanh_half = tanh(arg/2)**2
         return (1 + tanh_half)/(1 - tanh_half)
 
     def _eval_rewrite_as_coth(self, arg):
-        coth_half = coth(S.Half*arg)**2
+        coth_half = coth(arg/2)**2
         return (coth_half + 1)/(coth_half - 1)
 
     def _eval_as_leading_term(self, x):
@@ -317,7 +313,7 @@ class cosh(HyperbolicFunction):
         arg = self.args[0].as_leading_term(x)
 
         if x in arg.free_symbols and Order(1, x).contains(arg):
-            return S.One
+            return Integer(1)
         else:
             return self.func(arg)
 
@@ -342,18 +338,17 @@ class tanh(HyperbolicFunction):
     diofant.functions.elementary.hyperbolic.sinh
     diofant.functions.elementary.hyperbolic.cosh
     diofant.functions.elementary.hyperbolic.atanh
+
     """
 
     def fdiff(self, argindex=1):
         if argindex == 1:
-            return S.One - tanh(self.args[0])**2
+            return 1 - tanh(self.args[0])**2
         else:
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return atanh
 
     @classmethod
@@ -363,11 +358,11 @@ class tanh(HyperbolicFunction):
 
         if arg.is_Number:
             if arg is oo:
-                return S.One
+                return Integer(1)
             elif arg == -oo:
-                return S.NegativeOne
-            elif arg is S.Zero:
-                return S.Zero
+                return Integer(-1)
+            elif arg == 0:
+                return Integer(0)
             elif arg.is_negative:
                 return -cls(-arg)
         else:
@@ -403,7 +398,7 @@ class tanh(HyperbolicFunction):
     def taylor_term(n, x, *previous_terms):
         from .. import bernoulli
         if n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
 
@@ -422,9 +417,9 @@ class tanh(HyperbolicFunction):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return self.expand(deep, **hints), S.Zero
+                return self.expand(deep, **hints), Integer(0)
             else:
-                return self, S.Zero
+                return self, Integer(0)
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -472,6 +467,7 @@ class coth(HyperbolicFunction):
     The hyperbolic cotangent function, `\frac{\cosh(x)}{\sinh(x)}`.
 
     * coth(x) -> Returns the hyperbolic cotangent of x
+
     """
 
     def fdiff(self, argindex=1):
@@ -481,9 +477,7 @@ class coth(HyperbolicFunction):
             raise ArgumentIndexError(self, argindex)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return acoth
 
     @classmethod
@@ -493,10 +487,10 @@ class coth(HyperbolicFunction):
 
         if arg.is_Number:
             if arg is oo:
-                return S.One
+                return Integer(1)
             elif arg == -oo:
-                return S.NegativeOne
-            elif arg is S.Zero:
+                return Integer(-1)
+            elif arg == 0:
                 return zoo
             elif arg.is_negative:
                 return -cls(-arg)
@@ -535,7 +529,7 @@ class coth(HyperbolicFunction):
         if n == 0:
             return 1 / sympify(x)
         elif n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
 
@@ -552,9 +546,9 @@ class coth(HyperbolicFunction):
         if self.args[0].is_extended_real:
             if deep:
                 hints['complex'] = False
-                return self.expand(deep, **hints), S.Zero
+                return self.expand(deep, **hints), Integer(0)
             else:
-                return self, S.Zero
+                return self, Integer(0)
         if deep:
             re, im = self.args[0].expand(deep, **hints).as_real_imag()
         else:
@@ -590,7 +584,7 @@ class coth(HyperbolicFunction):
 
 
 class ReciprocalHyperbolicFunction(HyperbolicFunction):
-    """Base class for reciprocal functions of hyperbolic functions. """
+    """Base class for reciprocal functions of hyperbolic functions."""
 
     # To be defined in class
     _reciprocal_of = None
@@ -667,15 +661,14 @@ class csch(ReciprocalHyperbolicFunction):
     diofant.functions.elementary.hyperbolic.sech
     diofant.functions.elementary.hyperbolic.asinh
     diofant.functions.elementary.hyperbolic.acosh
+
     """
 
     _reciprocal_of = sinh
     _is_odd = True
 
     def fdiff(self, argindex=1):
-        """
-        Returns the first derivative of this function
-        """
+        """Returns the first derivative of this function."""
         if argindex == 1:
             return -coth(self.args[0]) * csch(self.args[0])
         else:
@@ -684,14 +677,12 @@ class csch(ReciprocalHyperbolicFunction):
     @staticmethod
     @cacheit
     def taylor_term(n, x, *previous_terms):
-        """
-        Returns the next term in the Taylor series expansion
-        """
+        """Returns the next term in the Taylor series expansion."""
         from .. import bernoulli
         if n == 0:
             return 1/sympify(x)
         elif n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
 
@@ -720,6 +711,7 @@ class sech(ReciprocalHyperbolicFunction):
     diofant.functions.elementary.hyperbolic.csch
     diofant.functions.elementary.hyperbolic.asinh
     diofant.functions.elementary.hyperbolic.acosh
+
     """
 
     _reciprocal_of = cosh
@@ -736,7 +728,7 @@ class sech(ReciprocalHyperbolicFunction):
     def taylor_term(n, x, *previous_terms):
         from ..combinatorial.numbers import euler
         if n < 0 or n % 2 == 1:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
             return euler(n) / factorial(n) * x**n
@@ -761,6 +753,7 @@ class asinh(Function):
     diofant.functions.elementary.hyperbolic.cosh
     diofant.functions.elementary.hyperbolic.tanh
     diofant.functions.elementary.hyperbolic.sinh
+
     """
 
     def fdiff(self, argindex=1):
@@ -777,9 +770,9 @@ class asinh(Function):
         if arg.is_Number:
             if arg in (oo, -oo, 0):
                 return arg
-            elif arg is S.One:
+            elif arg == 1:
                 return log(sqrt(2) + 1)
-            elif arg is S.NegativeOne:
+            elif arg == -1:
                 return log(sqrt(2) - 1)
             elif arg.is_negative:
                 return -cls(-arg)
@@ -799,7 +792,7 @@ class asinh(Function):
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
             if len(previous_terms) >= 2 and n > 2:
@@ -807,7 +800,7 @@ class asinh(Function):
                 return -p * (n - 2)**2/(n*(n - 1)) * x**2
             else:
                 k = (n - 1) // 2
-                R = RisingFactorial(S.Half, k)
+                R = RisingFactorial(Rational(1, 2), k)
                 F = factorial(k)
                 return (-1)**k * R / F * x**n / n
 
@@ -824,9 +817,7 @@ class asinh(Function):
         return log(x + sqrt(x**2 + 1))
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return sinh
 
 
@@ -842,6 +833,7 @@ class acosh(Function):
     diofant.functions.elementary.hyperbolic.asinh
     diofant.functions.elementary.hyperbolic.atanh
     diofant.functions.elementary.hyperbolic.cosh
+
     """
 
     def fdiff(self, argindex=1):
@@ -857,19 +849,19 @@ class acosh(Function):
         if arg.is_Number:
             if arg in (oo, -oo):
                 return oo
-            elif arg is S.Zero:
+            elif arg == 0:
                 return pi*I / 2
-            elif arg is S.One:
-                return S.Zero
-            elif arg is S.NegativeOne:
+            elif arg == 1:
+                return Integer(0)
+            elif arg == -1:
                 return pi*I
 
         if arg.is_number:
             cst_table = {
                 I: log(I*(1 + sqrt(2))),
                 -I: log(-I*(1 + sqrt(2))),
-                S.Half: pi/3,
-                -S.Half: 2*pi/3,
+                Rational(+1, 2): pi/3,
+                Rational(-1, 2): 2*pi/3,
                 sqrt(2)/2: pi/4,
                 -sqrt(2)/2: 3*pi/4,
                 1/sqrt(2): pi/4,
@@ -902,7 +894,7 @@ class acosh(Function):
         if n == 0:
             return pi*I / 2
         elif n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
             if len(previous_terms) >= 2 and n > 2:
@@ -910,7 +902,7 @@ class acosh(Function):
                 return p * (n - 2)**2/(n*(n - 1)) * x**2
             else:
                 k = (n - 1) // 2
-                R = RisingFactorial(S.Half, k)
+                R = RisingFactorial(Rational(1, 2), k)
                 F = factorial(k)
                 return -R / F * I * x**n / n
 
@@ -924,9 +916,7 @@ class acosh(Function):
             return self.func(arg)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return cosh
 
 
@@ -942,6 +932,7 @@ class atanh(Function):
     diofant.functions.elementary.hyperbolic.asinh
     diofant.functions.elementary.hyperbolic.acosh
     diofant.functions.elementary.hyperbolic.tanh
+
     """
 
     def fdiff(self, argindex=1):
@@ -956,11 +947,11 @@ class atanh(Function):
         arg = sympify(arg)
 
         if arg.is_Number:
-            if arg is S.Zero:
-                return S.Zero
-            elif arg is S.One:
+            if arg == 0:
+                return Integer(0)
+            elif arg == 1:
                 return oo
-            elif arg is S.NegativeOne:
+            elif arg == -1:
                 return -oo
             elif arg is oo:
                 return -I * atan(arg)
@@ -984,7 +975,7 @@ class atanh(Function):
     @cacheit
     def taylor_term(n, x, *previous_terms):
         if n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
             return x**n / n
@@ -999,9 +990,7 @@ class atanh(Function):
             return self.func(arg)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return tanh
 
 
@@ -1010,6 +999,7 @@ class acoth(Function):
     The inverse hyperbolic cotangent function.
 
     * acoth(x) -> Returns the inverse hyperbolic cotangent of x
+
     """
 
     def fdiff(self, argindex=1):
@@ -1025,12 +1015,12 @@ class acoth(Function):
 
         if arg.is_Number:
             if arg in (oo, -oo):
-                return S.Zero
-            elif arg is S.Zero:
+                return Integer(0)
+            elif arg == 0:
                 return pi*I / 2
-            elif arg is S.One:
+            elif arg == 1:
                 return oo
-            elif arg is S.NegativeOne:
+            elif arg == -1:
                 return -oo
             elif arg.is_negative:
                 return -cls(-arg)
@@ -1052,7 +1042,7 @@ class acoth(Function):
         if n == 0:
             return pi*I / 2
         elif n < 0 or n % 2 == 0:
-            return S.Zero
+            return Integer(0)
         else:
             x = sympify(x)
             return x**n / n
@@ -1067,7 +1057,5 @@ class acoth(Function):
             return self.func(arg)
 
     def inverse(self, argindex=1):
-        """
-        Returns the inverse of this function.
-        """
+        """Returns the inverse of this function."""
         return coth

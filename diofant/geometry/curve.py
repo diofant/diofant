@@ -48,7 +48,6 @@ class Curve(GeometrySet):
     Examples
     ========
 
-    >>> from diofant.abc import t, a
     >>> C = Curve((sin(t), cos(t)), (t, 0, 2))
     >>> C.functions
     (sin(t), cos(t))
@@ -58,10 +57,11 @@ class Curve(GeometrySet):
     t
     >>> C = Curve((t, interpolate([1, 4, 9, 16], t)), (t, 0, 1)); C
     Curve((t, t**2), (t, 0, 1))
-    >>> C.subs(t, 4)
+    >>> C.subs({t: 4})
     Point2D(4, 16)
     >>> C.arbitrary_point(a)
     Point2D(a, a**2)
+
     """
 
     def __new__(cls, function, limits):
@@ -77,7 +77,7 @@ class Curve(GeometrySet):
 
     def _eval_subs(self, old, new):
         if old == self.parameter:
-            return Point(*[f.subs(old, new) for f in self.functions])
+            return Point(*[f.subs({old: new}) for f in self.functions])
 
     @property
     def free_symbols(self):
@@ -88,11 +88,11 @@ class Curve(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.abc import t, a
         >>> Curve((t, t**2), (t, 0, 2)).free_symbols
         set()
         >>> Curve((t, t**2), (t, a, 2)).free_symbols
         {a}
+
         """
         free = set()
         for a in self.functions + self.limits[1:]:
@@ -117,7 +117,6 @@ class Curve(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.abc import t
         >>> C = Curve((t, t**2), (t, 0, 2))
         >>> C.functions
         (t, t**2)
@@ -142,7 +141,6 @@ class Curve(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.abc import t
         >>> C = Curve([t, t**2], (t, 0, 2))
         >>> C.parameter
         t
@@ -168,7 +166,6 @@ class Curve(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.abc import t
         >>> C = Curve([t, t**3], (t, -2, 2))
         >>> C.limits
         (t, -2, 2)
@@ -186,6 +183,7 @@ class Curve(GeometrySet):
 
         >>> Curve((x, x), (x, 0, 1)).rotate(pi/2)
         Curve((-x, x), (x, 0, 1))
+
         """
         from ..matrices import Matrix, rot_axis3
         pt = -Point(pt or (0, 0))
@@ -206,6 +204,7 @@ class Curve(GeometrySet):
 
         >>> Curve((x, x), (x, 0, 1)).scale(2)
         Curve((2*x, x), (x, 0, 1))
+
         """
         if pt:
             pt = Point(pt)
@@ -221,6 +220,7 @@ class Curve(GeometrySet):
 
         >>> Curve((x, x), (x, 0, 1)).translate(1, 2)
         Curve((x + 1, x + 2), (x, 0, 1))
+
         """
         fx, fy = self.functions
         return self.func((fx + x, fy + y), self.limits)
@@ -277,7 +277,7 @@ class Curve(GeometrySet):
                 tnew.name in (f.name for f in self.free_symbols)):
             raise ValueError('Symbol %s already appears in object '
                              'and cannot be used as a parameter.' % tnew.name)
-        return Point(*[w.subs(t, tnew) for w in self.functions])
+        return Point(*[w.subs({t: tnew}) for w in self.functions])
 
     def plot_interval(self, parameter='t'):
         """The plot interval for the default geometric plot of the curve.
@@ -303,7 +303,7 @@ class Curve(GeometrySet):
         Examples
         ========
 
-        >>> from diofant.abc import t, s
+        >>> from diofant.abc import s
         >>> Curve((x, sin(x)), (x, 1, 2)).plot_interval()
         [t, 1, 2]
         >>> Curve((x, sin(x)), (x, 1, 2)).plot_interval(s)

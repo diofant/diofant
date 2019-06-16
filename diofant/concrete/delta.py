@@ -2,16 +2,17 @@
 This module implements sums and products containing the Kronecker Delta function.
 """
 
-from ..core import Add, Dummy, Integer, Mul, S, cacheit
+from ..core import Add, Dummy, Integer, Mul, cacheit
 from ..core.compatibility import default_sort_key
 from ..functions import KroneckerDelta, Piecewise, piecewise_fold
+from ..logic import true
 from ..polys import factor
 from ..sets import Interval
 
 
 @cacheit
 def _expand_delta(expr, index):
-    """Expand the first Add containing a simple KroneckerDelta. """
+    """Expand the first Add containing a simple KroneckerDelta."""
     if not expr.is_Mul:
         return expr
     delta = None
@@ -55,6 +56,7 @@ def _extract_delta(expr, index):
     diofant.functions.special.tensor_functions.KroneckerDelta
     deltaproduct
     deltasummation
+
     """
     if not _has_simple_delta(expr, index):
         return None, expr
@@ -78,6 +80,7 @@ def _has_simple_delta(expr, index):
     Returns True if ``expr`` is an expression that contains a KroneckerDelta
     that is simple in the index ``index``, meaning that this KroneckerDelta
     is nonzero for a single value of the index ``index``.
+
     """
     if expr.has(KroneckerDelta):
         if _is_simple_delta(expr, index):
@@ -94,6 +97,7 @@ def _is_simple_delta(delta, index):
     """
     Returns True if ``delta`` is a KroneckerDelta and is nonzero for a single
     value of the index ``index``.
+
     """
     if isinstance(delta, KroneckerDelta) and delta.has(index):
         p = (delta.args[0] - delta.args[1]).as_poly(index)
@@ -104,7 +108,7 @@ def _is_simple_delta(delta, index):
 
 @cacheit
 def _remove_multiple_delta(expr):
-    """Evaluate products of KroneckerDelta's. """
+    """Evaluate products of KroneckerDelta's."""
     from ..solvers import solve
     if expr.is_Add:
         return expr.func(*list(map(_remove_multiple_delta, expr.args)))
@@ -121,7 +125,7 @@ def _remove_multiple_delta(expr):
         return expr
     solns = solve(eqs)
     if len(solns) == 0:
-        return S.Zero
+        return Integer(0)
     elif len(solns) == 1:
         for key in solns[0]:
             newargs.append(KroneckerDelta(key, solns[0][key]))
@@ -133,7 +137,7 @@ def _remove_multiple_delta(expr):
 
 @cacheit
 def _simplify_delta(expr):
-    """Rewrite a KroneckerDelta's indices in its simplest form. """
+    """Rewrite a KroneckerDelta's indices in its simplest form."""
     from ..solvers import solve
     if isinstance(expr, KroneckerDelta):
         slns = solve(expr.args[0] - expr.args[1])
@@ -153,11 +157,12 @@ def deltaproduct(f, limit):
     deltasummation
     diofant.functions.special.tensor_functions.KroneckerDelta
     diofant.concrete.products.product
+
     """
     from .products import product
 
-    if ((limit[2] - limit[1]) < 0) == S.true:
-        return S.One
+    if (limit[2] - limit[1] < 0) == true:
+        return Integer(1)
 
     if not f.has(KroneckerDelta):
         return product(f, limit)
@@ -176,7 +181,7 @@ def deltaproduct(f, limit):
         if isinstance(limit[1], int) and isinstance(limit[2], int):
             result += sum(deltaproduct(newexpr,
                                        (limit[0], limit[1], ik - 1)) *
-                          delta.subs(limit[0], ik) *
+                          delta.subs({limit[0]: ik}) *
                           deltaproduct(newexpr,
                                        (limit[0], ik + 1, limit[2]))
                           for ik in range(int(limit[1]), int(limit[2] + 1)))
@@ -185,7 +190,7 @@ def deltaproduct(f, limit):
             result += deltasummation(deltaproduct(newexpr,
                                                   (limit[0],
                                                    limit[1], k - 1)) *
-                                     delta.subs(limit[0], k) *
+                                     delta.subs({limit[0]: k}) *
                                      deltaproduct(newexpr, (limit[0],
                                                             k + 1, limit[2])),
                                      (k, limit[1], limit[2]),
@@ -201,7 +206,7 @@ def deltaproduct(f, limit):
             return factor(deltaproduct(g, limit))
         return product(f, limit)
 
-    return (_remove_multiple_delta(f.subs(limit[0], limit[1]) *
+    return (_remove_multiple_delta(f.subs({limit[0]: limit[1]}) *
                                    KroneckerDelta(limit[2], limit[1])) +
             _simplify_delta(KroneckerDelta(limit[2], limit[1] - 1)))
 
@@ -251,7 +256,7 @@ def deltasummation(f, limit, no_piecewise=False):
     >>> deltasummation(KroneckerDelta(i, k), (k, 0, oo))
     Piecewise((1, 0 <= i), (0, true))
     >>> deltasummation(KroneckerDelta(i, k), (k, 1, 3))
-    Piecewise((1, And(1 <= i, i <= 3)), (0, true))
+    Piecewise((1, (1 <= i) & (i <= 3)), (0, true))
     >>> deltasummation(k*KroneckerDelta(i, j)*KroneckerDelta(j, k),
     ...                (k, -oo, oo))
     j*KroneckerDelta(i, j)
@@ -266,12 +271,13 @@ def deltasummation(f, limit, no_piecewise=False):
     deltaproduct
     diofant.functions.special.tensor_functions.KroneckerDelta
     diofant.concrete.sums.summation
+
     """
     from .summations import summation
     from ..solvers import solve
 
-    if ((limit[2] - limit[1]) < 0) == S.true:
-        return S.Zero
+    if (limit[2] - limit[1] < 0) == true:
+        return Integer(0)
 
     if not f.has(KroneckerDelta):
         return summation(f, limit)
@@ -293,7 +299,7 @@ def deltasummation(f, limit, no_piecewise=False):
     assert len(solns) == 1
     value = solns[0][x]
     if no_piecewise:
-        return expr.subs(x, value)
-    return Piecewise((expr.subs(x, value),
+        return expr.subs({x: value})
+    return Piecewise((expr.subs({x: value}),
                       Interval(*limit[1:3]).as_relational(value)),
-                     (S.Zero, True))
+                     (0, True))

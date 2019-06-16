@@ -53,6 +53,12 @@ Concrete Domains
 .. autoclass:: AlgebraicField
    :members:
 
+.. autoclass:: RealAlgebraicField
+   :members:
+
+.. autoclass:: ComplexAlgebraicField
+   :members:
+
 .. autoclass:: diofant.polys.rings.PolynomialRing
    :members:
 
@@ -71,11 +77,11 @@ Concrete Domains
 Implementation Domains
 **********************
 
-.. autoclass:: PythonFiniteField
-.. autoclass:: GMPYFiniteField
+.. autoclass:: diofant.domains.finitefield.PythonFiniteField
+.. autoclass:: diofant.domains.finitefield.GMPYFiniteField
 
-.. autoclass:: PythonIntegerRing
-.. autoclass:: GMPYIntegerRing
+.. autoclass:: diofant.domains.integerring.PythonIntegerRing
+.. autoclass:: diofant.domains.integerring.GMPYIntegerRing
 
-.. autoclass:: PythonRationalField
-.. autoclass:: GMPYRationalField
+.. autoclass:: diofant.domains.rationalfield.PythonRationalField
+.. autoclass:: diofant.domains.rationalfield.GMPYRationalField

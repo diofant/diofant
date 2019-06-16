@@ -1,15 +1,11 @@
-from ..core import S
 from .expr_with_limits import ExprWithLimits
 
 
 class ReorderError(NotImplementedError):
-    """
-    Exception raised when trying to reorder dependent limits.
-    """
+    """Exception raised when trying to reorder dependent limits."""
 
     def __init__(self, expr, msg):
-        super(ReorderError, self).__init__(
-            "%s could not be reordered: %s." % (expr, msg))
+        super().__init__("%s could not be reordered: %s." % (expr, msg))
 
 
 class ExprWithIntLimits(ExprWithLimits):
@@ -35,59 +31,59 @@ class ExprWithIntLimits(ExprWithLimits):
         Examples
         ========
 
-        >>> from diofant.abc import a, b, c, d, u, v, i, j, l
+        >>> from diofant.abc import u, v, i, j, l
 
-        >>> S = Sum(x, (x, a, b))
-        >>> S.doit()
+        >>> s = Sum(x, (x, a, b))
+        >>> s.doit()
         -a**2/2 + a/2 + b**2/2 + b/2
 
-        >>> Sn = S.change_index(x, x + 1, y)
-        >>> Sn
+        >>> sn = s.change_index(x, x + 1, y)
+        >>> sn
         Sum(y - 1, (y, a + 1, b + 1))
-        >>> Sn.doit()
+        >>> sn.doit()
         -a**2/2 + a/2 + b**2/2 + b/2
 
-        >>> Sn = S.change_index(x, -x, y)
-        >>> Sn
+        >>> sn = s.change_index(x, -x, y)
+        >>> sn
         Sum(-y, (y, -b, -a))
-        >>> Sn.doit()
+        >>> sn.doit()
         -a**2/2 + a/2 + b**2/2 + b/2
 
-        >>> Sn = S.change_index(x, x+u)
-        >>> Sn
+        >>> sn = s.change_index(x, x+u)
+        >>> sn
         Sum(-u + x, (x, a + u, b + u))
-        >>> Sn.doit()
+        >>> sn.doit()
         -a**2/2 - a*u + a/2 + b**2/2 + b*u + b/2 - u*(-a + b + 1) + u
-        >>> simplify(Sn.doit())
+        >>> simplify(sn.doit())
         -a**2/2 + a/2 + b**2/2 + b/2
 
-        >>> Sn = S.change_index(x, -x - u, y)
-        >>> Sn
+        >>> sn = s.change_index(x, -x - u, y)
+        >>> sn
         Sum(-u - y, (y, -b - u, -a - u))
-        >>> Sn.doit()
+        >>> sn.doit()
         -a**2/2 - a*u + a/2 + b**2/2 + b*u + b/2 - u*(-a + b + 1) + u
-        >>> simplify(Sn.doit())
+        >>> simplify(sn.doit())
         -a**2/2 + a/2 + b**2/2 + b/2
 
-        >>> P = Product(i*j**2, (i, a, b), (j, c, d))
-        >>> P
+        >>> p = Product(i*j**2, (i, a, b), (j, c, d))
+        >>> p
         Product(i*j**2, (i, a, b), (j, c, d))
-        >>> P2 = P.change_index(i, i+3, k)
-        >>> P2
+        >>> p2 = p.change_index(i, i+3, k)
+        >>> p2
         Product(j**2*(k - 3), (k, a + 3, b + 3), (j, c, d))
-        >>> P3 = P2.change_index(j, -j, l)
-        >>> P3
+        >>> p3 = p2.change_index(j, -j, l)
+        >>> p3
         Product(l**2*(k - 3), (k, a + 3, b + 3), (l, -d, -c))
 
         When dealing with symbols only, we can make a
         general linear transformation:
 
-        >>> Sn = S.change_index(x, u*x+v, y)
-        >>> Sn
+        >>> sn = s.change_index(x, u*x+v, y)
+        >>> sn
         Sum((-v + y)/u, (y, b*u + v, a*u + v))
-        >>> Sn.doit()
+        >>> sn.doit()
         -v*(a*u - b*u + 1)/u + (a**2*u**2/2 + a*u*v + a*u/2 - b**2*u**2/2 - b*u*v + b*u/2 + v)/u
-        >>> simplify(Sn.doit())
+        >>> simplify(sn.doit())
         a**2*u/2 + a/2 - b**2*u/2 + b/2
 
         However, the last result can be inconsistent with usual
@@ -103,6 +99,7 @@ class ExprWithIntLimits(ExprWithLimits):
         diofant.concrete.expr_with_intlimits.ExprWithIntLimits.reorder
         diofant.concrete.summations.Sum.reverse_order
         diofant.concrete.products.Product.reverse_order
+
         """
         if newvar is None:
             newvar = var
@@ -114,7 +111,7 @@ class ExprWithIntLimits(ExprWithLimits):
                 if p.degree() != 1:
                     raise ValueError("Index transformation is not linear")
                 alpha = p.coeff_monomial(var)
-                beta = p.coeff_monomial(S.One)
+                beta = p.coeff_monomial(1)
                 if alpha.is_number:
                     if alpha == 1:
                         limits.append((newvar, alpha*limit[1] + beta, alpha*limit[2] + beta))
@@ -128,8 +125,8 @@ class ExprWithIntLimits(ExprWithLimits):
             else:
                 limits.append(limit)
 
-        function = self.function.subs(var, (var - beta)/alpha)
-        function = function.subs(var, newvar)
+        function = self.function.subs({var: (var - beta)/alpha})
+        function = function.subs({var: newvar})
 
         return self.func(function, *limits)
 
@@ -149,7 +146,6 @@ class ExprWithIntLimits(ExprWithLimits):
         Examples
         ========
 
-        >>> from diofant.abc import a, b, c, d
         >>> Sum(x*y, (x, a, b), (y, c, d)).index(x)
         0
         >>> Sum(x*y, (x, a, b), (y, c, d)).index(y)
@@ -166,6 +162,7 @@ class ExprWithIntLimits(ExprWithLimits):
         diofant.concrete.expr_with_intlimits.ExprWithIntLimits.reorder
         diofant.concrete.summations.Sum.reverse_order
         diofant.concrete.products.Product.reverse_order
+
         """
         variables = [limit[0] for limit in self.limits]
 
@@ -188,7 +185,7 @@ class ExprWithIntLimits(ExprWithLimits):
         Examples
         ========
 
-        >>> from diofant.abc import a, b, c, d, e, f
+        >>> from diofant.abc import e, f
 
         >>> Sum(x*y, (x, a, b), (y, c, d)).reorder((x, y))
         Sum(x*y, (y, c, d), (x, a, b))
@@ -220,6 +217,7 @@ class ExprWithIntLimits(ExprWithLimits):
         diofant.concrete.expr_with_intlimits.ExprWithIntLimits.reorder_limit
         diofant.concrete.summations.Sum.reverse_order
         diofant.concrete.products.Product.reverse_order
+
         """
         new_expr = self
 
@@ -253,7 +251,7 @@ class ExprWithIntLimits(ExprWithLimits):
         Examples
         ========
 
-        >>> from diofant.abc import a, b, c, d, e, f
+        >>> from diofant.abc import e, f
 
         >>> Sum(x*y*z, (x, a, b), (y, c, d), (z, e, f)).reorder_limit(0, 2)
         Sum(x*y*z, (z, e, f), (y, c, d), (x, a, b))
@@ -270,6 +268,7 @@ class ExprWithIntLimits(ExprWithLimits):
         diofant.concrete.expr_with_intlimits.ExprWithIntLimits.reorder
         diofant.concrete.summations.Sum.reverse_order
         diofant.concrete.products.Product.reverse_order
+
         """
         var = {limit[0] for limit in self.limits}
         limit_x = self.limits[x]

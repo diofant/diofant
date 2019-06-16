@@ -224,7 +224,7 @@ class NumExprPrinter(LambdaPrinter):
         blacklisted
 
     def doprint(self, expr):
-        lstr = super(NumExprPrinter, self).doprint(expr)
+        lstr = super().doprint(expr)
         return "evaluate('%s')" % lstr
 
 
@@ -235,12 +235,8 @@ class MpmathPrinter(LambdaPrinter):
                     "method='bisection')" % (self._print(expr.poly.gen),
                                              self._print(expr.expr),
                                              self._print(expr.interval.as_tuple())))
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
-
-    def _print_mpq(self, expr):
-        return "mp.mpq(%s, %s)" % (self._print(expr.numerator),
-                                   self._print(expr.denominator))
 
     def _print_Sum(self, expr):
         return "nsum(lambda %s: %s, %s)" % (",".join([self._print(v) for v in expr.variables]),
@@ -249,6 +245,15 @@ class MpmathPrinter(LambdaPrinter):
 
     def _print_Infinity(self, expr):
         return "inf"
+
+    def _print_Float(self, e):
+        # XXX: This does not handle setting mpmath.mp.dps. It is assumed that
+        # the caller of the lambdified function will have set it to sufficient
+        # precision to match the Floats in the expression.
+
+        # Remove 'mpz' if gmpy is installed.
+        args = str(tuple(map(int, e._mpf_)))
+        return 'mpf(%s)' % args
 
 
 def lambdarepr(expr, **settings):

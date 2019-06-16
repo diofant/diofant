@@ -1,5 +1,5 @@
-from ...core import (Add, Dummy, Equality, Expr, Lambda, Mul, Pow, Rational, S,
-                     Tuple, oo, sympify, zoo)
+from ...core import (Add, Dummy, Equality, Expr, Integer, Lambda, Mul, Pow,
+                     Rational, Tuple, oo, sympify, zoo)
 from ...core.compatibility import as_int
 from ...core.function import Application, ArgumentIndexError
 from ...core.logic import fuzzy_and
@@ -32,7 +32,7 @@ class IdentityFunction(Lambda, metaclass=Singleton):
         return obj
 
 
-Id = S.IdentityFunction
+Id = IdentityFunction()
 
 ###############################################################################
 # ########################### ROOT and SQUARE ROOT FUNCTION ################# #
@@ -61,7 +61,7 @@ def sqrt(arg, **kwargs):
     This is because the two are not equal to each other in general.
     For example, consider x == -1:
 
-    >>> Eq(sqrt(x**2), x).subs(x, -1)
+    >>> Eq(sqrt(x**2), x).subs({x: -1})
     false
 
     This is because sqrt computes the principal square root, so the square may
@@ -95,11 +95,12 @@ def sqrt(arg, **kwargs):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Square_root
-    .. [2] https//en.wikipedia.org/wiki/Principal_value
+    * https://en.wikipedia.org/wiki/Square_root
+    * https://en.wikipedia.org/wiki/Principal_value
+
     """
     # arg = sympify(arg) is handled by Pow
-    return Pow(arg, S.Half, **kwargs)
+    return Pow(arg, Rational(1, 2), **kwargs)
 
 
 def cbrt(arg, **kwargs):
@@ -123,7 +124,7 @@ def cbrt(arg, **kwargs):
     This is because the two are not equal to each other in general.
     For example, consider `x == -1`:
 
-    >>> Eq(cbrt(x**3), x).subs(x, -1)
+    >>> Eq(cbrt(x**3), x).subs({x: -1})
     false
 
     This is because cbrt computes the principal cube root, this
@@ -143,8 +144,8 @@ def cbrt(arg, **kwargs):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Cube_root
-    * https//en.wikipedia.org/wiki/Principal_value
+    * https://en.wikipedia.org/wiki/Cube_root
+    * https://en.wikipedia.org/wiki/Principal_value
 
     """
     return Pow(arg, Rational(1, 3), **kwargs)
@@ -222,16 +223,16 @@ def root(arg, n, k=0, **kwargs):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Square_root
-    * https//en.wikipedia.org/wiki/Real_root
-    * https//en.wikipedia.org/wiki/Root_of_unity
-    * https//en.wikipedia.org/wiki/Principal_value
+    * https://en.wikipedia.org/wiki/Square_root
+    * https://en.wikipedia.org/wiki/Real_root
+    * https://en.wikipedia.org/wiki/Root_of_unity
+    * https://en.wikipedia.org/wiki/Principal_value
     * http://mathworld.wolfram.com/CubeRoot.html
 
     """
     n = sympify(n)
     if k:
-        return Pow(arg, S.One/n, **kwargs)*S.NegativeOne**(2*k/n)
+        return Pow(arg, 1/n, **kwargs)*(-1)**(2*k/n)
     return Pow(arg, 1/n, **kwargs)
 
 
@@ -267,6 +268,7 @@ def real_root(arg, n=None):
     diofant.core.power.integer_nthroot
     diofant.functions.elementary.miscellaneous.root
     diofant.functions.elementary.miscellaneous.sqrt
+
     """
     from .complexes import im
     from .piecewise import Piecewise
@@ -280,11 +282,11 @@ def real_root(arg, n=None):
                 raise ValueError
         except ValueError:
             return root(arg, n)*Piecewise(
-                (S.One, ~Equality(im(arg), 0)),
-                (Pow(S.NegativeOne, S.One/n)**(2*floor(n/2)), And(
+                (1, ~Equality(im(arg), 0)),
+                (Pow(-1, Integer(1)/n)**(2*floor(n/2)), And(
                     Equality(n % 2, 1),
                     arg < 0)),
-                (S.One, True))
+                (1, True))
     else:
         rv = sympify(arg)
     n1pow = Transform(lambda x: -(-x.base)**x.exp,
@@ -341,6 +343,7 @@ class MinMaxBase(LatticeOp):
         first standard filter, for cls.zero and cls.identity.
         Also reshape Max(a, Max(b, c)) to Max(a, b, c),
         and check arguments for comparability
+
         """
         for arg in arg_sequence:
 
@@ -366,6 +369,7 @@ class MinMaxBase(LatticeOp):
         When a value is identified as being more extreme than another member it
         replaces that member; if this is never true, then the value is simply
         appended to the localzeros.
+
         """
         localzeros = set()
         for v in values:
@@ -385,9 +389,7 @@ class MinMaxBase(LatticeOp):
 
     @classmethod
     def _is_connected(cls, x, y):
-        """
-        Check if x and y are connected somehow.
-        """
+        """Check if x and y are connected somehow."""
         def hit(v, t, f):
             if not v.is_Relational:
                 return t if v else f
@@ -406,7 +408,7 @@ class MinMaxBase(LatticeOp):
         for a in self.args:
             i += 1
             da = a.diff(s)
-            if da is S.Zero:
+            if da == 0:
                 continue
             df = self.fdiff(i)
             l.append(df * da)
@@ -456,7 +458,7 @@ class Max(MinMaxBase, Application):
 
     >>> Max(x, -2)
     Max(-2, x)
-    >>> Max(x, -2).subs(x, 3)
+    >>> Max(x, -2).subs({x: 3})
     3
     >>> Max(p, -2)
     p
@@ -475,7 +477,7 @@ class Max(MinMaxBase, Application):
     =====
 
     The task can be considered as searching of supremums in the
-    directed complete partial orders [1]_.
+    directed complete partial orders.
 
     The source values are sequentially allocated by the isolated subsets
     in which supremums are searched and result as Max arguments.
@@ -499,13 +501,14 @@ class Max(MinMaxBase, Application):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Directed_complete_partial_order
-    .. [2] https//en.wikipedia.org/wiki/Lattice_%28order%29
+    * https://en.wikipedia.org/wiki/Directed_complete_partial_order
+    * https://en.wikipedia.org/wiki/Lattice_%28order%29
 
     See Also
     ========
 
     diofant.functions.elementary.miscellaneous.Min : find minimum values
+
     """
 
     zero = oo
@@ -543,7 +546,7 @@ class Min(MinMaxBase, Application):
 
     >>> Min(x, -2)
     Min(-2, x)
-    >>> Min(x, -2).subs(x, 3)
+    >>> Min(x, -2).subs({x: 3})
     -2
     >>> Min(p, -3)
     -3
@@ -556,6 +559,7 @@ class Min(MinMaxBase, Application):
     ========
 
     diofant.functions.elementary.miscellaneous.Max : find maximum values
+
     """
 
     zero = -oo

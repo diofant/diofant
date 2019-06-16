@@ -1,6 +1,6 @@
 """Gosper's algorithm for hypergeometric summation. """
 
-from ..core import Dummy, Integer, S, nan, symbols
+from ..core import Dummy, Integer, nan, symbols
 from ..core.compatibility import is_sequence
 from ..polys import Poly, factor, parallel_poly_from_expr
 from ..simplify import hypersimp
@@ -36,8 +36,9 @@ def gosper_normal(f, g, n, polys=True):
 
     >>> gosper_normal(4*n + 5, 2*(4*n + 1)*(2*n + 3), n, polys=False)
     (1/4, n + 3/2, n + 1/4)
+
     """
-    (p, q), opt = parallel_poly_from_expr((f, g), n, field=True, extension=True)
+    (p, q), opt = parallel_poly_from_expr((f, g), n, field=True)
 
     a, A = p.LC(), p.monic()
     b, B = q.LC(), q.monic()
@@ -55,7 +56,7 @@ def gosper_normal(f, g, n, polys=True):
         for j in range(1, i + 1):
             C *= d.shift(-j)
 
-    A = A.mul_ground(Z)
+    A *= Z
 
     if not polys:
         A = A.as_expr()
@@ -81,6 +82,7 @@ def gosper_term(f, n):
 
     >>> gosper_term((4*n + 1)*factorial(n)/factorial(2*n + 1), n)
     (-n - 1/2)/(n + 1/4)
+
     """
     r = hypersimp(f, n)
 
@@ -101,7 +103,8 @@ def gosper_term(f, n):
     elif not N:
         D = {K - N + 1, Integer(0)}
     else:
-        D = {K - N + 1, (B.nth(N - 1) - A.nth(N - 1))/A.LC()}
+        D = {K - N + 1, (B.coeff_monomial(n**(N - 1)) -
+                         A.coeff_monomial(n**(N - 1)))/A.LC()}
 
     for d in set(D):
         if not d.is_Integer or d < 0:
@@ -126,9 +129,9 @@ def gosper_term(f, n):
 
     for coeff in coeffs:
         if coeff not in solution:
-            x = x.subs(coeff, 0)
+            x = x.subs({coeff: 0})
 
-    if x is S.Zero:
+    if x == 0:
         return  # 'f(n)' is *not* Gosper-summable
     else:
         return B.as_expr()*x/C.as_expr()
@@ -154,18 +157,18 @@ def gosper_sum(f, k):
     >>> f = (4*k + 1)*factorial(k)/factorial(2*k + 1)
     >>> gosper_sum(f, (k, 0, n))
     (-factorial(n) + 2*factorial(2*n + 1))/factorial(2*n + 1)
-    >>> _.subs(n, 2) == sum(f.subs(k, i) for i in [0, 1, 2])
+    >>> _.subs({n: 2}) == sum(f.subs({k: i}) for i in [0, 1, 2])
     True
     >>> gosper_sum(f, (k, 3, n))
     (-60*factorial(n) + factorial(2*n + 1))/(60*factorial(2*n + 1))
-    >>> _.subs(n, 5) == sum(f.subs(k, i) for i in [3, 4, 5])
+    >>> _.subs({n: 5}) == sum(f.subs({k: i}) for i in [3, 4, 5])
     True
 
     References
     ==========
 
-    .. [1] Marko Petkovšek, Herbert S. Wilf, Doron Zeilberger, A = B,
-           AK Peters, Ltd., Wellesley, MA, USA, 1997, pp. 73--100
+    * :cite:`Petkovsek1997AeqB`
+
     """
     indefinite = False
 
@@ -182,7 +185,7 @@ def gosper_sum(f, k):
     if indefinite:
         result = f*g
     else:
-        result = (f*(g + 1)).subs(k, b) - (f*g).subs(k, a)
+        result = (f*(g + 1)).subs({k: b}) - (f*g).subs({k: a})
 
         if result is nan:
             try:

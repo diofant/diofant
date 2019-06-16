@@ -8,7 +8,7 @@ from .basic import Atom, Basic
 from .cache import cacheit
 from .compatibility import as_int, default_sort_key
 from .decorators import _sympifyit, call_highest_priority
-from .evalf import EvalfMixin, pure_complex
+from .evalf import EvalfMixin, PrecisionExhausted, pure_complex
 from .singleton import S
 from .sympify import sympify
 
@@ -26,6 +26,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     ========
 
     diofant.core.basic.Basic
+
     """
 
     def __new__(cls, *args):
@@ -47,7 +48,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Notes
         =====
 
-        The expr.subs(yourclass, Symbol) should be well-defined on a
+        The expr.subs({yourclass: Symbol}) should be well-defined on a
         structural level, or this will lead to inconsistent results.
 
         Examples
@@ -66,24 +67,25 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         diofant.core.function.Derivative
+
         """
         return False
 
     @cacheit
     def sort_key(self, order=None):
-        """Return a sort key. """
+        """Return a sort key."""
 
         coeff, expr = self.as_coeff_Mul()
 
         if expr.is_Pow:
             expr, exp = expr.args
         else:
-            expr, exp = expr, S.One
+            expr, exp = expr, Integer(1)
 
         if expr.is_Dummy:
-            args = (expr.sort_key(),)
+            args = expr.sort_key(),
         elif expr.is_Atom:
-            args = (str(expr),)
+            args = str(expr),
         else:
             if expr.is_Add:
                 args = expr.as_ordered_terms(order=order)
@@ -118,7 +120,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return self
 
     def __neg__(self):
-        return Mul(S.NegativeOne, self)
+        return Mul(-1, self)
 
     def __abs__(self):
         from ..functions import Abs
@@ -167,12 +169,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__rtruediv__')
     def __truediv__(self, other):
-        return Mul(self, Pow(other, S.NegativeOne))
+        return Mul(self, Pow(other, -1))
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__truediv__')
     def __rtruediv__(self, other):
-        return Mul(other, Pow(self, S.NegativeOne))
+        return Mul(other, Pow(self, -1))
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__rmod__')
@@ -191,6 +193,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if r in (nan, oo, -oo):
             raise TypeError("can't convert %s to int" % r)
         return int(r)
+
+    def __floor__(self):
+        from ..functions import floor
+        return floor(self)
 
     def __float__(self):
         # Don't bother testing if it's a number; if it's not this is going
@@ -301,6 +307,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         False
         >>> (2 + Integral(2, (x, 1, 2))).is_number
         True
+
         """
         return all(obj.is_number for obj in self.args)
 
@@ -333,6 +340,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         diofant.utilities.randtest.random_complex_number
+
         """
 
         free = self.free_symbols
@@ -397,8 +405,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant.abc import a
-
         >>> x.is_constant()
         False
         >>> Integer(2).is_constant()
@@ -430,6 +436,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         True
         >>> ((one - 1)**(x + 1)).is_constant() in (True, False) # could be 0 or 1
         True
+
         """
 
         simplify = flags.get('simplify', True)
@@ -530,6 +537,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         and the result has significance (i.e. the precision is either -1, for
         a Rational result, or is greater than 1) then the evalf value will be
         used to return True or False.
+
         """
         other = sympify(other)
         if self == other:
@@ -539,7 +547,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         # don't worry about doing simplification steps one at a time
         # because if the expression ever goes to 0 then the subsequent
         # simplification steps that are done will be very fast.
-        diff = factor_terms((self - other).simplify(), radical=True)
+        diff = self - other
+        try:
+            diff = factor_terms(diff.simplify(), radical=True)
+        except PrecisionExhausted:
+            pass
 
         if not diff:
             return True
@@ -635,12 +647,14 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     def _eval_interval(self, x, a, b):
         """Returns evaluation over an interval.
 
-        For most functions this is: self.subs(x, b) - self.subs(x, a),
+        For most functions this is: self.subs({x: b}) - self.subs({x: a}),
         possibly using limit() if NaN is returned from subs.
 
-        If b or a is None, it only evaluates -self.subs(x, a) or self.subs(b, x),
+        If b or a is None, it only evaluates -self.subs({x: a}) or self.subs({b: x}),
         respectively.
+
         """
+        from ..logic import false
         from ..series import limit, Limit
         if (a is None and b is None):
             raise ValueError('Both interval ends cannot be None.')
@@ -648,18 +662,19 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if a is None:
             A = 0
         else:
-            A = self.subs(x, a)
+            A = self.subs({x: a})
             if A.has(nan, oo, -oo, zoo):
-                A = limit(self, x, a)
+                A = limit(self, x, a, '+' if (a < b) is not false else '-')
                 if isinstance(A, Limit):
                     raise NotImplementedError("Could not compute limit")
 
         if b is None:
             B = 0
         else:
-            B = self.subs(x, b)
+            B = self.subs({x: b})
             if B.has(nan, oo, -oo, zoo):
                 B = limit(self, x, b)
+                B = limit(self, x, b, '-' if (a < b) is not false else '+')
                 if isinstance(B, Limit):
                     raise NotImplementedError("Could not compute limit")
 
@@ -683,6 +698,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         diofant.functions.elementary.complexes.conjugate
+
         """
         from ..functions.elementary.complexes import conjugate as c
         return c(self)
@@ -703,6 +719,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         diofant.functions.elementary.complexes.transpose
+
         """
         from ..functions.elementary.complexes import transpose
         return transpose(self)
@@ -727,13 +744,14 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         diofant.functions.elementary.complexes.adjoint
+
         """
         from ..functions.elementary.complexes import adjoint
         return adjoint(self)
 
     @classmethod
     def _parse_order(cls, order):
-        """Parse and configure the ordering of terms. """
+        """Parse and configure the ordering of terms."""
         from ..polys.orderings import monomial_key
 
         try:
@@ -780,6 +798,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> (sin(x)**2*cos(x) + sin(x)**2 + 1).as_ordered_terms()
         [sin(x)**2*cos(x), sin(x)**2, 1]
+
         """
         key, reverse = self._parse_order(order)
         terms, gens = self.as_terms()
@@ -804,7 +823,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             return [term for term, _ in ordered]
 
     def as_terms(self):
-        """Transform an expression to a list of terms. """
+        """Transform an expression to a list of terms."""
         from . import Add, Mul, S
         from .exprtools import decompose_power
 
@@ -858,7 +877,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return result, gens
 
     def removeO(self):
-        """Removes the additive O(..) symbol if there is one"""
+        """Removes the additive O(..) symbol if there is one."""
         return self
 
     def getO(self):
@@ -877,6 +896,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> (1 + x + O(x**2)).getn()
         2
         >>> (1 + x).getn()
+
         """
         from .symbol import Dummy, Symbol
         o = self.getO()
@@ -885,20 +905,20 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         elif o.is_Order:
             o = o.expr
             if o is S.One:
-                return S.Zero
+                return Integer(0)
             elif o.is_Symbol:
-                return S.One
+                return Integer(1)
             elif o.is_Pow:
                 return o.args[1]
             elif o.is_Mul:  # x**n*log(x)**n or x**n/log(x)**n
                 for oi in o.args:
                     if oi.is_Symbol:
-                        return S.One
+                        return Integer(1)
                     elif oi.is_Pow:
                         syms = oi.atoms(Dummy, Symbol)
                         if len(syms) == 1:
                             x = syms.pop()
-                            oi = oi.subs(x, Dummy('x', positive=True))
+                            oi = oi.subs({x: Dummy('x', positive=True)})
                             if oi.base.is_Symbol and oi.exp.is_Rational:
                                 return abs(oi.exp)
 
@@ -921,7 +941,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Note: -1 is always separated from a Number unless split_1 is False.
 
         >>> A, B = symbols('A B', commutative=0)
-        >>> x, y = symbols('x y')
         >>> (-2*x*y).args_cnc()
         [[-1, 2, x, y], []]
         >>> (-2.5*x).args_cnc()
@@ -939,6 +958,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         [[], [x - 2 + A]]
         >>> (-oo).args_cnc() # -oo is a singleton
         [[-1, oo], []]
+
         """
 
         if self.is_Mul:
@@ -958,7 +978,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             c[0].is_Number and
             c[0].is_negative and
                 c[0] is not S.NegativeOne):
-            c[:1] = [S.NegativeOne, -c[0]]
+            c[:1] = [Integer(-1), -c[0]]
 
         if cset:
             clen = len(c)
@@ -969,11 +989,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return [c, nc]
 
     def coeff(self, x, n=1, right=False):
-        """Returns the coefficient from the term(s) containing ``x**n`` or None. If ``n``
+        """Returns the coefficient from the term(s) containing ``x**n``. If ``n``
         is zero then all terms independent of ``x`` will be returned.
 
-        When x is noncommutative, the coeff to the left (default) or right of x
-        can be returned. The keyword 'right' is ignored when x is commutative.
+        When ``x`` is noncommutative, the coefficient to the left (default) or
+        right of ``x`` can be returned. The keyword 'right' is ignored when
+        ``x`` is commutative.
 
         See Also
         ========
@@ -983,7 +1004,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.core.expr.Expr.as_coeff_Mul
         diofant.core.expr.Expr.as_independent
         diofant.polys.polytools.Poly.coeff_monomial
-        diofant.polys.polytools.Poly.nth
 
         Examples
         ========
@@ -1069,23 +1089,24 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         x
         >>> (n*m + x*m*n).coeff(m*n, right=1)
         1
+
         """
         x = sympify(x)
         n = as_int(n)
 
         if not x:
-            return S.Zero
+            return Integer(0)
 
         if x == self:
             if n == 1:
-                return S.One
-            return S.Zero
+                return Integer(1)
+            return Integer(0)
 
         if x is S.One:
             co = [a for a in Add.make_args(self)
                   if a.as_coeff_Mul()[0] is S.One]
             if not co:
-                return S.Zero
+                return Integer(0)
             return Add(*co)
 
         if n == 0:
@@ -1115,6 +1136,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             7
             >> find(l, [2, 4])
             None
+
             """
             if not sub or not l or len(sub) > len(l):
                 return
@@ -1139,7 +1161,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         self_c = self.is_commutative
         x_c = x.is_commutative
         if self_c and not x_c:
-            return S.Zero
+            return Integer(0)
 
         if self_c:
             xargs = x.args_cnc(cset=True, warn=False)[0]
@@ -1151,7 +1173,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 if len(resid) + len(xargs) == len(margs):
                     co.append(Mul(*resid))
             if co == []:
-                return S.Zero
+                return Integer(0)
             else:
                 return Add(*co)
         elif x_c:
@@ -1164,7 +1186,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 if len(resid) + len(xargs) == len(margs):
                     co.append(Mul(*(list(resid) + nc)))
             if co == []:
-                return S.Zero
+                return Integer(0)
             else:
                 return Add(*co)
         else:  # both nc
@@ -1179,7 +1201,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     co.append((resid, nc))
             # now check the non-comm parts
             if not co:
-                return S.Zero
+                return Integer(0)
             if all(n == co[0][1] for r, n in co):
                 ii = find(co[0][1], nx, right)
                 if ii is not None:
@@ -1227,7 +1249,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     else:
                         return Mul(*n[ii + len(nx):])
 
-            return S.Zero
+            return Integer(0)
 
     def as_expr(self, *gens):
         """Convert a polynomial to a Diofant expression.
@@ -1241,6 +1263,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> sin(x).as_expr()
         sin(x)
+
         """
         return self
 
@@ -1258,6 +1281,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> (x**2 + sin(y)).as_poly(x, y) is None
         True
+
         """
         from ..polys import Poly, PolynomialError
 
@@ -1297,8 +1321,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Poly(x*E + 2*E, x, E, domain='ZZ')
         >>> p.coeff_monomial(E)
         2
-        >>> p.nth(0, 1)
-        2
 
         Since the following cannot be written as a product containing
         E as a factor, None is returned. (If the coefficient ``2*x`` is
@@ -1322,7 +1344,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         as_coeff_Mul: separate the multiplicative constant from an expression
         as_independent: separate x-dependent terms/factors from others
         diofant.polys.polytools.Poly.coeff_monomial: efficiently find the single coefficient of a monomial in Poly
-        diofant.polys.polytools.Poly.nth: like coeff_monomial but powers of monomial terms are used
+
         """
 
         r = self.extract_multiplicatively(expr)
@@ -1347,7 +1369,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         * d will be 1 or else have terms that contain variables that are in deps
         * if self is an Add then self = i + d
         * if self is a Mul then self = i*d
-        * if self is anything else, either tuple (self, S.One) or (S.One, self)
+        * if self is anything else, either tuple (self, Integer(1)) or (Integer(1), self)
           is returned.
 
         To force the expression to be treated as an Add, use the hint as_Add=True
@@ -1454,6 +1476,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.core.mul.Mul.as_two_terms
         as_coeff_add
         as_coeff_mul
+
         """
         from .symbol import Dummy, Symbol
         from ..utilities.iterables import sift
@@ -1472,6 +1495,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         def has(e):
             """return the standard has() if there are no literal symbols, else
             check to see that symbol-deps are in the free symbols.
+
             """
             has_other = e.has(*other)
             if not sym:
@@ -1524,6 +1548,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> (z + t*I).as_real_imag()
         (re(z) - im(t), re(t) + im(z))
+
         """
         from ..functions import im, re
         if hints.get('ignore') == self:
@@ -1538,6 +1563,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         be used with caution if the expression is a Mul and contains non-
         commutative factors since the order that they appeared will be lost in
         the dictionary.
+
         """
         d = defaultdict(int)
         b, e = self.as_base_exp()
@@ -1553,17 +1579,17 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Examples
         ========
 
-        >>> from diofant.abc import a
         >>> (3*x + a*x + 4).as_coefficients_dict()
         {1: 4, x: 3, a*x: 1}
         >>> _[a]
         0
         >>> (3*a*x).as_coefficients_dict()
         {a*x: 3}
+
         """
         c, m = self.as_coeff_Mul()
         if not c.is_Rational:
-            c = S.One
+            c = Integer(1)
             m = self
         d = defaultdict(int)
         d.update({m: c})
@@ -1576,8 +1602,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         diofant.core.power.Pow.as_base_exp
+
         """
-        return self, S.One
+        return self, Integer(1)
 
     def as_coeff_mul(self, *deps, **kwargs):
         """Return the tuple (c, args) where self is written as a Mul, ``m``.
@@ -1606,11 +1633,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         (3*y, (x,))
         >>> (3*y).as_coeff_mul(x)
         (3*y, ())
+
         """
         if deps:
             if not self.has(*deps):
                 return self, ()
-        return S.One, (self,)
+        return Integer(1), (self,)
 
     def as_coeff_add(self, *deps):
         """Return the tuple (c, args) where self is written as an Add, ``a``.
@@ -1639,11 +1667,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         (y + 3, (x,))
         >>> (3 + y).as_coeff_add(x)
         (y + 3, ())
+
         """
         if deps:
             if not self.has(*deps):
                 return self, ()
-        return S.Zero, (self,)
+        return Integer(0), (self,)
 
     def primitive(self):
         """Return the positive Rational that can be extracted non-recursively
@@ -1662,9 +1691,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         (1/2, x + 6)
         >>> (a*b).primitive()
         (1, (x/2 + 3)*(6*x + 2))
+
         """
         if not self:
-            return S.One, S.Zero
+            return Integer(1), Integer(0)
         c, r = self.as_coeff_Mul(rational=True)
         if c.is_negative:
             c, r = -c, -r
@@ -1712,8 +1742,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> (2*sqrt(2) + 4*sqrt(10)).as_content_primitive(radical=True)
         (2, sqrt(2)*(1 + 2*sqrt(5)))
+
         """
-        return S.One, self
+        return Integer(1), self
 
     def as_numer_denom(self):
         """expression -> a/b -> a, b
@@ -1725,15 +1756,16 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         normal: return a/b instead of a, b
+
         """
 
         try:
             return self._eval_as_numer_denom()
         except AttributeError:
-            return self, S.One
+            return self, Integer(1)
 
     def normal(self):
-        """canonicalize ratio, i.e. return numerator if denominator is 1"""
+        """canonicalize ratio, i.e. return numerator if denominator is 1."""
         n, d = self.as_numer_denom()
         if d is S.One:
             return n
@@ -1758,6 +1790,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> (Rational(1, 2)*x).extract_multiplicatively(3)
         x/6
+
         """
         c = sympify(c)
         if self is nan:
@@ -1765,7 +1798,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if c is S.One:
             return self
         elif c == self:
-            return S.One
+            return Integer(1)
         if c.is_Add:
             cc, pc = c.primitive()
             if cc is not S.One:
@@ -1806,7 +1839,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                     return
                 else:
                     return quotient
-            else:  # pragma: no cover
+            else:
                 raise NotImplementedError
         elif self.is_Add:
             cs, ps = self.primitive()
@@ -1867,6 +1900,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         extract_multiplicatively
         coeff
         as_coefficient
+
         """
 
         c = sympify(c)
@@ -1875,7 +1909,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if c is S.Zero:
             return self
         elif c == self:
-            return S.Zero
+            return Integer(0)
         elif self is S.Zero:
             return
 
@@ -1951,6 +1985,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> (x-y).could_extract_minus_sign() != (y-x).could_extract_minus_sign()
         True
+
         """
         negative_self = -self
         self_has_minus = (self.extract_multiplicatively(-1) is not None)
@@ -2006,6 +2041,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         (1, 3/2)
         >>> exp_polar(-I*pi).extract_branch_factor(allow_half=True)
         (1, -1/2)
+
         """
         from .add import Add
         from .numbers import pi, I
@@ -2110,6 +2146,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         is_rational_function
+
         """
         if syms:
             syms = set(map(sympify, syms))
@@ -2174,6 +2211,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         is_algebraic_expr
+
         """
         if self in [nan, oo, -oo, zoo]:
             return False
@@ -2201,7 +2239,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         or in any kind of canonical form.
 
         This function returns False for expressions that are "algebraic
-        expressions" [1]_ with symbolic exponents. This is a simple extension
+        expressions" with symbolic exponents. This is a simple extension
         to the is_rational_function, including rational exponentiation.
 
         Examples
@@ -2231,7 +2269,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         References
         ==========
 
-        .. [1] https//en.wikipedia.org/wiki/Algebraic_expression
+        * https://en.wikipedia.org/wiki/Algebraic_expression
+
         """
         if syms:
             syms = set(map(sympify, syms))
@@ -2251,6 +2290,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         diofant.simplify.simplify.hypersimp
+
         """
         from ..simplify import hypersimp
         return hypersimp(self, k) is not None
@@ -2267,6 +2307,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         True
         >>> (I*exp_polar(I*pi*2)).is_comparable
         False
+
         """
         is_real = self.is_extended_real
         if is_real is False:
@@ -2274,7 +2315,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         is_number = self.is_number
         if is_number is False:
             return False
-        n, i = self.n(strict=False).as_real_imag()
+        n, i = self.evalf(strict=False).as_real_imag()
         if not i.is_Number or not n.is_Number:
             return False
         if i._prec > 1 or i._prec == -1:
@@ -2329,6 +2370,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> (1/x).series(x, n=8)
         1/x
+
         """
         from .symbol import Dummy, Symbol
         from ..series import Order
@@ -2357,7 +2399,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         if x0 in [oo, -oo]:
             s = self.aseries(x, n)
             if x0 == -oo:
-                return s.subs(x, -x)
+                return s.subs({x: -x})
             return s
 
         # use rep to shift origin to x0 and change sign (if dir is negative)
@@ -2371,21 +2413,21 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 rep = x + x0
                 rep2 = x
                 rep2b = -x0
-            s = self.subs(x, rep).series(x, x0=0, n=n, dir='+', logx=logx)
+            s = self.subs({x: rep}).series(x, x0=0, n=n, dir='+', logx=logx)
             if n is None:  # lseries...
-                return (si.subs(x, rep2 + rep2b) for si in s)  # pragma: no branch
-            return s.subs(x, rep2 + rep2b)
+                return (si.subs({x: rep2 + rep2b}) for si in s)  # pragma: no branch
+            return s.subs({x: rep2 + rep2b})
 
         # from here on it's x0=0 and dir='+' handling
 
         if x.is_positive is x.is_negative is None or x.is_Symbol is not True:
             # replace x with an x that has a positive assumption
             xpos = Dummy('x', positive=True, finite=True)
-            rv = self.subs(x, xpos).series(xpos, x0, n, dir, logx=logx)
+            rv = self.subs({x: xpos}).series(xpos, x0, n, dir, logx=logx)
             if n is None:
-                return (s.subs(xpos, x) for s in rv)
+                return (s.subs({xpos: x}) for s in rv)
             else:
-                return rv.subs(xpos, x)
+                return rv.subs({xpos: x})
 
         if n is not None:  # nseries handling
             s1 = self._eval_nseries(x, n=n, logx=logx)
@@ -2400,7 +2442,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 cur_order = s1.getO()
 
             if (s1 + target_order).removeO() == s1:
-                target_order = S.Zero
+                target_order = Integer(0)
 
             try:
                 return collect(s1.removeO(), x) + target_order
@@ -2444,12 +2486,13 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         This method is slow, because it differentiates n-times. Subclasses can
         redefine it to make it faster by using the "previous_terms".
+
         """
         from .symbol import Dummy
         from ..functions import factorial
         x = sympify(x)
         _x = Dummy('x')
-        return self.subs(x, _x).diff(_x, n).subs(_x, x).subs(x, 0) * x**n / factorial(n)
+        return self.subs({x: _x}).diff(_x, n).subs({_x: x}).subs({x: 0}) * x**n / factorial(n)
 
     def lseries(self, x=None, x0=0, dir='+', logx=None):
         """Wrapper for series yielding an iterator of the terms of the series.
@@ -2470,6 +2513,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         nseries
+
         """
         return self.series(x, x0, n=None, dir=dir, logx=logx)
 
@@ -2570,6 +2614,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         only numbers, the function log, and log(x).  (This also means it
         must not contain log(x(1 + p)), this *has* to be expanded to
         log(x) + log(1 + p) if p.is_positive.)
+
         """
         from .symbol import Dummy
         from ..simplify import collect
@@ -2579,12 +2624,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             return collect(series.removeO(), x) + order
         else:
             p = Dummy('x', positive=True, finite=True)
-            e = self.subs(x, p)
+            e = self.subs({x: p})
             e = e.nseries(p, n, logx=logx)
-            return e.subs(p, x)
+            return e.subs({p: x})
 
     def aseries(self, x, n=6, bound=0, hir=False):
-        """Returns asymptotic expansion for "self". See [3]_
+        """Returns asymptotic expansion for "self".
 
         This is equivalent to ``self.series(x, oo, n)``
 
@@ -2618,7 +2663,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         =====
 
         This algorithm is directly induced from the limit computational algorithm
-        provided by Gruntz. It majorly uses the mrv and rewrite sub-routines.
+        provided by Gruntz :cite:`Gruntz1996limits`, p.90. It majorly uses the mrv and rewrite sub-routines.
         The overall idea of this algorithm is first to look for the most
         rapidly varying subexpression w of a given expression f and then expands f
         in a series in w. Then same thing is recursively done on the leading coefficient
@@ -2627,9 +2672,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         References
         ==========
 
-        .. [1] A New Algorithm for Computing Asymptotic Series - Dominik Gruntz
-        .. [2] Gruntz thesis - p90
-        .. [3] https//en.wikipedia.org/wiki/Asymptotic_expansion
+        * https://en.wikipedia.org/wiki/Asymptotic_expansion
+
         """
         from . import Dummy
         from ..series.gruntz import mrv, rewrite
@@ -2638,11 +2682,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         if x.is_positive is x.is_negative is None:
             xpos = Dummy('x', positive=True, finite=True)
-            return self.subs(x, xpos).aseries(xpos, n, bound, hir).subs(xpos, x)
+            return self.subs({x: xpos}).aseries(xpos, n, bound, hir).subs({xpos: x})
 
         omega = mrv(self, x)
         if x in omega:
-            s = self.subs(x, exp(x)).aseries(x, n, bound, hir).subs(x, log(x))
+            s = self.subs({x: exp(x)}).aseries(x, n, bound, hir).subs({x: log(x)})
             if s.getO():
                 o = Order(1/x**n, (x, oo))
                 return s + o
@@ -2657,18 +2701,18 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             a = self.exp
             s = a.aseries(x, n, bound=bound)
             s = s.func(*[t.removeO() for t in s.args])
-            rep = exp(s.subs(x, 1/x).as_leading_term(x).subs(x, 1/x))
+            rep = exp(s.subs({x: 1/x}).as_leading_term(x).subs({x: 1/x}))
             f = exp(self.exp - rep.exp)/d
             logw = log(1/rep)
 
         s = f.series(d, 0, n)
         # Hierarchical series: break after first recursion
         if hir:
-            return s.subs(d, exp(logw))
+            return s.subs({d: exp(logw)})
 
         o = s.getO()
         terms = sorted(Add.make_args(s.removeO()), key=lambda i: int(i.as_coeff_exponent(d)[1]))
-        s = S.Zero
+        s = Integer(0)
         gotO = False
 
         for t in terms:
@@ -2683,19 +2727,19 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             else:
                 s += t
         if not o or gotO:
-            return s.subs(d, exp(logw))
+            return s.subs({d: exp(logw)})
         else:
-            return (s + o).subs(d, exp(logw))
+            return (s + o).subs({d: exp(logw)})
 
     def limit(self, x, xlim, dir='+'):
-        """ Compute limit x->xlim.
-        """
+        """Compute limit x->xlim."""
         from ..series.limits import limit
         return limit(self, x, xlim, dir)
 
     def compute_leading_term(self, x, logx=None):
         """as_leading_term is only allowed for results of .series()
         This is a wrapper to compute a series first.
+
         """
         from .symbol import Dummy
         from ..functions import log
@@ -2706,7 +2750,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             t = t.cancel()
 
             is_zero = t.equals(0)
-            if is_zero is True:
+            if is_zero:
                 continue
             elif is_zero is False:
                 break
@@ -2714,7 +2758,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 raise NotImplementedError("Zero-decision problem for %s" % t)
 
         if logx is None:
-            t = t.subs(d, log(x))
+            t = t.subs({d: log(x)})
 
         return t.as_leading_term(x)
 
@@ -2732,6 +2776,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         1
         >>> (1/x**2 + x + x**2).as_leading_term(x)
         x**(-2)
+
         """
         from ..simplify import powsimp
         if len(symbols) > 1:
@@ -2766,15 +2811,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 return c, e
         if s.has(x):
             s = s.simplify()
-        return s, S.Zero
+        return s, Integer(0)
 
     def as_coeff_Mul(self, rational=False):
         """Efficiently extract the coefficient of a product."""
-        return S.One, self
+        return Integer(1), self
 
     def as_coeff_Add(self, rational=False):
         """Efficiently extract the coefficient of a summation."""
-        return S.Zero, self
+        return Integer(0), self
 
     @property
     def canonical_variables(self):
@@ -2789,6 +2834,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> Lambda(x, 2*x).canonical_variables
         {x: 0_}
+
         """
         from . import Symbol
         try:
@@ -2806,7 +2852,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     ###################################################################################
 
     def diff(self, *symbols, **kwargs):
-        """Alias for :func:`~diofant.core.function.diff`. """
+        """Alias for :func:`~diofant.core.function.diff`."""
         from .function import diff
         return diff(self, *symbols, **kwargs)
 
@@ -2828,6 +2874,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         Returns ``(expr, hit)``, where expr is the (possibly) expanded
         ``expr`` and ``hit`` is ``True`` if ``expr`` was truly expanded and
         ``False`` otherwise.
+
         """
         hit = False
         # XXX: Hack to support non-Basic args
@@ -2859,6 +2906,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         ========
 
         diofant.core.function.expand
+
         """
         from ..simplify.radsimp import fraction
 
@@ -2894,7 +2942,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         # TODO: Smarter heuristics
 
         def _expand_hint_key(hint):
-            """Make multinomial come before mul"""
+            """Make multinomial come before mul."""
             if hint == 'mul':
                 return 'mulz'
             return hint
@@ -2945,69 +2993,69 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     ###########################################################################
 
     def integrate(self, *args, **kwargs):
-        """See the integrate function in diofant.integrals"""
+        """See the integrate function in diofant.integrals."""
         from ..integrals import integrate
         return integrate(self, *args, **kwargs)
 
     def simplify(self, ratio=1.7, measure=None):
-        """See the simplify function in diofant.simplify"""
+        """See the simplify function in diofant.simplify."""
         from ..simplify import simplify
         from .function import count_ops
         measure = measure or count_ops
         return simplify(self, ratio, measure)
 
     def nsimplify(self, constants=[], tolerance=None, full=False):
-        """See the nsimplify function in diofant.simplify"""
+        """See the nsimplify function in diofant.simplify."""
         from ..simplify import nsimplify
         return nsimplify(self, constants, tolerance, full)
 
     def collect(self, syms, func=None, evaluate=True, exact=False, distribute_order_term=True):
-        """See the collect function in diofant.simplify"""
+        """See the collect function in diofant.simplify."""
         from ..simplify import collect
         return collect(self, syms, func, evaluate, exact, distribute_order_term)
 
     def together(self, *args, **kwargs):
-        """See the together function in diofant.polys"""
+        """See the together function in diofant.polys."""
         from ..polys import together
         return together(self, *args, **kwargs)
 
     def apart(self, x=None, **args):
-        """See the apart function in diofant.polys"""
+        """See the apart function in diofant.polys."""
         from ..polys import apart
         return apart(self, x, **args)
 
     def ratsimp(self):
-        """See the ratsimp function in diofant.simplify"""
+        """See the ratsimp function in diofant.simplify."""
         from ..simplify import ratsimp
         return ratsimp(self)
 
     def trigsimp(self, **args):
-        """See the trigsimp function in diofant.simplify"""
+        """See the trigsimp function in diofant.simplify."""
         from ..simplify import trigsimp
         return trigsimp(self, **args)
 
     def radsimp(self, **kwargs):
-        """See the radsimp function in diofant.simplify"""
+        """See the radsimp function in diofant.simplify."""
         from ..simplify import radsimp
         return radsimp(self, **kwargs)
 
     def powsimp(self, **args):
-        """See the powsimp function in diofant.simplify"""
+        """See the powsimp function in diofant.simplify."""
         from ..simplify import powsimp
         return powsimp(self, **args)
 
     def combsimp(self):
-        """See the combsimp function in diofant.simplify"""
+        """See the combsimp function in diofant.simplify."""
         from ..simplify import combsimp
         return combsimp(self)
 
     def factor(self, *gens, **args):
-        """See the factor() function in diofant.polys.polytools"""
+        """See the factor() function in diofant.polys.polytools."""
         from ..polys import factor
         return factor(self, *gens, **args)
 
     def cancel(self, *gens, **args):
-        """See the cancel function in diofant.polys"""
+        """See the cancel function in diofant.polys."""
         from ..polys import cancel
         return cancel(self, *gens, **args)
 
@@ -3020,6 +3068,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         diofant.core.numbers.mod_inverse
         diofant.polys.polytools.invert
+
         """
         from ..polys.polytools import invert
         from .numbers import mod_inverse
@@ -3070,6 +3119,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         True
         >>> isinstance((1 + 3*I).round(), Add)
         True
+
         """
         from .numbers import Float
         x = self
@@ -3094,10 +3144,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         mag = Pow(10, p)  # magnitude needed to bring digit p to units place
         xwas = x
         x += 1/(2*mag)  # add the half for rounding
-        i10 = 10*mag*x.n((dps if dps is not None else digits_needed) + 1, strict=False)
+        i10 = 10*mag*x.evalf((dps if dps is not None else digits_needed) + 1, strict=False)
         if i10.is_negative:
             x = xwas - 1/(2*mag)  # should have gone the other way
-            i10 = 10*mag*x.n((dps if dps is not None else digits_needed) + 1, strict=False)
+            i10 = 10*mag*x.evalf((dps if dps is not None else digits_needed) + 1, strict=False)
             rv = -(Integer(-i10)//10)
         else:
             rv = Integer(i10)//10
@@ -3121,6 +3171,7 @@ class AtomicExpr(Atom, Expr):
 
     For example: Symbol, Number, Rational, Integer, ...
     But not: Add, Mul, Pow, ...
+
     """
 
     is_number = False
@@ -3128,8 +3179,8 @@ class AtomicExpr(Atom, Expr):
 
     def _eval_derivative(self, s):
         if self == s:
-            return S.One
-        return S.Zero
+            return Integer(1)
+        return Integer(0)
 
     def _eval_is_polynomial(self, syms):
         return True
@@ -3156,16 +3207,17 @@ def _mag(x):
     -1
     >>> _mag(Float(1234))
     4
+
     """
     from math import log10, ceil, log
     from .numbers import Float
-    xpos = abs(x.n(strict=False))
+    xpos = abs(x.evalf(strict=False))
     if not xpos:
-        return S.Zero
+        return Integer(0)
     try:
-        mag_first_dig = int(ceil(log10(xpos)))
+        mag_first_dig = ceil(log10(xpos))
     except (ValueError, OverflowError):
-        mag_first_dig = int(ceil(Float(mpf_log(xpos._mpf_, 53))/log(10)))
+        mag_first_dig = ceil(Float(mpf_log(xpos._mpf_, 53))/log(10))
     # check that we aren't off by 1
     if (xpos/10**mag_first_dig) >= 1:
         assert 1 <= (xpos/10**mag_first_dig) < 10
@@ -3173,8 +3225,8 @@ def _mag(x):
     return mag_first_dig
 
 
-from .mul import Mul
 from .add import Add
+from .mul import Mul
 from .power import Pow
 from .function import Function, expand_mul
 from .mod import Mod

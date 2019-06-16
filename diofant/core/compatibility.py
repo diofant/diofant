@@ -20,6 +20,7 @@ class NotIterable:
     Use this as mixin when creating a class which is not supposed to return
     true when iterable() is called on its instances. I.e. avoid infinite loop
     when calling e.g. list() on the instance
+
     """
 
     pass
@@ -62,6 +63,7 @@ def iterable(i, exclude=(str, dict, NotIterable)):
     True
     >>> iterable("no", exclude=str)
     False
+
     """
     try:
         iter(i)
@@ -106,6 +108,7 @@ def is_sequence(i, include=None):
     False
     >>> is_sequence(generator, include=(str, GeneratorType))
     True
+
     """
     return (hasattr(i, '__getitem__') and
             iterable(i) or
@@ -133,6 +136,7 @@ def as_int(n):
     Traceback (most recent call last):
     ...
     ValueError: ... is not an integer
+
     """
     try:
         result = int(n)
@@ -179,7 +183,7 @@ def default_sort_key(item, order=None):
         (0, ()), (), 1), 1)
     >>> default_sort_key('1')
     ((0, 0, 'str'), (1, ('1',)), ((1, 0, 'Number'), (0, ()), (), 1), 1)
-    >>> default_sort_key(S.One)
+    >>> default_sort_key(Integer(1))
     ((1, 0, 'Number'), (0, ()), (), 1)
     >>> default_sort_key(2)
     ((1, 0, 'Number'), (0, ()), (), 2)
@@ -255,10 +259,10 @@ def default_sort_key(item, order=None):
     ordered
     diofant.core.expr.Expr.as_ordered_factors
     diofant.core.expr.Expr.as_ordered_terms
+
     """
-    from . import S, Basic
+    from . import Integer, Basic
     from .sympify import sympify, SympifyError
-    from .compatibility import iterable
 
     if isinstance(item, Basic):
         return item.sort_key(order=order)
@@ -298,7 +302,7 @@ def default_sort_key(item, order=None):
         cls_index, args = 0, (1, (str(item),))
 
     return (cls_index, 0, item.__class__.__name__
-            ), args, S.One.sort_key(), S.One
+            ), args, Integer(1).sort_key(), Integer(1)
 
 
 def _nodes(e):
@@ -307,6 +311,7 @@ def _nodes(e):
     for Basic objects is the number of Basic nodes in the expression tree
     but for other objects is 1 (unless the object is an iterable or dict
     for which the sum of nodes is returned).
+
     """
     from .basic import Basic
 
@@ -389,6 +394,7 @@ def ordered(seq, keys=None, default=True, warn=False):
     there were several criteria used to define the sort order, then this
     function would be good at returning that quickly if the first group
     of candidates is small relative to the number of items being processed.
+
     """
     d = defaultdict(list)
     if keys:
@@ -425,7 +431,7 @@ def ordered(seq, keys=None, default=True, warn=False):
 
 GROUND_TYPES = os.getenv('DIOFANT_GROUND_TYPES', 'auto').lower()
 
-gmpy = import_module('gmpy2', min_module_version='2.0.0',
+gmpy = import_module('gmpy2', min_module_version='2.1.0',
                      module_version_attr='version',
                      module_version_attr_call_args=())
 if gmpy:
@@ -443,12 +449,6 @@ if GROUND_TYPES == 'gmpy' and not HAS_GMPY:
     from warnings import warn
     warn("gmpy library is not installed, switching to 'python' ground types")
     GROUND_TYPES = 'python'
-
-# DIOFANT_INTS is a tuple containing the base types for valid integer types.
-DIOFANT_INTS = (int,)
-
-if GROUND_TYPES == 'gmpy':
-    DIOFANT_INTS += (type(gmpy.mpz(0)),)
 
 if GROUND_TYPES == 'python':
     os.environ['MPMATH_NOGMPY'] = 'yes'

@@ -100,6 +100,7 @@ class PartComponent:
     partition of the multiset.
 
     Knuth's psuedocode makes c, u, and v separate arrays.
+
     """
 
     def __init__(self):
@@ -118,11 +119,11 @@ class PartComponent:
         self.v = 0
 
     def __repr__(self):
-        """for debug/algorithm animation purposes"""
+        """for debug/algorithm animation purposes."""
         return 'c:%d u:%d v:%d' % (self.c, self.u, self.v)
 
     def __eq__(self, other):
-        """Define  value oriented equality, which is useful for testers"""
+        """Define  value oriented equality, which is useful for testers."""
         return (isinstance(other, self.__class__) and
                 self.c == other.c and
                 self.u == other.u and
@@ -195,6 +196,7 @@ def multiset_partitions_taocp(multiplicities):
     [['a', 'b'], ['b']],
     [['a'], ['b', 'b']],
     [['a'], ['b'], ['b']]]
+
     """
 
     # Important variables.
@@ -311,6 +313,7 @@ def factoring_visitor(state, primes):
     >>> states = multiset_partitions_taocp(multiplicities)
     >>> list(factoring_visitor(state, primes) for state in states)
     [[24], [8, 3], [12, 2], [4, 6], [4, 2, 3], [6, 2, 2], [2, 2, 2, 3]]
+
     """
     f, lpart, pstack = state
     factoring = []
@@ -336,6 +339,7 @@ def list_visitor(state, components):
     >>> s = next(states)
     >>> list_visitor(s, [1, 2, 3])  # for multiset '1 2 2 3
     [[1, 2, 2], [3]]
+
     """
     f, lpart, pstack = state
 
@@ -355,7 +359,7 @@ class MultisetPartitionTraverser():
     Has methods to ``enumerate`` and ``count`` the partitions of a multiset.
 
     This implements a refactored and extended version of Knuth's algorithm
-    7.1.2.5M [AOCP]_.
+    7.1.2.5M.
 
     The enumeration methods of this class are generators and return
     data structures which can be interpreted by the same visitor
@@ -378,17 +382,17 @@ class MultisetPartitionTraverser():
     References
     ==========
 
-    .. [AOCP] Algorithm 7.1.2.5M in Volume 4A, Combinatoral Algorithms,
-           Part 1, of The Art of Computer Programming, by Donald Knuth.
+    * Algorithm 7.1.2.5M in Volume 4A, Combinatoral Algorithms,
+      Part 1, of The Art of Computer Programming, by Donald Knuth.
 
-    .. [Factorisatio] On a Problem of Oppenheim concerning
-           "Factorisatio Numerorum" E. R. Canfield, Paul Erdős, Carl
-           Pomerance, JOURNAL OF NUMBER THEORY, Vol. 17, No. 1. August
-           1983.  See section 7 for a description of an algorithm
-           similar to Knuth's.
+    * On a Problem of Oppenheim concerning
+      "Factorisatio Numerorum" E. R. Canfield, Paul Erdős, Carl
+      Pomerance, JOURNAL OF NUMBER THEORY, Vol. 17, No. 1. August
+      1983.  See section 7 for a description of an algorithm
+      similar to Knuth's.
 
-    .. [Yorgey] Generating Multiset Partitions, Brent Yorgey, The
-           Monad.Reader, Issue 8, September 2007.
+    * Generating Multiset Partitions, Brent Yorgey, The
+      Monad.Reader, Issue 8, September 2007.
 
     """
 
@@ -404,6 +408,7 @@ class MultisetPartitionTraverser():
     def db_trace(self, msg):
         """Useful for usderstanding/debugging the algorithms.  Not
         generally activated in end-user code.
+
         """
         if self.debug:
             letters = 'abcdefghijklmnopqrstuvwxyz'
@@ -420,6 +425,7 @@ class MultisetPartitionTraverser():
 
         This is called from the enumeration/counting routines, so
         there is no need to call it separately.
+
         """
 
         num_components = len(multiplicities)
@@ -525,6 +531,7 @@ class MultisetPartitionTraverser():
            it exists) once decrementing has finished.  If this has
            ``v == 0``, this next component will push the expansion over the
            limit by 1, so fail.
+
         """
         if self.lpart >= ub - 1:
             self.p1 += 1  # increment to keep track of usefulness of tests
@@ -649,6 +656,7 @@ class MultisetPartitionTraverser():
         methods.  If returns success, part has been decremented at
         least once, but perhaps by quite a bit more if needed to meet
         the lb constraint.
+
         """
 
         # Constraint in the range case is just enforcing both the
@@ -674,6 +682,7 @@ class MultisetPartitionTraverser():
 
         This call does nothing (and returns False) if the current top
         part has no unallocated multiplicity.
+
         """
         j = self.f[self.lpart]  # base of current top part
         k = self.f[self.lpart + 1]  # ub of current; potential base of next
@@ -790,13 +799,14 @@ class MultisetPartitionTraverser():
         [['a', 'b'], ['a', 'b']]]
 
         The implementation is based, in part, on the answer given to
-        exercise 69, in Knuth [AOCP]_.
+        exercise 69, in Knuth.
 
         References
         ==========
 
-        .. [AOCP] Algorithm 7.1.2.5M in Volume 4A, Combinatoral Algorithms,
-           Part 1, of The Art of Computer Programming, by Donald Knuth.
+        * Algorithm 7.1.2.5M in Volume 4A, Combinatoral Algorithms,
+          Part 1, of The Art of Computer Programming, by Donald Knuth.
+
         """
 
         # Keep track of iterations which do not yield a partition.
@@ -1008,7 +1018,7 @@ class MultisetPartitionTraverser():
         Notes
         =====
 
-        If one looks at the workings of Knuth's algorithm M [AOCP]_, it
+        If one looks at the workings of Knuth's algorithm M, it
         can be viewed as a traversal of a binary tree of parts.  A
         part has (up to) two children, the left child resulting from
         the spread operation, and the right child from the decrement
@@ -1051,8 +1061,9 @@ class MultisetPartitionTraverser():
         References
         ==========
 
-        .. [AOCP] Algorithm 7.1.2.5M in Volume 4A, Combinatoral Algorithms,
-           Part 1, of The Art of Computer Programming, by Donald Knuth.
+        * Algorithm 7.1.2.5M in Volume 4A, Combinatoral Algorithms,
+          Part 1, of The Art of Computer Programming, by Donald Knuth.
+
         """
         # number of partitions so far in the enumeration
         self.pcount = 0

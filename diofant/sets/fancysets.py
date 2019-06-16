@@ -1,7 +1,8 @@
-from ..core import Basic, Integer, Lambda, Rational, S, oo
+from ..core import Basic, Expr, Integer, Lambda, Rational, S, oo
 from ..core.compatibility import as_int
 from ..core.singleton import Singleton
 from ..core.sympify import converter, sympify
+from ..logic import false, true
 from ..utilities.iterables import cantor_product
 from .sets import EmptySet, FiniteSet, Intersection, Interval, Set
 
@@ -25,18 +26,19 @@ class Naturals(Set, metaclass=Singleton):
     2
     >>> next(iterable)
     3
-    >>> pprint(S.Naturals.intersection(Interval(0, 10)))
-    {1, 2, ..., 10}
+    >>> S.Naturals.intersection(Interval(0, 10))
+    Range(1, 11, 1)
 
     See Also
     ========
 
     Naturals0 : non-negative integers
     Integers : also includes negative integers
+
     """
 
     is_iterable = True
-    _inf = S.One
+    _inf = Integer(1)
     _sup = oo
 
     def _intersection(self, other):
@@ -45,10 +47,12 @@ class Naturals(Set, metaclass=Singleton):
                 S.Integers, other, Interval(self._inf, oo, False, True))
 
     def _contains(self, other):
-        if other.is_positive and other.is_integer:
-            return S.true
+        if not isinstance(other, Expr):
+            return false
+        elif other.is_positive and other.is_integer:
+            return true
         elif other.is_integer is False or other.is_positive is False:
-            return S.false
+            return false
 
     def __iter__(self):
         i = self._inf
@@ -72,15 +76,18 @@ class Naturals0(Naturals):
 
     Naturals : positive integers
     Integers : also includes the negative integers
+
     """
 
-    _inf = S.Zero
+    _inf = Integer(0)
 
     def _contains(self, other):
-        if other.is_integer and other.is_nonnegative:
-            return S.true
+        if not isinstance(other, Expr):
+            return false
+        elif other.is_integer and other.is_nonnegative:
+            return true
         elif other.is_integer is False or other.is_nonnegative is False:
-            return S.false
+            return false
 
 
 class Integers(Set, metaclass=Singleton):
@@ -104,14 +111,15 @@ class Integers(Set, metaclass=Singleton):
     >>> next(iterable)
     2
 
-    >>> pprint(S.Integers.intersection(Interval(-4, 4)))
-    {-4, -3, ..., 4}
+    >>> S.Integers.intersection(Interval(-4, 4))
+    Range(-4, 5, 1)
 
     See Also
     ========
 
     Naturals0 : non-negative integers
     Integers : positive and negative integers and zero
+
     """
 
     is_iterable = True
@@ -125,13 +133,15 @@ class Integers(Set, metaclass=Singleton):
             return s.intersection(other)  # take out endpoints if open interval
 
     def _contains(self, other):
-        if other.is_integer:
-            return S.true
+        if not isinstance(other, Expr):
+            return false
+        elif other.is_integer:
+            return true
         elif other.is_integer is False:
-            return S.false
+            return false
 
     def __iter__(self):
-        yield S.Zero
+        yield Integer(0)
         i = Integer(1)
         while True:
             yield i
@@ -165,20 +175,20 @@ class Integers(Set, metaclass=Singleton):
             expr = -expr
 
         match = expr.match(a*n + b)
-        if match[a] is S.One and match[b].is_integer:
+        if match[a] == 1 and match[b].is_integer:
             expr = expr - match[b]
 
         return ImageSet(Lambda(n, expr), S.Integers)
 
 
 class Rationals(Set, metaclass=Singleton):
-    """The set of all rationals. """
+    """The set of all rationals."""
 
     def _contains(self, other):
         if other.is_rational:
-            return S.true
+            return true
         elif other.is_rational is False:
-            return S.false
+            return false
 
     @property
     def _inf(self):
@@ -214,8 +224,7 @@ class ImageSet(Set):
     Examples
     ========
 
-    >>> N = S.Naturals
-    >>> squares = ImageSet(Lambda(x, x**2), N) # {x**2 for x in N}
+    >>> squares = ImageSet(Lambda(x, x**2), S.Naturals)
     >>> 4 in squares
     True
     >>> 5 in squares
@@ -237,8 +246,9 @@ class ImageSet(Set):
 
     >>> squares.lamda(2)
     4
-    >>> squares.lamda(S.One/2)
+    >>> squares.lamda(Rational(1, 2))
     1/4
+
     """
 
     def __new__(cls, lamda, base_set):
@@ -268,8 +278,8 @@ class ImageSet(Set):
 
         for soln in solns:
             if soln[L.variables[0]] in self.base_set:
-                return S.true
-        return S.false
+                return true
+        return false
 
     @property
     def is_iterable(self):
@@ -289,7 +299,7 @@ class ImageSet(Set):
                 # on the variable name, they are replaced by the dummy variables
                 # below
                 a, b = Dummy('a'), Dummy('b')
-                f, g = f.subs(n, a), g.subs(m, b)
+                f, g = f.subs({n: a}), g.subs({m: b})
                 solns_set = diophantine(f - g)
                 if solns_set == set():
                     return EmptySet()
@@ -300,7 +310,7 @@ class ImageSet(Set):
                     return  # pragma: no cover
 
                 # since 'a' < 'b'
-                return imageset(Lambda(t, f.subs(a, solns[0][0])), S.Integers)
+                return imageset(Lambda(t, f.subs({a: solns[0][0]})), S.Integers)
 
         if other == S.Reals:
             from ..solvers.diophantine import diophantine
@@ -313,7 +323,7 @@ class ImageSet(Set):
             n = self.lamda.variables[0]
 
             n_ = Dummy(n.name, integer=True)
-            f_ = f.subs(n, n_)
+            f_ = f.subs({n: n_})
 
             re, im = map(expand_complex, f_.as_real_imag())
 
@@ -334,14 +344,15 @@ class Range(Set):
     Examples
     ========
 
-    >>> list(Range(5)) # 0 to 5
+    >>> list(Range(5))
     [0, 1, 2, 3, 4]
-    >>> list(Range(10, 15)) # 10 to 15
+    >>> list(Range(10, 15))
     [10, 11, 12, 13, 14]
-    >>> list(Range(10, 20, 2)) # 10 to 20 in steps of 2
+    >>> list(Range(10, 20, 2))
     [10, 12, 14, 16, 18]
-    >>> list(Range(20, 10, -2)) # 20 to 10 backward in steps of 2
+    >>> list(Range(20, 10, -2))
     [12, 14, 16, 18, 20]
+
     """
 
     is_iterable = True
@@ -407,7 +418,7 @@ class Range(Set):
             if inf.is_finite and self.inf.is_finite:
                 off = (inf - self.inf) % self.step
             else:
-                off = S.Zero
+                off = Integer(0)
             if off:
                 inf += self.step - off
 
@@ -424,7 +435,7 @@ class Range(Set):
                 ((self.stop - other)/self.step).is_integer):
             return sympify(other >= self.inf and other <= self.sup, strict=True)
         else:
-            return S.false
+            return false
 
     def __iter__(self):
         if self.start == -oo:

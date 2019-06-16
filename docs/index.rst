@@ -1,8 +1,12 @@
-Welcome to Diofant's documentation!
-===================================
+Diofant's documentation
+=======================
 
-`Diofant <https://diofant.readthedocs.io/en/latest/>`_ is a Python library for symbolic mathematics.
-If you are new to Diofant, start with the :ref:`Tutorial <tutorial>`.
+.. image:: https://mybinder.org/badge_logo.svg
+    :target: https://mybinder.org/v2/gh/diofant/diofant/master
+
+`Diofant <https://diofant.readthedocs.io/en/latest/>`_ is a Python
+library for symbolic mathematics.  If you are new to Diofant, start
+with the :ref:`Tutorial <tutorial>`.
 
 This is the central page for all of Diofant's documentation.
 
@@ -13,11 +17,9 @@ This is the central page for all of Diofant's documentation.
    interactive session:
 
       >>> from diofant import *
-      >>> x, y, z = symbols('x y z')
+      >>> a, b, c, d, x, y, z, t = symbols('a b c d x y z t')
       >>> k, m, n = symbols('k m n', integer=True)
       >>> f, g, h = symbols('f g h', cls=Function)
-
-Contents:
 
 .. toctree::
    :maxdepth: 2
@@ -29,6 +31,7 @@ Contents:
    guide
    aboutus
    release/index
+   sources
 
 
 .. autoprogram:: diofant.__main__:parser

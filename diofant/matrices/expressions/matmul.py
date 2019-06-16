@@ -22,6 +22,7 @@ class MatMul(MatrixExpr):
     >>> C = MatrixSymbol('C', 3, 6)
     >>> MatMul(A, B, C)
     A*B*C
+
     """
 
     is_MatMul = True
@@ -116,7 +117,7 @@ class MatMul(MatrixExpr):
 
 
 def validate(*matrices):
-    """ Checks for valid shapes for args of MatMul """
+    """Checks for valid shapes for args of MatMul."""
     for i in range(len(matrices)-1):
         A, B = matrices[i:i+2]
         if A.cols != B.rows:
@@ -140,30 +141,31 @@ def any_zeros(mul):
 
 
 def merge_explicit(matmul):
-    """ Merge explicit MatrixBase arguments
+    """Merge explicit MatrixBase arguments
 
     >>> A = MatrixSymbol('A', 2, 2)
     >>> B = Matrix([[1, 1], [1, 1]])
     >>> C = Matrix([[1, 2], [3, 4]])
     >>> X = MatMul(A, B, C)
     >>> pprint(X, use_unicode=False)
-    A*[1  1]*[1  2]
-      [    ] [    ]
+      [1  1] [1  2]
+    A*[    ]*[    ]
       [1  1] [3  4]
     >>> pprint(merge_explicit(X), use_unicode=False)
-    A*[4  6]
-      [    ]
+      [4  6]
+    A*[    ]
       [4  6]
 
     >>> X = MatMul(B, A, C)
     >>> pprint(X, use_unicode=False)
-    [1  1]*A*[1  2]
-    [    ]   [    ]
+    [1  1]   [1  2]
+    [    ]*A*[    ]
     [1  1]   [3  4]
     >>> pprint(merge_explicit(X), use_unicode=False)
-    [1  1]*A*[1  2]
-    [    ]   [    ]
+    [1  1]   [1  2]
+    [    ]*A*[    ]
     [1  1]   [3  4]
+
     """
     if not any(isinstance(arg, MatrixBase) for arg in matmul.args):
         return matmul
@@ -181,7 +183,7 @@ def merge_explicit(matmul):
 
 
 def xxinv(mul):
-    """ X * X.inverse() -> Identity """
+    """X * X.inverse() -> Identity."""
     factor, matrices = mul.as_coeff_matrices()
     for i, (X, Y) in enumerate(zip(matrices[:-1], matrices[1:])):
         try:
@@ -202,9 +204,10 @@ def remove_ids(mul):
     as args.
 
     See Also
-    --------
+    ========
 
     diofant.core.strategies.rm_id
+
     """
     # Separate Exprs from MatrixExprs in args
     factor, mmul = mul.as_coeff_mmul()
@@ -230,7 +233,7 @@ canonicalize = exhaust(typed({MatMul: do_one(rules)}))
 
 
 def only_squares(*matrices):
-    """ factor matrices only if they are square """
+    """factor matrices only if they are square."""
     if matrices[0].rows != matrices[-1].cols:
         raise RuntimeError("Invalid matrices being multiplied")
     out = []

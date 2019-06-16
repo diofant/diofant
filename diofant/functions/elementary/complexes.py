@@ -1,5 +1,5 @@
-from ...core import (Add, Derivative, Dummy, E, Eq, Expr, Function, I, Mul,
-                     Rational, S, Symbol, Tuple, factor_terms, nan, oo, pi,
+from ...core import (Add, Derivative, Dummy, E, Eq, Expr, Function, I, Integer,
+                     Mul, Rational, Symbol, Tuple, factor_terms, nan, oo, pi,
                      sympify, zoo)
 from ...core.function import AppliedUndef, ArgumentIndexError
 from ...logic.boolalg import BooleanAtom
@@ -38,6 +38,7 @@ class re(Function):
     ========
 
     diofant.functions.elementary.complexes.im
+
     """
 
     is_extended_real = True
@@ -50,7 +51,7 @@ class re(Function):
         elif arg.is_extended_real:
             return arg
         elif arg.is_imaginary or (I*arg).is_extended_real:
-            return S.Zero
+            return Integer(0)
         elif arg.is_Function and isinstance(arg, conjugate):
             return re(arg.args[0])
         else:
@@ -81,10 +82,8 @@ class re(Function):
                 return cls(a) - im(b) + c
 
     def as_real_imag(self, deep=True, **hints):
-        """
-        Returns the real number with a zero imaginary part.
-        """
-        return self, S.Zero
+        """Returns the real number with a zero imaginary part."""
+        return self, Integer(0)
 
     def _eval_derivative(self, x):
         if x.is_extended_real or self.args[0].is_extended_real:
@@ -123,6 +122,7 @@ class im(Function):
     ========
 
     diofant.functions.elementary.complexes.re
+
     """
 
     is_extended_real = True
@@ -133,7 +133,7 @@ class im(Function):
         if arg is zoo:
             return nan
         elif arg.is_extended_real:
-            return S.Zero
+            return Integer(0)
         elif arg.is_imaginary or (I*arg).is_extended_real:
             return -I * arg
         elif arg.is_Function and isinstance(arg, conjugate):
@@ -173,8 +173,9 @@ class im(Function):
 
         >>> im(2 + 3*I).as_real_imag()
         (3, 0)
+
         """
-        return self, S.Zero
+        return self, Integer(0)
 
     def _eval_derivative(self, x):
         if x.is_extended_real or self.args[0].is_extended_real:
@@ -229,6 +230,7 @@ class sign(Function):
 
     diofant.functions.elementary.complexes.Abs
     diofant.functions.elementary.complexes.conjugate
+
     """
 
     is_complex = True
@@ -254,20 +256,20 @@ class sign(Function):
                     s *= sign(a)
                 else:
                     unk.append(a)
-            if c is S.One and len(unk) == len(args):
+            if c == 1 and len(unk) == len(args):
                 return
             return s * cls(arg._new_rawargs(*unk))
         if arg.is_zero:  # it may be an Expr that is zero
-            return S.Zero
+            return Integer(0)
         if arg.is_positive:
-            return S.One
+            return Integer(1)
         if arg.is_negative:
-            return S.NegativeOne
+            return Integer(-1)
         if arg.is_Function:
             if isinstance(arg, sign):
                 return arg
         if arg.is_imaginary:
-            if arg.is_Pow and arg.exp is S.Half:
+            if arg.is_Pow and arg.exp == Rational(1, 2):
                 # we catch this because non-trivial sqrt args are not expanded
                 # e.g. sqrt(1-sqrt(2)) --x-->  to I*sqrt(sqrt(2) - 1)
                 return I
@@ -277,7 +279,7 @@ class sign(Function):
 
     def _eval_Abs(self):
         if self.args[0].is_nonzero:
-            return S.One
+            return Integer(1)
 
     def _eval_conjugate(self):
         return sign(conjugate(self.args[0]))
@@ -316,7 +318,7 @@ class sign(Function):
             other.is_integer and
             other.is_even
         ):
-            return S.One
+            return Integer(1)
 
     def _eval_rewrite_as_Piecewise(self, arg):
         if arg.is_extended_real:
@@ -335,7 +337,7 @@ class sign(Function):
         if direction.is_extended_real:
             return self.func(direction)
         else:
-            return super(sign, self)._eval_nseries(x, n, logx)
+            return super()._eval_nseries(x, n, logx)
 
 
 class Abs(Function):
@@ -359,12 +361,12 @@ class Abs(Function):
     Abs(x)
 
     Note that the Python built-in will return either an Expr or int depending on
-    the argument::
+    the argument:
 
-        >>> type(abs(-1))
-        <... 'int'>
-        >>> type(abs(S.NegativeOne))
-        <class 'diofant.core.numbers.One'>
+    >>> type(abs(-1))
+    <... 'int'>
+    >>> type(abs(Integer(-1)))
+    <class 'diofant.core.numbers.One'>
 
     Abs will always return a diofant object.
 
@@ -373,6 +375,7 @@ class Abs(Function):
 
     diofant.functions.elementary.complexes.sign
     diofant.functions.elementary.complexes.conjugate
+
     """
 
     is_extended_real = True
@@ -388,6 +391,7 @@ class Abs(Function):
 
         >>> Abs(-x).fdiff()
         sign(x)
+
         """
         if argindex == 1:
             return sign(self.args[0])
@@ -415,7 +419,7 @@ class Abs(Function):
                 else:
                     known.append(tnew)
             known = Mul(*known)
-            unk = cls(Mul(*unk), evaluate=False) if unk else S.One
+            unk = cls(Mul(*unk), evaluate=False) if unk else Integer(1)
             return known*unk
         if arg.is_Pow:
             base, exponent = arg.as_base_exp()
@@ -423,9 +427,9 @@ class Abs(Function):
                 if exponent.is_integer:
                     if exponent.is_even:
                         return arg
-                    if base is S.NegativeOne:
-                        return S.One
-                    if isinstance(base, cls) and exponent is S.NegativeOne:
+                    if base == -1:
+                        return Integer(1)
+                    if isinstance(base, cls) and exponent == -1:
                         return arg
                     return Abs(base)**exponent
                 if base.is_nonnegative:
@@ -433,7 +437,7 @@ class Abs(Function):
                 if base.is_negative:
                     return (-base)**re(exponent)*exp(-pi*im(exponent))
         if arg.is_zero:  # it may be an Expr that is zero
-            return S.Zero
+            return Integer(0)
         if arg.is_nonnegative:
             return arg
         if arg.is_nonpositive:
@@ -449,6 +453,8 @@ class Abs(Function):
                 if all(a.is_extended_real or a.is_imaginary or (I*a).is_extended_real for a in arg.args):
                     from ...core import expand_mul
                     return sqrt(expand_mul(arg*arg.conjugate()))
+        if arg is zoo:
+            return oo
         if arg.is_extended_real is not True and arg.is_imaginary is False:
             from ...core import expand_mul
             return sqrt(expand_mul(arg*arg.conjugate()))
@@ -486,7 +492,7 @@ class Abs(Function):
         if self.args[0].is_extended_real and exponent.is_integer:
             if exponent.is_even:
                 return self.args[0]**exponent
-            elif exponent is not S.NegativeOne and exponent.is_Integer:
+            elif exponent != -1 and exponent.is_Integer:
                 return self.args[0]**(exponent - 1)*self
         return
 
@@ -536,6 +542,7 @@ class arg(Function):
     pi/2
     >>> arg(sqrt(2) + I*sqrt(2))
     pi/4
+
     """
 
     is_real = True
@@ -551,7 +558,7 @@ class arg(Function):
         else:
             arg_ = arg
         if arg_.is_zero:
-            return S.Zero
+            return Integer(0)
         x, y = re(arg_), im(arg_)
         rv = atan2(y, x)
         if rv.is_number and not rv.atoms(AppliedUndef):
@@ -572,7 +579,7 @@ class arg(Function):
 class conjugate(Function):
     """Returns the complex conjugate of an argument.
 
-    In mathematics, the complex conjugate [1]_ of a complex number
+    In mathematics, the complex conjugate of a complex number
     is given by changing the sign of the imaginary part.
 
     Thus, the conjugate of the complex number
@@ -595,7 +602,8 @@ class conjugate(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Complex_conjugation
+    * https://en.wikipedia.org/wiki/Complex_conjugation
+
     """
 
     @classmethod
@@ -627,9 +635,7 @@ class conjugate(Function):
 
 
 class transpose(Function):
-    """
-    Linear map transposition.
-    """
+    """Linear map transposition."""
 
     @classmethod
     def eval(cls, arg):
@@ -648,9 +654,7 @@ class transpose(Function):
 
 
 class adjoint(Function):
-    """
-    Conjugate transpose or Hermite conjugation.
-    """
+    """Conjugate transpose or Hermite conjugation."""
 
     @classmethod
     def eval(cls, arg):
@@ -700,6 +704,7 @@ class polar_lift(Function):
 
     diofant.functions.elementary.exponential.exp_polar
     diofant.functions.elementary.complexes.periodic_argument
+
     """
 
     is_polar = True
@@ -741,7 +746,7 @@ class polar_lift(Function):
                 return Mul(*positive)*exp_polar(0)
 
     def _eval_evalf(self, prec):
-        """ Careful! any evalf of polar numbers is flaky """
+        """Careful! any evalf of polar numbers is flaky."""
         return self.args[0]._eval_evalf(prec)
 
     def _eval_Abs(self):
@@ -771,6 +776,7 @@ class periodic_argument(Function):
     diofant.functions.elementary.exponential.exp_polar
     diofant.functions.elementary.complexes.polar_lift : Lift argument to the Riemann surface of the logarithm
     diofant.functions.elementary.complexes.principal_branch
+
     """
 
     @classmethod
@@ -856,6 +862,7 @@ class principal_branch(Function):
     diofant.functions.elementary.exponential.exp_polar
     diofant.functions.elementary.complexes.polar_lift : Lift argument to the Riemann surface of the logarithm
     diofant.functions.elementary.complexes.periodic_argument
+
     """
 
     is_polar = True
@@ -903,7 +910,7 @@ class principal_branch(Function):
             if arg == 0:
                 return abs(c)*principal_branch(Mul(*m), period)
             return principal_branch(exp_polar(I*arg)*Mul(*m), period)*abs(c)
-        if arg.is_number and ((abs(arg) < period/2) is S.true or arg == period/2) \
+        if arg.is_number and ((abs(arg) - period/2).is_negative or arg == period/2) \
                 and m == ():
             return exp_polar(arg*I)*abs(c)
 
@@ -992,6 +999,7 @@ def polarify(eq, subs=True, lift=False):
 
     >>> polarify(1 + sin((1 + I)*x))
     (sin(_x*polar_lift(1 + I)) + 1, {_x: x})
+
     """
     if lift:
         subs = False
@@ -1049,6 +1057,7 @@ def unpolarify(eq, subs={}, exponents_only=False):
     2 + I
     >>> unpolarify(sin(polar_lift(I + 7)))
     sin(7 + I)
+
     """
     if isinstance(eq, bool):
         return eq

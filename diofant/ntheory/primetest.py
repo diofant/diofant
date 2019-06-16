@@ -51,12 +51,13 @@ def is_square(n, prep=True):
     References
     ==========
 
-    .. [1] http://mersenneforum.org/showpost.php?p=110896
+    * https://mersenneforum.org/showpost.php?p=110896
 
     See Also
     ========
 
     diofant.core.power.integer_nthroot
+
     """
     if prep:
         n = as_int(n)
@@ -78,6 +79,7 @@ def _test(n, base, s, t):
     """Miller-Rabin strong pseudoprime test for one base.
     Return False if n is definitely composite, True if n is
     probably prime, with a probability greater than 3/4.
+
     """
     # do the Fermat test
     b = pow(base, t, n)
@@ -101,10 +103,10 @@ def mr(n, bases):
     References
     ==========
 
-    .. [1] Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
-           A Computational Perspective", Springer, 2nd edition, 135-138
-    .. [2] A list of thresholds and the bases they require are here:
-           https//en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test#Deterministic_variants_of_the_test
+    * Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
+      A Computational Perspective", Springer, 2nd edition, 135-138
+    * A list of thresholds and the bases they require are here:
+      https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test#Deterministic_variants
 
     Examples
     ========
@@ -113,6 +115,7 @@ def mr(n, bases):
     False
     >>> mr(479001599, [31, 73])
     True
+
     """
     from .factor_ import trailing
     from ..domains import ZZ
@@ -154,11 +157,12 @@ def _mr_safe(n):
     References
     ==========
 
-    .. [1] http://primes.utm.edu/prove/prove2_3.html
-    .. [2] http://www.trnicely.net/misc/mpzspsp.html
-    .. [3] https//en.wikipedia.org/wiki/Miller-Rabin_primality_test#Accuracy_of_the_test
-    .. [4] http://primes.utm.edu/glossary/xpage/Pseudoprime.html
-    .. [5] http://uucode.com/obf/dalbec/alg.html#sprp
+    * https://primes.utm.edu/prove/prove2_3.html
+    * http://www.trnicely.net/misc/mpzspsp.html
+    * https://en.wikipedia.org/wiki/Miller-Rabin_primality_test#Accuracy_of_the_test
+    * https://primes.utm.edu/glossary/xpage/Pseudoprime.html
+    * http://uucode.com/obf/dalbec/alg.html#sprp
+
     """
 
     if n < 1373653:
@@ -226,6 +230,7 @@ def isprime(n):
     diofant.ntheory.generate.primerange : Generates all primes in a given range
     diofant.ntheory.generate.primepi : Return the number of primes less than or equal to n
     diofant.ntheory.generate.prime : Return the nth prime
+
     """
     n = int(n)
     if n < 2:
@@ -277,6 +282,7 @@ def _mr_safe_helper(_s):
         This info tag should then be appended to any new mr_safe line
         that is added so someone can easily see whether that line satisfies
         the requirements of mr_safe (see docstring there for details).
+
         """
         from .factor_ import factorint, trailing
 

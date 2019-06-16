@@ -11,10 +11,6 @@ class Trace(Expr):
     >>> Trace(A)
     Trace(A)
 
-    See Also
-    ========
-
-    trace
     """
 
     is_Trace = True
@@ -70,5 +66,6 @@ def trace(expr):
     ========
 
     Trace
+
     """
     return Trace(expr).doit()

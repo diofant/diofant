@@ -32,7 +32,7 @@ sub_dict = {
     'pi': re.compile('%pi'),
     'E': re.compile('%e'),
     'I': re.compile('%i'),
-    '**': re.compile('\^'),
+    '**': re.compile(r'\^'),
     'oo': re.compile(r'\binf\b'),
     '-oo': re.compile(r'\bminf\b'),
     "'-'": re.compile(r'\bminus\b'),

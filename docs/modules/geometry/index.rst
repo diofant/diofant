@@ -90,7 +90,7 @@ Intersection of medians
 An in-depth example: Pappus' Hexagon Theorem
 --------------------------------------------
 
-From Wikipedia ([WikiPappus]_):
+From `Wikipedia <https://en.wikipedia.org/wiki/Pappus's_hexagon_theorem>`_):
 
   Given one set of collinear points `A`, `B`, `C`, and another set of collinear
   points `a`, `b`, `c`, then the intersection points `X`, `Y`, `Z` of line pairs `Ab` and
@@ -105,7 +105,7 @@ From Wikipedia ([WikiPappus]_):
     ...    """Take an arbitrary point and make it a fixed point."""
     ...    t = Symbol('t', extended_real=True)
     ...    ap = l.arbitrary_point()
-    ...    return Point(ap.x.subs(t, val), ap.y.subs(t, val))
+    ...    return Point(ap.x.subs({t: val}), ap.y.subs({t: val}))
     ...
     >>> p11 = subs_point(l1, 5)
     >>> p12 = subs_point(l1, 6)
@@ -128,13 +128,6 @@ From Wikipedia ([WikiPappus]_):
     >>>
     >>> Point.is_collinear(pp1, pp2, pp3)
     True
-
-References
-~~~~~~~~~~
-
-.. [WikiPappus] "Pappus's Hexagon Theorem" Wikipedia, the Free Encyclopedia.
-        Web. 26 Apr. 2013.
-        <https//en.wikipedia.org/wiki/Pappus's_hexagon_theorem>
 
 Miscellaneous Notes
 -------------------

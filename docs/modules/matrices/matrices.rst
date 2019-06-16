@@ -245,12 +245,12 @@ All the standard arithmetic operations are supported:
 
 As well as some useful vector operations:
 
-    >>> M.row_del(0)
+    >>> del M[0, :]
     >>> M
     [4  5  6]
     [       ]
     [7  8  9]
-    >>> M.col_del(1)
+    >>> del M[:, 1]
     >>> M
     [4  6]
     [    ]
@@ -265,9 +265,7 @@ As well as some useful vector operations:
     >>> v1.dot(v3)
     0
 
-Recall that the ``row_del()`` and ``col_del()`` operations don't return a value - they
-simply change the matrix object. We can also ''glue'' together matrices of the
-appropriate size:
+We can also ''glue'' together matrices of the appropriate size:
 
     >>> M1 = eye(3)
     >>> M2 = zeros(3, 4)
@@ -332,14 +330,14 @@ One more useful matrix-wide entry application function is the substitution funct
     [0  x  0]
     [       ]
     [0  0  x]
-    >>> M.subs(x, 4)
+    >>> M.subs({x: 4})
     [4  0  0]
     [       ]
     [0  4  0]
     [       ]
     [0  0  4]
     >>> y = Symbol('y')
-    >>> M.subs(x, y)
+    >>> M.subs({x: y})
     [y  0  0]
     [       ]
     [0  y  0]

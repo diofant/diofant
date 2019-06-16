@@ -33,21 +33,22 @@ Examples
 35/6
 >>> simplify(P(Z>1)) # Probability of Z being greater than 1
 -erf(sqrt(2)/2)/2 + 1/2
+
 """
 
-from .rv_interface import (cdf, covariance, density, dependent, E, given,  # noqa: F401
-                           independent, P, pspace, random_symbols, sample,
-                           sample_iter, skewness, std, variance, where,
-                           correlation, moment, cmoment, smoment,
-                           sampling_density)
-from .frv_types import (Bernoulli, Binomial, Coin, Die, DiscreteUniform,  # noqa: F401
+from .crv_types import (Arcsin, Benini, Beta, BetaPrime, Cauchy, Chi,
+                        ChiNoncentral, ChiSquared, ContinuousRV, Dagum, Erlang,
+                        Exponential, FDistribution, FisherZ, Frechet, Gamma,
+                        GammaInverse, Kumaraswamy, Laplace, Logistic,
+                        LogNormal, Maxwell, Nakagami, Normal, Pareto,
+                        QuadraticU, RaisedCosine, Rayleigh, StudentT,
+                        Triangular, Uniform, UniformSum, VonMises, Weibull,
+                        WignerSemicircle)
+from .drv_types import Geometric, Poisson
+from .frv_types import (Bernoulli, Binomial, Coin, Die, DiscreteUniform,
                         FiniteRV, Hypergeometric, Rademacher)
-from .crv_types import (ContinuousRV, Arcsin, Benini, Beta, BetaPrime,  # noqa: F401
-                        Cauchy, Chi, ChiNoncentral, ChiSquared,
-                        Dagum, Erlang, Exponential, FDistribution, FisherZ,
-                        Frechet, Gamma, GammaInverse, Kumaraswamy, Laplace,
-                        Logistic, LogNormal, Maxwell, Nakagami, Normal,
-                        Pareto, QuadraticU, RaisedCosine, Rayleigh,
-                        StudentT, Triangular, Uniform, UniformSum,
-                        VonMises, Weibull, WignerSemicircle)
-from .drv_types import Geometric, Poisson  # noqa: F401
+from .rv_interface import (E, P, cdf, cmoment, correlation, covariance,
+                           density, dependent, given, independent, moment,
+                           pspace, random_symbols, sample, sample_iter,
+                           sampling_density, skewness, smoment, std, variance,
+                           where)

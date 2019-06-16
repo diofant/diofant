@@ -17,19 +17,21 @@ class Mod(Function):
     x**2%y
     >>> _.subs({x: 5, y: 6})
     1
+
     """
 
     @classmethod
     def eval(cls, p, q):
         from .add import Add
         from .mul import Mul
-        from .singleton import S
+        from .numbers import Integer
         from .exprtools import gcd_terms
         from ..polys.polytools import gcd
 
         def doit(p, q):
             """Try to return p % q if both are numbers or +/-p is known
             to be less than or equal q.
+
             """
 
             if p.is_infinite or q.is_infinite:
@@ -37,16 +39,16 @@ class Mod(Function):
             if (p == q or p == -q or
                     p.is_Pow and p.exp.is_Integer and p.base == q or
                     p.is_integer and q == 1):
-                return S.Zero
+                return Integer(0)
 
             if q.is_Number:
                 if p.is_Number:
                     return p % q
                 if q == 2:
                     if p.is_even:
-                        return S.Zero
+                        return Integer(0)
                     elif p.is_odd:
-                        return S.One
+                        return Integer(1)
 
             # by ratio
             r = p/q

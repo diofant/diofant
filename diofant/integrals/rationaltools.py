@@ -1,6 +1,6 @@
 """This module implements tools for integrating rational functions. """
 
-from ..core import Dummy, I, Integer, Lambda, S, Symbol, symbols
+from ..core import Dummy, I, Integer, Lambda, Symbol, symbols
 from ..domains import ZZ
 from ..functions import atan, log
 from ..polys import Poly, RootSum, cancel, resultant, roots
@@ -21,8 +21,8 @@ def ratint(f, x, **flags):
     References
     ==========
 
-    .. [Bro05] M. Bronstein, Symbolic Integration I: Transcendental
-       Functions, Second Edition, Springer-Verlag, 2005, pp. 35-70
+    * M. Bronstein, Symbolic Integration I: Transcendental
+      Functions, Second Edition, Springer-Verlag, 2005, pp. 35-70
 
     See Also
     ========
@@ -30,6 +30,7 @@ def ratint(f, x, **flags):
     diofant.integrals.integrals.Integral.doit
     diofant.integrals.rationaltools.ratint_logpart
     diofant.integrals.rationaltools.ratint_ratpart
+
     """
     if type(f) is not tuple:
         p, q = f.as_numer_denom()
@@ -119,8 +120,8 @@ def ratint_ratpart(f, g, x):
 
     >>> ratint_ratpart(Poly(1, x), Poly(x + 1, x), x)
     (0, 1/(x + 1))
-    >>> ratint_ratpart(Poly(1, x, domain='EX'),
-    ...                Poly(x**2 + y**2, x, domain='EX'), x)
+    >>> ratint_ratpart(Poly(1, x, domain=EX),
+    ...                Poly(x**2 + y**2, x, domain=EX), x)
     (0, 1/(x**2 + y**2))
     >>> ratint_ratpart(Poly(36, x),
     ...                Poly(x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2, x), x)
@@ -131,6 +132,7 @@ def ratint_ratpart(f, g, x):
 
     diofant.integrals.rationaltools.ratint
     diofant.integrals.rationaltools.ratint_logpart
+
     """
     f = Poly(f, x)
     g = Poly(g, x)
@@ -183,13 +185,14 @@ def ratint_logpart(f, g, x, t=None):
       Poly(3*_t**2 + 1, _t, domain='ZZ'))]
     >>> ratint_logpart(Poly(12, x), Poly(x**2 - x - 2, x), x)
     [(Poly(x - 3*_t/8 - 1/2, x, domain='QQ[_t]'),
-      Poly(-_t**2 + 16, _t, domain='ZZ'))]
+      Poly(_t**2 - 16, _t, domain='ZZ'))]
 
     See Also
     ========
 
     diofant.integrals.rationaltools.ratint
     diofant.integrals.rationaltools.ratint_ratpart
+
     """
     f, g = Poly(f, x), Poly(g, x)
 
@@ -207,7 +210,7 @@ def ratint_logpart(f, g, x, t=None):
         R_map[r.degree()] = r
 
     def _include_sign(c, sqf):
-        if (c < 0) is S.true:
+        if c.is_negative:
             h, k = sqf[0]
             sqf[0] = h*c, k
 
@@ -223,7 +226,7 @@ def ratint_logpart(f, g, x, t=None):
             h = R_map[i]
             h_lc = Poly(h.LC(), t, field=True)
 
-            c, h_lc_sqf = h_lc.sqf_list(all=True)
+            c, h_lc_sqf = h_lc.sqf_list()
             _include_sign(c, h_lc_sqf)
 
             for a, j in h_lc_sqf:
@@ -264,6 +267,7 @@ def log_to_atan(f, g):
     ========
 
     log_to_real
+
     """
     if f.degree() < g.degree():
         f, g = -g, f
@@ -307,6 +311,7 @@ def log_to_real(h, q, x, t):
     ========
 
     log_to_atan
+
     """
     u, v = symbols('u,v', cls=Dummy)
 
@@ -321,38 +326,47 @@ def log_to_real(h, q, x, t):
 
     R = Poly(resultant(c, d, v), u)
 
-    R_u = roots(R, filter='R')
-    R_q = roots(q, filter='R')
+    R_u_all = roots(R)
+    R_q_all = roots(q)
 
-    if len(R_u) != R.count_roots() or len(R_q) != q.count_roots():
+    if sum(R_u_all.values()) < R.degree() or sum(R_q_all.values()) < q.degree():
         return
+
+    R_u = {k: v for k, v in R_u_all.items() if k.is_extended_real}
+    R_q = {k: v for k, v in R_q_all.items() if k.is_extended_real}
 
     result = Integer(0)
 
     for r_u in R_u:
-        C = Poly(c.subs({u: r_u}), v)
-        R_v = roots(C, filter='R')
+        C = Poly(c.subs({u: r_u}), v, extension=False)
 
-        if len(R_v) != C.count_roots():
+        R_v_all = roots(C)
+        if sum(R_v_all.values()) < C.degree():
             return
+        R_v = {k: v for k, v in R_v_all.items() if k.is_extended_real is not False}
 
+        R_v_paired = []  # take one from each pair of conjugate roots
         for r_v in R_v:
-            if not r_v.is_positive:
-                continue
+            if all(_ not in R_v_paired for _ in [+r_v, -r_v]):
+                if r_v.could_extract_minus_sign():
+                    R_v_paired.append(-r_v)
+                elif not r_v.is_zero:
+                    R_v_paired.append(r_v)
 
+        for r_v in R_v_paired:
             D = d.subs({u: r_u, v: r_v})
 
             if D.evalf(2, chop=True) != 0:
                 continue
 
-            A = Poly(a.subs({u: r_u, v: r_v}), x)
-            B = Poly(b.subs({u: r_u, v: r_v}), x)
+            A = Poly(a.subs({u: r_u, v: r_v}), x, extension=False)
+            B = Poly(b.subs({u: r_u, v: r_v}), x, extension=False)
 
             AB = (A**2 + B**2).as_expr()
 
             result += r_u*log(AB) + r_v*log_to_atan(A, B)
 
     for r in R_q:
-        result += r*log(h.as_expr().subs(t, r))
+        result += r*log(h.as_expr().subs({t: r}))
 
     return result

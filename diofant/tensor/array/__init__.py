@@ -16,7 +16,6 @@ element values after the object has been constructed.
 
 Array construction can detect the shape of nested lists and tuples:
 
->>> from diofant.tensor.array import Array
 >>> a1 = Array([[1, 2], [3, 4], [5, 6]])
 >>> a1
 [[1, 2], [3, 4], [5, 6]]
@@ -94,8 +93,6 @@ creates the combined array `P = A \otimes B` defined as
 
 It is available through ``tensorproduct(...)``:
 
->>> from diofant.tensor.array import Array, tensorproduct
->>> from diofant.abc import t
 >>> A = Array([x, y, z, t])
 >>> B = Array([1, 2, 3, 4])
 >>> tensorproduct(A, B)
@@ -126,7 +123,6 @@ positions `a` and `b` means
 Remember that Python indexing is zero starting, to contract the a-th and b-th
 axes it is therefore necessary to specify `a-1` and `b-1`
 
->>> from diofant.tensor.array import tensorcontraction
 >>> C = Array([[x, y], [z, t]])
 
 The matrix trace is equivalent to the contraction of a rank-2 array:
@@ -174,12 +170,8 @@ the derivative of arrays will return a new array `B` defined by
 
 `B_{j_1,\ldots,j_M,i_1,\ldots,i_N} := \frac{\partial A_{i_1,\ldots,i_N}}{\partial X_{j_1,\ldots,j_M}}`
 
-The function ``derive_by_array`` performs such an operation:
-
->>> from diofant.tensor.array import Array, tensorcontraction, derive_by_array
->>> from diofant.abc import t
-
-With scalars, it behaves exactly as the ordinary derivative:
+The function ``derive_by_array`` performs such an operation.  With scalars,
+it behaves exactly as the ordinary derivative:
 
 >>> derive_by_array(sin(x*y), x)
 y*cos(x*y)
@@ -200,13 +192,16 @@ Contraction of the resulting array: `\sum_m \frac{\partial A^m}{\partial x^m}`
 
 >>> tensorcontraction(ax, (0, 1))
 E**x + z*cos(y*z)
+
 """
 
-from .dense_ndim_array import MutableDenseNDimArray, ImmutableDenseNDimArray  # noqa: F401
-from .sparse_ndim_array import MutableSparseNDimArray, ImmutableSparseNDimArray  # noqa: F401
-from .arrayop import derive_by_array, permutedims, tensorproduct, tensorcontraction  # noqa: F401
+from .arrayop import (derive_by_array, permutedims, tensorcontraction,
+                      tensorproduct)
+from .dense_ndim_array import (DenseNDimArray, ImmutableDenseNDimArray,
+                               MutableDenseNDimArray)
+from .ndim_array import NDimArray
+from .sparse_ndim_array import (ImmutableSparseNDimArray,
+                                MutableSparseNDimArray, SparseNDimArray)
+
 
 Array = ImmutableDenseNDimArray
-NDimArray = ImmutableDenseNDimArray
-DenseNDimArray = ImmutableDenseNDimArray
-SparseNDimArray = ImmutableSparseNDimArray

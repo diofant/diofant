@@ -3,11 +3,12 @@ Integer factorization
 """
 
 import math
+import numbers
 import random
 
-from ..core import (Function, Mul, Pow, Rational, S, igcd, integer_nthroot,
+from ..core import (Function, Integer, Mul, Pow, Rational, integer_nthroot,
                     sympify)
-from ..core.compatibility import DIOFANT_INTS, as_int
+from ..core.compatibility import as_int
 from ..core.evalf import bitcount
 from .generate import nextprime, primerange, sieve
 from .primetest import isprime
@@ -34,6 +35,7 @@ def smoothness(n):
     ========
 
     factorint, smoothness_p
+
     """
 
     if n == 1:
@@ -100,6 +102,7 @@ def smoothness_p(n, m=-1, power=0, visual=None):
     ========
 
     factorint, smoothness
+
     """
     from ..utilities import flatten
 
@@ -156,6 +159,7 @@ def trailing(n):
     7
     >>> trailing(63)
     0
+
     """
     n = int(n)
     if not n:
@@ -190,16 +194,17 @@ def multiplicity(p, n):
     [0, 1, 2, 3, 3]
     >>> multiplicity(3, Rational(1, 9))
     -2
+
     """
     try:
         p, n = as_int(p), as_int(n)
     except ValueError:
-        if all(isinstance(i, (DIOFANT_INTS, Rational)) for i in (p, n)):
+        if all(isinstance(i, (numbers.Integral, Rational)) for i in (p, n)):
             p, n = Rational(p), Rational(n)
             if p.denominator == 1:
                 if n.numerator == 1:
                     return -multiplicity(p.numerator, n.denominator)
-                return S.Zero
+                return Integer(0)
             elif p.numerator == 1:
                 return multiplicity(p.denominator, n.denominator)
             else:
@@ -264,6 +269,7 @@ def perfect_power(n, candidates=None, big=True, factor=True):
     (2, 4)
     >>> perfect_power(16, big = False)
     (4, 2)
+
     """
     n = int(n)
     if n < 3:
@@ -308,7 +314,7 @@ def perfect_power(n, candidates=None, big=True, factor=True):
                         r, m = m
                         # adjust the two exponents so the bases can
                         # be combined
-                        g = igcd(m, e)
+                        g = math.gcd(m, e)
                         if g == 1:
                             return False
                         m //= g
@@ -338,8 +344,7 @@ def perfect_power(n, candidates=None, big=True, factor=True):
                 if m is not False:
                     r, e = m[0], e*m[1]
             return int(r), e
-    else:
-        return False
+    return False
 
 
 def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
@@ -423,8 +428,9 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     References
     ==========
 
-    .. [1] Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
-           A Computational Perspective", Springer, 2nd edition, 229-231
+    * Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
+      A Computational Perspective", Springer, 2nd edition, 229-231
+
     """
     n = int(n)
     if n < 5:
@@ -443,7 +449,7 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
             j += 1
             U = F(U)
             V = F(F(V))  # V is 2x further along than U
-            g = igcd(U - V, n)
+            g = math.gcd(U - V, n)
             if g == 1:
                 continue
             if g == n:
@@ -506,8 +512,8 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
         >>> for i in range(2, 256):
         ...     M = ilcm(M, i)
         ...
-        >>> {igcd(pow(a, M, n) - 1, n) for a in range(2, 256) if
-        ...  igcd(pow(a, M, n) - 1, n) != n}
+        >>> {math.gcd(pow(a, M, n) - 1, n) for a in range(2, 256) if
+        ...  math.gcd(pow(a, M, n) - 1, n) != n}
         {1009}
 
     But does aM % d for every divisor of n give 1?
@@ -574,10 +580,11 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     References
     ==========
 
-    .. [1] Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
-           A Computational Perspective", Springer, 2nd edition, 236-238
-    .. [2] https://web.archive.org/web/20150716201437/http://modular.math.washington.edu/edu/2007/spring/ent/ent-html/node81.html
-    .. [3] https://web.archive.org/web/20170830055619/http://www.cs.toronto.edu/~yuvalf/Factorization.pdf
+    * Richard Crandall & Carl Pomerance (2005), "Prime Numbers:
+      A Computational Perspective", Springer, 2nd edition, 236-238
+    * https://web.archive.org/web/20150716201437/http://modular.math.washington.edu/edu/2007/spring/ent/ent-html/node81.html
+    * https://web.archive.org/web/20170830055619/http://www.cs.toronto.edu/~yuvalf/Factorization.pdf
+
     """
 
     n = int(n)
@@ -593,7 +600,7 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
         for p in sieve.primerange(2, B + 1):
             e = int(math.log(B, p))
             aM = pow(aM, pow(p, e), n)
-        g = igcd(aM - 1, n)
+        g = math.gcd(aM - 1, n)
         if 1 < g < n:
             return int(g)
 
@@ -611,6 +618,7 @@ def _trial(factors, n, candidates, verbose=False):
     against all integers given in the sequence ``candidates``
     and updates the dict ``factors`` in-place. Returns the reduced
     value of ``n`` and a flag indicating whether any factors were found.
+
     """
     if verbose:
         factors0 = list(factors)
@@ -632,6 +640,7 @@ def _check_termination(factors, n, limitp1, use_trial, use_rho, use_pm1,
     Helper function for integer factorization. Checks if ``n``
     is a prime or a perfect power, and in those cases updates
     the factorization and raises ``StopIteration``.
+
     """
 
     if verbose:
@@ -684,11 +693,13 @@ def _factorint_small(factors, n, limit, fail_max):
     If factors of n were found they will be in the factors dictionary as
     {factor: multiplicity} and the returned value of n will have had those
     factors removed. The factors dictionary is modified in-place.
+
     """
 
     def done(n, d):
         """return n, d if the sqrt(n) wasn't reached yet, else
         n, 0 indicating that factoring is done.
+
         """
         if d*d <= n:
             return n, d
@@ -904,6 +915,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     ========
 
     smoothness, smoothness_p, divisors
+
     """
     factordict = {}
     if visual and not isinstance(n, Mul) and not isinstance(n, dict):
@@ -932,10 +944,10 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
                   visual is not True and
                   visual is not False):
         if factordict == {}:
-            return S.One
+            return Integer(1)
         if -1 in factordict:
             factordict.pop(-1)
-            args = [S.NegativeOne]
+            args = [Integer(-1)]
         else:
             args = []
         args.extend([Pow(*i, evaluate=False)
@@ -1160,6 +1172,7 @@ def factorrat(rat, limit=None, use_trial=True, use_rho=True, use_pm1=True,
         - ``use_pm1``: Toggle use of Pollard's p-1 method
         - ``verbose``: Toggle detailed printing of progress
         - ``visual``: Toggle product form of output
+
     """
     from collections import defaultdict
     f = factorint(rat.numerator, limit=limit, use_trial=use_trial,
@@ -1178,7 +1191,7 @@ def factorrat(rat, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     else:
         if -1 in f:
             f.pop(-1)
-            args = [S.NegativeOne]
+            args = [Integer(-1)]
         else:
             args = []
         args.extend([Pow(*i, evaluate=False)
@@ -1216,6 +1229,7 @@ def primefactors(n, limit=None, verbose=False):
     ========
 
     divisors
+
     """
     n = int(n)
     factors = sorted(factorint(n, limit=limit, verbose=verbose))
@@ -1275,7 +1289,8 @@ def divisors(n, generator=False):
     References
     ==========
 
-    .. [1] https//stackoverflow.com/questions/1010381/python-factorization
+    * https://stackoverflow.com/questions/1010381/python-factorization
+
     """
 
     n = as_int(abs(n))
@@ -1300,7 +1315,7 @@ def divisor_count(n, modulus=1):
     References
     ==========
 
-    .. [1] https://web.archive.org/web/20130629014824/http://www.mayer.dial.pipex.com:80/maths/formulae.htm
+    * https://web.archive.org/web/20130629014824/http://www.mayer.dial.pipex.com:80/maths/formulae.htm
 
     Examples
     ========
@@ -1312,6 +1327,7 @@ def divisor_count(n, modulus=1):
     ========
 
     factorint, divisors, totient
+
     """
 
     if not modulus:
@@ -1343,13 +1359,13 @@ def _antidivisors(n):
 def antidivisors(n, generator=False):
     r"""Return all antidivisors of n sorted from 1..n by default.
 
-    Antidivisors [1]_ of n are numbers that do not divide n by the largest
+    Antidivisors of n are numbers that do not divide n by the largest
     possible margin.  If generator is True an unordered generator is returned.
 
     References
     ==========
 
-    .. [1] definition is described in http://oeis.org/A066272/a066272a.html
+    * definition is described in http://oeis.org/A066272/a066272a.html
 
     Examples
     ========
@@ -1364,6 +1380,7 @@ def antidivisors(n, generator=False):
     ========
 
     primefactors, factorint, divisors, divisor_count, antidivisor_count
+
     """
 
     n = as_int(abs(n))
@@ -1376,12 +1393,12 @@ def antidivisors(n, generator=False):
 
 
 def antidivisor_count(n):
-    """Return the number of antidivisors [1]_ of ``n``.
+    """Return the number of antidivisors of ``n``.
 
     References
     ==========
 
-    .. [1] formula from https://oeis.org/A066272
+    * formula from https://oeis.org/A066272
 
     Examples
     ========
@@ -1395,6 +1412,7 @@ def antidivisor_count(n):
     ========
 
     factorint, divisors, antidivisors, divisor_count, totient
+
     """
 
     n = as_int(abs(n))
@@ -1416,6 +1434,7 @@ class totient(Function):
     ========
 
     divisor_count
+
     """
 
     @classmethod
@@ -1465,7 +1484,7 @@ class divisor_sigma(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Divisor_function
+    * https://en.wikipedia.org/wiki/Divisor_function
 
     Examples
     ========
@@ -1483,6 +1502,7 @@ class divisor_sigma(Function):
     ========
 
     divisor_count, totient, divisors, factorint
+
     """
 
     @classmethod
@@ -1527,7 +1547,7 @@ def core(n, t=2):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Square-free_integer#Squarefree_core
+    * https://en.wikipedia.org/wiki/Square-free_integer#Squarefree_core
 
     Examples
     ========
@@ -1546,6 +1566,7 @@ def core(n, t=2):
     ========
 
     factorint, diofant.solvers.diophantine.square_factor
+
     """
 
     n = as_int(n)

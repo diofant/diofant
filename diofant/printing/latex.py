@@ -2,12 +2,13 @@
 A Printer which converts an expression into its LaTeX equivalent.
 """
 
+import itertools
 import re
 
 import mpmath.libmp as mlib
 from mpmath.libmp import prec_to_dps
 
-from ..core import Add, Mod, S, Symbol, oo
+from ..core import Add, Integer, Mod, Symbol, oo
 from ..core.alphabets import greeks
 from ..core.compatibility import default_sort_key
 from ..core.function import _coeff_isneg
@@ -31,18 +32,29 @@ accepted_latex_functions = ['arcsin', 'arccos', 'arctan', 'sin', 'cos', 'tan',
 tex_greek_dictionary = {
     'Alpha': 'A',
     'Beta': 'B',
+    'Gamma': r'\Gamma',
+    'Delta': r'\Delta',
     'Epsilon': 'E',
     'Zeta': 'Z',
     'Eta': 'H',
+    'Theta': r'\Theta',
     'Iota': 'I',
     'Kappa': 'K',
+    'Lambda': r'\Lambda',
     'Mu': 'M',
     'Nu': 'N',
+    'Xi': r'\Xi',
     'omicron': 'o',
     'Omicron': 'O',
+    'Pi': r'\Pi',
     'Rho': 'P',
+    'Sigma': r'\Sigma',
     'Tau': 'T',
+    'Upsilon': r'\Upsilon',
+    'Phi': r'\Phi',
     'Chi': 'X',
+    'Psi': r'\Psi',
+    'Omega': r'\Omega',
     'lamda': r'\lambda',
     'Lamda': r'\Lambda',
     'khi': r'\chi',
@@ -173,7 +185,6 @@ class LatexPrinter(Printer):
         specifies that this expr is the last to appear in a Mul.
         ``first=True`` specifies that this expr is the first to appear in a Mul.
         """
-        from ..functions import Piecewise
         from ..concrete import Product, Sum
         from ..integrals import Integral
 
@@ -185,11 +196,13 @@ class LatexPrinter(Printer):
             if not first and _coeff_isneg(expr):
                 return True
 
+        if expr.is_Piecewise:
+            return True
+
         if expr.has(Mod):
             return True
 
-        if (not last and any(expr.has(x) for
-                             x in (Integral, Piecewise, Product, Sum))):
+        if not last and any(expr.has(x) for x in (Integral, Product, Sum)):
             return True
 
         return False
@@ -329,7 +342,7 @@ class LatexPrinter(Printer):
                     last_term_tex = term_tex
                 return _tex
 
-        if denom is S.One:
+        if denom == 1:
             # use the original expression here, since fraction() may have
             # altered it when producing numer and denom
             tex += convert(expr)
@@ -352,8 +365,8 @@ class LatexPrinter(Printer):
                         % (sdenom, separator, snumer)
                 elif numer.is_Mul:
                     # split a long numerator
-                    a = S.One
-                    b = S.One
+                    a = Integer(1)
+                    b = Integer(1)
                     for x in numer.args:
                         if self._needs_mul_brackets(x, last=False) or \
                                 len(convert(a*x).split()) > ratio*ldenom or \
@@ -513,8 +526,8 @@ class LatexPrinter(Printer):
                 else:
                     multiplicity.append((current, i))
                     current, i = symbol, 1
-            else:
-                multiplicity.append((current, i))
+
+            multiplicity.append((current, i))
 
             for x, i in multiplicity:
                 if i == 1:
@@ -530,7 +543,7 @@ class LatexPrinter(Printer):
             return r"%s %s" % (tex, self._print(expr.expr))
 
     def _print_Subs(self, subs):
-        expr, old, new = subs.args
+        expr, old, new = subs.expr, subs.variables, subs.point
         latex_expr = self._print(expr)
         latex_old = (self._print(e) for e in old)
         latex_new = (self._print(e) for e in new)  # pragma: no branch
@@ -631,7 +644,7 @@ class LatexPrinter(Printer):
         # If the function is an inverse trig function, handle the style
         if func in inv_trig_table:
             if inv_trig_style == "abbreviated":
-                func = func
+                pass
             elif inv_trig_style == "full":
                 func = "arc" + func[1:]
             else:  # inv_trig_style == "power":
@@ -1290,7 +1303,7 @@ class LatexPrinter(Printer):
         if not isinstance(mat, MatrixSymbol):
             return r"\left(%s\right)^\dag" % self._print(mat)
         else:
-            return "%s^\dag" % self._print(mat)
+            return r"%s^\dag" % self._print(mat)
 
     def _print_MatAdd(self, expr):
         terms = list(expr.args)
@@ -1333,7 +1346,7 @@ class LatexPrinter(Printer):
             if isinstance(x, (Add, MatAdd, MatMul)):
                 return r"\left(%s\right)" % self._print(x)
             return self._print(x)
-        return ' \circ '.join(map(parens, expr.args))
+        return r' \circ '.join(map(parens, expr.args))
 
     def _print_MatPow(self, expr):
         base, exp = expr.base, expr.exp
@@ -1348,6 +1361,55 @@ class LatexPrinter(Printer):
 
     def _print_Identity(self, I):
         return r"\mathbb{I}"
+
+    def _print_NDimArray(self, expr):
+        mat_str = self._settings['mat_str']
+        if mat_str is None:
+            if self._settings['mode'] == 'inline':
+                mat_str = 'smallmatrix'
+            else:
+                if (expr.rank() == 0) or (expr.shape[-1] <= 10):
+                    mat_str = 'matrix'
+                else:
+                    mat_str = 'array'
+        block_str = r'\begin{%MATSTR%}%s\end{%MATSTR%}'
+        block_str = block_str.replace('%MATSTR%', mat_str)
+        if self._settings['mat_delim']:
+            left_delim = self._settings['mat_delim']
+            right_delim = self._delim_dict[left_delim]
+            block_str = r'\left' + left_delim + block_str + r'\right' + right_delim
+
+        if expr.rank() == 0:
+            return block_str % ""
+
+        level_str = [[]] + [[] for i in range(expr.rank())]
+        shape_ranges = [list(range(i)) for i in expr.shape]
+        for outer_i in itertools.product(*shape_ranges):
+            level_str[-1].append(self._print(expr[outer_i]))
+            even = True
+            for back_outer_i in range(expr.rank()-1, -1, -1):
+                if len(level_str[back_outer_i+1]) < expr.shape[back_outer_i]:
+                    break
+                if even:
+                    level_str[back_outer_i].append(r" & ".join(level_str[back_outer_i+1]))
+                else:
+                    level_str[back_outer_i].append(block_str % (r"\\".join(level_str[back_outer_i+1])))
+                    if len(level_str[back_outer_i+1]) == 1:
+                        level_str[back_outer_i][-1] = r"\left[" + level_str[back_outer_i][-1] + r"\right]"
+                even = not even
+                level_str[back_outer_i+1] = []
+
+        out_str = level_str[0][0]
+
+        if expr.rank() % 2 == 1:
+            out_str = block_str % out_str
+
+        return out_str
+
+    _print_ImmutableDenseNDimArray = _print_NDimArray
+    _print_ImmutableSparseNDimArray = _print_NDimArray
+    _print_MutableDenseNDimArray = _print_NDimArray
+    _print_MutableSparseNDimArray = _print_NDimArray
 
     def _print_tuple(self, expr):
         return r"\left ( %s\right )" % \
@@ -1372,6 +1434,33 @@ class LatexPrinter(Printer):
 
     def _print_Dict(self, expr):
         return self._print_dict(expr)
+
+    def _print_Infinity(self, expr):
+        return r"\infty"
+
+    def _print_NegativeInfinity(self, expr):
+        return r"-\infty"
+
+    def _print_NaN(self, expr):
+        return r"\mathrm{NaN}"
+
+    def _print_ComplexInfinity(self, expr):
+        return r"\tilde{\infty}"
+
+    def _print_Exp1(self, expr):
+        return r"e"
+
+    def _print_Pi(self, expr):
+        return r"\pi"
+
+    def _print_GoldenRatio(self, expr):
+        return r"\phi"
+
+    def _print_EulerGamma(self, expr):
+        return r"\gamma"
+
+    def _print_ImaginaryUnit(self, expr):
+        return r"i"
 
     def _print_DiracDelta(self, expr, exp=None):
         if len(expr.args) == 1 or expr.args[1] == 0:
@@ -1433,7 +1522,7 @@ class LatexPrinter(Printer):
     def _print_Range(self, s):
         if len(s) > 4:
             it = iter(s)
-            printset = next(it), next(it), '\ldots', s._last_element
+            printset = next(it), next(it), r'\ldots', s._last_element
         else:
             printset = tuple(s)
 
@@ -1495,7 +1584,7 @@ class LatexPrinter(Printer):
         return r"%s \in %s" % tuple(self._print(a) for a in e.args)
 
     def _print_FiniteField(self, expr):
-        return r"\mathbb{F}_{%s}" % expr.mod
+        return r"\mathbb{F}_{%s}" % expr.order
 
     def _print_IntegerRing(self, expr):
         return r"\mathbb{Z}"
@@ -1644,7 +1733,9 @@ def translate(s):
     tex = tex_greek_dictionary.get(s)
     if tex:
         return tex
-    elif s.lower() in greek_letters_set or s in other_symbols:
+    elif s.lower() in greek_letters_set:
+        return "\\" + s.lower()
+    elif s in other_symbols:
         return "\\" + s
     else:
         # Process modifiers, if any, and recurse

@@ -79,6 +79,8 @@ class Mul(AssocOp):
 
     is_Mul = True
 
+    identity = S.One
+
     @classmethod
     def flatten(cls, seq):
         """Return commutative, noncommutative and order arguments by
@@ -115,7 +117,7 @@ class Mul(AssocOp):
                 (x*sqrt(y))**(3/2)
                 >>> a*a*a
                 x*sqrt(y)*sqrt(x*sqrt(y))
-                >>> _.subs(a.base, z).subs(z, a.base)
+                >>> _.subs({a.base: z}).subs({z: a.base})
                 (x*sqrt(y))**(3/2)
 
               -  If more than two terms are being multiplied then all the
@@ -150,6 +152,7 @@ class Mul(AssocOp):
             details of Mul and flatten which may change at any time. Therefore,
             you should only consider them when your code is highly performance
             sensitive.
+
         """
         from ..series.order import Order
 
@@ -588,7 +591,7 @@ class Mul(AssocOp):
 
     @classmethod
     def class_key(cls):
-        """Nice order of classes. """
+        """Nice order of classes."""
         return 4, 0, cls.__name__
 
     def _eval_evalf(self, prec):
@@ -621,6 +624,7 @@ class Mul(AssocOp):
 
         >>> (3*x*y).as_two_terms()
         (3, x*y)
+
         """
         args = self.args
 
@@ -637,6 +641,7 @@ class Mul(AssocOp):
         ========
 
         diofant.core.expr.Expr.as_coeff_mul
+
         """
         rational = kwargs.pop('rational', True)
         if deps:
@@ -657,7 +662,7 @@ class Mul(AssocOp):
         return S.One, args
 
     def as_coeff_Mul(self, rational=False):
-        """Efficiently extract the coefficient of a product. """
+        """Efficiently extract the coefficient of a product."""
         coeff, args = self.args[0], self.args[1:]
 
         if coeff.is_Number:
@@ -677,6 +682,7 @@ class Mul(AssocOp):
         ========
 
         diofant.core.expr.Expr.as_real_imag
+
         """
         from .function import expand_mul
         from ..functions import Abs, im, re
@@ -736,6 +742,7 @@ class Mul(AssocOp):
         Helper function for _eval_expand_mul.
 
         sums must be a list of instances of Basic.
+
         """
 
         L = len(sums)
@@ -813,6 +820,7 @@ class Mul(AssocOp):
         ========
 
         diofant.core.basic.Basic.matches
+
         """
         expr = sympify(expr)
         if self.is_commutative and expr.is_commutative:
@@ -834,7 +842,7 @@ class Mul(AssocOp):
             a = self.func(*nc1)
             if not isinstance(a, self.func):
                 repl_dict = a._matches(self.func(*nc2), repl_dict)
-            else:  # pragma: no cover
+            else:
                 raise NotImplementedError
         return repl_dict or None
 
@@ -843,6 +851,7 @@ class Mul(AssocOp):
         """
         Returns lhs/rhs, but treats arguments like symbols, so things like
         oo/oo return 1, instead of a nan.
+
         """
         if lhs == rhs:
             return S.One
@@ -878,6 +887,7 @@ class Mul(AssocOp):
         ========
 
         diofant.core.expr.Expr.as_powers_dict
+
         """
         d = defaultdict(int)
         for term in self.args:
@@ -892,6 +902,7 @@ class Mul(AssocOp):
         ========
 
         diofant.core.expr.Expr.as_numer_denom
+
         """
         # don't use _from_args to rebuild the numerators and denominators
         # as the order is not guaranteed to be the same once they have
@@ -906,6 +917,7 @@ class Mul(AssocOp):
         ========
 
         diofant.core.expr.Expr.as_base_exp
+
         """
         e1 = None
         bases = []
@@ -1078,6 +1090,7 @@ class Mul(AssocOp):
 
             pos * neg * nonpositive -> pos or zero -> None is returned
             pos * neg * nonnegative -> neg or zero -> False is returned
+
         """
 
         sign = 1
@@ -1171,14 +1184,15 @@ class Mul(AssocOp):
 
             commutatives come back as a dictionary {b**e: Rational}
             noncommutatives come back as a list [(b**e, Rational)]
+
             """
 
-            (c, nc) = (defaultdict(int), [])
+            c, nc = defaultdict(int), []
             for a in Mul.make_args(eq):
                 a = powdenest(a)
-                (b, e) = base_exp(a)
+                b, e = base_exp(a)
                 if e is not S.One:
-                    (co, _) = e.as_coeff_mul()
+                    co, _ = e.as_coeff_mul()
                     b = Pow(b, e/co)
                     e = co
                 if a.is_commutative:
@@ -1192,15 +1206,17 @@ class Mul(AssocOp):
             Put rational back with exponent; in general this is not ok, but
             since we took it from the exponent for analysis, it's ok to put
             it back.
+
             """
 
-            (b, e) = base_exp(b)
+            b, e = base_exp(b)
             return Pow(b, e*co)
 
         def ndiv(a, b):
             """if b divides a in an extractive way (like 1/4 divides 1/2
             but not vice versa, and 2/5 does not divide 1/3) then return
             the integer number of times it divides, else return 0.
+
             """
             if not b.denominator % a.denominator or not a.denominator % b.denominator:
                 return int(a/b)
@@ -1237,8 +1253,8 @@ class Mul(AssocOp):
 
         # break self and old into factors
 
-        (c, nc) = breakup(self2)
-        (old_c, old_nc) = breakup(old)
+        c, nc = breakup(self2)
+        old_c, old_nc = breakup(old)
 
         # update the coefficients if we had an extraction
         # e.g. if co_self were 2*(3/35*x)**2 and co_old = 3/5
@@ -1373,7 +1389,7 @@ class Mul(AssocOp):
 
                 failed.extend(range(i, len(nc)))
                 for i in failed:
-                    nc[i] = rejoin(*nc[i]).subs(old, new)
+                    nc[i] = rejoin(*nc[i]).subs({old: new})
 
         # rebuild the expression
 
@@ -1393,7 +1409,7 @@ class Mul(AssocOp):
                 e = c[b] - old_c[b]*do
                 margs.append(rejoin(b, e))
             else:
-                margs.append(rejoin(b.subs(old, new), c[b]))
+                margs.append(rejoin(b.subs({old: new}), c[b]))
         if cdid and not ncdid:
 
             # in case we are replacing commutative with non-commutative,
@@ -1434,6 +1450,7 @@ class Mul(AssocOp):
         ========
 
         diofant.core.expr.Expr.as_content_primitive
+
         """
 
         coef = S.One
@@ -1514,6 +1531,7 @@ def _keep_coeff(coeff, factors, clear=True, sign=False):
     -x - y
     >>> _keep_coeff(Integer(-1), x + y, sign=True)
     -(x + y)
+
     """
     from . import Integer
 

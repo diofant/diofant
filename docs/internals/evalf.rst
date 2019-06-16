@@ -3,73 +3,6 @@
 Numerical evaluation
 ====================
 
-Basics
-------
-
-Exact Diofant expressions can be converted to floating-point approximations
-(decimal numbers) using either the ``.evalf()`` method or the ``N()`` function.
-``N(expr, <args>)`` is equivalent to ``sympify(expr).evalf(<args>)``.
-
-    >>> N(sqrt(2)*pi)
-    4.44288293815837
-    >>> (sqrt(2)*pi).evalf()
-    4.44288293815837
-
-
-By default, numerical evaluation is performed to an accuracy of 15 decimal
-digits. You can optionally pass a desired accuracy (which should be a positive
-integer) as an argument to ``evalf`` or ``N``:
-
-    >>> N(sqrt(2)*pi, 5)
-    4.4429
-    >>> N(sqrt(2)*pi, 50)
-    4.4428829381583662470158809900606936986146216893757
-
-
-Complex numbers are supported:
-
-    >>> N(1/(pi + I), 20)
-    0.28902548222223624241 - 0.091999668350375232456*I
-
-
-If the expression contains symbols or for some other reason cannot be evaluated
-numerically, calling ``.evalf()`` or ``N()`` returns the original expression, or
-in some cases a partially evaluated expression. For example, when the
-expression is a polynomial in expanded form, the coefficients are evaluated:
-
-    >>> x = Symbol('x')
-    >>> (pi*x**2 + x/3).evalf(strict=False)
-    3.14159265358979*x**2 + 0.333333333333333*x
-
-
-You can also use the standard Python functions ``float()``, ``complex()`` to
-convert Diofant expressions to regular Python numbers:
-
-    >>> float(pi)
-    3.1415926535...
-    >>> complex(pi+E*I)
-    (3.1415926535...+2.7182818284...j)
-
-
-If these functions are used, failure to evaluate the expression to an explicit
-number (for example if the expression contains symbols) will raise an exception.
-
-There is essentially no upper precision limit. The following command, for
-example, computes the first 100,000 digits of π/e:
-
-    >>> N(pi/E, 100000)
-    1.155727349790921717910...
-
-This shows digits 999,951 through 1,000,000 of pi:
-
-    >>> str(N(pi, 10**6))[-50:]
-    '95678796130331164628399634646042209010610577945815'
-
-
-High-precision calculations can be slow. It is recommended (but entirely
-optional) to install `gmpy2 <https://github.com/aleaxit/gmpy>`_, which will
-significantly speed up computations such as the one above.
-
 Floating-point numbers
 ----------------------
 
@@ -117,7 +50,7 @@ Function :func:`~diofant.core.evalf.N` (or
 :meth:`~diofant.core.evalf.EvalfMixin.evalf` method) can be used to
 change the precision of existing floating-point numbers:
 
-    >>> N(3.5, strict=False)
+    >>> N(3.5)
     3.50000000000000
     >>> N(3.5, 5)
     3.5000
@@ -200,7 +133,7 @@ imaginary portions of a number with exact zeros:
 In situations where you wish to remove meaningless digits, re-evaluation or
 the use of the ``round`` method are useful:
 
-    >>> Float('.1', '')*Float('.12345', '')
+    >>> Float('.1')*Float('.12345')
     0.012297
     >>> ans = _
     >>> N(ans, 1)
@@ -226,8 +159,6 @@ Sums and integrals
 Sums (in particular, infinite series) and integrals can be used like regular
 closed-form expressions, and support arbitrary-precision evaluation:
 
-    >>> var('n x')
-    (n, x)
     >>> Sum(1/n**n, (n, 1, oo)).evalf()
     1.29128599706266
     >>> Integral(x**(-x), (x, 0, 1)).evalf()
@@ -305,8 +236,6 @@ Otherwise, extrapolation methods (generally the Euler-Maclaurin formula but
 also Richardson extrapolation) are used to speed up convergence. This allows
 high-precision evaluation of slowly convergent series:
 
-    >>> var('k')
-    k
     >>> Sum(1/k**2, (k, 1, oo)).evalf(strict=False)
     1.64493406684823
     >>> zeta(2).evalf()

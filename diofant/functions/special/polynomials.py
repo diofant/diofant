@@ -6,7 +6,7 @@ combinatorial polynomials.
 
 """
 
-from ...core import Dummy, Function, Integer, Rational, S, oo, pi, zoo
+from ...core import Dummy, Function, Integer, Rational, oo, pi, zoo
 from ...core.function import ArgumentIndexError
 from ...polys.orthopolys import (chebyshevt_poly, chebyshevu_poly,
                                  gegenbauer_poly, hermite_poly, jacobi_poly,
@@ -24,13 +24,12 @@ _x = Dummy('dummy_for_special_polynomials')
 
 
 class OrthogonalPolynomial(Function):
-    """Base class for orthogonal polynomials.
-    """
+    """Base class for orthogonal polynomials."""
 
     @classmethod
     def _eval_at_order(cls, n, x):
         if n.is_integer and n >= 0:
-            return cls._ortho_poly(int(n), _x).subs(_x, x)
+            return cls._ortho_poly(int(n), _x).subs({_x: x})
 
     def _eval_conjugate(self):
         return self.func(self.args[0], self.args[1].conjugate())
@@ -52,8 +51,6 @@ class jacobi(OrthogonalPolynomial):
 
     Examples
     ========
-
-    >>> from diofant.abc import a, b
 
     >>> jacobi(0, a, b, x)
     1
@@ -88,7 +85,7 @@ class jacobi(OrthogonalPolynomial):
     jacobi(n, conjugate(a), conjugate(b), conjugate(x))
 
     >>> diff(jacobi(n, a, b, x), x)
-    (a/2 + b/2 + n/2 + 1/2)*jacobi(n - 1, a + 1, b + 1, x)
+    (a + b + n + 1)*jacobi(n - 1, a + 1, b + 1, x)/2
 
     See Also
     ========
@@ -109,9 +106,10 @@ class jacobi(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Jacobi_polynomials
-    .. [2] http://mathworld.wolfram.com/JacobiPolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/JacobiP/
+    * https://en.wikipedia.org/wiki/Jacobi_polynomials
+    * http://mathworld.wolfram.com/JacobiPolynomial.html
+    * http://functions.wolfram.com/Polynomials/JacobiP/
+
     """
 
     @classmethod
@@ -119,14 +117,14 @@ class jacobi(OrthogonalPolynomial):
         # Simplify to other polynomials
         # P^{a, a}_n(x)
         if a == b:
-            if a == -S.Half:
-                return RisingFactorial(S.Half, n) / factorial(n) * chebyshevt(n, x)
+            if a == -Rational(1, 2):
+                return RisingFactorial(Rational(1, 2), n) / factorial(n) * chebyshevt(n, x)
             elif a == 0:
                 return legendre(n, x)
-            elif a == S.Half:
-                return RisingFactorial(3*S.Half, n) / factorial(n + 1) * chebyshevu(n, x)
+            elif a == Rational(1, 2):
+                return RisingFactorial(Rational(3, 2), n) / factorial(n + 1) * chebyshevu(n, x)
             else:
-                return RisingFactorial(a + 1, n) / RisingFactorial(2*a + 1, n) * gegenbauer(n, a + S.Half, x)
+                return RisingFactorial(a + 1, n) / RisingFactorial(2*a + 1, n) * gegenbauer(n, a + Rational(1, 2), x)
         elif b == -a:
             # P^{a, -a}_n(x)
             return gamma(n + a + 1) / gamma(n + 1) * (1 + x)**(a/2) / (1 - x)**(a/2) * assoc_legendre(n, -a, x)
@@ -135,7 +133,7 @@ class jacobi(OrthogonalPolynomial):
             # Symbolic result P^{a,b}_n(x)
             # P^{a,b}_n(-x)  --->  (-1)**n * P^{b,a}_n(-x)
             if x.could_extract_minus_sign():
-                return S.NegativeOne**n * jacobi(n, b, a, -x)
+                return (-1)**n * jacobi(n, b, a, -x)
             # We can evaluate for some special values of x
             if x == 0:
                 return (2**(-n) * gamma(a + n + 1) / (gamma(a + 1) * factorial(n)) *
@@ -176,7 +174,7 @@ class jacobi(OrthogonalPolynomial):
         elif argindex == 4:
             # Diff wrt x
             n, a, b, x = self.args
-            return S.Half * (a + b + n + 1) * jacobi(n - 1, a + 1, b + 1, x)
+            return (a + b + n + 1) * jacobi(n - 1, a + 1, b + 1, x) / 2
         else:
             raise ArgumentIndexError(self, argindex)
 
@@ -208,8 +206,6 @@ def jacobi_normalized(n, a, b, x):
     Examples
     ========
 
-    >>> from diofant.abc import a, b
-
     >>> jacobi_normalized(n, a, b, x)
     jacobi(n, a, b, x)/sqrt(2**(a + b + 1)*gamma(a + n + 1)*gamma(b + n + 1)/((a + b + 2*n + 1)*factorial(n)*gamma(a + b + n + 1)))
 
@@ -232,9 +228,10 @@ def jacobi_normalized(n, a, b, x):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Jacobi_polynomials
-    .. [2] http://mathworld.wolfram.com/JacobiPolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/JacobiP/
+    * https://en.wikipedia.org/wiki/Jacobi_polynomials
+    * http://mathworld.wolfram.com/JacobiPolynomial.html
+    * http://functions.wolfram.com/Polynomials/JacobiP/
+
     """
     nfactor = (Integer(2)**(a + b + 1) * (gamma(n + a + 1) * gamma(n + b + 1))
                / (2*n + a + b + 1) / (factorial(n) * gamma(n + a + b + 1)))
@@ -260,7 +257,6 @@ class gegenbauer(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant.abc import a
     >>> gegenbauer(0, a, x)
     1
     >>> gegenbauer(1, a, x)
@@ -305,9 +301,10 @@ class gegenbauer(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gegenbauer_polynomials
-    .. [2] http://mathworld.wolfram.com/GegenbauerPolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/GegenbauerC3/
+    * https://en.wikipedia.org/wiki/Gegenbauer_polynomials
+    * http://mathworld.wolfram.com/GegenbauerPolynomial.html
+    * http://functions.wolfram.com/Polynomials/GegenbauerC3/
+
     """
 
     @classmethod
@@ -315,20 +312,20 @@ class gegenbauer(OrthogonalPolynomial):
         # For negative n the polynomials vanish
         # See http://functions.wolfram.com/Polynomials/GegenbauerC3/03/01/03/0012/
         if n.is_negative:
-            return S.Zero
+            return Integer(0)
 
         # Some special values for fixed a
-        if a == S.Half:
+        if a == Rational(1, 2):
             return legendre(n, x)
         elif a == 1:
             return chebyshevu(n, x)
         elif a == -1:
-            return S.Zero
+            return Integer(0)
 
         if not n.is_Number:
             # Handle this before the general sign extraction rule
             if x == -1:
-                if (re(a) > S.Half) is S.true:
+                if (re(a) - Rational(1, 2)).is_positive:
                     return zoo
                 else:
                     return
@@ -336,10 +333,10 @@ class gegenbauer(OrthogonalPolynomial):
             # Symbolic result C^a_n(x)
             # C^a_n(-x)  --->  (-1)**n * C^a_n(x)
             if x.could_extract_minus_sign():
-                return S.NegativeOne**n * gegenbauer(n, a, -x)
+                return (-1)**n * gegenbauer(n, a, -x)
             # We can evaluate for some special values of x
             if x == 0:
-                return (2**n * sqrt(pi) * gamma(a + S.Half*n) /
+                return (2**n * sqrt(pi) * gamma(a + n/2) /
                         (gamma((1 - n)/2) * gamma(n + 1) * gamma(a)) )
             if x == 1:
                 return gamma(2*a + n) / (gamma(2*a) * gamma(n + 1))
@@ -435,11 +432,12 @@ class chebyshevt(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Chebyshev_polynomial
-    .. [2] http://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
-    .. [3] http://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
-    .. [4] http://functions.wolfram.com/Polynomials/ChebyshevT/
-    .. [5] http://functions.wolfram.com/Polynomials/ChebyshevU/
+    * https://en.wikipedia.org/wiki/Chebyshev_polynomial
+    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
+    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
+    * http://functions.wolfram.com/Polynomials/ChebyshevT/
+    * http://functions.wolfram.com/Polynomials/ChebyshevU/
+
     """
 
     _ortho_poly = staticmethod(chebyshevt_poly)
@@ -450,15 +448,15 @@ class chebyshevt(OrthogonalPolynomial):
             # Symbolic result T_n(x)
             # T_n(-x)  --->  (-1)**n * T_n(x)
             if x.could_extract_minus_sign():
-                return S.NegativeOne**n * chebyshevt(n, -x)
+                return (-1)**n * chebyshevt(n, -x)
             # T_{-n}(x)  --->  T_n(x)
             if n.could_extract_minus_sign():
                 return chebyshevt(-n, x)
             # We can evaluate for some special values of x
             if x == 0:
-                return cos(S.Half * pi * n)
+                return cos(pi*n/2)
             if x == 1:
-                return S.One
+                return Integer(1)
             elif x == oo:
                 return oo
         else:
@@ -532,11 +530,12 @@ class chebyshevu(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Chebyshev_polynomial
-    .. [2] http://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
-    .. [3] http://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
-    .. [4] http://functions.wolfram.com/Polynomials/ChebyshevT/
-    .. [5] http://functions.wolfram.com/Polynomials/ChebyshevU/
+    * https://en.wikipedia.org/wiki/Chebyshev_polynomial
+    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
+    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
+    * http://functions.wolfram.com/Polynomials/ChebyshevT/
+    * http://functions.wolfram.com/Polynomials/ChebyshevU/
+
     """
 
     _ortho_poly = staticmethod(chebyshevu_poly)
@@ -547,15 +546,15 @@ class chebyshevu(OrthogonalPolynomial):
             # Symbolic result U_n(x)
             # U_n(-x)  --->  (-1)**n * U_n(x)
             if x.could_extract_minus_sign():
-                return S.NegativeOne**n * chebyshevu(n, -x)
+                return (-1)**n * chebyshevu(n, -x)
             # U_{-n}(x)  --->  -U_{n-2}(x)
             if n.could_extract_minus_sign():
                 return -chebyshevu(-n - 2, x)
             # We can evaluate for some special values of x
             if x == 0:
-                return cos(S.Half * pi * n)
+                return cos(pi*n/2)
             if x == 1:
-                return S.One + n
+                return 1 + n
             elif x == oo:
                 return oo
         else:
@@ -563,7 +562,7 @@ class chebyshevu(OrthogonalPolynomial):
             if n.is_negative:
                 # U_{-n}(x)  --->  -U_{n-2}(x)
                 if n == -1:
-                    return S.Zero
+                    return Integer(0)
                 else:
                     return -cls._eval_at_order(-n - 2, x)
             else:
@@ -607,6 +606,7 @@ class chebyshevt_root(Function):
     diofant.polys.orthopolys.hermite_poly
     diofant.polys.orthopolys.legendre_poly
     diofant.polys.orthopolys.laguerre_poly
+
     """
 
     @classmethod
@@ -645,6 +645,7 @@ class chebyshevu_root(Function):
     diofant.polys.orthopolys.hermite_poly
     diofant.polys.orthopolys.legendre_poly
     diofant.polys.orthopolys.laguerre_poly
+
     """
 
     @classmethod
@@ -700,10 +701,11 @@ class legendre(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Legendre_polynomial
-    .. [2] http://mathworld.wolfram.com/LegendrePolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/LegendreP/
-    .. [4] http://functions.wolfram.com/Polynomials/LegendreP2/
+    * https://en.wikipedia.org/wiki/Legendre_polynomial
+    * http://mathworld.wolfram.com/LegendrePolynomial.html
+    * http://functions.wolfram.com/Polynomials/LegendreP/
+    * http://functions.wolfram.com/Polynomials/LegendreP2/
+
     """
 
     _ortho_poly = staticmethod(legendre_poly)
@@ -714,15 +716,15 @@ class legendre(OrthogonalPolynomial):
             # Symbolic result L_n(x)
             # L_n(-x)  --->  (-1)**n * L_n(x)
             if x.could_extract_minus_sign():
-                return S.NegativeOne**n * legendre(n, -x)
+                return (-1)**n * legendre(n, -x)
             # L_{-n}(x)  --->  L_{n-1}(x)
             if n.could_extract_minus_sign():
-                return legendre(-n - S.One, x)
+                return legendre(-n - Integer(1), x)
             # We can evaluate for some special values of x
             if x == 0:
-                return sqrt(pi)/(gamma(S.Half - n/2)*gamma(S.One + n/2))
+                return sqrt(pi)/(gamma((1 - n)/2)*gamma(Integer(1) + n/2))
             elif x == 1:
-                return S.One
+                return Integer(1)
             elif x == oo:
                 return oo
         else:
@@ -789,10 +791,11 @@ class assoc_legendre(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Associated_Legendre_polynomials
-    .. [2] http://mathworld.wolfram.com/LegendrePolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/LegendreP/
-    .. [4] http://functions.wolfram.com/Polynomials/LegendreP2/
+    * https://en.wikipedia.org/wiki/Associated_Legendre_polynomials
+    * http://mathworld.wolfram.com/LegendrePolynomial.html
+    * http://functions.wolfram.com/Polynomials/LegendreP/
+    * http://functions.wolfram.com/Polynomials/LegendreP2/
+
     """
 
     @classmethod
@@ -804,7 +807,7 @@ class assoc_legendre(Function):
     def eval(cls, n, m, x):
         if m.could_extract_minus_sign():
             # P^{-m}_n  --->  F * P^m_n
-            return S.NegativeOne**(-m) * (factorial(m + n)/factorial(n - m)) * assoc_legendre(n, -m, x)
+            return (-1)**(-m) * (factorial(m + n)/factorial(n - m)) * assoc_legendre(n, -m, x)
         if m == 0:
             # P^0_n  --->  L_n
             return legendre(n, x)
@@ -815,7 +818,7 @@ class assoc_legendre(Function):
                 raise ValueError("%s : 1st index must be nonnegative integer (got %r)" % (cls, n))
             if abs(m) > n:
                 raise ValueError("%s : abs('2nd index') must be <= '1st index' (got %r, %r)" % (cls, n, m))
-            return cls._eval_at_order(int(n), abs(int(m))).subs(_x, x)
+            return cls._eval_at_order(int(n), abs(int(m))).subs({_x: x})
 
     def fdiff(self, argindex=3):
         if argindex == 3:
@@ -840,7 +843,7 @@ class hermite(OrthogonalPolynomial):
     hermite(n, x) gives the nth Hermite polynomial in x, `H_n(x)`
 
     The Hermite polynomials are orthogonal on `(-\infty, \infty)`
-    with respect to the weight `\exp\left(-\frac{x^2}{2}\right)`.
+    with respect to the weight `\exp\left(-x^2\right)`.
 
     Examples
     ========
@@ -876,9 +879,10 @@ class hermite(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Hermite_polynomial
-    .. [2] http://mathworld.wolfram.com/HermitePolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/HermiteH/
+    * https://en.wikipedia.org/wiki/Hermite_polynomial
+    * http://mathworld.wolfram.com/HermitePolynomial.html
+    * http://functions.wolfram.com/Polynomials/HermiteH/
+
     """
 
     _ortho_poly = staticmethod(hermite_poly)
@@ -889,10 +893,10 @@ class hermite(OrthogonalPolynomial):
             # Symbolic result H_n(x)
             # H_n(-x)  --->  (-1)**n * H_n(x)
             if x.could_extract_minus_sign():
-                return S.NegativeOne**n * hermite(n, -x)
+                return (-1)**n * hermite(n, -x)
             # We can evaluate for some special values of x
             if x == 0:
-                return 2**n * sqrt(pi) / gamma((S.One - n)/2)
+                return 2**n * sqrt(pi) / gamma((1 - n)/2)
             elif x == oo:
                 return oo
         else:
@@ -963,10 +967,11 @@ class laguerre(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Laguerre_polynomial
-    .. [2] http://mathworld.wolfram.com/LaguerrePolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/LaguerreL/
-    .. [4] http://functions.wolfram.com/Polynomials/LaguerreL3/
+    * https://en.wikipedia.org/wiki/Laguerre_polynomial
+    * http://mathworld.wolfram.com/LaguerrePolynomial.html
+    * http://functions.wolfram.com/Polynomials/LaguerreL/
+    * http://functions.wolfram.com/Polynomials/LaguerreL3/
+
     """
 
     _ortho_poly = staticmethod(laguerre_poly)
@@ -981,11 +986,11 @@ class laguerre(OrthogonalPolynomial):
                 return exp(x) * laguerre(-n - 1, -x)
             # We can evaluate for some special values of x
             if x == 0:
-                return S.One
+                return Integer(1)
             elif x == -oo:
                 return oo
             elif x == oo:
-                return S.NegativeOne**n * oo
+                return (-1)**n * oo
         else:
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
@@ -1020,7 +1025,6 @@ class assoc_laguerre(OrthogonalPolynomial):
     Examples
     ========
 
-    >>> from diofant.abc import a
     >>> assoc_laguerre(0, a, x)
     1
     >>> assoc_laguerre(1, a, x)
@@ -1065,16 +1069,16 @@ class assoc_laguerre(OrthogonalPolynomial):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Laguerre_polynomial#Assoc_laguerre_polynomials
-    .. [2] http://mathworld.wolfram.com/AssociatedLaguerrePolynomial.html
-    .. [3] http://functions.wolfram.com/Polynomials/LaguerreL/
-    .. [4] http://functions.wolfram.com/Polynomials/LaguerreL3/
+    * http://mathworld.wolfram.com/AssociatedLaguerrePolynomial.html
+    * http://functions.wolfram.com/Polynomials/LaguerreL/
+    * http://functions.wolfram.com/Polynomials/LaguerreL3/
+
     """
 
     @classmethod
     def _eval_at_order(cls, n, x, alpha):
         if n.is_integer and n >= 0:
-            return laguerre_poly(int(n), _x, alpha).subs(_x, x)
+            return laguerre_poly(int(n), _x, alpha).subs({_x: x})
 
     @classmethod
     def eval(cls, n, alpha, x):
@@ -1087,7 +1091,7 @@ class assoc_laguerre(OrthogonalPolynomial):
             if x == 0:
                 return binomial(n + alpha, alpha)
             elif x == oo and n.is_positive:
-                return S.NegativeOne**n * oo
+                return (-1)**n * oo
             elif x == -oo and n.is_positive:
                 return oo
         else:

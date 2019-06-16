@@ -3,7 +3,8 @@
 import collections
 import re
 
-from ..core import Add, Mul, Pow, S, nan, oo, zoo
+from ..core import Add, Mul, Pow, nan, oo, zoo
+from ..core.compatibility import default_sort_key
 from ..core.exprtools import decompose_power
 from .polyerrors import GeneratorsError, GeneratorsNeeded, PolynomialError
 from .polyoptions import build_options
@@ -44,18 +45,18 @@ def _nsort(roots, separated=False):
         raise NotImplementedError
     # see issue sympy/sympy#6137:
     # get the real part of the evaluated real and imaginary parts of each root
-    key = [[i.n(2).as_real_imag()[0] for i in r.as_real_imag()] for r in roots]
+    key = [[i.evalf(2).as_real_imag()[0] for i in r.as_real_imag()] for r in roots]
     # make sure the parts were computed with precision
     if any(i._prec == 1 for k in key for i in k):  # pragma: no cover
         raise NotImplementedError("could not compute root with precision")
     # insert a key to indicate if the root has an imaginary part
-    key = [(1 if i else 0, r, i) for r, i in key]
+    key = [(1 if i else 0, r, -abs(i), i.is_positive) for r, i in key]
     key = sorted(zip(key, roots))
     # return the real and imaginary roots separately if desired
     if separated:
         r = []
         i = []
-        for (im, _, _), v in key:
+        for (im, _, _, _), v in key:
             if im:
                 i.append(v)
             else:
@@ -158,10 +159,10 @@ def _sort_factors(factors, **args):
     """Sort low-level factors in increasing 'complexity' order. """
     def order_if_multiple_key(factor):
         f, n = factor
-        return len(f), n, f
+        return len(f), n, default_sort_key(f)
 
     def order_no_multiple_key(f):
-        return len(f), f
+        return len(f), default_sort_key(f)
 
     if args.get('multiple', True):
         return sorted(factors, key=order_if_multiple_key)
@@ -203,7 +204,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
                         base, exp = decompose_power(factor)
 
                         if exp < 0:
-                            exp, base = -exp, Pow(base, -S.One)
+                            exp, base = -exp, Pow(base, -1)
 
                         monom[indices[base]] += exp
                     except KeyError:
@@ -260,7 +261,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
                     base, exp = decompose_power(factor)
 
                     if exp < 0:
-                        exp, base = -exp, Pow(base, -S.One)
+                        exp, base = -exp, Pow(base, -1)
 
                     elements[base] += exp
                     gens.add(base)
@@ -273,7 +274,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
         if len(exprs) == 1:
             arg = exprs[0]
         else:
-            arg = (exprs,)
+            arg = exprs,
 
         raise GeneratorsNeeded("specify generators to give %s a meaning" % arg)
 
@@ -327,7 +328,7 @@ def parallel_dict_from_expr(exprs, **args):
 def _parallel_dict_from_expr(exprs, opt):
     """Transform expressions into a multinomial form. """
     if opt.expand is not False:
-        exprs = [ expr.expand() for expr in exprs ]
+        exprs = [expr.expand() for expr in exprs]
 
     if opt.gens:
         reps, gens = _parallel_dict_from_expr_if_gens(exprs, opt)
@@ -371,11 +372,6 @@ def expr_from_dict(rep, *gens):
     return Add(*result)
 
 
-parallel_dict_from_basic = parallel_dict_from_expr
-dict_from_basic = dict_from_expr
-basic_from_dict = expr_from_dict
-
-
 def _dict_reorder(rep, gens, new_gens):
     """Reorder levels using dict representation. """
     gens = list(gens)
@@ -383,7 +379,7 @@ def _dict_reorder(rep, gens, new_gens):
     monoms = rep.keys()
     coeffs = rep.values()
 
-    new_monoms = [ [] for _ in range(len(rep)) ]
+    new_monoms = [[] for _ in range(len(rep))]
     used_indices = set()
 
     for gen in new_gens:

@@ -11,7 +11,7 @@ def egyptian_fraction(r, algorithm="Greedy"):
 
     list
         The list of denominators of an Egyptian
-        fraction expansion [1]_.
+        fraction expansion.
 
     Parameters
     ==========
@@ -47,7 +47,7 @@ def egyptian_fraction(r, algorithm="Greedy"):
 
     1) Greedy Algorithm
 
-       Also called the Fibonacci-Sylvester algorithm [2]_.
+       Also called the Fibonacci-Sylvester algorithm.
        At each step, extract the largest unit fraction less
        than the target and replace the target with the remainder.
 
@@ -68,19 +68,19 @@ def egyptian_fraction(r, algorithm="Greedy"):
 
        The algorithm suggested by the result of Graham and Jewett.
        Note that this has a tendency to blow up: the length of the
-       resulting expansion is always ``2**(x/gcd(x, y)) - 1``.  See [3]_.
+       resulting expansion is always ``2**(x/gcd(x, y)) - 1``.
 
     3) Takenouchi Algorithm
 
        The algorithm suggested by Takenouchi (1921).
        Differs from the Graham-Jewett algorithm only in the handling
-       of duplicates.  See [3]_.
+       of duplicates.
 
     4) Golomb's Algorithm
 
        A method given by Golumb (1962), using modular arithmetic and
        inverses.  It yields the same results as a method using continued
-       fractions proposed by Bleicher (1972).  See [4]_.
+       fractions proposed by Bleicher (1972).
 
     If the given rational is greater than or equal to 1, a greedy algorithm
     of summing the harmonic sequence 1/1 + 1/2 + 1/3 + ... is used, taking
@@ -97,10 +97,11 @@ def egyptian_fraction(r, algorithm="Greedy"):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Egyptian_fraction
-    .. [2] https://en.wikipedia.org/wiki/Greedy_algorithm_for_Egyptian_fractions
-    .. [3] http://www.ics.uci.edu/~eppstein/numth/egypt/conflict.html
-    .. [4] http://ami.ektf.hu/uploads/papers/finalpdf/AMI_42_from129to134.pdf
+    * https://en.wikipedia.org/wiki/Egyptian_fraction
+    * https://en.wikipedia.org/wiki/Greedy_algorithm_for_Egyptian_fractions
+    * https://www.ics.uci.edu/~eppstein/numth/egypt/conflict.html
+    * http://ami.ektf.hu/uploads/papers/finalpdf/AMI_42_from129to134.pdf
+
     """
 
     if r <= 0:

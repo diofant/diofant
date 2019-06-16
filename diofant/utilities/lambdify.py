@@ -61,7 +61,6 @@ MPMATH_TRANSLATIONS = {
     "Chi": "chi",
     "Si": "si",
     "Ci": "ci",
-    "ceiling": "ceil",
     "Ynm": "spherharm",
     "RisingFactorial": "rf",
     "FallingFactorial": "ff",
@@ -102,7 +101,7 @@ MODULES = {
     "diofant": (DIOFANT, DIOFANT_DEFAULT, {}, (
         "from diofant.functions import *",
         "from diofant.matrices import *",
-        "from diofant import Sum, Integral, pi, oo, nan, zoo, E, I",)),
+        "from diofant import Sum, Integral, pi, oo, nan, zoo, E, I")),
     "numexpr": (NUMEXPR, NUMEXPR_DEFAULT, NUMEXPR_TRANSLATIONS,
                 ("import_module('numexpr')", )),
 }
@@ -116,6 +115,7 @@ def _import(module, reload="False"):
     "mpmath", "numpy", "diofant".
     These dictionaries map names of python functions to their equivalent in
     other modules.
+
     """
     try:
         namespace, namespace_default, translations, import_commands = MODULES[
@@ -193,13 +193,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     by default. As of release 0.7.7 ``numpy.array`` is the default.
     To get the old default behavior you must pass in ``[{'ImmutableMatrix':
     numpy.matrix}, 'numpy']`` to the ``modules`` kwarg.
-
-    >>> import numpy
-    >>> array2mat = [{'ImmutableMatrix': numpy.matrix}, 'numpy']
-    >>> f = lambdify((x, y), Matrix([x, y]), modules=array2mat)
-    >>> f(1, 2)
-    [[1]
-     [2]]
 
     (1) Use one of the provided modules:
 
@@ -285,6 +278,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
     ``lambdify`` always prefers ``_imp_`` implementations to implementations
     in other namespaces, unless the ``use_imps`` input parameter is False.
+
     """
     from ..core import Symbol
     from .iterables import flatten
@@ -344,7 +338,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
     # Get the names of the args, for creating a docstring
     if not iterable(args):
-        args = (args,)
+        args = args,
     names = []
     # Grab the callers frame, for getting the names by inspection (if needed)
     callers_local_vars = inspect.currentframe().f_back.f_locals.items()
@@ -396,9 +390,7 @@ def _module_present(modname, modlist):
 
 
 def _get_namespace(m):
-    """
-    This is used by _lambdify to parse its arguments.
-    """
+    """This is used by _lambdify to parse its arguments."""
     if isinstance(m, str):
         _import(m)
         return MODULES[m][0]
@@ -428,6 +420,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
 
     >>> lambdastr((x, (y, z)), x + y)
     'lambda _0,_1: (lambda x,y,z: (x + y))(*list(__flatten_args__([_0,_1])))'
+
     """
     # Transforming everything to strings.
     from ..matrices import DeferredVector
@@ -468,7 +461,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
     def sub_expr(expr, dummies_dict):
         try:
             expr = sympify(expr).xreplace(dummies_dict)
-        except Exception:
+        except (TypeError, AttributeError):
             if isinstance(expr, DeferredVector):
                 pass
             elif isinstance(expr, dict):
@@ -527,7 +520,8 @@ def _imp_namespace(expr, namespace=None):
     contain diofant expressions.
 
     Parameters
-    ----------
+    ==========
+
     expr : object
        Something passed to lambdify, that will generate valid code from
        ``str(expr)``.
@@ -535,20 +529,22 @@ def _imp_namespace(expr, namespace=None):
        Namespace to fill.  None results in new empty dict
 
     Returns
-    -------
+    =======
+
     namespace : dict
        dict with keys of implemented function names within `expr` and
        corresponding values being the numerical implementation of
        function
 
     Examples
-    --------
+    ========
 
     >>> f = implemented_function(Function('f'), lambda x: x+1)
     >>> g = implemented_function(Function('g'), lambda x: x*10)
     >>> namespace = _imp_namespace(f(g(x)))
     >>> sorted(namespace)
     ['f', 'g']
+
     """
     # Delayed import to avoid circular imports
     from ..core.function import FunctionClass
@@ -596,7 +592,8 @@ def implemented_function(symfunc, implementation):
     class.
 
     Parameters
-    ----------
+    ==========
+
     symfunc : ``str`` or ``UndefinedFunction`` instance
        If ``str``, then create new ``UndefinedFunction`` with this as
        name.  If `symfunc` is a diofant function, attach implementation to it.
@@ -604,17 +601,19 @@ def implemented_function(symfunc, implementation):
        numerical implementation to be called by ``evalf()`` or ``lambdify``
 
     Returns
-    -------
+    =======
+
     afunc : diofant.FunctionClass instance
        function with attached implementation
 
     Examples
-    --------
+    ========
 
     >>> f = implemented_function(Function('f'), lambda x: x+1)
     >>> lam_f = lambdify(x, f(x))
     >>> lam_f(4)
     5
+
     """
     # Delayed import to avoid circular imports
     from ..core.function import UndefinedFunction

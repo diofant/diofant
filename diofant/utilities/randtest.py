@@ -14,6 +14,7 @@ def random_complex_number(a=2, b=-1, c=3, d=1, rational=True):
 
     To reduce chance of hitting branch cuts or anything, we guarantee
     b <= Im z <= d, a <= Re z <= c
+
     """
     A, B = uniform(a, c), uniform(b, d)
     if not rational:
@@ -35,12 +36,13 @@ def verify_numerically(f, g, z=None, tol=1.0e-6, a=2, b=-1, c=3, d=1):
 
     >>> verify_numerically(sin(x)**2 + cos(x)**2, 1, x)
     true
+
     """
     f, g, z = Tuple(f, g, z)
     z = [z] if isinstance(z, Symbol) else (f.free_symbols | g.free_symbols)
-    reps = list(zip(z, [random_complex_number(a, b, c, d) for zi in z]))
-    z1 = f.subs(reps).n(strict=False)
-    z2 = g.subs(reps).n(strict=False)
+    reps = list(zip(z, [random_complex_number(a, b, c, d) for _ in z]))
+    z1 = f.subs(reps).evalf(strict=False)
+    z2 = g.subs(reps).evalf(strict=False)
     return comp(z1, z2, tol)
 
 
@@ -58,6 +60,7 @@ def verify_derivative_numerically(f, z, tol=1.0e-6, a=2, b=-1, c=3, d=1):
 
     >>> verify_derivative_numerically(sin(x), x)
     true
+
     """
     from ..core import Derivative
     z0 = random_complex_number(a, b, c, d)
@@ -85,6 +88,7 @@ def _randrange(seed=None):
     >>> rr = _randrange([0, 5, 1, 3, 4])
     >>> rr(3), rr(3)
     (0, 1)
+
     """
     if seed is None:
         return random.randrange
@@ -135,6 +139,7 @@ def _randint(seed=None):
     >>> ri = _randint([0, 5, 1, 2, 4])
     >>> ri(1, 3), ri(1, 3)
     (1, 2)
+
     """
     if seed is None:
         return random.randint

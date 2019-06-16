@@ -1,4 +1,4 @@
-from ..core import Expr, S, Symbol, sympify
+from ..core import Expr, Integer, Symbol, sympify
 from ..printing.pretty.stringpict import prettyForm
 
 
@@ -15,10 +15,8 @@ class BaseScalar(Expr):
         from .coordsysrect import CoordSysCartesian
         index = sympify(index, strict=True)
         system = sympify(system, strict=True)
-        obj = super(BaseScalar, cls).__new__(cls, Symbol(str(name)),
-                                             index, system,
-                                             Symbol(str(pretty_str)),
-                                             Symbol(str(latex_str)))
+        obj = super().__new__(cls, Symbol(str(name)), index, system,
+                              Symbol(str(pretty_str)), Symbol(str(latex_str)))
 
         if not isinstance(system, CoordSysCartesian):
             raise TypeError("system should be a CoordSysCartesian")
@@ -38,7 +36,7 @@ class BaseScalar(Expr):
 
     def _eval_derivative(self, s):
         assert self != s  # == case handled in Symbol._eval_derivative
-        return S.Zero
+        return Integer(0)
 
     def _latex(self, printer=None):
         return self._latex_form

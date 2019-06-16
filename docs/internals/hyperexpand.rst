@@ -8,7 +8,7 @@ Hypergeometric Function Expansion Algorithm
 *******************************************
 
 This section describes the algorithm used to expand hypergeometric functions.
-Most of it is based on the papers [Roach1996]_ and [Roach1997]_.
+Most of it is based on the papers :cite:`Roach1996` and :cite:`Roach1997`.
 
 Recall that the hypergeometric function is (initially) defined as
 
@@ -599,27 +599,9 @@ Implemented Hypergeometric Formulae
 A vital part of the algorithm is a relatively large table of hypergeometric
 function representations. The following automatically generated list contains
 all the representations implemented in Diofant (of course many more are
-derived from them). These formulae are mostly taken from [Luke1969]_ and
-[Prudnikov1990]_. They are all tested numerically.
+derived from them). These formulae are mostly taken from :cite:`Luke1969` and
+:cite:`Prudnikov1990`. They are all tested numerically.
 
 .. automodule:: diofant.simplify.hyperexpand_doc
 
 .. autofunction:: diofant.simplify.hyperexpand.add_formulae
-
-References
-**********
-
-.. [Roach1996] Kelly B. Roach.  Hypergeometric Function Representations.
-      In: Proceedings of the 1996 International Symposium on Symbolic and
-      Algebraic Computation, pages 301-308, New York, 1996. ACM.
-
-.. [Roach1997] Kelly B. Roach.  Meijer G Function Representations.
-      In: Proceedings of the 1997 International Symposium on Symbolic and
-      Algebraic Computation, pages 205-211, New York, 1997. ACM.
-
-.. [Luke1969] Luke, Y. L. (1969), The Special Functions and Their
-              Approximations, Volume 1.
-
-.. [Prudnikov1990] A. P. Prudnikov, Yu. A. Brychkov and O. I. Marichev (1990).
-     Integrals and Series: More Special Functions, Vol. 3,
-     Gordon and Breach Science Publisher.

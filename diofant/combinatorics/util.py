@@ -50,8 +50,8 @@ def _base_ordering(base, degree):
     References
     ==========
 
-    .. [1] Holt, D., Eick, B., O'Brien, E.
-           "Handbook of computational group theory"
+    * Holt, D., Eick, B., O'Brien, E.
+      "Handbook of computational group theory"
 
     """
     base_len = len(base)

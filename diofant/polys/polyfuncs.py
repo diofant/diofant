@@ -1,7 +1,9 @@
 """High-level polynomials manipulation functions. """
 
-from ..core import Add, Mul, S
-from ..utilities import numbered_symbols, take
+import itertools
+
+from ..core import Add, Integer, Mul
+from ..utilities import numbered_symbols
 from .polyerrors import (ComputationFailed, MultivariatePolynomialError,
                          PolificationFailed)
 from .polyoptions import allowed_flags
@@ -9,7 +11,7 @@ from .polytools import Poly, parallel_poly_from_expr, poly_from_expr
 from .specialpolys import interpolating_poly, symmetric_poly
 
 
-__all__ = ('symmetrize', 'horner', 'interpolate', 'viete')
+__all__ = 'symmetrize', 'horner', 'interpolate', 'viete'
 
 
 def symmetrize(F, *gens, **args):
@@ -56,18 +58,18 @@ def symmetrize(F, *gens, **args):
 
         for expr in exc.exprs:
             assert expr.is_Number
-            result.append((expr, S.Zero))
-        else:
-            if not iterable:
-                result, = result
+            result.append((expr, Integer(0)))
 
-            if not exc.opt.formal:
-                return result
+        if not iterable:
+            result, = result
+
+        if not exc.opt.formal:
+            return result
+        else:
+            if iterable:
+                return result, []
             else:
-                if iterable:
-                    return result, []
-                else:
-                    return result + ([],)
+                return result + ([],)
 
     polys, symbols = [], opt.symbols
     gens, dom = opt.gens, opt.domain
@@ -108,20 +110,20 @@ def symmetrize(F, *gens, **args):
             for m1, m2 in zip(monom, monom[1:] + (0,)):
                 exponents.append(m1 - m2)
 
-            term = [ s**n for (s, _), n in zip(polys, exponents) ]
-            poly = [ p**n for (_, p), n in zip(polys, exponents) ]
+            term = [s**n for (s, _), n in zip(polys, exponents)]
+            poly = [p**n for (_, p), n in zip(polys, exponents)]
 
             symmetric.append(Mul(coeff, *term))
-            product = poly[0].mul(coeff)
+            product = poly[0]*coeff
 
             for p in poly[1:]:
-                product = product.mul(p)
+                product *= p
 
             f -= product
 
         result.append((Add(*symmetric), f.as_expr()))
 
-    polys = [ (s, p.as_expr()) for s, p in polys ]
+    polys = [(s, p.as_expr()) for s, p in polys]
 
     if not opt.formal:
         for i, (sym, non_sym) in enumerate(result):
@@ -144,12 +146,12 @@ def horner(f, *gens, **args):
     Rewrite a polynomial in Horner form.
 
     Among other applications, evaluation of a polynomial at a point is optimal
-    when it is applied using the Horner scheme ([1]).
+    when it is applied using the Horner scheme.
 
     Examples
     ========
 
-    >>> from diofant.abc import a, b, c, d, e
+    >>> from diofant.abc import e
 
     >>> horner(9*x**4 + 8*x**3 + 7*x**2 + 6*x + 5)
     x*(x*(x*(9*x + 8) + 7) + 6) + 5
@@ -168,7 +170,8 @@ def horner(f, *gens, **args):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Horner_scheme
+    * https://en.wikipedia.org/wiki/Horner_scheme
+
     """
     allowed_flags(args, [])
 
@@ -177,7 +180,7 @@ def horner(f, *gens, **args):
     except PolificationFailed as exc:
         return exc.expr
 
-    form, gen = S.Zero, F.gen
+    form, gen = Integer(0), F.gen
 
     if F.is_univariate:
         for coeff in F.all_coeffs():
@@ -241,7 +244,7 @@ def viete(f, roots=None, *gens, **args):
     Examples
     ========
 
-    >>> x, a, b, c, r1, r2 = symbols('x a:c r1:3')
+    >>> r1, r2 = symbols('r1:3')
 
     >>> viete(a*x**2 + b*x + c, [r1, r2], x)
     [(r1 + r2, -b/a), (r1*r2, c/a)]
@@ -267,7 +270,7 @@ def viete(f, roots=None, *gens, **args):
     if roots is None:
         roots = numbered_symbols('r', start=1)
 
-    roots = take(roots, n)
+    roots = list(itertools.islice(roots, n))
 
     if n != len(roots):
         raise ValueError("required %s roots, got %s" % (n, len(roots)))

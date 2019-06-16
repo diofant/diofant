@@ -2,14 +2,14 @@
 Package for symbolic vector algebra in 3D.
 """
 
-from .vector import Vector, VectorAdd, VectorMul, BaseVector, VectorZero  # noqa: F401
-from .dyadic import Dyadic, DyadicAdd, DyadicMul, BaseDyadic, DyadicZero  # noqa: F401
-from .scalar import BaseScalar  # noqa: F401
-from .deloperator import Del  # noqa: F401
-from .coordsysrect import CoordSysCartesian  # noqa: F401
-from .functions import (express, matrix_to_vector, curl, divergence,  # noqa: F401
-                        gradient, is_conservative, is_solenoidal,
-                        scalar_potential, scalar_potential_difference)
-from .point import Point  # noqa: F401
-from .orienters import (AxisOrienter, BodyOrienter, SpaceOrienter,  # noqa: F401
-                        QuaternionOrienter)
+from .coordsysrect import CoordSysCartesian
+from .deloperator import Del
+from .dyadic import BaseDyadic, Dyadic, DyadicAdd, DyadicMul, DyadicZero
+from .functions import (curl, divergence, express, gradient, is_conservative,
+                        is_solenoidal, matrix_to_vector, scalar_potential,
+                        scalar_potential_difference)
+from .orienters import (AxisOrienter, BodyOrienter, QuaternionOrienter,
+                        SpaceOrienter)
+from .point import Point
+from .scalar import BaseScalar
+from .vector import BaseVector, Vector, VectorAdd, VectorMul, VectorZero

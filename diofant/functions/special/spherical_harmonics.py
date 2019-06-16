@@ -1,4 +1,4 @@
-from ...core import Dummy, Function, I, S, pi, sympify
+from ...core import Dummy, Function, I, pi, sympify
 from ...core.function import ArgumentIndexError
 from ..combinatorial.factorials import factorial
 from ..elementary.complexes import Abs
@@ -123,10 +123,11 @@ class Ynm(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Spherical_harmonics
-    .. [2] http://mathworld.wolfram.com/SphericalHarmonic.html
-    .. [3] http://functions.wolfram.com/Polynomials/SphericalHarmonicY/
-    .. [4] https://dlmf.nist.gov/14.30
+    * https://en.wikipedia.org/wiki/Spherical_harmonics
+    * http://mathworld.wolfram.com/SphericalHarmonic.html
+    * http://functions.wolfram.com/Polynomials/SphericalHarmonicY/
+    * https://dlmf.nist.gov/14.30
+
     """
 
     @classmethod
@@ -136,7 +137,7 @@ class Ynm(Function):
         # Handle negative index m and arguments theta, phi
         if m.could_extract_minus_sign():
             m = -m
-            return S.NegativeOne**m * exp(-2*I*m*phi) * Ynm(n, m, theta, phi)
+            return (-1)**m * exp(-2*I*m*phi) * Ynm(n, m, theta, phi)
         if theta.could_extract_minus_sign():
             theta = -theta
             return Ynm(n, m, theta, phi)
@@ -151,7 +152,7 @@ class Ynm(Function):
         rv = (sqrt((2*n + 1)/(4*pi) * factorial(n - m)/factorial(n + m)) *
               exp(I*m*phi) * assoc_legendre(n, m, cos(theta)))
         # We can do this because of the range of theta
-        return rv.subs(sqrt(-cos(theta)**2 + 1), sin(theta))
+        return rv.subs({sqrt(-cos(theta)**2 + 1): sin(theta)})
 
     def fdiff(self, argindex=4):
         if argindex == 3:
@@ -182,7 +183,7 @@ class Ynm(Function):
     def _eval_conjugate(self):
         # TODO: Make sure theta \in R and phi \in R
         n, m, theta, phi = self.args
-        return S.NegativeOne**m * self.func(n, -m, theta, phi)
+        return (-1)**m * self.func(n, -m, theta, phi)
 
     def as_real_imag(self, deep=True, **hints):
         # TODO: Handle deep and hints
@@ -209,9 +210,10 @@ def Ynm_c(n, m, theta, phi):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Spherical_harmonics
-    .. [2] http://mathworld.wolfram.com/SphericalHarmonic.html
-    .. [3] http://functions.wolfram.com/Polynomials/SphericalHarmonicY/
+    * https://en.wikipedia.org/wiki/Spherical_harmonics
+    * http://mathworld.wolfram.com/SphericalHarmonic.html
+    * http://functions.wolfram.com/Polynomials/SphericalHarmonicY/
+
     """
     from .. import conjugate
     return conjugate(Ynm(n, m, theta, phi))
@@ -250,9 +252,10 @@ class Znm(Function):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Spherical_harmonics
-    .. [2] http://mathworld.wolfram.com/SphericalHarmonic.html
-    .. [3] http://functions.wolfram.com/Polynomials/SphericalHarmonicY/
+    * https://en.wikipedia.org/wiki/Spherical_harmonics
+    * http://mathworld.wolfram.com/SphericalHarmonic.html
+    * http://functions.wolfram.com/Polynomials/SphericalHarmonicY/
+
     """
 
     @classmethod

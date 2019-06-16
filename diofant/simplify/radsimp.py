@@ -1,8 +1,8 @@
 from collections import defaultdict
 
 from .. import DIOFANT_DEBUG
-from ..core import (Add, Derivative, I, Mul, Pow, Rational, S, expand_mul,
-                    expand_power_base, gcd_terms, symbols, sympify)
+from ..core import (Add, Derivative, I, Integer, Mul, Pow, Rational,
+                    expand_mul, expand_power_base, gcd_terms, symbols, sympify)
 from ..core.compatibility import default_sort_key, iterable, ordered
 from ..core.exprtools import Factors
 from ..core.function import _mexpand
@@ -44,8 +44,6 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
 
     Examples
     ========
-
-    >>> from diofant.abc import a, b, c
 
     This function can collect symbolic coefficients in polynomials or
     rational expressions. It will manage to find all integer or rational
@@ -151,6 +149,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
     ========
 
     collect_const, collect_sqrt, rcollect
+
     """
     def make_expression(terms):
         product = []
@@ -163,7 +162,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
                     term, order = Derivative(term, var), order - 1
 
             if sym is None:
-                if rat is S.One:
+                if rat == 1:
                     product.append(term)
                 else:
                     product.append(Pow(term, rat))
@@ -210,8 +209,9 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
 
          for example, the output of x would be (x, 1, None, None)
          the output of 2**x would be (2, 1, x, None)
+
         """
-        rat_expo, sym_expo = S.One, None
+        rat_expo, sym_expo = Integer(1), None
         sexpr, deriv = expr, None
 
         if expr.is_Pow:
@@ -238,6 +238,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
         """Parse terms searching for a pattern.
         terms is a list of tuples as returned by parse_terms;
         pattern is an expression treated as a product of factors
+
         """
         pattern = Mul.make_args(pattern)
 
@@ -335,7 +336,7 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
 
     summa = [expand_power_base(i, deep=False) for i in Add.make_args(expr)]
 
-    collected, disliked = defaultdict(list), S.Zero
+    collected, disliked = defaultdict(list), Integer(0)
     for product in summa:
         terms = [parse_term(i) for i in Mul.make_args(product)]
 
@@ -374,8 +375,8 @@ def collect(expr, syms, func=None, evaluate=True, exact=False, distribute_order_
     # add terms now for each key
     collected = {k: Add(*v) for k, v in collected.items()}
 
-    if disliked is not S.Zero:
-        collected[S.One] = disliked
+    if disliked != 0:
+        collected[Integer(1)] = disliked
 
     if order_term is not None:
         for key, val in collected.items():
@@ -405,6 +406,7 @@ def rcollect(expr, *vars):
     See Also
     ========
     collect, collect_const, collect_sqrt
+
     """
     if expr.is_Atom or not expr.has(*vars):
         return expr
@@ -430,8 +432,6 @@ def collect_sqrt(expr, evaluate=True):
     Examples
     ========
 
-    >>> from diofant.abc import a, b
-
     >>> r2, r3, r5 = [sqrt(i) for i in [2, 3, 5]]
     >>> collect_sqrt(a*r2 + b*r2)
     sqrt(2)*(a + b)
@@ -454,6 +454,7 @@ def collect_sqrt(expr, evaluate=True):
     See Also
     ========
     collect, collect_const, rcollect
+
     """
     # this step will help to standardize any complex arguments
     # of sqrts
@@ -500,7 +501,7 @@ def collect_const(expr, *vars, **kwargs):
     Examples
     ========
 
-    >>> from diofant.abc import a, s
+    >>> from diofant.abc import s
     >>> collect_const(sqrt(3) + sqrt(3)*(1 + sqrt(2)))
     sqrt(3)*(sqrt(2) + 2)
     >>> collect_const(sqrt(3)*s + sqrt(7)*s + sqrt(3) + sqrt(7))
@@ -526,6 +527,7 @@ def collect_const(expr, *vars, **kwargs):
     See Also
     ========
     collect, collect_sqrt, rcollect
+
     """
     if not expr.is_Add:
         return expr
@@ -563,13 +565,13 @@ def collect_const(expr, *vars, **kwargs):
                            fnow[k].is_Integer for k in fnow):
                     terms[v].append(q.as_expr())
                     continue
-            terms[S.One].append(m)
+            terms[Integer(1)].append(m)
 
         args = []
         hit = False
         for k in ordered(terms):
             v = terms[k]
-            if k is S.One:
+            if k == 1:
                 args.extend(v)
                 continue
 
@@ -613,13 +615,10 @@ def radsimp(expr, symbolic=True, max_terms=4):
     Examples
     ========
 
-    >>> from diofant.abc import a, b, c
-
     >>> radsimp(1/(I + 1))
     (1 - I)/2
     >>> radsimp(1/(2 + sqrt(2)))
     (-sqrt(2) + 2)/2
-    >>> x, y = map(Symbol, 'xy')
     >>> e = ((2 + 2*sqrt(2))*x + (2 + sqrt(8))*y)/(2 + sqrt(2))
     >>> radsimp(e)
     sqrt(2)*(x + y)
@@ -655,9 +654,9 @@ def radsimp(expr, symbolic=True, max_terms=4):
     Results with symbols will not always be valid for all substitutions:
 
     >>> eq = 1/(a + b*sqrt(c))
-    >>> eq.subs(a, b*sqrt(c))
+    >>> eq.subs({a: b*sqrt(c)})
     1/(2*b*sqrt(c))
-    >>> radsimp(eq).subs(a, b*sqrt(c))
+    >>> radsimp(eq).subs({a: b*sqrt(c)})
     nan
 
     If symbolic=False, symbolic denominators will not be transformed (but
@@ -728,7 +727,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
         elif not n.is_Atom:
             n = n.func(*[handle(a) for a in n.args])
             return _unevaluated_Mul(n, handle(1/d))
-        elif n is not S.One:
+        elif n != 1:
             return _unevaluated_Mul(n, handle(1/d))
         elif d.is_Mul:
             return _unevaluated_Mul(*[handle(1/d) for d in d.args])
@@ -774,15 +773,15 @@ def radsimp(expr, symbolic=True, max_terms=4):
                 other = []
                 for i in Mul.make_args(m):
                     if ispow2(i, log2=True):
-                        p2.append(i.base if i.exp is S.Half else i.base**(2*i.exp))
+                        p2.append(i.base if i.exp == Rational(1, 2) else i.base**(2*i.exp))
                     elif i is I:
-                        p2.append(S.NegativeOne)
+                        p2.append(Integer(-1))
                     else:
                         other.append(i)
                 collected[tuple(ordered(p2))].append(Mul(*other))
             rterms = list(ordered(list(collected.items())))
             rterms = [(Mul(*i), Add(*j)) for i, j in rterms]
-            nrad = len(rterms) - (1 if rterms[0][0] is S.One else 0)
+            nrad = len(rterms) - (1 if rterms[0][0] == 1 else 0)
             if nrad < 1:
                 break
             elif nrad > max_terms:
@@ -798,7 +797,7 @@ def radsimp(expr, symbolic=True, max_terms=4):
                 # but other considerations can guide selection of radical terms
                 # so that radicals are removed
                 if all(x.is_Integer and (y**2).is_Rational for x, y in rterms):
-                    nd, d = rad_rationalize(S.One, Add._from_args(
+                    nd, d = rad_rationalize(Integer(1), Add._from_args(
                         [sqrt(x)*y for x, y in rterms]))
                     n *= nd
                 else:
@@ -854,6 +853,7 @@ def rad_rationalize(num, den):
 
     >>> rad_rationalize(sqrt(3), 1 + sqrt(2)/3)
     (-sqrt(3) + sqrt(6)/3, -7/9)
+
     """
     if not den.is_Add:
         return num, den
@@ -907,6 +907,7 @@ def fraction(expr, exact=False):
 
     >>> fraction(exp(-x), exact=True)
     (E**(-x), 1)
+
     """
     expr = sympify(expr)
 
@@ -916,7 +917,7 @@ def fraction(expr, exact=False):
         if term.is_Pow and term.is_commutative:
             b, ex = term.as_base_exp()
             if ex.is_negative:
-                if ex is S.NegativeOne:
+                if ex == -1:
                     denom.append(b)
                 else:
                     denom.append(Pow(b, -ex))
@@ -976,6 +977,7 @@ def split_surds(expr):
 
     >>> split_surds(3*sqrt(3) + sqrt(5)/7 + sqrt(6) + sqrt(10) + sqrt(15))
     (3, sqrt(2) + sqrt(5) + 3, sqrt(5)/7 + sqrt(10))
+
     """
     args = sorted(expr.args, key=default_sort_key)
     coeff_muls = [x.as_coeff_Mul() for x in args]
@@ -991,7 +993,7 @@ def split_surds(expr):
         g2 = g*g1
     a1v, a2v = [], []
     for c, s in coeff_muls:
-        if s.is_Pow and s.exp == S.Half:
+        if s.is_Pow and s.exp == Rational(1, 2):
             s1 = s.base
             if s1 in b1:
                 a1v.append(c*sqrt(s1/g2))
@@ -1015,6 +1017,7 @@ def _split_gcd(*a):
 
     >>> _split_gcd(55, 35, 22, 14, 77, 10)
     (5, [55, 35, 10], [22, 14, 77])
+
     """
     g = a[0]
     b1 = [g]

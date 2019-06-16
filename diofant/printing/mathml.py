@@ -2,7 +2,7 @@
 A MathML printer.
 """
 
-from ..core import Mul, S, sympify
+from ..core import Mul
 from ..core.function import _coeff_isneg
 from .conventions import requires_partial, split_super_sub
 from .pretty.pretty_symbology import greek_unicode
@@ -17,7 +17,8 @@ class MathMLPrinter(Printer):
     References
     ==========
 
-    .. [1] http://www.w3.org/TR/MathML2/
+    * http://www.w3.org/TR/MathML2/
+
     """
 
     printmethod = "_mathml"
@@ -32,9 +33,7 @@ class MathMLPrinter(Printer):
         self.dom = Document()
 
     def doprint(self, expr):
-        """
-        Prints the expression as MathML.
-        """
+        """Prints the expression as MathML."""
         mathML = Printer._print(self, expr)
         unistr = mathML.toxml()
         xmlbstr = unistr.encode('ascii', 'xmlcharrefreplace')
@@ -93,7 +92,7 @@ class MathMLPrinter(Printer):
         from ..simplify import fraction
         numer, denom = fraction(expr)
 
-        if denom is not S.One:
+        if denom != 1:
             x = self.dom.createElement('apply')
             x.appendChild(self.dom.createElement('divide'))
             x.appendChild(self._print(numer))
@@ -189,6 +188,7 @@ class MathMLPrinter(Printer):
     def _print_GoldenRatio(self, e):
         """We use unicode #x3c6 for Greek letter phi as defined here
         http://www.w3.org/2003/entities/2007doc/isogrk1.html
+
         """
         x = self.dom.createElement('cn')
         x.appendChild(self.dom.createTextNode("\N{GREEK SMALL LETTER PHI}"))
@@ -362,6 +362,7 @@ class MathMLPrinter(Printer):
     def _print_list(self, seq):
         """MathML reference for the <list> element:
         http://www.w3.org/TR/MathML2/chapter4.html#contm.list
+
         """
         dom_element = self.dom.createElement('list')
         for item in seq:
@@ -375,27 +376,5 @@ class MathMLPrinter(Printer):
 
 
 def mathml(expr, **settings):
-    """Returns the MathML representation of expr"""
+    """Returns the MathML representation of expr."""
     return MathMLPrinter(settings).doprint(expr)
-
-
-def print_mathml(expr, **settings):
-    """
-    Prints a pretty representation of the MathML code for expr
-
-    Examples
-    ========
-
-    >>> print_mathml(x+1)  #doctest: +NORMALIZE_WHITESPACE
-    <apply>
-        <plus/>
-        <ci>x</ci>
-        <cn>1</cn>
-    </apply>
-
-    """
-    s = MathMLPrinter(settings)
-    xml = s._print(sympify(expr))
-    pretty_xml = xml.toprettyxml()
-
-    print(pretty_xml)

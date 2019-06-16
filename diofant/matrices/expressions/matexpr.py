@@ -1,10 +1,11 @@
-from .. import ShapeError
-from ...core import AtomicExpr, Expr, Integer, S, Symbol, Tuple, sympify
+from ...core import AtomicExpr, Expr, Integer, Symbol, Tuple, sympify
 from ...core.assumptions import StdFactKB
 from ...core.decorators import _sympifyit, call_highest_priority
 from ...core.logic import fuzzy_bool
 from ...functions import adjoint, conjugate
+from ...logic import false
 from ...simplify import simplify
+from ..matrices import ShapeError
 
 
 class MatrixExpr(Expr):
@@ -22,11 +23,12 @@ class MatrixExpr(Expr):
 
     See Also
     ========
-        MatrixSymbol
-        MatAdd
-        MatMul
-        Transpose
-        Inverse
+    MatrixSymbol
+    MatAdd
+    MatMul
+    Transpose
+    Inverse
+
     """
 
     _op_priority = 11.0
@@ -47,10 +49,10 @@ class MatrixExpr(Expr):
     # The following is adapted from the core Expr object
     def __neg__(self):
         from .matmul import MatMul
-        return MatMul(S.NegativeOne, self).doit()
+        return MatMul(-1, self).doit()
 
     def __abs__(self):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__radd__')
@@ -97,11 +99,11 @@ class MatrixExpr(Expr):
             raise ShapeError("Power of non-square matrix %s" % self)
         elif self.is_Identity:
             return self
-        elif other is S.NegativeOne:
+        elif other == -1:
             return Inverse(self)
-        elif other is S.Zero:
+        elif other == 0:
             return Identity(self.rows)
-        elif other is S.One:
+        elif other == 1:
             return self
         return MatPow(self, other)
 
@@ -113,13 +115,13 @@ class MatrixExpr(Expr):
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__rtruediv__')
     def __truediv__(self, other):
-        return self * other**S.NegativeOne
+        return self * other**Integer(-1)
 
     @_sympifyit('other', NotImplemented)
     @call_highest_priority('__truediv__')
     def __rtruediv__(self, other):
         raise NotImplementedError()
-        # return MatMul(other, Pow(self, S.NegativeOne))
+        # return MatMul(other, Pow(self, -1))
 
     @property
     def rows(self):
@@ -183,8 +185,8 @@ class MatrixExpr(Expr):
         def is_valid(idx):
             return isinstance(idx, (int, Integer, Symbol, Expr))
         return (is_valid(i) and is_valid(j) and
-                (0 <= i) is not S.false and (i < self.rows) is not S.false and
-                (0 <= j) is not S.false and (j < self.cols) is not S.false)
+                (0 <= i) != false and (i < self.rows) != false and
+                (0 <= j) != false and (j < self.cols) != false)
 
     def __getitem__(self, key):
         if not isinstance(key, tuple) and isinstance(key, slice):
@@ -214,8 +216,8 @@ class MatrixExpr(Expr):
             else:
                 raise IndexError("Invalid index %s" % key)
         elif isinstance(key, (Symbol, Expr)):
-                raise IndexError("Single index only supported for "
-                                 "non-symbolic indices.")
+            raise IndexError("Single index only supported for "
+                             "non-symbolic indices.")
         raise IndexError("Invalid index, wanted %s[i,j]" % self)
 
     def as_explicit(self):
@@ -267,6 +269,7 @@ class MatrixExpr(Expr):
         See Also
         ========
         as_explicit: returns ImmutableMatrix
+
         """
         return self.as_explicit().as_mutable()
 
@@ -285,6 +288,7 @@ class MatrixExpr(Expr):
 
         >>> Identity(3).equals(eye(3))
         True
+
         """
         if all(x.is_Integer for x in self.shape):
             return self.as_explicit().equals(other)
@@ -303,19 +307,20 @@ class MatrixElement(Expr):
     j = property(lambda self: self.args[2])
     _diff_wrt = True
 
+    def __new__(cls, name, n, m):
+        n, m = map(sympify, (n, m))
+        from .. import MatrixBase
+        if isinstance(name, MatrixBase):
+            if n.is_Integer and m.is_Integer:
+                return name[n, m]
+        name = sympify(name)
+        return Expr.__new__(cls, name, n, m)
+
     def xreplace(self, rule):
         if self in rule:
             return rule[self]
         else:
             return self
-
-    def doit(self, **kwargs):
-        deep = kwargs.get('deep', True)
-        if deep:
-            args = [arg.doit(**kwargs) for arg in self.args]
-        else:
-            args = self.args
-        return args[0][args[1], args[2]]
 
 
 class MatrixSymbol(MatrixExpr, AtomicExpr):
@@ -330,6 +335,7 @@ class MatrixSymbol(MatrixExpr, AtomicExpr):
     (3, 4)
     >>> 2*A*B + Identity(3)
     I + 2*A*B
+
     """
 
     is_Atom = True
@@ -390,12 +396,13 @@ class Identity(MatrixExpr):
     >>> I = Identity(3)
     >>> I*A
     A
+
     """
 
     is_Identity = True
 
     def __new__(cls, n):
-        return super(Identity, cls).__new__(cls, sympify(n))
+        return super().__new__(cls, sympify(n))
 
     @property
     def rows(self):
@@ -423,12 +430,12 @@ class Identity(MatrixExpr):
 
     def _entry(self, i, j):
         if i == j:
-            return S.One
+            return Integer(1)
         else:
-            return S.Zero
+            return Integer(0)
 
     def _eval_determinant(self):
-        return S.One
+        return Integer(1)
 
 
 class ZeroMatrix(MatrixExpr):
@@ -440,12 +447,13 @@ class ZeroMatrix(MatrixExpr):
     A
     >>> Z*A.T
     0
+
     """
 
     is_ZeroMatrix = True
 
     def __new__(cls, m, n):
-        return super(ZeroMatrix, cls).__new__(cls, m, n)
+        return super().__new__(cls, m, n)
 
     @property
     def shape(self):
@@ -466,16 +474,16 @@ class ZeroMatrix(MatrixExpr):
         return ZeroMatrix(self.cols, self.rows)
 
     def _eval_trace(self):
-        return S.Zero
+        return Integer(0)
 
     def _eval_determinant(self):
-        return S.Zero
+        return Integer(0)
 
     def conjugate(self):
         return self
 
     def _entry(self, i, j):
-        return S.Zero
+        return Integer(0)
 
     def __bool__(self):
         return False

@@ -1,0 +1,162 @@
+from diofant import Function, Integral, latex
+from diofant import pretty as xpretty
+from diofant.abc import a, b, c
+from diofant.vector import CoordSysCartesian, Vector, express
+
+
+__all__ = ()
+
+
+def pretty(expr):
+    """ASCII pretty-printing"""
+    return xpretty(expr, use_unicode=False, wrap_line=False)
+
+
+def upretty(expr):
+    """Unicode pretty-printing"""
+    return xpretty(expr, use_unicode=True, wrap_line=False)
+
+
+# Initialize the basic and tedious vector/dyadic expressions
+# needed for testing.
+# Some of the pretty forms shown denote how the expressions just
+# above them should look with pretty printing.
+N = CoordSysCartesian('N')
+C = N.orient_new_axis('C', a, N.k)
+v = []
+d = []
+v.append(Vector.zero)
+v.append(N.i)
+v.append(-N.i)
+v.append(N.i + N.j)
+v.append(a*N.i)
+v.append(a*N.i - b*N.j)
+v.append((a**2 + N.x)*N.i + N.k)
+v.append((a**2 + b)*N.i + 3*(C.y - c)*N.k)
+f = Function('f')
+v.append(N.j - (Integral(f(b)) - C.x**2)*N.k)
+upretty_v_8 = \
+    """\
+N_j + ⎛   2   ⌠        ⎞ N_k\n\
+      ⎜C_x  - ⎮ f(b) db⎟    \n\
+      ⎝       ⌡        ⎠    \
+"""
+pretty_v_8 = \
+    """\
+N_j + /         /       \\\n\
+      |   2    |        |\n\
+      |C_x  -  | f(b) db|\n\
+      |        |        |\n\
+      \\       /         / \
+"""
+
+v.append(N.i + C.k)
+v.append(express(N.i, C))
+v.append((a**2 + b)*N.i + (Integral(f(b)))*N.k)
+upretty_v_11 = \
+    """\
+⎛ 2    ⎞ N_i + ⎛⌠        ⎞ N_k\n\
+⎝a  + b⎠       ⎜⎮ f(b) db⎟    \n\
+               ⎝⌡        ⎠    \
+"""
+pretty_v_11 = \
+    """\
+/ 2    \\ + /  /       \\\n\
+\\a  + b/ N_i| |        |\n\
+           | | f(b) db|\n\
+           | |        |\n\
+           \\/         / \
+"""
+
+for x in v:
+    d.append(x | N.k)
+s = 3*N.x**2*C.y
+upretty_s = \
+    """\
+         2\n\
+3⋅C_y⋅N_x \
+"""
+pretty_s = \
+    """\
+         2\n\
+3*C_y*N_x \
+"""
+
+# This is the pretty form for ((a**2 + b)*N.i + 3*(C.y - c)*N.k) | N.k
+upretty_d_7 = \
+    """\
+⎛ 2    ⎞ (N_i|N_k) + (-3⋅c + 3⋅C_y) (N_k|N_k)\n\
+⎝a  + b⎠                                     \
+"""
+pretty_d_7 = \
+    """\
+/ 2    \\ (N_i|N_k) + (-3*c + 3*C_y) (N_k|N_k)\n\
+\\a  + b/                                     \
+"""
+
+
+def test_str_printing():
+    assert str(v[0]) == '0'
+    assert str(v[1]) == 'N.i'
+    assert str(v[2]) == '(-1)*N.i'
+    assert str(v[3]) == 'N.i + N.j'
+    assert str(v[8]) == 'N.j + (C.x**2 - Integral(f(b), b))*N.k'
+    assert str(v[9]) == 'C.k + N.i'
+    assert str(s) == '3*C.y*N.x**2'
+    assert str(d[0]) == '0'
+    assert str(d[1]) == '(N.i|N.k)'
+    assert str(d[4]) == 'a*(N.i|N.k)'
+    assert str(d[5]) == 'a*(N.i|N.k) + (-b)*(N.j|N.k)'
+    assert str(d[8]) == ('(N.j|N.k) + (C.x**2 - ' +
+                         'Integral(f(b), b))*(N.k|N.k)')
+
+
+def test_pretty_print_unicode():
+    assert upretty(v[0]) == '0'
+    assert upretty(v[1]) == 'N_i'
+    assert upretty(v[5]) == '(a) N_i + (-b) N_j'
+    # Make sure the printing works in other objects
+    assert upretty(v[5].args) == '((a) N_i, (-b) N_j)'
+    assert upretty(v[8]) == upretty_v_8
+    assert upretty(v[2]) == '(-1) N_i'
+    assert upretty(v[11]) == upretty_v_11
+    assert upretty(s) == upretty_s
+    assert upretty(d[0]) == '(0|0)'
+    assert upretty(d[5]) == '(a) (N_i|N_k) + (-b) (N_j|N_k)'
+    assert upretty(d[7]) == upretty_d_7
+    assert upretty(d[10]) == '(cos(a)) (C_i|N_k) + (-sin(a)) (C_j|N_k)'
+
+
+def test_latex_printing():
+    assert latex(v[0]) == '\\mathbf{\\hat{0}}'
+    assert latex(v[1]) == '\\mathbf{\\hat{i}_{N}}'
+    assert latex(v[2]) == '- \\mathbf{\\hat{i}_{N}}'
+    assert latex(v[5]) == ('(a)\\mathbf{\\hat{i}_{N}} + '
+                           '(- b)\\mathbf{\\hat{j}_{N}}')
+    assert latex(v[6]) == ('(a^{2} + \\mathbf{{x}_{N}})\\mathbf{\\hat{i}_{N}} + '
+                           '\\mathbf{\\hat{k}_{N}}')
+    assert latex(v[8]) == ('\\mathbf{\\hat{j}_{N}} + (\\mathbf{{x}_'
+                           '{C}}^{2} - \\int f{\\left (b \\right )}\\,'
+                           ' db)\\mathbf{\\hat{k}_{N}}')
+    assert latex(s) == '3 \\mathbf{{y}_{C}} \\mathbf{{x}_{N}}^{2}'
+    assert latex(d[0]) == '(\\mathbf{\\hat{0}}|\\mathbf{\\hat{0}})'
+    assert latex(d[4]) == ('(a)(\\mathbf{\\hat{i}_{N}}{|}\\mathbf'
+                           '{\\hat{k}_{N}})')
+    assert latex(d[9]) == ('(\\mathbf{\\hat{k}_{C}}{|}\\mathbf{\\'
+                           'hat{k}_{N}}) + (\\mathbf{\\hat{i}_{N}}{|'
+                           '}\\mathbf{\\hat{k}_{N}})')
+    assert latex(d[11]) == ('(a^{2} + b)(\\mathbf{\\hat{i}_{N}}{|}\\'
+                            'mathbf{\\hat{k}_{N}}) + (\\int f{\\left ('
+                            'b \\right )}\\, db)(\\mathbf{\\hat{k}_{N}'
+                            '}{|}\\mathbf{\\hat{k}_{N}})')
+
+
+def test_custom_names():
+    A = CoordSysCartesian('A', vector_names=['x', 'y', 'z'],
+                          variable_names=['i', 'j', 'k'])
+    assert A.i.__str__() == 'x'
+    assert A.x.__str__() == 'i'
+    assert A.i._pretty_form == 'A_x'
+    assert A.x._pretty_form == 'A_i'
+    assert A.i._latex_form == r'\mathbf{\hat{x}_{A}}'
+    assert A.x._latex_form == r"\mathbf{{i}_{A}}"

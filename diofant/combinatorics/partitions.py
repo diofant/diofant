@@ -19,6 +19,7 @@ class Partition(FiniteSet):
 
     diofant.utilities.iterables.partitions,
     diofant.utilities.iterables.multiset_partitions
+
     """
 
     _rank = None
@@ -77,6 +78,7 @@ class Partition(FiniteSet):
         >>> l = [d, b, a + 1, a, c]
         >>> l.sort(key=default_sort_key); l
         [{{1, 2}}, {{1}, {2}}, {{1, x}}, {{3, 4}}, {{0, 1, 2, 3}}]
+
         """
         if order is None:
             members = self.members
@@ -94,6 +96,7 @@ class Partition(FiniteSet):
 
         >>> Partition([1], [2, 3]).partition
         [[1], [2, 3]]
+
         """
         if self._partition is None:
             self._partition = sorted(sorted(p, key=default_sort_key)
@@ -115,6 +118,7 @@ class Partition(FiniteSet):
         2
         >>> (a + 100).rank
         1
+
         """
         other = as_int(other)
         offset = self.rank + other
@@ -138,6 +142,7 @@ class Partition(FiniteSet):
         0
         >>> (a - 100).rank
         1
+
         """
         return self.__add__(-other)
 
@@ -157,6 +162,7 @@ class Partition(FiniteSet):
         True
         >>> a <= b
         true
+
         """
         return self.sort_key() <= sympify(other).sort_key()
 
@@ -173,6 +179,7 @@ class Partition(FiniteSet):
         (9, 34)
         >>> a < b
         true
+
         """
         return self.sort_key() < sympify(other).sort_key()
 
@@ -187,6 +194,7 @@ class Partition(FiniteSet):
         >>> a = Partition([1, 2], [3], [4, 5])
         >>> a.rank
         13
+
         """
         if self._rank is not None:
             return self._rank
@@ -215,6 +223,7 @@ class Partition(FiniteSet):
         {{3}, {4}, {5}, {1, 2}}
         >>> _.RGS
         (0, 0, 1, 2, 3)
+
         """
         rgs = {}
         partition = self.partition
@@ -245,6 +254,7 @@ class Partition(FiniteSet):
         >>> a = Partition([1, 4], [2], [3, 5])
         >>> Partition.from_rgs(a.RGS, a.members)
         {{2}, {1, 4}, {3, 5}}
+
         """
         if len(rgs) != len(elements):
             raise ValueError('mismatch in rgs and element lengths')
@@ -281,7 +291,8 @@ class IntegerPartition(Basic):
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Partition_%28number_theory%29
+    * https://en.wikipedia.org/wiki/Partition_%28number_theory%29
+
     """
 
     _dict = None
@@ -357,6 +368,7 @@ class IntegerPartition(Basic):
         [3, 1]
         >>> p.partition > p.prev_lex().partition
         True
+
         """
         d = defaultdict(int)
         d.update(self.as_dict())
@@ -393,6 +405,7 @@ class IntegerPartition(Basic):
         [4]
         >>> p.partition < p.next_lex().partition
         True
+
         """
         d = defaultdict(int)
         d.update(self.as_dict())
@@ -440,6 +453,7 @@ class IntegerPartition(Basic):
 
         >>> IntegerPartition([1]*3 + [2] + [3]*4).as_dict()
         {1: 3, 2: 1, 3: 4}
+
         """
         if self._dict is None:
             groups = group(self.partition, multiple=False)
@@ -458,6 +472,7 @@ class IntegerPartition(Basic):
         >>> a = IntegerPartition([6, 3, 3, 2, 1])
         >>> a.conjugate
         [5, 4, 3, 1, 1, 1]
+
         """
         j = 1
         temp_arr = list(self.partition) + [0]
@@ -485,6 +500,7 @@ class IntegerPartition(Basic):
         True
         >>> a == b
         False
+
         """
         return list(reversed(self.partition)) < list(reversed(other.partition))
 
@@ -498,6 +514,7 @@ class IntegerPartition(Basic):
         >>> a = IntegerPartition([4])
         >>> a <= a
         True
+
         """
         return list(reversed(self.partition)) <= list(reversed(other.partition))
 
@@ -512,6 +529,7 @@ class IntegerPartition(Basic):
         #####
         #
         #
+
         """
         return "\n".join([char*i for i in self.partition])
 
@@ -536,6 +554,7 @@ def random_integer_partition(n, seed=None):
     [5, 3, 1, 1]
     >>> random_integer_partition(1)
     [1]
+
     """
     from ..utilities.randtest import _randint
 
@@ -573,6 +592,7 @@ def RGS_generalized(m):
     [ 15,  52, 151,  0,  0, 0, 0],
     [ 52, 203,   0,  0,  0, 0, 0],
     [203,   0,   0,  0,  0, 0, 0]])
+
     """
     d = zeros(m + 1)
     for i in range(m + 1):
@@ -634,6 +654,7 @@ def RGS_unrank(rank, m):
     [0, 1, 2, 3]
     >>> RGS_unrank(0, 4)
     [0, 0, 0, 0]
+
     """
     if m < 1:
         raise ValueError("The superset size must be >= 1")
@@ -667,6 +688,7 @@ def RGS_rank(rgs):
     42
     >>> RGS_rank(RGS_unrank(4, 7))
     4
+
     """
     rgs_size = len(rgs)
     rank = 0

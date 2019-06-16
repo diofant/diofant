@@ -13,7 +13,7 @@ Hypergeometric
 """
 
 from ..concrete import Sum
-from ..core import Dict, Dummy, Expr, Integer, Rational, S, cacheit, sympify
+from ..core import Dict, Dummy, Expr, Integer, Rational, cacheit, sympify
 from ..core.compatibility import as_int
 from ..core.logic import fuzzy_and, fuzzy_not
 from ..functions import KroneckerDelta, binomial
@@ -54,6 +54,7 @@ def FiniteRV(name, density):
     2.00000000000000
     >>> P(X >= 2)
     0.700000000000000
+
     """
     return rv(name, FiniteDistributionHandmade, density)
 
@@ -76,7 +77,7 @@ class DiscreteUniformDistribution(SingleFiniteDistribution):
         if x in self.args:
             return self.p
         else:
-            return S.Zero
+            return Integer(0)
 
 
 def DiscreteUniform(name, items):
@@ -98,25 +99,26 @@ def DiscreteUniform(name, items):
     >>> Y = DiscreteUniform('Y', list(range(5))) # distribution over a range
     >>> density(Y).dict
     {0: 1/5, 1: 1/5, 2: 1/5, 3: 1/5, 4: 1/5}
+
     """
     return rv(name, DiscreteUniformDistribution, *items)
 
 
 class DieDistribution(SingleFiniteDistribution):
-    _argnames = ('sides',)
+    _argnames = 'sides',
 
     def __new__(cls, sides):
         sides_sym = sympify(sides)
         if fuzzy_not(fuzzy_and((sides_sym.is_integer, sides_sym.is_positive))):
             raise ValueError("'sides' must be a positive integer.")
         else:
-            return super(DieDistribution, cls).__new__(cls, sides)
+            return super().__new__(cls, sides)
 
     @property
     @cacheit
     def dict(self):
         as_int(self.sides)
-        return super(DieDistribution, self).dict
+        return super().dict
 
     @property
     def set(self):
@@ -127,7 +129,7 @@ class DieDistribution(SingleFiniteDistribution):
         if x.is_number:
             if x.is_Integer and x >= 1 and x <= self.sides:
                 return Rational(1, self.sides)
-            return S.Zero
+            return Integer(0)
         if x.is_Symbol:
             i = Dummy('i', integer=True, positive=True)
             return Sum(KroneckerDelta(x, i)/self.sides, (i, 1, self.sides))
@@ -150,6 +152,7 @@ def Die(name, sides=6):
     >>> D4 = Die('D4', 4) # Four sided Die
     >>> density(D4).dict
     {1: 1/4, 2: 1/4, 3: 1/4, 4: 1/4}
+
     """
 
     return rv(name, DieDistribution, sides)
@@ -176,15 +179,16 @@ def Bernoulli(name, p, succ=1, fail=0):
     >>> density(X).dict
     {0: 1/4, 1: 3/4}
 
-    >>> X = Bernoulli('X', S.Half, 'Heads', 'Tails') # A fair coin toss
+    >>> X = Bernoulli('X', Rational(1, 2), 'Heads', 'Tails') # A fair coin toss
     >>> density(X).dict
     {Heads: 1/2, Tails: 1/2}
+
     """
 
     return rv(name, BernoulliDistribution, p, succ, fail)
 
 
-def Coin(name, p=S.Half):
+def Coin(name, p=Rational(1, 2)):
     """
     Create a Finite Random Variable representing a Coin toss.
 
@@ -203,6 +207,7 @@ def Coin(name, p=S.Half):
     >>> C2 = Coin('C2', Rational(3, 5)) # An unfair coin
     >>> density(C2).dict
     {H: 3/5, T: 2/5}
+
     """
     return rv(name, BernoulliDistribution, p, 'H', 'T')
 
@@ -221,7 +226,7 @@ class BinomialDistribution(SingleFiniteDistribution):
         elif fuzzy_not(fuzzy_and((p_sym.is_nonnegative, (p_sym - 1).is_nonpositive))):
             raise ValueError("'p' must be: 0 <= p <= 1 . p = %s" % str(p))
         else:
-            return super(BinomialDistribution, cls).__new__(cls, *args)
+            return super().__new__(cls, *args)
 
     @property
     def n(self):
@@ -247,9 +252,10 @@ def Binomial(name, n, p, succ=1, fail=0):
 
     >>> from diofant.stats import density
 
-    >>> X = Binomial('X', 4, S.Half) # Four "coin flips"
+    >>> X = Binomial('X', 4, Rational(1, 2)) # Four "coin flips"
     >>> density(X).dict
     {0: 1/16, 1: 1/4, 2: 3/8, 3: 1/4, 4: 1/16}
+
     """
 
     return rv(name, BinomialDistribution, n, p, succ, fail)
@@ -288,6 +294,7 @@ def Hypergeometric(name, N, m, n):
     >>> X = Hypergeometric('X', 10, 5, 3) # 10 marbles, 5 white (success), 3 draws
     >>> density(X).dict
     {0: 1/12, 1: 5/12, 2: 5/12, 3: 1/12}
+
     """
     return rv(name, HypergeometricDistribution, N, m, n)
 
@@ -296,7 +303,7 @@ class RademacherDistribution(SingleFiniteDistribution):
     @property
     @cacheit
     def dict(self):
-        return {-1: S.Half, 1: S.Half}
+        return {-1: Rational(1, 2), 1: Rational(1, 2)}
 
 
 def Rademacher(name):
@@ -322,7 +329,7 @@ def Rademacher(name):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Rademacher_distribution
+    * https://en.wikipedia.org/wiki/Rademacher_distribution
 
     """
     return rv(name, RademacherDistribution)

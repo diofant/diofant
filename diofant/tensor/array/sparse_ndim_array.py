@@ -1,7 +1,7 @@
 import functools
 import itertools
 
-from ...core import Dict, Expr, S, Tuple
+from ...core import Dict, Expr, Integer, Tuple
 from ...core.sympify import sympify
 from ...matrices import SparseMatrix
 from ...utilities import flatten
@@ -30,37 +30,47 @@ class SparseNDimArray(NDimArray):
         >>> a[2]
         2
 
+        Symbolic indexing:
+        >>> a[n, m]
+        [[0, 1], [2, 3]][n, m]
+
+        Replace `n` and `m` to get element `(0, 0)`:
+        >>> a[n, m].subs({n: 0, m: 0})
+        0
+
         """
+        syindex = self._check_symbolic_index(index)
+        if syindex is not None:
+            return syindex
+
         # `index` is a tuple with one or more slices:
         if isinstance(index, tuple) and any(isinstance(i, slice) for i in index):
 
             def slice_expand(s, dim):
                 if not isinstance(s, slice):
-                        return s,
+                    return s,
                 start, stop, step = s.indices(dim)
                 return [start + i*step for i in range((stop-start)//step)]
 
             sl_factors = [slice_expand(i, dim) for (i, dim) in zip(index, self.shape)]
             eindices = itertools.product(*sl_factors)
-            array = [self._sparse_array.get(self._parse_index(i), S.Zero) for i in eindices]
+            array = [self._sparse_array.get(self._parse_index(i), Integer(0)) for i in eindices]
             nshape = [len(el) for i, el in enumerate(sl_factors) if isinstance(index[i], slice)]
             return type(self)(array, nshape)
         else:
             # `index` is a single slice:
             if isinstance(index, slice):
                 start, stop, step = index.indices(self._loop_size)
-                retvec = [self._sparse_array.get(ind, S.Zero) for ind in range(start, stop, step)]
+                retvec = [self._sparse_array.get(ind, Integer(0)) for ind in range(start, stop, step)]
                 return retvec
             # `index` is a number or a tuple without any slice:
             else:
                 index = self._parse_index(index)
-                return self._sparse_array.get(index, S.Zero)
+                return self._sparse_array.get(index, Integer(0))
 
     @classmethod
     def zeros(cls, *shape):
-        """
-        Return a sparse N-dim array of zeros.
-        """
+        """Return a sparse N-dim array of zeros."""
         return cls({}, shape)
 
     def tomatrix(self):
@@ -77,6 +87,7 @@ class SparseNDimArray(NDimArray):
         [1, 1, 1],
         [1, 1, 1],
         [1, 1, 1]])
+
         """
         if self.rank() != 2:
             raise ValueError('Dimensions must be of size of 2')
@@ -96,9 +107,9 @@ class SparseNDimArray(NDimArray):
 
 class ImmutableSparseNDimArray(SparseNDimArray, ImmutableNDimArray):
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, iterable=None, shape=None, **kwargs):
 
-        shape, flat_list = cls._handle_ndarray_creation_inputs(*args, **kwargs)
+        shape, flat_list = cls._handle_ndarray_creation_inputs(iterable, shape, **kwargs)
         shape = Tuple(*(sympify(x, strict=True) for x in shape))
         loop_size = functools.reduce(lambda x, y: x*y, shape) if shape else 0
 
@@ -127,9 +138,9 @@ class ImmutableSparseNDimArray(SparseNDimArray, ImmutableNDimArray):
 
 class MutableSparseNDimArray(MutableNDimArray, SparseNDimArray):
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, iterable=None, shape=None, **kwargs):
 
-        shape, flat_list = cls._handle_ndarray_creation_inputs(*args, **kwargs)
+        shape, flat_list = cls._handle_ndarray_creation_inputs(iterable, shape, **kwargs)
         self = object.__new__(cls)
         self._shape = shape
         self._rank = len(shape)
@@ -159,7 +170,6 @@ class MutableSparseNDimArray(MutableNDimArray, SparseNDimArray):
         >>> a[1, 1] = 1
         >>> a
         [[1, 0], [0, 1]]
-
 
         """
         index = self._parse_index(index)

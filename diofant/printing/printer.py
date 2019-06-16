@@ -127,6 +127,7 @@ class Printer:
     >>> x = Function('x')(t)
     >>> print(mystr(x.diff(t, 2)))
     x''
+
     """
 
     _global_settings = {}
@@ -170,7 +171,7 @@ class Printer:
 
     @classmethod
     def set_global_settings(cls, **settings):
-        """Set system-wide printing settings. """
+        """Set system-wide printing settings."""
         for key, val in settings.items():
             if val is not None:
                 cls._global_settings[key] = val
@@ -183,7 +184,7 @@ class Printer:
             raise AttributeError("No order defined.")
 
     def doprint(self, expr):
-        """Returns printer's representation for expr (as a string)"""
+        """Returns printer's representation for expr (as a string)."""
         return self._str(self._print(expr))
 
     def _print(self, expr, *args, **kwargs):
@@ -193,6 +194,7 @@ class Printer:
             1. Let the object print itself if it knows how.
             2. Take the best fitting method defined in the printer.
             3. As fall-back use the emptyPrinter method for the printer.
+
         """
         self._print_level += 1
         try:
@@ -208,6 +210,9 @@ class Printer:
             for cls in type(expr).__mro__:
                 printmethod = '_print_' + cls.__name__
                 if hasattr(self, printmethod):
+                    if cls.__class__.__name__ == 'UndefinedFunction':
+                        # XXX a hack for sympy/sympy#6853
+                        continue
                     return getattr(self, printmethod)(expr, *args, **kwargs)
 
             # Unknown object, fall back to the emptyPrinter.

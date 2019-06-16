@@ -8,24 +8,23 @@ from ..core.sympify import CantSympify
 from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
 from ..domains.field import Field
-from ..printing.defaults import DefaultPrinting
 from ..utilities.magic import pollute
 from .orderings import lex
 from .polyerrors import CoercionFailed, GeneratorsError
 from .rings import PolyElement, PolynomialRing
 
 
-__all__ = ('FractionField', 'field', 'vfield')
+__all__ = 'FractionField', 'field', 'vfield'
 
 
 def field(symbols, domain, order=lex):
-    """Construct new rational function field returning (field, x1, ..., xn). """
+    """Construct new rational function field returning (field, x1, ..., xn)."""
     _field = FractionField(domain, symbols, order)
     return (_field,) + _field.gens
 
 
 def vfield(symbols, domain, order=lex):
-    """Construct new rational function field and inject generators into global namespace. """
+    """Construct new rational function field and inject generators into global namespace."""
     _field = FractionField(domain, symbols, order)
     pollute([sym.name for sym in _field.symbols], _field.gens)
     return _field
@@ -35,7 +34,7 @@ _field_cache = {}
 
 
 class FractionField(Field, CompositeDomain):
-    """A class for representing multivariate rational function fields. """
+    """A class for representing multivariate rational function fields."""
 
     is_FractionField = is_Frac = True
 
@@ -80,7 +79,7 @@ class FractionField(Field, CompositeDomain):
         return obj
 
     def _gens(self):
-        """Return a list of polynomial generators. """
+        """Return a list of polynomial generators."""
         return tuple(self.dtype(gen) for gen in self.ring.gens)
 
     def __hash__(self):
@@ -95,36 +94,30 @@ class FractionField(Field, CompositeDomain):
     def raw_new(self, numer, denom=None):
         return self.dtype(numer, denom)
 
-    def new(self, numer, denom=None):
-        if denom is None:
-            denom = self.ring.one
-        numer, denom = numer.cancel(denom)
-        return self.raw_new(numer, denom)
-
     def domain_new(self, element):
         return self.domain.convert(element)
 
     def ground_new(self, element):
         try:
-            return self.new(self.ring.ground_new(element))
+            return self(self.ring.ground_new(element))
         except CoercionFailed:
             domain = self.domain
 
-            if not domain.has_Field and domain.has_assoc_Field:
+            if not domain.is_Field and domain.has_assoc_Field:
                 ring = self.ring
                 ground_field = domain.field
                 element = ground_field.convert(element)
                 numer = ring.ground_new(element.numerator)
                 denom = ring.ground_new(element.denominator)
                 return self.raw_new(numer, denom)
-            else:  # pragma: no cover
+            else:
                 raise NotImplementedError
 
     def field_new(self, element):
         if isinstance(element, FracElement):
             if self == element.field:
                 return element
-            else:  # pragma: no cover
+            else:
                 raise NotImplementedError("conversion")
         elif isinstance(element, PolyElement):
             denom, numer = element.clear_denoms()
@@ -133,8 +126,9 @@ class FractionField(Field, CompositeDomain):
             return self.raw_new(numer, denom)
         elif isinstance(element, tuple) and len(element) == 2:
             numer, denom = list(map(self.ring.ring_new, element))
-            return self.new(numer, denom)
-        elif isinstance(element, str):  # pragma: no cover
+            numer, denom = numer.cancel(denom)
+            return self.raw_new(numer, denom)
+        elif isinstance(element, str):
             raise NotImplementedError("parsing")
         elif isinstance(element, Expr):
             return self.convert(element)
@@ -160,7 +154,7 @@ class FractionField(Field, CompositeDomain):
                 if c.is_Integer and c != 1:
                     return _rebuild(expr.base**a)**int(c)
 
-            if not domain.has_Field and domain.has_assoc_Field:
+            if not domain.is_Field and domain.has_assoc_Field:
                 return domain.field.convert(expr)
             else:
                 return domain.convert(expr)
@@ -168,7 +162,7 @@ class FractionField(Field, CompositeDomain):
         return _rebuild(sympify(expr))
 
     def from_expr(self, expr):
-        """Convert Diofant's expression to ``dtype``. """
+        """Convert Diofant's expression to ``dtype``."""
         mapping = dict(zip(self.symbols, self.gens))
 
         try:
@@ -182,7 +176,7 @@ class FractionField(Field, CompositeDomain):
         return self.domain.poly_ring(*self.symbols, order=self.order)
 
     def to_expr(self, a):
-        """Convert ``a`` to a Diofant object. """
+        """Convert ``a`` to a Diofant object."""
         return a.as_expr()
 
     def _from_PythonIntegerRing(self, a, K0):
@@ -214,37 +208,31 @@ class FractionField(Field, CompositeDomain):
 
     @property
     def ring(self):
-        """Returns a field associated with ``self``. """
+        """Returns a field associated with ``self``."""
         return self.to_ring()
 
     def is_positive(self, a):
-        """Returns True if ``LC(a)`` is positive. """
+        """Returns True if ``LC(a)`` is positive."""
         return self.domain.is_positive(a.numer.LC)
 
     def is_negative(self, a):
-        """Returns True if ``LC(a)`` is negative. """
+        """Returns True if ``LC(a)`` is negative."""
         return self.domain.is_negative(a.numer.LC)
 
-    def is_nonpositive(self, a):
-        """Returns True if ``LC(a)`` is non-positive. """
-        return self.domain.is_nonpositive(a.numer.LC)
-
-    def is_nonnegative(self, a):
-        """Returns True if ``LC(a)`` is non-negative. """
-        return self.domain.is_nonnegative(a.numer.LC)
-
     def factorial(self, a):
-        """Returns factorial of ``a``. """
+        """Returns factorial of ``a``."""
         return self.dtype(self.domain.factorial(a))
 
 
-class FracElement(DomainElement, DefaultPrinting, CantSympify):
+@functools.total_ordering
+class FracElement(DomainElement, CantSympify):
     """Element of multivariate distributed rational function field.
 
     See Also
     ========
 
     FractionField
+
     """
 
     def __init__(self, numer, denom=None):
@@ -297,7 +285,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
             new_ring = new_field.ring
             numer = self.numer.set_ring(new_ring)
             denom = self.denom.set_ring(new_ring)
-            return new_field.new(numer, denom)
+            return new_field((numer, denom))
 
     def as_expr(self, *symbols):
         return self.numer.as_expr(*symbols)/self.denom.as_expr(*symbols)
@@ -314,29 +302,17 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
     def sort_key(self):
         return self.denom.sort_key(), self.numer.sort_key()
 
-    def _cmp(self, other, op):
-        if isinstance(other, self.field.dtype):
-            return op(self.sort_key(), other.sort_key())
-        else:  # pragma: no cover
-            return NotImplemented
-
     def __lt__(self, other):
-        return self._cmp(other, operator.lt)
-
-    def __le__(self, other):
-        return self._cmp(other, operator.le)
-
-    def __gt__(self, other):
-        return self._cmp(other, operator.gt)
-
-    def __ge__(self, other):
-        return self._cmp(other, operator.ge)
+        if isinstance(other, self.field.dtype):
+            return self.sort_key() < other.sort_key()
+        else:
+            return NotImplemented
 
     def __pos__(self):
         return self.raw_new(self.numer, self.denom)
 
     def __neg__(self):
-        """Negate all coefficients in ``self``. """
+        """Negate all coefficients in ``self``."""
         return self.raw_new(-self.numer, self.denom)
 
     def _extract_ground(self, element):
@@ -357,7 +333,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
             return 1, element, None
 
     def __add__(self, other):
-        """Add rational functions ``self`` and ``other``. """
+        """Add rational functions ``self`` and ``other``."""
         field = self.field
 
         if not other:
@@ -378,7 +354,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
                     pass
                 elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
                     return other.__radd__(self)
-                else:  # pragma: no cover
+                else:
                     return NotImplemented
             elif isinstance(other, PolyElement):
                 if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
@@ -396,14 +372,14 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
         if op == 1:
             return self.new(self.numer + self.denom*other_numer, self.denom)
-        elif not op:  # pragma: no cover
+        elif not op:
             return NotImplemented
         else:
             return self.new(self.numer*other_denom + self.denom*other_numer,
                             self.denom*other_denom)
 
     def __sub__(self, other):
-        """Subtract rational functions ``self`` and ``other``. """
+        """Subtract rational functions ``self`` and ``other``."""
         field = self.field
 
         if not other:
@@ -424,7 +400,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
                     pass
                 elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
                     return other.__rsub__(self)
-                else:  # pragma: no cover
+                else:
                     return NotImplemented
             elif isinstance(other, PolyElement):
                 if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
@@ -436,7 +412,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
         if op == 1:
             return self.new(self.numer - self.denom*other_numer, self.denom)
-        elif not op:  # pragma: no cover
+        elif not op:
             return NotImplemented
         else:
             return self.new(self.numer*other_denom - self.denom*other_numer,
@@ -450,14 +426,14 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
         if op == 1:
             return self.new(-self.numer + self.denom*other_numer, self.denom)
-        elif not op:  # pragma: no cover
+        elif not op:
             return NotImplemented
         else:
             return self.new(-self.numer*other_denom + self.denom*other_numer,
                             self.denom*other_denom)
 
     def __mul__(self, other):
-        """Multiply rational functions ``self`` and ``other``. """
+        """Multiply rational functions ``self`` and ``other``."""
         field = self.field
 
         if not self or not other:
@@ -472,7 +448,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
                     pass
                 elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
                     return other.__rmul__(self)
-                else:  # pragma: no cover
+                else:
                     return NotImplemented
             elif isinstance(other, PolyElement):
                 if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
@@ -490,13 +466,13 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
         if op == 1:
             return self.new(self.numer*other_numer, self.denom)
-        elif not op:  # pragma: no cover
+        elif not op:
             return NotImplemented
         else:
             return self.new(self.numer*other_numer, self.denom*other_denom)
 
     def __truediv__(self, other):
-        """Computes quotient of fractions ``self`` and ``other``. """
+        """Computes quotient of fractions ``self`` and ``other``."""
         field = self.field
 
         if not other:
@@ -511,19 +487,19 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
                     pass
                 elif isinstance(other.field.domain, FractionField) and other.field.domain.field == field:
                     return other.__rtruediv__(self)
-                else:  # pragma: no cover
+                else:
                     return NotImplemented
             elif isinstance(other, PolyElement):
                 if isinstance(field.domain, PolynomialRing) and field.domain.ring == other.ring:
                     pass
                 else:
-                    return other.__rtruediv__(self)
+                    return NotImplemented
 
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
             return self.new(self.numer, self.denom*other_numer)
-        elif not op:  # pragma: no cover
+        elif not op:
             return NotImplemented
         else:
             return self.new(self.numer*other_denom, self.denom*other_numer)
@@ -538,13 +514,13 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
         if op == 1:
             return self.new(self.denom*other_numer, self.numer)
-        elif not op:  # pragma: no cover
+        elif not op:
             return NotImplemented
         else:
             return self.new(self.denom*other_numer, self.numer*other_denom)
 
     def __pow__(self, n):
-        """Raise ``self`` to a non-negative power ``n``. """
+        """Raise ``self`` to a non-negative power ``n``."""
         if n >= 0:
             return self.raw_new(self.numer**n, self.denom**n)
         elif not self:
@@ -561,6 +537,7 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
         >>> _, x, y, z = field("x y z", ZZ)
         >>> ((x**2 + y)/(z + 1)).diff(x)
         2*x/(z + 1)
+
         """
         x = x.to_poly()
         return self.new(self.numer.diff(x)*self.denom -
@@ -568,35 +545,40 @@ class FracElement(DomainElement, DefaultPrinting, CantSympify):
 
     def __call__(self, *values):
         if 0 < len(values) <= self.field.ngens:
-            return self.evaluate(list(zip(self.field.gens, values)))
+            return self.eval(list(zip(self.field.gens, values)))
         else:
             raise ValueError("expected at least 1 and at most %s values, got %s" % (self.field.ngens, len(values)))
 
-    def evaluate(self, x, a=None):
+    def eval(self, x, a=None):
         if isinstance(x, list) and a is None:
             x = [(X.to_poly(), a) for X, a in x]
-            numer, denom = self.numer.evaluate(x), self.denom.evaluate(x)
+            numer, denom = self.numer.eval(x), self.denom.eval(x)
         else:
             x = x.to_poly()
-            numer, denom = self.numer.evaluate(x, a), self.denom.evaluate(x, a)
+            numer, denom = self.numer.eval(x, a), self.denom.eval(x, a)
 
         if self._extract_ground(denom) == (1, 1, None):
             return numer
         if isinstance(numer, PolyElement):
-            field = numer.ring.to_field()
+            field = numer.ring.field
         else:
             field = self.field
-        return field.new(field.ring(numer), field.ring(denom))
+        return field((field.ring(numer), field.ring(denom)))
 
-    def subs(self, x, a=None):
-        if isinstance(x, list) and a is None:
+    def subs(self, x):
+        if isinstance(x, (list, tuple)):
             x = [(X.to_poly(), a) for X, a in x]
             numer, denom = self.numer.subs(x), self.denom.subs(x)
+        elif isinstance(x, (set, frozenset)):
+            x = sorted((X.to_poly(), a) for X, a in x)
+            numer, denom = self.numer.subs(x), self.denom.subs(x)
+        elif isinstance(x, dict):
+            x = sorted((k.to_poly(), x[k]) for k in x)
+            numer, denom = self.numer.subs(x), self.denom.subs(x)
         else:
-            x = x.to_poly()
-            numer, denom = self.numer.subs(x, a), self.denom.subs(x, a)
+            raise ValueError("subs argument should be an iterable of pairs")
 
         return self.new(numer, denom)
 
     def compose(self, x, a=None):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError

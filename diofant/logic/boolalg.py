@@ -59,13 +59,13 @@ class Boolean(Expr):
         Examples
         ========
 
-        >>> from diofant.abc import A, B, C
-        >>> (A >> B).equals(~B >> ~A)
+        >>> (a >> b).equals(~b >> ~a)
         True
-        >>> Not(And(A, B, C)).equals(And(Not(A), Not(B), Not(C)))
+        >>> Not(And(a, b, c)).equals(And(Not(a), Not(b), Not(c)))
         False
-        >>> Not(And(A, Not(A))).equals(Or(B, Not(B)))
+        >>> Not(And(a, Not(a))).equals(Or(b, Not(b)))
         False
+
         """
         from .inference import satisfiable
         from ..core.relational import Relational
@@ -79,9 +79,7 @@ class Boolean(Expr):
 
 
 class BooleanAtom(Atom, Boolean):
-    """
-    Base class of BooleanTrue and BooleanFalse.
-    """
+    """Base class of BooleanTrue and BooleanFalse."""
 
     is_Boolean = True
 
@@ -91,7 +89,7 @@ class BooleanAtom(Atom, Boolean):
 
 
 class BooleanTrue(BooleanAtom, metaclass=Singleton):
-    """Diofant version of True, a singleton that can be accessed via S.true.
+    """Diofant version of True, a singleton that can be accessed via ``true``.
 
     This is the Diofant version of True, for use in the logic module. The
     primary advantage of using true instead of True is that shorthand boolean
@@ -103,23 +101,23 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
     =====
 
     There is liable to be some confusion as to when ``True`` should
-    be used and when ``S.true`` should be used in various contexts
+    be used and when ``true`` should be used in various contexts
     throughout Diofant. An important thing to remember is that
-    ``sympify(True)`` returns ``S.true``. This means that for the most
+    ``sympify(True)`` returns ``true``. This means that for the most
     part, you can just use ``True`` and it will automatically be converted
-    to ``S.true`` when necessary, similar to how you can generally use 1
-    instead of ``S.One``.
+    to ``true`` when necessary, similar to how you can generally use 1
+    instead of ``Integer(1)``.
 
     The rule of thumb is:
 
     "If the boolean in question can be replaced by an arbitrary symbolic
-    ``Boolean``, like ``Or(x, y)`` or ``x > 1``, use ``S.true``.
+    ``Boolean``, like ``Or(x, y)`` or ``x > 1``, use ``true``.
     Otherwise, use ``True``".
 
-    In other words, use ``S.true`` only on those contexts where the
+    In other words, use ``true`` only on those contexts where the
     boolean is being used as a symbolic representation of truth.
     For example, if the object ends up in the ``.args`` of any expression,
-    then it must necessarily be ``S.true`` instead of ``True``, as
+    then it must necessarily be ``true`` instead of ``True``, as
     elements of ``.args`` must be ``Basic``. On the other hand,
     ``==`` is not a symbolic operation in Diofant, since it always returns
     ``True`` or ``False``, and does so in terms of structural equality
@@ -127,14 +125,14 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
     system should use ``True`` and ``False``. Aside from not satisfying
     the above rule of thumb, the
     assumptions system uses a three-valued logic (``True``, ``False``, ``None``),
-    whereas ``S.true`` and ``S.false`` represent a two-valued logic. When in
+    whereas ``true`` and ``false`` represent a two-valued logic. When in
     doubt, use ``True``.
 
-    "``S.true == True is True``."
+    "``true == True is True``."
 
-    While "``S.true is True``" is ``False``, "``S.true == True``"
+    While "``true is True``" is ``False``, "``true == True``"
     is ``True``, so if there is any doubt over whether a function or
-    expression will return ``S.true`` or ``True``, just use ``==``
+    expression will return ``true`` or ``True``, just use ``==``
     instead of ``is`` to do the comparison, and it will work in either
     case.  Finally, for boolean flags, it's better to just use ``if x``
     instead of ``if x is True``. To quote PEP 8:
@@ -162,6 +160,7 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
     ========
 
     diofant.logic.boolalg.BooleanFalse
+
     """
 
     def __bool__(self):
@@ -179,12 +178,13 @@ class BooleanTrue(BooleanAtom, metaclass=Singleton):
 
         >>> true.as_set()
         UniversalSet()
+
         """
         return S.UniversalSet
 
 
 class BooleanFalse(BooleanAtom, metaclass=Singleton):
-    """Diofant version of False, a singleton that can be accessed via S.false.
+    """Diofant version of False, a singleton that can be accessed via ``false``.
 
     This is the Diofant version of False, for use in the logic module. The
     primary advantage of using false instead of False is that shorthand boolean
@@ -213,6 +213,7 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
     ========
 
     diofant.logic.boolalg.BooleanTrue
+
     """
 
     def __bool__(self):
@@ -230,6 +231,7 @@ class BooleanFalse(BooleanAtom, metaclass=Singleton):
 
         >>> false.as_set()
         EmptySet()
+
         """
         from ..sets import EmptySet
         return EmptySet()
@@ -244,13 +246,14 @@ false = BooleanFalse()
 S.true = true
 S.false = false
 
-converter[bool] = lambda x: S.true if x else S.false
+converter[bool] = lambda x: true if x else false
 
 
 class BooleanFunction(Application, Boolean):
     """Boolean function is a function that lives in a boolean space.
 
     This is used as base class for And, Or, Not, etc.
+
     """
 
     is_Boolean = True
@@ -272,7 +275,7 @@ class BooleanFunction(Application, Boolean):
                 if isinstance(arg, cls):
                     arg = arg.args
                 else:
-                    arg = (arg,)
+                    arg = arg,
                 for a in arg:
                     if Not(a) in argset:
                         return cls.zero
@@ -293,7 +296,7 @@ class And(LatticeOp, BooleanFunction):
     ========
 
     >>> x & y
-    And(x, y)
+    x & y
 
     Notes
     =====
@@ -303,8 +306,9 @@ class And(LatticeOp, BooleanFunction):
     and. Hence, ``And(a, b)`` and ``a & b`` will return different things if
     ``a`` and ``b`` are integers.
 
-    >>> And(x, y).subs(x, 1)
+    >>> And(x, y).subs({x: 1})
     y
+
     """
 
     zero = false
@@ -326,7 +330,7 @@ class And(LatticeOp, BooleanFunction):
                     continue
                 nc = (~c).canonical
                 if any(r == nc for r in rel):
-                    return [S.false]
+                    return [false]
                 rel.append(c)
             newargs.append(x)
         return LatticeOp._new_args_filter(newargs, And)
@@ -338,14 +342,14 @@ class And(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> x = Symbol('x', real=True)
         >>> And(x<2, x>-2).as_set()
         (-2, 2)
+
         """
         from ..sets import Intersection
         if len(self.free_symbols) == 1:
             return Intersection(*[arg.as_set() for arg in self.args])
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError("Sorry, And.as_set has not yet been"
                                       " implemented for multivariate"
                                       " expressions")
@@ -362,7 +366,7 @@ class Or(LatticeOp, BooleanFunction):
     ========
 
     >>> x | y
-    Or(x, y)
+    x | y
 
     Notes
     =====
@@ -372,8 +376,9 @@ class Or(LatticeOp, BooleanFunction):
     or. Hence, ``Or(a, b)`` and ``a | b`` will return different things if
     ``a`` and ``b`` are integers.
 
-    >>> Or(x, y).subs(x, 0)
+    >>> Or(x, y).subs({x: 0})
     y
+
     """
 
     zero = true
@@ -393,7 +398,7 @@ class Or(LatticeOp, BooleanFunction):
                     continue
                 nc = (~c).canonical
                 if any(r == nc for r in rel):
-                    return [S.true]
+                    return [true]
                 rel.append(c)
             newargs.append(x)
         return LatticeOp._new_args_filter(newargs, Or)
@@ -405,14 +410,14 @@ class Or(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> x = Symbol('x', real=True)
         >>> Or(x>2, x<-2).as_set()
         (-oo, -2) U (2, oo)
+
         """
         from ..sets import Union
         if len(self.free_symbols) == 1:
             return Union(*[arg.as_set() for arg in self.args])
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError("Sorry, Or.as_set has not yet been"
                                       " implemented for multivariate"
                                       " expressions")
@@ -428,7 +433,6 @@ class Not(BooleanFunction):
     Examples
     ========
 
-    >>> from diofant.abc import A, B
     >>> Not(True)
     false
     >>> Not(False)
@@ -438,11 +442,11 @@ class Not(BooleanFunction):
     >>> Not(Or(True, False))
     false
     >>> Not(And(And(True, x), Or(x, False)))
-    Not(x)
+    ~x
     >>> ~x
-    Not(x)
-    >>> Not(And(Or(A, B), Or(~A, ~B)))
-    Not(And(Or(A, B), Or(Not(A), Not(B))))
+    ~x
+    >>> Not(And(Or(x, y), Or(~x, ~y)))
+    ~((x | y) & (~x | ~y))
 
     Notes
     =====
@@ -459,6 +463,7 @@ class Not(BooleanFunction):
     -2
     >>> ~true
     false
+
     """
 
     is_Not = True
@@ -492,13 +497,13 @@ class Not(BooleanFunction):
         Examples
         ========
 
-        >>> x = Symbol('x', real=True)
         >>> Not(x>0, evaluate=False).as_set()
         (-oo, 0]
+
         """
         if len(self.free_symbols) == 1:
             return self.args[0].as_set().complement(S.Reals)
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError("Sorry, Not.as_set has not yet been"
                                       " implemented for mutivariate"
                                       " expressions")
@@ -571,13 +576,14 @@ class Xor(BooleanFunction):
     particular, ``a ^ b`` and ``Xor(a, b)`` will be different if ``a`` and
     ``b`` are integers.
 
-    >>> Xor(x, y).subs(y, 0)
+    >>> Xor(x, y).subs({y: 0})
     x
+
     """
 
     def __new__(cls, *args, **kwargs):
         argset = set()
-        obj = super(Xor, cls).__new__(cls, *args, **kwargs)
+        obj = super().__new__(cls, *args, **kwargs)
         for arg in super(Xor, obj).args:
             if isinstance(arg, Number) or arg in (True, False):
                 if not arg:
@@ -654,7 +660,8 @@ class Nand(BooleanFunction):
     >>> Nand(True, True)
     false
     >>> Nand(x, y)
-    Not(And(x, y))
+    ~(x & y)
+
     """
 
     @classmethod
@@ -684,7 +691,8 @@ class Nor(BooleanFunction):
     >>> Nor(False, False)
     true
     >>> Nor(x, y)
-    Not(Or(x, y))
+    ~(x | y)
+
     """
 
     @classmethod
@@ -733,6 +741,7 @@ class Implies(BooleanFunction):
     1
     >>> true >> false
     false
+
     """
 
     @classmethod
@@ -749,13 +758,13 @@ class Implies(BooleanFunction):
             raise ValueError(
                 "%d operand(s) used for an Implies "
                 "(pairs are required): %s" % (len(args), str(args)))
-        if A == S.true or A == S.false or B == S.true or B == S.false:
+        if A == true or A == false or B == true or B == false:
             return Or(Not(A), B)
         elif A == B:
-            return S.true
+            return true
         elif A.is_Relational and B.is_Relational:
             if A.canonical == B.canonical:
-                return S.true
+                return true
             elif (~A).canonical == B.canonical:
                 return B
         else:
@@ -784,6 +793,7 @@ class Equivalent(BooleanFunction):
     false
     >>> Equivalent(x, And(x, True))
     true
+
     """
 
     def __new__(cls, *args, **options):
@@ -821,7 +831,7 @@ class Equivalent(BooleanFunction):
             argset.discard(False)
             return And(*[~arg for arg in argset])
         _args = frozenset(argset)
-        obj = super(Equivalent, cls).__new__(cls, _args)
+        obj = super().__new__(cls, _args)
         obj._argset = _args
         return obj
 
@@ -860,6 +870,7 @@ class ITE(BooleanFunction):
     y
     >>> ITE(x, y, y)
     y
+
     """
 
     @classmethod
@@ -868,15 +879,15 @@ class ITE(BooleanFunction):
             a, b, c = args
         except ValueError:
             raise ValueError("ITE expects exactly 3 arguments")
-        if a == S.true:
+        if a == true:
             return b
-        elif a == S.false:
+        elif a == false:
             return c
         elif b == c:
             return b
-        elif b == S.true and c == S.false:
+        elif b == true and c == false:
             return a
-        elif b == S.false and c == S.true:
+        elif b == false and c == true:
             return Not(a)
 
     def to_nnf(self, simplify=True):
@@ -902,11 +913,11 @@ def conjuncts(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B
-    >>> conjuncts(A & B) == frozenset([A, B])
+    >>> conjuncts(a & b) == frozenset([a, b])
     True
-    >>> conjuncts(A | B) == frozenset([Or(A, B)])
+    >>> conjuncts(a | b) == frozenset([Or(a, b)])
     True
+
     """
     return And.make_args(expr)
 
@@ -917,11 +928,11 @@ def disjuncts(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B
-    >>> disjuncts(A | B) == frozenset([A, B])
+    >>> disjuncts(a | b) == frozenset([a, b])
     True
-    >>> disjuncts(A & B) == frozenset([And(A, B)])
+    >>> disjuncts(a & b) == frozenset([And(a, b)])
     True
+
     """
     return Or.make_args(expr)
 
@@ -934,9 +945,9 @@ def distribute_and_over_or(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> distribute_and_over_or(Or(A, And(Not(B), Not(C))))
-    And(Or(A, Not(B)), Or(A, Not(C)))
+    >>> distribute_and_over_or(Or(a, And(Not(b), Not(c))))
+    (a | ~b) & (a | ~c)
+
     """
     return _distribute((expr, And, Or))
 
@@ -951,17 +962,15 @@ def distribute_or_over_and(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> distribute_or_over_and(And(Or(Not(A), B), C))
-    Or(And(B, C), And(C, Not(A)))
+    >>> distribute_or_over_and(And(Or(Not(a), b), c))
+    (b & c) | (c & ~a)
+
     """
     return _distribute((expr, Or, And))
 
 
 def _distribute(info):
-    """
-    Distributes info[1] over info[2] with respect to info[0].
-    """
+    """Distributes info[1] over info[2] with respect to info[0]."""
     if isinstance(info[0], info[2]):
         for arg in info[0].args:
             if isinstance(arg, info[1]):
@@ -984,17 +993,18 @@ def to_nnf(expr, simplify=True):
     Converts expr to Negation Normal Form.
     A logical expression is in Negation Normal Form (NNF) if it
     contains only And, Or and Not, and Not is applied only to literals.
-    If simpify is True, the result contains no redundant clauses.
+    If simplify is True, the result contains no redundant clauses.
 
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C, D
-    >>> to_nnf(Not((~A & ~B) | (C & D)))
-    And(Or(A, B), Or(Not(C), Not(D)))
-    >>> to_nnf(Equivalent(A >> B, B >> A))
-    And(Or(A, And(A, Not(B)), Not(B)), Or(And(B, Not(A)), B, Not(A)))
+    >>> to_nnf(Not((~a & ~b) | (c & d)))
+    (a | b) & (~c | ~d)
+    >>> to_nnf(Equivalent(a >> b, b >> a))
+    (a | ~b | (a & ~b)) & (b | ~a | (b & ~a))
+
     """
+    expr = sympify(expr)
     if is_nnf(expr, simplify):
         return expr
     return expr.to_nnf(simplify)
@@ -1009,11 +1019,11 @@ def to_cnf(expr, simplify=False):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, D
-    >>> to_cnf(~(A | B) | D)
-    And(Or(D, Not(A)), Or(D, Not(B)))
-    >>> to_cnf((A | B) & (A | ~A), True)
-    Or(A, B)
+    >>> to_cnf(~(a | b) | c)
+    (c | ~a) & (c | ~b)
+    >>> to_cnf((a | b) & (a | ~a), True)
+    a | b
+
     """
     expr = sympify(expr)
     if not isinstance(expr, BooleanFunction):
@@ -1039,11 +1049,11 @@ def to_dnf(expr, simplify=False):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> to_dnf(B & (A | C))
-    Or(And(A, B), And(B, C))
-    >>> to_dnf((A & B) | (A & ~B) | (B & C) | (~B & C), True)
-    Or(A, C)
+    >>> to_dnf(b & (a | c))
+    (a & b) | (b & c)
+    >>> to_dnf((a & b) | (a & ~b) | (b & c) | (~b & c), True)
+    a | c
+
     """
     expr = sympify(expr)
     if not isinstance(expr, BooleanFunction):
@@ -1065,22 +1075,22 @@ def is_nnf(expr, simplified=True):
     Checks if expr is in Negation Normal Form.
     A logical expression is in Negation Normal Form (NNF) if it
     contains only And, Or and Not, and Not is applied only to literals.
-    If simpified is True, checks if result contains no redundant clauses.
+    If simplified is True, checks if result contains no redundant clauses.
 
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> is_nnf(A & B | ~C)
+    >>> is_nnf(a & b | ~c)
     True
-    >>> is_nnf((A | ~A) & (B | C))
+    >>> is_nnf((a | ~a) & (b | c))
     False
-    >>> is_nnf((A | ~A) & (B | C), False)
+    >>> is_nnf((a | ~a) & (b | c), False)
     True
-    >>> is_nnf(Not(A & B) | C)
+    >>> is_nnf(Not(a & b) | c)
     False
-    >>> is_nnf((A >> B) & (B >> A))
+    >>> is_nnf((a >> b) & (b >> a))
     False
+
     """
 
     expr = sympify(expr)
@@ -1112,13 +1122,13 @@ def is_cnf(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> is_cnf(A | B | C)
+    >>> is_cnf(a | b | c)
     True
-    >>> is_cnf(A & B & C)
+    >>> is_cnf(a & b & c)
     True
-    >>> is_cnf((A & B) | C)
+    >>> is_cnf((a & b) | c)
     False
+
     """
     return _is_form(expr, And, Or)
 
@@ -1130,23 +1140,21 @@ def is_dnf(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> is_dnf(A | B | C)
+    >>> is_dnf(a | b | c)
     True
-    >>> is_dnf(A & B & C)
+    >>> is_dnf(a & b & c)
     True
-    >>> is_dnf((A & B) | C)
+    >>> is_dnf((a & b) | c)
     True
-    >>> is_dnf(A & (B | C))
+    >>> is_dnf(a & (b | c))
     False
+
     """
     return _is_form(expr, Or, And)
 
 
 def _is_form(expr, function1, function2):
-    """
-    Test whether or not an expression is of the required form.
-    """
+    """Test whether or not an expression is of the required form."""
     expr = sympify(expr)
 
     # Special case of an Atom
@@ -1200,13 +1208,13 @@ def eliminate_implications(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B, C
-    >>> eliminate_implications(Implies(A, B))
-    Or(B, Not(A))
-    >>> eliminate_implications(Equivalent(A, B))
-    And(Or(A, Not(B)), Or(B, Not(A)))
-    >>> eliminate_implications(Equivalent(A, B, C))
-    And(Or(A, Not(C)), Or(B, Not(A)), Or(C, Not(B)))
+    >>> eliminate_implications(Implies(a, b))
+    b | ~a
+    >>> eliminate_implications(Equivalent(a, b))
+    (a | ~b) & (b | ~a)
+    >>> eliminate_implications(Equivalent(a, b, c))
+    (a | ~c) & (b | ~a) & (c | ~b)
+
     """
     return to_nnf(expr)
 
@@ -1218,15 +1226,15 @@ def is_literal(expr):
     Examples
     ========
 
-    >>> from diofant.abc import A, B
-    >>> is_literal(A)
+    >>> is_literal(a)
     True
-    >>> is_literal(~A)
+    >>> is_literal(~a)
     True
-    >>> is_literal(A + B)
+    >>> is_literal(a + b)
     True
-    >>> is_literal(Or(A, B))
+    >>> is_literal(Or(a, b))
     False
+
     """
     if isinstance(expr, Not):
         return not isinstance(expr.args[0], BooleanFunction)
@@ -1243,6 +1251,7 @@ def to_int_repr(clauses, symbols):
 
     >>> to_int_repr([x | y, y], [x, y])
     [{1, 2}, {2}]
+
     """
 
     symbols = dict(zip(symbols, range(1, len(symbols) + 1)))
@@ -1261,6 +1270,7 @@ def _check_pair(minterm1, minterm2):
     """
     Checks if a pair of minterms differs by only one bit. If yes, returns
     index, else returns -1.
+
     """
     index = -1
     for x, (i, j) in enumerate(zip(minterm1, minterm2)):
@@ -1276,6 +1286,7 @@ def _convert_to_varsSOP(minterm, variables):
     """
     Converts a term in the expansion of a function from binary to it's
     variable form (for SOP).
+
     """
     temp = []
     for i, m in enumerate(minterm):
@@ -1290,6 +1301,7 @@ def _convert_to_varsPOS(maxterm, variables):
     """
     Converts a term in the expansion of a function from binary to it's
     variable form (for POS).
+
     """
     temp = []
     for i, m in enumerate(maxterm):
@@ -1304,6 +1316,7 @@ def _simplified_pairs(terms):
     """
     Reduces a set of minterms, if possible, to a simplified set of minterms
     with one less variable in the terms using QM method.
+
     """
     simplified_terms = []
     todo = list(range(len(terms)))
@@ -1325,6 +1338,7 @@ def _compare_term(minterm, term):
     """
     Return True if a binary term is satisfied by the given term. Used
     for recognizing prime implicants.
+
     """
     for i, x in enumerate(term):
         if x != 3 and x != minterm[i]:
@@ -1337,6 +1351,7 @@ def _rem_redundancy(l1, terms):
     After the truth table has been sufficiently simplified, use the prime
     implicant table method to recognize and eliminate redundant pairs,
     and return the essential arguments.
+
     """
     essential = []
     for x in terms:
@@ -1379,17 +1394,17 @@ def SOPform(variables, minterms, dontcares=None):
     Examples
     ========
 
-    >>> w = Symbol('w')
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1],
     ...             [0, 1, 1, 1], [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
-    >>> SOPform([w, x, y, z], minterms, dontcares)
-    Or(And(Not(w), z), And(y, z))
+    >>> SOPform([t, x, y, z], minterms, dontcares)
+    (y & z) | (z & ~t)
 
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Quine-McCluskey_algorithm
+    * https://en.wikipedia.org/wiki/Quine-McCluskey_algorithm
+
     """
     variables = [sympify(v) for v in variables]
     if minterms == []:
@@ -1428,17 +1443,17 @@ def POSform(variables, minterms, dontcares=None):
     Examples
     ========
 
-    >>> w = Symbol('w')
     >>> minterms = [[0, 0, 0, 1], [0, 0, 1, 1], [0, 1, 1, 1],
     ...             [1, 0, 1, 1], [1, 1, 1, 1]]
     >>> dontcares = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 1]]
-    >>> POSform([w, x, y, z], minterms, dontcares)
-    And(Or(Not(w), y), z)
+    >>> POSform([t, x, y, z], minterms, dontcares)
+    z & (y | ~t)
 
     References
     ==========
 
-    .. [1] https://en.wikipedia.org/wiki/Quine-McCluskey_algorithm
+    * https://en.wikipedia.org/wiki/Quine-McCluskey_algorithm
+
     """
     variables = [sympify(v) for v in variables]
     if minterms == []:
@@ -1469,6 +1484,7 @@ def _find_predicates(expr):
 
     A logical predicate is defined here as anything within a BooleanFunction
     that is not a BooleanFunction itself.
+
     """
     if not isinstance(expr, BooleanFunction):
         return {expr}
@@ -1497,12 +1513,13 @@ def simplify_logic(expr, form=None, deep=True):
 
     >>> b = (~x & ~y & ~z) | (~x & ~y & z)
     >>> simplify_logic(b)
-    And(Not(x), Not(y))
+    ~x & ~y
 
     >>> sympify(b)
-    Or(And(Not(x), Not(y), Not(z)), And(Not(x), Not(y), z))
+    (z & ~x & ~y) | (~x & ~y & ~z)
     >>> simplify_logic(_)
-    And(Not(x), Not(y))
+    ~x & ~y
+
     """
 
     if form == 'cnf' or form == 'dnf' or form is None:
@@ -1539,7 +1556,6 @@ def _finger(eq):
     counting Symbol as 1 and Not(Symbol) as 2
     ]
 
-    >>> from diofant.abc import a, b
     >>> eq = Or(And(Not(y), a), And(Not(y), b), And(x, y))
     >>> dict(_finger(eq))
     {(0, 0, 1, 0, 2): [x],
@@ -1547,6 +1563,7 @@ def _finger(eq):
      (0, 0, 1, 2, 8): [y]}
 
     So y and x have unique fingerprints, but a and b do not.
+
     """
     f = eq.free_symbols
     d = {fi: [0] * 5 for fi in f}
@@ -1565,7 +1582,7 @@ def _finger(eq):
                     d[ai.args[0]][3] += 1
                     d[ai.args[0]][-1] += o
     inv = defaultdict(list)
-    for k, v in ordered(iter(d.items())):
+    for k, v in ordered(d.items()):
         inv[tuple(v)].append(k)
     return inv
 
@@ -1585,25 +1602,22 @@ def bool_map(bool1, bool2):
     Examples
     ========
 
-    >>> from diofant.abc import w, a, b, c, d
     >>> function1 = SOPform([x, z, y], [[1, 0, 1], [0, 0, 1]])
     >>> function2 = SOPform([a, b, c], [[1, 0, 1], [1, 0, 0]])
     >>> bool_map(function1, function2)
-    (And(Not(z), y), {y: a, z: b})
+    (y & ~z, {y: a, z: b})
 
     The results are not necessarily unique, but they are canonical. Here,
-    ``(w, z)`` could be ``(a, d)`` or ``(d, a)``:
+    ``(t, z)`` could be ``(a, d)`` or ``(d, a)``:
 
-    >>> eq =  Or(And(Not(y), w), And(Not(y), z), And(x, y))
+    >>> eq =  Or(And(Not(y), t), And(Not(y), z), And(x, y))
     >>> eq2 = Or(And(Not(c), a), And(Not(c), d), And(b, c))
     >>> bool_map(eq, eq2)
-    (Or(And(Not(y), w), And(Not(y), z),
-     And(x, y)), {w: a, x: b, y: c, z: d})
+    ((x & y) | (t & ~y) | (z & ~y), {t: a, x: b, y: c, z: d})
     >>> eq = And(Xor(a, b), c, And(c, d))
-    >>> bool_map(eq, eq.subs(c, x))
-    (And(Or(Not(a), Not(b)),
-     Or(a, b), c, d),
-     {a: a, b: b, c: d, d: x})
+    >>> bool_map(eq, eq.subs({c: x}))
+    (c & d & (a | b) & (~a | ~b), {a: a, b: b, c: d, d: x})
+
     """
 
     def match(function1, function2):
@@ -1618,6 +1632,7 @@ def bool_map(bool1, bool2):
 
         Basic.match is not robust enough (see issue sympy/sympy#4835) so this is
         a workaround that is valid for simplified boolean expressions.
+
         """
 
         # do some quick checks

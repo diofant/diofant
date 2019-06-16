@@ -1,4 +1,4 @@
-from ..core import Dummy, Rational, S, pi
+from ..core import Dummy, Integer, Rational, pi
 from ..functions import cos, factorial, gamma, sin, sqrt
 from ..polys.orthopolys import (hermite_poly, jacobi_poly, laguerre_poly,
                                 legendre_poly)
@@ -7,7 +7,7 @@ from ..polys.rootoftools import RootOf
 
 def gauss_legendre(n, n_digits):
     r"""
-    Computes the Gauss-Legendre quadrature [1]_ points and weights.
+    Computes the Gauss-Legendre quadrature points and weights.
 
     The Gauss-Legendre quadrature approximates the integral:
 
@@ -62,7 +62,8 @@ def gauss_legendre(n, n_digits):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gaussian_quadrature
+    * https://en.wikipedia.org/wiki/Gaussian_quadrature
+
     """
     x = Dummy("x")
     p = legendre_poly(n, x, polys=True)
@@ -72,14 +73,14 @@ def gauss_legendre(n, n_digits):
     for r in p.real_roots():
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
-        xi.append(r.n(n_digits))
-        w.append((2/((1-r**2) * pd.subs(x, r)**2)).n(n_digits))
+        xi.append(r.evalf(n_digits))
+        w.append((2/((1-r**2) * pd.subs({x: r})**2)).evalf(n_digits))
     return xi, w
 
 
 def gauss_laguerre(n, n_digits):
     r"""
-    Computes the Gauss-Laguerre quadrature [1]_ points and weights.
+    Computes the Gauss-Laguerre quadrature points and weights.
 
     The Gauss-Laguerre quadrature approximates the integral:
 
@@ -135,7 +136,8 @@ def gauss_laguerre(n, n_digits):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
+    * https://en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
+
     """
     x = Dummy("x")
     p = laguerre_poly(n, x, polys=True)
@@ -145,14 +147,14 @@ def gauss_laguerre(n, n_digits):
     for r in p.real_roots():
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
-        xi.append(r.n(n_digits))
-        w.append((r/((n+1)**2 * p1.subs(x, r)**2)).n(n_digits))
+        xi.append(r.evalf(n_digits))
+        w.append((r/((n+1)**2 * p1.subs({x: r})**2)).evalf(n_digits))
     return xi, w
 
 
 def gauss_hermite(n, n_digits):
     r"""
-    Computes the Gauss-Hermite quadrature [1]_ points and weights.
+    Computes the Gauss-Hermite quadrature points and weights.
 
     The Gauss-Hermite quadrature approximates the integral:
 
@@ -207,7 +209,8 @@ def gauss_hermite(n, n_digits):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gauss-Hermite_Quadrature
+    * https://en.wikipedia.org/wiki/Gauss-Hermite_Quadrature
+
     """
     x = Dummy("x")
     p = hermite_poly(n, x, polys=True)
@@ -217,14 +220,14 @@ def gauss_hermite(n, n_digits):
     for r in p.real_roots():
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
-        xi.append(r.n(n_digits))
-        w.append(((2**(n-1) * factorial(n) * sqrt(pi))/(n**2 * p1.subs(x, r)**2)).n(n_digits))
+        xi.append(r.evalf(n_digits))
+        w.append(((2**(n-1) * factorial(n) * sqrt(pi))/(n**2 * p1.subs({x: r})**2)).evalf(n_digits))
     return xi, w
 
 
 def gauss_gen_laguerre(n, alpha, n_digits):
     r"""
-    Computes the generalized Gauss-Laguerre quadrature [1]_ points and weights.
+    Computes the generalized Gauss-Laguerre quadrature points and weights.
 
     The generalized Gauss-Laguerre quadrature approximates the integral:
 
@@ -281,7 +284,8 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
+    * https://en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
+
     """
     x = Dummy("x")
     p = laguerre_poly(n, x, alpha=alpha, polys=True)
@@ -292,14 +296,14 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     for r in p.real_roots():
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
-        xi.append(r.n(n_digits))
-        w.append((gamma(alpha+n)/(n*gamma(n)*p1.subs(x, r)*p2.subs(x, r))).n(n_digits))
+        xi.append(r.evalf(n_digits))
+        w.append((gamma(alpha+n)/(n*gamma(n)*p1.subs({x: r})*p2.subs({x: r}))).evalf(n_digits))
     return xi, w
 
 
 def gauss_chebyshev_t(n, n_digits):
     r"""
-    Computes the Gauss-Chebyshev quadrature [1]_ points and weights of
+    Computes the Gauss-Chebyshev quadrature points and weights of
     the first kind.
 
     The Gauss-Chebyshev quadrature of the first kind approximates the integral:
@@ -355,19 +359,20 @@ def gauss_chebyshev_t(n, n_digits):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
+    * https://en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
+
     """
     xi = []
     w = []
     for i in range(1, n + 1):
-        xi.append((cos((2*i-S.One)/(2*n)*pi)).n(n_digits))
-        w.append((pi/n).n(n_digits))
+        xi.append((cos((2*i-Integer(1))/(2*n)*pi)).evalf(n_digits))
+        w.append((pi/n).evalf(n_digits))
     return xi, w
 
 
 def gauss_chebyshev_u(n, n_digits):
     r"""
-    Computes the Gauss-Chebyshev quadrature [1]_ points and weights of
+    Computes the Gauss-Chebyshev quadrature points and weights of
     the second kind.
 
     The Gauss-Chebyshev quadrature of the second kind approximates the integral:
@@ -423,19 +428,20 @@ def gauss_chebyshev_u(n, n_digits):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
+    * https://en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature
+
     """
     xi = []
     w = []
     for i in range(1, n + 1):
-        xi.append((cos(i/(n+S.One)*pi)).n(n_digits))
-        w.append((pi/(n+S.One)*sin(i*pi/(n+S.One))**2).n(n_digits))
+        xi.append((cos(i/(n+Integer(1))*pi)).evalf(n_digits))
+        w.append((pi/(n+Integer(1))*sin(i*pi/(n+1))**2).evalf(n_digits))
     return xi, w
 
 
 def gauss_jacobi(n, alpha, beta, n_digits):
     r"""
-    Computes the Gauss-Jacobi quadrature [1]_ points and weights.
+    Computes the Gauss-Jacobi quadrature points and weights.
 
     The Gauss-Jacobi quadrature of the first kind approximates the integral:
 
@@ -496,7 +502,8 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Gauss%E2%80%93Jacobi_quadrature
+    * https://en.wikipedia.org/wiki/Gauss%E2%80%93Jacobi_quadrature
+
     """
     x = Dummy("x")
     p = jacobi_poly(n, alpha, beta, x, polys=True)
@@ -507,10 +514,10 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     for r in p.real_roots():
         if isinstance(r, RootOf):
             r = r.eval_rational(Rational(1, 10)**(n_digits+2))
-        xi.append(r.n(n_digits))
+        xi.append(r.evalf(n_digits))
         w.append((
-            - (2*n+alpha+beta+2) / (n+alpha+beta+S.One)
-            * (gamma(n+alpha+1)*gamma(n+beta+1)) / (gamma(n+alpha+beta+S.One)*gamma(n+2))
-            * 2**(alpha+beta) / (pd.subs(x, r) * pn.subs(x, r))
-        ).n(n_digits))
+            - (2*n+alpha+beta+2) / (n+alpha+beta+Integer(1))
+            * (gamma(n+alpha+1)*gamma(n+beta+1)) / (gamma(n+alpha+beta+1)*gamma(n+2))
+            * 2**(alpha+beta) / (pd.subs({x: r}) * pn.subs({x: r}))
+        ).evalf(n_digits))
     return xi, w

@@ -4,7 +4,7 @@ import ast
 import unicodedata
 from io import BytesIO
 from keyword import iskeyword
-from tokenize import (ENDMARKER, NAME, NUMBER, OP, STRING, TokenError,
+from tokenize import (ENDMARKER, NAME, NEWLINE, NUMBER, OP, STRING, TokenError,
                       tokenize, untokenize)
 
 from ..core import Basic, Symbol
@@ -17,6 +17,7 @@ def _token_splittable(token):
     A token is splittable if it does not contain an underscore character and
     it is not the name of a Greek letter. This is used to implicitly convert
     expressions like 'xyz' into 'x*y*z'.
+
     """
     if '_' in token:
         return False
@@ -36,6 +37,7 @@ def _token_callable(token, local_dict, global_dict, nextToken=None):
 
     Essentially wraps ``callable``, but looks up the token name in the
     locals and globals.
+
     """
     func = local_dict.get(token[1])
     if not func:
@@ -48,6 +50,7 @@ class AppliedFunction:
     A group of tokens representing a function and its arguments.
 
     `exponent` is for handling the shorthand sin^2, ln^2, etc.
+
     """
 
     def __init__(self, function, args, exponent=[]):
@@ -57,7 +60,7 @@ class AppliedFunction:
         self.items = ['function', 'args', 'exponent']
 
     def expand(self):
-        """Return a list of tokens representing the function"""
+        """Return a list of tokens representing the function."""
         result = []
         result.append(self.function)
         result.extend(self.args)
@@ -166,6 +169,7 @@ def _implicit_multiplication(tokens, local_dict, global_dict):
     - A close parenthesis next to an open parenthesis ("(x+2)(x+3)")
 
     - AppliedFunction next to an implicitly applied function ("sin(x)cos x")
+
     """
     result = []
     for tok, nextTok in zip(tokens, tokens[1:]):
@@ -231,11 +235,11 @@ def _implicit_application(tokens, local_dict, global_dict):
         result.append(tok)
         if (tok[0] == NAME and
             nextTok[0] != OP and
-                nextTok[0] != ENDMARKER):
+                nextTok[0] not in (ENDMARKER, NEWLINE)):
             if _token_callable(tok, local_dict, global_dict, nextTok):
                 result.append((OP, '('))
                 appendParen += 1
-            else:  # pragma: no cover
+            else:
                 raise NotImplementedError
         # name followed by exponent - function exponentiation
         elif (tok[0] == NAME and nextTok[0] == OP and nextTok[1] == '**'):
@@ -282,6 +286,7 @@ def function_exponentiation(tokens, local_dict, global_dict):
     >>> transformations = standard_transformations + (function_exponentiation,)
     >>> parse_expr('sin**4(x)', transformations=transformations)
     sin(x)**4
+
     """
     result = []
     exponent = []
@@ -339,6 +344,7 @@ def split_symbols_custom(predicate):
     >>> parse_expr('unsplittable', transformations=standard_transformations +
     ...            (transformation, implicit_multiplication))
     unsplittable
+
     """
     def _split_symbols(tokens, local_dict, global_dict):
         result = []
@@ -403,6 +409,7 @@ def implicit_multiplication(result, local_dict, global_dict):
     >>> transformations = standard_transformations + (implicit_multiplication,)
     >>> parse_expr('3 x y', transformations=transformations)
     3*x*y
+
     """
     # These are interdependent steps, so we don't expose them separately
     for step in (_group_parentheses(implicit_multiplication),
@@ -427,6 +434,7 @@ def implicit_application(result, local_dict, global_dict):
     >>> transformations = standard_transformations + (implicit_application,)
     >>> parse_expr('cot z + csc z', transformations=transformations)
     cot(z) + csc(z)
+
     """
     for step in (_group_parentheses(implicit_application),
                  _apply_functions,
@@ -466,7 +474,7 @@ def implicit_multiplication_application(result, local_dict, global_dict):
 
 
 def auto_symbol(tokens, local_dict, global_dict):
-    """Inserts calls to ``Symbol`` for undefined variables."""
+    """Inserts calls to ``Symbol``/``Function`` for undefined variables."""
     result = []
     prevTok = (None, None)
 
@@ -528,7 +536,7 @@ def lambda_notation(tokens, local_dict, global_dict):
     toknum, tokval = tokens[0]
     tokLen = len(tokens)
     if toknum == NAME and tokval == 'lambda':
-        if tokLen == 2:
+        if tokLen == 2 or (tokLen == 3 and tokens[1][0] == NEWLINE):
             result.extend(tokens)
         elif tokLen > 2:
             result.extend([
@@ -548,7 +556,7 @@ def lambda_notation(tokens, local_dict, global_dict):
                     result.insert(-1, (tokNum, tokVal))
                 else:
                     result.insert(-2, (tokNum, tokVal))
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
     else:
         result.extend(tokens)
@@ -633,6 +641,7 @@ def stringify_expr(s, local_dict, global_dict, transformations):
     Converts the string ``s`` to Python code, in ``local_dict``
 
     Generally, ``parse_expr`` should be used.
+
     """
 
     tokens = []
@@ -651,6 +660,7 @@ def eval_expr(code, local_dict, global_dict):
     Evaluate Python code generated by ``stringify_expr``.
 
     Generally, ``parse_expr`` should be used.
+
     """
     expr = eval(
         code, global_dict, local_dict)  # take local objects in preference
@@ -723,6 +733,7 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
     diofant.parsing.sympy_parser.eval_expr
     diofant.parsing.sympy_parser.standard_transformations
     diofant.parsing.sympy_parser.implicit_multiplication_application
+
     """
 
     if local_dict is None:
@@ -743,6 +754,7 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
 def evaluateFalse(s):
     """
     Replaces operators with the Diofant equivalent and sets evaluate=False.
+
     """
     node = ast.parse(s)
     node = EvaluateFalseTransformer().visit(node)

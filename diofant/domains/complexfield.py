@@ -8,7 +8,10 @@ from .mpelements import MPContext
 from .simpledomain import SimpleDomain
 
 
-__all__ = ('ComplexField',)
+__all__ = 'ComplexField',
+
+
+_complexes_cache = {}
 
 
 class ComplexField(Field, CharacteristicZero, SimpleDomain):
@@ -42,14 +45,24 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
     def tolerance(self):
         return self._context.tolerance
 
-    def __init__(self, prec=_default_precision, dps=None, tol=None):
+    def __new__(cls, prec=_default_precision, dps=None, tol=None):
         context = MPContext(prec, dps, tol)
-        context._parent = self
-        self._context = context
 
-        self.dtype = context.mpc
-        self.zero = self.dtype(0)
-        self.one = self.dtype(1)
+        obj = super().__new__(cls)
+
+        try:
+            obj.dtype = _complexes_cache[(context.prec, context.tolerance)]
+        except KeyError:
+            _complexes_cache[(context.prec, context.tolerance)] = obj.dtype = context.mpc
+
+        context._parent = obj
+        obj._context = context
+        obj._hash = hash((cls.__name__, obj.dtype, context.prec, context.tolerance))
+
+        obj.zero = obj.dtype(0)
+        obj.one = obj.dtype(1)
+
+        return obj
 
     def __eq__(self, other):
         return (isinstance(other, ComplexField)
@@ -57,7 +70,7 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
                 and self.tolerance == other.tolerance)
 
     def __hash__(self):
-        return hash((self.__class__.__name__, self.dtype, self.precision, self.tolerance))
+        return self._hash
 
     def to_expr(self, element):
         """Convert ``element`` to Diofant number. """
@@ -65,7 +78,7 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
 
     def from_expr(self, expr):
         """Convert Diofant's number to ``dtype``. """
-        number = expr.evalf(self.dps, strict=False)
+        number = expr.evalf(self.dps)
         real, imag = number.as_real_imag()
 
         if real.is_Number and imag.is_Number:
@@ -84,6 +97,9 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
 
     def _from_GMPYRationalField(self, element, base):
         return self.dtype(int(element.numerator)) / int(element.denominator)
+
+    def _from_AlgebraicField(self, element, base):
+        return self.from_expr(base.to_expr(element))
 
     def _from_RealField(self, element, base):
         return self.dtype(element)
@@ -106,3 +122,6 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
     def almosteq(self, a, b, tolerance=None):
         """Check if ``a`` and ``b`` are almost equal. """
         return self._context.almosteq(a, b, tolerance)
+
+
+CC = ComplexField()

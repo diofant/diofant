@@ -21,6 +21,7 @@ def hadamard_product(*matrices):
     A.*B
     >>> hadamard_product(A, B)[0, 1]
     A[0, 1]*B[0, 1]
+
     """
     if not matrices:
         raise TypeError("Empty Hadamard product is undefined")
@@ -43,6 +44,7 @@ class HadamardProduct(MatrixExpr):
     >>> B = MatrixSymbol('B', 5, 5)
     >>> isinstance(hadamard_product(A, B), HadamardProduct)
     True
+
     """
 
     is_HadamardProduct = True
@@ -52,7 +54,7 @@ class HadamardProduct(MatrixExpr):
         check = kwargs.get('check', True)
         if check:
             validate(*args)
-        return super(HadamardProduct, cls).__new__(cls, *args)
+        return super().__new__(cls, *args)
 
     @property
     def shape(self):

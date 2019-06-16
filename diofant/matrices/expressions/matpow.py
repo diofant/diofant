@@ -1,7 +1,5 @@
-from .. import MatrixBase
-from ...core import S
 from ...core.sympify import sympify
-from ..matrices import ShapeError
+from ..matrices import MatrixBase, ShapeError
 from .matexpr import Identity, MatrixExpr, ZeroMatrix
 from .matmul import MatMul
 
@@ -13,7 +11,7 @@ class MatPow(MatrixExpr):
         if not base.is_Matrix:
             raise TypeError("Function parameter should be a matrix")
         exp = sympify(exp, strict=True)
-        return super(MatPow, cls).__new__(cls, base, exp)
+        return super().__new__(cls, base, exp)
 
     @property
     def base(self):
@@ -66,11 +64,11 @@ class MatPow(MatrixExpr):
         elif isinstance(base, (Identity, ZeroMatrix)):
             return base
         elif isinstance(base, MatrixBase) and exp.is_number:
-            if exp is S.One:
+            if exp == 1:
                 return base
             return base**exp
         # Note: just evaluate cases we know, return unevaluated on others.
         # E.g., MatrixSymbol('x', n, m) to power 0 is not an error.
-        elif exp is S.One:
+        elif exp == 1:
             return base
         return MatPow(base, exp)

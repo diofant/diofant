@@ -1,5 +1,8 @@
-from ...core import Add, Equality, Mul, Pow, Rational, S, Symbol, oo
+import itertools
+
+from ...core import Add, Equality, Integer, Mul, Pow, Rational, S, Symbol, oo
 from ...core.function import _coeff_isneg
+from ...logic import true
 from ...utilities import default_sort_key, group
 from ..conventions import requires_partial
 from ..printer import Printer
@@ -417,7 +420,7 @@ class PrettyPrinter(Printer):
             lines = []
             if use_ascii:
                 lines.append("_"*w + ' ')
-                lines.append("\%s`" % (' '*(w - 1)))
+                lines.append(r"\%s`" % (' '*(w - 1)))
                 for i in range(1, d):
                     lines.append('%s\\%s' % (' '*i, ' '*(w - i)))
                 if more:
@@ -588,6 +591,7 @@ class PrettyPrinter(Printer):
 
     def _print_MatrixBase(self, e):
         D = self._print_matrix_contents(e)
+        D.baseline = D.height()//2
         D = prettyForm(*D.parens('[', ']'))
         return D
     _print_ImmutableMatrix = _print_MatrixBase
@@ -732,12 +736,46 @@ class PrettyPrinter(Printer):
 
         return prettyForm('\n'.join([s[:-3] for s in strs]))
 
+    def _print_NDimArray(self, expr):
+        from ...matrices import ImmutableMatrix
+
+        if expr.rank() == 0:
+            return self._print(expr[()])
+
+        level_str = [[]] + [[] for i in range(expr.rank())]
+        shape_ranges = [list(range(i)) for i in expr.shape]
+        for outer_i in itertools.product(*shape_ranges):
+            level_str[-1].append(expr[outer_i])
+            even = True
+            for back_outer_i in range(expr.rank()-1, -1, -1):
+                if len(level_str[back_outer_i+1]) < expr.shape[back_outer_i]:
+                    break
+                if even:
+                    level_str[back_outer_i].append(level_str[back_outer_i+1])
+                else:
+                    level_str[back_outer_i].append(ImmutableMatrix(level_str[back_outer_i+1]))
+                    if len(level_str[back_outer_i + 1]) == 1:
+                        level_str[back_outer_i][-1] = ImmutableMatrix([[level_str[back_outer_i][-1]]])
+                even = not even
+                level_str[back_outer_i+1] = []
+
+        out_expr = level_str[0][0]
+        if expr.rank() % 2 == 1:
+            out_expr = ImmutableMatrix([out_expr])
+
+        return self._print(out_expr)
+
+    _print_ImmutableDenseNDimArray = _print_NDimArray
+    _print_ImmutableSparseNDimArray = _print_NDimArray
+    _print_MutableDenseNDimArray = _print_NDimArray
+    _print_MutableSparseNDimArray = _print_NDimArray
+
     def _print_Piecewise(self, pexpr):
 
         P = {}
         for n, ec in enumerate(pexpr.args):
             P[n, 0] = self._print(ec.expr)
-            if ec.cond == S.true:
+            if ec.cond == true:
                 P[n, 1] = prettyForm('otherwise')
             else:
                 P[n, 1] = prettyForm(
@@ -1243,7 +1281,7 @@ class PrettyPrinter(Printer):
             return prettyForm.__mul__(*a)
         else:
             if len(a) == 0:
-                a.append( self._print(S.One) )
+                a.append( self._print(Integer(1)) )
             return prettyForm.__mul__(*a)/prettyForm.__mul__(*b)
 
     # A helper function for _print_Pow to print x**(1/n)
@@ -1289,11 +1327,11 @@ class PrettyPrinter(Printer):
         from ...simplify import fraction
         from ...series import Limit
         b, e = power.as_base_exp()
-        if power.is_commutative:
-            if e is S.NegativeOne:
+        if power.is_commutative and not e.is_Float:
+            if e == -1:
                 return prettyForm("1")/self._print(b)
             n, d = fraction(e)
-            if n is S.One and d.is_Atom and not e.is_Integer:
+            if n == 1 and d.is_Atom and not e.is_Integer:
                 return self._print_nth_root(b, e)
             if e.is_Rational and e < 0:
                 return prettyForm("1")/self._print(Pow(b, -e, evaluate=False))
@@ -1519,11 +1557,11 @@ class PrettyPrinter(Printer):
 
     def _print_FiniteField(self, expr):
         if self._use_unicode:
-            form = '\N{DOUBLE-STRUCK CAPITAL Z}_%d'
+            form = '\N{MATHEMATICAL DOUBLE-STRUCK CAPITAL F}_%d'
         else:
             form = 'GF(%d)'
 
-        return prettyForm(pretty_symbol(form % expr.mod))
+        return prettyForm(pretty_symbol(form % expr.order))
 
     def _print_IntegerRing(self, expr):
         if self._use_unicode:

@@ -4,6 +4,7 @@ from mpmath import mpf, mpi
 
 from ..core import Basic, Eq, Expr, Mul, S, nan, oo, sympify, zoo
 from ..core.compatibility import iterable, ordered
+from ..core.decorators import _sympifyit
 from ..core.evalf import EvalfMixin
 from ..core.evaluate import global_evaluate
 from ..core.singleton import Singleton
@@ -22,6 +23,7 @@ class Set(Basic):
     Real intervals are represented by the :class:`Interval` class and unions of
     sets by the :class:`Union` class. The empty set is represented by the
     :class:`EmptySet` class and available as a singleton as ``S.EmptySet``.
+
     """
 
     is_number = False
@@ -40,9 +42,7 @@ class Set(Basic):
 
     @staticmethod
     def _infimum_key(expr):
-        """
-        Return infimum (if possible) else oo.
-        """
+        """Return infimum (if possible) else oo."""
         try:
             infimum = expr.inf
             assert infimum.is_comparable
@@ -73,6 +73,7 @@ class Set(Basic):
         (1, 2]
         >>> Interval(1, 3) - FiniteSet(2)
         [1, 2) U (2, 3]
+
         """
         return Union(self, other)
 
@@ -83,6 +84,7 @@ class Set(Basic):
 
         >>> Interval(1, 3).intersection(Interval(1, 2))
         [1, 2]
+
         """
         return Intersection(self, other)
 
@@ -97,6 +99,7 @@ class Set(Basic):
         be a :class:`Union`, :class:`FiniteSet`, or :class:`EmptySet`
 
         Used within the :class:`Intersection` class
+
         """
         return
 
@@ -115,14 +118,13 @@ class Set(Basic):
         References
         ==========
 
-        .. [1] https//en.wikipedia.org/wiki/Disjoint_sets
+        * https://en.wikipedia.org/wiki/Disjoint_sets
+
         """
         return self.intersection(other) == S.EmptySet
 
     def isdisjoint(self, other):
-        """
-        Alias for :meth:`is_disjoint()`
-        """
+        """Alias for :meth:`is_disjoint()`."""
         return self.is_disjoint(other)
 
     def _union(self, other):
@@ -136,6 +138,7 @@ class Set(Basic):
         must return ``None`` with _union'ed with each other
 
         Used within the :class:`Union` class
+
         """
         return
 
@@ -151,6 +154,7 @@ class Set(Basic):
 
         >>> Interval(0, 1).complement(S.UniversalSet)
         UniversalSet() \ [0, 1]
+
         """
         return Complement(universe, self)
 
@@ -186,15 +190,30 @@ class Set(Basic):
 
         elif isinstance(other, FiniteSet):
             unks = FiniteSet(*[el for el in other
-                               if self.contains(el) not in [S.true, S.false]])
+                               if self.contains(el) not in [true, false]])
             other = FiniteSet(*[el for el in other
-                                if self.contains(el) is not S.true])
-            ret = FiniteSet(*[el for el in other if self.contains(el) is S.false])
+                                if self.contains(el) != true])
+            ret = FiniteSet(*[el for el in other if self.contains(el) == false])
             if unks:
                 ret |= Complement(FiniteSet(*unks), self, evaluate=False)
             return ret
 
     def symmetric_difference(self, other):
+        """
+        Returns symmetric difference of ``self`` and ``other``.
+
+        Examples
+        ========
+
+        >>> Interval(1, 3).symmetric_difference(Reals)
+        (-oo, 1) U (3, oo)
+
+        References
+        ==========
+
+        * https://en.wikipedia.org/wiki/Symmetric_difference
+
+        """
         return SymmetricDifference(self, other)
 
     def _symmetric_difference(self, other):
@@ -212,6 +231,7 @@ class Set(Basic):
         0
         >>> Union(Interval(0, 1), Interval(2, 3)).inf
         0
+
         """
         return self._inf
 
@@ -231,13 +251,15 @@ class Set(Basic):
         1
         >>> Union(Interval(0, 1), Interval(2, 3)).sup
         3
+
         """
         return self._sup
 
     @property
     def _sup(self):
-        raise NotImplementedError("(%s)._sup" % self)  # pragma: no cover
+        raise NotImplementedError("(%s)._sup" % self)
 
+    @_sympifyit('other', false)
     def contains(self, other):
         """
         Returns True if 'other' is contained in 'self' as an element.
@@ -251,15 +273,15 @@ class Set(Basic):
         true
         >>> 0.5 in Interval(0, 1)
         True
+
         """
-        other = sympify(other, strict=True)
         ret = self._contains(other)
         if ret is None:
             ret = Contains(other, self, evaluate=False)
         return ret
 
     def _contains(self, other):
-        raise NotImplementedError("(%s)._contains(%s)" % (self, other))  # pragma: no cover
+        raise NotImplementedError("(%s)._contains(%s)" % (self, other))
 
     def is_subset(self, other):
         """
@@ -272,6 +294,7 @@ class Set(Basic):
         True
         >>> Interval(0, 1).is_subset(Interval(0, 1, left_open=True))
         False
+
         """
         if isinstance(other, Set):
             return self.intersection(other) == self
@@ -279,9 +302,7 @@ class Set(Basic):
             raise ValueError("Unknown argument '%s'" % other)
 
     def issubset(self, other):
-        """
-        Alias for :meth:`is_subset()`
-        """
+        """Alias for :meth:`is_subset()`."""
         return self.is_subset(other)
 
     def is_proper_subset(self, other):
@@ -295,6 +316,7 @@ class Set(Basic):
         True
         >>> Interval(0, 1).is_proper_subset(Interval(0, 1))
         False
+
         """
         if isinstance(other, Set):
             return self != other and self.is_subset(other)
@@ -312,6 +334,7 @@ class Set(Basic):
         False
         >>> Interval(0, 1).is_superset(Interval(0, 1, left_open=True))
         True
+
         """
         if isinstance(other, Set):
             return other.is_subset(self)
@@ -319,9 +342,7 @@ class Set(Basic):
             raise ValueError("Unknown argument '%s'" % other)
 
     def issuperset(self, other):
-        """
-        Alias for :meth:`is_superset()`
-        """
+        """Alias for :meth:`is_superset()`."""
         return self.is_superset(other)
 
     def is_proper_superset(self, other):
@@ -335,6 +356,7 @@ class Set(Basic):
         True
         >>> Interval(0, 1).is_proper_superset(Interval(0, 1))
         False
+
         """
         if isinstance(other, Set):
             return self != other and self.is_superset(other)
@@ -362,7 +384,8 @@ class Set(Basic):
         References
         ==========
 
-        .. [1] https//en.wikipedia.org/wiki/Power_set
+        * https://en.wikipedia.org/wiki/Power_set
+
         """
         return self._eval_powerset()
 
@@ -378,6 +401,7 @@ class Set(Basic):
         1
         >>> Union(Interval(0, 1), Interval(2, 3)).measure
         2
+
         """
         return self._measure
 
@@ -407,6 +431,7 @@ class Set(Basic):
         {0, 1}
         >>> Interval(0, 1, True, False).boundary
         {0, 1}
+
         """
         return self._boundary
 
@@ -427,25 +452,61 @@ class Set(Basic):
         ========
 
         boundary
+
         """
         if not Intersection(self, self.boundary):
             return True
 
     @property
     def is_closed(self):
+        """
+        Test if a set is closed.
+
+        Examples
+        ========
+
+        >>> Interval(0, 1).is_closed
+        True
+
+        """
         return self.boundary.is_subset(self)
 
     @property
     def closure(self):
+        """
+        Return the closure of a set.
+
+        Examples
+        ========
+
+        >>> Interval(0, 1, right_open=True).closure
+        [0, 1]
+
+        """
         return self + self.boundary
 
     @property
     def interior(self):
+        """
+        Return the interior of a set.
+
+        The interior of a set consists all points of a set that do not
+        belong to its boundary.
+
+        Examples
+        ========
+
+        >>> Interval(0, 1).interior
+        (0, 1)
+        >>> Interval(0, 1).boundary.interior
+        EmptySet()
+
+        """
         return self - self.boundary
 
     @property
     def _boundary(self):
-        raise NotImplementedError()  # pragma: no cover
+        raise NotImplementedError()
 
     def _eval_imageset(self, f):
         from .fancysets import ImageSet
@@ -453,7 +514,7 @@ class Set(Basic):
 
     @property
     def _measure(self):
-        raise NotImplementedError("(%s)._measure" % self)  # pragma: no cover
+        raise NotImplementedError("(%s)._measure" % self)
 
     def __add__(self, other):
         return self.union(other)
@@ -521,7 +582,8 @@ class ProductSet(Set):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Cartesian_product
+    * https://en.wikipedia.org/wiki/Cartesian_product
+
     """
 
     is_ProductSet = True
@@ -569,6 +631,7 @@ class ProductSet(Set):
         False
 
         Passes operation on to constituent sets
+
         """
         try:
             if len(element) != len(self.args):
@@ -582,6 +645,7 @@ class ProductSet(Set):
         This function should only be used internally
 
         See Set._intersection for docstring
+
         """
         if not other.is_ProductSet:
             return
@@ -672,7 +736,8 @@ class Interval(Set, EvalfMixin):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Interval_%28mathematics%29
+    * https://en.wikipedia.org/wiki/Interval_%28mathematics%29
+
     """
 
     is_Interval = True
@@ -717,6 +782,7 @@ class Interval(Set, EvalfMixin):
 
         >>> Interval(0, 1).start
         0
+
         """
         return self.args[0]
 
@@ -749,6 +815,7 @@ class Interval(Set, EvalfMixin):
 
         >>> Interval(0, 1).end
         1
+
         """
         return self.args[1]
 
@@ -766,6 +833,7 @@ class Interval(Set, EvalfMixin):
         true
         >>> Interval(0, 1, left_open=False).left_open
         false
+
         """
         return self.args[2]
 
@@ -781,6 +849,7 @@ class Interval(Set, EvalfMixin):
         true
         >>> Interval(0, 1, right_open=False).right_open
         false
+
         """
         return self.args[3]
 
@@ -789,13 +858,14 @@ class Interval(Set, EvalfMixin):
         This function should only be used internally
 
         See Set._intersection for docstring
+
         """
         # We only know how to intersect with other intervals
         if not other.is_Interval:
             return
 
         # handle (-oo, oo)
-        if Eq(self, S.Reals) is S.true:
+        if Eq(self, S.Reals) == true:
             return other
 
         # We can't intersect [0,3] with [x,6] -- we don't know if x>0 or x<0
@@ -850,6 +920,7 @@ class Interval(Set, EvalfMixin):
         This function should only be used internally
 
         See Set._union for docstring
+
         """
         if other.is_UniversalSet:
             return S.UniversalSet
@@ -922,7 +993,7 @@ class Interval(Set, EvalfMixin):
             result = S.EmptySet
             domain_set = self
             for (p_expr, p_cond) in expr.args:
-                if p_cond is S.true:
+                if p_cond == true:
                     intrvl = domain_set
                 else:
                     intrvl = p_cond.as_set()
@@ -1010,12 +1081,12 @@ class Interval(Set, EvalfMixin):
 
     @property
     def is_left_unbounded(self):
-        """Return ``True`` if the left endpoint is negative infinity. """
+        """Return ``True`` if the left endpoint is negative infinity."""
         return self.left == -oo
 
     @property
     def is_right_unbounded(self):
-        """Return ``True`` if the right endpoint is positive infinity. """
+        """Return ``True`` if the right endpoint is positive infinity."""
         return self.right == oo
 
     def as_relational(self, x):
@@ -1069,7 +1140,8 @@ class Union(Set, EvalfMixin):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Union_%28set_theory%29
+    * https://en.wikipedia.org/wiki/Union_%28set_theory%29
+
     """
 
     is_Union = True
@@ -1113,6 +1185,7 @@ class Union(Set, EvalfMixin):
 
         Then we iterate through all pairs and ask the constituent sets if they
         can simplify themselves with any other constituent
+
         """
 
         # ===== Global Rules =====
@@ -1217,7 +1290,7 @@ class Union(Set, EvalfMixin):
     @property
     def _boundary(self):
         def boundary_of_set(i):
-            """ The boundary of set i minus interior of all other sets """
+            """The boundary of set i minus interior of all other sets."""
             b = self.args[i].boundary
             for j, a in enumerate(self.args):
                 if j != i:
@@ -1229,7 +1302,7 @@ class Union(Set, EvalfMixin):
         return Union(imageset(f, arg) for arg in self.args)
 
     def as_relational(self, symbol):
-        """Rewrite a Union in terms of equalities and logic operators. """
+        """Rewrite a Union in terms of equalities and logic operators."""
         return Or(*[set.as_relational(symbol) for set in self.args])
 
     @property
@@ -1243,7 +1316,7 @@ class Union(Set, EvalfMixin):
         # roundrobin recipe taken from itertools documentation:
         # https://docs.python.org/3/library/itertools.html#itertools-recipes
         def roundrobin(*iterables):
-            """roundrobin('ABC', 'D', 'EF') --> A D E B F C"""
+            """roundrobin('ABC', 'D', 'EF') --> A D E B F C."""
             sentinel = object()
             it = itertools.chain.from_iterable(itertools.zip_longest(fillvalue=sentinel, *iterables))
             return (i for i in it if i is not sentinel)
@@ -1277,7 +1350,8 @@ class Intersection(Set):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Intersection_%28set_theory%29
+    * https://en.wikipedia.org/wiki/Intersection_%28set_theory%29
+
     """
 
     is_Intersection = True
@@ -1300,7 +1374,7 @@ class Intersection(Set):
         args = flatten(args)
 
         if len(args) == 0:
-            raise TypeError("Intersection expected at least one argument")
+            return S.UniversalSet
 
         args = list(ordered(args, Set._infimum_key))
 
@@ -1339,6 +1413,7 @@ class Intersection(Set):
 
         Then we iterate through all pairs and ask the constituent sets if they
         can simplify themselves with any other constituent
+
         """
 
         # ===== Global Rules =====
@@ -1349,10 +1424,10 @@ class Intersection(Set):
             if s.is_FiniteSet:
                 args = [a for a in args if a != s]
                 res = s.func(*[x for x in s
-                               if all(other.contains(x) is S.true
+                               if all(other.contains(x) == true
                                       for other in args)])
                 unk = [x for x in s
-                       if any(other.contains(x) not in (S.true, S.false)
+                       if any(other.contains(x) not in (true, false)
                               for other in args)]
                 if unk:
                     res += Intersection(*([s.func(*unk)] + args), evaluate=False)
@@ -1401,7 +1476,7 @@ class Intersection(Set):
             return Intersection(args, evaluate=False)
 
     def as_relational(self, symbol):
-        """Rewrite an Intersection in terms of equalities and logic operators"""
+        """Rewrite an Intersection in terms of equalities and logic operators."""
         return And(*[set.as_relational(symbol) for set in self.args])
 
 
@@ -1425,7 +1500,8 @@ class Complement(Set, EvalfMixin):
     References
     ==========
 
-    .. [1] http://mathworld.wolfram.com/ComplementSet.html
+    * http://mathworld.wolfram.com/ComplementSet.html
+
     """
 
     is_Complement = True
@@ -1438,10 +1514,7 @@ class Complement(Set, EvalfMixin):
 
     @staticmethod
     def reduce(A, B):
-        """
-        Simplify a :class:`Complement`.
-
-        """
+        """Simplify a :class:`Complement`."""
 
         result = B._complement(A)
         if result is not None:
@@ -1478,7 +1551,8 @@ class EmptySet(Set, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Empty_set
+    * https://en.wikipedia.org/wiki/Empty_set
+
     """
 
     is_EmptySet = True
@@ -1543,7 +1617,8 @@ class UniversalSet(Set, metaclass=Singleton):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Universal_set
+    * https://en.wikipedia.org/wiki/Universal_set
+
     """
 
     is_UniversalSet = True
@@ -1587,7 +1662,8 @@ class FiniteSet(Set, EvalfMixin):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Finite_set
+    * https://en.wikipedia.org/wiki/Finite_set
+
     """
 
     is_FiniteSet = True
@@ -1648,15 +1724,15 @@ class FiniteSet(Set, EvalfMixin):
 
         elif other.is_FiniteSet:
             common = FiniteSet(*[el for el in other
-                                 if self.contains(el) is S.true])
+                                 if self.contains(el) == true])
             self2 = FiniteSet(*[el for el in self
-                                if common.contains(el) is not S.true])
+                                if common.contains(el) != true])
             if self2.is_EmptySet:
                 self2 = common
             other = FiniteSet(*[el for el in other
-                                if common.contains(el) is not S.true])
+                                if common.contains(el) != true])
             return Set._complement(FiniteSet(*[el for el in self2
-                                               if other.contains(el) is not S.false]),
+                                               if other.contains(el) != false]),
                                    other)
 
         return Set._complement(self, other)
@@ -1666,6 +1742,7 @@ class FiniteSet(Set, EvalfMixin):
         This function should only be used internally
 
         See Set._union for docstring
+
         """
 
         # If other set contains one of my elements, remove it from myself
@@ -1688,6 +1765,7 @@ class FiniteSet(Set, EvalfMixin):
         True
         >>> 5 in FiniteSet(1, 2)
         False
+
         """
         r = false
         for e in self._elements:
@@ -1725,7 +1803,7 @@ class FiniteSet(Set, EvalfMixin):
         return len(self.args)
 
     def as_relational(self, symbol):
-        """Rewrite a FiniteSet in terms of equalities and logic operators. """
+        """Rewrite a FiniteSet in terms of equalities and logic operators."""
         return Or(*[Eq(symbol, elem) for elem in self])
 
     def _eval_evalf(self, prec):
@@ -1783,7 +1861,8 @@ class SymmetricDifference(Set):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Symmetric_difference
+    * https://en.wikipedia.org/wiki/Symmetric_difference
+
     """
 
     is_SymmetricDifference = True
@@ -1829,6 +1908,7 @@ def imageset(*args):
     ========
 
     diofant.sets.fancysets.ImageSet
+
     """
     from ..core import Dummy, Lambda
     from .fancysets import ImageSet
@@ -1854,7 +1934,8 @@ def imageset(*args):
     if isinstance(set, ImageSet):
         if len(set.lamda.variables) == 1 and len(f.variables) == 1:
             return imageset(Lambda(set.lamda.variables[0],
-                                   f.expr.subs(f.variables[0], set.lamda.expr)),
+                                   f.expr.subs({f.variables[0]:
+                                                set.lamda.expr})),
                             set.base_set)
 
     if r is not None:

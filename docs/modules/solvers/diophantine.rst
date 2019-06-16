@@ -19,8 +19,7 @@ We call a "Diophantine equation" to an equation of the form,
 `f(x_1, x_2, \ldots x_n) = 0` where `n \geq 2` and `x_1, x_2, \ldots x_n` are
 integer variables. If we can find `n` integers `a_1, a_2, \ldots a_n` such that
 `x_1 = a_1, x_2 = a_2, \ldots x_n = a_n` satisfies the above equation, we say
-that the equation is solvable. You can read more about Diophantine equations in
-[1]_ and [2]_.
+that the equation is solvable.
 
 Currently, following five types of Diophantine equations can be solved using
 :py:meth:`~diofant.solvers.diophantine.diophantine` and other helper functions of
@@ -146,9 +145,8 @@ Diophantine equations and binary quadratic equations.
 
 Let's try solving a binary quadratic equation which is an equation with two
 variables and has a degree of two. Before trying to solve these equations, an
-idea about various cases associated with the equation would help a lot. Please
-refer [3]_ and [4]_ for detailed analysis of different cases and the nature
-of the solutions. Let us define `\Delta = b^2 - 4ac` w.r.t. the binary quadratic
+idea about various cases associated with the equation would help a lot.
+Let us define `\Delta = b^2 - 4ac` w.r.t. the binary quadratic
 `ax^2 + bxy + cy^2 + dx + ey + f = 0`.
 
 When `\Delta < 0`, there are either no solutions or only a finite number of solutions.
@@ -267,7 +265,7 @@ The extended Pythagorean equation,
 general sum of squares equation, `x_{1}^2 + x_{2}^2 + \ldots + x_{n}^2 = k` can
 also be solved using the Diophantine module.
 
->>> from diofant.abc import a, b, c, d, e, f
+>>> from diofant.abc import e, f
 >>> diophantine(9*a**2 + 16*b**2 + c**2 + 49*d**2 + 4*e**2 - 25*f**2)
 {(70*t1**2 + 70*t2**2 + 70*t3**2 + 70*t4**2 - 70*t5**2, 105*t1*t5, 420*t2*t5, 60*t3*t5, 210*t4*t5, 42*t1**2 + 42*t2**2 + 42*t3**2 + 42*t4**2 + 42*t5**2)}
 
@@ -313,14 +311,14 @@ https://thilinaatsympy.wordpress.com/
 References
 ----------
 
-.. [1] Andreescu, Titu. Andrica, Dorin. Cucurezeanu, Ion. An Introduction to
-    Diophantine Equations
-.. [2] Diophantine Equation, Wolfram Mathworld, [online]. Available:
-    http://mathworld.wolfram.com/DiophantineEquation.html
-.. [3] Methods to solve Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0,[online],
-    Available: https://www.alpertron.com.ar/METHODS.HTM
-.. [4] Solving the equation ax^2+ bxy + cy^2 + dx + ey + f= 0, [online],
-    Available: http://www.jpr2718.org/ax2p.pdf
+* Andreescu, Titu. Andrica, Dorin. Cucurezeanu, Ion. An Introduction to
+  Diophantine Equations
+* Diophantine Equation, Wolfram Mathworld, [online]. Available:
+  http://mathworld.wolfram.com/DiophantineEquation.html
+* Methods to solve Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0,[online],
+  Available: https://www.alpertron.com.ar/METHODS.HTM
+* Solving the equation ax^2+ bxy + cy^2 + dx + ey + f= 0, [online],
+  Available: https://web.archive.org/web/20180831180321/http://www.jpr2718.org/ax2p.pdf
 
 User Functions
 --------------

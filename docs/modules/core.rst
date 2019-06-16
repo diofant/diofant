@@ -1,6 +1,8 @@
 Core
 ====
 
+.. automodule:: diofant.core
+
 sympify
 -------
 .. module:: diofant.core.sympify
@@ -125,9 +127,9 @@ mod_inverse
 ^^^^^^^^^^^
 .. autofunction:: mod_inverse
 
-seterr
-^^^^^^
-.. autofunction:: seterr
+integer_digits
+^^^^^^^^^^^^^^
+.. autofunction:: integer_digits
 
 Zero
 ^^^^

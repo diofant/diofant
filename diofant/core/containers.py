@@ -8,9 +8,8 @@ They are supposed to work seamlessly within the Diofant framework.
 
 from collections import Mapping
 
-from ..utilities.iterables import iterable
 from .basic import Basic
-from .compatibility import as_int
+from .compatibility import as_int, iterable
 from .sympify import converter, sympify
 
 
@@ -22,11 +21,11 @@ class Tuple(Basic):
     Diofant framework.  The wrapped tuple is available as self.args, but
     you can also access elements or slices with [:] syntax.
 
-    >>> a, b, c, d = symbols('a b c d')
     >>> Tuple(a, b, c)[1:]
     (b, c)
-    >>> Tuple(a, b, c).subs(a, d)
+    >>> Tuple(a, b, c).subs({a: d})
     (d, b, c)
+
     """
 
     def __new__(cls, *args):
@@ -76,12 +75,12 @@ class Tuple(Basic):
 
     def __eq__(self, other):
         if isinstance(other, Basic):
-            return super(Tuple, self).__eq__(other)
+            return super().__eq__(other)
         return self.args == other
 
     def __ne__(self, other):
         if isinstance(other, Basic):
-            return super(Tuple, self).__ne__(other)
+            return super().__ne__(other)
         return self.args != other
 
     def __hash__(self):
@@ -99,13 +98,14 @@ class Tuple(Basic):
     # XXX: Basic defines count() as something different, so we can't
     # redefine it here. Originally this lead to cse() test failure.
     def tuple_count(self, value):
-        """T.count(value) -> integer -- return number of occurrences of value"""
+        """T.count(value) -> integer -- return number of occurrences of value."""
         return self.args.count(value)
 
     def index(self, value, start=None, stop=None):
         """T.index(value, [start, [stop]]) -> integer -- return first index of value.
 
         Raises ValueError if the value is not present.
+
         """
         # XXX: One would expect:
         #
@@ -147,6 +147,7 @@ def tuple_wrapper(method):
 
     >>> g(0, (1, 2), 3)
     (0, (1, 2), 3)
+
     """
     def wrap_tuples(*args, **kw_args):
         newargs = []
@@ -203,7 +204,7 @@ class Dict(Basic):
         return obj
 
     def __getitem__(self, key):
-        """x.__getitem__(y) <==> x[y]"""
+        """x.__getitem__(y) <==> x[y]."""
         return self._dict[sympify(key)]
 
     def __setitem__(self, key, value):
@@ -217,27 +218,28 @@ class Dict(Basic):
         ========
 
         diofant.core.basic.Basic.args
+
         """
         return tuple(self.elements)
 
     def items(self):
-        """D.items() -> list of D's (key, value) pairs, as 2-tuples"""
+        """D.items() -> list of D's (key, value) pairs, as 2-tuples."""
         return self._dict.items()
 
     def keys(self):
-        """D.keys() -> list of D's keys"""
+        """D.keys() -> list of D's keys."""
         return self._dict.keys()
 
     def values(self):
-        """D.values() -> list of D's values"""
+        """D.values() -> list of D's values."""
         return self._dict.values()
 
     def __iter__(self):
-        """x.__iter__() <==> iter(x)"""
+        """x.__iter__() <==> iter(x)."""
         return iter(self._dict)
 
     def __len__(self):
-        """x.__len__() <==> len(x)"""
+        """x.__len__() <==> len(x)."""
         return self._dict.__len__()
 
     def get(self, key, default=None):
@@ -245,7 +247,7 @@ class Dict(Basic):
         return self._dict.get(sympify(key), default)
 
     def __contains__(self, key):
-        """D.__contains__(k) -> True if D has a key k, else False"""
+        """D.__contains__(k) -> True if D has a key k, else False."""
         return sympify(key) in self._dict
 
     def __lt__(self, other):

@@ -1,10 +1,11 @@
-from ..core import S, sympify
+from ..core import sympify
 from ..functions import exp, factorial
+from ..sets import Naturals, Naturals0
 from .drv import SingleDiscreteDistribution, SingleDiscretePSpace
 from .rv import _value_check
 
 
-__all__ = ('Geometric', 'Poisson')
+__all__ = 'Geometric', 'Poisson'
 
 
 def rv(symbol, cls, *args):
@@ -15,9 +16,9 @@ def rv(symbol, cls, *args):
 
 
 class PoissonDistribution(SingleDiscreteDistribution):
-    _argnames = ('lamda',)
+    _argnames = 'lamda',
 
-    set = S.Naturals0
+    set = Naturals0
 
     @staticmethod
     def check(lamda):
@@ -68,15 +69,16 @@ def Poisson(name, lamda):
     References
     ==========
 
-    [1] https//en.wikipedia.org/wiki/Poisson_distribution
+    [1] https://en.wikipedia.org/wiki/Poisson_distribution
     [2] http://mathworld.wolfram.com/PoissonDistribution.html
+
     """
     return rv(name, PoissonDistribution, lamda)
 
 
 class GeometricDistribution(SingleDiscreteDistribution):
-    _argnames = ('p',)
-    set = S.Naturals
+    _argnames = 'p',
+    set = Naturals
 
     @staticmethod
     def check(p):
@@ -110,7 +112,7 @@ def Geometric(name, p):
 
     >>> from diofant.stats import density, E, variance
 
-    >>> p = S.One / 5
+    >>> p = Rational(1, 5)
     >>> z = Symbol("z")
 
     >>> X = Geometric("x", p)
@@ -127,7 +129,8 @@ def Geometric(name, p):
     References
     ==========
 
-    [1] https//en.wikipedia.org/wiki/Geometric_distribution
+    [1] https://en.wikipedia.org/wiki/Geometric_distribution
     [2] http://mathworld.wolfram.com/GeometricDistribution.html
+
     """
     return rv(name, GeometricDistribution, p)

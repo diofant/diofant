@@ -37,7 +37,7 @@ import operator
 from functools import reduce
 from itertools import combinations_with_replacement
 
-from ..core import (Add, Eq, Equality, Function, S, Subs, Symbol, Wild, expand,
+from ..core import (Add, Eq, Equality, Function, Subs, Symbol, Wild, expand,
                     symbols)
 from ..core.compatibility import is_sequence
 from ..functions import exp
@@ -147,9 +147,10 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
     >>> u = f(x, y)
     >>> ux = u.diff(x)
     >>> uy = u.diff(y)
-    >>> eq = Eq(1 + (2*(ux/u)) + (3*(uy/u)))
+    >>> eq = Eq(1 + (2*(ux/u)) + (3*(uy/u)), 0)
     >>> pdsolve(eq)
     Eq(f(x, y), E**(-2*x/13 - 3*y/13)*F(3*x - 2*y))
+
     """
 
     if not solvefun:
@@ -190,6 +191,7 @@ def _helper_simplify(eq, hint, func, order, match, solvefun):
     pde functions to solve for the partial differential
     equations. This minimises the computation in
     calling _desolve multiple times.
+
     """
 
     if hint.endswith("_Integral"):
@@ -206,6 +208,7 @@ def _handle_Integral(expr, func, order, hint):
     Converts a solution with integrals in it into an actual solution.
 
     Simplifies the integral mainly using doit()
+
     """
     if hint.endswith("_Integral"):
         return expr
@@ -247,9 +250,10 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
     >>> u = f(x, y)
     >>> ux = u.diff(x)
     >>> uy = u.diff(y)
-    >>> eq = Eq(1 + (2*(ux/u)) + (3*(uy/u)))
+    >>> eq = Eq(1 + (2*(ux/u)) + (3*(uy/u)), 0)
     >>> classify_pde(eq)
     ('1st_linear_constant_coeff_homogeneous',)
+
     """
 
     prep = kwargs.pop('prep', True)
@@ -401,7 +405,8 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     >>> assert checkpdesol(eq, sol)[0]
     >>> eq = x*f(x, y) + f(x, y).diff(x)
     >>> checkpdesol(eq, sol)
-    (False, E**(-6*x/25 - 8*y/25)*(x*F(4*x - 3*y) - 6*F(4*x - 3*y)/25 + 4*Subs(Derivative(F(_xi_1), _xi_1), (_xi_1,), (4*x - 3*y,))))
+    (False, E**(-6*x/25 - 8*y/25)*(x*F(4*x - 3*y) - 6*F(4*x - 3*y)/25 + 4*Subs(Derivative(F(_xi_1), _xi_1), (_xi_1, 4*x - 3*y))))
+
     """
 
     # Converting the pde into an equation
@@ -426,8 +431,8 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     # try direct substitution of the solution into the PDE and simplify
     if sol.lhs == func:
         pde = pde.lhs - pde.rhs
-        s = simplify(pde.subs(func, sol.rhs).doit())
-        return s is S.Zero, s
+        s = simplify(pde.subs({func: sol.rhs}).doit())
+        return s == 0, s
 
     raise NotImplementedError(filldedent('''
         Unable to test if %s is a solution to %s.''' % (sol, pde)))
@@ -446,7 +451,6 @@ def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
 
     The general solution is of the form::
 
-        >>> from diofant.abc import a, b, c
         >>> u = f(x, y)
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
@@ -508,7 +512,6 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
 
     The general solution of the PDE is::
 
-        >>> from diofant.abc import a, b, c
         >>> f = Function('f')
         >>> G = Function('G')
         >>> u = f(x, y)
@@ -588,7 +591,7 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
     genterm = (1/(b**2 + c**2))*Integral(
         (1/expterm*e).subs(solvedict), (xi, b*x + c*y))
     return Eq(f(x, y), Subs(expterm*(functerm + genterm),
-                            (eta, xi), (c*x - b*y, b*x + c*y)))
+                            (eta, c*x - b*y), (xi, b*x + c*y)))
 
 
 def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
@@ -691,22 +694,22 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
         return Eq(f(x, y), rhs)
 
     dummy = Function('d')
-    h = (c/b).subs(y, dummy(x))
+    h = (c/b).subs({y: dummy(x)})
     sol = dsolve(dummy(x).diff(x) - h, dummy(x))
     if isinstance(sol, list):
         sol = sol[0]
     solsym = sol.free_symbols - h.free_symbols - {x, y}
     if len(solsym) == 1:
         solsym = solsym.pop()
-        etat = (solve(sol, solsym)[0][solsym]).subs(dummy(x), y)
+        etat = (solve(sol, solsym)[0][solsym]).subs({dummy(x): y})
         ysub = solve(eta - etat, y)[0][y]
-        deq = (b*(f(x).diff(x)) + d*f(x) - e).subs(y, ysub)
+        deq = (b*(f(x).diff(x)) + d*f(x) - e).subs({y: ysub})
         final = (dsolve(deq, f(x), hint='1st_linear')).rhs
         finsyms = final.free_symbols - deq.free_symbols - {x, y}
         rhs = _simplify_variable_coeff(final, finsyms, solvefun, etat)
         return Eq(f(x, y), rhs)
 
-    else:  # pragma: no cover
+    else:
         raise NotImplementedError("Cannot solve the partial differential "
                                   "equation due to inability of constantsimp")
 
@@ -714,15 +717,16 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
 def _simplify_variable_coeff(sol, syms, func, funcarg):
     r"""
     Helper function to replace constants by functions in 1st_linear_variable_coeff
+
     """
     eta = Symbol("eta")
     if len(syms) == 1:
         sym = syms.pop()
-        final = sol.subs(sym, func(funcarg))
-    else:  # pragma: no cover
+        final = sol.subs({sym: func(funcarg)})
+    else:
         raise NotImplementedError
 
-    return simplify(final.subs(eta, funcarg))
+    return simplify(final.subs({eta: funcarg}))
 
 
 def pde_separate(eq, fun, sep, strategy='mul'):
@@ -744,7 +748,6 @@ def pde_separate(eq, fun, sep, strategy='mul'):
     Examples
     ========
 
-    >>> from diofant.abc import t
     >>> u, X, T = map(Function, 'uXT')
 
     >>> eq = Eq(Derivative(u(x, t), x), E**(u(x, t))*Derivative(u(x, t), t))
@@ -760,6 +763,7 @@ def pde_separate(eq, fun, sep, strategy='mul'):
 
     diofant.solvers.pde.pde_separate_add
     diofant.solvers.pde.pde_separate_mul
+
     """
 
     do_add = False
@@ -772,9 +776,9 @@ def pde_separate(eq, fun, sep, strategy='mul'):
 
     if isinstance(eq, Equality):
         if eq.rhs != 0:
-            return pde_separate(Eq(eq.lhs - eq.rhs), fun, sep, strategy)
+            return pde_separate(Eq(eq.lhs - eq.rhs, 0), fun, sep, strategy)
     else:
-        eq = Eq(eq)
+        eq = Eq(eq, 0)
 
     # Handle arguments
     orig_args = list(fun.args)
@@ -799,7 +803,7 @@ def pde_separate(eq, fun, sep, strategy='mul'):
         raise ValueError("Arguments do not match")
 
     # Substitute original function with separated...
-    result = eq.lhs.subs(fun, functions).doit()
+    result = eq.lhs.subs({fun: functions}).doit()
 
     # Divide by terms when doing multiplicative separation
     if not do_add:
@@ -826,12 +830,12 @@ def pde_separate_add(eq, fun, sep):
     Examples
     ========
 
-    >>> from diofant.abc import t
     >>> u, X, T = map(Function, 'uXT')
 
     >>> eq = Eq(Derivative(u(x, t), x), E**(u(x, t))*Derivative(u(x, t), t))
     >>> pde_separate_add(eq, u(x, t), [X(x), T(t)])
     [E**(-X(x))*Derivative(X(x), x), E**T(t)*Derivative(T(t), t)]
+
     """
     return pde_separate(eq, fun, sep, strategy='add')
 

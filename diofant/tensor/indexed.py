@@ -81,6 +81,7 @@ get_indices() and get_contraction_structure():
 {(j,): {A[i, j, j]}}
 
 See the appropriate docstrings for a detailed explanation of the output.
+
 """
 
 #   TODO:  (some ideas for improvement)
@@ -121,12 +122,16 @@ class Indexed(Expr):
     >>> A = IndexedBase('A')
     >>> Indexed('A', i, j) == A[i, j]
     True
+
     """
 
     is_commutative = True
 
     def __new__(cls, base, *args, **kw_args):
         from ..utilities import filldedent
+
+        from .array.ndim_array import NDimArray
+        from ..matrices.matrices import MatrixBase
 
         if not args:
             raise IndexException("Indexed needs at least one index.")
@@ -136,6 +141,8 @@ class Indexed(Expr):
             raise TypeError(filldedent("""
                 Indexed expects string, Symbol or IndexedBase as base."""))
         args = list(map(sympify, args))
+        if isinstance(base, (NDimArray, Tuple, MatrixBase)) and all(i.is_number for i in args):
+            return base[args]
         return Expr.__new__(cls, base, *args, **kw_args)
 
     @property
@@ -207,6 +214,7 @@ class Indexed(Expr):
         (n, n)
         >>> B[i, j].shape
         (m, m)
+
         """
         from ..utilities import filldedent
 
@@ -310,7 +318,7 @@ class IndexedBase(Expr, NotIterable):
         elif isinstance(label, (Dummy, Symbol)):
             pass
         else:
-            raise TypeError("Base label should be a string or Symbol.")
+            label = sympify(label, strict=True)
 
         obj = Expr.__new__(cls, label, **kw_args)
         if is_sequence(shape):

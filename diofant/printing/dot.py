@@ -1,14 +1,14 @@
 from ..core import Basic, Expr
 
 
-__all__ = ('dotprint')
+__all__ = 'dotprint'
 
 default_styles = [(Basic, {'color': 'blue', 'shape': 'ellipse'}),
                   (Expr,  {'color': 'black'})]
 
 
 def styleof(expr, styles=default_styles):
-    """ Merge style dictionaries in order
+    """Merge style dictionaries in order.
 
     >>> styles = [(Basic, {'color': 'blue', 'shape': 'ellipse'}),
     ...           (Expr,  {'color': 'black'})]
@@ -19,6 +19,7 @@ def styleof(expr, styles=default_styles):
     >>> x = Symbol('x')
     >>> styleof(x + 1, styles)  # this is an Expr
     {'color': 'black', 'shape': 'ellipse'}
+
     """
     style = {}
     for typ, sty in styles:
@@ -28,19 +29,21 @@ def styleof(expr, styles=default_styles):
 
 
 def attrprint(d, delimiter=', '):
-    """ Print a dictionary of attributes
+    """Print a dictionary of attributes.
 
     >>> print(attrprint({'color': 'blue', 'shape': 'ellipse'}))
     "color"="blue", "shape"="ellipse"
+
     """
     return delimiter.join('"%s"="%s"' % item for item in sorted(d.items()))
 
 
 def dotnode(expr, styles=default_styles, labelfunc=str, pos=(), repeat=True):
-    """ String defining a node
+    """String defining a node.
 
     >>> print(dotnode(x))
     "Symbol('x')_()" ["color"="black", "label"="x", "shape"="ellipse"];
+
     """
     style = styleof(expr, styles)
 
@@ -56,7 +59,7 @@ def dotnode(expr, styles=default_styles, labelfunc=str, pos=(), repeat=True):
 
 
 def dotedges(expr, atom=lambda x: not isinstance(x, Basic), pos=(), repeat=True):
-    """ List of strings for all expr->expr.arg pairs
+    """List of strings for all expr->expr.arg pairs.
 
     >>> for e in dotedges(x+2):
     ...     print(e)
@@ -67,6 +70,7 @@ def dotedges(expr, atom=lambda x: not isinstance(x, Basic), pos=(), repeat=True)
     ========
 
     dotprint
+
     """
     if atom(expr):
         return []
@@ -138,7 +142,7 @@ def dotprint(expr, styles=default_styles,
     Examples
     ========
 
-    >>> print(dotprint(x + 2)) # doctest: +NORMALIZE_WHITESPACE
+    >>> print(dotprint(x + 2))
     digraph{
     <BLANKLINE>
     # Graph style
@@ -161,6 +165,7 @@ def dotprint(expr, styles=default_styles,
     "Add(Symbol('x'), Integer(2))_()" -> "Integer(2)_(0,)";
     "Add(Symbol('x'), Integer(2))_()" -> "Symbol('x')_(1,)";
     }
+
     """
     # repeat works by adding a signature tuple to the end of each node for its
     # position in the graph. For example, for expr = Add(x, Pow(x, 2)), the x in the

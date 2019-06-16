@@ -1,11 +1,11 @@
 from functools import reduce
 from itertools import permutations
 
-from ..core import Add, Basic, Dummy, E, Eq, Mul, S, Wild, pi, sympify
+from ..core import Add, Basic, Dummy, E, Eq, Integer, Mul, Wild, pi, sympify
 from ..core.compatibility import ordered
 from ..functions import (Ei, LambertW, Piecewise, acosh, asin, asinh, atan,
-                         cos, cosh, cot, coth, erf, erfi, exp, li, log, root,
-                         sin, sinh, sqrt, tan, tanh)
+                         binomial, cos, cosh, cot, coth, erf, erfi, exp, li,
+                         log, root, sin, sinh, sqrt, tan, tanh)
 from ..logic import And
 from ..polys import PolynomialError, cancel, factor, gcd, lcm, quo
 from ..polys.constructor import construct_domain
@@ -29,6 +29,7 @@ def components(f, x):
     ========
 
     diofant.integrals.heurisch.heurisch
+
     """
     result = set()
 
@@ -61,7 +62,7 @@ _symbols_cache = {}
 
 # NB @cacheit is not convenient here
 def _symbols(name, n):
-    """get vector of symbols local to this module"""
+    """get vector of symbols local to this module."""
     try:
         lsyms = _symbols_cache[name]
     except KeyError:
@@ -95,6 +96,7 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     ========
 
     diofant.integrals.heurisch.heurisch
+
     """
     from ..solvers.solvers import solve, denoms
     f = sympify(f)
@@ -156,7 +158,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     This is a heuristic approach to indefinite integration in finite
     terms using the extended heuristic (parallel) Risch algorithm, based
-    on Manuel Bronstein's "Poor Man's Integrator" [1]_.
+    on Manuel Bronstein's "Poor Man's Integrator".
 
     The algorithm supports various classes of functions including
     transcendental elementary or special functions like Airy,
@@ -196,22 +198,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     References
     ==========
 
-    .. [1] Manuel Bronstein's "Poor Man's Integrator",
-           http://www-sop.inria.fr/cafe/Manuel.Bronstein/pmint/index.html
-
-    .. [2] K. Geddes, L. Stefanus, On the Risch-Norman Integration
-           Method and its Implementation in Maple, Proceedings of
-           ISSAC'89, ACM Press, 212-217.
-
-    .. [3] J. H. Davenport, On the Parallel Risch Algorithm (I),
-           Proceedings of EUROCAM'82, LNCS 144, Springer, 144-157.
-
-    .. [4] J. H. Davenport, On the Parallel Risch Algorithm (III):
-           Use of Tangents, SIGSAM Bulletin 16 (1982), 3-6.
-
-    .. [5] J. H. Davenport, B. M. Trager, On the Parallel Risch
-           Algorithm (II), ACM Transactions on Mathematical
-           Software 11 (1985), 356-362.
+    * Manuel Bronstein's "Poor Man's Integrator",
+      http://www-sop.inria.fr/cafe/Manuel.Bronstein/pmint/index.html
 
     See Also
     ========
@@ -219,6 +207,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     diofant.integrals.integrals.Integral.doit
     diofant.integrals.integrals.Integral
     diofant.integrals.heurisch.components
+
     """
     f = sympify(f)
     if x not in f.free_symbols:
@@ -227,7 +216,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     if not f.is_Add:
         indep, f = f.as_independent(x)
     else:
-        indep = S.One
+        indep = Integer(1)
 
     rewritables = {
         (sin, cos, cot): tan,
@@ -357,18 +346,18 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             if not p.has(y):
                 continue
 
-            if _derivation(p) is not S.Zero:
+            if _derivation(p) != 0:
                 c, q = p.as_poly(y).primitive()
                 return _deflation(c)*gcd(q, q.diff(y)).as_expr()
-        else:
-            return p
+
+        return p
 
     def _splitter(p):
         for y in V:
             if not p.has(y):
                 continue
 
-            if _derivation(y) is not S.Zero:
+            if _derivation(y) != 0:
                 c, q = p.as_poly(y).primitive()
 
                 q = q.as_expr()
@@ -384,8 +373,8 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
                 q_split = _splitter(cancel(q / s))
 
                 return c_split[0]*q_split[0]*s, c_split[1]*q_split[1]
-        else:
-            return S.One, p
+
+        return Integer(1), p
 
     special = {}
 
@@ -435,13 +424,12 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
     A, B = _exponent(f), a + max(b, c)
 
+    degree = A + B + degree_offset
     if A > 1 and B > 1:
-        monoms = itermonomials(V, A + B - 1 + degree_offset)
-    else:
-        monoms = itermonomials(V, A + B + degree_offset)
+        degree -= 1
 
-    poly_coeffs = _symbols('A', len(monoms))
-
+    monoms = itermonomials(V, degree)
+    poly_coeffs = _symbols('A', binomial(len(V) + degree, degree))
     poly_part = Add(*[ poly_coeffs[i]*monomial
                        for i, monomial in enumerate(ordered(monoms)) ])
 
@@ -517,7 +505,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
         except PolynomialError:
             return
         else:
-            ground, _ = construct_domain(non_syms, field=True, extension=True)
+            ground, _ = construct_domain(non_syms, field=True)
 
         coeff_ring = ground.poly_ring(*poly_coeffs)
         ring = coeff_ring.poly_ring(*V)
@@ -535,7 +523,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
             solution = [(coeff_ring.symbols[coeff_ring.index(k)],
                          v.as_expr()) for k, v in solution.items()]
             return candidate.subs(solution).subs(
-                list(zip(poly_coeffs, [S.Zero]*len(poly_coeffs))))
+                list(zip(poly_coeffs, [Integer(0)]*len(poly_coeffs))))
 
     if not (F.free_symbols - set(V)):
         solution = _integrate('Q')

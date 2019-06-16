@@ -5,8 +5,8 @@ from strategies.core import identity
 from strategies.tree import greedy
 
 from ..core import (Add, Basic, Dummy, E, Expr, FunctionClass, I, Integer, Mul,
-                    Pow, S, Wild, cacheit, count_ops, expand, expand_mul,
-                    factor_terms, igcd, symbols, sympify)
+                    Pow, Rational, Wild, cacheit, count_ops, expand,
+                    expand_mul, factor_terms, igcd, symbols, sympify)
 from ..core.compatibility import iterable
 from ..core.function import _mexpand
 from ..domains import ZZ
@@ -104,6 +104,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
     >>> ex = (tan(x) + tan(y))/(1 - tan(x)*tan(y))
     >>> trigsimp_groebner(ex, hints=[(tan, x, y)])
     tan(x + y)
+
     """
     # TODO
     #  - preprocess by replacing everything by funcs we can handle
@@ -219,6 +220,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         If any of the terms is trigonometric, sin(x) and cos(x) are guaranteed
         to appear in terms. Similarly for hyperbolic functions. For tan(n*x),
         sin(n*x) and cos(n*x) are guaranteed.
+
         """
         I = []
         y = Dummy('y')
@@ -231,7 +233,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
                 elif fn == t:
                     I.append(t(coeff*x)*c(coeff*x) - s(coeff*x))
                 elif fn in [c, s]:
-                    cn = fn(coeff*y).expand(trig=True).subs(y, x)
+                    cn = fn(coeff*y).expand(trig=True).subs({y: x})
                     I.append(fn(coeff*x) - cn)
         return list(set(I))
 
@@ -242,6 +244,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         The meaning of ``hints`` is described in the main docstring.
         Return a new list of generators, and also the ideal we should
         work with.
+
         """
         # First parse the hints
         n, funcs, iterables, extragens = parse_hints(hints)
@@ -339,7 +342,7 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         return res, freegens, newgens
 
     myI = Dummy('I')
-    expr = expr.subs(I, myI)
+    expr = expr.subs({I: myI})
     subs = [(myI, I)]
 
     num, denom = cancel(expr).as_numer_denom()
@@ -401,10 +404,10 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
         # NOTE The following is simpler and has less assumptions on the
         #      groebner basis algorithm. If the above turns out to be broken,
         #      use this.
-        return Add(*[Mul(*[a**b for a, b in zip(freegens, monom)]) *
-                     ratsimpmodprime(coeff/denom, list(G), order=order,
-                                     gens=gens, quick=quick, domain=ZZ)
-                     for monom, coeff in num.terms()])
+        # return Add(*[Mul(*[a**b for a, b in zip(freegens, monom)]) *
+        #              ratsimpmodprime(coeff/denom, list(G), order=order,
+        #                              gens=gens, quick=quick, domain=ZZ)
+        #              for monom, coeff in num.terms()])
     else:
         return ratsimpmodprime(
             expr, list(G), order=order, gens=freegens+gens,
@@ -458,6 +461,7 @@ def trigsimp(expr, **opts):
     ========
 
     diofant.simplify.fu.fu
+
     """
     from .fu import fu
     from ..matrices import MatrixExpr
@@ -514,6 +518,7 @@ def exptrigsimp(expr, simplify=True):
     2*cosh(z)
     >>> exptrigsimp(cosh(z) - sinh(z))
     E**(-z)
+
     """
     from .fu import hyper_as_trig, TR2i
     from .simplify import bottom_up
@@ -541,31 +546,31 @@ def exptrigsimp(expr, simplify=True):
 
     # sinh and cosh
     for ei in ex:
-        a = ei.exp if ei is not E else S.One
-        newexpr = newexpr.subs(ei + 1/ei, 2*cosh(a))
-        newexpr = newexpr.subs(ei - 1/ei, 2*sinh(a))
+        a = ei.exp if ei is not E else Integer(1)
+        newexpr = newexpr.subs({ei + 1/ei: 2*cosh(a)})
+        newexpr = newexpr.subs({ei - 1/ei: 2*sinh(a)})
         e2 = ei**-2
         if e2 in ex:
-            a = e2.exp/2 if e2 is not E else S.Half
-            newexpr = newexpr.subs((e2 + 1)*ei, 2*cosh(a))
-            newexpr = newexpr.subs((e2 - 1)*ei, 2*sinh(a))
+            a = e2.exp/2 if e2 is not E else Rational(1, 2)
+            newexpr = newexpr.subs({(e2 + 1)*ei: 2*cosh(a)})
+            newexpr = newexpr.subs({(e2 - 1)*ei: 2*sinh(a)})
 
     # exp ratios to tan and tanh
     for ei in ex:
         n, d = ei - 1, ei + 1
         et = n/d
         etinv = d/n  # not 1/et or else recursion errors arise
-        a = ei.exp if ei.is_Pow and ei.base is E else S.One
+        a = ei.exp if ei.is_Pow and ei.base is E else Integer(1)
         if a.is_Mul or a is I:
             c = a.as_coefficient(I)
             if c:
                 t = I*tan(c/2)
-                newexpr = newexpr.subs(etinv, 1/t)
-                newexpr = newexpr.subs(et, t)
+                newexpr = newexpr.subs({etinv: 1/t})
+                newexpr = newexpr.subs({et: t})
                 continue
         t = tanh(a/2)
-        newexpr = newexpr.subs(etinv, 1/t)
-        newexpr = newexpr.subs(et, t)
+        newexpr = newexpr.subs({etinv: 1/t})
+        newexpr = newexpr.subs({et: t})
 
     # sin/cos and sinh/cosh ratios to tan and tanh, respectively
     if newexpr.has(HyperbolicFunction):
@@ -643,6 +648,7 @@ def trigsimp_old(expr, **opts):
 
     diofant.simplify.fu.fu
     futrig
+
     """
     old = expr
     first = opts.pop('first', True)
@@ -706,7 +712,7 @@ def trigsimp_old(expr, **opts):
         g = trigsimpfunc(g[0], deep)
 
         for sub in reversed(w):
-            g = g.subs(sub[0], sub[1])
+            g = g.subs({sub[0]: sub[1]})
             g = trigsimpfunc(g, deep)
         result = g
     else:
@@ -724,6 +730,7 @@ def _dotrig(a, b):
     """Helper to tell whether ``a`` and ``b`` have the same sorts
     of symbols in them -- no need to test hyperbolic patterns against
     expressions that have no hyperbolics in them.
+
     """
     return a.func == b.func and (
         a.has(TrigonometricFunction) and b.has(TrigonometricFunction) or
@@ -753,15 +760,15 @@ def _trigpats():
         (a*(sin(b) + 1)**c*(sin(b) - 1)**c,
             a*(-cos(b)**2)**c, sin(b) + 1, sin(b) - 1),
 
-        (a*sinh(b)**c/cosh(b)**c, a*tanh(b)**c, S.One, S.One),
-        (a*tanh(b)**c*cosh(b)**c, a*sinh(b)**c, S.One, S.One),
-        (a*coth(b)**c*sinh(b)**c, a*cosh(b)**c, S.One, S.One),
-        (a*tanh(b)**c/sinh(b)**c, a/cosh(b)**c, S.One, S.One),
-        (a*coth(b)**c/cosh(b)**c, a/sinh(b)**c, S.One, S.One),
-        (a*coth(b)**c*tanh(b)**c, a, S.One, S.One),
+        (a*sinh(b)**c/cosh(b)**c, a*tanh(b)**c, Integer(1), Integer(1)),
+        (a*tanh(b)**c*cosh(b)**c, a*sinh(b)**c, Integer(1), Integer(1)),
+        (a*coth(b)**c*sinh(b)**c, a*cosh(b)**c, Integer(1), Integer(1)),
+        (a*tanh(b)**c/sinh(b)**c, a/cosh(b)**c, Integer(1), Integer(1)),
+        (a*coth(b)**c/cosh(b)**c, a/sinh(b)**c, Integer(1), Integer(1)),
+        (a*coth(b)**c*tanh(b)**c, a, Integer(1), Integer(1)),
 
         (c*(tanh(a) + tanh(b))/(1 + tanh(a)*tanh(b)),
-            tanh(a + b)*c, S.One, S.One),
+            tanh(a + b)*c, Integer(1), Integer(1)),
     )
 
     matchers_add = (
@@ -822,6 +829,7 @@ def _replace_mul_fpowxgpow(expr, f, g, rexp, h, rexph):
 
     Replace f(b_)**c_*g(b_)**(rexp(c_)) with h(b)**rexph(c) if f(b_)
     and g(b_) are both positive or if c_ is an integer.
+
     """
     # assert expr.is_Mul and expr.is_commutative and f != g
     fargs = defaultdict(int)
@@ -870,11 +878,11 @@ def _midn(x):
 
 
 def _one(x):
-    return S.One
+    return Integer(1)
 
 
 def _match_div_rewrite(expr, i):
-    """helper for __trigsimp"""
+    """Helper for __trigsimp."""
     if i == 0:
         expr = _replace_mul_fpowxgpow(expr, sin, cos,
                                       _midn, tan, _idn)
@@ -927,7 +935,7 @@ def _trigsimp(expr, deep=False):
 
 @cacheit
 def __trigsimp(expr, deep=False):
-    """recursive helper for trigsimp"""
+    """Recursive helper for trigsimp."""
     from .fu import TR10i
 
     if _trigpat is None:
@@ -980,7 +988,7 @@ def __trigsimp(expr, deep=False):
                 nc = Mul._from_args(nc)
                 term = Mul._from_args(com)
             else:
-                nc = S.One
+                nc = Integer(1)
             term = _trigsimp(term, deep)
             for pattern, result in matchers_identity:
                 res = term.match(pattern)
@@ -1017,8 +1025,8 @@ def __trigsimp(expr, deep=False):
             # to help influence a better match. This is because
             # sometimes, for example, 'a' would match sec(x)**2
             a_t = Wild('a', exclude=[ex])
-            pattern = pattern.subs(a, a_t)
-            result = result.subs(a, a_t)
+            pattern = pattern.subs({a: a_t})
+            result = result.subs({a: a_t})
 
             m = expr.match(pattern)
             was = None
@@ -1031,7 +1039,7 @@ def __trigsimp(expr, deep=False):
                     break
                 expr = result.subs(m)
                 m = expr.match(pattern)
-                m.setdefault(c, S.Zero)
+                m.setdefault(c, Integer(0))
 
     elif expr.is_Mul or expr.is_Pow or deep and expr.args:
         expr = expr.func(*[_trigsimp(a, deep) for a in expr.args])
@@ -1110,7 +1118,7 @@ def _futrig(e, **kwargs):
     if e.is_Mul:
         coeff, e = e.as_independent(TrigonometricFunction)
     else:
-        coeff = S.One
+        coeff = Integer(1)
 
     def Lops(x):
         return L(x), x.count_ops(), _nodes(x), len(x.args), x.is_Add
@@ -1163,6 +1171,7 @@ def _futrig(e, **kwargs):
 def _is_Expr(e):
     """_eapply helper to tell whether ``e`` and all its args
     are Exprs.
+
     """
     if not isinstance(e, Expr):
         return False
@@ -1172,6 +1181,7 @@ def _is_Expr(e):
 def _eapply(func, e, cond=None):
     """Apply ``func`` to ``e`` if all args are Exprs else only
     apply it to those args that *are* Exprs.
+
     """
     if not isinstance(e, Expr):
         return e

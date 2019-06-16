@@ -61,8 +61,6 @@ Usage::
     >>> print_ccode(Abs(x**2))
     fabs(pow(x, 2))
 
-.. autodata:: diofant.printing.ccode.known_functions
-
 .. autoclass:: diofant.printing.ccode.CCodePrinter
    :members:
 
@@ -167,7 +165,7 @@ function.
           parameter (E = 2.718281828459045235360287d0)
           parameter (pi = 3.141592653589793238462643d0)
           x - pi**2 - E
-    >>> print(fcode(N(x - pi**2, 25, strict=False)))
+    >>> print(fcode(N(x - pi**2, 25)))
           x - 9.869604401089358618834491d0
 
 When some functions are not part of the Fortran standard, it might be desirable
@@ -202,8 +200,6 @@ Mathematica code printing
 -------------------------
 
 .. module:: diofant.printing.mathematica
-
-.. autodata:: diofant.printing.mathematica.known_functions
 
 .. autoclass:: diofant.printing.mathematica.MCodePrinter
    :members:
@@ -259,8 +255,6 @@ More info on mathml content: http://www.w3.org/TR/MathML2/chapter4.html
 
 .. autofunction:: mathml
 
-.. autofunction:: print_mathml
-
 PythonPrinter
 -------------
 
@@ -303,22 +297,6 @@ This module generates readable representations of Diofant expressions.
 
 .. autofunction:: sstrrepr
 
-Tree Printing
--------------
-
-.. module:: diofant.printing.tree
-
-The functions in this module create a representation of an expression as a
-tree.
-
-.. autofunction:: pprint_nodes
-
-.. autofunction:: print_node
-
-.. autofunction:: tree
-
-.. autofunction:: print_tree
-
 Implementation - Helper Classes/Functions
 -----------------------------------------
 
@@ -360,14 +338,6 @@ letter.
 .. autofunction:: g
 .. autofunction:: G
 .. autodata:: greek_letters
-.. autodata:: digit_2txt
-.. autodata:: symb_2txt
-
-The following functions return the Unicode subscript/superscript version of
-the character.
-
-.. autodata:: sub
-.. autodata:: sup
 
 The following functions return Unicode vertical objects.
 
@@ -375,16 +345,9 @@ The following functions return Unicode vertical objects.
 .. autofunction:: vobj
 .. autofunction:: hobj
 
-The following constants are for rendering roots and fractions.
-
-.. autodata:: root
-.. autofunction:: VF
-.. autodata:: frac
-
-The following constants/functions are for rendering atoms and symbols.
+The following functions are for rendering atoms and symbols.
 
 .. autofunction:: xsym
-.. autodata:: atoms_table
 .. autofunction:: pretty_atom
 .. autofunction:: pretty_symbol
 .. autofunction:: annotated

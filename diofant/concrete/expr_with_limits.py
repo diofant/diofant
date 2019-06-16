@@ -10,6 +10,7 @@ def _process_limits(*symbols):
     storing them as Tuple(symbol, lower, upper). The orientation of
     the function is also returned when the upper limit is missing
     so (x, 1, None) becomes (x, None, 1) and the orientation is changed.
+
     """
     limits = []
     orientation = 1
@@ -108,6 +109,7 @@ class ExprWithLimits(Expr):
         diofant.concrete.expr_with_limits.ExprWithLimits.limits
         diofant.concrete.expr_with_limits.ExprWithLimits.variables
         diofant.concrete.expr_with_limits.ExprWithLimits.free_symbols
+
         """
         return self.args[0]
 
@@ -128,6 +130,7 @@ class ExprWithLimits(Expr):
         diofant.concrete.expr_with_limits.ExprWithLimits.function
         diofant.concrete.expr_with_limits.ExprWithLimits.variables
         diofant.concrete.expr_with_limits.ExprWithLimits.free_symbols
+
         """
         return self.args[1:]
 
@@ -146,6 +149,7 @@ class ExprWithLimits(Expr):
         diofant.concrete.expr_with_limits.ExprWithLimits.limits
         diofant.concrete.expr_with_limits.ExprWithLimits.free_symbols
         diofant.concrete.expr_with_limits.ExprWithLimits.as_dummy : Rename dummy variables
+
         """
         return [l[0] for l in self.limits]
 
@@ -160,6 +164,7 @@ class ExprWithLimits(Expr):
 
         >>> Sum(x, (x, y, 1)).free_symbols
         {y}
+
         """
         # don't test for any special values -- nominal free symbols
         # should be returned, e.g. don't return set() if the
@@ -212,6 +217,7 @@ class ExprWithLimits(Expr):
         ========
 
         diofant.concrete.expr_with_limits.ExprWithLimits.variables : Lists the integration variables
+
         """
         reps = {}
         f = self.function
@@ -244,11 +250,10 @@ class ExprWithLimits(Expr):
         ========
 
         >>> from diofant.abc import s
-        >>> Sum(1/n**s, (n, 1, oo)).subs(s, 2)
+        >>> Sum(1/n**s, (n, 1, oo)).subs({s: 2})
         Sum(n**(-2), (n, 1, oo))
 
-        >>> from diofant.abc import a
-        >>> Integral(a*x**2, x).subs(x, 4)
+        >>> Integral(a*x**2, x).subs({x: 4})
         Integral(a*x**2, (x, 4))
 
         See Also
@@ -256,6 +261,7 @@ class ExprWithLimits(Expr):
 
         variables : Lists the integration variables
         change_index : Perform mapping on the sum and product dummy variables
+
         """
 
         from ..core.function import AppliedUndef, UndefinedFunction
@@ -290,7 +296,7 @@ class ExprWithLimits(Expr):
                         "substitution can not create dummy dependencies")
                 sub_into_func = True
             if sub_into_func:
-                func = func.subs(old, new)
+                func = func.subs({old: new})
         else:
             # old is a Symbol and a dummy variable of some limit
             for i, xab in enumerate(limits):
@@ -316,6 +322,7 @@ class AddWithLimits(ExprWithLimits):
     """Represents unevaluated oriented additions.
 
     Parent class for Integral and Sum.
+
     """
 
     def __new__(cls, function, *symbols, **assumptions):

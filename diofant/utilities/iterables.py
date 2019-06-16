@@ -3,7 +3,7 @@ from itertools import (combinations, combinations_with_replacement,
                        permutations, product)
 from operator import gt
 
-from ..core import Basic, S
+from ..core import Basic
 # this is the logical location of these functions
 from ..core.compatibility import (as_int, default_sort_key, is_sequence,
                                   iterable, ordered)
@@ -43,6 +43,7 @@ def flatten(iterable, levels=None, cls=None):
     [1, 2, 3]
 
     adapted from https://kogs-www.informatik.uni-hamburg.de/~meine/python_tricks
+
     """
     if levels is not None:
         if not levels:
@@ -76,6 +77,7 @@ def flatten(iterable, levels=None, cls=None):
 def unflatten(iter, n=2):
     """Group ``iter`` into tuples of length ``n``. Raise an error if
     the length of ``iter`` is not a multiple of ``n``.
+
     """
     if n < 1 or len(iter) % n:
         raise ValueError('iter length is not a multiple of %i' % n)
@@ -116,6 +118,7 @@ def reshape(seq, how):
 
     >>> reshape(list(range(12)), [2, [3], {2}, (1, (3,), 1)])
     [[0, 1, [2, 3, 4], {5, 6}, (7, (8, 9, 10), 11)]]
+
     """
     m = sum(flatten(how))
     n, rem = divmod(len(seq), m)
@@ -157,6 +160,7 @@ def group(seq, multiple=True):
     See Also
     ========
     multiset
+
     """
     if not seq:
         return []
@@ -195,6 +199,7 @@ def multiset(seq):
     ========
 
     group
+
     """
     rv = defaultdict(int)
     for s in seq:
@@ -239,12 +244,11 @@ def postorder_traversal(node, keys=None):
     >>> list(postorder_traversal(w + (x + y)*z, keys=True))
     [w, z, x, y, x + y, z*(x + y), w + z*(x + y)]
 
-
     """
     if isinstance(node, Basic):
         args = node.args
         if keys:
-            if keys != S.true:
+            if keys != 1:
                 args = ordered(args, keys, default=False)
             else:
                 args = ordered(args)
@@ -343,6 +347,7 @@ def variations(seq, n, repetition=False):
         []
         >>> list(variations([0, 1], 3, repetition=True))[:4]
         [(0, 0, 0), (0, 0, 1), (0, 1, 0), (0, 1, 1)]
+
     """
     if not repetition:
         seq = tuple(seq)
@@ -395,6 +400,7 @@ def subsets(seq, k=None, repetition=False):
     []
     >>> list(subsets([0, 1], 3, repetition=True))
     [(0, 0, 0), (0, 0, 1), (0, 1, 1), (1, 1, 1)]
+
     """
     if k is None:
         for k in range(len(seq) + 1):
@@ -427,6 +433,7 @@ def filter_symbols(iterator, exclude):
 
     iterator : iterator
     filtered iterator
+
     """
     exclude = set(exclude)
     for s in iterator:
@@ -457,6 +464,7 @@ def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], *args, **assumpt
 
     sym : Symbol
         The subscripted symbols.
+
     """
     exclude = set(exclude or [])
     if cls is None:
@@ -486,6 +494,7 @@ def capture(func):
     True
     >>> capture(lambda: pprint(2/x, use_unicode=False))
     '2\n-\nx\n'
+
     """
     from io import StringIO
     import sys
@@ -538,6 +547,7 @@ def sift(seq, keyfunc):
     ========
 
     diofant.core.compatibility.ordered
+
     """
     m = defaultdict(list)
     for i in seq:
@@ -545,13 +555,8 @@ def sift(seq, keyfunc):
     return m
 
 
-def take(iter, n):
-    """Return ``n`` items from ``iter`` iterator. """
-    return [ value for _, value in zip(range(n), iter) ]
-
-
 def dict_merge(*dicts):
-    """Merge dictionaries into a single dictionary. """
+    """Merge dictionaries into a single dictionary."""
     merged = {}
 
     for dict in dicts:
@@ -571,6 +576,7 @@ def common_prefix(*seqs):
     [1, 2]
     >>> common_prefix([1, 2, 3], [1, 3, 5])
     [1]
+
     """
     if any(not s for s in seqs):
         return []
@@ -596,6 +602,7 @@ def common_suffix(*seqs):
     [2, 3]
     >>> common_suffix([1, 2, 3], [9, 7, 3])
     [3]
+
     """
 
     if any(not s for s in seqs):
@@ -714,7 +721,8 @@ def topological_sort(graph, key=None):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Topological_sorting
+    * https://en.wikipedia.org/wiki/Topological_sorting
+
     """
     V, E = graph
 
@@ -771,6 +779,7 @@ def rotate_left(x, y):
     >>> a = [0, 1, 2]
     >>> rotate_left(a, 1)
     [1, 2, 0]
+
     """
     if len(x) == 0:
         return []
@@ -789,6 +798,7 @@ def rotate_right(x, y):
     >>> a = [0, 1, 2]
     >>> rotate_right(a, 1)
     [2, 0, 1]
+
     """
     if len(x) == 0:
         return []
@@ -864,6 +874,7 @@ def multiset_permutations(m, size=None, g=None):
     720
     >>> len(list(multiset_permutations('banana')))
     60
+
     """
     if g is None:
         if type(m) is dict:
@@ -981,10 +992,11 @@ def _set_partitions(n):
     References
     ==========
 
-    .. [1] Nijenhuis, Albert and Wilf, Herbert. (1978) Combinatorial Algorithms,
-           2nd Ed, p 91, algorithm "nexequ". Available online from
-           http://www.math.upenn.edu/~wilf/website/CombAlgDownld.html (viewed
-           November 17, 2012).
+    * Nijenhuis, Albert and Wilf, Herbert. (1978) Combinatorial Algorithms,
+      2nd Ed, p 91, algorithm "nexequ". Available online from
+      http://www.math.upenn.edu/~wilf/website/CombAlgDownld.html (viewed
+      November 17, 2012).
+
     """
     p = [0]*n
     q = [0]*n
@@ -1088,6 +1100,7 @@ def multiset_partitions(multiset, m=None):
     diofant.combinatorics.partitions.Partition
     diofant.combinatorics.partitions.IntegerPartition
     diofant.functions.combinatorial.numbers.nT
+
     """
 
     # This function looks at the supplied input and dispatches to
@@ -1235,12 +1248,12 @@ def partitions(n, m=None, k=None, size=False):
     References
     ==========
 
-    .. [1] http://code.activestate.com/recipes/218332-generator-for-integer-partitions/
+    * http://code.activestate.com/recipes/218332-generator-for-integer-partitions/
 
     Notes
     =====
 
-    Modified from Tim Peter's version [1]_ to allow for k and m values.
+    Modified from Tim Peter's version to allow for k and m values.
 
     See Also
     ========
@@ -1391,11 +1404,12 @@ def ordered_partitions(n, m=None, sort=True):
     References
     ==========
 
-    .. [1] Generating Integer Partitions, [online],
-           Available: http://jeromekelleher.net/generating-integer-partitions.html
-    .. [2] Jerome Kelleher and Barry O'Sullivan, "Generating All
-           Partitions: A Comparison Of Two Encodings", [online],
-           Available: https://arxiv.org/pdf/0909.2331v2.pdf
+    * Generating Integer Partitions, [online],
+      Available: http://jeromekelleher.net/generating-integer-partitions.html
+    * Jerome Kelleher and Barry O'Sullivan, "Generating All
+      Partitions: A Comparison Of Two Encodings", [online],
+      Available: https://arxiv.org/pdf/0909.2331v2.pdf
+
     """
     if n < 1 or m is not None and m < 1:
         # the empty set is the only way to handle these inputs
@@ -1466,7 +1480,7 @@ def binary_partitions(n):
     References
     ==========
 
-    .. [1] TAOCP 4, section 7.2.1.5, problem 64
+    * TAOCP 4, section 7.2.1.5, problem 64
 
     Examples
     ========
@@ -1478,9 +1492,10 @@ def binary_partitions(n):
     [2, 2, 1]
     [2, 1, 1, 1]
     [1, 1, 1, 1, 1]
+
     """
     from math import ceil, log
-    pow = int(2**(ceil(log(n, 2))))
+    pow = 2**ceil(log(n, 2))
     sum = 0
     partition = []
     while pow:
@@ -1523,6 +1538,7 @@ def has_dups(seq):
     False
     >>> all(has_dups(c) is False for c in (set(), Set(), dict(), Dict()))
     True
+
     """
     from ..core import Dict
     from ..sets import Set
@@ -1542,6 +1558,7 @@ def has_variety(seq):
     True
     >>> has_variety((1, 1, 1))
     False
+
     """
     for i, s in enumerate(seq):
         if i == 0:
@@ -1571,6 +1588,7 @@ def uniq(seq, result=None):
     [1, 4, 5, 2]
     >>> list(uniq([[1], [2, 1], [1]]))
     [[1], [2, 1]]
+
     """
     try:
         seen = set()
@@ -1641,10 +1659,10 @@ def generate_bell(n):
     References
     ==========
 
-    * https//en.wikipedia.org/wiki/Method_ringing
-    * https//stackoverflow.com/questions/4856615/recursive-permutation/4857018
+    * https://en.wikipedia.org/wiki/Method_ringing
+    * https://stackoverflow.com/questions/4856615/recursive-permutation/4857018
     * https://web.archive.org/web/20160324133718/http://programminggeeks.com/bell-algorithm-for-permutation/
-    * https//en.wikipedia.org/wiki/Steinhaus%E2%80%93Johnson%E2%80%93Trotter_algorithm
+    * https://en.wikipedia.org/wiki/Steinhaus%E2%80%93Johnson%E2%80%93Trotter_algorithm
     * Generating involutions, derangements, and relatives by ECO
       Vincent Vajnovszki, DMTCS vol 1 issue 12, 2010
 
@@ -1653,7 +1671,7 @@ def generate_bell(n):
     if n < 1:
         raise ValueError('n must be a positive integer')
     if n == 1:
-        yield (0,)
+        yield 0,
     elif n == 2:
         yield (0, 1)
         yield (1, 0)
@@ -1708,7 +1726,7 @@ def generate_involutions(n):
     References
     ==========
 
-    .. [1] http://mathworld.wolfram.com/PermutationInvolution.html
+    * http://mathworld.wolfram.com/PermutationInvolution.html
 
     Examples
     ========
@@ -1717,6 +1735,7 @@ def generate_involutions(n):
     [(0, 1, 2), (0, 2, 1), (1, 0, 2), (2, 1, 0)]
     >>> len(list(generate_involutions(4)))
     10
+
     """
     idx = list(range(n))
     for p in permutations(idx):
@@ -1751,6 +1770,7 @@ def generate_derangements(perm):
     ========
 
     diofant.functions.combinatorial.factorials.subfactorial
+
     """
     p = multiset_permutations(perm)
     indices = range(len(perm))
@@ -1821,9 +1841,9 @@ def generate_oriented_forest(n):
     References
     ==========
 
-    .. [1] T. Beyer and S.M. Hedetniemi: constant time generation of
-           rooted trees, SIAM J. Computing Vol. 9, No. 4, November 1980
-    .. [2] https//stackoverflow.com/questions/1633833/oriented-forest-taocp-algorithm-in-python
+    * T. Beyer and S.M. Hedetniemi: constant time generation of
+      rooted trees, SIAM J. Computing Vol. 9, No. 4, November 1980
+    * https://stackoverflow.com/questions/1633833/oriented-forest-taocp-algorithm-in-python
 
     Examples
     ========
@@ -1831,6 +1851,7 @@ def generate_oriented_forest(n):
     >>> list(generate_oriented_forest(4))
     [[0, 1, 2, 3], [0, 1, 2, 2], [0, 1, 2, 1], [0, 1, 2, 0],
      [0, 1, 1, 1], [0, 1, 1, 0], [0, 1, 0, 1], [0, 1, 0, 0], [0, 0, 0, 0]]
+
     """
     P = list(range(-1, n))
     while True:
@@ -1939,6 +1960,7 @@ def runs(seq, op=gt):
     [[0, 1, 2], [2], [1, 4], [3], [2], [2]]
     >>> runs([0, 1, 2, 2, 1, 4, 3, 2, 2], op=ge)
     [[0, 1, 2, 2], [1, 4], [3], [2, 2]]
+
     """
     cycles = []
     seq = iter(seq)
@@ -2040,10 +2062,11 @@ def kbins(l, k, ordered=None):
     ========
 
     partitions, multiset_partitions
+
     """
     def partition(lista, bins):
         #  EnricoGiampieri's partition generator from
-        #  https//stackoverflow.com/questions/13131491/
+        #  https://stackoverflow.com/questions/13131491/
         #  partition-n-items-into-k-bins-in-python-lazily
         if len(lista) == 1 or bins == 1:
             yield [lista]
@@ -2096,6 +2119,7 @@ def cantor_product(*args):
     >>> from itertools import islice, count
     >>> list(islice(cantor_product(count(), count()), 9))
     [(0, 0), (0, 1), (1, 0), (1, 1), (0, 2), (1, 2), (2, 0), (2, 1), (2, 2)]
+
     """
     args = list(map(iter, args))
 
@@ -2132,6 +2156,7 @@ def permute_signs(t):
 
     >>> list(permute_signs((0, 1, 2)))
     [(0, 1, 2), (0, -1, 2), (0, 1, -2), (0, -1, -2)]
+
     """
     for signs in product(*[(1, -1)]*(len(t) - t.count(0))):
         signs = list(signs)
@@ -2151,6 +2176,7 @@ def signed_permutations(t):
      (1, 0, -2), (-1, 0, -2), (1, 2, 0), (-1, 2, 0), (1, -2, 0),
      (-1, -2, 0), (2, 0, 1), (-2, 0, 1), (2, 0, -1), (-2, 0, -1),
      (2, 1, 0), (-2, 1, 0), (2, -1, 0), (-2, -1, 0)]
+
     """
     return (type(t)(i) for j in permutations(t)
             for i in permute_signs(j))

@@ -1,4 +1,4 @@
-from ..core import Dummy, Eq, Integer, Rational, S, Wild, cacheit
+from ..core import Dummy, Eq, Integer, Rational, Wild, cacheit
 from ..functions import Piecewise, binomial, cos, sin
 
 
@@ -48,13 +48,14 @@ def trigintegrate(f, x, conds='piecewise'):
     References
     ==========
 
-    .. [1] https//en.wikibooks.org/wiki/Calculus/Integration_techniques
+    * https://en.wikibooks.org/wiki/Calculus/Integration_techniques
 
     See Also
     ========
 
     diofant.integrals.integrals.Integral.doit
     diofant.integrals.integrals.Integral
+
     """
     from .integrals import integrate
     pat, a, n, m = _pat_sincos(x)
@@ -66,9 +67,9 @@ def trigintegrate(f, x, conds='piecewise'):
         return
 
     n, m = M[n], M[m]
-    if n is S.Zero and m is S.Zero:
+    if n == 0 and m == 0:
         return x
-    zz = x if n is S.Zero else S.Zero
+    zz = x if n == 0 else Integer(0)
 
     a = M[a]
 
@@ -94,7 +95,7 @@ def trigintegrate(f, x, conds='piecewise'):
             uu = sin(a*x)
 
         fi = integrate(ff, u)  # XXX cyclic deps
-        fx = fi.subs(u, uu)
+        fx = fi.subs({u: uu})
         if conds == 'piecewise':
             return Piecewise((zz, Eq(a, 0)), (fx / a, True))
         return fx / a
@@ -116,7 +117,7 @@ def trigintegrate(f, x, conds='piecewise'):
     # take largest n or m -- to choose simplest substitution
     n_ = (abs(n) > abs(m))
     m_ = (abs(m) > abs(n))
-    res = S.Zero
+    res = Integer(0)
 
     if n_:
         #  2k         2 k             i             2i
@@ -224,8 +225,8 @@ def trigintegrate(f, x, conds='piecewise'):
                        Rational(n - 1, m + 1) *
                        integrate(cos(x)**(m + 2)*sin(x)**(n - 2), x))
     if conds == 'piecewise':
-        return Piecewise((zz, Eq(a, 0)), (res.subs(x, a*x) / a, True))
-    return res.subs(x, a*x) / a
+        return Piecewise((zz, Eq(a, 0)), (res.subs({x: a*x}) / a, True))
+    return res.subs({x: a*x}) / a
 
 
 def _sin_pow_integrate(n, x):

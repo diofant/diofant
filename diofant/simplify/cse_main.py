@@ -1,12 +1,11 @@
 """ Tools for doing common subexpression elimination."""
 
-from . import cse_opts
-from ..core import (Add, Basic, Mul, Pow, S, Symbol, Tuple, factor_terms,
-                    sympify)
+from ..core import Add, Basic, Mul, Pow, Symbol, Tuple, factor_terms, sympify
 from ..core.compatibility import iterable
 from ..core.function import _coeff_isneg
 from ..utilities.iterables import (filter_symbols, numbered_symbols, ordered,
                                    sift, topological_sort)
+from . import cse_opts
 
 
 # (preprocessor, postprocessor) pairs which are commonly useful. They should
@@ -72,6 +71,7 @@ def cse_separate(r, e):
     ...  [x0 + exp(x0/x1) + cos(x1), z - 2]]]
     ...
     True
+
     """
     d = sift(e, lambda w: w.is_Equality and w.lhs.is_Symbol)
     r = r + [w.args for w in d[True]]
@@ -96,6 +96,7 @@ def preprocess_for_cse(expr, optimizations):
     -------
     expr : diofant expression
         The transformed expression.
+
     """
     for pre, post in optimizations:
         if pre is not None:
@@ -120,6 +121,7 @@ def postprocess_for_cse(expr, optimizations):
     -------
     expr : diofant expression
         The transformed expression.
+
     """
     for pre, post in reversed(optimizations):
         if post is not None:
@@ -132,7 +134,8 @@ def opt_cse(exprs, order='canonical'):
     coefficient Muls
 
     Parameters
-    ----------
+    ==========
+
     exprs : list of diofant expressions
         The expressions to optimize.
     order : string, 'none' or 'canonical'
@@ -140,16 +143,18 @@ def opt_cse(exprs, order='canonical'):
         expressions where speed is a concern, use the setting order='none'.
 
     Returns
-    -------
+    =======
+
     opt_subs : dictionary of expression substitutions
         The expression substitutions which can be useful to optimize CSE.
 
     Examples
-    --------
+    ========
 
     >>> opt_subs = opt_cse([x**-2])
     >>> opt_subs
     {x**(-2): 1/(x**2)}
+
     """
     opt_subs = {}
 
@@ -176,7 +181,7 @@ def opt_cse(exprs, order='canonical'):
         if _coeff_isneg(expr):
             neg_expr = -expr
             if not neg_expr.is_Atom:
-                opt_subs[expr] = Mul(S.NegativeOne, neg_expr, evaluate=False)
+                opt_subs[expr] = Mul(-1, neg_expr, evaluate=False)
                 seen_subexp.add(neg_expr)
                 expr = neg_expr
 
@@ -188,8 +193,7 @@ def opt_cse(exprs, order='canonical'):
 
         elif expr.is_Pow:
             if _coeff_isneg(expr.exp):
-                opt_subs[expr] = Pow(Pow(expr.base, -expr.exp), S.NegativeOne,
-                                     evaluate=False)
+                opt_subs[expr] = Pow(Pow(expr.base, -expr.exp), -1, evaluate=False)
 
     for e in exprs:
         assert isinstance(e, Basic)
@@ -248,7 +252,7 @@ def opt_cse(exprs, order='canonical'):
     return opt_subs
 
 
-def tree_cse(exprs, symbols, opt_subs={}, order='canonical'):
+def tree_cse(exprs, symbols, opt_subs={}, order='canonical', ignore=()):
     """Perform raw CSE on expression tree, taking opt_subs into account.
 
     Parameters
@@ -264,6 +268,9 @@ def tree_cse(exprs, symbols, opt_subs={}, order='canonical'):
     order : string, 'none' or 'canonical'
         The order by which Mul and Add arguments are processed. For large
         expressions where speed is a concern, use the setting order='none'.
+    ignore : iterable of Symbol's
+        Substitutions containing these symbols will be ignored.
+
     """
     # Find repeated sub-expressions
 
@@ -280,8 +287,9 @@ def tree_cse(exprs, symbols, opt_subs={}, order='canonical'):
 
         else:
             if expr in seen_subexp:
-                to_eliminate.add(expr)
-                return
+                if not any(ign in expr.free_symbols for ign in ignore):
+                    to_eliminate.add(expr)
+                    return
 
             seen_subexp.add(expr)
 
@@ -361,7 +369,7 @@ def tree_cse(exprs, symbols, opt_subs={}, order='canonical'):
 
 
 def cse(exprs, symbols=None, optimizations=None, postprocess=None,
-        order='canonical'):
+        order='canonical', ignore=()):
     """ Perform common subexpression elimination on an expression.
 
     Parameters
@@ -390,6 +398,8 @@ def cse(exprs, symbols=None, optimizations=None, postprocess=None,
         ordering will be faster but dependent on expressions hashes, thus
         machine dependent and variable. For large expressions where speed is a
         concern, use the setting order='none'.
+    ignore : iterable of Symbol's
+        Substitutions containing these symbols will be ignored.
 
     Returns
     =======
@@ -425,6 +435,11 @@ def cse(exprs, symbols=None, optimizations=None, postprocess=None,
 
     >>> isinstance(_[1][-1], SparseMatrix)
     True
+
+    The user may disallow substitutions containing certain symbols:
+    >>> cse([y**2*(x + 1), 3*y**2*(x + 1)], ignore=(y,))
+    ([(x0, x + 1)], [x0*y**2, 3*x0*y**2])
+
     """
     from ..matrices import (MatrixBase, Matrix, ImmutableMatrix,
                             SparseMatrix, ImmutableSparseMatrix)
@@ -470,7 +485,7 @@ def cse(exprs, symbols=None, optimizations=None, postprocess=None,
 
     # Main CSE algorithm.
     replacements, reduced_exprs = tree_cse(reduced_exprs, symbols, opt_subs,
-                                           order)
+                                           order, ignore)
 
     # Postprocess the expressions to return the expressions to canonical form.
     exprs = copy

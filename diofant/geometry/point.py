@@ -7,7 +7,7 @@ Point2D
 Point3D
 """
 
-from ..core import Add, Float, S, Tuple, sympify
+from ..core import Add, Float, Integer, Tuple, sympify
 from ..core.compatibility import iterable
 from ..core.evaluate import global_evaluate
 from ..functions import im, sqrt
@@ -63,6 +63,7 @@ class Point(GeometryEntity):
     Point2D(1/2, 1/4)
     >>> print(Point(0.5, 0.25, evaluate=False))
     Point2D(0.5, 0.25)
+
     """
 
     def __new__(cls, *args, **kwargs):
@@ -98,11 +99,11 @@ class Point(GeometryEntity):
     def is_concyclic(*args):
         # Coincident points are irrelevant and can confuse this algorithm.
         # Use only unique points.
-        args = list(set(args))
-        if not all(isinstance(p, Point) for p in args):
+        uniq_args = list(set(args))
+        if not all(isinstance(p, Point) for p in uniq_args):
             raise TypeError('Must pass only Point objects')
 
-        return args[0].is_concyclic(*args[1:])
+        return uniq_args[0].is_concyclic(*uniq_args[1:])
 
     def is_collinear(*args):
         """Is a sequence of points collinear?
@@ -159,17 +160,17 @@ class Point(GeometryEntity):
         """
 
         # Coincident points are irrelevant; use only unique points.
-        args = list(set(args))
-        if not all(isinstance(p, Point) for p in args):
+        uniq_args = list(set(args))
+        if not all(isinstance(p, Point) for p in uniq_args):
             raise TypeError('Must pass only Point objects')
 
-        if len(args) == 0:
+        if len(uniq_args) == 0:
             return False
-        if len(args) <= 2:
+        if len(uniq_args) <= 2:
             return True
 
         # translate our points
-        points = [p - args[0] for p in args[1:]]
+        points = [p - uniq_args[0] for p in uniq_args[1:]]
         for p in points[1:]:
             if not Point.is_scalar_multiple(points[0], p):
                 return False
@@ -178,6 +179,7 @@ class Point(GeometryEntity):
     def is_scalar_multiple(self, other):
         """Returns whether `self` and `other` are scalar multiples
         of each other.
+
         """
         # if the vectors self and other are linearly dependent, then they must
         # be scalar multiples of each other
@@ -195,13 +197,15 @@ class Point(GeometryEntity):
         >>> p = Point(0, 1)
         >>> p.length
         0
+
         """
-        return S.Zero
+        return Integer(0)
 
     @property
     def origin(self):
         """A point of all zeros of the same ambient dimension
         as the current point
+
         """
         return Point([0]*len(self))
 
@@ -215,6 +219,7 @@ class Point(GeometryEntity):
         """The dimension of the ambient space the point is in.
         I.e., if the point is in R^n, the ambient dimension
         will be n
+
         """
         return len(self)
 
@@ -279,7 +284,7 @@ class Point(GeometryEntity):
         Point2D(7, 3)
 
         """
-        return Point([simplify((a + b)*S.Half) for a, b in zip(self.args, p.args)])
+        return Point([simplify((a + b)/2) for a, b in zip(self.args, p.args)])
 
     def evalf(self, dps=15, **options):
         """Evaluate the coordinates of the point.
@@ -301,6 +306,7 @@ class Point(GeometryEntity):
         Point2D(1/2, 3/2)
         >>> print(p1.evalf())
         Point2D(0.5, 1.5)
+
         """
         coords = [x.evalf(dps, **options) for x in self.args]
         return Point(*coords, evaluate=False)
@@ -373,6 +379,7 @@ class Point(GeometryEntity):
         ========
 
         diofant.geometry.entity.GeometryEntity.translate
+
         """
 
         if iterable(other) and len(other) == len(self):
@@ -384,6 +391,7 @@ class Point(GeometryEntity):
     def __sub__(self, other):
         """Subtract two points, or subtract a factor from this point's
         coordinates.
+
         """
         return self + (-other)
 
@@ -452,6 +460,7 @@ class Point2D(Point):
     Point2D(1/2, 1/4)
     >>> print(Point2D(0.5, 0.25, evaluate=False))
     Point2D(0.5, 0.25)
+
     """
 
     def __new__(cls, *args, **kwargs):
@@ -491,6 +500,7 @@ class Point2D(Point):
         >>> p = Point2D(0, 1)
         >>> p.x
         0
+
         """
         return self.args[0]
 
@@ -505,6 +515,7 @@ class Point2D(Point):
         >>> p = Point2D(0, 1)
         >>> p.y
         1
+
         """
         return self.args[1]
 
@@ -567,14 +578,14 @@ class Point2D(Point):
             return False
         if len(points) <= 2:
             return True
-        points = [Point(p) for p in points]
-        if len(points) == 3:
-            return not Point.is_collinear(*points)
+        ppoints = [Point(p) for p in points]
+        if len(ppoints) == 3:
+            return not Point.is_collinear(*ppoints)
 
         try:
             from .ellipse import Circle
-            c = Circle(points[0], points[1], points[2])
-            for point in points[3:]:
+            c = Circle(ppoints[0], ppoints[1], ppoints[2])
+            for point in ppoints[3:]:
                 if point not in c:
                     return False
             return True
@@ -599,6 +610,7 @@ class Point2D(Point):
         Point2D(0, 1)
         >>> t.rotate(pi/2, (2, 0))
         Point2D(2, -1)
+
         """
         from ..functions import cos, sin
 
@@ -673,6 +685,7 @@ class Point2D(Point):
         diofant.geometry.entity.GeometryEntity.rotate
         diofant.geometry.entity.GeometryEntity.scale
         diofant.geometry.entity.GeometryEntity.translate
+
         """
         try:
             col, row = matrix.shape
@@ -732,6 +745,7 @@ class Point3D(Point):
     Point3D(1/2, 1/4, 2)
     >>> print(Point3D(0.5, 0.25, 3, evaluate=False))
     Point3D(0.5, 0.25, 3)
+
     """
 
     def __new__(cls, *args, **kwargs):
@@ -748,7 +762,7 @@ class Point3D(Point):
                     "Enter a 2 or 3 dimensional point")
         coords = Tuple(*args)
         if len(coords) == 2:
-            coords += (S.Zero,)
+            coords += Integer(0),
         if eval:
             coords = coords.xreplace({f: simplify(nsimplify(f, rational=True))
                                       for f in coords.atoms(Float)})
@@ -768,6 +782,7 @@ class Point3D(Point):
         >>> p = Point3D(0, 1, 3)
         >>> p.x
         0
+
         """
         return self.args[0]
 
@@ -782,6 +797,7 @@ class Point3D(Point):
         >>> p = Point3D(0, 1, 2)
         >>> p.y
         1
+
         """
         return self.args[1]
 
@@ -796,6 +812,7 @@ class Point3D(Point):
         >>> p = Point3D(0, 1, 1)
         >>> p.z
         1
+
         """
         return self.args[2]
 
@@ -819,6 +836,7 @@ class Point3D(Point):
         >>> p1 = Point3D(1, 2, 3)
         >>> p1.direction_ratio(Point3D(2, 3, 5))
         [1, 1, 2]
+
         """
         return [(point.x - self.x), (point.y - self.y), (point.z - self.z)]
 
@@ -842,6 +860,7 @@ class Point3D(Point):
         >>> p1 = Point3D(1, 2, 3)
         >>> p1.direction_cosine(Point3D(2, 3, 5))
         [sqrt(6)/6, sqrt(6)/6, sqrt(6)/3]
+
         """
         a = self.direction_ratio(point)
         b = sqrt(sum(i**2 for i in a))
@@ -879,6 +898,7 @@ class Point3D(Point):
         True
         >>> Point3D.are_collinear(p1, p2, p3, p5)
         False
+
         """
         return Point.is_collinear(*points)
 
@@ -913,6 +933,7 @@ class Point3D(Point):
         >>> p5 = Point3D(0, 1, 3)
         >>> Point3D.are_coplanar(p1, p2, p3, p5)
         False
+
         """
         from .plane import Plane
         points = list(set(points))
@@ -1010,6 +1031,7 @@ class Point3D(Point):
         Point3D(2, 3, 1)
         >>> t + Point3D(2, 2, 2)
         Point3D(2, 3, 3)
+
         """
         return Point3D(self.x + x, self.y + y, self.z + z)
 
@@ -1023,6 +1045,7 @@ class Point3D(Point):
         diofant.geometry.entity.GeometryEntity.rotate
         diofant.geometry.entity.GeometryEntity.scale
         diofant.geometry.entity.GeometryEntity.translate
+
         """
         try:
             col, row = matrix.shape

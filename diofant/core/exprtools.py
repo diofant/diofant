@@ -1,25 +1,24 @@
 """Tools for manipulating of large commutative expressions. """
 
+import numbers
 from collections import defaultdict
 
 from ..utilities.iterables import common_prefix, common_suffix, variations
 from .add import Add
 from .basic import Basic, preorder_traversal
-from .compatibility import (DIOFANT_INTS, default_sort_key, is_sequence,
-                            iterable, ordered)
+from .compatibility import default_sort_key, is_sequence, iterable, ordered
 from .containers import Dict, Tuple
 from .coreerrors import NonCommutativeExpression
 from .expr import Expr
 from .mul import Mul, _keep_coeff
 from .numbers import I, Integer, Number, Rational, oo
 from .power import Pow
-from .singleton import S
 from .symbol import Dummy
 from .sympify import sympify
 
 
 def _isnumber(i):
-    return isinstance(i, (DIOFANT_INTS, float)) or i.is_Number
+    return isinstance(i, (numbers.Integral, float)) or i.is_Number
 
 
 def decompose_power(expr):
@@ -57,9 +56,9 @@ def decompose_power(expr):
     else:
         exp, tail = exp.as_coeff_Mul(rational=True)
 
-        if exp is S.NegativeOne:
+        if exp == -1:
             base, exp = Pow(base, tail), -1
-        elif exp is not S.One:
+        elif exp != 1:
             tail = _keep_coeff(Rational(1, exp.denominator), tail)
             base, exp = Pow(base, tail), exp.numerator
         else:
@@ -99,35 +98,34 @@ class Factors:
         performed: powers of -1 and I are made canonical.
 
         """
-        if isinstance(factors, (DIOFANT_INTS, float)):
+        if isinstance(factors, (numbers.Integral, float)):
             factors = sympify(factors)
 
         if isinstance(factors, Factors):
             factors = factors.factors.copy()
-        elif factors is None or factors is S.One:
+        elif factors in (None, 1):
             factors = {}
-        elif factors is S.Zero or factors == 0:
-            factors = {S.Zero: S.One}
+        elif factors == 0:
+            factors = {Integer(0): Integer(1)}
         elif isinstance(factors, Number):
             n = factors
             factors = {}
             if n < 0:
-                factors[S.NegativeOne] = S.One
+                factors[Integer(-1)] = Integer(1)
                 n = -n
-            if n is not S.One:
-                if n.is_Float or n.is_Integer or n is oo:
-                    factors[n] = S.One
-                elif n.is_Rational:
-                    # since we're processing Numbers, the denominator is
-                    # stored with a negative exponent; all other factors
-                    # are left .
-                    if n.numerator != 1:
-                        factors[Integer(n.numerator)] = S.One
-                    factors[Integer(n.denominator)] = S.NegativeOne
-                else:  # pragma: no cover
-                    raise ValueError('Expected Float|Rational|Integer, not %s' % n)
+            if n.is_Float or n.is_Integer or n is oo:
+                factors[n] = Integer(1)
+            elif n.is_Rational and n != 1:
+                # since we're processing Numbers, the denominator is
+                # stored with a negative exponent; all other factors
+                # are left .
+                if n.numerator != 1:
+                    factors[Integer(n.numerator)] = Integer(1)
+                factors[Integer(n.denominator)] = Integer(-1)
+            else:  # pragma: no cover
+                raise ValueError('Expected Float|Rational|Integer, not %s' % n)
         elif isinstance(factors, Basic) and not factors.args:
-            factors = {factors: S.One}
+            factors = {factors: Integer(1)}
         elif isinstance(factors, Expr):
             c, nc = factors.args_cnc()
             i = c.count(I)
@@ -135,9 +133,9 @@ class Factors:
                 c.remove(I)
             factors = dict(Mul._from_args(c).as_powers_dict())
             if i:
-                factors[I] = S.One*i
+                factors[I] = Integer(1)*i
             if nc:
-                factors[Mul(*nc, evaluate=False)] = S.One
+                factors[Mul(*nc, evaluate=False)] = Integer(1)
         else:
             factors = factors.copy()  # /!\ should be dict-like
 
@@ -148,26 +146,26 @@ class Factors:
                 if k in (I, -1, 1):
                     handle.append(k)
             if handle:
-                i1 = S.One
+                i1 = Integer(1)
                 for k in handle:
                     if not _isnumber(factors[k]):
                         continue
                     i1 *= k**factors.pop(k)
-                if i1 is not S.One:
+                if i1 != 1 or i1.is_Float:
                     for a in i1.args if i1.is_Mul else [i1]:  # at worst, -1.0*I*(-1)**e
-                        if a is S.NegativeOne:
-                            factors[a] = S.One
+                        if a == -1 and not a.is_Float:
+                            factors[a] = Integer(1)
                         elif a is I:
-                            factors[I] = S.One
+                            factors[I] = Integer(1)
                         elif a.is_Pow:
-                            if S.NegativeOne not in factors:
-                                factors[S.NegativeOne] = S.Zero
-                            factors[S.NegativeOne] += a.exp
+                            if -1 not in factors:
+                                factors[Integer(-1)] = Integer(0)
+                            factors[Integer(-1)] += a.exp
                         elif a == 1:
-                            factors[a] = S.One
+                            factors[a] = Integer(1)
                         elif a == -1:
-                            factors[-a] = S.One
-                            factors[S.NegativeOne] = S.One
+                            factors[-a] = Integer(1)
+                            factors[Integer(-1)] = Integer(1)
                         else:  # pragma: no cover
                             raise RuntimeError('unexpected factor in i1: %s' % a)
 
@@ -188,6 +186,7 @@ class Factors:
         """
         >>> Factors(0).is_zero
         True
+
         """
         f = self.factors
         return len(f) == 1 and 0 in f
@@ -197,6 +196,7 @@ class Factors:
         """
         >>> Factors(1).is_one
         True
+
         """
         return not self.factors
 
@@ -238,11 +238,12 @@ class Factors:
         Factors({x: 2, y: 3, z: -1})
         >>> a*b
         Factors({x: 2, y: 3, z: -1})
+
         """
         if not isinstance(other, Factors):
             other = Factors(other)
         if any(f.is_zero for f in (self, other)):
-            return Factors(S.Zero)
+            return Factors(Integer(0))
         factors = dict(self.factors)
 
         for factor, exp in other.factors.items():
@@ -271,9 +272,9 @@ class Factors:
         if not isinstance(other, Factors):
             other = Factors(other)
             if other.is_zero:
-                return Factors(), Factors(S.Zero)
+                return Factors(), Factors(Integer(0))
             if self.is_zero:
-                return Factors(S.Zero), Factors()
+                return Factors(Integer(0)), Factors()
 
         self_factors = dict(self.factors)
         other_factors = dict(other.factors)
@@ -372,7 +373,7 @@ class Factors:
             if other.is_zero:
                 raise ZeroDivisionError
             if self.is_zero:
-                return Factors(S.Zero), Factors()
+                return Factors(Integer(0)), Factors()
 
         for factor, exp in other.factors.items():
             if factor in quo:
@@ -426,6 +427,7 @@ class Factors:
         >>> b = Factors((x*y/z).as_powers_dict())
         >>> a.quo(b)  # same as a/b
         Factors({y: 1})
+
         """
         return self.div(other)[0]
 
@@ -441,6 +443,7 @@ class Factors:
         Factors({z: -1})
         >>> a.rem(a)
         Factors({})
+
         """
         return self.div(other)[1]
 
@@ -459,7 +462,7 @@ class Factors:
             other = other.as_expr()
             if other.is_Integer:
                 other = int(other)
-        if isinstance(other, DIOFANT_INTS) and other >= 0:
+        if isinstance(other, numbers.Integral) and other >= 0:
             factors = {}
 
             if other:
@@ -482,6 +485,7 @@ class Factors:
         >>> b = Factors((x*y/z).as_powers_dict())
         >>> a.gcd(b)
         Factors({x: 1, y: 1})
+
         """
         if not isinstance(other, Factors):
             other = Factors(other)
@@ -513,11 +517,12 @@ class Factors:
         >>> b = Factors((x*y/z).as_powers_dict())
         >>> a.lcm(b)
         Factors({x: 1, y: 2, z: -1})
+
         """
         if not isinstance(other, Factors):
             other = Factors(other)
             if any(f.is_zero for f in (self, other)):
-                return Factors(S.Zero)
+                return Factors(Integer(0))
 
         factors = dict(self.factors)
 
@@ -551,7 +556,7 @@ class Factors:
 
 
 class Term:
-    """Efficient representation of ``coeff*(numer/denom)``. """
+    """Efficient representation of ``coeff*(numer/denom)``."""
 
     def __init__(self, term, numer=None, denom=None):
         if numer is None and denom is None:
@@ -638,7 +643,7 @@ class Term:
             return NotImplemented
 
     def __pow__(self, other):
-        if isinstance(other, DIOFANT_INTS):
+        if isinstance(other, numbers.Integral):
             return self.pow(other)
         else:
             return NotImplemented
@@ -658,6 +663,7 @@ def _gcd_terms(terms, isprimitive=False, fraction=True):
 
     If ``fraction`` is True then the expression will appear over a common
     denominator, the lcm of all term denominators.
+
     """
 
     if isinstance(terms, Basic) and not isinstance(terms, Tuple):
@@ -669,7 +675,7 @@ def _gcd_terms(terms, isprimitive=False, fraction=True):
     # here rather than duplicate it before the mapping of Term onto
     # the terms
     if len(terms) == 0:
-        return S.Zero, S.Zero, S.One
+        return Integer(0), Integer(0), Integer(1)
 
     if len(terms) == 1:
         cont = terms[0].coeff
@@ -760,6 +766,7 @@ def gcd_terms(terms, isprimitive=False, clear=True, fraction=True):
     def mask(terms):
         """replace nc portions of each term with a unique Dummy symbols
         and return the replacements to restore them
+
         """
         args = [(a, []) if a.is_commutative else a.args_cnc() for a in terms]
         reps = []
@@ -971,6 +978,7 @@ def _mask_nc(eq, name=None):
     True
     >>> _mask_nc(eq, 'd')
     (_d0**2 + 1, {_d0: Expr()}, [])
+
     """
     name = name or 'mask'
     # Make Dummy() append sequential numbers to the name
@@ -1041,14 +1049,13 @@ def factor_nc(expr):
     (x + A)**2
     >>> factor_nc(((x + A)*(x + B)).expand())
     (x + A)*(x + B)
+
     """
     from ..simplify.simplify import powsimp
     from ..polys import gcd, factor
 
     def _pemexpand(expr):
-        """Expand with the minimal set of hints necessary to check
-        the result.
-        """
+        """Expand with the minimal set of hints necessary to check the result."""
         return expr.expand(deep=True, mul=True, power_exp=True,
                            power_base=False, basic=False, multinomial=True, log=False)
 
@@ -1063,7 +1070,7 @@ def factor_nc(expr):
         return factor(expr).subs(rep)
     else:
         args = [a.args_cnc() for a in Add.make_args(expr)]
-        c = g = l = r = S.One
+        c = g = l = r = Integer(1)
         hit = False
         # find any commutative gcd term
         for i, a in enumerate(args):
@@ -1072,11 +1079,11 @@ def factor_nc(expr):
             elif a[0]:
                 c = gcd(c, Mul._from_args(a[0]))
             else:
-                c = S.One
-        if c is not S.One:
+                c = Integer(1)
+        if c != 1:
             hit = True
             c, g = c.as_coeff_Mul()
-            if g is not S.One:
+            if g != 1:
                 for i, (cc, _) in enumerate(args):
                     cc = list(Mul.make_args(Mul._from_args(list(cc))/g))
                     args[i][0] = cc

@@ -8,7 +8,8 @@ Features:
 References
 ==========
 
-.. [1] https://en.wikipedia.org/wiki/DPLL_algorithm
+* https://en.wikipedia.org/wiki/DPLL_algorithm
+
 """
 
 from collections import defaultdict
@@ -27,11 +28,11 @@ def dpll_satisfiable(expr, all_models=False):
     Examples
     ========
 
-    >>> from diofant.abc import A, B
-    >>> dpll_satisfiable(A & ~B)
-    {A: True, B: False}
-    >>> dpll_satisfiable(A & ~A)
+    >>> dpll_satisfiable(a & ~b)
+    {a: True, b: False}
+    >>> dpll_satisfiable(a & ~a)
     False
+
     """
     clauses = conjuncts(to_cnf(expr))
     if False in clauses:
@@ -70,6 +71,7 @@ class SATSolver:
     Class for representing a SAT solver capable of
      finding a model to a boolean theory in conjunctive
      normal form.
+
     """
 
     def __init__(self, clauses, variables, var_settings, symbols=None,
@@ -96,13 +98,13 @@ class SATSolver:
             self.heur_lit_unset = self._vsids_lit_unset
             self.heur_clause_added = self._vsids_clause_added
 
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
         if 'none' == clause_learning:
             self.add_learned_clause = lambda x: None
             self.compute_conflict = lambda: None
-        else:  # pragma: no cover
+        else:
             raise NotImplementedError
 
         # Create the base level
@@ -127,6 +129,7 @@ class SATSolver:
         - Unit clauses are queued for propagation right away.
         - Non-unit clauses have their first and last literals set as sentinels.
         - The number of clauses a literal appears in is computed.
+
         """
         self.clauses = []
         for cls in clauses:
@@ -162,11 +165,11 @@ class SATSolver:
         >>> list(l._find_model())
         [{1: True, 2: False, 3: False}, {1: True, 2: True, 3: True}]
 
-        >>> from diofant.abc import A, B, C
         >>> l = SATSolver([{2, -3}, {1}, {3, -3}, {2, -2},
-        ...                {3, -2}], {1, 2, 3}, set(), [A, B, C])
+        ...                {3, -2}], {1, 2, 3}, set(), [a, b, c])
         >>> list(l._find_model())
-        [{A: True, B: False, C: False}, {A: True, B: True, C: True}]
+        [{a: True, b: False, c: False}, {a: True, b: True, c: True}]
+
         """
 
         # We use this variable to keep track of if we should flip a
@@ -253,6 +256,7 @@ class SATSolver:
         False
         >>> l._current_level.var_settings
         {1, 2}
+
         """
         return self.levels[-1]
 
@@ -271,6 +275,7 @@ class SATSolver:
         False
         >>> l._clause_sat(1)
         True
+
         """
         for lit in self.clauses[cls]:
             if lit in self.var_settings:
@@ -291,6 +296,7 @@ class SATSolver:
         True
         >>> l._is_sentinel(-3, 1)
         False
+
         """
         return cls in self.sentinels[lit]
 
@@ -322,6 +328,7 @@ class SATSolver:
         ...     pass
         >>> l.var_settings
         {-1}
+
         """
         self.var_settings.add(lit)
         self._current_level.var_settings.add(lit)
@@ -365,6 +372,7 @@ class SATSolver:
         >>> level = l._current_level
         >>> (level.decision, level.var_settings, level.flipped)
         (0, {1}, False)
+
         """
         # Undo the variable settings
         for lit in self._current_level.var_settings:
@@ -400,6 +408,7 @@ class SATSolver:
         [False, True, False, False]
         >>> l.sentinels
         {-3: {0, 2}, -2: {3, 4}, -1: set(), 2: {0, 3}, 3: {2, 4}}
+
         """
         changed = True
         while changed:
@@ -452,6 +461,7 @@ class SATSolver:
         >>> l._vsids_decay()
         >>> l.lit_scores
         {-3: -1.0, -2: -1.0, -1: 0.0, 1: 0.0, 2: -1.0, 3: -1.0}
+
         """
         # We divide every literal score by 2 for a decay factor
         #  Note: This doesn't change the heap property
@@ -474,6 +484,7 @@ class SATSolver:
         -3
         >>> l.lit_heap
         [(-2.0, -2), (-2.0, 2), (0.0, -1), (0.0, 1), (-2.0, 3)]
+
         """
         if len(self.lit_heap) == 0:
             return 0
@@ -505,6 +516,7 @@ class SATSolver:
         >>> l.lit_heap
         [(-2.0, -3), (-2.0, -2), (-2.0, -2), (-2.0, 2), (-2.0, 3), (0.0, -1),
          (-2.0, 2), (0.0, 1)]
+
         """
         var = abs(lit)
         heappush(self.lit_heap, (self.lit_scores[var], var))
@@ -529,6 +541,7 @@ class SATSolver:
         1
         >>> l.lit_scores
         {-3: -1.0, -2: -2.0, -1: 0.0, 1: 0.0, 2: -1.0, 3: -2.0}
+
         """
         self.num_learned_clauses += 1
         for lit in cls:
@@ -558,6 +571,7 @@ class SATSolver:
         [[2, -3], [1], [3, -3], [2, -2], [3, -2], [3]]
         >>> l.sentinels
         {-3: {0, 2}, -2: {3, 4}, 2: {0, 3}, 3: {2, 4, 5}}
+
         """
         cls_num = len(self.clauses)
         self.clauses.append(cls)
@@ -583,6 +597,7 @@ class SATSolver:
         {1: True, 2: False, 3: False}
         >>> l._simple_compute_conflict()
         [3]
+
         """
         return [-(level.decision) for level in self.levels[1:]]
 
@@ -591,6 +606,7 @@ class Level:
     """
     Represents a single level in the DPLL algorithm, and contains
     enough information for a sound backtracking procedure.
+
     """
 
     def __init__(self, decision, flipped=False):

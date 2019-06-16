@@ -10,14 +10,15 @@ See Also
 diofant.stats.crv
 diofant.stats.frv
 diofant.stats.rv_interface
+
 """
 
 from ..abc import x
-from ..core import (Add, Eq, Equality, Expr, Integer, Lambda, S, Symbol, Tuple,
+from ..core import (Add, Eq, Equality, Expr, Integer, Lambda, Symbol, Tuple,
                     oo, sympify)
 from ..core.relational import Relational
 from ..functions import DiracDelta
-from ..logic.boolalg import Boolean
+from ..logic.boolalg import Boolean, false, true
 from ..sets import FiniteSet, ProductSet
 from ..solvers import solve
 from ..utilities import lambdify
@@ -31,6 +32,7 @@ class RandomDomain(Expr):
     ========
     diofant.stats.crv.ContinuousDomain
     diofant.stats.frv.FiniteDomain
+
     """
 
     is_ProductDomain = False
@@ -46,10 +48,10 @@ class RandomDomain(Expr):
         return self.args[1]
 
     def __contains__(self, other):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def integrate(self, expr):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
 
 class SingleDomain(RandomDomain):
@@ -61,6 +63,7 @@ class SingleDomain(RandomDomain):
 
     diofant.stats.crv.SingleContinuousDomain
     diofant.stats.frv.SingleFiniteDomain
+
     """
 
     def __new__(cls, symbol, set):
@@ -85,6 +88,7 @@ class ConditionalDomain(RandomDomain):
 
     diofant.stats.crv.ConditionalContinuousDomain
     diofant.stats.frv.ConditionalFiniteDomain
+
     """
 
     def __new__(cls, fulldomain, condition):
@@ -121,6 +125,7 @@ class PSpace(Expr):
     ========
     diofant.stats.crv.ContinuousPSpace
     diofant.stats.frv.FinitePSpace
+
     """
 
     is_Finite = None
@@ -135,25 +140,26 @@ class PSpace(Expr):
         return self.domain.symbols
 
     def where(self, condition):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def compute_density(self, expr):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def sample(self):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def probability(self, condition):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def integrate(self, expr):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
 
 class SinglePSpace(PSpace):
     """
     Represents the probabilities of a set of random events that can be
     attributed to a single variable/symbol.
+
     """
 
     def __new__(cls, s, distribution):
@@ -200,6 +206,7 @@ class RandomSymbol(Expr):
     user. They tend to be created instead by the PSpace class's value method.
     Traditionally a user doesn't even do this but instead calls one of the
     convenience functions Normal, Exponential, Coin, Die, FiniteRV, etc....
+
     """
 
     def __new__(cls, pspace, symbol):
@@ -245,6 +252,7 @@ class ProductPSpace(PSpace):
     spaces.
 
     Often created using the function, pspace
+
     """
 
     def __new__(cls, *spaces):
@@ -259,14 +267,15 @@ class ProductPSpace(PSpace):
         if len(symbols) < sum(len(space.symbols) for space in spaces):
             raise ValueError("Overlapping Random Variables")
 
+        new_cls = cls
         if all(space.is_Finite for space in spaces):
             from .frv import ProductFinitePSpace
-            cls = ProductFinitePSpace
+            new_cls = ProductFinitePSpace
         if all(space.is_Continuous for space in spaces):
             from .crv import ProductContinuousPSpace
-            cls = ProductContinuousPSpace
+            new_cls = ProductContinuousPSpace
 
-        obj = Expr.__new__(cls, *FiniteSet(*spaces))
+        obj = Expr.__new__(new_cls, *FiniteSet(*spaces))
 
         return obj
 
@@ -319,6 +328,7 @@ class ProductDomain(RandomDomain):
 
     diofant.stats.crv.ProductContinuousDomain
     diofant.stats.frv.ProductFiniteDomain
+
     """
 
     is_ProductDomain = True
@@ -333,14 +343,15 @@ class ProductDomain(RandomDomain):
                 domains2.extend(domain.domains)
         domains2 = FiniteSet(*domains2)
 
+        new_cls = cls
         if all(domain.is_Finite for domain in domains2):
             from .frv import ProductFiniteDomain
-            cls = ProductFiniteDomain
+            new_cls = ProductFiniteDomain
         if all(domain.is_Continuous for domain in domains2):
             from .crv import ProductContinuousDomain
-            cls = ProductContinuousDomain
+            new_cls = ProductContinuousDomain
 
-        return Expr.__new__(cls, *domains2)
+        return Expr.__new__(new_cls, *domains2)
 
     @property
     def symbols(self):
@@ -360,7 +371,7 @@ class ProductDomain(RandomDomain):
         for domain in self.domains:
             # Collect the parts of this event which associate to this domain
             elem = frozenset(item for item in other
-                             if domain.symbols.contains(item[0]) == S.true)
+                             if domain.symbols.contains(item[0]) == true)
             # Test this sub-event
             if elem not in domain:
                 return False
@@ -369,9 +380,7 @@ class ProductDomain(RandomDomain):
 
 
 def random_symbols(expr):
-    """
-    Returns all RandomSymbols within a Diofant Expression.
-    """
+    """Returns all RandomSymbols within a Diofant Expression."""
     try:
         return list(expr.atoms(RandomSymbol))
     except AttributeError:
@@ -391,6 +400,7 @@ def pspace(expr):
     >>> X = Normal('X', 0, 1)
     >>> pspace(2*X + 1) == X.pspace
     True
+
     """
 
     expr = sympify(expr)
@@ -405,9 +415,7 @@ def pspace(expr):
 
 
 def sumsets(sets):
-    """
-    Union of sets
-    """
+    """Union of sets."""
     return frozenset().union(*sets)
 
 
@@ -423,6 +431,7 @@ def rs_swap(a, b):
 
     Inputs: collections a and b of random variables which share common symbols
     Output: dict mapping RVs in a to RVs in b
+
     """
     d = {}
     for rsa in a:
@@ -461,6 +470,7 @@ def given(expr, condition=None, **kwargs):
     ------------------
              ____
          2*\/ pi
+
     """
 
     if not random_symbols(condition) or pspace_independent(expr, condition):
@@ -518,6 +528,7 @@ def expectation(expr, condition=None, numsamples=None, evaluate=True, **kwargs):
 
     >>> E(X, X > 3) # Expectation of X given that it is above 3
     5
+
     """
 
     if not random_symbols(expr):  # expr isn't random?
@@ -572,6 +583,7 @@ def probability(condition, given_condition=None, numsamples=None,
     1/4
     >>> P(X > Y)
     5/12
+
     """
 
     condition = sympify(condition)
@@ -581,15 +593,15 @@ def probability(condition, given_condition=None, numsamples=None,
             not isinstance(given_condition, (Relational, Boolean)):
         raise ValueError("%s is not a relational or combination of relationals"
                          % (given_condition))
-    if given_condition is S.false:
-        return S.Zero
+    if given_condition == false:
+        return Integer(0)
     if not isinstance(condition, (Relational, Boolean)):
         raise ValueError("%s is not a relational or combination of relationals"
                          % condition)
-    if condition is S.true:
-        return S.One
-    if condition is S.false:
-        return S.Zero
+    if condition == true:
+        return Integer(1)
+    if condition == false:
+        return Integer(0)
 
     if numsamples:
         return sampling_P(condition, given_condition, numsamples=numsamples,
@@ -672,6 +684,7 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
     {2: 1/6, 4: 1/6, 6: 1/6, 8: 1/6, 10: 1/6, 12: 1/6}
     >>> density(X)(x)
     sqrt(2)*E**(-x**2/2)/(2*sqrt(pi))
+
     """
 
     if numsamples:
@@ -711,6 +724,7 @@ def cdf(expr, condition=None, evaluate=True, **kwargs):
 
     >>> cdf(X)
     Lambda(_z, erf(sqrt(2)*_z/2)/2 + 1/2)
+
     """
     if condition is not None:  # If there is a condition
         # Recompute on new conditional expr
@@ -739,13 +753,14 @@ def where(condition, given_condition=None, **kwargs):
     >>> X = Normal('x', 0, 1)
 
     >>> where(X**2<1)
-    Domain: And(-1 < x, x < 1)
+    Domain: (-1 < x) & (x < 1)
 
     >>> where(X**2<1).set
     (-1, 1)
 
-    >>> where(And(D1<=D2 , D2<3))
-    Domain: Or(And(Eq(a, 1), Eq(b, 1)), And(Eq(a, 1), Eq(b, 2)), And(Eq(a, 2), Eq(b, 2)))
+    >>> where(And(D1<=D2, D2<3))
+    Domain: ((Eq(a, 1)) & (Eq(b, 1))) | ((Eq(a, 1)) & (Eq(b, 2))) | ((Eq(a, 2)) & (Eq(b, 2)))
+
     """
     if given_condition is not None:  # If there is a condition
         # Recompute on new conditional expr
@@ -766,6 +781,7 @@ def sample(expr, condition=None, **kwargs):
     >>> X, Y, Z = Die('X', 6), Die('Y', 6), Die('Z', 6)
 
     >>> die_roll = sample(X + Y + Z) # A random realization of three dice
+
     """
     return next(sample_iter(expr, condition, numsamples=1))
 
@@ -794,6 +810,7 @@ def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
     diofant.stats.sample
     diofant.stats.rv.sampling_P
     diofant.stats.rv.sampling_E
+
     """
     if condition is not None:
         ps = pspace(Tuple(expr, condition))
@@ -813,7 +830,7 @@ def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
         fn(*args)
         if condition is not None:
             given_fn(*args)
-    except Exception:
+    except (TypeError, ValueError):
         raise TypeError("Expr/condition too complex for lambdify")
 
     def return_generator():
@@ -845,6 +862,7 @@ def sampling_P(condition, given_condition=None, numsamples=1,
     diofant.stats.P
     diofant.stats.rv.sampling_E
     diofant.stats.rv.sampling_density
+
     """
 
     count_true = 0
@@ -873,6 +891,7 @@ def sampling_E(expr, given_condition=None, numsamples=1,
     diofant.stats.P
     diofant.stats.rv.sampling_P
     diofant.stats.rv.sampling_density
+
     """
 
     samples = sample_iter(expr, given_condition,
@@ -891,6 +910,7 @@ def sampling_density(expr, given_condition=None, numsamples=1, **kwargs):
     diofant.stats.density
     diofant.stats.rv.sampling_P
     diofant.stats.rv.sampling_E
+
     """
 
     results = {}
@@ -924,6 +944,7 @@ def dependent(a, b):
     See Also
     ========
     diofant.stats.rv.independent
+
     """
     if pspace_independent(a, b):
         return False
@@ -959,6 +980,7 @@ def independent(a, b):
     See Also
     ========
     diofant.stats.rv.dependent
+
     """
     return not dependent(a, b)
 
@@ -974,6 +996,7 @@ def pspace_independent(a, b):
 
     pspace_independent(a, b) implies independent(a, b)
     independent(a, b) does not imply pspace_independent(a, b)
+
     """
     a_symbols = set(pspace(b).symbols)
     b_symbols = set(pspace(a).symbols)
@@ -984,9 +1007,7 @@ def pspace_independent(a, b):
 
 
 def rv_subs(expr):
-    """
-    Given a random expression replace all random variables with their symbols.
-    """
+    """Given a random expression replace all random variables with their symbols."""
     symbols = random_symbols(expr)
     if not symbols:
         return expr
@@ -1010,6 +1031,7 @@ def _value_check(condition, message):
     Check a condition on input value.
 
     Raises ValueError with message if condition is not True
+
     """
-    if condition != S.true:
+    if condition != true:
         raise ValueError(message)

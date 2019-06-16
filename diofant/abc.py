@@ -20,7 +20,7 @@ Caveats
    different set of names.
 
 2. This module does not define symbol names on demand, i.e.
-   ```from diofant.abc import foo``` will be reported as an error because
+   ``from diofant.abc import foo`` will be reported as an error because
    ``diofant.abc`` does not contain the name ``foo``. To get a symbol named
    `'foo'`, you still need to use ``Symbol('foo')`` or ``symbols('foo')``.
    You can freely mix usage of ``diofant.abc`` and ``Symbol``/``symbols``, though
@@ -87,6 +87,7 @@ def clashing():
     be tested after removing "clashing" from the list of deleted items
     at the bottom of this file which removes this function from the
     namespace.
+
     """
 
     ns = {}

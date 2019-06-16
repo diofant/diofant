@@ -39,7 +39,7 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     x_list: sequence
         Sequence of (unique) values for the independent variable.
         It is useful (but not necessary) to order x_list from
-        nearest to farest from x0; see examples below.
+        nearest to furthest from x0; see examples below.
     x0: Number or Symbol
         Root or value of the independent variable for which the finite
         difference weights should be generated. Defaults to Integer(0).
@@ -126,7 +126,7 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     >>> x_list
     [-h + x, -sqrt(2)*h/2 + x, x, sqrt(2)*h/2 + x, h + x]
     >>> mycoeffs = finite_diff_weights(1, x_list, 0)[1][4]
-    >>> [simplify(c) for c in  mycoeffs] #doctest: +NORMALIZE_WHITESPACE
+    >>> [simplify(c) for c in  mycoeffs]
     [(h**3/2 + h**2*x - 3*h*x**2 - 4*x**3)/h**4,
     (-sqrt(2)*h**3 - 4*h**2*x + 3*sqrt(2)*h*x**2 + 8*x**3)/h**4,
     6*x/h**2 - 8*x**3/h**4,
@@ -153,9 +153,9 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     References
     ==========
 
-    .. [1] Generation of Finite Difference Formulas on Arbitrarily Spaced
-            Grids, Bengt Fornberg; Mathematics of computation; 51; 184;
-            (1988); 699-706; doi:10.1090/S0025-5718-1988-0935077-0
+    * Generation of Finite Difference Formulas on Arbitrarily Spaced
+      Grids, Bengt Fornberg; Mathematics of computation; 51; 184;
+      (1988); 699-706; doi:10.1090/S0025-5718-1988-0935077-0
 
     """
     # The notation below closely corresponds to the one used in the paper.
@@ -253,6 +253,7 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
     Fortran 90 implementation with Python interface for numerics: finitediff_
 
     .. _finitediff: https://github.com/bjodah/finitediff
+
     """
 
     # In the original paper the following holds for the notation:
@@ -345,6 +346,7 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
 
     diofant.calculus.finite_diff.apply_finite_diff
     diofant.calculus.finite_diff.finite_diff_weights
+
     """
     if wrt is None:
         wrt = derivative.variables[0]

@@ -1,5 +1,6 @@
 """Heuristic polynomial GCD algorithm (HEUGCD). """
 
+from ..ntheory.modular import symmetric_residue
 from .polyconfig import query
 from .polyerrors import HeuristicGCDFailed
 
@@ -31,22 +32,14 @@ def heugcd(f, g):
 
     >>> R, x, y = ring("x y", ZZ)
 
-    >>> f = x**2 + 2*x*y + y**2
-    >>> g = x**2 + x*y
-
-    >>> h, cff, cfg = heugcd(f, g)
-    >>> h, cff, cfg
+    >>> heugcd((x + y)**2, x*(x + y))
     (x + y, x + y, x)
-
-    >>> cff*h == f
-    True
-    >>> cfg*h == g
-    True
 
     References
     ==========
 
-    .. [1] [Liao95]_
+    * :cite:`Liao1995heuristic`
+
     """
     assert f.ring == g.ring and f.ring.domain.is_IntegerRing
 
@@ -65,48 +58,46 @@ def heugcd(f, g):
             2*min(f_norm // abs(f.LC),
                   g_norm // abs(g.LC)) + 2)
 
+    cofactors = domain.cofactors if ring.is_univariate else heugcd
+
     for i in range(query('HEU_GCD_MAX')):
-        ff = f.evaluate(x0, x)
-        gg = g.evaluate(x0, x)
+        ff = f.eval(x0, x)
+        gg = g.eval(x0, x)
 
         if ff and gg:
-            if ring.ngens == 1:
-                h, cff, cfg = domain.cofactors(ff, gg)
-            else:
-                h, cff, cfg = heugcd(ff, gg)
-
+            h, cff, cfg = cofactors(ff, gg)
             h = _gcd_interpolate(h, x, ring)
             h = h.primitive()[1]
 
-            cff_, r = f.div(h)
+            cff_, r = divmod(f, h)
 
             if not r:
-                cfg_, r = g.div(h)
+                cfg_, r = divmod(g, h)
 
                 if not r:
-                    h = h.mul_ground(gcd)
+                    h *= gcd
                     return h, cff_, cfg_
 
             cff = _gcd_interpolate(cff, x, ring)
 
-            h, r = f.div(cff)
+            h, r = divmod(f, cff)
 
             if not r:
-                cfg_, r = g.div(h)
+                cfg_, r = divmod(g, h)
 
                 if not r:
-                    h = h.mul_ground(gcd)
+                    h *= gcd
                     return h, cff, cfg_
 
             cfg = _gcd_interpolate(cfg, x, ring)
 
-            h, r = g.div(cfg)
+            h, r = divmod(g, cfg)
 
             if not r:
-                cff_, r = f.div(h)
+                cff_, r = divmod(f, h)
 
                 if not r:
-                    h = h.mul_ground(gcd)
+                    h *= gcd
                     return h, cff_, cfg
 
         x = 73794*x * domain.sqrt(domain.sqrt(x)) // 27011
@@ -115,15 +106,14 @@ def heugcd(f, g):
 
 
 def _gcd_interpolate(h, x, ring):
-    """Interpolate polynomial GCD from integer GCD. """
+    """Interpolate polynomial GCD from integer GCD."""
     f, i = ring.zero, 0
 
     # TODO: don't expose poly repr implementation details
-    if ring.ngens == 1:
+    if ring.is_univariate:
         while h:
             g = h % x
-            if g > x // 2:
-                g -= x
+            g = symmetric_residue(g, x)
             h = (h - g) // x
 
             # f += X**i*g
@@ -137,7 +127,7 @@ def _gcd_interpolate(h, x, ring):
 
             # f += X**i*g
             if g:
-                for monom, coeff in g.iterterms():
+                for monom, coeff in g.items():
                     f[(i,) + monom] = coeff
             i += 1
 

@@ -2,11 +2,13 @@
 
 import abc
 
+from ..printing.defaults import DefaultPrinting
 
-__all__ = ('DomainElement',)
+
+__all__ = 'DomainElement',
 
 
-class DomainElement(abc.ABC):
+class DomainElement(abc.ABC, DefaultPrinting):
     """
     Represents an element of a domain.
 
@@ -17,4 +19,4 @@ class DomainElement(abc.ABC):
     @property
     @abc.abstractmethod
     def parent(self):
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError

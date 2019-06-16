@@ -155,8 +155,7 @@ class stringPict:
 
         >>> from diofant.printing.pretty.pretty_symbology import pretty_use_unicode
         >>> f = pretty_use_unicode(flag=False)
-        >>> print(stringPict("x+3").below(
-        ...       stringPict.LINE, '3')[0])  #doctest: +NORMALIZE_WHITESPACE
+        >>> print(stringPict("x+3").below(stringPict.LINE, '3')[0])
         x+3
         ---
          3

@@ -1,4 +1,4 @@
-from ..core import Add, Dummy, Pow, S, expand_log
+from ..core import Add, Dummy, Pow, expand_log
 from ..core.compatibility import ordered
 from ..core.function import _mexpand
 from ..functions import LambertW, exp, log, root
@@ -17,12 +17,13 @@ def _filtered_gens(poly, symbol):
 
     >>> _filtered_gens(Poly(x + 1/x + exp(x)), x)
     {E**x, x}
+
     """
     gens = {g for g in poly.gens if symbol in g.free_symbols}
     for g in list(gens):
         ag = 1/g
         if g in gens and ag in gens:
-            if ag.as_numer_denom()[1] is not S.One:
+            if ag.as_numer_denom()[1] != 1:
                 g = ag
             gens.remove(g)
     return gens
@@ -35,6 +36,9 @@ def _mostfunc(lhs, func, X=None):
     ``func`` can be a function (exp, log, etc...) or any other Diofant object,
     like Pow.
 
+    If ``X`` is not ``None``, then the function returns the term composed with the
+    most ``func`` having the specified variable.
+
     Examples
     ========
 
@@ -42,12 +46,13 @@ def _mostfunc(lhs, func, X=None):
     E**(E**x + 2)
     >>> _mostfunc(exp(x) + exp(exp(y) + 2), Pow, x)
     E**x
-    >>> _mostfunc(exp(x) + exp(exp(y) + 2), Pow, x)
-    E**x
+    >>> _mostfunc(exp(x) + exp(exp(y) + 2), Pow)
+    E**(E**y + 2)
     >>> _mostfunc(x, exp, x) is None
     True
     >>> _mostfunc(exp(x) + exp(x*y), Pow, x)
     E**x
+
     """
     fterms = [tmp for tmp in lhs.atoms(func) if (not X or
                                                  X.is_Symbol and X in tmp.free_symbols or
@@ -75,6 +80,7 @@ def _linab(arg, symbol):
     (y + 2, y, x)
     >>> _linab(3 + 2*exp(x), x)
     (2, 3, E**x)
+
     """
 
     arg = arg.expand()
@@ -97,14 +103,15 @@ def _lambert(eq, x):
         ``F(X, a..f) = a*log(b*X + c) + d*X + f = 0``
     where X = g(x) and x = g^-1(X), return the Lambert solution if possible:
         ``x = g^-1(-c/b + (a/d)*W(d/(a*b)*exp(c*d/a/b)*exp(-f/a)))``.
+
     """
     eq = _mexpand(expand_log(eq))
     mainlog = _mostfunc(eq, log, x)
     if not mainlog:
         return []  # violated assumptions
-    other = eq.subs(mainlog, 0)
+    other = eq.subs({mainlog: 0})
     if isinstance(-other, log):
-        eq = (eq - other).subs(mainlog, mainlog.args[0])
+        eq = (eq - other).subs({mainlog: mainlog.args[0]})
         mainlog = mainlog.args[0]
         if not isinstance(mainlog, log):
             return []  # violated assumptions
@@ -135,7 +142,7 @@ def _lambert(eq, x):
 
         solns = solve(X1 - u, x)
         for i, tmp in enumerate(solns):
-            solns[i] = tmp[x].subs(u, rhs)
+            solns[i] = tmp[x].subs({u: rhs})
             sol.append(solns[i])
     return sol
 
@@ -163,6 +170,7 @@ def _solve_lambert(f, symbol, gens):
       if d*p**(a*B + g) - b*B = c then
       log(d) + (a*B + g)*log(p) - log(c + b*B) = 0
       a = -1, d = a*log(p), f = -log(d) - g*log(p)
+
     """
 
     nrhs, lhs = f.as_independent(symbol, as_Add=True)
@@ -205,7 +213,7 @@ def _solve_lambert(f, symbol, gens):
         if lhs.is_Mul and rhs != 0:
             soln = _lambert(log(lhs) - log(rhs), symbol)
         elif lhs.is_Add:
-            other = lhs.subs(mainlog, 0)
+            other = lhs.subs({mainlog: 0})
             if other and not other.is_Add and [
                     tmp for tmp in other.atoms(Pow)
                     if symbol in tmp.free_symbols]:
@@ -230,7 +238,7 @@ def _solve_lambert(f, symbol, gens):
                 soln = _lambert(expand_log(log(lhs) - log(rhs)), symbol)
             elif lhs.is_Add:
                 # move all but mainpow-containing term to rhs
-                other = lhs.subs(mainpow, 0)
+                other = lhs.subs({mainpow: 0})
                 mainterm = lhs - other
                 rhs = rhs - other
                 diff = log(mainterm) - log(rhs)
@@ -266,7 +274,7 @@ def bivariate_type(f, x, y, **kwargs):
     Examples
     ========
 
-    >>> eq = (x**2 - 3).subs(x, x + y)
+    >>> eq = (x**2 - 3).subs({x: x + y})
     >>> bivariate_type(eq, x, y)
     (x + y, _u**2 - 3, _u)
     >>> uxy, pu, u = _
@@ -276,6 +284,7 @@ def bivariate_type(f, x, y, **kwargs):
     [[{x: -y + sqrt(3)}]]
     >>> all(eq.subs(s).equals(0) for sol in _ for s in sol)
     True
+
     """
 
     u = Dummy('u', positive=True)
@@ -298,7 +307,7 @@ def bivariate_type(f, x, y, **kwargs):
     args = Add.make_args(p.as_expr())
     new = []
     for a in args:
-        a = _mexpand(a.subs(x, u/y))
+        a = _mexpand(a.subs({x: u/y}))
         free = a.free_symbols
         if x in free or y in free:
             break
@@ -307,7 +316,7 @@ def bivariate_type(f, x, y, **kwargs):
         return x*y, Add(*new), u
 
     def ok(f, v, c):
-        new = _mexpand(f.subs(v, c))
+        new = _mexpand(f.subs({v: c}))
         free = new.free_symbols
         return None if (x in free or y in free) else new
 

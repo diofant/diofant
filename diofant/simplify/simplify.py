@@ -3,7 +3,7 @@ from collections import defaultdict
 import mpmath
 
 from ..core import (Add, Basic, Dummy, E, Expr, Float, I, Integer, Mul, Pow,
-                    Rational, S, Symbol, count_ops, expand_func, expand_log,
+                    Rational, Symbol, count_ops, expand_func, expand_log,
                     expand_mul, expand_power_exp, factor_terms, oo, pi,
                     sympify)
 from ..core.compatibility import as_int, iterable, ordered
@@ -193,6 +193,7 @@ def _nthroot_solve(p, n, prec):
     """
     helper function for ``nthroot``
     It denests ``root(p, n)`` using its minimal polynomial
+
     """
     from ..polys.numberfields import _minimal_polynomial_sq
     from ..solvers import solve
@@ -209,7 +210,7 @@ def _nthroot_solve(p, n, prec):
     sols = solve(f, x)
     for sol in sols:
         sol = sol[x]
-        if abs(sol - pn).n() < 1./10**prec:
+        if abs(sol - pn).evalf() < 1./10**prec:
             sol = sqrtdenest(sol)
             if _mexpand(sol**n) == p:
                 return sol
@@ -238,6 +239,7 @@ def nthroot(expr, n, max_len=4, prec=15):
 
     >>> nthroot(90 + 34*sqrt(7), 3)
     sqrt(7) + 3
+
     """
     expr = sympify(expr)
     n = sympify(n)
@@ -251,9 +253,9 @@ def nthroot(expr, n, max_len=4, prec=15):
     for x, y in coeff_muls:
         if not x.is_rational:
             return p
-        if y is S.One:
+        if y == 1:
             continue
-        if not (y.is_Pow and y.exp == S.Half and y.base.is_integer):
+        if not (y.is_Pow and y.exp == Rational(1, 2) and y.base.is_integer):
             return p
         surds.append(y)
     surds.sort()
@@ -307,6 +309,7 @@ def posify(eq):
     [_x**2 - 4, _x]
     >>> solve(*eq_x)
     [{_x: 2}]
+
     """
     eq = sympify(eq)
     if iterable(eq):
@@ -337,7 +340,7 @@ def hypersimp(f, k):
     Notes
     =====
 
-    The algorithm [1]_ performs three basic steps::
+    The algorithm performs three basic steps::
 
        1. Rewrite all functions in terms of gamma, if possible.
 
@@ -356,12 +359,13 @@ def hypersimp(f, k):
     References
     ==========
 
-    .. [1] W. Koepf, Algorithms for m-fold Hypergeometric Summation,
+    * W. Koepf, Algorithms for m-fold Hypergeometric Summation,
            Journal of Symbolic Computation (1995) 20, 399-417
+
     """
     f = sympify(f)
 
-    g = f.subs(k, k + 1) / f
+    g = f.subs({k: k + 1}) / f
 
     g = g.rewrite(gamma)
     g = expand_func(g)
@@ -385,6 +389,7 @@ def hypersimilar(f, g, k):
     ========
 
     hypersimp
+
     """
     f, g = list(map(sympify, (f, g)))
 
@@ -555,9 +560,9 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     >>> def my_measure(expr):
     ...     POW = Symbol('POW')
     ...     # Discourage powers by giving POW a weight of 10
-    ...     count = count_ops(expr, visual=True).subs(POW, 10)
+    ...     count = count_ops(expr, visual=True).subs({POW: 10})
     ...     # Every other operation gets a weight of 1 (the default)
-    ...     count = count.replace(Symbol, type(S.One))
+    ...     count = count.replace(Symbol, type(Integer(1)))
     ...     return count
     >>> my_measure(g)
     8
@@ -572,6 +577,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     simplification strategies and then compares them using the measure
     function, we get a completely different result that is still different
     from the input expression by doing this.
+
     """
     expr = sympify(expr)
 
@@ -600,6 +606,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     def shorter(*choices):
         """Return the choice that has the fewest ops. In case of a tie,
         the expression listed first is selected.
+
         """
         if not has_variety(choices):
             return choices[0]
@@ -664,7 +671,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     numer, denom = expr.as_numer_denom()
     if denom.is_Add:
         n, d = fraction(radsimp(1/denom, symbolic=False, max_terms=1))
-        if n is not S.One:
+        if n != 1:
             expr = (numer*n).expand()/d
 
     if expr.could_extract_minus_sign():
@@ -700,7 +707,7 @@ def _real_to_rational(expr, tolerance=None):
             r = Rational(tolerance*round(float/tolerance)).limit_denominator(int(tolerance))
         else:
             r = nsimplify(float, rational=False)
-            # e.g. log(3).n() -> log(3) instead of a Rational
+            # e.g. log(3).evalf() -> log(3) instead of a Rational
             if float and not r:
                 r = Rational(float)
             elif not r.is_Rational:
@@ -856,7 +863,6 @@ def logcombine(expr, force=False):
     Examples
     ========
 
-    >>> from diofant.abc import a
     >>> logcombine(a*log(x) + log(y) - log(z))
     a*log(x) + log(y) - log(z)
     >>> logcombine(a*log(x) + log(y) - log(z), force=True)
@@ -889,7 +895,7 @@ def logcombine(expr, force=False):
         def gooda(a):
             # bool to tell whether the leading ``a`` in ``a*log(x)``
             # could appear as log(x**a)
-            return (a is not S.NegativeOne and  # -1 *could* go, but we disallow
+            return (a != -1 and  # -1 *could* go, but we disallow
                     (a.is_extended_real or force and a.is_extended_real is not False))
 
         def goodlog(l):
@@ -911,7 +917,7 @@ def logcombine(expr, force=False):
                 lo = []
                 for ai in a.args:
                     if ai.is_Rational and ai < 0:
-                        ot.append(S.NegativeOne)
+                        ot.append(Integer(-1))
                         co.append(-ai)
                     elif isinstance(ai, log) and goodlog(ai):
                         lo.append(ai)
@@ -976,6 +982,7 @@ def bottom_up(rv, F, atoms=False, nonbasic=False):
     """Apply ``F`` to all expressions in an expression tree from the
     bottom up. If ``atoms`` is True, apply ``F`` even if there are no args;
     if ``nonbasic`` is True, try to apply ``F`` to non-Basic objects.
+
     """
     try:
         if rv.args:
@@ -1017,6 +1024,7 @@ def besselsimp(expr):
     sqrt(2)*cosh(z)/(sqrt(pi)*sqrt(z))
     >>> besselsimp(z*besseli(0, z) + z*(besseli(2, z))/2 + besseli(1, z))
     3*z*besseli(0, z)/2
+
     """
     # TODO
     # - better algorithm?
@@ -1065,7 +1073,7 @@ def besselsimp(expr):
             if (nu % 1) == Rational(1, 2):
                 return exptrigsimp(trigsimp(unpolarify(
                     fro(nu, z0).rewrite(besselj).rewrite(jn).expand(
-                        func=True)).subs(z0, z)))
+                        func=True)).subs({z0: z})))
             elif nu.is_Integer and nu > 1:
                 return fro(nu, z).expand(func=True)
             return fro(nu, z)
@@ -1083,7 +1091,7 @@ def besselsimp(expr):
 
 
 def sum_simplify(s):
-    """Main function for Sum simplification"""
+    """Main function for Sum simplification."""
     from ..concrete import Sum
 
     terms = Add.make_args(s)
@@ -1139,7 +1147,7 @@ def sum_simplify(s):
 
 
 def sum_add(self, other, method=0):
-    """Helper function for Sum simplification"""
+    """Helper function for Sum simplification."""
     from ..concrete import Sum
 
     if type(self) == type(other):
@@ -1166,7 +1174,7 @@ def sum_add(self, other, method=0):
 
 
 def product_simplify(s):
-    """Main function for Product simplification"""
+    """Main function for Product simplification."""
     from ..concrete import Product
 
     terms = Mul.make_args(s)
@@ -1200,7 +1208,7 @@ def product_simplify(s):
 
 
 def product_mul(self, other, method=0):
-    """Helper function for Product simplification"""
+    """Helper function for Product simplification."""
     from ..concrete import Product
 
     if type(self) == type(other):
@@ -1247,8 +1255,9 @@ def clear_coefficients(expr, rhs=Integer(0)):
     >>> rhs = Dummy('rhs')
     >>> clear_coefficients(expr, rhs)
     (y*(2*x + 1), _rhs/12)
-    >>> _[1].subs(rhs, 2)
+    >>> _[1].subs({rhs: 2})
     1/6
+
     """
     was = None
     free = expr.free_symbols

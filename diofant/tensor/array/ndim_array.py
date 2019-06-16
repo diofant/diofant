@@ -1,18 +1,19 @@
 import collections
 
 from ...core import Expr, Integer, sympify
+from ...logic import true
 from ...matrices import MatrixBase
+from ..indexed import Indexed
 
 
 class NDimArray:
-    """
+    """N-dim array.
 
     Examples
     ========
 
     Create an N-dim array of zeros:
 
-    >>> from diofant.tensor.array import MutableDenseNDimArray
     >>> a = MutableDenseNDimArray.zeros(2, 3, 4)
     >>> a
     [[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
@@ -83,14 +84,24 @@ class NDimArray:
         index.reverse()
         return tuple(index)
 
+    def _check_symbolic_index(self, index):
+        # Check if any index is symbolic:
+        tuple_index = (index if isinstance(index, tuple) else (index,))
+        if any((isinstance(i, Expr) and (not i.is_number)) for i in tuple_index):
+            for i, nth_dim in zip(tuple_index, self.shape):
+                i = sympify(i)
+                if ((i < 0) is true) or ((i >= nth_dim) is true):
+                    raise ValueError("index out of range")
+            return Indexed(self, *tuple_index)
+
     def _setter_iterable_check(self, value):
-        if isinstance(value, (collections.Iterable, MatrixBase, NDimArray)):
-            raise NotImplementedError  # pragma: no cover
+        if isinstance(value, (collections.abc.Iterable, MatrixBase, NDimArray)):
+            raise NotImplementedError
 
     @classmethod
     def _scan_iterable_shape(cls, iterable):
         def f(pointer):
-            if not isinstance(pointer, collections.Iterable):
+            if not isinstance(pointer, collections.abc.Iterable):
                 return [pointer], ()
 
             result = []
@@ -116,7 +127,7 @@ class NDimArray:
             iterable = list(iterable)
 
         # Construct N-dim array from an iterable (numpy arrays included):
-        elif shape is None and isinstance(iterable, collections.Iterable):
+        elif shape is None and isinstance(iterable, collections.abc.Iterable):
             iterable, shape = cls._scan_iterable_shape(iterable)
 
         # Construct N-dim array from a Matrix:
@@ -131,7 +142,7 @@ class NDimArray:
             raise TypeError("Data type not understood")
 
         if isinstance(shape, (int, Integer)):
-            shape = (shape,)
+            shape = shape,
 
         if any(not isinstance(dim, (int, Integer)) for dim in shape):
             raise TypeError("Shape should contain integers only.")
@@ -144,7 +155,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(3, 3)
         >>> a
         [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
@@ -162,7 +172,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(3, 3)
         >>> a.shape
         (3, 3)
@@ -177,7 +186,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array.dense_ndim_array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(3, 4, 5, 6, 3)
         >>> a.rank()
         5
@@ -192,7 +200,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array import ImmutableDenseNDimArray
         >>> M = ImmutableDenseNDimArray([[x, y], [1, x*y]])
         >>> M.diff(x)
         [[1, 0], [0, y]]
@@ -206,12 +213,12 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array import ImmutableDenseNDimArray
         >>> m = ImmutableDenseNDimArray([i*2+j for i in range(2) for j in range(2)], (2, 2))
         >>> m
         [[0, 1], [2, 3]]
         >>> m.applyfunc(lambda i: 2*i)
         [[0, 2], [4, 6]]
+
         """
         return type(self)(map(f, self), self.shape)
 
@@ -221,7 +228,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(2, 2)
         >>> a
         [[0, 0], [0, 0]]
@@ -243,13 +249,13 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray([1, 2, 3, 4], (2, 2))
         >>> a
         [[1, 2], [3, 4]]
         >>> b = a.tolist()
         >>> b
         [[1, 2], [3, 4]]
+
         """
 
         def f(sh, shape_left, i, j):
@@ -284,21 +290,21 @@ class NDimArray:
         return type(self)(result_list, self.shape)
 
     def __mul__(self, other):
-        if isinstance(other, (collections.Iterable, NDimArray, MatrixBase)):
+        if isinstance(other, (collections.abc.Iterable, NDimArray, MatrixBase)):
             raise ValueError("scalar expected, use tensorproduct(...) for tensorial product")
         other = sympify(other)
         result_list = [i*other for i in self]
         return type(self)(result_list, self.shape)
 
     def __rmul__(self, other):
-        if isinstance(other, (collections.Iterable, NDimArray, MatrixBase)):
+        if isinstance(other, (collections.abc.Iterable, NDimArray, MatrixBase)):
             raise ValueError("scalar expected, use tensorproduct(...) for tensorial product")
         other = sympify(other)
         result_list = [other*i for i in self]
         return type(self)(result_list, self.shape)
 
     def __truediv__(self, other):
-        if isinstance(other, (collections.Iterable, NDimArray, MatrixBase)):
+        if isinstance(other, (collections.abc.Iterable, NDimArray, MatrixBase)):
             raise ValueError("scalar expected")
         other = sympify(other)
         result_list = [i/other for i in self]
@@ -315,7 +321,6 @@ class NDimArray:
         Examples
         ========
 
-        >>> from diofant.tensor.array import MutableDenseNDimArray
         >>> a = MutableDenseNDimArray.zeros(2, 3)
         >>> b = MutableDenseNDimArray.zeros(2, 3)
         >>> a == b
@@ -327,6 +332,7 @@ class NDimArray:
         >>> b[0, 0] = 2
         >>> a == b
         False
+
         """
         if not isinstance(other, NDimArray):
             return False
@@ -356,3 +362,6 @@ class NDimArray:
 
 class ImmutableNDimArray(NDimArray, Expr):
     _op_priority = 11.0
+
+    def _subs(self, old, new, **hints):
+        return super()._subs(old, new, **hints)

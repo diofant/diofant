@@ -228,7 +228,7 @@ def convex_hull(*args):
     References
     ==========
 
-    [1] https//en.wikipedia.org/wiki/Graham_scan
+    [1] https://en.wikipedia.org/wiki/Graham_scan
 
     [2] Andrew's Monotone Chain Algorithm
     (A.M. Andrew,
@@ -394,7 +394,7 @@ def are_similar(e1, e2):
     Raises
     ======
 
-    GeometryError
+    diofant.geometry.exceptions.GeometryError
         When `e1` and `e2` cannot be compared.
 
     Notes

@@ -2,7 +2,7 @@ from ..core import Integer, Rational
 
 
 def continued_fraction_periodic(p, q, d=0):
-    r"""Find the periodic continued fraction [1]_ expansion.
+    r"""Find the periodic continued fraction expansion.
 
     Compute the continued fraction expansion of a rational or a
     quadratic surd, i.e. `\frac{p + \sqrt{d}}{q}`, where `p`, `q`
@@ -53,9 +53,10 @@ def continued_fraction_periodic(p, q, d=0):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Periodic_continued_fraction
-    .. [2] K. Rosen. Elementary Number theory and its applications.
-           Addison-Wesley, 3 Sub edition, pages 379-381, January 1992.
+    * https://en.wikipedia.org/wiki/Periodic_continued_fraction
+    * K. Rosen. Elementary Number theory and its applications.
+      Addison-Wesley, 3 Sub edition, pages 379-381, January 1992.
+
     """
     from ..core.compatibility import as_int
     from ..functions import sqrt
@@ -117,7 +118,7 @@ def continued_fraction_reduce(cf):
     225/157
     >>> continued_fraction_reduce([-2, 1, 9, 7, 1, 2])
     -256/233
-    >>> continued_fraction_reduce([2, 1, 2, 1, 1, 4, 1, 1, 6, 1, 1, 8]).n(10)
+    >>> continued_fraction_reduce([2, 1, 2, 1, 1, 4, 1, 1, 6, 1, 1, 8]).evalf(10)
     2.718281835
     >>> continued_fraction_reduce([1, 4, 2, [3, 1]])
     (sqrt(21) + 287)/238
@@ -130,6 +131,7 @@ def continued_fraction_reduce(cf):
     ========
 
     continued_fraction_periodic
+
     """
     from ..core import Dummy
     from ..solvers import solve
@@ -155,7 +157,7 @@ def continued_fraction_reduce(cf):
         solns = [s[y] for s in solns]
         solns.sort()
         pure = solns[-1]
-        return a.subs(x, pure).radsimp()
+        return a.subs({x: pure}).radsimp()
     else:
         return a
 
@@ -187,7 +189,8 @@ def continued_fraction_iterator(x):
     References
     ==========
 
-    .. [1] https//en.wikipedia.org/wiki/Continued_fraction
+    * https://en.wikipedia.org/wiki/Continued_fraction
+
     """
     from ..functions import floor
 
@@ -234,6 +237,7 @@ def continued_fraction_convergents(cf):
     ========
 
     continued_fraction_iterator
+
     """
     p_2, q_2 = Integer(0), Integer(1)
     p_1, q_1 = Integer(1), Integer(0)

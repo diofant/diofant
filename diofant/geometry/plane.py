@@ -6,7 +6,7 @@ Plane
 
 """
 
-from ..core import Dummy, Rational, S, Symbol
+from ..core import Dummy, Integer, Rational, Symbol
 from ..core.compatibility import is_sequence
 from ..functions import acos, asin, sqrt
 from ..matrices import Matrix
@@ -15,7 +15,7 @@ from ..solvers import solve
 from ..utilities import filldedent
 from .entity import GeometryEntity
 from .line import Line, Ray, Segment
-from .line3d import Line3D, LinearEntity3D, Ray3D, Segment3D
+from .line3d import Line3D, Ray3D, Segment3D
 from .point import Point, Point3D
 
 
@@ -42,6 +42,7 @@ class Plane(GeometryEntity):
     Plane(Point3D(1, 1, 1), (-1, 2, -1))
     >>> Plane(Point3D(1, 1, 1), normal_vector=(1, 4, 7))
     Plane(Point3D(1, 1, 1), (1, 4, 7))
+
     """
 
     def __new__(cls, p1, a=None, b=None, **kwargs):
@@ -153,6 +154,7 @@ class Plane(GeometryEntity):
         >>> XY = Plane((0, 0, 0), (0, 0, 1))
         >>> XY.projection((1, 1, 2))
         Point3D(1, 1, 0)
+
         """
         rv = Point3D(pt)
         if rv in self:
@@ -270,6 +272,7 @@ class Plane(GeometryEntity):
         >>> b = Plane(Point3D(2, 2, 2), normal_vector=(-1, 2, -1))
         >>> a.is_perpendicular(b)
         True
+
         """
         from .line3d import LinearEntity3D
         if isinstance(l, LinearEntity3D):
@@ -320,11 +323,12 @@ class Plane(GeometryEntity):
         >>> c = Line3D(Point3D(2, 3, 1), Point3D(1, 2, 2))
         >>> a.distance(c)
         0
+
         """
         from .line3d import LinearEntity3D
         x, y, z = map(Dummy, 'xyz')
         if self.intersection(o) != []:
-            return S.Zero
+            return Integer(0)
 
         if isinstance(o, Point3D):
             x, y, z = map(Dummy, 'xyz')
@@ -376,6 +380,7 @@ class Plane(GeometryEntity):
         >>> b = Line3D(Point3D(1, 3, 4), Point3D(2, 2, 2))
         >>> a.angle_between(b)
         -asin(sqrt(21)/6)
+
         """
         from .line3d import LinearEntity3D
         if isinstance(o, LinearEntity3D):
@@ -521,6 +526,7 @@ class Plane(GeometryEntity):
         >>> p = Plane(a, normal_vector=Z)
         >>> p.perpendicular_plane(a, b)
         Plane(Point3D(0, 0, 0), (1, 0, 0))
+
         """
         if len(pts) > 2:
             raise ValueError('No more than 2 pts should be provided.')
@@ -570,7 +576,7 @@ class Plane(GeometryEntity):
         else:
             rng = random
         t = Dummy('t')
-        return self.arbitrary_point(t).subs(t, Rational(rng.random()))
+        return self.arbitrary_point(t).subs({t: Rational(rng.random())})
 
     def arbitrary_point(self, t=None):
         """ Returns an arbitrary point on the Plane; varying `t` from 0 to 2*pi
@@ -590,6 +596,7 @@ class Plane(GeometryEntity):
         =======
 
         Point3D
+
         """
         from ..functions import cos, sin
         t = t or Dummy('t')
@@ -632,6 +639,7 @@ class Plane(GeometryEntity):
         >>> e = Plane(Point3D(2, 0, 0), normal_vector=(3, 4, -3))
         >>> d.intersection(e)
         [Line3D(Point3D(78/23, -24/23, 0), Point3D(147/23, 321/23, 23))]
+
         """
         from .line3d import LinearEntity3D
         from .line import LinearEntity
@@ -661,7 +669,7 @@ class Plane(GeometryEntity):
                 if not c:
                     return []
                 else:
-                    p = a.subs(t, c[0][t])
+                    p = a.subs({t: c[0][t]})
                     if p not in self:
                         return []  # e.g. a segment might not intersect a plane
                     return [p]
@@ -676,15 +684,15 @@ class Plane(GeometryEntity):
                 c = list(a.cross(b))
                 d = self.equation(x, y, z)
                 e = o.equation(x, y, z)
-                f = solve((d.subs(z, 0), e.subs(z, 0)), [x, y])
+                f = solve((d.subs({z: 0}), e.subs({z: 0})), [x, y])
                 if f and len(f[0]) == 2:
                     f = f[0]
                     return [Line3D(Point3D(f[x], f[y], 0), direction_ratio=c)]
-                g = solve((d.subs(y, 0), e.subs(y, 0)), [x, z])
+                g = solve((d.subs({y: 0}), e.subs({y: 0})), [x, z])
                 if g and len(g[0]) == 2:
                     g = g[0]
                     return [Line3D(Point3D(g[x], 0, g[z]), direction_ratio=c)]
-                h = solve((d.subs(x, 0), e.subs(x, 0)), [y, z])
+                h = solve((d.subs({x: 0}), e.subs({x: 0})), [y, z])
                 if h and len(h[0]) == 2:  # pragma: no branch
                     h = h[0]
                     return [Line3D(Point3D(0, h[y], h[z]), direction_ratio=c)]
@@ -720,13 +728,12 @@ class Plane(GeometryEntity):
         False
         >>> p.is_coplanar(p2)
         True
+
         """
         if isinstance(o, Plane):
             x, y, z = map(Dummy, 'xyz')
             return not cancel(self.equation(x, y, z)/o.equation(x, y, z)).has(x, y, z)
-        if isinstance(o, Point3D):
+        elif isinstance(o, Point3D):
             return o in self
-        elif isinstance(o, LinearEntity3D):
-            return all(i in self for i in self)
-        elif isinstance(o, GeometryEntity):  # XXX should only be handling 2D objects now
-            return all(i == 0 for i in self.normal_vector[:2])
+        else:
+            raise NotImplementedError
