@@ -655,6 +655,14 @@ def test_dmp_factor_list():
     R, x, y = ring("x,y", EX)
     pytest.raises(DomainError, lambda: R(EX(sin(1))).factor_list())
 
+    R, x, y = ring('x, y', QQ.algebraic_field(I))
+    f, r = x**2 + y**2, (1, [(x - I*y, 1), (x + I*y, 1)])
+
+    assert R.dmp_factor_list(f) == r
+
+    with config.using(aa_factor_method='trager'):
+        assert R.dmp_factor_list(f) == r
+
 
 def test_gf_factor():
     R, x = ring('x', FF(11))

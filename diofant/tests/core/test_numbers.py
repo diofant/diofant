@@ -364,7 +364,7 @@ def test_Float():
     assert Float((0, int(0), -456, -2)) == Float('inf') == Float('+inf')
     assert Float((1, int(0), -789, -3)) == Float('-inf')
 
-    pytest.raises(ValueError, lambda: Float((0, 7, 1, 3), ''))
+    assert Float((0, int(7), 1, 3)) == Float('14.0', dps=15)
 
     assert Float('+inf').is_finite is False
     assert Float('+inf').is_negative is False
@@ -403,29 +403,30 @@ def test_Float():
 
     # integer
     i = 12345678901234567890
-    assert same_and_same_prec(Float(12, ''), Float('12', ''))
-    assert same_and_same_prec(Float(Integer(i), ''), Float(i, ''))
-    assert same_and_same_prec(Float(i, ''), Float(str(i), 20))
-    assert same_and_same_prec(Float(str(i)), Float(i, ''))
-    assert same_and_same_prec(Float(i), Float(i, ''))
+    assert same_and_same_prec(Float(12), Float('12'))
+    assert same_and_same_prec(Float(Integer(i)), Float(i))
+    assert same_and_same_prec(Float(i), Float(str(i), 20))
+    assert same_and_same_prec(Float(str(i)), Float(i))
+    assert same_and_same_prec(Float(i), Float(i))
 
     # inexact floats (repeating binary = denom not multiple of 2)
     # cannot have precision greater than 15
     assert Float(.125, 22) == .125
     assert Float(2.0, 22) == 2
-    assert float(Float('.12500000000000001', '')) == .125
-    pytest.raises(ValueError, lambda: Float(.12500000000000001, ''))
+    assert float(Float('.12500000000000001')) == .125
+    assert Float(.12500000000000001) == Float('0.125', dps=15)
 
     # allow auto precision detection
-    assert Float('.1', '') == Float(.1, 1)
-    assert Float('.125', '') == Float(.125, 3)
-    assert Float('.100', '') == Float(.1, 3)
-    assert Float('2.0', '') == Float('2', 2)
+    assert Float('.1') == Float(.1, 1)
+    assert Float('.125') == Float(.125, 3)
+    assert Float('.100') == Float(.1, 3)
+    assert Float('2.0') == Float('2', 2)
 
-    pytest.raises(ValueError, lambda: Float("12.3d-4", ""))
-    pytest.raises(ValueError, lambda: Float(12.3, ""))
+    pytest.raises(ValueError, lambda: Float("12.3d-4"))
     pytest.raises(ValueError, lambda: Float('.'))
     pytest.raises(ValueError, lambda: Float('-.'))
+
+    assert Float(12.3) == Float('12.300000000000001', dps=15)
 
     zero = Float('0.0')
     assert Float('-0') == zero
@@ -434,7 +435,7 @@ def test_Float():
     assert Float('-0.0') == zero
     assert Float(0.0) == zero
     assert Float(0) == zero
-    assert Float(0, '') == Float('0', '')
+    assert Float(0) == Float('0')
     assert Float(1) == Float(1.0)
     assert Float(Integer(0)) == zero
     assert Float(Integer(1)) == Float(1.0)
@@ -450,15 +451,8 @@ def test_Float():
     assert Float(+oo) == Float('+inf')
     assert Float(-oo) == Float('-inf')
 
-    assert Float('inf', dps='') == Float('inf')
-
     assert Float(0)**2 is Integer(0)
     assert Float(0)**t == Pow(Float(0), t, evaluate=False)
-
-
-def test_Float_default_to_highprec_from_str():
-    s = str(pi.evalf(128))
-    assert same_and_same_prec(Float(s), Float(s, ''))
 
 
 def test_Float_eval():
@@ -1434,10 +1428,10 @@ def test_sympyissue_6640():
 
 
 def test_sympyissue_6349():
-    assert Float('23.e3', '')._prec == 10
-    assert Float('23e3', '')._prec == 20
-    assert Float('23000', '')._prec == 20
-    assert Float('-23000', '')._prec == 20
+    assert Float('23.e3')._prec == 10
+    assert Float('23e3')._prec == 10
+    assert Float('23000')._prec == 20
+    assert Float('-23000')._prec == 20
 
 
 def test_mpf_norm():
@@ -1462,7 +1456,7 @@ def test_sympyissue_7742():
 
 
 def test_Float_idempotence():
-    x = Float('1.23', '')
+    x = Float('1.23')
     y = Float(x)
     z = Float(x, 15)
     assert same_and_same_prec(y, x)
@@ -1484,7 +1478,7 @@ def test_comp():
     assert comp(sqrt(2).evalf(2), '1.4')
     assert comp(sqrt(2).evalf(2), Float(1.4, 2), '')
     pytest.raises(ValueError, lambda: comp(sqrt(2).evalf(2), 1.4, ''))
-    assert comp(sqrt(2).evalf(2), Float(1.4, 3), '') is False
+    assert comp(sqrt(2).evalf(2), Float(1.4, 3)) is False
     pytest.raises(ValueError, lambda: comp('123', '123'))
 
 

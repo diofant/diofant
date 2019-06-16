@@ -99,7 +99,8 @@ matrix:
                      bMRfH54YS98QDxL+gwasr327iGLi++avxF3N+vSyWboJLkSydDDlVh\
                      B7k/t57Ig="
           skip_cleanup: true
-          distributions: "sdist bdist_wheel"
+          # a hack for diofant/diofant#777
+          distributions: "clean"
           on:
             tags: true
         - provider: pages

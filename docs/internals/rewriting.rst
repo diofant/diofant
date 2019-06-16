@@ -59,8 +59,6 @@ use ``rewrite()`` to do specific type of rewrite::
 Common Subexpression Detection and Collection
 ---------------------------------------------
 
-.. module:: diofant.simplify.cse_main
-
 Before evaluating a large expression, it is often useful to identify common
 subexpressions, collect them and evaluate them at once. This is implemented
 in the :func:`~diofant.simplify.cse_main.cse` function. Examples::

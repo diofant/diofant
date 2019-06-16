@@ -1083,7 +1083,7 @@ def test_RR_double():
 
 
 def test_RR_Float():
-    f1 = Float("1.01")
+    f1 = Float("1.01", 15)
     f2 = Float("1.0000000000000000000001")
     assert f1._prec == 53
     assert f2._prec == 80

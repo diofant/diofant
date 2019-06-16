@@ -272,7 +272,7 @@ def test_pmint_WrightOmega():
         return LambertW(exp(x))
 
     f = (1 + omega(x) * (2 + cos(omega(x)) * (x + omega(x))))/(1 + omega(x))/(x + omega(x))
-    g = log(x + LambertW(exp(x))) + sin(LambertW(exp(x)))
+    g = log(x + omega(x)) + sin(omega(x))
 
     assert heurisch(f, x) == g
 
