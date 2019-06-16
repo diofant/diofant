@@ -34,6 +34,7 @@ addons:
       - fonts-freefont-otf
       - latexmk
       - lmodern
+      - pandoc
 stages:
   - quality
   - test
