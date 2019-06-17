@@ -9,6 +9,12 @@ import diofant
 
 
 collect_ignore = ["setup.py"]
+try:
+    import matplotlib
+    del matplotlib
+except ImportError:
+    collect_ignore.extend(["diofant/plotting/plot.py",
+                           "diofant/plotting/plot_implicit.py"])
 
 sp = re.compile(r'([0-9]+)/([1-9][0-9]*)')
 
