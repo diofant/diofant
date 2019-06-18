@@ -96,3 +96,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`16714` Limit ((n**(n+1) + (n+1)**n) / n**(n+1))**n recursion error
 * :sympyissue:`16774` square proportion match has no result
 * :sympyissue:`17034` isqrt gives incorrect results
+* :sympyissue:`17044` is_square gives incorrect answers
