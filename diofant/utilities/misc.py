@@ -16,10 +16,6 @@ def filldedent(s, w=70):
     return '\n' + fill(dedent(str(s)).strip('\n'), width=w)
 
 
-# XXX: PyPy doesn't support hash randomization
-HASH_RANDOMIZATION = getattr(sys.flags, 'hash_randomization', False)
-
-
 def debug(*args):
     """
     Print ``*args`` if DIOFANT_DEBUG is True, else do nothing.
