@@ -70,8 +70,9 @@ def is_square(n, prep=True):
         m = n % 63
         if not ((m*0x3d491df7) & (m*0xc824a9f9) & 0x10f14008):
             from . import perfect_power
-            if perfect_power(n, [2]):
-                return True
+            test = perfect_power(n)
+            if test:
+                return test[1] % 2 == 0
     return False
 
 
