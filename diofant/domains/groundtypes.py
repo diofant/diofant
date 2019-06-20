@@ -4,8 +4,7 @@ __all__ = ()
 
 import builtins
 import fractions
-
-import mpmath.libmp as mlib
+from math import factorial as python_factorial  # noqa: F401
 
 from ..core.compatibility import HAS_GMPY
 from ..core.numbers import Float as DiofantReal  # noqa: F401
@@ -14,6 +13,7 @@ from ..core.numbers import Rational as DiofantRational  # noqa: F401
 from ..core.numbers import igcd as python_gcd  # noqa: F401
 from ..core.numbers import igcdex as python_gcdex  # noqa: F401
 from ..core.numbers import ilcm as python_lcm  # noqa: F401
+from ..core.power import isqrt as python_sqrt  # noqa: F401
 
 
 PythonInteger = builtins.int
@@ -51,11 +51,3 @@ else:
     gmpy_lcm = None
     gmpy_sqrt = None
     gmpy_qdiv = None
-
-
-def python_sqrt(n):
-    return int(mlib.isqrt(n))
-
-
-def python_factorial(n):
-    return int(mlib.ifac(n))
