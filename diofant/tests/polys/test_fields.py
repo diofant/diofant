@@ -72,7 +72,7 @@ def test_FracElement_copy():
     g = f.copy()
 
     assert f == g
-    g.numer[(1, 1, 1)] = 7
+    g.numerator[(1, 1, 1)] = 7
     assert f != g
 
 
@@ -189,15 +189,15 @@ def test_FracElement___add__():
     Fxyzt,  x, y, z, t = field("x,y,z,t", Fuv)
 
     f = (u*v + x)/(y + u*v)
-    assert dict(f.numer) == {(1, 0, 0, 0): 1, (0, 0, 0, 0): u*v}
-    assert dict(f.denom) == {(0, 1, 0, 0): 1, (0, 0, 0, 0): u*v}
+    assert dict(f.numerator) == {(1, 0, 0, 0): 1, (0, 0, 0, 0): u*v}
+    assert dict(f.denominator) == {(0, 1, 0, 0): 1, (0, 0, 0, 0): u*v}
 
     Ruv,  u, v = ring("u,v", ZZ)
     Fxyzt,  x, y, z, t = field("x,y,z,t", Ruv)
 
     f = (u*v + x)/(y + u*v)
-    assert dict(f.numer) == {(1, 0, 0, 0): 1, (0, 0, 0, 0): u*v}
-    assert dict(f.denom) == {(0, 1, 0, 0): 1, (0, 0, 0, 0): u*v}
+    assert dict(f.numerator) == {(1, 0, 0, 0): 1, (0, 0, 0, 0): u*v}
+    assert dict(f.denominator) == {(0, 1, 0, 0): 1, (0, 0, 0, 0): u*v}
 
 
 def test_FracElement___sub__():
@@ -216,15 +216,15 @@ def test_FracElement___sub__():
     Fxyzt,  x, y, z, t = field("x,y,z,t", Fuv)
 
     f = (u*v - x)/(y - u*v)
-    assert dict(f.numer) == {(1, 0, 0, 0): -1, (0, 0, 0, 0): u*v}
-    assert dict(f.denom) == {(0, 1, 0, 0): 1, (0, 0, 0, 0): -u*v}
+    assert dict(f.numerator) == {(1, 0, 0, 0): -1, (0, 0, 0, 0): u*v}
+    assert dict(f.denominator) == {(0, 1, 0, 0): 1, (0, 0, 0, 0): -u*v}
 
     Ruv,  u, v = ring("u,v", ZZ)
     Fxyzt,  x, y, z, t = field("x,y,z,t", Ruv)
 
     f = (u*v - x)/(y - u*v)
-    assert dict(f.numer) == {(1, 0, 0, 0): -1, (0, 0, 0, 0): u*v}
-    assert dict(f.denom) == {(0, 1, 0, 0): 1, (0, 0, 0, 0): -u*v}
+    assert dict(f.numerator) == {(1, 0, 0, 0): -1, (0, 0, 0, 0): u*v}
+    assert dict(f.denominator) == {(0, 1, 0, 0): 1, (0, 0, 0, 0): -u*v}
 
     Fuv,  u, v = field("u,v", ZZ)
     Rxyz,  x, y, z = ring("x,y,z", Fuv)
@@ -249,15 +249,15 @@ def test_FracElement___mul__():
     Fxyzt,  x, y, z, t = field("x,y,z,t", Fuv)
 
     f = ((u + 1)*x*y + 1)/((v - 1)*z - t*u*v - 1)
-    assert dict(f.numer) == {(1, 1, 0, 0): u + 1, (0, 0, 0, 0): 1}
-    assert dict(f.denom) == {(0, 0, 1, 0): v - 1, (0, 0, 0, 1): -u*v, (0, 0, 0, 0): -1}
+    assert dict(f.numerator) == {(1, 1, 0, 0): u + 1, (0, 0, 0, 0): 1}
+    assert dict(f.denominator) == {(0, 0, 1, 0): v - 1, (0, 0, 0, 1): -u*v, (0, 0, 0, 0): -1}
 
     Ruv,  u, v = ring("u,v", ZZ)
     Fxyzt,  x, y, z, t = field("x,y,z,t", Ruv)
 
     f = ((u + 1)*x*y + 1)/((v - 1)*z - t*u*v - 1)
-    assert dict(f.numer) == {(1, 1, 0, 0): u + 1, (0, 0, 0, 0): 1}
-    assert dict(f.denom) == {(0, 0, 1, 0): v - 1, (0, 0, 0, 1): -u*v, (0, 0, 0, 0): -1}
+    assert dict(f.numerator) == {(1, 1, 0, 0): u + 1, (0, 0, 0, 0): 1}
+    assert dict(f.denominator) == {(0, 0, 1, 0): v - 1, (0, 0, 0, 1): -u*v, (0, 0, 0, 0): -1}
 
 
 def test_FracElement___truediv__():
@@ -280,23 +280,23 @@ def test_FracElement___truediv__():
     Fxyzt,  x, y, z, t = field("x,y,z,t", Fuv)
 
     f = (u*v)/(x*y)
-    assert dict(f.numer) == {(0, 0, 0, 0): u*v}
-    assert dict(f.denom) == {(1, 1, 0, 0): 1}
+    assert dict(f.numerator) == {(0, 0, 0, 0): u*v}
+    assert dict(f.denominator) == {(1, 1, 0, 0): 1}
 
     g = (x*y)/(u*v)
-    assert dict(g.numer) == {(1, 1, 0, 0): 1}
-    assert dict(g.denom) == {(0, 0, 0, 0): u*v}
+    assert dict(g.numerator) == {(1, 1, 0, 0): 1}
+    assert dict(g.denominator) == {(0, 0, 0, 0): u*v}
 
     Ruv,  u, v = ring("u,v", ZZ)
     Fxyzt,  x, y, z, t = field("x,y,z,t", Ruv)
 
     f = (u*v)/(x*y)
-    assert dict(f.numer) == {(0, 0, 0, 0): u*v}
-    assert dict(f.denom) == {(1, 1, 0, 0): 1}
+    assert dict(f.numerator) == {(0, 0, 0, 0): u*v}
+    assert dict(f.denominator) == {(1, 1, 0, 0): 1}
 
     g = (x*y)/(u*v)
-    assert dict(g.numer) == {(1, 1, 0, 0): 1}
-    assert dict(g.denom) == {(0, 0, 0, 0): u*v}
+    assert dict(g.numerator) == {(1, 1, 0, 0): 1}
+    assert dict(g.denominator) == {(0, 0, 0, 0): u*v}
 
     Fuv,  u, v = field("u,v", ZZ)
     Rxyz,  x, y, z = ring("x,y,z", Fuv)

@@ -213,11 +213,11 @@ class FractionField(Field, CompositeDomain):
 
     def is_positive(self, a):
         """Returns True if ``LC(a)`` is positive."""
-        return self.domain.is_positive(a.numer.LC)
+        return self.domain.is_positive(a.numerator.LC)
 
     def is_negative(self, a):
         """Returns True if ``LC(a)`` is negative."""
-        return self.domain.is_negative(a.numer.LC)
+        return self.domain.is_negative(a.numerator.LC)
 
     def factorial(self, a):
         """Returns factorial of ``a``."""
@@ -241,8 +241,8 @@ class FracElement(DomainElement, CantSympify):
         elif not denom:
             raise ZeroDivisionError("zero denominator")
 
-        self.numer = numer
-        self.denom = denom
+        self._numerator = numer
+        self._denominator = denom
 
     def raw_new(self, numer, denom):
         return self.__class__(numer, denom)
@@ -251,17 +251,17 @@ class FracElement(DomainElement, CantSympify):
         return self.raw_new(*numer.cancel(denom))
 
     def to_poly(self):
-        if self.denom != self.field.ring.one:
-            raise ValueError("self.denom should be 1")
-        return self.numer
+        if self.denominator != self.field.ring.one:
+            raise ValueError("self.denominator should be 1")
+        return self.numerator
 
     @property
     def numerator(self):
-        return self.numer
+        return self._numerator
 
     @property
     def denominator(self):
-        return self.denom
+        return self._denominator
 
     @property
     def parent(self):
@@ -272,35 +272,35 @@ class FracElement(DomainElement, CantSympify):
     def __hash__(self):
         _hash = self._hash
         if _hash is None:
-            self._hash = _hash = hash((self.field, self.numer, self.denom))
+            self._hash = _hash = hash((self.field, self.numerator, self.denominator))
         return _hash
 
     def copy(self):
-        return self.raw_new(self.numer.copy(), self.denom.copy())
+        return self.raw_new(self.numerator.copy(), self.denominator.copy())
 
     def set_field(self, new_field):
         if self.field == new_field:
             return self
         else:
             new_ring = new_field.ring
-            numer = self.numer.set_ring(new_ring)
-            denom = self.denom.set_ring(new_ring)
+            numer = self.numerator.set_ring(new_ring)
+            denom = self.denominator.set_ring(new_ring)
             return new_field((numer, denom))
 
     def as_expr(self, *symbols):
-        return self.numer.as_expr(*symbols)/self.denom.as_expr(*symbols)
+        return self.numerator.as_expr(*symbols)/self.denominator.as_expr(*symbols)
 
     def __eq__(self, other):
         if isinstance(other, self.field.dtype):
-            return self.numer == other.numer and self.denom == other.denom
+            return self.numerator == other.numerator and self.denominator == other.denominator
         else:
-            return self.numer == other and self.denom == self.field.ring.one
+            return self.numerator == other and self.denominator == self.field.ring.one
 
     def __bool__(self):
-        return bool(self.numer)
+        return bool(self.numerator)
 
     def sort_key(self):
-        return self.denom.sort_key(), self.numer.sort_key()
+        return self.denominator.sort_key(), self.numerator.sort_key()
 
     def __lt__(self, other):
         if isinstance(other, self.field.dtype):
@@ -309,11 +309,11 @@ class FracElement(DomainElement, CantSympify):
             return NotImplemented
 
     def __pos__(self):
-        return self.raw_new(self.numer, self.denom)
+        return self.raw_new(self.numerator, self.denominator)
 
     def __neg__(self):
         """Negate all coefficients in ``self``."""
-        return self.raw_new(-self.numer, self.denom)
+        return self.raw_new(-self.numerator, self.denominator)
 
     def _extract_ground(self, element):
         domain = self.field.domain
@@ -341,13 +341,13 @@ class FracElement(DomainElement, CantSympify):
         elif not self:
             return other
         elif isinstance(other, field.dtype):
-            if self.denom == other.denom:
-                return self.new(self.numer + other.numer, self.denom)
+            if self.denominator == other.denominator:
+                return self.new(self.numerator + other.numerator, self.denominator)
             else:
-                return self.new(self.numer*other.denom + self.denom*other.numer,
-                                self.denom*other.denom)
+                return self.new(self.numerator*other.denominator + self.denominator*other.numerator,
+                                self.denominator*other.denominator)
         elif isinstance(other, field.ring.dtype):
-            return self.new(self.numer + self.denom*other, self.denom)
+            return self.new(self.numerator + self.denominator*other, self.denominator)
         else:
             if isinstance(other, FracElement):
                 if isinstance(field.domain, FractionField) and field.domain.field == other.field:
@@ -366,17 +366,17 @@ class FracElement(DomainElement, CantSympify):
 
     def __radd__(self, other):
         if isinstance(other, self.field.ring.dtype):
-            return self.new(self.numer + self.denom*other, self.denom)
+            return self.new(self.numerator + self.denominator*other, self.denominator)
 
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
-            return self.new(self.numer + self.denom*other_numer, self.denom)
+            return self.new(self.numerator + self.denominator*other_numer, self.denominator)
         elif not op:
             return NotImplemented
         else:
-            return self.new(self.numer*other_denom + self.denom*other_numer,
-                            self.denom*other_denom)
+            return self.new(self.numerator*other_denom + self.denominator*other_numer,
+                            self.denominator*other_denom)
 
     def __sub__(self, other):
         """Subtract rational functions ``self`` and ``other``."""
@@ -387,13 +387,13 @@ class FracElement(DomainElement, CantSympify):
         elif not self:
             return -other
         elif isinstance(other, field.dtype):
-            if self.denom == other.denom:
-                return self.new(self.numer - other.numer, self.denom)
+            if self.denominator == other.denominator:
+                return self.new(self.numerator - other.numerator, self.denominator)
             else:
-                return self.new(self.numer*other.denom - self.denom*other.numer,
-                                self.denom*other.denom)
+                return self.new(self.numerator*other.denominator - self.denominator*other.numerator,
+                                self.denominator*other.denominator)
         elif isinstance(other, field.ring.dtype):
-            return self.new(self.numer - self.denom*other, self.denom)
+            return self.new(self.numerator - self.denominator*other, self.denominator)
         else:
             if isinstance(other, FracElement):
                 if isinstance(field.domain, FractionField) and field.domain.field == other.field:
@@ -411,26 +411,26 @@ class FracElement(DomainElement, CantSympify):
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
-            return self.new(self.numer - self.denom*other_numer, self.denom)
+            return self.new(self.numerator - self.denominator*other_numer, self.denominator)
         elif not op:
             return NotImplemented
         else:
-            return self.new(self.numer*other_denom - self.denom*other_numer,
-                            self.denom*other_denom)
+            return self.new(self.numerator*other_denom - self.denominator*other_numer,
+                            self.denominator*other_denom)
 
     def __rsub__(self, other):
         if isinstance(other, self.field.ring.dtype):
-            return self.new(-self.numer + self.denom*other, self.denom)
+            return self.new(-self.numerator + self.denominator*other, self.denominator)
 
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
-            return self.new(-self.numer + self.denom*other_numer, self.denom)
+            return self.new(-self.numerator + self.denominator*other_numer, self.denominator)
         elif not op:
             return NotImplemented
         else:
-            return self.new(-self.numer*other_denom + self.denom*other_numer,
-                            self.denom*other_denom)
+            return self.new(-self.numerator*other_denom + self.denominator*other_numer,
+                            self.denominator*other_denom)
 
     def __mul__(self, other):
         """Multiply rational functions ``self`` and ``other``."""
@@ -439,9 +439,9 @@ class FracElement(DomainElement, CantSympify):
         if not self or not other:
             return field.zero
         elif isinstance(other, field.dtype):
-            return self.new(self.numer*other.numer, self.denom*other.denom)
+            return self.new(self.numerator*other.numerator, self.denominator*other.denominator)
         elif isinstance(other, field.ring.dtype):
-            return self.new(self.numer*other, self.denom)
+            return self.new(self.numerator*other, self.denominator)
         else:
             if isinstance(other, FracElement):
                 if isinstance(field.domain, FractionField) and field.domain.field == other.field:
@@ -460,16 +460,16 @@ class FracElement(DomainElement, CantSympify):
 
     def __rmul__(self, other):
         if isinstance(other, self.field.ring.dtype):
-            return self.new(self.numer*other, self.denom)
+            return self.new(self.numerator*other, self.denominator)
 
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
-            return self.new(self.numer*other_numer, self.denom)
+            return self.new(self.numerator*other_numer, self.denominator)
         elif not op:
             return NotImplemented
         else:
-            return self.new(self.numer*other_numer, self.denom*other_denom)
+            return self.new(self.numerator*other_numer, self.denominator*other_denom)
 
     def __truediv__(self, other):
         """Computes quotient of fractions ``self`` and ``other``."""
@@ -478,9 +478,9 @@ class FracElement(DomainElement, CantSympify):
         if not other:
             raise ZeroDivisionError
         elif isinstance(other, field.dtype):
-            return self.new(self.numer*other.denom, self.denom*other.numer)
+            return self.new(self.numerator*other.denominator, self.denominator*other.numerator)
         elif isinstance(other, field.ring.dtype):
-            return self.new(self.numer, self.denom*other)
+            return self.new(self.numerator, self.denominator*other)
         else:
             if isinstance(other, FracElement):
                 if isinstance(field.domain, FractionField) and field.domain.field == other.field:
@@ -498,35 +498,35 @@ class FracElement(DomainElement, CantSympify):
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
-            return self.new(self.numer, self.denom*other_numer)
+            return self.new(self.numerator, self.denominator*other_numer)
         elif not op:
             return NotImplemented
         else:
-            return self.new(self.numer*other_denom, self.denom*other_numer)
+            return self.new(self.numerator*other_denom, self.denominator*other_numer)
 
     def __rtruediv__(self, other):
         if not self:
             raise ZeroDivisionError
         elif isinstance(other, self.field.ring.dtype):
-            return self.new(self.denom*other, self.numer)
+            return self.new(self.denominator*other, self.numerator)
 
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
-            return self.new(self.denom*other_numer, self.numer)
+            return self.new(self.denominator*other_numer, self.numerator)
         elif not op:
             return NotImplemented
         else:
-            return self.new(self.denom*other_numer, self.numer*other_denom)
+            return self.new(self.denominator*other_numer, self.numerator*other_denom)
 
     def __pow__(self, n):
         """Raise ``self`` to a non-negative power ``n``."""
         if n >= 0:
-            return self.raw_new(self.numer**n, self.denom**n)
+            return self.raw_new(self.numerator**n, self.denominator**n)
         elif not self:
             raise ZeroDivisionError
         else:
-            return self.raw_new(self.denom**-n, self.numer**-n)
+            return self.raw_new(self.denominator**-n, self.numerator**-n)
 
     def diff(self, x):
         """Computes partial derivative in ``x``.
@@ -540,8 +540,8 @@ class FracElement(DomainElement, CantSympify):
 
         """
         x = x.to_poly()
-        return self.new(self.numer.diff(x)*self.denom -
-                        self.numer*self.denom.diff(x), self.denom**2)
+        return self.new(self.numerator.diff(x)*self.denominator -
+                        self.numerator*self.denominator.diff(x), self.denominator**2)
 
     def __call__(self, *values):
         if 0 < len(values) <= self.field.ngens:
@@ -552,10 +552,10 @@ class FracElement(DomainElement, CantSympify):
     def eval(self, x, a=None):
         if isinstance(x, list) and a is None:
             x = [(X.to_poly(), a) for X, a in x]
-            numer, denom = self.numer.eval(x), self.denom.eval(x)
+            numer, denom = self.numerator.eval(x), self.denominator.eval(x)
         else:
             x = x.to_poly()
-            numer, denom = self.numer.eval(x, a), self.denom.eval(x, a)
+            numer, denom = self.numerator.eval(x, a), self.denominator.eval(x, a)
 
         if self._extract_ground(denom) == (1, 1, None):
             return numer
@@ -568,13 +568,13 @@ class FracElement(DomainElement, CantSympify):
     def subs(self, x):
         if isinstance(x, (list, tuple)):
             x = [(X.to_poly(), a) for X, a in x]
-            numer, denom = self.numer.subs(x), self.denom.subs(x)
+            numer, denom = self.numerator.subs(x), self.denominator.subs(x)
         elif isinstance(x, (set, frozenset)):
             x = sorted((X.to_poly(), a) for X, a in x)
-            numer, denom = self.numer.subs(x), self.denom.subs(x)
+            numer, denom = self.numerator.subs(x), self.denominator.subs(x)
         elif isinstance(x, dict):
             x = sorted((k.to_poly(), x[k]) for k in x)
-            numer, denom = self.numer.subs(x), self.denom.subs(x)
+            numer, denom = self.numerator.subs(x), self.denominator.subs(x)
         else:
             raise ValueError("subs argument should be an iterable of pairs")
 
