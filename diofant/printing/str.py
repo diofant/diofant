@@ -366,11 +366,11 @@ class StrPrinter(Printer):
         return poly.str(self, PRECEDENCE, "%s**%d", "*")
 
     def _print_FracElement(self, frac):
-        if frac.denom == 1:
-            return self._print(frac.numer)
+        if frac.denominator == 1:
+            return self._print(frac.numerator)
         else:
-            numer = self.parenthesize(frac.numer, PRECEDENCE["Add"])
-            denom = self.parenthesize(frac.denom, PRECEDENCE["Atom"]-1)
+            numer = self.parenthesize(frac.numerator, PRECEDENCE["Add"])
+            denom = self.parenthesize(frac.denominator, PRECEDENCE["Atom"]-1)
             return numer + "/" + denom
 
     def _print_Poly(self, expr):

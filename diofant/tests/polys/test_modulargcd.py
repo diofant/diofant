@@ -347,7 +347,7 @@ def test_modgcd_algebraic_field_random():
     assert func_field_modgcd(h*a, h*b) == (h, a, b)
 
 
-# when func_field_modgcd suppors function fields, this test can be changed
+# when func_field_modgcd supports function fields, this test can be changed
 def test_modgcd_func_field():
     D, t = ring("t", ZZ)
     R, x, z = ring("x, z", D)
@@ -356,3 +356,10 @@ def test_modgcd_func_field():
     f, g = x + 1, x - 1
 
     assert _func_field_modgcd_m(f, g, minpoly) == R.one
+
+    # First example from Monagan2004algebraic.
+    minpoly = (z**2 - t).drop(0)
+    f = 3*t*x**2 - (2*t**2 - 3*t)*x*z + 15*x + 15*z - 2*t**3
+    g = 3*t*x**2*z + 15*x*z + (-2*t**3 + 3*t)*x - 2*t**2*z + 15
+
+    assert _func_field_modgcd_m(f, g, minpoly) == 3*t*x - 2*t**2*z + 15

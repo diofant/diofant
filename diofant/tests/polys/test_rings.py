@@ -98,6 +98,11 @@ def test_PolynomialRing_ring_new():
 
     assert R.ring_new({2: 1, 1: 0, 0: -1}) == x**2 - 1
 
+    D, t = ring('t', ZZ)
+    R, x = ring('x', D)
+
+    assert R.ring_new(t) == t
+
 
 def test_PolynomialRing_drop():
     R,  x, y, z = ring("x,y,z", ZZ)

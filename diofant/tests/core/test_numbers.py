@@ -852,11 +852,19 @@ def test_integer_nthroot_overflow():
 
 
 def test_isqrt():
+    pytest.raises(ValueError, lambda: isqrt(-1))
+
+    assert isqrt(0) == 0
+
     limit = 17984395633462800708566937239551
     assert int(_sqrt(limit)) == integer_nthroot(limit, 2)[0]
     assert int(_sqrt(limit + 1)) != integer_nthroot(limit + 1, 2)[0]
     assert isqrt(limit + 1) == integer_nthroot(limit + 1, 2)[0]
     assert isqrt(limit + 1 + Rational(1, 2)) == integer_nthroot(limit + 1, 2)[0]
+
+    # issue sympy/sympy#17034
+    assert isqrt(4503599761588224) == 67108864
+    assert isqrt(9999999999999999) == 99999999
 
 
 def test_powers_Integer():

@@ -28,6 +28,7 @@ Compatibility breaks
 * Former ``fast=True`` option is now a default for :meth:`~diofant.polys.polytools.Poly.intervals` and :meth:`~diofant.polys.polytools.Poly.refine_root`, see :pull:`834`.
 * Change order of keyword arguments for :meth:`~diofant.polys.rings.PolyElement.integrate`, see :pull:`834`.
 * Removed support for ``dps=''`` in :class:`~diofant.core.numbers.Float`.  Significant digits automatically counted for :class:`int` and :class:`str` inputs, see :pull:`797`.
+* Removed ``numer/denom`` properties of :class:`~diofant.polys.fields.FracElement`, see :pull:`851`.
 
 Minor changes
 =============
@@ -95,3 +96,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`16589` roots gives incorrect result
 * :sympyissue:`16714` Limit ((n**(n+1) + (n+1)**n) / n**(n+1))**n recursion error
 * :sympyissue:`16774` square proportion match has no result
+* :sympyissue:`17034` isqrt gives incorrect results
+* :sympyissue:`17044` is_square gives incorrect answers

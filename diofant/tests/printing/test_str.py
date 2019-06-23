@@ -399,6 +399,11 @@ def test_PolyElement():
     assert str(-(v**2 + v + 1)*x + 3*u*v + 1) == "-(v**2 + v + 1)*x + 3*u*v + 1"
     assert str(-(v**2 + v + 1)*x - 3*u*v + 1) == "-(v**2 + v + 1)*x - 3*u*v + 1"
 
+    K, t = field('t', ZZ)
+    R, x = ring('x', K)
+
+    assert str(x/t) == '1/t*x'
+
 
 def test_FracElement():
     Fuv,  u, v = field("u,v", ZZ)
