@@ -91,8 +91,10 @@ def precedence_PolyElement(item):
 
 
 def precedence_FracElement(item):
-    assert item.denom == 1
-    return precedence_PolyElement(item.numer)
+    if item.denominator == 1:
+        return precedence_PolyElement(item.numerator)
+    else:
+        return PRECEDENCE["Mul"]
 
 
 #: Sometimes it's not enough to assign a fixed precedence value to a class. Then

@@ -174,9 +174,9 @@ class ReprPrinter(Printer):
         return "%s(%s, %s)" % (poly.__class__.__name__, self._print(poly.ring), self._print(terms))
 
     def _print_FracElement(self, frac):
-        numer_terms = list(frac.numer.terms())
+        numer_terms = list(frac.numerator.terms())
         numer_terms.sort(key=frac.field.order, reverse=True)
-        denom_terms = list(frac.denom.terms())
+        denom_terms = list(frac.denominator.terms())
         denom_terms.sort(key=frac.field.order, reverse=True)
         numer = self._print(numer_terms)
         denom = self._print(denom_terms)
