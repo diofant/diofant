@@ -1128,33 +1128,29 @@ def _func_field_modgcd_p(f, g, minpoly, p):
 
         if k == 1:
             dom = qring.domain.field
-            den = dom.ring.one
-
             domp = dom.ring.domain.finite_field(p)
-            den = den.set_domain(domp)
-
-            for coeff in h.values():
-                coeff = coeff.denominator.set_domain(domp)
-                den = den.lcm(coeff)
-
-            den = den.set_ring(dom.ring)
-
+            new_dom = dom.clone(domain=domp)
+            h = h.set_domain(new_dom)
+            _, h = h.clear_denoms()
+            h = h.set_domain(domain)
         else:
             dom = qring.domain.domain.field
-            den = dom.ring.one
-
             domp = dom.ring.domain.finite_field(p)
-            den = den.set_domain(domp)
+            new_dom = dom.clone(domain=domp)
+            den = new_dom.ring.one
 
-            for coeff in h.values():
-                for c in coeff.values():
-                    c = c.denominator.set_domain(domp)
-                    den = den.lcm(c)
+            for c in h.values():
+                c = c.set_domain(new_dom)
+                c, _ = c.clear_denoms()
+                den = den.ring.lcm(den, c)
 
-            den = den.set_ring(dom.ring)
+            den = new_dom.field_new((den, new_dom.ring.one))
 
-        den = qring.domain_new(den.trunc_ground(p))
-        h = ring((h*den).as_expr()).trunc_ground(p)
+            for key, coeff in h.items():
+                coeff = coeff.set_domain(new_dom)
+                h[key] = (coeff*den).set_domain(dom)
+
+            h = ring(h.as_expr())
 
         if not trial_division(f, h, minpoly, p) and not trial_division(g, h, minpoly, p):
             return h
