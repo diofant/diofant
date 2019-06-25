@@ -104,6 +104,13 @@ def test_PolynomialRing_ring_new():
     assert R.ring_new(t) == t
 
 
+def test_PolynomialRing_domain_new():
+    R1 = ZZ.frac_field(t).poly_ring(y)
+    R2 = R1.poly_ring(x, z)
+
+    assert R2.domain_new(R1.ring.domain.one) == R2.one
+
+
 def test_PolynomialRing_drop():
     R,  x, y, z = ring("x,y,z", ZZ)
 
