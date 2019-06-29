@@ -30,7 +30,7 @@ def test_sympify1():
     assert sympify(None) is None
     with pytest.raises(SympifyError) as ex:
         sympify(None, strict=True)
-    assert str(ex).find("unprintable SympifyError object") >= 0
+    assert str(ex).find("SympifyError") >= 0
     assert sympify("x") == Symbol("x")
     assert sympify("   x") == Symbol("x")
     assert sympify("   x   ") == Symbol("x")
