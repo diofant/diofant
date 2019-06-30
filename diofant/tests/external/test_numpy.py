@@ -5,6 +5,8 @@
 # Python (without numpy). Here we test everything, that a user may need when
 # using Diofant with NumPy
 
+import sys
+
 import mpmath
 import pytest
 
@@ -206,6 +208,7 @@ def test_sympyissue_3728():
 
 
 @conserve_mpmath_dps
+@pytest.mark.skipif(sys.version_info >= (3, 8), reason="Broken on 3.8")
 def test_lambdify():
     mpmath.mp.dps = 16
     sin02 = mpmath.mpf("0.198669330795061215459412627")

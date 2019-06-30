@@ -88,6 +88,9 @@ class FractionField(Field, CompositeDomain):
     def __eq__(self, other):
         return self is other
 
+    def clone(self, symbols=None, domain=None, order=None):
+        return self.__class__(domain or self.domain, symbols or self.symbols, order or self.order)
+
     def __ne__(self, other):
         return self is not other
 

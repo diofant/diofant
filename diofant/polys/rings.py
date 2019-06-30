@@ -1818,7 +1818,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self._gcd_ZZ(other)
         elif ring.domain.is_AlgebraicField:
             return self._gcd_AA(other)
-        else:  # TODO: don't use dense representation (port PRS algorithms)
+        else:
             return ring.dmp_inner_gcd(self, other)
 
     def _gcd_ZZ(self, other):

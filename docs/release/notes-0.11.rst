@@ -98,3 +98,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`16774` square proportion match has no result
 * :sympyissue:`17034` isqrt gives incorrect results
 * :sympyissue:`17044` is_square gives incorrect answers
+* :sympyissue:`10996` Bug in polynomial GCD computation
