@@ -114,7 +114,7 @@ def igcd(*args):
     for b in args:
         if a == 1:
             break
-        a = math.gcd(a, abs(b))
+        a = math.gcd(a, b)
     return a
 
 
@@ -137,7 +137,7 @@ def ilcm(*args):
     for b in args:
         if a == 0:
             break
-        a = a*b // igcd(a, b)
+        a = a*b // math.gcd(a, b)
     return a
 
 

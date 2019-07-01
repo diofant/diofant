@@ -12,9 +12,6 @@ class SympifyError(ValueError):
         self.base_exc = base_exc
 
     def __str__(self):
-        if self.base_exc is None:
-            return "SympifyError: %r" % self.expr,
-
         try:
             s = str(self.expr)
         except TypeError:
