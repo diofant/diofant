@@ -1,7 +1,7 @@
 """Miscellaneous stuff that doesn't really fit anywhere else."""
 
 import sys
-from textwrap import dedent, fill
+import textwrap
 
 
 def filldedent(s, w=70):
@@ -13,7 +13,7 @@ def filldedent(s, w=70):
     start with a newline after the initial triple quote, inserting an empty
     line at the beginning of the string.
     """
-    return '\n' + fill(dedent(str(s)).strip('\n'), width=w)
+    return '\n' + textwrap.fill(textwrap.dedent(str(s)).strip('\n'), width=w)
 
 
 def debug(*args):
