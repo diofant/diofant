@@ -152,14 +152,26 @@ Discussed above method is not effective enough if you intend to
 evaluate an expression at many points, there are better ways,
 especially if you only care about machine precision.
 
+Substitution may be used to evaluate an expression for some floating point
+number
+
+    >>> expr = sin(x)/x
+    >>> expr.subs({x: 0.1})
+    0.998334166468282
+
+but this method is slow.
+
 The easiest way to convert an expression to the form that can be numerically
 evaluated with libraries like :mod:`numpy` or the standard library :mod:`math`
 module --- use the :func:`~diofant.utilities.lambdify.lambdify` function.
 
-    >>> expr = sin(x)
-    >>> f = lambdify(x, expr, "numpy")
-    >>> f(range(5))
-    [ 0.          0.84147098  0.90929743  0.14112001 -0.7568025 ]
     >>> f = lambdify(x, expr, "math")
     >>> f(0.1)
-    0.09983341664682815
+    0.9983341664682815
+
+Using the :mod:`numpy` library gives the generated function access to powerful
+vectorized ufuncs that are backed by compiled C code.
+
+    >>> f = lambdify(x, expr, "numpy")
+    >>> f(range(1, 5))
+    [ 0.84147098  0.45464871  0.04704    -0.18920062]
