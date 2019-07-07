@@ -10,4 +10,3 @@ Internals
    g-functions
    evalf
    numeric-computation
-   rewriting

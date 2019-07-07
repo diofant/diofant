@@ -1,7 +1,8 @@
 .. _meijerg-label:
 
+============================================
 Computing Integrals using Meijer G-Functions
-********************************************
+============================================
 
 This text aims do describe in some detail the steps (and subtleties) involved
 in using Meijer G-functions for computing definite and indefinite integrals.
@@ -165,7 +166,7 @@ be used to exploit the information. This is done transparently by the
 integration code.
 
 The G-Function Integration Theorems
-***********************************
+===================================
 
 This section intends to display in detail the definite integration theorems
 used in the code. The following two formulae go back to Meijer (In fact he
@@ -201,7 +202,7 @@ amalgamation of conditions found in :cite:`Prudnikov1990` and :cite:`Luke1969`; 
 let us know if you find any errors.
 
 Conditions of Convergence for Integral (1)
-==========================================
+------------------------------------------
 .. TODO: Formatting could be improved.
 
 We can without loss of generality assume `p \le q`, since the G-functions
@@ -266,7 +267,7 @@ And these are the conditions "at zero":
 5. .. math:: C_3
 
 Conditions of Convergence for Integral (2)
-==========================================
+------------------------------------------
 
 We introduce the following notation:
 
@@ -382,7 +383,7 @@ as follows:
 
 
 The Inverse Laplace Transform of a G-function
-*********************************************
+=============================================
 
 The inverse laplace transform of a Meijer G-function can be expressed as
 another G-function. This is a fairly versatile method for computing this
@@ -404,7 +405,7 @@ for positive real `t`. Three questions arise:
 
 
 How to compute the integral
-===========================
+---------------------------
 
 We shall work formally for now. Denote by `\Delta(s)` the product of gamma
 functions appearing in the definition of `G`, so that
@@ -444,7 +445,7 @@ which is a so-called Fox H function (of argument `\frac{b}{t^a}`). For rational
 multiplication theorem.
 
 When this computation is valid
-==============================
+------------------------------
 
 There are a number of obstacles in this computation. Interchange of integrals
 is only valid if all integrals involved are absolutely convergent. In
@@ -466,7 +467,7 @@ fulfilled if `G` converges along contours (2) or (3) of :cite:`Luke1969`,
 section 5.2, i.e. either `\delta >= \frac{a}{2}` or `p \ge 1, p \ge q`.
 
 When the integral exists
-========================
+------------------------
 
 Using :cite:`Luke1969`, section 5.10, for any given meijer G-function we can find a
 dominant term of the form `z^a e^{bz^c}` (although this expression might not be
@@ -495,7 +496,7 @@ Set `\omega_{\pm} = b e^{\pm i \Re(c) \frac{\pi}{2}}`. We have three cases:
    Here the same condition as in (1) applies.
 
 Implemented G-Function Formulae
-*******************************
+===============================
 
 An important part of the algorithm is a table expressing various functions
 as Meijer G-functions. This is essentially a table of Mellin Transforms in
