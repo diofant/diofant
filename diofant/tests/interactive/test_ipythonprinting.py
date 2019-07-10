@@ -125,12 +125,12 @@ def test_ipython_printing(monkeypatch):
     latex = app.user_ns['a'][0]['text/latex']
     assert text in ('{n\N{LATIN SUBSCRIPT SMALL LETTER I}: 3, \N{GREEK SMALL LETTER PI}: 3.14}',
                     '{\N{GREEK SMALL LETTER PI}: 3.14, n\N{LATIN SUBSCRIPT SMALL LETTER I}: 3}')
-    assert latex == r'\begin{equation}\left \{ n_{i} : 3, \quad \pi : 3.14\right \}\end{equation}'
+    assert latex == r'\begin{equation*}\left \{ n_{i} : 3, \quad \pi : 3.14\right \}\end{equation*}'
 
     app.run_cell("a = format([Symbol('x'), Symbol('y')])")
     latex = app.user_ns['a'][0]['text/latex']
-    assert latex in (r'\begin{equation}\left [ x, \quad y\right ]\end{equation}',
-                     r'\begin{equation}left [ y, \quad x\right ]\end{equation}')
+    assert latex in (r'\begin{equation*}\left [ x, \quad y\right ]\end{equation*}',
+                     r'\begin{equation*}left [ y, \quad x\right ]\end{equation*}')
 
     app.run_cell("a = format(False)")
     assert app.user_ns['a'][0]['text/plain'] == r'False'
