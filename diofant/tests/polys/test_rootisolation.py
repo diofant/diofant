@@ -429,6 +429,18 @@ def test_dup_isolate_real_roots():
     pytest.raises(DomainError, lambda: R.dup_isolate_real_roots(x + 3))
     pytest.raises(DomainError, lambda: R.dup_isolate_real_roots((x + 2)*(x + 3)**2))
 
+    R, x = ring("x", QQ.algebraic_field(I))
+
+    f = (x**2 - I)**2*(x - 2*I)**3
+
+    assert R.dup_isolate_real_roots(f) == []  # issue diofant/diofant#789
+    assert R.dup_isolate_real_roots(f*(x - 1)**3) == [((1, 1), 3)]
+
+    f = x**4*(x - 1)**3*(x**2 - 2)**2
+
+    assert R.dup_isolate_real_roots(f) == \
+        [((-2, -1), 2), ((0, 0), 4), ((1, 1), 3), ((1, 2), 2)]
+
 
 def test_dup_isolate_real_roots_list():
     R, x = ring("x", ZZ)

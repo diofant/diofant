@@ -496,6 +496,15 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None):
     if not (K.is_ComplexAlgebraicField or K.is_RationalField):
         raise DomainError("isolation of real roots not supported over %s" % K)
 
+    if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
+        A, K = K, K.domain
+        polys = [dmp_eval_in(_, K.zero, 1, 1, K) for _ in dup_real_imag(f, A)]
+        if not polys[1]:
+            f = polys[0]
+        else:
+            roots = dup_isolate_real_roots_list(polys, K, eps=eps, inf=inf, sup=sup, strict=True)
+            return [(_[0], _[1][0]) for _ in roots if _[1].keys() == {0, 1}]
+
     _, factors = dmp_sqf_list(f, 0, K)
     factors = [(dmp_clear_denoms(f, 0, K)[1], k) for f, k in factors]
 
