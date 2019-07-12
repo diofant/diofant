@@ -458,14 +458,8 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=Fals
     f = dmp_clear_denoms(f, 0, K)[1]
 
     if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
-        A, K = K, K.domain
-        polys = [dmp_eval_in(_, K.zero, 1, 1, K) for _ in dup_real_imag(f, A)]
-        if not polys[1]:
-            f = polys[0]
-        else:
-            roots = dup_isolate_real_roots_list(polys, K, eps=eps, inf=inf, sup=sup, strict=True)
-            roots = [_[0] for _ in roots if _[1].keys() == {0, 1}]
-            return [RealInterval((a, b), f, K) for (a, b) in roots] if blackbox else roots
+        roots = [r for r, _ in dup_isolate_real_roots(f, K, eps=eps, inf=inf, sup=sup)]
+        return [RealInterval((a, b), f, K) for (a, b) in roots] if blackbox else roots
 
     if dmp_degree_in(f, 0, 0) <= 0:
         return []
