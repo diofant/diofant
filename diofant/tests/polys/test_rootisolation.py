@@ -439,7 +439,7 @@ def test_dup_isolate_real_roots():
     f = x**4*(x - 1)**3*(x**2 - 2)**2
 
     assert R.dup_isolate_real_roots(f) == \
-        [((-2, -1), 2), ((0, 0), 4), ((1, 1), 3), ((1, 2), 2)]
+        [((-2, -1), 2), ((0, 0), 4), ((1, 1), 3), ((QQ(4, 3), QQ(3, 2)), 2)]
 
 
 def test_dup_isolate_real_roots_list():
@@ -495,6 +495,16 @@ def test_dup_isolate_real_roots_list():
     assert R.dup_isolate_real_roots_list([f, g], basis=True) == \
         [((-2, -1), {0: 2}, [1, 0, -2]), ((0, 0), {0: 2, 1: 1}, [1, 0]),
          ((1, 1), {0: 3, 1: 2}, [1, -1]), ((1, 2), {0: 2}, [1, 0, -2])]
+
+    f, g = x, R.zero
+
+    assert R.dup_isolate_real_roots_list([f, g]) == \
+        R.dup_isolate_real_roots_list([g, f]) == [((0, 0), {0: 1, 1: 1})]
+
+    f *= x**2
+
+    assert R.dup_isolate_real_roots_list([f, g]) == \
+        R.dup_isolate_real_roots_list([g, f]) == [((0, 0), {0: 3, 1: 3})]
 
     R, x = ring("x", EX)
 
