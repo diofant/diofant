@@ -21,10 +21,10 @@ import diofant
 warnings.simplefilter('error', UserWarning)
 
 # Add any Sphinx extension module names here, as strings.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.linkcode', 'sphinx.ext.mathjax',
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.linkcode',
               'sphinx.ext.graphviz', 'sphinx.ext.intersphinx',
               'sphinx.ext.extlinks', 'sphinx.ext.napoleon',
-              'sphinxcontrib.bibtex']
+              'sphinxcontrib.bibtex', 'sphinxcontrib.katex']
 
 napoleon_google_docstring = False
 napoleon_use_param = False
@@ -144,14 +144,6 @@ html_theme_options = {
     'logo_only': True,
     'display_version': False,
     'analytics_id': 'UA-147167689-1',
-}
-
-# The inline configuration options for mathjax.  The value is used as
-# a parameter of MathJax.Hub.Config().
-mathjax_config = {
-    'CommonHTML': {'linebreaks': {'automatic': True}},
-    'HTML-CSS': {'linebreaks': {'automatic': True}},
-    'SVG': {'linebreaks': {'automatic': True}},
 }
 
 
