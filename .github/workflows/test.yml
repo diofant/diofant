@@ -22,7 +22,9 @@ jobs:
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern pandoc
     - name: Install dependencies
-      run: pip install -U .[interactive,develop,gmpy,exports,plot,docs]
+      run: |
+        pip install -U git+https://github.com/tdamsma/jupyter_client.git@traitlets-observe-and-defaults-pattern
+        pip install -U .[interactive,develop,gmpy,exports,plot,docs]
     - name: Linting with flake8 and pylint
       run: |
         python -We:invalid -m compileall -f diofant -q
@@ -30,7 +32,7 @@ jobs:
         pylint -j1 diofant
     - name: Building and testing docs
       env:
-        PYTEST_ADDOPTS: -n auto --doctest-modules --ignore diofant/tests
+        PYTEST_ADDOPTS: -n auto --dist loadscope --doctest-modules --ignore diofant/tests
       id: release
       run: |
         python setup.py test
