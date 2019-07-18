@@ -346,3 +346,60 @@ Here are several more advanced examples:
     >>> nsimplify(gamma('1/4')*gamma('3/4'), [pi])
       ___
     \/ 2 *pi
+
+uFuncify
+--------
+
+While NumPy operations are very efficient for vectorized data they sometimes
+incur unnecessary costs when chained together. Consider the following operation
+
+.. code:: python
+
+    x = get_numpy_array(...)
+    y = sin(x)/x
+
+The operators ``sin`` and ``/`` call routines that execute tight for loops in
+``C``. The resulting computation looks something like this
+
+.. code:: c
+
+    for(int i = 0; i < n; i++)
+    {
+        temp[i] = sin(x[i]);
+    }
+    for(int i = i; i < n; i++)
+    {
+        y[i] = temp[i] / x[i];
+    }
+
+This is slightly sub-optimal because
+
+1.  We allocate an extra ``temp`` array
+2.  We walk over ``x`` memory twice when once would have been sufficient
+
+A better solution would fuse both element-wise operations into a single for loop
+
+.. code:: c
+
+    for(int i = i; i < n; i++)
+    {
+        y[i] = sin(x[i]) / x[i];
+    }
+
+Statically compiled projects like NumPy are unable to take advantage of such
+optimizations. Fortunately, Diofant is able to generate efficient low-level C
+or Fortran code. It can then depend on projects like ``Cython`` or ``f2py`` to
+compile and reconnect that code back up to Python. Fortunately this process is
+well automated and a Diofant user wishing to make use of this code generation
+should call the ``ufuncify`` function
+
+    >>> expr = sin(x)/x
+
+    >>> from diofant.utilities.autowrap import ufuncify
+    >>> f = ufuncify((x,), expr)
+
+This function ``f`` consumes and returns a NumPy array. Generally ``ufuncify``
+performs at least as well as ``lambdify``. If the expression is complicated
+then ``ufuncify`` often significantly outperforms the NumPy backed solution.
+Jensen has a good `blog post <https://ojensen.wordpress.com/2010/08/10/fast-ufunc-ish-hydrogen-solutions/>`_
+on this topic.

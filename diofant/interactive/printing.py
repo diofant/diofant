@@ -33,7 +33,7 @@ def _init_ipython_printing(ip, stringify_func):
         p.text(stringify_func(arg))
 
     def _print_latex_text(o):
-        return latex(o, mode='equation')
+        return latex(o, mode='equation*')
 
     printable_types = [float, tuple, list, set, frozenset, dict, int]
 

@@ -9,4 +9,3 @@ Internals
    hyperexpand
    g-functions
    evalf
-   numeric-computation
