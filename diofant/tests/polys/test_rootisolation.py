@@ -429,6 +429,18 @@ def test_dup_isolate_real_roots():
     pytest.raises(DomainError, lambda: R.dup_isolate_real_roots(x + 3))
     pytest.raises(DomainError, lambda: R.dup_isolate_real_roots((x + 2)*(x + 3)**2))
 
+    R, x = ring("x", QQ.algebraic_field(I))
+
+    f = (x**2 - I)**2*(x - 2*I)**3
+
+    assert R.dup_isolate_real_roots(f) == []  # issue diofant/diofant#789
+    assert R.dup_isolate_real_roots(f*(x - 1)**3) == [((1, 1), 3)]
+
+    f = x**4*(x - 1)**3*(x**2 - 2)**2
+
+    assert R.dup_isolate_real_roots(f) == \
+        [((-2, -1), 2), ((0, 0), 4), ((1, 1), 3), ((QQ(4, 3), QQ(3, 2)), 2)]
+
 
 def test_dup_isolate_real_roots_list():
     R, x = ring("x", ZZ)
@@ -483,6 +495,16 @@ def test_dup_isolate_real_roots_list():
     assert R.dup_isolate_real_roots_list([f, g], basis=True) == \
         [((-2, -1), {0: 2}, [1, 0, -2]), ((0, 0), {0: 2, 1: 1}, [1, 0]),
          ((1, 1), {0: 3, 1: 2}, [1, -1]), ((1, 2), {0: 2}, [1, 0, -2])]
+
+    f, g = x, R.zero
+
+    assert R.dup_isolate_real_roots_list([f, g]) == \
+        R.dup_isolate_real_roots_list([g, f]) == [((0, 0), {0: 1, 1: 1})]
+
+    f *= x**2
+
+    assert R.dup_isolate_real_roots_list([f, g]) == \
+        R.dup_isolate_real_roots_list([g, f]) == [((0, 0), {0: 3, 1: 3})]
 
     R, x = ring("x", EX)
 

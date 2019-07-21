@@ -458,14 +458,8 @@ def dup_isolate_real_roots_sqf(f, K, eps=None, inf=None, sup=None, blackbox=Fals
     f = dmp_clear_denoms(f, 0, K)[1]
 
     if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
-        A, K = K, K.domain
-        polys = [dmp_eval_in(_, K.zero, 1, 1, K) for _ in dup_real_imag(f, A)]
-        if not polys[1]:
-            f = polys[0]
-        else:
-            roots = dup_isolate_real_roots_list(polys, K, eps=eps, inf=inf, sup=sup, strict=True)
-            roots = [_[0] for _ in roots if _[1].keys() == {0, 1}]
-            return [RealInterval((a, b), f, K) for (a, b) in roots] if blackbox else roots
+        roots = [r for r, _ in dup_isolate_real_roots(f, K, eps=eps, inf=inf, sup=sup)]
+        return [RealInterval((a, b), f, K) for (a, b) in roots] if blackbox else roots
 
     if dmp_degree_in(f, 0, 0) <= 0:
         return []
@@ -495,6 +489,12 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None):
 
     if not (K.is_ComplexAlgebraicField or K.is_RationalField):
         raise DomainError("isolation of real roots not supported over %s" % K)
+
+    if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
+        A, K = K, K.domain
+        polys = [dmp_eval_in(_, K.zero, 1, 1, K) for _ in dup_real_imag(f, A)]
+        roots = dup_isolate_real_roots_list(polys, K, eps=eps, inf=inf, sup=sup, strict=True)
+        return [(_[0], _[1][0]) for _ in roots if _[1].keys() == {0, 1}]
 
     _, factors = dmp_sqf_list(f, 0, K)
     factors = [(dmp_clear_denoms(f, 0, K)[1], k) for f, k in factors]
@@ -540,10 +540,15 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
     factors = collections.defaultdict(dict)
 
     for i, p in enumerate(polys):
+        ni = (i + 1) % 2
+
+        if not p and zeros and ni in zero_indices:
+            zero_indices[i] = zero_indices[ni]
+
         for f, _ in dmp_sqf_list(dmp_gcd(p, gcd, 0, K), 0, K)[1]:
             k1 = dmp_trial_division(gcd, [f], 0, K)[0][1]
             k2 = dmp_trial_division(p, [f], 0, K)[0][1]
-            factors[tuple(f)] = {i: k1 + k2, (i + 1) % 2: k1}
+            factors[tuple(f)] = {i: k1 + k2, ni: k1}
 
             gcd = dmp_quo(gcd, dmp_pow(f, k1, 0, K), 0, K)
             p = dmp_quo(p, dmp_pow(f, k2, 0, K), 0, K)
