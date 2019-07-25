@@ -172,21 +172,25 @@ def test_wrap_twice_c_cython():
 
 
 @with_cython
+@with_numpy
 def test_autowrap_trace_C_Cython():
     runtest_autowrap_trace('C', 'cython')
 
 
 @with_cython
+@with_numpy
 def test_autowrap_matrix_vector_C_cython():
     runtest_autowrap_matrix_vector('C', 'cython')
 
 
 @with_cython
+@with_numpy
 def test_autowrap_matrix_matrix_C_cython():
     runtest_autowrap_matrix_matrix('C', 'cython')
 
 
 @with_cython
+@with_numpy
 def test_ufuncify_C_Cython():
     runtest_ufuncify('C', 'cython')
 
@@ -199,6 +203,7 @@ def test_sympyissue_10274_C_cython():
 # Numpy
 
 @with_cython
+@with_numpy
 def test_ufuncify_numpy():
     # This test doesn't use Cython, but if Cython works, then there is a valid
     # C compiler, which is needed.

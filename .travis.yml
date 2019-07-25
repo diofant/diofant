@@ -52,9 +52,11 @@ matrix:
             python setup.py build_sphinx -W -b linkcheck
           fi
         - pip uninstall -y gmpy2
+        - pip uninstall -y numpy
         - PYTEST_ADDOPTS="${PYTEST_ADDOPTS} ${COVOPTS}"
         - DIOFANT_GROUND_TYPES='gmpy' py.test diofant/tests/domains
         - travis_wait py.test diofant/tests/polys
+        - travis_wait py.test diofant/tests/external
     - stage: deploy
       env:
         -

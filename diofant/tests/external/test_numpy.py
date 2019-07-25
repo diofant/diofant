@@ -13,7 +13,7 @@ import pytest
 import diofant
 from diofant import (DeferredVector, Float, Integer, Matrix, MatrixSymbol,
                      Rational, Symbol, lambdify, list2numpy, matrix2numpy, sin,
-                     symarray, symbols)
+                     symarray, symbols, sympify)
 from diofant.abc import x, y, z
 from diofant.matrices.expressions.matexpr import MatrixElement
 from diofant.utilities.decorator import conserve_mpmath_dps
@@ -312,3 +312,7 @@ def test_from_ndarray():
     assert Matrix(numpy.array([x, y, z])) == Matrix([x, y, z])
     pytest.raises(NotImplementedError, lambda: Matrix(numpy.array([[
         [1, 2], [3, 4]], [[5, 6], [7, 8]]])))
+
+
+def test_sympify():
+    assert sympify(numpy.float128(1.1)) == Float(1.1)

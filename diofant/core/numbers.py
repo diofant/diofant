@@ -2563,6 +2563,16 @@ I = S.ImaginaryUnit
 
 converter[float] = converter[decimal.Decimal] = Float
 
+try:
+    import numpy as np
+
+    def _sympify_numpy(x):
+        return Float(mpmath.mpmathify(x))
+
+    converter[np.floating] = _sympify_numpy
+except ImportError:
+    pass
+
 converter[int] = Integer
 converter[fractions.Fraction] = Rational
 
