@@ -60,7 +60,7 @@ _assume_rules = FactRules([
     'imaginary      ->  complex & antihermitian',
     'complex        ->  finite & commutative',
     'extended_real  ->  commutative',
-    'extended_real  -> real | infinite',
+    'extended_real  ->  real | infinite',
 
     'odd            ==  integer & ~even',
     'even           ==  integer & ~odd',
