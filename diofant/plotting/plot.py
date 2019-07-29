@@ -23,7 +23,7 @@ every time you call ``show()`` and the old one is left to the garbage collector.
 """
 
 import warnings
-from collections import Callable
+from collections.abc import Callable
 from inspect import getfullargspec
 
 from ..core import Dummy, Expr, Symbol, Tuple, sympify
