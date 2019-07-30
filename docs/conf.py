@@ -57,7 +57,7 @@ latex_engine = 'xelatex'
 latex_use_xindy = False
 
 # This value determines how to group the document tree into LaTeX source
-# files. It must be a list of tuples (startdocname, targetname, title,
+# files.  It must be a list of tuples (startdocname, targetname, title,
 # author, documentclass, toctree_only),
 latex_documents = [('index', 'diofant.tex', 'Diofant Documentation',
                     'Diofant Development Team', 'manual', True)]
@@ -111,8 +111,8 @@ linkcheck_ignore = [r'https://primes.utm.edu/notes/gaps.html',
 # set, is inherited form parents.
 autodoc_inherit_docstrings = False
 
-# A list of paths that contain custom static files. Relative paths are taken as
-# relative to the configuration directory. They are copied to the output’s
+# A list of paths that contain custom static files.  Relative paths are taken as
+# relative to the configuration directory.  They are copied to the output’s
 # _static directory.
 html_static_path = ['_static']
 
@@ -136,6 +136,8 @@ html_theme_options = {
     'display_version': False,
 }
 
+# The inline configuration options for mathjax.  The value is used as
+# a parameter of MathJax.Hub.Config().
 mathjax_config = {
     'CommonHTML': {'linebreaks': {'automatic': True}},
     'HTML-CSS': {'linebreaks': {'automatic': True}},
