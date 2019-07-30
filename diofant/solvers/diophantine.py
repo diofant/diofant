@@ -734,7 +734,7 @@ def diop_quadratic(eq, param=symbols("t", integer=True)):
     ==========
 
     * Methods to solve Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0, [online],
-      Available: https://www.alpertron.com.ar/METHODS.HTM
+      Available: https://web.archive.org/web/20181231080858/https://www.alpertron.com.ar/METHODS.HTM
     * Solving the equation ax^2+ bxy + cy^2 + dx + ey + f= 0, [online],
       Available: https://web.archive.org/web/20180831180321/http://www.jpr2718.org/ax2p.pdf
 
@@ -769,7 +769,7 @@ def _diop_quadratic(var, coeff, t):
     # (1) Simple-Hyperbolic case: A = C = 0, B != 0
     # In this case equation can be converted to (Bx + E)(By + D) = DE - BF
     # We consider two cases; DE - BF = 0 and DE - BF != 0
-    # More details, https://www.alpertron.com.ar/METHODS.HTM#SHyperb
+    # More details, https://web.archive.org/web/20181231080858/https://www.alpertron.com.ar/METHODS.HTM#SHyperb
 
     sol = set()
     discr = B**2 - 4*A*C
@@ -797,7 +797,7 @@ def _diop_quadratic(var, coeff, t):
     # (2) Parabolic case: B**2 - 4*A*C = 0
     # There are two subcases to be considered in this case.
     # sqrt(c)D - sqrt(a)E = 0 and sqrt(c)D - sqrt(a)E != 0
-    # More Details, https://www.alpertron.com.ar/METHODS.HTM#Parabol
+    # More Details, https://web.archive.org/web/20181231080858/https://www.alpertron.com.ar/METHODS.HTM#Parabol
 
     elif discr == 0:
 

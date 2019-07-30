@@ -37,7 +37,7 @@ Major changes
 
 * Context manager for New Assumptions
 
-  - Added the ``with assuming(*facts)`` context manager for new assumptions.  See `blogpost <https://matthewrocklin.com/blog/work/2013/02/05/Assuming>`_.
+  - Added the ``with assuming(*facts)`` context manager for new assumptions.  See `blogpost <https://web.archive.org/web/20181111092915/https://matthewrocklin.com/blog/work/2013/02/05/Assuming>`_.
 
 Compatibility breaks
 ====================
