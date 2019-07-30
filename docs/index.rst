@@ -1,7 +1,7 @@
 Diofant's documentation
 =======================
 
-.. image:: https://mybinder.org/badge_logo.svg
+.. image:: https://static.mybinder.org/badge_logo.svg
     :target: https://mybinder.org/v2/gh/diofant/diofant/master
 
 `Diofant <https://diofant.readthedocs.io/en/latest/>`_ is a Python
