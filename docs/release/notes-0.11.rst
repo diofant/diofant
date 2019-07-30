@@ -29,6 +29,7 @@ Compatibility breaks
 * Change order of keyword arguments for :meth:`~diofant.polys.rings.PolyElement.integrate`, see :pull:`834`.
 * Removed support for ``dps=''`` in :class:`~diofant.core.numbers.Float`.  Significant digits automatically counted for :class:`int` and :class:`str` inputs, see :pull:`797`.
 * Removed ``numer/denom`` properties of :class:`~diofant.polys.fields.FracElement`, see :pull:`851`.
+* Removed ``is_hermitian/is_antihermitian`` core properties, see :pull:`873`.
 
 Minor changes
 =============

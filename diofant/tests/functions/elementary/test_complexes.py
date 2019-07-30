@@ -526,15 +526,6 @@ def test_arg_rewrite():
 
 
 def test_adjoint():
-    a = Symbol('a', antihermitian=True)
-    b = Symbol('b', hermitian=True)
-    assert adjoint(a) == -a
-    assert adjoint(I*a) == I*a
-    assert adjoint(b) == b
-    assert adjoint(I*b) == -I*b
-    assert adjoint(a*b) == -b*a
-    assert adjoint(I*a*b) == I*b*a
-
     x, y = symbols('x y')
     assert adjoint(adjoint(x)) == x
     assert adjoint(x + y) == adjoint(x) + adjoint(y)

@@ -413,15 +413,8 @@ class Add(AssocOp):
     def _eval_is_complex(self):
         return _fuzzy_group((a.is_complex for a in self.args), quick_exit=True)
 
-    def _eval_is_antihermitian(self):
-        return _fuzzy_group((a.is_antihermitian for a in self.args),
-                            quick_exit=True)
-
     def _eval_is_finite(self):
         return _fuzzy_group((a.is_finite for a in self.args), quick_exit=True)
-
-    def _eval_is_hermitian(self):
-        return _fuzzy_group((a.is_hermitian for a in self.args), quick_exit=True)
 
     def _eval_is_integer(self):
         return _fuzzy_group((a.is_integer for a in self.args), quick_exit=True)
