@@ -116,6 +116,12 @@ autodoc_inherit_docstrings = False
 # _static directory.
 html_static_path = ['_static']
 
+# These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
+html_css_files = [
+    'custom.css',
+]
+
 # A list of paths that contain extra files not directly related to the
 # documentation, such as robots.txt or .htaccess.  Relative paths are taken
 # as relative to the configuration directory.  They are copied to the
@@ -143,8 +149,3 @@ mathjax_config = {
     'HTML-CSS': {'linebreaks': {'automatic': True}},
     'SVG': {'linebreaks': {'automatic': True}},
 }
-
-
-# https://docs.readthedocs.io/en/latest/guides/adding-custom-css.html
-def setup(app):
-    app.add_stylesheet('custom.css')
