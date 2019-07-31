@@ -1260,35 +1260,6 @@ def test_Mul_is_imaginary_real():
     assert (b*nr).is_extended_real is None
 
 
-def test_Mul_hermitian_antihermitian():
-    a = Symbol('a', hermitian=True, zero=False)
-    b = Symbol('b', hermitian=True)
-    c = Symbol('c', hermitian=False)
-    d = Symbol('d', antihermitian=True)
-    e1 = Mul(a, b, c, evaluate=False)
-    e2 = Mul(b, a, c, evaluate=False)
-    e3 = Mul(a, b, c, d, evaluate=False)
-    e4 = Mul(b, a, c, d, evaluate=False)
-    e5 = Mul(a, c, evaluate=False)
-    e6 = Mul(a, c, d, evaluate=False)
-    assert e1.is_hermitian is None
-    assert e2.is_hermitian is None
-    assert e1.is_antihermitian is None
-    assert e2.is_antihermitian is None
-    assert e3.is_antihermitian is None
-    assert e4.is_antihermitian is None
-    assert e5.is_antihermitian is None
-    assert e6.is_antihermitian is None
-
-    z = Symbol('z', zero=True)
-    e = Symbol('e', antihermitian=True, finite=True)
-    assert (z*e).is_antihermitian is False
-    assert (z*e).is_hermitian is True
-    A = Symbol('A', hermitian=True, commutative=False)
-    B = Symbol('B', hermitian=True, commutative=False)
-    assert (A*B).is_hermitian is None
-
-
 def test_Add_is_comparable():
     assert (x + y).is_comparable is False
     assert (x + 1).is_comparable is False

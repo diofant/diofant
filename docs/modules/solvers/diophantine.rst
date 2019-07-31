@@ -316,7 +316,7 @@ References
 * Diophantine Equation, Wolfram Mathworld, [online]. Available:
   http://mathworld.wolfram.com/DiophantineEquation.html
 * Methods to solve Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0,[online],
-  Available: https://www.alpertron.com.ar/METHODS.HTM
+  Available: https://web.archive.org/web/20181231080858/https://www.alpertron.com.ar/METHODS.HTM
 * Solving the equation ax^2+ bxy + cy^2 + dx + ey + f= 0, [online],
   Available: https://web.archive.org/web/20180831180321/http://www.jpr2718.org/ax2p.pdf
 

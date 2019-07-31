@@ -56,8 +56,8 @@ _assume_rules = FactRules([
     'real           ==  extended_real & finite',
     'rational       ->  algebraic',
     'algebraic      ->  complex',
-    'real           ->  complex & hermitian',
-    'imaginary      ->  complex & antihermitian',
+    'real           ->  complex',
+    'imaginary      ->  complex',
     'complex        ->  finite & commutative',
     'extended_real  ->  commutative',
     'extended_real  ->  real | infinite',
@@ -321,10 +321,6 @@ References
     """Test if self can have only positive values.""",
     'nonpositive':
     """Test if self can have only nonpositive values.""",
-    'hermitian':
-    """Test if self belongs to the field of hermitian operators.""",
-    'antihermitian':
-    """Test if self belongs to the field of antihermitian operators.""",
 }
 
 

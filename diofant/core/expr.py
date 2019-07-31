@@ -704,13 +704,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return c(self)
 
     def _eval_transpose(self):
-        from ..functions.elementary.complexes import conjugate
         if self.is_complex or self.is_extended_real:
             return self
-        elif self.is_hermitian:
-            return conjugate(self)
-        elif self.is_antihermitian:
-            return -conjugate(self)
 
     def transpose(self):
         """Transpose self.
@@ -726,10 +721,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
     def _eval_adjoint(self):
         from ..functions.elementary.complexes import conjugate, transpose
-        if self.is_hermitian:
-            return self
-        elif self.is_antihermitian:
-            return -self
         obj = self._eval_conjugate()
         if obj is not None:
             return transpose(obj)

@@ -1980,7 +1980,7 @@ class Permutation(Basic):
         References
         ==========
 
-        [1] https://www.cp.eng.chula.ac.th/~piak/teaching/algo/algo2008/count-inv.htm
+        * https://www.cp.eng.chula.ac.th/~prabhas//teaching/algo/algo2008/count-inv.htm
 
         Examples
         ========

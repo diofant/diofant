@@ -57,7 +57,7 @@ latex_engine = 'xelatex'
 latex_use_xindy = False
 
 # This value determines how to group the document tree into LaTeX source
-# files. It must be a list of tuples (startdocname, targetname, title,
+# files.  It must be a list of tuples (startdocname, targetname, title,
 # author, documentclass, toctree_only),
 latex_documents = [('index', 'diofant.tex', 'Diofant Documentation',
                     'Diofant Development Team', 'manual', True)]
@@ -111,10 +111,22 @@ linkcheck_ignore = [r'https://primes.utm.edu/notes/gaps.html',
 # set, is inherited form parents.
 autodoc_inherit_docstrings = False
 
-# A list of paths that contain custom static files. Relative paths are taken as
-# relative to the configuration directory. They are copied to the output’s
+# A list of paths that contain custom static files.  Relative paths are taken as
+# relative to the configuration directory.  They are copied to the output’s
 # _static directory.
 html_static_path = ['_static']
+
+# These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
+html_css_files = [
+    'custom.css',
+]
+
+# A list of paths that contain extra files not directly related to the
+# documentation, such as robots.txt or .htaccess.  Relative paths are taken
+# as relative to the configuration directory.  They are copied to the
+# output directory. They will overwrite any existing file of the same name.
+html_extra_path = ['robots.txt']
 
 # Should we show "Created using Sphinx" in the HTML footer?
 html_show_sphinx = False
@@ -130,13 +142,10 @@ html_theme_options = {
     'display_version': False,
 }
 
+# The inline configuration options for mathjax.  The value is used as
+# a parameter of MathJax.Hub.Config().
 mathjax_config = {
     'CommonHTML': {'linebreaks': {'automatic': True}},
     'HTML-CSS': {'linebreaks': {'automatic': True}},
     'SVG': {'linebreaks': {'automatic': True}},
 }
-
-
-# https://docs.readthedocs.io/en/latest/guides/adding-custom-css.html
-def setup(app):
-    app.add_stylesheet('custom.css')

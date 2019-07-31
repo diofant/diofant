@@ -1034,38 +1034,6 @@ class Mul(AssocOp):
         else:
             return obj.is_real
 
-    def _eval_is_hermitian(self):
-        hermitian = True
-        one_nc = zero = False
-
-        for t in self.args:
-            if not t.is_commutative:
-                if one_nc:
-                    return
-                one_nc = True
-
-            if t.is_antihermitian or t.is_hermitian:
-                if t.is_antihermitian:
-                    hermitian = not hermitian
-                z = t.is_zero
-                if not z and zero is False:
-                    zero = z
-                elif z:
-                    if self.is_finite:
-                        return True
-                    return
-            else:
-                return
-
-        if zero is False or hermitian:
-            return hermitian
-
-    def _eval_is_antihermitian(self):
-        if self.is_zero:
-            return False
-        elif self.is_nonzero:
-            return (I*self).is_hermitian
-
     def _eval_is_irrational(self):
         for t in self.args:
             a = t.is_irrational

@@ -11,8 +11,6 @@ from diofant.abc import x, y, z
 __all__ = ()
 
 A, B, C = symbols("A B C", commutative=False)
-X = symbols("X", commutative=False, hermitian=True)
-Y = symbols("Y", commutative=False, antihermitian=True)
 
 
 def test_adjoint():
@@ -22,16 +20,6 @@ def test_adjoint():
     assert adjoint(A*B**2) == adjoint(B)**2*adjoint(A)
     assert adjoint(A*B - B*A) == adjoint(B)*adjoint(A) - adjoint(A)*adjoint(B)
     assert adjoint(A + I*B) == adjoint(A) - I*adjoint(B)
-
-    assert adjoint(X) == X
-    assert adjoint(-I*X) == I*X
-    assert adjoint(Y) == -Y
-    assert adjoint(-I*Y) == -I*Y
-
-    assert adjoint(X) == conjugate(transpose(X))
-    assert adjoint(Y) == conjugate(transpose(Y))
-    assert adjoint(X) == transpose(conjugate(X))
-    assert adjoint(Y) == transpose(conjugate(Y))
 
     assert adjoint(2**x) == 2**adjoint(x)
     assert adjoint(x**pi) == adjoint(x**pi, evaluate=False)
@@ -123,13 +111,6 @@ def test_transpose():
     assert transpose(A*B - B*A) == \
         transpose(B)*transpose(A) - transpose(A)*transpose(B)
     assert transpose(A + I*B) == transpose(A) + I*transpose(B)
-
-    assert transpose(X) == conjugate(X)
-    assert transpose(-I*X) == -I*conjugate(X)
-    assert transpose(Y) == -conjugate(Y)
-    assert transpose(-I*Y) == I*conjugate(Y)
-
-    assert transpose(X**pi) == transpose(X**pi, evaluate=False)
 
 
 def test_trigsimp():
