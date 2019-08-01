@@ -2402,13 +2402,9 @@ def test_intervals():
     assert intervals(x) == [((0, 0), 1)]
 
     assert intervals(x**128) == [((0, 0), 128)]
-    assert intervals([x**2, x**4]) == [((0, 0), {0: 2, 1: 4})]
-    assert intervals([x**2, x**4], eps=0.1) == [((0, 0), {0: 2, 1: 4})]
 
-    pytest.raises(MultivariatePolynomialError,
-                  lambda: intervals([x**2 - y, x*y + 1]))
+    pytest.raises(MultivariatePolynomialError, lambda: intervals(x**2 - y))
     pytest.raises(MultivariatePolynomialError, lambda: Poly(x**2 - y).intervals())
-    pytest.raises(ValueError, lambda: intervals([x**2, x**4], eps=-0.1))
 
     f = Poly((2*x/5 - Rational(17, 3))*(4*x + Rational(1, 257)))
 
@@ -2448,17 +2444,7 @@ def test_intervals():
          ((-1, -1), 1), ((-1, 0), 3),
          ((1, Rational(3, 2)), 1), ((Rational(3, 2), 2), 7)]
 
-    assert intervals([x**5 - 200, x**5 - 201]) == \
-        [((Rational(75, 26), Rational(101, 35)), {0: 1}), ((Rational(309, 107), Rational(26, 9)), {1: 1})]
-
-    assert intervals([x**5 - 200, x**5 - 201]) == \
-        [((Rational(75, 26), Rational(101, 35)), {0: 1}), ((Rational(309, 107), Rational(26, 9)), {1: 1})]
-
-    assert intervals([x**2 - 200, x**2 - 201]) == \
-        [((-Rational(71, 5), -Rational(85, 6)), {1: 1}), ((-Rational(85, 6), -14), {0: 1}),
-         ((14, Rational(85, 6)), {0: 1}), ((Rational(85, 6), Rational(71, 5)), {1: 1})]
-
-    f, g, h = x**2 - 2, x**4 - 4*x**2 + 4, x - 1
+    f, g = x**2 - 2, x**4 - 4*x**2 + 4
 
     assert intervals(f, inf=Rational(7, 4), sqf=True) == []
     assert intervals(f, inf=Rational(7, 5), sqf=True) == [(Rational(7, 5), Rational(3, 2))]
@@ -2469,17 +2455,6 @@ def test_intervals():
     assert intervals(g, inf=Rational(7, 5)) == [((Rational(7, 5), Rational(3, 2)), 2)]
     assert intervals(g, sup=Rational(7, 4)) == [((-2, -1), 2), ((1, Rational(3, 2)), 2)]
     assert intervals(g, sup=Rational(7, 5)) == [((-2, -1), 2)]
-
-    assert intervals([g, h], inf=Rational(7, 4)) == []
-    assert intervals([g, h], inf=Rational(7, 5)) == [((Rational(7, 5), Rational(3, 2)), {0: 2})]
-    assert intervals([g, h], sup=Rational(7, 4)) == [((-2, -1), {0: 2}), ((1, 1), {1: 1}), ((1, Rational(3, 2)), {0: 2})]
-    assert intervals(
-        [g, h], sup=Rational(7, 5)) == [((-2, -1), {0: 2}), ((1, 1), {1: 1})]
-
-    assert intervals([x + 2, x**2 - 2]) == \
-        [((-2, -2), {0: 1}), ((-2, -1), {1: 1}), ((1, 2), {1: 1})]
-    assert intervals([x + 2, x**2 - 2], strict=True) == \
-        [((-2, -2), {0: 1}), ((-Rational(3, 2), -1), {1: 1}), ((1, 2), {1: 1})]
 
     f = 7*z**4 - 19*z**3 + 20*z**2 + 17*z + 20
 
@@ -2502,15 +2477,6 @@ def test_intervals():
 
     pytest.raises(ValueError, lambda: intervals(x**2 - 2, eps=10**-100000))
     pytest.raises(ValueError, lambda: Poly(x**2 - 2).intervals(eps=10**-100000))
-    pytest.raises(
-        ValueError, lambda: intervals([x**2 - 2, x**2 - 3], eps=10**-100000))
-
-
-@pytest.mark.xfail
-def test_intervals_xfail():
-    assert intervals([x + 1, x + 2, x - 1, x + 1, 1, x - 1, x - 1, (x - 2)**2]) == \
-        [((-2, -2), {1: 1}), ((-1, -1), {0: 1, 3: 1}),
-         ((1, 1), {2: 1, 5: 1, 6: 1}), ((2, 2), {7: 2})]
 
 
 def test_refine_root():

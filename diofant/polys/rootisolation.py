@@ -493,7 +493,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None):
     if K.is_ComplexAlgebraicField and not K.is_RealAlgebraicField:
         A, K = K, K.domain
         polys = [dmp_eval_in(_, K.zero, 1, 1, K) for _ in dup_real_imag(f, A)]
-        roots = dup_isolate_real_roots_list(polys, K, eps=eps, inf=inf, sup=sup, strict=True)
+        roots = dup_isolate_real_roots_pair(*polys, K, eps=eps, inf=inf, sup=sup, strict=True)
         return [(_[0], _[1][0]) for _ in roots if _[1].keys() == {0, 1}]
 
     _, factors = dmp_sqf_list(f, 0, K)
@@ -508,7 +508,7 @@ def dup_isolate_real_roots(f, K, eps=None, inf=None, sup=None):
         return sorted(I_neg + I_zero + I_pos)
 
 
-def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=False, basis=False):
+def dup_isolate_real_roots_pair(f, g, K, eps=None, inf=None, sup=None, strict=False, basis=False):
     """Isolate real roots of a list of polynomials."""
     R, K = K, K.field
 
@@ -520,6 +520,7 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
     else:
         zeros = False
 
+    polys = [f, g]
     gcd = []
 
     for i, p in enumerate(polys):
@@ -533,9 +534,6 @@ def dup_isolate_real_roots_list(polys, K, eps=None, inf=None, sup=None, strict=F
         gcd = dmp_gcd(gcd, polys[i], 0, K)
 
     polys = [dmp_quo(p, gcd, 0, K) for p in polys]
-
-    if len(polys) != 2:
-        raise NotImplementedError
 
     factors = collections.defaultdict(dict)
 
@@ -1178,15 +1176,10 @@ def _get_rectangle(f1, f2, F, inf, sup, exclude=None):
     f1L4 = dmp_eval_in(f1, u, 0, 1, F)
     f2L4 = dmp_eval_in(f2, u, 0, 1, F)
 
-    S_L1 = [f1L1, f2L1]
-    S_L2 = [f1L2, f2L2]
-    S_L3 = [f1L3, f2L3]
-    S_L4 = [f1L4, f2L4]
-
-    I_L1 = dup_isolate_real_roots_list(S_L1, F, inf=u, sup=s, basis=True, strict=True)
-    I_L2 = dup_isolate_real_roots_list(S_L2, F, inf=v, sup=t, basis=True, strict=True)
-    I_L3 = dup_isolate_real_roots_list(S_L3, F, inf=u, sup=s, basis=True, strict=True)
-    I_L4 = dup_isolate_real_roots_list(S_L4, F, inf=v, sup=t, basis=True, strict=True)
+    I_L1 = dup_isolate_real_roots_pair(f1L1, f2L1, F, inf=u, sup=s, basis=True, strict=True)
+    I_L2 = dup_isolate_real_roots_pair(f1L2, f2L2, F, inf=v, sup=t, basis=True, strict=True)
+    I_L3 = dup_isolate_real_roots_pair(f1L3, f2L3, F, inf=u, sup=s, basis=True, strict=True)
+    I_L4 = dup_isolate_real_roots_pair(f1L4, f2L4, F, inf=v, sup=t, basis=True, strict=True)
 
     I_L3 = _reverse_intervals(I_L3)
     I_L4 = _reverse_intervals(I_L4)
@@ -1258,7 +1251,7 @@ def _vertical_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
     f1V = dmp_eval_in(f1, x, 0, 1, F)
     f2V = dmp_eval_in(f2, x, 0, 1, F)
 
-    I_V = dup_isolate_real_roots_list([f1V, f2V], F, inf=v, sup=t, strict=True, basis=True)
+    I_V = dup_isolate_real_roots_pair(f1V, f2V, F, inf=v, sup=t, strict=True, basis=True)
 
     I_L1_L, I_L1_R = [], []
     I_L2_L, I_L2_R = I_V, I_L2
@@ -1365,7 +1358,7 @@ def _horizontal_bisection(N, a, b, I, Q, F1, F2, f1, f2, F):
     f1H = dmp_eval_in(f1, y, 1, 1, F)
     f2H = dmp_eval_in(f2, y, 1, 1, F)
 
-    I_H = dup_isolate_real_roots_list([f1H, f2H], F, inf=u, sup=s, strict=True, basis=True)
+    I_H = dup_isolate_real_roots_pair(f1H, f2H, F, inf=u, sup=s, strict=True, basis=True)
 
     I_L1_B, I_L1_U = I_L1, I_H
     I_L2_B, I_L2_U = [], []
