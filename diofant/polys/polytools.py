@@ -4488,43 +4488,12 @@ def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, sqf=Fals
     [((-26/15, -19/11), 1), ((19/11, 26/15), 1)]
 
     """
-    if not hasattr(F, '__iter__'):
-        try:
-            F = Poly(F)
-        except GeneratorsNeeded:
-            return []
+    try:
+        F = Poly(F)
+    except GeneratorsNeeded:
+        return []
 
-        return F.intervals(all=all, eps=eps, inf=inf, sup=sup, sqf=sqf)
-    else:
-        polys, opt = parallel_poly_from_expr(F, domain='QQ')
-
-        if len(opt.gens) > 1:
-            raise MultivariatePolynomialError
-
-        R = polys[0].rep.ring
-        polys = [p.rep for p in polys]
-
-        if eps is not None:
-            eps = opt.domain.convert(eps)
-
-            if eps <= 0:
-                raise ValueError("'eps' must be a positive rational")
-
-        if inf is not None:
-            inf = opt.domain.convert(inf)
-        if sup is not None:
-            sup = opt.domain.convert(sup)
-
-        intervals = R.dup_isolate_real_roots_list(polys, eps=eps, inf=inf, sup=sup,
-                                                  strict=strict)
-
-        result = []
-
-        for (s, t), indices in intervals:
-            s, t = opt.domain.to_expr(s), opt.domain.to_expr(t)
-            result.append(((s, t), indices))
-
-        return result
+    return F.intervals(all=all, eps=eps, inf=inf, sup=sup, sqf=sqf)
 
 
 def refine_root(f, s, t, eps=None, steps=None, check_sqf=False):
