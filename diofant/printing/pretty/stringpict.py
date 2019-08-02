@@ -1,4 +1,5 @@
 """Prettyprinter by Jurjen Bos.
+
 (I hate spammers: mail me at pietjepuk314 at the reverse of ku.oc.oohay).
 All objects have a method that create a "stringPict",
 that can be used in the str method for pretty printing.
@@ -10,6 +11,7 @@ Updates by Jason Gedge (email <my last name> at cs mun ca)
 TODO:
     - Allow left/center/right alignment options for above/below and
       top/center/bottom alignment options for left/right
+
 """
 
 from .pretty_symbology import hobj, pretty_use_unicode, vobj, xsym
