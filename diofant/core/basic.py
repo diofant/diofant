@@ -161,7 +161,7 @@ class Basic:
 
     def _repr_latex_(self):
         from ..printing import latex
-        return latex(self, mode='equation')
+        return latex(self, mode='equation*')
 
     def atoms(self, *types):
         """Returns the atoms that form the current object.
