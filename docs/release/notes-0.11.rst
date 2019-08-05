@@ -101,3 +101,6 @@ These Sympy issues also were addressed:
 * :sympyissue:`17034` isqrt gives incorrect results
 * :sympyissue:`17044` is_square gives incorrect answers
 * :sympyissue:`10996` Bug in polynomial GCD computation
+* :sympyissue:`15282` Works too long on some limits with big powers
+* :sympyissue:`16722` limit(binomial(n + z, n)*n**-z, n, oo) gives different answers based on assumptions of n and z
+* :sympyissue:`15673` Wrong results. (Limit, Integral, sphere(Space polar coordinates))

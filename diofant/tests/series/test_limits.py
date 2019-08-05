@@ -3,8 +3,8 @@ import itertools
 import pytest
 
 from diofant import (E, Float, Function, I, Integral, Limit, Matrix, Piecewise,
-                     PoleError, Rational, Sum, Symbol, acos, atan, cbrt,
-                     ceiling, cos, cot, diff, digamma, erf, erfi, exp,
+                     PoleError, Rational, Sum, Symbol, acos, atan, binomial,
+                     cbrt, ceiling, cos, cot, diff, digamma, erf, erfi, exp,
                      factorial, floor, gamma, integrate, limit, log, nan, oo,
                      pi, polygamma, root, sign, simplify, sin, sinh, sqrt,
                      subfactorial, symbols, tan)
@@ -655,3 +655,31 @@ def test_sympyissue_16222():
 def test_sympyissue_16714():
     e = ((n**(n + 1) + (n + 1)**n)/n**(n + 1))**n
     assert limit(e, n, oo) == E**E
+
+
+@pytest.mark.timeout(20)
+def test_sympyissue_15282():
+    assert limit((x**2000 - (x + 1)**2000)/x**1999, x, oo) == -2000
+
+
+def test_sympyissue_16722():
+    n, z = symbols('n z')
+    assert isinstance(limit(binomial(n + z, n)*n**-z, n, oo), Limit)
+
+    z = symbols('z', positive=True)
+    assert limit(binomial(n + z, n)*n**-z, n, oo) == 1/gamma(z + 1)
+
+    n = symbols('n', positive=True, integer=True)
+    z = symbols('z', positive=True)
+    assert isinstance(limit(binomial(n + z, n)*n**-z, n, oo), Limit)
+
+    n, z = symbols('n z', positive=True, integer=True)
+    assert isinstance(limit(binomial(n + z, n)*n**-z, n, oo), Limit)
+
+
+def test_sympyissue_15673():
+    p = symbols('p')
+    alpha = symbols('α', positive=True)
+
+    e = Limit(4*pi*p**(-alpha)*(p**3 - p**alpha)/(alpha - 3), p, 0)
+    assert isinstance(e.doit(), Limit)  # but see diofant/diofant#425
