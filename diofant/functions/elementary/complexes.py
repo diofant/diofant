@@ -97,6 +97,10 @@ class re(Function):
     def _eval_is_algebraic(self):
         return self.args[0].is_algebraic
 
+    def _eval_is_real(self):
+        if self.args[0].is_complex:
+            return True
+
 
 class im(Function):
     """Returns imaginary part of expression.
@@ -188,6 +192,10 @@ class im(Function):
 
     def _eval_is_algebraic(self):
         return self.args[0].is_algebraic
+
+    def _eval_is_real(self):
+        if self.args[0].is_complex:
+            return True
 
 
 ###############################################################################
