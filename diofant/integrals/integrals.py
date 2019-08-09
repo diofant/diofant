@@ -483,7 +483,7 @@ class Integral(AddWithLimits):
                 if len(xab) >= 2:
                     if (any(b.is_extended_real for b in xab[1:]) and
                             not any(b.is_extended_real is False for b in xab[1:])):
-                        r = Dummy('r', extended_real=True)
+                        r = Dummy('r', real=True)
                         function = function.subs({xab[0]: r})
                         function = function.rewrite(Piecewise)
                         function = function.subs({r: xab[0]})
