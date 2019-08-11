@@ -61,7 +61,6 @@ def test_heaviside():
     assert Heaviside(nan) == nan
 
     assert Heaviside(x).is_real
-    assert Heaviside(z).is_real is None
 
     assert adjoint(Heaviside(x)) == Heaviside(x)
     assert adjoint(Heaviside(x - y)) == Heaviside(x - y)
