@@ -104,3 +104,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`15282` Works too long on some limits with big powers
 * :sympyissue:`16722` limit(binomial(n + z, n)*n**-z, n, oo) gives different answers based on assumptions of n and z
 * :sympyissue:`15673` Wrong results. (Limit, Integral, sphere(Space polar coordinates))
+* :sympyissue:`17380` Incorrect results given by some limit expressions

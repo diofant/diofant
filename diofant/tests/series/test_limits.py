@@ -683,3 +683,7 @@ def test_sympyissue_15673():
 
     e = Limit(4*pi*p**(-alpha)*(p**3 - p**alpha)/(alpha - 3), p, 0)
     assert isinstance(e.doit(), Limit)  # but see diofant/diofant#425
+
+
+def test_sympyissue_17380():
+    assert limit(x*(((x + 1)**2 + 1)/(x**2 + 1) - 1), x, oo) == 2
