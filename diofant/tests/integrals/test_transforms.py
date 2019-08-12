@@ -143,6 +143,7 @@ def test_mellin_transform():
 
 @pytest.mark.slow
 def test_mellin_transform_bessel():
+    a, b = symbols('a, b', complex=True)
     MT = mellin_transform
 
     # 8.4.19
