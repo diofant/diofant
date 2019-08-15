@@ -7,12 +7,12 @@ from diofant.concrete import Sum
 from diofant.core import (Catalan, Derivative, Dummy, E, Eq, EulerGamma,
                           Function, Gt, Integer, Lambda, Le, Ne, Rational,
                           Tuple, oo, pi, symbols)
-from diofant.functions import (Heaviside, Max, Min, Piecewise, acos, asin,
-                               asinh, atan, atanh, binomial, conjugate, cos,
-                               cosh, cot, coth, csch, erfc, exp, factorial,
-                               factorial2, fibonacci, gamma, hyper, im, log,
-                               meijerg, polygamma, polylog, re, rf, sech, sign,
-                               sin, sinh, tan, tanh, zeta)
+from diofant.functions import (Heaviside, Max, Min, Piecewise, acos, acosh,
+                               acot, acoth, asin, asinh, atan, atanh, binomial,
+                               conjugate, cos, cosh, cot, coth, csch, erfc,
+                               exp, factorial, factorial2, fibonacci, gamma,
+                               hyper, im, log, meijerg, polygamma, polylog, re,
+                               rf, sech, sign, sin, sinh, tan, tanh, zeta)
 from diofant.integrals import Integral
 from diofant.logic import Or, false, true
 from diofant.matrices import Matrix, SparseMatrix
@@ -69,10 +69,15 @@ def test_Function():
     assert mcode(asin(x)) == "ArcSin[x]"
     assert mcode(acos(x)) == "ArcCos[x]"
     assert mcode(atan(x)) == "ArcTan[x]"
+    assert mcode(acot(x)) == "ArcCot[x]"
     assert mcode(sinh(x)) == "Sinh[x]"
     assert mcode(cosh(x)) == "Cosh[x]"
     assert mcode(tanh(x)) == "Tanh[x]"
     assert mcode(coth(x)) == "Coth[x]"
+    assert mcode(asinh(x)) == "ArcSinh[x]"
+    assert mcode(acosh(x)) == "ArcCosh[x]"
+    assert mcode(atanh(x)) == "ArcTanh[x]"
+    assert mcode(acoth(x)) == "ArcCoth[x]"
     assert mcode(sech(x)) == "Sech[x]"
     assert mcode(csch(x)) == "Csch[x]"
     assert mcode(erfc(x)) == "Erfc[x]"
@@ -85,11 +90,9 @@ def test_Function():
     assert mcode(rf(x, y)) == "Pochhammer[x, y]"
     assert mcode(gamma(x)) == "Gamma[x]"
     assert mcode(zeta(x)) == "Zeta[x]"
-    assert mcode(asinh(x)) == "ArcSinh[x]"
     assert mcode(Heaviside(x)) == "UnitStep[x]"
     assert mcode(fibonacci(x)) == "Fibonacci[x]"
     assert mcode(polylog(x, y)) == "PolyLog[x, y]"
-    assert mcode(atanh(x)) == "ArcTanh[x]"
 
     class myfunc1(Function):
         @classmethod

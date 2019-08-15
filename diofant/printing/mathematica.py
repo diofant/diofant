@@ -19,10 +19,15 @@ known_functions = {
     "asin": [(lambda x: True, "ArcSin")],
     "acos": [(lambda x: True, "ArcCos")],
     "atan": [(lambda x: True, "ArcTan")],
+    "acot": [(lambda x: True, "ArcCot")],
     "sinh": [(lambda x: True, "Sinh")],
     "cosh": [(lambda x: True, "Cosh")],
     "tanh": [(lambda x: True, "Tanh")],
     "coth": [(lambda x: True, "Coth")],
+    "asinh": [(lambda x: True, "ArcSinh")],
+    "acosh": [(lambda x: True, "ArcCosh")],
+    "atanh": [(lambda x: True, "ArcTanh")],
+    "acoth": [(lambda x: True, "ArcCoth")],
     "sech": [(lambda x: True, "Sech")],
     "csch": [(lambda x: True, "Csch")],
     "sign": [(lambda x: True, "Sign")],
@@ -40,12 +45,10 @@ known_functions = {
     "factorial2": [(lambda *x: True, "Factorial2")],
     "RisingFactorial": [(lambda x, k: True, "Pochhammer")],
     "gamma": [(lambda x: True, "Gamma")],
-    "asinh": [(lambda x: True, "ArcSinh")],
     "zeta": [(lambda x: True, "Zeta")],
     "Heaviside": [(lambda x: True, "UnitStep")],
     "fibonacci": [(lambda x: True, "Fibonacci")],
     "polylog": [(lambda x, y: True, "PolyLog")],
-    "atanh": [(lambda x: True, "ArcTanh")],
 }
 
 
