@@ -140,10 +140,12 @@ class Limit(Expr):
 
         use_heuristics = hints.get('heuristics', True)
 
-        has_Floats = e.has(Float)
+        has_Floats = e.has(Float) or z0.has(Float)
         if has_Floats:
             e = e.subs({k: Rational(k) for k in e.atoms(Float)},
                        simultaneous=True)
+            z0 = z0.subs({k: Rational(k) for k in z0.atoms(Float)},
+                         simultaneous=True)
 
         if z0.has(z):
             newz = z.as_dummy()
