@@ -687,3 +687,14 @@ def test_sympyissue_15673():
 
 def test_sympyissue_17380():
     assert limit(x*(((x + 1)**2 + 1)/(x**2 + 1) - 1), x, oo) == 2
+
+
+def test_sympyissue_17431():
+    assert limit(((n + 1) + 1)/(((n + 1) + 2)*factorial(n + 1)) *
+                 (n + 2)*factorial(n)/(n + 1), n, oo) == 0
+    assert limit((n + 2)**2*factorial(n)/((n + 1)*(n + 3)*factorial(n + 1)),
+                 n, oo) == 0
+
+    # test from sympy/sympy#17434 (see also diofant/diofant#425):
+    y = symbols('y', integer=True, positive=True)
+    assert isinstance(limit(x*factorial(x)/factorial(x + y), x, oo), Limit)
