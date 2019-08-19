@@ -919,6 +919,16 @@ class acosh(Function):
         """Returns the inverse of this function."""
         return cosh
 
+    def _eval_rewrite_as_log(self, x):
+        return log(x + sqrt(x - 1)*sqrt(x + 1))
+
+    def _eval_nseries(self, x, n, logx):
+        x0 = self.args[0].limit(x, 0)
+        if x0 == 1:
+            return self._eval_rewrite_as_log(self.args[0])._eval_nseries(x, n, logx)
+        else:
+            return super()._eval_nseries(x, n, logx)
+
 
 class atanh(Function):
     """
