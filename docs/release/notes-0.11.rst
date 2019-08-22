@@ -106,3 +106,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`15673` Wrong results. (Limit, Integral, sphere(Space polar coordinates))
 * :sympyissue:`17380` Incorrect results given by some limit expressions
 * :sympyissue:`17431` Wrong results. (Limit, factorial, Power)
+* :sympyissue:`17492` Add link to GitHub in the Sphinx documentation

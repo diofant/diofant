@@ -9,6 +9,9 @@
 # removed automatically).
 #
 
+import inspect
+import os
+import sys
 import warnings
 
 import diofant
@@ -18,7 +21,7 @@ import diofant
 warnings.simplefilter('error', UserWarning)
 
 # Add any Sphinx extension module names here, as strings.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax',
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.linkcode', 'sphinx.ext.mathjax',
               'sphinx.ext.graphviz', 'sphinx.ext.intersphinx',
               'sphinx.ext.extlinks', 'sphinx.ext.napoleon',
               'sphinxcontrib.bibtex']
@@ -149,3 +152,57 @@ mathjax_config = {
     'HTML-CSS': {'linebreaks': {'automatic': True}},
     'SVG': {'linebreaks': {'automatic': True}},
 }
+
+
+def linkcode_resolve(domain, info):
+    """Determine the URL corresponding to Python object. """
+    if domain != 'py':
+        return
+
+    modname = info['module']
+    fullname = info['fullname']
+
+    submod = sys.modules.get(modname)
+    if submod is None:
+        return
+
+    obj = submod
+    for part in fullname.split('.'):
+        try:
+            obj = getattr(obj, part)
+        except Exception:
+            return
+
+    # strip decorators, which would resolve to the source of the decorator
+    # possibly an upstream bug in getsourcefile, bpo-1764286
+    try:
+        unwrap = inspect.unwrap
+    except AttributeError:
+        pass
+    else:
+        obj = unwrap(obj)
+
+    try:
+        fn = inspect.getsourcefile(obj)
+    except Exception:
+        fn = None
+    if not fn:
+        return
+
+    try:
+        source, lineno = inspect.getsourcelines(obj)
+    except Exception:
+        lineno = None
+
+    if lineno:
+        linespec = "#L%d-L%d" % (lineno, lineno + len(source) - 1)
+    else:
+        linespec = ""
+
+    fn = os.path.relpath(fn, start=os.path.dirname(diofant.__file__))
+
+    blobpath = "https://github.com/diofant/diofant/blob/"
+    if 'dev' in version:
+        return blobpath + "master/diofant/%s%s" % (fn, linespec)
+    else:
+        return blobpath + "v%s/diofant/%s%s" % (version, fn, linespec)
