@@ -383,6 +383,7 @@ def test_intractable():
     assert gruntz(gamma(Rational(1, 7) + 1/x), x) == gamma(Rational(1, 7))
     assert gruntz(log(x**x)/log(gamma(x)), x) == 1
     assert gruntz(log(gamma(gamma(x)))/exp(x), x) == oo
+    assert gruntz(acosh(1 + 1/x)*sqrt(x), x) == sqrt(2)
 
     # issue sympy/sympy#10804
     assert gruntz(2*airyai(x)*root(x, 4) *
