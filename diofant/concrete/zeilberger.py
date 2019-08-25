@@ -98,16 +98,21 @@ def zb_recur(F, n, k, J=1):
     >>> from diofant.concrete.zeilberger import zb_recur
     >>> from diofant.abc import n, k, x
     >>> from diofant import binomial
+
     >>> F = binomial(n - k - 1, k)
-    >>> zb_recur(F, n, k, J = 2)
+    >>> zb_recur(F, n, k, J=2)
     ([-1, -1, 1], k*(k - n)/((2*k - n)*(2*k - n - 1)))
+
     Discovering a recurrence for binomial(n, k)**3, the resulting recurrence for
     the sum can't be solved nicely, we don't care to look at G.
+
     >>> F = binomial(n, k)**3
-    >>> zb_recur(F, n, k, J = 2)[0]
+    >>> zb_recur(F, n, k, J=2)[0]
     [-2, -(7*n**2 + 21*n + 16)/(4*(n + 1)**2), (n + 2)**2/(4*(n + 1)**2)]
+
     F may have other symbols than n and k, here we discover the sum from k = 0 to n to be
     x / (x + n).
+
     >>> F = (-1)**k * binomial(n, k) / binomial(x + k, k)
     >>> zb_recur(F, n, k)
     ([-n - x, n + x + 1], k*(k + x)/(k - n - 1))
@@ -165,25 +170,32 @@ def zb_sum(F, k_a_b, J=1):
     Examples
     ========
 
-    >>> from sympy.concrete.zeilberger import zb_sum
-    >>> from sympy.core import symbols
-    >>> n = symbols('n', positive = True, integer = True)
+    >>> from diofant.concrete.zeilberger import zb_sum
+    >>> from diofant import binomial, symbols
+
+    >>> n = symbols('n', positive=True, integer=True)
     >>> k, x = symbols('k, x')
-    >>> from sympy import binomial
     >>> F = (-1)**k * binomial(x - k + 1, k) * binomial(x - 2 * k, n - k)
-    >>> zb_sum(F, (k, 0, n), J = 2)[0]
+
+    >>> zb_sum(F, (k, 0, n), J=2)[0]
     (-1)**n/2 + 1/2
+
     Rediscovering the binomial formula
+
     >>> F = binomial(n, k) * x**k
     >>> zb_sum(F, (k, 0, n))[0]
     (x + 1)**n
+
     Here F doesn't vanish for k > n
+
     >>> F = binomial(n + k, k) / 2**k
     >>> zb_sum(F, (k, 0, n))[0]
     2**n
+
     Here we need a large J
+
     >>> F = binomial(n, 3 * k)
-    >>> zb_sum(F, (k, 0, n), J = 3)[0]
+    >>> zb_sum(F, (k, 0, n), J=3)[0]
     2**n/3 + (1/2 - sqrt(3)*I/2)**n/3 + (1/2 + sqrt(3)*I/2)**n/3
 
     """
@@ -221,7 +233,7 @@ def zb_sum(F, k_a_b, J=1):
 
     initial = {f(i): sum(F.subs([(n, i), (k, a.subs({n: i}) + j)])
                          for j in range(b.subs({n: i}) - a.subs({n: i}) + 1))
-               for i in range(1, J + 2)}
+               for i in range(1, J + 1)}
 
     vanishes = (combsimp(F.subs({k: b + 1})) == 0) and _vanishes(F, b, n, k)
     if vanishes:

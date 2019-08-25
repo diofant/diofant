@@ -2,10 +2,10 @@ import pytest
 
 from diofant import (Abs, And, Catalan, Derivative, E, Eq, EulerGamma, Float,
                      Function, I, Integer, Integral, KroneckerDelta, Le, Mod,
-                     Ne, Or, Piecewise, Product, Rational, Sum, Symbol,
-                     binomial, cos, exp, factorial, gamma, harmonic, log,
-                     lowergamma, nan, oo, pi, product, simplify, sin, sqrt,
-                     summation, symbols, sympify, zeta)
+                     Piecewise, Product, Rational, Sum, Symbol, binomial, cos,
+                     exp, factorial, gamma, harmonic, log, lowergamma, nan, oo,
+                     pi, product, simplify, sin, sqrt, summation, symbols,
+                     sympify, zeta)
 from diofant.abc import a, b, c, d, k, m, x, y, z
 from diofant.concrete.summations import telescopic
 
@@ -874,10 +874,7 @@ def test_sympyissue_2787():
     binomial_dist = binomial(n, k)*p**k*(1 - p)**(n - k)
     s = Sum(binomial_dist*k, (k, 0, n))
     res = s.doit().simplify()
-    assert res == Piecewise(
-        (n*p, And(Or(-n + 1 < 0, Ne(p/(p - 1), 1)), p/Abs(p - 1) <= 1)),
-        (Sum(k*p**k*(-p + 1)**(-k)*(-p + 1)**n*binomial(n, k), (k, 0, n)),
-         True))
+    assert res == n*p
 
 
 def test_sympyissue_4668():

@@ -1,5 +1,5 @@
-from diofant import (binomial, combsimp, factorial, gamma, pi, simplify, sqrt,
-                     summation, symbols)
+from diofant import (binomial, combsimp, factorial, gamma, pi, rf, simplify,
+                     sqrt, summation, symbols)
 from diofant.abc import i, j, k, r, x, y
 from diofant.concrete.zeilberger import zb_recur, zb_sum
 
@@ -45,9 +45,9 @@ def test_zb_sum():
 
     R_1 = 0
     R_2 = 2**n
-    R_3 = gamma(n + 1)*gamma(x + 1)/gamma(n + x + 1)
-    R_4 = 4**n*gamma(n + 1/2)/(sqrt(pi)*gamma(n + 1))
-    R_5 = 4*2**(2*n - 3)*gamma(n + 1/2)/gamma(n - 1/2)
+    R_3 = factorial(n)*factorial(x)/factorial(n + x)
+    R_4 = 4**n*factorial(n - 1/2)/(sqrt(pi)*factorial(n))
+    R_5 = 4**n*gamma(n + 1/2)/gamma(n - 1/2)/2
     R_6 = x/(n + x)
 
     assert combsimp(zb_sum(F_1, (k, 0, n), J=2)[0]) == R_1
@@ -63,7 +63,7 @@ def test_new_summation():
     F_2 = binomial(x, k) * binomial(y, n - k)
 
     R_1 = 2**n
-    R_2 = (-1)**n*gamma(n - x - y)/(gamma(n + 1)*gamma(-x - y))
+    R_2 = (-1)**n*rf(-x - y, n)/factorial(n)
 
     assert summation(F_1, (k, 0, n)) == R_1
     assert summation(F_2, (k, 0, n)) == R_2
