@@ -12,8 +12,6 @@ __all__ = ()
 def test_gosper_normal():
     assert gosper_normal(4*n + 5, 2*(4*n + 1)*(2*n + 3), n) == \
         (Poly(Rational(1, 4), n), Poly(n + Rational(3, 2)), Poly(n + Rational(1, 4)))
-    assert gosper_normal(4*n + 5, 2*(4*n + 1)*(2*n + 3), n, polys=False) == \
-        (Rational(1, 4), n + Rational(3, 2), n + Rational(1, 4))
 
 
 def test_gosper_term():
@@ -43,8 +41,11 @@ def test_gosper_sum():
     assert gosper_sum((
         -1)**k*binomial(n, k), (k, 0, m)) == -(-1)**m*(m - n)*binomial(n, m)/n
 
-    assert gosper_sum((4*k + 1)*factorial(k)/factorial(2*k + 1), (k, 0, n)) == \
-        (2*factorial(2*n + 1) - factorial(n))/factorial(2*n + 1)
+    f = (4*k + 1)*factorial(k)/factorial(2*k + 1)
+    assert gosper_sum(f, (k, 0, n)) == (2*factorial(2*n + 1) -
+                                        factorial(n))/factorial(2*n + 1)
+    assert gosper_sum(f, (k, 3, n)) == (-60*factorial(n) +
+                                        factorial(2*n + 1))/(60*factorial(2*n + 1))
 
     # issue sympy/sympy#6033:
     assert gosper_sum(
