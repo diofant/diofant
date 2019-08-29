@@ -2,7 +2,7 @@
 
 from ..core import Dummy, Integer, nan, symbols
 from ..core.compatibility import is_sequence
-from ..polys import Poly, factor, parallel_poly_from_expr
+from ..polys import factor, parallel_poly_from_expr
 from ..simplify import hypersimp
 from ..solvers import solve
 
@@ -34,8 +34,9 @@ def gosper_normal(f, g, n, polys=True):
     Examples
     ========
 
-    >>> gosper_normal(4*n + 5, 2*(4*n + 1)*(2*n + 3), n, polys=False)
-    (1/4, n + 3/2, n + 1/4)
+    >>> gosper_normal(4*n + 5, 2*(4*n + 1)*(2*n + 3), n)
+    (Poly(1/4, n, domain='QQ'), Poly(n + 3/2, n, domain='QQ'),
+     Poly(n + 1/4, n, domain='QQ'))
 
     """
     (p, q), opt = parallel_poly_from_expr((f, g), n, field=True)
@@ -56,14 +57,7 @@ def gosper_normal(f, g, n, polys=True):
         for j in range(1, i + 1):
             C *= d.shift(-j)
 
-    A *= Z
-
-    if not polys:
-        A = A.as_expr()
-        B = B.as_expr()
-        C = C.as_expr()
-
-    return A, B, C
+    return A*Z, B, C
 
 
 def gosper_term(f, n):
@@ -111,29 +105,24 @@ def gosper_term(f, n):
             D.remove(d)
 
     if not D:
-        return  # 'f(n)' is *not* Gosper-summable
+        return
 
     d = max(D)
 
     coeffs = symbols('c:%s' % (d + 1), cls=Dummy)
     domain = A.domain.inject(*coeffs)
 
-    x = Poly(coeffs, n, domain=domain)
+    x = sum(c*n**i for i, c in enumerate(reversed(coeffs)))
+    x = x.as_poly(n, domain=domain)
     H = A*x.shift(1) - B*x - C
 
     solution = solve(H.coeffs(), coeffs)
     if solution:
         solution = solution[0]
 
-    x = x.as_expr().subs(solution)
+    x = x.as_expr().subs(solution).subs({_: 0 for _ in coeffs})
 
-    for coeff in coeffs:
-        if coeff not in solution:
-            x = x.subs({coeff: 0})
-
-    if x == 0:
-        return  # 'f(n)' is *not* Gosper-summable
-    else:
+    if x != 0:
         return B.as_expr()*x/C.as_expr()
 
 
@@ -152,17 +141,8 @@ def gosper_sum(f, k):
     Examples
     ========
 
-    >>> from diofant.abc import i
-
-    >>> f = (4*k + 1)*factorial(k)/factorial(2*k + 1)
-    >>> gosper_sum(f, (k, 0, n))
+    >>> gosper_sum((4*k + 1)*factorial(k)/factorial(2*k + 1), (k, 0, n))
     (-factorial(n) + 2*factorial(2*n + 1))/factorial(2*n + 1)
-    >>> _.subs({n: 2}) == sum(f.subs({k: i}) for i in [0, 1, 2])
-    True
-    >>> gosper_sum(f, (k, 3, n))
-    (-60*factorial(n) + factorial(2*n + 1))/(60*factorial(2*n + 1))
-    >>> _.subs({n: 5}) == sum(f.subs({k: i}) for i in [3, 4, 5])
-    True
 
     References
     ==========
@@ -188,9 +168,6 @@ def gosper_sum(f, k):
         result = (f*(g + 1)).subs({k: b}) - (f*g).subs({k: a})
 
         if result is nan:
-            try:
-                result = (f*(g + 1)).limit(k, b) - (f*g).limit(k, a)
-            except NotImplementedError:  # pragma: no cover
-                result = None
+            result = (f*(g + 1)).limit(k, b) - (f*g).limit(k, a)
 
     return factor(result)
