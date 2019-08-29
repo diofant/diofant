@@ -256,6 +256,7 @@ def test_lambdify_matrix_vec_input():
     assert numpy.allclose(actual, expected)
 
 
+@pytest.mark.skipif(sys.version_info >= (3, 8), reason="Broken on 3.8")
 def test_lambdify_transl():
     for sym, mat in NUMPY_TRANSLATIONS.items():
         assert sym in dir(diofant)
