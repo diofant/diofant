@@ -325,6 +325,7 @@ and
 Hence
 
 .. math ::
+    \begin{aligned}
     res_{s = b + l_u + t} =& -z^{b + l_u}
        \frac{(-1)^{l_u}}{l_u!}
        \prod_{i=1}^{u} \frac{(-1)^{\delta_i}}{(l_u - k_i + 1)_{\delta_i}}
@@ -340,6 +341,7 @@ Hence
              \prod_{j=n+1}^p (-1)^t (l_u + b + 1 - a_j)_t^*}
             {\prod_{j=1}^m (-1)^t (l_u + b + 1 - b_j)_t^*
              \prod_{j=m+1}^q (1 - b_j + l_u + b)_t},
+    \end{aligned}
 
 where the `*` means to omit the terms we treated specially.
 
@@ -426,11 +428,13 @@ We get these functions mainly by guessing and testing the result. Hence
 we proceed by computing `f(g(w))` (and simplifying naively)
 
 .. math ::
+   \begin{aligned}
    f(g(w)) &= -\frac{\pi^2 g(w)^4}{16} \\
            &= -\frac{\pi^2 g\left(\frac{2}{\sqrt{\pi}} \exp\left(\frac{i \pi}{4}\right) w^{\frac{1}{4}}\right)^4}{16} \\
            &= -\frac{\pi^2 \frac{2^4}{\sqrt{\pi}^4} \exp\left(\frac{i \pi}{4}\right)^4 {w^{\frac{1}{4}}}^4}{16} \\
            &= -\exp\left(i \pi\right) w \\
            &= w
+   \end{aligned}
 
 and indeed get back `w`. (In case of branched functions we have to be
 aware of branch cuts. In that case we take `w` to be a positive real
