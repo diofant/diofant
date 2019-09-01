@@ -907,3 +907,9 @@ def test_sympyissue_16530():
     e = 1/abs(x)
     assert e.is_real is None
     assert e.is_extended_real is None
+
+
+def test_sympyissue_17555():
+    x = Symbol('x', infinite=True, extended_real=True)
+    assert x.is_positive is None
+    assert (-x).is_positive is None

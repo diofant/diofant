@@ -107,3 +107,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`17380` Incorrect results given by some limit expressions
 * :sympyissue:`17431` Wrong results. (Limit, factorial, Power)
 * :sympyissue:`17492` Add link to GitHub in the Sphinx documentation
+* :sympyissue:`17555` (-x).is_extended_positive fails for extended_real and infinite
