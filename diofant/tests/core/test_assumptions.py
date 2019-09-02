@@ -913,3 +913,9 @@ def test_sympyissue_17555():
     x = Symbol('x', infinite=True, extended_real=True)
     assert x.is_positive is None
     assert (-x).is_positive is None
+
+
+def test_sympyissue_17556():
+    z = I*oo
+    assert z.is_imaginary is False
+    assert z.is_finite is False
