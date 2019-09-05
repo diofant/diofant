@@ -136,6 +136,6 @@ script:
       PYTEST_ADDOPTS="${PYTEST_ADDOPTS} --doctest-modules"
     fi
     python setup.py test
-after_success: test -n "${COVERAGE}" && codecov
+after_success: test -n "${COVERAGE}" && codecov --required
 notifications:
   email: false
