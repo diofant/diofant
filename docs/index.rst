@@ -1,3 +1,6 @@
+.. meta::
+    :google-site-verification: MJQX0mr79AK_SDl4JzriJBKrebj_maVDMKFTpsPhGiU
+
 Diofant's documentation
 =======================
 
