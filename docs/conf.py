@@ -129,7 +129,7 @@ html_css_files = [
 # documentation, such as robots.txt or .htaccess.  Relative paths are taken
 # as relative to the configuration directory.  They are copied to the
 # output directory. They will overwrite any existing file of the same name.
-html_extra_path = ['robots.txt', 'googlef1d0c0c51427e8a4.html']
+html_extra_path = ['robots.txt']
 
 # Should we show "Created using Sphinx" in the HTML footer?
 html_show_sphinx = False
