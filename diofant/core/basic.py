@@ -1,6 +1,7 @@
 """Base class for all the objects in Diofant."""
 
-from collections import Mapping, defaultdict
+from collections import defaultdict
+from collections.abc import Mapping
 from itertools import zip_longest
 
 from .cache import cacheit
