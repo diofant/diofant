@@ -352,6 +352,8 @@ def test_nsimplify():
         assert nsimplify(i) == ans
         assert nsimplify(i + x) == x + ans
 
+    assert nsimplify(Sum(1/n**2, (n, 1, oo)), [pi]) == pi**2/6
+
 
 def test_sympyissue_9448():
     expr = (1/(1 - (-1)**Rational(2, 3) - cbrt(-1)) +
