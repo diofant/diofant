@@ -722,6 +722,10 @@ def test_MatrixSlice():
     assert str(MatrixSymbol('X', 10, 10)[5, :5:2]) == 'X[5, :5:2]'
 
 
+def test_MatrixInverse():
+    assert str(MatrixSymbol('X', 3, 3).inverse()) == 'X^-1'
+
+
 def test_true_false():
     assert str(true) == repr(true) == sstr(true) == "true"
     assert str(false) == repr(false) == sstr(false) == "false"

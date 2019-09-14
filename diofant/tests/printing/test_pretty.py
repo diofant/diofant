@@ -2535,6 +2535,21 @@ x          \n\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
+    expr = Integral((x**4 + x**2*exp(x) - x**2 - 2*x*exp(x) - 2*x -
+                     exp(x))*exp(x)/((x - 1)**2*(x + 1)**2*(exp(x) + 1)))
+
+    ucode_str = \
+        """\
+⌠                                            \n\
+⎮  x ⎛ x  2      x      x    4    2      ⎞   \n\
+⎮ ℯ ⋅⎝ℯ ⋅x  - 2⋅ℯ ⋅x - ℯ  + x  - x  - 2⋅x⎠   \n\
+⎮ ──────────────────────────────────────── dx\n\
+⎮        ⎛ x    ⎞        2        2          \n\
+⎮        ⎝ℯ  + 1⎠⋅(x - 1) ⋅(x + 1)           \n\
+⌡                                            \
+"""
+    assert upretty(expr) == ucode_str
+
 
 def test_pretty_matrix():
     # Empty Matrix
