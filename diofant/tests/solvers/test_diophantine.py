@@ -742,6 +742,7 @@ def test_diopcoverage():
     assert cornacchia(1, 1, 5) == {(2, 1)}
     assert cornacchia(1, 2, 17) == {(3, 2)}
     assert cornacchia(2, 3, 31) == set()
+    assert cornacchia(1, 4, 52) == {(4, 3)}
 
     pytest.raises(ValueError, lambda: reconstruct(4, 20, 1))
 
