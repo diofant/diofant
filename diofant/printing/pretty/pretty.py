@@ -1330,8 +1330,7 @@ class PrettyPrinter(Printer):
         if power.is_commutative and not e.is_Float:
             if e == -1:
                 return prettyForm("1")/self._print(b)
-            n, d = fraction(e)
-            if n == 1 and d.is_Atom and not e.is_Integer:
+            if e.is_Rational and e.numerator == 1 and abs(e.denominator) <= 9:
                 return self._print_nth_root(b, e)
             if e.is_Rational and e < 0:
                 return prettyForm("1")/self._print(Pow(b, -e, evaluate=False))

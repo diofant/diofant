@@ -394,7 +394,7 @@ class LatexPrinter(Printer):
         from ..integrals import Integral
 
         # Treat root(x, n) as special case
-        if expr.exp.is_Rational and abs(expr.exp.numerator) == 1 and expr.exp.denominator != 1:
+        if expr.exp.is_Rational and abs(expr.exp.numerator) == 1 and expr.exp.denominator != 1 and abs(expr.exp.denominator) <= 9:
             base = self._print(expr.base)
             expq = expr.exp.denominator
 
