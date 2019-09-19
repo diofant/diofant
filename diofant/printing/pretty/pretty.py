@@ -1284,20 +1284,21 @@ class PrettyPrinter(Printer):
                 a.append( self._print(Integer(1)) )
             return prettyForm.__mul__(*a)/prettyForm.__mul__(*b)
 
-    # A helper function for _print_Pow to print x**(1/n)
-    def _print_nth_root(self, base, expt):
+    def _print_nth_root(self, base, n):
+        """Helper function to print ``x**(1/n)`` as a root.
+
+        Here ``n`` should be a ``prettyForm``, a string, or something
+        convertible by ``str``.  It should be a single line.
+        """
         bpretty = self._print(base)
+        exp = str(n)
+        if exp == '2':
+            exp = ''
 
         # Construct root sign, start with the \/ shape
         _zZ = xobj('/', 1)
         rootsign = xobj('\\', 1) + _zZ
-        # Make exponent number to put above it
-        if isinstance(expt, Rational):
-            exp = str(expt.denominator)
-            if exp == '2':
-                exp = ''
-        else:
-            exp = str(expt.args[0])
+        # Make exponent to put above it
         exp = exp.ljust(2)
         if len(exp) > 2:
             rootsign = ' '*(len(exp) - 2) + rootsign
@@ -1330,10 +1331,14 @@ class PrettyPrinter(Printer):
         if power.is_commutative and not e.is_Float:
             if e == -1:
                 return prettyForm("1")/self._print(b)
-            if e.is_Rational and e.numerator == 1 and abs(e.denominator) <= 9:
-                return self._print_nth_root(b, e)
             if e.is_Rational and e < 0:
                 return prettyForm("1")/self._print(Pow(b, -e, evaluate=False))
+            # nth root notation for small integer roots and short symbols
+            n, d = fraction(e)
+            if n == 1 and d != 1 and d.is_Atom:
+                dp = self._print(d)
+                if dp.height() == 1 and dp.width() <= 3:
+                    return self._print_nth_root(b, dp)
 
         if b.is_Relational or isinstance(b, Limit):
             return prettyForm(*self._print(b).parens()).__pow__(self._print(e))

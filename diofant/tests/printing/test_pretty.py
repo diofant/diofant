@@ -1773,19 +1773,28 @@ def test_pretty_sqrt():
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = root(2, 1000)
+    expr = root(2, 999)
     ascii_str = \
         """\
-1000___\n\
-  \\/ 2 \
+999___\n\
+ \\/ 2 \
 """
     ucode_str = \
         """\
-1000___\n\
-  ╲╱ 2 \
+999___\n\
+ ╲╱ 2 \
 """
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
+
+    expr = root(2, 1000)
+    ascii_str = \
+        """\
+ 1/1000\n\
+2      \
+"""
+    assert pretty(expr) == ascii_str
+    assert upretty(expr) == ascii_str
 
     expr = sqrt(x**2 + 1)
     ascii_str = \
@@ -1847,11 +1856,11 @@ x ___\n\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = root(2 + (1 + x**2)/(2 + x), 4) + (1 + root(x, 1000))/sqrt(3 + x**2)
+    expr = root(2 + (1 + x**2)/(2 + x), 4) + (1 + root(x, 100))/sqrt(3 + x**2)
     ascii_str = \
         """\
      ____________              \n\
-    /      2        1000___    \n\
+    /      2         100___    \n\
    /      x  + 1      \\/ x  + 1\n\
 4 /   2 + ------  + -----------\n\
 \\/        x + 2        ________\n\
@@ -1861,7 +1870,7 @@ x ___\n\
     ucode_str = \
         """\
      ____________              \n\
-    ╱      2        1000___    \n\
+    ╱      2         100___    \n\
    ╱      x  + 1      ╲╱ x  + 1\n\
 4 ╱   2 + ──────  + ───────────\n\
 ╲╱        x + 2        ________\n\
@@ -5305,3 +5314,43 @@ def test_pretty_Mod():
     assert upretty(Mod(x, 7) + 1) == ucode_str4
     assert pretty(2 * Mod(x, 7)) == ascii_str5
     assert upretty(2 * Mod(x, 7)) == ucode_str5
+
+
+def test_Pow_Eth_root_pith_root():
+    assert pretty(pi**(exp(-1))) == \
+        'E ____\n'\
+        '\\/ pi '
+
+    assert upretty(pi**(exp(-1))) == \
+        'ℯ ___\n'\
+        '╲╱ π '
+
+    assert pretty(pi**(1/pi)) == \
+        'pi____\n'\
+        '\\/ pi '
+
+    assert upretty(pi**(1/pi)) == \
+        'π ___\n'\
+        '╲╱ π '
+
+
+def test_Pow_symbol_short_and_long():
+    assert upretty(pi**(1/EulerGamma)) == \
+        'γ ___\n'\
+        '╲╱ π '
+    assert pretty(pi**(1/EulerGamma)) == \
+        '      1     \n'\
+        '  ----------\n'\
+        '  EulerGamma\n'\
+        'pi          '
+
+    z = Symbol("x_17")
+    assert upretty(7**(1/z)) == \
+        'x₁₇___\n'\
+        ' ╲╱ 7 '
+
+    assert pretty(7**(1/z)) == \
+        '  1  \n'\
+        ' ----\n'\
+        ' x_17\n'\
+        '7    '
