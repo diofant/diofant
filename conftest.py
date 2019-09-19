@@ -11,6 +11,7 @@ import diofant
 collect_ignore = ["setup.py"]
 try:
     import matplotlib
+    matplotlib.rc('figure', max_open_warning=0)
     del matplotlib
 except ImportError:
     collect_ignore.extend(["diofant/plotting/plot.py",

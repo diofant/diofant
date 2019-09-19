@@ -6,7 +6,7 @@ The containers implemented in this module are subclassed to Basic.
 They are supposed to work seamlessly within the Diofant framework.
 """
 
-from collections import Mapping
+from collections.abc import Mapping
 
 from .basic import Basic
 from .compatibility import as_int, iterable

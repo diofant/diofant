@@ -37,6 +37,8 @@ Contributing Code
 All work should be submitted via `Pull Requests (PR)`_.
 
 1. PR can be submitted as soon as there is code worth discussing.
+   Please make a draft PR, if one is not intended to be merged
+   in its present shape even if all checks pass.
 
 2. Please put your work on the branch of your fork, not in the
    master branch.  PR should generally be made against master.
@@ -52,7 +54,10 @@ All work should be submitted via `Pull Requests (PR)`_.
 
 5. PR should include tests:
 
-   1. Bugfixes should include regression tests.
+   1. Bugfixes should include regression tests.  Please format
+      them accordingly, to include references for fixed
+      issues (e.g. by naming test like ``test_diofantissue_123``
+      or adding comment with issue number).
    2. All new functionality should be tested, every new line
       should be covered by tests.
    3. Optionally, provide doctests to illustrate usage.  But keep in
