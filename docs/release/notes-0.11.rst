@@ -31,6 +31,7 @@ Compatibility breaks
 * Removed ``numer/denom`` properties of :class:`~diofant.polys.fields.FracElement`, see :pull:`851`.
 * Removed ``is_hermitian/is_antihermitian`` core properties, see :pull:`873`.
 * :meth:`~diofant.polys.polytools.Poly.intervals` support only scalar arguments, see :pull:`874`.
+* Removed ``print_python()`` function, see :pull:`891`.
 
 Minor changes
 =============

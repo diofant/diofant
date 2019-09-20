@@ -262,7 +262,7 @@ PythonPrinter
 
 This class implements Python printing. Usage::
 
-    >>> print_python(5*x**3 + sin(x))
+    >>> print(python(5*x**3 + sin(x)))
     x = Symbol('x')
     e = 5*x**3 + sin(x)
 
