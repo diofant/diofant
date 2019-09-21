@@ -1,6 +1,6 @@
 """Printing subsystem"""
 
-from .ccode import ccode, print_ccode
+from .ccode import ccode
 from .dot import dotprint
 from .fcode import fcode
 from .latex import latex
