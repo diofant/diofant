@@ -5,14 +5,15 @@ from io import StringIO
 import pytest
 
 from diofant import (FF, QQ, RR, ZZ, Add, And, Basic, Complement, Contains,
-                     Derivative, Dict, Eq, Equivalent, EulerGamma, FiniteSet,
-                     Float, Function, Ge, GoldenRatio, Gt, I, Implies, Integer,
-                     Integral, Intersection, Interval, Lambda, Le, Limit, Lt,
-                     Matrix, MatrixSymbol, Mod, Mul, Nand, Ne, Nor, Not, O, Or,
-                     Pow, Product, Range, Rational, Ray, RealField, RootOf,
-                     RootSum, S, Segment, Subs, Sum, Symbol,
-                     SymmetricDifference, Trace, Tuple, Union, Xor, cbrt,
-                     conjugate, grlex, groebner, ilex, oo, pi, root, symbols)
+                     Derivative, Dict, E, Eq, Equivalent, EulerGamma,
+                     FiniteSet, Float, Function, Ge, GoldenRatio, Gt, I,
+                     Implies, Integer, Integral, Intersection, Interval,
+                     Lambda, Le, Limit, Lt, Matrix, MatrixSymbol, Mod, Mul,
+                     Nand, Ne, Nor, Not, O, Or, Pow, Product, Range, Rational,
+                     Ray, RealField, RootOf, RootSum, S, Segment, Subs, Sum,
+                     Symbol, SymmetricDifference, Trace, Tuple, Union, Xor,
+                     cbrt, conjugate, grlex, groebner, ilex, oo, pi, root,
+                     symbols)
 from diofant.abc import a, b, c, d, e, f, k, l, lamda, m, n, t, w, x, y, z
 from diofant.core.trace import Tr
 from diofant.diffgeom import BaseVectorField
@@ -5320,3 +5321,70 @@ def test_pretty_Mod():
     assert upretty(Mod(x, 7) + 1) == ucode_str4
     assert pretty(2 * Mod(x, 7)) == ascii_str5
     assert upretty(2 * Mod(x, 7)) == ucode_str5
+
+
+def test_Pow_roots():
+    expr = root(pi, E)
+
+    assert pretty(expr) == \
+        """\
+E ____\n\
+\\/ pi \
+"""
+    assert upretty(expr) == \
+        """\
+ℯ ___\n\
+╲╱ π \
+"""
+
+    expr = root(pi, pi)
+
+    assert pretty(expr) == \
+        """\
+pi____\n\
+\\/ pi \
+"""
+    assert upretty(expr) == \
+        """\
+π ___\n\
+╲╱ π \
+"""
+
+    expr = root(7, pi)  # issue diofant/diofant#888
+
+    assert pretty(expr) == \
+        """\
+pi___\n\
+\\/ 7 \
+"""
+    assert upretty(expr) == \
+        """\
+π ___\n\
+╲╱ 7 \
+"""
+
+    expr = root(pi, EulerGamma)
+
+    assert upretty(expr) == \
+        """\
+γ ___\n\
+╲╱ π \
+"""
+    assert pretty(expr) == \
+        """\
+EulerGamma____\n\
+        \\/ pi \
+"""
+
+    expr = root(7, Symbol("x_17"))
+
+    assert upretty(expr) == \
+        """\
+x₁₇___\n\
+ ╲╱ 7 \
+"""
+    assert pretty(expr) == \
+        """\
+x_17___\n\
+  \\/ 7 \
+"""

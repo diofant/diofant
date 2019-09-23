@@ -1292,12 +1292,12 @@ class PrettyPrinter(Printer):
         _zZ = xobj('/', 1)
         rootsign = xobj('\\', 1) + _zZ
         # Make exponent number to put above it
-        if isinstance(expt, Rational):
+        if expt.is_Rational:
             exp = str(expt.denominator)
             if exp == '2':
                 exp = ''
         else:
-            exp = str(expt.args[0])
+            exp = str(self._print(expt.args[0]))
         exp = exp.ljust(2)
         if len(exp) > 2:
             rootsign = ' '*(len(exp) - 2) + rootsign
