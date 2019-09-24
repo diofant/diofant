@@ -118,7 +118,7 @@ matrix:
             tags: true
             condition: "$TRAVIS_TAG =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+.*$"
 before_install:
-  - pip uninstall -y pytest
+  - pip uninstall -y pytest attrs
   - pip install --pre -U gmpy2
 install:
   - |
@@ -126,7 +126,7 @@ install:
     if [ ${TRAVIS_PYTHON_VERSION} == '3.7' ]; then
       INSTALL_DEPS="${INSTALL_DEPS},exports,plot,docs"
     fi
-    travis_wait pip install .[${INSTALL_DEPS}]
+    travis_wait pip install -U .[${INSTALL_DEPS}]
 script:
   - |
     PYTEST_ADDOPTS="${PYTEST_ADDOPTS} --split=${SPLIT}"
