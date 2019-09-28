@@ -51,6 +51,4 @@ jobs:
         pip uninstall -y numpy
         py.test diofant/tests/external
     - name: Upload coverage data
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: codecov --required --verbose
