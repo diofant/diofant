@@ -34,6 +34,17 @@ jobs:
         python setup.py test
         python setup.py build_sphinx -W -b html,latex
         make -C build/sphinx/latex all-pdf
+        pip install wheel
+        python setup.py sdist bdist_wheel
+        export VERSION=$(python -c 'import diofant;print(diofant.__version__)')
+        cp -a build/sphinx/html diofant-docs-html-${VERSION}
+        zip -r dist/diofant-docs-html-${VERSION}.zip diofant-docs-html-${VERSION}
+        cp -a build/sphinx/latex/diofant.pdf dist/diofant-docs-${VERSION}.pdf
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@master
+      with:
+        name: dist
+        path: dist
     - name: Extra tests
       env:
         TERM: xterm
