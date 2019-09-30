@@ -45,17 +45,27 @@ jobs:
       with:
         name: dist
         path: dist
-    - name: Extra tests
-      env:
-        TERM: xterm
-        PYTEST_ADDOPTS: -n auto -m "slow or xfail" --ignore docs
-      run: python setup.py test
     - name: Coverage tests
       env:
         TERM: xterm
         PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
       run: |
         python setup.py test
+        pip uninstall -y gmpy2
+        DIOFANT_GROUND_TYPES='gmpy' py.test diofant/tests/domains
+        py.test diofant/tests/polys
+        pip uninstall -y numpy
+        py.test diofant/tests/external
+    - name: Slow and XFAILed tests
+      env:
+        TERM: xterm
+        PYTEST_ADDOPTS: -n auto -m "slow or xfail" --ignore docs
+      run: python setup.py test
+    - name: Extra coverage tests
+      env:
+        TERM: xterm
+        PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
+      run: |
         pip uninstall -y gmpy2
         DIOFANT_GROUND_TYPES='gmpy' py.test diofant/tests/domains
         py.test diofant/tests/polys
