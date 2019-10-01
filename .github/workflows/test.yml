@@ -73,3 +73,8 @@ jobs:
         py.test diofant/tests/external
     - name: Upload coverage data
       run: codecov --required --verbose
+    - name: Publish package on PyPI
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.pypi_password }}
