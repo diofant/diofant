@@ -32,18 +32,10 @@ matrix:
       env:
         -
       script:
-        - python setup.py build_sphinx -W -b html,latex
-        - make -C build/sphinx/latex all-pdf
+        - python setup.py build_sphinx -W -b html
         - git clone https://github.com/diofant/diofant.github.io.git sphinx_docs
         - rm -rf sphinx_docs/.git
         - rsync -a --delete build/sphinx/html/ sphinx_docs/en/latest/
-        - python setup.py sdist bdist_wheel
-        - VERSION=$(python -c 'import diofant;print(diofant.__version__)')
-        - cp -a dist gdist
-        - cp -a build/sphinx/html diofant-docs-html-${VERSION}
-        - zip -r gdist/diofant-docs-html-${VERSION}.zip diofant-docs-html-${VERSION}
-        - cp -a build/sphinx/latex/diofant.pdf gdist/diofant-docs-${VERSION}.pdf
-        - SHORT_VERSION=$(echo ${VERSION}|sed 's/\([0-9]\+\.[0-9]\+\).*$/\1/')
       deploy:
         - provider: pages
           repo: diofant/diofant.github.io
@@ -54,19 +46,6 @@ matrix:
           keep-history: true
           on:
             branch: master
-        - provider: releases
-          api_key: $GITHUB_TOKEN
-          skip_cleanup: true
-          draft: true
-          file_glob: true
-          file: gdist/*
-          name: "Diofant ${VERSION}"
-          body: "See [release notes](https://diofant.readthedocs.io/\
-                 en/latest/release/notes-${SHORT_VERSION}.html)."
-          prerelease: true
-          on:
-            tags: true
-            condition: "$TRAVIS_TAG =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+.*$"
 before_install:
   - pip uninstall -y pytest attrs
   - pip install --pre -U gmpy2
