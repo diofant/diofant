@@ -1,8 +1,8 @@
 Diofant
 =======
 
-.. image:: https://secure.travis-ci.org/diofant/diofant.svg?branch=master
-   :target: https://travis-ci.org/diofant/diofant
+.. image:: https://github.com/diofant/diofant/workflows/test/badge.svg
+   :target: https://github.com/diofant/diofant/actions?workflow=test
 
 .. image:: https://codecov.io/gh/diofant/diofant/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/diofant/diofant
