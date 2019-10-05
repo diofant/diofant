@@ -100,6 +100,10 @@ def test_vector():
     assert VectorAdd(v1, Vector.zero) == v1
     assert VectorMul(0, Vector.zero) == Vector.zero
 
+    v = (a*b + a*c + b**2 + b*c)*i + j
+
+    assert v.factor() == (a + b)*(b + c)*i + j
+
 
 def test_vector_magnitude_normalize():
     assert Vector.zero.magnitude() == 0

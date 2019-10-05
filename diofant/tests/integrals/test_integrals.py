@@ -381,6 +381,14 @@ def test_evalf_integrals():
 
     assert Integral(pi, (x, y, z)).evalf() == Integral(pi, (x, y, z))
     assert Integral(pi, (x, y, y + z)).evalf() == Integral(pi, (x, y, y + z))
+    #
+    # Endpoints causing trouble (rounding error in integration points -> complex log)
+    assert NS(
+        2 + Integral(log(2*cos(x/2)), (x, -pi, pi)), 17, chop=True) == NS(2, 17)
+    assert NS(
+        2 + Integral(log(2*cos(x/2)), (x, -pi, pi)), 20, chop=True) == NS(2, 20)
+    assert NS(
+        2 + Integral(log(2*cos(x/2)), (x, -pi, pi)), 22, chop=True) == NS(2, 22)
 
 
 @pytest.mark.slow
@@ -411,14 +419,6 @@ def test_evalf_integrals_slow():
     # http://mathworld.wolfram.com/VardisIntegral.html
     assert NS(Integral(log(log(sin(x)/cos(x))), (x, pi/4, pi/2)), 15, chop=True) == \
         NS('pi/4*log(4*pi**3/gamma(1/4)**4)', 15)
-    #
-    # Endpoints causing trouble (rounding error in integration points -> complex log)
-    assert NS(
-        2 + Integral(log(2*cos(x/2)), (x, -pi, pi)), 17, chop=True) == NS(2, 17)
-    assert NS(
-        2 + Integral(log(2*cos(x/2)), (x, -pi, pi)), 20, chop=True) == NS(2, 20)
-    assert NS(
-        2 + Integral(log(2*cos(x/2)), (x, -pi, pi)), 22, chop=True) == NS(2, 22)
     # Needs zero handling
     assert NS(pi - 4*Integral(sqrt(1 - x**2), (x, 0, 1)),
               15, maxn=30, chop=True, strict=False) in ('0.0', '0')

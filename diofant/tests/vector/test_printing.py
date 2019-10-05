@@ -109,6 +109,7 @@ def test_str_printing():
     assert str(d[5]) == 'a*(N.i|N.k) + (-b)*(N.j|N.k)'
     assert str(d[8]) == ('(N.j|N.k) + (C.x**2 - ' +
                          'Integral(f(b), b))*(N.k|N.k)')
+    assert str(N.origin) == 'N.origin'
 
 
 def test_pretty_print_unicode():

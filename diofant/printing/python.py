@@ -32,7 +32,7 @@ class PythonPrinter(ReprPrinter, StrPrinter):
             self.functions.append(func)
         return StrPrinter._print_Function(self, expr)
 
-    # procedure (!) for defining symbols which have be defined in print_python()
+    # procedure (!) for defining symbols which have be defined in python()
     def _print_Symbol(self, expr):
         symbol = self._str(expr)
         if symbol not in self.symbols:
@@ -80,8 +80,3 @@ def python(expr, **settings):
         exprp = expr.subs(renamings)
     result += 'e = ' + printer._str(exprp)
     return result
-
-
-def print_python(expr, **settings):
-    """Print output of python() function"""
-    print(python(expr, **settings))

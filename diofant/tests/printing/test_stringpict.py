@@ -36,3 +36,8 @@ def test_stringpict():
     assert p1 != 0
 
     assert len(p1) == 1
+
+
+def test_dumb_term(capsys):
+    print(pretty(sin(x)))
+    assert capsys.readouterr().out == 'sin(x)\n'

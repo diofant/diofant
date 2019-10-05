@@ -54,11 +54,11 @@ to strings of C code).
 
 Usage::
 
-    >>> print_ccode(sin(x)**2 + cos(x)**2)
+    >>> print(ccode(sin(x)**2 + cos(x)**2))
     pow(sin(x), 2) + pow(cos(x), 2)
-    >>> print_ccode(2*x + cos(x), assign_to="result")
+    >>> print(ccode(2*x + cos(x), assign_to="result"))
     result = 2*x + cos(x);
-    >>> print_ccode(Abs(x**2))
+    >>> print(ccode(Abs(x**2)))
     fabs(pow(x, 2))
 
 .. autoclass:: diofant.printing.ccode.CCodePrinter
@@ -68,8 +68,6 @@ Usage::
 
 
 .. autofunction:: diofant.printing.ccode.ccode
-
-.. autofunction:: diofant.printing.ccode.print_ccode
 
 Fortran Printing
 ----------------
@@ -262,7 +260,7 @@ PythonPrinter
 
 This class implements Python printing. Usage::
 
-    >>> print_python(5*x**3 + sin(x))
+    >>> print(python(5*x**3 + sin(x)))
     x = Symbol('x')
     e = 5*x**3 + sin(x)
 
