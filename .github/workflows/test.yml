@@ -1,0 +1,56 @@
+name: test
+on: [push, pull_request]
+jobs:
+  test:
+    strategy:
+      matrix:
+        python-version: [3.7]
+        os: [ubuntu]
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install libs
+      run: |
+        sudo apt install libmpc-dev libmpfr-dev libgmp-dev
+        sudo apt install libatlas-base-dev liblapack-dev gfortran
+        sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
+                         fonts-freefont-otf latexmk lmodern
+    - name: Install dependencies
+      run: pip install -U .[interactive,develop,gmpy,exports,plot,docs]
+    - name: Linting with flake8 and pylint
+      run: |
+        python -We:invalid -m compileall -f diofant -q
+        python setup.py flake8
+        pylint -j1 diofant
+    - name: Building and testing docs
+      env:
+        TERM: xterm
+        PYTEST_ADDOPTS: -n auto --doctest-modules --ignore diofant/tests
+      run: |
+        python setup.py test
+        python setup.py build_sphinx -W -b html,latex
+        make -C build/sphinx/latex all-pdf
+    - name: Extra tests
+      env:
+        TERM: xterm
+        PYTEST_ADDOPTS: -n auto -m "slow or xfail" --ignore docs
+      run: python setup.py test
+    - name: Coverage tests
+      env:
+        TERM: xterm
+        PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
+      run: |
+        python setup.py test
+        pip uninstall -y gmpy2
+        DIOFANT_GROUND_TYPES='gmpy' py.test diofant/tests/domains
+        py.test diofant/tests/polys
+        pip uninstall -y numpy
+        py.test diofant/tests/external
+    - name: Upload coverage data
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      run: codecov --required --verbose
