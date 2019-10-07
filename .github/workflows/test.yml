@@ -58,10 +58,16 @@ jobs:
         py.test diofant/tests/polys
         pip uninstall -y numpy
         py.test diofant/tests/external
-    - name: Slow and XFAILed tests
+    - name: Slow tests
       env:
         TERM: xterm
-        PYTEST_ADDOPTS: -n auto -m "slow or xfail" --ignore docs
+        PYTEST_ADDOPTS: -n auto -m "slow and not xfail" --ignore docs
+      run: python setup.py test
+    - name: XFAILed tests
+      if: github.event_name == 'push'
+      env:
+        TERM: xterm
+        PYTEST_ADDOPTS: -n auto -m "xfail" --ignore docs
       run: python setup.py test
     - name: Extra coverage tests
       env:
