@@ -1154,6 +1154,9 @@ def test_Pow_is_zero():
     n = Symbol('n', nonzero=True)
     assert Pow(n, oo).is_zero is None
 
+    e = Symbol('e', nonpositive=True)
+    assert Pow(0, e).is_zero is False
+
 
 def test_Pow_is_nonpositive_nonnegative():
     x = Symbol('x', extended_real=True)

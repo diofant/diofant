@@ -34,11 +34,19 @@ jobs:
         python setup.py test
         python setup.py build_sphinx -W -b html,latex
         make -C build/sphinx/latex all-pdf
-    - name: Extra tests
-      env:
-        TERM: xterm
-        PYTEST_ADDOPTS: -n auto -m "slow or xfail" --ignore docs
-      run: python setup.py test
+        pip install wheel
+        python setup.py sdist bdist_wheel
+        export VERSION=$(python -c 'import diofant;print(diofant.__version__)')
+        echo ::set-env VERSION=${VERSION}
+        echo ::set-env SHORT_VERSION=$(echo ${VERSION}|sed 's/\([0-9]\+\.[0-9]\+\).*$/\1/')
+        cp -a build/sphinx/html diofant-docs-html-${VERSION}
+        zip -r dist/diofant-docs-html-${VERSION}.zip diofant-docs-html-${VERSION}
+        cp -a build/sphinx/latex/diofant.pdf dist/diofant-docs-${VERSION}.pdf
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@master
+      with:
+        name: dist
+        path: dist
     - name: Coverage tests
       env:
         TERM: xterm
@@ -50,7 +58,43 @@ jobs:
         py.test diofant/tests/polys
         pip uninstall -y numpy
         py.test diofant/tests/external
-    - name: Upload coverage data
+    - name: Slow tests
       env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        TERM: xterm
+        PYTEST_ADDOPTS: -n auto -m "slow and not xfail" --ignore docs
+      run: python setup.py test
+    - name: XFAILed tests
+      if: github.event_name == 'push'
+      env:
+        TERM: xterm
+        PYTEST_ADDOPTS: -n auto -m "xfail" --ignore docs
+      run: python setup.py test
+    - name: Extra coverage tests
+      env:
+        TERM: xterm
+        PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
+      run: |
+        pip uninstall -y gmpy2
+        DIOFANT_GROUND_TYPES='gmpy' py.test diofant/tests/domains
+        py.test diofant/tests/polys
+        pip uninstall -y numpy
+        py.test diofant/tests/external
+    - name: Upload coverage data
       run: codecov --required --verbose
+    - name: Publish package on PyPI
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.pypi_password }}
+    - name: Publish on Github Releases
+      uses: softprops/action-gh-release@v1
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        files: dist/*
+        draft: true
+        prerelease: true
+        name: "Diofant ${VERSION}"
+        body: "See [release notes](https://diofant.readthedocs.io/\
+               en/latest/release/notes-${SHORT_VERSION}.html)."
