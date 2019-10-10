@@ -53,6 +53,10 @@ def plot_and_save(name):
 
     pytest.raises(ValueError, lambda: plot_implicit(y > x, (x, -1, 1, 2)))
 
+    # issue sympy/sympy#17719
+    plot_implicit(((x - 1)**2 + y**2 < 2) ^ ((x + 1)**2 + y**2 < 2),
+                  show=False).save(tmp_file(name))
+
 
 def test_line_color():
     x, y = symbols('x, y')
