@@ -688,7 +688,7 @@ def test_Add_is_algebraic():
 
 def test_Mul_is_algebraic():
     a = Symbol('a', algebraic=True)
-    b = Symbol('a', algebraic=True)
+    b = Symbol('b', algebraic=True)
     na = Symbol('na', algebraic=False)
     an = Symbol('an', algebraic=True, nonzero=True)
     nb = Symbol('nb', algebraic=False)
