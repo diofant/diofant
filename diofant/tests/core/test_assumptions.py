@@ -708,12 +708,14 @@ def test_Pow_is_algebraic():
     assert Pow(0, e, evaluate=False).is_algebraic
 
     a = Symbol('a', algebraic=True)
+    an = Symbol('an', algebraic=True, nonzero=True)
     na = Symbol('na', algebraic=False)
     ia = Symbol('ia', algebraic=True, irrational=True)
     ib = Symbol('ib', algebraic=True, irrational=True)
     r = Symbol('r', rational=True, nonzero=True)
     x = Symbol('x')
-    assert (a**r).is_algebraic
+    assert (an**r).is_algebraic
+    assert (a**r**2).is_algebraic
     assert (a**x).is_algebraic is None
     assert (na**r).is_algebraic is False
     assert (ia**r).is_algebraic
@@ -731,6 +733,11 @@ def test_Pow_is_algebraic():
     n = Symbol('n', integer=True)
     assert (t**n).is_algebraic is None
     assert (t**n).is_integer is None
+
+    i = Symbol('i', integer=True)
+    p = 1/(i - 1)
+    assert p.is_algebraic is None
+    assert p.is_finite is None  # issue sympy/sympy#17453
 
 
 def test_Mul_is_infinite():
