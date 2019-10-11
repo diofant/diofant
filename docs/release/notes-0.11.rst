@@ -110,3 +110,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`17492` Add link to GitHub in the Sphinx documentation
 * :sympyissue:`17555` (-x).is_extended_positive fails for extended_real and infinite
 * :sympyissue:`17556` Mul.is_imaginary fails for infinite values
+* :sympyissue:`17453` Pow._eval_is_ error
+* :sympyissue:`17719` plot_implicit error for Xor

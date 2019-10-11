@@ -132,6 +132,10 @@ class NumPyPrinter(LambdaPrinter):
         # version of the function and add 'logical_or' to NUMPY_TRANSLATIONS.
         return functools.reduce(lambda x, y: 'logical_or({0}, {1})'.format(self._print(x), self._print(y)), expr.args)
 
+    def _print_Xor(self, expr):
+        """Logical Xor printer"""
+        return functools.reduce(lambda x, y: 'logical_xor({0}, {1})'.format(self._print(x), self._print(y)), expr.args)
+
     def _print_Not(self, expr):
         """Logical Not printer"""
         # We have to override LambdaPrinter because it uses Python 'not' keyword.

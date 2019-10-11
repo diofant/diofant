@@ -1705,10 +1705,12 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
                 else:
                     return Float('-inf')
             else:
-                if other >= 0:
+                if other > 0:
                     return oo
-                else:
+                elif other < 0:
                     return -oo
+                else:
+                    return zoo
         return NotImplemented
 
     def __abs__(self):
@@ -1885,10 +1887,12 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
                 else:
                     return Float('inf')
             else:
-                if other >= 0:
+                if other > 0:
                     return -oo
-                else:
+                elif other < 0:
                     return oo
+                else:
+                    return zoo
         return NotImplemented
 
     def __abs__(self):
