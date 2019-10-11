@@ -92,11 +92,6 @@ jobs:
         EXTERNAL_REPOSITORY: diofant/diofant.github.io
         PUBLISH_BRANCH: master
         PUBLISH_DIR: sphinx_docs
-    - name: Publish package on PyPI
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
-      uses: pypa/gh-action-pypi-publish@master
-      with:
-        password: ${{ secrets.pypi_password }}
     - name: Publish on Github Releases
       uses: softprops/action-gh-release@v1
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
@@ -109,3 +104,10 @@ jobs:
         name: "Diofant ${VERSION}"
         body: "See [release notes](https://diofant.readthedocs.io/\
                en/latest/release/notes-${SHORT_VERSION}.html)."
+    - name: Cleanup extra artifacts from dist
+      run: rm -f dist/*.pdf dist/*.zip
+    - name: Publish package on PyPI
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.pypi_password }}
