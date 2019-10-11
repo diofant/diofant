@@ -85,7 +85,7 @@ jobs:
     - name: Upload coverage data
       run: codecov --required --verbose
     - name: Upload docs to Github Pages
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      if: github.event_name == 'push'
       uses: peaceiris/actions-gh-pages@v2.5.0
       env:
         ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
