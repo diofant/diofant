@@ -34,6 +34,9 @@ jobs:
         python setup.py test
         python setup.py build_sphinx -W -b html,latex
         make -C build/sphinx/latex all-pdf
+        git clone https://github.com/diofant/diofant.github.io.git sphinx_docs
+        rm -rf sphinx_docs/.git
+        rsync -a --delete build/sphinx/html/ sphinx_docs/en/latest/
         pip install wheel
         python setup.py sdist bdist_wheel
         export VERSION=$(python -c 'import diofant;print(diofant.__version__)')
@@ -81,6 +84,14 @@ jobs:
         py.test diofant/tests/external
     - name: Upload coverage data
       run: codecov --required --verbose
+    - name: Upload docs to Github Pages
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      uses: peaceiris/actions-gh-pages@v2.5.0
+      env:
+        ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        EXTERNAL_REPOSITORY: diofant/diofant.github.io
+        PUBLISH_BRANCH: master
+        PUBLISH_DIR: sphinx_docs
     - name: Publish package on PyPI
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@master
