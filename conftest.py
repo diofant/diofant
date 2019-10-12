@@ -30,26 +30,6 @@ ground types: %s
 """ % (diofant.core.cache.USE_CACHE, diofant.core.compatibility.GROUND_TYPES)
 
 
-def pytest_addoption(parser):
-    parser.addoption("--split", action="store", default="", help="split tests")
-
-
-def pytest_collection_modifyitems(session, config, items):
-    split = config.getoption("--split")
-    if not split:
-        return
-    m = sp.match(split)
-    if not m:
-        raise ValueError("split must be a string of the form a/b "
-                         "where a and b are ints.")
-    i, t = map(int, m.groups())
-    start, end = (i - 1)*len(items)//t, i*len(items)//t
-
-    if i < t:
-        del items[end:]
-    del items[:start]
-
-
 @pytest.fixture(autouse=True, scope='module')
 def file_clear_cache():
     diofant.core.cache.clear_cache()
