@@ -96,7 +96,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.RELEASES_DEPLOY_KEY }}
       with:
         files: dist/*
         draft: true
