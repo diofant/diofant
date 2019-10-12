@@ -94,7 +94,7 @@ jobs:
         PUBLISH_DIR: sphinx_docs
     - name: Publish on Github Releases
       uses: softprops/action-gh-release@v1
-      if: false && github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
