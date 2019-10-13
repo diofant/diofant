@@ -41,8 +41,8 @@ jobs:
         pip install wheel
         python setup.py sdist bdist_wheel
         export VERSION=$(python -c 'import diofant;print(diofant.__version__)')
-        echo ::set-output version=${VERSION}
-        echo ::set-output short_version=$(echo ${VERSION}|sed 's/\([0-9]\+\.[0-9]\+\).*$/\1/')
+        echo ::set-output name=version::${VERSION}
+        echo ::set-output name=short_version::$(echo ${VERSION}|sed 's/\([0-9]\+\.[0-9]\+\).*$/\1/')
         cp -a build/sphinx/html diofant-docs-html-${VERSION}
         zip -r dist/diofant-docs-html-${VERSION}.zip diofant-docs-html-${VERSION}
         cp -a build/sphinx/latex/diofant.pdf dist/diofant-docs-${VERSION}.pdf
