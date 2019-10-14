@@ -571,7 +571,7 @@ class MatrixBase(DefaultPrinting):
                             bn = bn._eval_expand_func()
                         jc[j, i + j] = l**(n - i)*bn
 
-            P, jordan_cells = self.jordan_cells()
+            jordan_cells, P = self.jordan_cells()
             # Make sure jordan_cells matrices are mutable:
             jordan_cells = [MutableMatrix(j) for j in jordan_cells]
             for j in jordan_cells:
@@ -1929,7 +1929,7 @@ class MatrixBase(DefaultPrinting):
         if not self.is_square:
             raise NonSquareMatrixError("Exponentiation is valid only "
                                        "for square matrices")
-        P, cells = self.jordan_cells()
+        cells, P = self.jordan_cells()
 
         def _jblock_exponential(b):
             # This function computes the matrix exponential for one single Jordan block
@@ -3594,13 +3594,12 @@ class MatrixBase(DefaultPrinting):
     def jordan_form(self, calc_transformation=True):
         r"""Return Jordan form J of current matrix.
 
-        Also the transformation P such that
+        Also (if calc_transformation=True) the transformation P such that
 
-            `J = P^{-1} \cdot M \cdot P`
+        .. math::
+            J = P^{-1} \cdot M \cdot P
 
-        and the jordan blocks forming J
-        will be calculated.
-
+        and the jordan blocks forming J will be calculated.
 
         Examples
         ========
@@ -3610,7 +3609,7 @@ class MatrixBase(DefaultPrinting):
         ...        [-3, -1,  3,  3],
         ...        [ 2,  1, -2, -3],
         ...        [-1,  1,  5,  5]])
-        >>> P, J = m.jordan_form()
+        >>> J, P = m.jordan_form()
         >>> J
         Matrix([
         [2, 1, 0, 0],
@@ -3624,25 +3623,29 @@ class MatrixBase(DefaultPrinting):
         jordan_cells
 
         """
-        P, Jcells = self.jordan_cells()
         from . import diag
+        res = self.jordan_cells(calc_transformation=calc_transformation)
+        if calc_transformation:
+            Jcells, P = res
+        else:
+            Jcells = res
         J = diag(*Jcells)
-        return P, type(self)(J)
+        J = type(self)(J)
+        if calc_transformation:
+            return J, P
+        else:
+            return J
 
     def jordan_cells(self, calc_transformation=True):
         r"""Return a list of Jordan cells of current matrix.
         This list shape Jordan matrix J.
 
-        If calc_transformation is specified as False, then transformation P such that
+        If calc_transformation=False, then transformation P such that
 
-              `J = P^{-1} \cdot M \cdot P`
+        .. math::
+            J = P^{-1} \cdot M \cdot P
 
         will not be calculated.
-
-        Notes
-        =====
-
-        Calculation of transformation P is not implemented yet.
 
         Examples
         ========
@@ -3653,7 +3656,7 @@ class MatrixBase(DefaultPrinting):
         ...  2,  1, -2, -3,
         ... -1,  1,  5,  5])
 
-        >>> P, Jcells = m.jordan_cells()
+        >>> Jcells, P = m.jordan_cells()
         >>> Jcells[0]
         Matrix([
         [2, 1],
@@ -3669,11 +3672,12 @@ class MatrixBase(DefaultPrinting):
         jordan_form
 
         """
+        from . import MutableMatrix
+
         n = self.rows
         Jcells = []
         Pcols_new = []
         jordan_block_structures = self._jordan_block_structure()
-        from . import MutableMatrix
 
         # Order according to default_sort_key, this makes sure the order is the same as in .diagonalize():
         for eigenval in (sorted(jordan_block_structures, key=default_sort_key)):
@@ -3690,11 +3694,14 @@ class MatrixBase(DefaultPrinting):
                     for j in range(lc):
                         generalized_eigen_vector = chain_vectors[j]
                         Pcols_new.append(generalized_eigen_vector)
-        P = MutableMatrix.zeros(n)
-        for j in range(n):
-            P[:, j] = Pcols_new[j]
 
-        return type(self)(P), Jcells
+        if calc_transformation:
+            P = MutableMatrix.zeros(n)
+            for j in range(n):
+                P[:, j] = Pcols_new[j]
+            return Jcells, type(self)(P)
+        else:
+            return Jcells
 
     def has(self, *patterns):
         """Test whether any subexpression matches any of the patterns.

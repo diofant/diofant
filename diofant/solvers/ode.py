@@ -7308,7 +7308,7 @@ def _linear_neq_order1_type1(match_):
     L = Matrix(n, n, lambda i, j: -fc[i, func[j], 0])
 
     A = M.inv()*L
-    T, JJ = A.jordan_cells()
+    JJ, T = A.jordan_cells()
     T, Tinv = map(simplify, [T, T.inv()])
 
     expm = Matrix(BlockDiagMatrix(*[(J*t).exp() for J in JJ]))
