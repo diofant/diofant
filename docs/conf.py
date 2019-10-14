@@ -73,6 +73,8 @@ latex_elements = {
 \setmonofont{DejaVu Sans Mono}
 % redefine \LaTeX to be usable in math mode
 \expandafter\def\expandafter\LaTeX\expandafter{\expandafter\text\expandafter{\LaTeX}}
+
+\renewcommand{\baselinestretch}{0}
 '''
 }
 
