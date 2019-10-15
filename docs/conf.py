@@ -78,7 +78,7 @@ latex_elements = {
 % redefine \LaTeX to be usable in math mode
 \expandafter\def\expandafter\LaTeX\expandafter{\expandafter\text\expandafter{\LaTeX}}
 
-\fvset{formatcom=\def\strut{\vphantom{⎟}}}
+\fvset{formatcom=\baselineskip10pt\relax\let\strut\empty}
 '''
 }
 
