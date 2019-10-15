@@ -14,6 +14,8 @@ import os
 import sys
 import warnings
 
+import sphinx.util.texescape
+
 import diofant
 
 
@@ -209,3 +211,7 @@ def linkcode_resolve(domain, info):
         return blobpath + "master/diofant/%s%s" % (fn, linespec)
     else:
         return blobpath + "v%s/diofant/%s%s" % (version, fn, linespec)
+
+
+# monkey-patch sphinx
+del sphinx.util.texescape.tex_replacements[30:]
