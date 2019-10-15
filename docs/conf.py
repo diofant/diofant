@@ -216,4 +216,4 @@ def linkcode_resolve(domain, info):
 
 
 # monkey-patch sphinx
-del sphinx.util.texescape.tex_replacements[30:]
+del sphinx.util.texescape.tex_replacements[29:]
