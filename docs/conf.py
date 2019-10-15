@@ -14,6 +14,8 @@ import os
 import sys
 import warnings
 
+import sphinx.util.texescape
+
 import diofant
 
 
@@ -67,12 +69,16 @@ latex_documents = [('index', 'diofant.tex', 'Diofant Documentation',
 
 # A dictionary that contains LaTeX snippets that override predefined.
 latex_elements = {
-    'preamble':  r'''
+    'fontpkg': r'''
 \setmainfont{DejaVu Serif}
 \setsansfont{DejaVu Sans}
 \setmonofont{DejaVu Sans Mono}
+''',
+    'preamble':  r'''
 % redefine \LaTeX to be usable in math mode
 \expandafter\def\expandafter\LaTeX\expandafter{\expandafter\text\expandafter{\LaTeX}}
+
+\fvset{formatcom=\baselineskip10pt\relax\let\strut\empty}
 '''
 }
 
@@ -207,3 +213,7 @@ def linkcode_resolve(domain, info):
         return blobpath + "master/diofant/%s%s" % (fn, linespec)
     else:
         return blobpath + "v%s/diofant/%s%s" % (version, fn, linespec)
+
+
+# monkey-patch sphinx
+del sphinx.util.texescape.tex_replacements[29:]
