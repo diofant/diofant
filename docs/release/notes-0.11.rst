@@ -114,3 +114,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`17453` Pow._eval_is_ error
 * :sympyissue:`17719` plot_implicit error for Xor
 * :sympyissue:`12386` Latex printer for MutableDenseNDimArray, MutableSparseNDimArray
+* :sympyissue:`12369` Start using spherical_jn from SciPy
