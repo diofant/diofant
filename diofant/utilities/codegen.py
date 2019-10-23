@@ -629,7 +629,10 @@ class CodeGen:
                 try:
                     new_args.append(name_arg_dict[symbol])
                 except KeyError:
-                    new_args.append(InputArgument(symbol))
+                    dims = None
+                    if isinstance(symbol, MatrixSymbol):
+                        dims = tuple((Integer(0), dim - 1) for dim in symbol.shape)
+                    new_args.append(InputArgument(symbol, dimensions=dims))
             arg_list = new_args
 
         return Routine(name, arg_list, return_val, local_vars, global_vars)

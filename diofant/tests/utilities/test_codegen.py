@@ -159,6 +159,20 @@ def test_c_code_argument_order():
     )
     assert source == expected
 
+    p = MatrixSymbol('p', 3, 1)
+    routine = make_routine("test", expr, argument_sequence=[p, x, y])
+    source = get_string(code_gen.dump_c, [routine])
+    expected = (
+        "#include \"file.h\"\n"
+        "#include <math.h>\n"
+        "double test(double *p, double x, double y) {\n"
+        "   double test_result;\n"
+        "   test_result = x + y;\n"
+        "   return test_result;\n"
+        "}\n"
+    )
+    assert source == expected
+
 
 def test_simple_c_header():
     expr = (x + y)*z
