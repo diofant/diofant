@@ -7,6 +7,8 @@ jobs:
         python-version: [3.7]
         os: [ubuntu]
     runs-on: ${{ matrix.os }}-latest
+    env:
+      TERM: xterm
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python ${{ matrix.python-version }}
@@ -28,7 +30,6 @@ jobs:
         pylint -j1 diofant
     - name: Building and testing docs
       env:
-        TERM: xterm
         PYTEST_ADDOPTS: -n auto --doctest-modules --ignore diofant/tests
       id: release
       run: |
@@ -53,24 +54,20 @@ jobs:
         path: dist
     - name: Coverage tests
       env:
-        TERM: xterm
         PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
       run: |
         python setup.py test
     - name: Slow tests
       env:
-        TERM: xterm
         PYTEST_ADDOPTS: -n auto -m "slow and not xfail" --ignore docs
       run: python setup.py test
     - name: XFAILed tests
       if: github.event_name == 'push'
       env:
-        TERM: xterm
         PYTEST_ADDOPTS: -n auto -m "xfail" --ignore docs
       run: python setup.py test
     - name: Extra coverage tests
       env:
-        TERM: xterm
         PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
       run: |
         pip uninstall -y gmpy2

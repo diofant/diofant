@@ -665,7 +665,7 @@ def jn_zeros(n, k, method="diofant", dps=15):
     This returns an array of zeros of jn up to the k-th zero.
 
     * method = "diofant": uses mpmath's function ``besseljzero``
-    * method = "scipy": uses :func:`scipy.special.jn_zeros`.
+    * method = "scipy": uses :func:`scipy.special.spherical_jn`.
       and :func:`scipy.optimize.newton` to find all
       roots, which is faster than computing the zeros using a general
       numerical solver, but it requires SciPy and only works with low
@@ -694,13 +694,7 @@ def jn_zeros(n, k, method="diofant", dps=15):
                 for l in range(1, k + 1)]
     elif method == "scipy":
         from scipy.optimize import newton
-        try:
-            from scipy.special import spherical_jn
-        except ImportError:  # pragma: no cover
-            from scipy.special import sph_jn
-
-            def spherical_jn(n, x):
-                return sph_jn(n, x)[0][-1]
+        from scipy.special import spherical_jn
 
         def f(x):
             return spherical_jn(n, x)

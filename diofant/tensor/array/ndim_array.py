@@ -3,10 +3,11 @@ import collections
 from ...core import Expr, Integer, sympify
 from ...logic import true
 from ...matrices import MatrixBase
+from ...printing.defaults import DefaultPrinting
 from ..indexed import Indexed
 
 
-class NDimArray:
+class NDimArray(DefaultPrinting):
     """N-dim array.
 
     Examples

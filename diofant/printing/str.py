@@ -484,6 +484,9 @@ class StrPrinter(Printer):
 
     _print_ImmutableSparseNDimArray = _print_ImmutableDenseNDimArray
 
+    _print_MutableDenseNDimArray = _print_ImmutableDenseNDimArray
+    _print_MutableSparseNDimArray = _print_ImmutableDenseNDimArray
+
     def _print_Integer(self, expr):
         return str(expr.numerator)
 
