@@ -40,6 +40,7 @@ Minor changes
 * Support truncation for elements of :class:`~diofant.domains.RealAlgebraicField` to :class:`int`, see :pull:`788`.
 * :class:`~diofant.matrices.Matrix`'s and :class:`~diofant.tensor.array.Array`'s support symbolic indexes, see :pull:`785`.  Thanks to Francesco Bonazzi.
 * Added ``AA_FACTOR_METHOD`` configuration option to specify factorization algorithm for polynomials with algebraic coefficients, see :pull:`844`.
+* :class:`~diofant.utilities.codegen.CCodeGen` got support for common subexpression replacement, see :pull:`893`.  Thanks to James Cotton.
 
 Developer changes
 =================
