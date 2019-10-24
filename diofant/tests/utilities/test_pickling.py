@@ -86,6 +86,7 @@ __all__ = ()
 half = Rational(1, 2)
 ø = S.EmptySet
 ℕ = S.Naturals0
+Id = Lambda(x, x)
 
 
 def check(a, exclude=[], check_attr=True):
