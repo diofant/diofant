@@ -191,10 +191,9 @@ class Limit(Expr):
                 else:
                     newe = e.subs({z: z0 - 1/z})
 
-            if not z.is_positive or not z.is_finite:
-                # We need a fresh variable here to simplify expression further.
-                newz = Dummy(z.name, positive=True, finite=True)
-                newe = newe.subs({z: newz})
+            # We need a fresh variable with correct assumptions.
+            newz = Dummy(z.name, positive=True, finite=True)
+            newe = newe.subs({z: newz})
 
             r = limitinf(newe, newz)
         except (PoleError, ValueError, NotImplementedError):

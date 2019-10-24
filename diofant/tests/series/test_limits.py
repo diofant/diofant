@@ -671,10 +671,10 @@ def test_sympyissue_16722():
 
     n = symbols('n', positive=True, integer=True)
     z = symbols('z', positive=True)
-    assert isinstance(limit(binomial(n + z, n)*n**-z, n, oo), Limit)
+    assert limit(binomial(n + z, n)*n**-z, n, oo) == 1/gamma(z + 1)
 
     n, z = symbols('n z', positive=True, integer=True)
-    assert isinstance(limit(binomial(n + z, n)*n**-z, n, oo), Limit)
+    assert limit(binomial(n + z, n)*n**-z, n, oo) == 1/gamma(z + 1)
 
 
 def test_sympyissue_15673():
@@ -698,3 +698,8 @@ def test_sympyissue_17431():
     # test from sympy/sympy#17434 (see also diofant/diofant#425):
     y = symbols('y', integer=True, positive=True)
     assert isinstance(limit(x*factorial(x)/factorial(x + y), x, oo), Limit)
+
+
+def test_sympyissue_17792():
+    n = Symbol('n', positive=True, integer=True)
+    assert limit(factorial(n)/sqrt(n)*(E/n)**n, n, oo) == sqrt(2*pi)
