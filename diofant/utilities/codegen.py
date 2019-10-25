@@ -95,7 +95,7 @@ from ..tensor import Idx, Indexed, IndexedBase
 __all__ = (
     # description of routines
     "Routine", "DataType", "default_datatypes", "get_default_datatype",
-    "Argument", "InputArgument", "Result",
+    "Argument", "InputArgument", "OutputArgument", "Result",
     # routines -> code
     "CodeGen", "CCodeGen", "FCodeGen", "OctaveCodeGen",
     # friendly functions
@@ -143,8 +143,9 @@ class Routine:
             Results and OutputArguments and when you should use each is
             language-specific.
 
-        local_vars : list of Symbols
-            These are used internally by the routine.
+        local_vars : list of Results
+            These are variables that will be defined at the beginning of the
+            function.
 
         global_vars : list of Symbols
             Variables which will not be passed into the function.
@@ -170,10 +171,18 @@ class Routine:
                 raise ValueError("Unknown Routine result: %s" % r)
             symbols.update(r.expr.free_symbols)
 
+        local_symbols = set()
+        for r in local_vars:
+            if isinstance(r, Result):
+                symbols.update(r.expr.free_symbols)
+                local_symbols.add(r.name)
+            else:
+                local_symbols.add(r)
+
         # Check that all symbols in the expressions are covered by
         # InputArguments/InOutArguments---subset because user could
         # specify additional (unused) InputArguments or local_vars.
-        notcovered = symbols.difference(input_symbols | local_vars | global_vars)
+        notcovered = symbols.difference(input_symbols | local_symbols | global_vars)
         if notcovered != set():
             raise ValueError("Symbols needed for output are not in input " +
                              ", ".join([str(x) for x in notcovered]))
@@ -461,7 +470,9 @@ class Result(Variable, ResultBase):
 class CodeGen:
     """Abstract class for the code generators."""
 
-    def __init__(self, project="project"):
+    printer = None  # will be set to an instance of a CodePrinter subclass
+
+    def __init__(self, project="project", cse=False):
         """Initialize a code generator.
 
         Derived classes will offer more options that affect the generated
@@ -469,8 +480,9 @@ class CodeGen:
 
         """
         self.project = project
+        self.cse = cse
 
-    def routine(self, name, expr, argument_sequence, global_vars):
+    def routine(self, name, expr, argument_sequence, global_vars=None):
         """Creates an Routine object that is appropriate for this language.
 
         This implementation is appropriate for at least C/Fortran.  Subclasses
@@ -484,6 +496,35 @@ class CodeGen:
         OutputArgument and InOutArguments.
 
         """
+        if self.cse:
+            from ..simplify import cse
+
+            if is_sequence(expr) and not isinstance(expr, (MatrixBase, MatrixExpr)):
+                if not expr:
+                    raise ValueError("No expression given")
+                for e in expr:
+                    if not e.is_Equality:
+                        raise CodeGenError("Lists of expressions must all be Equalities. {} is not.".format(e))
+
+                # create a list of right hand sides and simplify them
+                rhs = [e.rhs for e in expr]
+                common, simplified = cse(rhs)
+
+                # pack the simplified expressions back up with their left hand sides
+                expr = [Equality(e.lhs, rhs) for e, rhs in zip(expr, simplified)]
+            else:
+                if isinstance(expr, Equality):
+                    common, simplified = cse(expr.rhs)
+                    expr = Equality(expr.lhs, simplified[0])
+                else:
+                    common, simplified = cse(expr)
+                    expr = simplified
+
+            local_vars = [Result(b, a) for a, b in common]
+            local_symbols = {a for a, _ in common}
+            local_expressions = Tuple(*[b for _, b in common])
+        else:
+            local_expressions = Tuple()
 
         if is_sequence(expr) and not isinstance(expr, (MatrixBase, MatrixExpr)):
             if not expr:
@@ -493,13 +534,16 @@ class CodeGen:
             expressions = Tuple(expr)
 
         # local variables
-        local_vars = {i.label for i in expressions.atoms(Idx)}
+        if not self.cse:
+            # local variables for indexed expressions
+            local_vars = {i.label for i in expressions.atoms(Idx)}
+            local_symbols = local_vars
 
         # global variables
         global_vars = set() if global_vars is None else set(global_vars)
 
         # symbols that should be arguments
-        symbols = expressions.free_symbols - local_vars - global_vars
+        symbols = (expressions.free_symbols | local_expressions.free_symbols) - local_symbols - global_vars
         # Decide whether to use output argument or return value
         return_val = []
         output_args = []
@@ -542,9 +586,9 @@ class CodeGen:
 
         # setup input argument list
         array_symbols = {}
-        for array in expressions.atoms(Indexed):
+        for array in expressions.atoms(Indexed) | local_expressions.atoms(Indexed):
             array_symbols[array.base.label] = array
-        for array in expressions.atoms(MatrixSymbol):
+        for array in expressions.atoms(MatrixSymbol) | local_expressions.atoms(MatrixSymbol):
             array_symbols[array] = array
 
         for symbol in sorted(symbols, key=str):
@@ -585,7 +629,10 @@ class CodeGen:
                 try:
                     new_args.append(name_arg_dict[symbol])
                 except KeyError:
-                    new_args.append(InputArgument(symbol))
+                    dims = None
+                    if isinstance(symbol, MatrixSymbol):
+                        dims = tuple((Integer(0), dim - 1) for dim in symbol.shape)
+                    new_args.append(InputArgument(symbol, dimensions=dims))
             arg_list = new_args
 
         return Routine(name, arg_list, return_val, local_vars, global_vars)
@@ -686,6 +733,16 @@ class CodeGen:
         if code_lines:
             f.write(code_lines)
 
+    def _printer_method_with_settings(self, method, settings=None, *args, **kwargs):
+        settings = settings or {}
+        ori = {k: self.printer._settings[k] for k in settings}
+        for k, v in settings.items():
+            self.printer._settings[k] = v
+        result = getattr(self.printer, method)(*args, **kwargs)
+        for k, v in ori.items():
+            self.printer._settings[k] = v
+        return result
+
 
 class CodeGenError(Exception):
     pass
@@ -715,6 +772,15 @@ class CCodeGen(CodeGen):
 
     code_extension = "c"
     interface_extension = "h"
+
+    def __init__(self, project="project", printer=None,
+                 preprocessor_statements=None, cse=False):
+        super(CCodeGen, self).__init__(project=project, cse=cse)
+        self.printer = printer or CCodePrinter()
+
+        self.preprocessor_statements = preprocessor_statements
+        if preprocessor_statements is None:
+            self.preprocessor_statements = ['#include <math.h>\n']
 
     def _get_header(self):
         """Writes a common header for the generated files."""
@@ -755,8 +821,8 @@ class CCodeGen(CodeGen):
 
     def _preprocessor_statements(self, prefix):
         code_lines = []
-        code_lines.append("#include \"%s.h\"\n" % os.path.basename(prefix))
-        code_lines.append("#include <math.h>\n")
+        code_lines.append('#include "{}.h"\n'.format(os.path.basename(prefix)))
+        code_lines.extend(self.preprocessor_statements)
         return code_lines
 
     def _get_routine_opening(self, routine):
@@ -772,8 +838,33 @@ class CCodeGen(CodeGen):
         return []
 
     def _declare_locals(self, routine):
-        # loop variables are declared in loop statement
-        return []
+        # Compose a list of symbols to be dereferenced in the function
+        # body. These are the arguments that were passed by a reference
+        # pointer, excluding arrays.
+        dereference = []
+        for arg in routine.arguments:
+            if isinstance(arg, ResultBase) and not arg.dimensions:
+                dereference.append(arg.name)
+
+        code_lines = []
+        for result in routine.local_vars:
+
+            # local variables that are simple symbols such as those used as indices into
+            # for loops are defined declared elsewhere.
+            if not isinstance(result, Result):
+                continue
+
+            assign_to = result.name
+            t = result.get_datatype('c')
+            prefix = "const {0} ".format(t)
+
+            constants, not_c, c_expr = self._printer_method_with_settings(
+                'doprint', {'human': False, 'dereference': dereference},
+                result.expr, assign_to=assign_to)
+
+            code_lines.append("{}{}\n".format(prefix, c_expr))
+
+        return code_lines
 
     def _call_printer(self, routine):
         code_lines = []

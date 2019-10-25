@@ -31,7 +31,7 @@ Compatibility breaks
 * Removed ``numer/denom`` properties of :class:`~diofant.polys.fields.FracElement`, see :pull:`851`.
 * Removed ``is_hermitian/is_antihermitian`` core properties, see :pull:`873`.
 * :meth:`~diofant.polys.polytools.Poly.intervals` support only scalar arguments, see :pull:`874`.
-* Removed ``print_python()`` and `print_ccode()` functions, see :pull:`891`.
+* Removed ``print_python()`` and ``print_ccode()`` functions, see :pull:`891`.
 * Reorder output for :meth:`~diofant.matrices.matrices.MatrixBase.jordan_form` and :meth:`~diofant.matrices.matrices.MatrixBase.jordan_cells`, the last one is now optional, see :pull:`896`.
 
 Minor changes
@@ -40,6 +40,7 @@ Minor changes
 * Support truncation for elements of :class:`~diofant.domains.RealAlgebraicField` to :class:`int`, see :pull:`788`.
 * :class:`~diofant.matrices.Matrix`'s and :class:`~diofant.tensor.array.Array`'s support symbolic indexes, see :pull:`785`.  Thanks to Francesco Bonazzi.
 * Added ``AA_FACTOR_METHOD`` configuration option to specify factorization algorithm for polynomials with algebraic coefficients, see :pull:`844`.
+* :class:`~diofant.utilities.codegen.CCodeGen` got support for common subexpression replacement, see :pull:`893`.  Thanks to James Cotton.
 
 Developer changes
 =================

@@ -5,7 +5,7 @@ import pytest
 from diofant import (Abs, Equality, Integral, acos, asin, atan, atan2, ceiling,
                      cos, cosh, erf, floor, ln, log, sin, sinh, sqrt, tan,
                      tanh)
-from diofant.abc import B, C, X, a, t, x, y, z
+from diofant.abc import B, C, X, a, b, c, d, t, x, y, z
 from diofant.core import Catalan, Dummy, Eq, Lambda, pi, symbols
 from diofant.matrices import Matrix, MatrixSymbol
 from diofant.tensor import Idx, IndexedBase
@@ -63,6 +63,9 @@ def test_empty_c_code():
     code_gen = CCodeGen()
     source = get_string(code_gen.dump_c, [])
     assert source == "#include \"file.h\"\n#include <math.h>\n"
+    code_gen = CCodeGen(preprocessor_statements="")
+    source = get_string(code_gen.dump_c, [])
+    assert source == "#include \"file.h\"\n"
 
 
 def test_empty_c_code_with_comment():
@@ -149,6 +152,20 @@ def test_c_code_argument_order():
         "#include \"file.h\"\n"
         "#include <math.h>\n"
         "double test(double z, double x, double y) {\n"
+        "   double test_result;\n"
+        "   test_result = x + y;\n"
+        "   return test_result;\n"
+        "}\n"
+    )
+    assert source == expected
+
+    p = MatrixSymbol('p', 3, 1)
+    routine = make_routine("test", expr, argument_sequence=[p, x, y])
+    source = get_string(code_gen.dump_c, [routine])
+    expected = (
+        "#include \"file.h\"\n"
+        "#include <math.h>\n"
+        "double test(double *p, double x, double y) {\n"
         "   double test_result;\n"
         "   test_result = x + y;\n"
         "   return test_result;\n"
@@ -1375,4 +1392,52 @@ def test_global_vars():
         '   return f_result;\n'
         '}\n'
     )
+    assert source == expected
+
+
+def test_ccode_cse():
+    cg = CCodeGen(cse=True)
+    e = MatrixSymbol('e', 3, 1)
+
+    pytest.raises(ValueError, lambda: cg.routine("test", [], None))
+    pytest.raises(CodeGenError, lambda: cg.routine("test", [e], None))
+
+    routines = [cg.routine("test", [Equality(e, Matrix([[a*b], [a*b + c*d], [a*b*c*d]]))], None)]
+    result = cg.write(routines, prefix="test", to_files=False, header=False, empty=False)
+    source = result[0][1]
+    expected = (
+        '#include "test.h"\n'
+        '#include <math.h>\n'
+        'void test(double a, double b, double c, double d, double *e) {\n'
+        '   const double x0 = a*b;\n'
+        '   const double x1 = c*d;\n'
+        '   e[0] = x0;\n'
+        '   e[1] = x0 + x1;\n'
+        '   e[2] = x0*x1;\n'
+        '}\n'
+    )
+    assert source == expected
+
+    routines = [cg.routine("test", Equality(e, Matrix([[a*b], [a*b + c*d], [a*b*c*d]])), None)]
+    result = cg.write(routines, prefix="test", to_files=False, header=False, empty=False)
+    source = result[0][1]
+    assert source == expected
+
+    routines = [cg.routine("test", Matrix([[a*b], [a*b + c*d], [a*b*c*d]]), None)]
+    result = cg.write(routines, prefix="test", to_files=False, header=False, empty=False)
+    source = result[0][1]
+    expected = (
+        '#include "test.h"\n'
+        '#include <math.h>\n'
+        'void test(double a, double b, double c, double d, double *out_%(hash)s) {\n'
+        '   const double x0 = a*b;\n'
+        '   const double x1 = c*d;\n'
+        '   out_%(hash)s[0] = x0;\n'
+        '   out_%(hash)s[1] = x0 + x1;\n'
+        '   out_%(hash)s[2] = x0*x1;\n'
+        '}\n'
+    )
+    # look for the magic number
+    out = source.splitlines()[5].split('_')[1].split('[')[0]
+    expected = expected % {'hash': out}
     assert source == expected
