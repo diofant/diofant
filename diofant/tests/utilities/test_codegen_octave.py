@@ -73,7 +73,8 @@ def test_m_numbersymbol():
     source = result[1]
     expected = (
         "function out1 = test()\n"
-        "  out1 = pi^0.915965594177219;\n"
+        "  Catalan = 0.915965594177219;  % constant\n"
+        "  out1 = pi^Catalan;\n"
         "end\n"
     )
     assert source == expected
@@ -189,9 +190,15 @@ def test_m_piecewise_():
     source = result[1]
     expected = (
         "function out1 = pwtest(x)\n"
-        "  out1 = ((x < -1).*(0) + (~(x < -1)).*( ...\n"
-        "  (x <= 1).*(x.^2) + (~(x <= 1)).*( ...\n"
-        "  (x > 1).*(-x + 2) + (~(x > 1)).*(1))));\n"
+        "  if (x < -1)\n"
+        "    out1 = 0;\n"
+        "  elseif (x <= 1)\n"
+        "    out1 = x.^2;\n"
+        "  elseif (x > 1)\n"
+        "    out1 = -x + 2;\n"
+        "  else\n"
+        "    out1 = 1;\n"
+        "  end\n"
         "end\n"
     )
     assert source == expected

@@ -1369,7 +1369,8 @@ class OctaveCodeGen(CodeGen):
                 raise CodeGenError("unexpected object in Routine results")
 
             constants, not_supported, oct_expr = octave_code(result.expr,
-                                                             assign_to=assign_to, human=False)
+                                                             assign_to=assign_to,
+                                                             human=False, inline=False)
 
             for obj, v in sorted(constants, key=str):
                 declarations.append(
