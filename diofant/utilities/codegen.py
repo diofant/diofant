@@ -86,7 +86,6 @@ from ..core.compatibility import is_sequence
 from ..matrices import (ImmutableMatrix, MatrixBase, MatrixExpr, MatrixSlice,
                         MatrixSymbol)
 from ..printing.ccode import CCodePrinter, ccode
-from ..printing.codeprinter import AssignmentError
 from ..printing.fcode import FCodePrinter, fcode
 from ..printing.octave import OctaveCodePrinter, octave_code
 from ..tensor import Idx, Indexed, IndexedBase
@@ -240,11 +239,6 @@ default_datatypes = {
 def get_default_datatype(expr):
     """Derives an appropriate datatype based on the expression."""
     if expr.is_integer:
-        return default_datatypes["int"]
-    elif isinstance(expr, MatrixBase):
-        for element in expr:
-            if not element.is_integer:
-                return default_datatypes["float"]
         return default_datatypes["int"]
     else:
         return default_datatypes["float"]
@@ -443,7 +437,7 @@ class Result(Variable, ResultBase):
             Controls the precision of floating point constants.
 
         """
-        if not isinstance(expr, (Expr, MatrixBase, MatrixExpr)):
+        if not isinstance(expr, (Expr, MatrixBase)):
             raise TypeError("The first argument must be a diofant expression.")
 
         if name is None:
@@ -891,15 +885,8 @@ class CCodeGen(CodeGen):
             else:
                 assign_to = result.result_var
 
-            try:
-                constants, not_c, c_expr = ccode(result.expr, human=False,
-                                                 assign_to=assign_to, dereference=dereference)
-            except AssignmentError:
-                assign_to = result.result_var
-                code_lines.append(
-                    "%s %s;\n" % (result.get_datatype('c'), str(assign_to)))
-                constants, not_c, c_expr = ccode(result.expr, human=False,
-                                                 assign_to=assign_to, dereference=dereference)
+            constants, not_c, c_expr = ccode(result.expr, human=False,
+                                             assign_to=assign_to, dereference=dereference)
 
             for name, value in sorted(constants, key=str):
                 code_lines.append("double const %s = %s;\n" % (name, value))
