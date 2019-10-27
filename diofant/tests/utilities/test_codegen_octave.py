@@ -8,7 +8,9 @@ from diofant.abc import A, B, C, a, t, x, y, z
 from diofant.core import Catalan, Eq, Function, pi, symbols, zoo
 from diofant.matrices import Matrix, MatrixSymbol
 from diofant.tensor import Idx, IndexedBase
-from diofant.utilities.codegen import OctaveCodeGen, codegen, make_routine
+from diofant.utilities.codegen import (CodeGenArgumentListError, CodeGenError,
+                                       InOutArgument, OctaveCodeGen, Routine,
+                                       codegen, make_routine)
 
 
 __all__ = ()
@@ -22,6 +24,19 @@ def test_empty_m_code():
     assert source == ""
 
 
+def test_exceptions():
+    cg = OctaveCodeGen()
+
+    r = cg.routine("test", Eq(y, x), argument_sequence=[x, y], global_vars=None)
+    bad_r = Routine(r.name, [r.arguments[0], InOutArgument(y, y, y)], r.results,
+                    r.local_vars, r.global_vars)
+    pytest.raises(CodeGenError, lambda: cg.write([bad_r], "test"))
+
+    pytest.raises(ValueError, lambda: cg.routine("test", [], None, None))
+    pytest.raises(CodeGenError, lambda: cg.routine("test", Eq(sin(y), x),
+                                                   None, None))
+
+
 def test_m_simple_code():
     name_expr = ("test", (x + y)*z)
     result, = codegen(name_expr, "Octave", header=False, empty=False)
@@ -30,6 +45,17 @@ def test_m_simple_code():
     expected = (
         "function out1 = test(x, y, z)\n"
         "  out1 = z.*(x + y);\n"
+        "end\n"
+    )
+    assert source == expected
+    result, = codegen(name_expr, "Octave", header=False)
+    assert result[0] == "test.m"
+    source = result[1]
+    expected = (
+        "function out1 = test(x, y, z)\n"
+        "  \n"
+        "  out1 = z.*(x + y);\n"
+        "  \n"
         "end\n"
     )
     assert source == expected
@@ -93,6 +119,10 @@ def test_m_code_argument_order():
         "end\n"
     )
     assert source == expected
+
+    pytest.raises(CodeGenArgumentListError,
+                  lambda: make_routine("test", expr, argument_sequence=[x],
+                                       language="octave"))
 
 
 def test_multiple_results_m():
@@ -217,6 +247,24 @@ def test_m_multifcns_per_file():
         "function [out1, out2] = bar(y)\n"
         "  out1 = y.^2;\n"
         "  out2 = 4*y;\n"
+        "end\n"
+    )
+    assert source == expected
+    result = codegen(name_expr, "Octave", header=False)
+    assert result[0][0] == "foo.m"
+    source = result[0][1]
+    expected = (
+        "function [out1, out2] = foo(x, y)\n"
+        "  \n"
+        "  out1 = 2*x;\n"
+        "  out2 = 3*y;\n"
+        "  \n"
+        "end\n\n"
+        "function [out1, out2] = bar(y)\n"
+        "  \n"
+        "  out1 = y.^2;\n"
+        "  out2 = 4*y;\n"
+        "  \n"
         "end\n"
     )
     assert source == expected
@@ -433,6 +481,24 @@ def test_m_loops():
     assert (source == expected % {'rhs': 'A(%s, %s).*x(j)' % (i, j)} or
             source == expected % {'rhs': 'x(j).*A(%s, %s)' % (i, j)})
 
+    result, = codegen(('mat_vec_mult', Eq(y[i], A[i, j]*x[j])), "Octave",
+                      header=False, empty=False, argument_sequence=[x, A, m, n])
+    source = result[1]
+    expected = (
+        'function y = mat_vec_mult(x, A, m, n)\n'
+        '  for i = 1:m\n'
+        '    y(i) = 0;\n'
+        '  end\n'
+        '  for i = 1:m\n'
+        '    for j = 1:n\n'
+        '      y(i) = %(rhs)s + y(i);\n'
+        '    end\n'
+        '  end\n'
+        'end\n'
+    )
+    assert (source == expected % {'rhs': 'A(%s, %s).*x(j)' % (i, j)} or
+            source == expected % {'rhs': 'x(j).*A(%s, %s)' % (i, j)})
+
 
 def test_m_tensor_loops_multiple_contractions():
     # see comments in previous test about vectorizing
@@ -507,15 +573,17 @@ def test_m_InOutArgument_order():
 
 def test_m_not_supported():
     f = Function('f')
-    name_expr = ("test", [f(x).diff(x), zoo])
+    name_expr = ("test", [f(x).diff(x), zoo, f(x)])
     result, = codegen(name_expr, "Octave", header=False, empty=False)
     source = result[1]
     expected = (
-        "function [out1, out2] = test(x)\n"
+        "function [out1, out2, out3] = test(x)\n"
         "  % unsupported: Derivative(f(x), x)\n"
         "  % unsupported: zoo\n"
+        "  % unsupported: f\n"
         "  out1 = Derivative(f(x), x);\n"
         "  out2 = zoo;\n"
+        "  out3 = f(x);\n"
         "end\n"
     )
     assert source == expected
