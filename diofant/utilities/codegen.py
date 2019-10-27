@@ -666,6 +666,10 @@ class CodeGen:
             files. [default: True]
 
         """
+        for routine in routines:
+            if not isinstance(routine, Routine):
+                raise CodeGenError("Routine expected, got {0}".format(routine))
+
         if to_files:
             for dump_fn in self.dump_fns:
                 filename = "%s.%s" % (prefix, dump_fn.extension)
@@ -1042,10 +1046,8 @@ class FCodeGen(CodeGen):
                 typeinfo = "%s, intent(in)" % arg.get_datatype('fortran')
             elif isinstance(arg, InOutArgument):
                 typeinfo = "%s, intent(inout)" % arg.get_datatype('fortran')
-            elif isinstance(arg, OutputArgument):
-                typeinfo = "%s, intent(out)" % arg.get_datatype('fortran')
             else:
-                raise CodeGenError("Unkown Argument type: %s" % type(arg))
+                typeinfo = "%s, intent(out)" % arg.get_datatype('fortran')
 
             fprint = self._get_symbol
 
@@ -1109,7 +1111,7 @@ class FCodeGen(CodeGen):
         for result in routine.result_variables:
             if isinstance(result, Result):
                 assign_to = routine.name
-            elif isinstance(result, (OutputArgument, InOutArgument)):
+            else:
                 assign_to = result.result_var
 
             constants, not_fortran, f_expr = fcode(result.expr,
@@ -1318,11 +1320,8 @@ class OctaveCodeGen(CodeGen):
         # Outputs
         outs = []
         for i, result in enumerate(routine.results):
-            if isinstance(result, Result):
-                # Note: name not result_var; want `y` not `y(i)` for Indexed
-                s = self._get_symbol(result.name)
-            else:
-                raise CodeGenError("unexpected object in Routine results")
+            # Note: name not result_var; want `y` not `y(i)` for Indexed
+            s = self._get_symbol(result.name)
             outs.append(s)
         if len(outs) > 1:
             code_list.append("[" + (", ".join(outs)) + "]")
@@ -1336,7 +1335,7 @@ class OctaveCodeGen(CodeGen):
             if isinstance(arg, (OutputArgument, InOutArgument)):
                 raise CodeGenError("Octave: invalid argument of type %s" %
                                    str(type(arg)))
-            if isinstance(arg, InputArgument):
+            else:
                 args.append("%s" % self._get_symbol(arg.name))
         args = ", ".join(args)
         code_list.append("%s(%s)\n" % (routine.name, args))
@@ -1363,10 +1362,7 @@ class OctaveCodeGen(CodeGen):
         declarations = []
         code_lines = []
         for i, result in enumerate(routine.results):
-            if isinstance(result, Result):
-                assign_to = result.result_var
-            else:
-                raise CodeGenError("unexpected object in Routine results")
+            assign_to = result.result_var
 
             constants, not_supported, oct_expr = octave_code(result.expr,
                                                              assign_to=assign_to,
