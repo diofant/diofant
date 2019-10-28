@@ -2,16 +2,17 @@ from io import StringIO
 
 import pytest
 
-from diofant import (Abs, Equality, Integral, acos, asin, atan, atan2, ceiling,
-                     cos, cosh, erf, floor, ln, log, sin, sinh, sqrt, tan,
-                     tanh)
+from diofant import (Abs, Equality, Function, Integral, acos, asin, atan,
+                     atan2, besseli, ceiling, cos, cosh, erf, floor, ln, log,
+                     sin, sinh, sqrt, tan, tanh)
 from diofant.abc import B, C, X, a, b, c, d, t, x, y, z
 from diofant.core import Catalan, Dummy, Eq, Lambda, pi, symbols
 from diofant.matrices import Matrix, MatrixSymbol
 from diofant.tensor import Idx, IndexedBase
 from diofant.utilities.codegen import (CCodeGen, CodeGenArgumentListError,
                                        CodeGenError, FCodeGen, InOutArgument,
-                                       InputArgument, OutputArgument, codegen,
+                                       InputArgument, OutputArgument, Result,
+                                       Routine, codegen, default_datatypes,
                                        make_routine)
 from diofant.utilities.lambdify import implemented_function
 
@@ -32,6 +33,39 @@ def get_string(dump_fn, routines, prefix="file", header=False, empty=False):
     source = output.getvalue()
     output.close()
     return source
+
+
+def test_for_bad_arguments():
+    pytest.raises(ValueError, lambda: make_routine("test", x, language="foo"))
+
+    cg = CCodeGen()
+    pytest.raises(CodeGenError, lambda: cg.write([x], prefix='test'))
+
+    pytest.raises(CodeGenError, lambda: cg.routine("test", Eq(sin(y), x),
+                                                   argument_sequence=None))
+
+    pytest.raises(TypeError, lambda: Result([x]))
+    pytest.raises(TypeError, lambda: InOutArgument(sin(y), y, y*sin(x)))
+    pytest.raises(TypeError, lambda: InOutArgument(y, y, y*sin(x), "spam"))
+    pytest.raises(TypeError, lambda: InOutArgument(y, y, y*sin(x), dimensions="spam"))
+
+    r = cg.routine("test", x, argument_sequence=None)
+    pytest.raises(ValueError, lambda: Routine(r.name, r.arguments + ["spam"],
+                                              r.results, r.local_vars,
+                                              r.global_vars))
+    pytest.raises(ValueError, lambda: Routine(r.name, r.arguments,
+                                              r.results + ["spam"],
+                                              r.local_vars, r.global_vars))
+    pytest.raises(ValueError, lambda: Routine(r.name, r.arguments, [Result(y)],
+                                              r.local_vars, r.global_vars))
+
+
+def test_low_level():
+    a = InOutArgument(y, y, y*sin(x), default_datatypes["float"])
+    assert a.name == y
+    assert a.expr == y*sin(x)
+    assert a.get_datatype('C') == 'double'
+    pytest.raises(CodeGenError, lambda: a.get_datatype('spam'))
 
 
 def test_Routine_argument_order():
@@ -625,6 +659,35 @@ def test_erf_f_code():
         "implicit none\n"
         "REAL*8, intent(in) :: x\n"
         "test = erf(x) + erf(2.0d0*x)\n"
+        "end function\n"
+    )
+    assert source == expected, source
+
+
+def test_not_fortran_f_code():
+    routine = make_routine("test", besseli(1, x))
+    code_gen = FCodeGen()
+    source = get_string(code_gen.dump_f95, [routine])
+    expected = (
+        "REAL*8 function test(x)\n"
+        "implicit none\n"
+        "REAL*8, intent(in) :: x\n"
+        "REAL*8 :: besseli\n"
+        "test = besseli(1.0, x)\n"
+        "end function\n"
+    )
+    assert source == expected, source
+
+    f = Function('f')
+    routine = make_routine("test", f(x).diff(x))
+    code_gen = FCodeGen()
+    source = get_string(code_gen.dump_f95, [routine])
+    expected = (
+        "REAL*8 function test(x)\n"
+        "implicit none\n"
+        "REAL*8, intent(in) :: x\n"
+        "REAL*8 :: Derivative(f(x), x)\n"
+        "test = Derivative(f(x), x)\n"
         "end function\n"
     )
     assert source == expected, source

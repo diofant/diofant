@@ -86,7 +86,6 @@ from ..core.compatibility import is_sequence
 from ..matrices import (ImmutableMatrix, MatrixBase, MatrixExpr, MatrixSlice,
                         MatrixSymbol)
 from ..printing.ccode import CCodePrinter, ccode
-from ..printing.codeprinter import AssignmentError
 from ..printing.fcode import FCodePrinter, fcode
 from ..printing.octave import OctaveCodePrinter, octave_code
 from ..tensor import Idx, Indexed, IndexedBase
@@ -240,11 +239,6 @@ default_datatypes = {
 def get_default_datatype(expr):
     """Derives an appropriate datatype based on the expression."""
     if expr.is_integer:
-        return default_datatypes["int"]
-    elif isinstance(expr, MatrixBase):
-        for element in expr:
-            if not element.is_integer:
-                return default_datatypes["float"]
         return default_datatypes["int"]
     else:
         return default_datatypes["float"]
@@ -443,7 +437,7 @@ class Result(Variable, ResultBase):
             Controls the precision of floating point constants.
 
         """
-        if not isinstance(expr, (Expr, MatrixBase, MatrixExpr)):
+        if not isinstance(expr, (Expr, MatrixBase)):
             raise TypeError("The first argument must be a diofant expression.")
 
         if name is None:
@@ -666,6 +660,10 @@ class CodeGen:
             files. [default: True]
 
         """
+        for routine in routines:
+            if not isinstance(routine, Routine):
+                raise CodeGenError("Routine expected, got {0}".format(routine))
+
         if to_files:
             for dump_fn in self.dump_fns:
                 filename = "%s.%s" % (prefix, dump_fn.extension)
@@ -887,15 +885,8 @@ class CCodeGen(CodeGen):
             else:
                 assign_to = result.result_var
 
-            try:
-                constants, not_c, c_expr = ccode(result.expr, human=False,
-                                                 assign_to=assign_to, dereference=dereference)
-            except AssignmentError:
-                assign_to = result.result_var
-                code_lines.append(
-                    "%s %s;\n" % (result.get_datatype('c'), str(assign_to)))
-                constants, not_c, c_expr = ccode(result.expr, human=False,
-                                                 assign_to=assign_to, dereference=dereference)
+            constants, not_c, c_expr = ccode(result.expr, human=False,
+                                             assign_to=assign_to, dereference=dereference)
 
             for name, value in sorted(constants, key=str):
                 code_lines.append("double const %s = %s;\n" % (name, value))
@@ -1042,10 +1033,8 @@ class FCodeGen(CodeGen):
                 typeinfo = "%s, intent(in)" % arg.get_datatype('fortran')
             elif isinstance(arg, InOutArgument):
                 typeinfo = "%s, intent(inout)" % arg.get_datatype('fortran')
-            elif isinstance(arg, OutputArgument):
-                typeinfo = "%s, intent(out)" % arg.get_datatype('fortran')
             else:
-                raise CodeGenError("Unkown Argument type: %s" % type(arg))
+                typeinfo = "%s, intent(out)" % arg.get_datatype('fortran')
 
             fprint = self._get_symbol
 
@@ -1109,7 +1098,7 @@ class FCodeGen(CodeGen):
         for result in routine.result_variables:
             if isinstance(result, Result):
                 assign_to = routine.name
-            elif isinstance(result, (OutputArgument, InOutArgument)):
+            else:
                 assign_to = result.result_var
 
             constants, not_fortran, f_expr = fcode(result.expr,
@@ -1318,11 +1307,8 @@ class OctaveCodeGen(CodeGen):
         # Outputs
         outs = []
         for i, result in enumerate(routine.results):
-            if isinstance(result, Result):
-                # Note: name not result_var; want `y` not `y(i)` for Indexed
-                s = self._get_symbol(result.name)
-            else:
-                raise CodeGenError("unexpected object in Routine results")
+            # Note: name not result_var; want `y` not `y(i)` for Indexed
+            s = self._get_symbol(result.name)
             outs.append(s)
         if len(outs) > 1:
             code_list.append("[" + (", ".join(outs)) + "]")
@@ -1336,7 +1322,7 @@ class OctaveCodeGen(CodeGen):
             if isinstance(arg, (OutputArgument, InOutArgument)):
                 raise CodeGenError("Octave: invalid argument of type %s" %
                                    str(type(arg)))
-            if isinstance(arg, InputArgument):
+            else:
                 args.append("%s" % self._get_symbol(arg.name))
         args = ", ".join(args)
         code_list.append("%s(%s)\n" % (routine.name, args))
@@ -1363,13 +1349,11 @@ class OctaveCodeGen(CodeGen):
         declarations = []
         code_lines = []
         for i, result in enumerate(routine.results):
-            if isinstance(result, Result):
-                assign_to = result.result_var
-            else:
-                raise CodeGenError("unexpected object in Routine results")
+            assign_to = result.result_var
 
             constants, not_supported, oct_expr = octave_code(result.expr,
-                                                             assign_to=assign_to, human=False)
+                                                             assign_to=assign_to,
+                                                             human=False, inline=False)
 
             for obj, v in sorted(constants, key=str):
                 declarations.append(

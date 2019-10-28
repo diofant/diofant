@@ -116,3 +116,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`17719` plot_implicit error for Xor
 * :sympyissue:`12386` Latex printer for MutableDenseNDimArray, MutableSparseNDimArray
 * :sympyissue:`12369` Start using spherical_jn from SciPy
+* :sympyissue:`17792` Wrong limit
