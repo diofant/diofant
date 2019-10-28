@@ -85,7 +85,9 @@ def test_cython_wrapper_inoutarg():
 def test_autowrap_dummy():
     # Uses DummyWrapper to test that codegen works as expected
 
-    f = autowrap(x + y, backend='dummy')
+    tempdir = tempfile.mkstemp()[-1]
+    os.unlink(tempdir)
+    f = autowrap(x + y, backend='dummy', tempdir=tempdir)
     assert f() == str(x + y)
     assert f.args == "x, y"
     assert f.returns == "nameless"
@@ -97,6 +99,12 @@ def test_autowrap_dummy():
     assert f() == str(x + y + z)
     assert f.args == "x, y, z"
     assert f.returns == "z"
+
+    e = x + y
+
+    pytest.raises(ValueError, lambda: autowrap(e, backend='spam'))
+    pytest.raises(ValueError, lambda: autowrap(e, backend='spam', language='C'))
+    pytest.raises(ValueError, lambda: autowrap(e, language='spam'))
 
 
 def test_autowrap_args():
