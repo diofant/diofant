@@ -33,6 +33,7 @@ Compatibility breaks
 * :meth:`~diofant.polys.polytools.Poly.intervals` support only scalar arguments, see :pull:`874`.
 * Removed ``print_python()`` and ``print_ccode()`` functions, see :pull:`891`.
 * Reorder output for :meth:`~diofant.matrices.matrices.MatrixBase.jordan_form` and :meth:`~diofant.matrices.matrices.MatrixBase.jordan_cells`, the last one is now optional, see :pull:`896`.
+* Removed ``generate_oriented_forest()``, ``kbins()`` and ``ibin()`` functions, see :pull:`903`.
 
 Minor changes
 =============
