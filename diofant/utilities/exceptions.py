@@ -79,7 +79,7 @@ class DiofantDeprecationWarning(DeprecationWarning):
     ...    useinstead="new feature",
     ...    issue=5241))
     Old feature has been deprecated. Use new feature instead. See
-    https://github.com/sympy/sympy/issues/5241 for more info.
+    https://github.com/diofant/diofant/issues/5241 for more info.
 
     Every formal deprecation should have an associated issue in the GitHub
     issue tracker.  All such issues should have the DeprecationRemoval
@@ -128,7 +128,7 @@ class DiofantDeprecationWarning(DeprecationWarning):
             self.fullMessage += "Use %s instead. " % useinstead
         if issue:
             self.fullMessage += ("See "
-                                 "https://github.com/sympy/sympy/issues/%d for more "
+                                 "https://github.com/diofant/diofant/issues/%d for more "
                                  "info. ") % issue
 
         if value:

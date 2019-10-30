@@ -19,19 +19,20 @@ from diofant.utilities.iterables import (_partition, _set_partitions,
                                          common_prefix, common_suffix,
                                          dict_merge, filter_symbols, flatten,
                                          generate_bell, generate_derangements,
-                                         generate_involutions,
-                                         generate_oriented_forest, group,
-                                         has_dups, kbins, minlex, multiset,
+                                         generate_involutions, group, has_dups,
+                                         minlex, multiset,
                                          multiset_combinations,
                                          multiset_partitions,
                                          multiset_permutations, necklaces,
                                          numbered_symbols, ordered,
                                          ordered_partitions, partitions,
-                                         permutations, postfixes,
-                                         postorder_traversal, prefixes,
-                                         reshape, rotate_left, rotate_right,
-                                         runs, sift, subsets, topological_sort,
-                                         unflatten, uniq, variations)
+                                         permutations, permute_signs,
+                                         postfixes, postorder_traversal,
+                                         prefixes, reshape, rotate_left,
+                                         rotate_right, runs, sift,
+                                         signed_permutations, subsets,
+                                         topological_sort, unflatten, uniq,
+                                         variations)
 
 
 __all__ = ()
@@ -523,16 +524,6 @@ def test_bracelets():
     ])
 
 
-def test_generate_oriented_forest():
-    assert list(generate_oriented_forest(5)) == [[0, 1, 2, 3, 4],
-                                                 [0, 1, 2, 3, 3], [0, 1, 2, 3, 2], [0, 1, 2, 3, 1], [0, 1, 2, 3, 0],
-                                                 [0, 1, 2, 2, 2], [0, 1, 2, 2, 1], [0, 1, 2, 2, 0], [0, 1, 2, 1, 2],
-                                                 [0, 1, 2, 1, 1], [0, 1, 2, 1, 0], [0, 1, 2, 0, 1], [0, 1, 2, 0, 0],
-                                                 [0, 1, 1, 1, 1], [0, 1, 1, 1, 0], [0, 1, 1, 0, 1], [0, 1, 1, 0, 0],
-                                                 [0, 1, 0, 1, 0], [0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
-    assert len(list(generate_oriented_forest(10))) == 1842
-
-
 def test_unflatten():
     r = list(range(10))
     assert unflatten(r) == list(zip(r[::2], r[1::2]))
@@ -625,86 +616,6 @@ def test_uniq():
         [2, 3, 4, [2], [1], [3]]
 
 
-def test_kbins():
-    assert len(list(kbins('1123', 2, ordered=1))) == 24
-    assert len(list(kbins('1123', 2, ordered=11))) == 36
-    assert len(list(kbins('1123', 2, ordered=10))) == 10
-    assert len(list(kbins('1123', 2, ordered=0))) == 5
-    assert len(list(kbins('1123', 2, ordered=None))) == 3
-
-    def test():
-        for ordered in [None, 0, 1, 10, 11]:
-            print('ordered =', ordered)
-            for p in kbins([0, 0, 1], 2, ordered=ordered):
-                print('   ', p)
-    assert capture(lambda: test()) == dedent('''\
-        ordered = None
-            [[0], [0, 1]]
-            [[0, 0], [1]]
-        ordered = 0
-            [[0, 0], [1]]
-            [[0, 1], [0]]
-        ordered = 1
-            [[0], [0, 1]]
-            [[0], [1, 0]]
-            [[1], [0, 0]]
-        ordered = 10
-            [[0, 0], [1]]
-            [[1], [0, 0]]
-            [[0, 1], [0]]
-            [[0], [0, 1]]
-        ordered = 11
-            [[0], [0, 1]]
-            [[0, 0], [1]]
-            [[0], [1, 0]]
-            [[0, 1], [0]]
-            [[1], [0, 0]]
-            [[1, 0], [0]]\n''')
-
-    def test2():
-        for ordered in [None, 0, 1, 10, 11]:
-            print('ordered =', ordered)
-            for p in kbins(list(range(3)), 2, ordered=ordered):
-                print('   ', p)
-    assert capture(lambda: test2()) == dedent('''\
-        ordered = None
-            [[0], [1, 2]]
-            [[0, 1], [2]]
-        ordered = 0
-            [[0, 1], [2]]
-            [[0, 2], [1]]
-            [[0], [1, 2]]
-        ordered = 1
-            [[0], [1, 2]]
-            [[0], [2, 1]]
-            [[1], [0, 2]]
-            [[1], [2, 0]]
-            [[2], [0, 1]]
-            [[2], [1, 0]]
-        ordered = 10
-            [[0, 1], [2]]
-            [[2], [0, 1]]
-            [[0, 2], [1]]
-            [[1], [0, 2]]
-            [[0], [1, 2]]
-            [[1, 2], [0]]
-        ordered = 11
-            [[0], [1, 2]]
-            [[0, 1], [2]]
-            [[0], [2, 1]]
-            [[0, 2], [1]]
-            [[1], [0, 2]]
-            [[1, 0], [2]]
-            [[1], [2, 0]]
-            [[1, 2], [0]]
-            [[2], [0, 1]]
-            [[2, 0], [1]]
-            [[2], [1, 0]]
-            [[2, 1], [0]]\n''')
-
-    pytest.raises(ValueError, lambda: list(kbins([1], 2, 22)))
-
-
 def test_has_dups():
     assert has_dups(set()) is False
     assert has_dups(list(range(3))) is False
@@ -755,3 +666,17 @@ def test_ordered_partitions():
             assert (sum(1 for p in ordered_partitions(i, j, 1)) ==
                     sum(1 for p in ordered_partitions(i, j, 0)) ==
                     nT(i, j))
+
+
+def test_permute_signs():
+    assert list(permute_signs((0, 1, 2))) == [(0, 1, 2), (0, -1, 2),
+                                              (0, 1, -2), (0, -1, -2)]
+
+
+def test_signed_permutations():
+    assert (list(signed_permutations((0, 1, 2))) ==
+            [(0, 1, 2), (0, -1, 2), (0, 1, -2), (0, -1, -2), (0, 2, 1),
+             (0, -2, 1), (0, 2, -1), (0, -2, -1), (1, 0, 2), (-1, 0, 2),
+             (1, 0, -2), (-1, 0, -2), (1, 2, 0), (-1, 2, 0), (1, -2, 0),
+             (-1, -2, 0), (2, 0, 1), (-2, 0, 1), (2, 0, -1), (-2, 0, -1),
+             (2, 1, 0), (-2, 1, 0), (2, -1, 0), (-2, -1, 0)])

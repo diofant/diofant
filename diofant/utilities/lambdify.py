@@ -16,7 +16,6 @@ MATH = {}
 MPMATH = {}
 NUMPY = {}
 DIOFANT = {}
-NUMEXPR = {}
 
 # Default namespaces, letting us define translations that can't be defined
 # by simple variable maps, like I => 1j
@@ -26,7 +25,6 @@ MATH_DEFAULT = {}
 MPMATH_DEFAULT = {}
 NUMPY_DEFAULT = {"I": 1j}
 DIOFANT_DEFAULT = {}
-NUMEXPR_DEFAULT = {}
 
 # Mappings between diofant and other modules function names.
 MATH_TRANSLATIONS = {
@@ -91,8 +89,6 @@ NUMPY_TRANSLATIONS = {
     "ImmutableDenseMatrix": "array",
 }
 
-NUMEXPR_TRANSLATIONS = {}
-
 # Available modules:
 MODULES = {
     "math": (MATH, MATH_DEFAULT, MATH_TRANSLATIONS, ("from math import *",)),
@@ -102,8 +98,6 @@ MODULES = {
         "from diofant.functions import *",
         "from diofant.matrices import *",
         "from diofant import Sum, Integral, pi, oo, nan, zoo, E, I")),
-    "numexpr": (NUMEXPR, NUMEXPR_DEFAULT, NUMEXPR_TRANSLATIONS,
-                ("import_module('numexpr')", )),
 }
 
 
@@ -168,7 +162,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     ``math``, or ``mpmath`` functions otherwise. To change this behavior, the
     "modules" argument can be used. It accepts:
 
-     - the strings "math", "mpmath", "numpy", "numexpr", "diofant"
+     - the strings "math", "mpmath", "numpy", "diofant"
      - any modules (e.g. math)
      - dictionaries that map names of diofant functions to arbitrary functions
      - lists that contain a mix of the arguments above, with higher priority
@@ -180,14 +174,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     dummy substitution is unwanted (and `args` is not a string). If you want
     to view the lambdified function or provide "diofant" as the module, you
     should probably set dummify=False.
-
-    For functions involving large array calculations, numexpr can provide a
-    significant speedup over numpy.  Please note that the available functions
-    for numexpr are more limited than numpy but can be expanded with
-    implemented_function and user defined subclasses of Function.  If specified,
-    numexpr may be the only option in modules. The official list of numexpr
-    functions can be found at:
-    https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions
 
     In previous releases ``lambdify`` replaced ``Matrix`` with ``numpy.matrix``
     by default. As of release 0.7.7 ``numpy.array`` is the default.
@@ -308,9 +294,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     if isinstance(modules, (dict, str)) or not hasattr(modules, '__iter__'):
         namespaces.append(modules)
     else:
-        # consistency check
-        if _module_present('numexpr', modules) and len(modules) > 1:
-            raise TypeError("numexpr must be the only item in 'modules'")
         namespaces += list(modules)
     # fill namespace with first having highest priority
     namespace = {}
@@ -328,10 +311,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     if _module_present('numpy', namespaces) and printer is None:
         # XXX: This has to be done here because of circular imports
         from ..printing.lambdarepr import NumPyPrinter as printer  # noqa: N813
-
-    if _module_present('numexpr', namespaces) and printer is None:
-        # XXX: This has to be done here because of circular imports
-        from ..printing.lambdarepr import NumExprPrinter as printer  # noqa: N813
 
     if _module_present('mpmath', namespaces) and printer is None:
         from ..printing.lambdarepr import MpmathPrinter as printer  # noqa: N813

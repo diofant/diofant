@@ -1,3 +1,5 @@
+import random
+
 import pytest
 
 from diofant.combinatorics.generators import rubik, rubik_cube_generators
@@ -726,6 +728,12 @@ def test_make_perm():
         Permutation([4, 7, 6, 5, 0, 3, 2, 1])
     assert cube.pgroup.make_perm(7, seed=list(range(7))) == \
         Permutation([6, 7, 3, 2, 5, 4, 0, 1])
+
+    random.seed(0)
+    assert cube.pgroup.make_perm(5) == Permutation([2, 1, 5, 6, 3, 0, 4, 7])
+
+    random.seed(0)
+    assert cube.pgroup.make_perm(5, seed=1) == Permutation([0, 3, 7, 4, 1, 2, 6, 5])
 
 
 def test_elements():

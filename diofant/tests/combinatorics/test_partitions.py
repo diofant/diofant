@@ -1,3 +1,5 @@
+import random
+
 import pytest
 
 from diofant.abc import x
@@ -88,6 +90,9 @@ def test_integer_partition():
     assert random_integer_partition(10,
                                     seed=[1, 3, 2,
                                           1, 5, 1]) == [5, 2, 1, 1, 1]
+
+    random.seed(0)
+    assert random_integer_partition(5, seed=1) == [2, 2, 1]
 
 
 def test_rgs():

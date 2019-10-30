@@ -6,12 +6,11 @@ import pytest
 
 import diofant
 from diofant import (ITE, Abs, And, Float, Function, I, Integral, Lambda,
-                     Matrix, Max, Min, Not, Or, Piecewise, Rational, acos,
-                     acosh, cos, exp, false, lambdify, oo, pi, sin, sqrt,
-                     symbols, sympify, tan, true)
-from diofant.abc import a, b, t, w, x, y, z
+                     Matrix, Max, Min, Not, Or, Piecewise, Rational, cos, exp,
+                     false, lambdify, oo, pi, sin, sqrt, symbols, true)
+from diofant.abc import t, w, x, y, z
 from diofant.external import import_module
-from diofant.printing.lambdarepr import LambdaPrinter, NumExprPrinter
+from diofant.printing.lambdarepr import LambdaPrinter
 from diofant.utilities.decorator import conserve_mpmath_dps
 from diofant.utilities.lambdify import (MATH_TRANSLATIONS, MPMATH_TRANSLATIONS,
                                         NUMPY_TRANSLATIONS,
@@ -25,11 +24,6 @@ MutableDenseMatrix = Matrix
 numpy = import_module('numpy')
 with_numpy = pytest.mark.skipif(numpy is None,
                                 reason="Couldn't import numpy.")
-
-numexpr = import_module('numexpr')
-with_numexpr = pytest.mark.skipif(numexpr is None,
-                                  reason="Couldn't import numexpr.")
-
 
 # ================= Test different arguments =======================
 
@@ -170,36 +164,6 @@ def test_numpy_translation_abs():
     f = lambdify(x, Abs(x), "numpy")
     assert f(-1) == 1
     assert f(1) == 1
-
-
-@with_numexpr
-def test_numexpr_printer():
-    # if translation/printing is done incorrectly then evaluating
-    # a lambdified numexpr expression will throw an exception
-
-    blacklist = ('where', 'complex', 'contains')
-    arg_tuple = (x, y, z)  # some functions take more than one argument
-    for sym in NumExprPrinter._numexpr_functions:
-        if sym in blacklist:
-            continue
-        ssym = sympify(sym)
-        if hasattr(ssym, '_nargs'):
-            nargs = ssym._nargs[0]
-        else:
-            nargs = 1
-        args = arg_tuple[:nargs]
-        f = lambdify(args, ssym(*args), modules='numexpr')
-        assert f(*(1, )*nargs) is not None
-
-
-@with_numpy
-@with_numexpr
-def test_sympyissue_9334():
-    expr = b*a - sqrt(a**2)
-    syms = sorted(expr.free_symbols, key=lambda s: s.name)
-    func_numexpr = lambdify(syms, expr, modules=[numexpr], dummify=False)
-    foo, bar = numpy.random.random((2, 4))
-    func_numexpr(foo, bar)
 
 
 # ================= Test some functions ============================
@@ -381,32 +345,6 @@ def test_numpy_matmul():
     f = lambdify((x, y, z), xmat*xmat*xmat, modules="numpy")
     numpy.testing.assert_array_equal(f(0.5, 3, 4), numpy.array([[72.125, 119.25],
                                                                 [159, 251]]))
-
-
-@with_numpy
-@with_numexpr
-def test_numpy_numexpr():
-    a, b, c = numpy.random.randn(3, 128, 128)
-    # ensure that numpy and numexpr return same value for complicated expression
-    expr = (sin(x) + cos(y) + tan(z)**2 + Abs(z - y)*acos(sin(y*z)) +
-            Abs(y - z)*acosh(2 + exp(y - x)) - sqrt(x**2 + I*y**2))
-    npfunc = lambdify((x, y, z), expr, modules='numpy')
-    nefunc = lambdify((x, y, z), expr, modules='numexpr')
-    assert numpy.allclose(npfunc(a, b, c), nefunc(a, b, c))
-
-
-@with_numpy
-@with_numexpr
-def test_numexpr_userfunctions():
-    a, b = numpy.random.randn(2, 10)
-    uf = type('uf', (Function, ),
-              {'eval': classmethod(lambda x, y: y**2+1)})
-    func = lambdify(x, 1-uf(x), modules='numexpr')
-    assert numpy.allclose(func(a), -(a**2))
-
-    uf = implemented_function(Function('uf'), lambda x, y: 2*x*y+1)
-    func = lambdify((x, y), uf(x, y), modules='numexpr')
-    assert numpy.allclose(func(a, b), 2*a*b+1)
 
 
 def test_integral():
