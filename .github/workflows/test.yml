@@ -74,7 +74,7 @@ jobs:
         DIOFANT_GROUND_TYPES='gmpy' py.test diofant/tests/domains
         py.test diofant/tests/polys
         pip uninstall -y numpy
-        py.test diofant/tests/external
+        py.test diofant/tests/external diofant/tests/utilities
     - name: Upload coverage data
       run: |
         for n in 1 2 3; do

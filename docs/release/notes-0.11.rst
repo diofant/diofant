@@ -35,6 +35,7 @@ Compatibility breaks
 * Reorder output for :meth:`~diofant.matrices.matrices.MatrixBase.jordan_form` and :meth:`~diofant.matrices.matrices.MatrixBase.jordan_cells`, the last one is now optional, see :pull:`896`.
 * Removed ``generate_oriented_forest()``, ``kbins()`` and ``ibin()`` functions, see :pull:`903`.
 * Drop support for ``numexpr`` module in :func:`~diofant.utilities.lambdify.lambdify` and ``NumExprPrinter`` printer class, see :pull:`903`.
+* Removed ``DeferredVector`` class, see :pull:`905`.
 
 Minor changes
 =============

@@ -4,12 +4,10 @@ from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow,
                     Symbol, count_ops, ilcm, oo, symbols, sympify)
-from ..core.compatibility import (NotIterable, as_int, default_sort_key,
-                                  is_sequence)
+from ..core.compatibility import as_int, default_sort_key, is_sequence
 from ..core.logic import fuzzy_and
 from ..functions import Max, Min, exp, factorial, sqrt
 from ..polys import PurePoly, cancel, gcd, roots
-from ..printing import sstr
 from ..printing.defaults import DefaultPrinting
 from ..simplify import nsimplify, signsimp
 from ..simplify import simplify as _simplify
@@ -36,37 +34,6 @@ class ShapeError(ValueError, MatrixError):
 
 class NonSquareMatrixError(ShapeError):
     pass
-
-
-class DeferredVector(Symbol, NotIterable):
-    """A vector whose components are deferred (e.g. for use with lambdify)
-
-    Examples
-    ========
-
-    >>> X = DeferredVector('X')
-    >>> print(X)
-    X
-    >>> expr = (X[0] + 2, X[2] + 3)
-    >>> func = lambdify(X, expr)
-    >>> func([1, 2, 3])
-    (3, 6)
-
-    """
-
-    def __getitem__(self, i):
-        if i == -0:
-            i = 0
-        if i < 0:
-            raise IndexError('DeferredVector index out of range')
-        component_name = '%s[%d]' % (self.name, i)
-        return Symbol(component_name)
-
-    def __str__(self):
-        return sstr(self)
-
-    def __repr__(self):
-        return "DeferredVector('%s')" % (self.name)
 
 
 class MatrixBase(DefaultPrinting):
@@ -160,8 +127,7 @@ class MatrixBase(DefaultPrinting):
                         "Diofant supports just 1D and 2D matrices")
 
             # Matrix([1, 2, 3]) or Matrix([[1, 2], [3, 4]])
-            elif is_sequence(args[0])\
-                    and not isinstance(args[0], DeferredVector):
+            elif is_sequence(args[0]):
                 in_mat = []
                 ncol = set()
                 for row in args[0]:

@@ -4,19 +4,16 @@ import pytest
 
 from diofant import (Abs, Basic, E, Float, Function, I, Integer, Max, Min, N,
                      Poly, Pow, PurePoly, Rational, StrPrinter, Symbol, cos,
-                     exp, oo, pi, simplify, sin, sqrt, sstr, symbols, sympify,
-                     trigsimp)
+                     exp, oo, pi, simplify, sin, sqrt, sstr, symbols, trigsimp)
 from diofant.abc import a, b, c, d, k, n, x, y, z
-from diofant.core.compatibility import iterable
 from diofant.matrices import (GramSchmidt, ImmutableMatrix,
                               ImmutableSparseMatrix, Matrix, SparseMatrix,
                               casoratian, diag, eye, hessian, jordan_cell,
                               matrix_multiply_elementwise, ones, randMatrix,
                               rot_axis1, rot_axis2, rot_axis3, vandermonde,
                               wronskian, zeros)
-from diofant.matrices.matrices import (DeferredVector, MatrixError,
-                                       NonSquareMatrixError, ShapeError,
-                                       mgamma)
+from diofant.matrices.matrices import (MatrixError, NonSquareMatrixError,
+                                       ShapeError, mgamma)
 from diofant.utilities.iterables import capture, flatten
 
 
@@ -2165,21 +2162,6 @@ def test_rotation_matrices():
     assert rot_axis1(0) == eye(3)
     assert rot_axis2(0) == eye(3)
     assert rot_axis3(0) == eye(3)
-
-
-def test_DeferredVector():
-    assert str(DeferredVector("vector")[4]) == "vector[4]"
-    assert repr(DeferredVector("vector")) == "DeferredVector('vector')"
-    assert sympify(DeferredVector("d")) == DeferredVector("d")
-    pytest.raises(IndexError, lambda: DeferredVector('X')[-1])
-
-
-def test_DeferredVector_not_iterable():
-    assert not iterable(DeferredVector('X'))
-
-
-def test_DeferredVector_Matrix():
-    pytest.raises(TypeError, lambda: Matrix(DeferredVector("V")))
 
 
 def test_GramSchmidt():

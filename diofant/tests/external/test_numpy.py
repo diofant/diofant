@@ -11,9 +11,9 @@ import mpmath
 import pytest
 
 import diofant
-from diofant import (DeferredVector, Float, Integer, Matrix, MatrixSymbol,
-                     Rational, Symbol, lambdify, list2numpy, matrix2numpy, sin,
-                     symarray, symbols, sympify)
+from diofant import (Float, Integer, Matrix, MatrixSymbol, Rational, Symbol,
+                     lambdify, list2numpy, matrix2numpy, sin, symarray,
+                     symbols, sympify)
 from diofant.abc import x, y, z
 from diofant.matrices.expressions.matexpr import MatrixElement
 from diofant.utilities.decorator import conserve_mpmath_dps
@@ -238,21 +238,6 @@ def test_lambdify_matrix_multi_input():
                             [yh*xh, yh**2, yh*zh],
                             [zh*xh, zh*yh, zh**2]])
     actual = f(xh, yh, zh)
-    assert numpy.allclose(actual, expected)
-
-
-def test_lambdify_matrix_vec_input():
-    X = DeferredVector('X')
-    M = Matrix([[X[0]**2, X[0]*X[1], X[0]*X[2]],
-                [X[1]*X[0], X[1]**2, X[1]*X[2]],
-                [X[2]*X[0], X[2]*X[1], X[2]**2]])
-    f = lambdify(X, M, [{'ImmutableMatrix': numpy.array}, "numpy"])
-
-    Xh = numpy.array([1.0, 2.0, 3.0])
-    expected = numpy.array([[Xh[0]**2, Xh[0]*Xh[1], Xh[0]*Xh[2]],
-                            [Xh[1]*Xh[0], Xh[1]**2, Xh[1]*Xh[2]],
-                            [Xh[2]*Xh[0], Xh[2]*Xh[1], Xh[2]**2]])
-    actual = f(Xh)
     assert numpy.allclose(actual, expected)
 
 

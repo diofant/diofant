@@ -13,8 +13,8 @@ from diofant.external import import_module
 from diofant.printing.lambdarepr import LambdaPrinter
 from diofant.utilities.decorator import conserve_mpmath_dps
 from diofant.utilities.lambdify import (MATH_TRANSLATIONS, MPMATH_TRANSLATIONS,
-                                        NUMPY_TRANSLATIONS,
-                                        implemented_function)
+                                        NUMPY_TRANSLATIONS, _get_namespace,
+                                        implemented_function, lambdastr)
 
 
 __all__ = ()
@@ -70,6 +70,19 @@ def test_bad_args():
     pytest.raises(TypeError, lambda: lambdify(1))
     # same with vector exprs
     pytest.raises(TypeError, lambda: lambdify([1, 2]))
+    # reserved name
+    pytest.raises(ValueError, lambda: lambdify((('__flatten_args__',),), 1))
+
+    pytest.raises(NameError, lambda: lambdify(x, 1, "spam"))
+
+
+def test__get_namespace():
+    pytest.raises(TypeError, lambda: _get_namespace(1))
+
+
+def test_lambdastr():
+    assert lambdastr(x, x**2) == 'lambda x: (x**2)'
+    assert lambdastr(x, None).find('None') > 0
 
 
 def test_atoms():
