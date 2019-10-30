@@ -444,10 +444,6 @@ class MatrixBase(DefaultPrinting):
 
         """
         if self.rows != 4:
-            # In Python 3.2, properties can only return an AttributeError
-            # so we can't raise a ShapeError -- see commit which added the
-            # first line of this inline comment. Also, there is no need
-            # for a message since MatrixBase will raise the AttributeError
             raise AttributeError
         return self.H*mgamma(0)
 
