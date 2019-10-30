@@ -845,8 +845,7 @@ def multiset_permutations(m, size=None, g=None):
         for i, (k, v) in enumerate(do):
             do[i][1] -= 1
             for j in multiset_permutations(None, size - 1, do):
-                if j:
-                    yield [k] + j
+                yield [k] + j
             do[i][1] += 1
 
 
@@ -1260,6 +1259,7 @@ def partitions(n, m=None, k=None, size=False):
             if need > room:
                 if not keys:
                     return
+                q  # XXX "peephole" optimization, http://bugs.python.org/issue2506
                 continue
 
             ms[i] = q
@@ -1876,8 +1876,7 @@ def runs(seq, op=gt):
         else:
             cycles.append(run)
             run = [ei]
-    if run:
-        cycles.append(run)
+    cycles.append(run)
     return cycles
 
 
