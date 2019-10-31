@@ -120,3 +120,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`12386` Latex printer for MutableDenseNDimArray, MutableSparseNDimArray
 * :sympyissue:`12369` Start using spherical_jn from SciPy
 * :sympyissue:`17792` Wrong limit
+* :sympyissue:`17789` Intermittent test failure in assumptions

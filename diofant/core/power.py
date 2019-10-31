@@ -487,7 +487,8 @@ class Pow(Expr):
     def _eval_is_complex(self):
         from ..functions import log
         if self.base.is_complex:
-            return (log(self.base)*self.exp).is_complex
+            exp = log(self.base)*self.exp
+            return fuzzy_or([exp.is_complex, exp.is_negative])
 
     def _eval_is_imaginary(self):
         from ..functions import arg, log
