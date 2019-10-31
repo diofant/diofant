@@ -224,9 +224,6 @@ class StrPrinter(Printer):
                 strslice(expr.rowslice) + ', ' +
                 strslice(expr.colslice) + ']')
 
-    def _print_DeferredVector(self, expr):
-        return expr.name
-
     def _print_Mul(self, expr):
 
         prec = precedence(expr)

@@ -10,22 +10,22 @@ import warnings
 
 from diofant import (ITE, Add, Adjoint, And, Atom, AtomicExpr, Basic,
                      BlockDiagMatrix, BlockMatrix, Complement, Contains,
-                     DeferredVector, Derivative, Determinant, DiagonalMatrix,
-                     DiagonalOf, Dict, Dummy, Equality, Equivalent, Expr,
-                     FiniteSet, Float, FunctionMatrix, GrayCode, GreaterThan,
-                     GroebnerBasis, HadamardProduct, Identity, Idx, ImageSet,
-                     ImmutableMatrix, ImmutableSparseMatrix, Implies, Indexed,
-                     IndexedBase, Integer, IntegerPartition, Integral,
-                     Intersection, Interval, Inverse, Lambda, LessThan, Limit,
-                     MatAdd, MatMul, MatPow, MatrixSlice, MatrixSymbol, Mod,
-                     Mul, Nand, Nor, Not, Number, Or, Order, Partition,
-                     Permutation, PermutationGroup, Poly, Polyhedron, Pow,
-                     Product, ProductSet, Prufer, PurePoly, Range, Rational,
-                     RootOf, RootSum, S, Set, StrictGreaterThan,
-                     StrictLessThan, Subs, Subset, Sum, Symbol,
-                     SymmetricDifference, Trace, Transpose, Tuple, Unequality,
-                     Union, Wild, WildFunction, Xor, ZeroMatrix, divisor_sigma,
-                     false, mobius, oo, sin, symbols, totient, true)
+                     Derivative, Determinant, DiagonalMatrix, DiagonalOf, Dict,
+                     Dummy, Equality, Equivalent, Expr, FiniteSet, Float,
+                     FunctionMatrix, GrayCode, GreaterThan, GroebnerBasis,
+                     HadamardProduct, Identity, Idx, ImageSet, ImmutableMatrix,
+                     ImmutableSparseMatrix, Implies, Indexed, IndexedBase,
+                     Integer, IntegerPartition, Integral, Intersection,
+                     Interval, Inverse, Lambda, LessThan, Limit, MatAdd,
+                     MatMul, MatPow, MatrixSlice, MatrixSymbol, Mod, Mul, Nand,
+                     Nor, Not, Number, Or, Order, Partition, Permutation,
+                     PermutationGroup, Poly, Polyhedron, Pow, Product,
+                     ProductSet, Prufer, PurePoly, Range, Rational, RootOf,
+                     RootSum, S, Set, StrictGreaterThan, StrictLessThan, Subs,
+                     Subset, Sum, Symbol, SymmetricDifference, Trace,
+                     Transpose, Tuple, Unequality, Union, Wild, WildFunction,
+                     Xor, ZeroMatrix, divisor_sigma, false, mobius, oo, sin,
+                     symbols, totient, true)
 from diofant.abc import a, b, c, w, x, y, z
 from diofant.concrete.expr_with_intlimits import ExprWithIntLimits
 from diofant.concrete.expr_with_limits import AddWithLimits, ExprWithLimits
@@ -1650,10 +1650,6 @@ def test_diofant__logic__boolalg__Or():
 
 def test_diofant__logic__boolalg__Xor():
     assert _test_args(Xor(x, y, 2))
-
-
-def test_diofant__matrices__matrices__DeferredVector():
-    assert _test_args(DeferredVector("X"))
 
 
 def test_diofant__matrices__expressions__matexpr__MatrixBase():

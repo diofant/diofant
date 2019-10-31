@@ -101,7 +101,7 @@ MODULES = {
 }
 
 
-def _import(module, reload="False"):
+def _import(module):
     """
     Creates a global translation dictionary for module.
 
@@ -120,12 +120,8 @@ def _import(module, reload="False"):
 
     # Clear namespace or exit
     if namespace != namespace_default:
-        # The namespace was already generated, don't do it again if not forced.
-        if reload:
-            namespace.clear()
-            namespace.update(namespace_default)
-        else:
-            return
+        namespace.clear()
+        namespace.update(namespace_default)
 
     for import_command in import_commands:
         if import_command.startswith('import_module'):
@@ -308,11 +304,11 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
         for term in syms:
             namespace.update({str(term): term})
 
-    if _module_present('numpy', namespaces) and printer is None:
+    if 'numpy' in namespaces and printer is None:
         # XXX: This has to be done here because of circular imports
         from ..printing.lambdarepr import NumPyPrinter as printer  # noqa: N813
 
-    if _module_present('mpmath', namespaces) and printer is None:
+    if 'mpmath' in namespaces and printer is None:
         from ..printing.lambdarepr import MpmathPrinter as printer  # noqa: N813
 
     # Get the names of the args, for creating a docstring
@@ -342,7 +338,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
         namespace.update({flat: flatten})
     func = eval(lstr, namespace)
     # For numpy lambdify, wrap all input arguments in arrays.
-    if module_provided and _module_present('numpy', namespaces):
+    if module_provided and 'numpy' in namespaces:
         def array_wrap(funcarg):
             def wrapper(*argsx, **kwargsx):
                 return funcarg(*[namespace['asarray'](i) for i in argsx], **kwargsx)
@@ -357,15 +353,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     func.__doc__ = ("Created with lambdify. Signature:\n\n{sig}\n\n"
                     "Expression:\n\n{expr}").format(sig=sig, expr=expr_str)
     return func
-
-
-def _module_present(modname, modlist):
-    if modname in modlist:
-        return True
-    for m in modlist:
-        if hasattr(m, '__name__') and m.__name__ == modname:
-            return True
-    return False
 
 
 def _get_namespace(m):
@@ -402,7 +389,6 @@ def lambdastr(args, expr, printer=None, dummify=False):
 
     """
     # Transforming everything to strings.
-    from ..matrices import DeferredVector
     from ..core import Dummy, sympify, Symbol, Function
     from ..utilities import flatten
 
@@ -423,8 +409,6 @@ def lambdastr(args, expr, printer=None, dummify=False):
     def sub_args(args, dummies_dict):
         if isinstance(args, str):
             return args
-        elif isinstance(args, DeferredVector):
-            return str(args)
         elif iterable(args):
             dummies = flatten([sub_args(a, dummies_dict) for a in args])
             return ",".join(str(a) for a in dummies)
@@ -441,9 +425,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
         try:
             expr = sympify(expr).xreplace(dummies_dict)
         except (TypeError, AttributeError):
-            if isinstance(expr, DeferredVector):
-                pass
-            elif isinstance(expr, dict):
+            if isinstance(expr, dict):
                 k = [sub_expr(sympify(a), dummies_dict) for a in expr]
                 v = [sub_expr(sympify(a), dummies_dict) for a in expr.values()]
                 expr = dict(zip(k, v))
@@ -455,7 +437,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
 
     # Transform args
     def isiter(l):
-        return iterable(l, exclude=(str, DeferredVector))
+        return iterable(l, exclude=(str,))
 
     if isiter(args) and any(isiter(i) for i in args):
         import re
@@ -474,9 +456,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
     if dummify:
         args = sub_args(args, dummies_dict)
     else:
-        if isinstance(args, str):
-            pass
-        elif iterable(args, exclude=DeferredVector):
+        if iterable(args):
             args = ",".join(str(a) for a in args)
 
     # Transform expr
