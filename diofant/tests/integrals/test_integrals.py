@@ -1286,3 +1286,8 @@ def test_sympyissue_7337():
 def test_sympyissue_11877():
     assert integrate(log(Rational(1, 2) - x),
                      (x, 0, Rational(1, 2))) == -Rational(1, 2) - log(2)/2
+
+
+def test_sympyissue_17841():
+    e = 1/(x**2 + x + I)
+    assert integrate(e.diff(x), x) == e
