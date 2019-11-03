@@ -193,3 +193,10 @@ def test_subrange_large():
     lb = 4
     ub = 7
     subrange_exercise(mult, lb, ub)
+
+
+def test_coverage():
+    m = MultisetPartitionTraverser()
+    assert list(m.enum_small([2, 2], 0)) == []
+    assert m.count_partitions([2, 2]) == 9  # fill dp_map
+    assert m.count_partitions([2, 2]) == 9
