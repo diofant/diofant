@@ -131,11 +131,8 @@ def _import(module):
                 namespace.update(module.__dict__)
                 continue
         else:
-            try:
-                exec(import_command, {}, namespace)
-                continue
-            except ImportError:
-                pass
+            exec(import_command, {}, namespace)
+            continue
 
         raise ImportError(
             "can't import '%s' with '%s' command" % (module, import_command))
@@ -315,20 +312,12 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     if not iterable(args):
         args = args,
     names = []
-    # Grab the callers frame, for getting the names by inspection (if needed)
-    callers_local_vars = inspect.currentframe().f_back.f_locals.items()
     for n, var in enumerate(args):
         if hasattr(var, 'name'):
             names.append(var.name)
         else:
-            # It's an iterable. Try to get name by inspection of calling frame.
-            name_list = [var_name for var_name, var_val in callers_local_vars
-                         if var_val is var]
-            if len(name_list) == 1:
-                names.append(name_list[0])
-            else:
-                # Cannot infer name with certainty. arg_# will have to do.
-                names.append('arg_' + str(n))
+            # Cannot infer name with certainty. arg_# will have to do.
+            names.append('arg_' + str(n))
 
     # Create lambda function.
     lstr = lambdastr(args, expr, printer=printer, dummify=dummify)

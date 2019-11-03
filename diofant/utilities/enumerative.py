@@ -118,10 +118,6 @@ class PartComponent:
         # its u attribute.
         self.v = 0
 
-    def __repr__(self):
-        """for debug/algorithm animation purposes."""
-        return 'c:%d u:%d v:%d' % (self.c, self.u, self.v)
-
     def __eq__(self, other):
         """Define  value oriented equality, which is useful for testers."""
         return (isinstance(other, self.__class__) and
@@ -405,18 +401,6 @@ class MultisetPartitionTraverser():
         self.k2 = 0
         self.p1 = 0
 
-    def db_trace(self, msg):
-        """Useful for usderstanding/debugging the algorithms.  Not
-        generally activated in end-user code.
-
-        """
-        if self.debug:
-            letters = 'abcdefghijklmnopqrstuvwxyz'
-            state = [self.f, self.lpart, self.pstack]
-            print("DBG:", msg,
-                  ["".join(part) for part in list_visitor(state, letters)],
-                  animation_visitor(state))
-
     #
     # Helper methods for enumeration
     #
@@ -559,7 +543,6 @@ class MultisetPartitionTraverser():
                     (part[0].u - part[0].v) ==
                         ((ub - self.lpart - 1) * part[0].v)):
                     self.k2 += 1
-                    self.db_trace("Decrement fails test 3")
                     return False
                 return True
         return False
@@ -818,11 +801,9 @@ class MultisetPartitionTraverser():
         while True:
             good_partition = True
             while self.spread_part_multiplicity():
-                self.db_trace("spread 1")
                 if self.lpart >= ub:
                     self.discarded += 1
                     good_partition = False
-                    self.db_trace("  Discarding")
                     self.lpart = ub - 2
                     break
 
@@ -833,13 +814,10 @@ class MultisetPartitionTraverser():
 
             # M5 (Decrease v)
             while not self.decrement_part_small(self.top_part(), ub):
-                self.db_trace("Failed decrement, going to backtrack")
                 # M6 (Backtrack)
                 if self.lpart == 0:
                     return
                 self.lpart -= 1
-                self.db_trace("Backtracked to")
-            self.db_trace("decrement ok, about to expand")
 
     def enum_large(self, multiplicities, lb):
         """Enumerate the partitions of a multiset with lb < num(parts)
@@ -929,17 +907,14 @@ class MultisetPartitionTraverser():
         while True:
             good_partition = True
             while self.spread_part_multiplicity():
-                self.db_trace("spread 1")
                 if not self.decrement_part_large(self.top_part(), 0, lb):
                     # Failure here - possible in range case?
-                    self.db_trace("  Discarding (large cons)")
                     self.discarded += 1
                     good_partition = False
                     break
                 elif self.lpart >= ub:
                     self.discarded += 1
                     good_partition = False
-                    self.db_trace("  Discarding small cons")
                     self.lpart = ub - 2
                     break
 
@@ -950,13 +925,10 @@ class MultisetPartitionTraverser():
 
             # M5 (Decrease v)
             while not self.decrement_part_range(self.top_part(), lb, ub):
-                self.db_trace("Failed decrement, going to backtrack")
                 # M6 (Backtrack)
                 if self.lpart == 0:
                     return
                 self.lpart -= 1
-                self.db_trace("Backtracked to")
-            self.db_trace("decrement ok, about to expand")
 
     def count_partitions_slow(self, multiplicities):
         """Returns the number of partitions of a multiset whose elements

@@ -82,7 +82,7 @@ def test__get_namespace():
 
 def test_lambdastr():
     assert lambdastr(x, x**2) == 'lambda x: (x**2)'
-    assert lambdastr(x, None).find('None') > 0
+    assert lambdastr(x, None, dummify=True).find('None') > 0
 
 
 def test_atoms():
