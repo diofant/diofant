@@ -122,3 +122,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`17792` Wrong limit
 * :sympyissue:`17789` Intermittent test failure in assumptions
 * :sympyissue:`17841` integrate throws error for rational functions involving I
+* :sympyissue:`17847` Wrong result for as_leading_term()

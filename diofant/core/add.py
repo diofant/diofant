@@ -627,13 +627,21 @@ class Add(AssocOp):
 
     def _eval_as_leading_term(self, x):
         from . import factor_terms
+        from ..series import Order
 
-        expr = self.func(*[t.as_leading_term(x) for t in self.args]).removeO()
-        if not expr:
-            # simple leading term analysis gave us 0 but we have to send
-            # back a term, so compute the leading term (via series)
-            return self.compute_leading_term(x)
-        elif not expr.is_Add:
+        by_O = functools.cmp_to_key(lambda f, g: 1 if f in Order(g, x) else -1)
+        expr = Integer(0)
+
+        for t in sorted((_.as_leading_term(x) for _ in self.args), key=by_O):
+            expr += t
+            if not expr:
+                # simple leading term analysis gave us 0 but we have to send
+                # back a term, so compute the leading term (via series)
+                return self.compute_leading_term(x)
+
+        expr = expr.removeO()
+
+        if not expr.is_Add:
             return expr
         else:
             plain = expr.func(*[s for s, _ in expr.extract_leading_order(x)])
