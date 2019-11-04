@@ -629,7 +629,7 @@ class Add(AssocOp):
         from . import factor_terms
         from ..series import Order
 
-        by_O = functools.cmp_to_key(lambda f, g: 1 if f in Order(g, x) else -1)
+        by_O = functools.cmp_to_key(lambda f, g: 1 if Order(g, x).contains(f) is not False else -1)
         expr = Integer(0)
 
         for t in sorted((_.as_leading_term(x) for _ in self.args), key=by_O):
