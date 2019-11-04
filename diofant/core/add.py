@@ -1,5 +1,5 @@
-from collections import defaultdict
-from functools import reduce
+import collections
+import functools
 
 from .cache import cacheit
 from .compatibility import default_sort_key, is_sequence
@@ -237,7 +237,7 @@ class Add(AssocOp):
 
         """
 
-        d = defaultdict(list)
+        d = collections.defaultdict(list)
         for ai in self.args:
             c, m = ai.as_coeff_Mul()
             d[m].append(c)
@@ -246,7 +246,7 @@ class Add(AssocOp):
                 d[k] = v[0]
             else:
                 d[k] = Add(*v)
-        di = defaultdict(int)
+        di = collections.defaultdict(int)
         di.update(d)
         return di
 
@@ -366,7 +366,7 @@ class Add(AssocOp):
         ncon, dcon = content.as_numer_denom()
 
         # collect numerators and denominators of the terms
-        nd = defaultdict(list)
+        nd = collections.defaultdict(list)
         for f in expr.args:
             ni, di = f.as_numer_denom()
             nd[di].append(ni)
@@ -708,11 +708,11 @@ class Add(AssocOp):
             terms.append((c.numerator, c.denominator, m))
 
         if not inf:
-            ngcd = reduce(igcd, [t[0] for t in terms], 0)
-            dlcm = reduce(ilcm, [t[1] for t in terms], 1)
+            ngcd = functools.reduce(igcd, [t[0] for t in terms], 0)
+            dlcm = functools.reduce(ilcm, [t[1] for t in terms], 1)
         else:
-            ngcd = reduce(igcd, [t[0] for t in terms if t[1]], 0)
-            dlcm = reduce(ilcm, [t[1] for t in terms if t[1]], 1)
+            ngcd = functools.reduce(igcd, [t[0] for t in terms if t[1]], 0)
+            dlcm = functools.reduce(ilcm, [t[1] for t in terms if t[1]], 1)
 
         if ngcd == dlcm == 1:
             return Integer(1), self
@@ -769,7 +769,7 @@ class Add(AssocOp):
             rads = []
             common_q = None
             for m in args:
-                term_rads = defaultdict(list)
+                term_rads = collections.defaultdict(list)
                 for ai in Mul.make_args(m):
                     if ai.is_Pow:
                         b, e = ai.as_base_exp()
@@ -796,7 +796,7 @@ class Add(AssocOp):
                 # find the gcd of bases for each q
                 G = []
                 for q in common_q:
-                    g = reduce(igcd, [r[q] for r in rads], 0)
+                    g = functools.reduce(igcd, [r[q] for r in rads], 0)
                     if g != 1:
                         G.append(root(g, q))
                 if G:
