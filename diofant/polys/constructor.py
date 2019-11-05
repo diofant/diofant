@@ -169,9 +169,8 @@ def _construct_composite(coeffs, opt):
             coeffs.update(list(numer.values()))
             coeffs.update(list(denom.values()))
 
-    rationals, reals = False, False
+    algebraics, rationals, reals = False, False, False
 
-    algebraics = []
     for coeff in coeffs:
         if coeff.is_Rational:
             if not coeff.is_Integer:
@@ -180,16 +179,16 @@ def _construct_composite(coeffs, opt):
             reals = True
             break
         elif coeff.is_number and coeff.is_algebraic:
-            algebraics.append(coeff)
+            algebraics = True
         else:
             raise NotImplementedError
 
     if reals:
         ground = RR
+    elif algebraics:
+        ground, _ = _construct_algebraic(coeffs, opt)
     elif rationals:
         ground = QQ
-    elif algebraics:
-        ground, _ = _construct_algebraic(algebraics, opt)
     else:
         ground = ZZ
 
