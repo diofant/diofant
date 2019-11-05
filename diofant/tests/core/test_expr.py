@@ -264,6 +264,12 @@ def test_as_leading_term():
     assert (6**(x + 1)).as_leading_term(x) == 6
     assert (6**(x + n)).as_leading_term(x) == 6**n
 
+    # issue sympy/sympy#17847
+    assert (1 - cos(x)).as_leading_term(x) == x**2/2
+    assert (1 - cos(x) + x**6).as_leading_term(x) == x**2/2
+    assert (1 + cos(x) + x**6).as_leading_term(x) == 2
+    assert (sin(x) - x + x**7).as_leading_term(x) == -x**3/6
+
 
 def test_as_leading_term_stub():
     class foo(Function):
