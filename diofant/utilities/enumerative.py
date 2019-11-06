@@ -547,7 +547,7 @@ class MultisetPartitionTraverser():
                 return True
         return False
 
-    def decrement_part_large(self, part, amt, lb):
+    def decrement_part_large(self, part, lb):
         """Decrements part, while respecting size constraint.
 
         A part can have no children which are of sufficient size (as
@@ -564,25 +564,11 @@ class MultisetPartitionTraverser():
         part
             part to be decremented (topmost part on the stack)
 
-        amt
-            Can only take values 0 or 1.  A value of 1 means that the
-            part must be decremented, and then the size constraint is
-            enforced.  A value of 0 means just to enforce the ``lb``
-            size constraint.
-
         lb
             The partitions produced by the calling enumeration must
             have more parts than this value.
 
         """
-
-        if amt == 1:
-            # In this case we always need to increment, *before*
-            # enforcing the "sufficient unallocated multiplicity"
-            # constraint.  Easiest for this is just to call the
-            # regular decrement method.
-            if not self.decrement_part(part):
-                return False
 
         # Next, perform any needed additional decrementing to respect
         # "sufficient unallocated multiplicity" (or fail if this is
@@ -647,7 +633,7 @@ class MultisetPartitionTraverser():
         # short circuiting and left-to-right order of the 'and'
         # operator is important for this to work correctly.
         return self.decrement_part_small(part, ub) and \
-            self.decrement_part_large(part, 0, lb)
+            self.decrement_part_large(part, lb)
 
     def spread_part_multiplicity(self):
         """Returns True if a new part has been created, and
@@ -876,11 +862,11 @@ class MultisetPartitionTraverser():
         if ub <= 0 or lb >= sum(multiplicities):
             return
         self._initialize_enumeration(multiplicities)
-        self.decrement_part_large(self.top_part(), 0, lb)
+        self.decrement_part_large(self.top_part(), lb)
         while True:
             good_partition = True
             while self.spread_part_multiplicity():
-                assert self.decrement_part_large(self.top_part(), 0, lb)
+                assert self.decrement_part_large(self.top_part(), lb)
 
                 if self.lpart >= ub:
                     self.discarded += 1

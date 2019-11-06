@@ -203,4 +203,4 @@ def test_coverage():
     assert list(m.enum_range([2, 2], 1, 0)) == []
     assert list(m.enum_range([2, 2], 10, 2)) == []
     assert list(m.enum_large([2, 2], 10)) == []
-    assert m.decrement_part_large(m.top_part(), 0, 10) is False
+    assert m.decrement_part_large(m.top_part(), 10) is False
