@@ -601,11 +601,9 @@ class MultisetPartitionTraverser():
 
         for i in range(len(part) - 1, -1, -1):
             if i == 0:
-                if part[0].v > deficit:
-                    part[0].v -= deficit
-                    return True
-                else:
-                    return False  # This shouldn't happen, due to above check
+                assert part[0].v > deficit
+                part[0].v -= deficit
+                return True
             else:
                 if part[i].v >= deficit:
                     part[i].v -= deficit
@@ -822,8 +820,6 @@ class MultisetPartitionTraverser():
     def enum_large(self, multiplicities, lb):
         """Enumerate the partitions of a multiset with lb < num(parts)
 
-        Equivalent to enum_range(multiplicities, lb, sum(multiplicities))
-
         See also
         ========
         enum_all, enum_small, enum_range
@@ -851,31 +847,8 @@ class MultisetPartitionTraverser():
         [['a'], ['a'], ['b'], ['b']]]
 
         """
-        self.discarded = 0
-        if lb >= sum(multiplicities):
-            return
-        self._initialize_enumeration(multiplicities)
-        self.decrement_part_large(self.top_part(), 0, lb)
-        while True:
-            good_partition = True
-            while self.spread_part_multiplicity():
-                if not self.decrement_part_large(self.top_part(), 0, lb):
-                    # Failure here should be rare/impossible
-                    self.discarded += 1
-                    good_partition = False
-                    break
 
-            # M4  Visit a partition
-            if good_partition:
-                state = [self.f, self.lpart, self.pstack]
-                yield state
-
-            # M5 (Decrease v)
-            while not self.decrement_part_large(self.top_part(), 1, lb):
-                # M6 (Backtrack)
-                if self.lpart == 0:
-                    return
-                self.lpart -= 1
+        return self.enum_range(multiplicities, lb, sum(multiplicities))
 
     def enum_range(self, multiplicities, lb, ub):
         """Enumerate the partitions of a multiset with
@@ -907,12 +880,9 @@ class MultisetPartitionTraverser():
         while True:
             good_partition = True
             while self.spread_part_multiplicity():
-                if not self.decrement_part_large(self.top_part(), 0, lb):
-                    # Failure here - possible in range case?
-                    self.discarded += 1
-                    good_partition = False
-                    break
-                elif self.lpart >= ub:
+                assert self.decrement_part_large(self.top_part(), 0, lb)
+
+                if self.lpart >= ub:
                     self.discarded += 1
                     good_partition = False
                     self.lpart = ub - 2
