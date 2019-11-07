@@ -889,7 +889,7 @@ def _solve_system(exprs, symbols, **flags):
         else:
             failed.append(g)
 
-    if all(p.is_linear for p in polys):
+    if polys and all(p.is_linear for p in polys):
         n, m = len(polys), len(symbols)
         matrix = zeros(n, m + 1)
 
