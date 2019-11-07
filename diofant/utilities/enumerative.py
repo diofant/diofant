@@ -521,7 +521,7 @@ class MultisetPartitionTraverser():
             self.p1 += 1  # increment to keep track of usefulness of tests
             return False
         plen = len(part)
-        for j in range(plen - 1, -1, -1):
+        for j in range(plen - 1, -1, -1):  # pragma: no branch
             # Knuth's mod, (answer to problem 7.2.1.5.69)
             if (j == 0) and (part[0].v - 1)*(ub - self.lpart) < part[0].u:
                 self.k1 += 1
@@ -545,7 +545,7 @@ class MultisetPartitionTraverser():
                     self.k2 += 1
                     return False
                 return True
-        return False
+        assert False  # pragma: no cover
 
     def decrement_part_large(self, part, lb):
         """Decrements part, while respecting size constraint.
@@ -585,7 +585,7 @@ class MultisetPartitionTraverser():
         if deficit <= 0:
             return True
 
-        for i in range(len(part) - 1, -1, -1):
+        for i in range(len(part) - 1, -1, -1):  # pragma: no branch
             if i == 0:
                 assert part[0].v > deficit
                 part[0].v -= deficit
@@ -597,6 +597,7 @@ class MultisetPartitionTraverser():
                 else:
                     deficit -= part[i].v
                     part[i].v = 0
+        assert False  # pragma: no cover
 
     def decrement_part_range(self, part, lb, ub):
         """Decrements part (a subrange of pstack), if possible, returning
