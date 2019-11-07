@@ -54,7 +54,7 @@ jobs:
         path: dist
     - name: Coverage tests
       env:
-        PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
+        PYTEST_ADDOPTS: -n auto --doctest-modules --cov diofant --cov-append -m "not slow and not xfail"
       run: |
         python setup.py test
     - name: Slow tests
