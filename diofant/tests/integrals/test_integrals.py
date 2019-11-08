@@ -359,6 +359,12 @@ def test_transform():
     assert i.transform(x, (x + 2*y, x)).doit() == \
         i.transform(x, (x + 2*z, x)).doit() == 3
 
+    assert a.transform(b, x) == a
+    assert a.transform(x, y) == Integral(exp(-y**2), (y, -oo, oo))
+
+    pytest.raises(ValueError, lambda: Integral(cos(x**2 - 1),
+                                               (x, 0, 1)).transform(x**2 - 1, y))
+
 
 def test_sympyissue_4052():
     f = Rational(1, 2)*asin(x) + x*sqrt(1 - x**2)/2
@@ -627,6 +633,11 @@ def test_as_sum_midpoint2():
     assert e.as_sum(4, method="midpoint").expand() == Rational(21, 64) + y + y**2
 
 
+def test_as_sum_trapezoid():
+    e = Integral(sin(x), (x, 3, 7))
+    assert e.as_sum(2, 'trapezoid') == 2*sin(5) + sin(3) + sin(7)
+
+
 def test_as_sum_left():
     e = Integral((x + y)**2, (x, 0, 1))
     assert e.as_sum(1, method="left").expand() == y**2
@@ -650,6 +661,11 @@ def test_as_sum_raises():
     pytest.raises(ValueError, lambda: Integral(x).as_sum(3))
     pytest.raises(NotImplementedError, lambda: e.as_sum(oo))
     pytest.raises(NotImplementedError, lambda: e.as_sum(3, method='xxxx2'))
+
+
+def test_integrate_conds():
+    assert integrate(x**a*exp(-x), (x, 0, oo),
+                     conds='separate') == (gamma(a + 1), -re(a) < 1)
 
 
 def test_nested_doit():
