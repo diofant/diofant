@@ -337,6 +337,20 @@ def test_line_geom():
     assert Ray((0, 0), angle=pi/4).plot_interval() == \
         [t, 0, 10]
 
+    p1, p2 = Point(0, 0), Point(4, 1)
+    r1 = Ray(p1, p2)
+    assert r1.direction == p2
+
+    p1, p2, p3 = Point(0, 0), Point(-1, -1), Point(-1, 0)
+    r1, r2 = Ray(p1, p2), Ray(p1, p3)
+    assert r1.ydirection == -oo
+    assert r2.ydirection == 0
+
+    p1, p2, p3 = Point(0, 0), Point(6, 6), Point(5, 1)
+    s1 = Segment(p1, p2)
+    assert s1.perpendicular_bisector() == Line(Point(3, 3), Point(9, -3))
+    assert s1.perpendicular_bisector(p3) == Segment(Point(3, 3), Point(5, 1))
+
 
 def test_line3d():
     p1 = Point3D(0, 0, 0)
@@ -590,6 +604,36 @@ def test_line3d():
     pytest.raises(TypeError, lambda: seg1.contains([]))
     seg2 = Segment3D(Point3D(2, 2, 2), Point3D(3, 2, 2))
     assert seg1.contains(seg2) is False
+
+    p1, p2 = Point3D(0, 0, 0), Point3D(3, 5, 2)
+    p3, p4 = Point3D(-2, -2, -2), Point3D(0, 2, 1)
+    l1, l2, l3 = Line3D(p1, p2), Line3D(p1, p3), Line3D(p1, p4)
+    l4 = Line3D(p2, p3)
+    assert Line3D.are_concurrent(l2, l3, l4) is False
+
+    p1, p2, p3 = Point3D(0, 0, 1), Point3D(1, 1, 2), Point3D(2, 0, 1)
+    l1 = Line3D(p1, p2)
+    assert l1.projection(p3) == Point3D(Rational(2, 3), Rational(2, 3),
+                                        Rational(5, 3))
+
+    p6, p7 = Point3D(0, 5, 2), Point3D(2, 6, 3)
+    s1 = Segment3D(p6, p7)
+    assert l1.intersection(s1) == []
+
+    p1, p2 = Point3D(0, 0, 0), Point3D(5, 3, 1)
+    l1 = Line3D(p1, p2)
+    assert l1.plot_interval() == [t, -5, 5]
+
+    r = Ray3D(Point3D(0, 0, 0), Point3D(1, 1, 1))
+    assert r.plot_interval() == [t, 0, 10]
+
+    p1, p2 = Point3D(0, 0, 0), Point3D(5, 3, 0)
+    s1 = Segment3D(p1, p2)
+    assert s1.plot_interval() == [t, 0, 1]
+
+    p1, p2 = Point3D(0, 0, 3), Point3D(1, 1, 4)
+    s = Segment3D(p1, p2)
+    assert s.distance(Point3D(10, 15, 12)) == sqrt(341)
 
 
 def test_line_intersection():
