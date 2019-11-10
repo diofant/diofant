@@ -336,10 +336,19 @@ def test_collect_const():
     assert collect_const(2*x - 2*y - 2*z, -2) == \
         Add(2*x, Mul(-2, y + z, evaluate=False), evaluate=False)
 
+
+def test_collect_sqrt():
     # this is why the content_primitive is used
     eq = (sqrt(15 + 5*sqrt(2))*x + sqrt(3 + sqrt(2))*y)*2
     assert collect_sqrt(eq + 2) == \
         2*sqrt(sqrt(2) + 3)*(sqrt(5)*x + y) + 2
+
+    r2, r3, r5 = [sqrt(i) for i in [2, 3, 5]]
+    assert (collect_sqrt(a*r2 + b*r2 + a*r3 + b*r5, evaluate=False) ==
+            ((sqrt(3)*a, sqrt(5)*b, sqrt(2)*(a + b)), 3))
+
+    assert collect_sqrt(a*sqrt(2) + b, evaluate=False) == ((b, sqrt(2)*a), 1)
+    assert collect_sqrt(a + b, evaluate=False) == ((a + b,), 0)
 
 
 def test_sympyissue_6097():

@@ -102,6 +102,8 @@ def test_heurisch_trigonometric():
     assert heurisch(acos(x/4) * asin(x/4), x) == 2*x - (sqrt(16 - x**2))*asin(x/4) \
         + (sqrt(16 - x**2))*acos(x/4) + x*asin(x/4)*acos(x/4)
 
+    assert heurisch(1/sin(1/x)/x**2, x) == -log(tan(1/x/2))
+
 
 def test_heurisch_hyperbolic():
     assert heurisch(sinh(x), x) == cosh(x)
