@@ -311,10 +311,26 @@ def test_trigsimp_groebner():
     # issue sympy/sympy#11062
     trigsimp_groebner(csc(x) * sin(x))  # not raises
 
+    ex = sin(x)*cos(x)
+    assert trigsimp_groebner(ex, hints=[sin(2*x)]) == sin(2*x)/2
 
-def test_trigsimp_old():
+    ex = (tan(x) + tan(y))/(1 - tan(x)*tan(y))
+    assert trigsimp_groebner(ex, hints=[(tan, x, y)]) == tan(x + y)
+
+
+def test_trigsimp_old(capsys):
     e = 2*sin(x)**2 + 2*cos(x)**2
     assert trigsimp(e, old=True) == 2
+    e = 3*tanh(x)**7 - 2/coth(x)**7
+    assert trigsimp(e, method='old') == e
+    e = (-sin(x) + 1)/cos(x) + cos(x)/(-sin(x) + 1)
+    assert (trigsimp(e, method='old') ==
+            (-sin(x) + 1)/cos(x) - cos(x)/(sin(x) - 1))
+    e = (-sin(x) + 1)/cos(x) + cos(x)/(-sin(x) + 1)
+    assert trigsimp(e, method='groebner', old=True) == 2/cos(x)
+
+    assert trigsimp(1/cot(x)**2, compare=True, old=True) == cot(x)**(-2)
+    assert capsys.readouterr().out == '\tfutrig: tan(x)**2\n'
 
 
 def test_sympyissue_2827_trigsimp_methods():

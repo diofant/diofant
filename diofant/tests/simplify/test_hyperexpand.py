@@ -18,7 +18,8 @@ from diofant.simplify.hyperexpand import (Formula, FormulaCollection,
                                           ReduceOrder, ShiftA, ShiftB,
                                           UnShiftA, UnShiftB, apply_operators,
                                           build_hypergeometric_formula,
-                                          devise_plan, hyperexpand,
+                                          devise_plan, devise_plan_meijer,
+                                          hyperexpand,
                                           make_derivative_operator,
                                           reduce_order, reduce_order_meijer)
 from diofant.utilities.randtest import verify_numerically as tn
@@ -245,6 +246,23 @@ def test_plan():
                                           Hyper_Function((a1, a2), [b1]), z), op),
               h2, z)
 
+    m = meijerg(((0,), ()), ((), ()), z)
+    m2 = meijerg(((1,), ()), ((), ()), z)
+    assert tn(apply_operators(m, devise_plan_meijer(G_Function([0], [], [], []),
+                                                    G_Function([1], [], [], []), z), op),
+              m2, z)
+
+    m2 = meijerg(((-1,), ()), ((), ()), z)
+    assert tn(apply_operators(m, devise_plan_meijer(G_Function([0], [], [], []),
+                                                    G_Function([-1], [], [], []), z), op),
+              m2, z)
+
+    m = meijerg(((), (1,)), ((), ()), z)
+    m2 = meijerg(((), (2,)), ((), ()), z)
+    assert tn(apply_operators(m, devise_plan_meijer(G_Function([], [1], [], []),
+                                                    G_Function([], [2], [], []), z), op),
+              m2, z)
+
 
 def test_plan_derivatives():
     a1, a2, a3 = 1, 2, Rational(1, 2)
@@ -271,6 +289,8 @@ def test_reduction_operators():
 
     h2 = hyper((a1, a2), (b1, a2), z)
     assert tn(ReduceOrder(a2, a2).apply(h, op), h2, z)
+
+    assert str(ReduceOrder(a2, a2)).find('<Reduce order by cancelling upper ') == 0
 
     h2 = hyper((a1, a2 + 1), (b1, a2), z)
     assert tn(ReduceOrder(a2 + 1, a2).apply(h, op), h2, z)
@@ -300,6 +320,9 @@ def test_shift_operators():
     assert tn(ShiftB(b2).apply(h, op), hyper((a1, a2), (b1, b2 - 1, b3), z), z)
     assert tn(ShiftB(b3).apply(h, op), hyper((a1, a2), (b1, b2, b3 - 1), z), z)
 
+    assert str(ShiftA(a1)).find('<Increment upper') == 0
+    assert str(ShiftB(b1)).find('<Decrement lower') == 0
+
 
 def test_ushift_operators():
     a1, a2, b1, b2, b3 = (randcplx(n) for n in range(5))
@@ -315,12 +338,16 @@ def test_ushift_operators():
     s = UnShiftA((a1, a2), (b1, b2, b3), 1, z)
     assert tn(s.apply(h, op), hyper((a1, a2 - 1), (b1, b2, b3), z), z)
 
+    assert str(s).find('<Decrement upper index #') == 0
+
     s = UnShiftB((a1, a2), (b1, b2, b3), 0, z)
     assert tn(s.apply(h, op), hyper((a1, a2), (b1 + 1, b2, b3), z), z)
     s = UnShiftB((a1, a2), (b1, b2, b3), 1, z)
     assert tn(s.apply(h, op), hyper((a1, a2), (b1, b2 + 1, b3), z), z)
     s = UnShiftB((a1, a2), (b1, b2, b3), 2, z)
     assert tn(s.apply(h, op), hyper((a1, a2), (b1, b2, b3 + 1), z), z)
+
+    assert str(s).find('<Increment lower index #') == 0
 
 
 def can_do_meijer(a1, a2, b1, b2, numeric=True):
@@ -497,13 +524,22 @@ def test_meijerg_shift_operators():
     assert tn(MeijerShiftD(a3).apply(g, op),
               meijerg([a1], [a3 - 1, a4], [b1], [b3, b4], z), z)
 
+    assert str(MeijerShiftA(b1)).find('<Increment upper b=') == 0
+    assert str(MeijerShiftB(a1)).find('<Decrement upper a=') == 0
+    assert str(MeijerShiftC(b3)).find('<Increment lower b=') == 0
+    assert str(MeijerShiftD(a3)).find('<Decrement lower a=') == 0
+
     s = MeijerUnShiftA([a1], [a3, a4], [b1], [b3, b4], 0, z)
     assert tn(
         s.apply(g, op), meijerg([a1], [a3, a4], [b1 - 1], [b3, b4], z), z)
 
+    assert str(s).find('<Decrement upper b index #') == 0
+
     s = MeijerUnShiftC([a1], [a3, a4], [b1], [b3, b4], 0, z)
     assert tn(
         s.apply(g, op), meijerg([a1], [a3, a4], [b1], [b3 - 1, b4], z), z)
+
+    assert str(s).find('<Decrement lower b index #') == 0
 
     s = MeijerUnShiftB([a1], [a3, a4], [b1], [b3, b4], 0, z)
     assert tn(
