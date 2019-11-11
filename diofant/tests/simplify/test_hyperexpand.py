@@ -545,9 +545,13 @@ def test_meijerg_shift_operators():
     assert tn(
         s.apply(g, op), meijerg([a1 + 1], [a3, a4], [b1], [b3, b4], z), z)
 
+    assert str(s).find('<Increment upper a index #') == 0
+
     s = MeijerUnShiftD([a1], [a3, a4], [b1], [b3, b4], 0, z)
     assert tn(
         s.apply(g, op), meijerg([a1], [a3 + 1, a4], [b1], [b3, b4], z), z)
+
+    assert str(s).find('<Increment lower a index #') == 0
 
 
 @pytest.mark.slow

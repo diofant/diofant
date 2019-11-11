@@ -3,7 +3,7 @@ import warnings
 import pytest
 
 from diofant import (Abs, Derivative, Dummy, Float, Rational, Symbol, Tuple,
-                     cos, oo, pi, sqrt, symbols)
+                     cos, oo, pi, root, sqrt, symbols)
 from diofant.functions.elementary.trigonometric import tan
 from diofant.geometry import (Circle, Curve, Ellipse, GeometryError, Line,
                               Point, Point2D, Point3D, Polygon, Ray,
@@ -82,6 +82,8 @@ def test_curve():
 
     pytest.raises(ValueError, lambda: Curve((s, s + t), (s, 1, 2)).arbitrary_point())
     pytest.raises(ValueError, lambda: Curve((s, s + t), (t, 1, 2)).arbitrary_point(s))
+
+    assert Curve((t, t), (t, 0, 1)).plot_interval() == [t, 0, 1]
 
 
 def test_ellipse_geom():
@@ -345,6 +347,16 @@ def test_ellipse_geom():
     assert c.scale(-1) == Circle((-1, 1), 2)
     assert c.scale(y=-1) == Circle((1, -1), 2)
     assert c.scale(2) == Ellipse((2, 1), 4, 2)
+
+    e1 = Ellipse(Point(1, 0), 3, 2)
+    assert (e1.evolute() == root(4, 3)*y**Rational(2, 3) +
+            (3*x - 3)**Rational(2, 3) - root(25, 3))
+
+    e1 = Ellipse(Point(0, 0), 3, 2)
+    p1 = e1.random_point(seed=0)
+    assert p1.evalf(2) == Point(2.0664, 1.4492)
+
+    assert Ellipse((1, 0), 2, 1).rotate(pi/2) == Ellipse(Point(0, 1), 1, 2)
 
 
 def test_ellipse_random_point():
@@ -623,6 +635,18 @@ def test_polygon():
 
     assert p1.distance(p3) == sqrt(2)/2
     assert p3.distance(p4) == 2*sqrt(2)/5
+
+    r = Polygon(Point(0, 0), 1, n=3)
+    assert r.vertices[0] == Point(1, 0)
+
+    mid = Point(1, 1)
+    assert Polygon((0, 2), (2, 2), mid, (0, 0), (2, 0), mid).area == 0
+
+    t1 = Triangle(Point(0, 0), Point(4, 0), Point(2, 4))
+    assert t1.is_isosceles() is True
+
+    t1 = Triangle(Point(0, 0), Point(4, 0), Point(1, 4))
+    assert t1.is_scalene() is True
 
 
 def test_convex_hull():

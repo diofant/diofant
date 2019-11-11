@@ -1626,7 +1626,6 @@ def test_nth_linear_constant_coeff_homogeneous():
     assert checkodesol(eq30, sol30, order=5, solve_for_func=False)[0]
 
 
-@pytest.mark.slow
 def test_nth_linear_constant_coeff_homogeneous_RootOf():
     c = [C1, C2, C3, C4, C5]
     eq = f(x).diff(x, 5) + 11*f(x).diff(x) - 2*f(x)
@@ -1635,7 +1634,10 @@ def test_nth_linear_constant_coeff_homogeneous_RootOf():
     assert dsolve(eq) == sol
     assert checkodesol(eq, sol, order=5, solve_for_func=False)[0]
 
-    # issue sympy/sympy#15520
+
+@pytest.mark.slow
+def test_sympyissue_15520():
+    c = [C1, C2, C3, C4, C5]
     eq = f(x).diff(x, 5) + sqrt(3)*f(x).diff(x) - 2*f(x)
     sol = Eq(f(x), sum(exp(x*RootOf(x**5 + sqrt(3)*x - 2, i))*c[i]
                        for i in range(5)))
@@ -2002,6 +2004,14 @@ def test_nth_linear_constant_coeff_variation_of_parameters():
     assert checkodesol(eq9, sol9, order=3, solve_for_func=False)[0]
     assert checkodesol(eq10, sol10, order=2, solve_for_func=False)[0]
     assert checkodesol(eq12, sol12, order=4, solve_for_func=False)[0]
+
+
+def test_nth_linear_constant_coeff_variation_of_parameters_coverage():
+    hint = 'nth_linear_constant_coeff_variation_of_parameters'
+    eq = (f(x).diff(x, 3) - 3*f(x).diff(x, 2) + 3*f(x).diff(x) -
+          f(x) - exp(x)*log(x))
+    sol = Eq(f(x), exp(x)*(C1 + C2*x + C3*x**2 + x**3*(6*log(x) - 11)/36))
+    assert dsolve(eq, f(x), hint=hint) == sol
 
 
 @pytest.mark.slow
@@ -2485,6 +2495,9 @@ def test_heuristic1():
     for eq, i in (zip(eqlist, ilist)):
         check = checkinfsol(eq, i)
         assert check[0]
+
+    eq = f(x).diff(x) - x**2*f(x)
+    assert infinitesimals(eq) == [{eta(x, f(x)): exp(x**3/3), xi(x, f(x)): 0}]
 
 
 def test_sympyissue_6247():
