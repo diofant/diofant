@@ -2,11 +2,12 @@
 
 import pytest
 
-from diofant import (I, Matrix, Mul, Poly, Rational, flatten, ordered, sqrt,
-                     symbols)
+from diofant import (Eq, I, Matrix, Mul, Poly, Rational, flatten, ordered,
+                     sqrt, symbols)
 from diofant.abc import n, t, x, y, z
 from diofant.polys import ComputationFailed, PolynomialError
-from diofant.solvers.polysys import solve_linear_system, solve_poly_system
+from diofant.solvers.polysys import (eliminate, solve_linear_system,
+                                     solve_poly_system)
 
 
 __all__ = ()
@@ -305,3 +306,20 @@ def test_sympyissue_16038():
     assert {x: +1, y: +2, z: +3} in sols2
     assert (list(ordered([{k: v.n(7) for k, v in _.items()} for _ in sols1])) ==
             list(ordered([{k: v.n(7) for k, v in _.items()} for _ in sols2])))
+
+
+def test_eliminate():
+    assert eliminate([Eq(x + y + z, 0), Eq(y, z)], y) == [x + 2*z]
+    assert eliminate([x + y + z, y - z, x - y], y, z) == [x]
+    assert eliminate([Eq(x, 2 + y), Eq(y, z)], y) == [x - z - 2]
+    assert eliminate([x**2 + y + z - 1, x + y**2 + z - 1,
+                      x + y + z**2 - 1], z) == [x**2 - x - y**2 + y,
+                                                2*x*y**2 + y**4 - y**2,
+                                                y**6 - 4*y**4 + 4*y**3 - y**2]
+    assert eliminate([x**2 + y**2 + z**2 - 1, x - y + z - 2,
+                      x**3 - y**2 - z - 1],
+                     y, z) == [4*x**6 + 4*x**5 + 8*x**4 - 28*x**3 +
+                               4*x**2 - 18*x + 27]
+    assert eliminate([x*y - z**2 - z, x**2 + x - y*z, x*z - y**2 - y],
+                     z) == [x**2 + x*y + x + y**2 + y]
+    assert eliminate([x**2 - 1, (x - 1)*y, (x + 1)*z], z) == [x**2 - 1, x*y - y]

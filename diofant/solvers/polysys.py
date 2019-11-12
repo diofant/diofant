@@ -1,5 +1,6 @@
 """Solvers of systems of polynomial equations. """
 
+from ..core import Equality
 from ..domains import EX
 from ..matrices import Matrix
 from ..polys import groebner, poly, sring
@@ -10,7 +11,7 @@ from ..simplify import simplify
 from ..utilities import default_sort_key
 
 
-__all__ = 'solve_linear_system', 'solve_poly_system'
+__all__ = 'solve_linear_system', 'solve_poly_system', 'eliminate'
 
 
 def solve_linear_system(system, *symbols, **flags):
@@ -178,3 +179,43 @@ def solve_poly_system(eqs, *gens, **args):
         result = [{k: r[k].evalf(opt.domain.dps) for k in r} for r in result]
 
     return sorted(result, key=default_sort_key)
+
+
+def eliminate(eqs, *syms):
+    """
+    Eliminate the symbols ``syms`` from the equations ``eqs``.
+
+    Parameters
+    ==========
+
+    eqs : iterable of Expr's or Eq's
+        The system of equations to eliminate variables from.
+
+    syms : iterable of Symbol's
+        Symbols to be eliminated.
+
+    Returns
+    =======
+
+    list
+        Equations, which are equivalent to the ``eqs``, but
+        do not contain symbols ``syms``.
+
+    Examples
+    ========
+
+    >>> eliminate([Eq(x + y + z, 0), Eq(y, z)], y)
+    [x + 2*z]
+    >>> eliminate([x + y + z, y - z, x - y], y, z)
+    [x]
+    >>> eliminate([x**2 + y + z - 1, x + y**2 + z - 1, x + y + z**2 - 1], z)
+    [x**2 - x - y**2 + y, 2*x*y**2 + y**4 - y**2, y**6 - 4*y**4 + 4*y**3 - y**2]
+
+    """
+    others = sorted(set().union(*[_.free_symbols for _ in eqs]) - set(syms),
+                    key=default_sort_key)
+    eqs = [_.lhs - _.rhs if isinstance(_, Equality) else _ for _ in eqs]
+    polys, opt = parallel_poly_from_expr(eqs, *(list(syms) + others))
+
+    basis = groebner(polys, opt.gens)
+    return [_ for _ in basis.exprs if not _.has(*syms)]
