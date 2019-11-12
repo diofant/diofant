@@ -748,3 +748,47 @@ def test_is_group():
 
 def test_PermutationGroup():
     assert PermutationGroup() == PermutationGroup(Permutation())
+
+    a = Permutation(1, 2)
+    b = Permutation(2, 3, 1)
+    G = PermutationGroup(a, b, degree=5)
+    assert G.contains(G[0])
+
+    A = AlternatingGroup(4)
+    A.schreier_sims()
+    assert A.base == [0, 1]
+    assert A.basic_stabilizers == [PermutationGroup(Permutation(0, 1, 2),
+                                                    Permutation(1, 2, 3)),
+                                   PermutationGroup(Permutation(1, 2, 3))]
+
+    D = DihedralGroup(10)
+    assert D.is_primitive() is False
+
+    p = Permutation(0, 1, 2, 3, 4, 5)
+    G1 = PermutationGroup([Permutation(0, 1, 2), Permutation(0, 1)])
+    G2 = PermutationGroup([Permutation(0, 2), Permutation(0, 1, 2)])
+    G3 = PermutationGroup([p, p**2])
+    assert G1.order() == G2.order() == G3.order() == 6
+    assert G1.is_subgroup(G2) is True
+    assert G1.is_subgroup(G3) is False
+
+    a, b = [Permutation([1, 0, 3, 2]), Permutation([1, 3, 0, 2])]
+    G = PermutationGroup([a, b])
+    assert G.make_perm([0, 1, 0]) == Permutation(0, 2, 3, 1)
+
+    S = SymmetricGroup(5)
+    base, strong_gens = S.schreier_sims_random(consec_succ=5)
+    assert _verify_bsgs(S, base, strong_gens)
+
+    D = DihedralGroup(4)
+    assert D.strong_gens == [Permutation(0, 1, 2, 3), Permutation(0, 3)(1, 2), Permutation(1, 3)]
+
+    a = Permutation([1, 2, 0])
+    b = Permutation([1, 0, 2])
+    G = PermutationGroup([a, b])
+    assert G.transitivity_degree == 3
+
+    a = Permutation([1, 2, 0, 4, 5, 6, 3])
+    G = PermutationGroup([a])
+    assert G.orbit(0) == {0, 1, 2}
+    assert G.orbit([0, 4], 'union') == {0, 1, 2, 3, 4, 5, 6}

@@ -29,6 +29,7 @@ def test_partition():
 
     assert (a == b) is False
     assert a <= b
+    assert a < b
     assert (a > b) is False
     assert a != b
 
@@ -52,6 +53,7 @@ def test_integer_partition():
     # check fails since 1 + 2 != 100
     pytest.raises(ValueError, lambda: IntegerPartition(100, list(range(1, 3))))
     a = IntegerPartition(8, [1, 3, 4])
+    assert a.as_dict() == {1: 1, 3: 1, 4: 1}
     b = a.next_lex()
     c = IntegerPartition([1, 3, 4])
     d = IntegerPartition(8, {1: 3, 3: 1, 2: 1})

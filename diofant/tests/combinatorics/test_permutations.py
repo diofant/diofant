@@ -219,6 +219,11 @@ def test_Permutation():
     assert a.cycle_structure == {1: 4}
     assert b.cycle_structure == {2: 1, 3: 1, 1: 2}
 
+    p = Permutation(1, 2, 9)
+    assert 2 ^ p == p(2) == 9
+
+    assert Permutation(0, 4, 3)(1, 2)(5, 6).cycle_structure == {2: 2, 3: 1}
+
 
 def test_josephus():
     assert Permutation.josephus(4, 6, 1) == Permutation([3, 1, 0, 2, 5, 4])
