@@ -38,6 +38,10 @@ def test_prufer():
         [1, 3], [3, 4]))  # a broken tree but edges doesn't care
     pytest.raises(ValueError, lambda: Prufer.edges([1, 2], [5, 6]))
 
+    a = Prufer([[0, 1], [0, 2], [0, 3]])
+    b = a.next(1)
+    assert b.rank == 1
+
 
 def test_round_trip():
     def doit(t, b):
