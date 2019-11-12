@@ -66,7 +66,9 @@ def test_matplotlib_intro():
         name = 'test'
         tmp_file = TmpFileManager.tmp_file
 
-        p = plot(x)
+        p = plot(x, adaptive=False)
+        assert str(p) == """Plot object containing:
+[0]: cartesian line: x for x over (-10.0, 10.0)"""
         p = plot(x*sin(x), x*cos(x))
         p.extend(p)
         p[0].line_color = lambda a: a
@@ -108,6 +110,8 @@ def test_matplotlib_intro():
 
         # Single plot with range.
         p = plot_parametric(sin(x), cos(x), (x, -5, 5))
+        assert str(p) == """Plot object containing:
+[0]: parametric cartesian line: (sin(x), cos(x)) for x over (-5.0, 5.0)"""
         p.save(tmp_file('%s_parametric_range' % name))
         del p
 
@@ -133,6 +137,8 @@ def test_matplotlib_intro():
 
         # 3d parametric plots
         p = plot3d_parametric_line(sin(x), cos(x), x)
+        assert str(p) == """Plot object containing:
+[0]: 3D parametric cartesian line: (sin(x), cos(x), x) for x over (-10.0, 10.0)"""
         p.save(tmp_file('%s_3d_line' % name))
         del p
 
@@ -147,6 +153,9 @@ def test_matplotlib_intro():
 
         # 3d surface single plot.
         p = plot3d(x * y)
+        assert str(p) in ("""Plot object containing:
+[0]: cartesian surface: x*y for %s over (-10.0, 10.0) and %s over (-10.0, 10.0)""" % _
+                          for _ in [(x, y), (y, x)])
         p.save(tmp_file('%s_surface' % name))
         del p
 
@@ -163,6 +172,9 @@ def test_matplotlib_intro():
 
         # Single Parametric 3D plot
         p = plot3d_parametric_surface(sin(x + y), cos(x - y), x - y)
+        assert str(p) in ("""Plot object containing:
+[0]: parametric cartesian surface: (sin(x + y), cos(x - y), x - y) for %s over (-10.0, 10.0) and %s over (-10.0, 10.0)""" % _
+                          for _ in [(x, y), (y, x)])
         p.save(tmp_file('%s_parametric_surface' % name))
         del p
 
