@@ -608,6 +608,7 @@ def test_line3d():
     p1, p2 = Point3D(0, 0, 0), Point3D(3, 5, 2)
     p3, p4 = Point3D(-2, -2, -2), Point3D(0, 2, 1)
     l1, l2, l3 = Line3D(p1, p2), Line3D(p1, p3), Line3D(p1, p4)
+    assert Line3D.are_concurrent(l1, l2, l3) is True
     l4 = Line3D(p2, p3)
     assert Line3D.are_concurrent(l2, l3, l4) is False
 
