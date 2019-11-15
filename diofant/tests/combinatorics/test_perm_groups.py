@@ -761,6 +761,9 @@ def test_PermutationGroup():
                                                     Permutation(1, 2, 3)),
                                    PermutationGroup(Permutation(1, 2, 3))]
 
+    D = DihedralGroup(12)
+    assert D.is_primitive(randomized=False) is False
+
     D = DihedralGroup(10)
     assert D.is_primitive() is False
 

@@ -7,12 +7,13 @@ from diofant import (Abs, Derivative, Dummy, E, Ei, Eq, Function, I, Integer,
                      root, simplify, sin, sinh, sqrt, sstr, symbols, tan)
 from diofant.abc import A
 from diofant.solvers.deutils import ode_order
-from diofant.solvers.ode import (_linear_coeff_match,
+from diofant.solvers.ode import (_lie_group_remove, _linear_coeff_match,
                                  _undetermined_coefficients_match, checkinfsol,
                                  checkodesol, checksysodesol, classify_ode,
                                  classify_sysode, constant_renumber,
                                  constantsimp, homogeneous_order,
-                                 infinitesimals, solve_init)
+                                 infinitesimals, ode_sol_simplicity,
+                                 solve_init)
 from diofant.utilities.iterables import variations
 
 
@@ -2848,3 +2849,20 @@ def test_sympyissue_15574():
     assert dsolve(eqs[:2]) == ans[:2]
     assert dsolve(eqs[:3]) == ans[:3]
     assert dsolve(eqs[:4]) == ans[:4]
+
+
+def test__lie_group_remove():
+    eq = x**2*y
+    assert _lie_group_remove(eq) == x**2*y
+    eq = f(x**2*y)
+    assert _lie_group_remove(eq) == x**2*y
+    eq = y**2*x + f(x**3)
+    assert _lie_group_remove(eq) == x*y**2
+    eq = (f(x**3) + y)*x**4
+    assert _lie_group_remove(eq) == x**4*y
+
+
+def test_ode_sol_simplicity():
+    eq1 = Eq(f(x)/tan(f(x)/(2*x)), C1)
+    eq2 = Eq(f(x)/tan(f(x)/(2*x) + f(x)), C2)
+    assert [ode_sol_simplicity(eq, f(x)) for eq in [eq1, eq2]] == [28, 35]
