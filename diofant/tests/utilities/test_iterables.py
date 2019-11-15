@@ -500,7 +500,7 @@ def test_necklaces():
 
 
 def test_bracelets():
-    bc = [i for i in bracelets(2, 4)]
+    bc = list(bracelets(2, 4))
     assert Matrix(bc) == Matrix([
         [0, 0],
         [0, 1],
@@ -513,7 +513,7 @@ def test_bracelets():
         [2, 3],
         [3, 3]
     ])
-    bc = [i for i in bracelets(4, 2)]
+    bc = list(bracelets(4, 2))
     assert Matrix(bc) == Matrix([
         [0, 0, 0, 0],
         [0, 0, 0, 1],
@@ -644,8 +644,8 @@ def test_cantor_product():
 
     l1 = [random.randint(0, 100) for a in range(10)]
     l2 = [random.randint(0, 100) for a in range(10)]
-    assert (sorted(list(cantor_product(l1, l2))) ==
-            sorted(list(itertools.product(l1, l2))))
+    assert (sorted(cantor_product(l1, l2)) ==
+            sorted(itertools.product(l1, l2)))
 
     assert (list(itertools.islice(cantor_product([1, 2],
                                                  itertools.count(3)), 10)) ==

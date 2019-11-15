@@ -596,7 +596,7 @@ class Function(Application, Expr):
         # and issue sympy/sympy#5600
         arg_dummy = Dummy('xi_%i' % argindex)
         arg_dummy.dummy_index = hash(self.args[argindex - 1])
-        new_args = [arg for arg in self.args]
+        new_args = list(self.args)
         new_args[argindex-1] = arg_dummy
         return Subs(Derivative(self.func(*new_args), arg_dummy),
                     (arg_dummy, self.args[argindex - 1]))

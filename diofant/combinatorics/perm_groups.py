@@ -1050,7 +1050,7 @@ class PermutationGroup(Basic):
         a list
 
         """
-        return set(list(islice(self.generate(), None)))
+        return set(islice(self.generate(), None))
 
     def derived_series(self):
         r"""Return the derived series for the group.

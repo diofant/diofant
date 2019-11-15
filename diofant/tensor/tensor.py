@@ -321,9 +321,9 @@ class TIDS(CantSympify):
                 if c == other_c:
                     g_free[free_pos] = (index_type.auto_left, i, c)
 
-        for i in reversed(sorted(f_pop_pos)):
+        for i in sorted(f_pop_pos, reverse=True):
             f_free.pop(i)
-        for i in reversed(sorted(g_pop_pos)):
+        for i in sorted(g_pop_pos, reverse=True):
             g_free.pop(i)
         return dum
 
