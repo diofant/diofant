@@ -907,7 +907,7 @@ def _solve_system(exprs, symbols, **flags):
         result = [result] if result else [{}]
     elif polys:
         result = solve_poly_system(polys, *symbols)
-        solved_syms = list(set().union(*[{k for k in r} for r in result]))
+        solved_syms = list(set().union(*[set(r) for r in result]))
 
     if failed:
         # For each failed equation, see if we can solve for one of the

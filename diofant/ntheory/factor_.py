@@ -132,7 +132,7 @@ def smoothness_p(n, m=-1, power=0, visual=None):
         k = 1
     if type(n) is not tuple:
         rv = (m, sorted(((f, tuple([M] + list(smoothness(f + m))))
-                         for f, M in [i for i in facs.items()]),
+                         for f, M in list(facs.items())),
                         key=lambda x: (x[1][k], x[0])))
     else:
         rv = n

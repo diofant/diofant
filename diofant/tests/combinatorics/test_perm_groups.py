@@ -497,6 +497,17 @@ def test_schreier_sims_random():
     strong_gens = [Permutation([1, 2, 0]), Permutation([1, 0, 2]),
                    Permutation([0, 2, 1])]
     assert S.schreier_sims_random(base, strong_gens, 5) == (base, strong_gens)
+
+    S = SymmetricGroup(5)
+    _random_prec = {'g': [Permutation(1, 4), Permutation(0, 3)(1, 4),
+                          Permutation(0, 1, 2, 3, 4), Permutation(0, 1, 2)(3, 4),
+                          Permutation(4)(0, 1)(2, 3), Permutation(0, 1, 4, 3),
+                          Permutation(0, 1)(2, 4), Permutation(0, 3, 4, 2, 1),
+                          Permutation(0, 4, 1)(2, 3)]}
+    base, strong_gens = S.schreier_sims_random(consec_succ=5,
+                                               _random_prec=_random_prec)
+    assert _verify_bsgs(S, base, strong_gens) is True
+
     D = DihedralGroup(3)
     _random_prec = {'g': [Permutation([2, 0, 1]), Permutation([1, 2, 0]),
                           Permutation([1, 0, 2])]}
@@ -615,10 +626,11 @@ def test_normal_closure():
         for gp in (A, D, C):
             assert _verify_normal_closure(S, gp)
     # brute-force verifications for all elements of a group
-    S = SymmetricGroup(5)
-    elements = list(S.generate_dimino())
-    for element in elements:
-        assert _verify_normal_closure(S, element)
+    for i in range(7):
+        S = SymmetricGroup(5)
+        elements = list(S.generate_dimino())
+        for element in elements:
+            assert _verify_normal_closure(S, element)
     # small groups
     small = []
     for i in (1, 2, 3):

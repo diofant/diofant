@@ -898,8 +898,8 @@ def test_eigen():
     m = Matrix([[1, .6, .6], [.6, .9, .9], [.9, .6, .6]])
     evals = {-sqrt(385)/20 + Rational(5, 4): 1, sqrt(385)/20 + Rational(5, 4): 1, 0: 1}
     assert m.eigenvals() == evals
-    nevals = list(sorted(m.eigenvals(rational=False)))
-    sevals = list(sorted(evals))
+    nevals = sorted(m.eigenvals(rational=False))
+    sevals = sorted(evals)
     assert all(abs(nevals[i] - sevals[i]) < 1e-9 for i in range(len(nevals)))
 
     # issue sympy/sympy#10719

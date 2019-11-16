@@ -683,7 +683,7 @@ class SparseMatrixBase(MatrixBase):
                 while j != inf and j != k:
                     Lrow[k].append(j)
                     j = parent[j]
-            Lrow[k] = list(sorted(set(Lrow[k])))
+            Lrow[k] = sorted(set(Lrow[k]))
         return Lrow
 
     def _cholesky_sparse(self):
