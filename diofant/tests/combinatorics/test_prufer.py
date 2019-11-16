@@ -33,6 +33,7 @@ def test_prufer():
     assert sorted(Prufer(set(tree)).tree_repr) == sorted(tree_lists)
 
     pytest.raises(ValueError, lambda: Prufer([[1, 2], [3, 4]]))  # 0 is missing
+    pytest.raises(ValueError, lambda: Prufer([[1, 2], [3, [5, 6]]]))   # [0, 4]
     assert Prufer(*Prufer.edges([1, 2], [3, 4])).prufer_repr == [1, 3]
     pytest.raises(ValueError, lambda: Prufer.edges(
         [1, 3], [3, 4]))  # a broken tree but edges doesn't care
