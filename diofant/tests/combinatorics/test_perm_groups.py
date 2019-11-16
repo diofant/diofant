@@ -626,7 +626,7 @@ def test_normal_closure():
         for gp in (A, D, C):
             assert _verify_normal_closure(S, gp)
     # brute-force verifications for all elements of a group
-    for i in range(7):
+    for i in range(10):
         S = SymmetricGroup(5)
         elements = list(S.generate_dimino())
         for element in elements:
