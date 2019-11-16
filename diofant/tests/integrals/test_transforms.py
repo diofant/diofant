@@ -17,8 +17,9 @@ from diofant.integrals.transforms import (CosineTransform, FourierTransform,
                                           InverseLaplaceTransform,
                                           InverseSineTransform,
                                           LaplaceTransform, MellinTransform,
-                                          SineTransform, cosine_transform,
-                                          fourier_transform, hankel_transform,
+                                          SineTransform, _simplifyconds,
+                                          cosine_transform, fourier_transform,
+                                          hankel_transform,
                                           inverse_cosine_transform,
                                           inverse_fourier_transform,
                                           inverse_hankel_transform,
@@ -745,3 +746,8 @@ def test_sympyissue_8514():
                                                                                                               * sqrt(Abs(4*a*c - b**2))/(2*a)) - cos(t*sin(atan2(0, -4*a*c + b**2)/2)
                                                                                                                                                      * sqrt(Abs(4*a*c - b**2))/(2*a)))*exp(-t*(b + cos(atan2(0, -4*a*c + b**2)/2)
                                                                                                                                                                                                * sqrt(Abs(4*a*c - b**2)))/(2*a))/sqrt(-4*a*c + b**2))
+
+
+def test__simplifyconds():
+    assert _simplifyconds(1 < abs(x), x, 1) is True
+    assert _simplifyconds(abs(x**2) < 1, x, 0) == (abs(x**2) < 1)

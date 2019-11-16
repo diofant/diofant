@@ -492,6 +492,9 @@ def test_indices():
     pytest.raises(ValueError, lambda: A(a, b, c))
     pytest.raises(ValueError, lambda: TensorIndex([1, 2], Lorentz))
 
+    i0 = TensorIndex(True, Lorentz)
+    assert str(i0) == '_i0'
+
 
 def test_tensorsymmetry():
     sym = tensorsymmetry([1]*2)
@@ -614,6 +617,15 @@ def test_add1():
     assert t2 != TensMul.from_data(0, [], [], [])
     t = p(i) + q(i)
     pytest.raises(ValueError, lambda: t(i, j))
+
+    eA = 3*A(i, j)
+    eB = 2*B(j, i)
+    t1 = eA._tids
+    t2 = eB._tids
+    c1 = eA.coeff
+    c2 = eB.coeff
+    assert TensAdd.from_TIDS_list([c1, c2], [t1, t2]) == 2*B(i, j) + 3*A(i, j)
+    assert TensAdd.from_TIDS_list(4, [t1, t2]) == 4*A(i, j) + 4*B(i, j)
 
 
 def test_special_eq_ne():
@@ -1290,3 +1302,37 @@ def test_from_components_and_indices():
     assert a.components == []
     assert a.free == []
     assert a.dum == []
+
+    Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
+    m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
+    T = tensorhead('T', [Lorentz]*4, [[1]*4])
+    assert str(TIDS.from_components_and_indices([T], [m0, m1, -m1, m3])) == str(TIDS([T], [(m0, 0, 0), (m3, 3, 0)], [(1, 2, 0, 0)]))
+    A = tensorhead('A', [Lorentz], [[1]])
+    assert str(TIDS.from_components_and_indices([A]*4, [m0, m1, -m1, m3])) == str(TIDS([A, A, A, A], [(m0, 0, 0), (m3, 0, 3)], [(0, 0, 1, 2)]))
+
+
+def test_get_components_with_free_indices():
+    Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
+    m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
+    Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
+    m0, m1, m2, m3 = tensor_indices('m0 m1 m2 m3', Lorentz)
+    T = tensorhead('T', [Lorentz]*4, [[1]*4])
+    A = tensorhead('A', [Lorentz], [[1]])
+    t = TIDS.from_components_and_indices([T], [m0, m1, -m1, m3])
+    assert t.get_components_with_free_indices() == [(T, [(m0, 0, 0), (m3, 3, 0)])]
+    t2 = (A(m0)*A(-m0))._tids
+    assert t2.get_components_with_free_indices() == [(A, []), (A, [])]
+    t3 = (A(m0)*A(-m1)*A(-m0)*A(m1))._tids
+    assert t3.get_components_with_free_indices() == [(A, []), (A, []), (A, []), (A, [])]
+    t4 = (A(m0)*A(m1)*A(-m0))._tids
+    assert t4.get_components_with_free_indices() == [(A, []), (A, [(m1, 0, 1)]), (A, [])]
+    t5 = (A(m0)*A(m1)*A(m2))._tids
+    assert t5.get_components_with_free_indices() == [(A, [(m0, 0, 0)]), (A, [(m1, 0, 1)]), (A, [(m2, 0, 2)])]
+
+
+def test_Tensor():
+    Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
+    i0, i1, i2, i3, i4 = tensor_indices('i0:5', Lorentz)
+    A = tensorhead('A', [Lorentz]*5, [[1]*5])
+    t = A(i2, i1, -i2, -i3, i4)
+    assert str(t(i1, i2, i3)) == 'A(L_0, i1, -L_0, i2, i3)'

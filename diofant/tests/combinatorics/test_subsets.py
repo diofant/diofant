@@ -1,6 +1,7 @@
 import pytest
 
 from diofant.combinatorics import Subset
+from diofant.combinatorics.subsets import ksubsets
 
 
 __all__ = ()
@@ -58,3 +59,12 @@ def test_subset():
     assert i == 16
 
     pytest.raises(ValueError, lambda: Subset.subset_from_bitlist(['a'], '01'))
+
+    a = Subset(['d'], ['a', 'b', 'c', 'd'])
+    assert a.next_lexicographic().subset == []
+    a = Subset([], ['a', 'b', 'c', 'd'])
+    assert a.prev_lexicographic().subset == ['d']
+    a = Subset(['c', 'd'], ['a', 'b', 'c', 'd'])
+    assert a.size == 2
+
+    assert list(ksubsets([1, 2, 3], 2)) == [(1, 2), (1, 3), (2, 3)]
