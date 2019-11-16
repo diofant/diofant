@@ -1099,3 +1099,10 @@ def test_sympyissue_6052():
 def test_diofantissue_241():
     e = hyper((2, 3, 5, 9, 1), (1, 4, 6, 10), 1)
     assert hyperexpand(e) == Rational(108, 7)
+
+
+def test_hyperexpand_doc():
+    from diofant.simplify.hyperexpand_doc import __doc__
+    assert __doc__[:91] == \
+        r""".. math::
+  {{}_{0}F_{0}\left(\begin{matrix}  \\  \end{matrix}\middle| {z} \right)} = e^{z}"""
