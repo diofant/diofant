@@ -249,7 +249,7 @@ system_of_odes_linear_3eq_order1_type4
 
 system_of_odes_linear_neq_order1_type1
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: diofant.solvers.ode._linear_neq_order1_type1
+.. autofunction:: diofant.solvers.ode.sysode_linear_neq_order1
 
 system_of_odes_nonlinear_2eq_order1_type1
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
