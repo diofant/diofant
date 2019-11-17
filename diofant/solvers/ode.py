@@ -1419,7 +1419,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
     ========
 
     >>> f, x, y = symbols('f, x, y', cls=Function)
-    >>> k, l, m, n = symbols('k, l, m, n', Integer=True)
+    >>> k, l, m, n = symbols('k, l, m, n', integer=True)
     >>> x1 = diff(x(t), t) ; y1 = diff(y(t), t)
     >>> x2 = diff(x(t), t, t) ; y2 = diff(y(t), t, t)
     >>> eq = (Eq(5*x1, 12*x(t) - 6*y(t)), Eq(2*y1, 11*x(t) + 3*y(t)))

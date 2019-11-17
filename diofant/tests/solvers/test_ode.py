@@ -35,7 +35,7 @@ f, g, h = symbols('f g h', cls=Function)
 
 def test_linear_2eq_order1():
     x, y, z = symbols('x, y, z', cls=Function)
-    k, l, m, n = symbols('k, l, m, n', Integer=True)
+    k, l, m, n = symbols('k, l, m, n', integer=True)
     t, a = symbols('t, a')
     x0, y0 = symbols('x0, y0', cls=Function)
     eq1 = (Eq(diff(x(t), t), 9*y(t)), Eq(diff(y(t), t), 12*x(t)))
@@ -145,7 +145,7 @@ def test_sysode_linear_2eq_order1_type1_D_lt_0_b_eq_0():
 
 def test_linear_2eq_order2():
     x, y, z = symbols('x, y, z', cls=Function)
-    k, l, m, n = symbols('k, l, m, n', Integer=True)
+    k, l, m, n = symbols('k, l, m, n', integer=True)
     t, l = symbols('t, l')
     x0, y0 = symbols('x0, y0', cls=Function)
 
@@ -851,8 +851,8 @@ def test_classify_ode_init():
 def test_classify_sysode():
     # Here x is assumed to be x(t) and y as y(t) for simplicity.
     # Similarly diff(x,t) and diff(y,y) is assumed to be x1 and y1 respectively.
-    k, l, m, n = symbols('k, l, m, n', Integer=True)
-    k1, k2, k3, l1, l2, l3, m1, m2, m3 = symbols('k1, k2, k3, l1, l2, l3, m1, m2, m3', Integer=True)
+    k, l, m, n = symbols('k, l, m, n', integer=True)
+    k1, k2, k3, l1, l2, l3, m1, m2, m3 = symbols('k1, k2, k3, l1, l2, l3, m1, m2, m3', integer=True)
     P, Q, R, p, q, r = symbols('P, Q, R, p, q, r', cls=Function)
     P1, P2, P3, Q1, Q2, R1, R2 = symbols('P1, P2, P3, Q1, Q2, R1, R2', cls=Function)
     x, y, z = symbols('x, y, z', cls=Function)
