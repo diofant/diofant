@@ -51,13 +51,11 @@ def test_linear_2eq_order1():
     assert dsolve(eq3) == sol3
 
     eq4 = (Eq(diff(x(t), t), x(t) + y(t) + 9), Eq(diff(y(t), t), 2*x(t) + 5*y(t) + 23))
-    sol4 = [Eq(x(t), C1*exp(t*(-sqrt(6) + 3)) + C2*exp(t*(sqrt(6) + 3)) - Rational(22, 3)),
-            Eq(y(t), C1*(-sqrt(6) + 2)*exp(t*(-sqrt(6) + 3)) + C2*(2 + sqrt(6))*exp(t*(sqrt(6) + 3)) - Rational(5, 3))]
+    sol4 = [Eq(x(t), C1*(-sqrt(6)*exp(t*(-sqrt(6) + 3))*(-sqrt(6)/2 - 1)/6 + sqrt(6)*exp(t*(sqrt(6) + 3))*(-1 + sqrt(6)/2)/6) + C2*(exp(t*(-sqrt(6) + 3))*(-sqrt(6)/2 - 1)*(-sqrt(6)/6 + Rational(1, 2)) + exp(t*(sqrt(6) + 3))*(-1 + sqrt(6)/2)*(sqrt(6)/6 + Rational(1, 2))) - Rational(22, 3)), Eq(y(t), C1*(-sqrt(6)*exp(t*(-sqrt(6) + 3))/6 + sqrt(6)*exp(t*(sqrt(6) + 3))/6) + C2*(exp(t*(-sqrt(6) + 3))*(-sqrt(6)/6 + Rational(1, 2)) + exp(t*(sqrt(6) + 3))*(sqrt(6)/6 + Rational(1, 2))) - Rational(5, 3))]
     assert dsolve(eq4) == sol4
 
     eq5 = (Eq(diff(x(t), t), x(t) + y(t) + 81), Eq(diff(y(t), t), -2*x(t) + y(t) + 23))
-    sol5 = [Eq(x(t), (C1*sin(sqrt(2)*t) + C2*cos(sqrt(2)*t))*exp(t) - Rational(58, 3)),
-            Eq(y(t), (sqrt(2)*C1*cos(sqrt(2)*t) - sqrt(2)*C2*sin(sqrt(2)*t))*exp(t) - Rational(185, 3))]
+    sol5 = [Eq(x(t), C1*(exp(t*(1 - sqrt(2)*I))/2 + exp(t*(1 + sqrt(2)*I))/2) + C2*(sqrt(2)*exp(t*(1 - sqrt(2)*I))*I/4 - sqrt(2)*exp(t*(1 + sqrt(2)*I))*I/4) - Rational(58, 3)), Eq(y(t), C1*(-sqrt(2)*exp(t*(1 - sqrt(2)*I))*I/2 + sqrt(2)*exp(t*(1 + sqrt(2)*I))*I/2) + C2*(exp(t*(1 - sqrt(2)*I))/2 + exp(t*(1 + sqrt(2)*I))/2) - Rational(185, 3))]
     assert dsolve(eq5) == sol5
 
     eq6 = (Eq(diff(x(t), t), 5*t*x(t) + 2*y(t)), Eq(diff(y(t), t), 2*x(t) + 5*t*y(t)))
@@ -106,7 +104,7 @@ def test_linear_2eq_order1_nonhomog():
 def test_linear_2eq_order1_type2_degen():
     e = [Eq(diff(f(x), x), f(x) + 5),
          Eq(diff(g(x), x), f(x) + 7)]
-    s1 = [Eq(f(x), C2*exp(x) - 5), Eq(g(x), C2*exp(x) - C1 + 2*x - 5)]
+    s1 = [Eq(f(x), exp(x)*C1 - 5), Eq(g(x), C1*(exp(x) - 1) + C2 + 2*x - 5)]
     s = dsolve(e)
     assert checksysodesol(e, s) == (True, [0, 0])
     assert s == s1
@@ -2820,8 +2818,8 @@ def test_sympyissue_11290():
 
 def test_sympyissue_7138():
     eqs = [Eq(f(x).diff(x), f(x) - 1), Eq(g(x).diff(x), f(x) + 2*g(x) - 3)]
-    assert dsolve(eqs) == [Eq(f(x), -E**x*C1 + 1),
-                           Eq(g(x), 2*E**(2*x)*C2 + E**x*C1 + 1)]
+    assert dsolve(eqs) == [Eq(f(x), exp(x)*C1 + 1),
+                           Eq(g(x), exp(2*x)*C2 + C1*(exp(2*x) - exp(x)) + 1)]
 
 
 def test_diofantissue_309():
