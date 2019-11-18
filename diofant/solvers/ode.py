@@ -6633,8 +6633,8 @@ def _linear_2eq_order2_type1(x, y, t, r, eq):
         else:
             if r['a'] != r['d']:
                 k = sqrt(2*(r['a']+r['d']))
-                mid = r['b']*t+2*r['b']*k/(r['a']-r['d'])
-                gsol1 = 2*C1*mid*exp(k*t/2) + 2*C2*mid*exp(-k*t/2) + \
+                gsol1 = 2*C1*(r['b']*t+2*r['b']*k/(r['a']-r['d']))*exp(k*t/2) + \
+                    2*C2*(r['b']*t-2*r['b']*k/(r['a']-r['d']))*exp(-k*t/2) + \
                     2*r['b']*C3*t*exp(k*t/2) + 2*r['b']*C4*t*exp(-k*t/2)
                 gsol2 = C1*(r['d']-r['a'])*t*exp(k*t/2) + C2*(r['d']-r['a'])*t*exp(-k*t/2) + \
                     C3*((r['d']-r['a'])*t+2*k)*exp(k*t/2) + C4*((r['d']-r['a'])*t-2*k)*exp(-k*t/2)

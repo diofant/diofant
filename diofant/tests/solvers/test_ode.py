@@ -159,7 +159,7 @@ def test_linear_2eq_order2():
     assert dsolve(eq1) == sol1
 
     eq1_1 = (Eq(diff(x(t), t, t), 5*x(t) - 4*y(t)), Eq(diff(y(t), t, t), x(t) + 9*y(t)))
-    sol1_1 = [Eq(x(t), 2*E**(sqrt(7)*t)*C1*(-4*t + 4*sqrt(7)) - 8*E**(sqrt(7)*t)*C3*t + 2*E**(-sqrt(7)*t)*C2*(-4*t + 4*sqrt(7)) - 8*E**(-sqrt(7)*t)*C4*t), Eq(y(t), 4*E**(sqrt(7)*t)*C1*t + E**(sqrt(7)*t)*C3*(4*t + 4*sqrt(7)) + 4*E**(-sqrt(7)*t)*C2*t + E**(-sqrt(7)*t)*C4*(4*t - 4*sqrt(7)))]
+    sol1_1 = [Eq(x(t), 2*exp(sqrt(7)*t)*C1*(-4*t + 4*sqrt(7)) - 8*exp(sqrt(7)*t)*C3*t + 2*exp(-sqrt(7)*t)*C2*(-4*t - 4*sqrt(7)) - 8*exp(-sqrt(7)*t)*C4*t), Eq(y(t), 4*exp(sqrt(7)*t)*C1*t + exp(sqrt(7)*t)*C3*(4*t + 4*sqrt(7)) + 4*exp(-sqrt(7)*t)*C2*t + exp(-sqrt(7)*t)*C4*(4*t - 4*sqrt(7)))]
     assert dsolve(eq1_1) == sol1_1
 
     eq1_2 = (Eq(diff(x(t), t, t), 5*x(t)), Eq(diff(y(t), t, t), x(t) + 5*y(t)))
