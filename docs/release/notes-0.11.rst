@@ -9,6 +9,7 @@ New features
 
 * Added :func:`~diofant.ntheory.residue_ntheory.discrete_log` to compute discrete logarithms, see :pull:`785`.  Thanks to Gabriel Orisaka.
 * Function :func:`~diofant.solvers.recurr.rsolve` got initial support for systems of equations, see :pull:`921`.
+* Support inhomogenous case for systems of linear ODEs with constant coefficients, see :pull:`919`.
 
 Major changes
 =============
@@ -130,3 +131,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`17841` integrate throws error for rational functions involving I
 * :sympyissue:`17847` Wrong result for as_leading_term()
 * :sympyissue:`17982` Wrong result from rsolve
+* :sympyissue:`9244` dsolve: nonhomogeneous linear systems are not supported
+* :sympyissue:`15946` Matrix exponential for dsolve

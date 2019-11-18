@@ -183,10 +183,6 @@ System of ODEs
 These functions are intended for internal use by
 :py:meth:`~diofant.solvers.ode.dsolve` for system of differential equations.
 
-system_of_odes_linear_2eq_order1_type2
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: diofant.solvers.ode._linear_2eq_order1_type2
-
 system_of_odes_linear_2eq_order1_type3
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: diofant.solvers.ode._linear_2eq_order1_type3

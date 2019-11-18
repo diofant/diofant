@@ -1533,12 +1533,9 @@ def check_linear_2eq_order1(eq, func, func_coef):
         for j in Add.make_args(eq[i]):
             if not j.has(x(t), y(t)):
                 forcing[i] += j
-    if not (forcing[0].has(t) or forcing[1].has(t)):
-        # We can handle homogeneous case and simple constant forcings
-        r['d1'] = forcing[0]
-        r['d2'] = forcing[1]
-    else:
-        # Issue sympy/sympy#9244: nonhomogeneous linear systems are not supported
+    r['d1'] = forcing[0]
+    r['d2'] = forcing[1]
+    if r['d1'] != 0 or r['d2'] != 0:
         return
 
     # Conditions to check for type 6 whose equations are Eq(diff(x(t),t), f(t)*x(t) + g(t)*y(t)) and
@@ -1559,35 +1556,25 @@ def check_linear_2eq_order1(eq, func, func_coef):
                     p = 2
     # End of condition for type 6
 
-    if r['d1'] != 0 or r['d2'] != 0:
-        if not r['d1'].has(t) and not r['d2'].has(t):
-            if all(not r[k].has(t) for k in 'a1 a2 b1 b2 c1 c2'.split()):
-                # Equations for type 2 are Eq(a1*diff(x(t),t),b1*x(t)+c1*y(t)+d1) and Eq(a2*diff(y(t),t),b2*x(t)+c2*y(t)+d2)
-                return "type2"
+    r['b1'] = r['b1']/r['a1']
+    r['b2'] = r['b2']/r['a2']
+    r['c1'] = r['c1']/r['a1']
+    r['c2'] = r['c2']/r['a2']
+    if (r['b1'] == r['c2']) and (r['c1'] == r['b2']):
+        # Equation for type 3 are Eq(diff(x(t),t), f(t)*x(t) + g(t)*y(t)) and Eq(diff(y(t),t), g(t)*x(t) + f(t)*y(t))
+        return "type3"
+    elif (r['b1'] == r['c2']) and (r['c1'] == -r['b2']):
+        # Equation for type 4 are Eq(diff(x(t),t), f(t)*x(t) + g(t)*y(t)) and Eq(diff(y(t),t), -g(t)*x(t) + f(t)*y(t))
+        return "type4"
+    elif ((not cancel(r['b2']/r['c1']).has(t) and not cancel((r['c2']-r['b1'])/r['c1']).has(t))
+          or (not cancel(r['b1']/r['c2']).has(t) and not cancel((r['c1']-r['b2'])/r['c2']).has(t))):
+        # Equations for type 5 are Eq(diff(x(t),t), f(t)*x(t) + g(t)*y(t)) and Eq(diff(y(t),t), a*g(t)*x(t) + [f(t) + b*g(t)]*y(t)
+        return "type5"
+    elif p:
+        return "type6"
     else:
-        if all(not r[k].has(t) for k in 'a1 a2 b1 b2 c1 c2'.split()):
-            # Equations for type 1 are Eq(a1*diff(x(t),t),b1*x(t)+c1*y(t)) and Eq(a2*diff(y(t),t),b2*x(t)+c2*y(t))
-            return "type1"
-        else:
-            r['b1'] = r['b1']/r['a1']
-            r['b2'] = r['b2']/r['a2']
-            r['c1'] = r['c1']/r['a1']
-            r['c2'] = r['c2']/r['a2']
-            if (r['b1'] == r['c2']) and (r['c1'] == r['b2']):
-                # Equation for type 3 are Eq(diff(x(t),t), f(t)*x(t) + g(t)*y(t)) and Eq(diff(y(t),t), g(t)*x(t) + f(t)*y(t))
-                return "type3"
-            elif (r['b1'] == r['c2']) and (r['c1'] == -r['b2']):
-                # Equation for type 4 are Eq(diff(x(t),t), f(t)*x(t) + g(t)*y(t)) and Eq(diff(y(t),t), -g(t)*x(t) + f(t)*y(t))
-                return "type4"
-            elif (not cancel(r['b2']/r['c1']).has(t) and not cancel((r['c2']-r['b1'])/r['c1']).has(t)) \
-                    or (not cancel(r['b1']/r['c2']).has(t) and not cancel((r['c1']-r['b2'])/r['c2']).has(t)):
-                # Equations for type 5 are Eq(diff(x(t),t), f(t)*x(t) + g(t)*y(t)) and Eq(diff(y(t),t), a*g(t)*x(t) + [f(t) + b*g(t)]*y(t)
-                return "type5"
-            elif p:
-                return "type6"
-            else:
-                # Equations for type 7 are Eq(diff(x(t),t), f(t)*x(t) + g(t)*y(t)) and Eq(diff(y(t),t), h(t)*x(t) + p(t)*y(t))
-                return "type7"
+        # Equations for type 7 are Eq(diff(x(t),t), f(t)*x(t) + g(t)*y(t)) and Eq(diff(y(t),t), h(t)*x(t) + p(t)*y(t))
+        return "type7"
 
 
 def check_linear_2eq_order2(eq, func, func_coef):
@@ -1760,8 +1747,6 @@ def check_linear_neq_order1(eq, func, func_coef):
         for j in Add.make_args(eq[i]):
             if not j.has(*func):
                 r['forcing'][i] += j
-    if any(not f.is_zero for f in r['forcing']):
-        return  # nonhomogeneous systems aren't supported, see sympy/sympy#9244
 
     return 'type1'
 
@@ -6105,10 +6090,6 @@ def sysode_linear_2eq_order1(match_):
         raise NotImplementedError("Only homogeneous problems are supported" +
                                   " (and constant inhomogeneity)")
 
-    if match_['type_of_equation'] == 'type2':
-        gsol = sysode_linear_neq_order1(match_)
-        psol = _linear_2eq_order1_type2(x, y, t, r, eq)
-        sol = [Eq(x(t), gsol[0].rhs+psol[0]), Eq(y(t), gsol[1].rhs+psol[1])]
     if match_['type_of_equation'] == 'type3':
         sol = _linear_2eq_order1_type3(x, y, t, r, eq)
     if match_['type_of_equation'] == 'type4':
@@ -6120,59 +6101,6 @@ def sysode_linear_2eq_order1(match_):
     if match_['type_of_equation'] == 'type7':
         sol = _linear_2eq_order1_type7(x, y, t, r, eq)
     return sol
-
-
-def _linear_2eq_order1_type2(x, y, t, r, eq):
-    r"""
-    The equations of this type are
-
-    .. math:: x' = ax + by + k1 , y' = cx + dy + k2
-
-    The general solution of this system is given by sum of its particular solution and the
-    general solution of the corresponding homogeneous system is obtained from type1.
-
-    1. When `ad - bc \neq 0`. The particular solution will be
-    `x = x_0` and `y = y_0` where `x_0` and `y_0` are determined by solving linear system of equations
-
-    .. math:: a x_0 + b y_0 + k1 = 0 , c x_0 + d y_0 + k2 = 0
-
-    2. When `ad - bc = 0` and `a^{2} + b^{2} > 0`. In this case, the system of equation becomes
-
-    .. math:: x' = ax + by + k_1 , y' = k (ax + by) + k_2
-
-    2.1 If `\sigma = a + bk \neq 0`, particular solution is given by
-
-    .. math:: x = b \sigma^{-1} (c_1 k - c_2) t - \sigma^{-2} (a c_1 + b c_2)
-
-    .. math:: y = kx + (c_2 - c_1 k) t
-
-    2.2 If `\sigma = a + bk = 0`, particular solution is given by
-
-    .. math:: x = \frac{1}{2} b (c_2 - c_1 k) t^{2} + c_1 t
-
-    .. math:: y = kx + (c_2 - c_1 k) t
-
-    """
-    r['k1'] = -r['k1']
-    r['k2'] = -r['k2']
-    if (r['a']*r['d'] - r['b']*r['c']) != 0:
-        x0, y0 = symbols('x0, y0', cls=Dummy)
-        sol = solve((r['a']*x0+r['b']*y0+r['k1'],
-                     r['c']*x0+r['d']*y0+r['k2']), x0, y0)
-        sol = sol[0]
-        psol = [sol[x0], sol[y0]]
-    elif (r['a']*r['d'] - r['b']*r['c']) == 0 and (r['a']**2+r['b']**2) > 0:
-        k = r['c']/r['a']
-        sigma = r['a'] + r['b']*k
-        if sigma != 0:
-            sol1 = r['b']*sigma**-1*(r['k1']*k-r['k2'])*t - sigma**-2*(r['a']*r['k1']+r['b']*r['k2'])
-            sol2 = k*sol1 + (r['k2']-r['k1']*k)*t
-        else:
-            # FIXME: a previous typo fix shows this is not covered by tests
-            sol1 = r['b']*(r['k2']-r['k1']*k)*t**2 + r['k1']*t
-            sol2 = k*sol1 + (r['k2']-r['k1']*k)*t
-        psol = [sol1, sol2]
-    return psol
 
 
 def _linear_2eq_order1_type3(x, y, t, r, eq):
@@ -7007,9 +6935,8 @@ def sysode_linear_neq_order1(match_):
     Notes
     =====
 
-    The nonhomogeneous case is not implemented yet.  Mass-matrix
-    assumed to be invertible and provided general solution uses the
-    Jordan canonical form for `A = M^{-1} L`.
+    Mass-matrix assumed to be invertible and provided general solution uses
+    the Jordan canonical form for `A = M^{-1} L`.
 
     References
     ==========
@@ -7021,20 +6948,28 @@ def sysode_linear_neq_order1(match_):
     func = match_['func']
     fc = match_['func_coeff']
     eq = match_['eq']
-    n = len(eq)
+    n = match_['no_of_equation']
     t = func[0].args[0]
+
+    force = [Integer(0)]*n
+    for i in range(n):
+        for j in Add.make_args(eq[i]):
+            if not j.has(*func):
+                force[i] += j
 
     M = Matrix(n, n, lambda i, j: +fc[i, func[j], 1])
     L = Matrix(n, n, lambda i, j: -fc[i, func[j], 0])
+    Minv = M.inv()
 
-    A = M.inv()*L
+    A = Minv*L
     JJ, T = A.jordan_cells()
     T, Tinv = map(simplify, [T, T.inv()])
 
+    force = Minv*Matrix(force)
+
     expm = Matrix(BlockDiagMatrix(*[(J*t).exp() for J in JJ]))
-    q = T*expm*Tinv
-    Cvec = Matrix(get_numbered_constants(eq, num=n))
-    q = q*Cvec
+    q = T*expm*Tinv*Matrix(get_numbered_constants(eq, num=n))
+    q -= T*expm*(expm.subs({t: -t})*Tinv*force).integrate(t)
 
     return [Eq(func[i], q[i]) for i in range(n)]
 
