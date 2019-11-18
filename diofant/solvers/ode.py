@@ -1621,7 +1621,7 @@ def check_linear_2eq_order1(eq, func, func_coef):
             if (r['b1'] == r['c2']) and (r['c1'] == r['b2']):
                 # Equation for type 3 are Eq(diff(x(t),t), f(t)*x(t) + g(t)*y(t)) and Eq(diff(y(t),t), g(t)*x(t) + f(t)*y(t))
                 return "type3"
-            elif (r['b1'] == r['c2']) and (r['c1'] == -r['b2']) or (r['b1'] == -r['c2']) and (r['c1'] == r['b2']):
+            elif (r['b1'] == r['c2']) and (r['c1'] == -r['b2']):
                 # Equation for type 4 are Eq(diff(x(t),t), f(t)*x(t) + g(t)*y(t)) and Eq(diff(y(t),t), -g(t)*x(t) + f(t)*y(t))
                 return "type4"
             elif (not cancel(r['b2']/r['c1']).has(t) and not cancel((r['c2']-r['b1'])/r['c1']).has(t)) \
@@ -6344,11 +6344,6 @@ def _linear_2eq_order1_type4(x, y, t, r, eq):
         G = Integral(r['b'], t)
         sol1 = F*(C1*cos(G) + C2*sin(G))
         sol2 = F*(-C1*sin(G) + C2*cos(G))
-    elif r['d'] == -r['a']:
-        F = exp(Integral(r['c'], t))
-        G = Integral(r['d'], t)
-        sol1 = F*(-C1*sin(G) + C2*cos(G))
-        sol2 = F*(C1*cos(G) + C2*sin(G))
     return [Eq(x(t), sol1), Eq(y(t), sol2)]
 
 

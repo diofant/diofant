@@ -68,10 +68,6 @@ def test_linear_2eq_order1():
             Eq(y(t), (-C1*sin(Integral(t**2, t)) + C2*cos(Integral(t**2, t)))*exp(Integral(5*t, t)))]
     assert dsolve(eq7) == sol7
 
-    eq7_1 = (Eq(diff(x(t), t), 5*t*x(t) + t**2*y(t)), Eq(diff(y(t), t), t**2*x(t) - 5*t*y(t)))
-    sol7_1 = [Eq(x(t), E**Integral(t**2, t)*(-C1*sin(Integral(-5*t, t)) + C2*cos(Integral(-5*t, t)))), Eq(y(t), E**Integral(t**2, t)*(C1*cos(Integral(-5*t, t)) + C2*sin(Integral(-5*t, t))))]
-    assert dsolve(eq7_1) == sol7_1
-
     eq8 = (Eq(diff(x(t), t), 5*t*x(t) + t**2*y(t)), Eq(diff(y(t), t), -t**2*x(t) + (5*t+9*t**2)*y(t)))
     sol8 = [Eq(x(t), E**Integral(5*t, t)*(C1*(sqrt(77)*E**((-sqrt(77) + 9)*Integral(t**2, t)/2)*(sqrt(77)/2 + 9/2)/77 - sqrt(77)*E**((sqrt(77) + 9)*Integral(t**2, t)/2)*(-sqrt(77)/2 + 9/2)/77) + C2*(E**((-sqrt(77) + 9)*Integral(t**2, t)/2)*(-9*sqrt(77)/154 + 1/2)*(sqrt(77)/2 + 9/2) + E**((sqrt(77) + 9)*Integral(t**2, t)/2)*(1/2 + 9*sqrt(77)/154)*(-sqrt(77)/2 + 9/2)))), Eq(y(t), E**Integral(5*t, t)*(C1*(sqrt(77)*E**((-sqrt(77) + 9)*Integral(t**2, t)/2)/77 - sqrt(77)*E**((sqrt(77) + 9)*Integral(t**2, t)/2)/77) + C2*(E**((-sqrt(77) + 9)*Integral(t**2, t)/2)*(-9*sqrt(77)/154 + 1/2) + E**((sqrt(77) + 9)*Integral(t**2, t)/2)*(1/2 + 9*sqrt(77)/154))))]
     assert dsolve(eq8) == sol8
