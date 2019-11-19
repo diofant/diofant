@@ -1,4 +1,3 @@
-import re
 import sys
 import warnings
 
@@ -16,8 +15,6 @@ try:
 except ImportError:
     collect_ignore.extend(["diofant/plotting/plot.py",
                            "diofant/plotting/plot_implicit.py"])
-
-sp = re.compile(r'([0-9]+)/([1-9][0-9]*)')
 
 hypothesis.settings.register_profile("default",
                                      hypothesis.settings(max_examples=100))

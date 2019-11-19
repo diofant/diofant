@@ -585,8 +585,6 @@ def _condsimp(cond):
 
     >>> _condsimp(Or(x < y, z, Eq(x, y)))
     z | (x <= y)
-    >>> _condsimp(Or(x <= y, And(x < y, z)))
-    x <= y
 
     """
     from ..functions import (unbranched_argument, exp_polar,
@@ -630,14 +628,6 @@ def _condsimp(cond):
                         if k in otherlist:
                             continue
                         if arg2 == arg3:
-                            otherlist += [k]
-                            break
-                        if isinstance(arg3, And) and arg2.args[1] == r and \
-                                isinstance(arg2, And) and arg2.args[0] in arg3.args:
-                            otherlist += [k]
-                            break
-                        if isinstance(arg3, And) and arg2.args[0] == r and \
-                                isinstance(arg2, And) and arg2.args[1] in arg3.args:
                             otherlist += [k]
                             break
                 if len(otherlist) != len(otherargs) + 1:

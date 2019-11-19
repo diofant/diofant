@@ -869,6 +869,7 @@ def _solve_system(exprs, symbols, **flags):
     dens = set()
     failed = []
     result = [{}]
+    solved_syms = []
     polynomial = False
     inversions = False
     checkdens = check = flags.get('check', True)
@@ -888,29 +889,25 @@ def _solve_system(exprs, symbols, **flags):
         else:
             failed.append(g)
 
-    if not polys:
-        solved_syms = []
-    else:
-        if all(p.is_linear for p in polys):
-            n, m = len(polys), len(symbols)
-            matrix = zeros(n, m + 1)
+    if polys and all(p.is_linear for p in polys):
+        n, m = len(polys), len(symbols)
+        matrix = zeros(n, m + 1)
 
-            for i, poly in enumerate(polys):
-                for monom, coeff in poly.terms():
-                    try:
-                        j = monom.index(1)
-                        matrix[i, j] = coeff
-                    except ValueError:
-                        matrix[i, m] = -coeff
+        for i, poly in enumerate(polys):
+            for monom, coeff in poly.terms():
+                try:
+                    j = monom.index(1)
+                    matrix[i, j] = coeff
+                except ValueError:
+                    matrix[i, m] = -coeff
 
-            # returns a dictionary {symbols: values} or None
-            result = solve_linear_system(matrix, *symbols, **flags)
-            solved_syms = list(result) if result else []
-            result = [result] if result else [{}]
-        else:
-            result = solve_poly_system(polys, *symbols)
-            solved_syms = list(set().union(*[{k for k in r}
-                                             for r in result]))
+        # returns a dictionary {symbols: values} or None
+        result = solve_linear_system(matrix, *symbols, **flags)
+        solved_syms = list(result) if result else []
+        result = [result] if result else [{}]
+    elif polys:
+        result = solve_poly_system(polys, *symbols)
+        solved_syms = list(set().union(*[set(r) for r in result]))
 
     if failed:
         # For each failed equation, see if we can solve for one of the

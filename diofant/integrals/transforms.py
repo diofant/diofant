@@ -879,9 +879,9 @@ def _simplifyconds(expr, s, a):
     Abs(x**2) < 1
     >>> _simplifyconds(abs(1/x**2) < 1, x, 1)
     True
-    >>> _simplifyconds(Integer(1) < abs(x), x, 1)
+    >>> _simplifyconds(1 < abs(x), x, 1)
     True
-    >>> _simplifyconds(Integer(1) < abs(1/x), x, 1)
+    >>> _simplifyconds(1 < abs(1/x), x, 1)
     False
 
     >>> _simplifyconds(Ne(1, x**3), x, 1)
@@ -898,10 +898,9 @@ def _simplifyconds(expr, s, a):
 
     def power(ex):
         if ex == s:
-            return 1
+            return Integer(1)
         if ex.is_Pow and ex.base == s:
             return ex.exp
-        return
 
     def bigger(ex1, ex2):
         """ Return True only if |ex1| > |ex2|, False only if |ex1| < |ex2|.
@@ -919,13 +918,10 @@ def _simplifyconds(expr, s, a):
         n = power(ex2)
         if n is None:
             return
-        try:
-            if n > 0 and (abs(ex1) - abs(a)**n).is_nonpositive:
-                return False
-            if n < 0 and (abs(ex1) - abs(a)**n).is_nonnegative:
-                return True
-        except TypeError:
-            pass
+        if n.is_positive and (abs(ex1) - abs(a)**n).is_nonpositive:
+            return False
+        elif n.is_negative and (abs(ex1) - abs(a)**n).is_nonnegative:
+            return True
 
     def replie(x, y):
         """simplify x < y."""

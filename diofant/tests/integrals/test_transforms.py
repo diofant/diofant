@@ -17,8 +17,9 @@ from diofant.integrals.transforms import (CosineTransform, FourierTransform,
                                           InverseLaplaceTransform,
                                           InverseSineTransform,
                                           LaplaceTransform, MellinTransform,
-                                          SineTransform, cosine_transform,
-                                          fourier_transform, hankel_transform,
+                                          SineTransform, _simplifyconds,
+                                          cosine_transform, fourier_transform,
+                                          hankel_transform,
                                           inverse_cosine_transform,
                                           inverse_fourier_transform,
                                           inverse_hankel_transform,
@@ -283,20 +284,32 @@ def test_expint():
         (expint(2, x)*Heaviside(x)).rewrite(Ei).rewrite(expint).expand()
 
 
-@pytest.mark.slow
 def test_inverse_mellin_transform():
     IMT = inverse_mellin_transform
-
-    assert IMT(gamma(s), s, x, (0, oo)) == exp(-x)
-    assert IMT(gamma(-s), s, x, (-oo, 0)) == exp(-1/x)
-    assert simplify(IMT(s/(2*s**2 - 2), s, x, (2, oo))) == \
-        (x**2 + 1)*Heaviside(1 - x)/(4*x)
 
     # test passing "None"
     assert IMT(1/(s**2 - 1), s, x, (-1, None)) == \
         -x*Heaviside(-x + 1)/2 - Heaviside(x - 1)/(2*x)
     assert IMT(1/(s**2 - 1), s, x, (None, 1)) == \
         (-x/2 + 1/(2*x))*Heaviside(-x + 1)
+
+    def simp_pows(expr):
+        return simplify(powsimp(expand_mul(expr, deep=False), force=True)).replace(exp_polar, exp)
+
+    assert simp_pows(IMT(d**c*d**(s - 1)*sin(pi*c)
+                         * gamma(s)*gamma(s + c)*gamma(1 - s)*gamma(1 - s - c)/pi,
+                         s, x, (Max(-re(c), 0), Min(1 - re(c), 1)))) \
+        == (x**c - d**c)/(x - d)
+
+
+@pytest.mark.slow
+def test_inverse_mellin_transform2():
+    IMT = inverse_mellin_transform
+
+    assert IMT(gamma(s), s, x, (0, oo)) == exp(-x)
+    assert IMT(gamma(-s), s, x, (-oo, 0)) == exp(-1/x)
+    assert simplify(IMT(s/(2*s**2 - 2), s, x, (2, oo))) == \
+        (x**2 + 1)*Heaviside(1 - x)/(4*x)
 
     # test expansion of sums
     assert IMT(gamma(s) + gamma(s - 1), s, x, (1, oo)) == (x + 1)*exp(-x)/x
@@ -328,10 +341,6 @@ def test_inverse_mellin_transform():
         == (x - 1)**(beta - 1)*Heaviside(x - 1)
     assert simp_pows(IMT(gamma(s)*gamma(rho - s)/gamma(rho), s, x, (0, None))) \
         == (1/(x + 1))**rho
-    assert simp_pows(IMT(d**c*d**(s - 1)*sin(pi*c)
-                         * gamma(s)*gamma(s + c)*gamma(1 - s)*gamma(1 - s - c)/pi,
-                         s, x, (Max(-re(c), 0), Min(1 - re(c), 1)))) \
-        == (x**c - d**c)/(x - d)
 
     assert simplify(IMT(1/sqrt(pi)*(-c/2)*gamma(s)*gamma((1 - c)/2 - s)
                         * gamma(-c/2 - s)/gamma(1 - c - s),
@@ -737,3 +746,8 @@ def test_sympyissue_8514():
                                                                                                               * sqrt(Abs(4*a*c - b**2))/(2*a)) - cos(t*sin(atan2(0, -4*a*c + b**2)/2)
                                                                                                                                                      * sqrt(Abs(4*a*c - b**2))/(2*a)))*exp(-t*(b + cos(atan2(0, -4*a*c + b**2)/2)
                                                                                                                                                                                                * sqrt(Abs(4*a*c - b**2)))/(2*a))/sqrt(-4*a*c + b**2))
+
+
+def test__simplifyconds():
+    assert _simplifyconds(1 < abs(x), x, 1) is True
+    assert _simplifyconds(abs(x**2) < 1, x, 0) == (abs(x**2) < 1)

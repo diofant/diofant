@@ -1,4 +1,4 @@
-from random import uniform
+from random import randint, uniform
 
 import pytest
 
@@ -12,15 +12,12 @@ from diofant.abc import k, n, x, y, z
 from diofant.core.function import ArgumentIndexError
 from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
                                               airybiprime, fn)
-from diofant.utilities.randtest import _randint
 from diofant.utilities.randtest import random_complex_number as randcplx
 from diofant.utilities.randtest import verify_derivative_numerically as td
 from diofant.utilities.randtest import verify_numerically as tn
 
 
 __all__ = ()
-
-randint = _randint()
 
 
 def test_bessel_rand():

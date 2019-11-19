@@ -677,3 +677,11 @@ def test_sympyissue_11806():
     y, L = symbols('y L', positive=True)
     assert integrate(1/sqrt(x**2 + y**2)**3, (x, -L, L)) == \
         2*L/(y**2*sqrt(L**2 + y**2))
+
+
+def test_meijerint_doc():
+    from diofant.integrals.meijerint_doc import __doc__
+    assert __doc__[:89] == r"""Elementary functions:
+
+.. math::
+  a = a {G_{1, 1}^{1, 0}\left(\begin{matrix}  & 1 \\0 & """

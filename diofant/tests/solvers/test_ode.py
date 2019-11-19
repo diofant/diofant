@@ -7,12 +7,13 @@ from diofant import (Abs, Derivative, Dummy, E, Ei, Eq, Function, I, Integer,
                      root, simplify, sin, sinh, sqrt, sstr, symbols, tan)
 from diofant.abc import A
 from diofant.solvers.deutils import ode_order
-from diofant.solvers.ode import (_linear_coeff_match,
+from diofant.solvers.ode import (_lie_group_remove, _linear_coeff_match,
                                  _undetermined_coefficients_match, checkinfsol,
                                  checkodesol, checksysodesol, classify_ode,
                                  classify_sysode, constant_renumber,
                                  constantsimp, homogeneous_order,
-                                 infinitesimals, solve_init)
+                                 infinitesimals, ode_sol_simplicity,
+                                 solve_init)
 from diofant.utilities.iterables import variations
 
 
@@ -1626,7 +1627,6 @@ def test_nth_linear_constant_coeff_homogeneous():
     assert checkodesol(eq30, sol30, order=5, solve_for_func=False)[0]
 
 
-@pytest.mark.slow
 def test_nth_linear_constant_coeff_homogeneous_RootOf():
     c = [C1, C2, C3, C4, C5]
     eq = f(x).diff(x, 5) + 11*f(x).diff(x) - 2*f(x)
@@ -1635,7 +1635,10 @@ def test_nth_linear_constant_coeff_homogeneous_RootOf():
     assert dsolve(eq) == sol
     assert checkodesol(eq, sol, order=5, solve_for_func=False)[0]
 
-    # issue sympy/sympy#15520
+
+@pytest.mark.slow
+def test_sympyissue_15520():
+    c = [C1, C2, C3, C4, C5]
     eq = f(x).diff(x, 5) + sqrt(3)*f(x).diff(x) - 2*f(x)
     sol = Eq(f(x), sum(exp(x*RootOf(x**5 + sqrt(3)*x - 2, i))*c[i]
                        for i in range(5)))
@@ -2002,6 +2005,14 @@ def test_nth_linear_constant_coeff_variation_of_parameters():
     assert checkodesol(eq9, sol9, order=3, solve_for_func=False)[0]
     assert checkodesol(eq10, sol10, order=2, solve_for_func=False)[0]
     assert checkodesol(eq12, sol12, order=4, solve_for_func=False)[0]
+
+
+def test_nth_linear_constant_coeff_variation_of_parameters_coverage():
+    hint = 'nth_linear_constant_coeff_variation_of_parameters'
+    eq = (f(x).diff(x, 3) - 3*f(x).diff(x, 2) + 3*f(x).diff(x) -
+          f(x) - exp(x)*log(x))
+    sol = Eq(f(x), exp(x)*(C1 + C2*x + C3*x**2 + x**3*(6*log(x) - 11)/36))
+    assert dsolve(eq, f(x), hint=hint) == sol
 
 
 @pytest.mark.slow
@@ -2486,6 +2497,9 @@ def test_heuristic1():
         check = checkinfsol(eq, i)
         assert check[0]
 
+    eq = f(x).diff(x) - x**2*f(x)
+    assert infinitesimals(eq) == [{eta(x, f(x)): exp(x**3/3), xi(x, f(x)): 0}]
+
 
 def test_sympyissue_6247():
     eq = x**2*f(x)**2 + x*Derivative(f(x), x)
@@ -2835,3 +2849,20 @@ def test_sympyissue_15574():
     assert dsolve(eqs[:2]) == ans[:2]
     assert dsolve(eqs[:3]) == ans[:3]
     assert dsolve(eqs[:4]) == ans[:4]
+
+
+def test__lie_group_remove():
+    eq = x**2*y
+    assert _lie_group_remove(eq) == x**2*y
+    eq = f(x**2*y)
+    assert _lie_group_remove(eq) == x**2*y
+    eq = y**2*x + f(x**3)
+    assert _lie_group_remove(eq) == x*y**2
+    eq = (f(x**3) + y)*x**4
+    assert _lie_group_remove(eq) == x**4*y
+
+
+def test_ode_sol_simplicity():
+    eq1 = Eq(f(x)/tan(f(x)/(2*x)), C1)
+    eq2 = Eq(f(x)/tan(f(x)/(2*x) + f(x)), C2)
+    assert [ode_sol_simplicity(eq, f(x)) for eq in [eq1, eq2]] == [28, 35]
