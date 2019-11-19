@@ -11,9 +11,9 @@ from diofant.solvers.ode import (_lie_group_remove, _linear_coeff_match,
                                  _undetermined_coefficients_match, checkinfsol,
                                  checkodesol, checksysodesol, classify_ode,
                                  classify_sysode, constant_renumber,
-                                 constantsimp, homogeneous_order,
-                                 infinitesimals, ode_sol_simplicity,
-                                 solve_init)
+                                 constantsimp, get_numbered_constants,
+                                 homogeneous_order, infinitesimals,
+                                 ode_sol_simplicity, odesimp, solve_init)
 from diofant.utilities.iterables import variations
 
 
@@ -391,6 +391,10 @@ def test_nonlinear_2eq_order1():
         Eq(y(t), I*root(-1/(4*C2 + 4*t), 4))]
     assert dsolve(eq2) == sol2
 
+    eq2_1 = (Eq(diff(x(t), t), exp(0*x(t))*x(t)*y(t)**2), Eq(diff(y(t), t), x(t)*y(t)))
+    sol2_1 = [Eq(x(t), -exp(2*C1*(C2 + t))*C1/(exp(2*C1*(C2 + t)) - 1) + C1), Eq(y(t), -sqrt(2)*sqrt(-exp(2*C1*(C2 + t))*C1/(exp(2*C1*(C2 + t)) - 1))), Eq(x(t), -exp(2*C1*(C2 + t))*C1/(exp(2*C1*(C2 + t)) - 1) + C1), Eq(y(t), sqrt(2)*sqrt(-exp(2*C1*(C2 + t))*C1/(exp(2*C1*(C2 + t)) - 1)))]
+    assert dsolve(eq2_1) == sol2_1
+
     eq3 = (Eq(diff(x(t), t), y(t)*x(t)), Eq(diff(y(t), t), x(t)**3))
     tt = Rational(2, 3)
     sol3 = [
@@ -426,6 +430,16 @@ def test_checksysodesol():
     sol = [Eq(x(t), 9*C1*exp(-6*sqrt(3)*t) + 9*C2*exp(6*sqrt(3)*t)),
            Eq(y(t), -6*sqrt(3)*C1*exp(-6*sqrt(3)*t) + 6*sqrt(3)*C2*exp(6*sqrt(3)*t))]
     assert checksysodesol(eq, sol) == (True, [0, 0])
+
+    eq = (diff(x(t), t) - 9*y(t), diff(y(t), t) - 12*x(t))
+    assert checksysodesol(eq, sol) == (True, [0, 0])
+    assert checksysodesol(eq, sol, func=(x(t), y(t))) == (True, [0, 0])
+
+    pytest.raises(ValueError, lambda: checksysodesol(eq, sol, func=(x(t), y(t, C0))))
+    pytest.raises(ValueError, lambda: checksysodesol(eq, [Eq(x(t), y(t)), Eq(y(t), 0)]))
+    pytest.raises(ValueError, lambda: checksysodesol(eq, (sol[0],)))
+
+    assert checksysodesol(eq, [sol[0], Eq(sol[1].lhs, 0)])[0] is False
 
     # with change lhs to rhs:
     assert checksysodesol(eq, [_.reversed for _ in sol]) == (True, [0, 0])
@@ -1009,6 +1023,8 @@ def test_solve_init():
             Eq(x*cos(f(x)) + f(x)**3/3, Rational(1, 3)))
 
     assert (dsolve(x + f(x)*Derivative(f(x), x), init={f(1): 0}) ==
+            [Eq(f(x), -sqrt(-x**2 + 1)), Eq(f(x), sqrt(-x**2 + 1))])
+    assert (dsolve(x + f(x)*Derivative(f(x), x), init={Subs(f(x), (x, 1)): 0}) ==
             [Eq(f(x), -sqrt(-x**2 + 1)), Eq(f(x), sqrt(-x**2 + 1))])
 
     assert solve_init([Eq(f(x), C1*exp(x))], [f(x)], [C1], {f(0): 1}) == {C1: 1}
@@ -2033,7 +2049,6 @@ def test_nth_linear_constant_coeff_variation_of_parameters_coverage():
     assert dsolve(eq, f(x), hint=hint) == sol
 
 
-@pytest.mark.slow
 def test_nth_linear_constant_coeff_variation_of_parameters_simplify_False():
     # solve_variation_of_parameters shouldn't attempt to simplify the
     # Wronskian if simplify=False.  If wronskian() ever gets good enough
@@ -2884,3 +2899,29 @@ def test_ode_sol_simplicity():
     eq1 = Eq(f(x)/tan(f(x)/(2*x)), C1)
     eq2 = Eq(f(x)/tan(f(x)/(2*x) + f(x)), C2)
     assert [ode_sol_simplicity(eq, f(x)) for eq in [eq1, eq2]] == [28, 35]
+
+
+def test_get_numbered_constants():
+    pytest.raises(ValueError, lambda: get_numbered_constants("spam"))
+
+
+def test_dsolve_interface():
+    pytest.raises(ValueError, lambda: dsolve((f(t).diff(t) - g(t), g(t).diff(t, 2) + t)))
+    pytest.raises(ValueError, lambda: dsolve((f(t).diff(t) - g(t),)))
+    pytest.raises(ValueError, lambda: classify_sysode((f(t).diff(t) - g(t),)))
+    pytest.raises(ValueError, lambda: classify_sysode((f(t).diff(t) - g(t), g(t).diff(t) + 1), (f(t),)))
+    pytest.raises(ValueError, lambda: classify_sysode((f(t).diff(t) - g(t), g(t).diff(t) + 1), (f(t), g(t, x))))
+
+
+def test_odesimp():
+    sol = dsolve(x*f(x).diff(x) - f(x) - x*sin(f(x)/x), f(x),
+                 hint='1st_homogeneous_coeff_subs_indep_div_dep_Integral',
+                 simplify=False)
+    sol1 = odesimp(sol, f(x), 1, {C1}, hint='1st_homogeneous_coeff_subs_indep_div_dep')
+    ssol = Eq(f(x), 2*x*atan(C1*x))
+    assert sol1 == ssol
+    sol2 = odesimp(Eq(sol.rhs, sol.lhs), f(x), 1, {C1}, hint='1st_homogeneous_coeff_subs_indep_div_dep')
+    assert sol2 == ssol
+    pytest.raises(TypeError, lambda: odesimp(sol.lhs - sol.rhs,
+                                             f(x), 1, {C1},
+                                             hint='1st_homogeneous_coeff_subs_indep_div_dep'))
