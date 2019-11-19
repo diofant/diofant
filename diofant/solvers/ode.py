@@ -1090,44 +1090,38 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
             r3.update(r)
             # Exact Differential Equation: P(x, y) + Q(x, y)*y' = 0 where
             # dP/dy == dQ/dx
-            try:
-                if r[d] != 0:
-                    numerator = simplify(r[d].diff(y) - r[e].diff(x))
-                    # The following few conditions try to convert a non-exact
-                    # differential equation into an exact one.
-                    # References : Differential equations with applications
-                    # and historical notes - George E. Simmons
+            if r[d] != 0:
+                numerator = simplify(r[d].diff(y) - r[e].diff(x))
+                # The following few conditions try to convert a non-exact
+                # differential equation into an exact one.
+                # References : Differential equations with applications
+                # and historical notes - George E. Simmons
 
-                    if numerator:
-                        # If (dP/dy - dQ/dx) / Q = f(x)
-                        # then exp(integral(f(x))*equation becomes exact
-                        factor = simplify(numerator/r[e])
+                if numerator:
+                    # If (dP/dy - dQ/dx) / Q = f(x)
+                    # then exp(integral(f(x))*equation becomes exact
+                    factor = simplify(numerator/r[e])
+                    variables = factor.free_symbols
+                    if len(variables) == 1 and x == variables.pop():
+                        factor = exp(Integral(factor).doit())
+                        r[d] *= factor
+                        r[e] *= factor
+                        matching_hints["1st_exact"] = r
+                        matching_hints["1st_exact_Integral"] = r
+                    else:
+                        # If (dP/dy - dQ/dx) / -P = f(y)
+                        # then exp(integral(f(y))*equation becomes exact
+                        factor = simplify(-numerator/r[d])
                         variables = factor.free_symbols
-                        if len(variables) == 1 and x == variables.pop():
+                        if len(variables) == 1 and y == variables.pop():
                             factor = exp(Integral(factor).doit())
                             r[d] *= factor
                             r[e] *= factor
                             matching_hints["1st_exact"] = r
                             matching_hints["1st_exact_Integral"] = r
-                        else:
-                            # If (dP/dy - dQ/dx) / -P = f(y)
-                            # then exp(integral(f(y))*equation becomes exact
-                            factor = simplify(-numerator/r[d])
-                            variables = factor.free_symbols
-                            if len(variables) == 1 and y == variables.pop():
-                                factor = exp(Integral(factor).doit())
-                                r[d] *= factor
-                                r[e] *= factor
-                                matching_hints["1st_exact"] = r
-                                matching_hints["1st_exact_Integral"] = r
-                    else:
-                        matching_hints["1st_exact"] = r
-                        matching_hints["1st_exact_Integral"] = r
-
-            except NotImplementedError:
-                # Differentiating the coefficients might fail because of things
-                # like f(2*x).diff(x).  See issue sympy/sympy#4624 and issue 4719.
-                pass
+                else:
+                    matching_hints["1st_exact"] = r
+                    matching_hints["1st_exact_Integral"] = r
 
         # Any first order ODE can be ideally solved by the Lie Group
         # method
@@ -1425,7 +1419,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
     ========
 
     >>> f, x, y = symbols('f, x, y', cls=Function)
-    >>> k, l, m, n = symbols('k, l, m, n', Integer=True)
+    >>> k, l, m, n = symbols('k, l, m, n', integer=True)
     >>> x1 = diff(x(t), t) ; y1 = diff(y(t), t)
     >>> x2 = diff(x(t), t, t) ; y2 = diff(y(t), t, t)
     >>> eq = (Eq(5*x1, 12*x(t) - 6*y(t)), Eq(2*y1, 11*x(t) + 3*y(t)))
@@ -1615,8 +1609,6 @@ def check_linear_2eq_order1(eq, func, func_coef):
             if all(not r[k].has(t) for k in 'a1 a2 b1 b2 c1 c2'.split()):
                 # Equations for type 2 are Eq(a1*diff(x(t),t),b1*x(t)+c1*y(t)+d1) and Eq(a2*diff(y(t),t),b2*x(t)+c2*y(t)+d2)
                 return "type2"
-        else:
-            return
     else:
         if all(not r[k].has(t) for k in 'a1 a2 b1 b2 c1 c2'.split()):
             # Equations for type 1 are Eq(a1*diff(x(t),t),b1*x(t)+c1*y(t)) and Eq(a2*diff(y(t),t),b2*x(t)+c2*y(t))
@@ -1629,7 +1621,7 @@ def check_linear_2eq_order1(eq, func, func_coef):
             if (r['b1'] == r['c2']) and (r['c1'] == r['b2']):
                 # Equation for type 3 are Eq(diff(x(t),t), f(t)*x(t) + g(t)*y(t)) and Eq(diff(y(t),t), g(t)*x(t) + f(t)*y(t))
                 return "type3"
-            elif (r['b1'] == r['c2']) and (r['c1'] == -r['b2']) or (r['b1'] == -r['c2']) and (r['c1'] == r['b2']):
+            elif (r['b1'] == r['c2']) and (r['c1'] == -r['b2']):
                 # Equation for type 4 are Eq(diff(x(t),t), f(t)*x(t) + g(t)*y(t)) and Eq(diff(y(t),t), -g(t)*x(t) + f(t)*y(t))
                 return "type4"
             elif (not cancel(r['b2']/r['c1']).has(t) and not cancel((r['c2']-r['b1'])/r['c1']).has(t)) \
@@ -1698,10 +1690,6 @@ def check_linear_2eq_order2(eq, func, func_coef):
 
             if p[0] == 1 and p[1] == 1 and q[0] == 0 and q[1] == 0:
                 return "type4"
-            else:
-                return
-        else:
-            return
     else:
         if r['b1'] == r['b2'] == r['c1'] == r['c2'] == 0 and all(not r[k].has(t)
                                                                  for k in 'a1 a2 d1 d2 e1 e2'.split()):
@@ -1744,9 +1732,6 @@ def check_linear_2eq_order2(eq, func, func_coef):
         elif -r['b1']/r['d1'] == -r['c1']/r['e1'] == -r['b2']/r['d2'] == -r['c2']/r['e2'] == t:
             return "type11"
 
-        else:
-            return
-
 
 def check_linear_3eq_order1(eq, func, func_coef):
     x = func[0].func
@@ -1786,8 +1771,6 @@ def check_linear_3eq_order1(eq, func, func_coef):
         elif r['b1'] == r['c2'] == r['d3'] == 0 and r['c1']/r['a1'] == -r['d1']/r['a1'] \
                 and r['d2']/r['a2'] == -r['b2']/r['a2'] and r['b3']/r['a3'] == -r['c3']/r['a3']:
             return 'type3'
-        else:
-            return
     else:
         for k1 in 'c1 d1 b2 d2 b3 c3'.split():
             if r[k1] == 0:
@@ -1798,7 +1781,6 @@ def check_linear_3eq_order1(eq, func, func_coef):
                     return 'type4'
                 else:
                     break
-    return
 
 
 def check_linear_neq_order1(eq, func, func_coef):
@@ -1884,11 +1866,6 @@ def check_nonlinear_2eq_order1(eq, func, func_coef):
     R2 = den.match(f2*g2)
     if R1 and R2:
         return 'type4'
-    return
-
-
-def check_nonlinear_2eq_order2(eq, func, func_coef):
-    return
 
 
 def check_nonlinear_3eq_order1(eq, func, func_coef):
@@ -1929,10 +1906,6 @@ def check_nonlinear_3eq_order1(eq, func, func_coef):
         if solve([num1*u - den1*(v - w), num2*v - den2*(w - u),
                   num3*w - den3*(u - v)], [u, v]):
             return 'type2'
-
-
-def check_nonlinear_3eq_order2(eq, func, func_coef):
-    return
 
 
 def checksysodesol(eqs, sols, func=None):
@@ -2553,7 +2526,6 @@ def _get_constant_subexpressions(expr, Cs):
                     Ces.append(expr)
             for i in expr.args:
                 _recursive_walk(i)
-        return
 
     _recursive_walk(expr)
     return Ces
@@ -6255,7 +6227,7 @@ def sysode_linear_2eq_order1(match_):
                                   " (and constant inhomogeneity)")
 
     if match_['type_of_equation'] == 'type2':
-        gsol = _linear_2eq_order1_type1(x, y, t, r, eq)
+        gsol = sysode_linear_neq_order1(match_)
         psol = _linear_2eq_order1_type2(x, y, t, r, eq)
         sol = [Eq(x(t), gsol[0].rhs+psol[0]), Eq(y(t), gsol[1].rhs+psol[1])]
     if match_['type_of_equation'] == 'type3':
@@ -6269,129 +6241,6 @@ def sysode_linear_2eq_order1(match_):
     if match_['type_of_equation'] == 'type7':
         sol = _linear_2eq_order1_type7(x, y, t, r, eq)
     return sol
-
-
-def _linear_2eq_order1_type1(x, y, t, r, eq):
-    r"""
-    It is classified under system of two linear homogeneous first-order constant-coefficient
-    ordinary differential equations.
-
-    The equations which come under this type are
-
-    .. math:: x' = ax + by,
-
-    .. math:: y' = cx + dy
-
-    The characteristics equation is written as
-
-    .. math:: \lambda^{2} + (a+d) \lambda + ad - bc = 0
-
-    and its discriminant is `D = (a-d)^{2} + 4bc`. There are several cases
-
-    1. Case when `ad - bc \neq 0`. The origin of coordinates, `x = y = 0`,
-    is the only stationary point; it is
-    - a node if `D = 0`
-    - a node if `D > 0` and `ad - bc > 0`
-    - a saddle if `D > 0` and `ad - bc < 0`
-    - a focus if `D < 0` and `a + d \neq 0`
-    - a centre if `D < 0` and `a + d \neq 0`.
-
-    1.1. If `D > 0`. The characteristic equation has two distinct real roots
-    `\lambda_1` and `\lambda_ 2` . The general solution of the system in question is expressed as
-
-    .. math:: x = C_1 b e^{\lambda_1 t} + C_2 b e^{\lambda_2 t}
-
-    .. math:: y = C_1 (\lambda_1 - a) e^{\lambda_1 t} + C_2 (\lambda_2 - a) e^{\lambda_2 t}
-
-    where `C_1` and `C_2` being arbitrary constants
-
-    1.2. If `D < 0`. The characteristics equation has two conjugate
-    roots, `\lambda_1 = \sigma + i \beta` and `\lambda_2 = \sigma - i \beta`.
-    The general solution of the system is given by
-
-    .. math:: x = b e^{\sigma t} (C_1 \sin(\beta t) + C_2 \cos(\beta t))
-
-    .. math:: y = e^{\sigma t} ([(\sigma - a) C_1 - \beta C_2] \sin(\beta t) + [\beta C_1 + (\sigma - a) C_2 \cos(\beta t)])
-
-    1.3. If `D = 0` and `a \neq d`. The characteristic equation has
-    two equal roots, `\lambda_1 = \lambda_2`. The general solution of the system is written as
-
-    .. math:: x = 2b (C_1 + \frac{C_2}{a-d} + C_2 t) e^{\frac{a+d}{2} t}
-
-    .. math:: y = [(d - a) C_1 + C_2 + (d - a) C_2 t] e^{\frac{a+d}{2} t}
-
-    1.4. If `D = 0` and `a = d \neq 0` and `b = 0`
-
-    .. math:: x = C_1 e^{a t} , y = (c C_1 t + C_2) e^{a t}
-
-    1.5. If `D = 0` and `a = d \neq 0` and `c = 0`
-
-    .. math:: x = (b C_1 t + C_2) e^{a t} , y = C_1 e^{a t}
-
-    2. Case when `ad - bc = 0` and `a^{2} + b^{2} > 0`. The whole straight
-    line `ax + by = 0` consists of singular points. The orginal system of differential
-    equations can be rewritten as
-
-    .. math:: x' = ax + by , y' = k (ax + by)
-
-    2.1 If `a + bk \neq 0`, solution will be
-
-    .. math:: x = b C_1 + C_2 e^{(a + bk) t} , y = -a C_1 + k C_2 e^{(a + bk) t}
-
-    2.2 If `a + bk = 0`, solution will be
-
-    .. math:: x = C_1 (bk t - 1) + b C_2 t , y = k^{2} b C_1 t + (b k^{2} t + 1) C_2
-
-    """
-    # FIXME: at least some of these can fail to give two linearly
-    # independent solutions e.g., because they make assumptions about
-    # zero/nonzero of certain coefficients.  I've "fixed" one and
-    # raised NotImplementedError in another.  I think this should probably
-    # just be re-written in terms of eigenvectors...
-
-    l = Dummy('l')
-    C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
-    l1, l2 = Poly(l**2 - (r['a']+r['d'])*l + r['a']*r['d'] - r['b']*r['c'],
-                  l).all_roots()
-    D = (r['a'] - r['d'])**2 + 4*r['b']*r['c']
-    if (r['a']*r['d'] - r['b']*r['c']) != 0:
-        if D > 0:
-            if r['b'].is_zero:
-                # tempting to use this in all cases, but does not guarantee linearly independent eigenvectors
-                gsol1 = C1*(l1 - r['d'] + r['b'])*exp(l1*t) + C2*(l2 - r['d'] + r['b'])*exp(l2*t)
-                gsol2 = C1*(l1 - r['a'] + r['c'])*exp(l1*t) + C2*(l2 - r['a'] + r['c'])*exp(l2*t)
-            else:
-                gsol1 = C1*r['b']*exp(l1*t) + C2*r['b']*exp(l2*t)
-                gsol2 = C1*(l1 - r['a'])*exp(l1*t) + C2*(l2 - r['a'])*exp(l2*t)
-        if D < 0:
-            sigma = re(l1)
-            if im(l1).is_positive:
-                beta = im(l1)
-            else:
-                beta = im(l2)
-            if r['b'].is_zero:
-                raise NotImplementedError('b == 0 case not implemented')
-            gsol1 = r['b']*exp(sigma*t)*(C1*sin(beta*t)+C2*cos(beta*t))
-            gsol2 = exp(sigma*t)*(((C1*(sigma-r['a'])-C2*beta)*sin(beta*t)+(C1*beta+(sigma-r['a'])*C2)*cos(beta*t)))
-        if D == 0:
-            if r['a'] != r['d']:
-                gsol1 = 2*r['b']*(C1 + C2/(r['a']-r['d'])+C2*t)*exp((r['a']+r['d'])*t/2)
-                gsol2 = ((r['d']-r['a'])*C1+C2+(r['d']-r['a'])*C2*t)*exp((r['a']+r['d'])*t/2)
-            if r['a'] == r['d'] and r['a'] != 0 and r['b'] == 0:
-                gsol1 = C1*exp(r['a']*t)
-                gsol2 = (r['c']*C1*t+C2)*exp(r['a']*t)
-            if r['a'] == r['d'] and r['a'] != 0 and r['c'] == 0:
-                gsol1 = (r['b']*C1*t+C2)*exp(r['a']*t)
-                gsol2 = C1*exp(r['a']*t)
-    elif (r['a']*r['d'] - r['b']*r['c']) == 0 and (r['a']**2+r['b']**2) > 0:
-        k = r['c']/r['a']
-        if r['a']+r['b']*k != 0:
-            gsol1 = r['b']*C1 + C2*exp((r['a']+r['b']*k)*t)
-            gsol2 = -r['a']*C1 + k*C2*exp((r['a']+r['b']*k)*t)
-        else:
-            gsol1 = C1*(r['b']*k*t-1)+r['b']*C2*t
-            gsol2 = k**2*r['b']*C1*t+(r['b']*k**2*t+1)*C2
-    return [Eq(x(t), gsol1), Eq(y(t), gsol2)]
 
 
 def _linear_2eq_order1_type2(x, y, t, r, eq):
@@ -6495,11 +6344,6 @@ def _linear_2eq_order1_type4(x, y, t, r, eq):
         G = Integral(r['b'], t)
         sol1 = F*(C1*cos(G) + C2*sin(G))
         sol2 = F*(-C1*sin(G) + C2*cos(G))
-    elif r['d'] == -r['a']:
-        F = exp(Integral(r['c'], t))
-        G = Integral(r['d'], t)
-        sol1 = F*(-C1*sin(G) + C2*cos(G))
-        sol2 = F*(C1*cos(G) + C2*sin(G))
     return [Eq(x(t), sol1), Eq(y(t), sol2)]
 
 
@@ -6784,8 +6628,8 @@ def _linear_2eq_order2_type1(x, y, t, r, eq):
         else:
             if r['a'] != r['d']:
                 k = sqrt(2*(r['a']+r['d']))
-                mid = r['b']*t+2*r['b']*k/(r['a']-r['d'])
-                gsol1 = 2*C1*mid*exp(k*t/2) + 2*C2*mid*exp(-k*t/2) + \
+                gsol1 = 2*C1*(r['b']*t+2*r['b']*k/(r['a']-r['d']))*exp(k*t/2) + \
+                    2*C2*(r['b']*t-2*r['b']*k/(r['a']-r['d']))*exp(-k*t/2) + \
                     2*r['b']*C3*t*exp(k*t/2) + 2*r['b']*C4*t*exp(-k*t/2)
                 gsol2 = C1*(r['d']-r['a'])*t*exp(k*t/2) + C2*(r['d']-r['a'])*t*exp(-k*t/2) + \
                     C3*((r['d']-r['a'])*t+2*k)*exp(k*t/2) + C4*((r['d']-r['a'])*t-2*k)*exp(-k*t/2)
@@ -6793,7 +6637,8 @@ def _linear_2eq_order2_type1(x, y, t, r, eq):
                 sa = sqrt(r['a'])
                 gsol1 = 2*sa*C1*exp(sa*t) + 2*sa*C2*exp(-sa*t)
                 gsol2 = r['c']*C1*t*exp(sa*t)-r['c']*C2*t*exp(-sa*t)+C3*exp(sa*t)+C4*exp(-sa*t)
-            elif r['a'] == r['d'] != 0 and r['c'] == 0:
+            else:
+                assert r['a'] == r['d'] != 0 and r['c'] == 0
                 sa = sqrt(r['a'])
                 gsol1 = r['b']*C1*t*exp(sa*t)-r['b']*C2*t*exp(-sa*t)+C3*exp(sa*t)+C4*exp(-sa*t)
                 gsol2 = 2*sa*C1*exp(sa*t) + 2*sa*C2*exp(-sa*t)
@@ -7271,11 +7116,6 @@ def _linear_3eq_order1_type4(x, y, z, t, r, eq):
 
 
 def sysode_linear_neq_order1(match_):
-    sol = _linear_neq_order1_type1(match_)
-    return sol
-
-
-def _linear_neq_order1_type1(match_):
     r"""System of n first-order constant-coefficient linear differential equations
 
     .. math ::

@@ -116,3 +116,12 @@ def test_Equality():
     assert Unequality(M, M.subs({x: 2})).subs({x: 2}) is false
     assert Equality(M, M.subs({x: 2})).subs({x: 3}) is false
     assert Unequality(M, M.subs({x: 2})).subs({x: 3}) is true
+
+
+def test_diff_integrate():
+    M = Matrix([x, 1]).as_immutable()
+    assert M.integrate(x) == Matrix([x**2/2, x])
+    assert M.diff(x) == Matrix([1, 0])
+    assert M.limit(x, 1) == Matrix([1, 1])
+
+    assert zeros(2).as_immutable().integrate(x) == zeros(2)
