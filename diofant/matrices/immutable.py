@@ -111,6 +111,10 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
     __eq__ = DenseMatrix.__eq__
     __hash__ = Expr.__hash__
 
+    integrate = MatrixBase.integrate
+    diff = MatrixBase.diff
+    limit = MatrixBase.limit
+
 
 # This is included after the class definition as a workaround for issue sympy/sympy#7213.
 # See https://github.com/sympy/sympy/issues/7213

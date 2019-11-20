@@ -212,6 +212,9 @@ def test_unrad0():
                  (s**10 + 8*s**8 + 24*s**6 - 12*s**5 - 22*s**4 - 160*s**3 - 212*s**2 -
                   192*s - 56, [s, s**2 - x]))
 
+    assert check(unrad(sqrt(x) + sqrt(1 - x) - 3),
+                 (x**2 - x + 16, []))
+
 
 @pytest.mark.slow
 def test_unrad1():
@@ -263,8 +266,6 @@ def test_unrad1():
                  ((a*sqrt(x) + b*sqrt(x))**2 - (c*sqrt(y) + d*sqrt(y))**2, []))
     assert check(unrad(sqrt(x) + sqrt(1 - x)),
                  (2*x - 1, []))
-    assert check(unrad(sqrt(x) + sqrt(1 - x) - 3),
-                 (x**2 - x + 16, []))
     assert check(unrad(sqrt(x) + sqrt(1 - x) + sqrt(2 + x)),
                  (5*x**2 - 2*x + 1, []))
     assert unrad(sqrt(x) + sqrt(1 - x) + sqrt(2 + x) - 3) in [
