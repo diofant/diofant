@@ -572,12 +572,8 @@ def dsolve(eq, func=None, hint="default", simplify=True,
 
         # keep highest order term coefficient positive
         for i in range(len(eq)):
-            for func_ in func:
-                if isinstance(func_, list):
-                    pass
-                else:
-                    if eq[i].coeff(diff(func[i], t, ode_order(eq[i], func[i]))).is_negative:
-                        eq[i] = -eq[i]
+            if eq[i].coeff(diff(func[i], t, ode_order(eq[i], func[i]))).is_negative:
+                eq[i] = -eq[i]
         match['eq'] = eq
         if len(set(order.values())) != 1:
             raise ValueError("It solves only those systems of equations whose orders are equal")
@@ -597,6 +593,8 @@ def dsolve(eq, func=None, hint="default", simplify=True,
                     solvefunc = globals()['sysode_linear_neq_order%(order)s' % match]
                 elif match['no_of_equation'] <= 3:
                     solvefunc = globals()['sysode_linear_%(no_of_equation)seq_order%(order)s' % match]
+                else:
+                    raise NotImplementedError
             else:
                 solvefunc = globals()['sysode_nonlinear_%(no_of_equation)seq_order%(order)s' % match]
             sols = solvefunc(match)
@@ -742,6 +740,10 @@ def solve_init(sols, funcs, constants, init):
     diff_sols = []
     subs_sols = []
     diff_variables = set()
+
+    init = {k.doit() if isinstance(k, Subs) else k: v
+            for k, v in init.items()}
+
     for funcarg, value in init.items():
         if isinstance(funcarg, AppliedUndef):
             x0 = funcarg.args[0]
@@ -749,15 +751,11 @@ def solve_init(sols, funcs, constants, init):
             S = sols
         elif isinstance(funcarg, (Subs, Derivative)):
             if isinstance(funcarg, Subs):
-                # Make sure it stays a subs. Otherwise subs below will produce
-                # a different looking term.
-                funcarg = funcarg.doit()
-            if isinstance(funcarg, Subs):
                 deriv = funcarg.expr
                 x0 = funcarg.point[0]
                 variables = funcarg.expr.variables
                 matching_func = deriv
-            elif isinstance(funcarg, Derivative):
+            else:
                 deriv = funcarg
                 x0 = funcarg.variables[0]
                 variables = (x,)*len(funcarg.variables)
@@ -971,6 +969,8 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
 
     # Preprocessing to get the initial conditions out
     if init is not None:
+        init = {k.doit() if isinstance(k, Subs) else k: v
+                for k, v in init.items()}
         for funcarg in init:
             # Separating derivatives
             if isinstance(funcarg, (Subs, Derivative)):
@@ -980,7 +980,7 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
                     deriv = funcarg.expr
                     old = funcarg.variables[0]
                     new = funcarg.point[0]
-                elif isinstance(funcarg, Derivative):
+                else:
                     deriv = funcarg
                     # No information on this. Just assume it was x
                     old = x
@@ -1472,15 +1472,9 @@ def classify_sysode(eq, funcs=None, **kwargs):
         order[func] = max_order
     matching_hints['func'] = funcs
     for func in funcs:
-        if isinstance(func, list):
-            for func_elem in func:
-                if len(func_elem.args) != 1:
-                    raise ValueError("dsolve() and classify_sysode() work with "
-                                     "functions of one variable only, not %s" % func)
-        else:
-            if func and len(func.args) != 1:
-                raise ValueError("dsolve() and classify_sysode() work with "
-                                 "functions of one variable only, not %s" % func)
+        if func and len(func.args) != 1:
+            raise ValueError("dsolve() and classify_sysode() work with "
+                             "functions of one variable only, not %s" % func)
 
     # find the order of all equation in system of odes
     matching_hints["order"] = order
@@ -1506,26 +1500,16 @@ def classify_sysode(eq, funcs=None, **kwargs):
                             is_linear_ = False
                 else:
                     for func_ in funcs:
-                        if isinstance(func_, list):
-                            for elem_func_ in func_:
-                                dep = func_coef[j, func, k].as_independent(elem_func_)[1]
-                                if dep != 1 and dep != 0:
-                                    is_linear_ = False
-                        else:
-                            dep = func_coef[j, func, k].as_independent(func_)[1]
-                            if dep != 1 and dep != 0:
-                                is_linear_ = False
+                        dep = func_coef[j, func, k].as_independent(func_)[1]
+                        if dep != 1 and dep != 0:
+                            is_linear_ = False
         return is_linear_
 
     func_coef = {}
     is_linear = True
     for j, eqs in enumerate(eq):
         for func in funcs:
-            if isinstance(func, list):
-                for func_elem in func:
-                    is_linear = linearity_check(eqs, j, func_elem, is_linear)
-            else:
-                is_linear = linearity_check(eqs, j, func, is_linear)
+            is_linear = linearity_check(eqs, j, func, is_linear)
     matching_hints['func_coeff'] = func_coef
     matching_hints['is_linear'] = is_linear
 
@@ -1972,9 +1956,11 @@ def checksysodesol(eqs, sols, func=None):
             for func_ in func:
                 funcs.append(func_)
         funcs = list(set(funcs))
+    else:
+        funcs = list(func)
     if not all(isinstance(func, AppliedUndef) and len(func.args) == 1 for func in funcs)\
             and len({func.args for func in funcs}) != 1:
-        raise ValueError("func must be a function of one variable, not %s" % func)
+        raise ValueError("func must be a function of one variable, not %s" % str(func))
     for sol in sols:
         if len(sol.atoms(AppliedUndef)) != 1:
             raise ValueError("solutions should have one function only")
@@ -1985,24 +1971,13 @@ def checksysodesol(eqs, sols, func=None):
         func = list(sol.atoms(AppliedUndef))[0]
         if sol.rhs == func:
             sol = sol.reversed
-        solved = sol.lhs == func and not sol.rhs.has(func)
-        if not solved:
-            rhs = solve(sol, func)
-            if not rhs:  # pragma: no cover
-                raise NotImplementedError
-        else:
-            rhs = sol.rhs
-        dictsol[func] = rhs
+        dictsol[func] = sol.rhs
     checkeq = []
     for eq in eqs:
         for func in funcs:
             eq = sub_func_doit(eq, func, dictsol[func])
         ss = simplify(eq)
-        if ss != 0:
-            eq = ss.expand(force=True)
-        else:
-            eq = 0
-        checkeq.append(eq)
+        checkeq.append(ss)
     if len(set(checkeq)) == 1 and list(set(checkeq))[0] == 0:
         return True, checkeq
     else:
@@ -2232,16 +2207,7 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
     if not isinstance(ode, Equality):
         ode = Eq(ode, 0)
     if func is None:
-        try:
-            _, func = _preprocess(ode.lhs)
-        except ValueError:
-            funcs = [s.atoms(AppliedUndef) for s in (
-                sol if is_sequence(sol, set) else [sol])]
-            funcs = set().union(*funcs)
-            if len(funcs) != 1:
-                raise ValueError(
-                    'must pass func arg to checkodesol for this case.')
-            func = funcs.pop()
+        _, func = _preprocess(ode.lhs)
     if not isinstance(func, AppliedUndef) or len(func.args) != 1:
         raise ValueError(
             "func must be a function of one variable, not %s" % func)
@@ -6339,11 +6305,11 @@ def _linear_2eq_order1_type4(x, y, t, r, eq):
 
     """
     C1, C2, C3, C4 = get_numbered_constants(eq, num=4)
-    if r['b'] == -r['c']:
-        F = exp(Integral(r['a'], t))
-        G = Integral(r['b'], t)
-        sol1 = F*(C1*cos(G) + C2*sin(G))
-        sol2 = F*(-C1*sin(G) + C2*cos(G))
+    assert r['b'] == -r['c']
+    F = exp(Integral(r['a'], t))
+    G = Integral(r['b'], t)
+    sol1 = F*(C1*cos(G) + C2*sin(G))
+    sol2 = F*(-C1*sin(G) + C2*cos(G))
     return [Eq(x(t), sol1), Eq(y(t), sol2)]
 
 
@@ -6543,6 +6509,8 @@ def sysode_linear_2eq_order2(match_):
         sol = _linear_2eq_order2_type9(x, y, t, r, eq)
     elif match_['type_of_equation'] == 'type11':
         sol = _linear_2eq_order2_type11(x, y, t, r, eq)
+    else:
+        raise NotImplementedError
     return sol
 
 
@@ -7066,6 +7034,8 @@ def sysode_linear_3eq_order1(match_):
                 raise NotImplementedError("Only homogeneous problems are supported, non-homogenous are not supported currently.")
     if match_['type_of_equation'] == 'type4':
         sol = _linear_3eq_order1_type4(x, y, z, t, r, eq)
+    else:
+        raise NotImplementedError
     return sol
 
 
@@ -7182,6 +7152,8 @@ def sysode_nonlinear_2eq_order1(match_):
         sol = _nonlinear_2eq_order1_type3(x, y, t, eq)
     elif match_['type_of_equation'] == 'type4':
         sol = _nonlinear_2eq_order1_type4(x, y, t, eq)
+    else:
+        raise NotImplementedError
     return sol
 
 
