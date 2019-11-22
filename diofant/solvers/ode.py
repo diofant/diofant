@@ -579,12 +579,6 @@ def dsolve(eq, func=None, hint="default", simplify=True,
             raise ValueError("It solves only those systems of equations whose orders are equal")
         match['order'] = list(order.values())[0]
 
-        def recur_len(l):
-            return sum(recur_len(item) if isinstance(item, list) else 1 for item in l)
-
-        if recur_len(func) != len(eq):
-            raise ValueError("dsolve() and classify_sysode() work with "
-                             "number of functions being equal to number of equations")
         if match['type_of_equation'] is None:
             raise NotImplementedError
         else:
@@ -615,16 +609,11 @@ def dsolve(eq, func=None, hint="default", simplify=True,
         all_ = hints.pop('all', False)
         if all_:
             retdict = {}
-            failed_hints = {}
             gethints = classify_ode(eq, dict=True)
             orderedhints = gethints['ordered_hints']
             for hint in hints:
-                try:
-                    rv = _helper_simplify(eq, hint, hints[hint], simplify)
-                except NotImplementedError as detail:
-                    failed_hints[hint] = detail
-                else:
-                    retdict[hint] = rv
+                rv = _helper_simplify(eq, hint, hints[hint], simplify)
+                retdict[hint] = rv
             func = hints[hint]['func']
 
             retdict['best'] = min(list(retdict.values()), key=lambda x:
@@ -637,7 +626,6 @@ def dsolve(eq, func=None, hint="default", simplify=True,
                     break
             retdict['default'] = gethints['default']
             retdict['order'] = gethints['order']
-            retdict.update(failed_hints)
             return retdict
 
         else:
@@ -3918,7 +3906,7 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
                 collectterms = [(i, reroot, imroot)] + collectterms
     if returns == 'sol':
         return Eq(f(x), gsol)
-    elif returns in ('list' 'both'):
+    elif returns == 'both':
         # HOW TO TEST THIS CODE? (dsolve does not pass 'returns' through)
         # Create a list of (hopefully) linearly independent solutions
         gensols = []
@@ -3933,10 +3921,7 @@ def ode_nth_linear_euler_eq_homogeneous(eq, func, order, match, returns='sol'):
                     gensols.append(cos_form)
                 else:
                     gensols.append(sin_form)
-        if returns == 'list':
-            return gensols
-        else:
-            return {'sol': Eq(f(x), gsol), 'list': gensols}
+        return {'sol': Eq(f(x), gsol), 'list': gensols}
     else:
         raise ValueError('Unknown value for key "returns".')
 
