@@ -420,20 +420,7 @@ def are_similar(e1, e2):
     False
 
     """
-    from .exceptions import GeometryError
-
-    if e1 == e2:
-        return True
-    try:
-        return e1.is_similar(e2)
-    except AttributeError:
-        try:
-            return e2.is_similar(e1)
-        except AttributeError:
-            n1 = e1.__class__.__name__
-            n2 = e2.__class__.__name__
-            raise GeometryError(
-                "Cannot test similarity between %s and %s" % (n1, n2))
+    return e1.is_similar(e2)
 
 
 def centroid(*args):

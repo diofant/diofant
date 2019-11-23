@@ -648,6 +648,10 @@ def test_polygon():
     t1 = Triangle(Point(0, 0), Point(4, 0), Point(1, 4))
     assert t1.is_scalene() is True
 
+    p1 = Polygon((1, 0), (2, 0), (2, 2), (-4, 3))
+    p2 = Polygon((1, 0), (2, 0), (3, 2), (-4, 3))
+    assert (p1 == p2) is False
+
 
 def test_convex_hull():
     p = [Point(-5, -1), Point(-2, 1), Point(-2, -1), Point(-1, -3),
