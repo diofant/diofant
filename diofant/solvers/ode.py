@@ -1400,8 +1400,9 @@ def classify_sysode(eq, funcs=None, **kwargs):
 
     References
     ==========
-    -http://eqworld.ipmnet.ru/en/solutions/sysode/sode-toc1.htm
-    -A. D. Polyanin and A. V. Manzhirov, Handbook of Mathematics for Engineers and Scientists
+
+    * http://eqworld.ipmnet.ru/en/solutions/sysode/sode-toc1.htm
+    * :cite:`polyanin2006handbook`
 
     Examples
     ========
@@ -2841,8 +2842,7 @@ def ode_1st_exact(eq, func, order, match):
     ==========
 
     * https://en.wikipedia.org/wiki/Exact_differential_equation
-    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 73.
+    * :cite:`TenenbaumPollard63`, pp. 73.
 
     """
     x = func.args[0]
@@ -2893,8 +2893,7 @@ def ode_1st_homogeneous_coeff_best(eq, func, order, match):
     ==========
 
     * https://en.wikipedia.org/wiki/Homogeneous_differential_equation
-    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 59.
+    * :cite:`TenenbaumPollard63`, pp. 59.
 
     """
     # There are two substitutions that solve the equation, u1=y/x and u2=x/y
@@ -2990,8 +2989,7 @@ def ode_1st_homogeneous_coeff_subs_dep_div_indep(eq, func, order, match):
     ==========
 
     * https://en.wikipedia.org/wiki/Homogeneous_differential_equation
-    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 59.
+    * :cite:`TenenbaumPollard63`, pp. 59.
 
     """
     x = func.args[0]
@@ -3083,8 +3081,7 @@ def ode_1st_homogeneous_coeff_subs_indep_div_dep(eq, func, order, match):
     ==========
 
     * https://en.wikipedia.org/wiki/Homogeneous_differential_equation
-    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 59.
+    * :cite:`TenenbaumPollard63`, pp. 59.
 
     """
     x = func.args[0]
@@ -3234,8 +3231,7 @@ def ode_1st_linear(eq, func, order, match):
     ==========
 
     * https://en.wikipedia.org/wiki/Linear_differential_equation#First-order_equation_with_variable_coefficients
-    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 92.
+    * :cite:`TenenbaumPollard63`, pp. 92.
 
     """
     x = func.args[0]
@@ -3314,8 +3310,7 @@ def ode_Bernoulli(eq, func, order, match):
     ==========
 
     * https://en.wikipedia.org/wiki/Bernoulli_differential_equation
-    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 95.
+    * :cite:`TenenbaumPollard63`, pp. 95.
 
     """
     x = func.args[0]
@@ -3422,8 +3417,7 @@ def ode_Liouville(eq, func, order, match):
     References
     ==========
 
-    * Goldstein and Braun, "Advanced Methods for the Solution of Differential
-      Equations", pp. 98.
+    * :cite:`goldstein1973advanced`, pp. 98.
     * https://www.maplesoft.com/support/help/Maple/view.aspx?path=odeadvisor/Liouville
 
     """
@@ -3472,8 +3466,7 @@ def ode_2nd_power_series_ordinary(eq, func, order, match):
     ==========
 
     * http://tutorial.math.lamar.edu/Classes/DE/SeriesSolutions.aspx
-    * George E. Simmons, "Differential Equations with Applications and
-      Historical Notes", pp 176 - 184.
+    * :cite:`simmons2016differential`, pp 176 - 184.
 
     """
     x = func.args[0]
@@ -3631,8 +3624,8 @@ def ode_2nd_power_series_regular(eq, func, order, match):
 
     References
     ==========
-    - George E. Simmons, "Differential Equations with Applications and
-      Historical Notes", pp 176 - 184
+
+    * :cite:`simmons2016differential`, pp 176 - 184.
 
     """
     x = func.args[0]
@@ -4466,8 +4459,7 @@ def ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
 
     * https://en.wikipedia.org/wiki/Linear_differential_equation section:
       Nonhomogeneous_equation_with_constant_coefficients
-    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 211.
+    * :cite:`TenenbaumPollard63`, pp. 211.
 
     """
     x = func.args[0]
@@ -4597,8 +4589,7 @@ def ode_nth_linear_constant_coeff_undetermined_coefficients(eq, func, order, mat
     ==========
 
     * https://en.wikipedia.org/wiki/Method_of_undetermined_coefficients
-    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 221.
+    * :cite:`TenenbaumPollard63`, pp. 221.
 
     """
     gensol = ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
@@ -4919,8 +4910,7 @@ def ode_nth_linear_constant_coeff_variation_of_parameters(eq, func, order, match
     ==========
 
     * https://en.wikipedia.org/wiki/Variation_of_parameters
-    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 233.
+    * :cite:`TenenbaumPollard63`, pp. 233.
 
     """
 
@@ -5035,8 +5025,7 @@ def ode_separable(eq, func, order, match):
     References
     ==========
 
-    * M. Tenenbaum & H. Pollard, "Ordinary Differential Equations",
-      Dover 1963, pp. 52.
+    * :cite:`TenenbaumPollard63`, pp. 52.
 
     """
     x = func.args[0]
@@ -7086,10 +7075,7 @@ def sysode_linear_neq_order1(match_):
     References
     ==========
 
-    * Ernst Hairer, Syvert Paul Nørsett, Gerhard Wanner.  Solving
-      Ordinary Differential Equations I.  Nonstiff Problems.
-      Springer Series in Comput. Mathematics, Vol. 8, Springer-Verlag 1987,
-      Second revised edition 1993, pp. 73-76.
+    * :cite:`hairer2014solving`, pp. 73-76.
 
     """
 
