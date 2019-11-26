@@ -654,14 +654,11 @@ def rsolve(f, y, init=None):
     .. math:: (n - 1) y(n + 2) - (n^2 + 3 n - 2) y(n + 1) +
               2 n (n + 1) y(n) = 0
 
-    >>> y = Function('y')
+    >>> eq = (n - 1)*f(n + 2) - (n**2 + 3*n - 2)*f(n + 1) + 2*n*(n + 1)*f(n)
 
-    >>> f = (n - 1)*y(n + 2) - (n**2 + 3*n - 2)*y(n + 1) + 2*n*(n + 1)*y(n)
-
-    >>> rsolve(f, y(n))
+    >>> rsolve(eq, f(n))
     2**n*C0 + C1*factorial(n)
-
-    >>> rsolve(f, y(n), {y(0): 0, y(1): 3})
+    >>> rsolve(eq, f(n), {f(0): 0, f(1): 3})
     3*2**n - 3*factorial(n)
 
     See Also
