@@ -1,7 +1,7 @@
 import pytest
 
 from diofant import (Abs, Derivative, Dummy, E, Ei, Eq, Function, I, Integer,
-                     Integral, LambertW, Mul, O, Piecewise, Poly, Pow,
+                     Integral, LambertW, Matrix, Mul, O, Piecewise, Poly, Pow,
                      Rational, RootOf, Subs, Symbol, acos, acosh, asin, asinh,
                      atan, cbrt, cos, diff, dsolve, erf, erfi, exp, log, pi,
                      root, simplify, sin, sinh, sqrt, sstr, symbols, tan)
@@ -2957,3 +2957,53 @@ def test_odesimp():
     pytest.raises(TypeError, lambda: odesimp(sol.lhs - sol.rhs,
                                              f(x), 1, {C1},
                                              hint='1st_homogeneous_coeff_subs_indep_div_dep'))
+
+
+def test_sympyissue_16635():
+    eqs = [Eq(f(t).diff(t), f(t) - g(t) + 15*t - 10),
+           Eq(g(t).diff(t), f(t) - g(t) - 15*t - 5)]
+    sol = [Eq(f(t), C1*(t + 1) - C2*t - 10*t**3 + 5*t**2/2 - 15*t/2 - (-2*t - 1)*(15*t**2/2 - 5*t/2)),
+           Eq(g(t), C1*t + C2*(-t + 1) - 10*t**3 + 5*t**2/2 - 15*t/2 - (-2*t + 1)*(15*t**2/2 - 5*t/2))]
+    assert dsolve(eqs) == sol
+
+
+def test_sympyissue_14312():
+    a, b = symbols('a b')
+    eqs1 = (Eq(f(t).diff(t), b*g(t)), Eq(g(t).diff(t), -(b + a)*g(t)),
+            Eq(h(t).diff(t), a*g(t)))
+    sol1 = dsolve(eqs1)
+    assert checksysodesol(eqs1, sol1) == (True, [0, 0, 0])
+
+    eqs2 = (Eq(h(t).diff(t), a*g(t)), Eq(f(t).diff(t), b*g(t)),
+            Eq(g(t).diff(t), -(b + a)*g(t)))
+    sol2 = dsolve(eqs2)
+    assert checksysodesol(eqs2, sol2) == (True, [0, 0, 0])
+
+
+def test_sympyissue_8859():
+    eqs = [Eq(f(t).diff(t), f(t) + 3*t), Eq(g(t).diff(t), g(t))]
+    sol = [Eq(f(t), -3 - 3*t + C1*exp(t)), Eq(g(t), C2*exp(t))]
+    assert dsolve(eqs) == sol
+
+
+def test_sympyissue_9204():
+    m, q = symbols("m q", real=True)
+    El = Matrix(symbols("e1:4", real=True))
+    B = Matrix(symbols("b1:4", real=True))
+
+    V = Matrix([f(t), g(t), h(t)])
+    F = m*V.diff(t) - q*El - q*V.cross(B)
+
+    assert all(_.has(*El) for _ in dsolve(F))
+
+    El[0] = El[1] = 0
+    B[0] = B[1] = 0
+    e3 = El[2]
+    b3 = B[2]
+    F = m*V.diff(t) - q*El - q*V.cross(B)
+
+    sol2 = [_.rewrite(sin).simplify() for _ in dsolve(F)]
+
+    assert sol2 == [Eq(f(t), +C1*cos(b3*q*t/m) + C2*sin(b3*q*t/m)),
+                    Eq(g(t), -C1*sin(b3*q*t/m) + C2*cos(b3*q*t/m)),
+                    Eq(h(t), C3 + e3*q*t/m)]

@@ -133,3 +133,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`17982` Wrong result from rsolve
 * :sympyissue:`9244` dsolve: nonhomogeneous linear systems are not supported
 * :sympyissue:`15946` Matrix exponential for dsolve
+* :sympyissue:`16635` problem when using dsolve() to solve ordinary differential equations
+* :sympyissue:`14312` Incorrect solution of 3 by 3 linear ODE systems
+* :sympyissue:`8859` wrong result: dsolve for systems with forcings
+* :sympyissue:`9204` dsolve fails
