@@ -2165,8 +2165,10 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
     >>> C1 = symbols('C1')
     >>> checkodesol(f(x).diff(x), Eq(f(x), C1))
     (True, 0)
-    >>> assert checkodesol(f(x).diff(x), C1)[0]
-    >>> assert not checkodesol(f(x).diff(x), x)[0]
+    >>> checkodesol(f(x).diff(x), C1)
+    (True, 0)
+    >>> checkodesol(f(x).diff(x), x)
+    (False, 1)
     >>> checkodesol(f(x).diff(x, 2), x**2)
     (False, 2)
 
@@ -3312,9 +3314,6 @@ def ode_Riccati_special_minus2(eq, func, order, match):
             \                                 \                 2*a             //
     f(x) = ------------------------------------------------------------------------
                                             2*b*x
-
-    >>> checkodesol(genform, sol, order=1)[0]
-    True
 
     References
     ==========
