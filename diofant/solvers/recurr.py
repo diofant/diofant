@@ -54,7 +54,7 @@ from ..core.compatibility import default_sort_key
 from ..functions import FallingFactorial, RisingFactorial, binomial, factorial
 from ..matrices import Matrix, casoratian
 from ..polys import Poly, gcd, gcd_list, lcm_list, quo, resultant, roots
-from ..simplify import hypersimilar, hypersimp, simplify
+from ..simplify import hypersimilar, hypersimp
 from ..utilities import numbered_symbols
 from .solvers import solve
 
@@ -428,9 +428,9 @@ def rsolve_ratio(coeffs, f, n, **hints):
 
         if result is not None:
             if hints.get('symbols', False):
-                return simplify(result[0] / C), result[1]
+                return (result[0] / C).simplify(), result[1]
             else:
-                return simplify(result / C)
+                return (result / C).simplify()
 
 
 def rsolve_hyper(coeffs, f, n, **hints):
@@ -519,7 +519,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
             coeff, polys = Integer(1), coeffs[:]
             denoms = [Integer(1)] * (r + 1)
 
-            g = simplify(g)
+            g = g.simplify()
             s = hypersimp(g, n)
 
             for j in range(1, r + 1):
@@ -545,7 +545,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
                 return
 
             result = Add(*inhomogeneous)
-            result = simplify(result)
+            result = result.simplify()
     else:
         result = Integer(0)
 
@@ -603,14 +603,14 @@ def rsolve_hyper(coeffs, f, n, **hints):
 
             for C in sol:
                 ratio = z * A * C.subs({n: n + 1}) / B / C
-                ratio = simplify(ratio)
+                ratio = ratio.simplify()
 
                 skip = max([-1] + [v for v in roots(Mul(*ratio.as_numer_denom()), n)
                                    if v.is_Integer]) + 1
                 K = product(ratio, (n, skip, n - 1))
 
                 if K.has(factorial, FallingFactorial, RisingFactorial):
-                    K = simplify(K)
+                    K = K.simplify()
 
                 if casoratian(kernel + [K], n, zero=False) != 0:
                     kernel.append(K)
@@ -628,7 +628,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
         return result
 
 
-def rsolve(f, y, init=None):
+def rsolve(f, y, init=None, simplify=True):
     r"""
     Solve recurrence equations.
 
@@ -683,7 +683,7 @@ def rsolve(f, y, init=None):
             k = Wild('k', exclude=(n,))
             r = h.args[0].match(n + k)
             if r:
-                c = simplify(c)
+                c = c.simplify()
                 if not c.is_rational_function(n):
                     raise ValueError("Rational function of '%s' expected, got '%s'" % (n, c))
                 h_part[int(r[k])] = c
@@ -705,7 +705,8 @@ def rsolve(f, y, init=None):
     k_min, k_max = min(h_part), max(h_part)
 
     if k_min < 0:
-        return rsolve(f.subs({n: n + abs(k_min)}), y, init)
+        return rsolve(f.subs({n: n + abs(k_min)}), y, init=init,
+                      simplify=simplify)
 
     i_numer, i_denom = i_part.as_numer_denom()
 
@@ -754,5 +755,8 @@ def rsolve(f, y, init=None):
             return
         else:
             solution = solution.subs(result[0])
+
+    if simplify:
+        solution = solution.simplify()
 
     return solution
