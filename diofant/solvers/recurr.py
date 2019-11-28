@@ -1,7 +1,8 @@
 r"""
-This module is intended for solving recurrences or, in other words,
-difference equations. Currently supported are linear, inhomogeneous
-equations with polynomial or rational coefficients.
+This module is intended for solving recurrences (difference equations).
+
+Currently supported are linear, inhomogeneous equations with polynomial or
+rational coefficients.
 
 The solutions are obtained among polynomials, rational functions,
 hypergeometric terms, or combinations of hypergeometric term which
@@ -44,7 +45,7 @@ For the sake of completeness, `f(n)` can be:
     [3] a hypergeometric function  -> rsolve_hyper
 """
 
-from collections import defaultdict
+import collections
 
 from ..concrete import product
 from ..core import (Add, Dummy, Equality, Integer, Mul, Rational, Symbol, Wild,
@@ -60,6 +61,8 @@ from .solvers import solve
 
 def rsolve_poly(coeffs, f, n, **hints):
     r"""
+    Find polynomial solutions for linear recurrence.
+
     Given linear recurrence operator `\operatorname{L}` of order
     `k` with polynomial coefficients and inhomogeneous equation
     `\operatorname{L} y = f`, where `f` is a polynomial, we seek for
@@ -110,19 +113,19 @@ def rsolve_poly(coeffs, f, n, **hints):
 
     r = len(coeffs) - 1
 
-    coeffs = [ Poly(coeff, n) for coeff in coeffs ]
+    coeffs = [Poly(coeff, n) for coeff in coeffs]
 
     g = gcd_list(coeffs + [f], n, polys=True)
     if not g.is_ground:
         coeffs = [quo(c, g, n, polys=False) for c in coeffs]
         f = quo(f, g, n, polys=False)
 
-    polys = [ Poly(0, n) ] * (r + 1)
-    terms = [ (Integer(0), -oo) ] * (r + 1)
+    polys = [Poly(0, n)] * (r + 1)
+    terms = [(Integer(0), -oo)] * (r + 1)
 
     for i in range(r + 1):
         for j in range(i, r + 1):
-            polys[i] += coeffs[j]*binomial(j, i)
+            polys[i] += coeffs[j] * binomial(j, i)
 
         if not polys[i].is_zero:
             (exp,), coeff = polys[i].LT()
@@ -145,7 +148,7 @@ def rsolve_poly(coeffs, f, n, **hints):
 
     for i in range(r + 1):
         if terms[i][1] - i == b:
-            degree_poly += terms[i][0]*FallingFactorial(x, i)
+            degree_poly += terms[i][0] * FallingFactorial(x, i)
 
     nni_roots = list(roots(degree_poly, x, filter='Z',
                            predicate=lambda r: r >= 0))
@@ -180,7 +183,7 @@ def rsolve_poly(coeffs, f, n, **hints):
             y += C[i] * n**i
 
         for i in range(r + 1):
-            E += coeffs[i].as_expr()*y.subs({n: n + i})
+            E += coeffs[i].as_expr() * y.subs({n: n + i})
 
         solutions = solve((E - f).as_poly(n).coeffs(), *C)
 
@@ -220,10 +223,10 @@ def rsolve_poly(coeffs, f, n, **hints):
         alpha = {}
 
         for i in range(-A, d + 1):
-            I = _one_vector(d + 1)
+            E = _one_vector(d + 1)
 
             for k in range(1, d + 1):
-                I[k] = I[k - 1] * (x + i - k + 1)/k
+                E[k] = E[k - 1] * (x + i - k + 1) / k
 
             alpha[i] = Integer(0)
 
@@ -232,7 +235,7 @@ def rsolve_poly(coeffs, f, n, **hints):
                     B = binomial(k, i + j)
                     D = _delta(polys[j].as_expr(), k)
 
-                    alpha[i] += I[k]*B*D
+                    alpha[i] += E[k] * B * D
 
         V = Matrix(U, A, lambda i, j: int(i == j))
 
@@ -281,23 +284,23 @@ def rsolve_poly(coeffs, f, n, **hints):
         P, Q = _one_vector(U), _zero_vector(A)
 
         for i in range(1, U):
-            P[i] = (P[i - 1] * (n - a - i + 1)/i).expand()
+            P[i] = (P[i - 1] * (n - a - i + 1) / i).expand()
 
         for i in range(A):
-            Q[i] = Add(*[ (v*p).expand() for v, p in zip(V[:, i], P) ])
+            Q[i] = Add(*[(v * p).expand() for v, p in zip(V[:, i], P)])
 
         if not homogeneous:
-            h = Add(*[ (g*p).expand() for g, p in zip(G, P) ])
+            h = Add(*[(g * p).expand() for g, p in zip(G, P)])
 
         C = [Symbol('C' + str(i)) for i in range(A)]
 
         def g(i):
-            return Add(*[ c*_delta(q, i) for c, q in zip(C, Q) ])
+            return Add(*[c * _delta(q, i) for c, q in zip(C, Q)])
 
         if homogeneous:
-            E = [ g(i) for i in range(N + 1, U) ]
+            E = [g(i) for i in range(N + 1, U)]
         else:
-            E = [ g(i) + _delta(h, i) for i in range(N + 1, U) ]
+            E = [g(i) + _delta(h, i) for i in range(N + 1, U)]
 
         if E != []:
             solutions = solve(E, *C)
@@ -312,10 +315,10 @@ def rsolve_poly(coeffs, f, n, **hints):
 
         for c, q in list(zip(C, Q)):
             if c in solutions:
-                s = solutions[c]*q
+                s = solutions[c] * q
                 C.remove(c)
             else:
-                s = c*q
+                s = c * q
 
             result += s.expand()
 
@@ -327,6 +330,8 @@ def rsolve_poly(coeffs, f, n, **hints):
 
 def rsolve_ratio(coeffs, f, n, **hints):
     r"""
+    Find rational solutions for linear recurrence.
+
     Given linear recurrence operator `\operatorname{L}` of order `k`
     with polynomial coefficients and inhomogeneous equation
     `\operatorname{L} y = f`, where `f` is a polynomial, we seek
@@ -359,9 +364,10 @@ def rsolve_ratio(coeffs, f, n, **hints):
     Examples
     ========
 
-    >>> rsolve_ratio([-2*x**3 + x**2 + 2*x - 1, 2*x**3 + x**2 - 6*x,
-    ... - 2*x**3 - 11*x**2 - 18*x - 9, 2*x**3 + 13*x**2 + 22*x + 8], 0, x)
-    C2*(2*x - 3)/(2*(x**2 - 1))
+    >>> rsolve_ratio([-2*n**3 + n**2 + 2*n - 1, 2*n**3 + n**2 - 6*n,
+    ...               -2*n**3 - 11*n**2 - 18*n - 9,
+    ...               2*n**3 + 13*n**2 + 22*n + 8], 0, n)
+    C2*(2*n - 3)/(2*(n**2 - 1))
 
     References
     ==========
@@ -397,9 +403,9 @@ def rsolve_ratio(coeffs, f, n, **hints):
     if not nni_roots:
         return rsolve_poly(coeffs, f, n, **hints)
     else:
-        C, numers = Integer(1), [Integer(0)]*(r + 1)
+        C, numers = Integer(1), [Integer(0)] * (r + 1)
 
-        for i in range(int(max(nni_roots)), -1, -1):
+        for i in range(max(nni_roots), -1, -1):
             d = gcd(A, B.subs({n: n + i}), n)
 
             A = quo(A, d, n)
@@ -429,6 +435,8 @@ def rsolve_ratio(coeffs, f, n, **hints):
 
 def rsolve_hyper(coeffs, f, n, **hints):
     r"""
+    Find hypergeometric solutions for linear recurrence.
+
     Given linear recurrence operator `\operatorname{L}` of order `k`
     with polynomial coefficients and inhomogeneous equation
     `\operatorname{L} y = f` we seek for all hypergeometric solutions
@@ -464,11 +472,11 @@ def rsolve_hyper(coeffs, f, n, **hints):
     Examples
     ========
 
-    >>> rsolve_hyper([-1, -1, 1], 0, x)
-    C0*(1/2 + sqrt(5)/2)**x + C1*(-sqrt(5)/2 + 1/2)**x
+    >>> rsolve_hyper([-1, -1, 1], 0, n)
+    C0*(1/2 + sqrt(5)/2)**n + C1*(-sqrt(5)/2 + 1/2)**n
 
-    >>> rsolve_hyper([-1, 1], 1 + x, x)
-    C0 + x*(x + 1)/2
+    >>> rsolve_hyper([-1, 1], 1 + n, n)
+    C0 + n*(n + 1)/2
 
     References
     ==========
@@ -509,7 +517,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
 
         for i, g in enumerate(inhomogeneous):
             coeff, polys = Integer(1), coeffs[:]
-            denoms = [ Integer(1) ] * (r + 1)
+            denoms = [Integer(1)] * (r + 1)
 
             g = simplify(g)
             s = hypersimp(g, n)
@@ -529,7 +537,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
             if R is not None:
                 R, syms = R
                 if syms:
-                    R = R.subs(zip(syms, [0]*len(syms)))
+                    R = R.subs(zip(syms, [0] * len(syms)))
 
             if R:
                 inhomogeneous[i] *= R
@@ -548,7 +556,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
     p_factors = list(roots(p, n))
     q_factors = list(roots(q, n))
 
-    factors = [ (Integer(1), Integer(1)) ]
+    factors = [(Integer(1), Integer(1))]
 
     for p in p_factors:
         for q in q_factors:
@@ -557,20 +565,20 @@ def rsolve_hyper(coeffs, f, n, **hints):
             else:
                 factors += [(n - p, n - q)]
 
-    p = [ (n - p, Integer(1)) for p in p_factors ]
-    q = [ (Integer(1), n - q) for q in q_factors ]
+    p = [(n - p, Integer(1)) for p in p_factors]
+    q = [(Integer(1), n - q) for q in q_factors]
 
     factors = p + factors + q
 
     for A, B in factors:
         polys, degrees = [], []
-        D = A*B.subs({n: n + r - 1})
+        D = A * B.subs({n: n + r - 1})
 
         for i in range(r + 1):
             a = Mul(*[A.subs({n: n + j}) for j in range(0, i)])
             b = Mul(*[B.subs({n: n + j}) for j in range(i, r)])
 
-            poly = quo(coeffs[i]*a*b, D, n)
+            poly = quo(coeffs[i] * a * b, D, n)
             polys.append(poly.as_poly(n))
 
             if not poly.is_zero:
@@ -588,7 +596,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
             if z.is_zero:
                 continue
 
-            sol, syms = rsolve_poly([polys[i]*z**i for i in range(r + 1)],
+            sol, syms = rsolve_poly([polys[i] * z**i for i in range(r + 1)],
                                     0, n, symbols=True)
             sol = sol.collect(syms)
             sol = [sol.coeff(_) for _ in syms]
@@ -667,7 +675,7 @@ def rsolve(f, y, init=None):
 
     n = y.args[0]
 
-    h_part = defaultdict(lambda: Integer(0))
+    h_part = collections.defaultdict(lambda: Integer(0))
     i_part = Integer(0)
 
     for h, c in f.collect(y.func(Wild('n')), evaluate=False).items():
@@ -682,7 +690,7 @@ def rsolve(f, y, init=None):
             else:
                 raise ValueError("'%s(%s + Integer)' expected, got '%s'" % (y.func, n, h))
         else:
-            i_term = h*c
+            i_term = h * c
             if i_term.find(y.func(Wild('k'))):
                 raise NotImplementedError("Linear recurrence for '%s' "
                                           "expected, got '%s'" % (y.func, f))
@@ -706,9 +714,9 @@ def rsolve(f, y, init=None):
     if common != 1:
         for k, coeff in h_part.items():
             numer, denom = coeff.as_numer_denom()
-            h_part[k] = numer*quo(common, denom, n)
+            h_part[k] = numer * quo(common, denom, n)
 
-        i_part = i_numer*quo(common, i_denom, n)
+        i_part = i_numer * quo(common, i_denom, n)
 
     coeffs = [h_part[i] for i in range(k_max + 1)]
 
