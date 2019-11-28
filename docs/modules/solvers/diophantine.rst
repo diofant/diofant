@@ -82,6 +82,8 @@ Tutorial
 
 First, let's import the highest API of the Diophantine module.
 
+>>> from diofant.solvers.diophantine import diophantine
+
 Before we start solving the equations, we need to define the variables.
 
 >>> x, y, z, t, p, q = symbols("x, y, z, t, p, q", integer=True)

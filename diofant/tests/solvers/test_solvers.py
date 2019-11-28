@@ -6,15 +6,16 @@ from diofant import (Abs, And, Derivative, E, Eq, Float, Function, Gt, I,
                      Symbol, Tuple, Wild, acos, arg, asin, atan, atan2, cbrt,
                      cos, cosh, diff, erf, erfc, erfcinv, erfinv, exp,
                      expand_log, im, log, nan, oo, ordered, pi, re, real_root,
-                     root, sec, sech, simplify, sin, sinh, solve, solve_linear,
-                     sqrt, sstr, symbols, sympify, tan, tanh)
+                     root, sec, sech, simplify, sin, sinh, solve, sqrt, sstr,
+                     symbols, sympify, tan, tanh)
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
 from diofant.core.function import nfloat
 from diofant.polys.rootoftools import RootOf
 from diofant.solvers import reduce_inequalities
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
-from diofant.solvers.solvers import _invert, checksol, minsolve_linear_system
+from diofant.solvers.solvers import (_invert, checksol, minsolve_linear_system,
+                                     solve_linear)
 from diofant.utilities.randtest import verify_numerically as tn
 
 

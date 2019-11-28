@@ -36,6 +36,7 @@ Compatibility breaks
 * Removed ``generate_oriented_forest()``, ``kbins()`` and ``ibin()`` functions, see :pull:`903`.
 * Drop support for ``numexpr`` module in :func:`~diofant.utilities.lambdify.lambdify` and ``NumExprPrinter`` printer class, see :pull:`903`.
 * Removed ``DeferredVector`` class, see :pull:`905`.
+* Don't export too much from :mod:`~diofant.solvers` to the default namespace, keep only :func:`~diofant.solvers.solvers.solve`, :func:`~diofant.solvers.recurr.rsolve` and :func:`~diofant.solvers.ode.dsolve` functions, see :pull:`921`.
 
 Minor changes
 =============
