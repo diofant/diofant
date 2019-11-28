@@ -622,18 +622,10 @@ def rsolve_hyper(coeffs, f, n, **hints):
 
 def rsolve(f, y, init=None):
     r"""
-    Solve univariate recurrence with rational coefficients.
+    Solve recurrence equations.
 
-    Given `k`-th order linear recurrence `\operatorname{L} y = f`,
-    or equivalently:
-
-    .. math:: a_{k}(n) y(n+k) + a_{k-1}(n) y(n+k-1) +
-              \ldots + a_{0}(n) y(n) = f(n)
-
-    where `a_{i}(n)`, for `i=0, \ldots, k`, are polynomials or rational
-    functions in `n`, and `f` is a hypergeometric function or a sum
-    of a fixed number of pairwise dissimilar hypergeometric terms in
-    `n`, finds all solutions or returns ``None``, if none were found.
+    The equations can involve objects of the form `y(n + k)`, where
+    `k` is a constant.
 
     Initial conditions can be given as a dictionary in two forms:
 
@@ -649,11 +641,6 @@ def rsolve(f, y, init=None):
     Examples
     ========
 
-    Lets consider the following recurrence:
-
-    .. math:: (n - 1) y(n + 2) - (n^2 + 3 n - 2) y(n + 1) +
-              2 n (n + 1) y(n) = 0
-
     >>> eq = (n - 1)*f(n + 2) - (n**2 + 3*n - 2)*f(n + 1) + 2*n*(n + 1)*f(n)
 
     >>> rsolve(eq, f(n))
@@ -661,10 +648,17 @@ def rsolve(f, y, init=None):
     >>> rsolve(eq, f(n), {f(0): 0, f(1): 3})
     3*2**n - 3*factorial(n)
 
+    Notes
+    =====
+
+    Currently, the function can handle linear recurrences with polynomial
+    coefficients and hypergeometric inhomogeneous part.
+
     See Also
     ========
 
-    rsolve_poly, rsolve_ratio, rsolve_hyper
+    diofant.solvers.ode.dsolve : solving differential equations
+    diofant.solvers.solvers.solve : solving algebraic equations
 
     """
     if isinstance(f, Equality):
