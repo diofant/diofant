@@ -33,7 +33,7 @@ has solution `b(n) = B_m + C`.
 Then ``L = [-1, 1]`` and `f(n) = m n^(m-1)` and finally for `m=4`:
 
 >>> rsolve_poly([-1, 1], 4*n**3, n)
-C0 + n**4 - 2*n**3 + n**2
+(C0 + n**4 - 2*n**3 + n**2, [C0])
 
 >>> bernoulli(4, n)
 n**4 - 2*n**3 + n**2 - 1/30
@@ -94,7 +94,7 @@ def rsolve_poly(coeffs, f, n, **hints):
     recurrence, which has solution `b(n) = B_m + C`. For example:
 
     >>> rsolve_poly([-1, 1], 4*n**3, n)
-    C0 + n**4 - 2*n**3 + n**2
+    (C0 + n**4 - 2*n**3 + n**2, [C0])
 
     References
     ==========
@@ -167,10 +167,7 @@ def rsolve_poly(coeffs, f, n, **hints):
 
     if N < 0:
         if homogeneous:
-            if hints.get('symbols', False):
-                return Integer(0), []
-            else:
-                return Integer(0)
+            return Integer(0), []
         else:
             return
 
@@ -322,10 +319,7 @@ def rsolve_poly(coeffs, f, n, **hints):
 
             result += s.expand()
 
-    if hints.get('symbols', False):
-        return result, C
-    else:
-        return result
+    return result, C
 
 
 def rsolve_ratio(coeffs, f, n, **hints):
@@ -367,7 +361,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
     >>> rsolve_ratio([-2*n**3 + n**2 + 2*n - 1, 2*n**3 + n**2 - 6*n,
     ...               -2*n**3 - 11*n**2 - 18*n - 9,
     ...               2*n**3 + 13*n**2 + 22*n + 8], 0, n)
-    C2*(2*n - 3)/(2*(n**2 - 1))
+    (C2*(2*n - 3)/(2*(n**2 - 1)), [C2])
 
     References
     ==========
@@ -427,10 +421,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
         result = rsolve_poly(numers, f * Mul(*denoms), n, **hints)
 
         if result is not None:
-            if hints.get('symbols', False):
-                return (result[0] / C).simplify(), result[1]
-            else:
-                return (result / C).simplify()
+            return (result[0] / C).simplify(), result[1]
 
 
 def rsolve_hyper(coeffs, f, n, **hints):
@@ -473,10 +464,10 @@ def rsolve_hyper(coeffs, f, n, **hints):
     ========
 
     >>> rsolve_hyper([-1, -1, 1], 0, n)
-    C0*(1/2 + sqrt(5)/2)**n + C1*(-sqrt(5)/2 + 1/2)**n
+    (C0*(1/2 + sqrt(5)/2)**n + C1*(-sqrt(5)/2 + 1/2)**n, [C0, C1])
 
     >>> rsolve_hyper([-1, 1], 1 + n, n)
-    C0 + n*(n + 1)/2
+    (C0 + n*(n + 1)/2, [C0])
 
     References
     ==========
@@ -533,7 +524,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
             for j in range(r + 1):
                 polys[j] *= Mul(*(denoms[:j] + denoms[j + 1:]))
 
-            R = rsolve_ratio(polys, Mul(*denoms), n, symbols=True)
+            R = rsolve_ratio(polys, Mul(*denoms), n)
             if R is not None:
                 R, syms = R
                 if syms:
@@ -597,7 +588,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
                 continue
 
             sol, syms = rsolve_poly([polys[i] * z**i for i in range(r + 1)],
-                                    0, n, symbols=True)
+                                    0, n)
             sol = sol.collect(syms)
             sol = [sol.coeff(_) for _ in syms]
 
@@ -621,11 +612,8 @@ def rsolve_hyper(coeffs, f, n, **hints):
     for C, ker in sk:
         result += C * ker
 
-    if hints.get('symbols', False):
-        symbols |= {s for s, k in sk}
-        return result, list(symbols)
-    else:
-        return result
+    symbols |= {s for s, k in sk}
+    return result, sorted(symbols, key=default_sort_key)
 
 
 def rsolve(f, y, init=None, simplify=True):
@@ -721,7 +709,7 @@ def rsolve(f, y, init=None, simplify=True):
 
     coeffs = [h_part[i] for i in range(k_max + 1)]
 
-    result = rsolve_hyper(coeffs, i_part, n, symbols=True)
+    result = rsolve_hyper(coeffs, i_part, n)
 
     if result is None:
         return
