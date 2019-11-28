@@ -616,23 +616,23 @@ def rsolve_hyper(coeffs, f, n, **hints):
     return result, sorted(symbols, key=default_sort_key)
 
 
-def rsolve(f, y, init=None, simplify=True):
+def rsolve(f, y, init={}, simplify=True):
     r"""
     Solve recurrence equations.
 
     The equations can involve objects of the form `y(n + k)`, where
     `k` is a constant.
 
-    Initial conditions can be given as a dictionary in two forms:
+    Parameters
+    ==========
 
-        (1) ``{   n_0  : v_0,   n_1  : v_1, ...,   n_m  : v_m }``
-        (2) ``{ y(n_0) : v_0, y(n_1) : v_1, ..., y(n_m) : v_m }``
+    init : dict, optional
+        The initial/boundary conditions for the recurrence equations as
+        mapping of the function application `y(n_i)` to its value.
+        Default is empty dictionary.
 
-    or as a list ``L`` of values:
-
-        ``L = [ v_0, v_1, ..., v_m ]``
-
-    where ``L[i] = v_i``, for `i=0, \ldots, m`, maps to `y(n_i)`.
+    simplify : bool, optional
+        Enable simplification (default) on solutions.
 
     Examples
     ========
@@ -716,24 +716,15 @@ def rsolve(f, y, init=None, simplify=True):
 
     solution, symbols = result
 
-    if init == {} or init == []:
-        init = None
-
-    if symbols and init is not None:
-        if type(init) is list:
-            init = {i: init[i] for i in range(len(init))}
-
+    if symbols and init != {}:
         equations = []
 
         for k, v in init.items():
-            try:
-                i = int(k)
-            except TypeError:
-                if k.is_Function and k.func == y.func:
-                    i = int(k.args[0])
-                else:
-                    raise ValueError("Integer or term '%s(Integer)' "
-                                     "expected, got '%s'" % (y.func, k))
+            if k.is_Function and k.func == y.func:
+                i = int(k.args[0])
+            else:
+                raise ValueError("'%s(Integer)' expected, "
+                                 "got '%s'" % (y.func, k))
             eq = solution.limit(n, i) - v
             equations.append(eq)
 

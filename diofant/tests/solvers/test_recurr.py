@@ -102,23 +102,18 @@ def test_rsolve():
 
     res = res.subs({C0: sqrt(5), C1: -sqrt(5)}).simplify()
 
-    assert rsolve(eq, f(n), [0, 5]) == res
-    assert rsolve(eq, f(n), {0: 0, 1: 5}) == res
     assert rsolve(eq, f(n), {f(0): 0, f(1): 5}) == res
-    assert rsolve(f(n) - f(n - 1) - f(n - 2), f(n), [0, 5]) == res
-    assert rsolve(Eq(f(n), f(n - 1) + f(n - 2)), f(n), [0, 5]) == res
+    assert rsolve(f(n) - f(n - 1) - f(n - 2), f(n), {f(0): 0, f(1): 5}) == res
+    assert rsolve(Eq(f(n), f(n - 1) + f(n - 2)), f(n),
+                  {f(0): 0, f(1): 5}) == res
 
     eq = (n - 1)*f(n + 2) - (n**2 + 3*n - 2)*f(n + 1) + 2*n*(n + 1)*f(n)
     res = C1*factorial(n) + C0*2**n
 
     assert rsolve(eq, f(n)) == res
-    assert rsolve(eq, f(n), []) == res
-    assert rsolve(eq, f(n), {}) == res
 
     res = -3*factorial(n) + 3*2**n
 
-    assert rsolve(eq, f(n), [0, 3]) == res
-    assert rsolve(eq, f(n), {0: 0, 1: 3}) == res
     assert rsolve(eq, f(n), {f(0): 0, f(1): 3}) == res
 
     eq = f(n) - f(n - 1) - 2
