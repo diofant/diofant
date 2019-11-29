@@ -84,65 +84,6 @@ def unflatten(iter, n=2):
     return list(zip(*(iter[i::n] for i in range(n))))
 
 
-def reshape(seq, how):
-    """Reshape the sequence according to the template in ``how``.
-
-    Examples
-    ========
-
-    >>> seq = list(range(1, 9))
-
-    >>> reshape(seq, [4]) # lists of 4
-    [[1, 2, 3, 4], [5, 6, 7, 8]]
-
-    >>> reshape(seq, (4,)) # tuples of 4
-    [(1, 2, 3, 4), (5, 6, 7, 8)]
-
-    >>> reshape(seq, (2, 2)) # tuples of 4
-    [(1, 2, 3, 4), (5, 6, 7, 8)]
-
-    >>> reshape(seq, (2, [2])) # (i, i, [i, i])
-    [(1, 2, [3, 4]), (5, 6, [7, 8])]
-
-    >>> reshape(seq, ((2,), [2])) # etc....
-    [((1, 2), [3, 4]), ((5, 6), [7, 8])]
-
-    >>> reshape(seq, (1, [2], 1))
-    [(1, [2, 3], 4), (5, [6, 7], 8)]
-
-    >>> reshape(tuple(seq), ([[1], 1, (2,)],))
-    (([[1], 2, (3, 4)],), ([[5], 6, (7, 8)],))
-
-    >>> reshape(tuple(seq), ([1], 1, (2,)))
-    (([1], 2, (3, 4)), ([5], 6, (7, 8)))
-
-    >>> reshape(list(range(12)), [2, [3], {2}, (1, (3,), 1)])
-    [[0, 1, [2, 3, 4], {5, 6}, (7, (8, 9, 10), 11)]]
-
-    """
-    m = sum(flatten(how))
-    n, rem = divmod(len(seq), m)
-    if m < 0 or rem:
-        raise ValueError('template must sum to positive number '
-                         'that divides the length of the sequence')
-    i = 0
-    container = type(how)
-    rv = [None]*n
-    for k in range(len(rv)):
-        rv[k] = []
-        for hi in how:
-            if type(hi) is int:
-                rv[k].extend(seq[i: i + hi])
-                i += hi
-            else:
-                n = sum(flatten(hi))
-                hi_type = type(hi)
-                rv[k].append(hi_type(reshape(seq[i: i + n], hi)[0]))
-                i += n
-        rv[k] = container(rv[k])
-    return type(seq)(rv)
-
-
 def group(seq, multiple=True):
     """
     Splits a sequence into a list of lists of equal, adjacent elements.

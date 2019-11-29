@@ -5,7 +5,6 @@ Diofant.
 from .iterables import (cantor_product, capture, default_sort_key, flatten,
                         group, has_dups, has_variety, numbered_symbols,
                         ordered, postfixes, postorder_traversal, prefixes,
-                        reshape, sift, subsets, topological_sort, unflatten,
-                        variations)
+                        sift, subsets, topological_sort, unflatten, variations)
 from .lambdify import lambdify
 from .misc import filldedent

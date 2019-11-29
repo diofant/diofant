@@ -28,11 +28,10 @@ from diofant.utilities.iterables import (_partition, _set_partitions,
                                          ordered_partitions, partitions,
                                          permutations, permute_signs,
                                          postfixes, postorder_traversal,
-                                         prefixes, reshape, rotate_left,
-                                         rotate_right, runs, sift,
-                                         signed_permutations, subsets,
-                                         topological_sort, unflatten, uniq,
-                                         variations)
+                                         prefixes, rotate_left, rotate_right,
+                                         runs, sift, signed_permutations,
+                                         subsets, topological_sort, unflatten,
+                                         uniq, variations)
 
 
 __all__ = ()
@@ -550,30 +549,6 @@ def test_runs():
     assert runs([1, 2, 1]) == [[1, 2], [1]]
     assert runs([2, 1, 1]) == [[2], [1], [1]]
     assert runs([2, 1, 1], lt) == [[2, 1], [1]]
-
-
-def test_reshape():
-    seq = list(range(1, 9))
-    assert reshape(seq, [4]) == \
-        [[1, 2, 3, 4], [5, 6, 7, 8]]
-    assert reshape(seq, (4,)) == \
-        [(1, 2, 3, 4), (5, 6, 7, 8)]
-    assert reshape(seq, (2, 2)) == \
-        [(1, 2, 3, 4), (5, 6, 7, 8)]
-    assert reshape(seq, (2, [2])) == \
-        [(1, 2, [3, 4]), (5, 6, [7, 8])]
-    assert reshape(seq, ((2,), [2])) == \
-        [((1, 2), [3, 4]), ((5, 6), [7, 8])]
-    assert reshape(seq, (1, [2], 1)) == \
-        [(1, [2, 3], 4), (5, [6, 7], 8)]
-    assert reshape(tuple(seq), ([[1], 1, (2,)],)) == \
-        (([[1], 2, (3, 4)],), ([[5], 6, (7, 8)],))
-    assert reshape(tuple(seq), ([1], 1, (2,))) == \
-        (([1], 2, (3, 4)), ([5], 6, (7, 8)))
-    assert reshape(list(range(12)), [2, [3], {2}, (1, (3,), 1)]) == \
-        [[0, 1, [2, 3, 4], {5, 6}, (7, (8, 9, 10), 11)]]
-
-    pytest.raises(ValueError, lambda: reshape([1], [-1]))
 
 
 def test_uniq():
