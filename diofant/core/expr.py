@@ -2274,8 +2274,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         else:
             return self._eval_is_algebraic_expr(syms)
 
-    def is_hypergeometric(self, k):
-        """Test if self is a hypergeometric term in k.
+    def is_hypergeometric(self, n):
+        """Test if self is a hypergeometric term in ``n``.
+
+        Term `a(n)` is hypergeometric if it is annihilated by first order
+        linear difference equations with polynomial coefficients or, in
+        simpler words, if consecutive term ratio is a rational function.
 
         See Also
         ========
@@ -2284,7 +2288,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         """
         from ..simplify import hypersimp
-        return hypersimp(self, k) is not None
+        return hypersimp(self, n) is not None
 
     @property
     def is_comparable(self):
