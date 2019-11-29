@@ -14,7 +14,7 @@ n, k = symbols('n,k', integer=True)
 C0, C1, C2 = symbols('C0,C1,C2')
 
 
-def test_rsolve_poly():
+def test_poly():
     assert rsolve_poly([-1, -1, 1], 0, n) == (0, [])
     assert rsolve_poly([-1, -1, 1], 1, n) == (-1, [])
     assert rsolve_poly([-n**2, n, -1, 1], 1, n) is None
@@ -35,7 +35,7 @@ def test_rsolve_poly():
                   (n + 1)**2) == (C0*factorial(n) + n**3)/n
 
 
-def test_rsolve_ratio():
+def test_ratio():
     assert rsolve_ratio([-2*n**3 + n**2 + 2*n - 1, 2*n**3 + n**2 - 6*n,
                          -2*n**3 - 11*n**2 - 18*n - 9, 2*n**3 + 13*n**2 +
                          22*n + 8], 0, n) == (C2*(2*n - 3)/(n**2 - 1)/2, [C2])
@@ -43,7 +43,7 @@ def test_rsolve_ratio():
     assert rsolve_ratio([-n**3, n + 1], n, n) is None
 
 
-def test_rsolve_hyper():
+def test_hyper():
     assert rsolve((n**2 - 2)*f(n) - (2*n + 1)*f(n + 1) +
                   f(n + 2)) == C0*rf(-sqrt(2), n) + C1*rf(+sqrt(2), n)
 
@@ -77,14 +77,12 @@ def test_rsolve_hyper():
 
 
 @pytest.mark.slow
-def test_rsolve_bulk():
-    """Some bulk-generated tests."""
+def test_bulk():
     funcs = [n, n + 1, n**2, n**3, n**4, n + n**2,
              27*n + 52*n**2 - 3*n**3 + 12*n**4 - 52*n**5]
     coeffs = [[-2, 1], [-2, -1, 1], [-1, 1, 1, -1, 1],
               [-n, 1], [n**2 - n + 12, 1]]
     for p in funcs:
-        # compute difference
         for c in coeffs:
             q = sum(c[i]*p.subs({n: n + i}) for i in range(len(c)))
             if p.is_polynomial(n):
