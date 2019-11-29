@@ -59,7 +59,7 @@ from ..utilities import numbered_symbols
 from .solvers import solve
 
 
-def rsolve_poly(coeffs, f, n, **hints):
+def rsolve_poly(coeffs, f, n):
     r"""
     Find polynomial solutions for linear recurrence.
 
@@ -322,7 +322,7 @@ def rsolve_poly(coeffs, f, n, **hints):
     return result, C
 
 
-def rsolve_ratio(coeffs, f, n, **hints):
+def rsolve_ratio(coeffs, f, n):
     r"""
     Find rational solutions for linear recurrence.
 
@@ -395,7 +395,7 @@ def rsolve_ratio(coeffs, f, n, **hints):
                            predicate=lambda r: r >= 0))
 
     if not nni_roots:
-        return rsolve_poly(coeffs, f, n, **hints)
+        return rsolve_poly(coeffs, f, n)
     else:
         C, numers = Integer(1), [Integer(0)] * (r + 1)
 
@@ -418,13 +418,13 @@ def rsolve_ratio(coeffs, f, n, **hints):
         for i in range(r + 1):
             numers[i] *= Mul(*(denoms[:i] + denoms[i + 1:]))
 
-        result = rsolve_poly(numers, f * Mul(*denoms), n, **hints)
+        result = rsolve_poly(numers, f * Mul(*denoms), n)
 
         if result is not None:
             return (result[0] / C).simplify(), result[1]
 
 
-def rsolve_hyper(coeffs, f, n, **hints):
+def rsolve_hyper(coeffs, f, n):
     r"""
     Find hypergeometric solutions for linear recurrence.
 
