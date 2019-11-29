@@ -133,7 +133,7 @@ def test_solve_args():
     # symbol is a number
     assert solve(x**2 - pi, pi) == [{pi: x**2}]
     # no equations
-    assert solve([], [x]) == []
+    assert solve([], [x]) == [{}]
     # overdetermined system
     # - nonlinear
     assert solve([(x + y)**2 - 4, x + y - 2]) == [{x: -y + 2}]
