@@ -39,7 +39,7 @@ Compatibility breaks
 * Removed ``DeferredVector`` class, see :pull:`905`.
 * Don't export too much from :mod:`~diofant.solvers` to the default namespace, keep only :func:`~diofant.solvers.solvers.solve`, :func:`~diofant.solvers.recurr.rsolve` and :func:`~diofant.solvers.ode.dsolve` functions, see :pull:`921`.
 * Make :func:`~diofant.solvers.recurr.rsolve`'s ``init`` parameter more compatible with :func:`~diofant.solvers.ode.dsolve`'s one, e.g. drop accepting ``init=[1, 2, 3]`` and ``init={0: 1, 1: 2, 2: 3}`` forms, see :pull:`921`.
-* Removed ``dict_merge()`` function, see :pull:`921`.
+* Removed ``dict_merge()`` and ``generate_bell()`` functions, see :pull:`921`.
 
 Minor changes
 =============

@@ -6,7 +6,7 @@ from textwrap import dedent
 import pytest
 
 from diofant import (Basic, Dummy, Integer, Integral, Matrix, Tuple,
-                     default_sort_key, factorial, symbols, true)
+                     default_sort_key, symbols, true)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import Permutation, RGS_enum, RGS_unrank
 from diofant.functions.combinatorial.numbers import nT
@@ -18,7 +18,7 @@ from diofant.utilities.iterables import (_partition, _set_partitions,
                                          cantor_product, capture,
                                          common_prefix, common_suffix,
                                          filter_symbols, flatten,
-                                         generate_bell, generate_derangements,
+                                         generate_derangements,
                                          generate_involutions, group, has_dups,
                                          minlex, multiset,
                                          multiset_combinations,
@@ -430,23 +430,6 @@ def test_binary_partitions():
                                                      [2, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 
     assert len([j[:] for j in binary_partitions(16)]) == 36
-
-
-def test_bell_perm():
-    assert [len(set(generate_bell(i))) for i in range(1, 7)] == [
-        factorial(i) for i in range(1, 7)]
-    assert list(generate_bell(3)) == [
-        (0, 1, 2), (0, 2, 1), (2, 0, 1), (2, 1, 0), (1, 2, 0), (1, 0, 2)]
-    # generate_bell and trotterjohnson are advertised to return the same
-    # permutations; this is not technically necessary so this test could
-    # be removed
-    for n in range(1, 5):
-        p = Permutation(range(n))
-        b = generate_bell(n)
-        for bi in b:
-            assert bi == tuple(p.array_form)
-            p = p.next_trotterjohnson()
-    pytest.raises(ValueError, lambda: list(generate_bell(0)))  # XXX is this consistent with other permutation algorithms?
 
 
 def test_involutions():
