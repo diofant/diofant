@@ -1,7 +1,7 @@
 import pytest
 
-from diofant import (Eq, Function, I, binomial, factorial, gamma, pi, rf, sin,
-                     sqrt, symbols)
+from diofant import (Eq, Function, I, binomial, factorial, gamma, pi, rf, sqrt,
+                     symbols)
 from diofant.abc import a, b
 from diofant.solvers.recurr import (rsolve, rsolve_hyper, rsolve_poly,
                                     rsolve_ratio)
@@ -167,19 +167,10 @@ def test_rsolve():
 
 def test_rsolve_raises():
     pytest.raises(ValueError, lambda: rsolve(f(n) - f(k + 1), f(n)))
-    pytest.raises(NotImplementedError, lambda: rsolve(f(n) - f(n + 1), g(n)))
-    pytest.raises(NotImplementedError, lambda: rsolve(f(n) - g(n + 1), f(n)))
-    pytest.raises(ValueError, lambda: rsolve(f(n) - sqrt(n)*f(n + 1), f(n)))
+    pytest.raises(ValueError, lambda: rsolve(f(n) - sqrt(n)*f(n + 1)))
     pytest.raises(ValueError,
                   lambda: rsolve(f(n) - f(n + 1), f(n), init={g(0): 0}))
-    pytest.raises(NotImplementedError,
-                  lambda: rsolve(f(n) - f(n + 1) + f(n - 1)**2, f(n)))
-    pytest.raises(NotImplementedError, lambda: rsolve(f(n) - sin(n), f(n)))
-
-    # sympy/sympy#11063
-    pytest.raises(NotImplementedError,
-                  lambda: rsolve(f(n + 1, a) - f(n, 2*a), f(n, a),
-                                 init={f(0, a): a}))
+    pytest.raises(NotImplementedError, lambda: rsolve(f(n) - sqrt(n)))
 
 
 def test_sympyissue_6844():
