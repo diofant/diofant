@@ -17,6 +17,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install libs
       run: |
+        sudo apt update
         sudo apt install libmpc-dev libmpfr-dev libgmp-dev
         sudo apt install libatlas-base-dev liblapack-dev gfortran
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
