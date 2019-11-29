@@ -1,49 +1,4 @@
-r"""
-This module is intended for solving recurrences (difference equations).
-
-Currently supported are linear, inhomogeneous equations with polynomial or
-rational coefficients.
-
-The solutions are obtained among polynomials, rational functions,
-hypergeometric terms, or combinations of hypergeometric term which
-are pairwise dissimilar.
-
-``rsolve_X`` functions were meant as a low level interface
-for ``rsolve`` which would use Mathematica's syntax.
-
-Given a recurrence relation:
-
-    .. math:: a_{k}(n) y(n+k) + a_{k-1}(n) y(n+k-1) +
-              ... + a_{0}(n) y(n) = f(n)
-
-where `k > 0` and `a_{i}(n)` are polynomials in `n`. To use
-``rsolve_X`` we need to put all coefficients in to a list ``L`` of
-`k+1` elements the following way:
-
-    ``L = [ a_{0}(n), ..., a_{k-1}(n), a_{k}(n) ]``
-
-where ``L[i]``, for `i=0, \ldots, k`, maps to
-`a_{i}(n) y(n+i)` (`y(n+i)` is implicit).
-
-For example if we would like to compute `m`-th Bernoulli polynomial
-up to a constant (example was taken from rsolve_poly docstring),
-then we would use `b(n+1) - b(n) = m n^{m-1}` recurrence, which
-has solution `b(n) = B_m + C`.
-
-Then ``L = [-1, 1]`` and `f(n) = m n^(m-1)` and finally for `m=4`:
-
->>> rsolve_poly([-1, 1], 4*n**3, n)
-(C0 + n**4 - 2*n**3 + n**2, [C0])
-
->>> bernoulli(4, n)
-n**4 - 2*n**3 + n**2 - 1/30
-
-For the sake of completeness, `f(n)` can be:
-
-    [1] a polynomial              -> rsolve_poly
-    [2] a rational function       -> rsolve_ratio
-    [3] a hypergeometric function  -> rsolve_hyper
-"""
+"""This module is intended for solving recurrences (difference equations)."""
 
 import collections
 
@@ -68,11 +23,14 @@ def rsolve_poly(coeffs, f, n):
     `\operatorname{L} y = f`, where `f` is a polynomial, we seek for
     all polynomial solutions over field `K` of characteristic zero.
 
+    Notes
+    =====
+
     The algorithm performs two basic steps:
 
-        (1) Compute degree `N` of the general polynomial solution.
-        (2) Find all polynomials of degree `N` or less
-            of `\operatorname{L} y = f`.
+        1. Compute degree `N` of the general polynomial solution.
+        2. Find all polynomials of degree `N` or less
+           of `\operatorname{L} y = f`.
 
     There are two methods for computing the polynomial solutions.
     If the degree bound is relatively small, i.e. it's smaller than
@@ -89,12 +47,16 @@ def rsolve_poly(coeffs, f, n):
     It is possible to generalize the algorithm implemented here to
     the case of linear q-difference and differential equations.
 
+    Examples
+    ========
+
     Lets say that we would like to compute `m`-th Bernoulli polynomial
-    up to a constant. For this we can use `b(n+1) - b(n) = m n^{m-1}`
-    recurrence, which has solution `b(n) = B_m + C`. For example:
+    up to a constant, using `b(n+1) - b(n) = m n^{m-1}` recurrence:
 
     >>> rsolve_poly([-1, 1], 4*n**3, n)
     (C0 + n**4 - 2*n**3 + n**2, [C0])
+    >>> bernoulli(4, n)
+    n**4 - 2*n**3 + n**2 - 1/30
 
     References
     ==========
@@ -331,20 +293,17 @@ def rsolve_ratio(coeffs, f, n):
     `\operatorname{L} y = f`, where `f` is a polynomial, we seek
     for all rational solutions over field `K` of characteristic zero.
 
-    This procedure accepts only polynomials, however if you are
-    interested in solving recurrence with rational coefficients
-    then use ``rsolve`` which will pre-process the given equation
-    and run this procedure with polynomial arguments.
+    Notes
+    =====
 
     The algorithm performs two basic steps:
 
-        (1) Compute polynomial `v(n)` which can be used as universal
-            denominator of any rational solution of equation
-            `\operatorname{L} y = f`.
-
-        (2) Construct new linear difference equation by substitution
-            `y(n) = u(n)/v(n)` and solve it for `u(n)` finding all its
-            polynomial solutions. Return ``None`` if none were found.
+        1. Compute polynomial `v(n)` which can be used as universal
+           denominator of any rational solution of equation
+           `\operatorname{L} y = f`.
+        2. Construct new linear difference equation by substitution
+           `y(n) = u(n)/v(n)` and solve it for `u(n)` finding all its
+           polynomial solutions. Return :obj:`None` if none were found.
 
     Algorithm implemented here is a revised version of the original
     Abramov's algorithm, developed in 1989. The new approach is much
@@ -352,7 +311,7 @@ def rsolve_ratio(coeffs, f, n):
     method can be easily adapted to q-difference equations case.
 
     Besides finding rational solutions alone, this functions is
-    an important part of Hyper algorithm were it is used to find
+    an important part of the Hyper algorithm were it is used to find
     particular solution of inhomogeneous part of a recurrence.
 
     Examples
@@ -436,35 +395,29 @@ def rsolve_hyper(coeffs, f, n):
     The inhomogeneous part can be either hypergeometric or a sum
     of a fixed number of pairwise dissimilar hypergeometric terms.
 
+    Notes
+    =====
+
     The algorithm performs three basic steps:
 
-        (1) Group together similar hypergeometric terms in the
-            inhomogeneous part of `\operatorname{L} y = f`, and find
-            particular solution using Abramov's algorithm.
-
-        (2) Compute generating set of `\operatorname{L}` and find basis
-            in it, so that all solutions are linearly independent.
-
-        (3) Form final solution with the number of arbitrary
-            constants equal to dimension of basis of `\operatorname{L}`.
-
-    Term `a(n)` is hypergeometric if it is annihilated by first order
-    linear difference equations with polynomial coefficients or, in
-    simpler words, if consecutive term ratio is a rational function.
+        1. Group together similar hypergeometric terms in the
+           inhomogeneous part of `\operatorname{L} y = f`, and find
+           particular solution using Abramov's algorithm.
+        2. Compute generating set of `\operatorname{L}` and find basis
+           in it, so that all solutions are linearly independent.
+        3. Form final solution with the number of arbitrary
+           constants equal to dimension of basis of `\operatorname{L}`.
 
     The output of this procedure is a linear combination of fixed
-    number of hypergeometric terms. However the underlying method
+    number of hypergeometric terms.  However the underlying method
     can generate larger class of solutions - D'Alembertian terms.
 
-    Note also that this method not only computes the kernel of the
+    This method not only computes the kernel of the
     inhomogeneous equation, but also reduces in to a basis so that
     solutions generated by this procedure are linearly independent
 
     Examples
     ========
-
-    >>> rsolve_hyper([-1, -1, 1], 0, n)
-    (C0*(1/2 + sqrt(5)/2)**n + C1*(-sqrt(5)/2 + 1/2)**n, [C0, C1])
 
     >>> rsolve_hyper([-1, 1], 1 + n, n)
     (C0 + n*(n + 1)/2, [C0])
