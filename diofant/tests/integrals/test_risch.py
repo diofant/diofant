@@ -2,9 +2,8 @@
 import pytest
 
 from diofant import (E, Eq, Function, I, Integer, Lambda, Piecewise, Poly,
-                     Rational, Symbol, exp, factor, log, sin, sqrt, symbols,
-                     tan)
-from diofant.abc import a, nu, t, x, y, z
+                     Rational, exp, factor, log, sin, sqrt, symbols, tan)
+from diofant.abc import a, i, nu, t, x, y, z
 from diofant.integrals.risch import (DecrementLevel, DifferentialExtension,
                                      NonElementaryIntegral, as_poly_1t,
                                      canonical_representation, derivation,
@@ -24,7 +23,6 @@ from diofant.integrals.risch import (DecrementLevel, DifferentialExtension,
 __all__ = ()
 
 t0, t1, t2 = symbols('t:3')
-i = Symbol('i')
 
 
 def test_gcdex_diophantine():

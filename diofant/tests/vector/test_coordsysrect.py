@@ -2,6 +2,7 @@ import pytest
 
 from diofant import ImmutableMatrix as Matrix
 from diofant import Symbol, cos, pi, simplify, sin, symbols, zeros
+from diofant.abc import a, b, c, q
 from diofant.vector.coordsysrect import CoordSysCartesian
 from diofant.vector.functions import express
 from diofant.vector.orienters import (AxisOrienter, BodyOrienter,
@@ -13,8 +14,7 @@ from diofant.vector.vector import Vector
 
 __all__ = ()
 
-a, b, c, q = symbols('a b c q')
-q1, q2, q3, q4 = symbols('q1 q2 q3 q4')
+q1, q2, q3, q4 = symbols('q1:5')
 
 
 def test_func_args():

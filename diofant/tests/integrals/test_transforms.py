@@ -9,7 +9,7 @@ from diofant import (E1, Abs, And, Ci, Ei, EulerGamma, Function, Heaviside, I,
                      hyperexpand, lerchphi, log, logcombine, meijerg, oo,
                      periodic_argument, pi, polar_lift, powsimp, re, simplify,
                      sin, sinh, sqrt, symbols, tan, trigsimp, unpolarify)
-from diofant.abc import a, b, c, d, s, t, w, x
+from diofant.abc import a, b, beta, c, d, nu, rho, s, t, w, x
 from diofant.integrals.transforms import (CosineTransform, FourierTransform,
                                           IntegralTransformError,
                                           InverseCosineTransform,
@@ -32,8 +32,6 @@ from diofant.matrices import Matrix, eye
 
 
 __all__ = ()
-
-nu, beta, rho = symbols('nu beta rho')
 
 
 def test_undefined_function():

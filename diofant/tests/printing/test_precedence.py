@@ -1,9 +1,9 @@
+from diofant.abc import x, y
 from diofant.concrete.products import Product
 from diofant.concrete.summations import Sum
 from diofant.core.function import Derivative
 from diofant.core.numbers import Float, Integer, Rational, oo
 from diofant.core.relational import Rel
-from diofant.core.symbol import symbols
 from diofant.functions import sin
 from diofant.integrals.integrals import Integral
 from diofant.printing.precedence import PRECEDENCE, precedence
@@ -11,8 +11,6 @@ from diofant.series.order import Order
 
 
 __all__ = ()
-
-x, y = symbols("x,y")
 
 
 def test_Add():

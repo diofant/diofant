@@ -6,18 +6,14 @@ should serve as a set of test cases.
 import pytest
 
 from diofant import (Eq, Function, I, Integer, Integral, Pow, Symbol, acos,
-                     cos, cosh, exp, log, sin, sinh, sqrt)
+                     cos, cosh, exp, log, sin, sinh, sqrt, symbols)
+from diofant.abc import x, y, z
 from diofant.solvers.ode import constant_renumber, constantsimp
 
 
 __all__ = ()
 
-x = Symbol('x')
-y = Symbol('y')
-z = Symbol('z')
-C1 = Symbol('C1')
-C2 = Symbol('C2')
-C3 = Symbol('C3')
+C1, C2, C3 = symbols('C1:4')
 f = Function('f')
 
 

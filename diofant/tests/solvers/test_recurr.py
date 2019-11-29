@@ -11,7 +11,7 @@ __all__ = ()
 
 f, g = symbols('f,g', cls=Function)
 n, k = symbols('n,k', integer=True)
-C0, C1, C2 = symbols('C0,C1,C2')
+C0, C1, C2 = symbols('C:3')
 
 
 def test_poly():

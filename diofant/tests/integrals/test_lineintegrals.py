@@ -1,9 +1,8 @@
-from diofant import Curve, E, line_integrate, ln, sqrt, symbols
+from diofant import Curve, E, line_integrate, ln, sqrt
+from diofant.abc import t, x, y
 
 
 __all__ = ()
-
-s, t, x, y, z = symbols('s,t,x,y,z')
 
 
 def test_lineintegral():

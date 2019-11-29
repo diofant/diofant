@@ -1,11 +1,10 @@
+from diofant.abc import x
 from diofant.core import Eq, Integer, Symbol
 from diofant.functions import Piecewise, cos, cot, csc, log, sec, sin, tan
 from diofant.integrals.trigonometry import trigintegrate
 
 
 __all__ = ()
-
-x = Symbol('x')
 
 
 def test_trigintegrate_odd():

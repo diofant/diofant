@@ -3,13 +3,13 @@ import pytest
 from diofant import (Add, Derivative, Ei, Eq, Function, I, Integral, LambertW,
                      Piecewise, Rational, Sum, Symbol, acos, asin, asinh,
                      besselj, cos, cosh, diff, erf, exp, li, log, pi, ratsimp,
-                     root, simplify, sin, sinh, sqrt, symbols, tan)
+                     root, simplify, sin, sinh, sqrt, tan)
+from diofant.abc import nu, x, y, z
 from diofant.integrals.heurisch import components, heurisch, heurisch_wrapper
 
 
 __all__ = ()
 
-x, y, z, nu = symbols('x,y,z,nu')
 f = Function('f')
 
 
