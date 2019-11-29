@@ -2152,13 +2152,13 @@ def test_Y12():
 
 def test_Z1():
     r = Function('r')
-    assert (rsolve(r(n + 2) - 2*r(n + 1) + r(n) - 2, r(n),
-                   {r(0): 1, r(1): m}).simplify() == n**2 + n*(m - 2) + 1)
+    assert (rsolve(r(n + 2) - 2*r(n + 1) + r(n) - 2,
+                   init={r(0): 1, r(1): m}).simplify() == n**2 + n*(m - 2) + 1)
 
 
 def test_Z2():
     r = Function('r')
-    assert (rsolve(r(n) - (5*r(n - 1) - 6*r(n - 2)), r(n), {r(0): 0, r(1): 1})
+    assert (rsolve(r(n) - (5*r(n - 1) - 6*r(n - 2)), init={r(0): 0, r(1): 1})
             == -2**n + 3**n)
 
 
@@ -2168,8 +2168,8 @@ def test_Z3():
     r = Function('r')
     # recurrence solution is correct, Wester expects it to be simplified to
     # fibonacci(n+1), but that is quite hard
-    assert (rsolve(r(n) - (r(n - 1) + r(n - 2)), r(n),
-                   {r(1): 1, r(2): 2}).simplify()
+    assert (rsolve(r(n) - (r(n - 1) + r(n - 2)),
+                   init={r(1): 1, r(2): 2}).simplify()
             == 2**(-n)*((1 + sqrt(5))**n*(sqrt(5) + 5) +
                         (-sqrt(5) + 1)**n*(-sqrt(5) + 5))/10)
 
@@ -2179,7 +2179,7 @@ def test_Z4():
     r = Function('r')
     rsolve(r(n) - ((1 + c - c**(n-1) - c**(n+1))/(1 - c**n)*r(n - 1)
                    - c*(1 - c**(n-2))/(1 - c**(n-1))*r(n - 2) + 1),
-           r(n), {r(1): 1, r(2): (2 + 2*c + c**2)/(1 + c)})
+           init={r(1): 1, r(2): (2 + 2*c + c**2)/(1 + c)})
 
 
 def test_Z5():

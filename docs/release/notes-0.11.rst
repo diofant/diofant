@@ -8,6 +8,7 @@ New features
 ============
 
 * Added :func:`~diofant.ntheory.residue_ntheory.discrete_log` to compute discrete logarithms, see :pull:`785`.  Thanks to Gabriel Orisaka.
+* Function :func:`~diofant.solvers.recurr.rsolve` got initial support for systems of equations, see :pull:`921`.
 
 Major changes
 =============

@@ -48,9 +48,9 @@ For the sake of completeness, `f(n)` can be:
 import collections
 
 from ..concrete import product
-from ..core import (Add, Dummy, Equality, Integer, Mul, Rational, Symbol, Wild,
-                    oo, sympify)
-from ..core.compatibility import default_sort_key
+from ..core import (Add, Dummy, Equality, Function, Integer, Mul, Rational,
+                    Symbol, Wild, oo, sympify)
+from ..core.compatibility import default_sort_key, iterable
 from ..functions import FallingFactorial, RisingFactorial, binomial, factorial
 from ..matrices import Matrix, casoratian
 from ..polys import Poly, gcd, gcd_list, lcm_list, quo, resultant, roots
@@ -616,7 +616,7 @@ def rsolve_hyper(coeffs, f, n, **hints):
     return result, sorted(symbols, key=default_sort_key)
 
 
-def rsolve(f, y, init={}, simplify=True):
+def rsolve(f, *y, init={}, simplify=True):
     r"""
     Solve recurrence equations.
 
@@ -625,6 +625,15 @@ def rsolve(f, y, init={}, simplify=True):
 
     Parameters
     ==========
+
+    f : Expr, Equality or iterable of above
+        The single recurrence equation or a system of recurrence
+        equations.
+
+    y : tuple
+        Holds function applications `y(n)`, wrt to which the recurrence
+        equation(s) will be solved.  If none given (empty tuple), this
+        will be guessed from the provided equation(s).
 
     init : dict, optional
         The initial/boundary conditions for the recurrence equations as
@@ -639,9 +648,9 @@ def rsolve(f, y, init={}, simplify=True):
 
     >>> eq = (n - 1)*f(n + 2) - (n**2 + 3*n - 2)*f(n + 1) + 2*n*(n + 1)*f(n)
 
-    >>> rsolve(eq, f(n))
+    >>> rsolve(eq)
     2**n*C0 + C1*factorial(n)
-    >>> rsolve(eq, f(n), {f(0): 0, f(1): 3})
+    >>> rsolve(eq, init={f(0): 0, f(1): 3})
     3*2**n - 3*factorial(n)
 
     Notes
@@ -657,10 +666,22 @@ def rsolve(f, y, init={}, simplify=True):
     diofant.solvers.solvers.solve : solving algebraic equations
 
     """
-    if isinstance(f, Equality):
-        f = f.lhs - f.rhs
-    f = f.expand()
+    if not iterable(f):
+        f = [f]
 
+    f = [_.lhs - _.rhs if isinstance(_, Equality) else _ for _ in f]
+    f = [_.expand() for _ in f]
+
+    if len(f) > 1 or len(y) > 1:
+        raise NotImplementedError("Support for systems of recurrence "
+                                  "equations is not implemented yet.")
+    else:
+        f = f[0]
+
+    if not y:
+        y = sorted(f.atoms(Function), key=default_sort_key)[0]
+    else:
+        y = y[0]
     n = y.args[0]
 
     h_part = collections.defaultdict(lambda: Integer(0))

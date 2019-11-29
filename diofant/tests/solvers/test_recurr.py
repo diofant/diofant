@@ -19,20 +19,20 @@ def test_rsolve_poly():
     assert rsolve_poly([-1, -1, 1], 1, n) == (-1, [])
     assert rsolve_poly([-n**2, n, -1, 1], 1, n) is None
 
-    assert rsolve(-f(n) + (n + 1)*f(n + 1) - n, f(n)) == C0/factorial(n) + 1
-    assert rsolve(-(n + 1)*f(n) + n*f(n + 1) - 1, f(n)) == C0*n - 1
-    assert rsolve(-(4*n + 2)*f(n) + f(n + 1) - 4*n - 1,
-                  f(n)) == 4**n*C0*gamma(n + 1/2)/sqrt(pi) - 1
+    assert rsolve(-f(n) + (n + 1)*f(n + 1) - n) == C0/factorial(n) + 1
+    assert rsolve(-(n + 1)*f(n) + n*f(n + 1) - 1) == C0*n - 1
+    assert rsolve(-(4*n + 2)*f(n) + f(n + 1) -
+                  4*n - 1) == 4**n*C0*gamma(n + 1/2)/sqrt(pi) - 1
 
-    assert (rsolve(-f(n) + f(n + 1) - n**5 - n**3, f(n)) ==
+    assert (rsolve(-f(n) + f(n + 1) - n**5 - n**3) ==
             C0 + n**2*(n**4 - 3*n**3 + 4*n**2 - 3*n + 1)/6)
 
     assert rsolve_poly([1, 1], sqrt(n), n) is None
 
     assert rsolve_poly([-2, -1, 1],
                        -2*n**4 - (n + 1)**4 + (n + 2)**4, n) == (n**4, [])
-    assert rsolve(n*f(n) - f(n + 1) - n**3 + (n + 1)**2,
-                  f(n)) == (C0*factorial(n) + n**3)/n
+    assert rsolve(n*f(n) - f(n + 1) - n**3 +
+                  (n + 1)**2) == (C0*factorial(n) + n**3)/n
 
 
 def test_rsolve_ratio():
@@ -44,30 +44,30 @@ def test_rsolve_ratio():
 
 
 def test_rsolve_hyper():
-    assert rsolve((n**2 - 2)*f(n) - (2*n + 1)*f(n + 1) + f(n + 2),
-                  f(n)) == C0*rf(-sqrt(2), n) + C1*rf(+sqrt(2), n)
+    assert rsolve((n**2 - 2)*f(n) - (2*n + 1)*f(n + 1) +
+                  f(n + 2)) == C0*rf(-sqrt(2), n) + C1*rf(+sqrt(2), n)
 
-    assert rsolve((n**2 - k)*f(n) - (2*n + 1)*f(n + 1) + f(n + 2),
-                  f(n)) == C1*rf(sqrt(k), n) + C0*rf(-sqrt(k), n)
+    assert rsolve((n**2 - k)*f(n) - (2*n + 1)*f(n + 1) +
+                  f(n + 2)) == C1*rf(sqrt(k), n) + C0*rf(-sqrt(k), n)
 
     assert rsolve(2*n*(n + 1)*f(n) - (n**2 + 3*n - 2)*f(n + 1) +
-                  (n - 1)*f(n + 2), f(n)) == C1*factorial(n) + C0*2**n
+                  (n - 1)*f(n + 2)) == C1*factorial(n) + C0*2**n
 
     assert rsolve_hyper([n + 2, -(2*n + 3)*(17*n**2 + 51*n + 39), n + 1],
                         0, n) == (0, [])
 
     assert rsolve_hyper([-n - 1, -1, 1], 0, n) == (0, [])
 
-    assert rsolve(-n - f(n) + f(n + 1), f(n)) == C0 + n*(n - 1)/2
-    assert rsolve(-1 - n - f(n) + f(n + 1), f(n)) == C0 + n*(n + 1)/2
-    assert rsolve(-3*(n + n**2) - f(n) + f(n + 1), f(n)) == C0 + n**3 - n
+    assert rsolve(-n - f(n) + f(n + 1)) == C0 + n*(n - 1)/2
+    assert rsolve(-1 - n - f(n) + f(n + 1)) == C0 + n*(n + 1)/2
+    assert rsolve(-3*(n + n**2) - f(n) + f(n + 1)) == C0 + n**3 - n
 
-    assert rsolve(-n - factorial(n) - f(n) + f(n + 1), f(n)) is None
+    assert rsolve(-n - factorial(n) - f(n) + f(n + 1)) is None
 
-    assert rsolve(-a*f(n) + f(n + 1), f(n)) == C0*a**n
-    assert rsolve(-a*f(n) + f(n + 2), f(n)) == a**(n/2)*((-1)**n*C1 + C0)
+    assert rsolve(-a*f(n) + f(n + 1)) == C0*a**n
+    assert rsolve(-a*f(n) + f(n + 2)) == a**(n/2)*((-1)**n*C1 + C0)
 
-    assert (rsolve(f(n) + f(n + 1) + f(n + 2), f(n)) ==
+    assert (rsolve(f(n) + f(n + 1) + f(n + 2)) ==
             2**-n*(C0*(-1 - sqrt(3)*I)**n + C1*(-1 + sqrt(3)*I)**n))
 
     assert rsolve_hyper([1, -2*n/a - 2/a, 1], 0, n) == (0, [])
@@ -98,69 +98,69 @@ def test_rsolve():
     eq = f(n + 2) - f(n + 1) - f(n)
     res = 2**(-n)*(C0*(1 + sqrt(5))**n + C1*(-sqrt(5) + 1)**n)
 
-    assert rsolve(eq, f(n)) == res
+    assert rsolve(eq) == res
 
     res = res.subs({C0: sqrt(5), C1: -sqrt(5)}).simplify()
 
-    assert rsolve(eq, f(n), {f(0): 0, f(1): 5}) == res
-    assert rsolve(f(n) - f(n - 1) - f(n - 2), f(n), {f(0): 0, f(1): 5}) == res
-    assert rsolve(Eq(f(n), f(n - 1) + f(n - 2)), f(n),
-                  {f(0): 0, f(1): 5}) == res
+    assert rsolve(eq, init={f(0): 0, f(1): 5}) == res
+    assert rsolve(f(n) - f(n - 1) - f(n - 2), init={f(0): 0, f(1): 5}) == res
+    assert rsolve(Eq(f(n), f(n - 1) + f(n - 2)), init={f(0): 0, f(1): 5}) == res
 
     eq = (n - 1)*f(n + 2) - (n**2 + 3*n - 2)*f(n + 1) + 2*n*(n + 1)*f(n)
     res = C1*factorial(n) + C0*2**n
 
-    assert rsolve(eq, f(n)) == res
+    assert rsolve(eq) == res
 
     res = -3*factorial(n) + 3*2**n
 
-    assert rsolve(eq, f(n), {f(0): 0, f(1): 3}) == res
+    assert rsolve(eq, init={f(0): 0, f(1): 3}) == res
 
     eq = f(n) - f(n - 1) - 2
 
     assert rsolve(eq, f(n)) == C0 + 2*n
-    assert rsolve(eq, f(n), {f(0): 0}) == 2*n
-    assert rsolve(eq, f(n), {f(0): 1}) == 2*n + 1
-    assert rsolve(eq, f(n), {f(0): 0, f(1): 1}) is None
+    assert rsolve(eq) == C0 + 2*n
+    assert rsolve(eq, init={f(0): 0}) == 2*n
+    assert rsolve(eq, init={f(0): 1}) == 2*n + 1
+    assert rsolve(eq, init={f(0): 0, f(1): 1}) is None
 
     eq = 3*f(n - 1) - f(n) - 1
 
-    assert rsolve(eq, f(n)) == 3**n*C0 + 1/2
-    assert rsolve(eq, f(n), {f(0): 0}) == -3**n/2 + 1/2
-    assert rsolve(eq, f(n), {f(0): 1}) == 3**n/2 + 1/2
-    assert rsolve(eq, f(n), {f(0): 2}) == 3*3**n/2 + 1/2
+    assert rsolve(eq) == 3**n*C0 + 1/2
+    assert rsolve(eq, init={f(0): 0}) == -3**n/2 + 1/2
+    assert rsolve(eq, init={f(0): 1}) == 3**n/2 + 1/2
+    assert rsolve(eq, init={f(0): 2}) == 3*3**n/2 + 1/2
 
     assert rsolve(f(n) - 1/n*f(n - 1), f(n)) == C0/factorial(n)
     assert rsolve(f(n) - 1/n*f(n - 1) - 1, f(n)) is None
 
     eq = 2*f(n - 1) + (1 - n)*f(n)/n
 
-    assert rsolve(eq, f(n)) == 2**(n - 1)*C0*n
-    assert rsolve(eq, f(n), {f(1): 1}) == 2**(n - 1)*n
-    assert rsolve(eq, f(n), {f(1): 2}, simplify=False) == 2**(n - 1)*n*2
-    assert rsolve(eq, f(n), {f(1): 2}) == 2**n*n
-    assert rsolve(eq, f(n), {f(1): 3}) == 3*2**n*n/2
+    assert rsolve(eq) == 2**(n - 1)*C0*n
+    assert rsolve([eq]) == 2**(n - 1)*C0*n
+    assert rsolve(eq, init={f(1): 1}) == 2**(n - 1)*n
+    assert rsolve(eq, init={f(1): 2}, simplify=False) == 2**(n - 1)*n*2
+    assert rsolve(eq, init={f(1): 2}) == 2**n*n
+    assert rsolve(eq, init={f(1): 3}) == 3*2**n*n/2
 
     eq = (n - 1)*(n - 2)*f(n + 2) - (n + 1)*(n + 2)*f(n)
 
-    assert (rsolve(eq, f(n)) ==
-            n*(n - 2)*(n - 1)*(-(-1)**n*C1 + C0)/6)
-    assert rsolve(eq, f(n), {f(3): 6, f(4): 24}) == n*(n - 1)*(n - 2)
-    assert rsolve(eq, f(n),
-                  {f(3): 6, f(4): -24}) == (-1)**(n + 1)*n*(n - 2)*(n - 1)
+    assert rsolve(eq) == n*(n - 2)*(n - 1)*(-(-1)**n*C1 + C0)/6
+    assert rsolve(eq, init={f(3): 6, f(4): 24}) == n*(n - 1)*(n - 2)
+    assert rsolve(eq, init={f(3): 6,
+                            f(4): -24}) == (-1)**(n + 1)*n*(n - 2)*(n - 1)
 
-    assert rsolve(Eq(f(n + 1), a*f(n)), f(n), {f(1): a}) == a**n
+    assert rsolve(Eq(f(n + 1), a*f(n)), init={f(1): a}) == a**n
 
-    assert rsolve(f(n) - a*f(n - 2), f(n),
-                  {f(1): sqrt(a)*(a + b),
-                   f(2): a*(a - b)}) == a**(n/2)*(-(-1)**n*b + a)
+    assert rsolve(f(n) - a*f(n - 2),
+                  init={f(1): sqrt(a)*(a + b),
+                        f(2): a*(a - b)}) == a**(n/2)*(-(-1)**n*b + a)
 
     eq = (-16*n**2 + 32*n - 12)*f(n - 1) + (4*n**2 - 12*n + 9)*f(n)
 
-    assert (rsolve(eq, f(n), {f(1): binomial(2*n + 1, 3)}) ==
+    assert (rsolve(eq, init={f(1): binomial(2*n + 1, 3)}) ==
             4**n*n*(2*n - 1)*gamma(n + 3/2)/(3*gamma(n - 1/2)))
 
-    assert (rsolve(f(n) + a*(f(n + 1) + f(n - 1))/2, f(n)) ==
+    assert (rsolve(f(n) + a*(f(n + 1) + f(n - 1))/2) ==
             a**-n*(C0*(-a*sqrt(-1 + a**-2) - 1)**n +
                    C1*(a*sqrt(-1 + a**-2) - 1)**n))
 
@@ -170,66 +170,67 @@ def test_rsolve_raises():
     pytest.raises(NotImplementedError, lambda: rsolve(f(n) - f(n + 1), g(n)))
     pytest.raises(NotImplementedError, lambda: rsolve(f(n) - g(n + 1), f(n)))
     pytest.raises(ValueError, lambda: rsolve(f(n) - sqrt(n)*f(n + 1), f(n)))
-    pytest.raises(ValueError, lambda: rsolve(f(n) - f(n + 1), f(n), {g(0): 0}))
+    pytest.raises(ValueError,
+                  lambda: rsolve(f(n) - f(n + 1), f(n), init={g(0): 0}))
     pytest.raises(NotImplementedError,
                   lambda: rsolve(f(n) - f(n + 1) + f(n - 1)**2, f(n)))
     pytest.raises(NotImplementedError, lambda: rsolve(f(n) - sin(n), f(n)))
 
     # sympy/sympy#11063
-    pytest.raises(NotImplementedError, lambda: rsolve(f(n + 1, a) - f(n, 2*a),
-                                                      f(n, a), {f(0, a): a}))
+    pytest.raises(NotImplementedError,
+                  lambda: rsolve(f(n + 1, a) - f(n, 2*a), f(n, a),
+                                 init={f(0, a): a}))
 
 
 def test_sympyissue_6844():
     eq = f(n + 2) - f(n + 1) + f(n)/4
 
-    assert rsolve(eq, f(n)) == 2**(-n)*(C0 + 2*C1*n)
-    assert rsolve(eq, f(n), {f(0): 0, f(1): 1}) == 2**(1 - n)*n
+    assert rsolve(eq) == 2**(-n)*(C0 + 2*C1*n)
+    assert rsolve(eq, init={f(0): 0, f(1): 1}) == 2**(1 - n)*n
 
 
 def test_diofantissue_294():
     eq = f(n) - f(n - 1) - 2*f(n - 2) - 2*n
 
-    assert rsolve(eq, f(n)) == (-1)**n*C0 + 2**n*C1 - n - 5/2
+    assert rsolve(eq) == (-1)**n*C0 + 2**n*C1 - n - 5/2
     # issue sympy/sympy#11261
-    assert rsolve(eq, f(n),
-                  {f(0): -1, f(1): 1}) == -(-1)**n/2 + 2**(n + 1) - n - 5/2
+    assert rsolve(eq, init={f(0): -1,
+                            f(1): 1}) == -(-1)**n/2 + 2**(n + 1) - n - 5/2
     # issue sympy/sympy#7055
-    assert rsolve(-2*f(n) + f(n + 1) + n - 1, f(n)) == 2**n*C0 + n
+    assert rsolve(-2*f(n) + f(n + 1) + n - 1) == 2**n*C0 + n
 
 
 def test_sympyissue_8697():
-    assert rsolve(f(n + 3) - f(n + 2) - f(n + 1) + f(n),
+    assert rsolve(f(n + 3) - f(n + 2) - f(n + 1) +
                   f(n)) == (-1)**n*C1 + C0 + C2*n
-    assert (rsolve(f(n + 3) + 3*f(n + 2) + 3*f(n + 1) + f(n), f(n)) ==
+    assert (rsolve(f(n + 3) + 3*f(n + 2) + 3*f(n + 1) + f(n)) ==
             (-1)**n*(C0 - C1*n - C2*n**2))
 
     assert rsolve(f(n) - 2*f(n - 3) + 5*f(n - 2) - 4*f(n - 1),
-                  f(n), {f(0): 1, f(1): 3, f(2): 8}) == 3*2**n - n - 2
+                  init={f(0): 1, f(1): 3, f(2): 8}) == 3*2**n - n - 2
 
     # From issue thread (but not related to the problem, fixed before):
-    assert rsolve(f(n) - 2*f(n - 1) - n, f(n), {f(0): 1}) == 3*2**n - n - 2
-    assert (rsolve(f(n + 2) - 5*f(n + 1) + 6*f(n) - n, f(n)) ==
+    assert rsolve(f(n) - 2*f(n - 1) - n, init={f(0): 1}) == 3*2**n - n - 2
+    assert (rsolve(f(n + 2) - 5*f(n + 1) + 6*f(n) - n) ==
             2**n*C0 + 3**n*C1 + n/2 + 3/4)
 
 
 def test_diofantissue_451():
-    assert rsolve(f(n) - 2*f(n - 1) - 3**n, f(n),
-                  {f(0): 1}) == -2**(n + 1) + 3**(n + 1)
+    assert rsolve(f(n) - 2*f(n - 1) - 3**n,
+                  init={f(0): 1}) == -2**(n + 1) + 3**(n + 1)
 
 
 def test_diofantissue_456():
     assert rsolve(f(n) - 2*f(n - 1) - 3**n*n,
-                  f(n), {f(0): 1}) == 7*2**n + 3**(n + 1)*(n - 2)
+                  init={f(0): 1}) == 7*2**n + 3**(n + 1)*(n - 2)
 
 
 def test_diofantissue_13629():
     assert rsolve(f(n + 1) - (f(n) + (n + 1)**2),
-                  f(n), {f(0): 0}) == n*(2*n**2 + 3*n + 1)/6
+                  init={f(0): 0}) == n*(2*n**2 + 3*n + 1)/6
 
 
 def test_sympyissue_15553():
+    assert rsolve(Eq(f(n + 1), 2*f(n) + n**2 + 1)) == 2**n*C0 - n**2 - 2*n - 4
     assert rsolve(Eq(f(n + 1), 2*f(n) + n**2 + 1),
-                  f(n)) == 2**n*C0 - n**2 - 2*n - 4
-    assert rsolve(Eq(f(n + 1), 2*f(n) + n**2 + 1), f(n),
-                  {f(1): 0}) == 7*2**n/2 - n**2 - 2*n - 4
+                  init={f(1): 0}) == 7*2**n/2 - n**2 - 2*n - 4
