@@ -17,7 +17,7 @@ from diofant.utilities.iterables import (_partition, _set_partitions,
                                          binary_partitions, bracelets,
                                          cantor_product, capture,
                                          common_prefix, common_suffix,
-                                         dict_merge, filter_symbols, flatten,
+                                         filter_symbols, flatten,
                                          generate_bell, generate_derangements,
                                          generate_involutions, group, has_dups,
                                          minlex, multiset,
@@ -192,17 +192,6 @@ def test_sift():
     assert sift(list(range(5)), lambda _: _ % 2) == {1: [1, 3], 0: [0, 2, 4]}
     assert sift([x, y], lambda _: _.has(x)) == {False: [y], True: [x]}
     assert sift([Integer(1)], lambda _: _.has(x)) == {False: [1]}
-
-
-def test_dict_merge():
-    assert dict_merge({}, {1: x, y: z}) == {1: x, y: z}
-    assert dict_merge({1: x, y: z}, {}) == {1: x, y: z}
-
-    assert dict_merge({2: z}, {1: x, y: z}) == {1: x, 2: z, y: z}
-    assert dict_merge({1: x, y: z}, {2: z}) == {1: x, 2: z, y: z}
-
-    assert dict_merge({1: y, 2: z}, {1: x, y: z}) == {1: x, 2: z, y: z}
-    assert dict_merge({1: x, y: z}, {1: y, 2: z}) == {1: y, 2: z, y: z}
 
 
 def test_prefixes():

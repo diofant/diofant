@@ -496,16 +496,6 @@ def sift(seq, keyfunc):
     return m
 
 
-def dict_merge(*dicts):
-    """Merge dictionaries into a single dictionary."""
-    merged = {}
-
-    for dict in dicts:
-        merged.update(dict)
-
-    return merged
-
-
 def common_prefix(*seqs):
     """Return the subsequence that is a common start of sequences in ``seqs``.
 
