@@ -11,6 +11,7 @@ from ..matrices import Matrix, casoratian
 from ..polys import Poly, gcd, gcd_list, lcm_list, quo, resultant, roots
 from ..simplify import hypersimilar, hypersimp
 from ..utilities import numbered_symbols
+from .ode import constantsimp
 from .solvers import solve
 
 
@@ -710,6 +711,8 @@ def rsolve(f, *y, init={}, simplify=True):
             solution = solution.subs(result[0])
 
     if simplify:
+        solution = solution.expand(log=True, mul=False)
+        solution = constantsimp(solution, symbols)
         solution = solution.simplify()
 
     return solution

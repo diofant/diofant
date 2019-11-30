@@ -133,8 +133,8 @@ def test_rsolve():
 
     eq = 2*f(n - 1) + (1 - n)*f(n)/n
 
-    assert rsolve(eq) == 2**(n - 1)*C0*n
-    assert rsolve([eq]) == 2**(n - 1)*C0*n
+    assert rsolve(eq) == 2**n*C0*n
+    assert rsolve([eq]) == 2**n*C0*n
     assert rsolve(eq, init={f(1): 1}) == 2**(n - 1)*n
     assert rsolve(eq, init={f(1): 2}, simplify=False) == 2**(n - 1)*n*2
     assert rsolve(eq, init={f(1): 2}) == 2**n*n
@@ -142,7 +142,7 @@ def test_rsolve():
 
     eq = (n - 1)*(n - 2)*f(n + 2) - (n + 1)*(n + 2)*f(n)
 
-    assert rsolve(eq) == n*(n - 2)*(n - 1)*(-(-1)**n*C1 + C0)/6
+    assert rsolve(eq) == n*(n - 2)*(n - 1)*((-1)**n*C1 + C0)
     assert rsolve(eq, init={f(3): 6, f(4): 24}) == n*(n - 1)*(n - 2)
     assert rsolve(eq, init={f(3): 6,
                             f(4): -24}) == (-1)**(n + 1)*n*(n - 2)*(n - 1)
@@ -174,7 +174,7 @@ def test_rsolve_raises():
 def test_sympyissue_6844():
     eq = f(n + 2) - f(n + 1) + f(n)/4
 
-    assert rsolve(eq) == 2**(-n)*(C0 + 2*C1*n)
+    assert rsolve(eq) == 2**(-n)*(C0 + C1*n)
     assert rsolve(eq, init={f(0): 0, f(1): 1}) == 2**(1 - n)*n
 
 
@@ -193,7 +193,7 @@ def test_sympyissue_8697():
     assert rsolve(f(n + 3) - f(n + 2) - f(n + 1) +
                   f(n)) == (-1)**n*C1 + C0 + C2*n
     assert (rsolve(f(n + 3) + 3*f(n + 2) + 3*f(n + 1) + f(n)) ==
-            (-1)**n*(C0 - C1*n - C2*n**2))
+            (-1)**n*(C0 + C1*n + C2*n**2))
 
     assert rsolve(f(n) - 2*f(n - 3) + 5*f(n - 2) - 4*f(n - 1),
                   init={f(0): 1, f(1): 3, f(2): 8}) == 3*2**n - n - 2
@@ -228,3 +228,7 @@ def test_sympyissue_15553():
 def test_diofantissue_922():
     assert rsolve(-2*n/3 + f(n) - f(n - 1) + 2*(n - 1)**3/3 + 2*(n - 1)**2/3,
                   init={f(0): 0}) == n*(-3*n**3 + 2*n**2 + 9*n + 4)/18
+
+
+def test_diofantissue_923():
+    assert rsolve(4*f(n) + 4*f(n + 1) + f(n + 2)) == (-2)**n*(C0 + C1*n)
