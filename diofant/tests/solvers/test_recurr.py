@@ -232,3 +232,8 @@ def test_diofantissue_922():
 
 def test_diofantissue_923():
     assert rsolve(4*f(n) + 4*f(n + 1) + f(n + 2)) == (-2)**n*(C0 + C1*n)
+
+
+def test_sympyissue_17982():
+    assert (rsolve(f(n + 3) + 10*f(n + 2) + 32*f(n + 1) + 32*f(n)) ==
+            (-2)**n*C0 + (-4)**n*C1 + (-4)**n*C2*n)
