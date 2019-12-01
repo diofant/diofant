@@ -110,4 +110,4 @@ def clashing():
 
 _clash1, _clash2, _clash = clashing()
 
-del _latin, _greek, clashing, Symbol
+del _latin, _greek, clashing, greeks, symbols, Symbol
