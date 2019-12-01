@@ -112,24 +112,18 @@ def heurisch_wrapper(f, x, rewrite=False, hints=None, mappings=None, retries=3,
     # conditions for these cases are stored in the list slns.
     slns = []
     for d in denoms(res):
-        try:
-            ds = list(ordered(d.free_symbols - {x}))
-            if ds:
-                slns += solve(d, *ds)
-        except NotImplementedError:
-            pass
+        ds = list(ordered(d.free_symbols - {x}))
+        if ds:
+            slns += solve(d, *ds)
     if not slns:
         return res
     slns = list(uniq(slns))
     # Remove the solutions corresponding to poles in the original expression.
     slns0 = []
     for d in denoms(f):
-        try:
-            ds = list(ordered(d.free_symbols - {x}))
-            if ds:
-                slns0 += solve(d, *ds)
-        except NotImplementedError:
-            pass
+        ds = list(ordered(d.free_symbols - {x}))
+        if ds:
+            slns0 += solve(d, *ds)
     slns = [s for s in slns if s not in slns0]
     if not slns:
         return res
