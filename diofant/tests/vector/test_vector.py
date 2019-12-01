@@ -3,6 +3,7 @@ import pytest
 from diofant import Add, Derivative, Function
 from diofant import ImmutableMatrix as Matrix
 from diofant import Integral, Mul, Pow, cos, diff, pi, sin, sqrt, symbols
+from diofant.abc import a, b, c
 from diofant.simplify import simplify, trigsimp
 from diofant.vector.coordsysrect import CoordSysCartesian
 from diofant.vector.vector import (BaseVector, Vector, VectorAdd, VectorMul,
@@ -12,9 +13,7 @@ from diofant.vector.vector import (BaseVector, Vector, VectorAdd, VectorMul,
 __all__ = ()
 
 C = CoordSysCartesian('C')
-
 i, j, k = C.base_vectors()
-a, b, c = symbols('a b c')
 
 
 def test_vector_diofant():

@@ -26,7 +26,8 @@ When opening a new issue, please take the following steps:
 
 2. If possible, try updating to master and reproducing your issue.
 
-3. Try to include a minimal reproducible test case as an example.
+3. Try to include a minimal reproducible code example that demonstrates the
+   problem.  Avoid screenshots, if possible.
 
 4. Include any relevant details of your local setup (i.e. Python
    version, installed libraries).

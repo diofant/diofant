@@ -8,6 +8,7 @@ New features
 ============
 
 * Added :func:`~diofant.ntheory.residue_ntheory.discrete_log` to compute discrete logarithms, see :pull:`785`.  Thanks to Gabriel Orisaka.
+* Function :func:`~diofant.solvers.recurr.rsolve` got initial support for systems of equations, see :pull:`921`.
 
 Major changes
 =============
@@ -36,6 +37,9 @@ Compatibility breaks
 * Removed ``generate_oriented_forest()``, ``kbins()`` and ``ibin()`` functions, see :pull:`903`.
 * Drop support for ``numexpr`` module in :func:`~diofant.utilities.lambdify.lambdify` and ``NumExprPrinter`` printer class, see :pull:`903`.
 * Removed ``DeferredVector`` class, see :pull:`905`.
+* Don't export too much from :mod:`~diofant.solvers` to the default namespace, keep only :func:`~diofant.solvers.solvers.solve`, :func:`~diofant.solvers.recurr.rsolve` and :func:`~diofant.solvers.ode.dsolve` functions, see :pull:`921`.
+* Make :func:`~diofant.solvers.recurr.rsolve`'s ``init`` parameter more compatible with :func:`~diofant.solvers.ode.dsolve`'s one, e.g. drop accepting ``init=[1, 2, 3]`` and ``init={0: 1, 1: 2, 2: 3}`` forms, see :pull:`921`.
+* Removed ``dict_merge()``, ``generate_bell()`` and ``reshape()`` functions, see :pull:`921`.
 
 Minor changes
 =============
@@ -45,6 +49,7 @@ Minor changes
 * Added ``AA_FACTOR_METHOD`` configuration option to specify factorization algorithm for polynomials with algebraic coefficients, see :pull:`844`.
 * :class:`~diofant.utilities.codegen.CCodeGen` got support for common subexpression replacement, see :pull:`893`.  Thanks to James Cotton.
 * 100% test coverage for :mod:`~diofant.utilities` module.
+* :func:`~diofant.solvers.recurr.rsolve` got ``simplify`` option to control default output simplification, see :pull:`921`.
 
 Developer changes
 =================
@@ -124,3 +129,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`17789` Intermittent test failure in assumptions
 * :sympyissue:`17841` integrate throws error for rational functions involving I
 * :sympyissue:`17847` Wrong result for as_leading_term()
+* :sympyissue:`17982` Wrong result from rsolve

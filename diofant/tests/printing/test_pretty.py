@@ -14,7 +14,8 @@ from diofant import (FF, QQ, RR, ZZ, Add, And, Basic, Complement, Contains,
                      Symbol, SymmetricDifference, Trace, Tuple, Union, Xor,
                      cbrt, conjugate, grlex, groebner, ilex, oo, pi, root,
                      symbols)
-from diofant.abc import a, b, c, d, e, f, k, l, lamda, m, n, t, w, x, y, z
+from diofant.abc import (a, b, c, d, e, f, k, l, lamda, m, n, phi, t, theta, w,
+                         x, y, z)
 from diofant.core.trace import Tr
 from diofant.diffgeom import BaseVectorField
 from diofant.diffgeom.rn import R2, R2_r
@@ -36,9 +37,6 @@ from diofant.tensor import (ImmutableDenseNDimArray, ImmutableSparseNDimArray,
 
 
 __all__ = ()
-
-th = Symbol('theta')
-ph = Symbol('phi')
 
 
 """
@@ -152,13 +150,13 @@ Integral(x**2, (x,Rational(1,2),10))
 Integral(x**2*y**2, x,y)
 Integral(x**2, (x, None, 1))
 Integral(x**2, (x, 1, None))
-Integral(sin(th)/cos(ph), (th,0,pi), (ph, 0, 2*pi))
+Integral(sin(theta)/cos(phi), (theta,0,phi), (phi, 0, 2*pi))
 
 
 MATRICES:
 
 Matrix([[x**2+1, 1], [y, x+y]])  #
-Matrix([[x/y, y, th], [0, exp(I*k*ph), 1]])
+Matrix([[x/y, y, theta], [0, exp(I*k*phi), 1]])
 
 
 PIECEWISE:
@@ -172,8 +170,8 @@ SEQUENCES (TUPLES, LISTS, DICTIONARIES):
 []
 {}
 (1/x,)
-[x**2, 1/x, x, y, sin(th)**2/cos(ph)**2]
-(x**2, 1/x, x, y, sin(th)**2/cos(ph)**2)
+[x**2, 1/x, x, y, sin(theta)**2/cos(phi)**2]
+(x**2, 1/x, x, y, sin(theta)**2/cos(phi)**2)
 {x: sin(x)}
 {1/x: 1/y, x: sin(x)**2}  #
 [x**2]
@@ -2470,7 +2468,7 @@ def test_pretty_integrals():
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = Integral(sin(th)/cos(ph), (th, 0, pi), (ph, 0, 2*pi))
+    expr = Integral(sin(theta)/cos(phi), (theta, 0, pi), (phi, 0, 2*pi))
     ascii_str = \
         """\
  2*pi pi                           \n\
@@ -2601,7 +2599,7 @@ def test_pretty_matrix():
     assert pretty(expr) in [ascii_str_1, ascii_str_2]
     assert upretty(expr) in [ucode_str_1, ucode_str_2]
 
-    expr = Matrix([[x/y, y, th], [0, exp(I*k*ph), 1]])
+    expr = Matrix([[x/y, y, theta], [0, exp(I*k*phi), 1]])
     ascii_str = \
         """\
 [x                 ]
@@ -3176,7 +3174,7 @@ def test_pretty_seq():
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = [x**2, 1/x, x, y, sin(th)**2/cos(ph)**2]
+    expr = [x**2, 1/x, x, y, sin(theta)**2/cos(phi)**2]
     ascii_str = \
         """\
                  2        \n\
@@ -3196,7 +3194,7 @@ def test_pretty_seq():
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = (x**2, 1/x, x, y, sin(th)**2/cos(ph)**2)
+    expr = (x**2, 1/x, x, y, sin(theta)**2/cos(phi)**2)
     ascii_str = \
         """\
                  2        \n\
@@ -3216,7 +3214,7 @@ def test_pretty_seq():
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = Tuple(x**2, 1/x, x, y, sin(th)**2/cos(ph)**2)
+    expr = Tuple(x**2, 1/x, x, y, sin(theta)**2/cos(phi)**2)
     ascii_str = \
         """\
                  2        \n\
@@ -4384,7 +4382,7 @@ n = -∞       \
 
 def test_pretty_Subs():
     f = Function('f')
-    expr = Subs(f(x), (x, ph**2))
+    expr = Subs(f(x), (x, phi**2))
     ascii_str = \
         """\
 (f(x))|     2\n\

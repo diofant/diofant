@@ -13,6 +13,7 @@ from diofant.solvers.ode import (_lie_group_remove, _linear_coeff_match,
                                  classify_sysode, constant_renumber,
                                  constantsimp, get_numbered_constants,
                                  homogeneous_order, infinitesimals,
+                                 ode_nth_linear_euler_eq_homogeneous,
                                  ode_sol_simplicity, odesimp, solve_init)
 from diofant.utilities.iterables import variations
 
@@ -2231,6 +2232,17 @@ def test_nth_order_linear_euler_eq_homogeneous():
     assert dsolve(eq, y(t), hint=our_hint).rhs in (sol, sols)
     assert checkodesol(eq, sol, order=2, solve_for_func=False)[0]
 
+    eq = x**3*f(x).diff(x, 3) + f(x)
+    sol1 = dsolve(eq, f(x), hint=our_hint)
+    _x = sol1.atoms(RootOf).pop().poly.gen
+    r0, r1, r2 = Poly(_x**3 - 3*_x**2 + 2*_x + 1).all_roots()
+    sol0 = Eq(f(x), C1*x**r0 + C2*x**r1 + C3*x**r2)
+    assert sol0 == sol1
+
+    eq = x**2*f(x).diff(x, 2) + f(x)
+    sol = Eq(f(x), sqrt(x)*(C1*sin(sqrt(3)*log(x)/2) + C2*cos(sqrt(3)*log(x)/2)))
+    assert dsolve(eq, f(x), hint=our_hint) == sol
+
 
 def test_nth_order_linear_euler_eq_nonhomogeneous_undetermined_coefficients():
     x, t = symbols('x t')
@@ -2317,6 +2329,10 @@ def test_nth_order_linear_euler_eq_nonhomogeneous_variation_of_parameters():
     assert our_hint in classify_ode(eq)
     assert dsolve(eq, f(x), hint=our_hint).rhs in (sol, sols)
     assert checkodesol(eq, sol, order=2, solve_for_func=False)[0]
+
+    eq = x**2*f(x).diff(x, 2) + f(x) - 1
+    sol = Eq(f(x), sqrt(x)*(C1*sin(sqrt(3)*log(x)/2) + C2*cos(sqrt(3)*log(x)/2) + sin(sqrt(3)*log(x)/2)*Integral(2*sqrt(3)*cos(sqrt(3)*log(x)/2)/(3*x**Rational(3, 2)), x) - cos(sqrt(3)*log(x)/2)*Integral(2*sqrt(3)*sin(sqrt(3)*log(x)/2)/(3*x**Rational(3, 2)), x)))
+    assert dsolve(eq, f(x), hint=our_hint + '_Integral') == sol
 
 
 def test_sympyissue_5095():
@@ -2911,6 +2927,11 @@ def test_dsolve_interface():
     pytest.raises(ValueError, lambda: classify_sysode((f(t).diff(t) - g(t),)))
     pytest.raises(ValueError, lambda: classify_sysode((f(t).diff(t) - g(t), g(t).diff(t) + 1), (f(t),)))
     pytest.raises(ValueError, lambda: classify_sysode((f(t).diff(t) - g(t), g(t).diff(t) + 1), (f(t), g(t, x))))
+    pytest.raises(ValueError, lambda: ode_nth_linear_euler_eq_homogeneous(2*x**2*f(x).diff(x, 2) - 3*x*f(x).diff(x),
+                                                                          f(x), 2,
+                                                                          match={-1: Integer(0), 0: Integer(0),
+                                                                                 1: -3*x, 2: 2*x**2},
+                                                                          returns='spam'))
 
 
 def test_odesimp():

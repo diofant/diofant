@@ -1104,10 +1104,10 @@ class _TensorDataLazyEvaluator(CantSympify):
         Examples
         ========
 
-        >>> print(sstr(_TensorDataLazyEvaluator.parse_data([1, 3, -6, 12])))
+        >>> print(str(_TensorDataLazyEvaluator.parse_data([1, 3, -6, 12])))
         [1 3 -6 12]
 
-        >>> print(sstr(_TensorDataLazyEvaluator.parse_data([[1, 2], [4, 7]])))
+        >>> print(str(_TensorDataLazyEvaluator.parse_data([[1, 2], [4, 7]])))
         [[1 2]
          [4 7]]
 
@@ -1371,7 +1371,7 @@ class TensorIndexType(Basic):
     >>> Lorentz.data = [1, -1, -1, -1]
     >>> print(sstr(Lorentz))
     TensorIndexType(Lorentz, 0)
-    >>> print(sstr(Lorentz.data))
+    >>> print(str(Lorentz.data))
     [[1 0 0 0]
     [0 -1 0 0]
     [0 0 -1 0]
@@ -1981,7 +1981,7 @@ class TensorHead(Basic):
 
     To view the data, just type:
 
-    >>> print(sstr(A.data))
+    >>> print(str(A.data))
     [[0 1 2 3]
      [2 3 4 5]
      [4 5 6 7]
@@ -1990,13 +1990,13 @@ class TensorHead(Basic):
     Turning to a tensor expression, covariant indices get the corresponding
     components data corrected by the metric:
 
-    >>> print(sstr(A(i0, -i1).data))
+    >>> print(str(A(i0, -i1).data))
     [[0 -1 -2 -3]
      [2 -3 -4 -5]
      [4 -5 -6 -7]
      [6 -7 -8 -9]]
 
-    >>> print(sstr(A(-i0, -i1).data))
+    >>> print(str(A(-i0, -i1).data))
     [[0 -1 -2 -3]
      [-2 3 4 5]
      [-4 5 6 7]
@@ -2004,7 +2004,7 @@ class TensorHead(Basic):
 
     while if all indices are contravariant, the ``ndarray`` remains the same
 
-    >>> print(sstr(A(i0, i1).data))
+    >>> print(str(A(i0, i1).data))
      [[0 1 2 3]
      [2 3 4 5]
      [4 5 6 7]
@@ -2041,7 +2041,7 @@ class TensorHead(Basic):
     Now it is possible to retrieve the contravariant form of the Electromagnetic
     tensor:
 
-    >>> print(sstr(F(i0, i1).data))
+    >>> print(str(F(i0, i1).data))
     [[0 -E_x/c -E_y/c -E_z/c]
      [E_x/c 0 -B_z B_y]
      [E_y/c B_z 0 -B_x]
@@ -2049,7 +2049,7 @@ class TensorHead(Basic):
 
     and the mixed contravariant-covariant form:
 
-    >>> print(sstr(F(i0, -i1).data))
+    >>> print(str(F(i0, -i1).data))
     [[0 E_x/c E_y/c E_z/c]
      [E_x/c 0 B_z -B_y]
      [E_y/c -B_z 0 B_x]
@@ -2077,9 +2077,9 @@ class TensorHead(Basic):
 
     The contravariant and covariant components are, respectively:
 
-    >>> print(sstr(P(i0).data))
+    >>> print(str(P(i0).data))
     [E p_x p_y p_z]
-    >>> print(sstr(P(-i0).data))
+    >>> print(str(P(-i0).data))
     [E -p_x -p_y -p_z]
 
     The contraction of a 1-index tensor by itself is usually indicated by a

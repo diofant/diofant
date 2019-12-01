@@ -1,6 +1,7 @@
 import pytest
 
 from diofant import ccode
+from diofant.abc import x, y, z
 from diofant.core import (Catalan, Dummy, Eq, EulerGamma, GoldenRatio, Integer,
                           Lambda, Mul, Rational, oo, pi, symbols)
 from diofant.functions import (Abs, Max, Piecewise, ceiling, cos, elliptic_e,
@@ -13,8 +14,6 @@ from diofant.utilities.lambdify import implemented_function
 
 
 __all__ = ()
-
-x, y, z = symbols('x,y,z')
 
 
 def test_printmethod():
@@ -99,7 +98,6 @@ def test_ccode_functions():
 
 
 def test_ccode_inline_function():
-    x = symbols('x')
     g = implemented_function('g', Lambda(x, 2*x))
     assert ccode(g(x)) == "2*x"
     g = implemented_function('g', Lambda(x, 2*x/Catalan))
@@ -483,7 +481,7 @@ def test_Matrix_printing():
 
 def test_ccode_reserved_words():
 
-    x, y = symbols('x, if')
+    y = symbols('if')
 
     assert ccode(y**2) == 'pow(if_, 2)'
     assert ccode(x * y**2, dereference=[y]) == 'pow((*if_), 2)*x'

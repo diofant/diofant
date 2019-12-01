@@ -479,6 +479,9 @@ def solve(f, *symbols, **flags):
         if any(e.has(*symbols) for e in fi.atoms(Piecewise)):
             f[i] = piecewise_fold(fi)
 
+    if all(_ == 0 for _ in f):
+        return [{}]
+
     #
     # try to get a solution
     ###########################################################################

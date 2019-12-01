@@ -2373,9 +2373,7 @@ class Permutation(Basic):
         """
         Returns the next permutation in Trotter-Johnson order.
         If self is the last permutation it returns None.
-        See [4] section 2.4. If it is desired to generate all such
-        permutations, they can be generated in order more quickly
-        with the ``generate_bell`` function.
+        See [4] section 2.4.
 
         Examples
         ========
@@ -2392,7 +2390,7 @@ class Permutation(Basic):
         See Also
         ========
 
-        rank_trotterjohnson, unrank_trotterjohnson, diofant.utilities.iterables.generate_bell
+        rank_trotterjohnson, unrank_trotterjohnson
 
         """
         pi = self.array_form[:]

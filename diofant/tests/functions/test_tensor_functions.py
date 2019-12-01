@@ -1,10 +1,9 @@
 from diofant import (Dummy, Eijk, KroneckerDelta, LeviCivita, Symbol, adjoint,
                      conjugate, symbols, transpose)
+from diofant.abc import x, y
 
 
 __all__ = ()
-
-x, y = symbols('x y')
 
 
 def test_levicivita():

@@ -6,12 +6,12 @@ from diofant import (E, FiniteSet, Float, Heaviside, I, Matrix, Mul, O,
                      conjugate, cos, cosh, cot, coth, csc, csch, diff, exp,
                      gcd, im, log, nan, oo, pi, re, sec, sech, series,
                      simplify, sin, sinh, sqrt, symbols, tan, tanh, zoo)
+from diofant.abc import x, y, z
 from diofant.core.function import ArgumentIndexError
 
 
 __all__ = ()
 
-x, y, z = symbols('x y z')
 r = Symbol('r', real=True)
 c = Symbol('c', complex=True)
 k = Symbol('k', integer=True)

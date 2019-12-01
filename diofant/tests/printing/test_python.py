@@ -2,15 +2,12 @@ import pytest
 
 from diofant import (Abs, Derivative, Eq, Function, Ge, Gt, Integral, Le, Lt,
                      Matrix, Ne, Rational, Symbol, cbrt, exp, limit, log, oo,
-                     pi, root, sin, sqrt, symbols)
+                     pi, root, sin, sqrt)
+from diofant.abc import x, y
 from diofant.printing.python import python
 
 
 __all__ = ()
-
-x, y = symbols('x,y')
-th = Symbol('theta')
-ph = Symbol('phi')
 
 
 def test_python_basic():
