@@ -1,4 +1,5 @@
-from itertools import zip_longest
+import itertools
+import string
 
 import pytest
 
@@ -92,7 +93,7 @@ def compare_multiset_w_baseline(multiplicities):
     baseline implementation, and compare the results.
 
     """
-    letters = "abcdefghijklmnopqrstuvwxyz"
+    letters = string.ascii_lowercase
     bl_partitions = multiset_partitions_baseline(multiplicities, letters)
 
     # The partitions returned by the different algorithms may have
@@ -144,8 +145,9 @@ def test_multiset_partitions_versions():
     """Compares Knuth-based versions of multiset_partitions."""
     multiplicities = [5, 2, 2, 1]
     m = MultisetPartitionTraverser()
-    for s1, s2 in zip_longest(m.enum_all(multiplicities),
-                              multiset_partitions_taocp(multiplicities)):
+    it = itertools.zip_longest(m.enum_all(multiplicities),
+                               multiset_partitions_taocp(multiplicities))
+    for s1, s2 in it:
         assert compare_multiset_states(s1, s2)
 
 
@@ -172,7 +174,7 @@ def subrange_exercise(mult, lb, ub):
     c_it = part_range_filter(mc.enum_small(mult, ub), lb, sum(mult))
     d_it = part_range_filter(md.enum_large(mult, lb), 0, ub)
 
-    for sa, sb, sc, sd in zip_longest(a_it, b_it, c_it, d_it):
+    for sa, sb, sc, sd in itertools.zip_longest(a_it, b_it, c_it, d_it):
         assert compare_multiset_states(sa, sb)
         assert compare_multiset_states(sa, sc)
         assert compare_multiset_states(sa, sd)

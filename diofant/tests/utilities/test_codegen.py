@@ -1,4 +1,4 @@
-from io import StringIO
+import io
 
 import pytest
 
@@ -28,7 +28,7 @@ def get_string(dump_fn, routines, prefix="file", header=False, empty=False):
     The header and the empty lines are not generated to facilitate the
     testing of the output.
     """
-    output = StringIO()
+    output = io.StringIO()
     dump_fn(routines, output, prefix, header, empty)
     source = output.getvalue()
     output.close()

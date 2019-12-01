@@ -1,4 +1,4 @@
-from io import StringIO
+import io
 
 import pytest
 
@@ -18,7 +18,7 @@ __all__ = ()
 
 def test_empty_m_code():
     code_gen = OctaveCodeGen()
-    output = StringIO()
+    output = io.StringIO()
     code_gen.dump_m([], output, "file", header=False, empty=False)
     source = output.getvalue()
     assert source == ""
@@ -110,7 +110,7 @@ def test_m_code_argument_order():
     expr = x + y
     routine = make_routine("test", expr, argument_sequence=[z, x, y], language="octave")
     code_gen = OctaveCodeGen()
-    output = StringIO()
+    output = io.StringIO()
     code_gen.dump_m([routine], output, "test", header=False, empty=False)
     source = output.getvalue()
     expected = (

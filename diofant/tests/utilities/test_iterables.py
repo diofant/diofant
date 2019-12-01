@@ -1,7 +1,7 @@
 import itertools
+import operator
 import random
-from operator import lt
-from textwrap import dedent
+import textwrap
 
 import pytest
 
@@ -337,7 +337,7 @@ def test_multiset_permutations():
             print(i)
             for p in multiset_permutations([0, 0, 1, 0, 1], i):
                 print(p)
-    assert capture(lambda: test()) == dedent('''\
+    assert capture(lambda: test()) == textwrap.dedent('''\
         1
         [0]
         [1]
@@ -548,7 +548,7 @@ def test_runs():
     assert runs([1, 1, 2]) == [[1], [1, 2]]
     assert runs([1, 2, 1]) == [[1, 2], [1]]
     assert runs([2, 1, 1]) == [[2], [1], [1]]
-    assert runs([2, 1, 1], lt) == [[2, 1], [1]]
+    assert runs([2, 1, 1], operator.lt) == [[2, 1], [1]]
 
 
 def test_uniq():
