@@ -570,8 +570,8 @@ def dsolve(eq, func=None, hint="default", simplify=True,
             raise NotImplementedError
         else:
             if match['is_linear']:
-                if match['type_of_equation'] == 'type1' and match['order'] == 1:
-                    solvefunc = globals()['sysode_linear_neq_order%(order)s' % match]
+                if match['type_of_equation'] == 'type1':
+                    solvefunc = globals()['sysode_linear_neq_type1']
                 elif match['no_of_equation'] <= 3:
                     solvefunc = globals()['sysode_linear_%(no_of_equation)seq_order%(order)s' % match]
                 else:
@@ -1607,9 +1607,8 @@ def check_linear_2eq_order2(eq, func, func_coef):
     r['f1'] = const[0]
     r['f2'] = const[1]
     if r['f1'] != 0 or r['f2'] != 0:
-        if all(not r[k].has(t) for k in 'a1 a2 d1 d2 e1 e2 f1 f2'.split()) \
-                and r['b1'] == r['c1'] == r['b2'] == r['c2'] == 0:
-            return "type2"
+        if all(not r[k].has(t) for k in 'a1 a2 d1 d2 e1 e2 f1 f2'.split()):
+            return "type1"
 
         elif all(not r[k].has(t) for k in 'a1 a2 b1 b2 c1 c2 d1 d2 e1 e1'.split()):
             p = [Integer(0), Integer(0)]
@@ -1633,8 +1632,7 @@ def check_linear_2eq_order2(eq, func, func_coef):
             if p[0] == 1 and p[1] == 1 and q[0] == 0 and q[1] == 0:
                 return "type4"
     else:
-        if r['b1'] == r['b2'] == r['c1'] == r['c2'] == 0 and all(not r[k].has(t)
-                                                                 for k in 'a1 a2 d1 d2 e1 e2'.split()):
+        if all(not r[k].has(t) for k in 'a1 a2 b1 b2 c1 c2 d1 d2 e1 e2'.split()):
             return "type1"
 
         elif r['b1'] == r['e1'] == r['c2'] == r['d2'] == 0 and all(not r[k].has(t)
@@ -6926,7 +6924,7 @@ def _linear_3eq_order1_type4(x, y, z, t, r, eq):
     return [Eq(x(t), sol1), Eq(y(t), sol2), Eq(z(t), sol3)]
 
 
-def sysode_linear_neq_order1(match_):
+def sysode_linear_neq_type1(match_):
     r"""System of n first-order constant-coefficient linear differential equations
 
     .. math ::
@@ -6950,6 +6948,20 @@ def sysode_linear_neq_order1(match_):
     eq = match_['eq']
     n = match_['no_of_equation']
     t = func[0].args[0]
+    order = match_['order']
+
+    if order > 1:
+        aux = numbered_symbols('a', cls=Function)
+        neweq = []
+        for i in range(len(eq)):
+            f = func[i]
+            old_var = f
+            for j in range(order - 1):
+                new_var = next(aux)(t)
+                eq = [_.subs({f.diff(t, j + 1): new_var}) for _ in eq]
+                neweq.append(old_var.diff(t) - new_var)
+                old_var = new_var
+        return [_ for _ in dsolve(eq + neweq) if _.lhs in func]
 
     force = [Integer(0)]*n
     for i in range(n):

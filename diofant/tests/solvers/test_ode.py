@@ -164,33 +164,23 @@ def test_linear_2eq_order2():
     x0, y0 = symbols('x0, y0', cls=Function)
 
     eq1 = (Eq(diff(x(t), t, t), 5*x(t) + 43*y(t)), Eq(diff(y(t), t, t), x(t) + 9*y(t)))
-    sol1 = [Eq(x(t), 43*C1*exp(t*RootOf(l**4 - 14*l**2 + 2, 0)) + 43*C2*exp(t*RootOf(l**4 - 14*l**2 + 2, 1)) +
-               43*C3*exp(t*RootOf(l**4 - 14*l**2 + 2, 2)) + 43*C4*exp(t*RootOf(l**4 - 14*l**2 + 2, 3))),
-            Eq(y(t), C1*(RootOf(l**4 - 14*l**2 + 2, 0)**2 - 5)*exp(t*RootOf(l**4 - 14*l**2 + 2, 0)) +
-               C2*(RootOf(l**4 - 14*l**2 + 2, 1)**2 - 5)*exp(t*RootOf(l**4 - 14*l**2 + 2, 1)) +
-               C3*(RootOf(l**4 - 14*l**2 + 2, 2)**2 - 5)*exp(t*RootOf(l**4 - 14*l**2 + 2, 2)) +
-               C4*(RootOf(l**4 - 14*l**2 + 2, 3)**2 - 5)*exp(t*RootOf(l**4 - 14*l**2 + 2, 3)))]
-    assert dsolve(eq1) == sol1
+    sol1 = dsolve(eq1)
+    assert checksysodesol(eq1, sol1)[0]
 
     eq1_1 = (Eq(diff(x(t), t, t), 5*x(t) - 4*y(t)), Eq(diff(y(t), t, t), x(t) + 9*y(t)))
-    sol1_1 = [Eq(x(t), 2*exp(sqrt(7)*t)*C1*(-4*t + 4*sqrt(7)) - 8*exp(sqrt(7)*t)*C3*t + 2*exp(-sqrt(7)*t)*C2*(-4*t - 4*sqrt(7)) - 8*exp(-sqrt(7)*t)*C4*t), Eq(y(t), 4*exp(sqrt(7)*t)*C1*t + exp(sqrt(7)*t)*C3*(4*t + 4*sqrt(7)) + 4*exp(-sqrt(7)*t)*C2*t + exp(-sqrt(7)*t)*C4*(4*t - 4*sqrt(7)))]
+    sol1_1 = [Eq(x(t), C1*(229*sqrt(7)*exp(sqrt(7)*t)/3920 - 27*sqrt(7)*(80*sqrt(7)*exp(-sqrt(7)*t)*t/189 + 26*exp(-sqrt(7)*t)/27)/1120 + 27*sqrt(7)*(-80*sqrt(7)*exp(sqrt(7)*t)*t/189 + 26*exp(sqrt(7)*t)/27)/1120 - 229*sqrt(7)*exp(-sqrt(7)*t)/3920) + C2*(-51*sqrt(7)*exp(sqrt(7)*t)/1960 - 27*sqrt(7)*(80*sqrt(7)*exp(-sqrt(7)*t)*t/189 + 26*exp(-sqrt(7)*t)/27)/560 + 27*sqrt(7)*(-80*sqrt(7)*exp(sqrt(7)*t)*t/189 + 26*exp(sqrt(7)*t)/27)/560 + 51*sqrt(7)*exp(-sqrt(7)*t)/1960) + C3*(-sqrt(7)*exp(sqrt(7)*t)*t/14 + exp(sqrt(7)*t)/2 + sqrt(7)*exp(-sqrt(7)*t)*t/14 + exp(-sqrt(7)*t)/2) + C4*(-sqrt(7)*exp(sqrt(7)*t)*t/7 + sqrt(7)*exp(-sqrt(7)*t)*t/7)), Eq(y(t), C1*(-229*sqrt(7)*exp(sqrt(7)*t)/7840 - 27*sqrt(7)*(-40*sqrt(7)*exp(-sqrt(7)*t)*t/189 + exp(-sqrt(7)*t))/1120 + 27*sqrt(7)*(40*sqrt(7)*exp(sqrt(7)*t)*t/189 + exp(sqrt(7)*t))/1120 + 229*sqrt(7)*exp(-sqrt(7)*t)/7840) + C2*(51*sqrt(7)*exp(sqrt(7)*t)/3920 - 27*sqrt(7)*(-40*sqrt(7)*exp(-sqrt(7)*t)*t/189 + exp(-sqrt(7)*t))/560 + 27*sqrt(7)*(40*sqrt(7)*exp(sqrt(7)*t)*t/189 + exp(sqrt(7)*t))/560 - 51*sqrt(7)*exp(-sqrt(7)*t)/3920) + C3*(sqrt(7)*exp(sqrt(7)*t)*t/28 - sqrt(7)*exp(-sqrt(7)*t)*t/28) + C4*(sqrt(7)*exp(sqrt(7)*t)*t/14 + exp(sqrt(7)*t)/2 - sqrt(7)*exp(-sqrt(7)*t)*t/14 + exp(-sqrt(7)*t)/2))]
     assert dsolve(eq1_1) == sol1_1
 
     eq1_2 = (Eq(diff(x(t), t, t), 5*x(t)), Eq(diff(y(t), t, t), x(t) + 5*y(t)))
-    sol1_2 = [Eq(x(t), 2*sqrt(5)*exp(sqrt(5)*t)*C1 + 2*sqrt(5)*exp(-sqrt(5)*t)*C2), Eq(y(t), exp(sqrt(5)*t)*C1*t + exp(sqrt(5)*t)*C3 - exp(-sqrt(5)*t)*C2*t + exp(-sqrt(5)*t)*C4)]
+    sol1_2 = [Eq(x(t), C1*(sqrt(5)*exp(sqrt(5)*t)/10 - sqrt(5)*exp(-sqrt(5)*t)/10) + C3*(exp(sqrt(5)*t)/2 + exp(-sqrt(5)*t)/2)), Eq(y(t), C1*(-sqrt(5)*exp(sqrt(5)*t)/600 + sqrt(5)*(6*sqrt(5)*exp(-sqrt(5)*t)*t/5 + exp(-sqrt(5)*t))/120 - sqrt(5)*(-6*sqrt(5)*exp(sqrt(5)*t)*t/5 + exp(sqrt(5)*t))/120 + sqrt(5)*exp(-sqrt(5)*t)/600) + C2*(sqrt(5)*exp(sqrt(5)*t)/10 - sqrt(5)*exp(-sqrt(5)*t)/10) + C3*(sqrt(5)*exp(sqrt(5)*t)*t/20 - sqrt(5)*exp(-sqrt(5)*t)*t/20) + C4*(exp(sqrt(5)*t)/2 + exp(-sqrt(5)*t)/2))]
     assert dsolve(eq1_2) == sol1_2
 
     eq1_3 = (Eq(diff(x(t), t, t), 5*x(t) - 4*y(t)), Eq(diff(y(t), t, t), 5*y(t)))
-    sol1_3 = [Eq(x(t), -4*exp(sqrt(5)*t)*C1*t + exp(sqrt(5)*t)*C3 + 4*exp(-sqrt(5)*t)*C2*t + exp(-sqrt(5)*t)*C4), Eq(y(t), 2*sqrt(5)*exp(sqrt(5)*t)*C1 + 2*sqrt(5)*exp(-sqrt(5)*t)*C2)]
+    sol1_3 = [Eq(x(t), C1*(sqrt(5)*exp(sqrt(5)*t)/10 - sqrt(5)*exp(-sqrt(5)*t)/10) + C2*(sqrt(5)*exp(sqrt(5)*t)/150 - sqrt(5)*(2*sqrt(5)*exp(-sqrt(5)*t)*t/5 + exp(-sqrt(5)*t)/3)/10 + sqrt(5)*(-2*sqrt(5)*exp(sqrt(5)*t)*t/5 + exp(sqrt(5)*t)/3)/10 - sqrt(5)*exp(-sqrt(5)*t)/150) + C3*(exp(sqrt(5)*t)/2 + exp(-sqrt(5)*t)/2) + C4*(-sqrt(5)*exp(sqrt(5)*t)*t/5 + sqrt(5)*exp(-sqrt(5)*t)*t/5)), Eq(y(t), C2*(sqrt(5)*exp(sqrt(5)*t)/10 - sqrt(5)*exp(-sqrt(5)*t)/10) + C4*(exp(sqrt(5)*t)/2 + exp(-sqrt(5)*t)/2))]
     assert dsolve(eq1_3) == sol1_3
 
     eq2 = (Eq(diff(x(t), t, t), 8*x(t)+3*y(t)+31), Eq(diff(y(t), t, t), 9*x(t)+7*y(t)+12))
-    sol2 = [Eq(x(t), 3*C1*exp(t*RootOf(l**4 - 15*l**2 + 29, 0)) + 3*C2*exp(t*RootOf(l**4 - 15*l**2 + 29, 1)) +
-               3*C3*exp(t*RootOf(l**4 - 15*l**2 + 29, 2)) + 3*C4*exp(t*RootOf(l**4 - 15*l**2 + 29, 3)) - 181/29),
-            Eq(y(t), C1*(RootOf(l**4 - 15*l**2 + 29, 0)**2 - 8)*exp(t*RootOf(l**4 - 15*l**2 + 29, 0)) +
-               C2*(RootOf(l**4 - 15*l**2 + 29, 1)**2 - 8)*exp(t*RootOf(l**4 - 15*l**2 + 29, 1)) +
-               C3*(RootOf(l**4 - 15*l**2 + 29, 2)**2 - 8)*exp(t*RootOf(l**4 - 15*l**2 + 29, 2)) +
-               C4*(RootOf(l**4 - 15*l**2 + 29, 3)**2 - 8)*exp(t*RootOf(l**4 - 15*l**2 + 29, 3)) + 183/29)]
+    sol2 = [Eq(x(t), 3*E**(t*RootOf(l**4 - 15*l**2 + 29, 0))*C1 + 3*E**(t*RootOf(l**4 - 15*l**2 + 29, 1))*C2 + 3*E**(t*RootOf(l**4 - 15*l**2 + 29, 2))*C3 + 3*E**(t*RootOf(l**4 - 15*l**2 + 29, 3))*C4 - Rational(181, 29)), Eq(y(t), E**(t*RootOf(l**4 - 15*l**2 + 29, 0))*C1*(-8 + RootOf(l**4 - 15*l**2 + 29, 0)**2) + E**(t*RootOf(l**4 - 15*l**2 + 29, 1))*C2*(-8 + RootOf(l**4 - 15*l**2 + 29, 1)**2) + E**(t*RootOf(l**4 - 15*l**2 + 29, 2))*C3*(-8 + RootOf(l**4 - 15*l**2 + 29, 2)**2) + E**(t*RootOf(l**4 - 15*l**2 + 29, 3))*C4*(-8 + RootOf(l**4 - 15*l**2 + 29, 3)**2) + Rational(183, 29))]
     assert dsolve(eq2) == sol2
 
     eq3 = (Eq(diff(x(t), t, t) - 9*diff(y(t), t) + 7*x(t), 0), Eq(diff(y(t), t, t) + 9*diff(x(t), t) + 7*y(t), 0))
@@ -923,7 +913,7 @@ def test_classify_sysode():
     assert classify_sysode(eq1) == sol1
 
     eq2 = (Eq(x2, k*x(t) - l*y1), Eq(y2, l*x1 + k*y(t)))
-    sol2 = {'order': {y(t): 2, x(t): 2}, 'type_of_equation': 'type3', 'is_linear': True, 'eq':
+    sol2 = {'order': {y(t): 2, x(t): 2}, 'type_of_equation': 'type1', 'is_linear': True, 'eq':
             [-k*x(t) + l*Derivative(y(t), t) + Derivative(x(t), t, t), -k*y(t) - l*Derivative(x(t), t) +
              Derivative(y(t), t, t)], 'no_of_equation': 2, 'func_coeff': {(0, y(t), 0): 0, (0, x(t), 2): 1,
                                                                           (1, y(t), 1): 0, (1, y(t), 2): 1, (1, x(t), 2): 0, (0, y(t), 2): 0, (0, x(t), 0): -k, (1, x(t), 1):
