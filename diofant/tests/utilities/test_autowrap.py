@@ -1,10 +1,10 @@
 # Tests that require installed backends go into
 # diofant/test_external/test_autowrap
 
+import io
 import os
 import shutil
 import tempfile
-from io import StringIO
 
 import pytest
 
@@ -28,7 +28,7 @@ def get_string(dump_fn, routines, prefix="file"):
     The header and the empty lines are not generator to facilitate the
     testing of the output.
     """
-    output = StringIO()
+    output = io.StringIO()
     dump_fn(routines, output, prefix)
     source = output.getvalue()
     output.close()

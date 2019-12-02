@@ -1,5 +1,5 @@
+import itertools
 import math
-from itertools import product
 
 import mpmath
 import pytest
@@ -427,8 +427,9 @@ def test_imps():
 def test_imps_errors():
     # Test errors that implemented functions can return, and still be
     # able to form expressions.  See issue sympy/sympy#10810.
-    for val, error_class in product((0, 0., 2, 2.0),
-                                    (AttributeError, TypeError, ValueError)):
+    for val, error_class in itertools.product((0, 0., 2, 2.0),
+                                              (AttributeError, TypeError,
+                                               ValueError)):
 
         def myfunc(a):
             if a == 0:
