@@ -1,5 +1,4 @@
 import sys
-import warnings
 
 import pytest
 
@@ -12,15 +11,13 @@ try:
     matplotlib.rc('figure', max_open_warning=0)
     del matplotlib
 except ImportError:
-    collect_ignore.extend(["diofant/plotting/plot.py",
-                           "diofant/plotting/plot_implicit.py"])
+    collect_ignore_glob = ["diofant/plotting/*.py"]
 
 
 def pytest_report_header(config):
-    return """
-cache: %s
-ground types: %s
-""" % (diofant.core.cache.USE_CACHE, diofant.core.compatibility.GROUND_TYPES)
+    return """\ncache: %s
+ground types: %s\n""" % (diofant.core.cache.USE_CACHE,
+                         diofant.core.compatibility.GROUND_TYPES)
 
 
 @pytest.fixture(autouse=True, scope='module')
@@ -36,10 +33,8 @@ def set_displayhook():
 @pytest.fixture(autouse=True, scope='session')
 def enable_mpl_agg_backend():
     try:
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', DeprecationWarning)
-            import matplotlib as mpl
-        mpl.use('Agg')
+        import matplotlib
+        matplotlib.use('Agg')
     except ImportError:
         pass
 
