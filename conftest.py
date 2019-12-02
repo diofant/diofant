@@ -1,7 +1,6 @@
 import sys
 import warnings
 
-import hypothesis
 import pytest
 
 import diofant
@@ -15,9 +14,6 @@ try:
 except ImportError:
     collect_ignore.extend(["diofant/plotting/plot.py",
                            "diofant/plotting/plot_implicit.py"])
-
-hypothesis.settings.register_profile("default",
-                                     hypothesis.settings(max_examples=100))
 
 
 def pytest_report_header(config):
