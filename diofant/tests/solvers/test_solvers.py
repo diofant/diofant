@@ -35,64 +35,6 @@ def test_swap_back():
     assert solve([f(1) - 2, x + 2]) == [{x: -2, f(1): 2}]
 
 
-def guess_solve_strategy(eq, symbol):
-    try:
-        solve(eq, symbol)
-        return True
-    except (TypeError, NotImplementedError):
-        return False
-
-
-def test_guess_poly():
-    # polynomial equations
-    assert guess_solve_strategy( Integer(4), x )  # == GS_POLY
-    assert guess_solve_strategy( x, x )  # == GS_POLY
-    assert guess_solve_strategy( x + a, x )  # == GS_POLY
-    assert guess_solve_strategy( 2*x, x )  # == GS_POLY
-    assert guess_solve_strategy( x + sqrt(2), x)  # == GS_POLY
-    assert guess_solve_strategy( x + root(2, 4), x)  # == GS_POLY
-    assert guess_solve_strategy( x**2 + 1, x )  # == GS_POLY
-    assert guess_solve_strategy( x**2 - 1, x )  # == GS_POLY
-    assert guess_solve_strategy( x*y + y, x )  # == GS_POLY
-    assert guess_solve_strategy( x*exp(y) + y, x)  # == GS_POLY
-    assert guess_solve_strategy(
-        (x - y**3)/(y**2*sqrt(1 - y**2)), x)  # == GS_POLY
-
-
-def test_guess_poly_cv():
-    # polynomial equations via a change of variable
-    assert guess_solve_strategy( sqrt(x) + 1, x )  # == GS_POLY_CV_1
-    assert guess_solve_strategy(
-        cbrt(x) + sqrt(x) + 1, x )  # == GS_POLY_CV_1
-    assert guess_solve_strategy( 4*x*(1 - sqrt(x)), x )  # == GS_POLY_CV_1
-
-    # polynomial equation multiplying both sides by x**n
-    assert guess_solve_strategy( x + 1/x + y, x )  # == GS_POLY_CV_2
-
-
-def test_guess_rational_cv():
-    # rational functions
-    assert guess_solve_strategy( (x + 1)/(x**2 + 2), x)  # == GS_RATIONAL
-    assert guess_solve_strategy(
-        (x - y**3)/(y**2*sqrt(1 - y**2)), y)  # == GS_RATIONAL_CV_1
-
-    # rational functions via the change of variable y -> x**n
-    assert guess_solve_strategy( (sqrt(x) + 1)/(cbrt(x) + sqrt(x) + 1), x ) \
-        # == GS_RATIONAL_CV_1
-
-
-def test_guess_transcendental():
-    # transcendental functions
-    assert guess_solve_strategy( exp(x) + 1, x )  # == GS_TRANSCENDENTAL
-    assert guess_solve_strategy( 2*cos(x) - y, x )  # == GS_TRANSCENDENTAL
-    assert guess_solve_strategy(
-        exp(x) + exp(-x) - y, x )  # == GS_TRANSCENDENTAL
-    assert guess_solve_strategy(3**x - 10, x)  # == GS_TRANSCENDENTAL
-    assert guess_solve_strategy(-3**x + 10, x)  # == GS_TRANSCENDENTAL
-
-    assert guess_solve_strategy(a*x**b - y, x)  # == GS_TRANSCENDENTAL
-
-
 def test_solve_args():
     # equation container, issue sympy/sympy#5113
     ans = [{x: -3, y: 1}]
@@ -158,7 +100,8 @@ def test_solve_max():
 
 
 def test_solve_polynomial1():
-    assert solve(x - y, x) == [{x: y}]
+    assert solve(x - y, x) == [{x: +y}]
+    assert solve(x + y, x) == [{x: -y}]
     assert solve(3*x - 2, x) == [{x: Rational(2, 3)}]
     assert solve(Eq(3*x, 2), x) == [{x: Rational(2, 3)}]
 
@@ -196,6 +139,9 @@ def test_solve_polynomial1():
     assert solve(x - y**2, x, y) == [{x: y**2}]
     assert solve(x**2 - y, y, x) == [{y: x**2}]
 
+    assert solve(x*y + y, x) == [{x: -1}]
+    assert solve(x*exp(y) + y, x) == [{x: -y/exp(y)}]
+
     assert solve(x**3 + 2*x + 3, x) == [{x: -1},
                                         {x: Rational(1, 2) - sqrt(11)*I/2},
                                         {x: Rational(1, 2) + sqrt(11)*I/2}]
@@ -214,9 +160,15 @@ def test_solve_polynomial1():
 
 def test_solve_polynomial2():
     assert solve(4, x) == []
+    assert solve(x, x) == [{x: 0}]
+    assert solve(2*x, x) == [{x: 0}]
     assert solve(x - 3, y) == []
     assert solve(x - 3, x) == [{x: 3}]
     assert solve(x - 3) == [{x: 3}]
+    assert solve(x + sqrt(2), x) == [{x: -sqrt(2)}]
+    assert solve(x + root(2, 4), x) == [{x: -root(2, 4)}]
+    assert solve(x**2 + 1, x) == [{x: -I}, {x: I}]
+    assert solve(x**2 - 1, x) == [{x: -1}, {x: 1}]
     assert solve([x**2 - 3, y - 1]) == [{x: -sqrt(3), y: 1},
                                         {x: sqrt(3), y: 1}]
     assert solve(x**4 - 1, x) == [{x: -1}, {x: 1}, {x: -I}, {x: I}]
@@ -321,11 +273,16 @@ def test_quintics_2():
 
 def test_solve_rational():
     """Test solve for rational functions"""
-    assert solve(( x - y**3 )/( (y**2)*sqrt(1 - y**2) ), x) == [{x: y**3}]
+    assert solve((x - y**3)/((y**2)*sqrt(1 - y**2)), x) == [{x: y**3}]
 
     eq = x**2*(1/x - z**2/x)
     assert solve(eq, x) == []
     assert solve(eq, x, check=False) == [{x: 0}]
+
+    assert solve(x + 1/x + y, x) == [{x: -y/2 - sqrt(y**2 - 4)/2},
+                                     {x: -y/2 + sqrt(y**2 - 4)/2}]
+
+    assert solve((x + 1)/(x**2 + 2)) == [{x: -1}]
 
 
 def test_solve_nonlinear():
@@ -384,6 +341,15 @@ def test_solve_radicals():
     # XXX is this correct?
     sol = solve(eq, check=False)
     assert abs(real_root(eq.subs(sol[0])).evalf(2, strict=False)).epsilon_eq(0)
+
+    assert solve(sqrt(x) + 1, x) == []
+    assert solve(cbrt(x) + sqrt(x) + 1, x) == []
+    assert solve(4*x*(1 - sqrt(x))) == [{x: 0}, {x: 1}]
+
+
+@pytest.mark.xfail
+def test_solve_radicals_xfail():
+    assert solve((sqrt(x) + 1)/(cbrt(x) + sqrt(x) + 1)) == []
 
 
 # Note: multiple solutions exist for some of these equations, so the tests
@@ -504,6 +470,11 @@ def test_solve_transcendental():
                                          (-1)**Rational(2, 5)*x**3 -
                                          v, x, extension=False).all_roots())):
         assert simplify(s - v) == 0
+
+    assert solve(+3**x - 10) == [{x: log(10)/log(3)}]
+    assert solve(-3**x + 10) == [{x: log(10)/log(3)}]
+
+    assert solve(a*x**b - y, x) == [{x: (y/a)**(1/b)}]
 
 
 def test_solve_for_exprs():
