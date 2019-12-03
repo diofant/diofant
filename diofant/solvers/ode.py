@@ -6963,13 +6963,14 @@ def sysode_linear_neq_order1(match_):
 
     A = Minv*L
     JJ, T = A.jordan_cells()
-    T, Tinv = map(simplify, [T, T.inv()])
-
-    force = Minv*Matrix(force)
 
     expm = Matrix(BlockDiagMatrix(*[(J*t).exp() for J in JJ]))
-    q = T*expm*Tinv*Matrix(get_numbered_constants(eq, num=n))
-    q -= T*expm*(expm.subs({t: -t})*Tinv*force).integrate(t)
+    q = T*expm*Matrix(get_numbered_constants(eq, num=n))
+
+    force = Minv*Matrix(force)
+    if not force.is_zero:
+        Tinv = simplify(T.inv())
+        q -= T*expm*(expm.subs({t: -t})*Tinv*force).integrate(t)
 
     return [Eq(func[i], q[i]) for i in range(n)]
 

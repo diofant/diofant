@@ -101,7 +101,5 @@ the form ``C1``, ``C2``, ``C3``, and so on.
 equations, like :func:`~diofant.solvers.solvers.solve`.
 
     >>> dsolve([f(x).diff(x) - g(x), g(x).diff(x) - f(x)], [f(x), g(x)])
-    ⎡          ⎛ x    -x⎞      ⎛ x    -x⎞            ⎛ x    -x⎞      ⎛ x    -x⎞⎤
-    ⎢          ⎜ℯ    ℯ  ⎟      ⎜ℯ    ℯ  ⎟            ⎜ℯ    ℯ  ⎟      ⎜ℯ    ℯ  ⎟⎥
-    ⎢f(x) = C₁⋅⎜── + ───⎟ + C₂⋅⎜── - ───⎟, g(x) = C₁⋅⎜── - ───⎟ + C₂⋅⎜── + ───⎟⎥
-    ⎣          ⎝2     2 ⎠      ⎝2     2 ⎠            ⎝2     2 ⎠      ⎝2     2 ⎠⎦
+    ⎡        x       -x             x       -x   ⎤
+    ⎣f(x) = ℯ ⋅C₂ - ℯ  ⋅C₁, g(x) = ℯ ⋅C₂ + ℯ  ⋅C₁⎦
