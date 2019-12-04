@@ -7,7 +7,7 @@ from diofant import (Abs, And, Derivative, E, Eq, Float, Function, Gt, I,
                      cos, cosh, diff, erf, erfc, erfcinv, erfinv, exp,
                      expand_log, im, log, nan, oo, ordered, pi, re, real_root,
                      root, sec, sech, simplify, sin, sinh, solve, sqrt, sstr,
-                     symbols, sympify, tan, tanh)
+                     symbols, tan, tanh)
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
 from diofant.core.function import nfloat
@@ -20,10 +20,6 @@ from diofant.utilities.randtest import verify_numerically as tn
 
 
 __all__ = ()
-
-
-def NS(e, n=15, **options):
-    return sstr(sympify(e).evalf(n, **options), full_prec=True)
 
 
 def test_swap_back():
