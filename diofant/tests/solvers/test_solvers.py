@@ -120,12 +120,13 @@ def test_solve_polynomial1():
     assert solve((x - y, x + y), (x, y)) == solution
     assert solve((x - y, x + y), [x, y]) == solution
 
-    assert {s[x] for s in solve(x**3 - 15*x - 4, x)} == {-2 + sqrt(3), 4,
-                                                         -2 - sqrt(3)}
+    assert solve(x**3 - 15*x - 4) == [{x: 4}, {x: -2 - sqrt(3)},
+                                      {x: -2 + sqrt(3)}]
 
-    assert ({s[x] for s in solve((x**2 - 1)**2 - a, x)} ==
-            {sqrt(1 + sqrt(a)), -sqrt(1 + sqrt(a)),
-             sqrt(1 - sqrt(a)), -sqrt(1 - sqrt(a))})
+    assert solve((x**2 - 1)**2 - a, x) == [{x: -sqrt(-sqrt(a) + 1)},
+                                           {x: +sqrt(-sqrt(a) + 1)},
+                                           {x: -sqrt(sqrt(a) + 1)},
+                                           {x: +sqrt(sqrt(a) + 1)}]
 
     assert (solve(x**3 - x + a, x, cubics=False) ==
             [{x: r} for r in Poly(x**3 - x + a, x).all_roots()])
@@ -189,8 +190,8 @@ def test_solve_polynomial_cv_1a():
 
 
 def test_solve_polynomial_cv_1b():
-    assert {s[x] for s in solve(4*x*(1 - a*sqrt(x)), x)} == {0, 1/a**2}
-    assert {s[x] for s in solve(x*(root(x, 3) - 3), x)} == {0, 27}
+    assert solve(4*x*(1 - a*sqrt(x)), x) == [{x: 0}, {x: 1/a**2}]
+    assert solve(x*(root(x, 3) - 3)) == [{x: 0}, {x: 27}]
 
 
 def test_solve_polynomial_cv_2():
@@ -227,15 +228,11 @@ def test_solve_qubics():
 
 def test_quintics_1():
     f = x**5 - 110*x**3 - 55*x**2 + 2310*x + 979
-    s = solve(f, check=False)
-    for root in s:
-        res = f.subs(root).evalf(strict=False)
-        assert tn(res, 0)
+    assert all(tn(f.subs(root).evalf(strict=False), 0)
+               for root in solve(f, check=False))
 
     f = x**5 - 15*x**3 - 5*x**2 + 10*x + 20
-    s = solve(f)
-    for root in s:
-        assert root[x].func == RootOf
+    assert all(root[x].func == RootOf for root in solve(f))
 
     # if one uses solve to get the roots of a polynomial that has a RootOf
     # solution, make sure that the use of nfloat during the solve process
@@ -256,15 +253,11 @@ def test_highorder_poly():
 
 def test_quintics_2():
     f = x**5 + 15*x + 12
-    s = solve(f, check=False)
-    for root in s:
-        res = f.subs(root).evalf(strict=False)
-        assert tn(res, 0)
+    assert all(tn(f.subs(root).evalf(strict=False), 0)
+               for root in solve(f, check=False))
 
     f = x**5 - 15*x**3 - 5*x**2 + 10*x + 20
-    s = solve(f)
-    for root in s:
-        assert root[x].func == RootOf
+    assert all(root[x].func == RootOf for root in solve(f))
 
 
 def test_solve_rational():
@@ -357,17 +350,18 @@ def test_solve_transcendental():
     assert solve(sin(x)/x, check=False) == [{x: 0}, {x: pi}]
 
     assert solve(exp(x) - 3, x) == [{x: log(3)}]
-    assert {s[x] for s in solve((a*x + b)*(exp(x) - 3), x)} == {-b/a, log(3)}
+    assert solve((a*x + b)*(exp(x) - 3), x) == [{x: -b/a}, {x: log(3)}]
     assert solve(cos(x) - y, x) == [{x: -acos(y) + 2*pi}, {x: acos(y)}]
     assert solve(2*cos(x) - y, x) == [{x: -acos(y/2) + 2*pi}, {x: acos(y/2)}]
     assert solve(Eq(cos(x), sin(x)), x) == [{x: -3*pi/4}, {x: pi/4}]
 
-    assert ({s[x] for s in solve(exp(x) + exp(-x) - y, x)} in
-            [{log(y/2 - sqrt(y**2 - 4)/2), log(y/2 + sqrt(y**2 - 4)/2)},
-             {log(y - sqrt(y**2 - 4)) - log(2),
-              log(y + sqrt(y**2 - 4)) - log(2)},
-             {log(y/2 - sqrt((y - 2)*(y + 2))/2),
-              log(y/2 + sqrt((y - 2)*(y + 2))/2)}])
+    assert (solve(exp(x) + exp(-x) - y, x) in
+            [[{x: log(y/2 - sqrt(y**2 - 4)/2)},
+              {x: log(y/2 + sqrt(y**2 - 4)/2)}],
+             [{x: log(y - sqrt(y**2 - 4)) - log(2)},
+              {x: log(y + sqrt(y**2 - 4)) - log(2)}],
+             [{x: log(y/2 - sqrt((y - 2)*(y + 2))/2)},
+              {x: log(y/2 + sqrt((y - 2)*(y + 2))/2)}]])
     assert solve(exp(x) - 3, x) == [{x: log(3)}]
     assert solve(Eq(exp(x), 3), x) == [{x: log(3)}]
     assert solve(log(x) - 3, x) == [{x: exp(3)}]
@@ -383,8 +377,7 @@ def test_solve_transcendental():
     assert (solve(2*x + 5 + log(3*x - 2), x) ==
             [{x: Rational(2, 3) + LambertW(2*exp(-Rational(19, 3))/3)/2}])
     assert solve(3*x + log(4*x), x) == [{x: LambertW(Rational(3, 4))/3}]
-    assert ({s[x] for s in solve((2*x + 8)*(8 + exp(x)), x)} ==
-            {-4, log(8) + pi*I})
+    assert solve((2*x + 8)*(8 + exp(x))) == [{x: -4}, {x: log(8) + pi*I}]
     eq = 2*exp(3*x + 4) - 3
     ans = solve(eq, x)  # this generated a failure in flatten
     assert len(ans) == 3 and all(eq.subs(a).evalf(chop=True) == 0 for a in ans)
@@ -647,7 +640,7 @@ def test_sympypull_1964():
     # issue sympy/sympy#4486
     assert solve(2*x/(x + 2) - 1, x) == [{x: 2}]
     # issue sympy/sympy#4496
-    assert {s[x] for s in solve((x**2/(7 - x)).diff(x))} == {0, 14}
+    assert solve((x**2/(7 - x)).diff(x)) == [{x: 0}, {x: 14}]
     # issue sympy/sympy#4695
     f = Function('f')
     assert solve((3 - 5*x/f(x))*f(x), f(x)) == [{f(x): 5*x/3}]
@@ -655,14 +648,15 @@ def test_sympypull_1964():
     assert solve(1/root(5 + x, 5) - 9, x) == [{x: Rational(-295244, 59049)}]
 
     assert solve(sqrt(x) + sqrt(sqrt(x)) - 4) == [{x: (Rational(-1, 2) + sqrt(17)/2)**4}]
-    assert ({s[x] for s in solve(Poly(sqrt(exp(x)) + sqrt(exp(-x)) - 4))} in
-            [{log((-sqrt(3) + 2)**2), log((sqrt(3) + 2)**2)},
-             {2*log(-sqrt(3) + 2), 2*log(sqrt(3) + 2)},
-             {log(-4*sqrt(3) + 7), log(4*sqrt(3) + 7)}])
-    assert ({s[x] for s in solve(Poly(exp(x) + exp(-x) - 4))} ==
-            {log(-sqrt(3) + 2), log(sqrt(3) + 2)})
-    assert ({s[x] for s in solve(x**y + x**(2*y) - 1, x)} ==
-            {(Rational(-1, 2) + sqrt(5)/2)**(1/y), (Rational(-1, 2) - sqrt(5)/2)**(1/y)})
+    assert (solve(Poly(sqrt(exp(x)) + sqrt(exp(-x)) - 4)) in
+            [[{x: log((-sqrt(3) + 2)**2)}, {x: log((sqrt(3) + 2)**2)}],
+             [{x: 2*log(-sqrt(3) + 2)}, {x: 2*log(sqrt(3) + 2)}],
+             [{x: log(-4*sqrt(3) + 7)}, {x: log(4*sqrt(3) + 7)}]])
+    assert solve(Poly(exp(x) + exp(-x) - 4)) == [{x: log(-sqrt(3) + 2)},
+                                                 {x: log(+sqrt(3) + 2)}]
+    assert (solve(x**y + x**(2*y) - 1, x) ==
+            [{x: (Rational(-1, 2) + sqrt(5)/2)**(1/y)},
+             {x: (Rational(-1, 2) - sqrt(5)/2)**(1/y)}])
 
     assert solve(exp(x/y)*exp(-z/y) - 2, y) == [{y: (x - z)/log(2)}]
     assert solve(x**z*y**z - 2, z) in [[{z: log(2)/(log(x) + log(y))}],
@@ -726,11 +720,12 @@ def test_sympyissue_4671_4463_4467():
     assert (solve(1 - log(a + 4*x**2), x) in
             ([{x: -sqrt(-a + E)/2}, {x: sqrt(-a + E)/2}],
              [{x: sqrt(-a + E)/2}, {x: -sqrt(-a + E)/2}]))
-    assert {s[x] for s in solve((a**2 + 1)*(sin(a*x) + cos(a*x)), x)} == {-pi/(4*a), 3*pi/(4*a)}
+    assert solve((a**2 + 1)*(sin(a*x) + cos(a*x)), x) == [{x: -pi/(4*a)},
+                                                          {x: 3*pi/(4*a)}]
     assert solve(3 - (sinh(a*x) + cosh(a*x)), x) == [{x: log(3)/a}]
-    assert ({s[x] for s in solve(3 - (sinh(a*x) + cosh(a*x)**2), x)} ==
-            {log(-2 + sqrt(5))/a, log(-sqrt(2) + 1)/a,
-             log(-sqrt(5) - 2)/a, log(1 + sqrt(2))/a})
+    assert (solve(3 - (sinh(a*x) + cosh(a*x)**2), x) ==
+            [{x: (log(-1 + sqrt(2)) + I*pi)/a}, {x: (log(2 + sqrt(5)) + I*pi)/a},
+             {x: log(-2 + sqrt(5))/a}, {x: log(1 + sqrt(2))/a}])
     assert solve(atan(x) - 1) == [{x: tan(1)}]
 
 
@@ -742,21 +737,21 @@ def test_sympyissue_5132():
             [{x: log(sin(Rational(1, 3))), y: Rational(1, 3)}])
     assert (solve([exp(x) - sin(y), 1/exp(y) - 3], [x, y]) ==
             [{x: log(-sin(log(3))), y: -log(3)}])
-    assert ({(s[x], s[y]) for s in solve([exp(x) - sin(y), y**2 - 4], [x, y])} ==
-            {(log(-sin(2)), -2), (log(sin(2)), 2)})
+    assert (solve([exp(x) - sin(y), y**2 - 4]) ==
+            [{x: log(-sin(2)), y: -2}, {x: log(sin(2)), y: 2}])
     eqs = [exp(x)**2 - sin(y) + z**2, 1/exp(y) - 3]
-    assert solve(eqs) == [{x: log(-sqrt(-z**2 - sin(log(3)))),
-                           y: -log(3)},
-                          {x: log(sqrt(-z**2 - sin(log(3)))),
-                           y: -log(3)}]
+    assert solve(eqs, [x, y]) == [{x: log(-sqrt(-z**2 - sin(log(3)))),
+                                   y: -log(3)},
+                                  {x: log(sqrt(-z**2 - sin(log(3)))),
+                                   y: -log(3)}]
     assert solve(eqs, x, z) == [{x: log(-sqrt(-z**2 + sin(y)))},
                                 {x: log(sqrt(-z**2 + sin(y)))}]
-    assert ({(s[x], s[y]) for s in solve(eqs, x, y)} ==
-            {(log(-sqrt(-z**2 - sin(log(3)))), -log(3)),
-             (log(sqrt(-z**2 - sin(log(3)))), -log(3))})
-    assert ({(s[y], s[z]) for s in solve(eqs, y, z)} ==
-            {(-log(3), -sqrt(-exp(2*x) - sin(log(3)))),
-             (-log(3), sqrt(-exp(2*x) - sin(log(3))))})
+    assert (solve(eqs, x, y) ==
+            [{x: log(-sqrt(-z**2 - sin(log(3)))), y: -log(3)},
+             {x: log(sqrt(-z**2 - sin(log(3)))), y: -log(3)}])
+    assert (solve(eqs, y, z) ==
+            [{y: -log(3), z: -sqrt(-exp(2*x) - sin(log(3)))},
+             {y: -log(3), z: +sqrt(-exp(2*x) - sin(log(3)))}])
     eqs = [exp(x)**2 - sin(y) + z, 1/exp(y) - 3]
     assert solve(eqs) == [{x: log(-sqrt(-z - sin(log(3)))),
                            y: -log(3)},
@@ -764,13 +759,14 @@ def test_sympyissue_5132():
                            y: -log(3)}]
     assert solve(eqs, x, z) == [{x: log(-sqrt(-z + sin(y)))},
                                 {x: log(sqrt(-z + sin(y)))}]
-    assert ({(s[x], s[y]) for s in solve(eqs, x, y)} ==
-            {(log(-sqrt(-z - sin(log(3)))), -log(3)),
-             (log(sqrt(-z - sin(log(3)))), -log(3))})
+    assert (solve(eqs, x, y) ==
+            [{x: log(-sqrt(-z - sin(log(3)))), y: -log(3)},
+             {x: log(+sqrt(-z - sin(log(3)))), y: -log(3)}])
     assert solve(eqs, z, y) == [{z: -exp(2*x) - sin(log(3)), y: -log(3)}]
     assert (solve((sqrt(x**2 + y**2) - sqrt(10), x + y - 4)) ==
             [{x: 1, y: 3}, {x: 3, y: 1}])
-    assert {(s[x], s[y]) for s in solve((sqrt(x**2 + y**2) - sqrt(10), x + y - 4), x, y)} == {(1, 3), (3, 1)}
+    assert (solve((sqrt(x**2 + y**2) - sqrt(10), x + y - 4), x, y) ==
+            [{x: 1, y: 3}, {x: 3, y: 1}])
 
 
 @pytest.mark.slow
@@ -785,14 +781,14 @@ def test_sympyissue_5335():
 
 
 def test_sympyissue_5767():
-    assert ({(s[x],) for s in solve([x**2 + y + 4], [x])} ==
-            {(-sqrt(-y - 4),), (sqrt(-y - 4),)})
+    assert solve([x**2 + y + 4], [x]) == [{x: -sqrt(-y - 4)},
+                                          {x: +sqrt(-y - 4)}]
 
 
 def test_polysys():
-    assert ({(s[x], s[y]) for s in solve([x**2 + 2/y - 2, x + y - 3], [x, y])} ==
-            {(1, 2), (1 + sqrt(5), 2 - sqrt(5)),
-             (1 - sqrt(5), 2 + sqrt(5))})
+    assert (solve([x**2 + 2/y - 2, x + y - 3], [x, y]) ==
+            [{x: 1, y: 2}, {x: 1 + sqrt(5), y: 2 - sqrt(5)},
+             {x: 1 - sqrt(5), y: 2 + sqrt(5)}])
     assert solve([x**2 + y - 2, x**2 + y]) == []
     assert (solve([x**2 + y - 3, x - y - 4], (x, y)) ==
             [{x: -Rational(1, 2) + sqrt(29)/2, y: -Rational(9, 2) + sqrt(29)/2},
@@ -904,8 +900,9 @@ def test_sympyissue_5901():
 
 
 def test_sympyissue_5912():
-    assert ({s[x] for s in solve(x**2 - x - 0.1, rational=True)} ==
-            {Rational(1, 2) + sqrt(35)/10, -sqrt(35)/10 + Rational(1, 2)})
+    assert (solve(x**2 - x - 0.1, rational=True) ==
+            [{x: Rational(1, 2) + sqrt(35)/10},
+             {x: Rational(1, 2) - sqrt(35)/10}])
     ans = solve(x**2 - x - 0.1, rational=False)
     assert len(ans) == 2 and all(a[x].is_Number for a in ans)
     ans = solve(x**2 - x - 0.1)
@@ -1042,7 +1039,7 @@ def test_exclude():
 
 def test_high_order_roots():
     s = x**5 + 4*x**3 + 3*x**2 + Rational(7, 4)
-    assert {_[x] for _ in solve(s)} == set(Poly(s*4, domain='ZZ').all_roots())
+    assert solve(s) == [{x: RootOf(s*4, i)} for i in range(5)]
 
 
 def test_minsolve_linear_system():
