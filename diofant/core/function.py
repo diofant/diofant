@@ -63,7 +63,7 @@ def _coeff_isneg(a):
     False
     >>> _coeff_isneg(-oo)
     True
-    >>> _coeff_isneg(Symbol('n', negative=True)) # coeff is 1
+    >>> _coeff_isneg(Symbol('n', negative=True))  # coeff is 1
     False
 
     """
@@ -299,7 +299,7 @@ class Function(Application, Expr):
     1
     >>> MyFunc(oo)
     0
-    >>> MyFunc(3.54).evalf() # Not yet implemented for MyFunc.
+    >>> MyFunc(3.54).evalf()  # Not yet implemented for MyFunc.
     MyFunc(3.54)
     >>> MyFunc(I).is_real
     False

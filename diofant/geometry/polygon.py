@@ -1447,9 +1447,9 @@ class RegularPolygon(Polygon):
         about its center.
 
         >>> t = RegularPolygon(Point(1, 0), 1, 3)
-        >>> t.vertices[0] # vertex on x-axis
+        >>> t.vertices[0]  # vertex on x-axis
         Point2D(2, 0)
-        >>> t.rotate(pi/2).vertices[0] # vertex on y axis now
+        >>> t.rotate(pi/2).vertices[0]  # vertex on y axis now
         Point2D(0, 2)
 
         See Also

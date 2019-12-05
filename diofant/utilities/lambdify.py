@@ -202,9 +202,11 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
     (3) Use a dictionary defining custom functions:
 
-        >>> def my_cool_function(x): return 'sin(%s) is cool' % x
-        >>> myfuncs = {"sin" : my_cool_function}
-        >>> f = lambdify(x, sin(x), myfuncs); f(1)
+        >>> def my_cool_function(x):
+        ...     return 'sin(%s) is cool' % x
+        >>> myfuncs = {"sin": my_cool_function}
+        >>> f = lambdify(x, sin(x), myfuncs)
+        >>> f(1)
         'sin(1) is cool'
 
     Examples

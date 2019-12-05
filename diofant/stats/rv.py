@@ -526,7 +526,7 @@ def expectation(expr, condition=None, numsamples=None, evaluate=True, **kwargs):
     >>> E(2*X + 1)
     8
 
-    >>> E(X, X > 3) # Expectation of X given that it is above 3
+    >>> E(X, X > 3)  # Expectation of X given that it is above 3
     5
 
     """
@@ -579,7 +579,7 @@ def probability(condition, given_condition=None, numsamples=None,
     >>> X, Y = Die('X', 6), Die('Y', 6)
     >>> P(X > 3)
     1/2
-    >>> P(Eq(X, 5), X > 2) # Probability that X == 5 given that X > 2
+    >>> P(Eq(X, 5), X > 2)  # Probability that X == 5 given that X > 2
     1/4
     >>> P(X > Y)
     5/12
@@ -752,13 +752,13 @@ def where(condition, given_condition=None, **kwargs):
     >>> a, b = D1.symbol, D2.symbol
     >>> X = Normal('x', 0, 1)
 
-    >>> where(X**2<1)
+    >>> where(X**2 < 1)
     Domain: (-1 < x) & (x < 1)
 
-    >>> where(X**2<1).set
+    >>> where(X**2 < 1).set
     (-1, 1)
 
-    >>> where(And(D1<=D2, D2<3))
+    >>> where(And(D1 <= D2, D2 < 3))
     Domain: ((Eq(a, 1)) & (Eq(b, 1))) | ((Eq(a, 1)) & (Eq(b, 2))) | ((Eq(a, 2)) & (Eq(b, 2)))
 
     """
@@ -780,7 +780,7 @@ def sample(expr, condition=None, **kwargs):
     >>> from diofant.stats import Die
     >>> X, Y, Z = Die('X', 6), Die('Y', 6), Die('Z', 6)
 
-    >>> die_roll = sample(X + Y + Z) # A random realization of three dice
+    >>> die_roll = sample(X + Y + Z)  # A random realization of three dice
 
     """
     return next(sample_iter(expr, condition, numsamples=1))
@@ -801,7 +801,7 @@ def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
     >>> X = Normal('X', 0, 1)
     >>> expr = X*X + 3
     >>> iterator = sample_iter(expr, numsamples=3)
-    >>> list(iterator) # doctest: +SKIP
+    >>> list(iterator)  # doctest: +SKIP
     [12, 4, 7]
 
     See Also

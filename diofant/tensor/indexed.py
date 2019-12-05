@@ -283,7 +283,8 @@ class IndexedBase(Expr, NotIterable):
          to arrays, and is recognized as such for code generation and automatic
          compilation and wrapping.
 
-    >>> A = IndexedBase('A'); A
+    >>> A = IndexedBase('A')
+    >>> A
     A
     >>> type(A)
     <class 'diofant.tensor.indexed.IndexedBase'>
@@ -435,14 +436,16 @@ class Idx(Expr):
     If a string is given for the label an integer Symbol is created and the
     bounds are both None:
 
-    >>> idx = Idx('qwerty'); idx
+    >>> idx = Idx('qwerty')
+    >>> idx
     qwerty
     >>> idx.lower, idx.upper
     (None, None)
 
     Both upper and lower bounds can be specified:
 
-    >>> idx = Idx(i, (L, U)); idx
+    >>> idx = Idx(i, (L, U))
+    >>> idx
     i
     >>> idx.lower, idx.upper
     (L, U)
@@ -450,16 +453,20 @@ class Idx(Expr):
     When only a single bound is given it is interpreted as the dimension
     and the lower bound defaults to 0:
 
-    >>> idx = Idx(i, n); idx.lower, idx.upper
+    >>> idx = Idx(i, n)
+    >>> idx.lower, idx.upper
     (0, n - 1)
-    >>> idx = Idx(i, 4); idx.lower, idx.upper
+    >>> idx = Idx(i, 4)
+    >>> idx.lower, idx.upper
     (0, 3)
-    >>> idx = Idx(i, oo); idx.lower, idx.upper
+    >>> idx = Idx(i, oo)
+    >>> idx.lower, idx.upper
     (0, oo)
 
     The label can be a literal integer instead of a string/Symbol:
 
-    >>> idx = Idx(2, n); idx.lower, idx.upper
+    >>> idx = Idx(2, n)
+    >>> idx.lower, idx.upper
     (0, n - 1)
     >>> idx.label
     2

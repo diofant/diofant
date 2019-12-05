@@ -84,7 +84,7 @@ def separatevars(expr, symbols=[], dict=False, force=False):
     >>> eq = 2*x + y*sin(x)
     >>> separatevars(eq) == eq
     True
-    >>> separatevars(2*x + y*sin(x), symbols=(x, y), dict=True) == None
+    >>> separatevars(2*x + y*sin(x), symbols=(x, y), dict=True) is None
     True
 
     """
@@ -305,7 +305,8 @@ def posify(eq):
     >>> eq = x**2 - 4
     >>> solve(eq, x)
     [{x: -2}, {x: 2}]
-    >>> eq_x, reps = posify([eq, x]); eq_x
+    >>> eq_x, reps = posify([eq, x])
+    >>> eq_x
     [_x**2 - 4, _x]
     >>> solve(*eq_x)
     [{_x: 2}]

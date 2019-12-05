@@ -342,7 +342,7 @@ class And(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> And(x<2, x>-2).as_set()
+        >>> And(x < 2, x > -2).as_set()
         (-2, 2)
 
         """
@@ -410,7 +410,7 @@ class Or(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> Or(x>2, x<-2).as_set()
+        >>> Or(x > 2, x < -2).as_set()
         (-oo, -2) U (2, oo)
 
         """
@@ -497,7 +497,7 @@ class Not(BooleanFunction):
         Examples
         ========
 
-        >>> Not(x>0, evaluate=False).as_set()
+        >>> Not(x > 0, evaluate=False).as_set()
         (-oo, 0]
 
         """
@@ -1610,9 +1610,9 @@ def bool_map(bool1, bool2):
     The results are not necessarily unique, but they are canonical. Here,
     ``(t, z)`` could be ``(a, d)`` or ``(d, a)``:
 
-    >>> eq =  Or(And(Not(y), t), And(Not(y), z), And(x, y))
+    >>> eq1 = Or(And(Not(y), t), And(Not(y), z), And(x, y))
     >>> eq2 = Or(And(Not(c), a), And(Not(c), d), And(b, c))
-    >>> bool_map(eq, eq2)
+    >>> bool_map(eq1, eq2)
     ((x & y) | (t & ~y) | (z & ~y), {t: a, x: b, y: c, z: d})
     >>> eq = And(Xor(a, b), c, And(c, d))
     >>> bool_map(eq, eq.subs({c: x}))

@@ -899,7 +899,8 @@ class PermutationGroup(Basic):
         >>> f = G.coset_factor(g)
         >>> f[2]*f[1]*f[0] == g
         True
-        >>> f1 = G.coset_factor(g, True); f1
+        >>> f1 = G.coset_factor(g, True)
+        >>> f1
         [0, 4, 4]
         >>> tr = G.basic_transversals
         >>> f[0] == tr[0][f1[0]]
@@ -1166,7 +1167,8 @@ class PermutationGroup(Basic):
         pgroup -- even the first two -- is a proper group:
 
         >>> H = PermutationGroup(G[0], G[1])
-        >>> J = PermutationGroup(list(H.generate())); J
+        >>> J = PermutationGroup(list(H.generate()))
+        >>> J
         PermutationGroup([
             Permutation(0, 1)(2, 3),
             Permutation(3),
@@ -2826,7 +2828,8 @@ class PermutationGroup(Basic):
 
         >>> from diofant.combinatorics.testutil import _verify_bsgs
         >>> S = SymmetricGroup(7)
-        >>> prop_even = lambda x: x.is_even
+        >>> def prop_even(x):
+        ...     return x.is_even
         >>> base, strong_gens = S.schreier_sims_incremental()
         >>> G = S.subgroup_search(prop_even, base=base, strong_gens=strong_gens)
         >>> G.is_subgroup(AlternatingGroup(7))

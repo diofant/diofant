@@ -558,14 +558,15 @@ class ProductSet(Set):
     Examples
     ========
 
-    >>> I = Interval(0, 5); S = FiniteSet(1, 2, 3)
+    >>> I = Interval(0, 5)
+    >>> S = FiniteSet(1, 2, 3)
     >>> ProductSet(I, S)
     [0, 5] x {1, 2, 3}
 
     >>> (2, 2) in ProductSet(I, S)
     True
 
-    >>> Interval(0, 1) * Interval(0, 1) # The unit square
+    >>> Interval(0, 1) * Interval(0, 1)  # The unit square
     [0, 1] x [0, 1]
 
     >>> H, T = Symbol('H'), Symbol('T')

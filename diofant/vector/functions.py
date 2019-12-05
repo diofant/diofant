@@ -351,7 +351,6 @@ def scalar_potential_difference(field, coord_sys, point1, point2):
     Examples
     ========
 
-    >>> from diofant.vector import Point
     >>> R = CoordSysCartesian('R')
     >>> P = R.origin.locate_new('P', R.x*R.i + R.y*R.j + R.z*R.k)
     >>> vectfield = 4*R.x*R.y*R.i + 2*R.x**2*R.j

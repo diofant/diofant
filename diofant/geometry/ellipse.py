@@ -916,9 +916,10 @@ class Ellipse(GeometrySet):
         ========
 
         >>> e1 = Ellipse(Point(0, 0), 3, 2)
-        >>> e1.random_point() # gives some random point
+        >>> e1.random_point()  # gives some random point
         Point2D(...)
-        >>> p1 = e1.random_point(seed=0); p1.evalf(2)
+        >>> p1 = e1.random_point(seed=0)
+        >>> p1.evalf(2)
         Point2D(2.1, 1.4)
 
         The random_point method assures that the point will test as being

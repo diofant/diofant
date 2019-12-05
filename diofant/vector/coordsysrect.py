@@ -268,7 +268,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import Point
         >>> N = CoordSysCartesian('N')
         >>> N1 = N.locate_new('N1', 10 * N.i)
         >>> N.position_wrt(N1)

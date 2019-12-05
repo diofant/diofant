@@ -516,8 +516,8 @@ Formatting this result nicely we obtain
 
 Computing the second derivative we find
 
-   >>> B1prime = cosh(2*sqrt(z))/4 - sqrt(pi)*exp(-I*pi/4)*\
-   ...           fresnelc(2*root(z,4)*exp(I*pi/4)/sqrt(pi))/(8*root(z,4))
+   >>> B1prime = cosh(2*sqrt(z))/4 - sqrt(pi)*exp(-I*pi/4) * \
+   ...     fresnelc(2*root(z, 4)*exp(I*pi/4)/sqrt(pi))/(8*root(z, 4))
    >>> z * diff(B1prime, z)
    z*(-cosh(2*sqrt(z))/(16*z) + sinh(2*sqrt(z))/(4*sqrt(z)) + E**(-I*pi/4)*sqrt(pi)*fresnelc(2*E**(I*pi/4)*z**(1/4)/sqrt(pi))/(32*z**(5/4)))
    >>> expand(_)

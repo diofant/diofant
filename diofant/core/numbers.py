@@ -151,7 +151,8 @@ def igcdex(a, b):
 
     >>> igcdex(100, 2004)
     (-20, 1, 4)
-    >>> x, y = _[:-1]; x*100 + y*2004
+    >>> x, y = _[:-1]
+    >>> x*100 + y*2004
     4
 
     """
@@ -540,7 +541,7 @@ class Float(Number):
     Although you can increase the precision of an existing Float using Float
     it will not increase the accuracy -- the underlying value is not changed:
 
-    >>> def show(f): # binary rep of Float
+    >>> def show(f):  # binary rep of Float
     ...     from diofant import Mul, Pow
     ...     s, m, e, b = f._mpf_
     ...     v = Mul(int(m), Pow(2, int(e), evaluate=False), evaluate=False)
@@ -549,9 +550,9 @@ class Float(Number):
     >>> t = Float('0.3', 3)
     >>> show(t)
     4915/2**14 at prec=13
-    >>> show(Float(t, 20)) # higher prec, not higher accuracy
+    >>> show(Float(t, 20))  # higher prec, not higher accuracy
     4915/2**14 at prec=70
-    >>> show(Float(t, 2)) # lower prec
+    >>> show(Float(t, 2))  # lower prec
     307/2**10 at prec=10
 
     """

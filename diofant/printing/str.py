@@ -307,7 +307,7 @@ class StrPrinter(Printer):
         during doctests, the dict's __repr__ form is used. Defining this _print
         function solves that problem.
 
-        >>> Cycle(1, 2) # will print as a dict without this method
+        >>> Cycle(1, 2)  # will print as a dict without this method
         Cycle(1, 2)
 
         """

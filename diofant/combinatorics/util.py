@@ -205,7 +205,7 @@ def _handle_precomputed_bsgs(base, strong_gens, transversals=None,
     >>> D = DihedralGroup(3)
     >>> D.schreier_sims()
     >>> _handle_precomputed_bsgs(D.base, D.strong_gens,
-    ... basic_orbits=D.basic_orbits)
+    ...                          basic_orbits=D.basic_orbits)
     ([{0: Permutation(2), 1: Permutation(0, 1, 2), 2: Permutation(0, 2)},
     {1: Permutation(2), 2: Permutation(1, 2)}],
     [[0, 1, 2], [1, 2]], [[Permutation(0, 1, 2),

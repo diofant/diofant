@@ -63,7 +63,8 @@ def _af_rmuln(*abc):
 
     This handles the operands in reverse order compared to the ``*`` operator:
 
-    >>> a = Permutation(a); b = Permutation(b)
+    >>> a = Permutation(a)
+    >>> b = Permutation(b)
     >>> list(a*b)
     [2, 0, 1]
     >>> [b(a(i)) for i in range(3)]
@@ -472,21 +473,22 @@ class Permutation(Basic):
     referred to as the "array form" of the permutation. This is entered
     in brackets as the argument to the Permutation class:
 
-    >>> p = Permutation([0, 2, 1]); p
+    >>> p = Permutation([0, 2, 1])
+    >>> p
     Permutation([0, 2, 1])
 
     Given i in range(p.size), the permutation maps i to i^p
 
-    >>> [i^p for i in range(p.size)]
+    >>> [i ^ p for i in range(p.size)]
     [0, 2, 1]
 
     The composite of two permutations p*q means first apply p, then q, so
     i^(p*q) = (i^p)^q which is i^p^q according to Python precedence rules:
 
     >>> q = Permutation([2, 1, 0])
-    >>> [i^p^q for i in range(3)]
+    >>> [i ^ p ^ q for i in range(3)]
     [2, 0, 1]
-    >>> [i^(p*q) for i in range(3)]
+    >>> [i ^ (p*q) for i in range(3)]
     [2, 0, 1]
 
     One can use also the notation p(i) = i^p, but then the composition
@@ -589,11 +591,8 @@ class Permutation(Basic):
     an identity permutation of size 4:
 
     >>> I = Permutation([0, 1, 2, 3])
-    >>> all(p == I for p in [
-    ... Permutation(3),
-    ... Permutation(range(4)),
-    ... Permutation([], size=4),
-    ... Permutation(size=4)])
+    >>> all(p == I for p in [Permutation(3), Permutation(range(4)),
+    ...                      Permutation([], size=4), Permutation(size=4)])
     True
 
     Watch out for entering the range *inside* a set of brackets (which is
@@ -659,9 +658,9 @@ class Permutation(Basic):
     located at a given position
 
     >>> q = Permutation([5, 2, 3, 4, 1, 0])
-    >>> q.array_form[1] # the hard way
+    >>> q.array_form[1]  # the hard way
     2
-    >>> q(1) # the easy way
+    >>> q(1)  # the easy way
     2
     >>> {i: q(i) for i in range(q.size)}  # showing the bijection
     {0: 5, 1: 2, 2: 3, 3: 4, 4: 1, 5: 0}
@@ -1137,7 +1136,8 @@ class Permutation(Basic):
         >>> Permutation.print_cyclic = False
 
         >>> a, b = [1, 0, 2], [0, 2, 1]
-        >>> a = Permutation(a); b = Permutation(b)
+        >>> a = Permutation(a)
+        >>> b = Permutation(b)
         >>> list(Permutation.rmul(a, b))
         [1, 2, 0]
         >>> [a(b(i)) for i in range(3)]
@@ -1145,7 +1145,8 @@ class Permutation(Basic):
 
         This handles the operands in reverse order compared to the ``*`` operator:
 
-        >>> a = Permutation(a); b = Permutation(b)
+        >>> a = Permutation(a)
+        >>> b = Permutation(b)
         >>> list(a*b)
         [2, 0, 1]
         >>> [b(a(i)) for i in range(3)]
@@ -1202,7 +1203,8 @@ class Permutation(Basic):
         >>> Permutation.print_cyclic = False
 
         >>> a, b = [1, 0, 2], [0, 2, 1]
-        >>> a = Permutation(a); b = Permutation(b)
+        >>> a = Permutation(a)
+        >>> b = Permutation(b)
         >>> list(a*b)
         [2, 0, 1]
         >>> [b(a(i)) for i in range(3)]
@@ -1210,7 +1212,8 @@ class Permutation(Basic):
 
         This handles operands in reverse order compared to _af_rmul and rmul:
 
-        >>> al = list(a); bl = list(b)
+        >>> al = list(a)
+        >>> bl = list(b)
         >>> _af_rmul(al, bl)
         [1, 2, 0]
         >>> [al[bl[i]] for i in range(3)]
@@ -1227,9 +1230,9 @@ class Permutation(Basic):
         It is also acceptable to allow coercion to handle conversion of a
         single list to the left of a Permutation:
 
-        >>> [0, 1]*a # no change: 2-element identity
+        >>> [0, 1]*a  # no change: 2-element identity
         Permutation([1, 0, 2])
-        >>> [[0, 1]]*a # exchange first two elements
+        >>> [[0, 1]]*a  # exchange first two elements
         Permutation([0, 1, 2])
 
         You cannot use more than 1 cycle notation in a product of cycles
@@ -1298,7 +1301,7 @@ class Permutation(Basic):
         ========
 
         >>> p = Permutation(1, 2, 9)
-        >>> 2^p == p(2) == 9
+        >>> 2 ^ p == p(2) == 9
         True
 
         """
@@ -1325,26 +1328,26 @@ class Permutation(Basic):
 
         Calculate and check properties of the conjugate:
 
-        >>> c = p^q
+        >>> c = p ^ q
         >>> c == ~q*p*q and p == q*c*~q
         True
 
         The expression q^p^r is equivalent to q^(p*r):
 
         >>> r = Permutation(9)(4, 6, 8)
-        >>> q^p^r == q^(p*r)
+        >>> q ^ p ^ r == q ^ (p*r)
         True
 
         If the term to the left of the conjugate operator, i, is an integer
         then this is interpreted as selecting the ith element from the
         permutation to the right:
 
-        >>> all(i^p == p(i) for i in range(p.size))
+        >>> all(i ^ p == p(i) for i in range(p.size))
         True
 
         Note that the * operator as higher precedence than the ^ operator:
 
-        >>> q^r*p^r == q^(r*p)^r == Permutation(9)(1, 6, 4)
+        >>> q ^ r*p ^ r == q ^ (r*p) ^ r == Permutation(9)(1, 6, 4)
         True
 
         Notes
@@ -1353,9 +1356,9 @@ class Permutation(Basic):
         In Python the precedence rule is p^q^r = (p^q)^r which differs
         in general from p^(q^r)
 
-        >>> q^p^r
+        >>> q ^ p ^ r
         Permutation(9)(1, 4, 8)
-        >>> q^(p^r)
+        >>> q ^ (p ^ r)
         Permutation(9)(1, 8, 6)
 
         For a given r and p, both of the following are conjugates of p:
@@ -1372,7 +1375,7 @@ class Permutation(Basic):
         to ``p^(q*r)`` rather than ``p^(r*q)``. To obtain r*p*~r, pass ~r to
         this method:
 
-        >>> p^~r == r*p*~r
+        >>> p ^ ~r == r*p*~r
         True
 
         """
@@ -1543,9 +1546,11 @@ class Permutation(Basic):
         ========
 
         >>> p = Permutation([2, 3, 1, 0])
-        >>> p = Permutation([2, 3, 1, 0]); p.rank()
+        >>> p = Permutation([2, 3, 1, 0])
+        >>> p.rank()
         17
-        >>> p = p.next_lex(); p.rank()
+        >>> p = p.next_lex()
+        >>> p.rank()
         18
 
         See Also
@@ -1651,9 +1656,11 @@ class Permutation(Basic):
         ========
 
         >>> Permutation.print_cyclic = False
-        >>> p = Permutation([2, 0, 3, 1]); p.rank_nonlex()
+        >>> p = Permutation([2, 0, 3, 1])
+        >>> p.rank_nonlex()
         5
-        >>> p = p.next_nonlex(); p
+        >>> p = p.next_nonlex()
+        >>> p
         Permutation([3, 0, 1, 2])
         >>> p.rank_nonlex()
         6
@@ -2034,7 +2041,8 @@ class Permutation(Basic):
         >>> Permutation.print_cyclic = False
         >>> p = Permutation([0, 2, 3, 1])
         >>> x = Permutation([2, 0, 3, 1])
-        >>> c = p.commutator(x); c
+        >>> c = p.commutator(x)
+        >>> c
         Permutation([2, 1, 3, 0])
         >>> c == ~x*~p*x*p
         True
@@ -2382,7 +2390,8 @@ class Permutation(Basic):
         >>> p = Permutation([3, 0, 2, 1])
         >>> p.rank_trotterjohnson()
         4
-        >>> p = p.next_trotterjohnson(); p
+        >>> p = p.next_trotterjohnson()
+        >>> p
         Permutation([0, 3, 2, 1])
         >>> p.rank_trotterjohnson()
         5

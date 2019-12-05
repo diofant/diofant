@@ -175,7 +175,7 @@ solutions. Consider the below cases where `\Delta = 8`.
 >>> diophantine(x**2 - 4*x*y + 2*y**2 - 3*x + 7*y - 5)
 set()
 >>> n = symbols("n", integer=True)
->>> s = diophantine(x**2 -  2*y**2 - 2*x - 4*y, n)
+>>> s = diophantine(x**2 - 2*y**2 - 2*x - 4*y, n)
 >>> x_1, y_1 = s.pop()
 >>> x_2, y_2 = s.pop()
 >>> x_n = -(-2*sqrt(2) + 3)**n/2 + sqrt(2)*(-2*sqrt(2) + 3)**n/2 - sqrt(2)*(2*sqrt(2) + 3)**n/2 - (2*sqrt(2) + 3)**n/2 + 1
@@ -257,7 +257,7 @@ this. The equation `w^2 = AX^2 + BY^2` can be solved more easily by using the
 Aforementioned :py:meth:`~diofant.solvers.diophantine.descent`.
 
 >>> from diofant.solvers.diophantine import descent
->>> descent(3, 1) # solves the equation w**2 = 3*Y**2 + Z**2
+>>> descent(3, 1)  # solves the equation w**2 = 3*Y**2 + Z**2
 (1, 0, 1)
 
 Here the solution tuple is in the order (w, Y, Z)

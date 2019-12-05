@@ -312,21 +312,20 @@ def ccode(expr, assign_to=None, **settings):
     Alternatively, the dictionary value can be a list of tuples i.e.
     [(argument_test, cfunction_string)].
 
-    >>> custom_functions = {
-    ...   "ceiling": "CEIL",
-    ...   "Abs": [(lambda x: not x.is_integer, "fabs"),
-    ...           (lambda x: x.is_integer, "ABS")],
-    ...   "func": "f"
-    ... }
+    >>> custom_functions = {"ceiling": "CEIL",
+    ...                     "Abs": [(lambda x: not x.is_integer, "fabs"),
+    ...                             (lambda x: x.is_integer, "ABS")],
+    ...                     "func": "f"}
     >>> func = Function('func')
     >>> ccode(func(Abs(x) + ceiling(x)), user_functions=custom_functions)
     'f(fabs(x) + CEIL(x))'
 
     or if the C-function takes a subset of the original arguments:
 
-    >>> ccode(2**x + 3**x, user_functions={'Pow': [
-    ...   (lambda b, e: b == 2, lambda b, e: 'exp2(%s)' % e),
-    ...   (lambda b, e: b != 2, 'pow')]})
+    >>> ccode(2**x + 3**x,
+    ...       user_functions={'Pow': [(lambda b, e: b == 2,
+    ...                                lambda b, e: 'exp2(%s)' % e),
+    ...                               (lambda b, e: b != 2, 'pow')]})
     'exp2(x) + pow(3, x)'
 
     ``Piecewise`` expressions are converted into conditionals. If an

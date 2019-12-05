@@ -21,7 +21,7 @@ lambdify().
     >>> f = binary_function('f', expr)
     >>> 2*f(x, y) + y
     y + 2*f(x, y)
-    >>> (2*f(x, y) + y).evalf(2, subs={x: 1, y:2}, strict=False)
+    >>> (2*f(x, y) + y).evalf(2, subs={x: 1, y: 2}, strict=False)
     0.e-190
 
 The idea is that a Diofant user will primarily be interested in working with

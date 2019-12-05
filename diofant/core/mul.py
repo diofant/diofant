@@ -94,15 +94,15 @@ class Mul(AssocOp):
               -  Sometimes terms are not combined as one would like:
                  {c.f. https://github.com/sympy/sympy/issues/4596}
 
-                >>> 2*(x + 1) # this is the 2-arg Mul behavior
+                >>> 2*(x + 1)  # this is the 2-arg Mul behavior
                 2*x + 2
                 >>> y*(x + 1)*2
                 2*y*(x + 1)
-                >>> 2*(x + 1)*y # 2-arg result will be obtained first
+                >>> 2*(x + 1)*y  # 2-arg result will be obtained first
                 y*(2*x + 2)
-                >>> Mul(2, x + 1, y) # all 3 args simultaneously processed
+                >>> Mul(2, x + 1, y)  # all 3 args simultaneously processed
                 2*y*(x + 1)
-                >>> 2*((x + 1)*y) # parentheses can control this behavior
+                >>> 2*((x + 1)*y)  # parentheses can control this behavior
                 2*y*(x + 1)
 
                 Powers with compound bases may not find a single base to

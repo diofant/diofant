@@ -110,12 +110,12 @@ def ContinuousRV(symbol, density, set=Interval(-oo, oo, True, True)):
 
     >>> x = Symbol("x")
 
-    >>> pdf = sqrt(2)*exp(-x**2/2)/(2*sqrt(pi)) # Normal distribution
+    >>> pdf = sqrt(2)*exp(-x**2/2)/(2*sqrt(pi))  # Normal distribution
     >>> X = ContinuousRV(x, pdf)
 
     >>> E(X)
     0
-    >>> P(X>0)
+    >>> P(X > 0)
     1/2
 
     """

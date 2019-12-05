@@ -10,7 +10,7 @@ below for advanced users that may want to use the framework directly.
 .. note:: The ``codegen`` callable is not in the diofant namespace automatically,
    to use it you must first execute
 
-   >>> from diofant.utilities.codegen import codegen
+   >>> from diofant.utilities.codegen import codegen  # noqa: F401
 
 Implementation Details
 ======================

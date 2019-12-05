@@ -55,7 +55,8 @@ class Curve(GeometrySet):
     (t, 0, 2)
     >>> C.parameter
     t
-    >>> C = Curve((t, interpolate([1, 4, 9, 16], t)), (t, 0, 1)); C
+    >>> C = Curve((t, interpolate([1, 4, 9, 16], t)), (t, 0, 1))
+    >>> C
     Curve((t, t**2), (t, 0, 1))
     >>> C.subs({t: 4})
     Point2D(4, 16)

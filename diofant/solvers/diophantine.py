@@ -256,9 +256,9 @@ def diop_solve(eq, param=symbols("t", integer=True)):
     >>> from diofant.abc import w
     >>> diop_solve(2*x + 3*y - 5)
     (3*t_0 - 5, -2*t_0 + 5)
-    >>> diop_solve(4*x + 3*y -4*z + 5)
+    >>> diop_solve(4*x + 3*y - 4*z + 5)
     (t_0, 8*t_0 + 4*t_1 + 5, 7*t_0 + 3*t_1 + 5)
-    >>> diop_solve(x + 3*y - 4*z + w -6)
+    >>> diop_solve(x + 3*y - 4*z + w - 6)
     (t_0, t_0 + t_1, 6*t_0 + 5*t_1 + 4*t_2 - 6, 5*t_0 + 4*t_1 + 3*t_2 - 6)
     >>> diop_solve(x**2 + y**2 - 5)
     {(-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1), (2, 1)}
@@ -331,10 +331,9 @@ def classify_diop(eq, _dict=True):
     Examples
     ========
 
-    >>> from diofant.abc import w
     >>> classify_diop(4*x + 6*y - 4)
     ([x, y], {1: -4, x: 4, y: 6}, 'linear')
-    >>> classify_diop(x + 3*y -4*z + 5)
+    >>> classify_diop(x + 3*y - 4*z + 5)
     ([x, y, z], {1: 5, x: 1, y: 3, z: -4}, 'linear')
     >>> classify_diop(x**2 + y**2 - x*y + x + 5)
     ([x, y], {1: 5, x: 1, x**2: 1, y**2: 1, x*y: -1}, 'binary_quadratic')
@@ -1714,7 +1713,7 @@ def diop_ternary_quadratic(eq):
     (1, 0, 2)
     >>> diop_ternary_quadratic(45*x**2 - 7*y**2 - 8*x*y - z**2)
     (28, 45, 105)
-    >>> diop_ternary_quadratic(x**2 - 49*y**2 - z**2 + 13*z*y -8*x*y)
+    >>> diop_ternary_quadratic(x**2 - 49*y**2 - z**2 + 13*z*y - 8*x*y)
     (9, 1, 5)
 
     """

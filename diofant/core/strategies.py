@@ -51,10 +51,10 @@ def rm_id(isid):
 
     isid - fn :: x -> Bool  --- whether or not this element is an identity
 
-    >>> remove_zeros = rm_id(lambda x: x==0)
+    >>> remove_zeros = rm_id(lambda x: x == 0)
     >>> remove_zeros(Basic(1, 0, 2))
     Basic(1, 2)
-    >>> remove_zeros(Basic(0, 0)) # If only identites then we keep one
+    >>> remove_zeros(Basic(0, 0))  # If only identites then we keep one
     Basic(0)
 
     See Also
@@ -80,9 +80,12 @@ def rm_id(isid):
 def glom(key, count, combine):
     """ Create a rule to conglomerate identical args
 
-    >>> key     = lambda x: x.as_coeff_Mul()[1]
-    >>> count   = lambda x: x.as_coeff_Mul()[0]
-    >>> combine = lambda cnt, arg: cnt * arg
+    >>> def key(x):
+    ...     return x.as_coeff_Mul()[1]
+    >>> def count(x):
+    ...     return x.as_coeff_Mul()[0]
+    >>> def combine(cnt, arg):
+    ...     return cnt * arg
     >>> rl = glom(key, count, combine)
 
     >>> rl(Add(x, -x, 3*x, 2, 3, evaluate=False))

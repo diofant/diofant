@@ -1507,9 +1507,10 @@ def codegen(name_expr, language, prefix=None, project="project",
     filename (prefix) is taken from the first (name, expr) pair.
 
     >>> from diofant.abc import f, g
-    >>> [(c_name, c_code), (h_name, c_header)] = codegen(
-    ...      [("myfcn", x + y), ("fcn2", [Eq(f, 2*x), Eq(g, y)])],
-    ...      "C", header=False, empty=False)
+    >>> [(c_name, c_code),
+    ...  (h_name, c_header)] = codegen([("myfcn", x + y),
+    ...                                 ("fcn2", [Eq(f, 2*x), Eq(g, y)])],
+    ...                                "C", header=False, empty=False)
     >>> print(c_name)
     myfcn.c
     >>> print(c_code)

@@ -30,7 +30,7 @@ class Transform:
     is supplied, only the objects for which it returns True are considered as
     being in the dictionary:
 
-    >>> add1_odd = Transform(lambda x: x + 1, lambda x: x%2 == 1)
+    >>> add1_odd = Transform(lambda x: x + 1, lambda x: x % 2 == 1)
     >>> 2 in add1_odd
     False
     >>> add1_odd.get(2, 0)

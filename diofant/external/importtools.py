@@ -76,12 +76,12 @@ def import_module(module, min_module_version=None, min_python_version=None,
     __import__().  The values do not matter.
 
     >>> p3 = import_module('mpl_toolkits.mplot3d',
-    ...                     __import__kwargs={'fromlist':['something']})
+    ...                    __import__kwargs={'fromlist': ['something']})
 
     matplotlib.pyplot can raise RuntimeError when the display cannot be opened
 
     >>> matplotlib = import_module('matplotlib',
-    ...                            __import__kwargs={'fromlist':['pyplot']},
+    ...                            __import__kwargs={'fromlist': ['pyplot']},
     ...                            catch=(RuntimeError,))
 
     See Also

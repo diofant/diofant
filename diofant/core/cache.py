@@ -36,9 +36,8 @@ def cacheit(f, maxsize=None):
 
     >>> @cacheit
     ... def f(a, b):
-    ...    print(a, b)
-    ...    return a + b
-
+    ...     print(a, b)
+    ...     return a + b
     >>> f(x, y)
     x y
     x + y

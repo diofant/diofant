@@ -11,7 +11,8 @@ routine that calculates a matrix-vector product.
 >>> m, n = symbols('m n', integer=True)
 >>> i = Idx('i', m)
 >>> j = Idx('j', n)
->>> instruction = Eq(y[i], A[i, j]*x[j]); instruction
+>>> instruction = Eq(y[i], A[i, j]*x[j])
+>>> instruction
 Eq(y[i], x[j]*A[i, j])
 
 Because the code printers treat Indexed objects with repeated indices as a
