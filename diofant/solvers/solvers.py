@@ -471,12 +471,16 @@ def solve(f, *symbols, **flags):
                 floats = True
                 f[i] = nsimplify(fi, rational=True)
 
+    # piecewise_fold might cancel denominators, so be sure to check them.
+    piecewise_dens = set()
+
     # Any embedded piecewise functions need to be brought out to the
     # top level so that the appropriate strategy gets selected.
     # However, this is necessary only if one of the piecewise
     # functions depends on one of the symbols we are solving for.
     for i, fi in enumerate(f):
         if any(e.has(*symbols) for e in fi.atoms(Piecewise)):
+            piecewise_dens |= denoms(fi, symbols)
             f[i] = piecewise_fold(fi)
 
     if all(_ == 0 for _ in f):
@@ -536,6 +540,9 @@ def solve(f, *symbols, **flags):
                 can't be checked:""" + '\n\t' +
                                      ', '.join(str(s) for s in got_None)))
 
+        solution = [s for s in solution if
+                    all(not checksol(den, s, **flags) for den in piecewise_dens)]
+
     #
     # done
     ###########################################################################
@@ -560,8 +567,7 @@ def _solve(f, symbol, **flags):
 
     # /!\ capture this flag then set it to False so that no checking in
     # recursive calls will be done; only the final answer is checked
-    checkdens = check = flags.pop('check', True)
-    flags['check'] = False
+    flags['check'] = checkdens = check = flags.pop('check', True)
 
     # build up solutions if f is a Mul
     if f.is_Mul:
@@ -578,7 +584,8 @@ def _solve(f, symbol, **flags):
             result = [s for s in result if
                       all(not checksol(den, {symbol: s}, **flags) for den in
                           dens)]
-        # set flags for quick exit at end
+        # set flags for quick exit at end; solutions for each
+        # factor were already checked and simplified
         check = False
         flags['simplify'] = False
 
@@ -615,6 +622,7 @@ def _solve(f, symbol, **flags):
                             (nan, True)
                         ))
         check = False
+        flags['simplify'] = False
     else:
         # first see if it really depends on symbol and whether there
         # is a linear solution
@@ -680,7 +688,11 @@ def _solve(f, symbol, **flags):
                 if not other and len(funcs.intersection(trig)) > 1:
                     newf = TR1(f_num).rewrite(tan)
                     if newf != f_num:
+                        # don't check the rewritten form --check
+                        # solutions in the un-rewritten form below
+                        flags['check'] = False
                         result = _solve(newf, symbol, **flags)
+                        flags['check'] = check
 
                 # just a simple case - see if replacement of single function
                 # clears all symbol-dependent functions, e.g.
