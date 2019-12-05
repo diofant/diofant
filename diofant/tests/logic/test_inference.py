@@ -221,18 +221,18 @@ def test_propKB_tolerant():
 
 
 def test_satisfiable_non_symbols():
-    class zero(Boolean):
+    class Zero(Boolean):
         pass
 
-    assumptions = zero(x*y)
-    facts = Implies(zero(x*y), zero(x) | zero(y))
-    query = ~zero(x) & ~zero(y)
+    assumptions = Zero(x*y)
+    facts = Implies(Zero(x*y), Zero(x) | Zero(y))
+    query = ~Zero(x) & ~Zero(y)
     refutations = [
-        {zero(x): True, zero(x*y): True},
-        {zero(y): True, zero(x*y): True},
-        {zero(x): True, zero(y): True, zero(x*y): True},
-        {zero(x): True, zero(y): False, zero(x*y): True},
-        {zero(x): False, zero(y): True, zero(x*y): True}]
+        {Zero(x): True, Zero(x*y): True},
+        {Zero(y): True, Zero(x*y): True},
+        {Zero(x): True, Zero(y): True, Zero(x*y): True},
+        {Zero(x): True, Zero(y): False, Zero(x*y): True},
+        {Zero(x): False, Zero(y): True, Zero(x*y): True}]
     assert not satisfiable(And(assumptions, facts, query), algorithm='dpll')
     assert satisfiable(And(assumptions, facts, ~query), algorithm='dpll') in refutations
     assert not satisfiable(And(assumptions, facts, query), algorithm='dpll2')

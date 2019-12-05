@@ -3206,13 +3206,14 @@ def test_sympyissue_5786():
 
 
 def test_noncommutative():
-    class foo(Expr):
+    class Foo(Expr):
         is_commutative = False
     e = x/(x + x*y)
     c = 1/(1 + y)
-    assert cancel(foo(e)) == foo(c)
-    assert cancel(e + foo(e)) == c + foo(c)
-    assert cancel(e*foo(c)) == c*foo(c)
+    fe, fc = map(Foo, [e, c])
+    assert cancel(fe) == fc
+    assert cancel(e + fe) == c + fc
+    assert cancel(e*fc) == c*fc
 
 
 def test_to_rational_coeffs():

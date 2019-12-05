@@ -17,10 +17,10 @@ __all__ = ()
 
 
 def test_printmethod():
-    class nint(Function):
+    class MyFunction(Function):
         def _fcode(self, printer):
-            return "nint(%s)" % printer._print(self.args[0])
-    assert fcode(nint(x)) == "      nint(x)"
+            return "myf(%s)" % printer._print(self.args[0])
+    assert fcode(MyFunction(x)) == "      myf(x)"
 
 
 def test_args():
