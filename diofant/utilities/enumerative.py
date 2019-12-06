@@ -187,7 +187,7 @@ def multiset_partitions_taocp(multiplicities):
     >>> components = 'ab'
     >>> multiplicities = [1, 2]
     >>> states = multiset_partitions_taocp(multiplicities)
-    >>> list(list_visitor(state, components) for state in states)
+    >>> [list_visitor(state, components) for state in states]
     [[['a', 'b', 'b']],
     [['a', 'b'], ['b']],
     [['a'], ['b', 'b']],
@@ -307,7 +307,7 @@ def factoring_visitor(state, primes):
     >>> multiplicities
     (3, 1)
     >>> states = multiset_partitions_taocp(multiplicities)
-    >>> list(factoring_visitor(state, primes) for state in states)
+    >>> [factoring_visitor(state, primes) for state in states]
     [[24], [8, 3], [12, 2], [4, 6], [4, 2, 3], [6, 2, 2], [2, 2, 2, 3]]
 
     """
@@ -699,7 +699,7 @@ class MultisetPartitionTraverser():
 
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_all([2, 2])
-        >>> list(list_visitor(state, 'ab') for state in states)
+        >>> [list_visitor(state, 'ab') for state in states]
         [[['a', 'a', 'b', 'b']],
         [['a', 'a', 'b'], ['b']],
         [['a', 'a'], ['b', 'b']],
@@ -759,7 +759,7 @@ class MultisetPartitionTraverser():
 
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_small([2, 2], 2)
-        >>> list(list_visitor(state, 'ab') for state in states)
+        >>> [list_visitor(state, 'ab') for state in states]
         [[['a', 'a', 'b', 'b']],
         [['a', 'a', 'b'], ['b']],
         [['a', 'a'], ['b', 'b']],
@@ -827,7 +827,7 @@ class MultisetPartitionTraverser():
 
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_large([2, 2], 2)
-        >>> list(list_visitor(state, 'ab') for state in states)
+        >>> [list_visitor(state, 'ab') for state in states]
         [[['a', 'a'], ['b'], ['b']],
         [['a', 'b'], ['a'], ['b']],
         [['a'], ['a'], ['b', 'b']],
@@ -850,7 +850,7 @@ class MultisetPartitionTraverser():
 
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_range([2, 2], 1, 2)
-        >>> list(list_visitor(state, 'ab') for state in states)
+        >>> [list_visitor(state, 'ab') for state in states]
         [[['a', 'a', 'b'], ['b']],
         [['a', 'a'], ['b', 'b']],
         [['a', 'b', 'b'], ['a']],

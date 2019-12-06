@@ -59,10 +59,10 @@ geometry module.
     [Point2D(2/3, 1/3)]
     >>> c = Circle(x, 5)
     >>> l = Line(Point(5, -5), Point(5, 5))
-    >>> c.is_tangent(l) # is l tangent to c?
+    >>> c.is_tangent(l)  # is l tangent to c?
     True
     >>> l = Line(x, y)
-    >>> c.is_tangent(l) # is l tangent to c?
+    >>> c.is_tangent(l)  # is l tangent to c?
     False
     >>> intersection(c, l)
     [Point2D(-5*sqrt(2)/2, -5*sqrt(2)/2), Point2D(5*sqrt(2)/2, 5*sqrt(2)/2)]
@@ -102,10 +102,10 @@ From `Wikipedia <https://en.wikipedia.org/wiki/Pappus's_hexagon_theorem>`_):
     >>> l2 = Line(Point(0, 0), Point(2, -2))
     >>>
     >>> def subs_point(l, val):
-    ...    """Take an arbitrary point and make it a fixed point."""
-    ...    t = Symbol('t', extended_real=True)
-    ...    ap = l.arbitrary_point()
-    ...    return Point(ap.x.subs({t: val}), ap.y.subs({t: val}))
+    ...     """Take an arbitrary point and make it a fixed point."""
+    ...     t = Symbol('t', extended_real=True)
+    ...     ap = l.arbitrary_point()
+    ...     return Point(ap.x.subs({t: val}), ap.y.subs({t: val}))
     ...
     >>> p11 = subs_point(l1, 5)
     >>> p12 = subs_point(l1, 6)

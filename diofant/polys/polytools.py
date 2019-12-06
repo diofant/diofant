@@ -4324,12 +4324,14 @@ def _torational_factor_list(p, x):
     ========
 
     >>> p = expand(((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))}))
-    >>> factors = _torational_factor_list(p, x); factors
+    >>> factors = _torational_factor_list(p, x)
+    >>> factors
     (-2, [(-x*(1 + sqrt(2))/2 + 1, 1), (-x*(1 + sqrt(2)) - 1, 1), (-x*(1 + sqrt(2)) + 1, 1)])
     >>> expand(factors[0]*Mul(*[z[0] for z in factors[1]])) == p
     True
     >>> p = expand(((x**2-1)*(x-2)).subs({x: x + sqrt(2)}))
-    >>> factors = _torational_factor_list(p, x); factors
+    >>> factors = _torational_factor_list(p, x)
+    >>> factors
     (1, [(x - 2 + sqrt(2), 1), (x - 1 + sqrt(2), 1), (x + 1 + sqrt(2), 1)])
     >>> expand(factors[0]*Mul(*[z[0] for z in factors[1]])) == p
     True

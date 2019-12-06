@@ -1543,7 +1543,8 @@ class TensorIndex(Basic):
     ========
 
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    >>> i = TensorIndex('i', Lorentz); i
+    >>> i = TensorIndex('i', Lorentz)
+    >>> i
     i
     >>> sym1 = TensorSymmetry(*get_symmetric_group_sgs(1))
     >>> S1 = TensorType([Lorentz], sym1)
@@ -2489,7 +2490,8 @@ class TensAdd(TensExpr):
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> a, b = tensor_indices('a b', Lorentz)
     >>> p, q = tensorhead('p q', [Lorentz], [[1]])
-    >>> t = p(a) + q(a); t
+    >>> t = p(a) + q(a)
+    >>> t
     p(a) + q(a)
     >>> t(b)
     p(b) + q(b)
@@ -2500,7 +2502,8 @@ class TensAdd(TensExpr):
     >>> a, b = tensor_indices('a, b', Lorentz)
     >>> p.data = [2, 3, -2, 7]
     >>> q.data = [2, 3, -2, 7]
-    >>> t = p(a) + q(a); t
+    >>> t = p(a) + q(a)
+    >>> t
     p(a) + q(a)
     >>> t(b)
     p(b) + q(b)
@@ -2858,7 +2861,8 @@ class TensAdd(TensExpr):
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
         >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
-        >>> t = A(i, k)*B(-k, -j); t
+        >>> t = A(i, k)*B(-k, -j)
+        >>> t
         A(i, L_0)*B(-L_0, -j)
         >>> t.substitute_indices((i, j), (j, k))
         A(j, L_0)*B(-L_0, -k)
@@ -3514,7 +3518,8 @@ class TensMul(TensExpr):
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
         >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
-        >>> t = A(i, k)*B(-k, -j); t
+        >>> t = A(i, k)*B(-k, -j)
+        >>> t
         A(i, L_0)*B(-L_0, -j)
         >>> t.fun_eval((i, k), (-j, l))
         A(k, L_0)*B(-L_0, l)
@@ -3715,7 +3720,8 @@ def substitute_indices(t, *index_tuples):
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
     >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
-    >>> t = A(i, k)*B(-k, -j); t
+    >>> t = A(i, k)*B(-k, -j)
+    >>> t
     A(i, L_0)*B(-L_0, -j)
     >>> t.substitute_indices((i, j), (j, k))
     A(j, L_0)*B(-L_0, -k)

@@ -416,9 +416,9 @@ def sift(seq, keyfunc):
 
     Sometimes you won't know how many keys you will get:
 
-    >>> sift([sqrt(x), exp(x), (y**x)**2],
-    ...      lambda x: x.as_base_exp()[0]) == defaultdict(list,
-    ...      {E: [exp(x)], x: [sqrt(x)], y: [y**(2*x)]})
+    >>> (sift([sqrt(x), exp(x), (y**x)**2],
+    ...       lambda x: x.as_base_exp()[0]) ==
+    ...  defaultdict(list, {E: [exp(x)], x: [sqrt(x)], y: [y**(2*x)]}))
     True
 
     If you need to sort the sifted items it might be better to use
@@ -500,7 +500,7 @@ def prefixes(seq):
     Examples
     ========
 
-    >>> list(prefixes([1,2,3,4]))
+    >>> list(prefixes([1, 2, 3, 4]))
     [[1], [1, 2], [1, 2, 3], [1, 2, 3, 4]]
 
     """
@@ -517,7 +517,7 @@ def postfixes(seq):
     Examples
     ========
 
-    >>> list(postfixes([1,2,3,4]))
+    >>> list(postfixes([1, 2, 3, 4]))
     [[4], [3, 4], [2, 3, 4], [1, 2, 3, 4]]
 
     """
@@ -686,10 +686,11 @@ def multiset_combinations(m, n, g=None):
     ========
 
     >>> from itertools import combinations
-    >>> [''.join(i) for i in  multiset_combinations('baby', 3)]
+    >>> [''.join(i) for i in multiset_combinations('baby', 3)]
     ['abb', 'aby', 'bby']
 
-    >>> def count(f, s): return len(list(f(s, 3)))
+    >>> def count(f, s):
+    ...     return len(list(f(s, 3)))
 
     The number of combinations depends on the number of letters; the
     number of unique combinations depends on how the letters are
@@ -918,8 +919,8 @@ def multiset_partitions(multiset, m=None):
     ...     if k > n:
     ...         return 0
     ...     j = Dummy()
-    ...     arg = (-1)**(k-j)*j**n*binomial(k,j)
-    ...     return 1/factorial(k)*Sum(arg,(j,0,k)).doit()
+    ...     arg = (-1)**(k-j)*j**n*binomial(k, j)
+    ...     return 1/factorial(k)*Sum(arg, (j, 0, k)).doit()
     ...
     >>> S2(5, 2) == len(list(multiset_partitions(5, 2))) == 15
     True
@@ -1105,7 +1106,7 @@ def partitions(n, m=None, k=None, size=False):
     This is for speed:  generating each partition goes quickly,
     taking constant time, independent of n.
 
-    >>> [p for p in partitions(6, k=2)]
+    >>> list(partitions(6, k=2))
     [{1: 6}, {1: 6}, {1: 6}, {1: 6}]
 
     If you want to build a list of the returned dictionaries then
@@ -1249,7 +1250,7 @@ def ordered_partitions(n, m=None, sort=True):
     once for speed reasons so you will not see the correct partitions
     unless you make a copy of each as it is generated:
 
-    >>> [p for p in ordered_partitions(7, 3)]
+    >>> list(ordered_partitions(7, 3))
     [[1, 1, 1], [1, 1, 1], [1, 1, 1], [2, 2, 2]]
     >>> [list(p) for p in ordered_partitions(7, 3)]
     [[1, 1, 5], [1, 2, 4], [1, 3, 3], [2, 2, 3]]
@@ -1408,7 +1409,7 @@ def has_dups(seq):
     True
     >>> has_dups(range(3))
     False
-    >>> all(has_dups(c) is False for c in (set(), Set(), dict(), Dict()))
+    >>> all(has_dups(c) is False for c in (set(), Set(), {}, Dict()))
     True
 
     """

@@ -210,7 +210,8 @@ class MatrixBase(DefaultPrinting):
 
         >>> M = zeros(4)
         >>> m = M.cols
-        >>> M[3*m] = ones(1, m)*2; M
+        >>> M[3*m] = ones(1, m)*2
+        >>> M
         Matrix([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
@@ -219,7 +220,8 @@ class MatrixBase(DefaultPrinting):
 
         And to replace column c you can assign to position c:
 
-        >>> M[2] = ones(m, 1)*4; M
+        >>> M[2] = ones(m, 1)*4
+        >>> M
         Matrix([
         [0, 0, 4, 0],
         [0, 0, 4, 0],
@@ -922,7 +924,8 @@ class MatrixBase(DefaultPrinting):
         If each line of S represent coefficients of Ax + By
         and x and y are [2, 3] then S*xy is:
 
-        >>> r = S*Matrix([2, 3]); r
+        >>> r = S*Matrix([2, 3])
+        >>> r
         Matrix([
         [ 8],
         [13],
@@ -931,7 +934,8 @@ class MatrixBase(DefaultPrinting):
         But let's add 1 to the middle value and then solve for the
         least-squares value of xy:
 
-        >>> xy = S.solve_least_squares(Matrix([8, 14, 18])); xy
+        >>> xy = S.solve_least_squares(Matrix([8, 14, 18]))
+        >>> xy
         Matrix([
         [ 5/3],
         [10/3]])
@@ -3919,7 +3923,8 @@ class MatrixBase(DefaultPrinting):
         ========
 
         >>> F, G = symbols('F, G', cls=Function)
-        >>> M = Matrix(2, 2, lambda i, j: F(i+j)) ; M
+        >>> M = Matrix(2, 2, lambda i, j: F(i+j))
+        >>> M
         Matrix([
         [F(0), F(1)],
         [F(1), F(2)]])

@@ -1523,7 +1523,7 @@ def devise_plan(target, origin, z):
     Several buckets:
 
     >>> for i in devise_plan(Hyper_Function((1, Rational(1, 2)), ()),
-    ...             Hyper_Function((2, Rational(3, 2)), ()), z):
+    ...                      Hyper_Function((2, Rational(3, 2)), ()), z):
     ...     i
     <Decrement upper index #0 of [3/2, 1], [].>
     <Decrement upper index #0 of [2, 3/2], [].>

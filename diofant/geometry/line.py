@@ -966,7 +966,6 @@ class Line(LinearEntity):
     Examples
     ========
 
-    >>> from diofant.abc import L
     >>> L = Line(Point(2, 3), Point(3, 5))
     >>> L
     Line(Point2D(2, 3), Point2D(3, 5))
@@ -1198,7 +1197,6 @@ class Ray(LinearEntity):
     Examples
     ========
 
-    >>> from diofant.abc import r
     >>> r = Ray(Point(2, 3), Point(3, 5))
     >>> r = Ray(Point(2, 3), Point(3, 5))
     >>> r
@@ -1523,8 +1521,7 @@ class Segment(LinearEntity):
     Examples
     ========
 
-    >>> from diofant.abc import s
-    >>> Segment((1, 0), (1, 1)) # tuples are interpreted as pts
+    >>> Segment((1, 0), (1, 1))  # tuples are interpreted as pts
     Segment(Point2D(1, 0), Point2D(1, 1))
     >>> s = Segment(Point(4, 3), Point(1, 1))
     >>> s

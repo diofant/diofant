@@ -123,7 +123,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
 
     >>> ns["O"] = Symbol("O")  # method 1
     >>> exec('from diofant.abc import O', ns)  # method 2
-    >>> ns.update(dict(O=Symbol("O")))  # method 3
+    >>> ns.update({O: Symbol("O")})  # method 3
     >>> sympify("O + 1", locals=ns)
     O + 1
 
@@ -190,8 +190,10 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     ...         yield 1
     ...         yield 2
     ...         return
-    ...     def __getitem__(self, i): return list(self)[i]
-    ...     def _diofant_(self): return Matrix(self)
+    ...     def __getitem__(self, i):
+    ...         return list(self)[i]
+    ...     def _diofant_(self):
+    ...         return Matrix(self)
     >>> sympify(MyList1())
     Matrix([
     [1],
@@ -203,11 +205,12 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     object, e.g. ``converter[MyList] = lambda x: Matrix(x)``.
 
     >>> class MyList2:   # XXX Do not do this if you control the class!
-    ...     def __iter__(self):  #     Use _diofant_!
+    ...     def __iter__(self):  # Use _diofant_!
     ...         yield 1
     ...         yield 2
     ...         return
-    ...     def __getitem__(self, i): return list(self)[i]
+    ...     def __getitem__(self, i):
+    ...         return list(self)[i]
     >>> converter[MyList2] = lambda x: Matrix(x)
     >>> sympify(MyList2())
     Matrix([

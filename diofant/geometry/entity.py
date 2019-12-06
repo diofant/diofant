@@ -78,9 +78,9 @@ class GeometryEntity(Basic):
         ========
 
         >>> t = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
-        >>> t # vertex on x axis
+        >>> t  # vertex on x axis
         Triangle(Point2D(1, 0), Point2D(-1/2, sqrt(3)/2), Point2D(-1/2, -sqrt(3)/2))
-        >>> t.rotate(pi/2) # vertex on y axis now
+        >>> t.rotate(pi/2)  # vertex on y axis now
         Triangle(Point2D(0, 1), Point2D(-sqrt(3)/2, -1/2), Point2D(sqrt(3)/2, -1/2))
 
         """
@@ -198,11 +198,11 @@ class GeometryEntity(Basic):
         Examples
         ========
 
-        >>> t  = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
+        >>> t1 = Polygon(*RegularPolygon(Point(0, 0), 1, 3).vertices)
         >>> t2 = Polygon(*RegularPolygon(Point(0, 0), 2, 3).vertices)
-        >>> t2.encloses(t)
+        >>> t2.encloses(t1)
         True
-        >>> t.encloses(t2)
+        >>> t1.encloses(t2)
         False
 
         """

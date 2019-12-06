@@ -100,15 +100,15 @@ def test_basic4():
 
 
 def test_basic5():
-    class my(Function):
+    class MyFunction(Function):
         @classmethod
         def eval(cls, arg):
             if arg is oo:
                 return nan
-    assert limit(my(x), x, oo) == Limit(my(x), x, oo)
+    assert limit(MyFunction(x), x, oo) == Limit(MyFunction(x), x, oo)
 
     assert limit(4/x > 8, x, 0)  # relational test
-    assert limit(my(x) > 0, x, oo) == Limit(my(x) > 0, x, oo)
+    assert limit(MyFunction(x) > 0, x, oo) == Limit(MyFunction(x) > 0, x, oo)
 
     # from https://groups.google.com/forum/#!topic/sympy/LkTMQKC_BOw
     # fix bisected to ade6d20 and c459d18

@@ -502,7 +502,7 @@ def gf_random(n, p, K):
     Examples
     ========
 
-    >>> gf_random(10, 5, ZZ) #doctest: +SKIP
+    >>> gf_random(10, 5, ZZ)  # doctest: +SKIP
     [1, 2, 3, 2, 1, 1, 1, 2, 0, 4, 2]
 
     """
@@ -516,7 +516,7 @@ def gf_irreducible(n, p, K):
     Examples
     ========
 
-    >>> gf_irreducible(10, 5, ZZ) #doctest: +SKIP
+    >>> gf_irreducible(10, 5, ZZ)  # doctest: +SKIP
     [1, 4, 2, 2, 3, 2, 4, 1, 4, 0, 4]
 
     """

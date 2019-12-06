@@ -32,9 +32,7 @@ class DenseMatrix(MatrixBase):
         Examples
         ========
 
-        >>> m = Matrix([
-        ... [1, 2 + I],
-        ... [3, 4    ]])
+        >>> m = Matrix([[1, 2 + I], [3, 4]])
 
         If the key is a tuple that doesn't involve a slice then that element
         is returned:
@@ -443,7 +441,7 @@ class DenseMatrix(MatrixBase):
 
         >>> X = ImmutableMatrix([[1, 2], [3, 4]])
         >>> Y = X.as_mutable()
-        >>> Y[1, 1] = 5 # Can set values in Y
+        >>> Y[1, 1] = 5  # Can set values in Y
         >>> Y
         Matrix([
         [1, 2],
@@ -558,7 +556,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
 
         >>> M = zeros(4)
         >>> m = M.cols
-        >>> M[3*m] = ones(1, m)*2; M
+        >>> M[3*m] = ones(1, m)*2
+        >>> M
         Matrix([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
@@ -567,7 +566,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
 
         And to replace column c you can assign to position c:
 
-        >>> M[2] = ones(m, 1)*4; M
+        >>> M[2] = ones(m, 1)*4
+        >>> M
         Matrix([
         [0, 0, 4, 0],
         [0, 0, 4, 0],
@@ -642,7 +642,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         ========
 
         >>> I = eye(3)
-        >>> I[:2, 0] = [1, 2] # col
+        >>> I[:2, 0] = [1, 2]  # col
         >>> I
         Matrix([
         [1, 0, 0],
@@ -673,7 +673,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         ========
 
         >>> M = eye(3)
-        >>> M.zip_row_op(1, 0, lambda v, u: v + 2*u); M
+        >>> M.zip_row_op(1, 0, lambda v, u: v + 2*u)
+        >>> M
         Matrix([
         [1, 0, 0],
         [2, 1, 0],
@@ -702,7 +703,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         ========
 
         >>> M = eye(3)
-        >>> M.row_op(1, lambda v, j: v + 2*M[0, j]); M
+        >>> M.row_op(1, lambda v, j: v + 2*M[0, j])
+        >>> M
         Matrix([
         [1, 0, 0],
         [2, 1, 0],
@@ -727,7 +729,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         ========
 
         >>> M = eye(3)
-        >>> M.col_op(1, lambda v, i: v + 2*M[i, 0]); M
+        >>> M.col_op(1, lambda v, i: v + 2*M[i, 0])
+        >>> M
         Matrix([
         [1, 2, 0],
         [0, 1, 0],
@@ -1526,29 +1529,29 @@ def randMatrix(r, c=None, min=0, max=99, seed=None, symmetric=False, percent=100
     Examples
     ========
 
-    >>> randMatrix(3) # doctest:+SKIP
+    >>> randMatrix(3)  # doctest:+SKIP
     [25, 45, 27]
     [44, 54,  9]
     [23, 96, 46]
-    >>> randMatrix(3, 2) # doctest:+SKIP
+    >>> randMatrix(3, 2)  # doctest:+SKIP
     [87, 29]
     [23, 37]
     [90, 26]
-    >>> randMatrix(3, 3, 0, 2) # doctest:+SKIP
+    >>> randMatrix(3, 3, 0, 2)  # doctest:+SKIP
     [0, 2, 0]
     [2, 0, 1]
     [0, 0, 1]
-    >>> randMatrix(3, symmetric=True) # doctest:+SKIP
+    >>> randMatrix(3, symmetric=True)  # doctest:+SKIP
     [85, 26, 29]
     [26, 71, 43]
     [29, 43, 57]
     >>> A = randMatrix(3, seed=1)
     >>> B = randMatrix(3, seed=2)
-    >>> A == B # doctest:+SKIP
+    >>> A == B  # doctest:+SKIP
     False
     >>> A == randMatrix(3, seed=1)
     True
-    >>> randMatrix(3, symmetric=True, percent=50) # doctest:+SKIP
+    >>> randMatrix(3, symmetric=True, percent=50)  # doctest:+SKIP
     [0, 68, 43]
     [0, 68,  0]
     [0, 91, 34]

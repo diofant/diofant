@@ -94,24 +94,24 @@ def test_Function():
     assert mcode(fibonacci(x)) == "Fibonacci[x]"
     assert mcode(polylog(x, y)) == "PolyLog[x, y]"
 
-    class myfunc1(Function):
+    class MyFunc1(Function):
         @classmethod
         def eval(cls, x):
             pass
 
-    class myfunc2(Function):
+    class MyFunc2(Function):
         @classmethod
         def eval(cls, x, y):
             pass
 
     pytest.raises(ValueError,
-                  lambda: mcode(myfunc1(x),
-                                user_functions={"myfunc1": ["Myfunc1"]}))
-    assert mcode(myfunc1(x),
-                 user_functions={"myfunc1": "Myfunc1"}) == "Myfunc1[x]"
-    assert mcode(myfunc2(x, y),
-                 user_functions={"myfunc2": [(lambda *x: False,
-                                              "Myfunc2")]}) == "myfunc2[x, y]"
+                  lambda: mcode(MyFunc1(x),
+                                user_functions={"MyFunc1": ["Myfunc1"]}))
+    assert mcode(MyFunc1(x),
+                 user_functions={"MyFunc1": "Myfunc1"}) == "Myfunc1[x]"
+    assert mcode(MyFunc2(x, y),
+                 user_functions={"MyFunc2": [(lambda *x: False,
+                                              "Myfunc2")]}) == "MyFunc2[x, y]"
 
 
 def test_Lambda():

@@ -365,7 +365,7 @@ class Abs(Function):
     Abs(x)
     >>> Abs(x**2)
     x**2
-    >>> abs(-x) # The Python built-in
+    >>> abs(-x)  # The Python built-in
     Abs(x)
 
     Note that the Python built-in will return either an Expr or int depending on

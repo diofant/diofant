@@ -24,7 +24,7 @@ class Sieve:
     an odd number that has not been sieved, the sieve is automatically
     extended up to that number.
 
-    >>> from array import array # this line and next for doctest only
+    >>> from array import array  # this line and next for doctest only
     >>> sieve._list = array('l', [2, 3, 5, 7, 11, 13])
 
     >>> 25 in sieve
@@ -47,7 +47,7 @@ class Sieve:
         Examples
         ========
 
-        >>> from array import array # this line and next for doctest only
+        >>> from array import array  # this line and next for doctest only
         >>> sieve._list = array('l', [2, 3, 5, 7, 11, 13])
 
         >>> sieve.extend(30)
@@ -91,7 +91,7 @@ class Sieve:
         Examples
         ========
 
-        >>> from array import array # this line and next for doctest only
+        >>> from array import array  # this line and next for doctest only
         >>> sieve._list = array('l', [2, 3, 5, 7, 11, 13])
 
         >>> sieve.extend_to_no(9)
@@ -109,7 +109,7 @@ class Sieve:
         Examples
         ========
 
-        >>> print([i for i in sieve.primerange(7, 18)])
+        >>> print(list(sieve.primerange(7, 18)))
         [7, 11, 13, 17]
 
         """
@@ -390,7 +390,7 @@ def primerange(a, b):
     Examples
     ========
 
-    >>> print([i for i in primerange(1, 30)])
+    >>> print(list(primerange(1, 30)))
     [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
 
     The Sieve method, primerange, is generally faster but it will
@@ -447,7 +447,7 @@ def randprime(a, b):
     Examples
     ========
 
-    >>> randprime(1, 30) #doctest: +SKIP
+    >>> randprime(1, 30)  # doctest: +SKIP
     13
     >>> isprime(randprime(1, 30))
     True
@@ -474,9 +474,9 @@ def primorial(n, nth=True):
     """Returns the product of the first n primes (default) or
     the primes less than or equal to n (when ``nth=False``).
 
-    >>> primorial(4) # the first 4 primes are 2, 3, 5, 7
+    >>> primorial(4)  # the first 4 primes are 2, 3, 5, 7
     210
-    >>> primorial(4, nth=False) # primes <= 4 are 2 and 3
+    >>> primorial(4, nth=False)  # primes <= 4 are 2 and 3
     6
     >>> primorial(1)
     2
@@ -553,7 +553,8 @@ def cycle_length(f, x0, nmax=None, values=False):
 
     A function is defined:
 
-        >>> func = lambda i: (i**2 + 1) % 51
+        >>> def func(i):
+        ...     return (i**2 + 1) % 51
 
     and given a seed of 4 and the mu and lambda terms calculated:
 
@@ -563,7 +564,7 @@ def cycle_length(f, x0, nmax=None, values=False):
     We can see what is meant by looking at the output:
 
         >>> n = cycle_length(func, 4, values=True)
-        >>> list(ni for ni in n)
+        >>> list(n)
         [17, 35, 2, 5, 26, 14, 44, 50, 2, 5, 26, 14]
 
     There are 6 repeating values after the first 2.
@@ -571,9 +572,9 @@ def cycle_length(f, x0, nmax=None, values=False):
     If a sequence is suspected of being longer than you might wish, ``nmax``
     can be used to exit early (and mu will be returned as None):
 
-        >>> next(cycle_length(func, 4, nmax = 4))
+        >>> next(cycle_length(func, 4, nmax=4))
         (4, None)
-        >>> [ni for ni in cycle_length(func, 4, nmax = 4, values=True)]
+        >>> list(cycle_length(func, 4, nmax=4, values=True))
         [17, 35, 2, 5]
 
     References

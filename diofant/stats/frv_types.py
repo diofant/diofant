@@ -92,11 +92,11 @@ def DiscreteUniform(name, items):
 
     >>> from diofant.stats import density
 
-    >>> X = DiscreteUniform('X', symbols('a b c')) # equally likely over a, b, c
+    >>> X = DiscreteUniform('X', symbols('a b c'))  # equally likely over a, b, c
     >>> density(X).dict
     {a: 1/3, b: 1/3, c: 1/3}
 
-    >>> Y = DiscreteUniform('Y', list(range(5))) # distribution over a range
+    >>> Y = DiscreteUniform('Y', list(range(5)))  # distribution over a range
     >>> density(Y).dict
     {0: 1/5, 1: 1/5, 2: 1/5, 3: 1/5, 4: 1/5}
 
@@ -145,11 +145,11 @@ def Die(name, sides=6):
 
     >>> from diofant.stats import density
 
-    >>> D6 = Die('D6', 6) # Six sided Die
+    >>> D6 = Die('D6', 6)  # Six sided Die
     >>> density(D6).dict
     {1: 1/6, 2: 1/6, 3: 1/6, 4: 1/6, 5: 1/6, 6: 1/6}
 
-    >>> D4 = Die('D4', 4) # Four sided Die
+    >>> D4 = Die('D4', 4)  # Four sided Die
     >>> density(D4).dict
     {1: 1/4, 2: 1/4, 3: 1/4, 4: 1/4}
 
@@ -175,11 +175,11 @@ def Bernoulli(name, p, succ=1, fail=0):
 
     >>> from diofant.stats import density
 
-    >>> X = Bernoulli('X', Rational(3, 4)) # 1-0 Bernoulli variable, probability = 3/4
+    >>> X = Bernoulli('X', Rational(3, 4))  # 1-0 Bernoulli variable, probability = 3/4
     >>> density(X).dict
     {0: 1/4, 1: 3/4}
 
-    >>> X = Bernoulli('X', Rational(1, 2), 'Heads', 'Tails') # A fair coin toss
+    >>> X = Bernoulli('X', Rational(1, 2), 'Heads', 'Tails')  # A fair coin toss
     >>> density(X).dict
     {Heads: 1/2, Tails: 1/2}
 
@@ -200,11 +200,11 @@ def Coin(name, p=Rational(1, 2)):
 
     >>> H, T = Symbol('H'), Symbol('T')
 
-    >>> C = Coin('C') # A fair coin toss
+    >>> C = Coin('C')  # A fair coin toss
     >>> density(C).dict
     {H: 1/2, T: 1/2}
 
-    >>> C2 = Coin('C2', Rational(3, 5)) # An unfair coin
+    >>> C2 = Coin('C2', Rational(3, 5))  # An unfair coin
     >>> density(C2).dict
     {H: 3/5, T: 2/5}
 
@@ -252,7 +252,7 @@ def Binomial(name, n, p, succ=1, fail=0):
 
     >>> from diofant.stats import density
 
-    >>> X = Binomial('X', 4, Rational(1, 2)) # Four "coin flips"
+    >>> X = Binomial('X', 4, Rational(1, 2))  # Four "coin flips"
     >>> density(X).dict
     {0: 1/16, 1: 1/4, 2: 3/8, 3: 1/4, 4: 1/16}
 
@@ -291,7 +291,7 @@ def Hypergeometric(name, N, m, n):
 
     >>> from diofant.stats import density
 
-    >>> X = Hypergeometric('X', 10, 5, 3) # 10 marbles, 5 white (success), 3 draws
+    >>> X = Hypergeometric('X', 10, 5, 3)  # 10 marbles, 5 white (success), 3 draws
     >>> density(X).dict
     {0: 1/12, 1: 5/12, 2: 5/12, 3: 1/12}
 

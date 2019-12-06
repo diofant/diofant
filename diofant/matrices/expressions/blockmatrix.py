@@ -122,7 +122,6 @@ class BlockMatrix(MatrixExpr):
         Examples
         ========
 
-        >>> from diofant.abc import l
         >>> X = MatrixSymbol('X', n, n)
         >>> Y = MatrixSymbol('Y', m, m)
         >>> Z = MatrixSymbol('Z', n, m)

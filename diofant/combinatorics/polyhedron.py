@@ -137,7 +137,7 @@ class Polyhedron(Basic):
 
         Here, 3 permutations are used:
 
-        >>> tetra.pgroup.make_perm(3) # doctest: +SKIP
+        >>> tetra.pgroup.make_perm(3)  # doctest: +SKIP
         Permutation([0, 3, 1, 2])
 
         To select the permutations that should be used, supply a list
@@ -267,7 +267,7 @@ class Polyhedron(Basic):
         >>> show()
         [(U1, U2), (F1, F2), (R1, R2), (B1, B2), (L1, L2), (D1, D2)]
         [(U3, U4), (F3, F4), (R3, R4), (B3, B4), (L3, L4), (D3, D4)]
-        >>> r2.rotate(0) # cw rotation of F
+        >>> r2.rotate(0)  # cw rotation of F
         >>> show()
         [(U1, U2), (F3, F1), (U3, R2), (B1, B2), (L1, D1), (R3, R1)]
         [(L4, L2), (F4, F2), (U4, R4), (B3, B4), (L3, D2), (D3, D4)]

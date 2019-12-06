@@ -122,11 +122,11 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     used e.g. to minimize Runge's phenomenon by using Chebyshev nodes:
 
     >>> N, (h, x) = 4, symbols('h x')
-    >>> x_list = [x + h*cos(i*pi/(N)) for i in range(N, -1, -1)] # chebyshev nodes
+    >>> x_list = [x + h*cos(i*pi/(N)) for i in range(N, -1, -1)]  # chebyshev nodes
     >>> x_list
     [-h + x, -sqrt(2)*h/2 + x, x, sqrt(2)*h/2 + x, h + x]
     >>> mycoeffs = finite_diff_weights(1, x_list, 0)[1][4]
-    >>> [simplify(c) for c in  mycoeffs]
+    >>> [simplify(c) for c in mycoeffs]
     [(h**3/2 + h**2*x - 3*h*x**2 - 4*x**3)/h**4,
     (-sqrt(2)*h**3 - 4*h**2*x + 3*sqrt(2)*h*x**2 + 8*x**3)/h**4,
     6*x/h**2 - 8*x**3/h**4,

@@ -17,10 +17,10 @@ __all__ = ()
 
 
 def test_printmethod():
-    class fabs(Abs):
+    class Fabs(Abs):
         def _ccode(self, printer):
             return "fabs(%s)" % printer._print(self.args[0])
-    assert ccode(fabs(x)) == "fabs(x)"
+    assert ccode(Fabs(x)) == "fabs(x)"
 
 
 def test_ccode_sqrt():

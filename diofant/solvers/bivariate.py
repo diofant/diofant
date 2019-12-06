@@ -278,7 +278,8 @@ def bivariate_type(f, x, y, **kwargs):
     >>> bivariate_type(eq, x, y)
     (x + y, _u**2 - 3, _u)
     >>> uxy, pu, u = _
-    >>> usol = solve(pu, u); usol
+    >>> usol = solve(pu, u)
+    >>> usol
     [{_u: sqrt(3)}]
     >>> [solve(uxy - s[u]) for s in solve(pu, u)]
     [[{x: -y + sqrt(3)}]]

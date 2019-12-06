@@ -237,14 +237,14 @@ class Symbol(BaseSymbol):
 class Dummy(BaseSymbol):
     """Dummy symbols are each unique, identified by an internal count index:
 
-    >>> bool(Dummy("x") == Dummy("x")) == True
+    >>> bool(Dummy("x") == Dummy("x")) is True
     False
 
     If a name is not supplied then a string value of the count index will be
     used. This is useful when a temporary variable is needed and the name
     of the variable used in the expression is not important.
 
-    >>> Dummy() #doctest: +SKIP
+    >>> Dummy()  # doctest: +SKIP
     _Dummy_10
 
     See Also

@@ -125,7 +125,7 @@ class Del(Basic):
 
         >>> C = CoordSysCartesian('C')
         >>> v = C.x*C.y*C.z * (C.i + C.j + C.k)
-        >>> C.delop.cross(v, doit = True)
+        >>> C.delop.cross(v, doit=True)
         (-C.x*C.y + C.x*C.z)*C.i + (C.x*C.y - C.y*C.z)*C.j + (-C.x*C.z + C.y*C.z)*C.k
         >>> (C.delop ^ C.i).doit()
         0

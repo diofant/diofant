@@ -470,7 +470,7 @@ class Max(MinMaxBase, Application):
     Max(x, y, z)
     >>> Max(n, 8, p, 7, -oo)
     Max(8, p)
-    >>> Max (1, x, oo)
+    >>> Max(1, x, oo)
     oo
 
     Notes

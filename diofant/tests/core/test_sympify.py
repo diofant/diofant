@@ -274,11 +274,11 @@ def test_sympifyit():
 
 
 def test_int_float():
-    class F1_1:
+    class F1dot1:
         def __float__(self):
             return 1.1
 
-    class F1_1b:
+    class F1dot1b:
         """
         This class is still a float, even though it also implements __int__().
         """
@@ -289,7 +289,7 @@ def test_int_float():
         def __int__(self):
             return 1
 
-    class F1_1c:
+    class F1dot1c:
         """
         This class is still a float, because it implements _diofant_()
         """
@@ -341,9 +341,9 @@ def test_int_float():
     i5 = I5()
     i5b = I5b()
     i5c = I5c()
-    f1_1 = F1_1()
-    f1_1b = F1_1b()
-    f1_1c = F1_1c()
+    f1_1 = F1dot1()
+    f1_1b = F1dot1b()
+    f1_1c = F1dot1c()
     assert sympify(i5) == 5
     assert isinstance(sympify(i5), Integer)
     assert sympify(i5b) == 5

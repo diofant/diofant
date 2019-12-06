@@ -337,7 +337,7 @@ def split_symbols_custom(predicate):
 
     >>> def can_split(symbol):
     ...     if symbol not in ('list', 'of', 'unsplittable', 'names'):
-    ...             return _token_splittable(symbol)
+    ...         return _token_splittable(symbol)
     ...     return False
     ...
     >>> transformation = split_symbols_custom(can_split)
@@ -461,8 +461,8 @@ def implicit_multiplication_application(result, local_dict, global_dict):
     ========
 
     >>> parse_expr("10sin**2 x**2 + 3xyz + tan theta",
-    ... transformations=(standard_transformations +
-    ...                  (implicit_multiplication_application,)))
+    ...            transformations=(standard_transformations +
+    ...                             (implicit_multiplication_application,)))
     3*x*y*z + 10*sin(x**2)**2 + tan(theta)
 
     """

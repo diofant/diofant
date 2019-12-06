@@ -89,9 +89,9 @@ def _symbol(s, matching_symbol=None):
     >>> _.is_extended_real is None
     True
     >>> arb = Symbol('foo')
-    >>> _symbol('arb', arb) # arb's name is foo so foo will not be returned
+    >>> _symbol('arb', arb)  # arb's name is foo so foo will not be returned
     arb
-    >>> _symbol('foo', arb) # now it will
+    >>> _symbol('foo', arb)  # now it will
     foo
 
     NB: the symbol here may not be the same as a symbol with the same
@@ -459,7 +459,7 @@ def centroid(*args):
         >>> q = Polygon((1, 0), (3, 0), (3, 1), (1, 1))
         >>> centroid(p, q)
         Point2D(3/2, 1/2)
-        >>> centroid(p, p, p, q) # centroid x-coord shifts left
+        >>> centroid(p, p, p, q)  # centroid x-coord shifts left
         Point2D(11/10, 1/2)
 
     Stacking the squares vertically above and below p has the same

@@ -1183,7 +1183,7 @@ def integrate(*args, **kwargs):
     Note that ``integrate(x)`` syntax is meant only for convenience
     in interactive sessions and should be avoided in library code.
 
-    >>> integrate(x**a*exp(-x), (x, 0, oo)) # same as conds='piecewise'
+    >>> integrate(x**a*exp(-x), (x, 0, oo))  # same as conds='piecewise'
     Piecewise((gamma(a + 1), -re(a) < 1),
         (Integral(E**(-x)*x**a, (x, 0, oo)), true))
 

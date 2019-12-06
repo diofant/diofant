@@ -37,9 +37,9 @@ partitions::
 multiset_partitions::
 
     >>> from diofant.utilities.iterables import multiset_partitions
-    >>> [p for p in multiset_partitions(3, 2)]
+    >>> list(multiset_partitions(3, 2))
     [[[0, 1], [2]], [[0, 2], [1]], [[0], [1, 2]]]
-    >>> [p for p in multiset_partitions([1, 1, 1, 2], 2)]
+    >>> list(multiset_partitions([1, 1, 1, 2], 2))
     [[[1, 1, 1], [2]], [[1, 1, 2], [1]], [[1, 1], [1, 2]]]
 
 Docstring

@@ -140,7 +140,7 @@ def tuple_wrapper(method):
     convert them to Tuples before handing them to the function.
 
     >>> def f(*args):
-    ...    return args
+    ...     return args
     >>> g = tuple_wrapper(f)
 
     The decorated function g sees only the Tuple argument:
@@ -172,8 +172,8 @@ class Dict(Basic):
 
     >>> D = Dict({1: 'one', 2: 'two'})
     >>> for key in D:
-    ...    if key == 1:
-    ...        print('%s %s' % (key, D[key]))
+    ...     if key == 1:
+    ...         print('%s %s' % (key, D[key]))
     1 one
 
     The args are sympified so the 1 and 2 are Integers and the values
@@ -181,9 +181,9 @@ class Dict(Basic):
 
     >>> 1 in D
     True
-    >>> D.has('one') # searches keys and values
+    >>> D.has('one')  # searches keys and values
     True
-    >>> 'one' in D # not in the keys
+    >>> 'one' in D  # not in the keys
     False
     >>> D[1]
     one

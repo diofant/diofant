@@ -72,7 +72,8 @@ class AssocOp(Expr):
            expression's numerators and denominators) they will not show up in
            the result but a Mul will be returned nonetheless:
 
-               >>> m = (x*y)._new_rawargs(Integer(1), x); m
+               >>> m = (x*y)._new_rawargs(Integer(1), x)
+               >>> m
                x
                >>> m == x
                False
@@ -367,16 +368,16 @@ class LatticeOp(AssocOp):
     This is an abstract base class, concrete derived classes must declare
     attributes zero and identity. All defining properties are then respected.
 
-    >>> class my_join(LatticeOp):
+    >>> class MyJoin(LatticeOp):
     ...     zero = Integer(0)
     ...     identity = Integer(1)
-    >>> my_join(2, 3) == my_join(3, 2)
+    >>> MyJoin(2, 3) == MyJoin(3, 2)
     True
-    >>> my_join(2, my_join(3, 4)) == my_join(2, 3, 4)
+    >>> MyJoin(2, MyJoin(3, 4)) == MyJoin(2, 3, 4)
     True
-    >>> my_join(0, 1, 4, 2, 3, 4)
+    >>> MyJoin(0, 1, 4, 2, 3, 4)
     0
-    >>> my_join(1, 2)
+    >>> MyJoin(1, 2)
     2
 
     References

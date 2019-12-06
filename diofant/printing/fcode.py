@@ -454,11 +454,9 @@ def fcode(expr, assign_to=None, **settings):
     dictionary value can be a list of tuples i.e. [(argument_test,
     cfunction_string)].
 
-    >>> custom_functions = {
-    ...   "ceiling": "CEIL",
-    ...   "floor": [(lambda x: not x.is_integer, "FLOOR1"),
-    ...             (lambda x: x.is_integer, "FLOOR2")]
-    ... }
+    >>> custom_functions = {"ceiling": "CEIL",
+    ...                     "floor": [(lambda x: not x.is_integer, "FLOOR1"),
+    ...                               (lambda x: x.is_integer, "FLOOR2")]}
     >>> fcode(floor(x) + ceiling(x), user_functions=custom_functions)
     '      CEIL(x) + FLOOR1(x)'
 

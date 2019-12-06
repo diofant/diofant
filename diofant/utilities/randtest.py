@@ -80,10 +80,10 @@ def _randrange(seed=None):
     ========
 
     >>> rr = _randrange()
-    >>> rr(1000) # doctest: +SKIP
+    >>> rr(1000)  # doctest: +SKIP
     999
     >>> rr = _randrange(3)
-    >>> rr(1000) # doctest: +SKIP
+    >>> rr(1000)  # doctest: +SKIP
     238
     >>> rr = _randrange([0, 5, 1, 3, 4])
     >>> rr(3), rr(3)
@@ -129,10 +129,10 @@ def _randint(seed=None):
     ========
 
     >>> ri = _randint()
-    >>> ri(1, 1000) # doctest: +SKIP
+    >>> ri(1, 1000)  # doctest: +SKIP
     999
     >>> ri = _randint(3)
-    >>> ri(1, 1000) # doctest: +SKIP
+    >>> ri(1, 1000)  # doctest: +SKIP
     238
     >>> ri = _randint([0, 5, 1, 2, 4])
     >>> ri(1, 3), ri(1, 3)

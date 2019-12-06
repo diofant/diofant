@@ -136,13 +136,13 @@ def test_Singleton():
     assert S.MyNewSingleton is MyNewSingleton()
     assert instantiated == 1
 
-    class MySingleton_sub(MyNewSingleton):
+    class MySingletonSub(MyNewSingleton):
         pass
     assert instantiated == 1
-    MySingleton_sub()
+    MySingletonSub()
     assert instantiated == 2
-    assert MySingleton_sub() is not MyNewSingleton()
-    assert MySingleton_sub() is MySingleton_sub()
+    assert MySingletonSub() is not MyNewSingleton()
+    assert MySingletonSub() is MySingletonSub()
 
 
 def test_preorder_traversal():
