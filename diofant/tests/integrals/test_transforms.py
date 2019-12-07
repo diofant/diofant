@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (E1, Abs, And, Ci, Ei, EulerGamma, Function, Heaviside, I,
+from diofant import (E1, And, Ci, Ei, EulerGamma, Function, Heaviside, I,
                      Integer, Integral, Max, Min, Ne, Or, Rational, Si, Symbol,
                      atan, atan2, besseli, besselj, besselk, bessely, combsimp,
                      cos, cosh, cot, erf, exp, exp_polar, expand,
@@ -727,10 +727,10 @@ def test_sympyissue_8882():
 def test_sympyissue_7173():
     assert laplace_transform(sinh(a*x)*cosh(a*x), x, s) == \
         (a/(s**2 - 4*a**2), 0,
-         And(Or(Abs(periodic_argument(exp_polar(I*pi)*polar_lift(a), oo)) <
-                pi/2, Abs(periodic_argument(exp_polar(I*pi)*polar_lift(a), oo)) <=
-                pi/2), Or(Abs(periodic_argument(a, oo)) < pi/2,
-                          Abs(periodic_argument(a, oo)) <= pi/2)))
+         And(Or(abs(periodic_argument(exp_polar(I*pi)*polar_lift(a), oo)) <
+                pi/2, abs(periodic_argument(exp_polar(I*pi)*polar_lift(a), oo)) <=
+                pi/2), Or(abs(periodic_argument(a, oo)) < pi/2,
+                          abs(periodic_argument(a, oo)) <= pi/2)))
 
 
 def test_sympyissue_8514():
@@ -739,11 +739,11 @@ def test_sympyissue_8514():
     ft = simplify(inverse_laplace_transform(1/(a*s**2 + b*s + c), s, t))
     assert ft.rewrite(atan2) == ((exp(t*(exp(I*atan2(0, -4*a*c + b**2)/2) -
                                          exp(-I*atan2(0, -4*a*c + b**2)/2)) *
-                                      sqrt(Abs(4*a*c - b**2))/(4*a))*exp(t*cos(atan2(0, -4*a*c + b**2)/2)
-                                                                         * sqrt(Abs(4*a*c - b**2))/a) + I*sin(t*sin(atan2(0, -4*a*c + b**2)/2)
-                                                                                                              * sqrt(Abs(4*a*c - b**2))/(2*a)) - cos(t*sin(atan2(0, -4*a*c + b**2)/2)
-                                                                                                                                                     * sqrt(Abs(4*a*c - b**2))/(2*a)))*exp(-t*(b + cos(atan2(0, -4*a*c + b**2)/2)
-                                                                                                                                                                                               * sqrt(Abs(4*a*c - b**2)))/(2*a))/sqrt(-4*a*c + b**2))
+                                      sqrt(abs(4*a*c - b**2))/(4*a))*exp(t*cos(atan2(0, -4*a*c + b**2)/2)
+                                                                         * sqrt(abs(4*a*c - b**2))/a) + I*sin(t*sin(atan2(0, -4*a*c + b**2)/2)
+                                                                                                              * sqrt(abs(4*a*c - b**2))/(2*a)) - cos(t*sin(atan2(0, -4*a*c + b**2)/2)
+                                                                                                                                                     * sqrt(abs(4*a*c - b**2))/(2*a)))*exp(-t*(b + cos(atan2(0, -4*a*c + b**2)/2)
+                                                                                                                                                                                               * sqrt(abs(4*a*c - b**2)))/(2*a))/sqrt(-4*a*c + b**2))
 
 
 def test__simplifyconds():

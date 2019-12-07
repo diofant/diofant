@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Abs, And, Catalan, Derivative, E, Eq, EulerGamma, Float,
+from diofant import (And, Catalan, Derivative, E, Eq, EulerGamma, Float,
                      Function, I, Integer, Integral, KroneckerDelta, Le, Mod,
                      Ne, Or, Piecewise, Product, Rational, Sum, Symbol,
                      binomial, cos, exp, factorial, gamma, harmonic, log,
@@ -235,7 +235,7 @@ def test_geometric_sums():
 
     # issue sympy/sympy#6664:
     assert summation(x**n, (n, 0, oo)) == \
-        Piecewise((1/(-x + 1), Abs(x) < 1), (Sum(x**n, (n, 0, oo)), True))
+        Piecewise((1/(-x + 1), abs(x) < 1), (Sum(x**n, (n, 0, oo)), True))
 
     assert summation(-2**n, (n, 0, oo)) == -oo
     assert summation(I**n, (n, 0, oo)) == Sum(I**n, (n, 0, oo))
@@ -875,7 +875,7 @@ def test_sympyissue_2787():
     s = Sum(binomial_dist*k, (k, 0, n))
     res = s.doit().simplify()
     assert res == Piecewise(
-        (n*p, And(Or(-n + 1 < 0, Ne(p/(p - 1), 1)), p/Abs(p - 1) <= 1)),
+        (n*p, And(Or(-n + 1 < 0, Ne(p/(p - 1), 1)), p/abs(p - 1) <= 1)),
         (Sum(k*p**k*(-p + 1)**(-k)*(-p + 1)**n*binomial(n, k), (k, 0, n)),
          True))
 

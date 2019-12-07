@@ -1,13 +1,12 @@
 import pytest
 
-from diofant import (Abs, And, Derivative, E, Eq, Float, Function, Gt, I,
-                     Indexed, IndexedBase, Integer, Integral, LambertW, Lt,
-                     Matrix, Max, Mul, Or, Piecewise, Poly, Pow, Rational,
-                     Symbol, Tuple, Wild, acos, arg, asin, atan, atan2, cbrt,
-                     cos, cosh, diff, erf, erfc, erfcinv, erfinv, exp,
-                     expand_log, im, log, nan, oo, ordered, pi, re, real_root,
-                     root, sec, sech, simplify, sin, sinh, solve, sqrt, sstr,
-                     symbols, tan, tanh)
+from diofant import (And, Derivative, E, Eq, Float, Function, Gt, I, Indexed,
+                     IndexedBase, Integer, Integral, LambertW, Lt, Matrix, Max,
+                     Mul, Or, Piecewise, Poly, Pow, Rational, Symbol, Tuple,
+                     Wild, acos, arg, asin, atan, atan2, cbrt, cos, cosh, diff,
+                     erf, erfc, erfcinv, erfinv, exp, expand_log, im, log, nan,
+                     oo, ordered, pi, re, real_root, root, sec, sech, simplify,
+                     sin, sinh, solve, sqrt, sstr, symbols, tan, tanh)
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
 from diofant.core.function import nfloat
@@ -1074,7 +1073,7 @@ def test_sympyissue_6528():
 
 def test_overdetermined():
     x = symbols('x', extended_real=True)
-    eqs = [Abs(4*x - 7) - 5, Abs(3 - 8*x) - 1]
+    eqs = [abs(4*x - 7) - 5, abs(3 - 8*x) - 1]
     assert solve(eqs, x) == [{x: Rational(1, 2)}]
     assert solve(eqs, x) == [{x: Rational(1, 2)}]
     assert solve(eqs, x, check=False) == [{x: Rational(1, 2)}, {x: 3}]
@@ -1119,7 +1118,7 @@ def test_sympyissues_6819_6820_6821_6248_8692():
     assert {s[x] for s in solve(abs(x - 7) - 8)} == {-1, 15}
 
     # issue sympy/sympy#8692
-    assert (solve(Eq(Abs(x + 1) + Abs(x**2 - 7), 9), x) ==
+    assert (solve(Eq(abs(x + 1) + abs(x**2 - 7), 9), x) ==
             [{x: -Rational(1, 2) + sqrt(61)/2},
              {x: -sqrt(69)/2 + Rational(1, 2)}])
 
@@ -1494,4 +1493,4 @@ def test_sympyissue_14791():
 def test_sympyissue_14779():
     x = symbols('x', real=True)
     assert solve(sqrt(x**4 - 130*x**2 + 1089) +
-                 sqrt(x**4 - 130*x**2 + 3969) - 96*Abs(x)/x) == [{x: sqrt(130)}]
+                 sqrt(x**4 - 130*x**2 + 3969) - 96*abs(x)/x) == [{x: sqrt(130)}]

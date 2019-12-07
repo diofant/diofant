@@ -41,9 +41,9 @@ def test_printmethod():
 
 
 def test_Abs():
-    assert str(Abs(x)) == "Abs(x)"
-    assert str(Abs(Rational(1, 6))) == "1/6"
-    assert str(Abs(Rational(-1, 6))) == "1/6"
+    assert str(abs(x)) == "Abs(x)"
+    assert str(abs(Rational(1, 6))) == "1/6"
+    assert str(abs(Rational(-1, 6))) == "1/6"
 
 
 def test_Add():

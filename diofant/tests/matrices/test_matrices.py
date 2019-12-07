@@ -2,9 +2,9 @@ import collections
 
 import pytest
 
-from diofant import (Abs, Basic, E, Float, Function, I, Integer, Max, Min, N,
-                     Poly, Pow, PurePoly, Rational, StrPrinter, Symbol, cos,
-                     exp, oo, pi, simplify, sin, sqrt, sstr, symbols, trigsimp)
+from diofant import (Basic, E, Float, Function, I, Integer, Max, Min, N, Poly,
+                     Pow, PurePoly, Rational, StrPrinter, Symbol, cos, exp, oo,
+                     pi, simplify, sin, sqrt, sstr, symbols, trigsimp)
 from diofant.abc import a, b, c, d, k, n, x, y, z
 from diofant.matrices import (GramSchmidt, ImmutableMatrix,
                               ImmutableSparseMatrix, Matrix, SparseMatrix,
@@ -2037,7 +2037,7 @@ def test_condition_number():
     assert A.condition_number() == 100
 
     A[1, 1] = x
-    assert A.condition_number() == Max(10, Abs(x)) / Min(Rational(1, 10), Abs(x))
+    assert A.condition_number() == Max(10, abs(x)) / Min(Rational(1, 10), abs(x))
 
     M = Matrix([[cos(x), sin(x)], [-sin(x), cos(x)]])
     Mc = M.condition_number()

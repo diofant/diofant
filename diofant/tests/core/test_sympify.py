@@ -4,9 +4,9 @@ import re
 import mpmath
 import pytest
 
-from diofant import (Abs, Add, Float, Function, I, Integer, Lambda, Matrix,
-                     Mul, Or, Poly, Pow, Range, Rational, Symbol, Tuple, Xor,
-                     exp, false, pi, sin, sqrt, true)
+from diofant import (Add, Float, Function, I, Integer, Lambda, Matrix, Mul, Or,
+                     Poly, Pow, Range, Rational, Symbol, Tuple, Xor, exp,
+                     false, pi, sin, sqrt, true)
 from diofant.abc import _clash, _clash1, _clash2, x, y
 from diofant.core.compatibility import HAS_GMPY
 from diofant.core.decorators import _sympifyit
@@ -448,7 +448,7 @@ def test_sympyissue_6046():
 def test_sympyissue_8821_highprec_from_str():
     s = str(pi.evalf(128))
     p = sympify(s)
-    assert Abs(sin(p)) < 1e-127
+    assert abs(sin(p)) < 1e-127
 
 
 def test_Range():

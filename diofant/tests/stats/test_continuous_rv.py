@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Abs, And, Eq, Integer, Integral, Interval, N, Piecewise,
+from diofant import (And, Eq, Integer, Integral, Interval, N, Piecewise,
                      Rational, Sum, Symbol, besseli, beta, binomial, cos, erf,
                      exp, expand_func, factorial, floor, gamma, log,
                      lowergamma, oo, pi, simplify, sin, sqrt, symbols)
@@ -338,7 +338,7 @@ def test_laplace():
     b = Symbol("b", positive=True)
 
     X = Laplace('x', mu, b)
-    assert density(X)(x) == exp(-Abs(x - mu)/b)/(2*b)
+    assert density(X)(x) == exp(-abs(x - mu)/b)/(2*b)
 
 
 def test_logistic():

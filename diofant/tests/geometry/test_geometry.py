@@ -2,8 +2,8 @@ import warnings
 
 import pytest
 
-from diofant import (Abs, Derivative, Dummy, Float, Rational, Symbol, Tuple,
-                     cos, oo, pi, root, sqrt, symbols)
+from diofant import (Derivative, Dummy, Float, Rational, Symbol, Tuple, cos,
+                     oo, pi, root, sqrt, symbols)
 from diofant.functions.elementary.trigonometric import tan
 from diofant.geometry import (Circle, Curve, Ellipse, GeometryError, Line,
                               Point, Point2D, Point3D, Polygon, Ray,
@@ -564,7 +564,7 @@ def test_polygon():
     # Inradius
     assert t1.inradius == t1.incircle.radius == 5 - 5*sqrt(2)/2
     assert t2.inradius == t2.incircle.radius == 5*sqrt(3)/6
-    assert t3.inradius == t3.incircle.radius == x1**2/((2 + sqrt(2))*Abs(x1))
+    assert t3.inradius == t3.incircle.radius == x1**2/((2 + sqrt(2))*abs(x1))
 
     # Circumcircle
     assert t1.circumcircle.center == Point(2.5, 2.5)

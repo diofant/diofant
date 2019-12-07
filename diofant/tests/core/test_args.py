@@ -41,7 +41,7 @@ from diofant.diffgeom import (BaseCovarDerivativeOp, BaseScalarField,
                               Manifold, Patch)
 from diofant.diffgeom import Point as DiffgeomPoint
 from diofant.diffgeom import TensorProduct, WedgeProduct
-from diofant.functions import (Abs, Chi, Ci, DiracDelta, Ei, FallingFactorial,
+from diofant.functions import (Chi, Ci, DiracDelta, Ei, FallingFactorial,
                                Heaviside, KroneckerDelta, LambertW, LeviCivita,
                                Li, Max, Min, Piecewise, RisingFactorial, Shi,
                                Si, Ynm, Znm, acos, acosh, acot, acoth, acsc,
@@ -983,7 +983,7 @@ def test_diofant__functions__combinatorial__numbers__lucas():
 
 
 def test_diofant__functions__elementary__complexes__Abs():
-    assert _test_args(Abs(x))
+    assert _test_args(abs(x))
 
 
 def test_diofant__functions__elementary__complexes__adjoint():

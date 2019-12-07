@@ -361,12 +361,10 @@ class Abs(Function):
     >>> Abs(-1)
     1
     >>> x = Symbol('x', real=True)
-    >>> Abs(-x)
-    Abs(x)
-    >>> Abs(x**2)
-    x**2
     >>> abs(-x)  # The Python built-in
     Abs(x)
+    >>> abs(x**2)
+    x**2
 
     Note that the Python built-in will return either an Expr or int depending on
     the argument:
@@ -397,7 +395,7 @@ class Abs(Function):
         Examples
         ========
 
-        >>> Abs(-x).fdiff()
+        >>> abs(-x).fdiff()
         sign(x)
 
         """

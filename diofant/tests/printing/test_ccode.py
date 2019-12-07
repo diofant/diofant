@@ -91,8 +91,8 @@ def test_ccode_functions():
                                     "// elliptic_e\nelliptic_e(x)")
 
     n = symbols('n', integer=True)
-    assert ccode(Abs(n)) == '// Not supported in C:\n// Abs\nAbs(n)'
-    assert ccode(Abs(x)) == 'fabs(x)'
+    assert ccode(abs(n)) == '// Not supported in C:\n// Abs\nAbs(n)'
+    assert ccode(abs(x)) == 'fabs(x)'
 
     pytest.raises(TypeError, lambda: ccode(sin(x), assign_to=1))
 
@@ -115,7 +115,7 @@ def test_ccode_inline_function():
 
 def test_ccode_exceptions():
     assert ccode(ceiling(x)) == "ceil(x)"
-    assert ccode(Abs(x)) == "fabs(x)"
+    assert ccode(abs(x)) == "fabs(x)"
     assert ccode(gamma(x)) == "tgamma(x)"
 
 
@@ -127,8 +127,8 @@ def test_ccode_user_functions():
         "Abs": [(lambda x: not x.is_integer, "fabs"), (lambda x: x.is_integer, "abs")],
     }
     assert ccode(ceiling(x), user_functions=custom_functions) == "ceil(x)"
-    assert ccode(Abs(x), user_functions=custom_functions) == "fabs(x)"
-    assert ccode(Abs(n), user_functions=custom_functions) == "abs(n)"
+    assert ccode(abs(x), user_functions=custom_functions) == "fabs(x)"
+    assert ccode(abs(n), user_functions=custom_functions) == "abs(n)"
 
 
 def test_ccode_boolean():
