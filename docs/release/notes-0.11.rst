@@ -139,3 +139,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`8859` wrong result: dsolve for systems with forcings
 * :sympyissue:`9204` dsolve fails
 * :sympyissue:`14779` Spurious solutions when solving equation involving Abs(x)/x
+* :sympyissue:`18008` series does not give the same expansion depending on whether simple expression is simplified or not
