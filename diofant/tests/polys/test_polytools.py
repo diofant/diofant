@@ -1044,6 +1044,9 @@ def test_Poly_inject():
     f = Poly(x**2 + 2*x - 1)
     assert f.inject() == f
 
+    f = Poly(x**2 - 2*sqrt(3)*x + 4, extension=True)
+    assert f.inject().replace(f.domain.ext, y) == Poly(x**2 - 2*x*y + 4)
+
 
 def test_Poly_eject():
     f = Poly(x**2*y + x*y**3 + x*y + 1, x, y)

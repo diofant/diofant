@@ -820,7 +820,7 @@ class Poly(Expr):
         """
         dom = self.domain
 
-        if dom.is_Numerical:
+        if dom.is_Numerical and not dom.is_Algebraic:
             return self
 
         if front:
