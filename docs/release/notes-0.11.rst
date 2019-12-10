@@ -51,6 +51,7 @@ Minor changes
 * :class:`~diofant.utilities.codegen.CCodeGen` got support for common subexpression replacement, see :pull:`893`.  Thanks to James Cotton.
 * 100% test coverage for :mod:`~diofant.utilities` module.
 * :func:`~diofant.solvers.recurr.rsolve` got ``simplify`` option to control default output simplification, see :pull:`921`.
+* :func:`~diofant.polys.numberfields.minimal_polynomial` got support for :class:`~diofant.polys.rootoftools.RootOf` instances over algebraic number fields, see :pull:`927`.
 
 Developer changes
 =================
