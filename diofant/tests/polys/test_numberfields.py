@@ -210,6 +210,11 @@ def test_minimal_polynomial_rootof(method):
                               domain=e.poly.domain)(y) == e.poly(y)
 
 
+@pytest.mark.parametrize("method", ("groebner", "compose"))
+def test_minimal_polynomial_GoldenRatio(method):
+    assert minimal_polynomial(GoldenRatio, method=method)(x) == x**2 - x - 1
+
+
 def test_diofantissue_662():
     e1 = abs(sqrt(1 + sqrt(2 + I)))
     e2 = re(sqrt(I), evaluate=False)

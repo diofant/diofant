@@ -611,6 +611,8 @@ def minpoly_groebner(ex, x, domain):
         if ex.is_Atom:
             if ex is I:
                 return update_mapping(ex, 2, 1)
+            elif ex is GoldenRatio:
+                return bottom_up_scan(ex.expand(func=True))
             elif ex.is_Rational:
                 return ex
             elif ex.is_Symbol:
