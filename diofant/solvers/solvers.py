@@ -752,8 +752,6 @@ def _solve(f, symbol, **flags):
             # there may have been more than one generator identified by
             # polys (e.g. for symbols other than the one we are interested
             # in) so recast the poly in terms of our generator of interest.
-            # Also use composite=True with f_num since Poly won't update
-            # poly as documented in issue sympy/sympy#8810.
 
             poly = Poly(f_num, gens[0], extension=False)
 

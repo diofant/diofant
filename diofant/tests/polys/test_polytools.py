@@ -3276,3 +3276,12 @@ def test_sympyissue_15798():
 @pytest.mark.timeout(20)
 def test_sympyissue_16222():
     Poly(x**100000000)
+
+
+def test_sympyissue_8810():
+    e = y**3 + y**2*sqrt(x) + y + x
+    p = Poly(e, y)
+    c = Poly(e, y, composite=True)
+
+    assert c == Poly(e, y, domain=ZZ.poly_ring(x, sqrt(x)))
+    assert Poly(p, y, composite=True) == c
