@@ -19,7 +19,7 @@ from diofant.abc import (a, b, c, d, e, f, k, l, lamda, m, n, phi, t, theta, w,
 from diofant.core.trace import Tr
 from diofant.diffgeom import BaseVectorField
 from diofant.diffgeom.rn import R2, R2_r
-from diofant.functions import (Abs, Chi, Ci, DiracDelta, Ei, KroneckerDelta,
+from diofant.functions import (Chi, Ci, DiracDelta, Ei, KroneckerDelta,
                                Piecewise, Shi, Si, atan2, binomial, catalan,
                                ceiling, cos, elliptic_e, elliptic_f,
                                elliptic_k, elliptic_pi, euler, exp, expint,
@@ -94,9 +94,9 @@ sin(x)**3/tan(x)**2
 FUNCTIONS (ABS, CONJ, EXP, FUNCTION BRACES, FACTORIAL, FLOOR, CEILING):
 
 (2*x + exp(x))  #
-Abs(x)
-Abs(x/(x**2+1)) #
-Abs(1 / (y - Abs(x)))
+abs(x)
+abs(x/(x**2+1)) #
+abs(1 / (y - abs(x)))
 factorial(n)
 factorial(2*n)
 subfactorial(n)
@@ -1189,7 +1189,7 @@ E  + 2*x\
     assert pretty(expr) in [ascii_str_1, ascii_str_2]
     assert upretty(expr) in [ucode_str_1, ucode_str_2]
 
-    expr = Abs(x)
+    expr = abs(x)
     ascii_str = \
         """\
 |x|\
@@ -1201,7 +1201,7 @@ E  + 2*x\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = Abs(x/(x**2 + 1))
+    expr = abs(x/(x**2 + 1))
     ascii_str_1 = \
         """\
 |  x   |\n\
@@ -1233,7 +1233,7 @@ E  + 2*x\
     assert pretty(expr) in [ascii_str_1, ascii_str_2]
     assert upretty(expr) in [ucode_str_1, ucode_str_2]
 
-    expr = Abs(1 / (y - Abs(x)))
+    expr = abs(1 / (y - abs(x)))
     ascii_str = \
         """\
 |   1   |\n\
@@ -3068,7 +3068,7 @@ x⋅⎜⎨            ⎟\n\
     assert pretty(expr) == ascii_str
     assert upretty(expr) == ucode_str
 
-    expr = Piecewise((0, Abs(1/y) < 1), (1, Abs(y) < 1), (y*meijerg(((2, 1),
+    expr = Piecewise((0, abs(1/y) < 1), (1, abs(y) < 1), (y*meijerg(((2, 1),
                                                                      ()), ((), (1, 0)), 1/y), True))
     ascii_str = \
         """\

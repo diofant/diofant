@@ -58,7 +58,7 @@ Usage::
     pow(sin(x), 2) + pow(cos(x), 2)
     >>> print(ccode(2*x + cos(x), assign_to="result"))
     result = 2*x + cos(x);
-    >>> print(ccode(Abs(x**2)))
+    >>> print(ccode(abs(x**2)))
     fabs(pow(x, 2))
 
 .. autoclass:: diofant.printing.ccode.CCodePrinter

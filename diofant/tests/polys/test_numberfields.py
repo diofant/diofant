@@ -201,6 +201,20 @@ def test_minimal_polynomial_conjugate():
                 1152*x**8 + 3328*x**6 - 1600*x**4 + 64*x**2 + 1)
 
 
+@pytest.mark.parametrize("method", ("groebner", "compose"))
+def test_minimal_polynomial_rootof(method):
+    e = RootOf(x**4 - 3*x**3 + x**2*(-3*sqrt(2) + 1) + 2*sqrt(2)*x + 2, 0)
+    assert (minimal_polynomial(e, method=method)(x) ==
+            x**8 - 6*x**7 + 11*x**6 - 6*x**5 - 13*x**4 + 12*x**3 - 4*x**2 + 4)
+    assert minimal_polynomial(e, method=method,
+                              domain=e.poly.domain)(y) == e.poly(y)
+
+
+@pytest.mark.parametrize("method", ("groebner", "compose"))
+def test_minimal_polynomial_GoldenRatio(method):
+    assert minimal_polynomial(GoldenRatio, method=method)(x) == x**2 - x - 1
+
+
 def test_diofantissue_662():
     e1 = abs(sqrt(1 + sqrt(2 + I)))
     e2 = re(sqrt(I), evaluate=False)

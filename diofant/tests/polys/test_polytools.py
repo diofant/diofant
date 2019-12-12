@@ -1044,6 +1044,9 @@ def test_Poly_inject():
     f = Poly(x**2 + 2*x - 1)
     assert f.inject() == f
 
+    f = Poly(x**2 - 2*sqrt(3)*x + 4, extension=True)
+    assert f.inject().replace(f.domain.ext, y) == Poly(x**2 - 2*x*y + 4)
+
 
 def test_Poly_eject():
     f = Poly(x**2*y + x*y**3 + x*y + 1, x, y)
@@ -3273,3 +3276,12 @@ def test_sympyissue_15798():
 @pytest.mark.timeout(20)
 def test_sympyissue_16222():
     Poly(x**100000000)
+
+
+def test_sympyissue_8810():
+    e = y**3 + y**2*sqrt(x) + y + x
+    p = Poly(e, y)
+    c = Poly(e, y, composite=True)
+
+    assert c == Poly(e, y, domain=ZZ.poly_ring(x, sqrt(x)))
+    assert Poly(p, y, composite=True) == c

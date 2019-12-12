@@ -1714,9 +1714,6 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
                     return zoo
         return NotImplemented
 
-    def __abs__(self):
-        return oo
-
     def __neg__(self):
         return S.NegativeInfinity
 
@@ -1895,9 +1892,6 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
                 else:
                     return zoo
         return NotImplemented
-
-    def __abs__(self):
-        return oo
 
     def __neg__(self):
         return oo
@@ -2107,9 +2101,6 @@ class ComplexInfinity(AtomicExpr, metaclass=SingletonWithManagedProperties):
 
     def __new__(cls):
         return AtomicExpr.__new__(cls)
-
-    def __abs__(self):
-        return oo
 
     def __neg__(self):
         return self

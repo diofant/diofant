@@ -51,6 +51,7 @@ Minor changes
 * :class:`~diofant.utilities.codegen.CCodeGen` got support for common subexpression replacement, see :pull:`893`.  Thanks to James Cotton.
 * 100% test coverage for :mod:`~diofant.utilities` module.
 * :func:`~diofant.solvers.recurr.rsolve` got ``simplify`` option to control default output simplification, see :pull:`921`.
+* :func:`~diofant.polys.numberfields.minimal_polynomial` got support for :class:`~diofant.polys.rootoftools.RootOf` instances over algebraic number fields, see :pull:`927`.
 
 Developer changes
 =================
@@ -139,3 +140,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`8859` wrong result: dsolve for systems with forcings
 * :sympyissue:`9204` dsolve fails
 * :sympyissue:`14779` Spurious solutions when solving equation involving Abs(x)/x
+* :sympyissue:`18008` series does not give the same expansion depending on whether simple expression is simplified or not
+* :sympyissue:`8810` Poly keyword `composite` is ignored when instantiating from Poly

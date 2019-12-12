@@ -1,6 +1,6 @@
 import pytest
 
-from diofant import (Abs, Add, Basic, E, Eq, Float, Function, GoldenRatio, I,
+from diofant import (Add, Basic, E, Eq, Float, Function, GoldenRatio, I,
                      Integer, Integral, Lt, Matrix, MatrixSymbol, Mul, Number,
                      Piecewise, Rational, Sum, Symbol, acos, asin, atan,
                      besseli, besselj, besselsimp, binomial, cancel, cbrt,
@@ -491,7 +491,7 @@ def test_as_content_primitive():
 def test_signsimp():
     e = x*(-x + 1) + x*(x - 1)
     assert signsimp(Eq(e, 0)) is true
-    assert Abs(x - 1) == Abs(1 - x)
+    assert abs(x - 1) == abs(1 - x)
 
 
 def test_besselsimp():

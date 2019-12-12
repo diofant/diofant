@@ -294,8 +294,8 @@ def test_latex_functions():
     assert latex(Min(x, y)**2) == r"\min\left(x, y\right)^{2}"
     assert latex(Max(x, 2, x**3)) == r"\max\left(2, x, x^{3}\right)"
     assert latex(Max(x, y)**2) == r"\max\left(x, y\right)^{2}"
-    assert latex(Abs(x)) == r"\left|{x}\right|"
-    assert latex(Abs(x)**3) == r'\left|{x}\right|^{3}'
+    assert latex(abs(x)) == r"\left|{x}\right|"
+    assert latex(abs(x)**3) == r'\left|{x}\right|^{3}'
     assert latex(re(x)) == r"\Re{x}"
     assert latex(re(x)**3) == r"\left(\Re{x}\right)^{3}"
     assert latex(re(x + y)) == r"\Re{x} + \Re{y}"

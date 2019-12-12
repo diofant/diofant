@@ -270,6 +270,9 @@ def test_roots_binomial():
         2*y: 1,
         2*y*(-Rational(1, 2) + sqrt(3)*I/2): 1}
 
+    p = Poly(exp(I*x/3)**4 + exp(I*x/3), exp(I*x/3))
+    assert roots(p) == roots(x**4 + x)
+
 
 def test_roots_preprocessing():
     f = a*y*x**2 + y - b

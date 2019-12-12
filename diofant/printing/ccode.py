@@ -317,7 +317,7 @@ def ccode(expr, assign_to=None, **settings):
     ...                             (lambda x: x.is_integer, "ABS")],
     ...                     "func": "f"}
     >>> func = Function('func')
-    >>> ccode(func(Abs(x) + ceiling(x)), user_functions=custom_functions)
+    >>> ccode(func(abs(x) + ceiling(x)), user_functions=custom_functions)
     'f(fabs(x) + CEIL(x))'
 
     or if the C-function takes a subset of the original arguments:
