@@ -336,7 +336,7 @@ def roots_binomial(f):
     """
     n = f.degree()
 
-    a, b = f.coeff_monomial(f.gen**n), f.coeff_monomial(1)
+    a, b = f.coeff_monomial((n,)), f.coeff_monomial(1)
     base = -cancel(b/a)
     alpha = root(base, n)
 
