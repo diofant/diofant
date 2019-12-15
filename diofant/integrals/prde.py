@@ -619,13 +619,11 @@ def is_deriv_k(fa, fd, DE):
 
     A, u = constant_system(lhs, rhs, DE)
 
-    if not all(derivation(i, DE, basic=True).is_zero for i in u) or not A:
-        # If the elements of u are not all constant
+    if all(derivation(i, DE, basic=True).is_zero for i in u) and A:
+        # If the elements of u are all constant
         # Note: See comment in constant_system
 
         # Also note: derivation(basic=True) calls cancel()
-        return
-    else:
         if not all(i.is_Rational for i in u):
             raise NotImplementedError("Cannot work with non-rational "
                                       "coefficients in this case.")
@@ -724,13 +722,11 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
     rhs = Matrix([dfa.as_expr()/dfd.as_expr()])
 
     A, u = constant_system(lhs, rhs, DE)
-    if not all(derivation(i, DE, basic=True).is_zero for i in u) or not A:
-        # If the elements of u are not all constant
+    if all(derivation(i, DE, basic=True).is_zero for i in u) and A:
+        # If the elements of u are all constant
         # Note: See comment in constant_system
 
         # Also note: derivation(basic=True) calls cancel()
-        return
-    else:
         if not all(i.is_Rational for i in u):
             # TODO: But maybe we can tell if they're not rational, like
             # log(2)/log(3). Also, there should be an option to continue

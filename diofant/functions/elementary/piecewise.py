@@ -146,8 +146,6 @@ class Piecewise(Function):
         if len(non_false_ecpairs) != len(args) or piecewise_again:
             return cls(*non_false_ecpairs)
 
-        return
-
     def doit(self, **hints):
         """Evaluate this piecewise function."""
         newargs = []
@@ -512,7 +510,6 @@ class Piecewise(Function):
             diff = cond.lhs - cond.rhs
             if diff.is_commutative:
                 return diff.is_zero
-        return
 
     def as_expr_set_pairs(self):
         exp_sets = []

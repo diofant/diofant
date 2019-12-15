@@ -986,9 +986,7 @@ class Pow(Expr):
                 hints['complex'] = False
 
                 expanded = self.expand(deep, **hints)
-                if hints.get('ignore') == expanded:
-                    return
-                else:
+                if hints.get('ignore') != expanded:
                     return re(expanded), im(expanded)
             else:
                 return re(self), im(self)

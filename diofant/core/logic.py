@@ -64,9 +64,8 @@ def fuzzy_bool(x):
     for the None value.
 
     """
-    if x is None:
-        return
-    return bool(x)
+    if x is not None:
+        return bool(x)
 
 
 def fuzzy_and(args):

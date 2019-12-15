@@ -304,7 +304,6 @@ class Add(AssocOp):
         coeff, terms = self.as_coeff_add()
         if len(terms) == 1:
             return terms[0]._matches(expr - coeff, repl_dict)
-        return
 
     def _matches(self, expr, repl_dict={}):
         """Helper method for match().

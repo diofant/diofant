@@ -500,7 +500,6 @@ class Abs(Function):
                 return self.args[0]**exponent
             elif exponent != -1 and exponent.is_Integer:
                 return self.args[0]**(exponent - 1)*self
-        return
 
     def _eval_nseries(self, x, n, logx):
         direction = self.args[0].as_leading_term(x).as_coeff_exponent(x)[0]

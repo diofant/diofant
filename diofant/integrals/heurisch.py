@@ -511,9 +511,7 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
         solution = solve_lin_sys(numer.coeffs(), coeff_ring)
 
-        if solution is None:
-            return
-        else:
+        if solution is not None:
             solution = [(coeff_ring.symbols[coeff_ring.index(k)],
                          v.as_expr()) for k, v in solution.items()]
             return candidate.subs(solution).subs(
@@ -541,5 +539,3 @@ def heurisch(f, x, rewrite=False, hints=None, mappings=None, retries=3,
 
             if result is not None:
                 return indep*result
-
-        return

@@ -245,8 +245,6 @@ class AssocOp(Expr):
 
                 break  # if we didn't continue, there is nothing more to do
 
-        return
-
     def _has_matcher(self):
         """Helper for .has()."""
         def _ncsplit(expr):

@@ -500,7 +500,6 @@ def sqrt_biquadratic_denest(expr, a, b, r, d2):
         if z < 0:
             z = -z
         return _mexpand(z)
-    return
 
 
 def _denester(nested, av0, h, max_depth_level):

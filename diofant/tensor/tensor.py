@@ -844,8 +844,6 @@ class _TensorDataLazyEvaluator(CantSympify):
                     sumvar += numpy.transpose(data, axes)
             return sumvar
 
-        return
-
     def data_tensorhead_from_tensmul(self, data, tensmul, tensorhead):
         """
         This method is used when assigning components data to a ``TensMul``
@@ -853,15 +851,13 @@ class _TensorDataLazyEvaluator(CantSympify):
         which is then stored according to the ``TensorHead`` key.
 
         """
-        if data is None:
-            return
-
-        return self._correct_signature_from_indices(
-            data,
-            tensmul.get_indices(),
-            tensmul.free,
-            tensmul.dum,
-            True)
+        if data is not None:
+            return self._correct_signature_from_indices(
+                data,
+                tensmul.get_indices(),
+                tensmul.free,
+                tensmul.dum,
+                True)
 
     def data_tensmul_from_tensorhead(self, tensmul, tensorhead):
         """
@@ -870,14 +866,12 @@ class _TensorDataLazyEvaluator(CantSympify):
         ``TensorIndexType``.
 
         """
-        if tensorhead.data is None:
-            return
-
-        return self._correct_signature_from_indices(
-            tensorhead.data,
-            tensmul.get_indices(),
-            tensmul.free,
-            tensmul.dum)
+        if tensorhead.data is not None:
+            return self._correct_signature_from_indices(
+                tensorhead.data,
+                tensmul.get_indices(),
+                tensmul.free,
+                tensmul.dum)
 
     def data_product_tensors(self, data_list, tensmul_list):
         """
@@ -3587,9 +3581,8 @@ class TensMul(TensExpr):
     @property
     def data(self):
         dat = _tensor_data_substitution_dict[self]
-        if dat is None:
-            return
-        return self.coeff * dat
+        if dat is not None:
+            return self.coeff * dat
 
     def __iter__(self):
         if self.data is None:

@@ -1356,8 +1356,6 @@ class PrettyPrinter(Printer):
                 # return prettyForm(binding=prettyForm.NEG, *pform.left('- '))
             else:
                 return prettyForm(str(p))/prettyForm(str(q))
-        else:
-            return
 
     def _print_Rational(self, expr):
         result = self.__print_numer_denom(expr.numerator, expr.denominator)

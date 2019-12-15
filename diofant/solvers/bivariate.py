@@ -61,7 +61,6 @@ def _mostfunc(lhs, func, X=None):
         return fterms[0]
     elif fterms:
         return max(list(ordered(fterms)), key=lambda x: x.count(func))
-    return
 
 
 def _linab(arg, symbol):
