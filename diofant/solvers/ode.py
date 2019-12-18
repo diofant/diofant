@@ -5016,7 +5016,7 @@ def checkinfsol(eq, infinitesimals, func=None, order=None):
             else:
                 try:
                     sol = solve(eq, df)
-                except NotImplementedError:
+                except NotImplementedError:  # pragma: no cover
                     raise NotImplementedError("Infinitesimals for the "
                                               "first order ODE could not be found")
                 else:
@@ -5104,7 +5104,7 @@ def ode_lie_group(eq, func, order, match):
     else:
         try:
             sol = solve(eq, df)
-        except NotImplementedError:
+        except NotImplementedError:  # pragma: no cover
             raise NotImplementedError("Unable to solve the differential equation " +
                                       str(eq) + " by the lie group method")
         else:
@@ -5342,7 +5342,7 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
                 else:
                     try:
                         sol = solve(eq, df)
-                    except NotImplementedError:
+                    except NotImplementedError:  # pragma: no cover
                         raise NotImplementedError("Infinitesimals for the "
                                                   "first order ODE could not be found")
                     else:
