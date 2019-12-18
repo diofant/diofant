@@ -63,7 +63,6 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     It currently accepts as arguments:
        - any object defined in diofant
        - standard numeric python types: int, long, float, Decimal
-       - strings (like "0.09" or "2e-19")
        - booleans, including ``None`` (will leave ``None`` unchanged)
        - lists, sets or tuples containing any of the above
 
@@ -77,10 +76,6 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     True
 
     >>> sympify(2.0).is_real
-    True
-    >>> sympify("2.0").is_real
-    True
-    >>> sympify("2e-45").is_real
     True
 
     If the expression could not be converted, a SympifyError is raised.
@@ -219,6 +214,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
 
     """
     from .basic import Basic
+    from .symbol import Symbol
 
     if evaluate is None:
         evaluate = global_evaluate[0]
@@ -270,35 +266,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
         return type(a)([sympify(x, locals=locals, convert_xor=convert_xor,
                                 rational=rational) for x in a.items()])
 
-    # At this point we were given an arbitrary expression
-    # which does not inherit from Basic and doesn't implement
-    # _diofant_ (which is a canonical and robust way to convert
-    # anything to Diofant expression).
-    #
-    # As a last chance, we try to take "a"'s normal form via str()
-    # and try to parse it. If it fails, then we have no luck and
-    # return an exception
-    try:
-        a = str(a)
-    except Exception as exc:
-        raise SympifyError(a, exc)
-
-    from ..parsing.sympy_parser import (parse_expr, TokenError,
-                                        standard_transformations)
-    from ..parsing.sympy_parser import convert_xor as t_convert_xor
-    from ..parsing.sympy_parser import rationalize as t_rationalize
-
-    transformations = standard_transformations
-
-    if rational:
-        transformations += t_rationalize,
-    if convert_xor:
-        transformations += t_convert_xor,
-
-    try:
-        a = a.replace('\n', '')
-        expr = parse_expr(a, local_dict=locals, transformations=transformations, evaluate=evaluate)
-    except (TokenError, SyntaxError) as exc:
-        raise SympifyError('could not parse %r' % a, exc)
-
-    return expr
+    if isinstance(a, str):
+        return Symbol(a)
+    else:
+        raise SympifyError(a)

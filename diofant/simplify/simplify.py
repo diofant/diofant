@@ -805,6 +805,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
         orig = mpmath.mp.dps
         xv = x._to_mpmath(bprec)
         try:
+            from ..parsing.sympy_parser import parse_expr
             # We'll be happy with low precision if a simple fraction
             if not (tolerance or full):
                 mpmath.mp.dps = 15
@@ -816,6 +817,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
                                       tol=tolerance, full=full)
             if not newexpr:
                 raise ValueError
+            newexpr = parse_expr(newexpr)
             if full:
                 newexpr = newexpr[0]
             expr = sympify(newexpr)
