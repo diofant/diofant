@@ -1672,9 +1672,8 @@ class Permutation(Basic):
 
         """
         r = self.rank_nonlex()
-        if r == ifac(self.size) - 1:
-            return
-        return Perm.unrank_nonlex(self.size, r + 1)
+        if r != ifac(self.size) - 1:
+            return Perm.unrank_nonlex(self.size, r + 1)
 
     def rank(self):
         """
@@ -2426,9 +2425,8 @@ class Permutation(Basic):
                 else:
                     pi[st + d], pi[st + d - 1] = pi[st + d - 1], pi[st + d]
                     done = True
-        if m == 0:
-            return
-        return _af_new(pi)
+        if m != 0:
+            return _af_new(pi)
 
     def get_precedence_matrix(self):
         """

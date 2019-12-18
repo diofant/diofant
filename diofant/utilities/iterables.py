@@ -761,7 +761,6 @@ def multiset_permutations(m, size=None, g=None):
     if not do or size is not None and (size > SUM or size < 1):
         if size < 1:
             yield []
-        return
     elif size == 1:
         for k, v in do:
             yield [k]

@@ -253,7 +253,6 @@ class MatrixBase(DefaultPrinting):
                 self.copyin_matrix(key, value)
             else:
                 return i, j, self._sympify(value)
-            return
 
     def copy(self):
         """Returns the copy of a matrix."""
@@ -1978,9 +1977,8 @@ class MatrixBase(DefaultPrinting):
         """
         if any(i.is_nonzero for i in self):
             return False
-        if any(i.is_zero is None for i in self):
-            return
-        return True
+        if not any(i.is_zero is None for i in self):
+            return True
 
     def is_nilpotent(self):
         """Checks if a matrix is nilpotent.

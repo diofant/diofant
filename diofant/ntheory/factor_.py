@@ -458,7 +458,6 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
         V = prng.randint(0, n - 1)
         a = prng.randint(1, n - 3)  # for x**2 + a, a%n should not be 0 or -2
         F = None
-    return
 
 
 def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):

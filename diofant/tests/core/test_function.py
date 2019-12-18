@@ -611,8 +611,6 @@ def test_unhandled():
         def _eval_derivative(self, s):
             if not s.name.startswith('xi'):
                 return self
-            else:
-                return
 
     expr = MyExpr(x, y, z)
     assert diff(expr, x, y, f(x), z) == Derivative(expr, f(x), z)

@@ -819,12 +819,10 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         if isinstance(i, int) and j == slice(None):
             del self._mat[i*self.cols:(i + 1)*self.cols]
             self.rows -= 1
-            return
         elif i == slice(None) and isinstance(j, int):
             for i in range(self.rows - 1, -1, -1):
                 del self._mat[j + i*self.cols]
             self.cols -= 1
-            return
         else:
             raise NotImplementedError
 

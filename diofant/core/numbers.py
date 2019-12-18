@@ -2549,7 +2549,6 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
                     return -S.One
                 return -I
             return S.NegativeOne**(expt*S.Half)
-        return
 
     def as_base_exp(self):
         return S.NegativeOne, S.Half

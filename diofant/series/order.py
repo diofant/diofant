@@ -259,7 +259,6 @@ class Order(Expr):
             return self.func(self.expr ** e, *self.args[1:])
         if e == O(1):
             return self
-        return
 
     def as_expr_variables(self, order_symbols):
         if order_symbols is None:

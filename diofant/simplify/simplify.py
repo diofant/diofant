@@ -375,8 +375,6 @@ def hypersimp(f, k):
 
     if g.is_rational_function(k):
         return simplify(g, ratio=oo)
-    else:
-        return
 
 
 def hypersimilar(f, g, k):

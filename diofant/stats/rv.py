@@ -625,8 +625,6 @@ class Density(Expr):
     def condition(self):
         if len(self.args) > 1:
             return self.args[1]
-        else:
-            return
 
     def doit(self, **kwargs):
         evaluate = kwargs.pop('evaluate', True)
@@ -1003,7 +1001,6 @@ def pspace_independent(a, b):
 
     if len(a_symbols.intersection(b_symbols)) == 0:
         return True
-    return
 
 
 def rv_subs(expr):

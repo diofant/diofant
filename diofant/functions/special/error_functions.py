@@ -1192,10 +1192,9 @@ class expint(Function):
         if n == 0:
             return
         if nu.is_integer:
-            if not nu.is_positive:
-                return
-            return expint(nu, z) \
-                - 2*pi*I*n*(-1)**(nu - 1)/factorial(nu - 1)*unpolarify(z)**(nu - 1)
+            if nu.is_positive:
+                return expint(nu, z) \
+                    - 2*pi*I*n*(-1)**(nu - 1)/factorial(nu - 1)*unpolarify(z)**(nu - 1)
         else:
             return (exp(2*I*pi*nu*n) - 1)*z**(nu - 1)*gamma(1 - nu) + expint(nu, z)
 
@@ -1519,9 +1518,8 @@ class TrigonometricIntegral(Function):
             return cls._minusfactor(nz)
 
         nz, n = z.extract_branch_factor()
-        if n == 0 and nz == z:
-            return
-        return 2*pi*I*n*cls._trigfunc(0) + cls(nz)
+        if n != 0 or nz != z:
+            return 2*pi*I*n*cls._trigfunc(0) + cls(nz)
 
     def fdiff(self, argindex=1):
         from .. import unpolarify

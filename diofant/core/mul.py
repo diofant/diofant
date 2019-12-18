@@ -811,7 +811,6 @@ class Mul(AssocOp):
         if len(terms) == 1:
             newexpr = self.__class__._combine_inverse(expr, coeff)
             return terms[0]._matches(newexpr, repl_dict)
-        return
 
     def _matches(self, expr, repl_dict={}):
         """Helper method for match().
@@ -953,9 +952,8 @@ class Mul(AssocOp):
 
     def _eval_is_infinite(self):
         if any(a.is_infinite for a in self.args):
-            if any(not a.is_nonzero for a in self.args):
-                return
-            return True
+            if not any(not a.is_nonzero for a in self.args):
+                return True
 
     def _eval_is_rational(self):
         r = _fuzzy_group((a.is_rational for a in self.args), quick_exit=True)

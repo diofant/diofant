@@ -1543,9 +1543,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         """
         from ..functions import im, re
-        if hints.get('ignore') == self:
-            return
-        else:
+        if hints.get('ignore') != self:
             return re(self), im(self)
 
     def as_powers_dict(self):
