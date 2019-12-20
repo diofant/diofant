@@ -167,16 +167,21 @@ def test_linear_2eq_order2():
     sol1 = dsolve(eq1)
     assert checksysodesol(eq1, sol1)[0]
 
-    eq1_1 = (Eq(diff(x(t), t, t), 5*x(t) - 4*y(t)), Eq(diff(y(t), t, t), x(t) + 9*y(t)))
-    sol1_1 = [Eq(x(t), C1*(229*sqrt(7)*exp(sqrt(7)*t)/3920 - 27*sqrt(7)*(80*sqrt(7)*exp(-sqrt(7)*t)*t/189 + 26*exp(-sqrt(7)*t)/27)/1120 + 27*sqrt(7)*(-80*sqrt(7)*exp(sqrt(7)*t)*t/189 + 26*exp(sqrt(7)*t)/27)/1120 - 229*sqrt(7)*exp(-sqrt(7)*t)/3920) + C2*(-51*sqrt(7)*exp(sqrt(7)*t)/1960 - 27*sqrt(7)*(80*sqrt(7)*exp(-sqrt(7)*t)*t/189 + 26*exp(-sqrt(7)*t)/27)/560 + 27*sqrt(7)*(-80*sqrt(7)*exp(sqrt(7)*t)*t/189 + 26*exp(sqrt(7)*t)/27)/560 + 51*sqrt(7)*exp(-sqrt(7)*t)/1960) + C3*(-sqrt(7)*exp(sqrt(7)*t)*t/14 + exp(sqrt(7)*t)/2 + sqrt(7)*exp(-sqrt(7)*t)*t/14 + exp(-sqrt(7)*t)/2) + C4*(-sqrt(7)*exp(sqrt(7)*t)*t/7 + sqrt(7)*exp(-sqrt(7)*t)*t/7)), Eq(y(t), C1*(-229*sqrt(7)*exp(sqrt(7)*t)/7840 - 27*sqrt(7)*(-40*sqrt(7)*exp(-sqrt(7)*t)*t/189 + exp(-sqrt(7)*t))/1120 + 27*sqrt(7)*(40*sqrt(7)*exp(sqrt(7)*t)*t/189 + exp(sqrt(7)*t))/1120 + 229*sqrt(7)*exp(-sqrt(7)*t)/7840) + C2*(51*sqrt(7)*exp(sqrt(7)*t)/3920 - 27*sqrt(7)*(-40*sqrt(7)*exp(-sqrt(7)*t)*t/189 + exp(-sqrt(7)*t))/560 + 27*sqrt(7)*(40*sqrt(7)*exp(sqrt(7)*t)*t/189 + exp(sqrt(7)*t))/560 - 51*sqrt(7)*exp(-sqrt(7)*t)/3920) + C3*(sqrt(7)*exp(sqrt(7)*t)*t/28 - sqrt(7)*exp(-sqrt(7)*t)*t/28) + C4*(sqrt(7)*exp(sqrt(7)*t)*t/14 + exp(sqrt(7)*t)/2 - sqrt(7)*exp(-sqrt(7)*t)*t/14 + exp(-sqrt(7)*t)/2))]
+    eq1_1 = [Eq(diff(x(t), t, t), 5*x(t) - 4*y(t)),
+             Eq(diff(y(t), t, t), x(t) + 9*y(t))]
+    sol1_1 = [Eq(x(t), -80*sqrt(7)*exp(sqrt(7)*t)*C3/189 + C2*(80*sqrt(7)*exp(-sqrt(7)*t)*t/189 + 26*exp(-sqrt(7)*t)/27) + C4*(-80*sqrt(7)*exp(sqrt(7)*t)*t/189 + 26*exp(sqrt(7)*t)/27) + 80*sqrt(7)*exp(-sqrt(7)*t)*C1/189),
+              Eq(y(t), 40*sqrt(7)*exp(sqrt(7)*t)*C3/189 + C2*(-40*sqrt(7)*exp(-sqrt(7)*t)*t/189 + exp(-sqrt(7)*t)) + C4*(40*sqrt(7)*exp(sqrt(7)*t)*t/189 + exp(sqrt(7)*t)) - 40*sqrt(7)*exp(-sqrt(7)*t)*C1/189)]
     assert dsolve(eq1_1) == sol1_1
 
-    eq1_2 = (Eq(diff(x(t), t, t), 5*x(t)), Eq(diff(y(t), t, t), x(t) + 5*y(t)))
-    sol1_2 = [Eq(x(t), C1*(sqrt(5)*exp(sqrt(5)*t)/10 - sqrt(5)*exp(-sqrt(5)*t)/10) + C3*(exp(sqrt(5)*t)/2 + exp(-sqrt(5)*t)/2)), Eq(y(t), C1*(-sqrt(5)*exp(sqrt(5)*t)/600 + sqrt(5)*(6*sqrt(5)*exp(-sqrt(5)*t)*t/5 + exp(-sqrt(5)*t))/120 - sqrt(5)*(-6*sqrt(5)*exp(sqrt(5)*t)*t/5 + exp(sqrt(5)*t))/120 + sqrt(5)*exp(-sqrt(5)*t)/600) + C2*(sqrt(5)*exp(sqrt(5)*t)/10 - sqrt(5)*exp(-sqrt(5)*t)/10) + C3*(sqrt(5)*exp(sqrt(5)*t)*t/20 - sqrt(5)*exp(-sqrt(5)*t)*t/20) + C4*(exp(sqrt(5)*t)/2 + exp(-sqrt(5)*t)/2))]
+    eq1_2 = [Eq(diff(x(t), t, t), 5*x(t)), Eq(diff(y(t), t, t), x(t) + 5*y(t))]
+    sol1_2 = [Eq(x(t), -12*exp(sqrt(5)*t)*C4 - 12*exp(-sqrt(5)*t)*C2),
+              Eq(y(t), -6*sqrt(5)*exp(sqrt(5)*t)*C3/5 + C2*(6*sqrt(5)*exp(-sqrt(5)*t)*t/5 + exp(-sqrt(5)*t)) + C4*(-6*sqrt(5)*exp(sqrt(5)*t)*t/5 + exp(sqrt(5)*t)) + 6*sqrt(5)*exp(-sqrt(5)*t)*C1/5)]
     assert dsolve(eq1_2) == sol1_2
 
-    eq1_3 = (Eq(diff(x(t), t, t), 5*x(t) - 4*y(t)), Eq(diff(y(t), t, t), 5*y(t)))
-    sol1_3 = [Eq(x(t), C1*(sqrt(5)*exp(sqrt(5)*t)/10 - sqrt(5)*exp(-sqrt(5)*t)/10) + C2*(sqrt(5)*exp(sqrt(5)*t)/150 - sqrt(5)*(2*sqrt(5)*exp(-sqrt(5)*t)*t/5 + exp(-sqrt(5)*t)/3)/10 + sqrt(5)*(-2*sqrt(5)*exp(sqrt(5)*t)*t/5 + exp(sqrt(5)*t)/3)/10 - sqrt(5)*exp(-sqrt(5)*t)/150) + C3*(exp(sqrt(5)*t)/2 + exp(-sqrt(5)*t)/2) + C4*(-sqrt(5)*exp(sqrt(5)*t)*t/5 + sqrt(5)*exp(-sqrt(5)*t)*t/5)), Eq(y(t), C2*(sqrt(5)*exp(sqrt(5)*t)/10 - sqrt(5)*exp(-sqrt(5)*t)/10) + C4*(exp(sqrt(5)*t)/2 + exp(-sqrt(5)*t)/2))]
+    eq1_3 = [Eq(diff(x(t), t, t), 5*x(t) - 4*y(t)),
+             Eq(diff(y(t), t, t), 5*y(t))]
+    sol1_3 = [Eq(x(t), -2*sqrt(5)*exp(sqrt(5)*t)*C3/5 + C2*(2*sqrt(5)*exp(-sqrt(5)*t)*t/5 + exp(-sqrt(5)*t)/3) + C4*(-2*sqrt(5)*exp(sqrt(5)*t)*t/5 + exp(sqrt(5)*t)/3) + 2*sqrt(5)*exp(-sqrt(5)*t)*C1/5),
+              Eq(y(t), exp(sqrt(5)*t)*C4 + exp(-sqrt(5)*t)*C2)]
     assert dsolve(eq1_3) == sol1_3
 
     eq2 = (Eq(diff(x(t), t, t), 8*x(t)+3*y(t)+31), Eq(diff(y(t), t, t), 9*x(t)+7*y(t)+12))
