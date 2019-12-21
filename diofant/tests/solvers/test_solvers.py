@@ -1170,12 +1170,13 @@ def test_sympyissue_6989():
 
 
 def test_lambert_multivariate():
-    assert _filtered_gens(Poly(x + 1/x + exp(x) + y), x) == {x, exp(x)}
-    assert _filtered_gens(Poly(x + 1/x + exp(x)), x) == {exp(x), x}
-    assert _filtered_gens(Poly(x + log(x) + 1/x + exp(x)),
-                          x) == {exp(x), log(x), x}
-    assert _filtered_gens(Poly(exp(I*x) - 1/x + log(x)/exp(I*x) + 2*x),
-                          x) == {exp(I*x), x, log(x)}
+    for i in range(7):
+        assert _filtered_gens(Poly(x + 1/x + exp(x) + y), x) == {x, exp(x)}
+        assert _filtered_gens(Poly(x + 1/x + exp(x)), x) == {exp(x), x}
+        assert _filtered_gens(Poly(x + log(x) + 1/x + exp(x)),
+                              x) == {exp(x), log(x), x}
+        assert _filtered_gens(Poly(exp(I*x) - 1/x + log(x)/exp(I*x) + 2*x),
+                              x) == {exp(I*x), x, log(x)}
     assert _lambert(x, x) == []
     assert solve((x**2 - 2*x + 1).subs({x: log(x) + 3*x})) == [{x: LambertW(3*E)/3}]
     assert (solve((x**2 - 2*x + 1).subs({x: (log(x) + 3*x)**2 - 1})) ==
