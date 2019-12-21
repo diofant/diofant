@@ -344,7 +344,7 @@ def sub_func_doit(eq, func, new):
         repu[u] = d.subs({func: new}).doit()
         reps[d] = u
 
-    return eq.subs(reps).subs({func: new}).subs(repu)
+    return eq.subs(reps).subs({func: new.doit()}).subs(repu)
 
 
 def get_numbered_constants(eq, num=1, start=1, prefix='C'):
