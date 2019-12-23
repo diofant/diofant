@@ -360,9 +360,9 @@ def test_linear_3eq_order1():
     eq4 = [Eq(diff(x(t), t), (4*f + g)*x(t) - f*y(t) - 2*f*z(t)),
            Eq(diff(y(t), t), 2*f*x(t) + (f + g)*y(t) - 2*f*z(t)),
            Eq(diff(z(t), t), 5*f*x(t) + f*y(t) + (-3*f + g)*z(t))]
-    sol4 = [Eq(x(t), E**Integral(-t**2 - sin(t), t)*(exp(sqrt(3)*I*Integral(t**3 + log(t), t))*C3*(-2/(-4 - sqrt(3)*I) + (2 + 4/(-4 - sqrt(3)*I))/((-4 - sqrt(3)*I)*(Rational(-27, 19) - 17*sqrt(3)*I/19))) + exp(-2*Integral(t**3 + log(t), t))*C1 + exp(-sqrt(3)*I*Integral(t**3 + log(t), t))*C2*((2 + 4/(-4 + sqrt(3)*I))/((-4 + sqrt(3)*I)*(Rational(-27, 19) + 17*sqrt(3)*I/19)) - 2/(-4 + sqrt(3)*I)))),
-            Eq(y(t), E**Integral(-t**2 - sin(t), t)*(-exp(sqrt(3)*I*Integral(t**3 + log(t), t))*C3*(2 + 4/(-4 - sqrt(3)*I))/(Rational(-27, 19) - 17*sqrt(3)*I/19) - exp(-sqrt(3)*I*Integral(t**3 + log(t), t))*C2*(2 + 4/(-4 + sqrt(3)*I))/(Rational(-27, 19) + 17*sqrt(3)*I/19))),
-            Eq(z(t), E**Integral(-t**2 - sin(t), t)*(exp(sqrt(3)*I*Integral(t**3 + log(t), t))*C3 + exp(-2*Integral(t**3 + log(t), t))*C1 + exp(-sqrt(3)*I*Integral(t**3 + log(t), t))*C2))]
+    sol4 = [Eq(x(t), E**Integral(t**2 + sin(t), t)*(exp(sqrt(3)*I*Integral(-t**3 - log(t), t))*C3*(-2/(-4 - sqrt(3)*I) + (2 + 4/(-4 - sqrt(3)*I))/((-4 - sqrt(3)*I)*(Rational(-27, 19) - 17*sqrt(3)*I/19))) + exp(-2*Integral(-t**3 - log(t), t))*C1 + exp(-sqrt(3)*I*Integral(-t**3 - log(t), t))*C2*((2 + 4/(-4 + sqrt(3)*I))/((-4 + sqrt(3)*I)*(Rational(-27, 19) + 17*sqrt(3)*I/19)) - 2/(-4 + sqrt(3)*I)))),
+            Eq(y(t), E**Integral(t**2 + sin(t), t)*(-exp(sqrt(3)*I*Integral(-t**3 - log(t), t))*C3*(2 + 4/(-4 - sqrt(3)*I))/(Rational(-27, 19) - 17*sqrt(3)*I/19) - exp(-sqrt(3)*I*Integral(-t**3 - log(t), t))*C2*(2 + 4/(-4 + sqrt(3)*I))/(Rational(-27, 19) + 17*sqrt(3)*I/19))),
+            Eq(z(t), E**Integral(t**2 + sin(t), t)*(exp(sqrt(3)*I*Integral(-t**3 - log(t), t))*C3 + exp(-2*Integral(-t**3 - log(t), t))*C1 + exp(-sqrt(3)*I*Integral(-t**3 - log(t), t))*C2))]
     assert dsolve(eq4) == sol4
 
     eq5 = [Eq(diff(x(t), t), 4*x(t) - z(t)),
