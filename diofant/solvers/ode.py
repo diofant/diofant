@@ -344,7 +344,7 @@ def sub_func_doit(eq, func, new):
         repu[u] = d.subs({func: new}).doit()
         reps[d] = u
 
-    return eq.subs(reps).subs({func: new}).subs(repu)
+    return eq.subs(reps).subs({func: new.doit()}).subs(repu)
 
 
 def get_numbered_constants(eq, num=1, start=1, prefix='C'):
@@ -6860,15 +6860,15 @@ def sysode_linear_3eq_order1(match_):
     #   Eq(g1*diff(x(t),t), a1*x(t)+b1*y(t)+c1*z(t)+d1),
     #   Eq(g2*diff(y(t),t), a2*x(t)+b2*y(t)+c2*z(t)+d2), and
     #   Eq(g3*diff(z(t),t), a3*x(t)+b3*y(t)+c3*z(t)+d3)
-    r['a1'] = fc[0, x(t), 0]/fc[0, x(t), 1]
-    r['a2'] = fc[1, x(t), 0]/fc[1, y(t), 1]
-    r['a3'] = fc[2, x(t), 0]/fc[2, z(t), 1]
-    r['b1'] = fc[0, y(t), 0]/fc[0, x(t), 1]
-    r['b2'] = fc[1, y(t), 0]/fc[1, y(t), 1]
-    r['b3'] = fc[2, y(t), 0]/fc[2, z(t), 1]
-    r['c1'] = fc[0, z(t), 0]/fc[0, x(t), 1]
-    r['c2'] = fc[1, z(t), 0]/fc[1, y(t), 1]
-    r['c3'] = fc[2, z(t), 0]/fc[2, z(t), 1]
+    r['a1'] = -fc[0, x(t), 0]/fc[0, x(t), 1]
+    r['a2'] = -fc[1, x(t), 0]/fc[1, y(t), 1]
+    r['a3'] = -fc[2, x(t), 0]/fc[2, z(t), 1]
+    r['b1'] = -fc[0, y(t), 0]/fc[0, x(t), 1]
+    r['b2'] = -fc[1, y(t), 0]/fc[1, y(t), 1]
+    r['b3'] = -fc[2, y(t), 0]/fc[2, z(t), 1]
+    r['c1'] = -fc[0, z(t), 0]/fc[0, x(t), 1]
+    r['c2'] = -fc[1, z(t), 0]/fc[1, y(t), 1]
+    r['c3'] = -fc[2, z(t), 0]/fc[2, z(t), 1]
     for i in range(3):
         for j in Add.make_args(eq[i]):
             if not j.has(x(t), y(t), z(t)):
@@ -6963,13 +6963,14 @@ def sysode_linear_neq_order1(match_):
 
     A = Minv*L
     JJ, T = A.jordan_cells()
-    T, Tinv = map(simplify, [T, T.inv()])
-
-    force = Minv*Matrix(force)
 
     expm = Matrix(BlockDiagMatrix(*[(J*t).exp() for J in JJ]))
-    q = T*expm*Tinv*Matrix(get_numbered_constants(eq, num=n))
-    q -= T*expm*(expm.subs({t: -t})*Tinv*force).integrate(t)
+    q = T*expm*Matrix(get_numbered_constants(eq, num=n))
+
+    force = Minv*Matrix(force)
+    if not force.is_zero:
+        Tinv = simplify(T.inv())
+        q -= T*expm*(expm.subs({t: -t})*Tinv*force).integrate(t)
 
     return [Eq(func[i], q[i]) for i in range(n)]
 
