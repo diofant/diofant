@@ -3,8 +3,8 @@
 import collections
 
 from ..concrete import product
-from ..core import (Add, Dummy, Equality, Function, Integer, Mul, Rational,
-                    Symbol, Wild, oo, sympify)
+from ..core import (Add, Dummy, Equality, Function, Integer, Lambda, Mul,
+                    Rational, Symbol, Wild, oo, sympify)
 from ..core.compatibility import default_sort_key, iterable
 from ..functions import FallingFactorial, RisingFactorial, binomial, factorial
 from ..matrices import Matrix, casoratian
@@ -603,9 +603,9 @@ def rsolve(f, *y, init={}, simplify=True):
     >>> eq = (n - 1)*f(n + 2) - (n**2 + 3*n - 2)*f(n + 1) + 2*n*(n + 1)*f(n)
 
     >>> rsolve(eq)
-    2**n*C0 + C1*factorial(n)
+    [{f: Lambda(n, 2**n*C0 + C1*factorial(n))}]
     >>> rsolve(eq, init={f(0): 0, f(1): 3})
-    3*2**n - 3*factorial(n)
+    [{f: Lambda(n, 3*2**n - 3*factorial(n))}]
 
     Notes
     =====
@@ -715,4 +715,4 @@ def rsolve(f, *y, init={}, simplify=True):
         solution = constantsimp(solution, symbols)
         solution = solution.simplify()
 
-    return solution
+    return [{y.func: Lambda((n,), solution)}]

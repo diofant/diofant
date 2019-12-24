@@ -2152,12 +2152,13 @@ def test_Y12():
 
 def test_Z1():
     assert (rsolve(f(n + 2) - 2*f(n + 1) + f(n) - 2,
-                   init={f(0): 1, f(1): m}) == n**2 + n*(m - 2) + 1)
+                   init={f(0): 1, f(1): m}) == [{f: Lambda(n, n**2 +
+                                                           n*(m - 2) + 1)}])
 
 
 def test_Z2():
-    assert (rsolve(f(n) - (5*f(n - 1) - 6*f(n - 2)), init={f(0): 0, f(1): 1})
-            == -2**n + 3**n)
+    assert rsolve(f(n) - (5*f(n - 1) - 6*f(n - 2)),
+                  init={f(0): 0, f(1): 1}) == [{f: Lambda(n, -2**n + 3**n)}]
 
 
 @pytest.mark.slow
@@ -2167,8 +2168,8 @@ def test_Z3():
     # fibonacci(n+1), but that is quite hard
     assert (rsolve(f(n) - (f(n - 1) + f(n - 2)),
                    init={f(1): 1, f(2): 2})
-            == 2**(-n)*((1 + sqrt(5))**n*(sqrt(5) + 5) +
-                        (-sqrt(5) + 1)**n*(-sqrt(5) + 5))/10)
+            == [{f: Lambda(n, 2**(-n)*((1 + sqrt(5))**n*(sqrt(5) + 5) +
+                           (-sqrt(5) + 1)**n*(-sqrt(5) + 5))/10)}])
 
 
 @pytest.mark.xfail
