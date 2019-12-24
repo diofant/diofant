@@ -703,3 +703,11 @@ def test_sympyissue_17431():
 def test_sympyissue_17792():
     n = Symbol('n', positive=True, integer=True)
     assert limit(factorial(n)/sqrt(n)*(E/n)**n, n, oo) == sqrt(2*pi)
+
+
+def test_sympyissue_18118():
+    assert limit(sign(x), x, 0, "+") == +1
+    assert limit(sign(x), x, 0, "-") == -1
+
+    assert limit(sign(sin(x)), x, 0, "+") == +1
+    assert limit(sign(sin(x)), x, 0, "-") == -1

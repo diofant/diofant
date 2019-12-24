@@ -142,3 +142,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14779` Spurious solutions when solving equation involving Abs(x)/x
 * :sympyissue:`18008` series does not give the same expansion depending on whether simple expression is simplified or not
 * :sympyissue:`8810` Poly keyword `composite` is ignored when instantiating from Poly
+* :sympyissue:`18118` limit(sign(sin(x)), x, 0, '+')) = 0 (which is wrong)
