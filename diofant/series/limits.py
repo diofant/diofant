@@ -34,6 +34,9 @@ def limit(expr, z, z0, dir="+"):
 def heuristics(e, z, z0, dir):
     rv = None
 
+    if isinstance(e, Expr):
+        e = e.expand()
+
     if abs(z0) is oo:
         rv = limit(e.subs({z: 1/z}), z, Integer(0), "+" if z0 is oo else "-")
         if isinstance(rv, Limit):
