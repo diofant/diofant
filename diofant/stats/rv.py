@@ -672,7 +672,6 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
 
     >>> from diofant.stats import Die, Normal
 
-    >>> x = Symbol('x')
     >>> D = Die('D', 6)
     >>> X = Normal(x, 0, 1)
 

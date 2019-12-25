@@ -497,9 +497,8 @@ def octave_code(expr, assign_to=None, **settings):
     >>> octave_code(sin(x).series(x).removeO())
     'x.^5/120 - x.^3/6 + x'
 
-    >>> tau = symbols("tau")
-    >>> octave_code((2*tau)**Rational(7, 2))
-    '8*sqrt(2)*tau.^(7/2)'
+    >>> octave_code((2*x)**Rational(7, 2))
+    '8*sqrt(2)*x.^(7/2)'
 
     Note that element-wise (Hadamard) operations are used by default between
     symbols.  This is because its very common in Octave to write "vectorized"
@@ -542,8 +541,8 @@ def octave_code(expr, assign_to=None, **settings):
     generating an expression that may not evaluate to anything.
 
     >>> pw = Piecewise((x + 1, x > 0), (x, True))
-    >>> octave_code(pw, assign_to=tau)
-    'tau = ((x > 0).*(x + 1) + (~(x > 0)).*(x));'
+    >>> octave_code(pw, assign_to=y)
+    'y = ((x > 0).*(x + 1) + (~(x > 0)).*(x));'
 
     Note that any expression that can be generated normally can also exist
     inside a Matrix:

@@ -16,7 +16,6 @@ def styleof(expr, styles=default_styles):
     >>> styleof(Basic(1), styles)
     {'color': 'blue', 'shape': 'ellipse'}
 
-    >>> x = Symbol('x')
     >>> styleof(x + 1, styles)  # this is an Expr
     {'color': 'black', 'shape': 'ellipse'}
 

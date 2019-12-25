@@ -338,7 +338,6 @@ One more useful matrix-wide entry application function is the substitution funct
     [0  4  0]
     [       ]
     [0  0  4]
-    >>> y = Symbol('y')
     >>> M.subs({x: y})
     [y  0  0]
     [       ]

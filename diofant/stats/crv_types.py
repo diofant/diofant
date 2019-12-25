@@ -108,8 +108,6 @@ def ContinuousRV(symbol, density, set=Interval(-oo, oo, True, True)):
 
     >>> from diofant.stats import P, E
 
-    >>> x = Symbol("x")
-
     >>> pdf = sqrt(2)*exp(-x**2/2)/(2*sqrt(pi))  # Normal distribution
     >>> X = ContinuousRV(x, pdf)
 
@@ -238,7 +236,6 @@ def Benini(name, alpha, beta, sigma):
     >>> alpha = Symbol("alpha", positive=True)
     >>> beta = Symbol("beta", positive=True)
     >>> sigma = Symbol("sigma", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Benini("x", alpha, beta, sigma)
 
@@ -311,7 +308,6 @@ def Beta(name, alpha, beta):
 
     >>> alpha = Symbol("alpha", positive=True)
     >>> beta = Symbol("beta", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Beta("x", alpha, beta)
 
@@ -378,7 +374,6 @@ def BetaPrime(name, alpha, beta):
 
     >>> alpha = Symbol("alpha", positive=True)
     >>> beta = Symbol("beta", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = BetaPrime("x", alpha, beta)
 
@@ -438,7 +433,6 @@ def Cauchy(name, x0, gamma):
 
     >>> x0 = Symbol("x0")
     >>> gamma = Symbol("gamma", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Cauchy("x", x0, gamma)
 
@@ -493,9 +487,6 @@ def Chi(name, k):
     ========
 
     >>> from diofant.stats import density, E, std, Chi
-
-    >>> k = Symbol("k", integer=True)
-    >>> z = Symbol("z")
 
     >>> X = Chi("x", k)
 
@@ -555,9 +546,7 @@ def ChiNoncentral(name, k, l):
 
     >>> from diofant.stats import density, E, std
 
-    >>> k = Symbol("k", integer=True)
     >>> l = Symbol("l")
-    >>> z = Symbol("z")
 
     >>> X = ChiNoncentral("x", k, l)
 
@@ -615,7 +604,6 @@ def ChiSquared(name, k):
     >>> from diofant.stats import density, E, variance
 
     >>> k = Symbol("k", integer=True, positive=True)
-    >>> z = Symbol("z")
 
     >>> X = ChiSquared("x", k)
 
@@ -682,7 +670,6 @@ def Dagum(name, p, a, b):
     >>> p = Symbol("p", positive=True)
     >>> b = Symbol("b", positive=True)
     >>> a = Symbol("a", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Dagum("x", p, a, b)
 
@@ -731,7 +718,6 @@ def Erlang(name, k, l):
 
     >>> k = Symbol("k", integer=True, positive=True)
     >>> l = Symbol("l", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Erlang("x", k, l)
 
@@ -813,7 +799,6 @@ def Exponential(name, rate):
     >>> from diofant.stats import density, cdf, E, variance, std, skewness
 
     >>> l = Symbol("lambda", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Exponential("x", l)
 
@@ -901,7 +886,6 @@ def FDistribution(name, d1, d2):
 
     >>> d1 = Symbol("d1", positive=True)
     >>> d2 = Symbol("d2", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = FDistribution("x", d1, d2)
 
@@ -970,7 +954,6 @@ def FisherZ(name, d1, d2):
 
     >>> d1 = Symbol("d1", positive=True)
     >>> d2 = Symbol("d2", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = FisherZ("x", d1, d2)
 
@@ -1111,7 +1094,6 @@ def Gamma(name, k, theta):
 
     >>> k = Symbol("k", positive=True)
     >>> theta = Symbol("theta", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Gamma("x", k, theta)
 
@@ -1201,7 +1183,6 @@ def GammaInverse(name, a, b):
 
     >>> a = Symbol("a", positive=True)
     >>> b = Symbol("b", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = GammaInverse("x", a, b)
 
@@ -1271,7 +1252,6 @@ def Kumaraswamy(name, a, b):
 
     >>> a = Symbol("a", positive=True)
     >>> b = Symbol("b", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Kumaraswamy("x", a, b)
 
@@ -1330,7 +1310,6 @@ def Laplace(name, mu, b):
 
     >>> mu = Symbol("mu")
     >>> b = Symbol("b", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Laplace("x", mu, b)
 
@@ -1522,7 +1501,6 @@ def Maxwell(name, a):
     >>> from diofant.stats import density, E, variance
 
     >>> a = Symbol("a", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Maxwell("x", a)
 
@@ -1589,7 +1567,6 @@ def Nakagami(name, mu, omega):
 
     >>> mu = Symbol("mu", positive=True)
     >>> omega = Symbol("omega", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Nakagami("x", mu, omega)
 
@@ -1667,7 +1644,6 @@ def Normal(name, mean, std):
 
     >>> mu = Symbol("mu")
     >>> sigma = Symbol("sigma", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Normal("x", mu, sigma)
 
@@ -1759,7 +1735,6 @@ def Pareto(name, xm, alpha):
 
     >>> xm = Symbol("xm", positive=True)
     >>> beta = Symbol("beta", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Pareto("x", xm, beta)
 
@@ -1961,7 +1936,6 @@ def Rayleigh(name, sigma):
     >>> from diofant.stats import density, E, variance
 
     >>> sigma = Symbol("sigma", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Rayleigh("x", sigma)
 
@@ -2023,7 +1997,6 @@ def StudentT(name, nu):
     >>> from diofant.stats import density, E, variance
 
     >>> nu = Symbol("nu", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = StudentT("x", nu)
 
@@ -2098,11 +2071,6 @@ def Triangular(name, a, b, c):
     ========
 
     >>> from diofant.stats import density, E
-
-    >>> a = Symbol("a")
-    >>> b = Symbol("b")
-    >>> c = Symbol("c")
-    >>> z = Symbol("z")
 
     >>> X = Triangular("x", a, b, c)
 
@@ -2199,7 +2167,6 @@ def Uniform(name, left, right):
 
     >>> a = Symbol("a", negative=True)
     >>> b = Symbol("b", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Uniform("x", a, b)
 
@@ -2275,9 +2242,6 @@ def UniformSum(name, n):
 
     >>> from diofant.stats import density
 
-    >>> n = Symbol("n", integer=True)
-    >>> z = Symbol("z")
-
     >>> X = UniformSum("x", n)
 
     >>> D = density(X)(z)
@@ -2350,7 +2314,6 @@ def VonMises(name, mu, k):
 
     >>> mu = Symbol("mu")
     >>> k = Symbol("k", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = VonMises("x", mu, k)
 
@@ -2424,7 +2387,6 @@ def Weibull(name, alpha, beta):
 
     >>> l = Symbol("lambda", positive=True)
     >>> k = Symbol("k", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Weibull("x", l, k)
 
@@ -2490,7 +2452,6 @@ def WignerSemicircle(name, R):
     >>> from diofant.stats import density, E
 
     >>> R = Symbol("R", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = WignerSemicircle("x", R)
 
