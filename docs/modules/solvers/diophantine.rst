@@ -130,7 +130,6 @@ Note that except for the highest level API, in case of no solutions, a tuple of
 Also, one can specifically set the parameter to be used in the solutions by
 passing a customized parameter. Consider the following example:
 
->>> m = symbols("m", integer=True)
 >>> diop_solve(2*x + 3*y - 5, m)
 (3*m_0 - 5, -2*m_0 + 5)
 
@@ -174,7 +173,6 @@ solutions. Consider the below cases where `\Delta = 8`.
 
 >>> diophantine(x**2 - 4*x*y + 2*y**2 - 3*x + 7*y - 5)
 set()
->>> n = symbols("n", integer=True)
 >>> s = diophantine(x**2 - 2*y**2 - 2*x - 4*y, n)
 >>> x_1, y_1 = s.pop()
 >>> x_2, y_2 = s.pop()

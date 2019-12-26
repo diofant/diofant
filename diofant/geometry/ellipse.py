@@ -222,14 +222,11 @@ class Ellipse(GeometrySet):
         >>> e1.minor
         1
 
-        >>> a = Symbol('a')
-        >>> b = Symbol('b')
         >>> Ellipse(p1, a, b).minor
         b
         >>> Ellipse(p1, b, a).minor
         a
 
-        >>> m = Symbol('m')
         >>> M = m + 1
         >>> Ellipse(p1, m, M).minor
         m
@@ -268,14 +265,11 @@ class Ellipse(GeometrySet):
         >>> e1.major
         3
 
-        >>> a = Symbol('a')
-        >>> b = Symbol('b')
         >>> Ellipse(p1, a, b).major
         a
         >>> Ellipse(p1, b, a).major
         b
 
-        >>> m = Symbol('m')
         >>> M = m + 1
         >>> Ellipse(p1, m, M).major
         m + 1

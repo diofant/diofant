@@ -8,7 +8,6 @@ routine that calculates a matrix-vector product.
 
 >>> from diofant.utilities.autowrap import autowrap
 >>> A, x, y = map(IndexedBase, ['A', 'x', 'y'])
->>> m, n = symbols('m n', integer=True)
 >>> i = Idx('i', m)
 >>> j = Idx('j', n)
 >>> instruction = Eq(y[i], A[i, j]*x[j])

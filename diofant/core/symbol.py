@@ -72,7 +72,6 @@ class BaseSymbol(AtomicExpr, Boolean):
         Examples
         ========
 
-            >>> x = Symbol('x')
             >>> x._diff_wrt
             True
 

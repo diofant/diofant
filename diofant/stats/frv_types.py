@@ -92,7 +92,7 @@ def DiscreteUniform(name, items):
 
     >>> from diofant.stats import density
 
-    >>> X = DiscreteUniform('X', symbols('a b c'))  # equally likely over a, b, c
+    >>> X = DiscreteUniform('X', (a, b, c))  # equally likely over a, b, c
     >>> density(X).dict
     {a: 1/3, b: 1/3, c: 1/3}
 

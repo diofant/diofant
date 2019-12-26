@@ -163,7 +163,7 @@ def get_indices(expr):
     ========
 
     >>> x, y, A = map(IndexedBase, ['x', 'y', 'A'])
-    >>> i, j, a, z = symbols('i j a z', integer=True)
+    >>> i, j = symbols('i j', integer=True)
 
     The indices of the total expression is determined, Repeated indices imply a
     summation, for instance the trace of a matrix A:

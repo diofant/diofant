@@ -57,7 +57,6 @@ optional shape parameter to IndexedBase upon construction:
 If an IndexedBase object has no shape information, it is assumed that the
 array is as large as the ranges of its indices:
 
->>> n, m = symbols('n m', integer=True)
 >>> i = Idx('i', m)
 >>> j = Idx('j', n)
 >>> M[i, j].shape
@@ -205,7 +204,6 @@ class Indexed(Expr):
         the IndexedBase does not define a shape attribute, it is assumed that
         the ranges of the indices correspond to the shape of the array.
 
-        >>> n, m = symbols('n m', integer=True)
         >>> i = Idx('i', m)
         >>> j = Idx('j', m)
         >>> A = IndexedBase('A', shape=(n, n))
@@ -244,7 +242,6 @@ class Indexed(Expr):
         [(0, 1), (0, 3), (0, 7)]
         >>> Indexed('A', Idx('i', 3), Idx('j', 3), Idx('k', 3)).ranges
         [(0, 2), (0, 2), (0, 2)]
-        >>> x, y, z = symbols('x y z', integer=True)
         >>> Indexed('A', x, y, z).ranges
         [None, None, None]
 
@@ -302,7 +299,7 @@ class IndexedBase(Expr, NotIterable):
     it overrides any shape information in the indices. (But not the index
     ranges!)
 
-    >>> m, n, o, p = symbols('m n o p', integer=True)
+    >>> o, p = symbols('o p', integer=True)
     >>> i = Idx('i', m)
     >>> j = Idx('j', n)
     >>> A[i, j].shape
@@ -431,7 +428,7 @@ class Idx(Expr):
     Examples
     ========
 
-    >>> n, i, L, U = symbols('n i L U', integer=True)
+    >>> i, L, U = symbols('i L U', integer=True)
 
     If a string is given for the label an integer Symbol is created and the
     bounds are both None:

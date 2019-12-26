@@ -1933,7 +1933,6 @@ class Triangle(Polygon):
         Examples
         ========
 
-        >>> a = Symbol('a')
         >>> p1, p2, p3 = Point(0, 0), Point(1, 0), Point(0, a)
         >>> t = Triangle(p1, p2, p3)
         >>> t.circumradius

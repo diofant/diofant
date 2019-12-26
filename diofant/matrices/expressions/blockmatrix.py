@@ -22,7 +22,6 @@ class BlockMatrix(MatrixExpr):
     The submatrices are stored in a Diofant Matrix object but accessed as part of
     a Matrix Expression
 
-    >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
     >>> Y = MatrixSymbol('Y', m, m)
     >>> Z = MatrixSymbol('Z', n, m)
@@ -180,7 +179,6 @@ class BlockDiagMatrix(BlockMatrix):
     """
     A BlockDiagMatrix is a BlockMatrix with matrices only along the diagonal
 
-    >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
     >>> Y = MatrixSymbol('Y', m, m)
     >>> BlockDiagMatrix(X, Y)
@@ -247,7 +245,6 @@ class BlockDiagMatrix(BlockMatrix):
 def block_collapse(expr):
     """Evaluates a block matrix expression
 
-    >>> n, m, l = symbols('n m l')
     >>> X = MatrixSymbol('X', n, n)
     >>> Y = MatrixSymbol('Y', m, m)
     >>> Z = MatrixSymbol('Z', n, m)
