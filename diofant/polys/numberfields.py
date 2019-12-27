@@ -762,18 +762,14 @@ def field_isomorphism_pslq(a, b):
             basis = [B**i for i in range(m)] + [A]
             coeffs = mpmath.pslq(basis, maxcoeff=int(1e10), maxsteps=1000)
 
-        if coeffs is None:
+        if coeffs is None or not coeffs[-1]:
             break
 
-        coeffs = [QQ(c, coeffs[-1]) for c in coeffs[:-1]]
-        while not coeffs[-1]:
-            coeffs.pop()
-        coeffs.reverse()
+        h = Poly([QQ(-c, coeffs[-1]) for c in reversed(coeffs[:-1])],
+                 f.gen, domain='QQ')
 
-        h = Poly(coeffs, f.gen, domain='QQ')
-
-        if f.compose(h).rem(g).is_zero or f.compose(-h).rem(g).is_zero:
-            return [-c for c in coeffs]
+        if f.compose(h).rem(g).is_zero:
+            return h.rep.all_coeffs()
 
 
 def field_isomorphism_factor(a, b):
