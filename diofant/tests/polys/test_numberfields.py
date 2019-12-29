@@ -8,9 +8,8 @@ from diofant import (Add, GoldenRatio, I, Integer, PurePoly, Rational, cbrt,
                      solve, sqrt)
 from diofant.abc import x, y, z
 from diofant.domains import QQ
-from diofant.polys.numberfields import (field_isomorphism,
-                                        is_isomorphism_possible,
-                                        minimal_polynomial, primitive_element)
+from diofant.polys.numberfields import (field_isomorphism, minimal_polynomial,
+                                        primitive_element)
 from diofant.polys.polyerrors import CoercionFailed, NotAlgebraic
 from diofant.polys.polytools import degree
 from diofant.polys.rootoftools import RootOf
@@ -448,13 +447,7 @@ def test_field_isomorphism():
 
     a = QQ.algebraic_field(sqrt(2))
 
-    assert is_isomorphism_possible(a, c) is False
     assert field_isomorphism(a, c) is None
-
-    assert is_isomorphism_possible(a, p) is True
-    assert is_isomorphism_possible(a, q) is True
-    assert is_isomorphism_possible(a, r) is True
-    assert is_isomorphism_possible(a, s) is True
 
     assert field_isomorphism(a, p, fast=True) == pos_coeffs
     assert field_isomorphism(a, q, fast=True) == neg_coeffs
@@ -467,11 +460,6 @@ def test_field_isomorphism():
     assert field_isomorphism(a, s, fast=False) == neg_coeffs
 
     a = QQ.algebraic_field(-sqrt(2))
-
-    assert is_isomorphism_possible(a, p) is True
-    assert is_isomorphism_possible(a, q) is True
-    assert is_isomorphism_possible(a, r) is True
-    assert is_isomorphism_possible(a, s) is True
 
     assert field_isomorphism(a, p, fast=True) == neg_coeffs
     assert field_isomorphism(a, q, fast=True) == pos_coeffs
@@ -488,11 +476,6 @@ def test_field_isomorphism():
 
     a = QQ.algebraic_field(sqrt(3))
 
-    assert is_isomorphism_possible(a, p) is True
-    assert is_isomorphism_possible(a, q) is True
-    assert is_isomorphism_possible(a, r) is True
-    assert is_isomorphism_possible(a, s) is True
-
     assert field_isomorphism(a, p, fast=True) == neg_coeffs
     assert field_isomorphism(a, q, fast=True) == neg_coeffs
     assert field_isomorphism(a, r, fast=True) == pos_coeffs
@@ -504,11 +487,6 @@ def test_field_isomorphism():
     assert field_isomorphism(a, s, fast=False) == pos_coeffs
 
     a = QQ.algebraic_field(-sqrt(3))
-
-    assert is_isomorphism_possible(a, p) is True
-    assert is_isomorphism_possible(a, q) is True
-    assert is_isomorphism_possible(a, r) is True
-    assert is_isomorphism_possible(a, s) is True
 
     assert field_isomorphism(a, p, fast=True) == pos_coeffs
     assert field_isomorphism(a, q, fast=True) == pos_coeffs
@@ -524,11 +502,6 @@ def test_field_isomorphism():
     neg_coeffs = [-QQ(3, 2), 0, +QQ(33, 2), -8]
 
     a = QQ.algebraic_field(3*sqrt(3) - 8)
-
-    assert is_isomorphism_possible(a, p) is True
-    assert is_isomorphism_possible(a, q) is True
-    assert is_isomorphism_possible(a, r) is True
-    assert is_isomorphism_possible(a, s) is True
 
     assert field_isomorphism(a, p, fast=True) == neg_coeffs
     assert field_isomorphism(a, q, fast=True) == neg_coeffs
@@ -547,11 +520,6 @@ def test_field_isomorphism():
     pos_5_coeffs = [+QQ(5, 2), 0, -QQ(49, 2), 1]
     neg_5_coeffs = [-QQ(5, 2), 0, +QQ(49, 2), 1]
 
-    assert is_isomorphism_possible(a, p) is True
-    assert is_isomorphism_possible(a, q) is True
-    assert is_isomorphism_possible(a, r) is True
-    assert is_isomorphism_possible(a, s) is True
-
     assert field_isomorphism(a, p, fast=True) == pos_1_coeffs
     assert field_isomorphism(a, q, fast=True) == neg_5_coeffs
     assert field_isomorphism(a, r, fast=True) == pos_5_coeffs
@@ -565,11 +533,6 @@ def test_field_isomorphism():
     a = QQ.algebraic_field(sqrt(2))
     b = QQ.algebraic_field(sqrt(3))
     c = QQ.algebraic_field(sqrt(7))
-
-    assert is_isomorphism_possible(a, b) is True
-    assert is_isomorphism_possible(b, a) is True
-
-    assert is_isomorphism_possible(c, p) is False
 
     assert field_isomorphism(a, b, fast=True) is None
     assert field_isomorphism(b, a, fast=True) is None
