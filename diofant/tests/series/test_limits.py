@@ -715,3 +715,12 @@ def test_sympyissue_18118():
 
 def test_sympyissue_6599():
     assert limit((x + cos(x))/x, x, oo) == 1
+
+
+def test_sympyissue_18176():
+    x = Symbol('x', real=True, positive=True)
+    n = Symbol('n', integer=True, positive=True)
+    k = Symbol('k')
+    e = x**n - x**(n - k)
+    assert limit(e.subs({k: 0}), x, oo) == 0
+    assert limit(e.subs({k: 1}), x, oo) == oo

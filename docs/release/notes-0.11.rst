@@ -144,3 +144,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`8810` Poly keyword `composite` is ignored when instantiating from Poly
 * :sympyissue:`18118` limit(sign(sin(x)), x, 0, '+')) = 0 (which is wrong)
 * :sympyissue:`6599` limit of fraction with oscillating term in the numerator calculated incorrectly
+* :sympyissue:`18176` Incorrect value for limit(x**n-x**(n-k),x,oo) when k is a natural number
