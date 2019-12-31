@@ -14,8 +14,7 @@ from .. import (acosh, acoth, asin, asinh, atan, atanh, cos, cosh, exp, log,
 class TupleArg(Tuple):
     def limit(self, x, xlim, dir='+'):
         """Compute limit x->xlim."""
-        from ...series import limit
-        return TupleArg(*[limit(f, x, xlim, dir) for f in self.args])
+        return self.func(*[_.limit(x, xlim, dir) for _ in self.args])
 
 
 # TODO should __new__ accept **options?
