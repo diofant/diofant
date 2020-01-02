@@ -1618,7 +1618,6 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
     oo
     >>> 42/oo
     0
-    >>> x = Symbol('x')
     >>> limit(exp(x), x, oo)
     oo
 
@@ -2319,7 +2318,6 @@ class Pi(NumberSymbol, metaclass=SingletonWithManagedProperties):
     true
     >>> pi.is_irrational
     True
-    >>> x = Symbol('x')
     >>> sin(x + 2*pi)
     sin(x)
     >>> integrate(exp(-x**2), (x, -oo, oo))

@@ -17,7 +17,6 @@ class IdentityFunction(Lambda, metaclass=Singleton):
     Examples
     ========
 
-    >>> x = Symbol('x')
     >>> Id(x)
     x
 

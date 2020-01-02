@@ -265,7 +265,7 @@ class Curve(GeometrySet):
         Point2D(2*s, s**2)
         >>> C.arbitrary_point(None)
         Point2D(2*s, s**2)
-        >>> C.arbitrary_point(Symbol('a'))
+        >>> C.arbitrary_point(a)
         Point2D(2*a, a**2)
 
         """
