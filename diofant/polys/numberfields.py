@@ -752,50 +752,41 @@ def field_isomorphism_pslq(a, b):
         raise NotImplementedError("PSLQ doesn't support complex coefficients")
 
     f = a.minpoly
-    g = b.minpoly.replace(f.gen)
-    m = b.minpoly.degree()
+    x = f.gen
+
+    g = b.minpoly.replace(x)
+    m = g.degree()
+
+    a, b = a.ext, b.ext
 
     for n in mpmath.libmp.libintmath.giant_steps(32, 256):  # pragma: no branch
         with mpmath.workdps(n):
-            A = lambdify((), a.ext, "mpmath")()
-            B = lambdify((), b.ext, "mpmath")()
-            basis = [B**i for i in range(m)] + [A]
-            coeffs = mpmath.pslq(basis, maxcoeff=int(1e10), maxsteps=1000)
+            A, B = lambdify((), [a, b], "mpmath")()
+            basis = [A] + [B**i for i in reversed(range(m))]
+            coeffs = mpmath.pslq(basis, maxcoeff=10**10, maxsteps=10**3)
 
-        if coeffs is None:
+        if coeffs:
+            assert coeffs[0]  # basis[1:] elements are linearly independent
+
+            h = -Poly(coeffs[1:], x, field=True).quo_ground(coeffs[0])
+
+            if f.compose(h).rem(g).is_zero:
+                return h.rep.all_coeffs()
+        else:
             break
-
-        coeffs = [QQ(c, coeffs[-1]) for c in coeffs[:-1]]
-        while not coeffs[-1]:
-            coeffs.pop()
-        coeffs.reverse()
-
-        h = Poly(coeffs, f.gen, domain='QQ')
-
-        if f.compose(h).rem(g).is_zero or f.compose(-h).rem(g).is_zero:
-            return [-c for c in coeffs]
 
 
 def field_isomorphism_factor(a, b):
     """Construct field isomorphism via factorization."""
-    _, factors = a.minpoly.set_domain(b).factor_list()
+    p = a.minpoly.set_domain(b)
+    _, factors = p.factor_list()
 
     for f, _ in factors:
         if f.degree() == 1:
-            tc = f.rep.to_dense()[-1]
-            coeffs = [tc.domain.domain.to_expr(c) for c in tc.rep.to_dense()]
-            d, terms = len(coeffs) - 1, []
+            root = -f.rep.coeff((0,))/f.rep.coeff((1,))
 
-            for i, coeff in enumerate(coeffs):
-                terms.append(coeff*b.ext**(d - i))
-
-            root = Add(*terms)
-
-            if (a.ext - root).evalf(chop=True) == 0:
-                return [b(+c) for c in coeffs]
-
-            if (a.ext + root).evalf(chop=True) == 0:
-                return [b(-c) for c in coeffs]
+            if (a.ext - b.to_expr(root)).evalf(chop=True) == 0:
+                return root.rep.to_dense()
 
 
 def field_isomorphism(a, b, **args):
