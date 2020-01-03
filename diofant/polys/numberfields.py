@@ -778,24 +778,15 @@ def field_isomorphism_pslq(a, b):
 
 def field_isomorphism_factor(a, b):
     """Construct field isomorphism via factorization."""
-    _, factors = a.minpoly.set_domain(b).factor_list()
+    p = a.minpoly.set_domain(b)
+    _, factors = p.factor_list()
 
     for f, _ in factors:
         if f.degree() == 1:
-            tc = f.rep.to_dense()[-1]
-            coeffs = [tc.domain.domain.to_expr(c) for c in tc.rep.to_dense()]
-            d, terms = len(coeffs) - 1, []
+            root = -f.rep.coeff((0,))/f.rep.coeff((1,))
 
-            for i, coeff in enumerate(coeffs):
-                terms.append(coeff*b.ext**(d - i))
-
-            root = Add(*terms)
-
-            if (a.ext - root).evalf(chop=True) == 0:
-                return [b(+c) for c in coeffs]
-
-            if (a.ext + root).evalf(chop=True) == 0:
-                return [b(-c) for c in coeffs]
+            if (a.ext - b.to_expr(root)).evalf(chop=True) == 0:
+                return root.rep.to_dense()
 
 
 def field_isomorphism(a, b, **args):
