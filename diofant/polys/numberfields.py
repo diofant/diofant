@@ -752,24 +752,28 @@ def field_isomorphism_pslq(a, b):
         raise NotImplementedError("PSLQ doesn't support complex coefficients")
 
     f = a.minpoly
-    g = b.minpoly.replace(f.gen)
-    m = b.minpoly.degree()
+    x = f.gen
+
+    g = b.minpoly.replace(x)
+    m = g.degree()
+
+    a, b = a.ext, b.ext
 
     for n in mpmath.libmp.libintmath.giant_steps(32, 256):  # pragma: no branch
         with mpmath.workdps(n):
-            A = lambdify((), a.ext, "mpmath")()
-            B = lambdify((), b.ext, "mpmath")()
-            basis = [B**i for i in range(m)] + [A]
-            coeffs = mpmath.pslq(basis, maxcoeff=int(1e10), maxsteps=1000)
+            A, B = lambdify((), [a, b], "mpmath")()
+            basis = [A] + [B**i for i in reversed(range(m))]
+            coeffs = mpmath.pslq(basis, maxcoeff=10**10, maxsteps=10**3)
 
-        if coeffs is None or not coeffs[-1]:
+        if coeffs:
+            assert coeffs[0]  # basis[1:] elements are linearly independent
+
+            h = -Poly(coeffs[1:], x, field=True).quo_ground(coeffs[0])
+
+            if f.compose(h).rem(g).is_zero:
+                return h.rep.all_coeffs()
+        else:
             break
-
-        h = Poly([QQ(-c, coeffs[-1]) for c in reversed(coeffs[:-1])],
-                 f.gen, domain='QQ')
-
-        if f.compose(h).rem(g).is_zero:
-            return h.rep.all_coeffs()
 
 
 def field_isomorphism_factor(a, b):
