@@ -21,32 +21,32 @@ The main function for solving algebraic equations is
 
 When solving a single equation, the output is a list of the solutions.
 
-    >>> solve(x**2 - x, x)
+    >>> solve(x**2 - x)
     [{x: 0}, {x: 1}]
 
 If no solutions are found, an empty list is returned.
 
-    >>> solve(exp(x), x)
+    >>> solve(exp(x))
     []
 
 :func:`~diofant.solvers.solvers.solve` can also solve systems of equations.
 
-    >>> solve([x - y + 2, x + y - 3], [x, y])
+    >>> solve([x - y + 2, x + y - 3])
     [{x: 1/2, y: 5/2}]
-    >>> solve([x*y - 7, x + y - 6], [x, y])
+    >>> solve([x*y - 7, x + y - 6])
     ⎡⎧       ___           ___    ⎫  ⎧     ___             ___    ⎫⎤
     ⎢⎨x: - ╲╱ 2  + 3, y: ╲╱ 2  + 3⎬, ⎨x: ╲╱ 2  + 3, y: - ╲╱ 2  + 3⎬⎥
     ⎣⎩                            ⎭  ⎩                            ⎭⎦
 
 :func:`~diofant.solvers.solvers.solve` reports each solution only once.
 
-    >>> solve(x**3 - 6*x**2 + 9*x, x)
+    >>> solve(x**3 - 6*x**2 + 9*x)
     [{x: 0}, {x: 3}]
 
 To get the solutions of a polynomial including multiplicity use
 :func:`~diofant.polys.polyroots.roots`.
 
-    >>> roots(x**3 - 6*x**2 + 9*x, x)
+    >>> roots(x**3 - 6*x**2 + 9*x)
     {0: 1, 3: 2}
 
 Differential Equations
@@ -81,7 +81,7 @@ To represent the differential equation `f''(x) - 2f'(x) + f(x) =
 To solve the ODE, pass it and the function to solve for to
 :func:`~diofant.solvers.ode.dsolve`.
 
-    >>> dsolve(_, f(x))
+    >>> dsolve(_)
             x               cos(x)
     f(x) = ℯ ⋅(C₁ + C₂⋅x) + ──────
                               2
@@ -91,7 +91,7 @@ To solve the ODE, pass it and the function to solve for to
 solutions to differential equations cannot be solved explicitly for
 the function.
 
-    >>> dsolve(f(x).diff(x)*(1 - sin(f(x))), f(x))
+    >>> dsolve(f(x).diff(x)*(1 - sin(f(x))))
     f(x) + cos(f(x)) = C₁
 
 The arbitrary constants in the solutions from dsolve are symbols of
@@ -100,6 +100,6 @@ the form ``C1``, ``C2``, ``C3``, and so on.
 :func:`~diofant.solvers.ode.dsolve` can also solve systems of
 equations, like :func:`~diofant.solvers.solvers.solve`.
 
-    >>> dsolve([f(x).diff(x) - g(x), g(x).diff(x) - f(x)], [f(x), g(x)])
+    >>> dsolve([f(x).diff(x) - g(x), g(x).diff(x) - f(x)])
     ⎡        x       -x             x       -x   ⎤
     ⎣f(x) = ℯ ⋅C₂ - ℯ  ⋅C₁, g(x) = ℯ ⋅C₂ + ℯ  ⋅C₁⎦
