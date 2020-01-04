@@ -1362,6 +1362,12 @@ def test_separable_1_5_checkodesol():
     assert checkodesol(eq12, sol12, order=1, solve_for_func=False)[0]
 
 
+def test_separable6():
+    eq1 = f(x).diff(x)*(1 - sin(f(x)))
+    sol1 = Eq(f(x) + cos(f(x)), C1)
+    assert dsolve(eq1) == sol1
+
+
 def test_homogeneous_order():
     assert homogeneous_order(exp(y/x) + tan(y/x), x, y) == 0
     assert homogeneous_order(x**2 + sin(x)*cos(y), x, y) is None
