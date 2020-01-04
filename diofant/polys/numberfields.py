@@ -10,7 +10,7 @@ from ..core.exprtools import Factors
 from ..core.function import _mexpand, count_ops
 from ..domains import QQ, ZZ, AlgebraicField
 from ..functions import Abs, conjugate, cos, exp_polar, im, re, root, sin, sqrt
-from ..ntheory import divisors, sieve
+from ..ntheory import divisors
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
 from ..utilities import lambdify, numbered_symbols, sift
@@ -713,37 +713,6 @@ def primitive_element(extension, **args):
         g = (g.compose(Poly(g.gen/g.LC()))*g.LC()**g.degree()//g.LC()).retract()
 
     return g, list(coeffs), H
-
-
-def is_isomorphism_possible(a, b):
-    """Returns `True` if there is a chance for isomorphism."""
-    n = a.minpoly.degree()
-    m = b.minpoly.degree()
-
-    if m % n != 0:
-        return False
-
-    if n == m:
-        return True
-
-    da = a.minpoly.discriminant()
-    db = b.minpoly.discriminant()
-
-    i, k, half = 1, m//n, db//2
-
-    while True:
-        p = sieve[i]
-        P = p**k
-
-        if P > half:
-            break
-
-        if ((da % p) % 2) and not (db % P):
-            return False
-
-        i += 1
-
-    return True
 
 
 def field_isomorphism_pslq(a, b):
