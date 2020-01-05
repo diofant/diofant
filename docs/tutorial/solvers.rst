@@ -38,7 +38,7 @@ If no solutions are found, an empty list is returned.
     ⎢⎨x: - ╲╱ 2  + 3, y: ╲╱ 2  + 3⎬, ⎨x: ╲╱ 2  + 3, y: - ╲╱ 2  + 3⎬⎥
     ⎣⎩                            ⎭  ⎩                            ⎭⎦
 
-:func:`~diofant.solvers.solvers.solve` reports each solution only once.
+Each solution reported only once:
 
     >>> solve(x**3 - 6*x**2 + 9*x)
     [{x: 0}, {x: 3}]
@@ -68,20 +68,10 @@ and it will represent an unknown function application.  Derivatives of
     ──(f(x))
     dx
 
-To represent the differential equation `f''(x) - 2f'(x) + f(x) =
+To solve the differential equation `f''(x) - 2f'(x) + f(x) =
 \sin(x)`, we would thus use
 
-    >>> Eq(f(x).diff(x, x) - 2*f(x).diff(x) + f(x), sin(x))
-                          2
-             d           d
-    f(x) - 2⋅──(f(x)) + ───(f(x)) = sin(x)
-             dx           2
-                        dx
-
-To solve the ODE, pass it and the function to solve for to
-:func:`~diofant.solvers.ode.dsolve`.
-
-    >>> dsolve(_)
+    >>> dsolve(Eq(f(x).diff(x, x) - 2*f(x).diff(x) + f(x), sin(x)))
             x               cos(x)
     f(x) = ℯ ⋅(C₁ + C₂⋅x) + ──────
                               2
