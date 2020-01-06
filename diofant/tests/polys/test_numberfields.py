@@ -537,6 +537,14 @@ def test_field_isomorphism():
 
     pytest.raises(ValueError, lambda: field_isomorphism(1, 2))
 
+    r1, r2 = RootOf(x**3 - x + 1, 1), RootOf(x**3 - x + 1, 2)
+    a = QQ.algebraic_field(r1)
+    b = QQ.algebraic_field(r1**2 + 1)
+    c = QQ.algebraic_field(r2)
+
+    assert field_isomorphism(a, c) is None
+    assert field_isomorphism(a, b) == [-1, 3, -2]
+
 
 def test_to_number_field():
     A = QQ.algebraic_field(sqrt(2))

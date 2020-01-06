@@ -5,7 +5,7 @@ import functools
 import mpmath
 
 from ..core import (Add, Dummy, E, GoldenRatio, I, Integer, Mul, Rational, pi,
-                    prod, sympify)
+                    prod, symbols, sympify)
 from ..core.exprtools import Factors
 from ..core.function import _mexpand, count_ops
 from ..domains import QQ, ZZ, AlgebraicField
@@ -715,14 +715,47 @@ def primitive_element(extension, **args):
 
 def field_isomorphism_pslq(a, b):
     """Construct field isomorphism using PSLQ algorithm."""
-    if not all(_.domain.is_RationalField and _.ext.is_real for _ in (a, b)):
-        raise NotImplementedError("PSLQ doesn't support complex coefficients")
-
     f = a.minpoly
     x = f.gen
 
     g = b.minpoly.replace(x)
     m = g.degree()
+
+    if not all(_.is_RealAlgebraicField for _ in (a, b)):
+        if any(_.ext.is_imaginary for _ in (a, b)):
+            return
+
+        for n in mpmath.libmp.libintmath.giant_steps(32, 256):  # pragma: no branch
+            with mpmath.workdps(n):
+                reA = lambdify((), re(a.ext), "mpmath")()
+                imA = lambdify((), im(a.ext), "mpmath")()
+                reB = lambdify((), re(b.ext), "mpmath")()
+                imB = lambdify((), im(b.ext), "mpmath")()
+
+                d1, d2 = symbols('d1, d2', cls=Dummy)
+                R2 = QQ.poly_ring(d1, d2)
+
+                basis_re = [R2.dup_real_imag(R2.gens[0]**i)[0].as_expr().subs({d1: reB, d2: imB})
+                            for i in range(m)] + [reA]
+                basis_im = [R2.dup_real_imag(R2.gens[0]**i)[1].as_expr().subs({d1: reB, d2: imB})
+                            for i in range(1, m)] + [imA]
+                coeffs_re = mpmath.pslq(basis_re, maxcoeff=10**10, maxsteps=10**3)
+                coeffs_im = mpmath.pslq(basis_im, maxcoeff=10**10, maxsteps=10**3)
+
+            if any(_ is None or not _[-1] for _ in [coeffs_re, coeffs_im]):
+                break
+
+            coeffs_re = [QQ(-c, coeffs_re[-1]) for c in reversed(coeffs_re[:-1])]
+            coeffs_im = [QQ(-c, coeffs_im[-1]) for c in reversed(coeffs_im[:-1])]
+
+            if coeffs_re[:-1] != coeffs_im:
+                break
+
+            h = Poly(coeffs_re, f.gen, domain='QQ')
+
+            if f.compose(h).rem(g).is_zero:
+                return h.rep.all_coeffs()
+        return
 
     a, b = a.ext, b.ext
 
@@ -771,13 +804,10 @@ def field_isomorphism(a, b, **args):
     if a.domain == b.domain and m % n != 0:
         return
 
-    if args.get('fast', True):
-        try:
-            result = field_isomorphism_pslq(a, b)
+    if args.get('fast', True) and all(_.domain.is_RationalField for _ in (a, b)):
+        result = field_isomorphism_pslq(a, b)
 
-            if result is not None:
-                return result
-        except NotImplementedError:
-            pass
+        if result is not None:
+            return result
 
     return field_isomorphism_factor(a, b)
