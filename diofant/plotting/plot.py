@@ -1515,7 +1515,6 @@ def plot3d(*args, **kwargs):
     Plot, SurfaceOver2DRangeSeries
 
     """
-
     args = list(map(sympify, args))
     show = kwargs.pop('show', True)
     series = []
@@ -1606,7 +1605,6 @@ def plot3d_parametric_surface(*args, **kwargs):
     Plot, ParametricSurfaceSeries
 
     """
-
     args = list(map(sympify, args))
     show = kwargs.pop('show', True)
     series = []

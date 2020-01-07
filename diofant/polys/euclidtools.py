@@ -498,7 +498,6 @@ def dmp_zz_collins_resultant(f, g, u, K):
     -2*y**2 - 5*y + 1
 
     """
-
     n = dmp_degree_in(f, 0, u)
     m = dmp_degree_in(g, 0, u)
 

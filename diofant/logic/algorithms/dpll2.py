@@ -171,7 +171,6 @@ class SATSolver:
         [{a: True, b: False, c: False}, {a: True, b: True, c: True}]
 
         """
-
         # We use this variable to keep track of if we should flip a
         #  variable setting in successive rounds
         flip_var = False

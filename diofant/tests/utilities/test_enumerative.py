@@ -69,7 +69,6 @@ def multiset_partitions_baseline(multiplicities, components):
     production implementation.)
 
     """
-
     canon = []                  # list of components with repeats
     for ct, elem in zip(multiplicities, components):
         canon.extend([elem]*ct)
@@ -131,7 +130,6 @@ def test_multiset_partitions_taocp():
     (set partition based) implementation.
 
     """
-
     # Test cases should not be too large, since the baseline
     # implementation is fairly slow.
     multiplicities = [2, 2]

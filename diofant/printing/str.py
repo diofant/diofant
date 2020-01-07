@@ -662,7 +662,6 @@ def sstr(expr, **settings):
     'Eq(a + b, 0)'
 
     """
-
     p = StrPrinter(settings)
     s = p.doprint(expr)
 
@@ -684,7 +683,6 @@ def sstrrepr(expr, **settings):
 
     This function could be useful for hooking into sys.displayhook
     """
-
     p = StrReprPrinter(settings)
     s = p.doprint(expr)
 

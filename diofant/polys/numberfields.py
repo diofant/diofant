@@ -545,7 +545,6 @@ def minimal_polynomial(ex, method=None, **args):
     x**2 - y
 
     """
-
     if method is None:
         method = query('minpoly_method')
     _minpoly_methods = {'compose': _minpoly_compose, 'groebner': minpoly_groebner}
@@ -589,7 +588,6 @@ def minpoly_groebner(ex, x, domain):
     * :cite:`Adams1994intro`
 
     """
-
     generator = numbered_symbols('a', cls=Dummy)
     mapping, symbols = {}, {}
 

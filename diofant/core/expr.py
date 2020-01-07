@@ -74,7 +74,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     @cacheit
     def sort_key(self, order=None):
         """Return a sort key."""
-
         coeff, expr = self.as_coeff_Mul()
 
         if expr.is_Pow:
@@ -342,7 +341,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.utilities.randtest.random_complex_number
 
         """
-
         free = self.free_symbols
         prec = 1
         if free:
@@ -438,7 +436,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         True
 
         """
-
         simplify = flags.get('simplify', True)
 
         # Except for expressions that contain units, only one of these should
@@ -951,7 +948,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         [[-1, oo], []]
 
         """
-
         if self.is_Mul:
             args = list(self.args)
         else:
@@ -1338,7 +1334,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.polys.polytools.Poly.coeff_monomial: efficiently find the single coefficient of a monomial in Poly
 
         """
-
         r = self.extract_multiplicatively(expr)
         if r and not r.has(expr):
             return r
@@ -1750,7 +1745,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         normal: return a/b instead of a, b
 
         """
-
         try:
             return self._eval_as_numer_denom()
         except AttributeError:
@@ -1894,7 +1888,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         as_coefficient
 
         """
-
         c = sympify(c)
         if self is nan:
             return

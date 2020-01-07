@@ -643,7 +643,6 @@ def stringify_expr(s, local_dict, global_dict, transformations):
     Generally, ``parse_expr`` should be used.
 
     """
-
     tokens = []
     input_code = BytesIO(s.encode('utf-8').strip())
     for toknum, tokval, _, _, _ in tokenize(input_code.readline):
@@ -735,7 +734,6 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
     diofant.parsing.sympy_parser.implicit_multiplication_application
 
     """
-
     if local_dict is None:
         local_dict = {}
 

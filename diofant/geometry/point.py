@@ -157,7 +157,6 @@ class Point(GeometryEntity):
         False
 
         """
-
         # Coincident points are irrelevant; use only unique points.
         uniq_args = list(set(args))
         if not all(isinstance(p, Point) for p in uniq_args):
@@ -380,7 +379,6 @@ class Point(GeometryEntity):
         diofant.geometry.entity.GeometryEntity.translate
 
         """
-
         if iterable(other) and len(other) == len(self):
             return Point([simplify(a + b) for a, b in zip(self, other)])
         else:
@@ -524,7 +522,6 @@ class Point2D(Point):
         rectangle for the geometric figure.
 
         """
-
         return self.x, self.y, self.x, self.y
 
     def is_concyclic(*points):

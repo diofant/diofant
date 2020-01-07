@@ -81,7 +81,6 @@ def _linab(arg, symbol):
     (2, 3, E**x)
 
     """
-
     arg = arg.expand()
     ind, dep = arg.as_independent(symbol)
     if not arg.is_Add:
@@ -171,7 +170,6 @@ def _solve_lambert(f, symbol, gens):
       a = -1, d = a*log(p), f = -log(d) - g*log(p)
 
     """
-
     nrhs, lhs = f.as_independent(symbol, as_Add=True)
     rhs = -nrhs
 
@@ -286,7 +284,6 @@ def bivariate_type(f, x, y, **kwargs):
     True
 
     """
-
     u = Dummy('u', positive=True)
 
     if kwargs.pop('first', True):

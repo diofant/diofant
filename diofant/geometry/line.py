@@ -191,7 +191,6 @@ class LinearEntity(GeometrySet):
         False
 
         """
-
         # Concurrency requires intersection at a single point; One linear
         # entity cannot be concurrent.
         if len(lines) <= 1:

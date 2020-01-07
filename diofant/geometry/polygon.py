@@ -264,7 +264,6 @@ class Polygon(GeometrySet):
         acos(-4*sqrt(17)/17)
 
         """
-
         # Determine orientation of points
         args = self.vertices
         cw = self._isright(args[-1], args[0], args[1])
@@ -442,7 +441,6 @@ class Polygon(GeometrySet):
         True
 
         """
-
         # Determine orientation of points
         args = self.vertices
         cw = self._isright(args[-2], args[-1], args[0])
@@ -947,7 +945,6 @@ class Polygon(GeometrySet):
         True
 
         """
-
         if isinstance(o, Polygon):
             return self == o
         elif isinstance(o, Segment):
@@ -1410,7 +1407,6 @@ class RegularPolygon(Polygon):
         False
 
         """
-
         c = self.center
         d = Segment(c, p).length
         if d >= self.radius:
@@ -1459,7 +1455,6 @@ class RegularPolygon(Polygon):
         spin : Rotates a RegularPolygon in place
 
         """
-
         r = type(self)(*self.args)  # need a copy or else changes are in-place
         r._rot += angle
         return GeometryEntity.rotate(r, angle, pt)

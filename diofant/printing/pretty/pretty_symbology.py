@@ -289,7 +289,6 @@ def xobj(symb, length):
 
     return: [] of equal-length strings
     """
-
     if length <= 0:
         raise ValueError("Length should be greater than 0")
 

@@ -744,7 +744,6 @@ class Mul(AssocOp):
         sums must be a list of instances of Basic.
 
         """
-
         L = len(sums)
         if L == 1:
             return sums[0].args
@@ -1058,7 +1057,6 @@ class Mul(AssocOp):
             pos * neg * nonnegative -> neg or zero -> False is returned
 
         """
-
         sign = 1
         saw_NON = False
         for t in self.args:
@@ -1152,7 +1150,6 @@ class Mul(AssocOp):
             noncommutatives come back as a list [(b**e, Rational)]
 
             """
-
             c, nc = defaultdict(int), []
             for a in Mul.make_args(eq):
                 a = powdenest(a)
@@ -1174,7 +1171,6 @@ class Mul(AssocOp):
             it back.
 
             """
-
             b, e = base_exp(b)
             return Pow(b, e*co)
 
@@ -1418,7 +1414,6 @@ class Mul(AssocOp):
         diofant.core.expr.Expr.as_content_primitive
 
         """
-
         coef = S.One
         args = []
         for i, a in enumerate(self.args):

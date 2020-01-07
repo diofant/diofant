@@ -92,7 +92,6 @@ def fuzzy_and(args):
     False
 
     """
-
     rv = True
     for ai in args:
         ai = fuzzy_bool(ai)

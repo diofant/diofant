@@ -469,7 +469,6 @@ def centroid(*args):
         Point2D(11/10, 1/2)
 
     """
-
     from .polygon import Polygon, Segment
     from .point import Point
     if args:

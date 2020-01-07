@@ -117,7 +117,6 @@ def test_product_rules():
     * https://en.wikipedia.org/wiki/Del
 
     """
-
     # Define the scalar and vector functions
     f = 2*x*y*z
     g = x*y + y*z + z*x

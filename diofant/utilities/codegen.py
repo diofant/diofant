@@ -150,7 +150,6 @@ class Routine:
             Variables which will not be passed into the function.
 
         """
-
         # extract all input symbols and all symbols appearing in an expression
         input_symbols = set()
         symbols = set()
@@ -377,7 +376,6 @@ class OutputArgument(Argument, ResultBase):
             Controls the precision of floating point constants.
 
         """
-
         Argument.__init__(self, name, datatype, dimensions, precision)
         ResultBase.__init__(self, expr, result_var)
 
@@ -706,7 +704,6 @@ class CodeGen:
             files.  [default : True]
 
         """
-
         code_lines = self._preprocessor_statements(prefix)
 
         for routine in routines:
@@ -1198,7 +1195,6 @@ class OctaveCodeGen(CodeGen):
 
     def routine(self, name, expr, argument_sequence, global_vars):
         """Specialized Routine creation for Octave."""
-
         # FIXME: this is probably general enough for other high-level
         # languages, perhaps its the C/Fortran one that is specialized!
 
@@ -1542,7 +1538,6 @@ def codegen(name_expr, language, prefix=None, project="project",
     end function
 
     """
-
     # Initialize the code generator.
     code_gen = get_code_generator(language, project)
 
@@ -1640,7 +1635,6 @@ def make_routine(name, expr, argument_sequence=None,
     [g + x]
 
     """
-
     # initialize a new code generator
     code_gen = get_code_generator(language, "nothingElseMatters")
 

@@ -232,7 +232,6 @@ class CCodePrinter(CodePrinter):
 
     def indent_code(self, code):
         """Accepts a string of code or a list of code lines."""
-
         if isinstance(code, str):
             code_lines = self.indent_code(code.splitlines(True))
             return ''.join(code_lines)
@@ -374,5 +373,4 @@ def ccode(expr, assign_to=None, **settings):
     A[2] = sin(x);
 
     """
-
     return CCodePrinter(settings).doprint(expr, assign_to)

@@ -1231,7 +1231,6 @@ class Rational(Number):
         diofant.core.expr.Expr.as_content_primitive
 
         """
-
         if self:
             if self.is_positive:
                 return self, S.One
@@ -2535,7 +2534,6 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
         I**3 mod 4 -> -I
 
         """
-
         if isinstance(expt, Number):
             if isinstance(expt, Integer):
                 expt = expt.numerator % 4

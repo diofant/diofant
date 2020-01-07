@@ -402,7 +402,6 @@ def pspace(expr):
     True
 
     """
-
     expr = sympify(expr)
     rvs = random_symbols(expr)
     if not rvs:
@@ -473,7 +472,6 @@ def given(expr, condition=None, **kwargs):
          2*\/ pi
 
     """
-
     if not random_symbols(condition) or pspace_independent(expr, condition):
         return expr
 
@@ -531,7 +529,6 @@ def expectation(expr, condition=None, numsamples=None, evaluate=True, **kwargs):
     5
 
     """
-
     if not random_symbols(expr):  # expr isn't random?
         return expr
     if numsamples:  # Computing by monte carlo sampling?
@@ -586,7 +583,6 @@ def probability(condition, given_condition=None, numsamples=None,
     5/12
 
     """
-
     condition = sympify(condition)
     given_condition = sympify(given_condition)
 
@@ -684,7 +680,6 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
     sqrt(2)*E**(-x**2/2)/(2*sqrt(pi))
 
     """
-
     if numsamples:
         return sampling_density(expr, condition, numsamples=numsamples,
                                 **kwargs)
@@ -862,7 +857,6 @@ def sampling_P(condition, given_condition=None, numsamples=1,
     diofant.stats.rv.sampling_density
 
     """
-
     count_true = 0
     count_false = 0
 
@@ -891,7 +885,6 @@ def sampling_E(expr, given_condition=None, numsamples=1,
     diofant.stats.rv.sampling_density
 
     """
-
     samples = sample_iter(expr, given_condition,
                           numsamples=numsamples, **kwargs)
 
@@ -910,7 +903,6 @@ def sampling_density(expr, given_condition=None, numsamples=1, **kwargs):
     diofant.stats.rv.sampling_E
 
     """
-
     results = {}
     for result in sample_iter(expr, given_condition,
                               numsamples=numsamples, **kwargs):

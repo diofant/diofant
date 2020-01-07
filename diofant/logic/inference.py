@@ -18,7 +18,6 @@ def literal_symbol(literal):
     a
 
     """
-
     if literal is True or literal is False:
         return literal
     try:
@@ -142,7 +141,6 @@ def pl_true(expr, model={}, deep=False):
     False
 
     """
-
     from ..core import Symbol
     from .boolalg import BooleanFunction
     boolean = (True, False)

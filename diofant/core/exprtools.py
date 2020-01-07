@@ -210,7 +210,6 @@ class Factors:
         x*y**2
 
         """
-
         args = []
         for factor, exp in self.factors.items():
             if exp != 1:
@@ -665,7 +664,6 @@ def _gcd_terms(terms, isprimitive=False, fraction=True):
     denominator, the lcm of all term denominators.
 
     """
-
     if isinstance(terms, Basic) and not isinstance(terms, Tuple):
         terms = Add.make_args(terms)
 

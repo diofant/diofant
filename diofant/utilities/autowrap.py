@@ -848,7 +848,6 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     [  2.   6.  12.]
 
     """
-
     if isinstance(args, (Dummy, Symbol)):
         args = args,
     else:

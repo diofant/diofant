@@ -263,7 +263,6 @@ class ExprWithLimits(Expr):
         change_index : Perform mapping on the sum and product dummy variables
 
         """
-
         from ..core.function import AppliedUndef, UndefinedFunction
         func, limits = self.function, list(self.limits)
 

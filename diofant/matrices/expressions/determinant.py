@@ -61,5 +61,4 @@ def det(matexpr):
     Determinant
 
     """
-
     return Determinant(matexpr).doit()

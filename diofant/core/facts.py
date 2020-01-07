@@ -418,7 +418,6 @@ class FactRules:
 
     def __init__(self, rules):
         """Compile rules into internal lookup tables."""
-
         if isinstance(rules, str):
             rules = rules.splitlines()
 

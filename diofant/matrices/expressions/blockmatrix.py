@@ -416,7 +416,6 @@ def blockcut(expr, rowsizes, colsizes):
     Matrix([[1, 2, 3]])
 
     """
-
     rowbounds = bounds(rowsizes)
     colbounds = bounds(colsizes)
     return BlockMatrix([[MatrixSlice(expr, rowbound, colbound)

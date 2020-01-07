@@ -10,7 +10,6 @@ from .sympify import sympify
 
 def _is_scalar(e):
     """Helper method used in Tr."""
-
     # sympify to set proper attributes
     e = sympify(e)
     if isinstance(e, Expr):
@@ -106,7 +105,6 @@ class Tr(Expr):
         indices = tuple/list if indices, optional
 
         """
-
         # expect no indices,int or a tuple/list/Tuple
         if (len(args) == 2):
             if not isinstance(args[1], (list, Tuple, tuple)):

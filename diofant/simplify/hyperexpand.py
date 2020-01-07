@@ -1468,7 +1468,6 @@ def reduce_order_meijer(func):
     G_Function((), (), (), ())
 
     """
-
     nan, nbq, ops1 = _reduce_order(func.an, func.bq, ReduceOrder.meijer_plus,
                                    lambda x: default_sort_key(-x))
     nbm, nap, ops2 = _reduce_order(func.bm, func.ap, ReduceOrder.meijer_minus,
@@ -1962,7 +1961,6 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     premult must be a*z**prem for some a independent of z.
 
     """
-
     z = polarify(z, subs=False)
     if rewrite == 'default':
         rewrite = 'nonrepsmall'

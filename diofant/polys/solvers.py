@@ -21,7 +21,6 @@ def eqs_to_matrix(eqs, ring):
 
 def solve_lin_sys(eqs, ring):
     """Solve a system of linear equations."""
-
     assert ring.domain.is_Field
 
     # transform from equations to matrix form

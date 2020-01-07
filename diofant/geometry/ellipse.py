@@ -1011,7 +1011,6 @@ class Ellipse(GeometrySet):
         the end to see that they lie in o.
 
         """
-
         hr_sq = self.hradius ** 2
         vr_sq = self.vradius ** 2
         lp = o.points
@@ -1046,7 +1045,6 @@ class Ellipse(GeometrySet):
         Private helper method for `intersection`.
 
         """
-
         x = Dummy('x', extended_real=True)
         y = Dummy('y', extended_real=True)
         seq = self.equation(x, y)

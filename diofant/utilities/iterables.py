@@ -476,7 +476,6 @@ def common_suffix(*seqs):
     [3]
 
     """
-
     if any(not s for s in seqs):
         return []
     elif len(seqs) == 1:
@@ -973,7 +972,6 @@ def multiset_partitions(multiset, m=None):
     diofant.functions.combinatorial.numbers.nT
 
     """
-
     # This function looks at the supplied input and dispatches to
     # several special-case routines as they apply.
     if type(multiset) is int:

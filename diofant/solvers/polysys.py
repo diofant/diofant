@@ -62,7 +62,6 @@ def solve_linear_system(system, *symbols, **flags):
     diofant.matrices.matrices.MatrixBase.rref
 
     """
-
     eqs = system*Matrix(symbols + (-1,))
     domain, eqs = sring(eqs.transpose().tolist()[0], *symbols, field=True)
 
@@ -111,7 +110,6 @@ def solve_poly_system(eqs, *gens, **args):
 
     def _solve_reduced_system(system, gens):
         """Recursively solves reduced polynomial systems."""
-
         basis = groebner(system, gens, polys=True, extension=False)
         dim = basis.dimension
         solutions = []

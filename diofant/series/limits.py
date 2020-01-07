@@ -27,7 +27,6 @@ def limit(expr, z, z0, dir="+"):
     Limit
 
     """
-
     return Limit(expr, z, z0, dir).doit(deep=False)
 
 

@@ -42,7 +42,6 @@ def roots_quadratic(f):
     sorted (but will be canonical).
 
     """
-
     a, b, c = f.all_coeffs()
     dom = f.domain
 

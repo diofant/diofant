@@ -67,7 +67,6 @@ def _coeff_isneg(a):
     False
 
     """
-
     if a.is_Mul or a.is_MatMul:
         a = a.args[0]
     return a.is_Number and a.is_negative
@@ -126,7 +125,6 @@ class FunctionClass(ManagedProperties):
         Function subclasses.
 
         """
-
         # TODO: Look at nargs
         return inspect.signature(self.eval)
 
@@ -1110,7 +1108,6 @@ class Derivative(Expr):
         [y, z, f(x), x, f(x), g(x), x, y, z, z]
 
         """
-
         sorted_vars = []
         symbol_part = []
         non_symbol_part = []

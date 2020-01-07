@@ -194,7 +194,6 @@ def multiset_partitions_taocp(multiplicities):
     [['a'], ['b'], ['b']]]
 
     """
-
     # Important variables.
     # m is the number of components, i.e., number of distinct elements
     m = len(multiplicities)
@@ -411,7 +410,6 @@ class MultisetPartitionTraverser():
         there is no need to call it separately.
 
         """
-
         num_components = len(multiplicities)
         # cardinality is the total number of elements, whether or not distinct
         cardinality = sum(multiplicities)
@@ -569,7 +567,6 @@ class MultisetPartitionTraverser():
             have more parts than this value.
 
         """
-
         # Next, perform any needed additional decrementing to respect
         # "sufficient unallocated multiplicity" (or fail if this is
         # not possible).
@@ -626,7 +623,6 @@ class MultisetPartitionTraverser():
         the lb constraint.
 
         """
-
         # Constraint in the range case is just enforcing both the
         # constraints from _small and _large cases.  Note the 0 as the
         # second argument to the _large call -- this is the signal to
@@ -776,7 +772,6 @@ class MultisetPartitionTraverser():
           Part 1, of The Art of Computer Programming, by Donald Knuth.
 
         """
-
         # Keep track of iterations which do not yield a partition.
         # Clearly, we would like to keep this number small.
         self.discarded = 0
@@ -834,7 +829,6 @@ class MultisetPartitionTraverser():
         [['a'], ['a'], ['b'], ['b']]]
 
         """
-
         return self.enum_range(multiplicities, lb, sum(multiplicities))
 
     def enum_range(self, multiplicities, lb, ub):

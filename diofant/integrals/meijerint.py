@@ -467,7 +467,6 @@ def _mul_as_two_parts(f):
     [(x, E**x*sin(x)), (E**x*x, sin(x)), (x*sin(x), E**x)]
 
     """
-
     gs = _mul_args(f)
     if len(gs) < 2:
         return

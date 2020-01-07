@@ -25,7 +25,6 @@ def evaluate(x):
     x + x
 
     """
-
     old = global_evaluate[0]
 
     global_evaluate[0] = x

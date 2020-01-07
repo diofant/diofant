@@ -70,7 +70,6 @@ class Field(Ring):
         >>> lcm(Rational(2, 3), Rational(4, 9))
         4/3
         """
-
         try:
             ring = self.ring
         except AttributeError:

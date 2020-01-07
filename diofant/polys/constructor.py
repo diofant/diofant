@@ -66,7 +66,6 @@ def _construct_simple(coeffs, opt):
 
 def _construct_algebraic(coeffs, opt):
     """We know that coefficients are algebraic so construct the extension."""
-
     result, exts = [], set()
 
     for coeff in coeffs:

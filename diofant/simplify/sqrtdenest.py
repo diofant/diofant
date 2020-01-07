@@ -10,7 +10,6 @@ from .powsimp import powdenest
 
 def is_sqrt(expr):
     """Return True if expr is a sqrt, otherwise False."""
-
     return expr.is_Pow and expr.exp.is_Rational and abs(expr.exp) == Rational(1, 2)
 
 
@@ -30,7 +29,6 @@ def sqrt_depth(p):
     2
 
     """
-
     if p.is_Atom:
         return 0
     elif p.is_Add or p.is_Mul:
@@ -54,7 +52,6 @@ def is_algebraic(p):
     False
 
     """
-
     if p.is_Rational:
         return True
     elif p.is_Atom:
@@ -212,7 +209,6 @@ class SqrtdenestStopIteration(StopIteration):
 
 def _sqrtdenest0(expr):
     """Returns expr after denesting its arguments."""
-
     if is_sqrt(expr):
         n, d = expr.as_numer_denom()
         if d == 1:  # n is a square root
@@ -300,7 +296,6 @@ def _sqrtdenest1(expr, denester=True):
     failing, using the denester.
 
     """
-
     from .simplify import radsimp
 
     if not is_sqrt(expr):
@@ -392,7 +387,6 @@ def _sqrt_symbolic_denest(a, b, r):
     sqrt(sqrt(sqrt(x + 3) + 1) + 1) + 1 + sqrt(2)
 
     """
-
     a, b, r = map(sympify, (a, b, r))
     rval = _sqrt_match(r)
     if not rval:

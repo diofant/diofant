@@ -37,7 +37,6 @@ def smoothness(n):
     factorint, smoothness_p
 
     """
-
     if n == 1:
         return (1, 1)  # not prime, but otherwise this causes headaches
     facs = factorint(n)
@@ -585,7 +584,6 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     * https://web.archive.org/web/20170830055619/http://www.cs.toronto.edu/~yuvalf/Factorization.pdf
 
     """
-
     n = int(n)
     if n < 4 or B < 3:
         raise ValueError('pollard_pm1 should receive n > 3 and B > 2')
@@ -641,7 +639,6 @@ def _check_termination(factors, n, limitp1, use_trial, use_rho, use_pm1,
     the factorization and raises ``StopIteration``.
 
     """
-
     if verbose:
         print('Check for termination')
 
@@ -1240,7 +1237,6 @@ def primefactors(n, limit=None, verbose=False):
 
 def _divisors(n):
     """Helper function for divisors which generates the divisors."""
-
     factordict = factorint(n)
     ps = sorted(factordict)
 
@@ -1291,7 +1287,6 @@ def divisors(n, generator=False):
     * https://stackoverflow.com/questions/1010381/python-factorization
 
     """
-
     n = as_int(abs(n))
     if isprime(n):
         return [1, n]
@@ -1328,7 +1323,6 @@ def divisor_count(n, modulus=1):
     factorint, divisors, totient
 
     """
-
     if not modulus:
         return 0
     elif modulus != 1:
@@ -1342,7 +1336,6 @@ def divisor_count(n, modulus=1):
 
 def _antidivisors(n):
     """Helper function for antidivisors which generates the antidivisors."""
-
     for d in _divisors(n):
         y = 2*d
         if n > y and n % y:
@@ -1381,7 +1374,6 @@ def antidivisors(n, generator=False):
     primefactors, factorint, divisors, divisor_count, antidivisor_count
 
     """
-
     n = as_int(abs(n))
     if n <= 2:
         return []
@@ -1413,7 +1405,6 @@ def antidivisor_count(n):
     factorint, divisors, antidivisors, divisor_count, totient
 
     """
-
     n = as_int(abs(n))
     if n <= 2:
         return 0
@@ -1567,7 +1558,6 @@ def core(n, t=2):
     factorint, diofant.solvers.diophantine.square_factor
 
     """
-
     n = as_int(n)
     t = as_int(t)
     if n <= 0:

@@ -1867,5 +1867,4 @@ def latex(expr, **settings):
     $\left [ 2 / x, \quad y\right ]$
 
     """
-
     return LatexPrinter(settings).doprint(expr)

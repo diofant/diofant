@@ -56,7 +56,6 @@ class Dyadic(BasisDependent):
         N.i
 
         """
-
         from .vector import Vector
 
         if isinstance(other, BasisDependentZero):
@@ -104,7 +103,6 @@ class Dyadic(BasisDependent):
         (N.i|N.k)
 
         """
-
         from .vector import Vector
 
         if other == Vector.zero:
@@ -161,7 +159,6 @@ class Dyadic(BasisDependent):
         [       0,         0, 0]])
 
         """
-
         if second_system is None:
             second_system = system
 
