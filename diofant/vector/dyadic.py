@@ -217,7 +217,7 @@ class DyadicMul(BasisDependentMul, Dyadic):
 
     @property
     def measure_number(self):
-        """ The scalar expression involved in the definition of
+        """The scalar expression involved in the definition of
         this DyadicMul.
 
         """

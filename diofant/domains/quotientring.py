@@ -5,7 +5,7 @@ from .domainelement import DomainElement
 
 
 class QuotientRingElement(DomainElement):
-    """A class representing an element of the quotent ring. """
+    """A class representing an element of the quotent ring."""
 
     @property
     def parent(self):

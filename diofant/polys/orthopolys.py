@@ -1,4 +1,4 @@
-"""Efficient functions for generating orthogonal polynomials. """
+"""Efficient functions for generating orthogonal polynomials."""
 
 from ..core import Dummy
 from ..domains import QQ, ZZ

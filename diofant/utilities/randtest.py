@@ -1,4 +1,4 @@
-""" Helpers for randomized testing """
+"""Helpers for randomized testing."""
 
 import random
 from random import uniform

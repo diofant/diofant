@@ -1,4 +1,4 @@
-"""Sparse polynomial rings. """
+"""Sparse polynomial rings."""
 
 import functools
 import math

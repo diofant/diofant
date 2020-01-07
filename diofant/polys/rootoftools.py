@@ -1,4 +1,4 @@
-"""Implementation of RootOf class and related tools. """
+"""Implementation of RootOf class and related tools."""
 
 from mpmath import findroot, mpc, mpf, workprec
 from mpmath.libmp.libmpf import prec_to_dps

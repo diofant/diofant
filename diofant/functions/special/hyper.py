@@ -1,4 +1,4 @@
-"""Hypergeometric and Meijer G-functions"""
+"""Hypergeometric and Meijer G-functions."""
 
 from functools import reduce
 
@@ -42,7 +42,7 @@ def _prep_tuple(v):
 
 
 class TupleParametersBase(Function):
-    """ Base class that takes care of differentiation, when some of
+    """Base class that takes care of differentiation, when some of
     the arguments are actually tuples.
 
     """

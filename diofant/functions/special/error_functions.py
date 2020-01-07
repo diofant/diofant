@@ -1,4 +1,4 @@
-""" This module contains various functions that are special cases
+"""This module contains various functions that are special cases
 of incomplete gamma functions. It should probably be renamed.
 """
 

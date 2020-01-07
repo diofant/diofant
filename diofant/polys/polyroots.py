@@ -1,4 +1,4 @@
-"""Algorithms for computing symbolic roots of polynomials. """
+"""Algorithms for computing symbolic roots of polynomials."""
 
 import functools
 import math

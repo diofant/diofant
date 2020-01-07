@@ -1,4 +1,4 @@
-"""Solvers of systems of polynomial equations. """
+"""Solvers of systems of polynomial equations."""
 
 from ..domains import EX
 from ..matrices import Matrix

@@ -1710,7 +1710,7 @@ def runs(seq, op=gt):
 
 
 def cantor_product(*args):
-    """ Breadth-first (diagonal) cartesian product of iterables.
+    """Breadth-first (diagonal) cartesian product of iterables.
 
     Each iterable is advanced in turn in a round-robin fashion. As usual with
     breadth-first, this comes at the cost of memory consumption.

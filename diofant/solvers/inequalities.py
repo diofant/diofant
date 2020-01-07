@@ -1,4 +1,4 @@
-"""Tools for solving inequalities and systems of inequalities. """
+"""Tools for solving inequalities and systems of inequalities."""
 
 from collections import defaultdict
 

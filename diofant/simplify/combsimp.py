@@ -101,7 +101,7 @@ def combsimp(expr):
     expr = expr.replace(binomial, rule)
 
     def rule_gamma(expr, level=0):
-        """ Simplify products of gamma functions further. """
+        """Simplify products of gamma functions further."""
 
         if expr.is_Atom:
             return expr

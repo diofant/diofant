@@ -1,4 +1,4 @@
-"""Dense univariate polynomials with coefficients in Galois fields. """
+"""Dense univariate polynomials with coefficients in Galois fields."""
 
 import math
 import random

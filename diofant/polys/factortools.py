@@ -1,4 +1,4 @@
-"""Polynomial factorization routines in characteristic zero. """
+"""Polynomial factorization routines in characteristic zero."""
 
 import math
 

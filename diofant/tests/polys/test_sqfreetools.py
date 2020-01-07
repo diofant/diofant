@@ -1,4 +1,4 @@
-"""Tests for square-free decomposition algorithms and related tools. """
+"""Tests for square-free decomposition algorithms and related tools."""
 
 import pytest
 

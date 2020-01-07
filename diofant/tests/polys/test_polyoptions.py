@@ -1,4 +1,4 @@
-"""Tests for options manager for :class:`Poly` and public API functions. """
+"""Tests for options manager for :class:`Poly` and public API functions."""
 
 import pytest
 

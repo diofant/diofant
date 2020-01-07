@@ -480,7 +480,7 @@ def _mul_as_two_parts(f):
 
 
 def _inflate_g(g, n):
-    """ Return C, h such that h is a G function of argument z**n and
+    """Return C, h such that h is a G function of argument z**n and
     g = C*h.
 
     """
@@ -502,7 +502,7 @@ def _inflate_g(g, n):
 
 
 def _flip_g(g):
-    """ Turn the G function into one of inverse argument
+    """Turn the G function into one of inverse argument
     (i.e. G(1/x) -> G'(x))
 
     """
@@ -568,7 +568,7 @@ def _dummy_(name, token, **kwargs):
 
 
 def _is_analytic(f, x):
-    """ Check if f(x), when expressed using G functions on the positive reals,
+    """Check if f(x), when expressed using G functions on the positive reals,
     will in fact agree with the G functions almost everywhere
 
     """
@@ -670,7 +670,7 @@ def _eval_cond(cond):
 
 
 def _my_principal_branch(expr, period, full_pb=False):
-    """ Bring expr nearer to its principal branch by removing
+    """Bring expr nearer to its principal branch by removing
     superfluous factors.
 
     This function does *not* guarantee to yield the principal branch,
@@ -1286,7 +1286,7 @@ def _check_antecedents_inversion(g, x):
         return Or(*conds)
 
     def statement(a, b, c, z):
-        """ Provide a convergence statement for z**a * exp(b*z**c),
+        """Provide a convergence statement for z**a * exp(b*z**c),
         c/f sphinx docs.
 
         """
@@ -1476,7 +1476,7 @@ def _rewrite_single(f, x, recursive=True):
     from ..polys import cancel
 
     def my_imt(F, s, x, strip):
-        """ Calling simplify() all the time is slow and not helpful, since
+        """Calling simplify() all the time is slow and not helpful, since
         most of the time it only factors things in a way that has to be
         un-done anyway. But sometimes it can remove apparent poles.
 

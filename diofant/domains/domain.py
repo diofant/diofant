@@ -1,4 +1,4 @@
-"""Implementation of :class:`Domain` class. """
+"""Implementation of :class:`Domain` class."""
 
 import abc
 import inspect
@@ -16,7 +16,7 @@ __all__ = 'Domain',
 
 
 class Domain(DefaultPrinting, abc.ABC):
-    """Represents an abstract domain. """
+    """Represents an abstract domain."""
 
     dtype = None
     zero = None
@@ -52,21 +52,21 @@ class Domain(DefaultPrinting, abc.ABC):
         return hash((self.__class__.__name__, self.dtype))
 
     def __call__(self, *args):
-        """Construct an element of ``self`` domain from ``args``. """
+        """Construct an element of ``self`` domain from ``args``."""
         return self.dtype(*args)
 
     @abc.abstractmethod
     def from_expr(self, element):
-        """Convert Diofant's expression to ``dtype``. """
+        """Convert Diofant's expression to ``dtype``."""
         raise NotImplementedError
 
     @abc.abstractmethod
     def to_expr(self, element):
-        """Convert ``element`` to Diofant expression. """
+        """Convert ``element`` to Diofant expression."""
         raise NotImplementedError
 
     def convert_from(self, element, base):
-        """Convert ``element`` to ``self.dtype`` given the base domain. """
+        """Convert ``element`` to ``self.dtype`` given the base domain."""
         for superclass in inspect.getmro(base.__class__):
             method = "_from_" + superclass.__name__
 
@@ -82,7 +82,7 @@ class Domain(DefaultPrinting, abc.ABC):
                              "to %s" % (element, type(element), base, self))
 
     def convert(self, element, base=None):
-        """Convert ``element`` to ``self.dtype``. """
+        """Convert ``element`` to ``self.dtype``."""
         if base is not None:
             return self.convert_from(element, base)
 
@@ -128,7 +128,7 @@ class Domain(DefaultPrinting, abc.ABC):
         raise CoercionFailed("can't convert %s of type %s to %s" % (element, type(element), self))
 
     def __contains__(self, a):
-        """Check if ``a`` belongs to this domain. """
+        """Check if ``a`` belongs to this domain."""
         try:
             self.convert(a)
             return True
@@ -232,27 +232,27 @@ class Domain(DefaultPrinting, abc.ABC):
         raise NotImplementedError
 
     def __eq__(self, other):
-        """Returns ``True`` if two domains are equivalent. """
+        """Returns ``True`` if two domains are equivalent."""
         return isinstance(other, Domain) and self.dtype == other.dtype
 
     def get_exact(self):
-        """Returns an exact domain associated with ``self``. """
+        """Returns an exact domain associated with ``self``."""
         return self
 
     def poly_ring(self, *symbols, **kwargs):
-        """Returns a polynomial ring, i.e. `K[X]`. """
+        """Returns a polynomial ring, i.e. `K[X]`."""
         from ..polys import PolynomialRing
         return PolynomialRing(self, symbols, kwargs.get("order", lex))
 
     def frac_field(self, *symbols, **kwargs):
-        """Returns a fraction field, i.e. `K(X)`. """
+        """Returns a fraction field, i.e. `K(X)`."""
         from ..polys import FractionField
         return FractionField(self, symbols, kwargs.get("order", lex))
 
     def is_positive(self, a):
-        """Returns True if ``a`` is positive. """
+        """Returns True if ``a`` is positive."""
         return a > 0
 
     def is_negative(self, a):
-        """Returns True if ``a`` is negative. """
+        """Returns True if ``a`` is negative."""
         return a < 0

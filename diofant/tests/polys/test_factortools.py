@@ -1,4 +1,4 @@
-"""Tools for polynomial factorization routines in characteristic zero. """
+"""Tools for polynomial factorization routines in characteristic zero."""
 
 import pytest
 

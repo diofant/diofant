@@ -599,7 +599,7 @@ def _denester(nested, av0, h, max_depth_level):
 
 
 def unrad(eq, *syms, **flags):
-    """ Remove radicals with symbolic arguments and return (eq, cov),
+    """Remove radicals with symbolic arguments and return (eq, cov),
     None or raise an error:
 
     None is returned if there are no radicals to remove.

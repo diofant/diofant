@@ -16,7 +16,7 @@ __all__ = ()
 
 @cacheit
 def _emptyfn():
-    """test docstring"""
+    """test docstring."""
     pass
 
 
@@ -64,7 +64,7 @@ def clear_imports(request):
 
 
 def test_nocache(clear_imports, monkeypatch):
-    """Regression tests with DIOFANT_USE_CACHE=False. """
+    """Regression tests with DIOFANT_USE_CACHE=False."""
 
     monkeypatch.setenv('DIOFANT_USE_CACHE', 'False')
     from diofant.core.cache import CACHE

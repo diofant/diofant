@@ -1,4 +1,4 @@
-"""Tests for tools for solving inequalities and systems of inequalities. """
+"""Tests for tools for solving inequalities and systems of inequalities."""
 
 import pytest
 

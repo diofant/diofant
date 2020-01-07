@@ -1,4 +1,4 @@
-"""Tests of monomial orderings. """
+"""Tests of monomial orderings."""
 
 import pytest
 

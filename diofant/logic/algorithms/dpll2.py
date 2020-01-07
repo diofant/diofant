@@ -585,7 +585,7 @@ class SATSolver:
         self.heur_clause_added(cls)
 
     def _simple_compute_conflict(self):
-        """ Build a clause representing the fact that at least one decision made
+        """Build a clause representing the fact that at least one decision made
         so far is wrong.
 
         Examples

@@ -306,7 +306,7 @@ def convex_hull(*args):
 
 
 def are_coplanar(*e):
-    """ Returns True if the given entities are coplanar otherwise False
+    """Returns True if the given entities are coplanar otherwise False.
 
     Parameters
     ==========

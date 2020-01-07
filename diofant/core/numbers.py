@@ -2126,7 +2126,7 @@ class NumberSymbol(AtomicExpr):
         return AtomicExpr.__new__(cls)
 
     def approximation_interval(self, number_cls):
-        """ Return an interval with number_cls endpoints that contains the
+        """Return an interval with number_cls endpoints that contains the
         value of NumberSymbol.  If not implemented, then return None.
 
         """

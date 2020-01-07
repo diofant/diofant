@@ -1,4 +1,4 @@
-"""Tools for applying functions to specified parts of expressions. """
+"""Tools for applying functions to specified parts of expressions."""
 
 from ..core import sympify
 

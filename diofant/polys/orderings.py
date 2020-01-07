@@ -1,4 +1,4 @@
-"""Definitions of monomial orderings. """
+"""Definitions of monomial orderings."""
 
 from ..core import Symbol, Tuple
 from ..core.compatibility import iterable

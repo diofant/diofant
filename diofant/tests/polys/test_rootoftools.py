@@ -1,4 +1,4 @@
-"""Tests for the implementation of RootOf class and related tools. """
+"""Tests for the implementation of RootOf class and related tools."""
 
 import pytest
 

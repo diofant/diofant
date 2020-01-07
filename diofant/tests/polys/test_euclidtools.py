@@ -1,4 +1,4 @@
-"""Tests for Euclidean algorithms, GCDs, LCMs and polynomial remainder sequences. """
+"""Tests for Euclidean algorithms, GCDs, LCMs and polynomial remainder sequences."""
 
 import pytest
 

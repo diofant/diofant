@@ -142,7 +142,7 @@ class ContinuousDistribution(Expr):
 
 
 class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
-    """ Continuous distribution of a single variable
+    """Continuous distribution of a single variable.
 
     Serves as superclass for Normal/Exponential/UniformDistribution etc....
 
@@ -173,7 +173,7 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
 
     @cacheit
     def _inverse_cdf_expression(self):
-        """ Inverse of the CDF
+        """Inverse of the CDF.
 
         Used by sample
 
@@ -225,7 +225,7 @@ class ContinuousDistributionHandmade(SingleContinuousDistribution):
 
 
 class ContinuousPSpace(PSpace):
-    """ Continuous Probability Space
+    """Continuous Probability Space.
 
     Represents the likelihood of an event space defined over a continuum.
 

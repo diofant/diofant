@@ -1,4 +1,4 @@
-"""Definitions of common exceptions for :mod:`~diofant.polys` module. """
+"""Definitions of common exceptions for :mod:`~diofant.polys` module."""
 
 
 __all__ = ('BasePolynomialError', 'ExactQuotientFailed',
@@ -14,7 +14,7 @@ __all__ = ('BasePolynomialError', 'ExactQuotientFailed',
 
 
 class BasePolynomialError(Exception):
-    """Base class for polynomial related exceptions. """
+    """Base class for polynomial related exceptions."""
 
     def new(self, *args):
         raise NotImplementedError("abstract base class")

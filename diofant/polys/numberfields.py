@@ -1,4 +1,4 @@
-"""Computational algebraic field theory. """
+"""Computational algebraic field theory."""
 
 import functools
 

@@ -1,4 +1,4 @@
-"""Tools for manipulating of large commutative expressions. """
+"""Tools for manipulating of large commutative expressions."""
 
 import numbers
 from collections import defaultdict

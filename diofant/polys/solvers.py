@@ -1,4 +1,4 @@
-"""Low-level linear systems solver. """
+"""Low-level linear systems solver."""
 
 from ..matrices import Matrix, zeros
 
@@ -8,7 +8,7 @@ class RawMatrix(Matrix):
 
 
 def eqs_to_matrix(eqs, ring):
-    """Transform from equations to matrix form. """
+    """Transform from equations to matrix form."""
     m = zeros(len(eqs), len(ring.gens) + 1, cls=RawMatrix)
 
     for j, e_j in enumerate(eqs):
@@ -20,7 +20,7 @@ def eqs_to_matrix(eqs, ring):
 
 
 def solve_lin_sys(eqs, ring):
-    """Solve a system of linear equations. """
+    """Solve a system of linear equations."""
 
     assert ring.domain.is_Field
 

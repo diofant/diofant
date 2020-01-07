@@ -1,5 +1,5 @@
 """
-Main Random Variables Module
+Main Random Variables Module.
 
 Defines abstract random variable type.
 Contains interfaces for probability space object (PSpace) as well as standard
@@ -440,7 +440,8 @@ def rs_swap(a, b):
 
 
 def given(expr, condition=None, **kwargs):
-    r""" Conditional Random Expression
+    r"""Conditional Random Expression.
+
     From a random expression and a condition on that expression creates a new
     probability space from the condition and returns the same expression on that
     conditional probability space.

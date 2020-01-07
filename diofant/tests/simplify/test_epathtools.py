@@ -1,4 +1,4 @@
-"""Tests for tools for manipulation of expressions using paths. """
+"""Tests for tools for manipulation of expressions using paths."""
 
 import pytest
 

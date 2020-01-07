@@ -314,7 +314,7 @@ class GeometrySet(GeometryEntity, Set):
         return self.__contains__(other)
 
     def _union(self, o):
-        """ Returns the union of self and o
+        """Returns the union of self and o
         for use with diofant.sets.Set, if possible.
 
         """

@@ -1,4 +1,4 @@
-"""Euclidean algorithms, GCDs, LCMs and polynomial remainder sequences. """
+"""Euclidean algorithms, GCDs, LCMs and polynomial remainder sequences."""
 
 from ..core import cacheit
 from ..ntheory import nextprime

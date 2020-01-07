@@ -1,4 +1,4 @@
-"""Implementation of :class:`RealField` class. """
+"""Implementation of :class:`RealField` class."""
 
 from ..core import Float
 from ..polys.polyerrors import CoercionFailed
@@ -15,7 +15,7 @@ _reals_cache = {}
 
 
 class RealField(Field, CharacteristicZero, SimpleDomain):
-    """Real numbers up to the given precision. """
+    """Real numbers up to the given precision."""
 
     rep = 'RR'
 
@@ -73,11 +73,11 @@ class RealField(Field, CharacteristicZero, SimpleDomain):
         return self._hash
 
     def to_expr(self, element):
-        """Convert ``element`` to Diofant number. """
+        """Convert ``element`` to Diofant number."""
         return Float(element, self.dps)
 
     def from_expr(self, expr):
-        """Convert Diofant's number to ``dtype``. """
+        """Convert Diofant's number to ``dtype``."""
         number = expr.evalf(self.dps)
 
         if number.is_Number:
@@ -111,24 +111,24 @@ class RealField(Field, CharacteristicZero, SimpleDomain):
             return self.dtype(element.real)
 
     def to_rational(self, element, limit=True):
-        """Convert a real number to rational number. """
+        """Convert a real number to rational number."""
         return self._context.to_rational(element, limit)
 
     def get_exact(self):
-        """Returns an exact domain associated with ``self``. """
+        """Returns an exact domain associated with ``self``."""
         from . import QQ
         return QQ
 
     def gcd(self, a, b):
-        """Returns GCD of ``a`` and ``b``. """
+        """Returns GCD of ``a`` and ``b``."""
         return self.one
 
     def lcm(self, a, b):
-        """Returns LCM of ``a`` and ``b``. """
+        """Returns LCM of ``a`` and ``b``."""
         return a*b
 
     def almosteq(self, a, b, tolerance=None):
-        """Check if ``a`` and ``b`` are almost equal. """
+        """Check if ``a`` and ``b`` are almost equal."""
         return self._context.almosteq(a, b, tolerance)
 
 

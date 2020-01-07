@@ -1,4 +1,4 @@
-""" Tools for doing common subexpression elimination."""
+"""Tools for doing common subexpression elimination."""
 
 from ..core import Add, Basic, Mul, Pow, Symbol, Tuple, factor_terms, sympify
 from ..core.compatibility import iterable
@@ -84,7 +84,7 @@ def cse_separate(r, e):
 
 
 def preprocess_for_cse(expr, optimizations):
-    """ Preprocess an expression to optimize for common subexpression
+    """Preprocess an expression to optimize for common subexpression
     elimination.
 
     Parameters
@@ -107,7 +107,7 @@ def preprocess_for_cse(expr, optimizations):
 
 
 def postprocess_for_cse(expr, optimizations):
-    """ Postprocess an expression after common subexpression elimination to
+    """Postprocess an expression after common subexpression elimination to
     return the expression to canonical diofant form.
 
     Parameters
@@ -372,7 +372,7 @@ def tree_cse(exprs, symbols, opt_subs={}, order='canonical', ignore=()):
 
 def cse(exprs, symbols=None, optimizations=None, postprocess=None,
         order='canonical', ignore=()):
-    """ Perform common subexpression elimination on an expression.
+    """Perform common subexpression elimination on an expression.
 
     Parameters
     ==========

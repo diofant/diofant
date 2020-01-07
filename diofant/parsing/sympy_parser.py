@@ -1,4 +1,4 @@
-"""Transform a string with Python-like source code into Diofant expression. """
+"""Transform a string with Python-like source code into Diofant expression."""
 
 import ast
 import unicodedata

@@ -1,4 +1,4 @@
-""" Caching facility for Diofant. """
+"""Caching facility for Diofant."""
 
 import functools
 import os

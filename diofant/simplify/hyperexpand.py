@@ -555,7 +555,7 @@ class Hyper_Function(Expr):
         return self.gamma, tr(abuckets), tr(bbuckets)
 
     def difficulty(self, func):
-        """ Estimate how many steps it takes to reach ``func`` from self.
+        """Estimate how many steps it takes to reach ``func`` from self.
         Return -1 if impossible.
 
         """
@@ -2119,7 +2119,7 @@ def devise_plan_meijer(fro, to, z):
     #      when possible, shift otherwise. Give up if we cannot make progress.
 
     def try_shift(f, t, shifter, diff, counter):
-        """ Try to apply ``shifter`` in order to bring some element in ``f``
+        """Try to apply ``shifter`` in order to bring some element in ``f``
         nearer to its counterpart in ``to``. ``diff`` is +/- 1 and
         determines the effect of ``shifter``. Counter is a list of elements
         blocking the shift.

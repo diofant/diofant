@@ -1,4 +1,4 @@
-"""Compatibility interface between dense and sparse polys. """
+"""Compatibility interface between dense and sparse polys."""
 
 from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term, dmp_div,
                          dmp_expand, dmp_exquo_ground, dmp_l1_norm,
