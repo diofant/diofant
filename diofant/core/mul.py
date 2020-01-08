@@ -16,6 +16,8 @@ from .sympify import sympify
 
 
 class NC_Marker:
+    """Helper class to mark non-commutative exponents."""
+
     is_Order = False
     is_Mul = False
     is_Number = False
@@ -76,6 +78,7 @@ def _unevaluated_Mul(*args):
 
 
 class Mul(AssocOp):
+    """Symbolic multiplication class."""
 
     is_Mul = True
 

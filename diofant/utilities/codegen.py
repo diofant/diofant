@@ -323,6 +323,8 @@ class Argument(Variable):
 
 
 class InputArgument(Argument):
+    """Input argument class."""
+
     pass
 
 

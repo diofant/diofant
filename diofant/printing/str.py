@@ -14,6 +14,8 @@ from .printer import Printer
 
 
 class StrPrinter(Printer):
+    """Str printer."""
+
     printmethod = "_diofantstr"
     _default_settings = {
         "order": None,

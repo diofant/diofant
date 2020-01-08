@@ -59,6 +59,8 @@ class SingleDiscreteDistribution(Expr, NamedArgsMixin):
 
 
 class SingleDiscreteDomain(SingleDomain):
+    """Base class for a discrete domain."""
+
     pass
 
 

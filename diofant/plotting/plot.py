@@ -798,6 +798,8 @@ class ParametricSurfaceSeries(SurfaceBaseSeries):
 ##############################################################################
 
 class BaseBackend:
+    """Base backend class."""
+
     def __init__(self, parent):
         super().__init__()
         self.parent = parent
@@ -806,6 +808,8 @@ class BaseBackend:
 # don't have to check for the success of importing matplotlib in each case;
 # we will only be using this backend if we can successfully import matploblib
 class MatplotlibBackend(BaseBackend):
+    """Matplotlib backend."""
+
     def __init__(self, parent):
         super().__init__(parent)
         are_3D = [s.is_3D for s in self.parent._series]

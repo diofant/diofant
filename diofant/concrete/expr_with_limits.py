@@ -50,6 +50,7 @@ def _process_limits(*symbols):
 
 
 class ExprWithLimits(Expr):
+    """Represents an expression with limits."""
 
     def __new__(cls, function, *symbols, **assumptions):
         # Any embedded piecewise functions need to be brought out to the

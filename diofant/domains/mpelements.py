@@ -58,6 +58,7 @@ new = object.__new__
 
 
 class MPContext(PythonMPContext):
+    """Base class to keep mpmath evaluation context."""
 
     def __init__(self, prec=53, dps=None, tol=None):
         self._prec_rounding = [prec, round_nearest]

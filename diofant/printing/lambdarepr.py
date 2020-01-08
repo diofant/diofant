@@ -151,6 +151,8 @@ class NumPyPrinter(LambdaPrinter):
 
 
 class MpmathPrinter(LambdaPrinter):
+    """Mpmath printer."""
+
     def _print_RootOf(self, expr):
         if expr.is_real:
             return ("findroot(lambda %s: %s, %s, "

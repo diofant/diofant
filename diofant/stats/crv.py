@@ -137,6 +137,8 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
 
 
 class ContinuousDistribution(Expr):
+    """Base class for continuous distributions."""
+
     def __call__(self, *args):
         return self.pdf(*args)
 
@@ -214,6 +216,8 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
 
 
 class ContinuousDistributionHandmade(SingleContinuousDistribution):
+    """Continuous distribution with custom pdf and support."""
+
     _argnames = 'pdf',
 
     @property

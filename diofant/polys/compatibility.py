@@ -43,6 +43,8 @@ __all__ = 'IPolys',
 
 
 class IPolys:
+    """Compatibility class between dense and sparse polynomials."""
+
     symbols = None
     ngens = None
     domain = None

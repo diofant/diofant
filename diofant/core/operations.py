@@ -350,6 +350,8 @@ class AssocOp(Expr):
 
 
 class ShortCircuit(Exception):
+    """Helper exception to detect absorbing element among arguments."""
+
     pass
 
 

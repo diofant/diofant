@@ -16,6 +16,8 @@ from .printer import Printer
 
 
 class ReprPrinter(Printer):
+    """Repr printer."""
+
     printmethod = "_diofantrepr"
 
     _default_settings = {

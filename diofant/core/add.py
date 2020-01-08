@@ -9,6 +9,7 @@ from .operations import AssocOp
 
 
 class Add(AssocOp):
+    """Symbolic addition class."""
 
     is_Add = True
 

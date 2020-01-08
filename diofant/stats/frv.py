@@ -22,6 +22,8 @@ from .rv import (ConditionalDomain, NamedArgsMixin, ProductDomain,
 
 
 class FiniteDensity(dict):
+    """Finite probabibility density."""
+
     def __call__(self, item):
         item = sympify(item)
         if item in self:
@@ -157,6 +159,8 @@ class ConditionalFiniteDomain(ConditionalDomain, ProductFiniteDomain):
 
 
 class SingleFiniteDistribution(Expr, NamedArgsMixin):
+    """Base class for finite distributions."""
+
     def __new__(cls, *args):
         args = list(map(sympify, args))
         return Expr.__new__(cls, *args)

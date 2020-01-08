@@ -1250,6 +1250,7 @@ numbers.Rational.register(Rational)
 
 
 class Integer(Rational):
+    """Represents integer numbers."""
 
     is_integer = True
     is_number = True
@@ -1439,6 +1440,7 @@ class RationalConstant(Rational):
 
 
 class IntegerConstant(Integer):
+    """Abstract class for integer constants."""
 
     def __new__(cls):
         return AtomicExpr.__new__(cls)
@@ -2114,6 +2116,7 @@ zoo = S.ComplexInfinity
 
 
 class NumberSymbol(AtomicExpr):
+    """Base class for symbolic numbers."""
 
     is_commutative = True
     is_finite = True

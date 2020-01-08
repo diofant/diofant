@@ -109,6 +109,8 @@ _between_two_numbers_p = (
 
 
 class LatexPrinter(Printer):
+    """LaTex printer."""
+
     printmethod = "_latex"
 
     _default_settings = {

@@ -610,7 +610,7 @@ class GreaterThan(_Greater):
 Ge = GreaterThan
 
 
-class LessThan(_Less):
+class LessThan(_Less):  # noqa: D101
     __doc__ = GreaterThan.__doc__
 
     rel_op = '<='
@@ -623,7 +623,7 @@ class LessThan(_Less):
 Le = LessThan
 
 
-class StrictGreaterThan(_Greater):
+class StrictGreaterThan(_Greater):  # noqa: D101
     __doc__ = GreaterThan.__doc__
 
     rel_op = '>'
@@ -636,7 +636,7 @@ class StrictGreaterThan(_Greater):
 Gt = StrictGreaterThan
 
 
-class StrictLessThan(_Less):
+class StrictLessThan(_Less):  # noqa: D101
     __doc__ = GreaterThan.__doc__
 
     rel_op = '<'

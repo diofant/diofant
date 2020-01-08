@@ -25,6 +25,8 @@ from .util import _symbol
 
 
 class Undecidable(ValueError):
+    """Raised when can't decide on relation."""
+
     pass
 
 

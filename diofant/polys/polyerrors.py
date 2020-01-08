@@ -21,6 +21,7 @@ class BasePolynomialError(Exception):
 
 
 class ExactQuotientFailed(BasePolynomialError):
+    """Raised when exact quotient is failed."""
 
     def __init__(self, f, g, dom=None):
         self.f, self.g, self.domain = f, g, dom
@@ -38,6 +39,7 @@ class ExactQuotientFailed(BasePolynomialError):
 
 
 class PolynomialDivisionFailed(BasePolynomialError):
+    """Raised when polynomial division is failed."""
 
     def __init__(self, f, g, domain):
         self.f = f
@@ -65,6 +67,7 @@ class PolynomialDivisionFailed(BasePolynomialError):
 
 
 class OperationNotSupported(BasePolynomialError):
+    """Raised when an operation is not supported."""
 
     def __init__(self, poly, func):
         self.poly = poly
@@ -75,70 +78,103 @@ class OperationNotSupported(BasePolynomialError):
 
 
 class HeuristicGCDFailed(BasePolynomialError):
+    """Raised when a heuristic GCD is failed."""
+
     pass
 
 
 class ModularGCDFailed(BasePolynomialError):
+    """Raised when a modular GCD is failed."""
+
     pass
 
 
 class HomomorphismFailed(BasePolynomialError):
+    """Raised when a homomorphism is failed."""
+
     pass
 
 
 class IsomorphismFailed(BasePolynomialError):
+    """Raised when an isomprphism is failed."""
+
     pass
 
 
 class ExtraneousFactors(BasePolynomialError):
+    """Raised when there are extraneous factors."""
+
     pass
 
 
 class EvaluationFailed(BasePolynomialError):
+    """Raised when a polynomial evaluation is failed."""
+
     pass
 
 
 class RefinementFailed(BasePolynomialError):
+    """Raised when a root refinement is failed."""
+
     pass
 
 
 class CoercionFailed(BasePolynomialError):
+    """Raised when a coercion is failed."""
+
     pass
 
 
 class NotInvertible(BasePolynomialError):
+    """Raised when a element is not invertible."""
+
     pass
 
 
 class NotReversible(BasePolynomialError):
+    """Raised when a element is not reversible."""
+
     pass
 
 
 class NotAlgebraic(BasePolynomialError):
+    """Raised when a non algebraic element occurred."""
+
     pass
 
 
 class DomainError(BasePolynomialError):
+    """Generic domain error."""
+
     pass
 
 
 class PolynomialError(BasePolynomialError):
+    """Generic polynomial error."""
+
     pass
 
 
 class UnificationFailed(BasePolynomialError):
+    """Raised when domains unification failed."""
+
     pass
 
 
 class GeneratorsError(BasePolynomialError):
+    """Raised when polynomial generators are unsuitable."""
+
     pass
 
 
 class GeneratorsNeeded(GeneratorsError):
+    """Raised when more generators needed."""
+
     pass
 
 
 class ComputationFailed(BasePolynomialError):
+    """Raised when polynomial computation failed."""
 
     def __init__(self, func, nargs, exc):
         self.func = func
@@ -150,14 +186,19 @@ class ComputationFailed(BasePolynomialError):
 
 
 class UnivariatePolynomialError(PolynomialError):
+    """Generic univariate polynomial error."""
+
     pass
 
 
 class MultivariatePolynomialError(PolynomialError):
+    """Generic multivariate polynomial error."""
+
     pass
 
 
 class PolificationFailed(PolynomialError):
+    """Raised if polunomial construction is failed."""
 
     def __init__(self, opt, origs, exprs, seq=False):
         if not seq:
@@ -180,8 +221,12 @@ class PolificationFailed(PolynomialError):
 
 
 class OptionError(BasePolynomialError):
+    """Generic option error."""
+
     pass
 
 
 class FlagError(OptionError):
+    """Generic flag error."""
+
     pass

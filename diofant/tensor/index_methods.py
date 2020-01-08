@@ -17,6 +17,8 @@ from .indexed import Idx, Indexed
 
 
 class IndexConformanceException(Exception):
+    """Raised if indexes are not consistent."""
+
     pass
 
 

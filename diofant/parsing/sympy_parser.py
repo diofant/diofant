@@ -763,6 +763,8 @@ def evaluateFalse(s):
 
 
 class EvaluateFalseTransformer(ast.NodeTransformer):
+    """Transformer class to hold evaluation."""
+
     operators = {
         ast.Add: 'Add',
         ast.Mult: 'Mul',

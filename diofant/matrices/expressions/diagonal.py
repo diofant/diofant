@@ -3,6 +3,8 @@ from .matexpr import MatrixExpr
 
 
 class DiagonalMatrix(MatrixExpr):
+    """Diagonal matrix class."""
+
     arg = property(lambda self: self.args[0])
     shape = property(lambda self: (self.arg.shape[0], self.arg.shape[0]))
 
@@ -11,6 +13,8 @@ class DiagonalMatrix(MatrixExpr):
 
 
 class DiagonalOf(MatrixExpr):
+    """Represents the matrix diagonal."""
+
     arg = property(lambda self: self.args[0])
     shape = property(lambda self: (self.arg.shape[0], Integer(1)))
 

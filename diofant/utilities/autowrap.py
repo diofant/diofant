@@ -79,6 +79,8 @@ from .lambdify import implemented_function
 
 
 class CodeWrapError(Exception):
+    """Generic code wrapping error."""
+
     pass
 
 

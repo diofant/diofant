@@ -616,6 +616,8 @@ def probability(condition, given_condition=None, numsamples=None,
 
 
 class Density(Expr):
+    """Probability density."""
+
     expr = property(lambda self: self.args[0])
 
     @property
@@ -1005,6 +1007,8 @@ def rv_subs(expr):
 
 
 class NamedArgsMixin:
+    """Helper class for named arguments."""
+
     _argnames = ()
 
     def __getattr__(self, attr):

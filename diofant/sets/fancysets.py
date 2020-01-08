@@ -214,6 +214,8 @@ class Rationals(Set, metaclass=Singleton):
 
 
 class Reals(Interval, metaclass=Singleton):
+    """The set of all reals."""
+
     def __new__(cls):
         return Interval.__new__(cls, -oo, oo, True, True)
 

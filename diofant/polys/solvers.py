@@ -4,6 +4,8 @@ from ..matrices import Matrix, zeros
 
 
 class RawMatrix(Matrix):
+    """Dummy class with overriden sympify() helper."""
+
     _sympify = staticmethod(lambda x: x)
 
 

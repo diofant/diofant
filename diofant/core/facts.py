@@ -475,6 +475,8 @@ class FactRules:
 
 
 class InconsistentAssumptions(ValueError):
+    """Raised when assumptions are inconsistent."""
+
     def __str__(self):
         kb, fact, value = self.args
         return "%s, %s=%s" % (kb, fact, value)

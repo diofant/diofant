@@ -23,6 +23,8 @@ def _iszero(x):
 
 
 class MatrixError(Exception):
+    """Generic matrix error."""
+
     pass
 
 
@@ -33,10 +35,13 @@ class ShapeError(ValueError, MatrixError):
 
 
 class NonSquareMatrixError(ShapeError):
+    """Raised when a square matrix is expected."""
+
     pass
 
 
 class MatrixBase(DefaultPrinting):
+    """Base class for matrices."""
 
     # Added just for numpy compatibility
     __array_priority__ = 11

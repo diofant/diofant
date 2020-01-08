@@ -193,10 +193,6 @@ class factorial(CombinatorialFunction):
             return True
 
 
-class MultiFactorial(CombinatorialFunction):
-    pass
-
-
 class subfactorial(CombinatorialFunction):
     r"""The subfactorial counts the derangements of n items and is
     defined for non-negative integers as::

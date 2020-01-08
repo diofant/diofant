@@ -302,6 +302,8 @@ class MatrixExpr(Expr):
 
 
 class MatrixElement(Expr):
+    """Element of the matrix expression."""
+
     parent = property(lambda self: self.args[0])
     i = property(lambda self: self.args[1])
     j = property(lambda self: self.args[2])
