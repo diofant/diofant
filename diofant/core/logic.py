@@ -92,7 +92,6 @@ def fuzzy_and(args):
     False
 
     """
-
     rv = True
     for ai in args:
         ai = fuzzy_bool(ai)
@@ -232,6 +231,8 @@ class Logic:
 
 
 class AndOr_Base(Logic):
+    """Base class for And and Or."""
+
     def __new__(cls, *args):
         bargs = []
         for a in args:
@@ -276,6 +277,8 @@ class AndOr_Base(Logic):
 
 
 class And(AndOr_Base):
+    """Logical And."""
+
     op_x_notx = False
 
     def _eval_propagate_not(self):
@@ -302,6 +305,8 @@ class And(AndOr_Base):
 
 
 class Or(AndOr_Base):
+    """Logical Or."""
+
     op_x_notx = True
 
     def _eval_propagate_not(self):
@@ -310,6 +315,8 @@ class Or(AndOr_Base):
 
 
 class Not(Logic):
+    """Logical Not."""
+
     def __new__(cls, arg):
         if isinstance(arg, str):
             return Logic.__new__(cls, arg)

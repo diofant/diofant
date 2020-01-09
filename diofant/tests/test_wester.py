@@ -1,4 +1,4 @@
-""" Tests from Michael Wester's 1999 paper "Review of CAS mathematical
+"""Tests from Michael Wester's 1999 paper "Review of CAS mathematical
 capabilities".
 
 http://www.math.unm.edu/~wester/cas/book/Wester.pdf

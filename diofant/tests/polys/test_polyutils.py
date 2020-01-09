@@ -1,4 +1,4 @@
-"""Tests for useful utilities for higher level polynomial classes. """
+"""Tests for useful utilities for higher level polynomial classes."""
 
 import pytest
 

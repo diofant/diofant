@@ -1,4 +1,4 @@
-"""Tests for tools for constructing domains for expressions. """
+"""Tests for tools for constructing domains for expressions."""
 
 from diofant import (E, Float, GoldenRatio, I, Integer, Poly, Rational, sin,
                      sqrt)

@@ -1,4 +1,4 @@
-"""Tests for dense recursive polynomials' tools. """
+"""Tests for dense recursive polynomials' tools."""
 
 import pytest
 

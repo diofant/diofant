@@ -1,4 +1,4 @@
-""" Unit tests for Hyper_Function"""
+"""Unit tests for Hyper_Function."""
 
 from diofant.core import Dummy, Rational, Tuple, symbols
 from diofant.functions import hyper

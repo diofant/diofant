@@ -583,7 +583,6 @@ def cycle_length(f, x0, nmax=None, values=False):
     * https://en.wikipedia.org/wiki/Cycle_detection.
 
     """
-
     nmax = int(nmax or 0)
 
     # main phase: search successive powers of two

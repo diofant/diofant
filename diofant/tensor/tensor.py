@@ -2275,7 +2275,6 @@ class TensorHead(Basic):
         C(auto_left, -auto_right)
 
         """
-
         indices, matrix_behavior_kinds = self._check_auto_matrix_indices_in_call(*indices)
         tensor = Tensor._new_with_dummy_replacement(self, indices, **kw_args)
         return tensor
@@ -2808,7 +2807,6 @@ class TensAdd(TensExpr):
         TensorIndexType
 
         """
-
         args = [contract_metric(x, g) for x in self.args]
         t = TensAdd(*args)
         return canon_bp(t)
@@ -3042,7 +3040,6 @@ class Tensor(TensExpr):
         A(L_0, i1, -L_0, i2, i3)
 
         """
-
         free_args = self.free_args
         indices = list(indices)
         if [x._tensortype for x in indices] != [x._tensortype for x in free_args]:

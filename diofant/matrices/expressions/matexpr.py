@@ -9,7 +9,7 @@ from ..matrices import ShapeError
 
 
 class MatrixExpr(Expr):
-    """ Superclass for Matrix Expressions
+    """Superclass for Matrix Expressions
 
     MatrixExprs represent abstract matrices, linear transformations represented
     within a particular basis.
@@ -302,6 +302,8 @@ class MatrixExpr(Expr):
 
 
 class MatrixElement(Expr):
+    """Element of the matrix expression."""
+
     parent = property(lambda self: self.args[0])
     i = property(lambda self: self.args[1])
     j = property(lambda self: self.args[2])

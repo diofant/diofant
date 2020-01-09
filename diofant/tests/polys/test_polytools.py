@@ -1,4 +1,4 @@
-"""Tests for user-friendly public interface to polynomial functions. """
+"""Tests for user-friendly public interface to polynomial functions."""
 
 import pytest
 

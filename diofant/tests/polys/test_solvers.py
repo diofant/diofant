@@ -1,4 +1,4 @@
-"""Tests for low-level linear systems solver. """
+"""Tests for low-level linear systems solver."""
 
 from diofant.domains import QQ, ZZ
 from diofant.functions import sqrt

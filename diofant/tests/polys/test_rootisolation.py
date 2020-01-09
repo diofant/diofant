@@ -1,4 +1,4 @@
-"""Tests for real and complex root isolation and refinement algorithms. """
+"""Tests for real and complex root isolation and refinement algorithms."""
 
 import pytest
 

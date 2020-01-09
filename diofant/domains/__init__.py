@@ -1,4 +1,4 @@
-"""Implementation of mathematical domains. """
+"""Implementation of mathematical domains."""
 
 from ..core.compatibility import GROUND_TYPES
 from . import (algebraicfield, complexfield, domain, expressiondomain,

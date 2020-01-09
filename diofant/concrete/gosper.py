@@ -1,4 +1,4 @@
-"""Gosper's algorithm for hypergeometric summation. """
+"""Gosper's algorithm for hypergeometric summation."""
 
 from ..core import Dummy, Integer, nan, symbols
 from ..core.compatibility import is_sequence

@@ -187,7 +187,6 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         involving a limit variable, the unevaluated derivative is returned.
 
         """
-
         # get limits and the function
         f, limits = self.function, list(self.limits)
 

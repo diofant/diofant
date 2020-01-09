@@ -162,7 +162,7 @@ mathjax_config = {
 
 
 def linkcode_resolve(domain, info):
-    """Determine the URL corresponding to Python object. """
+    """Determine the URL corresponding to Python object."""
     if domain != 'py':
         return
 

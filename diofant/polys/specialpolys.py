@@ -1,4 +1,4 @@
-"""Functions for generating interesting polynomials, e.g. for benchmarking. """
+"""Functions for generating interesting polynomials, e.g. for benchmarking."""
 
 from ..core import Add, Dummy, Integer, Mul, Symbol, symbols, sympify
 from ..domains import ZZ
@@ -19,7 +19,7 @@ __all__ = ('swinnerton_dyer_poly', 'cyclotomic_poly', 'symmetric_poly',
 
 
 def swinnerton_dyer_poly(n, x=None, **args):
-    """Generates n-th Swinnerton-Dyer polynomial in `x`.  """
+    """Generates n-th Swinnerton-Dyer polynomial in `x`."""
     from .numberfields import minimal_polynomial
     if n <= 0:
         raise ValueError(
@@ -51,7 +51,7 @@ def swinnerton_dyer_poly(n, x=None, **args):
 
 
 def cyclotomic_poly(n, x=None, **args):
-    """Generates cyclotomic polynomial of order `n` in `x`. """
+    """Generates cyclotomic polynomial of order `n` in `x`."""
     if n <= 0:
         raise ValueError(
             "can't generate cyclotomic polynomial of order %s" % n)
@@ -70,7 +70,7 @@ def cyclotomic_poly(n, x=None, **args):
 
 
 def symmetric_poly(n, *gens, **args):
-    """Generates symmetric polynomial of order `n`. """
+    """Generates symmetric polynomial of order `n`."""
     gens = _analyze_gens(gens)
 
     if n < 0 or n > len(gens) or not gens:
@@ -87,7 +87,7 @@ def symmetric_poly(n, *gens, **args):
 
 
 def random_poly(x, n, inf, sup, domain=ZZ, polys=False, percent=None):
-    """Return a polynomial of degree ``n`` with coefficients in ``[inf, sup]``. """
+    """Return a polynomial of degree ``n`` with coefficients in ``[inf, sup]``."""
     poly = Poly(dup_random(n, inf, sup, domain, percent), x, domain=domain)
 
     if not polys:
@@ -97,7 +97,7 @@ def random_poly(x, n, inf, sup, domain=ZZ, polys=False, percent=None):
 
 
 def interpolating_poly(n, x, X='x', Y='y'):
-    """Construct Lagrange interpolating polynomial for ``n`` data points. """
+    """Construct Lagrange interpolating polynomial for ``n`` data points."""
     if isinstance(X, str):
         X = symbols("%s:%s" % (X, n))
 
@@ -126,7 +126,7 @@ def interpolating_poly(n, x, X='x', Y='y'):
 
 
 def fateman_poly_F_1(n):
-    """Fateman's GCD benchmark: trivial GCD """
+    """Fateman's GCD benchmark: trivial GCD."""
     Y = [Symbol('y_' + str(i)) for i in range(n + 1)]
 
     return tuple(map(lambda p: Poly(dmp_to_dict(p, n), *Y),
@@ -134,7 +134,7 @@ def fateman_poly_F_1(n):
 
 
 def dmp_fateman_poly_F_1(n, K):
-    """Fateman's GCD benchmark: trivial GCD """
+    """Fateman's GCD benchmark: trivial GCD."""
     u = [K(1), K(0)]
 
     for i in range(n):
@@ -164,7 +164,7 @@ def dmp_fateman_poly_F_1(n, K):
 
 
 def fateman_poly_F_2(n):
-    """Fateman's GCD benchmark: linearly dense quartic inputs """
+    """Fateman's GCD benchmark: linearly dense quartic inputs."""
     Y = [Symbol('y_' + str(i)) for i in range(n + 1)]
 
     return tuple(map(lambda p: Poly(dmp_to_dict(p, n), *Y),
@@ -172,7 +172,7 @@ def fateman_poly_F_2(n):
 
 
 def dmp_fateman_poly_F_2(n, K):
-    """Fateman's GCD benchmark: linearly dense quartic inputs """
+    """Fateman's GCD benchmark: linearly dense quartic inputs."""
     u = [K(1), K(0)]
 
     for i in range(n - 1):
@@ -193,7 +193,7 @@ def dmp_fateman_poly_F_2(n, K):
 
 
 def fateman_poly_F_3(n):
-    """Fateman's GCD benchmark: sparse inputs (deg f ~ vars f) """
+    """Fateman's GCD benchmark: sparse inputs (deg f ~ vars f)."""
     Y = [Symbol('y_' + str(i)) for i in range(n + 1)]
 
     return tuple(map(lambda p: Poly(dmp_to_dict(p, n), *Y),
@@ -201,7 +201,7 @@ def fateman_poly_F_3(n):
 
 
 def dmp_fateman_poly_F_3(n, K):
-    """Fateman's GCD benchmark: sparse inputs (deg f ~ vars f) """
+    """Fateman's GCD benchmark: sparse inputs (deg f ~ vars f)."""
     u = dmp_from_dict({(n + 1,): K.one}, 0, K)
 
     for i in range(n - 1):

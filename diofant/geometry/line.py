@@ -25,6 +25,8 @@ from .util import _symbol
 
 
 class Undecidable(ValueError):
+    """Raised when can't decide on relation."""
+
     pass
 
 
@@ -191,7 +193,6 @@ class LinearEntity(GeometrySet):
         False
 
         """
-
         # Concurrency requires intersection at a single point; One linear
         # entity cannot be concurrent.
         if len(lines) <= 1:

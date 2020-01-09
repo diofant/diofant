@@ -1,4 +1,4 @@
-"""Polynomial manipulation algorithms and algebraic objects. """
+"""Polynomial manipulation algorithms and algebraic objects."""
 
 from .polytools import (Poly, PurePoly, poly_from_expr,
                         parallel_poly_from_expr, degree, degree_list, LC,

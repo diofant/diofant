@@ -1,4 +1,4 @@
-"""Tests for algorithms for computing symbolic roots of polynomials. """
+"""Tests for algorithms for computing symbolic roots of polynomials."""
 
 import itertools
 
@@ -529,7 +529,7 @@ def test_roots1():
 
 
 def test_roots_slow():
-    """Just test that calculating these roots does not hang. """
+    """Just test that calculating these roots does not hang."""
     a, b, c, d, x = symbols("a,b,c,d,x")
 
     f1 = x**2*c + (a/b) + x*c*d - a

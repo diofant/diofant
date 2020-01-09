@@ -53,7 +53,7 @@ class Trace(Expr):
 
 
 def trace(expr):
-    """ Trace of a Matrix.  Sum of the diagonal elements
+    """Trace of a Matrix.  Sum of the diagonal elements
 
     >>> X = MatrixSymbol('X', n, n)  # A square matrix
     >>> trace(2*X)

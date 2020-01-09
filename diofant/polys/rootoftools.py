@@ -1,4 +1,4 @@
-"""Implementation of RootOf class and related tools. """
+"""Implementation of RootOf class and related tools."""
 
 from mpmath import findroot, mpc, mpf, workprec
 from mpmath.libmp.libmpf import prec_to_dps
@@ -434,7 +434,6 @@ class RootOf(Expr):
     @classmethod
     def _all_roots(cls, poly):
         """Get real and complex roots of a composite polynomial."""
-
         if not (poly.domain.is_IntegerRing or poly.domain.is_AlgebraicField):
             return [(poly, i) for i in range(poly.degree())]
 
@@ -512,7 +511,6 @@ class RootOf(Expr):
     @classmethod
     def _get_roots(cls, method, poly, radicals):
         """Return postprocessed roots of specified kind."""
-
         poly = PurePoly(poly)
 
         coeff, poly = cls._preprocess_roots(poly)
@@ -625,7 +623,6 @@ class RootOf(Expr):
         ['-0.86114', '-0.33998', '0.33998', '0.86114']
 
         """
-
         if not self.is_extended_real:
             raise NotImplementedError("eval_rational() only works for real polynomials so far")
         interval = self.interval
@@ -750,7 +747,6 @@ class RootSum(Expr):
     @classmethod
     def new(cls, poly, func, auto=True):
         """Construct new ``RootSum`` instance."""
-
         rational = cls._is_func_rational(poly, func)
 
         if not rational or not auto:

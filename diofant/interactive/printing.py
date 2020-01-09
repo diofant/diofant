@@ -89,7 +89,6 @@ def init_printing(no_global=False, pretty_print=None, **settings):
     x  + y  + x + y
 
     """
-
     try:
         ip = get_ipython()
     except NameError:

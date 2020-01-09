@@ -531,7 +531,7 @@ def test_lambdify_docstring():
 
 def test_special_printers():
     class IntervalPrinter(LambdaPrinter):
-        """Use ``lambda`` printer but print numbers as ``mpi`` intervals. """
+        """Use ``lambda`` printer but print numbers as ``mpi`` intervals."""
 
         def _print_Integer(self, expr):
             return "mpi('%s')" % super()._print_Integer(expr)

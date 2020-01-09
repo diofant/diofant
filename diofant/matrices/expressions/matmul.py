@@ -197,7 +197,7 @@ def xxinv(mul):
 
 
 def remove_ids(mul):
-    """ Remove Identities from a MatMul
+    """Remove Identities from a MatMul
 
     This is a modified version of diofant.core.strategies.rm_id.
     This is necesssary because MatMul may contain both MatrixExprs and Exprs

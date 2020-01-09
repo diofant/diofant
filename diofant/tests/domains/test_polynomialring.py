@@ -1,4 +1,4 @@
-"""Tests for the PolynomialRing classes. """
+"""Tests for the PolynomialRing classes."""
 
 import pytest
 

@@ -353,7 +353,6 @@ def get_numbered_constants(eq, num=1, start=1, prefix='C'):
     in eq already.
 
     """
-
     if isinstance(eq, Expr):
         eq = [eq]
     elif not iterable(eq):
@@ -1401,7 +1400,6 @@ def classify_sysode(eq, funcs=None, **kwargs):
     {'eq': [-t**2*g(t) - 5*t*f(t) + Derivative(f(t), t), t**2*f(t) - 5*t*g(t) + Derivative(g(t), t)], 'func': [f(t), g(t)], 'func_coeff': {(0, f(t), 0): -5*t, (0, f(t), 1): 1, (0, g(t), 0): -t**2, (0, g(t), 1): 0, (1, f(t), 0): t**2, (1, f(t), 1): 0, (1, g(t), 0): -5*t, (1, g(t), 1): 1}, 'is_linear': True, 'no_of_equation': 2, 'order': {f(t): 1, g(t): 1}, 'type_of_equation': 'type4'}
 
     """
-
     # Sympify equations and convert iterables of equations into
     # a list of equations
     def _sympify(eq):
@@ -3099,7 +3097,6 @@ def homogeneous_order(eq, *symbols):
     True
 
     """
-
     if not symbols:
         raise ValueError("homogeneous_order: no symbols were given.")
     symset = set(symbols)
@@ -3308,7 +3305,6 @@ def ode_Riccati_special_minus2(eq, func, order, match):
        http://eqworld.ipmnet.ru/en/solutions/ode/ode0123.pdf
 
     """
-
     x = func.args[0]
     f = func.func
     r = match  # a2*diff(f(x),x) + b2*f(x) + c2*f(x)/x + d2/x**2
@@ -4045,7 +4041,6 @@ def ode_almost_linear(eq, func, order, match):
       of the ACM, Volume 14, Number 8, August 1971, pp. 558
 
     """
-
     # Since ode_1st_linear has already been implemented, and the
     # coefficients have been modified to the required form in
     # classify_ode, just passing eq, func, order and match to
@@ -4179,7 +4174,6 @@ def ode_linear_coefficients(eq, func, order, match):
       of the ACM, Volume 14, Number 8, August 1971, pp. 558
 
     """
-
     return ode_1st_homogeneous_coeff_best(eq, func, order, match)
 
 
@@ -4238,7 +4232,6 @@ def ode_separable_reduced(eq, func, order, match):
       of the ACM, Volume 14, Number 8, August 1971, pp. 558
 
     """
-
     # Arguments are passed in a way so that they are coherent with the
     # ode_separable function
     x = func.args[0]
@@ -4841,7 +4834,6 @@ def ode_nth_linear_constant_coeff_variation_of_parameters(eq, func, order, match
     * :cite:`TenenbaumPollard63`, pp. 233.
 
     """
-
     gensol = ode_nth_linear_constant_coeff_homogeneous(eq, func, order, match,
                                                        returns='both')
     match.update(gensol)
@@ -4869,7 +4861,6 @@ def _solve_variation_of_parameters(eq, func, order, match):
       ``ode_nth_linear_constant_coeff_homogeneous(returns='sol')``.
 
     """
-
     x = func.args[0]
     f = func.func
     r = match
@@ -5087,7 +5078,6 @@ def ode_lie_group(eq, func, order, match):
       John Starrett, pp. 1-14.
 
     """
-
     heuristics = lie_heuristics
     inf = {}
     f = func.func
@@ -5312,7 +5302,6 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
       John Starrett, pp. 1 - pp. 14
 
     """
-
     if isinstance(eq, Equality):
         eq = eq.lhs - eq.rhs
     if not func:
@@ -5425,7 +5414,6 @@ def lie_heuristic_abaco1_simple(match, comp=False):
 
 
     """
-
     xieta = []
     y = match['y']
     h = match['h']
@@ -5525,7 +5513,6 @@ def lie_heuristic_abaco1_product(match, comp=False):
       ODE Patterns, pp. 7 - pp. 8
 
     """
-
     xieta = []
     y = match['y']
     h = match['h']
@@ -5586,7 +5573,6 @@ def lie_heuristic_bivariate(match, comp=False):
       pp. 327 - pp. 329
 
     """
-
     h = match['h']
     hx = match['hx']
     hy = match['hy']
@@ -5664,7 +5650,6 @@ def lie_heuristic_chi(match, comp=False):
       Solving of First Order ODEs Using Symmetry Methods, pp. 8
 
     """
-
     h = match['h']
     hy = match['hy']
     func = match['func']
@@ -5750,7 +5735,6 @@ def lie_heuristic_function_sum(match, comp=False):
       ODE Patterns, pp. 7 - pp. 8
 
     """
-
     xieta = []
     h = match['h']
     func = match['func']
@@ -5835,7 +5819,6 @@ def lie_heuristic_abaco2_similar(match, comp=False):
       ODE Patterns, pp. 10 - pp. 12
 
     """
-
     h = match['h']
     hx = match['hx']
     hy = match['hy']
@@ -5936,7 +5919,6 @@ def lie_heuristic_abaco2_unique_unknown(match, comp=False):
       ODE Patterns, pp. 10 - pp. 12
 
     """
-
     h = match['h']
     hx = match['hx']
     hy = match['hy']
@@ -6944,7 +6926,6 @@ def sysode_linear_neq_order1(match_):
     * :cite:`hairer2014solving`, pp. 73-76.
 
     """
-
     func = match_['func']
     fc = match_['func_coeff']
     eq = match_['eq']

@@ -1092,7 +1092,6 @@ def is_nnf(expr, simplified=True):
     False
 
     """
-
     expr = sympify(expr)
     if is_literal(expr):
         return True
@@ -1253,7 +1252,6 @@ def to_int_repr(clauses, symbols):
     [{1, 2}, {2}]
 
     """
-
     symbols = dict(zip(symbols, range(1, len(symbols) + 1)))
 
     def append_symbol(arg, symbols):
@@ -1521,7 +1519,6 @@ def simplify_logic(expr, form=None, deep=True):
     ~x & ~y
 
     """
-
     if form == 'cnf' or form == 'dnf' or form is None:
         expr = sympify(expr)
         if not isinstance(expr, BooleanFunction):
@@ -1634,7 +1631,6 @@ def bool_map(bool1, bool2):
         a workaround that is valid for simplified boolean expressions.
 
         """
-
         # do some quick checks
         if function1.__class__ != function2.__class__:
             return

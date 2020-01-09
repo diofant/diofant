@@ -9,6 +9,7 @@ from .operations import AssocOp
 
 
 class Add(AssocOp):
+    """Symbolic addition class."""
 
     is_Add = True
 
@@ -236,7 +237,6 @@ class Add(AssocOp):
         {x*y: 3}
 
         """
-
         d = collections.defaultdict(list)
         for ai in self.args:
             c, m = ai.as_coeff_Mul()

@@ -1166,7 +1166,7 @@ class PrettyPrinter(Printer):
         pforms, indices = [], []
 
         def pretty_negative(pform, index):
-            """Prepend a minus sign to a pretty form. """
+            """Prepend a minus sign to a pretty form."""
             # TODO: Move this code to prettyForm
             if index == 0:
                 if pform.height() > 1:

@@ -1121,7 +1121,6 @@ def recognize_log_derivative(a, d, DE, z=None):
     produces u in K(x) such that du/dx = uf.
 
     """
-
     z = z or Dummy('z')
     a, d = a.cancel(d, include=True)
     p, a = a.div(d)

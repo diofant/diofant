@@ -1,4 +1,4 @@
-"""Tests for functions for generating interesting polynomials. """
+"""Tests for functions for generating interesting polynomials."""
 
 import pytest
 

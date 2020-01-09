@@ -262,7 +262,7 @@ def test_hyperrep():
     assert MyRep(exp_polar(I*pi)*z).rewrite('nonrepsmall') == b
 
     def t(func, hyp, z):
-        """ Test that func is a valid representation of hyp. """
+        """Test that func is a valid representation of hyp."""
         # First test that func agrees with hyp for small z
         if not tn(func.rewrite('nonrepsmall'), hyp, z,
                   a=Rational(-1, 2), b=Rational(-1, 2), c=Rational(1, 2), d=Rational(1, 2)):

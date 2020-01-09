@@ -10,6 +10,7 @@ from .ndim_array import ImmutableNDimArray, NDimArray
 
 
 class DenseNDimArray(NDimArray):
+    """Dense N-dim array."""
 
     def __getitem__(self, index):
         """
@@ -115,6 +116,7 @@ class DenseNDimArray(NDimArray):
 
 
 class ImmutableDenseNDimArray(DenseNDimArray, ImmutableNDimArray):
+    """An immutable version of a dense N-dim array."""
 
     def __new__(cls, iterable=None, shape=None, **kwargs):
         return cls._new(iterable, shape, **kwargs)
@@ -140,6 +142,7 @@ class ImmutableDenseNDimArray(DenseNDimArray, ImmutableNDimArray):
 
 
 class MutableDenseNDimArray(DenseNDimArray, MutableNDimArray):
+    """A mutable version of a dense N-dim array."""
 
     def __new__(cls, iterable=None, shape=None, **kwargs):
         return cls._new(iterable, shape, **kwargs)

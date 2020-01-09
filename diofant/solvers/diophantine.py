@@ -481,7 +481,6 @@ def _diop_linear(var, coeff, param):
     Note that no solution exists if gcd(a_0, ..., a_n) doesn't divide c.
 
     """
-
     if 1 in coeff:
         # negate coeff[] because input is of the form: ax + by + c ==  0
         #                              but is used as: ax + by     == -c
@@ -1538,7 +1537,6 @@ def transformation_to_DN(eq):
       https://web.archive.org/web/20180831180321/http://www.jpr2718.org/ax2p.pdf
 
     """
-
     var, coeff, diop_type = classify_diop(eq, _dict=False)
     if diop_type == "binary_quadratic":
         return _transformation_to_DN(var, coeff)
@@ -1664,7 +1662,6 @@ def check_param(x, y, a, t):
     Here ``x`` and ``y`` are functions of ``t``.
 
     """
-
     from ..simplify.simplify import clear_coefficients
 
     if x.is_number and not x.is_Integer:
@@ -2374,7 +2371,6 @@ def holzer(x, y, z, a, b, c):
     * Diophantine Equations, L. J. Mordell, page 48.
 
     """
-
     if _odd(c):
         k = 2*c
     else:

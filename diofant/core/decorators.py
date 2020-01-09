@@ -54,7 +54,6 @@ def __sympifyit(func, arg, retval=None):
 
     don't use directly -- use _sympifyit instead
     """
-
     # we support f(a,b) only
     if not func.__code__.co_argcount:
         raise LookupError("func not found")

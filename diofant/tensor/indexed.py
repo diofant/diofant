@@ -106,6 +106,8 @@ from ..core.compatibility import NotIterable, is_sequence
 
 
 class IndexException(Exception):
+    """Generic index error."""
+
     pass
 
 

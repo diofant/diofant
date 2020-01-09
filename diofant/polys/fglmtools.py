@@ -1,4 +1,4 @@
-"""Implementation of matrix FGLM Gröbner basis conversion algorithm. """
+"""Implementation of matrix FGLM Gröbner basis conversion algorithm."""
 
 from .monomials import Monomial
 

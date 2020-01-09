@@ -1,4 +1,4 @@
-"""Tests for functions that inject symbols into the global namespace. """
+"""Tests for functions that inject symbols into the global namespace."""
 
 import pytest
 

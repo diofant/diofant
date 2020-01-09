@@ -1,4 +1,4 @@
-"""User-friendly public interface to polynomial functions. """
+"""User-friendly public interface to polynomial functions."""
 
 import mpmath
 

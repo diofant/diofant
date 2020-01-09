@@ -148,12 +148,12 @@ def test_shifted_sum():
 
 
 def _randrat():
-    """ Steer clear of integers. """
+    """Steer clear of integers."""
     return Integer(randrange(25) + 10)/50
 
 
 def randcplx(offset=-1):
-    """ Polys is not good with real coefficients. """
+    """Polys is not good with real coefficients."""
     return _randrat() + I*_randrat() + I*(1 + offset)
 
 

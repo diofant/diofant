@@ -1,4 +1,4 @@
-"""Test sparse polynomials. """
+"""Test sparse polynomials."""
 
 import functools
 import operator

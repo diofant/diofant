@@ -1,4 +1,4 @@
-""" A module which handles Matrix Expressions """
+"""A module which handles Matrix Expressions."""
 
 from .adjoint import Adjoint
 from .blockmatrix import BlockDiagMatrix, BlockMatrix, block_collapse, blockcut

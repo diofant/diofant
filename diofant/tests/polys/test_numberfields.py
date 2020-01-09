@@ -1,4 +1,4 @@
-"""Tests for computational algebraic number field theory. """
+"""Tests for computational algebraic number field theory."""
 
 import pytest
 

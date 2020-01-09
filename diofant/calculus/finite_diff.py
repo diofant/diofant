@@ -255,7 +255,6 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
     .. _finitediff: https://github.com/bjodah/finitediff
 
     """
-
     # In the original paper the following holds for the notation:
     # M = order
     # N = len(x_list) - 1

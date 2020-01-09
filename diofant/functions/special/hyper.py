@@ -1,4 +1,4 @@
-"""Hypergeometric and Meijer G-functions"""
+"""Hypergeometric and Meijer G-functions."""
 
 from functools import reduce
 
@@ -12,6 +12,8 @@ from .. import (acosh, acoth, asin, asinh, atan, atanh, cos, cosh, exp, log,
 
 
 class TupleArg(Tuple):
+    """Arguments of the hyper/meijerg functions."""
+
     def limit(self, x, xlim, dir='+'):
         """Compute limit x->xlim."""
         return self.func(*[_.limit(x, xlim, dir) for _ in self.args])
@@ -42,7 +44,7 @@ def _prep_tuple(v):
 
 
 class TupleParametersBase(Function):
-    """ Base class that takes care of differentiation, when some of
+    """Base class that takes care of differentiation, when some of
     the arguments are actually tuples.
 
     """

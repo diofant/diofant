@@ -67,17 +67,20 @@ def _coeff_isneg(a):
     False
 
     """
-
     if a.is_Mul or a.is_MatMul:
         a = a.args[0]
     return a.is_Number and a.is_negative
 
 
 class PoleError(Exception):
+    """Raised when an expansion pole is encountered."""
+
     pass
 
 
 class ArgumentIndexError(ValueError):
+    """Raised when an invalid operation for positional argument happened."""
+
     def __str__(self):
         return ("Invalid operation with argument number %s for Function %s" %
                 (self.args[1], self.args[0]))
@@ -126,7 +129,6 @@ class FunctionClass(ManagedProperties):
         Function subclasses.
 
         """
-
         # TODO: Look at nargs
         return inspect.signature(self.eval)
 
@@ -1110,7 +1112,6 @@ class Derivative(Expr):
         [y, z, f(x), x, f(x), g(x), x, y, z, z]
 
         """
-
         sorted_vars = []
         symbol_part = []
         non_symbol_part = []

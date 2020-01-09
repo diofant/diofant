@@ -427,7 +427,6 @@ class OctaveCodePrinter(CodePrinter):
 
     def indent_code(self, code):
         """Accepts a string of code or a list of code lines."""
-
         # code mostly copied from ccode
         if isinstance(code, str):
             code_lines = self.indent_code(code.splitlines(True))

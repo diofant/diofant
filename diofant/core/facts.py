@@ -418,7 +418,6 @@ class FactRules:
 
     def __init__(self, rules):
         """Compile rules into internal lookup tables."""
-
         if isinstance(rules, str):
             rules = rules.splitlines()
 
@@ -476,6 +475,8 @@ class FactRules:
 
 
 class InconsistentAssumptions(ValueError):
+    """Raised when assumptions are inconsistent."""
+
     def __str__(self):
         kb, fact, value = self.args
         return "%s, %s=%s" % (kb, fact, value)

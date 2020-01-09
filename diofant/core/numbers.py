@@ -1231,7 +1231,6 @@ class Rational(Number):
         diofant.core.expr.Expr.as_content_primitive
 
         """
-
         if self:
             if self.is_positive:
                 return self, S.One
@@ -1251,6 +1250,7 @@ numbers.Rational.register(Rational)
 
 
 class Integer(Rational):
+    """Represents integer numbers."""
 
     is_integer = True
     is_number = True
@@ -1440,6 +1440,7 @@ class RationalConstant(Rational):
 
 
 class IntegerConstant(Integer):
+    """Abstract class for integer constants."""
 
     def __new__(cls):
         return AtomicExpr.__new__(cls)
@@ -2115,6 +2116,7 @@ zoo = S.ComplexInfinity
 
 
 class NumberSymbol(AtomicExpr):
+    """Base class for symbolic numbers."""
 
     is_commutative = True
     is_finite = True
@@ -2126,7 +2128,7 @@ class NumberSymbol(AtomicExpr):
         return AtomicExpr.__new__(cls)
 
     def approximation_interval(self, number_cls):
-        """ Return an interval with number_cls endpoints that contains the
+        """Return an interval with number_cls endpoints that contains the
         value of NumberSymbol.  If not implemented, then return None.
 
         """
@@ -2535,7 +2537,6 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
         I**3 mod 4 -> -I
 
         """
-
         if isinstance(expt, Number):
             if isinstance(expt, Integer):
                 expt = expt.numerator % 4

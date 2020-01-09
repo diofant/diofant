@@ -1,4 +1,4 @@
-"""Tests for tools for manipulation of rational expressions. """
+"""Tests for tools for manipulation of rational expressions."""
 
 from diofant import Eq, Integral, Mul, Rational, exp, sin, symbols
 from diofant.abc import x, y, z

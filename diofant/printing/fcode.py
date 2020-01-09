@@ -504,5 +504,4 @@ def fcode(expr, assign_to=None, **settings):
           A(3, 1) = sin(x)
 
     """
-
     return FCodePrinter(settings).doprint(expr, assign_to)

@@ -1,4 +1,4 @@
-""" Riemann zeta and related function. """
+"""Riemann zeta and related function."""
 
 from ...core import (Add, Dummy, E, Function, I, Integer, Rational, expand_mul,
                      oo, pi, sympify, zoo)

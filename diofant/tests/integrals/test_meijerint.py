@@ -533,7 +533,7 @@ def test_probability():
 
 @pytest.mark.slow
 def test_expint():
-    """ Test various exponential integrals. """
+    """Test various exponential integrals."""
     assert simplify(integrate(exp(-z*x)/x**y,
                               (x, 1, oo),
                               meijerg=True,
