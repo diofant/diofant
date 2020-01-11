@@ -49,35 +49,61 @@ To get the solutions of a polynomial including multiplicity use
     >>> roots(x**3 - 6*x**2 + 9*x)
     {0: 1, 3: 2}
 
-Differential Equations
-======================
+Recurrence Equations
+====================
 
-To solve differential equations, use
-:func:`~diofant.solvers.ode.dsolve`.  First, create an undefined
+To solve recurrence equations, use
+:func:`~diofant.solvers.recurr.rsolve`.  First, create an undefined
 function by passing ``cls=Function`` to the
 :func:`~diofant.core.symbol.symbols` function.
 
-    >>> f, g = symbols('f g', cls=Function)
+    >>> f = symbols('f', cls=Function)
 
-``f`` and ``g`` are now undefined functions.  We can call ``f(x)``,
-and it will represent an unknown function application.  Derivatives of
-``f(x)`` are unevaluated.
+We can call ``f(x)``, and it will represent an unknown function application.
 
-    >>> f(x).diff(x)
-    d
-    ──(f(x))
-    dx
+.. note::
 
-To solve the differential equation `f''(x) - 2f'(x) + f(x) =
-\sin(x)`, we would thus use
+   From here on in this tutorial we assume that these statements were
+   executed:
 
-    >>> dsolve(Eq(f(x).diff(x, x) - 2*f(x).diff(x) + f(x), sin(x)))
+      >>> from diofant import *
+      >>> a, b, c, d, t, x, y, z = symbols('a:d t x:z')
+      >>> k, m, n = symbols('k m n', integer=True)
+      >>> f, g, h = symbols('f:h', cls=Function)
+      >>> init_printing(pretty_print=True, use_unicode=True)
+
+As for algebraic equations, the output is a list of :class:`dict`'s
+
+    >>> rsolve(f(n + 1) - 3*f(n) - 1)
+    ⎡⎧        n      1⎫⎤
+    ⎢⎨f: n ↦ 3 ⋅C₀ - ─⎬⎥
+    ⎣⎩               2⎭⎦
+
+The arbitrary constants in the solutions are symbols of the
+form ``C0``, ``C1``, and so on.
+
+Differential Equations
+======================
+
+To solve the differential equation
+
+    >>> Eq(f(x).diff(x, x) - 2*f(x).diff(x) + f(x), sin(x))
+                          2
+             d           d
+    f(x) - 2⋅──(f(x)) + ───(f(x)) = sin(x)
+             dx           2
+                        dx
+
+.. note::
+
+    Derivatives of the unknown function ``f(x)`` are unevaluated.
+
+we would use
+
+    >>> dsolve(_)
             x               cos(x)
     f(x) = ℯ ⋅(C₁ + C₂⋅x) + ──────
                               2
-
-The arbitrary constants in the solutions from dsolve are symbols of
-the form ``C1``, ``C2``, ``C3``, and so on.
 
 :func:`~diofant.solvers.ode.dsolve` can also solve systems of
 equations, like :func:`~diofant.solvers.solvers.solve`.
