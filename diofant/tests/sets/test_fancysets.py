@@ -1,3 +1,5 @@
+"""Special sets tests."""
+
 import itertools
 
 import pytest

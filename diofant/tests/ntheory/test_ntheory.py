@@ -1,3 +1,5 @@
+"""Tests for number theory functions."""
+
 import collections
 import itertools
 import random

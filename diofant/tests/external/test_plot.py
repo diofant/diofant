@@ -1,3 +1,5 @@
+"""Generic plotting tests."""
+
 import errno
 import functools
 import os

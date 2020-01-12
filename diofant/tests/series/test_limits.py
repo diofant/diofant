@@ -1,3 +1,5 @@
+"""Limit computation tests."""
+
 import itertools
 
 import pytest

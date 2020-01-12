@@ -1,3 +1,5 @@
+"""Fortran code printing tests."""
+
 import pytest
 
 from diofant import (Add, Catalan, Dummy, E, Eq, EulerGamma, Float, Function,

@@ -1,3 +1,5 @@
+"""Generic set theory interfaces."""
+
 import itertools
 
 from mpmath import mpf, mpi
