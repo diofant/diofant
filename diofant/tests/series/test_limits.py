@@ -724,3 +724,7 @@ def test_sympyissue_18176():
     e = x**n - x**(n - k)
     assert limit(e.subs({k: 0}), x, oo) == 0
     assert limit(e.subs({k: 1}), x, oo) == oo
+
+
+def test_sympyissue_18306():
+    assert limit(sin(sqrt(x))/sqrt(sin(x)), x, 0) == 1
