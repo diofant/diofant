@@ -727,9 +727,9 @@ def canonicalize(g, dummies, msym, *v):
 
     >>> base_f, gens_f = get_symmetric_group_sgs(3, 1)
     >>> base1, gens1 = get_symmetric_group_sgs(1)
-    >>> base_A, gens_A = bsgs_direct_product(base1, gens1, base1, gens1)
+    >>> base_a, gens_a = bsgs_direct_product(base1, gens1, base1, gens1)
     >>> t0 = (base_f, gens_f, 2, 0)
-    >>> t1 = (base_A, gens_A, 4, 0)
+    >>> t1 = (base_a, gens_a, 4, 0)
     >>> dummies = [range(2, 10), range(10, 14)]
     >>> g = Permutation([0, 7, 3, 1, 9, 5, 11, 6, 10, 4, 13, 2, 12, 8, 14, 15])
     >>> canonicalize(g, dummies, [0, 0], t0, t1)
