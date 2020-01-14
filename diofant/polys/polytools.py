@@ -4319,49 +4319,6 @@ def to_rational_coeffs(f):
                 return None, None, r[0], r[1]
 
 
-def _torational_factor_list(p, x):
-    """
-    helper function to factor polynomial using to_rational_coeffs
-
-    Examples
-    ========
-
-    >>> p = expand(((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))}))
-    >>> factors = _torational_factor_list(p, x)
-    >>> factors
-    (-2, [(-x*(1 + sqrt(2))/2 + 1, 1), (-x*(1 + sqrt(2)) - 1, 1), (-x*(1 + sqrt(2)) + 1, 1)])
-    >>> expand(factors[0]*Mul(*[z[0] for z in factors[1]])) == p
-    True
-    >>> p = expand(((x**2-1)*(x-2)).subs({x: x + sqrt(2)}))
-    >>> factors = _torational_factor_list(p, x)
-    >>> factors
-    (1, [(x - 2 + sqrt(2), 1), (x - 1 + sqrt(2), 1), (x + 1 + sqrt(2), 1)])
-    >>> expand(factors[0]*Mul(*[z[0] for z in factors[1]])) == p
-    True
-
-    """
-    from ..simplify import simplify
-    p1 = Poly(p, x, domain='EX')
-    n = p1.degree()
-    res = to_rational_coeffs(p1)
-    if not res:
-        return
-    lc, r, t, g = res
-    factors = factor_list(g.as_expr())
-    if lc:
-        c = simplify(factors[0]*lc*r**n)
-        r1 = simplify(1/r)
-        a = []
-        for z in factors[1:][0]:
-            a.append((simplify(z[0].subs({x: x*r1})), z[1]))
-    else:
-        c = factors[0]
-        a = []
-        for z in factors[1:][0]:
-            a.append((z[0].subs({x: x - t}), z[1]))
-    return c, a
-
-
 def sqf_list(f, *gens, **args):
     """
     Compute a list of square-free factors of ``f``.

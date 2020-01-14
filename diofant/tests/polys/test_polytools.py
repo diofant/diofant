@@ -4,8 +4,8 @@ import pytest
 
 from diofant import (Derivative, Eq, Expr, Float, I, Integer, Integral, Mul,
                      Piecewise, Rational, RootOf, Sum, Symbol, Tuple, diff,
-                     exp, expand, false, im, oo, pi, re, root, sin, sqrt,
-                     symbols, tanh, true)
+                     exp, expand, false, im, oo, pi, re, sin, sqrt, symbols,
+                     tanh, true)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.mul import _keep_coeff
 from diofant.domains import EX, FF, QQ, RR, ZZ
@@ -20,11 +20,10 @@ from diofant.polys.polyerrors import (CoercionFailed, ComputationFailed,
                                       PolificationFailed, PolynomialError,
                                       RefinementFailed, UnificationFailed)
 from diofant.polys.polytools import (LC, LM, LT, GroebnerBasis, Poly, PurePoly,
-                                     _torational_factor_list, cancel,
-                                     cofactors, compose, content, count_roots,
-                                     decompose, degree, degree_list,
-                                     discriminant, div, exquo, factor,
-                                     factor_list, gcd, gcd_list, gcdex,
+                                     cancel, cofactors, compose, content,
+                                     count_roots, decompose, degree,
+                                     degree_list, discriminant, div, exquo,
+                                     factor, factor_list, gcd, gcd_list, gcdex,
                                      groebner, ground_roots, half_gcdex,
                                      intervals, invert, lcm, lcm_list, monic,
                                      nroots, nth_power_roots_poly,
@@ -2715,22 +2714,6 @@ def test_nth_power_roots_poly():
     pytest.raises(MultivariatePolynomialError, lambda: nth_power_roots_poly(
         x + y, 2, x, y))
     pytest.raises(ComputationFailed, lambda: nth_power_roots_poly(1, 2))
-
-
-def test_torational_factor_list():
-    p = expand(((x**2 - 1)*(x - 2)).subs({x: x*(1 + sqrt(2))}))
-    assert _torational_factor_list(p, x) == (-2, [
-        (-x*(1 + sqrt(2))/2 + 1, 1),
-        (-x*(1 + sqrt(2)) - 1, 1),
-        (-x*(1 + sqrt(2)) + 1, 1)])
-
-    p = expand(((x**2 - 1)*(x - 2)).subs({x: x*(1 + root(2, 4))}))
-    assert _torational_factor_list(p, x) is None
-
-    p = expand(((x**2 - 1)*(x - 2)).subs({x: x + sqrt(2)}))
-    assert _torational_factor_list(p, x) == (1, [(x - 2 + sqrt(2), 1),
-                                                 (x - 1 + sqrt(2), 1),
-                                                 (x + 1 + sqrt(2), 1)])
 
 
 def test_cancel():
