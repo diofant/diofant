@@ -1,5 +1,8 @@
 """User-friendly public interface to polynomial functions."""
 
+import functools
+import operator
+
 import mpmath
 
 from ..core import (Add, Basic, Derivative, Dummy, E, Expr, I, Integer, Mul,
@@ -4073,10 +4076,7 @@ def _symbolic_factor_list(expr, opt, method):
         if arg.is_Number:
             coeff *= arg
             continue
-        if arg.is_Mul:
-            args.extend(arg.args)
-            continue
-        if arg.is_Pow and arg.base is not E:
+        elif arg.is_Pow and arg.base is not E:
             base, exp = arg.args
             if base.is_Number:
                 factors.append((base, exp))
@@ -4114,6 +4114,11 @@ def _symbolic_factor_list(expr, opt, method):
                         other.append((f, k))
 
                 factors.append((_factors_product(other), exp))
+
+    if method == 'sqf':
+        factors = [(functools.reduce(operator.mul,
+                                     (f for f, _ in factors if _ == k)), k)
+                   for k in set(dict(factors).values())]
 
     return coeff, factors
 

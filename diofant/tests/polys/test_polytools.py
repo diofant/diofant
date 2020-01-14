@@ -3246,7 +3246,7 @@ def test_sympyissue_8754():
 def test_factor_terms():
     # issue sympy/sympy#7067
     assert factor_list(x*(x + y)) == (1, [(x, 1), (x + y, 1)])
-    assert sqf_list(x*(x + y)) == (1, [(x, 1), (x + y, 1)])
+    assert sqf_list(x*(x + y)) == (1, [(x**2 + x*y, 1)])
 
 
 def test_sympyissue_8210():
@@ -3285,3 +3285,14 @@ def test_sympyissue_8810():
 
     assert c == Poly(e, y, domain=ZZ.poly_ring(x, sqrt(x)))
     assert Poly(p, y, composite=True) == c
+
+
+def test_sympyissue_8695():
+    e = (x**2 + 1) * (x - 1)**2 * (x - 2)**3 * (x - 3)**3
+    r = (1, [(x**2 + 1, 1), (x - 1, 2), (x**2 - 5*x + 6, 3)])
+    assert sqf_list(e) == r
+    assert poly(e).sqf_list() == r
+
+    # regression test from the issue thread, not related to the issue
+    e = (x + 2)**2 * (y + 4)**5
+    assert sqf(e) == sqf(e.expand()) == e
