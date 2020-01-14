@@ -58,7 +58,6 @@ class Point(Basic):
         (-10)*N.i
 
         """
-
         if (not isinstance(other, Point)
                 and not isinstance(other, CoordSysCartesian)):
             raise TypeError(str(other) +
@@ -135,7 +134,6 @@ class Point(Basic):
         (10, 5, 0)
 
         """
-
         # Determine the position vector
         pos_vect = self.position_wrt(coordinate_system.origin)
         # Express it in the given coordinate system

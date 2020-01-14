@@ -1,4 +1,4 @@
-"""Tools for solving inequalities and systems of inequalities. """
+"""Tools for solving inequalities and systems of inequalities."""
 
 from collections import defaultdict
 
@@ -248,9 +248,9 @@ def reduce_piecewise_inequality(expr, rel, gen):
 
     >>> x = Symbol('x', real=True)
 
-    >>> reduce_piecewise_inequality(Abs(x - 5) - 3, '<', x)
+    >>> reduce_piecewise_inequality(abs(x - 5) - 3, '<', x)
     (2 < x) & (x < 8)
-    >>> reduce_piecewise_inequality(Abs(x + 2)*3 - 13, '<', x)
+    >>> reduce_piecewise_inequality(abs(x + 2)*3 - 13, '<', x)
     (-19/3 < x) & (x < 7/3)
 
     >>> reduce_piecewise_inequality(Piecewise((1, x < 1),
@@ -343,10 +343,10 @@ def reduce_piecewise_inequalities(exprs, gen):
 
     >>> x = Symbol('x', real=True)
 
-    >>> reduce_piecewise_inequalities([(Abs(3*x - 5) - 7, '<'),
-    ...                                (Abs(x + 25) - 13, '>')], x)
+    >>> reduce_piecewise_inequalities([(abs(3*x - 5) - 7, '<'),
+    ...                                (abs(x + 25) - 13, '>')], x)
     (-2/3 < x) & (x < 4) & ((-12 < x) | (x < -38))
-    >>> reduce_piecewise_inequalities([(Abs(x - 4) + Abs(3*x - 5) - 7, '<')], x)
+    >>> reduce_piecewise_inequalities([(abs(x - 4) + abs(3*x - 5) - 7, '<')], x)
     (1/2 < x) & (x < 4)
 
     See Also

@@ -1,6 +1,7 @@
 import pytest
 
 from diofant import ccode
+from diofant.abc import x, y, z
 from diofant.core import (Catalan, Dummy, Eq, EulerGamma, GoldenRatio, Integer,
                           Lambda, Mul, Rational, oo, pi, symbols)
 from diofant.functions import (Abs, Max, Piecewise, ceiling, cos, elliptic_e,
@@ -14,14 +15,12 @@ from diofant.utilities.lambdify import implemented_function
 
 __all__ = ()
 
-x, y, z = symbols('x,y,z')
-
 
 def test_printmethod():
-    class fabs(Abs):
+    class Fabs(Abs):
         def _ccode(self, printer):
             return "fabs(%s)" % printer._print(self.args[0])
-    assert ccode(fabs(x)) == "fabs(x)"
+    assert ccode(Fabs(x)) == "fabs(x)"
 
 
 def test_ccode_sqrt():
@@ -92,14 +91,13 @@ def test_ccode_functions():
                                     "// elliptic_e\nelliptic_e(x)")
 
     n = symbols('n', integer=True)
-    assert ccode(Abs(n)) == '// Not supported in C:\n// Abs\nAbs(n)'
-    assert ccode(Abs(x)) == 'fabs(x)'
+    assert ccode(abs(n)) == '// Not supported in C:\n// Abs\nAbs(n)'
+    assert ccode(abs(x)) == 'fabs(x)'
 
     pytest.raises(TypeError, lambda: ccode(sin(x), assign_to=1))
 
 
 def test_ccode_inline_function():
-    x = symbols('x')
     g = implemented_function('g', Lambda(x, 2*x))
     assert ccode(g(x)) == "2*x"
     g = implemented_function('g', Lambda(x, 2*x/Catalan))
@@ -117,7 +115,7 @@ def test_ccode_inline_function():
 
 def test_ccode_exceptions():
     assert ccode(ceiling(x)) == "ceil(x)"
-    assert ccode(Abs(x)) == "fabs(x)"
+    assert ccode(abs(x)) == "fabs(x)"
     assert ccode(gamma(x)) == "tgamma(x)"
 
 
@@ -129,8 +127,8 @@ def test_ccode_user_functions():
         "Abs": [(lambda x: not x.is_integer, "fabs"), (lambda x: x.is_integer, "abs")],
     }
     assert ccode(ceiling(x), user_functions=custom_functions) == "ceil(x)"
-    assert ccode(Abs(x), user_functions=custom_functions) == "fabs(x)"
-    assert ccode(Abs(n), user_functions=custom_functions) == "abs(n)"
+    assert ccode(abs(x), user_functions=custom_functions) == "fabs(x)"
+    assert ccode(abs(n), user_functions=custom_functions) == "abs(n)"
 
 
 def test_ccode_boolean():
@@ -483,7 +481,7 @@ def test_Matrix_printing():
 
 def test_ccode_reserved_words():
 
-    x, y = symbols('x, if')
+    y = symbols('if')
 
     assert ccode(y**2) == 'pow(if_, 2)'
     assert ccode(x * y**2, dereference=[y]) == 'pow((*if_), 2)*x'

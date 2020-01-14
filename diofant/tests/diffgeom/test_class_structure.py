@@ -1,4 +1,5 @@
-from diofant import Function, symbols
+from diofant import Function
+from diofant.abc import x, y
 from diofant.diffgeom import CoordSystem, Manifold, Patch, Point
 
 
@@ -8,7 +9,6 @@ m = Manifold('m', 2)
 p = Patch('p', m)
 cs = CoordSystem('cs', p, ['a', 'b'])
 cs_noname = CoordSystem('cs', p)
-x, y = symbols('x y')
 f = Function('f')
 s1, s2 = cs.coord_functions()
 v1, v2 = cs.base_vectors()

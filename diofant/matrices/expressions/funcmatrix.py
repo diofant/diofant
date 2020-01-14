@@ -18,10 +18,10 @@ class FunctionMatrix(MatrixExpr):
 
     >>> Y = FunctionMatrix(1000, 1000, Lambda((i, j), i + j))
 
-    >>> isinstance(Y*Y, MatMul) # this is an expression object
+    >>> isinstance(Y*Y, MatMul)  # this is an expression object
     True
 
-    >>> (Y**2)[10, 10] # So this is evaluated lazily
+    >>> (Y**2)[10, 10]  # So this is evaluated lazily
     342923500
     """
 

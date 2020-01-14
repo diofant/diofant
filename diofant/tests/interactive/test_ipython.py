@@ -1,4 +1,4 @@
-"""Tests of tools for setting up interactive IPython sessions. """
+"""Tests of tools for setting up interactive IPython sessions."""
 
 import ast
 

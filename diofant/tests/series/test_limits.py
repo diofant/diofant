@@ -100,15 +100,15 @@ def test_basic4():
 
 
 def test_basic5():
-    class my(Function):
+    class MyFunction(Function):
         @classmethod
         def eval(cls, arg):
             if arg is oo:
                 return nan
-    assert limit(my(x), x, oo) == Limit(my(x), x, oo)
+    assert limit(MyFunction(x), x, oo) == Limit(MyFunction(x), x, oo)
 
     assert limit(4/x > 8, x, 0)  # relational test
-    assert limit(my(x) > 0, x, oo) == Limit(my(x) > 0, x, oo)
+    assert limit(MyFunction(x) > 0, x, oo) == Limit(MyFunction(x) > 0, x, oo)
 
     # from https://groups.google.com/forum/#!topic/sympy/LkTMQKC_BOw
     # fix bisected to ade6d20 and c459d18
@@ -671,10 +671,10 @@ def test_sympyissue_16722():
 
     n = symbols('n', positive=True, integer=True)
     z = symbols('z', positive=True)
-    assert isinstance(limit(binomial(n + z, n)*n**-z, n, oo), Limit)
+    assert limit(binomial(n + z, n)*n**-z, n, oo) == 1/gamma(z + 1)
 
     n, z = symbols('n z', positive=True, integer=True)
-    assert isinstance(limit(binomial(n + z, n)*n**-z, n, oo), Limit)
+    assert limit(binomial(n + z, n)*n**-z, n, oo) == 1/gamma(z + 1)
 
 
 def test_sympyissue_15673():
@@ -698,3 +698,29 @@ def test_sympyissue_17431():
     # test from sympy/sympy#17434 (see also diofant/diofant#425):
     y = symbols('y', integer=True, positive=True)
     assert isinstance(limit(x*factorial(x)/factorial(x + y), x, oo), Limit)
+
+
+def test_sympyissue_17792():
+    n = Symbol('n', positive=True, integer=True)
+    assert limit(factorial(n)/sqrt(n)*(E/n)**n, n, oo) == sqrt(2*pi)
+
+
+def test_sympyissue_18118():
+    assert limit(sign(x), x, 0, "+") == +1
+    assert limit(sign(x), x, 0, "-") == -1
+
+    assert limit(sign(sin(x)), x, 0, "+") == +1
+    assert limit(sign(sin(x)), x, 0, "-") == -1
+
+
+def test_sympyissue_6599():
+    assert limit((x + cos(x))/x, x, oo) == 1
+
+
+def test_sympyissue_18176():
+    x = Symbol('x', real=True, positive=True)
+    n = Symbol('n', integer=True, positive=True)
+    k = Symbol('k')
+    e = x**n - x**(n - k)
+    assert limit(e.subs({k: 0}), x, oo) == 0
+    assert limit(e.subs({k: 1}), x, oo) == oo

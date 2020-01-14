@@ -1,4 +1,4 @@
-"""Test sparse rational functions. """
+"""Test sparse rational functions."""
 
 import pytest
 

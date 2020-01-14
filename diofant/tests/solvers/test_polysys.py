@@ -1,4 +1,4 @@
-"""Tests for solvers of systems of polynomial equations. """
+"""Tests for solvers of systems of polynomial equations."""
 
 import pytest
 

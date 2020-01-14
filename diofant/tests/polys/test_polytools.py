@@ -1,4 +1,4 @@
-"""Tests for user-friendly public interface to polynomial functions. """
+"""Tests for user-friendly public interface to polynomial functions."""
 
 import pytest
 
@@ -1043,6 +1043,9 @@ def test_Poly_inject():
 
     f = Poly(x**2 + 2*x - 1)
     assert f.inject() == f
+
+    f = Poly(x**2 - 2*sqrt(3)*x + 4, extension=True)
+    assert f.inject().replace(f.domain.ext, y) == Poly(x**2 - 2*x*y + 4)
 
 
 def test_Poly_eject():
@@ -3206,13 +3209,14 @@ def test_sympyissue_5786():
 
 
 def test_noncommutative():
-    class foo(Expr):
+    class Foo(Expr):
         is_commutative = False
     e = x/(x + x*y)
     c = 1/(1 + y)
-    assert cancel(foo(e)) == foo(c)
-    assert cancel(e + foo(e)) == c + foo(c)
-    assert cancel(e*foo(c)) == c*foo(c)
+    fe, fc = map(Foo, [e, c])
+    assert cancel(fe) == fc
+    assert cancel(e + fe) == c + fc
+    assert cancel(e*fc) == c*fc
 
 
 def test_to_rational_coeffs():
@@ -3272,3 +3276,12 @@ def test_sympyissue_15798():
 @pytest.mark.timeout(20)
 def test_sympyissue_16222():
     Poly(x**100000000)
+
+
+def test_sympyissue_8810():
+    e = y**3 + y**2*sqrt(x) + y + x
+    p = Poly(e, y)
+    c = Poly(e, y, composite=True)
+
+    assert c == Poly(e, y, domain=ZZ.poly_ring(x, sqrt(x)))
+    assert Poly(p, y, composite=True) == c

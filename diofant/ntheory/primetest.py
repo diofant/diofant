@@ -165,7 +165,6 @@ def _mr_safe(n):
     * http://uucode.com/obf/dalbec/alg.html#sprp
 
     """
-
     if n < 1373653:
         return mr(n, [2, 3])
         # [2, 3] stot = 1 clear == bases

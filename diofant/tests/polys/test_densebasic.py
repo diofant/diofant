@@ -1,4 +1,4 @@
-"""Tests for dense recursive polynomials' basic tools. """
+"""Tests for dense recursive polynomials' basic tools."""
 
 import random
 

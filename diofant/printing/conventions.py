@@ -72,7 +72,6 @@ def requires_partial(expr):
     free variables. In that case, check its variable list explicitly to
     get the context of the expression.
     """
-
     if not isinstance(expr.free_symbols, collections.abc.Iterable):
         return len(set(expr.variables)) > 1
 

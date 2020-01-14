@@ -14,6 +14,8 @@ from .printer import Printer
 
 
 class StrPrinter(Printer):
+    """Str printer."""
+
     printmethod = "_diofantstr"
     _default_settings = {
         "order": None,
@@ -224,9 +226,6 @@ class StrPrinter(Printer):
                 strslice(expr.rowslice) + ', ' +
                 strslice(expr.colslice) + ']')
 
-    def _print_DeferredVector(self, expr):
-        return expr.name
-
     def _print_Mul(self, expr):
 
         prec = precedence(expr)
@@ -310,7 +309,7 @@ class StrPrinter(Printer):
         during doctests, the dict's __repr__ form is used. Defining this _print
         function solves that problem.
 
-        >>> Cycle(1, 2) # will print as a dict without this method
+        >>> Cycle(1, 2)  # will print as a dict without this method
         Cycle(1, 2)
 
         """
@@ -483,6 +482,9 @@ class StrPrinter(Printer):
         return str(expr)
 
     _print_ImmutableSparseNDimArray = _print_ImmutableDenseNDimArray
+
+    _print_MutableDenseNDimArray = _print_ImmutableDenseNDimArray
+    _print_MutableSparseNDimArray = _print_ImmutableDenseNDimArray
 
     def _print_Integer(self, expr):
         return str(expr.numerator)
@@ -662,7 +664,6 @@ def sstr(expr, **settings):
     'Eq(a + b, 0)'
 
     """
-
     p = StrPrinter(settings)
     s = p.doprint(expr)
 
@@ -684,7 +685,6 @@ def sstrrepr(expr, **settings):
 
     This function could be useful for hooking into sys.displayhook
     """
-
     p = StrReprPrinter(settings)
     s = p.doprint(expr)
 

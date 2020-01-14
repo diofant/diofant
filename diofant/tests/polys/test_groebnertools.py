@@ -1,4 +1,4 @@
-"""Tests for Gröbner bases. """
+"""Tests for Gröbner bases."""
 
 import pytest
 

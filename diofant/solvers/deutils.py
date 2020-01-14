@@ -50,12 +50,13 @@ def _preprocess(expr, func=None, hint='_Integral'):
     >>> eq = Derivative(f(x) + g(x), x)
     >>> _preprocess(eq, g(x))
     (Derivative(f(x), x) + Derivative(g(x), x), g(x))
-    >>> try: _preprocess(eq)
-    ... except ValueError: print("A ValueError was raised.")
+    >>> try:
+    ...     _preprocess(eq)
+    ... except ValueError:
+    ...     print("A ValueError was raised.")
     A ValueError was raised.
 
     """
-
     derivs = expr.atoms(Derivative)
     if not func:
         funcs = set().union(*[d.atoms(AppliedUndef) for d in derivs])
@@ -81,7 +82,7 @@ def ode_order(expr, func):
     ========
 
     >>> ode_order(f(x).diff(x, 2) + f(x).diff(x)**2 +
-    ... f(x).diff(x), f(x))
+    ...           f(x).diff(x), f(x))
     2
     >>> ode_order(f(x).diff(x, 2) + g(x).diff(x, 3), f(x))
     2

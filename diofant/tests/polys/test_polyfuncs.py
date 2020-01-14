@@ -1,4 +1,4 @@
-"""Tests for high-level polynomials manipulation functions. """
+"""Tests for high-level polynomials manipulation functions."""
 
 import pytest
 

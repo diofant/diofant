@@ -23,15 +23,15 @@ Examples
 ========
 
 >>> from diofant.stats import P, E, variance, Die, Normal
->>> X, Y = Die('X', 6), Die('Y', 6) # Define two six sided dice
->>> Z = Normal('Z', 0, 1) # Declare a Normal random variable with mean 0, std 1
->>> P(X>3) # Probability X is greater than 3
+>>> X, Y = Die('X', 6), Die('Y', 6)  # Define two six sided dice
+>>> Z = Normal('Z', 0, 1)  # Declare a Normal random variable with mean 0, std 1
+>>> P(X > 3)  # Probability X is greater than 3
 1/2
->>> E(X+Y) # Expectation of the sum of two dice
+>>> E(X + Y)  # Expectation of the sum of two dice
 7
->>> variance(X+Y) # Variance of the sum of two dice
+>>> variance(X + Y)  # Variance of the sum of two dice
 35/6
->>> simplify(P(Z>1)) # Probability of Z being greater than 1
+>>> simplify(P(Z > 1))  # Probability of Z being greater than 1
 -erf(sqrt(2)/2)/2 + 1/2
 
 """

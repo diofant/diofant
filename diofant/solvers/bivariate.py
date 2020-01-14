@@ -61,7 +61,6 @@ def _mostfunc(lhs, func, X=None):
         return fterms[0]
     elif fterms:
         return max(list(ordered(fterms)), key=lambda x: x.count(func))
-    return
 
 
 def _linab(arg, symbol):
@@ -82,7 +81,6 @@ def _linab(arg, symbol):
     (2, 3, E**x)
 
     """
-
     arg = arg.expand()
     ind, dep = arg.as_independent(symbol)
     if not arg.is_Add:
@@ -172,7 +170,6 @@ def _solve_lambert(f, symbol, gens):
       a = -1, d = a*log(p), f = -log(d) - g*log(p)
 
     """
-
     nrhs, lhs = f.as_independent(symbol, as_Add=True)
     rhs = -nrhs
 
@@ -278,7 +275,8 @@ def bivariate_type(f, x, y, **kwargs):
     >>> bivariate_type(eq, x, y)
     (x + y, _u**2 - 3, _u)
     >>> uxy, pu, u = _
-    >>> usol = solve(pu, u); usol
+    >>> usol = solve(pu, u)
+    >>> usol
     [{_u: sqrt(3)}]
     >>> [solve(uxy - s[u]) for s in solve(pu, u)]
     [[{x: -y + sqrt(3)}]]
@@ -286,7 +284,6 @@ def bivariate_type(f, x, y, **kwargs):
     True
 
     """
-
     u = Dummy('u', positive=True)
 
     if kwargs.pop('first', True):

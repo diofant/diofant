@@ -16,7 +16,6 @@ MATH = {}
 MPMATH = {}
 NUMPY = {}
 DIOFANT = {}
-NUMEXPR = {}
 
 # Default namespaces, letting us define translations that can't be defined
 # by simple variable maps, like I => 1j
@@ -26,7 +25,6 @@ MATH_DEFAULT = {}
 MPMATH_DEFAULT = {}
 NUMPY_DEFAULT = {"I": 1j}
 DIOFANT_DEFAULT = {}
-NUMEXPR_DEFAULT = {}
 
 # Mappings between diofant and other modules function names.
 MATH_TRANSLATIONS = {
@@ -91,8 +89,6 @@ NUMPY_TRANSLATIONS = {
     "ImmutableDenseMatrix": "array",
 }
 
-NUMEXPR_TRANSLATIONS = {}
-
 # Available modules:
 MODULES = {
     "math": (MATH, MATH_DEFAULT, MATH_TRANSLATIONS, ("from math import *",)),
@@ -102,12 +98,10 @@ MODULES = {
         "from diofant.functions import *",
         "from diofant.matrices import *",
         "from diofant import Sum, Integral, pi, oo, nan, zoo, E, I")),
-    "numexpr": (NUMEXPR, NUMEXPR_DEFAULT, NUMEXPR_TRANSLATIONS,
-                ("import_module('numexpr')", )),
 }
 
 
-def _import(module, reload="False"):
+def _import(module):
     """
     Creates a global translation dictionary for module.
 
@@ -126,12 +120,8 @@ def _import(module, reload="False"):
 
     # Clear namespace or exit
     if namespace != namespace_default:
-        # The namespace was already generated, don't do it again if not forced.
-        if reload:
-            namespace.clear()
-            namespace.update(namespace_default)
-        else:
-            return
+        namespace.clear()
+        namespace.update(namespace_default)
 
     for import_command in import_commands:
         if import_command.startswith('import_module'):
@@ -141,11 +131,8 @@ def _import(module, reload="False"):
                 namespace.update(module.__dict__)
                 continue
         else:
-            try:
-                exec(import_command, {}, namespace)
-                continue
-            except ImportError:
-                pass
+            exec(import_command, {}, namespace)
+            continue
 
         raise ImportError(
             "can't import '%s' with '%s' command" % (module, import_command))
@@ -168,7 +155,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     ``math``, or ``mpmath`` functions otherwise. To change this behavior, the
     "modules" argument can be used. It accepts:
 
-     - the strings "math", "mpmath", "numpy", "numexpr", "diofant"
+     - the strings "math", "mpmath", "numpy", "diofant"
      - any modules (e.g. math)
      - dictionaries that map names of diofant functions to arbitrary functions
      - lists that contain a mix of the arguments above, with higher priority
@@ -180,14 +167,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     dummy substitution is unwanted (and `args` is not a string). If you want
     to view the lambdified function or provide "diofant" as the module, you
     should probably set dummify=False.
-
-    For functions involving large array calculations, numexpr can provide a
-    significant speedup over numpy.  Please note that the available functions
-    for numexpr are more limited than numpy but can be expanded with
-    implemented_function and user defined subclasses of Function.  If specified,
-    numexpr may be the only option in modules. The official list of numexpr
-    functions can be found at:
-    https://numexpr.readthedocs.io/en/latest/user_guide.html#supported-functions
 
     In previous releases ``lambdify`` replaced ``Matrix`` with ``numpy.matrix``
     by default. As of release 0.7.7 ``numpy.array`` is the default.
@@ -223,9 +202,11 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
     (3) Use a dictionary defining custom functions:
 
-        >>> def my_cool_function(x): return 'sin(%s) is cool' % x
-        >>> myfuncs = {"sin" : my_cool_function}
-        >>> f = lambdify(x, sin(x), myfuncs); f(1)
+        >>> def my_cool_function(x):
+        ...     return 'sin(%s) is cool' % x
+        >>> myfuncs = {"sin": my_cool_function}
+        >>> f = lambdify(x, sin(x), myfuncs)
+        >>> f(1)
         'sin(1) is cool'
 
     Examples
@@ -308,9 +289,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     if isinstance(modules, (dict, str)) or not hasattr(modules, '__iter__'):
         namespaces.append(modules)
     else:
-        # consistency check
-        if _module_present('numexpr', modules) and len(modules) > 1:
-            raise TypeError("numexpr must be the only item in 'modules'")
         namespaces += list(modules)
     # fill namespace with first having highest priority
     namespace = {}
@@ -325,35 +303,23 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
         for term in syms:
             namespace.update({str(term): term})
 
-    if _module_present('numpy', namespaces) and printer is None:
+    if 'numpy' in namespaces and printer is None:
         # XXX: This has to be done here because of circular imports
         from ..printing.lambdarepr import NumPyPrinter as printer  # noqa: N813
 
-    if _module_present('numexpr', namespaces) and printer is None:
-        # XXX: This has to be done here because of circular imports
-        from ..printing.lambdarepr import NumExprPrinter as printer  # noqa: N813
-
-    if _module_present('mpmath', namespaces) and printer is None:
+    if 'mpmath' in namespaces and printer is None:
         from ..printing.lambdarepr import MpmathPrinter as printer  # noqa: N813
 
     # Get the names of the args, for creating a docstring
     if not iterable(args):
         args = args,
     names = []
-    # Grab the callers frame, for getting the names by inspection (if needed)
-    callers_local_vars = inspect.currentframe().f_back.f_locals.items()
     for n, var in enumerate(args):
         if hasattr(var, 'name'):
             names.append(var.name)
         else:
-            # It's an iterable. Try to get name by inspection of calling frame.
-            name_list = [var_name for var_name, var_val in callers_local_vars
-                         if var_val is var]
-            if len(name_list) == 1:
-                names.append(name_list[0])
-            else:
-                # Cannot infer name with certainty. arg_# will have to do.
-                names.append('arg_' + str(n))
+            # Cannot infer name with certainty. arg_# will have to do.
+            names.append('arg_' + str(n))
 
     # Create lambda function.
     lstr = lambdastr(args, expr, printer=printer, dummify=dummify)
@@ -363,7 +329,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
         namespace.update({flat: flatten})
     func = eval(lstr, namespace)
     # For numpy lambdify, wrap all input arguments in arrays.
-    if module_provided and _module_present('numpy', namespaces):
+    if module_provided and 'numpy' in namespaces:
         def array_wrap(funcarg):
             def wrapper(*argsx, **kwargsx):
                 return funcarg(*[namespace['asarray'](i) for i in argsx], **kwargsx)
@@ -378,15 +344,6 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     func.__doc__ = ("Created with lambdify. Signature:\n\n{sig}\n\n"
                     "Expression:\n\n{expr}").format(sig=sig, expr=expr_str)
     return func
-
-
-def _module_present(modname, modlist):
-    if modname in modlist:
-        return True
-    for m in modlist:
-        if hasattr(m, '__name__') and m.__name__ == modname:
-            return True
-    return False
 
 
 def _get_namespace(m):
@@ -423,7 +380,6 @@ def lambdastr(args, expr, printer=None, dummify=False):
 
     """
     # Transforming everything to strings.
-    from ..matrices import DeferredVector
     from ..core import Dummy, sympify, Symbol, Function
     from ..utilities import flatten
 
@@ -444,8 +400,6 @@ def lambdastr(args, expr, printer=None, dummify=False):
     def sub_args(args, dummies_dict):
         if isinstance(args, str):
             return args
-        elif isinstance(args, DeferredVector):
-            return str(args)
         elif iterable(args):
             dummies = flatten([sub_args(a, dummies_dict) for a in args])
             return ",".join(str(a) for a in dummies)
@@ -462,9 +416,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
         try:
             expr = sympify(expr).xreplace(dummies_dict)
         except (TypeError, AttributeError):
-            if isinstance(expr, DeferredVector):
-                pass
-            elif isinstance(expr, dict):
+            if isinstance(expr, dict):
                 k = [sub_expr(sympify(a), dummies_dict) for a in expr]
                 v = [sub_expr(sympify(a), dummies_dict) for a in expr.values()]
                 expr = dict(zip(k, v))
@@ -476,7 +428,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
 
     # Transform args
     def isiter(l):
-        return iterable(l, exclude=(str, DeferredVector))
+        return iterable(l, exclude=(str,))
 
     if isiter(args) and any(isiter(i) for i in args):
         import re
@@ -495,9 +447,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
     if dummify:
         args = sub_args(args, dummies_dict)
     else:
-        if isinstance(args, str):
-            pass
-        elif iterable(args, exclude=DeferredVector):
+        if iterable(args):
             args = ",".join(str(a) for a in args)
 
     # Transform expr
@@ -512,7 +462,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
 
 
 def _imp_namespace(expr, namespace=None):
-    """ Return namespace dict with function implementations
+    """Return namespace dict with function implementations
 
     We need to search for functions in anything that can be thrown at
     us - that is - anything that could be passed as `expr`.  Examples
@@ -580,7 +530,7 @@ def _imp_namespace(expr, namespace=None):
 
 
 def implemented_function(symfunc, implementation):
-    """ Add numerical ``implementation`` to function ``symfunc``.
+    """Add numerical ``implementation`` to function ``symfunc``.
 
     ``symfunc`` can be an ``UndefinedFunction`` instance, or a name string.
     In the latter case we create an ``UndefinedFunction`` instance with that

@@ -1,4 +1,4 @@
-"""This module implements tools for integrating rational functions. """
+"""This module implements tools for integrating rational functions."""
 
 from ..core import Dummy, I, Integer, Lambda, Symbol, symbols
 from ..domains import ZZ
@@ -350,8 +350,6 @@ def log_to_real(h, q, x, t):
             if all(_ not in R_v_paired for _ in [+r_v, -r_v]):
                 if r_v.could_extract_minus_sign():
                     R_v_paired.append(-r_v)
-                elif not r_v.is_zero:
-                    R_v_paired.append(r_v)
 
         for r_v in R_v_paired:
             D = d.subs({u: r_u, v: r_v})

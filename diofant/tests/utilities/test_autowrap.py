@@ -1,10 +1,10 @@
 # Tests that require installed backends go into
 # diofant/test_external/test_autowrap
 
+import io
 import os
 import shutil
 import tempfile
-from io import StringIO
 
 import pytest
 
@@ -28,7 +28,7 @@ def get_string(dump_fn, routines, prefix="file"):
     The header and the empty lines are not generator to facilitate the
     testing of the output.
     """
-    output = StringIO()
+    output = io.StringIO()
     dump_fn(routines, output, prefix)
     source = output.getvalue()
     output.close()
@@ -85,7 +85,9 @@ def test_cython_wrapper_inoutarg():
 def test_autowrap_dummy():
     # Uses DummyWrapper to test that codegen works as expected
 
-    f = autowrap(x + y, backend='dummy')
+    tempdir = tempfile.mkstemp()[-1]
+    os.unlink(tempdir)
+    f = autowrap(x + y, backend='dummy', tempdir=tempdir)
     assert f() == str(x + y)
     assert f.args == "x, y"
     assert f.returns == "nameless"
@@ -97,6 +99,12 @@ def test_autowrap_dummy():
     assert f() == str(x + y + z)
     assert f.args == "x, y, z"
     assert f.returns == "z"
+
+    e = x + y
+
+    pytest.raises(ValueError, lambda: autowrap(e, backend='spam'))
+    pytest.raises(ValueError, lambda: autowrap(e, backend='spam', language='C'))
+    pytest.raises(ValueError, lambda: autowrap(e, language='spam'))
 
 
 def test_autowrap_args():

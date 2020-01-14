@@ -103,7 +103,6 @@ def egyptian_fraction(r, algorithm="Greedy"):
     * http://ami.ektf.hu/uploads/papers/finalpdf/AMI_42_from129to134.pdf
 
     """
-
     if r <= 0:
         raise ValueError("Value must be positive")
 

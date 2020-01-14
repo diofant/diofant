@@ -1,4 +1,4 @@
-"""Tests for tools and arithmetics for monomials of distributed polynomials. """
+"""Tests for tools and arithmetics for monomials of distributed polynomials."""
 
 import functools
 

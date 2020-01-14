@@ -1,4 +1,4 @@
-"""Implementation of :class:`RationalField` class. """
+"""Implementation of :class:`RationalField` class."""
 
 from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
@@ -12,7 +12,7 @@ __all__ = 'GMPYRationalField', 'PythonRationalField', 'RationalField'
 
 
 class RationalField(Field, CharacteristicZero, SimpleDomain):
-    """General class for rational fields. """
+    """General class for rational fields."""
 
     rep = 'QQ'
 
@@ -23,16 +23,16 @@ class RationalField(Field, CharacteristicZero, SimpleDomain):
     has_assoc_Field = True
 
     def algebraic_field(self, *extension):
-        r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`. """
+        r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
         from . import AlgebraicField
         return AlgebraicField(self, *extension)
 
     def to_expr(self, a):
-        """Convert ``a`` to a Diofant object. """
+        """Convert ``a`` to a Diofant object."""
         return DiofantRational(a.numerator, a.denominator)
 
     def from_expr(self, a):
-        """Convert Diofant's Integer to ``dtype``. """
+        """Convert Diofant's Integer to ``dtype``."""
         if a.is_Rational:
             return self.dtype(a.numerator, a.denominator)
         elif a.is_Float:
@@ -62,7 +62,7 @@ class RationalField(Field, CharacteristicZero, SimpleDomain):
 
 
 class PythonRationalField(RationalField):
-    """Rational field based on Python's rationals. """
+    """Rational field based on Python's rationals."""
 
     dtype = PythonRational
     zero = dtype(0)
@@ -70,17 +70,17 @@ class PythonRationalField(RationalField):
 
     @property
     def ring(self):
-        """Returns ring associated with ``self``. """
+        """Returns ring associated with ``self``."""
         from .integerring import PythonIntegerRing
         return PythonIntegerRing()
 
     def factorial(self, a):
-        """Returns factorial of `a`. """
+        """Returns factorial of `a`."""
         return self.dtype(python_factorial(int(a)))
 
 
 class GMPYRationalField(RationalField):
-    """Rational field based on GMPY's rationals. """
+    """Rational field based on GMPY's rationals."""
 
     dtype = GMPYRational
     zero = dtype(0)
@@ -88,20 +88,20 @@ class GMPYRationalField(RationalField):
 
     @property
     def ring(self):
-        """Returns ring associated with ``self``. """
+        """Returns ring associated with ``self``."""
         from .integerring import GMPYIntegerRing
         return GMPYIntegerRing()
 
     def exquo(self, a, b):
-        """Exact quotient of `a` and `b`, implies `__truediv__`.  """
+        """Exact quotient of `a` and `b`, implies `__truediv__`."""
         return self.dtype(gmpy_qdiv(a, b))
 
     def quo(self, a, b):
-        """Quotient of `a` and `b`, implies `__truediv__`. """
+        """Quotient of `a` and `b`, implies `__truediv__`."""
         return self.dtype(gmpy_qdiv(a, b))
 
     def factorial(self, a):
-        """Returns factorial of `a`. """
+        """Returns factorial of `a`."""
         return self.dtype(gmpy_factorial(int(a)))
 
 

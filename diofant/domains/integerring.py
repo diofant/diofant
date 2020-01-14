@@ -1,4 +1,4 @@
-"""Implementation of :class:`IntegerRing` class. """
+"""Implementation of :class:`IntegerRing` class."""
 
 import abc
 
@@ -16,7 +16,7 @@ __all__ = 'GMPYIntegerRing', 'IntegerRing', 'PythonIntegerRing'
 
 
 class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
-    """General class for integer rings. """
+    """General class for integer rings."""
 
     rep = 'ZZ'
 
@@ -28,20 +28,20 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
 
     @property
     def field(self):
-        """Returns a field associated with ``self``. """
+        """Returns a field associated with ``self``."""
         from . import QQ
         return QQ
 
     def algebraic_field(self, *extension):
-        r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`. """
+        r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
         return self.field.algebraic_field(*extension)
 
     def to_expr(self, a):
-        """Convert ``a`` to a Diofant object. """
+        """Convert ``a`` to a Diofant object."""
         return DiofantInteger(a)
 
     def from_expr(self, a):
-        """Convert Diofant's Integer to ``dtype``. """
+        """Convert Diofant's Integer to ``dtype``."""
         if a.is_Integer:
             return self.dtype(a.numerator)
         elif a.is_Float and int(a) == a:
@@ -79,73 +79,73 @@ class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
 
     @abc.abstractmethod
     def finite_field(self, p):
-        """Returns a finite field. """
+        """Returns a finite field."""
         raise NotImplementedError
 
 
 class PythonIntegerRing(IntegerRing):
-    """Integer ring based on Python's integers. """
+    """Integer ring based on Python's integers."""
 
     dtype = PythonInteger
     zero = dtype(0)
     one = dtype(1)
 
     def gcdex(self, a, b):
-        """Compute extended GCD of ``a`` and ``b``. """
+        """Compute extended GCD of ``a`` and ``b``."""
         return python_gcdex(a, b)
 
     def gcd(self, a, b):
-        """Compute GCD of ``a`` and ``b``. """
+        """Compute GCD of ``a`` and ``b``."""
         return python_gcd(a, b)
 
     def lcm(self, a, b):
-        """Compute LCM of ``a`` and ``b``. """
+        """Compute LCM of ``a`` and ``b``."""
         return python_lcm(a, b)
 
     def sqrt(self, a):
-        """Compute square root of ``a``. """
+        """Compute square root of ``a``."""
         return python_sqrt(a)
 
     def factorial(self, a):
-        """Compute factorial of ``a``. """
+        """Compute factorial of ``a``."""
         return python_factorial(a)
 
     def finite_field(self, p):
-        """Returns a finite field. """
+        """Returns a finite field."""
         from .finitefield import PythonFiniteField
         return PythonFiniteField(p)
 
 
 class GMPYIntegerRing(IntegerRing):
-    """Integer ring based on GMPY's integers. """
+    """Integer ring based on GMPY's integers."""
 
     dtype = GMPYInteger
     zero = dtype(0)
     one = dtype(1)
 
     def gcdex(self, a, b):
-        """Compute extended GCD of ``a`` and ``b``. """
+        """Compute extended GCD of ``a`` and ``b``."""
         h, s, t = gmpy_gcdex(a, b)
         return s, t, h
 
     def gcd(self, a, b):
-        """Compute GCD of ``a`` and ``b``. """
+        """Compute GCD of ``a`` and ``b``."""
         return gmpy_gcd(a, b)
 
     def lcm(self, a, b):
-        """Compute LCM of ``a`` and ``b``. """
+        """Compute LCM of ``a`` and ``b``."""
         return gmpy_lcm(a, b)
 
     def sqrt(self, a):
-        """Compute square root of ``a``. """
+        """Compute square root of ``a``."""
         return gmpy_sqrt(a)
 
     def factorial(self, a):
-        """Compute factorial of ``a``. """
+        """Compute factorial of ``a``."""
         return gmpy_factorial(a)
 
     def finite_field(self, p):
-        """Returns a finite field. """
+        """Returns a finite field."""
         from .finitefield import GMPYFiniteField
         return GMPYFiniteField(p)
 

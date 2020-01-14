@@ -26,7 +26,8 @@ When opening a new issue, please take the following steps:
 
 2. If possible, try updating to master and reproducing your issue.
 
-3. Try to include a minimal reproducible test case as an example.
+3. Try to include a minimal reproducible code example that demonstrates the
+   problem.  Avoid screenshots, if possible.
 
 4. Include any relevant details of your local setup (i.e. Python
    version, installed libraries).
@@ -59,7 +60,8 @@ All work should be submitted via `Pull Requests (PR)`_.
       issues (e.g. by naming test like ``test_diofantissue_123``
       or adding comment with issue number).
    2. All new functionality should be tested, every new line
-      should be covered by tests.
+      should be covered by tests.  Please use in tests only
+      public interfaces.
    3. Optionally, provide doctests to illustrate usage.  But keep in
       mind, doctests are not tests.  Think of them as examples that
       happen to be tested.

@@ -90,7 +90,8 @@ def trigintegrate(f, x, conds='piecewise'):
 
         #  n      m       u=S   n         (m-1)/2
         # S(x) * C(x) dx  -->  u  * (1-u^2)       du
-        elif m_:
+        else:
+            assert m_
             ff = u**n * (1 - u**2)**((m - 1)/2)
             uu = sin(a*x)
 
@@ -211,7 +212,8 @@ def trigintegrate(f, x, conds='piecewise'):
         if m == n:
             # Substitute sin(2x)/2 for sin(x)cos(x) and then Integrate.
             res = integrate((Rational(1, 2)*sin(2*x))**m, x)
-        elif (m == -n):
+        else:
+            assert m == -n
             if n < 0:
                 # Same as the scheme described above.
                 # the function argument to integrate in the end will
@@ -230,11 +232,8 @@ def trigintegrate(f, x, conds='piecewise'):
 
 
 def _sin_pow_integrate(n, x):
+    assert n.is_even
     if n > 0:
-        if n == 1:
-            # Recursion break
-            return -cos(x)
-
         #  n > 0
         #   /                                                 /
         #  |                                                 |
@@ -249,11 +248,6 @@ def _sin_pow_integrate(n, x):
                 Rational(n - 1, n) * _sin_pow_integrate(n - 2, x))
 
     if n < 0:
-        if n == -1:
-            # Make sure this does not come back here again.
-            # Recursion breaks here or at n==0.
-            return trigintegrate(1/sin(x), x)
-
         #  n < 0
         #   /                                                 /
         #  |                                                 |
@@ -274,11 +268,8 @@ def _sin_pow_integrate(n, x):
 
 
 def _cos_pow_integrate(n, x):
+    assert n.is_even
     if n > 0:
-        if n == 1:
-            # Recursion break.
-            return sin(x)
-
         #  n > 0
         #   /                                                 /
         #  |                                                 |
@@ -293,10 +284,6 @@ def _cos_pow_integrate(n, x):
                 Rational(n - 1, n) * _cos_pow_integrate(n - 2, x))
 
     if n < 0:
-        if n == -1:
-            # Recursion break
-            return trigintegrate(1/cos(x), x)
-
         #  n < 0
         #   /                                                 /
         #  |                                                 |

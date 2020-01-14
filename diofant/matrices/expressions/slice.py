@@ -31,7 +31,7 @@ def normalize(i, parentsize):
 
 
 class MatrixSlice(MatrixExpr):
-    """ A MatrixSlice of a Matrix Expression
+    """A MatrixSlice of a Matrix Expression
 
     Examples
     ========
@@ -99,7 +99,7 @@ def slice_of_slice(s, t):
 
 
 def mat_slice_of_slice(parent, rowslice, colslice):
-    """ Collapse nested matrix slices
+    """Collapse nested matrix slices
 
     >>> X = MatrixSymbol('X', 10, 10)
     >>> X[:, 1:5][5:8, :]

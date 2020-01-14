@@ -1,4 +1,4 @@
-"""High-level polynomials manipulation functions. """
+"""High-level polynomials manipulation functions."""
 
 import itertools
 

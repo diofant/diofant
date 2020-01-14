@@ -27,12 +27,14 @@ def limit(expr, z, z0, dir="+"):
     Limit
 
     """
-
     return Limit(expr, z, z0, dir).doit(deep=False)
 
 
 def heuristics(e, z, z0, dir):
     rv = None
+
+    if isinstance(e, Expr):
+        e = e.expand()
 
     if abs(z0) is oo:
         rv = limit(e.subs({z: 1/z}), z, Integer(0), "+" if z0 is oo else "-")
@@ -191,10 +193,9 @@ class Limit(Expr):
                 else:
                     newe = e.subs({z: z0 - 1/z})
 
-            if not z.is_positive or not z.is_finite:
-                # We need a fresh variable here to simplify expression further.
-                newz = Dummy(z.name, positive=True, finite=True)
-                newe = newe.subs({z: newz})
+            # We need a fresh variable with correct assumptions.
+            newz = Dummy(z.name, positive=True, finite=True)
+            newe = newe.subs({z: newz})
 
             r = limitinf(newe, newz)
         except (PoleError, ValueError, NotImplementedError):

@@ -24,7 +24,7 @@ class DummyNumber:
 
     If one has a Number class (e.g. Sage Integer, or some other custom class)
     that one wants to work well with Diofant, one has to implement at least the
-    methods of this class DummyNumber, resp. its subclasses I5 and F1_1.
+    methods of this class DummyNumber, resp. its subclasses I5 and F1dot1.
 
     Basically, one just needs to implement either __int__() or __float__() and
     then one needs to make sure that the class works with Python integers and
@@ -95,7 +95,7 @@ class I5(DummyNumber):
         return self.number
 
 
-class F1_1(DummyNumber):
+class F1dot1(DummyNumber):
     number = 1.1
 
     def __float__(self):
@@ -103,7 +103,7 @@ class F1_1(DummyNumber):
 
 
 i5 = I5()
-f1_1 = F1_1()
+f1_1 = F1dot1()
 
 # basic diofant objects
 basic_objs = [
@@ -264,13 +264,19 @@ def test_as_leading_term():
     assert (6**(x + 1)).as_leading_term(x) == 6
     assert (6**(x + n)).as_leading_term(x) == 6**n
 
+    # issue sympy/sympy#17847
+    assert (1 - cos(x)).as_leading_term(x) == x**2/2
+    assert (1 - cos(x) + x**6).as_leading_term(x) == x**2/2
+    assert (1 + cos(x) + x**6).as_leading_term(x) == 2
+    assert (sin(x) - x + x**7).as_leading_term(x) == -x**3/6
+
 
 def test_as_leading_term_stub():
-    class foo(Function):
+    class Foo(Function):
         pass
-    assert foo(1/x).as_leading_term(x) == foo(1/x)
-    assert foo(1).as_leading_term(x) == foo(1)
-    pytest.raises(NotImplementedError, lambda: foo(x).as_leading_term(x))
+    assert Foo(1/x).as_leading_term(x) == Foo(1/x)
+    assert Foo(1).as_leading_term(x) == Foo(1)
+    pytest.raises(NotImplementedError, lambda: Foo(x).as_leading_term(x))
 
 
 def test_atoms():

@@ -43,16 +43,12 @@ def euler_equations(L, funcs=(), vars=()):
     Examples
     ========
 
-    >>> x = Function('x')
-    >>> t = Symbol('t')
-    >>> L = (x(t).diff(t))**2/2 - x(t)**2/2
-    >>> euler_equations(L, x(t), t)
-    [Eq(-x(t) - Derivative(x(t), t, t), 0)]
-    >>> u = Function('u')
-    >>> x = Symbol('x')
-    >>> L = (u(t, x).diff(t))**2/2 - (u(t, x).diff(x))**2/2
-    >>> euler_equations(L, u(t, x), [t, x])
-    [Eq(-Derivative(u(t, x), t, t) + Derivative(u(t, x), x, x), 0)]
+    >>> L = (f(t).diff(t))**2/2 - f(t)**2/2
+    >>> euler_equations(L, f(t), t)
+    [Eq(-f(t) - Derivative(f(t), t, t), 0)]
+    >>> L = (f(t, x).diff(t))**2/2 - (f(t, x).diff(x))**2/2
+    >>> euler_equations(L, f(t, x), [t, x])
+    [Eq(-Derivative(f(t, x), t, t) + Derivative(f(t, x), x, x), 0)]
 
     References
     ==========

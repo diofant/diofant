@@ -1,17 +1,18 @@
-from io import StringIO
+import io
 
 import pytest
 
-from diofant import (Abs, Equality, Integral, acos, asin, atan, atan2, ceiling,
-                     cos, cosh, erf, floor, ln, log, sin, sinh, sqrt, tan,
-                     tanh)
-from diofant.abc import B, C, X, a, t, x, y, z
+from diofant import (Equality, Function, Integral, acos, asin, atan, atan2,
+                     besseli, ceiling, cos, cosh, erf, floor, ln, log, sin,
+                     sinh, sqrt, tan, tanh)
+from diofant.abc import B, C, X, a, b, c, d, t, x, y, z
 from diofant.core import Catalan, Dummy, Eq, Lambda, pi, symbols
 from diofant.matrices import Matrix, MatrixSymbol
 from diofant.tensor import Idx, IndexedBase
 from diofant.utilities.codegen import (CCodeGen, CodeGenArgumentListError,
                                        CodeGenError, FCodeGen, InOutArgument,
-                                       InputArgument, OutputArgument, codegen,
+                                       InputArgument, OutputArgument, Result,
+                                       Routine, codegen, default_datatypes,
                                        make_routine)
 from diofant.utilities.lambdify import implemented_function
 
@@ -27,11 +28,44 @@ def get_string(dump_fn, routines, prefix="file", header=False, empty=False):
     The header and the empty lines are not generated to facilitate the
     testing of the output.
     """
-    output = StringIO()
+    output = io.StringIO()
     dump_fn(routines, output, prefix, header, empty)
     source = output.getvalue()
     output.close()
     return source
+
+
+def test_for_bad_arguments():
+    pytest.raises(ValueError, lambda: make_routine("test", x, language="foo"))
+
+    cg = CCodeGen()
+    pytest.raises(CodeGenError, lambda: cg.write([x], prefix='test'))
+
+    pytest.raises(CodeGenError, lambda: cg.routine("test", Eq(sin(y), x),
+                                                   argument_sequence=None))
+
+    pytest.raises(TypeError, lambda: Result([x]))
+    pytest.raises(TypeError, lambda: InOutArgument(sin(y), y, y*sin(x)))
+    pytest.raises(TypeError, lambda: InOutArgument(y, y, y*sin(x), "spam"))
+    pytest.raises(TypeError, lambda: InOutArgument(y, y, y*sin(x), dimensions="spam"))
+
+    r = cg.routine("test", x, argument_sequence=None)
+    pytest.raises(ValueError, lambda: Routine(r.name, r.arguments + ["spam"],
+                                              r.results, r.local_vars,
+                                              r.global_vars))
+    pytest.raises(ValueError, lambda: Routine(r.name, r.arguments,
+                                              r.results + ["spam"],
+                                              r.local_vars, r.global_vars))
+    pytest.raises(ValueError, lambda: Routine(r.name, r.arguments, [Result(y)],
+                                              r.local_vars, r.global_vars))
+
+
+def test_low_level():
+    a = InOutArgument(y, y, y*sin(x), default_datatypes["float"])
+    assert a.name == y
+    assert a.expr == y*sin(x)
+    assert a.get_datatype('C') == 'double'
+    pytest.raises(CodeGenError, lambda: a.get_datatype('spam'))
 
 
 def test_Routine_argument_order():
@@ -63,6 +97,9 @@ def test_empty_c_code():
     code_gen = CCodeGen()
     source = get_string(code_gen.dump_c, [])
     assert source == "#include \"file.h\"\n#include <math.h>\n"
+    code_gen = CCodeGen(preprocessor_statements="")
+    source = get_string(code_gen.dump_c, [])
+    assert source == "#include \"file.h\"\n"
 
 
 def test_empty_c_code_with_comment():
@@ -156,6 +193,20 @@ def test_c_code_argument_order():
     )
     assert source == expected
 
+    p = MatrixSymbol('p', 3, 1)
+    routine = make_routine("test", expr, argument_sequence=[p, x, y])
+    source = get_string(code_gen.dump_c, [routine])
+    expected = (
+        "#include \"file.h\"\n"
+        "#include <math.h>\n"
+        "double test(double *p, double x, double y) {\n"
+        "   double test_result;\n"
+        "   test_result = x + y;\n"
+        "   return test_result;\n"
+        "}\n"
+    )
+    assert source == expected
+
 
 def test_simple_c_header():
     expr = (x + y)*z
@@ -210,7 +261,7 @@ def test_no_results_c():
 def test_ansi_math1_codegen():
     # not included: log10
     name_expr = [
-        ("test_fabs", Abs(x)),
+        ("test_fabs", abs(x)),
         ("test_acos", acos(x)),
         ("test_asin", asin(x)),
         ("test_atan", atan(x)),
@@ -613,6 +664,35 @@ def test_erf_f_code():
     assert source == expected, source
 
 
+def test_not_fortran_f_code():
+    routine = make_routine("test", besseli(1, x))
+    code_gen = FCodeGen()
+    source = get_string(code_gen.dump_f95, [routine])
+    expected = (
+        "REAL*8 function test(x)\n"
+        "implicit none\n"
+        "REAL*8, intent(in) :: x\n"
+        "REAL*8 :: besseli\n"
+        "test = besseli(1.0, x)\n"
+        "end function\n"
+    )
+    assert source == expected, source
+
+    f = Function('f')
+    routine = make_routine("test", f(x).diff(x))
+    code_gen = FCodeGen()
+    source = get_string(code_gen.dump_f95, [routine])
+    expected = (
+        "REAL*8 function test(x)\n"
+        "implicit none\n"
+        "REAL*8, intent(in) :: x\n"
+        "REAL*8 :: Derivative(f(x), x)\n"
+        "test = Derivative(f(x), x)\n"
+        "end function\n"
+    )
+    assert source == expected, source
+
+
 def test_f_code_argument_order():
     expr = x + y
     routine = make_routine("test", expr, argument_sequence=[z, x, y])
@@ -692,7 +772,7 @@ def test_no_results_f():
 def test_intrinsic_math_codegen():
     # not included: log10
     name_expr = [
-        ("test_abs", Abs(x)),
+        ("test_abs", abs(x)),
         ("test_acos", acos(x)),
         ("test_asin", asin(x)),
         ("test_atan", atan(x)),
@@ -1375,4 +1455,52 @@ def test_global_vars():
         '   return f_result;\n'
         '}\n'
     )
+    assert source == expected
+
+
+def test_ccode_cse():
+    cg = CCodeGen(cse=True)
+    e = MatrixSymbol('e', 3, 1)
+
+    pytest.raises(ValueError, lambda: cg.routine("test", [], None))
+    pytest.raises(CodeGenError, lambda: cg.routine("test", [e], None))
+
+    routines = [cg.routine("test", [Equality(e, Matrix([[a*b], [a*b + c*d], [a*b*c*d]]))], None)]
+    result = cg.write(routines, prefix="test", to_files=False, header=False, empty=False)
+    source = result[0][1]
+    expected = (
+        '#include "test.h"\n'
+        '#include <math.h>\n'
+        'void test(double a, double b, double c, double d, double *e) {\n'
+        '   const double x0 = a*b;\n'
+        '   const double x1 = c*d;\n'
+        '   e[0] = x0;\n'
+        '   e[1] = x0 + x1;\n'
+        '   e[2] = x0*x1;\n'
+        '}\n'
+    )
+    assert source == expected
+
+    routines = [cg.routine("test", Equality(e, Matrix([[a*b], [a*b + c*d], [a*b*c*d]])), None)]
+    result = cg.write(routines, prefix="test", to_files=False, header=False, empty=False)
+    source = result[0][1]
+    assert source == expected
+
+    routines = [cg.routine("test", Matrix([[a*b], [a*b + c*d], [a*b*c*d]]), None)]
+    result = cg.write(routines, prefix="test", to_files=False, header=False, empty=False)
+    source = result[0][1]
+    expected = (
+        '#include "test.h"\n'
+        '#include <math.h>\n'
+        'void test(double a, double b, double c, double d, double *out_%(hash)s) {\n'
+        '   const double x0 = a*b;\n'
+        '   const double x1 = c*d;\n'
+        '   out_%(hash)s[0] = x0;\n'
+        '   out_%(hash)s[1] = x0 + x1;\n'
+        '   out_%(hash)s[2] = x0*x1;\n'
+        '}\n'
+    )
+    # look for the magic number
+    out = source.splitlines()[5].split('_')[1].split('[')[0]
+    expected = expected % {'hash': out}
     assert source == expected

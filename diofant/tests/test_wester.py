@@ -1,4 +1,4 @@
-""" Tests from Michael Wester's 1999 paper "Review of CAS mathematical
+"""Tests from Michael Wester's 1999 paper "Review of CAS mathematical
 capabilities".
 
 http://www.math.unm.edu/~wester/cas/book/Wester.pdf
@@ -1326,7 +1326,7 @@ def test_P30():
                 [0,  0, -1,  2, -2],
                 [1, -1,  1,  0,  1],
                 [1, -1,  1, -1,  2]])
-    _, J = M.jordan_form()
+    J, _ = M.jordan_form()
     assert J == Matrix([[-1, 0, 0, 0, 0],
                         [0,  1, 1, 0, 0],
                         [0,  0, 1, 0, 0],
@@ -2152,35 +2152,32 @@ def test_Y12():
 # Z. Ordinary Difference and Differential Equations
 
 def test_Z1():
-    r = Function('r')
-    assert (rsolve(r(n + 2) - 2*r(n + 1) + r(n) - 2, r(n),
-                   {r(0): 1, r(1): m}).simplify() == n**2 + n*(m - 2) + 1)
+    assert (rsolve(f(n + 2) - 2*f(n + 1) + f(n) - 2,
+                   init={f(0): 1, f(1): m}) == [{f: Lambda(n, n**2 +
+                                                           n*(m - 2) + 1)}])
 
 
 def test_Z2():
-    r = Function('r')
-    assert (rsolve(r(n) - (5*r(n - 1) - 6*r(n - 2)), r(n), {r(0): 0, r(1): 1})
-            == -2**n + 3**n)
+    assert rsolve(f(n) - (5*f(n - 1) - 6*f(n - 2)),
+                  init={f(0): 0, f(1): 1}) == [{f: Lambda(n, -2**n + 3**n)}]
 
 
 @pytest.mark.slow
 def test_Z3():
-    # => r(n) = Fibonacci[n + 1]   [Cohen, p. 83]
-    r = Function('r')
+    # => f(n) = Fibonacci[n + 1]   [Cohen, p. 83]
     # recurrence solution is correct, Wester expects it to be simplified to
     # fibonacci(n+1), but that is quite hard
-    assert (rsolve(r(n) - (r(n - 1) + r(n - 2)), r(n),
-                   {r(1): 1, r(2): 2}).simplify()
-            == 2**(-n)*((1 + sqrt(5))**n*(sqrt(5) + 5) +
-                        (-sqrt(5) + 1)**n*(-sqrt(5) + 5))/10)
+    assert (rsolve(f(n) - (f(n - 1) + f(n - 2)),
+                   init={f(1): 1, f(2): 2})
+            == [{f: Lambda(n, 2**(-n)*((1 + sqrt(5))**n*(sqrt(5) + 5) +
+                           (-sqrt(5) + 1)**n*(-sqrt(5) + 5))/10)}])
 
 
 @pytest.mark.xfail
 def test_Z4():
-    r = Function('r')
-    rsolve(r(n) - ((1 + c - c**(n-1) - c**(n+1))/(1 - c**n)*r(n - 1)
-                   - c*(1 - c**(n-2))/(1 - c**(n-1))*r(n - 2) + 1),
-           r(n), {r(1): 1, r(2): (2 + 2*c + c**2)/(1 + c)})
+    rsolve(f(n) - ((1 + c - c**(n-1) - c**(n+1))/(1 - c**n)*f(n - 1)
+                   - c*(1 - c**(n-2))/(1 - c**(n-1))*f(n - 2) + 1),
+           init={f(1): 1, f(2): (2 + 2*c + c**2)/(1 + c)})
 
 
 def test_Z5():

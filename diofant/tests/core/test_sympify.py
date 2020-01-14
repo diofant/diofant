@@ -4,9 +4,9 @@ import re
 import mpmath
 import pytest
 
-from diofant import (Abs, Add, Float, Function, I, Integer, Lambda, Matrix,
-                     Mul, Or, Poly, Pow, Range, Rational, Symbol, Tuple, Xor,
-                     exp, false, pi, sin, sqrt, true)
+from diofant import (Add, Float, Function, I, Integer, Lambda, Matrix, Mul, Or,
+                     Poly, Pow, Range, Rational, Symbol, Tuple, Xor, exp,
+                     false, pi, sin, sqrt, true)
 from diofant.abc import _clash, _clash1, _clash2, x, y
 from diofant.core.compatibility import HAS_GMPY
 from diofant.core.decorators import _sympifyit
@@ -274,11 +274,11 @@ def test_sympifyit():
 
 
 def test_int_float():
-    class F1_1:
+    class F1dot1:
         def __float__(self):
             return 1.1
 
-    class F1_1b:
+    class F1dot1b:
         """
         This class is still a float, even though it also implements __int__().
         """
@@ -289,7 +289,7 @@ def test_int_float():
         def __int__(self):
             return 1
 
-    class F1_1c:
+    class F1dot1c:
         """
         This class is still a float, because it implements _diofant_()
         """
@@ -341,9 +341,9 @@ def test_int_float():
     i5 = I5()
     i5b = I5b()
     i5c = I5c()
-    f1_1 = F1_1()
-    f1_1b = F1_1b()
-    f1_1c = F1_1c()
+    f1_1 = F1dot1()
+    f1_1b = F1dot1b()
+    f1_1c = F1dot1c()
     assert sympify(i5) == 5
     assert isinstance(sympify(i5), Integer)
     assert sympify(i5b) == 5
@@ -448,7 +448,7 @@ def test_sympyissue_6046():
 def test_sympyissue_8821_highprec_from_str():
     s = str(pi.evalf(128))
     p = sympify(s)
-    assert Abs(sin(p)) < 1e-127
+    assert abs(sin(p)) < 1e-127
 
 
 def test_Range():

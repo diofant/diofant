@@ -1,3 +1,5 @@
+import random
+
 import pytest
 
 from diofant.combinatorics.generators import rubik, rubik_cube_generators
@@ -495,6 +497,17 @@ def test_schreier_sims_random():
     strong_gens = [Permutation([1, 2, 0]), Permutation([1, 0, 2]),
                    Permutation([0, 2, 1])]
     assert S.schreier_sims_random(base, strong_gens, 5) == (base, strong_gens)
+
+    S = SymmetricGroup(5)
+    _random_prec = {'g': [Permutation(1, 4), Permutation(0, 3)(1, 4),
+                          Permutation(0, 1, 2, 3, 4), Permutation(0, 1, 2)(3, 4),
+                          Permutation(4)(0, 1)(2, 3), Permutation(0, 1, 4, 3),
+                          Permutation(0, 1)(2, 4), Permutation(0, 3, 4, 2, 1),
+                          Permutation(0, 4, 1)(2, 3)]}
+    base, strong_gens = S.schreier_sims_random(consec_succ=5,
+                                               _random_prec=_random_prec)
+    assert _verify_bsgs(S, base, strong_gens) is True
+
     D = DihedralGroup(3)
     _random_prec = {'g': [Permutation([2, 0, 1]), Permutation([1, 2, 0]),
                           Permutation([1, 0, 2])]}
@@ -613,10 +626,11 @@ def test_normal_closure():
         for gp in (A, D, C):
             assert _verify_normal_closure(S, gp)
     # brute-force verifications for all elements of a group
-    S = SymmetricGroup(5)
-    elements = list(S.generate_dimino())
-    for element in elements:
-        assert _verify_normal_closure(S, element)
+    for i in range(10):
+        S = SymmetricGroup(5)
+        elements = list(S.generate_dimino())
+        for element in elements:
+            assert _verify_normal_closure(S, element)
     # small groups
     small = []
     for i in (1, 2, 3):
@@ -727,6 +741,12 @@ def test_make_perm():
     assert cube.pgroup.make_perm(7, seed=list(range(7))) == \
         Permutation([6, 7, 3, 2, 5, 4, 0, 1])
 
+    random.seed(0)
+    assert cube.pgroup.make_perm(5) == Permutation([2, 1, 5, 6, 3, 0, 4, 7])
+
+    random.seed(0)
+    assert cube.pgroup.make_perm(5, seed=1) == Permutation([0, 3, 7, 4, 1, 2, 6, 5])
+
 
 def test_elements():
     p = Permutation(2, 3)
@@ -740,3 +760,50 @@ def test_is_group():
 
 def test_PermutationGroup():
     assert PermutationGroup() == PermutationGroup(Permutation())
+
+    a = Permutation(1, 2)
+    b = Permutation(2, 3, 1)
+    G = PermutationGroup(a, b, degree=5)
+    assert G.contains(G[0])
+
+    A = AlternatingGroup(4)
+    A.schreier_sims()
+    assert A.base == [0, 1]
+    assert A.basic_stabilizers == [PermutationGroup(Permutation(0, 1, 2),
+                                                    Permutation(1, 2, 3)),
+                                   PermutationGroup(Permutation(1, 2, 3))]
+
+    D = DihedralGroup(12)
+    assert D.is_primitive(randomized=False) is False
+
+    D = DihedralGroup(10)
+    assert D.is_primitive() is False
+
+    p = Permutation(0, 1, 2, 3, 4, 5)
+    G1 = PermutationGroup([Permutation(0, 1, 2), Permutation(0, 1)])
+    G2 = PermutationGroup([Permutation(0, 2), Permutation(0, 1, 2)])
+    G3 = PermutationGroup([p, p**2])
+    assert G1.order() == G2.order() == G3.order() == 6
+    assert G1.is_subgroup(G2) is True
+    assert G1.is_subgroup(G3) is False
+
+    a, b = [Permutation([1, 0, 3, 2]), Permutation([1, 3, 0, 2])]
+    G = PermutationGroup([a, b])
+    assert G.make_perm([0, 1, 0]) == Permutation(0, 2, 3, 1)
+
+    S = SymmetricGroup(5)
+    base, strong_gens = S.schreier_sims_random(consec_succ=5)
+    assert _verify_bsgs(S, base, strong_gens)
+
+    D = DihedralGroup(4)
+    assert D.strong_gens == [Permutation(0, 1, 2, 3), Permutation(0, 3)(1, 2), Permutation(1, 3)]
+
+    a = Permutation([1, 2, 0])
+    b = Permutation([1, 0, 2])
+    G = PermutationGroup([a, b])
+    assert G.transitivity_degree == 3
+
+    a = Permutation([1, 2, 0, 4, 5, 6, 3])
+    G = PermutationGroup([a])
+    assert G.orbit(0) == {0, 1, 2}
+    assert G.orbit([0, 4], 'union') == {0, 1, 2, 3, 4, 5, 6}

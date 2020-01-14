@@ -443,9 +443,8 @@ def fcode(expr, assign_to=None, **settings):
     Examples
     ========
 
-    >>> x, tau = symbols("x, tau")
-    >>> fcode((2*tau)**Rational(7, 2))
-    '      8*sqrt(2.0d0)*tau**(7.0d0/2.0d0)'
+    >>> fcode((2*x)**Rational(7, 2))
+    '      8*sqrt(2.0d0)*x**(7.0d0/2.0d0)'
     >>> fcode(sin(x), assign_to="s")
     '      s = sin(x)'
 
@@ -454,11 +453,9 @@ def fcode(expr, assign_to=None, **settings):
     dictionary value can be a list of tuples i.e. [(argument_test,
     cfunction_string)].
 
-    >>> custom_functions = {
-    ...   "ceiling": "CEIL",
-    ...   "floor": [(lambda x: not x.is_integer, "FLOOR1"),
-    ...             (lambda x: x.is_integer, "FLOOR2")]
-    ... }
+    >>> custom_functions = {"ceiling": "CEIL",
+    ...                     "floor": [(lambda x: not x.is_integer, "FLOOR1"),
+    ...                               (lambda x: x.is_integer, "FLOOR2")]}
     >>> fcode(floor(x) + ceiling(x), user_functions=custom_functions)
     '      CEIL(x) + FLOOR1(x)'
 
@@ -470,11 +467,11 @@ def fcode(expr, assign_to=None, **settings):
     anything.
 
     >>> expr = Piecewise((x + 1, x > 0), (x, True))
-    >>> print(fcode(expr, tau))
+    >>> print(fcode(expr, y))
           if (x > 0) then
-             tau = x + 1
+             y = x + 1
           else
-             tau = x
+             y = x
           end if
 
     Support for loops is provided through ``Indexed`` types. With
@@ -507,5 +504,4 @@ def fcode(expr, assign_to=None, **settings):
           A(3, 1) = sin(x)
 
     """
-
     return FCodePrinter(settings).doprint(expr, assign_to)

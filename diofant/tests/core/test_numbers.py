@@ -515,8 +515,8 @@ def test_Infinity():
     assert -oo*oo == -oo
     assert oo*-oo == -oo
     assert -oo*-oo == oo
-    assert oo/0 == oo
-    assert -oo/0 == -oo
+    assert oo/0 == zoo
+    assert -oo/0 == zoo
     assert 0/oo == 0
     assert 0/-oo == 0
     assert oo*0 == nan

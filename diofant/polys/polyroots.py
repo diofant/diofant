@@ -1,4 +1,4 @@
-"""Algorithms for computing symbolic roots of polynomials. """
+"""Algorithms for computing symbolic roots of polynomials."""
 
 import functools
 import math
@@ -42,7 +42,6 @@ def roots_quadratic(f):
     sorted (but will be canonical).
 
     """
-
     a, b, c = f.all_coeffs()
     dom = f.domain
 
@@ -234,11 +233,11 @@ def roots_quartic(f):
     Examples
     ========
 
-        >>> r = roots_quartic(Poly('x**4-6*x**3+17*x**2-26*x+20'))
+    >>> r = roots_quartic(Poly(x**4 - 6*x**3 + 17*x**2 - 26*x + 20))
 
-        >>> # 4 complex roots: 1+-I*sqrt(3), 2+-I
-        >>> sorted(str(tmp.evalf(2)) for tmp in r)
-        ['1.0 + 1.7*I', '1.0 - 1.7*I', '2.0 + 1.0*I', '2.0 - 1.0*I']
+    >>> # 4 complex roots: 1+-I*sqrt(3), 2+-I
+    >>> sorted(str(tmp.evalf(2)) for tmp in r)
+    ['1.0 + 1.7*I', '1.0 - 1.7*I', '2.0 + 1.0*I', '2.0 - 1.0*I']
 
     References
     ==========
@@ -336,7 +335,7 @@ def roots_binomial(f):
     """
     n = f.degree()
 
-    a, b = f.coeff_monomial(f.gen**n), f.coeff_monomial(1)
+    a, b = f.coeff_monomial((n,)), f.coeff_monomial(1)
     base = -cancel(b/a)
     alpha = root(base, n)
 

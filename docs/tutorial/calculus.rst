@@ -14,7 +14,7 @@ Derivatives
 To take derivatives, use the :func:`~diofant.core.function.diff`
 function.
 
-    >>> diff(cos(x), x)
+    >>> diff(cos(x))
     -sin(x)
     >>> diff(exp(x**2), x)
        ⎛ 2⎞
@@ -84,7 +84,7 @@ To compute an integral, use the :func:`~diofant.integrals.integrals.integrate`
 function.  There are two kinds of integrals, definite and indefinite.  To
 compute an indefinite integral, do
 
-    >>> integrate(cos(x), x)
+    >>> integrate(cos(x))
     sin(x)
 
 .. note::
@@ -123,7 +123,7 @@ If :func:`~diofant.integrals.integrals.integrate` is unable to compute an
 integral, it returns an unevaluated
 :class:`~diofant.integrals.integrals.Integral` object.
 
-    >>> integrate(x**x, x)
+    >>> integrate(x**x)
     ⌠
     ⎮  x
     ⎮ x  dx
@@ -135,7 +135,7 @@ As with :class:`~diofant.core.function.Derivative`, you can create an
 unevaluated integral directly.  To later evaluate this integral, call
 :meth:`~diofant.integrals.integrals.Integral.doit`.
 
-    >>> Integral(log(x)**2, x)
+    >>> Integral(log(x)**2)
     ⌠
     ⎮    2
     ⎮ log (x) dx
@@ -150,7 +150,7 @@ including a partial implementation of the `Risch algorithm
 <https://en.wikipedia.org/wiki/Risch_algorithm>`_
 
     >>> Integral((x**4 + x**2*exp(x) - x**2 - 2*x*exp(x) - 2*x -
-    ...           exp(x))*exp(x)/((x - 1)**2*(x + 1)**2*(exp(x) + 1)), x)
+    ...           exp(x))*exp(x)/((x - 1)**2*(x + 1)**2*(exp(x) + 1)))
     ⌠
     ⎮  x ⎛ x  2      x      x    4    2      ⎞
     ⎮ ℯ ⋅⎝ℯ ⋅x  - 2⋅ℯ ⋅x - ℯ  + x  - x  - 2⋅x⎠
@@ -169,7 +169,7 @@ and an algorithm using `Meijer G-functions
 <https://en.wikipedia.org/wiki/Meijer_g-function>`_ that is useful for computing
 integrals in terms of special functions, especially definite integrals
 
-    >>> Integral(sin(x**2), x)
+    >>> Integral(sin(x**2))
     ⌠
     ⎮    ⎛ 2⎞
     ⎮ sin⎝x ⎠ dx
@@ -331,8 +331,7 @@ If you do not want the order term, use the
     ── + x + 1
     2
 
-The :class:`~diofant.series.order.O` notation supports arbitrary limit points
-(other than 0):
+The :class:`~diofant.series.order.O` notation supports arbitrary limit points:
 
     >>> series(exp(x - 1), x, x0=1)
            2          3          4          5

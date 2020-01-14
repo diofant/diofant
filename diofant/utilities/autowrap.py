@@ -21,7 +21,7 @@ lambdify().
     >>> f = binary_function('f', expr)
     >>> 2*f(x, y) + y
     y + 2*f(x, y)
-    >>> (2*f(x, y) + y).evalf(2, subs={x: 1, y:2}, strict=False)
+    >>> (2*f(x, y) + y).evalf(2, subs={x: 1, y: 2}, strict=False)
     0.e-190
 
 The idea is that a Diofant user will primarily be interested in working with
@@ -79,6 +79,8 @@ from .lambdify import implemented_function
 
 
 class CodeWrapError(Exception):
+    """Generic code wrapping error."""
+
     pass
 
 
@@ -136,11 +138,7 @@ class CodeWrapper:
             CodeWrapper._module_counter += 1
             os.chdir(oldwork)
             if not self.filepath:
-                try:
-                    shutil.rmtree(workdir)
-                except OSError:
-                    # Could be some issues on Windows
-                    pass
+                shutil.rmtree(workdir)
 
         return self._get_wrapped_function(mod, routine.name)
 
@@ -313,8 +311,6 @@ class CythonCodeWrapper(CodeWrapper):
             rets = ", ".join([str(r.name) for r in py_rets])
             if routine.results:
                 body = '    return %s(%s)' % (routine.name, args_c)
-                if rets:
-                    body = body + ', ' + rets
             else:
                 body = '    %s(%s)\n' % (routine.name, args_c)
                 body = body + '    return ' + rets
@@ -443,7 +439,7 @@ def _validate_backend_language(backend, language):
 @cacheit
 @doctest_depends_on(exe=('f2py', 'gfortran'), modules=('numpy',))
 def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
-             flags=None, verbose=False, helpers=None):
+             flags=None, verbose=False, helpers=[]):
     """Generates python callable binaries based on the math expression.
 
     Parameters
@@ -492,7 +488,6 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
     else:
         language = _infer_language(backend)
 
-    helpers = [helpers] if helpers else ()
     flags = flags if flags else ()
     args = list(args) if iterable(args, exclude=set) else args
 
@@ -782,7 +777,7 @@ class UfuncifyCodeWrapper(CodeWrapper):
 @cacheit
 @doctest_depends_on(exe=('f2py', 'gfortran', 'gcc'), modules=('numpy',))
 def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
-             flags=None, verbose=False, helpers=None):
+             flags=None, verbose=False, helpers=[]):
     """
     Generates a binary function that supports broadcasting on numpy arrays.
 
@@ -855,7 +850,6 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     [  2.   6.  12.]
 
     """
-
     if isinstance(args, (Dummy, Symbol)):
         args = args,
     else:
@@ -866,14 +860,17 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     else:
         language = _infer_language(backend)
 
-    helpers = helpers if helpers else ()
     flags = flags if flags else ()
 
     if backend.upper() == 'NUMPY':
-        routine = make_routine('autofunc', expr, args)
         helps = []
-        for name, expr, args in helpers:
-            helps.append(make_routine(name, expr, args))
+        for name_h, expr_h, args_h in helpers:
+            helps.append(make_routine(name_h, expr_h, args_h))
+        for name_h, expr_h, args_h in helpers:
+            if expr.has(expr_h):
+                name_h = binary_function(name_h, expr_h, backend='dummy')
+                expr = expr.subs({expr_h: name_h(*args_h)})
+        routine = make_routine('autofunc', expr, args)
         code_wrapper = UfuncifyCodeWrapper(CCodeGen("ufuncify"), tempdir,
                                            flags, verbose)
         return code_wrapper.wrap_code(routine, helpers=helps)

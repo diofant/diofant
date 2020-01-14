@@ -17,7 +17,7 @@ from diofant.integrals.risch import DifferentialExtension
 
 __all__ = ()
 
-t0, t1, t2, t3, k = symbols('t:4 k')
+t0, t1, t2, t3 = symbols('t:4')
 
 
 def test_prde_normal_denom():

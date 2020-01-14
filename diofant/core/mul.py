@@ -16,6 +16,8 @@ from .sympify import sympify
 
 
 class NC_Marker:
+    """Helper class to mark non-commutative exponents."""
+
     is_Order = False
     is_Mul = False
     is_Number = False
@@ -76,6 +78,7 @@ def _unevaluated_Mul(*args):
 
 
 class Mul(AssocOp):
+    """Symbolic multiplication class."""
 
     is_Mul = True
 
@@ -94,15 +97,15 @@ class Mul(AssocOp):
               -  Sometimes terms are not combined as one would like:
                  {c.f. https://github.com/sympy/sympy/issues/4596}
 
-                >>> 2*(x + 1) # this is the 2-arg Mul behavior
+                >>> 2*(x + 1)  # this is the 2-arg Mul behavior
                 2*x + 2
                 >>> y*(x + 1)*2
                 2*y*(x + 1)
-                >>> 2*(x + 1)*y # 2-arg result will be obtained first
+                >>> 2*(x + 1)*y  # 2-arg result will be obtained first
                 y*(2*x + 2)
-                >>> Mul(2, x + 1, y) # all 3 args simultaneously processed
+                >>> Mul(2, x + 1, y)  # all 3 args simultaneously processed
                 2*y*(x + 1)
-                >>> 2*((x + 1)*y) # parentheses can control this behavior
+                >>> 2*((x + 1)*y)  # parentheses can control this behavior
                 2*y*(x + 1)
 
                 Powers with compound bases may not find a single base to
@@ -744,7 +747,6 @@ class Mul(AssocOp):
         sums must be a list of instances of Basic.
 
         """
-
         L = len(sums)
         if L == 1:
             return sums[0].args
@@ -811,7 +813,6 @@ class Mul(AssocOp):
         if len(terms) == 1:
             newexpr = self.__class__._combine_inverse(expr, coeff)
             return terms[0]._matches(newexpr, repl_dict)
-        return
 
     def _matches(self, expr, repl_dict={}):
         """Helper method for match().
@@ -953,9 +954,8 @@ class Mul(AssocOp):
 
     def _eval_is_infinite(self):
         if any(a.is_infinite for a in self.args):
-            if any(not a.is_nonzero for a in self.args):
-                return
-            return True
+            if not any(not a.is_nonzero for a in self.args):
+                return True
 
     def _eval_is_rational(self):
         r = _fuzzy_group((a.is_rational for a in self.args), quick_exit=True)
@@ -1060,7 +1060,6 @@ class Mul(AssocOp):
             pos * neg * nonnegative -> neg or zero -> False is returned
 
         """
-
         sign = 1
         saw_NON = False
         for t in self.args:
@@ -1154,7 +1153,6 @@ class Mul(AssocOp):
             noncommutatives come back as a list [(b**e, Rational)]
 
             """
-
             c, nc = defaultdict(int), []
             for a in Mul.make_args(eq):
                 a = powdenest(a)
@@ -1176,7 +1174,6 @@ class Mul(AssocOp):
             it back.
 
             """
-
             b, e = base_exp(b)
             return Pow(b, e*co)
 
@@ -1420,7 +1417,6 @@ class Mul(AssocOp):
         diofant.core.expr.Expr.as_content_primitive
 
         """
-
         coef = S.One
         args = []
         for i, a in enumerate(self.args):

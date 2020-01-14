@@ -89,6 +89,10 @@ def test_exp_infinity():
     assert exp(-I*oo) == nan
     assert exp(y*I*oo) != nan
 
+    # issue sympy/sympy#17789
+    x = Symbol('x', extended_real=True, finite=False)
+    assert exp(x).is_complex is None
+
 
 def test_exp_subs():
     x = Symbol('x')

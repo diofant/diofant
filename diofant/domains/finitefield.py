@@ -1,4 +1,4 @@
-"""Implementation of :class:`FiniteField` class. """
+"""Implementation of :class:`FiniteField` class."""
 
 import numbers
 import random
@@ -21,7 +21,7 @@ _modular_integer_cache = {}
 
 
 class FiniteField(Field, SimpleDomain):
-    """General class for finite fields. """
+    """General class for finite fields."""
 
     is_FiniteField = is_FF = True
     is_Numerical = True
@@ -88,21 +88,21 @@ class FiniteField(Field, SimpleDomain):
         return hash((self.__class__.__name__, self.dtype, self.order, self.domain))
 
     def __eq__(self, other):
-        """Returns ``True`` if two domains are equivalent. """
+        """Returns ``True`` if two domains are equivalent."""
         return isinstance(other, FiniteField) and \
             self.order == other.order and self.domain == other.domain
 
     @property
     def characteristic(self):
-        """Return the characteristic of this domain. """
+        """Return the characteristic of this domain."""
         return self.mod
 
     def to_expr(self, a):
-        """Convert ``a`` to a Diofant object. """
+        """Convert ``a`` to a Diofant object."""
         return DiofantInteger(int(a))
 
     def from_expr(self, a):
-        """Convert Diofant's Integer to ``dtype``. """
+        """Convert Diofant's Integer to ``dtype``."""
         if a.is_Integer:
             return self.dtype(self.domain.dtype(int(a)))
         elif a.is_Float and int(a) == a:
@@ -137,30 +137,30 @@ class FiniteField(Field, SimpleDomain):
             return self.dtype(self.domain.dtype(p))
 
     def is_positive(self, a):
-        """Returns True if ``a`` is positive. """
+        """Returns True if ``a`` is positive."""
         return a.rep != 0
 
     def is_negative(self, a):
-        """Returns True if ``a`` is negative. """
+        """Returns True if ``a`` is negative."""
         return False
 
 
 class PythonFiniteField(FiniteField):
-    """Finite field based on Python's integers. """
+    """Finite field based on Python's integers."""
 
     def __new__(cls, order, modulus=None):
         return super().__new__(cls, order, PythonIntegerRing(), modulus)
 
 
 class GMPYFiniteField(FiniteField):
-    """Finite field based on GMPY's integers. """
+    """Finite field based on GMPY's integers."""
 
     def __new__(cls, order, modulus=None):
         return super().__new__(cls, order, GMPYIntegerRing(), modulus)
 
 
 class ModularInteger(QuotientRingElement):
-    """A class representing a modular integer. """
+    """A class representing a modular integer."""
 
 
 class GaloisFieldElement(ModularInteger):

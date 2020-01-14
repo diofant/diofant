@@ -3,7 +3,7 @@
 import pytest
 
 from diofant import I, Poly, Rational, oo, symbols
-from diofant.abc import n, t, x, z
+from diofant.abc import k, n, t, x, z
 from diofant.integrals.rde import (bound_degree, cancel_exp, cancel_primitive,
                                    no_cancel_equal, normal_denom, order_at,
                                    order_at_oo, rischDE, solve_poly_rde, spde,
@@ -14,7 +14,7 @@ from diofant.integrals.risch import (DifferentialExtension,
 
 __all__ = ()
 
-t0, t1, t2, k = symbols('t:3 k')
+t0, t1, t2 = symbols('t:3')
 
 
 def test_order_at():

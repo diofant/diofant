@@ -623,7 +623,6 @@ class PermutationGroup(Basic):
         base, strong_gens, basic_orbits, basic_transversals
 
         """
-
         if self._transversals == []:
             self.schreier_sims()
         strong_gens = self._strong_gens
@@ -664,7 +663,6 @@ class PermutationGroup(Basic):
         strong_gens, base, basic_orbits, basic_stabilizers
 
         """
-
         if self._transversals == []:
             self.schreier_sims()
         return self._transversals
@@ -899,7 +897,8 @@ class PermutationGroup(Basic):
         >>> f = G.coset_factor(g)
         >>> f[2]*f[1]*f[0] == g
         True
-        >>> f1 = G.coset_factor(g, True); f1
+        >>> f1 = G.coset_factor(g, True)
+        >>> f1
         [0, 4, 4]
         >>> tr = G.basic_transversals
         >>> f[0] == tr[0][f1[0]]
@@ -1050,7 +1049,7 @@ class PermutationGroup(Basic):
         a list
 
         """
-        return set(list(islice(self.generate(), None)))
+        return set(islice(self.generate(), None))
 
     def derived_series(self):
         r"""Return the derived series for the group.
@@ -1166,7 +1165,8 @@ class PermutationGroup(Basic):
         pgroup -- even the first two -- is a proper group:
 
         >>> H = PermutationGroup(G[0], G[1])
-        >>> J = PermutationGroup(list(H.generate())); J
+        >>> J = PermutationGroup(list(H.generate()))
+        >>> J
         PermutationGroup([
             Permutation(0, 1)(2, 3),
             Permutation(3),
@@ -1267,7 +1267,6 @@ class PermutationGroup(Basic):
          [0, 1, 3, 2], [0, 2, 3, 1], [0, 3, 1, 2]]
 
         """
-
         n = self._degree
         u = self.basic_transversals
         basic_orbits = self._basic_orbits
@@ -2826,7 +2825,8 @@ class PermutationGroup(Basic):
 
         >>> from diofant.combinatorics.testutil import _verify_bsgs
         >>> S = SymmetricGroup(7)
-        >>> prop_even = lambda x: x.is_even
+        >>> def prop_even(x):
+        ...     return x.is_even
         >>> base, strong_gens = S.schreier_sims_incremental()
         >>> G = S.subgroup_search(prop_even, base=base, strong_gens=strong_gens)
         >>> G.is_subgroup(AlternatingGroup(7))
@@ -3167,7 +3167,6 @@ def _orbits(degree, generators):
     [{0, 1, 2}]
 
     """
-
     orbs = []
     sorted_I = list(range(degree))
     I = set(sorted_I)
@@ -3209,7 +3208,6 @@ def _orbit_transversal(degree, generators, alpha, pairs, af=False):
          Permutation(0, 3)(1, 4)(2, 5)]
 
     """
-
     tr = [(alpha, list(range(degree)))]
     used = [False]*degree
     used[alpha] = True

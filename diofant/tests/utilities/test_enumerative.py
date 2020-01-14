@@ -1,4 +1,5 @@
-from itertools import zip_longest
+import itertools
+import string
 
 import pytest
 
@@ -68,7 +69,6 @@ def multiset_partitions_baseline(multiplicities, components):
     production implementation.)
 
     """
-
     canon = []                  # list of components with repeats
     for ct, elem in zip(multiplicities, components):
         canon.extend([elem]*ct)
@@ -92,7 +92,7 @@ def compare_multiset_w_baseline(multiplicities):
     baseline implementation, and compare the results.
 
     """
-    letters = "abcdefghijklmnopqrstuvwxyz"
+    letters = string.ascii_lowercase
     bl_partitions = multiset_partitions_baseline(multiplicities, letters)
 
     # The partitions returned by the different algorithms may have
@@ -130,7 +130,6 @@ def test_multiset_partitions_taocp():
     (set partition based) implementation.
 
     """
-
     # Test cases should not be too large, since the baseline
     # implementation is fairly slow.
     multiplicities = [2, 2]
@@ -144,8 +143,9 @@ def test_multiset_partitions_versions():
     """Compares Knuth-based versions of multiset_partitions."""
     multiplicities = [5, 2, 2, 1]
     m = MultisetPartitionTraverser()
-    for s1, s2 in zip_longest(m.enum_all(multiplicities),
-                              multiset_partitions_taocp(multiplicities)):
+    it = itertools.zip_longest(m.enum_all(multiplicities),
+                               multiset_partitions_taocp(multiplicities))
+    for s1, s2 in it:
         assert compare_multiset_states(s1, s2)
 
 
@@ -172,7 +172,7 @@ def subrange_exercise(mult, lb, ub):
     c_it = part_range_filter(mc.enum_small(mult, ub), lb, sum(mult))
     d_it = part_range_filter(md.enum_large(mult, lb), 0, ub)
 
-    for sa, sb, sc, sd in zip_longest(a_it, b_it, c_it, d_it):
+    for sa, sb, sc, sd in itertools.zip_longest(a_it, b_it, c_it, d_it):
         assert compare_multiset_states(sa, sb)
         assert compare_multiset_states(sa, sc)
         assert compare_multiset_states(sa, sd)
@@ -193,3 +193,14 @@ def test_subrange_large():
     lb = 4
     ub = 7
     subrange_exercise(mult, lb, ub)
+
+
+def test_coverage():
+    m = MultisetPartitionTraverser()
+    assert list(m.enum_small([2, 2], 0)) == []
+    assert m.count_partitions([2, 2]) == 9  # fill dp_map
+    assert m.count_partitions([2, 2]) == 9
+    assert list(m.enum_range([2, 2], 1, 0)) == []
+    assert list(m.enum_range([2, 2], 10, 2)) == []
+    assert list(m.enum_large([2, 2], 10)) == []
+    assert m.decrement_part_large(m.top_part(), 10) is False

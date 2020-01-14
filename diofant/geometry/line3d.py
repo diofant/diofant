@@ -223,7 +223,6 @@ class LinearEntity3D(GeometryEntity):
         False
 
         """
-
         # Concurrency requires intersection at a single point; One linear
         # entity cannot be concurrent.
         if len(lines) <= 1:
@@ -813,7 +812,6 @@ class Line3D(LinearEntity3D):
     Examples
     ========
 
-    >>> from diofant.abc import L
     >>> L = Line3D(Point3D(2, 3, 4), Point3D(3, 5, 1))
     >>> L
     Line3D(Point3D(2, 3, 4), Point3D(3, 5, 1))
@@ -1002,7 +1000,6 @@ class Ray3D(LinearEntity3D):
     Examples
     ========
 
-    >>> from diofant.abc import r
     >>> r = Ray3D(Point3D(2, 3, 4), Point3D(3, 5, 0))
     >>> r
     Ray3D(Point3D(2, 3, 4), Point3D(3, 5, 0))
@@ -1279,8 +1276,7 @@ class Segment3D(LinearEntity3D):
     Examples
     ========
 
-    >>> from diofant.abc import s
-    >>> Segment3D((1, 0, 0), (1, 1, 1)) # tuples are interpreted as pts
+    >>> Segment3D((1, 0, 0), (1, 1, 1))  # tuples are interpreted as pts
     Segment3D(Point3D(1, 0, 0), Point3D(1, 1, 1))
     >>> s = Segment3D(Point3D(4, 3, 9), Point3D(1, 1, 7))
     >>> s

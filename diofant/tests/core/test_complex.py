@@ -1,4 +1,4 @@
-from diofant import (Abs, I, Rational, Symbol, cbrt, conjugate, cos, cosh, cot,
+from diofant import (I, Rational, Symbol, cbrt, conjugate, cos, cosh, cot,
                      coth, exp, expand_complex, im, oo, pi, re, root, sign,
                      sin, sinh, sqrt, symbols, tan, tanh)
 
@@ -173,14 +173,14 @@ def test_real_imag():
     assert (2*a*x).as_real_imag() == (2*a*re(x), 2*a*im(x))
 
     # issue sympy/sympy#5395:
-    assert (x*x.conjugate()).as_real_imag() == (Abs(x)**2, 0)
+    assert (x*x.conjugate()).as_real_imag() == (abs(x)**2, 0)
     assert im(x*x.conjugate()) == 0
-    assert im(x*y.conjugate()*z*y) == im(x*z)*Abs(y)**2
-    assert im(x*y.conjugate()*x*y) == im(x**2)*Abs(y)**2
-    assert im(Z*y.conjugate()*X*y) == im(Z*X)*Abs(y)**2
+    assert im(x*y.conjugate()*z*y) == im(x*z)*abs(y)**2
+    assert im(x*y.conjugate()*x*y) == im(x**2)*abs(y)**2
+    assert im(Z*y.conjugate()*X*y) == im(Z*X)*abs(y)**2
     assert im(X*X.conjugate()) == im(X*X.conjugate(), evaluate=False)
     assert (sin(x)*sin(x).conjugate()).as_real_imag() == \
-        (Abs(sin(x))**2, 0)
+        (abs(sin(x))**2, 0)
 
     # issue sympy/sympy#6573:
     assert (x**2).as_real_imag() == (re(x)**2 - im(x)**2, 2*re(x)*im(x))

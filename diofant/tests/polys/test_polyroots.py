@@ -1,4 +1,4 @@
-"""Tests for algorithms for computing symbolic roots of polynomials. """
+"""Tests for algorithms for computing symbolic roots of polynomials."""
 
 import itertools
 
@@ -270,6 +270,9 @@ def test_roots_binomial():
         2*y: 1,
         2*y*(-Rational(1, 2) + sqrt(3)*I/2): 1}
 
+    p = Poly(exp(I*x/3)**4 + exp(I*x/3), exp(I*x/3))
+    assert roots(p) == roots(x**4 + x)
+
 
 def test_roots_preprocessing():
     f = a*y*x**2 + y - b
@@ -526,7 +529,7 @@ def test_roots1():
 
 
 def test_roots_slow():
-    """Just test that calculating these roots does not hang. """
+    """Just test that calculating these roots does not hang."""
     a, b, c, d, x = symbols("a,b,c,d,x")
 
     f1 = x**2*c + (a/b) + x*c*d - a

@@ -558,14 +558,15 @@ class ProductSet(Set):
     Examples
     ========
 
-    >>> I = Interval(0, 5); S = FiniteSet(1, 2, 3)
+    >>> I = Interval(0, 5)
+    >>> S = FiniteSet(1, 2, 3)
     >>> ProductSet(I, S)
     [0, 5] x {1, 2, 3}
 
     >>> (2, 2) in ProductSet(I, S)
     True
 
-    >>> Interval(0, 1) * Interval(0, 1) # The unit square
+    >>> Interval(0, 1) * Interval(0, 1)  # The unit square
     [0, 1] x [0, 1]
 
     >>> H, T = Symbol('H'), Symbol('T')
@@ -1187,7 +1188,6 @@ class Union(Set, EvalfMixin):
         can simplify themselves with any other constituent
 
         """
-
         # ===== Global Rules =====
         # Merge all finite sets
         finite_sets = [x for x in args if x.is_FiniteSet]
@@ -1415,7 +1415,6 @@ class Intersection(Set):
         can simplify themselves with any other constituent
 
         """
-
         # ===== Global Rules =====
 
         # If any FiniteSets see which elements of that finite set occur within
@@ -1515,7 +1514,6 @@ class Complement(Set, EvalfMixin):
     @staticmethod
     def reduce(A, B):
         """Simplify a :class:`Complement`."""
-
         result = B._complement(A)
         if result is not None:
             return result
@@ -1744,7 +1742,6 @@ class FiniteSet(Set, EvalfMixin):
         See Set._union for docstring
 
         """
-
         # If other set contains one of my elements, remove it from myself
         if any(other.contains(x) is true for x in self):
             return {FiniteSet(*[x for x in self

@@ -176,5 +176,6 @@ def test_sympyissue_5788():
         if o != Tuple:
             assert o(*args) == o(*reversed(args))
         pair = [o(*args), o(*reversed(args))]
-        assert sorted(pair) == sorted(reversed(pair))
+        rpair = reversed(pair)
+        assert sorted(pair) == sorted(rpair)
         assert set(o(*args))  # doesn't fail

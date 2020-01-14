@@ -151,7 +151,8 @@ def igcdex(a, b):
 
     >>> igcdex(100, 2004)
     (-20, 1, 4)
-    >>> x, y = _[:-1]; x*100 + y*2004
+    >>> x, y = _[:-1]
+    >>> x*100 + y*2004
     4
 
     """
@@ -540,7 +541,7 @@ class Float(Number):
     Although you can increase the precision of an existing Float using Float
     it will not increase the accuracy -- the underlying value is not changed:
 
-    >>> def show(f): # binary rep of Float
+    >>> def show(f):  # binary rep of Float
     ...     from diofant import Mul, Pow
     ...     s, m, e, b = f._mpf_
     ...     v = Mul(int(m), Pow(2, int(e), evaluate=False), evaluate=False)
@@ -549,9 +550,9 @@ class Float(Number):
     >>> t = Float('0.3', 3)
     >>> show(t)
     4915/2**14 at prec=13
-    >>> show(Float(t, 20)) # higher prec, not higher accuracy
+    >>> show(Float(t, 20))  # higher prec, not higher accuracy
     4915/2**14 at prec=70
-    >>> show(Float(t, 2)) # lower prec
+    >>> show(Float(t, 2))  # lower prec
     307/2**10 at prec=10
 
     """
@@ -1230,7 +1231,6 @@ class Rational(Number):
         diofant.core.expr.Expr.as_content_primitive
 
         """
-
         if self:
             if self.is_positive:
                 return self, S.One
@@ -1250,6 +1250,7 @@ numbers.Rational.register(Rational)
 
 
 class Integer(Rational):
+    """Represents integer numbers."""
 
     is_integer = True
     is_number = True
@@ -1439,6 +1440,7 @@ class RationalConstant(Rational):
 
 
 class IntegerConstant(Integer):
+    """Abstract class for integer constants."""
 
     def __new__(cls):
         return AtomicExpr.__new__(cls)
@@ -1617,7 +1619,6 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
     oo
     >>> 42/oo
     0
-    >>> x = Symbol('x')
     >>> limit(exp(x), x, oo)
     oo
 
@@ -1705,14 +1706,13 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
                 else:
                     return Float('-inf')
             else:
-                if other >= 0:
+                if other > 0:
                     return oo
-                else:
+                elif other < 0:
                     return -oo
+                else:
+                    return zoo
         return NotImplemented
-
-    def __abs__(self):
-        return oo
 
     def __neg__(self):
         return S.NegativeInfinity
@@ -1885,14 +1885,13 @@ class NegativeInfinity(Number, metaclass=SingletonWithManagedProperties):
                 else:
                     return Float('inf')
             else:
-                if other >= 0:
+                if other > 0:
                     return -oo
-                else:
+                elif other < 0:
                     return oo
+                else:
+                    return zoo
         return NotImplemented
-
-    def __abs__(self):
-        return oo
 
     def __neg__(self):
         return oo
@@ -2103,9 +2102,6 @@ class ComplexInfinity(AtomicExpr, metaclass=SingletonWithManagedProperties):
     def __new__(cls):
         return AtomicExpr.__new__(cls)
 
-    def __abs__(self):
-        return oo
-
     def __neg__(self):
         return self
 
@@ -2120,6 +2116,7 @@ zoo = S.ComplexInfinity
 
 
 class NumberSymbol(AtomicExpr):
+    """Base class for symbolic numbers."""
 
     is_commutative = True
     is_finite = True
@@ -2131,7 +2128,7 @@ class NumberSymbol(AtomicExpr):
         return AtomicExpr.__new__(cls)
 
     def approximation_interval(self, number_cls):
-        """ Return an interval with number_cls endpoints that contains the
+        """Return an interval with number_cls endpoints that contains the
         value of NumberSymbol.  If not implemented, then return None.
 
         """
@@ -2323,7 +2320,6 @@ class Pi(NumberSymbol, metaclass=SingletonWithManagedProperties):
     true
     >>> pi.is_irrational
     True
-    >>> x = Symbol('x')
     >>> sin(x + 2*pi)
     sin(x)
     >>> integrate(exp(-x**2), (x, -oo, oo))
@@ -2541,7 +2537,6 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
         I**3 mod 4 -> -I
 
         """
-
         if isinstance(expt, Number):
             if isinstance(expt, Integer):
                 expt = expt.numerator % 4
@@ -2553,7 +2548,6 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
                     return -S.One
                 return -I
             return S.NegativeOne**(expt*S.Half)
-        return
 
     def as_base_exp(self):
         return S.NegativeOne, S.Half

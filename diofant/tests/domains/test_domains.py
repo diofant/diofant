@@ -1,4 +1,4 @@
-"""Tests for classes defining properties of ground domains, e.g. ZZ, QQ, ZZ[x] ... """
+"""Tests for classes defining properties of ground domains, e.g. ZZ, QQ, ZZ[x]..."""
 
 import pytest
 

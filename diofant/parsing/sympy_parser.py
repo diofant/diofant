@@ -1,4 +1,4 @@
-"""Transform a string with Python-like source code into Diofant expression. """
+"""Transform a string with Python-like source code into Diofant expression."""
 
 import ast
 import unicodedata
@@ -337,7 +337,7 @@ def split_symbols_custom(predicate):
 
     >>> def can_split(symbol):
     ...     if symbol not in ('list', 'of', 'unsplittable', 'names'):
-    ...             return _token_splittable(symbol)
+    ...         return _token_splittable(symbol)
     ...     return False
     ...
     >>> transformation = split_symbols_custom(can_split)
@@ -461,8 +461,8 @@ def implicit_multiplication_application(result, local_dict, global_dict):
     ========
 
     >>> parse_expr("10sin**2 x**2 + 3xyz + tan theta",
-    ... transformations=(standard_transformations +
-    ...                  (implicit_multiplication_application,)))
+    ...            transformations=(standard_transformations +
+    ...                             (implicit_multiplication_application,)))
     3*x*y*z + 10*sin(x**2)**2 + tan(theta)
 
     """
@@ -643,7 +643,6 @@ def stringify_expr(s, local_dict, global_dict, transformations):
     Generally, ``parse_expr`` should be used.
 
     """
-
     tokens = []
     input_code = BytesIO(s.encode('utf-8').strip())
     for toknum, tokval, _, _, _ in tokenize(input_code.readline):
@@ -735,7 +734,6 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
     diofant.parsing.sympy_parser.implicit_multiplication_application
 
     """
-
     if local_dict is None:
         local_dict = {}
 
@@ -765,6 +763,8 @@ def evaluateFalse(s):
 
 
 class EvaluateFalseTransformer(ast.NodeTransformer):
+    """Transformer class to hold evaluation."""
+
     operators = {
         ast.Add: 'Add',
         ast.Mult: 'Mul',

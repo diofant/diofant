@@ -1,8 +1,5 @@
-import re
 import sys
-import warnings
 
-import hypothesis
 import pytest
 
 import diofant
@@ -14,40 +11,13 @@ try:
     matplotlib.rc('figure', max_open_warning=0)
     del matplotlib
 except ImportError:
-    collect_ignore.extend(["diofant/plotting/plot.py",
-                           "diofant/plotting/plot_implicit.py"])
-
-sp = re.compile(r'([0-9]+)/([1-9][0-9]*)')
-
-hypothesis.settings.register_profile("default",
-                                     hypothesis.settings(max_examples=100))
+    collect_ignore_glob = ["diofant/plotting/*.py"]
 
 
 def pytest_report_header(config):
-    return """
-cache: %s
-ground types: %s
-""" % (diofant.core.cache.USE_CACHE, diofant.core.compatibility.GROUND_TYPES)
-
-
-def pytest_addoption(parser):
-    parser.addoption("--split", action="store", default="", help="split tests")
-
-
-def pytest_collection_modifyitems(session, config, items):
-    split = config.getoption("--split")
-    if not split:
-        return
-    m = sp.match(split)
-    if not m:
-        raise ValueError("split must be a string of the form a/b "
-                         "where a and b are ints.")
-    i, t = map(int, m.groups())
-    start, end = (i - 1)*len(items)//t, i*len(items)//t
-
-    if i < t:
-        del items[end:]
-    del items[:start]
+    return """\ncache: %s
+ground types: %s\n""" % (diofant.core.cache.USE_CACHE,
+                         diofant.core.compatibility.GROUND_TYPES)
 
 
 @pytest.fixture(autouse=True, scope='module')
@@ -63,19 +33,17 @@ def set_displayhook():
 @pytest.fixture(autouse=True, scope='session')
 def enable_mpl_agg_backend():
     try:
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore', DeprecationWarning)
-            import matplotlib as mpl
-        mpl.use('Agg')
+        import matplotlib
+        matplotlib.use('Agg')
     except ImportError:
         pass
 
 
 @pytest.fixture(autouse=True)
 def add_np(doctest_namespace):
-    for sym in (diofant.symbols('a b c d x y z t') +
+    for sym in (diofant.symbols('a:d t x:z') +
                 diofant.symbols('k m n', integer=True) +
-                diofant.symbols('f g h', cls=diofant.Function)):
+                diofant.symbols('f:h', cls=diofant.Function)):
         doctest_namespace[str(sym)] = sym
     for name in dir(diofant):
         doctest_namespace[name] = getattr(diofant, name)

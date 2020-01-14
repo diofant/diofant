@@ -11,9 +11,9 @@ import mpmath
 import pytest
 
 import diofant
-from diofant import (DeferredVector, Float, Integer, Matrix, MatrixSymbol,
-                     Rational, Symbol, lambdify, list2numpy, matrix2numpy, sin,
-                     symarray, symbols, sympify)
+from diofant import (Float, Integer, Matrix, MatrixSymbol, Rational, Symbol,
+                     lambdify, list2numpy, matrix2numpy, sin, symarray,
+                     symbols, sympify)
 from diofant.abc import x, y, z
 from diofant.matrices.expressions.matexpr import MatrixElement
 from diofant.utilities.decorator import conserve_mpmath_dps
@@ -169,10 +169,10 @@ def test_Matrix_mul():
 
 
 def test_Matrix_numpy_array():
-    class matarray:
+    class MatArray:
         def __array__(self):
             return numpy.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-    matarr = matarray()
+    matarr = MatArray()
     assert Matrix(matarr) == Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
 
@@ -241,21 +241,6 @@ def test_lambdify_matrix_multi_input():
     assert numpy.allclose(actual, expected)
 
 
-def test_lambdify_matrix_vec_input():
-    X = DeferredVector('X')
-    M = Matrix([[X[0]**2, X[0]*X[1], X[0]*X[2]],
-                [X[1]*X[0], X[1]**2, X[1]*X[2]],
-                [X[2]*X[0], X[2]*X[1], X[2]**2]])
-    f = lambdify(X, M, [{'ImmutableMatrix': numpy.array}, "numpy"])
-
-    Xh = numpy.array([1.0, 2.0, 3.0])
-    expected = numpy.array([[Xh[0]**2, Xh[0]*Xh[1], Xh[0]*Xh[2]],
-                            [Xh[1]*Xh[0], Xh[1]**2, Xh[1]*Xh[2]],
-                            [Xh[2]*Xh[0], Xh[2]*Xh[1], Xh[2]**2]])
-    actual = f(Xh)
-    assert numpy.allclose(actual, expected)
-
-
 @pytest.mark.skipif(sys.version_info >= (3, 8), reason="Broken on 3.8")
 def test_lambdify_transl():
     for sym, mat in NUMPY_TRANSLATIONS.items():
@@ -265,7 +250,6 @@ def test_lambdify_transl():
 
 def test_symarray():
     """Test creation of numpy arrays of diofant symbols."""
-
     syms = symbols('_0,_1,_2')
     s1 = symarray("", 3)
     s2 = symarray("", 3)

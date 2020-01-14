@@ -1,4 +1,4 @@
-"""User-friendly public interface to polynomial functions. """
+"""User-friendly public interface to polynomial functions."""
 
 import mpmath
 
@@ -159,18 +159,16 @@ class Poly(Expr):
             rep = cls.new(rep.rep, *rep.gens)
 
         gens = opt.gens
-        field = opt.field
-        domain = opt.domain
+
+        if opt.composite or (gens and set(rep.gens) != set(gens)):
+            return cls._from_expr(rep.as_expr(), opt)
 
         if gens and rep.gens != gens:
-            if set(rep.gens) != set(gens):
-                return cls._from_expr(rep.as_expr(), opt)
-            else:
-                rep = rep.reorder(*gens)
+            rep = rep.reorder(*gens)
 
-        if 'domain' in opt and domain:
-            rep = rep.set_domain(domain)
-        elif field is True:
+        if opt.domain:
+            rep = rep.set_domain(opt.domain)
+        elif opt.field:
             rep = rep.to_field()
 
         return rep
@@ -820,7 +818,7 @@ class Poly(Expr):
         """
         dom = self.domain
 
-        if dom.is_Numerical:
+        if dom.is_Numerical and not dom.is_Algebraic:
             return self
 
         if front:
@@ -4324,12 +4322,14 @@ def _torational_factor_list(p, x):
     ========
 
     >>> p = expand(((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))}))
-    >>> factors = _torational_factor_list(p, x); factors
+    >>> factors = _torational_factor_list(p, x)
+    >>> factors
     (-2, [(-x*(1 + sqrt(2))/2 + 1, 1), (-x*(1 + sqrt(2)) - 1, 1), (-x*(1 + sqrt(2)) + 1, 1)])
     >>> expand(factors[0]*Mul(*[z[0] for z in factors[1]])) == p
     True
     >>> p = expand(((x**2-1)*(x-2)).subs({x: x + sqrt(2)}))
-    >>> factors = _torational_factor_list(p, x); factors
+    >>> factors = _torational_factor_list(p, x)
+    >>> factors
     (1, [(x - 2 + sqrt(2), 1), (x - 1 + sqrt(2), 1), (x + 1 + sqrt(2), 1)])
     >>> expand(factors[0]*Mul(*[z[0] for z in factors[1]])) == p
     True

@@ -147,23 +147,23 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     With the range for the symbols
 
     >>> p2 = plot_implicit(Eq(x**2 + y**2, 3),
-    ...         (x, -3, 3), (y, -3, 3))
+    ...                    (x, -3, 3), (y, -3, 3))
 
     With depth of recursion as argument.
 
     >>> p3 = plot_implicit(Eq(x**2 + y**2, 5),
-    ...         (x, -4, 4), (y, -4, 4), depth = 2)
+    ...                    (x, -4, 4), (y, -4, 4), depth=2)
 
     Using mesh grid and not using adaptive meshing.
 
     >>> p4 = plot_implicit(Eq(x**2 + y**2, 5),
-    ...         (x, -5, 5), (y, -2, 2), adaptive=False)
+    ...                    (x, -5, 5), (y, -2, 2), adaptive=False)
 
     Using mesh grid with number of points as input.
 
     >>> p5 = plot_implicit(Eq(x**2 + y**2, 5),
-    ...         (x, -5, 5), (y, -2, 2),
-    ...         adaptive=False, points=400)
+    ...                    (x, -5, 5), (y, -2, 2),
+    ...                    adaptive=False, points=400)
 
     Plotting regions.
 
@@ -180,7 +180,6 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     >>> p9 = plot_implicit(x - 1, x_var=x)
 
     """
-
     # Represents whether the expression contains an Equality,
     # GreaterThan or LessThan
     has_equality = False

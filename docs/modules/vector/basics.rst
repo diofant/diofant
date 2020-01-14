@@ -219,7 +219,7 @@ method of ``Vector``. The ``|`` operator has been overloaded for
   >>> N = CoordSysCartesian('N')
   >>> N.i.outer(N.j)
   (N.i|N.j)
-  >>> N.i|N.j
+  >>> N.i | N.j
   (N.i|N.j)
 
 Similar to ``Vector``, ``Dyadic`` also has subsequent subclasses like
@@ -233,7 +233,7 @@ All basic mathematical operations work with ``Dyadic`` too.
   3*(N.i|N.k)
   >>> dyad - dyad
   0
-  >>> dyad + 2*(N.j|N.i)
+  >>> dyad + 2*(N.j | N.i)
   (N.i|N.k) + 2*(N.j|N.i)
 
 ``dot`` and ``cross`` also work among ``Dyadic`` instances as well as
@@ -242,7 +242,7 @@ respective mathematical definitions. As with ``Vector``, ``&`` and
 ``^`` have been overloaded for ``dot`` and ``cross``.
 
   >>> d = N.i.outer(N.j)
-  >>> d.dot(N.j|N.j)
+  >>> d.dot(N.j | N.j)
   (N.i|N.j)
   >>> d.dot(N.i)
   0

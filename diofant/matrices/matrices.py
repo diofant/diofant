@@ -4,12 +4,10 @@ from types import FunctionType
 
 from ..core import (Add, Atom, Basic, Dummy, Expr, Float, I, Integer, Pow,
                     Symbol, count_ops, ilcm, oo, symbols, sympify)
-from ..core.compatibility import (NotIterable, as_int, default_sort_key,
-                                  is_sequence)
+from ..core.compatibility import as_int, default_sort_key, is_sequence
 from ..core.logic import fuzzy_and
 from ..functions import Max, Min, exp, factorial, sqrt
 from ..polys import PurePoly, cancel, gcd, roots
-from ..printing import sstr
 from ..printing.defaults import DefaultPrinting
 from ..simplify import nsimplify, signsimp
 from ..simplify import simplify as _simplify
@@ -25,6 +23,8 @@ def _iszero(x):
 
 
 class MatrixError(Exception):
+    """Generic matrix error."""
+
     pass
 
 
@@ -35,41 +35,13 @@ class ShapeError(ValueError, MatrixError):
 
 
 class NonSquareMatrixError(ShapeError):
+    """Raised when a square matrix is expected."""
+
     pass
 
 
-class DeferredVector(Symbol, NotIterable):
-    """A vector whose components are deferred (e.g. for use with lambdify)
-
-    Examples
-    ========
-
-    >>> X = DeferredVector('X')
-    >>> print(X)
-    X
-    >>> expr = (X[0] + 2, X[2] + 3)
-    >>> func = lambdify(X, expr)
-    >>> func([1, 2, 3])
-    (3, 6)
-
-    """
-
-    def __getitem__(self, i):
-        if i == -0:
-            i = 0
-        if i < 0:
-            raise IndexError('DeferredVector index out of range')
-        component_name = '%s[%d]' % (self.name, i)
-        return Symbol(component_name)
-
-    def __str__(self):
-        return sstr(self)
-
-    def __repr__(self):
-        return "DeferredVector('%s')" % (self.name)
-
-
 class MatrixBase(DefaultPrinting):
+    """Base class for matrices."""
 
     # Added just for numpy compatibility
     __array_priority__ = 11
@@ -160,8 +132,7 @@ class MatrixBase(DefaultPrinting):
                         "Diofant supports just 1D and 2D matrices")
 
             # Matrix([1, 2, 3]) or Matrix([[1, 2], [3, 4]])
-            elif is_sequence(args[0])\
-                    and not isinstance(args[0], DeferredVector):
+            elif is_sequence(args[0]):
                 in_mat = []
                 ncol = set()
                 for row in args[0]:
@@ -244,7 +215,8 @@ class MatrixBase(DefaultPrinting):
 
         >>> M = zeros(4)
         >>> m = M.cols
-        >>> M[3*m] = ones(1, m)*2; M
+        >>> M[3*m] = ones(1, m)*2
+        >>> M
         Matrix([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
@@ -253,7 +225,8 @@ class MatrixBase(DefaultPrinting):
 
         And to replace column c you can assign to position c:
 
-        >>> M[2] = ones(m, 1)*4; M
+        >>> M[2] = ones(m, 1)*4
+        >>> M
         Matrix([
         [0, 0, 4, 0],
         [0, 0, 4, 0],
@@ -285,7 +258,6 @@ class MatrixBase(DefaultPrinting):
                 self.copyin_matrix(key, value)
             else:
                 return i, j, self._sympify(value)
-            return
 
     def copy(self):
         """Returns the copy of a matrix."""
@@ -444,10 +416,6 @@ class MatrixBase(DefaultPrinting):
 
         """
         if self.rows != 4:
-            # In Python 3.2, properties can only return an AttributeError
-            # so we can't raise a ShapeError -- see commit which added the
-            # first line of this inline comment. Also, there is no need
-            # for a message since MatrixBase will raise the AttributeError
             raise AttributeError
         return self.H*mgamma(0)
 
@@ -571,7 +539,7 @@ class MatrixBase(DefaultPrinting):
                             bn = bn._eval_expand_func()
                         jc[j, i + j] = l**(n - i)*bn
 
-            P, jordan_cells = self.jordan_cells()
+            jordan_cells, P = self.jordan_cells()
             # Make sure jordan_cells matrices are mutable:
             jordan_cells = [MutableMatrix(j) for j in jordan_cells]
             for j in jordan_cells:
@@ -748,7 +716,6 @@ class MatrixBase(DefaultPrinting):
         QRdecomposition
 
         """
-
         if not self.is_square:
             raise NonSquareMatrixError("Matrix must be square.")
         if not self.is_symmetric():
@@ -810,7 +777,6 @@ class MatrixBase(DefaultPrinting):
         pinv_solve
 
         """
-
         if not self.is_square:
             raise NonSquareMatrixError("Matrix must be square.")
         if rhs.rows != self.rows:
@@ -960,7 +926,8 @@ class MatrixBase(DefaultPrinting):
         If each line of S represent coefficients of Ax + By
         and x and y are [2, 3] then S*xy is:
 
-        >>> r = S*Matrix([2, 3]); r
+        >>> r = S*Matrix([2, 3])
+        >>> r
         Matrix([
         [ 8],
         [13],
@@ -969,7 +936,8 @@ class MatrixBase(DefaultPrinting):
         But let's add 1 to the middle value and then solve for the
         least-squares value of xy:
 
-        >>> xy = S.solve_least_squares(Matrix([8, 14, 18])); xy
+        >>> xy = S.solve_least_squares(Matrix([8, 14, 18]))
+        >>> xy
         Matrix([
         [ 5/3],
         [10/3]])
@@ -1056,7 +1024,6 @@ class MatrixBase(DefaultPrinting):
         key2ij
 
         """
-
         islice, jslice = [isinstance(k, slice) for k in keys]
         if islice:
             assert self.rows
@@ -1111,7 +1078,6 @@ class MatrixBase(DefaultPrinting):
         {x}
 
         """
-
         if types:
             types = tuple(t if isinstance(t, type) else type(t) for t in types)
         else:
@@ -1132,7 +1098,6 @@ class MatrixBase(DefaultPrinting):
         {x}
 
         """
-
         return set().union(*[i.free_symbols for i in self])
 
     def subs(self, *args, **kwargs):  # should mirror core.basic.subs
@@ -1635,7 +1600,6 @@ class MatrixBase(DefaultPrinting):
         QRdecomposition
 
         """
-
         Q, R = self.as_mutable().QRdecomposition()
         y = Q.T*b
 
@@ -1929,7 +1893,7 @@ class MatrixBase(DefaultPrinting):
         if not self.is_square:
             raise NonSquareMatrixError("Exponentiation is valid only "
                                        "for square matrices")
-        P, cells = self.jordan_cells()
+        cells, P = self.jordan_cells()
 
         def _jblock_exponential(b):
             # This function computes the matrix exponential for one single Jordan block
@@ -2012,9 +1976,8 @@ class MatrixBase(DefaultPrinting):
         """
         if any(i.is_nonzero for i in self):
             return False
-        if any(i.is_zero is None for i in self):
-            return
-        return True
+        if not any(i.is_zero is None for i in self):
+            return True
 
     def is_nilpotent(self):
         """Checks if a matrix is nilpotent.
@@ -2333,7 +2296,6 @@ class MatrixBase(DefaultPrinting):
         [-1, 0]])
         >>> m.is_anti_symmetric()
         True
-        >>> x, y = symbols('x y')
         >>> m = Matrix(2, 3, [0, 0, x, -y, 0, 0])
         >>> m
         Matrix([
@@ -2460,7 +2422,6 @@ class MatrixBase(DefaultPrinting):
         det_LU_decomposition
 
         """
-
         # if methods were made internal and all determinant calculations
         # passed through here, then these lines could be factored out of
         # the method routines
@@ -2597,7 +2558,6 @@ class MatrixBase(DefaultPrinting):
         berkowitz
 
         """
-
         return self.cofactorMatrix(method).T
 
     def inverse_LU(self, iszerofunc=_iszero):
@@ -3076,7 +3036,6 @@ class MatrixBase(DefaultPrinting):
         singular_values
 
         """
-
         if not self:
             return Integer(0)
         singularvalues = self.singular_values()
@@ -3594,13 +3553,12 @@ class MatrixBase(DefaultPrinting):
     def jordan_form(self, calc_transformation=True):
         r"""Return Jordan form J of current matrix.
 
-        Also the transformation P such that
+        Also (if calc_transformation=True) the transformation P such that
 
-            `J = P^{-1} \cdot M \cdot P`
+        .. math::
+            J = P^{-1} \cdot M \cdot P
 
-        and the jordan blocks forming J
-        will be calculated.
-
+        and the jordan blocks forming J will be calculated.
 
         Examples
         ========
@@ -3610,7 +3568,7 @@ class MatrixBase(DefaultPrinting):
         ...        [-3, -1,  3,  3],
         ...        [ 2,  1, -2, -3],
         ...        [-1,  1,  5,  5]])
-        >>> P, J = m.jordan_form()
+        >>> J, P = m.jordan_form()
         >>> J
         Matrix([
         [2, 1, 0, 0],
@@ -3624,25 +3582,29 @@ class MatrixBase(DefaultPrinting):
         jordan_cells
 
         """
-        P, Jcells = self.jordan_cells()
         from . import diag
+        res = self.jordan_cells(calc_transformation=calc_transformation)
+        if calc_transformation:
+            Jcells, P = res
+        else:
+            Jcells = res
         J = diag(*Jcells)
-        return P, type(self)(J)
+        J = type(self)(J)
+        if calc_transformation:
+            return J, P
+        else:
+            return J
 
     def jordan_cells(self, calc_transformation=True):
         r"""Return a list of Jordan cells of current matrix.
         This list shape Jordan matrix J.
 
-        If calc_transformation is specified as False, then transformation P such that
+        If calc_transformation=False, then transformation P such that
 
-              `J = P^{-1} \cdot M \cdot P`
+        .. math::
+            J = P^{-1} \cdot M \cdot P
 
         will not be calculated.
-
-        Notes
-        =====
-
-        Calculation of transformation P is not implemented yet.
 
         Examples
         ========
@@ -3653,7 +3615,7 @@ class MatrixBase(DefaultPrinting):
         ...  2,  1, -2, -3,
         ... -1,  1,  5,  5])
 
-        >>> P, Jcells = m.jordan_cells()
+        >>> Jcells, P = m.jordan_cells()
         >>> Jcells[0]
         Matrix([
         [2, 1],
@@ -3669,16 +3631,17 @@ class MatrixBase(DefaultPrinting):
         jordan_form
 
         """
+        from . import MutableMatrix
+
         n = self.rows
         Jcells = []
         Pcols_new = []
         jordan_block_structures = self._jordan_block_structure()
-        from . import MutableMatrix
 
         # Order according to default_sort_key, this makes sure the order is the same as in .diagonalize():
         for eigenval in (sorted(jordan_block_structures, key=default_sort_key)):
             l_jordan_chains = jordan_block_structures[eigenval]
-            for s in reversed(sorted(l_jordan_chains)):  # Start with the biggest block
+            for s in sorted(l_jordan_chains, reverse=True):  # Start with the biggest block
                 s_chains = l_jordan_chains[s]
                 block = self.jordan_cell(eigenval, s)
                 number_of_s_chains = len(s_chains)
@@ -3690,11 +3653,14 @@ class MatrixBase(DefaultPrinting):
                     for j in range(lc):
                         generalized_eigen_vector = chain_vectors[j]
                         Pcols_new.append(generalized_eigen_vector)
-        P = MutableMatrix.zeros(n)
-        for j in range(n):
-            P[:, j] = Pcols_new[j]
 
-        return type(self)(P), Jcells
+        if calc_transformation:
+            P = MutableMatrix.zeros(n)
+            for j in range(n):
+                P[:, j] = Pcols_new[j]
+            return Jcells, type(self)(P)
+        else:
+            return Jcells
 
     def has(self, *patterns):
         """Test whether any subexpression matches any of the patterns.
@@ -3950,7 +3916,8 @@ class MatrixBase(DefaultPrinting):
         ========
 
         >>> F, G = symbols('F, G', cls=Function)
-        >>> M = Matrix(2, 2, lambda i, j: F(i+j)) ; M
+        >>> M = Matrix(2, 2, lambda i, j: F(i+j))
+        >>> M
         Matrix([
         [F(0), F(1)],
         [F(1), F(2)]])

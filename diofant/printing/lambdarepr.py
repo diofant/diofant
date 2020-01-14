@@ -132,6 +132,10 @@ class NumPyPrinter(LambdaPrinter):
         # version of the function and add 'logical_or' to NUMPY_TRANSLATIONS.
         return functools.reduce(lambda x, y: 'logical_or({0}, {1})'.format(self._print(x), self._print(y)), expr.args)
 
+    def _print_Xor(self, expr):
+        """Logical Xor printer"""
+        return functools.reduce(lambda x, y: 'logical_xor({0}, {1})'.format(self._print(x), self._print(y)), expr.args)
+
     def _print_Not(self, expr):
         """Logical Not printer"""
         # We have to override LambdaPrinter because it uses Python 'not' keyword.
@@ -146,89 +150,9 @@ class NumPyPrinter(LambdaPrinter):
         return '{0}(({1}))'.format('amax', ','.join(self._print(i) for i in expr.args))
 
 
-# numexpr works by altering the string passed to numexpr.evaluate
-# rather than by populating a namespace.  Thus a special printer...
-
-
-class NumExprPrinter(LambdaPrinter):
-    # key, value pairs correspond to diofant name and numexpr name
-    # functions not appearing in this dict will raise a TypeError
-    _numexpr_functions = {
-        'sin': 'sin',
-        'cos': 'cos',
-        'tan': 'tan',
-        'asin': 'arcsin',
-        'acos': 'arccos',
-        'atan': 'arctan',
-        'atan2': 'arctan2',
-        'sinh': 'sinh',
-        'cosh': 'cosh',
-        'tanh': 'tanh',
-        'asinh': 'arcsinh',
-        'acosh': 'arccosh',
-        'atanh': 'arctanh',
-        'ln': 'log',
-        'log': 'log',
-        'exp': 'exp',
-        'sqrt': 'sqrt',
-        'Abs': 'abs',
-        'conjugate': 'conj',
-        'im': 'imag',
-        're': 'real',
-        'where': 'where',
-        'complex': 'complex',
-        'contains': 'contains',
-    }
-
-    def _print_ImaginaryUnit(self, expr):
-        return '1j'
-
-    def _print_seq(self, seq, delimiter=', '):
-        s = [self._print(item) for item in seq]
-        return delimiter.join(s)
-
-    def _print_Function(self, e):
-        func_name = e.func.__name__
-
-        nstr = self._numexpr_functions.get(func_name, None)
-        if nstr is None:
-            # check for implemented_function
-            if hasattr(e, '_imp_'):
-                return "(%s)" % self._print(e._imp_(*e.args))
-            else:
-                raise TypeError("numexpr does not support function '%s'" %
-                                func_name)
-        return "%s(%s)" % (nstr, self._print_seq(e.args))
-
-    def blacklisted(self, expr):
-        raise TypeError("numexpr cannot be used with %s" %
-                        expr.__class__.__name__)
-
-    # blacklist all Matrix printing
-    _print_SparseMatrix = \
-        _print_MutableSparseMatrix = \
-        _print_ImmutableSparseMatrix = \
-        _print_Matrix = \
-        _print_DenseMatrix = \
-        _print_MutableDenseMatrix = \
-        _print_ImmutableMatrix = \
-        _print_ImmutableDenseMatrix = \
-        _print_MatrixSymbol = \
-        blacklisted
-    # blacklist some python expressions
-    _print_list = \
-        _print_tuple = \
-        _print_Tuple = \
-        _print_dict = \
-        _print_Dict = \
-        blacklisted
-
-    def doprint(self, expr):
-        lstr = super().doprint(expr)
-        return "evaluate('%s')" % lstr
-
-
 class MpmathPrinter(LambdaPrinter):
+    """Mpmath printer."""
+
     def _print_RootOf(self, expr):
         if expr.is_real:
             return ("findroot(lambda %s: %s, %s, "
@@ -236,7 +160,10 @@ class MpmathPrinter(LambdaPrinter):
                                              self._print(expr.expr),
                                              self._print(expr.interval.as_tuple())))
         else:
-            raise NotImplementedError
+            return ("findroot(lambda %s: %s, mpc%s, "
+                    "method='secant')" % (self._print(expr.poly.gen),
+                                          self._print(expr.expr),
+                                          self._print(expr.interval.center)))
 
     def _print_Sum(self, expr):
         return "nsum(lambda %s: %s, %s)" % (",".join([self._print(v) for v in expr.variables]),
@@ -257,6 +184,32 @@ class MpmathPrinter(LambdaPrinter):
 
     def _print_GoldenRatio(self, expr):
         return "phi"
+
+    def _print_Pow(self, expr):
+        if expr.exp.is_Rational:
+            n, d = expr.exp.as_numer_denom()
+            if d == 1:
+                if n >= 0:
+                    return "%s**%s" % (self._print(expr.base), n)
+                else:
+                    return "power(%s, %s)" % (self._print(expr.base), n)
+            else:
+                if n >= 2:
+                    return "root(%s, %s)**%s" % (self._print(expr.base), d, n)
+                elif n == 1:
+                    return "root(%s, %s)" % (self._print(expr.base), d)
+                else:
+                    return "power(root(%s, %s), %s)" % (self._print(expr.base),
+                                                        d, n)
+        else:
+            return super()._print_Pow(expr)
+
+    def _print_Rational(self, expr):
+        n, d = expr.numerator, expr.denominator
+        if d == 1:
+            return "%s" % n
+        else:
+            return "%s*power(%s, -1)" % (n, d)
 
 
 def lambdarepr(expr, **settings):

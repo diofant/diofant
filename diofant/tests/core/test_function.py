@@ -105,22 +105,22 @@ def test_diff_symbols():
 
 
 def test_Function():
-    class myfunc(Function):
+    class MyFunc(Function):
         @classmethod
         def eval(cls, x):  # one arg
             return
 
-    assert myfunc.nargs == FiniteSet(1)
-    assert myfunc(x).nargs == FiniteSet(1)
-    pytest.raises(TypeError, lambda: myfunc(x, y).nargs)
+    assert MyFunc.nargs == FiniteSet(1)
+    assert MyFunc(x).nargs == FiniteSet(1)
+    pytest.raises(TypeError, lambda: MyFunc(x, y).nargs)
 
-    class myfunc(Function):
+    class MyFunc(Function):
         @classmethod
         def eval(cls, *x):  # star args
             return
 
-    assert myfunc.nargs == S.Naturals0
-    assert myfunc(x).nargs == S.Naturals0
+    assert MyFunc.nargs == S.Naturals0
+    assert MyFunc(x).nargs == S.Naturals0
 
 
 def test_nargs():
@@ -466,14 +466,14 @@ def test_derivative_numerically():
 
 
 def test_fdiff_argument_index_error():
-    class myfunc(Function):
+    class MyFunc(Function):
         nargs = 1  # define since there is no eval routine
 
         def fdiff(self, idx):
             raise ArgumentIndexError
-    mf = myfunc(x)
+    mf = MyFunc(x)
     assert mf.diff(x) == Derivative(mf, x)
-    pytest.raises(TypeError, lambda: myfunc(x, x))
+    pytest.raises(TypeError, lambda: MyFunc(x, x))
 
     pytest.raises(ArgumentIndexError, lambda: f(x).fdiff(2))
 
@@ -611,8 +611,6 @@ def test_unhandled():
         def _eval_derivative(self, s):
             if not s.name.startswith('xi'):
                 return self
-            else:
-                return
 
     expr = MyExpr(x, y, z)
     assert diff(expr, x, y, f(x), z) == Derivative(expr, f(x), z)

@@ -1,4 +1,4 @@
-"""Tests for efficient functions for generating orthogonal polynomials. """
+"""Tests for efficient functions for generating orthogonal polynomials."""
 
 import pytest
 

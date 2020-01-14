@@ -1,12 +1,12 @@
 import itertools
+import operator
 import random
-from operator import lt
-from textwrap import dedent
+import textwrap
 
 import pytest
 
 from diofant import (Basic, Dummy, Integer, Integral, Matrix, Tuple,
-                     default_sort_key, factorial, symbols, true)
+                     default_sort_key, symbols, true)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import Permutation, RGS_enum, RGS_unrank
 from diofant.functions.combinatorial.numbers import nT
@@ -17,21 +17,21 @@ from diofant.utilities.iterables import (_partition, _set_partitions,
                                          binary_partitions, bracelets,
                                          cantor_product, capture,
                                          common_prefix, common_suffix,
-                                         dict_merge, filter_symbols, flatten,
-                                         generate_bell, generate_derangements,
-                                         generate_involutions,
-                                         generate_oriented_forest, group,
-                                         has_dups, kbins, minlex, multiset,
+                                         filter_symbols, flatten,
+                                         generate_derangements,
+                                         generate_involutions, group, has_dups,
+                                         minlex, multiset,
                                          multiset_combinations,
                                          multiset_partitions,
                                          multiset_permutations, necklaces,
                                          numbered_symbols, ordered,
                                          ordered_partitions, partitions,
-                                         permutations, postfixes,
-                                         postorder_traversal, prefixes,
-                                         reshape, rotate_left, rotate_right,
-                                         runs, sift, subsets, topological_sort,
-                                         unflatten, uniq, variations)
+                                         permutations, permute_signs,
+                                         postfixes, postorder_traversal,
+                                         prefixes, rotate_left, rotate_right,
+                                         runs, sift, signed_permutations,
+                                         subsets, topological_sort, unflatten,
+                                         uniq, variations)
 
 
 __all__ = ()
@@ -193,17 +193,6 @@ def test_sift():
     assert sift([Integer(1)], lambda _: _.has(x)) == {False: [1]}
 
 
-def test_dict_merge():
-    assert dict_merge({}, {1: x, y: z}) == {1: x, y: z}
-    assert dict_merge({1: x, y: z}, {}) == {1: x, y: z}
-
-    assert dict_merge({2: z}, {1: x, y: z}) == {1: x, 2: z, y: z}
-    assert dict_merge({1: x, y: z}, {2: z}) == {1: x, 2: z, y: z}
-
-    assert dict_merge({1: y, 2: z}, {1: x, y: z}) == {1: x, 2: z, y: z}
-    assert dict_merge({1: x, y: z}, {1: y, 2: z}) == {1: y, 2: z, y: z}
-
-
 def test_prefixes():
     assert list(prefixes([])) == []
     assert list(prefixes([1])) == [[1]]
@@ -348,7 +337,7 @@ def test_multiset_permutations():
             print(i)
             for p in multiset_permutations([0, 0, 1, 0, 1], i):
                 print(p)
-    assert capture(lambda: test()) == dedent('''\
+    assert capture(lambda: test()) == textwrap.dedent('''\
         1
         [0]
         [1]
@@ -442,23 +431,6 @@ def test_binary_partitions():
     assert len([j[:] for j in binary_partitions(16)]) == 36
 
 
-def test_bell_perm():
-    assert [len(set(generate_bell(i))) for i in range(1, 7)] == [
-        factorial(i) for i in range(1, 7)]
-    assert list(generate_bell(3)) == [
-        (0, 1, 2), (0, 2, 1), (2, 0, 1), (2, 1, 0), (1, 2, 0), (1, 0, 2)]
-    # generate_bell and trotterjohnson are advertised to return the same
-    # permutations; this is not technically necessary so this test could
-    # be removed
-    for n in range(1, 5):
-        p = Permutation(range(n))
-        b = generate_bell(n)
-        for bi in b:
-            assert bi == tuple(p.array_form)
-            p = p.next_trotterjohnson()
-    pytest.raises(ValueError, lambda: list(generate_bell(0)))  # XXX is this consistent with other permutation algorithms?
-
-
 def test_involutions():
     lengths = [1, 2, 4, 10, 26, 76]
     for n, N in enumerate(lengths):
@@ -499,7 +471,7 @@ def test_necklaces():
 
 
 def test_bracelets():
-    bc = [i for i in bracelets(2, 4)]
+    bc = list(bracelets(2, 4))
     assert Matrix(bc) == Matrix([
         [0, 0],
         [0, 1],
@@ -512,7 +484,7 @@ def test_bracelets():
         [2, 3],
         [3, 3]
     ])
-    bc = [i for i in bracelets(4, 2)]
+    bc = list(bracelets(4, 2))
     assert Matrix(bc) == Matrix([
         [0, 0, 0, 0],
         [0, 0, 0, 1],
@@ -521,16 +493,6 @@ def test_bracelets():
         [0, 1, 1, 1],
         [1, 1, 1, 1]
     ])
-
-
-def test_generate_oriented_forest():
-    assert list(generate_oriented_forest(5)) == [[0, 1, 2, 3, 4],
-                                                 [0, 1, 2, 3, 3], [0, 1, 2, 3, 2], [0, 1, 2, 3, 1], [0, 1, 2, 3, 0],
-                                                 [0, 1, 2, 2, 2], [0, 1, 2, 2, 1], [0, 1, 2, 2, 0], [0, 1, 2, 1, 2],
-                                                 [0, 1, 2, 1, 1], [0, 1, 2, 1, 0], [0, 1, 2, 0, 1], [0, 1, 2, 0, 0],
-                                                 [0, 1, 1, 1, 1], [0, 1, 1, 1, 0], [0, 1, 1, 0, 1], [0, 1, 1, 0, 0],
-                                                 [0, 1, 0, 1, 0], [0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
-    assert len(list(generate_oriented_forest(10))) == 1842
 
 
 def test_unflatten():
@@ -559,6 +521,7 @@ def test_common_prefix_suffix():
 def test_minlex():
     assert minlex([1, 2, 0]) == (0, 1, 2)
     assert minlex((1, 2, 0)) == (0, 1, 2)
+    assert minlex((1, 2, 0), small=0) == (0, 1, 2)
     assert minlex((1, 0, 2)) == (0, 2, 1)
     assert minlex((1, 0, 2), directed=False) == (0, 1, 2)
     assert minlex('aba') == 'aab'
@@ -585,31 +548,7 @@ def test_runs():
     assert runs([1, 1, 2]) == [[1], [1, 2]]
     assert runs([1, 2, 1]) == [[1, 2], [1]]
     assert runs([2, 1, 1]) == [[2], [1], [1]]
-    assert runs([2, 1, 1], lt) == [[2, 1], [1]]
-
-
-def test_reshape():
-    seq = list(range(1, 9))
-    assert reshape(seq, [4]) == \
-        [[1, 2, 3, 4], [5, 6, 7, 8]]
-    assert reshape(seq, (4,)) == \
-        [(1, 2, 3, 4), (5, 6, 7, 8)]
-    assert reshape(seq, (2, 2)) == \
-        [(1, 2, 3, 4), (5, 6, 7, 8)]
-    assert reshape(seq, (2, [2])) == \
-        [(1, 2, [3, 4]), (5, 6, [7, 8])]
-    assert reshape(seq, ((2,), [2])) == \
-        [((1, 2), [3, 4]), ((5, 6), [7, 8])]
-    assert reshape(seq, (1, [2], 1)) == \
-        [(1, [2, 3], 4), (5, [6, 7], 8)]
-    assert reshape(tuple(seq), ([[1], 1, (2,)],)) == \
-        (([[1], 2, (3, 4)],), ([[5], 6, (7, 8)],))
-    assert reshape(tuple(seq), ([1], 1, (2,))) == \
-        (([1], 2, (3, 4)), ([5], 6, (7, 8)))
-    assert reshape(list(range(12)), [2, [3], {2}, (1, (3,), 1)]) == \
-        [[0, 1, [2, 3, 4], {5, 6}, (7, (8, 9, 10), 11)]]
-
-    pytest.raises(ValueError, lambda: reshape([1], [-1]))
+    assert runs([2, 1, 1], operator.lt) == [[2, 1], [1]]
 
 
 def test_uniq():
@@ -623,86 +562,6 @@ def test_uniq():
         [([1], 2, 2), (2, [1], 2), (2, 2, [1])]
     assert list(uniq([2, 3, 2, 4, [2], [1], [2], [3], [1]])) == \
         [2, 3, 4, [2], [1], [3]]
-
-
-def test_kbins():
-    assert len(list(kbins('1123', 2, ordered=1))) == 24
-    assert len(list(kbins('1123', 2, ordered=11))) == 36
-    assert len(list(kbins('1123', 2, ordered=10))) == 10
-    assert len(list(kbins('1123', 2, ordered=0))) == 5
-    assert len(list(kbins('1123', 2, ordered=None))) == 3
-
-    def test():
-        for ordered in [None, 0, 1, 10, 11]:
-            print('ordered =', ordered)
-            for p in kbins([0, 0, 1], 2, ordered=ordered):
-                print('   ', p)
-    assert capture(lambda: test()) == dedent('''\
-        ordered = None
-            [[0], [0, 1]]
-            [[0, 0], [1]]
-        ordered = 0
-            [[0, 0], [1]]
-            [[0, 1], [0]]
-        ordered = 1
-            [[0], [0, 1]]
-            [[0], [1, 0]]
-            [[1], [0, 0]]
-        ordered = 10
-            [[0, 0], [1]]
-            [[1], [0, 0]]
-            [[0, 1], [0]]
-            [[0], [0, 1]]
-        ordered = 11
-            [[0], [0, 1]]
-            [[0, 0], [1]]
-            [[0], [1, 0]]
-            [[0, 1], [0]]
-            [[1], [0, 0]]
-            [[1, 0], [0]]\n''')
-
-    def test2():
-        for ordered in [None, 0, 1, 10, 11]:
-            print('ordered =', ordered)
-            for p in kbins(list(range(3)), 2, ordered=ordered):
-                print('   ', p)
-    assert capture(lambda: test2()) == dedent('''\
-        ordered = None
-            [[0], [1, 2]]
-            [[0, 1], [2]]
-        ordered = 0
-            [[0, 1], [2]]
-            [[0, 2], [1]]
-            [[0], [1, 2]]
-        ordered = 1
-            [[0], [1, 2]]
-            [[0], [2, 1]]
-            [[1], [0, 2]]
-            [[1], [2, 0]]
-            [[2], [0, 1]]
-            [[2], [1, 0]]
-        ordered = 10
-            [[0, 1], [2]]
-            [[2], [0, 1]]
-            [[0, 2], [1]]
-            [[1], [0, 2]]
-            [[0], [1, 2]]
-            [[1, 2], [0]]
-        ordered = 11
-            [[0], [1, 2]]
-            [[0, 1], [2]]
-            [[0], [2, 1]]
-            [[0, 2], [1]]
-            [[1], [0, 2]]
-            [[1, 0], [2]]
-            [[1], [2, 0]]
-            [[1, 2], [0]]
-            [[2], [0, 1]]
-            [[2, 0], [1]]
-            [[2], [1, 0]]
-            [[2, 1], [0]]\n''')
-
-    pytest.raises(ValueError, lambda: list(kbins([1], 2, 22)))
 
 
 def test_has_dups():
@@ -732,8 +591,8 @@ def test_cantor_product():
 
     l1 = [random.randint(0, 100) for a in range(10)]
     l2 = [random.randint(0, 100) for a in range(10)]
-    assert (sorted(list(cantor_product(l1, l2))) ==
-            sorted(list(itertools.product(l1, l2))))
+    assert (sorted(cantor_product(l1, l2)) ==
+            sorted(itertools.product(l1, l2)))
 
     assert (list(itertools.islice(cantor_product([1, 2],
                                                  itertools.count(3)), 10)) ==
@@ -755,3 +614,17 @@ def test_ordered_partitions():
             assert (sum(1 for p in ordered_partitions(i, j, 1)) ==
                     sum(1 for p in ordered_partitions(i, j, 0)) ==
                     nT(i, j))
+
+
+def test_permute_signs():
+    assert list(permute_signs((0, 1, 2))) == [(0, 1, 2), (0, -1, 2),
+                                              (0, 1, -2), (0, -1, -2)]
+
+
+def test_signed_permutations():
+    assert (list(signed_permutations((0, 1, 2))) ==
+            [(0, 1, 2), (0, -1, 2), (0, 1, -2), (0, -1, -2), (0, 2, 1),
+             (0, -2, 1), (0, 2, -1), (0, -2, -1), (1, 0, 2), (-1, 0, 2),
+             (1, 0, -2), (-1, 0, -2), (1, 2, 0), (-1, 2, 0), (1, -2, 0),
+             (-1, -2, 0), (2, 0, 1), (-2, 0, 1), (2, 0, -1), (-2, 0, -1),
+             (2, 1, 0), (-2, 1, 0), (2, -1, 0), (-2, -1, 0)])

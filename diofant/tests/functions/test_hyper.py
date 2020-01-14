@@ -231,7 +231,7 @@ def test_hyperrep():
     # First test the base class works.
     a, b, c, d, z = symbols('a b c d z')
 
-    class myrep(HyperRep):
+    class MyRep(HyperRep):
         @classmethod
         def _expr_small(cls, x):
             return a
@@ -247,22 +247,22 @@ def test_hyperrep():
         @classmethod
         def _expr_big_minus(cls, x, n):
             return d*n
-    assert myrep(z).rewrite('nonrep') == Piecewise((0, abs(z) > 1), (a, True))
-    assert myrep(exp_polar(I*pi)*z).rewrite('nonrep') == \
+    assert MyRep(z).rewrite('nonrep') == Piecewise((0, abs(z) > 1), (a, True))
+    assert MyRep(exp_polar(I*pi)*z).rewrite('nonrep') == \
         Piecewise((0, abs(z) > 1), (b, True))
-    assert myrep(exp_polar(2*I*pi)*z).rewrite('nonrep') == \
+    assert MyRep(exp_polar(2*I*pi)*z).rewrite('nonrep') == \
         Piecewise((c, abs(z) > 1), (a, True))
-    assert myrep(exp_polar(3*I*pi)*z).rewrite('nonrep') == \
+    assert MyRep(exp_polar(3*I*pi)*z).rewrite('nonrep') == \
         Piecewise((d, abs(z) > 1), (b, True))
-    assert myrep(exp_polar(4*I*pi)*z).rewrite('nonrep') == \
+    assert MyRep(exp_polar(4*I*pi)*z).rewrite('nonrep') == \
         Piecewise((2*c, abs(z) > 1), (a, True))
-    assert myrep(exp_polar(5*I*pi)*z).rewrite('nonrep') == \
+    assert MyRep(exp_polar(5*I*pi)*z).rewrite('nonrep') == \
         Piecewise((2*d, abs(z) > 1), (b, True))
-    assert myrep(z).rewrite('nonrepsmall') == a
-    assert myrep(exp_polar(I*pi)*z).rewrite('nonrepsmall') == b
+    assert MyRep(z).rewrite('nonrepsmall') == a
+    assert MyRep(exp_polar(I*pi)*z).rewrite('nonrepsmall') == b
 
     def t(func, hyp, z):
-        """ Test that func is a valid representation of hyp. """
+        """Test that func is a valid representation of hyp."""
         # First test that func agrees with hyp for small z
         if not tn(func.rewrite('nonrepsmall'), hyp, z,
                   a=Rational(-1, 2), b=Rational(-1, 2), c=Rational(1, 2), d=Rational(1, 2)):

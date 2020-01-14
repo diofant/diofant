@@ -981,9 +981,8 @@ class tan(TrigonometricFunction):
 
     def _eval_rewrite_as_sqrt(self, arg):
         y = self.rewrite(cos).rewrite(sqrt)
-        if y.has(cos):
-            return
-        return y
+        if not y.has(cos):
+            return y
 
     def _eval_as_leading_term(self, x):
         from ...series import Order

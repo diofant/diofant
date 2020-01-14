@@ -63,21 +63,24 @@ def _coeff_isneg(a):
     False
     >>> _coeff_isneg(-oo)
     True
-    >>> _coeff_isneg(Symbol('n', negative=True)) # coeff is 1
+    >>> _coeff_isneg(Symbol('n', negative=True))  # coeff is 1
     False
 
     """
-
     if a.is_Mul or a.is_MatMul:
         a = a.args[0]
     return a.is_Number and a.is_negative
 
 
 class PoleError(Exception):
+    """Raised when an expansion pole is encountered."""
+
     pass
 
 
 class ArgumentIndexError(ValueError):
+    """Raised when an invalid operation for positional argument happened."""
+
     def __str__(self):
         return ("Invalid operation with argument number %s for Function %s" %
                 (self.args[1], self.args[0]))
@@ -126,7 +129,6 @@ class FunctionClass(ManagedProperties):
         Function subclasses.
 
         """
-
         # TODO: Look at nargs
         return inspect.signature(self.eval)
 
@@ -276,13 +278,13 @@ class Function(Application, Expr):
     Derivative(g(x), x)
 
     In the following example Function is used as a base class for
-    ``my_func`` that represents a mathematical function *my_func*. Suppose
-    that it is well known, that *my_func(0)* is *1* and *my_func* at infinity
+    ``MyFunc`` that represents a mathematical function *MyFunc*. Suppose
+    that it is well known, that *MyFunc(0)* is *1* and *MyFunc* at infinity
     goes to *0*, so we want those two simplifications to occur automatically.
-    Suppose also that *my_func(x)* is real exactly when *x* is real. Here is
+    Suppose also that *MyFunc(x)* is real exactly when *x* is real. Here is
     an implementation that honours those requirements:
 
-    >>> class my_func(Function):
+    >>> class MyFunc(Function):
     ...
     ...     @classmethod
     ...     def eval(cls, x):
@@ -295,24 +297,24 @@ class Function(Application, Expr):
     ...     def _eval_is_real(self):
     ...         return self.args[0].is_real
     ...
-    >>> my_func(0) + sin(0)
+    >>> MyFunc(0) + sin(0)
     1
-    >>> my_func(oo)
+    >>> MyFunc(oo)
     0
-    >>> my_func(3.54).evalf() # Not yet implemented for my_func.
-    my_func(3.54)
-    >>> my_func(I).is_real
+    >>> MyFunc(3.54).evalf()  # Not yet implemented for MyFunc.
+    MyFunc(3.54)
+    >>> MyFunc(I).is_real
     False
 
-    In order for ``my_func`` to become useful, several other methods would
+    In order for ``MyFunc`` to become useful, several other methods would
     need to be implemented. See source code of some of the already
     implemented functions for more complete examples.
 
     Also, if the function can take more than one argument, then ``nargs``
-    must be defined, e.g. if ``my_func`` can take one or two arguments
+    must be defined, e.g. if ``MyFunc`` can take one or two arguments
     then,
 
-    >>> class my_func(Function):
+    >>> class MyFunc(Function):
     ...     nargs = (1, 2)
     ...
     >>>
@@ -596,7 +598,7 @@ class Function(Application, Expr):
         # and issue sympy/sympy#5600
         arg_dummy = Dummy('xi_%i' % argindex)
         arg_dummy.dummy_index = hash(self.args[argindex - 1])
-        new_args = [arg for arg in self.args]
+        new_args = list(self.args)
         new_args[argindex-1] = arg_dummy
         return Subs(Derivative(self.func(*new_args), arg_dummy),
                     (arg_dummy, self.args[argindex - 1]))
@@ -1110,7 +1112,6 @@ class Derivative(Expr):
         [y, z, f(x), x, f(x), g(x), x, y, z, z]
 
         """
-
         sorted_vars = []
         symbol_part = []
         non_symbol_part = []
@@ -1897,8 +1898,6 @@ def _mexpand(expr, recursive=False):
     # expand multinomials and then expand products; this may not always
     # be sufficient to give a fully expanded expression (see
     # test_sympyissue_8247_8354 in test_arit)
-    if expr is None:
-        return
     was = None
     while was != expr:
         was, expr = expr, expand_mul(expand_multinomial(expr))

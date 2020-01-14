@@ -53,7 +53,6 @@ def combsimp(expr):
     (n + 1)/(k + 1)
 
     """
-
     # as a rule of thumb, if the expression contained gammas initially, it
     # probably makes sense to retain them
     as_gamma = expr.has(gamma)
@@ -101,8 +100,7 @@ def combsimp(expr):
     expr = expr.replace(binomial, rule)
 
     def rule_gamma(expr, level=0):
-        """ Simplify products of gamma functions further. """
-
+        """Simplify products of gamma functions further."""
         if expr.is_Atom:
             return expr
 
@@ -327,7 +325,7 @@ def combsimp(expr):
             # look for runs in Rationals for each resid
             keys = sorted(rats, key=default_sort_key)
             for resid in keys:
-                coeffs = list(sorted(rats[resid]))
+                coeffs = sorted(rats[resid])
                 new = []
                 while True:
                     run = _run(coeffs)

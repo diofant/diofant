@@ -121,12 +121,12 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     The capability to generate weights at arbitrary points can be
     used e.g. to minimize Runge's phenomenon by using Chebyshev nodes:
 
-    >>> N, (h, x) = 4, symbols('h x')
-    >>> x_list = [x + h*cos(i*pi/(N)) for i in range(N, -1, -1)] # chebyshev nodes
+    >>> N, h = 4, symbols('h')
+    >>> x_list = [x + h*cos(i*pi/(N)) for i in range(N, -1, -1)]  # chebyshev nodes
     >>> x_list
     [-h + x, -sqrt(2)*h/2 + x, x, sqrt(2)*h/2 + x, h + x]
     >>> mycoeffs = finite_diff_weights(1, x_list, 0)[1][4]
-    >>> [simplify(c) for c in  mycoeffs]
+    >>> [simplify(c) for c in mycoeffs]
     [(h**3/2 + h**2*x - 3*h*x**2 - 4*x**3)/h**4,
     (-sqrt(2)*h**3 - 4*h**2*x + 3*sqrt(2)*h*x**2 + 8*x**3)/h**4,
     6*x/h**2 - 8*x**3/h**4,
@@ -255,7 +255,6 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
     .. _finitediff: https://github.com/bjodah/finitediff
 
     """
-
     # In the original paper the following holds for the notation:
     # M = order
     # N = len(x_list) - 1
@@ -305,7 +304,7 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
     Examples
     ========
 
-    >>> x, h = symbols('x h')
+    >>> h = symbols('h')
     >>> as_finite_diff(f(x).diff(x))
     -f(x - 1/2) + f(x + 1/2)
 
@@ -336,7 +335,6 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
 
     Partial derivatives are also supported:
 
-    >>> y = Symbol('y')
     >>> d2fdxdy = f(x, y).diff(x, y)
     >>> as_finite_diff(d2fdxdy, wrt=x)
     -f(x - 1/2, y) + f(x + 1/2, y)

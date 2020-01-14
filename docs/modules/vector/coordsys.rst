@@ -214,7 +214,7 @@ reexpression of scalars (general Diofant ``Expr``) and
 ``express`` also accepts a second coordinate system
 for re-expressing ``Dyadic`` instances.
 
-  >>> d = 2*(M.i | N.j) + 3* (M.j | N.k)
+  >>> d = 2*(M.i | N.j) + 3*(M.j | N.k)
   >>> express(d, M)
   (2*sin(a))*(M.i|M.i) + (2*cos(a))*(M.i|M.j) + 3*(M.j|M.k)
   >>> express(d, M, N)

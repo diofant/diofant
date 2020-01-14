@@ -8,7 +8,7 @@ from diofant.vector.vector import Vector
 __all__ = ()
 
 N = CoordSysCartesian('N')
-q1, q2, q3, q4, q5 = symbols('q1 q2 q3 q4 q5')
+q1, q2, q3, q4, q5 = symbols('q1:6')
 A = N.orient_new_axis('A', q1, N.k)
 B = A.orient_new_axis('B', q2, A.i)
 C = B.orient_new_axis('C', q3, B.j)

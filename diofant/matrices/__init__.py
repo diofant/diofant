@@ -16,8 +16,7 @@ from .expressions import (Adjoint, BlockDiagMatrix, BlockMatrix, Determinant,
                           hadamard_product, trace)
 from .immutable import (ImmutableDenseMatrix, ImmutableMatrix,
                         ImmutableSparseMatrix)
-from .matrices import (DeferredVector, MatrixBase, NonSquareMatrixError,
-                       ShapeError)
+from .matrices import MatrixBase, NonSquareMatrixError, ShapeError
 from .sparse import MutableSparseMatrix, SparseMatrix
 
 

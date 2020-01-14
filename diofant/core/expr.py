@@ -74,7 +74,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     @cacheit
     def sort_key(self, order=None):
         """Return a sort key."""
-
         coeff, expr = self.as_coeff_Mul()
 
         if expr.is_Pow:
@@ -342,7 +341,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.utilities.randtest.random_complex_number
 
         """
-
         free = self.free_symbols
         prec = 1
         if free:
@@ -434,11 +432,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         >>> one = cos(x)**2 + sin(x)**2
         >>> one.is_constant()
         True
-        >>> ((one - 1)**(x + 1)).is_constant() in (True, False) # could be 0 or 1
+        >>> ((one - 1)**(x + 1)).is_constant() in (True, False)  # could be 0 or 1
         True
 
         """
-
         simplify = flags.get('simplify', True)
 
         # Except for expressions that contain units, only one of these should
@@ -947,11 +944,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> (-2 + x + A).args_cnc()
         [[], [x - 2 + A]]
-        >>> (-oo).args_cnc() # -oo is a singleton
+        >>> (-oo).args_cnc()  # -oo is a singleton
         [[-1, oo], []]
 
         """
-
         if self.is_Mul:
             args = list(self.args)
         else:
@@ -1064,9 +1060,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         1
         >>> (3*n).coeff(n)
         3
-        >>> (n*m + m*n*m).coeff(n) # = (1 + m)*n*m
+        >>> (n*m + m*n*m).coeff(n)  # = (1 + m)*n*m
         1 + m
-        >>> (n*m + m*n*m).coeff(n, right=True) # = (1 + m)*n*m
+        >>> (n*m + m*n*m).coeff(n, right=True)  # = (1 + m)*n*m
         m
 
         If there is more than one possible coefficient 0 is returned:
@@ -1308,7 +1304,8 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         x + 2
         >>> _.args[0]  # just want the exact match
         2
-        >>> p = Poly(2*E + x*E); p
+        >>> p = Poly(2*E + x*E)
+        >>> p
         Poly(x*E + 2*E, x, E, domain='ZZ')
         >>> p.coeff_monomial(E)
         2
@@ -1337,7 +1334,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.polys.polytools.Poly.coeff_monomial: efficiently find the single coefficient of a monomial in Poly
 
         """
-
         r = self.extract_multiplicatively(expr)
         if r and not r.has(expr):
             return r
@@ -1454,7 +1450,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         (x, y + 1)
         >>> (x*(1 + y)).expand(mul=True).as_independent(y)
         (x, x*y)
-        >>> a, b=symbols('a b', positive=True)
+        >>> a, b = symbols('a b', positive=True)
         >>> (log(a*b).expand(log=True)).as_independent(b)
         (log(a), log(b))
 
@@ -1542,9 +1538,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         """
         from ..functions import im, re
-        if hints.get('ignore') == self:
-            return
-        else:
+        if hints.get('ignore') != self:
             return re(self), im(self)
 
     def as_powers_dict(self):
@@ -1676,9 +1670,11 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         >>> (3*(x + 1)**2).primitive()
         (3, (x + 1)**2)
-        >>> a = (6*x + 2); a.primitive()
+        >>> a = (6*x + 2)
+        >>> a.primitive()
         (2, 3*x + 1)
-        >>> b = (x/2 + 3); b.primitive()
+        >>> b = (x/2 + 3)
+        >>> b.primitive()
         (1/2, x + 6)
         >>> (a*b).primitive()
         (1, (x/2 + 3)*(6*x + 2))
@@ -1749,7 +1745,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         normal: return a/b instead of a, b
 
         """
-
         try:
             return self._eval_as_numer_denom()
         except AttributeError:
@@ -1893,7 +1888,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         as_coefficient
 
         """
-
         c = sympify(c)
         if self is nan:
             return
@@ -2274,8 +2268,12 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         else:
             return self._eval_is_algebraic_expr(syms)
 
-    def is_hypergeometric(self, k):
-        """Test if self is a hypergeometric term in k.
+    def is_hypergeometric(self, n):
+        """Test if self is a hypergeometric term in ``n``.
+
+        Term `a(n)` is hypergeometric if it is annihilated by first order
+        linear difference equations with polynomial coefficients or, in
+        simpler words, if consecutive term ratio is a rational function.
 
         See Also
         ========
@@ -2284,7 +2282,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
         """
         from ..simplify import hypersimp
-        return hypersimp(self, k) is not None
+        return hypersimp(self, n) is not None
 
     @property
     def is_comparable(self):

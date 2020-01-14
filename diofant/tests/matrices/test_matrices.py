@@ -2,21 +2,18 @@ import collections
 
 import pytest
 
-from diofant import (Abs, Basic, E, Float, Function, I, Integer, Max, Min, N,
-                     Poly, Pow, PurePoly, Rational, StrPrinter, Symbol, cos,
-                     exp, oo, pi, simplify, sin, sqrt, sstr, symbols, sympify,
-                     trigsimp)
+from diofant import (Basic, E, Float, Function, I, Integer, Max, Min, N, Poly,
+                     Pow, PurePoly, Rational, StrPrinter, Symbol, cos, exp, oo,
+                     pi, simplify, sin, sqrt, sstr, symbols, trigsimp)
 from diofant.abc import a, b, c, d, k, n, x, y, z
-from diofant.core.compatibility import iterable
 from diofant.matrices import (GramSchmidt, ImmutableMatrix,
                               ImmutableSparseMatrix, Matrix, SparseMatrix,
                               casoratian, diag, eye, hessian, jordan_cell,
                               matrix_multiply_elementwise, ones, randMatrix,
                               rot_axis1, rot_axis2, rot_axis3, vandermonde,
                               wronskian, zeros)
-from diofant.matrices.matrices import (DeferredVector, MatrixError,
-                                       NonSquareMatrixError, ShapeError,
-                                       mgamma)
+from diofant.matrices.matrices import (MatrixError, NonSquareMatrixError,
+                                       ShapeError, mgamma)
 from diofant.utilities.iterables import capture, flatten
 
 
@@ -901,8 +898,8 @@ def test_eigen():
     m = Matrix([[1, .6, .6], [.6, .9, .9], [.9, .6, .6]])
     evals = {-sqrt(385)/20 + Rational(5, 4): 1, sqrt(385)/20 + Rational(5, 4): 1, 0: 1}
     assert m.eigenvals() == evals
-    nevals = list(sorted(m.eigenvals(rational=False)))
-    sevals = list(sorted(evals))
+    nevals = sorted(m.eigenvals(rational=False))
+    sevals = sorted(evals)
     assert all(abs(nevals[i] - sevals[i]) < 1e-9 for i in range(len(nevals)))
 
     # issue sympy/sympy#10719
@@ -1509,8 +1506,9 @@ def test_jordan_form():
     # diagonalizable
     m = Matrix(3, 3, [7, -12, 6, 10, -19, 10, 12, -24, 13])
     Jmust = Matrix(3, 3, [-1, 0, 0, 0, 1, 0, 0, 0, 1])
-    P, J = m.jordan_form()
+    J, P = m.jordan_form()
     assert Jmust == J
+    assert Jmust == m.jordan_form(calc_transformation=False)
     assert Jmust == m.diagonalize()[1]
 
     # m = Matrix(3, 3, [0, 6, 3, 1, 3, 1, -2, 2, 1])
@@ -1525,25 +1523,26 @@ def test_jordan_form():
     # The blocks are ordered according to the value of their eigenvalues,
     # in order to make the matrix compatible with .diagonalize()
     Jmust = Matrix(3, 3, [2, 1, 0, 0, 2, 0, 0, 0, 2])
-    P, J = m.jordan_form()
+    J, P = m.jordan_form()
     assert Jmust == J
-    P, Jcells = m.jordan_cells()
+    Jcells, P = m.jordan_cells()
     # same here see 1456ff
     assert Jcells[1] == Matrix(1, 1, [2])
     assert Jcells[0] == Matrix(2, 2, [2, 1, 0, 2])
+    assert Jcells == m.jordan_cells(calc_transformation=False)
 
     # complexity: all of eigenvalues are equal
     m = Matrix(3, 3, [2, 6, -15, 1, 1, -5, 1, 2, -6])
     # Jmust = Matrix(3, 3, [-1, 0, 0, 0, -1, 1, 0, 0, -1])
     # same here see 1456ff
     Jmust = Matrix(3, 3, [-1, 1, 0, 0, -1, 0, 0, 0, -1])
-    P, J = m.jordan_form()
+    J, P = m.jordan_form()
     assert Jmust == J
 
     # complexity: two of eigenvalues are zero
     m = Matrix(3, 3, [4, -5, 2, 5, -7, 3, 6, -9, 4])
     Jmust = Matrix(3, 3, [0, 1, 0, 0, 0, 0, 0, 0, 1])
-    P, J = m.jordan_form()
+    J, P = m.jordan_form()
     assert Jmust == J
 
     m = Matrix(4, 4, [6, 5, -2, -3, -3, -1, 3, 3, 2, 1, -2, -3, -1, 1, 5, 5])
@@ -1551,7 +1550,7 @@ def test_jordan_form():
                           0, 2, 0, 0,
                           0, 0, 2, 1,
                           0, 0, 0, 2])
-    P, J = m.jordan_form()
+    J, P = m.jordan_form()
     assert Jmust == J
 
     m = Matrix(4, 4, [6, 2, -8, -6, -3, 2, 9, 6, 2, -2, -8, -6, -1, 0, 3, 4])
@@ -1561,13 +1560,13 @@ def test_jordan_form():
                           0, 2, 1, 0,
                           0, 0, 2, 0,
                           0, 0, 0, 2])
-    P, J = m.jordan_form()
+    J, P = m.jordan_form()
     assert Jmust == J
 
     m = Matrix(4, 4, [5, 4, 2, 1, 0, 1, -1, -1, -1, -1, 3, 0, 1, 1, -1, 2])
     assert not m.is_diagonalizable()
     Jmust = Matrix(4, 4, [1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 4, 1, 0, 0, 0, 4])
-    P, J = m.jordan_form()
+    J, P = m.jordan_form()
     assert Jmust == J
 
     # the following tests are new and include (some) test the cases where the old
@@ -1579,14 +1578,14 @@ def test_jordan_form():
                       0, 2, 1, 0,
                       0, 0, 2, 0,
                       0, 0, 0, 2])
-    P, J = m.jordan_form()
+    J, P = m.jordan_form()
     assert m == J
 
     m = Matrix(4, 4, [2, 1, 0, 0,
                       0, 2, 0, 0,
                       0, 0, 2, 1,
                       0, 0, 0, 2])
-    P, J = m.jordan_form()
+    J, P = m.jordan_form()
     assert m == J
 
 
@@ -1605,7 +1604,7 @@ def test_jordan_form_complex_sympyissue_9274():
                      [0, q, 0, 0],
                      [0, 0, p, 1],
                      [0, 0, 0, p]])
-    P, J = A.jordan_form()
+    J, P = A.jordan_form()
     assert J == Jmust1 or J == Jmust2
     assert simplify(P*J*P.inv()) == A
 
@@ -1623,7 +1622,7 @@ def test_sympyissue_10220():
                 [0, 1, 1, 0],
                 [0, 0, 1, 1],
                 [0, 0, 0, 1]])
-    P, C = M.jordan_cells()
+    C, P = M.jordan_cells()
     assert P == Matrix([[0, 1, 0, 1],
                         [1, 0, 0, 0],
                         [0, 1, 0, 0],
@@ -2038,7 +2037,7 @@ def test_condition_number():
     assert A.condition_number() == 100
 
     A[1, 1] = x
-    assert A.condition_number() == Max(10, Abs(x)) / Min(Rational(1, 10), Abs(x))
+    assert A.condition_number() == Max(10, abs(x)) / Min(Rational(1, 10), abs(x))
 
     M = Matrix([[cos(x), sin(x)], [-sin(x), cos(x)]])
     Mc = M.condition_number()
@@ -2163,21 +2162,6 @@ def test_rotation_matrices():
     assert rot_axis1(0) == eye(3)
     assert rot_axis2(0) == eye(3)
     assert rot_axis3(0) == eye(3)
-
-
-def test_DeferredVector():
-    assert str(DeferredVector("vector")[4]) == "vector[4]"
-    assert repr(DeferredVector("vector")) == "DeferredVector('vector')"
-    assert sympify(DeferredVector("d")) == DeferredVector("d")
-    pytest.raises(IndexError, lambda: DeferredVector('X')[-1])
-
-
-def test_DeferredVector_not_iterable():
-    assert not iterable(DeferredVector('X'))
-
-
-def test_DeferredVector_Matrix():
-    pytest.raises(TypeError, lambda: Matrix(DeferredVector("V")))
 
 
 def test_GramSchmidt():

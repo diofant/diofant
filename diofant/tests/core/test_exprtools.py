@@ -1,4 +1,4 @@
-"""Tests for tools for manipulating of large commutative expressions. """
+"""Tests for tools for manipulating of large commutative expressions."""
 
 import pytest
 

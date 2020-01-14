@@ -3,10 +3,11 @@ import collections
 from ...core import Expr, Integer, sympify
 from ...logic import true
 from ...matrices import MatrixBase
+from ...printing.defaults import DefaultPrinting
 from ..indexed import Indexed
 
 
-class NDimArray:
+class NDimArray(DefaultPrinting):
     """N-dim array.
 
     Examples
@@ -361,6 +362,8 @@ class NDimArray:
 
 
 class ImmutableNDimArray(NDimArray, Expr):
+    """An immutable version of the N-dim array."""
+
     _op_priority = 11.0
 
     def _subs(self, old, new, **hints):

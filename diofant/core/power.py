@@ -487,7 +487,8 @@ class Pow(Expr):
     def _eval_is_complex(self):
         from ..functions import log
         if self.base.is_complex:
-            return (log(self.base)*self.exp).is_complex
+            exp = log(self.base)*self.exp
+            return fuzzy_or([exp.is_complex, exp.is_negative])
 
     def _eval_is_imaginary(self):
         from ..functions import arg, log
@@ -627,7 +628,6 @@ class Pow(Expr):
         (1/2, 2)
 
         """
-
         b, e = self.args
         if b.is_Rational and b.numerator == 1 and b.denominator != 1:
             return Integer(b.denominator), -e
@@ -791,7 +791,6 @@ class Pow(Expr):
 
     def _eval_expand_multinomial(self, **hints):
         """(a+b+..) ** n -> a**n + n*a**(n-1)*b + .., n is nonzero integer."""
-
         base, exp = self.args
         result = self
 
@@ -985,9 +984,7 @@ class Pow(Expr):
                 hints['complex'] = False
 
                 expanded = self.expand(deep, **hints)
-                if hints.get('ignore') == expanded:
-                    return
-                else:
+                if hints.get('ignore') != expanded:
                     return re(expanded), im(expanded)
             else:
                 return re(self), im(self)
@@ -1051,7 +1048,8 @@ class Pow(Expr):
             else:
                 return s.is_algebraic
         elif self.exp.is_rational and self.exp.is_nonzero:
-            return self.base.is_algebraic
+            if self.base.is_nonzero or self.exp.is_nonnegative:
+                return self.base.is_algebraic
         elif self.base.is_algebraic and self.exp.is_algebraic:
             if ((self.base.is_nonzero and (self.base - 1).is_nonzero)
                     or self.base.is_irrational):
@@ -1283,11 +1281,13 @@ class Pow(Expr):
         3**(2*x + 2)
 
         >>> eq = (2 + 2*x)**y
-        >>> s = expand_power_base(eq); s.is_Mul, s
+        >>> s = expand_power_base(eq)
+        >>> s.is_Mul, s
         (False, (2*x + 2)**y)
         >>> eq.as_content_primitive()
         (1, (2*(x + 1))**y)
-        >>> s = expand_power_base(_[1]); s.is_Mul, s
+        >>> s = expand_power_base(_[1])
+        >>> s.is_Mul, s
         (True, 2**y*(x + 1)**y)
 
         See Also
@@ -1296,7 +1296,6 @@ class Pow(Expr):
         diofant.core.expr.Expr.as_content_primitive
 
         """
-
         b, e = self.as_base_exp()
         b = _keep_coeff(*b.as_content_primitive(radical=radical))
         ce, pe = e.as_content_primitive(radical=radical)

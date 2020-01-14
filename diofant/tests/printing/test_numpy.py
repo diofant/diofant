@@ -1,4 +1,5 @@
-from diofant import And, Equality, MatrixSymbol, Mod, Or, Piecewise, Unequality
+from diofant import (And, Equality, MatrixSymbol, Mod, Or, Piecewise,
+                     Unequality, Xor)
 from diofant.abc import a, b, c, x
 from diofant.printing.lambdarepr import NumPyPrinter
 
@@ -54,3 +55,4 @@ def test_logic():
     p = NumPyPrinter()
     assert p.doprint(And(a, b, c)) == 'logical_and(logical_and(a, b), c)'
     assert p.doprint(Or(a, b, c)) == 'logical_or(logical_or(a, b), c)'
+    assert p.doprint(Xor(a, b, c)) == 'logical_xor(logical_xor(a, b), c)'

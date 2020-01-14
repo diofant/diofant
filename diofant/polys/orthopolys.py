@@ -1,4 +1,4 @@
-"""Efficient functions for generating orthogonal polynomials. """
+"""Efficient functions for generating orthogonal polynomials."""
 
 from ..core import Dummy
 from ..domains import QQ, ZZ
@@ -290,7 +290,6 @@ def spherical_bessel_fn(n, x=None, **args):
     1/z - 45/z**3 + 105/z**5
 
     """
-
     if n < 0:
         poly = dup_spherical_bessel_fn_minus(-int(n), ZZ)
     else:

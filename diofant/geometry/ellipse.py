@@ -222,14 +222,11 @@ class Ellipse(GeometrySet):
         >>> e1.minor
         1
 
-        >>> a = Symbol('a')
-        >>> b = Symbol('b')
         >>> Ellipse(p1, a, b).minor
         b
         >>> Ellipse(p1, b, a).minor
         a
 
-        >>> m = Symbol('m')
         >>> M = m + 1
         >>> Ellipse(p1, m, M).minor
         m
@@ -268,14 +265,11 @@ class Ellipse(GeometrySet):
         >>> e1.major
         3
 
-        >>> a = Symbol('a')
-        >>> b = Symbol('b')
         >>> Ellipse(p1, a, b).major
         a
         >>> Ellipse(p1, b, a).major
         b
 
-        >>> m = Symbol('m')
         >>> M = m + 1
         >>> Ellipse(p1, m, M).major
         m + 1
@@ -916,9 +910,10 @@ class Ellipse(GeometrySet):
         ========
 
         >>> e1 = Ellipse(Point(0, 0), 3, 2)
-        >>> e1.random_point() # gives some random point
+        >>> e1.random_point()  # gives some random point
         Point2D(...)
-        >>> p1 = e1.random_point(seed=0); p1.evalf(2)
+        >>> p1 = e1.random_point(seed=0)
+        >>> p1.evalf(2)
         Point2D(2.1, 1.4)
 
         The random_point method assures that the point will test as being
@@ -1016,7 +1011,6 @@ class Ellipse(GeometrySet):
         the end to see that they lie in o.
 
         """
-
         hr_sq = self.hradius ** 2
         vr_sq = self.vradius ** 2
         lp = o.points
@@ -1051,7 +1045,6 @@ class Ellipse(GeometrySet):
         Private helper method for `intersection`.
 
         """
-
         x = Dummy('x', extended_real=True)
         y = Dummy('y', extended_real=True)
         seq = self.equation(x, y)

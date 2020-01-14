@@ -76,7 +76,8 @@ class Partition(FiniteSet):
         >>> c = Partition([1, x])
         >>> d = Partition(list(range(4)))
         >>> l = [d, b, a + 1, a, c]
-        >>> l.sort(key=default_sort_key); l
+        >>> l.sort(key=default_sort_key)
+        >>> l
         [{{1, 2}}, {{1}, {2}}, {{1, x}}, {{3, 4}}, {{0, 1, 2, 3}}]
 
         """

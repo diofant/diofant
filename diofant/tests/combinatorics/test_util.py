@@ -113,6 +113,15 @@ def test_handle_precomputed_bsgs():
                                                     basic_orbits=transversals,
                                                     strong_gens_distr=strong_gens_distr)[0]
 
+    D = DihedralGroup(3)
+    D.schreier_sims()
+    assert (_handle_precomputed_bsgs(D.base, D.strong_gens,
+                                     basic_orbits=D.basic_orbits) ==
+            ([{0: Permutation(2), 1: Permutation(0, 1, 2), 2: Permutation(0, 2)},
+              {1: Permutation(2), 2: Permutation(1, 2)}],
+             [[0, 1, 2], [1, 2]], [[Permutation(0, 1, 2), Permutation(0, 2),
+                                    Permutation(1, 2)], [Permutation(1, 2)]]))
+
 
 def test_base_ordering():
     base = [2, 4, 5]

@@ -8,13 +8,12 @@ Point3D
 """
 
 from ..core import Add, Float, Integer, Tuple, sympify
-from ..core.compatibility import iterable
+from ..core.compatibility import iterable, ordered
 from ..core.evaluate import global_evaluate
 from ..functions import im, sqrt
 from ..matrices import Matrix
 from ..simplify import nsimplify, simplify
 from .entity import GeometryEntity
-from .exceptions import GeometryError
 
 
 class Point(GeometryEntity):
@@ -158,7 +157,6 @@ class Point(GeometryEntity):
         False
 
         """
-
         # Coincident points are irrelevant; use only unique points.
         uniq_args = list(set(args))
         if not all(isinstance(p, Point) for p in uniq_args):
@@ -381,7 +379,6 @@ class Point(GeometryEntity):
         diofant.geometry.entity.GeometryEntity.translate
 
         """
-
         if iterable(other) and len(other) == len(self):
             return Point([simplify(a + b) for a, b in zip(self, other)])
         else:
@@ -525,7 +522,6 @@ class Point2D(Point):
         rectangle for the geometric figure.
 
         """
-
         return self.x, self.y, self.x, self.y
 
     def is_concyclic(*points):
@@ -578,21 +574,16 @@ class Point2D(Point):
             return False
         if len(points) <= 2:
             return True
-        ppoints = [Point(p) for p in points]
+        ppoints = list(ordered(Point(p) for p in points))
         if len(ppoints) == 3:
             return not Point.is_collinear(*ppoints)
 
-        try:
-            from .ellipse import Circle
-            c = Circle(ppoints[0], ppoints[1], ppoints[2])
-            for point in ppoints[3:]:
-                if point not in c:
-                    return False
-            return True
-        except GeometryError:
-            # Circle could not be created, because of collinearity of the
-            # three points passed in, hence they are not concyclic.
-            return False
+        from .ellipse import Circle
+        c = Circle(ppoints[0], ppoints[1], ppoints[2])
+        for point in ppoints[3:]:
+            if point not in c:
+                return False
+        return True
 
     def rotate(self, angle, pt=None):
         """Rotate ``angle`` radians counterclockwise about Point ``pt``.

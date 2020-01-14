@@ -89,7 +89,6 @@ def clashing():
     namespace.
 
     """
-
     ns = {}
     exec('from diofant import *', ns)
     clash1 = {}
@@ -110,4 +109,4 @@ def clashing():
 
 _clash1, _clash2, _clash = clashing()
 
-del _latin, _greek, clashing, Symbol
+del _latin, _greek, clashing, greeks, symbols, Symbol

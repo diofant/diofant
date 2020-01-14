@@ -19,7 +19,7 @@ def tmp_file(name=''):
 
 def plot_and_save(name):
     # implicit plot tests
-    plot_implicit(Eq(y, cos(x)), (x, -5, 5), (y, -2, 2), show=False).save(tmp_file(name))
+    plot_implicit(Eq(y, cos(x)), (x, -5, 5), (y, -2, 2)).save(tmp_file(name))
     plot_implicit(Eq(y**2, x**3 - x), (x, -5, 5),
                   (y, -4, 4), show=False).save(tmp_file(name))
     plot_implicit(y > 1 / x, (x, -5, 5),
@@ -52,6 +52,10 @@ def plot_and_save(name):
     plot_implicit(y - cos(pi / x), show=False).save(tmp_file(name))
 
     pytest.raises(ValueError, lambda: plot_implicit(y > x, (x, -1, 1, 2)))
+
+    # issue sympy/sympy#17719
+    plot_implicit(((x - 1)**2 + y**2 < 2) ^ ((x + 1)**2 + y**2 < 2),
+                  show=False).save(tmp_file(name))
 
 
 def test_line_color():

@@ -342,7 +342,7 @@ class And(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> And(x<2, x>-2).as_set()
+        >>> And(x < 2, x > -2).as_set()
         (-2, 2)
 
         """
@@ -410,7 +410,7 @@ class Or(LatticeOp, BooleanFunction):
         Examples
         ========
 
-        >>> Or(x>2, x<-2).as_set()
+        >>> Or(x > 2, x < -2).as_set()
         (-oo, -2) U (2, oo)
 
         """
@@ -497,7 +497,7 @@ class Not(BooleanFunction):
         Examples
         ========
 
-        >>> Not(x>0, evaluate=False).as_set()
+        >>> Not(x > 0, evaluate=False).as_set()
         (-oo, 0]
 
         """
@@ -1092,7 +1092,6 @@ def is_nnf(expr, simplified=True):
     False
 
     """
-
     expr = sympify(expr)
     if is_literal(expr):
         return True
@@ -1253,7 +1252,6 @@ def to_int_repr(clauses, symbols):
     [{1, 2}, {2}]
 
     """
-
     symbols = dict(zip(symbols, range(1, len(symbols) + 1)))
 
     def append_symbol(arg, symbols):
@@ -1521,7 +1519,6 @@ def simplify_logic(expr, form=None, deep=True):
     ~x & ~y
 
     """
-
     if form == 'cnf' or form == 'dnf' or form is None:
         expr = sympify(expr)
         if not isinstance(expr, BooleanFunction):
@@ -1610,9 +1607,9 @@ def bool_map(bool1, bool2):
     The results are not necessarily unique, but they are canonical. Here,
     ``(t, z)`` could be ``(a, d)`` or ``(d, a)``:
 
-    >>> eq =  Or(And(Not(y), t), And(Not(y), z), And(x, y))
+    >>> eq1 = Or(And(Not(y), t), And(Not(y), z), And(x, y))
     >>> eq2 = Or(And(Not(c), a), And(Not(c), d), And(b, c))
-    >>> bool_map(eq, eq2)
+    >>> bool_map(eq1, eq2)
     ((x & y) | (t & ~y) | (z & ~y), {t: a, x: b, y: c, z: d})
     >>> eq = And(Xor(a, b), c, And(c, d))
     >>> bool_map(eq, eq.subs({c: x}))
@@ -1634,7 +1631,6 @@ def bool_map(bool1, bool2):
         a workaround that is valid for simplified boolean expressions.
 
         """
-
         # do some quick checks
         if function1.__class__ != function2.__class__:
             return

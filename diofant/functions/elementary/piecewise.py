@@ -57,7 +57,7 @@ class Piecewise(Function):
 
       >>> f = x**2
       >>> g = log(x)
-      >>> p = Piecewise((0, x<-1), (f, x<=1), (g, True))
+      >>> p = Piecewise((0, x < -1), (f, x <= 1), (g, True))
       >>> p.subs({x: 1})
       1
       >>> p.subs({x: 5})
@@ -145,8 +145,6 @@ class Piecewise(Function):
             non_false_ecpairs.append(ExprCondPair(expr, cond))
         if len(non_false_ecpairs) != len(args) or piecewise_again:
             return cls(*non_false_ecpairs)
-
-        return
 
     def doit(self, **hints):
         """Evaluate this piecewise function."""
@@ -512,7 +510,6 @@ class Piecewise(Function):
             diff = cond.lhs - cond.rhs
             if diff.is_commutative:
                 return diff.is_zero
-        return
 
     def as_expr_set_pairs(self):
         exp_sets = []
