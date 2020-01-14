@@ -1,3 +1,5 @@
+"""C code printing tests."""
+
 import pytest
 
 from diofant import ccode

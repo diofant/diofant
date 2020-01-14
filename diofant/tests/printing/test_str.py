@@ -1,3 +1,5 @@
+"""str() printing tests."""
+
 import pytest
 
 from diofant import (Abs, Add, And, BlockMatrix, Catalan, Complement,

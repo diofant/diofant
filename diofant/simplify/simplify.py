@@ -557,9 +557,8 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     2*LOG + MUL + POW + SUB
 
     >>> def my_measure(expr):
-    ...     POW = Symbol('POW')
     ...     # Discourage powers by giving POW a weight of 10
-    ...     count = count_ops(expr, visual=True).subs({POW: 10})
+    ...     count = count_ops(expr, visual=True).subs({'POW': 10})
     ...     # Every other operation gets a weight of 1 (the default)
     ...     count = count.replace(Symbol, type(Integer(1)))
     ...     return count

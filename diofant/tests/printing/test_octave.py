@@ -1,3 +1,5 @@
+"""Octave printing tests."""
+
 import pytest
 
 from diofant import octave_code as mcode

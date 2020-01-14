@@ -2890,12 +2890,12 @@ class TensAdd(TensExpr):
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> i, j = tensor_indices('i j', Lorentz)
         >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
-        >>> eA = 3*A(i, j)
-        >>> eB = 2*B(j, i)
-        >>> t1 = eA._tids
-        >>> t2 = eB._tids
-        >>> c1 = eA.coeff
-        >>> c2 = eB.coeff
+        >>> ea = 3*A(i, j)
+        >>> eb = 2*B(j, i)
+        >>> t1 = ea._tids
+        >>> t2 = eb._tids
+        >>> c1 = ea.coeff
+        >>> c2 = eb.coeff
         >>> TensAdd.from_TIDS_list([c1, c2], [t1, t2])
         2*B(i, j) + 3*A(i, j)
 

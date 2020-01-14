@@ -1,3 +1,5 @@
+"""Symbolic optimization tests."""
+
 import pytest
 
 from diofant.abc import x, y, z

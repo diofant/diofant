@@ -1,3 +1,5 @@
+"""repr() printing tests."""
+
 import pytest
 
 from diofant import (Abs, Catalan, Dummy, E, EulerGamma, Float, Function,

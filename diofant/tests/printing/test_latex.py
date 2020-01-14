@@ -1,3 +1,5 @@
+"""LaTeX printing tests."""
+
 import pytest
 
 from diofant import (CC, FF, QQ, ZZ, Abs, Add, BlockMatrix, Chi, Ci,
