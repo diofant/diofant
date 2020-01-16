@@ -4,8 +4,8 @@ import pytest
 
 from diofant import (Derivative, Eq, Expr, Float, I, Integer, Integral, Mul,
                      Piecewise, Rational, RootOf, Sum, Symbol, Tuple, diff,
-                     exp, expand, false, im, oo, pi, re, root, sin, sqrt,
-                     symbols, tanh, true)
+                     exp, expand, false, im, oo, pi, re, sin, sqrt, symbols,
+                     tanh, true)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.mul import _keep_coeff
 from diofant.domains import EX, FF, QQ, RR, ZZ
@@ -20,11 +20,10 @@ from diofant.polys.polyerrors import (CoercionFailed, ComputationFailed,
                                       PolificationFailed, PolynomialError,
                                       RefinementFailed, UnificationFailed)
 from diofant.polys.polytools import (LC, LM, LT, GroebnerBasis, Poly, PurePoly,
-                                     _torational_factor_list, cancel,
-                                     cofactors, compose, content, count_roots,
-                                     decompose, degree, degree_list,
-                                     discriminant, div, exquo, factor,
-                                     factor_list, gcd, gcd_list, gcdex,
+                                     cancel, cofactors, compose, content,
+                                     count_roots, decompose, degree,
+                                     degree_list, discriminant, div, exquo,
+                                     factor, factor_list, gcd, gcd_list, gcdex,
                                      groebner, ground_roots, half_gcdex,
                                      intervals, invert, lcm, lcm_list, monic,
                                      nroots, nth_power_roots_poly,
@@ -2717,22 +2716,6 @@ def test_nth_power_roots_poly():
     pytest.raises(ComputationFailed, lambda: nth_power_roots_poly(1, 2))
 
 
-def test_torational_factor_list():
-    p = expand(((x**2 - 1)*(x - 2)).subs({x: x*(1 + sqrt(2))}))
-    assert _torational_factor_list(p, x) == (-2, [
-        (-x*(1 + sqrt(2))/2 + 1, 1),
-        (-x*(1 + sqrt(2)) - 1, 1),
-        (-x*(1 + sqrt(2)) + 1, 1)])
-
-    p = expand(((x**2 - 1)*(x - 2)).subs({x: x*(1 + root(2, 4))}))
-    assert _torational_factor_list(p, x) is None
-
-    p = expand(((x**2 - 1)*(x - 2)).subs({x: x + sqrt(2)}))
-    assert _torational_factor_list(p, x) == (1, [(x - 2 + sqrt(2), 1),
-                                                 (x - 1 + sqrt(2), 1),
-                                                 (x + 1 + sqrt(2), 1)])
-
-
 def test_cancel():
     assert cancel(0) == 0
     assert cancel(7) == 7
@@ -3246,7 +3229,7 @@ def test_sympyissue_8754():
 def test_factor_terms():
     # issue sympy/sympy#7067
     assert factor_list(x*(x + y)) == (1, [(x, 1), (x + y, 1)])
-    assert sqf_list(x*(x + y)) == (1, [(x, 1), (x + y, 1)])
+    assert sqf_list(x*(x + y)) == (1, [(x**2 + x*y, 1)])
 
 
 def test_sympyissue_8210():
@@ -3285,3 +3268,14 @@ def test_sympyissue_8810():
 
     assert c == Poly(e, y, domain=ZZ.poly_ring(x, sqrt(x)))
     assert Poly(p, y, composite=True) == c
+
+
+def test_sympyissue_8695():
+    e = (x**2 + 1) * (x - 1)**2 * (x - 2)**3 * (x - 3)**3
+    r = (1, [(x**2 + 1, 1), (x - 1, 2), (x**2 - 5*x + 6, 3)])
+    assert sqf_list(e) == r
+    assert poly(e).sqf_list() == r
+
+    # regression test from the issue thread, not related to the issue
+    e = (x + 2)**2 * (y + 4)**5
+    assert sqf(e) == sqf(e.expand()) == e
