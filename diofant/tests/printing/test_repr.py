@@ -29,8 +29,6 @@ exec("\n".join(imports), ENV)
 
 def sT(expr, string):
     """
-    sT := reprTest
-
     Tests that repr delivers the expected string and that
     the condition eval(repr(expr))==expr holds.
     """

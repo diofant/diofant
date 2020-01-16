@@ -253,7 +253,7 @@ class Plane(GeometryEntity):
                 return False
 
     def is_perpendicular(self, l):
-        """is the given geometric entity perpendicular to the given plane?
+        """Is the given geometric entity perpendicular to the given plane?
 
         Parameters
         ==========

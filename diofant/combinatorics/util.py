@@ -437,7 +437,7 @@ def _strip(g, base, orbits, transversals):
 
 def _strip_af(h, base, orbits, transversals, j):
     """
-    optimized _strip, with h, transversals and result in array form
+    Optimized _strip, with h, transversals and result in array form
     if the stripped elements is the identity, it returns False, base_len + 1
 
     j    h[base[i]] == base[i] for i <= j

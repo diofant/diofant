@@ -4191,7 +4191,7 @@ def _generic_factor(expr, gens, args, method):
 
 def to_rational_coeffs(f):
     """
-    try to transform a polynomial to have rational coefficients
+    Try to transform a polynomial to have rational coefficients.
 
     try to find a transformation ``x = alpha*y``
 
@@ -4228,8 +4228,9 @@ def to_rational_coeffs(f):
 
     def _try_rescale(f, f1=None):
         """
-        try rescaling ``x -> alpha*x`` to convert f to a polynomial
+        Try rescaling ``x -> alpha*x`` to convert f to a polynomial
         with rational coefficients.
+
         Returns ``alpha, f``; if the rescaling is successful,
         ``alpha`` is the rescaling factor, and ``f`` is the rescaled
         polynomial; else ``alpha`` is ``None``.
@@ -4263,8 +4264,9 @@ def to_rational_coeffs(f):
 
     def _try_translate(f, f1=None):
         """
-        try translating ``x -> x + alpha`` to convert f to a polynomial
+        Try translating ``x -> x + alpha`` to convert f to a polynomial
         with rational coefficients.
+
         Returns ``alpha, f``; if the translating is successful,
         ``alpha`` is the translating factor, and ``f`` is the shifted
         polynomial; else ``alpha`` is ``None``.

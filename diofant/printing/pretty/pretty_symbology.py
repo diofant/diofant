@@ -8,7 +8,7 @@ from ..conventions import split_super_sub
 
 # first, setup unicodedate environment
 def U(name):
-    """unicode character by name or None if not found"""
+    """Unicode character by name or None if not found."""
     try:
         u = unicodedata.lookup(name)
     except KeyError:
@@ -32,7 +32,7 @@ _use_unicode = False
 
 
 def pretty_use_unicode(flag=None):
-    """Set whether pretty-printer should use unicode by default"""
+    """Set whether pretty-printer should use unicode by default."""
     global _use_unicode
     if flag is None:
         return _use_unicode
@@ -352,17 +352,23 @@ def xobj(symb, length):
 
 
 def vobj(symb, height):
-    """Construct vertical object of a given height
+    """Construct vertical object of a given height.
 
-    see: xobj
+    See Also
+    ========
+
+    xobj
     """
     return '\n'.join( xobj(symb, height) )
 
 
 def hobj(symb, width):
-    """Construct horizontal object of a given width
+    """Construct horizontal object of a given width.
 
-    see: xobj
+    See Also
+    ========
+
+    xobj
     """
     return ''.join( xobj(symb, width) )
 
@@ -424,7 +430,7 @@ _xsym = {
 
 
 def xsym(sym):
-    """get symbology for a 'character'"""
+    """Get symbology for a 'character'."""
     op = _xsym[sym]
 
     if _use_unicode:
@@ -460,7 +466,7 @@ atoms_table = {
 
 
 def pretty_atom(atom_name, default=None):
-    """return pretty representation of an atom"""
+    """Return pretty representation of an atom."""
     if _use_unicode:
         return atoms_table[atom_name]
     else:
@@ -471,7 +477,7 @@ def pretty_atom(atom_name, default=None):
 
 
 def pretty_symbol(symb_name):
-    """return pretty representation of a symbol"""
+    """Return pretty representation of a symbol."""
     # let's split symb_name into symbol + index
     # UC: beta1
     # UC: f_beta

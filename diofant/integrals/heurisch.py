@@ -62,7 +62,7 @@ _symbols_cache = {}
 
 # NB @cacheit is not convenient here
 def _symbols(name, n):
-    """get vector of symbols local to this module."""
+    """Get vector of symbols local to this module."""
     try:
         lsyms = _symbols_cache[name]
     except KeyError:

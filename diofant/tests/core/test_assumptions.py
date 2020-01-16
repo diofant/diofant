@@ -611,7 +611,7 @@ def test_hash_vs_typeinfo():
 
 
 def test_hash_vs_typeinfo_2():
-    """different typeinfo should mean !eq"""
+    """Different typeinfo should mean !eq"""
     # the following two are semantically different
     x = Symbol('x')
     x1 = Symbol('x', even=True)

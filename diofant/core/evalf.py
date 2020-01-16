@@ -214,7 +214,7 @@ def get_abs(expr, prec, options):
 
 
 def get_complex_part(expr, no, prec, options):
-    """no = 0 for real part, no = 1 for imaginary part."""
+    """Selector no = 0 for real part, no = 1 for imaginary part."""
     workprec = prec
     i = 0
     while 1:

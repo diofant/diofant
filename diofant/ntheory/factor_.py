@@ -693,7 +693,7 @@ def _factorint_small(factors, n, limit, fail_max):
     """
 
     def done(n, d):
-        """return n, d if the sqrt(n) wasn't reached yet, else
+        """Return n, d if the sqrt(n) wasn't reached yet, else
         n, 0 indicating that factoring is done.
 
         """

@@ -117,7 +117,7 @@ def multinomial_coefficients(m, n):
 
 
 def multinomial_coefficients_iterator(m, n, _tuple=tuple):
-    """multinomial coefficient iterator
+    """Multinomial coefficient iterator.
 
     This routine has been optimized for `m` large with respect to `n` by taking
     advantage of the fact that when the monomial tuples `t` are stripped of

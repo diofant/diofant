@@ -13,8 +13,8 @@ __all__ = ()
 
 def test_no_stdlib_collections():
     """
-    make sure we get the right collections when it is not part of a
-    larger list
+    Make sure we get the right collections when it is not part of a
+    larger list.
     """
     matplotlib = import_module('matplotlib',
                                __import__kwargs={'fromlist': ['cm', 'collections']},
@@ -25,8 +25,8 @@ def test_no_stdlib_collections():
 
 def test_no_stdlib_collections2():
     """
-    make sure we get the right collections when it is not part of a
-    larger list
+    Make sure we get the right collections when it is not part of a
+    larger list.
     """
     matplotlib = import_module('matplotlib',
                                __import__kwargs={'fromlist': ['collections']},
@@ -36,7 +36,7 @@ def test_no_stdlib_collections2():
 
 
 def test_no_stdlib_collections3():
-    """make sure we get the right collections with no catch"""
+    """Make sure we get the right collections with no catch."""
     matplotlib = import_module('matplotlib',
                                __import__kwargs={'fromlist': ['cm', 'collections']},
                                min_module_version='1.1.0')

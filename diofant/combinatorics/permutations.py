@@ -1171,8 +1171,8 @@ class Permutation(Basic):
     @staticmethod
     def rmul_with_af(*args):
         """
-        same as rmul, but the elements of args are Permutation objects
-        which have _array_form
+        Same as rmul, but the elements of args are Permutation objects
+        which have _array_form.
 
         """
         a = [x._array_form for x in args]

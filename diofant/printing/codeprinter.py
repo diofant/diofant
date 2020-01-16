@@ -265,10 +265,10 @@ class CodePrinter(StrPrinter):
         return sorted(indices, key=lambda x: score_table[x])
 
     def _rate_index_position(self, p):
-        """function to calculate score based on position among indices
+        """Function to calculate score based on position among indices.
 
         This method is used to sort loops in an optimized order, see
-        CodePrinter._sort_optimized()
+        CodePrinter._sort_optimized().
 
         """
         raise NotImplementedError("This function must be implemented by "

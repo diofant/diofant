@@ -945,7 +945,7 @@ class PermutationGroup(Basic):
         return factors
 
     def coset_rank(self, g):
-        """rank using Schreier-Sims representation
+        """Rank using Schreier-Sims representation.
 
         The coset rank of ``g`` is the ordering number in which
         it appears in the lexicographic listing according to the
@@ -989,7 +989,7 @@ class PermutationGroup(Basic):
         return rank
 
     def coset_unrank(self, rank, af=False):
-        """unrank using Schreier-Sims representation
+        """Unrank using Schreier-Sims representation.
 
         coset_unrank is the inverse operation of coset_rank
         if 0 <= rank < order; otherwise it returns None.

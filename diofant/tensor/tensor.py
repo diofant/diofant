@@ -1159,7 +1159,7 @@ class _TensorManager:
 
     def comm_symbols2i(self, i):
         """
-        get the commutation group number corresponding to ``i``
+        Get the commutation group number corresponding to ``i``
 
         ``i`` can be a symbol or a number or a string
 
@@ -1183,7 +1183,7 @@ class _TensorManager:
 
     def set_comm(self, i, j, c):
         """
-        set the commutation parameter ``c`` for commutation groups ``i, j``
+        Set the commutation parameter ``c`` for commutation groups ``i, j``
 
         Parameters
         ==========
@@ -1255,7 +1255,7 @@ class _TensorManager:
 
     def set_comms(self, *args):
         """
-        set the commutation group numbers ``c`` for symbols ``i, j``
+        Set the commutation group numbers ``c`` for symbols ``i, j``
 
         Parameters
         ==========
@@ -2723,7 +2723,7 @@ class TensAdd(TensExpr):
 
     def canon_bp(self):
         """
-        canonicalize using the Butler-Portugal algorithm for canonicalization
+        Canonicalize using the Butler-Portugal algorithm for canonicalization
         under monoterm symmetries.
 
         """
@@ -3621,7 +3621,7 @@ def riemann_cyclic_replace(t_r):
 
 def riemann_cyclic(t2):
     """
-    replace each Riemann tensor with an equivalent expression
+    Replace each Riemann tensor with an equivalent expression
     satisfying the cyclic identity.
 
     This trick is discussed in the reference guide to Cadabra.
