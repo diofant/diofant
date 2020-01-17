@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import I, asin, cbrt, exp, false, log, simplify, sin, sqrt
-from diofant.core import (Dummy, E, Float, GoldenRatio, Integer, Mod, Mul, Pow,
-                          Rational, Symbol, Wild, nan, oo, pi, zoo)
+from diofant import (Dummy, E, Float, GoldenRatio, I, Integer, Mod, Mul, Pow,
+                     Rational, Symbol, Wild, asin, cbrt, exp, false, log, nan,
+                     oo, pi, simplify, sin, sqrt, zoo)
 from diofant.core.facts import InconsistentAssumptions
 
 

@@ -4,10 +4,9 @@ import tempfile
 import pytest
 
 import diofant
-from diofant import Eq, sin, symbols
+from diofant import Eq, Idx, IndexedBase, sin, symbols
 from diofant.abc import a, b, c
 from diofant.external import import_module
-from diofant.tensor import Idx, IndexedBase
 from diofant.utilities.autowrap import (CodeWrapError, F2PyCodeWrapper,
                                         autowrap, ufuncify)
 

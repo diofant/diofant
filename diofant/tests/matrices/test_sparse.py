@@ -1,9 +1,9 @@
 import pytest
 
-from diofant import I, PurePoly, Rational
+from diofant import (I, Matrix, MutableDenseMatrix, MutableSparseMatrix,
+                     PurePoly, Rational, ShapeError, SparseMatrix, eye, ones,
+                     zeros)
 from diofant.abc import x, y, z
-from diofant.matrices import (Matrix, MutableDenseMatrix, MutableSparseMatrix,
-                              ShapeError, SparseMatrix, eye, ones, zeros)
 
 
 __all__ = ()

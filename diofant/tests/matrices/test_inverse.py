@@ -1,8 +1,7 @@
 import pytest
 
-from diofant.core import symbols
-from diofant.matrices import Identity, ShapeError, det, eye
-from diofant.matrices.expressions import Inverse, MatrixSymbol
+from diofant import (Identity, Inverse, MatrixSymbol, ShapeError, det, eye,
+                     symbols)
 
 
 __all__ = ()

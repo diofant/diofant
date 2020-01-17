@@ -1,10 +1,9 @@
 import pytest
 
-from diofant import Function
-from diofant import KroneckerDelta as Kd
-from diofant import (Product, Rational, Sum, Symbol, cos, exp, factorial, log,
-                     oo, product, rf, simplify, sqrt, symbols)
+from diofant import (Function, Product, Rational, Sum, Symbol, cos, exp,
+                     factorial, log, oo, product, rf, simplify, sqrt, symbols)
 from diofant.concrete.expr_with_intlimits import ReorderError
+from diofant.functions import KroneckerDelta as Kd
 
 
 __all__ = ()

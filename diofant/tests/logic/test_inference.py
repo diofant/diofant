@@ -4,7 +4,8 @@ import copy
 
 import pytest
 
-from diofant import numbered_symbols, pi
+from diofant import (And, Equivalent, Implies, Or, false, numbered_symbols, pi,
+                     satisfiable, true)
 from diofant.abc import A, B, C, x, y
 from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
                                            find_pure_symbol, find_unit_clause,
@@ -12,10 +13,9 @@ from diofant.logic.algorithms.dpll import (dpll, dpll_satisfiable,
 from diofant.logic.algorithms.dpll2 import SATSolver
 from diofant.logic.algorithms.dpll2 import \
     dpll_satisfiable as dpll2_satisfiable
-from diofant.logic.boolalg import (And, Boolean, Equivalent, Implies, Or,
-                                   false, true)
+from diofant.logic.boolalg import Boolean
 from diofant.logic.inference import (PropKB, entails, literal_symbol, pl_true,
-                                     satisfiable, valid)
+                                     valid)
 
 
 __all__ = ()

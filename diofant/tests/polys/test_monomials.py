@@ -4,8 +4,8 @@ import functools
 
 import pytest
 
+from diofant import Monomial, itermonomials
 from diofant.abc import a, b, c, x, y, z
-from diofant.polys.monomials import Monomial, itermonomials
 
 
 __all__ = ()

@@ -20,3 +20,10 @@ from .plane import Plane
 from .point import Point, Point2D, Point3D
 from .polygon import Polygon, RegularPolygon, Triangle, deg, rad
 from .util import are_similar, centroid, convex_hull, idiff, intersection
+
+
+__all__ = ('Curve', 'Circle', 'Ellipse', 'GeometryError', 'Line', 'Ray',
+           'Segment', 'Line3D', 'Ray3D', 'Segment3D', 'Plane', 'Point',
+           'Point2D', 'Point3D', 'Polygon', 'RegularPolygon', 'Triangle',
+           'deg', 'rad', 'are_similar', 'centroid', 'convex_hull',
+           'idiff', 'intersection')

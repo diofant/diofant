@@ -14,7 +14,7 @@ from .power import Pow, integer_nthroot
 from .mul import Mul, prod
 from .add import Add
 from .mod import Mod
-from .relational import (Rel, Eq, Ne, Lt, Le, Gt, Ge, Equality,
+from .relational import (Rel, Eq, Ne, Lt, Le, Gt, Ge, Equality, Relational,
                          GreaterThan, LessThan, Unequality, StrictGreaterThan,
                          StrictLessThan)
 from .multidimensional import vectorize
@@ -32,3 +32,20 @@ from .evaluate import evaluate
 Catalan = S.Catalan
 EulerGamma = S.EulerGamma
 GoldenRatio = S.GoldenRatio
+
+
+__all__ = ('sympify', 'SympifyError', 'cacheit', 'Basic', 'Atom',
+           'preorder_traversal', 'S', 'Expr', 'AtomicExpr', 'Symbol',
+           'Wild', 'Dummy', 'symbols', 'var', 'Number', 'Float', 'Rational',
+           'Integer', 'NumberSymbol', 'igcd', 'ilcm', 'E', 'I', 'nan', 'oo',
+           'pi', 'zoo', 'comp', 'mod_inverse', 'integer_digits', 'Pow',
+           'integer_nthroot', 'Mul', 'prod', 'Add', 'Mod', 'Rel', 'Eq', 'Ne',
+           'Lt', 'Le', 'Gt', 'Ge', 'Equality', 'GreaterThan', 'LessThan',
+           'Unequality', 'StrictGreaterThan', 'StrictLessThan', 'vectorize',
+           'Lambda', 'WildFunction', 'Derivative', 'diff', 'FunctionClass',
+           'Function', 'Subs', 'expand', 'PoleError', 'count_ops',
+           'expand_mul', 'expand_log', 'expand_func', 'expand_trig',
+           'expand_complex', 'expand_multinomial', 'nfloat',
+           'expand_power_base', 'expand_power_exp', 'PrecisionExhausted', 'N',
+           'Tuple', 'Dict', 'gcd_terms', 'factor_terms', 'factor_nc',
+           'evaluate', 'Catalan', 'EulerGamma', 'GoldenRatio', 'Relational')

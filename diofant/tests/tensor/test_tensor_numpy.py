@@ -1,8 +1,6 @@
 import pytest
 
-from diofant import Matrix, eye
-from diofant.core.symbol import symbols
-from diofant.functions.elementary.miscellaneous import sqrt
+from diofant import Matrix, eye, sqrt, symbols
 from diofant.tensor.tensor import (TensorIndexType, TensorType, tensor_indices,
                                    tensorhead, tensorsymmetry)
 

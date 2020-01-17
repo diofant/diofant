@@ -4,9 +4,9 @@ import pytest
 
 from diofant import (RR, Ci, I, Integer, Piecewise, Rational, Si, Symbol,
                      Tuple, asin, atanh, besseli, cbrt, combsimp, cos, erf,
-                     exp, exp_polar, expand, gamma, hyper, lerchphi, log,
-                     lowergamma, meijerg, oo, pi, polylog, simplify, sin, sqrt,
-                     sympify, unpolarify, uppergamma, zoo)
+                     exp, exp_polar, expand, gamma, hyper, hyperexpand,
+                     lerchphi, log, lowergamma, meijerg, oo, pi, polylog,
+                     simplify, sin, sqrt, sympify, unpolarify, uppergamma, zoo)
 from diofant.abc import a, b, c, z
 from diofant.simplify.hyperexpand import (Formula, FormulaCollection,
                                           G_Function, Hyper_Function,
@@ -19,7 +19,6 @@ from diofant.simplify.hyperexpand import (Formula, FormulaCollection,
                                           UnShiftA, UnShiftB, apply_operators,
                                           build_hypergeometric_formula,
                                           devise_plan, devise_plan_meijer,
-                                          hyperexpand,
                                           make_derivative_operator,
                                           reduce_order, reduce_order_meijer)
 from diofant.utilities.randtest import verify_numerically as tn

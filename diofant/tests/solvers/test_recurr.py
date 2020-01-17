@@ -1,10 +1,9 @@
 import pytest
 
 from diofant import (Eq, Function, I, Lambda, binomial, factorial, gamma, pi,
-                     rf, sqrt, symbols)
+                     rf, rsolve, sqrt, symbols)
 from diofant.abc import a, b
-from diofant.solvers.recurr import (rsolve, rsolve_hyper, rsolve_poly,
-                                    rsolve_ratio)
+from diofant.solvers.recurr import rsolve_hyper, rsolve_poly, rsolve_ratio
 
 
 __all__ = ()

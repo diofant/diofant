@@ -1,9 +1,8 @@
 import pytest
 
+from diofant import default_sort_key, nan, oo, zoo
 from diofant.abc import x
-from diofant.core import nan, oo, zoo
-from diofant.core.compatibility import (as_int, default_sort_key, iterable,
-                                        ordered)
+from diofant.core.compatibility import as_int, iterable, ordered
 
 
 __all__ = ()

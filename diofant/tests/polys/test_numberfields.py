@@ -2,17 +2,12 @@
 
 import pytest
 
-from diofant import (Add, GoldenRatio, I, Integer, PurePoly, Rational, cbrt,
-                     conjugate, cos, exp, exp_polar, expand,
-                     expand_multinomial, im, nsimplify, oo, pi, re, root, sin,
-                     solve, sqrt)
+from diofant import (QQ, Add, CoercionFailed, GoldenRatio, I, Integer,
+                     NotAlgebraic, PurePoly, Rational, RootOf, cbrt, conjugate,
+                     cos, degree, exp, exp_polar, expand, expand_multinomial,
+                     field_isomorphism, im, minimal_polynomial, nsimplify, oo,
+                     pi, primitive_element, re, root, sin, solve, sqrt)
 from diofant.abc import x, y, z
-from diofant.domains import QQ
-from diofant.polys.numberfields import (field_isomorphism, minimal_polynomial,
-                                        primitive_element)
-from diofant.polys.polyerrors import CoercionFailed, NotAlgebraic
-from diofant.polys.polytools import degree
-from diofant.polys.rootoftools import RootOf
 
 
 __all__ = ()

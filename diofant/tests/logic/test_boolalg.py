@@ -2,18 +2,18 @@ import itertools
 
 import pytest
 
-from diofant import (Dummy, EmptySet, Eq, Equality, Integer, Interval, S,
-                     Unequality, Union, oo, simplify, sqrt, symbols)
+from diofant import (ITE, And, Dummy, EmptySet, Eq, Equality, Equivalent,
+                     Implies, Integer, Interval, Nand, Nor, Not, Or, POSform,
+                     S, SOPform, Unequality, Union, Xor, bool_map, false, oo,
+                     simplify, simplify_logic, sqrt, symbols, to_cnf, to_dnf,
+                     to_nnf, true)
 from diofant.abc import A, B, C, D, a, b, c, w, x, y, z
-from diofant.logic.boolalg import (ITE, And, Boolean, BooleanAtom,
-                                   BooleanFunction, Equivalent, Implies, Nand,
-                                   Nor, Not, Or, POSform, SOPform, Xor,
-                                   bool_map, conjuncts, disjuncts,
+from diofant.logic.boolalg import (Boolean, BooleanAtom, BooleanFunction,
+                                   conjuncts, disjuncts,
                                    distribute_and_over_or,
                                    distribute_or_over_and,
-                                   eliminate_implications, false, is_cnf,
-                                   is_dnf, is_literal, is_nnf, simplify_logic,
-                                   to_cnf, to_dnf, to_int_repr, to_nnf, true)
+                                   eliminate_implications, is_cnf, is_dnf,
+                                   is_literal, is_nnf, to_int_repr)
 
 
 __all__ = ()

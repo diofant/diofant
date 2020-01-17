@@ -1,10 +1,8 @@
 import pytest
 
-from diofant.domains import ZZ
+from diofant import ZZ, HeuristicGCDFailed, ring
 from diofant.polys.heuristicgcd import heugcd
 from diofant.polys.polyconfig import using
-from diofant.polys.polyerrors import HeuristicGCDFailed
-from diofant.polys.rings import ring
 
 
 __all__ = ()

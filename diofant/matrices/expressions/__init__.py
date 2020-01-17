@@ -14,3 +14,10 @@ from .matpow import MatPow
 from .slice import MatrixSlice
 from .trace import Trace, trace
 from .transpose import Transpose
+
+
+__all__ = ('Adjoint', 'BlockDiagMatrix', 'BlockMatrix', 'block_collapse',
+           'blockcut', 'Determinant', 'det', 'DiagonalMatrix', 'DiagonalOf',
+           'FunctionMatrix', 'HadamardProduct', 'hadamard_product', 'Inverse',
+           'MatAdd', 'Identity', 'MatrixExpr', 'MatrixSymbol', 'ZeroMatrix',
+           'MatMul', 'MatPow', 'MatrixSlice', 'Trace', 'trace', 'Transpose')

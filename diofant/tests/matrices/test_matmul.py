@@ -1,14 +1,13 @@
 import pytest
 from strategies.core import null_safe
 
-from diofant.core import Basic, I, symbols
-from diofant.functions import adjoint, transpose
-from diofant.matrices import (Identity, ImmutableMatrix, Inverse, Matrix,
-                              MatrixSymbol, ShapeError, ZeroMatrix, eye)
-from diofant.matrices.expressions import Adjoint, MatPow, Transpose, det
-from diofant.matrices.expressions.matmul import (MatMul, any_zeros,
-                                                 factor_in_front, only_squares,
-                                                 remove_ids, unpack, xxinv)
+from diofant import (Adjoint, Basic, I, Identity, ImmutableMatrix, Inverse,
+                     MatMul, MatPow, Matrix, MatrixSymbol, ShapeError,
+                     Transpose, ZeroMatrix, adjoint, det, eye, symbols,
+                     transpose)
+from diofant.matrices.expressions.matmul import (any_zeros, factor_in_front,
+                                                 only_squares, remove_ids,
+                                                 unpack, xxinv)
 
 
 __all__ = ()
