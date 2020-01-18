@@ -4,10 +4,9 @@ import weakref
 
 import pytest
 
-from diofant import cacheit, sstr, symbols
+from diofant import cacheit, ordered, sstr, symbols
 from diofant.abc import x
 from diofant.core.cache import clear_cache, print_cache
-from diofant.core.compatibility import ordered
 
 
 __all__ = ()

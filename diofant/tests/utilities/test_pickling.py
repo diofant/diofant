@@ -4,17 +4,25 @@ import warnings
 
 import pytest
 
-from diofant import (ZZ, Abs, Add, Atom, Basic, Catalan, Derivative,
-                     DiracDelta, Dummy, E, Eijk, Equality, EulerGamma,
-                     ExpressionDomain, Float, Function, FunctionClass,
-                     GoldenRatio, GreaterThan, Heaviside, I, Integer, Integral,
-                     Interval, Lambda, LambertW, LessThan, Limit, Mul, Order,
-                     Piecewise, Pow, Product, PythonRational, Rational,
-                     Relational, RootOf, RootSum, StrictGreaterThan,
-                     StrictLessThan, Sum, Symbol, Unequality, Wild,
-                     WildFunction, acos, acosh, acot, acoth, arg, asin, asinh,
-                     assoc_legendre, atan, atan2, atanh, bell, bernoulli,
-                     binomial, ceiling, chebyshevt, chebyshevt_root,
+from diofant import (ZZ, Abs, Add, Atom, Basic, Catalan, CoercionFailed,
+                     Derivative, DiracDelta, DomainError, Dummy, E, Eijk,
+                     Equality, EulerGamma, EvaluationFailed, ExpressionDomain,
+                     ExtraneousFactors, FlagError, Float, FractionField,
+                     Function, FunctionClass, GeneratorsError,
+                     GeneratorsNeeded, GoldenRatio, GreaterThan, GroebnerBasis,
+                     Heaviside, HeuristicGCDFailed, HomomorphismFailed, I,
+                     Integer, Integral, Interval, IsomorphismFailed, Lambda,
+                     LambertW, LessThan, Limit, Matrix, Monomial, Mul,
+                     MultivariatePolynomialError, NotAlgebraic, NotInvertible,
+                     NotReversible, OptionError, Options, Order, Piecewise,
+                     Poly, PolynomialError, PolynomialRing, Pow, Product,
+                     PurePoly, PythonRational, Rational, RefinementFailed,
+                     Relational, RootOf, RootSum, Sieve, SparseMatrix,
+                     StrictGreaterThan, StrictLessThan, Sum, Symbol,
+                     Unequality, UnificationFailed, UnivariatePolynomialError,
+                     Wild, WildFunction, acos, acosh, acot, acoth, arg, asin,
+                     asinh, assoc_legendre, atan, atan2, atanh, bell,
+                     bernoulli, binomial, ceiling, chebyshevt, chebyshevt_root,
                      chebyshevu, chebyshevu_root, conjugate, cos, cosh, cot,
                      coth, dirichlet_eta, erf, exp, factorial, ff, fibonacci,
                      floor, gamma, harmonic, hermite, im, legendre, ln, log,
@@ -28,32 +36,13 @@ from diofant.core.singleton import S, SingletonRegistry
 from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing
 from diofant.domains.rationalfield import (GMPYRationalField,
                                            PythonRationalField)
-from diofant.geometry.ellipse import Circle, Ellipse
+from diofant.geometry import (Circle, Ellipse, Line, Point, Polygon, Ray,
+                              RegularPolygon, Segment, Triangle)
 from diofant.geometry.entity import GeometryEntity
-from diofant.geometry.line import Line, LinearEntity, Ray, Segment
-from diofant.geometry.point import Point
-from diofant.geometry.polygon import Polygon, RegularPolygon, Triangle
-from diofant.matrices import Matrix, SparseMatrix
-from diofant.ntheory.generate import Sieve
+from diofant.geometry.line import LinearEntity
 from diofant.plotting.plot import Plot
-from diofant.polys.fields import FractionField
-from diofant.polys.monomials import Monomial
 from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
                                      ProductOrder, ReversedGradedLexOrder)
-from diofant.polys.polyerrors import (CoercionFailed, DomainError,
-                                      EvaluationFailed, ExtraneousFactors,
-                                      FlagError, GeneratorsError,
-                                      GeneratorsNeeded, HeuristicGCDFailed,
-                                      HomomorphismFailed, IsomorphismFailed,
-                                      MultivariatePolynomialError,
-                                      NotAlgebraic, NotInvertible,
-                                      NotReversible, OptionError,
-                                      PolynomialError, RefinementFailed,
-                                      UnificationFailed,
-                                      UnivariatePolynomialError)
-from diofant.polys.polyoptions import Options
-from diofant.polys.polytools import GroebnerBasis, Poly, PurePoly
-from diofant.polys.rings import PolynomialRing
 from diofant.printing.latex import LatexPrinter
 from diofant.printing.mathml import MathMLPrinter
 from diofant.printing.pretty.pretty import PrettyPrinter

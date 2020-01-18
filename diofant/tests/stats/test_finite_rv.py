@@ -1,10 +1,9 @@
 import pytest
 
-from diofant import (And, Dict, Eq, FiniteSet, Integer, Or, Rational, Symbol,
-                     Tuple, binomial, cancel, cos, pi, simplify, sqrt, symbols,
-                     sympify)
+from diofant import (And, Dict, Eq, FiniteSet, Integer, Matrix, Or, Rational,
+                     Symbol, Tuple, binomial, cancel, cos, pi, simplify, sqrt,
+                     symbols, sympify)
 from diofant.abc import p, x
-from diofant.matrices import Matrix
 from diofant.stats import (Bernoulli, Binomial, Coin, Die, DiscreteUniform, E,
                            FiniteRV, Hypergeometric, P, Rademacher, cdf,
                            cmoment, correlation, covariance, density, moment,
