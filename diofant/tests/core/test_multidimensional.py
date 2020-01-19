@@ -1,9 +1,8 @@
 import pytest
 
 from diofant import (Derivative, E, Function, Integer, Rational, diff, log, pi,
-                     sin)
+                     sin, vectorize)
 from diofant.abc import x, y, z
-from diofant.core.multidimensional import vectorize
 
 
 __all__ = ()

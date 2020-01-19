@@ -101,7 +101,7 @@ def transitive_closure(implications):
 
 def deduce_alpha_implications(implications):
     """
-    deduce all implications
+    Deduce all implications.
 
     Description by example
     ----------------------
@@ -142,7 +142,7 @@ def deduce_alpha_implications(implications):
 
 def apply_beta_to_alpha_route(alpha_implications, beta_rules):
     """
-    apply additional beta-rules (And conditions) to already-built alpha implication tables
+    Apply additional beta-rules (And conditions) to already-built alpha implication tables.
 
     TODO: write about
 
@@ -221,7 +221,7 @@ def apply_beta_to_alpha_route(alpha_implications, beta_rules):
 
 def rules_2prereq(rules):
     """
-    build prerequisites table from rules
+    Build prerequisites table from rules.
 
     Description by example
     ----------------------

@@ -1,6 +1,5 @@
-from diofant import I, exp, pi, simplify, sqrt
+from diofant import I, Identity, Matrix, det, exp, pi, simplify, sqrt
 from diofant.abc import i, j, n
-from diofant.matrices import Identity, Matrix, det
 from diofant.matrices.expressions.fourier import DFT, IDFT
 
 

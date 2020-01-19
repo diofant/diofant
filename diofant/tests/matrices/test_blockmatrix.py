@@ -1,14 +1,10 @@
-from diofant.core import Expr, Tuple, symbols
-from diofant.functions import transpose
-from diofant.matrices import ImmutableMatrix, Matrix
-from diofant.matrices.expressions import (Identity, Inverse, MatrixSymbol,
-                                          Transpose, det, trace)
-from diofant.matrices.expressions.blockmatrix import (BlockDiagMatrix,
-                                                      BlockMatrix,
-                                                      bc_block_plus_ident,
+from diofant import (BlockDiagMatrix, BlockMatrix, Expr, Identity,
+                     ImmutableMatrix, Inverse, Matrix, MatrixSymbol, Transpose,
+                     Tuple, block_collapse, blockcut, det, symbols, trace,
+                     transpose)
+from diofant.matrices.expressions.blockmatrix import (bc_block_plus_ident,
                                                       bc_dist, bc_matadd,
                                                       bc_matmul, bc_transpose,
-                                                      block_collapse, blockcut,
                                                       deblock, reblock_2x2)
 
 

@@ -15,3 +15,12 @@ from .polyhedron import (Polyhedron, cube, dodecahedron, icosahedron,
                          octahedron, tetrahedron)
 from .prufer import Prufer
 from .subsets import Subset
+
+
+__all__ = ('alternating', 'cyclic', 'dihedral', 'symmetric', 'GrayCode',
+           'DirectProduct', 'AbelianGroup', 'AlternatingGroup', 'CyclicGroup',
+           'DihedralGroup', 'RubikGroup', 'SymmetricGroup', 'IntegerPartition',
+           'Partition', 'RGS_enum', 'RGS_rank', 'RGS_unrank',
+           'PermutationGroup', 'Cycle', 'Permutation', 'Polyhedron', 'cube',
+           'dodecahedron', 'icosahedron', 'octahedron', 'tetrahedron',
+           'Prufer', 'Subset')

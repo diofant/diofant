@@ -1,10 +1,7 @@
 import pytest
 
-from diofant.core import symbols
-from diofant.matrices import Matrix, ShapeError, eye
-from diofant.matrices.expressions import (Determinant, Identity, MatrixExpr,
-                                          MatrixSymbol, Transpose, ZeroMatrix,
-                                          det)
+from diofant import (Determinant, Identity, Matrix, MatrixExpr, MatrixSymbol,
+                     ShapeError, Transpose, ZeroMatrix, det, eye, symbols)
 
 
 __all__ = ()

@@ -897,7 +897,7 @@ class Mul(AssocOp):
         return d
 
     def _eval_as_numer_denom(self):
-        """expression -> a/b -> a, b
+        """Expression -> a/b -> a, b.
 
         See Also
         ========
@@ -1145,7 +1145,7 @@ class Mul(AssocOp):
             return a, S.One
 
         def breakup(eq):
-            """break up powers of eq when treated as a Mul::
+            """Break up powers of eq when treated as a Mul::
 
                 b**(Rational*e) -> b**e, Rational
 
@@ -1178,7 +1178,7 @@ class Mul(AssocOp):
             return Pow(b, e*co)
 
         def ndiv(a, b):
-            """if b divides a in an extractive way (like 1/4 divides 1/2
+            """If b divides a in an extractive way (like 1/4 divides 1/2
             but not vice versa, and 2/5 does not divide 1/3) then return
             the integer number of times it divides, else return 0.
 

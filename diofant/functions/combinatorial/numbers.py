@@ -1132,7 +1132,7 @@ def _nP(n, k=None, replacement=False):
 
 @cacheit
 def _AOP_product(n):
-    """for n = (m1, m2, .., mk) return the coefficients of the polynomial,
+    """For n = (m1, m2, .., mk) return the coefficients of the polynomial,
     prod(sum(x**i for i in range(nj + 1)) for nj in n); i.e. the coefficients
     of the product of AOPs (all-one polynomials) or order given in n.  The
     resulting coefficient corresponding to x**r is the number of r-length

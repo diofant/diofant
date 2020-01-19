@@ -4,48 +4,35 @@ import warnings
 
 import pytest
 
-from diofant import ZZ
+from diofant import (ZZ, Abs, Add, Atom, Basic, Catalan, Derivative,
+                     DiracDelta, Dummy, E, Eijk, Equality, EulerGamma,
+                     ExpressionDomain, Float, Function, FunctionClass,
+                     GoldenRatio, GreaterThan, Heaviside, I, Integer, Integral,
+                     Interval, Lambda, LambertW, LessThan, Limit, Mul, Order,
+                     Piecewise, Pow, Product, PythonRational, Rational,
+                     Relational, RootOf, RootSum, StrictGreaterThan,
+                     StrictLessThan, Sum, Symbol, Unequality, Wild,
+                     WildFunction, acos, acosh, acot, acoth, arg, asin, asinh,
+                     assoc_legendre, atan, atan2, atanh, bell, bernoulli,
+                     binomial, ceiling, chebyshevt, chebyshevt_root,
+                     chebyshevu, chebyshevu_root, conjugate, cos, cosh, cot,
+                     coth, dirichlet_eta, erf, exp, factorial, ff, fibonacci,
+                     floor, gamma, harmonic, hermite, im, legendre, ln, log,
+                     loggamma, lowergamma, lucas, nan, oo, pi, polygamma, re,
+                     rf, sign, sin, sinh, tan, tanh, uppergamma, vectorize,
+                     zeta, zoo)
 from diofant.abc import x, y, z
-from diofant.concrete.products import Product
-from diofant.concrete.summations import Sum
-from diofant.core import Catalan, EulerGamma, GoldenRatio
-from diofant.core.add import Add
-from diofant.core.basic import Atom, Basic
 from diofant.core.compatibility import HAS_GMPY
-from diofant.core.function import (Derivative, Function, FunctionClass, Lambda,
-                                   WildFunction)
 from diofant.core.logic import Logic
-from diofant.core.mul import Mul
-from diofant.core.multidimensional import vectorize
-from diofant.core.numbers import (E, Float, I, Integer, Rational, nan, oo, pi,
-                                  zoo)
-from diofant.core.power import Pow
-from diofant.core.relational import (Equality, GreaterThan, LessThan,
-                                     Relational, StrictGreaterThan,
-                                     StrictLessThan, Unequality)
 from diofant.core.singleton import S, SingletonRegistry
-from diofant.core.symbol import Dummy, Symbol, Wild
-from diofant.domains.expressiondomain import ExpressionDomain
-from diofant.domains.groundtypes import PythonRational
 from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing
 from diofant.domains.rationalfield import (GMPYRationalField,
                                            PythonRationalField)
-from diofant.functions import (Abs, DiracDelta, Eijk, Heaviside, LambertW,
-                               Piecewise, acos, acosh, acot, acoth, arg, asin,
-                               asinh, assoc_legendre, atan, atan2, atanh, bell,
-                               bernoulli, binomial, ceiling, chebyshevt,
-                               chebyshevt_root, chebyshevu, chebyshevu_root,
-                               conjugate, cos, cosh, cot, coth, dirichlet_eta,
-                               erf, exp, factorial, ff, fibonacci, floor,
-                               gamma, harmonic, hermite, im, legendre, ln, log,
-                               loggamma, lowergamma, lucas, polygamma, re, rf,
-                               sign, sin, sinh, tan, tanh, uppergamma, zeta)
 from diofant.geometry.ellipse import Circle, Ellipse
 from diofant.geometry.entity import GeometryEntity
 from diofant.geometry.line import Line, LinearEntity, Ray, Segment
 from diofant.geometry.point import Point
 from diofant.geometry.polygon import Polygon, RegularPolygon, Triangle
-from diofant.integrals.integrals import Integral
 from diofant.matrices import Matrix, SparseMatrix
 from diofant.ntheory.generate import Sieve
 from diofant.plotting.plot import Plot
@@ -67,16 +54,12 @@ from diofant.polys.polyerrors import (CoercionFailed, DomainError,
 from diofant.polys.polyoptions import Options
 from diofant.polys.polytools import GroebnerBasis, Poly, PurePoly
 from diofant.polys.rings import PolynomialRing
-from diofant.polys.rootoftools import RootOf, RootSum
 from diofant.printing.latex import LatexPrinter
 from diofant.printing.mathml import MathMLPrinter
 from diofant.printing.pretty.pretty import PrettyPrinter
 from diofant.printing.pretty.stringpict import prettyForm, stringPict
 from diofant.printing.printer import Printer
 from diofant.printing.python import PythonPrinter
-from diofant.series.limits import Limit
-from diofant.series.order import Order
-from diofant.sets.sets import Interval
 from diofant.utilities.exceptions import DiofantDeprecationWarning
 
 

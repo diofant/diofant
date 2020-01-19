@@ -2,13 +2,11 @@ import io
 
 import pytest
 
-from diofant import (Equality, Function, Integral, acos, asin, atan, atan2,
-                     besseli, ceiling, cos, cosh, erf, floor, ln, log, sin,
-                     sinh, sqrt, tan, tanh)
+from diofant import (Catalan, Dummy, Eq, Equality, Function, Idx, IndexedBase,
+                     Integral, Lambda, Matrix, MatrixSymbol, acos, asin, atan,
+                     atan2, besseli, ceiling, cos, cosh, erf, floor, ln, log,
+                     pi, sin, sinh, sqrt, symbols, tan, tanh)
 from diofant.abc import B, C, X, a, b, c, d, t, x, y, z
-from diofant.core import Catalan, Dummy, Eq, Lambda, pi, symbols
-from diofant.matrices import Matrix, MatrixSymbol
-from diofant.tensor import Idx, IndexedBase
 from diofant.utilities.codegen import (CCodeGen, CodeGenArgumentListError,
                                        CodeGenError, FCodeGen, InOutArgument,
                                        InputArgument, OutputArgument, Result,

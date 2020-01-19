@@ -678,7 +678,7 @@ class StrReprPrinter(StrPrinter):
 
 
 def sstrrepr(expr, **settings):
-    """return expr in mixed str/repr form
+    """Return expr in mixed str/repr form.
 
     i.e. strings are returned in repr form with quotes, and everything else
     is returned in str form.

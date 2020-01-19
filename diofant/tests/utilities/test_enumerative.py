@@ -108,7 +108,7 @@ def compare_multiset_w_baseline(multiplicities):
 
 
 def compare_multiset_states(s1, s2):
-    """compare for equality two instances of multiset partition states
+    """Compare for equality two instances of multiset partition states
 
     This is useful for comparing different versions of the algorithm
     to verify correctness.

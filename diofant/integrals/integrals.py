@@ -304,8 +304,8 @@ class Integral(AddWithLimits):
 
         def _calc_limit_1(F, a, b):
             """
-            replace d with a, using subs if possible, otherwise limit
-            where sign of b is considered
+            Replace d with a, using subs if possible, otherwise limit
+            where sign of b is considered.
 
             """
             wok = F.subs({d: a})
@@ -315,8 +315,8 @@ class Integral(AddWithLimits):
 
         def _calc_limit(a, b):
             """
-            replace d with a, using subs if possible, otherwise limit
-            where sign of b is considered
+            Replace d with a, using subs if possible, otherwise limit
+            where sign of b is considered.
 
             """
             avals = list({_calc_limit_1(Fi, a, b) for Fi in F})

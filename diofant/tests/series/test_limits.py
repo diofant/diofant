@@ -730,3 +730,7 @@ def test_sympyissue_18176():
 
 def test_sympyissue_18306():
     assert limit(sin(sqrt(x))/sqrt(sin(x)), x, 0) == 1
+
+
+def test_sympyissue_18378():
+    assert limit(log(exp(3*x) + x)/log(exp(x) + x**100), x, oo) == 3

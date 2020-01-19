@@ -1,11 +1,10 @@
 import pytest
 
-from diofant import (E, Float, I, LambertW, O, Rational, Symbol, arg,
-                     conjugate, cos, cosh, exp, exp_polar, expand_log, log,
-                     nan, oo, pi, re, sign, simplify, sin, sinh, sqrt, symbols,
-                     tanh, zoo)
+from diofant import (E, Float, I, LambertW, O, Product, Rational, Sum, Symbol,
+                     arg, conjugate, cos, cosh, exp, exp_polar, expand_log,
+                     log, nan, oo, pi, re, sign, simplify, sin, sinh, sqrt,
+                     symbols, tanh, zoo)
 from diofant.abc import m, n, x, y, z
-from diofant.concrete import Product, Sum
 from diofant.core.function import ArgumentIndexError
 
 

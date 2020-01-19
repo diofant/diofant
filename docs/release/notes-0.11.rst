@@ -148,3 +148,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`18176` Incorrect value for limit(x**n-x**(n-k),x,oo) when k is a natural number
 * :sympyissue:`18306` NotImplementedError in limit
 * :sympyissue:`8695` sqf and sqf_list output is not consistant
+* :sympyissue:`18378` Invalid result in Limit
+* :sympyissue:`18384` abs(sin(x)*cos(x)) integrates wrong

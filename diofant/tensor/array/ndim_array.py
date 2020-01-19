@@ -316,7 +316,8 @@ class NDimArray(DefaultPrinting):
 
     def __eq__(self, other):
         """
-        NDimArray instances can be compared to each other.
+        Compare NDimArray instances.
+
         Instances equal if they have same shape and data.
 
         Examples

@@ -4,7 +4,8 @@ from diofant import (Derivative, Dummy, E, Ei, Eq, Function, I, Integer,
                      Integral, LambertW, Matrix, Mul, O, Piecewise, Poly,
                      Rational, RootOf, Subs, Symbol, acos, acosh, asin, asinh,
                      atan, cbrt, cos, diff, dsolve, erf, erfi, exp, log, pi,
-                     root, simplify, sin, sinh, sqrt, sstr, symbols, tan)
+                     root, simplify, sin, sinh, sqrt, sstr, symbols, tan,
+                     variations)
 from diofant.abc import A
 from diofant.solvers.deutils import ode_order
 from diofant.solvers.ode import (_lie_group_remove, _linear_coeff_match,
@@ -15,7 +16,6 @@ from diofant.solvers.ode import (_lie_group_remove, _linear_coeff_match,
                                  homogeneous_order, infinitesimals,
                                  ode_nth_linear_euler_eq_homogeneous,
                                  ode_sol_simplicity, odesimp, solve_init)
-from diofant.utilities.iterables import variations
 
 
 __all__ = ()

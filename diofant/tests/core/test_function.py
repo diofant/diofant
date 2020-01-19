@@ -3,19 +3,17 @@ from random import random
 
 import pytest
 
-from diofant import (Derivative, Dummy, E, Eq, Expr, Float, Function, I,
-                     Integer, Lambda, O, Rational, RootOf, S, Subs, Sum,
-                     Symbol, Tuple, acos, cbrt, cos, diff, exp, expand, expint,
-                     floor, im, log, loggamma, nan, nfloat, oo, pi, polygamma,
-                     re, sin, sqrt, symbols, zoo)
+from diofant import (Derivative, Dummy, E, Eq, Expr, FiniteSet, Float,
+                     Function, I, Integer, Lambda, O, PoleError, Rational,
+                     RootOf, S, Subs, Sum, Symbol, Tuple, acos, cbrt, cos,
+                     diff, exp, expand, expint, floor, im, log, loggamma, nan,
+                     nfloat, oo, pi, polygamma, re, sin, solve, sqrt, subsets,
+                     symbols, variations, zoo)
 from diofant.abc import a, b, t, w, x, y, z
 from diofant.core.basic import _aresame
 from diofant.core.cache import clear_cache
-from diofant.core.function import (ArgumentIndexError, PoleError,
-                                   UndefinedFunction, _mexpand)
-from diofant.sets.sets import FiniteSet
-from diofant.solvers import solve
-from diofant.utilities.iterables import subsets, variations
+from diofant.core.function import (ArgumentIndexError, UndefinedFunction,
+                                   _mexpand)
 
 
 __all__ = ()

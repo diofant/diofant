@@ -1,7 +1,5 @@
-from diofant import Derivative, Function, Integral, cos, exp, oo, symbols
-from diofant.functions.combinatorial.numbers import bell
-from diofant.functions.special.bessel import besselj
-from diofant.functions.special.polynomials import legendre
+from diofant import (Derivative, Function, Integral, bell, besselj, cos, exp,
+                     legendre, oo, symbols)
 from diofant.printing.conventions import requires_partial, split_super_sub
 
 

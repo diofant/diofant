@@ -1,10 +1,8 @@
 import pytest
 
+from diofant import Basic, Integer, Rational, Symbol, Tuple, pretty
 from diofant.abc import x
 from diofant.combinatorics import Permutation
-from diofant.core import Basic, Integer, Rational, Symbol
-from diofant.core.containers import Tuple
-from diofant.printing.pretty.pretty import pretty
 from diofant.tensor.tensor import (TIDS, TensAdd, TensExpr, TensMul,
                                    TensorHead, TensorIndex, TensorIndexType,
                                    TensorManager, TensorSymmetry, TensorType,

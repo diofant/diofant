@@ -2,11 +2,10 @@ from random import randint
 
 import pytest
 
-from diofant import (Add, Eq, Integer, Matrix, Mul, Rational, factorint, oo,
-                     pi, powsimp, symbols)
+from diofant import (Add, Eq, Integer, Matrix, Mul, Rational, default_sort_key,
+                     factorint, oo, pi, powsimp, sin, symbols)
 from diofant.abc import a, b, c, d, e
 from diofant.core.function import _mexpand
-from diofant.functions.elementary.trigonometric import sin
 from diofant.solvers.diophantine import (_can_do_sum_of_squares,
                                          _diop_general_sum_of_squares,
                                          _diop_ternary_quadratic_normal, _even,
@@ -31,7 +30,6 @@ from diofant.solvers.diophantine import (_can_do_sum_of_squares,
                                          sum_of_three_squares,
                                          transformation_to_DN,
                                          transformation_to_normal)
-from diofant.utilities import default_sort_key
 
 
 __all__ = ()

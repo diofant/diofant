@@ -68,7 +68,7 @@ def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
 
 def _separate_sq(p):
     """
-    helper function for ``_minimal_polynomial_sq``
+    Helper function for ``_minimal_polynomial_sq``.
 
     It selects a rational ``g`` such that the polynomial ``p``
     consists of a sum of terms whose surds squared have gcd equal to ``g``
@@ -174,7 +174,7 @@ def _minimal_polynomial_sq(p, n, x):
 
 def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
     """
-    return the minimal polynomial for ``op(ex1, ex2)``
+    Return the minimal polynomial for ``op(ex1, ex2)``.
 
     Parameters
     ==========

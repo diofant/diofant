@@ -1076,7 +1076,7 @@ class Pow(Expr):
             return True
 
     def _eval_as_numer_denom(self):
-        """expression -> a/b -> a, b
+        """Expression -> a/b -> a, b.
 
         See Also
         ========

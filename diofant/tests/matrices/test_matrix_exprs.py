@@ -1,15 +1,12 @@
 import pytest
 
+from diofant import (Add, Adjoint, Eq, Identity, ImmutableMatrix, Integer,
+                     Inverse, MatAdd, MatMul, MatPow, Matrix, MatrixExpr,
+                     MatrixSlice, MatrixSymbol, Mul, Rational, ShapeError,
+                     SparseMatrix, Transpose, ZeroMatrix, cos, re, simplify,
+                     sin, sqrt, symbols, transpose)
 from diofant.abc import t, w, x, y, z
-from diofant.core import Add, Eq, Integer, Mul, Rational, symbols
-from diofant.functions import cos, re, sin, sqrt, transpose
-from diofant.matrices import (Adjoint, Identity, ImmutableMatrix, Inverse,
-                              MatAdd, MatMul, MatPow, Matrix, MatrixExpr,
-                              MatrixSymbol, ShapeError, SparseMatrix,
-                              Transpose, ZeroMatrix)
 from diofant.matrices.expressions.matexpr import MatrixElement
-from diofant.matrices.expressions.slice import MatrixSlice
-from diofant.simplify import simplify
 
 
 __all__ = ()

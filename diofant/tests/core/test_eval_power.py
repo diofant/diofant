@@ -1,13 +1,9 @@
 import pytest
 
+from diofant import (Basic, E, Float, I, Integer, Number, O, Pow, Rational,
+                     Symbol, cbrt, cos, exp, log, nan, oo, pi, root, sin, sqrt,
+                     symbols, true, zoo)
 from diofant.abc import a, b, c, x, y
-from diofant.core import (Basic, E, Float, I, Integer, Number, Pow, Rational,
-                          Symbol, nan, oo, pi, symbols, zoo)
-from diofant.functions.elementary.exponential import exp, log
-from diofant.functions.elementary.miscellaneous import cbrt, root, sqrt
-from diofant.functions.elementary.trigonometric import cos, sin
-from diofant.logic import true
-from diofant.series.order import O
 from diofant.tests.core.test_evalf import NS
 
 

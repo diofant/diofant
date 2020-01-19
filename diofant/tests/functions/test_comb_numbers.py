@@ -4,21 +4,20 @@ from random import choice
 import pytest
 
 from diofant import (Dummy, EulerGamma, GoldenRatio, I, Integer, Product,
-                     Rational, Sum, Symbol, cancel, diff, expand_func, im,
-                     limit, nan, oo, pi, re, sstr, symbols, zoo)
+                     Rational, Sum, Symbol, bell, bernoulli, binomial, cancel,
+                     catalan, cos, cot, diff, digamma, euler, expand_func,
+                     factorial, fibonacci, gamma, genocchi, harmonic, hyper,
+                     im, limit, log, lucas, nan, oo, pi, polygamma, re, sin,
+                     sqrt, sstr, subsets, symbols, trigamma, zeta, zoo)
 from diofant.abc import x
 from diofant.combinatorics.permutations import Permutation
-from diofant.functions import (bell, bernoulli, binomial, catalan, cos, cot,
-                               digamma, euler, factorial, fibonacci, gamma,
-                               genocchi, harmonic, hyper, log, lucas,
-                               polygamma, sin, sqrt, trigamma, zeta)
 from diofant.functions.combinatorial.numbers import (_AOP_product,
                                                      _multiset_histogram, nC,
                                                      nP, nT, stirling)
 from diofant.utilities.iterables import (multiset_combinations,
                                          multiset_partitions,
                                          multiset_permutations, partitions,
-                                         permutations, subsets)
+                                         permutations)
 
 
 __all__ = ()

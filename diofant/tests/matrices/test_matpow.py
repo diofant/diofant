@@ -1,10 +1,8 @@
 import pytest
 
-from diofant.concrete import Sum
-from diofant.core import Rational, pi, symbols
-from diofant.matrices import (Identity, ImmutableMatrix, MatrixSymbol,
-                              ShapeError, ZeroMatrix)
-from diofant.matrices.expressions import MatAdd, MatMul, MatPow
+from diofant import (Identity, ImmutableMatrix, MatAdd, MatMul, MatPow,
+                     MatrixSymbol, Rational, ShapeError, Sum, ZeroMatrix, pi,
+                     symbols)
 
 
 __all__ = ()

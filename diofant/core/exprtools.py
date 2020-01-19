@@ -762,8 +762,8 @@ def gcd_terms(terms, isprimitive=False, clear=True, fraction=True):
 
     """
     def mask(terms):
-        """replace nc portions of each term with a unique Dummy symbols
-        and return the replacements to restore them
+        """Replace nc portions of each term with a unique Dummy symbols
+        and return the replacements to restore them.
 
         """
         args = [(a, []) if a.is_commutative else a.args_cnc() for a in terms]

@@ -2,16 +2,14 @@ import pytest
 
 from diofant import (And, Derivative, E, Eq, Float, Function, Gt, I, Indexed,
                      IndexedBase, Integer, Integral, LambertW, Lt, Matrix, Max,
-                     Mul, Or, Piecewise, Poly, Pow, Rational, Symbol, Tuple,
-                     Wild, acos, arg, asin, atan, atan2, cbrt, cos, cosh, diff,
-                     erf, erfc, erfcinv, erfinv, exp, expand_log, im, log, nan,
-                     oo, ordered, pi, re, real_root, root, sec, sech, simplify,
-                     sin, sinh, solve, sqrt, sstr, symbols, tan, tanh)
+                     Mul, Or, Piecewise, Poly, Pow, Rational, RootOf, Symbol,
+                     Tuple, Wild, acos, arg, asin, atan, atan2, cbrt, cos,
+                     cosh, diff, erf, erfc, erfcinv, erfinv, exp, expand_log,
+                     im, log, nan, nfloat, oo, ordered, pi, re, real_root,
+                     reduce_inequalities, root, sec, sech, simplify, sin, sinh,
+                     solve, sqrt, sstr, symbols, tan, tanh)
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
-from diofant.core.function import nfloat
-from diofant.polys.rootoftools import RootOf
-from diofant.solvers import reduce_inequalities
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
 from diofant.solvers.solvers import (_invert, checksol, minsolve_linear_system,
                                      solve_linear)

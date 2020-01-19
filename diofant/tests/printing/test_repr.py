@@ -2,16 +2,14 @@
 
 import pytest
 
-from diofant import (Abs, Catalan, Dummy, E, EulerGamma, Float, Function,
-                     GoldenRatio, I, ImmutableMatrix, Integer, Matrix,
-                     Rational, Symbol, Wild, WildFunction, false, nan, ones,
-                     oo, pi, root, sin, sqrt, true, zoo)
+from diofant import (FF, QQ, ZZ, Abs, Catalan, Dummy, E, EulerGamma, Float,
+                     Function, GoldenRatio, I, ImmutableMatrix, Integer,
+                     Matrix, Rational, Symbol, Wild, WildFunction, false,
+                     field, grlex, nan, ones, oo, pi, ring, root, sin, sqrt,
+                     srepr, true, zoo)
 from diofant.abc import x, y
 from diofant.core.exprtools import Factors
-from diofant.domains import FF, QQ, ZZ
 from diofant.geometry import Ellipse, Point
-from diofant.polys import field, grlex, ring
-from diofant.printing.repr import srepr
 
 
 __all__ = ()
@@ -29,8 +27,6 @@ exec("\n".join(imports), ENV)
 
 def sT(expr, string):
     """
-    sT := reprTest
-
     Tests that repr delivers the expected string and that
     the condition eval(repr(expr))==expr holds.
     """

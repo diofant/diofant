@@ -8,7 +8,7 @@ from .solvers import _invert, solve
 
 
 def _filtered_gens(poly, symbol):
-    """process the generators of ``poly``, returning the set of generators that
+    """Process the generators of ``poly``, returning the set of generators that
     have ``symbol``.  If there are two generators that are inverses of each other,
     prefer the one that has no denominator.
 

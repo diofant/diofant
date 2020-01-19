@@ -2,11 +2,9 @@
 
 import pytest
 
-from diofant import I, Rational, sin, sqrt
+from diofant import (EX, FF, QQ, ZZ, DomainError, ExactQuotientFailed, I,
+                     Rational, ring, sin, sqrt)
 from diofant.abc import x
-from diofant.domains import EX, FF, QQ, ZZ
-from diofant.polys.polyerrors import DomainError, ExactQuotientFailed
-from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
 

@@ -429,10 +429,10 @@ def _sqrt_numeric_denest(a, b, r, d2):
 
 
 def sqrt_biquadratic_denest(expr, a, b, r, d2):
-    """denest expr = sqrt(a + b*sqrt(r))
+    """Denest expr = sqrt(a + b*sqrt(r))
     where a, b, r are linear combinations of square roots of
     positive rationals on the rationals (SQRR) and r > 0, b != 0,
-    d2 = a**2 - b**2*r > 0
+    d2 = a**2 - b**2*r > 0.
 
     If it cannot denest it returns None.
 
