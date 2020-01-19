@@ -3269,3 +3269,7 @@ def test_sympyissue_8695():
     # regression test from the issue thread, not related to the issue
     e = (x + 2)**2 * (y + 4)**5
     assert sqf(e) == sqf(e.expand()) == e
+
+
+def test_sympyissue_18391():
+    assert gcd(x**2 + 1, x + I) == x + I
