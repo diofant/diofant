@@ -434,7 +434,7 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
             list_segments = []
 
             def sample(p, q, depth):
-                """ Samples recursively if three points are almost collinear.
+                """Samples recursively if three points are almost collinear.
                 For depth < 6, points are added irrespective of whether they
                 satisfy the collinearity condition or not. The maximum depth
                 allowed is 12.
@@ -555,7 +555,7 @@ class Parametric2DLineSeries(Line2DBaseSeries):
         list_segments = []
 
         def sample(param_p, param_q, p, q, depth):
-            """ Samples recursively if three points are almost collinear.
+            """Samples recursively if three points are almost collinear.
             For depth < 6, points are added irrespective of whether they
             satisfy the collinearity condition or not. The maximum depth
             allowed is 12.
@@ -798,6 +798,8 @@ class ParametricSurfaceSeries(SurfaceBaseSeries):
 ##############################################################################
 
 class BaseBackend:
+    """Base backend class."""
+
     def __init__(self, parent):
         super().__init__()
         self.parent = parent
@@ -806,6 +808,8 @@ class BaseBackend:
 # don't have to check for the success of importing matplotlib in each case;
 # we will only be using this backend if we can successfully import matploblib
 class MatplotlibBackend(BaseBackend):
+    """Matplotlib backend."""
+
     def __init__(self, parent):
         super().__init__(parent)
         are_3D = [s.is_3D for s in self.parent._series]
@@ -1311,7 +1315,7 @@ def plot_parametric(*args, **kwargs):
     Multiple parametric plots.
 
     >>> print(str(plot_parametric((cos(u), sin(u), (u, -5, 5)),
-    ...     (cos(u), u, (u, -5, 5)))))
+    ...                           (cos(u), u, (u, -5, 5)))))
     Plot object containing:
     [0]: parametric cartesian line: (cos(u), sin(u)) for u over (-5.0, 5.0)
     [1]: parametric cartesian line: (cos(u), u) for u over (-5.0, 5.0)
@@ -1402,7 +1406,7 @@ def plot3d_parametric_line(*args, **kwargs):
     Multiple plots.
 
     >>> print(str(plot3d_parametric_line((cos(u), sin(u), u, (u, -5, 5)),
-    ...     (sin(u), u**2, u, (u, -5, 5)))))
+    ...                                  (sin(u), u**2, u, (u, -5, 5)))))
     Plot object containing:
     [0]: 3D parametric cartesian line: (cos(u), sin(u), u) for u over (-5.0, 5.0)
     [1]: 3D parametric cartesian line: (sin(u), u**2, u) for u over (-5.0, 5.0)
@@ -1504,7 +1508,7 @@ def plot3d(*args, **kwargs):
     Multiple plots with different ranges.
 
     >>> print(str(plot3d((x**2 + y**2, (x, -5, 5), (y, -5, 5)),
-    ...     (x*y, (x, -3, 3), (y, -3, 3)))))
+    ...                  (x*y, (x, -3, 3), (y, -3, 3)))))
     Plot object containing:
     [0]: cartesian surface: x**2 + y**2 for x over (-5.0, 5.0) and y over (-5.0, 5.0)
     [1]: cartesian surface: x*y for x over (-3.0, 3.0) and y over (-3.0, 3.0)
@@ -1515,7 +1519,6 @@ def plot3d(*args, **kwargs):
     Plot, SurfaceOver2DRangeSeries
 
     """
-
     args = list(map(sympify, args))
     show = kwargs.pop('show', True)
     series = []
@@ -1596,7 +1599,7 @@ def plot3d_parametric_surface(*args, **kwargs):
     Single plot.
 
     >>> print(str(plot3d_parametric_surface(cos(u + v), sin(u - v), u - v,
-    ...     (u, -5, 5), (v, -5, 5))))
+    ...                                     (u, -5, 5), (v, -5, 5))))
     Plot object containing:
     [0]: parametric cartesian surface: (cos(u + v), sin(u - v), u - v) for u over (-5.0, 5.0) and v over (-5.0, 5.0)
 
@@ -1606,7 +1609,6 @@ def plot3d_parametric_surface(*args, **kwargs):
     Plot, ParametricSurfaceSeries
 
     """
-
     args = list(map(sympify, args))
     show = kwargs.pop('show', True)
     series = []

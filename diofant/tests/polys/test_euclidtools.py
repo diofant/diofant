@@ -1,12 +1,10 @@
-"""Tests for Euclidean algorithms, GCDs, LCMs and polynomial remainder sequences. """
+"""Tests for Euclidean algorithms, GCDs, LCMs and polynomial remainder sequences."""
 
 import pytest
 
-from diofant.domains import CC, FF, QQ, RR, ZZ
-from diofant.functions import sqrt
+from diofant import (CC, FF, QQ, RR, ZZ, HeuristicGCDFailed, NotInvertible,
+                     ring, sqrt)
 from diofant.polys.polyconfig import using
-from diofant.polys.polyerrors import HeuristicGCDFailed, NotInvertible
-from diofant.polys.rings import ring
 from diofant.polys.specialpolys import (dmp_fateman_poly_F_1,
                                         dmp_fateman_poly_F_2,
                                         dmp_fateman_poly_F_3, f_polys)

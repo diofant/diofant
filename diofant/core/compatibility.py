@@ -202,7 +202,8 @@ def default_sort_key(item, order=None):
     The returned key can be used anywhere that a key can be specified for
     a function, e.g. sort, min, max, etc...:
 
-    >>> a.sort(key=default_sort_key); a[0]
+    >>> a.sort(key=default_sort_key)
+    >>> a[0]
     2
     >>> min(a, key=default_sort_key)
     2

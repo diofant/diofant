@@ -84,7 +84,7 @@ def separatevars(expr, symbols=[], dict=False, force=False):
     >>> eq = 2*x + y*sin(x)
     >>> separatevars(eq) == eq
     True
-    >>> separatevars(2*x + y*sin(x), symbols=(x, y), dict=True) == None
+    >>> separatevars(2*x + y*sin(x), symbols=(x, y), dict=True) is None
     True
 
     """
@@ -191,8 +191,9 @@ def _is_sum_surds(p):
 
 def _nthroot_solve(p, n, prec):
     """
-    helper function for ``nthroot``
-    It denests ``root(p, n)`` using its minimal polynomial
+    Helper function for ``nthroot``.
+
+    It denests ``root(p, n)`` using its minimal polynomial.
 
     """
     from ..polys.numberfields import _minimal_polynomial_sq
@@ -218,7 +219,7 @@ def _nthroot_solve(p, n, prec):
 
 def nthroot(expr, n, max_len=4, prec=15):
     """
-    compute a real nth-root of a sum of surds
+    Compute a real nth-root of a sum of surds.
 
     Parameters
     ==========
@@ -305,7 +306,8 @@ def posify(eq):
     >>> eq = x**2 - 4
     >>> solve(eq, x)
     [{x: -2}, {x: 2}]
-    >>> eq_x, reps = posify([eq, x]); eq_x
+    >>> eq_x, reps = posify([eq, x])
+    >>> eq_x
     [_x**2 - 4, _x]
     >>> solve(*eq_x)
     [{_x: 2}]
@@ -374,8 +376,6 @@ def hypersimp(f, k):
 
     if g.is_rational_function(k):
         return simplify(g, ratio=oo)
-    else:
-        return
 
 
 def hypersimilar(f, g, k):
@@ -558,9 +558,8 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     2*LOG + MUL + POW + SUB
 
     >>> def my_measure(expr):
-    ...     POW = Symbol('POW')
     ...     # Discourage powers by giving POW a weight of 10
-    ...     count = count_ops(expr, visual=True).subs({POW: 10})
+    ...     count = count_ops(expr, visual=True).subs({'POW': 10})
     ...     # Every other operation gets a weight of 1 (the default)
     ...     count = count.replace(Symbol, type(Integer(1)))
     ...     return count

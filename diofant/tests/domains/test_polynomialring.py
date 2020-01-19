@@ -1,12 +1,10 @@
-"""Tests for the PolynomialRing classes. """
+"""Tests for the PolynomialRing classes."""
 
 import pytest
 
-from diofant import sqrt
+from diofant import QQ, ZZ, CoercionFailed, GeneratorsNeeded, sqrt
 from diofant.abc import x, y
-from diofant.domains import QQ, ZZ
 from diofant.polys.orderings import build_product_order
-from diofant.polys.polyerrors import CoercionFailed, GeneratorsNeeded
 
 
 __all__ = ()

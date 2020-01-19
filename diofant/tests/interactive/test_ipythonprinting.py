@@ -1,4 +1,4 @@
-"""Tests that the IPython printing module is properly loaded. """
+"""Tests that the IPython printing module is properly loaded."""
 
 import sys
 

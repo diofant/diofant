@@ -109,7 +109,6 @@ def _trace_S(s, j, b, S_cosets):
     for h in S_cosets[b]:
         if s[h[b]] == j:
             return h
-    return
 
 
 def _trace_D(gj, p_i, Dxtrav):
@@ -122,11 +121,10 @@ def _trace_D(gj, p_i, Dxtrav):
     for h in Dxtrav:
         if h[gj] == p_i:
             return h
-    return
 
 
 def _dumx_remove(dumx, dumx_flat, p0):
-    """remove p0 from dumx"""
+    """Remove p0 from dumx."""
     res = []
     for dx in dumx:
         if p0 not in dx:
@@ -522,9 +520,10 @@ def double_coset_can_rep(dummies, sym, b_S, sgens, S_transversals, g):
 
 def canonical_free(base, gens, g, num_free):
     """
-    canonicalization of a tensor with respect to free indices
-    choosing the minimum with respect to lexicographical ordering
-    in the free indices
+    Canonicalization of a tensor with respect to free indices.
+
+    Choosing the minimum with respect to lexicographical ordering
+    in the free indices.
 
     ``base``, ``gens``  BSGS for slot permutation group
     ``g``               permutation representing the tensor
@@ -618,7 +617,7 @@ def _lift_sgens(size, fixed_slots, free, s):
 
 def canonicalize(g, dummies, msym, *v):
     """
-    canonicalize tensor formed by tensors
+    Canonicalize tensor formed by tensors.
 
     Parameters
     ==========
@@ -729,9 +728,9 @@ def canonicalize(g, dummies, msym, *v):
 
     >>> base_f, gens_f = get_symmetric_group_sgs(3, 1)
     >>> base1, gens1 = get_symmetric_group_sgs(1)
-    >>> base_A, gens_A = bsgs_direct_product(base1, gens1, base1, gens1)
+    >>> base_a, gens_a = bsgs_direct_product(base1, gens1, base1, gens1)
     >>> t0 = (base_f, gens_f, 2, 0)
-    >>> t1 = (base_A, gens_A, 4, 0)
+    >>> t1 = (base_a, gens_a, 4, 0)
     >>> dummies = [range(2, 10), range(10, 14)]
     >>> g = Permutation([0, 7, 3, 1, 9, 5, 11, 6, 10, 4, 13, 2, 12, 8, 14, 15])
     >>> canonicalize(g, dummies, [0, 0], t0, t1)
@@ -841,7 +840,7 @@ def canonicalize(g, dummies, msym, *v):
 
 def perm_af_direct_product(gens1, gens2, signed=True):
     """
-    direct products of the generators gens1 and gens2
+    Direct products of the generators gens1 and gens2.
 
     Examples
     ========
@@ -878,7 +877,7 @@ def perm_af_direct_product(gens1, gens2, signed=True):
 
 def bsgs_direct_product(base1, gens1, base2, gens2, signed=True):
     """
-    direct product of two BSGS
+    Direct product of two BSGS.
 
     base1    base of the first BSGS.
 
@@ -1005,9 +1004,8 @@ def get_minimal_bsgs(base, gens):
     """
     G = PermutationGroup(gens)
     base, gens = G.schreier_sims_incremental()
-    if not _is_minimal_bsgs(base, gens):
-        return
-    return base, gens
+    if _is_minimal_bsgs(base, gens):
+        return base, gens
 
 
 def tensor_gens(base, gens, list_free_indices, sym=0):

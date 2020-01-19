@@ -72,7 +72,6 @@ class BaseSymbol(AtomicExpr, Boolean):
         Examples
         ========
 
-            >>> x = Symbol('x')
             >>> x._diff_wrt
             True
 
@@ -81,10 +80,7 @@ class BaseSymbol(AtomicExpr, Boolean):
 
     @staticmethod
     def _sanitize(assumptions, obj=None):
-        """Remove None, covert values to bool, check commutativity *in place*.
-
-        """
-
+        """Remove None, covert values to bool, check commutativity *in place*."""
         # be strict about commutativity: cannot be None
         is_commutative = fuzzy_bool(assumptions.get('commutative', True))
         if is_commutative is None:
@@ -237,14 +233,14 @@ class Symbol(BaseSymbol):
 class Dummy(BaseSymbol):
     """Dummy symbols are each unique, identified by an internal count index:
 
-    >>> bool(Dummy("x") == Dummy("x")) == True
+    >>> bool(Dummy("x") == Dummy("x")) is True
     False
 
     If a name is not supplied then a string value of the count index will be
     used. This is useful when a temporary variable is needed and the name
     of the variable used in the expression is not important.
 
-    >>> Dummy() #doctest: +SKIP
+    >>> Dummy()  # doctest: +SKIP
     _Dummy_10
 
     See Also

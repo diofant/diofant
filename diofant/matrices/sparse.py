@@ -347,8 +347,8 @@ class SparseMatrixBase(MatrixBase):
         >>> S = SparseMatrix(2, 2, range(2, 6))
         >>> A*S == S*A
         False
-        >>> (isinstance(A*S, SparseMatrix) ==
-        ...  isinstance(S*A, SparseMatrix) == False)
+        >>> (isinstance(A*S, SparseMatrix) is
+        ...  isinstance(S*A, SparseMatrix) is False)
         True
 
         """
@@ -396,7 +396,6 @@ class SparseMatrixBase(MatrixBase):
         [ 0,  0, -1]])
 
         """
-
         rv = self.copy()
         for k, v in rv._smat.items():
             rv._smat[k] = -v
@@ -616,11 +615,10 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> S = SparseMatrix([
-        ... [1, 0, 3, 2],
-        ... [0, 0, 1, 0],
-        ... [4, 0, 0, 5],
-        ... [0, 6, 7, 0]])
+        >>> S = SparseMatrix([[1, 0, 3, 2],
+        ...                   [0, 0, 1, 0],
+        ...                   [4, 0, 0, 5],
+        ...                   [0, 6, 7, 0]])
         >>> S.liupc()
         ([[0], [], [0], [1, 2]], [4, 3, 4, 4])
 
@@ -659,11 +657,10 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> S = SparseMatrix([
-        ... [1, 0, 3, 2],
-        ... [0, 0, 1, 0],
-        ... [4, 0, 0, 5],
-        ... [0, 6, 7, 0]])
+        >>> S = SparseMatrix([[1, 0, 3, 2],
+        ...                   [0, 0, 1, 0],
+        ...                   [4, 0, 0, 5],
+        ...                   [0, 6, 7, 0]])
         >>> S.row_structure_symbolic_cholesky()
         [[0], [], [0], [1, 2]]
 
@@ -674,7 +671,6 @@ class SparseMatrixBase(MatrixBase):
         Jeroen Van Grondelle (1999)
 
         """
-
         R, parent = self.liupc()
         inf = len(R)  # this acts as infinity
         Lrow = copy.deepcopy(R)
@@ -836,7 +832,6 @@ class SparseMatrixBase(MatrixBase):
         True
 
         """
-
         from ..core import nan, oo
         if not self.is_symmetric():
             raise ValueError('Cholesky decomposition applies only to '
@@ -902,7 +897,8 @@ class SparseMatrixBase(MatrixBase):
         If each line of S represent coefficients of Ax + By
         and x and y are [2, 3] then S*xy is:
 
-        >>> r = S*Matrix([2, 3]); r
+        >>> r = S*Matrix([2, 3])
+        >>> r
         Matrix([
         [ 8],
         [13],
@@ -911,7 +907,8 @@ class SparseMatrixBase(MatrixBase):
         But let's add 1 to the middle value and then solve for the
         least-squares value of xy:
 
-        >>> xy = S.solve_least_squares(Matrix([8, 14, 18])); xy
+        >>> xy = S.solve_least_squares(Matrix([8, 14, 18]))
+        >>> xy
         Matrix([
         [ 5/3],
         [10/3]])
@@ -967,16 +964,15 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> A = SparseMatrix([
-        ... [ 2, -1,  0],
-        ... [-1,  2, -1],
-        ... [ 0,  0,  2]])
+        >>> A = SparseMatrix([[+2, -1, +0],
+        ...                   [-1, +2, -1],
+        ...                   [+0, +0, +2]])
         >>> A.inv('CH')
         Matrix([
         [2/3, 1/3, 1/6],
         [1/3, 2/3, 1/3],
         [  0,   0, 1/2]])
-        >>> A.inv(method='LDL') # use of 'method=' is optional
+        >>> A.inv(method='LDL')  # use of 'method=' is optional
         Matrix([
         [2/3, 1/3, 1/6],
         [1/3, 2/3, 1/3],
@@ -1029,7 +1025,7 @@ class SparseMatrixBase(MatrixBase):
 
         >>> X = ImmutableMatrix([[1, 2], [3, 4]])
         >>> Y = X.as_mutable()
-        >>> Y[1, 1] = 5 # Can set values in Y
+        >>> Y[1, 1] = 5  # Can set values in Y
         >>> Y
         Matrix([
         [1, 2],
@@ -1099,21 +1095,25 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         ========
 
         >>> M = SparseMatrix(2, 2, {})
-        >>> M[1] = 1; M
+        >>> M[1] = 1
+        >>> M
         Matrix([
         [0, 1],
         [0, 0]])
-        >>> M[1, 1] = 2; M
+        >>> M[1, 1] = 2
+        >>> M
         Matrix([
         [0, 1],
         [0, 2]])
         >>> M = SparseMatrix(2, 2, {})
-        >>> M[:, 1] = [1, 1]; M
+        >>> M[:, 1] = [1, 1]
+        >>> M
         Matrix([
         [0, 1],
         [0, 1]])
         >>> M = SparseMatrix(2, 2, {})
-        >>> M[1, :] = [[1, 1]]; M
+        >>> M[1, :] = [[1, 1]]
+        >>> M
         Matrix([
         [0, 0],
         [1, 1]])
@@ -1124,7 +1124,8 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
 
         >>> M = SparseMatrix(4, 4, {})
         >>> m = M.cols
-        >>> M[3*m] = ones(1, m)*2; M
+        >>> M[3*m] = ones(1, m)*2
+        >>> M
         Matrix([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
@@ -1133,7 +1134,8 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
 
         And to replace column c you can assign to position c:
 
-        >>> M[2] = ones(m, 1)*4; M
+        >>> M[2] = ones(m, 1)*4
+        >>> M
         Matrix([
         [0, 0, 4, 0],
         [0, 0, 4, 0],
@@ -1203,8 +1205,10 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         Examples
         ========
 
-        >>> S = SparseMatrix.eye(3); S[2, 1] = 2
-        >>> S.row_swap(1, 0); S
+        >>> S = SparseMatrix.eye(3)
+        >>> S[2, 1] = 2
+        >>> S.row_swap(1, 0)
+        >>> S
         Matrix([
         [0, 1, 0],
         [1, 0, 0],
@@ -1233,8 +1237,10 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         Examples
         ========
 
-        >>> S = SparseMatrix.eye(3); S[2, 1] = 2
-        >>> S.col_swap(1, 0); S
+        >>> S = SparseMatrix.eye(3)
+        >>> S[2, 1] = 2
+        >>> S.col_swap(1, 0)
+        >>> S
         Matrix([
         [0, 1, 0],
         [1, 0, 0],
@@ -1277,7 +1283,8 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         [1, 0, 0],
         [0, 1, 0],
         [0, 0, 1]])
-        >>> C = A.row_join(B); C
+        >>> C = A.row_join(B)
+        >>> C
         Matrix([
         [1, 0, 1, 1, 0, 0],
         [0, 1, 0, 0, 1, 0],
@@ -1334,7 +1341,8 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         [1, 0, 0],
         [0, 1, 0],
         [0, 0, 1]])
-        >>> C = A.col_join(B); C
+        >>> C = A.col_join(B)
+        >>> C
         Matrix([
         [1, 1, 1],
         [1, 1, 1],
@@ -1415,7 +1423,8 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
 
         >>> M = SparseMatrix.eye(3)*2
         >>> M[0, 1] = -1
-        >>> M.zip_row_op(1, 0, lambda v, u: v + 2*u); M
+        >>> M.zip_row_op(1, 0, lambda v, u: v + 2*u)
+        >>> M
         Matrix([
         [2, -1, 0],
         [4,  0, 0],
@@ -1439,7 +1448,8 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
 
         >>> M = SparseMatrix.eye(3)*2
         >>> M[0, 1] = -1
-        >>> M.row_op(1, lambda v, j: v + 2*M[0, j]); M
+        >>> M.row_op(1, lambda v, j: v + 2*M[0, j])
+        >>> M
         Matrix([
         [2, -1, 0],
         [4,  0, 0],
@@ -1469,7 +1479,8 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
 
         >>> M = SparseMatrix.eye(3)*2
         >>> M[1, 0] = -1
-        >>> M.col_op(1, lambda v, i: v + 2*M[i, 0]); M
+        >>> M.col_op(1, lambda v, i: v + 2*M[i, 0])
+        >>> M
         Matrix([
         [ 2, 4, 0],
         [-1, 0, 0],
@@ -1497,12 +1508,14 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         Examples
         ========
 
-        >>> M = SparseMatrix.zeros(3); M
+        >>> M = SparseMatrix.zeros(3)
+        >>> M
         Matrix([
         [0, 0, 0],
         [0, 0, 0],
         [0, 0, 0]])
-        >>> M.fill(1); M
+        >>> M.fill(1)
+        >>> M
         Matrix([
         [1, 1, 1],
         [1, 1, 1],

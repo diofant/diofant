@@ -1,4 +1,4 @@
-"""Tools for manipulation of expressions using paths. """
+"""Tools for manipulation of expressions using paths."""
 
 from ..core import Basic
 

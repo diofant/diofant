@@ -1,4 +1,4 @@
-"""Implementation of :class:`ComplexField` class. """
+"""Implementation of :class:`ComplexField` class."""
 
 from ..core import Float, I
 from ..polys.polyerrors import CoercionFailed, DomainError
@@ -15,7 +15,7 @@ _complexes_cache = {}
 
 
 class ComplexField(Field, CharacteristicZero, SimpleDomain):
-    """Complex numbers up to the given precision. """
+    """Complex numbers up to the given precision."""
 
     rep = 'CC'
 
@@ -73,11 +73,11 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
         return self._hash
 
     def to_expr(self, element):
-        """Convert ``element`` to Diofant number. """
+        """Convert ``element`` to Diofant number."""
         return Float(element.real, self.dps) + I*Float(element.imag, self.dps)
 
     def from_expr(self, expr):
-        """Convert Diofant's number to ``dtype``. """
+        """Convert Diofant's number to ``dtype``."""
         number = expr.evalf(self.dps)
         real, imag = number.as_real_imag()
 
@@ -108,19 +108,19 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
         return self.dtype(element)
 
     def get_exact(self):
-        """Returns an exact domain associated with ``self``. """
+        """Returns an exact domain associated with ``self``."""
         raise DomainError("there is no exact domain associated with %s" % self)
 
     def gcd(self, a, b):
-        """Returns GCD of ``a`` and ``b``. """
+        """Returns GCD of ``a`` and ``b``."""
         return self.one
 
     def lcm(self, a, b):
-        """Returns LCM of ``a`` and ``b``. """
+        """Returns LCM of ``a`` and ``b``."""
         return a*b
 
     def almosteq(self, a, b, tolerance=None):
-        """Check if ``a`` and ``b`` are almost equal. """
+        """Check if ``a`` and ``b`` are almost equal."""
         return self._context.almosteq(a, b, tolerance)
 
 

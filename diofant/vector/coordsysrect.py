@@ -40,7 +40,6 @@ class CoordSysCartesian(Basic):
             Used for simple str printing.
 
         """
-
         from .vector import Vector, BaseVector
         from .point import Point
         from .deloperator import Del
@@ -226,7 +225,6 @@ class CoordSysCartesian(Basic):
         [0, sin(q1),  cos(q1)]])
 
         """
-
         from .functions import _path
 
         if not isinstance(other, CoordSysCartesian):
@@ -268,7 +266,6 @@ class CoordSysCartesian(Basic):
         Examples
         ========
 
-        >>> from diofant.vector import Point
         >>> N = CoordSysCartesian('N')
         >>> N1 = N.locate_new('N1', 10 * N.i)
         >>> N.position_wrt(N1)
@@ -299,7 +296,6 @@ class CoordSysCartesian(Basic):
         {A.x: -sin(q)*B.y + cos(q)*B.x, A.y: sin(q)*B.x + cos(q)*B.y, A.z: B.z}
 
         """
-
         relocated_scalars = []
         origin_coords = tuple(self.position_wrt(other).to_matrix(other))
         for i, x in enumerate(other.base_scalars()):
@@ -342,7 +338,6 @@ class CoordSysCartesian(Basic):
         10*A.i
 
         """
-
         return CoordSysCartesian(name, location=position,
                                  vector_names=vector_names,
                                  variable_names=variable_names,
@@ -408,7 +403,6 @@ class CoordSysCartesian(Basic):
         >>> D = N.orient_new('D', [q_orienter])
 
         """
-
         if isinstance(orienters, Orienter):
             if isinstance(orienters, AxisOrienter):
                 final_matrix = orienters.rotation_matrix(self)
@@ -471,7 +465,6 @@ class CoordSysCartesian(Basic):
         >>> B = N.orient_new_axis('B', q1, N.i + 2 * N.j)
 
         """
-
         orienter = AxisOrienter(angle, axis)
         return self.orient_new(name, orienter,
                                location=location,
@@ -540,7 +533,6 @@ class CoordSysCartesian(Basic):
         >>> B = N.orient_new_body('B', 0, 0, 0, 'XYX')
 
         """
-
         orienter = BodyOrienter(angle1, angle2, angle3, rotation_order)
         return self.orient_new(name, orienter,
                                location=location,
@@ -603,7 +595,6 @@ class CoordSysCartesian(Basic):
         >>> D = C.orient_new_axis('D', q3, N.k)
 
         """
-
         orienter = SpaceOrienter(angle1, angle2, angle3, rotation_order)
         return self.orient_new(name, orienter,
                                location=location,
@@ -656,7 +647,6 @@ class CoordSysCartesian(Basic):
         >>> B = N.orient_new_quaternion('B', q0, q1, q2, q3)
 
         """
-
         orienter = QuaternionOrienter(q0, q1, q2, q3)
         return self.orient_new(name, orienter,
                                location=location,

@@ -177,7 +177,6 @@ def simplex(c, m, b):
       Programming and Game Theory, Third edition, 2008, Ch. 3.
 
     """
-
     rows, cols = len(b), len(c)
 
     if len(m) != rows or any(len(_) != cols for _ in m):

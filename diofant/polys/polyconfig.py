@@ -1,4 +1,4 @@
-"""Configuration utilities for polynomial manipulation algorithms. """
+"""Configuration utilities for polynomial manipulation algorithms."""
 
 import ast
 import contextlib
@@ -51,7 +51,7 @@ def using(**kwargs):
 
 
 def setup(key, value=None):
-    """Assign a value to (or reset) a configuration item. """
+    """Assign a value to (or reset) a configuration item."""
     key = key.upper()
 
     if value is not None:
@@ -61,12 +61,12 @@ def setup(key, value=None):
 
 
 def query(key):
-    """Ask for a value of the given configuration item. """
+    """Ask for a value of the given configuration item."""
     return _current_config.get(key.upper(), None)
 
 
 def configure():
-    """Initialized configuration of polys module. """
+    """Initialized configuration of polys module."""
     for key, default in _default_config.items():
         _current_config[key] = default
 

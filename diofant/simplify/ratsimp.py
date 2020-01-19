@@ -18,7 +18,6 @@ def ratsimp(expr):
     (x + y)/(x*y)
 
     """
-
     f, g = cancel(expr).as_numer_denom()
     try:
         Q, r = reduced(f, [g], field=True, expand=False)

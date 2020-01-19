@@ -1,4 +1,4 @@
-Copyright (c) 2006-2018 SymPy Development Team, 2013-2019 Sergey B Kirpichev
+Copyright (c) 2006-2018 SymPy Development Team, 2013-2020 Sergey B Kirpichev
 
 All rights reserved.
 

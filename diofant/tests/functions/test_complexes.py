@@ -194,7 +194,7 @@ def test_sign():
     assert sign(x).is_extended_real is None
     assert sign(x).is_zero is None
     assert sign(x).diff(x) == 2*DiracDelta(-I*x)
-    assert sign(xn).doit() == xn / Abs(xn)
+    assert sign(xn).doit() == xn/abs(xn)
     assert conjugate(sign(x)) == -sign(x)
 
     x = Symbol('x', extended_real=True)
@@ -215,18 +215,18 @@ def test_sign():
     assert sign(x).is_integer is None
     assert sign(x).is_extended_real is None
     assert sign(x).is_nonzero is True
-    assert sign(x).doit() == x / Abs(x)
-    assert sign(Abs(x)) == 1
-    assert Abs(sign(x)) == 1
+    assert sign(x).doit() == x/abs(x)
+    assert sign(abs(x)) == 1
+    assert abs(sign(x)) == 1
 
     x = Symbol('x', positive=True)
     assert sign(x).is_imaginary is False
     assert sign(x).is_integer is True
     assert sign(x).is_extended_real is True
     assert sign(x).is_nonzero is True
-    assert sign(x).doit() == x / Abs(x)
-    assert sign(Abs(x)) == 1
-    assert Abs(sign(x)) == 1
+    assert sign(x).doit() == x/abs(x)
+    assert sign(abs(x)) == 1
+    assert abs(sign(x)) == 1
 
     x = 0
     assert sign(x).is_imaginary is True
@@ -234,8 +234,8 @@ def test_sign():
     assert sign(x).is_extended_real is True
     assert sign(x).is_zero is True
     assert sign(x).doit() == 0
-    assert sign(Abs(x)) == 0
-    assert Abs(sign(x)) == 0
+    assert sign(abs(x)) == 0
+    assert abs(sign(x)) == 0
 
     nz = Symbol('nz', nonzero=True, integer=True)
     assert sign(nz).is_imaginary is False
@@ -321,48 +321,47 @@ def test_Abs():
     assert Abs(0) == 0
     assert Abs(1) == 1
     assert Abs(-1) == 1
-    assert Abs(I) == 1
-    assert Abs(-I) == 1
-    assert Abs(nan) == nan
-    assert Abs(zoo) == oo
-    assert Abs(I * pi) == pi
-    assert Abs(-I * pi) == pi
-    assert Abs(I * x) == Abs(x)
-    assert Abs(-I * x) == Abs(x)
-    assert Abs(-2*x) == 2*Abs(x)
-    assert Abs(-2.0*x) == 2.0*Abs(x)
-    assert Abs(2*pi*x*y) == 2*pi*Abs(x*y)
-    assert Abs(conjugate(x)) == Abs(x)
-    assert conjugate(Abs(x)) == Abs(x)
+    assert abs(I) == 1
+    assert abs(-I) == 1
+    assert abs(nan) == nan
+    assert abs(zoo) == oo
+    assert abs(+I * pi) == pi
+    assert abs(-I * pi) == pi
+    assert abs(+I * x) == abs(x)
+    assert abs(-I * x) == abs(x)
+    assert abs(-2*x) == 2*abs(x)
+    assert abs(-2.0*x) == 2.0*abs(x)
+    assert abs(2*pi*x*y) == 2*pi*abs(x*y)
+    assert abs(conjugate(x)) == abs(x)
+    assert conjugate(abs(x)) == abs(x)
 
     a = cos(1)**2 + sin(1)**2 - 1
-    assert Abs(a*x).series(x).simplify() == 0
+    assert abs(a*x).series(x).simplify() == 0
 
     a = Symbol('a', positive=True)
-    assert Abs(2*pi*x*a) == 2*pi*a*Abs(x)
-    assert Abs(2*pi*I*x*a) == 2*pi*a*Abs(x)
+    assert abs(2*pi*x*a) == 2*pi*a*abs(x)
+    assert abs(2*pi*I*x*a) == 2*pi*a*abs(x)
 
     x = Symbol('x', extended_real=True)
     n = Symbol('n', integer=True)
-    assert Abs((-1)**n) == 1
-    assert x**(2*n) == Abs(x)**(2*n)
-    assert Abs(x).diff(x) == sign(x)
-    assert Abs(-x).fdiff() == sign(x)
+    assert abs((-1)**n) == 1
+    assert x**(2*n) == abs(x)**(2*n)
+    assert abs(x).diff(x) == sign(x)
+    assert abs(-x).fdiff() == sign(x)
     assert abs(x) == Abs(x)  # Python built-in
-    assert Abs(x)**3 == x**2*Abs(x)
-    assert Abs(x)**4 == x**4
-    assert (
-        Abs(x)**(3*n)).args == (Abs(x), 3*n)  # leave symbolic odd unchanged
-    assert (1/Abs(x)).args == (Abs(x), -1)
-    assert 1/Abs(x)**3 == 1/(x**2*Abs(x))
-    assert Abs(x)**-3 == Abs(x)/(x**4)
-    assert Abs(x**3) == x**2*Abs(x)
-    assert Abs(x**pi) == Abs(x**pi, evaluate=False)
+    assert abs(x)**3 == x**2*abs(x)
+    assert abs(x)**4 == x**4
+    assert (abs(x)**(3*n)).args == (abs(x), 3*n)  # leave symbolic odd unchanged
+    assert (1/abs(x)).args == (abs(x), -1)
+    assert 1/abs(x)**3 == 1/(x**2*abs(x))
+    assert abs(x)**-3 == abs(x)/x**4
+    assert abs(x**3) == x**2*abs(x)
+    assert abs(x**pi) == Abs(x**pi, evaluate=False)
 
     x = Symbol('x', imaginary=True)
-    assert Abs(x).diff(x) == -sign(x)
+    assert abs(x).diff(x) == -sign(x)
 
-    pytest.raises(ArgumentIndexError, lambda: Abs(z).fdiff(2))
+    pytest.raises(ArgumentIndexError, lambda: abs(z).fdiff(2))
 
     eq = -sqrt(10 + 6*sqrt(3)) + sqrt(1 + sqrt(3)) + sqrt(3 + 3*sqrt(3))
     # if there is a fast way to know when you can and when you cannot prove an
@@ -373,14 +372,14 @@ def test_Abs():
     d = p - q
     assert abs(d) == 0
 
-    assert Abs(4*exp(pi*I/4)) == 4
-    assert Abs(3**(2 + I)) == 9
-    assert Abs((-3)**(1 - I)) == 3*exp(pi)
+    assert abs(4*exp(pi*I/4)) == 4
+    assert abs(3**(2 + I)) == 9
+    assert abs((-3)**(1 - I)) == 3*exp(pi)
 
-    assert Abs(oo) is oo
-    assert Abs(-oo) is oo
-    assert Abs(oo + I) is oo
-    assert Abs(oo + I*oo) is oo
+    assert abs(+oo) is oo
+    assert abs(-oo) is oo
+    assert abs(oo + I) is oo
+    assert abs(oo + I*oo) is oo
 
     a = Symbol('a', algebraic=True)
     t = Symbol('t', transcendental=True)
@@ -394,82 +393,82 @@ def test_Abs():
 
 def test_Abs_rewrite():
     x = Symbol('x', extended_real=True)
-    a = Abs(x).rewrite(Heaviside).expand()
+    a = abs(x).rewrite(Heaviside).expand()
     assert a == x*Heaviside(x) - x*Heaviside(-x)
     for i in [-2, -1, 0, 1, 2]:
         assert a.subs({x: i}) == abs(i)
     y = Symbol('y')
-    assert Abs(y).rewrite(Heaviside) == Abs(y)
+    assert abs(y).rewrite(Heaviside) == abs(y)
 
     x, y = Symbol('x', extended_real=True), Symbol('y')
-    assert Abs(x).rewrite(Piecewise) == Piecewise((x, x >= 0), (-x, True))
-    assert Abs(y).rewrite(Piecewise) == Abs(y)
-    assert Abs(y).rewrite(sign) == y/sign(y)
+    assert abs(x).rewrite(Piecewise) == Piecewise((x, x >= 0), (-x, True))
+    assert abs(y).rewrite(Piecewise) == abs(y)
+    assert abs(y).rewrite(sign) == y/sign(y)
 
 
 def test_Abs_real():
     # test some properties of abs that only apply
     # to real numbers
     x = Symbol('x', complex=True)
-    assert sqrt(x**2) != Abs(x)
-    assert Abs(x**2) != x**2
+    assert sqrt(x**2) != abs(x)
+    assert abs(x**2) != x**2
 
     x = Symbol('x', extended_real=True)
-    assert sqrt(x**2) == Abs(x)
-    assert Abs(x**2) == x**2
+    assert sqrt(x**2) == abs(x)
+    assert abs(x**2) == x**2
 
     # if the symbol is zero, the following will still apply
     nn = Symbol('nn', nonnegative=True, extended_real=True)
     np = Symbol('np', nonpositive=True, extended_real=True)
-    assert Abs(nn) == nn
-    assert Abs(np) == -np
+    assert abs(nn) == nn
+    assert abs(np) == -np
 
 
 def test_Abs_properties():
     x, z = symbols('x, z')
-    assert Abs(x).is_extended_real is True
-    assert Abs(x).is_rational is None
-    assert Abs(x).is_positive is None
-    assert Abs(x).is_nonnegative is True
-    assert Abs(x).is_finite is None
+    assert abs(x).is_extended_real is True
+    assert abs(x).is_rational is None
+    assert abs(x).is_positive is None
+    assert abs(x).is_nonnegative is True
+    assert abs(x).is_finite is None
 
     z = Symbol('z', complex=True, zero=False)
-    assert Abs(z).is_extended_real is True
-    assert Abs(z).is_rational is None
-    assert Abs(z).is_positive is True
-    assert Abs(z).is_nonzero is True
-    assert Abs(z).is_finite is True
+    assert abs(z).is_extended_real is True
+    assert abs(z).is_rational is None
+    assert abs(z).is_positive is True
+    assert abs(z).is_nonzero is True
+    assert abs(z).is_finite is True
 
     p = Symbol('p', positive=True)
-    assert Abs(p).is_extended_real is True
-    assert Abs(p).is_rational is None
-    assert Abs(p).is_positive is True
-    assert Abs(p).is_nonzero is True
+    assert abs(p).is_extended_real is True
+    assert abs(p).is_rational is None
+    assert abs(p).is_positive is True
+    assert abs(p).is_nonzero is True
 
     q = Symbol('q', rational=True)
-    assert Abs(q).is_rational is True
-    assert Abs(q).is_integer is None
-    assert Abs(q).is_positive is None
-    assert Abs(q).is_nonnegative is True
-    assert Abs(q).is_finite is True
+    assert abs(q).is_rational is True
+    assert abs(q).is_integer is None
+    assert abs(q).is_positive is None
+    assert abs(q).is_nonnegative is True
+    assert abs(q).is_finite is True
 
     i = Symbol('i', integer=True)
-    assert Abs(i).is_integer is True
-    assert Abs(i).is_positive is None
-    assert Abs(i).is_nonnegative is True
-    assert Abs(i).is_finite is True
+    assert abs(i).is_integer is True
+    assert abs(i).is_positive is None
+    assert abs(i).is_nonnegative is True
+    assert abs(i).is_finite is True
 
     e = Symbol('n', even=True)
     ne = Symbol('ne', extended_real=True, even=False)
-    assert Abs(e).is_even
-    assert Abs(ne).is_even is False
-    assert Abs(i).is_even is None
+    assert abs(e).is_even
+    assert abs(ne).is_even is False
+    assert abs(i).is_even is None
 
     o = Symbol('n', odd=True)
     no = Symbol('no', extended_real=True, odd=False)
-    assert Abs(o).is_odd
-    assert Abs(no).is_odd is False
-    assert Abs(i).is_odd is None
+    assert abs(o).is_odd
+    assert abs(no).is_odd is False
+    assert abs(i).is_odd is None
 
 
 def test_abs():
@@ -689,13 +688,13 @@ def test_unpolarify():
 
 
 def test_sympyissue_4035():
-    assert Abs(x).expand(trig=True) == Abs(x)
+    assert abs(x).expand(trig=True) == abs(x)
     assert sign(x).expand(trig=True) == sign(x)
     assert arg(x).expand(trig=True) == arg(x)
 
 
 def test_sympyissue_3206():
-    assert Abs(Abs(x)) == Abs(x)
+    assert abs(abs(x)) == abs(x)
 
 
 def test_sympyissue_4754_derivative_conjugate():
@@ -716,9 +715,9 @@ def test_derivatives_sympyissue_4757():
     assert im(f(y)).diff(y) == -I*re(f(y).diff(y))
     assert re(f(z)).diff(z) == Derivative(re(f(z)), z)
     assert im(f(z)).diff(z) == Derivative(im(f(z)), z)
-    assert Abs(f(x)).diff(x).subs({f(x): 1 + I*x}).doit() == x/sqrt(1 + x**2)
+    assert abs(f(x)).diff(x).subs({f(x): 1 + I*x}).doit() == x/sqrt(1 + x**2)
     assert arg(f(x)).diff(x).subs({f(x): 1 + I*x**2}).doit() == 2*x/(1 + x**4)
-    assert Abs(f(y)).diff(y).subs({f(y): 1 + y}).doit() == -y/sqrt(1 - y**2)
+    assert abs(f(y)).diff(y).subs({f(y): 1 + y}).doit() == -y/sqrt(1 - y**2)
     assert arg(f(y)).diff(y).subs({f(y): I + y**2}).doit() == 2*y/(1 + y**4)
 
 
@@ -747,7 +746,7 @@ def test_periodic_argument():
     assert periodic_argument(2*p, p) == periodic_argument(p, p)
     assert periodic_argument(pi*p, p) == periodic_argument(p, p)
 
-    assert Abs(polar_lift(1 + I)) == Abs(1 + I)
+    assert abs(polar_lift(1 + I)) == abs(1 + I)
 
     assert periodic_argument(x, pi).is_real is True
     assert periodic_argument(x, oo, evaluate=False).is_real is None
@@ -806,6 +805,6 @@ def test_sympyissue_6167_6151():
 def test_sympyissue_11413():
     V = Matrix([[x], [y], [z]])
     U = V.normalized()
-    r = sqrt(Abs(x)**2 + Abs(y)**2 + Abs(z)**2)
+    r = sqrt(abs(x)**2 + abs(y)**2 + abs(z)**2)
     assert U == Matrix([[x/r], [y/r], [z/r]])
     assert U.norm().simplify() == 1

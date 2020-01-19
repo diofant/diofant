@@ -187,14 +187,13 @@ def multiset_partitions_taocp(multiplicities):
     >>> components = 'ab'
     >>> multiplicities = [1, 2]
     >>> states = multiset_partitions_taocp(multiplicities)
-    >>> list(list_visitor(state, components) for state in states)
+    >>> [list_visitor(state, components) for state in states]
     [[['a', 'b', 'b']],
     [['a', 'b'], ['b']],
     [['a'], ['b', 'b']],
     [['a'], ['b'], ['b']]]
 
     """
-
     # Important variables.
     # m is the number of components, i.e., number of distinct elements
     m = len(multiplicities)
@@ -307,7 +306,7 @@ def factoring_visitor(state, primes):
     >>> multiplicities
     (3, 1)
     >>> states = multiset_partitions_taocp(multiplicities)
-    >>> list(factoring_visitor(state, primes) for state in states)
+    >>> [factoring_visitor(state, primes) for state in states]
     [[24], [8, 3], [12, 2], [4, 6], [4, 2, 3], [6, 2, 2], [2, 2, 2, 3]]
 
     """
@@ -411,7 +410,6 @@ class MultisetPartitionTraverser():
         there is no need to call it separately.
 
         """
-
         num_components = len(multiplicities)
         # cardinality is the total number of elements, whether or not distinct
         cardinality = sum(multiplicities)
@@ -569,7 +567,6 @@ class MultisetPartitionTraverser():
             have more parts than this value.
 
         """
-
         # Next, perform any needed additional decrementing to respect
         # "sufficient unallocated multiplicity" (or fail if this is
         # not possible).
@@ -626,7 +623,6 @@ class MultisetPartitionTraverser():
         the lb constraint.
 
         """
-
         # Constraint in the range case is just enforcing both the
         # constraints from _small and _large cases.  Note the 0 as the
         # second argument to the _large call -- this is the signal to
@@ -699,7 +695,7 @@ class MultisetPartitionTraverser():
 
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_all([2, 2])
-        >>> list(list_visitor(state, 'ab') for state in states)
+        >>> [list_visitor(state, 'ab') for state in states]
         [[['a', 'a', 'b', 'b']],
         [['a', 'a', 'b'], ['b']],
         [['a', 'a'], ['b', 'b']],
@@ -759,7 +755,7 @@ class MultisetPartitionTraverser():
 
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_small([2, 2], 2)
-        >>> list(list_visitor(state, 'ab') for state in states)
+        >>> [list_visitor(state, 'ab') for state in states]
         [[['a', 'a', 'b', 'b']],
         [['a', 'a', 'b'], ['b']],
         [['a', 'a'], ['b', 'b']],
@@ -776,7 +772,6 @@ class MultisetPartitionTraverser():
           Part 1, of The Art of Computer Programming, by Donald Knuth.
 
         """
-
         # Keep track of iterations which do not yield a partition.
         # Clearly, we would like to keep this number small.
         self.discarded = 0
@@ -827,14 +822,13 @@ class MultisetPartitionTraverser():
 
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_large([2, 2], 2)
-        >>> list(list_visitor(state, 'ab') for state in states)
+        >>> [list_visitor(state, 'ab') for state in states]
         [[['a', 'a'], ['b'], ['b']],
         [['a', 'b'], ['a'], ['b']],
         [['a'], ['a'], ['b', 'b']],
         [['a'], ['a'], ['b'], ['b']]]
 
         """
-
         return self.enum_range(multiplicities, lb, sum(multiplicities))
 
     def enum_range(self, multiplicities, lb, ub):
@@ -850,7 +844,7 @@ class MultisetPartitionTraverser():
 
         >>> m = MultisetPartitionTraverser()
         >>> states = m.enum_range([2, 2], 1, 2)
-        >>> list(list_visitor(state, 'ab') for state in states)
+        >>> [list_visitor(state, 'ab') for state in states]
         [[['a', 'a', 'b'], ['b']],
         [['a', 'a'], ['b', 'b']],
         [['a', 'b', 'b'], ['a']],

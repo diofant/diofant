@@ -2,16 +2,16 @@ from random import randint, uniform
 
 import pytest
 
-from diofant import (Abs, Float, I, Integer, Limit, O, Rational, Symbol,
-                     besseli, besselj, besselk, besselsimp, bessely, cbrt,
-                     conjugate, cos, cosh, diff, exp, exp_polar, expand_func,
-                     gamma, hankel1, hankel2, hyper, im, jn, jn_zeros, log,
-                     nan, oo, pi, polar_lift, re, root, series, simplify, sin,
-                     sinh, sqrt, yn, zoo)
+from diofant import (Float, I, Integer, Limit, O, Rational, Symbol, airyai,
+                     airyaiprime, airybi, airybiprime, besseli, besselj,
+                     besselk, besselsimp, bessely, cbrt, conjugate, cos, cosh,
+                     diff, exp, exp_polar, expand_func, gamma, hankel1,
+                     hankel2, hyper, im, jn, jn_zeros, log, nan, oo, pi,
+                     polar_lift, re, root, series, simplify, sin, sinh, sqrt,
+                     yn, zoo)
 from diofant.abc import k, n, x, y, z
 from diofant.core.function import ArgumentIndexError
-from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
-                                              airybiprime, fn)
+from diofant.functions.special.bessel import fn
 from diofant.utilities.randtest import random_complex_number as randcplx
 from diofant.utilities.randtest import verify_derivative_numerically as td
 from diofant.utilities.randtest import verify_numerically as tn
@@ -368,9 +368,9 @@ def test_airy_base():
     assert airyai(z).is_extended_real is None
 
     assert airyai(x+I*y).as_real_imag() == (
-        airyai(x - I*x*Abs(y)/Abs(x))/2 + airyai(x + I*x*Abs(y)/Abs(x))/2,
-        I*x*(airyai(x - I*x*Abs(y)/Abs(x)) -
-             airyai(x + I*x*Abs(y)/Abs(x)))*Abs(y)/(2*y*Abs(x)))
+        airyai(x - I*x*abs(y)/abs(x))/2 + airyai(x + I*x*abs(y)/abs(x))/2,
+        I*x*(airyai(x - I*x*abs(y)/abs(x)) -
+             airyai(x + I*x*abs(y)/abs(x)))*abs(y)/(2*y*abs(x)))
 
 
 def test_airyai():
@@ -422,7 +422,7 @@ def test_airyai():
             (airyai(re(x) - I*re(x)*abs(im(x))/abs(re(x)))/2 +
              airyai(re(x) + I*re(x)*abs(im(x))/abs(re(x)))/2,
              I*(airyai(re(x) - I*re(x)*abs(im(x))/abs(re(x))) -
-                airyai(re(x) + I*re(x)*abs(im(x))/Abs(re(x)))) *
+                airyai(re(x) + I*re(x)*abs(im(x))/abs(re(x)))) *
              re(x)*abs(im(x))/(2*im(x)*abs(re(x)))))
 
     assert airyai(x).taylor_term(-1, x) == 0

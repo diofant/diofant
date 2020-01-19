@@ -1,13 +1,11 @@
-from io import StringIO
+import io
 
 import pytest
 
 import diofant
-from diofant import Equality, Piecewise, cos, sin, tan
+from diofant import (Catalan, Eq, Equality, Function, Idx, IndexedBase, Matrix,
+                     MatrixSymbol, Piecewise, cos, pi, sin, symbols, tan, zoo)
 from diofant.abc import A, B, C, a, t, x, y, z
-from diofant.core import Catalan, Eq, Function, pi, symbols, zoo
-from diofant.matrices import Matrix, MatrixSymbol
-from diofant.tensor import Idx, IndexedBase
 from diofant.utilities.codegen import (CodeGenArgumentListError, CodeGenError,
                                        InOutArgument, OctaveCodeGen, Routine,
                                        codegen, make_routine)
@@ -18,7 +16,7 @@ __all__ = ()
 
 def test_empty_m_code():
     code_gen = OctaveCodeGen()
-    output = StringIO()
+    output = io.StringIO()
     code_gen.dump_m([], output, "file", header=False, empty=False)
     source = output.getvalue()
     assert source == ""
@@ -110,7 +108,7 @@ def test_m_code_argument_order():
     expr = x + y
     routine = make_routine("test", expr, argument_sequence=[z, x, y], language="octave")
     code_gen = OctaveCodeGen()
-    output = StringIO()
+    output = io.StringIO()
     code_gen.dump_m([routine], output, "test", header=False, empty=False)
     source = output.getvalue()
     expected = (

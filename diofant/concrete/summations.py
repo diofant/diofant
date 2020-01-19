@@ -187,7 +187,6 @@ class Sum(AddWithLimits, ExprWithIntLimits):
         involving a limit variable, the unevaluated derivative is returned.
 
         """
-
         # get limits and the function
         f, limits = self.function, list(self.limits)
 
@@ -551,8 +550,6 @@ def telescopic(L, R, limits):
         return telescopic_direct(R, L, abs(s), (i, a, b))
     elif s.is_positive:
         return telescopic_direct(L, R, s, (i, a, b))
-    else:
-        return
 
 
 def eval_sum(f, limits):

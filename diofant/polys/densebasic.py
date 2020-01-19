@@ -860,7 +860,8 @@ def dmp_apply_pairs(f, g, h, args, u, K):
     Examples
     ========
 
-    >>> h = lambda x, y, z: 2*x + y - z
+    >>> def h(x, y, z):
+    ...     return 2*x + y - z
 
     >>> dmp_apply_pairs([[ZZ(1)], [ZZ(2), ZZ(3)]],
     ...                 [[ZZ(3)], [ZZ(2), ZZ(1)]], h, [ZZ(1)], 1, ZZ)
@@ -923,7 +924,7 @@ def dup_random(n, a, b, K, percent=None):
     Examples
     ========
 
-    >>> dup_random(3, -10, 10, ZZ) #doctest: +SKIP
+    >>> dup_random(3, -10, 10, ZZ)  # doctest: +SKIP
     [-2, -8, 9, -4]
 
     """

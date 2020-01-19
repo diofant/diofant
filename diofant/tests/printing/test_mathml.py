@@ -3,14 +3,13 @@ import pytest
 from diofant import (Basic, E, Eq, EulerGamma, Float, Ge, GoldenRatio, I,
                      Integer, Integral, Limit, Lt, Matrix, Ne, Rational, Sum,
                      Symbol, acos, acosh, asin, asinh, atan, atanh, cbrt, cos,
-                     cosh, diff, oo, pi, sin, sinh, sqrt, tan, tanh)
-from diofant.printing.mathml import MathMLPrinter, mathml
+                     cosh, diff, mathml, oo, pi, sin, sinh, sqrt, tan, tanh)
+from diofant.abc import x, y
+from diofant.printing.mathml import MathMLPrinter
 
 
 __all__ = ()
 
-x = Symbol('x')
-y = Symbol('y')
 mp = MathMLPrinter()
 
 

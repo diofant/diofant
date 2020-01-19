@@ -5,6 +5,7 @@ from .matmul import MatMul
 
 
 class MatPow(MatrixExpr):
+    """Power of matrix expression."""
 
     def __new__(cls, base, exp):
         base = sympify(base, strict=True)

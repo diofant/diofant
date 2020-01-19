@@ -109,6 +109,8 @@ _between_two_numbers_p = (
 
 
 class LatexPrinter(Printer):
+    """LaTex printer."""
+
     printmethod = "_latex"
 
     _default_settings = {
@@ -1867,5 +1869,4 @@ def latex(expr, **settings):
     $\left [ 2 / x, \quad y\right ]$
 
     """
-
     return LatexPrinter(settings).doprint(expr)

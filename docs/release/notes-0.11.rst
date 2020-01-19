@@ -8,11 +8,14 @@ New features
 ============
 
 * Added :func:`~diofant.ntheory.residue_ntheory.discrete_log` to compute discrete logarithms, see :pull:`785`.  Thanks to Gabriel Orisaka.
+* Function :func:`~diofant.solvers.recurr.rsolve` got initial support for systems of equations, see :pull:`921`.
+* Support inhomogenous case for systems of linear ODEs with constant coefficients, see :pull:`919`.
 
 Major changes
 =============
 
 * :class:`~diofant.polys.polytools.Poly` now use sparse polynomial representation (via :class:`~diofant.polys.rings.PolyElement`) internally, see :pull:`795`.
+* :func:`~diofant.solvers.recurr.rsolve` now return :class:`list` of :class:`dict`'s, see :pull:`940`.
 
 Compatibility breaks
 ====================
@@ -36,6 +39,9 @@ Compatibility breaks
 * Removed ``generate_oriented_forest()``, ``kbins()`` and ``ibin()`` functions, see :pull:`903`.
 * Drop support for ``numexpr`` module in :func:`~diofant.utilities.lambdify.lambdify` and ``NumExprPrinter`` printer class, see :pull:`903`.
 * Removed ``DeferredVector`` class, see :pull:`905`.
+* Don't export too much from :mod:`~diofant.solvers` to the default namespace, keep only :func:`~diofant.solvers.solvers.solve`, :func:`~diofant.solvers.recurr.rsolve` and :func:`~diofant.solvers.ode.dsolve` functions, see :pull:`921`.
+* Make :func:`~diofant.solvers.recurr.rsolve`'s ``init`` parameter more compatible with :func:`~diofant.solvers.ode.dsolve`'s one, e.g. drop accepting ``init=[1, 2, 3]`` and ``init={0: 1, 1: 2, 2: 3}`` forms, see :pull:`921`.
+* Removed ``dict_merge()``, ``generate_bell()`` and ``reshape()`` functions, see :pull:`921`.
 
 Minor changes
 =============
@@ -44,11 +50,15 @@ Minor changes
 * :class:`~diofant.matrices.Matrix`'s and :class:`~diofant.tensor.array.Array`'s support symbolic indexes, see :pull:`785`.  Thanks to Francesco Bonazzi.
 * Added ``AA_FACTOR_METHOD`` configuration option to specify factorization algorithm for polynomials with algebraic coefficients, see :pull:`844`.
 * :class:`~diofant.utilities.codegen.CCodeGen` got support for common subexpression replacement, see :pull:`893`.  Thanks to James Cotton.
+* 100% test coverage for :mod:`~diofant.utilities` module.
+* :func:`~diofant.solvers.recurr.rsolve` got ``simplify`` option to control default output simplification, see :pull:`921`.
+* :func:`~diofant.polys.numberfields.minimal_polynomial` got support for :class:`~diofant.polys.rootoftools.RootOf` instances over algebraic number fields, see :pull:`927`.
 
 Developer changes
 =================
 
 * Depend on `sphinxcontrib-bibtex <https://sphinxcontrib-bibtex.readthedocs.io/en/latest/>`_ to track the bibliography, see :pull:`766`.
+* Depend on `flake8-rst <https://github.com/kataev/flake8-rst>`_ to test formatting of docstrings, see :pull:`928`.
 
 Issues closed
 =============
@@ -123,3 +133,20 @@ These Sympy issues also were addressed:
 * :sympyissue:`17789` Intermittent test failure in assumptions
 * :sympyissue:`17841` integrate throws error for rational functions involving I
 * :sympyissue:`17847` Wrong result for as_leading_term()
+* :sympyissue:`17982` Wrong result from rsolve
+* :sympyissue:`9244` dsolve: nonhomogeneous linear systems are not supported
+* :sympyissue:`15946` Matrix exponential for dsolve
+* :sympyissue:`16635` problem when using dsolve() to solve ordinary differential equations
+* :sympyissue:`14312` Incorrect solution of 3 by 3 linear ODE systems
+* :sympyissue:`8859` wrong result: dsolve for systems with forcings
+* :sympyissue:`9204` dsolve fails
+* :sympyissue:`14779` Spurious solutions when solving equation involving Abs(x)/x
+* :sympyissue:`18008` series does not give the same expansion depending on whether simple expression is simplified or not
+* :sympyissue:`8810` Poly keyword `composite` is ignored when instantiating from Poly
+* :sympyissue:`18118` limit(sign(sin(x)), x, 0, '+')) = 0 (which is wrong)
+* :sympyissue:`6599` limit of fraction with oscillating term in the numerator calculated incorrectly
+* :sympyissue:`18176` Incorrect value for limit(x**n-x**(n-k),x,oo) when k is a natural number
+* :sympyissue:`18306` NotImplementedError in limit
+* :sympyissue:`8695` sqf and sqf_list output is not consistant
+* :sympyissue:`18378` Invalid result in Limit
+* :sympyissue:`18384` abs(sin(x)*cos(x)) integrates wrong

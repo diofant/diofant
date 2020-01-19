@@ -1,5 +1,5 @@
 """
-Main Random Variables Module
+Main Random Variables Module.
 
 Defines abstract random variable type.
 Contains interfaces for probability space object (PSpace) as well as standard
@@ -402,7 +402,6 @@ def pspace(expr):
     True
 
     """
-
     expr = sympify(expr)
     rvs = random_symbols(expr)
     if not rvs:
@@ -440,7 +439,8 @@ def rs_swap(a, b):
 
 
 def given(expr, condition=None, **kwargs):
-    r""" Conditional Random Expression
+    r"""Conditional Random Expression.
+
     From a random expression and a condition on that expression creates a new
     probability space from the condition and returns the same expression on that
     conditional probability space.
@@ -472,7 +472,6 @@ def given(expr, condition=None, **kwargs):
          2*\/ pi
 
     """
-
     if not random_symbols(condition) or pspace_independent(expr, condition):
         return expr
 
@@ -526,11 +525,10 @@ def expectation(expr, condition=None, numsamples=None, evaluate=True, **kwargs):
     >>> E(2*X + 1)
     8
 
-    >>> E(X, X > 3) # Expectation of X given that it is above 3
+    >>> E(X, X > 3)  # Expectation of X given that it is above 3
     5
 
     """
-
     if not random_symbols(expr):  # expr isn't random?
         return expr
     if numsamples:  # Computing by monte carlo sampling?
@@ -579,13 +577,12 @@ def probability(condition, given_condition=None, numsamples=None,
     >>> X, Y = Die('X', 6), Die('Y', 6)
     >>> P(X > 3)
     1/2
-    >>> P(Eq(X, 5), X > 2) # Probability that X == 5 given that X > 2
+    >>> P(Eq(X, 5), X > 2)  # Probability that X == 5 given that X > 2
     1/4
     >>> P(X > Y)
     5/12
 
     """
-
     condition = sympify(condition)
     given_condition = sympify(given_condition)
 
@@ -619,14 +616,14 @@ def probability(condition, given_condition=None, numsamples=None,
 
 
 class Density(Expr):
+    """Probability density."""
+
     expr = property(lambda self: self.args[0])
 
     @property
     def condition(self):
         if len(self.args) > 1:
             return self.args[1]
-        else:
-            return
 
     def doit(self, **kwargs):
         evaluate = kwargs.pop('evaluate', True)
@@ -674,7 +671,6 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
 
     >>> from diofant.stats import Die, Normal
 
-    >>> x = Symbol('x')
     >>> D = Die('D', 6)
     >>> X = Normal(x, 0, 1)
 
@@ -686,7 +682,6 @@ def density(expr, condition=None, evaluate=True, numsamples=None, **kwargs):
     sqrt(2)*E**(-x**2/2)/(2*sqrt(pi))
 
     """
-
     if numsamples:
         return sampling_density(expr, condition, numsamples=numsamples,
                                 **kwargs)
@@ -752,13 +747,13 @@ def where(condition, given_condition=None, **kwargs):
     >>> a, b = D1.symbol, D2.symbol
     >>> X = Normal('x', 0, 1)
 
-    >>> where(X**2<1)
+    >>> where(X**2 < 1)
     Domain: (-1 < x) & (x < 1)
 
-    >>> where(X**2<1).set
+    >>> where(X**2 < 1).set
     (-1, 1)
 
-    >>> where(And(D1<=D2, D2<3))
+    >>> where(And(D1 <= D2, D2 < 3))
     Domain: ((Eq(a, 1)) & (Eq(b, 1))) | ((Eq(a, 1)) & (Eq(b, 2))) | ((Eq(a, 2)) & (Eq(b, 2)))
 
     """
@@ -780,7 +775,7 @@ def sample(expr, condition=None, **kwargs):
     >>> from diofant.stats import Die
     >>> X, Y, Z = Die('X', 6), Die('Y', 6), Die('Z', 6)
 
-    >>> die_roll = sample(X + Y + Z) # A random realization of three dice
+    >>> die_roll = sample(X + Y + Z)  # A random realization of three dice
 
     """
     return next(sample_iter(expr, condition, numsamples=1))
@@ -801,7 +796,7 @@ def sample_iter(expr, condition=None, numsamples=oo, **kwargs):
     >>> X = Normal('X', 0, 1)
     >>> expr = X*X + 3
     >>> iterator = sample_iter(expr, numsamples=3)
-    >>> list(iterator) # doctest: +SKIP
+    >>> list(iterator)  # doctest: +SKIP
     [12, 4, 7]
 
     See Also
@@ -864,7 +859,6 @@ def sampling_P(condition, given_condition=None, numsamples=1,
     diofant.stats.rv.sampling_density
 
     """
-
     count_true = 0
     count_false = 0
 
@@ -893,7 +887,6 @@ def sampling_E(expr, given_condition=None, numsamples=1,
     diofant.stats.rv.sampling_density
 
     """
-
     samples = sample_iter(expr, given_condition,
                           numsamples=numsamples, **kwargs)
 
@@ -912,7 +905,6 @@ def sampling_density(expr, given_condition=None, numsamples=1, **kwargs):
     diofant.stats.rv.sampling_E
 
     """
-
     results = {}
     for result in sample_iter(expr, given_condition,
                               numsamples=numsamples, **kwargs):
@@ -1003,7 +995,6 @@ def pspace_independent(a, b):
 
     if len(a_symbols.intersection(b_symbols)) == 0:
         return True
-    return
 
 
 def rv_subs(expr):
@@ -1016,6 +1007,8 @@ def rv_subs(expr):
 
 
 class NamedArgsMixin:
+    """Helper class for named arguments."""
+
     _argnames = ()
 
     def __getattr__(self, attr):

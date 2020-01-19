@@ -1,13 +1,13 @@
+import itertools
 import math
-from itertools import product
 
 import mpmath
 import pytest
 
 import diofant
-from diofant import (ITE, Abs, And, Float, Function, I, Integral, Lambda,
-                     Matrix, Max, Min, Not, Or, Piecewise, Rational, cos, exp,
-                     false, lambdify, oo, pi, sin, sqrt, symbols, true)
+from diofant import (ITE, And, Float, Function, I, Integral, Lambda, Matrix,
+                     Max, Min, Not, Or, Piecewise, Rational, cos, exp, false,
+                     lambdify, oo, pi, sin, sqrt, symbols, true)
 from diofant.abc import t, w, x, y, z
 from diofant.external import import_module
 from diofant.printing.lambdarepr import LambdaPrinter
@@ -174,7 +174,7 @@ def test_numpy_transl():
 
 @with_numpy
 def test_numpy_translation_abs():
-    f = lambdify(x, Abs(x), "numpy")
+    f = lambdify(x, abs(x), "numpy")
     assert f(-1) == 1
     assert f(1) == 1
 
@@ -350,7 +350,7 @@ def test_numpy_logical_ops():
 @with_numpy
 def test_numpy_matmul():
     xmat = Matrix([[x, y], [z, 1+z]])
-    ymat = Matrix([[x**2], [Abs(x)]])
+    ymat = Matrix([[x**2], [abs(x)]])
     mat_func = lambdify((x, y, z), xmat*ymat, modules="numpy")
     numpy.testing.assert_array_equal(mat_func(0.5, 3, 4), numpy.array([[1.625], [3.5]]))
     numpy.testing.assert_array_equal(mat_func(-0.5, 3, 4), numpy.array([[1.375], [3.5]]))
@@ -427,8 +427,9 @@ def test_imps():
 def test_imps_errors():
     # Test errors that implemented functions can return, and still be
     # able to form expressions.  See issue sympy/sympy#10810.
-    for val, error_class in product((0, 0., 2, 2.0),
-                                    (AttributeError, TypeError, ValueError)):
+    for val, error_class in itertools.product((0, 0., 2, 2.0),
+                                              (AttributeError, TypeError,
+                                               ValueError)):
 
         def myfunc(a):
             if a == 0:
@@ -530,7 +531,7 @@ def test_lambdify_docstring():
 
 def test_special_printers():
     class IntervalPrinter(LambdaPrinter):
-        """Use ``lambda`` printer but print numbers as ``mpi`` intervals. """
+        """Use ``lambda`` printer but print numbers as ``mpi`` intervals."""
 
         def _print_Integer(self, expr):
             return "mpi('%s')" % super()._print_Integer(expr)

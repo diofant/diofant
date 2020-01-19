@@ -1,14 +1,14 @@
 import pytest
 
-from diofant import (Abs, Add, And, Ci, Derivative, DiracDelta, E, Eq,
-                     EulerGamma, Expr, Function, I, Integral, Interval, Lambda,
-                     LambertW, Matrix, Max, Min, Ne, O, Piecewise, Poly,
-                     Rational, Si, Sum, Symbol, Tuple, acos, acosh, asin,
-                     asinh, atan, cbrt, cos, cosh, diff, erf, erfi, exp,
-                     expand_func, expand_mul, factor, fresnels, gamma, im,
-                     integrate, log, lowergamma, meijerg, nan, oo, pi,
-                     polar_lift, polygamma, re, sign, simplify, sin, sinh,
-                     sqrt, sstr, symbols, sympify, tan, tanh, trigsimp)
+from diofant import (Add, And, Ci, Derivative, DiracDelta, E, Eq, EulerGamma,
+                     Expr, Function, I, Integral, Interval, Lambda, LambertW,
+                     Matrix, Max, Min, Ne, O, Piecewise, Poly, Rational, Si,
+                     Sum, Symbol, Tuple, acos, acosh, asin, asinh, atan, cbrt,
+                     cos, cosh, diff, erf, erfi, exp, expand_func, expand_mul,
+                     factor, fresnels, gamma, im, integrate, log, lowergamma,
+                     meijerg, nan, oo, pi, polar_lift, polygamma, re, sign,
+                     simplify, sin, sinh, sqrt, sstr, symbols, sympify, tan,
+                     tanh, trigsimp)
 from diofant.abc import A, L, R, a, b, c, h, i, k, m, s, t, w, x, y, z
 from diofant.functions.elementary.complexes import periodic_argument
 from diofant.integrals.heurisch import heurisch
@@ -715,7 +715,7 @@ def test_sympyissue_4884():
     assert integrate(sqrt(x)*(1 + x)) == \
         Piecewise(
             (2*sqrt(x)*(x + 1)**2/5 - 2*sqrt(x)*(x + 1)/15 - 4*sqrt(x)/15,
-             Abs(x + 1) > 1),
+             abs(x + 1) > 1),
             (2*I*sqrt(-x)*(x + 1)**2/5 - 2*I*sqrt(-x)*(x + 1)/15 -
              4*I*sqrt(-x)/15, True))
     assert integrate(x**x*(1 + log(x))) == x**x
@@ -1098,7 +1098,7 @@ def test_sympyissue_4234():
 def test_sympyissue_4492():
     assert simplify(integrate(x**2 * sqrt(5 - x**2), x)) == Piecewise(
         (I*(2*x**5 - 15*x**3 + 25*x - 25*sqrt(x**2 - 5)*acosh(sqrt(5)*x/5)) /
-            (8*sqrt(x**2 - 5)), 1 < Abs(x**2)/5),
+            (8*sqrt(x**2 - 5)), 1 < abs(x**2)/5),
         ((-2*x**5 + 15*x**3 - 25*x + 25*sqrt(-x**2 + 5)*asin(sqrt(5)*x/5)) /
             (8*sqrt(-x**2 + 5)), True))
 
@@ -1119,20 +1119,20 @@ def test_sympyissue_2708():
 
 def test_sympyissue_8368():
     assert integrate(exp(-s*x)*cosh(x), (x, 0, oo)) == \
-        Piecewise((pi*Piecewise((-s/(pi*(-s**2 + 1)), Abs(s**2) < 1),
-                                (1/(pi*s*(1 - 1/s**2)), Abs(s**(-2)) < 1), (meijerg(((Rational(1, 2),), (0, 0)),
-                                                                                    ((0, Rational(1, 2)), (0,)), polar_lift(s)**2), True)),
-                   And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
-                       cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) -
+        Piecewise((pi*Piecewise((-s/(pi*(-s**2 + 1)), abs(s**2) < 1),
+                                (1/(pi*s*(1 - 1/s**2)), abs(s**-2) < 1), (meijerg(((Rational(1, 2),), (0, 0)),
+                                                                                  ((0, Rational(1, 2)), (0,)), polar_lift(s)**2), True)),
+                   And(abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
+                       cos(abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(abs(s**2)) -
                        1 > 0)), (Integral(exp(-s*x)*cosh(x), (x, 0, oo)), True))
     assert integrate(exp(-s*x)*sinh(x), (x, 0, oo)) == \
-        Piecewise((pi*Piecewise((2/(pi*(2*s**2 - 2)), Abs(s**2) < 1),
-                                (-2/(pi*s**2*(-2 + 2/s**2)), Abs(s**(-2)) < 1),
+        Piecewise((pi*Piecewise((2/(pi*(2*s**2 - 2)), abs(s**2) < 1),
+                                (-2/(pi*s**2*(-2 + 2/s**2)), abs(s**-2) < 1),
                                 (meijerg(((0,), (Rational(-1, 2), Rational(1, 2))),
                                          ((0, Rational(1, 2)), (Rational(-1, 2),)),
                                          polar_lift(s)**2), True)),
-                   And(Abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
-                       cos(Abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(Abs(s**2)) - 1 > 0)),
+                   And(abs(periodic_argument(polar_lift(s)**2, oo)) < pi, Ne(s**2, 1),
+                       cos(abs(periodic_argument(polar_lift(s)**2, oo))/2)*sqrt(abs(s**2)) - 1 > 0)),
                   (Integral(E**(-s*x)*sinh(x), (x, 0, oo)), True))
 
 
@@ -1264,7 +1264,7 @@ def test_sympyissue_4511():
 
 def test_sympyissue_4551():
     assert (integrate(1/(x*sqrt(1 - x**2)), x) ==
-            Piecewise((-acosh(1/x), Abs(x**(-2)) > 1), (I*asin(1/x), True)))
+            Piecewise((-acosh(1/x), abs(x**-2) > 1), (I*asin(1/x), True)))
 
 
 @pytest.mark.xfail
@@ -1307,3 +1307,12 @@ def test_sympyissue_11877():
 def test_sympyissue_17841():
     e = 1/(x**2 + x + I)
     assert integrate(e.diff(x), x) == e
+
+
+def test_sympyissue_18384():
+    e = abs(sin(x)*cos(x))
+    assert integrate(e, (x, pi, 2*pi)) == 1
+    assert integrate(e, (x, 0, pi/2)) == Rational(1, 2)
+    assert integrate(e, (x, pi/2, pi)) == Rational(1, 2)
+    assert integrate(e, (x, pi, 3*pi/2)) == Rational(1, 2)
+    assert integrate(e, (x, 3*pi/2, 2*pi)) == Rational(1, 2)

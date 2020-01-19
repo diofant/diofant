@@ -1,4 +1,4 @@
-"""Definitions of monomial orderings. """
+"""Definitions of monomial orderings."""
 
 from ..core import Symbol, Tuple
 from ..core.compatibility import iterable
@@ -85,7 +85,7 @@ class ProductOrder(MonomialOrder):
     y_1, y_2, y_3, and their product on {x_i, y_i} as follows:
 
     >>> P = ProductOrder(
-    ...     (lex, lambda m: m[:2]), # lex order on x_1 and x_2 of monomial
+    ...     (lex, lambda m: m[:2]),  # lex order on x_1 and x_2 of monomial
     ...     (grlex, lambda m: m[2:]))  # grlex on y_1, y_2, y_3
     >>> P((2, 1, 1, 0, 0)) > P((1, 10, 0, 2, 0))
     True

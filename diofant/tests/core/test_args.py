@@ -41,7 +41,7 @@ from diofant.diffgeom import (BaseCovarDerivativeOp, BaseScalarField,
                               Manifold, Patch)
 from diofant.diffgeom import Point as DiffgeomPoint
 from diofant.diffgeom import TensorProduct, WedgeProduct
-from diofant.functions import (Abs, Chi, Ci, DiracDelta, Ei, FallingFactorial,
+from diofant.functions import (Chi, Ci, DiracDelta, Ei, FallingFactorial,
                                Heaviside, KroneckerDelta, LambertW, LeviCivita,
                                Li, Max, Min, Piecewise, RisingFactorial, Shi,
                                Si, Ynm, Znm, acos, acosh, acot, acoth, acsc,
@@ -66,7 +66,6 @@ from diofant.functions import (Abs, Chi, Ci, DiracDelta, Ei, FallingFactorial,
 from diofant.functions import re as _re
 from diofant.functions import (sec, sech, sign, sinh, subfactorial, tan, tanh,
                                transpose, uppergamma, yn, zeta)
-from diofant.functions.combinatorial.factorials import MultiFactorial
 from diofant.functions.elementary.miscellaneous import IdentityFunction
 from diofant.functions.elementary.piecewise import ExprCondPair
 from diofant.functions.special.error_functions import _erfs
@@ -92,12 +91,6 @@ from diofant.integrals.transforms import (CosineTransform, FourierTransform,
                                           LaplaceTransform, MellinTransform,
                                           SineTransform)
 from diofant.logic.boolalg import BooleanFunction
-from diofant.matrices.expressions.factorizations import (EigenValues,
-                                                         EigenVectors,
-                                                         LofCholesky, LofLU,
-                                                         QofQR, RofQR, SofSVD,
-                                                         UofCholesky, UofLU,
-                                                         UofSVD, VofSVD)
 from diofant.matrices.expressions.fourier import DFT, IDFT
 from diofant.matrices.expressions.matexpr import MatrixElement
 from diofant.printing.codeprinter import Assignment
@@ -926,10 +919,6 @@ def test_diofant__functions__combinatorial__factorials__FallingFactorial():
     assert _test_args(FallingFactorial(2, x))
 
 
-def test_diofant__functions__combinatorial__factorials__MultiFactorial():
-    assert _test_args(MultiFactorial(x))
-
-
 def test_diofant__functions__combinatorial__factorials__RisingFactorial():
     assert _test_args(RisingFactorial(2, x))
 
@@ -983,7 +972,7 @@ def test_diofant__functions__combinatorial__numbers__lucas():
 
 
 def test_diofant__functions__elementary__complexes__Abs():
-    assert _test_args(Abs(x))
+    assert _test_args(abs(x))
 
 
 def test_diofant__functions__elementary__complexes__adjoint():
@@ -1792,57 +1781,6 @@ def test_diofant__matrices__expressions__fourier__DFT():
 
 def test_diofant__matrices__expressions__fourier__IDFT():
     assert _test_args(IDFT(Integer(2)))
-
-
-X = MatrixSymbol('X', 10, 10)
-
-
-def test_diofant__matrices__expressions__factorizations__LofLU():
-    assert _test_args(LofLU(X))
-
-
-def test_diofant__matrices__expressions__factorizations__UofLU():
-    assert _test_args(UofLU(X))
-
-
-def test_diofant__matrices__expressions__factorizations__QofQR():
-    assert _test_args(QofQR(X))
-
-
-def test_diofant__matrices__expressions__factorizations__RofQR():
-    assert _test_args(RofQR(X))
-
-
-def test_diofant__matrices__expressions__factorizations__LofCholesky():
-    assert _test_args(LofCholesky(X))
-
-
-def test_diofant__matrices__expressions__factorizations__UofCholesky():
-    assert _test_args(UofCholesky(X))
-
-
-def test_diofant__matrices__expressions__factorizations__EigenVectors():
-    assert _test_args(EigenVectors(X))
-
-
-def test_diofant__matrices__expressions__factorizations__EigenValues():
-    assert _test_args(EigenValues(X))
-
-
-def test_diofant__matrices__expressions__factorizations__UofSVD():
-    assert _test_args(UofSVD(X))
-
-
-def test_diofant__matrices__expressions__factorizations__VofSVD():
-    assert _test_args(VofSVD(X))
-
-
-def test_diofant__matrices__expressions__factorizations__SofSVD():
-    assert _test_args(SofSVD(X))
-
-
-def test_diofant__matrices__expressions__factorizations__Factorization():
-    pass
 
 
 def test_diofant__polys__polytools__GroebnerBasis():

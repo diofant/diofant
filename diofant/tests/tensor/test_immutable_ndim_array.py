@@ -2,10 +2,10 @@ from copy import copy
 
 import pytest
 
-from diofant import Dict, Indexed, IndexedBase, Rational, SparseMatrix, Symbol
+from diofant import (Dict, ImmutableDenseNDimArray, ImmutableSparseNDimArray,
+                     Indexed, IndexedBase, Matrix, Rational, SparseMatrix,
+                     Symbol)
 from diofant.abc import i, j, w, x, y, z
-from diofant.matrices import Matrix
-from diofant.tensor import ImmutableDenseNDimArray, ImmutableSparseNDimArray
 
 
 __all__ = ()

@@ -1,16 +1,12 @@
 import pytest
 
-from diofant import (Abs, Derivative, Eq, Function, Ge, Gt, Integral, Le, Lt,
+from diofant import (Derivative, Eq, Function, Ge, Gt, Integral, Le, Lt,
                      Matrix, Ne, Rational, Symbol, cbrt, exp, limit, log, oo,
-                     pi, root, sin, sqrt, symbols)
-from diofant.printing.python import python
+                     pi, python, root, sin, sqrt)
+from diofant.abc import x, y
 
 
 __all__ = ()
-
-x, y = symbols('x,y')
-th = Symbol('theta')
-ph = Symbol('phi')
 
 
 def test_python_basic():
@@ -98,9 +94,9 @@ def test_python_functions():
     assert python(sqrt(2 + pi)) == 'e = sqrt(2 + pi)'
     assert python(cbrt(2 + pi)) == 'e = (2 + pi)**Rational(1, 3)'
     assert python(root(2, 4)) == 'e = 2**Rational(1, 4)'
-    assert python(Abs(x)) == "x = Symbol('x')\ne = Abs(x)"
+    assert python(abs(x)) == "x = Symbol('x')\ne = Abs(x)"
     assert python(
-        Abs(x/(x**2 + 1))) in ["x = Symbol('x')\ne = Abs(x/(1 + x**2))",
+        abs(x/(x**2 + 1))) in ["x = Symbol('x')\ne = Abs(x/(1 + x**2))",
                                "x = Symbol('x')\ne = Abs(x/(x**2 + 1))"]
 
     # Univariate/Multivariate functions

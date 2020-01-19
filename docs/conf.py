@@ -1,13 +1,13 @@
-#
-# Diofant documentation build configuration file.
-#
-# This file is execfile()d with the current directory set to its
-# containing dir.
-#
-# The contents of this file are pickled, so don't put values in the
-# namespace that aren't pickleable (module imports are okay, they're
-# removed automatically).
-#
+"""
+Diofant documentation build configuration file.
+
+This file is execfile()d with the current directory set to its
+containing dir.
+
+The contents of this file are pickled, so don't put values in the
+namespace that aren't pickleable (module imports are okay, they're
+removed automatically).
+"""
 
 import inspect
 import os
@@ -44,7 +44,7 @@ master_doc = 'index'
 
 # Project information.
 project = 'Diofant'
-copyright = '2006-2018 SymPy Development Team, 2013-2019 Sergey B Kirpichev'
+copyright = '2006-2018 SymPy Development Team, 2013-2020 Sergey B Kirpichev'
 version = diofant.__version__
 release = version
 
@@ -74,7 +74,7 @@ latex_elements = {
 \setsansfont{DejaVu Sans}
 \setmonofont{DejaVu Sans Mono}
 ''',
-    'preamble':  r'''
+    'preamble': r'''
 % redefine \LaTeX to be usable in math mode
 \expandafter\def\expandafter\LaTeX\expandafter{\expandafter\text\expandafter{\LaTeX}}
 
@@ -162,7 +162,7 @@ mathjax_config = {
 
 
 def linkcode_resolve(domain, info):
-    """Determine the URL corresponding to Python object. """
+    """Determine the URL corresponding to Python object."""
     if domain != 'py':
         return
 

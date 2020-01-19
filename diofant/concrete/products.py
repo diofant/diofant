@@ -214,7 +214,6 @@ class Product(ExprWithIntLimits):
     def _eval_adjoint(self):
         if self.is_commutative:
             return self.func(self.function.adjoint(), *self.limits)
-        return
 
     def _eval_conjugate(self):
         return self.func(self.function.conjugate(), *self.limits)
@@ -260,8 +259,6 @@ class Product(ExprWithIntLimits):
 
             if M > 0:
                 return poly.LC()**(n - a + 1) * A * B
-            else:
-                return
 
         elif term.is_Add:
             p, q = term.as_numer_denom()
@@ -285,9 +282,7 @@ class Product(ExprWithIntLimits):
                 else:
                     include.append(t)
 
-            if not exclude:
-                return
-            else:
+            if exclude:
                 arg = term._new_rawargs(*include)
                 A = Mul(*exclude)
                 B = self.func(arg, (k, a, n)).doit()
@@ -311,7 +306,6 @@ class Product(ExprWithIntLimits):
     def _eval_transpose(self):
         if self.is_commutative:
             return self.func(self.function.transpose(), *self.limits)
-        return
 
     def reverse_order(self, *indices):
         r"""
@@ -423,7 +417,6 @@ def product(*args, **kwargs):
     Product(factorial(k), (k, 1, n))
 
     """
-
     prod = Product(*args, **kwargs)
 
     if isinstance(prod, Product):

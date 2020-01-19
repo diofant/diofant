@@ -22,7 +22,7 @@ division of polynomials with remainder.
 That is, for polynomials ``f`` and ``g``, it computes ``q`` and ``r``, such
 that `f = g \cdot q + r` and `\deg(r) < q`. For polynomials in one variables
 with coefficients in a field, say, the rational numbers, ``q`` and ``r`` are
-uniquely defined this way::
+uniquely defined this way
 
     >>> f, g = 5*x**2 + 10*x + 3, 2*x + 2
 
@@ -36,7 +36,7 @@ uniquely defined this way::
 
 As you can see, ``q`` has a non-integer coefficient. If you want to do division
 only in the ring of polynomials with integer coefficients, you can specify an
-additional parameter::
+additional parameter
 
     >>> div(f, g, field=False)
     ⎛      2    ⎞
@@ -44,7 +44,7 @@ additional parameter::
 
 But be warned, that this ring is no longer Euclidean and that the degree of the
 remainder doesn't need to be smaller than that of ``f``. Since 2 doesn't divide 5,
-`2 x` doesn't divide `5 x^2`, even if the degree is smaller. But::
+`2 x` doesn't divide `5 x^2`, even if the degree is smaller. But
 
     >>> g = 5*x + 1
 
@@ -54,7 +54,7 @@ remainder doesn't need to be smaller than that of ``f``. Since 2 doesn't divide 
        2
     5⋅x  + 10⋅x + 3
 
-This also works for polynomials with multiple variables::
+This also works for polynomials with multiple variables
 
     >>> div(x*y + y*z, 3*x + 3*z)
     ⎛y   ⎞
@@ -68,30 +68,30 @@ With division, there is also the computation of the greatest common divisor and
 the least common multiple.
 
 When the polynomials have integer coefficients, the contents' gcd is also
-considered::
+considered
 
     >>> gcd((12*x + 12)*x, 16*x**2)
     4⋅x
 
 But if the polynomials have rational coefficients, then the returned polynomial is
-monic::
+monic
 
     >>> gcd(3*x**2/2, 9*x/4)
     x
 
-Symbolic exponents are supported::
+Symbolic exponents are supported
 
     >>> gcd(2*x**(n + 4) - x**(n + 2), 4*x**(n + 1) + 3*x**n)
      n
     x
 
 It also works with multiple variables. In this case, the variables are ordered
-alphabetically, be default, which has influence on the leading coefficient::
+alphabetically, be default, which has influence on the leading coefficient
 
     >>> gcd(x*y/2 + y**2, 3*x + 6*y)
     x + 2⋅y
 
-The lcm is connected with the gcd and one can be computed using the other::
+The lcm is connected with the gcd and one can be computed using the other
 
     >>> f, g = x*y**2 + x**2*y, x**2*y**2
 
@@ -111,17 +111,18 @@ Square-free factorization
 =========================
 
 The square-free factorization of a univariate polynomial is the product of all
-factors (not necessarily irreducible) of degree 1, 2 etc.::
+factors (not necessarily irreducible) of degree 1, 2 etc
 
     >>> sqf(2*x**2 + 5*x**3 + 4*x**4 + x**5)
-     2        2
-    x ⋅(x + 1) ⋅(x + 2)
+                    2
+            ⎛ 2    ⎞
+    (x + 2)⋅⎝x  + x⎠
 
 Factorization
 =============
 
 Factorization supported over different domains, lets compute one for the finite
-field with characteristic 5, rational field or its algebraic extension::
+field with characteristic 5, rational field or its algebraic extension
 
     >>> f = x**4 - 3*x**2 + 1
 
@@ -135,7 +136,7 @@ field with characteristic 5, rational field or its algebraic extension::
     (x - φ)⋅(x + φ)⋅(x - 1 + φ)⋅(x - φ + 1)
 
 You also may use ``gaussian`` keyword to obtain a factorization over
-Gaussian rationals::
+Gaussian rationals
 
     >>> factor(4*x**4 + 8*x**3 + 77*x**2 + 18*x + 153, gaussian=True)
       ⎛    3⋅ⅈ⎞ ⎛    3⋅ⅈ⎞
@@ -157,7 +158,7 @@ univariate case.
 Gröbner bases
 =============
 
-Buchberger's algorithm is implemented, supporting various monomial orders::
+Buchberger's algorithm is implemented, supporting various monomial orders
 
     >>> groebner([x**2 + 1, y**4*x + x**3])
                  ⎛⎡ 2       4    ⎤                           ⎞

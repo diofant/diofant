@@ -83,7 +83,6 @@ class Vector(BasisDependent):
         C.i
 
         """
-
         from .functions import express
         from .deloperator import Del
 
@@ -156,7 +155,6 @@ class Vector(BasisDependent):
         (-1)*(C.k|C.i)
 
         """
-
         # Check special cases
         if isinstance(other, Dyadic):
             if isinstance(self, VectorZero):
@@ -181,7 +179,6 @@ class Vector(BasisDependent):
             The user shouldn't be calling this.
 
             """
-
             return (mat[0][0] * (mat[1][1] * mat[2][2] - mat[1][2] *
                                  mat[2][1])
                     + mat[0][1] * (mat[1][2] * mat[2][0] - mat[1][0] *
@@ -224,7 +221,6 @@ class Vector(BasisDependent):
         (N.i|N.j)
 
         """
-
         # Handle the special cases
         if not isinstance(other, Vector):
             raise TypeError("Invalid operand for outer product")
@@ -268,7 +264,6 @@ class Vector(BasisDependent):
         [c]])
 
         """
-
         return ImmutableMatrix([self.dot(unit_vec)
                                 for unit_vec in system.base_vectors()])
 
@@ -290,7 +285,6 @@ class Vector(BasisDependent):
         {R1: R1.i, R2: R2.i}
 
         """
-
         parts = {}
         for vect, measure in self.components.items():
             parts[vect.system] = (parts.get(vect.system, Vector.zero) +
@@ -385,7 +379,7 @@ class VectorMul(BasisDependentMul, Vector):
 
     @property
     def measure_number(self):
-        """ The scalar expression involved in the defition of
+        """The scalar expression involved in the defition of
         this VectorMul.
 
         """

@@ -126,7 +126,7 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
     **Tips**
         - You can declare the derivative of an unknown function this way:
 
-            >>> f = Function("f")(x, y) # f is a function of x and y
+            >>> f = Function("f")(x, y)  # f is a function of x and y
             >>> # fx will be the partial derivative of f with respect to x
             >>> fx = Derivative(f, x)
             >>> # fy will be the partial derivative of f with respect to y
@@ -152,7 +152,6 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
     Eq(f(x, y), E**(-2*x/13 - 3*y/13)*F(3*x - 2*y))
 
     """
-
     if not solvefun:
         solvefun = Function('F')
 
@@ -193,7 +192,6 @@ def _helper_simplify(eq, hint, func, order, match, solvefun):
     calling _desolve multiple times.
 
     """
-
     if hint.endswith("_Integral"):
         solvefunc = globals()[
             "pde_" + hint[:-len("_Integral")]]
@@ -255,7 +253,6 @@ def classify_pde(eq, func=None, dict=False, **kwargs):
     ('1st_linear_constant_coeff_homogeneous',)
 
     """
-
     prep = kwargs.pop('prep', True)
 
     if func and len(func.args) != 2:  # pragma: no cover
@@ -408,7 +405,6 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
     (False, E**(-6*x/25 - 8*y/25)*(x*F(4*x - 3*y) - 6*F(4*x - 3*y)/25 + 4*Subs(Derivative(F(_xi_1), _xi_1), (_xi_1, 4*x - 3*y))))
 
     """
-
     # Converting the pde into an equation
     if not isinstance(pde, Equality):
         pde = Eq(pde, 0)
@@ -571,7 +567,6 @@ def pde_1st_linear_constant_coeff(eq, func, order, match, solvefun):
       Math 124A - Fall 2010, pp.7
 
     """
-
     # TODO : For now homogeneous first order linear PDE's having
     # two variables are implemented. Once there is support for
     # solving systems of ODE's, this can be extended to n variables.
@@ -765,7 +760,6 @@ def pde_separate(eq, fun, sep, strategy='mul'):
     diofant.solvers.pde.pde_separate_mul
 
     """
-
     do_add = False
     if strategy == 'add':
         do_add = True
@@ -865,7 +859,6 @@ def pde_separate_mul(eq, fun, sep):
 
 def _separate(eq, dep, others):
     """Separate expression into two parts based on dependencies of variables."""
-
     # FIRST PASS
     # Extract derivatives depending our separable variable...
     terms = set()

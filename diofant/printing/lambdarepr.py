@@ -151,6 +151,8 @@ class NumPyPrinter(LambdaPrinter):
 
 
 class MpmathPrinter(LambdaPrinter):
+    """Mpmath printer."""
+
     def _print_RootOf(self, expr):
         if expr.is_real:
             return ("findroot(lambda %s: %s, %s, "
@@ -158,7 +160,10 @@ class MpmathPrinter(LambdaPrinter):
                                              self._print(expr.expr),
                                              self._print(expr.interval.as_tuple())))
         else:
-            raise NotImplementedError
+            return ("findroot(lambda %s: %s, mpc%s, "
+                    "method='secant')" % (self._print(expr.poly.gen),
+                                          self._print(expr.expr),
+                                          self._print(expr.interval.center)))
 
     def _print_Sum(self, expr):
         return "nsum(lambda %s: %s, %s)" % (",".join([self._print(v) for v in expr.variables]),
@@ -179,6 +184,32 @@ class MpmathPrinter(LambdaPrinter):
 
     def _print_GoldenRatio(self, expr):
         return "phi"
+
+    def _print_Pow(self, expr):
+        if expr.exp.is_Rational:
+            n, d = expr.exp.as_numer_denom()
+            if d == 1:
+                if n >= 0:
+                    return "%s**%s" % (self._print(expr.base), n)
+                else:
+                    return "power(%s, %s)" % (self._print(expr.base), n)
+            else:
+                if n >= 2:
+                    return "root(%s, %s)**%s" % (self._print(expr.base), d, n)
+                elif n == 1:
+                    return "root(%s, %s)" % (self._print(expr.base), d)
+                else:
+                    return "power(root(%s, %s), %s)" % (self._print(expr.base),
+                                                        d, n)
+        else:
+            return super()._print_Pow(expr)
+
+    def _print_Rational(self, expr):
+        n, d = expr.numerator, expr.denominator
+        if d == 1:
+            return "%s" % n
+        else:
+            return "%s*power(%s, -1)" % (n, d)
 
 
 def lambdarepr(expr, **settings):

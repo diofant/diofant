@@ -1,7 +1,6 @@
 import pytest
 
-from diofant import nextprime, pi
-from diofant.domains import ZZ
+from diofant import ZZ, nextprime, pi
 from diofant.polys import polyconfig as config
 from diofant.polys.galoistools import (gf_add, gf_add_ground, gf_berlekamp,
                                        gf_compose_mod, gf_ddf_shoup,

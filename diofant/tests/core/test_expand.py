@@ -1,9 +1,9 @@
 import pytest
 
 from diofant import (I, Integer, Mul, O, Pow, Rational, Symbol, cbrt, cos, exp,
-                     expand, log, pi, sin, sqrt)
+                     expand, expand_multinomial, expand_power_base, log, pi,
+                     sin, sqrt)
 from diofant.abc import x, y, z
-from diofant.core.function import expand_multinomial, expand_power_base
 from diofant.simplify.radsimp import expand_numer
 from diofant.utilities.randtest import verify_numerically
 

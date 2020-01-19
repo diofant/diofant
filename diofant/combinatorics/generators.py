@@ -131,7 +131,6 @@ def rubik(n):
     slices from the front.
 
     """
-
     if n < 2:
         raise ValueError('dimension of cube must be > 1')
 

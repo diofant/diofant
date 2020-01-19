@@ -1,11 +1,10 @@
-from diofant.core import Eq, Integer, Symbol
-from diofant.functions import Piecewise, cos, cot, csc, log, sec, sin, tan
+from diofant import (Eq, Integer, Piecewise, Symbol, cos, cot, csc, log, sec,
+                     sin, tan)
+from diofant.abc import x
 from diofant.integrals.trigonometry import trigintegrate
 
 
 __all__ = ()
-
-x = Symbol('x')
 
 
 def test_trigintegrate_odd():
@@ -26,6 +25,8 @@ def test_trigintegrate_odd():
         Piecewise((x, Eq(y, 0)), (sin(y*x)/y, True))
     assert trigintegrate(sin(y*x)**2, x) == \
         Piecewise((0, Eq(y, 0)), ((x*y/2 - sin(x*y)*cos(x*y)/2)/y, True))
+    assert trigintegrate(sin(y*x)**2, x, conds='none') == \
+        (x*y/2 - sin(x*y)*cos(x*y)/2)/y
     assert trigintegrate(sin(y*x)*cos(y*x), x) == \
         Piecewise((0, Eq(y, 0)), (sin(x*y)**2/(2*y), True))
     assert trigintegrate(cos(y*x)**2, x) == \
@@ -75,6 +76,13 @@ def test_trigintegrate_even():
 
     assert trigintegrate(cos(x)**(-6), x) == sin(x)/(5*cos(x)**5) \
         + 4*sin(x)/(15*cos(x)**3) + 8*sin(x)/(15*cos(x))
+
+    assert trigintegrate(sin(x)**4/cos(x)**2, x) == \
+        -3*x/2 + sin(x)**3/cos(x) + 3*sin(x)*cos(x)/2
+    assert trigintegrate(cos(x)**4/sin(x)**2, x) == \
+        -3*x/2 - 3*sin(x)*cos(x)/2 - cos(x)**3/sin(x)
+    assert trigintegrate(sin(x)**2/cos(x)**2, x) == -x + sin(x)/cos(x)
+    assert trigintegrate(sin(x)**-2*cos(x)**2, x) == -x - cos(x)/sin(x)
 
 
 def test_trigintegrate_mixed():

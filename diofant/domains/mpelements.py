@@ -1,4 +1,4 @@
-"""Real and complex elements. """
+"""Real and complex elements."""
 
 from mpmath.ctx_mp_python import PythonMPContext, _constant, _mpc, _mpf
 from mpmath.libmp import (MPZ_ONE, finf, fnan, fninf, fone, from_float,
@@ -13,7 +13,7 @@ __all__ = 'RealElement', 'ComplexElement', 'MPContext'
 
 
 class RealElement(_mpf, DomainElement):
-    """An element of a real domain. """
+    """An element of a real domain."""
 
     def _set_mpf(self, val):
         self.__mpf__ = val
@@ -34,7 +34,7 @@ class RealElement(_mpf, DomainElement):
 
 
 class ComplexElement(_mpc, DomainElement):
-    """An element of a complex domain. """
+    """An element of a complex domain."""
 
     def _set_mpc(self, val):
         self.__mpc__ = val
@@ -58,6 +58,7 @@ new = object.__new__
 
 
 class MPContext(PythonMPContext):
+    """Base class to keep mpmath evaluation context."""
 
     def __init__(self, prec=53, dps=None, tol=None):
         self._prec_rounding = [prec, round_nearest]

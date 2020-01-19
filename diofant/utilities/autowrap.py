@@ -21,7 +21,7 @@ lambdify().
     >>> f = binary_function('f', expr)
     >>> 2*f(x, y) + y
     y + 2*f(x, y)
-    >>> (2*f(x, y) + y).evalf(2, subs={x: 1, y:2}, strict=False)
+    >>> (2*f(x, y) + y).evalf(2, subs={x: 1, y: 2}, strict=False)
     0.e-190
 
 The idea is that a Diofant user will primarily be interested in working with
@@ -79,6 +79,8 @@ from .lambdify import implemented_function
 
 
 class CodeWrapError(Exception):
+    """Generic code wrapping error."""
+
     pass
 
 
@@ -848,7 +850,6 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     [  2.   6.  12.]
 
     """
-
     if isinstance(args, (Dummy, Symbol)):
         args = args,
     else:

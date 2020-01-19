@@ -23,6 +23,8 @@ def _iszero(x):
 
 
 class MatrixError(Exception):
+    """Generic matrix error."""
+
     pass
 
 
@@ -33,10 +35,13 @@ class ShapeError(ValueError, MatrixError):
 
 
 class NonSquareMatrixError(ShapeError):
+    """Raised when a square matrix is expected."""
+
     pass
 
 
 class MatrixBase(DefaultPrinting):
+    """Base class for matrices."""
 
     # Added just for numpy compatibility
     __array_priority__ = 11
@@ -210,7 +215,8 @@ class MatrixBase(DefaultPrinting):
 
         >>> M = zeros(4)
         >>> m = M.cols
-        >>> M[3*m] = ones(1, m)*2; M
+        >>> M[3*m] = ones(1, m)*2
+        >>> M
         Matrix([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
@@ -219,7 +225,8 @@ class MatrixBase(DefaultPrinting):
 
         And to replace column c you can assign to position c:
 
-        >>> M[2] = ones(m, 1)*4; M
+        >>> M[2] = ones(m, 1)*4
+        >>> M
         Matrix([
         [0, 0, 4, 0],
         [0, 0, 4, 0],
@@ -251,7 +258,6 @@ class MatrixBase(DefaultPrinting):
                 self.copyin_matrix(key, value)
             else:
                 return i, j, self._sympify(value)
-            return
 
     def copy(self):
         """Returns the copy of a matrix."""
@@ -710,7 +716,6 @@ class MatrixBase(DefaultPrinting):
         QRdecomposition
 
         """
-
         if not self.is_square:
             raise NonSquareMatrixError("Matrix must be square.")
         if not self.is_symmetric():
@@ -772,7 +777,6 @@ class MatrixBase(DefaultPrinting):
         pinv_solve
 
         """
-
         if not self.is_square:
             raise NonSquareMatrixError("Matrix must be square.")
         if rhs.rows != self.rows:
@@ -922,7 +926,8 @@ class MatrixBase(DefaultPrinting):
         If each line of S represent coefficients of Ax + By
         and x and y are [2, 3] then S*xy is:
 
-        >>> r = S*Matrix([2, 3]); r
+        >>> r = S*Matrix([2, 3])
+        >>> r
         Matrix([
         [ 8],
         [13],
@@ -931,7 +936,8 @@ class MatrixBase(DefaultPrinting):
         But let's add 1 to the middle value and then solve for the
         least-squares value of xy:
 
-        >>> xy = S.solve_least_squares(Matrix([8, 14, 18])); xy
+        >>> xy = S.solve_least_squares(Matrix([8, 14, 18]))
+        >>> xy
         Matrix([
         [ 5/3],
         [10/3]])
@@ -1018,7 +1024,6 @@ class MatrixBase(DefaultPrinting):
         key2ij
 
         """
-
         islice, jslice = [isinstance(k, slice) for k in keys]
         if islice:
             assert self.rows
@@ -1073,7 +1078,6 @@ class MatrixBase(DefaultPrinting):
         {x}
 
         """
-
         if types:
             types = tuple(t if isinstance(t, type) else type(t) for t in types)
         else:
@@ -1094,7 +1098,6 @@ class MatrixBase(DefaultPrinting):
         {x}
 
         """
-
         return set().union(*[i.free_symbols for i in self])
 
     def subs(self, *args, **kwargs):  # should mirror core.basic.subs
@@ -1597,7 +1600,6 @@ class MatrixBase(DefaultPrinting):
         QRdecomposition
 
         """
-
         Q, R = self.as_mutable().QRdecomposition()
         y = Q.T*b
 
@@ -1974,9 +1976,8 @@ class MatrixBase(DefaultPrinting):
         """
         if any(i.is_nonzero for i in self):
             return False
-        if any(i.is_zero is None for i in self):
-            return
-        return True
+        if not any(i.is_zero is None for i in self):
+            return True
 
     def is_nilpotent(self):
         """Checks if a matrix is nilpotent.
@@ -2295,7 +2296,6 @@ class MatrixBase(DefaultPrinting):
         [-1, 0]])
         >>> m.is_anti_symmetric()
         True
-        >>> x, y = symbols('x y')
         >>> m = Matrix(2, 3, [0, 0, x, -y, 0, 0])
         >>> m
         Matrix([
@@ -2422,7 +2422,6 @@ class MatrixBase(DefaultPrinting):
         det_LU_decomposition
 
         """
-
         # if methods were made internal and all determinant calculations
         # passed through here, then these lines could be factored out of
         # the method routines
@@ -2559,7 +2558,6 @@ class MatrixBase(DefaultPrinting):
         berkowitz
 
         """
-
         return self.cofactorMatrix(method).T
 
     def inverse_LU(self, iszerofunc=_iszero):
@@ -3038,7 +3036,6 @@ class MatrixBase(DefaultPrinting):
         singular_values
 
         """
-
         if not self:
             return Integer(0)
         singularvalues = self.singular_values()
@@ -3919,7 +3916,8 @@ class MatrixBase(DefaultPrinting):
         ========
 
         >>> F, G = symbols('F, G', cls=Function)
-        >>> M = Matrix(2, 2, lambda i, j: F(i+j)) ; M
+        >>> M = Matrix(2, 2, lambda i, j: F(i+j))
+        >>> M
         Matrix([
         [F(0), F(1)],
         [F(1), F(2)]])

@@ -1,15 +1,15 @@
 import pytest
 
-from diofant import (Add, Derivative, Ei, Eq, Function, I, Integral, LambertW,
-                     Piecewise, Rational, Sum, Symbol, acos, asin, asinh,
-                     besselj, cos, cosh, diff, erf, exp, li, log, pi, ratsimp,
-                     root, simplify, sin, sinh, sqrt, symbols, tan)
+from diofant import (Add, Derivative, E, Ei, Eq, Function, I, Integral,
+                     LambertW, Piecewise, Rational, Sum, Symbol, acos, asin,
+                     asinh, besselj, cos, cosh, diff, erf, erfi, exp, li, log,
+                     pi, ratsimp, root, simplify, sin, sinh, sqrt, tan)
+from diofant.abc import nu, x, y, z
 from diofant.integrals.heurisch import components, heurisch, heurisch_wrapper
 
 
 __all__ = ()
 
-x, y, z, nu = symbols('x,y,z,nu')
 f = Function('f')
 
 
@@ -165,17 +165,28 @@ def test_heurisch_hacking():
     assert (heurisch(sqrt(1 - 7*x**2), x, hints=[]) ==
             x*sqrt(1 - 7*x**2)/2 + sqrt(7)*asin(sqrt(7)*x)/14)
 
+    assert heurisch(sqrt(y*x**2 - 1), x, hints=[]) is None
+
     assert (heurisch(1/sqrt(1 + 7*x**2), x, hints=[]) ==
             sqrt(7)*asinh(sqrt(7)*x)/7)
     assert (heurisch(1/sqrt(1 - 7*x**2), x, hints=[]) ==
             sqrt(7)*asin(sqrt(7)*x)/7)
 
-    assert (heurisch(exp(-7*x**2), x, hints=[]) == sqrt(7*pi)*erf(sqrt(7)*x)/14)
+    assert heurisch(exp(-7*x**2), x, hints=[]) == sqrt(7*pi)*erf(sqrt(7)*x)/14
+    assert heurisch(exp(2*x**2), x,
+                    hints=[]) == sqrt(2)*sqrt(pi)*erfi(sqrt(2)*x)/4
+
+    assert (heurisch(exp(2*x**2 - 3*x), x, hints=[]) ==
+            sqrt(2)*sqrt(pi)*erfi(sqrt(2)*x - 3*sqrt(2)/4)/(4*E**Rational(9, 8)))
 
     assert heurisch(1/sqrt(9 - 4*x**2), x, hints=[]) == asin(2*x/3)/2
     assert heurisch(1/sqrt(9 + 4*x**2), x, hints=[]) == asinh(2*x/3)/2
 
     assert heurisch(li(x), x, hints=[]) == x*li(x) - Ei(2*log(x))
+    assert heurisch(li(log(x)), x, hints=[]) is None
+
+    assert (heurisch(sqrt(1 + x), x, hints=[x, sqrt(1 + x)]) ==
+            2*x*sqrt(x + 1)/3 + 2*sqrt(x + 1)/3)
 
 
 def test_heurisch_function():
@@ -183,6 +194,7 @@ def test_heurisch_function():
 
 
 def test_heurisch_wrapper():
+    assert heurisch_wrapper(1, x) == x
     f = 1/(y + x)
     assert heurisch_wrapper(f, x) == log(x + y)
     f = 1/(y - x)

@@ -50,7 +50,6 @@ def express(expr, system, system2=None, variables=False):
     (cos(q))*(B.i|N.i) + (-sin(q))*(B.j|N.i)
 
     """
-
     if expr == 0 or expr == Vector.zero:
         return expr
 
@@ -142,7 +141,6 @@ def curl(vect, coord_sys):
     R.x*R.y*R.j + (-R.x*R.z)*R.k
 
     """
-
     return coord_sys.delop.cross(vect).doit()
 
 
@@ -172,7 +170,6 @@ def divergence(vect, coord_sys):
     2*R.z
 
     """
-
     return coord_sys.delop.dot(vect).doit()
 
 
@@ -202,7 +199,6 @@ def gradient(scalar, coord_sys):
     10*R.x*R.z*R.i + 5*R.x**2*R.k
 
     """
-
     return coord_sys.delop(scalar).doit()
 
 
@@ -226,7 +222,6 @@ def is_conservative(field):
     False
 
     """
-
     # Field is conservative irrespective of system
     # Take the first coordinate system in the result of the
     # separate method of Vector
@@ -258,7 +253,6 @@ def is_solenoidal(field):
     False
 
     """
-
     # Field is solenoidal irrespective of system
     # Take the first coordinate system in the result of the
     # separate method in Vector
@@ -297,7 +291,6 @@ def scalar_potential(field, coord_sys):
     2*R.x**2*R.y*R.z
 
     """
-
     # Check whether field is conservative
     if not is_conservative(field):
         raise ValueError("Field is not conservative")
@@ -351,7 +344,6 @@ def scalar_potential_difference(field, coord_sys, point1, point2):
     Examples
     ========
 
-    >>> from diofant.vector import Point
     >>> R = CoordSysCartesian('R')
     >>> P = R.origin.locate_new('P', R.x*R.i + R.y*R.j + R.z*R.k)
     >>> vectfield = 4*R.x*R.y*R.i + 2*R.x**2*R.j
@@ -362,7 +354,6 @@ def scalar_potential_difference(field, coord_sys, point1, point2):
     -2*R.x**2*R.y + 18
 
     """
-
     if not isinstance(coord_sys, CoordSysCartesian):
         raise TypeError("coord_sys must be a CoordSysCartesian")
     if isinstance(field, Vector):
@@ -416,7 +407,6 @@ def matrix_to_vector(matrix, system):
     True
 
     """
-
     outvec = Vector.zero
     vects = system.base_vectors()
     for i, x in enumerate(matrix):
@@ -433,7 +423,6 @@ def _path(from_object, to_object):
     Returns (index, list) tuple.
 
     """
-
     if from_object._root != to_object._root:
         raise ValueError("No connecting path found between " +
                          str(from_object) + " and " + str(to_object))

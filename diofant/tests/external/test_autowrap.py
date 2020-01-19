@@ -4,9 +4,9 @@ import tempfile
 import pytest
 
 import diofant
-from diofant import Eq, sin, symbols
+from diofant import Eq, Idx, IndexedBase, sin, symbols
+from diofant.abc import a, b, c
 from diofant.external import import_module
-from diofant.tensor import Idx, IndexedBase
 from diofant.utilities.autowrap import (CodeWrapError, F2PyCodeWrapper,
                                         autowrap, ufuncify)
 
@@ -33,7 +33,6 @@ if f2py:
     else:
         f2pyworks = True
 
-a, b, c = symbols('a b c')
 n, m, d = symbols('n m d', integer=True)
 A, B, C = symbols('A B C', cls=IndexedBase)
 i = Idx('i', m)

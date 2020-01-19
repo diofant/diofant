@@ -3,19 +3,17 @@ from random import random
 
 import pytest
 
-from diofant import (Derivative, Dummy, E, Eq, Expr, Float, Function, I,
-                     Integer, Lambda, O, Rational, RootOf, S, Subs, Sum,
-                     Symbol, Tuple, acos, cbrt, cos, diff, exp, expand, expint,
-                     floor, im, log, loggamma, nan, nfloat, oo, pi, polygamma,
-                     re, sin, sqrt, symbols, zoo)
+from diofant import (Derivative, Dummy, E, Eq, Expr, FiniteSet, Float,
+                     Function, I, Integer, Lambda, O, PoleError, Rational,
+                     RootOf, S, Subs, Sum, Symbol, Tuple, acos, cbrt, cos,
+                     diff, exp, expand, expint, floor, im, log, loggamma, nan,
+                     nfloat, oo, pi, polygamma, re, sin, solve, sqrt, subsets,
+                     symbols, variations, zoo)
 from diofant.abc import a, b, t, w, x, y, z
 from diofant.core.basic import _aresame
 from diofant.core.cache import clear_cache
-from diofant.core.function import (ArgumentIndexError, PoleError,
-                                   UndefinedFunction, _mexpand)
-from diofant.sets.sets import FiniteSet
-from diofant.solvers import solve
-from diofant.utilities.iterables import subsets, variations
+from diofant.core.function import (ArgumentIndexError, UndefinedFunction,
+                                   _mexpand)
 
 
 __all__ = ()
@@ -105,22 +103,22 @@ def test_diff_symbols():
 
 
 def test_Function():
-    class myfunc(Function):
+    class MyFunc(Function):
         @classmethod
         def eval(cls, x):  # one arg
             return
 
-    assert myfunc.nargs == FiniteSet(1)
-    assert myfunc(x).nargs == FiniteSet(1)
-    pytest.raises(TypeError, lambda: myfunc(x, y).nargs)
+    assert MyFunc.nargs == FiniteSet(1)
+    assert MyFunc(x).nargs == FiniteSet(1)
+    pytest.raises(TypeError, lambda: MyFunc(x, y).nargs)
 
-    class myfunc(Function):
+    class MyFunc(Function):
         @classmethod
         def eval(cls, *x):  # star args
             return
 
-    assert myfunc.nargs == S.Naturals0
-    assert myfunc(x).nargs == S.Naturals0
+    assert MyFunc.nargs == S.Naturals0
+    assert MyFunc(x).nargs == S.Naturals0
 
 
 def test_nargs():
@@ -466,14 +464,14 @@ def test_derivative_numerically():
 
 
 def test_fdiff_argument_index_error():
-    class myfunc(Function):
+    class MyFunc(Function):
         nargs = 1  # define since there is no eval routine
 
         def fdiff(self, idx):
             raise ArgumentIndexError
-    mf = myfunc(x)
+    mf = MyFunc(x)
     assert mf.diff(x) == Derivative(mf, x)
-    pytest.raises(TypeError, lambda: myfunc(x, x))
+    pytest.raises(TypeError, lambda: MyFunc(x, x))
 
     pytest.raises(ArgumentIndexError, lambda: f(x).fdiff(2))
 
@@ -611,8 +609,6 @@ def test_unhandled():
         def _eval_derivative(self, s):
             if not s.name.startswith('xi'):
                 return self
-            else:
-                return
 
     expr = MyExpr(x, y, z)
     assert diff(expr, x, y, f(x), z) == Derivative(expr, f(x), z)

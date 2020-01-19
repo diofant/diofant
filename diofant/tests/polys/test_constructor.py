@@ -1,10 +1,8 @@
-"""Tests for tools for constructing domains for expressions. """
+"""Tests for tools for constructing domains for expressions."""
 
-from diofant import (E, Float, GoldenRatio, I, Integer, Poly, Rational, sin,
-                     sqrt)
+from diofant import (EX, QQ, RR, ZZ, E, Float, GoldenRatio, I, Integer, Poly,
+                     Rational, construct_domain, sin, sqrt)
 from diofant.abc import x, y
-from diofant.domains import EX, QQ, RR, ZZ
-from diofant.polys.constructor import construct_domain
 
 
 __all__ = ()

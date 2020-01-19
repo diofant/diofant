@@ -197,7 +197,7 @@ def xxinv(mul):
 
 
 def remove_ids(mul):
-    """ Remove Identities from a MatMul
+    """Remove Identities from a MatMul
 
     This is a modified version of diofant.core.strategies.rm_id.
     This is necesssary because MatMul may contain both MatrixExprs and Exprs
@@ -233,7 +233,7 @@ canonicalize = exhaust(typed({MatMul: do_one(rules)}))
 
 
 def only_squares(*matrices):
-    """factor matrices only if they are square."""
+    """Factor matrices only if they are square."""
     if matrices[0].rows != matrices[-1].cols:
         raise RuntimeError("Invalid matrices being multiplied")
     out = []

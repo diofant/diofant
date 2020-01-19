@@ -473,9 +473,6 @@ def _ask(fact, obj):
             if ret_val is not None:
                 return ret_val
 
-    # Note: the result has already been cached
-    return
-
 
 class ManagedProperties(type):
     """Metaclass for classes with old-style assumptions."""

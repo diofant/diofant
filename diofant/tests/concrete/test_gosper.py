@@ -1,4 +1,4 @@
-"""Tests for Gosper's algorithm for hypergeometric summation. """
+"""Tests for Gosper's algorithm for hypergeometric summation."""
 
 from diofant import (Poly, Rational, Symbol, binomial, factorial, gamma, pi,
                      simplify, sqrt)

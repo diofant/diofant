@@ -316,7 +316,8 @@ class NDimArray(DefaultPrinting):
 
     def __eq__(self, other):
         """
-        NDimArray instances can be compared to each other.
+        Compare NDimArray instances.
+
         Instances equal if they have same shape and data.
 
         Examples
@@ -362,6 +363,8 @@ class NDimArray(DefaultPrinting):
 
 
 class ImmutableNDimArray(NDimArray, Expr):
+    """An immutable version of the N-dim array."""
+
     _op_priority = 11.0
 
     def _subs(self, old, new, **hints):

@@ -7,6 +7,7 @@ from diofant import (EulerGamma, I, Integer, O, Rational, Symbol, conjugate,
                      gamma, harmonic, im, log, loggamma, lowergamma, meijerg,
                      nan, oo, pi, polygamma, sin, sqrt, trigamma, uppergamma,
                      zeta, zoo)
+from diofant.abc import x, y
 from diofant.core.function import ArgumentIndexError
 from diofant.utilities.randtest import random_complex_number as randcplx
 from diofant.utilities.randtest import verify_derivative_numerically as td
@@ -15,8 +16,6 @@ from diofant.utilities.randtest import verify_numerically as tn
 
 __all__ = ()
 
-x = Symbol('x')
-y = Symbol('y')
 n = Symbol('n', integer=True)
 w = Symbol('w', extended_real=True)
 

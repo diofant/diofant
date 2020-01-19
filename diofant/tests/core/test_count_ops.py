@@ -1,14 +1,11 @@
 from diofant import (ITE, And, Basic, Derivative, Eq, Equivalent, I, Implies,
                      Integer, Integral, MatrixSymbol, Nand, Nor, Not, Or,
-                     Rational, Symbol, Xor, cos, count_ops, exp, pi, sin,
-                     symbols)
-from diofant.core.containers import Tuple
+                     Rational, Symbol, Tuple, Xor, cos, count_ops, exp, pi,
+                     sin, symbols)
+from diofant.abc import a, x, y, z
 
 
 __all__ = ()
-
-x, y, z = symbols('x,y,z')
-a, b, c = symbols('a,b,c')
 
 
 def test_count_ops_non_visual():

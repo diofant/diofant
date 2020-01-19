@@ -169,10 +169,10 @@ def test_Matrix_mul():
 
 
 def test_Matrix_numpy_array():
-    class matarray:
+    class MatArray:
         def __array__(self):
             return numpy.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-    matarr = matarray()
+    matarr = MatArray()
     assert Matrix(matarr) == Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
 
@@ -250,7 +250,6 @@ def test_lambdify_transl():
 
 def test_symarray():
     """Test creation of numpy arrays of diofant symbols."""
-
     syms = symbols('_0,_1,_2')
     s1 = symarray("", 3)
     s2 = symarray("", 3)

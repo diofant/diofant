@@ -1,4 +1,4 @@
-"""Computational algebraic field theory. """
+"""Computational algebraic field theory."""
 
 import functools
 
@@ -10,7 +10,7 @@ from ..core.exprtools import Factors
 from ..core.function import _mexpand, count_ops
 from ..domains import QQ, ZZ, AlgebraicField
 from ..functions import Abs, conjugate, cos, exp_polar, im, re, root, sin, sqrt
-from ..ntheory import divisors, sieve
+from ..ntheory import divisors
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
 from ..utilities import lambdify, numbered_symbols, sift
@@ -68,7 +68,7 @@ def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
 
 def _separate_sq(p):
     """
-    helper function for ``_minimal_polynomial_sq``
+    Helper function for ``_minimal_polynomial_sq``.
 
     It selects a rational ``g`` such that the polynomial ``p``
     consists of a sum of terms whose surds squared have gcd equal to ``g``
@@ -81,11 +81,14 @@ def _separate_sq(p):
     ========
 
     >>> p = -x + sqrt(2) + sqrt(3) + sqrt(7)
-    >>> p = _separate_sq(p); p
+    >>> p = _separate_sq(p)
+    >>> p
     -x**2 + 2*sqrt(3)*x + 2*sqrt(7)*x - 2*sqrt(21) - 8
-    >>> p = _separate_sq(p); p
+    >>> p = _separate_sq(p)
+    >>> p
     -x**4 + 4*sqrt(7)*x**3 - 32*x**2 + 8*sqrt(7)*x + 20
-    >>> p = _separate_sq(p); p
+    >>> p = _separate_sq(p)
+    >>> p
     -x**8 + 48*x**6 - 536*x**4 + 1728*x**2 - 400
 
     """
@@ -171,7 +174,7 @@ def _minimal_polynomial_sq(p, n, x):
 
 def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
     """
-    return the minimal polynomial for ``op(ex1, ex2)``
+    Return the minimal polynomial for ``op(ex1, ex2)``.
 
     Parameters
     ==========
@@ -421,10 +424,11 @@ def _minpoly_exp(ex, x):
 
 def _minpoly_rootof(ex, x):
     """Returns the minimal polynomial of a ``RootOf`` object."""
-    p = ex.expr
-    p = p.subs({ex.poly.gens[0]: x})
-    _, factors = factor_list(p, x)
-    return _choose_factor(factors, x, ex)
+    domain = ex.poly.domain
+    if domain.is_IntegerRing:
+        return ex.poly(x)
+    else:
+        return ex.poly.sqf_norm()[-1](x)
 
 
 def _minpoly_compose(ex, x, dom):
@@ -493,7 +497,7 @@ def _minpoly_compose(ex, x, dom):
         res = _minpoly_sin(ex, x)
     elif isinstance(ex, cos):
         res = _minpoly_cos(ex, x)
-    elif isinstance(ex, RootOf):
+    elif isinstance(ex, RootOf) and ex.poly.domain.is_Numerical:
         res = _minpoly_rootof(ex, x)
     elif isinstance(ex, conjugate):
         res = _minpoly_compose(ex.args[0], x, dom)
@@ -541,7 +545,6 @@ def minimal_polynomial(ex, method=None, **args):
     x**2 - y
 
     """
-
     if method is None:
         method = query('minpoly_method')
     _minpoly_methods = {'compose': _minpoly_compose, 'groebner': minpoly_groebner}
@@ -585,7 +588,6 @@ def minpoly_groebner(ex, x, domain):
     * :cite:`Adams1994intro`
 
     """
-
     generator = numbered_symbols('a', cls=Dummy)
     mapping, symbols = {}, {}
 
@@ -607,6 +609,8 @@ def minpoly_groebner(ex, x, domain):
         if ex.is_Atom:
             if ex is I:
                 return update_mapping(ex, 2, 1)
+            elif ex is GoldenRatio:
+                return bottom_up_scan(ex.expand(func=True))
             elif ex.is_Rational:
                 return ex
             elif ex.is_Symbol:
@@ -624,8 +628,11 @@ def minpoly_groebner(ex, x, domain):
                     bmp = PurePoly(minpoly_groebner(1/base, x, domain=domain), x)
                     base, exp = update_mapping(1/base, bmp), -exp
                 return update_mapping(ex, exp.denominator, -base**exp.numerator)
-        elif isinstance(ex, RootOf) and ex.poly.domain.is_IntegerRing:
-            return update_mapping(ex, ex.poly)
+        elif isinstance(ex, RootOf) and ex.poly.domain.is_Numerical:
+            if ex.poly.domain.is_IntegerRing:
+                return update_mapping(ex, ex.poly)
+            else:
+                return update_mapping(ex, ex.poly.sqf_norm()[-1])
         elif isinstance(ex, conjugate):
             return update_mapping(ex, minimal_polynomial(ex.args[0], domain=domain,
                                                          method='groebner'))
@@ -706,87 +713,47 @@ def primitive_element(extension, **args):
     return g, list(coeffs), H
 
 
-def is_isomorphism_possible(a, b):
-    """Returns `True` if there is a chance for isomorphism."""
-    n = a.minpoly.degree()
-    m = b.minpoly.degree()
-
-    if m % n != 0:
-        return False
-
-    if n == m:
-        return True
-
-    da = a.minpoly.discriminant()
-    db = b.minpoly.discriminant()
-
-    i, k, half = 1, m//n, db//2
-
-    while True:
-        p = sieve[i]
-        P = p**k
-
-        if P > half:
-            break
-
-        if ((da % p) % 2) and not (db % P):
-            return False
-
-        i += 1
-
-    return True
-
-
 def field_isomorphism_pslq(a, b):
     """Construct field isomorphism using PSLQ algorithm."""
     if not all(_.domain.is_RationalField and _.ext.is_real for _ in (a, b)):
         raise NotImplementedError("PSLQ doesn't support complex coefficients")
 
     f = a.minpoly
-    g = b.minpoly.replace(f.gen)
-    m = b.minpoly.degree()
+    x = f.gen
+
+    g = b.minpoly.replace(x)
+    m = g.degree()
+
+    a, b = a.ext, b.ext
 
     for n in mpmath.libmp.libintmath.giant_steps(32, 256):  # pragma: no branch
         with mpmath.workdps(n):
-            A = lambdify((), a.ext, "mpmath")()
-            B = lambdify((), b.ext, "mpmath")()
-            basis = [B**i for i in range(m)] + [A]
-            coeffs = mpmath.pslq(basis, maxcoeff=int(1e10), maxsteps=1000)
+            A, B = lambdify((), [a, b], "mpmath")()
+            basis = [A] + [B**i for i in reversed(range(m))]
+            coeffs = mpmath.pslq(basis, maxcoeff=10**10, maxsteps=10**3)
 
-        if coeffs is None:
+        if coeffs:
+            assert coeffs[0]  # basis[1:] elements are linearly independent
+
+            h = -Poly(coeffs[1:], x, field=True).quo_ground(coeffs[0])
+
+            if f.compose(h).rem(g).is_zero:
+                return h.rep.all_coeffs()
+        else:
             break
-
-        coeffs = [QQ(c, coeffs[-1]) for c in coeffs[:-1]]
-        while not coeffs[-1]:
-            coeffs.pop()
-        coeffs.reverse()
-
-        h = Poly(coeffs, f.gen, domain='QQ')
-
-        if f.compose(h).rem(g).is_zero or f.compose(-h).rem(g).is_zero:
-            return [-c for c in coeffs]
 
 
 def field_isomorphism_factor(a, b):
     """Construct field isomorphism via factorization."""
-    _, factors = a.minpoly.set_domain(b).factor_list()
+    p = a.minpoly.set_domain(b)
+    _, factors = p.factor_list()
 
     for f, _ in factors:
         if f.degree() == 1:
-            tc = f.rep.to_dense()[-1]
-            coeffs = [tc.domain.domain.to_expr(c) for c in tc.rep.to_dense()]
-            d, terms = len(coeffs) - 1, []
+            root = -f.rep.coeff((0,))/f.rep.coeff((1,))
 
-            for i, coeff in enumerate(coeffs):
-                terms.append(coeff*b.ext**(d - i))
-
-            root = Add(*terms)
-
-            if (a.ext - root).evalf(chop=True) == 0:
-                return [b(+c) for c in coeffs]
-
-            if (a.ext + root).evalf(chop=True) == 0:
-                return [b(-c) for c in coeffs]
+            if (a.ext - b.to_expr(root)).evalf(chop=True) == 0:
+                return root.rep.to_dense()
 
 
 def field_isomorphism(a, b, **args):

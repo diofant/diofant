@@ -16,6 +16,8 @@ from .printer import Printer
 
 
 class ReprPrinter(Printer):
+    """Repr printer."""
+
     printmethod = "_diofantrepr"
 
     _default_settings = {
@@ -195,5 +197,5 @@ class ReprPrinter(Printer):
 
 
 def srepr(expr, **settings):
-    """return expr in repr form"""
+    """Return expr in repr form."""
     return ReprPrinter(settings).doprint(expr)

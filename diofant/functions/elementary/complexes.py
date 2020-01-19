@@ -361,12 +361,10 @@ class Abs(Function):
     >>> Abs(-1)
     1
     >>> x = Symbol('x', real=True)
-    >>> Abs(-x)
+    >>> abs(-x)  # The Python built-in
     Abs(x)
-    >>> Abs(x**2)
+    >>> abs(x**2)
     x**2
-    >>> abs(-x) # The Python built-in
-    Abs(x)
 
     Note that the Python built-in will return either an Expr or int depending on
     the argument:
@@ -397,7 +395,7 @@ class Abs(Function):
         Examples
         ========
 
-        >>> Abs(-x).fdiff()
+        >>> abs(-x).fdiff()
         sign(x)
 
         """
@@ -502,7 +500,6 @@ class Abs(Function):
                 return self.args[0]**exponent
             elif exponent != -1 and exponent.is_Integer:
                 return self.args[0]**(exponent - 1)*self
-        return
 
     def _eval_nseries(self, x, n, logx):
         direction = self.args[0].as_leading_term(x).as_coeff_exponent(x)[0]

@@ -17,6 +17,8 @@ from .indexed import Idx, Indexed
 
 
 class IndexConformanceException(Exception):
+    """Raised if indexes are not consistent."""
+
     pass
 
 
@@ -52,7 +54,6 @@ def _get_indices_Mul(expr, return_dummies=False):
     >>> _get_indices_Mul(x[i, k]*y[j, k], return_dummies=True)
     ({i, j}, {}, (k,))
     """
-
     inds = list(map(get_indices, expr.args))
     inds, syms = list(zip(*inds))
 
@@ -134,7 +135,6 @@ def _get_indices_Add(expr):
     >>> _get_indices_Add(x[i] + x[k]*y[i, k])
     ({i}, {})
     """
-
     inds = list(map(get_indices, expr.args))
     inds, syms = list(zip(*inds))
 
@@ -163,7 +163,7 @@ def get_indices(expr):
     ========
 
     >>> x, y, A = map(IndexedBase, ['x', 'y', 'A'])
-    >>> i, j, a, z = symbols('i j a z', integer=True)
+    >>> i, j = symbols('i j', integer=True)
 
     The indices of the total expression is determined, Repeated indices imply a
     summation, for instance the trace of a matrix A:
@@ -335,7 +335,6 @@ def get_contraction_structure(expr):
     ...     # treat outermost contactions here
 
     """
-
     # We call ourself recursively to inspect sub expressions.
 
     if isinstance(expr, Indexed):

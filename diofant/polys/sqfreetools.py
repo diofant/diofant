@@ -1,4 +1,4 @@
-"""Square-free decomposition algorithms and related tools. """
+"""Square-free decomposition algorithms and related tools."""
 
 from .densearith import dmp_mul, dmp_quo, dmp_sub
 from .densebasic import (dmp_degree_in, dmp_ground_LC, dmp_ground_p,

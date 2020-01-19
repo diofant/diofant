@@ -25,6 +25,8 @@ from .util import _symbol
 
 
 class Undecidable(ValueError):
+    """Raised when can't decide on relation."""
+
     pass
 
 
@@ -191,7 +193,6 @@ class LinearEntity(GeometrySet):
         False
 
         """
-
         # Concurrency requires intersection at a single point; One linear
         # entity cannot be concurrent.
         if len(lines) <= 1:
@@ -966,7 +967,6 @@ class Line(LinearEntity):
     Examples
     ========
 
-    >>> from diofant.abc import L
     >>> L = Line(Point(2, 3), Point(3, 5))
     >>> L
     Line(Point2D(2, 3), Point2D(3, 5))
@@ -1198,7 +1198,6 @@ class Ray(LinearEntity):
     Examples
     ========
 
-    >>> from diofant.abc import r
     >>> r = Ray(Point(2, 3), Point(3, 5))
     >>> r = Ray(Point(2, 3), Point(3, 5))
     >>> r
@@ -1224,7 +1223,7 @@ class Ray(LinearEntity):
             try:
                 p2 = Point(pt)
             except ValueError:
-                from ...utilities import filldedent
+                from ..utilities import filldedent
                 raise ValueError(filldedent('''
                     The 2nd argument was not a valid Point; if
                     it was meant to be an angle it should be
@@ -1523,8 +1522,7 @@ class Segment(LinearEntity):
     Examples
     ========
 
-    >>> from diofant.abc import s
-    >>> Segment((1, 0), (1, 1)) # tuples are interpreted as pts
+    >>> Segment((1, 0), (1, 1))  # tuples are interpreted as pts
     Segment(Point2D(1, 0), Point2D(1, 1))
     >>> s = Segment(Point(4, 3), Point(1, 1))
     >>> s

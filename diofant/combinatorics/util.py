@@ -205,7 +205,7 @@ def _handle_precomputed_bsgs(base, strong_gens, transversals=None,
     >>> D = DihedralGroup(3)
     >>> D.schreier_sims()
     >>> _handle_precomputed_bsgs(D.base, D.strong_gens,
-    ... basic_orbits=D.basic_orbits)
+    ...                          basic_orbits=D.basic_orbits)
     ([{0: Permutation(2), 1: Permutation(0, 1, 2), 2: Permutation(0, 2)},
     {1: Permutation(2), 2: Permutation(1, 2)}],
     [[0, 1, 2], [1, 2]], [[Permutation(0, 1, 2),
@@ -437,7 +437,7 @@ def _strip(g, base, orbits, transversals):
 
 def _strip_af(h, base, orbits, transversals, j):
     """
-    optimized _strip, with h, transversals and result in array form
+    Optimized _strip, with h, transversals and result in array form
     if the stripped elements is the identity, it returns False, base_len + 1
 
     j    h[base[i]] == base[i] for i <= j

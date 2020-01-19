@@ -1,38 +1,33 @@
 import itertools
+import operator
 import random
-from operator import lt
-from textwrap import dedent
+import textwrap
 
 import pytest
 
-from diofant import (Basic, Dummy, Integer, Integral, Matrix, Tuple,
-                     default_sort_key, factorial, symbols, true)
+from diofant import (Basic, Dummy, Integer, Integral, Matrix, Piecewise, Tuple,
+                     cantor_product, capture, default_sort_key, flatten, group,
+                     has_dups, numbered_symbols, ordered, postfixes,
+                     postorder_traversal, prefixes, subsets, symbols,
+                     topological_sort, true, unflatten, variations)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import Permutation, RGS_enum, RGS_unrank
 from diofant.functions.combinatorial.numbers import nT
-from diofant.functions.elementary.piecewise import ExprCondPair, Piecewise
+from diofant.functions.elementary.piecewise import ExprCondPair
 from diofant.utilities.enumerative import (factoring_visitor,
                                            multiset_partitions_taocp)
 from diofant.utilities.iterables import (_partition, _set_partitions,
                                          binary_partitions, bracelets,
-                                         cantor_product, capture,
                                          common_prefix, common_suffix,
-                                         dict_merge, filter_symbols, flatten,
-                                         generate_bell, generate_derangements,
-                                         generate_involutions, group, has_dups,
-                                         minlex, multiset,
-                                         multiset_combinations,
+                                         filter_symbols, generate_derangements,
+                                         generate_involutions, minlex,
+                                         multiset, multiset_combinations,
                                          multiset_partitions,
                                          multiset_permutations, necklaces,
-                                         numbered_symbols, ordered,
                                          ordered_partitions, partitions,
                                          permutations, permute_signs,
-                                         postfixes, postorder_traversal,
-                                         prefixes, reshape, rotate_left,
-                                         rotate_right, runs, sift,
-                                         signed_permutations, subsets,
-                                         topological_sort, unflatten, uniq,
-                                         variations)
+                                         rotate_left, rotate_right, runs, sift,
+                                         signed_permutations, uniq)
 
 
 __all__ = ()
@@ -194,17 +189,6 @@ def test_sift():
     assert sift([Integer(1)], lambda _: _.has(x)) == {False: [1]}
 
 
-def test_dict_merge():
-    assert dict_merge({}, {1: x, y: z}) == {1: x, y: z}
-    assert dict_merge({1: x, y: z}, {}) == {1: x, y: z}
-
-    assert dict_merge({2: z}, {1: x, y: z}) == {1: x, 2: z, y: z}
-    assert dict_merge({1: x, y: z}, {2: z}) == {1: x, 2: z, y: z}
-
-    assert dict_merge({1: y, 2: z}, {1: x, y: z}) == {1: x, 2: z, y: z}
-    assert dict_merge({1: x, y: z}, {1: y, 2: z}) == {1: y, 2: z, y: z}
-
-
 def test_prefixes():
     assert list(prefixes([])) == []
     assert list(prefixes([1])) == [[1]]
@@ -349,7 +333,7 @@ def test_multiset_permutations():
             print(i)
             for p in multiset_permutations([0, 0, 1, 0, 1], i):
                 print(p)
-    assert capture(lambda: test()) == dedent('''\
+    assert capture(lambda: test()) == textwrap.dedent('''\
         1
         [0]
         [1]
@@ -441,23 +425,6 @@ def test_binary_partitions():
                                                      [2, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 
     assert len([j[:] for j in binary_partitions(16)]) == 36
-
-
-def test_bell_perm():
-    assert [len(set(generate_bell(i))) for i in range(1, 7)] == [
-        factorial(i) for i in range(1, 7)]
-    assert list(generate_bell(3)) == [
-        (0, 1, 2), (0, 2, 1), (2, 0, 1), (2, 1, 0), (1, 2, 0), (1, 0, 2)]
-    # generate_bell and trotterjohnson are advertised to return the same
-    # permutations; this is not technically necessary so this test could
-    # be removed
-    for n in range(1, 5):
-        p = Permutation(range(n))
-        b = generate_bell(n)
-        for bi in b:
-            assert bi == tuple(p.array_form)
-            p = p.next_trotterjohnson()
-    pytest.raises(ValueError, lambda: list(generate_bell(0)))  # XXX is this consistent with other permutation algorithms?
 
 
 def test_involutions():
@@ -577,31 +544,7 @@ def test_runs():
     assert runs([1, 1, 2]) == [[1], [1, 2]]
     assert runs([1, 2, 1]) == [[1, 2], [1]]
     assert runs([2, 1, 1]) == [[2], [1], [1]]
-    assert runs([2, 1, 1], lt) == [[2, 1], [1]]
-
-
-def test_reshape():
-    seq = list(range(1, 9))
-    assert reshape(seq, [4]) == \
-        [[1, 2, 3, 4], [5, 6, 7, 8]]
-    assert reshape(seq, (4,)) == \
-        [(1, 2, 3, 4), (5, 6, 7, 8)]
-    assert reshape(seq, (2, 2)) == \
-        [(1, 2, 3, 4), (5, 6, 7, 8)]
-    assert reshape(seq, (2, [2])) == \
-        [(1, 2, [3, 4]), (5, 6, [7, 8])]
-    assert reshape(seq, ((2,), [2])) == \
-        [((1, 2), [3, 4]), ((5, 6), [7, 8])]
-    assert reshape(seq, (1, [2], 1)) == \
-        [(1, [2, 3], 4), (5, [6, 7], 8)]
-    assert reshape(tuple(seq), ([[1], 1, (2,)],)) == \
-        (([[1], 2, (3, 4)],), ([[5], 6, (7, 8)],))
-    assert reshape(tuple(seq), ([1], 1, (2,))) == \
-        (([1], 2, (3, 4)), ([5], 6, (7, 8)))
-    assert reshape(list(range(12)), [2, [3], {2}, (1, (3,), 1)]) == \
-        [[0, 1, [2, 3, 4], {5, 6}, (7, (8, 9, 10), 11)]]
-
-    pytest.raises(ValueError, lambda: reshape([1], [-1]))
+    assert runs([2, 1, 1], operator.lt) == [[2, 1], [1]]
 
 
 def test_uniq():

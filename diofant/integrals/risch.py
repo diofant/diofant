@@ -387,15 +387,12 @@ class DifferentialExtension:
         self.fa, self.fd = frac_in(self.newf, self.t)
         self._auto_attrs()
 
-        return
-
     def __getattr__(self, attr):
         # Avoid AttributeErrors when debugging
         if attr not in ('f', 'x', 'T', 'D', 'fa', 'fd', 'Tfuncs', 'backsubs',
                         'E_K', 'E_args', 'L_K', 'L_args', 'cases', 'case', 't',
                         'd', 'newf', 'level', 'ts'):
             raise AttributeError("%s has no attribute %s" % (repr(self), repr(attr)))
-        return
 
     def _auto_attrs(self):
         """Set attributes that are generated automatically."""
@@ -514,9 +511,8 @@ class DifferentialExtension:
                     {exp(exparg): self.t**p for exparg, p in others})
                 new_extension = True
 
-        if restart:
-            return
-        return new_extension
+        if not restart:
+            return new_extension
 
     def _log_part(self, logs, dummy=True):
         """
@@ -626,7 +622,6 @@ class DifferentialExtension:
         self.t = self.T[self.level]
         self.d = self.D[self.level]
         self.case = self.cases[self.level]
-        return
 
     def decrement_level(self):
         """
@@ -645,7 +640,6 @@ class DifferentialExtension:
         self.t = self.T[self.level]
         self.d = self.D[self.level]
         self.case = self.cases[self.level]
-        return
 
 
 class DecrementLevel:
@@ -653,7 +647,6 @@ class DecrementLevel:
 
     def __init__(self, DE):
         self.DE = DE
-        return
 
     def __enter__(self):
         self.DE.decrement_level()
@@ -1128,7 +1121,6 @@ def recognize_log_derivative(a, d, DE, z=None):
     produces u in K(x) such that du/dx = uf.
 
     """
-
     z = z or Dummy('z')
     a, d = a.cancel(d, include=True)
     p, a = a.div(d)

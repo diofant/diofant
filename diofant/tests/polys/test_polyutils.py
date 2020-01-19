@@ -1,13 +1,12 @@
-"""Tests for useful utilities for higher level polynomial classes. """
+"""Tests for useful utilities for higher level polynomial classes."""
 
 import pytest
 
-from diofant import Abs, Eq, I, Integer, Integral, Mul
+from diofant import (ZZ, Eq, GeneratorsNeeded, I, Integer, Integral, Mul,
+                     PolynomialError)
 from diofant import Rational as Q  # noqa: N814
-from diofant import cos, erf, exp, integrate, pi, sin, sqrt, symbols
-from diofant.domains import ZZ
-from diofant.polys import factor
-from diofant.polys.polyerrors import GeneratorsNeeded, PolynomialError
+from diofant import cos, erf, exp, factor, integrate, pi, sin, sqrt, symbols
+from diofant.abc import p, q, t, x, y, z
 from diofant.polys.polyutils import (_analyze_gens, _nsort, _sort_factors,
                                      _sort_gens, _unify_gens, dict_from_expr,
                                      parallel_dict_from_expr)
@@ -15,7 +14,6 @@ from diofant.polys.polyutils import (_analyze_gens, _nsort, _sort_factors,
 
 __all__ = ()
 
-x, y, z, p, q, r, s, t, u, v, w = symbols('x,y,z,p,q,r,s,t,u,v,w')
 A, B = symbols('A,B', commutative=False)
 
 
@@ -299,6 +297,6 @@ def test_sympyissue_7383():
 
 def test_sympyissue_10161():
     x = symbols('x', real=True)
-    h = (2*x*(-2*x + Abs(x))*(x**2 - 1)/Abs(x**2 - 1)
-         + (x/Abs(x) - 2)*Abs(x**2 - 1))
+    h = (2*x*(-2*x + abs(x))*(x**2 - 1)/abs(x**2 - 1)
+         + (x/abs(x) - 2)*abs(x**2 - 1))
     assert (h - factor(h)).simplify() == 0

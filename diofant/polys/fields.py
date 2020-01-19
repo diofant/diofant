@@ -1,4 +1,4 @@
-"""Sparse rational function fields. """
+"""Sparse rational function fields."""
 
 import functools
 import operator

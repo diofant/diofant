@@ -1,39 +1,28 @@
 import pytest
 
-from diofant import (E1, Abs, And, Ci, Ei, EulerGamma, Function, Heaviside, I,
-                     Integer, Integral, Max, Min, Ne, Or, Rational, Si, Symbol,
-                     atan, atan2, besseli, besselj, besselk, bessely, combsimp,
-                     cos, cosh, cot, erf, exp, exp_polar, expand,
-                     expand_complex, expand_mul, expand_trig, expint, factor,
-                     factor_terms, factorial, fresnelc, fresnels, gamma,
-                     hyperexpand, lerchphi, log, logcombine, meijerg, oo,
-                     periodic_argument, pi, polar_lift, powsimp, re, simplify,
-                     sin, sinh, sqrt, symbols, tan, trigsimp, unpolarify)
-from diofant.abc import a, b, c, d, s, t, w, x
-from diofant.integrals.transforms import (CosineTransform, FourierTransform,
-                                          IntegralTransformError,
-                                          InverseCosineTransform,
-                                          InverseFourierTransform,
-                                          InverseLaplaceTransform,
-                                          InverseSineTransform,
-                                          LaplaceTransform, MellinTransform,
-                                          SineTransform, _simplifyconds,
-                                          cosine_transform, fourier_transform,
-                                          hankel_transform,
-                                          inverse_cosine_transform,
-                                          inverse_fourier_transform,
-                                          inverse_hankel_transform,
-                                          inverse_laplace_transform,
-                                          inverse_mellin_transform,
-                                          inverse_sine_transform,
-                                          laplace_transform, mellin_transform,
-                                          sine_transform)
-from diofant.matrices import Matrix, eye
+from diofant import (E1, And, Ci, CosineTransform, Ei, EulerGamma,
+                     FourierTransform, Function, Heaviside, I, Integer,
+                     Integral, InverseCosineTransform, InverseFourierTransform,
+                     InverseLaplaceTransform, InverseSineTransform,
+                     LaplaceTransform, Matrix, Max, MellinTransform, Min, Ne,
+                     Or, Rational, Si, SineTransform, Symbol, atan, atan2,
+                     besseli, besselj, besselk, bessely, combsimp, cos, cosh,
+                     cosine_transform, cot, erf, exp, exp_polar, expand,
+                     expand_complex, expand_mul, expand_trig, expint, eye,
+                     factor, factor_terms, factorial, fourier_transform,
+                     fresnelc, fresnels, gamma, hankel_transform, hyperexpand,
+                     inverse_cosine_transform, inverse_fourier_transform,
+                     inverse_hankel_transform, inverse_laplace_transform,
+                     inverse_mellin_transform, inverse_sine_transform,
+                     laplace_transform, lerchphi, log, logcombine, meijerg,
+                     mellin_transform, oo, periodic_argument, pi, polar_lift,
+                     powsimp, re, simplify, sin, sine_transform, sinh, sqrt,
+                     symbols, tan, trigsimp, unpolarify)
+from diofant.abc import a, b, beta, c, d, nu, rho, s, t, w, x
+from diofant.integrals.transforms import IntegralTransformError, _simplifyconds
 
 
 __all__ = ()
-
-nu, beta, rho = symbols('nu beta rho')
 
 
 def test_undefined_function():
@@ -729,10 +718,10 @@ def test_sympyissue_8882():
 def test_sympyissue_7173():
     assert laplace_transform(sinh(a*x)*cosh(a*x), x, s) == \
         (a/(s**2 - 4*a**2), 0,
-         And(Or(Abs(periodic_argument(exp_polar(I*pi)*polar_lift(a), oo)) <
-                pi/2, Abs(periodic_argument(exp_polar(I*pi)*polar_lift(a), oo)) <=
-                pi/2), Or(Abs(periodic_argument(a, oo)) < pi/2,
-                          Abs(periodic_argument(a, oo)) <= pi/2)))
+         And(Or(abs(periodic_argument(exp_polar(I*pi)*polar_lift(a), oo)) <
+                pi/2, abs(periodic_argument(exp_polar(I*pi)*polar_lift(a), oo)) <=
+                pi/2), Or(abs(periodic_argument(a, oo)) < pi/2,
+                          abs(periodic_argument(a, oo)) <= pi/2)))
 
 
 def test_sympyissue_8514():
@@ -741,11 +730,11 @@ def test_sympyissue_8514():
     ft = simplify(inverse_laplace_transform(1/(a*s**2 + b*s + c), s, t))
     assert ft.rewrite(atan2) == ((exp(t*(exp(I*atan2(0, -4*a*c + b**2)/2) -
                                          exp(-I*atan2(0, -4*a*c + b**2)/2)) *
-                                      sqrt(Abs(4*a*c - b**2))/(4*a))*exp(t*cos(atan2(0, -4*a*c + b**2)/2)
-                                                                         * sqrt(Abs(4*a*c - b**2))/a) + I*sin(t*sin(atan2(0, -4*a*c + b**2)/2)
-                                                                                                              * sqrt(Abs(4*a*c - b**2))/(2*a)) - cos(t*sin(atan2(0, -4*a*c + b**2)/2)
-                                                                                                                                                     * sqrt(Abs(4*a*c - b**2))/(2*a)))*exp(-t*(b + cos(atan2(0, -4*a*c + b**2)/2)
-                                                                                                                                                                                               * sqrt(Abs(4*a*c - b**2)))/(2*a))/sqrt(-4*a*c + b**2))
+                                      sqrt(abs(4*a*c - b**2))/(4*a))*exp(t*cos(atan2(0, -4*a*c + b**2)/2)
+                                                                         * sqrt(abs(4*a*c - b**2))/a) + I*sin(t*sin(atan2(0, -4*a*c + b**2)/2)
+                                                                                                              * sqrt(abs(4*a*c - b**2))/(2*a)) - cos(t*sin(atan2(0, -4*a*c + b**2)/2)
+                                                                                                                                                     * sqrt(abs(4*a*c - b**2))/(2*a)))*exp(-t*(b + cos(atan2(0, -4*a*c + b**2)/2)
+                                                                                                                                                                                               * sqrt(abs(4*a*c - b**2)))/(2*a))/sqrt(-4*a*c + b**2))
 
 
 def test__simplifyconds():

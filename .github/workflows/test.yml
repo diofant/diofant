@@ -17,16 +17,18 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install libs
       run: |
+        sudo apt update
         sudo apt install libmpc-dev libmpfr-dev libgmp-dev
         sudo apt install libatlas-base-dev liblapack-dev gfortran
         sudo apt install graphviz texlive-xetex texlive-fonts-recommended \
                          fonts-freefont-otf latexmk lmodern
     - name: Install dependencies
       run: pip install -U .[interactive,develop,gmpy,exports,plot,docs]
-    - name: Linting with flake8 and pylint
+    - name: Linting with flake8, flake8-rst and pylint
       run: |
         python -We:invalid -m compileall -f diofant -q
         python setup.py flake8
+        flake8-rst
         pylint -j1 diofant
     - name: Building and testing docs
       env:

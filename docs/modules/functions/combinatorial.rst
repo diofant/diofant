@@ -80,13 +80,6 @@ lucas
    :members:
 
 
-MultiFactorial
---------------
-
-.. autoclass:: diofant.functions.combinatorial.factorials.MultiFactorial
-   :members:
-
-
 RisingFactorial
 ---------------
 
@@ -111,9 +104,6 @@ number of items represented by ``n``) is returned. A ``replacement`` parameter
 is recognized for combinations and permutations; this indicates that any item
 may appear with multiplicity as high as the number of items in the original
 set.
-
->>> from diofant.functions.combinatorial.numbers import nC, nP, nT
->>> items = 'baby'
 
 .. autofunction:: diofant.functions.combinatorial.numbers.nC
 

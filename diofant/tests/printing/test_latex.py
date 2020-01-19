@@ -1,42 +1,40 @@
+"""LaTeX printing tests."""
+
 import pytest
 
-from diofant import (CC, FF, QQ, ZZ, Abs, Add, BlockMatrix, Chi, Ci,
-                     Complement, Contains, CosineTransform, Dict, Dummy, Ei,
-                     Eq, Equivalent, FallingFactorial, FiniteSet, Float,
-                     FourierTransform, Function, Identity, ImageSet,
+from diofant import (CC, FF, QQ, ZZ, Abs, Add, Adjoint, And, BlockMatrix, Chi,
+                     Ci, Complement, Contains, CosineTransform, Dict,
+                     DiracDelta, Dummy, Ei, Eq, Equivalent, FallingFactorial,
+                     FiniteSet, Float, FourierTransform, Function,
+                     HadamardProduct, Heaviside, Identity, ImageSet, Implies,
                      IndexedBase, Integer, Integral, Intersection, Interval,
-                     InverseCosineTransform, InverseFourierTransform,
+                     Inverse, InverseCosineTransform, InverseFourierTransform,
                      InverseLaplaceTransform, InverseMellinTransform,
-                     InverseSineTransform, Lambda, LaplaceTransform, Limit,
-                     Matrix, MatrixSymbol, Max, MellinTransform, Min, Mod, Mul,
-                     Not, Order, Piecewise, Poly, Pow, Product, Range,
-                     Rational, RisingFactorial, RootOf, RootSum, S, Shi, Si,
+                     InverseSineTransform, KroneckerDelta, Lambda,
+                     LaplaceTransform, LeviCivita, Limit, Matrix, MatrixSymbol,
+                     Max, MellinTransform, Min, Mod, Mul, Not, Or, Order,
+                     Piecewise, Poly, Pow, Product, Range, Rational,
+                     RisingFactorial, RootOf, RootSum, S, Shi, Si,
                      SineTransform, Subs, Sum, Symbol, SymmetricDifference,
-                     Tuple, Union, Wild, Ynm, Znm, acot, airyai, airyaiprime,
-                     airybi, airybiprime, arg, asin, assoc_laguerre,
-                     assoc_legendre, binomial, catalan, cbrt, ceiling,
-                     chebyshevt, chebyshevu, conjugate, cos, cot, coth, diff,
+                     Transpose, Tuple, Union, Wild, Xor, Ynm, ZeroMatrix, Znm,
+                     acot, airyai, airyaiprime, airybi, airybiprime, arg, asin,
+                     assoc_laguerre, assoc_legendre, besseli, besselj, besselk,
+                     bessely, binomial, catalan, cbrt, ceiling, chebyshevt,
+                     chebyshevu, conjugate, cos, cot, coth, diff,
                      dirichlet_eta, divisor_sigma, elliptic_e, elliptic_f,
-                     elliptic_k, elliptic_pi, exp, expint, factorial,
-                     factorial2, false, field, floor, gamma, gegenbauer,
-                     hermite, hyper, im, jacobi, laguerre, legendre, lerchphi,
-                     log, lowergamma, meijerg, oo, pi, polar_lift, polylog, re,
-                     ring, root, sin, sqrt, subfactorial, symbols, tan,
-                     totient, true, uppergamma, zeta)
+                     elliptic_k, elliptic_pi, euler, exp, expint, factorial,
+                     factorial2, false, field, floor, fresnelc, fresnels,
+                     gamma, gegenbauer, hankel1, hankel2, hermite, hyper, im,
+                     jacobi, jn, laguerre, legendre, lerchphi, log, lowergamma,
+                     meijerg, oo, pi, polar_lift, polylog, re, ring, root, sin,
+                     sqrt, subfactorial, symbols, tan, totient, true,
+                     uppergamma, yn, zeta)
 from diofant.abc import a, b, mu, t, tau, w, x, y, z
 from diofant.combinatorics.permutations import Cycle, Permutation
 from diofant.core.trace import Tr
 from diofant.diffgeom import (CovarDerivativeOp, Differential, Manifold, Patch,
                               TensorProduct, metric_to_Christoffel_2nd)
 from diofant.diffgeom.rn import R2, R2_r
-from diofant.functions import (DiracDelta, Heaviside, KroneckerDelta,
-                               LeviCivita, besseli, besselj, besselk, bessely,
-                               euler, fresnelc, fresnels, hankel1, hankel2, jn,
-                               yn)
-from diofant.logic import Implies
-from diofant.logic.boolalg import And, Or, Xor
-from diofant.matrices import (Adjoint, HadamardProduct, Inverse, Transpose,
-                              ZeroMatrix)
 from diofant.parsing.sympy_parser import parse_expr
 from diofant.printing.latex import (LatexPrinter, greek_letters_set, latex,
                                     other_symbols, tex_greek_dictionary,
@@ -294,8 +292,8 @@ def test_latex_functions():
     assert latex(Min(x, y)**2) == r"\min\left(x, y\right)^{2}"
     assert latex(Max(x, 2, x**3)) == r"\max\left(2, x, x^{3}\right)"
     assert latex(Max(x, y)**2) == r"\max\left(x, y\right)^{2}"
-    assert latex(Abs(x)) == r"\left|{x}\right|"
-    assert latex(Abs(x)**3) == r'\left|{x}\right|^{3}'
+    assert latex(abs(x)) == r"\left|{x}\right|"
+    assert latex(abs(x)**3) == r'\left|{x}\right|^{3}'
     assert latex(re(x)) == r"\Re{x}"
     assert latex(re(x)**3) == r"\left(\Re{x}\right)^{3}"
     assert latex(re(x + y)) == r"\Re{x} + \Re{y}"

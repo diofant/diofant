@@ -6,13 +6,13 @@ from diofant import (Add, Dummy, E, Float, I, Integer, Mod, Mul, O, Pow,
                      Rational, Symbol, cbrt, comp, cos, exp, factorial, im,
                      log, nan, oo, pi, polar_lift, re, root, sign, sin, sqrt,
                      symbols, sympify, tan, zoo)
+from diofant.abc import a, c, x, y, z
 from diofant.utilities.randtest import verify_numerically
 
 
 __all__ = ()
 
 
-a, c, x, y, z = symbols('a,c,x,y,z')
 b = Symbol("b", positive=True)
 
 

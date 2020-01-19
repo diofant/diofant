@@ -844,8 +844,6 @@ class _TensorDataLazyEvaluator(CantSympify):
                     sumvar += numpy.transpose(data, axes)
             return sumvar
 
-        return
-
     def data_tensorhead_from_tensmul(self, data, tensmul, tensorhead):
         """
         This method is used when assigning components data to a ``TensMul``
@@ -853,15 +851,13 @@ class _TensorDataLazyEvaluator(CantSympify):
         which is then stored according to the ``TensorHead`` key.
 
         """
-        if data is None:
-            return
-
-        return self._correct_signature_from_indices(
-            data,
-            tensmul.get_indices(),
-            tensmul.free,
-            tensmul.dum,
-            True)
+        if data is not None:
+            return self._correct_signature_from_indices(
+                data,
+                tensmul.get_indices(),
+                tensmul.free,
+                tensmul.dum,
+                True)
 
     def data_tensmul_from_tensorhead(self, tensmul, tensorhead):
         """
@@ -870,14 +866,12 @@ class _TensorDataLazyEvaluator(CantSympify):
         ``TensorIndexType``.
 
         """
-        if tensorhead.data is None:
-            return
-
-        return self._correct_signature_from_indices(
-            tensorhead.data,
-            tensmul.get_indices(),
-            tensmul.free,
-            tensmul.dum)
+        if tensorhead.data is not None:
+            return self._correct_signature_from_indices(
+                tensorhead.data,
+                tensmul.get_indices(),
+                tensmul.free,
+                tensmul.dum)
 
     def data_product_tensors(self, data_list, tensmul_list):
         """
@@ -1104,10 +1098,10 @@ class _TensorDataLazyEvaluator(CantSympify):
         Examples
         ========
 
-        >>> print(sstr(_TensorDataLazyEvaluator.parse_data([1, 3, -6, 12])))
+        >>> print(str(_TensorDataLazyEvaluator.parse_data([1, 3, -6, 12])))
         [1 3 -6 12]
 
-        >>> print(sstr(_TensorDataLazyEvaluator.parse_data([[1, 2], [4, 7]])))
+        >>> print(str(_TensorDataLazyEvaluator.parse_data([[1, 2], [4, 7]])))
         [[1 2]
          [4 7]]
 
@@ -1165,7 +1159,7 @@ class _TensorManager:
 
     def comm_symbols2i(self, i):
         """
-        get the commutation group number corresponding to ``i``
+        Get the commutation group number corresponding to ``i``
 
         ``i`` can be a symbol or a number or a string
 
@@ -1189,7 +1183,7 @@ class _TensorManager:
 
     def set_comm(self, i, j, c):
         """
-        set the commutation parameter ``c`` for commutation groups ``i, j``
+        Set the commutation parameter ``c`` for commutation groups ``i, j``
 
         Parameters
         ==========
@@ -1261,7 +1255,7 @@ class _TensorManager:
 
     def set_comms(self, *args):
         """
-        set the commutation group numbers ``c`` for symbols ``i, j``
+        Set the commutation group numbers ``c`` for symbols ``i, j``
 
         Parameters
         ==========
@@ -1371,7 +1365,7 @@ class TensorIndexType(Basic):
     >>> Lorentz.data = [1, -1, -1, -1]
     >>> print(sstr(Lorentz))
     TensorIndexType(Lorentz, 0)
-    >>> print(sstr(Lorentz.data))
+    >>> print(str(Lorentz.data))
     [[1 0 0 0]
     [0 -1 0 0]
     [0 0 -1 0]
@@ -1543,7 +1537,8 @@ class TensorIndex(Basic):
     ========
 
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
-    >>> i = TensorIndex('i', Lorentz); i
+    >>> i = TensorIndex('i', Lorentz)
+    >>> i
     i
     >>> sym1 = TensorSymmetry(*get_symmetric_group_sgs(1))
     >>> S1 = TensorType([Lorentz], sym1)
@@ -1981,7 +1976,7 @@ class TensorHead(Basic):
 
     To view the data, just type:
 
-    >>> print(sstr(A.data))
+    >>> print(str(A.data))
     [[0 1 2 3]
      [2 3 4 5]
      [4 5 6 7]
@@ -1990,13 +1985,13 @@ class TensorHead(Basic):
     Turning to a tensor expression, covariant indices get the corresponding
     components data corrected by the metric:
 
-    >>> print(sstr(A(i0, -i1).data))
+    >>> print(str(A(i0, -i1).data))
     [[0 -1 -2 -3]
      [2 -3 -4 -5]
      [4 -5 -6 -7]
      [6 -7 -8 -9]]
 
-    >>> print(sstr(A(-i0, -i1).data))
+    >>> print(str(A(-i0, -i1).data))
     [[0 -1 -2 -3]
      [-2 3 4 5]
      [-4 5 6 7]
@@ -2004,7 +1999,7 @@ class TensorHead(Basic):
 
     while if all indices are contravariant, the ``ndarray`` remains the same
 
-    >>> print(sstr(A(i0, i1).data))
+    >>> print(str(A(i0, i1).data))
      [[0 1 2 3]
      [2 3 4 5]
      [4 5 6 7]
@@ -2041,7 +2036,7 @@ class TensorHead(Basic):
     Now it is possible to retrieve the contravariant form of the Electromagnetic
     tensor:
 
-    >>> print(sstr(F(i0, i1).data))
+    >>> print(str(F(i0, i1).data))
     [[0 -E_x/c -E_y/c -E_z/c]
      [E_x/c 0 -B_z B_y]
      [E_y/c B_z 0 -B_x]
@@ -2049,7 +2044,7 @@ class TensorHead(Basic):
 
     and the mixed contravariant-covariant form:
 
-    >>> print(sstr(F(i0, -i1).data))
+    >>> print(str(F(i0, -i1).data))
     [[0 E_x/c E_y/c E_z/c]
      [E_x/c 0 B_z -B_y]
      [E_y/c -B_z 0 B_x]
@@ -2077,9 +2072,9 @@ class TensorHead(Basic):
 
     The contravariant and covariant components are, respectively:
 
-    >>> print(sstr(P(i0).data))
+    >>> print(str(P(i0).data))
     [E p_x p_y p_z]
-    >>> print(sstr(P(-i0).data))
+    >>> print(str(P(-i0).data))
     [E -p_x -p_y -p_z]
 
     The contraction of a 1-index tensor by itself is usually indicated by a
@@ -2280,7 +2275,6 @@ class TensorHead(Basic):
         C(auto_left, -auto_right)
 
         """
-
         indices, matrix_behavior_kinds = self._check_auto_matrix_indices_in_call(*indices)
         tensor = Tensor._new_with_dummy_replacement(self, indices, **kw_args)
         return tensor
@@ -2489,7 +2483,8 @@ class TensAdd(TensExpr):
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> a, b = tensor_indices('a b', Lorentz)
     >>> p, q = tensorhead('p q', [Lorentz], [[1]])
-    >>> t = p(a) + q(a); t
+    >>> t = p(a) + q(a)
+    >>> t
     p(a) + q(a)
     >>> t(b)
     p(b) + q(b)
@@ -2500,7 +2495,8 @@ class TensAdd(TensExpr):
     >>> a, b = tensor_indices('a, b', Lorentz)
     >>> p.data = [2, 3, -2, 7]
     >>> q.data = [2, 3, -2, 7]
-    >>> t = p(a) + q(a); t
+    >>> t = p(a) + q(a)
+    >>> t
     p(a) + q(a)
     >>> t(b)
     p(b) + q(b)
@@ -2727,7 +2723,7 @@ class TensAdd(TensExpr):
 
     def canon_bp(self):
         """
-        canonicalize using the Butler-Portugal algorithm for canonicalization
+        Canonicalize using the Butler-Portugal algorithm for canonicalization
         under monoterm symmetries.
 
         """
@@ -2811,7 +2807,6 @@ class TensAdd(TensExpr):
         TensorIndexType
 
         """
-
         args = [contract_metric(x, g) for x in self.args]
         t = TensAdd(*args)
         return canon_bp(t)
@@ -2858,7 +2853,8 @@ class TensAdd(TensExpr):
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
         >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
-        >>> t = A(i, k)*B(-k, -j); t
+        >>> t = A(i, k)*B(-k, -j)
+        >>> t
         A(i, L_0)*B(-L_0, -j)
         >>> t.substitute_indices((i, j), (j, k))
         A(j, L_0)*B(-L_0, -k)
@@ -2894,12 +2890,12 @@ class TensAdd(TensExpr):
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> i, j = tensor_indices('i j', Lorentz)
         >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
-        >>> eA = 3*A(i, j)
-        >>> eB = 2*B(j, i)
-        >>> t1 = eA._tids
-        >>> t2 = eB._tids
-        >>> c1 = eA.coeff
-        >>> c2 = eB.coeff
+        >>> ea = 3*A(i, j)
+        >>> eb = 2*B(j, i)
+        >>> t1 = ea._tids
+        >>> t2 = eb._tids
+        >>> c1 = ea.coeff
+        >>> c2 = eb.coeff
         >>> TensAdd.from_TIDS_list([c1, c2], [t1, t2])
         2*B(i, j) + 3*A(i, j)
 
@@ -3044,7 +3040,6 @@ class Tensor(TensExpr):
         A(L_0, i1, -L_0, i2, i3)
 
         """
-
         free_args = self.free_args
         indices = list(indices)
         if [x._tensortype for x in indices] != [x._tensortype for x in free_args]:
@@ -3514,7 +3509,8 @@ class TensMul(TensExpr):
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
         >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
-        >>> t = A(i, k)*B(-k, -j); t
+        >>> t = A(i, k)*B(-k, -j)
+        >>> t
         A(i, L_0)*B(-L_0, -j)
         >>> t.fun_eval((i, k), (-j, l))
         A(k, L_0)*B(-L_0, l)
@@ -3582,9 +3578,8 @@ class TensMul(TensExpr):
     @property
     def data(self):
         dat = _tensor_data_substitution_dict[self]
-        if dat is None:
-            return
-        return self.coeff * dat
+        if dat is not None:
+            return self.coeff * dat
 
     def __iter__(self):
         if self.data is None:
@@ -3626,7 +3621,7 @@ def riemann_cyclic_replace(t_r):
 
 def riemann_cyclic(t2):
     """
-    replace each Riemann tensor with an equivalent expression
+    Replace each Riemann tensor with an equivalent expression
     satisfying the cyclic identity.
 
     This trick is discussed in the reference guide to Cadabra.
@@ -3715,7 +3710,8 @@ def substitute_indices(t, *index_tuples):
     >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> i, j, k, l = tensor_indices('i j k l', Lorentz)
     >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
-    >>> t = A(i, k)*B(-k, -j); t
+    >>> t = A(i, k)*B(-k, -j)
+    >>> t
     A(i, L_0)*B(-L_0, -j)
     >>> t.substitute_indices((i, j), (j, k))
     A(j, L_0)*B(-L_0, -k)

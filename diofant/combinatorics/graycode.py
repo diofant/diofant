@@ -317,7 +317,7 @@ def random_bitstring(n):
     Examples
     ========
 
-    >>> random_bitstring(3) # doctest: +SKIP
+    >>> random_bitstring(3)  # doctest: +SKIP
     100
 
     """

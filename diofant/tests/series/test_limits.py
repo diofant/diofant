@@ -1,3 +1,5 @@
+"""Limit computation tests."""
+
 import itertools
 
 import pytest
@@ -100,15 +102,15 @@ def test_basic4():
 
 
 def test_basic5():
-    class my(Function):
+    class MyFunction(Function):
         @classmethod
         def eval(cls, arg):
             if arg is oo:
                 return nan
-    assert limit(my(x), x, oo) == Limit(my(x), x, oo)
+    assert limit(MyFunction(x), x, oo) == Limit(MyFunction(x), x, oo)
 
     assert limit(4/x > 8, x, 0)  # relational test
-    assert limit(my(x) > 0, x, oo) == Limit(my(x) > 0, x, oo)
+    assert limit(MyFunction(x) > 0, x, oo) == Limit(MyFunction(x) > 0, x, oo)
 
     # from https://groups.google.com/forum/#!topic/sympy/LkTMQKC_BOw
     # fix bisected to ade6d20 and c459d18
@@ -703,3 +705,32 @@ def test_sympyissue_17431():
 def test_sympyissue_17792():
     n = Symbol('n', positive=True, integer=True)
     assert limit(factorial(n)/sqrt(n)*(E/n)**n, n, oo) == sqrt(2*pi)
+
+
+def test_sympyissue_18118():
+    assert limit(sign(x), x, 0, "+") == +1
+    assert limit(sign(x), x, 0, "-") == -1
+
+    assert limit(sign(sin(x)), x, 0, "+") == +1
+    assert limit(sign(sin(x)), x, 0, "-") == -1
+
+
+def test_sympyissue_6599():
+    assert limit((x + cos(x))/x, x, oo) == 1
+
+
+def test_sympyissue_18176():
+    x = Symbol('x', real=True, positive=True)
+    n = Symbol('n', integer=True, positive=True)
+    k = Symbol('k')
+    e = x**n - x**(n - k)
+    assert limit(e.subs({k: 0}), x, oo) == 0
+    assert limit(e.subs({k: 1}), x, oo) == oo
+
+
+def test_sympyissue_18306():
+    assert limit(sin(sqrt(x))/sqrt(sin(x)), x, 0) == 1
+
+
+def test_sympyissue_18378():
+    assert limit(log(exp(3*x) + x)/log(exp(x) + x**100), x, oo) == 3

@@ -1,8 +1,7 @@
 import pytest
 
-from diofant import Basic
-from diofant.matrices import ImmutableMatrix, ShapeError, eye
-from diofant.matrices.expressions import MatAdd, MatMul, MatPow, MatrixSymbol
+from diofant import (Basic, ImmutableMatrix, MatAdd, MatMul, MatPow,
+                     MatrixSymbol, ShapeError, eye)
 
 
 __all__ = ()

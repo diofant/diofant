@@ -58,7 +58,7 @@ Usage::
     pow(sin(x), 2) + pow(cos(x), 2)
     >>> print(ccode(2*x + cos(x), assign_to="result"))
     result = 2*x + cos(x);
-    >>> print(ccode(Abs(x**2)))
+    >>> print(ccode(abs(x**2)))
     fabs(pow(x, 2))
 
 .. autoclass:: diofant.printing.ccode.CCodePrinter
@@ -114,7 +114,7 @@ are wrapped properly when the assignment part is added.
 
 For piecewise functions, the ``assign_to`` option is mandatory:
 
-    >>> print(fcode(Piecewise((x, x<1), (x**2, True)), assign_to="var"))
+    >>> print(fcode(Piecewise((x, x < 1), (x**2, True)), assign_to="var"))
           if (x < 1) then
             var = x
           else
@@ -126,7 +126,7 @@ the lack of a conditional operator in Fortran 77. Inline conditionals can be
 supported using the ``merge`` function introduced in Fortran 95 by setting of
 the kwarg ``standard=95``:
 
-    >>> print(fcode(Piecewise((x, x<1), (x**2, True)), standard=95))
+    >>> print(fcode(Piecewise((x, x < 1), (x**2, True)), standard=95))
           merge(x, x**2, x < 1)
 
 Loops are generated if there are Indexed objects in the expression. This

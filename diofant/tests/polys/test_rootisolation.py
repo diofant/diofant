@@ -1,16 +1,12 @@
-"""Tests for real and complex root isolation and refinement algorithms. """
+"""Tests for real and complex root isolation and refinement algorithms."""
 
 import pytest
 
-from diofant.core import I, prod
-from diofant.domains import EX, QQ, ZZ
-from diofant.functions import sqrt
-from diofant.polys.polyerrors import DomainError, RefinementFailed
-from diofant.polys.rings import ring
+from diofant import (EX, QQ, ZZ, DomainError, I, RefinementFailed, prod, ring,
+                     sqrt, subsets)
 from diofant.polys.rootisolation import (RealInterval,
                                          dup_inner_refine_real_root,
                                          dup_step_refine_real_root)
-from diofant.utilities import subsets
 
 
 __all__ = ()

@@ -202,15 +202,14 @@ def test_collect_3():
 
 
 def test_collect_4():
-    """Collect with respect to a power"""
-
+    """Collect with respect to a power."""
     assert collect(a*x**c + b*x**c, x**c) == x**c*(a + b)
     # issue sympy/sympy#6096: 2 stays with c (unless c is integer or x is positive0
     assert collect(a*x**(2*c) + b*x**(2*c), x**c) == x**(2*c)*(a + b)
 
 
 def test_collect_5():
-    """Collect with respect to a tuple"""
+    """Collect with respect to a tuple."""
     assert collect(x**2*y**4 + z*(x*y**2)**2 + z + a*z, [x*y**2, z]) in [
         z*(1 + a + x**2*y**4) + x**2*y**4,
         z*(1 + a) + x**2*y**4*(1 + z) ]

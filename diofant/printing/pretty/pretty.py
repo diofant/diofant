@@ -1166,7 +1166,7 @@ class PrettyPrinter(Printer):
         pforms, indices = [], []
 
         def pretty_negative(pform, index):
-            """Prepend a minus sign to a pretty form. """
+            """Prepend a minus sign to a pretty form."""
             # TODO: Move this code to prettyForm
             if index == 0:
                 if pform.height() > 1:
@@ -1356,8 +1356,6 @@ class PrettyPrinter(Printer):
                 # return prettyForm(binding=prettyForm.NEG, *pform.left('- '))
             else:
                 return prettyForm(str(p))/prettyForm(str(q))
-        else:
-            return
 
     def _print_Rational(self, expr):
         result = self.__print_numer_denom(expr.numerator, expr.denominator)

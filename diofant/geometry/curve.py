@@ -55,7 +55,8 @@ class Curve(GeometrySet):
     (t, 0, 2)
     >>> C.parameter
     t
-    >>> C = Curve((t, interpolate([1, 4, 9, 16], t)), (t, 0, 1)); C
+    >>> C = Curve((t, interpolate([1, 4, 9, 16], t)), (t, 0, 1))
+    >>> C
     Curve((t, t**2), (t, 0, 1))
     >>> C.subs({t: 4})
     Point2D(4, 16)
@@ -264,7 +265,7 @@ class Curve(GeometrySet):
         Point2D(2*s, s**2)
         >>> C.arbitrary_point(None)
         Point2D(2*s, s**2)
-        >>> C.arbitrary_point(Symbol('a'))
+        >>> C.arbitrary_point(a)
         Point2D(2*a, a**2)
 
         """

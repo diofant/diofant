@@ -1,14 +1,12 @@
-from io import StringIO
+import io
 
 import pytest
 
-from diofant import (Abs, Equality, Function, Integral, acos, asin, atan,
+from diofant import (Catalan, Dummy, Eq, Equality, Function, Idx, IndexedBase,
+                     Integral, Lambda, Matrix, MatrixSymbol, acos, asin, atan,
                      atan2, besseli, ceiling, cos, cosh, erf, floor, ln, log,
-                     sin, sinh, sqrt, tan, tanh)
+                     pi, sin, sinh, sqrt, symbols, tan, tanh)
 from diofant.abc import B, C, X, a, b, c, d, t, x, y, z
-from diofant.core import Catalan, Dummy, Eq, Lambda, pi, symbols
-from diofant.matrices import Matrix, MatrixSymbol
-from diofant.tensor import Idx, IndexedBase
 from diofant.utilities.codegen import (CCodeGen, CodeGenArgumentListError,
                                        CodeGenError, FCodeGen, InOutArgument,
                                        InputArgument, OutputArgument, Result,
@@ -28,7 +26,7 @@ def get_string(dump_fn, routines, prefix="file", header=False, empty=False):
     The header and the empty lines are not generated to facilitate the
     testing of the output.
     """
-    output = StringIO()
+    output = io.StringIO()
     dump_fn(routines, output, prefix, header, empty)
     source = output.getvalue()
     output.close()
@@ -261,7 +259,7 @@ def test_no_results_c():
 def test_ansi_math1_codegen():
     # not included: log10
     name_expr = [
-        ("test_fabs", Abs(x)),
+        ("test_fabs", abs(x)),
         ("test_acos", acos(x)),
         ("test_asin", asin(x)),
         ("test_atan", atan(x)),
@@ -772,7 +770,7 @@ def test_no_results_f():
 def test_intrinsic_math_codegen():
     # not included: log10
     name_expr = [
-        ("test_abs", Abs(x)),
+        ("test_abs", abs(x)),
         ("test_acos", acos(x)),
         ("test_asin", asin(x)),
         ("test_atan", atan(x)),

@@ -37,7 +37,6 @@ def smoothness(n):
     factorint, smoothness_p
 
     """
-
     if n == 1:
         return (1, 1)  # not prime, but otherwise this causes headaches
     facs = factorint(n)
@@ -267,7 +266,7 @@ def perfect_power(n, candidates=None, big=True, factor=True):
 
     >>> perfect_power(16)
     (2, 4)
-    >>> perfect_power(16, big = False)
+    >>> perfect_power(16, big=False)
     (4, 2)
 
     """
@@ -458,7 +457,6 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
         V = prng.randint(0, n - 1)
         a = prng.randint(1, n - 3)  # for x**2 + a, a%n should not be 0 or -2
         F = None
-    return
 
 
 def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
@@ -518,8 +516,8 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
 
     But does aM % d for every divisor of n give 1?
 
-        >>> aM = pow(255, M, n)
-        >>> [(d, aM%Pow(*d.args)) for d in factorint(n, visual=True).args]
+        >>> am = pow(255, M, n)
+        >>> [(d, am % Pow(*d.args)) for d in factorint(n, visual=True).args]
         [(257**1, 1), (1009**1, 1)]
 
     No, only one of them. So perhaps the principle is that a root will
@@ -586,7 +584,6 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
     * https://web.archive.org/web/20170830055619/http://www.cs.toronto.edu/~yuvalf/Factorization.pdf
 
     """
-
     n = int(n)
     if n < 4 or B < 3:
         raise ValueError('pollard_pm1 should receive n > 3 and B > 2')
@@ -642,7 +639,6 @@ def _check_termination(factors, n, limitp1, use_trial, use_rho, use_pm1,
     the factorization and raises ``StopIteration``.
 
     """
-
     if verbose:
         print('Check for termination')
 
@@ -697,7 +693,7 @@ def _factorint_small(factors, n, limit, fail_max):
     """
 
     def done(n, d):
-        """return n, d if the sqrt(n) wasn't reached yet, else
+        """Return n, d if the sqrt(n) wasn't reached yet, else
         n, 0 indicating that factoring is done.
 
         """
@@ -1241,7 +1237,6 @@ def primefactors(n, limit=None, verbose=False):
 
 def _divisors(n):
     """Helper function for divisors which generates the divisors."""
-
     factordict = factorint(n)
     ps = sorted(factordict)
 
@@ -1292,7 +1287,6 @@ def divisors(n, generator=False):
     * https://stackoverflow.com/questions/1010381/python-factorization
 
     """
-
     n = as_int(abs(n))
     if isprime(n):
         return [1, n]
@@ -1329,7 +1323,6 @@ def divisor_count(n, modulus=1):
     factorint, divisors, totient
 
     """
-
     if not modulus:
         return 0
     elif modulus != 1:
@@ -1343,7 +1336,6 @@ def divisor_count(n, modulus=1):
 
 def _antidivisors(n):
     """Helper function for antidivisors which generates the antidivisors."""
-
     for d in _divisors(n):
         y = 2*d
         if n > y and n % y:
@@ -1382,7 +1374,6 @@ def antidivisors(n, generator=False):
     primefactors, factorint, divisors, divisor_count, antidivisor_count
 
     """
-
     n = as_int(abs(n))
     if n <= 2:
         return []
@@ -1414,7 +1405,6 @@ def antidivisor_count(n):
     factorint, divisors, antidivisors, divisor_count, totient
 
     """
-
     n = as_int(abs(n))
     if n <= 2:
         return 0
@@ -1568,7 +1558,6 @@ def core(n, t=2):
     factorint, diofant.solvers.diophantine.square_factor
 
     """
-
     n = as_int(n)
     t = as_int(t)
     if n <= 0:

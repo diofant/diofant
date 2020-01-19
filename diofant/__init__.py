@@ -1,4 +1,4 @@
-"""Diofant is a Python library for symbolic mathematics. """
+"""Diofant is a Python library for symbolic mathematics."""
 
 import os
 DIOFANT_DEBUG = os.getenv('DIOFANT_DEBUG', 'False') != 'False'

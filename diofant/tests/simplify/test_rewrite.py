@@ -1,7 +1,6 @@
-from diofant import I, Pow, cos, cot, exp, sin, symbols
+from diofant import I, Pow, cos, cot, exp, sin
+from diofant.abc import x, y
 
-
-x, y, z, n = symbols('x,y,z,n')
 
 __all__ = ()
 

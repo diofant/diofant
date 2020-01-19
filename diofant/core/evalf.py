@@ -47,6 +47,8 @@ DEFAULT_MAXPREC = int(110*LG10)  # keep in sync with maxn kwarg of evalf
 
 
 class PrecisionExhausted(ArithmeticError):
+    """Raised when precision is exhausted."""
+
     pass
 
 ############################################################################
@@ -104,7 +106,6 @@ def fastlog(x):
     (10, 3.3, 4)
 
     """
-
     if not x or x == fzero:
         return MINUS_INF
     return x[2] + x[3]
@@ -213,7 +214,7 @@ def get_abs(expr, prec, options):
 
 
 def get_complex_part(expr, no, prec, options):
-    """no = 0 for real part, no = 1 for imaginary part."""
+    """Selector no = 0 for real part, no = 1 for imaginary part."""
     workprec = prec
     i = 0
     while 1:
@@ -305,7 +306,6 @@ def add_terms(terms, prec, target_prec):
     XXX explain why this is needed and why one can't just loop using mpf_add
 
     """
-
     terms = [t for t in terms if not iszero(t)]
     if not terms:
         return None, None

@@ -1132,7 +1132,7 @@ def _nP(n, k=None, replacement=False):
 
 @cacheit
 def _AOP_product(n):
-    """for n = (m1, m2, .., mk) return the coefficients of the polynomial,
+    """For n = (m1, m2, .., mk) return the coefficients of the polynomial,
     prod(sum(x**i for i in range(nj + 1)) for nj in n); i.e. the coefficients
     of the product of AOPs (all-one polynomials) or order given in n.  The
     resulting coefficient corresponding to x**r is the number of r-length
@@ -1145,7 +1145,8 @@ def _AOP_product(n):
 
     >>> n = (2, 2, 3)  # e.g. aabbccc
     >>> prod = ((x**2 + x + 1)*(x**2 + x + 1)*(x**3 + x**2 + x + 1)).expand()
-    >>> c = _AOP_product(n); dict(c)
+    >>> c = _AOP_product(n)
+    >>> dict(c)
     {0: 1, 1: 3, 2: 6, 3: 8, 4: 8, 5: 6, 6: 3, 7: 1}
     >>> [c[i] for i in range(8)] == [prod.coeff(x, i) for i in range(8)]
     True
@@ -1380,9 +1381,9 @@ def stirling(n, k, d=None, kind=2, signed=False):
     Reduced second kind:
 
     >>> def delta(p):
-    ...    if len(p) == 1:
-    ...        return oo
-    ...    return min(abs(i[0] - i[1]) for i in subsets(p, 2))
+    ...     if len(p) == 1:
+    ...         return oo
+    ...     return min(abs(i[0] - i[1]) for i in subsets(p, 2))
     >>> parts = multiset_partitions(range(5), 3)
     >>> d = 2
     >>> sum(1 for p in parts if all(delta(i) >= d for i in p))

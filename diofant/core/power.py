@@ -628,7 +628,6 @@ class Pow(Expr):
         (1/2, 2)
 
         """
-
         b, e = self.args
         if b.is_Rational and b.numerator == 1 and b.denominator != 1:
             return Integer(b.denominator), -e
@@ -792,7 +791,6 @@ class Pow(Expr):
 
     def _eval_expand_multinomial(self, **hints):
         """(a+b+..) ** n -> a**n + n*a**(n-1)*b + .., n is nonzero integer."""
-
         base, exp = self.args
         result = self
 
@@ -986,9 +984,7 @@ class Pow(Expr):
                 hints['complex'] = False
 
                 expanded = self.expand(deep, **hints)
-                if hints.get('ignore') == expanded:
-                    return
-                else:
+                if hints.get('ignore') != expanded:
                     return re(expanded), im(expanded)
             else:
                 return re(self), im(self)
@@ -1080,7 +1076,7 @@ class Pow(Expr):
             return True
 
     def _eval_as_numer_denom(self):
-        """expression -> a/b -> a, b
+        """Expression -> a/b -> a, b.
 
         See Also
         ========
@@ -1285,11 +1281,13 @@ class Pow(Expr):
         3**(2*x + 2)
 
         >>> eq = (2 + 2*x)**y
-        >>> s = expand_power_base(eq); s.is_Mul, s
+        >>> s = expand_power_base(eq)
+        >>> s.is_Mul, s
         (False, (2*x + 2)**y)
         >>> eq.as_content_primitive()
         (1, (2*(x + 1))**y)
-        >>> s = expand_power_base(_[1]); s.is_Mul, s
+        >>> s = expand_power_base(_[1])
+        >>> s.is_Mul, s
         (True, 2**y*(x + 1)**y)
 
         See Also
@@ -1298,7 +1296,6 @@ class Pow(Expr):
         diofant.core.expr.Expr.as_content_primitive
 
         """
-
         b, e = self.as_base_exp()
         b = _keep_coeff(*b.as_content_primitive(radical=radical))
         ce, pe = e.as_content_primitive(radical=radical)

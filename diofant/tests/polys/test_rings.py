@@ -1,23 +1,18 @@
-"""Test sparse polynomials. """
+"""Test sparse polynomials."""
 
 import functools
 import operator
 
 import pytest
 
-from diofant import oo, pi, sqrt
+from diofant import (EX, FF, QQ, RR, ZZ, CoercionFailed, ExactQuotientFailed,
+                     GeneratorsError, GeneratorsNeeded,
+                     MultivariatePolynomialError, PolynomialDivisionFailed,
+                     PolynomialError, PolynomialRing, Symbol, field, grlex,
+                     lex, oo, pi, ring, sqrt, sring, symbols)
 from diofant.abc import t, x, y, z
-from diofant.core import Symbol, symbols
-from diofant.domains import EX, FF, QQ, RR, ZZ
-from diofant.polys.fields import field
-from diofant.polys.orderings import grlex, lex
 from diofant.polys.polyconfig import using
-from diofant.polys.polyerrors import (CoercionFailed, ExactQuotientFailed,
-                                      GeneratorsError, GeneratorsNeeded,
-                                      MultivariatePolynomialError,
-                                      PolynomialDivisionFailed,
-                                      PolynomialError)
-from diofant.polys.rings import PolyElement, PolynomialRing, ring, sring
+from diofant.polys.rings import PolyElement
 
 
 __all__ = ()

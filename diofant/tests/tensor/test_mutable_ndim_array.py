@@ -2,10 +2,9 @@ from copy import copy
 
 import pytest
 
-from diofant import Rational, SparseMatrix, Symbol
+from diofant import (Matrix, MutableDenseNDimArray, MutableSparseNDimArray,
+                     Rational, SparseMatrix, Symbol)
 from diofant.abc import x, y, z
-from diofant.matrices import Matrix
-from diofant.tensor import MutableDenseNDimArray, MutableSparseNDimArray
 
 
 __all__ = ()

@@ -232,7 +232,6 @@ class CCodePrinter(CodePrinter):
 
     def indent_code(self, code):
         """Accepts a string of code or a list of code lines."""
-
         if isinstance(code, str):
             code_lines = self.indent_code(code.splitlines(True))
             return ''.join(code_lines)
@@ -301,9 +300,8 @@ def ccode(expr, assign_to=None, **settings):
     Examples
     ========
 
-    >>> x, tau = symbols("x, tau")
-    >>> ccode((2*tau)**Rational(7, 2))
-    '8*sqrt(2)*pow(tau, 7.0L/2.0L)'
+    >>> ccode((2*x)**Rational(7, 2))
+    '8*sqrt(2)*pow(x, 7.0L/2.0L)'
     >>> ccode(sin(x), assign_to="s")
     's = sin(x);'
 
@@ -312,21 +310,20 @@ def ccode(expr, assign_to=None, **settings):
     Alternatively, the dictionary value can be a list of tuples i.e.
     [(argument_test, cfunction_string)].
 
-    >>> custom_functions = {
-    ...   "ceiling": "CEIL",
-    ...   "Abs": [(lambda x: not x.is_integer, "fabs"),
-    ...           (lambda x: x.is_integer, "ABS")],
-    ...   "func": "f"
-    ... }
+    >>> custom_functions = {"ceiling": "CEIL",
+    ...                     "Abs": [(lambda x: not x.is_integer, "fabs"),
+    ...                             (lambda x: x.is_integer, "ABS")],
+    ...                     "func": "f"}
     >>> func = Function('func')
-    >>> ccode(func(Abs(x) + ceiling(x)), user_functions=custom_functions)
+    >>> ccode(func(abs(x) + ceiling(x)), user_functions=custom_functions)
     'f(fabs(x) + CEIL(x))'
 
     or if the C-function takes a subset of the original arguments:
 
-    >>> ccode(2**x + 3**x, user_functions={'Pow': [
-    ...   (lambda b, e: b == 2, lambda b, e: 'exp2(%s)' % e),
-    ...   (lambda b, e: b != 2, 'pow')]})
+    >>> ccode(2**x + 3**x,
+    ...       user_functions={'Pow': [(lambda b, e: b == 2,
+    ...                                lambda b, e: 'exp2(%s)' % e),
+    ...                               (lambda b, e: b != 2, 'pow')]})
     'exp2(x) + pow(3, x)'
 
     ``Piecewise`` expressions are converted into conditionals. If an
@@ -337,12 +334,12 @@ def ccode(expr, assign_to=None, **settings):
     anything.
 
     >>> expr = Piecewise((x + 1, x > 0), (x, True))
-    >>> print(ccode(expr, tau))
+    >>> print(ccode(expr, y))
     if (x > 0) {
-    tau = x + 1;
+    y = x + 1;
     }
     else {
-    tau = x;
+    y = x;
     }
 
     Support for loops is provided through ``Indexed`` types. With
@@ -376,5 +373,4 @@ def ccode(expr, assign_to=None, **settings):
     A[2] = sin(x);
 
     """
-
     return CCodePrinter(settings).doprint(expr, assign_to)

@@ -1,4 +1,4 @@
-"""Sparse polynomial rings. """
+"""Sparse polynomial rings."""
 
 import functools
 import math
@@ -930,7 +930,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return p
 
     def __rsub__(self, other):
-        """n - self with n convertible to the coefficient domain.
+        """Substract self from other, with other convertible to the coefficient domain.
 
         Examples
         ========
@@ -998,7 +998,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return p
 
     def __rmul__(self, other):
-        """other * self with other in the coefficient domain of self.
+        """Multiply other to self with other in the coefficient domain of self.
 
         Examples
         ========
@@ -1024,7 +1024,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return p
 
     def __pow__(self, n):
-        """raise polynomial to power `n`
+        """Raise polynomial to power `n`.
 
         Examples
         ========
@@ -1099,7 +1099,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         return poly
 
     def _square(self):
-        """square of a polynomial
+        """Square of a polynomial.
 
         Examples
         ========
@@ -1241,7 +1241,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             raise ExactQuotientFailed(self, other)
 
     def _iadd_monom(self, mc):
-        """add to self the monomial coeff*x0**i0*x1**i1*...
+        """Add to self the monomial coeff*x0**i0*x1**i1*...
         unless self is a generator -- then just return the sum of the two.
 
         mc is a tuple, (monom, coeff), where monomial is (i0, i1, ...)
@@ -1282,7 +1282,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         return cpself
 
     def _iadd_poly_monom(self, p2, mc):
-        """add to self the product of (p)*(coeff*x0**i0*x1**i1*...)
+        """Add to self the product of (p)*(coeff*x0**i0*x1**i1*...)
         unless self is a generator -- then just return the sum of the two.
 
         mc is a tuple, (monom, coeff), where monomial is (i0, i1, ...)
@@ -1546,9 +1546,9 @@ class PolyElement(DomainElement, CantSympify, dict):
         return self._sorted(self.items(), order)
 
     def _imul_num(self, c):
-        """multiply inplace the polynomial self by an element in the
+        """Multiply inplace the polynomial self by an element in the
         coefficient ring, provided self is not one of the generators;
-        else multiply not inplace
+        else multiply not inplace.
 
         Examples
         ========

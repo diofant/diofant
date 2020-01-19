@@ -138,7 +138,6 @@ def run_test(label, routines, numerical_tests, language, commands, friendly=True
     generated code. The test passes when the compilation and the validation
     run correctly.
     """
-
     # Check input arguments before touching the file system
     language = language.upper()
     assert language in main_template

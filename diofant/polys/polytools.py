@@ -1,4 +1,7 @@
-"""User-friendly public interface to polynomial functions. """
+"""User-friendly public interface to polynomial functions."""
+
+import functools
+import operator
 
 import mpmath
 
@@ -159,18 +162,16 @@ class Poly(Expr):
             rep = cls.new(rep.rep, *rep.gens)
 
         gens = opt.gens
-        field = opt.field
-        domain = opt.domain
+
+        if opt.composite or (gens and set(rep.gens) != set(gens)):
+            return cls._from_expr(rep.as_expr(), opt)
 
         if gens and rep.gens != gens:
-            if set(rep.gens) != set(gens):
-                return cls._from_expr(rep.as_expr(), opt)
-            else:
-                rep = rep.reorder(*gens)
+            rep = rep.reorder(*gens)
 
-        if 'domain' in opt and domain:
-            rep = rep.set_domain(domain)
-        elif field is True:
+        if opt.domain:
+            rep = rep.set_domain(opt.domain)
+        elif opt.field:
             rep = rep.to_field()
 
         return rep
@@ -820,7 +821,7 @@ class Poly(Expr):
         """
         dom = self.domain
 
-        if dom.is_Numerical:
+        if dom.is_Numerical and not dom.is_Algebraic:
             return self
 
         if front:
@@ -4075,10 +4076,7 @@ def _symbolic_factor_list(expr, opt, method):
         if arg.is_Number:
             coeff *= arg
             continue
-        if arg.is_Mul:
-            args.extend(arg.args)
-            continue
-        if arg.is_Pow and arg.base is not E:
+        elif arg.is_Pow and arg.base is not E:
             base, exp = arg.args
             if base.is_Number:
                 factors.append((base, exp))
@@ -4116,6 +4114,11 @@ def _symbolic_factor_list(expr, opt, method):
                         other.append((f, k))
 
                 factors.append((_factors_product(other), exp))
+
+    if method == 'sqf':
+        factors = [(functools.reduce(operator.mul,
+                                     (f for f, _ in factors if _ == k)), k)
+                   for k in set(dict(factors).values())]
 
     return coeff, factors
 
@@ -4188,7 +4191,7 @@ def _generic_factor(expr, gens, args, method):
 
 def to_rational_coeffs(f):
     """
-    try to transform a polynomial to have rational coefficients
+    Try to transform a polynomial to have rational coefficients.
 
     try to find a transformation ``x = alpha*y``
 
@@ -4225,8 +4228,9 @@ def to_rational_coeffs(f):
 
     def _try_rescale(f, f1=None):
         """
-        try rescaling ``x -> alpha*x`` to convert f to a polynomial
+        Try rescaling ``x -> alpha*x`` to convert f to a polynomial
         with rational coefficients.
+
         Returns ``alpha, f``; if the rescaling is successful,
         ``alpha`` is the rescaling factor, and ``f`` is the rescaled
         polynomial; else ``alpha`` is ``None``.
@@ -4260,8 +4264,9 @@ def to_rational_coeffs(f):
 
     def _try_translate(f, f1=None):
         """
-        try translating ``x -> x + alpha`` to convert f to a polynomial
+        Try translating ``x -> x + alpha`` to convert f to a polynomial
         with rational coefficients.
+
         Returns ``alpha, f``; if the translating is successful,
         ``alpha`` is the translating factor, and ``f`` is the shifted
         polynomial; else ``alpha`` is ``None``.
@@ -4314,47 +4319,6 @@ def to_rational_coeffs(f):
             r = _try_translate(f, f1)
             if r:
                 return None, None, r[0], r[1]
-
-
-def _torational_factor_list(p, x):
-    """
-    helper function to factor polynomial using to_rational_coeffs
-
-    Examples
-    ========
-
-    >>> p = expand(((x**2-1)*(x-2)).subs({x: x*(1 + sqrt(2))}))
-    >>> factors = _torational_factor_list(p, x); factors
-    (-2, [(-x*(1 + sqrt(2))/2 + 1, 1), (-x*(1 + sqrt(2)) - 1, 1), (-x*(1 + sqrt(2)) + 1, 1)])
-    >>> expand(factors[0]*Mul(*[z[0] for z in factors[1]])) == p
-    True
-    >>> p = expand(((x**2-1)*(x-2)).subs({x: x + sqrt(2)}))
-    >>> factors = _torational_factor_list(p, x); factors
-    (1, [(x - 2 + sqrt(2), 1), (x - 1 + sqrt(2), 1), (x + 1 + sqrt(2), 1)])
-    >>> expand(factors[0]*Mul(*[z[0] for z in factors[1]])) == p
-    True
-
-    """
-    from ..simplify import simplify
-    p1 = Poly(p, x, domain='EX')
-    n = p1.degree()
-    res = to_rational_coeffs(p1)
-    if not res:
-        return
-    lc, r, t, g = res
-    factors = factor_list(g.as_expr())
-    if lc:
-        c = simplify(factors[0]*lc*r**n)
-        r1 = simplify(1/r)
-        a = []
-        for z in factors[1:][0]:
-            a.append((simplify(z[0].subs({x: x*r1})), z[1]))
-    else:
-        c = factors[0]
-        a = []
-        for z in factors[1:][0]:
-            a.append((z[0].subs({x: x - t}), z[1]))
-    return c, a
 
 
 def sqf_list(f, *gens, **args):

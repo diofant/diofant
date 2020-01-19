@@ -75,11 +75,10 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
         """
         if not hasattr(other, 'shape') or self.shape != other.shape:
             return false
-        if isinstance(other, MatrixExpr) and not isinstance(
+        if not isinstance(other, MatrixExpr) or isinstance(
                 other, ImmutableMatrix):
-            return
-        diff = self - other
-        return sympify(diff.is_zero)
+            diff = self - other
+            return sympify(diff.is_zero)
 
     adjoint = MatrixBase.adjoint
     conjugate = MatrixBase.conjugate

@@ -50,6 +50,7 @@ def _process_limits(*symbols):
 
 
 class ExprWithLimits(Expr):
+    """Represents an expression with limits."""
 
     def __new__(cls, function, *symbols, **assumptions):
         # Any embedded piecewise functions need to be brought out to the
@@ -263,7 +264,6 @@ class ExprWithLimits(Expr):
         change_index : Perform mapping on the sum and product dummy variables
 
         """
-
         from ..core.function import AppliedUndef, UndefinedFunction
         func, limits = self.function, list(self.limits)
 
@@ -371,17 +371,14 @@ class AddWithLimits(ExprWithLimits):
     def _eval_adjoint(self):
         if all(x.is_extended_real for x in flatten(self.limits)):
             return self.func(self.function.adjoint(), *self.limits)
-        return
 
     def _eval_conjugate(self):
         if all(x.is_extended_real for x in flatten(self.limits)):
             return self.func(self.function.conjugate(), *self.limits)
-        return
 
     def _eval_transpose(self):
         if all(x.is_extended_real for x in flatten(self.limits)):
             return self.func(self.function.transpose(), *self.limits)
-        return
 
     def _eval_factor(self, **hints):
         if 1 == len(self.limits):

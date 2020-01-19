@@ -1,4 +1,4 @@
-"""Tools for manipulating of large commutative expressions. """
+"""Tools for manipulating of large commutative expressions."""
 
 import numbers
 from collections import defaultdict
@@ -210,7 +210,6 @@ class Factors:
         x*y**2
 
         """
-
         args = []
         for factor, exp in self.factors.items():
             if exp != 1:
@@ -665,7 +664,6 @@ def _gcd_terms(terms, isprimitive=False, fraction=True):
     denominator, the lcm of all term denominators.
 
     """
-
     if isinstance(terms, Basic) and not isinstance(terms, Tuple):
         terms = Add.make_args(terms)
 
@@ -764,8 +762,8 @@ def gcd_terms(terms, isprimitive=False, clear=True, fraction=True):
 
     """
     def mask(terms):
-        """replace nc portions of each term with a unique Dummy symbols
-        and return the replacements to restore them
+        """Replace nc portions of each term with a unique Dummy symbols
+        and return the replacements to restore them.
 
         """
         args = [(a, []) if a.is_commutative else a.args_cnc() for a in terms]

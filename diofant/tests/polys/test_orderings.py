@@ -1,12 +1,11 @@
-"""Tests of monomial orderings. """
+"""Tests of monomial orderings."""
 
 import pytest
 
+from diofant import Integer, grevlex, grlex, igrlex, ilex, lex
 from diofant.abc import t, x, y, z
-from diofant.core import Integer
 from diofant.polys.orderings import (InverseOrder, LexOrder, MonomialOrder,
                                      ProductOrder, build_product_order,
-                                     grevlex, grlex, igrlex, ilex, lex,
                                      monomial_key)
 
 

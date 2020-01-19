@@ -1,10 +1,8 @@
-"""Tests for functions that inject symbols into the global namespace. """
+"""Tests for functions that inject symbols into the global namespace."""
 
 import pytest
 
-from diofant.domains import QQ
-from diofant.polys.fields import vfield
-from diofant.polys.rings import vring
+from diofant import QQ, vfield, vring
 
 
 __all__ = ()

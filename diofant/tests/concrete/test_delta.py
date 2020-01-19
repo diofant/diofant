@@ -1,10 +1,8 @@
-from diofant.concrete import Sum
+from diofant import (And, Eq, Integer, Piecewise, Sum, exp, oo, piecewise_fold,
+                     symbols)
 from diofant.concrete.delta import deltaproduct as dp
 from diofant.concrete.delta import deltasummation as ds
-from diofant.core import Eq, Integer, oo, symbols
 from diofant.functions import KroneckerDelta as Kd
-from diofant.functions import Piecewise, exp, piecewise_fold
-from diofant.logic import And
 
 
 __all__ = ()

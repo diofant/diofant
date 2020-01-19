@@ -1,4 +1,4 @@
-"""Ground types for various mathematical domains in Diofant. """
+"""Ground types for various mathematical domains in Diofant."""
 
 __all__ = ()
 

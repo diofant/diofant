@@ -9,7 +9,7 @@ from ..matrices import ShapeError
 
 
 class MatrixExpr(Expr):
-    """ Superclass for Matrix Expressions
+    """Superclass for Matrix Expressions
 
     MatrixExprs represent abstract matrices, linear transformations represented
     within a particular basis.
@@ -302,6 +302,8 @@ class MatrixExpr(Expr):
 
 
 class MatrixElement(Expr):
+    """Element of the matrix expression."""
+
     parent = property(lambda self: self.args[0])
     i = property(lambda self: self.args[1])
     j = property(lambda self: self.args[2])
@@ -329,8 +331,8 @@ class MatrixSymbol(MatrixExpr, AtomicExpr):
     Creates a Diofant Symbol to represent a Matrix. This matrix has a shape and
     can be included in Matrix Expressions
 
-    >>> A = MatrixSymbol('A', 3, 4) # A 3 by 4 Matrix
-    >>> B = MatrixSymbol('B', 4, 3) # A 4 by 3 Matrix
+    >>> A = MatrixSymbol('A', 3, 4)  # A 3 by 4 Matrix
+    >>> B = MatrixSymbol('B', 4, 3)  # A 4 by 3 Matrix
     >>> A.shape
     (3, 4)
     >>> 2*A*B + Identity(3)
