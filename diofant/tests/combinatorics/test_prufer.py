@@ -1,6 +1,6 @@
 import pytest
 
-from diofant.combinatorics.prufer import Prufer
+from diofant.combinatorics import Prufer
 
 
 __all__ = ()

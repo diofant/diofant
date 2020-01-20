@@ -734,3 +734,8 @@ def test_sympyissue_18306():
 
 def test_sympyissue_18378():
     assert limit(log(exp(3*x) + x)/log(exp(x) + x**100), x, oo) == 3
+
+
+def test_sympyissue_18399():
+    assert limit((1 - x/2)**(3*x), x, oo) == oo
+    assert limit((-x)**x, x, oo) == oo

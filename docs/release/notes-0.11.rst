@@ -150,3 +150,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`8695` sqf and sqf_list output is not consistant
 * :sympyissue:`18378` Invalid result in Limit
 * :sympyissue:`18384` abs(sin(x)*cos(x)) integrates wrong
+* :sympyissue:`18399` Incorrect limit
