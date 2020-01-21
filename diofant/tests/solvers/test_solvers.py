@@ -11,8 +11,9 @@ from diofant import (And, Derivative, E, Eq, Float, Function, Gt, I, Indexed,
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
-from diofant.solvers.solvers import (_invert, checksol, minsolve_linear_system,
+from diofant.solvers.solvers import (_invert, minsolve_linear_system,
                                      solve_linear)
+from diofant.solvers.utils import checksol
 from diofant.utilities.randtest import verify_numerically as tn
 
 

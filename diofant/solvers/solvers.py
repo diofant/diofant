@@ -9,8 +9,8 @@ from types import GeneratorType
 
 from ..core import (Add, Dummy, E, Equality, Expr, Float, Function, Ge, I,
                     Integer, Lambda, Mul, Pow, Symbol, expand_log, expand_mul,
-                    expand_multinomial, expand_power_exp, nan, nfloat, oo, pi,
-                    preorder_traversal, sympify, zoo)
+                    expand_power_exp, nan, nfloat, pi, preorder_traversal,
+                    sympify)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import (default_sort_key, is_sequence, iterable,
                                   ordered)
@@ -33,9 +33,10 @@ from ..simplify.sqrtdenest import unrad
 from ..utilities import filldedent
 from ..utilities.iterables import uniq
 from .polysys import solve_linear_system, solve_poly_system
+from .utils import checksol
 
 
-__all__ = 'solve', 'solve_linear', 'minsolve_linear_system', 'checksol'
+__all__ = 'solve', 'solve_linear', 'minsolve_linear_system'
 
 
 def denoms(eq, symbols=None):
@@ -74,136 +75,6 @@ def denoms(eq, symbols=None):
     return set(rv)
 
 
-def checksol(f, sol, **flags):
-    r"""Checks whether sol is a solution of equations f.
-
-    Examples
-    ========
-
-    >>> checksol(x**4 - 1, {x: 1})
-    True
-    >>> checksol(x**4 - 1, {x: 0})
-    False
-    >>> checksol(x**2 + y**2 - 5**2, {x: 3, y: 4})
-    True
-
-    Returns
-    =======
-
-    bool or None
-        Return True, if solution satisfy all equations
-        in ``f``.  Return False, if a solution doesn't
-        satisfy any equation.  Else (i.e. one or more checks
-        are inconclusive), return None.
-
-    Parameters
-    ==========
-
-    f : Expr or iterable of Expr's
-        Equations to substitute solutions in.
-    sol : dict of Expr's
-        Mapping of symbols to values.
-    \*\*flags : dict
-        A dictionary of following parameters:
-
-        minimal : bool, optional
-            Do a very fast, minimal testing.  Default is False.
-        warn : bool, optional
-            Show a warning if :func:`~diofant.solvers.solvers.checksol`
-            could not conclude.  Default is False.
-        simplify : bool, optional
-            Simplify solution before substituting into function and
-            simplify the function before trying specific simplifications.
-            Default is True.
-        force : bool, optional
-           Make positive all symbols without assumptions regarding
-           sign.  Default is False.
-
-    """
-    minimal = flags.get('minimal', False)
-
-    if not isinstance(sol, dict):
-        raise ValueError("Expecting dictionary but got %s" % sol)
-
-    if sol and not f.has(*list(sol)):
-        # if f(y) == 0, x=3 does not set f(y) to zero...nor does it not
-        if f.is_Number:
-            return f.is_zero
-        else:
-            return
-
-    illegal = {nan, zoo, oo, -oo}
-    if any(sympify(v).atoms() & illegal for k, v in sol.items()):
-        return False
-
-    was = f
-    attempt = -1
-    while 1:
-        attempt += 1
-        if attempt == 0:
-            val = f.subs(sol)
-            if val.atoms() & illegal:
-                return False
-        elif attempt == 1:
-            assert val.free_symbols
-            if not val.is_constant(*list(sol), simplify=not minimal):
-                return False
-            # there are free symbols -- simple expansion might work
-            _, val = val.as_content_primitive()
-            val = expand_mul(expand_multinomial(val))
-        elif attempt == 2:
-            if minimal:
-                return
-            if flags.get('simplify', True):
-                for k in sol:
-                    sol[k] = simplify(sol[k])
-            # start over without the failed expanded form, possibly
-            # with a simplified solution
-            val = simplify(f.subs(sol))
-            if flags.get('force', True):
-                val, reps = posify(val)
-                # expansion may work now, so try again and check
-                exval = expand_mul(expand_multinomial(val))
-                if exval.is_number or not exval.free_symbols:
-                    # we can decide now
-                    val = exval
-        else:
-            # if there are no radicals and no functions then this can't be
-            # zero anymore -- can it?
-            pot = preorder_traversal(expand_mul(val))
-            seen = set()
-            saw_pow_func = False
-            for p in pot:
-                if p in seen:
-                    continue
-                seen.add(p)
-                if p.is_Pow and not p.exp.is_Integer:
-                    saw_pow_func = True
-                elif p.is_Function:
-                    saw_pow_func = True
-                if saw_pow_func:
-                    break
-            if saw_pow_func is False:
-                return False
-            if flags.get('force', True):
-                # don't do a zero check with the positive assumptions in place
-                val = val.subs(reps)
-            break
-
-        if val == was:
-            continue
-        elif val.is_Rational:
-            return val == 0
-        elif val.is_nonzero:
-            return False
-        if not val.free_symbols:
-            return bool(abs(val.evalf(18, strict=False).evalf(12, chop=True)) < 1e-9)
-        was = val
-
-    if flags.get('warn', False):
-        warnings.warn("\n\tWarning: could not verify solution %s." % sol)
-
-
 def solve(f, *symbols, **flags):
     r"""Algebraically solves equation or system of equations.
 
@@ -226,7 +97,7 @@ def solve(f, *symbols, **flags):
             satisfy given assumptions on symbols solved for or make any
             denominator zero - are automatically excluded.
         warn : bool, optional
-            Show a warning if :func:`~diofant.solvers.solvers.checksol`
+            Show a warning if :func:`~diofant.solvers.utils.checksol`
             could not conclude.  Default is False.
         simplify : bool, optional
             Enable simplification (default) for all but polynomials of

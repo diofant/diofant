@@ -1,4 +1,8 @@
 Utilities for solving
 =====================
 
-.. autofunction:: diofant.solvers.deutils.ode_order
+.. automodule:: diofant.solvers.utils
+    :members:
+
+.. automodule:: diofant.solvers.deutils
+    :members:
