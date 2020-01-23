@@ -1,5 +1,7 @@
 """Solvers of systems of polynomial equations."""
 
+import collections
+
 from ..domains import EX
 from ..functions import root
 from ..matrices import Matrix
@@ -203,13 +205,19 @@ def solve_surd_system(eqs, *gens, **args):
     neqs = len(eqs)
     ngens = len(gens)
     testeqs = []
+    bases = collections.defaultdict(dict)
 
     def q_surd(e):
         return e.is_Pow and e.exp.is_Rational and not e.exp.is_Integer
 
     def tr_surd(e):
         n, d = e.exp.as_numer_denom()
+        for v2, d2 in sorted(bases.get(e.base, {}).items(),
+                             key=lambda _: -_[1]):
+            if not d2 % d:
+                return v2**(d2 // d)
         v = next(aux)
+        bases[e.base][v] = d
         gens.append(v)
         eqs.append(v**d - e.base)
         testeqs.append(v - root(e.base, d))

@@ -320,6 +320,10 @@ def test_solve_surd_system():
     res = [{x: -1}]
     assert solve_surd_system(eqs) == res
 
+    eqs = [root(x, 4) + root(x, 3) + sqrt(x)]
+    res = [{x: 0}]
+    assert solve_surd_system(eqs) == res
+
     a0, a1 = symbols('a:2')
 
     eqs = [x + sqrt(x + sqrt(x + 1)) - 2]
