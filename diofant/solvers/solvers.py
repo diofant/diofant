@@ -32,7 +32,7 @@ from ..simplify.fu import TR1
 from ..simplify.sqrtdenest import unrad
 from ..utilities import filldedent
 from ..utilities.iterables import uniq
-from .polysys import solve_linear_system, solve_poly_system
+from .polysys import solve_linear_system, solve_poly_system, solve_surd_system
 from .utils import checksol
 
 
@@ -747,11 +747,12 @@ def _solve_system(exprs, symbols, **flags):
             return result
 
     polys = []
+    surds = []
     dens = set()
     failed = []
     result = [{}]
     solved_syms = []
-    polynomial = False
+    algebraic = False
     inversions = False
     checkdens = check = flags.get('check', True)
 
@@ -767,10 +768,16 @@ def _solve_system(exprs, symbols, **flags):
 
         if poly is not None:
             polys.append(poly)
+        elif g.is_algebraic_expr(*symbols):
+            surds.append(g)
         else:
             failed.append(g)
 
-    if polys and all(p.is_linear for p in polys):
+    if surds:
+        result = solve_surd_system([_.as_expr() for _ in polys] +
+                                   surds, *symbols)
+        solved_syms = list(set().union(*[set(r) for r in result]))
+    elif polys and all(p.is_linear for p in polys):
         n, m = len(polys), len(symbols)
         matrix = zeros(n, m + 1)
 
@@ -858,7 +865,7 @@ def _solve_system(exprs, symbols, **flags):
                 result = newresult
                 assert not any(b in bad_results for b in result)
     else:
-        polynomial = True
+        algebraic = True
 
     default_simplify = bool(failed)  # rely on system-solvers to simplify
     if flags.get('simplify', default_simplify):
@@ -871,7 +878,7 @@ def _solve_system(exprs, symbols, **flags):
         result = [r for r in result
                   if not any(checksol(d, r, **flags) for d in dens)]
 
-    if check and (inversions or not polynomial):
+    if check and (inversions or not algebraic):
         result = [r for r in result
                   if not any(checksol(e, r, **flags) is False for e in exprs)]
 
