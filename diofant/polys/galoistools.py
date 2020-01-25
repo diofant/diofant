@@ -1,4 +1,4 @@
-"""Dense univariate polynomials with coefficients in Galois fields. """
+"""Dense univariate polynomials with coefficients in Galois fields."""
 
 import math
 import random
@@ -234,8 +234,8 @@ def gf_quo(f, g, p, K):
 
 def gf_frobenius_monomial_base(g, p, K):
     """
-    return the list of ``x**(i*p) mod g in Z_p`` for ``i = 0, .., n - 1``
-    where ``n = dmp_degree_in(g, 0, 0)``
+    Return the list of ``x**(i*p) mod g in Z_p`` for ``i = 0, .., n - 1``
+    where ``n = dmp_degree_in(g, 0, 0)``.
 
     Examples
     ========
@@ -264,7 +264,7 @@ def gf_frobenius_monomial_base(g, p, K):
 
 def gf_frobenius_map(f, g, b, p, K):
     """
-    compute gf_pow_mod(f, p, g, p, K) using the Frobenius map
+    Compute gf_pow_mod(f, p, g, p, K) using the Frobenius map.
 
     Parameters
     ==========
@@ -301,7 +301,8 @@ def gf_frobenius_map(f, g, b, p, K):
 
 def _gf_pow_pnm1d2(f, n, g, b, p, K):
     """
-    utility function for ``gf_edf_zassenhaus``
+    Utility function for ``gf_edf_zassenhaus``.
+
     Compute ``f**((p**n - 1) // 2)`` in ``GF(p)[x]/(g)``
     ``f**((p**n - 1) // 2) = (f*f**p*...*f**(p**n - 1))**((p - 1) // 2)``
 
@@ -482,7 +483,7 @@ def gf_trace_map(a, b, c, n, f, p, K):
 
 def _gf_trace_map(f, n, g, b, p, K):
     """
-    utility for ``gf_edf_shoup``
+    Utility for ``gf_edf_shoup``.
 
     """
     f = gf_rem(f, g, p, K)

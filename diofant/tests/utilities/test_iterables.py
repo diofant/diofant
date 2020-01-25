@@ -5,33 +5,29 @@ import textwrap
 
 import pytest
 
-from diofant import (Basic, Dummy, Integer, Integral, Matrix, Tuple,
-                     default_sort_key, symbols, true)
+from diofant import (Basic, Dummy, Integer, Integral, Matrix, Piecewise, Tuple,
+                     cantor_product, capture, default_sort_key, flatten, group,
+                     has_dups, numbered_symbols, ordered, postfixes,
+                     postorder_traversal, prefixes, subsets, symbols,
+                     topological_sort, true, unflatten, variations)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import Permutation, RGS_enum, RGS_unrank
 from diofant.functions.combinatorial.numbers import nT
-from diofant.functions.elementary.piecewise import ExprCondPair, Piecewise
+from diofant.functions.elementary.piecewise import ExprCondPair
 from diofant.utilities.enumerative import (factoring_visitor,
                                            multiset_partitions_taocp)
 from diofant.utilities.iterables import (_partition, _set_partitions,
                                          binary_partitions, bracelets,
-                                         cantor_product, capture,
                                          common_prefix, common_suffix,
-                                         filter_symbols, flatten,
-                                         generate_derangements,
-                                         generate_involutions, group, has_dups,
-                                         minlex, multiset,
-                                         multiset_combinations,
+                                         filter_symbols, generate_derangements,
+                                         generate_involutions, minlex,
+                                         multiset, multiset_combinations,
                                          multiset_partitions,
                                          multiset_permutations, necklaces,
-                                         numbered_symbols, ordered,
                                          ordered_partitions, partitions,
                                          permutations, permute_signs,
-                                         postfixes, postorder_traversal,
-                                         prefixes, rotate_left, rotate_right,
-                                         runs, sift, signed_permutations,
-                                         subsets, topological_sort, unflatten,
-                                         uniq, variations)
+                                         rotate_left, rotate_right, runs, sift,
+                                         signed_permutations, uniq)
 
 
 __all__ = ()

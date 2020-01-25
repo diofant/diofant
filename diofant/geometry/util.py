@@ -306,7 +306,7 @@ def convex_hull(*args):
 
 
 def are_coplanar(*e):
-    """ Returns True if the given entities are coplanar otherwise False
+    """Returns True if the given entities are coplanar otherwise False.
 
     Parameters
     ==========
@@ -469,7 +469,6 @@ def centroid(*args):
         Point2D(11/10, 1/2)
 
     """
-
     from .polygon import Polygon, Segment
     from .point import Point
     if args:

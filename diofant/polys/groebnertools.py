@@ -1,4 +1,4 @@
-"""Gröbner bases algorithms. """
+"""Gröbner bases algorithms."""
 
 from ..core import Dummy
 from .monomials import Monomial

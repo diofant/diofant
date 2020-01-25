@@ -1,11 +1,8 @@
+from diofant import (EX, RR, ZZ, ComputationFailed, ExactQuotientFailed,
+                     OperationNotSupported, PolificationFailed, Poly,
+                     PolynomialDivisionFailed)
 from diofant.abc import x
-from diofant.domains import EX, RR, ZZ
-from diofant.polys import Poly
 from diofant.polys.densebasic import dmp_normal
-from diofant.polys.polyerrors import (ComputationFailed, ExactQuotientFailed,
-                                      OperationNotSupported,
-                                      PolificationFailed,
-                                      PolynomialDivisionFailed)
 
 
 __all__ = ()

@@ -396,7 +396,6 @@ class SparseMatrixBase(MatrixBase):
         [ 0,  0, -1]])
 
         """
-
         rv = self.copy()
         for k, v in rv._smat.items():
             rv._smat[k] = -v
@@ -672,7 +671,6 @@ class SparseMatrixBase(MatrixBase):
         Jeroen Van Grondelle (1999)
 
         """
-
         R, parent = self.liupc()
         inf = len(R)  # this acts as infinity
         Lrow = copy.deepcopy(R)
@@ -834,7 +832,6 @@ class SparseMatrixBase(MatrixBase):
         True
 
         """
-
         from ..core import nan, oo
         if not self.is_symmetric():
             raise ValueError('Cholesky decomposition applies only to '
@@ -967,9 +964,9 @@ class SparseMatrixBase(MatrixBase):
         Examples
         ========
 
-        >>> A = SparseMatrix([[ 2, -1,  0],
-        ...                   [-1,  2, -1],
-        ...                   [+0,  0,  2]])
+        >>> A = SparseMatrix([[+2, -1, +0],
+        ...                   [-1, +2, -1],
+        ...                   [+0, +0, +2]])
         >>> A.inv('CH')
         Matrix([
         [2/3, 1/3, 1/6],

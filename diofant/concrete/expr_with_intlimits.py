@@ -9,6 +9,8 @@ class ReorderError(NotImplementedError):
 
 
 class ExprWithIntLimits(ExprWithLimits):
+    """Represents an expression with integer limits."""
+
     def change_index(self, var, trafo, newvar=None):
         r"""
         Change index of a Sum or Product.

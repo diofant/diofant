@@ -1,9 +1,7 @@
-from diofant import sqrt
-from diofant.domains import QQ, ZZ
+from diofant import QQ, ZZ, ring, sqrt
 from diofant.polys.modulargcd import (_chinese_remainder_reconstruction,
                                       _func_field_modgcd_m, _to_ANP_poly,
                                       _to_ZZ_poly, func_field_modgcd, modgcd)
-from diofant.polys.rings import ring
 
 
 __all__ = ()

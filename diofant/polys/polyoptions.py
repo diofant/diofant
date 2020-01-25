@@ -1,4 +1,4 @@
-"""Options manager for :class:`~diofant.polys.polytools.Poly` and public API functions. """
+"""Options manager for :class:`~diofant.polys.polytools.Poly` and public API functions."""
 
 import re
 
@@ -11,7 +11,7 @@ __all__ = "Options", "Order"
 
 
 class Option:
-    """Base class for all kinds of options. """
+    """Base class for all kinds of options."""
 
     option = None
 
@@ -37,13 +37,13 @@ class Option:
 
 
 class Flag(Option):
-    """Base class for all kinds of flags. """
+    """Base class for all kinds of flags."""
 
     is_Flag = True
 
 
 class BooleanOption(Option):
-    """An option that must have a boolean value or equivalent assigned. """
+    """An option that must have a boolean value or equivalent assigned."""
 
     @classmethod
     def preprocess(cls, value):
@@ -54,7 +54,7 @@ class BooleanOption(Option):
 
 
 class OptionType(type):
-    """Base type for all options that does registers options. """
+    """Base type for all options that does registers options."""
 
     def __init__(cls, *args, **kwargs):
         @property
@@ -166,7 +166,7 @@ class Options(dict):
 
     @classmethod
     def _init_dependencies_order(cls):
-        """Resolve the order of options' processing. """
+        """Resolve the order of options' processing."""
         if cls.__order__ is None:
             vertices, edges = [], set()
 
@@ -186,7 +186,7 @@ class Options(dict):
                     "cycle detected in diofant.polys options framework")
 
     def clone(self, updates={}):
-        """Clone ``self`` and update specified options. """
+        """Clone ``self`` and update specified options."""
         obj = dict.__new__(self.__class__)
 
         for option, value in self.items():
@@ -236,7 +236,7 @@ class Options(dict):
 
 
 class Expand(BooleanOption, metaclass=OptionType):
-    """``expand`` option to polynomial manipulation functions. """
+    """``expand`` option to polynomial manipulation functions."""
 
     option = 'expand'
 
@@ -249,7 +249,7 @@ class Expand(BooleanOption, metaclass=OptionType):
 
 
 class Gens(Option, metaclass=OptionType):
-    """``gens`` option to polynomial manipulation functions. """
+    """``gens`` option to polynomial manipulation functions."""
 
     option = 'gens'
 
@@ -278,7 +278,7 @@ class Gens(Option, metaclass=OptionType):
 
 
 class Wrt(Option, metaclass=OptionType):
-    """``wrt`` option to polynomial manipulation functions. """
+    """``wrt`` option to polynomial manipulation functions."""
 
     option = 'wrt'
 
@@ -305,7 +305,7 @@ class Wrt(Option, metaclass=OptionType):
 
 
 class Sort(Option, metaclass=OptionType):
-    """``sort`` option to polynomial manipulation functions. """
+    """``sort`` option to polynomial manipulation functions."""
 
     option = 'sort'
 
@@ -327,7 +327,7 @@ class Sort(Option, metaclass=OptionType):
 
 
 class Order(Option, metaclass=OptionType):
-    """``order`` option to polynomial manipulation functions. """
+    """``order`` option to polynomial manipulation functions."""
 
     option = 'order'
 
@@ -346,7 +346,7 @@ class Order(Option, metaclass=OptionType):
 
 
 class Field(BooleanOption, metaclass=OptionType):
-    """``field`` option to polynomial manipulation functions. """
+    """``field`` option to polynomial manipulation functions."""
 
     option = 'field'
 
@@ -355,7 +355,7 @@ class Field(BooleanOption, metaclass=OptionType):
 
 
 class Greedy(BooleanOption, metaclass=OptionType):
-    """``greedy`` option to polynomial manipulation functions. """
+    """``greedy`` option to polynomial manipulation functions."""
 
     option = 'greedy'
 
@@ -364,7 +364,7 @@ class Greedy(BooleanOption, metaclass=OptionType):
 
 
 class Composite(BooleanOption, metaclass=OptionType):
-    """``composite`` option to polynomial manipulation functions. """
+    """``composite`` option to polynomial manipulation functions."""
 
     option = 'composite'
 
@@ -377,7 +377,7 @@ class Composite(BooleanOption, metaclass=OptionType):
 
 
 class Domain(Option, metaclass=OptionType):
-    """``domain`` option to polynomial manipulation functions. """
+    """``domain`` option to polynomial manipulation functions."""
 
     option = 'domain'
 
@@ -478,7 +478,7 @@ class Domain(Option, metaclass=OptionType):
 
 
 class Split(BooleanOption, metaclass=OptionType):
-    """``split`` option to polynomial manipulation functions. """
+    """``split`` option to polynomial manipulation functions."""
 
     option = 'split'
 
@@ -492,7 +492,7 @@ class Split(BooleanOption, metaclass=OptionType):
 
 
 class Gaussian(BooleanOption, metaclass=OptionType):
-    """``gaussian`` option to polynomial manipulation functions. """
+    """``gaussian`` option to polynomial manipulation functions."""
 
     option = 'gaussian'
 
@@ -507,7 +507,7 @@ class Gaussian(BooleanOption, metaclass=OptionType):
 
 
 class Extension(Option, metaclass=OptionType):
-    """``extension`` option to polynomial manipulation functions. """
+    """``extension`` option to polynomial manipulation functions."""
 
     option = 'extension'
 
@@ -540,7 +540,7 @@ class Extension(Option, metaclass=OptionType):
 
 
 class Modulus(Option, metaclass=OptionType):
-    """``modulus`` option to polynomial manipulation functions. """
+    """``modulus`` option to polynomial manipulation functions."""
 
     option = 'modulus'
 
@@ -566,7 +566,7 @@ class Modulus(Option, metaclass=OptionType):
 
 
 class Strict(BooleanOption, metaclass=OptionType):
-    """``strict`` option to polynomial manipulation functions. """
+    """``strict`` option to polynomial manipulation functions."""
 
     option = 'strict'
 
@@ -576,7 +576,7 @@ class Strict(BooleanOption, metaclass=OptionType):
 
 
 class Auto(BooleanOption, Flag, metaclass=OptionType):
-    """``auto`` flag to polynomial manipulation functions. """
+    """``auto`` flag to polynomial manipulation functions."""
 
     option = 'auto'
 
@@ -593,7 +593,7 @@ class Auto(BooleanOption, Flag, metaclass=OptionType):
 
 
 class Frac(BooleanOption, Flag, metaclass=OptionType):
-    """``frac`` option to polynomial manipulation functions. """
+    """``frac`` option to polynomial manipulation functions."""
 
     option = 'frac'
 
@@ -603,7 +603,7 @@ class Frac(BooleanOption, Flag, metaclass=OptionType):
 
 
 class Formal(BooleanOption, Flag, metaclass=OptionType):
-    """``formal`` flag to polynomial manipulation functions. """
+    """``formal`` flag to polynomial manipulation functions."""
 
     option = 'formal'
 
@@ -613,13 +613,13 @@ class Formal(BooleanOption, Flag, metaclass=OptionType):
 
 
 class Polys(BooleanOption, Flag, metaclass=OptionType):
-    """``polys`` flag to polynomial manipulation functions. """
+    """``polys`` flag to polynomial manipulation functions."""
 
     option = 'polys'
 
 
 class Include(BooleanOption, Flag, metaclass=OptionType):
-    """``include`` flag to polynomial manipulation functions. """
+    """``include`` flag to polynomial manipulation functions."""
 
     option = 'include'
 
@@ -629,7 +629,7 @@ class Include(BooleanOption, Flag, metaclass=OptionType):
 
 
 class All(BooleanOption, Flag, metaclass=OptionType):
-    """``all`` flag to polynomial manipulation functions. """
+    """``all`` flag to polynomial manipulation functions."""
 
     option = 'all'
 
@@ -639,7 +639,7 @@ class All(BooleanOption, Flag, metaclass=OptionType):
 
 
 class Gen(Flag, metaclass=OptionType):
-    """``gen`` flag to polynomial manipulation functions. """
+    """``gen`` flag to polynomial manipulation functions."""
 
     option = 'gen'
 
@@ -656,7 +656,7 @@ class Gen(Flag, metaclass=OptionType):
 
 
 class Symbols(Flag, metaclass=OptionType):
-    """``symbols`` flag to polynomial manipulation functions. """
+    """``symbols`` flag to polynomial manipulation functions."""
 
     option = 'symbols'
 
@@ -673,7 +673,7 @@ class Symbols(Flag, metaclass=OptionType):
 
 
 class Method(Flag, metaclass=OptionType):
-    """``method`` flag to polynomial manipulation functions. """
+    """``method`` flag to polynomial manipulation functions."""
 
     option = 'method'
 
@@ -686,7 +686,7 @@ class Method(Flag, metaclass=OptionType):
 
 
 def build_options(gens, args=None):
-    """Construct options from keyword arguments or ... options. """
+    """Construct options from keyword arguments or ... options."""
     if args is None:
         gens, args = (), gens
 
@@ -725,7 +725,7 @@ def allowed_flags(args, flags):
 
 
 def set_defaults(options, **defaults):
-    """Update options with default values. """
+    """Update options with default values."""
     if 'defaults' not in options:
         options = dict(options)
         options['defaults'] = defaults

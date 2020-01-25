@@ -79,6 +79,8 @@ from .lambdify import implemented_function
 
 
 class CodeWrapError(Exception):
+    """Generic code wrapping error."""
+
     pass
 
 
@@ -848,7 +850,6 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
     [  2.   6.  12.]
 
     """
-
     if isinstance(args, (Dummy, Symbol)):
         args = args,
     else:

@@ -980,10 +980,10 @@ def _distribute(info):
             return info[0]
         rest = info[2](*[a for a in info[0].args if a is not conj])
         return info[1](*list(map(_distribute,
-                                 [(info[2](c, rest), info[1], info[2]) for c in conj.args])))
+                                 ((info[2](c, rest), info[1], info[2]) for c in conj.args))))
     elif isinstance(info[0], info[1]):
         return info[1](*list(map(_distribute,
-                                 [(x, info[1], info[2]) for x in info[0].args])))
+                                 ((x, info[1], info[2]) for x in info[0].args))))
     else:
         return info[0]
 
@@ -1092,7 +1092,6 @@ def is_nnf(expr, simplified=True):
     False
 
     """
-
     expr = sympify(expr)
     if is_literal(expr):
         return True
@@ -1253,7 +1252,6 @@ def to_int_repr(clauses, symbols):
     [{1, 2}, {2}]
 
     """
-
     symbols = dict(zip(symbols, range(1, len(symbols) + 1)))
 
     def append_symbol(arg, symbols):
@@ -1521,7 +1519,6 @@ def simplify_logic(expr, form=None, deep=True):
     ~x & ~y
 
     """
-
     if form == 'cnf' or form == 'dnf' or form is None:
         expr = sympify(expr)
         if not isinstance(expr, BooleanFunction):
@@ -1634,7 +1631,6 @@ def bool_map(bool1, bool2):
         a workaround that is valid for simplified boolean expressions.
 
         """
-
         # do some quick checks
         if function1.__class__ != function2.__class__:
             return

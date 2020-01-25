@@ -1,9 +1,6 @@
-"""Tests for low-level linear systems solver. """
+"""Tests for low-level linear systems solver."""
 
-from diofant.domains import QQ, ZZ
-from diofant.functions import sqrt
-from diofant.polys.fields import field
-from diofant.polys.rings import ring
+from diofant import QQ, ZZ, field, ring, sqrt
 from diofant.polys.solvers import solve_lin_sys
 
 

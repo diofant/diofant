@@ -108,8 +108,6 @@ def ContinuousRV(symbol, density, set=Interval(-oo, oo, True, True)):
 
     >>> from diofant.stats import P, E
 
-    >>> x = Symbol("x")
-
     >>> pdf = sqrt(2)*exp(-x**2/2)/(2*sqrt(pi))  # Normal distribution
     >>> X = ContinuousRV(x, pdf)
 
@@ -184,7 +182,6 @@ def Arcsin(name, a=0, b=1):
     * https://en.wikipedia.org/wiki/Arcsine_distribution
 
     """
-
     return rv(name, ArcsinDistribution, (a, b))
 
 # ------------------------------------------------------------------------------
@@ -238,7 +235,6 @@ def Benini(name, alpha, beta, sigma):
     >>> alpha = Symbol("alpha", positive=True)
     >>> beta = Symbol("beta", positive=True)
     >>> sigma = Symbol("sigma", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Benini("x", alpha, beta, sigma)
 
@@ -257,7 +253,6 @@ def Benini(name, alpha, beta, sigma):
     * https://reference.wolfram.com/legacy/v8/ref/BeniniDistribution.html
 
     """
-
     return rv(name, BeniniDistribution, (alpha, beta, sigma))
 
 # ------------------------------------------------------------------------------
@@ -311,7 +306,6 @@ def Beta(name, alpha, beta):
 
     >>> alpha = Symbol("alpha", positive=True)
     >>> beta = Symbol("beta", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Beta("x", alpha, beta)
 
@@ -332,7 +326,6 @@ def Beta(name, alpha, beta):
     * http://mathworld.wolfram.com/BetaDistribution.html
 
     """
-
     return rv(name, BetaDistribution, (alpha, beta))
 
 # ------------------------------------------------------------------------------
@@ -378,7 +371,6 @@ def BetaPrime(name, alpha, beta):
 
     >>> alpha = Symbol("alpha", positive=True)
     >>> beta = Symbol("beta", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = BetaPrime("x", alpha, beta)
 
@@ -396,7 +388,6 @@ def BetaPrime(name, alpha, beta):
     * http://mathworld.wolfram.com/BetaPrimeDistribution.html
 
     """
-
     return rv(name, BetaPrimeDistribution, (alpha, beta))
 
 # ------------------------------------------------------------------------------
@@ -438,7 +429,6 @@ def Cauchy(name, x0, gamma):
 
     >>> x0 = Symbol("x0")
     >>> gamma = Symbol("gamma", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Cauchy("x", x0, gamma)
 
@@ -452,7 +442,6 @@ def Cauchy(name, x0, gamma):
     * http://mathworld.wolfram.com/CauchyDistribution.html
 
     """
-
     return rv(name, CauchyDistribution, (x0, gamma))
 
 # ------------------------------------------------------------------------------
@@ -494,9 +483,6 @@ def Chi(name, k):
 
     >>> from diofant.stats import density, E, std, Chi
 
-    >>> k = Symbol("k", integer=True)
-    >>> z = Symbol("z")
-
     >>> X = Chi("x", k)
 
     >>> density(X)(z)
@@ -509,7 +495,6 @@ def Chi(name, k):
     * http://mathworld.wolfram.com/ChiDistribution.html
 
     """
-
     return rv(name, ChiDistribution, (k,))
 
 # ------------------------------------------------------------------------------
@@ -555,9 +540,7 @@ def ChiNoncentral(name, k, l):
 
     >>> from diofant.stats import density, E, std
 
-    >>> k = Symbol("k", integer=True)
     >>> l = Symbol("l")
-    >>> z = Symbol("z")
 
     >>> X = ChiNoncentral("x", k, l)
 
@@ -570,7 +553,6 @@ def ChiNoncentral(name, k, l):
     * https://en.wikipedia.org/wiki/Noncentral_chi_distribution
 
     """
-
     return rv(name, ChiNoncentralDistribution, (k, l))
 
 # ------------------------------------------------------------------------------
@@ -615,7 +597,6 @@ def ChiSquared(name, k):
     >>> from diofant.stats import density, E, variance
 
     >>> k = Symbol("k", integer=True, positive=True)
-    >>> z = Symbol("z")
 
     >>> X = ChiSquared("x", k)
 
@@ -635,7 +616,6 @@ def ChiSquared(name, k):
     * http://mathworld.wolfram.com/Chi-SquaredDistribution.html
 
     """
-
     return rv(name, ChiSquaredDistribution, (k, ))
 
 # ------------------------------------------------------------------------------
@@ -682,7 +662,6 @@ def Dagum(name, p, a, b):
     >>> p = Symbol("p", positive=True)
     >>> b = Symbol("b", positive=True)
     >>> a = Symbol("a", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Dagum("x", p, a, b)
 
@@ -695,7 +674,6 @@ def Dagum(name, p, a, b):
     * https://en.wikipedia.org/wiki/Dagum_distribution
 
     """
-
     return rv(name, DagumDistribution, (p, a, b))
 
 # ------------------------------------------------------------------------------
@@ -731,7 +709,6 @@ def Erlang(name, k, l):
 
     >>> k = Symbol("k", integer=True, positive=True)
     >>> l = Symbol("l", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Erlang("x", k, l)
 
@@ -763,7 +740,6 @@ def Erlang(name, k, l):
     * http://mathworld.wolfram.com/ErlangDistribution.html
 
     """
-
     return rv(name, GammaDistribution, (k, 1/l))
 
 # ------------------------------------------------------------------------------
@@ -813,7 +789,6 @@ def Exponential(name, rate):
     >>> from diofant.stats import density, cdf, E, variance, std, skewness
 
     >>> l = Symbol("lambda", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Exponential("x", l)
 
@@ -850,7 +825,6 @@ def Exponential(name, rate):
     * http://mathworld.wolfram.com/ExponentialDistribution.html
 
     """
-
     return rv(name, ExponentialDistribution, (rate, ))
 
 # ------------------------------------------------------------------------------
@@ -901,7 +875,6 @@ def FDistribution(name, d1, d2):
 
     >>> d1 = Symbol("d1", positive=True)
     >>> d2 = Symbol("d2", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = FDistribution("x", d1, d2)
 
@@ -923,7 +896,6 @@ def FDistribution(name, d1, d2):
     * http://mathworld.wolfram.com/F-Distribution.html
 
     """
-
     return rv(name, FDistributionDistribution, (d1, d2))
 
 # ------------------------------------------------------------------------------
@@ -970,7 +942,6 @@ def FisherZ(name, d1, d2):
 
     >>> d1 = Symbol("d1", positive=True)
     >>> d2 = Symbol("d2", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = FisherZ("x", d1, d2)
 
@@ -993,7 +964,6 @@ def FisherZ(name, d1, d2):
     * http://mathworld.wolfram.com/Fishersz-Distribution.html
 
     """
-
     return rv(name, FisherZDistribution, (d1, d2))
 
 # ------------------------------------------------------------------------------
@@ -1057,7 +1027,6 @@ def Frechet(name, a, s=1, m=0):
     * https://en.wikipedia.org/wiki/Fr%C3%A9chet_distribution
 
     """
-
     return rv(name, FrechetDistribution, (a, s, m))
 
 # ------------------------------------------------------------------------------
@@ -1111,7 +1080,6 @@ def Gamma(name, k, theta):
 
     >>> k = Symbol("k", positive=True)
     >>> theta = Symbol("theta", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Gamma("x", k, theta)
 
@@ -1149,7 +1117,6 @@ def Gamma(name, k, theta):
     * http://mathworld.wolfram.com/GammaDistribution.html
 
     """
-
     return rv(name, GammaDistribution, (k, theta))
 
 # ------------------------------------------------------------------------------
@@ -1201,7 +1168,6 @@ def GammaInverse(name, a, b):
 
     >>> a = Symbol("a", positive=True)
     >>> b = Symbol("b", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = GammaInverse("x", a, b)
 
@@ -1220,7 +1186,6 @@ def GammaInverse(name, a, b):
     * https://en.wikipedia.org/wiki/Inverse-gamma_distribution
 
     """
-
     return rv(name, GammaInverseDistribution, (a, b))
 
 # ------------------------------------------------------------------------------
@@ -1271,7 +1236,6 @@ def Kumaraswamy(name, a, b):
 
     >>> a = Symbol("a", positive=True)
     >>> b = Symbol("b", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Kumaraswamy("x", a, b)
 
@@ -1288,7 +1252,6 @@ def Kumaraswamy(name, a, b):
     * https://en.wikipedia.org/wiki/Kumaraswamy_distribution
 
     """
-
     return rv(name, KumaraswamyDistribution, (a, b))
 
 # ------------------------------------------------------------------------------
@@ -1330,7 +1293,6 @@ def Laplace(name, mu, b):
 
     >>> mu = Symbol("mu")
     >>> b = Symbol("b", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Laplace("x", mu, b)
 
@@ -1344,7 +1306,6 @@ def Laplace(name, mu, b):
     * http://mathworld.wolfram.com/LaplaceDistribution.html
 
     """
-
     return rv(name, LaplaceDistribution, (mu, b))
 
 # ------------------------------------------------------------------------------
@@ -1399,7 +1360,6 @@ def Logistic(name, mu, s):
     * http://mathworld.wolfram.com/LogisticDistribution.html
 
     """
-
     return rv(name, LogisticDistribution, (mu, s))
 
 # ------------------------------------------------------------------------------
@@ -1476,7 +1436,6 @@ def LogNormal(name, mean, std):
     * http://mathworld.wolfram.com/LogNormalDistribution.html
 
     """
-
     return rv(name, LogNormalDistribution, (mean, std))
 
 # ------------------------------------------------------------------------------
@@ -1522,7 +1481,6 @@ def Maxwell(name, a):
     >>> from diofant.stats import density, E, variance
 
     >>> a = Symbol("a", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Maxwell("x", a)
 
@@ -1542,7 +1500,6 @@ def Maxwell(name, a):
     * http://mathworld.wolfram.com/MaxwellDistribution.html
 
     """
-
     return rv(name, MaxwellDistribution, (a, ))
 
 # ------------------------------------------------------------------------------
@@ -1589,7 +1546,6 @@ def Nakagami(name, mu, omega):
 
     >>> mu = Symbol("mu", positive=True)
     >>> omega = Symbol("omega", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Nakagami("x", mu, omega)
 
@@ -1619,7 +1575,6 @@ def Nakagami(name, mu, omega):
     * https://en.wikipedia.org/wiki/Nakagami_distribution
 
     """
-
     return rv(name, NakagamiDistribution, (mu, omega))
 
 # ------------------------------------------------------------------------------
@@ -1667,7 +1622,6 @@ def Normal(name, mean, std):
 
     >>> mu = Symbol("mu")
     >>> sigma = Symbol("sigma", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Normal("x", mu, sigma)
 
@@ -1703,7 +1657,6 @@ def Normal(name, mean, std):
     * http://mathworld.wolfram.com/NormalDistributionFunction.html
 
     """
-
     return rv(name, NormalDistribution, (mean, std))
 
 # ------------------------------------------------------------------------------
@@ -1759,7 +1712,6 @@ def Pareto(name, xm, alpha):
 
     >>> xm = Symbol("xm", positive=True)
     >>> beta = Symbol("beta", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Pareto("x", xm, beta)
 
@@ -1773,7 +1725,6 @@ def Pareto(name, xm, alpha):
     * http://mathworld.wolfram.com/ParetoDistribution.html
 
     """
-
     return rv(name, ParetoDistribution, (xm, alpha))
 
 # ------------------------------------------------------------------------------
@@ -1844,7 +1795,6 @@ def QuadraticU(name, a, b):
     * https://en.wikipedia.org/wiki/U-quadratic_distribution
 
     """
-
     return rv(name, QuadraticUDistribution, (a, b))
 
 # ------------------------------------------------------------------------------
@@ -1917,7 +1867,6 @@ def RaisedCosine(name, mu, s):
     * https://en.wikipedia.org/wiki/Raised_cosine_distribution
 
     """
-
     return rv(name, RaisedCosineDistribution, (mu, s))
 
 # ------------------------------------------------------------------------------
@@ -1961,7 +1910,6 @@ def Rayleigh(name, sigma):
     >>> from diofant.stats import density, E, variance
 
     >>> sigma = Symbol("sigma", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Rayleigh("x", sigma)
 
@@ -1981,7 +1929,6 @@ def Rayleigh(name, sigma):
     * http://mathworld.wolfram.com/RayleighDistribution.html
 
     """
-
     return rv(name, RayleighDistribution, (sigma, ))
 
 # ------------------------------------------------------------------------------
@@ -2023,7 +1970,6 @@ def StudentT(name, nu):
     >>> from diofant.stats import density, E, variance
 
     >>> nu = Symbol("nu", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = StudentT("x", nu)
 
@@ -2048,7 +1994,6 @@ def StudentT(name, nu):
     * http://mathworld.wolfram.com/Studentst-Distribution.html
 
     """
-
     return rv(name, StudentTDistribution, (nu, ))
 
 # ------------------------------------------------------------------------------
@@ -2099,11 +2044,6 @@ def Triangular(name, a, b, c):
 
     >>> from diofant.stats import density, E
 
-    >>> a = Symbol("a")
-    >>> b = Symbol("b")
-    >>> c = Symbol("c")
-    >>> z = Symbol("z")
-
     >>> X = Triangular("x", a, b, c)
 
     >>> pprint(density(X)(z), use_unicode=False)
@@ -2128,7 +2068,6 @@ def Triangular(name, a, b, c):
     * http://mathworld.wolfram.com/TriangularDistribution.html
 
     """
-
     return rv(name, TriangularDistribution, (a, b, c))
 
 # ------------------------------------------------------------------------------
@@ -2199,7 +2138,6 @@ def Uniform(name, left, right):
 
     >>> a = Symbol("a", negative=True)
     >>> b = Symbol("b", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Uniform("x", a, b)
 
@@ -2222,7 +2160,6 @@ def Uniform(name, left, right):
     * http://mathworld.wolfram.com/UniformDistribution.html
 
     """
-
     return rv(name, UniformDistribution, (left, right))
 
 # ------------------------------------------------------------------------------
@@ -2275,9 +2212,6 @@ def UniformSum(name, n):
 
     >>> from diofant.stats import density
 
-    >>> n = Symbol("n", integer=True)
-    >>> z = Symbol("z")
-
     >>> X = UniformSum("x", n)
 
     >>> D = density(X)(z)
@@ -2300,7 +2234,6 @@ def UniformSum(name, n):
     * http://mathworld.wolfram.com/UniformSumDistribution.html
 
     """
-
     return rv(name, UniformSumDistribution, (n, ))
 
 # ------------------------------------------------------------------------------
@@ -2350,7 +2283,6 @@ def VonMises(name, mu, k):
 
     >>> mu = Symbol("mu")
     >>> k = Symbol("k", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = VonMises("x", mu, k)
 
@@ -2368,7 +2300,6 @@ def VonMises(name, mu, k):
     * http://mathworld.wolfram.com/vonMisesDistribution.html
 
     """
-
     return rv(name, VonMisesDistribution, (mu, k))
 
 # ------------------------------------------------------------------------------
@@ -2424,7 +2355,6 @@ def Weibull(name, alpha, beta):
 
     >>> l = Symbol("lambda", positive=True)
     >>> k = Symbol("k", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = Weibull("x", l, k)
 
@@ -2444,7 +2374,6 @@ def Weibull(name, alpha, beta):
     * http://mathworld.wolfram.com/WeibullDistribution.html
 
     """
-
     return rv(name, WeibullDistribution, (alpha, beta))
 
 # ------------------------------------------------------------------------------
@@ -2490,7 +2419,6 @@ def WignerSemicircle(name, R):
     >>> from diofant.stats import density, E
 
     >>> R = Symbol("R", positive=True)
-    >>> z = Symbol("z")
 
     >>> X = WignerSemicircle("x", R)
 
@@ -2507,5 +2435,4 @@ def WignerSemicircle(name, R):
     * http://mathworld.wolfram.com/WignersSemicircleLaw.html
 
     """
-
     return rv(name, WignerSemicircleDistribution, (R,))

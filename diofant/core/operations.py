@@ -7,7 +7,7 @@ from .sympify import sympify
 
 
 class AssocOp(Expr):
-    """ Associative operations, can separate noncommutative and
+    """Associative operations, can separate noncommutative and
     commutative parts.
 
     (a op b) op c == a op (b op c) == a op b op c.
@@ -350,6 +350,8 @@ class AssocOp(Expr):
 
 
 class ShortCircuit(Exception):
+    """Helper exception to detect absorbing element among arguments."""
+
     pass
 
 

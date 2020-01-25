@@ -1,4 +1,4 @@
-"""Algorithms for partial fraction decomposition of rational functions. """
+"""Algorithms for partial fraction decomposition of rational functions."""
 
 import itertools
 

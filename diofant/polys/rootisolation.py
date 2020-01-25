@@ -1,4 +1,4 @@
-"""Real and complex root isolation and refinement algorithms. """
+"""Real and complex root isolation and refinement algorithms."""
 
 import collections
 import math

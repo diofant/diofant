@@ -1,4 +1,4 @@
-""" Tests from Michael Wester's 1999 paper "Review of CAS mathematical
+"""Tests from Michael Wester's 1999 paper "Review of CAS mathematical
 capabilities".
 
 http://www.math.unm.edu/~wester/cas/book/Wester.pdf
@@ -9,45 +9,35 @@ import itertools
 
 import pytest
 
-from diofant import (ZZ, And, Complement, Derivative, DiracDelta, E,
-                     EulerGamma, FiniteSet, Float, Function, GoldenRatio, I,
-                     Integral, Lambda, LambertW, Le, Lt, Max, Mul, N, O, Or,
-                     Piecewise, Poly, Rational, Subs, Symbol, acos, acot,
-                     apart, asin, asinh, assoc_legendre, atan, bernoulli,
-                     besselj, binomial, cancel, cbrt, ceiling, chebyshevt,
+from diofant import (ZZ, And, BlockMatrix, Complement, Derivative, DiracDelta,
+                     E, EulerGamma, FiniteSet, Float, Function, GoldenRatio,
+                     GramSchmidt, Heaviside, I, Integral, Lambda, LambertW,
+                     LaplaceTransform, Le, Lt, Matrix, MatrixSymbol, Max, Mul,
+                     N, O, Or, Piecewise, Poly, Product, Rational, Subs, Sum,
+                     Symbol, ZeroMatrix, acos, acot, apart, asin, asinh,
+                     assoc_legendre, atan, bernoulli, besselj, binomial,
+                     block_collapse, cancel, cbrt, ceiling, chebyshevt,
                      combsimp, conjugate)
 from diofant import continued_fraction_convergents as cf_c
 from diofant import continued_fraction_iterator as cf_i
 from diofant import continued_fraction_periodic as cf_p
 from diofant import continued_fraction_reduce as cf_r
-from diofant import (cos, cosh, cot, diff, elliptic_e, elliptic_f, exp, expand,
-                     expand_func, factor, factorial, factorial2, factorint,
-                     fibonacci, floor, gamma, gcd, groebner, hessian, hyper,
-                     hyperexpand, igcd, im, legendre_poly, limit, log,
-                     logcombine, maximize, minimize, nan, npartitions, oo, pi,
+from diofant import (cos, cosh, cot, diff, dsolve, elliptic_e, elliptic_f, erf,
+                     exp, expand, expand_func, eye, factor, factorial,
+                     factorial2, factorint, fibonacci, floor,
+                     fourier_transform, gamma, gcd, groebner, hessian, hyper,
+                     hyperexpand, igcd, im, integrate,
+                     inverse_laplace_transform, laplace_transform,
+                     legendre_poly, limit, log, logcombine, maximize,
+                     mellin_transform, minimize, nan, npartitions, oo, pi,
                      polygamma, polylog, powdenest, powsimp, primerange,
                      primitive, primitive_root, product, radsimp, re,
-                     reduce_inequalities, residue, resultant, rf, root, sec,
-                     series, sign, simplify, sin, sinh, solve, sqrt,
+                     reduce_inequalities, residue, resultant, rf, root, rsolve,
+                     sec, series, sign, simplify, sin, sinh, solve, sqrt,
                      sqrtdenest, summation, symbols, tan, tanh, totient,
-                     trigsimp, trunc, wronskian, zoo)
+                     trigsimp, trunc, wronskian, zeta, zoo)
 from diofant.abc import a, b, c, s, t, w, x, y, z
-from diofant.concrete import Sum
-from diofant.concrete.products import Product
 from diofant.functions.combinatorial.numbers import stirling
-from diofant.functions.special.delta_functions import Heaviside
-from diofant.functions.special.error_functions import erf
-from diofant.functions.special.zeta_functions import zeta
-from diofant.integrals import integrate
-from diofant.integrals.transforms import (LaplaceTransform, fourier_transform,
-                                          inverse_laplace_transform,
-                                          laplace_transform, mellin_transform)
-from diofant.matrices import GramSchmidt, Matrix, eye
-from diofant.matrices.expressions import MatrixSymbol, ZeroMatrix
-from diofant.matrices.expressions.blockmatrix import (BlockMatrix,
-                                                      block_collapse)
-from diofant.solvers.ode import dsolve
-from diofant.solvers.recurr import rsolve
 from diofant.utilities.iterables import partitions
 
 
@@ -2152,12 +2142,13 @@ def test_Y12():
 
 def test_Z1():
     assert (rsolve(f(n + 2) - 2*f(n + 1) + f(n) - 2,
-                   init={f(0): 1, f(1): m}) == n**2 + n*(m - 2) + 1)
+                   init={f(0): 1, f(1): m}) == [{f: Lambda(n, n**2 +
+                                                           n*(m - 2) + 1)}])
 
 
 def test_Z2():
-    assert (rsolve(f(n) - (5*f(n - 1) - 6*f(n - 2)), init={f(0): 0, f(1): 1})
-            == -2**n + 3**n)
+    assert rsolve(f(n) - (5*f(n - 1) - 6*f(n - 2)),
+                  init={f(0): 0, f(1): 1}) == [{f: Lambda(n, -2**n + 3**n)}]
 
 
 @pytest.mark.slow
@@ -2167,8 +2158,8 @@ def test_Z3():
     # fibonacci(n+1), but that is quite hard
     assert (rsolve(f(n) - (f(n - 1) + f(n - 2)),
                    init={f(1): 1, f(2): 2})
-            == 2**(-n)*((1 + sqrt(5))**n*(sqrt(5) + 5) +
-                        (-sqrt(5) + 1)**n*(-sqrt(5) + 5))/10)
+            == [{f: Lambda(n, 2**(-n)*((1 + sqrt(5))**n*(sqrt(5) + 5) +
+                           (-sqrt(5) + 1)**n*(-sqrt(5) + 5))/10)}])
 
 
 @pytest.mark.xfail

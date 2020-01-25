@@ -3,8 +3,7 @@ import itertools
 import pytest
 
 from diofant import (Float, I, Rational, Symbol, acos, cos, oo, pi, simplify,
-                     sin, sqrt, symbols)
-from diofant.functions.elementary.trigonometric import tan
+                     sin, sqrt, symbols, tan)
 from diofant.geometry import (Circle, GeometryError, Line, Line3D, Plane,
                               Point, Point3D, Ray, Ray3D, Segment, Segment3D,
                               Triangle, intersection)

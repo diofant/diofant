@@ -1,5 +1,4 @@
-from diofant.combinatorics.group_constructs import DirectProduct
-from diofant.combinatorics.named_groups import CyclicGroup, DihedralGroup
+from diofant.combinatorics import CyclicGroup, DihedralGroup, DirectProduct
 
 
 __all__ = ()

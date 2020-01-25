@@ -250,7 +250,6 @@ def test_lambdify_transl():
 
 def test_symarray():
     """Test creation of numpy arrays of diofant symbols."""
-
     syms = symbols('_0,_1,_2')
     s1 = symarray("", 3)
     s2 = symarray("", 3)

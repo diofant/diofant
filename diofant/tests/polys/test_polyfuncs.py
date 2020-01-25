@@ -1,12 +1,10 @@
-"""Tests for high-level polynomials manipulation functions. """
+"""Tests for high-level polynomials manipulation functions."""
 
 import pytest
 
-from diofant import symbols
+from diofant import (ComputationFailed, MultivariatePolynomialError, horner,
+                     interpolate, symbols, symmetrize, viete)
 from diofant.abc import a, b, c, d, e, x, y, z
-from diofant.polys.polyerrors import (ComputationFailed,
-                                      MultivariatePolynomialError)
-from diofant.polys.polyfuncs import horner, interpolate, symmetrize, viete
 
 
 __all__ = ()

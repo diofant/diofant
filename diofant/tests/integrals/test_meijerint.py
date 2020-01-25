@@ -6,12 +6,13 @@ import pytest
 from diofant import (E1, RR, Abs, Add, And, Chi, Ci, Ei, Heaviside, I, Integer,
                      Integral, Mul, Piecewise, Rational, Shi, Si, Symbol,
                      acosh, acoth, arg, asin, atan, besseli, besselj, cbrt,
-                     combsimp, cos, cosh, erf, exp, exp_polar, expand,
-                     expand_func, expand_mul, expint, fourier_transform,
-                     fresnelc, fresnels, gamma, hyper, hyperexpand, integrate,
-                     laplace_transform, log, lowergamma, meijerg, nan, oo, pi,
-                     piecewise_fold, polygamma, powdenest, powsimp, re,
-                     simplify, sin, sinh, sqrt, symbols, unpolarify)
+                     combsimp, cos, cosh, default_sort_key, erf, exp,
+                     exp_polar, expand, expand_func, expand_mul, expint,
+                     fourier_transform, fresnelc, fresnels, gamma, hyper,
+                     hyperexpand, integrate, laplace_transform, log,
+                     lowergamma, meijerg, nan, oo, pi, piecewise_fold,
+                     polygamma, powdenest, powsimp, re, simplify, sin, sinh,
+                     sqrt, symbols, unpolarify)
 from diofant.abc import R, a, b, c, d, h, r, s, t, w, x, y, z
 from diofant.integrals.meijerint import (_create_lookup_table, _inflate_g,
                                          _rewrite1, _rewrite_single,
@@ -19,7 +20,6 @@ from diofant.integrals.meijerint import (_create_lookup_table, _inflate_g,
                                          meijerint_indefinite,
                                          meijerint_inversion)
 from diofant.integrals.meijerint import z as z_dummy
-from diofant.utilities import default_sort_key
 from diofant.utilities.randtest import random_complex_number as randcplx
 from diofant.utilities.randtest import verify_numerically
 
@@ -533,7 +533,7 @@ def test_probability():
 
 @pytest.mark.slow
 def test_expint():
-    """ Test various exponential integrals. """
+    """Test various exponential integrals."""
     assert simplify(integrate(exp(-z*x)/x**y,
                               (x, 1, oo),
                               meijerg=True,

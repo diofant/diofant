@@ -409,7 +409,6 @@ class Cycle(dict):
         Cycle(1, 2, 6)
 
         """
-
         if not args:
             return
         if len(args) == 1:
@@ -1172,8 +1171,8 @@ class Permutation(Basic):
     @staticmethod
     def rmul_with_af(*args):
         """
-        same as rmul, but the elements of args are Permutation objects
-        which have _array_form
+        Same as rmul, but the elements of args are Permutation objects
+        which have _array_form.
 
         """
         a = [x._array_form for x in args]
@@ -1379,7 +1378,6 @@ class Permutation(Basic):
         True
 
         """
-
         if self.size != h.size:
             raise ValueError("The permutations must be of equal size.")
         a = [None]*self.size
@@ -2063,7 +2061,6 @@ class Permutation(Basic):
         https://en.wikipedia.org/wiki/Commutator
 
         """
-
         a = self.array_form
         b = x.array_form
         n = len(a)
@@ -2131,7 +2128,6 @@ class Permutation(Basic):
         is_Identity, cardinality, length, rank, size
 
         """
-
         return reduce(lcm, [len(cycle) for cycle in self.cyclic_form], 1)
 
     def length(self):
@@ -2152,7 +2148,6 @@ class Permutation(Basic):
         min, max, support, cardinality, order, rank, size
 
         """
-
         return len(self.support())
 
     @property

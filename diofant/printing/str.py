@@ -14,6 +14,8 @@ from .printer import Printer
 
 
 class StrPrinter(Printer):
+    """Str printer."""
+
     printmethod = "_diofantstr"
     _default_settings = {
         "order": None,
@@ -662,7 +664,6 @@ def sstr(expr, **settings):
     'Eq(a + b, 0)'
 
     """
-
     p = StrPrinter(settings)
     s = p.doprint(expr)
 
@@ -677,14 +678,13 @@ class StrReprPrinter(StrPrinter):
 
 
 def sstrrepr(expr, **settings):
-    """return expr in mixed str/repr form
+    """Return expr in mixed str/repr form.
 
     i.e. strings are returned in repr form with quotes, and everything else
     is returned in str form.
 
     This function could be useful for hooking into sys.displayhook
     """
-
     p = StrReprPrinter(settings)
     s = p.doprint(expr)
 

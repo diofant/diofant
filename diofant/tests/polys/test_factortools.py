@@ -1,13 +1,11 @@
-"""Tools for polynomial factorization routines in characteristic zero. """
+"""Tools for polynomial factorization routines in characteristic zero."""
 
 import pytest
 
-from diofant import I, nextprime, pi, sin, sqrt
-from diofant.domains import EX, FF, QQ, RR, ZZ
+from diofant import (EX, FF, QQ, RR, ZZ, DomainError, I, nextprime, pi, ring,
+                     sin, sqrt)
 from diofant.polys import polyconfig as config
 from diofant.polys.factortools import dmp_zz_diophantine
-from diofant.polys.polyerrors import DomainError
-from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys, w_polys
 
 

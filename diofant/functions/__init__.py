@@ -46,3 +46,29 @@ from .special.zeta_functions import dirichlet_eta, lerchphi, polylog, zeta
 
 
 ln = log
+
+
+__all__ = ('FallingFactorial', 'RisingFactorial', 'binomial', 'factorial',
+           'factorial2', 'ff', 'rf', 'subfactorial', 'bell', 'bernoulli',
+           'catalan', 'euler', 'fibonacci', 'genocchi', 'harmonic', 'lucas',
+           'Abs', 'adjoint', 'arg', 'conjugate', 'im', 'periodic_argument',
+           'polar_lift', 'polarify', 'principal_branch', 're', 'sign',
+           'transpose', 'unbranched_argument', 'unpolarify', 'LambertW',
+           'exp', 'exp_polar', 'log', 'ln', 'acosh', 'acoth', 'asinh',
+           'atanh', 'cosh', 'coth', 'csch', 'sech', 'sinh', 'tanh', 'ceiling',
+           'floor', 'Id', 'Max', 'Min', 'cbrt', 'real_root', 'root', 'sqrt',
+           'Piecewise', 'piecewise_fold', 'acos', 'acot', 'acsc', 'asec',
+           'asin', 'atan', 'atan2', 'cos', 'cot', 'csc', 'sec', 'sin', 'tan',
+           'airyai', 'airyaiprime', 'airybi', 'airybiprime', 'besseli',
+           'besselj', 'besselk', 'bessely', 'hankel1', 'hankel2', 'jn',
+           'jn_zeros', 'yn', 'beta', 'bspline_basis', 'bspline_basis_set',
+           'DiracDelta', 'Heaviside', 'elliptic_e', 'elliptic_f', 'elliptic_k',
+           'elliptic_pi', 'E1', 'Chi', 'Ci', 'Ei', 'Li', 'Shi', 'Si', 'erf',
+           'erf2', 'erf2inv', 'erfc', 'erfcinv', 'erfi', 'erfinv',
+           'expint', 'fresnelc', 'fresnels', 'li', 'digamma', 'gamma',
+           'loggamma', 'lowergamma', 'polygamma', 'trigamma', 'uppergamma',
+           'hyper', 'meijerg', 'assoc_laguerre', 'assoc_legendre', 'chebyshevt',
+           'chebyshevt_root', 'chebyshevu', 'chebyshevu_root', 'gegenbauer',
+           'hermite', 'jacobi', 'jacobi_normalized', 'laguerre', 'legendre',
+           'Ynm', 'Ynm_c', 'Znm', 'Eijk', 'KroneckerDelta', 'LeviCivita',
+           'dirichlet_eta', 'lerchphi', 'polylog', 'zeta')

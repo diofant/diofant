@@ -1,4 +1,4 @@
-"""Heuristic polynomial GCD algorithm (HEUGCD). """
+"""Heuristic polynomial GCD algorithm (HEUGCD)."""
 
 from ..ntheory.modular import symmetric_residue
 from .polyconfig import query

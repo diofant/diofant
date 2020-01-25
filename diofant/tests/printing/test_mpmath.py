@@ -32,6 +32,12 @@ def test_RootOf():
 
     assert p.doprint(e) == r
 
+    e = RootOf(x**3 + x - 1, x, 1)
+    r = ("findroot(lambda x: x**3 + x - 1, mpc(%s, %s), "
+         "method='secant')" % (p.doprint(QQ(-3, 8)), p.doprint(QQ(-9, 8))))
+
+    assert p.doprint(e) == r
+
 
 def test_Sum():
     p = MpmathPrinter()

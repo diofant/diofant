@@ -1,12 +1,8 @@
-"""Tests for square-free decomposition algorithms and related tools. """
+"""Tests for square-free decomposition algorithms and related tools."""
 
 import pytest
 
-from diofant.core import I
-from diofant.domains import FF, QQ, ZZ
-from diofant.functions import sqrt
-from diofant.polys.polyerrors import DomainError
-from diofant.polys.rings import ring
+from diofant import FF, QQ, ZZ, DomainError, I, ring, sqrt
 from diofant.polys.specialpolys import f_polys
 
 

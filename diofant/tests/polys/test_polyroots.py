@@ -1,18 +1,17 @@
-"""Tests for algorithms for computing symbolic roots of polynomials. """
+"""Tests for algorithms for computing symbolic roots of polynomials."""
 
 import itertools
 
 import mpmath
 import pytest
 
-from diofant import (ZZ, I, Integer, Interval, Mul, Piecewise, Rational,
-                     Symbol, Wild, acos, cbrt, cos, exp, im, pi, powsimp, re,
-                     root, sin, sqrt, symbols)
+from diofant import (ZZ, I, Integer, Interval, Mul, Piecewise, Poly,
+                     PolynomialError, Rational, RootOf, Symbol, Wild, acos,
+                     cbrt, cos, cyclotomic_poly, exp, im, intervals,
+                     legendre_poly, nroots, pi, powsimp, re, root, roots, sin,
+                     sqrt, symbols)
 from diofant.abc import a, b, c, d, e, q, x, y, z
-from diofant.polys import Poly, RootOf, cyclotomic_poly, intervals, nroots
-from diofant.polys.orthopolys import legendre_poly
-from diofant.polys.polyerrors import PolynomialError
-from diofant.polys.polyroots import (preprocess_roots, root_factors, roots,
+from diofant.polys.polyroots import (preprocess_roots, root_factors,
                                      roots_binomial, roots_cubic,
                                      roots_cyclotomic, roots_linear,
                                      roots_quadratic, roots_quartic,
@@ -529,7 +528,7 @@ def test_roots1():
 
 
 def test_roots_slow():
-    """Just test that calculating these roots does not hang. """
+    """Just test that calculating these roots does not hang."""
     a, b, c, d, x = symbols("a,b,c,d,x")
 
     f1 = x**2*c + (a/b) + x*c*d - a

@@ -1,4 +1,4 @@
-"""Diofant is a Python library for symbolic mathematics. """
+"""Diofant is a Python library for symbolic mathematics."""
 
 import os
 DIOFANT_DEBUG = os.getenv('DIOFANT_DEBUG', 'False') != 'False'
@@ -24,7 +24,6 @@ from .geometry import *
 from .utilities import *
 from .integrals import *
 from .tensor import *
-from .parsing import *
 from .calculus import *
 from .combinatorics import *
 from .plotting import *

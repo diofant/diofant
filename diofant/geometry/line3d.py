@@ -223,7 +223,6 @@ class LinearEntity3D(GeometryEntity):
         False
 
         """
-
         # Concurrency requires intersection at a single point; One linear
         # entity cannot be concurrent.
         if len(lines) <= 1:

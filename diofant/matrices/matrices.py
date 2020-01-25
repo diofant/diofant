@@ -23,6 +23,8 @@ def _iszero(x):
 
 
 class MatrixError(Exception):
+    """Generic matrix error."""
+
     pass
 
 
@@ -33,10 +35,13 @@ class ShapeError(ValueError, MatrixError):
 
 
 class NonSquareMatrixError(ShapeError):
+    """Raised when a square matrix is expected."""
+
     pass
 
 
 class MatrixBase(DefaultPrinting):
+    """Base class for matrices."""
 
     # Added just for numpy compatibility
     __array_priority__ = 11
@@ -711,7 +716,6 @@ class MatrixBase(DefaultPrinting):
         QRdecomposition
 
         """
-
         if not self.is_square:
             raise NonSquareMatrixError("Matrix must be square.")
         if not self.is_symmetric():
@@ -773,7 +777,6 @@ class MatrixBase(DefaultPrinting):
         pinv_solve
 
         """
-
         if not self.is_square:
             raise NonSquareMatrixError("Matrix must be square.")
         if rhs.rows != self.rows:
@@ -1021,7 +1024,6 @@ class MatrixBase(DefaultPrinting):
         key2ij
 
         """
-
         islice, jslice = [isinstance(k, slice) for k in keys]
         if islice:
             assert self.rows
@@ -1076,7 +1078,6 @@ class MatrixBase(DefaultPrinting):
         {x}
 
         """
-
         if types:
             types = tuple(t if isinstance(t, type) else type(t) for t in types)
         else:
@@ -1097,7 +1098,6 @@ class MatrixBase(DefaultPrinting):
         {x}
 
         """
-
         return set().union(*[i.free_symbols for i in self])
 
     def subs(self, *args, **kwargs):  # should mirror core.basic.subs
@@ -1600,7 +1600,6 @@ class MatrixBase(DefaultPrinting):
         QRdecomposition
 
         """
-
         Q, R = self.as_mutable().QRdecomposition()
         y = Q.T*b
 
@@ -2297,7 +2296,6 @@ class MatrixBase(DefaultPrinting):
         [-1, 0]])
         >>> m.is_anti_symmetric()
         True
-        >>> x, y = symbols('x y')
         >>> m = Matrix(2, 3, [0, 0, x, -y, 0, 0])
         >>> m
         Matrix([
@@ -2424,7 +2422,6 @@ class MatrixBase(DefaultPrinting):
         det_LU_decomposition
 
         """
-
         # if methods were made internal and all determinant calculations
         # passed through here, then these lines could be factored out of
         # the method routines
@@ -2561,7 +2558,6 @@ class MatrixBase(DefaultPrinting):
         berkowitz
 
         """
-
         return self.cofactorMatrix(method).T
 
     def inverse_LU(self, iszerofunc=_iszero):
@@ -3040,7 +3036,6 @@ class MatrixBase(DefaultPrinting):
         singular_values
 
         """
-
         if not self:
             return Integer(0)
         singularvalues = self.singular_values()

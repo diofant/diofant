@@ -57,7 +57,6 @@ def _preprocess(expr, func=None, hint='_Integral'):
     A ValueError was raised.
 
     """
-
     derivs = expr.atoms(Derivative)
     if not func:
         funcs = set().union(*[d.atoms(AppliedUndef) for d in derivs])

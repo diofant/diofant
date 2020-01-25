@@ -1,4 +1,4 @@
-"""Implementation of :class:`AlgebraicField` class. """
+"""Implementation of :class:`AlgebraicField` class."""
 
 import functools
 
@@ -20,7 +20,7 @@ _algebraic_numbers_cache = {}
 
 
 class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
-    """A class for representing algebraic number fields. """
+    """A class for representing algebraic number fields."""
 
     is_AlgebraicField = is_Algebraic = True
     is_Numerical = True
@@ -96,20 +96,20 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         return hash((self.__class__.__name__, self.domain, self.ext))
 
     def __eq__(self, other):
-        """Returns ``True`` if two domains are equivalent. """
+        """Returns ``True`` if two domains are equivalent."""
         return isinstance(other, AlgebraicField) and self.domain == other.domain and self.ext == other.ext
 
     def algebraic_field(self, *extension):
-        r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`. """
+        r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
         return AlgebraicField(self, *extension)
 
     def to_expr(self, a):
-        """Convert ``a`` to a Diofant object. """
+        """Convert ``a`` to a Diofant object."""
         return sum(((self.domain.to_expr(c)*self.ext**n).expand()
                     for n, c in enumerate(reversed(a.rep.to_dense()))), Integer(0))
 
     def from_expr(self, a):
-        """Convert Diofant's expression to ``dtype``. """
+        """Convert Diofant's expression to ``dtype``."""
         try:
             K0 = self.domain.algebraic_field(a)
         except NotAlgebraic:
@@ -163,15 +163,15 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
     @property
     def ring(self):
-        """Returns a ring associated with ``self``. """
+        """Returns a ring associated with ``self``."""
         raise AttributeError('there is no ring associated with %s' % self)
 
     def is_positive(self, a):
-        """Returns True if ``a`` is positive. """
+        """Returns True if ``a`` is positive."""
         return self.domain.is_positive(a.LC())
 
     def is_negative(self, a):
-        """Returns True if ``a`` is negative. """
+        """Returns True if ``a`` is negative."""
         return self.domain.is_negative(a.LC())
 
     @staticmethod
@@ -184,27 +184,27 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
 
 
 class ComplexAlgebraicField(AlgebraicField):
-    """A class for representing complex algebraic number fields. """
+    """A class for representing complex algebraic number fields."""
 
     is_ComplexAlgebraicField = True
 
 
 class RealAlgebraicField(ComplexAlgebraicField):
-    """A class for representing real algebraic number fields. """
+    """A class for representing real algebraic number fields."""
 
     is_RealAlgebraicField = True
 
     def is_positive(self, a):
-        """Returns True if ``a`` is positive. """
+        """Returns True if ``a`` is positive."""
         return a > 0
 
     def is_negative(self, a):
-        """Returns True if ``a`` is negative. """
+        """Returns True if ``a`` is negative."""
         return a < 0
 
 
 class AlgebraicElement(QuotientRingElement, CantSympify):
-    """Dense Algebraic Number Polynomials over a field. """
+    """Dense Algebraic Number Polynomials over a field."""
 
     def __init__(self, rep):
         dom = self.domain
@@ -221,16 +221,16 @@ class AlgebraicElement(QuotientRingElement, CantSympify):
         self.rep = rep % self.mod
 
     def to_dict(self):
-        """Convert ``self`` to a dict representation with native coefficients. """
+        """Convert ``self`` to a dict representation with native coefficients."""
         return dict(self.rep)
 
     def LC(self):
-        """Returns the leading coefficient of ``self``. """
+        """Returns the leading coefficient of ``self``."""
         return self.rep.LC
 
     @property
     def is_ground(self):
-        """Returns ``True`` if ``self`` is an element of the ground domain. """
+        """Returns ``True`` if ``self`` is an element of the ground domain."""
         return self.rep.is_ground
 
     @property
@@ -244,26 +244,26 @@ class AlgebraicElement(QuotientRingElement, CantSympify):
 
 
 class ComplexAlgebraicElement(AlgebraicElement):
-    """Elements of complex algebraic numbers field. """
+    """Elements of complex algebraic numbers field."""
 
     @property
     def real(self):
-        """Returns real part of ``self``. """
+        """Returns real part of ``self``."""
         return self.domain.domain.convert(self.rep.coeff(1)) if self else self.domain.domain.zero
 
     @property
     def imag(self):
-        """Returns imaginary part of ``self``. """
+        """Returns imaginary part of ``self``."""
         return self.domain.domain.convert((self - self.real)/self.parent.unit)
 
     def conjugate(self):
-        """Returns the complex conjugate of ``self``. """
+        """Returns the complex conjugate of ``self``."""
         return self.parent.one*self.real - self.parent.unit*self.imag
 
 
 @functools.total_ordering
 class RealAlgebraicElement(ComplexAlgebraicElement):
-    """Elements of real algebraic numbers field. """
+    """Elements of real algebraic numbers field."""
 
     def __abs__(self):
         return self if self >= 0 else -self
@@ -310,10 +310,10 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
 
     @property
     def real(self):
-        """Returns real part of ``self``. """
+        """Returns real part of ``self``."""
         return self
 
     @property
     def imag(self):
-        """Returns imaginary part of ``self``. """
+        """Returns imaginary part of ``self``."""
         return self.parent.zero

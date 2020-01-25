@@ -56,7 +56,6 @@ def denoms(eq, symbols=None):
     {2, z}
 
     """
-
     pot = preorder_traversal(eq)
     dens = set()
     for p in pot:
@@ -562,7 +561,6 @@ def _solve(f, symbol, **flags):
     gives None a ValueError will be raised.
 
     """
-
     not_impl_msg = "No algorithms are implemented to solve equation %s"
 
     # /!\ capture this flag then set it to False so that no checking in
@@ -851,7 +849,6 @@ def _solve_system(exprs, symbols, **flags):
     of the symbols. A list of dict's (possibly empty) should be returned.
 
     """
-
     if len(symbols) != 1 and len(exprs) == 1:
         f = exprs[0]
         soln = None

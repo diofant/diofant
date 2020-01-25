@@ -8,8 +8,8 @@ import tempfile
 
 import pytest
 
+from diofant import Eq
 from diofant.abc import x, y, z
-from diofant.core import Eq
 from diofant.utilities.autowrap import (CodeWrapper, CythonCodeWrapper,
                                         UfuncifyCodeWrapper, autowrap,
                                         binary_function)

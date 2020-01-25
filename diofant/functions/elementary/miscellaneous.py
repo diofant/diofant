@@ -17,7 +17,6 @@ class IdentityFunction(Lambda, metaclass=Singleton):
     Examples
     ========
 
-    >>> x = Symbol('x')
     >>> Id(x)
     x
 
@@ -303,6 +302,8 @@ def real_root(arg, n=None):
 
 
 class MinMaxBase(LatticeOp):
+    """Base class for Min/Max classes."""
+
     def __new__(cls, *args, **assumptions):
         if not args:
             raise ValueError("The Max/Min functions must have arguments.")

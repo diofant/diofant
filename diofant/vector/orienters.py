@@ -72,7 +72,6 @@ class AxisOrienter(Orienter):
             is to be computed
 
         """
-
         from .functions import express
 
         axis = express(self.axis, system).normalize()

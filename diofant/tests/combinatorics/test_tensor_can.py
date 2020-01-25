@@ -1,6 +1,7 @@
 import random
 
-from diofant.combinatorics.permutations import Perm, Permutation
+from diofant.combinatorics import Permutation
+from diofant.combinatorics.permutations import Perm
 from diofant.combinatorics.tensor_can import (bsgs_direct_product,
                                               canonicalize, dummy_sgs,
                                               get_symmetric_group_sgs,

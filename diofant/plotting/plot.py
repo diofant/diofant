@@ -434,7 +434,7 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
             list_segments = []
 
             def sample(p, q, depth):
-                """ Samples recursively if three points are almost collinear.
+                """Samples recursively if three points are almost collinear.
                 For depth < 6, points are added irrespective of whether they
                 satisfy the collinearity condition or not. The maximum depth
                 allowed is 12.
@@ -555,7 +555,7 @@ class Parametric2DLineSeries(Line2DBaseSeries):
         list_segments = []
 
         def sample(param_p, param_q, p, q, depth):
-            """ Samples recursively if three points are almost collinear.
+            """Samples recursively if three points are almost collinear.
             For depth < 6, points are added irrespective of whether they
             satisfy the collinearity condition or not. The maximum depth
             allowed is 12.
@@ -798,6 +798,8 @@ class ParametricSurfaceSeries(SurfaceBaseSeries):
 ##############################################################################
 
 class BaseBackend:
+    """Base backend class."""
+
     def __init__(self, parent):
         super().__init__()
         self.parent = parent
@@ -806,6 +808,8 @@ class BaseBackend:
 # don't have to check for the success of importing matplotlib in each case;
 # we will only be using this backend if we can successfully import matploblib
 class MatplotlibBackend(BaseBackend):
+    """Matplotlib backend."""
+
     def __init__(self, parent):
         super().__init__(parent)
         are_3D = [s.is_3D for s in self.parent._series]
@@ -1515,7 +1519,6 @@ def plot3d(*args, **kwargs):
     Plot, SurfaceOver2DRangeSeries
 
     """
-
     args = list(map(sympify, args))
     show = kwargs.pop('show', True)
     series = []
@@ -1606,7 +1609,6 @@ def plot3d_parametric_surface(*args, **kwargs):
     Plot, ParametricSurfaceSeries
 
     """
-
     args = list(map(sympify, args))
     show = kwargs.pop('show', True)
     series = []

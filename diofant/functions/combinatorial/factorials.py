@@ -193,10 +193,6 @@ class factorial(CombinatorialFunction):
             return True
 
 
-class MultiFactorial(CombinatorialFunction):
-    pass
-
-
 class subfactorial(CombinatorialFunction):
     r"""The subfactorial counts the derangements of n items and is
     defined for non-negative integers as::
@@ -563,7 +559,7 @@ class binomial(CombinatorialFunction):
     Rows of Pascal's triangle can be generated with the binomial function:
 
     >>> for N in range(8):
-    ...     [ binomial(N, i) for i in range(N + 1)]
+    ...     [binomial(N, i) for i in range(N + 1)]
     ...
     [1]
     [1, 1]

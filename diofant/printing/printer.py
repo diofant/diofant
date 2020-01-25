@@ -123,10 +123,8 @@ class Printer:
     ...         return str(expr.args[0].func) + "'"*len(expr.args[1:])
     >>> def mystr(e):
     ...     return CustomStrPrinter().doprint(e)
-    >>> t = Symbol('t')
-    >>> x = Function('x')(t)
-    >>> print(mystr(x.diff(t, 2)))
-    x''
+    >>> print(mystr(f(t).diff(t, 2)))
+    f''
 
     """
 

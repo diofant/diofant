@@ -180,7 +180,6 @@ def plot_implicit(expr, x_var=None, y_var=None, **kwargs):
     >>> p9 = plot_implicit(x - 1, x_var=x)
 
     """
-
     # Represents whether the expression contains an Equality,
     # GreaterThan or LessThan
     has_equality = False

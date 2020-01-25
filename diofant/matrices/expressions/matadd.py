@@ -92,7 +92,7 @@ def combine(cnt, mat):
 
 
 def merge_explicit(matadd):
-    """ Merge explicit MatrixBase arguments
+    """Merge explicit MatrixBase arguments
 
     >>> A = MatrixSymbol('A', 2, 2)
     >>> B = eye(2)

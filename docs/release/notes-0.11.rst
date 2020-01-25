@@ -15,6 +15,7 @@ Major changes
 =============
 
 * :class:`~diofant.polys.polytools.Poly` now use sparse polynomial representation (via :class:`~diofant.polys.rings.PolyElement`) internally, see :pull:`795`.
+* :func:`~diofant.solvers.recurr.rsolve` now return :class:`list` of :class:`dict`'s, see :pull:`940`.
 
 Compatibility breaks
 ====================
@@ -142,3 +143,11 @@ These Sympy issues also were addressed:
 * :sympyissue:`14779` Spurious solutions when solving equation involving Abs(x)/x
 * :sympyissue:`18008` series does not give the same expansion depending on whether simple expression is simplified or not
 * :sympyissue:`8810` Poly keyword `composite` is ignored when instantiating from Poly
+* :sympyissue:`18118` limit(sign(sin(x)), x, 0, '+')) = 0 (which is wrong)
+* :sympyissue:`6599` limit of fraction with oscillating term in the numerator calculated incorrectly
+* :sympyissue:`18176` Incorrect value for limit(x**n-x**(n-k),x,oo) when k is a natural number
+* :sympyissue:`18306` NotImplementedError in limit
+* :sympyissue:`8695` sqf and sqf_list output is not consistant
+* :sympyissue:`18378` Invalid result in Limit
+* :sympyissue:`18384` abs(sin(x)*cos(x)) integrates wrong
+* :sympyissue:`18399` Incorrect limit

@@ -1,24 +1,24 @@
+"""str() printing tests."""
+
 import pytest
 
-from diofant import (Abs, Add, And, BlockMatrix, Catalan, Complement,
-                     Derivative, Dict, Dummy, E, Equivalent, EulerGamma,
+from diofant import (QQ, ZZ, Abs, Add, And, BlockMatrix, Catalan, Complement,
+                     Derivative, Dict, Dummy, E, Equivalent, EulerGamma, Expr,
                      FiniteSet, Float, Function, GoldenRatio, I, Integer,
                      Integral, Interval, Lambda, Limit, Matrix, MatrixSymbol,
-                     Mul, O, Pow, Rational, Rel, S, SparseMatrix, Sum, Symbol,
+                     Mul, O, Poly, Pow, Rational, Rel, RootOf, RootSum, S,
+                     SparseMatrix, StrPrinter, Sum, Symbol,
                      SymmetricDifference, Tuple, Wild, WildFunction, Xor,
                      ZeroMatrix, cbrt, cos, exp, factor, factorial, factorial2,
-                     false, nan, oo, pi, root, sin, sqrt, subfactorial,
-                     summation, symbols, true, zeta, zoo)
+                     false, field, grlex, groebner, nan, oo, pi, ring, root,
+                     sin, sqrt, sstr, sstrrepr, subfactorial, summation,
+                     symbols, true, zeta, zoo)
 from diofant.abc import w, x, y, z
 from diofant.combinatorics import AbelianGroup, Cycle, Permutation
-from diofant.core import Expr
 from diofant.core.trace import Tr
 from diofant.diffgeom import Differential, LieDerivative, TensorProduct
 from diofant.diffgeom.rn import R2
-from diofant.domains import QQ, ZZ
 from diofant.geometry import Circle, Point
-from diofant.polys import Poly, RootOf, RootSum, field, grlex, groebner, ring
-from diofant.printing import StrPrinter, sstr, sstrrepr
 from diofant.stats import Die, Exponential, Normal, pspace, where
 from diofant.tensor.array import ImmutableDenseNDimArray
 

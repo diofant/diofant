@@ -2,16 +2,14 @@ import pytest
 
 from diofant import (And, Derivative, E, Eq, Float, Function, Gt, I, Indexed,
                      IndexedBase, Integer, Integral, LambertW, Lt, Matrix, Max,
-                     Mul, Or, Piecewise, Poly, Pow, Rational, Symbol, Tuple,
-                     Wild, acos, arg, asin, atan, atan2, cbrt, cos, cosh, diff,
-                     erf, erfc, erfcinv, erfinv, exp, expand_log, im, log, nan,
-                     oo, ordered, pi, re, real_root, root, sec, sech, simplify,
-                     sin, sinh, solve, sqrt, sstr, symbols, tan, tanh)
+                     Mul, Or, Piecewise, Poly, Pow, Rational, RootOf, Symbol,
+                     Tuple, Wild, acos, arg, asin, atan, atan2, cbrt, cos,
+                     cosh, diff, erf, erfc, erfcinv, erfinv, exp, expand_log,
+                     im, log, nan, nfloat, oo, ordered, pi, re, real_root,
+                     reduce_inequalities, root, sec, sech, simplify, sin, sinh,
+                     solve, sqrt, sstr, symbols, tan, tanh)
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
-from diofant.core.function import nfloat
-from diofant.polys.rootoftools import RootOf
-from diofant.solvers import reduce_inequalities
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
 from diofant.solvers.solvers import (_invert, checksol, minsolve_linear_system,
                                      solve_linear)
@@ -1170,12 +1168,13 @@ def test_sympyissue_6989():
 
 
 def test_lambert_multivariate():
-    assert _filtered_gens(Poly(x + 1/x + exp(x) + y), x) == {x, exp(x)}
-    assert _filtered_gens(Poly(x + 1/x + exp(x)), x) == {exp(x), x}
-    assert _filtered_gens(Poly(x + log(x) + 1/x + exp(x)),
-                          x) == {exp(x), log(x), x}
-    assert _filtered_gens(Poly(exp(I*x) - 1/x + log(x)/exp(I*x) + 2*x),
-                          x) == {exp(I*x), x, log(x)}
+    for i in range(7):
+        assert _filtered_gens(Poly(x + 1/x + exp(x) + y), x) == {x, exp(x)}
+        assert _filtered_gens(Poly(x + 1/x + exp(x)), x) == {exp(x), x}
+        assert _filtered_gens(Poly(x + log(x) + 1/x + exp(x)),
+                              x) == {exp(x), log(x), x}
+        assert _filtered_gens(Poly(exp(I*x) - 1/x + log(x)/exp(I*x) + 2*x),
+                              x) == {exp(I*x), x, log(x)}
     assert _lambert(x, x) == []
     assert solve((x**2 - 2*x + 1).subs({x: log(x) + 3*x})) == [{x: LambertW(3*E)/3}]
     assert (solve((x**2 - 2*x + 1).subs({x: (log(x) + 3*x)**2 - 1})) ==

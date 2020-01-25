@@ -18,6 +18,7 @@ def _iszero(x):
 
 
 class DenseMatrix(MatrixBase):
+    """A dense matrix base class."""
 
     is_MatrixExpr = False
 
@@ -518,6 +519,8 @@ def _force_mutable(x):
 
 
 class MutableDenseMatrix(DenseMatrix, MatrixBase):
+    """A mutable version of the dense matrix."""
+
     @classmethod
     def _new(cls, *args, **kwargs):
         rows, cols, flat_list = cls._handle_creation_inputs(*args, **kwargs)

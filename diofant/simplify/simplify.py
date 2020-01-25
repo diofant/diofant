@@ -191,8 +191,9 @@ def _is_sum_surds(p):
 
 def _nthroot_solve(p, n, prec):
     """
-    helper function for ``nthroot``
-    It denests ``root(p, n)`` using its minimal polynomial
+    Helper function for ``nthroot``.
+
+    It denests ``root(p, n)`` using its minimal polynomial.
 
     """
     from ..polys.numberfields import _minimal_polynomial_sq
@@ -218,7 +219,7 @@ def _nthroot_solve(p, n, prec):
 
 def nthroot(expr, n, max_len=4, prec=15):
     """
-    compute a real nth-root of a sum of surds
+    Compute a real nth-root of a sum of surds.
 
     Parameters
     ==========
@@ -557,9 +558,8 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     2*LOG + MUL + POW + SUB
 
     >>> def my_measure(expr):
-    ...     POW = Symbol('POW')
     ...     # Discourage powers by giving POW a weight of 10
-    ...     count = count_ops(expr, visual=True).subs({POW: 10})
+    ...     count = count_ops(expr, visual=True).subs({'POW': 10})
     ...     # Every other operation gets a weight of 1 (the default)
     ...     count = count.replace(Symbol, type(Integer(1)))
     ...     return count

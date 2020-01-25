@@ -1704,7 +1704,6 @@ def process_common_addends(rv, do, key2=None, key1=True):
     will be the only key applied.
 
     """
-
     # collect by absolute value of coefficient and key2
     absc = defaultdict(list)
     if key1:
@@ -2122,5 +2121,4 @@ def sincos_to_sum(expr):
     7*sin(x) - 5*sin(3*x) + 3*sin(5*x) - sin(7*x)
 
     """
-
     return TR8(expand_mul(TRpower(expr)))

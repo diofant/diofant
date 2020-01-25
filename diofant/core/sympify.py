@@ -7,6 +7,8 @@ from .evaluate import global_evaluate
 
 
 class SympifyError(ValueError):
+    """Generic sympification error."""
+
     def __init__(self, expr, base_exc=None):
         self.expr = expr
         self.base_exc = base_exc
@@ -185,8 +187,10 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     ...         yield 1
     ...         yield 2
     ...         return
+    ...
     ...     def __getitem__(self, i):
     ...         return list(self)[i]
+    ...
     ...     def _diofant_(self):
     ...         return Matrix(self)
     >>> sympify(MyList1())
@@ -204,6 +208,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     ...         yield 1
     ...         yield 2
     ...         return
+    ...
     ...     def __getitem__(self, i):
     ...         return list(self)[i]
     >>> converter[MyList2] = lambda x: Matrix(x)

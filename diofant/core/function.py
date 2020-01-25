@@ -67,17 +67,20 @@ def _coeff_isneg(a):
     False
 
     """
-
     if a.is_Mul or a.is_MatMul:
         a = a.args[0]
     return a.is_Number and a.is_negative
 
 
 class PoleError(Exception):
+    """Raised when an expansion pole is encountered."""
+
     pass
 
 
 class ArgumentIndexError(ValueError):
+    """Raised when an invalid operation for positional argument happened."""
+
     def __str__(self):
         return ("Invalid operation with argument number %s for Function %s" %
                 (self.args[1], self.args[0]))
@@ -126,7 +129,6 @@ class FunctionClass(ManagedProperties):
         Function subclasses.
 
         """
-
         # TODO: Look at nargs
         return inspect.signature(self.eval)
 
@@ -802,23 +804,23 @@ class Derivative(Expr):
     of it instead as if we have something like this::
 
         >>> from diofant.abc import s
-        >>> def F(u):
+        >>> def f(u):
         ...     return 2*u
         ...
-        >>> def G(u):
+        >>> def g(u):
         ...     return 2*sqrt(1 - u**2)
         ...
-        >>> F(cos(x))
+        >>> f(cos(x))
         2*cos(x)
-        >>> G(sin(x))
+        >>> g(sin(x))
         2*sqrt(-sin(x)**2 + 1)
-        >>> F(c).diff(c)
+        >>> f(c).diff(c)
         2
-        >>> F(c).diff(c)
+        >>> f(c).diff(c)
         2
-        >>> G(s).diff(c)
+        >>> g(s).diff(c)
         0
-        >>> G(sin(x)).diff(cos(x))
+        >>> g(sin(x)).diff(cos(x))
         0
 
     Here, the Symbols c and s act just like the functions cos(x) and sin(x),
@@ -851,6 +853,7 @@ class Derivative(Expr):
     chain rule.  Note how the chain rule in Diofant is defined using unevaluated
     Subs objects::
 
+        >>> f, g = symbols('f g', cls=Function)
         >>> f(2*g(x)).diff(x)
         2*Derivative(g(x), x)*Subs(Derivative(f(_xi_1), _xi_1), (_xi_1, 2*g(x)))
         >>> f(g(x)).diff(x)
@@ -1110,7 +1113,6 @@ class Derivative(Expr):
         [y, z, f(x), x, f(x), g(x), x, y, z, z]
 
         """
-
         sorted_vars = []
         symbol_part = []
         non_symbol_part = []

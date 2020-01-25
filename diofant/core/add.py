@@ -9,6 +9,7 @@ from .operations import AssocOp
 
 
 class Add(AssocOp):
+    """Symbolic addition class."""
 
     is_Add = True
 
@@ -236,7 +237,6 @@ class Add(AssocOp):
         {x*y: 3}
 
         """
-
         d = collections.defaultdict(list)
         for ai in self.args:
             c, m = ai.as_coeff_Mul()
@@ -350,7 +350,7 @@ class Add(AssocOp):
         return self.args[0], self._new_rawargs(*self.args[1:])
 
     def _eval_as_numer_denom(self):
-        """expression -> a/b -> a, b
+        """Expression -> a/b -> a, b.
 
         See Also
         ========
@@ -603,7 +603,7 @@ class Add(AssocOp):
 
     def as_real_imag(self, deep=True, **hints):
         """
-        returns a tuple representing a complex number
+        Returns a tuple representing a complex number.
 
         Examples
         ========

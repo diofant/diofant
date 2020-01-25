@@ -1,4 +1,4 @@
-"""This module implements tools for integrating rational functions. """
+"""This module implements tools for integrating rational functions."""
 
 from ..core import Dummy, I, Integer, Lambda, Symbol, symbols
 from ..domains import ZZ

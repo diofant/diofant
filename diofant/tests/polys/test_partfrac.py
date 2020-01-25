@@ -5,12 +5,10 @@ functions.
 import pytest
 
 from diofant import (Dummy, E, Eq, Expr, I, Lambda, Poly, Rational, RootSum,
-                     Symbol, factor, pi, sqrt, symbols, together)
+                     Symbol, apart, apart_list, assemble_partfrac_list, factor,
+                     numbered_symbols, pi, sqrt, symbols, together)
 from diofant.abc import a, b, c, x, y
-from diofant.polys.partfrac import (apart, apart_list,
-                                    apart_undetermined_coeffs,
-                                    assemble_partfrac_list)
-from diofant.utilities.iterables import numbered_symbols
+from diofant.polys.partfrac import apart_undetermined_coeffs
 
 
 __all__ = ()

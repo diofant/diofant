@@ -417,7 +417,6 @@ def product(*args, **kwargs):
     Product(factorial(k), (k, 1, n))
 
     """
-
     prod = Product(*args, **kwargs)
 
     if isinstance(prod, Product):

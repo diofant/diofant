@@ -1,3 +1,5 @@
+"""Generic set theory interfaces."""
+
 import itertools
 
 from mpmath import mpf, mpi
@@ -1188,7 +1190,6 @@ class Union(Set, EvalfMixin):
         can simplify themselves with any other constituent
 
         """
-
         # ===== Global Rules =====
         # Merge all finite sets
         finite_sets = [x for x in args if x.is_FiniteSet]
@@ -1416,7 +1417,6 @@ class Intersection(Set):
         can simplify themselves with any other constituent
 
         """
-
         # ===== Global Rules =====
 
         # If any FiniteSets see which elements of that finite set occur within
@@ -1516,7 +1516,6 @@ class Complement(Set, EvalfMixin):
     @staticmethod
     def reduce(A, B):
         """Simplify a :class:`Complement`."""
-
         result = B._complement(A)
         if result is not None:
             return result
@@ -1745,7 +1744,6 @@ class FiniteSet(Set, EvalfMixin):
         See Set._union for docstring
 
         """
-
         # If other set contains one of my elements, remove it from myself
         if any(other.contains(x) is true for x in self):
             return {FiniteSet(*[x for x in self

@@ -50,7 +50,6 @@ class Integral(AddWithLimits):
         Integral(_x, (_x, x))
 
         """
-
         # This will help other classes define their own definitions
         # of behaviour with Integral.
         if hasattr(function, '_eval_Integral'):
@@ -233,7 +232,6 @@ class Integral(AddWithLimits):
         diofant.concrete.expr_with_limits.ExprWithLimits.as_dummy : Replace integration variables with dummy ones
 
         """
-
         from ..solvers import solve
         from ..simplify import posify
         d = Dummy('d')
@@ -306,8 +304,8 @@ class Integral(AddWithLimits):
 
         def _calc_limit_1(F, a, b):
             """
-            replace d with a, using subs if possible, otherwise limit
-            where sign of b is considered
+            Replace d with a, using subs if possible, otherwise limit
+            where sign of b is considered.
 
             """
             wok = F.subs({d: a})
@@ -317,8 +315,8 @@ class Integral(AddWithLimits):
 
         def _calc_limit(a, b):
             """
-            replace d with a, using subs if possible, otherwise limit
-            where sign of b is considered
+            Replace d with a, using subs if possible, otherwise limit
+            where sign of b is considered.
 
             """
             avals = list({_calc_limit_1(Fi, a, b) for Fi in F})
@@ -610,7 +608,6 @@ class Integral(AddWithLimits):
         2*x**3/3 - x/2 - 1/6
 
         """
-
         # differentiate under the integral sign; we do not
         # check for regularity conditions (TODO), see issue sympy/sympy#4215
 
@@ -1015,7 +1012,6 @@ class Integral(AddWithLimits):
         diofant.integrals.integrals.Integral.doit : Perform the integration using any hints
 
         """
-
         limits = self.limits
         if len(limits) > 1:
             raise NotImplementedError(

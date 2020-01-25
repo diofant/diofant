@@ -1159,7 +1159,7 @@ class _TensorManager:
 
     def comm_symbols2i(self, i):
         """
-        get the commutation group number corresponding to ``i``
+        Get the commutation group number corresponding to ``i``
 
         ``i`` can be a symbol or a number or a string
 
@@ -1183,7 +1183,7 @@ class _TensorManager:
 
     def set_comm(self, i, j, c):
         """
-        set the commutation parameter ``c`` for commutation groups ``i, j``
+        Set the commutation parameter ``c`` for commutation groups ``i, j``
 
         Parameters
         ==========
@@ -1255,7 +1255,7 @@ class _TensorManager:
 
     def set_comms(self, *args):
         """
-        set the commutation group numbers ``c`` for symbols ``i, j``
+        Set the commutation group numbers ``c`` for symbols ``i, j``
 
         Parameters
         ==========
@@ -2275,7 +2275,6 @@ class TensorHead(Basic):
         C(auto_left, -auto_right)
 
         """
-
         indices, matrix_behavior_kinds = self._check_auto_matrix_indices_in_call(*indices)
         tensor = Tensor._new_with_dummy_replacement(self, indices, **kw_args)
         return tensor
@@ -2724,7 +2723,7 @@ class TensAdd(TensExpr):
 
     def canon_bp(self):
         """
-        canonicalize using the Butler-Portugal algorithm for canonicalization
+        Canonicalize using the Butler-Portugal algorithm for canonicalization
         under monoterm symmetries.
 
         """
@@ -2808,7 +2807,6 @@ class TensAdd(TensExpr):
         TensorIndexType
 
         """
-
         args = [contract_metric(x, g) for x in self.args]
         t = TensAdd(*args)
         return canon_bp(t)
@@ -2892,12 +2890,12 @@ class TensAdd(TensExpr):
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> i, j = tensor_indices('i j', Lorentz)
         >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
-        >>> eA = 3*A(i, j)
-        >>> eB = 2*B(j, i)
-        >>> t1 = eA._tids
-        >>> t2 = eB._tids
-        >>> c1 = eA.coeff
-        >>> c2 = eB.coeff
+        >>> ea = 3*A(i, j)
+        >>> eb = 2*B(j, i)
+        >>> t1 = ea._tids
+        >>> t2 = eb._tids
+        >>> c1 = ea.coeff
+        >>> c2 = eb.coeff
         >>> TensAdd.from_TIDS_list([c1, c2], [t1, t2])
         2*B(i, j) + 3*A(i, j)
 
@@ -3042,7 +3040,6 @@ class Tensor(TensExpr):
         A(L_0, i1, -L_0, i2, i3)
 
         """
-
         free_args = self.free_args
         indices = list(indices)
         if [x._tensortype for x in indices] != [x._tensortype for x in free_args]:
@@ -3624,7 +3621,7 @@ def riemann_cyclic_replace(t_r):
 
 def riemann_cyclic(t2):
     """
-    replace each Riemann tensor with an equivalent expression
+    Replace each Riemann tensor with an equivalent expression
     satisfying the cyclic identity.
 
     This trick is discussed in the reference guide to Cadabra.

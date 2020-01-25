@@ -360,7 +360,7 @@ class MathMLPrinter(Printer):
         return x
 
     def _print_list(self, seq):
-        """MathML reference for the <list> element:
+        """See MathML reference for the <list> element:
         http://www.w3.org/TR/MathML2/chapter4.html#contm.list
 
         """

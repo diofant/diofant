@@ -6,7 +6,7 @@ global_evaluate = [True]
 
 @contextmanager
 def evaluate(x):
-    """ Control automatic evaluation
+    """Control automatic evaluation.
 
     This context managers controls whether or not all Diofant functions evaluate
     by default.
@@ -25,7 +25,6 @@ def evaluate(x):
     x + x
 
     """
-
     old = global_evaluate[0]
 
     global_evaluate[0] = x

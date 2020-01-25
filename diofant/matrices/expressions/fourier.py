@@ -4,7 +4,7 @@ from .matexpr import MatrixExpr
 
 
 class DFT(MatrixExpr):
-    """ Discrete Fourier Transform """
+    """Discrete Fourier Transform."""
 
     n = property(lambda self: self.args[0])
     shape = property(lambda self: (self.n, self.n))
@@ -18,7 +18,7 @@ class DFT(MatrixExpr):
 
 
 class IDFT(DFT):
-    """ Inverse Discrete Fourier Transform """
+    """Inverse Discrete Fourier Transform."""
 
     def _entry(self, i, j):
         w = exp(-2*pi*I/self.n)

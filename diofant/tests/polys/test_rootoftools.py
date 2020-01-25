@@ -1,16 +1,13 @@
-"""Tests for the implementation of RootOf class and related tools. """
+"""Tests for the implementation of RootOf class and related tools."""
 
 import pytest
 
-from diofant import (Eq, Float, Function, I, Lambda, Pow, Rational, Symbol,
-                     conjugate, exp, expand_func, false, legendre_poly, log,
-                     oo, root, solve, sqrt, tan, true)
+from diofant import (Eq, Float, Function, GeneratorsNeeded, I, Lambda,
+                     MultivariatePolynomialError, Poly, PolynomialError, Pow,
+                     PurePoly, Rational, RootOf, RootSum, Symbol, conjugate,
+                     exp, expand_func, false, legendre_poly, log, oo, root,
+                     solve, sqrt, tan, true)
 from diofant.abc import a, b, r, x, y, z
-from diofant.polys.polyerrors import (GeneratorsNeeded,
-                                      MultivariatePolynomialError,
-                                      PolynomialError)
-from diofant.polys.polytools import Poly, PurePoly
-from diofant.polys.rootoftools import RootOf, RootSum
 
 
 __all__ = ()

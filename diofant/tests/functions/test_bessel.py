@@ -2,16 +2,16 @@ from random import randint, uniform
 
 import pytest
 
-from diofant import (Float, I, Integer, Limit, O, Rational, Symbol, besseli,
-                     besselj, besselk, besselsimp, bessely, cbrt, conjugate,
-                     cos, cosh, diff, exp, exp_polar, expand_func, gamma,
-                     hankel1, hankel2, hyper, im, jn, jn_zeros, log, nan, oo,
-                     pi, polar_lift, re, root, series, simplify, sin, sinh,
-                     sqrt, yn, zoo)
+from diofant import (Float, I, Integer, Limit, O, Rational, Symbol, airyai,
+                     airyaiprime, airybi, airybiprime, besseli, besselj,
+                     besselk, besselsimp, bessely, cbrt, conjugate, cos, cosh,
+                     diff, exp, exp_polar, expand_func, gamma, hankel1,
+                     hankel2, hyper, im, jn, jn_zeros, log, nan, oo, pi,
+                     polar_lift, re, root, series, simplify, sin, sinh, sqrt,
+                     yn, zoo)
 from diofant.abc import k, n, x, y, z
 from diofant.core.function import ArgumentIndexError
-from diofant.functions.special.bessel import (airyai, airyaiprime, airybi,
-                                              airybiprime, fn)
+from diofant.functions.special.bessel import fn
 from diofant.utilities.randtest import random_complex_number as randcplx
 from diofant.utilities.randtest import verify_derivative_numerically as td
 from diofant.utilities.randtest import verify_numerically as tn

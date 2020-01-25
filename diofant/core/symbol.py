@@ -72,7 +72,6 @@ class BaseSymbol(AtomicExpr, Boolean):
         Examples
         ========
 
-            >>> x = Symbol('x')
             >>> x._diff_wrt
             True
 
@@ -81,10 +80,7 @@ class BaseSymbol(AtomicExpr, Boolean):
 
     @staticmethod
     def _sanitize(assumptions, obj=None):
-        """Remove None, covert values to bool, check commutativity *in place*.
-
-        """
-
+        """Remove None, covert values to bool, check commutativity *in place*."""
         # be strict about commutativity: cannot be None
         is_commutative = fuzzy_bool(assumptions.get('commutative', True))
         if is_commutative is None:

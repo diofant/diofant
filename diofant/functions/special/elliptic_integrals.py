@@ -1,4 +1,4 @@
-""" Elliptic integrals. """
+"""Elliptic integrals."""
 
 from ...core import Function, I, Integer, Rational, oo, pi, zoo
 from ...core.function import ArgumentIndexError

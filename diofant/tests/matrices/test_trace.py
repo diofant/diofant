@@ -1,13 +1,9 @@
 import pytest
 
-from diofant.concrete import Sum
-from diofant.core import Lambda, symbols
-from diofant.functions import adjoint, conjugate, transpose
-from diofant.matrices import ImmutableMatrix, Matrix, ShapeError, eye
-from diofant.matrices.expressions import (Adjoint, FunctionMatrix, Identity,
-                                          MatAdd, MatMul, MatPow, MatrixExpr,
-                                          MatrixSymbol, Trace, ZeroMatrix,
-                                          trace)
+from diofant import (Adjoint, FunctionMatrix, Identity, ImmutableMatrix,
+                     Lambda, MatAdd, MatMul, MatPow, Matrix, MatrixExpr,
+                     MatrixSymbol, ShapeError, Sum, Trace, ZeroMatrix, adjoint,
+                     conjugate, eye, symbols, trace, transpose)
 
 
 __all__ = ()

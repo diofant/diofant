@@ -462,7 +462,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
 
 
 def _imp_namespace(expr, namespace=None):
-    """ Return namespace dict with function implementations
+    """Return namespace dict with function implementations
 
     We need to search for functions in anything that can be thrown at
     us - that is - anything that could be passed as `expr`.  Examples
@@ -530,7 +530,7 @@ def _imp_namespace(expr, namespace=None):
 
 
 def implemented_function(symfunc, implementation):
-    """ Add numerical ``implementation`` to function ``symfunc``.
+    """Add numerical ``implementation`` to function ``symfunc``.
 
     ``symfunc`` can be an ``UndefinedFunction`` instance, or a name string.
     In the latter case we create an ``UndefinedFunction`` instance with that

@@ -11,12 +11,11 @@ def styleof(expr, styles=default_styles):
     """Merge style dictionaries in order.
 
     >>> styles = [(Basic, {'color': 'blue', 'shape': 'ellipse'}),
-    ...           (Expr,  {'color': 'black'})]
+    ...           (Expr, {'color': 'black'})]
 
     >>> styleof(Basic(1), styles)
     {'color': 'blue', 'shape': 'ellipse'}
 
-    >>> x = Symbol('x')
     >>> styleof(x + 1, styles)  # this is an Expr
     {'color': 'black', 'shape': 'ellipse'}
 

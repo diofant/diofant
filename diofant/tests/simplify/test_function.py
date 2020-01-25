@@ -1,7 +1,6 @@
-""" Unit tests for Hyper_Function"""
+"""Unit tests for Hyper_Function."""
 
-from diofant.core import Dummy, Rational, Tuple, symbols
-from diofant.functions import hyper
+from diofant import Dummy, Rational, Tuple, hyper, symbols
 from diofant.simplify.hyperexpand import Hyper_Function
 
 

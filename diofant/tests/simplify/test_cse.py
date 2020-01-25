@@ -2,13 +2,12 @@ import itertools
 
 import pytest
 
-from diofant import (Add, Eq, Function, Idx, IndexedBase, Matrix, MatrixSymbol,
-                     O, Piecewise, Pow, Rational, RootOf, Subs, Symbol, Tuple,
-                     cos, cse, exp, sin, sqrt, symbols, sympify, true)
+from diofant import (Add, Eq, Function, Idx, ImmutableDenseMatrix,
+                     ImmutableSparseMatrix, IndexedBase, Matrix, MatrixSymbol,
+                     MutableDenseMatrix, MutableSparseMatrix, O, Piecewise,
+                     Pow, Rational, RootOf, Subs, Symbol, Tuple, cos, cse, exp,
+                     meijerg, sin, sqrt, symbols, sympify, true)
 from diofant.abc import a, b, w, x, y, z
-from diofant.functions.special.hyper import meijerg
-from diofant.matrices import (ImmutableDenseMatrix, ImmutableSparseMatrix,
-                              MutableDenseMatrix, MutableSparseMatrix)
 from diofant.simplify import cse_main, cse_opts
 from diofant.simplify.cse_opts import sub_post, sub_pre
 

@@ -1,19 +1,15 @@
-"""Tests for classes defining properties of ground domains, e.g. ZZ, QQ, ZZ[x] ... """
+"""Tests for classes defining properties of ground domains, e.g. ZZ, QQ, ZZ[x]..."""
 
 import pytest
 
-from diofant import Float, I, Integer, Poly, Rational, oo, root, sin, sqrt
+from diofant import (CC, EX, FF, GF, QQ, RR, ZZ, AlgebraicField,
+                     CoercionFailed, ComplexField, DomainError, Float,
+                     GeneratorsError, GeneratorsNeeded, I, Integer,
+                     NotInvertible, Poly, PythonRational, QQ_python, Rational,
+                     RealField, RootOf, UnificationFailed, ZZ_python, field,
+                     oo, ring, root, roots, sin, sqrt)
 from diofant.abc import x, y, z
-from diofant.domains import CC, EX, FF, GF, QQ, RR, ZZ, QQ_python, ZZ_python
-from diofant.domains.algebraicfield import AlgebraicField
-from diofant.domains.complexfield import ComplexField
 from diofant.domains.domainelement import DomainElement
-from diofant.domains.groundtypes import PythonRational
-from diofant.domains.realfield import RealField
-from diofant.polys import RootOf, field, ring, roots
-from diofant.polys.polyerrors import (CoercionFailed, DomainError,
-                                      GeneratorsError, GeneratorsNeeded,
-                                      NotInvertible, UnificationFailed)
 
 
 __all__ = ()

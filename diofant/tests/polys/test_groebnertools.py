@@ -1,8 +1,8 @@
-"""Tests for Gröbner bases. """
+"""Tests for Gröbner bases."""
 
 import pytest
 
-from diofant.domains import QQ, ZZ
+from diofant import QQ, ZZ, grlex, lex, ring
 from diofant.polys import polyconfig as config
 from diofant.polys.fglmtools import _representing_matrices
 from diofant.polys.groebnertools import (Num, Polyn, Sign, cp_key,
@@ -12,8 +12,6 @@ from diofant.polys.groebnertools import (Num, Polyn, Sign, cp_key,
                                          is_rewritable_or_comparable, lbp,
                                          lbp_key, lbp_sub, s_poly, sig,
                                          sig_key)
-from diofant.polys.orderings import grlex, lex
-from diofant.polys.rings import ring
 
 
 __all__ = ()

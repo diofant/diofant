@@ -151,6 +151,8 @@ class NumPyPrinter(LambdaPrinter):
 
 
 class MpmathPrinter(LambdaPrinter):
+    """Mpmath printer."""
+
     def _print_RootOf(self, expr):
         if expr.is_real:
             return ("findroot(lambda %s: %s, %s, "
@@ -158,7 +160,10 @@ class MpmathPrinter(LambdaPrinter):
                                              self._print(expr.expr),
                                              self._print(expr.interval.as_tuple())))
         else:
-            raise NotImplementedError
+            return ("findroot(lambda %s: %s, mpc%s, "
+                    "method='secant')" % (self._print(expr.poly.gen),
+                                          self._print(expr.expr),
+                                          self._print(expr.interval.center)))
 
     def _print_Sum(self, expr):
         return "nsum(lambda %s: %s, %s)" % (",".join([self._print(v) for v in expr.variables]),

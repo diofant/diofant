@@ -1,4 +1,4 @@
-""" Integral Transforms """
+"""Integral Transforms."""
 
 from functools import reduce, wraps
 from itertools import repeat
@@ -699,7 +699,7 @@ def _rewrite_gamma(f, s, a, b):
 
 @_noconds_(True)
 def _inverse_mellin_transform(F, s, x_, strip, as_meijerg=False):
-    """ A helper for the real inverse_mellin_transform function, this one here
+    """A helper for the real inverse_mellin_transform function, this one here
     assumes x to be real and positive.
 
     """
@@ -903,7 +903,7 @@ def _simplifyconds(expr, s, a):
             return ex.exp
 
     def bigger(ex1, ex2):
-        """ Return True only if |ex1| > |ex2|, False only if |ex1| < |ex2|.
+        """Return True only if |ex1| > |ex2|, False only if |ex1| < |ex2|.
         Else return None.
 
         """
@@ -924,7 +924,7 @@ def _simplifyconds(expr, s, a):
             return True
 
     def replie(x, y):
-        """simplify x < y."""
+        """Simplify x < y."""
         if not (x.is_positive or isinstance(x, Abs)) \
                 or not (y.is_positive or isinstance(y, Abs)):
             return x < y

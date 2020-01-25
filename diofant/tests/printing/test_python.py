@@ -2,9 +2,8 @@ import pytest
 
 from diofant import (Derivative, Eq, Function, Ge, Gt, Integral, Le, Lt,
                      Matrix, Ne, Rational, Symbol, cbrt, exp, limit, log, oo,
-                     pi, root, sin, sqrt)
+                     pi, python, root, sin, sqrt)
 from diofant.abc import x, y
-from diofant.printing.python import python
 
 
 __all__ = ()

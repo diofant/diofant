@@ -1,4 +1,4 @@
-"""Trait for implementing domain elements. """
+"""Trait for implementing domain elements."""
 
 import abc
 

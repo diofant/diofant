@@ -25,6 +25,8 @@ from .util import _symbol
 
 
 class Undecidable(ValueError):
+    """Raised when can't decide on relation."""
+
     pass
 
 
@@ -191,7 +193,6 @@ class LinearEntity(GeometrySet):
         False
 
         """
-
         # Concurrency requires intersection at a single point; One linear
         # entity cannot be concurrent.
         if len(lines) <= 1:
@@ -1222,7 +1223,7 @@ class Ray(LinearEntity):
             try:
                 p2 = Point(pt)
             except ValueError:
-                from ...utilities import filldedent
+                from ..utilities import filldedent
                 raise ValueError(filldedent('''
                     The 2nd argument was not a valid Point; if
                     it was meant to be an angle it should be

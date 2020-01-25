@@ -8,12 +8,12 @@ from mpmath.libmp.libmpf import finf, fninf
 
 from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      Integer, Le, Lt, Mul, Number, Pow, Rational, Symbol, cbrt,
-                     cos, exp, factorial, false, latex, log, nan, nextprime,
-                     oo, pi, root, sin, sqrt, true, zoo)
+                     comp, cos, exp, factorial, false, igcd, ilcm,
+                     integer_digits, integer_nthroot, latex, log, mod_inverse,
+                     nan, nextprime, oo, pi, root, sin, sqrt, true, zoo)
 from diofant.core.cache import clear_cache
-from diofant.core.numbers import (comp, igcd, igcdex, ilcm, integer_digits,
-                                  mod_inverse, mpf_norm)
-from diofant.core.power import integer_nthroot, isqrt
+from diofant.core.numbers import igcdex, mpf_norm
+from diofant.core.power import isqrt
 
 
 __all__ = ()

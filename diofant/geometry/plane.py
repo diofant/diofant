@@ -253,7 +253,7 @@ class Plane(GeometryEntity):
                 return False
 
     def is_perpendicular(self, l):
-        """is the given geometric entity perpendicular to the given plane?
+        """Is the given geometric entity perpendicular to the given plane?
 
         Parameters
         ==========
@@ -562,7 +562,7 @@ class Plane(GeometryEntity):
         return Plane(p1, p2, p3)
 
     def random_point(self, seed=None):
-        """ Returns a random point on the Plane.
+        """Returns a random point on the Plane.
 
         Returns
         =======
@@ -579,7 +579,7 @@ class Plane(GeometryEntity):
         return self.arbitrary_point(t).subs({t: Rational(rng.random())})
 
     def arbitrary_point(self, t=None):
-        """ Returns an arbitrary point on the Plane; varying `t` from 0 to 2*pi
+        """Returns an arbitrary point on the Plane; varying `t` from 0 to 2*pi
         will move the point in a circle of radius 1 about p1 of the Plane.
 
         Examples
@@ -613,7 +613,7 @@ class Plane(GeometryEntity):
         return p.xreplace({m: solve(p.distance(self.p1) - 1, m)[0][m]})
 
     def intersection(self, o):
-        """ The intersection with other geometrical entity.
+        """The intersection with other geometrical entity.
 
         Parameters
         ==========
@@ -716,7 +716,7 @@ class Plane(GeometryEntity):
             return False
 
     def is_coplanar(self, o):
-        """ Returns True if `o` is coplanar with self, else False.
+        """Returns True if `o` is coplanar with self, else False.
 
         Examples
         ========
