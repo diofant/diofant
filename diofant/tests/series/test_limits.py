@@ -739,3 +739,8 @@ def test_sympyissue_18378():
 def test_sympyissue_18399():
     assert limit((1 - x/2)**(3*x), x, oo) == oo
     assert limit((-x)**x, x, oo) == oo
+
+
+def test_sympyissue_18452():
+    assert limit(abs(log(x))**x, x, 0, "+") == 1
+    assert limit(abs(log(x))**x, x, 0, "-") == 1

@@ -152,3 +152,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`18378` Invalid result in Limit
 * :sympyissue:`18384` abs(sin(x)*cos(x)) integrates wrong
 * :sympyissue:`18399` Incorrect limit
+* :sympyissue:`18452` Infinite recursion while computing Limit of Expression in 1.5.1
