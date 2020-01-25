@@ -334,3 +334,8 @@ def test_solve_surd_system():
     _, r1, r2 = Poly(a0**3 + 2*a0**2 + 1).all_roots()
     res = [{x: r1**2, y: -2 - r1}, {x: r2**2, y: -2 - r2}]
     assert solve_surd_system(eqs) == res
+
+    eqs = [sqrt(17*x - sqrt(x**2 - 5)) - y]
+    res = [{x: 17*y**2/288 - sqrt(y**4 - 1440)/288},
+           {x: 17*y**2/288 + sqrt(y**4 - 1440)/288}]
+    assert solve_surd_system(eqs, x) == res

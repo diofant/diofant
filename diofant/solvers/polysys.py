@@ -3,14 +3,14 @@
 import collections
 
 from ..domains import EX
-from ..functions import root
 from ..matrices import Matrix
-from ..polys import groebner, minimal_polynomial, poly, sring
+from ..polys import groebner, poly, sring
 from ..polys.polyerrors import ComputationFailed, PolificationFailed
 from ..polys.polytools import parallel_poly_from_expr
 from ..polys.solvers import solve_lin_sys
 from ..simplify import simplify
 from ..utilities import default_sort_key, numbered_symbols
+from .utils import checksol
 
 
 __all__ = ('solve_linear_system', 'solve_poly_system',
@@ -203,8 +203,8 @@ def solve_surd_system(eqs, *gens, **args):
 
     aux = numbered_symbols('a')
     neqs = len(eqs)
+    orig_eqs = eqs[:]
     ngens = len(gens)
-    testeqs = []
     bases = collections.defaultdict(dict)
 
     def q_surd(e):
@@ -220,7 +220,6 @@ def solve_surd_system(eqs, *gens, **args):
         bases[e.base][v] = d
         gens.append(v)
         eqs.append(v**d - e.base)
-        testeqs.append(v - root(e.base, d))
         return v**n
 
     for i in range(neqs):
@@ -235,9 +234,9 @@ def solve_surd_system(eqs, *gens, **args):
     weaksols = solve_poly_system(eqs, *gens, **args)
 
     for i in range(len(weaksols) - 1, -1, -1):
-        if any(minimal_polynomial(_.subs(weaksols[i]))(0) == 0 for _ in denoms):
+        if any(checksol(_, weaksols[i], warn=True) for _ in denoms):
             del weaksols[i]
-        elif any(minimal_polynomial(_.subs(weaksols[i]))(0) for _ in testeqs):
+        elif any(checksol(_, weaksols[i], warn=True) is False for _ in orig_eqs):
             del weaksols[i]
         else:
             for g in gens[ngens:]:
