@@ -3,9 +3,10 @@
 import pytest
 
 from diofant import (ComputationFailed, I, Matrix, Mul, Poly, PolynomialError,
-                     Rational, flatten, ordered, sqrt, symbols)
+                     Rational, RootOf, flatten, ordered, root, sqrt, symbols)
 from diofant.abc import n, t, x, y, z
-from diofant.solvers.polysys import solve_linear_system, solve_poly_system
+from diofant.solvers.polysys import (solve_linear_system, solve_poly_system,
+                                     solve_surd_system)
 
 
 __all__ = ()
@@ -304,3 +305,37 @@ def test_sympyissue_16038():
     assert {x: +1, y: +2, z: +3} in sols2
     assert (list(ordered([{k: v.n(7) for k, v in _.items()} for _ in sols1])) ==
             list(ordered([{k: v.n(7) for k, v in _.items()} for _ in sols2])))
+
+
+def test_solve_surd_system():
+    eqs = [x + sqrt(x + 1) - 2]
+    res = [{x: -sqrt(13)/2 + Rational(5, 2)}]
+    assert solve_surd_system(eqs) == solve_surd_system(eqs, x) == res
+
+    eqs = [root(x, 3) + root(x, 2) - 2]
+    res = [{x: 1}]
+    assert solve_surd_system(eqs) == res
+
+    eqs = [x - (-x + 1)/(x - 1)]
+    res = [{x: -1}]
+    assert solve_surd_system(eqs) == res
+
+    eqs = [root(x, 4) + root(x, 3) + sqrt(x)]
+    res = [{x: 0}]
+    assert solve_surd_system(eqs) == res
+
+    a0, a1 = symbols('a:2')
+
+    eqs = [x + sqrt(x + sqrt(x + 1)) - 2]
+    res = [{x: -RootOf(a1**3 + a1**2 - 4*a1 + 1, 2) + 2}]
+    assert solve_surd_system(eqs) == res
+
+    eqs = [sqrt(x) + y + 2, y*x - 1]
+    _, r1, r2 = Poly(a0**3 + 2*a0**2 + 1).all_roots()
+    res = [{x: r1**2, y: -2 - r1}, {x: r2**2, y: -2 - r2}]
+    assert solve_surd_system(eqs) == res
+
+    eqs = [sqrt(17*x - sqrt(x**2 - 5)) - y]
+    res = [{x: 17*y**2/288 - sqrt(y**4 - 1440)/288},
+           {x: 17*y**2/288 + sqrt(y**4 - 1440)/288}]
+    assert solve_surd_system(eqs, x) == res

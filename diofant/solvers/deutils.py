@@ -12,6 +12,9 @@ from ..core import Derivative, Equality, Wild
 from ..core.function import AppliedUndef
 
 
+__all__ = 'ode_order',
+
+
 def _preprocess(expr, func=None, hint='_Integral'):
     """Prepare expr for solving by making sure that differentiation
     is done so that only func remains in unevaluated derivatives and

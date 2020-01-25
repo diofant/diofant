@@ -11,8 +11,9 @@ from diofant import (And, Derivative, E, Eq, Float, Function, Gt, I, Indexed,
 from diofant.abc import (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r,
                          t, x, y, z)
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
-from diofant.solvers.solvers import (_invert, checksol, minsolve_linear_system,
+from diofant.solvers.solvers import (_invert, minsolve_linear_system,
                                      solve_linear)
+from diofant.solvers.utils import checksol
 from diofant.utilities.randtest import verify_numerically as tn
 
 
@@ -1493,3 +1494,13 @@ def test_sympyissue_14779():
     x = symbols('x', real=True)
     assert solve(sqrt(x**4 - 130*x**2 + 1089) +
                  sqrt(x**4 - 130*x**2 + 3969) - 96*abs(x)/x) == [{x: sqrt(130)}]
+
+
+@pytest.mark.slow
+def test_diofantissue_709():
+    eqs = [sqrt(x) + y + 2, root(y, 3)*x - 1]
+    a1 = symbols('a1')
+    r5, r6 = Poly(a1**7 + 4*a1**4 + 4*a1 - 1).all_roots()[-2:]
+    res = [{x: 4 + 4*r5**3 + r5**6, y: r5**3},
+           {x: 4 + r6**6 + 4*r6**3, y: r6**3}]
+    assert solve(eqs) == res
