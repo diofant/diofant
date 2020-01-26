@@ -29,7 +29,6 @@ from ..polys.polyerrors import PolynomialError
 from ..simplify import (denom, logcombine, nsimplify, posify, powdenest,
                         powsimp, simplify)
 from ..simplify.fu import TR1
-from ..simplify.sqrtdenest import unrad
 from ..utilities import filldedent
 from ..utilities.iterables import uniq
 from .polysys import solve_linear_system, solve_poly_system, solve_surd_system
@@ -667,18 +666,13 @@ def _solve(f, symbol, **flags):
     # fallback if above fails
     # -----------------------
     if result is False:
-        u = unrad(f_num, symbol)
-        if u:
-            eq, cov = u
-            if cov:
-                isym, ieq = cov
-                inv = _solve(ieq, symbol, **flags)[0]
-                rv = {inv.subs({isym: xi}) for xi in _solve(eq, isym, **flags)}
-            else:
-                rv = set(_solve(eq, symbol, **flags))
-            result = list(ordered(rv))
-            # if the flag wasn't set then unset it since unrad results
-            # can be quite long or of very high order
+        try:
+            result = solve_surd_system([f_num], symbol)
+            result = list(ordered(set().union(*[set(_.values()) for _ in result])))
+        except PolynomialError:
+            result = False
+
+        if result:
             flags['simplify'] = flags.get('simplify', False)
 
     # try _tsolve
