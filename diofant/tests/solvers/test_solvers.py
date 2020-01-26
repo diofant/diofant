@@ -6,8 +6,8 @@ from diofant import (And, Derivative, E, Eq, Float, Function, Gt, I, Indexed,
                      Tuple, Wild, acos, arg, asin, atan, atan2, cbrt, cos,
                      cosh, diff, erf, erfc, erfcinv, erfinv, exp, expand_log,
                      im, log, nan, nfloat, oo, ordered, pi, posify, re,
-                     real_root, reduce_inequalities, root, sec, sech, simplify,
-                     sin, sinh, solve, sqrt, sstr, symbols, sympify, tan, tanh)
+                     reduce_inequalities, root, sec, sech, simplify, sin, sinh,
+                     solve, sqrt, sstr, symbols, sympify, tan, tanh)
 from diofant.abc import (F, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q,
                          r, t, x, y, z)
 from diofant.solvers.bivariate import _filtered_gens, _lambert, _solve_lambert
@@ -323,15 +323,13 @@ def test_linear_system_function():
 def test_solve_radicals():
     eq = root(x**3 - 3*x**2, 3) + 1 - x
     assert solve(eq) == []
-    assert solve(eq, check=False) == [{x: Rational(1, 3)}]
+    assert solve(eq, check=False) == []
 
     eq = root(x, 3) - root(x, 5) + Rational(1, 7)
-    assert solve(eq) == [{x: RootOf(7*x**5 - 7*x**3 + 1, 1)**15},
-                         {x: RootOf(7*x**5 - 7*x**3 + 1, 2)**15}]
-
-    # XXX is this correct?
-    sol = solve(eq, check=False)
-    assert abs(real_root(eq.subs(sol[0])).evalf(2, strict=False)).epsilon_eq(0)
+    a1 = symbols('a1')
+    r1, r2 = Poly(16807*a1**5 + 12005*a1**4 - 13377*a1**3 +
+                  490*a1**2 + 35*a1 + 1).all_roots()[1:3]
+    assert solve(eq) == [{x: r1**3}, {x: r2**3}]
 
     assert solve(sqrt(x) + 1, x) == []
     assert solve(cbrt(x) + sqrt(x) + 1, x) == []
@@ -649,7 +647,8 @@ def test_sympypull_1964():
     # issue sympy/sympy#4497
     assert solve(1/root(5 + x, 5) - 9, x) == [{x: Rational(-295244, 59049)}]
 
-    assert solve(sqrt(x) + sqrt(sqrt(x)) - 4) == [{x: (Rational(-1, 2) + sqrt(17)/2)**4}]
+    assert (solve(sqrt(x) + sqrt(sqrt(x)) - 4) ==
+            [{x: -9*sqrt(17)/2 + Rational(49, 2)}])
     assert (solve(Poly(sqrt(exp(x)) + sqrt(exp(-x)) - 4)) in
             [[{x: log((-sqrt(3) + 2)**2)}, {x: log((sqrt(3) + 2)**2)}],
              [{x: 2*log(-sqrt(3) + 2)}, {x: 2*log(sqrt(3) + 2)}],
