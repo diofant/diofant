@@ -195,7 +195,9 @@ class Pow(Expr):
         b = sympify(b, strict=True)
         e = sympify(e, strict=True)
         if evaluate:
-            if e is S.Zero:
+            if nan in (b, e):
+                return nan
+            elif e is S.Zero:
                 return Integer(1)
             elif e is S.One:
                 return b
@@ -206,9 +208,7 @@ class Pow(Expr):
                     b = -b
                 elif e.is_odd:
                     return -Pow(-b, e)
-            if nan in (b, e):  # XXX nan**x -> nan under assumption that x != 0
-                return nan
-            elif b is S.One:
+            if b is S.One:
                 if abs(e).is_infinite:
                     return nan
                 return Integer(1)

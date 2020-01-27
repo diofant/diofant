@@ -775,10 +775,10 @@ def test_NaN():
     assert nan*1 == nan
     assert nan + 1 == nan
     assert nan/1 == nan
-    assert nan**0 == 1  # as per IEEE 754
-    assert 1**nan == nan  # IEEE 754 is not the best choice for symbolic work
+    assert nan**0 == nan
+    assert 1**nan == nan
     # test Pow._eval_power's handling of NaN
-    assert Pow(nan, 0, evaluate=False)**2 == 1
+    assert Pow(nan, 0, evaluate=False)**2 == nan
     assert Integer(0)/Integer(0) == nan
 
 
