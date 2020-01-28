@@ -9,9 +9,9 @@ from diofant import (QQ, Catalan, Derivative, Dummy, E, Eq, EulerGamma,
                      acosh, acot, acoth, asin, asinh, atan, atanh, binomial,
                      conjugate, cos, cosh, cot, coth, csch, erfc, exp,
                      factorial, factorial2, false, fibonacci, gamma, hyper, im,
-                     log, mathematica_code, meijerg, oo, pi, polygamma,
-                     polylog, re, rf, sech, sign, sin, sinh, symbols, tan,
-                     tanh, true, zeta)
+                     log, loggamma, mathematica_code, meijerg, oo, pi,
+                     polygamma, polylog, re, rf, sech, sign, sin, sinh,
+                     symbols, tan, tanh, true, zeta)
 from diofant.abc import x, y, z
 
 
@@ -88,6 +88,7 @@ def test_Function():
     assert mathematica_code(Heaviside(x)) == "UnitStep[x]"
     assert mathematica_code(fibonacci(x)) == "Fibonacci[x]"
     assert mathematica_code(polylog(x, y)) == "PolyLog[x, y]"
+    assert mathematica_code(loggamma(x)) == "LogGamma[x]"
 
     class MyFunc1(Function):
         @classmethod
