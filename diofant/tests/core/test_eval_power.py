@@ -356,3 +356,7 @@ def test_sympyissue_13914():
 
 def test_sympyissue_18470():
     assert nan**0 is nan
+
+
+def test_sympyissue_18499():
+    assert (1/oo)**(-oo) is zoo
