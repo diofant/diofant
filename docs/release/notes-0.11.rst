@@ -156,3 +156,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`18470` nan**0 returns 1 instead of nan
 * :sympyissue:`18482` Incorrect evaluation of limit
 * :sympyissue:`18499` The result of (1/oo)**(-oo) should be oo
+* :sympyissue:`18501` Extraneous variable in limit result

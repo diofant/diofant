@@ -751,3 +751,7 @@ def test_sympyissue_18482():
     assert limit((x**3 + x**2 + sqrt(x*(x + 6))*(x**2 + 1))/(x**2 + 1),
                  x, -oo) == -2
     assert limit((2*exp(3*x)/(exp(2*x) + 1))**(1/x), x, oo) == E
+
+
+def test_sympyissue_18501():
+    assert limit(abs(log(x - 1)**3 - 1), x, 1, '+') == oo
