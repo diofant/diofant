@@ -120,6 +120,20 @@ def test_basic5():
 
     assert limit(O(x), x, x**2) == Limit(O(x), x, x**2)
 
+    # issue sympy/sympy#18492
+    e = Piecewise((x/5 - Rational(9, 5), (x > 4) | (x < -1)),
+                  (-sqrt(abs(x - 3)), True))
+
+    assert limit(e, x, -1, 'real') == e.subs({x: -1}) == -2
+
+    e = Piecewise((sqrt(abs(x)), (x > 4) | (x < -4)), (x/4 + 1, True))
+
+    assert limit(e, x, 4, 'real') == e.subs({x: 4}) == 2
+
+    e = Piecewise((x, MyFunction(x) > 1), (-1, True))
+
+    assert limit(e, x, oo) == Limit(e, x, oo)
+
 
 def test_sympyissue_3885():
     assert limit(x*y + x*z, z, 2) == x*y + 2*x

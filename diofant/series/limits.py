@@ -173,8 +173,17 @@ class Limit(Expr):
                 return self
             else:
                 return e.func(ll, rl)
-
-        if e.has(Order):
+        elif e.is_Piecewise:
+            newargs = []
+            for expr, cond in e.args:
+                expr = limit(expr, z, z0, dir)
+                cond = limit(cond, z, z0, dir)
+                if any(isinstance(_, Limit) for _ in [expr, cond]):
+                    return self
+                else:
+                    newargs.append((expr, cond))
+            return e.func(*newargs)
+        elif e.has(Order):
             e = e.expand()
             order = e.getO()
             if order:
