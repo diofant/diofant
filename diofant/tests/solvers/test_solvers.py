@@ -1083,8 +1083,8 @@ def test_sympyissue_6605():
     x = symbols('x')
     assert solve(4**(x/2) - 2**(x/3)) == [{x: 0}, {x: 3*I*pi/log(2)}]
     # while the first one passed, this one failed
-    x = symbols('x', extended_real=True)
     assert solve(5**(x/2) - 2**(x/3)) == [{x: 0}]
+    x = symbols('x', real=True, nonzero=True)
     b = sqrt(6)*sqrt(log(2))/sqrt(log(5))
     assert [expand_log(s[x]) for s in solve(5**(x/2) - 2**(3/x))] == [-b, b]
 
@@ -1194,9 +1194,9 @@ def test_lambert_multivariate():
     _56 = Rational(5, 6)
     _53 = Rational(5, 3)
     assert (solve(3*log(a**(3*x + 5)) + a**(3*x + 5), x) ==
-            [{x: (log(a**(-_53)) - LambertW(_13)/3)/log(a)},
-             {x: (log((-1 - sqrt(3)*I)/a**_53) - log(2) - LambertW(_13)/3)/log(a)},
-             {x: (log((-1 + sqrt(3)*I)/a**_53) - log(2) - LambertW(_13)/3)/log(a)}])
+            [{x: log(exp(-LambertW(_13)/3)/a**_53)/log(a)},
+             {x: log(exp(-LambertW(_13)/3)*(-1 - sqrt(3)*I)/(2*a**_53))/log(a)},
+             {x: log(exp(-LambertW(_13)/3)*(-1 + sqrt(3)*I)/(2*a**_53))/log(a)}])
     p = symbols('p', positive=True)
     assert (solve(3*log(p**(3*x + 5)) + p**(3*x + 5), x) ==
             [{x: (-5*log(p) + log(LambertW(_13)) + log(3))/(3*log(p))},

@@ -1088,7 +1088,9 @@ def test_Pow_is_even_odd():
 
 
 def test_Pow_is_negative_positive():
-    r = Symbol('r', extended_real=True)
+    er = Symbol('er', extended_real=True)
+    r = Symbol('r', real=True)
+    p = Symbol('p', positive=True)
 
     k = Symbol('k', integer=True, positive=True)
     n = Symbol('n', even=True)
@@ -1096,29 +1098,31 @@ def test_Pow_is_negative_positive():
 
     x = Symbol('x')
 
+    assert (2**p).is_positive is True
     assert (2**r).is_positive is True
-    assert ((-2)**r).is_positive is None
+    assert ((-2)**er).is_positive is None
     assert ((-2)**n).is_positive is True
     assert ((-2)**m).is_positive is False
 
     assert (k**2).is_positive is True
     assert (k**(-2)).is_positive is True
 
+    assert (k**p).is_positive is True
     assert (k**r).is_positive is True
-    assert ((-k)**r).is_positive is None
+    assert ((-k)**er).is_positive is None
     assert ((-k)**n).is_positive is True
     assert ((-k)**m).is_positive is False
 
-    assert (2**r).is_negative is False
-    assert ((-2)**r).is_negative is None
+    assert (2**er).is_negative is False
+    assert ((-2)**er).is_negative is None
     assert ((-2)**n).is_negative is False
     assert ((-2)**m).is_negative is True
 
     assert (k**2).is_negative is False
     assert (k**(-2)).is_negative is False
 
-    assert (k**r).is_negative is False
-    assert ((-k)**r).is_negative is None
+    assert (k**er).is_negative is False
+    assert ((-k)**er).is_negative is None
     assert ((-k)**n).is_negative is False
     assert ((-k)**m).is_negative is True
 
@@ -1160,6 +1164,8 @@ def test_Pow_is_zero():
 
 def test_Pow_is_nonpositive_nonnegative():
     x = Symbol('x', extended_real=True)
+    r = Symbol('r', real=True)
+    p = Symbol('p', positive=True)
 
     k = Symbol('k', integer=True, nonnegative=True)
     l = Symbol('l', integer=True, positive=True)
@@ -1177,13 +1183,16 @@ def test_Pow_is_nonpositive_nonnegative():
     assert (k**k).is_nonnegative is True
 
     assert (k**x).is_nonnegative is None    # NOTE (0**x).is_extended_real = U
-    assert (l**x).is_nonnegative is True
-    assert (l**x).is_positive is True
+    assert (l**p).is_nonnegative is True
+    assert (l**p).is_positive is True
+    assert (l**r).is_nonnegative is True
+    assert (l**r).is_positive is True
     assert ((-k)**x).is_nonnegative is None
     assert ((-k)**n).is_nonnegative is None
     assert ((-k)**m).is_nonnegative is None
 
-    assert (2**x).is_nonpositive is False
+    assert (2**p).is_nonpositive is False
+    assert (2**r).is_nonpositive is False
     assert ((-2)**x).is_nonpositive is None
     assert ((-2)**n).is_nonpositive is False
     assert ((-2)**m).is_nonpositive is True
@@ -1873,3 +1882,15 @@ def test_sympyissue_10728():
     A, B = symbols('A B', commutative=False)
     assert (A + B).is_commutative is None
     assert (A + B).is_zero is None
+
+
+def test_sympyissue_18509():
+    e = 2**oo / pi**oo
+
+    assert e != oo
+    assert e == Mul(oo, pi**-oo, evaluate=False)
+
+    e = 2**oo / (E + 1)**oo
+
+    assert e != oo
+    assert e == Mul(oo, (E + 1)**-oo, evaluate=False)

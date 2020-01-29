@@ -534,7 +534,7 @@ def test_von_mises():
 
 
 def test_weibull():
-    a, b = symbols('a b', positive=True)
+    a, b = symbols('a b', positive=True, real=True)
     X = Weibull('x', a, b)
 
     assert simplify(E(X)) == simplify(a * gamma(1 + 1/b))
