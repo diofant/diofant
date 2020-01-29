@@ -3,6 +3,7 @@
 import re
 
 from ..core import Basic, I, sympify
+from ..parsing.sympy_parser import parse_expr
 from ..utilities import has_dups, numbered_symbols, topological_sort
 from .polyerrors import FlagError, GeneratorsError, OptionError
 
@@ -438,7 +439,7 @@ class Domain(Option, metaclass=OptionType):
             if r is not None:
                 ground, gens = r.groups()
 
-                gens = list(map(sympify, gens.split(',')))
+                gens = list(map(parse_expr, gens.split(',')))
 
                 if ground in ['Z', 'ZZ']:
                     return domains.ZZ.poly_ring(*gens)
@@ -450,7 +451,7 @@ class Domain(Option, metaclass=OptionType):
             if r is not None:
                 ground, gens = r.groups()
 
-                gens = list(map(sympify, gens.split(',')))
+                gens = list(map(parse_expr, gens.split(',')))
 
                 if ground in ['Z', 'ZZ']:
                     return domains.ZZ.frac_field(*gens)
@@ -460,7 +461,7 @@ class Domain(Option, metaclass=OptionType):
             r = cls._re_algebraic.match(domain)
 
             if r is not None:
-                gens = list(map(sympify, r.groups()[1].split(',')))
+                gens = list(map(parse_expr, r.groups()[1].split(',')))
                 return domains.QQ.algebraic_field(*gens)
 
         raise OptionError('expected a valid domain specification, got %s' % str(domain))
