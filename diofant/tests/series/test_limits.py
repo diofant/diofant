@@ -755,3 +755,7 @@ def test_sympyissue_18482():
 
 def test_sympyissue_18501():
     assert limit(abs(log(x - 1)**3 - 1), x, 1, '+') == oo
+
+
+def test_sympyissue_18508():
+    assert limit(sin(x)/sqrt(1 - cos(x)), x, 0) == sqrt(2)
