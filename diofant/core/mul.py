@@ -263,9 +263,6 @@ class Mul(AssocOp):
                 if not coeff:
                     # 0 * zoo = NaN
                     return [nan], [], None
-                if coeff is zoo:
-                    # zoo * zoo = zoo
-                    return [zoo], [], None
                 coeff = zoo
                 continue
 

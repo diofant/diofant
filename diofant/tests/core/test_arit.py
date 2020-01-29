@@ -1664,6 +1664,9 @@ def test_mul_flatten_oo_zoo():
 
     assert zoo*2*zoo is zoo
 
+    # issue sympy/sympy#18507
+    assert Mul(zoo, zoo, 0) is nan
+
 
 def test_add_flatten():
     # see https://github.com/sympy/sympy/issues/2633#issuecomment-29545524
