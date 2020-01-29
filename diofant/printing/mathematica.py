@@ -49,6 +49,7 @@ known_functions = {
     "Heaviside": [(lambda x: True, "UnitStep")],
     "fibonacci": [(lambda x: True, "Fibonacci")],
     "polylog": [(lambda x, y: True, "PolyLog")],
+    "loggamma": [(lambda x: True, "LogGamma")],
 }
 
 

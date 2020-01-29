@@ -16,6 +16,7 @@ Major changes
 
 * :class:`~diofant.polys.polytools.Poly` now use sparse polynomial representation (via :class:`~diofant.polys.rings.PolyElement`) internally, see :pull:`795`.
 * :func:`~diofant.solvers.recurr.rsolve` now return :class:`list` of :class:`dict`'s, see :pull:`940`.
+* :func:`~diofant.solvers.solvers.solve` now return all solutions for equations, involving surds, see :pull:`910`.
 
 Compatibility breaks
 ====================
@@ -151,3 +152,8 @@ These Sympy issues also were addressed:
 * :sympyissue:`18378` Invalid result in Limit
 * :sympyissue:`18384` abs(sin(x)*cos(x)) integrates wrong
 * :sympyissue:`18399` Incorrect limit
+* :sympyissue:`18452` Infinite recursion while computing Limit of Expression in 1.5.1
+* :sympyissue:`18470` nan**0 returns 1 instead of nan
+* :sympyissue:`18482` Incorrect evaluation of limit
+* :sympyissue:`18499` The result of (1/oo)**(-oo) should be oo
+* :sympyissue:`18501` Extraneous variable in limit result

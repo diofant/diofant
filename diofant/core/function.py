@@ -660,9 +660,12 @@ class UndefinedFunction(FunctionClass):
     def __instancecheck__(self, instance):
         return self in type(instance).__mro__
 
+    def __eq__(self, other):
+        return (isinstance(other, self.__class__) and
+                (self.class_key() == other.class_key()))
 
-UndefinedFunction.__eq__ = lambda s, o: (isinstance(o, s.__class__) and
-                                         (s.class_key() == o.class_key()))
+    def __hash__(self):
+        return super().__hash__()
 
 
 class WildFunction(Function, AtomicExpr):
