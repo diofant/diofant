@@ -37,7 +37,7 @@ def test_solve_args():
                for container in (tuple, list, set, frozenset))
     assert solve(Tuple(*eqs), x, y) == ans
     # implicit symbol to solve for
-    assert {s[x] for s in solve(x**2 - 4)} == {2, -2}
+    assert solve(x**2 - 4) == [{x: -2}, {x: 2}]
     assert solve([x + y - 3, x - y - 5]) == [{x: 4, y: -1}]
     # no symbol to solve for
     assert solve(42) == []
@@ -894,7 +894,8 @@ def test_sympyissue_5901():
     assert solve_linear(x + Integral(x, y) - 2, x) == \
         (x + Integral(x, y) - 2, 1)
 
-    assert {s[exp(x)] for s in solve(x + exp(x)**2, exp(x))} == {-sqrt(-x), sqrt(-x)}
+    assert solve(x + exp(x)**2, exp(x)) == [{exp(x): -sqrt(-x)},
+                                            {exp(x): +sqrt(-x)}]
 
 
 def test_sympyissue_5912():
@@ -1114,7 +1115,7 @@ def test_sympyissues_6819_6820_6821_6248_8692():
     x, y = symbols('x y', extended_real=True)
     assert solve(abs(x + 3) - 2*abs(x - 3)) == [{x: 1}, {x: 9}]
     assert solve([abs(x) - 2, arg(x) - pi], x) == [{x: -2}, {x: 2}]
-    assert {s[x] for s in solve(abs(x - 7) - 8)} == {-1, 15}
+    assert solve(abs(x - 7) - 8) == [{x: -1}, {x: 15}]
 
     # issue sympy/sympy#8692
     assert (solve(Eq(abs(x + 1) + abs(x**2 - 7), 9), x) ==
