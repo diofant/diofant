@@ -314,14 +314,14 @@ Here are several more advanced examples:
     5*pi
     ---- + 2*E
      7
-    >>> nsimplify(cos(atan('1/3')))
+    >>> nsimplify(cos(atan(1/3)))
         ____
     3*\/ 10
     --------
        10
     >>> nsimplify(4/(1+sqrt(5)), [GoldenRatio])
     -2 + 2*GoldenRatio
-    >>> nsimplify(2 + exp(2*atan('1/4')*I))
+    >>> nsimplify(2 + exp(2*atan(1/4)*I))
     49   8*I
     -- + ---
     17    17
@@ -341,7 +341,7 @@ Here are several more advanced examples:
     pi
     ---
      6
-    >>> nsimplify(gamma('1/4')*gamma('3/4'), [pi])
+    >>> nsimplify(gamma(1/4)*gamma(3/4), [pi])
       ___
     \/ 2 *pi
 

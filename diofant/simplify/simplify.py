@@ -817,9 +817,9 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
                                       tol=tolerance, full=full)
             if not newexpr:
                 raise ValueError
-            newexpr = parse_expr(newexpr)
             if full:
                 newexpr = newexpr[0]
+            newexpr = parse_expr(newexpr)
             expr = sympify(newexpr)
             if x and not expr:  # don't let x become 0
                 raise ValueError

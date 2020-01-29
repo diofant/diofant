@@ -80,13 +80,6 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     >>> sympify(2.0).is_real
     True
 
-    If the expression could not be converted, a SympifyError is raised.
-
-    >>> sympify("x***2")
-    Traceback (most recent call last):
-    ...
-    SympifyError: SympifyError: "could not parse u'x***2'"
-
     *Locals*
 
     The sympification happens with access to everything that is loaded
@@ -101,23 +94,12 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     bitcount(42)
     >>> sympify("O(x)")
     O(x)
-    >>> sympify("O + 1")
-    Traceback (most recent call last):
-    ...
-    TypeError: unbound method...
-
-    In order to have ``bitcount`` be recognized it can be imported into a
-    namespace dictionary and passed as locals:
-
-    >>> ns = {}
-    >>> exec('from diofant.core.evalf import bitcount', ns)
-    >>> sympify(s, locals=ns)
-    6
 
     In order to have the ``O`` interpreted as a Symbol, identify it as such
     in the namespace dictionary. This can be done in a variety of ways; all
     three of the following are possibilities:
 
+    >>> ns = {}
     >>> ns["O"] = Symbol("O")  # method 1
     >>> exec('from diofant.abc import O', ns)  # method 2
     >>> ns.update({O: Symbol("O")})  # method 3
@@ -148,33 +130,6 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     Traceback (most recent call last):
     ...
     SympifyError: SympifyError: None
-
-    *Evaluation*
-
-    If the option ``evaluate`` is set to ``False``, then arithmetic and
-    operators will be converted into their Diofant equivalents and the
-    ``evaluate=False`` option will be added. Nested ``Add`` or ``Mul`` will
-    be denested first. This is done via an AST transformation that replaces
-    operators with their Diofant equivalents, so if an operand redefines any
-    of those operations, the redefined operators will not be used.
-
-    >>> sympify('2**2 / 3 + 5')
-    19/3
-    >>> sympify('2**2 / 3 + 5', evaluate=False)
-    2**2/3 + 5
-
-    Sometimes autosimplification during sympification results in expressions
-    that are very different in structure than what was entered.  Below you
-    can see how an expression reduces to -1 by autosimplification, but does
-    not do so when ``evaluate`` option is used.
-
-    >>> -2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) - 1
-    -1
-    >>> s = '-2*(-(-x + 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) - 1'
-    >>> sympify(s)
-    -1
-    >>> sympify(s, evaluate=False)
-    -2*((x - 1/x)/(x*(x - 1/x)**2) - 1/(x*(x - 1/x))) - 1
 
     *Extending*
 
