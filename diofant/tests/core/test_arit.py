@@ -149,9 +149,6 @@ def test_pow():
 
     assert sqrt(2*(1 + sqrt(2))) == (2*(1 + 2**Rational(1, 2)))**Rational(1, 2)
 
-    x = Symbol('x')
-    y = Symbol('y')
-
     assert ((x*y)**3).expand() == y**3 * x**3
     assert ((x*y)**-3).expand() == y**-3 * x**-3
 
@@ -301,9 +298,7 @@ def test_ncpow():
     x = Symbol('x', commutative=False)
     y = Symbol('y', commutative=False)
     z = Symbol('z', commutative=False)
-    a = Symbol('a')
     b = Symbol('b')
-    c = Symbol('c')
 
     assert (x**2)*(y**2) != (y**2)*(x**2)
     assert (x**-2)*y != y*(x**2)
@@ -323,7 +318,6 @@ def test_ncpow():
 
 
 def test_powerbug():
-    x = Symbol("x")
     assert x**1 != (-x)**1
     assert x**2 == (-x)**2
     assert x**3 != (-x)**3
@@ -338,8 +332,6 @@ def test_powerbug():
 
 
 def test_Mul_doesnt_expand_exp():
-    x = Symbol('x')
-    y = Symbol('y')
     assert exp(x)*exp(y) == exp(x)*exp(y)
     assert 2**x*2**y == 2**x*2**y
     assert x**2*x**3 == x**5
@@ -352,8 +344,6 @@ def test_Mul_doesnt_expand_exp():
 
 
 def test_Add_Mul_is_integer():
-    x = Symbol('x')
-
     k = Symbol('k', integer=True)
     n = Symbol('n', integer=True)
 
@@ -466,7 +456,6 @@ def test_even_odd_in_ternary_integer_product():
 
 
 def test_Mul_is_rational():
-    x = Symbol('x')
     n = Symbol('n', integer=True)
     m = Symbol('m', integer=True, nonzero=True)
 
@@ -484,7 +473,6 @@ def test_Mul_is_rational():
 
 
 def test_Add_is_rational():
-    x = Symbol('x')
     n = Symbol('n', rational=True)
     m = Symbol('m', rational=True)
 
@@ -1036,8 +1024,6 @@ def test_Pow_is_finite():
 
 
 def test_Pow_is_even_odd():
-    x = Symbol('x')
-
     k = Symbol('k', even=True)
     n = Symbol('n', odd=True)
     m = Symbol('m', integer=True, nonnegative=True)
@@ -1095,8 +1081,6 @@ def test_Pow_is_negative_positive():
     k = Symbol('k', integer=True, positive=True)
     n = Symbol('n', even=True)
     m = Symbol('m', odd=True)
-
-    x = Symbol('x')
 
     assert (2**p).is_positive is True
     assert (2**r).is_positive is True
@@ -1221,7 +1205,6 @@ def test_Mul_is_imaginary_real():
     ii = Symbol('ii', imaginary=True)
     ni = Symbol('ni', imaginary=True, nonzero=True)
     nii = Symbol('nii', imaginary=True, nonzero=True)
-    x = Symbol('x')
 
     assert I.is_imaginary is True
     assert I.is_extended_real is False
@@ -1330,12 +1313,10 @@ def test_sympyissue_3531b():
         def __rmul__(self, other):
             self.field = other * self.field
     f = Foo()
-    x = Symbol("x")
     assert f*x == x*f
 
 
 def test_bug3():
-    a = Symbol("a")
     b = Symbol("b", positive=True)
     e = 2*a + b
     f = b + 2*a
@@ -1625,7 +1606,6 @@ def test_sympyissue_6001():
 
 def test_polar():
     p = Symbol('p', polar=True)
-    x = Symbol('x')
     assert p.is_polar
     assert x.is_polar is None
     assert Integer(1).is_polar is None
