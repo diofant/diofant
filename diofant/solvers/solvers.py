@@ -8,7 +8,7 @@ from collections import defaultdict
 from types import GeneratorType
 
 from ..core import (Add, Dummy, E, Equality, Expr, Float, Function, Ge, I,
-                    Integer, Lambda, Mul, Pow, Symbol, expand_log, expand_mul,
+                    Integer, Lambda, Mul, Symbol, expand_log, expand_mul,
                     expand_power_exp, nan, nfloat, pi, preorder_traversal,
                     sympify)
 from ..core.assumptions import check_assumptions
@@ -592,29 +592,29 @@ def _solve(f, symbol, **flags):
                 u = bases.pop()
                 t = Dummy('t')
                 inv = _solve(u - t, symbol, **flags)
-                if isinstance(u, Pow):
-                    # this will be resolved by factor in _tsolve but we might
-                    # as well try a simple expansion here to get things in
-                    # order so something like the following will work now without
-                    # having to factor:
-                    #
-                    # >>> eq = (exp(I*(-x-2))+exp(I*(x+2)))
-                    # >>> eq.subs({exp(x): y})  # fails
-                    # exp(I*(-x - 2)) + exp(I*(x + 2))
-                    # >>> eq.expand().subs({exp(x): y})  # works
-                    # y**I*exp(2*I) + y**(-I)*exp(-2*I)
-                    def _expand(p):
-                        b, e = p.as_base_exp()
-                        e = expand_mul(e)
-                        return expand_power_exp(b**e)
-                    ftry = f_num.replace(lambda w: w.is_Pow, _expand).subs({u: t})
-                    assert not ftry.has(symbol)
-                    soln = _solve(ftry, t, **flags)
-                    sols = []
-                    for sol in soln:
-                        for i in inv:
-                            sols.append(i.subs({t: sol}))
-                    result = list(ordered(sols))
+                # this will be resolved by factor in _tsolve but we might
+                # as well try a simple expansion here to get things in
+                # order so something like the following will work now without
+                # having to factor:
+                #
+                # >>> eq = (exp(I*(-x-2))+exp(I*(x+2)))
+                # >>> eq.subs({exp(x): y})  # fails
+                # exp(I*(-x - 2)) + exp(I*(x + 2))
+                # >>> eq.expand().subs({exp(x): y})  # works
+                # y**I*exp(2*I) + y**(-I)*exp(-2*I)
+
+                def _expand(p):
+                    b, e = p.as_base_exp()
+                    e = expand_mul(e)
+                    return expand_power_exp(b**e)
+                ftry = f_num.replace(lambda w: w.is_Pow, _expand).subs({u: t})
+                assert not ftry.has(symbol)
+                soln = _solve(ftry, t, **flags)
+                sols = []
+                for sol in soln:
+                    for i in inv:
+                        sols.append(i.subs({t: sol}))
+                result = list(ordered(sols))
 
         else:
             # There is only one generator that we are interested in, but
