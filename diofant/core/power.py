@@ -403,7 +403,7 @@ class Pow(Expr):
                     return self.exp.is_negative
 
     def _eval_is_integer(self):
-        b, e = self.args
+        b, e = self.base, self.exp
         if b.is_rational:
             if b.is_integer is False and e.is_positive:
                 return False  # rat**nonneg
@@ -628,7 +628,7 @@ class Pow(Expr):
         (1/2, 2)
 
         """
-        b, e = self.args
+        b, e = self.base, self.exp
         if b.is_Rational and b.numerator == 1 and b.denominator != 1:
             return Integer(b.denominator), -e
         return b, e
@@ -791,7 +791,7 @@ class Pow(Expr):
 
     def _eval_expand_multinomial(self, **hints):
         """(a+b+..) ** n -> a**n + n*a**(n-1)*b + .., n is nonzero integer."""
-        base, exp = self.args
+        base, exp = self.base, self.exp
         result = self
 
         if exp.is_Rational and exp.numerator > 0 and base.is_Add:

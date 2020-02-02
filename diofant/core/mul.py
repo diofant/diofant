@@ -475,7 +475,7 @@ class Mul(AssocOp):
                             coeff *= obj
                         else:
                             assert obj.is_Pow
-                            bi, ei = obj.args
+                            bi, ei = obj.base, obj.exp
                             pnew[ei].append(bi)
 
             num_rat.extend(grow)

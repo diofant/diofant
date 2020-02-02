@@ -77,7 +77,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         coeff, expr = self.as_coeff_Mul()
 
         if expr.is_Pow:
-            expr, exp = expr.args
+            expr, exp = expr.base, expr.exp
         else:
             expr, exp = expr, Integer(1)
 
