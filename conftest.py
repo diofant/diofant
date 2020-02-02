@@ -15,9 +15,8 @@ except ImportError:
 
 
 def pytest_report_header(config):
-    return """\ncache: %s
-ground types: %s\n""" % (diofant.core.cache.USE_CACHE,
-                         diofant.core.compatibility.GROUND_TYPES)
+    return f"""\ncache: {diofant.core.cache.USE_CACHE}
+ground types: {diofant.core.compatibility.GROUND_TYPES}\n"""
 
 
 @pytest.fixture(autouse=True, scope='module')
