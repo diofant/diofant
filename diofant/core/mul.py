@@ -5,7 +5,7 @@ from functools import reduce
 from .basic import Basic
 from .cache import cacheit
 from .compatibility import default_sort_key
-from .logic import _fuzzy_group, fuzzy_and, fuzzy_not
+from .logic import _fuzzy_group, fuzzy_and
 from .operations import AssocOp
 from .singleton import S
 from .sympify import sympify
@@ -1106,15 +1106,6 @@ class Mul(AssocOp):
             return r
         else:
             return is_integer
-
-    def _eval_is_even(self):
-        is_integer = self.is_integer
-
-        if is_integer:
-            return fuzzy_not(self.is_odd)
-
-        elif is_integer is False:
-            return False
 
     def _eval_subs(self, old, new):
         from . import Integer

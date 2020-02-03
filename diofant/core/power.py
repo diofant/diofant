@@ -338,10 +338,6 @@ class Pow(Expr):
         if s is not None:
             return s*Pow(b, e*other)
 
-    def _eval_is_even(self):
-        if self.exp.is_integer and self.exp.is_positive:
-            return self.base.is_even
-
     def _eval_is_positive(self):
         from ..functions import log
         if self.base == self.exp:
