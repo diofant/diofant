@@ -582,7 +582,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     def _eval_is_zero(self):
         from ..polys.numberfields import minimal_polynomial
         from .function import count_ops
-        from .symbol import Dummy
 
         if self.is_number:
             try:
@@ -603,7 +602,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 if count_ops(self) > 75:
                     return
                 try:
-                    return minimal_polynomial(self)(Dummy()).is_Symbol
+                    return not minimal_polynomial(self)(0)
                 except NotImplementedError:  # pragma: no cover
                     return
 
