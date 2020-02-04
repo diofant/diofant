@@ -339,30 +339,22 @@ class Pow(Expr):
             return s*Pow(b, e*other)
 
     def _eval_is_positive(self):
-        from ..functions import log
-        if self.base == self.exp:
-            if self.base.is_nonnegative:
+        b, e = self.base, self.exp
+        if b.is_nonnegative and b == e:
+            return True
+        elif b.is_positive and (e.is_real or e.is_positive):
+            return True
+        elif b.is_negative and e.is_integer:
+            return e.is_even
+        elif b.is_nonpositive and e.is_odd:
+            return False
+        elif b.is_imaginary:
+            if e.is_imaginary and b in {I, -I}:
                 return True
-        elif self.base.is_positive:
-            if self.exp.is_real or self.exp.is_positive:
-                return True
-        elif self.base.is_negative:
-            if self.exp.is_even:
-                return True
-            if self.exp.is_odd:
-                return False
-        elif self.base.is_nonpositive:
-            if self.exp.is_odd:
-                return False
-        elif self.base.is_imaginary:
-            if self.exp.is_integer:
-                m = self.exp % 4
-                if m.is_zero:
-                    return True
-                if m.is_integer and m.is_nonzero:
-                    return False
-            if self.exp.is_imaginary:
-                return log(self.base).is_imaginary
+            else:
+                m = e % 4
+                if m.is_integer:
+                    return m.is_zero
 
     def _eval_is_negative(self):
         if self.base.is_negative:
