@@ -157,3 +157,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`18482` Incorrect evaluation of limit
 * :sympyissue:`18499` The result of (1/oo)**(-oo) should be oo
 * :sympyissue:`18501` Extraneous variable in limit result
+* :sympyissue:`18508` NotImplementedError in limit
+* :sympyissue:`18507` Bug in Mul

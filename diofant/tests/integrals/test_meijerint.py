@@ -400,7 +400,7 @@ def test_probability():
     assert simplify(E((x + y)**2) - E(x + y)**2) == ans
 
     # Beta' distribution
-    alpha, beta = symbols('alpha beta', positive=True)
+    alpha, beta = symbols('alpha beta', positive=True, real=True)
     betadist = x**(alpha - 1)*(1 + x)**(-alpha - beta)*gamma(alpha + beta) \
         / gamma(alpha)/gamma(beta)
     assert integrate(betadist, (x, 0, oo), meijerg=True) == 1
@@ -445,7 +445,7 @@ def test_probability():
                               meijerg=True)) == 2*sqrt(2)/sqrt(k)
 
     # Dagum distribution
-    a, b, p = symbols('a b p', positive=True)
+    a, b, p = symbols('a b p', positive=True, real=True)
     # XXX (x/b)**a does not work
     dagum = a*p/x*(x/b)**(a*p)/(1 + x**a/b**a)**(p + 1)
     assert simplify(integrate(dagum, (x, 0, oo), meijerg=True)) == 1
@@ -501,7 +501,7 @@ def test_probability():
         pi*alpha**y*y/beta/sin(pi*y/beta)
 
     # weibull
-    k = Symbol('k', positive=True)
+    k = Symbol('k', positive=True, real=True)
     n = Symbol('n', positive=True)
     distn = k/lamda*(x/lamda)**(k - 1)*exp(-(x/lamda)**k)
     assert simplify(integrate(distn, (x, 0, oo))) == 1
