@@ -677,54 +677,32 @@ def test_gf_factor():
              (x**2 + 5*x + 3, 1),
              (x**3 + 2*x**2 + 3*x + 4, 1)])
 
-    with config.using(gf_factor_method='berlekamp'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='zassenhaus'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='shoup'):
-        assert f.factor_list() == g
+    for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with config.using(gf_factor_method=method):
+            assert f.factor_list() == g
 
     f = x**3 + 5*x**2 + 8*x + 4
-
     g = (1, [(x + 1, 1), (x + 2, 2)])
 
-    with config.using(gf_factor_method='berlekamp'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='zassenhaus'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='shoup'):
-        assert f.factor_list() == g
+    for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with config.using(gf_factor_method=method):
+            assert f.factor_list() == g
 
     f = x**9 + x**8 + 10*x**7 + x**6 + 10*x**4 + 10*x**3 + 10*x**2
     g = (1, [(x, 2), (x**2 + 9*x + 5, 1),
              (x**5 + 3*x**4 + 8*x**2 + 5*x + 2, 1)])
 
-    with config.using(gf_factor_method='berlekamp'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='zassenhaus'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='shoup'):
-        assert f.factor_list() == g
+    for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with config.using(gf_factor_method=method):
+            assert f.factor_list() == g
 
     f = x**32 + 1
-
     g = (1, [(x**16 + 3*x**8 + 10, 1),
              (x**16 + 8*x**8 + 10, 1)])
 
-    with config.using(gf_factor_method='berlekamp'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='zassenhaus'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='shoup'):
-        assert f.factor_list() == g
+    for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with config.using(gf_factor_method=method):
+            assert f.factor_list() == g
 
     f = 8*x**32 + 5
     g = (8, [(x + 3, 1),
@@ -737,14 +715,9 @@ def test_gf_factor():
              (x**8 + x**4 + 6, 1),
              (x**8 + 10*x**4 + 6, 1)])
 
-    with config.using(gf_factor_method='berlekamp'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='zassenhaus'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='shoup'):
-        assert f.factor_list() == g
+    for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with config.using(gf_factor_method=method):
+            assert f.factor_list() == g
 
     f = 8*x**63 + 5
     g = (8, [(x + 7, 1),
@@ -761,14 +734,9 @@ def test_gf_factor():
              (x**6 + 10*x**5 + 4*x**4 + 7*x**3 + 10*x**2 + 7*x + 4, 1),
              (x**6 + 10*x**5 + 10*x**4 + x**3 + 4*x**2 + 9*x + 4, 1)])
 
-    with config.using(gf_factor_method='berlekamp'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='zassenhaus'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='shoup'):
-        assert f.factor_list() == g
+    for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with config.using(gf_factor_method=method):
+            assert f.factor_list() == g
 
     with config.using(gf_factor_method='other'):
         pytest.raises(KeyError, lambda: (x + 1).factor_list())
@@ -780,14 +748,9 @@ def test_gf_factor():
              (x + 1, 1),
              (x**2 + x + 1, 1)])
 
-    with config.using(gf_factor_method='berlekamp'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='zassenhaus'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='shoup'):
-        assert f.factor_list() == g
+    for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with config.using(gf_factor_method=method):
+            assert f.factor_list() == g
 
     # Gathen polynomials: x**n + x + 1 (mod p > 2**n * pi)
 
@@ -800,11 +763,9 @@ def test_gf_factor():
              (x**4 + 86276*x**3 + 56779*x**2 + 14859*x + 31575, 1),
              (x**5 + 15347*x**4 + 95022*x**3 + 84569*x**2 + 94508*x + 92335, 1)])
 
-    with config.using(gf_factor_method='zassenhaus'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='shoup'):
-        assert f.factor_list() == g
+    for method in ('zassenhaus', 'shoup'):
+        with config.using(gf_factor_method=method):
+            assert f.factor_list() == g
 
     # Shoup polynomials: f = a_0 x**n + a_1 x**(n-1) + ... + a_n
     # (mod p > 2**(n-2) * pi), where a_n = a_{n-1}**2 + 1, a_0 = 1
@@ -813,15 +774,12 @@ def test_gf_factor():
     R, x = ring('x', FF(p))
 
     f = x**6 + 2*x**5 + 5*x**4 + 26*x**3 + 41*x**2 + 39*x + 38
-
     g = (1, [(x**2 + 44*x + 26, 1),
              (x**4 + 11*x**3 + 25*x**2 + 18*x + 30, 1)])
 
-    with config.using(gf_factor_method='zassenhaus'):
-        assert f.factor_list() == g
-
-    with config.using(gf_factor_method='shoup'):
-        assert f.factor_list() == g
+    for method in ('zassenhaus', 'shoup'):
+        with config.using(gf_factor_method=method):
+            assert f.factor_list() == g
 
 
 def test_PolyElement_is_irreducible():
