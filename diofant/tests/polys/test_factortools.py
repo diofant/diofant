@@ -665,9 +665,13 @@ def test_dmp_factor_list():
 def test_gf_factor():
     R, x = ring('x', FF(11))
 
-    assert R(0).factor_list() == (0, [])
-    assert R(1).factor_list() == (1, [])
-    assert (x + 1).factor_list() == (1, [(x + 1, 1)])
+    for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with config.using(gf_factor_method=method):
+            assert R(0).factor_list() == (0, [])
+            assert R(1).factor_list() == (1, [])
+            assert x.factor_list() == (1, [(x, 1)])
+            assert (x + 1).factor_list() == (1, [(x + 1, 1)])
+            assert (2*x + 3).factor_list() == (2, [(x + 7, 1)])
 
     assert (5*x**3 + 2*x**2 + 7*x +
             2).factor_list() == (5, [(x + 2, 1), (x + 8, 2)])

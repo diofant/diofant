@@ -5,8 +5,7 @@ from diofant.polys import polyconfig as config
 from diofant.polys.galoistools import (gf_add, gf_add_ground, gf_berlekamp,
                                        gf_compose_mod, gf_ddf_shoup,
                                        gf_ddf_zassenhaus, gf_div, gf_edf_shoup,
-                                       gf_edf_zassenhaus, gf_factor_sqf,
-                                       gf_frobenius_map,
+                                       gf_edf_zassenhaus, gf_frobenius_map,
                                        gf_frobenius_monomial_base,
                                        gf_from_dict, gf_gcd, gf_irreducible,
                                        gf_irreducible_p, gf_monic, gf_mul,
@@ -324,44 +323,3 @@ def test_gf_edf():
 
     assert gf_edf_zassenhaus(f, 2, 3, ZZ) == g
     assert gf_edf_shoup(f, 2, 3, ZZ) == g
-
-
-def test_gf_factor_sqf():
-    for method in ('berlekamp', 'zassenhaus', 'shoup'):
-        with config.using(gf_factor_method=method):
-            assert gf_factor_sqf([], 11, ZZ) == (0, [])
-            assert gf_factor_sqf([1], 11, ZZ) == (1, [])
-            assert gf_factor_sqf([1, 1], 11, ZZ) == (1, [[1, 1]])
-            assert gf_factor_sqf([1, 0], 11, ZZ) == (1, [[1, 0]])
-            assert gf_factor_sqf([2, 3], 11, ZZ) == (2, [[1, 7]])
-
-    f, p = [1, 0, 0, 1, 0], 2
-    g = (1, [[1, 0], [1, 1], [1, 1, 1]])
-
-    for method in ('berlekamp', 'zassenhaus', 'shoup'):
-        with config.using(gf_factor_method=method):
-            assert gf_factor_sqf(f, p, ZZ) == g
-
-    # Gathen polynomials: x**n + x + 1 (mod p > 2**n * pi)
-
-    p = ZZ(nextprime(int((2**15*pi))))
-    f = gf_from_dict({15: 1, 1: 1, 0: 1}, p, ZZ)
-    g = (1, [[1, 22730, 68144],
-             [1, 81553, 77449, 86810, 4724],
-             [1, 86276, 56779, 14859, 31575],
-             [1, 15347, 95022, 84569, 94508, 92335]])
-
-    for method in ('zassenhaus', 'shoup'):
-        with config.using(gf_factor_method=method):
-            assert gf_factor_sqf(f, p, ZZ) == g
-
-    # Shoup polynomials: f = a_0 x**n + a_1 x**(n-1) + ... + a_n
-    # (mod p > 2**(n-2) * pi), where a_n = a_{n-1}**2 + 1, a_0 = 1
-
-    p = ZZ(nextprime(int((2**4*pi))))
-    f = [1, 2, 5, 26, 41, 39, 38]
-    g = (1, [[1, 44, 26], [1, 11, 25, 18, 30]])
-
-    for method in ('zassenhaus', 'shoup'):
-        with config.using(gf_factor_method=method):
-            assert gf_factor_sqf(f, p, ZZ) == g
