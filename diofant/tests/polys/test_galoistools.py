@@ -8,8 +8,7 @@ from diofant.polys.galoistools import (gf_add, gf_add_ground, gf_berlekamp,
                                        gf_edf_zassenhaus, gf_factor_sqf,
                                        gf_frobenius_map,
                                        gf_frobenius_monomial_base,
-                                       gf_from_dict, gf_gcd, gf_irred_p_ben_or,
-                                       gf_irred_p_rabin, gf_irreducible,
+                                       gf_from_dict, gf_gcd, gf_irreducible,
                                        gf_irreducible_p, gf_monic, gf_mul,
                                        gf_mul_ground, gf_pow_mod, gf_Qbasis,
                                        gf_Qmatrix, gf_quo, gf_rem, gf_sqr,
@@ -189,54 +188,41 @@ def test_gf_trace_map():
 
 
 def test_gf_irreducible():
-    assert gf_irreducible_p(gf_irreducible(1, 11, ZZ), 11, ZZ) is True
-    assert gf_irreducible_p(gf_irreducible(2, 11, ZZ), 11, ZZ) is True
-    assert gf_irreducible_p(gf_irreducible(3, 11, ZZ), 11, ZZ) is True
-    assert gf_irreducible_p(gf_irreducible(4, 11, ZZ), 11, ZZ) is True
-    assert gf_irreducible_p(gf_irreducible(5, 11, ZZ), 11, ZZ) is True
-    assert gf_irreducible_p(gf_irreducible(6, 11, ZZ), 11, ZZ) is True
-    assert gf_irreducible_p(gf_irreducible(7, 11, ZZ), 11, ZZ) is True
+    for n in range(8):
+        assert gf_irreducible_p(gf_irreducible(n, 11, ZZ), 11, ZZ) is True
 
 
 def test_gf_irreducible_p():
-    assert gf_irred_p_ben_or([7], 11, ZZ) is True
-    assert gf_irred_p_ben_or([7, 3], 11, ZZ) is True
-    assert gf_irred_p_ben_or([7, 3, 1], 11, ZZ) is False
+    f = [7]
+    g = [7, 3]
+    h = [7, 3, 1]
 
-    assert gf_irred_p_rabin([7], 11, ZZ) is True
-    assert gf_irred_p_rabin([7, 3], 11, ZZ) is True
-    assert gf_irred_p_rabin([7, 3, 1], 11, ZZ) is False
-
-    assert gf_irred_p_ben_or([2, 3, 4, 5, 6], 13, ZZ) is False
-    assert gf_irred_p_ben_or([2, 3, 4, 5, 8], 13, ZZ) is True
-
-    with config.using(gf_irred_method='ben-or'):
-        assert gf_irreducible_p([7], 11, ZZ) is True
-        assert gf_irreducible_p([7, 3], 11, ZZ) is True
-        assert gf_irreducible_p([7, 3, 1], 11, ZZ) is False
-
-    with config.using(gf_irred_method='rabin'):
-        assert gf_irreducible_p([7], 11, ZZ) is True
-        assert gf_irreducible_p([7, 3], 11, ZZ) is True
-        assert gf_irreducible_p([7, 3, 1], 11, ZZ) is False
+    for method in ('ben-or', 'rabin'):
+        with config.using(gf_irred_method=method):
+            assert gf_irreducible_p(f, 11, ZZ) is True
+            assert gf_irreducible_p(g, 11, ZZ) is True
+            assert gf_irreducible_p(h, 11, ZZ) is False
 
     with config.using(gf_irred_method='other'):
         pytest.raises(KeyError, lambda: gf_irreducible_p([7], 11, ZZ))
 
+    f = [2, 3, 4, 5, 6]
+    g = [2, 3, 4, 5, 8]
+
+    for method in ('ben-or', 'rabin'):
+        with config.using(gf_irred_method=method):
+            assert gf_irreducible_p(f, 13, ZZ) is False
+            assert gf_irreducible_p(g, 13, ZZ) is True
+
     f = [1, 9, 9, 13, 16, 15, 6, 7, 7, 7, 10]
     g = [1, 7, 16, 7, 15, 13, 13, 11, 16, 10, 9]
-
     h = gf_mul(f, g, 17, ZZ)
 
-    assert gf_irred_p_ben_or(f, 17, ZZ) is True
-    assert gf_irred_p_ben_or(g, 17, ZZ) is True
-
-    assert gf_irred_p_ben_or(h, 17, ZZ) is False
-
-    assert gf_irred_p_rabin(f, 17, ZZ) is True
-    assert gf_irred_p_rabin(g, 17, ZZ) is True
-
-    assert gf_irred_p_rabin(h, 17, ZZ) is False
+    for method in ('ben-or', 'rabin'):
+        with config.using(gf_irred_method=method):
+            assert gf_irreducible_p(f, 17, ZZ) is True
+            assert gf_irreducible_p(g, 17, ZZ) is True
+            assert gf_irreducible_p(h, 17, ZZ) is False
 
 
 def test_gf_frobenius_map():
@@ -341,42 +327,20 @@ def test_gf_edf():
 
 
 def test_gf_factor_sqf():
-    assert gf_factor_sqf([], 11, ZZ) == (0, [])
-    assert gf_factor_sqf([1], 11, ZZ) == (1, [])
-    assert gf_factor_sqf([1, 1], 11, ZZ) == (1, [[1, 1]])
-    assert gf_factor_sqf([2, 3], 11, ZZ) == (2, [[1, 7]])
-
-    with config.using(gf_factor_method='berlekamp'):
-        assert gf_factor_sqf([], 11, ZZ) == (0, [])
-        assert gf_factor_sqf([1], 11, ZZ) == (1, [])
-        assert gf_factor_sqf([1, 1], 11, ZZ) == (1, [[1, 1]])
-        assert gf_factor_sqf([1, 0], 11, ZZ) == (1, [[1, 0]])
-
-    with config.using(gf_factor_method='zassenhaus'):
-        assert gf_factor_sqf([], 11, ZZ) == (0, [])
-        assert gf_factor_sqf([1], 11, ZZ) == (1, [])
-        assert gf_factor_sqf([1, 1], 11, ZZ) == (1, [[1, 1]])
-        assert gf_factor_sqf([1, 0], 11, ZZ) == (1, [[1, 0]])
-
-    with config.using(gf_factor_method='shoup'):
-        assert gf_factor_sqf([], 11, ZZ) == (0, [])
-        assert gf_factor_sqf([1], 11, ZZ) == (1, [])
-        assert gf_factor_sqf([1, 1], 11, ZZ) == (1, [[1, 1]])
-        assert gf_factor_sqf([1, 0], 11, ZZ) == (1, [[1, 0]])
+    for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with config.using(gf_factor_method=method):
+            assert gf_factor_sqf([], 11, ZZ) == (0, [])
+            assert gf_factor_sqf([1], 11, ZZ) == (1, [])
+            assert gf_factor_sqf([1, 1], 11, ZZ) == (1, [[1, 1]])
+            assert gf_factor_sqf([1, 0], 11, ZZ) == (1, [[1, 0]])
+            assert gf_factor_sqf([2, 3], 11, ZZ) == (2, [[1, 7]])
 
     f, p = [1, 0, 0, 1, 0], 2
-    g = (1, [[1, 0],
-             [1, 1],
-             [1, 1, 1]])
+    g = (1, [[1, 0], [1, 1], [1, 1, 1]])
 
-    with config.using(gf_factor_method='berlekamp'):
-        assert gf_factor_sqf(f, p, ZZ) == g
-
-    with config.using(gf_factor_method='zassenhaus'):
-        assert gf_factor_sqf(f, p, ZZ) == g
-
-    with config.using(gf_factor_method='shoup'):
-        assert gf_factor_sqf(f, p, ZZ) == g
+    for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with config.using(gf_factor_method=method):
+            assert gf_factor_sqf(f, p, ZZ) == g
 
     # Gathen polynomials: x**n + x + 1 (mod p > 2**n * pi)
 
@@ -387,23 +351,17 @@ def test_gf_factor_sqf():
              [1, 86276, 56779, 14859, 31575],
              [1, 15347, 95022, 84569, 94508, 92335]])
 
-    with config.using(gf_factor_method='zassenhaus'):
-        assert gf_factor_sqf(f, p, ZZ) == g
-
-    with config.using(gf_factor_method='shoup'):
-        assert gf_factor_sqf(f, p, ZZ) == g
+    for method in ('zassenhaus', 'shoup'):
+        with config.using(gf_factor_method=method):
+            assert gf_factor_sqf(f, p, ZZ) == g
 
     # Shoup polynomials: f = a_0 x**n + a_1 x**(n-1) + ... + a_n
     # (mod p > 2**(n-2) * pi), where a_n = a_{n-1}**2 + 1, a_0 = 1
 
     p = ZZ(nextprime(int((2**4*pi))))
     f = [1, 2, 5, 26, 41, 39, 38]
+    g = (1, [[1, 44, 26], [1, 11, 25, 18, 30]])
 
-    g = (1, [[1, 44, 26],
-             [1, 11, 25, 18, 30]])
-
-    with config.using(gf_factor_method='zassenhaus'):
-        assert gf_factor_sqf(f, p, ZZ) == g
-
-    with config.using(gf_factor_method='shoup'):
-        assert gf_factor_sqf(f, p, ZZ) == g
+    for method in ('zassenhaus', 'shoup'):
+        with config.using(gf_factor_method=method):
+            assert gf_factor_sqf(f, p, ZZ) == g
