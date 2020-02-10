@@ -307,12 +307,10 @@ def dup_cyclotomic_p(f, K, irreducible=False):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> f = x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1
-    >>> R.dup_cyclotomic_p(f)
+    >>> (x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1).is_cyclotomic
     False
 
-    >>> g = x**16 + x**14 - x**10 - x**8 - x**6 + x**2 + 1
-    >>> R.dup_cyclotomic_p(g)
+    >>> (x**16 + x**14 - x**10 - x**8 - x**6 + x**2 + 1).is_cyclotomic
     True
 
     """
