@@ -4,8 +4,8 @@ import pytest
 
 from diofant import (EX, FF, QQ, RR, ZZ, DomainError, I, nextprime, pi, ring,
                      sin, sqrt)
-from diofant.polys import polyconfig as config
 from diofant.polys.factortools import dmp_zz_diophantine
+from diofant.polys.polyconfig import using
 from diofant.polys.specialpolys import f_polys, w_polys
 
 
@@ -17,17 +17,21 @@ w_1, w_2 = w_polys()
 
 def test_dmp_trial_division():
     R, x = ring("x", ZZ)
+
     assert R.dmp_trial_division(x**5 + 8*x**4 + 25*x**3 + 38*x**2 + 28*x + 8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
 
     R, x, y = ring("x,y", ZZ)
+
     assert R.dmp_trial_division(x**5 + 8*x**4 + 25*x**3 + 38*x**2 + 28*x + 8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
 
 
 def test_dmp_zz_mignotte_bound():
     R, x = ring("x", ZZ)
+
     assert R.dmp_zz_mignotte_bound(2*x**2 + 3*x + 4) == 32
 
     R, x, y = ring("x,y", ZZ)
+
     assert R.dmp_zz_mignotte_bound(2*x**2 + 3*x + 4) == 32
 
 
@@ -146,122 +150,107 @@ def test_dup_zz_cyclotomic_factor():
 def test_dup_zz_factor():
     R, x = ring("x", ZZ)
 
-    assert R.dup_zz_factor(0) == (0, [])
-    assert R.dup_zz_factor(7) == (7, [])
-    assert R.dup_zz_factor(-7) == (-7, [])
+    assert R(0).factor_list() == (0, [])
+    assert R(7).factor_list() == (7, [])
+    assert R(-7).factor_list() == (-7, [])
 
     assert R.dup_zz_factor_sqf(0) == (0, [])
     assert R.dup_zz_factor_sqf(7) == (7, [])
     assert R.dup_zz_factor_sqf(-7) == (-7, [])
 
-    assert R.dup_zz_factor(2*x + 4) == (2, [(x + 2, 1)])
+    assert (2*x + 4).factor_list() == (2, [(x + 2, 1)])
     assert R.dup_zz_factor_sqf(2*x + 4) == (2, [x + 2])
 
     f = x**4 + x + 1
 
     for i in range(20):
-        assert R.dup_zz_factor(f) == (1, [(f, 1)])
+        assert f.factor_list() == (1, [(f, 1)])
 
-    assert R.dup_zz_factor(x**2 + 2*x + 2) == (1, [(x**2 + 2*x + 2, 1)])
+    assert (x**2 + 2*x + 2).factor_list() == (1, [(x**2 + 2*x + 2, 1)])
 
-    with config.using(use_irreducible_in_factor=True):
-        assert R.dup_zz_factor(x**2 + 2*x + 2) == (1, [(x**2 + 2*x + 2, 1)])
+    with using(use_irreducible_in_factor=True):
+        assert (x**2 + 2*x + 2).factor_list() == (1, [(x**2 + 2*x + 2, 1)])
 
-    assert R.dup_zz_factor(18*x**2 + 12*x + 2) == (2, [(3*x + 1, 2)])
+    assert (18*x**2 + 12*x + 2).factor_list() == (2, [(3*x + 1, 2)])
 
-    with config.using(use_irreducible_in_factor=True):
-        assert R.dup_zz_factor(18*x**2 + 12*x + 2) == (2, [(3*x + 1, 2)])
+    with using(use_irreducible_in_factor=True):
+        assert (18*x**2 + 12*x + 2).factor_list() == (2, [(3*x + 1, 2)])
 
-    assert R.dup_zz_factor(-9*x**2 + 1) == \
-        (-1, [(3*x - 1, 1),
-              (3*x + 1, 1)])
+    assert (-9*x**2 + 1).factor_list() == (-1, [(3*x - 1, 1), (3*x + 1, 1)])
 
-    with config.using(use_irreducible_in_factor=True):
+    with using(use_irreducible_in_factor=True):
         assert R.dup_zz_factor_sqf(3*x**4 + 2*x**3 +
                                    6*x**2 + 8*x + 10) == (1, [3*x**4 + 2*x**3 +
                                                               6*x**2 + 8*x + 10])
 
     assert R.dup_zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
 
-    with config.using(use_irreducible_in_factor=True):
+    with using(use_irreducible_in_factor=True):
         assert R.dup_zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
 
-    with config.using(use_cyclotomic_factor=False):
+    with using(use_cyclotomic_factor=False):
         assert R.dup_zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
 
-    assert R.dup_zz_factor(x**3 - 6*x**2 + 11*x - 6) == \
-        (1, [(x - 3, 1),
-             (x - 2, 1),
-             (x - 1, 1)])
+    assert (x**3 - 6*x**2 + 11*x - 6).factor_list() == (1, [(x - 3, 1),
+                                                            (x - 2, 1),
+                                                            (x - 1, 1)])
 
     assert R.dup_zz_factor_sqf(x**3 - 6*x**2 + 11*x - 6) == \
         (1, [x - 3,
              x - 2,
              x - 1])
 
-    assert R.dup_zz_factor(3*x**3 + 10*x**2 + 13*x + 10) == \
-        (1, [(x + 2, 1),
-             (3*x**2 + 4*x + 5, 1)])
+    assert (3*x**3 + 10*x**2 + 13*x +
+            10).factor_list() == (1, [(x + 2, 1), (3*x**2 + 4*x + 5, 1)])
 
     assert R.dup_zz_factor_sqf(3*x**3 + 10*x**2 + 13*x + 10) == \
         (1, [x + 2,
              3*x**2 + 4*x + 5])
 
-    assert R.dup_zz_factor(-x**6 + x**2) == \
-        (-1, [(x - 1, 1),
-              (x + 1, 1),
-              (x, 2),
-              (x**2 + 1, 1)])
+    assert (-x**6 + x**2).factor_list() == (-1, [(x - 1, 1), (x + 1, 1),
+                                                 (x, 2), (x**2 + 1, 1)])
 
-    f = 1080*x**8 + 5184*x**7 + 2099*x**6 + 744*x**5 + 2736*x**4 - 648*x**3 + 129*x**2 - 324
+    f = (1080*x**8 + 5184*x**7 + 2099*x**6 + 744*x**5 + 2736*x**4 -
+         648*x**3 + 129*x**2 - 324)
 
-    assert R.dup_zz_factor(f) == \
-        (1, [(5*x**4 + 24*x**3 + 9*x**2 + 12, 1),
-             (216*x**4 + 31*x**2 - 27, 1)])
+    assert f.factor_list() == (1, [(5*x**4 + 24*x**3 + 9*x**2 + 12, 1),
+                                   (216*x**4 + 31*x**2 - 27, 1)])
 
-    f = -29802322387695312500000000000000000000*x**25 \
-        + 2980232238769531250000000000000000*x**20 \
-        + 1743435859680175781250000000000*x**15 \
-        + 114142894744873046875000000*x**10 \
-        - 210106372833251953125*x**5 \
-        + 95367431640625
+    f = (-29802322387695312500000000000000000000*x**25 +
+         2980232238769531250000000000000000*x**20 +
+         1743435859680175781250000000000*x**15 +
+         114142894744873046875000000*x**10 - 210106372833251953125*x**5 +
+         + 95367431640625)
 
-    assert R.dup_zz_factor(f) == \
-        (-95367431640625, [(5*x - 1, 1),
-                           (100*x**2 + 10*x - 1, 2),
-                           (625*x**4 + 125*x**3 + 25*x**2 + 5*x + 1, 1),
-                           (10000*x**4 - 3000*x**3 + 400*x**2 - 20*x + 1, 2),
-                           (10000*x**4 + 2000*x**3 + 400*x**2 + 30*x + 1, 2)])
+    assert (f.factor_list() ==
+            (-95367431640625,
+             [(5*x - 1, 1), (100*x**2 + 10*x - 1, 2),
+              (625*x**4 + 125*x**3 + 25*x**2 + 5*x + 1, 1),
+              (10000*x**4 - 3000*x**3 + 400*x**2 - 20*x + 1, 2),
+              (10000*x**4 + 2000*x**3 + 400*x**2 + 30*x + 1, 2)]))
 
     f = x**10 - 1
 
-    config.setup('USE_CYCLOTOMIC_FACTOR', True)
-    F_0 = R.dup_zz_factor(f)
+    with using(use_cyclotomic_factor=True):
+        F_0 = f.factor_list()
 
-    config.setup('USE_CYCLOTOMIC_FACTOR', False)
-    F_1 = R.dup_zz_factor(f)
+    with using(use_cyclotomic_factor=False):
+        F_1 = f.factor_list()
 
-    assert F_0 == F_1 == \
-        (1, [(x - 1, 1),
-             (x + 1, 1),
-             (x**4 - x**3 + x**2 - x + 1, 1),
-             (x**4 + x**3 + x**2 + x + 1, 1)])
-
-    config.setup('USE_CYCLOTOMIC_FACTOR')
+    assert F_0 == F_1 == (1, [(x - 1, 1), (x + 1, 1),
+                              (x**4 - x**3 + x**2 - x + 1, 1),
+                              (x**4 + x**3 + x**2 + x + 1, 1)])
 
     f = x**10 + 1
 
-    config.setup('USE_CYCLOTOMIC_FACTOR', True)
-    F_0 = R.dup_zz_factor(f)
+    with using(use_cyclotomic_factor=True):
+        F_0 = f.factor_list()
 
-    config.setup('USE_CYCLOTOMIC_FACTOR', False)
-    F_1 = R.dup_zz_factor(f)
+    with using(use_cyclotomic_factor=False):
+        F_1 = f.factor_list()
 
-    assert F_0 == F_1 == \
-        (1, [(x**2 + 1, 1),
-             (x**8 - x**6 + x**4 - x**2 + 1, 1)])
-
-    config.setup('USE_CYCLOTOMIC_FACTOR')
+    assert F_0 == F_1 == (1, [(x**2 + 1, 1),
+                              (x**8 - x**6 + x**4 - x**2 + 1, 1)])
 
 
 def test_dmp_zz_wang():
@@ -269,6 +258,7 @@ def test_dmp_zz_wang():
     UV, _x = ring("x", ZZ)
 
     p = ZZ(nextprime(R.dmp_zz_mignotte_bound(w_1)))
+
     assert p == 6291469
 
     t_1, k_1, e_1 = y, 1, ZZ(-14)
@@ -287,8 +277,8 @@ def test_dmp_zz_wang():
     S = R.dmp_eval_tail(w_1, A)
     cs, s = UV.dmp_ground_primitive(S)
 
-    assert cs == 1 and s == S == \
-        1036728*_x**6 + 915552*_x**5 + 55748*_x**4 + 105621*_x**3 - 17304*_x**2 - 26841*_x - 644
+    assert cs == 1 and s == S == (1036728*_x**6 + 915552*_x**5 + 55748*_x**4 +
+                                  105621*_x**3 - 17304*_x**2 - 26841*_x - 644)
 
     assert R.dmp_zz_wang_non_divisors(E, cs, ZZ(4)) == [7, 3, 11, 17]
     assert s.is_squarefree and UV.dmp_degree_in(s, 0) == R.dmp_degree_in(w_1, 0)
@@ -319,6 +309,7 @@ def test_dmp_zz_wang():
     # assert R.dmp_zz_diophantine(H_3, c_3, [ZZ(-14)], 5, p) == [0, 0, -1]
 
     factors = R.dmp_zz_wang_hensel_lifting(w_1, H, LC, A, p)
+
     assert R.dmp_expand(factors) == w_1
 
 
@@ -334,6 +325,7 @@ def test_dmp_zz_diophantine():
     K = ZZ
 
     r = dmp_zz_diophantine(F, c, A, d, p, u, K)
+
     assert r == [[[[-6, 0, 0, 6]]], [[[2, 0]]]]
 
 
@@ -343,6 +335,7 @@ def test_sympyissue_6355():
     random_sequence = [-1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 3, -1, 3, 3, 3, 3, -1, 3]
 
     R, x, y, z = ring("x,y,z", ZZ)
+
     f = 2*x**2 + y*z - y - z**2 + z
 
     assert R.dmp_zz_wang(f, seed=random_sequence) == [f]
@@ -350,77 +343,78 @@ def test_sympyissue_6355():
 
 def test_dmp_zz_factor():
     R, x = ring("x", ZZ)
-    assert R.dmp_zz_factor(0) == (0, [])
-    assert R.dmp_zz_factor(7) == (7, [])
-    assert R.dmp_zz_factor(-7) == (-7, [])
 
-    assert R.dmp_zz_factor(x**2 - 9) == (1, [(x - 3, 1), (x + 3, 1)])
+    assert R(0).factor_list() == (0, [])
+    assert R(7).factor_list() == (7, [])
+    assert R(-7).factor_list() == (-7, [])
+
+    assert (x**2 - 9).factor_list() == (1, [(x - 3, 1), (x + 3, 1)])
 
     R, x, y = ring("x,y", ZZ)
-    assert R.dmp_zz_factor(0) == (0, [])
-    assert R.dmp_zz_factor(7) == (7, [])
-    assert R.dmp_zz_factor(-7) == (-7, [])
 
-    assert R.dmp_zz_factor(x) == (1, [(x, 1)])
-    assert R.dmp_zz_factor(4*x) == (4, [(x, 1)])
-    assert R.dmp_zz_factor(4*x + 2) == (2, [(2*x + 1, 1)])
-    assert R.dmp_zz_factor(x*y + 1) == (1, [(x*y + 1, 1)])
-    assert R.dmp_zz_factor(y**2 + 1) == (1, [(y**2 + 1, 1)])
-    assert R.dmp_zz_factor(y**2 - 1) == (1, [(y - 1, 1), (y + 1, 1)])
+    assert R(0).factor_list() == (0, [])
+    assert R(7).factor_list() == (7, [])
+    assert R(-7).factor_list() == (-7, [])
 
-    assert R.dmp_zz_factor(x**2*y**2 + 6*x**2*y + 9*x**2 - 1) == (1, [(x*y + 3*x - 1, 1), (x*y + 3*x + 1, 1)])
-    assert R.dmp_zz_factor(x**2*y**2 - 9) == (1, [(x*y - 3, 1), (x*y + 3, 1)])
+    assert x.factor_list() == (1, [(x, 1)])
+    assert (4*x).factor_list() == (4, [(x, 1)])
+    assert (4*x + 2).factor_list() == (2, [(2*x + 1, 1)])
+    assert (x*y + 1).factor_list() == (1, [(x*y + 1, 1)])
+    assert (y**2 + 1).factor_list() == (1, [(y**2 + 1, 1)])
+    assert (y**2 - 1).factor_list() == (1, [(y - 1, 1), (y + 1, 1)])
+
+    assert (x**2*y**2 + 6*x**2*y +
+            9*x**2 - 1).factor_list() == (1, [(x*y + 3*x - 1, 1),
+                                              (x*y + 3*x + 1, 1)])
+    assert (x**2*y**2 - 9).factor_list() == (1, [(x*y - 3, 1), (x*y + 3, 1)])
 
     R, x, y, z = ring("x,y,z", ZZ)
-    assert R.dmp_zz_factor(x**2*y**2*z**2 - 9) == \
-        (1, [(x*y*z - 3, 1),
-             (x*y*z + 3, 1)])
+
+    assert (x**2*y**2*z**2 - 9).factor_list() == (1, [(x*y*z - 3, 1),
+                                                      (x*y*z + 3, 1)])
 
     R, x, y, z, u = ring("x,y,z,u", ZZ)
-    assert R.dmp_zz_factor(x**2*y**2*z**2*u**2 - 9) == \
-        (1, [(x*y*z*u - 3, 1),
-             (x*y*z*u + 3, 1)])
+
+    assert (x**2*y**2*z**2*u**2 - 9).factor_list() == (1, [(x*y*z*u - 3, 1),
+                                                           (x*y*z*u + 3, 1)])
 
     R, x, y, z = ring("x,y,z", ZZ)
-    assert R.dmp_zz_factor(f_1) == \
-        (1, [(x + y*z + 20, 1),
-             (x*z + y + 30, 1),
-             (x*y + z + 10, 1)])
 
-    assert R.dmp_zz_factor(f_2) == \
-        (1, [(x**2*y**2 + x**2*z**2 + y + 90, 1),
-             (x**3*y + x**3*z + z - 11, 1)])
+    assert f_1.factor_list() == (1, [(x + y*z + 20, 1), (x*z + y + 30, 1),
+                                     (x*y + z + 10, 1)])
 
-    assert R.dmp_zz_factor(f_3) == \
-        (1, [(x**2*y**2 + x*z**4 + x + z, 1),
-             (x**3 + x*y*z + y**2 + y*z**3, 1)])
+    assert f_2.factor_list() == (1, [(x**2*y**2 + x**2*z**2 + y + 90, 1),
+                                     (x**3*y + x**3*z + z - 11, 1)])
 
-    assert R.dmp_zz_factor(f_4) == \
-        (-1, [(x*y**3 + z**2, 1),
-              (x**2*z + y**4*z**2 + 5, 1),
-              (x**3*y - z**2 - 3, 1),
-              (x**3*y**4 + z**2, 1)])
+    assert f_3.factor_list() == (1, [(x**2*y**2 + x*z**4 + x + z, 1),
+                                     (x**3 + x*y*z + y**2 + y*z**3, 1)])
 
-    assert R.dmp_zz_factor(f_5) == \
-        (-1, [(x + y - z, 3)])
+    assert f_4.factor_list() == (-1, [(x*y**3 + z**2, 1),
+                                      (x**2*z + y**4*z**2 + 5, 1),
+                                      (x**3*y - z**2 - 3, 1),
+                                      (x**3*y**4 + z**2, 1)])
+
+    assert f_5.factor_list() == (-1, [(x + y - z, 3)])
 
     R, x, y, z, t = ring("x,y,z,t", ZZ)
-    assert R.dmp_zz_factor(f_6) == \
-        (1, [(47*x*y + z**3*t**2 - t**2, 1),
-             (45*x**3 - 9*y**3 - y**2 + 3*z**3 + 2*z*t, 1)])
+
+    assert f_6.factor_list() == (1, [(47*x*y + z**3*t**2 - t**2, 1),
+                                     (45*x**3 - 9*y**3 - y**2 + 3*z**3 +
+                                      2*z*t, 1)])
 
     R, x, y, z = ring("x,y,z", ZZ)
-    assert R.dmp_zz_factor(w_1) == (1, [(4*x**2*y + 4*x**2*z + x*y*z - 1, 1),
-                                        (x**2*y*z**2 + 3*x*z + 2*y, 1),
-                                        (x**2*y**2 - x**2*z**2 + y - z**2, 1)])
+
+    assert w_1.factor_list() == (1, [(4*x**2*y + 4*x**2*z + x*y*z - 1, 1),
+                                     (x**2*y*z**2 + 3*x*z + 2*y, 1),
+                                     (x**2*y**2 - x**2*z**2 + y - z**2, 1)])
 
     R, x, y = ring("x,y", ZZ)
-    f = -12*x**16*y + 240*x**12*y**3 - 768*x**10*y**4 + 1080*x**8*y**5 - 768*x**6*y**6 + 240*x**4*y**7 - 12*y**9
 
-    assert R.dmp_zz_factor(f) == \
-        (-12, [(y, 1),
-               (x**2 - y, 6),
-               (x**4 + 6*x**2*y + y**2, 1)])
+    f = (-12*x**16*y + 240*x**12*y**3 - 768*x**10*y**4 + 1080*x**8*y**5 -
+         768*x**6*y**6 + 240*x**4*y**7 - 12*y**9)
+
+    assert f.factor_list() == (-12, [(y, 1), (x**2 - y, 6),
+                                     (x**4 + 6*x**2*y + y**2, 1)])
 
 
 def test_dmp_ext_factor():
@@ -471,7 +465,7 @@ def test_dmp_ext_factor():
     assert f.factor_list() == (2, [(x + sqrt(2), 2)])
     assert (f**3).factor_list() == (8, [(x + sqrt(2), 6)])
 
-    R,  x, y = ring("x,y", QQ.algebraic_field(sqrt(2)))
+    R, x, y = ring("x,y", QQ.algebraic_field(sqrt(2)))
 
     assert R(0).factor_list() == (0, [])
 
@@ -491,65 +485,73 @@ def test_dmp_ext_factor():
 
     assert f.factor_list() == (2, [(x - sqrt(2)*y, 1), (x + sqrt(2)*y, 1)])
 
-    R,  x = ring("x", QQ.algebraic_field(I))
-    f = x**2 + 1
-    assert f.factor_list() == (1, [(x - I, 1), (x + I, 1)])
+    R, x = ring("x", QQ.algebraic_field(I))
+
+    assert (x**2 + 1).factor_list() == (1, [(x - I, 1), (x + I, 1)])
 
 
 def test_sympyissue_5786():
-    R,  x, y, z, t = ring("x, y, z, t", QQ.algebraic_field(I))
+    R, x, y, z, t = ring("x, y, z, t", QQ.algebraic_field(I))
 
-    f = (z - I*t)*(x - I*y)
-    assert f.factor_list() == (1, [(z - I*t, 1), (x - I*y, 1)])
+    f, g = z - I*t, x - I*y
 
-    f = (z - I*t)**2*(x - I*y)
-    assert f.factor_list() == (1, [(z - I*t, 2), (x - I*y, 1)])
-
-    f = (z - I*t)*(x - I*y)**3
-    assert f.factor_list() == (1, [(z - I*t, 1), (x - I*y, 3)])
+    assert (f*g).factor_list() == (1, [(f, 1), (g, 1)])
+    assert (f**2*g).factor_list() == (1, [(f, 2), (g, 1)])
+    assert (f*g**3).factor_list() == (1, [(f, 1), (g, 3)])
 
 
 def test_dmp_factor_list():
     R, x = ring("x", ZZ)
+
     assert R(0).factor_list() == (0, [])
     assert R(7).factor_list() == (7, [])
 
     R, x = ring("x", QQ)
+
     assert R(0).factor_list() == (0, [])
     assert R(QQ(1, 7)).factor_list() == (QQ(1, 7), [])
 
     R, x = ring("x", ZZ.poly_ring('t'))
+
     assert R(0).factor_list() == (0, [])
     assert R(7).factor_list() == (7, [])
 
     R, x = ring("x", QQ.poly_ring('t'))
+
     assert R(0).factor_list() == (0, [])
     assert R(QQ(1, 7)).factor_list() == (QQ(1, 7), [])
 
     R, x = ring("x", ZZ)
 
     assert (x**2 + 2*x + 1).factor_list() == (1, [(x + 1, 2)])
+
     # issue sympy/sympy#8037
     assert (6*x**2 - 5*x - 6).factor_list() == (1, [(2*x - 3, 1), (3*x + 2, 1)])
 
     R, x = ring("x", QQ)
+
     assert (x**2/2 + x + QQ(1, 2)).factor_list() == (QQ(1, 2), [(x + 1, 2)])
 
     R, x = ring("x", FF(2))
+
     assert (x**2 + 1).factor_list() == (1, [(x + 1, 2)])
 
     R, x = ring("x", RR)
+
     assert (1.0*x**2 + 2.0*x + 1.0).factor_list() == (1.0, [(1.0*x + 1.0, 2)])
     assert (2.0*x**2 + 4.0*x + 2.0).factor_list() == (2.0, [(1.0*x + 1.0, 2)])
 
     f = 6.7225336055071*x**2 - 10.6463972754741*x - 0.33469524022264
-    coeff, factors = f.factor_list()
-    assert coeff == 1.0 and len(factors) == 1 and factors[0][0].almosteq(f, 1e-10) and factors[0][1] == 1
+
+    assert f.factor_list() == (1.0, [(f, 1)])
 
     # issue diofant/diofant#238
     f = 0.1*x**2 + 1.1*x + 1.0
+
     assert f.factor_list() == (10.0, [(0.1*x + 0.1, 1), (0.1*x + 1.0, 1)])
+
     f = 0.25 + 1.0*x + 1.0*x**2
+
     assert f.factor_list() == (4.0, [(0.25 + 0.5*x, 2)])
 
     Rt, t = ring("t", ZZ)
@@ -573,102 +575,127 @@ def test_dmp_factor_list():
     assert f.factor_list() == (1, [(x, 2), (x**2 + 2, 1)])
 
     R, x = ring("x", EX)
+
     pytest.raises(DomainError, lambda: R(EX(sin(1))).factor_list())
 
     R, x, y = ring("x,y", ZZ)
+
     assert R(0).factor_list() == (0, [])
     assert R(7).factor_list() == (7, [])
 
     R, x, y = ring("x,y", QQ)
+
     assert R(0).factor_list() == (0, [])
     assert R(QQ(1, 7)).factor_list() == (QQ(1, 7), [])
 
     Rt, t = ring("t", ZZ)
     R, x, y = ring("x,y", Rt)
+
     assert R(0).factor_list() == (0, [])
     assert R(7).factor_list() == (7, [])
 
     Rt, t = ring("t", QQ)
     R, x, y = ring("x,y", Rt)
+
     assert R(0).factor_list() == (0, [])
     assert R(QQ(1, 7)).factor_list() == (QQ(1, 7), [])
 
     R, *X = ring("x:200", ZZ)
 
     f, g = X[0]**2 + 2*X[0] + 1, X[0] + 1
+
     assert f.factor_list() == (1, [(g, 2)])
 
     f, g = X[-1]**2 + 2*X[-1] + 1, X[-1] + 1
+
     assert f.factor_list() == (1, [(g, 2)])
 
     R, x = ring("x", ZZ)
+
     assert (x**2 + 2*x + 1).factor_list() == (1, [(x + 1, 2)])
+
     R, x = ring("x", QQ)
+
     assert (x**2/2 + x + QQ(1, 2)).factor_list() == (QQ(1, 2), [(x + 1, 2)])
 
     R, x, y = ring("x,y", ZZ)
+
     assert (x**2 + 2*x + 1).factor_list() == (1, [(x + 1, 2)])
+
     R, x, y = ring("x,y", QQ)
+
     assert (x**2/2 + x + QQ(1, 2)).factor_list() == (QQ(1, 2), [(x + 1, 2)])
 
     R, x, y = ring("x,y", ZZ)
+
     f = 4*x**2*y + 4*x*y**2
 
     assert f.factor_list() == (4, [(y, 1), (x, 1), (x + y, 1)])
 
-    R,  x, y = ring("x,y", QQ)
+    R, x, y = ring("x,y", QQ)
+
     f = x**2*y/2 + x*y**2/2
 
     assert f.factor_list() == (QQ(1, 2), [(y, 1), (x, 1), (x + y, 1)])
 
-    R,  x, y = ring("x,y", RR)
+    R, x, y = ring("x,y", RR)
+
     f = 2.0*x**2 - 8.0*y**2
 
     assert f.factor_list() == (2.0, [(1.0*x - 2.0*y, 1), (1.0*x + 2.0*y, 1)])
 
     f = 6.7225336055071*x**2*y**2 - 10.6463972754741*x*y - 0.33469524022264
-    coeff, factors = f.factor_list()
-    assert coeff == 1.0 and len(factors) == 1 and factors[0][0].almosteq(f, 1e-10) and factors[0][1] == 1
+
+    assert f.factor_list() == (1.0, [(f, 1)])
 
     # issue diofant/diofant#238
-    R,  x, y, z = ring("x,y,z", RR)
+    R, x, y, z = ring("x,y,z", RR)
+
     f = x*y + x*z + 0.1*y + 0.1*z
+
     assert f.factor_list() == (10.0, [(0.1*y + 0.1*z, 1), (x + 0.1, 1)])
+
     f = 0.25*x**2 + 1.0*x*y*z + 1.0*y**2*z**2
+
     assert f.factor_list() == (4.0, [(0.25*x + 0.5*y*z, 2)])
 
     Rt, t = ring("t", ZZ)
     R, x, y = ring("x,y", Rt)
+
     f = 4*t*x**2 + 4*t**2*x
 
     assert f.factor_list() == (4*t, [(x, 1), (x + t, 1)])
 
     Rt, t = ring("t", QQ)
     R, x, y = ring("x,y", Rt)
+
     f = t*x**2/2 + t**2*x/2
 
     assert f.factor_list() == (t/2, [(x, 1), (x + t, 1)])
 
     R, x, y = ring("x,y", FF(2))
+
     pytest.raises(NotImplementedError, lambda: (x**2 + y**2).factor_list())
 
     R, x, y = ring("x,y", EX)
+
     pytest.raises(DomainError, lambda: R(EX(sin(1))).factor_list())
 
     R, x, y = ring('x, y', QQ.algebraic_field(I))
+
     f, r = x**2 + y**2, (1, [(x - I*y, 1), (x + I*y, 1)])
 
-    assert R.dmp_factor_list(f) == r
+    assert f.factor_list() == r
 
-    with config.using(aa_factor_method='trager'):
-        assert R.dmp_factor_list(f) == r
+    with using(aa_factor_method='trager'):
+        assert f.factor_list() == r
 
 
 def test_gf_factor():
     R, x = ring('x', FF(11))
 
     for method in ('berlekamp', 'zassenhaus', 'shoup'):
-        with config.using(gf_factor_method=method):
+        with using(gf_factor_method=method):
             assert R(0).factor_list() == (0, [])
             assert R(1).factor_list() == (1, [])
             assert x.factor_list() == (1, [(x, 1)])
@@ -684,14 +711,14 @@ def test_gf_factor():
              (x**3 + 2*x**2 + 3*x + 4, 1)])
 
     for method in ('berlekamp', 'zassenhaus', 'shoup'):
-        with config.using(gf_factor_method=method):
+        with using(gf_factor_method=method):
             assert f.factor_list() == g
 
     f = x**3 + 5*x**2 + 8*x + 4
     g = (1, [(x + 1, 1), (x + 2, 2)])
 
     for method in ('berlekamp', 'zassenhaus', 'shoup'):
-        with config.using(gf_factor_method=method):
+        with using(gf_factor_method=method):
             assert f.factor_list() == g
 
     f = x**9 + x**8 + 10*x**7 + x**6 + 10*x**4 + 10*x**3 + 10*x**2
@@ -699,7 +726,7 @@ def test_gf_factor():
              (x**5 + 3*x**4 + 8*x**2 + 5*x + 2, 1)])
 
     for method in ('berlekamp', 'zassenhaus', 'shoup'):
-        with config.using(gf_factor_method=method):
+        with using(gf_factor_method=method):
             assert f.factor_list() == g
 
     f = x**32 + 1
@@ -707,7 +734,7 @@ def test_gf_factor():
              (x**16 + 8*x**8 + 10, 1)])
 
     for method in ('berlekamp', 'zassenhaus', 'shoup'):
-        with config.using(gf_factor_method=method):
+        with using(gf_factor_method=method):
             assert f.factor_list() == g
 
     f = 8*x**32 + 5
@@ -722,7 +749,7 @@ def test_gf_factor():
              (x**8 + 10*x**4 + 6, 1)])
 
     for method in ('berlekamp', 'zassenhaus', 'shoup'):
-        with config.using(gf_factor_method=method):
+        with using(gf_factor_method=method):
             assert f.factor_list() == g
 
     f = 8*x**63 + 5
@@ -741,10 +768,10 @@ def test_gf_factor():
              (x**6 + 10*x**5 + 10*x**4 + x**3 + 4*x**2 + 9*x + 4, 1)])
 
     for method in ('berlekamp', 'zassenhaus', 'shoup'):
-        with config.using(gf_factor_method=method):
+        with using(gf_factor_method=method):
             assert f.factor_list() == g
 
-    with config.using(gf_factor_method='other'):
+    with using(gf_factor_method='other'):
         pytest.raises(KeyError, lambda: (x + 1).factor_list())
 
     R, x = ring('x', FF(2))
@@ -755,13 +782,12 @@ def test_gf_factor():
              (x**2 + x + 1, 1)])
 
     for method in ('berlekamp', 'zassenhaus', 'shoup'):
-        with config.using(gf_factor_method=method):
+        with using(gf_factor_method=method):
             assert f.factor_list() == g
 
     # Gathen polynomials: x**n + x + 1 (mod p > 2**n * pi)
 
-    p = ZZ(nextprime(int((2**15*pi))))
-    R, x = ring('x', FF(p))
+    R, x = ring('x', FF(nextprime(2**15*pi)))
 
     f = x**15 + x + 1
     g = (1, [(x**2 + 22730*x + 68144, 1),
@@ -770,21 +796,20 @@ def test_gf_factor():
              (x**5 + 15347*x**4 + 95022*x**3 + 84569*x**2 + 94508*x + 92335, 1)])
 
     for method in ('zassenhaus', 'shoup'):
-        with config.using(gf_factor_method=method):
+        with using(gf_factor_method=method):
             assert f.factor_list() == g
 
     # Shoup polynomials: f = a_0 x**n + a_1 x**(n-1) + ... + a_n
     # (mod p > 2**(n-2) * pi), where a_n = a_{n-1}**2 + 1, a_0 = 1
 
-    p = ZZ(nextprime(int((2**4*pi))))
-    R, x = ring('x', FF(p))
+    R, x = ring('x', FF(nextprime(2**4*pi)))
 
     f = x**6 + 2*x**5 + 5*x**4 + 26*x**3 + 41*x**2 + 39*x + 38
     g = (1, [(x**2 + 44*x + 26, 1),
              (x**4 + 11*x**3 + 25*x**2 + 18*x + 30, 1)])
 
     for method in ('zassenhaus', 'shoup'):
-        with config.using(gf_factor_method=method):
+        with using(gf_factor_method=method):
             assert f.factor_list() == g
 
 

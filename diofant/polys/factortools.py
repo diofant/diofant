@@ -489,7 +489,7 @@ def dup_zz_factor(f, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_zz_factor(2*x**4 - 2)
+    >>> (2*x**4 - 2).factor_list()
     (2, [(x - 1, 1), (x + 1, 1), (x**2 + 1, 1)])
 
     Note that this is a complete factorization over integers,
@@ -955,7 +955,7 @@ def dmp_zz_factor(f, u, K):
 
     >>> R, x, y = ring("x y", ZZ)
 
-    >>> R.dmp_zz_factor(2*x**2 - 2*y**2)
+    >>> (2*x**2 - 2*y**2).factor_list()
     (2, [(x - y, 1), (x + y, 1)])
 
     References

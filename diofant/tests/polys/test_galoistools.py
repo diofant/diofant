@@ -1,7 +1,6 @@
 import pytest
 
 from diofant import ZZ, nextprime, pi
-from diofant.polys import polyconfig as config
 from diofant.polys.galoistools import (gf_add, gf_add_ground, gf_berlekamp,
                                        gf_compose_mod, gf_ddf_shoup,
                                        gf_ddf_zassenhaus, gf_div, gf_edf_shoup,
@@ -12,6 +11,7 @@ from diofant.polys.galoistools import (gf_add, gf_add_ground, gf_berlekamp,
                                        gf_mul_ground, gf_pow_mod, gf_Qbasis,
                                        gf_Qmatrix, gf_quo, gf_rem, gf_sqr,
                                        gf_sub, gf_sub_ground, gf_trace_map)
+from diofant.polys.polyconfig import using
 
 
 __all__ = ()
@@ -197,19 +197,19 @@ def test_gf_irreducible_p():
     h = [7, 3, 1]
 
     for method in ('ben-or', 'rabin'):
-        with config.using(gf_irred_method=method):
+        with using(gf_irred_method=method):
             assert gf_irreducible_p(f, 11, ZZ) is True
             assert gf_irreducible_p(g, 11, ZZ) is True
             assert gf_irreducible_p(h, 11, ZZ) is False
 
-    with config.using(gf_irred_method='other'):
+    with using(gf_irred_method='other'):
         pytest.raises(KeyError, lambda: gf_irreducible_p([7], 11, ZZ))
 
     f = [2, 3, 4, 5, 6]
     g = [2, 3, 4, 5, 8]
 
     for method in ('ben-or', 'rabin'):
-        with config.using(gf_irred_method=method):
+        with using(gf_irred_method=method):
             assert gf_irreducible_p(f, 13, ZZ) is False
             assert gf_irreducible_p(g, 13, ZZ) is True
 
@@ -218,7 +218,7 @@ def test_gf_irreducible_p():
     h = gf_mul(f, g, 17, ZZ)
 
     for method in ('ben-or', 'rabin'):
-        with config.using(gf_irred_method=method):
+        with using(gf_irred_method=method):
             assert gf_irreducible_p(f, 17, ZZ) is True
             assert gf_irreducible_p(g, 17, ZZ) is True
             assert gf_irreducible_p(h, 17, ZZ) is False
@@ -307,7 +307,7 @@ def test_gf_ddf():
     assert gf_ddf_zassenhaus(f, 809, ZZ) == g
     assert gf_ddf_shoup(f, 809, ZZ) == g
 
-    p = ZZ(nextprime(int((2**15*pi))))
+    p = ZZ(nextprime(2**15*pi))
     f = gf_from_dict({15: 1, 1: 1, 0: 1}, p, ZZ)
     g = [([1, 22730, 68144], 2),
          ([1, 64876, 83977, 10787, 12561, 68608, 52650, 88001, 84356], 4),
