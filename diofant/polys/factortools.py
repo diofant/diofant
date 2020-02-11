@@ -11,11 +11,10 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
                          dmp_sub, dmp_sub_mul, dup_add, dup_lshift, dup_mul,
                          dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
-                         dmp_eject, dmp_exclude, dmp_from_dict, dmp_ground_LC,
-                         dmp_ground_p, dmp_include, dmp_inject, dmp_LC,
-                         dmp_nest, dmp_normal, dmp_one, dmp_raise, dmp_strip,
-                         dmp_swap, dmp_TC, dmp_terms_gcd, dmp_zero_p,
-                         dup_inflate)
+                         dmp_eject, dmp_exclude, dmp_ground_LC, dmp_ground_p,
+                         dmp_include, dmp_inject, dmp_LC, dmp_nest, dmp_normal,
+                         dmp_one, dmp_raise, dmp_strip, dmp_swap, dmp_TC,
+                         dmp_zero_p, dup_inflate)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
@@ -1047,7 +1046,6 @@ _factor_aa_methods = {'trager': dmp_ext_factor}
 
 def dmp_factor_list(f, u, K0):
     """Factor polynomials into irreducibles in `K[X]`."""
-    J, f = dmp_terms_gcd(f, u, K0)
     cont, f = dmp_ground_primitive(f, u, K0)
 
     if K0.is_FiniteField:
@@ -1104,12 +1102,5 @@ def dmp_factor_list(f, u, K0):
 
                 coeff = K0_inexact.convert(coeff, K0)
                 K0 = K0_inexact
-
-    for i, j in enumerate(reversed(J)):
-        if not j:
-            continue
-
-        term = {(0,)*(u - i) + (1,) + (0,)*i: K0.one}
-        factors.insert(0, (dmp_from_dict(term, u, K0), j))
 
     return coeff*cont, _sort_factors(factors)
