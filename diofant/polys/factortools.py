@@ -1027,9 +1027,6 @@ def dmp_gf_factor(f, u, K):
         lc = dmp_ground_LC(f, u, K)
         f = dmp_ground_monic(f, u, K)
 
-        if dmp_degree_in(f, 0, 0) < 1:
-            return lc, []
-
         factors = []
 
         for g, n in dmp_sqf_list(f, 0, K)[1]:
