@@ -4,7 +4,6 @@ import pytest
 
 from diofant import (EX, FF, QQ, RR, ZZ, DomainError, I, nextprime, pi, ring,
                      sin, sqrt)
-from diofant.polys.factortools import dmp_zz_diophantine
 from diofant.polys.polyconfig import using
 from diofant.polys.specialpolys import f_polys, w_polys
 
@@ -295,44 +294,45 @@ def test_dmp_zz_wang():
     h_2 = 126*_x**2 - 9*_x + 28
     h_3 = 187*_x**2 - 23
 
-    assert H == [h_1, h_2, h_3]
-
     LC = [lc.drop(x) for lc in [-4*y - 4*z, -y*z**2, y**2 - z**2]]
-
-    assert R.dmp_zz_wang_lead_coeffs(w_1, T, cs, E, H, A) == (w_1, H, LC)
-
-    # H_1 = [44*x**2 + 42*x + 1, 126*x**2 - 9*x + 28, 187*x**2 - 23]
-    # H_2 = [-4*x**2*y - 12*x**2 - 3*x*y + 1, -9*x**2*y - 9*x - 2*y, x**2*y**2 - 9*x**2 + y - 9]
-    # H_3 = [-4*x**2*y - 12*x**2 - 3*x*y + 1, -9*x**2*y - 9*x - 2*y, x**2*y**2 - 9*x**2 + y - 9]
-
-    # c_1 = -70686*x**5 - 5863*x**4 - 17826*x**3 + 2009*x**2 + 5031*x + 74
-    # c_2 = 9*x**5*y**4 + 12*x**5*y**3 - 45*x**5*y**2 - 108*x**5*y - 324*x**5 + 18*x**4*y**3 - 216*x**4*y**2 - 810*x**4*y + 2*x**3*y**4 + 9*x**3*y**3 - 252*x**3*y**2 - 288*x**3*y - 945*x**3 - 30*x**2*y**2 - 414*x**2*y + 2*x*y**3 - 54*x*y**2 - 3*x*y + 81*x + 12*y
-    # c_3 = -36*x**4*y**2 - 108*x**4*y - 27*x**3*y**2 - 36*x**3*y - 108*x**3 - 8*x**2*y**2 - 42*x**2*y - 6*x*y**2 + 9*x + 2*y
-
-    # TODO
-    # assert R.dmp_zz_diophantine(H_1, c_1, [], 5, p) == [-3*x, -2, 1]
-    # assert R.dmp_zz_diophantine(H_2, c_2, [ZZ(-14)], 5, p) == [-x*y, -3*x, -6]
-    # assert R.dmp_zz_diophantine(H_3, c_3, [ZZ(-14)], 5, p) == [0, 0, -1]
-
     factors = R.dmp_zz_wang_hensel_lifting(w_1, H, LC, A, p)
 
+    assert H == [h_1, h_2, h_3]
+    assert R.dmp_zz_wang_lead_coeffs(w_1, T, cs, E, H, A) == (w_1, H, LC)
     assert R.dmp_expand(factors) == w_1
 
 
 def test_dmp_zz_diophantine():
-    F = [[[[47], []], [[9, 0, 0, -9]]],
-         [[[45]], [[]], [[]], [[-9], [-1], [], [3, 0, -6, 0]]]]
-    c = [[[-270, 0, 0, 270]], [[]], [[94, 0], []],
-         [[54, 0, 0, -54], [6, 0, 0, -6], [], [-18, 0, 54, 18, 0, -54, 0]]]
-    A = [-2, 0]
-    d = 6
+    R, x, y = ring("x,y", ZZ)
+
+    H_1 = [44*x**2 + 42*x + 1, 126*x**2 - 9*x + 28, 187*x**2 - 23]
+    H_2 = [-4*x**2*y - 12*x**2 - 3*x*y + 1, -9*x**2*y - 9*x - 2*y,
+           x**2*y**2 - 9*x**2 + y - 9]
+    H_3 = [-4*x**2*y - 12*x**2 - 3*x*y + 1, -9*x**2*y - 9*x - 2*y,
+           x**2*y**2 - 9*x**2 + y - 9]
+    c_1 = -70686*x**5 - 5863*x**4 - 17826*x**3 + 2009*x**2 + 5031*x + 74
+    c_2 = (9*x**5*y**4 + 12*x**5*y**3 - 45*x**5*y**2 - 108*x**5*y -
+           324*x**5 + 18*x**4*y**3 - 216*x**4*y**2 - 810*x**4*y +
+           2*x**3*y**4 + 9*x**3*y**3 - 252*x**3*y**2 - 288*x**3*y -
+           945*x**3 - 30*x**2*y**2 - 414*x**2*y + 2*x*y**3 -
+           54*x*y**2 - 3*x*y + 81*x + 12*y)
+    c_3 = (-36*x**4*y**2 - 108*x**4*y - 27*x**3*y**2 - 36*x**3*y -
+           108*x**3 - 8*x**2*y**2 - 42*x**2*y - 6*x*y**2 + 9*x + 2*y)
+    p = 6291469
+
+    assert R.dmp_zz_diophantine(H_1, c_1, [ZZ(0)], 5, p) == [-3*x, -2, 1]
+    assert R.dmp_zz_diophantine(H_2, c_2, [ZZ(-14)], 5, p) == [-x*y, -3*x, -6]
+    assert R.dmp_zz_diophantine(H_3, c_3, [ZZ(-14)], 5, p) == [0, 0, -1]
+
+    R, x, y, z = ring("x,y,z", ZZ)
+
+    F = [47*x*y + 9*z**3 - 9, 45*x**3 - 9*y**3 - y**2 + 3*z**3 - 6*z]
+    c = (-270*x**3*z**3 + 270*x**3 + 94*x*y*z + 54*y**3*z**3 - 54*y**3 +
+         6*y**2*z**3 - 6*y**2 - 18*z**6 + 54*z**4 + 18*z**3 - 54*z)
     p = 2345258188817
-    u = 2
-    K = ZZ
 
-    r = dmp_zz_diophantine(F, c, A, d, p, u, K)
-
-    assert r == [[[[-6, 0, 0, 6]]], [[[2, 0]]]]
+    assert R.dmp_zz_diophantine(F, c, [ZZ(-2), ZZ(0)], 6,
+                                p) == [-6*z**3 + 6, 2*z]
 
 
 def test_sympyissue_6355():

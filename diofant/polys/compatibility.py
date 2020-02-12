@@ -22,12 +22,13 @@ from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
                           dmp_zz_modular_resultant, dup_ff_prs_gcd, dup_gcdex,
                           dup_half_gcdex, dup_invert, dup_rr_prs_gcd)
 from .factortools import (dmp_factor_list, dmp_trial_division,
-                          dmp_zz_mignotte_bound, dmp_zz_wang,
-                          dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
-                          dmp_zz_wang_non_divisors, dup_cyclotomic_p,
-                          dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
-                          dup_zz_factor_sqf, dup_zz_hensel_lift,
-                          dup_zz_hensel_step, dup_zz_irreducible_p)
+                          dmp_zz_diophantine, dmp_zz_mignotte_bound,
+                          dmp_zz_wang, dmp_zz_wang_hensel_lifting,
+                          dmp_zz_wang_lead_coeffs, dmp_zz_wang_non_divisors,
+                          dup_cyclotomic_p, dup_zz_cyclotomic_factor,
+                          dup_zz_cyclotomic_poly, dup_zz_factor_sqf,
+                          dup_zz_hensel_lift, dup_zz_hensel_step,
+                          dup_zz_irreducible_p)
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -366,6 +367,11 @@ class IPolys:
         H = list(map(uv.to_dense, H))
         f, HH, CC = dmp_zz_wang_lead_coeffs(self.to_dense(f), T, cs, E, H, A, self.ngens-1, self.domain)
         return self.from_dense(f), list(map(uv.from_dense, HH)), list(map(mv.from_dense, CC))
+
+    # f: List[Poly], c: List[Poly], A: List[ZZ], d: int, p: ZZ
+    def dmp_zz_diophantine(self, F, c, A, d, p):
+        result = dmp_zz_diophantine(list(map(self.to_dense, F)), self.to_dense(c), A, d, p, self.ngens-1, self.domain)
+        return list(map(self.from_dense, result))
 
     # f: Poly, H: List[Poly], LC: List[Poly], A: List[ZZ], p: ZZ
     def dmp_zz_wang_hensel_lifting(self, f, H, LC, A, p):
