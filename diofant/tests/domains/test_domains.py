@@ -280,6 +280,9 @@ def test_Domain_unify_algebraic():
     assert sqrt5.unify(sqrt7.frac_field(x, y)) == sqrt57.frac_field(x, y)
     assert sqrt5.frac_field(x, y).unify(sqrt7) == sqrt57.frac_field(x, y)
 
+
+@pytest.mark.slow
+def test_Domain_unify_algebraic_slow():
     sqrt2 = QQ.algebraic_field(sqrt(2))
     r = RootOf(x**7 - x + 1, 0)
     rootof = QQ.algebraic_field(r)

@@ -1095,10 +1095,6 @@ def gf_factor_sqf(f, p, K):
 
     """
     lc, f = gf_monic(f, p, K)
-
-    if dmp_degree_in(f, 0, 0) < 1:
-        return lc, []
-
     method = query('GF_FACTOR_METHOD')
 
     return lc, _factor_methods[method](f, p, K)
