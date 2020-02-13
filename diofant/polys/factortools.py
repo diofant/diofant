@@ -20,7 +20,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc, dup_mirror)
 from .euclidtools import dmp_inner_gcd, dmp_primitive, dup_gcdex
-from .galoistools import gf_factor_sqf
+from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
@@ -207,8 +207,8 @@ def dup_zz_zassenhaus(f, K):
         if not dmp_sqf_p(F, 0, Kpx):
             continue
 
-        fsqfx = gf_factor_sqf(f, px, K)[1]
-        a.append((px, fsqfx))
+        fsqfx = dup_gf_factor_sqf(F, Kpx)[1]
+        a.append((px, [dmp_normal(_, 0, K) for _ in fsqfx]))
         if len(fsqfx) < 15 or len(a) > 4:
             break
     p, fsqf = min(a, key=lambda x: len(x[1]))
@@ -1030,9 +1030,7 @@ def dmp_gf_factor(f, u, K):
         factors = []
 
         for g, n in dmp_sqf_list(f, 0, K)[1]:
-            g = dmp_normal(g, 0, K.domain)
-            for h in gf_factor_sqf(g, K.characteristic, K.domain)[1]:
-                h = dmp_normal(h, 0, K)
+            for h in dup_gf_factor_sqf(g, K)[1]:
                 factors.append((h, n))
 
         return lc, factors

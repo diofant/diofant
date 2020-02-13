@@ -5,234 +5,15 @@ import random
 
 from ..ntheory import factorint
 from .densearith import (dmp_add, dmp_add_term, dmp_mul, dmp_mul_ground,
-                         dmp_sqr, dmp_sub, dup_lshift)
-from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_normal,
-                         dmp_strip)
+                         dmp_quo, dmp_rem, dmp_sqr, dmp_sub, dup_lshift)
+from .densebasic import dmp_degree_in, dmp_ground_LC, dmp_strip
+from .densetools import dmp_ground_monic
+from .euclidtools import dmp_gcd
 from .polyconfig import query
 from .polyutils import _sort_factors
 
 
-def gf_from_dict(f, p, K):
-    """
-    Create a ``GF(p)[x]`` polynomial from a dict.
-
-    Examples
-    ========
-
-    >>> gf_from_dict({10: 4, 4: 33, 0: -1}, 5, ZZ)
-    [4, 0, 0, 0, 0, 0, 3, 0, 0, 0, 4]
-
-    """
-    f = dmp_from_dict(f, 0, K.finite_field(p))
-    f = dmp_normal(f, 0, K.finite_field(p))
-
-    return dmp_convert(f, 0, K.finite_field(p), K)
-
-
-def gf_trunc(f, p):
-    """
-    Reduce all coefficients modulo ``p``.
-
-    Examples
-    ========
-
-    >>> gf_trunc([7, -2, 3], 5)
-    [2, 3, 3]
-
-    """
-    return dmp_strip([a % p for a in f], 0)
-
-
-def gf_add_ground(f, a, p, K):
-    """
-    Compute ``f + a`` where ``f`` in ``GF(p)[x]`` and ``a`` in ``GF(p)``.
-
-    Examples
-    ========
-
-    >>> gf_add_ground([3, 2, 4], 2, 5, ZZ)
-    [3, 2, 1]
-
-    """
-    return gf_trunc(dmp_add_term(f, a, 0, 0, K), p)
-
-
-def gf_sub_ground(f, a, p, K):
-    """
-    Compute ``f - a`` where ``f`` in ``GF(p)[x]`` and ``a`` in ``GF(p)``.
-
-    Examples
-    ========
-
-    >>> gf_sub_ground([3, 2, 4], 2, 5, ZZ)
-    [3, 2, 2]
-
-    """
-    return gf_trunc(dmp_add_term(f, -a, 0, 0, K), p)
-
-
-def gf_mul_ground(f, a, p, K):
-    """
-    Compute ``f * a`` where ``f`` in ``GF(p)[x]`` and ``a`` in ``GF(p)``.
-
-    Examples
-    ========
-
-    >>> gf_mul_ground([3, 2, 4], 2, 5, ZZ)
-    [1, 4, 3]
-
-    """
-    return gf_trunc(dmp_mul_ground(f, a, 0, K), p)
-
-
-def gf_quo_ground(f, a, p, K):
-    """
-    Compute ``f/a`` where ``f`` in ``GF(p)[x]`` and ``a`` in ``GF(p)``.
-
-    Examples
-    ========
-
-    >>> gf_quo_ground([3, 2, 4], 2, 5, ZZ)
-    [4, 1, 2]
-
-    """
-    return gf_mul_ground(f, K.invert(a, p), p, K)
-
-
-def gf_add(f, g, p, K):
-    """
-    Add polynomials in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_add([3, 2, 4], [2, 2, 2], 5, ZZ)
-    [4, 1]
-
-    """
-    return gf_trunc(dmp_add(f, g, 0, K), p)
-
-
-def gf_sub(f, g, p, K):
-    """
-    Subtract polynomials in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_sub([3, 2, 4], [2, 2, 2], 5, ZZ)
-    [1, 0, 2]
-
-    """
-    return gf_trunc(dmp_sub(f, g, 0, K), p)
-
-
-def gf_mul(f, g, p, K):
-    """
-    Multiply polynomials in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_mul([3, 2, 4], [2, 2, 2], 5, ZZ)
-    [1, 0, 3, 2, 3]
-
-    """
-    return gf_trunc(dmp_mul(f, g, 0, K), p)
-
-
-def gf_sqr(f, p, K):
-    """
-    Square polynomials in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_sqr([3, 2, 4], 5, ZZ)
-    [4, 2, 3, 1, 1]
-
-    """
-    return gf_trunc(dmp_sqr(f, 0, K), p)
-
-
-def gf_div(f, g, p, K):
-    """
-    Division with remainder in ``GF(p)[x]``.
-
-    Given univariate polynomials ``f`` and ``g`` with coefficients in a
-    finite field with ``p`` elements, returns polynomials ``q`` and ``r``
-    (quotient and remainder) such that ``f = q*g + r``.
-
-    Examples
-    ========
-
-    >>> gf_div([1, 0, 1, 1], [1, 1, 0], 2, ZZ)
-    ([1, 1], [1])
-
-    References
-    ==========
-
-    * :cite:`Monagan1993inplace`
-    * :cite:`Gathen1999modern`
-
-    """
-    df = dmp_degree_in(f, 0, 0)
-    dg = dmp_degree_in(g, 0, 0)
-
-    if not g:
-        raise ZeroDivisionError("polynomial division")
-    elif df < dg:
-        return [], f
-
-    inv = K.invert(g[0], p)
-
-    h, dq, dr = list(f), df - dg, dg - 1
-
-    for i in range(df + 1):
-        coeff = h[i]
-
-        for j in range(max(0, dg - i), min(df - i, dr) + 1):
-            coeff -= h[i + j - dg] * g[dg - j]
-
-        if i <= dq:
-            coeff *= inv
-
-        h[i] = coeff % p
-
-    return h[:dq + 1], dmp_strip(h[dq + 1:], 0)
-
-
-def gf_rem(f, g, p, K):
-    """
-    Compute polynomial remainder in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_rem([1, 0, 1, 1], [1, 1, 0], 2, ZZ)
-    [1]
-
-    """
-    return gf_div(f, g, p, K)[1]
-
-
-def gf_quo(f, g, p, K):
-    """
-    Compute exact quotient in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_quo([1, 0, 1, 1], [1, 1, 0], 2, ZZ)
-    [1, 1]
-    >>> gf_quo([1, 0, 3, 2, 3], [2, 2, 2], 5, ZZ)
-    [3, 2, 4]
-
-    """
-    return gf_div(f, g, p, K)[0]
-
-
-def gf_frobenius_monomial_base(g, p, K):
+def dup_gf_frobenius_monomial_base(g, K):
     """
     Return the list of ``x**(i*p) mod g in Z_p`` for ``i = 0, .., n - 1``
     where ``n = dmp_degree_in(g, 0, 0)``.
@@ -240,66 +21,67 @@ def gf_frobenius_monomial_base(g, p, K):
     Examples
     ========
 
-    >>> gf_frobenius_monomial_base([1, 0, 2, 1], 5, ZZ)
-    [[1], [4, 4, 2], [1, 2]]
+    >>> R, x = ring('x', FF(5))
+    >>> f = R.to_dense(x**3 + 2*x + 1)
+    >>> dup_gf_frobenius_monomial_base(f, R.domain)
+    [[1 mod 5], [4 mod 5, 4 mod 5, 2 mod 5], [1 mod 5, 2 mod 5]]
 
     """
     n = dmp_degree_in(g, 0, 0)
     if n == 0:
         return []
     b = [0]*n
-    b[0] = [1]
+    b[0] = [K.one]
+    p = K.mod
     if p < n:
         for i in range(1, n):
             mon = dup_lshift(b[i - 1], p, K)
-            b[i] = gf_rem(mon, g, p, K)
+            b[i] = dmp_rem(mon, g, 0, K)
     elif n > 1:
-        b[1] = gf_pow_mod([K.one, K.zero], p, g, p, K)
+        b[1] = dup_gf_pow_mod([K.one, K.zero], p, g, K)
         for i in range(2, n):
-            b[i] = gf_mul(b[i - 1], b[1], p, K)
-            b[i] = gf_rem(b[i], g, p, K)
+            b[i] = dmp_mul(b[i - 1], b[1], 0, K)
+            b[i] = dmp_rem(b[i], g, 0, K)
 
     return b
 
 
-def gf_frobenius_map(f, g, b, p, K):
+def dup_gf_frobenius_map(f, g, b, K):
     """
-    Compute gf_pow_mod(f, p, g, p, K) using the Frobenius map.
+    Compute dup_gf_pow_mod(f, p, g, K) using the Frobenius map.
 
     Parameters
     ==========
 
     f, g : polynomials in ``GF(p)[x]``
     b : frobenius monomial base
-    p : prime number
     K : domain
 
     Examples
     ========
 
-    >>> f = [2, 1, 0, 1]
-    >>> g = [1, 0, 2, 1]
-    >>> p = 5
-    >>> b = gf_frobenius_monomial_base(g, p, ZZ)
-    >>> r = gf_frobenius_map(f, g, b, p, ZZ)
-    >>> gf_frobenius_map(f, g, b, p, ZZ)
-    [4, 0, 3]
+    >>> R, x = ring('x', FF(5))
+    >>> f = R.to_dense(2*x**3 + x**2 + 1)
+    >>> g = R.to_dense(x**3 + 2*x + 1)
+    >>> b = dup_gf_frobenius_monomial_base(g, R.domain)
+    >>> dup_gf_frobenius_map(f, g, b, R.domain)
+    [4 mod 5, 0 mod 5, 3 mod 5]
 
     """
     m = dmp_degree_in(g, 0, 0)
     if dmp_degree_in(f, 0, 0) >= m:
-        f = gf_rem(f, g, p, K)
+        f = dmp_rem(f, g, 0, K)
     if not f:
         return []
     n = dmp_degree_in(f, 0, 0)
     sf = [f[-1]]
     for i in range(1, n + 1):
-        v = gf_mul_ground(b[i], f[n - i], p, K)
-        sf = gf_add(sf, v, p, K)
+        v = dmp_mul_ground(b[i], f[n - i], 0, K)
+        sf = dmp_add(sf, v, 0, K)
     return sf
 
 
-def _gf_pow_pnm1d2(f, n, g, b, p, K):
+def _dup_gf_pow_pnm1d2(f, n, g, b, K):
     """
     Utility function for ``gf_edf_zassenhaus``.
 
@@ -307,19 +89,19 @@ def _gf_pow_pnm1d2(f, n, g, b, p, K):
     ``f**((p**n - 1) // 2) = (f*f**p*...*f**(p**n - 1))**((p - 1) // 2)``
 
     """
-    f = gf_rem(f, g, p, K)
+    f = dmp_rem(f, g, 0, K)
     h = f
     r = f
     for i in range(1, n):
-        h = gf_frobenius_map(h, g, b, p, K)
-        r = gf_mul(r, h, p, K)
-        r = gf_rem(r, g, p, K)
+        h = dup_gf_frobenius_map(h, g, b, K)
+        r = dmp_mul(r, h, 0, K)
+        r = dmp_rem(r, g, 0, K)
 
-    res = gf_pow_mod(r, (p - 1)//2, g, p, K)
+    res = dup_gf_pow_mod(r, (K.mod - 1)//2, g, K)
     return res
 
 
-def gf_pow_mod(f, n, g, p, K):
+def dup_gf_pow_mod(f, n, g, K):
     """
     Compute ``f**n`` in ``GF(p)[x]/(g)`` using repeated squaring.
 
@@ -330,7 +112,10 @@ def gf_pow_mod(f, n, g, p, K):
     Examples
     ========
 
-    >>> gf_pow_mod([3, 2, 4], 3, [1, 1], 5, ZZ)
+    >>> R, x = ring('x', FF(5))
+    >>> f = R.to_dense(3*x**2 + 2*x + 4)
+    >>> g = R.to_dense(x + 1)
+    >>> dup_gf_pow_mod(f, 3, g, R.domain)
     []
 
     References
@@ -342,16 +127,16 @@ def gf_pow_mod(f, n, g, p, K):
     if not n:
         return [K.one]
     elif n == 1:
-        return gf_rem(f, g, p, K)
+        return dmp_rem(f, g, 0, K)
     elif n == 2:
-        return gf_rem(gf_sqr(f, p, K), g, p, K)
+        return dmp_rem(dmp_sqr(f, 0, K), g, 0, K)
 
     h = [K.one]
 
     while True:
         if n & 1:
-            h = gf_mul(h, f, p, K)
-            h = gf_rem(h, g, p, K)
+            h = dmp_mul(h, f, 0, K)
+            h = dmp_rem(h, g, 0, K)
             n -= 1
 
         n >>= 1
@@ -359,60 +144,25 @@ def gf_pow_mod(f, n, g, p, K):
         if not n:
             break
 
-        f = gf_sqr(f, p, K)
-        f = gf_rem(f, g, p, K)
+        f = dmp_sqr(f, 0, K)
+        f = dmp_rem(f, g, 0, K)
 
     return h
 
 
-def gf_gcd(f, g, p, K):
-    """
-    Euclidean Algorithm in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_gcd([3, 2, 4], [2, 2, 3], 5, ZZ)
-    [1, 3]
-
-    """
-    while g:
-        f, g = g, gf_rem(f, g, p, K)
-
-    return gf_monic(f, p, K)[1]
-
-
-def gf_monic(f, p, K):
-    """
-    Compute LC and a monic polynomial in ``GF(p)[x]``.
-
-    Examples
-    ========
-
-    >>> gf_monic([3, 2, 4], 5, ZZ)
-    (3, [1, 4, 3])
-
-    """
-    if not f:
-        return K.zero, []
-    else:
-        lc = f[0]
-
-        if lc == K.one:
-            return lc, list(f)
-        else:
-            return lc, gf_quo_ground(f, lc, p, K)
-
-
-def gf_compose_mod(g, h, f, p, K):
+def dup_gf_compose_mod(g, h, f, K):
     """
     Compute polynomial composition ``g(h)`` in ``GF(p)[x]/(f)``.
 
     Examples
     ========
 
-    >>> gf_compose_mod([3, 2, 4], [2, 2, 2], [4, 3], 5, ZZ)
-    [4]
+    >>> R, x = ring('x', FF(5))
+    >>> g = R.to_dense(3*x**2 + 2*x + 4)
+    >>> h = R.to_dense(2*x**2 + 2*x + 2)
+    >>> f = R.to_dense(4*x + 3)
+    >>> dup_gf_compose_mod(g, h, f, R.domain)
+    [4 mod 5]
 
     """
     if not g:
@@ -421,14 +171,14 @@ def gf_compose_mod(g, h, f, p, K):
     comp = [g[0]]
 
     for a in g[1:]:
-        comp = gf_mul(comp, h, p, K)
-        comp = gf_add_ground(comp, a, p, K)
-        comp = gf_rem(comp, f, p, K)
+        comp = dmp_mul(comp, h, 0, K)
+        comp = dmp_add_term(comp, a, 0, 0, K)
+        comp = dmp_rem(comp, f, 0, K)
 
     return comp
 
 
-def gf_trace_map(a, b, c, n, f, p, K):
+def dup_gf_trace_map(a, b, c, n, f, K):
     """
     Compute polynomial trace map in ``GF(p)[x]/(f)``.
 
@@ -447,8 +197,13 @@ def gf_trace_map(a, b, c, n, f, p, K):
     Examples
     ========
 
-    >>> gf_trace_map([1, 2], [4, 4], [1, 1], 4, [3, 2, 4], 5, ZZ)
-    ([1, 3], [1, 3])
+    >>> R, x = ring('x', FF(5))
+    >>> a = R.to_dense(x + 2)
+    >>> b = R.to_dense(4*x + 4)
+    >>> c = R.to_dense(x + 1)
+    >>> f = R.to_dense(3*x**2 + 2*x + 4)
+    >>> dup_gf_trace_map(a, b, c, 4, f, R.domain)
+    ([1 mod 5, 3 mod 5], [1 mod 5, 3 mod 5])
 
     References
     ==========
@@ -456,11 +211,11 @@ def gf_trace_map(a, b, c, n, f, p, K):
     * :cite:`Gathen1992frobenious`
 
     """
-    u = gf_compose_mod(a, b, f, p, K)
+    u = dup_gf_compose_mod(a, b, f, K)
     v = b
 
     if n & 1:
-        U = gf_add(a, u, p, K)
+        U = dmp_add(a, u, 0, K)
         V = b
     else:
         U = a
@@ -469,74 +224,80 @@ def gf_trace_map(a, b, c, n, f, p, K):
     n >>= 1
 
     while n:
-        u = gf_add(u, gf_compose_mod(u, v, f, p, K), p, K)
-        v = gf_compose_mod(v, v, f, p, K)
+        u = dmp_add(u, dup_gf_compose_mod(u, v, f, K), 0, K)
+        v = dup_gf_compose_mod(v, v, f, K)
 
         if n & 1:
-            U = gf_add(U, gf_compose_mod(u, V, f, p, K), p, K)
-            V = gf_compose_mod(v, V, f, p, K)
+            U = dmp_add(U, dup_gf_compose_mod(u, V, f, K), 0, K)
+            V = dup_gf_compose_mod(v, V, f, K)
 
         n >>= 1
 
-    return gf_compose_mod(a, V, f, p, K), U
+    return dup_gf_compose_mod(a, V, f, K), U
 
 
-def _gf_trace_map(f, n, g, b, p, K):
+def _gf_trace_map(f, n, g, b, K):
     """
     Utility for ``gf_edf_shoup``.
 
     """
-    f = gf_rem(f, g, p, K)
+    f = dmp_rem(f, g, 0, K)
     h = f
     r = f
     for i in range(1, n):
-        h = gf_frobenius_map(h, g, b, p, K)
-        r = gf_add(r, h, p, K)
-        r = gf_rem(r, g, p, K)
+        h = dup_gf_frobenius_map(h, g, b, K)
+        r = dmp_add(r, h, 0, K)
+        r = dmp_rem(r, g, 0, K)
     return r
 
 
-def gf_random(n, p, K):
+def dup_gf_random(n, K):
     """
     Generate a random polynomial in ``GF(p)[x]`` of degree ``n``.
 
     Examples
     ========
 
-    >>> gf_random(10, 5, ZZ)  # doctest: +SKIP
-    [1, 2, 3, 2, 1, 1, 1, 2, 0, 4, 2]
+    >>> dup_gf_random(4, FF(5))  # doctest: +SKIP
+    [1 mod 5, 4 mod 5, 4 mod 5, 2 mod 5, 1 mod 5]
 
     """
-    return [K.one] + [K(int(random.uniform(0, p))) for i in range(n)]
+    return [K.one] + [K(int(random.uniform(0, K.mod))) for i in range(n)]
 
 
-def gf_irreducible(n, p, K):
+def dup_gf_irreducible(n, K):
     """
     Generate random irreducible polynomial of degree ``n`` in ``GF(p)[x]``.
 
     Examples
     ========
 
-    >>> gf_irreducible(10, 5, ZZ)  # doctest: +SKIP
-    [1, 4, 2, 2, 3, 2, 4, 1, 4, 0, 4]
+    >>> dup_gf_irreducible(4, FF(5))  # doctest: +SKIP
+    [1 mod 5, 2 mod 5, 4 mod 5, 4 mod 5, 3 mod 5]
+    >>> dup_gf_irreducible_p(_, FF(5))
+    True
 
     """
     while True:
-        f = gf_random(n, p, K)
-        if gf_irreducible_p(f, p, K):
+        f = dup_gf_random(n, K)
+        if dup_gf_irreducible_p(f, K):
             return f
 
 
-def gf_irred_p_ben_or(f, p, K):
+def dup_gf_irred_p_ben_or(f, K):
     """
     Ben-Or's polynomial irreducibility test over finite fields.
 
     Examples
     ========
 
-    >>> gf_irred_p_ben_or([1, 4, 2, 2, 3, 2, 4, 1, 4, 0, 4], 5, ZZ)
+    >>> R, x = ring('x', FF(5))
+    >>> f = R.to_dense(x**10 + 4*x**9 + 2*x**8 + 2*x**7 + 3*x**6 +
+    ...                2*x**5 + 4*x**4 + x**3 + 4*x**2 + 4)
+    >>> dup_gf_irred_p_ben_or(f, R.domain)
     True
-    >>> gf_irred_p_ben_or([3, 2, 4], 5, ZZ)
+    >>> f = R.to_dense(3*x**2 + 2*x + 4)
+    >>> dup_gf_irred_p_ben_or(f, R.domain)
     False
 
     References
@@ -550,40 +311,45 @@ def gf_irred_p_ben_or(f, p, K):
     if n <= 1:
         return True
 
-    _, f = gf_monic(f, p, K)
+    f = dmp_ground_monic(f, 0, K)
+    p = K.mod
     if n < 5:
-        H = h = gf_pow_mod([K.one, K.zero], p, f, p, K)
+        H = h = dup_gf_pow_mod([K.one, K.zero], p, f, K)
 
         for i in range(n//2):
-            g = gf_sub(h, [K.one, K.zero], p, K)
+            g = dmp_sub(h, [K.one, K.zero], 0, K)
 
-            if gf_gcd(f, g, p, K) == [K.one]:
-                h = gf_compose_mod(h, H, f, p, K)
+            if dmp_gcd(f, g, 0, K) == [K.one]:
+                h = dup_gf_compose_mod(h, H, f, K)
             else:
                 return False
     else:
-        b = gf_frobenius_monomial_base(f, p, K)
-        H = h = gf_frobenius_map([K.one, K.zero], f, b, p, K)
+        b = dup_gf_frobenius_monomial_base(f, K)
+        H = h = dup_gf_frobenius_map([K.one, K.zero], f, b, K)
         for i in range(n//2):
-            g = gf_sub(h, [K.one, K.zero], p, K)
-            if gf_gcd(f, g, p, K) == [K.one]:
-                h = gf_frobenius_map(h, f, b, p, K)
+            g = dmp_sub(h, [K.one, K.zero], 0, K)
+            if dmp_gcd(f, g, 0, K) == [K.one]:
+                h = dup_gf_frobenius_map(h, f, b, K)
             else:
                 return False
 
     return True
 
 
-def gf_irred_p_rabin(f, p, K):
+def dup_gf_irred_p_rabin(f, K):
     """
     Rabin's polynomial irreducibility test over finite fields.
 
     Examples
     ========
 
-    >>> gf_irred_p_rabin([1, 4, 2, 2, 3, 2, 4, 1, 4, 0, 4], 5, ZZ)
+    >>> R, x = ring('x', FF(5))
+    >>> f = R.to_dense(x**10 + 4*x**9 + 2*x**8 + 2*x**7 + 3*x**6 +
+    ...                2*x**5 + 4*x**4 + x**3 + 4*x**2 + 4)
+    >>> dup_gf_irred_p_rabin(f, R.domain)
     True
-    >>> gf_irred_p_rabin([3, 2, 4], 5, ZZ)
+    >>> f = R.to_dense(3*x**2 + 2*x + 4)
+    >>> dup_gf_irred_p_rabin(f, R.domain)
     False
 
     """
@@ -592,79 +358,87 @@ def gf_irred_p_rabin(f, p, K):
     if n <= 1:
         return True
 
-    _, f = gf_monic(f, p, K)
+    f = dmp_ground_monic(f, 0, K)
 
     x = [K.one, K.zero]
 
     indices = {n//d for d in factorint(n)}
 
-    b = gf_frobenius_monomial_base(f, p, K)
+    b = dup_gf_frobenius_monomial_base(f, K)
     h = b[1]
 
     for i in range(1, n):
         if i in indices:
-            g = gf_sub(h, x, p, K)
+            g = dmp_sub(h, x, 0, K)
 
-            if gf_gcd(f, g, p, K) != [K.one]:
+            if dmp_gcd(f, g, 0, K) != [K.one]:
                 return False
 
-        h = gf_frobenius_map(h, f, b, p, K)
+        h = dup_gf_frobenius_map(h, f, b, K)
 
     return h == x
 
 
 _irred_methods = {
-    'ben-or': gf_irred_p_ben_or,
-    'rabin': gf_irred_p_rabin,
+    'ben-or': dup_gf_irred_p_ben_or,
+    'rabin': dup_gf_irred_p_rabin,
 }
 
 
-def gf_irreducible_p(f, p, K):
+def dup_gf_irreducible_p(f, K):
     """
     Test irreducibility of a polynomial ``f`` in ``GF(p)[x]``.
 
     Examples
     ========
 
-    >>> gf_irreducible_p([1, 4, 2, 2, 3, 2, 4, 1, 4, 0, 4], 5, ZZ)
+    >>> R, x = ring('x', FF(5))
+    >>> f = R.to_dense(x**10 + 4*x**9 + 2*x**8 + 2*x**7 + 3*x**6 +
+    ...                2*x**5 + 4*x**4 + x**3 + 4*x**2 + 4)
+    >>> dup_gf_irreducible_p(f, R.domain)
     True
-    >>> gf_irreducible_p([3, 2, 4], 5, ZZ)
+    >>> f = R.to_dense(3*x**2 + 2*x + 4)
+    >>> dup_gf_irreducible_p(f, R.domain)
     False
 
     """
     method = query('GF_IRRED_METHOD')
 
-    return _irred_methods[method](f, p, K)
+    return _irred_methods[method](f, K)
 
 
-def gf_Qmatrix(f, p, K):
+def dup_gf_Qmatrix(f, K):
     """
     Calculate Berlekamp's ``Q`` matrix.
 
     Examples
     ========
 
-    >>> gf_Qmatrix([3, 2, 4], 5, ZZ)
-    [[1, 0],
-     [3, 4]]
+    >>> R, x = ring('x', FF(5))
+    >>> f = R.to_dense(3*x**2 + 2*x + 4)
+    >>> dup_gf_Qmatrix(f, R.domain)
+    [[1 mod 5, 0 mod 5],
+     [3 mod 5, 4 mod 5]]
 
-    >>> gf_Qmatrix([1, 0, 0, 0, 1], 5, ZZ)
-    [[1, 0, 0, 0],
-     [0, 4, 0, 0],
-     [0, 0, 1, 0],
-     [0, 0, 0, 4]]
+    >>> f = R.to_dense(x**4 + 1)
+    >>> dup_gf_Qmatrix(f, R.domain)
+    [[1 mod 5, 0 mod 5, 0 mod 5, 0 mod 5],
+     [0 mod 5, 4 mod 5, 0 mod 5, 0 mod 5],
+     [0 mod 5, 0 mod 5, 1 mod 5, 0 mod 5],
+     [0 mod 5, 0 mod 5, 0 mod 5, 4 mod 5]]
 
     """
+    p = K.mod
     n, r = dmp_degree_in(f, 0, 0), int(p)
 
     q = [K.one] + [K.zero]*(n - 1)
     Q = [list(q)] + [[]]*(n - 1)
 
     for i in range(1, (n - 1)*r + 1):
-        qq, c = [(-q[-1]*f[-1]) % p], q[-1]
+        qq, c = [-q[-1]*f[-1]], q[-1]
 
         for j in range(1, n):
-            qq.append((q[j - 1] - c*f[-j - 1]) % p)
+            qq.append((q[j - 1] - c*f[-j - 1]))
 
         if not (i % r):
             Q[i//r] = list(qq)
@@ -674,24 +448,28 @@ def gf_Qmatrix(f, p, K):
     return Q
 
 
-def gf_Qbasis(Q, p, K):
+def dup_gf_Qbasis(Q, K):
     """
     Compute a basis of the kernel of ``Q``.
 
     Examples
     ========
 
-    >>> gf_Qbasis(gf_Qmatrix([1, 0, 0, 0, 1], 5, ZZ), 5, ZZ)
-    [[1, 0, 0, 0], [0, 0, 1, 0]]
+    >>> R, x = ring('x', FF(5))
+    >>> f = R.to_dense(x**4 + 1)
+    >>> dup_gf_Qbasis(dup_gf_Qmatrix(f, R.domain), R.domain)
+    [[1 mod 5, 0 mod 5, 0 mod 5, 0 mod 5],
+     [0 mod 5, 0 mod 5, 1 mod 5, 0 mod 5]]
 
-    >>> gf_Qbasis(gf_Qmatrix([3, 2, 4], 5, ZZ), 5, ZZ)
-    [[1, 0]]
+    >>> f = R.to_dense(3*x**2 + 2*x + 4)
+    >>> dup_gf_Qbasis(dup_gf_Qmatrix(f, R.domain), R.domain)
+    [[1 mod 5, 0 mod 5]]
 
     """
     Q, n = [list(q) for q in Q], len(Q)
 
     for k in range(n):
-        Q[k][k] = (Q[k][k] - K.one) % p
+        Q[k][k] = Q[k][k] - K.one
 
     for k in range(n):
         for i in range(k, n):
@@ -700,10 +478,10 @@ def gf_Qbasis(Q, p, K):
         else:
             continue
 
-        inv = K.invert(Q[k][i], p)
+        inv = K.one/Q[k][i]
 
         for j in range(n):
-            Q[j][i] = (Q[j][i]*inv) % p
+            Q[j][i] = Q[j][i]*inv
 
         for j in range(n):
             t = Q[j][k]
@@ -715,14 +493,14 @@ def gf_Qbasis(Q, p, K):
                 q = Q[k][i]
 
                 for j in range(n):
-                    Q[j][i] = (Q[j][i] - Q[j][k]*q) % p
+                    Q[j][i] = Q[j][i] - Q[j][k]*q
 
     for i in range(n):
         for j in range(n):
             if i == j:
-                Q[i][j] = (K.one - Q[i][j]) % p
+                Q[i][j] = K.one - Q[i][j]
             else:
-                Q[i][j] = (-Q[i][j]) % p
+                Q[i][j] = -Q[i][j]
 
     basis = []
 
@@ -733,19 +511,21 @@ def gf_Qbasis(Q, p, K):
     return basis
 
 
-def gf_berlekamp(f, p, K):
+def dup_gf_berlekamp(f, K):
     """
     Factor a square-free ``f`` in ``GF(p)[x]`` for small ``p``.
 
     Examples
     ========
 
-    >>> gf_berlekamp([1, 0, 0, 0, 1], 5, ZZ)
-    [[1, 0, 2], [1, 0, 3]]
+    >>> R, x = ring('x', FF(5))
+    >>> f = R.to_dense(x**4 + 1)
+    >>> dup_gf_berlekamp([1, 0, 0, 0, 1], R.domain)
+    [[1 mod 5, 0 mod 5, 2 mod 5], [1 mod 5, 0 mod 5, 3 mod 5]]
 
     """
-    Q = gf_Qmatrix(f, p, K)
-    V = gf_Qbasis(Q, p, K)
+    Q = dup_gf_Qmatrix(f, K)
+    V = dup_gf_Qbasis(Q, K)
 
     for i, v in enumerate(V):
         V[i] = dmp_strip(list(reversed(v)), 0)
@@ -756,14 +536,14 @@ def gf_berlekamp(f, p, K):
         for f in list(factors):
             s = K.zero
 
-            while s < p:
-                g = gf_sub_ground(V[k], s, p, K)
-                h = gf_gcd(f, g, p, K)
+            while True:
+                g = dmp_add_term(V[k], -s, 0, 0, K)
+                h = dmp_gcd(f, g, 0, K)
 
                 if h != [K.one] and h != f:
                     factors.remove(f)
 
-                    f = gf_quo(f, h, p, K)
+                    f = dmp_quo(f, h, 0, K)
                     factors.extend([f, h])
 
                 if len(factors) == len(V):
@@ -771,10 +551,13 @@ def gf_berlekamp(f, p, K):
 
                 s += K.one
 
+                if s == K.zero:
+                    break
+
     return _sort_factors(factors, multiple=False)
 
 
-def gf_ddf_zassenhaus(f, p, K):
+def dup_gf_ddf_zassenhaus(f, K):
     """
     Cantor-Zassenhaus: Deterministic Distinct Degree Factorization
 
@@ -787,10 +570,12 @@ def gf_ddf_zassenhaus(f, p, K):
     Examples
     ========
 
-    >>> f = gf_from_dict({15: ZZ(1), 0: ZZ(-1)}, 11, ZZ)
-
-    >>> gf_ddf_zassenhaus(f, 11, ZZ)
-    [([1, 0, 0, 0, 0, 10], 1), ([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], 2)]
+    >>> R, x = ring('x', FF(11))
+    >>> f = R.to_dense(x**15 - 1)
+    >>> dup_gf_ddf_zassenhaus(f, R.domain)
+    [([1 mod 11, 0 mod 11, 0 mod 11, 0 mod 11, 0 mod 11, 10 mod 11], 1),
+     ([1 mod 11, 0 mod 11, 0 mod 11, 0 mod 11, 0 mod 11, 1 mod 11, 0 mod 11,
+       0 mod 11, 0 mod 11, 0 mod 11, 1 mod 11], 2)]
 
     To obtain factorization into irreducibles, use equal degree factorization
     procedure (EDF) with each of the factors.
@@ -804,17 +589,17 @@ def gf_ddf_zassenhaus(f, p, K):
     """
     i, g, factors = 1, [K.one, K.zero], []
 
-    b = gf_frobenius_monomial_base(f, p, K)
+    b = dup_gf_frobenius_monomial_base(f, K)
     while 2*i <= dmp_degree_in(f, 0, 0):
-        g = gf_frobenius_map(g, f, b, p, K)
-        h = gf_gcd(f, gf_sub(g, [K.one, K.zero], p, K), p, K)
+        g = dup_gf_frobenius_map(g, f, b, K)
+        h = dmp_gcd(f, dmp_sub(g, [K.one, K.zero], 0, K), 0, K)
 
         if h != [K.one]:
             factors.append((h, i))
 
-            f = gf_quo(f, h, p, K)
-            g = gf_rem(g, f, p, K)
-            b = gf_frobenius_monomial_base(f, p, K)
+            f = dmp_quo(f, h, 0, K)
+            g = dmp_rem(g, f, 0, K)
+            b = dup_gf_frobenius_monomial_base(f, K)
 
         i += 1
 
@@ -824,7 +609,7 @@ def gf_ddf_zassenhaus(f, p, K):
         return factors
 
 
-def gf_edf_zassenhaus(f, n, p, K):
+def dup_gf_edf_zassenhaus(f, n, K):
     """
     Cantor-Zassenhaus: Probabilistic Equal Degree Factorization
 
@@ -836,8 +621,10 @@ def gf_edf_zassenhaus(f, n, p, K):
     Examples
     ========
 
-    >>> gf_edf_zassenhaus([1, 1, 1, 1], 1, 5, ZZ)
-    [[1, 1], [1, 2], [1, 3]]
+    >>> R, x = ring('x', FF(5))
+    >>> f = R.to_dense(x**3 + x**2 + x + 1)
+    >>> dup_gf_edf_zassenhaus(f, 1, R.domain)
+    [[1 mod 5, 1 mod 5], [1 mod 5, 2 mod 5], [1 mod 5, 3 mod 5]]
 
     References
     ==========
@@ -852,32 +639,33 @@ def gf_edf_zassenhaus(f, n, p, K):
         return factors
 
     N = dmp_degree_in(f, 0, 0) // n
+    p = K.mod
     if p != 2:
-        b = gf_frobenius_monomial_base(f, p, K)
+        b = dup_gf_frobenius_monomial_base(f, K)
 
     while len(factors) < N:
-        r = gf_random(2*n - 1, p, K)
+        r = dup_gf_random(2*n - 1, K)
 
         if p == 2:
             h = r
 
             for i in range(2**(n*N - 1)):
-                r = gf_pow_mod(r, 2, f, p, K)
-                h = gf_add(h, r, p, K)
+                r = dup_gf_pow_mod(r, 2, f, K)
+                h = dmp_add(h, r, 0, K)
 
-            g = gf_gcd(f, h, p, K)
+            g = dmp_gcd(f, h, 0, K)
         else:
-            h = _gf_pow_pnm1d2(r, n, f, b, p, K)
-            g = gf_gcd(f, gf_sub_ground(h, K.one, p, K), p, K)
+            h = _dup_gf_pow_pnm1d2(r, n, f, b, K)
+            g = dmp_gcd(f, dmp_add_term(h, -K.one, 0, 0, K), 0, K)
 
         if g != [K.one] and g != f:
-            factors = gf_edf_zassenhaus(g, n, p, K) \
-                + gf_edf_zassenhaus(gf_quo(f, g, p, K), n, p, K)
+            factors = dup_gf_edf_zassenhaus(g, n, K) \
+                + dup_gf_edf_zassenhaus(dmp_quo(f, g, 0, K), n, K)
 
     return _sort_factors(factors, multiple=False)
 
 
-def gf_ddf_shoup(f, p, K):
+def dup_gf_ddf_shoup(f, K):
     """
     Kaltofen-Shoup: Deterministic Distinct Degree Factorization
 
@@ -893,10 +681,10 @@ def gf_ddf_shoup(f, p, K):
     Examples
     ========
 
-    >>> f = gf_from_dict({6: ZZ(1), 5: ZZ(-1), 4: ZZ(1), 3: ZZ(1), 1: ZZ(-1)}, 3, ZZ)
-
-    >>> gf_ddf_shoup(f, 3, ZZ)
-    [([1, 1, 0], 1), ([1, 1, 0, 1, 2], 2)]
+    >>> R, x = ring('x', FF(3))
+    >>> f = R.to_dense(x**6 - x**5 + x**4 + x**3 - x)
+    >>> dup_gf_ddf_shoup(f, R.domain)
+    [([1 mod 3, 1 mod 3, 0 mod 3], 1), ([1 mod 3, 1 mod 3, 0 mod 3, 1 mod 3, 2 mod 3], 2)]
 
     References
     ==========
@@ -908,20 +696,20 @@ def gf_ddf_shoup(f, p, K):
     """
     n = dmp_degree_in(f, 0, 0)
     k = math.ceil(math.sqrt(n//2))
-    b = gf_frobenius_monomial_base(f, p, K)
-    h = gf_frobenius_map([K.one, K.zero], f, b, p, K)
+    b = dup_gf_frobenius_monomial_base(f, K)
+    h = dup_gf_frobenius_map([K.one, K.zero], f, b, K)
     # U[i] = x**(p**i)
     U = [[K.one, K.zero], h] + [K.zero]*(k - 1)
 
     for i in range(2, k + 1):
-        U[i] = gf_frobenius_map(U[i-1], f, b, p, K)
+        U[i] = dup_gf_frobenius_map(U[i-1], f, b, K)
 
     h, U = U[k], U[:k]
     # V[i] = x**(p**(k*(i+1)))
     V = [h] + [K.zero]*(k - 1)
 
     for i in range(1, k):
-        V[i] = gf_compose_mod(V[i - 1], h, f, p, K)
+        V[i] = dup_gf_compose_mod(V[i - 1], h, f, K)
 
     factors = []
 
@@ -929,21 +717,21 @@ def gf_ddf_shoup(f, p, K):
         h, j = [K.one], k - 1
 
         for u in U:
-            g = gf_sub(v, u, p, K)
-            h = gf_mul(h, g, p, K)
-            h = gf_rem(h, f, p, K)
+            g = dmp_sub(v, u, 0, K)
+            h = dmp_mul(h, g, 0, K)
+            h = dmp_rem(h, f, 0, K)
 
-        g = gf_gcd(f, h, p, K)
-        f = gf_quo(f, g, p, K)
+        g = dmp_gcd(f, h, 0, K)
+        f = dmp_quo(f, g, 0, K)
 
         for u in reversed(U):
-            h = gf_sub(v, u, p, K)
-            F = gf_gcd(g, h, p, K)
+            h = dmp_sub(v, u, 0, K)
+            F = dmp_gcd(g, h, 0, K)
 
             if F != [K.one]:
                 factors.append((F, k*(i + 1) - j))
 
-            g, j = gf_quo(g, F, p, K), j - 1
+            g, j = dmp_quo(g, F, 0, K), j - 1
 
     if f != [K.one]:
         factors.append((f, dmp_degree_in(f, 0, 0)))
@@ -951,7 +739,7 @@ def gf_ddf_shoup(f, p, K):
     return factors
 
 
-def gf_edf_shoup(f, n, p, K):
+def dup_gf_edf_shoup(f, n, K):
     """
     Gathen-Shoup: Probabilistic Equal Degree Factorization
 
@@ -966,8 +754,10 @@ def gf_edf_shoup(f, n, p, K):
     Examples
     ========
 
-    >>> gf_edf_shoup([1, 2837, 2277], 1, 2917, ZZ)
-    [[1, 852], [1, 1985]]
+    >>> R, x = ring('x', FF(2917))
+    >>> f = R.to_dense(x**2 + 2837*x + 2277)
+    >>> dup_gf_edf_shoup(f, 1, R.domain)
+    [[1 mod 2917, 852 mod 2917], [1 mod 2917, 1985 mod 2917]]
 
     References
     ==========
@@ -976,6 +766,7 @@ def gf_edf_shoup(f, n, p, K):
     * :cite:`Gathen1992frobenious`
 
     """
+    p = K.mod
     N, q = dmp_degree_in(f, 0, 0), int(p)
 
     if not N:
@@ -985,78 +776,81 @@ def gf_edf_shoup(f, n, p, K):
 
     factors, x = [f], [K.one, K.zero]
 
-    r = gf_random(N - 1, p, K)
+    r = dup_gf_random(N - 1, K)
 
     if p == 2:
-        h = gf_pow_mod(x, q, f, p, K)
-        H = gf_trace_map(r, h, x, n - 1, f, p, K)[1]
-        h1 = gf_gcd(f, H, p, K)
-        h2 = gf_quo(f, h1, p, K)
+        h = dup_gf_pow_mod(x, q, f, K)
+        H = dup_gf_trace_map(r, h, x, n - 1, f, K)[1]
+        h1 = dmp_gcd(f, H, 0, K)
+        h2 = dmp_quo(f, h1, 0, K)
 
-        factors = gf_edf_shoup(h1, n, p, K) \
-            + gf_edf_shoup(h2, n, p, K)
+        factors = dup_gf_edf_shoup(h1, n, K) + dup_gf_edf_shoup(h2, n, K)
     else:
-        b = gf_frobenius_monomial_base(f, p, K)
-        H = _gf_trace_map(r, n, f, b, p, K)
-        h = gf_pow_mod(H, (q - 1)//2, f, p, K)
+        b = dup_gf_frobenius_monomial_base(f, K)
+        H = _gf_trace_map(r, n, f, b, K)
+        h = dup_gf_pow_mod(H, (q - 1)//2, f, K)
 
-        h1 = gf_gcd(f, h, p, K)
-        h2 = gf_gcd(f, gf_sub_ground(h, K.one, p, K), p, K)
-        h3 = gf_quo(f, gf_mul(h1, h2, p, K), p, K)
+        h1 = dmp_gcd(f, h, 0, K)
+        h2 = dmp_gcd(f, dmp_add_term(h, -K.one, 0, 0, K), 0, K)
+        h3 = dmp_quo(f, dmp_mul(h1, h2, 0, K), 0, K)
 
-        factors = gf_edf_shoup(h1, n, p, K) \
-            + gf_edf_shoup(h2, n, p, K) \
-            + gf_edf_shoup(h3, n, p, K)
+        factors = dup_gf_edf_shoup(h1, n, K) \
+            + dup_gf_edf_shoup(h2, n, K) \
+            + dup_gf_edf_shoup(h3, n, K)
 
     return _sort_factors(factors, multiple=False)
 
 
-def gf_zassenhaus(f, p, K):
+def dup_gf_zassenhaus(f, K):
     """
     Factor a square-free ``f`` in ``GF(p)[x]`` for medium ``p``.
 
     Examples
     ========
 
-    >>> gf_zassenhaus([1, 4, 3], 5, ZZ)
-    [[1, 1], [1, 3]]
+    >>> R, x = ring('x', FF(5))
+    >>> f = R.to_dense(x**2 + 4*x + 3)
+    >>> dup_gf_zassenhaus(f, R.domain)
+    [[1 mod 5, 1 mod 5], [1 mod 5, 3 mod 5]]
 
     """
     factors = []
 
-    for factor, n in gf_ddf_zassenhaus(f, p, K):
-        factors += gf_edf_zassenhaus(factor, n, p, K)
+    for factor, n in dup_gf_ddf_zassenhaus(f, K):
+        factors += dup_gf_edf_zassenhaus(factor, n, K)
 
     return _sort_factors(factors, multiple=False)
 
 
-def gf_shoup(f, p, K):
+def dup_gf_shoup(f, K):
     """
     Factor a square-free ``f`` in ``GF(p)[x]`` for large ``p``.
 
     Examples
     ========
 
-    >>> gf_shoup([1, 4, 3], 5, ZZ)
-    [[1, 1], [1, 3]]
+    >>> R, x = ring('x', FF(5))
+    >>> f = R.to_dense(x**2 + 4*x + 3)
+    >>> dup_gf_shoup(f, R.domain)
+    [[1 mod 5, 1 mod 5], [1 mod 5, 3 mod 5]]
 
     """
     factors = []
 
-    for factor, n in gf_ddf_shoup(f, p, K):
-        factors += gf_edf_shoup(factor, n, p, K)
+    for factor, n in dup_gf_ddf_shoup(f, K):
+        factors += dup_gf_edf_shoup(factor, n, K)
 
     return _sort_factors(factors, multiple=False)
 
 
 _factor_methods = {
-    'berlekamp': gf_berlekamp,  # ``p`` : small
-    'zassenhaus': gf_zassenhaus,  # ``p`` : medium
-    'shoup': gf_shoup,      # ``p`` : large
+    'berlekamp': dup_gf_berlekamp,  # ``p`` : small
+    'zassenhaus': dup_gf_zassenhaus,  # ``p`` : medium
+    'shoup': dup_gf_shoup,      # ``p`` : large
 }
 
 
-def gf_factor_sqf(f, p, K):
+def dup_gf_factor_sqf(f, K):
     """
     Factor a square-free polynomial ``f`` in ``GF(p)[x]``.
 
@@ -1085,8 +879,10 @@ def gf_factor_sqf(f, p, K):
     Examples
     ========
 
-    >>> gf_factor_sqf([3, 2, 4], 5, ZZ)
-    (3, [[1, 1], [1, 3]])
+    >>> R, x = ring('x', FF(5))
+    >>> f = R.to_dense(3*x**2 + 2*x + 4)
+    >>> dup_gf_factor_sqf(f, R.domain)
+    (3 mod 5, [[1 mod 5, 1 mod 5], [1 mod 5, 3 mod 5]])
 
     References
     ==========
@@ -1094,7 +890,8 @@ def gf_factor_sqf(f, p, K):
     * :cite:`Gathen1999modern`
 
     """
-    lc, f = gf_monic(f, p, K)
+    lc = dmp_ground_LC(f, 0, K)
+    f = dmp_ground_monic(f, 0, K)
     method = query('GF_FACTOR_METHOD')
 
-    return lc, _factor_methods[method](f, p, K)
+    return lc, _factor_methods[method](f, K)

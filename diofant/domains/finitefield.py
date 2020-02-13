@@ -5,7 +5,7 @@ import random
 
 from ..core import Dummy, integer_digits
 from ..ntheory import isprime, perfect_power
-from ..polys.galoistools import gf_irreducible
+from ..polys.galoistools import dup_gf_irreducible
 from ..polys.polyerrors import CoercionFailed
 from .field import Field
 from .groundtypes import DiofantInteger
@@ -46,7 +46,7 @@ class FiniteField(Field, SimpleDomain):
 
         if modulus is None:
             random.seed(0)
-            modulus = gf_irreducible(deg, mod, dom)
+            modulus = dup_gf_irreducible(deg, dom.finite_field(mod))
         elif deg != len(modulus) - 1:
             raise ValueError('degree of a defining polynomial for the field'
                              ' does not match extension degree')
