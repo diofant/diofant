@@ -1,241 +1,132 @@
 import pytest
 
-from diofant import ZZ, nextprime, pi
-from diofant.polys.galoistools import (gf_add, gf_add_ground, gf_berlekamp,
-                                       gf_compose_mod, gf_ddf_shoup,
-                                       gf_ddf_zassenhaus, gf_div, gf_edf_shoup,
-                                       gf_edf_zassenhaus, gf_frobenius_map,
-                                       gf_frobenius_monomial_base,
-                                       gf_from_dict, gf_gcd, gf_irreducible,
-                                       gf_irreducible_p, gf_monic, gf_mul,
-                                       gf_mul_ground, gf_pow_mod, gf_Qbasis,
-                                       gf_Qmatrix, gf_quo, gf_rem, gf_sqr,
-                                       gf_sub, gf_sub_ground, gf_trace_map)
+from diofant import FF, nextprime, pi, ring
+from diofant.polys.galoistools import (dup_gf_berlekamp, dup_gf_compose_mod,
+                                       dup_gf_ddf_shoup, dup_gf_ddf_zassenhaus,
+                                       dup_gf_edf_shoup, dup_gf_edf_zassenhaus,
+                                       dup_gf_frobenius_map,
+                                       dup_gf_frobenius_monomial_base,
+                                       dup_gf_irreducible,
+                                       dup_gf_irreducible_p, dup_gf_pow_mod,
+                                       dup_gf_Qbasis, dup_gf_Qmatrix,
+                                       dup_gf_trace_map)
 from diofant.polys.polyconfig import using
 
 
 __all__ = ()
 
 
-def test_gf_from_dict():
-    f = {11: 12, 6: 2, 0: 25}
-    g = [1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 3]
-
-    assert gf_from_dict(f, 11, ZZ) == g
-
-    f = {11: -5, 4: 0, 3: 1, 0: 12}
-    g = [6, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1]
-
-    assert gf_from_dict(f, 11, ZZ) == g
-
-
-def test_gf_monic():
-    assert gf_monic([], 11, ZZ) == (0, [])
-
-    assert gf_monic([1], 11, ZZ) == (1, [1])
-    assert gf_monic([2], 11, ZZ) == (2, [1])
-
-    assert gf_monic([1, 2, 3, 4], 11, ZZ) == (1, [1, 2, 3, 4])
-    assert gf_monic([2, 3, 4, 5], 11, ZZ) == (2, [1, 7, 2, 8])
-
-
-def test_gf_arith():
-    assert gf_add_ground([], 0, 11, ZZ) == []
-    assert gf_sub_ground([], 0, 11, ZZ) == []
-
-    assert gf_add_ground([], 3, 11, ZZ) == [3]
-    assert gf_sub_ground([], 3, 11, ZZ) == [8]
-
-    assert gf_add_ground([1], 3, 11, ZZ) == [4]
-    assert gf_sub_ground([1], 3, 11, ZZ) == [9]
-
-    assert gf_add_ground([8], 3, 11, ZZ) == []
-    assert gf_sub_ground([3], 3, 11, ZZ) == []
-
-    assert gf_add_ground([1, 2, 3], 3, 11, ZZ) == [1, 2, 6]
-    assert gf_sub_ground([1, 2, 3], 3, 11, ZZ) == [1, 2, 0]
-
-    assert gf_mul_ground([], 0, 11, ZZ) == []
-    assert gf_mul_ground([], 1, 11, ZZ) == []
-
-    assert gf_mul_ground([1], 0, 11, ZZ) == []
-    assert gf_mul_ground([1], 1, 11, ZZ) == [1]
-
-    assert gf_mul_ground([1, 2, 3], 0, 11, ZZ) == []
-    assert gf_mul_ground([1, 2, 3], 1, 11, ZZ) == [1, 2, 3]
-    assert gf_mul_ground([1, 2, 3], 7, 11, ZZ) == [7, 3, 10]
-
-    assert gf_add([], [], 11, ZZ) == []
-    assert gf_add([1], [], 11, ZZ) == [1]
-    assert gf_add([], [1], 11, ZZ) == [1]
-    assert gf_add([1], [1], 11, ZZ) == [2]
-    assert gf_add([1], [2], 11, ZZ) == [3]
-
-    assert gf_add([1, 2], [1], 11, ZZ) == [1, 3]
-    assert gf_add([1], [1, 2], 11, ZZ) == [1, 3]
-
-    assert gf_add([1, 2, 3], [8, 9, 10], 11, ZZ) == [9, 0, 2]
-
-    assert gf_sub([], [], 11, ZZ) == []
-    assert gf_sub([1], [], 11, ZZ) == [1]
-    assert gf_sub([], [1], 11, ZZ) == [10]
-    assert gf_sub([1], [1], 11, ZZ) == []
-    assert gf_sub([1], [2], 11, ZZ) == [10]
-
-    assert gf_sub([1, 2], [1], 11, ZZ) == [1, 1]
-    assert gf_sub([1], [1, 2], 11, ZZ) == [10, 10]
-
-    assert gf_sub([3, 2, 1], [8, 9, 10], 11, ZZ) == [6, 4, 2]
-
-    assert gf_mul([], [], 11, ZZ) == []
-    assert gf_mul([], [1], 11, ZZ) == []
-    assert gf_mul([1], [], 11, ZZ) == []
-    assert gf_mul([1], [1], 11, ZZ) == [1]
-    assert gf_mul([5], [7], 11, ZZ) == [2]
-
-    assert gf_mul([3, 0, 0, 6, 1, 2], [4, 0, 1, 0], 11, ZZ) == [1, 0,
-                                                                3, 2, 4, 3, 1, 2, 0]
-    assert gf_mul([4, 0, 1, 0], [3, 0, 0, 6, 1, 2], 11, ZZ) == [1, 0,
-                                                                3, 2, 4, 3, 1, 2, 0]
-
-    assert gf_mul([2, 0, 0, 1, 7], [2, 0, 0, 1, 7], 11, ZZ) == [4, 0,
-                                                                0, 4, 6, 0, 1, 3, 5]
-
-    assert gf_sqr([], 11, ZZ) == []
-    assert gf_sqr([2], 11, ZZ) == [4]
-    assert gf_sqr([1, 2], 11, ZZ) == [1, 4, 4]
-
-    assert gf_sqr([2, 0, 0, 1, 7], 11, ZZ) == [4, 0, 0, 4, 6, 0, 1, 3, 5]
-
-
-def test_gf_division():
-    pytest.raises(ZeroDivisionError, lambda: gf_div([1, 2, 3], [], 11, ZZ))
-    pytest.raises(ZeroDivisionError, lambda: gf_rem([1, 2, 3], [], 11, ZZ))
-    pytest.raises(ZeroDivisionError, lambda: gf_quo([1, 2, 3], [], 11, ZZ))
-    pytest.raises(ZeroDivisionError, lambda: gf_quo([1, 2, 3], [], 11, ZZ))
-
-    assert gf_div([1], [1, 2, 3], 7, ZZ) == ([], [1])
-    assert gf_rem([1], [1, 2, 3], 7, ZZ) == [1]
-    assert gf_quo([1], [1, 2, 3], 7, ZZ) == []
-
-    f = [5, 4, 3, 2, 1, 0]
-    g = [1, 2, 3]
-    q = [5, 1, 0, 6]
-    r = [3, 3]
-
-    assert gf_div(f, g, 7, ZZ) == (q, r)
-    assert gf_rem(f, g, 7, ZZ) == r
-    assert gf_quo(f, g, 7, ZZ) == q
-
-    f = [5, 4, 3, 2, 1, 0]
-    g = [1, 2, 3, 0]
-    q = [5, 1, 0]
-    r = [6, 1, 0]
-
-    assert gf_div(f, g, 7, ZZ) == (q, r)
-    assert gf_rem(f, g, 7, ZZ) == r
-    assert gf_quo(f, g, 7, ZZ) == q
-
-    assert gf_quo([1, 2, 1], [1, 1], 11, ZZ) == [1, 1]
-
-
 def test_gf_powering():
-    assert gf_pow_mod([1, 0, 0, 1, 8], 0, [2, 0, 7], 11, ZZ) == [1]
-    assert gf_pow_mod([1, 0, 0, 1, 8], 1, [2, 0, 7], 11, ZZ) == [1, 1]
-    assert gf_pow_mod([1, 0, 0, 1, 8], 2, [2, 0, 7], 11, ZZ) == [2, 3]
-    assert gf_pow_mod([1, 0, 0, 1, 8], 5, [2, 0, 7], 11, ZZ) == [7, 8]
-    assert gf_pow_mod([1, 0, 0, 1, 8], 8, [2, 0, 7], 11, ZZ) == [1, 5]
-    assert gf_pow_mod([1, 0, 0, 1, 8], 45, [2, 0, 7], 11, ZZ) == [5, 4]
+    R, x = ring('x', FF(11))
+
+    f = R.to_dense(x**4 + x + 8)
+    g = R.to_dense(2*x**2 + 7)
+
+    assert dup_gf_pow_mod(f, 0, g, R.domain) == [1]
+    assert dup_gf_pow_mod(f, 1, g, R.domain) == [1, 1]
+    assert dup_gf_pow_mod(f, 2, g, R.domain) == [2, 3]
+    assert dup_gf_pow_mod(f, 5, g, R.domain) == [7, 8]
+    assert dup_gf_pow_mod(f, 8, g, R.domain) == [1, 5]
+    assert dup_gf_pow_mod(f, 45, g, R.domain) == [5, 4]
 
 
-def test_gf_gcd():
-    assert gf_gcd([], [], 11, ZZ) == []
-    assert gf_gcd([2], [], 11, ZZ) == [1]
-    assert gf_gcd([], [2], 11, ZZ) == [1]
-    assert gf_gcd([2], [2], 11, ZZ) == [1]
+def test_dup_gf_compose_mod():
+    R, x = ring('x', FF(11))
 
-    assert gf_gcd([], [1, 0], 11, ZZ) == [1, 0]
-    assert gf_gcd([1, 0], [], 11, ZZ) == [1, 0]
+    g = []
+    h = R.to_dense(x)
+    f = h.copy()
 
-    assert gf_gcd([3, 0], [3, 0], 11, ZZ) == [1, 0]
-    assert gf_gcd([1, 8, 7], [1, 7, 1, 7], 11, ZZ) == [1, 7]
+    assert dup_gf_compose_mod(g, h, h, R.domain) == []
 
+    f = R.to_dense(x**4 + x**3 + 4*x**2 + 9*x + 1)
+    g = R.to_dense(x**2 + x + 1)
+    h = R.to_dense(x**3 + 2)
 
-def test_gf_compose_mod():
-    assert gf_compose_mod([], [1, 0], [1, 0], 11, ZZ) == []
-
-    f = [1, 1, 4, 9, 1]
-    g = [1, 1, 1]
-    h = [1, 0, 0, 2]
-
-    assert gf_compose_mod(g, h, f, 11, ZZ) == [3, 9, 6, 10]
+    assert dup_gf_compose_mod(g, h, f, R.domain) == [3, 9, 6, 10]
 
 
-def test_gf_trace_map():
-    f = [1, 1, 4, 9, 1]
-    a = [1, 1, 1]
-    c = [1, 0]
-    b = gf_pow_mod(c, 11, f, 11, ZZ)
+def test_dup_gf_trace_map():
+    R, x = ring('x', FF(11))
 
-    assert gf_trace_map(a, b, c, 0, f, 11, ZZ) == ([1, 1, 1], [1, 1, 1])
-    assert gf_trace_map(a, b, c, 1, f, 11, ZZ) == ([5, 2, 10, 3], [5, 3, 0, 4])
-    assert gf_trace_map(a, b, c, 2, f, 11, ZZ) == ([5, 9, 5, 3], [10, 1, 5, 7])
-    assert gf_trace_map(a, b, c, 3, f, 11, ZZ) == ([1, 10, 6, 0], [7])
-    assert gf_trace_map(a, b, c, 4, f, 11, ZZ) == ([1, 1, 1], [1, 1, 8])
-    assert gf_trace_map(a, b, c, 5, f, 11, ZZ) == ([5, 2, 10, 3], [5, 3, 0, 0])
-    assert gf_trace_map(a, b, c, 11, f, 11, ZZ) == ([1, 10, 6, 0], [10])
+    f = R.to_dense(x**4 + x**3 + 4*x**2 + 9*x + 1)
+    a = R.to_dense(x**2 + x + 1)
+    c = R.to_dense(x)
+    b = dup_gf_pow_mod(c, 11, f, R.domain)
+
+    assert dup_gf_trace_map(a, b, c, 0, f, R.domain) == ([1, 1, 1], [1, 1, 1])
+    assert dup_gf_trace_map(a, b, c, 1, f, R.domain) == ([5, 2, 10, 3], [5, 3, 0, 4])
+    assert dup_gf_trace_map(a, b, c, 2, f, R.domain) == ([5, 9, 5, 3], [10, 1, 5, 7])
+    assert dup_gf_trace_map(a, b, c, 3, f, R.domain) == ([1, 10, 6, 0], [7])
+    assert dup_gf_trace_map(a, b, c, 4, f, R.domain) == ([1, 1, 1], [1, 1, 8])
+    assert dup_gf_trace_map(a, b, c, 5, f, R.domain) == ([5, 2, 10, 3], [5, 3, 0, 0])
+    assert dup_gf_trace_map(a, b, c, 11, f, R.domain) == ([1, 10, 6, 0], [10])
 
 
-def test_gf_irreducible():
+def test_dup_gf_irreducible():
+    F11 = FF(11)
+
     for n in range(8):
-        assert gf_irreducible_p(gf_irreducible(n, 11, ZZ), 11, ZZ) is True
+        assert dup_gf_irreducible_p(dup_gf_irreducible(n, F11), F11) is True
 
 
-def test_gf_irreducible_p():
-    f = [7]
-    g = [7, 3]
-    h = [7, 3, 1]
+def test_dup_gf_irreducible_p():
+    R, x = ring('x', FF(11))
+
+    f = R.to_dense(R(7))
+    g = R.to_dense(7*x + 3)
+    h = R.to_dense(7*x**2 + 3*x + 1)
 
     for method in ('ben-or', 'rabin'):
         with using(gf_irred_method=method):
-            assert gf_irreducible_p(f, 11, ZZ) is True
-            assert gf_irreducible_p(g, 11, ZZ) is True
-            assert gf_irreducible_p(h, 11, ZZ) is False
+            assert dup_gf_irreducible_p(f, R.domain) is True
+            assert dup_gf_irreducible_p(g, R.domain) is True
+            assert dup_gf_irreducible_p(h, R.domain) is False
 
     with using(gf_irred_method='other'):
-        pytest.raises(KeyError, lambda: gf_irreducible_p([7], 11, ZZ))
+        pytest.raises(KeyError, lambda: dup_gf_irreducible_p(f, R.domain))
 
-    f = [2, 3, 4, 5, 6]
-    g = [2, 3, 4, 5, 8]
+    R, x = ring('x', FF(13))
+
+    f = R.to_dense(2*x**4 + 3*x**3 + 4*x**2 + 5*x + 6)
+    g = R.to_dense(2*x**4 + 3*x**3 + 4*x**2 + 5*x + 8)
+
+    with using(gf_irred_method='ben-or'):
+        assert dup_gf_irreducible_p(f, R.domain) is False
+        assert dup_gf_irreducible_p(g, R.domain) is True
+
+    R, x = ring('x', FF(17))
+
+    f = (x**10 + 9*x**9 + 9*x**8 + 13*x**7 + 16*x**6 + 15*x**5 +
+         6*x**4 + 7*x**3 + 7*x**2 + 7*x + 10)
+    g = (x**10 + 7*x**9 + 16*x**8 + 7*x**7 + 15*x**6 + 13*x**5 + 13*x**4 +
+         11*x**3 + 16*x**2 + 10*x + 9)
+    h = f*g
+    f, g, h = map(R.to_dense, (f, g, h))
 
     for method in ('ben-or', 'rabin'):
         with using(gf_irred_method=method):
-            assert gf_irreducible_p(f, 13, ZZ) is False
-            assert gf_irreducible_p(g, 13, ZZ) is True
-
-    f = [1, 9, 9, 13, 16, 15, 6, 7, 7, 7, 10]
-    g = [1, 7, 16, 7, 15, 13, 13, 11, 16, 10, 9]
-    h = gf_mul(f, g, 17, ZZ)
-
-    for method in ('ben-or', 'rabin'):
-        with using(gf_irred_method=method):
-            assert gf_irreducible_p(f, 17, ZZ) is True
-            assert gf_irreducible_p(g, 17, ZZ) is True
-            assert gf_irreducible_p(h, 17, ZZ) is False
+            assert dup_gf_irreducible_p(f, R.domain) is True
+            assert dup_gf_irreducible_p(g, R.domain) is True
+            assert dup_gf_irreducible_p(h, R.domain) is False
 
 
-def test_gf_frobenius_map():
-    f = [2, 0, 1, 0, 2, 2, 0, 2, 2, 2]
-    g = [1, 1, 0, 2, 0, 1, 0, 2, 0, 1]
-    p = 3
-    b = gf_frobenius_monomial_base(g, p, ZZ)
-    h = gf_frobenius_map(f, g, b, p, ZZ)
-    h1 = gf_pow_mod(f, p, g, p, ZZ)
+def test_dup_gf_frobenius_map():
+    R, x = ring('x', FF(3))
+
+    f = R.to_dense(2*x**9 + x**7 + 2*x**5 + 2*x**4 + 2*x**2 + 2*x + 2)
+    g = R.to_dense(x**9 + x**8 + 2*x**6 + x**4 + 2*x**2 + 1)
+    b = dup_gf_frobenius_monomial_base(g, R.domain)
+    h = dup_gf_frobenius_map(f, g, b, R.domain)
+    h1 = dup_gf_pow_mod(f, R.domain.mod, g, R.domain)
+
     assert h == h1
 
 
-def test_gf_berlekamp():
-    f = [1, 8, 1, 8, 10, 8, 1]
+def test_dup_gf_berlekamp():
+    R, x = ring('x', FF(11))
+
+    f = R.to_dense(x**6 + 8*x**5 + x**4 + 8*x**3 + 10*x**2 + 8*x + 1)
 
     Q = [[1, 0, 0, 0, 0, 0],
          [3, 5, 8, 8, 6, 5],
@@ -248,13 +139,14 @@ def test_gf_berlekamp():
          [0, 1, 1, 1, 1, 0],
          [0, 0, 7, 9, 0, 1]]
 
-    assert gf_Qmatrix(f, 11, ZZ) == Q
-    assert gf_Qbasis(Q, 11, ZZ) == V
+    assert dup_gf_Qmatrix(f, R.domain) == Q
+    assert dup_gf_Qbasis(Q, R.domain) == V
 
-    assert gf_berlekamp(f, 11, ZZ) == [[1, 1], [1, 5, 3], [1, 2, 3, 4]]
+    assert dup_gf_berlekamp(f, R.domain) == [[1, 1], [1, 5, 3], [1, 2, 3, 4]]
 
-    f = [1, 0, 1, 0, 10, 10, 8, 2, 8]
+    R, x = ring('x', FF(13))
 
+    f = R.to_dense(x**8 + x**6 + 10*x**4 + 10*x**3 + 8*x**2 + 2*x + 8)
     Q = [[1, 0, 0, 0, 0, 0, 0, 0],
          [2, 1, 7, 11, 10, 12, 5, 11],
          [3, 6, 4, 3, 0, 4, 7, 2],
@@ -263,26 +155,29 @@ def test_gf_berlekamp():
          [6, 11, 8, 6, 2, 7, 10, 9],
          [5, 11, 7, 10, 0, 11, 7, 12],
          [3, 3, 12, 5, 0, 11, 9, 12]]
-
     V = [[1, 0, 0, 0, 0, 0, 0, 0],
          [0, 5, 5, 0, 9, 5, 1, 0],
          [0, 9, 11, 9, 10, 12, 0, 1]]
 
-    assert gf_Qmatrix(f, 13, ZZ) == Q
-    assert gf_Qbasis(Q, 13, ZZ) == V
+    assert dup_gf_Qmatrix(f, R.domain) == Q
+    assert dup_gf_Qbasis(Q, R.domain) == V
 
-    assert gf_berlekamp(f, 13, ZZ) == [[1, 3], [1, 8, 4, 12], [1, 2, 3, 4, 6]]
+    assert dup_gf_berlekamp(f, R.domain) == [[1, 3], [1, 8, 4, 12], [1, 2, 3, 4, 6]]
 
 
-def test_gf_ddf():
-    f = gf_from_dict({15: ZZ(1), 0: ZZ(-1)}, 11, ZZ)
+def test_dup_gf_ddf():
+    R, x = ring('x', FF(11))
+
+    f = R.to_dense(x**15 - 1)
     g = [([1, 0, 0, 0, 0, 10], 1),
          ([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], 2)]
 
-    assert gf_ddf_zassenhaus(f, 11, ZZ) == g
-    assert gf_ddf_shoup(f, 11, ZZ) == g
+    assert dup_gf_ddf_zassenhaus(f, R.domain) == g
+    assert dup_gf_ddf_shoup(f, R.domain) == g
 
-    f = gf_from_dict({63: ZZ(1), 0: ZZ(1)}, 2, ZZ)
+    R, x = ring('x', FF(2))
+
+    f = R.to_dense(x**63 + 1)
     g = [([1, 1], 1),
          ([1, 1, 1], 2),
          ([1, 1, 1, 1, 1, 1, 1], 3),
@@ -290,36 +185,44 @@ def test_gf_ddf():
            0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0,
            0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1], 6)]
 
-    assert gf_ddf_zassenhaus(f, 2, ZZ) == g
-    assert gf_ddf_shoup(f, 2, ZZ) == g
+    assert dup_gf_ddf_zassenhaus(f, R.domain) == g
+    assert dup_gf_ddf_shoup(f, R.domain) == g
 
-    f = gf_from_dict({6: ZZ(1), 5: ZZ(-1), 4: ZZ(1), 3: ZZ(1), 1: ZZ(-1)}, 3, ZZ)
+    R, x = ring('x', FF(3))
+
+    f = R.to_dense(x**6 - x**5 + x**4 + x**3 - x)
     g = [([1, 1, 0], 1),
          ([1, 1, 0, 1, 2], 2)]
 
-    assert gf_ddf_zassenhaus(f, 3, ZZ) == g
-    assert gf_ddf_shoup(f, 3, ZZ) == g
+    assert dup_gf_ddf_zassenhaus(f, R.domain) == g
+    assert dup_gf_ddf_shoup(f, R.domain) == g
 
-    f = [1, 2, 5, 26, 677, 436, 791, 325, 456, 24, 577]
+    R, x = ring('x', FF(809))
+
+    f = R.to_dense(x**10 + 2*x**9 + 5*x**8 + 26*x**7 + 677*x**6 + 436*x**5 +
+                   791*x**4 + 325*x**3 + 456*x**2 + 24*x + 577)
     g = [([1, 701], 1),
          ([1, 110, 559, 532, 694, 151, 110, 70, 735, 122], 9)]
 
-    assert gf_ddf_zassenhaus(f, 809, ZZ) == g
-    assert gf_ddf_shoup(f, 809, ZZ) == g
+    assert dup_gf_ddf_zassenhaus(f, R.domain) == g
+    assert dup_gf_ddf_shoup(f, R.domain) == g
 
-    p = ZZ(nextprime(2**15*pi))
-    f = gf_from_dict({15: 1, 1: 1, 0: 1}, p, ZZ)
+    R, x = ring('x', FF(nextprime(int((2**15*pi)))))
+
+    f = R.to_dense(x**15 + x + 1)
     g = [([1, 22730, 68144], 2),
          ([1, 64876, 83977, 10787, 12561, 68608, 52650, 88001, 84356], 4),
          ([1, 15347, 95022, 84569, 94508, 92335], 5)]
 
-    assert gf_ddf_zassenhaus(f, p, ZZ) == g
-    assert gf_ddf_shoup(f, p, ZZ) == g
+    assert dup_gf_ddf_zassenhaus(f, R.domain) == g
+    assert dup_gf_ddf_shoup(f, R.domain) == g
 
 
-def test_gf_edf():
-    f = [1, 1, 0, 1, 2]
+def test_dup_gf_edf():
+    R, x = ring('x', FF(3))
+
+    f = R.to_dense(x**4 + x**3 + x + 2)
     g = [[1, 0, 1], [1, 1, 2]]
 
-    assert gf_edf_zassenhaus(f, 2, 3, ZZ) == g
-    assert gf_edf_shoup(f, 2, 3, ZZ) == g
+    assert dup_gf_edf_zassenhaus(f, 2, R.domain) == g
+    assert dup_gf_edf_shoup(f, 2, R.domain) == g
