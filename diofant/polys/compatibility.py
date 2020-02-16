@@ -16,10 +16,9 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dup_transform)
 from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_inner_subresultants,
                           dmp_prem, dmp_primitive, dmp_qq_collins_resultant,
-                          dmp_qq_heu_gcd, dmp_resultant, dmp_rr_prs_gcd,
-                          dmp_zz_collins_resultant, dmp_zz_heu_gcd,
-                          dmp_zz_modular_resultant, dup_ff_prs_gcd, dup_gcdex,
-                          dup_half_gcdex, dup_invert, dup_rr_prs_gcd)
+                          dmp_resultant, dmp_rr_prs_gcd,
+                          dmp_zz_collins_resultant, dmp_zz_modular_resultant,
+                          dup_gcdex, dup_half_gcdex, dup_invert)
 from .factortools import (dmp_factor_list, dmp_trial_division,
                           dmp_zz_diophantine, dmp_zz_mignotte_bound,
                           dmp_zz_wang, dmp_zz_wang_hensel_lifting,
@@ -272,28 +271,12 @@ class IPolys:
         else:
             return res0
 
-    def dup_rr_prs_gcd(self, f, g):
-        H, F, G = dup_rr_prs_gcd(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
-    def dup_ff_prs_gcd(self, f, g):
-        H, F, G = dup_ff_prs_gcd(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
     def dmp_rr_prs_gcd(self, f, g):
         H, F, G = dmp_rr_prs_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.from_dense(H), self.from_dense(F), self.from_dense(G)
 
     def dmp_ff_prs_gcd(self, f, g):
         H, F, G = dmp_ff_prs_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
-    def dmp_zz_heu_gcd(self, f, g):
-        H, F, G = dmp_zz_heu_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
-    def dmp_qq_heu_gcd(self, f, g):
-        H, F, G = dmp_qq_heu_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.from_dense(H), self.from_dense(F), self.from_dense(G)
 
     def dmp_content(self, f):
