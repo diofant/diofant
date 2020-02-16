@@ -145,10 +145,22 @@ class NDimArray(DefaultPrinting):
         if isinstance(shape, (int, Integer)):
             shape = shape,
 
+        shape = tuple(shape)
+
         if any(not isinstance(dim, (int, Integer)) for dim in shape):
             raise TypeError("Shape should contain integers only.")
 
-        return tuple(shape), iterable
+        if isinstance(iterable, collections.abc.Mapping):
+            for k, v in iterable.items():
+                if not isinstance(k, collections.abc.Sequence):
+                    continue
+                new_key = 0
+                for i, idx in enumerate(k):
+                    new_key = new_key * shape[i] + idx
+                iterable[new_key] = iterable[k]
+                del iterable[k]
+
+        return shape, iterable
 
     def __len__(self):
         """Overload common function len(). Returns number of elements in array.
