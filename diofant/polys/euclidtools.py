@@ -7,16 +7,14 @@ from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
                          dmp_sub_mul, dup_mul)
-from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_deflate,
-                         dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
-                         dmp_LC, dmp_one, dmp_one_p, dmp_raise, dmp_strip,
-                         dmp_zero, dmp_zero_p, dmp_zeros)
+from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
+                         dmp_ground, dmp_ground_LC, dmp_LC, dmp_one, dmp_one_p,
+                         dmp_raise, dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
 from .densetools import (dmp_clear_denoms, dmp_eval_in, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc)
 from .heuristicgcd import heugcd
 from .polyconfig import query
-from .polyerrors import (DomainError, HeuristicGCDFailed, HomomorphismFailed,
-                         NotInvertible)
+from .polyerrors import DomainError, HomomorphismFailed, NotInvertible
 
 
 def dup_half_gcdex(f, g, K):
@@ -919,72 +917,6 @@ def dmp_qq_heu_gcd(f, g, u, K0):
     return h, cff, cfg
 
 
-def _dmp_zz_modgcd(f, g, u, K):
-    from .modulargcd import modgcd
-    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
-    f, g = map(ring.from_dense, (f, g))
-    return tuple(map(ring.to_dense, modgcd(f, g)))
-
-
-_gcd_zz_methods = {'modgcd': _dmp_zz_modgcd,
-                   'prs': dmp_rr_prs_gcd}
-
-
-def _dmp_aa_modgcd(f, g, u, K):
-    from .modulargcd import func_field_modgcd
-    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
-    f, g = map(ring.from_dense, (f, g))
-    return tuple(map(ring.to_dense, func_field_modgcd(f, g)))
-
-
-_gcd_aa_methods = {'modgcd': _dmp_aa_modgcd,
-                   'prs': dmp_ff_prs_gcd}
-
-
-def _dmp_inner_gcd(f, g, u, K):
-    """Helper function for `dmp_inner_gcd()`."""
-    if not K.is_Exact:
-        try:
-            exact = K.get_exact()
-        except DomainError:
-            return dmp_one(u, K), f, g
-
-        f = dmp_convert(f, u, K, exact)
-        g = dmp_convert(g, u, K, exact)
-
-        h, cff, cfg = _dmp_inner_gcd(f, g, u, exact)
-
-        h = dmp_convert(h, u, exact, K)
-        cff = dmp_convert(cff, u, exact, K)
-        cfg = dmp_convert(cfg, u, exact, K)
-
-        return h, cff, cfg
-    elif K.is_Field:
-        if K.is_RationalField:
-            if query('USE_HEU_GCD'):
-                try:
-                    return dmp_qq_heu_gcd(f, g, u, K)
-                except HeuristicGCDFailed:  # pragma: no cover
-                    pass
-        elif K.is_AlgebraicField:
-            method = _gcd_aa_methods[query('GCD_AA_METHOD')]
-            return method(f, g, u, K)
-
-        return dmp_ff_prs_gcd(f, g, u, K)
-    else:
-        if K.is_IntegerRing:
-            if query('USE_HEU_GCD'):
-                try:
-                    return dmp_zz_heu_gcd(f, g, u, K)
-                except HeuristicGCDFailed:  # pragma: no cover
-                    pass
-
-            method = _gcd_zz_methods[query('FALLBACK_GCD_ZZ_METHOD')]
-            return method(f, g, u, K)
-
-        return dmp_rr_prs_gcd(f, g, u, K)
-
-
 def dmp_inner_gcd(f, g, u, K):
     """
     Computes polynomial GCD and cofactors of `f` and `g` in `K[X]`.
@@ -1000,16 +932,13 @@ def dmp_inner_gcd(f, g, u, K):
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
 
-    >>> R.dmp_inner_gcd(f, g)
+    >>> f.cofactors(g)
     (x + y, x + y, x)
 
     """
-    J, (f, g) = dmp_deflate((f, g), u, K)
-    h, cff, cfg = _dmp_inner_gcd(f, g, u, K)
-
-    return (dmp_inflate(h, J, u, K),
-            dmp_inflate(cff, J, u, K),
-            dmp_inflate(cfg, J, u, K))
+    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    f, g = map(ring.from_dense, (f, g))
+    return tuple(map(ring.to_dense, f.cofactors(g)))
 
 
 def dmp_gcd(f, g, u, K):

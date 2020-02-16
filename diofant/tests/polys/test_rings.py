@@ -1292,7 +1292,7 @@ def test_PolyElement_gcd():
     F, x = field('x', QQ)
     R, t = ring('t', F)
 
-    assert R(x).gcd(R(0)) == R.dmp_gcd(R(x), R(0)) == 1
+    assert R(x).gcd(R(0)) == 1
 
 
 def test_PolyElement_terms_gcd():

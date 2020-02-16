@@ -23,8 +23,8 @@ from .modulargcd import func_field_modgcd, modgcd
 from .monomials import Monomial
 from .orderings import lex
 from .polyconfig import query
-from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
-                         GeneratorsNeeded, HeuristicGCDFailed,
+from .polyerrors import (CoercionFailed, DomainError, ExactQuotientFailed,
+                         GeneratorsError, GeneratorsNeeded, HeuristicGCDFailed,
                          MultivariatePolynomialError, PolynomialDivisionFailed,
                          PolynomialError)
 from .polyoptions import Domain as DomainOpt
@@ -1818,8 +1818,19 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self._gcd_ZZ(other)
         elif ring.domain.is_AlgebraicField:
             return self._gcd_AA(other)
+        elif not ring.domain.is_Exact:
+            try:
+                exact = ring.domain.get_exact()
+            except DomainError:
+                return ring.one, self, other
+
+            f, g = map(lambda x: x.set_domain(exact), (self, other))
+
+            return tuple(map(lambda x: x.set_domain(ring.domain), f.cofactors(g)))
+        elif ring.domain.is_Field:
+            return self.ring.dmp_ff_prs_gcd(self, other)
         else:
-            return ring.dmp_inner_gcd(self, other)
+            return self.ring.dmp_rr_prs_gcd(self, other)
 
     def _gcd_ZZ(self, other):
         if query('USE_HEU_GCD'):
