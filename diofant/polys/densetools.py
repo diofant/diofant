@@ -1,8 +1,8 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
 from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_exquo_ground,
-                         dmp_mul, dmp_mul_ground, dmp_neg, dmp_quo_ground,
-                         dmp_sub, dup_add, dup_mul)
+                         dmp_mul, dmp_mul_ground, dmp_neg, dmp_sub, dup_add,
+                         dup_mul)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
                          dmp_zero, dmp_zero_p)
@@ -284,38 +284,19 @@ def dmp_ground_content(f, u, K):
     >>> R, x, y = ring("x y", ZZ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
-    >>> R.dmp_ground_content(f)
+    >>> f.content()
     2
 
     >>> R, x, y = ring("x y", QQ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
-    >>> R.dmp_ground_content(f)
+    >>> f.content()
     2
 
     """
-    if u < 0:
-        return f
-
-    if dmp_zero_p(f, u):
-        return K.zero
-
-    cont, v = K.zero, u - 1
-
-    if K.is_RationalField:
-        for c in f:
-            cont = K.gcd(cont, dmp_ground_content(c, v, K))
-    else:
-        for c in f:
-            cont = K.gcd(cont, dmp_ground_content(c, v, K))
-
-            if cont == K.one:
-                break
-
-    if K.is_negative(dmp_ground_LC(f, u, K)):
-        cont = -cont
-
-    return cont
+    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    f = ring.from_dense(f)
+    return f.content()
 
 
 def dmp_ground_primitive(f, u, K):
@@ -328,25 +309,20 @@ def dmp_ground_primitive(f, u, K):
     >>> R, x, y = ring("x y", ZZ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
-    >>> R.dmp_ground_primitive(f)
+    >>> f.primitive()
     (2, x*y + 3*x + 2*y + 6)
 
     >>> R, x, y = ring("x y", QQ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
-    >>> R.dmp_ground_primitive(f)
+    >>> f.primitive()
     (2, x*y + 3*x + 2*y + 6)
 
     """
-    if dmp_zero_p(f, u):
-        return K.zero, list(f)
-
-    cont = dmp_ground_content(f, u, K)
-
-    if cont != K.one:
-        f = dmp_quo_ground(f, cont, u, K)
-
-    return cont, list(f)
+    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    f = ring.from_dense(f)
+    cont, p = f.primitive()
+    return cont, ring.to_dense(p)
 
 
 def dup_real_imag(f, K):

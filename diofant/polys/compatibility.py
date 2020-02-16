@@ -10,8 +10,7 @@ from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
                          dmp_to_dict)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_diff_in, dmp_eval_in, dmp_eval_tail,
-                         dmp_ground_content, dmp_ground_monic,
-                         dmp_ground_primitive, dmp_ground_trunc, dup_decompose,
+                         dmp_ground_monic, dmp_ground_trunc, dup_decompose,
                          dup_mirror, dup_real_imag, dup_scale, dup_shift,
                          dup_transform)
 from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_inner_subresultants,
@@ -286,14 +285,6 @@ class IPolys:
     def dmp_primitive(self, f):
         cont, prim = dmp_primitive(self.to_dense(f), self.ngens-1, self.domain)
         return self.drop(0).from_dense(cont), self.from_dense(prim)
-
-    def dmp_ground_content(self, f):
-        cont = dmp_ground_content(self.to_dense(f), self.ngens-1, self.domain)
-        return cont
-
-    def dmp_ground_primitive(self, f):
-        cont, prim = dmp_ground_primitive(self.to_dense(f), self.ngens-1, self.domain)
-        return cont, self.from_dense(prim)
 
     def dmp_trial_division(self, f, factors):
         factors = dmp_trial_division(self.to_dense(f), list(map(self.to_dense, factors)), self.ngens-1, self.domain)
