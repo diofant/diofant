@@ -1069,6 +1069,13 @@ def test_ModularInteger():
     assert F4.order == 4
     assert F4.characteristic == 2
 
+    assert F4(1) == F4.one
+    assert F4.one + F4.one == 2*F4.one == F4.one*2 == F4.zero
+    assert F4(2)*F4.one == F4.one*F4(2)
+    assert 2*F4.one != F4(2)*F4.one
+
+    pytest.raises(TypeError, lambda: object()*F4.one)
+
 
 def test_QQ_int():
     assert int(QQ(2**2000, 3**1250)) == 455431

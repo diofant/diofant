@@ -403,6 +403,11 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
     def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
 
+    def _from_PythonFiniteField(self, a, K0):
+        if self.domain == K0:
+            return self(a)
+    _from_GMPYFiniteField = _from_PythonFiniteField
+
     def _from_PythonRationalField(self, a, K0):
         return self(self.domain.convert(a, K0))
 

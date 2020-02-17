@@ -117,7 +117,8 @@ class FiniteField(Field, SimpleDomain):
         return self.dtype(self.domain.convert(a.rep, K0.domain))
 
     def _from_PythonIntegerRing(self, a, K0=None):
-        return self.dtype(self.domain.convert(a, K0))
+        return self.dtype(self.domain.convert(a, K0) % self.characteristic)
+    _from_GMPYIntegerRing = _from_PythonIntegerRing
 
     def _from_PythonRationalField(self, a, K0=None):
         if a.denominator == 1:
@@ -125,9 +126,6 @@ class FiniteField(Field, SimpleDomain):
 
     def _from_GMPYFiniteField(self, a, K0=None):
         return self.dtype(self.domain.convert(a.rep, K0.domain))
-
-    def _from_GMPYIntegerRing(self, a, K0=None):
-        return self.dtype(self.domain.convert(a, K0))
 
     def _from_GMPYRationalField(self, a, K0=None):
         if a.denominator == 1:

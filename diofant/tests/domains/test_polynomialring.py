@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import QQ, ZZ, CoercionFailed, GeneratorsNeeded, sqrt
+from diofant import FF, QQ, ZZ, CoercionFailed, GeneratorsNeeded, sqrt
 from diofant.abc import x, y
 from diofant.polys.orderings import build_product_order
 
@@ -75,6 +75,8 @@ def test_conversion():
 
     R = R.drop(y)
     pytest.raises(CoercionFailed, lambda: R.convert(G(y), R))
+
+    pytest.raises(CoercionFailed, lambda: R.convert(FF(8)(2)))
 
 
 def test_units():
