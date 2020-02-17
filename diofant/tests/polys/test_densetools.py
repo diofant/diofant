@@ -82,80 +82,76 @@ def test_PolyElement_integrate():
 def test_dmp_diff_in():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_diff_in(0, 1, 0) == 0
-    assert R.dmp_diff_in(7, 1, 0) == 0
-    assert R.dmp_diff_in(2*x + 7, 1, 0) == 2
-    assert R.dmp_diff_in(x**2 + 2*x + 1, 1, 0) == 2*x + 2
-    assert R.dmp_diff_in(x**3 + 2*x**2 + 3*x + 4, 1, 0) == 3*x**2 + 4*x + 3
-    assert R.dmp_diff_in(x**4 - x**3 + 2, 1, 0) == 4*x**3 - 3*x**2
-    assert R.dmp_diff_in(x**3 + 2*x**2 + 3*x + 4, 2, 0) == 6*x + 4
+    assert R(0).diff() == 0
+    assert R(7).diff() == 0
+    assert (2*x + 7).diff() == 2
+    assert (x**2 + 2*x + 1).diff() == 2*x + 2
+    assert (x**3 + 2*x**2 + 3*x + 4).diff() == 3*x**2 + 4*x + 3
+    assert (x**4 - x**3 + 2).diff() == 4*x**3 - 3*x**2
+    assert (x**3 + 2*x**2 + 3*x + 4).diff(m=2) == 6*x + 4
 
     f = 17*x**10 + 34*x**9 + 56*x**8 - 345*x**7 + 23*x**6 + 76*x**5 + 12*x**2 + 3*x + 7
 
-    assert R.dmp_diff_in(f, 0, 0) == f
-    assert R.dmp_diff_in(f, 2, 0) == R.dmp_diff_in(R.dmp_diff_in(f, 1, 0), 1, 0)
-    assert R.dmp_diff_in(f, 3, 0) == R.dmp_diff_in(R.dmp_diff_in(R.dmp_diff_in(f, 1, 0),
-                                                                 1, 0), 1, 0)
+    assert f.diff(m=0) == f
+    assert f.diff(m=2) == f.diff().diff()
+    assert f.diff(m=3) == f.diff().diff().diff()
 
     R, x = ring('x', FF(3))
 
     f = 2*x**10 + x**9 + 2*x**8 + 2*x**6 + x**5 + 1
 
-    assert R.dmp_diff_in(f, 1, 0) == 2*x**9 + x**7 + 2*x**4
-    assert R.dmp_diff_in(f, 2, 0) == x**6 + 2*x**3
-    assert R.dmp_diff_in(f, 3, 0) == 0
+    assert f.diff() == 2*x**9 + x**7 + 2*x**4
+    assert f.diff(m=2) == x**6 + 2*x**3
+    assert f.diff(m=3) == 0
 
-    assert R.dmp_diff_in(f, 0, 0) == f
-    assert R.dmp_diff_in(f, 2, 0) == R.dmp_diff_in(R.dmp_diff_in(f, 1, 0), 1, 0)
-    assert R.dmp_diff_in(f, 3, 0) == R.dmp_diff_in(R.dmp_diff_in(R.dmp_diff_in(f, 1, 0),
-                                                                 1, 0), 1, 0)
+    assert f.diff(m=0) == f
+    assert f.diff(m=2) == f.diff().diff()
+    assert f.diff(m=3) == f.diff().diff().diff()
 
     R, x, y = ring('x y', ZZ)
 
-    assert R.dmp_diff_in(0, 1, 0) == 0
+    assert R(0).diff() == 0
 
     f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
 
-    assert R.dmp_diff_in(f, 1, 0) == y**2 + 2*y + 3
-    assert R.dmp_diff_in(f, 2, 0) == 0
-    assert R.dmp_diff_in(f, 1, 1) == 2*x*y + 2*x + 4*y + 3
+    assert f.diff() == y**2 + 2*y + 3
+    assert f.diff(m=2) == 0
+    assert f.diff(y) == 2*x*y + 2*x + 4*y + 3
 
     R, x, y, z = ring('x y z', ZZ)
 
-    assert R.dmp_diff_in(0, 1, 0) == 0
-    assert R.dmp_diff_in(y + 2, 1, 0) == 0
-    assert R.dmp_diff_in(x, 1, 0) == 1
-    assert R.dmp_diff_in(3*x**2 + x, 1, 0) == 6*x + 1
+    assert R(0).diff() == 0
+    assert (y + 2).diff() == 0
+    assert x.diff() == 1
+    assert (3*x**2 + x).diff() == 6*x + 1
 
     R, x, y, z, t = ring('x y z t', ZZ)
 
     f = f_polys()[6]
 
-    assert R.dmp_diff_in(f, 0, 0) == f
-    assert R.dmp_diff_in(f, 2, 0) == R.dmp_diff_in(R.dmp_diff_in(f, 1, 0), 1, 0)
-    assert R.dmp_diff_in(f, 3, 0) == R.dmp_diff_in(R.dmp_diff_in(R.dmp_diff_in(f, 1, 0),
-                                                                 1, 0), 1, 0)
+    assert f.diff(m=0) == f
+    assert f.diff(m=2) == f.diff().diff()
+    assert f.diff(m=3) == f.diff().diff().diff()
 
-    assert (R.dmp_diff_in(f, 2, 1) ==
+    assert (f.diff(y, m=2) ==
             -5076*x*y**2 - 282*x*y - 54*y*z**3*t**2 + 54*y*t**2 - 2*z**3*t**2 + 2*t**2)
-    assert R.dmp_diff_in(f, 3, 1) == -10152*x*y - 282*x - 54*z**3*t**2 + 54*t**2
-    assert (R.dmp_diff_in(f, 2, 2) ==
+    assert f.diff(y, m=3) == -10152*x*y - 282*x - 54*z**3*t**2 + 54*t**2
+    assert (f.diff(z, m=2) ==
             270*x**3*z*t**2 + 846*x*y*z - 54*y**3*z*t**2 - 6*y**2*z*t**2 +
             90*z**4*t**2 + 24*z**2*t**3 - 18*z*t**2)
-    assert (R.dmp_diff_in(f, 3, 2) ==
+    assert (f.diff(z, m=3) ==
             270*x**3*t**2 + 846*x*y - 54*y**3*t**2 - 6*y**2*t**2 +
             360*z**3*t**2 + 48*z*t**3 - 18*t**2)
 
-    pytest.raises(IndexError, lambda: R.dmp_diff_in(f, 2, -1))
+    pytest.raises(ValueError, lambda: f.diff(x="spam", m=2))
 
     R, x, y, z, t = ring('x y z t', FF(23))
 
     f = R.from_dense(f_polys()[6].to_dense())
 
-    assert R.dmp_diff_in(f, 0, 0) == f
-    assert R.dmp_diff_in(f, 2, 0) == R.dmp_diff_in(R.dmp_diff_in(f, 1, 0), 1, 0)
-    assert R.dmp_diff_in(f, 3, 0) == R.dmp_diff_in(R.dmp_diff_in(R.dmp_diff_in(f, 1, 0),
-                                                                 1, 0), 1, 0)
+    assert f.diff(m=0) == f
+    assert f.diff(m=2) == f.diff().diff()
+    assert f.diff(m=3) == f.diff().diff().diff()
 
 
 def test_dmp_eval_in():

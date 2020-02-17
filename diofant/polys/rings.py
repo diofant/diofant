@@ -1958,7 +1958,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         i = ring.index(x)
         x = ring.monomial_basis(i)
         x = x**m
-        g = ring.zero
+        g = ring.zero if m else self.compose(ring.gens[i], ring.zero)
         for expv, coeff in self.items():
             if expv[i]:
                 e = expv/x

@@ -20,53 +20,15 @@ def dmp_diff_in(f, m, j, u, K):
 
     >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
 
-    >>> R.dmp_diff_in(f, 1, 0)
+    >>> f.diff()
     y**2 + 2*y + 3
-    >>> R.dmp_diff_in(f, 1, 1)
+    >>> f.diff(y)
     2*x*y + 2*x + 4*y + 3
 
     """
-    if j < 0 or j > u:
-        raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
-
-    if not j:
-        if m <= 0:
-            return f
-
-        n = dmp_degree_in(f, 0, u)
-
-        if n < m:
-            return dmp_zero(u)
-
-        deriv, v = [], u - 1
-
-        if m == 1:
-            for coeff in f[:-m]:
-                d = dmp_mul_ground(coeff, K(n), v, K) if u else K(n)*coeff
-                deriv.append(d)
-                n -= 1
-        else:
-            for coeff in f[:-m]:
-                k = n
-
-                for i in range(n - 1, n - m, -1):
-                    k *= i
-
-                d = dmp_mul_ground(coeff, K(k), v, K) if u else K(k)*coeff
-                deriv.append(d)
-                n -= 1
-
-        return dmp_strip(deriv, u)
-
-    def diff_in(f, m, u, i, j, K):
-        if i == j:
-            return dmp_diff_in(f, m, 0, u, K)
-
-        v, i = u - 1, i + 1
-
-        return dmp_strip([diff_in(c, m, v, i, j, K) for c in f], u)
-
-    return diff_in(f, m, u, 0, j, K)
+    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    f = ring.from_dense(f)
+    return ring.to_dense(f.diff(x=j, m=m))
 
 
 def dmp_eval_in(f, a, j, u, K):
