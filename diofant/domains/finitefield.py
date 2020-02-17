@@ -62,7 +62,11 @@ class FiniteField(Field, SimpleDomain):
         obj.mod = mod
         obj.order = order
 
-        obj.rep = 'GF(%s)' % obj.order
+        if order > mod:
+            obj.rep = 'GF(%s, %s)' % (obj.mod, list(map(PythonIntegerRing(),
+                                                        modulus)))
+        else:
+            obj.rep = 'GF(%s)' % obj.mod
 
         try:
             obj.dtype = _modular_integer_cache[key]
