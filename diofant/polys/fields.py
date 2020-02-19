@@ -568,20 +568,5 @@ class FracElement(DomainElement, CantSympify):
             field = self.field
         return field((field.ring(numer), field.ring(denom)))
 
-    def subs(self, x):
-        if isinstance(x, (list, tuple)):
-            x = [(X.to_poly(), a) for X, a in x]
-            numer, denom = self.numerator.subs(x), self.denominator.subs(x)
-        elif isinstance(x, (set, frozenset)):
-            x = sorted((X.to_poly(), a) for X, a in x)
-            numer, denom = self.numerator.subs(x), self.denominator.subs(x)
-        elif isinstance(x, dict):
-            x = sorted((k.to_poly(), x[k]) for k in x)
-            numer, denom = self.numerator.subs(x), self.denominator.subs(x)
-        else:
-            raise ValueError("subs argument should be an iterable of pairs")
-
-        return self.new(numer, denom)
-
     def compose(self, x, a=None):
         raise NotImplementedError

@@ -2033,56 +2033,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             return poly
 
-    def subs(self, x):
-        f = self
-        a = None
-
-        if isinstance(x, dict):
-            return f.subs(list(x.items()))
-        elif isinstance(x, (set, frozenset)):
-            return f.subs(sorted(x))
-        elif isinstance(x, (list, tuple)):
-            if len(x) == 0:
-                return f
-            x = list(x)
-            while len(x) > 1:
-                f = f.subs([x[0]])
-                del x[0]
-            x, a = x[0]
-        else:
-            raise ValueError("subs argument should be an iterable of pairs")
-
-        ring = f.ring
-        i = ring.index(x)
-        a = ring.domain.convert(a)
-
-        if ring.is_univariate:
-            result = ring.domain.zero
-
-            for (n,), coeff in f.items():
-                result += coeff*a**n
-
-            return ring.ground_new(result)
-        else:
-            poly = ring.zero
-
-            for monom, coeff in f.items():
-                n, monom = monom[i], monom[:i] + (0,) + monom[i+1:]
-                coeff = coeff*a**n
-
-                if monom in poly:
-                    coeff += poly[monom]
-
-                    if coeff:
-                        poly[monom] = coeff
-                    else:
-                        del poly[monom]
-                else:
-                    if coeff:
-                        poly[monom] = coeff
-
-            return poly
-
     def compose(self, x, a=None):
         """Computes the functional composition."""
         ring = self.ring
