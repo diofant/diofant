@@ -1040,7 +1040,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 k2 = keys[j]
                 exp = k1*k2
                 p[exp] = get(exp, zero) + pk*self[k2]
-        p = p._imul_num(2)
+        p += p
         get = p.get
         for k, v in self.items():
             k2 = k**2
@@ -1462,38 +1462,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         return self._sorted(self.items(), order)
-
-    def _imul_num(self, c):
-        """Multiply inplace the polynomial self by an element in the
-        coefficient ring, provided self is not one of the generators;
-        else multiply not inplace.
-
-        Examples
-        ========
-
-        >>> _, x, y = ring('x, y', ZZ)
-        >>> p = x + y**2
-        >>> p1 = p._imul_num(3)
-        >>> p1
-        3*x + 3*y**2
-        >>> p1 is p
-        True
-        >>> p = x
-        >>> p1 = p._imul_num(3)
-        >>> p1
-        3*x
-        >>> p1 is p
-        False
-
-        """
-        if self in self.ring._gens_set:
-            return self*c
-        if not c:
-            self.clear()
-            return self
-        for exp in self:
-            self[exp] *= c
-        return self
 
     def content(self):
         """Returns GCD of polynomial's coefficients."""
