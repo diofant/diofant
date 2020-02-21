@@ -751,6 +751,17 @@ def test_gf_factor():
         with using(gf_factor_method=method):
             assert f.factor_list() == g
 
+    F8 = FF(8)
+    R, x = ring("x", F8)
+
+    f = x**10 + x**9 + F8(2)*x**8 + F8(2)*x**7 + F8(5)*x**6 + F8(3)*x**5
+    g = (1, [(x + F8(3), 1), (x + F8(6), 1), (x, 5),
+             (x**3 + F8(4)*x**2 + x + F8(3), 1)])
+
+    for method in ('berlekamp',):
+        with using(gf_factor_method=method):
+            assert f.factor_list() == g
+
 
 def test_PolyElement_is_irreducible():
     R, x = ring("x", ZZ)

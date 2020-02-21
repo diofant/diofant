@@ -428,7 +428,7 @@ def dup_gf_Qmatrix(f, K):
      [0 mod 5, 0 mod 5, 0 mod 5, 4 mod 5]]
 
     """
-    p = K.mod
+    p = K.order
     n, r = dmp_degree_in(f, 0, 0), int(p)
 
     q = [K.one] + [K.zero]*(n - 1)
@@ -534,10 +534,10 @@ def dup_gf_berlekamp(f, K):
 
     for k in range(1, len(V)):
         for f in list(factors):
-            s = K.zero
+            s = 0
 
             while True:
-                g = dmp_add_term(V[k], -s, 0, 0, K)
+                g = dmp_add_term(V[k], -K(s), 0, 0, K)
                 h = dmp_gcd(f, g, 0, K)
 
                 if h != [K.one] and h != f:
@@ -549,9 +549,9 @@ def dup_gf_berlekamp(f, K):
                 if len(factors) == len(V):
                     return _sort_factors(factors, multiple=False)
 
-                s += K.one
+                s += 1
 
-                if s == K.zero:
+                if s == K.order:
                     break
 
     return _sort_factors(factors, multiple=False)
