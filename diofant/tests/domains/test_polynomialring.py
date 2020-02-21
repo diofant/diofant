@@ -73,6 +73,9 @@ def test_conversion():
     pytest.raises(CoercionFailed,
                   lambda: R.convert(ALG(1), QQ.algebraic_field(sqrt(2))))
 
+    R = R.drop(y)
+    pytest.raises(CoercionFailed, lambda: R.convert(G(y), R))
+
 
 def test_units():
     R = QQ.poly_ring(x)

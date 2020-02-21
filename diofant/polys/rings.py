@@ -859,24 +859,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return p
 
     def __radd__(self, other):
-        p = self.copy()
-        if not other:
-            return p
-        ring = self.ring
-        try:
-            other = ring.domain_new(other)
-        except CoercionFailed:
-            return NotImplemented
-        else:
-            zm = ring.zero_monom
-            if zm not in self:
-                p[zm] = other
-            else:
-                if other == -p[zm]:
-                    del p[zm]
-                else:
-                    p[zm] += other
-            return p
+        return self.__add__(other)
 
     def __sub__(self, other):
         """Subtract polynomial other from self.
@@ -941,17 +924,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         -x - y + 4
 
         """
-        ring = self.ring
-        try:
-            other = ring.domain_new(other)
-        except CoercionFailed:
-            return NotImplemented
-        else:
-            p = ring.zero
-            for expv in self:
-                p[expv] = -self[expv]
-            p += other
-            return p
+        return (-self).__add__(other)
 
     def __mul__(self, other):
         """Multiply two polynomials.
@@ -1009,19 +982,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         4*x + 4*y
 
         """
-        p = self.ring.zero
-        if not other:
-            return p
-        try:
-            other = p.ring.domain_new(other)
-        except CoercionFailed:
-            return NotImplemented
-        else:
-            for exp1, v1 in self.items():
-                v = other*v1
-                if v:
-                    p[exp1] = v
-            return p
+        return self.__mul__(other)
 
     def __pow__(self, n):
         """Raise polynomial to power `n`.
