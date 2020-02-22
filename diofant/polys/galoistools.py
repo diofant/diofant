@@ -439,9 +439,9 @@ def dup_gf_berlekamp(f, K):
 
 def dup_gf_ddf_zassenhaus(f, K):
     """
-    Cantor-Zassenhaus: Deterministic Distinct Degree Factorization
+    Cantor-Zassenhaus: Deterministic Distinct Degree Factorization.
 
-    Given a monic square-free polynomial ``f`` in ``GF(p)[x]``, computes
+    Given a monic square-free polynomial ``f`` in ``GF(q)[x]``, computes
     partial distinct degree factorization ``f_1 ... f_d`` of ``f`` where
     ``deg(f_i) != deg(f_j)`` for ``i != j``. The result is returned as a
     list of pairs ``(f_i, e_i)`` where ``deg(f_i) > 0`` and ``e_i > 0``
@@ -463,15 +463,20 @@ def dup_gf_ddf_zassenhaus(f, K):
     References
     ==========
 
-    * :cite:`Gathen1999modern`
-    * :cite:`Geddes1992algorithms`
+    * :cite:`Gathen1999modern`, algorithm 14.3
+    * :cite:`Geddes1992algorithms`, algorithm 8.8
+
+    See Also
+    ========
+
+    dup_gf_edf_zassenhaus
 
     """
-    factors, p = [], K.characteristic
+    factors, q = [], K.order
     g, x = [[K.one, K.zero]]*2
 
     for i in range(1, dmp_degree_in(f, 0, 0)//2 + 1):
-        g = dup_gf_pow_mod(g, p, f, K)
+        g = dup_gf_pow_mod(g, q, f, K)
         h = dmp_gcd(f, dmp_sub(g, x, 0, K), 0, K)
 
         if not dmp_one_p(h, 0, K):
@@ -488,9 +493,9 @@ def dup_gf_ddf_zassenhaus(f, K):
 
 def dup_gf_edf_zassenhaus(f, n, K):
     """
-    Cantor-Zassenhaus: Probabilistic Equal Degree Factorization
+    Cantor-Zassenhaus: Probabilistic Equal Degree Factorization.
 
-    Given a monic square-free polynomial ``f`` in ``GF(p)[x]`` and
+    Given a monic square-free polynomial ``f`` in ``GF(q)[x]`` and
     an integer ``n``, such that ``n`` divides ``deg(f)``, returns all
     irreducible factors ``f_1,...,f_d`` of ``f``, each of degree ``n``.
     EDF procedure gives complete factorization over Galois fields.
@@ -506,8 +511,12 @@ def dup_gf_edf_zassenhaus(f, n, K):
     References
     ==========
 
-    * :cite:`Gathen1999modern`
-    * :cite:`Geddes1992algorithms`
+    * :cite:`Geddes1992algorithms`, algorithm 8.9
+
+    See Also
+    ========
+
+    dup_gf_ddf_zassenhaus
 
     """
     factors = [f]
@@ -515,8 +524,8 @@ def dup_gf_edf_zassenhaus(f, n, K):
     if dmp_degree_in(f, 0, 0) <= n:
         return factors
 
+    p, q = K.characteristic, K.order
     N = dmp_degree_in(f, 0, 0) // n
-    p = K.characteristic
 
     while len(factors) < N:
         r = dup_gf_random(2*n - 1, K)
@@ -525,10 +534,10 @@ def dup_gf_edf_zassenhaus(f, n, K):
             h = r
 
             for i in range(1, n):
-                r = dup_gf_pow_mod(r, p, f, K)
+                r = dup_gf_pow_mod(r, q, f, K)
                 h = dmp_add(h, r, 0, K)
         else:
-            h = dup_gf_pow_mod(r, (p**n - 1) // 2, f, K)
+            h = dup_gf_pow_mod(r, (q**n - 1) // 2, f, K)
             h = dmp_add_term(h, -K.one, 0, 0, K)
 
         g = dmp_gcd(f, h, 0, K)
@@ -542,16 +551,19 @@ def dup_gf_edf_zassenhaus(f, n, K):
 
 def dup_gf_ddf_shoup(f, K):
     """
-    Kaltofen-Shoup: Deterministic Distinct Degree Factorization
+    Kaltofen-Shoup: Deterministic Distinct Degree Factorization.
 
-    Given a monic square-free polynomial ``f`` in ``GF(p)[x]``, computes
-    partial distinct degree factorization ``f_1,...,f_d`` of ``f`` where
+    Given a monic square-free polynomial ``f`` in ``GF(q)[x]``, computes
+    partial distinct degree factorization ``f_1 ... f_d`` of ``f`` where
     ``deg(f_i) != deg(f_j)`` for ``i != j``. The result is returned as a
     list of pairs ``(f_i, e_i)`` where ``deg(f_i) > 0`` and ``e_i > 0``
     is an argument to the equal degree factorization routine.
 
+    Notes
+    =====
+
     This algorithm is an improved version of Zassenhaus algorithm for
-    large ``deg(f)`` and modulus ``p`` (especially for ``deg(f) ~ lg(p)``).
+    large ``deg(f)`` and order ``q`` (especially for ``deg(f) ~ lg(q)``).
 
     Examples
     ========
@@ -564,25 +576,30 @@ def dup_gf_ddf_shoup(f, K):
     References
     ==========
 
-    * :cite:`Kaltofen1998subquadratic`
+    * :cite:`Kaltofen1998subquadratic`, algorithm D
     * :cite:`Shoup1995factor`
     * :cite:`Gathen1992frobenious`
 
+    See Also
+    ========
+
+    dup_gf_edf_shoup
+
     """
-    n, p = dmp_degree_in(f, 0, 0), K.characteristic
+    n, q = dmp_degree_in(f, 0, 0), K.order
     k = math.ceil(math.sqrt(n//2))
     x = [K.one, K.zero]
 
-    h = dup_gf_pow_mod(x, p, f, K)
+    h = dup_gf_pow_mod(x, q, f, K)
 
-    # U[i] = x**(p**i)
+    # U[i] = x**(q**i)
     U = [x, h] + [K.zero]*(k - 1)
 
     for i in range(2, k + 1):
         U[i] = dup_gf_compose_mod(U[i - 1], h, f, K)
 
     h, U = U[k], U[:k]
-    # V[i] = x**(p**(k*(i+1)))
+    # V[i] = x**(q**(k*(i+1)))
     V = [h] + [K.zero]*(k - 1)
 
     for i in range(1, k):
@@ -618,15 +635,18 @@ def dup_gf_ddf_shoup(f, K):
 
 def dup_gf_edf_shoup(f, n, K):
     """
-    Gathen-Shoup: Probabilistic Equal Degree Factorization
+    Gathen-Shoup: Probabilistic Equal Degree Factorization.
 
-    Given a monic square-free polynomial ``f`` in ``GF(p)[x]`` and integer
-    ``n`` such that ``n`` divides ``deg(f)``, returns all irreducible factors
-    ``f_1,...,f_d`` of ``f``, each of degree ``n``. This is a complete
-    factorization over Galois fields.
+    Given a monic square-free polynomial ``f`` in ``GF(q)[x]`` and
+    an integer ``n``, such that ``n`` divides ``deg(f)``, returns all
+    irreducible factors ``f_1,...,f_d`` of ``f``, each of degree ``n``.
+    EDF procedure gives complete factorization over Galois fields.
+
+    Notes
+    =====
 
     This algorithm is an improved version of Zassenhaus algorithm for
-    large ``deg(f)`` and modulus ``p`` (especially for ``deg(f) ~ lg(p)``).
+    large ``deg(f)`` and order ``q`` (especially for ``deg(f) ~ lg(q)``).
 
     Examples
     ========
@@ -640,11 +660,16 @@ def dup_gf_edf_shoup(f, n, K):
     ==========
 
     * :cite:`Shoup1991ffactor`
-    * :cite:`Gathen1992frobenious`
+    * :cite:`Gathen1992ComputingFM`, algorithm 3.6
+
+    See Also
+    ========
+
+    dup_gf_ddf_shoup
 
     """
-    p = K.characteristic
-    N, q = dmp_degree_in(f, 0, 0), p
+    q, p = K.order, K.characteristic
+    N = dmp_degree_in(f, 0, 0)
 
     if not N:
         return []
@@ -678,7 +703,7 @@ def dup_gf_edf_shoup(f, n, K):
 
 def dup_gf_zassenhaus(f, K):
     """
-    Factor a square-free ``f`` in ``GF(p)[x]`` for medium ``p``.
+    Factor a square-free polynomial over finite fields of medium order.
 
     Examples
     ========
@@ -699,7 +724,7 @@ def dup_gf_zassenhaus(f, K):
 
 def dup_gf_shoup(f, K):
     """
-    Factor a square-free ``f`` in ``GF(p)[x]`` for large ``p``.
+    Factor a square-free polynomial over finite fields of large order.
 
     Examples
     ========
