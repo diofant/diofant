@@ -161,3 +161,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`18501` Extraneous variable in limit result
 * :sympyissue:`18508` NotImplementedError in limit
 * :sympyissue:`18507` Bug in Mul
+* :sympyissue:`18707` There is a problem or limitation when the Limit is calculated
