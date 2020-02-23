@@ -46,7 +46,7 @@ class FiniteField(Field, SimpleDomain):
 
         if modulus is None:
             random.seed(0)
-            modulus = dup_gf_irreducible(deg, dom.finite_field(mod))
+            modulus = dup_gf_irreducible(deg, PythonIntegerRing().finite_field(mod))
         elif deg != len(modulus) - 1:
             raise ValueError('degree of a defining polynomial for the field'
                              ' does not match extension degree')
