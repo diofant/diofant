@@ -14,7 +14,7 @@ __all__ = 'RealField',
 _reals_cache = {}
 
 
-class RealField(Field, CharacteristicZero, SimpleDomain):
+class RealField(CharacteristicZero, SimpleDomain, Field):
     """Real numbers up to the given precision."""
 
     rep = 'RR'

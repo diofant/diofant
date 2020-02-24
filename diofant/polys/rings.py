@@ -202,6 +202,10 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
 
         return obj
 
+    @property
+    def characteristic(self):
+        return self.domain.characteristic
+
     def _gens(self):
         """Return a list of polynomial generators."""
         one = self.domain.one

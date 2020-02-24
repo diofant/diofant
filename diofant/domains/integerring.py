@@ -15,7 +15,7 @@ from .simpledomain import SimpleDomain
 __all__ = 'GMPYIntegerRing', 'IntegerRing', 'PythonIntegerRing'
 
 
-class IntegerRing(Ring, CharacteristicZero, SimpleDomain):
+class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
     """General class for integer rings."""
 
     rep = 'ZZ'

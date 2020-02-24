@@ -19,7 +19,7 @@ __all__ = 'AlgebraicField',
 _algebraic_numbers_cache = {}
 
 
-class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
+class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
     """A class for representing algebraic number fields."""
 
     is_AlgebraicField = is_Algebraic = True

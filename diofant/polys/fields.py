@@ -78,6 +78,10 @@ class FractionField(Field, CompositeDomain):
 
         return obj
 
+    @property
+    def characteristic(self):
+        return self.domain.characteristic
+
     def _gens(self):
         """Return a list of polynomial generators."""
         return tuple(self.dtype(gen) for gen in self.ring.gens)

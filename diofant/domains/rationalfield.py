@@ -11,7 +11,7 @@ from .simpledomain import SimpleDomain
 __all__ = 'GMPYRationalField', 'PythonRationalField', 'RationalField'
 
 
-class RationalField(Field, CharacteristicZero, SimpleDomain):
+class RationalField(CharacteristicZero, SimpleDomain, Field):
     """General class for rational fields."""
 
     rep = 'QQ'
