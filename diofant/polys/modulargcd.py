@@ -12,28 +12,6 @@ from .polyerrors import ModularGCDFailed
 __all__ = 'modgcd', 'func_field_modgcd', 'trial_division',
 
 
-def _trivial_gcd(f, g):
-    """
-    Compute the GCD of two polynomials in trivial cases, i.e. when one
-    or both polynomials are zero.
-
-    """
-    ring = f.ring
-
-    if not (f or g):
-        return ring.zero, ring.zero, ring.zero
-    elif not f:
-        if g.LC < ring.domain.zero:
-            return -g, ring.zero, -ring.one
-        else:
-            return g, ring.zero, ring.one
-    elif not g:
-        if f.LC < ring.domain.zero:
-            return -f, -ring.one, ring.zero
-        else:
-            return f, ring.one, ring.zero
-
-
 def _gf_gcd(fp, gp, p):
     r"""Compute the GCD of two univariate polynomials in `\mathbb{Z}_p[x]`."""
     dom = fp.ring.domain
@@ -586,10 +564,6 @@ def modgcd(f, g):
 
     """
     assert f.ring == g.ring and f.ring.domain.is_IntegerRing
-
-    result = _trivial_gcd(f, g)
-    if result is not None:
-        return result
 
     ring = f.ring
     k = ring.ngens
@@ -1586,9 +1560,8 @@ def func_field_modgcd(f, g):
 
     assert ring == g.ring and domain.is_AlgebraicField
 
-    result = _trivial_gcd(f, g)
-    if result is not None:
-        return result
+    if not f:
+        return f._gcd_zero(g)
 
     z = Dummy('z')
 

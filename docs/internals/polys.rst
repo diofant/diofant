@@ -327,9 +327,6 @@ including the last one which is the resultant if this does not vanish.
 .. autofunction:: dmp_resultant
 .. autofunction:: dmp_rr_prs_gcd
 .. autofunction:: dmp_ff_prs_gcd
-.. autofunction:: dmp_zz_heu_gcd
-.. autofunction:: dmp_qq_heu_gcd
-.. autofunction:: dmp_inner_gcd
 .. autofunction:: dmp_gcd
 .. autofunction:: dmp_content
 .. autofunction:: dmp_primitive

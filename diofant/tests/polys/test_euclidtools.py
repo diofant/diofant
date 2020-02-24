@@ -4,6 +4,7 @@ import pytest
 
 from diofant import (CC, FF, QQ, RR, ZZ, HeuristicGCDFailed, NotInvertible,
                      ring, sqrt)
+from diofant.polys.heuristicgcd import heugcd
 from diofant.polys.polyconfig import using
 from diofant.polys.specialpolys import (dmp_fateman_poly_F_1,
                                         dmp_fateman_poly_F_2,
@@ -340,371 +341,238 @@ def test_PolyElement_discriminant():
 def test_dmp_gcd():
     R, x = ring("x", ZZ)
 
-    f, g = 0, 0
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (0, 0, 0)
+    for test in (True, False):
+        with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
+            assert R(0).cofactors(R(0)) == (0, 0, 0)
+            assert R(2).cofactors(R(0)) == (2, 1, 0)
+            assert R(-2).cofactors(R(0)) == (2, -1, 0)
+            assert R(0).cofactors(R(-2)) == (2, 0, -1)
+            assert R(0).cofactors(2*x + 4) == (2*x + 4, 0, 1)
+            assert (2*x + 4).cofactors(R(0)) == (2*x + 4, 1, 0)
+            assert R(2).cofactors(R(2)) == (2, 1, 1)
+            assert R(-2).cofactors(R(2)) == (2, -1, 1)
+            assert R(2).cofactors(R(-2)) == (2, 1, -1)
+            assert R(-2).cofactors(R(-2)) == (2, -1, -1)
+            assert (x**2 + 2*x + 1).cofactors(R(1)) == (1, x**2 + 2*x + 1, 1)
+            assert (x**2 + 2*x + 1).cofactors(R(2)) == (1, x**2 + 2*x + 1, 2)
+            assert (2*x**2 + 4*x + 2).cofactors(R(2)) == (2, x**2 + 2*x + 1, 1)
+            assert R(2).cofactors(2*x**2 + 4*x + 2) == (2, 1, x**2 + 2*x + 1)
+            assert (2*x**2 + 4*x + 2).cofactors(x + 1) == (x + 1, 2*x + 2, 1)
+            assert (x + 1).cofactors(2*x**2 + 4*x + 2) == (x + 1, 1, 2*x + 2)
+            assert (x - 31).cofactors(x) == (1, x - 31, x)
 
-    f, g = 2, 0
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, 1, 0)
+            f = x**4 + 8*x**3 + 21*x**2 + 22*x + 8
+            g = x**3 + 6*x**2 + 11*x + 6
 
-    f, g = -2, 0
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, -1, 0)
+            assert f.cofactors(g) == (x**2 + 3*x + 2, x**2 + 5*x + 4, x + 3)
 
-    f, g = 0, -2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, 0, -1)
+            f = x**4 - 4
+            g = x**4 + 4*x**2 + 4
 
-    f, g = 0, 2*x + 4
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2*x + 4, 0, 1)
+            assert f.cofactors(g) == (x**2 + 2, x**2 - 2, x**2 + 2)
 
-    f, g = 2*x + 4, 0
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2*x + 4, 1, 0)
+            f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
+            g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
 
-    f, g = 2, 2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, 1, 1)
+            assert f.cofactors(g) == (1, f, g)
 
-    f, g = -2, 2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, -1, 1)
+            f = (-352518131239247345597970242177235495263669787845475025293906825864749649589178600387510272*x**49 +
+                 46818041807522713962450042363465092040687472354933295397472942006618953623327997952*x**42 +
+                 378182690892293941192071663536490788434899030680411695933646320291525827756032*x**35 +
+                 112806468807371824947796775491032386836656074179286744191026149539708928*x**28 -
+                 12278371209708240950316872681744825481125965781519138077173235712*x**21 +
+                 289127344604779611146960547954288113529690984687482920704*x**14 +
+                 19007977035740498977629742919480623972236450681*x**7 +
+                 311973482284542371301330321821976049)
+            g = (365431878023781158602430064717380211405897160759702125019136*x**21 +
+                 197599133478719444145775798221171663643171734081650688*x**14 -
+                 9504116979659010018253915765478924103928886144*x**7 -
+                 311973482284542371301330321821976049)
 
-    f, g = 2, -2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, 1, -1)
+            assert f.gcd(f.diff()) == g
 
-    f, g = -2, -2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, -1, -1)
+            f = 1317378933230047068160*x + 2945748836994210856960
+            g = 120352542776360960*x + 269116466014453760
 
-    f, g = x**2 + 2*x + 1, 1
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (1, x**2 + 2*x + 1, 1)
+            assert f.cofactors(g) == (120352542776360960*x + 269116466014453760,
+                                      10946, 1)
 
-    f, g = x**2 + 2*x + 1, 2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (1, x**2 + 2*x + 1, 2)
+            with using(heu_gcd_max=0):
+                pytest.raises(HeuristicGCDFailed, lambda: heugcd(f, g))
 
-    f, g = 2*x**2 + 4*x + 2, 2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, x**2 + 2*x + 1, 1)
+    f, g = x**2 - 1, x**2 - 3*x + 2
 
-    f, g = 2, 2*x**2 + 4*x + 2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (2, 1, x**2 + 2*x + 1)
-
-    f, g = 2*x**2 + 4*x + 2, x + 1
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (x + 1, 2*x + 2, 1)
-
-    f, g = x + 1, 2*x**2 + 4*x + 2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (x + 1, 1, 2*x + 2)
-
-    f, g = x - 31, x
-    assert R.dmp_zz_heu_gcd(f, g) == R.dup_rr_prs_gcd(f, g) == (1, f, g)
-
-    f = x**4 + 8*x**3 + 21*x**2 + 22*x + 8
-    g = x**3 + 6*x**2 + 11*x + 6
-
-    h = x**2 + 3*x + 2
-
-    cff = x**2 + 5*x + 4
-    cfg = x + 3
-
-    assert R.dmp_zz_heu_gcd(f, g) == (h, cff, cfg)
-    assert R.dup_rr_prs_gcd(f, g) == (h, cff, cfg)
-
-    f = x**4 - 4
-    g = x**4 + 4*x**2 + 4
-
-    h = x**2 + 2
-
-    cff = x**2 - 2
-    cfg = x**2 + 2
-
-    assert R.dmp_zz_heu_gcd(f, g) == (h, cff, cfg)
-    assert R.dup_rr_prs_gcd(f, g) == (h, cff, cfg)
-
-    f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
-    g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
-
-    h = 1
-
-    cff = f
-    cfg = g
-
-    assert R.dmp_zz_heu_gcd(f, g) == (h, cff, cfg)
-    assert R.dup_rr_prs_gcd(f, g) == (h, cff, cfg)
+    for test in (True, False):
+        for method in ('prs', 'modgcd'):
+            with using(use_heu_gcd=test, fallback_gcd_zz_method=method):
+                assert f.gcd(g) == x - 1
 
     R, x = ring("x", QQ)
 
-    f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
-    g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
+    for test in (True, False):
+        with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
+            f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
+            g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
 
-    h = 1
+            assert f.cofactors(g) == (1, f, g)
 
-    cff = f
-    cfg = g
+            assert R(0).cofactors(R(0)) == (0, 0, 0)
 
-    assert R.dmp_qq_heu_gcd(f, g) == (h, cff, cfg)
-    assert R.dup_ff_prs_gcd(f, g) == (h, cff, cfg)
+            f, g = x**2/2 + x + QQ(1, 2), x/2 + QQ(1, 2)
 
-    assert R.dup_ff_prs_gcd(R.zero, R.zero) == ([], [], [])
-
-    R, x = ring("x", ZZ)
-
-    f = - 352518131239247345597970242177235495263669787845475025293906825864749649589178600387510272*x**49 \
-        + 46818041807522713962450042363465092040687472354933295397472942006618953623327997952*x**42 \
-        + 378182690892293941192071663536490788434899030680411695933646320291525827756032*x**35 \
-        + 112806468807371824947796775491032386836656074179286744191026149539708928*x**28 \
-        - 12278371209708240950316872681744825481125965781519138077173235712*x**21 \
-        + 289127344604779611146960547954288113529690984687482920704*x**14 \
-        + 19007977035740498977629742919480623972236450681*x**7 \
-        + 311973482284542371301330321821976049
-
-    g = 365431878023781158602430064717380211405897160759702125019136*x**21 \
-        + 197599133478719444145775798221171663643171734081650688*x**14 \
-        - 9504116979659010018253915765478924103928886144*x**7 \
-        - 311973482284542371301330321821976049
-
-    assert R.dmp_zz_heu_gcd(f, R.dmp_diff_in(f, 1, 0))[0] == g
-    assert R.dup_rr_prs_gcd(f, R.dmp_diff_in(f, 1, 0))[0] == g
-
-    R, x = ring("x", QQ)
-
-    f = x**2/2 + x + QQ(1, 2)
-    g = x/2 + QQ(1, 2)
-
-    h = x + 1
-
-    assert R.dmp_qq_heu_gcd(f, g) == (h, g, QQ(1, 2))
-    assert R.dup_ff_prs_gcd(f, g) == (h, g, QQ(1, 2))
-
-    R, x = ring("x", ZZ)
-
-    f = 1317378933230047068160*x + 2945748836994210856960
-    g = 120352542776360960*x + 269116466014453760
-
-    h = 120352542776360960*x + 269116466014453760
-    cff = 10946
-    cfg = 1
-
-    assert R.dmp_zz_heu_gcd(f, g) == (h, cff, cfg)
-
-    with using(heu_gcd_max=0):
-        pytest.raises(HeuristicGCDFailed, lambda: R.dmp_zz_heu_gcd(f, g))
+            assert f.cofactors(g) == (x + 1, g, QQ(1, 2))
 
     R, x = ring("x", CC)
-    f, g = (x**2 - 1, x**3 - 3*x + 2)
-    assert R.dmp_inner_gcd(f, g) == (1, f, g)
+
+    f, g = x**2 - 1, x**3 - 3*x + 2
+
+    assert f.cofactors(g) == (1, f, g)
 
     R, x, y = ring("x,y", CC)
-    f, g = (x**2 - y, x**3 - y*x + 2)
-    assert R.dmp_inner_gcd(f, g) == (1, f, g)
+
+    f, g = x**2 - y, x**3 - y*x + 2
+
+    assert f.cofactors(g) == (1, f, g)
 
     R,  x, y = ring("x,y", ZZ)
 
-    f, g = 0, 0
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (0, 0, 0)
+    for test in (True, False):
+        with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
+            assert R(0).cofactors(R(0)) == (0, 0, 0)
+            assert R(2).cofactors(R(0)) == (2, 1, 0)
+            assert R(-2).cofactors(R(0)) == (2, -1, 0)
+            assert R(0).cofactors(R(-2)) == (2, 0, -1)
+            assert R(0).cofactors(2*x + 4) == (2*x + 4, 0, 1)
+            assert (2*x + 4).cofactors(R(0)) == (2*x + 4, 1, 0)
+            assert R(2).cofactors(R(2)) == (2, 1, 1)
+            assert R(-2).cofactors(R(2)) == (2, -1, 1)
+            assert R(2).cofactors(R(-2)) == (2, 1, -1)
+            assert R(-2).cofactors(R(-2)) == (2, -1, -1)
+            assert (x**2 + 2*x + 1).cofactors(R(1)) == (1, x**2 + 2*x + 1, 1)
+            assert (x**2 + 2*x + 1).cofactors(R(2)) == (1, x**2 + 2*x + 1, 2)
+            assert (2*x**2 + 4*x + 2).cofactors(R(2)) == (2, x**2 + 2*x + 1, 1)
+            assert R(2).cofactors(2*x**2 + 4*x + 2) == (2, 1, x**2 + 2*x + 1)
+            assert (2*x**2 + 4*x + 2).cofactors(x + 1) == (x + 1, 2*x + 2, 1)
 
-    f, g = 2, 0
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (2, 1, 0)
+            f, g = x + 1, 2*x**2 + 4*x + 2
 
-    f, g = -2, 0
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (2, -1, 0)
+            assert f.cofactors(g) == (f, 1, 2*x + 2)
 
-    f, g = 0, -2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (2, 0, -1)
+            with using(heu_gcd_max=0):
+                pytest.raises(HeuristicGCDFailed, lambda: heugcd(f, g))
 
-    f, g = 0, 2*x + 4
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (2*x + 4, 0, 1)
+            f, g = x**2 + 2*x*y + y**2, x**2 + x*y
 
-    f, g = 2*x + 4, 0
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (2*x + 4, 1, 0)
+            assert f.cofactors(g) == (x + y, x + y, x)
 
-    f, g = 2, 2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (2, 1, 1)
+            f = (-17434367009167300000000000000000000000000000000000000000000000000000000*x**4*y -
+                 250501827896299135568887342575961783764139560000000000000000000000000000000000000000000*x**3*y -
+                 2440935909299672540738135183426056447877858000000000000000000000000000000*x**3 -
+                 1349729941723537919695626818065131519270095220127010623905326719279566297660000000000000000000000000000*x**2*y -
+                 26304033868956978374552886858060487282904504027042515077682955951658838800000000000000000*x**2 -
+                 3232215785736369696036755035364398565076440134133908303058376297547504030528179314849416971379040931276000000000000000*x*y -
+                 94485916261760032526508027937078714464844205539023800247528621905831259414691631156161537919255129011800*x -
+                 2902585888465621357542575571971656665554321652262249362701116665830760628936600958940851960635161420991047110815678789984677193092993*y -
+                 113133324167442997472440652189550843502029192913459268196939183295294085146407870078840385860571627108778756267503630290)
+            g = (10000000000000000000000000000*x**2 + 71841388839807267676152024786000000000000000*x +
+                 129029628760809605749020969023932901278290735413660734705971)
 
-    f, g = -2, 2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (2, -1, 1)
+            h = (-1743436700916730000000000000000000000000000*x**2*y -
+                 12525091394814956778444367128798089188206978000000000000000*x*y -
+                 244093590929967254073813518342605644787785800*x -
+                 22495499028725631994927113634418779135935898997901327211111875586270479483*y -
+                 876801128965234839118530545935732755107147297241756982389990)
 
-    f, g = 2, -2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (2, 1, -1)
-
-    f, g = -2, -2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (2, -1, -1)
-
-    f, g = x**2 + 2*x + 1, 1
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (1, x**2 + 2*x + 1, 1)
-
-    f, g = x**2 + 2*x + 1, 2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (1, x**2 + 2*x + 1, 2)
-    with using(use_simplify_gcd=0):
-        assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (1, x**2 + 2*x + 1, 2)
-
-    f, g = 2*x**2 + 4*x + 2, 2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (2, x**2 + 2*x + 1, 1)
-
-    f, g = 2, 2*x**2 + 4*x + 2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (2, 1, x**2 + 2*x + 1)
-
-    f, g = 2*x**2 + 4*x + 2, x + 1
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (x + 1, 2*x + 2, 1)
-
-    f, g = x + 1, 2*x**2 + 4*x + 2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (x + 1, 1, 2*x + 2)
-
-    with using(heu_gcd_max=0):
-        pytest.raises(HeuristicGCDFailed, lambda: R.dmp_zz_heu_gcd(f, g))
-
-    f = x**2 + 2*x*y + y**2
-    g = x**2 + x*y
-
-    assert R.dmp_rr_prs_gcd(f, g) == (x + y, x + y, x)
-
-    R, x, y, z, u = ring("x,y,z,u", ZZ)
-
-    f, g = u**2 + 2*u + 1, 2*u + 2
-    assert R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) == (u + 1, u + 1, 2)
-
-    f, g = z**2*u**2 + 2*z**2*u + z**2 + z*u + z, u**2 + 2*u + 1
-    h, cff, cfg = u + 1, z**2*u + z**2 + z, u + 1
-
-    assert R.dmp_zz_heu_gcd(f, g) == (h, cff, cfg)
-    assert R.dmp_rr_prs_gcd(f, g) == (h, cff, cfg)
-
-    assert R.dmp_zz_heu_gcd(g, f) == (h, cfg, cff)
-    assert R.dmp_rr_prs_gcd(g, f) == (h, cfg, cff)
-
-    R, x, y, z = ring("x,y,z", ZZ)
-
-    f, g, h = map(R.from_dense, dmp_fateman_poly_F_1(2, ZZ))
-    H, cff, cfg = R.dmp_zz_heu_gcd(f, g)
-
-    assert H == h and R.dmp_mul(H, cff) == f \
-        and R.dmp_mul(H, cfg) == g
-
-    H, cff, cfg = R.dmp_rr_prs_gcd(f, g)
-
-    assert H == h and R.dmp_mul(H, cff) == f \
-        and R.dmp_mul(H, cfg) == g
-
-    R, x, y, z, u, v = ring("x,y,z,u,v", ZZ)
-
-    f, g, h = map(R.from_dense, dmp_fateman_poly_F_1(4, ZZ))
-    H, cff, cfg = R.dmp_zz_heu_gcd(f, g)
-
-    assert H == h and R.dmp_mul(H, cff) == f \
-        and R.dmp_mul(H, cfg) == g
-
-    R, x, y, z, u, v, a, b = ring("x,y,z,u,v,a,b", ZZ)
-
-    f, g, h = map(R.from_dense, dmp_fateman_poly_F_1(6, ZZ))
-    H, cff, cfg = R.dmp_zz_heu_gcd(f, g)
-
-    assert H == h and R.dmp_mul(H, cff) == f \
-        and R.dmp_mul(H, cfg) == g
-
-    R, x, y, z, u, v, a, b, c, d = ring("x,y,z,u,v,a,b,c,d", ZZ)
-
-    f, g, h = map(R.from_dense, dmp_fateman_poly_F_1(8, ZZ))
-    H, cff, cfg = R.dmp_zz_heu_gcd(f, g)
-
-    assert H == h and R.dmp_mul(H, cff) == f \
-        and R.dmp_mul(H, cfg) == g
-
-    R, x, y, z = ring("x,y,z", ZZ)
-
-    f, g, h = map(R.from_dense, dmp_fateman_poly_F_2(2, ZZ))
-    H, cff, cfg = R.dmp_zz_heu_gcd(f, g)
-
-    assert H == h and R.dmp_mul(H, cff) == f \
-        and R.dmp_mul(H, cfg) == g
-
-    H, cff, cfg = R.dmp_rr_prs_gcd(f, g)
-
-    assert H == h and R.dmp_mul(H, cff) == f \
-        and R.dmp_mul(H, cfg) == g
-
-    f, g, h = map(R.from_dense, dmp_fateman_poly_F_3(2, ZZ))
-    H, cff, cfg = R.dmp_zz_heu_gcd(f, g)
-
-    assert H == h and R.dmp_mul(H, cff) == f \
-        and R.dmp_mul(H, cfg) == g
-
-    H, cff, cfg = R.dmp_rr_prs_gcd(f, g)
-
-    assert H == h and R.dmp_mul(H, cff) == f \
-        and R.dmp_mul(H, cfg) == g
-
-    R, x, y, z, u, v = ring("x,y,z,u,v", ZZ)
-
-    f, g, h = map(R.from_dense, dmp_fateman_poly_F_3(4, ZZ))
-    H, cff, cfg = R.dmp_inner_gcd(f, g)
-
-    assert H == h and R.dmp_mul(H, cff) == f \
-        and R.dmp_mul(H, cfg) == g
+            assert f.cofactors(g) == (g, h, 1)
 
     R, x, y = ring("x,y", QQ)
 
-    f = x**2/2 + x + QQ(1, 2)
-    g = x/2 + QQ(1, 2)
+    for test in (True, False):
+        with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
+            f, g = x**2/2 + x + QQ(1, 2), x/2 + QQ(1, 2)
 
-    h = x + 1
+            assert f.cofactors(g) == (x + 1, g, QQ(1, 2))
+            assert R(0).cofactors(R(0)) == (0, 0, 0)
+            assert R(0).cofactors(g) == (x + 1, 0, QQ(1, 2))
 
-    assert R.dmp_qq_heu_gcd(f, g) == (h, g, QQ(1, 2))
-    assert R.dmp_ff_prs_gcd(f, g) == (h, g, QQ(1, 2))
-    with using(use_simplify_gcd=0):
-        assert R.dmp_qq_heu_gcd(f, g) == (h, g, QQ(1, 2))
-        assert R.dmp_ff_prs_gcd(f, g) == (h, g, QQ(1, 2))
+            f, g = x**2/4 + x*y + y**2, x**2/2 + x*y
 
-    assert R.dmp_ff_prs_gcd(R.zero, R.zero) == (0, 0, 0)
-    assert R.dmp_qq_heu_gcd(R.zero, R.zero) == (0, 0, 0)
-    assert R.dmp_ff_prs_gcd(R.zero, g) == (x + 1, R.zero, QQ(1, 2))
-    assert R.dmp_qq_heu_gcd(R.zero, g) == (x + 1, R.zero, QQ(1, 2))
+            assert f.cofactors(g) == (x + 2*y, x/4 + y/2, x/2)
 
     R, x, y = ring("x,y", RR)
 
-    f = 2.1*x*y**2 - 2.2*x*y + 2.1*x
-    g = 1.0*x**3
+    for test in (True, False):
+        with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
+            f, g = 2.1*x*y**2 - 2.2*x*y + 2.1*x, 1.0*x**3
 
-    assert R.dmp_ff_prs_gcd(f, g) == \
-        (1.0*x, 2.1*y**2 - 2.2*y + 2.1, 1.0*x**2)
-
-    R, x, y = ring("x,y", ZZ)
-
-    f = (-17434367009167300000000000000000000000000000000000000000000000000000000*x**4*y -
-         250501827896299135568887342575961783764139560000000000000000000000000000000000000000000*x**3*y -
-         2440935909299672540738135183426056447877858000000000000000000000000000000*x**3 -
-         1349729941723537919695626818065131519270095220127010623905326719279566297660000000000000000000000000000*x**2*y -
-         26304033868956978374552886858060487282904504027042515077682955951658838800000000000000000*x**2 -
-         3232215785736369696036755035364398565076440134133908303058376297547504030528179314849416971379040931276000000000000000*x*y -
-         94485916261760032526508027937078714464844205539023800247528621905831259414691631156161537919255129011800*x -
-         2902585888465621357542575571971656665554321652262249362701116665830760628936600958940851960635161420991047110815678789984677193092993*y -
-         113133324167442997472440652189550843502029192913459268196939183295294085146407870078840385860571627108778756267503630290)
-
-    g = (10000000000000000000000000000*x**2 + 71841388839807267676152024786000000000000000*x +
-         129029628760809605749020969023932901278290735413660734705971)
-
-    assert (R.dmp_zz_heu_gcd(f, g) == R.dmp_rr_prs_gcd(f, g) ==
-            (g,
-             -1743436700916730000000000000000000000000000*x**2*y -
-             12525091394814956778444367128798089188206978000000000000000*x*y -
-             244093590929967254073813518342605644787785800*x -
-             22495499028725631994927113634418779135935898997901327211111875586270479483*y -
-             876801128965234839118530545935732755107147297241756982389990, 1))
-
-    R, x = ring("x", ZZ)
-
-    f, g = x**2 - 1, x**2 - 3*x + 2
-    assert R.dmp_gcd(f, g) == x - 1
-
-    with using(use_heu_gcd=False, fallback_gcd_zz_method='modgcd'):
-        R.dmp_gcd(f, g) == x - 1
-
-    R, x = ring("x", QQ)
-
-    f, g = x**2/2 + x + QQ(1, 2), x/2 + QQ(1, 2)
-
-    assert R.dmp_gcd(f, g) == x + 1
-    with using(use_heu_gcd=False):
-        R.dmp_gcd(f, g) == x + 1
+            assert f.cofactors(g) == (1.0*x, 2.1*y**2 - 2.2*y + 2.1, 1.0*x**2)
 
     R, x, y = ring("x,y", QQ.algebraic_field(sqrt(2)))
 
     f, g = (x + sqrt(2)*y)**2, x + sqrt(2)*y
 
-    assert R.dmp_gcd(f, g) == g
+    assert f.gcd(g) == g
     with using(gcd_aa_method='modgcd'):
-        assert R.dmp_gcd(f, g) == g
+        assert f.gcd(g) == g
+
+    R, x, y, z = ring("x,y,z", ZZ)
+
+    for test in (True, False):
+        with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
+            f, g, h = map(R.from_dense, dmp_fateman_poly_F_1(2, ZZ))
+            H, cff, cfg = f.cofactors(g)
+
+            assert H == h and H*cff == f and H*cfg == g
+
+            f, g, h = map(R.from_dense, dmp_fateman_poly_F_2(2, ZZ))
+            H, cff, cfg = f.cofactors(g)
+
+            assert H == h and H*cff == f and H*cfg == g
+
+            f, g, h = map(R.from_dense, dmp_fateman_poly_F_3(2, ZZ))
+            H, cff, cfg = f.cofactors(g)
+
+            assert H == h and H*cff == f and H*cfg == g
+
+    R, x, y, z, u = ring("x,y,z,u", ZZ)
+
+    for test in (True, False):
+        with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
+            f, g = u**2 + 2*u + 1, 2*u + 2
+
+            assert f.cofactors(g) == (u + 1, u + 1, 2)
+
+            f, g = z**2*u**2 + 2*z**2*u + z**2 + z*u + z, u**2 + 2*u + 1
+            h, cff, cfg = u + 1, z**2*u + z**2 + z, u + 1
+
+            assert f.cofactors(g) == (h, cff, cfg)
+            assert g.cofactors(f) == (h, cfg, cff)
+
+    R, x, y, z, u, v = ring("x,y,z,u,v", ZZ)
+
+    f, g, h = map(R.from_dense, dmp_fateman_poly_F_1(4, ZZ))
+    H, cff, cfg = f.cofactors(g)
+
+    assert H == h and H*cff == f and H*cfg == g
+
+    f, g, h = map(R.from_dense, dmp_fateman_poly_F_3(4, ZZ))
+    H, cff, cfg = f.cofactors(g)
+
+    assert H == h and H*cff == f and H*cfg == g
+
+    R, x, y, z, u, v, a, b = ring("x,y,z,u,v,a,b", ZZ)
+
+    f, g, h = map(R.from_dense, dmp_fateman_poly_F_1(6, ZZ))
+    H, cff, cfg = f.cofactors(g)
+
+    assert H == h and H*cff == f and H*cfg == g
+
+    R, x, y, z, u, v, a, b, c, d = ring("x,y,z,u,v,a,b,c,d", ZZ)
+
+    f, g, h = map(R.from_dense, dmp_fateman_poly_F_1(8, ZZ))
+    H, cff, cfg = f.cofactors(g)
+
+    assert H == h and H*cff == f and H*cfg == g
 
 
 def test_PolyElement_lcm():

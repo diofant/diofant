@@ -9,18 +9,14 @@ from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
                          dmp_ground_TC, dmp_LC, dmp_slice_in, dmp_TC,
                          dmp_to_dict)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
-                         dmp_diff_in, dmp_eval_in, dmp_eval_tail,
-                         dmp_ground_content, dmp_ground_monic,
-                         dmp_ground_primitive, dmp_ground_trunc, dup_decompose,
-                         dup_mirror, dup_real_imag, dup_scale, dup_shift,
-                         dup_transform)
-from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
-                          dmp_inner_subresultants, dmp_prem, dmp_primitive,
-                          dmp_qq_collins_resultant, dmp_qq_heu_gcd,
+                         dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
+                         dmp_ground_trunc, dup_decompose, dup_mirror,
+                         dup_real_imag, dup_scale, dup_shift, dup_transform)
+from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_inner_subresultants,
+                          dmp_prem, dmp_primitive, dmp_qq_collins_resultant,
                           dmp_resultant, dmp_rr_prs_gcd,
-                          dmp_zz_collins_resultant, dmp_zz_heu_gcd,
-                          dmp_zz_modular_resultant, dup_ff_prs_gcd, dup_gcdex,
-                          dup_half_gcdex, dup_invert, dup_rr_prs_gcd)
+                          dmp_zz_collins_resultant, dmp_zz_modular_resultant,
+                          dup_gcdex, dup_half_gcdex, dup_invert)
 from .factortools import (dmp_factor_list, dmp_trial_division,
                           dmp_zz_diophantine, dmp_zz_mignotte_bound,
                           dmp_zz_wang, dmp_zz_wang_hensel_lifting,
@@ -166,9 +162,6 @@ class IPolys:
     def dmp_degree_list(self, f):
         return dmp_degree_list(self.to_dense(f), self.ngens-1)
 
-    def dmp_diff_in(self, f, m, j):
-        return self.from_dense(dmp_diff_in(self.to_dense(f), m, j, self.ngens-1, self.domain))
-
     def dmp_slice_in(self, f, m, n, j=0):
         return self.from_dense(dmp_slice_in(self.to_dense(f), m, n, j, self.ngens-1, self.domain))
 
@@ -273,14 +266,6 @@ class IPolys:
         else:
             return res0
 
-    def dup_rr_prs_gcd(self, f, g):
-        H, F, G = dup_rr_prs_gcd(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
-    def dup_ff_prs_gcd(self, f, g):
-        H, F, G = dup_ff_prs_gcd(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
     def dmp_rr_prs_gcd(self, f, g):
         H, F, G = dmp_rr_prs_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.from_dense(H), self.from_dense(F), self.from_dense(G)
@@ -289,22 +274,6 @@ class IPolys:
         H, F, G = dmp_ff_prs_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.from_dense(H), self.from_dense(F), self.from_dense(G)
 
-    def dmp_zz_heu_gcd(self, f, g):
-        H, F, G = dmp_zz_heu_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
-    def dmp_qq_heu_gcd(self, f, g):
-        H, F, G = dmp_qq_heu_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
-    def dmp_inner_gcd(self, f, g):
-        H, F, G = dmp_inner_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
-    def dmp_gcd(self, f, g):
-        H = dmp_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(H)
-
     def dmp_content(self, f):
         cont = dmp_content(self.to_dense(f), self.ngens-1, self.domain)
         return self.drop(0).from_dense(cont)
@@ -312,14 +281,6 @@ class IPolys:
     def dmp_primitive(self, f):
         cont, prim = dmp_primitive(self.to_dense(f), self.ngens-1, self.domain)
         return self.drop(0).from_dense(cont), self.from_dense(prim)
-
-    def dmp_ground_content(self, f):
-        cont = dmp_ground_content(self.to_dense(f), self.ngens-1, self.domain)
-        return cont
-
-    def dmp_ground_primitive(self, f):
-        cont, prim = dmp_ground_primitive(self.to_dense(f), self.ngens-1, self.domain)
-        return cont, self.from_dense(prim)
 
     def dmp_trial_division(self, f, factors):
         factors = dmp_trial_division(self.to_dense(f), list(map(self.to_dense, factors)), self.ngens-1, self.domain)

@@ -137,7 +137,7 @@ def test_dmp_sqf():
     A = x**4 - 3*x**2 + 6
     D = x**6 - 5*x**4 + 5*x**2 + 4
 
-    f, g = D, R.dmp_sub(A, R.dmp_mul(R.dmp_diff_in(D, 1, 0), y))
+    f, g = D, A - D.diff(x)*y
     res = f.resultant(g)
     h = (4*y**2 + 1).drop(x)
 

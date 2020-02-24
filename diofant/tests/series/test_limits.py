@@ -759,3 +759,9 @@ def test_sympyissue_18501():
 
 def test_sympyissue_18508():
     assert limit(sin(x)/sqrt(1 - cos(x)), x, 0) == sqrt(2)
+
+
+def test_sympyissue_18707():
+    p = Symbol('p', positive=True, real=True)
+
+    assert limit(1/p**n, n, oo) == p**-oo

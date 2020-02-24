@@ -44,6 +44,7 @@ Compatibility breaks
 * Don't export too much from :mod:`~diofant.solvers` to the default namespace, keep only :func:`~diofant.solvers.solvers.solve`, :func:`~diofant.solvers.recurr.rsolve` and :func:`~diofant.solvers.ode.dsolve` functions, see :pull:`921`.
 * Make :func:`~diofant.solvers.recurr.rsolve`'s ``init`` parameter more compatible with :func:`~diofant.solvers.ode.dsolve`'s one, e.g. drop accepting ``init=[1, 2, 3]`` and ``init={0: 1, 1: 2, 2: 3}`` forms, see :pull:`921`.
 * Removed ``dict_merge()``, ``generate_bell()`` and ``reshape()`` functions, see :pull:`921`.
+* Removed ``subs()`` methods from :class:`~diofant.polys.rings.PolyElement` and :class:`~diofant.polys.fields.FracElement`, see :pull:`967`.
 
 Minor changes
 =============
@@ -160,3 +161,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`18501` Extraneous variable in limit result
 * :sympyissue:`18508` NotImplementedError in limit
 * :sympyissue:`18507` Bug in Mul
+* :sympyissue:`18707` There is a problem or limitation when the Limit is calculated

@@ -23,8 +23,8 @@ from .modulargcd import func_field_modgcd, modgcd
 from .monomials import Monomial
 from .orderings import lex
 from .polyconfig import query
-from .polyerrors import (CoercionFailed, ExactQuotientFailed, GeneratorsError,
-                         GeneratorsNeeded, HeuristicGCDFailed,
+from .polyerrors import (CoercionFailed, DomainError, ExactQuotientFailed,
+                         GeneratorsError, GeneratorsNeeded, HeuristicGCDFailed,
                          MultivariatePolynomialError, PolynomialDivisionFailed,
                          PolynomialError)
 from .polyoptions import Domain as DomainOpt
@@ -859,24 +859,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return p
 
     def __radd__(self, other):
-        p = self.copy()
-        if not other:
-            return p
-        ring = self.ring
-        try:
-            other = ring.domain_new(other)
-        except CoercionFailed:
-            return NotImplemented
-        else:
-            zm = ring.zero_monom
-            if zm not in self:
-                p[zm] = other
-            else:
-                if other == -p[zm]:
-                    del p[zm]
-                else:
-                    p[zm] += other
-            return p
+        return self.__add__(other)
 
     def __sub__(self, other):
         """Subtract polynomial other from self.
@@ -941,17 +924,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         -x - y + 4
 
         """
-        ring = self.ring
-        try:
-            other = ring.domain_new(other)
-        except CoercionFailed:
-            return NotImplemented
-        else:
-            p = ring.zero
-            for expv in self:
-                p[expv] = -self[expv]
-            p += other
-            return p
+        return (-self).__add__(other)
 
     def __mul__(self, other):
         """Multiply two polynomials.
@@ -1009,19 +982,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         4*x + 4*y
 
         """
-        p = self.ring.zero
-        if not other:
-            return p
-        try:
-            other = p.ring.domain_new(other)
-        except CoercionFailed:
-            return NotImplemented
-        else:
-            for exp1, v1 in self.items():
-                v = other*v1
-                if v:
-                    p[exp1] = v
-            return p
+        return self.__mul__(other)
 
     def __pow__(self, n):
         """Raise polynomial to power `n`.
@@ -1818,8 +1779,19 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self._gcd_ZZ(other)
         elif ring.domain.is_AlgebraicField:
             return self._gcd_AA(other)
+        elif not ring.domain.is_Exact:
+            try:
+                exact = ring.domain.get_exact()
+            except DomainError:
+                return ring.one, self, other
+
+            f, g = map(lambda x: x.set_domain(exact), (self, other))
+
+            return tuple(map(lambda x: x.set_domain(ring.domain), f.cofactors(g)))
+        elif ring.domain.is_Field:
+            return self.ring.dmp_ff_prs_gcd(self, other)
         else:
-            return ring.dmp_inner_gcd(self, other)
+            return self.ring.dmp_rr_prs_gcd(self, other)
 
     def _gcd_ZZ(self, other):
         if query('USE_HEU_GCD'):
@@ -1947,7 +1919,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         i = ring.index(x)
         x = ring.monomial_basis(i)
         x = x**m
-        g = ring.zero
+        g = ring.zero if m else self.compose(ring.gens[i], ring.zero)
         for expv, coeff in self.items():
             if expv[i]:
                 e = expv/x
@@ -2007,56 +1979,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             for monom, coeff in f.items():
                 n, monom = monom[i], monom[:i] + monom[i+1:]
-                coeff = coeff*a**n
-
-                if monom in poly:
-                    coeff += poly[monom]
-
-                    if coeff:
-                        poly[monom] = coeff
-                    else:
-                        del poly[monom]
-                else:
-                    if coeff:
-                        poly[monom] = coeff
-
-            return poly
-
-    def subs(self, x):
-        f = self
-        a = None
-
-        if isinstance(x, dict):
-            return f.subs(list(x.items()))
-        elif isinstance(x, (set, frozenset)):
-            return f.subs(sorted(x))
-        elif isinstance(x, (list, tuple)):
-            if len(x) == 0:
-                return f
-            x = list(x)
-            while len(x) > 1:
-                f = f.subs([x[0]])
-                del x[0]
-            x, a = x[0]
-        else:
-            raise ValueError("subs argument should be an iterable of pairs")
-
-        ring = f.ring
-        i = ring.index(x)
-        a = ring.domain.convert(a)
-
-        if ring.is_univariate:
-            result = ring.domain.zero
-
-            for (n,), coeff in f.items():
-                result += coeff*a**n
-
-            return ring.ground_new(result)
-        else:
-            poly = ring.zero
-
-            for monom, coeff in f.items():
-                n, monom = monom[i], monom[:i] + (0,) + monom[i+1:]
                 coeff = coeff*a**n
 
                 if monom in poly:
