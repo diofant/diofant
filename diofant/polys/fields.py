@@ -226,10 +226,6 @@ class FractionField(Field, CompositeDomain):
         """Returns True if ``LC(a)`` is negative."""
         return self.domain.is_negative(a.numerator.LC)
 
-    def factorial(self, a):
-        """Returns factorial of ``a``."""
-        return self.dtype(self.domain.factorial(a))
-
 
 @functools.total_ordering
 class FracElement(DomainElement, CantSympify):

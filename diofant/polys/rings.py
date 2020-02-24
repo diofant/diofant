@@ -458,10 +458,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         """Returns LCM of ``a`` and ``b``."""
         return a.lcm(b)
 
-    def factorial(self, a):
-        """Returns factorial of ``a``."""
-        return self(self.domain.factorial(a))
-
 
 class PolyElement(DomainElement, CantSympify, dict):
     """Element of multivariate distributed polynomial ring.

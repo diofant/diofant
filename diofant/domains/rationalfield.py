@@ -4,7 +4,7 @@ from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
 from .field import Field
 from .groundtypes import (DiofantRational, GMPYRational, PythonRational,
-                          gmpy_factorial, gmpy_qdiv, python_factorial)
+                          gmpy_qdiv)
 from .simpledomain import SimpleDomain
 
 
@@ -74,10 +74,6 @@ class PythonRationalField(RationalField):
         from .integerring import PythonIntegerRing
         return PythonIntegerRing()
 
-    def factorial(self, a):
-        """Returns factorial of `a`."""
-        return self.dtype(python_factorial(int(a)))
-
 
 class GMPYRationalField(RationalField):
     """Rational field based on GMPY's rationals."""
@@ -99,10 +95,6 @@ class GMPYRationalField(RationalField):
     def quo(self, a, b):
         """Quotient of `a` and `b`, implies `__truediv__`."""
         return self.dtype(gmpy_qdiv(a, b))
-
-    def factorial(self, a):
-        """Returns factorial of `a`."""
-        return self.dtype(gmpy_factorial(int(a)))
 
 
 QQ_python = PythonRationalField()

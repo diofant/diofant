@@ -575,8 +575,6 @@ def test_arithmetics():
     assert QQ.rem(QQ(2, 3), QQ(4, 7)) == 0
     assert QQ.div(QQ(2, 3), QQ(4, 7)) == (QQ(7, 6), 0)
 
-    assert QQ_python.factorial(QQ_python(7, 2)) == 6
-
     assert CC.gcd(CC(1), CC(2)) == 1
     assert CC.lcm(CC(1), CC(2)) == 2
 
