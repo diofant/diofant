@@ -253,7 +253,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             poly[monom] = coeff
         return poly
 
-    def ring_new(self, element):
+    def __call__(self, element):
         if isinstance(element, PolyElement):
             if self == element.ring:
                 return element
@@ -274,8 +274,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             return self.convert(element)
         else:
             return self.ground_new(element)
-
-    __call__ = ring_new
 
     def from_dict(self, element):
         domain_new = self.domain_new
@@ -325,7 +323,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             raise ValueError("expected an expression convertible to a "
                              "polynomial in %s, got %s" % (self, expr))
         else:
-            return self.ring_new(poly)
+            return self(poly)
 
     def index(self, gen):
         """Compute index of ``gen`` in ``self.gens``."""
@@ -2011,7 +2009,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 raise ValueError("expected a generator, value pair a sequence of such pairs")
 
         for k, (x, g) in enumerate(replacements):
-            replacements[k] = (gens_map[x], ring.ring_new(g))
+            replacements[k] = (gens_map[x], ring(g))
 
         for monom, coeff in self.items():
             monom = list(monom)

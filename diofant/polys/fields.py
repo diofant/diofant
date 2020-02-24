@@ -132,7 +132,7 @@ class FractionField(Field, CompositeDomain):
             denom = self.ring.ground_new(denom)
             return self.raw_new(numer, denom)
         elif isinstance(element, tuple) and len(element) == 2:
-            numer, denom = list(map(self.ring.ring_new, element))
+            numer, denom = list(map(self.ring.__call__, element))
             numer, denom = numer.cancel(denom)
             return self.raw_new(numer, denom)
         elif isinstance(element, str):
