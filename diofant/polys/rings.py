@@ -826,11 +826,8 @@ class PolyElement(DomainElement, CantSympify, dict):
             get = p.get
             zero = ring.domain.zero
             for k, v in other.items():
-                v = get(k, zero) + v
-                if v:
-                    p[k] = v
-                else:
-                    del p[k]
+                p[k] = get(k, zero) + v
+            p._strip_zero()
             return p
         elif isinstance(other, PolyElement):
             if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
@@ -841,20 +838,11 @@ class PolyElement(DomainElement, CantSympify, dict):
                 return NotImplemented
 
         try:
-            other = ring.domain_new(other)
+            other = ring.ground_new(other)
         except CoercionFailed:
             return NotImplemented
-        else:
-            p = self.copy()
-            zm = ring.zero_monom
-            if zm not in self:
-                p[zm] = other
-            else:
-                if other == -p[zm]:
-                    del p[zm]
-                else:
-                    p[zm] += other
-            return p
+
+        return self.__add__(other)
 
     def __radd__(self, other):
         return self.__add__(other)
@@ -880,11 +868,8 @@ class PolyElement(DomainElement, CantSympify, dict):
             get = p.get
             zero = ring.domain.zero
             for k, v in other.items():
-                v = get(k, zero) - v
-                if v:
-                    p[k] = v
-                else:
-                    del p[k]
+                p[k] = get(k, zero) - v
+            p._strip_zero()
             return p
         elif isinstance(other, PolyElement):
             if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
@@ -895,20 +880,11 @@ class PolyElement(DomainElement, CantSympify, dict):
                 return NotImplemented
 
         try:
-            other = ring.domain_new(other)
+            other = ring.ground_new(other)
         except CoercionFailed:
             return NotImplemented
-        else:
-            p = self.copy()
-            zm = ring.zero_monom
-            if zm not in self:
-                p[zm] = -other
-            else:
-                if other == p[zm]:
-                    del p[zm]
-                else:
-                    p[zm] -= other
-            return p
+
+        return self.__sub__(other)
 
     def __rsub__(self, other):
         """Substract self from other, with other convertible to the coefficient domain.
@@ -959,15 +935,11 @@ class PolyElement(DomainElement, CantSympify, dict):
                 return NotImplemented
 
         try:
-            other = ring.domain_new(other)
+            other = ring.ground_new(other)
         except CoercionFailed:
             return NotImplemented
-        else:
-            for exp1, v1 in self.items():
-                v = v1*other
-                p[exp1] = v
-            p._strip_zero()
-            return p
+
+        return self.__mul__(other)
 
     def __rmul__(self, other):
         """Multiply other to self with other in the coefficient domain of self.
