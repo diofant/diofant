@@ -966,6 +966,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             for exp1, v1 in self.items():
                 v = v1*other
                 p[exp1] = v
+            p._strip_zero()
             return p
 
     def __rmul__(self, other):
