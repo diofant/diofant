@@ -6,7 +6,7 @@ import re
 from ..core import Add, Mul, Pow, nan, oo, zoo
 from ..core.compatibility import default_sort_key
 from ..core.exprtools import decompose_power
-from .polyerrors import GeneratorsError, GeneratorsNeeded, PolynomialError
+from .polyerrors import GeneratorsNeeded, PolynomialError
 from .polyoptions import build_options
 
 
@@ -380,23 +380,15 @@ def _dict_reorder(rep, gens, new_gens):
     coeffs = rep.values()
 
     new_monoms = [[] for _ in range(len(rep))]
-    used_indices = set()
 
     for gen in new_gens:
         try:
             j = gens.index(gen)
-            used_indices.add(j)
 
             for M, new_M in zip(monoms, new_monoms):
                 new_M.append(M[j])
         except ValueError:
             for new_M in new_monoms:
                 new_M.append(0)
-
-    for i, _ in enumerate(gens):
-        if i not in used_indices:
-            for monom in monoms:
-                if monom[i]:
-                    raise GeneratorsError("unable to drop generators")
 
     return map(tuple, new_monoms), coeffs

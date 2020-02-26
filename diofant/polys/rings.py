@@ -430,6 +430,9 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             return
 
     def _from_FractionField(self, a, K0):
+        if self.domain == K0:
+            return self.ground_new(a)
+
         (q,), r = a.numerator.div([a.denominator])
 
         if r.is_zero:
@@ -516,11 +519,13 @@ class PolyElement(DomainElement, CantSympify, dict):
     def set_ring(self, new_ring):
         if self.ring == new_ring:
             return self
-        elif self.ring.symbols != new_ring.symbols:
+        elif self.ring == new_ring.domain:
+            return new_ring.ground_new(self)
+        elif set(new_ring.symbols).issuperset(self.ring.symbols):
             terms = zip(*_dict_reorder(self, self.ring.symbols, new_ring.symbols))
             return new_ring.from_terms(terms)
         else:
-            return new_ring.from_dict(self)
+            raise CoercionFailed("Can't set element ring to %s" % new_ring)
 
     def set_domain(self, new_domain):
         if self.ring.domain == new_domain:
@@ -586,6 +591,8 @@ class PolyElement(DomainElement, CantSympify, dict):
             return not self
         elif isinstance(other, self.ring.dtype):
             return dict.__eq__(self, other)
+        elif isinstance(other, self.ring.field.dtype):
+            return other.__eq__(self)
         elif len(self) > 1:
             return False
         else:
@@ -822,31 +829,21 @@ class PolyElement(DomainElement, CantSympify, dict):
         2*x**2 + 2*y**2
 
         """
-        if not other:
-            return self.copy()
         ring = self.ring
-        if isinstance(other, ring.dtype):
-            p = self.copy()
-            get = p.get
-            zero = ring.domain.zero
-            for k, v in other.items():
-                p[k] = get(k, zero) + v
-            p._strip_zero()
-            return p
-        elif isinstance(other, PolyElement):
-            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
-                pass
-            elif isinstance(other.ring.domain, PolynomialRing) and other.ring.domain.ring == ring:
-                return other.__radd__(self)
-            else:
+        if not isinstance(other, ring.dtype):
+            try:
+                other = ring.convert(other)
+            except CoercionFailed:
                 return NotImplemented
-
-        try:
-            other = ring.ground_new(other)
-        except CoercionFailed:
-            return NotImplemented
-
-        return self.__add__(other)
+        p = self.copy()
+        if not other:
+            return p
+        get = p.get
+        zero = ring.domain.zero
+        for k, v in other.items():
+            p[k] = get(k, zero) + v
+        p._strip_zero()
+        return p
 
     def __radd__(self, other):
         return self.__add__(other)
@@ -864,31 +861,21 @@ class PolyElement(DomainElement, CantSympify, dict):
         -x*y + x
 
         """
-        if not other:
-            return self.copy()
         ring = self.ring
-        if isinstance(other, ring.dtype):
-            p = self.copy()
-            get = p.get
-            zero = ring.domain.zero
-            for k, v in other.items():
-                p[k] = get(k, zero) - v
-            p._strip_zero()
-            return p
-        elif isinstance(other, PolyElement):
-            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
-                pass
-            elif isinstance(other.ring.domain, PolynomialRing) and other.ring.domain.ring == ring:
-                return other.__rsub__(self)
-            else:
+        if not isinstance(other, ring.dtype):
+            try:
+                other = ring.convert(other)
+            except CoercionFailed:
                 return NotImplemented
-
-        try:
-            other = ring.ground_new(other)
-        except CoercionFailed:
-            return NotImplemented
-
-        return self.__sub__(other)
+        p = self.copy()
+        if not other:
+            return p
+        get = p.get
+        zero = ring.domain.zero
+        for k, v in other.items():
+            p[k] = get(k, zero) - v
+        p._strip_zero()
+        return p
 
     def __rsub__(self, other):
         """Substract self from other, with other convertible to the coefficient domain.
@@ -918,32 +905,22 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         ring = self.ring
+        if not isinstance(other, ring.dtype):
+            try:
+                other = ring.convert(other)
+            except CoercionFailed:
+                return NotImplemented
         p = ring.zero
         if not self or not other:
             return p
-        elif isinstance(other, ring.dtype):
-            get = p.get
-            zero = ring.domain.zero
-            for exp1, v1 in self.items():
-                for exp2, v2 in other.items():
-                    exp = exp1*exp2
-                    p[exp] = get(exp, zero) + v1*v2
-            p._strip_zero()
-            return p
-        elif isinstance(other, PolyElement):
-            if isinstance(ring.domain, PolynomialRing) and ring.domain.ring == other.ring:
-                pass
-            elif isinstance(other.ring.domain, PolynomialRing) and other.ring.domain.ring == ring:
-                return other.__rmul__(self)
-            else:
-                return NotImplemented
-
-        try:
-            other = ring.ground_new(other)
-        except CoercionFailed:
-            return NotImplemented
-
-        return self.__mul__(other)
+        get = p.get
+        zero = ring.domain.zero
+        for exp1, v1 in self.items():
+            for exp2, v2 in other.items():
+                exp = exp1*exp2
+                p[exp] = get(exp, zero) + v1*v2
+        p._strip_zero()
+        return p
 
     def __rmul__(self, other):
         """Multiply other to self with other in the coefficient domain of self.

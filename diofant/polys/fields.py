@@ -368,9 +368,6 @@ class FracElement(DomainElement, CantSympify):
         return self.__radd__(other)
 
     def __radd__(self, other):
-        if isinstance(other, self.field.ring.dtype):
-            return self.new(self.numerator + self.denominator*other, self.denominator)
-
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
@@ -422,9 +419,6 @@ class FracElement(DomainElement, CantSympify):
                             self.denominator*other_denom)
 
     def __rsub__(self, other):
-        if isinstance(other, self.field.ring.dtype):
-            return self.new(-self.numerator + self.denominator*other, self.denominator)
-
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
@@ -462,9 +456,6 @@ class FracElement(DomainElement, CantSympify):
         return self.__rmul__(other)
 
     def __rmul__(self, other):
-        if isinstance(other, self.field.ring.dtype):
-            return self.new(self.numerator*other, self.denominator)
-
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
