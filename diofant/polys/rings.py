@@ -415,6 +415,10 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
     def _from_RealField(self, a, K0):
         return self(self.domain.convert(a, K0))
 
+    def _from_ExpressionDomain(self, a, K0):
+        if self.domain == K0:
+            return self(a)
+
     def _from_AlgebraicField(self, a, K0):
         if self.domain == K0:
             return self(a)

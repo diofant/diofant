@@ -588,6 +588,8 @@ def test_PolyElement___add__():
 
     R, x, y = ring('x, y', ZZ)
 
+    pytest.raises(CoercionFailed, lambda: R.convert(EX(pi)))
+
     p = x**4 + 2*y
     m = (1, 2)
     p1 = p._iadd_monom((m, 5))
