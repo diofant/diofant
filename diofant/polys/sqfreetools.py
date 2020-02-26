@@ -188,12 +188,13 @@ def dmp_gf_sqf_list(f, u, K):
 
 
 def dmp_rr_yun0_sqf_list(f, u, K):
-    """Compute square-free decomposition of ``f`` in zero-characteristic ring ``K``.
+    """Compute square-free decomposition of ``f`` in zero-characteristic ring ``K[X]``.
 
     References
     ==========
 
-    * :cite:`LeeM2013factor`, page 8
+    * :cite:`Geddes1992algorithms`, algorithm 8.2.
+    * :cite:`LeeM2013factor`, algorithm 3.1.
 
     """
     if dmp_ground_p(f, None, u):
