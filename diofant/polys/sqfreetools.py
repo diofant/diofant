@@ -17,13 +17,11 @@ def dmp_sqf_p(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> _, x, y = ring("x y", ZZ)
 
-    >>> R.dmp_sqf_p(R(0))
-    True
-    >>> R.dmp_sqf_p((x + y)**2)
+    >>> ((x + y)**2).is_squarefree
     False
-    >>> R.dmp_sqf_p(x**2 + y**2)
+    >>> (x**2 + y**2).is_squarefree
     True
 
     """
@@ -48,10 +46,9 @@ def dmp_sqf_norm(f, u, K):
     Examples
     ========
 
-    >>> K = QQ.algebraic_field(I)
-    >>> R, x, y = ring("x y", K)
+    >>> _, x, y = ring("x y", QQ.algebraic_field(I))
 
-    >>> R.dmp_sqf_norm(x*y + y**2)
+    >>> (x*y + y**2).sqf_norm()
     (1, x*y - I*x + y**2 - 3*I*y - 2,
      x**2*y**2 + x**2 + 2*x*y**3 + 2*x*y + y**4 + 5*y**2 + 4)
 
@@ -85,9 +82,9 @@ def dmp_sqf_part(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> _, x, y = ring("x y", ZZ)
 
-    >>> R.dmp_sqf_part(x**3 + 2*x**2*y + x*y**2)
+    >>> (x**3 + 2*x**2*y + x*y**2).sqf_part()
     x**2 + x*y
 
     """
@@ -124,7 +121,7 @@ def dmp_gf_sqf_list(f, u, K):
     Examples
     ========
 
-    >>> R, x = ring('x', FF(11))
+    >>> _, x = ring('x', FF(11))
     >>> f = x**11 + 1
 
     Note that:
@@ -135,7 +132,7 @@ def dmp_gf_sqf_list(f, u, K):
     This phenomenon doesn't happen in characteristic zero. However we can
     still compute square-free decomposition of ``f``:
 
-    >>> R.dmp_sqf_list(f)
+    >>> f.sqf_list()
     (1 mod 11, [(x + 1 mod 11, 11)])
 
     References
@@ -234,9 +231,9 @@ def dmp_sqf_list(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> _, x, y = ring("x y", ZZ)
 
-    >>> R.dmp_sqf_list(x**5 + 2*x**4*y + x**3*y**2)
+    >>> (x**5 + 2*x**4*y + x**3*y**2).sqf_list()
     (1, [(x + y, 2), (x, 3)])
 
     """
