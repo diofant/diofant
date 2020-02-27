@@ -174,6 +174,10 @@ def test_dup_zz_factor():
     for i in range(20):
         assert f.factor_list() == (1, [(f, 1)])
 
+    f = x**5 - x**3 - x**2 + 1
+
+    assert f.factor_list() == (1, [(x + 1, 1), (x - 1, 2), (x**2 + x + 1, 1)])
+
     assert (x**2 + 2*x + 2).factor_list() == (1, [(x**2 + 2*x + 2, 1)])
 
     with using(use_irreducible_in_factor=True):
@@ -754,3 +758,13 @@ def test_PolyElement_is_irreducible():
     assert (x**2 + 2*x + 1).is_irreducible is False
     assert ((x - 2*y)*(x + y)).is_irreducible is False
     assert (x**2 + y**2).is_irreducible is True
+
+    R, x, y, z = ring("x,y,z", QQ)
+
+    assert (x**2 + x + 1).is_irreducible
+    assert (x**2 + 2*x + 1).is_irreducible is False
+
+    R, x = ring("x", FF(11))
+
+    assert (7*x + 3).is_irreducible
+    assert (7*x**2 + 3*x + 1).is_irreducible is False
