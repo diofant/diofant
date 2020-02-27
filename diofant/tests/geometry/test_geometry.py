@@ -612,13 +612,14 @@ def test_polygon():
     pt1 = Point(half, half)
     pt2 = Point(1, 1)
 
-    '''Polygon to Point'''
+    # Polygon to Point
     assert p1.distance(pt1) == half
     assert p1.distance(pt2) == 0
     assert p2.distance(pt1) == Rational(3, 4)
     assert p3.distance(pt2) == sqrt(2)/2
 
-    '''Polygon to Polygon'''
+    # Polygon to Polygon
+
     # p1.distance(p2) emits a warning
     # First, test the warning
     warnings.filterwarnings("error",

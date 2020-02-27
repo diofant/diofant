@@ -308,12 +308,12 @@ def diop_solve(eq, param=symbols("t", integer=True)):
         return _diop_general_sum_of_even_powers(var, p, -int(coeff[1]), limit=oo)
 
     if eq_type is not None and eq_type not in diop_known:
-        raise ValueError(filldedent('''
+        raise ValueError(filldedent("""
     Alhough this type of equation was identified, it is not yet
     handled. It should, however, be listed in `diop_known` at the
     top of this file. Developers should see comments at the end of
     `classify_diop`.
-            '''))  # pragma: no cover
+            """))  # pragma: no cover
     else:
         raise NotImplementedError('No solver has been written for %s.' % eq_type)
 
@@ -410,10 +410,10 @@ def classify_diop(eq, _dict=True):
     # if a solver can be written for it,
     #  * a dedicated handler should be written (e.g. diop_linear)
     #  * it should be passed to that handler in diop_solve
-    raise NotImplementedError(filldedent('''
+    raise NotImplementedError(filldedent("""
         This equation is not yet recognized or else has not been
         simplified sufficiently to put it in a form recognized by
-        diop_classify().'''))
+        diop_classify()."""))
 
 
 classify_diop.__doc__ += """
@@ -502,7 +502,7 @@ def _diop_linear(var, coeff, param):
         else:
             return None,
 
-    '''
+    """
     base_solution_linear() can solve diophantine equations of the form:
 
     a*x + b*y == c
@@ -542,7 +542,7 @@ def _diop_linear(var, coeff, param):
 
     The arrays A and B are the arrays of integers used for
     'a' and 'b' in each of the n-1 bivariate equations we solve.
-    '''
+    """
 
     A = [coeff[v] for v in var]
     B = []
@@ -557,7 +557,7 @@ def _diop_linear(var, coeff, param):
             B.insert(0, gcd)
     B.append(A[-1])
 
-    '''
+    """
     Consider the trivariate linear equation:
 
     4*x_0 + 6*x_1 + 3*x_2 == 2
@@ -608,7 +608,7 @@ def _diop_linear(var, coeff, param):
 
     This method is generalized for many variables, below.
 
-    '''
+    """
 
     solutions = []
     for i in range(len(B)):
@@ -2024,10 +2024,10 @@ def _diop_ternary_quadratic_normal(var, coeff):
         assert len([k for k in coeff if coeff[k]]) == 3
         assert all(coeff[i**2] for i in var)
     except AssertionError:
-        raise ValueError(filldedent('''
+        raise ValueError(filldedent("""
     coeff dict is not consistent with assumption of this routine:
     coefficients should be those of an expression in the form
-    a*x**2 + b*y**2 + c*z**2 where a*b*c != 0.'''))
+    a*x**2 + b*y**2 + c*z**2 where a*b*c != 0."""))
 
     (sqf_of_a, sqf_of_b, sqf_of_c), (a_1, b_1, c_1), (a_2, b_2, c_2) = sqf_normal(a, b, c, steps=True)
 
@@ -2906,8 +2906,8 @@ def power_representation(n, p, k, zeros=False):
         return
 
     if p < 1 or k < 1:
-        raise ValueError(filldedent('''
-    Expecting positive integers for `(p, k)`, but got `(%s, %s)`''' % (p, k)))
+        raise ValueError(filldedent("""
+    Expecting positive integers for `(p, k)`, but got `(%s, %s)`""" % (p, k)))
 
     if n == 0:
         if zeros:

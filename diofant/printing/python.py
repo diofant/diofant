@@ -62,7 +62,7 @@ def python(expr, **settings):
                         newsymbolname not in printer.functions):
                     renamings[Symbol(symbolname)] = Symbol(newsymbolname)
                     break
-        result += newsymbolname + ' = Symbol(\'' + symbolname + '\')\n'
+        result += newsymbolname + " = Symbol('" + symbolname + "')\n"
 
     for functionname in printer.functions:
         newfunctionname = functionname
@@ -74,7 +74,7 @@ def python(expr, **settings):
                         newfunctionname not in printer.functions):
                     renamings[Function(functionname)] = Function(newfunctionname)
                     break
-        result += newfunctionname + ' = Function(\'' + functionname + '\')\n'
+        result += newfunctionname + " = Function('" + functionname + "')\n"
 
     if not len(renamings) == 0:
         exprp = expr.subs(renamings)

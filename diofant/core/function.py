@@ -478,9 +478,9 @@ class Function(Application, Expr):
 
         """
         from ..utilities.misc import filldedent
-        raise PoleError(filldedent('''
+        raise PoleError(filldedent("""
             Asymptotic expansion of %s around %s is
-            not implemented.''' % (type(self), args0)))
+            not implemented.""" % (type(self), args0)))
 
     def _eval_nseries(self, x, n, logx):
         """
@@ -933,9 +933,9 @@ class Derivative(Expr):
             variables = expr.free_symbols
             if len(variables) != 1:
                 from ..utilities.misc import filldedent
-                raise ValueError(filldedent('''
+                raise ValueError(filldedent("""
                     The variable(s) of differentiation
-                    must be supplied to differentiate %s''' % expr))
+                    must be supplied to differentiate %s""" % expr))
 
         # Standardize the variables by sympifying them and making appending a
         # count of 1 if there is only one variable: diff(e,x)->diff(e,x,1).
@@ -967,8 +967,8 @@ class Derivative(Expr):
                 from ..utilities.misc import filldedent
                 last_digit = int(str(count)[-1])
                 ordinal = 'st' if last_digit == 1 else 'nd' if last_digit == 2 else 'rd' if last_digit == 3 else 'th'
-                raise ValueError(filldedent('''
-                Can\'t calculate %s%s derivative wrt %s.''' % (count, ordinal, v)))
+                raise ValueError(filldedent("""
+                Can\'t calculate %s%s derivative wrt %s.""" % (count, ordinal, v)))
 
             if all_zero and not count == 0:
                 all_zero = False

@@ -362,8 +362,14 @@ def test_transform():
     assert a.transform(b, x) == a
     assert a.transform(x, y) == Integral(exp(-y**2), (y, -oo, oo))
 
-    pytest.raises(ValueError, lambda: Integral(cos(x**2 - 1),
-                                               (x, 0, 1)).transform(x**2 - 1, y))
+    i2 = Integral(cos(x**2 - 1), (x, 0, y))
+    i = i2.subs({y: 1})
+
+    pytest.raises(ValueError, lambda: i.transform(x**2 - 1, y))
+    pytest.raises(ValueError, lambda: i.transform(x, y*z))
+    pytest.raises(ValueError, lambda: i.transform(x, (y, y + z)))
+    pytest.raises(ValueError, lambda: i2.transform(x, (z*y, y)))
+    pytest.raises(ValueError, lambda: i.transform(x, (sin(y), y)))
 
 
 def test_sympyissue_4052():
