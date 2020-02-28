@@ -111,45 +111,19 @@ def dmp_sqf_part(f, u, K):
         return dmp_ground_primitive(sqf, u, K)[1]
 
 
-def dmp_gf_sqf_list(f, u, K):
-    """Compute square-free decomposition of ``f`` in ``GF(p)[X]``.
-
-    Returns the leading coefficient of ``f`` and a square-free decomposition
-    ``f_1**e_1 f_2**e_2 ... f_k**e_k`` such that all ``f_i`` are monic
-    polynomials and ``(f_i, f_j)`` for ``i != j`` are co-prime.
-
-    Examples
-    ========
-
-    >>> _, x = ring('x', FF(11))
-    >>> f = x**11 + 1
-
-    Note that:
-
-    >>> f.diff()
-    0 mod 11
-
-    This phenomenon doesn't happen in characteristic zero. However we can
-    still compute square-free decomposition of ``f``:
-
-    >>> f.sqf_list()
-    (1 mod 11, [(x + 1 mod 11, 11)])
+def dup_gf_musser_sqf_list(f, K):
+    """Compute square-free decomposition of the monic ``f`` in ``GF(p^m)[x]``.
 
     References
     ==========
 
-    * :cite:`Geddes1992algorithms`
+    * :cite:`Geddes1992algorithms`, algorithm 8.3.
 
     """
-    if u:
-        raise NotImplementedError('multivariate polynomials over finite fields')
-
     n, sqf, factors, r = 1, False, [], int(K.characteristic)
 
-    lc, f = dmp_ground_primitive(f, 0, K)
-
     if dmp_degree_in(f, 0, 0) < 1:
-        return lc, []
+        return factors
 
     while True:
         F = dmp_diff_in(f, 1, 0, 0, K)
@@ -184,7 +158,34 @@ def dmp_gf_sqf_list(f, u, K):
         else:
             break
 
-    return lc, factors
+    return factors
+
+
+def dmp_gf_sqf_list(f, u, K):
+    """Compute square-free decomposition of the monic ``f`` in ``GF(p^m)[X]``.
+
+    Examples
+    ========
+
+    >>> _, x = ring('x', FF(11))
+    >>> f = x**11 + 1
+
+    Note that:
+
+    >>> f.diff()
+    0 mod 11
+
+    This phenomenon doesn't happen in characteristic zero. However we can
+    still compute square-free decomposition of ``f``:
+
+    >>> f.sqf_list()
+    (1 mod 11, [(x + 1 mod 11, 11)])
+
+    """
+    if not u:
+        return dup_gf_musser_sqf_list(f, K)
+
+    raise NotImplementedError('multivariate polynomials over finite fields')
 
 
 def dmp_rr_yun0_sqf_list(f, u, K):
@@ -245,6 +246,6 @@ def dmp_sqf_list(f, u, K):
         coeff, f = dmp_ground_primitive(f, u, K)
 
     if K.is_FiniteField:
-        return coeff, dmp_gf_sqf_list(f, u, K)[1]
+        return coeff, dmp_gf_sqf_list(f, u, K)
 
     return coeff, dmp_rr_yun0_sqf_list(f, u, K)
