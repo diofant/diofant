@@ -103,3 +103,21 @@ def test_dup_gf_irreducible_p():
             assert dup_gf_irreducible_p(f, R.domain) is True
             assert dup_gf_irreducible_p(g, R.domain) is True
             assert dup_gf_irreducible_p(h, R.domain) is False
+
+    F9 = FF(9)
+    R, x = ring('x', F9)
+
+    f = R.to_dense(x**3 + F9(8)*x**2 + F9(8)*x + F9(4))
+
+    for method in ('ben-or', 'rabin'):
+        with using(gf_irred_method=method):
+            assert dup_gf_irreducible_p(f, R.domain) is False
+
+    F27 = FF(27)
+    R, x = ring('x', F27)
+
+    f = R.to_dense(x**3 + F27(8)*x**2 + F27(19)*x + F27(24))
+
+    for method in ('ben-or', 'rabin'):
+        with using(gf_irred_method=method):
+            assert dup_gf_irreducible_p(f, R.domain) is True

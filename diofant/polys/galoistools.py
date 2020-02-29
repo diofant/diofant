@@ -164,7 +164,7 @@ def dup_gf_random(n, K):
 
 def dup_gf_irreducible(n, K):
     """
-    Generate random irreducible polynomial of degree ``n`` in ``GF(p)[x]``.
+    Generate random irreducible polynomial of degree ``n`` in ``GF(q)[x]``.
 
     Examples
     ========
@@ -203,7 +203,7 @@ def dup_gf_irred_p_ben_or(f, K):
     * :cite:`Ben-Or1981ff`
 
     """
-    n, p = dmp_degree_in(f, 0, 0), K.characteristic
+    n, q = dmp_degree_in(f, 0, 0), K.order
 
     if n <= 1:
         return True
@@ -211,7 +211,7 @@ def dup_gf_irred_p_ben_or(f, K):
     x = [K.one, K.zero]
     f = dmp_ground_monic(f, 0, K)
 
-    H = h = dup_gf_pow_mod(x, p, f, K)
+    H = h = dup_gf_pow_mod(x, q, f, K)
 
     for i in range(n//2):
         g = dmp_sub(h, x, 0, K)
@@ -240,8 +240,13 @@ def dup_gf_irred_p_rabin(f, K):
     >>> dup_gf_irred_p_rabin(f, R.domain)
     False
 
+    References
+    ==========
+
+    * :cite:`Gathen1999modern`, algorithm 14.36
+
     """
-    n, p = dmp_degree_in(f, 0, 0), K.characteristic
+    n, q = dmp_degree_in(f, 0, 0), K.order
 
     if n <= 1:
         return True
@@ -251,7 +256,7 @@ def dup_gf_irred_p_rabin(f, K):
 
     indices = {n//d for d in factorint(n)}
 
-    H = h = dup_gf_pow_mod(x, p, f, K)
+    H = h = dup_gf_pow_mod(x, q, f, K)
 
     for i in range(1, n):
         if i in indices:
@@ -273,7 +278,7 @@ _irred_methods = {
 
 def dup_gf_irreducible_p(f, K):
     """
-    Test irreducibility of a polynomial ``f`` in ``GF(p)[x]``.
+    Test irreducibility of a polynomial ``f`` in ``GF(q)[x]``.
 
     Examples
     ========
