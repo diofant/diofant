@@ -120,43 +120,32 @@ def dup_gf_musser_sqf_list(f, K):
     * :cite:`Geddes1992algorithms`, algorithm 8.3.
 
     """
-    n, sqf, factors, r = 1, False, [], int(K.characteristic)
+    n, factors, p = 1, [], K.characteristic
 
-    if dmp_degree_in(f, 0, 0) < 1:
-        return factors
+    while not dmp_ground_p(f, None, 0):
+        df = dmp_diff_in(f, 1, 0, 0, K)
 
-    while True:
-        F = dmp_diff_in(f, 1, 0, 0, K)
-
-        if F != []:
-            g = dmp_gcd(f, F, 0, K)
+        if not dmp_zero_p(df, 0):
+            g = dmp_gcd(f, df, 0, K)
             h = dmp_quo(f, g, 0, K)
-
+            f = g
             i = 1
 
-            while h != [K.one]:
-                G = dmp_gcd(g, h, 0, K)
-                H = dmp_quo(h, G, 0, K)
+            while not dmp_one_p(h, 0, K):
+                g = dmp_gcd(f, h, 0, K)
+                h = dmp_quo(h, g, 0, K)
 
-                if dmp_degree_in(H, 0, 0) > 0:
-                    factors.append((H, i*n))
+                if dmp_degree_in(h, 0, 0) > 0:
+                    factors.append((h, i*n))
 
-                g, h, i = dmp_quo(g, G, 0, K), G, i + 1
+                f, h, i = dmp_quo(f, g, 0, K), g, i + 1
 
-            if g == [K.one]:
-                sqf = True
-            else:
-                f = g
+        d = dmp_degree_in(f, 0, 0) // p
+        n *= p
 
-        if not sqf:
-            d = dmp_degree_in(f, 0, 0) // r
-
-            for i in range(d + 1):
-                f[i] = f[i*r]
-
-            f, n = f[:d + 1], n*r
-        else:
-            break
+        for i in range(d + 1):
+            f[i] = f[i*p]
+        del f[d + 1:]
 
     return factors
 
