@@ -450,7 +450,7 @@ def dup_gf_Qmatrix(f, K):
 
 def dup_gf_Qbasis(Q, K):
     """
-    Compute a basis of the kernel of ``Q``.
+    Compute a basis of the kernel of ``Q - I``.
 
     Examples
     ========
@@ -465,48 +465,42 @@ def dup_gf_Qbasis(Q, K):
     >>> dup_gf_Qbasis(dup_gf_Qmatrix(f, R.domain), R.domain)
     [[1 mod 5, 0 mod 5]]
 
+    References
+    ==========
+
+    * :cite:`Knuth1985seminumerical`, section 4.6.2, algorithm N.
+
     """
     Q, n = [list(q) for q in Q], len(Q)
+    for k in range(n):
+        Q[k][k] -= K.one
+
+    c, basis = [-1]*n, []
 
     for k in range(n):
-        Q[k][k] = Q[k][k] - K.one
+        for j in range(n):
+            if Q[k][j] and c[j] < 0:
+                c[j] = k
 
-    for k in range(n):
-        for i in range(k, n):
-            if Q[k][i]:
+                q = -K.one/Q[k][j]
+                for i in range(k, n):
+                    Q[i][j] *= q
+
+                for i in range(n):
+                    q = Q[k][i]
+                    if i != j:
+                        for s in range(k, n):
+                            Q[s][i] += q*Q[s][j]
+
                 break
         else:
-            continue
-
-        inv = K.one/Q[k][i]
-
-        for j in range(n):
-            Q[j][i] = Q[j][i]*inv
-
-        for j in range(n):
-            t = Q[j][k]
-            Q[j][k] = Q[j][i]
-            Q[j][i] = t
-
-        for i in range(n):
-            if i != k:
-                q = Q[k][i]
-
-                for j in range(n):
-                    Q[j][i] = Q[j][i] - Q[j][k]*q
-
-    for i in range(n):
-        for j in range(n):
-            if i == j:
-                Q[i][j] = K.one - Q[i][j]
-            else:
-                Q[i][j] = -Q[i][j]
-
-    basis = []
-
-    for q in Q:
-        if any(q):
-            basis.append(q)
+            v = [K.zero]*n
+            v[k] = K.one
+            for j in range(n):
+                for s in range(n):
+                    if c[s] == j:
+                        v[j] = Q[k][s]
+            basis.append(v)
 
     return basis
 
@@ -522,6 +516,12 @@ def dup_gf_berlekamp(f, K):
     >>> f = R.to_dense(x**4 + 1)
     >>> dup_gf_berlekamp([1, 0, 0, 0, 1], R.domain)
     [[1 mod 5, 0 mod 5, 2 mod 5], [1 mod 5, 0 mod 5, 3 mod 5]]
+
+    References
+    ==========
+
+    * :cite:`Geddes1992algorithms`, algorithm 8.4.
+    * :cite:`Knuth1985seminumerical`, section 4.6.2.
 
     """
     Q = dup_gf_Qmatrix(f, K)

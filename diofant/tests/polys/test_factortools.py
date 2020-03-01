@@ -716,6 +716,14 @@ def test_gf_factor():
         with using(gf_factor_method=method):
             assert f.factor_list() == g
 
+    f = x**18 + x**17 + x**16 + x**14 + x**12 + x**11 + x**8 + x**5 + x**3 + 1
+    g = (1, [(x + 1, 4), (x**4 + x**3 + 1, 1),
+             (x**10 + x**8 + x**7 + x**5 + 1, 1)])
+
+    for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with using(gf_factor_method=method):
+            assert f.factor_list() == g
+
     # Gathen polynomials: x**n + x + 1 (mod p > 2**n * pi)
 
     R, x = ring("x", FF(nextprime(2**15*pi)))
