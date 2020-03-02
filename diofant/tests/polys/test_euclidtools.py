@@ -2,8 +2,9 @@
 
 import pytest
 
-from diofant import (CC, FF, QQ, RR, ZZ, HeuristicGCDFailed, NotInvertible,
-                     ring, sqrt)
+from diofant import (CC, FF, QQ, RR, ZZ, HeuristicGCDFailed,
+                     MultivariatePolynomialError, NotInvertible, field, ring,
+                     sqrt)
 from diofant.polys.heuristicgcd import heugcd
 from diofant.polys.polyconfig import using
 from diofant.polys.specialpolys import (dmp_fateman_poly_F_1,
@@ -59,15 +60,21 @@ def test_dup_gcdex():
 
     assert (x**2 + 8*x + 7).gcdex(x**3 + 7*x**2 + x + 7) == (5*x + 6, 6, x + 7)
 
+    _, x, y = ring("x,y", QQ)
+
+    pytest.raises(MultivariatePolynomialError, lambda: (x + y).half_gcdex(x*y))
+    pytest.raises(MultivariatePolynomialError, lambda: (x + y).gcdex(x*y))
+
 
 def test_dup_invert():
     R, x = ring("x", QQ)
+
     assert R.dup_invert(2*x, x**2 - 16) == x/32
     pytest.raises(NotInvertible, lambda: R.dup_invert(x**2 - 1, x - 1))
 
 
 def test_dmp_prem():
-    R, x = ring('x', ZZ)
+    R, x = ring("x", ZZ)
 
     f = 3*x**3 + x**2 + x + 5
     g = 5*x**2 - 3*x + 1
@@ -84,7 +91,7 @@ def test_dmp_prem():
 
     assert f.prem(g) == r
 
-    R, x = ring('x', QQ)
+    R, x = ring("x", QQ)
 
     f = 3*x**3 + x**2 + x + 5
     g = 5*x**2 - 3*x + 1
@@ -94,7 +101,12 @@ def test_dmp_prem():
     assert g.prem(f) == g
     assert f.prem(g) == r
 
-    R, x, y = ring('x y', ZZ)
+    R, x, y = ring("x,y", ZZ)
+
+    f = x**2 - y**2
+    g = x - y
+
+    assert f.prem(g) == 0
 
     f = x**2 + y**2
     g = x - y
@@ -253,7 +265,7 @@ def test_PolyElement_subresultants():
 
     assert R.dmp_zz_collins_resultant(f, g) == r.drop(x)
 
-    R,  x, y, z, u, v = ring("x,y,z,u,v", QQ)
+    R, x, y, z, u, v = ring("x,y,z,u,v", QQ)
 
     f = x**2 - x*y/2 - x*z/3 + y*z/6
     g = x**2 - x*u - x*v + u*v
@@ -294,10 +306,11 @@ def test_PolyElement_subresultants():
     with using(use_collins_resultant=True):
         assert f.resultant(g) == (1 + 2*y**2).drop(x)
 
-    R, x, y = ring("x y", ZZ)
+    R, x, y = ring("x,y", ZZ)
 
     f = x + y + 2
     g = 2*x*y + x + 3
+
     assert R.dmp_zz_collins_resultant(f, g) == (-2*y**2 - 5*y + 1).drop(x)
 
 
@@ -328,14 +341,24 @@ def test_PolyElement_discriminant():
     assert (x*y**2 + 2*x).discriminant() == 1
 
     R, x, y, z = ring("x,y,z", ZZ)
+
     assert (x*y + z).discriminant() == 1
 
     R, x, y, z, u = ring("x,y,z,u", ZZ)
+
     assert (x**2*y + x*z + u).discriminant() == (-4*y*u + z**2).drop(x)
 
     R, x, y, z, u, v = ring("x,y,z,u,v", ZZ)
+
     assert (x**3*y + x**2*z + x*u + v).discriminant() == \
         (-27*y**2*v**2 + 18*y*z*u*v - 4*y*u**3 - 4*z**3*v + z**2*u**2).drop(x)
+
+    F, a, b, c = ring("a,b,c", ZZ)
+    _, x = ring("x", F)
+
+    f, g = a*x**2 + b*x + c, b**2 - 4*a*c
+
+    assert f.discriminant() == g
 
 
 def test_dmp_gcd():
@@ -422,6 +445,27 @@ def test_dmp_gcd():
 
             assert f.cofactors(g) == (x + 1, g, QQ(1, 2))
 
+    R, x = ring("x", FF(5))
+
+    f = 3*x**2 + 2*x + 4
+    g = 2*x**2 + 2*x + 3
+
+    assert f.cofactors(g) == (x + 3, 3*x + 3, 2*x + 1)
+
+    R, x = ring("x", FF(11))
+
+    assert R(0).cofactors(R(0)) == (0, 0, 0)
+    assert R(2).cofactors(R(0)) == (1, 2, 0)
+    assert R(0).cofactors(R(2)) == (1, 0, 2)
+    assert R(2).cofactors(R(2)) == (1, 2, 2)
+
+    assert R(0).cofactors(x) == (x, 0, 1)
+    assert x.cofactors(R(0)) == (x, 1, 0)
+
+    assert (3*x).cofactors(3*x) == (x, 3, 3)
+    assert (x**2 + 8*x + 7).cofactors(x**3 + 7*x**2 + x + 7) == (x + 7, x + 1,
+                                                                 x**2 + 1)
+
     R, x = ring("x", CC)
 
     f, g = x**2 - 1, x**3 - 3*x + 2
@@ -434,7 +478,7 @@ def test_dmp_gcd():
 
     assert f.cofactors(g) == (1, f, g)
 
-    R,  x, y = ring("x,y", ZZ)
+    R, x, y = ring("x,y", ZZ)
 
     for test in (True, False):
         with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
@@ -452,11 +496,11 @@ def test_dmp_gcd():
             assert (x**2 + 2*x + 1).cofactors(R(2)) == (1, x**2 + 2*x + 1, 2)
             assert (2*x**2 + 4*x + 2).cofactors(R(2)) == (2, x**2 + 2*x + 1, 1)
             assert R(2).cofactors(2*x**2 + 4*x + 2) == (2, 1, x**2 + 2*x + 1)
-            assert (2*x**2 + 4*x + 2).cofactors(x + 1) == (x + 1, 2*x + 2, 1)
 
-            f, g = x + 1, 2*x**2 + 4*x + 2
+            f, g = 2*x**2 + 4*x + 2, x + 1
 
-            assert f.cofactors(g) == (f, 1, 2*x + 2)
+            assert f.cofactors(g) == (g, 2*x + 2, 1)
+            assert g.cofactors(f) == (g, 1, 2*x + 2)
 
             with using(heu_gcd_max=0):
                 pytest.raises(HeuristicGCDFailed, lambda: heugcd(f, g))
@@ -492,6 +536,12 @@ def test_dmp_gcd():
             f, g = x**2/2 + x + QQ(1, 2), x/2 + QQ(1, 2)
 
             assert f.cofactors(g) == (x + 1, g, QQ(1, 2))
+            assert g.cofactors(f) == (x + 1, QQ(1, 2), g)
+
+            assert f.gcd(g) == x + 1
+            with using(fallback_gcd_zz_method='modgcd'):
+                assert f.gcd(g) == x + 1
+
             assert R(0).cofactors(R(0)) == (0, 0, 0)
             assert R(0).cofactors(g) == (x + 1, 0, QQ(1, 2))
 
@@ -504,8 +554,14 @@ def test_dmp_gcd():
     for test in (True, False):
         with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
             f, g = 2.1*x*y**2 - 2.2*x*y + 2.1*x, 1.0*x**3
+            h = 1.0*x
 
-            assert f.cofactors(g) == (1.0*x, 2.1*y**2 - 2.2*y + 2.1, 1.0*x**2)
+            assert f.cofactors(g) == (h, 2.1*y**2 - 2.2*y + 2.1, 1.0*x**2)
+
+            f, g = 2.1*x*y**2 - 2.1*x*y + 2.1*x, 2.1*x**3
+
+            assert f.cofactors(g) == (h, f//h, g//h)
+            assert g.cofactors(f) == (h, g//h, f//h)
 
     R, x, y = ring("x,y", QQ.algebraic_field(sqrt(2)))
 
@@ -574,6 +630,11 @@ def test_dmp_gcd():
 
     assert H == h and H*cff == f and H*cfg == g
 
+    F, x = field("x", QQ)
+    R, t = ring("t", F)
+
+    assert R(x).gcd(R(0)) == 1
+
 
 def test_PolyElement_lcm():
     R, x = ring("x", ZZ)
@@ -590,7 +651,7 @@ def test_PolyElement_lcm():
     assert (2*x**2 + x).lcm(2*x) == 4*x**2 + 2*x
     assert (x**2 - 1).lcm(x**2 - 3*x + 2) == x**3 - 2*x**2 - x + 2
 
-    R,  x, y = ring("x,y", ZZ)
+    R, x, y = ring("x,y", ZZ)
 
     assert R(2).lcm(R(6)) == 6
     assert x.lcm(y) == x*y
@@ -618,7 +679,7 @@ def test_PolyElement_lcm():
 
     assert f.lcm(g) == h
 
-    R, x = ring('x', QQ)
+    R, x = ring("x", QQ)
 
     f = (x**2 + 7*x/2 + 3)/2
     g = x**2/2 + x
@@ -626,7 +687,7 @@ def test_PolyElement_lcm():
 
     assert f.lcm(g) == h
 
-    R,  x, y = ring("x,y", QQ)
+    R, x, y = ring("x,y", QQ)
 
     f = 2*x*y - x**2/2 + QQ(1, 3)
     g = 3*x**3 - x*y**2 - QQ(1, 2)
@@ -658,7 +719,7 @@ def test_PolyElement_lcm():
 
 
 def test_dmp_content():
-    R,  x, y = ring("x,y", ZZ)
+    R, x, y = ring("x,y", ZZ)
 
     assert R.dmp_content(-2) == 2
 
@@ -670,17 +731,17 @@ def test_dmp_content():
 
     assert R.dmp_content(F) == f.drop(x)
 
-    R,  x, y, z = ring("x,y,z", ZZ)
+    R, x, y, z = ring("x,y,z", ZZ)
 
     assert R.dmp_content(f_4) == 1
     assert R.dmp_content(f_5) == 1
 
-    R,  x, y, z, t = ring("x,y,z,t", ZZ)
+    R, x, y, z, t = ring("x,y,z,t", ZZ)
     assert R.dmp_content(f_6) == 1
 
 
 def test_dmp_primitive():
-    R,  x, y = ring("x,y", ZZ)
+    R, x, y = ring("x,y", ZZ)
 
     assert R.dmp_primitive(0) == (0, 0)
     assert R.dmp_primitive(1) == (1, 1)
@@ -693,14 +754,14 @@ def test_dmp_primitive():
 
     assert R.dmp_primitive(F) == (f.drop(x), F // f)
 
-    R,  x, y, z = ring("x,y,z", ZZ)
+    R, x, y, z = ring("x,y,z", ZZ)
 
     cont, f = R.dmp_primitive(f_4)
     assert cont == 1 and f == f_4
     cont, f = R.dmp_primitive(f_5)
     assert cont == 1 and f == f_5
 
-    R,  x, y, z, t = ring("x,y,z,t", ZZ)
+    R, x, y, z, t = ring("x,y,z,t", ZZ)
 
     cont, f = R.dmp_primitive(f_6)
     assert cont == 1 and f == f_6
@@ -742,6 +803,10 @@ def test_PolyElement_cancel():
 
     assert f.cancel(g, include=True) == (f, one)
 
+    R, x = ring("x", QQ)
+
+    assert (x**2/4 - 1).cancel(x/2 - 1) == (x + 2, 2)
+
     R, x, y = ring("x,y", ZZ)
 
     f = 2*x**2 - 2
@@ -764,13 +829,39 @@ def test_PolyElement_cancel():
 
     assert (y**2 - x**2).cancel(y - x) == (x + y, 1)
 
-    R, x = ring('x', QQ)
+    f = 2*x**3 + 4*x**2 + 2*x
+    g = 3*x**2 + 3*x
+    F = 2*x + 2
+    G = 3
 
-    assert (x**2/4 - 1).cancel(x/2 - 1) == (x + 2, 2)
+    assert f.cancel(g) == (F, G)
+
+    assert (-f).cancel(g) == (-F, G)
+    assert f.cancel(-g) == (-F, G)
+
+    R, x, y = ring("x,y", QQ)
+
+    f = x**3/2 + x**2 + x/2
+    g = x**2/3 + x/3
+    F = 3*x + 3
+    G = 2
+
+    assert f.cancel(g) == (F, G)
+
+    assert (-f).cancel(g) == (-F, G)
+    assert f.cancel(-g) == (-F, G)
+
+    Fx, x = field("x", ZZ)
+    Rt, t = ring("t", Fx)
+
+    f = (-x**2 - 4)/4*t
+    g = t**2 + (x**2 + 2)/2
+
+    assert f.cancel(g) == ((-x**2 - 4)*t, 4*t**2 + 2*x**2 + 4)
 
 
 def test_dmp_zz_modular_resultant():
-    R, x, y = ring("x y", ZZ)
+    R, x, y = ring("x,y", ZZ)
     R1 = R.drop(x)
 
     f = x + y + 2

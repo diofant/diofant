@@ -1224,10 +1224,10 @@ class Ray(LinearEntity):
                 p2 = Point(pt)
             except ValueError:
                 from ..utilities import filldedent
-                raise ValueError(filldedent('''
+                raise ValueError(filldedent("""
                     The 2nd argument was not a valid Point; if
                     it was meant to be an angle it should be
-                    given with keyword "angle".'''))
+                    given with keyword "angle"."""))
             if p1 == p2:
                 raise ValueError('A Ray requires two distinct points.')
         elif angle is not None and pt is None:

@@ -78,6 +78,10 @@ class FractionField(Field, CompositeDomain):
 
         return obj
 
+    @property
+    def characteristic(self):
+        return self.domain.characteristic
+
     def _gens(self):
         """Return a list of polynomial generators."""
         return tuple(self.dtype(gen) for gen in self.ring.gens)
@@ -128,7 +132,7 @@ class FractionField(Field, CompositeDomain):
             denom = self.ring.ground_new(denom)
             return self.raw_new(numer, denom)
         elif isinstance(element, tuple) and len(element) == 2:
-            numer, denom = list(map(self.ring.ring_new, element))
+            numer, denom = list(map(self.ring.__call__, element))
             numer, denom = numer.cancel(denom)
             return self.raw_new(numer, denom)
         elif isinstance(element, str):
@@ -221,10 +225,6 @@ class FractionField(Field, CompositeDomain):
     def is_negative(self, a):
         """Returns True if ``LC(a)`` is negative."""
         return self.domain.is_negative(a.numerator.LC)
-
-    def factorial(self, a):
-        """Returns factorial of ``a``."""
-        return self.dtype(self.domain.factorial(a))
 
 
 @functools.total_ordering
@@ -368,9 +368,6 @@ class FracElement(DomainElement, CantSympify):
         return self.__radd__(other)
 
     def __radd__(self, other):
-        if isinstance(other, self.field.ring.dtype):
-            return self.new(self.numerator + self.denominator*other, self.denominator)
-
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
@@ -422,9 +419,6 @@ class FracElement(DomainElement, CantSympify):
                             self.denominator*other_denom)
 
     def __rsub__(self, other):
-        if isinstance(other, self.field.ring.dtype):
-            return self.new(-self.numerator + self.denominator*other, self.denominator)
-
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:
@@ -462,9 +456,6 @@ class FracElement(DomainElement, CantSympify):
         return self.__rmul__(other)
 
     def __rmul__(self, other):
-        if isinstance(other, self.field.ring.dtype):
-            return self.new(self.numerator*other, self.denominator)
-
         op, other_numer, other_denom = self._extract_ground(other)
 
         if op == 1:

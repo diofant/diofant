@@ -1215,9 +1215,9 @@ class Poly(Expr):
         # at this time the ``right`` keyword would be ignored because Poly
         # doesn't work with non-commutatives.
         raise NotImplementedError(
-            'Either convert to Expr with `as_expr` method '
-            'to use Expr\'s coeff method or else use the '
-            '`coeff_monomial` method of Polys.')
+            "Either convert to Expr with `as_expr` method "
+            "to use Expr's coeff method or else use the "
+            "`coeff_monomial` method of Polys.")
 
     def LM(self, order=None):
         """

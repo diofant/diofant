@@ -98,7 +98,6 @@ class FiniteField(Field, SimpleDomain):
 
     @property
     def characteristic(self):
-        """Return the characteristic of this domain."""
         return self.mod
 
     def to_expr(self, a):

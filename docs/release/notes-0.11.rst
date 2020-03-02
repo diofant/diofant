@@ -56,6 +56,8 @@ Minor changes
 * 100% test coverage for :mod:`~diofant.utilities` module.
 * :func:`~diofant.solvers.recurr.rsolve` got ``simplify`` option to control default output simplification, see :pull:`921`.
 * :func:`~diofant.polys.numberfields.minimal_polynomial` got support for :class:`~diofant.polys.rootoftools.RootOf` instances over algebraic number fields, see :pull:`927`.
+* The :class:`~diofant.domains.ring.Ring` and all derived classes got `:attr:`~diofant.domains.ring.Ring.characteristic` property, see :pull:`968`.
+* Correct wrong implementation of the Berlekamp factorization algorithm, see :pull:`968`.
 
 Developer changes
 =================
@@ -162,3 +164,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`18508` NotImplementedError in limit
 * :sympyissue:`18507` Bug in Mul
 * :sympyissue:`18707` There is a problem or limitation when the Limit is calculated
+* :sympyissue:`18751` handling of rsolve coefficients

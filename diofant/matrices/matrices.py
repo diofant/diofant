@@ -2688,13 +2688,13 @@ class MatrixBase(DefaultPrinting):
         rank = len(row_reduced[-1])
         return rank
 
-    def nullspace(self, simplify=False):
+    def nullspace(self, simplify=False, iszerofunc=_iszero):
         """Returns list of vectors (Matrix objects) that span nullspace of self."""
         from . import zeros
 
         simpfunc = simplify if isinstance(
             simplify, FunctionType) else _simplify
-        reduced, pivots = self.rref(simplify=simpfunc)
+        reduced, pivots = self.rref(simplify=simpfunc, iszerofunc=iszerofunc)
 
         basis = []
         # create a set of vectors for the basis

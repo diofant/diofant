@@ -14,7 +14,7 @@ __all__ = 'ComplexField',
 _complexes_cache = {}
 
 
-class ComplexField(Field, CharacteristicZero, SimpleDomain):
+class ComplexField(CharacteristicZero, SimpleDomain, Field):
     """Complex numbers up to the given precision."""
 
     rep = 'CC'

@@ -264,9 +264,9 @@ def reduce_piecewise_inequality(expr, rel, gen):
 
     """
     if gen.is_extended_real is False:
-        raise TypeError(filldedent('''
+        raise TypeError(filldedent("""
             can't solve inequalities with piecewise
-            functions containing non-real variables'''))
+            functions containing non-real variables"""))
 
     def _bottom_up_scan(expr):
         exprs = []
@@ -464,9 +464,9 @@ def _reduce_inequalities(inequalities, symbols):
                 other.append(solve_univariate_inequality(Relational(expr, 0, rel), gen))
                 continue
             else:
-                raise NotImplementedError(filldedent('''
+                raise NotImplementedError(filldedent("""
                     inequality has more than one
-                    symbol of interest'''))
+                    symbol of interest"""))
 
         if expr.is_polynomial(gen):
             poly_part[gen].append((expr, rel))

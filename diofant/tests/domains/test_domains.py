@@ -575,8 +575,6 @@ def test_arithmetics():
     assert QQ.rem(QQ(2, 3), QQ(4, 7)) == 0
     assert QQ.div(QQ(2, 3), QQ(4, 7)) == (QQ(7, 6), 0)
 
-    assert QQ_python.factorial(QQ_python(7, 2)) == 6
-
     assert CC.gcd(CC(1), CC(2)) == 1
     assert CC.lcm(CC(1), CC(2)) == 2
 
@@ -673,6 +671,8 @@ def test_Domain__algebraic_field():
     pytest.raises(DomainError, lambda: AlgebraicField(ZZ, sqrt(2)))
 
     assert alg.characteristic == 0
+    assert alg.poly_ring(x).characteristic == 0
+    assert alg.frac_field(x).characteristic == 0
 
     assert alg.is_RealAlgebraicField is True
 
@@ -1032,6 +1032,8 @@ def test_ModularInteger():
 
     assert F9.order == 9
     assert F9.characteristic == 3
+    assert F9.poly_ring(x).characteristic == 3
+    assert F9.frac_field(x).characteristic == 3
 
     assert F9.zero == F9([0])
     assert F9.one == F9([1])

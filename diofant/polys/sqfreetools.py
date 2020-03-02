@@ -17,13 +17,11 @@ def dmp_sqf_p(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> _, x, y = ring("x y", ZZ)
 
-    >>> R.dmp_sqf_p(R(0))
-    True
-    >>> R.dmp_sqf_p((x + y)**2)
+    >>> ((x + y)**2).is_squarefree
     False
-    >>> R.dmp_sqf_p(x**2 + y**2)
+    >>> (x**2 + y**2).is_squarefree
     True
 
     """
@@ -48,10 +46,9 @@ def dmp_sqf_norm(f, u, K):
     Examples
     ========
 
-    >>> K = QQ.algebraic_field(I)
-    >>> R, x, y = ring("x y", K)
+    >>> _, x, y = ring("x y", QQ.algebraic_field(I))
 
-    >>> R.dmp_sqf_norm(x*y + y**2)
+    >>> (x*y + y**2).sqf_norm()
     (1, x*y - I*x + y**2 - 3*I*y - 2,
      x**2*y**2 + x**2 + 2*x*y**3 + 2*x*y + y**4 + 5*y**2 + 4)
 
@@ -85,9 +82,9 @@ def dmp_sqf_part(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> _, x, y = ring("x y", ZZ)
 
-    >>> R.dmp_sqf_part(x**3 + 2*x**2*y + x*y**2)
+    >>> (x**3 + 2*x**2*y + x*y**2).sqf_part()
     x**2 + x*y
 
     """
@@ -114,17 +111,52 @@ def dmp_sqf_part(f, u, K):
         return dmp_ground_primitive(sqf, u, K)[1]
 
 
-def dmp_gf_sqf_list(f, u, K):
-    """Compute square-free decomposition of ``f`` in ``GF(p)[X]``.
+def dup_gf_musser_sqf_list(f, K):
+    """Compute square-free decomposition of the monic ``f`` in ``GF(p^m)[x]``.
 
-    Returns the leading coefficient of ``f`` and a square-free decomposition
-    ``f_1**e_1 f_2**e_2 ... f_k**e_k`` such that all ``f_i`` are monic
-    polynomials and ``(f_i, f_j)`` for ``i != j`` are co-prime.
+    References
+    ==========
+
+    * :cite:`Geddes1992algorithms`, algorithm 8.3.
+
+    """
+    n, factors, p = 1, [], K.characteristic
+
+    while not dmp_ground_p(f, None, 0):
+        df = dmp_diff_in(f, 1, 0, 0, K)
+
+        if not dmp_zero_p(df, 0):
+            g = dmp_gcd(f, df, 0, K)
+            h = dmp_quo(f, g, 0, K)
+            f = g
+            i = 1
+
+            while not dmp_one_p(h, 0, K):
+                g = dmp_gcd(f, h, 0, K)
+                h = dmp_quo(h, g, 0, K)
+
+                if dmp_degree_in(h, 0, 0) > 0:
+                    factors.append((h, i*n))
+
+                f, h, i = dmp_quo(f, g, 0, K), g, i + 1
+
+        d = dmp_degree_in(f, 0, 0) // p
+        n *= p
+
+        for i in range(d + 1):
+            f[i] = f[i*p]
+        del f[d + 1:]
+
+    return factors
+
+
+def dmp_gf_sqf_list(f, u, K):
+    """Compute square-free decomposition of the monic ``f`` in ``GF(p^m)[X]``.
 
     Examples
     ========
 
-    >>> R, x = ring('x', FF(11))
+    >>> _, x = ring('x', FF(11))
     >>> f = x**11 + 1
 
     Note that:
@@ -135,68 +167,24 @@ def dmp_gf_sqf_list(f, u, K):
     This phenomenon doesn't happen in characteristic zero. However we can
     still compute square-free decomposition of ``f``:
 
-    >>> R.dmp_sqf_list(f)
+    >>> f.sqf_list()
     (1 mod 11, [(x + 1 mod 11, 11)])
 
-    References
-    ==========
-
-    * :cite:`Geddes1992algorithms`
-
     """
-    if u:
-        raise NotImplementedError('multivariate polynomials over finite fields')
+    if not u:
+        return dup_gf_musser_sqf_list(f, K)
 
-    n, sqf, factors, r = 1, False, [], int(K.characteristic)
-
-    lc, f = dmp_ground_primitive(f, 0, K)
-
-    if dmp_degree_in(f, 0, 0) < 1:
-        return lc, []
-
-    while True:
-        F = dmp_diff_in(f, 1, 0, 0, K)
-
-        if F != []:
-            g = dmp_gcd(f, F, 0, K)
-            h = dmp_quo(f, g, 0, K)
-
-            i = 1
-
-            while h != [K.one]:
-                G = dmp_gcd(g, h, 0, K)
-                H = dmp_quo(h, G, 0, K)
-
-                if dmp_degree_in(H, 0, 0) > 0:
-                    factors.append((H, i*n))
-
-                g, h, i = dmp_quo(g, G, 0, K), G, i + 1
-
-            if g == [K.one]:
-                sqf = True
-            else:
-                f = g
-
-        if not sqf:
-            d = dmp_degree_in(f, 0, 0) // r
-
-            for i in range(d + 1):
-                f[i] = f[i*r]
-
-            f, n = f[:d + 1], n*r
-        else:
-            break
-
-    return lc, factors
+    raise NotImplementedError('multivariate polynomials over finite fields')
 
 
 def dmp_rr_yun0_sqf_list(f, u, K):
-    """Compute square-free decomposition of ``f`` in zero-characteristic ring ``K``.
+    """Compute square-free decomposition of ``f`` in zero-characteristic ring ``K[X]``.
 
     References
     ==========
 
-    * :cite:`LeeM2013factor`, page 8
+    * :cite:`Geddes1992algorithms`, algorithm 8.2.
+    * :cite:`LeeM2013factor`, algorithm 3.1.
 
     """
     if dmp_ground_p(f, None, u):
@@ -234,9 +222,9 @@ def dmp_sqf_list(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> _, x, y = ring("x y", ZZ)
 
-    >>> R.dmp_sqf_list(x**5 + 2*x**4*y + x**3*y**2)
+    >>> (x**5 + 2*x**4*y + x**3*y**2).sqf_list()
     (1, [(x + y, 2), (x, 3)])
 
     """
@@ -247,6 +235,6 @@ def dmp_sqf_list(f, u, K):
         coeff, f = dmp_ground_primitive(f, u, K)
 
     if K.is_FiniteField:
-        return coeff, dmp_gf_sqf_list(f, u, K)[1]
+        return coeff, dmp_gf_sqf_list(f, u, K)
 
     return coeff, dmp_rr_yun0_sqf_list(f, u, K)

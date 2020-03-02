@@ -773,12 +773,12 @@ def _pgroup_calcs():
     # the strings below, like 0104 are shorthand for F0*F1*F0**4 and are
     # the remaining 4 face rotations, 15 edge permutations, and the
     # 10 vertex rotations.
-    _dodeca_pgroup = [_f0, _f1] + [_string_to_perm(s) for s in '''
+    _dodeca_pgroup = [_f0, _f1] + [_string_to_perm(s) for s in """
     0104 140 014 0410
     010 1403 03104 04103 102
     120 1304 01303 021302 03130
     0412041 041204103 04120410 041204104 041204102
-    10 01 1402 0140 04102 0412 1204 1302 0130 03120'''.strip().split()]
+    10 01 1402 0140 04102 0412 1204 1302 0130 03120""".strip().split()]
 
     dodecahedron = Polyhedron(
         range(20),
