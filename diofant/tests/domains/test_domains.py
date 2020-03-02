@@ -1062,7 +1062,7 @@ def test_ModularInteger():
     assert F8.dtype.mod.to_dense() == [1, 0, 1, 1]
     assert int(F8([1, 0, 1])) == int(F8(5)) == 5
     assert int(F8(-1)) == int(F8(7)) == 7
-    assert str(F8([1, 0, 1])) == 'GF(2, [1, 0, 1, 1])([1, 0, 1])'
+    assert str(F8([1, 0, 1])) == 'GF(2, [1, 0, 1, 1])(5)'
 
     F4 = FF(2, [1, 1, 1])
 
