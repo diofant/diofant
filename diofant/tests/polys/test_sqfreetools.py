@@ -143,6 +143,32 @@ def test_dmp_sqf():
 
     assert f.is_squarefree is True
 
+    F9 = FF(9)
+    R, x = ring("x", F9)
+
+    f = x + F9(4)
+
+    assert f.is_squarefree is True
+
+    f = f**3
+
+    assert f.is_squarefree is False
+    assert f.sqf_list() == (1, [(x + F9(4), 3)])
+
+    f = (x + F9(4))*(x + F9(7))
+
+    assert f.is_squarefree is True
+    assert f.sqf_list() == (1, [(f, 1)])
+    assert (2*f).is_squarefree is True
+    assert (2*f).sqf_list() == (2, [(f, 1)])
+    assert (F9(6)*f).is_squarefree is True
+    assert (F9(6)*f).sqf_list() == (F9(6), [(f, 1)])
+
+    f *= (x + F9(7))
+
+    assert f.is_squarefree is False
+    assert f.sqf_list() == (1, [(x + F9(4), 1), (x + F9(7), 2)])
+
     R, x, y = ring("x,y", ZZ)
 
     A = x**4 - 3*x**2 + 6

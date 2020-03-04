@@ -1062,12 +1062,19 @@ def test_ModularInteger():
     assert F8.dtype.mod.to_dense() == [1, 0, 1, 1]
     assert int(F8([1, 0, 1])) == int(F8(5)) == 5
     assert int(F8(-1)) == int(F8(7)) == 7
-    assert str(F8([1, 0, 1])) == 'GF(2, [1, 0, 1, 1])([1, 0, 1])'
+    assert str(F8([1, 0, 1])) == 'GF(2, [1, 0, 1, 1])(5)'
 
     F4 = FF(2, [1, 1, 1])
 
     assert F4.order == 4
     assert F4.characteristic == 2
+
+    assert F4(1) == F4.one
+    assert F4.one + F4.one == 2*F4.one == F4.one*2 == F4.zero
+    assert F4(2)*F4.one == F4.one*F4(2)
+    assert 2*F4.one != F4(2)*F4.one
+
+    pytest.raises(TypeError, lambda: object()*F4.one)
 
 
 def test_QQ_int():

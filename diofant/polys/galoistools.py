@@ -427,23 +427,24 @@ def dup_gf_Qmatrix(f, K):
      [0 mod 5, 0 mod 5, 1 mod 5, 0 mod 5],
      [0 mod 5, 0 mod 5, 0 mod 5, 4 mod 5]]
 
+    References
+    ==========
+
+    * :cite:`Geddes1992algorithms`, algorithm 8.5.
+
     """
-    p = K.mod
-    n, r = dmp_degree_in(f, 0, 0), int(p)
+    n, q = dmp_degree_in(f, 0, 0), K.order
 
-    q = [K.one] + [K.zero]*(n - 1)
-    Q = [list(q)] + [[]]*(n - 1)
+    r = [K.one] + [K.zero]*(n - 1)
+    Q = [r.copy()] + [[]]*(n - 1)
 
-    for i in range(1, (n - 1)*r + 1):
-        qq, c = [-q[-1]*f[-1]], q[-1]
+    for i in range(1, (n - 1)*q + 1):
+        c, r[1:], r[0] = r[-1], r[:-1], K.zero
+        for j in range(n):
+            r[j] -= c*f[-j - 1]
 
-        for j in range(1, n):
-            qq.append((q[j - 1] - c*f[-j - 1]))
-
-        if not (i % r):
-            Q[i//r] = list(qq)
-
-        q = qq
+        if not (i % q):
+            Q[i//q] = r.copy()
 
     return Q
 
@@ -507,7 +508,7 @@ def dup_gf_Qbasis(Q, K):
 
 def dup_gf_berlekamp(f, K):
     """
-    Factor a square-free ``f`` in ``GF(p)[x]`` for small ``p``.
+    Factor a square-free ``f`` in ``GF(p^m)[x]`` for small order.
 
     Examples
     ========
@@ -532,27 +533,20 @@ def dup_gf_berlekamp(f, K):
 
     factors = [f]
 
-    for k in range(1, len(V)):
+    for v in V[1:]:
         for f in list(factors):
-            s = K.zero
+            for s in range(K.order):
+                h = dmp_add_term(v, -K(s), 0, 0, K)
+                g = dmp_gcd(f, h, 0, K)
 
-            while True:
-                g = dmp_add_term(V[k], -s, 0, 0, K)
-                h = dmp_gcd(f, g, 0, K)
-
-                if h != [K.one] and h != f:
+                if g != [K.one] and g != f:
                     factors.remove(f)
 
-                    f = dmp_quo(f, h, 0, K)
-                    factors.extend([f, h])
+                    f = dmp_quo(f, g, 0, K)
+                    factors.extend([f, g])
 
                 if len(factors) == len(V):
                     return _sort_factors(factors, multiple=False)
-
-                s += K.one
-
-                if s == K.zero:
-                    break
 
     return _sort_factors(factors, multiple=False)
 

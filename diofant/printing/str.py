@@ -449,7 +449,7 @@ class StrPrinter(Printer):
         from ..domains import ZZ_python
         return "GF(%s, %s)(%s)" % (expr.parent.characteristic,
                                    expr.mod.set_domain(ZZ_python).to_dense(),
-                                   expr.rep.set_domain(ZZ_python).to_dense())
+                                   int(expr))
 
     def _print_Pow(self, expr, rational=False):
         PREC = precedence(expr)

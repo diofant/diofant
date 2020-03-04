@@ -683,13 +683,6 @@ def test_PolyElement___mul__():
 
     assert (x + 2*y).mul_ground(0) == Rxyz.zero
 
-    R, x, y = ring("x,y", ZZ)
-    p = x + y**2
-    p1 = p._imul_num(3)
-    assert p == p1 and p1 == 3*x + 3*y**2
-    p2 = p._imul_num(0)
-    assert p == p2 and p2 == R.zero
-
 
 def test_PolyElement___floordiv__truediv__():
     R,  x, y, z = ring("x,y,z", ZZ)
@@ -974,6 +967,25 @@ def test_PolyElement___pow__():
 
     assert ((3*x**2 + 2*x + 4)**3 == 2*x**6 + 4*x**5 + 4*x**4 +
             2*x**3 + 2*x**2 + x + 4)
+
+    R, x = ring("x", FF(8))
+
+    f = x + 1
+
+    assert f**0 == R.one
+    assert f**1 == f
+    assert f**2 == f*f == x**2 + 1
+    assert f**3 == f*f*f == x**3 + x**2 + x + 1
+    assert f**4 == f*f*f*f == x**4 + 1
+    assert f**5 == f*f*f*f*f == x**5 + x**4 + x + 1
+    assert f**8 == functools.reduce(operator.mul, [f]*8) == x**8 + 1
+
+    F9 = FF(9)
+    R, x = ring('x', F9)
+
+    f = x + F9(4)
+
+    assert f**3 == f*f*f == x**3 + F9(8)
 
 
 def test_PolyElement_div():

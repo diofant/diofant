@@ -121,6 +121,7 @@ def dup_gf_musser_sqf_list(f, K):
 
     """
     n, factors, p = 1, [], K.characteristic
+    m = K.order // p
 
     while not dmp_ground_p(f, None, 0):
         df = dmp_diff_in(f, 1, 0, 0, K)
@@ -144,7 +145,7 @@ def dup_gf_musser_sqf_list(f, K):
         n *= p
 
         for i in range(d + 1):
-            f[i] = f[i*p]
+            f[i] = f[i*p]**m
         del f[d + 1:]
 
     return factors
