@@ -202,6 +202,9 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
 
         return obj
 
+    def __getnewargs_ex__(self):
+        return (self.domain, self.symbols), {'order': self.order}
+
     @property
     def characteristic(self):
         return self.domain.characteristic
@@ -495,6 +498,9 @@ class PolyElement(DomainElement, CantSympify, dict):
         if _hash is None:
             self._hash = _hash = hash((self.ring, frozenset(self.items())))
         return _hash
+
+    def __reduce__(self):
+        return self.parent.__call__, (dict(self),)
 
     def copy(self):
         """Return a copy of polynomial self.

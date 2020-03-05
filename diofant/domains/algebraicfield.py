@@ -92,6 +92,9 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
 
         return obj
 
+    def __getnewargs_ex__(self):
+        return (self.domain, self.ext), {}
+
     def __hash__(self):
         return hash((self.__class__.__name__, self.domain, self.ext))
 
