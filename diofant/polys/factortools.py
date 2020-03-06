@@ -207,7 +207,8 @@ def dup_zz_zassenhaus(f, K):
         if not dmp_sqf_p(F, 0, Kpx):
             continue
 
-        fsqfx = dup_gf_factor_sqf(F, Kpx)[1]
+        F = dmp_ground_monic(F, 0, Kpx)
+        fsqfx = dup_gf_factor_sqf(F, Kpx)
         a.append((px, [dmp_normal(_, 0, K) for _ in fsqfx]))
         if len(fsqfx) < 15 or len(a) > 4:
             break
@@ -1030,7 +1031,7 @@ def dmp_gf_factor(f, u, K):
         factors = []
 
         for g, n in dmp_sqf_list(f, 0, K)[1]:
-            for h in dup_gf_factor_sqf(g, K)[1]:
+            for h in dup_gf_factor_sqf(g, K):
                 factors.append((h, n))
 
         return lc, factors

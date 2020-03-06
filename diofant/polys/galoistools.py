@@ -6,7 +6,7 @@ import random
 from ..ntheory import factorint
 from .densearith import (dmp_add, dmp_add_term, dmp_mul, dmp_quo, dmp_rem,
                          dmp_sqr, dmp_sub)
-from .densebasic import dmp_degree_in, dmp_ground_LC, dmp_one_p, dmp_strip
+from .densebasic import dmp_degree_in, dmp_one_p, dmp_strip
 from .densetools import dmp_ground_monic
 from .euclidtools import dmp_gcd
 from .polyconfig import query
@@ -734,8 +734,7 @@ def dup_gf_factor_sqf(f, K):
                  f_1(x) f_2(x) ... f_d(x)
 
     where each ``f_i`` is a monic polynomial and ``gcd(f_i, f_j) == 1``,
-    for ``i != j``.  The result is given as a tuple consisting of the
-    leading coefficient of ``f`` and a list of factors of ``f``.
+    for ``i != j``.  The result is given as a list of factors of ``f``.
 
     Square-free factors of ``f`` can be factored into irreducibles over
     ``GF(p)`` using three very different methods:
@@ -755,9 +754,9 @@ def dup_gf_factor_sqf(f, K):
     ========
 
     >>> R, x = ring('x', FF(5))
-    >>> f = R.to_dense(3*x**2 + 2*x + 4)
+    >>> f = R.to_dense(x**2 + 4*x + 3)
     >>> dup_gf_factor_sqf(f, R.domain)
-    (3 mod 5, [[1 mod 5, 1 mod 5], [1 mod 5, 3 mod 5]])
+    [[1 mod 5, 1 mod 5], [1 mod 5, 3 mod 5]]
 
     References
     ==========
@@ -765,8 +764,6 @@ def dup_gf_factor_sqf(f, K):
     * :cite:`Gathen1999modern`
 
     """
-    lc = dmp_ground_LC(f, 0, K)
-    f = dmp_ground_monic(f, 0, K)
     method = query('GF_FACTOR_METHOD')
 
-    return lc, _factor_methods[method](f, K)
+    return _factor_methods[method](f, K)
