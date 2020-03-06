@@ -4,101 +4,13 @@ import math
 import random
 
 from ..ntheory import factorint
-from .densearith import (dmp_add, dmp_add_term, dmp_mul, dmp_mul_ground,
-                         dmp_quo, dmp_rem, dmp_sqr, dmp_sub, dup_lshift)
-from .densebasic import dmp_degree_in, dmp_ground_LC, dmp_strip
+from .densearith import (dmp_add, dmp_add_term, dmp_mul, dmp_quo, dmp_rem,
+                         dmp_sqr, dmp_sub)
+from .densebasic import dmp_degree_in, dmp_ground_LC, dmp_one_p, dmp_strip
 from .densetools import dmp_ground_monic
 from .euclidtools import dmp_gcd
 from .polyconfig import query
 from .polyutils import _sort_factors
-
-
-def dup_gf_frobenius_monomial_base(g, K):
-    """
-    Return the list of ``x**(i*p) mod g in Z_p`` for ``i = 0, .., n - 1``
-    where ``n = dmp_degree_in(g, 0, 0)``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', FF(5))
-    >>> f = R.to_dense(x**3 + 2*x + 1)
-    >>> dup_gf_frobenius_monomial_base(f, R.domain)
-    [[1 mod 5], [4 mod 5, 4 mod 5, 2 mod 5], [1 mod 5, 2 mod 5]]
-
-    """
-    n = dmp_degree_in(g, 0, 0)
-    if n == 0:
-        return []
-    b = [0]*n
-    b[0] = [K.one]
-    p = K.mod
-    if p < n:
-        for i in range(1, n):
-            mon = dup_lshift(b[i - 1], p, K)
-            b[i] = dmp_rem(mon, g, 0, K)
-    elif n > 1:
-        b[1] = dup_gf_pow_mod([K.one, K.zero], p, g, K)
-        for i in range(2, n):
-            b[i] = dmp_mul(b[i - 1], b[1], 0, K)
-            b[i] = dmp_rem(b[i], g, 0, K)
-
-    return b
-
-
-def dup_gf_frobenius_map(f, g, b, K):
-    """
-    Compute dup_gf_pow_mod(f, p, g, K) using the Frobenius map.
-
-    Parameters
-    ==========
-
-    f, g : polynomials in ``GF(p)[x]``
-    b : frobenius monomial base
-    K : domain
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', FF(5))
-    >>> f = R.to_dense(2*x**3 + x**2 + 1)
-    >>> g = R.to_dense(x**3 + 2*x + 1)
-    >>> b = dup_gf_frobenius_monomial_base(g, R.domain)
-    >>> dup_gf_frobenius_map(f, g, b, R.domain)
-    [4 mod 5, 0 mod 5, 3 mod 5]
-
-    """
-    m = dmp_degree_in(g, 0, 0)
-    if dmp_degree_in(f, 0, 0) >= m:
-        f = dmp_rem(f, g, 0, K)
-    if not f:
-        return []
-    n = dmp_degree_in(f, 0, 0)
-    sf = [f[-1]]
-    for i in range(1, n + 1):
-        v = dmp_mul_ground(b[i], f[n - i], 0, K)
-        sf = dmp_add(sf, v, 0, K)
-    return sf
-
-
-def _dup_gf_pow_pnm1d2(f, n, g, b, K):
-    """
-    Utility function for ``gf_edf_zassenhaus``.
-
-    Compute ``f**((p**n - 1) // 2)`` in ``GF(p)[x]/(g)``
-    ``f**((p**n - 1) // 2) = (f*f**p*...*f**(p**n - 1))**((p - 1) // 2)``
-
-    """
-    f = dmp_rem(f, g, 0, K)
-    h = f
-    r = f
-    for i in range(1, n):
-        h = dup_gf_frobenius_map(h, g, b, K)
-        r = dmp_mul(r, h, 0, K)
-        r = dmp_rem(r, g, 0, K)
-
-    res = dup_gf_pow_mod(r, (K.mod - 1)//2, g, K)
-    return res
 
 
 def dup_gf_pow_mod(f, n, g, K):
@@ -236,21 +148,6 @@ def dup_gf_trace_map(a, b, c, n, f, K):
     return dup_gf_compose_mod(a, V, f, K), U
 
 
-def _gf_trace_map(f, n, g, b, K):
-    """
-    Utility for ``gf_edf_shoup``.
-
-    """
-    f = dmp_rem(f, g, 0, K)
-    h = f
-    r = f
-    for i in range(1, n):
-        h = dup_gf_frobenius_map(h, g, b, K)
-        r = dmp_add(r, h, 0, K)
-        r = dmp_rem(r, g, 0, K)
-    return r
-
-
 def dup_gf_random(n, K):
     """
     Generate a random polynomial in ``GF(p)[x]`` of degree ``n``.
@@ -306,32 +203,23 @@ def dup_gf_irred_p_ben_or(f, K):
     * :cite:`Ben-Or1981ff`
 
     """
-    n = dmp_degree_in(f, 0, 0)
+    n, p = dmp_degree_in(f, 0, 0), K.characteristic
 
     if n <= 1:
         return True
 
+    x = [K.one, K.zero]
     f = dmp_ground_monic(f, 0, K)
-    p = K.mod
-    if n < 5:
-        H = h = dup_gf_pow_mod([K.one, K.zero], p, f, K)
 
-        for i in range(n//2):
-            g = dmp_sub(h, [K.one, K.zero], 0, K)
+    H = h = dup_gf_pow_mod(x, p, f, K)
 
-            if dmp_gcd(f, g, 0, K) == [K.one]:
-                h = dup_gf_compose_mod(h, H, f, K)
-            else:
-                return False
-    else:
-        b = dup_gf_frobenius_monomial_base(f, K)
-        H = h = dup_gf_frobenius_map([K.one, K.zero], f, b, K)
-        for i in range(n//2):
-            g = dmp_sub(h, [K.one, K.zero], 0, K)
-            if dmp_gcd(f, g, 0, K) == [K.one]:
-                h = dup_gf_frobenius_map(h, f, b, K)
-            else:
-                return False
+    for i in range(n//2):
+        g = dmp_sub(h, x, 0, K)
+
+        if dmp_one_p(dmp_gcd(f, g, 0, K), 0, K):
+            h = dup_gf_compose_mod(h, H, f, K)
+        else:
+            return False
 
     return True
 
@@ -353,28 +241,26 @@ def dup_gf_irred_p_rabin(f, K):
     False
 
     """
-    n = dmp_degree_in(f, 0, 0)
+    n, p = dmp_degree_in(f, 0, 0), K.characteristic
 
     if n <= 1:
         return True
 
-    f = dmp_ground_monic(f, 0, K)
-
     x = [K.one, K.zero]
+    f = dmp_ground_monic(f, 0, K)
 
     indices = {n//d for d in factorint(n)}
 
-    b = dup_gf_frobenius_monomial_base(f, K)
-    h = b[1]
+    H = h = dup_gf_pow_mod(x, p, f, K)
 
     for i in range(1, n):
         if i in indices:
             g = dmp_sub(h, x, 0, K)
 
-            if dmp_gcd(f, g, 0, K) != [K.one]:
+            if not dmp_one_p(dmp_gcd(f, g, 0, K), 0, K):
                 return False
 
-        h = dup_gf_frobenius_map(h, f, b, K)
+        h = dup_gf_compose_mod(h, H, f, K)
 
     return h == x
 
@@ -539,7 +425,7 @@ def dup_gf_berlekamp(f, K):
                 h = dmp_add_term(v, -K(s), 0, 0, K)
                 g = dmp_gcd(f, h, 0, K)
 
-                if g != [K.one] and g != f:
+                if not dmp_one_p(g, 0, K) and g != f:
                     factors.remove(f)
 
                     f = dmp_quo(f, g, 0, K)
@@ -581,26 +467,23 @@ def dup_gf_ddf_zassenhaus(f, K):
     * :cite:`Geddes1992algorithms`
 
     """
-    i, g, factors = 1, [K.one, K.zero], []
+    factors, p = [], K.characteristic
+    g, x = [[K.one, K.zero]]*2
 
-    b = dup_gf_frobenius_monomial_base(f, K)
-    while 2*i <= dmp_degree_in(f, 0, 0):
-        g = dup_gf_frobenius_map(g, f, b, K)
-        h = dmp_gcd(f, dmp_sub(g, [K.one, K.zero], 0, K), 0, K)
+    for i in range(1, dmp_degree_in(f, 0, 0)//2 + 1):
+        g = dup_gf_pow_mod(g, p, f, K)
+        h = dmp_gcd(f, dmp_sub(g, x, 0, K), 0, K)
 
-        if h != [K.one]:
+        if not dmp_one_p(h, 0, K):
             factors.append((h, i))
 
             f = dmp_quo(f, h, 0, K)
             g = dmp_rem(g, f, 0, K)
-            b = dup_gf_frobenius_monomial_base(f, K)
 
-        i += 1
+    if not dmp_one_p(f, 0, K):
+        factors += [(f, dmp_degree_in(f, 0, 0))]
 
-    if f != [K.one]:
-        return factors + [(f, dmp_degree_in(f, 0, 0))]
-    else:
-        return factors
+    return factors
 
 
 def dup_gf_edf_zassenhaus(f, n, K):
@@ -633,9 +516,7 @@ def dup_gf_edf_zassenhaus(f, n, K):
         return factors
 
     N = dmp_degree_in(f, 0, 0) // n
-    p = K.mod
-    if p != 2:
-        b = dup_gf_frobenius_monomial_base(f, K)
+    p = K.characteristic
 
     while len(factors) < N:
         r = dup_gf_random(2*n - 1, K)
@@ -646,15 +527,15 @@ def dup_gf_edf_zassenhaus(f, n, K):
             for i in range(2**(n*N - 1)):
                 r = dup_gf_pow_mod(r, 2, f, K)
                 h = dmp_add(h, r, 0, K)
-
-            g = dmp_gcd(f, h, 0, K)
         else:
-            h = _dup_gf_pow_pnm1d2(r, n, f, b, K)
-            g = dmp_gcd(f, dmp_add_term(h, -K.one, 0, 0, K), 0, K)
+            h = dup_gf_pow_mod(r, (p**n - 1) // 2, f, K)
+            h = dmp_add_term(h, -K.one, 0, 0, K)
 
-        if g != [K.one] and g != f:
-            factors = dup_gf_edf_zassenhaus(g, n, K) \
-                + dup_gf_edf_zassenhaus(dmp_quo(f, g, 0, K), n, K)
+        g = dmp_gcd(f, h, 0, K)
+
+        if not dmp_one_p(g, 0, K) and g != f:
+            factors = (dup_gf_edf_zassenhaus(g, n, K) +
+                       dup_gf_edf_zassenhaus(dmp_quo(f, g, 0, K), n, K))
 
     return _sort_factors(factors, multiple=False)
 
@@ -688,15 +569,17 @@ def dup_gf_ddf_shoup(f, K):
     * :cite:`Gathen1992frobenious`
 
     """
-    n = dmp_degree_in(f, 0, 0)
+    n, p = dmp_degree_in(f, 0, 0), K.characteristic
     k = math.ceil(math.sqrt(n//2))
-    b = dup_gf_frobenius_monomial_base(f, K)
-    h = dup_gf_frobenius_map([K.one, K.zero], f, b, K)
+    x = [K.one, K.zero]
+
+    h = dup_gf_pow_mod(x, p, f, K)
+
     # U[i] = x**(p**i)
-    U = [[K.one, K.zero], h] + [K.zero]*(k - 1)
+    U = [x, h] + [K.zero]*(k - 1)
 
     for i in range(2, k + 1):
-        U[i] = dup_gf_frobenius_map(U[i-1], f, b, K)
+        U[i] = dup_gf_compose_mod(U[i - 1], h, f, K)
 
     h, U = U[k], U[:k]
     # V[i] = x**(p**(k*(i+1)))
@@ -722,12 +605,12 @@ def dup_gf_ddf_shoup(f, K):
             h = dmp_sub(v, u, 0, K)
             F = dmp_gcd(g, h, 0, K)
 
-            if F != [K.one]:
+            if not dmp_one_p(F, 0, K):
                 factors.append((F, k*(i + 1) - j))
 
             g, j = dmp_quo(g, F, 0, K), j - 1
 
-    if f != [K.one]:
+    if not dmp_one_p(f, 0, K):
         factors.append((f, dmp_degree_in(f, 0, 0)))
 
     return factors
@@ -760,8 +643,8 @@ def dup_gf_edf_shoup(f, n, K):
     * :cite:`Gathen1992frobenious`
 
     """
-    p = K.mod
-    N, q = dmp_degree_in(f, 0, 0), int(p)
+    p = K.characteristic
+    N, q = dmp_degree_in(f, 0, 0), p
 
     if not N:
         return []
@@ -772,25 +655,23 @@ def dup_gf_edf_shoup(f, n, K):
 
     r = dup_gf_random(N - 1, K)
 
+    h = dup_gf_pow_mod(x, q, f, K)
+    H = dup_gf_trace_map(r, h, x, n - 1, f, K)[1]
+
     if p == 2:
-        h = dup_gf_pow_mod(x, q, f, K)
-        H = dup_gf_trace_map(r, h, x, n - 1, f, K)[1]
         h1 = dmp_gcd(f, H, 0, K)
         h2 = dmp_quo(f, h1, 0, K)
 
         factors = dup_gf_edf_shoup(h1, n, K) + dup_gf_edf_shoup(h2, n, K)
     else:
-        b = dup_gf_frobenius_monomial_base(f, K)
-        H = _gf_trace_map(r, n, f, b, K)
         h = dup_gf_pow_mod(H, (q - 1)//2, f, K)
 
         h1 = dmp_gcd(f, h, 0, K)
         h2 = dmp_gcd(f, dmp_add_term(h, -K.one, 0, 0, K), 0, K)
         h3 = dmp_quo(f, dmp_mul(h1, h2, 0, K), 0, K)
 
-        factors = dup_gf_edf_shoup(h1, n, K) \
-            + dup_gf_edf_shoup(h2, n, K) \
-            + dup_gf_edf_shoup(h3, n, K)
+        factors = (dup_gf_edf_shoup(h1, n, K) + dup_gf_edf_shoup(h2, n, K) +
+                   dup_gf_edf_shoup(h3, n, K))
 
     return _sort_factors(factors, multiple=False)
 

@@ -4,8 +4,6 @@ from diofant import FF, nextprime, pi, ring
 from diofant.polys.galoistools import (dup_gf_berlekamp, dup_gf_compose_mod,
                                        dup_gf_ddf_shoup, dup_gf_ddf_zassenhaus,
                                        dup_gf_edf_shoup, dup_gf_edf_zassenhaus,
-                                       dup_gf_frobenius_map,
-                                       dup_gf_frobenius_monomial_base,
                                        dup_gf_irreducible,
                                        dup_gf_irreducible_p, dup_gf_pow_mod,
                                        dup_gf_Qbasis, dup_gf_Qmatrix,
@@ -109,18 +107,6 @@ def test_dup_gf_irreducible_p():
             assert dup_gf_irreducible_p(f, R.domain) is True
             assert dup_gf_irreducible_p(g, R.domain) is True
             assert dup_gf_irreducible_p(h, R.domain) is False
-
-
-def test_dup_gf_frobenius_map():
-    R, x = ring('x', FF(3))
-
-    f = R.to_dense(2*x**9 + x**7 + 2*x**5 + 2*x**4 + 2*x**2 + 2*x + 2)
-    g = R.to_dense(x**9 + x**8 + 2*x**6 + x**4 + 2*x**2 + 1)
-    b = dup_gf_frobenius_monomial_base(g, R.domain)
-    h = dup_gf_frobenius_map(f, g, b, R.domain)
-    h1 = dup_gf_pow_mod(f, R.domain.mod, g, R.domain)
-
-    assert h == h1
 
 
 def test_dup_gf_berlekamp():
