@@ -755,6 +755,17 @@ def test_gf_factor():
         with using(gf_factor_method=method):
             assert f.factor_list() == g
 
+    f = (x**28 + x**27 + x**26 + x**25 + x**24 + x**20 + x**19 + x**17 +
+         x**16 + x**15 + x**14 + x**13 + x**12 + x**11 + x**9 + x**8 +
+         x**5 + x**4 + x**2 + x)
+    g = (1, [(x, 1), (x + 1, 2), (x**5 + x**4 + x**3 + x + 1, 1),
+             (x**10 + x**9 + x**8 + x**5 + x**4 + x**2 + 1, 1),
+             (x**10 + x**9 + x**8 + x**7 + 1, 1)])
+
+    for method in ('zassenhaus', 'shoup'):
+        with using(gf_factor_method=method):
+            assert f.factor_list() == g
+
     R, x = ring('x', FF(3))
 
     f = x**6 - x**5 + x**4 + x**3 - x

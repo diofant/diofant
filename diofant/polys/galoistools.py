@@ -524,8 +524,8 @@ def dup_gf_edf_zassenhaus(f, n, K):
         if p == 2:
             h = r
 
-            for i in range(2**(n*N - 1)):
-                r = dup_gf_pow_mod(r, 2, f, K)
+            for i in range(1, n):
+                r = dup_gf_pow_mod(r, p, f, K)
                 h = dmp_add(h, r, 0, K)
         else:
             h = dup_gf_pow_mod(r, (p**n - 1) // 2, f, K)
