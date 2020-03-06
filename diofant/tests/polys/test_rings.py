@@ -1577,7 +1577,7 @@ def test_PolyElement_is_():
     assert f.is_cyclotomic is False
     assert (f + 1).is_cyclotomic
 
-    pytest.raises(MultivariatePolynomialError, lambda: x.is_cyclotomic)
+    pytest.raises(AttributeError, lambda: x.is_cyclotomic)
 
     assert R.is_positive(f) is True
     assert R.is_negative(f) is False
