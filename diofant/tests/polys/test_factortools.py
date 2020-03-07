@@ -702,8 +702,26 @@ def test_gf_factor():
         with using(gf_factor_method=method):
             assert f.factor_list() == g
 
+    f = x**15 - 1
+    g = (1, [(x + 2, 1), (x + 6, 1), (x + 7, 1), (x + 8, 1), (x + 10, 1),
+             (x**2 + x + 1, 1), (x**2 + 3*x + 9, 1), (x**2 + 4*x + 5, 1),
+             (x**2 + 5*x + 3, 1), (x**2 + 9*x + 4, 1)])
+
+    for method in ('zassenhaus', 'shoup'):
+        with using(gf_factor_method=method):
+            assert f.factor_list() == g
+
     with using(gf_factor_method='other'):
         pytest.raises(KeyError, lambda: (x + 1).factor_list())
+
+    R, x = ring("x", FF(13))
+
+    f = x**8 + x**6 + 10*x**4 + 10*x**3 + 8*x**2 + 2*x + 8
+    g = (1, [(x + 3, 1), (x**3 + 8*x**2 + 4*x + 12, 1),
+             (x**4 + 2*x**3 + 3*x**2 + 4*x + 6, 1)])
+
+    with using(gf_factor_method='berlekamp'):
+        assert f.factor_list() == g
 
     R, x = ring("x", FF(2))
 
@@ -721,6 +739,58 @@ def test_gf_factor():
              (x**10 + x**8 + x**7 + x**5 + 1, 1)])
 
     for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with using(gf_factor_method=method):
+            assert f.factor_list() == g
+
+    f = x**63 + 1
+    g = (1, [(x + 1, 1), (x**2 + x + 1, 1), (x**3 + x + 1, 1),
+             (x**3 + x**2 + 1, 1), (x**6 + x + 1, 1), (x**6 + x**3 + 1, 1),
+             (x**6 + x**4 + x**2 + x + 1, 1), (x**6 + x**4 + x**3 + x + 1, 1),
+             (x**6 + x**5 + 1, 1), (x**6 + x**5 + x**2 + x + 1, 1),
+             (x**6 + x**5 + x**3 + x**2 + 1, 1),
+             (x**6 + x**5 + x**4 + x + 1, 1),
+             (x**6 + x**5 + x**4 + x**2 + 1, 1)])
+
+    for method in ('zassenhaus', 'shoup'):
+        with using(gf_factor_method=method):
+            assert f.factor_list() == g
+
+    f = (x**28 + x**27 + x**26 + x**25 + x**24 + x**20 + x**19 + x**17 +
+         x**16 + x**15 + x**14 + x**13 + x**12 + x**11 + x**9 + x**8 +
+         x**5 + x**4 + x**2 + x)
+    g = (1, [(x, 1), (x + 1, 2), (x**5 + x**4 + x**3 + x + 1, 1),
+             (x**10 + x**9 + x**8 + x**5 + x**4 + x**2 + 1, 1),
+             (x**10 + x**9 + x**8 + x**7 + 1, 1)])
+
+    for method in ('zassenhaus', 'shoup'):
+        with using(gf_factor_method=method):
+            assert f.factor_list() == g
+
+    R, x = ring('x', FF(3))
+
+    f = x**6 - x**5 + x**4 + x**3 - x
+    g = (1, [(x, 1), (x + 1, 1), (x**2 + 1, 1), (x**2 + x + 2, 1)])
+
+    for method in ('zassenhaus', 'shoup'):
+        with using(gf_factor_method=method):
+            assert f.factor_list() == g
+
+    f = x**4 + x**3 + x + 2
+    g = (1, [(x**2 + 1, 1), (x**2 + x + 2, 1)])
+
+    for method in ('zassenhaus', 'shoup'):
+        with using(gf_factor_method=method):
+            assert f.factor_list() == g
+
+    R, x = ring("x", FF(809))
+
+    f = (x**10 + 2*x**9 + 5*x**8 + 26*x**7 + 677*x**6 + 436*x**5 +
+         791*x**4 + 325*x**3 + 456*x**2 + 24*x + 577)
+    g = (1, [(x + 701, 1), (x**9 + 110*x**8 + 559*x**7 + 532*x**6 +
+                            694*x**5 + 151*x**4 + 110*x**3 + 70*x**2 +
+                            735*x + 122, 1)])
+
+    for method in ('zassenhaus', 'shoup'):
         with using(gf_factor_method=method):
             assert f.factor_list() == g
 

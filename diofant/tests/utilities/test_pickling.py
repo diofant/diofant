@@ -89,7 +89,7 @@ def check(a, exclude=[], check_attr=True):
         def c(a, b, d):
             for i in d:
                 if not hasattr(a, i) or i in {'_assumptions',
-                                              '_mhash', '__dict__'}:
+                                              '_hash', '__dict__'}:
                     continue
                 attr = getattr(a, i)
                 if not hasattr(attr, "__call__"):

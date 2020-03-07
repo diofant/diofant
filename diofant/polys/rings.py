@@ -797,7 +797,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.ring.is_univariate:
             return self.ring.dup_cyclotomic_p(self)
         else:
-            raise MultivariatePolynomialError("cyclotomic polynomial")
+            raise AttributeError("cyclotomic polynomial")
 
     @property
     def is_homogeneous(self):
