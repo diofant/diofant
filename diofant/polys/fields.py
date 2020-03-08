@@ -78,6 +78,9 @@ class FractionField(Field, CompositeDomain):
 
         return obj
 
+    def __getnewargs_ex__(self):
+        return (self.domain, self.symbols), {'order': self.order}
+
     @property
     def characteristic(self):
         return self.domain.characteristic
@@ -246,6 +249,9 @@ class FracElement(DomainElement, CantSympify):
 
         self._numerator = numer
         self._denominator = denom
+
+    def __reduce__(self):
+        return self.parent.__call__, ((self.numerator, self.denominator),)
 
     def raw_new(self, numer, denom):
         return self.__class__(numer, denom)

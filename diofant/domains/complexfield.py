@@ -1,5 +1,7 @@
 """Implementation of :class:`ComplexField` class."""
 
+import mpmath
+
 from ..core import Float, I
 from ..polys.polyerrors import CoercionFailed, DomainError
 from .characteristiczero import CharacteristicZero
@@ -63,6 +65,10 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
         obj.one = obj.dtype(1)
 
         return obj
+
+    def __getnewargs_ex__(self):
+        return (), {'prec': self.precision,
+                    'tol': mpmath.mpf(self.tolerance._mpf_)}
 
     def __eq__(self, other):
         return (isinstance(other, ComplexField)

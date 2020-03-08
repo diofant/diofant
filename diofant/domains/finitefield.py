@@ -96,6 +96,9 @@ class FiniteField(Field, SimpleDomain):
         return isinstance(other, FiniteField) and \
             self.order == other.order and self.domain == other.domain
 
+    def __getnewargs_ex__(self):
+        return (self.order,), {}
+
     @property
     def characteristic(self):
         return self.mod

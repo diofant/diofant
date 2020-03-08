@@ -4,7 +4,7 @@ import warnings
 
 import pytest
 
-from diofant import (ZZ, Abs, Add, Atom, Basic, Catalan, CoercionFailed,
+from diofant import (QQ, ZZ, Abs, Add, Atom, Basic, Catalan, CoercionFailed,
                      Derivative, DiracDelta, DomainError, Dummy, E, Eijk,
                      Equality, EulerGamma, EvaluationFailed, ExpressionDomain,
                      ExtraneousFactors, FlagError, Float, FractionField,
@@ -27,12 +27,14 @@ from diofant import (ZZ, Abs, Add, Atom, Basic, Catalan, CoercionFailed,
                      coth, dirichlet_eta, erf, exp, factorial, ff, fibonacci,
                      floor, gamma, harmonic, hermite, im, legendre, ln, log,
                      loggamma, lowergamma, lucas, nan, oo, pi, polygamma, re,
-                     rf, sign, sin, sinh, tan, tanh, uppergamma, vectorize,
-                     zeta, zoo)
+                     rf, sign, sin, sinh, sqrt, tan, tanh, uppergamma,
+                     vectorize, zeta, zoo)
 from diofant.abc import x, y, z
 from diofant.core.compatibility import HAS_GMPY
 from diofant.core.logic import Logic
 from diofant.core.singleton import S, SingletonRegistry
+from diofant.domains import AlgebraicField, ComplexField, RealField
+from diofant.domains.finitefield import GMPYFiniteField, PythonFiniteField
 from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing
 from diofant.domains.rationalfield import (GMPYRationalField,
                                            PythonRationalField)
@@ -257,7 +259,6 @@ def test_pickling_polys_polytools():
         check(c)
 
 
-@pytest.mark.xfail
 def test_pickling_polys_rings():
     # NOTE: can't use protocols < 2 because we have to execute __new__ to
     # make sure caching of rings works properly.
@@ -267,27 +268,47 @@ def test_pickling_polys_rings():
     for c in (PolynomialRing, ring):
         check(c, exclude=[0, 1])
 
-    for c in (ring.dtype, ring.one):
-        check(c, exclude=[0, 1], check_attr=False)  # TODO: Py3k
+    for c in (ring.one, ring.x):
+        check(c, exclude=[0, 1])
 
 
-@pytest.mark.xfail
 def test_pickling_polys_fields():
     # NOTE: can't use protocols < 2 because we have to execute __new__ to
     # make sure caching of fields works properly.
 
     field = FractionField(ZZ, "x,y,z")
 
-    for c in (FracField, field):
+    for c in (FractionField, field):
         check(c, exclude=[0, 1])
 
-    for c in (field.dtype, field.one):
+    for c in (field.one, field.x):
         check(c, exclude=[0, 1])
 
 
 def test_pickling_polys_elements():
     for c in (PythonRational, PythonRational(1, 7)):
         check(c)
+
+    gf17 = PythonFiniteField(17)
+    gf64 = PythonFiniteField(64)
+
+    for c in (gf17(5), gf64(12)):
+        check(c, exclude=[0, 1])
+
+    A = AlgebraicField(QQ, sqrt(2))
+
+    for c in (A.one, A.unit, A([2, 1])):
+        check(c, exclude=[0, 1])
+
+    R = RealField(100)
+
+    for c in (R.zero, R.one, R(1.2345)):
+        check(c, exclude=[0, 1])
+
+    C = ComplexField(100)
+
+    for c in (C.zero, C.one, C(1.2345)):
+        check(c, exclude=[0, 1])
 
 
 def test_pickling_polys_domains():
@@ -297,12 +318,27 @@ def test_pickling_polys_domains():
     for c in (PythonRationalField, PythonRationalField()):
         check(c)
 
+    for c in (PythonFiniteField, PythonFiniteField(7), PythonFiniteField(64)):
+        check(c, exclude=[0, 1])
+
     if HAS_GMPY:
         for c in (GMPYIntegerRing, GMPYIntegerRing()):
             check(c)
 
         for c in (GMPYRationalField, GMPYRationalField()):
             check(c)
+
+        for c in (GMPYFiniteField, GMPYFiniteField(7), GMPYFiniteField(64)):
+            check(c, exclude=[0, 1])
+
+    for c in (RealField, RealField(100)):
+        check(c, exclude=[0, 1])
+
+    for c in (ComplexField, ComplexField(100)):
+        check(c, exclude=[0, 1])
+
+    for c in (AlgebraicField, AlgebraicField(QQ, sqrt(2))):
+        check(c, exclude=[0, 1])
 
     EX = ExpressionDomain()
     for c in (ExpressionDomain, EX, EX(sin(x))):

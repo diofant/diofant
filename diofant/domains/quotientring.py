@@ -17,6 +17,9 @@ class QuotientRingElement(DomainElement):
         else:
             self.rep = self.domain.convert(rep) % self.mod
 
+    def __reduce__(self):
+        return self.parent.__call__, (self.rep,)
+
     def __hash__(self):
         return hash((self.rep, self.mod))
 
