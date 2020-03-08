@@ -112,12 +112,12 @@ def dmp_sqf_part(f, u, K):
 
 
 def dup_gf_musser_sqf_list(f, K):
-    """Compute square-free decomposition of the monic ``f`` in ``GF(p^m)[x]``.
+    """Compute square-free decomposition of the monic ``f`` in ``GF(q)[x]``.
 
     References
     ==========
 
-    * :cite:`Geddes1992algorithms`, algorithm 8.3.
+    * :cite:`Geddes1992algorithms`, algorithm 8.3
 
     """
     n, factors, p = 1, [], K.characteristic
@@ -152,7 +152,7 @@ def dup_gf_musser_sqf_list(f, K):
 
 
 def dmp_gf_sqf_list(f, u, K):
-    """Compute square-free decomposition of the monic ``f`` in ``GF(p^m)[X]``.
+    """Compute square-free decomposition of the monic ``f`` in ``GF(q)[X]``.
 
     Examples
     ========
@@ -184,8 +184,8 @@ def dmp_rr_yun0_sqf_list(f, u, K):
     References
     ==========
 
-    * :cite:`Geddes1992algorithms`, algorithm 8.2.
-    * :cite:`LeeM2013factor`, algorithm 3.1.
+    * :cite:`Geddes1992algorithms`, algorithm 8.2
+    * :cite:`LeeM2013factor`, algorithm 3.1
 
     """
     if dmp_ground_p(f, None, u):

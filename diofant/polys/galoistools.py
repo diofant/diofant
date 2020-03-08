@@ -15,9 +15,9 @@ from .polyutils import _sort_factors
 
 def dup_gf_pow_mod(f, n, g, K):
     """
-    Compute ``f**n`` in ``GF(p)[x]/(g)`` using repeated squaring.
+    Compute ``f**n`` in ``GF(q)[x]/(g)`` using repeated squaring.
 
-    Given polynomials ``f`` and ``g`` in ``GF(p)[x]`` and a non-negative
+    Given polynomials ``f`` and ``g`` in ``GF(q)[x]`` and a non-negative
     integer ``n``, efficiently computes ``f**n (mod g)`` i.e. the remainder
     of ``f**n`` from division by ``g``, using the repeated squaring algorithm.
 
@@ -33,7 +33,7 @@ def dup_gf_pow_mod(f, n, g, K):
     References
     ==========
 
-    * :cite:`Gathen1999modern`
+    * :cite:`Gathen1999modern`, algorithm 4.8
 
     """
     if not n:
@@ -64,7 +64,7 @@ def dup_gf_pow_mod(f, n, g, K):
 
 def dup_gf_compose_mod(g, h, f, K):
     """
-    Compute polynomial composition ``g(h)`` in ``GF(p)[x]/(f)``.
+    Compute polynomial composition ``g(h)`` in ``GF(q)[x]/(f)``.
 
     Examples
     ========
@@ -92,16 +92,16 @@ def dup_gf_compose_mod(g, h, f, K):
 
 def dup_gf_trace_map(a, b, c, n, f, K):
     """
-    Compute polynomial trace map in ``GF(p)[x]/(f)``.
+    Compute polynomial trace map in ``GF(q)[x]/(f)``.
 
-    Given a polynomial ``f`` in ``GF(p)[x]``, polynomials ``a``, ``b``,
-    ``c`` in the quotient ring ``GF(p)[x]/(f)`` such that ``b = c**t
-    (mod f)`` for some positive power ``t`` of ``p``, and a positive
+    Given a polynomial ``f`` in ``GF(q)[x]``, polynomials ``a``, ``b``,
+    ``c`` in the quotient ring ``GF(q)[x]/(f)`` such that ``b = c**t
+    (mod f)`` for some positive power ``t`` of ``q``, and a positive
     integer ``n``, returns a mapping::
 
        a -> a**t**n, a + a**t + a**t**2 + ... + a**t**n (mod f)
 
-    In factorization context, ``b = x**p mod f`` and ``c = x mod f``.
+    In factorization context, ``b = x**q mod f`` and ``c = x mod f``.
     This way we can efficiently compute trace polynomials in equal
     degree factorization routine, much faster than with other methods,
     like iterated Frobenius algorithm, for large degrees.
@@ -120,7 +120,7 @@ def dup_gf_trace_map(a, b, c, n, f, K):
     References
     ==========
 
-    * :cite:`Gathen1992frobenious`
+    * :cite:`Gathen1992ComputingFM`, algorithm 5.2
 
     """
     u = dup_gf_compose_mod(a, b, f, K)
@@ -150,7 +150,7 @@ def dup_gf_trace_map(a, b, c, n, f, K):
 
 def dup_gf_random(n, K):
     """
-    Generate a random polynomial in ``GF(p)[x]`` of degree ``n``.
+    Generate a random polynomial in ``GF(q)[x]`` of degree ``n``.
 
     Examples
     ========
@@ -321,7 +321,7 @@ def dup_gf_Qmatrix(f, K):
     References
     ==========
 
-    * :cite:`Geddes1992algorithms`, algorithm 8.5.
+    * :cite:`Geddes1992algorithms`, algorithm 8.5
 
     """
     n, q = dmp_degree_in(f, 0, 0), K.order
@@ -360,7 +360,7 @@ def dup_gf_Qbasis(Q, K):
     References
     ==========
 
-    * :cite:`Knuth1985seminumerical`, section 4.6.2, algorithm N.
+    * :cite:`Knuth1985seminumerical`, section 4.6.2, algorithm N
 
     """
     Q, n = [list(q) for q in Q], len(Q)
@@ -399,7 +399,7 @@ def dup_gf_Qbasis(Q, K):
 
 def dup_gf_berlekamp(f, K):
     """
-    Factor a square-free ``f`` in ``GF(p^m)[x]`` for small order.
+    Factor a square-free polynomial over finite fields of small order.
 
     Examples
     ========
@@ -412,8 +412,8 @@ def dup_gf_berlekamp(f, K):
     References
     ==========
 
-    * :cite:`Geddes1992algorithms`, algorithm 8.4.
-    * :cite:`Knuth1985seminumerical`, section 4.6.2.
+    * :cite:`Geddes1992algorithms`, algorithm 8.4
+    * :cite:`Knuth1985seminumerical`, section 4.6.2
 
     """
     Q = dup_gf_Qmatrix(f, K)
@@ -757,7 +757,7 @@ _factor_methods = {
 
 def dup_gf_factor_sqf(f, K):
     """
-    Factor a square-free polynomial ``f`` in ``GF(p)[x]``.
+    Factor a square-free polynomial ``f`` in ``GF(q)[x]``.
 
     Returns its complete factorization into irreducibles::
 
@@ -767,18 +767,18 @@ def dup_gf_factor_sqf(f, K):
     for ``i != j``.  The result is given as a list of factors of ``f``.
 
     Square-free factors of ``f`` can be factored into irreducibles over
-    ``GF(p)`` using three very different methods:
+    finite fields using three very different methods:
 
     Berlekamp
-        efficient for very small values of ``p`` (usually ``p < 25``)
+        efficient for very small values of order ``q`` (usually ``q < 25``)
     Cantor-Zassenhaus
-        efficient on average input and with "typical" ``p``
+        efficient on average input and with "typical" ``q``
     Shoup-Kaltofen-Gathen
-        efficient with very large inputs and modulus
+        efficient with very large inputs and order
 
-    If you want to use a specific factorization method, instead of the default
-    one, set ``GF_FACTOR_METHOD`` with one of ``berlekamp``, ``zassenhaus`` or
-    ``shoup`` values.
+    If you want to use a specific factorization method - set
+    ``GF_FACTOR_METHOD`` configuration option with one of ``"berlekamp"``,
+    ``"zassenhaus"`` or ``"shoup"`` values.
 
     Examples
     ========
@@ -791,7 +791,7 @@ def dup_gf_factor_sqf(f, K):
     References
     ==========
 
-    * :cite:`Gathen1999modern`
+    * :cite:`Gathen1999modern`, chapter 14
 
     """
     method = query('GF_FACTOR_METHOD')
