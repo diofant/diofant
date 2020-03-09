@@ -159,7 +159,7 @@ def dup_gf_random(n, K):
     [1 mod 5, 4 mod 5, 4 mod 5, 2 mod 5, 1 mod 5]
 
     """
-    return [K.one] + [K(int(random.uniform(0, K.order))) for i in range(n)]
+    return [K.one] + [K(random.randint(0, K.order - 1)) for i in range(n)]
 
 
 def dup_gf_irreducible(n, K):

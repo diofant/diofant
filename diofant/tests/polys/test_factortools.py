@@ -821,7 +821,7 @@ def test_gf_factor():
         with using(gf_factor_method=method):
             assert f.factor_list() == g
 
-    F8 = FF(8)
+    F8 = FF(2, [1, 0, 1, 1])
     R, x = ring("x", F8)
 
     f = x**10 + x**9 + F8(2)*x**8 + F8(2)*x**7 + F8(5)*x**6 + F8(3)*x**5
@@ -832,7 +832,7 @@ def test_gf_factor():
         with using(gf_factor_method=method):
             assert f.factor_list() == g
 
-    F9 = FF(9)
+    F9 = FF(3, [1, 2, 2])
     R, x = ring("x", F9)
 
     f = x**5 + F9(2)*x**4 + F9(6)*x**3 + F9(8)*x**2 + F9(5)*x + F9(4)
