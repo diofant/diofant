@@ -5,7 +5,7 @@ import random
 
 from ..core import Dummy, integer_digits
 from ..ntheory import isprime, perfect_power
-from ..polys.galoistools import gf_irreducible
+from ..polys.galoistools import dup_gf_irreducible
 from ..polys.polyerrors import CoercionFailed
 from .field import Field
 from .groundtypes import DiofantInteger
@@ -46,7 +46,7 @@ class FiniteField(Field, SimpleDomain):
 
         if modulus is None:
             random.seed(0)
-            modulus = gf_irreducible(deg, mod, dom)
+            modulus = dup_gf_irreducible(deg, PythonIntegerRing().finite_field(mod))
         elif deg != len(modulus) - 1:
             raise ValueError('degree of a defining polynomial for the field'
                              ' does not match extension degree')
@@ -62,7 +62,11 @@ class FiniteField(Field, SimpleDomain):
         obj.mod = mod
         obj.order = order
 
-        obj.rep = 'GF(%s)' % obj.order
+        if order > mod:
+            obj.rep = 'GF(%s, %s)' % (obj.mod, list(map(PythonIntegerRing(),
+                                                        modulus)))
+        else:
+            obj.rep = 'GF(%s)' % obj.mod
 
         try:
             obj.dtype = _modular_integer_cache[key]
@@ -92,9 +96,11 @@ class FiniteField(Field, SimpleDomain):
         return isinstance(other, FiniteField) and \
             self.order == other.order and self.domain == other.domain
 
+    def __getnewargs_ex__(self):
+        return (self.order,), {}
+
     @property
     def characteristic(self):
-        """Return the characteristic of this domain."""
         return self.mod
 
     def to_expr(self, a):
@@ -114,7 +120,8 @@ class FiniteField(Field, SimpleDomain):
         return self.dtype(self.domain.convert(a.rep, K0.domain))
 
     def _from_PythonIntegerRing(self, a, K0=None):
-        return self.dtype(self.domain.convert(a, K0))
+        return self.dtype(self.domain.convert(a, K0) % self.characteristic)
+    _from_GMPYIntegerRing = _from_PythonIntegerRing
 
     def _from_PythonRationalField(self, a, K0=None):
         if a.denominator == 1:
@@ -122,9 +129,6 @@ class FiniteField(Field, SimpleDomain):
 
     def _from_GMPYFiniteField(self, a, K0=None):
         return self.dtype(self.domain.convert(a.rep, K0.domain))
-
-    def _from_GMPYIntegerRing(self, a, K0=None):
-        return self.dtype(self.domain.convert(a, K0))
 
     def _from_GMPYRationalField(self, a, K0=None):
         if a.denominator == 1:

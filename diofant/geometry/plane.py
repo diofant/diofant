@@ -60,9 +60,9 @@ class Plane(GeometryEntity):
             if is_sequence(a) and len(a) == 3:
                 normal_vector = Point3D(a).args
             else:
-                raise ValueError(filldedent('''
+                raise ValueError(filldedent("""
                     Either provide 3 3D points or a point with a
-                    normal vector expressed as a sequence of length 3'''))
+                    normal vector expressed as a sequence of length 3"""))
         return GeometryEntity.__new__(cls, p1, normal_vector, **kwargs)
 
     @property

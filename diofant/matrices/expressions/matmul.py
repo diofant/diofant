@@ -28,7 +28,8 @@ class MatMul(MatrixExpr):
     is_MatMul = True
 
     def _eval_is_commutative(self):
-        return _fuzzy_group(a.is_commutative for a in self.args)
+        return _fuzzy_group((a.is_commutative for a in self.args),
+                            quick_exit=True)
 
     def __new__(cls, *args, **kwargs):
         check = kwargs.get('check', True)

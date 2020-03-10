@@ -4,56 +4,47 @@ import warnings
 
 import pytest
 
-from diofant import (ZZ, Abs, Add, Atom, Basic, Catalan, Derivative,
-                     DiracDelta, Dummy, E, Eijk, Equality, EulerGamma,
-                     ExpressionDomain, Float, Function, FunctionClass,
-                     GoldenRatio, GreaterThan, Heaviside, I, Integer, Integral,
-                     Interval, Lambda, LambertW, LessThan, Limit, Mul, Order,
-                     Piecewise, Pow, Product, PythonRational, Rational,
-                     Relational, RootOf, RootSum, StrictGreaterThan,
-                     StrictLessThan, Sum, Symbol, Unequality, Wild,
-                     WildFunction, acos, acosh, acot, acoth, arg, asin, asinh,
-                     assoc_legendre, atan, atan2, atanh, bell, bernoulli,
-                     binomial, ceiling, chebyshevt, chebyshevt_root,
+from diofant import (QQ, ZZ, Abs, Add, Atom, Basic, Catalan, CoercionFailed,
+                     Derivative, DiracDelta, DomainError, Dummy, E, Eijk,
+                     Equality, EulerGamma, EvaluationFailed, ExpressionDomain,
+                     ExtraneousFactors, FlagError, Float, FractionField,
+                     Function, FunctionClass, GeneratorsError,
+                     GeneratorsNeeded, GoldenRatio, GreaterThan, GroebnerBasis,
+                     Heaviside, HeuristicGCDFailed, HomomorphismFailed, I,
+                     Integer, Integral, Interval, IsomorphismFailed, Lambda,
+                     LambertW, LessThan, Limit, Matrix, Monomial, Mul,
+                     MultivariatePolynomialError, NotAlgebraic, NotInvertible,
+                     NotReversible, OptionError, Options, Order, Piecewise,
+                     Poly, PolynomialError, PolynomialRing, Pow, Product,
+                     PurePoly, PythonRational, Rational, RefinementFailed,
+                     Relational, RootOf, RootSum, Sieve, SparseMatrix,
+                     StrictGreaterThan, StrictLessThan, Sum, Symbol,
+                     Unequality, UnificationFailed, UnivariatePolynomialError,
+                     Wild, WildFunction, acos, acosh, acot, acoth, arg, asin,
+                     asinh, assoc_legendre, atan, atan2, atanh, bell,
+                     bernoulli, binomial, ceiling, chebyshevt, chebyshevt_root,
                      chebyshevu, chebyshevu_root, conjugate, cos, cosh, cot,
                      coth, dirichlet_eta, erf, exp, factorial, ff, fibonacci,
                      floor, gamma, harmonic, hermite, im, legendre, ln, log,
                      loggamma, lowergamma, lucas, nan, oo, pi, polygamma, re,
-                     rf, sign, sin, sinh, tan, tanh, uppergamma, vectorize,
-                     zeta, zoo)
+                     rf, sign, sin, sinh, sqrt, tan, tanh, uppergamma,
+                     vectorize, zeta, zoo)
 from diofant.abc import x, y, z
 from diofant.core.compatibility import HAS_GMPY
 from diofant.core.logic import Logic
 from diofant.core.singleton import S, SingletonRegistry
+from diofant.domains import AlgebraicField, ComplexField, RealField
+from diofant.domains.finitefield import GMPYFiniteField, PythonFiniteField
 from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing
 from diofant.domains.rationalfield import (GMPYRationalField,
                                            PythonRationalField)
-from diofant.geometry.ellipse import Circle, Ellipse
+from diofant.geometry import (Circle, Ellipse, Line, Point, Polygon, Ray,
+                              RegularPolygon, Segment, Triangle)
 from diofant.geometry.entity import GeometryEntity
-from diofant.geometry.line import Line, LinearEntity, Ray, Segment
-from diofant.geometry.point import Point
-from diofant.geometry.polygon import Polygon, RegularPolygon, Triangle
-from diofant.matrices import Matrix, SparseMatrix
-from diofant.ntheory.generate import Sieve
+from diofant.geometry.line import LinearEntity
 from diofant.plotting.plot import Plot
-from diofant.polys.fields import FractionField
-from diofant.polys.monomials import Monomial
 from diofant.polys.orderings import (GradedLexOrder, InverseOrder, LexOrder,
                                      ProductOrder, ReversedGradedLexOrder)
-from diofant.polys.polyerrors import (CoercionFailed, DomainError,
-                                      EvaluationFailed, ExtraneousFactors,
-                                      FlagError, GeneratorsError,
-                                      GeneratorsNeeded, HeuristicGCDFailed,
-                                      HomomorphismFailed, IsomorphismFailed,
-                                      MultivariatePolynomialError,
-                                      NotAlgebraic, NotInvertible,
-                                      NotReversible, OptionError,
-                                      PolynomialError, RefinementFailed,
-                                      UnificationFailed,
-                                      UnivariatePolynomialError)
-from diofant.polys.polyoptions import Options
-from diofant.polys.polytools import GroebnerBasis, Poly, PurePoly
-from diofant.polys.rings import PolynomialRing
 from diofant.printing.latex import LatexPrinter
 from diofant.printing.mathml import MathMLPrinter
 from diofant.printing.pretty.pretty import PrettyPrinter
@@ -100,7 +91,7 @@ def check(a, exclude=[], check_attr=True):
         def c(a, b, d):
             for i in d:
                 if not hasattr(a, i) or i in {'_assumptions',
-                                              '_mhash', '__dict__'}:
+                                              '_hash', '__dict__'}:
                     continue
                 attr = getattr(a, i)
                 if not hasattr(attr, "__call__"):
@@ -268,7 +259,6 @@ def test_pickling_polys_polytools():
         check(c)
 
 
-@pytest.mark.xfail
 def test_pickling_polys_rings():
     # NOTE: can't use protocols < 2 because we have to execute __new__ to
     # make sure caching of rings works properly.
@@ -278,27 +268,47 @@ def test_pickling_polys_rings():
     for c in (PolynomialRing, ring):
         check(c, exclude=[0, 1])
 
-    for c in (ring.dtype, ring.one):
-        check(c, exclude=[0, 1], check_attr=False)  # TODO: Py3k
+    for c in (ring.one, ring.x):
+        check(c, exclude=[0, 1])
 
 
-@pytest.mark.xfail
 def test_pickling_polys_fields():
     # NOTE: can't use protocols < 2 because we have to execute __new__ to
     # make sure caching of fields works properly.
 
     field = FractionField(ZZ, "x,y,z")
 
-    for c in (FracField, field):
+    for c in (FractionField, field):
         check(c, exclude=[0, 1])
 
-    for c in (field.dtype, field.one):
+    for c in (field.one, field.x):
         check(c, exclude=[0, 1])
 
 
 def test_pickling_polys_elements():
     for c in (PythonRational, PythonRational(1, 7)):
         check(c)
+
+    gf17 = PythonFiniteField(17)
+    gf64 = PythonFiniteField(64)
+
+    for c in (gf17(5), gf64(12)):
+        check(c, exclude=[0, 1])
+
+    A = AlgebraicField(QQ, sqrt(2))
+
+    for c in (A.one, A.unit, A([2, 1])):
+        check(c, exclude=[0, 1])
+
+    R = RealField(100)
+
+    for c in (R.zero, R.one, R(1.2345)):
+        check(c, exclude=[0, 1])
+
+    C = ComplexField(100)
+
+    for c in (C.zero, C.one, C(1.2345)):
+        check(c, exclude=[0, 1])
 
 
 def test_pickling_polys_domains():
@@ -308,12 +318,27 @@ def test_pickling_polys_domains():
     for c in (PythonRationalField, PythonRationalField()):
         check(c)
 
+    for c in (PythonFiniteField, PythonFiniteField(7), PythonFiniteField(64)):
+        check(c, exclude=[0, 1])
+
     if HAS_GMPY:
         for c in (GMPYIntegerRing, GMPYIntegerRing()):
             check(c)
 
         for c in (GMPYRationalField, GMPYRationalField()):
             check(c)
+
+        for c in (GMPYFiniteField, GMPYFiniteField(7), GMPYFiniteField(64)):
+            check(c, exclude=[0, 1])
+
+    for c in (RealField, RealField(100)):
+        check(c, exclude=[0, 1])
+
+    for c in (ComplexField, ComplexField(100)):
+        check(c, exclude=[0, 1])
+
+    for c in (AlgebraicField, AlgebraicField(QQ, sqrt(2))):
+        check(c, exclude=[0, 1])
 
     EX = ExpressionDomain()
     for c in (ExpressionDomain, EX, EX(sin(x))):

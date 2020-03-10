@@ -255,11 +255,6 @@ class subfactorial(CombinatorialFunction):
             elif arg is oo:
                 return oo
 
-    def _eval_is_even(self):
-        n = self.args[0]
-        if n.is_odd and n.is_nonnegative:
-            return True
-
     def _eval_is_integer(self):
         n = self.args[0]
         if n.is_integer and n.is_nonnegative:
@@ -276,8 +271,8 @@ class subfactorial(CombinatorialFunction):
 
     def _eval_is_odd(self):
         n = self.args[0]
-        if n.is_even and n.is_nonnegative:
-            return True
+        if n.is_integer and n.is_nonnegative:
+            return n.is_even
 
 
 class factorial2(CombinatorialFunction):

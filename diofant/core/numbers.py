@@ -234,12 +234,12 @@ def mod_inverse(a, m):
     except ValueError:
         a, m = sympify(a), sympify(m)
         if not (a.is_number and m.is_number):
-            raise TypeError(filldedent('''
+            raise TypeError(filldedent("""
                 Expected numbers for arguments; symbolic `mod_inverse`
                 is not implemented
                 but symbolic expressions can be handled with the
                 similar function,
-                sympy.polys.polytools.invert'''))
+                sympy.polys.polytools.invert"""))
         big = (m > 1)
         if not (big is S.true or big is S.false):
             raise ValueError('m > 1 did not evaluate; try to simplify %s' % m)

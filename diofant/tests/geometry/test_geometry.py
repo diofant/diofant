@@ -2,18 +2,14 @@ import warnings
 
 import pytest
 
-from diofant import (Derivative, Dummy, Float, Rational, Symbol, Tuple, cos,
-                     oo, pi, root, sqrt, symbols)
-from diofant.functions.elementary.trigonometric import tan
+from diofant import (Derivative, Dummy, Float, Integral, Rational, Symbol,
+                     Tuple, cos, oo, pi, root, solve, sqrt, symbols, tan)
 from diofant.geometry import (Circle, Curve, Ellipse, GeometryError, Line,
                               Point, Point2D, Point3D, Polygon, Ray,
                               RegularPolygon, Segment, Triangle, are_similar,
-                              centroid, convex_hull, intersection)
+                              centroid, convex_hull, deg, idiff, intersection,
+                              rad)
 from diofant.geometry.entity import rotate, scale, translate
-from diofant.geometry.polygon import deg, rad
-from diofant.geometry.util import idiff
-from diofant.integrals.integrals import Integral
-from diofant.solvers.solvers import solve
 from diofant.utilities.randtest import verify_numerically
 
 
@@ -616,13 +612,14 @@ def test_polygon():
     pt1 = Point(half, half)
     pt2 = Point(1, 1)
 
-    '''Polygon to Point'''
+    # Polygon to Point
     assert p1.distance(pt1) == half
     assert p1.distance(pt2) == 0
     assert p2.distance(pt1) == Rational(3, 4)
     assert p3.distance(pt2) == sqrt(2)/2
 
-    '''Polygon to Polygon'''
+    # Polygon to Polygon
+
     # p1.distance(p2) emits a warning
     # First, test the warning
     warnings.filterwarnings("error",

@@ -543,7 +543,7 @@ def _denester(nested, av0, h, max_depth_level):
             nested2 = [av0[3], R]
             av0[0] = None
         else:
-            values = list(filter(None, [_sqrt_match(expr) for expr in nested]))
+            values = list(filter(None, (_sqrt_match(expr) for expr in nested)))
             for v in values:
                 if v[2]:  # Since if b=0, r is not defined
                     if R is not None:

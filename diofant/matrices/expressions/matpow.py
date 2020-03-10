@@ -1,3 +1,4 @@
+from ...core.logic import fuzzy_and
 from ...core.sympify import sympify
 from ..matrices import MatrixBase, ShapeError
 from .matexpr import Identity, MatrixExpr, ZeroMatrix
@@ -46,7 +47,7 @@ class MatPow(MatrixExpr):
         return A._entry(i, j)
 
     def _eval_is_commutative(self):
-        return self.base.is_commutative and self.exp.is_commutative
+        return fuzzy_and([self.base.is_commutative, self.exp.is_commutative])
 
     def doit(self, **kwargs):
         deep = kwargs.get('deep', True)

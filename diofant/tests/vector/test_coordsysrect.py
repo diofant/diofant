@@ -3,13 +3,9 @@ import pytest
 from diofant import ImmutableMatrix as Matrix
 from diofant import Symbol, cos, pi, simplify, sin, symbols, zeros
 from diofant.abc import a, b, c, q
-from diofant.vector.coordsysrect import CoordSysCartesian
-from diofant.vector.functions import express
-from diofant.vector.orienters import (AxisOrienter, BodyOrienter,
-                                      QuaternionOrienter, SpaceOrienter)
-from diofant.vector.point import Point
-from diofant.vector.scalar import BaseScalar
-from diofant.vector.vector import Vector
+from diofant.vector import (AxisOrienter, BaseScalar, BodyOrienter,
+                            CoordSysCartesian, Point, QuaternionOrienter,
+                            SpaceOrienter, Vector, express)
 
 
 __all__ = ()

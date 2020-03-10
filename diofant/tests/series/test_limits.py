@@ -734,3 +734,34 @@ def test_sympyissue_18306():
 
 def test_sympyissue_18378():
     assert limit(log(exp(3*x) + x)/log(exp(x) + x**100), x, oo) == 3
+
+
+def test_sympyissue_18399():
+    assert limit((1 - x/2)**(3*x), x, oo) == oo
+    assert limit((-x)**x, x, oo) == oo
+
+
+def test_sympyissue_18452():
+    assert limit(abs(log(x))**x, x, 0, "+") == 1
+    assert limit(abs(log(x))**x, x, 0, "-") == 1
+
+
+def test_sympyissue_18482():
+    assert limit(sqrt(x**2 + 6*x) + (x**3 + x**2)/(x**2 + 1), x, -oo) == -2
+    assert limit((x**3 + x**2 + sqrt(x*(x + 6))*(x**2 + 1))/(x**2 + 1),
+                 x, -oo) == -2
+    assert limit((2*exp(3*x)/(exp(2*x) + 1))**(1/x), x, oo) == E
+
+
+def test_sympyissue_18501():
+    assert limit(abs(log(x - 1)**3 - 1), x, 1, '+') == oo
+
+
+def test_sympyissue_18508():
+    assert limit(sin(x)/sqrt(1 - cos(x)), x, 0) == sqrt(2)
+
+
+def test_sympyissue_18707():
+    p = Symbol('p', positive=True, real=True)
+
+    assert limit(1/p**n, n, oo) == p**-oo

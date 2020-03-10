@@ -47,7 +47,7 @@ class Basic:
 
     def __new__(cls, *args):
         obj = object.__new__(cls)
-        obj._mhash = None  # will be set by __hash__ method.
+        obj._hash = None  # will be set by __hash__ method.
 
         obj._args = args  # all items in args must be Basic objects
         return obj
@@ -73,10 +73,10 @@ class Basic:
     def __hash__(self):
         # hash cannot be cached using cache_it because infinite recurrence
         # occurs as hash is needed for setting cache dictionary keys
-        h = self._mhash
+        h = self._hash
         if h is None:
             h = hash((type(self).__name__,) + self._hashable_content())
-            self._mhash = h
+            self._hash = h
         return h
 
     def _hashable_content(self):

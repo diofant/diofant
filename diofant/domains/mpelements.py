@@ -32,6 +32,9 @@ class RealElement(_mpf, DomainElement):
     def denominator(self):
         return self.parent.one
 
+    def __reduce__(self):
+        return self.parent.__call__, (self._mpf_,)
+
 
 class ComplexElement(_mpc, DomainElement):
     """An element of a complex domain."""
@@ -52,6 +55,9 @@ class ComplexElement(_mpc, DomainElement):
     @property
     def denominator(self):
         return self.parent.one
+
+    def __reduce__(self):
+        return self.parent.__call__, (*self._mpc_,)
 
 
 new = object.__new__
@@ -102,6 +108,10 @@ class MPContext(PythonMPContext):
         self.inf = self.make_mpf(finf)
         self.ninf = self.make_mpf(fninf)
         self.nan = self.make_mpf(fnan)
+
+    def __eq__(self, other):
+        return (isinstance(other, MPContext) and self.prec == other.prec and
+                self.dps == other.dps and self.tolerance == other.tolerance)
 
     def _make_tol(self):
         hundred = (0, 25, 2, 5)

@@ -16,6 +16,7 @@ diofant.stats.rv_interface
 from ..abc import x
 from ..core import (Add, Eq, Equality, Expr, Integer, Lambda, Symbol, Tuple,
                     oo, sympify)
+from ..core.logic import fuzzy_or
 from ..core.relational import Relational
 from ..functions import DiracDelta
 from ..logic.boolalg import Boolean, false, true
@@ -233,7 +234,8 @@ class RandomSymbol(Expr):
         return self.symbol.is_integer
 
     def _eval_is_extended_real(self):
-        return self.symbol.is_extended_real or self.pspace.is_extended_real
+        return fuzzy_or([self.symbol.is_extended_real,
+                         self.pspace.is_extended_real])
 
     def _eval_is_commutative(self):
         return self.symbol.is_commutative

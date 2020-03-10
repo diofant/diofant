@@ -61,7 +61,7 @@ may be slightly more efficient.)
 Manipulation of dense, univariate polynomials with finite field coefficients
 ============================================================================
 
-Functions in this module carry the prefix ``gf_``, referring to the classical
+Functions in this module carry the suffix ``gf_``, referring to the classical
 name "Galois Fields" for finite fields. Note that many polynomial
 factorization algorithms work by reduction to the finite field case, so having
 special implementations for this case is justified both by performance, and by
@@ -327,9 +327,6 @@ including the last one which is the resultant if this does not vanish.
 .. autofunction:: dmp_resultant
 .. autofunction:: dmp_rr_prs_gcd
 .. autofunction:: dmp_ff_prs_gcd
-.. autofunction:: dmp_zz_heu_gcd
-.. autofunction:: dmp_qq_heu_gcd
-.. autofunction:: dmp_inner_gcd
 .. autofunction:: dmp_gcd
 .. autofunction:: dmp_content
 .. autofunction:: dmp_primitive

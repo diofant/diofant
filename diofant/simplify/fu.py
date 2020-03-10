@@ -1739,10 +1739,10 @@ def process_common_addends(rv, do, key2=None, key1=True):
     return rv
 
 
-fufuncs = '''
+fufuncs = """
     TR0 TR1 TR2 TR3 TR4 TR5 TR6 TR7 TR8 TR9 TR10 TR10i TR11
     TR12 TR13 L TR2i TRmorrie TR12i
-    TR14 TR15 TR16 TR111 TR22'''.split()
+    TR14 TR15 TR16 TR111 TR22""".split()
 FU = dict(zip(fufuncs, list(map(locals().get, fufuncs))))
 
 

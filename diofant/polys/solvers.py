@@ -43,4 +43,4 @@ def solve_lin_sys(eqs, ring):
             vect = RawMatrix([[-x] for x in ring.gens[p+1:]] + [[ring.one]])
             sols[ring.gens[p]] = (echelon[i, p + 1:]*vect)[0]
 
-    return {k: ring.ring_new(v) for k, v in sols.items()}
+    return {k: ring(v) for k, v in sols.items()}

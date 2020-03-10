@@ -2354,7 +2354,7 @@ def Weibull(name, alpha, beta):
     >>> from diofant.stats import density, E, variance
 
     >>> l = Symbol("lambda", positive=True)
-    >>> k = Symbol("k", positive=True)
+    >>> k = Symbol("k", positive=True, real=True)
 
     >>> X = Weibull("x", l, k)
 

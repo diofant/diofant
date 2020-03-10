@@ -12,7 +12,7 @@ from diofant import (Add, Basic, Derivative, DiracDelta, Dummy, E, Float,
                      trigsimp, true, zoo)
 from diofant.abc import a, b, c, n, r, t, u, x, y, z
 from diofant.core.function import AppliedUndef
-from diofant.solvers.solvers import checksol
+from diofant.solvers.utils import checksol
 
 
 __all__ = ()

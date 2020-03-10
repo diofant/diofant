@@ -7,16 +7,13 @@ from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
                          dmp_sub_mul, dup_mul)
-from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_deflate,
-                         dmp_degree_in, dmp_ground, dmp_ground_LC, dmp_inflate,
-                         dmp_LC, dmp_one, dmp_one_p, dmp_raise, dmp_strip,
-                         dmp_zero, dmp_zero_p, dmp_zeros)
+from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
+                         dmp_ground, dmp_ground_LC, dmp_LC, dmp_one_p,
+                         dmp_raise, dmp_strip, dmp_zero, dmp_zero_p)
 from .densetools import (dmp_clear_denoms, dmp_eval_in, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc)
-from .heuristicgcd import heugcd
 from .polyconfig import query
-from .polyerrors import (DomainError, HeuristicGCDFailed, HomomorphismFailed,
-                         NotInvertible)
+from .polyerrors import DomainError, HomomorphismFailed, NotInvertible
 
 
 def dup_half_gcdex(f, g, K):
@@ -607,77 +604,7 @@ def dmp_resultant(f, g, u, K, includePRS=False):
     return dmp_prs_resultant(f, g, u, K)[0]
 
 
-def _dmp_rr_trivial_gcd(f, g, u, K):
-    """Handle trivial cases in GCD algorithm over a ring."""
-    zero_f = dmp_zero_p(f, u)
-    zero_g = dmp_zero_p(g, u)
-
-    if zero_f and zero_g:
-        return tuple(dmp_zeros(3, u, K))
-    elif zero_f:
-        if K.is_negative(dmp_ground_LC(g, u, K)):
-            return dmp_neg(g, u, K), dmp_zero(u), dmp_ground(-K.one, u)
-        else:
-            return g, dmp_zero(u), dmp_one(u, K)
-    elif zero_g:
-        if K.is_negative(dmp_ground_LC(f, u, K)):
-            return dmp_neg(f, u, K), dmp_ground(-K.one, u), dmp_zero(u)
-        else:
-            return f, dmp_one(u, K), dmp_zero(u)
-    elif dmp_one_p(f, u, K) or dmp_one_p(g, u, K):
-        return dmp_one(u, K), f, g
-    elif u and query('USE_SIMPLIFY_GCD'):
-        return _dmp_simplify_gcd(f, g, u, K)
-
-
-def _dmp_ff_trivial_gcd(f, g, u, K):
-    """Handle trivial cases in GCD algorithm over a field."""
-    zero_f = dmp_zero_p(f, u)
-    zero_g = dmp_zero_p(g, u)
-
-    if zero_f and zero_g:
-        return tuple(dmp_zeros(3, u, K))
-    elif zero_f:
-        return (dmp_ground_monic(g, u, K),
-                dmp_zero(u),
-                dmp_ground(dmp_ground_LC(g, u, K), u))
-    elif zero_g:
-        return (dmp_ground_monic(f, u, K),
-                dmp_ground(dmp_ground_LC(f, u, K), u),
-                dmp_zero(u))
-    elif u and query('USE_SIMPLIFY_GCD'):
-        return _dmp_simplify_gcd(f, g, u, K)
-
-
-def _dmp_simplify_gcd(f, g, u, K):
-    """Try to eliminate `x_0` from GCD computation in `K[X]`."""
-    df = dmp_degree_in(f, 0, u)
-    dg = dmp_degree_in(g, 0, u)
-
-    if df > 0 and dg > 0:
-        return
-
-    if not (df or dg):
-        F = dmp_LC(f, K)
-        G = dmp_LC(g, K)
-    else:
-        if not df:
-            F = dmp_LC(f, K)
-            G = dmp_content(g, u, K)
-        else:
-            F = dmp_content(f, u, K)
-            G = dmp_LC(g, K)
-
-    v = u - 1
-    h = dmp_gcd(F, G, v, K)
-
-    cff = [dmp_quo(cf, h, v, K) for cf in f]
-    cfg = [dmp_quo(cg, h, v, K) for cg in g]
-
-    return [h], cff, cfg
-
-
-def dup_rr_prs_gcd(f, g, K):
+def dmp_rr_prs_gcd(f, g, u, K):
     """
     Computes polynomial GCD using subresultants over a ring.
 
@@ -689,70 +616,8 @@ def dup_rr_prs_gcd(f, g, K):
 
     >>> R, x = ring("x", ZZ)
 
-    >>> R.dup_rr_prs_gcd(x**2 - 1, x**2 - 3*x + 2)
+    >>> R.dmp_rr_prs_gcd(x**2 - 1, x**2 - 3*x + 2)
     (x - 1, x + 1, x - 2)
-
-    """
-    result = _dmp_rr_trivial_gcd(f, g, 0, K)
-
-    if result is not None:
-        return result
-
-    fc, F = dmp_ground_primitive(f, 0, K)
-    gc, G = dmp_ground_primitive(g, 0, K)
-
-    c = K.gcd(fc, gc)
-
-    h = dmp_subresultants(F, G, 0, K)[-1]
-    _, h = dmp_ground_primitive(h, 0, K)
-
-    h = dmp_mul_ground(h, c, 0, K)
-
-    cff = dmp_quo(f, h, 0, K)
-    cfg = dmp_quo(g, h, 0, K)
-
-    return h, cff, cfg
-
-
-def dup_ff_prs_gcd(f, g, K):
-    """
-    Computes polynomial GCD using subresultants over a field.
-
-    Returns ``(h, cff, cfg)`` such that ``a = gcd(f, g)``, ``cff = quo(f, h)``,
-    and ``cfg = quo(g, h)``.
-
-    Examples
-    ========
-
-    >>> R, x = ring("x", QQ)
-
-    >>> R.dup_ff_prs_gcd(x**2 - 1, x**2 - 3*x + 2)
-    (x - 1, x + 1, x - 2)
-
-    """
-    result = _dmp_ff_trivial_gcd(f, g, 0, K)
-
-    if result is not None:
-        return result
-
-    h = dmp_subresultants(f, g, 0, K)[-1]
-    h = dmp_ground_monic(h, 0, K)
-
-    cff = dmp_quo(f, h, 0, K)
-    cfg = dmp_quo(g, h, 0, K)
-
-    return h, cff, cfg
-
-
-def dmp_rr_prs_gcd(f, g, u, K):
-    """
-    Computes polynomial GCD using subresultants over a ring.
-
-    Returns ``(h, cff, cfg)`` such that ``a = gcd(f, g)``, ``cff = quo(f, h)``,
-    and ``cfg = quo(g, h)``.
-
-    Examples
-    ========
 
     >>> R, x, y = ring("x y", ZZ)
 
@@ -764,12 +629,20 @@ def dmp_rr_prs_gcd(f, g, u, K):
 
     """
     if not u:
-        return dup_rr_prs_gcd(f, g, K)
+        fc, F = dmp_ground_primitive(f, 0, K)
+        gc, G = dmp_ground_primitive(g, 0, K)
 
-    result = _dmp_rr_trivial_gcd(f, g, u, K)
+        c = K.gcd(fc, gc)
 
-    if result is not None:
-        return result
+        h = dmp_subresultants(F, G, 0, K)[-1]
+        _, h = dmp_ground_primitive(h, 0, K)
+
+        h = dmp_mul_ground(h, c, 0, K)
+
+        cff = dmp_quo(f, h, 0, K)
+        cfg = dmp_quo(g, h, 0, K)
+
+        return h, cff, cfg
 
     fc, F = dmp_primitive(f, u, K)
     gc, G = dmp_primitive(g, u, K)
@@ -799,6 +672,11 @@ def dmp_ff_prs_gcd(f, g, u, K):
     Examples
     ========
 
+    >>> R, x = ring("x", QQ)
+
+    >>> R.dmp_ff_prs_gcd(x**2 - 1, x**2 - 3*x + 2)
+    (x - 1, x + 1, x - 2)
+
     >>> R, x, y = ring("x y", QQ)
 
     >>> f = x**2/2 + x*y + y**2/2
@@ -809,12 +687,13 @@ def dmp_ff_prs_gcd(f, g, u, K):
 
     """
     if not u:
-        return dup_ff_prs_gcd(f, g, K)
+        h = dmp_subresultants(f, g, 0, K)[-1]
+        h = dmp_ground_monic(h, 0, K)
 
-    result = _dmp_ff_trivial_gcd(f, g, u, K)
+        cff = dmp_quo(f, h, 0, K)
+        cfg = dmp_quo(g, h, 0, K)
 
-    if result is not None:
-        return result
+        return h, cff, cfg
 
     fc, F = dmp_primitive(f, u, K)
     gc, G = dmp_primitive(g, u, K)
@@ -832,159 +711,6 @@ def dmp_ff_prs_gcd(f, g, u, K):
     return h, cff, cfg
 
 
-def dmp_zz_heu_gcd(f, g, u, K):
-    """
-    Heuristic polynomial GCD in `Z[X]`.
-
-    Returns ``(h, cff, cfg)`` such that ``a = gcd(f, g)``,
-    ``cff = quo(f, h)``, and ``cfg = quo(g, h)``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> f = x**2 + 2*x*y + y**2
-    >>> g = x**2 + x*y
-
-    >>> R.dmp_zz_heu_gcd(f, g)
-    (x + y, x + y, x)
-
-    See Also
-    ========
-
-    diofant.polys.heuristicgcd.heugcd
-
-    References
-    ==========
-
-    * :cite:`Liao1995heuristic`
-
-    """
-    result = _dmp_rr_trivial_gcd(f, g, u, K)
-
-    if result is not None:
-        return result
-
-    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
-    f, g = map(ring.from_dense, (f, g))
-    return tuple(map(ring.to_dense, heugcd(f, g)))
-
-
-def dmp_qq_heu_gcd(f, g, u, K0):
-    """
-    Heuristic polynomial GCD in `Q[X]`.
-
-    Returns ``(h, cff, cfg)`` such that ``a = gcd(f, g)``,
-    ``cff = quo(f, h)``, and ``cfg = quo(g, h)``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", QQ)
-
-    >>> f = x**2/4 + x*y + y**2
-    >>> g = x**2/2 + x*y
-
-    >>> R.dmp_qq_heu_gcd(f, g)
-    (x + 2*y, 1/4*x + 1/2*y, 1/2*x)
-
-    """
-    result = _dmp_ff_trivial_gcd(f, g, u, K0)
-
-    if result is not None:
-        return result
-
-    K1 = K0.ring
-
-    cf, f = dmp_clear_denoms(f, u, K0, K1)
-    cg, g = dmp_clear_denoms(g, u, K0, K1)
-
-    f = dmp_convert(f, u, K0, K1)
-    g = dmp_convert(g, u, K0, K1)
-
-    h, cff, cfg = dmp_zz_heu_gcd(f, g, u, K1)
-
-    h = dmp_convert(h, u, K1, K0)
-
-    c = dmp_ground_LC(h, u, K0)
-    h = dmp_ground_monic(h, u, K0)
-
-    cff = dmp_convert(cff, u, K1, K0)
-    cfg = dmp_convert(cfg, u, K1, K0)
-
-    cff = dmp_mul_ground(cff, K0.quo(c, cf), u, K0)
-    cfg = dmp_mul_ground(cfg, K0.quo(c, cg), u, K0)
-
-    return h, cff, cfg
-
-
-def _dmp_zz_modgcd(f, g, u, K):
-    from .modulargcd import modgcd
-    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
-    f, g = map(ring.from_dense, (f, g))
-    return tuple(map(ring.to_dense, modgcd(f, g)))
-
-
-_gcd_zz_methods = {'modgcd': _dmp_zz_modgcd,
-                   'prs': dmp_rr_prs_gcd}
-
-
-def _dmp_aa_modgcd(f, g, u, K):
-    from .modulargcd import func_field_modgcd
-    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
-    f, g = map(ring.from_dense, (f, g))
-    return tuple(map(ring.to_dense, func_field_modgcd(f, g)))
-
-
-_gcd_aa_methods = {'modgcd': _dmp_aa_modgcd,
-                   'prs': dmp_ff_prs_gcd}
-
-
-def _dmp_inner_gcd(f, g, u, K):
-    """Helper function for `dmp_inner_gcd()`."""
-    if not K.is_Exact:
-        try:
-            exact = K.get_exact()
-        except DomainError:
-            return dmp_one(u, K), f, g
-
-        f = dmp_convert(f, u, K, exact)
-        g = dmp_convert(g, u, K, exact)
-
-        h, cff, cfg = _dmp_inner_gcd(f, g, u, exact)
-
-        h = dmp_convert(h, u, exact, K)
-        cff = dmp_convert(cff, u, exact, K)
-        cfg = dmp_convert(cfg, u, exact, K)
-
-        return h, cff, cfg
-    elif K.is_Field:
-        if K.is_RationalField:
-            if query('USE_HEU_GCD'):
-                try:
-                    return dmp_qq_heu_gcd(f, g, u, K)
-                except HeuristicGCDFailed:  # pragma: no cover
-                    pass
-        elif K.is_AlgebraicField:
-            method = _gcd_aa_methods[query('GCD_AA_METHOD')]
-            return method(f, g, u, K)
-
-        return dmp_ff_prs_gcd(f, g, u, K)
-    else:
-        if K.is_IntegerRing:
-            if query('USE_HEU_GCD'):
-                try:
-                    return dmp_zz_heu_gcd(f, g, u, K)
-                except HeuristicGCDFailed:  # pragma: no cover
-                    pass
-
-            method = _gcd_zz_methods[query('FALLBACK_GCD_ZZ_METHOD')]
-            return method(f, g, u, K)
-
-        return dmp_rr_prs_gcd(f, g, u, K)
-
-
 def dmp_inner_gcd(f, g, u, K):
     """
     Computes polynomial GCD and cofactors of `f` and `g` in `K[X]`.
@@ -1000,16 +726,13 @@ def dmp_inner_gcd(f, g, u, K):
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
 
-    >>> R.dmp_inner_gcd(f, g)
+    >>> f.cofactors(g)
     (x + y, x + y, x)
 
     """
-    J, (f, g) = dmp_deflate((f, g), u, K)
-    h, cff, cfg = _dmp_inner_gcd(f, g, u, K)
-
-    return (dmp_inflate(h, J, u, K),
-            dmp_inflate(cff, J, u, K),
-            dmp_inflate(cfg, J, u, K))
+    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    f, g = map(ring.from_dense, (f, g))
+    return tuple(map(ring.to_dense, f.cofactors(g)))
 
 
 def dmp_gcd(f, g, u, K):
@@ -1024,7 +747,7 @@ def dmp_gcd(f, g, u, K):
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
 
-    >>> R.dmp_gcd(f, g)
+    >>> f.gcd(g)
     x + y
 
     """

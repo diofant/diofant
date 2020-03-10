@@ -1,6 +1,6 @@
 from ..concrete.expr_with_limits import AddWithLimits
-from ..core import (Add, Basic, Dummy, Eq, Expr, Integer, Mul, Symbol, Tuple,
-                    Wild, diff, nan, oo, sympify)
+from ..core import (Add, Basic, Dummy, Eq, Expr, Integer, Mul, Tuple, Wild,
+                    diff, nan, oo, sympify)
 from ..core.compatibility import is_sequence
 from ..functions import Piecewise, log, piecewise_fold, sign, sqrt
 from ..logic import false, true
@@ -249,21 +249,17 @@ class Integral(AddWithLimits):
         if isinstance(u, Expr):
             ufree = u.free_symbols
             if len(ufree) != 1:
-                raise ValueError(filldedent('''
+                raise ValueError(filldedent("""
                 When f(u) has more than one free symbol, the one replacing x
-                must be identified: pass f(u) as (f(u), u)'''))
+                must be identified: pass f(u) as (f(u), u)"""))
             uvar = ufree.pop()
         else:
             u, uvar = u
             if uvar not in u.free_symbols:
-                raise ValueError(filldedent('''
+                raise ValueError(filldedent("""
                 Expecting a tuple (expr, symbol) where symbol identified
                 a free symbol in expr, but symbol is not in expr's free
-                symbols.'''))
-            if not isinstance(uvar, (Dummy, Symbol)):
-                raise ValueError(filldedent('''
-                Expecting a tuple (expr, symbol) but didn't get
-                a symbol; got %s''' % uvar))
+                symbols."""))
 
         if x.is_Symbol and u.is_Symbol:
             return self.xreplace({x: u})
@@ -274,10 +270,11 @@ class Integral(AddWithLimits):
         if uvar == xvar:
             return self.transform(x, (u.subs({uvar: d}), d)).xreplace({d: uvar})
 
-        if uvar in self.limits:
-            raise ValueError(filldedent('''
-            u must contain the same variable as in x
-            or a variable that is not already an integration variable'''))
+        for xab in self.limits:
+            if uvar in xab:
+                raise ValueError(filldedent("""
+                u must contain the same variable as in x
+                or a variable that is not already an integration variable"""))
 
         if not x.is_Symbol:
             F = [x.subs({xvar: d})]
@@ -297,9 +294,9 @@ class Integral(AddWithLimits):
         newfuncs = {(self.function.subs({xvar: fi})*fi.diff(d)).subs({d: uvar})
                     for fi in f}
         if len(newfuncs) > 1:
-            raise ValueError(filldedent('''
+            raise ValueError(filldedent("""
             The mapping between F(x) and f(u) did not give
-            a unique integrand.'''))
+            a unique integrand."""))
         newfunc = newfuncs.pop()
 
         def _calc_limit_1(F, a, b):
@@ -321,9 +318,9 @@ class Integral(AddWithLimits):
             """
             avals = list({_calc_limit_1(Fi, a, b) for Fi in F})
             if len(avals) > 1:
-                raise ValueError(filldedent('''
+                raise ValueError(filldedent("""
                 The mapping between F(x) and f(u) did not
-                give a unique limit.'''))
+                give a unique limit."""))
             return avals[0]
 
         newlimits = []

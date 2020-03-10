@@ -333,7 +333,7 @@ def test_multiset_permutations():
             print(i)
             for p in multiset_permutations([0, 0, 1, 0, 1], i):
                 print(p)
-    assert capture(lambda: test()) == textwrap.dedent('''\
+    assert capture(lambda: test()) == textwrap.dedent("""\
         1
         [0]
         [1]
@@ -372,7 +372,7 @@ def test_multiset_permutations():
         [1, 0, 0, 1, 0]
         [1, 0, 1, 0, 0]
         [1, 1, 0, 0, 0]
-        6\n''')
+        6\n""")
 
 
 def test_partitions():
