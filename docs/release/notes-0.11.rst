@@ -17,7 +17,7 @@ Major changes
 * :class:`~diofant.polys.polytools.Poly` now use sparse polynomial representation (via :class:`~diofant.polys.rings.PolyElement`) internally, see :pull:`795`.
 * :func:`~diofant.solvers.recurr.rsolve` now return :class:`list` of :class:`dict`'s, see :pull:`940`.
 * :func:`~diofant.solvers.solvers.solve` now return all solutions for equations, involving surds, see :pull:`910`.
-* Module :mod:`~diofant.polys.galoistools` was adapted to use :class:`~diofant.domains.FiniteField`'s and usual conventions for low-level methods of the :mod:`~diofant.polys` module, see :pull:`957` and :pull:`971`.
+* Module :mod:`~diofant.polys.galoistools` was adapted to use :class:`~diofant.domains.FiniteField`'s and usual conventions for low-level methods of the :mod:`~diofant.polys` module, see :pull:`957`, :pull:`971` and :pull:`964`.
 
 Compatibility breaks
 ====================

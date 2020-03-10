@@ -980,7 +980,7 @@ def test_PolyElement___pow__():
     assert f**5 == f*f*f*f*f == x**5 + x**4 + x + 1
     assert f**8 == functools.reduce(operator.mul, [f]*8) == x**8 + 1
 
-    F9 = FF(9)
+    F9 = FF(3, [1, 2, 2])
     R, x = ring('x', F9)
 
     f = x + F9(4)
