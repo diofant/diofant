@@ -962,6 +962,7 @@ def test_Pow_is_real():
     assert sqrt(-1 - sqrt(2)).is_extended_real is False
 
     i = Symbol('i', imaginary=True)
+    ni = Symbol('ni', imaginary=True, nonzero=True)
     assert (i**i).is_extended_real is None
     assert (I**i).is_extended_real is True
     assert ((-I)**i).is_extended_real is True
@@ -977,7 +978,8 @@ def test_Pow_is_real():
     assert (i**(e**2)).is_extended_real is True
     assert (i**o).is_extended_real is False
     assert (i**k).is_extended_real is None
-    assert (i**(4*k)).is_extended_real is True
+    assert (i**(4*k)).is_extended_real is None
+    assert (ni**(4*k)).is_extended_real is True
     assert (x**i).is_extended_real is None
     assert (i**(Rational(1, 2) + x)).is_extended_real is None
     assert Pow(I, 2, evaluate=False).is_extended_real
@@ -1116,6 +1118,9 @@ def test_Pow_is_negative_positive():
     s = Symbol('s', nonpositive=True)
     assert (s**n).is_negative is False
 
+    i = Symbol('i', imaginary=True)
+    assert (i**4).is_positive is None  # issue diofant/diofant#956
+
 
 def test_Pow_is_zero():
     z = Symbol('z', zero=True)
@@ -1191,8 +1196,9 @@ def test_Pow_is_nonpositive_nonnegative():
 
     assert (x**2).is_nonnegative is True
     i = symbols('i', imaginary=True)
-    assert (i**2).is_nonpositive is True
-    assert (i**4).is_nonpositive is False
+    ni = symbols('ni', imaginary=True, nonzero=True)
+    assert (ni**2).is_nonpositive is True
+    assert (ni**4).is_nonpositive is False
     assert (i**3).is_nonpositive is False
     assert (I**i).is_nonnegative is True
     assert (exp(I)**i).is_nonnegative is True
