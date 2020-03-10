@@ -64,6 +64,7 @@ Developer changes
 =================
 
 * Depend on `sphinxcontrib-bibtex <https://sphinxcontrib-bibtex.readthedocs.io/en/latest/>`_ to track the bibliography, see :pull:`766`.
+* Use Github Actions for CI, instead of the Travis CI, see :pull:`887`.
 * Depend on `flake8-rst <https://github.com/kataev/flake8-rst>`_ to test formatting of docstrings, see :pull:`928`.
 
 Issues closed
