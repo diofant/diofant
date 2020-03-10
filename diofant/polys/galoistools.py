@@ -298,6 +298,26 @@ def dup_gf_irreducible_p(f, K):
     return _irred_methods[method](f, K)
 
 
+def dup_gf_primitive_p(f, K):
+    """Test if ``f`` is a primitive polynomial over ``GF(p)``."""
+    p = K.characteristic
+
+    assert K.order == p
+
+    if not dup_gf_irreducible_p(f, K):
+        return False
+
+    n = dmp_degree_in(f, 0, 0)
+    t = [K.one] + [K.zero]*n
+
+    for m in range(n, p**n - 1):
+        r = dmp_rem(t, f, 0, K)
+        if r == [K.one]:
+            return False
+        t = dmp_mul(r, [K.one, K.zero], 0, K)
+    return True
+
+
 def dup_gf_Qmatrix(f, K):
     """
     Calculate Berlekamp's ``Q`` matrix.
