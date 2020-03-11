@@ -24,7 +24,7 @@ from diofant.ntheory import (discrete_log, divisor_count, divisor_sigma,
                              pollard_rho, prevprime, prime, primefactors,
                              primepi, primerange, primitive_root, primorial,
                              quadratic_residues, randprime, sqrt_mod,
-                             sqrt_mod_iter, totient, trailing)
+                             sqrt_mod_iter, square_factor, totient, trailing)
 from diofant.ntheory.continued_fraction import \
     continued_fraction_convergents as cf_c
 from diofant.ntheory.continued_fraction import \
@@ -1068,3 +1068,17 @@ def test_is_square():
     # issue sympy/sympy#17044
     assert is_square(216000) is False
     assert is_square(216000/15) is True
+
+
+def test_square_factor():
+    assert square_factor(1) == square_factor(-1) == 1
+    assert square_factor(0) == 1
+    assert square_factor(5) == square_factor(-5) == 1
+    assert square_factor(4) == square_factor(-4) == 2
+    assert square_factor(12) == square_factor(-12) == 2
+    assert square_factor(6) == 1
+    assert square_factor(18) == 3
+    assert square_factor(52) == 2
+    assert square_factor(49) == 7
+    assert square_factor(392) == 14
+    assert square_factor(factorint(-12)) == 2

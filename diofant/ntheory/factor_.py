@@ -7,7 +7,7 @@ import numbers
 import random
 
 from ..core import (Function, Integer, Mul, Pow, Rational, integer_nthroot,
-                    sympify)
+                    prod, sympify)
 from ..core.compatibility import as_int
 from ..core.evalf import bitcount
 from .generate import nextprime, primerange, sieve
@@ -1569,3 +1569,31 @@ def core(n, t=2):
         for p, e in factorint(n).items():
             y *= p**(e % t)
         return y
+
+
+def square_factor(a):
+    r"""
+    Returns an integer `c` s.t. `a = c^2k, \ c,k \in Z`. Here `k` is square
+    free. `a` can be given as an integer or a dictionary of factors.
+
+    Examples
+    ========
+
+    >>> square_factor(24)
+    2
+    >>> square_factor(-36*3)
+    6
+    >>> square_factor(1)
+    1
+    >>> square_factor({3: 2, 2: 1, -1: 1})
+    3
+
+    See Also
+    ========
+
+    diofant.solvers.diophantine.reconstruct
+    diofant.ntheory.factor_.core
+
+    """
+    f = a if isinstance(a, dict) else factorint(a)
+    return prod(p**(e//2) for p, e in f.items())

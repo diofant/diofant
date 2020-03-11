@@ -1,7 +1,7 @@
 import math
 
-from ..core import (Add, Eq, Integer, Mul, Rational, Symbol, factor_terms,
-                    igcd, ilcm, integer_nthroot, oo, symbols, sympify)
+from ..core import (Add, Eq, Integer, Rational, Symbol, factor_terms, igcd,
+                    ilcm, integer_nthroot, oo, symbols, sympify)
 from ..core.assumptions import check_assumptions
 from ..core.compatibility import as_int, is_sequence
 from ..core.function import _mexpand
@@ -10,7 +10,7 @@ from ..core.power import isqrt
 from ..functions import floor, sign, sqrt
 from ..matrices import Matrix
 from ..ntheory import (divisors, factorint, is_square, isprime, multiplicity,
-                       nextprime, perfect_power, sqrt_mod)
+                       nextprime, perfect_power, sqrt_mod, square_factor)
 from ..polys import GeneratorsNeeded, Poly, factor_list
 from ..simplify import signsimp
 from ..utilities import default_sort_key, filldedent, numbered_symbols
@@ -2126,34 +2126,6 @@ def sqf_normal(a, b, c, steps=False):
         return sq, sqf, (A, B, C)
     else:
         return A, B, C
-
-
-def square_factor(a):
-    r"""
-    Returns an integer `c` s.t. `a = c^2k, \ c,k \in Z`. Here `k` is square
-    free. `a` can be given as an integer or a dictionary of factors.
-
-    Examples
-    ========
-
-    >>> square_factor(24)
-    2
-    >>> square_factor(-36*3)
-    6
-    >>> square_factor(1)
-    1
-    >>> square_factor({3: 2, 2: 1, -1: 1})
-    3
-
-    See Also
-    ========
-
-    diofant.solvers.diophantine.reconstruct
-    diofant.ntheory.factor_.core
-
-    """
-    f = a if isinstance(a, dict) else factorint(a)
-    return Mul(*[p**(e//2) for p, e in f.items()])
 
 
 def reconstruct(A, B, z):
