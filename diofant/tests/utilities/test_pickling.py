@@ -62,6 +62,8 @@ half = Rational(1, 2)
 ℕ = S.Naturals0
 Id = Lambda(x, x)
 
+excluded_attrs = {'_assumptions', '_hash', '__dict__'}
+
 
 def check(a, exclude=[], check_attr=True):
     """Check that pickling and copying round-trips."""
@@ -90,8 +92,12 @@ def check(a, exclude=[], check_attr=True):
 
         def c(a, b, d):
             for i in d:
-                if not hasattr(a, i) or i in {'_assumptions',
-                                              '_hash', '__dict__'}:
+                if i in excluded_attrs:
+                    continue
+                try:
+                    if not hasattr(a, i):
+                        continue
+                except NotImplementedError:
                     continue
                 attr = getattr(a, i)
                 if not hasattr(attr, "__call__"):

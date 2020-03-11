@@ -167,7 +167,8 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
     @property
     def ring(self):
         """Returns a ring associated with ``self``."""
-        raise AttributeError('there is no ring associated with %s' % self)
+        raise NotImplementedError("ring of integers of %s is not "
+                                  "implemented yet" % self)
 
     def is_positive(self, a):
         """Returns True if ``a`` is positive."""

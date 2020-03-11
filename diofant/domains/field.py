@@ -53,7 +53,7 @@ class Field(Ring):
         """
         try:
             ring = self.ring
-        except AttributeError:
+        except (AttributeError, NotImplementedError):
             return self.one
 
         p = ring.gcd(a.numerator, b.numerator)
@@ -72,7 +72,7 @@ class Field(Ring):
         """
         try:
             ring = self.ring
-        except AttributeError:
+        except (AttributeError, NotImplementedError):
             return a*b
 
         p = ring.lcm(a.numerator, b.numerator)

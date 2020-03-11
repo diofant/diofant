@@ -480,7 +480,7 @@ def test_Domain_ring():
     assert EX.ring == EX
 
     pytest.raises(AttributeError, lambda: RR.ring)
-    pytest.raises(AttributeError, lambda: ALG.ring)
+    pytest.raises(NotImplementedError, lambda: ALG.ring)
 
 
 def test_Domain_field():
