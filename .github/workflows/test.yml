@@ -80,7 +80,7 @@ jobs:
     - name: Upload coverage data
       run: |
         for n in 1 2 3; do
-          if codecov --required --verbose; then
+          if codecov --required; then
             exit 0
           fi
           sleep $((n*160))
