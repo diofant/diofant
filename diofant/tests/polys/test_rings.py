@@ -1579,7 +1579,6 @@ def test_PolyElement_is_():
 
     pytest.raises(AttributeError, lambda: x.is_cyclotomic)
 
-    assert R.is_positive(f) is True
     assert R.is_negative(f) is False
 
     R, x, y = ring('x y', ZZ)

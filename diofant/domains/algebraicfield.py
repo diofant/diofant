@@ -170,10 +170,6 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         raise NotImplementedError("ring of integers of %s is not "
                                   "implemented yet" % self)
 
-    def is_positive(self, a):
-        """Returns True if ``a`` is positive."""
-        return self.domain.is_positive(a.LC())
-
     def is_negative(self, a):
         """Returns True if ``a`` is negative."""
         return self.domain.is_negative(a.LC())
@@ -197,10 +193,6 @@ class RealAlgebraicField(ComplexAlgebraicField):
     """A class for representing real algebraic number fields."""
 
     is_RealAlgebraicField = True
-
-    def is_positive(self, a):
-        """Returns True if ``a`` is positive."""
-        return a > 0
 
     def is_negative(self, a):
         """Returns True if ``a`` is negative."""
