@@ -480,7 +480,7 @@ def test_Domain_ring():
     assert EX.ring == EX
 
     pytest.raises(AttributeError, lambda: RR.ring)
-    pytest.raises(AttributeError, lambda: ALG.ring)
+    pytest.raises(NotImplementedError, lambda: ALG.ring)
 
 
 def test_Domain_field():
@@ -1021,9 +1021,7 @@ def test_ModularInteger():
     pytest.raises(ValueError, lambda: FF(9, [1, 0]))
     pytest.raises(ValueError, lambda: FF(9, [1, 1, 1]))
 
-    assert F5.is_positive(a) is True
     assert F5.is_negative(a) is False
-    assert F5.is_positive(F5.zero) is False
     assert F5.is_negative(F5.zero) is False
 
     assert F5 == FF(5, [1, 0])
@@ -1141,8 +1139,8 @@ def test_to_expr():
 
 
 def test_EX():
-    assert EX.is_positive(EX(2))
-    assert EX.is_negative(EX(-1))
+    assert EX.is_negative(EX(2)) is False
+    assert EX.is_negative(EX(-1)) is True
 
     assert (EX(1)/2).numerator == 1
     assert (EX(1)/2).denominator == 2

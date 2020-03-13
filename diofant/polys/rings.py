@@ -451,10 +451,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         """Returns a field associated with ``self``."""
         return self.domain.frac_field(*self.symbols, order=self.order)
 
-    def is_positive(self, a):
-        """Returns True if ``LC(a)`` is positive."""
-        return self.domain.is_positive(a.LC)
-
     def is_negative(self, a):
         """Returns True if ``LC(a)`` is negative."""
         return self.domain.is_negative(a.LC)
@@ -712,15 +708,15 @@ class PolyElement(DomainElement, CantSympify, dict):
         zm = ring.zero_monom
         sexpvs = []
         for expv, coeff in self.terms():
-            positive = ring.domain.is_positive(coeff)
-            sign = " + " if positive else " - "
+            negative = ring.domain.is_negative(coeff)
+            sign = " - " if negative else " + "
             sexpvs.append(sign)
             if expv == zm:
                 scoeff = printer._print(coeff)
                 if scoeff.startswith("-"):
                     scoeff = scoeff[1:]
             else:
-                if not positive:
+                if negative:
                     coeff = -coeff
                 if coeff != 1:
                     scoeff = printer.parenthesize(coeff, prec_add)

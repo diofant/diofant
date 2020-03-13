@@ -10,7 +10,7 @@ from ..core.exprtools import Factors
 from ..core.function import _mexpand, count_ops
 from ..domains import QQ, ZZ, AlgebraicField
 from ..functions import Abs, conjugate, cos, exp_polar, im, re, root, sin, sqrt
-from ..ntheory import divisors
+from ..ntheory import divisors, factorint
 from ..simplify.radsimp import _split_gcd
 from ..simplify.simplify import _is_sum_surds
 from ..utilities import lambdify, numbered_symbols, sift
@@ -768,8 +768,17 @@ def field_isomorphism(a, b, **args):
     n = a.minpoly.degree()
     m = b.minpoly.degree()
 
-    if a.domain == b.domain and m % n != 0:
-        return
+    if a.domain == b.domain:
+        if m % n:
+            return
+        elif a.domain.is_RationalField:
+            da = a.minpoly.discriminant()
+            db = b.minpoly.discriminant()
+            k = m // n
+
+            for p, q in factorint(da).items():
+                if q % 2 and db % (p**k):
+                    return
 
     if args.get('fast', True):
         try:

@@ -221,10 +221,6 @@ class FractionField(Field, CompositeDomain):
         """Returns a field associated with ``self``."""
         return self.to_ring()
 
-    def is_positive(self, a):
-        """Returns True if ``LC(a)`` is positive."""
-        return self.domain.is_positive(a.numerator.LC)
-
     def is_negative(self, a):
         """Returns True if ``LC(a)`` is negative."""
         return self.domain.is_negative(a.numerator.LC)

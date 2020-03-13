@@ -29,7 +29,7 @@ Compatibility breaks
 * Removed ``DMP`` class, see :pull:`795`.
 * Removed ``ring_series`` module, see :pull:`820`.
 * :class:`~diofant.core.relational.Equality` doesn't support single-argument call, see :pull:`828`.
-* Removed ``is_nonnegative()`` and ``is_nonpositive()`` methods of :class:`~diofant.domains.domain.Domain` subclasses, see :pull:`834`.
+* Removed ``is_nonnegative()``, ``is_nonpositive()`` and ``is_positive()`` methods of :class:`~diofant.domains.domain.Domain` subclasses, see :pull:`834` and :pull:`975`.
 * Former ``fast=True`` option is now a default for :meth:`~diofant.polys.polytools.Poly.intervals` and :meth:`~diofant.polys.polytools.Poly.refine_root`, see :pull:`834`.
 * Change order of keyword arguments for :meth:`~diofant.polys.rings.PolyElement.integrate`, see :pull:`834`.
 * Removed support for ``dps=''`` in :class:`~diofant.core.numbers.Float`.  Significant digits automatically counted for :class:`int` and :class:`str` inputs, see :pull:`797`.
@@ -64,6 +64,7 @@ Developer changes
 =================
 
 * Depend on `sphinxcontrib-bibtex <https://sphinxcontrib-bibtex.readthedocs.io/en/latest/>`_ to track the bibliography, see :pull:`766`.
+* Use Github Actions for CI, instead of the Travis CI, see :pull:`887`.
 * Depend on `flake8-rst <https://github.com/kataev/flake8-rst>`_ to test formatting of docstrings, see :pull:`928`.
 
 Issues closed

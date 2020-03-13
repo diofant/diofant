@@ -3,7 +3,7 @@ import pytest
 from diofant import FF, ring
 from diofant.polys.galoistools import (dup_gf_compose_mod, dup_gf_irreducible,
                                        dup_gf_irreducible_p, dup_gf_pow_mod,
-                                       dup_gf_trace_map)
+                                       dup_gf_primitive_p, dup_gf_trace_map)
 from diofant.polys.polyconfig import using
 
 
@@ -121,3 +121,20 @@ def test_dup_gf_irreducible_p():
     for method in ('ben-or', 'rabin'):
         with using(gf_irred_method=method):
             assert dup_gf_irreducible_p(f, R.domain) is True
+
+
+def test_dup_gf_primitive_p():
+    R, x = ring('x', FF(11))
+
+    f = R.to_dense(x**2 + 2*x)
+
+    assert dup_gf_primitive_p(f, R.domain) is False
+
+    f = R.to_dense(x**2 + 7*x + 5)
+
+    assert dup_gf_primitive_p(f, R.domain) is False
+
+    f = R.to_dense(x**2 + 2*x + 6)
+
+    assert dup_gf_irreducible_p(f, R.domain) is True
+    assert dup_gf_primitive_p(f, R.domain) is True
