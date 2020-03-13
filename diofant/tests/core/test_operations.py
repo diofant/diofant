@@ -1,8 +1,7 @@
 import pytest
 
-from diofant import Integer
+from diofant import Integer, SympifyError
 from diofant.core.operations import AssocOp, LatticeOp
-from diofant.core.sympify import SympifyError
 
 
 __all__ = ()

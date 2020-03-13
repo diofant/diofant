@@ -16,7 +16,7 @@ from ..polys import gcd, lcm_list
 @cacheit
 def powsimp(expr, deep=False, combine='all', force=False, measure=count_ops):
     """
-    reduces expression by combining powers with similar bases and exponents.
+    Reduces expression by combining powers with similar bases and exponents.
 
     Notes
     =====

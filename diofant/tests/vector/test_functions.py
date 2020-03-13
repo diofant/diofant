@@ -1,8 +1,6 @@
 from diofant import ImmutableMatrix as Matrix
 from diofant import Integer, cos, sin, symbols
-from diofant.vector.coordsysrect import CoordSysCartesian
-from diofant.vector.functions import express, matrix_to_vector
-from diofant.vector.vector import Vector
+from diofant.vector import CoordSysCartesian, Vector, express, matrix_to_vector
 
 
 __all__ = ()

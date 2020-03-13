@@ -966,9 +966,9 @@ expand_fraction = fraction_expand
 
 def split_surds(expr):
     """
-    split an expression with terms whose squares are rationals
+    Split an expression with terms whose squares are rationals
     into a sum of terms whose surds squared have gcd equal to g
-    and a sum of terms with surds squared prime with g
+    and a sum of terms with surds squared prime with g.
 
     Examples
     ========
@@ -1006,9 +1006,9 @@ def split_surds(expr):
 
 def _split_gcd(*a):
     """
-    split the list of integers ``a`` into a list of integers, ``a1`` having
+    Split the list of integers ``a`` into a list of integers, ``a1`` having
     ``g = gcd(a1)``, and a list ``a2`` whose elements are not divisible by
-    ``g``.  Returns ``g, a1, a2``
+    ``g``.  Returns ``g, a1, a2``.
 
     Examples
     ========

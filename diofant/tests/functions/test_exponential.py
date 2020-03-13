@@ -1,11 +1,10 @@
 import pytest
 
-from diofant import (E, Float, I, LambertW, O, Rational, Symbol, arg,
-                     conjugate, cos, cosh, exp, exp_polar, expand_log, log,
-                     nan, oo, pi, re, sign, simplify, sin, sinh, sqrt, symbols,
-                     tanh, zoo)
+from diofant import (E, Float, I, LambertW, O, Product, Rational, Sum, Symbol,
+                     arg, conjugate, cos, cosh, exp, exp_polar, expand_log,
+                     log, nan, oo, pi, re, sign, simplify, sin, sinh, sqrt,
+                     symbols, tanh, zoo)
 from diofant.abc import m, n, x, y, z
-from diofant.concrete import Product, Sum
 from diofant.core.function import ArgumentIndexError
 
 
@@ -203,7 +202,7 @@ def test_log_symbolic():
     assert log(x, y) == log(x)/log(y)
 
     p, q = symbols('p,q', positive=True)
-    r = Symbol('r', extended_real=True)
+    r = Symbol('r', real=True)
 
     assert log(p**2) != 2*log(p)
     assert log(p**2).expand() == 2*log(p)
@@ -216,6 +215,7 @@ def test_log_symbolic():
     assert log(-sqrt(3)) == log(sqrt(3)) + I*pi
     assert log(-exp(p)) != p + I*pi
     assert log(-exp(x)).expand() != x + I*pi
+    assert log(-exp(p)).expand() == p + I*pi
     assert log(-exp(r)).expand() == r + I*pi
 
     assert log(x**y) != y*log(x)
@@ -232,18 +232,20 @@ def test_log_symbolic():
 
 
 def test_exp_assumptions():
-    r = Symbol('r', extended_real=True)
+    er = Symbol('er', extended_real=True)
+    r = Symbol('r', real=True)
     i = Symbol('i', imaginary=True)
+    c = Symbol('c', complex=True)
     for e in exp, exp_polar:
         assert e(x).is_extended_real is None
         assert e(x).is_imaginary is None
         assert e(i).is_extended_real is None
         assert e(i).is_imaginary is None
-        assert e(r).is_extended_real is True
+        assert e(er).is_extended_real is True
         assert e(re(x)).is_extended_real is True
         if e is not exp_polar:
             assert e(r).is_imaginary is False
-            assert e(re(x)).is_imaginary is False
+            assert e(re(c)).is_imaginary is False
 
     assert exp(0, evaluate=False).is_algebraic
 

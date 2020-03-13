@@ -1,6 +1,5 @@
-from diofant.combinatorics.named_groups import (AlternatingGroup,
-                                                DihedralGroup, SymmetricGroup)
-from diofant.combinatorics.permutations import Permutation
+from diofant.combinatorics import (AlternatingGroup, DihedralGroup,
+                                   Permutation, SymmetricGroup)
 from diofant.combinatorics.testutil import _verify_bsgs
 from diofant.combinatorics.util import (_base_ordering, _check_cycles_alt_sym,
                                         _distribute_gens_by_base,

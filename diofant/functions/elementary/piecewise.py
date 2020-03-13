@@ -462,9 +462,6 @@ class Piecewise(Function):
     def _eval_is_complex(self):
         return self._eval_template_is_attr('is_complex')
 
-    def _eval_is_even(self):
-        return self._eval_template_is_attr('is_even')
-
     def _eval_is_imaginary(self):
         return self._eval_template_is_attr('is_imaginary')
 

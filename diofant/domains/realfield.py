@@ -1,5 +1,7 @@
 """Implementation of :class:`RealField` class."""
 
+import mpmath
+
 from ..core import Float
 from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
@@ -14,7 +16,7 @@ __all__ = 'RealField',
 _reals_cache = {}
 
 
-class RealField(Field, CharacteristicZero, SimpleDomain):
+class RealField(CharacteristicZero, SimpleDomain, Field):
     """Real numbers up to the given precision."""
 
     rep = 'RR'
@@ -63,6 +65,10 @@ class RealField(Field, CharacteristicZero, SimpleDomain):
         obj.one = obj.dtype(1)
 
         return obj
+
+    def __getnewargs_ex__(self):
+        return (), {'prec': self.precision,
+                    'tol': mpmath.mpf(self.tolerance._mpf_)}
 
     def __eq__(self, other):
         return (isinstance(other, RealField)

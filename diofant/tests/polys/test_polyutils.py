@@ -2,13 +2,11 @@
 
 import pytest
 
-from diofant import Eq, I, Integer, Integral, Mul
+from diofant import (ZZ, Eq, GeneratorsNeeded, I, Integer, Integral, Mul,
+                     PolynomialError)
 from diofant import Rational as Q  # noqa: N814
-from diofant import cos, erf, exp, integrate, pi, sin, sqrt, symbols
+from diofant import cos, erf, exp, factor, integrate, pi, sin, sqrt, symbols
 from diofant.abc import p, q, t, x, y, z
-from diofant.domains import ZZ
-from diofant.polys import factor
-from diofant.polys.polyerrors import GeneratorsNeeded, PolynomialError
 from diofant.polys.polyutils import (_analyze_gens, _nsort, _sort_factors,
                                      _sort_gens, _unify_gens, dict_from_expr,
                                      parallel_dict_from_expr)

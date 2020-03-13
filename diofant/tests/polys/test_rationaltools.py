@@ -1,8 +1,7 @@
 """Tests for tools for manipulation of rational expressions."""
 
-from diofant import Eq, Integral, Mul, Rational, exp, sin, symbols
+from diofant import Eq, Integral, Mul, Rational, exp, sin, symbols, together
 from diofant.abc import x, y, z
-from diofant.polys.rationaltools import together
 
 
 __all__ = ()

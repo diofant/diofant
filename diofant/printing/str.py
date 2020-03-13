@@ -443,8 +443,13 @@ class StrPrinter(Printer):
         return self._print(expr.parent.to_expr(expr))
 
     def _print_ModularInteger(self, expr):
-        return "%s mod %s" % (expr.rep, expr.mod)
-    _print_GaloisFieldElement = emptyPrinter
+        return "%s mod %s" % (expr.rep, expr.parent.characteristic)
+
+    def _print_GaloisFieldElement(self, expr):
+        from ..domains import ZZ_python
+        return "GF(%s, %s)(%s)" % (expr.parent.characteristic,
+                                   expr.mod.set_domain(ZZ_python).to_dense(),
+                                   int(expr))
 
     def _print_Pow(self, expr, rational=False):
         PREC = precedence(expr)
@@ -678,7 +683,7 @@ class StrReprPrinter(StrPrinter):
 
 
 def sstrrepr(expr, **settings):
-    """return expr in mixed str/repr form
+    """Return expr in mixed str/repr form.
 
     i.e. strings are returned in repr form with quotes, and everything else
     is returned in str form.

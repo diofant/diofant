@@ -234,12 +234,12 @@ def mod_inverse(a, m):
     except ValueError:
         a, m = sympify(a), sympify(m)
         if not (a.is_number and m.is_number):
-            raise TypeError(filldedent('''
+            raise TypeError(filldedent("""
                 Expected numbers for arguments; symbolic `mod_inverse`
                 is not implemented
                 but symbolic expressions can be handled with the
                 similar function,
-                sympy.polys.polytools.invert'''))
+                sympy.polys.polytools.invert"""))
         big = (m > 1)
         if not (big is S.true or big is S.false):
             raise ValueError('m > 1 did not evaluate; try to simplify %s' % m)
@@ -717,7 +717,7 @@ class Float(Number):
 
     def _eval_power(self, expt):
         """
-        expt is symbolic object but not equal to 0, 1
+        Expt is symbolic object but not equal to 0, 1.
 
         (-p)**r -> exp(r*log(-p)) -> exp(r*(log(p) + I*Pi)) ->
                   -> p**r*(sin(Pi*r) + cos(Pi*r)*I)
@@ -1205,7 +1205,7 @@ class Rational(Number):
         return Number.lcm(self, other)
 
     def _eval_as_numer_denom(self):
-        """expression -> a/b -> a, b
+        """Expression -> a/b -> a, b.
 
         See Also
         ========
@@ -2526,7 +2526,8 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
         return -I
 
     def _eval_power(self, expt):
-        """
+        """Helper for Pow constructor.
+
         b is I = sqrt(-1)
         e is symbolic object but not equal to 0, 1
 

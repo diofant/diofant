@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import Idx, Indexed, IndexedBase
+from diofant import (Basic, Dict, Idx, Indexed, IndexedBase, Symbol, Tuple, oo,
+                     symbols)
 from diofant.abc import a, b, c, x
-from diofant.core import Basic, Dict, Symbol, Tuple, oo, symbols
 from diofant.core.compatibility import iterable
 from diofant.tensor.indexed import IndexException
 

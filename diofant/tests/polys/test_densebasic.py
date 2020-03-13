@@ -4,8 +4,7 @@ import random
 
 import pytest
 
-from diofant import oo
-from diofant.domains import FF, ZZ
+from diofant import FF, ZZ, oo, ring
 from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert,
                                       dmp_deflate, dmp_degree_in, dmp_eject,
                                       dmp_exclude, dmp_from_dict, dmp_ground,
@@ -16,7 +15,6 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert,
                                       dmp_terms_gcd, dmp_to_dict, dmp_zero,
                                       dmp_zero_p, dmp_zeros, dup_inflate,
                                       dup_random, dup_reverse)
-from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
 
@@ -521,6 +519,7 @@ def test_dmp_terms_gcd():
 
     assert dmp_terms_gcd([[1, 0], [], [1]], 1, ZZ) == ((0, 0), [[1, 0], [], [1]])
     assert dmp_terms_gcd([[1, 0], [1, 0, 0], [], []], 1, ZZ) == ((2, 1), [[1], [1, 0]])
+    assert dmp_terms_gcd([[1], [-1, 0], [-2, 0, 0]], 1, ZZ) == ((0, 0), [[1], [-1, 0], [-2, 0, 0]])
 
 
 def test_dmp_apply_pairs():

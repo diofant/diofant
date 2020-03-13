@@ -77,7 +77,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         coeff, expr = self.as_coeff_Mul()
 
         if expr.is_Pow:
-            expr, exp = expr.args
+            expr, exp = expr.base, expr.exp
         else:
             expr, exp = expr, Integer(1)
 
@@ -582,7 +582,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     def _eval_is_zero(self):
         from ..polys.numberfields import minimal_polynomial
         from .function import count_ops
-        from .symbol import Dummy
 
         if self.is_number:
             try:
@@ -603,7 +602,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 if count_ops(self) > 75:
                     return
                 try:
-                    return minimal_polynomial(self)(Dummy()).is_Symbol
+                    return not minimal_polynomial(self)(0)
                 except NotImplementedError:  # pragma: no cover
                     return
 
@@ -913,7 +912,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         raise NotImplementedError('not sure of order of %s' % o)
 
     def count_ops(self, visual=None):
-        """wrapper for count_ops that returns the operation count."""
+        """Wrapper for count_ops that returns the operation count."""
         from .function import count_ops
         return count_ops(self, visual)
 
@@ -1480,7 +1479,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 other.append(d)
 
         def has(e):
-            """return the standard has() if there are no literal symbols, else
+            """Return the standard has() if there are no literal symbols, else
             check to see that symbol-deps are in the free symbols.
 
             """
@@ -1734,7 +1733,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return Integer(1), self
 
     def as_numer_denom(self):
-        """expression -> a/b -> a, b
+        """Expression -> a/b -> a, b.
 
         This is just a stub that should be defined by
         an object's class methods to get anything else.
@@ -1751,7 +1750,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             return self, Integer(1)
 
     def normal(self):
-        """canonicalize ratio, i.e. return numerator if denominator is 1."""
+        """Canonicalize ratio, i.e. return numerator if denominator is 1."""
         n, d = self.as_numer_denom()
         if d is S.One:
             return n

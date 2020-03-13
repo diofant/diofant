@@ -28,7 +28,8 @@ class MatMul(MatrixExpr):
     is_MatMul = True
 
     def _eval_is_commutative(self):
-        return _fuzzy_group(a.is_commutative for a in self.args)
+        return _fuzzy_group((a.is_commutative for a in self.args),
+                            quick_exit=True)
 
     def __new__(cls, *args, **kwargs):
         check = kwargs.get('check', True)
@@ -233,7 +234,7 @@ canonicalize = exhaust(typed({MatMul: do_one(rules)}))
 
 
 def only_squares(*matrices):
-    """factor matrices only if they are square."""
+    """Factor matrices only if they are square."""
     if matrices[0].rows != matrices[-1].cols:
         raise RuntimeError("Invalid matrices being multiplied")
     out = []

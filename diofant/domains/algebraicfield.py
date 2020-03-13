@@ -19,7 +19,7 @@ __all__ = 'AlgebraicField',
 _algebraic_numbers_cache = {}
 
 
-class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
+class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
     """A class for representing algebraic number fields."""
 
     is_AlgebraicField = is_Algebraic = True
@@ -91,6 +91,9 @@ class AlgebraicField(Field, CharacteristicZero, SimpleDomain):
         obj.rep = str(obj.domain) + '<' + str(obj.ext) + '>'
 
         return obj
+
+    def __getnewargs_ex__(self):
+        return (self.domain, self.ext), {}
 
     def __hash__(self):
         return hash((self.__class__.__name__, self.domain, self.ext))

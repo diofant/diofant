@@ -16,6 +16,8 @@ Major changes
 
 * :class:`~diofant.polys.polytools.Poly` now use sparse polynomial representation (via :class:`~diofant.polys.rings.PolyElement`) internally, see :pull:`795`.
 * :func:`~diofant.solvers.recurr.rsolve` now return :class:`list` of :class:`dict`'s, see :pull:`940`.
+* :func:`~diofant.solvers.solvers.solve` now return all solutions for equations, involving surds, see :pull:`910`.
+* Module :mod:`~diofant.polys.galoistools` was adapted to use :class:`~diofant.domains.FiniteField`'s and usual conventions for low-level methods of the :mod:`~diofant.polys` module, see :pull:`957`, :pull:`971` and :pull:`964`.
 
 Compatibility breaks
 ====================
@@ -42,6 +44,7 @@ Compatibility breaks
 * Don't export too much from :mod:`~diofant.solvers` to the default namespace, keep only :func:`~diofant.solvers.solvers.solve`, :func:`~diofant.solvers.recurr.rsolve` and :func:`~diofant.solvers.ode.dsolve` functions, see :pull:`921`.
 * Make :func:`~diofant.solvers.recurr.rsolve`'s ``init`` parameter more compatible with :func:`~diofant.solvers.ode.dsolve`'s one, e.g. drop accepting ``init=[1, 2, 3]`` and ``init={0: 1, 1: 2, 2: 3}`` forms, see :pull:`921`.
 * Removed ``dict_merge()``, ``generate_bell()`` and ``reshape()`` functions, see :pull:`921`.
+* Removed ``subs()`` methods from :class:`~diofant.polys.rings.PolyElement` and :class:`~diofant.polys.fields.FracElement`, see :pull:`967`.
 
 Minor changes
 =============
@@ -53,6 +56,9 @@ Minor changes
 * 100% test coverage for :mod:`~diofant.utilities` module.
 * :func:`~diofant.solvers.recurr.rsolve` got ``simplify`` option to control default output simplification, see :pull:`921`.
 * :func:`~diofant.polys.numberfields.minimal_polynomial` got support for :class:`~diofant.polys.rootoftools.RootOf` instances over algebraic number fields, see :pull:`927`.
+* The :class:`~diofant.domains.ring.Ring` and all derived classes got :attr:`~diofant.domains.ring.Ring.characteristic` property, see :pull:`968`.
+* Correct wrong implementation of the Berlekamp factorization algorithm, see :pull:`968`.
+* Support domains pickling, see :pull:`972`.
 
 Developer changes
 =================
@@ -146,3 +152,17 @@ These Sympy issues also were addressed:
 * :sympyissue:`18118` limit(sign(sin(x)), x, 0, '+')) = 0 (which is wrong)
 * :sympyissue:`6599` limit of fraction with oscillating term in the numerator calculated incorrectly
 * :sympyissue:`18176` Incorrect value for limit(x**n-x**(n-k),x,oo) when k is a natural number
+* :sympyissue:`18306` NotImplementedError in limit
+* :sympyissue:`8695` sqf and sqf_list output is not consistant
+* :sympyissue:`18378` Invalid result in Limit
+* :sympyissue:`18384` abs(sin(x)*cos(x)) integrates wrong
+* :sympyissue:`18399` Incorrect limit
+* :sympyissue:`18452` Infinite recursion while computing Limit of Expression in 1.5.1
+* :sympyissue:`18470` nan**0 returns 1 instead of nan
+* :sympyissue:`18482` Incorrect evaluation of limit
+* :sympyissue:`18499` The result of (1/oo)**(-oo) should be oo
+* :sympyissue:`18501` Extraneous variable in limit result
+* :sympyissue:`18508` NotImplementedError in limit
+* :sympyissue:`18507` Bug in Mul
+* :sympyissue:`18707` There is a problem or limitation when the Limit is calculated
+* :sympyissue:`18751` handling of rsolve coefficients

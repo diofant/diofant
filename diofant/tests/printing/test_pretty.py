@@ -4,30 +4,26 @@ from io import StringIO
 
 import pytest
 
-from diofant import (FF, QQ, RR, ZZ, Add, And, Basic, Complement, Contains,
-                     Derivative, Dict, E, Eq, Equivalent, EulerGamma,
-                     FiniteSet, Float, Function, Ge, GoldenRatio, Gt, I,
-                     Implies, Integer, Integral, Intersection, Interval,
-                     Lambda, Le, Limit, Lt, Matrix, MatrixSymbol, Mod, Mul,
-                     Nand, Ne, Nor, Not, O, Or, Pow, Product, Range, Rational,
-                     Ray, RealField, RootOf, RootSum, S, Segment, Subs, Sum,
-                     Symbol, SymmetricDifference, Trace, Tuple, Union, Xor,
-                     cbrt, conjugate, grlex, groebner, ilex, oo, pi, root,
-                     symbols)
+from diofant import (FF, QQ, RR, ZZ, Add, Adjoint, And, Basic, Chi, Ci,
+                     Complement, Contains, Derivative, Dict, DiracDelta, E, Ei,
+                     Eq, Equivalent, EulerGamma, FiniteSet, Float, Function,
+                     Ge, GoldenRatio, Gt, I, Implies, Integer, Integral,
+                     Intersection, Interval, Inverse, KroneckerDelta, Lambda,
+                     Le, Limit, Lt, Matrix, MatrixSymbol, Mod, Mul, Nand, Ne,
+                     Nor, Not, O, Or, Piecewise, Pow, Product, Range, Rational,
+                     Ray, RealField, RootOf, RootSum, S, Segment, Shi, Si,
+                     Subs, Sum, Symbol, SymmetricDifference, Trace, Transpose,
+                     Tuple, Union, Xor, atan2, binomial, catalan, cbrt,
+                     ceiling, conjugate, cos, elliptic_e, elliptic_f,
+                     elliptic_k, elliptic_pi, euler, exp, expint, factorial,
+                     factorial2, floor, gamma, grlex, groebner, hyper, ilex,
+                     log, lowergamma, meijerg, oo, pi, pprint, root, sin, sqrt,
+                     subfactorial, symbols, tan, uppergamma)
 from diofant.abc import (a, b, c, d, e, f, k, l, lamda, m, n, phi, t, theta, w,
                          x, y, z)
 from diofant.core.trace import Tr
 from diofant.diffgeom import BaseVectorField
 from diofant.diffgeom.rn import R2, R2_r
-from diofant.functions import (Chi, Ci, DiracDelta, Ei, KroneckerDelta,
-                               Piecewise, Shi, Si, atan2, binomial, catalan,
-                               ceiling, cos, elliptic_e, elliptic_f,
-                               elliptic_k, elliptic_pi, euler, exp, expint,
-                               factorial, factorial2, floor, gamma, hyper, log,
-                               lowergamma, meijerg, sin, sqrt, subfactorial,
-                               tan, uppergamma)
-from diofant.matrices import Adjoint, Inverse, Transpose
-from diofant.printing.pretty import pprint
 from diofant.printing.pretty import pretty as xpretty
 from diofant.printing.pretty.pretty_symbology import U, xobj
 from diofant.stats import Die, Exponential, Normal, pspace, where
@@ -214,27 +210,19 @@ def upretty(expr, order=None):
 
 def test_pretty_ascii_str():
     assert pretty( 'xxx' ) == 'xxx'
-    assert pretty( "xxx" ) == 'xxx'
-    assert pretty( 'xxx\'xxx' ) == 'xxx\'xxx'
-    assert pretty( 'xxx"xxx' ) == 'xxx\"xxx'
-    assert pretty( 'xxx\"xxx' ) == 'xxx\"xxx'
-    assert pretty( "xxx'xxx" ) == 'xxx\'xxx'
-    assert pretty( "xxx\'xxx" ) == 'xxx\'xxx'
+    assert pretty( "xxx'xxx" ) == "xxx'xxx"
+    assert pretty( 'xxx"xxx' ) == 'xxx"xxx'
     assert pretty( "xxx\"xxx" ) == 'xxx\"xxx'
-    assert pretty( "xxx\"xxx\'xxx" ) == 'xxx"xxx\'xxx'
+    assert pretty( "xxx\"xxx'xxx" ) == "xxx\"xxx'xxx"
     assert pretty( "xxx\nxxx" ) == 'xxx\nxxx'
 
 
 def test_pretty_unicode_str():
     assert pretty( 'xxx' ) == 'xxx'
     assert pretty( 'xxx' ) == 'xxx'
-    assert pretty( 'xxx\'xxx' ) == 'xxx\'xxx'
-    assert pretty( 'xxx"xxx' ) == 'xxx\"xxx'
-    assert pretty( 'xxx\"xxx' ) == 'xxx\"xxx'
-    assert pretty( "xxx'xxx" ) == 'xxx\'xxx'
-    assert pretty( "xxx\'xxx" ) == 'xxx\'xxx'
-    assert pretty( "xxx\"xxx" ) == 'xxx\"xxx'
-    assert pretty( "xxx\"xxx\'xxx" ) == 'xxx"xxx\'xxx'
+    assert pretty( "xxx'xxx" ) == "xxx'xxx"
+    assert pretty( 'xxx"xxx' ) == 'xxx"xxx'
+    assert pretty( "xxx\"xxx'xxx" ) == "xxx\"xxx'xxx"
     assert pretty( "xxx\nxxx" ) == 'xxx\nxxx'
 
 

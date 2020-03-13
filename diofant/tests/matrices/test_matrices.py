@@ -2,19 +2,17 @@ import collections
 
 import pytest
 
-from diofant import (Basic, E, Float, Function, I, Integer, Max, Min, N, Poly,
-                     Pow, PurePoly, Rational, StrPrinter, Symbol, cos, exp, oo,
-                     pi, simplify, sin, sqrt, sstr, symbols, trigsimp)
+from diofant import (Basic, E, Float, Function, GramSchmidt, I,
+                     ImmutableMatrix, ImmutableSparseMatrix, Integer, Matrix,
+                     Max, Min, N, NonSquareMatrixError, Poly, Pow, PurePoly,
+                     Rational, ShapeError, SparseMatrix, StrPrinter, Symbol,
+                     capture, casoratian, cos, diag, exp, eye, flatten,
+                     hessian, jordan_cell, matrix_multiply_elementwise, ones,
+                     oo, pi, randMatrix, rot_axis1, rot_axis2, rot_axis3,
+                     simplify, sin, sqrt, sstr, symbols, trigsimp, vandermonde,
+                     wronskian, zeros)
 from diofant.abc import a, b, c, d, k, n, x, y, z
-from diofant.matrices import (GramSchmidt, ImmutableMatrix,
-                              ImmutableSparseMatrix, Matrix, SparseMatrix,
-                              casoratian, diag, eye, hessian, jordan_cell,
-                              matrix_multiply_elementwise, ones, randMatrix,
-                              rot_axis1, rot_axis2, rot_axis3, vandermonde,
-                              wronskian, zeros)
-from diofant.matrices.matrices import (MatrixError, NonSquareMatrixError,
-                                       ShapeError, mgamma)
-from diofant.utilities.iterables import capture, flatten
+from diofant.matrices.matrices import MatrixError, mgamma
 
 
 __all__ = ()

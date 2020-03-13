@@ -1,8 +1,5 @@
-from diofant import Integer, symbols
-from diofant.functions import adjoint, conjugate, transpose
-from diofant.matrices import Matrix, eye
-from diofant.matrices.expressions import (Adjoint, MatrixSymbol, Transpose,
-                                          trace)
+from diofant import (Adjoint, Integer, Matrix, MatrixSymbol, Transpose,
+                     adjoint, conjugate, eye, symbols, trace, transpose)
 
 
 __all__ = ()

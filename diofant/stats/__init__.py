@@ -52,3 +52,18 @@ from .rv_interface import (E, P, cdf, cmoment, correlation, covariance,
                            pspace, random_symbols, sample, sample_iter,
                            sampling_density, skewness, smoment, std, variance,
                            where)
+
+
+__all__ = ('Arcsin', 'Benini', 'Beta', 'BetaPrime', 'Cauchy', 'Chi',
+           'ChiNoncentral', 'ChiSquared', 'ContinuousRV', 'Dagum', 'Erlang',
+           'Exponential', 'FDistribution', 'FisherZ', 'Frechet', 'Gamma',
+           'GammaInverse', 'Kumaraswamy', 'Laplace', 'Logistic', 'LogNormal',
+           'Maxwell', 'Nakagami', 'Normal', 'Pareto', 'QuadraticU',
+           'RaisedCosine', 'Rayleigh', 'StudentT', 'Triangular', 'Uniform',
+           'UniformSum', 'VonMises', 'Weibull', 'WignerSemicircle',
+           'Geometric', 'Poisson', 'Bernoulli', 'Binomial', 'Coin', 'Die',
+           'DiscreteUniform', 'FiniteRV', 'Hypergeometric', 'Rademacher',
+           'E', 'P', 'cdf', 'cmoment', 'correlation', 'covariance', 'density',
+           'dependent', 'given', 'independent', 'moment', 'pspace',
+           'random_symbols', 'sample', 'sample_iter', 'sampling_density',
+           'skewness', 'smoment', 'std', 'variance', 'where')

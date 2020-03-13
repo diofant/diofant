@@ -516,8 +516,8 @@ def pollard_pm1(n, B=10, a=2, retries=0, seed=1234):
 
     But does aM % d for every divisor of n give 1?
 
-        >>> aM = pow(255, M, n)
-        >>> [(d, aM % Pow(*d.args)) for d in factorint(n, visual=True).args]
+        >>> am = pow(255, M, n)
+        >>> [(d, am % Pow(*d.args)) for d in factorint(n, visual=True).args]
         [(257**1, 1), (1009**1, 1)]
 
     No, only one of them. So perhaps the principle is that a root will
@@ -693,7 +693,7 @@ def _factorint_small(factors, n, limit, fail_max):
     """
 
     def done(n, d):
-        """return n, d if the sqrt(n) wasn't reached yet, else
+        """Return n, d if the sqrt(n) wasn't reached yet, else
         n, 0 indicating that factoring is done.
 
         """

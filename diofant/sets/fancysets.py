@@ -1,3 +1,5 @@
+"""Special sets."""
+
 from ..core import Basic, Expr, Integer, Lambda, Rational, S, oo
 from ..core.compatibility import as_int
 from ..core.singleton import Singleton

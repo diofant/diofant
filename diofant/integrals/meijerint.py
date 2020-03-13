@@ -1022,14 +1022,12 @@ def _check_antecedents(g1, g2, x):
         # Hence the following seems correct:
         c14 = Or(c14, c14_alt)
 
-    '''
-    When `c15` is NaN (e.g. from `psi` being NaN as happens during
-    'test_sympyissue_4992' and/or `theta` is NaN as in 'test_sympyissue_6253',
-    both in `test_integrals.py`) the comparison to 0 formerly gave False
-    whereas now an error is raised. To keep the old behavior, the value
-    of NaN is replaced with False but perhaps a closer look at this condition
-    should be made: XXX how should conditions leading to c15=NaN be handled?
-    '''
+    # When `c15` is NaN (e.g. from `psi` being NaN as happens during
+    # 'test_sympyissue_4992' and/or `theta` is NaN as in 'test_sympyissue_6253',
+    # both in `test_integrals.py`) the comparison to 0 formerly gave False
+    # whereas now an error is raised. To keep the old behavior, the value
+    # of NaN is replaced with False but perhaps a closer look at this condition
+    # should be made: XXX how should conditions leading to c15=NaN be handled?
     try:
         lambda_c = (q - p)*abs(omega)**(1/(q - p))*cos(psi) \
             + (v - u)*abs(sigma)**(1/(v - u))*cos(theta)

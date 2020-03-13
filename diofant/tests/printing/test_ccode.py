@@ -1,15 +1,14 @@
+"""C code printing tests."""
+
 import pytest
 
-from diofant import ccode
+from diofant import (ITE, Abs, Catalan, Dummy, Eq, Equivalent, EulerGamma,
+                     GoldenRatio, Idx, IndexedBase, Integer, Lambda, Matrix,
+                     MatrixSymbol, Max, Mul, Piecewise, Rational, ccode,
+                     ceiling, cos, elliptic_e, exp, gamma, oo, pi, sign, sin,
+                     sqrt, symbols)
 from diofant.abc import x, y, z
-from diofant.core import (Catalan, Dummy, Eq, EulerGamma, GoldenRatio, Integer,
-                          Lambda, Mul, Rational, oo, pi, symbols)
-from diofant.functions import (Abs, Max, Piecewise, ceiling, cos, elliptic_e,
-                               exp, gamma, sign, sin, sqrt)
-from diofant.logic import ITE, Equivalent
-from diofant.matrices import Matrix, MatrixSymbol
 from diofant.printing.ccode import CCodePrinter
-from diofant.tensor import Idx, IndexedBase
 from diofant.utilities.lambdify import implemented_function
 
 

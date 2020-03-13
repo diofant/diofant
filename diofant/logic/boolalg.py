@@ -980,10 +980,10 @@ def _distribute(info):
             return info[0]
         rest = info[2](*[a for a in info[0].args if a is not conj])
         return info[1](*list(map(_distribute,
-                                 [(info[2](c, rest), info[1], info[2]) for c in conj.args])))
+                                 ((info[2](c, rest), info[1], info[2]) for c in conj.args))))
     elif isinstance(info[0], info[1]):
         return info[1](*list(map(_distribute,
-                                 [(x, info[1], info[2]) for x in info[0].args])))
+                                 ((x, info[1], info[2]) for x in info[0].args))))
     else:
         return info[0]
 

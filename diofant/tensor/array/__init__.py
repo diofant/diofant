@@ -205,3 +205,9 @@ from .sparse_ndim_array import (ImmutableSparseNDimArray,
 
 
 Array = ImmutableDenseNDimArray
+
+
+__all__ = ('derive_by_array', 'permutedims', 'tensorcontraction',
+           'tensorproduct', 'DenseNDimArray', 'ImmutableDenseNDimArray',
+           'MutableDenseNDimArray', 'NDimArray', 'ImmutableSparseNDimArray',
+           'MutableSparseNDimArray', 'SparseNDimArray', 'Array')

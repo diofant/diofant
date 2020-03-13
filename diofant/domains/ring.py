@@ -1,5 +1,7 @@
 """Implementation of :class:`Ring` class."""
 
+import abc
+
 from ..polys.polyerrors import ExactQuotientFailed, NotInvertible
 from .domain import Domain
 
@@ -56,3 +58,9 @@ class Ring(Domain):
         cfa = self.quo(a, gcd)
         cfb = self.quo(b, gcd)
         return gcd, cfa, cfb
+
+    @property
+    @abc.abstractmethod
+    def characteristic(self):
+        """Return the characteristic of this ring."""
+        raise NotImplementedError

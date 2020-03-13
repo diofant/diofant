@@ -3,11 +3,9 @@ import io
 import pytest
 
 import diofant
-from diofant import Equality, Piecewise, cos, sin, tan
+from diofant import (Catalan, Eq, Equality, Function, Idx, IndexedBase, Matrix,
+                     MatrixSymbol, Piecewise, cos, pi, sin, symbols, tan, zoo)
 from diofant.abc import A, B, C, a, t, x, y, z
-from diofant.core import Catalan, Eq, Function, pi, symbols, zoo
-from diofant.matrices import Matrix, MatrixSymbol
-from diofant.tensor import Idx, IndexedBase
 from diofant.utilities.codegen import (CodeGenArgumentListError, CodeGenError,
                                        InOutArgument, OctaveCodeGen, Routine,
                                        codegen, make_routine)

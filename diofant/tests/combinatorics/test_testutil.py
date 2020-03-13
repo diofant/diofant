@@ -1,9 +1,7 @@
 from random import shuffle
 
-from diofant.combinatorics.named_groups import (AlternatingGroup, CyclicGroup,
-                                                SymmetricGroup)
-from diofant.combinatorics.perm_groups import PermutationGroup
-from diofant.combinatorics.permutations import Permutation
+from diofant.combinatorics import (AlternatingGroup, CyclicGroup, Permutation,
+                                   PermutationGroup, SymmetricGroup)
 from diofant.combinatorics.testutil import (_cmp_perm_lists,
                                             _naive_list_centralizer,
                                             _verify_bsgs, _verify_centralizer,

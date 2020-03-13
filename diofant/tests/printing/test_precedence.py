@@ -1,13 +1,7 @@
+from diofant import (Derivative, Float, Integer, Integral, Order, Product,
+                     Rational, Rel, Sum, oo, sin)
 from diofant.abc import x, y
-from diofant.concrete.products import Product
-from diofant.concrete.summations import Sum
-from diofant.core.function import Derivative
-from diofant.core.numbers import Float, Integer, Rational, oo
-from diofant.core.relational import Rel
-from diofant.functions import sin
-from diofant.integrals.integrals import Integral
 from diofant.printing.precedence import PRECEDENCE, precedence
-from diofant.series.order import Order
 
 
 __all__ = ()

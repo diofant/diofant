@@ -8,12 +8,12 @@ from mpmath.libmp.libmpf import finf, fninf
 
 from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      Integer, Le, Lt, Mul, Number, Pow, Rational, Symbol, cbrt,
-                     cos, exp, factorial, false, latex, log, nan, nextprime,
-                     oo, pi, root, sin, sqrt, true, zoo)
+                     comp, cos, exp, factorial, false, igcd, ilcm,
+                     integer_digits, integer_nthroot, latex, log, mod_inverse,
+                     nan, nextprime, oo, pi, root, sin, sqrt, true, zoo)
 from diofant.core.cache import clear_cache
-from diofant.core.numbers import (comp, igcd, igcdex, ilcm, integer_digits,
-                                  mod_inverse, mpf_norm)
-from diofant.core.power import integer_nthroot, isqrt
+from diofant.core.numbers import igcdex, mpf_norm
+from diofant.core.power import isqrt
 
 
 __all__ = ()
@@ -775,10 +775,10 @@ def test_NaN():
     assert nan*1 == nan
     assert nan + 1 == nan
     assert nan/1 == nan
-    assert nan**0 == 1  # as per IEEE 754
-    assert 1**nan == nan  # IEEE 754 is not the best choice for symbolic work
+    assert nan**0 == nan
+    assert 1**nan == nan
     # test Pow._eval_power's handling of NaN
-    assert Pow(nan, 0, evaluate=False)**2 == 1
+    assert Pow(nan, 0, evaluate=False)**2 == nan
     assert Integer(0)/Integer(0) == nan
 
 

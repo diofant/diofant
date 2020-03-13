@@ -7,10 +7,9 @@ Here we test the extent to which they cooperate
 
 import pytest
 
+from diofant import (Identity, ImmutableMatrix, MatAdd, Matrix, MatrixExpr,
+                     MatrixSymbol, eye)
 from diofant.abc import a
-from diofant.matrices import (Identity, ImmutableMatrix, Matrix, MatrixSymbol,
-                              eye)
-from diofant.matrices.expressions import MatAdd, MatrixExpr
 from diofant.matrices.matrices import classof
 
 

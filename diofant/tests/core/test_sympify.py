@@ -5,13 +5,11 @@ import mpmath
 import pytest
 
 from diofant import (Add, Float, Function, I, Integer, Lambda, Matrix, Mul, Or,
-                     Poly, Pow, Range, Rational, Symbol, Tuple, Xor, exp,
-                     false, pi, sin, sqrt, true)
+                     Poly, Pow, Range, Rational, Symbol, SympifyError, Tuple,
+                     Xor, evaluate, exp, false, pi, sin, sqrt, sympify, true)
 from diofant.abc import _clash, _clash1, _clash2, x, y
 from diofant.core.compatibility import HAS_GMPY
 from diofant.core.decorators import _sympifyit
-from diofant.core.evaluate import evaluate
-from diofant.core.sympify import SympifyError, sympify
 from diofant.geometry import Line, Point
 from diofant.utilities.decorator import conserve_mpmath_dps
 

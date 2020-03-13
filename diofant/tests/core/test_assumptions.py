@@ -1,8 +1,8 @@
 import pytest
 
-from diofant import I, asin, cbrt, exp, false, log, simplify, sin, sqrt
-from diofant.core import (Dummy, E, Float, GoldenRatio, Integer, Mod, Mul, Pow,
-                          Rational, Symbol, Wild, nan, oo, pi, zoo)
+from diofant import (Dummy, E, Float, GoldenRatio, I, Integer, Mod, Mul, Pow,
+                     Rational, Symbol, Wild, asin, cbrt, exp, false, log, nan,
+                     oo, pi, simplify, sin, sqrt, zoo)
 from diofant.core.facts import InconsistentAssumptions
 
 
@@ -611,7 +611,7 @@ def test_hash_vs_typeinfo():
 
 
 def test_hash_vs_typeinfo_2():
-    """different typeinfo should mean !eq"""
+    """Different typeinfo should mean !eq"""
     # the following two are semantically different
     x = Symbol('x')
     x1 = Symbol('x', even=True)

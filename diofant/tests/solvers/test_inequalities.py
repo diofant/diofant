@@ -4,17 +4,14 @@ import pytest
 
 from diofant import (And, E, Eq, FiniteSet, Float, Ge, Gt, Integer, Integral,
                      Interval, Le, Lt, Ne, Or, Piecewise, Poly, PurePoly,
-                     Rational, S, Symbol, Union, false, log, oo, pi, root, sin,
-                     sqrt)
+                     Rational, RootOf, S, Symbol, Union, false, log, oo, pi,
+                     reduce_inequalities, root, sin, solve, sqrt)
 from diofant.abc import x, y
-from diofant.polys.rootoftools import RootOf
-from diofant.solvers.inequalities import (reduce_inequalities,
-                                          reduce_piecewise_inequality,
+from diofant.solvers.inequalities import (reduce_piecewise_inequality,
                                           reduce_rational_inequalities,
                                           solve_poly_inequalities)
 from diofant.solvers.inequalities import solve_poly_inequality as psolve
 from diofant.solvers.inequalities import solve_univariate_inequality as isolve
-from diofant.solvers.solvers import solve
 
 
 __all__ = ()

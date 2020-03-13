@@ -1,10 +1,9 @@
 import pytest
 
-from diofant import (Eq, Function, I, Lambda, binomial, factorial, gamma, pi,
-                     rf, sqrt, symbols)
+from diofant import (Eq, Function, I, Lambda, binomial, cos, factorial, gamma,
+                     pi, rf, rsolve, sin, sqrt, symbols)
 from diofant.abc import a, b
-from diofant.solvers.recurr import (rsolve, rsolve_hyper, rsolve_poly,
-                                    rsolve_ratio)
+from diofant.solvers.recurr import rsolve_hyper, rsolve_poly, rsolve_ratio
 
 
 __all__ = ()
@@ -264,3 +263,14 @@ def test_diofantissue_923():
 def test_sympyissue_17982():
     assert (rsolve(f(n + 3) + 10*f(n + 2) + 32*f(n + 1) + 32*f(n)) ==
             [{f: Lambda(n, (-2)**n*C0 + (-4)**n*C1 + (-4)**n*C2*n)}])
+
+
+def test_sympyissue_18751():
+    r = symbols('r', real=True, positive=True)
+    theta = symbols('theta', real=True)
+
+    eq = f(n) - 2*r*cos(theta)*f(n - 1) + r**2*f(n - 2)
+    res = [{f: Lambda(n, r**n*(C0*(cos(theta) - I*abs(sin(theta)))**n +
+                      C1*(cos(theta) + I*abs(sin(theta)))**n))}]
+
+    assert rsolve(eq) == res

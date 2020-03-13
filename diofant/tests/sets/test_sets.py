@@ -1,3 +1,5 @@
+"""Generic set theory tests."""
+
 import pytest
 from mpmath import mpi
 

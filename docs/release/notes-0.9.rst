@@ -52,7 +52,7 @@ Compatibility breaks
 * Removed ``canonical_variables()`` property to :meth:`~diofant.core.expr.Expr.canonical_variables`, see :pull:`534`.
 * Removed ``group`` option of :meth:`~diofant.core.basic.Basic.find`, which now return a :class:`dict`, see :pull:`529`.
 * Removed support for Python 3.4, see :pull:`543`.
-* Second argument of :func:`~diofant.solvers.solvers.checksol` must be a :class:`dict`.  See :pull:`549`.
+* Second argument of :func:`~diofant.solvers.utils.checksol` must be a :class:`dict`.  See :pull:`549`.
 * Removed ``solve_undetermined_coeffs()`` function, see :pull:`554`.
 * Make ``matches()`` method for :class:`~diofant.core.basic.Basic` - private, see :pull:`557`.
 * Removed :meth:`~diofant.core.basic.Basic.replace` flags ``simultaneous`` and ``map``, see :pull:`557`.

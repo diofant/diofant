@@ -2,10 +2,8 @@
 
 import pytest
 
-from diofant.domains import FF, QQ, RR, ZZ
-from diofant.polys.polyerrors import (ExactQuotientFailed,
-                                      PolynomialDivisionFailed)
-from diofant.polys.rings import ring
+from diofant import (FF, QQ, RR, ZZ, ExactQuotientFailed,
+                     PolynomialDivisionFailed, ring)
 from diofant.polys.specialpolys import f_polys
 
 

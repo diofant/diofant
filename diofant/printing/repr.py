@@ -197,5 +197,5 @@ class ReprPrinter(Printer):
 
 
 def srepr(expr, **settings):
-    """return expr in repr form"""
+    """Return expr in repr form."""
     return ReprPrinter(settings).doprint(expr)

@@ -55,6 +55,9 @@ class Domain(DefaultPrinting, abc.ABC):
         """Construct an element of ``self`` domain from ``args``."""
         return self.dtype(*args)
 
+    def __getstate__(self):
+        return {}
+
     @abc.abstractmethod
     def from_expr(self, element):
         """Convert Diofant's expression to ``dtype``."""
@@ -92,6 +95,7 @@ class Domain(DefaultPrinting, abc.ABC):
         from .integerring import PythonIntegerRing, GMPYIntegerRing
         from .rationalfield import PythonRationalField, GMPYRationalField
         from . import RealField, ComplexField, PythonRational
+        from .expressiondomain import ExpressionDomain
 
         if isinstance(element, int):
             return self.convert_from(element, PythonIntegerRing())
@@ -118,6 +122,9 @@ class Domain(DefaultPrinting, abc.ABC):
 
         if isinstance(element, DomainElement):
             return self.convert_from(element, element.parent)
+
+        if isinstance(element, ExpressionDomain.Expression):
+            return self.convert_from(element, ExpressionDomain())
 
         if isinstance(element, Expr):
             try:

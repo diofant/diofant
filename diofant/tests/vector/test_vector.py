@@ -2,12 +2,11 @@ import pytest
 
 from diofant import Add, Derivative, Function
 from diofant import ImmutableMatrix as Matrix
-from diofant import Integral, Mul, Pow, cos, diff, pi, sin, sqrt, symbols
+from diofant import (Integral, Mul, Pow, cos, diff, pi, simplify, sin, sqrt,
+                     symbols, trigsimp)
 from diofant.abc import a, b, c
-from diofant.simplify import simplify, trigsimp
-from diofant.vector.coordsysrect import CoordSysCartesian
-from diofant.vector.vector import (BaseVector, Vector, VectorAdd, VectorMul,
-                                   VectorZero)
+from diofant.vector import (BaseVector, CoordSysCartesian, Vector, VectorAdd,
+                            VectorMul, VectorZero)
 
 
 __all__ = ()

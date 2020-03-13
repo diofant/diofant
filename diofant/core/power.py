@@ -195,7 +195,9 @@ class Pow(Expr):
         b = sympify(b, strict=True)
         e = sympify(e, strict=True)
         if evaluate:
-            if e is S.Zero:
+            if nan in (b, e):
+                return nan
+            elif e is S.Zero:
                 return Integer(1)
             elif e is S.One:
                 return b
@@ -206,9 +208,7 @@ class Pow(Expr):
                     b = -b
                 elif e.is_odd:
                     return -Pow(-b, e)
-            if nan in (b, e):  # XXX nan**x -> nan under assumption that x != 0
-                return nan
-            elif b is S.One:
+            if b is S.One:
                 if abs(e).is_infinite:
                     return nan
                 return Integer(1)
@@ -338,35 +338,23 @@ class Pow(Expr):
         if s is not None:
             return s*Pow(b, e*other)
 
-    def _eval_is_even(self):
-        if self.exp.is_integer and self.exp.is_positive:
-            return self.base.is_even
-
     def _eval_is_positive(self):
-        from ..functions import log
-        if self.base == self.exp:
-            if self.base.is_nonnegative:
+        b, e = self.base, self.exp
+        if b.is_nonnegative and b == e:
+            return True
+        elif b.is_positive and (e.is_real or e.is_positive):
+            return True
+        elif b.is_negative and e.is_integer:
+            return e.is_even
+        elif b.is_nonpositive and e.is_odd:
+            return False
+        elif b.is_imaginary:
+            if e.is_imaginary and b in {I, -I}:
                 return True
-        elif self.base.is_positive:
-            if self.exp.is_extended_real:
-                return True
-        elif self.base.is_negative:
-            if self.exp.is_even:
-                return True
-            if self.exp.is_odd:
-                return False
-        elif self.base.is_nonpositive:
-            if self.exp.is_odd:
-                return False
-        elif self.base.is_imaginary:
-            if self.exp.is_integer:
-                m = self.exp % 4
-                if m.is_zero:
-                    return True
-                if m.is_integer and m.is_nonzero:
-                    return False
-            if self.exp.is_imaginary:
-                return log(self.base).is_imaginary
+            else:
+                m = e % 4
+                if m.is_integer:
+                    return m.is_zero
 
     def _eval_is_negative(self):
         if self.base.is_negative:
@@ -403,7 +391,7 @@ class Pow(Expr):
                     return self.exp.is_negative
 
     def _eval_is_integer(self):
-        b, e = self.args
+        b, e = self.base, self.exp
         if b.is_rational:
             if b.is_integer is False and e.is_positive:
                 return False  # rat**nonneg
@@ -628,7 +616,7 @@ class Pow(Expr):
         (1/2, 2)
 
         """
-        b, e = self.args
+        b, e = self.base, self.exp
         if b.is_Rational and b.numerator == 1 and b.denominator != 1:
             return Integer(b.denominator), -e
         return b, e
@@ -791,7 +779,7 @@ class Pow(Expr):
 
     def _eval_expand_multinomial(self, **hints):
         """(a+b+..) ** n -> a**n + n*a**(n-1)*b + .., n is nonzero integer."""
-        base, exp = self.args
+        base, exp = self.base, self.exp
         result = self
 
         if exp.is_Rational and exp.numerator > 0 and base.is_Add:
@@ -1076,7 +1064,7 @@ class Pow(Expr):
             return True
 
     def _eval_as_numer_denom(self):
-        """expression -> a/b -> a, b
+        """Expression -> a/b -> a, b.
 
         See Also
         ========

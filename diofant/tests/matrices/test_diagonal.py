@@ -1,6 +1,5 @@
+from diofant import DiagonalMatrix, DiagonalOf, MatrixSymbol
 from diofant.abc import n
-from diofant.matrices.expressions import MatrixSymbol
-from diofant.matrices.expressions.diagonal import DiagonalMatrix, DiagonalOf
 
 
 __all__ = ()

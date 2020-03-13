@@ -1,34 +1,25 @@
 import pytest
 
-from diofant import (E1, And, Ci, Ei, EulerGamma, Function, Heaviside, I,
-                     Integer, Integral, Max, Min, Ne, Or, Rational, Si, Symbol,
-                     atan, atan2, besseli, besselj, besselk, bessely, combsimp,
-                     cos, cosh, cot, erf, exp, exp_polar, expand,
-                     expand_complex, expand_mul, expand_trig, expint, factor,
-                     factor_terms, factorial, fresnelc, fresnels, gamma,
-                     hyperexpand, lerchphi, log, logcombine, meijerg, oo,
-                     periodic_argument, pi, polar_lift, powsimp, re, simplify,
-                     sin, sinh, sqrt, symbols, tan, trigsimp, unpolarify)
+from diofant import (E1, And, Ci, CosineTransform, Ei, EulerGamma,
+                     FourierTransform, Function, Heaviside, I, Integer,
+                     Integral, InverseCosineTransform, InverseFourierTransform,
+                     InverseLaplaceTransform, InverseSineTransform,
+                     LaplaceTransform, Matrix, Max, MellinTransform, Min, Ne,
+                     Or, Rational, Si, SineTransform, Symbol, atan, atan2,
+                     besseli, besselj, besselk, bessely, combsimp, cos, cosh,
+                     cosine_transform, cot, erf, exp, exp_polar, expand,
+                     expand_complex, expand_mul, expand_trig, expint, eye,
+                     factor, factor_terms, factorial, fourier_transform,
+                     fresnelc, fresnels, gamma, hankel_transform, hyperexpand,
+                     inverse_cosine_transform, inverse_fourier_transform,
+                     inverse_hankel_transform, inverse_laplace_transform,
+                     inverse_mellin_transform, inverse_sine_transform,
+                     laplace_transform, lerchphi, log, logcombine, meijerg,
+                     mellin_transform, oo, periodic_argument, pi, polar_lift,
+                     powsimp, re, simplify, sin, sine_transform, sinh, sqrt,
+                     symbols, tan, trigsimp, unpolarify)
 from diofant.abc import a, b, beta, c, d, nu, rho, s, t, w, x
-from diofant.integrals.transforms import (CosineTransform, FourierTransform,
-                                          IntegralTransformError,
-                                          InverseCosineTransform,
-                                          InverseFourierTransform,
-                                          InverseLaplaceTransform,
-                                          InverseSineTransform,
-                                          LaplaceTransform, MellinTransform,
-                                          SineTransform, _simplifyconds,
-                                          cosine_transform, fourier_transform,
-                                          hankel_transform,
-                                          inverse_cosine_transform,
-                                          inverse_fourier_transform,
-                                          inverse_hankel_transform,
-                                          inverse_laplace_transform,
-                                          inverse_mellin_transform,
-                                          inverse_sine_transform,
-                                          laplace_transform, mellin_transform,
-                                          sine_transform)
-from diofant.matrices import Matrix, eye
+from diofant.integrals.transforms import IntegralTransformError, _simplifyconds
 
 
 __all__ = ()

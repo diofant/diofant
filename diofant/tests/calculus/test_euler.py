@@ -1,3 +1,5 @@
+"""Tests for Euler-Lagrange equations."""
+
 import pytest
 
 from diofant import Eq, Function, Symbol, cos, diff, sin

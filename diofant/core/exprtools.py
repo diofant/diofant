@@ -667,7 +667,7 @@ def _gcd_terms(terms, isprimitive=False, fraction=True):
     if isinstance(terms, Basic) and not isinstance(terms, Tuple):
         terms = Add.make_args(terms)
 
-    terms = list(map(Term, [t for t in terms if t]))
+    terms = list(map(Term, (t for t in terms if t)))
 
     # there is some simplification that may happen if we leave this
     # here rather than duplicate it before the mapping of Term onto
@@ -762,8 +762,8 @@ def gcd_terms(terms, isprimitive=False, clear=True, fraction=True):
 
     """
     def mask(terms):
-        """replace nc portions of each term with a unique Dummy symbols
-        and return the replacements to restore them
+        """Replace nc portions of each term with a unique Dummy symbols
+        and return the replacements to restore them.
 
         """
         args = [(a, []) if a.is_commutative else a.args_cnc() for a in terms]

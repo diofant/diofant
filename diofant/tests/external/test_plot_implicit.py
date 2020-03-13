@@ -1,3 +1,5 @@
+"""Implicit plotting tests."""
+
 import tempfile
 import warnings
 

@@ -114,8 +114,9 @@ The square-free factorization of a univariate polynomial is the product of all
 factors (not necessarily irreducible) of degree 1, 2 etc
 
     >>> sqf(2*x**2 + 5*x**3 + 4*x**4 + x**5)
-     2        2
-    x ⋅(x + 1) ⋅(x + 2)
+                    2
+            ⎛ 2    ⎞
+    (x + 2)⋅⎝x  + x⎠
 
 Factorization
 =============

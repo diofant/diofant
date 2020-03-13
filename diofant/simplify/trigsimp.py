@@ -419,7 +419,7 @@ _trigs = (TrigonometricFunction, HyperbolicFunction)
 
 def trigsimp(expr, **opts):
     """
-    reduces expression by using known trig identities
+    Reduces expression by using known trig identities.
 
     Notes
     =====
@@ -590,7 +590,7 @@ def exptrigsimp(expr, simplify=True):
 
 def trigsimp_old(expr, **opts):
     """
-    reduces expression by using known trig identities
+    Reduces expression by using known trig identities.
 
     Notes
     =====
