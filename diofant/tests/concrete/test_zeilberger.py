@@ -47,7 +47,7 @@ def test_zb_sum():
     R_2 = 2**n
     R_3 = factorial(n)*factorial(x)/factorial(n + x)
     R_4 = 4**n*factorial(n - 1/2)/(sqrt(pi)*factorial(n))
-    R_5 = 4**n*gamma(n + 1/2)/gamma(n - 1/2)/2
+    R_5 = 2**(2*n - 1)*gamma(n + 1/2)/gamma(n - 1/2)
     R_6 = x/(n + x)
 
     assert combsimp(zb_sum(F_1, (k, 0, n), J=2)[0]) == R_1

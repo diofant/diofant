@@ -196,7 +196,7 @@ def zb_sum(F, k_a_b, J=1):
 
     >>> F = binomial(n, 3 * k)
     >>> zb_sum(F, (k, 0, n), J=3)[0]
-    2**n/3 + (1/2 - sqrt(3)*I/2)**n/3 + (1/2 + sqrt(3)*I/2)**n/3
+    2**(-n)*(4**n + (1 - sqrt(3)*I)**n + (1 + sqrt(3)*I)**n)/3
 
     """
     k, a, b = k_a_b
@@ -238,10 +238,10 @@ def zb_sum(F, k_a_b, J=1):
     vanishes = (combsimp(F.subs({k: b + 1})) == 0) and _vanishes(F, b, n, k)
     if vanishes:
         try:
-            res = rsolve(combsimp(sum_rec + G_a), f(n), initial)
+            res = rsolve([combsimp(sum_rec + G_a)], f(n), init=initial)
             if res is None:
                 return
-            return res.subs({n: w}), w
+            return f(n).subs(res[0]).subs({n: w}), w
         except ValueError:
             return
 
@@ -254,9 +254,9 @@ def zb_sum(F, k_a_b, J=1):
 
     G_b = G.subs({k: b.subs({n: n + J})})
     try:
-        res = rsolve(combsimp(sum_rec + boundary + G_a - G_b), f(n), initial)
+        res = rsolve([combsimp(sum_rec + boundary + G_a - G_b)], f(n), init=initial)
         if res is None:
             return
-        return res.subs({n: w}), w
+        return f(n).subs(res[0]).subs({n: w}), w
     except ValueError:
         return
