@@ -167,3 +167,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`18507` Bug in Mul
 * :sympyissue:`18707` There is a problem or limitation when the Limit is calculated
 * :sympyissue:`18751` handling of rsolve coefficients
+* :sympyissue:`18749` polys: Berlekamp factorization failure

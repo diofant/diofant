@@ -6,7 +6,7 @@ import random
 from ..ntheory import factorint
 from .densearith import (dmp_add, dmp_add_term, dmp_mul, dmp_quo, dmp_rem,
                          dmp_sqr, dmp_sub)
-from .densebasic import dmp_degree_in, dmp_one_p, dmp_strip
+from .densebasic import dmp_degree_in, dmp_normal, dmp_one_p
 from .densetools import dmp_ground_monic
 from .euclidtools import dmp_gcd
 from .polyconfig import query
@@ -360,63 +360,6 @@ def dup_gf_Qmatrix(f, K):
     return Q
 
 
-def dup_gf_Qbasis(Q, K):
-    """
-    Compute a basis of the kernel of ``Q - I``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', FF(5))
-    >>> f = R.to_dense(x**4 + 1)
-    >>> dup_gf_Qbasis(dup_gf_Qmatrix(f, R.domain), R.domain)
-    [[1 mod 5, 0 mod 5, 0 mod 5, 0 mod 5],
-     [0 mod 5, 0 mod 5, 1 mod 5, 0 mod 5]]
-
-    >>> f = R.to_dense(3*x**2 + 2*x + 4)
-    >>> dup_gf_Qbasis(dup_gf_Qmatrix(f, R.domain), R.domain)
-    [[1 mod 5, 0 mod 5]]
-
-    References
-    ==========
-
-    * :cite:`Knuth1985seminumerical`, section 4.6.2, algorithm N
-
-    """
-    Q, n = [list(q) for q in Q], len(Q)
-    for k in range(n):
-        Q[k][k] -= K.one
-
-    c, basis = [-1]*n, []
-
-    for k in range(n):
-        for j in range(n):
-            if Q[k][j] and c[j] < 0:
-                c[j] = k
-
-                q = -K.one/Q[k][j]
-                for i in range(k, n):
-                    Q[i][j] *= q
-
-                for i in range(n):
-                    q = Q[k][i]
-                    if i != j:
-                        for s in range(k, n):
-                            Q[s][i] += q*Q[s][j]
-
-                break
-        else:
-            v = [K.zero]*n
-            v[k] = K.one
-            for j in range(n):
-                for s in range(n):
-                    if c[s] == j:
-                        v[j] = Q[k][s]
-            basis.append(v)
-
-    return basis
-
-
 def dup_gf_berlekamp(f, K):
     """
     Factor a square-free polynomial over finite fields of small order.
@@ -436,11 +379,13 @@ def dup_gf_berlekamp(f, K):
     * :cite:`Knuth1985seminumerical`, section 4.6.2
 
     """
+    from .solvers import RawMatrix
     Q = dup_gf_Qmatrix(f, K)
-    V = dup_gf_Qbasis(Q, K)
+    Q = RawMatrix(Q) - RawMatrix.eye(len(Q))
+    V = Q.T.nullspace()
 
     for i, v in enumerate(V):
-        V[i] = dmp_strip(list(reversed(v)), 0)
+        V[i] = dmp_normal(list(reversed(v)), 0, K)
 
     factors = [f]
 
