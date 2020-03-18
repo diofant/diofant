@@ -3180,6 +3180,11 @@ def test_sympyissue_5786():
     e = (x - I*y)*(z - I*t)
     assert factor(expand(e), extension=[I]) == e
 
+    # issue sympy/sympy#18895
+    e = (x - 1)*(y - 1)
+    assert factor(expand(e)) == e
+    assert factor(expand(e), extension=[I]) == e
+
 
 def test_noncommutative():
     class Foo(Expr):
