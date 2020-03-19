@@ -4,9 +4,10 @@ functions.
 
 import pytest
 
-from diofant import (Dummy, E, Eq, Expr, I, Lambda, Poly, Rational, RootSum,
-                     Symbol, apart, apart_list, assemble_partfrac_list, factor,
-                     numbered_symbols, pi, sqrt, symbols, together)
+from diofant import (Dummy, E, Eq, Expr, I, Lambda, Mul, Poly, Rational,
+                     RootSum, Symbol, apart, apart_list,
+                     assemble_partfrac_list, factor, numbered_symbols, pi,
+                     sqrt, symbols, together)
 from diofant.abc import a, b, c, x, y
 from diofant.polys.partfrac import apart_undetermined_coeffs
 
@@ -175,3 +176,17 @@ def test_sympyissue_5798():
     assert apart(
         2*x/(x**2 + 1) - (x - 1)/(2*(x**2 + 1)) + 1/(2*(x + 1)) - 2/x) == \
         (3*x + 1)/(x**2 + 1)/2 + 1/(x + 1)/2 - 2/x
+
+
+@pytest.mark.timeout(100)
+def test_sympyissue_18531():
+    e = (x**2 + 1)**3/((x - 1)**2*(x + 1)**2*(-x**2 + 2*x + 1)*(x**2 + 2*x - 1))
+
+    def mul2(x):
+        return Mul(2, x, evaluate=False)
+
+    r = (1/mul2(x - sqrt(2) + 1) - 1/mul2(x - sqrt(2) - 1) +
+         1/mul2(x + 1 + sqrt(2)) - 1/mul2(x - 1 + sqrt(2)) +
+         1/mul2((x + 1)**2) + 1/mul2((x - 1)**2))
+
+    assert apart(e, x, extension=sqrt(2)) == r

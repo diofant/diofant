@@ -8,8 +8,8 @@ import pytest
 from diofant import (EX, FF, QQ, RR, ZZ, CoercionFailed, ExactQuotientFailed,
                      GeneratorsError, GeneratorsNeeded,
                      MultivariatePolynomialError, PolynomialDivisionFailed,
-                     PolynomialError, PolynomialRing, Symbol, field, grlex,
-                     lex, oo, pi, ring, sqrt, sring, symbols)
+                     PolynomialError, PolynomialRing, Rational, Symbol, field,
+                     grlex, lex, oo, pi, ring, sqrt, sring, symbols)
 from diofant.abc import t, x, y, z
 from diofant.polys.rings import PolyElement
 from diofant.polys.specialpolys import f_polys
@@ -1676,3 +1676,12 @@ def test_PolyElement_slice():
     assert f.slice(0, 2) == f.slice(0, 2, x) == 3*x + 4
     assert f.slice(0, 3) == f.slice(0, 3, x) == 2*x**2 + 3*x + 4
     assert f.slice(0, 4) == f.slice(0, 4, x) == x**3 + 2*x**2 + 3*x + 4
+
+
+def test_sympyissue_18894():
+    exprs = [+Rational(3, 16) + sqrt(3*sqrt(3) + 10)/8,
+             Rational(1, 8) + 3*sqrt(3)/16,
+             -Rational(3, 16) + sqrt(3*sqrt(3) + 10)/8]
+    K = QQ.algebraic_field(sqrt(3) + sqrt(3*sqrt(3) + 10))
+
+    assert sring(exprs, x, extension=True)[0] == K.poly_ring(x)

@@ -168,3 +168,6 @@ These Sympy issues also were addressed:
 * :sympyissue:`18707` There is a problem or limitation when the Limit is calculated
 * :sympyissue:`18751` handling of rsolve coefficients
 * :sympyissue:`18749` polys: Berlekamp factorization failure
+* :sympyissue:`18895` Factor with extension=True drops a factor of y - 1
+* :sympyissue:`18894` sring extension=True error: nan is not in any domain
+* :sympyissue:`18531` apart: hangs or takes too long
