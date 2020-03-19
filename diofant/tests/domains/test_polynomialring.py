@@ -105,12 +105,12 @@ def test_methods():
     R = QQ.poly_ring(x)
     X = R.convert(x)
 
-    assert R.is_negative(-X) is True
-    assert R.is_negative(+X) is False
+    assert R.is_normal(-X) is False
+    assert R.is_normal(+X) is True
 
     assert R.gcdex(X**3 - X, X**2) == (-1, X, X)
 
     F = QQ.frac_field(y)
     Y = F.convert(y)
-    assert F.is_negative(-Y) is True
-    assert F.is_negative(+Y) is False
+    assert F.is_normal(-Y) is False
+    assert F.is_normal(+Y) is True

@@ -650,7 +650,7 @@ def dmp_rr_prs_gcd(f, g, u, K):
     h = dmp_subresultants(F, G, u, K)[-1]
     c, _, _ = dmp_rr_prs_gcd(fc, gc, u - 1, K)
 
-    if K.is_negative(dmp_ground_LC(h, u, K)):
+    if not K.is_normal(dmp_ground_LC(h, u, K)):
         h = dmp_neg(h, u, K)
 
     _, h = dmp_primitive(h, u, K)

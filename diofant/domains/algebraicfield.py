@@ -170,9 +170,8 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         raise NotImplementedError("ring of integers of %s is not "
                                   "implemented yet" % self)
 
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative."""
-        return self.domain.is_negative(a.LC())
+    def is_normal(self, a):
+        return self.domain.is_normal(a.LC())
 
     @staticmethod
     def _compute_ext_root(ext, minpoly):
@@ -194,9 +193,8 @@ class RealAlgebraicField(ComplexAlgebraicField):
 
     is_RealAlgebraicField = True
 
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative."""
-        return a < 0
+    def is_normal(self, a):
+        return a >= 0
 
 
 class AlgebraicElement(QuotientRingElement, CantSympify):

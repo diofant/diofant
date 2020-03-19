@@ -140,9 +140,8 @@ class FiniteField(Field, SimpleDomain):
         if q == 1:
             return self.dtype(self.domain.dtype(p))
 
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative."""
-        return False
+    def is_normal(self, a):
+        return True
 
 
 class PythonFiniteField(FiniteField):

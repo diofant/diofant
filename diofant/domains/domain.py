@@ -255,7 +255,3 @@ class Domain(DefaultPrinting, abc.ABC):
         """Returns a fraction field, i.e. `K(X)`."""
         from ..polys import FractionField
         return FractionField(self, symbols, kwargs.get("order", lex))
-
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative."""
-        return a < 0

@@ -168,9 +168,8 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
         """Returns a ring associated with ``self``."""
         return self  # XXX: EX is not a ring but we don't have much choice here.
 
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative."""
-        return a.ex.as_coeff_mul()[0].is_negative
+    def is_normal(self, a):
+        return a.ex.as_coeff_mul()[0].is_nonnegative
 
     def gcd(self, a, b):
         return a.gcd(b)

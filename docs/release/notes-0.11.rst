@@ -45,6 +45,7 @@ Compatibility breaks
 * Make :func:`~diofant.solvers.recurr.rsolve`'s ``init`` parameter more compatible with :func:`~diofant.solvers.ode.dsolve`'s one, e.g. drop accepting ``init=[1, 2, 3]`` and ``init={0: 1, 1: 2, 2: 3}`` forms, see :pull:`921`.
 * Removed ``dict_merge()``, ``generate_bell()`` and ``reshape()`` functions, see :pull:`921`.
 * Removed ``subs()`` methods from :class:`~diofant.polys.rings.PolyElement` and :class:`~diofant.polys.fields.FracElement`, see :pull:`967`.
+* ``is_negative()`` method of :class:`~diofant.domains.domain.Domain` refactored to the :meth:`~diofant.domains.ring.Ring.is_normal`, see :pull:`977`.
 
 Minor changes
 =============
@@ -171,3 +172,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`18895` Factor with extension=True drops a factor of y - 1
 * :sympyissue:`18894` sring extension=True error: nan is not in any domain
 * :sympyissue:`18531` apart: hangs or takes too long
+* :sympyissue:`14806` Domain.is_positive (and friends) is a wrong interface

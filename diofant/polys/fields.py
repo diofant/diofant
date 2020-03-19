@@ -221,9 +221,8 @@ class FractionField(Field, CompositeDomain):
         """Returns a field associated with ``self``."""
         return self.to_ring()
 
-    def is_negative(self, a):
-        """Returns True if ``LC(a)`` is negative."""
-        return self.domain.is_negative(a.numerator.LC)
+    def is_normal(self, a):
+        return self.domain.is_normal(a.numerator.LC)
 
 
 @functools.total_ordering

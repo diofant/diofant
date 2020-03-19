@@ -1021,8 +1021,8 @@ def test_ModularInteger():
     pytest.raises(ValueError, lambda: FF(9, [1, 0]))
     pytest.raises(ValueError, lambda: FF(9, [1, 1, 1]))
 
-    assert F5.is_negative(a) is False
-    assert F5.is_negative(F5.zero) is False
+    assert F5.is_normal(a) is True
+    assert F5.is_normal(F5.zero) is True
 
     assert F5 == FF(5, [1, 0])
 
@@ -1139,8 +1139,8 @@ def test_to_expr():
 
 
 def test_EX():
-    assert EX.is_negative(EX(2)) is False
-    assert EX.is_negative(EX(-1)) is True
+    assert EX.is_normal(EX(2)) is True
+    assert EX.is_normal(EX(-1)) is False
 
     assert (EX(1)/2).numerator == 1
     assert (EX(1)/2).denominator == 2
