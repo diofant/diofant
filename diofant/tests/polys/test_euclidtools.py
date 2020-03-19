@@ -721,7 +721,7 @@ def test_PolyElement_lcm():
 def test_dmp_content():
     R, x, y = ring("x,y", ZZ)
 
-    assert R.dmp_content(-2) == 2
+    assert R.dmp_content(-2) == -2
 
     f, g, F = 3*y**2 + 2*y + 1, 1, 0
 
@@ -733,8 +733,8 @@ def test_dmp_content():
 
     R, x, y, z = ring("x,y,z", ZZ)
 
-    assert R.dmp_content(f_4) == 1
-    assert R.dmp_content(f_5) == 1
+    assert R.dmp_content(f_4) == -1
+    assert R.dmp_content(f_5) == -1
 
     R, x, y, z, t = ring("x,y,z,t", ZZ)
     assert R.dmp_content(f_6) == 1
@@ -757,9 +757,9 @@ def test_dmp_primitive():
     R, x, y, z = ring("x,y,z", ZZ)
 
     cont, f = R.dmp_primitive(f_4)
-    assert cont == 1 and f == f_4
+    assert cont == -1 and f == -f_4
     cont, f = R.dmp_primitive(f_5)
-    assert cont == 1 and f == f_5
+    assert cont == -1 and f == -f_5
 
     R, x, y, z, t = ring("x,y,z,t", ZZ)
 

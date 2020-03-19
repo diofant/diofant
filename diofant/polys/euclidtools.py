@@ -767,21 +767,11 @@ def dmp_content(f, u, K):
     2*y + 6
 
     """
-    cont, v = dmp_LC(f, K), u - 1
-
-    if dmp_zero_p(f, u):
-        return cont
-
-    for c in f[1:]:
-        cont = dmp_gcd(cont, c, v, K)
-
-        if dmp_one_p(cont, v, K):
-            break
-
-    if K.is_negative(dmp_ground_LC(cont, v, K)):
-        cont = dmp_neg(cont, v, K)
-
-    return cont
+    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    f = ring.from_dense(f)
+    new_ring = ring.drop_to_ground(*ring.gens[1:])
+    f = f.drop_to_ground(*ring.gens[1:])
+    return new_ring.domain.to_dense(f.content())
 
 
 def dmp_primitive(f, u, K):
