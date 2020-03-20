@@ -769,8 +769,8 @@ def dmp_content(f, u, K):
     """
     ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
     f = ring.from_dense(f)
-    new_ring = ring.drop_to_ground(*ring.gens[1:])
-    f = f.drop_to_ground(*ring.gens[1:])
+    new_ring = ring.eject(*ring.gens[1:])
+    f = f.eject(*ring.gens[1:])
     return new_ring.domain.to_dense(f.content())
 
 

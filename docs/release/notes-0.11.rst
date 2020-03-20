@@ -48,6 +48,7 @@ Compatibility breaks
 * ``is_negative()`` method of :class:`~diofant.domains.domain.Domain` refactored to the :meth:`~diofant.domains.ring.Ring.is_normal`, see :pull:`977`.
 * Drop ``algebraic_field()`` method of :class:`~diofant.domains.IntegerRing`, see :pull:`977`.
 * Drop ``has_assoc_Field`` property, ``is_SymbolicDomain`` property renamed to ``is_ExpressionDomain`` of :class:`~diofant.domains.domain.Domain`, see :pull:`977`.
+* ``drop_to_ground()`` method of :class:`~diofant.polys.rings.PolynomialRing` renamed to :meth:`~diofant.polys.rings.PolynomialRing.eject`, see :pull:`977`.
 
 Minor changes
 =============

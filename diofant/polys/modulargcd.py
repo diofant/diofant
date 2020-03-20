@@ -762,7 +762,7 @@ def _rational_reconstruction_func_coeffs(hm, p, m, ring, k):
 
         else:
             coeffh = ring.domain.zero
-            for mon, c in coeff.drop_to_ground(k).items():
+            for mon, c in coeff.eject(k).items():
                 ch = _rational_function_reconstruction(c, p, m)
 
                 if not ch:
@@ -858,7 +858,7 @@ def _euclidean_algorithm(f, g, minpoly, p):
     while g:
         rem = f
         deg = g.degree(0)  # degree in x
-        lcinv, _, gcd = _gf_gcdex(g.drop_to_ground(-1).LC, minpoly, p)
+        lcinv, _, gcd = _gf_gcdex(g.eject(-1).LC, minpoly, p)
 
         if not gcd == 1:
             return
@@ -867,13 +867,13 @@ def _euclidean_algorithm(f, g, minpoly, p):
             degrem = rem.degree(0)  # degree in x
             if degrem < deg:
                 break
-            quo = (lcinv * rem.drop_to_ground(-1).LC).set_ring(ring)
+            quo = (lcinv * rem.eject(-1).LC).set_ring(ring)
             rem = _trunc(rem - g.mul_monom((degrem - deg, 0))*quo, minpoly, p)
 
         f = g
         g = rem
 
-    lcfinv = _gf_gcdex(f.drop_to_ground(-1).LC, minpoly, p)[0].set_ring(ring)
+    lcfinv = _gf_gcdex(f.eject(-1).LC, minpoly, p)[0].set_ring(ring)
 
     return _trunc(f * lcfinv, minpoly, p)
 
@@ -1012,7 +1012,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     if k == 1:
         qdomain = domain.ring.field
     else:
-        qdomain = domain.ring.drop_to_ground(k - 1)
+        qdomain = domain.ring.eject(k - 1)
         qdomain = qdomain.clone(domain=qdomain.domain.ring.field)
 
     qring = ring.clone(domain=qdomain)  # = Z(t_k)[t_1, ..., t_{k-1}][x, z]
@@ -1021,7 +1021,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
     d = 1
 
     # polynomial in Z_p[t_1, ..., t_k][z]
-    gamma = f.drop_to_ground(-1).LC * g.drop_to_ground(-1).LC
+    gamma = f.eject(-1).LC * g.eject(-1).LC
     # polynomial in Z_p[t_1, ..., t_k]
     delta = minpoly.LC
 
@@ -1269,7 +1269,7 @@ def _func_field_modgcd_m(f, g, minpoly):
     cg, g = g.primitive()
 
     # polynomial in Z[t_1, ..., t_k][z]
-    gamma = f.drop_to_ground(-1).LC * g.drop_to_ground(-1).LC
+    gamma = f.eject(-1).LC * g.eject(-1).LC
     # polynomial in Z[t_1, ..., t_k]
     delta = minpoly.LC
     assert k > 0 or delta == 1
@@ -1468,7 +1468,7 @@ def _primitive_in_x0(f):
 
     """
     fring = f.ring
-    f_ = f.drop_to_ground(*range(1, fring.ngens))
+    f_ = f.eject(*range(1, fring.ngens))
     dom = f_.ring.domain.ring
     cont = dom.zero
 
@@ -1581,7 +1581,7 @@ def func_field_modgcd(f, g):
         contx0g, g = _primitive_in_x0(g)
         contx0h = func_field_modgcd(contx0f, contx0g)[0]
 
-        ZZring_ = ZZring.drop_to_ground(*range(1, n))
+        ZZring_ = ZZring.eject(*range(1, n))
 
         f_ = _to_ZZ_poly(f, ZZring_)
         g_ = _to_ZZ_poly(g, ZZring_)

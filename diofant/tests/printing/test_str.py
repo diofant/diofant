@@ -374,7 +374,7 @@ def test_Poly():
 def test_PolynomialRing():
     assert str(ZZ.inject("x")) == "ZZ[x]"
     assert str(QQ.poly_ring("x", "y", order=grlex)) == "QQ[x,y]"
-    assert str(ZZ.inject("x", "y", "z", "t").drop_to_ground("t")) == "ZZ[t][x,y,z]"
+    assert str(ZZ.inject("x", "y", "z", "t").eject("t")) == "ZZ[t][x,y,z]"
 
 
 def test_FractionField():

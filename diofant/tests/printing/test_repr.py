@@ -201,7 +201,7 @@ def test_PolynomialRing():
     sT(QQ.poly_ring("x", "y", order=grlex),
        "PolynomialRing(%s, (Symbol('x'), Symbol('y')), "
        "GradedLexOrder())" % repr(QQ))
-    sT(ZZ.inject("x", "y", "z", "t").drop_to_ground("t"),
+    sT(ZZ.inject("x", "y", "z", "t").eject("t"),
        "PolynomialRing(PolynomialRing(%s, (Symbol('t'),), "
        "LexOrder()), (Symbol('x'), Symbol('y'), Symbol('z')), "
        "LexOrder())" % repr(ZZ))

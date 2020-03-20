@@ -382,7 +382,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
     def is_multivariate(self):
         return len(self.gens) > 1
 
-    def drop_to_ground(self, *gens):
+    def eject(self, *gens):
         r"""
         Remove specified generators from the ring and inject them into
         its domain.
@@ -657,7 +657,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             return poly
 
-    def drop_to_ground(self, *gens):
+    def eject(self, *gens):
         ring = self.ring
 
         if not gens:
@@ -1985,7 +1985,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return ring.zero.drop(0)
         else:
             s = (-1)**((d*(d - 1)) // 2)
-            c = self.drop_to_ground(*ring.gens[1:]).LC
+            c = self.eject(*ring.gens[1:]).LC
 
             return self.resultant(self.diff()) // (c*s)
 

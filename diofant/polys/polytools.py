@@ -855,7 +855,7 @@ class Poly(Expr):
             raise DomainError("can't eject generators over %s" % dom)
 
         result = self.rep.copy()
-        result = result.drop_to_ground(*gens)
+        result = result.eject(*gens)
 
         return self.new(result, *result.ring.symbols)
 

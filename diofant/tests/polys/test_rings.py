@@ -180,8 +180,8 @@ def test_PolynomialRing_to_ground():
     pytest.raises(ValueError, lambda: R.to_ground())
 
     R2, x, y = ring("x,y", ZZ)
-    assert R2.drop_to_ground(x) == ZZ.inject("x").poly_ring("y")
-    assert R2.drop_to_ground(x, y) == R2
+    assert R2.eject(x) == ZZ.inject("x").poly_ring("y")
+    assert R2.eject(x, y) == R2
 
 
 def test_sring():
@@ -1599,19 +1599,19 @@ def test_PolyElement_drop():
     pytest.raises(ValueError, lambda: x.drop(0))
 
     f = z**2*x + 2*z*y + x*z + 1
-    R2 = R.drop_to_ground(z)
+    R2 = R.eject(z)
     D = R2.domain
-    assert f.drop_to_ground(z) == D.z**2*R2.x + 2*D.z*R2.y + D.z*R2.x + 1
-    R12 = R.drop_to_ground(y, z)
+    assert f.eject(z) == D.z**2*R2.x + 2*D.z*R2.y + D.z*R2.x + 1
+    R12 = R.eject(y, z)
     D = R12.domain
-    assert f.drop_to_ground(y, z) == R12.x*(D.z**2 + D.z) + 2*D.y*D.z + 1
-    R02 = R.drop_to_ground(x, z)
+    assert f.eject(y, z) == R12.x*(D.z**2 + D.z) + 2*D.y*D.z + 1
+    R02 = R.eject(x, z)
     D = R02.domain
-    assert f.drop_to_ground(x, z) == R02.y*2*D.z + D.x*D.z**2 + D.x*D.z + 1
+    assert f.eject(x, z) == R02.y*2*D.z + D.x*D.z**2 + D.x*D.z + 1
 
     R3 = R.drop(y, z)
     assert R3 == ZZ.inject('x')
-    pytest.raises(ValueError, lambda: R3.x.drop_to_ground(R3.x))
+    pytest.raises(ValueError, lambda: R3.x.eject(R3.x))
 
 
 def test_PolyElement_decompose():
