@@ -775,7 +775,7 @@ class RootSum(Expr):
         f = sum(expr.subs({var: r}) for r in roots)
         p, q = together(f).as_numer_denom()
 
-        domain = QQ.poly_ring(*roots)
+        domain = QQ.inject(*roots)
 
         p = p.expand()
         q = q.expand()

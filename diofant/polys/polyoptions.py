@@ -441,9 +441,9 @@ class Domain(Option, metaclass=OptionType):
                 gens = list(map(sympify, gens.split(',')))
 
                 if ground in ['Z', 'ZZ']:
-                    return domains.ZZ.poly_ring(*gens)
+                    return domains.ZZ.inject(*gens)
                 else:
-                    return domains.QQ.poly_ring(*gens)
+                    return domains.QQ.inject(*gens)
 
             r = cls._re_fraction.match(domain)
 

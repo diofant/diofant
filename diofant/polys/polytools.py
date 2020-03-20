@@ -352,7 +352,7 @@ class Poly(Expr):
         ========
 
         >>> a = Poly(x**2 + 1)
-        >>> R = ZZ.poly_ring(x)
+        >>> R = ZZ.inject(x)
 
         >>> a.per(R.from_dense([ZZ(1), ZZ(1)]), gens=[y])
         Poly(y + 1, y, domain='ZZ')
@@ -607,7 +607,7 @@ class Poly(Expr):
         Examples
         ========
 
-        >>> f = Poly(x**2 + 1, domain=QQ.poly_ring(y))
+        >>> f = Poly(x**2 + 1, domain=QQ.inject(y))
         >>> f
         Poly(x**2 + 1, x, domain='QQ[y]')
 

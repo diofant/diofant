@@ -3761,12 +3761,12 @@ def test_pretty_Domain():
 
     assert upretty(RealField(prec=100)) == "ℝ₁₀₀"
 
-    expr = QQ.poly_ring(x)
+    expr = QQ.inject(x)
 
     assert pretty(expr) == "QQ[x]"
     assert upretty(expr) == "ℚ[x]"
 
-    expr = QQ.poly_ring(x, y)
+    expr = QQ.inject(x, y)
 
     assert pretty(expr) == "QQ[x, y]"
     assert upretty(expr) == "ℚ[x, y]"
@@ -4926,7 +4926,7 @@ def test_RandomDomain():
 
 def test_PrettyPoly():
     F = QQ.frac_field(x, y)
-    R = QQ.poly_ring(x, y)
+    R = QQ.inject(x, y)
 
     expr = F.convert(x/(x + y))
     assert pretty(expr) == "x/(x + y)"

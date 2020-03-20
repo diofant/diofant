@@ -74,7 +74,7 @@ class FiniteField(Field, SimpleDomain):
                 obj.dtype = type("ModularInteger", (ModularInteger,),
                                  {"mod": mod, "domain": dom, "_parent": obj})
             else:
-                ff = dom.finite_field(mod).poly_ring(Dummy('x'))
+                ff = dom.finite_field(mod).inject(Dummy('x'))
                 mod = ff.from_dense(modulus)
                 if not mod.is_irreducible:
                     raise ValueError('defining polynomial must be irreducible')
@@ -170,7 +170,7 @@ class GaloisFieldElement(ModularInteger):
         else:
             super().__init__(rep)
 
-        self._int_rep = self.parent.domain.poly_ring(*self.rep.parent.symbols)(dict(self.rep))
+        self._int_rep = self.parent.domain.inject(*self.rep.parent.symbols)(dict(self.rep))
 
     def __int__(self):
         return int(self._int_rep.eval(0, self.parent.mod))
