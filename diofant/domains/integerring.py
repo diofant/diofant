@@ -24,7 +24,6 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
     is_Numerical = True
 
     has_assoc_Ring = True
-    has_assoc_Field = True
 
     @property
     def field(self):

@@ -25,8 +25,6 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
     is_AlgebraicField = is_Algebraic = True
     is_Numerical = True
 
-    has_assoc_Field = True
-
     def __new__(cls, dom, *ext):
         if not (dom.is_RationalField or dom.is_AlgebraicField):
             raise DomainError("ground domain must be a rational "

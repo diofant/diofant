@@ -20,7 +20,6 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
     is_Numerical = True
 
     has_assoc_Ring = True
-    has_assoc_Field = True
 
     def algebraic_field(self, *extension):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""

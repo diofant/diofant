@@ -158,7 +158,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
     is_PolynomialRing = is_Poly = True
 
     has_assoc_Ring = True
-    has_assoc_Field = True
 
     def __new__(cls, domain, symbols, order=lex):
         symbols = tuple(_parse_symbols(symbols))

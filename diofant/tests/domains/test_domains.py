@@ -484,16 +484,6 @@ def test_Domain_ring():
 
 
 def test_Domain_field():
-    assert EX.has_assoc_Field is True
-    assert ZZ.has_assoc_Field is True
-    assert QQ.has_assoc_Field is True
-    assert RR.has_assoc_Field is True
-    assert ALG.has_assoc_Field is True
-    assert ZZ.inject(x).has_assoc_Field is True
-    assert QQ.inject(x).has_assoc_Field is True
-    assert ZZ.inject(x, y).has_assoc_Field is True
-    assert QQ.inject(x, y).has_assoc_Field is True
-
     assert EX.field == EX
     assert ZZ.field == QQ
     assert QQ.field == QQ

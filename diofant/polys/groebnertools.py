@@ -31,7 +31,7 @@ def groebner(seq, ring, method=None):
 
     domain, orig = ring.domain, None
 
-    if not domain.is_Field or not domain.has_assoc_Field:
+    if not domain.is_Field and hasattr(domain, 'field'):
         orig, ring = ring, ring.clone(domain=domain.field)
         seq = [s.set_ring(ring) for s in seq]
 

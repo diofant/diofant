@@ -128,8 +128,6 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
 
     rep = 'EX'
 
-    has_assoc_Field = True
-
     def to_expr(self, element):
         return element.as_expr()
 

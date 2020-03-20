@@ -26,8 +26,6 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
     is_Exact = False
     is_Numerical = True
 
-    has_assoc_Field = True
-
     _default_precision = 53
 
     @property

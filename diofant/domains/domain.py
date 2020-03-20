@@ -26,7 +26,6 @@ class Domain(DefaultPrinting, abc.ABC):
     is_Field = False
 
     has_assoc_Ring = False
-    has_assoc_Field = False
 
     is_FiniteField = is_FF = False
     is_IntegerRing = is_ZZ = False
