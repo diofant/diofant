@@ -64,8 +64,8 @@ class Domain(DefaultPrinting, abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def to_expr(self, a):
-        """Convert element ``a`` to Diofant expression."""
+    def to_expr(self, element):
+        """Convert domain ``element`` to Diofant expression."""
         raise NotImplementedError
 
     def convert_from(self, element, base):

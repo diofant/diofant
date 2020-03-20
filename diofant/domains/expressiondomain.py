@@ -130,8 +130,8 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
 
     has_assoc_Field = True
 
-    def to_expr(self, a):
-        return a.as_expr()
+    def to_expr(self, element):
+        return element.as_expr()
 
     def from_expr(self, a):
         return self.dtype(a)

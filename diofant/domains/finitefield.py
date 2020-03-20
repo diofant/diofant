@@ -102,8 +102,8 @@ class FiniteField(Field, SimpleDomain):
     def characteristic(self):
         return self.mod
 
-    def to_expr(self, a):
-        return DiofantInteger(int(a))
+    def to_expr(self, element):
+        return DiofantInteger(int(element))
 
     def from_expr(self, a):
         if a.is_Integer:

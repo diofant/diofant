@@ -105,9 +105,9 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
         return AlgebraicField(self, *extension)
 
-    def to_expr(self, a):
+    def to_expr(self, element):
         return sum(((self.domain.to_expr(c)*self.ext**n).expand()
-                    for n, c in enumerate(reversed(a.rep.to_dense()))), Integer(0))
+                    for n, c in enumerate(reversed(element.rep.to_dense()))), Integer(0))
 
     def from_expr(self, a):
         try:

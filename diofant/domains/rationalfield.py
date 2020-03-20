@@ -27,8 +27,8 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
         from . import AlgebraicField
         return AlgebraicField(self, *extension)
 
-    def to_expr(self, a):
-        return DiofantRational(a.numerator, a.denominator)
+    def to_expr(self, element):
+        return DiofantRational(element.numerator, element.denominator)
 
     def from_expr(self, a):
         if a.is_Rational:

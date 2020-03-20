@@ -184,8 +184,8 @@ class FractionField(Field, CompositeDomain):
     def to_ring(self):
         return self.domain.poly_ring(*self.symbols, order=self.order)
 
-    def to_expr(self, a):
-        return a.as_expr()
+    def to_expr(self, element):
+        return element.as_expr()
 
     def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
