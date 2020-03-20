@@ -648,7 +648,7 @@ def test_Domain___eq__():
 
 
 def test_Domain__algebraic_field():
-    alg = ZZ.algebraic_field(sqrt(3))
+    alg = QQ.algebraic_field(sqrt(3))
     assert alg.minpoly == Poly(x**2 - 3)
     assert alg.domain == QQ
     assert alg.from_expr(sqrt(3)).denominator == 1

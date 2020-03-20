@@ -32,10 +32,6 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
         from . import QQ
         return QQ
 
-    def algebraic_field(self, *extension):
-        r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
-        return self.field.algebraic_field(*extension)
-
     def to_expr(self, element):
         return DiofantInteger(element)
 
