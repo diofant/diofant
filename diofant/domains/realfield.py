@@ -79,11 +79,9 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
         return self._hash
 
     def to_expr(self, element):
-        """Convert ``element`` to Diofant number."""
         return Float(element, self.dps)
 
     def from_expr(self, expr):
-        """Convert Diofant's number to ``dtype``."""
         number = expr.evalf(self.dps)
 
         if number.is_Number:
@@ -121,7 +119,6 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
         return self._context.to_rational(element, limit)
 
     def get_exact(self):
-        """Returns an exact domain associated with ``self``."""
         from . import QQ
         return QQ
 

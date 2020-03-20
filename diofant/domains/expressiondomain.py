@@ -132,11 +132,9 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
     has_assoc_Field = True
 
     def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
         return a.as_expr()
 
     def from_expr(self, a):
-        """Convert Diofant's expression to ``dtype``."""
         return self.dtype(a)
 
     def _from_PythonIntegerRing(self, a, K0):
@@ -165,7 +163,6 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
 
     @property
     def ring(self):
-        """Returns a ring associated with ``self``."""
         return self  # XXX: EX is not a ring but we don't have much choice here.
 
     def is_normal(self, a):

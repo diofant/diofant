@@ -59,13 +59,13 @@ class Domain(DefaultPrinting, abc.ABC):
         return {}
 
     @abc.abstractmethod
-    def from_expr(self, element):
-        """Convert Diofant's expression to ``dtype``."""
+    def from_expr(self, a):
+        """Convert Diofant's expression ``a`` to ``dtype``."""
         raise NotImplementedError
 
     @abc.abstractmethod
-    def to_expr(self, element):
-        """Convert ``element`` to Diofant expression."""
+    def to_expr(self, a):
+        """Convert element ``a`` to Diofant expression."""
         raise NotImplementedError
 
     def convert_from(self, element, base):
@@ -243,7 +243,6 @@ class Domain(DefaultPrinting, abc.ABC):
         return isinstance(other, Domain) and self.dtype == other.dtype
 
     def get_exact(self):
-        """Returns an exact domain associated with ``self``."""
         return self
 
     def poly_ring(self, *symbols, **kwargs):

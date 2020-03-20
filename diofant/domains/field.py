@@ -13,7 +13,6 @@ class Field(Ring):
 
     @property
     def ring(self):
-        """Returns a ring associated with ``self``."""
         raise AttributeError('there is no ring associated with %s' % self)
 
     @property

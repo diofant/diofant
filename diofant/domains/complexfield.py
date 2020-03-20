@@ -79,11 +79,9 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
         return self._hash
 
     def to_expr(self, element):
-        """Convert ``element`` to Diofant number."""
         return Float(element.real, self.dps) + I*Float(element.imag, self.dps)
 
     def from_expr(self, expr):
-        """Convert Diofant's number to ``dtype``."""
         number = expr.evalf(self.dps)
         real, imag = number.as_real_imag()
 
@@ -114,7 +112,6 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
         return self.dtype(element)
 
     def get_exact(self):
-        """Returns an exact domain associated with ``self``."""
         raise DomainError("there is no exact domain associated with %s" % self)
 
     def gcd(self, a, b):

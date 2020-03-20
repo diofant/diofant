@@ -172,7 +172,6 @@ class FractionField(Field, CompositeDomain):
         return _rebuild(sympify(expr))
 
     def from_expr(self, expr):
-        """Convert Diofant's expression to ``dtype``."""
         mapping = dict(zip(self.symbols, self.gens))
 
         try:
@@ -186,7 +185,6 @@ class FractionField(Field, CompositeDomain):
         return self.domain.poly_ring(*self.symbols, order=self.order)
 
     def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
         return a.as_expr()
 
     def _from_PythonIntegerRing(self, a, K0):
@@ -218,7 +216,6 @@ class FractionField(Field, CompositeDomain):
 
     @property
     def ring(self):
-        """Returns a field associated with ``self``."""
         return self.to_ring()
 
     def is_normal(self, a):

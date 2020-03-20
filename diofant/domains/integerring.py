@@ -37,11 +37,9 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
         return self.field.algebraic_field(*extension)
 
     def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
         return DiofantInteger(a)
 
     def from_expr(self, a):
-        """Convert Diofant's Integer to ``dtype``."""
         if a.is_Integer:
             return self.dtype(a.numerator)
         elif a.is_Float and int(a) == a:

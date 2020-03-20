@@ -298,7 +298,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         return self.from_dict(dmp_to_dict(element, self.ngens-1))
 
     def from_expr(self, expr):
-        """Convert an Expr instance to ``dtype``."""
         expr = sympify(expr)
 
         domain = self.domain
@@ -400,7 +399,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             return self.clone(symbols=symbols, domain=self.drop(*gens))
 
     def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
         return a.as_expr()
 
     def _from_PythonIntegerRing(self, a, K0):

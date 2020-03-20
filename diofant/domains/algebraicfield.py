@@ -107,12 +107,10 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         return AlgebraicField(self, *extension)
 
     def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
         return sum(((self.domain.to_expr(c)*self.ext**n).expand()
                     for n, c in enumerate(reversed(a.rep.to_dense()))), Integer(0))
 
     def from_expr(self, a):
-        """Convert Diofant's expression to ``dtype``."""
         try:
             K0 = self.domain.algebraic_field(a)
         except NotAlgebraic:
@@ -166,7 +164,6 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
 
     @property
     def ring(self):
-        """Returns a ring associated with ``self``."""
         raise NotImplementedError("ring of integers of %s is not "
                                   "implemented yet" % self)
 

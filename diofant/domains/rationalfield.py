@@ -28,11 +28,9 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
         return AlgebraicField(self, *extension)
 
     def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
         return DiofantRational(a.numerator, a.denominator)
 
     def from_expr(self, a):
-        """Convert Diofant's Integer to ``dtype``."""
         if a.is_Rational:
             return self.dtype(a.numerator, a.denominator)
         elif a.is_Float:
