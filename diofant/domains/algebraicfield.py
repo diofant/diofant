@@ -109,18 +109,18 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         return sum(((self.domain.to_expr(c)*self.ext**n).expand()
                     for n, c in enumerate(reversed(element.rep.to_dense()))), Integer(0))
 
-    def from_expr(self, a):
+    def from_expr(self, expr):
         try:
-            K0 = self.domain.algebraic_field(a)
+            K0 = self.domain.algebraic_field(expr)
         except NotAlgebraic:
-            raise CoercionFailed("%s is not a valid algebraic number in %s" % (a, self))
-        if a in self.domain:
-            return self([a])
+            raise CoercionFailed("%s is not a valid algebraic number in %s" % (expr, self))
+        if expr in self.domain:
+            return self([expr])
         else:
             from ..polys import field_isomorphism
 
             coeffs = field_isomorphism(K0, self)
-            factor = Integer((K0.to_expr(K0.unit)/a).simplify())
+            factor = Integer((K0.to_expr(K0.unit)/expr).simplify())
 
             return self.dtype(coeffs)/factor
 

@@ -39,13 +39,13 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
     def to_expr(self, element):
         return DiofantInteger(element)
 
-    def from_expr(self, a):
-        if a.is_Integer:
-            return self.dtype(a.numerator)
-        elif a.is_Float and int(a) == a:
-            return self.dtype(int(a))
+    def from_expr(self, expr):
+        if expr.is_Integer:
+            return self.dtype(expr.numerator)
+        elif expr.is_Float and int(expr) == expr:
+            return self.dtype(int(expr))
         else:
-            raise CoercionFailed("expected an integer, got %s" % a)
+            raise CoercionFailed("expected an integer, got %s" % expr)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)

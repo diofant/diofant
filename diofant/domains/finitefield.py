@@ -105,13 +105,13 @@ class FiniteField(Field, SimpleDomain):
     def to_expr(self, element):
         return DiofantInteger(int(element))
 
-    def from_expr(self, a):
-        if a.is_Integer:
-            return self.dtype(self.domain.dtype(int(a)))
-        elif a.is_Float and int(a) == a:
-            return self.dtype(self.domain.dtype(int(a)))
+    def from_expr(self, expr):
+        if expr.is_Integer:
+            return self.dtype(self.domain.dtype(int(expr)))
+        elif expr.is_Float and int(expr) == expr:
+            return self.dtype(self.domain.dtype(int(expr)))
         else:
-            raise CoercionFailed("expected an integer, got %s" % a)
+            raise CoercionFailed("expected an integer, got %s" % expr)
 
     def _from_PythonFiniteField(self, a, K0=None):
         return self.dtype(self.domain.convert(a.rep, K0.domain))

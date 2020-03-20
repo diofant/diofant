@@ -133,8 +133,8 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
     def to_expr(self, element):
         return element.as_expr()
 
-    def from_expr(self, a):
-        return self.dtype(a)
+    def from_expr(self, expr):
+        return self.dtype(expr)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self(K0.to_expr(a))

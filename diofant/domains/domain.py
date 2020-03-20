@@ -59,8 +59,8 @@ class Domain(DefaultPrinting, abc.ABC):
         return {}
 
     @abc.abstractmethod
-    def from_expr(self, a):
-        """Convert Diofant's expression ``a`` to ``dtype``."""
+    def from_expr(self, expr):
+        """Convert Diofant's expression ``expr`` to ``dtype``."""
         raise NotImplementedError
 
     @abc.abstractmethod

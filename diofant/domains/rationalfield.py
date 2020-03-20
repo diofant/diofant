@@ -30,14 +30,14 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
     def to_expr(self, element):
         return DiofantRational(element.numerator, element.denominator)
 
-    def from_expr(self, a):
-        if a.is_Rational:
-            return self.dtype(a.numerator, a.denominator)
-        elif a.is_Float:
+    def from_expr(self, expr):
+        if expr.is_Rational:
+            return self.dtype(expr.numerator, expr.denominator)
+        elif expr.is_Float:
             from . import RR
-            return self.dtype(*RR.to_rational(a))
+            return self.dtype(*RR.to_rational(expr))
         else:
-            raise CoercionFailed("expected `Rational` object, got %s" % a)
+            raise CoercionFailed("expected `Rational` object, got %s" % expr)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)
