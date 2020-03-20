@@ -47,7 +47,7 @@ class PolynomialDivisionFailed(BasePolynomialError):
         self.domain = domain
 
     def __str__(self):
-        if self.domain.is_SymbolicDomain:
+        if self.domain.is_ExpressionDomain:
             msg = "You may want to use a different simplification algorithm. Note " \
                   "that in general it's not possible to guarantee to detect zero "  \
                   "in this domain."

@@ -12,7 +12,7 @@ __all__ = 'ExpressionDomain',
 class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
     """A class for arbitrary expressions."""
 
-    is_SymbolicDomain = is_EX = True
+    is_ExpressionDomain = True
 
     class Expression:
         """An arbitrary expression."""

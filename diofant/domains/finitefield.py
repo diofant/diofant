@@ -23,7 +23,7 @@ _modular_integer_cache = {}
 class FiniteField(Field, SimpleDomain):
     """General class for finite fields."""
 
-    is_FiniteField = is_FF = True
+    is_FiniteField = True
     is_Numerical = True
 
     def __new__(cls, order, dom, modulus=None):

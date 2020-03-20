@@ -20,7 +20,7 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
 
     rep = 'ZZ'
 
-    is_IntegerRing = is_ZZ = True
+    is_IntegerRing = True
     is_Numerical = True
 
     has_assoc_Ring = True

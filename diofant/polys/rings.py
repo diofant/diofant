@@ -155,7 +155,7 @@ _ring_cache = {}
 class PolynomialRing(Ring, CompositeDomain, IPolys):
     """A class for representing multivariate polynomial rings."""
 
-    is_PolynomialRing = is_Poly = True
+    is_PolynomialRing = True
 
     has_assoc_Ring = True
 

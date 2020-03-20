@@ -16,7 +16,7 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
 
     rep = 'QQ'
 
-    is_RationalField = is_QQ = True
+    is_RationalField = True
     is_Numerical = True
 
     has_assoc_Ring = True

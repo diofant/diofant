@@ -21,7 +21,7 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
 
     rep = 'CC'
 
-    is_ComplexField = is_CC = True
+    is_ComplexField = True
 
     is_Exact = False
     is_Numerical = True

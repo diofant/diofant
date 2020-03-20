@@ -36,7 +36,7 @@ _field_cache = {}
 class FractionField(Field, CompositeDomain):
     """A class for representing multivariate rational function fields."""
 
-    is_FractionField = is_Frac = True
+    is_FractionField = True
 
     has_assoc_Ring = True
 

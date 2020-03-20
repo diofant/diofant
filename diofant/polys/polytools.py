@@ -233,7 +233,7 @@ class Poly(Expr):
         if domain.is_Composite:
             for gen in domain.symbols:
                 symbols |= gen.free_symbols
-        elif domain.is_SymbolicDomain:
+        elif domain.is_ExpressionDomain:
             for coeff in self.coeffs():
                 symbols |= coeff.free_symbols
 
@@ -620,7 +620,7 @@ class Poly(Expr):
         dom, rep = construct_domain(self.as_dict(),
                                     field=field,
                                     composite=self.domain.is_Composite or None,
-                                    extension=False if self.domain.is_SymbolicDomain else True)
+                                    extension=False if self.domain.is_ExpressionDomain else True)
         return self.from_dict(rep, self.gens, domain=dom)
 
     def slice(self, x, m, n=None):
@@ -821,7 +821,7 @@ class Poly(Expr):
         """
         dom = self.domain
 
-        if dom.is_Numerical and not dom.is_Algebraic:
+        if dom.is_Numerical and not dom.is_AlgebraicField:
             return self
 
         if front:
@@ -4310,7 +4310,7 @@ def to_rational_coeffs(f):
                     return False
         return has_sq
 
-    if f.domain.is_SymbolicDomain and _has_square_roots(f):
+    if f.domain.is_ExpressionDomain and _has_square_roots(f):
         f1 = f.monic()
         r = _try_rescale(f, f1)
         if r:

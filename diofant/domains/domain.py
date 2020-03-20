@@ -27,17 +27,17 @@ class Domain(DefaultPrinting, abc.ABC):
 
     has_assoc_Ring = False
 
-    is_FiniteField = is_FF = False
-    is_IntegerRing = is_ZZ = False
-    is_RationalField = is_QQ = False
-    is_RealField = is_RR = False
-    is_ComplexField = is_CC = False
-    is_AlgebraicField = is_Algebraic = False
+    is_FiniteField = False
+    is_IntegerRing = False
+    is_RationalField = False
+    is_RealField = False
+    is_ComplexField = False
+    is_AlgebraicField = False
     is_RealAlgebraicField = False
     is_ComplexAlgebraicField = False
-    is_PolynomialRing = is_Poly = False
-    is_FractionField = is_Frac = False
-    is_SymbolicDomain = is_EX = False
+    is_PolynomialRing = False
+    is_FractionField = False
+    is_ExpressionDomain = False
 
     is_Exact = True
     is_Numerical = False
@@ -172,9 +172,9 @@ class Domain(DefaultPrinting, abc.ABC):
         if self == K1:
             return self
 
-        if self.is_SymbolicDomain:
+        if self.is_ExpressionDomain:
             return self
-        if K1.is_SymbolicDomain:
+        if K1.is_ExpressionDomain:
             return K1
 
         if self.is_Composite or K1.is_Composite:

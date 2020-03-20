@@ -47,7 +47,7 @@ Compatibility breaks
 * Removed ``subs()`` methods from :class:`~diofant.polys.rings.PolyElement` and :class:`~diofant.polys.fields.FracElement`, see :pull:`967`.
 * ``is_negative()`` method of :class:`~diofant.domains.domain.Domain` refactored to the :meth:`~diofant.domains.ring.Ring.is_normal`, see :pull:`977`.
 * Drop ``algebraic_field()`` method of :class:`~diofant.domains.IntegerRing`, see :pull:`977`.
-* Drop ``has_assoc_Field`` property of :class:`~diofant.domains.domain.Domain`, see :pull:`977`.
+* Drop ``has_assoc_Field`` property, ``is_SymbolicDomain`` property renamed to ``is_ExpressionDomain`` of :class:`~diofant.domains.domain.Domain`, see :pull:`977`.
 
 Minor changes
 =============

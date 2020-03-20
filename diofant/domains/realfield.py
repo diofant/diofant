@@ -21,7 +21,7 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
 
     rep = 'RR'
 
-    is_RealField = is_RR = True
+    is_RealField = True
 
     is_Exact = False
     is_Numerical = True

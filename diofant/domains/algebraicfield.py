@@ -22,7 +22,7 @@ _algebraic_numbers_cache = {}
 class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
     """A class for representing algebraic number fields."""
 
-    is_AlgebraicField = is_Algebraic = True
+    is_AlgebraicField = True
     is_Numerical = True
 
     def __new__(cls, dom, *ext):
