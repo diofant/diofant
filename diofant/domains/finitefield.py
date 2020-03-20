@@ -26,7 +26,6 @@ class FiniteField(Field, SimpleDomain):
     is_FiniteField = is_FF = True
     is_Numerical = True
 
-    has_assoc_Ring = False
     has_assoc_Field = True
 
     def __new__(cls, order, dom, modulus=None):

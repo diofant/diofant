@@ -128,7 +128,6 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
 
     rep = 'EX'
 
-    has_assoc_Ring = False
     has_assoc_Field = True
 
     def to_expr(self, a):
