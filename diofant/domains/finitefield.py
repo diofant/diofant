@@ -91,7 +91,6 @@ class FiniteField(Field, SimpleDomain):
         return hash((self.__class__.__name__, self.dtype, self.order, self.domain))
 
     def __eq__(self, other):
-        """Returns ``True`` if two domains are equivalent."""
         return isinstance(other, FiniteField) and \
             self.order == other.order and self.domain == other.domain
 

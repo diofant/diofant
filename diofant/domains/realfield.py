@@ -122,11 +122,9 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
         return QQ
 
     def gcd(self, a, b):
-        """Returns GCD of ``a`` and ``b``."""
         return self.one
 
     def lcm(self, a, b):
-        """Returns LCM of ``a`` and ``b``."""
         return a*b
 
     def almosteq(self, a, b, tolerance=None):

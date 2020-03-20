@@ -114,11 +114,9 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
         raise DomainError("there is no exact domain associated with %s" % self)
 
     def gcd(self, a, b):
-        """Returns GCD of ``a`` and ``b``."""
         return self.one
 
     def lcm(self, a, b):
-        """Returns LCM of ``a`` and ``b``."""
         return a*b
 
     def almosteq(self, a, b, tolerance=None):

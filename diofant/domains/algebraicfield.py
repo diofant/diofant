@@ -98,7 +98,6 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         return hash((self.__class__.__name__, self.domain, self.ext))
 
     def __eq__(self, other):
-        """Returns ``True`` if two domains are equivalent."""
         return isinstance(other, AlgebraicField) and self.domain == other.domain and self.ext == other.ext
 
     def algebraic_field(self, *extension):
