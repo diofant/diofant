@@ -111,7 +111,7 @@ def test_dup_cyclotomic_p():
     assert (x**2 + x + 1).is_cyclotomic is True
     assert (x**2/2 + x + 1).is_cyclotomic is False
 
-    R, x = ring("x", ZZ.poly_ring("y"))
+    R, x = ring("x", ZZ.inject("y"))
 
     assert (x**2 + x + 1).is_cyclotomic is False
 

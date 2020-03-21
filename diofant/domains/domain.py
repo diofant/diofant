@@ -26,19 +26,18 @@ class Domain(DefaultPrinting, abc.ABC):
     is_Field = False
 
     has_assoc_Ring = False
-    has_assoc_Field = False
 
-    is_FiniteField = is_FF = False
-    is_IntegerRing = is_ZZ = False
-    is_RationalField = is_QQ = False
-    is_RealField = is_RR = False
-    is_ComplexField = is_CC = False
-    is_AlgebraicField = is_Algebraic = False
+    is_FiniteField = False
+    is_IntegerRing = False
+    is_RationalField = False
+    is_RealField = False
+    is_ComplexField = False
+    is_AlgebraicField = False
     is_RealAlgebraicField = False
     is_ComplexAlgebraicField = False
-    is_PolynomialRing = is_Poly = False
-    is_FractionField = is_Frac = False
-    is_SymbolicDomain = is_EX = False
+    is_PolynomialRing = False
+    is_FractionField = False
+    is_ExpressionDomain = False
 
     is_Exact = True
     is_Numerical = False
@@ -59,13 +58,13 @@ class Domain(DefaultPrinting, abc.ABC):
         return {}
 
     @abc.abstractmethod
-    def from_expr(self, element):
-        """Convert Diofant's expression to ``dtype``."""
+    def from_expr(self, expr):
+        """Convert Diofant's expression ``expr`` to ``dtype``."""
         raise NotImplementedError
 
     @abc.abstractmethod
     def to_expr(self, element):
-        """Convert ``element`` to Diofant expression."""
+        """Convert domain ``element`` to Diofant expression."""
         raise NotImplementedError
 
     def convert_from(self, element, base):
@@ -173,9 +172,9 @@ class Domain(DefaultPrinting, abc.ABC):
         if self == K1:
             return self
 
-        if self.is_SymbolicDomain:
+        if self.is_ExpressionDomain:
             return self
-        if K1.is_SymbolicDomain:
+        if K1.is_ExpressionDomain:
             return K1
 
         if self.is_Composite or K1.is_Composite:
@@ -243,7 +242,6 @@ class Domain(DefaultPrinting, abc.ABC):
         return isinstance(other, Domain) and self.dtype == other.dtype
 
     def get_exact(self):
-        """Returns an exact domain associated with ``self``."""
         return self
 
     def poly_ring(self, *symbols, **kwargs):
@@ -255,7 +253,3 @@ class Domain(DefaultPrinting, abc.ABC):
         """Returns a fraction field, i.e. `K(X)`."""
         from ..polys import FractionField
         return FractionField(self, symbols, kwargs.get("order", lex))
-
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative."""
-        return a < 0

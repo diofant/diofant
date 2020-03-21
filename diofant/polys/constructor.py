@@ -190,7 +190,7 @@ def _construct_composite(coeffs, opt):
     result = []
 
     if not fractions:
-        domain = ground.poly_ring(*gens)
+        domain = ground.inject(*gens)
 
         for numer in numers:
             for monom, coeff in numer.items():

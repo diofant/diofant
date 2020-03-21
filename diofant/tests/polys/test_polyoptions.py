@@ -189,7 +189,7 @@ def test_Domain_preprocess():
     assert Domain.preprocess(QQ) == QQ
     assert Domain.preprocess(EX) == EX
     assert Domain.preprocess(FF(2)) == FF(2)
-    assert Domain.preprocess(ZZ.poly_ring(x, y)) == ZZ.poly_ring(x, y)
+    assert Domain.preprocess(ZZ.inject(x, y)) == ZZ.inject(x, y)
 
     assert Domain.preprocess('Z') == ZZ
     assert Domain.preprocess('Q') == QQ
@@ -204,17 +204,17 @@ def test_Domain_preprocess():
 
     pytest.raises(OptionError, lambda: Domain.preprocess('Z[]'))
 
-    assert Domain.preprocess('Z[x]') == ZZ.poly_ring(x)
-    assert Domain.preprocess('Q[x]') == QQ.poly_ring(x)
+    assert Domain.preprocess('Z[x]') == ZZ.inject(x)
+    assert Domain.preprocess('Q[x]') == QQ.inject(x)
 
-    assert Domain.preprocess('ZZ[x]') == ZZ.poly_ring(x)
-    assert Domain.preprocess('QQ[x]') == QQ.poly_ring(x)
+    assert Domain.preprocess('ZZ[x]') == ZZ.inject(x)
+    assert Domain.preprocess('QQ[x]') == QQ.inject(x)
 
-    assert Domain.preprocess('Z[x,y]') == ZZ.poly_ring(x, y)
-    assert Domain.preprocess('Q[x,y]') == QQ.poly_ring(x, y)
+    assert Domain.preprocess('Z[x,y]') == ZZ.inject(x, y)
+    assert Domain.preprocess('Q[x,y]') == QQ.inject(x, y)
 
-    assert Domain.preprocess('ZZ[x,y]') == ZZ.poly_ring(x, y)
-    assert Domain.preprocess('QQ[x,y]') == QQ.poly_ring(x, y)
+    assert Domain.preprocess('ZZ[x,y]') == ZZ.inject(x, y)
+    assert Domain.preprocess('QQ[x,y]') == QQ.inject(x, y)
 
     pytest.raises(OptionError, lambda: Domain.preprocess('Z()'))
 
@@ -250,7 +250,7 @@ def test_Domain_preprocess():
 
 def test_Domain_postprocess():
     pytest.raises(GeneratorsError, lambda: Domain.postprocess({'gens': (x, y),
-                                                               'domain': ZZ.poly_ring(y, z)}))
+                                                               'domain': ZZ.inject(y, z)}))
 
     pytest.raises(GeneratorsError, lambda: Domain.postprocess({'gens': (),
                                                                'domain': EX}))

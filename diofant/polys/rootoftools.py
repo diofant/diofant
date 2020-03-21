@@ -386,7 +386,7 @@ class RootOf(Expr):
         complexes = []
         for f in ordered(sifted):
             nimag = f.compose(PurePoly(I*f.gen, f.gen,
-                                       domain=f.domain.algebraic_field(I))).count_roots()
+                                       domain=f.domain.field.algebraic_field(I))).count_roots()
             potential_imag = list(range(len(sifted[f])))
             while len(potential_imag) > nimag:
                 for i in list(potential_imag):
@@ -775,7 +775,7 @@ class RootSum(Expr):
         f = sum(expr.subs({var: r}) for r in roots)
         p, q = together(f).as_numer_denom()
 
-        domain = QQ.poly_ring(*roots)
+        domain = QQ.inject(*roots)
 
         p = p.expand()
         q = q.expand()

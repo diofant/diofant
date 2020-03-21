@@ -20,26 +20,26 @@ __all__ = ()
 
 def test_PolynomialRing___init__():
     assert len(PolynomialRing(ZZ, "x,y,z").gens) == 3
-    assert len(ZZ.poly_ring(x).gens) == 1
-    assert len(ZZ.poly_ring("x", "y", "z").gens) == 3
-    assert len(ZZ.poly_ring(x, y, z).gens) == 3
+    assert len(ZZ.inject(x).gens) == 1
+    assert len(ZZ.inject("x", "y", "z").gens) == 3
+    assert len(ZZ.inject(x, y, z).gens) == 3
 
-    pytest.raises(GeneratorsNeeded, lambda: ZZ.poly_ring())
-    pytest.raises(GeneratorsError, lambda: ZZ.poly_ring(0))
+    pytest.raises(GeneratorsNeeded, lambda: ZZ.inject())
+    pytest.raises(GeneratorsError, lambda: ZZ.inject(0))
 
-    assert ZZ.poly_ring(t).poly_ring("x").domain == ZZ.poly_ring(t)
-    assert PolynomialRing('ZZ[t]', "x").domain == ZZ.poly_ring(t)
+    assert ZZ.inject(t).poly_ring("x").domain == ZZ.inject(t)
+    assert PolynomialRing('ZZ[t]', "x").domain == ZZ.inject(t)
 
-    pytest.raises(GeneratorsError, lambda: ZZ.poly_ring("x").poly_ring("x"))
+    pytest.raises(GeneratorsError, lambda: ZZ.inject("x").poly_ring("x"))
 
     _lex = Symbol("lex")
     assert PolynomialRing(ZZ, "x").order == lex
     assert PolynomialRing(ZZ, "x", _lex).order == lex
     assert PolynomialRing(ZZ, "x", 'lex').order == lex
 
-    R1 = ZZ.poly_ring("x", "y")
-    R2 = ZZ.poly_ring("x", "y")
-    R3 = ZZ.poly_ring("x", "y", "z")
+    R1 = ZZ.inject("x", "y")
+    R2 = ZZ.inject("x", "y")
+    R3 = ZZ.inject("x", "y", "z")
 
     assert R1.x == R1.gens[0]
     assert R1.y == R1.gens[1]
@@ -48,7 +48,7 @@ def test_PolynomialRing___init__():
     assert R1.x != R3.x
     assert R1.y != R3.y
 
-    R4 = ZZ.poly_ring("gens")
+    R4 = ZZ.inject("gens")
     assert type(R4.gens) is tuple
 
     pytest.raises(GeneratorsError, lambda: PolynomialRing(ZZ, {1: 2}))
@@ -109,18 +109,18 @@ def test_PolynomialRing_domain_new():
 def test_PolynomialRing_drop():
     R,  x, y, z = ring("x,y,z", ZZ)
 
-    assert R.drop(x) == ZZ.poly_ring("y", "z")
-    assert R.drop(y) == ZZ.poly_ring("x", "z")
-    assert R.drop(z) == ZZ.poly_ring("x", "y")
+    assert R.drop(x) == ZZ.inject("y", "z")
+    assert R.drop(y) == ZZ.inject("x", "z")
+    assert R.drop(z) == ZZ.inject("x", "y")
 
-    assert R.drop(0) == ZZ.poly_ring("y", "z")
-    assert R.drop(0).drop(0) == ZZ.poly_ring("z")
+    assert R.drop(0) == ZZ.inject("y", "z")
+    assert R.drop(0).drop(0) == ZZ.inject("z")
     assert R.drop(0).drop(0).drop(0) == ZZ
 
-    assert R.drop(1) == ZZ.poly_ring("x", "z")
+    assert R.drop(1) == ZZ.inject("x", "z")
 
-    assert R.drop(2) == ZZ.poly_ring("x", "y")
-    assert R.drop(2).drop(1) == ZZ.poly_ring("x")
+    assert R.drop(2) == ZZ.inject("x", "y")
+    assert R.drop(2).drop(1) == ZZ.inject("x")
     assert R.drop(2).drop(1).drop(0) == ZZ
 
     pytest.raises(ValueError, lambda: R.drop(3))
@@ -148,12 +148,12 @@ def test_PolynomialRing_index():
 
 
 def test_PolynomialRing_is_():
-    R = QQ.poly_ring("x")
+    R = QQ.inject("x")
 
     assert R.is_univariate is True
     assert R.is_multivariate is False
 
-    R = QQ.poly_ring("x", "y", "z")
+    R = QQ.inject("x", "y", "z")
 
     assert R.is_univariate is False
     assert R.is_multivariate is True
@@ -180,25 +180,25 @@ def test_PolynomialRing_to_ground():
     pytest.raises(ValueError, lambda: R.to_ground())
 
     R2, x, y = ring("x,y", ZZ)
-    assert R2.drop_to_ground(x) == ZZ.poly_ring("x").poly_ring("y")
-    assert R2.drop_to_ground(x, y) == R2
+    assert R2.eject(x) == ZZ.inject("x").poly_ring("y")
+    assert R2.eject(x, y) == R2
 
 
 def test_sring():
     x, y, z, t = symbols("x,y,z,t")
 
-    R = ZZ.poly_ring("x", "y", "z")
+    R = ZZ.inject("x", "y", "z")
     assert sring(x + 2*y + 3*z) == (R, R.x + 2*R.y + 3*R.z)
 
-    R = QQ.poly_ring("x", "y", "z")
+    R = QQ.inject("x", "y", "z")
     assert sring(x + 2*y + z/3) == (R, R.x + 2*R.y + R.z/3)
     assert sring([x, 2*y, z/3]) == (R, [R.x, 2*R.y, R.z/3])
 
-    Rt = ZZ.poly_ring("t")
+    Rt = ZZ.inject("t")
     R = Rt.poly_ring("x", "y", "z")
     assert sring(x + 2*t*y + 3*t**2*z, x, y, z) == (R, R.x + 2*Rt.t*R.y + 3*Rt.t**2*R.z)
 
-    Rt = QQ.poly_ring("t")
+    Rt = QQ.inject("t")
     R = Rt.poly_ring("x", "y", "z")
     assert sring(x + t*y/2 + t**2*z/3, x, y, z) == (R, R.x + Rt.t*R.y/2 + Rt.t**2*R.z/3)
 
@@ -206,7 +206,7 @@ def test_sring():
     R = Rt.poly_ring("x", "y", "z")
     assert sring(x + 2*y/t + t**2*z/3, x, y, z) == (R, R.x + 2*R.y/Rt.t + Rt.t**2*R.z/3)
 
-    R = QQ.poly_ring("x", "y")
+    R = QQ.inject("x", "y")
     assert sring(x + y, domain=QQ) == (R, R.x + R.y)
 
 
@@ -1579,7 +1579,7 @@ def test_PolyElement_is_():
 
     pytest.raises(AttributeError, lambda: x.is_cyclotomic)
 
-    assert R.is_negative(f) is False
+    assert R.is_normal(f) is True
 
     R, x, y = ring('x y', ZZ)
 
@@ -1591,27 +1591,27 @@ def test_PolyElement_is_():
 def test_PolyElement_drop():
     R,  x, y, z = ring("x,y,z", ZZ)
 
-    assert R(1).drop(0).ring == ZZ.poly_ring("y", "z")
-    assert R(1).drop(0).drop(0).ring == ZZ.poly_ring("z")
+    assert R(1).drop(0).ring == ZZ.inject("y", "z")
+    assert R(1).drop(0).drop(0).ring == ZZ.inject("z")
     assert isinstance(R(1).drop(0).drop(0).drop(0), R.dtype) is False
 
     pytest.raises(ValueError, lambda: z.drop(0).drop(0).drop(0))
     pytest.raises(ValueError, lambda: x.drop(0))
 
     f = z**2*x + 2*z*y + x*z + 1
-    R2 = R.drop_to_ground(z)
+    R2 = R.eject(z)
     D = R2.domain
-    assert f.drop_to_ground(z) == D.z**2*R2.x + 2*D.z*R2.y + D.z*R2.x + 1
-    R12 = R.drop_to_ground(y, z)
+    assert f.eject(z) == D.z**2*R2.x + 2*D.z*R2.y + D.z*R2.x + 1
+    R12 = R.eject(y, z)
     D = R12.domain
-    assert f.drop_to_ground(y, z) == R12.x*(D.z**2 + D.z) + 2*D.y*D.z + 1
-    R02 = R.drop_to_ground(x, z)
+    assert f.eject(y, z) == R12.x*(D.z**2 + D.z) + 2*D.y*D.z + 1
+    R02 = R.eject(x, z)
     D = R02.domain
-    assert f.drop_to_ground(x, z) == R02.y*2*D.z + D.x*D.z**2 + D.x*D.z + 1
+    assert f.eject(x, z) == R02.y*2*D.z + D.x*D.z**2 + D.x*D.z + 1
 
     R3 = R.drop(y, z)
-    assert R3 == ZZ.poly_ring('x')
-    pytest.raises(ValueError, lambda: R3.x.drop_to_ground(R3.x))
+    assert R3 == ZZ.inject('x')
+    pytest.raises(ValueError, lambda: R3.x.eject(R3.x))
 
 
 def test_PolyElement_decompose():
@@ -1684,4 +1684,4 @@ def test_sympyissue_18894():
              -Rational(3, 16) + sqrt(3*sqrt(3) + 10)/8]
     K = QQ.algebraic_field(sqrt(3) + sqrt(3*sqrt(3) + 10))
 
-    assert sring(exprs, x, extension=True)[0] == K.poly_ring(x)
+    assert sring(exprs, x, extension=True)[0] == K.inject(x)

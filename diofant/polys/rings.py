@@ -155,10 +155,9 @@ _ring_cache = {}
 class PolynomialRing(Ring, CompositeDomain, IPolys):
     """A class for representing multivariate polynomial rings."""
 
-    is_PolynomialRing = is_Poly = True
+    is_PolynomialRing = True
 
     has_assoc_Ring = True
-    has_assoc_Field = True
 
     def __new__(cls, domain, symbols, order=lex):
         symbols = tuple(_parse_symbols(symbols))
@@ -298,7 +297,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         return self.from_dict(dmp_to_dict(element, self.ngens-1))
 
     def from_expr(self, expr):
-        """Convert an Expr instance to ``dtype``."""
         expr = sympify(expr)
 
         domain = self.domain
@@ -384,7 +382,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
     def is_multivariate(self):
         return len(self.gens) > 1
 
-    def drop_to_ground(self, *gens):
+    def eject(self, *gens):
         r"""
         Remove specified generators from the ring and inject them into
         its domain.
@@ -399,9 +397,8 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         else:
             return self.clone(symbols=symbols, domain=self.drop(*gens))
 
-    def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
-        return a.as_expr()
+    def to_expr(self, element):
+        return element.as_expr()
 
     def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
@@ -451,9 +448,8 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         """Returns a field associated with ``self``."""
         return self.domain.frac_field(*self.symbols, order=self.order)
 
-    def is_negative(self, a):
-        """Returns True if ``LC(a)`` is negative."""
-        return self.domain.is_negative(a.LC)
+    def is_normal(self, a):
+        return self.domain.is_normal(a.LC)
 
     def gcdex(self, a, b):
         """Extended GCD of ``a`` and ``b``."""
@@ -661,7 +657,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             return poly
 
-    def drop_to_ground(self, *gens):
+    def eject(self, *gens):
         ring = self.ring
 
         if not gens:
@@ -708,15 +704,15 @@ class PolyElement(DomainElement, CantSympify, dict):
         zm = ring.zero_monom
         sexpvs = []
         for expv, coeff in self.terms():
-            negative = ring.domain.is_negative(coeff)
-            sign = " - " if negative else " + "
+            normal = ring.domain.is_normal(coeff)
+            sign = " + " if normal else " - "
             sexpvs.append(sign)
             if expv == zm:
                 scoeff = printer._print(coeff)
                 if scoeff.startswith("-"):
                     scoeff = scoeff[1:]
             else:
-                if negative:
+                if not normal:
                     coeff = -coeff
                 if coeff != 1:
                     scoeff = printer.parenthesize(coeff, prec_add)
@@ -1467,7 +1463,8 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def content(self):
         """Returns GCD of polynomial's coefficients."""
-        domain = self.ring.domain
+        ring = self.ring
+        domain = ring.domain
         cont = domain.zero
         gcd = domain.gcd
 
@@ -1477,7 +1474,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             if cont == domain.one:
                 break
 
-        if domain.is_negative(self.LC):
+        if not ring.is_normal(self):
             cont = -cont
 
         return cont
@@ -1692,7 +1689,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.ring.domain.is_Field:
             return other.monic(), zero, self.ring.ground_new(other.LC)
         else:
-            if self.ring.is_negative(other):
+            if not self.ring.is_normal(other):
                 return -other, zero, -one
             else:
                 return other, zero, one
@@ -1812,8 +1809,8 @@ class PolyElement(DomainElement, CantSympify, dict):
             p = p.set_ring(ring)
             q = q.set_ring(ring)
 
-        p_neg = ring.is_negative(p)
-        q_neg = ring.is_negative(q)
+        p_neg = not ring.is_normal(p)
+        q_neg = not ring.is_normal(q)
 
         if p_neg and q_neg:
             p, q = -p, -q
@@ -1988,7 +1985,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return ring.zero.drop(0)
         else:
             s = (-1)**((d*(d - 1)) // 2)
-            c = self.drop_to_ground(*ring.gens[1:]).LC
+            c = self.eject(*ring.gens[1:]).LC
 
             return self.resultant(self.diff()) // (c*s)
 

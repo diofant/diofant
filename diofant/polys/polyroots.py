@@ -908,7 +908,7 @@ def roots(f, *gens, **flags):
                     _update_dict(result, r, 1)
             else:
                 if len(factors) == 1 and factors[0][1] == 1:
-                    if f.domain.is_SymbolicDomain:
+                    if f.domain.is_ExpressionDomain:
                         res = to_rational_coeffs(f)
                         if res:
                             if res[0] is None:

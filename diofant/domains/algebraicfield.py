@@ -22,11 +22,8 @@ _algebraic_numbers_cache = {}
 class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
     """A class for representing algebraic number fields."""
 
-    is_AlgebraicField = is_Algebraic = True
+    is_AlgebraicField = True
     is_Numerical = True
-
-    has_assoc_Ring = False
-    has_assoc_Field = True
 
     def __new__(cls, dom, *ext):
         if not (dom.is_RationalField or dom.is_AlgebraicField):
@@ -99,31 +96,28 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         return hash((self.__class__.__name__, self.domain, self.ext))
 
     def __eq__(self, other):
-        """Returns ``True`` if two domains are equivalent."""
         return isinstance(other, AlgebraicField) and self.domain == other.domain and self.ext == other.ext
 
     def algebraic_field(self, *extension):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
         return AlgebraicField(self, *extension)
 
-    def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
+    def to_expr(self, element):
         return sum(((self.domain.to_expr(c)*self.ext**n).expand()
-                    for n, c in enumerate(reversed(a.rep.to_dense()))), Integer(0))
+                    for n, c in enumerate(reversed(element.rep.to_dense()))), Integer(0))
 
-    def from_expr(self, a):
-        """Convert Diofant's expression to ``dtype``."""
+    def from_expr(self, expr):
         try:
-            K0 = self.domain.algebraic_field(a)
+            K0 = self.domain.algebraic_field(expr)
         except NotAlgebraic:
-            raise CoercionFailed("%s is not a valid algebraic number in %s" % (a, self))
-        if a in self.domain:
-            return self([a])
+            raise CoercionFailed("%s is not a valid algebraic number in %s" % (expr, self))
+        if expr in self.domain:
+            return self([expr])
         else:
             from ..polys import field_isomorphism
 
             coeffs = field_isomorphism(K0, self)
-            factor = Integer((K0.to_expr(K0.unit)/a).simplify())
+            factor = Integer((K0.to_expr(K0.unit)/expr).simplify())
 
             return self.dtype(coeffs)/factor
 
@@ -166,13 +160,11 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
 
     @property
     def ring(self):
-        """Returns a ring associated with ``self``."""
         raise NotImplementedError("ring of integers of %s is not "
                                   "implemented yet" % self)
 
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative."""
-        return self.domain.is_negative(a.LC())
+    def is_normal(self, a):
+        return self.domain.is_normal(a.LC())
 
     @staticmethod
     def _compute_ext_root(ext, minpoly):
@@ -194,9 +186,8 @@ class RealAlgebraicField(ComplexAlgebraicField):
 
     is_RealAlgebraicField = True
 
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative."""
-        return a < 0
+    def is_normal(self, a):
+        return a >= 0
 
 
 class AlgebraicElement(QuotientRingElement, CantSympify):

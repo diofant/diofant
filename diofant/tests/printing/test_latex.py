@@ -1090,7 +1090,7 @@ def test_latex_RandomDomain():
 
 def test_PrettyPoly():
     F = QQ.frac_field(x, y)
-    R = QQ.poly_ring(x, y)
+    R = QQ.inject(x, y)
 
     assert latex(F.convert(x/(x + y))) == latex(x/(x + y))
     assert latex(R.convert(x + y)) == latex(x + y)
@@ -1120,7 +1120,7 @@ def test_integral_transforms():
 
 
 def test_PolynomialRing():
-    assert latex(QQ.poly_ring(x, y)) == r"\mathbb{Q}\left[x, y\right]"
+    assert latex(QQ.inject(x, y)) == r"\mathbb{Q}\left[x, y\right]"
 
 
 def test_Tr():

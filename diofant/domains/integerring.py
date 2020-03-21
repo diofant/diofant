@@ -20,11 +20,10 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
 
     rep = 'ZZ'
 
-    is_IntegerRing = is_ZZ = True
+    is_IntegerRing = True
     is_Numerical = True
 
     has_assoc_Ring = True
-    has_assoc_Field = True
 
     @property
     def field(self):
@@ -32,22 +31,16 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
         from . import QQ
         return QQ
 
-    def algebraic_field(self, *extension):
-        r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
-        return self.field.algebraic_field(*extension)
+    def to_expr(self, element):
+        return DiofantInteger(element)
 
-    def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
-        return DiofantInteger(a)
-
-    def from_expr(self, a):
-        """Convert Diofant's Integer to ``dtype``."""
-        if a.is_Integer:
-            return self.dtype(a.numerator)
-        elif a.is_Float and int(a) == a:
-            return self.dtype(int(a))
+    def from_expr(self, expr):
+        if expr.is_Integer:
+            return self.dtype(expr.numerator)
+        elif expr.is_Float and int(expr) == expr:
+            return self.dtype(int(expr))
         else:
-            raise CoercionFailed("expected an integer, got %s" % a)
+            raise CoercionFailed("expected an integer, got %s" % expr)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)

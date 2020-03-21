@@ -372,15 +372,15 @@ def test_Poly():
 
 
 def test_PolynomialRing():
-    assert str(ZZ.poly_ring("x")) == "ZZ[x]"
+    assert str(ZZ.inject("x")) == "ZZ[x]"
     assert str(QQ.poly_ring("x", "y", order=grlex)) == "QQ[x,y]"
-    assert str(ZZ.poly_ring("t").poly_ring("x", "y", "z")) == "ZZ[t][x,y,z]"
+    assert str(ZZ.inject("x", "y", "z", "t").eject("t")) == "ZZ[t][x,y,z]"
 
 
 def test_FractionField():
     assert str(ZZ.frac_field("x")) == "ZZ(x)"
     assert str(QQ.frac_field("x", "y", order=grlex)) == "QQ(x,y)"
-    assert str(ZZ.poly_ring("t").frac_field("x", "y", "z")) == "ZZ[t](x,y,z)"
+    assert str(ZZ.inject("t").frac_field("x", "y", "z")) == "ZZ[t](x,y,z)"
 
 
 def test_PolyElement():
@@ -693,7 +693,7 @@ def test_FiniteSet():
 
 def test_PrettyPoly():
     F = QQ.frac_field(x, y)
-    R = QQ.poly_ring(x, y)
+    R = QQ.inject(x, y)
     assert sstr(F.convert(x/(x + y))) == sstr(x/(x + y))
     assert sstr(R.convert(x + y)) == sstr(x + y)
 

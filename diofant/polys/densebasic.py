@@ -799,7 +799,7 @@ def dmp_eject(f, u, K, front=False):
     Examples
     ========
 
-    >>> dmp_eject([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], 2, ZZ.poly_ring('x', 'y'))
+    >>> dmp_eject([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], 2, ZZ.inject('x', 'y'))
     [1, x + 2]
 
     """
