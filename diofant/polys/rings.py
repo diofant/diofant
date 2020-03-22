@@ -165,15 +165,15 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         domain = DomainOpt.preprocess(domain)
         order = OrderOpt.preprocess(order)
 
-        _hash = hash((cls.__name__, symbols, ngens, domain, order))
-        obj = _ring_cache.get(_hash)
+        key = (cls.__name__, symbols, ngens, domain, order)
+        obj = _ring_cache.get(key)
 
         if obj is None:
             if domain.is_Composite and set(symbols) & set(domain.symbols):
                 raise GeneratorsError("polynomial ring and it's ground domain share generators")
 
             obj = object.__new__(cls)
-            obj._hash = _hash
+            obj._hash = hash(key)
             obj.dtype = type('PolyElement', (PolyElement,), {'ring': obj})
             obj.symbols = symbols
             obj.ngens = ngens
@@ -197,7 +197,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
                     if not hasattr(obj, name):
                         setattr(obj, name, generator)
 
-            _ring_cache[_hash] = obj
+            _ring_cache[key] = obj
 
         return obj
 
