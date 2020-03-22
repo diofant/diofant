@@ -4,8 +4,8 @@ import functools
 
 import mpmath
 
-from ..core import (Add, Dummy, E, GoldenRatio, I, Integer, Mul, Rational, pi,
-                    prod, sympify)
+from ..core import (Add, Dummy, E, GoldenRatio, I, Integer, Mul, Rational,
+                    cacheit, pi, prod, sympify)
 from ..core.exprtools import Factors
 from ..core.function import _mexpand, count_ops
 from ..domains import QQ, ZZ, AlgebraicField
@@ -512,6 +512,7 @@ def _minpoly_compose(ex, x, dom):
     return res
 
 
+@cacheit
 def minimal_polynomial(ex, method=None, **args):
     """
     Computes the minimal polynomial of an algebraic element.
