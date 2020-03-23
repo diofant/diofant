@@ -828,7 +828,6 @@ def test_AlgebraicElement():
     assert bool(A([QQ(1)])) is True
 
     a = A([QQ(1), -QQ(1), QQ(2)])
-    assert a.LC() == -1
     assert a.rep.to_dense() == [-1, 1]
 
     A = QQ.algebraic_field(root(2, 3))

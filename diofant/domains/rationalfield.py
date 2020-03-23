@@ -55,7 +55,7 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
 
     def _from_AlgebraicField(self, a, K0):
         if a.is_ground:
-            return self.convert(a.LC(), K0.domain)
+            return self.convert(a.rep.LC, K0.domain)
 
 
 class PythonRationalField(RationalField):

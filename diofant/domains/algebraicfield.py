@@ -164,7 +164,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
                                   'implemented yet' % self)
 
     def is_normal(self, a):
-        return self.domain.is_normal(a.LC())
+        return self.domain.is_normal(a.rep.LC)
 
     @staticmethod
     def _compute_ext_root(ext, minpoly):
@@ -210,10 +210,6 @@ class AlgebraicElement(QuotientRingElement, CantSympify):
     def to_dict(self):
         """Convert ``self`` to a dict representation with native coefficients."""
         return dict(self.rep)
-
-    def LC(self):
-        """Returns the leading coefficient of ``self``."""
-        return self.rep.LC
 
     @property
     def is_ground(self):
