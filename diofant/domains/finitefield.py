@@ -155,20 +155,24 @@ class GMPYFiniteField(FiniteField):
 class ModularInteger(QuotientRingElement):
     """A class representing a modular integer."""
 
+    @property
+    def numerator(self):
+        return self
+
+    @property
+    def denominator(self):
+        return self.parent.one
+
 
 class GaloisFieldElement(ModularInteger):
     def __init__(self, rep):
         if isinstance(rep, numbers.Integral):
-            rep = rep % self.parent.order
-            rep = integer_digits(rep, self.parent.mod)
+            rep = integer_digits(rep % self.parent.order, self.parent.mod)
 
         if isinstance(rep, (list, tuple)):
             rep = self.domain.from_dense(rep)
-            self.rep = rep = rep % self.mod
-        else:
-            super().__init__(rep)
 
-        self._int_rep = self.parent.domain.inject(*self.rep.parent.symbols)(dict(self.rep))
+        super().__init__(rep)
 
     def __int__(self):
-        return int(self._int_rep.eval(0, self.parent.mod))
+        return int(self.rep.set_domain(self.parent.domain).eval(0, self.parent.mod))
