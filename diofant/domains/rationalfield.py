@@ -3,8 +3,7 @@
 from ..polys.polyerrors import CoercionFailed
 from .characteristiczero import CharacteristicZero
 from .field import Field
-from .groundtypes import (DiofantRational, GMPYRational, PythonRational,
-                          gmpy_qdiv)
+from .groundtypes import DiofantRational, GMPYRational, PythonRational
 from .simpledomain import SimpleDomain
 
 
@@ -40,15 +39,11 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)
+    _from_GMPYIntegerRing = _from_PythonIntegerRing
 
     def _from_PythonRationalField(self, a, K0):
         return self.dtype(a.numerator, a.denominator)
-
-    def _from_GMPYIntegerRing(self, a, K0):
-        return self.dtype(a)
-
-    def _from_GMPYRationalField(self, a, K0):
-        return self.dtype(a.numerator, a.denominator)
+    _from_GMPYRationalField = _from_PythonRationalField
 
     def _from_RealField(self, a, K0):
         return self.dtype(*K0.to_rational(a))
@@ -84,14 +79,6 @@ class GMPYRationalField(RationalField):
         """Returns ring associated with ``self``."""
         from .integerring import GMPYIntegerRing
         return GMPYIntegerRing()
-
-    def exquo(self, a, b):
-        """Exact quotient of `a` and `b`, implies `__truediv__`."""
-        return self.dtype(gmpy_qdiv(a, b))
-
-    def quo(self, a, b):
-        """Quotient of `a` and `b`, implies `__truediv__`."""
-        return self.dtype(gmpy_qdiv(a, b))
 
 
 QQ_python = PythonRationalField()
