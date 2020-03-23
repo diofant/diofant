@@ -414,18 +414,6 @@ def test_dup_scale():
                        -7) == 2401*x**4 - 686*x**3 + 147*x**2 - 28*x + 5
 
 
-def test_dup_shift():
-    R, x = ring('x', ZZ)
-
-    assert R.dup_shift(0, 1) == 0
-    assert R.dup_shift(1, 1) == 1
-
-    assert R.dup_shift(x**4 + 2*x**3 + 3*x**2 + 4*x + 5,
-                       1) == x**4 + 6*x**3 + 15*x**2 + 20*x + 15
-    assert R.dup_shift(x**4 + 2*x**3 + 3*x**2 + 4*x + 5,
-                       7) == x**4 + 30*x**3 + 339*x**2 + 1712*x + 3267
-
-
 def test_dup_transform():
     R, x = ring('x', ZZ)
 
@@ -468,6 +456,16 @@ def test_dmp_compose():
                          5, -x) == x**4 - 2*x**3 + 3*x**2 - 4*x + 5
     assert R.dmp_compose(x**5 + 2*x**4 + 3*x**3 + 4*x**2 + 5*x +
                          6, -x) == -x**5 + 2*x**4 - 3*x**3 + 4*x**2 - 5*x + 6
+
+    assert R.dmp_compose(0, x + 1) == 0
+    assert R.dmp_compose(1, x + 1) == 1
+
+    assert R.dmp_compose(x**2 - 2*x + 1, x + 2) == x**2 + 2*x + 1
+
+    assert R.dmp_compose(x**4 + 2*x**3 + 3*x**2 + 4*x + 5,
+                         x + 1) == x**4 + 6*x**3 + 15*x**2 + 20*x + 15
+    assert R.dmp_compose(x**4 + 2*x**3 + 3*x**2 + 4*x + 5,
+                         x + 7) == x**4 + 30*x**3 + 339*x**2 + 1712*x + 3267
 
     R, x, y, z = ring('x y z', ZZ)
 
