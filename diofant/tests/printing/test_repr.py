@@ -208,12 +208,12 @@ def test_PolynomialRing():
 
 
 def test_FractionField():
-    sT(ZZ.frac_field('x'), "FractionField(%s, (Symbol('x'),), "
-                           'LexOrder())' % repr(ZZ))
+    sT(ZZ.inject('x').field, "FractionField(%s, (Symbol('x'),), "
+                             'LexOrder())' % repr(ZZ))
     sT(QQ.frac_field('x', 'y', order=grlex),
        "FractionField(%s, (Symbol('x'), Symbol('y')), "
        'GradedLexOrder())' % repr(QQ))
-    sT(ZZ.inject('t').frac_field('x', 'y', 'z'),
+    sT(ZZ.inject('x', 'y', 'z', 't').eject('t').field,
        "FractionField(PolynomialRing(%s, (Symbol('t'),), LexOrder()), "
        "(Symbol('x'), Symbol('y'), Symbol('z')), LexOrder())" % repr(ZZ))
 

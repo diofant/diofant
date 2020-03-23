@@ -194,7 +194,7 @@ def _minpoly_op_algebraic_element(op, ex1, ex2, x, dom, mp1=None, mp2=None):
     x - 1
     >>> q1 = sqrt(y)
     >>> q2 = 1 / y
-    >>> _minpoly_op_algebraic_element(Add, q1, q2, x, QQ.frac_field(y))
+    >>> _minpoly_op_algebraic_element(Add, q1, q2, x, QQ.inject(y).field)
     x**2*y**2 - 2*x*y - y**3 + 1
 
     References
@@ -277,7 +277,7 @@ def _minpoly_pow(ex, pw, x, dom):
     x**2 - 2*x - 1
     >>> minimal_polynomial(p**2)(x)
     x**2 - 2*x - 1
-    >>> _minpoly_pow(y, Rational(1, 3), x, QQ.frac_field(y))
+    >>> _minpoly_pow(y, Rational(1, 3), x, QQ.inject(y).field)
     x**3 - y
     >>> minimal_polynomial(cbrt(y))(x)
     x**3 - y
@@ -562,7 +562,7 @@ def minimal_polynomial(ex, method=None, **args):
 
     x = Dummy('x')
     domain = args.get('domain',
-                      QQ.frac_field(*ex.free_symbols) if ex.free_symbols else QQ)
+                      QQ.inject(*ex.free_symbols).field if ex.free_symbols else QQ)
 
     result = _minpoly(ex, x, domain)
     _, factors = factor_list(result, x, domain=domain)

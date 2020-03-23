@@ -61,19 +61,19 @@ def test_construct_domain():
 
     assert construct_domain([x/2, 3.5*y]) == (dom, [dom(x/2), dom(3.5*y)])
 
-    dom = ZZ.frac_field(x)
+    dom = ZZ.inject(x).field
 
     assert construct_domain([2/x, 3]) == (dom, [dom(2/x), dom(3)])
 
-    dom = ZZ.frac_field(x, y)
+    dom = ZZ.inject(x, y).field
 
     assert construct_domain([2/x, 3*y]) == (dom, [dom(2/x), dom(3*y)])
 
-    dom = RR.frac_field(x)
+    dom = RR.inject(x).field
 
     assert construct_domain([2/x, 3.5]) == (dom, [dom(2/x), dom(3.5)])
 
-    dom = RR.frac_field(x, y)
+    dom = RR.inject(x, y).field
 
     assert construct_domain([2/x, 3.5*y]) == (dom, [dom(2/x), dom(3.5*y)])
 

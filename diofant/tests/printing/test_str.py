@@ -378,9 +378,9 @@ def test_PolynomialRing():
 
 
 def test_FractionField():
-    assert str(ZZ.frac_field('x')) == 'ZZ(x)'
+    assert str(ZZ.inject('x').field) == 'ZZ(x)'
     assert str(QQ.frac_field('x', 'y', order=grlex)) == 'QQ(x,y)'
-    assert str(ZZ.inject('t').frac_field('x', 'y', 'z')) == 'ZZ[t](x,y,z)'
+    assert str(ZZ.inject('x', 'y', 'z', 't').eject('t').field) == 'ZZ[t](x,y,z)'
 
 
 def test_PolyElement():
@@ -692,7 +692,7 @@ def test_FiniteSet():
 
 
 def test_PrettyPoly():
-    F = QQ.frac_field(x, y)
+    F = QQ.inject(x, y).field
     R = QQ.inject(x, y)
     assert sstr(F.convert(x/(x + y))) == sstr(x/(x + y))
     assert sstr(R.convert(x + y)) == sstr(x + y)
