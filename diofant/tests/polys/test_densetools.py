@@ -14,35 +14,33 @@ __all__ = ()
 def test_dmp_eval_in():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_eval_in(0, ZZ(7), 0) == 0
-    assert R.dmp_eval_in(x + 2, ZZ(0), 0) == 2
-    assert R.dmp_eval_in(x**2 + 2*x + 3, ZZ(7), 0) == 66
-    assert R.dmp_eval_in(x**2 + 2*x + 3, ZZ(2), 0) == 11
+    assert R(0).eval(x, 7) == 0
+    assert (x + 2).eval(x, 0) == 2
+    assert (x**2 + 2*x + 3).eval(x, 7) == 66
+    assert (x**2 + 2*x + 3).eval(x, 2) == 11
 
-    assert R.dmp_eval_in(0, ZZ(3), 0) == 0
+    assert R(0).eval(x, 3) == 0
 
     R, x, y = ring('x y', ZZ)
     R1 = R.drop(x)
 
-    assert R.dmp_eval_in(0, 3, 0) == 0
-    assert R.dmp_eval_in(y + 2, 0, 0) == R1.y + 2
-    assert R.dmp_eval_in(3*x*y + 2*x + y + 2, 3, 0) == 10*R1.y + 8
-    assert R.dmp_eval_in(2*x*y + 3*x + y + 2, 2, 0) == 5*R1.y + 8
+    assert R(0).eval(x, 3) == 0
+    assert (y + 2).eval(x, 0) == R1.y + 2
+    assert (3*x*y + 2*x + y + 2).eval(x, 3) == 10*R1.y + 8
+    assert (2*x*y + 3*x + y + 2).eval(x, 2) == 5*R1.y + 8
 
     R, x, y, z = ring('x y z', ZZ)
     R1 = R.drop(x)
     R3 = R.drop(z)
 
-    assert R.dmp_eval_in(0, 3, 0) == 0
-    assert R.dmp_eval_in(1, 3, 0) == 1
-    assert R.dmp_eval_in(z + 2, 3, 0) == R1.z + 2
-    assert R.dmp_eval_in(3*x*z + 2*x + z + 2, 3, 0) == 10*R1.z + 8
+    assert R(0).eval(x, 3) == 0
+    assert R(1).eval(x, 3) == 1
+    assert (z + 2).eval(x, 3) == R1.z + 2
+    assert (3*x*z + 2*x + z + 2).eval(x, 3) == 10*R1.z + 8
 
     f = 45*x**3 - 9*y**3 - y**2 + 3*z**3 + 10*z
 
-    assert R.dmp_eval_in(f, -2, 2) == 45*R3.x**3 - 9*R3.y**3 - R3.y**2 - 44
-
-    pytest.raises(IndexError, lambda: R.dmp_eval_in(f, -2, -1))
+    assert f.eval(z, -2) == 45*R3.x**3 - 9*R3.y**3 - R3.y**2 - 44
 
     R, x, y, z, t = ring('x y z t', ZZ)
 
@@ -52,21 +50,21 @@ def test_dmp_eval_in():
 
     x, z, t = R2.gens
 
-    assert (R.dmp_eval_in(f, -2, 1) ==
+    assert (f.eval(y, -2) ==
             -4230*x**4 + 45*x**3*z**3*t**2 - 45*x**3*t**2 - 282*x*z**3 -
             188*x*z*t - 6392*x + 3*z**6*t**2 + 2*z**4*t**3 + 65*z**3*t**2 -
             2*z*t**3 - 68*t**2)
-    assert (R.dmp_eval_in(f, 7, 1) ==
+    assert (f.eval(y, 7) ==
             14805*x**4 + 45*x**3*z**3*t**2 - 45*x**3*t**2 + 987*x*z**3 +
             658*x*z*t - 1031744*x + 3*z**6*t**2 + 2*z**4*t**3 -
             3139*z**3*t**2 - 2*z*t**3 + 3136*t**2)
 
     x, y, t = R3.gens
 
-    assert (R.dmp_eval_in(f, -2, 2) ==
+    assert (f.eval(R.z, -2) ==
             2115*x**4*y - 405*x**3*t**2 - 423*x*y**4 - 47*x*y**3 - 188*x*y*t -
             1128*x*y + 81*y**3*t**2 + 9*y**2*t**2 + 36*t**3 + 216*t**2)
-    assert (R.dmp_eval_in(f, 7, 2) ==
+    assert (f.eval(R.z, 7) ==
             2115*x**4*y + 15390*x**3*t**2 - 423*x*y**4 - 47*x*y**3 + 658*x*y*t +
             48363*x*y - 3078*y**3*t**2 - 342*y**2*t**2 + 4788*t**3 + 351918*t**2)
 
