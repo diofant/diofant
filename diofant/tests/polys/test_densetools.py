@@ -402,18 +402,6 @@ def test_dup_real_imag():
                                   2*x*y + 2*sqrt(2)*x + 1)
 
 
-def test_dup_scale():
-    R, x = ring('x', ZZ)
-
-    assert R.dup_scale(0, -1) == 0
-    assert R.dup_scale(1, -1) == 1
-
-    assert R.dup_scale(x**4 + 2*x**3 + 3*x**2 + 4*x + 5,
-                       -1) == x**4 - 2*x**3 + 3*x**2 - 4*x + 5
-    assert R.dup_scale(x**4 + 2*x**3 + 3*x**2 + 4*x + 5,
-                       -7) == 2401*x**4 - 686*x**3 + 147*x**2 - 28*x + 5
-
-
 def test_dup_transform():
     R, x = ring('x', ZZ)
 
@@ -466,6 +454,10 @@ def test_dmp_compose():
                          x + 1) == x**4 + 6*x**3 + 15*x**2 + 20*x + 15
     assert R.dmp_compose(x**4 + 2*x**3 + 3*x**2 + 4*x + 5,
                          x + 7) == x**4 + 30*x**3 + 339*x**2 + 1712*x + 3267
+
+    assert R.dmp_compose(x**2 - 2*x + 1, 2*x) == 4*x**2 - 4*x + 1
+    assert R.dmp_compose(x**4 + 2*x**3 + 3*x**2 + 4*x + 5,
+                         -7*x) == 2401*x**4 - 686*x**3 + 147*x**2 - 28*x + 5
 
     R, x, y, z = ring('x y z', ZZ)
 

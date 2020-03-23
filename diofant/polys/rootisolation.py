@@ -11,7 +11,7 @@ from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
                          dup_reverse)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_primitive, dup_real_imag,
-                         dup_scale, dup_transform)
+                         dup_transform)
 from .euclidtools import dmp_gcd, dmp_resultant
 from .factortools import dmp_trial_division
 from .polyerrors import DomainError, RefinementFailed
@@ -156,7 +156,7 @@ def dup_step_refine_real_root(f, M, K):
         A = K.zero
 
     if A > 16:
-        f = dup_scale(f, A, K)
+        f = dmp_compose(f, [A, K.zero], 0, K)
         a, c, A = A*a, A*c, K.one
 
     if A >= 1:
@@ -284,7 +284,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
             A = K.zero
 
         if A > 16:
-            f = dup_scale(f, A, K)
+            f = dmp_compose(f, [A, K.zero], 0, K)
             a, c, A = A*a, A*c, K.one
 
         if A >= 1:
