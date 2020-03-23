@@ -402,18 +402,6 @@ def test_dup_real_imag():
                                   2*x*y + 2*sqrt(2)*x + 1)
 
 
-def test_dup_mirror():
-    R, x = ring('x', ZZ)
-
-    assert R.dup_mirror(0) == 0
-    assert R.dup_mirror(1) == 1
-
-    assert R.dup_mirror(x**4 + 2*x**3 + 3*x**2 + 4*x +
-                        5) == x**4 - 2*x**3 + 3*x**2 - 4*x + 5
-    assert R.dup_mirror(x**5 + 2*x**4 + 3*x**3 + 4*x**2 + 5*x +
-                        6) == -x**5 + 2*x**4 - 3*x**3 + 4*x**2 - 5*x + 6
-
-
 def test_dup_scale():
     R, x = ring('x', ZZ)
 
@@ -471,6 +459,15 @@ def test_dmp_compose():
     assert R.dmp_compose(x**2 + 2*x + 1, x**2 + 2*x + 1) == x**4 + 4*x**3 + 8*x**2 + 8*x + 4
 
     assert R.dmp_compose(x**2 + x, x - 1) == x**2 - x
+
+    assert R.dmp_compose(0, -x) == 0
+    assert R.dmp_compose(1, -x) == 1
+
+    assert R.dmp_compose(x**3 + 2*x**2 - 4*x + 2, -x) == -x**3 + 2*x**2 + 4*x + 2
+    assert R.dmp_compose(x**4 + 2*x**3 + 3*x**2 + 4*x +
+                         5, -x) == x**4 - 2*x**3 + 3*x**2 - 4*x + 5
+    assert R.dmp_compose(x**5 + 2*x**4 + 3*x**3 + 4*x**2 + 5*x +
+                         6, -x) == -x**5 + 2*x**4 - 3*x**3 + 4*x**2 - 5*x + 6
 
     R, x, y, z = ring('x y z', ZZ)
 

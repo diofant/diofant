@@ -18,7 +18,7 @@ from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
-                         dmp_ground_trunc, dup_mirror)
+                         dmp_ground_trunc)
 from .euclidtools import dmp_inner_gcd, dmp_primitive, dup_gcdex
 from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
@@ -355,7 +355,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     if F == f:
         return True
 
-    g = dup_mirror(f, K)
+    g = dmp_compose(f, [-K.one, K.zero], 0, K)
 
     if dmp_LC(g, K) < 0:
         g = dmp_neg(g, 0, K)
