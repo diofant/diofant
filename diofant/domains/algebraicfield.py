@@ -4,7 +4,6 @@ import functools
 
 from ..core import I, Integer, cacheit, sympify
 from ..core.sympify import CantSympify
-from ..polys.densetools import dmp_compose, dmp_diff_in, dmp_eval_in
 from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
 from .characteristiczero import CharacteristicZero
 from .field import Field
@@ -103,8 +102,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         return AlgebraicField(self, *extension)
 
     def to_expr(self, element):
-        return sum(((self.domain.to_expr(c)*self.ext**n).expand()
-                    for n, c in enumerate(reversed(element.rep.to_dense()))), Integer(0))
+        return element.rep.as_expr()
 
     def from_expr(self, expr):
         try:
@@ -123,18 +121,10 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
 
     def _from_PythonIntegerRing(self, a, K0):
         return self([self.domain.convert(a, K0)])
-
-    def _from_PythonRationalField(self, a, K0):
-        return self([self.domain.convert(a, K0)])
-
-    def _from_GMPYIntegerRing(self, a, K0):
-        return self([self.domain.convert(a, K0)])
-
-    def _from_GMPYRationalField(self, a, K0):
-        return self([self.domain.convert(a, K0)])
-
-    def _from_RealField(self, a, K0):
-        return self([self.domain.convert(a, K0)])
+    _from_PythonRationalField = _from_PythonIntegerRing
+    _from_GMPYIntegerRing = _from_PythonIntegerRing
+    _from_GMPYRationalField = _from_PythonIntegerRing
+    _from_RealField = _from_PythonIntegerRing
 
     def _from_AlgebraicField(self, a, K0):
         if K0 == self.domain:
@@ -148,15 +138,14 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
 
         if coeffs is not None:
             if K0.domain == self.domain:
-                return self(dmp_compose(a.rep.to_dense(), coeffs, 0, self.domain))
+                return self(a.rep.compose(0, a.rep.ring.from_list(coeffs)))
             else:
                 return self.from_expr(K0.to_expr(a))
         else:
             raise CoercionFailed('%s is not in a subfield of %s' % (K0, self))
 
     def _from_ExpressionDomain(self, a, K0):
-        expr = K0.to_expr(a)
-        return self.from_expr(expr)
+        return self.from_expr(K0.to_expr(a))
 
     @property
     def ring(self):
@@ -253,43 +242,36 @@ class RealAlgebraicElement(ComplexAlgebraicElement):
 
     @cacheit
     def __lt__(self, other):
-        from ..polys.rootisolation import dup_count_real_roots
-
         try:
             other = self.parent.convert(other)
         except CoercionFailed:
             return NotImplemented
 
-        dom = self.parent.domain
         coeff, root = self.parent._ext_root
 
-        rep = dmp_compose((self - other).rep.to_dense(),
-                          (self.parent.unit.rep*coeff).to_dense(), 0, dom)
+        ring = self.rep.ring
+        rep = (self - other).rep.compose(0, self.parent.unit.rep*coeff)
 
-        while dup_count_real_roots(rep, dom, root.interval.a, root.interval.b):
+        while ring.dup_count_real_roots(rep, root.interval.a, root.interval.b):
             root.refine()
 
         self.parent._ext_root = coeff, root
-        return dmp_eval_in(rep, root.interval.center, 0, 0, dom) < 0
+        return rep.eval(0, root.interval.center) < 0
 
     @cacheit
     def __int__(self):
-        from ..polys.rootisolation import dup_count_real_roots
-
-        dom = self.parent.domain
         coeff, root = self.parent._ext_root
 
-        rep = dmp_compose(self.rep.to_dense(),
-                          (self.parent.unit.rep*coeff).to_dense(), 0, dom)
-        df = dmp_diff_in(rep, 1, 0, 0, dom)
+        ring = self.rep.ring
+        rep = self.rep.compose(0, self.parent.unit.rep*coeff)
+        df = rep.diff()
 
-        while (dup_count_real_roots(df, dom, root.interval.a, root.interval.b) or
-               int(dmp_eval_in(rep, root.interval.b, 0, 0, dom)) !=
-               int(dmp_eval_in(rep, root.interval.a, 0, 0, dom))):
+        while (ring.dup_count_real_roots(df, root.interval.a, root.interval.b) or
+               int(rep.eval(0, root.interval.b)) != int(rep.eval(0, root.interval.a))):
             root.refine()
 
         self.parent._ext_root = coeff, root
-        return int(dmp_eval_in(rep, root.interval.a, 0, 0, dom))
+        return int(rep.eval(0, root.interval.a))
 
     @property
     def real(self):
