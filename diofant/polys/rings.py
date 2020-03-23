@@ -1922,7 +1922,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         """Computes the functional composition."""
         ring = self.ring
         poly = ring.zero
-        gens_map = dict(zip(ring.gens, range(ring.ngens)))
 
         if a is not None:
             replacements = [(x, a)]
@@ -1930,12 +1929,12 @@ class PolyElement(DomainElement, CantSympify, dict):
             if isinstance(x, list):
                 replacements = list(x)
             elif isinstance(x, dict):
-                replacements = sorted(x.items(), key=lambda k: gens_map[k[0]])
+                replacements = sorted(x.items(), key=lambda k: ring.index(k[0]))
             else:
                 raise ValueError('expected a generator, value pair a sequence of such pairs')
 
         for k, (x, g) in enumerate(replacements):
-            replacements[k] = (gens_map[x], ring(g))
+            replacements[k] = (ring.index(x), ring(g))
 
         for monom, coeff in self.items():
             monom = list(monom)
