@@ -2020,5 +2020,19 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def slice(self, m, n, x=0):
         ring = self.ring
+        poly = ring.zero
         j = ring.index(x)
-        return ring.dmp_slice_in(self, m, n, j)
+
+        for monom, coeff in self.items():
+            if not n > monom[j] >= m:
+                if ring.ngens > 1:
+                    monom = monom[:j] + (0,) + monom[j + 1:]
+                else:
+                    continue
+
+            if monom in poly:
+                poly[monom] += coeff
+            else:
+                poly[monom] = coeff
+
+        return poly

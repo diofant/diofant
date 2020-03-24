@@ -569,8 +569,6 @@ def test_dmp_slice_in():
     assert f.slice(1, 3) == 2*x**2 + 3*x
     assert f.slice(1, 4) == x**3 + 2*x**2 + 3*x
 
-    pytest.raises(IndexError, lambda: R.dmp_slice_in(f, 0, 0, -1))
-
     assert (x + 2).slice(0, 3) == x + 2
 
     R, x, y = ring('x y', ZZ)
