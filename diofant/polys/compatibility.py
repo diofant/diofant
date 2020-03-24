@@ -10,7 +10,7 @@ from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
 from .densetools import (dmp_eval_tail, dup_decompose, dup_real_imag,
                          dup_transform)
 from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_inner_subresultants,
-                          dmp_prem, dmp_primitive, dmp_qq_collins_resultant,
+                          dmp_primitive, dmp_qq_collins_resultant,
                           dmp_resultant, dmp_rr_prs_gcd,
                           dmp_zz_collins_resultant, dmp_zz_modular_resultant,
                           dup_gcdex, dup_half_gcdex, dup_invert)
@@ -116,9 +116,6 @@ class IPolys:
 
     def dmp_pow(self, f, n):
         return self.from_dense(dmp_pow(self.to_dense(f), n, self.ngens-1, self.domain))
-
-    def dmp_prem(self, f, g):
-        return self.from_dense(dmp_prem(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain))
 
     def dmp_div(self, f, g):
         q, r = dmp_div(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)

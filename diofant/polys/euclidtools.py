@@ -107,57 +107,10 @@ def dup_invert(f, g, K):
 
 
 def dmp_prem(f, g, u, K):
-    """
-    Polynomial pseudo-remainder in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> (x**2 + x*y).prem(2*x + 2)
-    -4*y + 4
-
-    References
-    ==========
-
-    * :cite:`Knuth1985seminumerical`, p. 407.
-
-    """
-    df = dmp_degree_in(f, 0, u)
-    dg = dmp_degree_in(g, 0, u)
-
-    if dg < 0:
-        raise ZeroDivisionError('polynomial division')
-
-    r, dr = f, df
-
-    if df < dg:
-        return r
-
-    N = df - dg + 1
-    lc_g = dmp_LC(g, K)
-
-    while True:
-        lc_r = dmp_LC(r, K)
-        j, N = dr - dg, N - 1
-
-        R = dmp_mul_term(r, lc_g, 0, u, K)
-        G = dmp_mul_term(g, lc_r, j, u, K)
-        r = dmp_sub(R, G, u, K)
-
-        _dr, dr = dr, dmp_degree_in(r, 0, u)
-
-        if dr < dg:
-            break
-        assert dr < _dr
-
-    if u:
-        c = dmp_pow(lc_g, N, u - 1, K)
-    else:
-        c = lc_g**N
-
-    return dmp_mul_term(r, c, 0, u, K)
+    """Polynomial pseudo-remainder in ``K[X]``."""
+    ring = K.poly_ring(*['_%d' % i for i in range(u + 1)])
+    f, g = map(ring.from_dense, (f, g))
+    return ring.to_dense(f.prem(g))
 
 
 def dup_inner_subresultants(f, g, K):
