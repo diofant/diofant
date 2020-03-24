@@ -648,3 +648,11 @@ def test_sympyissue_5934():
          (-36000 - 7200*sqrt(5) + (12*sqrt(10)*sqrt(sqrt(5) + 5) +
                                    24*sqrt(10)*sqrt(-sqrt(5) + 5))**2))
     assert [minimal_polynomial(i)(x) for i in e.as_numer_denom()] == [x]*2
+
+
+def test_sympyissue_18874():
+    e = [sqrt(2) + sqrt(5), sqrt(2)]
+
+    assert primitive_element(e) == (PurePoly(x**4 - 46*x**2 + 169),
+                                    [1, 2], [[QQ(1, 39), 0, QQ(-20, 39), 0],
+                                             [QQ(-1, 78), 0, QQ(59, 78), 0]])
