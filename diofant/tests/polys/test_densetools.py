@@ -180,28 +180,28 @@ def test_dmp_ground_trunc():
 def test_dmp_ground_monic():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_ground_monic(3*x**2 + 6*x + 9) == x**2 + 2*x + 3
+    assert (3*x**2 + 6*x + 9).monic() == x**2 + 2*x + 3
 
-    pytest.raises(ExactQuotientFailed, lambda: R.dmp_ground_monic(3*x**2 + 4*x + 5))
+    pytest.raises(ExactQuotientFailed, lambda: (3*x**2 + 4*x + 5).monic())
 
     R, x = ring('x', QQ)
 
-    assert R.dmp_ground_monic(0) == 0
-    assert R.dmp_ground_monic(1) == 1
-    assert R.dmp_ground_monic(7*x**2 + x + 21) == x**2 + x/7 + 3
-    assert R.dmp_ground_monic(3*x**2 + 4*x + 2) == x**2 + 4*x/3 + QQ(2, 3)
+    assert R(0).monic() == 0
+    assert R(1).monic() == 1
+    assert (7*x**2 + x + 21).monic() == x**2 + x/7 + 3
+    assert (3*x**2 + 4*x + 2).monic() == x**2 + 4*x/3 + QQ(2, 3)
 
     R, x, y = ring('x y', ZZ)
 
-    assert R.dmp_ground_monic(3*x**2 + 6*x + 9) == x**2 + 2*x + 3
+    assert (3*x**2 + 6*x + 9).monic() == x**2 + 2*x + 3
 
-    pytest.raises(ExactQuotientFailed, lambda: R.dmp_ground_monic(3*x**2 + 4*x + 5))
+    pytest.raises(ExactQuotientFailed, lambda: (3*x**2 + 4*x + 5).monic())
 
     R, x, y = ring('x y', QQ)
 
-    assert R.dmp_ground_monic(0) == 0
-    assert R.dmp_ground_monic(1) == 1
-    assert R.dmp_ground_monic(7*x**2 + x + 21) == x**2 + x/7 + 3
+    assert R(0).monic() == 0
+    assert R(1).monic() == 1
+    assert (7*x**2 + x + 21).monic() == x**2 + x/7 + 3
 
 
 def test_dmp_ground_content():
