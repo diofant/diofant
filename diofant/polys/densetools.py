@@ -3,7 +3,7 @@
 from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_exquo_ground,
                          dmp_mul, dmp_mul_ground, dmp_neg, dmp_sub, dup_add,
                          dup_mul)
-from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
+from .densebasic import (dmp_degree_in, dmp_from_dict, dmp_ground,
                          dmp_ground_LC, dmp_LC, dmp_strip, dmp_to_dict,
                          dmp_zero, dmp_zero_p)
 from .polyerrors import DomainError
@@ -480,7 +480,7 @@ def dup_decompose(f, K):
     return [f] + F
 
 
-def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
+def dmp_clear_denoms(f, u, K0, convert=False):
     """
     Clear denominators, i.e. transform ``K_0`` to ``K_1``.
 
@@ -491,36 +491,11 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
 
     >>> f = x/2 + y/3 + 1
 
-    >>> R.dmp_clear_denoms(f, convert=False)
-    (6, 3*x + 2*y + 6)
-    >>> R.dmp_clear_denoms(f, convert=True)
+    >>> f.clear_denoms()
     (6, 3*x + 2*y + 6)
 
     """
-    if K1 is None:
-        if K0.has_assoc_Ring:
-            K1 = K0.ring
-        else:
-            K1 = K0
-
-    def clear_denoms(g, v, K0, K1):
-        common = K1.one
-
-        if not v:
-            for c in g:
-                common = K1.lcm(common, c.denominator)
-        else:
-            w = v - 1
-
-            for c in g:
-                common = K1.lcm(common, clear_denoms(c, w, K0, K1))
-
-        return common
-
-    common = clear_denoms(f, u, K0, K1)
-    f = dmp_mul_ground(f, common, u, K0)
-
-    if not convert:
-        return common, f
-    else:
-        return common, dmp_convert(f, u, K0, K1)
+    ring = K0.poly_ring(*['_%d' % i for i in range(u + 1)])
+    f = ring.from_dense(f)
+    common, f = f.clear_denoms()
+    return common, ring.to_dense(f)

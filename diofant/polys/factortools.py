@@ -1059,7 +1059,7 @@ def dmp_factor_list(f, u, K0):
         if K0.is_Field:
             K = K0.ring
 
-            denom, f = dmp_clear_denoms(f, u, K0, K)
+            denom, f = dmp_clear_denoms(f, u, K0)
             f = dmp_convert(f, u, K0, K)
         else:
             K = K0

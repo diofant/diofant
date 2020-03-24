@@ -8,9 +8,9 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term, dmp_div,
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
                          dmp_ground_TC, dmp_LC, dmp_slice_in, dmp_TC,
                          dmp_to_dict)
-from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
-                         dmp_eval_tail, dmp_ground_monic, dmp_ground_trunc,
-                         dup_decompose, dup_real_imag, dup_transform)
+from .densetools import (dmp_compose, dmp_diff_eval_in, dmp_eval_tail,
+                         dmp_ground_monic, dmp_ground_trunc, dup_decompose,
+                         dup_real_imag, dup_transform)
 from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_inner_subresultants,
                           dmp_prem, dmp_primitive, dmp_qq_collins_resultant,
                           dmp_resultant, dmp_rr_prs_gcd,
@@ -203,14 +203,6 @@ class IPolys:
 
     def dup_sign_variations(self, f):
         return dup_sign_variations(self.to_dense(f), self.domain)
-
-    def dmp_clear_denoms(self, f, convert=False):
-        c, F = dmp_clear_denoms(self.to_dense(f), self.ngens-1, self.domain, convert=convert)
-        if convert:
-            ring = self.clone(domain=self.domain.ring)
-        else:
-            ring = self
-        return c, ring.from_dense(F)
 
     def dup_half_gcdex(self, f, g):
         s, h = dup_half_gcdex(self.to_dense(f), self.to_dense(g), self.domain)

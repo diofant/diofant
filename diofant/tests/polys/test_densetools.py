@@ -516,51 +516,39 @@ def test_dup_decompose():
 
 def test_dmp_clear_denoms():
     R0, X = ring('x', QQ)
-    R1 = R0.domain.ring.inject('x')
 
-    assert R0.dmp_clear_denoms(0) == (1, 0)
+    assert R0(0).clear_denoms() == (1, 0)
 
-    assert R0.dmp_clear_denoms(1) == (1, 1)
-    assert R0.dmp_clear_denoms(7) == (1, 7)
+    assert R0(1).clear_denoms() == (1, 1)
+    assert R0(7).clear_denoms() == (1, 7)
 
-    assert R0.dmp_clear_denoms(QQ(7, 3)) == (3, 7)
+    assert R0(QQ(7, 3)).clear_denoms() == (3, 7)
 
-    assert R0.dmp_clear_denoms(3*X**2 + X) == (1, 3*X**2 + X)
-    assert R0.dmp_clear_denoms(X**2 + X/2) == (2, 2*X**2 + X)
+    assert (3*X**2 + X).clear_denoms() == (1, 3*X**2 + X)
+    assert (X**2 + X/2).clear_denoms() == (2, 2*X**2 + X)
 
-    assert R0.dmp_clear_denoms(3*X**2 + X, convert=True) == (1, 3*R1.x**2 + R1.x)
-    assert R0.dmp_clear_denoms(X**2 + X/2, convert=True) == (2, 2*R1.x**2 + R1.x)
-
-    assert R0.dmp_clear_denoms(X/2 + QQ(1, 3)) == (6, 3*X + 2)
-    assert R0.dmp_clear_denoms(X/2 + QQ(1, 3), convert=True) == (6, 3*R1.x + 2)
-
-    assert R0.dmp_clear_denoms(3*X**2 + X, convert=True) == (1, 3*R1.x**2 + R1.x)
-    assert R0.dmp_clear_denoms(X**2 + X/2, convert=True) == (2, 2*R1.x**2 + R1.x)
+    assert (X/2 + QQ(1, 3)).clear_denoms() == (6, 3*X + 2)
 
     R0, a = ring('a', EX)
 
-    assert R0.dmp_clear_denoms(3*a/2 + Rational(9, 4)) == (4, 6*a + 9)
+    assert (3*a/2 + Rational(9, 4)).clear_denoms() == (4, 6*a + 9)
 
-    assert R0.dmp_clear_denoms(7) == (1, 7)
-    assert R0.dmp_clear_denoms(sin(x)/x*a) == (x, a*sin(x))
+    assert R0(7).clear_denoms() == (1, 7)
+    assert (sin(x)/x*a).clear_denoms() == (x, a*sin(x))
 
     R0, X, Y = ring('x y', QQ)
-    R1 = R0.domain.ring.inject('x', 'y')
 
-    assert R0.dmp_clear_denoms(0) == (1, 0)
+    assert R0(0).clear_denoms() == (1, 0)
 
-    assert R0.dmp_clear_denoms(1) == (1, 1)
-    assert R0.dmp_clear_denoms(7) == (1, 7)
+    assert R0(1).clear_denoms() == (1, 1)
+    assert R0(7).clear_denoms() == (1, 7)
 
-    assert R0.dmp_clear_denoms(QQ(7, 3)) == (3, 7)
+    assert R0(QQ(7, 3)).clear_denoms() == (3, 7)
 
-    assert R0.dmp_clear_denoms(3*X**2 + X) == (1, 3*X**2 + X)
-    assert R0.dmp_clear_denoms(X**2 + X/2) == (2, 2*X**2 + X)
-
-    assert R0.dmp_clear_denoms(3*X**2 + X, convert=True) == (1, 3*R1.x**2 + R1.x)
-    assert R0.dmp_clear_denoms(X**2 + X/2, convert=True) == (2, 2*R1.x**2 + R1.x)
+    assert (3*X**2 + X).clear_denoms() == (1, 3*X**2 + X)
+    assert (X**2 + X/2).clear_denoms() == (2, 2*X**2 + X)
 
     R0, a, b = ring('a b', EX)
-    assert R0.dmp_clear_denoms(3*a/2 + Rational(9, 4)) == (4, 6*a + 9)
-    assert R0.dmp_clear_denoms(7) == (1, 7)
-    assert R0.dmp_clear_denoms(sin(x)/x*b) == (x, b*sin(x))
+    assert (3*a/2 + Rational(9, 4)).clear_denoms() == (4, 6*a + 9)
+    assert R0(7).clear_denoms() == (1, 7)
+    assert (sin(x)/x*b).clear_denoms() == (x, b*sin(x))

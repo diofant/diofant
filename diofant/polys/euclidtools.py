@@ -560,8 +560,8 @@ def dmp_qq_collins_resultant(f, g, u, K0):
 
     K1 = K0.ring
 
-    cf, f = dmp_clear_denoms(f, u, K0, K1)
-    cg, g = dmp_clear_denoms(g, u, K0, K1)
+    cf, f = dmp_clear_denoms(f, u, K0)
+    cg, g = dmp_clear_denoms(g, u, K0)
 
     f = dmp_convert(f, u, K0, K1)
     g = dmp_convert(g, u, K0, K1)
