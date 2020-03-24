@@ -1966,10 +1966,10 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         for monom, coeff in self.items():
             if not n > monom[j] >= m:
-                if ring.ngens > 1:
-                    monom = monom[:j] + (0,) + monom[j + 1:]
-                else:
+                if ring.ngens == 1:
                     continue
+                else:
+                    monom = monom[:j] + (0,) + monom[j + 1:]
 
             if monom in poly:
                 poly[monom] += coeff
