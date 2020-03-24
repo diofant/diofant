@@ -110,26 +110,16 @@ def dmp_diff_eval_in(f, m, a, j, u, K):
 
     >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
 
-    >>> R.dmp_diff_eval_in(f, 1, 2, 0)
+    >>> f.diff().eval(x, 2)
     y**2 + 2*y + 3
-    >>> R.dmp_diff_eval_in(f, 1, 2, 1)
+    >>> f.diff(x=y).eval(y, 2)
     6*x + 11
 
     """
-    if j > u:
-        raise IndexError('-%s <= j < %s expected, got %s' % (u, u, j))
-    if not j:
-        return dmp_eval_in(dmp_diff_in(f, m, 0, u, K), a, 0, u, K)
-
-    def diff_eval(g, m, a, v, i, j, K):
-        if i == j:
-            return dmp_eval_in(dmp_diff_in(g, m, 0, v, K), a, 0, v, K)
-
-        v, i = v - 1, i + 1
-
-        return dmp_strip([diff_eval(c, m, a, v, i, j, K) for c in g], v)
-
-    return diff_eval(f, m, a, u, 0, j, K)
+    ring = K.poly_ring(*['_%d' % i for i in range(u + 1)])
+    f = ring.from_dense(f)
+    r = f.diff(x=j, m=m).eval(j, a)
+    return ring.drop(j).to_dense(r) if u else r
 
 
 def dup_trunc(f, p, K):
