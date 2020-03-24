@@ -416,66 +416,71 @@ def test_dup_transform():
 def test_dmp_compose():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_compose(0, 0) == 0
-    assert R.dmp_compose(0, 1) == 0
-    assert R.dmp_compose(0, x + 2) == 0
+    assert R(0).compose(x, R(0)) == 0
+    assert R(0).compose(x, R(1)) == 0
+    assert R(0).compose(x, x + 2) == 0
+    assert R(0).compose(x, x + 1) == 0
+    assert R(0).compose(x, -x) == 0
 
-    assert R.dmp_compose(1, 0) == 1
+    assert R(1).compose(x, 1) == 1
+    assert R(1).compose(x, -x) == 1
+    assert R(1).compose(x, x + 1) == 1
 
-    assert R.dmp_compose(x**2 + 2*x, 0) == 0
-    assert R.dmp_compose(x**2 + 2*x + 1, 0) == 1
+    f = x**2 + 2*x
 
-    assert R.dmp_compose(x**2 + 2*x + 1, 1) == 4
-    assert R.dmp_compose(x**2 + 2*x + 1, 7) == 64
+    assert f.compose(x, R(0)) == 0
 
-    assert R.dmp_compose(x**2 + 2*x + 1, x - 1) == x**2
-    assert R.dmp_compose(x**2 + 2*x + 1, x + 1) == x**2 + 4*x + 4
-    assert R.dmp_compose(x**2 + 2*x + 1, x**2 + 2*x + 1) == x**4 + 4*x**3 + 8*x**2 + 8*x + 4
+    f += 1
 
-    assert R.dmp_compose(x**2 + x, x - 1) == x**2 - x
+    assert f.compose(x, R(0)) == 1
+    assert f.compose(x, R(1)) == 4
+    assert f.compose(x, R(7)) == 64
+    assert f.compose(x, x - 1) == x**2
+    assert f.compose(x, x + 1) == x**2 + 4*x + 4
+    assert f.compose(x, x**2 + 2*x + 1) == x**4 + 4*x**3 + 8*x**2 + 8*x + 4
 
-    assert R.dmp_compose(0, -x) == 0
-    assert R.dmp_compose(1, -x) == 1
+    assert (x**2 + x).compose(x, x - 1) == x**2 - x
 
-    assert R.dmp_compose(x**3 + 2*x**2 - 4*x + 2, -x) == -x**3 + 2*x**2 + 4*x + 2
-    assert R.dmp_compose(x**4 + 2*x**3 + 3*x**2 + 4*x +
-                         5, -x) == x**4 - 2*x**3 + 3*x**2 - 4*x + 5
-    assert R.dmp_compose(x**5 + 2*x**4 + 3*x**3 + 4*x**2 + 5*x +
-                         6, -x) == -x**5 + 2*x**4 - 3*x**3 + 4*x**2 - 5*x + 6
+    assert (x**3 + 2*x**2 - 4*x + 2).compose(x, -x) == -x**3 + 2*x**2 + 4*x + 2
+    assert (x**4 + 2*x**3 + 3*x**2 + 4*x +
+            5).compose(x, -x) == x**4 - 2*x**3 + 3*x**2 - 4*x + 5
+    assert (x**5 + 2*x**4 + 3*x**3 + 4*x**2 + 5*x +
+            6).compose(x, -x) == -x**5 + 2*x**4 - 3*x**3 + 4*x**2 - 5*x + 6
 
-    assert R.dmp_compose(0, x + 1) == 0
-    assert R.dmp_compose(1, x + 1) == 1
+    f = x**2 - 2*x + 1
 
-    assert R.dmp_compose(x**2 - 2*x + 1, x + 2) == x**2 + 2*x + 1
+    assert f.compose(x, x + 2) == x**2 + 2*x + 1
+    assert f.compose(x, 2*x) == 4*x**2 - 4*x + 1
 
-    assert R.dmp_compose(x**4 + 2*x**3 + 3*x**2 + 4*x + 5,
-                         x + 1) == x**4 + 6*x**3 + 15*x**2 + 20*x + 15
-    assert R.dmp_compose(x**4 + 2*x**3 + 3*x**2 + 4*x + 5,
-                         x + 7) == x**4 + 30*x**3 + 339*x**2 + 1712*x + 3267
+    f = x**4 + 2*x**3 + 3*x**2 + 4*x + 5
 
-    assert R.dmp_compose(x**2 - 2*x + 1, 2*x) == 4*x**2 - 4*x + 1
-    assert R.dmp_compose(x**4 + 2*x**3 + 3*x**2 + 4*x + 5,
-                         -7*x) == 2401*x**4 - 686*x**3 + 147*x**2 - 28*x + 5
+    assert f.compose(x, x + 1) == x**4 + 6*x**3 + 15*x**2 + 20*x + 15
+    assert f.compose(x, x + 7) == x**4 + 30*x**3 + 339*x**2 + 1712*x + 3267
+    assert f.compose(x, -7*x) == 2401*x**4 - 686*x**3 + 147*x**2 - 28*x + 5
 
     R, x, y, z = ring('x y z', ZZ)
 
-    assert R.dmp_compose(0, 0) == 0
-    assert R.dmp_compose(0, 1) == 0
-    assert R.dmp_compose(1, 0) == 1
-    assert R.dmp_compose(0, x + 2) == 0
+    assert R(0).compose(x, R(0)) == 0
+    assert R(0).compose(x, R(1)) == 0
+    assert R(1).compose(x, R(0)) == 1
+    assert R(0).compose(x, x + 2) == 0
 
     R, x, y = ring('x y', ZZ)
 
-    assert R.dmp_compose(x**2 + 2*x, 0) == 0
-    assert R.dmp_compose(x**2 + 2*x + 1, 0) == 1
+    f = x**2 + 2*x
 
-    assert R.dmp_compose(x**2 + 2*x + 1, 1) == 4
-    assert R.dmp_compose(x**2 + 2*x + 1, 7) == 64
+    assert f.compose(x, R(0)) == 0
 
-    assert R.dmp_compose(x**2 + 2*x + 1, x - 1) == x**2
-    assert R.dmp_compose(x**2 + 2*x + 1, x + 1) == x**2 + 4*x + 4
+    f += 1
 
-    assert R.dmp_compose(x**2 + 2*x + 1, x**2 + 2*x + 1) == x**4 + 4*x**3 + 8*x**2 + 8*x + 4
+    assert f.compose(x, R(0)) == 1
+    assert f.compose(x, R(1)) == 4
+    assert f.compose(x, R(7)) == 64
+    assert f.compose(x, x - 1) == x**2
+    assert f.compose(x, x + 1) == x**2 + 4*x + 4
+    assert f.compose(x, x**2 + 2*x + 1) == x**4 + 4*x**3 + 8*x**2 + 8*x + 4
+
+    assert (x*y + 2*x + y).compose(x, y) == y**2 + 3*y
 
 
 def test_dup_decompose():

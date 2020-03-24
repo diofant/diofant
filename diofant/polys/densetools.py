@@ -324,20 +324,13 @@ def dmp_compose(f, g, u, K):
 
     >>> R, x, y = ring('x y', ZZ)
 
-    >>> R.dmp_compose(x*y + 2*x + y, y)
+    >>> (x*y + 2*x + y).compose(x, y)
     y**2 + 3*y
 
     """
-    if dmp_zero_p(f, u):
-        return f
-
-    h = [f[0]]
-
-    for c in f[1:]:
-        h = dmp_mul(h, g, u, K)
-        h = dmp_add_term(h, c, 0, u, K)
-
-    return h
+    ring = K.poly_ring(*['_%d' % i for i in range(u + 1)])
+    f, g = map(ring.from_dense, (f, g))
+    return ring.to_dense(f.compose(0, g))
 
 
 def _dup_right_decompose(f, s, K):
