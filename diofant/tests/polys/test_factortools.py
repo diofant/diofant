@@ -868,3 +868,26 @@ def test_PolyElement_is_irreducible():
 
     assert (7*x + 3).is_irreducible
     assert (7*x**2 + 3*x + 1).is_irreducible is False
+
+
+@pytest.mark.timeout(20)
+def test_sympyissue_16620():
+    R, x = ring('x', FF(2))
+
+    f = x**17 + 1
+    g = (1, [(x + 1, 1),
+             (x**8 + x**5 + x**4 + x**3 + 1, 1),
+             (x**8 + x**7 + x**6 + x**4 + x**2 + x + 1, 1)])
+
+    for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with using(gf_factor_method=method):
+            assert f.factor_list() == g
+
+    f = x**31 + 1
+    g = (1, [(x + 1, 1), (x**5 + x**2 + 1, 1), (x**5 + x**3 + 1, 1),
+             (x**5 + x**3 + x**2 + x + 1, 1), (x**5 + x**4 + x**2 + x + 1, 1),
+             (x**5 + x**4 + x**3 + x + 1, 1), (x**5 + x**4 + x**3 + x**2 + 1, 1)])
+
+    for method in ('berlekamp', 'zassenhaus', 'shoup'):
+        with using(gf_factor_method=method):
+            assert f.factor_list() == g
