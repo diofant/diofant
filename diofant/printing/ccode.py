@@ -302,7 +302,7 @@ def ccode(expr, assign_to=None, **settings):
 
     >>> ccode((2*x)**Rational(7, 2))
     '8*sqrt(2)*pow(x, 7.0L/2.0L)'
-    >>> ccode(sin(x), assign_to="s")
+    >>> ccode(sin(x), assign_to='s')
     's = sin(x);'
 
     Simple custom printing can be defined for certain types by passing a
@@ -310,10 +310,10 @@ def ccode(expr, assign_to=None, **settings):
     Alternatively, the dictionary value can be a list of tuples i.e.
     [(argument_test, cfunction_string)].
 
-    >>> custom_functions = {"ceiling": "CEIL",
-    ...                     "Abs": [(lambda x: not x.is_integer, "fabs"),
-    ...                             (lambda x: x.is_integer, "ABS")],
-    ...                     "func": "f"}
+    >>> custom_functions = {'ceiling': 'CEIL',
+    ...                     'Abs': [(lambda x: not x.is_integer, 'fabs'),
+    ...                             (lambda x: x.is_integer, 'ABS')],
+    ...                     'func': 'f'}
     >>> func = Function('func')
     >>> ccode(func(abs(x) + ceiling(x)), user_functions=custom_functions)
     'f(fabs(x) + CEIL(x))'

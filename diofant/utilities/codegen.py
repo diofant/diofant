@@ -1482,7 +1482,7 @@ def codegen(name_expr, language, prefix=None, project="project",
     ========
 
     >>> [(c_name, c_code), (h_name, c_header)] = codegen(
-    ...     ("f", x+y*z), "C", "test", header=False, empty=False)
+    ...     ('f', x+y*z), 'C', 'test', header=False, empty=False)
     >>> print(c_name)
     test.c
     >>> print(c_code)
@@ -1506,9 +1506,9 @@ def codegen(name_expr, language, prefix=None, project="project",
 
     >>> from diofant.abc import f, g
     >>> [(c_name, c_code),
-    ...  (h_name, c_header)] = codegen([("myfcn", x + y),
-    ...                                 ("fcn2", [Eq(f, 2*x), Eq(g, y)])],
-    ...                                "C", header=False, empty=False)
+    ...  (h_name, c_header)] = codegen([('myfcn', x + y),
+    ...                                 ('fcn2', [Eq(f, 2*x), Eq(g, y)])],
+    ...                                'C', header=False, empty=False)
     >>> print(c_name)
     myfcn.c
     >>> print(c_code)
@@ -1529,7 +1529,7 @@ def codegen(name_expr, language, prefix=None, project="project",
     to remove the specified variables from the function signature
 
     >>> [(f_name, f_code), header] = codegen(
-    ...     ("f", x+y*z), "F95", header=False, empty=False,
+    ...     ('f', x+y*z), 'F95', header=False, empty=False,
     ...     argument_sequence=(x, y), global_vars=(z,))
     >>> print(f_code)
     REAL*8 function f(x, y)

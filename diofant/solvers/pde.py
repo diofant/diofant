@@ -126,7 +126,7 @@ def pdsolve(eq, func=None, hint='default', dict=False, solvefun=None, **kwargs):
     **Tips**
         - You can declare the derivative of an unknown function this way:
 
-            >>> f = Function("f")(x, y)  # f is a function of x and y
+            >>> f = Function('f')(x, y)  # f is a function of x and y
             >>> # fx will be the partial derivative of f with respect to x
             >>> fx = Derivative(f, x)
             >>> # fy will be the partial derivative of f with respect to y

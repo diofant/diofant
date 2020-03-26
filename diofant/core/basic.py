@@ -989,8 +989,8 @@ class Basic:
         Examples
         ========
 
-        >>> p = Wild("p")
-        >>> q = Wild("q")
+        >>> p = Wild('p')
+        >>> q = Wild('q')
         >>> e = (x + y)**(x + y)
         >>> e.match(p**p)
         {p_: x + y}

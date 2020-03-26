@@ -56,7 +56,7 @@ def _preprocess(expr, func=None, hint='_Integral'):
     >>> try:
     ...     _preprocess(eq)
     ... except ValueError:
-    ...     print("A ValueError was raised.")
+    ...     print('A ValueError was raised.')
     A ValueError was raised.
 
     """

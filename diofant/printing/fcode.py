@@ -445,7 +445,7 @@ def fcode(expr, assign_to=None, **settings):
 
     >>> fcode((2*x)**Rational(7, 2))
     '      8*sqrt(2.0d0)*x**(7.0d0/2.0d0)'
-    >>> fcode(sin(x), assign_to="s")
+    >>> fcode(sin(x), assign_to='s')
     '      s = sin(x)'
 
     Custom printing can be defined for certain types by passing a dictionary of
@@ -453,9 +453,9 @@ def fcode(expr, assign_to=None, **settings):
     dictionary value can be a list of tuples i.e. [(argument_test,
     cfunction_string)].
 
-    >>> custom_functions = {"ceiling": "CEIL",
-    ...                     "floor": [(lambda x: not x.is_integer, "FLOOR1"),
-    ...                               (lambda x: x.is_integer, "FLOOR2")]}
+    >>> custom_functions = {'ceiling': 'CEIL',
+    ...                     'floor': [(lambda x: not x.is_integer, 'FLOOR1'),
+    ...                               (lambda x: x.is_integer, 'FLOOR2')]}
     >>> fcode(floor(x) + ceiling(x), user_functions=custom_functions)
     '      CEIL(x) + FLOOR1(x)'
 

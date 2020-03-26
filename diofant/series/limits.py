@@ -14,9 +14,9 @@ def limit(expr, z, z0, dir="+"):
 
     >>> limit(sin(x)/x, x, 0)
     1
-    >>> limit(1/x, x, 0, dir="+")
+    >>> limit(1/x, x, 0, dir='+')
     oo
-    >>> limit(1/x, x, 0, dir="-")
+    >>> limit(1/x, x, 0, dir='-')
     -oo
     >>> limit(1/x, x, oo)
     0

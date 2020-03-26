@@ -2929,9 +2929,9 @@ class Tensor(TensExpr):
     Examples
     ========
 
-    >>> Lorentz = TensorIndexType("Lorentz", dummy_fmt="L")
+    >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> mu, nu = tensor_indices('mu nu', Lorentz)
-    >>> A = tensorhead("A", [Lorentz, Lorentz], [[1], [1]])
+    >>> A = tensorhead('A', [Lorentz, Lorentz], [[1], [1]])
     >>> A(mu, -nu)
     A(mu, -nu)
     >>> A(mu, -mu)

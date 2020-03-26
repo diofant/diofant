@@ -49,7 +49,7 @@ def ring(symbols, domain, order=lex):
     Examples
     ========
 
-    >>> R, x, y, z = ring("x y z", ZZ)
+    >>> R, x, y, z = ring('x y z', ZZ)
     >>> R
     ZZ[x,y,z]
     >>> x + y + z
@@ -73,7 +73,7 @@ def vring(symbols, domain, order=lex):
     Examples
     ========
 
-    >>> vring("x y z", ZZ)
+    >>> vring('x y z', ZZ)
     ZZ[x,y,z]
     >>> x + y + z
     x + y + z
@@ -1302,7 +1302,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y, z = ring("x y z", ZZ)
+        >>> _, x, y, z = ring('x y z', ZZ)
         >>> f = 3*x**2*y - x*y*z + 7*z**3 + 23
 
         >>> f.coeff(x**2*y)
@@ -1397,7 +1397,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring("x, y", ZZ, lex)
+        >>> _, x, y = ring('x, y', ZZ, lex)
         >>> f = x*y**7 + 2*x**2*y**3
 
         >>> f.coeffs()
@@ -1428,7 +1428,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring("x, y", ZZ, lex)
+        >>> _, x, y = ring('x, y', ZZ, lex)
         >>> f = x*y**7 + 2*x**2*y**3
 
         >>> f.monoms()
@@ -1450,7 +1450,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring("x, y", ZZ, lex)
+        >>> _, x, y = ring('x, y', ZZ, lex)
         >>> f = x*y**7 + 2*x**2*y**3
 
         >>> f.terms()
@@ -1781,7 +1781,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> R, x, y = ring("x y", ZZ)
+        >>> R, x, y = ring('x y', ZZ)
 
         >>> (2*x**2 - 2).cancel(x**2 - 2*x + 1)
         (2*x + 2, x - 1)
@@ -1833,7 +1833,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         Examples
         ========
 
-        >>> _, x, y = ring("x y", ZZ)
+        >>> _, x, y = ring('x y', ZZ)
         >>> p = x + x**2*y**3
         >>> p.diff(x)
         2*x*y**3 + 1

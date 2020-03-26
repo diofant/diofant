@@ -525,7 +525,7 @@ class FracElement(DomainElement, CantSympify):
         Examples
         ========
 
-        >>> _, x, y, z = field("x y z", ZZ)
+        >>> _, x, y, z = field('x y z', ZZ)
         >>> ((x**2 + y)/(z + 1)).diff(x)
         2*x/(z + 1)
 

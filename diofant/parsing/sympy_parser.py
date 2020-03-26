@@ -460,7 +460,7 @@ def implicit_multiplication_application(result, local_dict, global_dict):
     Examples
     ========
 
-    >>> parse_expr("10sin**2 x**2 + 3xyz + tan theta",
+    >>> parse_expr('10sin**2 x**2 + 3xyz + tan theta',
     ...            transformations=(standard_transformations +
     ...                             (implicit_multiplication_application,)))
     3*x*y*z + 10*sin(x**2)**2 + tan(theta)

@@ -2349,9 +2349,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         for ``dir=-`` the series from the left. For smooth functions this
         flag will not alter the results.
 
-        >>> abs(x).series(dir="+")
+        >>> abs(x).series(dir='+')
         x
-        >>> abs(x).series(dir="-")
+        >>> abs(x).series(dir='-')
         -x
 
         For rational expressions this method may return original expression.

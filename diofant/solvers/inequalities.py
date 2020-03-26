@@ -103,8 +103,8 @@ def solve_poly_inequalities(polys):
     Examples
     ========
 
-    >>> solve_poly_inequalities(((Poly(x**2 - 3), ">"),
-    ...                          (Poly(-x**2 + 1), ">")))
+    >>> solve_poly_inequalities(((Poly(x**2 - 3), '>'),
+    ...                          (Poly(-x**2 + 1), '>')))
     (-oo, -sqrt(3)) U (-1, 1) U (sqrt(3), oo)
 
     """
@@ -182,7 +182,7 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
     Eq(x, 0)
     >>> reduce_rational_inequalities([[x + 2 > 0]], x)
     -2 < x
-    >>> reduce_rational_inequalities([[(x + 2, ">")]], x)
+    >>> reduce_rational_inequalities([[(x + 2, '>')]], x)
     -2 < x
     >>> reduce_rational_inequalities([[x + 2]], x)
     Eq(x, -2)

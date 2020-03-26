@@ -175,13 +175,13 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
     (1) Use one of the provided modules:
 
-        >>> f = lambdify(x, sin(x), "math")
+        >>> f = lambdify(x, sin(x), 'math')
 
         Attention: Functions that are not in the math module will throw a name
                    error when the lambda function is evaluated! So this would
                    be better:
 
-        >>> f = lambdify(x, sin(x)*gamma(x), ("math", "mpmath", "diofant"))
+        >>> f = lambdify(x, sin(x)*gamma(x), ('math', 'mpmath', 'diofant'))
 
     (2) Use some other module:
 
@@ -193,7 +193,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
                    translated to numpy.arctan. Use the modified module instead
                    by passing the string "numpy":
 
-        >>> f = lambdify((x, y), tan(x*y), "numpy")
+        >>> f = lambdify((x, y), tan(x*y), 'numpy')
         >>> f(1, 2)
         -2.18503986326
         >>> from numpy import array
@@ -204,7 +204,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
         >>> def my_cool_function(x):
         ...     return 'sin(%s) is cool' % x
-        >>> myfuncs = {"sin": my_cool_function}
+        >>> myfuncs = {'sin': my_cool_function}
         >>> f = lambdify(x, sin(x), myfuncs)
         >>> f(1)
         'sin(1) is cool'

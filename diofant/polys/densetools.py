@@ -16,7 +16,7 @@ def dmp_diff_in(f, m, j, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
 
@@ -38,7 +38,7 @@ def dmp_eval_in(f, a, j, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = 2*x*y + 3*x + y + 2
 
@@ -86,7 +86,7 @@ def dmp_eval_tail(f, A, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = 2*x*y + 3*x + y + 2
 
@@ -128,7 +128,7 @@ def dmp_diff_eval_in(f, m, a, j, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
 
@@ -161,7 +161,7 @@ def dup_trunc(f, p, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dmp_ground_trunc(2*x**3 + 3*x**2 + 5*x + 7, ZZ(3))
     -x**3 - x + 1
@@ -189,7 +189,7 @@ def dmp_ground_trunc(f, p, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
 
@@ -212,13 +212,13 @@ def dmp_ground_monic(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
     >>> f = 3*x**2*y + 6*x**2 + 3*x*y + 9*y + 3
 
     >>> R.dmp_ground_monic(f)
     x**2*y + 2*x**2 + x*y + 3*y + 1
 
-    >>> R, x, y = ring("x y", QQ)
+    >>> R, x, y = ring('x y', QQ)
     >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
 
     >>> R.dmp_ground_monic(f)
@@ -243,13 +243,13 @@ def dmp_ground_content(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
     >>> f.content()
     2
 
-    >>> R, x, y = ring("x y", QQ)
+    >>> R, x, y = ring('x y', QQ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
     >>> f.content()
@@ -268,13 +268,13 @@ def dmp_ground_primitive(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
     >>> f.primitive()
     (2, x*y + 3*x + 2*y + 6)
 
-    >>> R, x, y = ring("x y", QQ)
+    >>> R, x, y = ring('x y', QQ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
     >>> f.primitive()
@@ -294,12 +294,12 @@ def dup_real_imag(f, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dup_real_imag(x**3 + x**2 + x + 1)
     (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1, 3*x**2*y + 2*x*y - y**3 + y)
 
-    >>> R, x, y = ring("x y", QQ.algebraic_field(I))
+    >>> R, x, y = ring('x y', QQ.algebraic_field(I))
 
     >>> R.dup_real_imag(x**2 + I*x - 1)
     (x**2 - y**2 - y - 1, 2*x*y + x)
@@ -350,7 +350,7 @@ def dup_mirror(f, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dup_mirror(x**3 + 2*x**2 - 4*x + 2)
     -x**3 + 2*x**2 + 4*x + 2
@@ -371,7 +371,7 @@ def dup_scale(f, a, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dup_scale(x**2 - 2*x + 1, ZZ(2))
     4*x**2 - 4*x + 1
@@ -392,7 +392,7 @@ def dup_shift(f, a, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dup_shift(x**2 - 2*x + 1, ZZ(2))
     x**2 + 2*x + 1
@@ -414,7 +414,7 @@ def dup_transform(f, p, q, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dup_transform(x**2 - 2*x + 1, x**2 + 1, x - 1)
     x**4 - 2*x**3 + 5*x**2 - 4*x + 4
@@ -444,7 +444,7 @@ def dmp_compose(f, g, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_compose(x*y + 2*x + y, y)
     y**2 + 3*y
@@ -541,7 +541,7 @@ def dup_decompose(f, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dup_decompose(x**4 - 2*x**3 + x**2)
     [x**2, x**2 - x]
@@ -573,7 +573,7 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", QQ)
+    >>> R, x, y = ring('x y', QQ)
 
     >>> f = x/2 + y/3 + 1
 

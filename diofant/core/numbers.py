@@ -876,11 +876,11 @@ class Rational(Number):
     An arbitrarily precise Rational is obtained when a string literal is
     passed:
 
-    >>> Rational("1.23")
+    >>> Rational('1.23')
     123/100
     >>> Rational('1e-2')
     1/100
-    >>> Rational(".1")
+    >>> Rational('.1')
     1/10
 
     The conversion of floats to expressions or simple fractions can

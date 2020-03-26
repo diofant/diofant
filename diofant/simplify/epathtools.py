@@ -159,13 +159,13 @@ class EPath:
         Examples
         ========
 
-        >>> path = EPath("/*/[0]/Symbol")
+        >>> path = EPath('/*/[0]/Symbol')
         >>> expr = [((x, 1), 2), ((3, y), z)]
 
         >>> path.apply(expr, lambda expr: expr**2)
         [((x**2, 1), 2), ((3, y**2), z)]
 
-        >>> path = EPath("/*/*/Symbol")
+        >>> path = EPath('/*/*/Symbol')
         >>> expr = t + sin(x + 1) + cos(x + y + E)
 
         >>> path.apply(expr, lambda expr: 2*expr)
@@ -227,13 +227,13 @@ class EPath:
         Examples
         ========
 
-        >>> path = EPath("/*/[0]/Symbol")
+        >>> path = EPath('/*/[0]/Symbol')
         >>> expr = [((x, 1), 2), ((3, y), z)]
 
         >>> path.select(expr)
         [x, y]
 
-        >>> path = EPath("/*/*/Symbol")
+        >>> path = EPath('/*/*/Symbol')
         >>> expr = t + sin(x + 1) + cos(x + y + E)
 
         >>> path.select(expr)

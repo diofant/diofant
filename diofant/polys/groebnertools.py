@@ -482,7 +482,7 @@ def f5_reduce(f, B):
     A polynomial that is reducible in the usual sense need not be
     F5-reducible, e.g.:
 
-    >>> R, x, y, z = ring("x y z", QQ, lex)
+    >>> R, x, y, z = ring('x y z', QQ, lex)
 
     >>> f = lbp(sig(Monomial((1, 1, 1)), 4), x, 3)
     >>> g = lbp(sig(Monomial((0, 0, 0)), 2), x, 2)

@@ -32,7 +32,7 @@ def dup_sturm(f, K):
     Examples
     ========
 
-    >>> R, x = ring("x", QQ)
+    >>> R, x = ring('x', QQ)
 
     >>> R.dup_sturm(x**3 - 2*x**2 + x - 3)
     [x**3 - 2*x**2 + x - 3, 3*x**2 - 4*x + 1, 2/9*x + 25/9, -2079/4]
@@ -59,7 +59,7 @@ def dup_sign_variations(f, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dup_sign_variations(x**4 - x**2 - x + 1)
     2

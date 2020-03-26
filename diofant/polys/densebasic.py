@@ -221,7 +221,7 @@ def dmp_convert(f, u, K0, K1):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> dmp_convert([[R(1)], [R(2)]], 1, R, ZZ)
     [[1], [2]]
@@ -766,7 +766,7 @@ def dmp_inject(f, u, K, front=False):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> dmp_inject([R(1), x + 2], 0, R)
     ([[[1]], [[1], [2]]], 2)

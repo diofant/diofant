@@ -99,9 +99,9 @@ class BaseSymbol(AtomicExpr, Boolean):
     def __new__(cls, name, **assumptions):
         """Symbols are identified by name and assumptions::
 
-        >>> Symbol("x") == Symbol("x")
+        >>> Symbol('x') == Symbol('x')
         True
-        >>> Symbol("x", real=True) == Symbol("x", real=False)
+        >>> Symbol('x', real=True) == Symbol('x', real=False)
         False
 
         """
@@ -233,7 +233,7 @@ class Symbol(BaseSymbol):
 class Dummy(BaseSymbol):
     """Dummy symbols are each unique, identified by an internal count index:
 
-    >>> bool(Dummy("x") == Dummy("x")) is True
+    >>> bool(Dummy('x') == Dummy('x')) is True
     False
 
     If a name is not supplied then a string value of the count index will be

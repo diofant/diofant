@@ -26,13 +26,13 @@ def egyptian_fraction(r, algorithm="Greedy"):
 
     >>> egyptian_fraction(Rational(3, 7))
     [3, 11, 231]
-    >>> egyptian_fraction(Rational(3, 7), "Graham Jewett")
+    >>> egyptian_fraction(Rational(3, 7), 'Graham Jewett')
     [7, 8, 9, 56, 57, 72, 3192]
-    >>> egyptian_fraction(Rational(3, 7), "Takenouchi")
+    >>> egyptian_fraction(Rational(3, 7), 'Takenouchi')
     [4, 7, 28]
-    >>> egyptian_fraction(Rational(3, 7), "Golomb")
+    >>> egyptian_fraction(Rational(3, 7), 'Golomb')
     [3, 15, 35]
-    >>> egyptian_fraction(Rational(11, 5), "Golomb")
+    >>> egyptian_fraction(Rational(11, 5), 'Golomb')
     [1, 2, 3, 4, 9, 234, 1118, 2580]
 
     See Also

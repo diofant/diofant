@@ -1436,7 +1436,7 @@ class Permutation(Basic):
 
         >>> Permutation.from_sequence('SymPy')
         Permutation(4)(0, 1, 3)
-        >>> _(sorted("SymPy"))
+        >>> _(sorted('SymPy'))
         ['S', 'y', 'm', 'P', 'y']
         >>> Permutation.from_sequence('SymPy', key=lambda x: x.lower())
         Permutation(4)(0, 2)(1, 3)

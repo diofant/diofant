@@ -1466,7 +1466,7 @@ def nT(n, k=None):
     >>> nT('aabbc') == sum(_)
     True
 
-    >>> [nT("mississippi", i) for i in range(1, 12)]
+    >>> [nT('mississippi', i) for i in range(1, 12)]
     [1, 74, 609, 1521, 1768, 1224, 579, 197, 50, 9, 1]
 
     Partitions when all items are identical:

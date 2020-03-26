@@ -1179,7 +1179,7 @@ class MatrixBase(DefaultPrinting):
         [ XX]
         [XXX]
         >>> m = eye(4)
-        >>> m.print_nonzero("x")
+        >>> m.print_nonzero('x')
         [x   ]
         [ x  ]
         [  x ]

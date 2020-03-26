@@ -80,14 +80,14 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
 
     >>> sympify(2.0).is_real
     True
-    >>> sympify("2.0").is_real
+    >>> sympify('2.0').is_real
     True
-    >>> sympify("2e-45").is_real
+    >>> sympify('2e-45').is_real
     True
 
     If the expression could not be converted, a SympifyError is raised.
 
-    >>> sympify("x***2")
+    >>> sympify('x***2')
     Traceback (most recent call last):
     ...
     SympifyError: SympifyError: "could not parse u'x***2'"
@@ -104,9 +104,9 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     >>> s = 'bitcount(42)'
     >>> sympify(s)
     bitcount(42)
-    >>> sympify("O(x)")
+    >>> sympify('O(x)')
     O(x)
-    >>> sympify("O + 1")
+    >>> sympify('O + 1')
     Traceback (most recent call last):
     ...
     TypeError: unbound method...
@@ -123,10 +123,10 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     in the namespace dictionary. This can be done in a variety of ways; all
     three of the following are possibilities:
 
-    >>> ns["O"] = Symbol("O")  # method 1
+    >>> ns['O'] = Symbol('O')  # method 1
     >>> exec('from diofant.abc import O', ns)  # method 2
-    >>> ns.update({O: Symbol("O")})  # method 3
-    >>> sympify("O + 1", locals=ns)
+    >>> ns.update({O: Symbol('O')})  # method 3
+    >>> sympify('O + 1', locals=ns)
     O + 1
 
     If you want *all* single-letter and Greek-letter variables to be symbols
