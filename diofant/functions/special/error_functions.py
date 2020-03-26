@@ -339,7 +339,7 @@ class erfc(Function):
             return False
 
     def _eval_rewrite_as_tractable(self, z):
-        return self.rewrite(erf).rewrite("tractable", deep=True)
+        return self.rewrite(erf).rewrite('tractable', deep=True)
 
     def _eval_rewrite_as_erf(self, z):
         return 1 - erf(z)
@@ -517,7 +517,7 @@ class erfi(Function):
             return False
 
     def _eval_rewrite_as_tractable(self, z):
-        return self.rewrite(erf).rewrite("tractable", deep=True)
+        return self.rewrite(erf).rewrite('tractable', deep=True)
 
     def _eval_rewrite_as_erf(self, z):
         return -I*erf(I*z)
@@ -1483,7 +1483,7 @@ class Li(Function):
         return li(z) - li(2)
 
     def _eval_rewrite_as_tractable(self, z):
-        return self.rewrite(li).rewrite("tractable", deep=True)
+        return self.rewrite(li).rewrite('tractable', deep=True)
 
 ###############################################################################
 # ################## TRIGONOMETRIC INTEGRALS ################################ #

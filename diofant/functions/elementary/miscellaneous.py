@@ -306,7 +306,7 @@ class MinMaxBase(LatticeOp):
 
     def __new__(cls, *args, **assumptions):
         if not args:
-            raise ValueError("The Max/Min functions must have arguments.")
+            raise ValueError('The Max/Min functions must have arguments.')
 
         args = (sympify(arg) for arg in args)
 

@@ -24,7 +24,7 @@ def hadamard_product(*matrices):
 
     """
     if not matrices:
-        raise TypeError("Empty Hadamard product is undefined")
+        raise TypeError('Empty Hadamard product is undefined')
     validate(*matrices)
     if len(matrices) == 1:
         return matrices[0]
@@ -73,11 +73,11 @@ class HadamardProduct(MatrixExpr):
 
 def validate(*args):
     if not all(arg.is_Matrix for arg in args):
-        raise TypeError("Mix of Matrix and Scalar symbols")
+        raise TypeError('Mix of Matrix and Scalar symbols')
     A = args[0]
     for B in args[1:]:
         if A.shape != B.shape:
-            raise ShapeError("Matrices %s and %s are not aligned" % (A, B))
+            raise ShapeError('Matrices %s and %s are not aligned' % (A, B))
 
 
 rules = (unpack, flatten)

@@ -62,10 +62,10 @@ class LinearEntity(GeometrySet):
             # sometimes we return a single point if we are not given two unique
             # points. This is done in the specific subclass
             raise ValueError(
-                "%s.__new__ requires two unique Points." % cls.__name__)
+                '%s.__new__ requires two unique Points.' % cls.__name__)
         if len(p1) != len(p2):
             raise ValueError(
-                "%s.__new__ requires two Points of equal dimension." % cls.__name__)
+                '%s.__new__ requires two Points of equal dimension.' % cls.__name__)
 
         return GeometryEntity.__new__(cls, p1, p2, **kwargs)
 
@@ -625,7 +625,7 @@ class LinearEntity(GeometrySet):
             n1 = self.__class__.__name__
             n2 = o.__class__.__name__
             raise GeometryError(
-                "Do not know how to project %s onto %s" % (n2, n1))
+                'Do not know how to project %s onto %s' % (n2, n1))
 
         return self.intersection(projected)[0]
 

@@ -845,7 +845,7 @@ class loggamma(Function):
             n = p // q
             p = p - n*q
             assert p.is_positive and q.is_positive and p < q
-            k = Dummy("k")
+            k = Dummy('k')
             if n.is_positive:
                 return loggamma(p / q) - n*log(q) + Sum(log((k - 1)*q + p), (k, 1, n))
             elif n.is_negative:

@@ -3,7 +3,7 @@ import math
 from ..core import Integer
 
 
-def egyptian_fraction(r, algorithm="Greedy"):
+def egyptian_fraction(r, algorithm='Greedy'):
     """Compute an Egyptian fraction of the rational `r`.
 
     Returns
@@ -104,23 +104,23 @@ def egyptian_fraction(r, algorithm="Greedy"):
 
     """
     if r <= 0:
-        raise ValueError("Value must be positive")
+        raise ValueError('Value must be positive')
 
     prefix, rem = egypt_harmonic(r)
     if rem == 0:
         return prefix
     x, y = rem.as_numer_denom()
 
-    if algorithm == "Greedy":
+    if algorithm == 'Greedy':
         return prefix + egypt_greedy(x, y)
-    elif algorithm == "Graham Jewett":
+    elif algorithm == 'Graham Jewett':
         return prefix + egypt_graham_jewett(x, y)
-    elif algorithm == "Takenouchi":
+    elif algorithm == 'Takenouchi':
         return prefix + egypt_takenouchi(x, y)
-    elif algorithm == "Golomb":
+    elif algorithm == 'Golomb':
         return prefix + egypt_golomb(x, y)
     else:
-        raise ValueError("Entered invalid algorithm")
+        raise ValueError('Entered invalid algorithm')
 
 
 def egypt_greedy(x, y):

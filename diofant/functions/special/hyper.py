@@ -209,7 +209,7 @@ class hyper(TupleParametersBase):
     def _eval_rewrite_as_Sum(self, ap, bq, z):
         from .. import factorial, RisingFactorial, Piecewise
         from ...concrete import Sum
-        n = Dummy("n", integer=True)
+        n = Dummy('n', integer=True)
         rfap = Tuple(*[RisingFactorial(a, n) for a in ap])
         rfbq = Tuple(*[RisingFactorial(b, n) for b in bq])
         coeff = Mul(*rfap) / Mul(*rfbq)
@@ -440,22 +440,22 @@ class meijerg(TupleParametersBase):
             args = [(args[0], args[1]), (args[2], args[3]), args[4]]
         if len(args) != 3:
             raise TypeError("args must be either as, as', bs, bs', z or "
-                            "as, bs, z")
+                            'as, bs, z')
 
         def tr(p):
             if len(p) != 2:
-                raise TypeError("wrong argument")
+                raise TypeError('wrong argument')
             return TupleArg(_prep_tuple(p[0]), _prep_tuple(p[1]))
 
         arg0, arg1 = tr(args[0]), tr(args[1])
         if Tuple(arg0, arg1).has(oo, zoo,
                                  -oo):
-            raise ValueError("G-function parameters must be finite")
+            raise ValueError('G-function parameters must be finite')
 
         if any((a - b).is_integer and (a - b).is_positive
                for a in arg0[0] for b in arg1[0]):
-            raise ValueError("no parameter a1, ..., an may differ from "
-                             "any b1, ..., bm by a positive integer")
+            raise ValueError('no parameter a1, ..., an may differ from '
+                             'any b1, ..., bm by a positive integer')
 
         # TODO should we check convergence conditions?
         return Function.__new__(cls, arg0, arg1, args[2])

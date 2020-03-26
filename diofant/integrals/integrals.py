@@ -91,7 +91,7 @@ class Integral(AddWithLimits):
                 return
             if not l[1].is_real or not l[2].is_real:
                 return
-        f = self.function.subs({v: Dummy("d", real=True) for v in self.variables})
+        f = self.function.subs({v: Dummy('d', real=True) for v in self.variables})
         if f.is_real:
             return True
 
@@ -932,7 +932,7 @@ class Integral(AddWithLimits):
             x=symb, n=n, logx=logx).as_coeff_add(Order)
         return integrate(terms, *expr.limits) + Add(*order)*x
 
-    def as_sum(self, n, method="midpoint"):
+    def as_sum(self, n, method='midpoint'):
         """
         Approximates the definite integral by a sum.
 
@@ -1012,42 +1012,42 @@ class Integral(AddWithLimits):
         limits = self.limits
         if len(limits) > 1:
             raise NotImplementedError(
-                "Multidimensional midpoint rule not implemented yet")
+                'Multidimensional midpoint rule not implemented yet')
         else:
             limit = limits[0]
             if len(limit) != 3:
-                raise ValueError("Expecting a definite integral.")
+                raise ValueError('Expecting a definite integral.')
         if n <= 0:
-            raise ValueError("n must be > 0")
+            raise ValueError('n must be > 0')
         if n == oo:
-            raise NotImplementedError("Infinite summation not yet implemented")
+            raise NotImplementedError('Infinite summation not yet implemented')
         sym, lower_limit, upper_limit = limit
         dx = (upper_limit - lower_limit)/n
 
         if method == 'trapezoid':
             l = self.function.limit(sym, lower_limit)
-            r = self.function.limit(sym, upper_limit, "-")
+            r = self.function.limit(sym, upper_limit, '-')
             result = (l + r)/2
             for i in range(1, n):
                 x = lower_limit + i*dx
                 result += self.function.subs({sym: x})
             return result*dx
         elif method not in ('left', 'right', 'midpoint'):
-            raise NotImplementedError("Unknown method %s" % method)
+            raise NotImplementedError('Unknown method %s' % method)
 
         result = 0
         for i in range(n):
-            if method == "midpoint":
+            if method == 'midpoint':
                 xi = lower_limit + i*dx + dx/2
-            elif method == "left":
+            elif method == 'left':
                 xi = lower_limit + i*dx
                 if i == 0:
                     result = self.function.limit(sym, lower_limit)
                     continue
-            elif method == "right":
+            elif method == 'right':
                 xi = lower_limit + i*dx + dx
                 if i == n:
-                    result += self.function.limit(sym, upper_limit, "-")
+                    result += self.function.limit(sym, upper_limit, '-')
                     continue
             result += self.function.subs({sym: xi})
         return result*dx
@@ -1228,16 +1228,16 @@ def line_integrate(field, curve, vars):
     F = sympify(field)
     if not F:
         raise ValueError(
-            "Expecting function specifying field as first argument.")
+            'Expecting function specifying field as first argument.')
     if not isinstance(curve, Curve):
-        raise ValueError("Expecting Curve entity as second argument.")
+        raise ValueError('Expecting Curve entity as second argument.')
     if not is_sequence(vars):
-        raise ValueError("Expecting ordered iterable for variables.")
+        raise ValueError('Expecting ordered iterable for variables.')
     if len(curve.functions) != len(vars):
-        raise ValueError("Field variable size does not match curve dimension.")
+        raise ValueError('Field variable size does not match curve dimension.')
 
     if curve.parameter in vars:
-        raise ValueError("Curve parameter clashes with field parameters.")
+        raise ValueError('Curve parameter clashes with field parameters.')
 
     # Calculate derivatives for line parameter functions
     # F(r) -> F(r(t)) and finally F(r(t)*r'(t))

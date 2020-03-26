@@ -34,7 +34,7 @@ half = Rational(1, 2)
 
 def feq(a, b):
     """Test if two floating point values are 'equal'."""
-    t = Float("1.0E-10")
+    t = Float('1.0E-10')
     return -t < a - b < t
 
 
@@ -431,13 +431,13 @@ def test_polygon():
     assert p5.distance(
         Polygon(Point(1, 8), Point(5, 8), Point(8, 12), Point(1, 12))) == 4
     warnings.filterwarnings(
-        "error", message="Polygons may intersect producing erroneous output")
+        'error', message='Polygons may intersect producing erroneous output')
     pytest.raises(UserWarning,
                   lambda: Polygon(Point(0, 0), Point(1, 0),
                                   Point(1, 1)).distance(
                       Polygon(Point(0, 0), Point(0, 1), Point(1, 1))))
     warnings.filterwarnings(
-        "ignore", message="Polygons may intersect producing erroneous output")
+        'ignore', message='Polygons may intersect producing erroneous output')
     assert hash(p5) == hash(Polygon(Point(0, 0), Point(4, 4), Point(0, 4)))
     assert p5 == Polygon(Point(4, 4), Point(0, 4), Point(0, 0))
     assert Polygon(Point(4, 4), Point(0, 4), Point(0, 0)) in p5
@@ -505,16 +505,16 @@ def test_polygon():
     # Angles
     #
     angles = p4.angles
-    assert feq(angles[Point(0, 0)].evalf(), Float("0.7853981633974483"))
-    assert feq(angles[Point(4, 4)].evalf(), Float("1.2490457723982544"))
-    assert feq(angles[Point(5, 2)].evalf(), Float("1.8925468811915388"))
-    assert feq(angles[Point(3, 0)].evalf(), Float("2.3561944901923449"))
+    assert feq(angles[Point(0, 0)].evalf(), Float('0.7853981633974483'))
+    assert feq(angles[Point(4, 4)].evalf(), Float('1.2490457723982544'))
+    assert feq(angles[Point(5, 2)].evalf(), Float('1.8925468811915388'))
+    assert feq(angles[Point(3, 0)].evalf(), Float('2.3561944901923449'))
 
     angles = p3.angles
-    assert feq(angles[Point(0, 0)].evalf(), Float("0.7853981633974483"))
-    assert feq(angles[Point(4, 4)].evalf(), Float("1.2490457723982544"))
-    assert feq(angles[Point(5, 2)].evalf(), Float("1.8925468811915388"))
-    assert feq(angles[Point(3, 0)].evalf(), Float("2.3561944901923449"))
+    assert feq(angles[Point(0, 0)].evalf(), Float('0.7853981633974483'))
+    assert feq(angles[Point(4, 4)].evalf(), Float('1.2490457723982544'))
+    assert feq(angles[Point(5, 2)].evalf(), Float('1.8925468811915388'))
+    assert feq(angles[Point(3, 0)].evalf(), Float('2.3561944901923449'))
 
     #
     # Triangle
@@ -622,12 +622,12 @@ def test_polygon():
 
     # p1.distance(p2) emits a warning
     # First, test the warning
-    warnings.filterwarnings("error",
-                            message="Polygons may intersect producing erroneous output")
+    warnings.filterwarnings('error',
+                            message='Polygons may intersect producing erroneous output')
     pytest.raises(UserWarning, lambda: p1.distance(p2))
     # now test the actual output
-    warnings.filterwarnings("ignore",
-                            message="Polygons may intersect producing erroneous output")
+    warnings.filterwarnings('ignore',
+                            message='Polygons may intersect producing erroneous output')
     assert p1.distance(p2) == half/2
 
     assert p1.distance(p3) == sqrt(2)/2

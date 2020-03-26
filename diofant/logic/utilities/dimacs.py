@@ -52,9 +52,9 @@ def load(s):
                             sign = False
 
                         if sign:
-                            list.append(Symbol("cnf_%s" % num))
+                            list.append(Symbol('cnf_%s' % num))
                         else:
-                            list.append(~Symbol("cnf_%s" % num))
+                            list.append(~Symbol('cnf_%s' % num))
 
                 if len(list) > 0:
                     clauses.append(Or(*list))

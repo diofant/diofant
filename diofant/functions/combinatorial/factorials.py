@@ -325,7 +325,7 @@ class factorial2(CombinatorialFunction):
                 if n.is_odd:
                     return n * (-1)**((1 - n) / 2) / factorial2(-n)
                 elif n.is_even:
-                    raise ValueError("argument must be nonnegative or odd")
+                    raise ValueError('argument must be nonnegative or odd')
             else:
                 if n.is_even:
                     k = n / 2
