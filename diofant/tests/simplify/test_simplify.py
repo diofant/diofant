@@ -372,8 +372,8 @@ def test_extract_minus_sign():
 
 
 def test_diff():
-    f = Function("f")
-    g = Function("g")
+    f = Function('f')
+    g = Function('g')
     assert simplify(g(x).diff(x)*f(x).diff(x) - f(x).diff(x)*g(x).diff(x)) == 0
     assert simplify(2*f(x)*f(x).diff(x) - diff(f(x)**2, x)) == 0
     assert simplify(diff(1/f(x), x) + f(x).diff(x)/f(x)**2) == 0
@@ -381,8 +381,8 @@ def test_diff():
 
 
 def test_logcombine_1():
-    z, w = symbols("z,w", positive=True)
-    b = Symbol("b", real=True)
+    z, w = symbols('z,w', positive=True)
+    b = Symbol('b', real=True)
     assert logcombine(log(x) + 2*log(y)) == log(x) + 2*log(y)
     assert logcombine(log(x) + 2*log(y), force=True) == log(x*y**2)
     assert logcombine(a*log(w) + log(z)) == a*log(w) + log(z)
@@ -590,7 +590,7 @@ def test_sympyissue_9398():
     assert simplify(1e-100) != 0
     assert simplify(1e-100*I) != 0
 
-    f = Float("1e-1000", 15)
+    f = Float('1e-1000', 15)
     assert cancel(f) != 0
     assert cancel(f*I) != 0
 

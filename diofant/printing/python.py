@@ -5,8 +5,8 @@ from .str import StrPrinter
 
 
 # A list of classes that should be printed using StrPrinter
-STRPRINT = ("Add", "Infinity", "Integer", "Mul", "NegativeInfinity",
-            "Pow", "Zero")
+STRPRINT = ('Add', 'Infinity', 'Integer', 'Mul', 'NegativeInfinity',
+            'Pow', 'Zero')
 
 
 class PythonPrinter(ReprPrinter, StrPrinter):
@@ -21,7 +21,7 @@ class PythonPrinter(ReprPrinter, StrPrinter):
         # Create print methods for classes that should use StrPrinter instead
         # of ReprPrinter.
         for name in STRPRINT:
-            f_name = "_print_%s" % name
+            f_name = '_print_%s' % name
             f = getattr(StrPrinter, f_name)
             setattr(PythonPrinter, f_name, f)
 
@@ -57,7 +57,7 @@ def python(expr, **settings):
         # Escape symbol names that are reserved python keywords
         if kw.iskeyword(newsymbolname):
             while True:
-                newsymbolname += "_"
+                newsymbolname += '_'
                 if (newsymbolname not in printer.symbols and
                         newsymbolname not in printer.functions):
                     renamings[Symbol(symbolname)] = Symbol(newsymbolname)
@@ -69,7 +69,7 @@ def python(expr, **settings):
         # Escape function names that are reserved python keywords
         if kw.iskeyword(newfunctionname):
             while True:
-                newfunctionname += "_"
+                newfunctionname += '_'
                 if (newfunctionname not in printer.symbols and
                         newfunctionname not in printer.functions):
                     renamings[Function(functionname)] = Function(newfunctionname)

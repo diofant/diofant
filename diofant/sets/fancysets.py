@@ -373,11 +373,11 @@ class Range(Set):
             start, stop, step = [w if w in [-oo, oo] else Integer(as_int(w))
                                  for w in (start, stop, step)]
         except ValueError:
-            raise ValueError("Inputs to Range must be Integer Valued\n" +
-                             "Use ImageSets of Ranges for other cases")
+            raise ValueError('Inputs to Range must be Integer Valued\n' +
+                             'Use ImageSets of Ranges for other cases')
 
         if not step.is_finite:
-            raise ValueError("Infinite step is not allowed")
+            raise ValueError('Infinite step is not allowed')
         if start == stop:
             return S.EmptySet
 
@@ -394,8 +394,8 @@ class Range(Set):
 
         step = abs(step)
         if (start, stop) == (-oo, oo):
-            raise ValueError("Both the start and end value of "
-                             "Range cannot be unbounded")
+            raise ValueError('Both the start and end value of '
+                             'Range cannot be unbounded')
         else:
             return Basic.__new__(cls, start, stop + step, step)
 

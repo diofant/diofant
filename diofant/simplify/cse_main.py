@@ -351,7 +351,7 @@ def tree_cse(exprs, symbols, opt_subs={}, order='canonical', ignore=()):
             try:
                 sym = next(symbols)
             except StopIteration:
-                raise ValueError("Symbols iterator ran out of symbols.")
+                raise ValueError('Symbols iterator ran out of symbols.')
             if not orig_expr.is_commutative and not orig_expr.is_Relational:
                 sym = Symbol(sym.name, commutative=False)
             subs[orig_expr] = sym

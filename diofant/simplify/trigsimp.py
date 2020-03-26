@@ -19,7 +19,7 @@ from ..polys.polytools import groebner
 from ..utilities.misc import debug
 
 
-def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
+def trigsimp_groebner(expr, hints=[], quick=False, order='grlex',
                       polynomial=False):
     """
     Simplify trigonometric expressions using a groebner basis algorithm.
@@ -353,14 +353,14 @@ def trigsimp_groebner(expr, hints=[], quick=False, order="grlex",
     debug('initial gens:', opt.gens)
     ideal, freegens, gens = analyse_gens(opt.gens, hints)
     debug('ideal:', ideal)
-    debug('new gens:', gens, " -- len", len(gens))
-    debug('free gens:', freegens, " -- len", len(gens))
+    debug('new gens:', gens, ' -- len', len(gens))
+    debug('free gens:', freegens, ' -- len', len(gens))
     # NOTE we force the domain to be ZZ to stop polys from injecting generators
     #      (which is usually a sign of a bug in the way we build the ideal)
     if not gens:
         return expr
     G = groebner(ideal, order=order, gens=gens, domain=ZZ)
-    debug('groebner basis:', list(G), " -- len", len(G))
+    debug('groebner basis:', list(G), ' -- len', len(G))
 
     # If our fraction is a polynomial in the free generators, simplify all
     # coefficients separately:

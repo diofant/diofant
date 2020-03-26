@@ -21,10 +21,10 @@ class MathMLPrinter(Printer):
 
     """
 
-    printmethod = "_mathml"
+    printmethod = '_mathml'
     _default_settings = {
-        "order": None,
-        "encoding": "utf-8"
+        'order': None,
+        'encoding': 'utf-8'
     }
 
     def __init__(self, settings=None):
@@ -191,7 +191,7 @@ class MathMLPrinter(Printer):
 
         """
         x = self.dom.createElement('cn')
-        x.appendChild(self.dom.createTextNode("\N{GREEK SMALL LETTER PHI}"))
+        x.appendChild(self.dom.createTextNode('\N{GREEK SMALL LETTER PHI}'))
         return x
 
     def _print_Exp1(self, e):
@@ -252,7 +252,7 @@ class MathMLPrinter(Printer):
                 for i, item in enumerate(items):
                     if i > 0:
                         mo = self.dom.createElement('mml:mo')
-                        mo.appendChild(self.dom.createTextNode(" "))
+                        mo.appendChild(self.dom.createTextNode(' '))
                         mrow.appendChild(mo)
                     mi = self.dom.createElement('mml:mi')
                     mi.appendChild(self.dom.createTextNode(item))
@@ -340,7 +340,7 @@ class MathMLPrinter(Printer):
         return x
 
     def _print_Function(self, e):
-        x = self.dom.createElement("apply")
+        x = self.dom.createElement('apply')
         x.appendChild(self.dom.createElement(self.mathml_tag(e)))
         for arg in e.args:
             x.appendChild(self._print(arg))

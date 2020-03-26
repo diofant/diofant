@@ -208,12 +208,12 @@ class stringPict:
         break the expression in a form that can be printed
         on the terminal without being broken up.
         """
-        if kwargs["wrap_line"] is False:
-            return "\n".join(self.picture)
+        if kwargs['wrap_line'] is False:
+            return '\n'.join(self.picture)
 
-        if kwargs["num_columns"] is not None:
+        if kwargs['num_columns'] is not None:
             # Read the argument num_columns if it is not None
-            ncols = kwargs["num_columns"]
+            ncols = kwargs['num_columns']
         else:
             # Attempt to get a terminal width
             ncols = self.terminal_width()
@@ -243,13 +243,13 @@ class stringPict:
         while i < self.width():
             svals.extend([ sval[i:i + ncols] for sval in self.picture ])
             if do_vspacers:
-                svals.append("")  # a vertical spacer
+                svals.append('')  # a vertical spacer
             i += ncols
 
         if svals[-1] == '':
             del svals[-1]  # Get rid of the last spacer
 
-        return "\n".join(svals)
+        return '\n'.join(svals)
 
     def terminal_width(self):
         """Return the terminal width if possible, otherwise return 0.
@@ -334,7 +334,7 @@ class prettyForm(stringPict):
         num = self
 
         if num.binding == prettyForm.NEG:
-            num = num.right(" ")[0]
+            num = num.right(' ')[0]
 
         return prettyForm(binding=prettyForm.DIV, *stringPict.stack(
             num,
@@ -406,4 +406,4 @@ class prettyForm(stringPict):
 
         return prettyForm(binding=prettyForm.POW, *bot.above(top))
 
-    simpleFunctions = ["sin", "cos", "tan"]
+    simpleFunctions = ['sin', 'cos', 'tan']

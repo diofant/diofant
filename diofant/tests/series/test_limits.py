@@ -24,7 +24,7 @@ def test_basic1():
     assert limit(-x, x, oo) == -oo
     assert limit(x**2, x, -oo) == oo
     assert limit(-x**2, x, oo) == -oo
-    assert limit(x*log(x), x, 0, dir="+") == 0
+    assert limit(x*log(x), x, 0, dir='+') == 0
     assert limit(1/x, x, oo) == 0
     assert limit(exp(x), x, oo) == oo
     assert limit(-exp(x), x, oo) == -oo
@@ -44,21 +44,21 @@ def test_basic1():
     assert limit(nan, x, -oo) == nan
     assert limit(O(2)*x, x, nan) == nan
     assert limit(sin(O(x)), x, 0) == 0
-    assert limit(1/(x - 1), x, 1, dir="+") == oo
-    assert limit(1/(x - 1), x, 1, dir="-") == -oo
-    assert limit(1/(5 - x)**3, x, 5, dir="+") == -oo
-    assert limit(1/(5 - x)**3, x, 5, dir="-") == oo
-    assert limit(1/sin(x), x, pi, dir="+") == -oo
-    assert limit(1/sin(x), x, pi, dir="-") == oo
-    assert limit(1/cos(x), x, pi/2, dir="+") == -oo
-    assert limit(1/cos(x), x, pi/2, dir="-") == oo
-    assert limit(1/tan(x**3), x, cbrt(2*pi), dir="+") == oo
-    assert limit(1/tan(x**3), x, cbrt(2*pi), dir="-") == -oo
-    assert limit(1/cot(x)**3, x, 3*pi/2, dir="+") == -oo
-    assert limit(1/cot(x)**3, x, 3*pi/2, dir="-") == oo
+    assert limit(1/(x - 1), x, 1, dir='+') == oo
+    assert limit(1/(x - 1), x, 1, dir='-') == -oo
+    assert limit(1/(5 - x)**3, x, 5, dir='+') == -oo
+    assert limit(1/(5 - x)**3, x, 5, dir='-') == oo
+    assert limit(1/sin(x), x, pi, dir='+') == -oo
+    assert limit(1/sin(x), x, pi, dir='-') == oo
+    assert limit(1/cos(x), x, pi/2, dir='+') == -oo
+    assert limit(1/cos(x), x, pi/2, dir='-') == oo
+    assert limit(1/tan(x**3), x, cbrt(2*pi), dir='+') == oo
+    assert limit(1/tan(x**3), x, cbrt(2*pi), dir='-') == -oo
+    assert limit(1/cot(x)**3, x, 3*pi/2, dir='+') == -oo
+    assert limit(1/cot(x)**3, x, 3*pi/2, dir='-') == oo
 
     # approaching 0
-    # from dir="+"
+    # from dir='+'
     assert limit(1 + 1/x, x, 0) == oo
     # from dir='-'
     # Add
@@ -78,7 +78,7 @@ def test_basic1():
 
 
 def test_basic2():
-    assert limit(x**x, x, 0, dir="+") == 1
+    assert limit(x**x, x, 0, dir='+') == 1
     assert limit((exp(x) - 1)/x, x, 0) == 1
     assert limit(1 + 1/x, x, oo) == 1
     assert limit(-exp(1/x), x, oo) == -1
@@ -89,8 +89,8 @@ def test_basic2():
 
 
 def test_basic3():
-    assert limit(1/x, x, 0, dir="+") == oo
-    assert limit(1/x, x, 0, dir="-") == -oo
+    assert limit(1/x, x, 0, dir='+') == oo
+    assert limit(1/x, x, 0, dir='-') == -oo
 
 
 def test_basic4():
@@ -131,55 +131,55 @@ def test_Limit():
 
 
 def test_floor():
-    assert limit(floor(x), x, -2, "+") == -2
-    assert limit(floor(x), x, -2, "-") == -3
-    assert limit(floor(x), x, -1, "+") == -1
-    assert limit(floor(x), x, -1, "-") == -2
-    assert limit(floor(x), x, 0, "+") == 0
-    assert limit(floor(x), x, 0, "-") == -1
-    assert limit(floor(x), x, 1, "+") == 1
-    assert limit(floor(x), x, 1, "-") == 0
-    assert limit(floor(x), x, 2, "+") == 2
-    assert limit(floor(x), x, 2, "-") == 1
-    assert limit(floor(x), x, 248, "+") == 248
-    assert limit(floor(x), x, 248, "-") == 247
+    assert limit(floor(x), x, -2, '+') == -2
+    assert limit(floor(x), x, -2, '-') == -3
+    assert limit(floor(x), x, -1, '+') == -1
+    assert limit(floor(x), x, -1, '-') == -2
+    assert limit(floor(x), x, 0, '+') == 0
+    assert limit(floor(x), x, 0, '-') == -1
+    assert limit(floor(x), x, 1, '+') == 1
+    assert limit(floor(x), x, 1, '-') == 0
+    assert limit(floor(x), x, 2, '+') == 2
+    assert limit(floor(x), x, 2, '-') == 1
+    assert limit(floor(x), x, 248, '+') == 248
+    assert limit(floor(x), x, 248, '-') == 247
 
 
 def test_floor_requires_robust_assumptions():
-    assert limit(floor(sin(x)), x, 0, "+") == 0
-    assert limit(floor(sin(x)), x, 0, "-") == -1
-    assert limit(floor(cos(x)), x, 0, "+") == 0
-    assert limit(floor(cos(x)), x, 0, "-") == 0
-    assert limit(floor(5 + sin(x)), x, 0, "+") == 5
-    assert limit(floor(5 + sin(x)), x, 0, "-") == 4
-    assert limit(floor(5 + cos(x)), x, 0, "+") == 5
-    assert limit(floor(5 + cos(x)), x, 0, "-") == 5
+    assert limit(floor(sin(x)), x, 0, '+') == 0
+    assert limit(floor(sin(x)), x, 0, '-') == -1
+    assert limit(floor(cos(x)), x, 0, '+') == 0
+    assert limit(floor(cos(x)), x, 0, '-') == 0
+    assert limit(floor(5 + sin(x)), x, 0, '+') == 5
+    assert limit(floor(5 + sin(x)), x, 0, '-') == 4
+    assert limit(floor(5 + cos(x)), x, 0, '+') == 5
+    assert limit(floor(5 + cos(x)), x, 0, '-') == 5
 
 
 def test_ceiling():
-    assert limit(ceiling(x), x, -2, "+") == -1
-    assert limit(ceiling(x), x, -2, "-") == -2
-    assert limit(ceiling(x), x, -1, "+") == 0
-    assert limit(ceiling(x), x, -1, "-") == -1
-    assert limit(ceiling(x), x, 0, "+") == 1
-    assert limit(ceiling(x), x, 0, "-") == 0
-    assert limit(ceiling(x), x, 1, "+") == 2
-    assert limit(ceiling(x), x, 1, "-") == 1
-    assert limit(ceiling(x), x, 2, "+") == 3
-    assert limit(ceiling(x), x, 2, "-") == 2
-    assert limit(ceiling(x), x, 248, "+") == 249
-    assert limit(ceiling(x), x, 248, "-") == 248
+    assert limit(ceiling(x), x, -2, '+') == -1
+    assert limit(ceiling(x), x, -2, '-') == -2
+    assert limit(ceiling(x), x, -1, '+') == 0
+    assert limit(ceiling(x), x, -1, '-') == -1
+    assert limit(ceiling(x), x, 0, '+') == 1
+    assert limit(ceiling(x), x, 0, '-') == 0
+    assert limit(ceiling(x), x, 1, '+') == 2
+    assert limit(ceiling(x), x, 1, '-') == 1
+    assert limit(ceiling(x), x, 2, '+') == 3
+    assert limit(ceiling(x), x, 2, '-') == 2
+    assert limit(ceiling(x), x, 248, '+') == 249
+    assert limit(ceiling(x), x, 248, '-') == 248
 
 
 def test_ceiling_requires_robust_assumptions():
-    assert limit(ceiling(sin(x)), x, 0, "+") == 1
-    assert limit(ceiling(sin(x)), x, 0, "-") == 0
-    assert limit(ceiling(cos(x)), x, 0, "+") == 1
-    assert limit(ceiling(cos(x)), x, 0, "-") == 1
-    assert limit(ceiling(5 + sin(x)), x, 0, "+") == 6
-    assert limit(ceiling(5 + sin(x)), x, 0, "-") == 5
-    assert limit(ceiling(5 + cos(x)), x, 0, "+") == 6
-    assert limit(ceiling(5 + cos(x)), x, 0, "-") == 6
+    assert limit(ceiling(sin(x)), x, 0, '+') == 1
+    assert limit(ceiling(sin(x)), x, 0, '-') == 0
+    assert limit(ceiling(cos(x)), x, 0, '+') == 1
+    assert limit(ceiling(cos(x)), x, 0, '-') == 1
+    assert limit(ceiling(5 + sin(x)), x, 0, '+') == 6
+    assert limit(ceiling(5 + sin(x)), x, 0, '-') == 5
+    assert limit(ceiling(5 + cos(x)), x, 0, '+') == 6
+    assert limit(ceiling(5 + cos(x)), x, 0, '-') == 6
 
 
 def test_atan():
@@ -201,14 +201,14 @@ def test_abs():
 
 
 def test_heuristic():
-    x = Symbol("x", extended_real=True)
+    x = Symbol('x', extended_real=True)
     assert heuristics(sin(1/x) + atan(x), x, 0, '+') == sin(oo)
     assert heuristics(log(2 + sqrt(atan(x))*sin(1/x)), x, 0, '+') == log(2)
     assert heuristics(tan(tan(1/x)), x, 0, '+') is None
 
 
 def test_sympyissue_3871():
-    z = Symbol("z", positive=True)
+    z = Symbol('z', positive=True)
     f = -1/z*exp(-z*x)
     assert limit(f, x, oo) == 0
     assert f.limit(x, oo) == 0
@@ -491,7 +491,7 @@ def test_sympyissue_5383():
 def test_sympyissue_6171():
     e = Piecewise((0, x < 0), (1, True))
     assert e.limit(x, 0) == 1
-    assert e.limit(x, 0, "-") == 0
+    assert e.limit(x, 0, '-') == 0
 
 
 def test_sympyissue_11526():
@@ -708,11 +708,11 @@ def test_sympyissue_17792():
 
 
 def test_sympyissue_18118():
-    assert limit(sign(x), x, 0, "+") == +1
-    assert limit(sign(x), x, 0, "-") == -1
+    assert limit(sign(x), x, 0, '+') == +1
+    assert limit(sign(x), x, 0, '-') == -1
 
-    assert limit(sign(sin(x)), x, 0, "+") == +1
-    assert limit(sign(sin(x)), x, 0, "-") == -1
+    assert limit(sign(sin(x)), x, 0, '+') == +1
+    assert limit(sign(sin(x)), x, 0, '-') == -1
 
 
 def test_sympyissue_6599():
@@ -742,8 +742,8 @@ def test_sympyissue_18399():
 
 
 def test_sympyissue_18452():
-    assert limit(abs(log(x))**x, x, 0, "+") == 1
-    assert limit(abs(log(x))**x, x, 0, "-") == 1
+    assert limit(abs(log(x))**x, x, 0, '+') == 1
+    assert limit(abs(log(x))**x, x, 0, '-') == 1
 
 
 def test_sympyissue_18482():
