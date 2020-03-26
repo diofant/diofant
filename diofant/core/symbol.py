@@ -110,7 +110,7 @@ class BaseSymbol(AtomicExpr, Boolean):
 
     def __new_stage2__(cls, name, **assumptions):
         if not isinstance(name, str):
-            raise TypeError("name should be a string, not %s" % repr(type(name)))
+            raise TypeError('name should be a string, not %s' % repr(type(name)))
 
         obj = Expr.__new__(cls)
         obj.name = name
@@ -256,7 +256,7 @@ class Dummy(BaseSymbol):
 
     def __new__(cls, name=None, **assumptions):
         if name is None:
-            name = "Dummy_" + str(Dummy._count)
+            name = 'Dummy_' + str(Dummy._count)
 
         cls._sanitize(assumptions, cls)
         obj = Symbol.__xnew__(cls, name, **assumptions)

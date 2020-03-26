@@ -50,7 +50,7 @@ def dummy_sgs(dummies, sym, n):
 
     """
     if len(dummies) > n:
-        raise ValueError("List too large")
+        raise ValueError('List too large')
     res = []
     # exchange of contravariant and covariant indices
     if sym is not None:

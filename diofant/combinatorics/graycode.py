@@ -85,17 +85,17 @@ class GrayCode(Basic):
         args = (Integer(n),) + args
         obj = Basic.__new__(cls, *args)
         if 'start' in kw_args:
-            obj._current = kw_args["start"]
+            obj._current = kw_args['start']
             if len(obj._current) > n:
                 raise ValueError('Gray code start has length %i but '
                                  'should not be greater '
                                  'than %i' % (len(obj._current), n))
         elif 'rank' in kw_args:
-            kw_args["rank"] = as_int(kw_args["rank"])
-            if kw_args["rank"] <= 0:
+            kw_args['rank'] = as_int(kw_args['rank'])
+            if kw_args['rank'] <= 0:
                 raise ValueError('Gray code rank must be a positive integer, '
-                                 'not %i' % kw_args["rank"])
-            obj._rank = kw_args["rank"] % obj.selections
+                                 'not %i' % kw_args['rank'])
+            obj._rank = kw_args['rank'] % obj.selections
             obj._current = obj.unrank(n, obj._rank)
         return obj
 
@@ -172,10 +172,10 @@ class GrayCode(Basic):
         """
         bits = self.n
         start = None
-        if "start" in hints:
-            start = hints["start"]
-        elif "rank" in hints:
-            start = GrayCode.unrank(self.n, hints["rank"])
+        if 'start' in hints:
+            start = hints['start']
+        elif 'rank' in hints:
+            start = GrayCode.unrank(self.n, hints['rank'])
         if start is not None:
             self._current = start
         current = self.current
@@ -388,7 +388,7 @@ def get_subset_from_bitstring(super_set, bitstring):
 
     """
     if len(super_set) != len(bitstring):
-        raise ValueError("The sizes of the lists are not equal")
+        raise ValueError('The sizes of the lists are not equal')
     return [super_set[i] for i, j in enumerate(bitstring)
             if bitstring[i] == '1']
 

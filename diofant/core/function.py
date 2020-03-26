@@ -82,7 +82,7 @@ class ArgumentIndexError(ValueError):
     """Raised when an invalid operation for positional argument happened."""
 
     def __str__(self):
-        return ("Invalid operation with argument number %s for Function %s" %
+        return ('Invalid operation with argument number %s for Function %s' %
                 (self.args[1], self.args[0]))
 
 
@@ -116,7 +116,7 @@ class FunctionClass(ManagedProperties):
         # Canonicalize nargs here; change to set in nargs.
         if is_sequence(nargs):
             if not nargs:
-                raise ValueError("Incorrectly specified nargs as %s" % str(nargs))
+                raise ValueError('Incorrectly specified nargs as %s' % str(nargs))
             nargs = tuple(ordered(set(nargs)))
         elif nargs is not None:
             nargs = as_int(nargs),
@@ -201,7 +201,7 @@ class Application(Expr, metaclass=FunctionClass):
         options.pop('nargs', None)
 
         if options:
-            raise ValueError("Unknown options: %s" % options)
+            raise ValueError('Unknown options: %s' % options)
 
         if evaluate:
             if nan in args:
@@ -550,7 +550,7 @@ class Function(Application, Expr):
                 # let's try the general algorithm
                 term = e.subs({x: 0})
                 if term.is_finite is False:
-                    raise PoleError("Cannot expand %s around 0" % self)
+                    raise PoleError('Cannot expand %s around 0' % self)
                 series = term
                 fact = Integer(1)
                 _x = Dummy('x', real=True, positive=True)
@@ -1406,7 +1406,7 @@ class Subs(Expr):
         if len(args) and all(is_sequence(_) and len(_) == 2 for _ in args):
             variables, point = zip(*args)
         else:
-            raise ValueError("Subs support two or more arguments")
+            raise ValueError('Subs support two or more arguments')
 
         if tuple(uniq(variables)) != variables:
             repeated = [ v for v in set(variables) if variables.count(v) > 1 ]
@@ -1417,7 +1417,7 @@ class Subs(Expr):
 
         # use symbols with names equal to the point value (with preppended _)
         # to give a variable-independent expression
-        pre = "_"
+        pre = '_'
         pts = sorted(set(point), key=default_sort_key)
         from ..printing import StrPrinter
 
@@ -1443,7 +1443,7 @@ class Subs(Expr):
                    r in variables and
                    Symbol(pre + mystr(point[variables.index(r)])) != r
                    for _, r in reps):
-                pre += "_"
+                pre += '_'
                 continue
             break
 

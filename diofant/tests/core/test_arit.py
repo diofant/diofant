@@ -13,7 +13,7 @@ from diofant.utilities.randtest import verify_numerically
 __all__ = ()
 
 
-b = Symbol("b", positive=True)
+b = Symbol('b', positive=True)
 
 
 def same_and_same_prec(a, b):
@@ -267,9 +267,9 @@ def test_real_mul():
 
 
 def test_ncmul():
-    A = Symbol("A", commutative=False)
-    B = Symbol("B", commutative=False)
-    C = Symbol("C", commutative=False)
+    A = Symbol('A', commutative=False)
+    B = Symbol('B', commutative=False)
+    C = Symbol('C', commutative=False)
     assert A*B != B*A
     assert A*B*C != C*B*A
     assert A*b*B*3*C == 3*b*A*B*C
@@ -984,8 +984,8 @@ def test_Pow_is_real():
     assert (i**(Rational(1, 2) + x)).is_extended_real is None
     assert Pow(I, 2, evaluate=False).is_extended_real
 
-    x = Symbol("x", nonnegative=True)
-    y = Symbol("y", nonnegative=True)
+    x = Symbol('x', nonnegative=True)
+    y = Symbol('y', nonnegative=True)
     assert im(x**y).expand(complex=True) is Integer(0)
     assert (x**y).is_extended_real is True
     i = Symbol('i', imaginary=True)
@@ -1303,9 +1303,9 @@ def test_Add_is_irrational():
 def test_sympyissue_3531():
     class MightyNumeric(tuple):
         def __rtruediv__(self, other):
-            return "something"
+            return 'something'
 
-    assert sympify(1)/MightyNumeric((1, 2)) == "something"
+    assert sympify(1)/MightyNumeric((1, 2)) == 'something'
 
 
 def test_sympyissue_3531b():
@@ -1323,7 +1323,7 @@ def test_sympyissue_3531b():
 
 
 def test_bug3():
-    b = Symbol("b", positive=True)
+    b = Symbol('b', positive=True)
     e = 2*a + b
     f = b + 2*a
     assert e == f
@@ -1596,15 +1596,15 @@ def test_Mod_is_nonposneg():
 
 
 def test_sympyissue_6001():
-    A = Symbol("A", commutative=False)
+    A = Symbol('A', commutative=False)
     eq = A + A**2
     # it doesn't matter whether it's True or False; they should
     # just all be the same
     assert eq.is_commutative == (eq + 1).is_commutative
 
-    B = Symbol("B", commutative=False)
+    B = Symbol('B', commutative=False)
     # Although commutative terms could cancel we return True
-    # meaning "there are non-commutative symbols; aftersubstitution
+    # meaning there are non-commutative symbols; aftersubstitution
     # that definition can change, e.g. (A*B).subs({B: A**-1}) -> 1
     assert (sqrt(2)*A).is_commutative is False
     assert (sqrt(2)*A*B).is_commutative is False

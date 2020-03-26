@@ -297,7 +297,7 @@ class Number(AtomicExpr):
                 return val
             else:
                 raise ValueError('String "%s" does not denote a Number' % obj)
-        msg = "expected str|int|float|Decimal|Number object but got %r"
+        msg = 'expected str|int|float|Decimal|Number object but got %r'
         raise TypeError(msg % type(obj).__name__)
 
     def invert(self, other, *gens, **args):
@@ -832,7 +832,7 @@ class Float(Number):
     def __hash__(self):
         return super().__hash__()
 
-    def epsilon_eq(self, other, epsilon="1e-15"):
+    def epsilon_eq(self, other, epsilon='1e-15'):
         """Test approximate equality."""
         return abs(self - other) < Float(epsilon)
 
