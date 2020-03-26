@@ -295,7 +295,7 @@ def test_dmp_from_to_dict():
 
     assert dmp_to_dict(f, 0) == h
 
-    R,  x, y = ring("x,y", ZZ)
+    R,  x, y = ring('x,y', ZZ)
 
     f = [R(3), R(0), R(2), R(0), R(0), R(8)]
     h = {(5,): R(3), (3,): R(2), (0,): R(8)}
@@ -466,7 +466,7 @@ def test_dmp_include():
 
 
 def test_dmp_inject():
-    R,  x, y = ring("x,y", ZZ)
+    R,  x, y = ring('x,y', ZZ)
 
     assert dmp_inject([], 0, R) == ([[[]]], 2)
     assert dmp_inject([[]], 1, R) == ([[[[]]]], 3)
@@ -486,7 +486,7 @@ def test_dmp_inject():
 
 
 def test_dmp_eject():
-    R,  x, y = ring("x,y", ZZ)
+    R,  x, y = ring('x,y', ZZ)
 
     assert dmp_eject([[[]]], 2, R) == []
     assert dmp_eject([[[[]]]], 3, R) == [[]]

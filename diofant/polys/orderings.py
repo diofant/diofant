@@ -153,7 +153,7 @@ class InverseOrder(MonomialOrder):
         self.O = O
 
     def __str__(self):
-        return "i" + str(self.O)
+        return 'i' + str(self.O)
 
     def __call__(self, monomial):
         def inv(l):
@@ -234,7 +234,7 @@ def monomial_key(order=None, gens=None):
             return _order
         return order
     else:
-        raise ValueError("monomial ordering specification must be a string or a callable, got %s" % order)
+        raise ValueError('monomial ordering specification must be a string or a callable, got %s' % order)
 
 
 class _ItemGetter:

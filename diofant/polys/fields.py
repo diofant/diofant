@@ -53,7 +53,7 @@ class FractionField(Field, CompositeDomain):
         if obj is None:
             obj = object.__new__(cls)
             obj._hash = _hash
-            obj.dtype = type("FracElement", (FracElement,), {"field": obj})
+            obj.dtype = type('FracElement', (FracElement,), {'field': obj})
             obj.symbols = symbols
             obj.ngens = ngens
             obj.domain = domain
@@ -127,7 +127,7 @@ class FractionField(Field, CompositeDomain):
             if self == element.field:
                 return element
             else:
-                raise NotImplementedError("conversion")
+                raise NotImplementedError('conversion')
         elif isinstance(element, PolyElement):
             denom, numer = element.clear_denoms()
             numer = numer.set_ring(self.ring)
@@ -138,7 +138,7 @@ class FractionField(Field, CompositeDomain):
             numer, denom = numer.cancel(denom)
             return self.raw_new(numer, denom)
         elif isinstance(element, str):
-            raise NotImplementedError("parsing")
+            raise NotImplementedError('parsing')
         elif isinstance(element, Expr):
             return self.convert(element)
         else:
@@ -176,7 +176,7 @@ class FractionField(Field, CompositeDomain):
         try:
             frac = self._rebuild_expr(expr, mapping)
         except CoercionFailed:
-            raise ValueError("expected an expression convertible to a rational function in %s, got %s" % (self, expr))
+            raise ValueError('expected an expression convertible to a rational function in %s, got %s' % (self, expr))
         else:
             return self.field_new(frac)
 
@@ -236,7 +236,7 @@ class FracElement(DomainElement, CantSympify):
         if denom is None:
             denom = self.field.ring.one
         elif not denom:
-            raise ZeroDivisionError("zero denominator")
+            raise ZeroDivisionError('zero denominator')
 
         self._numerator = numer
         self._denominator = denom
@@ -252,7 +252,7 @@ class FracElement(DomainElement, CantSympify):
 
     def to_poly(self):
         if self.denominator != self.field.ring.one:
-            raise ValueError("self.denominator should be 1")
+            raise ValueError('self.denominator should be 1')
         return self.numerator
 
     @property
@@ -538,7 +538,7 @@ class FracElement(DomainElement, CantSympify):
         if 0 < len(values) <= self.field.ngens:
             return self.eval(list(zip(self.field.gens, values)))
         else:
-            raise ValueError("expected at least 1 and at most %s values, got %s" % (self.field.ngens, len(values)))
+            raise ValueError('expected at least 1 and at most %s values, got %s' % (self.field.ngens, len(values)))
 
     def eval(self, x, a=None):
         if isinstance(x, list) and a is None:

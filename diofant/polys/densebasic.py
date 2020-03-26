@@ -103,7 +103,7 @@ def dmp_degree_in(f, j, u):
         return -oo if dmp_zero_p(f, u) else len(f) - 1
 
     if j < 0 or j > u:
-        raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
+        raise IndexError('0 <= j <= %s expected, got %s' % (u, j))
 
     def degree_in(g, v, i, j):
         if i == j:
@@ -490,7 +490,7 @@ def dmp_swap(f, i, j, u, K):
 
     """
     if i < 0 or j < 0 or i > u or j > u:
-        raise IndexError("0 <= i < j <= %s expected" % u)
+        raise IndexError('0 <= i < j <= %s expected' % u)
     elif i == j:
         return f
 
@@ -665,7 +665,7 @@ def dmp_inflate(f, M, u, K):
         if not v:
             return dup_inflate(g, M[i], K)
         if M[i] <= 0:
-            raise IndexError("all M[i] must be positive, got %s" % M[i])
+            raise IndexError('all M[i] must be positive, got %s' % M[i])
 
         w, j = v - 1, i + 1
 
@@ -889,7 +889,7 @@ def dmp_apply_pairs(f, g, h, args, u, K):
 def dmp_slice_in(f, m, n, j, u, K):
     """Take a continuous subsequence of terms of ``f`` in ``x_j`` in ``K[X]``."""
     if j < 0 or j > u:
-        raise IndexError("-%s <= j < %s expected, got %s" % (u, u, j))
+        raise IndexError('-%s <= j < %s expected, got %s' % (u, u, j))
 
     if not u:
         k = len(f)

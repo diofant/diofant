@@ -144,9 +144,9 @@ def _parse_symbols(symbols):
         elif all(isinstance(s, Expr) for s in symbols):
             return symbols
 
-    raise GeneratorsError("expected a string, Symbol or expression "
-                          "or a non-empty sequence of strings, "
-                          "Symbols or expressions")
+    raise GeneratorsError('expected a string, Symbol or expression '
+                          'or a non-empty sequence of strings, '
+                          'Symbols or expressions')
 
 
 _ring_cache = {}
@@ -174,7 +174,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
 
             obj = object.__new__(cls)
             obj._hash = _hash
-            obj.dtype = type("PolyElement", (PolyElement,), {"ring": obj})
+            obj.dtype = type('PolyElement', (PolyElement,), {'ring': obj})
             obj.symbols = symbols
             obj.ngens = ngens
             obj.domain = domain
@@ -321,8 +321,8 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         try:
             poly = _rebuild(expr)
         except CoercionFailed:
-            raise ValueError("expected an expression convertible to a "
-                             "polynomial in %s, got %s" % (self, expr))
+            raise ValueError('expected an expression convertible to a '
+                             'polynomial in %s, got %s' % (self, expr))
         else:
             return self(poly)
 
@@ -336,24 +336,24 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             elif -self.ngens <= i and i <= -1:
                 i = self.ngens + i
             else:
-                raise ValueError("invalid generator index: %s" % gen)
+                raise ValueError('invalid generator index: %s' % gen)
         elif isinstance(gen, self.dtype):
             try:
                 i = self.gens.index(gen)
             except ValueError:
-                raise ValueError("invalid generator: %s" % gen)
+                raise ValueError('invalid generator: %s' % gen)
         elif isinstance(gen, str):
             try:
                 i = self.symbols.index(Symbol(gen))
             except ValueError:
-                raise ValueError("invalid generator: %s" % gen)
+                raise ValueError('invalid generator: %s' % gen)
         elif isinstance(gen, Expr):
             try:
                 i = self.symbols.index(gen)
             except ValueError:
-                raise ValueError("invalid generator: %s" % gen)
+                raise ValueError('invalid generator: %s' % gen)
         else:
-            raise ValueError("expected a polynomial generator, an integer, a string, an expression or None, got %s" % gen)
+            raise ValueError('expected a polynomial generator, an integer, a string, an expression or None, got %s' % gen)
 
         return i
 
@@ -371,8 +371,8 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         if self.domain.is_Composite or self.domain.is_AlgebraicField:
             return self.clone(domain=self.domain.domain)
         else:
-            raise ValueError("%s is not a composite or algebraic "
-                             "domain" % self.domain)
+            raise ValueError('%s is not a composite or algebraic '
+                             'domain' % self.domain)
 
     @property
     def is_univariate(self):
@@ -541,7 +541,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if not symbols:
             symbols = self.ring.symbols
         elif len(symbols) != self.ring.ngens:
-            raise ValueError("not enough symbols, expected %s got %s" % (self.ring.ngens, len(symbols)))
+            raise ValueError('not enough symbols, expected %s got %s' % (self.ring.ngens, len(symbols)))
 
         to_expr = self.ring.domain.to_expr
         return expr_from_dict({monom: to_expr(self[monom]) for monom in self}, *symbols)
@@ -696,8 +696,8 @@ class PolyElement(DomainElement, CantSympify, dict):
     def str(self, printer, precedence, exp_pattern, mul_symbol):
         if not self:
             return printer._print(self.ring.domain.zero)
-        prec_add = precedence["Add"]
-        prec_atom = precedence["Atom"]
+        prec_add = precedence['Add']
+        prec_atom = precedence['Atom']
         ring = self.ring
         symbols = ring.symbols
         ngens = ring.ngens
@@ -705,11 +705,11 @@ class PolyElement(DomainElement, CantSympify, dict):
         sexpvs = []
         for expv, coeff in self.terms():
             normal = ring.domain.is_normal(coeff)
-            sign = " + " if normal else " - "
+            sign = ' + ' if normal else ' - '
             sexpvs.append(sign)
             if expv == zm:
                 scoeff = printer._print(coeff)
-                if scoeff.startswith("-"):
+                if scoeff.startswith('-'):
                     scoeff = scoeff[1:]
             else:
                 if not normal:
@@ -732,9 +732,9 @@ class PolyElement(DomainElement, CantSympify, dict):
                 sexpv = [scoeff] + sexpv
             sexpvs.append(mul_symbol.join(sexpv))
         head = sexpvs.pop(0)
-        if head == " - ":
-            sexpvs.insert(0, "-")
-        return "".join(sexpvs)
+        if head == ' - ':
+            sexpvs.insert(0, '-')
+        return ''.join(sexpvs)
 
     @property
     def is_generator(self):
@@ -795,7 +795,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.ring.is_univariate:
             return self.ring.dup_cyclotomic_p(self)
         else:
-            raise AttributeError("cyclotomic polynomial")
+            raise AttributeError('cyclotomic polynomial')
 
     @property
     def is_homogeneous(self):
@@ -955,7 +955,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         n = int(n)
 
         if n < 0:
-            raise ValueError("negative exponent")
+            raise ValueError('negative exponent')
         elif not n:
             return ring.one
         elif len(self) == 1:
@@ -1050,7 +1050,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         ring = self.ring
 
         if not other:
-            raise ZeroDivisionError("polynomial division")
+            raise ZeroDivisionError('polynomial division')
         elif isinstance(other, ring.dtype):
             (q,), r = self.div([other])
             return q, r
@@ -1077,7 +1077,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         ring = self.ring
 
         if not other:
-            raise ZeroDivisionError("polynomial division")
+            raise ZeroDivisionError('polynomial division')
         elif isinstance(other, ring.domain.dtype):
             return self.quo_ground(other)
 
@@ -1116,7 +1116,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         ring = self.ring
         order = ring.order
         if any(not f for f in fv):
-            raise ZeroDivisionError("polynomial division")
+            raise ZeroDivisionError('polynomial division')
         if any(f.ring != ring for f in fv):
             raise ValueError('self and f must have the same ring')
         if not self:
@@ -1321,7 +1321,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         elif is_sequence(element) and all(isinstance(n, int) for n in element):
             return self._get_coeff(element)
 
-        raise ValueError("expected a monomial, got %s" % element)
+        raise ValueError('expected a monomial, got %s' % element)
 
     @property
     def LC(self):
@@ -1551,7 +1551,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         monom, coeff = term
 
         if not coeff:
-            raise ZeroDivisionError("polynomial division")
+            raise ZeroDivisionError('polynomial division')
         elif not self:
             return self.ring.zero
 
@@ -1872,7 +1872,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if 0 < len(values) <= self.ring.ngens:
             return self.eval(list(zip(self.ring.gens, values)))
         else:
-            raise ValueError("expected at least 1 and at most %s values, got %s" % (self.ring.ngens, len(values)))
+            raise ValueError('expected at least 1 and at most %s values, got %s' % (self.ring.ngens, len(values)))
 
     def eval(self, x=0, a=0):
         f = self
@@ -1932,7 +1932,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             elif isinstance(x, dict):
                 replacements = sorted(x.items(), key=lambda k: gens_map[k[0]])
             else:
-                raise ValueError("expected a generator, value pair a sequence of such pairs")
+                raise ValueError('expected a generator, value pair a sequence of such pairs')
 
         for k, (x, g) in enumerate(replacements):
             replacements[k] = (gens_map[x], ring(g))
@@ -1961,13 +1961,13 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.ring.is_univariate:
             return self.ring.dup_half_gcdex(self, other)
         else:
-            raise MultivariatePolynomialError("half extended Euclidean algorithm")
+            raise MultivariatePolynomialError('half extended Euclidean algorithm')
 
     def gcdex(self, other):
         if self.ring.is_univariate:
             return self.ring.dup_gcdex(self, other)
         else:
-            raise MultivariatePolynomialError("extended Euclidean algorithm")
+            raise MultivariatePolynomialError('extended Euclidean algorithm')
 
     def subresultants(self, other):
         return self.ring.dmp_inner_subresultants(self, other)[0]
@@ -1993,19 +1993,19 @@ class PolyElement(DomainElement, CantSympify, dict):
         if self.ring.is_univariate:
             return self.ring.dup_decompose(self)
         else:
-            raise MultivariatePolynomialError("polynomial decomposition")
+            raise MultivariatePolynomialError('polynomial decomposition')
 
     def shift(self, a):
         if self.ring.is_univariate:
             return self.ring.dup_shift(self, a)
         else:
-            raise MultivariatePolynomialError("polynomial shift")
+            raise MultivariatePolynomialError('polynomial shift')
 
     def sturm(self):
         if self.ring.is_univariate:
             return self.ring.dup_sturm(self)
         else:
-            raise MultivariatePolynomialError("sturm sequence")
+            raise MultivariatePolynomialError('sturm sequence')
 
     def sqf_norm(self):
         return self.ring.dmp_sqf_norm(self)

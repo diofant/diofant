@@ -54,7 +54,7 @@ def dmp_sqf_norm(f, u, K):
 
     """
     if not K.is_AlgebraicField:
-        raise DomainError("ground domain must be algebraic")
+        raise DomainError('ground domain must be algebraic')
 
     g = dmp_raise(K.mod.to_dense(), u + 1, 0, K.domain)
     F = dmp_raise([K.one, -K.unit], u, 0, K)

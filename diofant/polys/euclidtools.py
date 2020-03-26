@@ -103,7 +103,7 @@ def dup_invert(f, g, K):
     if h == [K.one]:
         return dmp_rem(s, g, 0, K)
     else:
-        raise NotInvertible("zero divisor")
+        raise NotInvertible('zero divisor')
 
 
 def dmp_prem(f, g, u, K):
@@ -128,7 +128,7 @@ def dmp_prem(f, g, u, K):
     dg = dmp_degree_in(g, 0, u)
 
     if dg < 0:
-        raise ZeroDivisionError("polynomial division")
+        raise ZeroDivisionError('polynomial division')
 
     r, dr = f, df
 
@@ -730,7 +730,7 @@ def dmp_inner_gcd(f, g, u, K):
     (x + y, x + y, x)
 
     """
-    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    ring = K.poly_ring(*['_%d' % i for i in range(u + 1)])
     f, g = map(ring.from_dense, (f, g))
     return tuple(map(ring.to_dense, f.cofactors(g)))
 
@@ -767,7 +767,7 @@ def dmp_content(f, u, K):
     2*y + 6
 
     """
-    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    ring = K.poly_ring(*['_%d' % i for i in range(u + 1)])
     f = ring.from_dense(f)
     new_ring = ring.eject(*ring.gens[1:])
     f = f.eject(*ring.gens[1:])

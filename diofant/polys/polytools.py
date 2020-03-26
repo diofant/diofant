@@ -76,9 +76,9 @@ class Poly(Expr):
         """Construct :class:`Poly` instance from raw representation."""
         if not isinstance(rep, PolyElement):
             raise PolynomialError(
-                "invalid polynomial representation: %s" % rep)
+                'invalid polynomial representation: %s' % rep)
         elif rep.ring.ngens != len(gens):
-            raise PolynomialError("invalid arguments: %s, %s" % (rep, gens))
+            raise PolynomialError('invalid arguments: %s, %s' % (rep, gens))
 
         obj = Expr.__new__(cls)
 
@@ -405,7 +405,7 @@ class Poly(Expr):
         if domain.is_FiniteField:
             return Integer(domain.characteristic)
         else:
-            raise PolynomialError("not a polynomial over a Galois field")
+            raise PolynomialError('not a polynomial over a Galois field')
 
     def _eval_subs(self, old, new):
         """Internal implementation of :func:`~diofant.core.basic.Basic.subs`."""
@@ -458,7 +458,7 @@ class Poly(Expr):
                 x, y = self.gen, x
             else:
                 raise PolynomialError(
-                    "syntax supported only in univariate case")
+                    'syntax supported only in univariate case')
 
         if x == y:
             return self
@@ -491,7 +491,7 @@ class Poly(Expr):
             gens = _sort_gens(self.gens, opt=opt)
         elif set(self.gens) != set(gens):
             raise PolynomialError(
-                "generators list can differ only up to order of elements")
+                'generators list can differ only up to order of elements')
 
         rep = dict(zip(*_dict_reorder(dict(self.rep), self.gens, gens)))
 
@@ -722,8 +722,8 @@ class Poly(Expr):
                 if monom not in terms:
                     terms[monom] = coeff
                 else:
-                    raise PolynomialError("%s monomial was generated"
-                                          " twice" % monom)
+                    raise PolynomialError('%s monomial was generated'
+                                          ' twice' % monom)
 
         return self.from_dict(terms, *(gens or self.gens), **args)
 
@@ -1067,14 +1067,14 @@ class Poly(Expr):
                 else:
                     return gen
             else:
-                raise PolynomialError("-%s <= gen < %s expected, got %s" %
+                raise PolynomialError('-%s <= gen < %s expected, got %s' %
                                       (length, length, gen))
         else:
             try:
                 return self.gens.index(sympify(gen))
             except ValueError:
                 raise PolynomialError(
-                    "a valid generator expected, got %s" % gen)
+                    'a valid generator expected, got %s' % gen)
 
     def degree(self, gen=0):
         """
@@ -1215,9 +1215,9 @@ class Poly(Expr):
         # at this time the ``right`` keyword would be ignored because Poly
         # doesn't work with non-commutatives.
         raise NotImplementedError(
-            "Either convert to Expr with `as_expr` method "
+            'Either convert to Expr with `as_expr` method '
             "to use Expr's coeff method or else use the "
-            "`coeff_monomial` method of Polys.")
+            '`coeff_monomial` method of Polys.')
 
     def LM(self, order=None):
         """
@@ -1487,7 +1487,7 @@ class Poly(Expr):
                 values = x
 
                 if len(values) > len(f.gens):
-                    raise ValueError("too many values provided")
+                    raise ValueError('too many values provided')
 
                 for gen, value in zip(f.gens, values):
                     f = f.eval(gen, value)
@@ -2076,7 +2076,7 @@ class Poly(Expr):
 
         """
         if check_sqf and not self.is_squarefree:
-            raise PolynomialError("only square-free polynomials supported")
+            raise PolynomialError('only square-free polynomials supported')
 
         s, t = QQ.convert(s), QQ.convert(t)
 
@@ -2263,7 +2263,7 @@ class Poly(Expr):
             try:
                 coeffs = [mpmath.mpc(*coeff) for coeff in coeffs]
             except TypeError:
-                raise DomainError("Numerical domain expected, got %s" %
+                raise DomainError('Numerical domain expected, got %s' %
                                   self.domain)
 
         dps = mpmath.mp.dps
@@ -2333,7 +2333,7 @@ class Poly(Expr):
 
         """
         if self.is_multivariate:
-            raise MultivariatePolynomialError("must be a univariate polynomial")
+            raise MultivariatePolynomialError('must be a univariate polynomial')
 
         N = sympify(n)
 
@@ -2985,7 +2985,7 @@ def _parallel_poly_from_expr(exprs, opt):
 
     for k in opt.gens:
         if isinstance(k, Piecewise):
-            raise PolynomialError("Piecewise generators do not make sense")
+            raise PolynomialError('Piecewise generators do not make sense')
 
     coeffs_list, lengths = [], []
 
@@ -4152,7 +4152,7 @@ def _generic_factor_list(expr, gens, args, method):
         cq, fq = _symbolic_factor_list(denom, opt, method)
 
         if fq and not opt.frac:
-            raise PolynomialError("a polynomial expected, got %s" % expr)
+            raise PolynomialError('a polynomial expected, got %s' % expr)
 
         _opt = opt.clone({'expand': True})
         if not _opt.get('gens'):
@@ -4179,7 +4179,7 @@ def _generic_factor_list(expr, gens, args, method):
         else:
             return coeff, fp, fq
     else:
-        raise PolynomialError("a polynomial expected, got %s" % expr)
+        raise PolynomialError('a polynomial expected, got %s' % expr)
 
 
 def _generic_factor(expr, gens, args, method):
@@ -4519,7 +4519,7 @@ def real_roots(f, multiple=True):
         F = Poly(f, greedy=False)
     except GeneratorsNeeded:
         raise PolynomialError("can't compute real roots of %s, "
-                              "not a polynomial" % f)
+                              'not a polynomial' % f)
 
     return F.real_roots(multiple=multiple)
 
@@ -4937,7 +4937,7 @@ class GroebnerBasis(Basic):
 
         if self.dimension != 0:
             raise NotImplementedError("can't convert Gröbner bases of "
-                                      "ideals with positive dimension")
+                                      'ideals with positive dimension')
 
         polys = self.polys
         domain = self.domain

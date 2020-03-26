@@ -21,7 +21,7 @@ _gens_order = {
 }
 
 _max_order = 1000
-_re_gen = re.compile(r"^(.+?)(\d*)$")
+_re_gen = re.compile(r'^(.+?)(\d*)$')
 
 
 def _nsort(roots, separated=False):
@@ -48,7 +48,7 @@ def _nsort(roots, separated=False):
     key = [[i.evalf(2).as_real_imag()[0] for i in r.as_real_imag()] for r in roots]
     # make sure the parts were computed with precision
     if any(i._prec == 1 for k in key for i in k):  # pragma: no cover
-        raise NotImplementedError("could not compute root with precision")
+        raise NotImplementedError('could not compute root with precision')
     # insert a key to indicate if the root has an imaginary part
     key = [(1 if i else 0, r, -abs(i), i.is_positive) for r, i in key]
     key = sorted(zip(key, roots))
@@ -211,7 +211,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
                         if not factor.free_symbols.intersection(opt.gens):
                             coeff.append(factor)
                         else:
-                            raise PolynomialError("%s contains an element of the generators set" % factor)
+                            raise PolynomialError('%s contains an element of the generators set' % factor)
 
             monom = tuple(monom)
 
@@ -276,7 +276,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
         else:
             arg = exprs,
 
-        raise GeneratorsNeeded("specify generators to give %s a meaning" % arg)
+        raise GeneratorsNeeded('specify generators to give %s a meaning' % arg)
 
     gens = _sort_gens(gens, opt=opt)
     k, indices = len(gens), {}

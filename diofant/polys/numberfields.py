@@ -63,7 +63,7 @@ def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
                 break
             prec1 *= 2
     else:
-        raise NotImplementedError("multiple candidates for the minimal polynomial of %s" % v)
+        raise NotImplementedError('multiple candidates for the minimal polynomial of %s' % v)
 
 
 def _separate_sq(p):
@@ -553,7 +553,7 @@ def minimal_polynomial(ex, method=None, **args):
         _minpoly = _minpoly_methods[method]
     except KeyError:
         raise ValueError("'%s' is not a valid algorithm for computing minimal "
-                         " polynomial" % method)
+                         ' polynomial' % method)
 
     ex = sympify(ex)
     if ex.is_number:
@@ -696,7 +696,7 @@ def primitive_element(extension, **args):
         if len(F) == 1:
             g, coeffs, H = F[0].replace(x), [Integer(1)], [Poly(x, domain=domain)]
         else:  # pragma: no cover
-            raise RuntimeError("run out of coefficient configurations")
+            raise RuntimeError('run out of coefficient configurations')
 
     _, factors = factor_list(g, domain=domain)
     t = sum(c*e for c, e in zip(coeffs, extension))
@@ -729,7 +729,7 @@ def field_isomorphism_pslq(a, b):
 
     for n in mpmath.libmp.libintmath.giant_steps(32, 256):  # pragma: no branch
         with mpmath.workdps(n):
-            A, B = lambdify((), [a, b], "mpmath")()
+            A, B = lambdify((), [a, b], 'mpmath')()
             basis = [A] + [B**i for i in reversed(range(m))]
             coeffs = mpmath.pslq(basis, maxcoeff=10**10, maxsteps=10**3)
 
@@ -760,8 +760,8 @@ def field_isomorphism_factor(a, b):
 def field_isomorphism(a, b, **args):
     """Construct an isomorphism between two number fields."""
     if not all(isinstance(_, AlgebraicField) for _ in (a, b)):
-        raise ValueError("Arguments should be algebraic fields, "
-                         "got %s and %s" % (a, b))
+        raise ValueError('Arguments should be algebraic fields, '
+                         'got %s and %s' % (a, b))
 
     if a == b:
         return a.unit.rep.to_dense()

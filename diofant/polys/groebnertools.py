@@ -721,7 +721,7 @@ def groebner_lcm(f, g):
 
     """
     if f.ring != g.ring:
-        raise ValueError("Values should be equal")
+        raise ValueError('Values should be equal')
 
     ring = f.ring
     domain = ring.domain
@@ -743,7 +743,7 @@ def groebner_lcm(f, g):
     g_terms = [((0,) + monom, coeff) for monom, coeff in g.terms()] \
         + [((1,) + monom, -coeff) for monom, coeff in g.terms()]
 
-    t = Dummy("t")
+    t = Dummy('t')
     t_ring = ring.clone(symbols=(t,) + ring.symbols, order=lex)
 
     F = t_ring.from_terms(f_terms)
@@ -765,7 +765,7 @@ def groebner_lcm(f, g):
 def groebner_gcd(f, g):
     """Computes GCD of two polynomials using Gröbner bases."""
     if f.ring != g.ring:
-        raise ValueError("Values should be equal")
+        raise ValueError('Values should be equal')
     domain = f.ring.domain
 
     if not domain.is_Field:

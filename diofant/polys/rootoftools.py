@@ -79,12 +79,12 @@ class RootOf(Expr):
         if index is not None and index.is_Integer:
             index = int(index)
         else:
-            raise ValueError("expected an integer root index, got %s" % index)
+            raise ValueError('expected an integer root index, got %s' % index)
 
         poly = PurePoly(f, x, greedy=False, expand=expand)
 
         if not poly.is_univariate:
-            raise PolynomialError("only univariate polynomials are allowed")
+            raise PolynomialError('only univariate polynomials are allowed')
 
         degree = poly.degree()
         dom = poly.domain
@@ -93,13 +93,13 @@ class RootOf(Expr):
             raise PolynomialError("can't construct RootOf object for %s" % f)
 
         if index < -degree or index >= degree:
-            raise IndexError("root index out of [%d, %d] range, got %d" %
+            raise IndexError('root index out of [%d, %d] range, got %d' %
                              (-degree, degree - 1, index))
         elif index < 0:
             index += degree
 
         if not dom.is_IntegerRing and poly.LC().is_nonzero is False:
-            raise NotImplementedError("sorted roots not supported over %s" % dom)
+            raise NotImplementedError('sorted roots not supported over %s' % dom)
 
         if evaluate is None:
             evaluate = global_evaluate[0]
@@ -227,12 +227,12 @@ class RootOf(Expr):
     @classmethod
     def real_roots(cls, poly, radicals=True):
         """Get real roots of a polynomial."""
-        return cls._get_roots("_real_roots", poly, radicals)
+        return cls._get_roots('_real_roots', poly, radicals)
 
     @classmethod
     def all_roots(cls, poly, radicals=True):
         """Get real and complex roots of a polynomial."""
-        return cls._get_roots("_all_roots", poly, radicals)
+        return cls._get_roots('_all_roots', poly, radicals)
 
     @classmethod
     def _get_reals_sqf(cls, factor):
@@ -493,7 +493,7 @@ class RootOf(Expr):
         dom = poly.domain
 
         if not dom.is_IntegerRing and poly.LC().is_nonzero is False:
-            raise NotImplementedError("sorted roots not supported over %s" % dom)
+            raise NotImplementedError('sorted roots not supported over %s' % dom)
 
         return coeff, poly
 
@@ -553,9 +553,9 @@ class RootOf(Expr):
             g = self.poly.gen
             if not g.is_Symbol:
                 d = Dummy('x')
-                func = lambdify(d, self.expr.subs({g: d}), "mpmath")
+                func = lambdify(d, self.expr.subs({g: d}), 'mpmath')
             else:
-                func = lambdify(g, self.expr, "mpmath")
+                func = lambdify(g, self.expr, 'mpmath')
 
             try:
                 interval = self.interval
@@ -624,7 +624,7 @@ class RootOf(Expr):
 
         """
         if not self.is_extended_real:
-            raise NotImplementedError("eval_rational() only works for real polynomials so far")
+            raise NotImplementedError('eval_rational() only works for real polynomials so far')
         interval = self.interval
         while interval.b - interval.a > tol:
             self.refine()
@@ -675,8 +675,7 @@ class RootSum(Expr):
         coeff, poly = cls._transform(expr, x)
 
         if not poly.is_univariate:
-            raise MultivariatePolynomialError(
-                "only univariate polynomials are allowed")
+            raise MultivariatePolynomialError('only univariate polynomials are allowed')
 
         if func is None:
             func = Lambda(poly.gen, poly.gen)
@@ -691,7 +690,7 @@ class RootSum(Expr):
                     func = Lambda(poly.gen, func(poly.gen))
             else:
                 raise ValueError(
-                    "expected a univariate function, got %s" % func)
+                    'expected a univariate function, got %s' % func)
 
         var, expr = func.variables[0], func.expr
 

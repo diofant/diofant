@@ -9,7 +9,7 @@ __all__ = ()
 
 
 def test_heugcd_univariate_integers():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = x**4 + 8*x**3 + 21*x**2 + 22*x + 8
     g = x**3 + 6*x**2 + 11*x + 6
@@ -71,7 +71,7 @@ def test_heugcd_univariate_integers():
 
 
 def test_heugcd_multivariate_integers():
-    R, x, y = ring("x,y", ZZ)
+    R, x, y = ring('x,y', ZZ)
 
     f, g = 2*x**2 + 4*x + 2, x + 1
     assert heugcd(f, g) == (x + 1, 2*x + 2, 1)
@@ -79,7 +79,7 @@ def test_heugcd_multivariate_integers():
     f, g = x + 1, 2*x**2 + 4*x + 2
     assert heugcd(f, g) == (x + 1, 1, 2*x + 2)
 
-    R, x, y, z, u = ring("x,y,z,u", ZZ)
+    R, x, y, z, u = ring('x,y,z,u', ZZ)
 
     f, g = u**2 + 2*u + 1, 2*u + 2
     assert heugcd(f, g) == (u + 1, u + 1, 2)
@@ -90,35 +90,35 @@ def test_heugcd_multivariate_integers():
     assert heugcd(f, g) == (h, cff, cfg)
     assert heugcd(g, f) == (h, cfg, cff)
 
-    R, x, y, z = ring("x,y,z", ZZ)
+    R, x, y, z = ring('x,y,z', ZZ)
 
     f, g, h = R.fateman_poly_F_1()
     H, cff, cfg = heugcd(f, g)
 
     assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z, u, v = ring("x,y,z,u,v", ZZ)
+    R, x, y, z, u, v = ring('x,y,z,u,v', ZZ)
 
     f, g, h = R.fateman_poly_F_1()
     H, cff, cfg = heugcd(f, g)
 
     assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z, u, v, a, b = ring("x,y,z,u,v,a,b", ZZ)
+    R, x, y, z, u, v, a, b = ring('x,y,z,u,v,a,b', ZZ)
 
     f, g, h = R.fateman_poly_F_1()
     H, cff, cfg = heugcd(f, g)
 
     assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z, u, v, a, b, c, d = ring("x,y,z,u,v,a,b,c,d", ZZ)
+    R, x, y, z, u, v, a, b, c, d = ring('x,y,z,u,v,a,b,c,d', ZZ)
 
     f, g, h = R.fateman_poly_F_1()
     H, cff, cfg = heugcd(f, g)
 
     assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z = ring("x,y,z", ZZ)
+    R, x, y, z = ring('x,y,z', ZZ)
 
     f, g, h = R.fateman_poly_F_2()
     H, cff, cfg = heugcd(f, g)
@@ -130,7 +130,7 @@ def test_heugcd_multivariate_integers():
 
     assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z, t = ring("x,y,z,t", ZZ)
+    R, x, y, z, t = ring('x,y,z,t', ZZ)
 
     f, g, h = R.fateman_poly_F_3()
     H, cff, cfg = heugcd(f, g)

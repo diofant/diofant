@@ -309,7 +309,7 @@ def test_roots_preprocessing():
     assert coeff == 1/c
     assert poly == Poly(x**3 + a, x)
 
-    E, F, J, L = symbols("E,F,J,L")
+    E, F, J, L = symbols('E,F,J,L')
 
     f = -21601054687500000000*E**8*J**8/L**16 + \
         508232812500000000*F*x*E**7*J**7/L**14 - \
@@ -529,7 +529,7 @@ def test_roots1():
 
 def test_roots_slow():
     """Just test that calculating these roots does not hang."""
-    a, b, c, d, x = symbols("a,b,c,d,x")
+    a, b, c, d, x = symbols('a,b,c,d,x')
 
     f1 = x**2*c + (a/b) + x*c*d - a
     f2 = x**2*(a + b*(c - d)*a) + x*a*b*c/(b*d - d) + (a*d - c/d)
@@ -537,7 +537,7 @@ def test_roots_slow():
     assert list(roots(f1, x).values()) == [1, 1]
     assert list(roots(f2, x).values()) == [1, 1]
 
-    zz, yy, xx, zy, zx, yx, k = symbols("zz,yy,xx,zy,zx,yx,k")
+    zz, yy, xx, zy, zx, yx, k = symbols('zz,yy,xx,zy,zx,yx,k')
 
     e1 = (zz - k)*(yy - k)*(xx - k) + zy*yx*zx + zx - zy - yx
     e2 = (zz - k)*yx*yx + zx*(yy - k)*zx + zy*zy*(xx - k)
@@ -569,7 +569,7 @@ def test_roots_inexact():
 
 
 def test_roots_preprocessed():
-    E, F, J, L = symbols("E,F,J,L")
+    E, F, J, L = symbols('E,F,J,L')
 
     f = -21601054687500000000*E**8*J**8/L**16 + \
         508232812500000000*F*x*E**7*J**7/L**14 - \

@@ -437,7 +437,7 @@ def roots_cyclotomic(f, factor=False):
         if f == g:
             break
     else:  # pragma: no cover
-        raise RuntimeError("failed to find index of a cyclotomic polynomial")
+        raise RuntimeError('failed to find index of a cyclotomic polynomial')
 
     roots = []
 
@@ -943,7 +943,7 @@ def roots(f, *gens, **flags):
         try:
             query = handlers[filter]
         except KeyError:
-            raise ValueError("Invalid filter: %s" % filter)
+            raise ValueError('Invalid filter: %s' % filter)
 
         for zero in dict(result):
             if not query(zero):
