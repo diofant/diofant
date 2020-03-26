@@ -88,7 +88,7 @@ class QuotientRingElement(DomainElement):
 
     def __pow__(self, exp):
         if not isinstance(exp, numbers.Integral):
-            raise TypeError("Integer exponent expected, got %s" % type(exp))
+            raise TypeError('Integer exponent expected, got %s' % type(exp))
         if exp < 0:
             rep, exp = self.domain.invert(self.rep, self.mod), -exp
         else:

@@ -70,7 +70,7 @@ class Domain(DefaultPrinting, abc.ABC):
     def convert_from(self, element, base):
         """Convert ``element`` to ``self.dtype`` given the base domain."""
         for superclass in inspect.getmro(base.__class__):
-            method = "_from_" + superclass.__name__
+            method = '_from_' + superclass.__name__
 
             convert = getattr(self, method, None)
 
@@ -81,7 +81,7 @@ class Domain(DefaultPrinting, abc.ABC):
                     return result
 
         raise CoercionFailed("can't convert %s of type %s from %s "
-                             "to %s" % (element, type(element), base, self))
+                             'to %s' % (element, type(element), base, self))
 
     def convert(self, element, base=None):
         """Convert ``element`` to ``self.dtype``."""
@@ -165,7 +165,7 @@ class Domain(DefaultPrinting, abc.ABC):
             if any(d.is_Composite and (set(d.symbols) & set(symbols))
                    for d in [self, K1]):
                 raise UnificationFailed("Can't unify %s with %s, given %s"
-                                        " generators" % (self, K1, tuple(symbols)))
+                                        ' generators' % (self, K1, tuple(symbols)))
 
             return self.unify(K1)
 
@@ -247,9 +247,9 @@ class Domain(DefaultPrinting, abc.ABC):
     def poly_ring(self, *symbols, **kwargs):
         """Returns a polynomial ring, i.e. `K[X]`."""
         from ..polys import PolynomialRing
-        return PolynomialRing(self, symbols, kwargs.get("order", lex))
+        return PolynomialRing(self, symbols, kwargs.get('order', lex))
 
     def frac_field(self, *symbols, **kwargs):
         """Returns a fraction field, i.e. `K(X)`."""
         from ..polys import FractionField
-        return FractionField(self, symbols, kwargs.get("order", lex))
+        return FractionField(self, symbols, kwargs.get('order', lex))

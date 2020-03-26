@@ -84,7 +84,7 @@ class RealField(CharacteristicZero, SimpleDomain, Field):
         if number.is_Number:
             return self.dtype(number)
         else:
-            raise CoercionFailed("expected real number, got %s" % expr)
+            raise CoercionFailed('expected real number, got %s' % expr)
 
     def _from_PythonIntegerRing(self, element, base):
         return self.dtype(element)
