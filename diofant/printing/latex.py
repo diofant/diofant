@@ -1803,7 +1803,7 @@ def latex(expr, **settings):
 
     >>> print(latex((2*tau)**sin(Rational(7, 2))))
     \left(2 \tau\right)^{\sin{\left (\frac{7}{2} \right )}}
-    >>> print(latex((2*tau)**sin(Rational(7, 2)), fold_func_brackets = True))
+    >>> print(latex((2*tau)**sin(Rational(7, 2)), fold_func_brackets=True))
     \left(2 \tau\right)^{\sin {\frac{7}{2}}}
 
     fold_short_frac: Emit "p / q" instead of "\frac{p}{q}" when the

@@ -1622,7 +1622,7 @@ def risch_integrate(f, x, extension=None, handle_first='log',
     For example,
 
     >>> pprint(risch_integrate((2*log(x)**2 - log(x) - x**2)/(log(x)**3 -
-    ... x**2*log(x)), x), use_unicode=False)
+    ...                        x**2*log(x)), x), use_unicode=False)
                                              /
                                             |
       log(-x + log(x))   log(x + log(x))    |   1

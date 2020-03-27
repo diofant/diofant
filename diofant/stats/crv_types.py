@@ -302,7 +302,7 @@ def Beta(name, alpha, beta):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import density, E
 
     >>> alpha = Symbol("alpha", positive=True)
     >>> beta = Symbol("beta", positive=True)
@@ -481,7 +481,7 @@ def Chi(name, k):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, std, Chi
+    >>> from diofant.stats import density, Chi
 
     >>> X = Chi("x", k)
 
@@ -538,7 +538,7 @@ def ChiNoncentral(name, k, l):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, std
+    >>> from diofant.stats import density
 
     >>> l = Symbol("l")
 
@@ -1011,7 +1011,7 @@ def Frechet(name, a, s=1, m=0):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, std
+    >>> from diofant.stats import density
 
     >>> a, s = symbols("a s", positive=True)
     >>> m = Symbol("m", real=True)
@@ -1164,7 +1164,7 @@ def GammaInverse(name, a, b):
     Examples
     ========
 
-    >>> from diofant.stats import density, cdf, E, variance
+    >>> from diofant.stats import density
 
     >>> a = Symbol("a", positive=True)
     >>> b = Symbol("b", positive=True)
@@ -1232,7 +1232,7 @@ def Kumaraswamy(name, a, b):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import density
 
     >>> a = Symbol("a", positive=True)
     >>> b = Symbol("b", positive=True)
@@ -1424,7 +1424,7 @@ def LogNormal(name, mean, std):
             ____
         2*\/ pi *sigma*z
 
-    >>> X = LogNormal('x', 0, 1) # Mean 0, standard deviation 1
+    >>> X = LogNormal('x', 0, 1)  # Mean 0, standard deviation 1
 
     >>> density(X)(z)
     sqrt(2)*E**(-log(z)**2/2)/(2*sqrt(pi)*z)
@@ -1628,7 +1628,7 @@ def Normal(name, mean, std):
     >>> density(X)(z)
     sqrt(2)*E**(-(-mu + z)**2/(2*sigma**2))/(2*sqrt(pi)*sigma)
 
-    >>> C = simplify(cdf(X))(z) # it needs a little more help...
+    >>> C = simplify(cdf(X))(z)  # it needs a little more help...
     >>> pprint(C, use_unicode=False)
          /  ___         \
          |\/ 2 *(mu - z)|
@@ -1640,7 +1640,7 @@ def Normal(name, mean, std):
     >>> simplify(skewness(X))
     0
 
-    >>> X = Normal("x", 0, 1) # Mean 0, standard deviation 1
+    >>> X = Normal("x", 0, 1)  # Mean 0, standard deviation 1
     >>> density(X)(z)
     sqrt(2)*E**(-z**2/2)/(2*sqrt(pi))
 
@@ -1771,7 +1771,7 @@ def QuadraticU(name, a, b):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import density
 
     >>> a, b = symbols("a b", real=True)
 
@@ -1844,7 +1844,7 @@ def RaisedCosine(name, mu, s):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import density
 
     >>> mu = Symbol("mu", real=True)
     >>> s = Symbol("s", positive=True)
@@ -1967,7 +1967,7 @@ def StudentT(name, nu):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import density
 
     >>> nu = Symbol("nu", positive=True)
 
@@ -2042,7 +2042,7 @@ def Triangular(name, a, b, c):
     Examples
     ========
 
-    >>> from diofant.stats import density, E
+    >>> from diofant.stats import density
 
     >>> X = Triangular("x", a, b, c)
 
@@ -2134,7 +2134,7 @@ def Uniform(name, left, right):
     Examples
     ========
 
-    >>> from diofant.stats import density, cdf, E, variance, skewness
+    >>> from diofant.stats import density, cdf, E, variance
 
     >>> a = Symbol("a", negative=True)
     >>> b = Symbol("b", positive=True)
@@ -2279,7 +2279,7 @@ def VonMises(name, mu, k):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import density
 
     >>> mu = Symbol("mu")
     >>> k = Symbol("k", positive=True)

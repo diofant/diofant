@@ -18,13 +18,13 @@ class DiofantDeprecationWarning(DeprecationWarning):
     ...     "always", DiofantDeprecationWarning)
     >>> warnings.warn(
     ...     "Don't do this, it's deprecated",
-    ...     DiofantDeprecationWarning) #doctest:+SKIP
+    ...     DiofantDeprecationWarning)  # doctest:+SKIP
     __main__:1: DiofantDeprecationWarning: "Don't do this, it's deprecated"
 
     The recommended way to use this class is, however, is by calling
     the warn method after constructing the message:
 
-        >>> DiofantDeprecationWarning("Don't do this, it's deprecated.").warn() #doctest:+SKIP
+        >>> DiofantDeprecationWarning("Don't do this, it's deprecated.").warn()  # doctest:+SKIP
         __main__:1: DiofantDeprecationWarning:
 
         Don't do this, it's deprecated.
@@ -49,35 +49,32 @@ class DiofantDeprecationWarning(DeprecationWarning):
     will not be shown:
 
     >>> print(DiofantDeprecationWarning(feature="Such and such",
-    ...     useinstead="this other feature"))
+    ...                                 useinstead="this other feature"))
     Such and such has been deprecated. Use this other feature instead.
 
     You can still provide the argument value.  If it is a string, it
     will be appended to the end of the message:
 
-    >>> print(DiofantDeprecationWarning(
-    ...     feature="Such and such",
-    ...     useinstead="this other feature",
-    ...     value="Contact the developers for further information."))
+    >>> print(DiofantDeprecationWarning(feature="Such and such",
+    ...       useinstead="this other feature",
+    ...       value="Contact the developers for further information."))
     Such and such has been deprecated. Use this other feature instead.
     Contact the developers for further information.
 
     If, however, the argument value does not hold a string, a string
     representation of the object will be appended to the message:
 
-    >>> print(DiofantDeprecationWarning(
-    ...     feature="Such and such",
-    ...     useinstead="this other feature",
-    ...     value=[1,2,3]))
+    >>> print(DiofantDeprecationWarning(feature="Such and such",
+    ...                                 useinstead="this other feature",
+    ...                                 value=[1, 2, 3]))
     Such and such has been deprecated. Use this other feature instead.
     ([1, 2, 3])
 
     To associate an issue with a deprecation, use the ``issue`` flag.
 
-    >>> print(DiofantDeprecationWarning(
-    ...    feature="Old feature",
-    ...    useinstead="new feature",
-    ...    issue=5241))
+    >>> print(DiofantDeprecationWarning(feature="Old feature",
+    ...                                 useinstead="new feature",
+    ...                                 issue=5241))
     Old feature has been deprecated. Use new feature instead. See
     https://github.com/diofant/diofant/issues/5241 for more info.
 
@@ -89,10 +86,9 @@ class DiofantDeprecationWarning(DeprecationWarning):
     which it was deprecated.  Use the ``deprecated_since_version`` flag for
     this.
 
-    >>> print(DiofantDeprecationWarning(
-    ...    feature="Old feature",
-    ...    useinstead="new feature",
-    ...    deprecated_since_version="0.7.2"))
+    >>> print(DiofantDeprecationWarning(feature="Old feature",
+    ...                                 useinstead="new feature",
+    ...                                 deprecated_since_version="0.7.2"))
     Old feature has been deprecated since Diofant 0.7.2. Use new feature
     instead.
 

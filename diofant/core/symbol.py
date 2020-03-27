@@ -212,10 +212,10 @@ class Symbol(BaseSymbol):
 
     You can override default assumptions:
 
-    >>> A, B = symbols('A B', commutative = False)
+    >>> A, B = symbols('A B', commutative=False)
     >>> bool(A*B != B*A)
     True
-    >>> bool(A*B*2 == 2*A*B) == True # multiplication by scalars is commutative
+    >>> bool(A*B*2 == 2*A*B) is True  # multiplication by scalars is commutative
     True
 
     See Also

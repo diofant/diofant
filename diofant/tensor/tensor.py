@@ -2027,11 +2027,10 @@ class TensorHead(Basic):
     representation of an antisymmetric set of two elements:
 
     >>> F = tensorhead('A', [Lorentz, Lorentz], [[2]])
-    >>> F(-i0, -i1).data = [
-    ... [0, Ex/c, Ey/c, Ez/c],
-    ... [-Ex/c, 0, -Bz, By],
-    ... [-Ey/c, Bz, 0, -Bx],
-    ... [-Ez/c, -By, Bx, 0]]
+    >>> F(-i0, -i1).data = [[0, Ex/c, Ey/c, Ez/c],
+    ...                     [-Ex/c, 0, -Bz, By],
+    ...                     [-Ey/c, Bz, 0, -Bx],
+    ...                     [-Ez/c, -By, Bx, 0]]
 
     Now it is possible to retrieve the contravariant form of the Electromagnetic
     tensor:

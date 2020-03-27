@@ -550,13 +550,13 @@ class GreaterThan(_Greater):
     no way available to Diofant to recognize this has happened, so the statement
     (1 < x) will turn silently into (x > 1).
 
-    >>> e1 = x >  1
+    >>> e1 = x > 1
     >>> e2 = x >= 1
-    >>> e3 = x <  1
+    >>> e3 = x < 1
     >>> e4 = x <= 1
-    >>> e5 = 1 >  x
+    >>> e5 = 1 > x
     >>> e6 = 1 >= x
-    >>> e7 = 1 <  x
+    >>> e7 = 1 < x
     >>> e8 = 1 <= x
     >>> print("%s     %s\n"*4 % (e1, e2, e3, e4, e5, e6, e7, e8))
     x > 1     x >= 1
@@ -569,9 +569,9 @@ class GreaterThan(_Greater):
     "sympify" the literal before comparison, (2) use one of the wrappers, or (3)
     use the less succinct methods described above:
 
-    >>> e1 = Integer(1) >  x
+    >>> e1 = Integer(1) > x
     >>> e2 = Integer(1) >= x
-    >>> e3 = Integer(1) <  x
+    >>> e3 = Integer(1) < x
     >>> e4 = Integer(1) <= x
     >>> e5 = Gt(1, x)
     >>> e6 = Ge(1, x)

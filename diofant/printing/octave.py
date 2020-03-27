@@ -556,9 +556,9 @@ def octave_code(expr, assign_to=None, **settings):
     cfunction_string)].  This can be used to call a custom Octave function.
 
     >>> custom_functions = {
-    ...   "f": "existing_octave_fcn",
-    ...   "g": [(lambda x: x.is_Matrix, "my_mat_fcn"),
-    ...         (lambda x: not x.is_Matrix, "my_fcn")]
+    ...     "f": "existing_octave_fcn",
+    ...     "g": [(lambda x: x.is_Matrix, "my_mat_fcn"),
+    ...           (lambda x: not x.is_Matrix, "my_fcn")]
     ... }
     >>> mat = Matrix([[1, x]])
     >>> octave_code(f(x) + g(x) + g(mat), user_functions=custom_functions)

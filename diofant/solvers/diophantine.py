@@ -2477,7 +2477,7 @@ def diop_general_sum_of_squares(eq, limit=1):
     Examples
     ========
 
-    >>> from diofant.abc import e, f
+    >>> from diofant.abc import e
     >>> diop_general_sum_of_squares(a**2 + b**2 + c**2 + d**2 + e**2 - 2345)
     {(15, 22, 22, 24, 24)}
 
