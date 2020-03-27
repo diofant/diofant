@@ -91,7 +91,7 @@ def npartitions(n):
         a = _a(n, q, p)
         d = _d(n, q, p, sq23pi, sqrt8)
         s = mpf_add(s, mpf_mul(a, d), prec)
-        debug("step", q, "of", M, to_str(a, 10), to_str(d, 10))
+        debug('step', q, 'of', M, to_str(a, 10), to_str(d, 10))
         # On average, the terms decrease rapidly in magnitude. Dynamically
         # reducing the precision greatly improves performance.
         p = bitcount(abs(to_int(d))) + 50

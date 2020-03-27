@@ -124,7 +124,7 @@ class Order(Expr):
                 if v in new_vp:
                     if p != new_vp[v]:
                         raise NotImplementedError(
-                            "Mixing Order at different points is not supported.")
+                            'Mixing Order at different points is not supported.')
                 else:
                     new_vp[v] = p
             if set(expr_vp) == set(new_vp):
@@ -270,7 +270,7 @@ class Order(Expr):
                                           'or oo not supported, got %s as a point.' % point)
             if order_symbols and order_symbols[0][1] != self.point[0]:
                 raise NotImplementedError(
-                    "Multiplying Order at different points is not supported.")
+                    'Multiplying Order at different points is not supported.')
             order_symbols = dict(order_symbols)
             for s, p in dict(self.args[1:]).items():
                 if s not in order_symbols:

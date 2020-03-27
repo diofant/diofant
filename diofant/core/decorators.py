@@ -59,7 +59,7 @@ def __sympifyit(func, arg, retval=None):
     """
     # we support f(a,b) only
     if not func.__code__.co_argcount:
-        raise LookupError("func not found")
+        raise LookupError('func not found')
     # only b is _sympified
     assert func.__code__.co_varnames[1] == arg
     if retval is None:

@@ -135,8 +135,8 @@ def ratsimpmodprime(expr, G, *gens, **args):
             M2 = staircase(D)
             debug('%s / %s: %s, %s' % (N, D, M1, M2))
 
-            Cs = symbols("c:%d" % len(M1), cls=Dummy)
-            Ds = symbols("d:%d" % len(M2), cls=Dummy)
+            Cs = symbols('c:%d' % len(M1), cls=Dummy)
+            Ds = symbols('d:%d' % len(M2), cls=Dummy)
             ng = Cs + Ds
 
             c_hat = Poly(

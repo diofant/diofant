@@ -35,7 +35,7 @@ def test_Domain_interface():
 
     assert RealField(tol=3).tolerance == 3.0
     assert RealField(tol=0.1).tolerance == 0.1
-    assert RealField(tol="0.1").tolerance == 0.1
+    assert RealField(tol='0.1').tolerance == 0.1
     pytest.raises(ValueError, lambda: RealField(tol=object()))
 
     pytest.raises(AttributeError, lambda: CC.ring)
@@ -514,7 +514,7 @@ def test_Domain_get_exact():
 def test_Domain_convert():
     assert QQ.convert(10e-52) == QQ(1684996666696915, 1684996666696914987166688442938726917102321526408785780068975640576)
 
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
     assert ZZ.convert(x - x) == 0
     assert ZZ.convert(x - x, R) == 0
 
@@ -708,8 +708,8 @@ def test_Domain__algebraic_field():
 
 
 def test_PolynomialRing_from_FractionField():
-    F,  x, y = field("x,y", ZZ)
-    R,  X, Y = ring("x,y", ZZ)
+    F,  x, y = field('x,y', ZZ)
+    R,  X, Y = ring('x,y', ZZ)
 
     f = (x**2 + y**2)/(x + 1)
     g = (x**2 + y**2)/4
@@ -719,8 +719,8 @@ def test_PolynomialRing_from_FractionField():
     pytest.raises(CoercionFailed, lambda: R.convert(g, F))
     assert R.convert(h, F) == X**2 + Y**2
 
-    F,  x, y = field("x,y", QQ)
-    R,  X, Y = ring("x,y", QQ)
+    F,  x, y = field('x,y', QQ)
+    R,  X, Y = ring('x,y', QQ)
 
     f = (x**2 + y**2)/(x + 1)
     g = (x**2 + y**2)/4
@@ -732,8 +732,8 @@ def test_PolynomialRing_from_FractionField():
 
 
 def test_FractionField_from_PolynomialRing():
-    R,  x, y = ring("x,y", QQ)
-    F,  X, Y = field("x,y", ZZ)
+    R,  x, y = ring('x,y', QQ)
+    F,  X, Y = field('x,y', ZZ)
 
     f = 3*x**2 + 5*y**2
     g = x**2/3 + y**2/5
@@ -741,13 +741,13 @@ def test_FractionField_from_PolynomialRing():
     assert F.convert(f, R) == 3*X**2 + 5*Y**2
     assert F.convert(g, R) == (5*X**2 + 3*Y**2)/15
 
-    RALG,  u, v = ring("u,v", ALG)
+    RALG,  u, v = ring('u,v', ALG)
     pytest.raises(CoercionFailed,
                   lambda: F.convert(3*u**2 + 5*sqrt(2)*v**2))
 
 
 def test_FractionField_convert():
-    F,  X, Y = field("x,y", QQ)
+    F,  X, Y = field('x,y', QQ)
     F.convert(QQ_python(1, 3)) == F.one/3
 
 
@@ -774,8 +774,8 @@ def test_RealField_from_expr():
     assert RR.convert(Integer(1)) == RR.dtype(1)
     assert RR.convert(Float(1.0)) == RR.dtype(1.0)
     assert RR.convert(sin(1)) == RR.dtype(sin(1).evalf())
-    assert RR.convert(oo) == RR("+inf")
-    assert RR.convert(-oo) == RR("-inf")
+    assert RR.convert(oo) == RR('+inf')
+    assert RR.convert(-oo) == RR('-inf')
     pytest.raises(CoercionFailed, lambda: RR.convert(x))
 
 
@@ -857,8 +857,8 @@ def test_AlgebraicElement():
     assert b + a == c
 
     assert c + 1 == A([QQ(2), QQ(0), QQ(4)])
-    pytest.raises(TypeError, lambda: c + "x")
-    pytest.raises(TypeError, lambda: "x" + c)
+    pytest.raises(TypeError, lambda: c + 'x')
+    pytest.raises(TypeError, lambda: 'x' + c)
 
     c = A([QQ(2), QQ(-2), QQ(-1)])
 
@@ -869,8 +869,8 @@ def test_AlgebraicElement():
     assert b - a == c
 
     assert c - 1 == A([QQ(-2), QQ(2), QQ(0)])
-    pytest.raises(TypeError, lambda: c - "x")
-    pytest.raises(TypeError, lambda: "x" - c)
+    pytest.raises(TypeError, lambda: c - 'x')
+    pytest.raises(TypeError, lambda: 'x' - c)
 
     c = A([QQ(3), QQ(-1), QQ(6)])
 
@@ -878,14 +878,14 @@ def test_AlgebraicElement():
     assert b*a == c
 
     assert c*2 == A([QQ(6), QQ(-2), QQ(12)])
-    pytest.raises(TypeError, lambda: c*"x")
-    pytest.raises(TypeError, lambda: "x"*c)
+    pytest.raises(TypeError, lambda: c*'x')
+    pytest.raises(TypeError, lambda: 'x'*c)
 
     c = A([QQ(11, 10), -QQ(1, 5), -QQ(3, 5)])
 
     assert c/2 == A([QQ(11, 20), -QQ(1, 10), -QQ(3, 10)])
-    pytest.raises(TypeError, lambda: c/"x")
-    pytest.raises(TypeError, lambda: "x"/c)
+    pytest.raises(TypeError, lambda: c/'x')
+    pytest.raises(TypeError, lambda: 'x'/c)
 
     c = A([QQ(-1, 43), QQ(9, 43), QQ(5, 43)])
 
@@ -1079,8 +1079,8 @@ def test_RR_double():
 
 
 def test_RR_Float():
-    f1 = Float("1.01", 15)
-    f2 = Float("1.0000000000000000000001")
+    f1 = Float('1.01', 15)
+    f2 = Float('1.0000000000000000000001')
     assert f1._prec == 53
     assert f2._prec == 80
     assert RR(f1)-1 > 1e-50

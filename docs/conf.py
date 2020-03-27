@@ -202,17 +202,17 @@ def linkcode_resolve(domain, info):
         lineno = None
 
     if lineno:
-        linespec = "#L%d-L%d" % (lineno, lineno + len(source) - 1)
+        linespec = '#L%d-L%d' % (lineno, lineno + len(source) - 1)
     else:
-        linespec = ""
+        linespec = ''
 
     fn = os.path.relpath(fn, start=os.path.dirname(diofant.__file__))
 
-    blobpath = "https://github.com/diofant/diofant/blob/"
+    blobpath = 'https://github.com/diofant/diofant/blob/'
     if 'dev' in version:
-        return blobpath + "master/diofant/%s%s" % (fn, linespec)
+        return blobpath + 'master/diofant/%s%s' % (fn, linespec)
     else:
-        return blobpath + "v%s/diofant/%s%s" % (version, fn, linespec)
+        return blobpath + 'v%s/diofant/%s%s' % (version, fn, linespec)
 
 
 # monkey-patch sphinx

@@ -99,9 +99,9 @@ class BaseSymbol(AtomicExpr, Boolean):
     def __new__(cls, name, **assumptions):
         """Symbols are identified by name and assumptions::
 
-        >>> Symbol("x") == Symbol("x")
+        >>> Symbol('x') == Symbol('x')
         True
-        >>> Symbol("x", real=True) == Symbol("x", real=False)
+        >>> Symbol('x', real=True) == Symbol('x', real=False)
         False
 
         """
@@ -110,7 +110,7 @@ class BaseSymbol(AtomicExpr, Boolean):
 
     def __new_stage2__(cls, name, **assumptions):
         if not isinstance(name, str):
-            raise TypeError("name should be a string, not %s" % repr(type(name)))
+            raise TypeError('name should be a string, not %s' % repr(type(name)))
 
         obj = Expr.__new__(cls)
         obj.name = name
@@ -233,7 +233,7 @@ class Symbol(BaseSymbol):
 class Dummy(BaseSymbol):
     """Dummy symbols are each unique, identified by an internal count index:
 
-    >>> bool(Dummy("x") == Dummy("x")) is True
+    >>> bool(Dummy('x') == Dummy('x')) is True
     False
 
     If a name is not supplied then a string value of the count index will be
@@ -256,7 +256,7 @@ class Dummy(BaseSymbol):
 
     def __new__(cls, name=None, **assumptions):
         if name is None:
-            name = "Dummy_" + str(Dummy._count)
+            name = 'Dummy_' + str(Dummy._count)
 
         cls._sanitize(assumptions, cls)
         obj = Symbol.__xnew__(cls, name, **assumptions)

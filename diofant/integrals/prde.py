@@ -423,8 +423,8 @@ def limited_integrate(fa, fd, G, DE):
     l = M.nullspace()
     if M == Matrix() or len(l) > 1:
         # Continue with param_rischDE()
-        raise NotImplementedError("param_rischDE() is required to solve this "
-                                  "integral.")
+        raise NotImplementedError('param_rischDE() is required to solve this '
+                                  'integral.')
     elif len(l) == 0:
         raise NonElementaryIntegralException
     elif len(l) == 1:
@@ -504,8 +504,8 @@ def parametric_log_deriv_heu(fa, fd, wa, wd, DE, c1=None):
     z = ls*ln.gcd(ln.diff(DE.t))
 
     if not z.has(DE.t):
-        raise NotImplementedError("parametric_log_deriv_heu() "
-                                  "heuristic failed: z in k.")
+        raise NotImplementedError('parametric_log_deriv_heu() '
+                                  'heuristic failed: z in k.')
 
     u1, r1 = (fa*l.quo(fd)).div(z)  # (l*f).div(z)
     u2, r2 = (wa*l.quo(wd)).div(z)  # (l*w).div(z)
@@ -604,12 +604,12 @@ def is_deriv_k(fa, fd, DE):
     if len(DE.L_K) + len(DE.E_K) != len(DE.D) - 1:
         if [i for i in DE.cases if i == 'tan'] or \
                 {i for i in DE.cases if i == 'primitive'} - set(DE.L_K):
-            raise NotImplementedError("Real version of the structure "
-                                      "theorems with hypertangent support is not yet implemented.")
+            raise NotImplementedError('Real version of the structure '
+                                      'theorems with hypertangent support is not yet implemented.')
 
         # TODO: What should really be done in this case?
-        raise NotImplementedError("Nonelementary extensions not supported "
-                                  "in the structure theorems.")
+        raise NotImplementedError('Nonelementary extensions not supported '
+                                  'in the structure theorems.')
 
     E_part = [DE.D[i].quo(Poly(DE.T[i], DE.T[i])).as_expr() for i in DE.E_K]
     L_part = [DE.D[i].as_expr() for i in DE.L_K]
@@ -625,8 +625,8 @@ def is_deriv_k(fa, fd, DE):
 
         # Also note: derivation(basic=True) calls cancel()
         if not all(i.is_Rational for i in u):
-            raise NotImplementedError("Cannot work with non-rational "
-                                      "coefficients in this case.")
+            raise NotImplementedError('Cannot work with non-rational '
+                                      'coefficients in this case.')
         else:
             terms = DE.E_args + [DE.T[i] for i in DE.L_K]
             ans = list(zip(terms, u))
@@ -708,12 +708,12 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
     if len(DE.L_K) + len(DE.E_K) != len(DE.D) - 1:
         if [i for i in DE.cases if i == 'tan'] or \
                 {i for i in DE.cases if i == 'primitive'} - set(DE.L_K):
-            raise NotImplementedError("Real version of the structure "
-                                      "theorems with hypertangent support is not yet implemented.")
+            raise NotImplementedError('Real version of the structure '
+                                      'theorems with hypertangent support is not yet implemented.')
 
         # TODO: What should really be done in this case?
-        raise NotImplementedError("Nonelementary extensions not supported "
-                                  "in the structure theorems.")
+        raise NotImplementedError('Nonelementary extensions not supported '
+                                  'in the structure theorems.')
 
     E_part = [DE.D[i].quo(Poly(DE.T[i], DE.T[i])).as_expr() for i in DE.E_K]
     L_part = [DE.D[i].as_expr() for i in DE.L_K]
@@ -731,8 +731,8 @@ def is_log_deriv_k_t_radical(fa, fd, DE, Df=True):
             # TODO: But maybe we can tell if they're not rational, like
             # log(2)/log(3). Also, there should be an option to continue
             # anyway, even if the result might potentially be wrong.
-            raise NotImplementedError("Cannot work with non-rational "
-                                      "coefficients in this case.")
+            raise NotImplementedError('Cannot work with non-rational '
+                                      'coefficients in this case.')
         else:
             n = reduce(ilcm, [i.as_numer_denom()[1] for i in u])
             u *= Integer(n)
@@ -842,12 +842,12 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
         return Integer(n), u
 
     elif case == 'tan':
-        raise NotImplementedError("The hypertangent case is "
-                                  "not yet implemented for is_log_deriv_k_t_radical_in_field()")
+        raise NotImplementedError('The hypertangent case is '
+                                  'not yet implemented for is_log_deriv_k_t_radical_in_field()')
 
     elif case in ['other_linear', 'other_nonlinear']:
         # XXX: If these are supported by the structure theorems, change to NotImplementedError.
-        raise ValueError("The %s case is not supported in this function." % case)
+        raise ValueError('The %s case is not supported in this function.' % case)
 
     else:
         raise ValueError("case must be one of {'primitive', 'exp', 'tan', "
@@ -858,7 +858,7 @@ def is_log_deriv_k_t_radical_in_field(fa, fd, DE, case='auto', z=None):
     residueterms = [(i, j*common_denom) for i, j in residueterms]
     m = common_denom//n
     if common_denom != n*m:  # Verify exact division
-        raise ValueError("Inexact division")
+        raise ValueError('Inexact division')
     u = cancel(u**m*Mul(*[Pow(i, j) for i, j in residueterms]))
 
     return Integer(common_denom), u

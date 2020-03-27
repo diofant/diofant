@@ -25,7 +25,7 @@ half = Rational(1, 2)
 
 def feq(a, b):
     """Test if two floating point values are 'equal'."""
-    t = Float("1.0E-10")
+    t = Float('1.0E-10')
     return -t < a - b < t
 
 
@@ -87,7 +87,7 @@ def test_point():
     assert Point.is_concyclic(p2_1, p2_2, p2_3, p2_4)
     assert Point.is_concyclic(p2_1, p2_2, p2_3, p2_5) is False
     assert Point.is_concyclic(p4, p4 * 2, p4 * 3) is False
-    pytest.raises(TypeError, lambda: Point.is_concyclic(p2_1, "123"))
+    pytest.raises(TypeError, lambda: Point.is_concyclic(p2_1, '123'))
 
     assert p4.scale(2, 3) == Point(2, 3)
     assert p3.scale(2, 3) == p3

@@ -669,8 +669,8 @@ def _check_termination(factors, n, limitp1, use_trial, use_rho, use_pm1,
     return False
 
 
-trial_int_msg = "Trial division with ints [%i ... %i] and fail_max=%i"
-trial_msg = "Trial division with primes [%i ... %i]"
+trial_int_msg = 'Trial division with ints [%i ... %i] and fail_max=%i'
+trial_msg = 'Trial division with primes [%i ... %i]'
 rho_msg = "Pollard's rho with retries %i, max_steps %i and seed %i"
 pm1_msg = "Pollard's p-1 with smoothness bound %i and seed %i"
 factor_msg = '\t%i ** %i'
@@ -1432,7 +1432,7 @@ class totient(Function):
         n = sympify(n)
         if n.is_Integer:
             if n < 1:
-                raise ValueError("n must be a positive integer")
+                raise ValueError('n must be a positive integer')
             factors = factorint(n)
             t = 1
             for p, k in factors.items():
@@ -1503,7 +1503,7 @@ class divisor_sigma(Function):
             return 1 + n**k
         if n.is_Integer:
             if n <= 0:
-                raise ValueError("n must be a positive integer")
+                raise ValueError('n must be a positive integer')
             else:
                 return Mul(*[(p**(k*(e + 1)) - 1)/(p**k - 1) if k != 0
                              else e + 1 for p, e in factorint(n).items()])
@@ -1561,9 +1561,9 @@ def core(n, t=2):
     n = as_int(n)
     t = as_int(t)
     if n <= 0:
-        raise ValueError("n must be a positive integer")
+        raise ValueError('n must be a positive integer')
     elif t <= 1:
-        raise ValueError("t must be >= 2")
+        raise ValueError('t must be >= 2')
     else:
         y = 1
         for p, e in factorint(n).items():

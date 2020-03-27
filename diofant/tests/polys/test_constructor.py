@@ -91,8 +91,8 @@ def test_composite_option():
 
 
 def test_precision():
-    f1 = Float("1.01")
-    f2 = Float("1.0000000000000000000001")
+    f1 = Float('1.01')
+    f2 = Float('1.0000000000000000000001')
     for x in [1, 1e-2, 1e-6, 1e-13, 1e-14, 1e-16, 1e-20, 1e-100, 1e-300,
               f1, f2]:
         result = construct_domain([x])

@@ -104,8 +104,8 @@ class fibonacci(Function):
                     return Integer(cls._fib(n))
             else:
                 if n < 1:
-                    raise ValueError("Fibonacci polynomials are defined "
-                                     "only for positive integer indices.")
+                    raise ValueError('Fibonacci polynomials are defined '
+                                     'only for positive integer indices.')
                 return cls._fibpoly(n).subs({_sym: sym})
 
     def _eval_rewrite_as_sqrt(self, n, sym=None):
@@ -304,8 +304,8 @@ class bernoulli(Function):
                         result.append(binomial(n, k)*cls(k)*sym**(n - k))
                     return Add(*result)
             else:
-                raise ValueError("Bernoulli numbers are defined only"
-                                 " for nonnegative integer indices.")
+                raise ValueError('Bernoulli numbers are defined only'
+                                 ' for nonnegative integer indices.')
 
         if sym is None:
             if n.is_odd and (n - 1).is_positive:
@@ -630,7 +630,7 @@ class harmonic(Function):
 
     def _eval_rewrite_as_Sum(self, n, m=None):
         from ...concrete import Sum
-        k = Dummy("k", integer=True)
+        k = Dummy('k', integer=True)
         if m is None:
             m = Integer(1)
         return Sum(k**(-m), (k, 1, n))
@@ -658,7 +658,7 @@ class harmonic(Function):
                 u = p // q
                 p = p - u * q
                 if u.is_nonnegative and p.is_positive and q.is_positive and p < q:
-                    k = Dummy("k")
+                    k = Dummy('k')
                     t1 = q * Sum(1 / (q * k + p), (k, 0, u))
                     t2 = 2 * Sum(cos((2 * pi * p * k) / q) *
                                  log(sin((pi * k) / q)),
@@ -670,7 +670,7 @@ class harmonic(Function):
 
     def _eval_rewrite_as_tractable(self, n, m=1):
         from .. import polygamma
-        return self.rewrite(polygamma).rewrite("tractable", deep=True)
+        return self.rewrite(polygamma).rewrite('tractable', deep=True)
 
     def _eval_evalf(self, prec):
         from .. import polygamma
@@ -941,8 +941,8 @@ class genocchi(Function):
     def eval(cls, n):
         if n.is_Number:
             if (not n.is_Integer) or n.is_nonpositive:
-                raise ValueError("Genocchi numbers are defined only for " +
-                                 "positive integers")
+                raise ValueError('Genocchi numbers are defined only for ' +
+                                 'positive integers')
             return 2*(1 - 2**n)*bernoulli(n)
 
         if n.is_odd and (n - 1).is_positive:
@@ -1256,7 +1256,7 @@ def nC(n, k=None, replacement=False):
                 return 2**n
             return sum(nC(n, i, replacement) for i in range(n + 1))
         if k < 0:
-            raise ValueError("k cannot be negative")
+            raise ValueError('k cannot be negative')
         if replacement:
             return binomial(n + k - 1, k)
         return binomial(n, k)
@@ -1466,7 +1466,7 @@ def nT(n, k=None):
     >>> nT('aabbc') == sum(_)
     True
 
-    >>> [nT("mississippi", i) for i in range(1, 12)]
+    >>> [nT('mississippi', i) for i in range(1, 12)]
     [1, 74, 609, 1521, 1768, 1224, 579, 197, 50, 9, 1]
 
     Partitions when all items are identical:

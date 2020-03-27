@@ -305,7 +305,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> (x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1).is_cyclotomic
     False
@@ -487,7 +487,7 @@ def dup_zz_factor(f, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> (2*x**4 - 2).factor_list()
     (2, [(x - 1, 1), (x + 1, 1), (x**2 + 1, 1)])
@@ -920,7 +920,7 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
             return dmp_zz_wang(orig_f, u, K, mod + 1)
         else:
             raise ExtraneousFactors(
-                "we need to restart algorithm with better parameters")
+                'we need to restart algorithm with better parameters')
 
     result = []
 
@@ -953,7 +953,7 @@ def dmp_zz_factor(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> (2*x**2 - 2*y**2).factor_list()
     (2, [(x - y, 1), (x + y, 1)])

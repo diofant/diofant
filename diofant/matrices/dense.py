@@ -68,7 +68,7 @@ class DenseMatrix(MatrixBase):
                 if any(isinstance(_, Expr) and not _.is_number for _ in (i, j)):
                     if ((j < 0) == true) or ((j >= self.shape[1]) == true) or \
                        ((i < 0) == true) or ((i >= self.shape[0]) == true):
-                        raise ValueError("index out of boundary")
+                        raise ValueError('index out of boundary')
                     from .expressions.matexpr import MatrixElement
                     return MatrixElement(self, i, j)
 
@@ -254,16 +254,16 @@ class DenseMatrix(MatrixBase):
             return diag(*r)
 
         M = self.as_mutable()
-        if method == "GE":
+        if method == 'GE':
             rv = M.inverse_GE(iszerofunc=iszerofunc)
-        elif method == "LU":
+        elif method == 'LU':
             rv = M.inverse_LU(iszerofunc=iszerofunc)
-        elif method == "ADJ":
+        elif method == 'ADJ':
             rv = M.inverse_ADJ(iszerofunc=iszerofunc)
         else:
             # make sure to add an invertibility check (as in inverse_LU)
             # if a new method is added.
-            raise ValueError("Inversion method unrecognized")
+            raise ValueError('Inversion method unrecognized')
         return self._new(rv)
 
     def equals(self, other, failing_expression=False):
@@ -361,7 +361,7 @@ class DenseMatrix(MatrixBase):
         for j in range(rhs.cols):
             for i in range(self.rows):
                 if self[i, i] == 0:
-                    raise ValueError("Matrix must be non-singular.")
+                    raise ValueError('Matrix must be non-singular.')
                 X[i, j] = (rhs[i, j] - sum(self[i, k]*X[k, j]
                                            for k in range(i))) / self[i, i]
         return self._new(X)
@@ -375,7 +375,7 @@ class DenseMatrix(MatrixBase):
         for j in range(rhs.cols):
             for i in reversed(range(self.rows)):
                 if self[i, i] == 0:
-                    raise ValueError("Matrix must be non-singular.")
+                    raise ValueError('Matrix must be non-singular.')
                 X[i, j] = (rhs[i, j] - sum(self[i, k]*X[k, j]
                                            for k in range(i + 1, self.rows))) / self[i, i]
         return self._new(X)
@@ -405,7 +405,7 @@ class DenseMatrix(MatrixBase):
 
         """
         if not callable(f):
-            raise TypeError("`f` must be callable.")
+            raise TypeError('`f` must be callable.')
 
         out = self._new(self.rows, self.cols, list(map(f, self._mat)))
         return out
@@ -431,7 +431,7 @@ class DenseMatrix(MatrixBase):
 
         """
         if len(self) != rows*cols:
-            raise ValueError("Invalid reshape parameters %d %d" % (rows, cols))
+            raise ValueError('Invalid reshape parameters %d %d' % (rows, cols))
         return self._new(rows, cols, lambda i, j: self._mat[i*cols + j])
 
     def as_mutable(self):
@@ -623,8 +623,8 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
         dr, dc = rhi - rlo, chi - clo
         if shape != (dr, dc):
             raise ShapeError(filldedent("The Matrix `value` doesn't have the "
-                                        "same dimensions "
-                                        "as the in sub-Matrix given by `key`."))
+                                        'same dimensions '
+                                        'as the in sub-Matrix given by `key`.'))
 
         for i in range(value.rows):
             for j in range(value.cols):
@@ -665,7 +665,7 @@ class MutableDenseMatrix(DenseMatrix, MatrixBase):
 
         """
         if not is_sequence(value):
-            raise TypeError("`value` must be an ordered iterable, not %s." % type(value))
+            raise TypeError('`value` must be an ordered iterable, not %s.' % type(value))
         return self.copyin_matrix(key, MutableMatrix(value))
 
     def zip_row_op(self, i, k, f):
@@ -1388,26 +1388,26 @@ def hessian(f, varlist, constraints=[]):
     # f is the expression representing a function f, return regular matrix
     if isinstance(varlist, MatrixBase):
         if 1 not in varlist.shape:
-            raise ShapeError("`varlist` must be a column or row vector.")
+            raise ShapeError('`varlist` must be a column or row vector.')
         if varlist.cols == 1:
             varlist = varlist.T
         varlist = varlist.tolist()[0]
     if is_sequence(varlist):
         n = len(varlist)
         if not n:
-            raise ShapeError("`len(varlist)` must not be zero.")
+            raise ShapeError('`len(varlist)` must not be zero.')
     else:
-        raise ValueError("Improper variable list in hessian function")
+        raise ValueError('Improper variable list in hessian function')
     if not getattr(f, 'diff', None):
         # check differentiability
-        raise ValueError("Function `f` (%s) is not differentiable" % f)
+        raise ValueError('Function `f` (%s) is not differentiable' % f)
     m = len(constraints)
     N = m + n
     out = zeros(N)
     for k, g in enumerate(constraints):
         if not getattr(g, 'diff', None):
             # check differentiability
-            raise ValueError("Function `f` (%s) is not differentiable" % f)
+            raise ValueError('Function `f` (%s) is not differentiable' % f)
         for i in range(n):
             out[k, i + m] = g.diff(varlist[i])
     for i in range(n):
@@ -1434,7 +1434,7 @@ def GramSchmidt(vlist, orthonormal=False):
             tmp -= vlist[i].project(out[j])
         if not tmp.values():
             raise ValueError(
-                "GramSchmidt: vector set not linearly independent")
+                'GramSchmidt: vector set not linearly independent')
         out.append(tmp)
     if orthonormal:
         for i in range(len(out)):

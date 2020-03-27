@@ -8,7 +8,7 @@ from ..elementary.trigonometric import cos, cot, sin
 from .polynomials import assoc_legendre
 
 
-_x = Dummy("dummy_for_spherical_harmonics")
+_x = Dummy('dummy_for_spherical_harmonics')
 
 
 class Ynm(Function):

@@ -69,15 +69,15 @@ class FiniteField(Field, SimpleDomain):
             obj.dtype = _modular_integer_cache[key]
         except KeyError:
             if deg == 1:
-                obj.dtype = type("ModularInteger", (ModularInteger,),
-                                 {"mod": mod, "domain": dom, "_parent": obj})
+                obj.dtype = type('ModularInteger', (ModularInteger,),
+                                 {'mod': mod, 'domain': dom, '_parent': obj})
             else:
                 ff = dom.finite_field(mod).inject(Dummy('x'))
                 mod = ff.from_dense(modulus)
                 if not mod.is_irreducible:
                     raise ValueError('defining polynomial must be irreducible')
-                obj.dtype = type("GaloisFieldElement", (GaloisFieldElement,),
-                                 {"mod": mod, "domain": ff, "_parent": obj})
+                obj.dtype = type('GaloisFieldElement', (GaloisFieldElement,),
+                                 {'mod': mod, 'domain': ff, '_parent': obj})
             _modular_integer_cache[key] = obj.dtype
 
         obj.zero = obj.dtype(0)
@@ -108,7 +108,7 @@ class FiniteField(Field, SimpleDomain):
         elif expr.is_Float and int(expr) == expr:
             return self.dtype(self.domain.dtype(int(expr)))
         else:
-            raise CoercionFailed("expected an integer, got %s" % expr)
+            raise CoercionFailed('expected an integer, got %s' % expr)
 
     def _from_PythonFiniteField(self, a, K0=None):
         return self.dtype(self.domain.convert(a.rep, K0.domain))

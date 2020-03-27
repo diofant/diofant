@@ -22,12 +22,12 @@ inf = oo.evalf()
 def test_solve_poly_inequality():
     assert psolve(Poly(0, x), '==') == [S.Reals]
     assert psolve(Poly(1, x), '==') == [S.EmptySet]
-    assert psolve(PurePoly(x + 1, x), ">") == [Interval(-1, oo, True, True)]
+    assert psolve(PurePoly(x + 1, x), '>') == [Interval(-1, oo, True, True)]
     pytest.raises(ValueError, lambda: psolve(x, '=='))
     pytest.raises(ValueError, lambda: psolve(Poly(x, x), '??'))
 
-    assert (solve_poly_inequalities(((Poly(x**2 - 3), ">"),
-                                     (Poly(-x**2 + 1), ">"))) ==
+    assert (solve_poly_inequalities(((Poly(x**2 - 3), '>'),
+                                     (Poly(-x**2 + 1), '>'))) ==
             Union(Interval(-oo, -sqrt(3), True, True),
                   Interval(-1, 1, True, True),
                   Interval(sqrt(3), oo, True, True)))

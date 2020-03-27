@@ -7,8 +7,8 @@ from diofant.functions import KroneckerDelta as Kd
 
 __all__ = ()
 
-i, j, k, l, m = symbols("i j k l m", integer=True, finite=True)
-x, y = symbols("x y", commutative=False)
+i, j, k, l, m = symbols('i j k l m', integer=True, finite=True)
+x, y = symbols('x y', commutative=False)
 
 
 def test_deltaproduct_trivial():

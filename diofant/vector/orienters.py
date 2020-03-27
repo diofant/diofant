@@ -21,7 +21,7 @@ class AxisOrienter(Orienter):
         from .vector import Vector
 
         if not isinstance(axis, Vector):
-            raise TypeError("axis should be a Vector")
+            raise TypeError('axis should be a Vector')
         angle = sympify(angle)
 
         obj = super().__new__(cls, angle, axis)

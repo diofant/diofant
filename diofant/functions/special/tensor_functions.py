@@ -152,11 +152,11 @@ class KroneckerDelta(Function):
         elif diff.is_nonzero:
             return Integer(0)
 
-        if i._assumptions.get("below_fermi") and \
-                j._assumptions.get("above_fermi"):
+        if i._assumptions.get('below_fermi') and \
+                j._assumptions.get('above_fermi'):
             return Integer(0)
-        if j._assumptions.get("below_fermi") and \
-                i._assumptions.get("above_fermi"):
+        if j._assumptions.get('below_fermi') and \
+                i._assumptions.get('above_fermi'):
             return Integer(0)
         # to make KroneckerDelta canonical
         # following lines will check if inputs are in order
@@ -197,9 +197,9 @@ class KroneckerDelta(Function):
         diofant.functions.special.tensor_functions.KroneckerDelta.is_only_above_fermi
 
         """
-        if self.args[0]._assumptions.get("below_fermi"):
+        if self.args[0]._assumptions.get('below_fermi'):
             return False
-        if self.args[1]._assumptions.get("below_fermi"):
+        if self.args[1]._assumptions.get('below_fermi'):
             return False
         return True
 
@@ -230,9 +230,9 @@ class KroneckerDelta(Function):
         diofant.functions.special.tensor_functions.KroneckerDelta.is_only_below_fermi
 
         """
-        if self.args[0]._assumptions.get("above_fermi"):
+        if self.args[0]._assumptions.get('above_fermi'):
             return False
-        if self.args[1]._assumptions.get("above_fermi"):
+        if self.args[1]._assumptions.get('above_fermi'):
             return False
         return True
 
@@ -263,8 +263,8 @@ class KroneckerDelta(Function):
         diofant.functions.special.tensor_functions.KroneckerDelta.is_only_below_fermi
 
         """
-        return (self.args[0]._assumptions.get("above_fermi") or
-                self.args[1]._assumptions.get("above_fermi") or False)
+        return (self.args[0]._assumptions.get('above_fermi') or
+                self.args[1]._assumptions.get('above_fermi') or False)
 
     @property
     def is_only_below_fermi(self):
@@ -293,8 +293,8 @@ class KroneckerDelta(Function):
         diofant.functions.special.tensor_functions.KroneckerDelta.is_only_above_fermi
 
         """
-        return (self.args[0]._assumptions.get("below_fermi") or
-                self.args[1]._assumptions.get("below_fermi") or False)
+        return (self.args[0]._assumptions.get('below_fermi') or
+                self.args[1]._assumptions.get('below_fermi') or False)
 
     @property
     def indices_contain_equal_information(self):
@@ -316,11 +316,11 @@ class KroneckerDelta(Function):
         False
 
         """
-        if (self.args[0]._assumptions.get("below_fermi") and
-                self.args[1]._assumptions.get("below_fermi")):
+        if (self.args[0]._assumptions.get('below_fermi') and
+                self.args[1]._assumptions.get('below_fermi')):
             return True
-        if (self.args[0]._assumptions.get("above_fermi")
-                and self.args[1]._assumptions.get("above_fermi")):
+        if (self.args[0]._assumptions.get('above_fermi')
+                and self.args[1]._assumptions.get('above_fermi')):
             return True
 
         # if both indices are general we are True, else false
@@ -404,12 +404,12 @@ class KroneckerDelta(Function):
 
         """
         if not self.is_above_fermi:
-            if self.args[0]._assumptions.get("below_fermi"):
+            if self.args[0]._assumptions.get('below_fermi'):
                 return 0
             else:
                 return 1
         elif not self.is_below_fermi:
-            if self.args[0]._assumptions.get("above_fermi"):
+            if self.args[0]._assumptions.get('above_fermi'):
                 return 0
             else:
                 return 1

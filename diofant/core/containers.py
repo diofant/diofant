@@ -208,7 +208,7 @@ class Dict(Basic):
         return self._dict[sympify(key)]
 
     def __setitem__(self, key, value):
-        raise NotImplementedError("Diofant Dicts are Immutable")
+        raise NotImplementedError('Diofant Dicts are Immutable')
 
     @property
     def args(self):

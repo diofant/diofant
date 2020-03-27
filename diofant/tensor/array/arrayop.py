@@ -103,15 +103,15 @@ def tensorcontraction(array, *contraction_axes):
     taken_dims = set()
     for axes_group in contraction_axes:
         if not isinstance(axes_group, collections.abc.Iterable):
-            raise ValueError("collections of contraction axes expected")
+            raise ValueError('collections of contraction axes expected')
 
         dim = array.shape[axes_group[0]]
 
         for d in axes_group:
             if d in taken_dims:
-                raise ValueError("dimension specified more than once")
+                raise ValueError('dimension specified more than once')
             if dim != array.shape[d]:
-                raise ValueError("cannot contract between axes of different dimension")
+                raise ValueError('cannot contract between axes of different dimension')
             taken_dims.add(d)
 
     rank = array.rank()
@@ -191,7 +191,7 @@ def derive_by_array(expr, dx):
         dx = ImmutableDenseNDimArray(dx)
         for i in dx:
             if not i._diff_wrt:
-                raise ValueError("cannot derive by this array")
+                raise ValueError('cannot derive by this array')
 
     if isinstance(expr, array_types):
         expr = ImmutableDenseNDimArray(expr)
@@ -239,13 +239,13 @@ def permutedims(expr, perm):
 
     """
     if not isinstance(expr, NDimArray):
-        raise TypeError("expression has to be an N-dim array")
+        raise TypeError('expression has to be an N-dim array')
 
     if not isinstance(perm, Permutation):
         perm = Permutation(list(perm))
 
     if perm.size != expr.rank():
-        raise ValueError("wrong permutation size")
+        raise ValueError('wrong permutation size')
 
     # Get the inverse permutation:
     iperm = ~perm

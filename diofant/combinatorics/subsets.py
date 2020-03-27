@@ -50,12 +50,12 @@ class Subset(Basic):
 
         """
         if len(subset) > len(superset):
-            raise ValueError("Invalid arguments have been provided. The "
-                             "superset must be larger than the subset.")
+            raise ValueError('Invalid arguments have been provided. The '
+                             'superset must be larger than the subset.')
         for elem in subset:
             if elem not in superset:
-                raise ValueError("The superset provided is invalid as it "
-                                 "does not contain the element %s" % elem)
+                raise ValueError('The superset provided is invalid as it '
+                                 'does not contain the element %s' % elem)
         obj = Basic.__new__(cls)
         obj._subset = subset
         obj._superset = superset
@@ -293,7 +293,7 @@ class Subset(Basic):
 
         """
         if self._rank_binary is None:
-            self._rank_binary = int("".join(
+            self._rank_binary = int(''.join(
                 Subset.bitlist_from_subset(self.subset,
                                            self.superset)), 2)
         return self._rank_binary
@@ -463,7 +463,7 @@ class Subset(Basic):
 
         """
         if len(super_set) != len(bitlist):
-            raise ValueError("The sizes of the lists are not equal")
+            raise ValueError('The sizes of the lists are not equal')
         ret_set = []
         for i in range(len(bitlist)):
             if bitlist[i] == '1':

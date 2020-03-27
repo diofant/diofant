@@ -114,7 +114,7 @@ def apart(f, x=None, full=False, **options):
             return apart(fc, x=x, full=full, **_options)
 
         raise NotImplementedError(
-            "multivariate partial fraction decomposition")
+            'multivariate partial fraction decomposition')
 
     common, P, Q = P.cancel(Q)
 
@@ -314,7 +314,7 @@ def apart_list(f, x=None, dummies=None, **options):
     (P, Q), opt = parallel_poly_from_expr((P, Q), x, **options)
 
     if P.is_multivariate:  # pragma: no cover
-        raise NotImplementedError("multivariate partial fraction decomposition")
+        raise NotImplementedError('multivariate partial fraction decomposition')
 
     common, P, Q = P.cancel(Q)
 
@@ -329,7 +329,7 @@ def apart_list(f, x=None, dummies=None, **options):
             while True:
                 yield d
 
-        dummies = dummies("w")
+        dummies = dummies('w')
 
     rationalpart = apart_list_full_decomposition(P, Q, dummies)
 

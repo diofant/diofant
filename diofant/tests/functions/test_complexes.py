@@ -634,8 +634,8 @@ def test_polarify():
     newex, subs = polarify(f(x) + z)
     assert newex.subs(subs) == f(x) + z
 
-    mu = Symbol("mu")
-    sigma = Symbol("sigma", positive=True)
+    mu = Symbol('mu')
+    sigma = Symbol('sigma', positive=True)
 
     # Make sure polarify(lift=True) doesn't try to lift the integration
     # variable

@@ -48,10 +48,10 @@ def test__nsort():
     assert len(_nsort(r, separated=True)[0]) == 0
     b, c, a = exp(-1000), exp(-999), exp(-1001)
     assert _nsort((b, c, a)) == [a, b, c]
-    d = symbols("d", extended_real=True)
+    d = symbols('d', extended_real=True)
     assert _nsort((d,)) == [d]
     assert _nsort((d,), separated=True) == [[d], []]
-    c = symbols("c", complex=True, real=False)
+    c = symbols('c', complex=True, real=False)
     assert _nsort((c,)) == [c]
     assert _nsort((c,), separated=True) == [[], [c]]
     assert _nsort((I, Q(1)), separated=True) == ([Q(1)], [I])

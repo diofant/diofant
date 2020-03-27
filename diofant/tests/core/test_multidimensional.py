@@ -16,15 +16,15 @@ def test_vectorize():
     def vsin2(x):
         return sin(x)
 
-    @vectorize(0, "evaluate")
+    @vectorize(0, 'evaluate')
     def vsin3(x, evaluate=True):
         return sin(x, evaluate=evaluate)
 
-    @vectorize(0, "evaluate")
+    @vectorize(0, 'evaluate')
     def vlog1(x, base=None, evaluate=True):
         return log(x, base, evaluate=evaluate)
 
-    @vectorize(0, 3, "boo")
+    @vectorize(0, 3, 'boo')
     def vlog2(x, base=E, **kwargs):
         return log(x, base)
 

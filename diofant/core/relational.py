@@ -54,7 +54,7 @@ class Relational(Boolean, Expr, EvalfMixin):
             new_cls = cls.ValidRelationOperator[rop]
             return new_cls(lhs, rhs, **assumptions)
         except KeyError:
-            raise ValueError("Invalid relational operator symbol: %r" % rop)
+            raise ValueError('Invalid relational operator symbol: %r' % rop)
 
     @property
     def lhs(self):
@@ -189,7 +189,7 @@ class Relational(Boolean, Expr, EvalfMixin):
             return self
 
     def __bool__(self):
-        raise TypeError("cannot determine truth value of Relational")
+        raise TypeError('cannot determine truth value of Relational')
 
     def as_set(self):
         """
@@ -211,9 +211,9 @@ class Relational(Boolean, Expr, EvalfMixin):
         if len(syms) == 1:
             sym = syms.pop()
         else:
-            raise NotImplementedError("Sorry, Relational.as_set procedure"
-                                      " is not yet implemented for"
-                                      " multivariate expressions")
+            raise NotImplementedError('Sorry, Relational.as_set procedure'
+                                      ' is not yet implemented for'
+                                      ' multivariate expressions')
 
         return solve_univariate_inequality(self, sym, relational=False)
 

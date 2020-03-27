@@ -45,7 +45,7 @@ class Ring(Domain):
         if h == self.one:
             return s % b
         else:
-            raise NotInvertible("zero divisor")
+            raise NotInvertible('zero divisor')
 
     def half_gcdex(self, a, b):
         """Half extended GCD of ``a`` and ``b``."""

@@ -7,7 +7,7 @@ from ..utilities import has_dups, numbered_symbols, topological_sort
 from .polyerrors import FlagError, GeneratorsError, OptionError
 
 
-__all__ = "Options", "Order"
+__all__ = 'Options', 'Order'
 
 
 class Option:
@@ -182,8 +182,8 @@ class Options(dict):
             try:
                 cls.__order__ = topological_sort((vertices, list(edges)))
             except ValueError:
-                raise RuntimeError(
-                    "cycle detected in diofant.polys options framework")
+                raise RuntimeError('cycle detected in diofant.polys'
+                                   ' options framework')
 
     def clone(self, updates={}):
         """Clone ``self`` and update specified options."""
@@ -270,9 +270,9 @@ class Gens(Option, metaclass=OptionType):
         if gens == (None,):
             gens = ()
         elif has_dups(gens):
-            raise GeneratorsError("duplicated generators: %s" % str(gens))
+            raise GeneratorsError('duplicated generators: %s' % str(gens))
         elif any(gen.is_commutative is False for gen in gens):
-            raise GeneratorsError("non-commutative generators: %s" % str(gens))
+            raise GeneratorsError('non-commutative generators: %s' % str(gens))
 
         return tuple(gens)
 
@@ -285,7 +285,7 @@ class Wrt(Option, metaclass=OptionType):
     requires = []
     excludes = []
 
-    _re_split = re.compile(r"\s*,\s*|\s+")
+    _re_split = re.compile(r'\s*,\s*|\s+')
 
     @classmethod
     def preprocess(cls, wrt):
@@ -386,12 +386,12 @@ class Domain(Option, metaclass=OptionType):
 
     after = ['gens']
 
-    _re_realfield = re.compile(r"^(R|RR)(_(\d+))?$")
-    _re_complexfield = re.compile(r"^(C|CC)(_(\d+))?$")
-    _re_finitefield = re.compile(r"^(FF|GF)\((\d+)\)$")
-    _re_polynomial = re.compile(r"^(Z|ZZ|Q|QQ)\[(.+)\]$")
-    _re_fraction = re.compile(r"^(Z|ZZ|Q|QQ)\((.+)\)$")
-    _re_algebraic = re.compile(r"^(Q|QQ)\<(.+)\>$")
+    _re_realfield = re.compile(r'^(R|RR)(_(\d+))?$')
+    _re_complexfield = re.compile(r'^(C|CC)(_(\d+))?$')
+    _re_finitefield = re.compile(r'^(FF|GF)\((\d+)\)$')
+    _re_polynomial = re.compile(r'^(Z|ZZ|Q|QQ)\[(.+)\]$')
+    _re_fraction = re.compile(r'^(Z|ZZ|Q|QQ)\((.+)\)$')
+    _re_algebraic = re.compile(r'^(Q|QQ)\<(.+)\>$')
 
     @classmethod
     def preprocess(cls, domain):
@@ -470,11 +470,12 @@ class Domain(Option, metaclass=OptionType):
         from .. import domains
         if 'gens' in options and 'domain' in options and options['domain'].is_Composite and \
                 (set(options['domain'].symbols) & set(options['gens'])):
-            raise GeneratorsError(
-                "ground domain and generators interfere together")
+            raise GeneratorsError('ground domain and generators '
+                                  'interfere together')
         elif ('gens' not in options or not options['gens']) and \
                 'domain' in options and options['domain'] == domains.EX:
-            raise GeneratorsError("you have to provide generators because EX domain was requested")
+            raise GeneratorsError('you have to provide generators because'
+                                  ' EX domain was requested')
 
 
 class Split(BooleanOption, metaclass=OptionType):
@@ -669,7 +670,8 @@ class Symbols(Flag, metaclass=OptionType):
         if hasattr(symbols, '__iter__'):
             return iter(symbols)
         else:
-            raise OptionError("expected an iterator or iterable container, got %s" % symbols)
+            raise OptionError('expected an iterator or '
+                              'iterable container, got %s' % symbols)
 
 
 class Method(Flag, metaclass=OptionType):
@@ -682,7 +684,7 @@ class Method(Flag, metaclass=OptionType):
         if isinstance(method, str):
             return method.lower()
         else:
-            raise OptionError("expected a string, got %s" % method)
+            raise OptionError('expected a string, got %s' % method)
 
 
 def build_options(gens, args=None):

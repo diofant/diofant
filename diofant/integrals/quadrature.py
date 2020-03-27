@@ -65,7 +65,7 @@ def gauss_legendre(n, n_digits):
     * https://en.wikipedia.org/wiki/Gaussian_quadrature
 
     """
-    x = Dummy("x")
+    x = Dummy('x')
     p = legendre_poly(n, x, polys=True)
     pd = p.diff(x)
     xi = []
@@ -139,7 +139,7 @@ def gauss_laguerre(n, n_digits):
     * https://en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
 
     """
-    x = Dummy("x")
+    x = Dummy('x')
     p = laguerre_poly(n, x, polys=True)
     p1 = laguerre_poly(n+1, x, polys=True)
     xi = []
@@ -212,7 +212,7 @@ def gauss_hermite(n, n_digits):
     * https://en.wikipedia.org/wiki/Gauss-Hermite_Quadrature
 
     """
-    x = Dummy("x")
+    x = Dummy('x')
     p = hermite_poly(n, x, polys=True)
     p1 = hermite_poly(n-1, x, polys=True)
     xi = []
@@ -287,7 +287,7 @@ def gauss_gen_laguerre(n, alpha, n_digits):
     * https://en.wikipedia.org/wiki/Gauss%E2%80%93Laguerre_quadrature
 
     """
-    x = Dummy("x")
+    x = Dummy('x')
     p = laguerre_poly(n, x, alpha=alpha, polys=True)
     p1 = laguerre_poly(n-1, x, alpha=alpha, polys=True)
     p2 = laguerre_poly(n-1, x, alpha=alpha+1, polys=True)
@@ -505,7 +505,7 @@ def gauss_jacobi(n, alpha, beta, n_digits):
     * https://en.wikipedia.org/wiki/Gauss%E2%80%93Jacobi_quadrature
 
     """
-    x = Dummy("x")
+    x = Dummy('x')
     p = jacobi_poly(n, alpha, beta, x, polys=True)
     pd = p.diff(x)
     pn = jacobi_poly(n+1, alpha, beta, x, polys=True)

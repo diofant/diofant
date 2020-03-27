@@ -477,7 +477,7 @@ def make_simp(z):
 def debug(*args):
     if DIOFANT_DEBUG:
         for a in args:
-            print(a, end="")
+            print(a, end='')
         print()
 
 
@@ -752,8 +752,8 @@ class Formula:
             elif a in self.func.bq.args:
                 symbol_values.append(bq)
             else:
-                raise ValueError("At least one of the parameters of the "
-                                 "formula must be equal to %s" % (a,))
+                raise ValueError('At least one of the parameters of the '
+                                 'formula must be equal to %s' % (a,))
         base_repl = [dict(zip(self.symbols, values))
                      for values in product(*symbol_values)]
         abuckets, bbuckets = [sift(params, _mod1) for params in [ap, bq]]
@@ -780,7 +780,7 @@ class Formula:
                             for target in bucket[mod]:
                                 n0 = solve(expr.xreplace(repl0) - target, _n)[0][_n]
                                 if n0.free_symbols:
-                                    raise ValueError("Value should not be true")
+                                    raise ValueError('Value should not be true')
                                 vals.append(n0)
             else:
                 values = []
@@ -1783,7 +1783,7 @@ def try_lerchphi(func):
         if not denom.has(t):
             p = Poly(numer, t)
             if not p.is_term:
-                raise TypeError("p should be a term")
+                raise TypeError('p should be a term')
             ((b, ), a) = p.LT()
             monomials += [(a/denom, b)]
             continue

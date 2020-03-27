@@ -14,8 +14,8 @@ ALG = QQ.algebraic_field(sqrt(2), sqrt(3))
 
 
 def test_build_order():
-    R = QQ.poly_ring(x, y, order=build_product_order((("lex", x),
-                                                      ("ilex", y)), (x, y)))
+    R = QQ.poly_ring(x, y, order=build_product_order((('lex', x),
+                                                      ('ilex', y)), (x, y)))
     assert R.order((1, 5)) == ((1,), (-5,))
 
 
@@ -43,7 +43,7 @@ def test_globalring():
 
 def test_localring():
     Qxy = QQ.frac_field(x, y)
-    R = QQ.poly_ring(x, y, order="ilex")
+    R = QQ.poly_ring(x, y, order='ilex')
     X = R.convert(x)
     Y = R.convert(y)
 
@@ -61,7 +61,7 @@ def test_localring():
 
 
 def test_conversion():
-    L = QQ.poly_ring(x, y, order="ilex")
+    L = QQ.poly_ring(x, y, order='ilex')
     G = QQ.inject(x, y)
 
     assert L.convert(x) == L.convert(G.convert(x), G)

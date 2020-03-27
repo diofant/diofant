@@ -27,8 +27,8 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
 
     def __new__(cls, dom, *ext):
         if not (dom.is_RationalField or dom.is_AlgebraicField):
-            raise DomainError("ground domain must be a rational "
-                              "or an algebraic field")
+            raise DomainError('ground domain must be a rational '
+                              'or an algebraic field')
 
         ext = [sympify(_).as_expr() for _ in ext]
         ext = [_ for _ in ext if _ not in dom]
@@ -77,7 +77,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
             else:
                 dtype_cls = AlgebraicElement
             obj.dtype = type(dtype_cls.__name__, (dtype_cls,),
-                             {"mod": mod, "domain": rep_ring, "_parent": obj})
+                             {'mod': mod, 'domain': rep_ring, '_parent': obj})
             _algebraic_numbers_cache[(obj.domain, obj.ext)] = obj.dtype
 
         obj.unit = obj.dtype([dom(1), dom(0)])
@@ -110,7 +110,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         try:
             K0 = self.domain.algebraic_field(expr)
         except NotAlgebraic:
-            raise CoercionFailed("%s is not a valid algebraic number in %s" % (expr, self))
+            raise CoercionFailed('%s is not a valid algebraic number in %s' % (expr, self))
         if expr in self.domain:
             return self([expr])
         else:
@@ -152,7 +152,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
             else:
                 return self.from_expr(K0.to_expr(a))
         else:
-            raise CoercionFailed("%s is not in a subfield of %s" % (K0, self))
+            raise CoercionFailed('%s is not in a subfield of %s' % (K0, self))
 
     def _from_ExpressionDomain(self, a, K0):
         expr = K0.to_expr(a)
@@ -160,8 +160,8 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
 
     @property
     def ring(self):
-        raise NotImplementedError("ring of integers of %s is not "
-                                  "implemented yet" % self)
+        raise NotImplementedError('ring of integers of %s is not '
+                                  'implemented yet' % self)
 
     def is_normal(self, a):
         return self.domain.is_normal(a.LC())

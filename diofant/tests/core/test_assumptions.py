@@ -584,8 +584,8 @@ def test_other_symbol():
 
 def test_sympyissue_3825():
     """catch: hash instability"""
-    x = Symbol("x")
-    y = Symbol("y")
+    x = Symbol('x')
+    y = Symbol('y')
     a1 = x + y
     a2 = y + x
     a2.is_comparable

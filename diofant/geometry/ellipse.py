@@ -556,7 +556,7 @@ class Ellipse(GeometrySet):
             raise NotImplementedError(filldedent(
                 'General Ellipse is not supported but the equation '
                 'of the reflected Ellipse is given by the zeros of: ' +
-                "f(%s, %s) = %s" % (str(x), str(y), str(result))))
+                'f(%s, %s) = %s' % (str(x), str(y), str(result))))
 
     def encloses_point(self, p):
         """
@@ -744,7 +744,7 @@ class Ellipse(GeometrySet):
                 c += len([True for point in inter if point in seg])
             return c == 1
         else:
-            raise NotImplementedError("Unknown argument type")
+            raise NotImplementedError('Unknown argument type')
 
     def normal_lines(self, p, prec=None):
         """Normal lines between `p` and the ellipse.
@@ -1232,7 +1232,7 @@ class Circle(Ellipse):
             args = [Point(a) for a in args]
             if Point.is_collinear(*args):
                 raise GeometryError(
-                    "Cannot construct a circle from three collinear points")
+                    'Cannot construct a circle from three collinear points')
             from .polygon import Triangle
             t = Triangle(*args)
             c = t.circumcenter
@@ -1245,7 +1245,7 @@ class Circle(Ellipse):
         if not (c is None or r is None):
             return GeometryEntity.__new__(cls, c, r, **kwargs)
 
-        raise GeometryError("Circle.__new__ received unknown arguments")
+        raise GeometryError('Circle.__new__ received unknown arguments')
 
     @property
     def radius(self):

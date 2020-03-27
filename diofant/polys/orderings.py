@@ -153,7 +153,7 @@ class InverseOrder(MonomialOrder):
         self.O = O
 
     def __str__(self):
-        return "i" + str(self.O)
+        return 'i' + str(self.O)
 
     def __call__(self, monomial):
         def inv(l):
@@ -234,7 +234,7 @@ def monomial_key(order=None, gens=None):
             return _order
         return order
     else:
-        raise ValueError("monomial ordering specification must be a string or a callable, got %s" % order)
+        raise ValueError('monomial ordering specification must be a string or a callable, got %s' % order)
 
 
 class _ItemGetter:
@@ -264,7 +264,7 @@ def build_product_order(arg, gens):
 
     For example, build a product of two grlex orders:
 
-    >>> O = build_product_order((("grlex", x, y), ("grlex", z, t)), [x, y, z, t])
+    >>> O = build_product_order((('grlex', x, y), ('grlex', z, t)), [x, y, z, t])
     >>> O((1, 2, 3, 4))
     ((3, (1, 2)), (7, (3, 4)))
 

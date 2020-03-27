@@ -314,7 +314,7 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
                     pass
                 else:
                     if len(m) != 1:
-                        raise ValueError("Length of m should be 1")
+                        raise ValueError('Length of m should be 1')
                     n = max(n, m[0])
 
             elif db == da:
@@ -336,7 +336,7 @@ def bound_degree(a, b, cQ, DE, case='auto', parametric=False):
                             pass
                         else:
                             if len(m) != 1:
-                                raise ValueError("Length of m should be 1")
+                                raise ValueError('Length of m should be 1')
                             n = max(n, m[0])
 
     elif case == 'exp':
@@ -546,8 +546,8 @@ def cancel_primitive(b, c, n, DE):
         if A is not None:
             n, z = A
             if n == 1:  # b == Dz/z
-                raise NotImplementedError("is_deriv_in_field() is required to "
-                                          " solve this problem.")
+                raise NotImplementedError('is_deriv_in_field() is required to '
+                                          ' solve this problem.')
                 # if z*c == Dp for p in k[t] and deg(p) <= n:
                 #     return p/z
                 # else:
@@ -596,8 +596,8 @@ def cancel_exp(b, c, n, DE):
         if A is not None:
             a, m, z = A
             if a == 1:
-                raise NotImplementedError("is_deriv_in_field() is required to "
-                                          "solve this problem.")
+                raise NotImplementedError('is_deriv_in_field() is required to '
+                                          'solve this problem.')
                 # if c*z*t**m == Dp for p in k<t> and q = p/(z*t**m) in k[t] and
                 # deg(q) <= n:
                 #     return q
@@ -668,9 +668,9 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
             with DecrementLevel(DE):
                 b0, c0 = b0.as_poly(DE.t), c0.as_poly(DE.t)
                 if b0 is None:  # See above comment
-                    raise ValueError("b0 should be a non-Null value")
+                    raise ValueError('b0 should be a non-Null value')
                 if c0 is None:
-                    raise ValueError("c0 should be a non-Null value")
+                    raise ValueError('c0 should be a non-Null value')
                 y = solve_poly_rde(b0, c0, n, DE).as_poly(DE.t)
             return h + y
 
@@ -680,11 +680,11 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
         # TODO: Is this check necessary, and if so, what should it do if it fails?
         # b comes from the first element returned from spde()
         if not b.as_poly(DE.t).LC().is_number:
-            raise TypeError("Result should be a number")
+            raise TypeError('Result should be a number')
 
         if parametric:
-            raise NotImplementedError("prde_no_cancel_b_equal() is not yet "
-                                      "implemented.")
+            raise NotImplementedError('prde_no_cancel_b_equal() is not yet '
+                                      'implemented.')
 
         R = no_cancel_equal(b, cQ, n, DE)
 
@@ -699,27 +699,27 @@ def solve_poly_rde(b, cQ, n, DE, parametric=False):
     else:
         # Cancellation
         if b.is_zero:
-            raise NotImplementedError("Remaining cases for Poly (P)RDE are "
-                                      "not yet implemented (is_deriv_in_field() required).")
+            raise NotImplementedError('Remaining cases for Poly (P)RDE are '
+                                      'not yet implemented (is_deriv_in_field() required).')
         else:
             if DE.case == 'exp':
                 if parametric:
-                    raise NotImplementedError("Parametric RDE cancellation "
-                                              "hyperexponential case is not yet implemented.")
+                    raise NotImplementedError('Parametric RDE cancellation '
+                                              'hyperexponential case is not yet implemented.')
                 return cancel_exp(b, cQ, n, DE)
 
             elif DE.case == 'primitive':
                 if parametric:
-                    raise NotImplementedError("Parametric RDE cancellation "
-                                              "primitive case is not yet implemented.")
+                    raise NotImplementedError('Parametric RDE cancellation '
+                                              'primitive case is not yet implemented.')
                 return cancel_primitive(b, cQ, n, DE)
 
             else:
-                raise NotImplementedError("Other Poly (P)RDE cancellation "
-                                          "cases are not yet implemented (%s)." % DE.case)
+                raise NotImplementedError('Other Poly (P)RDE cancellation '
+                                          'cases are not yet implemented (%s).' % DE.case)
 
-        raise NotImplementedError("Remaining cases for Poly RDE not yet "
-                                  "implemented.")
+        raise NotImplementedError('Remaining cases for Poly RDE not yet '
+                                  'implemented.')
 
 
 def rischDE(fa, fd, ga, gd, DE):

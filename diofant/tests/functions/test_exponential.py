@@ -50,12 +50,12 @@ def test_exp_values():
 
 
 def test_exp_log():
-    x = Symbol("x", extended_real=True)
+    x = Symbol('x', extended_real=True)
     assert log(exp(x)) == x
     assert exp(log(x)) == x
     assert log(x).inverse() == exp
 
-    y = Symbol("y", polar=True)
+    y = Symbol('y', polar=True)
     assert log(exp_polar(z)) == z
     assert exp(log(y)) == y
 
@@ -317,11 +317,11 @@ def test_log_expand_complex():
 
 def test_log_apply_evalf():
     value = (log(3)/log(2) - 1).evalf()
-    assert value.epsilon_eq(Float("0.58496250072115618145373"))
+    assert value.epsilon_eq(Float('0.58496250072115618145373'))
 
 
 def test_log_expand():
-    w = Symbol("w", positive=True)
+    w = Symbol('w', positive=True)
     e = log(w**(log(5)/log(3)))
     assert e.expand() == log(5)/log(3) * log(w)
     x, y, z = symbols('x,y,z', positive=True)
@@ -345,7 +345,7 @@ def test_log_expand():
 
 
 def test_log_simplify():
-    x = Symbol("x", positive=True)
+    x = Symbol('x', positive=True)
     assert log(x**2).expand() == 2*log(x)
     assert expand_log(log(x**(2 + log(2)))) == (2 + log(2))*log(x)
 
@@ -372,8 +372,8 @@ def test_lambertw():
     pytest.raises(ArgumentIndexError, lambda: LambertW(x, k).fdiff(3))
 
     assert LambertW(sqrt(2)).evalf(30).epsilon_eq(
-        Float("0.701338383413663009202120278965", 30), 1e-29)
-    assert re(LambertW(2, -1)).evalf().epsilon_eq(Float("-0.834310366631110"))
+        Float('0.701338383413663009202120278965', 30), 1e-29)
+    assert re(LambertW(2, -1)).evalf().epsilon_eq(Float('-0.834310366631110'))
 
     assert LambertW(-1).is_extended_real is False  # issue sympy/sympy#5215
     assert LambertW(2, evaluate=False).is_extended_real

@@ -658,7 +658,7 @@ class yn(SphericalBesselBase):
                (fn(-n - 1, z) * sin(z) + (-1)**(-n) * fn(n, z) * cos(z))
 
 
-def jn_zeros(n, k, method="diofant", dps=15):
+def jn_zeros(n, k, method='diofant', dps=15):
     """
     Zeros of the spherical Bessel function of the first kind.
 
@@ -687,25 +687,25 @@ def jn_zeros(n, k, method="diofant", dps=15):
     """
     from math import pi
 
-    if method == "diofant":
+    if method == 'diofant':
         prec = dps_to_prec(dps)
         return [Expr._from_mpmath(besseljzero(sympify(n + 0.5)._to_mpmath(prec),
                                               int(l)), prec)
                 for l in range(1, k + 1)]
-    elif method == "scipy":
+    elif method == 'scipy':
         from scipy.optimize import newton
         from scipy.special import spherical_jn
 
         def f(x):
             return spherical_jn(n, x)
     else:
-        raise NotImplementedError("Unknown method.")
+        raise NotImplementedError('Unknown method.')
 
     def solver(f, x):
-        if method == "scipy":
+        if method == 'scipy':
             root = newton(f, x)
         else:
-            raise NotImplementedError("Unknown method.")
+            raise NotImplementedError('Unknown method.')
         return root
 
     # we need to approximate the position of the first root:
@@ -886,10 +886,10 @@ class airyai(AiryBase):
 
         if len(symbs) == 1:
             z = symbs.pop()
-            c = Wild("c", exclude=[z])
-            d = Wild("d", exclude=[z])
-            m = Wild("m", exclude=[z])
-            n = Wild("n", exclude=[z])
+            c = Wild('c', exclude=[z])
+            d = Wild('d', exclude=[z])
+            m = Wild('m', exclude=[z])
+            n = Wild('n', exclude=[z])
             M = arg.match(c*(d*z**n)**m)
             if M is not None:
                 m = M[m]
@@ -1044,10 +1044,10 @@ class airybi(AiryBase):
 
         if len(symbs) == 1:
             z = symbs.pop()
-            c = Wild("c", exclude=[z])
-            d = Wild("d", exclude=[z])
-            m = Wild("m", exclude=[z])
-            n = Wild("n", exclude=[z])
+            c = Wild('c', exclude=[z])
+            d = Wild('d', exclude=[z])
+            m = Wild('m', exclude=[z])
+            n = Wild('n', exclude=[z])
             M = arg.match(c*(d*z**n)**m)
             if M is not None:
                 m = M[m]
@@ -1241,10 +1241,10 @@ class airyaiprime(AiryBase):
 
         if len(symbs) == 1:
             z = symbs.pop()
-            c = Wild("c", exclude=[z])
-            d = Wild("d", exclude=[z])
-            m = Wild("m", exclude=[z])
-            n = Wild("n", exclude=[z])
+            c = Wild('c', exclude=[z])
+            d = Wild('d', exclude=[z])
+            m = Wild('m', exclude=[z])
+            n = Wild('n', exclude=[z])
             M = arg.match(c*(d*z**n)**m)
             if M is not None:
                 m = M[m]
@@ -1386,10 +1386,10 @@ class airybiprime(AiryBase):
 
         if len(symbs) == 1:
             z = symbs.pop()
-            c = Wild("c", exclude=[z])
-            d = Wild("d", exclude=[z])
-            m = Wild("m", exclude=[z])
-            n = Wild("n", exclude=[z])
+            c = Wild('c', exclude=[z])
+            d = Wild('d', exclude=[z])
+            m = Wild('m', exclude=[z])
+            n = Wild('n', exclude=[z])
             M = arg.match(c*(d*z**n)**m)
             if M is not None:
                 m = M[m]
