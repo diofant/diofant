@@ -185,8 +185,8 @@ def solve(f, *symbols, **flags):
             else:
                 f[i] = Add(fi.lhs, -fi.rhs, evaluate=False)
         elif isinstance(fi, Relational):
-            raise ValueError("Only expressions or equalities "
-                             "supported, got %s" % fi)
+            raise ValueError('Only expressions or equalities '
+                             'supported, got %s' % fi)
         elif isinstance(fi, Poly):
             f[i] = fi.as_expr()
 
@@ -432,7 +432,7 @@ def _solve(f, symbol, **flags):
     gives None a ValueError will be raised.
 
     """
-    not_impl_msg = "No algorithms are implemented to solve equation %s"
+    not_impl_msg = 'No algorithms are implemented to solve equation %s'
 
     # /!\ capture this flag then set it to False so that no checking in
     # recursive calls will be done; only the final answer is checked
@@ -912,7 +912,7 @@ def solve_linear(f, x):
 
     """
     if not x.is_Symbol:
-        raise ValueError("%s is not a Symbol" % x)
+        raise ValueError('%s is not a Symbol' % x)
     f = f.replace(lambda e: e.is_Derivative, lambda e: e.doit())
     n, d = res = f.as_numer_denom()
     poly = n.as_poly(x, extension=False)

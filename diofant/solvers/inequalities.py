@@ -39,7 +39,7 @@ def solve_poly_inequality(poly, rel):
     if not isinstance(poly, Poly):
         raise ValueError('`poly` should be a Poly instance')
     if rel not in {'>', '<', '>=', '<=', '==', '!='}:
-        raise ValueError("Invalid relational operator symbol: %r" % rel)
+        raise ValueError('Invalid relational operator symbol: %r' % rel)
     if poly.is_number:
         t = Relational(poly.as_expr(), 0, rel)
         if t == true:
@@ -291,7 +291,7 @@ def reduce_piecewise_inequality(expr, rel, gen):
             n = expr.exp
 
             if not n.is_Integer:  # pragma: no cover
-                raise NotImplementedError("only integer powers are supported")
+                raise NotImplementedError('only integer powers are supported')
 
             _exprs = _bottom_up_scan(expr.base)
 

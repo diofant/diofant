@@ -134,7 +134,7 @@ class DieDistribution(SingleFiniteDistribution):
             i = Dummy('i', integer=True, positive=True)
             return Sum(KroneckerDelta(x, i)/self.sides, (i, 1, self.sides))
         raise ValueError("'x' expected as an argument of type 'number' or 'symbol', "
-                         "not %s" % (type(x)))
+                         'not %s' % (type(x)))
 
 
 def Die(name, sides=6):

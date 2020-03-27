@@ -170,8 +170,8 @@ def test_variations():
 
 def test_filter_symbols():
     s = numbered_symbols()
-    filtered = filter_symbols(s, symbols("x0 x2 x3"))
-    assert list(itertools.islice(filtered, 3)) == list(symbols("x1 x4 x5"))
+    filtered = filter_symbols(s, symbols('x0 x2 x3'))
+    assert list(itertools.islice(filtered, 3)) == list(symbols('x1 x4 x5'))
 
     assert set(filter_symbols((), set())) == set()
 
@@ -294,7 +294,7 @@ def test_multiset_partitions():
            ('m', 'py', 's', 'y'), ('m', 'p', 'syy'),
            ('m', 'p', 'sy', 'y'), ('m', 'p', 's', 'yy'),
            ('m', 'p', 's', 'y', 'y')]
-    assert [tuple("".join(part) for part in p)
+    assert [tuple(''.join(part) for part in p)
             for p in multiset_partitions('sympy')] == ans
     factorings = [[24], [8, 3], [12, 2], [4, 6], [4, 2, 3],
                   [6, 2, 2], [2, 2, 2, 3]]

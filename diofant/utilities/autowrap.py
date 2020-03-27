@@ -87,17 +87,17 @@ class CodeWrapError(Exception):
 class CodeWrapper:
     """Base Class for code wrappers."""
 
-    _filename = "wrapped_code"
-    _module_basename = "wrapper_module"
+    _filename = 'wrapped_code'
+    _module_basename = 'wrapper_module'
     _module_counter = 0
 
     @property
     def filename(self):
-        return "%s_%s" % (self._filename, CodeWrapper._module_counter)
+        return '%s_%s' % (self._filename, CodeWrapper._module_counter)
 
     @property
     def module_name(self):
-        return "%s_%s" % (self._module_basename, CodeWrapper._module_counter)
+        return '%s_%s' % (self._module_basename, CodeWrapper._module_counter)
 
     def __init__(self, generator, filepath=None, flags=[], verbose=False):
         """Generator -- the code generator to use."""
@@ -122,7 +122,7 @@ class CodeWrapper:
 
     def wrap_code(self, routine, helpers=[]):
 
-        workdir = self.filepath or tempfile.mkdtemp("_diofant_compile")
+        workdir = self.filepath or tempfile.mkdtemp('_diofant_compile')
         if not os.access(workdir, os.F_OK):
             os.mkdir(workdir)
         oldwork = os.getcwd()
@@ -149,8 +149,8 @@ class CodeWrapper:
             retoutput = check_output(command, stderr=STDOUT)
         except CalledProcessError as e:
             raise CodeWrapError(
-                "Error while executing command: %s. Command output is:\n%s" % (
-                    " ".join(command), e.output.decode()))
+                'Error while executing command: %s. Command output is:\n%s' % (
+                    ' '.join(command), e.output.decode()))
         if not self.quiet:
             print(retoutput)
 
@@ -170,7 +170,7 @@ def %(name)s():
 
     def _generate_code(self, routine, helpers):
         with open('%s.py' % self.module_name, 'w') as f:
-            printed = ", ".join(
+            printed = ', '.join(
                 [str(res.expr) for res in routine.result_variables])
             # convert OutputArguments to return value like f2py
             args = filter(lambda x: not isinstance(
@@ -185,9 +185,9 @@ def %(name)s():
             print(DummyWrapper.template % {
                 'name': routine.name,
                 'expr': printed,
-                'args': ", ".join([str(a.name) for a in args]),
-                'retvals': ", ".join([str(val) for val in retvals])
-            }, end="", file=f)
+                'args': ', '.join([str(a.name) for a in args]),
+                'retvals': ', '.join([str(val) for val in retvals])
+            }, end='', file=f)
 
     def _process_files(self, routine):
         return
@@ -201,31 +201,31 @@ class CythonCodeWrapper(CodeWrapper):
     """Wrapper that uses Cython."""
 
     setup_template = (
-        "from setuptools import setup\n"
-        "from setuptools.extension import Extension\n"
-        "from Cython.Distutils import build_ext\n"
-        "{np_import}"
-        "\n"
-        "setup(\n"
+        'from setuptools import setup\n'
+        'from setuptools.extension import Extension\n'
+        'from Cython.Distutils import build_ext\n'
+        '{np_import}'
+        '\n'
+        'setup(\n'
         "    cmdclass = {{'build_ext': build_ext}},\n"
-        "    ext_modules = [Extension({ext_args},\n"
+        '    ext_modules = [Extension({ext_args},\n'
         "                             extra_compile_args=['-std=c99'])],\n"
-        "{np_includes}"
-        "        )")
+        '{np_includes}'
+        '        )')
 
     pyx_imports = (
-        "import numpy as np\n"
-        "cimport numpy as np\n\n")
+        'import numpy as np\n'
+        'cimport numpy as np\n\n')
 
     pyx_header = (
         "cdef extern from '{header_file}.h':\n"
-        "    {prototype}\n\n")
+        '    {prototype}\n\n')
 
     pyx_func = (
-        "def {name}_c({arg_string}):\n"
-        "\n"
-        "{declarations}"
-        "{body}")
+        'def {name}_c({arg_string}):\n'
+        '\n'
+        '{declarations}'
+        '{body}')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -233,12 +233,12 @@ class CythonCodeWrapper(CodeWrapper):
 
     @property
     def command(self):
-        command = [sys.executable, "setup.py", "build_ext", "--inplace"]
+        command = [sys.executable, 'setup.py', 'build_ext', '--inplace']
         return command
 
     def _prepare_files(self, routine):
         pyxfilename = self.module_name + '.pyx'
-        codefilename = "%s.%s" % (self.filename, self.generator.code_extension)
+        codefilename = '%s.%s' % (self.filename, self.generator.code_extension)
 
         # pyx
         with open(pyxfilename, 'w') as f:
@@ -253,7 +253,7 @@ class CythonCodeWrapper(CodeWrapper):
             np_import = ''
             np_includes = ''
         with open('setup.py', 'w') as f:
-            f.write(self.setup_template.format(ext_args=", ".join(ext_args),
+            f.write(self.setup_template.format(ext_args=', '.join(ext_args),
                                                np_import=np_import,
                                                np_includes=np_includes))
 
@@ -293,22 +293,22 @@ class CythonCodeWrapper(CodeWrapper):
 
             # Function prototype
             name = routine.name
-            arg_string = ", ".join(self._prototype_arg(arg) for arg in py_args)
+            arg_string = ', '.join(self._prototype_arg(arg) for arg in py_args)
 
             # Local Declarations
             local_decs = []
             for arg, val in py_inf.items():
                 proto = self._prototype_arg(arg)
                 mat, ind = val
-                local_decs.append("    cdef {0} = {1}.shape[{2}]".format(proto, mat, ind))
-            local_decs.extend(["    cdef {0}".format(self._declare_arg(a)) for a in py_loc])
-            declarations = "\n".join(local_decs)
+                local_decs.append('    cdef {0} = {1}.shape[{2}]'.format(proto, mat, ind))
+            local_decs.extend(['    cdef {0}'.format(self._declare_arg(a)) for a in py_loc])
+            declarations = '\n'.join(local_decs)
             if declarations:
-                declarations = declarations + "\n"
+                declarations = declarations + '\n'
 
             # Function Body
-            args_c = ", ".join([self._call_arg(a) for a in routine.arguments])
-            rets = ", ".join([str(r.name) for r in py_rets])
+            args_c = ', '.join([self._call_arg(a) for a in routine.arguments])
+            rets = ', '.join([str(r.name) for r in py_rets])
             if routine.results:
                 body = '    return %s(%s)' % (routine.name, args_c)
             else:
@@ -355,7 +355,7 @@ class CythonCodeWrapper(CodeWrapper):
         return py_returns, py_args, py_locals, py_inferred
 
     def _prototype_arg(self, arg):
-        mat_dec = "np.ndarray[{mtype}, ndim={ndim}] {name}"
+        mat_dec = 'np.ndarray[{mtype}, ndim={ndim}] {name}'
         np_types = {'double': 'np.double_t',
                     'int': 'np.int_t'}
         t = arg.get_datatype('c')
@@ -365,22 +365,22 @@ class CythonCodeWrapper(CodeWrapper):
             mtype = np_types[t]
             return mat_dec.format(mtype=mtype, ndim=ndim, name=arg.name)
         else:
-            return "%s %s" % (t, str(arg.name))
+            return '%s %s' % (t, str(arg.name))
 
     def _declare_arg(self, arg):
         proto = self._prototype_arg(arg)
         if arg.dimensions:
             shape = '(' + ','.join(str(i[1] + 1) for i in arg.dimensions) + ')'
-            return proto + " = np.empty({shape})".format(shape=shape)
+            return proto + ' = np.empty({shape})'.format(shape=shape)
         else:
-            return proto + " = 0"
+            return proto + ' = 0'
 
     def _call_arg(self, arg):
         if arg.dimensions:
             t = arg.get_datatype('c')
-            return "<{0}*> {1}.data".format(t, arg.name)
+            return '<{0}*> {1}.data'.format(t, arg.name)
         elif isinstance(arg, ResultBase):
-            return "&{0}".format(arg.name)
+            return '&{0}'.format(arg.name)
         else:
             return str(arg.name)
 
@@ -392,7 +392,7 @@ class F2PyCodeWrapper(CodeWrapper):
     def command(self):
         filename = self.filename + '.' + self.generator.code_extension
         args = ['-c', '-m', self.module_name, filename]
-        command = [sys.executable, "-c", "import numpy.f2py as f2py2e;f2py2e.main()"]+args
+        command = [sys.executable, '-c', 'import numpy.f2py as f2py2e;f2py2e.main()']+args
         return command
 
     def _prepare_files(self, routine):
@@ -422,7 +422,7 @@ def _infer_language(backend):
     """For a given backend, return the top choice of language."""
     langs = _lang_lookup.get(backend.upper(), False)
     if not langs:
-        raise ValueError("Unrecognized backend: " + backend)
+        raise ValueError('Unrecognized backend: ' + backend)
     return langs[0]
 
 
@@ -430,10 +430,10 @@ def _validate_backend_language(backend, language):
     """Throws error if backend and language are incompatible."""
     langs = _lang_lookup.get(backend.upper(), False)
     if not langs:
-        raise ValueError("Unrecognized backend: " + backend)
+        raise ValueError('Unrecognized backend: ' + backend)
     if language.upper() not in langs:
-        raise ValueError(("Backend {0} and language {1} are "
-                          "incompatible").format(backend, language))
+        raise ValueError(('Backend {0} and language {1} are '
+                          'incompatible').format(backend, language))
 
 
 @cacheit
@@ -491,7 +491,7 @@ def autowrap(expr, language=None, backend='f2py', tempdir=None, args=None,
     flags = flags if flags else ()
     args = list(args) if iterable(args, exclude=set) else args
 
-    code_generator = get_code_generator(language, "autowrap")
+    code_generator = get_code_generator(language, 'autowrap')
     CodeWrapperClass = _get_code_wrapper_class(backend)
     code_wrapper = CodeWrapperClass(code_generator, tempdir, flags, verbose)
 
@@ -646,7 +646,7 @@ class UfuncifyCodeWrapper(CodeWrapper):
 
     @property
     def command(self):
-        command = [sys.executable, "setup.py", "build_ext", "--inplace"]
+        command = [sys.executable, 'setup.py', 'build_ext', '--inplace']
         return command
 
     def _prepare_files(self, routine):
@@ -689,7 +689,7 @@ class UfuncifyCodeWrapper(CodeWrapper):
         function_creation = []
         ufunc_init = []
         module = self.module_name
-        include_file = "\"{0}.h\"".format(prefix)
+        include_file = '"{0}.h"'.format(prefix)
         top = _ufunc_top.substitute(include_file=include_file, module=module)
 
         for r_index, routine in enumerate(routines):
@@ -701,36 +701,36 @@ class UfuncifyCodeWrapper(CodeWrapper):
             n_out = 1
 
             # Declare Args
-            form = "char *{0}{1} = args[{2}];"
+            form = 'char *{0}{1} = args[{2}];'
             arg_decs = [form.format('in', i, i) for i in range(n_in)]
             arg_decs.append(form.format('out', 1, n_in))
             declare_args = '\n    '.join(arg_decs)
 
             # Declare Steps
-            form = "npy_intp {0}{1}_step = steps[{2}];"
+            form = 'npy_intp {0}{1}_step = steps[{2}];'
             step_decs = [form.format('in', i, i) for i in range(n_in)]
             step_decs.append(form.format('out', 1, n_in))
             declare_steps = '\n    '.join(step_decs)
 
             # Call Args
-            form = "*(double *)in{0}"
+            form = '*(double *)in{0}'
             call_args = ', '.join([form.format(a) for a in range(n_in)])
 
             # Step Increments
-            form = "{0}{1} += {0}{1}_step;"
+            form = '{0}{1} += {0}{1}_step;'
             step_incs = [form.format('in', i) for i in range(n_in)]
             step_incs.append(form.format('out', 1))
             step_increments = '\n        '.join(step_incs)
 
             # Types
             n_types = n_in + n_out
-            types = "{" + ', '.join(["NPY_DOUBLE"]*n_types) + "};"
+            types = '{' + ', '.join(['NPY_DOUBLE']*n_types) + '};'
 
             # Docstring
             docstring = '"Created in Diofant with Ufuncify"'
 
             # Function Creation
-            function_creation.append("PyObject *ufunc{0};".format(r_index))
+            function_creation.append('PyObject *ufunc{0};'.format(r_index))
 
             # Ufunc initialization
             init_form = _ufunc_init_form.substitute(module=module,
@@ -871,7 +871,7 @@ def ufuncify(args, expr, language=None, backend='numpy', tempdir=None,
                 name_h = binary_function(name_h, expr_h, backend='dummy')
                 expr = expr.subs({expr_h: name_h(*args_h)})
         routine = make_routine('autofunc', expr, args)
-        code_wrapper = UfuncifyCodeWrapper(CCodeGen("ufuncify"), tempdir,
+        code_wrapper = UfuncifyCodeWrapper(CCodeGen('ufuncify'), tempdir,
                                            flags, verbose)
         return code_wrapper.wrap_code(routine, helpers=helps)
     else:

@@ -33,8 +33,8 @@ from diofant.solvers.diophantine import (_can_do_sum_of_squares,
 
 __all__ = ()
 
-n1, p, q, x, y, z, w, t, u, v, X, Y, Z = symbols("n1, p, q, x, y, z, w, t, u, v, X, Y, Z", integer=True)
-t_0, t_1, t_2, t_3, t_4, t_5, t_6 = symbols("t_:7", integer=True)
+n1, p, q, x, y, z, w, t, u, v, X, Y, Z = symbols('n1, p, q, x, y, z, w, t, u, v, X, Y, Z', integer=True)
+t_0, t_1, t_2, t_3, t_4, t_5, t_6 = symbols('t_:7', integer=True)
 m1, m2, m3 = symbols('m1:4', integer=True)
 n1 = symbols('n1', integer=True)
 

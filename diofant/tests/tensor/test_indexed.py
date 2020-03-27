@@ -120,7 +120,7 @@ def test_IndexedBase_shape():
     pytest.raises(IndexException, lambda: b[i])
     pytest.raises(IndexException, lambda: b[i, i, j])
 
-    F = IndexedBase("F", shape=m)
+    F = IndexedBase('F', shape=m)
     assert F.shape == Tuple(m)
     assert F[i].subs({i: j}) == F[j]
     pytest.raises(IndexException, lambda: F[i, j])
@@ -132,7 +132,7 @@ def test_Indexed_constructor():
     assert A == Indexed(Symbol('A'), i, j)
     assert A == Indexed(IndexedBase('A'), i, j)
     pytest.raises(TypeError, lambda: Indexed(A, i, j))
-    pytest.raises(IndexException, lambda: Indexed("A"))
+    pytest.raises(IndexException, lambda: Indexed('A'))
 
 
 def test_Indexed_func_args():
@@ -162,7 +162,7 @@ def test_Indexed_properties():
     assert Indexed('A', Idx(
         i, m), Idx(j, n)).ranges == [Tuple(0, m - 1), Tuple(0, n - 1)]
     assert Indexed('A', Idx(i, m), Idx(j, n)).shape == Tuple(m, n)
-    pytest.raises(IndexException, lambda: Indexed("A", Idx(i, m), Idx(j)).shape)
+    pytest.raises(IndexException, lambda: Indexed('A', Idx(i, m), Idx(j)).shape)
 
 
 def test_Indexed_shape_precedence():
@@ -203,8 +203,8 @@ def test_Indexed_coeff():
 
 
 def test_indexed_is_constant():
-    A = IndexedBase("A")
-    i, j, k = symbols("i,j,k")
+    A = IndexedBase('A')
+    i, j, k = symbols('i,j,k')
     assert not A[i].is_constant()
     assert A[i].is_constant(j)
     assert not A[1 + 2*i, k].is_constant()

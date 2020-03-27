@@ -52,7 +52,7 @@ def flatten(iterable, levels=None, cls=None):
             levels -= 1
         else:
             raise ValueError(
-                "expected non-negative number of levels, got %s" % levels)
+                'expected non-negative number of levels, got %s' % levels)
 
     if cls is None:
         def reducible(x):
@@ -634,7 +634,7 @@ def topological_sort(graph, key=None):
                         S.append(v)
 
     if E:
-        raise ValueError("cycle detected")
+        raise ValueError('cycle detected')
     else:
         return L
 

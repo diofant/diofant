@@ -112,31 +112,31 @@ class DiofantDeprecationWarning(DeprecationWarning):
 
     def __init__(self, value=None, feature=None, last_supported_version=None,
                  useinstead=None, issue=None, deprecated_since_version=None):
-        self.fullMessage = ""
+        self.fullMessage = ''
 
         if feature:
             if deprecated_since_version:
-                self.fullMessage = "%s has been deprecated since Diofant %s. " % \
+                self.fullMessage = '%s has been deprecated since Diofant %s. ' % \
                                    (feature, deprecated_since_version)
             else:
-                self.fullMessage = "%s has been deprecated. " % feature
+                self.fullMessage = '%s has been deprecated. ' % feature
 
         if last_supported_version:
-            self.fullMessage += ("It will be last supported in Diofant "
-                                 "version %s. ") % last_supported_version
+            self.fullMessage += ('It will be last supported in Diofant '
+                                 'version %s. ') % last_supported_version
         if useinstead:
-            self.fullMessage += "Use %s instead. " % useinstead
+            self.fullMessage += 'Use %s instead. ' % useinstead
         if issue:
-            self.fullMessage += ("See "
-                                 "https://github.com/diofant/diofant/issues/%d for more "
-                                 "info. ") % issue
+            self.fullMessage += ('See '
+                                 'https://github.com/diofant/diofant/issues/%d for more '
+                                 'info. ') % issue
 
         if value:
             if not isinstance(value, str):
-                value = "(%s)" % repr(value)
-            value = " " + value
+                value = '(%s)' % repr(value)
+            value = ' ' + value
         else:
-            value = ""
+            value = ''
 
         self.fullMessage += value
 

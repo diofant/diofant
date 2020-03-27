@@ -13,12 +13,12 @@ class Del(Basic):
 
     def __new__(cls, system):
         if not isinstance(system, CoordSysCartesian):
-            raise TypeError("system should be a CoordSysCartesian")
+            raise TypeError('system should be a CoordSysCartesian')
         obj = super().__new__(cls, system)
         obj._x, obj._y, obj._z = system.x, system.y, system.z
         obj._i, obj._j, obj._k = system.i, system.j, system.k
         obj._system = system
-        obj._name = system.__str__() + ".delop"
+        obj._name = system.__str__() + '.delop'
         return obj
 
     @property

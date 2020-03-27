@@ -859,7 +859,7 @@ def test_M38():
     [k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15,
      k16, k17, k18, k19, k20, k21, k22, k23, k24, k25, k26, k27, k28, k29,
      k30, k31, k32, k33, k34, k35, k36, k37, k38, k39, k40, k41, k42, k43,
-     k44, k45, k46, k47, k48, k49] = variables = symbols("k1:50")
+     k44, k45, k46, k47, k48, k49] = variables = symbols('k1:50')
     system = [
         -b*k8/a + c*k8/a, -b*k11/a + c*k11/a, -b*k10/a + c*k10/a + k2, -k3 - b*k9/a + c*k9/a,
         -b*k14/a + c*k14/a, -b*k15/a + c*k15/a, -b*k18/a + c*k18/a - k2, -b*k17/a + c*k17/a,
@@ -1598,7 +1598,7 @@ def test_S5():
             factorial(n - Rational(1, 2))/(sqrt(pi)*factorial(n)))
 
 
-@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7133")
+@pytest.mark.xfail(reason='https://github.com/sympy/sympy/issues/7133')
 def test_S6():
     n, k = symbols('n k', integer=True, positive=True)
     assert simplify(product(x**2 - 2*x*cos(k*pi/n) + 1, (k, 1, n - 1))
@@ -1619,14 +1619,14 @@ def test_S8():
     assert simplify(T) == 2/pi
 
 
-@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7133")
+@pytest.mark.xfail(reason='https://github.com/sympy/sympy/issues/7133')
 def test_S9():
     k = symbols('k', integer=True, positive=True)
     T = product(1 + (-1)**(k + 1)/(2*k - 1), (k, 1, oo))
     assert simplify(T) == sqrt(2)
 
 
-@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7137")
+@pytest.mark.xfail(reason='https://github.com/sympy/sympy/issues/7137')
 def test_S10():
     k = symbols('k', integer=True, positive=True)
     T = product((k*(k + 1) + 1 + I)/(k*(k + 1) + 1 - I), (k, 0, oo))
@@ -2066,14 +2066,14 @@ def test_X14():
     series(1/2**(2*n)*binomial(2*n, n), n, x0=oo, n=1)
 
 
-@pytest.mark.xfail(reason="https://github.com/sympy/sympy/issues/7164")
+@pytest.mark.xfail(reason='https://github.com/sympy/sympy/issues/7164')
 def test_X15():
     x, t = symbols('x t', real=True)
     e1 = integrate(exp(-t)/t, (t, x, oo))
     series(e1, x, x0=oo, n=5)
 
 
-@pytest.mark.xfail(reason="https://github.com/diofant/diofant/pull/158")
+@pytest.mark.xfail(reason='https://github.com/diofant/diofant/pull/158')
 def test_X16():
     series(cos(x + y), x + y, x0=0, n=4)
 

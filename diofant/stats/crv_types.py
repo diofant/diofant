@@ -266,8 +266,8 @@ class BetaDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(alpha, beta):
-        _value_check(alpha > 0, "Alpha must be positive")
-        _value_check(beta > 0, "Beta must be positive")
+        _value_check(alpha > 0, 'Alpha must be positive')
+        _value_check(beta > 0, 'Beta must be positive')
 
     def pdf(self, x):
         alpha, beta = self.alpha, self.beta
@@ -753,7 +753,7 @@ class ExponentialDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(rate):
-        _value_check(rate > 0, "Rate must be positive.")
+        _value_check(rate > 0, 'Rate must be positive.')
 
     def pdf(self, x):
         return self.rate * exp(-self.rate*x)
@@ -1040,8 +1040,8 @@ class GammaDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(k, theta):
-        _value_check(k > 0, "k must be positive")
-        _value_check(theta > 0, "Theta must be positive")
+        _value_check(k > 0, 'k must be positive')
+        _value_check(theta > 0, 'Theta must be positive')
 
     def pdf(self, x):
         k, theta = self.k, self.theta
@@ -1130,8 +1130,8 @@ class GammaInverseDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(a, b):
-        _value_check(a > 0, "alpha must be positive")
-        _value_check(b > 0, "beta must be positive")
+        _value_check(a > 0, 'alpha must be positive')
+        _value_check(b > 0, 'beta must be positive')
 
     def pdf(self, x):
         a, b = self.a, self.b
@@ -1199,8 +1199,8 @@ class KumaraswamyDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(a, b):
-        _value_check(a > 0, "a must be positive")
-        _value_check(b > 0, "b must be positive")
+        _value_check(a > 0, 'a must be positive')
+        _value_check(b > 0, 'b must be positive')
 
     def pdf(self, x):
         a, b = self.a, self.b
@@ -1586,7 +1586,7 @@ class NormalDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(mean, std):
-        _value_check(std > 0, "Standard deviation must be positive")
+        _value_check(std > 0, 'Standard deviation must be positive')
 
     def pdf(self, x):
         return exp(-(x - self.mean)**2 / (2*self.std**2)) / (sqrt(2*pi)*self.std)
@@ -1672,8 +1672,8 @@ class ParetoDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(xm, alpha):
-        _value_check(xm > 0, "Xm must be positive")
-        _value_check(alpha > 0, "Alpha must be positive")
+        _value_check(xm > 0, 'Xm must be positive')
+        _value_check(alpha > 0, 'Alpha must be positive')
 
     def pdf(self, x):
         xm, alpha = self.xm, self.alpha
@@ -1810,7 +1810,7 @@ class RaisedCosineDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(mu, s):
-        _value_check(s > 0, "s must be positive")
+        _value_check(s > 0, 's must be positive')
 
     def pdf(self, x):
         mu, s = self.mu, self.s
@@ -2179,7 +2179,7 @@ class UniformSumDistribution(SingleContinuousDistribution):
 
     def pdf(self, x):
         n = self.n
-        k = Dummy("k")
+        k = Dummy('k')
         return 1/factorial(
             n - 1)*Sum((-1)**k*binomial(n, k)*(x - k)**(n - 1), (k, 0, floor(x)))
 
@@ -2247,7 +2247,7 @@ class VonMisesDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(mu, k):
-        _value_check(k > 0, "k must be positive")
+        _value_check(k > 0, 'k must be positive')
 
     def pdf(self, x):
         mu, k = self.mu, self.k
@@ -2313,8 +2313,8 @@ class WeibullDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(alpha, beta):
-        _value_check(alpha > 0, "Alpha must be positive")
-        _value_check(beta > 0, "Beta must be positive")
+        _value_check(alpha > 0, 'Alpha must be positive')
+        _value_check(beta > 0, 'Beta must be positive')
 
     def pdf(self, x):
         alpha, beta = self.alpha, self.beta
