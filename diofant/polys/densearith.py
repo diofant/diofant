@@ -250,7 +250,7 @@ def dmp_neg(f, u, K):
     Negate a polynomial in ``K[X]``.
 
     Examples
-    =======
+    ========
 
     >>> R, x, y = ring('x y', ZZ)
 
