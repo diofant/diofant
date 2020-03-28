@@ -322,7 +322,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             poly = _rebuild(expr)
         except CoercionFailed:
             raise ValueError('expected an expression convertible to a '
-                             'polynomial in %s, got %s' % (self, expr))
+                             f'polynomial in {self}, got {expr}')
         else:
             return self(poly)
 
@@ -336,24 +336,24 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             elif -self.ngens <= i and i <= -1:
                 i = self.ngens + i
             else:
-                raise ValueError('invalid generator index: %s' % gen)
+                raise ValueError(f'invalid generator index: {gen}')
         elif isinstance(gen, self.dtype):
             try:
                 i = self.gens.index(gen)
             except ValueError:
-                raise ValueError('invalid generator: %s' % gen)
+                raise ValueError(f'invalid generator: {gen}')
         elif isinstance(gen, str):
             try:
                 i = self.symbols.index(Symbol(gen))
             except ValueError:
-                raise ValueError('invalid generator: %s' % gen)
+                raise ValueError(f'invalid generator: {gen}')
         elif isinstance(gen, Expr):
             try:
                 i = self.symbols.index(gen)
             except ValueError:
-                raise ValueError('invalid generator: %s' % gen)
+                raise ValueError(f'invalid generator: {gen}')
         else:
-            raise ValueError('expected a polynomial generator, an integer, a string, an expression or None, got %s' % gen)
+            raise ValueError(f'expected a polynomial generator, an integer, a string, an expression or None, got {gen}')
 
         return i
 
@@ -371,8 +371,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         if self.domain.is_Composite or self.domain.is_AlgebraicField:
             return self.clone(domain=self.domain.domain)
         else:
-            raise ValueError('%s is not a composite or algebraic '
-                             'domain' % self.domain)
+            raise ValueError(f'{self.domain} is not a composite or algebraic domain')
 
     @property
     def is_univariate(self):
@@ -528,7 +527,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             terms = zip(*_dict_reorder(self, self.ring.symbols, new_ring.symbols))
             return new_ring.from_terms(terms)
         else:
-            raise CoercionFailed("Can't set element ring to %s" % new_ring)
+            raise CoercionFailed(f"Can't set element ring to {new_ring}")
 
     def set_domain(self, new_domain):
         if self.ring.domain == new_domain:
@@ -541,7 +540,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if not symbols:
             symbols = self.ring.symbols
         elif len(symbols) != self.ring.ngens:
-            raise ValueError('not enough symbols, expected %s got %s' % (self.ring.ngens, len(symbols)))
+            raise ValueError(f'not enough symbols, expected {self.ring.ngens} got {len(symbols)}')
 
         to_expr = self.ring.domain.to_expr
         return expr_from_dict({monom: to_expr(self[monom]) for monom in self}, *symbols)
@@ -639,7 +638,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             if self.is_ground:
                 return self.coeff(1)
             else:
-                raise ValueError("can't drop %s" % gen)
+                raise ValueError(f"can't drop {gen}")
         else:
             symbols = list(ring.symbols)
             del symbols[i]
@@ -653,7 +652,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                     del K[i]
                     poly[K] = v
                 else:
-                    raise ValueError("can't drop %s" % gen)
+                    raise ValueError(f"can't drop {gen}")
 
             return poly
 
@@ -727,7 +726,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 if exp != 1:
                     sexpv.append(exp_pattern % (symbol, exp))
                 else:
-                    sexpv.append('%s' % symbol)
+                    sexpv.append(f'{symbol}')
             if scoeff:
                 sexpv = [scoeff] + sexpv
             sexpvs.append(mul_symbol.join(sexpv))
@@ -1321,7 +1320,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         elif is_sequence(element) and all(isinstance(n, int) for n in element):
             return self._get_coeff(element)
 
-        raise ValueError('expected a monomial, got %s' % element)
+        raise ValueError(f'expected a monomial, got {element}')
 
     @property
     def LC(self):
@@ -1872,7 +1871,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if 0 < len(values) <= self.ring.ngens:
             return self.eval(list(zip(self.ring.gens, values)))
         else:
-            raise ValueError('expected at least 1 and at most %s values, got %s' % (self.ring.ngens, len(values)))
+            raise ValueError(f'expected at least 1 and at most {self.ring.ngens} values, got {len(values)}')
 
     def eval(self, x=0, a=0):
         f = self

@@ -40,7 +40,7 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
         elif expr.is_Float and int(expr) == expr:
             return self.dtype(int(expr))
         else:
-            raise CoercionFailed('expected an integer, got %s' % expr)
+            raise CoercionFailed(f'expected an integer, got {expr}')
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)

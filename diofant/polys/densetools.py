@@ -26,7 +26,7 @@ def dmp_diff_in(f, m, j, u, K):
     2*x*y + 2*x + 4*y + 3
 
     """
-    ring = K.poly_ring(*['_%d' % i for i in range(u + 1)])
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_dense(f)
     return ring.to_dense(f.diff(x=j, m=m))
 
@@ -49,7 +49,7 @@ def dmp_eval_in(f, a, j, u, K):
 
     """
     if j < 0 or j > u:
-        raise IndexError('0 <= j <= %s expected, got %s' % (u, j))
+        raise IndexError(f'0 <= j <= {u} expected, got {j}')
 
     if not j:
         if not a:
@@ -139,7 +139,7 @@ def dmp_diff_eval_in(f, m, a, j, u, K):
 
     """
     if j > u:
-        raise IndexError('-%s <= j < %s expected, got %s' % (u, u, j))
+        raise IndexError(f'-{u} <= j < {u} expected, got {j}')
     if not j:
         return dmp_eval_in(dmp_diff_in(f, m, 0, u, K), a, 0, u, K)
 
@@ -256,7 +256,7 @@ def dmp_ground_content(f, u, K):
     2
 
     """
-    ring = K.poly_ring(*['_%d' % i for i in range(u + 1)])
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_dense(f)
     return f.content()
 
@@ -281,7 +281,7 @@ def dmp_ground_primitive(f, u, K):
     (2, x*y + 3*x + 2*y + 6)
 
     """
-    ring = K.poly_ring(*['_%d' % i for i in range(u + 1)])
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_dense(f)
     cont, p = f.primitive()
     return cont, ring.to_dense(p)
@@ -311,7 +311,7 @@ def dup_real_imag(f, K):
         r2, i2 = dup_real_imag([_.imag for _ in f], K0)
         return dmp_add(r1, dmp_neg(i2, 1, K0), 1, K0), dmp_add(r2, i1, 1, K0)
     elif not K.is_IntegerRing and not K.is_RationalField and not K.is_RealAlgebraicField:
-        raise DomainError('computing real and imaginary parts is not supported over %s' % K)
+        raise DomainError(f'computing real and imaginary parts is not supported over {K}')
 
     f1 = dmp_zero(1)
     f2 = dmp_zero(1)

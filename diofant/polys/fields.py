@@ -176,7 +176,7 @@ class FractionField(Field, CompositeDomain):
         try:
             frac = self._rebuild_expr(expr, mapping)
         except CoercionFailed:
-            raise ValueError('expected an expression convertible to a rational function in %s, got %s' % (self, expr))
+            raise ValueError(f'expected an expression convertible to a rational function in {self}, got {expr}')
         else:
             return self.field_new(frac)
 
@@ -538,7 +538,7 @@ class FracElement(DomainElement, CantSympify):
         if 0 < len(values) <= self.field.ngens:
             return self.eval(list(zip(self.field.gens, values)))
         else:
-            raise ValueError('expected at least 1 and at most %s values, got %s' % (self.field.ngens, len(values)))
+            raise ValueError(f'expected at least 1 and at most {self.field.ngens} values, got {len(values)}')
 
     def eval(self, x, a=None):
         if isinstance(x, list) and a is None:

@@ -23,7 +23,7 @@ def swinnerton_dyer_poly(n, x=None, **args):
     from .numberfields import minimal_polynomial
     if n <= 0:
         raise ValueError(
-            "can't generate Swinnerton-Dyer polynomial of order %s" % n)
+            f"can't generate Swinnerton-Dyer polynomial of order {n}")
 
     if x is not None:
         x = sympify(x)
@@ -54,7 +54,7 @@ def cyclotomic_poly(n, x=None, **args):
     """Generates cyclotomic polynomial of order `n` in `x`."""
     if n <= 0:
         raise ValueError(
-            "can't generate cyclotomic polynomial of order %s" % n)
+            f"can't generate cyclotomic polynomial of order {n}")
 
     poly = dup_zz_cyclotomic_poly(int(n), ZZ)
 
@@ -74,7 +74,7 @@ def symmetric_poly(n, *gens, **args):
     gens = _analyze_gens(gens)
 
     if n < 0 or n > len(gens) or not gens:
-        raise ValueError("can't generate symmetric polynomial of order %s for %s" % (n, gens))
+        raise ValueError(f"can't generate symmetric polynomial of order {n} for {gens}")
     elif not n:
         poly = Integer(1)
     else:
@@ -99,10 +99,10 @@ def random_poly(x, n, inf, sup, domain=ZZ, polys=False, percent=None):
 def interpolating_poly(n, x, X='x', Y='y'):
     """Construct Lagrange interpolating polynomial for ``n`` data points."""
     if isinstance(X, str):
-        X = symbols('%s:%s' % (X, n))
+        X = symbols(f'{X}:{n}')
 
     if isinstance(Y, str):
-        Y = symbols('%s:%s' % (Y, n))
+        Y = symbols(f'{Y}:{n}')
 
     coeffs = []
 

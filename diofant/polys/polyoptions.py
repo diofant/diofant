@@ -50,7 +50,7 @@ class BooleanOption(Option):
         if value in [True, False]:
             return bool(value)
         else:
-            raise OptionError("'%s' must have a boolean value assigned, got %s" % (cls.option, value))
+            raise OptionError(f"'{cls.option}' must have a boolean value assigned, got {value}")
 
 
 class OptionType(type):
@@ -130,11 +130,11 @@ class Options(dict):
                 try:
                     cls = self.__options__[option]
                 except KeyError:
-                    raise OptionError("'%s' is not a valid option" % option)
+                    raise OptionError(f"'{option}' is not a valid option")
 
                 if issubclass(cls, Flag):
                     if strict and (flags is None or option not in flags):
-                        raise OptionError("'%s' flag is not allowed in this context" % option)
+                        raise OptionError(f"'{option}' flag is not allowed in this context")
 
                 if value is not None:
                     self[option] = cls.preprocess(value)
@@ -159,7 +159,7 @@ class Options(dict):
 
             for exclude_option in cls.excludes:
                 if self.get(exclude_option) is not None:
-                    raise OptionError("'%s' option is not allowed together with '%s'" % (option, exclude_option))
+                    raise OptionError(f"'{option}' option is not allowed together with '{exclude_option}'")
 
         for option in self.__order__:
             self.__options__[option].postprocess(self)
@@ -270,9 +270,9 @@ class Gens(Option, metaclass=OptionType):
         if gens == (None,):
             gens = ()
         elif has_dups(gens):
-            raise GeneratorsError('duplicated generators: %s' % str(gens))
+            raise GeneratorsError(f'duplicated generators: {gens}')
         elif any(gen.is_commutative is False for gen in gens):
-            raise GeneratorsError('non-commutative generators: %s' % str(gens))
+            raise GeneratorsError(f'non-commutative generators: {gens}')
 
         return tuple(gens)
 
@@ -463,7 +463,7 @@ class Domain(Option, metaclass=OptionType):
                 gens = list(map(sympify, r.groups()[1].split(',')))
                 return domains.QQ.algebraic_field(*gens)
 
-        raise OptionError('expected a valid domain specification, got %s' % str(domain))
+        raise OptionError(f'expected a valid domain specification, got {domain}')
 
     @classmethod
     def postprocess(cls, options):
@@ -556,7 +556,7 @@ class Modulus(Option, metaclass=OptionType):
             return int(modulus)
         else:
             raise OptionError(
-                "'modulus' must a positive integer, got %s" % modulus)
+                f"'modulus' must a positive integer, got {modulus}")
 
     @classmethod
     def postprocess(cls, options):
@@ -671,7 +671,7 @@ class Symbols(Flag, metaclass=OptionType):
             return iter(symbols)
         else:
             raise OptionError('expected an iterator or '
-                              'iterable container, got %s' % symbols)
+                              f'iterable container, got {symbols}')
 
 
 class Method(Flag, metaclass=OptionType):
@@ -684,7 +684,7 @@ class Method(Flag, metaclass=OptionType):
         if isinstance(method, str):
             return method.lower()
         else:
-            raise OptionError('expected a string, got %s' % method)
+            raise OptionError(f'expected a string, got {method}')
 
 
 def build_options(gens, args=None):
@@ -721,9 +721,9 @@ def allowed_flags(args, flags):
         try:
             if Options.__options__[arg].is_Flag and arg not in flags:
                 raise FlagError(
-                    "'%s' flag is not allowed in this context" % arg)
+                    f"'{arg}' flag is not allowed in this context")
         except KeyError:
-            raise OptionError("'%s' is not a valid option" % arg)
+            raise OptionError(f"'{arg}' is not a valid option")
 
 
 def set_defaults(options, **defaults):

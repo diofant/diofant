@@ -63,7 +63,7 @@ def _choose_factor(factors, x, v, dom=QQ, prec=200, bound=5):
                 break
             prec1 *= 2
     else:
-        raise NotImplementedError('multiple candidates for the minimal polynomial of %s' % v)
+        raise NotImplementedError(f'multiple candidates for the minimal polynomial of {v}')
 
 
 def _separate_sq(p):
@@ -286,10 +286,10 @@ def _minpoly_pow(ex, pw, x, dom):
     pw = sympify(pw)
     mp = _minpoly_compose(ex, x, dom)
     if not pw.is_rational:
-        raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
+        raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic element")
     if pw < 0:
         if mp == x:
-            raise ZeroDivisionError('%s is zero' % ex)
+            raise ZeroDivisionError(f'{ex} is zero')
         mp = _invertx(mp, x)
         if pw == -1:
             return mp
@@ -359,7 +359,7 @@ def _minpoly_sin(ex, x):
         expr = sqrt((1 - cos(2*c*pi))/2)
         return _minpoly_compose(expr, x, QQ)
 
-    raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
+    raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic element")
 
 
 def _minpoly_cos(ex, x):
@@ -389,7 +389,7 @@ def _minpoly_cos(ex, x):
         _, factors = factor_list(r)
         return _choose_factor(factors, x, ex)
 
-    raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
+    raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic element")
 
 
 def _minpoly_exp(ex, x):
@@ -419,7 +419,7 @@ def _minpoly_exp(ex, x):
         # x**(2*q) = product(factors)
         factors = [cyclotomic_poly(i, x) for i in divisors(2*q)]
         return _choose_factor(factors, x, ex)
-    raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
+    raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic element")
 
 
 def _minpoly_rootof(ex, x):
@@ -508,7 +508,7 @@ def _minpoly_compose(ex, x, dom):
     elif isinstance(ex, im):
         res = _minpoly_compose((ex.args[0] - ex.args[0].conjugate())/2/I, x, dom)
     else:
-        raise NotAlgebraic("%s doesn't seem to be an algebraic element" % ex)
+        raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic element")
     return res
 
 
@@ -552,8 +552,8 @@ def minimal_polynomial(ex, method=None, **args):
     try:
         _minpoly = _minpoly_methods[method]
     except KeyError:
-        raise ValueError("'%s' is not a valid algorithm for computing minimal "
-                         ' polynomial' % method)
+        raise ValueError(f"'{method}' is not a valid algorithm for computing minimal "
+                         ' polynomial')
 
     ex = sympify(ex)
     if ex.is_number:
@@ -644,7 +644,7 @@ def minpoly_groebner(ex, x, domain):
         elif isinstance(ex, im):
             return bottom_up_scan((ex.args[0] - ex.args[0].conjugate())/2/I)
 
-        raise NotAlgebraic("%s doesn't seem to be an algebraic number" % ex)
+        raise NotAlgebraic(f"{ex} doesn't seem to be an algebraic number")
 
     if ex.is_Pow and ex.exp.is_negative:
         n, d = Integer(1), bottom_up_scan(1/ex)
@@ -760,8 +760,7 @@ def field_isomorphism_factor(a, b):
 def field_isomorphism(a, b, **args):
     """Construct an isomorphism between two number fields."""
     if not all(isinstance(_, AlgebraicField) for _ in (a, b)):
-        raise ValueError('Arguments should be algebraic fields, '
-                         'got %s and %s' % (a, b))
+        raise ValueError(f'Arguments should be algebraic fields, got {a} and {b}')
 
     if a == b:
         return a.unit.rep.to_dense()

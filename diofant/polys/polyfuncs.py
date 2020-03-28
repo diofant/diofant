@@ -273,7 +273,7 @@ def viete(f, roots=None, *gens, **args):
     roots = list(itertools.islice(roots, n))
 
     if n != len(roots):
-        raise ValueError('required %s roots, got %s' % (n, len(roots)))
+        raise ValueError(f'required {n} roots, got {len(roots)}')
 
     lc, coeffs = f.LC(), f.all_coeffs()
     result, sign = [], -1

@@ -24,7 +24,7 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
                 self.ex = ex.ex
 
         def __str__(self):
-            return 'EX(%s)' % str(self.ex)
+            return f'EX({self.ex})'
 
         def __hash__(self):
             return hash((self.__class__.__name__, self.ex))

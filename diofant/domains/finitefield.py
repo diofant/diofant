@@ -30,8 +30,7 @@ class FiniteField(Field, SimpleDomain):
         if not (isinstance(order, numbers.Integral) and isprime(order)):
             pp = perfect_power(order)
             if not pp:
-                raise ValueError('order must be a prime power, '
-                                 'got %s' % order)
+                raise ValueError(f'order must be a prime power, got {order}')
             mod, deg = pp
         else:
             mod, deg = order, 1
@@ -60,10 +59,9 @@ class FiniteField(Field, SimpleDomain):
         obj.order = order
 
         if order > mod:
-            obj.rep = 'GF(%s, %s)' % (obj.mod, list(map(PythonIntegerRing(),
-                                                        modulus)))
+            obj.rep = f'GF({obj.mod}, {list(map(PythonIntegerRing(), modulus))})'
         else:
-            obj.rep = 'GF(%s)' % obj.mod
+            obj.rep = f'GF({obj.mod})'
 
         try:
             obj.dtype = _modular_integer_cache[key]
@@ -108,7 +106,7 @@ class FiniteField(Field, SimpleDomain):
         elif expr.is_Float and int(expr) == expr:
             return self.dtype(self.domain.dtype(int(expr)))
         else:
-            raise CoercionFailed('expected an integer, got %s' % expr)
+            raise CoercionFailed(f'expected an integer, got {expr}')
 
     def _from_PythonFiniteField(self, a, K0=None):
         return self.dtype(self.domain.convert(a.rep, K0.domain))

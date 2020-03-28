@@ -80,8 +80,8 @@ class Domain(DefaultPrinting, abc.ABC):
                 if result is not None:
                     return result
 
-        raise CoercionFailed("can't convert %s of type %s from %s "
-                             'to %s' % (element, type(element), base, self))
+        raise CoercionFailed(f"can't convert {element} of type {type(element)} "
+                             f'from {base} to {self}')
 
     def convert(self, element, base=None):
         """Convert ``element`` to ``self.dtype``."""
@@ -131,7 +131,7 @@ class Domain(DefaultPrinting, abc.ABC):
             except (TypeError, ValueError):
                 pass
 
-        raise CoercionFailed("can't convert %s of type %s to %s" % (element, type(element), self))
+        raise CoercionFailed(f"can't convert {element} of type {type(element)} to {self}")
 
     def __contains__(self, a):
         """Check if ``a`` belongs to this domain."""
@@ -164,8 +164,8 @@ class Domain(DefaultPrinting, abc.ABC):
         if symbols:
             if any(d.is_Composite and (set(d.symbols) & set(symbols))
                    for d in [self, K1]):
-                raise UnificationFailed("Can't unify %s with %s, given %s"
-                                        ' generators' % (self, K1, tuple(symbols)))
+                raise UnificationFailed(f"Can't unify {self} with {K1}, "
+                                        f'given {symbols} generators')
 
             return self.unify(K1)
 

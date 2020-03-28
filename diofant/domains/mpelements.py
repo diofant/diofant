@@ -128,7 +128,7 @@ class MPContext(PythonMPContext):
         prec, rounding = self._prec_rounding
         if isinstance(tol, str):
             return from_str(tol, prec, rounding)
-        raise ValueError('expected a real number, got %s' % tol)
+        raise ValueError(f'expected a real number, got {tol}')
 
     def _convert_fallback(self, x, strings):
         raise TypeError('cannot create mpf from ' + str(x))

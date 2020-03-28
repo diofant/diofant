@@ -79,7 +79,7 @@ class RootOf(Expr):
         if index is not None and index.is_Integer:
             index = int(index)
         else:
-            raise ValueError('expected an integer root index, got %s' % index)
+            raise ValueError(f'expected an integer root index, got {index}')
 
         poly = PurePoly(f, x, greedy=False, expand=expand)
 
@@ -90,16 +90,15 @@ class RootOf(Expr):
         dom = poly.domain
 
         if degree <= 0:
-            raise PolynomialError("can't construct RootOf object for %s" % f)
+            raise PolynomialError(f"can't construct RootOf object for {f}")
 
         if index < -degree or index >= degree:
-            raise IndexError('root index out of [%d, %d] range, got %d' %
-                             (-degree, degree - 1, index))
+            raise IndexError(f'root index out of [{-degree}, {degree - 1}] range, got {index}')
         elif index < 0:
             index += degree
 
         if not dom.is_IntegerRing and poly.LC().is_nonzero is False:
-            raise NotImplementedError('sorted roots not supported over %s' % dom)
+            raise NotImplementedError(f'sorted roots not supported over {dom}')
 
         if evaluate is None:
             evaluate = global_evaluate[0]
@@ -493,7 +492,7 @@ class RootOf(Expr):
         dom = poly.domain
 
         if not dom.is_IntegerRing and poly.LC().is_nonzero is False:
-            raise NotImplementedError('sorted roots not supported over %s' % dom)
+            raise NotImplementedError(f'sorted roots not supported over {dom}')
 
         return coeff, poly
 
@@ -690,7 +689,7 @@ class RootSum(Expr):
                     func = Lambda(poly.gen, func(poly.gen))
             else:
                 raise ValueError(
-                    'expected a univariate function, got %s' % func)
+                    f'expected a univariate function, got {func}')
 
         var, expr = func.variables[0], func.expr
 
@@ -768,7 +767,7 @@ class RootSum(Expr):
     @classmethod
     def _rational_case(cls, poly, func):
         """Handle the rational function case."""
-        roots = symbols('r:%d' % poly.degree())
+        roots = symbols(f'r:{poly.degree()}')
         var, expr = func.variables[0], func.expr
 
         f = sum(expr.subs({var: r}) for r in roots)

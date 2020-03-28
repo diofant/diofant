@@ -36,7 +36,7 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
             from . import RR
             return self.dtype(*RR.to_rational(expr))
         else:
-            raise CoercionFailed('expected `Rational` object, got %s' % expr)
+            raise CoercionFailed(f'expected `Rational` object, got {expr}')
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)
