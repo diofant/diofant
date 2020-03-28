@@ -177,3 +177,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`18894` sring extension=True error: nan is not in any domain
 * :sympyissue:`18531` apart: hangs or takes too long
 * :sympyissue:`14806` Domain.is_positive (and friends) is a wrong interface
+* :sympyissue:`18874` Zero divisor from sring over QQ<sqrt(2) + sqrt(5)>
