@@ -3768,12 +3768,12 @@ def test_pretty_Domain():
     assert pretty(expr) == 'QQ[x, y]'
     assert upretty(expr) == 'ℚ[x, y]'
 
-    expr = ZZ.frac_field(x)
+    expr = ZZ.inject(x).field
 
     assert pretty(expr) == 'ZZ(x)'
     assert upretty(expr) == 'ℤ(x)'
 
-    expr = ZZ.frac_field(x, y)
+    expr = ZZ.inject(x, y).field
 
     assert pretty(expr) == 'ZZ(x, y)'
     assert upretty(expr) == 'ℤ(x, y)'
@@ -4922,8 +4922,8 @@ def test_RandomDomain():
 
 
 def test_PrettyPoly():
-    F = QQ.frac_field(x, y)
     R = QQ.inject(x, y)
+    F = R.field
 
     expr = F.convert(x/(x + y))
     assert pretty(expr) == 'x/(x + y)'

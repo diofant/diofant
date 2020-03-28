@@ -429,16 +429,16 @@ def test_Poly_unify():
     assert Poly(x + 1, y, x).unify(Poly(x + 2, x, y, domain=QQ)) == \
         (Poly(x + 1, y, x, domain=QQ), Poly(x + 2, y, x, domain=QQ))
 
-    assert Poly(a*x, x, domain=ZZ.inject(a)).unify(Poly(a*b*x, x, domain=ZZ.frac_field(a, b))) == \
-        (Poly(a*x, x, domain=ZZ.frac_field(a, b)), Poly(a*b*x, x, domain=ZZ.frac_field(a, b)))
+    assert Poly(a*x, x, domain=ZZ.inject(a)).unify(Poly(a*b*x, x, domain=ZZ.inject(a, b).field)) == \
+        (Poly(a*x, x, domain=ZZ.inject(a, b).field), Poly(a*b*x, x, domain=ZZ.inject(a, b).field))
 
-    assert Poly(a*x, x, domain=ZZ.frac_field(a)).unify(Poly(a*b*x, x, domain=ZZ.frac_field(a, b))) == \
-        (Poly(a*x, x, domain=ZZ.frac_field(a, b)), Poly(a*b*x, x, domain=ZZ.frac_field(a, b)))
+    assert Poly(a*x, x, domain=ZZ.inject(a).field).unify(Poly(a*b*x, x, domain=ZZ.inject(a, b).field)) == \
+        (Poly(a*x, x, domain=ZZ.inject(a, b).field), Poly(a*b*x, x, domain=ZZ.inject(a, b).field))
 
     pytest.raises(CoercionFailed, lambda: Poly(Poly(x**2 + x**2*z, y, field=True),
-                                               domain=ZZ.frac_field(x)))
+                                               domain=ZZ.inject(x).field))
 
-    f = Poly(t**2 + t/3 + x, t, domain=QQ.frac_field(x))
+    f = Poly(t**2 + t/3 + x, t, domain=QQ.inject(x).field)
     g = Poly(t**2 + t/3 + x, t, domain=QQ.inject(x))
 
     assert f.unify(g) == (f, f)

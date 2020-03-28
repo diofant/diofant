@@ -58,7 +58,7 @@ def test_Domain_unify():
     assert unify(F3, RR) == RR
     assert unify(F3, CC) == CC
     assert unify(F3, ZZ.inject(x)) == F3.inject(x)
-    assert unify(F3, ZZ.frac_field(x)) == F3.frac_field(x)
+    assert unify(F3, ZZ.inject(x).field) == F3.inject(x).field
     assert unify(F3, EX) == EX
 
     assert unify(ZZ, F3) == F3
@@ -68,7 +68,7 @@ def test_Domain_unify():
     assert unify(ZZ, RR) == RR
     assert unify(ZZ, CC) == CC
     assert unify(ZZ, ZZ.inject(x)) == ZZ.inject(x)
-    assert unify(ZZ, ZZ.frac_field(x)) == ZZ.frac_field(x)
+    assert unify(ZZ, ZZ.inject(x).field) == ZZ.inject(x).field
     assert unify(ZZ, EX) == EX
 
     assert unify(QQ, F3) == QQ
@@ -78,7 +78,7 @@ def test_Domain_unify():
     assert unify(QQ, RR) == RR
     assert unify(QQ, CC) == CC
     assert unify(QQ, ZZ.inject(x)) == QQ.inject(x)
-    assert unify(QQ, ZZ.frac_field(x)) == QQ.frac_field(x)
+    assert unify(QQ, ZZ.inject(x).field) == QQ.inject(x).field
     assert unify(QQ, EX) == EX
 
     assert unify(RR, F3) == RR
@@ -88,7 +88,7 @@ def test_Domain_unify():
     assert unify(RR, RR) == RR
     assert unify(RR, CC) == CC
     assert unify(RR, ZZ.inject(x)) == RR.inject(x)
-    assert unify(RR, ZZ.frac_field(x)) == RR.frac_field(x)
+    assert unify(RR, ZZ.inject(x).field) == RR.inject(x).field
     assert unify(RR, EX) == EX
 
     assert unify(CC, F3) == CC
@@ -98,7 +98,7 @@ def test_Domain_unify():
     assert unify(CC, RR) == CC
     assert unify(CC, CC) == CC
     assert unify(CC, ZZ.inject(x)) == CC.inject(x)
-    assert unify(CC, ZZ.frac_field(x)) == CC.frac_field(x)
+    assert unify(CC, ZZ.inject(x).field) == CC.inject(x).field
     assert unify(CC, EX) == EX
 
     CC2 = ComplexField(prec=20)
@@ -115,18 +115,18 @@ def test_Domain_unify():
     assert unify(ZZ.inject(x), RR) == RR.inject(x)
     assert unify(ZZ.inject(x), CC) == CC.inject(x)
     assert unify(ZZ.inject(x), ZZ.inject(x)) == ZZ.inject(x)
-    assert unify(ZZ.inject(x), ZZ.frac_field(x)) == ZZ.frac_field(x)
+    assert unify(ZZ.inject(x), ZZ.inject(x).field) == ZZ.inject(x).field
     assert unify(ZZ.inject(x), EX) == EX
 
-    assert unify(ZZ.frac_field(x), F3) == F3.frac_field(x)
-    assert unify(ZZ.frac_field(x), ZZ) == ZZ.frac_field(x)
-    assert unify(ZZ.frac_field(x), QQ) == QQ.frac_field(x)
-    assert unify(ZZ.frac_field(x), ALG) == ALG.frac_field(x)
-    assert unify(ZZ.frac_field(x), RR) == RR.frac_field(x)
-    assert unify(ZZ.frac_field(x), CC) == CC.frac_field(x)
-    assert unify(ZZ.frac_field(x), ZZ.inject(x)) == ZZ.frac_field(x)
-    assert unify(ZZ.frac_field(x), ZZ.frac_field(x)) == ZZ.frac_field(x)
-    assert unify(ZZ.frac_field(x), EX) == EX
+    assert unify(ZZ.inject(x).field, F3) == F3.inject(x).field
+    assert unify(ZZ.inject(x).field, ZZ) == ZZ.inject(x).field
+    assert unify(ZZ.inject(x).field, QQ) == QQ.inject(x).field
+    assert unify(ZZ.inject(x).field, ALG) == ALG.inject(x).field
+    assert unify(ZZ.inject(x).field, RR) == RR.inject(x).field
+    assert unify(ZZ.inject(x).field, CC) == CC.inject(x).field
+    assert unify(ZZ.inject(x).field, ZZ.inject(x)) == ZZ.inject(x).field
+    assert unify(ZZ.inject(x).field, ZZ.inject(x).field) == ZZ.inject(x).field
+    assert unify(ZZ.inject(x).field, EX) == EX
 
     assert unify(EX, F3) == EX
     assert unify(EX, ZZ) == EX
@@ -135,7 +135,7 @@ def test_Domain_unify():
     assert unify(EX, RR) == EX
     assert unify(EX, CC) == EX
     assert unify(EX, ZZ.inject(x)) == EX
-    assert unify(EX, ZZ.frac_field(x)) == EX
+    assert unify(EX, ZZ.inject(x).field) == EX
     assert unify(EX, EX) == EX
 
 
@@ -160,25 +160,25 @@ def test_Domain_unify_composite():
     assert unify(ZZ, QQ.inject(x, y)) == QQ.inject(x, y)
     assert unify(QQ, QQ.inject(x, y)) == QQ.inject(x, y)
 
-    assert unify(ZZ.frac_field(x), ZZ) == ZZ.frac_field(x)
-    assert unify(ZZ.frac_field(x), QQ) == QQ.frac_field(x)
-    assert unify(QQ.frac_field(x), ZZ) == QQ.frac_field(x)
-    assert unify(QQ.frac_field(x), QQ) == QQ.frac_field(x)
+    assert unify(ZZ.inject(x).field, ZZ) == ZZ.inject(x).field
+    assert unify(ZZ.inject(x).field, QQ) == QQ.inject(x).field
+    assert unify(QQ.inject(x).field, ZZ) == QQ.inject(x).field
+    assert unify(QQ.inject(x).field, QQ) == QQ.inject(x).field
 
-    assert unify(ZZ, ZZ.frac_field(x)) == ZZ.frac_field(x)
-    assert unify(QQ, ZZ.frac_field(x)) == QQ.frac_field(x)
-    assert unify(ZZ, QQ.frac_field(x)) == QQ.frac_field(x)
-    assert unify(QQ, QQ.frac_field(x)) == QQ.frac_field(x)
+    assert unify(ZZ, ZZ.inject(x).field) == ZZ.inject(x).field
+    assert unify(QQ, ZZ.inject(x).field) == QQ.inject(x).field
+    assert unify(ZZ, QQ.inject(x).field) == QQ.inject(x).field
+    assert unify(QQ, QQ.inject(x).field) == QQ.inject(x).field
 
-    assert unify(ZZ.frac_field(x, y), ZZ) == ZZ.frac_field(x, y)
-    assert unify(ZZ.frac_field(x, y), QQ) == QQ.frac_field(x, y)
-    assert unify(QQ.frac_field(x, y), ZZ) == QQ.frac_field(x, y)
-    assert unify(QQ.frac_field(x, y), QQ) == QQ.frac_field(x, y)
+    assert unify(ZZ.inject(x, y).field, ZZ) == ZZ.inject(x, y).field
+    assert unify(ZZ.inject(x, y).field, QQ) == QQ.inject(x, y).field
+    assert unify(QQ.inject(x, y).field, ZZ) == QQ.inject(x, y).field
+    assert unify(QQ.inject(x, y).field, QQ) == QQ.inject(x, y).field
 
-    assert unify(ZZ, ZZ.frac_field(x, y)) == ZZ.frac_field(x, y)
-    assert unify(QQ, ZZ.frac_field(x, y)) == QQ.frac_field(x, y)
-    assert unify(ZZ, QQ.frac_field(x, y)) == QQ.frac_field(x, y)
-    assert unify(QQ, QQ.frac_field(x, y)) == QQ.frac_field(x, y)
+    assert unify(ZZ, ZZ.inject(x, y).field) == ZZ.inject(x, y).field
+    assert unify(QQ, ZZ.inject(x, y).field) == QQ.inject(x, y).field
+    assert unify(ZZ, QQ.inject(x, y).field) == QQ.inject(x, y).field
+    assert unify(QQ, QQ.inject(x, y).field) == QQ.inject(x, y).field
 
     assert unify(ZZ.inject(x), ZZ.inject(x)) == ZZ.inject(x)
     assert unify(ZZ.inject(x), QQ.inject(x)) == QQ.inject(x)
@@ -200,65 +200,65 @@ def test_Domain_unify_composite():
     assert unify(QQ.inject(x, y), ZZ.inject(x, z)) == QQ.inject(x, y, z)
     assert unify(QQ.inject(x, y), QQ.inject(x, z)) == QQ.inject(x, y, z)
 
-    assert unify(ZZ.frac_field(x), ZZ.frac_field(x)) == ZZ.frac_field(x)
-    assert unify(ZZ.frac_field(x), QQ.frac_field(x)) == QQ.frac_field(x)
-    assert unify(QQ.frac_field(x), ZZ.frac_field(x)) == QQ.frac_field(x)
-    assert unify(QQ.frac_field(x), QQ.frac_field(x)) == QQ.frac_field(x)
+    assert unify(ZZ.inject(x).field, ZZ.inject(x).field) == ZZ.inject(x).field
+    assert unify(ZZ.inject(x).field, QQ.inject(x).field) == QQ.inject(x).field
+    assert unify(QQ.inject(x).field, ZZ.inject(x).field) == QQ.inject(x).field
+    assert unify(QQ.inject(x).field, QQ.inject(x).field) == QQ.inject(x).field
 
-    assert unify(ZZ.frac_field(x, y), ZZ.frac_field(x)) == ZZ.frac_field(x, y)
-    assert unify(ZZ.frac_field(x, y), QQ.frac_field(x)) == QQ.frac_field(x, y)
-    assert unify(QQ.frac_field(x, y), ZZ.frac_field(x)) == QQ.frac_field(x, y)
-    assert unify(QQ.frac_field(x, y), QQ.frac_field(x)) == QQ.frac_field(x, y)
+    assert unify(ZZ.inject(x, y).field, ZZ.inject(x).field) == ZZ.inject(x, y).field
+    assert unify(ZZ.inject(x, y).field, QQ.inject(x).field) == QQ.inject(x, y).field
+    assert unify(QQ.inject(x, y).field, ZZ.inject(x).field) == QQ.inject(x, y).field
+    assert unify(QQ.inject(x, y).field, QQ.inject(x).field) == QQ.inject(x, y).field
 
-    assert unify(ZZ.frac_field(x), ZZ.frac_field(x, y)) == ZZ.frac_field(x, y)
-    assert unify(ZZ.frac_field(x), QQ.frac_field(x, y)) == QQ.frac_field(x, y)
-    assert unify(QQ.frac_field(x), ZZ.frac_field(x, y)) == QQ.frac_field(x, y)
-    assert unify(QQ.frac_field(x), QQ.frac_field(x, y)) == QQ.frac_field(x, y)
+    assert unify(ZZ.inject(x).field, ZZ.inject(x, y).field) == ZZ.inject(x, y).field
+    assert unify(ZZ.inject(x).field, QQ.inject(x, y).field) == QQ.inject(x, y).field
+    assert unify(QQ.inject(x).field, ZZ.inject(x, y).field) == QQ.inject(x, y).field
+    assert unify(QQ.inject(x).field, QQ.inject(x, y).field) == QQ.inject(x, y).field
 
-    assert unify(ZZ.frac_field(x, y), ZZ.frac_field(x, z)) == ZZ.frac_field(x, y, z)
-    assert unify(ZZ.frac_field(x, y), QQ.frac_field(x, z)) == QQ.frac_field(x, y, z)
-    assert unify(QQ.frac_field(x, y), ZZ.frac_field(x, z)) == QQ.frac_field(x, y, z)
-    assert unify(QQ.frac_field(x, y), QQ.frac_field(x, z)) == QQ.frac_field(x, y, z)
+    assert unify(ZZ.inject(x, y).field, ZZ.inject(x, z).field) == ZZ.inject(x, y, z).field
+    assert unify(ZZ.inject(x, y).field, QQ.inject(x, z).field) == QQ.inject(x, y, z).field
+    assert unify(QQ.inject(x, y).field, ZZ.inject(x, z).field) == QQ.inject(x, y, z).field
+    assert unify(QQ.inject(x, y).field, QQ.inject(x, z).field) == QQ.inject(x, y, z).field
 
-    assert unify(ZZ.inject(x), ZZ.frac_field(x)) == ZZ.frac_field(x)
-    assert unify(ZZ.inject(x), QQ.frac_field(x)) == ZZ.frac_field(x)
-    assert unify(QQ.inject(x), ZZ.frac_field(x)) == ZZ.frac_field(x)
-    assert unify(QQ.inject(x), QQ.frac_field(x)) == QQ.frac_field(x)
+    assert unify(ZZ.inject(x), ZZ.inject(x).field) == ZZ.inject(x).field
+    assert unify(ZZ.inject(x), QQ.inject(x).field) == ZZ.inject(x).field
+    assert unify(QQ.inject(x), ZZ.inject(x).field) == ZZ.inject(x).field
+    assert unify(QQ.inject(x), QQ.inject(x).field) == QQ.inject(x).field
 
-    assert unify(ZZ.inject(x, y), ZZ.frac_field(x)) == ZZ.frac_field(x, y)
-    assert unify(ZZ.inject(x, y), QQ.frac_field(x)) == ZZ.frac_field(x, y)
-    assert unify(QQ.inject(x, y), ZZ.frac_field(x)) == ZZ.frac_field(x, y)
-    assert unify(QQ.inject(x, y), QQ.frac_field(x)) == QQ.frac_field(x, y)
+    assert unify(ZZ.inject(x, y), ZZ.inject(x).field) == ZZ.inject(x, y).field
+    assert unify(ZZ.inject(x, y), QQ.inject(x).field) == ZZ.inject(x, y).field
+    assert unify(QQ.inject(x, y), ZZ.inject(x).field) == ZZ.inject(x, y).field
+    assert unify(QQ.inject(x, y), QQ.inject(x).field) == QQ.inject(x, y).field
 
-    assert unify(ZZ.inject(x), ZZ.frac_field(x, y)) == ZZ.frac_field(x, y)
-    assert unify(ZZ.inject(x), QQ.frac_field(x, y)) == ZZ.frac_field(x, y)
-    assert unify(QQ.inject(x), ZZ.frac_field(x, y)) == ZZ.frac_field(x, y)
-    assert unify(QQ.inject(x), QQ.frac_field(x, y)) == QQ.frac_field(x, y)
+    assert unify(ZZ.inject(x), ZZ.inject(x, y).field) == ZZ.inject(x, y).field
+    assert unify(ZZ.inject(x), QQ.inject(x, y).field) == ZZ.inject(x, y).field
+    assert unify(QQ.inject(x), ZZ.inject(x, y).field) == ZZ.inject(x, y).field
+    assert unify(QQ.inject(x), QQ.inject(x, y).field) == QQ.inject(x, y).field
 
-    assert unify(ZZ.inject(x, y), ZZ.frac_field(x, z)) == ZZ.frac_field(x, y, z)
-    assert unify(ZZ.inject(x, y), QQ.frac_field(x, z)) == ZZ.frac_field(x, y, z)
-    assert unify(QQ.inject(x, y), ZZ.frac_field(x, z)) == ZZ.frac_field(x, y, z)
-    assert unify(QQ.inject(x, y), QQ.frac_field(x, z)) == QQ.frac_field(x, y, z)
+    assert unify(ZZ.inject(x, y), ZZ.inject(x, z).field) == ZZ.inject(x, y, z).field
+    assert unify(ZZ.inject(x, y), QQ.inject(x, z).field) == ZZ.inject(x, y, z).field
+    assert unify(QQ.inject(x, y), ZZ.inject(x, z).field) == ZZ.inject(x, y, z).field
+    assert unify(QQ.inject(x, y), QQ.inject(x, z).field) == QQ.inject(x, y, z).field
 
-    assert unify(ZZ.frac_field(x), ZZ.inject(x)) == ZZ.frac_field(x)
-    assert unify(ZZ.frac_field(x), QQ.inject(x)) == ZZ.frac_field(x)
-    assert unify(QQ.frac_field(x), ZZ.inject(x)) == ZZ.frac_field(x)
-    assert unify(QQ.frac_field(x), QQ.inject(x)) == QQ.frac_field(x)
+    assert unify(ZZ.inject(x).field, ZZ.inject(x)) == ZZ.inject(x).field
+    assert unify(ZZ.inject(x).field, QQ.inject(x)) == ZZ.inject(x).field
+    assert unify(QQ.inject(x).field, ZZ.inject(x)) == ZZ.inject(x).field
+    assert unify(QQ.inject(x).field, QQ.inject(x)) == QQ.inject(x).field
 
-    assert unify(ZZ.frac_field(x, y), ZZ.inject(x)) == ZZ.frac_field(x, y)
-    assert unify(ZZ.frac_field(x, y), QQ.inject(x)) == ZZ.frac_field(x, y)
-    assert unify(QQ.frac_field(x, y), ZZ.inject(x)) == ZZ.frac_field(x, y)
-    assert unify(QQ.frac_field(x, y), QQ.inject(x)) == QQ.frac_field(x, y)
+    assert unify(ZZ.inject(x, y).field, ZZ.inject(x)) == ZZ.inject(x, y).field
+    assert unify(ZZ.inject(x, y).field, QQ.inject(x)) == ZZ.inject(x, y).field
+    assert unify(QQ.inject(x, y).field, ZZ.inject(x)) == ZZ.inject(x, y).field
+    assert unify(QQ.inject(x, y).field, QQ.inject(x)) == QQ.inject(x, y).field
 
-    assert unify(ZZ.frac_field(x), ZZ.inject(x, y)) == ZZ.frac_field(x, y)
-    assert unify(ZZ.frac_field(x), QQ.inject(x, y)) == ZZ.frac_field(x, y)
-    assert unify(QQ.frac_field(x), ZZ.inject(x, y)) == ZZ.frac_field(x, y)
-    assert unify(QQ.frac_field(x), QQ.inject(x, y)) == QQ.frac_field(x, y)
+    assert unify(ZZ.inject(x).field, ZZ.inject(x, y)) == ZZ.inject(x, y).field
+    assert unify(ZZ.inject(x).field, QQ.inject(x, y)) == ZZ.inject(x, y).field
+    assert unify(QQ.inject(x).field, ZZ.inject(x, y)) == ZZ.inject(x, y).field
+    assert unify(QQ.inject(x).field, QQ.inject(x, y)) == QQ.inject(x, y).field
 
-    assert unify(ZZ.frac_field(x, y), ZZ.inject(x, z)) == ZZ.frac_field(x, y, z)
-    assert unify(ZZ.frac_field(x, y), QQ.inject(x, z)) == ZZ.frac_field(x, y, z)
-    assert unify(QQ.frac_field(x, y), ZZ.inject(x, z)) == ZZ.frac_field(x, y, z)
-    assert unify(QQ.frac_field(x, y), QQ.inject(x, z)) == QQ.frac_field(x, y, z)
+    assert unify(ZZ.inject(x, y).field, ZZ.inject(x, z)) == ZZ.inject(x, y, z).field
+    assert unify(ZZ.inject(x, y).field, QQ.inject(x, z)) == ZZ.inject(x, y, z).field
+    assert unify(QQ.inject(x, y).field, ZZ.inject(x, z)) == ZZ.inject(x, y, z).field
+    assert unify(QQ.inject(x, y).field, QQ.inject(x, z)) == QQ.inject(x, y, z).field
 
 
 def test_Domain_unify_algebraic():
@@ -271,14 +271,14 @@ def test_Domain_unify_algebraic():
     assert sqrt5.unify(sqrt5.inject(x, y)) == sqrt5.inject(x, y)
     assert sqrt5.inject(x, y).unify(sqrt5) == sqrt5.inject(x, y)
 
-    assert sqrt5.unify(sqrt5.frac_field(x, y)) == sqrt5.frac_field(x, y)
-    assert sqrt5.frac_field(x, y).unify(sqrt5) == sqrt5.frac_field(x, y)
+    assert sqrt5.unify(sqrt5.inject(x, y).field) == sqrt5.inject(x, y).field
+    assert sqrt5.inject(x, y).field.unify(sqrt5) == sqrt5.inject(x, y).field
 
     assert sqrt5.unify(sqrt7.inject(x, y)) == sqrt57.inject(x, y)
     assert sqrt5.inject(x, y).unify(sqrt7) == sqrt57.inject(x, y)
 
-    assert sqrt5.unify(sqrt7.frac_field(x, y)) == sqrt57.frac_field(x, y)
-    assert sqrt5.frac_field(x, y).unify(sqrt7) == sqrt57.frac_field(x, y)
+    assert sqrt5.unify(sqrt7.inject(x, y).field) == sqrt57.inject(x, y).field
+    assert sqrt5.inject(x, y).field.unify(sqrt7) == sqrt57.inject(x, y).field
 
 
 @pytest.mark.slow
@@ -457,10 +457,10 @@ def test_Domain_ring():
     assert QQ.inject(x).has_assoc_Ring is True
     assert ZZ.inject(x, y).has_assoc_Ring is True
     assert QQ.inject(x, y).has_assoc_Ring is True
-    assert ZZ.frac_field(x).has_assoc_Ring is True
-    assert QQ.frac_field(x).has_assoc_Ring is True
-    assert ZZ.frac_field(x, y).has_assoc_Ring is True
-    assert QQ.frac_field(x, y).has_assoc_Ring is True
+    assert ZZ.inject(x).field.has_assoc_Ring is True
+    assert QQ.inject(x).field.has_assoc_Ring is True
+    assert ZZ.inject(x, y).field.has_assoc_Ring is True
+    assert QQ.inject(x, y).field.has_assoc_Ring is True
 
     assert EX.has_assoc_Ring is False
     assert RR.has_assoc_Ring is False
@@ -472,10 +472,10 @@ def test_Domain_ring():
     assert QQ.inject(x).ring == QQ.inject(x)
     assert ZZ.inject(x, y).ring == ZZ.inject(x, y)
     assert QQ.inject(x, y).ring == QQ.inject(x, y)
-    assert ZZ.frac_field(x).ring == ZZ.inject(x)
-    assert QQ.frac_field(x).ring == QQ.inject(x)
-    assert ZZ.frac_field(x, y).ring == ZZ.inject(x, y)
-    assert QQ.frac_field(x, y).ring == QQ.inject(x, y)
+    assert ZZ.inject(x).field.ring == ZZ.inject(x)
+    assert QQ.inject(x).field.ring == QQ.inject(x)
+    assert ZZ.inject(x, y).field.ring == ZZ.inject(x, y)
+    assert QQ.inject(x, y).field.ring == QQ.inject(x, y)
 
     assert EX.ring == EX
 
@@ -505,10 +505,10 @@ def test_Domain_get_exact():
     assert QQ.inject(x).get_exact() == QQ.inject(x)
     assert ZZ.inject(x, y).get_exact() == ZZ.inject(x, y)
     assert QQ.inject(x, y).get_exact() == QQ.inject(x, y)
-    assert ZZ.frac_field(x).get_exact() == ZZ.frac_field(x)
-    assert QQ.frac_field(x).get_exact() == QQ.frac_field(x)
-    assert ZZ.frac_field(x, y).get_exact() == ZZ.frac_field(x, y)
-    assert QQ.frac_field(x, y).get_exact() == QQ.frac_field(x, y)
+    assert ZZ.inject(x).field.get_exact() == ZZ.inject(x).field
+    assert QQ.inject(x).field.get_exact() == QQ.inject(x).field
+    assert ZZ.inject(x, y).field.get_exact() == ZZ.inject(x, y).field
+    assert QQ.inject(x, y).field.get_exact() == QQ.inject(x, y).field
 
 
 def test_Domain_convert():
@@ -613,12 +613,12 @@ def test_PolynomialRing__init():
 
 
 def test_FractionField__init():
-    pytest.raises(GeneratorsNeeded, lambda: ZZ.frac_field())
+    pytest.raises(GeneratorsNeeded, lambda: ZZ.inject().field)
 
 
 def test_inject():
     assert ZZ.inject(x).inject(y, z) == ZZ.inject(x, y, z)
-    assert ZZ.frac_field(x).inject(y, z) == ZZ.frac_field(x, y, z)
+    assert ZZ.inject(x).field.inject(y, z) == ZZ.inject(x, y, z).field
     pytest.raises(GeneratorsError, lambda: ZZ.inject(x).inject(x))
 
 
@@ -629,11 +629,11 @@ def test_Domain___eq__():
     assert (ZZ.inject(x, y) == QQ.inject(x, y)) is False
     assert (QQ.inject(x, y) == ZZ.inject(x, y)) is False
 
-    assert (ZZ.frac_field(x, y) == ZZ.frac_field(x, y)) is True
-    assert (QQ.frac_field(x, y) == QQ.frac_field(x, y)) is True
+    assert (ZZ.inject(x, y).field == ZZ.inject(x, y).field) is True
+    assert (QQ.inject(x, y).field == QQ.inject(x, y).field) is True
 
-    assert (ZZ.frac_field(x, y) == QQ.frac_field(x, y)) is False
-    assert (QQ.frac_field(x, y) == ZZ.frac_field(x, y)) is False
+    assert (ZZ.inject(x, y).field == QQ.inject(x, y).field) is False
+    assert (QQ.inject(x, y).field == ZZ.inject(x, y).field) is False
 
 
 def test_Domain__algebraic_field():
@@ -661,7 +661,7 @@ def test_Domain__algebraic_field():
 
     assert alg.characteristic == 0
     assert alg.inject(x).characteristic == 0
-    assert alg.frac_field(x).characteristic == 0
+    assert alg.inject(x).field.characteristic == 0
 
     assert alg.is_RealAlgebraicField is True
 
@@ -759,7 +759,7 @@ def test_FF_of_type():
 
 def test___eq__():
     assert not QQ.inject(x) == ZZ.inject(x)
-    assert not QQ.frac_field(x) == ZZ.frac_field(x)
+    assert not QQ.inject(x).field == ZZ.inject(x).field
 
     assert EX(1) != EX(2)
 
@@ -1020,7 +1020,7 @@ def test_ModularInteger():
     assert F9.order == 9
     assert F9.characteristic == 3
     assert F9.inject(x).characteristic == 3
-    assert F9.frac_field(x).characteristic == 3
+    assert F9.inject(x).field.characteristic == 3
 
     assert F9.zero == F9([0])
     assert F9.one == F9([1])

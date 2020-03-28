@@ -202,7 +202,7 @@ def test_sring():
     R = Rt.poly_ring('x', 'y', 'z')
     assert sring(x + t*y/2 + t**2*z/3, x, y, z) == (R, R.x + Rt.t*R.y/2 + Rt.t**2*R.z/3)
 
-    Rt = ZZ.frac_field('t')
+    Rt = ZZ.inject('t').field
     R = Rt.poly_ring('x', 'y', 'z')
     assert sring(x + 2*y/t + t**2*z/3, x, y, z) == (R, R.x + 2*R.y/Rt.t + Rt.t**2*R.z/3)
 

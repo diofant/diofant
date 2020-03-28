@@ -1089,8 +1089,8 @@ def test_latex_RandomDomain():
 
 
 def test_PrettyPoly():
-    F = QQ.frac_field(x, y)
     R = QQ.inject(x, y)
+    F = R.field
 
     assert latex(F.convert(x/(x + y))) == latex(x/(x + y))
     assert latex(R.convert(x + y)) == latex(x + y)
