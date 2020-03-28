@@ -350,3 +350,10 @@ def test_FracElement_eval():
 
 def test_FracElement_compose():
     pass
+
+
+def test_cache():
+    F1 = QQ.frac_field(-sqrt(2))
+    F2 = QQ.frac_field(-2*sqrt(2))
+
+    assert F1 != F2

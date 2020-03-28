@@ -47,12 +47,12 @@ class FractionField(Field, CompositeDomain):
         domain = ring.domain
         order = ring.order
 
-        _hash = hash((cls.__name__, symbols, ngens, domain, order))
-        obj = _field_cache.get(_hash)
+        key = (cls.__name__, symbols, ngens, domain, order)
+        obj = _field_cache.get(key)
 
         if obj is None:
             obj = object.__new__(cls)
-            obj._hash = _hash
+            obj._hash = hash(key)
             obj.dtype = type('FracElement', (FracElement,), {'field': obj})
             obj.symbols = symbols
             obj.ngens = ngens
@@ -73,7 +73,7 @@ class FractionField(Field, CompositeDomain):
                     if not hasattr(obj, name):
                         setattr(obj, name, generator)
 
-            _field_cache[_hash] = obj
+            _field_cache[key] = obj
 
         return obj
 

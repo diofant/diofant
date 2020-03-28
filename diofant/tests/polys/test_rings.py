@@ -1685,3 +1685,10 @@ def test_sympyissue_18894():
     K = QQ.algebraic_field(sqrt(3) + sqrt(3*sqrt(3) + 10))
 
     assert sring(exprs, x, extension=True)[0] == K.inject(x)
+
+
+def test_cache():
+    R1 = QQ.inject(-sqrt(2))
+    R2 = QQ.inject(-2*sqrt(2))
+
+    assert R1 != R2
