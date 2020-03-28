@@ -776,10 +776,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         return all(sum(monom) <= 2 for monom in self)
 
     @property
-    def is_squarefree(self):
-        return self.ring.dmp_sqf_p(self)
-
-    @property
     def is_irreducible(self):
         _, factors = self.factor_list()
         if not factors:
@@ -788,13 +784,6 @@ class PolyElement(DomainElement, CantSympify, dict):
             return False
         else:
             return factors[0][1] == 1
-
-    @property
-    def is_cyclotomic(self):
-        if self.ring.is_univariate:
-            return self.ring.dup_cyclotomic_p(self)
-        else:
-            raise AttributeError('cyclotomic polynomial')
 
     @property
     def is_homogeneous(self):
@@ -1947,6 +1936,26 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return poly
 
+    def discriminant(self):
+        """Computes discriminant of a polynomial."""
+        ring = self.ring
+
+        d = self.degree()
+
+        if d <= 0:
+            return ring.zero.drop(0)
+        else:
+            s = (-1)**((d*(d - 1)) // 2)
+            c = self.eject(*ring.gens[1:]).LC
+
+            return self.resultant(self.diff()) // (c*s)
+
+    def shift(self, a):
+        if self.ring.is_univariate:
+            return self.compose(0, self.ring.gens[0] + a)
+        else:
+            raise MultivariatePolynomialError('polynomial shift')
+
     # TODO: following methods should point to polynomial
     # representation independent algorithm implementations.
 
@@ -1971,37 +1980,28 @@ class PolyElement(DomainElement, CantSympify, dict):
     def resultant(self, other, includePRS=False):
         return self.ring.dmp_resultant(self, other, includePRS=includePRS)
 
-    def discriminant(self):
-        """Computes discriminant of a polynomial."""
-        ring = self.ring
-
-        d = self.degree()
-
-        if d <= 0:
-            return ring.zero.drop(0)
-        else:
-            s = (-1)**((d*(d - 1)) // 2)
-            c = self.eject(*ring.gens[1:]).LC
-
-            return self.resultant(self.diff()) // (c*s)
-
     def decompose(self):
         if self.ring.is_univariate:
             return self.ring.dup_decompose(self)
         else:
             raise MultivariatePolynomialError('polynomial decomposition')
 
-    def shift(self, a):
-        if self.ring.is_univariate:
-            return self.compose(0, self.ring.gens[0] + a)
-        else:
-            raise MultivariatePolynomialError('polynomial shift')
-
     def sturm(self):
         if self.ring.is_univariate:
             return self.ring.dup_sturm(self)
         else:
             raise MultivariatePolynomialError('sturm sequence')
+
+    @property
+    def is_cyclotomic(self):
+        if self.ring.is_univariate:
+            return self.ring.dup_cyclotomic_p(self)
+        else:
+            raise AttributeError('cyclotomic polynomial')
+
+    @property
+    def is_squarefree(self):
+        return self.ring.dmp_sqf_p(self)
 
     def sqf_norm(self):
         return self.ring.dmp_sqf_norm(self)
