@@ -25,7 +25,7 @@ def dup_half_gcdex(f, g, K):
     Examples
     ========
 
-    >>> R, x = ring("x", QQ)
+    >>> R, x = ring('x', QQ)
 
     >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
     >>> g = x**3 + x**2 - 4*x - 4
@@ -35,7 +35,7 @@ def dup_half_gcdex(f, g, K):
 
     """
     if not K.is_Field:
-        raise DomainError("can't compute half extended GCD over %s" % K)
+        raise DomainError(f"can't compute half extended GCD over {K}")
 
     a, b = [K.one], []
 
@@ -59,7 +59,7 @@ def dup_gcdex(f, g, K):
     Examples
     ========
 
-    >>> R, x = ring("x", QQ)
+    >>> R, x = ring('x', QQ)
 
     >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
     >>> g = x**3 + x**2 - 4*x - 4
@@ -83,7 +83,7 @@ def dup_invert(f, g, K):
     Examples
     ========
 
-    >>> R, x = ring("x", QQ)
+    >>> R, x = ring('x', QQ)
 
     >>> f = x**2 - 1
     >>> g = 2*x - 1
@@ -103,7 +103,7 @@ def dup_invert(f, g, K):
     if h == [K.one]:
         return dmp_rem(s, g, 0, K)
     else:
-        raise NotInvertible("zero divisor")
+        raise NotInvertible('zero divisor')
 
 
 def dmp_prem(f, g, u, K):
@@ -113,7 +113,7 @@ def dmp_prem(f, g, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> (x**2 + x*y).prem(2*x + 2)
     -4*y + 4
@@ -128,7 +128,7 @@ def dmp_prem(f, g, u, K):
     dg = dmp_degree_in(g, 0, u)
 
     if dg < 0:
-        raise ZeroDivisionError("polynomial division")
+        raise ZeroDivisionError('polynomial division')
 
     r, dr = f, df
 
@@ -175,7 +175,7 @@ def dup_inner_subresultants(f, g, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dmp_inner_subresultants(x**2 + 1, x**2 - 1)
     ([x**2 + 1, x**2 - 1, -2], [1, 1, 4])
@@ -245,7 +245,7 @@ def dup_prs_resultant(f, g, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> (x**2 + 1).resultant(x**2 - 1, includePRS=True)
     (4, [x**2 + 1, x**2 - 1, -2])
@@ -269,7 +269,7 @@ def dmp_inner_subresultants(f, g, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = 3*x**2*y - y**3 - 4
     >>> g = x**2 + x*y**3 - 9
@@ -348,7 +348,7 @@ def dmp_subresultants(f, g, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = 3*x**2*y - y**3 - 4
     >>> g = x**2 + x*y**3 - 9
@@ -370,7 +370,7 @@ def dmp_prs_resultant(f, g, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = 3*x**2*y - y**3 - 4
     >>> g = x**2 + x*y**3 - 9
@@ -409,7 +409,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = x + y + 2
     >>> g = 2*x*y + x + 3
@@ -486,7 +486,7 @@ def dmp_zz_collins_resultant(f, g, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = x + y + 2
     >>> g = 2*x*y + x + 3
@@ -543,7 +543,7 @@ def dmp_qq_collins_resultant(f, g, u, K0):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", QQ)
+    >>> R, x, y = ring('x y', QQ)
 
     >>> f = x/2 + y + QQ(2, 3)
     >>> g = 2*x*y + x + 3
@@ -582,7 +582,7 @@ def dmp_resultant(f, g, u, K, includePRS=False):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = 3*x**2*y - y**3 - 4
     >>> g = x**2 + x*y**3 - 9
@@ -614,12 +614,12 @@ def dmp_rr_prs_gcd(f, g, u, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dmp_rr_prs_gcd(x**2 - 1, x**2 - 3*x + 2)
     (x - 1, x + 1, x - 2)
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -650,7 +650,7 @@ def dmp_rr_prs_gcd(f, g, u, K):
     h = dmp_subresultants(F, G, u, K)[-1]
     c, _, _ = dmp_rr_prs_gcd(fc, gc, u - 1, K)
 
-    if K.is_negative(dmp_ground_LC(h, u, K)):
+    if not K.is_normal(dmp_ground_LC(h, u, K)):
         h = dmp_neg(h, u, K)
 
     _, h = dmp_primitive(h, u, K)
@@ -672,12 +672,12 @@ def dmp_ff_prs_gcd(f, g, u, K):
     Examples
     ========
 
-    >>> R, x = ring("x", QQ)
+    >>> R, x = ring('x', QQ)
 
     >>> R.dmp_ff_prs_gcd(x**2 - 1, x**2 - 3*x + 2)
     (x - 1, x + 1, x - 2)
 
-    >>> R, x, y = ring("x y", QQ)
+    >>> R, x, y = ring('x y', QQ)
 
     >>> f = x**2/2 + x*y + y**2/2
     >>> g = x**2 + x*y
@@ -721,7 +721,7 @@ def dmp_inner_gcd(f, g, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -730,7 +730,7 @@ def dmp_inner_gcd(f, g, u, K):
     (x + y, x + y, x)
 
     """
-    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f, g = map(ring.from_dense, (f, g))
     return tuple(map(ring.to_dense, f.cofactors(g)))
 
@@ -742,7 +742,7 @@ def dmp_gcd(f, g, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = x**2 + 2*x*y + y**2
     >>> g = x**2 + x*y
@@ -761,27 +761,17 @@ def dmp_content(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_content(2*x*y + 6*x + 4*y + 12)
     2*y + 6
 
     """
-    cont, v = dmp_LC(f, K), u - 1
-
-    if dmp_zero_p(f, u):
-        return cont
-
-    for c in f[1:]:
-        cont = dmp_gcd(cont, c, v, K)
-
-        if dmp_one_p(cont, v, K):
-            break
-
-    if K.is_negative(dmp_ground_LC(cont, v, K)):
-        cont = dmp_neg(cont, v, K)
-
-    return cont
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    new_ring = ring.eject(*ring.gens[1:])
+    f = f.eject(*ring.gens[1:])
+    return new_ring.domain.to_dense(f.content())
 
 
 def dmp_primitive(f, u, K):
@@ -791,7 +781,7 @@ def dmp_primitive(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_primitive(2*x*y + 6*x + 4*y + 12)
     (2*y + 6, x + 2)

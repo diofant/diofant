@@ -71,7 +71,7 @@ Intersection of medians
 -----------------------
 ::
 
-    >>> a, b = symbols("a b", positive=True)
+    >>> a, b = symbols('a b', positive=True)
 
     >>> x = Point(0, 0)
     >>> y = Point(a, 0)

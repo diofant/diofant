@@ -35,8 +35,8 @@ class IntegralTransformError(NotImplementedError):
     """
 
     def __init__(self, transform, function, msg):
-        super().__init__("%s Transform could not be "
-                         "computed: %s." % (transform, msg))
+        super().__init__('%s Transform could not be '
+                         'computed: %s.' % (transform, msg))
         self.function = function
 
 
@@ -254,7 +254,7 @@ def _mellin_transform(f, x, s_, integrator=_default_integrator, simplify=True):
                     aux_ += [d]
                     continue
                 soln = solve_univariate_inequality(d_, t)
-                t_ = Dummy("t", real=True)
+                t_ = Dummy('t', real=True)
                 soln = soln.subs({t: t_}).subs({t_: t})
                 if not soln.is_Relational or soln.rel_op in ('==', '!='):
                     aux_ += [d]
@@ -513,7 +513,7 @@ def _rewrite_gamma(f, s, a, b):
     s_multipliers = [x/common_coefficient for x in s_multipliers]
     if (any(not x.is_Rational for x in s_multipliers) or
             not common_coefficient.is_extended_real):
-        raise IntegralTransformError("Gamma", None, "Nonrational multiplier")
+        raise IntegralTransformError('Gamma', None, 'Nonrational multiplier')
     s_multiplier = common_coefficient/reduce(ilcm, [Integer(x.denominator)
                                                     for x in s_multipliers], Integer(1))
     if s_multiplier == common_coefficient:
@@ -548,7 +548,7 @@ def _rewrite_gamma(f, s, a, b):
     exponentials = []
 
     def exception(fact):
-        return IntegralTransformError("Inverse Mellin", f, "Unrecognised form '%s'." % fact)
+        return IntegralTransformError('Inverse Mellin', f, "Unrecognised form '%s'." % fact)
     while args:
         fact, is_numer = args.pop()
         if is_numer:
@@ -667,7 +667,7 @@ def _rewrite_gamma(f, s, a, b):
                 newa = a/p
                 newc = c/p
                 if not a.is_Integer:
-                    raise TypeError("a is not an integer")
+                    raise TypeError('a is not an integer')
                 for k in range(p):
                     gammas += [(newa, newc + k/p)]
                 if is_numer:
@@ -1005,7 +1005,7 @@ def _laplace_transform(f, t, s_, simplify=True):
                     aux_ += [d]
                     continue
                 soln = solve_univariate_inequality(d_, t)
-                t_ = Dummy("t", real=True)
+                t_ = Dummy('t', real=True)
                 soln = soln.subs({t: t_}).subs({t_: t})
                 if not soln.is_Relational or soln.rel_op in ('==', '!='):
                     aux_ += [d]
@@ -1306,11 +1306,11 @@ class FourierTypeTransform(IntegralTransform):
 
     def a(self):
         raise NotImplementedError(
-            "Class %s must implement a(self) but does not" % self.__class__)
+            'Class %s must implement a(self) but does not' % self.__class__)
 
     def b(self):
         raise NotImplementedError(
-            "Class %s must implement b(self) but does not" % self.__class__)
+            'Class %s must implement b(self) but does not' % self.__class__)
 
     def _compute_transform(self, f, x, k, **hints):
         return _fourier_transform(f, x, k,
@@ -1470,11 +1470,11 @@ class SineCosineTypeTransform(IntegralTransform):
 
     def a(self):
         raise NotImplementedError(
-            "Class %s must implement a(self) but does not" % self.__class__)
+            'Class %s must implement a(self) but does not' % self.__class__)
 
     def b(self):
         raise NotImplementedError(
-            "Class %s must implement b(self) but does not" % self.__class__)
+            'Class %s must implement b(self) but does not' % self.__class__)
 
     def _compute_transform(self, f, x, k, **hints):
         return _sine_cosine_transform(f, x, k,
@@ -1579,8 +1579,8 @@ def inverse_sine_transform(F, k, x, **hints):
     :func:`diofant.integrals.transforms.IntegralTransform.doit`.
     Note that for this transform, by default ``noconds=True``.
 
-    >>> inverse_sine_transform(2**((1-2*a)/2)*k**(a - 1)*
-    ...     gamma(-a/2 + 1)/gamma((a+1)/2), k, x)
+    >>> inverse_sine_transform(2**((1-2*a)/2)*k**(a - 1) *
+    ...                        gamma(-a/2 + 1)/gamma((a+1)/2), k, x)
     x**(-a)
     >>> inverse_sine_transform(sqrt(2)*k*exp(-k**2/(4*a))/(4*sqrt(a)**3), k, x)
     E**(-a*x**2)*x

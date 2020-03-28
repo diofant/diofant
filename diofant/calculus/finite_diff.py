@@ -160,9 +160,9 @@ def finite_diff_weights(order, x_list, x0=Integer(0)):
     """
     # The notation below closely corresponds to the one used in the paper.
     if order < 0:
-        raise ValueError("Negative derivative order illegal.")
+        raise ValueError('Negative derivative order illegal.')
     if int(order) != order:
-        raise ValueError("Non-integer order illegal")
+        raise ValueError('Non-integer order illegal')
     M = order
     N = len(x_list) - 1
     delta = [[[0 for nu in range(N+1)] for n in range(N+1)] for
@@ -217,7 +217,8 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
     Examples
     ========
 
-    >>> cube = lambda arg: (1.0*arg)**3
+    >>> def cube(arg):
+    ...     return (1.0*arg)**3
     >>> xlist = range(-3, 4)
     >>> apply_finite_diff(2, xlist, list(map(cube, xlist)), 2) - 12
     -3.55271367880050e-15
@@ -261,7 +262,7 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
 
     N = len(x_list) - 1
     if len(x_list) != len(y_list):
-        raise ValueError("x_list and y_list not equal in length.")
+        raise ValueError('x_list and y_list not equal in length.')
 
     delta = finite_diff_weights(order, x_list, x0)
 
@@ -371,6 +372,6 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
                       in range(-order, order + 1, 2)]
 
     if len(points) < order+1:
-        raise ValueError("Too few points for order %d" % order)
+        raise ValueError('Too few points for order %d' % order)
     return apply_finite_diff(order, points, [
         derivative.expr.subs({wrt: x}) for x in points], x0)

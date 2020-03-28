@@ -17,7 +17,7 @@ def dmp_sqf_p(f, u, K):
     Examples
     ========
 
-    >>> _, x, y = ring("x y", ZZ)
+    >>> _, x, y = ring('x y', ZZ)
 
     >>> ((x + y)**2).is_squarefree
     False
@@ -46,7 +46,7 @@ def dmp_sqf_norm(f, u, K):
     Examples
     ========
 
-    >>> _, x, y = ring("x y", QQ.algebraic_field(I))
+    >>> _, x, y = ring('x y', QQ.algebraic_field(I))
 
     >>> (x*y + y**2).sqf_norm()
     (1, x*y - I*x + y**2 - 3*I*y - 2,
@@ -54,7 +54,7 @@ def dmp_sqf_norm(f, u, K):
 
     """
     if not K.is_AlgebraicField:
-        raise DomainError("ground domain must be algebraic")
+        raise DomainError('ground domain must be algebraic')
 
     g = dmp_raise(K.mod.to_dense(), u + 1, 0, K.domain)
     F = dmp_raise([K.one, -K.unit], u, 0, K)
@@ -82,7 +82,7 @@ def dmp_sqf_part(f, u, K):
     Examples
     ========
 
-    >>> _, x, y = ring("x y", ZZ)
+    >>> _, x, y = ring('x y', ZZ)
 
     >>> (x**3 + 2*x**2*y + x*y**2).sqf_part()
     x**2 + x*y
@@ -223,7 +223,7 @@ def dmp_sqf_list(f, u, K):
     Examples
     ========
 
-    >>> _, x, y = ring("x y", ZZ)
+    >>> _, x, y = ring('x y', ZZ)
 
     >>> (x**5 + 2*x**4*y + x**3*y**2).sqf_list()
     (1, [(x + y, 2), (x, 3)])

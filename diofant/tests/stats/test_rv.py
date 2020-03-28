@@ -107,8 +107,8 @@ def test_ProductPSpace():
     assert pspace(X + Y) == ProductPSpace(px, py)
     assert pspace(X + Y) == ProductPSpace(py, px)
 
-    X = Die("X", 2)
-    Y = Die("Y", 2)
+    X = Die('X', 2)
+    Y = Die('Y', 2)
 
     assert (pspace(X + Y).density ==
             Dict((frozenset({('X', 1), ('Y', 2)}), Rational(1, 4)),
@@ -119,7 +119,7 @@ def test_ProductPSpace():
     assert ((X.symbol, 1), (Y.symbol, 2)) in d
     assert ((X.symbol, 0), (Y.symbol, 2)) not in d
 
-    Z = Die("Z", 2)
+    Z = Die('Z', 2)
     d1 = pspace(X + Y).domain
     assert ProductDomain(d1, Z.pspace.domain) == pspace(X + Y + Z).domain
 
@@ -142,15 +142,15 @@ def test_Sample():
 
     pytest.raises(TypeError, lambda: P(Y > z, numsamples=5))
 
-    assert P(sin(Y) <= 1, numsamples=10, modules=["math"]) == 1
-    assert P(sin(Y) <= 1, cos(Y) < 1, numsamples=10, modules=["math"]) == 1
+    assert P(sin(Y) <= 1, numsamples=10, modules=['math']) == 1
+    assert P(sin(Y) <= 1, cos(Y) < 1, numsamples=10, modules=['math']) == 1
 
     assert all(i in range(1, 7) for i in density(X, numsamples=10))
     assert all(i in range(4, 7) for i in density(X, X > 3, numsamples=10))
 
     # Make sure this doesn't raise an error
     Y = Normal('Y', 0, 1)
-    E(Sum(1/z**Y, (z, 1, oo)), Y > 2, numsamples=3, modules="mpmath")
+    E(Sum(1/z**Y, (z, 1, oo)), Y > 2, numsamples=3, modules='mpmath')
 
 
 def test_given():

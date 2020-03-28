@@ -27,10 +27,10 @@ class Determinant(Expr):
     def __new__(cls, mat):
         mat = sympify(mat)
         if not mat.is_Matrix:
-            raise TypeError("Input to Determinant, %s, not a matrix" % str(mat))
+            raise TypeError('Input to Determinant, %s, not a matrix' % str(mat))
 
         if not mat.is_square:
-            raise ShapeError("Det of a non-square matrix")
+            raise ShapeError('Det of a non-square matrix')
 
         return Expr.__new__(cls, mat)
 

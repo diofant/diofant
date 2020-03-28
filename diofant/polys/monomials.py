@@ -38,7 +38,7 @@ class Monomial(tuple, DefaultPrinting):
             if len(rep) == 1 and list(rep.values())[0] == 1:
                 monom = list(rep)[0]
             else:
-                raise ValueError(f"Expected a monomial got {monom}")
+                raise ValueError(f'Expected a monomial got {monom}')
 
         obj = super().__new__(cls, map(int, monom))
         obj.gens = gens
@@ -85,7 +85,7 @@ class Monomial(tuple, DefaultPrinting):
         if other is not None:
             return all(a <= b for a, b in zip(self, other))
         else:
-            raise TypeError(f"An instance of {self.__class__.__name__} expected, got {orig}")
+            raise TypeError(f'An instance of {self.__class__.__name__} expected, got {orig}')
 
     def __pow__(self, other):
         """Return pow(self, other)."""
@@ -94,7 +94,7 @@ class Monomial(tuple, DefaultPrinting):
         if n >= 0:
             return self.__class__((a * n for a in self), self.gens)
         else:
-            raise ValueError(f"A non-negative integer expected, got {other}")
+            raise ValueError(f'A non-negative integer expected, got {other}')
 
     def gcd(self, other):
         """Greatest common divisor of monomials."""
@@ -102,7 +102,7 @@ class Monomial(tuple, DefaultPrinting):
         if other is not None:
             return self.__class__((min(a, b) for a, b in zip(self, other)), self.gens)
         else:
-            raise TypeError(f"An instance of {self.__class__.__name__} expected, got {orig}")
+            raise TypeError(f'An instance of {self.__class__.__name__} expected, got {orig}')
 
     def lcm(self, other):
         """Least common multiple of monomials."""
@@ -110,4 +110,4 @@ class Monomial(tuple, DefaultPrinting):
         if other is not None:
             return self.__class__((max(a, b) for a, b in zip(self, other)), self.gens)
         else:
-            raise TypeError(f"An instance of {self.__class__.__name__} expected, got {orig}")
+            raise TypeError(f'An instance of {self.__class__.__name__} expected, got {orig}')

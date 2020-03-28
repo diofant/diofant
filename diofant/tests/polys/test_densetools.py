@@ -72,7 +72,7 @@ def test_dmp_eval_in():
 
 
 def test_dmp_eval_tail():
-    R, x, y = ring("x y", ZZ)
+    R, x, y = ring('x y', ZZ)
 
     assert R.dmp_eval_tail(0, [ZZ(1)]) == 0
 
@@ -358,7 +358,7 @@ def test_dmp_ground_primitive():
 
 
 def test_dup_real_imag():
-    R, x, y = ring("x y", ZZ)
+    R, x, y = ring('x y', ZZ)
 
     assert R.dup_real_imag(R.zero) == (0, 0)
     assert R.dup_real_imag(R.one) == (1, 0)
@@ -374,10 +374,10 @@ def test_dup_real_imag():
     assert R.dup_real_imag(f) == (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1,
                                   3*x**2*y + 2*x*y - y**3 + y)
 
-    R, x, y = ring("x y", EX)
+    R, x, y = ring('x y', EX)
     pytest.raises(DomainError, lambda: R.dup_real_imag(x + 1))
 
-    R = QQ.algebraic_field(I).poly_ring("x", "y")
+    R = QQ.algebraic_field(I).inject('x', 'y')
     x, y = R.to_ground().gens
 
     f = R.x**4 + I*R.x**3 - R.x + 1
@@ -387,14 +387,14 @@ def test_dup_real_imag():
     assert R.dup_real_imag(f) == (r, i)
 
     K = QQ.algebraic_field(sqrt(2))
-    R = K.poly_ring("x", "y")
+    R = K.inject('x', 'y')
     x, y = R.gens
 
     f = R.x**2 + sqrt(2)*R.x - 1
     assert R.dup_real_imag(f) == (x**2 - y**2 + sqrt(2)*x - 1, 2*x*y + sqrt(2)*y)
 
     K = K.algebraic_field(I)
-    R = K.poly_ring("x", "y")
+    R = K.inject('x', 'y')
     x, y = R.to_ground().gens
 
     f = R.x**2 + 2*sqrt(2)*I*R.x - 1 + I
@@ -520,7 +520,7 @@ def test_dup_decompose():
 
     assert R.dup_decompose(f) == [x**4 - 8*x**3 + 24*x**2 - 34*x + 29, x**3 + 5*x]
 
-    Rt, t = ring("t", ZZ)
+    Rt, t = ring('t', ZZ)
     R, x = ring('x', Rt)
     f = ((6*t**2 - 42)*x**4 + (48*t**2 + 96)*x**3 +
          (144*t**2 + 648*t + 288)*x**2 + (624*t**2 + 864*t + 384)*x +
@@ -531,7 +531,7 @@ def test_dup_decompose():
 
 def test_dmp_clear_denoms():
     R0, X = ring('x', QQ)
-    R1 = R0.domain.ring.poly_ring('x')
+    R1 = R0.domain.ring.inject('x')
 
     assert R0.dmp_clear_denoms(0) == (1, 0)
 
@@ -560,7 +560,7 @@ def test_dmp_clear_denoms():
     assert R0.dmp_clear_denoms(sin(x)/x*a) == (x, a*sin(x))
 
     R0, X, Y = ring('x y', QQ)
-    R1 = R0.domain.ring.poly_ring('x', 'y')
+    R1 = R0.domain.ring.inject('x', 'y')
 
     assert R0.dmp_clear_denoms(0) == (1, 0)
 

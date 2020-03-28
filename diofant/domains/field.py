@@ -13,8 +13,7 @@ class Field(Ring):
 
     @property
     def ring(self):
-        """Returns a ring associated with ``self``."""
-        raise AttributeError('there is no ring associated with %s' % self)
+        raise AttributeError(f'there is no ring associated with {self}')
 
     @property
     def field(self):
@@ -53,7 +52,7 @@ class Field(Ring):
         """
         try:
             ring = self.ring
-        except AttributeError:
+        except (AttributeError, NotImplementedError):
             return self.one
 
         p = ring.gcd(a.numerator, b.numerator)
@@ -72,7 +71,7 @@ class Field(Ring):
         """
         try:
             ring = self.ring
-        except AttributeError:
+        except (AttributeError, NotImplementedError):
             return a*b
 
         p = ring.lcm(a.numerator, b.numerator)

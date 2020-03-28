@@ -14,14 +14,14 @@ ALG = QQ.algebraic_field(sqrt(2), sqrt(3))
 
 
 def test_build_order():
-    R = QQ.poly_ring(x, y, order=build_product_order((("lex", x),
-                                                      ("ilex", y)), (x, y)))
+    R = QQ.poly_ring(x, y, order=build_product_order((('lex', x),
+                                                      ('ilex', y)), (x, y)))
     assert R.order((1, 5)) == ((1,), (-5,))
 
 
 def test_globalring():
-    Qxy = QQ.frac_field(x, y)
-    R = QQ.poly_ring(x, y)
+    Qxy = QQ.inject(x, y).field
+    R = QQ.inject(x, y)
     X = R.convert(x)
     Y = R.convert(y)
 
@@ -37,13 +37,13 @@ def test_globalring():
     assert X + 1 == R.convert(x + 1)
     assert X**2 // X == X
 
-    assert R.convert(ZZ.poly_ring(x, y).convert(x), ZZ.poly_ring(x, y)) == X
+    assert R.convert(ZZ.inject(x, y).convert(x), ZZ.inject(x, y)) == X
     assert R.convert(Qxy.convert(x), Qxy) == X
 
 
 def test_localring():
-    Qxy = QQ.frac_field(x, y)
-    R = QQ.poly_ring(x, y, order="ilex")
+    Qxy = QQ.inject(x, y).field
+    R = QQ.poly_ring(x, y, order='ilex')
     X = R.convert(x)
     Y = R.convert(y)
 
@@ -56,19 +56,19 @@ def test_localring():
     assert X + 1 == R.convert(x + 1)
     assert X**2 // X == X
 
-    assert R.convert(ZZ.poly_ring(x, y).convert(x), ZZ.poly_ring(x, y)) == X
+    assert R.convert(ZZ.inject(x, y).convert(x), ZZ.inject(x, y)) == X
     assert R.convert(Qxy.convert(x), Qxy) == X
 
 
 def test_conversion():
-    L = QQ.poly_ring(x, y, order="ilex")
-    G = QQ.poly_ring(x, y)
+    L = QQ.poly_ring(x, y, order='ilex')
+    G = QQ.inject(x, y)
 
     assert L.convert(x) == L.convert(G.convert(x), G)
     assert G.convert(x) == G.convert(L.convert(x), L)
     pytest.raises(CoercionFailed, lambda: G.convert(L.convert(1/(1 + x)), L))
 
-    R = ALG.poly_ring(x, y)
+    R = ALG.inject(x, y)
     assert R.convert(ALG(1), ALG) == R(1)
     pytest.raises(CoercionFailed,
                   lambda: R.convert(ALG(1), QQ.algebraic_field(sqrt(2))))
@@ -80,7 +80,7 @@ def test_conversion():
 
 
 def test_units():
-    R = QQ.poly_ring(x)
+    R = QQ.inject(x)
     assert R.convert(1) == R.one
     assert R.convert(x) != R.one
     assert R.convert(1 + x) != R.one
@@ -89,7 +89,7 @@ def test_units():
     assert R.convert(1) == R.one
     assert R.convert(x) != R.one
 
-    R = ZZ.poly_ring(x)
+    R = ZZ.inject(x)
     assert R.convert(1) == R.one
     assert R.convert(2) != R.one
     assert R.convert(x) != R.one
@@ -97,20 +97,20 @@ def test_units():
 
 
 def test_poly_frac():
-    pytest.raises(GeneratorsNeeded, lambda: QQ.poly_ring())
-    pytest.raises(GeneratorsNeeded, lambda: QQ.frac_field())
+    pytest.raises(GeneratorsNeeded, lambda: QQ.inject())
+    pytest.raises(GeneratorsNeeded, lambda: QQ.inject().field)
 
 
 def test_methods():
-    R = QQ.poly_ring(x)
+    R = QQ.inject(x)
     X = R.convert(x)
 
-    assert R.is_negative(-X) is True
-    assert R.is_positive(X) is True
+    assert R.is_normal(-X) is False
+    assert R.is_normal(+X) is True
 
     assert R.gcdex(X**3 - X, X**2) == (-1, X, X)
 
-    F = QQ.frac_field(y)
+    F = QQ.inject(y).field
     Y = F.convert(y)
-    assert F.is_negative(-Y) is True
-    assert F.is_positive(Y) is True
+    assert F.is_normal(-Y) is False
+    assert F.is_normal(+Y) is True

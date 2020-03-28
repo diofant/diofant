@@ -7,7 +7,7 @@ import numbers
 import random
 
 from ..core import (Function, Integer, Mul, Pow, Rational, integer_nthroot,
-                    sympify)
+                    prod, sympify)
 from ..core.compatibility import as_int
 from ..core.evalf import bitcount
 from .generate import nextprime, primerange, sieve
@@ -367,7 +367,8 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     so it is a good idea to allow for retries:
 
     >>> n = 16843009
-    >>> F = lambda x: (2048*pow(x, 2, n) + 32767)%n
+    >>> def F(x):
+    ...     return (2048*pow(x, 2, n) + 32767) % n
     >>> for s in range(5):
     ...     print('loop length = %4i; leader length = %3i' % next(cycle_length(F, s)))
     ...
@@ -382,7 +383,7 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
 
     >>> x = 2
     >>> for i in range(9):
-    ...     x = (x**2 + 12)%17
+    ...     x = (x**2 + 12) % 17
     ...     print(x)
     ...
     16
@@ -394,9 +395,9 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     14
     4
     11
-    >>> next(cycle_length(lambda x: (x**2+12)%17, 2))
+    >>> next(cycle_length(lambda x: (x**2+12) % 17, 2))
     (3, 2)
-    >>> list(cycle_length(lambda x: (x**2+12)%17, 2, values=True))
+    >>> list(cycle_length(lambda x: (x**2+12) % 17, 2, values=True))
     [16, 13, 11, 14, 4]
 
     Instead of checking the differences of all generated values for a gcd
@@ -410,7 +411,8 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     ========
 
     >>> n = 16843009
-    >>> F = lambda x: (2048*pow(x, 2, n) + 32767) % n
+    >>> def F(x):
+    ...     return (2048*pow(x, 2, n) + 32767) % n
     >>> pollard_rho(n, F=F)
     257
 
@@ -669,8 +671,8 @@ def _check_termination(factors, n, limitp1, use_trial, use_rho, use_pm1,
     return False
 
 
-trial_int_msg = "Trial division with ints [%i ... %i] and fail_max=%i"
-trial_msg = "Trial division with primes [%i ... %i]"
+trial_int_msg = 'Trial division with ints [%i ... %i] and fail_max=%i'
+trial_msg = 'Trial division with primes [%i ... %i]'
 rho_msg = "Pollard's rho with retries %i, max_steps %i and seed %i"
 pm1_msg = "Pollard's p-1 with smoothness bound %i and seed %i"
 factor_msg = '\t%i ** %i'
@@ -844,13 +846,15 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     You can easily switch between the two forms by sending them back to
     factorint:
 
-    >>> regular = factorint(1764); regular
+    >>> regular = factorint(1764)
+    >>> regular
     {2: 2, 3: 2, 7: 2}
     >>> pprint(factorint(regular), use_unicode=False)
      2  2  2
     2 *3 *7
 
-    >>> visual = factorint(1764, visual=True); pprint(visual, use_unicode=False)
+    >>> visual = factorint(1764, visual=True)
+    >>> pprint(visual, use_unicode=False)
      2  2  2
     2 *3 *7
     >>> print(factorint(visual))
@@ -859,7 +863,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     If you want to send a number to be factored in a partially factored form
     you can do so with a dictionary or unevaluated expression:
 
-    >>> factorint(factorint({4: 2, 12: 3})) # twice to toggle to dict form
+    >>> factorint(factorint({4: 2, 12: 3}))  # twice to toggle to dict form
     {2: 10, 3: 3}
     >>> factorint(Mul(4, 12, evaluate=False))
     {2: 4, 3: 1}
@@ -1432,7 +1436,7 @@ class totient(Function):
         n = sympify(n)
         if n.is_Integer:
             if n < 1:
-                raise ValueError("n must be a positive integer")
+                raise ValueError('n must be a positive integer')
             factors = factorint(n)
             t = 1
             for p, k in factors.items():
@@ -1503,7 +1507,7 @@ class divisor_sigma(Function):
             return 1 + n**k
         if n.is_Integer:
             if n <= 0:
-                raise ValueError("n must be a positive integer")
+                raise ValueError('n must be a positive integer')
             else:
                 return Mul(*[(p**(k*(e + 1)) - 1)/(p**k - 1) if k != 0
                              else e + 1 for p, e in factorint(n).items()])
@@ -1561,11 +1565,39 @@ def core(n, t=2):
     n = as_int(n)
     t = as_int(t)
     if n <= 0:
-        raise ValueError("n must be a positive integer")
+        raise ValueError('n must be a positive integer')
     elif t <= 1:
-        raise ValueError("t must be >= 2")
+        raise ValueError('t must be >= 2')
     else:
         y = 1
         for p, e in factorint(n).items():
             y *= p**(e % t)
         return y
+
+
+def square_factor(a):
+    r"""
+    Returns an integer `c` s.t. `a = c^2k, \ c,k \in Z`. Here `k` is square
+    free. `a` can be given as an integer or a dictionary of factors.
+
+    Examples
+    ========
+
+    >>> square_factor(24)
+    2
+    >>> square_factor(-36*3)
+    6
+    >>> square_factor(1)
+    1
+    >>> square_factor({3: 2, 2: 1, -1: 1})
+    3
+
+    See Also
+    ========
+
+    diofant.solvers.diophantine.reconstruct
+    diofant.ntheory.factor_.core
+
+    """
+    f = a if isinstance(a, dict) else factorint(a)
+    return prod(p**(e//2) for p, e in f.items())

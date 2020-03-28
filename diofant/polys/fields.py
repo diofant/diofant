@@ -36,10 +36,9 @@ _field_cache = {}
 class FractionField(Field, CompositeDomain):
     """A class for representing multivariate rational function fields."""
 
-    is_FractionField = is_Frac = True
+    is_FractionField = True
 
     has_assoc_Ring = True
-    has_assoc_Field = True
 
     def __new__(cls, domain, symbols, order=lex):
         ring = PolynomialRing(domain, symbols, order)
@@ -48,13 +47,13 @@ class FractionField(Field, CompositeDomain):
         domain = ring.domain
         order = ring.order
 
-        _hash = hash((cls.__name__, symbols, ngens, domain, order))
-        obj = _field_cache.get(_hash)
+        key = (cls.__name__, symbols, ngens, domain, order)
+        obj = _field_cache.get(key)
 
         if obj is None:
             obj = object.__new__(cls)
-            obj._hash = _hash
-            obj.dtype = type("FracElement", (FracElement,), {"field": obj})
+            obj._hash = hash(key)
+            obj.dtype = type('FracElement', (FracElement,), {'field': obj})
             obj.symbols = symbols
             obj.ngens = ngens
             obj.domain = domain
@@ -74,7 +73,7 @@ class FractionField(Field, CompositeDomain):
                     if not hasattr(obj, name):
                         setattr(obj, name, generator)
 
-            _field_cache[_hash] = obj
+            _field_cache[key] = obj
 
         return obj
 
@@ -113,7 +112,7 @@ class FractionField(Field, CompositeDomain):
         except CoercionFailed:
             domain = self.domain
 
-            if not domain.is_Field and domain.has_assoc_Field:
+            if not domain.is_Field and hasattr(domain, 'field'):
                 ring = self.ring
                 ground_field = domain.field
                 element = ground_field.convert(element)
@@ -128,7 +127,7 @@ class FractionField(Field, CompositeDomain):
             if self == element.field:
                 return element
             else:
-                raise NotImplementedError("conversion")
+                raise NotImplementedError('conversion')
         elif isinstance(element, PolyElement):
             denom, numer = element.clear_denoms()
             numer = numer.set_ring(self.ring)
@@ -139,7 +138,7 @@ class FractionField(Field, CompositeDomain):
             numer, denom = numer.cancel(denom)
             return self.raw_new(numer, denom)
         elif isinstance(element, str):
-            raise NotImplementedError("parsing")
+            raise NotImplementedError('parsing')
         elif isinstance(element, Expr):
             return self.convert(element)
         else:
@@ -164,7 +163,7 @@ class FractionField(Field, CompositeDomain):
                 if c.is_Integer and c != 1:
                     return _rebuild(expr.base**a)**int(c)
 
-            if not domain.is_Field and domain.has_assoc_Field:
+            if not domain.is_Field and hasattr(domain, 'field'):
                 return domain.field.convert(expr)
             else:
                 return domain.convert(expr)
@@ -172,22 +171,20 @@ class FractionField(Field, CompositeDomain):
         return _rebuild(sympify(expr))
 
     def from_expr(self, expr):
-        """Convert Diofant's expression to ``dtype``."""
         mapping = dict(zip(self.symbols, self.gens))
 
         try:
             frac = self._rebuild_expr(expr, mapping)
         except CoercionFailed:
-            raise ValueError("expected an expression convertible to a rational function in %s, got %s" % (self, expr))
+            raise ValueError(f'expected an expression convertible to a rational function in {self}, got {expr}')
         else:
             return self.field_new(frac)
 
     def to_ring(self):
         return self.domain.poly_ring(*self.symbols, order=self.order)
 
-    def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
-        return a.as_expr()
+    def to_expr(self, element):
+        return element.as_expr()
 
     def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
@@ -218,16 +215,10 @@ class FractionField(Field, CompositeDomain):
 
     @property
     def ring(self):
-        """Returns a field associated with ``self``."""
         return self.to_ring()
 
-    def is_positive(self, a):
-        """Returns True if ``LC(a)`` is positive."""
-        return self.domain.is_positive(a.numerator.LC)
-
-    def is_negative(self, a):
-        """Returns True if ``LC(a)`` is negative."""
-        return self.domain.is_negative(a.numerator.LC)
+    def is_normal(self, a):
+        return self.domain.is_normal(a.numerator.LC)
 
 
 @functools.total_ordering
@@ -245,7 +236,7 @@ class FracElement(DomainElement, CantSympify):
         if denom is None:
             denom = self.field.ring.one
         elif not denom:
-            raise ZeroDivisionError("zero denominator")
+            raise ZeroDivisionError('zero denominator')
 
         self._numerator = numer
         self._denominator = denom
@@ -261,7 +252,7 @@ class FracElement(DomainElement, CantSympify):
 
     def to_poly(self):
         if self.denominator != self.field.ring.one:
-            raise ValueError("self.denominator should be 1")
+            raise ValueError('self.denominator should be 1')
         return self.numerator
 
     @property
@@ -534,7 +525,7 @@ class FracElement(DomainElement, CantSympify):
         Examples
         ========
 
-        >>> _, x, y, z = field("x y z", ZZ)
+        >>> _, x, y, z = field('x y z', ZZ)
         >>> ((x**2 + y)/(z + 1)).diff(x)
         2*x/(z + 1)
 
@@ -547,7 +538,7 @@ class FracElement(DomainElement, CantSympify):
         if 0 < len(values) <= self.field.ngens:
             return self.eval(list(zip(self.field.gens, values)))
         else:
-            raise ValueError("expected at least 1 and at most %s values, got %s" % (self.field.ngens, len(values)))
+            raise ValueError(f'expected at least 1 and at most {self.field.ngens} values, got {len(values)}')
 
     def eval(self, x, a=None):
         if isinstance(x, list) and a is None:

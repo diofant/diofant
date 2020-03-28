@@ -50,9 +50,9 @@ def test_as_integral():
     assert laplace_transform(f(x), x, s).rewrite('Integral') == \
         Integral(f(x)*exp(-s*x), (x, 0, oo))
     assert str(inverse_mellin_transform(f(s), s, x, (a, b)).rewrite('Integral')) \
-        == "Integral(x**(-s)*f(s), (s, _c - oo*I, _c + oo*I))"
+        == 'Integral(x**(-s)*f(s), (s, _c - oo*I, _c + oo*I))'
     assert str(inverse_laplace_transform(f(s), s, x).rewrite('Integral')) == \
-        "Integral(E**(s*x)*f(s), (s, _c - oo*I, _c + oo*I))"
+        'Integral(E**(s*x)*f(s), (s, _c - oo*I, _c + oo*I))'
     assert inverse_fourier_transform(f(s), s, x).rewrite('Integral') == \
         Integral(f(s)*exp(2*I*pi*s*x), (s, -oo, oo))
 
@@ -418,7 +418,7 @@ def test_inverse_mellin_transform2():
 def test_laplace_transform():
     LT = laplace_transform
     a, b, c, = symbols('a b c', positive=True)
-    f = Function("f")
+    f = Function('f')
 
     # Test unevaluated form
     assert laplace_transform(f(t), t, w) == LaplaceTransform(f(t), t, w)
@@ -553,7 +553,7 @@ def test_fourier_transform():
     def sinc(x):
         return sin(pi*x)/(pi*x)
     k = symbols('k', extended_real=True)
-    f = Function("f")
+    f = Function('f')
 
     # TODO for this to work with real a, need to expand abs(a*x) to abs(a)*abs(x)
     a = symbols('a', positive=True)
@@ -599,7 +599,7 @@ def test_fourier_transform():
 
 
 def test_sine_transform():
-    f = Function("f")
+    f = Function('f')
 
     # Test unevaluated form
     assert sine_transform(f(t), t, w) == SineTransform(f(t), t, w)
@@ -632,7 +632,7 @@ def test_sine_transform():
 
 
 def test_cosine_transform():
-    f = Function("f")
+    f = Function('f')
 
     # Test unevaluated form
     assert cosine_transform(f(t), t, w) == CosineTransform(f(t), t, w)
@@ -669,10 +669,10 @@ def test_cosine_transform():
 
 
 def test_hankel_transform():
-    r = Symbol("r")
-    k = Symbol("k")
-    nu = Symbol("nu")
-    m = Symbol("m")
+    r = Symbol('r')
+    k = Symbol('k')
+    nu = Symbol('nu')
+    m = Symbol('m')
 
     assert hankel_transform(1/r, r, k, 0) == 1/k
     assert inverse_hankel_transform(1/k, k, r, 0) == 1/r

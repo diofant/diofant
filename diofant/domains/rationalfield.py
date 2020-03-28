@@ -16,30 +16,27 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
 
     rep = 'QQ'
 
-    is_RationalField = is_QQ = True
+    is_RationalField = True
     is_Numerical = True
 
     has_assoc_Ring = True
-    has_assoc_Field = True
 
     def algebraic_field(self, *extension):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
         from . import AlgebraicField
         return AlgebraicField(self, *extension)
 
-    def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
-        return DiofantRational(a.numerator, a.denominator)
+    def to_expr(self, element):
+        return DiofantRational(element.numerator, element.denominator)
 
-    def from_expr(self, a):
-        """Convert Diofant's Integer to ``dtype``."""
-        if a.is_Rational:
-            return self.dtype(a.numerator, a.denominator)
-        elif a.is_Float:
+    def from_expr(self, expr):
+        if expr.is_Rational:
+            return self.dtype(expr.numerator, expr.denominator)
+        elif expr.is_Float:
             from . import RR
-            return self.dtype(*RR.to_rational(a))
+            return self.dtype(*RR.to_rational(expr))
         else:
-            raise CoercionFailed("expected `Rational` object, got %s" % a)
+            raise CoercionFailed(f'expected `Rational` object, got {expr}')
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)
@@ -58,7 +55,7 @@ class RationalField(CharacteristicZero, SimpleDomain, Field):
 
     def _from_AlgebraicField(self, a, K0):
         if a.is_ground:
-            return self.convert(a.LC(), K0.domain)
+            return self.convert(a.rep.LC, K0.domain)
 
 
 class PythonRationalField(RationalField):

@@ -61,7 +61,7 @@ class ImmutableMatrix(MatrixExpr, DenseMatrix):
     __getitem__ = DenseMatrix.__getitem__
 
     def __setitem__(self, *args):
-        raise TypeError("Cannot set values of ImmutableMatrix")
+        raise TypeError('Cannot set values of ImmutableMatrix')
 
     def _eval_Eq(self, other):
         """Helper method for Equality with matrices.
@@ -163,7 +163,7 @@ class ImmutableSparseMatrix(Basic, SparseMatrixBase):
         return cls._new(*args, **kwargs)
 
     def __setitem__(self, *args):
-        raise TypeError("Cannot set values of ImmutableSparseMatrix")
+        raise TypeError('Cannot set values of ImmutableSparseMatrix')
 
     subs = MatrixBase.subs
 

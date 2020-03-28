@@ -77,6 +77,6 @@ class FloatRationalizer(ast.NodeTransformer):
         return node
 
     def visit_Call(self, node):
-        if isinstance(node.func, ast.Name) and node.func.id == "Float":
+        if isinstance(node.func, ast.Name) and node.func.id == 'Float':
             return node
         return self.generic_visit(node)

@@ -218,9 +218,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import GreaterThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError("Invalid comparison of complex %s" % me)
+                raise TypeError('Invalid comparison of complex %s' % me)
             if me is nan:
-                raise TypeError("Invalid NaN comparison")
+                raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_nonnegative is not None and \
@@ -233,9 +233,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import LessThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError("Invalid comparison of complex %s" % me)
+                raise TypeError('Invalid comparison of complex %s' % me)
             if me is nan:
-                raise TypeError("Invalid NaN comparison")
+                raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_nonpositive is not None and \
@@ -248,9 +248,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import StrictGreaterThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError("Invalid comparison of complex %s" % me)
+                raise TypeError('Invalid comparison of complex %s' % me)
             if me is nan:
-                raise TypeError("Invalid NaN comparison")
+                raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_positive is not None and \
@@ -263,9 +263,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import StrictLessThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError("Invalid comparison of complex %s" % me)
+                raise TypeError('Invalid comparison of complex %s' % me)
             if me is nan:
-                raise TypeError("Invalid NaN comparison")
+                raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_negative is not None and \
@@ -276,15 +276,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     @staticmethod
     def _from_mpmath(x, prec):
         from .numbers import Float
-        if hasattr(x, "_mpf_"):
+        if hasattr(x, '_mpf_'):
             return Float._new(x._mpf_, prec)
-        elif hasattr(x, "_mpc_"):
+        elif hasattr(x, '_mpc_'):
             re, im = x._mpc_
             re = Float._new(re, prec)
             im = Float._new(im, prec)*I
             return re + im
         else:
-            raise TypeError("expected mpmath number (mpf or mpc)")
+            raise TypeError('expected mpmath number (mpf or mpc)')
 
     @property
     def is_number(self):
@@ -662,7 +662,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if A.has(nan, oo, -oo, zoo):
                 A = limit(self, x, a, '+' if (a < b) is not false else '-')
                 if isinstance(A, Limit):
-                    raise NotImplementedError("Could not compute limit")
+                    raise NotImplementedError('Could not compute limit')
 
         if b is None:
             B = 0
@@ -672,7 +672,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 B = limit(self, x, b)
                 B = limit(self, x, b, '-' if (a < b) is not false else '+')
                 if isinstance(B, Limit):
-                    raise NotImplementedError("Could not compute limit")
+                    raise NotImplementedError('Could not compute limit')
 
         return B - A
 
@@ -2316,7 +2316,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     # #################### SERIES, LEADING TERM, LIMIT, ORDER METHODS ############### #
     ###################################################################################
 
-    def series(self, x=None, x0=0, n=6, dir="+", logx=None):
+    def series(self, x=None, x0=0, n=6, dir='+', logx=None):
         """Series expansion of "self" around ``x = x0`` yielding either terms of
         the series one by one (the lazy series given when n=None), else
         all the terms at once when n != None.
@@ -2349,9 +2349,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         for ``dir=-`` the series from the left. For smooth functions this
         flag will not alter the results.
 
-        >>> abs(x).series(dir="+")
+        >>> abs(x).series(dir='+')
         x
-        >>> abs(x).series(dir="-")
+        >>> abs(x).series(dir='-')
         -x
 
         For rational expressions this method may return original expression.
@@ -2373,7 +2373,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             x = syms.pop()
 
         if not x.is_Symbol:  # pragma: no cover
-            raise NotImplementedError("x is not a symbol")
+            raise NotImplementedError('x is not a symbol')
 
         if not self.has(x):
             if n is None:
@@ -2743,7 +2743,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             elif is_zero is False:
                 break
             else:
-                raise NotImplementedError("Zero-decision problem for %s" % t)
+                raise NotImplementedError('Zero-decision problem for %s' % t)
 
         if logx is None:
             t = t.subs({d: log(x)})
@@ -2829,9 +2829,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             V = self.variables
         except AttributeError:
             return {}
-        u = "_"
+        u = '_'
         while any(str(s).endswith(u) for s in V):
-            u += "_"
+            u += '_'
         name = '%%i%s' % u
         return {v: Symbol(name % i, **v._assumptions) for i, v in enumerate(V)}
 
@@ -2960,7 +2960,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
             if not modulus.is_Integer or modulus <= 0:
                 raise ValueError(
-                    "modulus must be a positive integer, got %s" % modulus)
+                    'modulus must be a positive integer, got %s' % modulus)
 
             terms = []
 

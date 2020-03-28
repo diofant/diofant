@@ -296,24 +296,24 @@ def test_sparse_matrix():
     # test_inverse
     A = sparse_eye(4)
     assert A.inv() == sparse_eye(4)
-    assert A.inv(method="CH") == sparse_eye(4)
-    assert A.inv(method="LDL") == sparse_eye(4)
+    assert A.inv(method='CH') == sparse_eye(4)
+    assert A.inv(method='LDL') == sparse_eye(4)
 
     A = SparseMatrix([[2, 3, 5],
                       [3, 6, 2],
                       [7, 2, 6]])
     Ainv = SparseMatrix(Matrix(A).inv())
     assert A*Ainv == sparse_eye(3)
-    assert A.inv(method="CH") == Ainv
-    assert A.inv(method="LDL") == Ainv
+    assert A.inv(method='CH') == Ainv
+    assert A.inv(method='LDL') == Ainv
 
     A = SparseMatrix([[2, 3, 5],
                       [3, 6, 2],
                       [5, 2, 6]])
     Ainv = SparseMatrix(Matrix(A).inv())
     assert A*Ainv == sparse_eye(3)
-    assert A.inv(method="CH") == Ainv
-    assert A.inv(method="LDL") == Ainv
+    assert A.inv(method='CH') == Ainv
+    assert A.inv(method='LDL') == Ainv
 
     # test_cross
     v1 = Matrix(1, 3, [1, 2, 3])

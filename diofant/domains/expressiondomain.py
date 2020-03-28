@@ -12,7 +12,7 @@ __all__ = 'ExpressionDomain',
 class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
     """A class for arbitrary expressions."""
 
-    is_SymbolicDomain = is_EX = True
+    is_ExpressionDomain = True
 
     class Expression:
         """An arbitrary expression."""
@@ -24,7 +24,7 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
                 self.ex = ex.ex
 
         def __str__(self):
-            return 'EX(%s)' % str(self.ex)
+            return f'EX({self.ex})'
 
         def __hash__(self):
             return hash((self.__class__.__name__, self.ex))
@@ -128,16 +128,11 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
 
     rep = 'EX'
 
-    has_assoc_Ring = False
-    has_assoc_Field = True
+    def to_expr(self, element):
+        return element.as_expr()
 
-    def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
-        return a.as_expr()
-
-    def from_expr(self, a):
-        """Convert Diofant's expression to ``dtype``."""
-        return self.dtype(a)
+    def from_expr(self, expr):
+        return self.dtype(expr)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self(K0.to_expr(a))
@@ -165,16 +160,10 @@ class ExpressionDomain(CharacteristicZero, SimpleDomain, Field):
 
     @property
     def ring(self):
-        """Returns a ring associated with ``self``."""
         return self  # XXX: EX is not a ring but we don't have much choice here.
 
-    def is_positive(self, a):
-        """Returns True if ``a`` is positive."""
-        return a.ex.as_coeff_mul()[0].is_positive
-
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative."""
-        return a.ex.as_coeff_mul()[0].is_negative
+    def is_normal(self, a):
+        return a.ex.as_coeff_mul()[0].is_nonnegative
 
     def gcd(self, a, b):
         return a.gcd(b)

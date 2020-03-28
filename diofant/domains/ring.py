@@ -45,7 +45,7 @@ class Ring(Domain):
         if h == self.one:
             return s % b
         else:
-            raise NotInvertible("zero divisor")
+            raise NotInvertible('zero divisor')
 
     def half_gcdex(self, a, b):
         """Half extended GCD of ``a`` and ``b``."""
@@ -64,3 +64,7 @@ class Ring(Domain):
     def characteristic(self):
         """Return the characteristic of this ring."""
         raise NotImplementedError
+
+    def is_normal(self, a):
+        """Returns True if ``a`` is unit normal."""
+        return a >= 0

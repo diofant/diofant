@@ -22,16 +22,13 @@ _algebraic_numbers_cache = {}
 class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
     """A class for representing algebraic number fields."""
 
-    is_AlgebraicField = is_Algebraic = True
+    is_AlgebraicField = True
     is_Numerical = True
-
-    has_assoc_Ring = False
-    has_assoc_Field = True
 
     def __new__(cls, dom, *ext):
         if not (dom.is_RationalField or dom.is_AlgebraicField):
-            raise DomainError("ground domain must be a rational "
-                              "or an algebraic field")
+            raise DomainError('ground domain must be a rational '
+                              'or an algebraic field')
 
         ext = [sympify(_).as_expr() for _ in ext]
         ext = [_ for _ in ext if _ not in dom]
@@ -80,7 +77,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
             else:
                 dtype_cls = AlgebraicElement
             obj.dtype = type(dtype_cls.__name__, (dtype_cls,),
-                             {"mod": mod, "domain": rep_ring, "_parent": obj})
+                             {'mod': mod, 'domain': rep_ring, '_parent': obj})
             _algebraic_numbers_cache[(obj.domain, obj.ext)] = obj.dtype
 
         obj.unit = obj.dtype([dom(1), dom(0)])
@@ -99,31 +96,28 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         return hash((self.__class__.__name__, self.domain, self.ext))
 
     def __eq__(self, other):
-        """Returns ``True`` if two domains are equivalent."""
         return isinstance(other, AlgebraicField) and self.domain == other.domain and self.ext == other.ext
 
     def algebraic_field(self, *extension):
         r"""Returns an algebraic field, i.e. `\mathbb{Q}(\alpha, \ldots)`."""
         return AlgebraicField(self, *extension)
 
-    def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
+    def to_expr(self, element):
         return sum(((self.domain.to_expr(c)*self.ext**n).expand()
-                    for n, c in enumerate(reversed(a.rep.to_dense()))), Integer(0))
+                    for n, c in enumerate(reversed(element.rep.to_dense()))), Integer(0))
 
-    def from_expr(self, a):
-        """Convert Diofant's expression to ``dtype``."""
+    def from_expr(self, expr):
         try:
-            K0 = self.domain.algebraic_field(a)
+            K0 = self.domain.algebraic_field(expr)
         except NotAlgebraic:
-            raise CoercionFailed("%s is not a valid algebraic number in %s" % (a, self))
-        if a in self.domain:
-            return self([a])
+            raise CoercionFailed(f'{expr} is not a valid algebraic number in {self}')
+        if expr in self.domain:
+            return self([expr])
         else:
             from ..polys import field_isomorphism
 
             coeffs = field_isomorphism(K0, self)
-            factor = Integer((K0.to_expr(K0.unit)/a).simplify())
+            factor = Integer((K0.to_expr(K0.unit)/expr).simplify())
 
             return self.dtype(coeffs)/factor
 
@@ -158,7 +152,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
             else:
                 return self.from_expr(K0.to_expr(a))
         else:
-            raise CoercionFailed("%s is not in a subfield of %s" % (K0, self))
+            raise CoercionFailed(f'{K0} is not in a subfield of {self}')
 
     def _from_ExpressionDomain(self, a, K0):
         expr = K0.to_expr(a)
@@ -166,16 +160,10 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
 
     @property
     def ring(self):
-        """Returns a ring associated with ``self``."""
-        raise AttributeError('there is no ring associated with %s' % self)
+        raise NotImplementedError(f'ring of integers of {self} is not implemented yet')
 
-    def is_positive(self, a):
-        """Returns True if ``a`` is positive."""
-        return self.domain.is_positive(a.LC())
-
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative."""
-        return self.domain.is_negative(a.LC())
+    def is_normal(self, a):
+        return self.domain.is_normal(a.rep.LC)
 
     @staticmethod
     def _compute_ext_root(ext, minpoly):
@@ -197,13 +185,8 @@ class RealAlgebraicField(ComplexAlgebraicField):
 
     is_RealAlgebraicField = True
 
-    def is_positive(self, a):
-        """Returns True if ``a`` is positive."""
-        return a > 0
-
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative."""
-        return a < 0
+    def is_normal(self, a):
+        return a >= 0
 
 
 class AlgebraicElement(QuotientRingElement, CantSympify):
@@ -226,10 +209,6 @@ class AlgebraicElement(QuotientRingElement, CantSympify):
     def to_dict(self):
         """Convert ``self`` to a dict representation with native coefficients."""
         return dict(self.rep)
-
-    def LC(self):
-        """Returns the leading coefficient of ``self``."""
-        return self.rep.LC
 
     @property
     def is_ground(self):

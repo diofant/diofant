@@ -178,7 +178,7 @@ class Factors:
         return hash((keys, values))
 
     def __repr__(self):
-        return "Factors({%s})" % ', '.join(
+        return 'Factors({%s})' % ', '.join(
             ['%s: %s' % (k, v) for k, v in ordered(self.factors.items())])
 
     @property
@@ -470,7 +470,7 @@ class Factors:
 
             return Factors(factors)
         else:
-            raise ValueError("expected non-negative integer, got %s" % other)
+            raise ValueError('expected non-negative integer, got %s' % other)
 
     def gcd(self, other):
         """Return Factors of ``gcd(self, other)``. The keys are

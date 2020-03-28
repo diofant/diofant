@@ -23,18 +23,14 @@ _modular_integer_cache = {}
 class FiniteField(Field, SimpleDomain):
     """General class for finite fields."""
 
-    is_FiniteField = is_FF = True
+    is_FiniteField = True
     is_Numerical = True
-
-    has_assoc_Ring = False
-    has_assoc_Field = True
 
     def __new__(cls, order, dom, modulus=None):
         if not (isinstance(order, numbers.Integral) and isprime(order)):
             pp = perfect_power(order)
             if not pp:
-                raise ValueError('order must be a prime power, '
-                                 'got %s' % order)
+                raise ValueError(f'order must be a prime power, got {order}')
             mod, deg = pp
         else:
             mod, deg = order, 1
@@ -63,24 +59,23 @@ class FiniteField(Field, SimpleDomain):
         obj.order = order
 
         if order > mod:
-            obj.rep = 'GF(%s, %s)' % (obj.mod, list(map(PythonIntegerRing(),
-                                                        modulus)))
+            obj.rep = f'GF({obj.mod}, {list(map(PythonIntegerRing(), modulus))})'
         else:
-            obj.rep = 'GF(%s)' % obj.mod
+            obj.rep = f'GF({obj.mod})'
 
         try:
             obj.dtype = _modular_integer_cache[key]
         except KeyError:
             if deg == 1:
-                obj.dtype = type("ModularInteger", (ModularInteger,),
-                                 {"mod": mod, "domain": dom, "_parent": obj})
+                obj.dtype = type('ModularInteger', (ModularInteger,),
+                                 {'mod': mod, 'domain': dom, '_parent': obj})
             else:
-                ff = dom.finite_field(mod).poly_ring(Dummy('x'))
+                ff = dom.finite_field(mod).inject(Dummy('x'))
                 mod = ff.from_dense(modulus)
                 if not mod.is_irreducible:
                     raise ValueError('defining polynomial must be irreducible')
-                obj.dtype = type("GaloisFieldElement", (GaloisFieldElement,),
-                                 {"mod": mod, "domain": ff, "_parent": obj})
+                obj.dtype = type('GaloisFieldElement', (GaloisFieldElement,),
+                                 {'mod': mod, 'domain': ff, '_parent': obj})
             _modular_integer_cache[key] = obj.dtype
 
         obj.zero = obj.dtype(0)
@@ -92,7 +87,6 @@ class FiniteField(Field, SimpleDomain):
         return hash((self.__class__.__name__, self.dtype, self.order, self.domain))
 
     def __eq__(self, other):
-        """Returns ``True`` if two domains are equivalent."""
         return isinstance(other, FiniteField) and \
             self.order == other.order and self.domain == other.domain
 
@@ -103,18 +97,16 @@ class FiniteField(Field, SimpleDomain):
     def characteristic(self):
         return self.mod
 
-    def to_expr(self, a):
-        """Convert ``a`` to a Diofant object."""
-        return DiofantInteger(int(a))
+    def to_expr(self, element):
+        return DiofantInteger(int(element))
 
-    def from_expr(self, a):
-        """Convert Diofant's Integer to ``dtype``."""
-        if a.is_Integer:
-            return self.dtype(self.domain.dtype(int(a)))
-        elif a.is_Float and int(a) == a:
-            return self.dtype(self.domain.dtype(int(a)))
+    def from_expr(self, expr):
+        if expr.is_Integer:
+            return self.dtype(self.domain.dtype(int(expr)))
+        elif expr.is_Float and int(expr) == expr:
+            return self.dtype(self.domain.dtype(int(expr)))
         else:
-            raise CoercionFailed("expected an integer, got %s" % a)
+            raise CoercionFailed(f'expected an integer, got {expr}')
 
     def _from_PythonFiniteField(self, a, K0=None):
         return self.dtype(self.domain.convert(a.rep, K0.domain))
@@ -140,13 +132,8 @@ class FiniteField(Field, SimpleDomain):
         if q == 1:
             return self.dtype(self.domain.dtype(p))
 
-    def is_positive(self, a):
-        """Returns True if ``a`` is positive."""
-        return a.rep != 0
-
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative."""
-        return False
+    def is_normal(self, a):
+        return True
 
 
 class PythonFiniteField(FiniteField):
@@ -179,7 +166,7 @@ class GaloisFieldElement(ModularInteger):
         else:
             super().__init__(rep)
 
-        self._int_rep = self.parent.domain.poly_ring(*self.rep.parent.symbols)(dict(self.rep))
+        self._int_rep = self.parent.domain.inject(*self.rep.parent.symbols)(dict(self.rep))
 
     def __int__(self):
         return int(self._int_rep.eval(0, self.parent.mod))

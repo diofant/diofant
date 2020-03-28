@@ -30,7 +30,7 @@ def heugcd(f, g):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> heugcd((x + y)**2, x*(x + y))
     (x + y, x + y, x)

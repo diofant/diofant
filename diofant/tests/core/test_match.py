@@ -69,9 +69,9 @@ def test_power():
 
 
 def test_match_exclude():
-    p = Wild("p")
-    q = Wild("q")
-    r = Wild("r")
+    p = Wild('p')
+    q = Wild('q')
+    r = Wild('r')
 
     e = Integer(6)
     assert e.match(2*p) == {p: 3}
@@ -239,9 +239,9 @@ def test_derivative1():
 
 
 def test_derivative_bug1():
-    f = Function("f")
-    a = Wild("a", exclude=[f, x])
-    b = Wild("b", exclude=[f])
+    f = Function('f')
+    a = Wild('a', exclude=[f, x])
+    b = Wild('b', exclude=[f])
     pattern = a * Derivative(f(x), x, x) + b
     expr = Derivative(f(x), x) + x**2
     d1 = {b: x**2}
@@ -250,9 +250,9 @@ def test_derivative_bug1():
 
 
 def test_derivative2():
-    f = Function("f")
-    a = Wild("a", exclude=[f, x])
-    b = Wild("b", exclude=[f])
+    f = Function('f')
+    a = Wild('a', exclude=[f, x])
+    b = Wild('b', exclude=[f])
     e = Derivative(f(x), x)
     assert e.match(Derivative(f(x), x)) == {}
     assert e.match(Derivative(f(x), x, x)) is None
@@ -355,9 +355,9 @@ def test_floats():
 
 
 def test_Derivative_bug1():
-    f = Function("f")
-    a = Wild("a", exclude=[f(x)])
-    b = Wild("b", exclude=[f(x)])
+    f = Function('f')
+    a = Wild('a', exclude=[f(x)])
+    b = Wild('b', exclude=[f(x)])
     eq = f(x).diff(x)
     assert eq.match(a*Derivative(f(x), x) + b) == {a: 1, b: 0}
 
@@ -549,13 +549,13 @@ def test_sympyissue_4319():
     def ok(pat):
         assert set(p.match(pat).values()) == ans
 
-    ok(Wild("coeff", exclude=[x])*x + Wild("rest"))
-    ok(Wild("w", exclude=[x])*x + Wild("rest"))
-    ok(Wild("coeff", exclude=[x])*x + Wild("rest"))
-    ok(Wild("w", exclude=[x])*x + Wild("rest"))
-    ok(Wild("e", exclude=[x])*x + Wild("rest"))
-    ok(Wild("ress", exclude=[x])*x + Wild("rest"))
-    ok(Wild("resu", exclude=[x])*x + Wild("rest"))
+    ok(Wild('coeff', exclude=[x])*x + Wild('rest'))
+    ok(Wild('w', exclude=[x])*x + Wild('rest'))
+    ok(Wild('coeff', exclude=[x])*x + Wild('rest'))
+    ok(Wild('w', exclude=[x])*x + Wild('rest'))
+    ok(Wild('e', exclude=[x])*x + Wild('rest'))
+    ok(Wild('ress', exclude=[x])*x + Wild('rest'))
+    ok(Wild('resu', exclude=[x])*x + Wild('rest'))
 
 
 def test_sympyissue_3778():
@@ -598,11 +598,11 @@ def test_diofantissue_423():
 
 
 def test_sympyissue_8694():
-    theta1, theta2, rho = symbols("theta1, theta2, rho")
+    theta1, theta2, rho = symbols('theta1, theta2, rho')
     S1, C1 = sin(theta1), cos(theta1)
-    X1 = Wild("X1", exclude=[rho, theta1, theta2])
-    Y1 = Wild("Y1", exclude=[rho, theta1, theta2])
-    Z1 = Wild("Z1", exclude=[rho, theta1, theta2])
+    X1 = Wild('X1', exclude=[rho, theta1, theta2])
+    Y1 = Wild('Y1', exclude=[rho, theta1, theta2])
+    Z1 = Wild('Z1', exclude=[rho, theta1, theta2])
     eq = -Y + (-X + Z)*cos(theta1) + (X + Y)*sin(theta1)
     assert eq.match(X1*C1 + Y1*S1 + Z1) == {X1: Z - X, Y1: X + Y, Z1: -Y}
     eq = -Y + Z*cos(theta1) + (X + Y)*sin(theta1)

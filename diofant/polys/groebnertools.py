@@ -27,11 +27,11 @@ def groebner(seq, ring, method=None):
     try:
         _groebner = _groebner_methods[method]
     except KeyError:
-        raise ValueError("'%s' is not a valid Gröbner bases algorithm (valid are 'buchberger' and 'f5b')" % method)
+        raise ValueError(f"'{method}' is not a valid Gröbner bases algorithm (valid are 'buchberger' and 'f5b')")
 
     domain, orig = ring.domain, None
 
-    if not domain.is_Field or not domain.has_assoc_Field:
+    if not domain.is_Field and hasattr(domain, 'field'):
         orig, ring = ring, ring.clone(domain=domain.field)
         seq = [s.set_ring(ring) for s in seq]
 
@@ -482,7 +482,7 @@ def f5_reduce(f, B):
     A polynomial that is reducible in the usual sense need not be
     F5-reducible, e.g.:
 
-    >>> R, x, y, z = ring("x y z", QQ, lex)
+    >>> R, x, y, z = ring('x y z', QQ, lex)
 
     >>> f = lbp(sig(Monomial((1, 1, 1)), 4), x, 3)
     >>> g = lbp(sig(Monomial((0, 0, 0)), 2), x, 2)
@@ -721,7 +721,7 @@ def groebner_lcm(f, g):
 
     """
     if f.ring != g.ring:
-        raise ValueError("Values should be equal")
+        raise ValueError('Values should be equal')
 
     ring = f.ring
     domain = ring.domain
@@ -743,7 +743,7 @@ def groebner_lcm(f, g):
     g_terms = [((0,) + monom, coeff) for monom, coeff in g.terms()] \
         + [((1,) + monom, -coeff) for monom, coeff in g.terms()]
 
-    t = Dummy("t")
+    t = Dummy('t')
     t_ring = ring.clone(symbols=(t,) + ring.symbols, order=lex)
 
     F = t_ring.from_terms(f_terms)
@@ -765,7 +765,7 @@ def groebner_lcm(f, g):
 def groebner_gcd(f, g):
     """Computes GCD of two polynomials using Gröbner bases."""
     if f.ring != g.ring:
-        raise ValueError("Values should be equal")
+        raise ValueError('Values should be equal')
     domain = f.ring.domain
 
     if not domain.is_Field:

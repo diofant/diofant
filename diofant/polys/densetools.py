@@ -16,7 +16,7 @@ def dmp_diff_in(f, m, j, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
 
@@ -26,7 +26,7 @@ def dmp_diff_in(f, m, j, u, K):
     2*x*y + 2*x + 4*y + 3
 
     """
-    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_dense(f)
     return ring.to_dense(f.diff(x=j, m=m))
 
@@ -38,7 +38,7 @@ def dmp_eval_in(f, a, j, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = 2*x*y + 3*x + y + 2
 
@@ -49,7 +49,7 @@ def dmp_eval_in(f, a, j, u, K):
 
     """
     if j < 0 or j > u:
-        raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
+        raise IndexError(f'0 <= j <= {u} expected, got {j}')
 
     if not j:
         if not a:
@@ -86,7 +86,7 @@ def dmp_eval_tail(f, A, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = 2*x*y + 3*x + y + 2
 
@@ -128,7 +128,7 @@ def dmp_diff_eval_in(f, m, a, j, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
 
@@ -139,7 +139,7 @@ def dmp_diff_eval_in(f, m, a, j, u, K):
 
     """
     if j > u:
-        raise IndexError("-%s <= j < %s expected, got %s" % (u, u, j))
+        raise IndexError(f'-{u} <= j < {u} expected, got {j}')
     if not j:
         return dmp_eval_in(dmp_diff_in(f, m, 0, u, K), a, 0, u, K)
 
@@ -161,7 +161,7 @@ def dup_trunc(f, p, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dmp_ground_trunc(2*x**3 + 3*x**2 + 5*x + 7, ZZ(3))
     -x**3 - x + 1
@@ -189,7 +189,7 @@ def dmp_ground_trunc(f, p, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
 
@@ -212,13 +212,13 @@ def dmp_ground_monic(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
     >>> f = 3*x**2*y + 6*x**2 + 3*x*y + 9*y + 3
 
     >>> R.dmp_ground_monic(f)
     x**2*y + 2*x**2 + x*y + 3*y + 1
 
-    >>> R, x, y = ring("x y", QQ)
+    >>> R, x, y = ring('x y', QQ)
     >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
 
     >>> R.dmp_ground_monic(f)
@@ -243,20 +243,20 @@ def dmp_ground_content(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
     >>> f.content()
     2
 
-    >>> R, x, y = ring("x y", QQ)
+    >>> R, x, y = ring('x y', QQ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
     >>> f.content()
     2
 
     """
-    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_dense(f)
     return f.content()
 
@@ -268,20 +268,20 @@ def dmp_ground_primitive(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
     >>> f.primitive()
     (2, x*y + 3*x + 2*y + 6)
 
-    >>> R, x, y = ring("x y", QQ)
+    >>> R, x, y = ring('x y', QQ)
     >>> f = 2*x*y + 6*x + 4*y + 12
 
     >>> f.primitive()
     (2, x*y + 3*x + 2*y + 6)
 
     """
-    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_dense(f)
     cont, p = f.primitive()
     return cont, ring.to_dense(p)
@@ -294,12 +294,12 @@ def dup_real_imag(f, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dup_real_imag(x**3 + x**2 + x + 1)
     (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1, 3*x**2*y + 2*x*y - y**3 + y)
 
-    >>> R, x, y = ring("x y", QQ.algebraic_field(I))
+    >>> R, x, y = ring('x y', QQ.algebraic_field(I))
 
     >>> R.dup_real_imag(x**2 + I*x - 1)
     (x**2 - y**2 - y - 1, 2*x*y + x)
@@ -311,7 +311,7 @@ def dup_real_imag(f, K):
         r2, i2 = dup_real_imag([_.imag for _ in f], K0)
         return dmp_add(r1, dmp_neg(i2, 1, K0), 1, K0), dmp_add(r2, i1, 1, K0)
     elif not K.is_IntegerRing and not K.is_RationalField and not K.is_RealAlgebraicField:
-        raise DomainError("computing real and imaginary parts is not supported over %s" % K)
+        raise DomainError(f'computing real and imaginary parts is not supported over {K}')
 
     f1 = dmp_zero(1)
     f2 = dmp_zero(1)
@@ -350,7 +350,7 @@ def dup_mirror(f, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dup_mirror(x**3 + 2*x**2 - 4*x + 2)
     -x**3 + 2*x**2 + 4*x + 2
@@ -371,7 +371,7 @@ def dup_scale(f, a, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dup_scale(x**2 - 2*x + 1, ZZ(2))
     4*x**2 - 4*x + 1
@@ -392,7 +392,7 @@ def dup_shift(f, a, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dup_shift(x**2 - 2*x + 1, ZZ(2))
     x**2 + 2*x + 1
@@ -414,7 +414,7 @@ def dup_transform(f, p, q, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dup_transform(x**2 - 2*x + 1, x**2 + 1, x - 1)
     x**4 - 2*x**3 + 5*x**2 - 4*x + 4
@@ -444,7 +444,7 @@ def dmp_compose(f, g, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_compose(x*y + 2*x + y, y)
     y**2 + 3*y
@@ -541,7 +541,7 @@ def dup_decompose(f, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dup_decompose(x**4 - 2*x**3 + x**2)
     [x**2, x**2 - x]
@@ -573,7 +573,7 @@ def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", QQ)
+    >>> R, x, y = ring('x y', QQ)
 
     >>> f = x/2 + y/3 + 1
 

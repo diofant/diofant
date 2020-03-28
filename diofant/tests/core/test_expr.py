@@ -108,7 +108,7 @@ f1_1 = F1dot1()
 # basic diofant objects
 basic_objs = [
     Integer(2),
-    Float("1.3"),
+    Float('1.3'),
     x,
     y,
     pow(x, y)*y,
@@ -171,34 +171,34 @@ def test_relational():
 
 
 def test_relational_assumptions():
-    m1 = Symbol("m1", nonnegative=False)
-    m2 = Symbol("m2", positive=False)
-    m3 = Symbol("m3", nonpositive=False)
-    m4 = Symbol("m4", negative=False)
+    m1 = Symbol('m1', nonnegative=False)
+    m2 = Symbol('m2', positive=False)
+    m3 = Symbol('m3', nonpositive=False)
+    m4 = Symbol('m4', negative=False)
     assert (m1 < 0) == Lt(m1, 0)
     assert (m2 <= 0) == Le(m2, 0)
     assert (m3 > 0) == Gt(m3, 0)
     assert (m4 >= 0) == Ge(m4, 0)
-    m1 = Symbol("m1", nonnegative=False, extended_real=True)
-    m2 = Symbol("m2", positive=False, extended_real=True)
-    m3 = Symbol("m3", nonpositive=False, extended_real=True)
-    m4 = Symbol("m4", negative=False, extended_real=True)
+    m1 = Symbol('m1', nonnegative=False, extended_real=True)
+    m2 = Symbol('m2', positive=False, extended_real=True)
+    m3 = Symbol('m3', nonpositive=False, extended_real=True)
+    m4 = Symbol('m4', negative=False, extended_real=True)
     assert (m1 < 0) is true
     assert (m2 <= 0) is true
     assert (m3 > 0) is true
     assert (m4 >= 0) is true
-    m1 = Symbol("m1", negative=True)
-    m2 = Symbol("m2", nonpositive=True)
-    m3 = Symbol("m3", positive=True)
-    m4 = Symbol("m4", nonnegative=True)
+    m1 = Symbol('m1', negative=True)
+    m2 = Symbol('m2', nonpositive=True)
+    m3 = Symbol('m3', positive=True)
+    m4 = Symbol('m4', nonnegative=True)
     assert (m1 < 0) is true
     assert (m2 <= 0) is true
     assert (m3 > 0) is true
     assert (m4 >= 0) is true
-    m1 = Symbol("m1", negative=False, extended_real=True)
-    m2 = Symbol("m2", nonpositive=False, extended_real=True)
-    m3 = Symbol("m3", positive=False, extended_real=True)
-    m4 = Symbol("m4", nonnegative=False, extended_real=True)
+    m1 = Symbol('m1', negative=False, extended_real=True)
+    m2 = Symbol('m2', nonpositive=False, extended_real=True)
+    m3 = Symbol('m3', positive=False, extended_real=True)
+    m4 = Symbol('m4', nonnegative=False, extended_real=True)
     assert (m1 < 0) is false
     assert (m2 <= 0) is false
     assert (m3 > 0) is false
@@ -976,7 +976,7 @@ def test_extractions():
     assert ((y + 1)*(x + 2*y + 1) + 3).extract_additively(y + 1) == \
         (x + 2*y)*(y + 1) + 3
 
-    n = Symbol("n", integer=True)
+    n = Symbol('n', integer=True)
     assert (Integer(-3)).could_extract_minus_sign() is True
     assert (-n*x + x).could_extract_minus_sign() != \
         (n*x - x).could_extract_minus_sign()
@@ -1084,14 +1084,14 @@ def test_coeff():
 
 
 def test_coeff2():
-    psi = Function("psi")
+    psi = Function('psi')
     g = 1/r**2 * (2*r*psi(r).diff(r, 1) + r**2 * psi(r).diff(r, 2))
     g = g.expand()
     assert g.coeff((psi(r).diff(r))) == 2/r
 
 
 def test_coeff2_0():
-    psi = Function("psi")
+    psi = Function('psi')
     g = 1/r**2 * (2*r*psi(r).diff(r, 1) + r**2 * psi(r).diff(r, 2))
     g = g.expand()
 
@@ -1118,12 +1118,12 @@ def test_as_base_exp():
 
 
 def test_sympyissue_4963():
-    assert hasattr(Mul(x, y), "is_commutative")
-    assert hasattr(Mul(x, y, evaluate=False), "is_commutative")
-    assert hasattr(Pow(x, y), "is_commutative")
-    assert hasattr(Pow(x, y, evaluate=False), "is_commutative")
+    assert hasattr(Mul(x, y), 'is_commutative')
+    assert hasattr(Mul(x, y, evaluate=False), 'is_commutative')
+    assert hasattr(Pow(x, y), 'is_commutative')
+    assert hasattr(Pow(x, y, evaluate=False), 'is_commutative')
     expr = Mul(Pow(2, 2, evaluate=False), 3, evaluate=False) + 1
-    assert hasattr(expr, "is_commutative")
+    assert hasattr(expr, 'is_commutative')
 
 
 def test_action_verbs():
@@ -1353,10 +1353,10 @@ def test_as_ordered_terms():
 
     f = x**2*y**2 + x*y**4 + y + 2
 
-    assert f.as_ordered_terms(order="lex") == [x**2*y**2, x*y**4, y, 2]
-    assert f.as_ordered_terms(order="grlex") == [x*y**4, x**2*y**2, y, 2]
-    assert f.as_ordered_terms(order="rev-lex") == [2, y, x*y**4, x**2*y**2]
-    assert f.as_ordered_terms(order="rev-grlex") == [2, y, x**2*y**2, x*y**4]
+    assert f.as_ordered_terms(order='lex') == [x**2*y**2, x*y**4, y, 2]
+    assert f.as_ordered_terms(order='grlex') == [x*y**4, x**2*y**2, y, 2]
+    assert f.as_ordered_terms(order='rev-lex') == [2, y, x*y**4, x**2*y**2]
+    assert f.as_ordered_terms(order='rev-grlex') == [2, y, x**2*y**2, x*y**4]
 
 
 def test_sympyissue_4199():
@@ -1607,7 +1607,7 @@ def test_round_exception_nostr():
         assert 'bad' not in str(e)
     else:
         # Did not raise
-        raise AssertionError("Did not raise")
+        raise AssertionError('Did not raise')
 
 
 def test_extract_branch_factor():

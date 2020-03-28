@@ -17,7 +17,7 @@ class BasePolynomialError(Exception):
     """Base class for polynomial related exceptions."""
 
     def new(self, *args):
-        raise NotImplementedError("abstract base class")
+        raise NotImplementedError('abstract base class')
 
 
 class ExactQuotientFailed(BasePolynomialError):
@@ -30,9 +30,9 @@ class ExactQuotientFailed(BasePolynomialError):
         from ..printing import sstr
 
         if self.domain is None:
-            return "%s does not divide %s" % (sstr(self.g), sstr(self.f))
+            return f'{sstr(self.g)} does not divide {sstr(self.f)}'
         else:
-            return "%s does not divide %s in %s" % (sstr(self.g), sstr(self.f), sstr(self.domain))
+            return f'{sstr(self.g)} does not divide {sstr(self.f)} in {sstr(self.domain)}'
 
     def new(self, f, g):
         return self.__class__(f, g, self.domain)
@@ -47,23 +47,23 @@ class PolynomialDivisionFailed(BasePolynomialError):
         self.domain = domain
 
     def __str__(self):
-        if self.domain.is_SymbolicDomain:
-            msg = "You may want to use a different simplification algorithm. Note " \
+        if self.domain.is_ExpressionDomain:
+            msg = 'You may want to use a different simplification algorithm. Note ' \
                   "that in general it's not possible to guarantee to detect zero "  \
-                  "in this domain."
+                  'in this domain.'
         elif not self.domain.is_Exact:
-            msg = "Your working precision or tolerance of computations may be set " \
-                  "improperly. Adjust those parameters of the coefficient domain "  \
-                  "and try again."
+            msg = 'Your working precision or tolerance of computations may be set ' \
+                  'improperly. Adjust those parameters of the coefficient domain '  \
+                  'and try again.'
         else:
-            msg = "Zero detection is guaranteed in this coefficient domain. This "  \
-                  "may indicate a bug in Diofant or the domain is user defined and "  \
+            msg = 'Zero detection is guaranteed in this coefficient domain. This '  \
+                  'may indicate a bug in Diofant or the domain is user defined and '  \
                   "doesn't implement zero detection properly."
 
         return "couldn't reduce degree in a polynomial division algorithm when "    \
-               "dividing %s by %s. This can happen when it's not possible to "      \
-               "detect zero in the coefficient domain. The domain of computation "  \
-               "is %s. %s" % (self.f, self.g, self.domain, msg)
+               f"dividing {self.f} by {self.g}. This can happen when it's not possible to "      \
+               'detect zero in the coefficient domain. The domain of computation '  \
+               f'is {self.domain}. {msg}'
 
 
 class OperationNotSupported(BasePolynomialError):
@@ -74,7 +74,7 @@ class OperationNotSupported(BasePolynomialError):
         self.func = func
 
     def __str__(self):
-        return "`%s` operation not supported by %s representation" % (self.func, self.poly.rep.__class__.__name__)
+        return f'`{self.func}` operation not supported by {self.poly.rep.__class__.__name__} representation'
 
 
 class HeuristicGCDFailed(BasePolynomialError):
@@ -182,7 +182,7 @@ class ComputationFailed(BasePolynomialError):
         self.exc = exc
 
     def __str__(self):
-        return "%s(%s) failed without generators" % (self.func, ', '.join(map(str, self.exc.exprs[:self.nargs])))
+        return f'{self.func}({", ".join(map(str, self.exc.exprs[:self.nargs]))}) failed without generators'
 
 
 class UnivariatePolynomialError(PolynomialError):
@@ -215,9 +215,9 @@ class PolificationFailed(PolynomialError):
 
     def __str__(self):
         if not self.seq:
-            return "can't construct a polynomial from %s" % str(self.orig)
+            return f"can't construct a polynomial from {self.orig}"
         else:
-            return "can't construct polynomials from %s" % ', '.join(map(str, self.origs))
+            return f"can't construct polynomials from {', '.join(map(str, self.origs))}"
 
 
 class OptionError(BasePolynomialError):

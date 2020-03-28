@@ -29,7 +29,7 @@ Compatibility breaks
 * Removed ``DMP`` class, see :pull:`795`.
 * Removed ``ring_series`` module, see :pull:`820`.
 * :class:`~diofant.core.relational.Equality` doesn't support single-argument call, see :pull:`828`.
-* Removed ``is_nonnegative()`` and ``is_nonpositive()`` methods of :class:`~diofant.domains.domain.Domain` subclasses, see :pull:`834`.
+* Removed ``is_nonnegative()``, ``is_nonpositive()`` and ``is_positive()`` methods of :class:`~diofant.domains.domain.Domain` subclasses, see :pull:`834` and :pull:`975`.
 * Former ``fast=True`` option is now a default for :meth:`~diofant.polys.polytools.Poly.intervals` and :meth:`~diofant.polys.polytools.Poly.refine_root`, see :pull:`834`.
 * Change order of keyword arguments for :meth:`~diofant.polys.rings.PolyElement.integrate`, see :pull:`834`.
 * Removed support for ``dps=''`` in :class:`~diofant.core.numbers.Float`.  Significant digits automatically counted for :class:`int` and :class:`str` inputs, see :pull:`797`.
@@ -45,6 +45,10 @@ Compatibility breaks
 * Make :func:`~diofant.solvers.recurr.rsolve`'s ``init`` parameter more compatible with :func:`~diofant.solvers.ode.dsolve`'s one, e.g. drop accepting ``init=[1, 2, 3]`` and ``init={0: 1, 1: 2, 2: 3}`` forms, see :pull:`921`.
 * Removed ``dict_merge()``, ``generate_bell()`` and ``reshape()`` functions, see :pull:`921`.
 * Removed ``subs()`` methods from :class:`~diofant.polys.rings.PolyElement` and :class:`~diofant.polys.fields.FracElement`, see :pull:`967`.
+* ``is_negative()`` method of :class:`~diofant.domains.domain.Domain` refactored to the :meth:`~diofant.domains.ring.Ring.is_normal`, see :pull:`977`.
+* Drop ``algebraic_field()`` method of :class:`~diofant.domains.IntegerRing`, see :pull:`977`.
+* Drop ``has_assoc_Field`` property, ``is_SymbolicDomain`` property renamed to ``is_ExpressionDomain`` of :class:`~diofant.domains.domain.Domain`, see :pull:`977`.
+* ``drop_to_ground()`` method of :class:`~diofant.polys.rings.PolynomialRing` renamed to :meth:`~diofant.polys.rings.PolynomialRing.eject`, see :pull:`977`.
 
 Minor changes
 =============
@@ -64,7 +68,9 @@ Developer changes
 =================
 
 * Depend on `sphinxcontrib-bibtex <https://sphinxcontrib-bibtex.readthedocs.io/en/latest/>`_ to track the bibliography, see :pull:`766`.
+* Use Github Actions for CI, instead of the Travis CI, see :pull:`887`.
 * Depend on `flake8-rst <https://github.com/kataev/flake8-rst>`_ to test formatting of docstrings, see :pull:`928`.
+* Depend on `flake8-quotes <https://github.com/zheller/flake8-quotes>`_, see :pull:`982`.
 
 Issues closed
 =============
@@ -166,3 +172,10 @@ These Sympy issues also were addressed:
 * :sympyissue:`18507` Bug in Mul
 * :sympyissue:`18707` There is a problem or limitation when the Limit is calculated
 * :sympyissue:`18751` handling of rsolve coefficients
+* :sympyissue:`18749` polys: Berlekamp factorization failure
+* :sympyissue:`18895` Factor with extension=True drops a factor of y - 1
+* :sympyissue:`18894` sring extension=True error: nan is not in any domain
+* :sympyissue:`18531` apart: hangs or takes too long
+* :sympyissue:`14806` Domain.is_positive (and friends) is a wrong interface
+* :sympyissue:`18874` Zero divisor from sring over QQ<sqrt(2) + sqrt(5)>
+* :sympyissue:`16620` Slow factor(x^n-1, modulus=2) computation for some "difficult" n

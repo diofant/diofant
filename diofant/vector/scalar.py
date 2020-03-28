@@ -19,9 +19,9 @@ class BaseScalar(Expr):
                               Symbol(str(pretty_str)), Symbol(str(latex_str)))
 
         if not isinstance(system, CoordSysCartesian):
-            raise TypeError("system should be a CoordSysCartesian")
+            raise TypeError('system should be a CoordSysCartesian')
         if index not in range(3):
-            raise ValueError("Invalid index specified.")
+            raise ValueError('Invalid index specified.')
 
         # The _id is used for equating purposes, and for hashing
         obj._id = (index, system)

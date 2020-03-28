@@ -54,7 +54,7 @@ class IPolys:
             if element.ring == self:
                 return element
             else:
-                raise NotImplementedError("domain conversions")
+                raise NotImplementedError('domain conversions')
         else:
             return self.ground_new(element)
 

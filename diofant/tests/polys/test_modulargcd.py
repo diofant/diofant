@@ -9,7 +9,7 @@ __all__ = ()
 
 
 def test_modgcd_univariate_integers():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     with using(use_heu_gcd=False, fallback_gcd_zz_method='modgcd'):
         f, g = R.zero, R.zero
@@ -80,7 +80,7 @@ def test_modgcd_univariate_integers():
 
 
 def test_modgcd_bivariate_integers():
-    R, x, y = ring("x,y", ZZ)
+    R, x, y = ring('x,y', ZZ)
 
     with using(use_heu_gcd=False, fallback_gcd_zz_method='modgcd'):
         f, g = R.zero, R.zero
@@ -132,7 +132,7 @@ def test_modgcd_bivariate_integers():
 
 
 def test_chinese_remainder():
-    R, x, y = ring("x, y", ZZ)
+    R, x, y = ring('x, y', ZZ)
     p, q = 3, 5
 
     hp = x**3*y - x**2 - 1
@@ -143,7 +143,7 @@ def test_chinese_remainder():
     assert hpq.trunc_ground(p) == hp
     assert hpq.trunc_ground(q) == hq
 
-    T, z = ring("z", R)
+    T, z = ring('z', R)
     p, q = 3, 7
 
     hp = (x*y + 1)*z**2 + x
@@ -156,7 +156,7 @@ def test_chinese_remainder():
 
 
 def test_modgcd_multivariate_integers():
-    R, x, y = ring("x,y", ZZ)
+    R, x, y = ring('x,y', ZZ)
 
     with using(use_heu_gcd=False, fallback_gcd_zz_method='modgcd'):
         f, g = R.zero, R.zero
@@ -189,7 +189,7 @@ def test_modgcd_multivariate_integers():
 
         assert f.cofactors(g) == (x**2 + 3*x + 2, x**2 + 5*x + 4, x + 3)
 
-    R, x, y, z, u = ring("x,y,z,u", ZZ)
+    R, x, y, z, u = ring('x,y,z,u', ZZ)
 
     with using(use_heu_gcd=False, fallback_gcd_zz_method='modgcd'):
         f, g = x + y + z, -x - y - z - u
@@ -212,7 +212,7 @@ def test_modgcd_multivariate_integers():
         for i in range(10):
             assert (f*h).cofactors(g*h) == (h, f, g)
 
-    R, x, y, z = ring("x,y,z", ZZ)
+    R, x, y, z = ring('x,y,z', ZZ)
 
     with using(use_heu_gcd=False, fallback_gcd_zz_method='modgcd'):
         f, g = x - y*z, x - y*z
@@ -234,7 +234,7 @@ def test_modgcd_multivariate_integers():
 
         assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z, u, v = ring("x,y,z,u,v", ZZ)
+    R, x, y, z, u, v = ring('x,y,z,u,v', ZZ)
 
     with using(use_heu_gcd=False, fallback_gcd_zz_method='modgcd'):
         f, g, h = R.fateman_poly_F_1()
@@ -242,7 +242,7 @@ def test_modgcd_multivariate_integers():
 
         assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z, u, v, a, b = ring("x,y,z,u,v,a,b", ZZ)
+    R, x, y, z, u, v, a, b = ring('x,y,z,u,v,a,b', ZZ)
 
     with using(use_heu_gcd=False, fallback_gcd_zz_method='modgcd'):
         f, g, h = R.fateman_poly_F_1()
@@ -250,7 +250,7 @@ def test_modgcd_multivariate_integers():
 
         assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z, u, v, a, b, c, d = ring("x,y,z,u,v,a,b,c,d", ZZ)
+    R, x, y, z, u, v, a, b, c, d = ring('x,y,z,u,v,a,b,c,d', ZZ)
 
     with using(use_heu_gcd=False, fallback_gcd_zz_method='modgcd'):
         f, g, h = R.fateman_poly_F_1()
@@ -258,7 +258,7 @@ def test_modgcd_multivariate_integers():
 
         assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z, t = ring("x,y,z,t", ZZ)
+    R, x, y, z, t = ring('x,y,z,t', ZZ)
 
     with using(use_heu_gcd=False, fallback_gcd_zz_method='modgcd'):
         f, g, h = R.fateman_poly_F_3()
@@ -269,20 +269,20 @@ def test_modgcd_multivariate_integers():
 
 def test_to_ZZ_ANP_poly():
     A = QQ.algebraic_field(sqrt(2))
-    R, x = ring("x", A)
+    R, x = ring('x', A)
     f = x*(sqrt(2) + 1)
 
-    T, x_, z_ = ring("x_, z_", ZZ)
+    T, x_, z_ = ring('x_, z_', ZZ)
     f_ = x_*z_ + x_
 
     assert _to_ZZ_poly(f, T) == f_
     assert _to_ANP_poly(f_, R) == f
 
-    R, x, t, s = ring("x, t, s", A)
+    R, x, t, s = ring('x, t, s', A)
     f = x*t**2 + x*s + sqrt(2)
 
-    D, t_, s_ = ring("t_, s_", ZZ)
-    T, x_, z_ = ring("x_, z_", D)
+    D, t_, s_ = ring('t_, s_', ZZ)
+    T, x_, z_ = ring('x_, z_', D)
     f_ = (t_**2 + s_)*x_ + z_
 
     assert _to_ZZ_poly(f, T) == f_
@@ -291,7 +291,7 @@ def test_to_ZZ_ANP_poly():
 
 def test_modgcd_algebraic_field():
     A = QQ.algebraic_field(sqrt(2))
-    R, x = ring("x", A)
+    R, x = ring('x', A)
 
     with using(gcd_aa_method='modgcd'):
         f, g = 2*x, R(2)
@@ -306,7 +306,7 @@ def test_modgcd_algebraic_field():
 
         assert f.cofactors(g) == (x + 1, 2, 6*x - 6)
 
-    R, x, y = ring("x, y", A)
+    R, x, y = ring('x, y', A)
 
     with using(gcd_aa_method='modgcd'):
         f, g = x + sqrt(2)*y, x + y
@@ -322,7 +322,7 @@ def test_modgcd_algebraic_field():
         assert f.cofactors(g) == (g, g, 1)
 
     A = QQ.algebraic_field(sqrt(2), sqrt(3))
-    R, x, y, z = ring("x, y, z", A)
+    R, x, y, z = ring('x, y, z', A)
 
     with using(gcd_aa_method='modgcd'):
         h = x**2*y**7 + sqrt(6)/21*z
@@ -346,7 +346,7 @@ def test_modgcd_algebraic_field():
         assert f.cofactors(g) == (x**4*y**3 + sqrt(6)/22*z, 11*y**3 + 1, x + y)
 
     A = QQ.algebraic_field(sqrt(2)**(-1)*sqrt(3))
-    R, x = ring("x", A)
+    R, x = ring('x', A)
 
     with using(gcd_aa_method='modgcd'):
         f, g = x + 1, x - 1
@@ -356,7 +356,7 @@ def test_modgcd_algebraic_field():
 
 def test_modgcd_algebraic_field_random():
     A = QQ.algebraic_field(sqrt(2), sqrt(3))
-    R, x, y, z = ring("x, y, z", A)
+    R, x, y, z = ring('x, y, z', A)
 
     with using(gcd_aa_method='modgcd'):
         h = x**2*y**3 + 1111*sqrt(6)/12*z
@@ -371,8 +371,8 @@ def test_modgcd_algebraic_field_random():
 
 # when func_field_modgcd supports function fields, this test can be changed
 def test_modgcd_func_field():
-    D, t = ring("t", ZZ)
-    R, x, z = ring("x, z", D)
+    D, t = ring('t', ZZ)
+    R, x, z = ring('x, z', D)
 
     minpoly = (z**2*t**2 + z**2*t - 1).drop(0)
     f, g = x + 1, x - 1

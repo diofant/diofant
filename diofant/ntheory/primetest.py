@@ -199,7 +199,7 @@ def _mr_safe(n):
     if n < 10000000000000000:
         return mr(n, [2, 3, 7, 61, 24251]) and n not in _pseudos
         # [2, 3, 7, 61, 24251] stot = 5 clear == bases
-    raise ValueError("n too large")
+    raise ValueError('n too large')
 
 
 def isprime(n):
@@ -266,7 +266,7 @@ def _mr_safe_helper(_s):
 
     e.g.
 
-    >>> print(_mr_safe_helper("if n < 170584961: return mr(n, [350, 3958281543])"))
+    >>> print(_mr_safe_helper('if n < 170584961: return mr(n, [350, 3958281543])'))
      # [350, 3958281543] stot = 1 clear [2, 3, 5, 7, 29, 67, 679067]
     >>> print(_mr_safe_helper('return mr(n, [2, 379215, 457083754])'))
      # [2, 379215, 457083754] stot = 1 clear [2, 3, 5, 53, 228541877]

@@ -1155,7 +1155,7 @@ def intcurve_series(vector_field, param, start_point, n=6, coord_sys=None, coeff
 
     Use the predefined R2 manifold:
 
-    >>> from diofant.diffgeom.rn import R2, R2_p, R2_r
+    >>> from diofant.diffgeom.rn import R2_p, R2_r
 
     Specify a starting point and a vector field:
 

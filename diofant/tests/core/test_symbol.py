@@ -9,11 +9,11 @@ __all__ = ()
 
 
 def test_Symbol():
-    a = Symbol("a")
-    x1 = Symbol("x")
-    x2 = Symbol("x")
-    xdummy1 = Dummy("x")
-    xdummy2 = Dummy("x")
+    a = Symbol('a')
+    x1 = Symbol('x')
+    x2 = Symbol('x')
+    xdummy1 = Dummy('x')
+    xdummy2 = Dummy('x')
 
     assert a != x1
     assert a != x2
@@ -21,8 +21,8 @@ def test_Symbol():
     assert x1 != xdummy1
     assert xdummy1 != xdummy2
 
-    assert Symbol("x") == Symbol("x")
-    assert Dummy("x") != Dummy("x")
+    assert Symbol('x') == Symbol('x')
+    assert Dummy('x') != Dummy('x')
     d = symbols('d', cls=Dummy)
     assert isinstance(d, Dummy)
     c, d = symbols('c,d', cls=Dummy)
@@ -159,11 +159,11 @@ def test_ineq_unequal():
 
 def test_Wild_properties():
     # these tests only include Atoms
-    x = Symbol("x")
-    y = Symbol("y")
-    p = Symbol("p", positive=True)
-    k = Symbol("k", integer=True)
-    n = Symbol("n", integer=True, positive=True)
+    x = Symbol('x')
+    y = Symbol('y')
+    p = Symbol('p', positive=True)
+    k = Symbol('k', integer=True)
+    n = Symbol('n', integer=True, positive=True)
 
     given_patterns = [ x, y, p, k, -k, n, -n, sympify(-3), sympify(3),
                        pi, Rational(3, 2), I ]
@@ -180,12 +180,12 @@ def test_Wild_properties():
     def realp(k):
         return k.is_extended_real
 
-    S = Wild("S", properties=[symbolp])
-    R = Wild("R", properties=[realp])
-    Y = Wild("Y", exclude=[x, p, k, n])
-    P = Wild("P", properties=[positivep])
-    K = Wild("K", properties=[integerp])
-    N = Wild("N", properties=[positivep, integerp])
+    S = Wild('S', properties=[symbolp])
+    R = Wild('R', properties=[realp])
+    Y = Wild('Y', exclude=[x, p, k, n])
+    P = Wild('P', properties=[positivep])
+    K = Wild('K', properties=[integerp])
+    N = Wild('N', properties=[positivep, integerp])
 
     given_wildcards = [ S, R, Y, P, K, N ]
 

@@ -52,21 +52,21 @@ class CoordSysCartesian(Basic):
             parent_orient = ImmutableMatrix(eye(3))
         else:
             if not isinstance(rotation_matrix, ImmutableMatrix):
-                raise TypeError("rotation_matrix should be an Immutable" +
-                                "Matrix instance")
+                raise TypeError('rotation_matrix should be an Immutable' +
+                                'Matrix instance')
             parent_orient = rotation_matrix
 
         # If location information is not given, adjust the default
         # location as Vector.zero
         if parent is not None:
             if not isinstance(parent, CoordSysCartesian):
-                raise TypeError("parent should be a " +
-                                "CoordSysCartesian/None")
+                raise TypeError('parent should be a ' +
+                                'CoordSysCartesian/None')
             if location is None:
                 location = Vector.zero
             else:
                 if not isinstance(location, Vector):
-                    raise TypeError("location should be a Vector")
+                    raise TypeError('location should be a Vector')
             origin = parent.origin.locate_new(name + '.origin',
                                               location)
         else:
@@ -112,14 +112,14 @@ class CoordSysCartesian(Basic):
         # Initialize the base scalars
         if variable_names is None:
             variable_names = (name + '.x', name + '.y', name + '.z')
-            latex_scalars = [(r"\mathbf{{x}_{%s}}" % name),
-                             (r"\mathbf{{y}_{%s}}" % name),
-                             (r"\mathbf{{z}_{%s}}" % name)]
+            latex_scalars = [(r'\mathbf{{x}_{%s}}' % name),
+                             (r'\mathbf{{y}_{%s}}' % name),
+                             (r'\mathbf{{z}_{%s}}' % name)]
             pretty_scalars = (name + '_x', name + '_y', name + '_z')
         else:
             _check_strings('variable_names', vector_names)
             variable_names = list(variable_names)
-            latex_scalars = [(r"\mathbf{{%s}_{%s}}" % (x, name)) for
+            latex_scalars = [(r'\mathbf{{%s}_{%s}}' % (x, name)) for
                              x in variable_names]
             pretty_scalars = [(name + '_' + x) for x in variable_names]
 
@@ -229,7 +229,7 @@ class CoordSysCartesian(Basic):
 
         if not isinstance(other, CoordSysCartesian):
             raise TypeError(str(other) +
-                            " is not a CoordSysCartesian")
+                            ' is not a CoordSysCartesian')
         # Handle special cases
         if other == self:
             return eye(3)
@@ -663,7 +663,7 @@ class CoordSysCartesian(Basic):
 
 
 def _check_strings(arg_name, arg):
-    errorstr = arg_name + " must be an iterable of 3 string-types"
+    errorstr = arg_name + ' must be an iterable of 3 string-types'
     if len(arg) != 3:
         raise ValueError(errorstr)
     for s in arg:

@@ -437,7 +437,7 @@ def roots_cyclotomic(f, factor=False):
         if f == g:
             break
     else:  # pragma: no cover
-        raise RuntimeError("failed to find index of a cyclotomic polynomial")
+        raise RuntimeError('failed to find index of a cyclotomic polynomial')
 
     roots = []
 
@@ -908,7 +908,7 @@ def roots(f, *gens, **flags):
                     _update_dict(result, r, 1)
             else:
                 if len(factors) == 1 and factors[0][1] == 1:
-                    if f.domain.is_SymbolicDomain:
+                    if f.domain.is_ExpressionDomain:
                         res = to_rational_coeffs(f)
                         if res:
                             if res[0] is None:
@@ -943,7 +943,7 @@ def roots(f, *gens, **flags):
         try:
             query = handlers[filter]
         except KeyError:
-            raise ValueError("Invalid filter: %s" % filter)
+            raise ValueError(f'Invalid filter: {filter}')
 
         for zero in dict(result):
             if not query(zero):

@@ -56,7 +56,7 @@ def _preprocess(expr, func=None, hint='_Integral'):
     >>> try:
     ...     _preprocess(eq)
     ... except ValueError:
-    ...     print("A ValueError was raised.")
+    ...     print('A ValueError was raised.')
     A ValueError was raised.
 
     """
@@ -112,7 +112,7 @@ def ode_order(expr, func):
         return order
 
 
-def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
+def _desolve(eq, func=None, hint='default', init=None, simplify=True, **kwargs):
     """This is a helper function to dsolve and pdsolve in the ode
     and pde modules.
 
@@ -212,7 +212,7 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
                             'order': kwargs['order']})
     if hints['order'] == 0:
         raise ValueError(
-            str(eq) + " is not a differential equation in " + str(func))
+            str(eq) + ' is not a differential equation in ' + str(func))
 
     if hint == 'default':
         return _desolve(eq, func, init=init, hint=hints['default'], simplify=simplify,
@@ -226,9 +226,9 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
                 if i.endswith('_Integral'):
                     gethints.remove(i[:-len('_Integral')])
             # special cases
-            for k in ["1st_homogeneous_coeff_best", "1st_power_series",
-                      "lie_group", "2nd_power_series_ordinary",
-                      "2nd_power_series_regular"]:
+            for k in ['1st_homogeneous_coeff_best', '1st_power_series',
+                      'lie_group', '2nd_power_series_ordinary',
+                      '2nd_power_series_regular']:
                 if k in gethints:
                     gethints.remove(k)
         for i in gethints:
@@ -239,9 +239,9 @@ def _desolve(eq, func=None, hint="default", init=None, simplify=True, **kwargs):
         retdict['eq'] = eq
         return retdict
     elif hint not in allhints:  # and hint not in ('default', 'ordered_hints'):
-        raise ValueError("Hint not recognized: " + hint)
+        raise ValueError('Hint not recognized: ' + hint)
     elif hint not in hints:
-        raise ValueError(string + str(eq) + " does not match hint " + hint)
+        raise ValueError(string + str(eq) + ' does not match hint ' + hint)
     else:
         # Key added to identify the hint needed to solve the equation
         hints['hint'] = hint

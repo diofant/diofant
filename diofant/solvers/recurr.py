@@ -627,8 +627,8 @@ def rsolve(f, *y, init={}, simplify=True):
     f = [_.expand() for _ in f]
 
     if len(f) > 1 or len(y) > 1:
-        raise NotImplementedError("Support for systems of recurrence "
-                                  "equations is not implemented yet.")
+        raise NotImplementedError('Support for systems of recurrence '
+                                  'equations is not implemented yet.')
     else:
         f = f[0]
 
@@ -661,7 +661,7 @@ def rsolve(f, *y, init={}, simplify=True):
 
     if not i_part.is_zero:
         if not all(p.is_hypergeometric(n) for p in i_part.as_coeff_add(n)[1]):
-            raise NotImplementedError("Inhomogeneous part should be a sum of "
+            raise NotImplementedError('Inhomogeneous part should be a sum of '
                                       "hypergeometric terms in '%s', got "
                                       "'%s'" % (n, i_part))
 

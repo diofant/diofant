@@ -86,8 +86,8 @@ First, let's import the highest API of the Diophantine module.
 
 Before we start solving the equations, we need to define the variables.
 
->>> x, y, z, t, p, q = symbols("x, y, z, t, p, q", integer=True)
->>> t1, t2, t3, t4, t5 = symbols("t1:6", integer=True)
+>>> x, y, z, t, p, q = symbols('x, y, z, t, p, q', integer=True)
+>>> t1, t2, t3, t4, t5 = symbols('t1:6', integer=True)
 
 Let's start by solving the easiest type of Diophantine equations, i.e. linear
 Diophantine equations. Let's solve `2x + 3y = 5`. Note that although we

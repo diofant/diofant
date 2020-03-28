@@ -25,7 +25,7 @@ def isqrt(n):
     n = int(n)
 
     if n < 0:
-        raise ValueError("n argument must be nonnegative")
+        raise ValueError('n argument must be nonnegative')
     if n == 0:
         return 0
 
@@ -54,9 +54,9 @@ def integer_nthroot(y, n):
     """
     y, n = int(y), int(n)
     if y < 0:
-        raise ValueError("y must be nonnegative")
+        raise ValueError('y must be nonnegative')
     if n < 1:
-        raise ValueError("n must be positive")
+        raise ValueError('n must be positive')
     if y in (0, 1):
         return y, True
     if n == 1:
@@ -348,13 +348,15 @@ class Pow(Expr):
             return e.is_even
         elif b.is_nonpositive and e.is_odd:
             return False
-        elif b.is_imaginary:
-            if e.is_imaginary and b in {I, -I}:
-                return True
-            else:
-                m = e % 4
-                if m.is_integer:
-                    return m.is_zero
+        elif b in {I, -I} and e.is_imaginary:
+            return True
+
+    def _eval_is_nonnegative(self):
+        b, e = self.base, self.exp
+        if b.is_imaginary and e.is_nonnegative:
+            m = e % 4
+            if m.is_integer:
+                return m.is_zero
 
     def _eval_is_negative(self):
         if self.base.is_negative:

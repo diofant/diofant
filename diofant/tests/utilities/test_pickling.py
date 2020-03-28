@@ -62,11 +62,13 @@ half = Rational(1, 2)
 ℕ = S.Naturals0
 Id = Lambda(x, x)
 
+excluded_attrs = {'_assumptions', '_hash', '__dict__'}
+
 
 def check(a, exclude=[], check_attr=True):
     """Check that pickling and copying round-trips."""
     # Python 2.6+ warns about BasicException.message, for example.
-    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    warnings.filterwarnings('ignore', category=DeprecationWarning)
 
     protocols = list(range(5)) + [copy.copy, copy.deepcopy]
     for protocol in protocols:
@@ -90,19 +92,23 @@ def check(a, exclude=[], check_attr=True):
 
         def c(a, b, d):
             for i in d:
-                if not hasattr(a, i) or i in {'_assumptions',
-                                              '_hash', '__dict__'}:
+                if i in excluded_attrs:
+                    continue
+                try:
+                    if not hasattr(a, i):
+                        continue
+                except NotImplementedError:
                     continue
                 attr = getattr(a, i)
-                if not hasattr(attr, "__call__"):
+                if not hasattr(attr, '__call__'):
                     assert hasattr(b, i), i
-                    assert getattr(b, i) == attr, "%s != %s" % (getattr(b, i), attr)
+                    assert getattr(b, i) == attr, '%s != %s' % (getattr(b, i), attr)
         c(a, b, d1)
         c(b, a, d2)
 
     # reset filters
-    warnings.simplefilter("default", category=DeprecationWarning)
-    warnings.simplefilter("error", category=DiofantDeprecationWarning)
+    warnings.simplefilter('default', category=DeprecationWarning)
+    warnings.simplefilter('error', category=DiofantDeprecationWarning)
 
 # ================= core =========================
 
@@ -117,14 +123,14 @@ def test_core_symbol():
     # make the Symbol a unique name that doesn't class with any other
     # testing variable in this file since after this test the symbol
     # having the same name will be cached as noncommutative
-    for c in (Dummy, Dummy("x", commutative=False), Symbol,
-              Symbol("_sympyissue_6229", commutative=False),
-              Wild, Wild("x")):
+    for c in (Dummy, Dummy('x', commutative=False), Symbol,
+              Symbol('_sympyissue_6229', commutative=False),
+              Wild, Wild('x')):
         check(c)
 
 
 def test_core_numbers():
-    for c in (Integer(2), Rational(2, 3), Float("1.2")):
+    for c in (Integer(2), Rational(2, 3), Float('1.2')):
         check(c)
 
 
@@ -159,7 +165,7 @@ def test_core_function():
 
 @pytest.mark.xfail
 def test_core_dynamicfunctions():
-    f = Function("f")
+    f = Function('f')
     check(f)
 
 
@@ -263,7 +269,7 @@ def test_pickling_polys_rings():
     # NOTE: can't use protocols < 2 because we have to execute __new__ to
     # make sure caching of rings works properly.
 
-    ring = PolynomialRing(ZZ, "x,y,z")
+    ring = PolynomialRing(ZZ, 'x,y,z')
 
     for c in (PolynomialRing, ring):
         check(c, exclude=[0, 1])
@@ -276,7 +282,7 @@ def test_pickling_polys_fields():
     # NOTE: can't use protocols < 2 because we have to execute __new__ to
     # make sure caching of fields works properly.
 
-    field = FractionField(ZZ, "x,y,z")
+    field = FractionField(ZZ, 'x,y,z')
 
     for c in (FractionField, field):
         check(c, exclude=[0, 1])
@@ -436,7 +442,7 @@ def test_pickling_polys_rootoftools():
 
 def test_printing():
     for c in (LatexPrinter, LatexPrinter(), MathMLPrinter,
-              PrettyPrinter, prettyForm, stringPict, stringPict("a"),
+              PrettyPrinter, prettyForm, stringPict, stringPict('a'),
               Printer, Printer(), PythonPrinter, PythonPrinter()):
         check(c)
 

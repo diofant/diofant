@@ -18,9 +18,9 @@ def test_diff():
     assert (x**2).diff(x, y) == 0
     pytest.raises(ValueError, lambda: x.diff(1, x))
 
-    a = Symbol("a")
-    b = Symbol("b")
-    c = Symbol("c")
+    a = Symbol('a')
+    b = Symbol('b')
+    c = Symbol('c')
     p = Integer(5)
     e = a*b + b**p
     assert e.diff(a) == b
@@ -94,13 +94,13 @@ def test_diff_no_eval_derivative():
 
 def test_speed():
     # this should return in 0.0s. If it takes forever, it's wrong.
-    x = Symbol("x")
+    x = Symbol('x')
     assert x.diff(x, 10**8) == 0
 
 
 def test_deriv_noncommutative():
-    A = Symbol("A", commutative=False)
-    f = Function("f")
-    x = Symbol("x")
+    A = Symbol('A', commutative=False)
+    f = Function('f')
+    x = Symbol('x')
     assert A*f(x)*A == f(x)*A**2
     assert A*f(x).diff(x)*A == f(x).diff(x) * A**2

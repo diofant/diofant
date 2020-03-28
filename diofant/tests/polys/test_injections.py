@@ -11,13 +11,13 @@ __all__ = ()
 
 
 def _make_r1():
-    return vring("r1", QQ)
+    return vring('r1', QQ)
 
 # make r2 with call-depth = 2
 
 
 def __make_r2():
-    return vring("r2", QQ)
+    return vring('r2', QQ)
 
 
 def _make_r2():
@@ -25,10 +25,10 @@ def _make_r2():
 
 
 def test_vring():
-    R = vring("r", QQ)
+    R = vring('r', QQ)
     assert r == R.gens[0]
 
-    R = vring("rb rbb rcc rzz _rx", QQ)
+    R = vring('rb rbb rcc rzz _rx', QQ)
     assert rb == R.gens[0]
     assert rbb == R.gens[1]
     assert rcc == R.gens[2]
@@ -53,13 +53,13 @@ def test_vring():
 
 
 def _make_f1():
-    return vfield("f1", QQ)
+    return vfield('f1', QQ)
 
 # make f2 with call-depth = 2
 
 
 def __make_f2():
-    return vfield("f2", QQ)
+    return vfield('f2', QQ)
 
 
 def _make_f2():
@@ -67,10 +67,10 @@ def _make_f2():
 
 
 def test_vfield():
-    F = vfield("f", QQ)
+    F = vfield('f', QQ)
     assert f == F.gens[0]
 
-    F = vfield("fb fbb fcc fzz _fx", QQ)
+    F = vfield('fb fbb fcc fzz _fx', QQ)
     assert fb == F.gens[0]
     assert fbb == F.gens[1]
     assert fcc == F.gens[2]

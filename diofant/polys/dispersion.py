@@ -70,11 +70,11 @@ def dispersionset(p, q=None, *gens, **args):
     q = Poly(q, *gens, **args)
 
     if not p.is_univariate or not q.is_univariate:
-        raise ValueError("Polynomials need to be univariate")
+        raise ValueError('Polynomials need to be univariate')
 
     # The generator
     if not p.gen == q.gen:
-        raise ValueError("Polynomials must have the same generator")
+        raise ValueError('Polynomials must have the same generator')
     gen = p.gen
 
     # We define the dispersion of constant polynomials to be zero
