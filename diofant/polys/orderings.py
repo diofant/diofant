@@ -226,7 +226,7 @@ def monomial_key(order=None, gens=None):
         try:
             order = _monomial_key[order]
         except KeyError:
-            raise ValueError("supported monomial orderings are 'lex', 'grlex' and 'grevlex', got %r" % order)
+            raise ValueError(f"supported monomial orderings are 'lex', 'grlex' and 'grevlex', got {order!r}")
     if hasattr(order, '__call__'):
         if gens is not None:
             def _order(expr):
@@ -234,7 +234,7 @@ def monomial_key(order=None, gens=None):
             return _order
         return order
     else:
-        raise ValueError('monomial ordering specification must be a string or a callable, got %s' % order)
+        raise ValueError(f'monomial ordering specification must be a string or a callable, got {order}')
 
 
 class _ItemGetter:

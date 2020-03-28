@@ -11,9 +11,9 @@ __all__ = ()
 
 
 def test_FractionField___init__():
-    F1 = ZZ.frac_field('x', 'y')
-    F2 = ZZ.frac_field('x', 'y')
-    F3 = ZZ.frac_field('x', 'y', 'z')
+    F1 = ZZ.inject('x', 'y').field
+    F2 = ZZ.inject('x', 'y').field
+    F3 = ZZ.inject('x', 'y', 'z').field
 
     assert F1.x == F1.gens[0]
     assert F1.y == F1.gens[1]
@@ -22,7 +22,7 @@ def test_FractionField___init__():
     assert F1.x != F3.x
     assert F1.y != F3.y
 
-    F4 = ZZ.frac_field('gens')
+    F4 = ZZ.inject('gens').field
     assert type(F4.gens) is tuple
 
 
@@ -49,7 +49,7 @@ def test_FractionField___eq__():
 
 
 def test_FractionField_methods():
-    F = ZZ.frac_field('x')
+    F = ZZ.inject('x').field
 
     assert F.domain_new(2) == ZZ(2)
 
@@ -335,7 +335,7 @@ def test_FracElement___call__():
     assert r == 4 and not isinstance(r, FracElement)
     pytest.raises(ZeroDivisionError, lambda: f(1, 1, 0))
 
-    Fz = ZZ.frac_field('z')
+    Fz = ZZ.inject('z').field
     assert f(1, 1) == 4/Fz.z
 
 
@@ -350,3 +350,10 @@ def test_FracElement_eval():
 
 def test_FracElement_compose():
     pass
+
+
+def test_cache():
+    F1 = QQ.frac_field(-sqrt(2))
+    F2 = QQ.frac_field(-2*sqrt(2))
+
+    assert F1 != F2

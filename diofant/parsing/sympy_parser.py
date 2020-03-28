@@ -699,18 +699,18 @@ def parse_expr(s, local_dict=None, transformations=standard_transformations,
     Examples
     ========
 
-    >>> parse_expr("1/2")
+    >>> parse_expr('1/2')
     1/2
     >>> type(_)
     <class 'diofant.core.numbers.Half'>
     >>> transformations = (standard_transformations +
     ...                    (implicit_multiplication_application,))
-    >>> parse_expr("2x", transformations=transformations)
+    >>> parse_expr('2x', transformations=transformations)
     2*x
 
     When evaluate=False, some automatic simplifications will not occur:
 
-    >>> parse_expr("2**3"), parse_expr("2**3", evaluate=False)
+    >>> parse_expr('2**3'), parse_expr('2**3', evaluate=False)
     (8, 2**3)
 
     In addition the order of the arguments will not be made canonical.

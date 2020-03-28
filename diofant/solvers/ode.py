@@ -1884,12 +1884,12 @@ def checksysodesol(eqs, sols, func=None):
     >>> C1, C2 = symbols('C1:3')
     >>> eq = (Eq(diff(f(t), t), f(t) + g(t) + 17), Eq(diff(g(t), t), -2*f(t) + g(t) + 12))
     >>> sol = [Eq(f(t), (C1*sin(sqrt(2)*t) + C2*cos(sqrt(2)*t))*exp(t) - Rational(5, 3)),
-    ... Eq(g(t), (sqrt(2)*C1*cos(sqrt(2)*t) - sqrt(2)*C2*sin(sqrt(2)*t))*exp(t) - Rational(46, 3))]
+    ...        Eq(g(t), (sqrt(2)*C1*cos(sqrt(2)*t) - sqrt(2)*C2*sin(sqrt(2)*t))*exp(t) - Rational(46, 3))]
     >>> checksysodesol(eq, sol)
     (True, [0, 0])
     >>> eq = (Eq(diff(f(t), t), f(t)*g(t)**4), Eq(diff(g(t), t), g(t)**3))
     >>> sol = [Eq(f(t), C1*exp(-1/(4*(C2 + t)))), Eq(g(t), -sqrt(2)*sqrt(-1/(C2 + t))/2),
-    ... Eq(f(t), C1*exp(-1/(4*(C2 + t)))), Eq(g(t), sqrt(2)*sqrt(-1/(C2 + t))/2)]
+    ...        Eq(f(t), C1*exp(-1/(4*(C2 + t)))), Eq(g(t), sqrt(2)*sqrt(-1/(C2 + t))/2)]
     >>> checksysodesol(eq, sol)
     (True, [0, 0])
 
@@ -1959,11 +1959,11 @@ def odesimp(eq, func, order, constants, hint):
     Examples
     ========
 
-    >>> C1= symbols('C1')
+    >>> C1 = symbols('C1')
 
     >>> eq = dsolve(x*f(x).diff(x) - f(x) - x*sin(f(x)/x), f(x),
-    ... hint='1st_homogeneous_coeff_subs_indep_div_dep_Integral',
-    ... simplify=False)
+    ...             hint='1st_homogeneous_coeff_subs_indep_div_dep_Integral',
+    ...             simplify=False)
     >>> pprint(eq, wrap_line=False, use_unicode=False)
                             x
                            ----
@@ -2772,10 +2772,10 @@ def ode_1st_exact(eq, func, order, match):
     to be exact is that `\partial{}P/\partial{}y = \partial{}Q/\partial{}x`.
     Then, the solution will be as given below::
 
-        >>> x0, y0, C1= symbols('x0 y0 C1')
-        >>> P, Q, F= map(Function, ['P', 'Q', 'F'])
+        >>> x0, y0, C1 = symbols('x0 y0 C1')
+        >>> P, Q, F = map(Function, ['P', 'Q', 'F'])
         >>> pprint(Eq(Eq(F(x, y), Integral(P(t, y), (t, x0, x)) +
-        ... Integral(Q(x0, t), (t, y0, y))), C1), use_unicode=False)
+        ...              Integral(Q(x0, t), (t, y0, y))), C1), use_unicode=False)
                     x                y
                     /                /
                    |                |
@@ -3702,12 +3702,12 @@ def _nth_linear_match(eq, func, order):
     ========
 
     >>> _nth_linear_match(f(x).diff(x, 3) + 2*f(x).diff(x) +
-    ... x*f(x).diff(x, 2) + cos(x)*f(x).diff(x) + x - f(x) -
-    ... sin(x), f(x), 3)
+    ...                   x*f(x).diff(x, 2) + cos(x)*f(x).diff(x) + x - f(x) -
+    ...                   sin(x), f(x), 3)
     {-1: x - sin(x), 0: -1, 1: cos(x) + 2, 2: x, 3: 1}
     >>> _nth_linear_match(f(x).diff(x, 3) + 2*f(x).diff(x) +
-    ... x*f(x).diff(x, 2) + cos(x)*f(x).diff(x) + x - f(x) -
-    ... sin(f(x)), f(x), 3) == None
+    ...                   x*f(x).diff(x, 2) + cos(x)*f(x).diff(x) + x - f(x) -
+    ...                   sin(f(x)), f(x), 3) is None
     True
 
     """
@@ -3896,7 +3896,7 @@ def ode_nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients(eq, func, o
 
     >>> eq = x**2*Derivative(f(x), x, x) - 2*x*Derivative(f(x), x) + 2*f(x) - log(x)
     >>> dsolve(eq, f(x),
-    ... hint='nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients').expand()
+    ...        hint='nth_linear_euler_eq_nonhomogeneous_undetermined_coefficients').expand()
     Eq(f(x), C1*x + C2*x**2 + log(x)/2 + 3/4)
 
     """
@@ -3970,7 +3970,7 @@ def ode_nth_linear_euler_eq_nonhomogeneous_variation_of_parameters(eq, func, ord
 
     >>> eq = x**2*Derivative(f(x), x, x) - 2*x*Derivative(f(x), x) + 2*f(x) - x**4
     >>> dsolve(eq, f(x),
-    ... hint='nth_linear_euler_eq_nonhomogeneous_variation_of_parameters').expand()
+    ...        hint='nth_linear_euler_eq_nonhomogeneous_variation_of_parameters').expand()
     Eq(f(x), C1*x + C2*x**2 + x**4/6)
 
     """
@@ -4006,7 +4006,7 @@ def ode_almost_linear(eq, func, order, match):
              d
         f(x)*--(l(y)) + g(x) + k(x)*l(y) = 0
              dy
-        >>> pprint(dsolve(genform, hint = 'almost_linear'), use_unicode=False)
+        >>> pprint(dsolve(genform, hint='almost_linear'), use_unicode=False)
                          /     //   -y*g(x)                  \\
                          |     ||   --------     for k(x) = 0||
                 -y*k(x)  |     ||     f(x)                   ||
@@ -4068,11 +4068,9 @@ def _linear_coeff_match(expr, func):
     Examples
     ========
 
-    >>> _linear_coeff_match((
-    ... (-25*f(x) - 8*x + 62)/(4*f(x) + 11*x - 11)), f(x))
+    >>> _linear_coeff_match(((-25*f(x) - 8*x + 62)/(4*f(x) + 11*x - 11)), f(x))
     (1/9, 22/9)
-    >>> _linear_coeff_match(
-    ... sin((-5*f(x) - 8*x + 6)/(4*f(x) + x - 1)), f(x))
+    >>> _linear_coeff_match(sin((-5*f(x) - 8*x + 6)/(4*f(x) + x - 1)), f(x))
     (19/27, 2/27)
     >>> _linear_coeff_match(sin(f(x)/x), f(x))
 
@@ -5267,8 +5265,8 @@ def infinitesimals(eq, func=None, order=None, hint='default', match=None):
         >>> h = h(x, y)  # dy/dx = h
         >>> eta = eta(x, y)
         >>> xi = xi(x, y)
-        >>> genform = Eq(eta.diff(x) + (eta.diff(y) - xi.diff(x))*h
-        ... - (xi.diff(y))*h**2 - xi*(h.diff(x)) - eta*(h.diff(y)), 0)
+        >>> genform = Eq(eta.diff(x) + (eta.diff(y) - xi.diff(x))*h -
+        ...              (xi.diff(y))*h**2 - xi*(h.diff(x)) - eta*(h.diff(y)), 0)
         >>> pprint(genform, use_unicode=False)
                     d              2       d                      /d               d
         - eta(x, y)*--(h(x, y)) - h (x, y)*--(xi(x, y)) + h(x, y)*|--(eta(x, y)) - --(

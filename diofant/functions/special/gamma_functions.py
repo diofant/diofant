@@ -525,7 +525,7 @@ class polygamma(Function):
     harmonic(x - 1) - EulerGamma
     >>> polygamma(2, x).rewrite(harmonic)
     2*harmonic(x - 1, 3) - 2*zeta(3)
-    >>> ni = Symbol("n", integer=True)
+    >>> ni = Symbol('n', integer=True)
     >>> polygamma(ni, x).rewrite(harmonic)
     (-1)**(n + 1)*(-harmonic(x - 1, n + 1) + zeta(n + 1))*factorial(n)
 
@@ -736,7 +736,7 @@ class loggamma(Function):
 
     and for symbolic values:
 
-    >>> n = Symbol("n", integer=True, positive=True)
+    >>> n = Symbol('n', integer=True, positive=True)
     >>> loggamma(n)
     log(gamma(n))
     >>> loggamma(-n)

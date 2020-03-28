@@ -218,17 +218,17 @@ def test_Domain_preprocess():
 
     pytest.raises(OptionError, lambda: Domain.preprocess('Z()'))
 
-    assert Domain.preprocess('Z(x)') == ZZ.frac_field(x)
-    assert Domain.preprocess('Q(x)') == QQ.frac_field(x)
+    assert Domain.preprocess('Z(x)') == ZZ.inject(x).field
+    assert Domain.preprocess('Q(x)') == QQ.inject(x).field
 
-    assert Domain.preprocess('ZZ(x)') == ZZ.frac_field(x)
-    assert Domain.preprocess('QQ(x)') == QQ.frac_field(x)
+    assert Domain.preprocess('ZZ(x)') == ZZ.inject(x).field
+    assert Domain.preprocess('QQ(x)') == QQ.inject(x).field
 
-    assert Domain.preprocess('Z(x,y)') == ZZ.frac_field(x, y)
-    assert Domain.preprocess('Q(x,y)') == QQ.frac_field(x, y)
+    assert Domain.preprocess('Z(x,y)') == ZZ.inject(x, y).field
+    assert Domain.preprocess('Q(x,y)') == QQ.inject(x, y).field
 
-    assert Domain.preprocess('ZZ(x,y)') == ZZ.frac_field(x, y)
-    assert Domain.preprocess('QQ(x,y)') == QQ.frac_field(x, y)
+    assert Domain.preprocess('ZZ(x,y)') == ZZ.inject(x, y).field
+    assert Domain.preprocess('QQ(x,y)') == QQ.inject(x, y).field
 
     assert Domain.preprocess('Q<I>') == QQ.algebraic_field(I)
     assert Domain.preprocess('QQ<I>') == QQ.algebraic_field(I)

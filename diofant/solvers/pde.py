@@ -613,7 +613,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
 
     The general form of this PDE is::
 
-        >>> a, b, c, G, f= [Function(i) for i in ['a', 'b', 'c', 'G', 'f']]
+        >>> a, b, c, G, f = [Function(i) for i in ['a', 'b', 'c', 'G', 'f']]
         >>> u = f(x, y)
         >>> ux = u.diff(x)
         >>> uy = u.diff(y)
@@ -627,7 +627,7 @@ def pde_1st_linear_variable_coeff(eq, func, order, match, solvefun):
     ========
 
     >>> f = Function('f')
-    >>> eq =  x*(u.diff(x)) - y*(u.diff(y)) + y**2*u - y**2
+    >>> eq = x*(u.diff(x)) - y*(u.diff(y)) + y**2*u - y**2
     >>> pdsolve(eq)
     Eq(f(x, y), E**(y**2/2)*F(x*y) + 1)
 

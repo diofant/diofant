@@ -85,7 +85,7 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
         if real.is_Number and imag.is_Number:
             return self.dtype(real, imag)
         else:
-            raise CoercionFailed('expected complex number, got %s' % expr)
+            raise CoercionFailed(f'expected complex number, got {expr}')
 
     def _from_PythonIntegerRing(self, element, base):
         return self.dtype(element)
@@ -109,7 +109,7 @@ class ComplexField(CharacteristicZero, SimpleDomain, Field):
         return self.dtype(element)
 
     def get_exact(self):
-        raise DomainError('there is no exact domain associated with %s' % self)
+        raise DomainError(f'there is no exact domain associated with {self}')
 
     def gcd(self, a, b):
         return self.one

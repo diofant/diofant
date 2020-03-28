@@ -20,7 +20,7 @@ def test_build_order():
 
 
 def test_globalring():
-    Qxy = QQ.frac_field(x, y)
+    Qxy = QQ.inject(x, y).field
     R = QQ.inject(x, y)
     X = R.convert(x)
     Y = R.convert(y)
@@ -42,7 +42,7 @@ def test_globalring():
 
 
 def test_localring():
-    Qxy = QQ.frac_field(x, y)
+    Qxy = QQ.inject(x, y).field
     R = QQ.poly_ring(x, y, order='ilex')
     X = R.convert(x)
     Y = R.convert(y)
@@ -98,7 +98,7 @@ def test_units():
 
 def test_poly_frac():
     pytest.raises(GeneratorsNeeded, lambda: QQ.inject())
-    pytest.raises(GeneratorsNeeded, lambda: QQ.frac_field())
+    pytest.raises(GeneratorsNeeded, lambda: QQ.inject().field)
 
 
 def test_methods():
@@ -110,7 +110,7 @@ def test_methods():
 
     assert R.gcdex(X**3 - X, X**2) == (-1, X, X)
 
-    F = QQ.frac_field(y)
+    F = QQ.inject(y).field
     Y = F.convert(y)
     assert F.is_normal(-Y) is False
     assert F.is_normal(+Y) is True

@@ -57,14 +57,14 @@ def _primitive(f, p):
     Examples
     ========
 
-    >>> R, x, y = ring("x, y", ZZ)
+    >>> R, x, y = ring('x, y', ZZ)
     >>> p = 3
 
     >>> f = x**2*y**2 + x**2*y - y**2 - y
     >>> _primitive(f, p)
     (y**2 + y, x**2 - 1)
 
-    >>> R, x, y, z = ring("x, y, z", ZZ)
+    >>> R, x, y, z = ring('x, y, z', ZZ)
 
     >>> f = x*y*z - y**2*z**2
     >>> _primitive(f, p)
@@ -115,13 +115,13 @@ def _deg(f):
     Examples
     ========
 
-    >>> R, x, y = ring("x, y", ZZ)
+    >>> R, x, y = ring('x, y', ZZ)
 
     >>> f = x**2*y**2 + x**2*y - 1
     >>> _deg(f)
     (2,)
 
-    >>> R, x, y, z = ring("x, y, z", ZZ)
+    >>> R, x, y, z = ring('x, y, z', ZZ)
 
     >>> f = x**2*y**2 + x**2*y - 1
     >>> _deg(f)
@@ -160,13 +160,13 @@ def _LC(f):
     Examples
     ========
 
-    >>> R, x, y = ring("x, y", ZZ)
+    >>> R, x, y = ring('x, y', ZZ)
 
     >>> f = x**2*y**2 + x**2*y - 1
     >>> _LC(f)
     y**2 + y
 
-    >>> R, x, y, z = ring("x, y, z", ZZ)
+    >>> R, x, y, z = ring('x, y, z', ZZ)
 
     >>> f = x**2*y**2 + x**2*y - 1
     >>> _LC(f)
@@ -236,7 +236,7 @@ def _chinese_remainder_reconstruction(hp, hq, p, q):
     Examples
     ========
 
-    >>> R, x, y = ring("x, y", ZZ)
+    >>> R, x, y = ring('x, y', ZZ)
     >>> p = 3
     >>> q = 5
 
@@ -252,7 +252,7 @@ def _chinese_remainder_reconstruction(hp, hq, p, q):
     >>> hpq.trunc_ground(q) == hq
     True
 
-    >>> R, x, y, z = ring("x, y, z", ZZ)
+    >>> R, x, y, z = ring('x, y, z', ZZ)
     >>> p = 6
     >>> q = 5
 
@@ -546,12 +546,12 @@ def modgcd(f, g):
     Examples
     ========
 
-    >>> R, x, y = ring("x, y", ZZ)
+    >>> R, x, y = ring('x, y', ZZ)
 
     >>> modgcd((x - y)*(x + y), (x + y)**2)
     (x + y, x - y, x + y)
 
-    >>> R, x, y, z = ring("x, y, z", ZZ)
+    >>> R, x, y, z = ring('x, y, z', ZZ)
 
     >>> modgcd((x - y)*z**2, (x**2 + 1)*z)
     (z, x*z - y*z, x**2 + 1)

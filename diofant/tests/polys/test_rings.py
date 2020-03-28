@@ -202,7 +202,7 @@ def test_sring():
     R = Rt.poly_ring('x', 'y', 'z')
     assert sring(x + t*y/2 + t**2*z/3, x, y, z) == (R, R.x + Rt.t*R.y/2 + Rt.t**2*R.z/3)
 
-    Rt = ZZ.frac_field('t')
+    Rt = ZZ.inject('t').field
     R = Rt.poly_ring('x', 'y', 'z')
     assert sring(x + 2*y/t + t**2*z/3, x, y, z) == (R, R.x + 2*R.y/Rt.t + Rt.t**2*R.z/3)
 
@@ -1685,3 +1685,10 @@ def test_sympyissue_18894():
     K = QQ.algebraic_field(sqrt(3) + sqrt(3*sqrt(3) + 10))
 
     assert sring(exprs, x, extension=True)[0] == K.inject(x)
+
+
+def test_cache():
+    R1 = QQ.inject(-sqrt(2))
+    R2 = QQ.inject(-2*sqrt(2))
+
+    assert R1 != R2

@@ -110,7 +110,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         try:
             K0 = self.domain.algebraic_field(expr)
         except NotAlgebraic:
-            raise CoercionFailed('%s is not a valid algebraic number in %s' % (expr, self))
+            raise CoercionFailed(f'{expr} is not a valid algebraic number in {self}')
         if expr in self.domain:
             return self([expr])
         else:
@@ -152,7 +152,7 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
             else:
                 return self.from_expr(K0.to_expr(a))
         else:
-            raise CoercionFailed('%s is not in a subfield of %s' % (K0, self))
+            raise CoercionFailed(f'{K0} is not in a subfield of {self}')
 
     def _from_ExpressionDomain(self, a, K0):
         expr = K0.to_expr(a)
@@ -160,11 +160,10 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
 
     @property
     def ring(self):
-        raise NotImplementedError('ring of integers of %s is not '
-                                  'implemented yet' % self)
+        raise NotImplementedError(f'ring of integers of {self} is not implemented yet')
 
     def is_normal(self, a):
-        return self.domain.is_normal(a.LC())
+        return self.domain.is_normal(a.rep.LC)
 
     @staticmethod
     def _compute_ext_root(ext, minpoly):
@@ -210,10 +209,6 @@ class AlgebraicElement(QuotientRingElement, CantSympify):
     def to_dict(self):
         """Convert ``self`` to a dict representation with native coefficients."""
         return dict(self.rep)
-
-    def LC(self):
-        """Returns the leading coefficient of ``self``."""
-        return self.rep.LC
 
     @property
     def is_ground(self):

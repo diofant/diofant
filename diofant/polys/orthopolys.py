@@ -32,7 +32,7 @@ def dup_jacobi(n, a, b, K):
 def jacobi_poly(n, a, b, x=None, **args):
     """Generates Jacobi polynomial of degree `n` in `x`."""
     if n < 0:
-        raise ValueError("can't generate Jacobi polynomial of degree %s" % n)
+        raise ValueError(f"can't generate Jacobi polynomial of degree {n}")
 
     K, v = construct_domain([a, b], field=True)
     poly = dup_jacobi(int(n), v[0], v[1], K)
@@ -66,7 +66,7 @@ def gegenbauer_poly(n, a, x=None, **args):
     """Generates Gegenbauer polynomial of degree `n` in `x`."""
     if n < 0:
         raise ValueError(
-            "can't generate Gegenbauer polynomial of degree %s" % n)
+            f"can't generate Gegenbauer polynomial of degree {n}")
 
     K, a = construct_domain(a, field=True)
     poly = dup_gegenbauer(int(n), a, K)
@@ -97,7 +97,7 @@ def chebyshevt_poly(n, x=None, **args):
     """Generates Chebyshev polynomial of the first kind of degree `n` in `x`."""
     if n < 0:
         raise ValueError(
-            "can't generate 1st kind Chebyshev polynomial of degree %s" % n)
+            f"can't generate 1st kind Chebyshev polynomial of degree {n}")
 
     poly = dup_chebyshevt(int(n), ZZ)
 
@@ -127,7 +127,7 @@ def chebyshevu_poly(n, x=None, **args):
     """Generates Chebyshev polynomial of the second kind of degree `n` in `x`."""
     if n < 0:
         raise ValueError(
-            "can't generate 2nd kind Chebyshev polynomial of degree %s" % n)
+            f"can't generate 2nd kind Chebyshev polynomial of degree {n}")
 
     poly = dup_chebyshevu(int(n), ZZ)
 
@@ -160,7 +160,7 @@ def dup_hermite(n, K):
 def hermite_poly(n, x=None, **args):
     """Generates Hermite polynomial of degree `n` in `x`."""
     if n < 0:
-        raise ValueError("can't generate Hermite polynomial of degree %s" % n)
+        raise ValueError(f"can't generate Hermite polynomial of degree {n}")
 
     poly = dup_hermite(int(n), ZZ)
 
@@ -191,7 +191,7 @@ def dup_legendre(n, K):
 def legendre_poly(n, x=None, **args):
     """Generates Legendre polynomial of degree `n` in `x`."""
     if n < 0:
-        raise ValueError("can't generate Legendre polynomial of degree %s" % n)
+        raise ValueError(f"can't generate Legendre polynomial of degree {n}")
 
     poly = dup_legendre(int(n), QQ)
 
@@ -222,7 +222,7 @@ def dup_laguerre(n, alpha, K):
 def laguerre_poly(n, x=None, alpha=None, **args):
     """Generates Laguerre polynomial of degree `n` in `x`."""
     if n < 0:
-        raise ValueError("can't generate Laguerre polynomial of degree %s" % n)
+        raise ValueError(f"can't generate Laguerre polynomial of degree {n}")
 
     if alpha is not None:
         K, alpha = construct_domain(

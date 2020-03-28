@@ -35,7 +35,7 @@ def dup_half_gcdex(f, g, K):
 
     """
     if not K.is_Field:
-        raise DomainError("can't compute half extended GCD over %s" % K)
+        raise DomainError(f"can't compute half extended GCD over {K}")
 
     a, b = [K.one], []
 
@@ -730,7 +730,7 @@ def dmp_inner_gcd(f, g, u, K):
     (x + y, x + y, x)
 
     """
-    ring = K.poly_ring(*['_%d' % i for i in range(u + 1)])
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f, g = map(ring.from_dense, (f, g))
     return tuple(map(ring.to_dense, f.cofactors(g)))
 
@@ -767,7 +767,7 @@ def dmp_content(f, u, K):
     2*y + 6
 
     """
-    ring = K.poly_ring(*['_%d' % i for i in range(u + 1)])
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_dense(f)
     new_ring = ring.eject(*ring.gens[1:])
     f = f.eject(*ring.gens[1:])

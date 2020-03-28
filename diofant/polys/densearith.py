@@ -250,7 +250,7 @@ def dmp_neg(f, u, K):
     Negate a polynomial in ``K[X]``.
 
     Examples
-    =======
+    ========
 
     >>> R, x, y = ring('x y', ZZ)
 
@@ -700,7 +700,7 @@ def dmp_div(f, g, u, K):
     (1/2*x + 1/2*y - 1/2, -y + 1)
 
     """
-    ring = K.poly_ring(*['_%d' % i for i in range(u + 1)])
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f, g = map(ring.from_dense, (f, g))
     return tuple(map(ring.to_dense, divmod(f, g)))
 

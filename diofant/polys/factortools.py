@@ -1080,7 +1080,7 @@ def dmp_factor_list(f, u, K0):
 
             coeff = K.convert(coeff, K.domain)
         else:  # pragma: no cover
-            raise DomainError('factorization not supported over %s' % K0)
+            raise DomainError(f'factorization not supported over {K0}')
 
         if K0.is_Field:
             for i, (f, k) in enumerate(factors):

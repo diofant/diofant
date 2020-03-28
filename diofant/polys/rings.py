@@ -165,15 +165,15 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         domain = DomainOpt.preprocess(domain)
         order = OrderOpt.preprocess(order)
 
-        _hash = hash((cls.__name__, symbols, ngens, domain, order))
-        obj = _ring_cache.get(_hash)
+        key = (cls.__name__, symbols, ngens, domain, order)
+        obj = _ring_cache.get(key)
 
         if obj is None:
             if domain.is_Composite and set(symbols) & set(domain.symbols):
                 raise GeneratorsError("polynomial ring and it's ground domain share generators")
 
             obj = object.__new__(cls)
-            obj._hash = _hash
+            obj._hash = hash(key)
             obj.dtype = type('PolyElement', (PolyElement,), {'ring': obj})
             obj.symbols = symbols
             obj.ngens = ngens
@@ -197,7 +197,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
                     if not hasattr(obj, name):
                         setattr(obj, name, generator)
 
-            _ring_cache[_hash] = obj
+            _ring_cache[key] = obj
 
         return obj
 
@@ -322,7 +322,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             poly = _rebuild(expr)
         except CoercionFailed:
             raise ValueError('expected an expression convertible to a '
-                             'polynomial in %s, got %s' % (self, expr))
+                             f'polynomial in {self}, got {expr}')
         else:
             return self(poly)
 
@@ -336,24 +336,24 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
             elif -self.ngens <= i and i <= -1:
                 i = self.ngens + i
             else:
-                raise ValueError('invalid generator index: %s' % gen)
+                raise ValueError(f'invalid generator index: {gen}')
         elif isinstance(gen, self.dtype):
             try:
                 i = self.gens.index(gen)
             except ValueError:
-                raise ValueError('invalid generator: %s' % gen)
+                raise ValueError(f'invalid generator: {gen}')
         elif isinstance(gen, str):
             try:
                 i = self.symbols.index(Symbol(gen))
             except ValueError:
-                raise ValueError('invalid generator: %s' % gen)
+                raise ValueError(f'invalid generator: {gen}')
         elif isinstance(gen, Expr):
             try:
                 i = self.symbols.index(gen)
             except ValueError:
-                raise ValueError('invalid generator: %s' % gen)
+                raise ValueError(f'invalid generator: {gen}')
         else:
-            raise ValueError('expected a polynomial generator, an integer, a string, an expression or None, got %s' % gen)
+            raise ValueError(f'expected a polynomial generator, an integer, a string, an expression or None, got {gen}')
 
         return i
 
@@ -371,8 +371,7 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         if self.domain.is_Composite or self.domain.is_AlgebraicField:
             return self.clone(domain=self.domain.domain)
         else:
-            raise ValueError('%s is not a composite or algebraic '
-                             'domain' % self.domain)
+            raise ValueError(f'{self.domain} is not a composite or algebraic domain')
 
     @property
     def is_univariate(self):
@@ -528,7 +527,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             terms = zip(*_dict_reorder(self, self.ring.symbols, new_ring.symbols))
             return new_ring.from_terms(terms)
         else:
-            raise CoercionFailed("Can't set element ring to %s" % new_ring)
+            raise CoercionFailed(f"Can't set element ring to {new_ring}")
 
     def set_domain(self, new_domain):
         if self.ring.domain == new_domain:
@@ -541,7 +540,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if not symbols:
             symbols = self.ring.symbols
         elif len(symbols) != self.ring.ngens:
-            raise ValueError('not enough symbols, expected %s got %s' % (self.ring.ngens, len(symbols)))
+            raise ValueError(f'not enough symbols, expected {self.ring.ngens} got {len(symbols)}')
 
         to_expr = self.ring.domain.to_expr
         return expr_from_dict({monom: to_expr(self[monom]) for monom in self}, *symbols)
@@ -639,7 +638,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             if self.is_ground:
                 return self.coeff(1)
             else:
-                raise ValueError("can't drop %s" % gen)
+                raise ValueError(f"can't drop {gen}")
         else:
             symbols = list(ring.symbols)
             del symbols[i]
@@ -653,7 +652,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                     del K[i]
                     poly[K] = v
                 else:
-                    raise ValueError("can't drop %s" % gen)
+                    raise ValueError(f"can't drop {gen}")
 
             return poly
 
@@ -666,13 +665,8 @@ class PolyElement(DomainElement, CantSympify, dict):
         if ring.is_univariate:
             raise ValueError("can't drop only generator to ground")
 
-        symbols = ring.symbols
         indexes = [ring.index(gen) for gen in gens]
-
-        dropped = [symbols[i] for i in indexes]
-        symbols = [symbols[i] for i in range(ring.ngens) if i not in indexes]
-
-        ring = ring.clone(symbols=symbols, domain=ring.clone(dropped))
+        ring = ring.eject(*indexes)
 
         poly = ring.zero
         gens = ring.domain.gens[0:len(indexes)]
@@ -680,10 +674,10 @@ class PolyElement(DomainElement, CantSympify, dict):
         for monom, coeff in self.items():
             mon = tuple(monom[i] for i in range(self.ring.ngens) if i not in indexes)
             gc = functools.reduce(operator.mul, [x**n for x, n in zip(gens, (monom[i] for i in indexes))])
-            if mon not in poly:
-                poly[mon] = gc.mul_ground(coeff)
-            else:
+            if mon in poly:
                 poly[mon] += gc.mul_ground(coeff)
+            else:
+                poly[mon] = gc.mul_ground(coeff)
 
         return poly
 
@@ -727,7 +721,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 if exp != 1:
                     sexpv.append(exp_pattern % (symbol, exp))
                 else:
-                    sexpv.append('%s' % symbol)
+                    sexpv.append(f'{symbol}')
             if scoeff:
                 sexpv = [scoeff] + sexpv
             sexpvs.append(mul_symbol.join(sexpv))
@@ -777,10 +771,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         return all(sum(monom) <= 2 for monom in self)
 
     @property
-    def is_squarefree(self):
-        return self.ring.dmp_sqf_p(self)
-
-    @property
     def is_irreducible(self):
         _, factors = self.factor_list()
         if not factors:
@@ -789,13 +779,6 @@ class PolyElement(DomainElement, CantSympify, dict):
             return False
         else:
             return factors[0][1] == 1
-
-    @property
-    def is_cyclotomic(self):
-        if self.ring.is_univariate:
-            return self.ring.dup_cyclotomic_p(self)
-        else:
-            raise AttributeError('cyclotomic polynomial')
 
     @property
     def is_homogeneous(self):
@@ -1321,7 +1304,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         elif is_sequence(element) and all(isinstance(n, int) for n in element):
             return self._get_coeff(element)
 
-        raise ValueError('expected a monomial, got %s' % element)
+        raise ValueError(f'expected a monomial, got {element}')
 
     @property
     def LC(self):
@@ -1872,7 +1855,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         if 0 < len(values) <= self.ring.ngens:
             return self.eval(list(zip(self.ring.gens, values)))
         else:
-            raise ValueError('expected at least 1 and at most %s values, got %s' % (self.ring.ngens, len(values)))
+            raise ValueError(f'expected at least 1 and at most {self.ring.ngens} values, got {len(values)}')
 
     def eval(self, x=0, a=0):
         f = self
@@ -1922,7 +1905,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         """Computes the functional composition."""
         ring = self.ring
         poly = ring.zero
-        gens_map = dict(zip(ring.gens, range(ring.ngens)))
 
         if a is not None:
             replacements = [(x, a)]
@@ -1930,18 +1912,16 @@ class PolyElement(DomainElement, CantSympify, dict):
             if isinstance(x, list):
                 replacements = list(x)
             elif isinstance(x, dict):
-                replacements = sorted(x.items(), key=lambda k: gens_map[k[0]])
+                replacements = sorted(x.items(), key=lambda k: ring.index(k[0]))
             else:
                 raise ValueError('expected a generator, value pair a sequence of such pairs')
-
-        for k, (x, g) in enumerate(replacements):
-            replacements[k] = (gens_map[x], ring(g))
 
         for monom, coeff in self.items():
             monom = list(monom)
             subpoly = ring.one
 
-            for i, g in replacements:
+            for x, g in replacements:
+                i, g = ring.index(x), ring(g)
                 n, monom[i] = monom[i], 0
                 if n:
                     subpoly *= g**n
@@ -1950,6 +1930,26 @@ class PolyElement(DomainElement, CantSympify, dict):
             poly += subpoly
 
         return poly
+
+    def discriminant(self):
+        """Computes discriminant of a polynomial."""
+        ring = self.ring
+
+        d = self.degree()
+
+        if d <= 0:
+            return ring.zero.drop(0)
+        else:
+            s = (-1)**((d*(d - 1)) // 2)
+            c = self.eject(*ring.gens[1:]).LC
+
+            return self.resultant(self.diff()) // (c*s)
+
+    def shift(self, a):
+        if self.ring.is_univariate:
+            return self.compose(0, self.ring.gens[0] + a)
+        else:
+            raise MultivariatePolynomialError('polynomial shift')
 
     # TODO: following methods should point to polynomial
     # representation independent algorithm implementations.
@@ -1975,37 +1975,28 @@ class PolyElement(DomainElement, CantSympify, dict):
     def resultant(self, other, includePRS=False):
         return self.ring.dmp_resultant(self, other, includePRS=includePRS)
 
-    def discriminant(self):
-        """Computes discriminant of a polynomial."""
-        ring = self.ring
-
-        d = self.degree()
-
-        if d <= 0:
-            return ring.zero.drop(0)
-        else:
-            s = (-1)**((d*(d - 1)) // 2)
-            c = self.eject(*ring.gens[1:]).LC
-
-            return self.resultant(self.diff()) // (c*s)
-
     def decompose(self):
         if self.ring.is_univariate:
             return self.ring.dup_decompose(self)
         else:
             raise MultivariatePolynomialError('polynomial decomposition')
 
-    def shift(self, a):
-        if self.ring.is_univariate:
-            return self.ring.dup_shift(self, a)
-        else:
-            raise MultivariatePolynomialError('polynomial shift')
-
     def sturm(self):
         if self.ring.is_univariate:
             return self.ring.dup_sturm(self)
         else:
             raise MultivariatePolynomialError('sturm sequence')
+
+    @property
+    def is_cyclotomic(self):
+        if self.ring.is_univariate:
+            return self.ring.dup_cyclotomic_p(self)
+        else:
+            raise AttributeError('cyclotomic polynomial')
+
+    @property
+    def is_squarefree(self):
+        return self.ring.dmp_sqf_p(self)
 
     def sqf_norm(self):
         return self.ring.dmp_sqf_norm(self)

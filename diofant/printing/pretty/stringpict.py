@@ -94,7 +94,7 @@ class stringPict:
 
         >>> from diofant.printing.pretty.pretty_symbology import pretty_use_unicode
         >>> f = pretty_use_unicode(flag=False)
-        >>> print(stringPict("10").right(" + ", stringPict("1\r-\r2", 1))[0])
+        >>> print(stringPict('10').right(' + ', stringPict('1\r-\r2', 1))[0])
              1
         10 + -
              2

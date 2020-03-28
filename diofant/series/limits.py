@@ -82,7 +82,7 @@ class Limit(Expr):
 
     >>> Limit(sin(x)/x, x, 0)
     Limit(sin(x)/x, x, 0)
-    >>> Limit(1/x, x, 0, dir="-")
+    >>> Limit(1/x, x, 0, dir='-')
     Limit(1/x, x, 0, dir='-')
 
     """

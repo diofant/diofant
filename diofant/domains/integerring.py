@@ -40,7 +40,7 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
         elif expr.is_Float and int(expr) == expr:
             return self.dtype(int(expr))
         else:
-            raise CoercionFailed('expected an integer, got %s' % expr)
+            raise CoercionFailed(f'expected an integer, got {expr}')
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)
@@ -68,7 +68,7 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
 
     def _from_AlgebraicField(self, a, K0):
         if a.is_ground:
-            return self.convert(a.LC(), K0.domain)
+            return self.convert(a.rep.LC, K0.domain)
 
     @abc.abstractmethod
     def finite_field(self, p):
