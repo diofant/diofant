@@ -1,3 +1,4 @@
+import math
 from functools import reduce
 from math import sqrt as _sqrt
 
@@ -78,85 +79,18 @@ class factorial(CombinatorialFunction):
         else:
             raise ArgumentIndexError(self, argindex)
 
-    _small_swing = [
-        1, 1, 1, 3, 3, 15, 5, 35, 35, 315, 63, 693, 231, 3003, 429, 6435, 6435, 109395,
-        12155, 230945, 46189, 969969, 88179, 2028117, 676039, 16900975, 1300075,
-        35102025, 5014575, 145422675, 9694845, 300540195, 300540195
-    ]
-
-    @classmethod
-    def _swing(cls, n):
-        if n < 33:
-            return cls._small_swing[n]
-        else:
-            N, primes = int(_sqrt(n)), []
-
-            for prime in sieve.primerange(3, N + 1):
-                p, q = 1, n
-
-                while True:
-                    q //= prime
-
-                    if q > 0:
-                        if q & 1 == 1:
-                            p *= prime
-                    else:
-                        break
-
-                if p > 1:
-                    primes.append(p)
-
-            for prime in sieve.primerange(N + 1, n//3 + 1):
-                if (n // prime) & 1 == 1:
-                    primes.append(prime)
-
-            L_product = R_product = 1
-
-            for prime in sieve.primerange(n//2 + 1, n + 1):
-                L_product *= prime
-
-            for prime in primes:
-                R_product *= prime
-
-            return L_product*R_product
-
-    @classmethod
-    def _recursive(cls, n):
-        if n < 2:
-            return 1
-        else:
-            return (cls._recursive(n//2)**2)*cls._swing(n)
-
     @classmethod
     def eval(cls, n):
         n = sympify(n)
 
         if n.is_Number:
-            if n == 0:
-                return Integer(1)
-            elif n is oo:
+            if n is oo:
                 return oo
             elif n.is_Integer:
                 if n.is_negative:
                     return zoo
                 else:
-                    n, result = n.numerator, 1
-
-                    if n < 20:
-                        for i in range(2, n + 1):
-                            result *= i
-                    else:
-                        N, bits = n, 0
-
-                        while N != 0:
-                            if N & 1 == 1:
-                                bits += 1
-
-                            N = N >> 1
-
-                        result = cls._recursive(n)*2**(n - bits)
-
-                    return Integer(result)
+                    return Integer(math.factorial(n))
 
     def _eval_rewrite_as_gamma(self, n):
         from .. import gamma
