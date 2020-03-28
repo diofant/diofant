@@ -1,6 +1,5 @@
+import functools
 import math
-from functools import reduce
-from math import sqrt as _sqrt
 
 from ...core import Dummy, E, Function, Integer, cacheit, oo, sympify, zoo
 from ...core.function import ArgumentIndexError
@@ -354,12 +353,12 @@ class RisingFactorial(CombinatorialFunction):
                         else:
                             return oo
                     else:
-                        return reduce(lambda r, i: r*(x + i), range(int(k)), 1)
+                        return functools.reduce(lambda r, i: r*(x + i), range(int(k)), 1)
                 else:
                     if x in (oo, -oo):
                         return oo
                     else:
-                        return 1/reduce(lambda r, i: r*(x - i), range(1, abs(int(k)) + 1), 1)
+                        return 1/functools.reduce(lambda r, i: r*(x - i), range(1, abs(int(k)) + 1), 1)
 
     def _eval_rewrite_as_gamma(self, x, k):
         from .. import gamma
@@ -424,12 +423,12 @@ class FallingFactorial(CombinatorialFunction):
                         else:
                             return oo
                     else:
-                        return reduce(lambda r, i: r*(x - i), range(int(k)), 1)
+                        return functools.reduce(lambda r, i: r*(x - i), range(int(k)), 1)
                 else:
                     if x in (oo, -oo):
                         return oo
                     else:
-                        return 1/reduce(lambda r, i: r*(x + i), range(1, abs(int(k)) + 1), 1)
+                        return 1/functools.reduce(lambda r, i: r*(x + i), range(1, abs(int(k)) + 1), 1)
 
     def _eval_rewrite_as_gamma(self, x, k):
         from .. import gamma
@@ -545,7 +544,7 @@ class binomial(CombinatorialFunction):
             if k > n // 2:
                 k = n - k
 
-            M, result = int(_sqrt(n)), 1
+            M, result = int(math.sqrt(n)), 1
 
             for prime in sieve.primerange(2, n + 1):
                 if prime > n - k:
