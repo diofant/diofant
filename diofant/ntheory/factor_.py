@@ -367,7 +367,8 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     so it is a good idea to allow for retries:
 
     >>> n = 16843009
-    >>> F = lambda x: (2048*pow(x, 2, n) + 32767)%n
+    >>> def F(x):
+    ...     return (2048*pow(x, 2, n) + 32767) % n
     >>> for s in range(5):
     ...     print('loop length = %4i; leader length = %3i' % next(cycle_length(F, s)))
     ...
@@ -382,7 +383,7 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
 
     >>> x = 2
     >>> for i in range(9):
-    ...     x = (x**2 + 12)%17
+    ...     x = (x**2 + 12) % 17
     ...     print(x)
     ...
     16
@@ -394,9 +395,9 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     14
     4
     11
-    >>> next(cycle_length(lambda x: (x**2+12)%17, 2))
+    >>> next(cycle_length(lambda x: (x**2+12) % 17, 2))
     (3, 2)
-    >>> list(cycle_length(lambda x: (x**2+12)%17, 2, values=True))
+    >>> list(cycle_length(lambda x: (x**2+12) % 17, 2, values=True))
     [16, 13, 11, 14, 4]
 
     Instead of checking the differences of all generated values for a gcd
@@ -410,7 +411,8 @@ def pollard_rho(n, s=2, a=1, retries=5, seed=1234, max_steps=None, F=None):
     ========
 
     >>> n = 16843009
-    >>> F = lambda x: (2048*pow(x, 2, n) + 32767) % n
+    >>> def F(x):
+    ...     return (2048*pow(x, 2, n) + 32767) % n
     >>> pollard_rho(n, F=F)
     257
 
@@ -844,13 +846,15 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     You can easily switch between the two forms by sending them back to
     factorint:
 
-    >>> regular = factorint(1764); regular
+    >>> regular = factorint(1764)
+    >>> regular
     {2: 2, 3: 2, 7: 2}
     >>> pprint(factorint(regular), use_unicode=False)
      2  2  2
     2 *3 *7
 
-    >>> visual = factorint(1764, visual=True); pprint(visual, use_unicode=False)
+    >>> visual = factorint(1764, visual=True)
+    >>> pprint(visual, use_unicode=False)
      2  2  2
     2 *3 *7
     >>> print(factorint(visual))
@@ -859,7 +863,7 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     If you want to send a number to be factored in a partially factored form
     you can do so with a dictionary or unevaluated expression:
 
-    >>> factorint(factorint({4: 2, 12: 3})) # twice to toggle to dict form
+    >>> factorint(factorint({4: 2, 12: 3}))  # twice to toggle to dict form
     {2: 10, 3: 3}
     >>> factorint(Mul(4, 12, evaluate=False))
     {2: 4, 3: 1}

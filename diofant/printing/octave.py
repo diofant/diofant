@@ -503,7 +503,7 @@ def octave_code(expr, assign_to=None, **settings):
     symbols.  This is because its very common in Octave to write "vectorized"
     code.  It is harmless if the values are scalars.
 
-    >>> octave_code(sin(pi*x*y), assign_to="s")
+    >>> octave_code(sin(pi*x*y), assign_to='s')
     's = sin(pi*x.*y);'
 
     If you need a matrix product "*" or matrix power "^", you can specify the
@@ -556,9 +556,9 @@ def octave_code(expr, assign_to=None, **settings):
     cfunction_string)].  This can be used to call a custom Octave function.
 
     >>> custom_functions = {
-    ...   "f": "existing_octave_fcn",
-    ...   "g": [(lambda x: x.is_Matrix, "my_mat_fcn"),
-    ...         (lambda x: not x.is_Matrix, "my_fcn")]
+    ...     'f': 'existing_octave_fcn',
+    ...     'g': [(lambda x: x.is_Matrix, 'my_mat_fcn'),
+    ...           (lambda x: not x.is_Matrix, 'my_fcn')]
     ... }
     >>> mat = Matrix([[1, x]])
     >>> octave_code(f(x) + g(x) + g(mat), user_functions=custom_functions)

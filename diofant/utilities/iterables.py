@@ -372,7 +372,7 @@ def capture(func):
     >>> def foo():
     ...     print('hello world!')
     ...
-    >>> 'hello' in capture(foo) # foo, not foo()
+    >>> 'hello' in capture(foo)  # foo, not foo()
     True
     >>> capture(lambda: pprint(2/x, use_unicode=False))
     '2\n-\nx\n'

@@ -52,9 +52,9 @@ def Poisson(name, lamda):
 
     >>> from diofant.stats import density, E, variance
 
-    >>> rate = Symbol("lambda", positive=True)
+    >>> rate = Symbol('lambda', positive=True)
 
-    >>> X = Poisson("x", rate)
+    >>> X = Poisson('x', rate)
 
     >>> density(X)(z)
     E**(-lambda)*lambda**z/factorial(z)
@@ -113,7 +113,7 @@ def Geometric(name, p):
 
     >>> p = Rational(1, 5)
 
-    >>> X = Geometric("x", p)
+    >>> X = Geometric('x', p)
 
     >>> density(X)(z)
     (4/5)**(z - 1)/5

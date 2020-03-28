@@ -317,7 +317,7 @@ def epath(path, expr=None, func=None, args=None, kwargs=None):
     Examples
     ========
 
-    >>> path = "/*/[0]/Symbol"
+    >>> path = '/*/[0]/Symbol'
     >>> expr = [((x, 1), 2), ((3, y), z)]
 
     >>> epath(path, expr)
@@ -325,7 +325,7 @@ def epath(path, expr=None, func=None, args=None, kwargs=None):
     >>> epath(path, expr, lambda expr: expr**2)
     [((x**2, 1), 2), ((3, y**2), z)]
 
-    >>> path = "/*/*/Symbol"
+    >>> path = '/*/*/Symbol'
     >>> expr = t + sin(x + 1) + cos(x + y + E)
 
     >>> epath(path, expr)

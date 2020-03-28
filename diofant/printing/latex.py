@@ -1803,7 +1803,7 @@ def latex(expr, **settings):
 
     >>> print(latex((2*tau)**sin(Rational(7, 2))))
     \left(2 \tau\right)^{\sin{\left (\frac{7}{2} \right )}}
-    >>> print(latex((2*tau)**sin(Rational(7, 2)), fold_func_brackets = True))
+    >>> print(latex((2*tau)**sin(Rational(7, 2)), fold_func_brackets=True))
     \left(2 \tau\right)^{\sin {\frac{7}{2}}}
 
     fold_short_frac: Emit "p / q" instead of "\frac{p}{q}" when the
@@ -1827,7 +1827,7 @@ def latex(expr, **settings):
     mul_symbol: The symbol to use for multiplication. Can be one of None,
     "ldot", "dot", or "times".
 
-    >>> print(latex((2*tau)**sin(Rational(7, 2)), mul_symbol="times"))
+    >>> print(latex((2*tau)**sin(Rational(7, 2)), mul_symbol='times'))
     \left(2 \times \tau\right)^{\sin{\left (\frac{7}{2} \right )}}
 
     inv_trig_style: How inverse trig functions should be displayed. Can be one
@@ -1835,9 +1835,9 @@ def latex(expr, **settings):
 
     >>> print(latex(asin(Rational(7, 2))))
     \operatorname{asin}{\left (\frac{7}{2} \right )}
-    >>> print(latex(asin(Rational(7, 2)), inv_trig_style="full"))
+    >>> print(latex(asin(Rational(7, 2)), inv_trig_style='full'))
     \arcsin{\left (\frac{7}{2} \right )}
-    >>> print(latex(asin(Rational(7, 2)), inv_trig_style="power"))
+    >>> print(latex(asin(Rational(7, 2)), inv_trig_style='power'))
     \sin^{-1}{\left (\frac{7}{2} \right )}
 
     mat_str: Which matrix environment string to emit. "smallmatrix", "matrix",
@@ -1847,13 +1847,13 @@ def latex(expr, **settings):
     >>> print(latex(Matrix(2, 1, [x, y])))
     \left[\begin{matrix}x\\y\end{matrix}\right]
 
-    >>> print(latex(Matrix(2, 1, [x, y]), mat_str="array"))
+    >>> print(latex(Matrix(2, 1, [x, y]), mat_str='array'))
     \left[\begin{array}{c}x\\y\end{array}\right]
 
     mat_delim: The delimiter to wrap around matrices. Can be one of "[", "(",
     or the empty string. Defaults to "[".
 
-    >>> print(latex(Matrix(2, 1, [x, y]), mat_delim="("))
+    >>> print(latex(Matrix(2, 1, [x, y]), mat_delim='('))
     \left(\begin{matrix}x\\y\end{matrix}\right)
 
     symbol_names: Dictionary of symbols and the custom strings they should be

@@ -217,7 +217,8 @@ def apply_finite_diff(order, x_list, y_list, x0=Integer(0)):
     Examples
     ========
 
-    >>> cube = lambda arg: (1.0*arg)**3
+    >>> def cube(arg):
+    ...     return (1.0*arg)**3
     >>> xlist = range(-3, 4)
     >>> apply_finite_diff(2, xlist, list(map(cube, xlist)), 2) - 12
     -3.55271367880050e-15

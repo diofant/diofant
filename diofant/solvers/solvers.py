@@ -129,7 +129,7 @@ def solve(f, *symbols, **flags):
 
     We could restrict solutions by using assumptions:
 
-    >>> p = Symbol("p", positive=True)
+    >>> p = Symbol('p', positive=True)
     >>> solve(p**2 - 1)
     [{p: 1}]
 
