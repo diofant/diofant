@@ -1993,7 +1993,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def shift(self, a):
         if self.ring.is_univariate:
-            return self.ring.dup_shift(self, a)
+            return self.compose(0, self.ring.gens[0] + a)
         else:
             raise MultivariatePolynomialError('polynomial shift')
 
