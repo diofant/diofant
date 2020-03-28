@@ -665,13 +665,8 @@ class PolyElement(DomainElement, CantSympify, dict):
         if ring.is_univariate:
             raise ValueError("can't drop only generator to ground")
 
-        symbols = ring.symbols
         indexes = [ring.index(gen) for gen in gens]
-
-        dropped = [symbols[i] for i in indexes]
-        symbols = [symbols[i] for i in range(ring.ngens) if i not in indexes]
-
-        ring = ring.clone(symbols=symbols, domain=ring.clone(dropped))
+        ring = ring.eject(*indexes)
 
         poly = ring.zero
         gens = ring.domain.gens[0:len(indexes)]
@@ -679,10 +674,10 @@ class PolyElement(DomainElement, CantSympify, dict):
         for monom, coeff in self.items():
             mon = tuple(monom[i] for i in range(self.ring.ngens) if i not in indexes)
             gc = functools.reduce(operator.mul, [x**n for x, n in zip(gens, (monom[i] for i in indexes))])
-            if mon not in poly:
-                poly[mon] = gc.mul_ground(coeff)
-            else:
+            if mon in poly:
                 poly[mon] += gc.mul_ground(coeff)
+            else:
+                poly[mon] = gc.mul_ground(coeff)
 
         return poly
 
