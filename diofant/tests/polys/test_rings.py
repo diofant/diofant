@@ -261,6 +261,26 @@ def test_PolyElement_copy():
     assert f != g
 
 
+def test_PolyElement_inject():
+    D, y, z = ring('y z', ZZ)
+    R, x = ring('x', D)
+
+    p = x*y*z + 1
+
+    R2 = ZZ.inject('x', 'y', 'z')
+    R3 = ZZ.inject('y', 'z', 'x')
+
+    p2 = p.inject()
+
+    assert p2.ring == R2
+    assert p2 == R2.x*R2.y*R2.z + 1
+
+    p3 = p.inject(front=True)
+
+    assert p3.ring == R3
+    assert p3 == R3.x*R3.y*R3.z + 1
+
+
 def test_PolyElement_set_domain():
     R, x, y = ring('x y', ZZ)
 

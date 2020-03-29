@@ -818,20 +818,8 @@ class Poly(Expr):
         Poly(y**3*x + y*x**2 + y*x + 1, y, x, domain='ZZ')
 
         """
-        dom = self.domain
-
-        if dom.is_Numerical and not dom.is_AlgebraicField:
-            return self
-
-        if front:
-            gens = dom.symbols + self.gens
-        else:
-            gens = self.gens + dom.symbols
-
-        newring = dom.domain.poly_ring(*gens)
-        result = newring.from_expr(self.rep.as_expr())
-
-        return self.new(result, *gens)
+        result = self.rep.inject(front=front)
+        return self.new(result, *result.ring.symbols)
 
     def eject(self, *gens):
         """

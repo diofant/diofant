@@ -618,6 +618,7 @@ def test_FractionField__init():
 
 def test_inject():
     assert ZZ.inject(x).inject(y, z) == ZZ.inject(x, y, z)
+    assert ZZ.inject(x).inject(y, z, front=True) == ZZ.inject(y, z, x)
     assert ZZ.inject(x).field.inject(y, z) == ZZ.inject(x, y, z).field
     pytest.raises(GeneratorsError, lambda: ZZ.inject(x).inject(x))
 

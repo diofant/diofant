@@ -681,6 +681,30 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return poly
 
+    def inject(self, front=False):
+        ring = self.ring
+        domain = ring.domain
+
+        if not (domain.is_Composite or domain.is_AlgebraicField):
+            return self
+
+        new_ring = ring.to_ground()
+        new_ring = new_ring.inject(*domain.symbols, front=front)
+
+        poly = new_ring.zero
+
+        for monom, coeff in self.items():
+            coeff = coeff.to_dict()
+            for cmonom, ccoeff in coeff.items():
+                if front:
+                    cmonom += monom
+                else:
+                    cmonom = monom + cmonom
+
+                poly[cmonom] = ccoeff
+
+        return poly
+
     def to_dense(self):
         return dmp_from_dict(self, self.ring.ngens-1, self.ring.domain)
 
