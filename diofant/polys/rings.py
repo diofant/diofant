@@ -1994,11 +1994,69 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return poly
 
+    def prem(self, other):
+        """Polynomial pseudo-remainder.
+
+        Examples
+        ========
+
+        >>> R, x, y = ring('x y', ZZ)
+
+        >>> (x**2 + x*y).prem(2*x + 2)
+        -4*y + 4
+
+        References
+        ==========
+
+        * :cite:`Knuth1985seminumerical`, p. 407.
+
+        """
+        ring = self.ring
+
+        if not isinstance(other, ring.dtype):
+            other = ring.convert(other)
+
+        f, g = self, other
+
+        if ring.is_multivariate:
+            f, g = map(lambda _: _.eject(*ring.gens[1:]), (f, g))
+            r = f.prem(g)
+            return r.inject()
+
+        ring = f.ring
+
+        df = f.degree()
+        dg = g.degree()
+
+        if dg < 0:
+            raise ZeroDivisionError('polynomial division')
+
+        r, dr = f, df
+
+        if df < dg:
+            return r
+
+        x = ring.gens[0]
+        n = df - dg + 1
+        lc_g = g.LC
+
+        while True:
+            lc_r = r.LC
+            n -= 1
+
+            r *= lc_g
+            r -= g*x**(dr - dg)*lc_r
+            dr = r.degree()
+
+            if dr < dg:
+                break
+
+        r *= lc_g**n
+
+        return r
+
     # TODO: following methods should point to polynomial
     # representation independent algorithm implementations.
-
-    def prem(self, other):
-        return self.ring.dmp_prem(self, other)
 
     def half_gcdex(self, other):
         if self.ring.is_univariate:
