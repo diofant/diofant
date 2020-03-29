@@ -765,3 +765,8 @@ def test_sympyissue_18707():
     p = Symbol('p', positive=True, real=True)
 
     assert limit(1/p**n, n, oo) == p**-oo
+
+
+def test_sympyissue_18997():
+    assert limit(abs(log(x)), x, 0) == oo
+    assert limit(abs(log(abs(x))), x, 0) == oo

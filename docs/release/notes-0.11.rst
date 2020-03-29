@@ -179,3 +179,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`14806` Domain.is_positive (and friends) is a wrong interface
 * :sympyissue:`18874` Zero divisor from sring over QQ<sqrt(2) + sqrt(5)>
 * :sympyissue:`16620` Slow factor(x^n-1, modulus=2) computation for some "difficult" n
+* :sympyissue:`18997` Incorrect limit result involving Abs, returns expression involving a symbol
