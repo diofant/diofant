@@ -1570,7 +1570,7 @@ def func_field_modgcd(f, g):
     if n == 1:
         f_ = _to_ZZ_poly(f, ZZring)
         g_ = _to_ZZ_poly(g, ZZring)
-        minpoly = ZZring.drop(0).from_dense(domain.mod.to_dense())
+        minpoly = ZZring.drop(0).from_dict(domain.mod)
 
         h = _func_field_modgcd_m(f_, g_, minpoly)
         h = _to_ANP_poly(h, ring)
