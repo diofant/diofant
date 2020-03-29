@@ -888,30 +888,9 @@ def dmp_apply_pairs(f, g, h, args, u, K):
 
 def dmp_slice_in(f, m, n, j, u, K):
     """Take a continuous subsequence of terms of ``f`` in ``x_j`` in ``K[X]``."""
-    if j < 0 or j > u:
-        raise IndexError(f'-{u} <= j < {u} expected, got {j}')
-
-    if not u:
-        k = len(f)
-        M = k - m if k >= m else 0
-        N = k - n if k >= n else 0
-        f = f[N:M]
-        return dmp_strip(f + [K.zero]*m if f else [], u)
-
-    f, g = dmp_to_dict(f, u), {}
-
-    for monom, coeff in f.items():
-        k = monom[j]
-
-        if k < m or k >= n:
-            monom = monom[:j] + (0,) + monom[j + 1:]
-
-        if monom in g:
-            g[monom] += coeff
-        else:
-            g[monom] = coeff
-
-    return dmp_from_dict(g, u, K)
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    return ring.to_dense(f.slice(m, n, x=j))
 
 
 def dup_random(n, a, b, K, percent=None):

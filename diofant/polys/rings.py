@@ -1975,6 +1975,25 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             raise MultivariatePolynomialError('polynomial shift')
 
+    def slice(self, m, n, x=0):
+        ring = self.ring
+        poly = ring.zero
+        j = ring.index(x)
+
+        for monom, coeff in self.items():
+            if not n > monom[j] >= m:
+                if ring.ngens == 1:
+                    continue
+                else:
+                    monom = monom[:j] + (0,) + monom[j + 1:]
+
+            if monom in poly:
+                poly[monom] += coeff
+            else:
+                poly[monom] = coeff
+
+        return poly
+
     # TODO: following methods should point to polynomial
     # representation independent algorithm implementations.
 
@@ -2033,8 +2052,3 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def factor_list(self):
         return self.ring.dmp_factor_list(self)
-
-    def slice(self, m, n, x=0):
-        ring = self.ring
-        j = ring.index(x)
-        return ring.dmp_slice_in(self, m, n, j)

@@ -1695,7 +1695,24 @@ def test_PolyElement_slice():
     assert f.slice(0, 1) == f.slice(0, 1, x) == 4
     assert f.slice(0, 2) == f.slice(0, 2, x) == 3*x + 4
     assert f.slice(0, 3) == f.slice(0, 3, x) == 2*x**2 + 3*x + 4
-    assert f.slice(0, 4) == f.slice(0, 4, x) == x**3 + 2*x**2 + 3*x + 4
+
+    assert f.slice(0, 4) == f.slice(0, 4, x) == f
+    assert f.slice(0, 9) == f
+
+    assert f.slice(1, 0) == 0
+    assert f.slice(1, 1) == 0
+    assert f.slice(1, 2) == 3*x
+    assert f.slice(1, 3) == 2*x**2 + 3*x
+    assert f.slice(1, 4) == x**3 + 2*x**2 + 3*x
+
+    assert (x + 2).slice(0, 3) == x + 2
+
+    R, x, y = ring('x y', ZZ)
+
+    f = x + 2*y**2 + 3*y + 4
+
+    assert f.slice(1, 2) == f
+    assert f.slice(2, 1) == 2*y**2 + 3*y + 5
 
 
 def test_sympyissue_18894():
