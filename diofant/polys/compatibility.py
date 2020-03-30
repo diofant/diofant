@@ -6,14 +6,13 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term, dmp_div,
                          dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_rem,
                          dmp_sqr, dmp_sub, dmp_sub_mul, dup_lshift, dup_rshift)
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
-                         dmp_ground_TC, dmp_LC, dmp_slice_in, dmp_TC,
-                         dmp_to_dict)
+                         dmp_ground_TC, dmp_LC, dmp_TC, dmp_to_dict)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
                          dmp_ground_trunc, dup_decompose, dup_mirror,
                          dup_real_imag, dup_scale, dup_shift, dup_transform)
 from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_inner_subresultants,
-                          dmp_prem, dmp_primitive, dmp_qq_collins_resultant,
+                          dmp_primitive, dmp_qq_collins_resultant,
                           dmp_resultant, dmp_rr_prs_gcd,
                           dmp_zz_collins_resultant, dmp_zz_modular_resultant,
                           dup_gcdex, dup_half_gcdex, dup_invert)
@@ -120,9 +119,6 @@ class IPolys:
     def dmp_pow(self, f, n):
         return self.from_dense(dmp_pow(self.to_dense(f), n, self.ngens-1, self.domain))
 
-    def dmp_prem(self, f, g):
-        return self.from_dense(dmp_prem(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain))
-
     def dmp_div(self, f, g):
         q, r = dmp_div(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.from_dense(q), self.from_dense(r)
@@ -161,9 +157,6 @@ class IPolys:
 
     def dmp_degree_list(self, f):
         return dmp_degree_list(self.to_dense(f), self.ngens-1)
-
-    def dmp_slice_in(self, f, m, n, j=0):
-        return self.from_dense(dmp_slice_in(self.to_dense(f), m, n, j, self.ngens-1, self.domain))
 
     def dmp_eval_in(self, f, a, j):
         result = dmp_eval_in(self.to_dense(f), a, j, self.ngens-1, self.domain)

@@ -121,19 +121,25 @@ factors (not necessarily irreducible) of degree 1, 2 etc
 Factorization
 =============
 
-Factorization supported over different domains, lets compute one for the finite
-field with characteristic 5, rational field or its algebraic extension
+Factorization supported over different domains, lets compute one for the
+rational field, its algebraic extension or the finite field of order 5
 
     >>> f = x**4 - 3*x**2 + 1
 
-    >>> factor(f, modulus=5)
-           2        2
-    (x + 2) ⋅(x + 3)
     >>> factor(f)
     ⎛ 2        ⎞ ⎛ 2        ⎞
     ⎝x  - x - 1⎠⋅⎝x  + x - 1⎠
     >>> factor(f, extension=GoldenRatio)
     (x - φ)⋅(x + φ)⋅(x - 1 + φ)⋅(x - φ + 1)
+    >>> factor(f, modulus=5)
+           2        2
+    (x + 2) ⋅(x + 3)
+
+The finite fields of prime power order are supported
+
+    >>> factor(x**3 + 3*x + 2, modulus=4)
+            ⎛ 2        ⎞
+    (x + 1)⋅⎝x  + x + 2⎠
 
 You also may use ``gaussian`` keyword to obtain a factorization over
 Gaussian rationals

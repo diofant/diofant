@@ -64,8 +64,8 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         obj.ngens = 1
         obj.symbols = obj.gens = obj.ext.as_expr(),
 
-        rep_ring = dom.poly_ring(obj.ext)
-        obj.mod = mod = rep_ring.from_dense(minpoly.rep.to_dense())
+        rep_ring = dom.inject(obj.ext)
+        obj.mod = mod = rep_ring.from_dict(minpoly.rep)
 
         try:
             obj.dtype = _algebraic_numbers_cache[(obj.domain, obj.ext)]

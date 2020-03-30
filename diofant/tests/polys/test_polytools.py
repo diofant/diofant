@@ -562,6 +562,7 @@ def test_Poly_set_domain():
 
 def test_Poly_get_modulus():
     assert Poly(x**2 + 1, modulus=2).get_modulus() == 2
+    assert Poly(x**2 + 1, modulus=8).get_modulus() == 8
     pytest.raises(PolynomialError, lambda: Poly(x**2 + 1).get_modulus())
 
 
@@ -572,6 +573,9 @@ def test_Poly_set_modulus():
         x**2 + 5, modulus=7).set_modulus(2) == Poly(x**2 + 1, modulus=2)
 
     assert Poly(x**2 + 1).set_modulus(2) == Poly(x**2 + 1, modulus=2)
+
+    assert Poly(x**2 + 1, modulus=2).set_modulus(4) == Poly(x**2 + 1, modulus=4)
+    assert Poly(x**2 + 7*x + 6, modulus=4) == Poly(x**2 + 3*x + 2, modulus=4)
 
     pytest.raises(CoercionFailed, lambda: Poly(x/2 + 1).set_modulus(2))
 
@@ -2284,6 +2288,8 @@ def test_factor():
     assert factor(x**11 + x + 1, modulus=65537) == \
         (x**2 + x + 1)*(x**9 + 65536*x**8 + x**6 + 65536*x**5 +
                         x**3 + 65536*x**2 + 1)
+
+    assert factor(x**3 + 3*x + 2, modulus=4) == (x + 1)*(x**2 + x + 2)
 
     f = x/pi + x*sin(x)/pi
     g = y/(pi**2 + 2*pi + 1) + y*sin(x)/(pi**2 + 2*pi + 1)

@@ -17,7 +17,7 @@ Major changes
 * :class:`~diofant.polys.polytools.Poly` now use sparse polynomial representation (via :class:`~diofant.polys.rings.PolyElement`) internally, see :pull:`795`.
 * :func:`~diofant.solvers.recurr.rsolve` now return :class:`list` of :class:`dict`'s, see :pull:`940`.
 * :func:`~diofant.solvers.solvers.solve` now return all solutions for equations, involving surds, see :pull:`910`.
-* Module :mod:`~diofant.polys.galoistools` was adapted to use :class:`~diofant.domains.FiniteField`'s and usual conventions for low-level methods of the :mod:`~diofant.polys` module, see :pull:`957`, :pull:`971` and :pull:`964`.
+* Module :mod:`~diofant.polys.galoistools` was adapted to use :class:`~diofant.domains.FiniteField`'s and usual conventions for low-level methods of the :mod:`~diofant.polys` module, see :pull:`957`, :pull:`971` and :pull:`964`.  Polynomial factorization now works for univariate polynomials over any :class:`~diofant.domains.FiniteField`'s domain.
 
 Compatibility breaks
 ====================
@@ -179,3 +179,5 @@ These Sympy issues also were addressed:
 * :sympyissue:`14806` Domain.is_positive (and friends) is a wrong interface
 * :sympyissue:`18874` Zero divisor from sring over QQ<sqrt(2) + sqrt(5)>
 * :sympyissue:`16620` Slow factor(x^n-1, modulus=2) computation for some "difficult" n
+* :sympyissue:`18997` Incorrect limit result involving Abs, returns expression involving a symbol
+* :sympyissue:`18992` Possibly incorrect limit related to Stirling's formula
