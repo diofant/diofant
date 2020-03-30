@@ -618,6 +618,7 @@ def test_FractionField__init():
 
 def test_inject():
     assert ZZ.inject(x).inject(y, z) == ZZ.inject(x, y, z)
+    assert ZZ.inject(x).inject(y, z, front=True) == ZZ.inject(y, z, x)
     assert ZZ.inject(x).field.inject(y, z) == ZZ.inject(x, y, z).field
     pytest.raises(GeneratorsError, lambda: ZZ.inject(x).inject(x))
 
@@ -918,6 +919,9 @@ def test_ModularInteger():
     a = F3(4)
     assert isinstance(a, F3.dtype) and a == 1
 
+    assert a.numerator == a
+    assert a.denominator == F3.one
+
     a = F3(F3(0))
     assert isinstance(a, F3.dtype) and a == 0
     a = F3(F3(1))
@@ -1008,6 +1012,7 @@ def test_ModularInteger():
     pytest.raises(ValueError, lambda: FF(6))
     pytest.raises(ValueError, lambda: FF(9, [1, 0]))
     pytest.raises(ValueError, lambda: FF(9, [1, 1, 1]))
+    pytest.raises(ValueError, lambda: FF(36))
 
     assert F5.is_normal(a) is True
     assert F5.is_normal(F5.zero) is True

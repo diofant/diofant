@@ -550,37 +550,6 @@ def test_dmp_apply_pairs():
     assert dmp_apply_pairs([1, 2, 3], [3, 2, 1], h2, [1], 0, ZZ) == [4, 5, 6]
 
 
-def test_dmp_slice_in():
-    R, x = ring('x', ZZ)
-
-    f = x**3 + 2*x**2 + 3*x + 4
-
-    assert f.slice(0, 0) == 0
-    assert f.slice(0, 1) == 4
-    assert f.slice(0, 2) == 3*x + 4
-    assert f.slice(0, 3) == 2*x**2 + 3*x + 4
-
-    assert f.slice(0, 4) == f
-    assert f.slice(0, 9) == f
-
-    assert f.slice(1, 0) == 0
-    assert f.slice(1, 1) == 0
-    assert f.slice(1, 2) == 3*x
-    assert f.slice(1, 3) == 2*x**2 + 3*x
-    assert f.slice(1, 4) == x**3 + 2*x**2 + 3*x
-
-    pytest.raises(IndexError, lambda: R.dmp_slice_in(f, 0, 0, -1))
-
-    assert (x + 2).slice(0, 3) == x + 2
-
-    R, x, y = ring('x y', ZZ)
-
-    f = x + 2*y**2 + 3*y + 4
-
-    assert f.slice(1, 2) == f
-    assert f.slice(2, 1) == 2*y**2 + 3*y + 5
-
-
 def test_dup_random():
     f = dup_random(0, -10, 10, ZZ)
 

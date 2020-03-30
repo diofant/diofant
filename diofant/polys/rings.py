@@ -681,6 +681,30 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return poly
 
+    def inject(self, front=False):
+        ring = self.ring
+        domain = ring.domain
+
+        if not (domain.is_Composite or domain.is_AlgebraicField):
+            return self
+
+        new_ring = ring.to_ground()
+        new_ring = new_ring.inject(*domain.symbols, front=front)
+
+        poly = new_ring.zero
+
+        for monom, coeff in self.items():
+            coeff = coeff.to_dict()
+            for cmonom, ccoeff in coeff.items():
+                if front:
+                    cmonom += monom
+                else:
+                    cmonom = monom + cmonom
+
+                poly[cmonom] = ccoeff
+
+        return poly
+
     def to_dense(self):
         return dmp_from_dict(self, self.ring.ngens-1, self.ring.domain)
 
@@ -1951,11 +1975,88 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             raise MultivariatePolynomialError('polynomial shift')
 
-    # TODO: following methods should point to polynomial
-    # representation independent algorithm implementations.
+    def slice(self, m, n, x=0):
+        ring = self.ring
+        poly = ring.zero
+        j = ring.index(x)
+
+        for monom, coeff in self.items():
+            if not n > monom[j] >= m:
+                if ring.ngens == 1:
+                    continue
+                else:
+                    monom = monom[:j] + (0,) + monom[j + 1:]
+
+            if monom in poly:
+                poly[monom] += coeff
+            else:
+                poly[monom] = coeff
+
+        return poly
 
     def prem(self, other):
-        return self.ring.dmp_prem(self, other)
+        """Polynomial pseudo-remainder.
+
+        Examples
+        ========
+
+        >>> R, x, y = ring('x y', ZZ)
+
+        >>> (x**2 + x*y).prem(2*x + 2)
+        -4*y + 4
+
+        References
+        ==========
+
+        * :cite:`Knuth1985seminumerical`, p. 407.
+
+        """
+        ring = self.ring
+
+        if not isinstance(other, ring.dtype):
+            other = ring.convert(other)
+
+        f, g = self, other
+
+        if ring.is_multivariate:
+            f, g = map(lambda _: _.eject(*ring.gens[1:]), (f, g))
+            r = f.prem(g)
+            return r.inject()
+
+        ring = f.ring
+
+        df = f.degree()
+        dg = g.degree()
+
+        if dg < 0:
+            raise ZeroDivisionError('polynomial division')
+
+        r, dr = f, df
+
+        if df < dg:
+            return r
+
+        x = ring.gens[0]
+        n = df - dg + 1
+        lc_g = g.LC
+
+        while True:
+            lc_r = r.LC
+            n -= 1
+
+            r *= lc_g
+            r -= g*x**(dr - dg)*lc_r
+            dr = r.degree()
+
+            if dr < dg:
+                break
+
+        r *= lc_g**n
+
+        return r
+
+    # TODO: following methods should point to polynomial
+    # representation independent algorithm implementations.
 
     def half_gcdex(self, other):
         if self.ring.is_univariate:
@@ -2009,8 +2110,3 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def factor_list(self):
         return self.ring.dmp_factor_list(self)
-
-    def slice(self, m, n, x=0):
-        ring = self.ring
-        j = ring.index(x)
-        return ring.dmp_slice_in(self, m, n, j)
