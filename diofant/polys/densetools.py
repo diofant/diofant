@@ -543,7 +543,7 @@ def dup_decompose(f, K):
 
     >>> R, x = ring('x', ZZ)
 
-    >>> R.dup_decompose(x**4 - 2*x**3 + x**2)
+    >>> (x**4 - 2*x**3 + x**2).decompose()
     [x**2, x**2 - x]
 
     References

@@ -1982,7 +1982,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         for monom, coeff in self.items():
             if not n > monom[j] >= m:
-                if ring.ngens == 1:
+                if ring.is_univariate:
                     continue
                 else:
                     monom = monom[:j] + (0,) + monom[j + 1:]
