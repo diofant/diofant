@@ -516,7 +516,7 @@ def _solve(f, symbol, **flags):
         # as a polynomial, followed (perhaps) by a change of variables if the
         # generator is not a symbol
 
-        poly = Poly(f_num)
+        poly = Poly(f_num, extension=False)
         gens = [g for g in poly.gens if g.has(symbol)]
 
         def _as_base_q(x):

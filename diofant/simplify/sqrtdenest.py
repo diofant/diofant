@@ -688,7 +688,7 @@ def unrad(eq, *syms, **flags):
         # make the sign canonical
         free = eq.free_symbols
         if len(free) == 1:
-            if eq.coeff(free.pop()**degree(eq)).could_extract_minus_sign():
+            if eq.coeff(free.pop()**degree(eq, extension=False)).could_extract_minus_sign():
                 eq = -eq
         elif eq.could_extract_minus_sign():
             eq = -eq
@@ -730,7 +730,7 @@ def unrad(eq, *syms, **flags):
         return
 
     syms = set(syms) or eq.free_symbols
-    poly = eq.as_poly()
+    poly = eq.as_poly(extension=False)
     gens = [g for g in poly.gens if _take(g, True)]
     if not gens:
         return

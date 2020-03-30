@@ -538,7 +538,7 @@ def roots_quintic(f):
     a, b = symbols('a b', cls=Dummy)
     _sol = _solve(sol**5 - a - I*b, sol)
     for i in range(5):
-        _sol[i] = factor(_sol[i][sol])
+        _sol[i] = factor(_sol[i][sol], extension=False)
     R1 = R1.as_real_imag()
     R2 = R2.as_real_imag()
     R3 = R3.as_real_imag()
@@ -601,7 +601,7 @@ def roots_quintic(f):
 
 def _quintic_simplify(expr):
     expr = powsimp(expr)
-    expr = cancel(expr)
+    expr = cancel(expr, extension=False)
     return together(expr)
 
 
@@ -902,7 +902,7 @@ def roots(f, *gens, **flags):
             for r in roots_fun(f):
                 _update_dict(result, r, 1)
         else:
-            _, factors = Poly(f.as_expr()).factor_list()
+            _, factors = Poly(f.as_expr(), extension=False).factor_list()
             if len(factors) == 1 and f.degree() == 2:
                 for r in roots_quadratic(f):
                     _update_dict(result, r, 1)
