@@ -130,12 +130,10 @@ def test_legendre():
     assert legendre(10, 0) != 0
     assert legendre(11, 0) == 0
 
-    assert roots(legendre(4, x), x) == {
-        sqrt(Rational(3, 7) - Rational(2, 35)*sqrt(30)): 1,
-        -sqrt(Rational(3, 7) - Rational(2, 35)*sqrt(30)): 1,
-        sqrt(Rational(3, 7) + Rational(2, 35)*sqrt(30)): 1,
-        -sqrt(Rational(3, 7) + Rational(2, 35)*sqrt(30)): 1,
-    }
+    assert roots(legendre(4, x), x) == {-sqrt(35)*sqrt(-2*sqrt(30) + 15)/35: 1,
+                                        +sqrt(35)*sqrt(-2*sqrt(30) + 15)/35: 1,
+                                        -sqrt(35)*sqrt(+2*sqrt(30) + 15)/35: 1,
+                                        +sqrt(35)*sqrt(+2*sqrt(30) + 15)/35: 1}
 
     X = legendre(n, x)
     assert isinstance(X, legendre)

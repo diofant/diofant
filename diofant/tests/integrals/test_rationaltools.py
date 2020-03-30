@@ -106,7 +106,7 @@ def test_ratint():
            sqrt(2)*log(x**2 + x*(-2 + sqrt(2)) - sqrt(2) + 2)/8 -
            sqrt(2)*atan(-sqrt(2)*x + 1 + sqrt(2))/4 +
            sqrt(2)*atan(sqrt(2)*x - sqrt(2) + 1)/4)
-    assert ratint(1/((x - 1)**4 + 1), x) == ans
+    assert (ratint(1/((x - 1)**4 + 1), x) - ans).equals(0) is True
 
     ans = RootSum(776887*t**7 + 27216*t**5 - 15120*t**4 + 3780*t**3 -
                   504*t**2 + 35*t - 1,
