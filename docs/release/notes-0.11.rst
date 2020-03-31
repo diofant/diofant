@@ -181,3 +181,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`16620` Slow factor(x^n-1, modulus=2) computation for some "difficult" n
 * :sympyissue:`18997` Incorrect limit result involving Abs, returns expression involving a symbol
 * :sympyissue:`18992` Possibly incorrect limit related to Stirling's formula
+* :sympyissue:`19026` Bug in Limit
