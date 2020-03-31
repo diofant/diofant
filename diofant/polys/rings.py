@@ -975,7 +975,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self._square()
         elif n == 3:
             return self*self._square()
-        elif len(self) <= 5:  # TODO: use an actuall density measure
+        elif len(self) <= 5:
             return self._pow_multinomial(n)
         else:
             return self._pow_generic(n)
