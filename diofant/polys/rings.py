@@ -112,7 +112,6 @@ def sring(exprs, *symbols, **options):
     exprs = list(map(sympify, exprs))
     opt = build_options(symbols, options)
 
-    # TODO: rewrite this so that it doesn't use expand() (see poly()).
     reps, opt = _parallel_dict_from_expr(exprs, opt)
 
     if opt.domain is None:
