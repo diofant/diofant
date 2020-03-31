@@ -2054,7 +2054,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return r
 
-    # TODO: following methods should point to polynomial
+    # The following methods aren't ported (yet) to polynomial
     # representation independent algorithm implementations.
 
     def half_gcdex(self, other):
