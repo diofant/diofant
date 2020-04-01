@@ -180,11 +180,8 @@ def dup_inner_subresultants(f, g, K):
 
         lc = dmp_LC(g, K)
 
-        if d > 1:        # abnormal case
-            q = c**(d - 1)
-            c = K.quo((-lc)**d, q)
-        else:
-            c = -lc
+        q = c**(d - 1)
+        c = K.quo((-lc)**d, q)
 
         S.append(-c)
 
@@ -282,12 +279,9 @@ def dmp_inner_subresultants(f, g, u, K):
 
         lc = dmp_LC(g, K)
 
-        if d > 1:
-            p = dmp_pow(dmp_neg(lc, v, K), d, v, K)
-            q = dmp_pow(c, d - 1, v, K)
-            c = dmp_quo(p, q, v, K)
-        else:
-            c = dmp_neg(lc, v, K)
+        p = dmp_pow(dmp_neg(lc, v, K), d, v, K)
+        q = dmp_pow(c, d - 1, v, K)
+        c = dmp_quo(p, q, v, K)
 
         S.append(dmp_neg(c, v, K))
 
