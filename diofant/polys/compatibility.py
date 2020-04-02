@@ -11,11 +11,11 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
                          dmp_ground_trunc, dup_decompose, dup_mirror,
                          dup_real_imag, dup_scale, dup_shift, dup_transform)
-from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_inner_subresultants,
-                          dmp_primitive, dmp_qq_collins_resultant,
-                          dmp_resultant, dmp_rr_prs_gcd,
-                          dmp_zz_collins_resultant, dmp_zz_modular_resultant,
-                          dup_gcdex, dup_half_gcdex, dup_invert)
+from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_primitive,
+                          dmp_qq_collins_resultant, dmp_resultant,
+                          dmp_rr_prs_gcd, dmp_zz_collins_resultant,
+                          dmp_zz_modular_resultant, dup_gcdex, dup_half_gcdex,
+                          dup_invert)
 from .factortools import (dmp_factor_list, dmp_trial_division,
                           dmp_zz_diophantine, dmp_zz_mignotte_bound,
                           dmp_zz_wang, dmp_zz_wang_hensel_lifting,
@@ -232,10 +232,6 @@ class IPolys:
 
     def dup_invert(self, f, g):
         return self.from_dense(dup_invert(self.to_dense(f), self.to_dense(g), self.domain))
-
-    def dmp_inner_subresultants(self, f, g):
-        prs, sres = dmp_inner_subresultants(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return list(map(self.from_dense, prs)), sres
 
     def dmp_zz_modular_resultant(self, f, g, p):
         res = dmp_zz_modular_resultant(self.to_dense(f), self.to_dense(g), self.domain_new(p), self.ngens-1, self.domain)

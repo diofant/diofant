@@ -2054,6 +2054,27 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return r
 
+    def subresultants(self, other):
+        """
+        Computes subresultant PRS of two polynomials in `K[X]`.
+
+        Examples
+        ========
+
+        >>> R, x, y = ring('x y', ZZ)
+
+        >>> f = 3*x**2*y - y**3 - 4
+        >>> g = x**2 + x*y**3 - 9
+
+        >>> a = 3*x*y**4 + y**3 - 27*y + 4
+        >>> b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
+
+        >>> f.subresultants(g) == [f, g, a, b]
+        True
+
+        """
+        return self.resultant(other, includePRS=True)[1]
+
     # The following methods aren't ported (yet) to polynomial
     # representation independent algorithm implementations.
 
@@ -2068,9 +2089,6 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self.ring.dup_gcdex(self, other)
         else:
             raise MultivariatePolynomialError('extended Euclidean algorithm')
-
-    def subresultants(self, other):
-        return self.ring.dmp_inner_subresultants(self, other)[0]
 
     def resultant(self, other, includePRS=False):
         return self.ring.dmp_resultant(self, other, includePRS=includePRS)

@@ -136,9 +136,11 @@ def test_PolyElement_subresultants():
     R, x = ring('x', ZZ)
 
     assert R(0).resultant(R(0)) == 0
+    assert R(0).resultant(R(0), includePRS=True) == (0, [])
 
     assert R(1).resultant(R(0)) == 0
     assert R(0).resultant(R(1)) == 0
+    assert R(0).resultant(R(1), includePRS=True) == (0, [1])
 
     f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
     g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
@@ -203,25 +205,19 @@ def test_PolyElement_subresultants():
 
     assert f.resultant(g) == -1
 
-    assert R.dmp_inner_subresultants(0, 0) == ([], [])
-    assert R.dmp_inner_subresultants(0, 1) == ([1], [1])
-
     R, x, y = ring('x,y', ZZ)
 
     assert R(0).resultant(R(0)) == 0
-    assert R(0).resultant(R(0), includePRS=True)[0] == 0
+    assert R(0).resultant(R(0), includePRS=True) == (0, [])
     assert R.dmp_zz_collins_resultant(0, 0) == 0
     assert R.dmp_qq_collins_resultant(0, 0) == 0
 
     assert R(1).resultant(R(0)) == 0
 
     assert R(0).resultant(R(1)) == 0
-    assert R(0).resultant(R(1), includePRS=True)[0] == 0
+    assert R(0).resultant(R(1), includePRS=True) == (0, [1])
     assert R.dmp_zz_collins_resultant(0, 1) == 0
     assert R.dmp_qq_collins_resultant(0, 1) == 0
-
-    assert R.dmp_inner_subresultants(0, 0) == ([], [])
-    assert R.dmp_inner_subresultants(0, 1) == ([R.one], [[1]])
 
     f = 3*x**2*y - y**3 - 4
     g = x**2 + x*y**3 - 9
