@@ -44,6 +44,7 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
 
     def _from_PythonIntegerRing(self, a, K0):
         return self.dtype(a)
+    _from_GMPYIntegerRing = _from_PythonIntegerRing
 
     def _from_PythonFiniteField(self, a, K0):
         return self.dtype(int(a))
@@ -52,13 +53,7 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
     def _from_PythonRationalField(self, a, K0):
         if a.denominator == 1:
             return self.dtype(a.numerator)
-
-    def _from_GMPYIntegerRing(self, a, K0):
-        return self.dtype(a)
-
-    def _from_GMPYRationalField(self, a, K0):
-        if a.denominator == 1:
-            return self.dtype(a.numerator)
+    _from_GMPYRationalField = _from_PythonRationalField
 
     def _from_RealField(self, a, K0):
         p, q = K0.to_rational(a)

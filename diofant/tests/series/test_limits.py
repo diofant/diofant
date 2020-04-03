@@ -778,3 +778,7 @@ def test_sympyissue_18992():
     n = Symbol('n', positive=True, integer=True)
 
     assert limit(n/(factorial(n)**(1/n)), n, oo) == E
+
+
+def test_sympyissue_19026():
+    assert limit(abs(log(x) + 1)/log(x), x, oo) == 1

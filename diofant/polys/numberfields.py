@@ -674,14 +674,14 @@ def primitive_element(extension, **args):
 
     x = Dummy('x')
     domain = args.get('domain', QQ)
-    F, Y = zip(*[(minimal_polynomial(e, domain=domain).replace(y), y)
-                 for e, y in zip(extension, numbered_symbols('y', cls=Dummy))])
+    F = [minimal_polynomial(e, domain=domain) for e in extension]
+    Y = [p.gen for p in F]
 
     for u in range(1, (len(F) - 1)*prod(f.degree() for f in F) + 1):
         coeffs = [u**n for n in range(len(Y))]
         f = x - sum(c*y for c, y in zip(coeffs, Y))
 
-        *H, g = groebner(F + (f,), Y + (x,), domain=domain, polys=True)
+        *H, g = groebner(F + [f], Y + [x], domain=domain)
 
         for i, (h, y) in enumerate(zip(H, Y)):
             H[i] = (y - h).eject(*Y).retract(field=True)

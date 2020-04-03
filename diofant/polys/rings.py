@@ -112,7 +112,6 @@ def sring(exprs, *symbols, **options):
     exprs = list(map(sympify, exprs))
     opt = build_options(symbols, options)
 
-    # TODO: rewrite this so that it doesn't use expand() (see poly()).
     reps, opt = _parallel_dict_from_expr(exprs, opt)
 
     if opt.domain is None:
@@ -976,7 +975,7 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self._square()
         elif n == 3:
             return self*self._square()
-        elif len(self) <= 5:  # TODO: use an actuall density measure
+        elif len(self) <= 5:
             return self._pow_multinomial(n)
         else:
             return self._pow_generic(n)
@@ -2055,7 +2054,28 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return r
 
-    # TODO: following methods should point to polynomial
+    def subresultants(self, other):
+        """
+        Computes subresultant PRS of two polynomials in `K[X]`.
+
+        Examples
+        ========
+
+        >>> R, x, y = ring('x y', ZZ)
+
+        >>> f = 3*x**2*y - y**3 - 4
+        >>> g = x**2 + x*y**3 - 9
+
+        >>> a = 3*x*y**4 + y**3 - 27*y + 4
+        >>> b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
+
+        >>> f.subresultants(g) == [f, g, a, b]
+        True
+
+        """
+        return self.resultant(other, includePRS=True)[1]
+
+    # The following methods aren't ported (yet) to polynomial
     # representation independent algorithm implementations.
 
     def half_gcdex(self, other):
@@ -2069,9 +2089,6 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self.ring.dup_gcdex(self, other)
         else:
             raise MultivariatePolynomialError('extended Euclidean algorithm')
-
-    def subresultants(self, other):
-        return self.ring.dmp_inner_subresultants(self, other)[0]
 
     def resultant(self, other, includePRS=False):
         return self.ring.dmp_resultant(self, other, includePRS=includePRS)

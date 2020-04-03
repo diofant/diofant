@@ -118,7 +118,8 @@ def dup_inner_subresultants(f, g, K):
     Subresultant PRS algorithm in `K[x]`.
 
     Computes the subresultant polynomial remainder sequence (PRS)
-    and the non-zero scalar subresultants of `f` and `g`.
+    and the last non-zero scalar subresultant of `f` and `g`.
+
     By [1] Thm. 3, these are the constants '-c' (- to optimize
     computation of sign).
     The first subdeterminant is set to 1 by convention to match
@@ -130,8 +131,8 @@ def dup_inner_subresultants(f, g, K):
 
     >>> R, x = ring('x', ZZ)
 
-    >>> R.dmp_inner_subresultants(x**2 + 1, x**2 - 1)
-    ([x**2 + 1, x**2 - 1, -2], [1, 1, 4])
+    >>> (x**2 + 1).resultant(x**2 - 1, includePRS=True)
+    (4, [x**2 + 1, x**2 - 1, -2])
 
     References
     ==========
@@ -147,10 +148,10 @@ def dup_inner_subresultants(f, g, K):
         n, m = m, n
 
     if not f:
-        return [], []
+        return [], 0
 
     if not g:
-        return [f], [K.one]
+        return [f], K.one
 
     R = [f, g]
     d = n - m
@@ -163,8 +164,6 @@ def dup_inner_subresultants(f, g, K):
     lc = dmp_LC(g, K)
     c = lc**d
 
-    # Conventional first scalar subdeterminant is 1
-    S = [K.one, c]
     c = -c
 
     while h:
@@ -180,15 +179,10 @@ def dup_inner_subresultants(f, g, K):
 
         lc = dmp_LC(g, K)
 
-        if d > 1:        # abnormal case
-            q = c**(d - 1)
-            c = K.quo((-lc)**d, q)
-        else:
-            c = -lc
+        q = c**(d - 1)
+        c = K.quo((-lc)**d, q)
 
-        S.append(-c)
-
-    return R, S
+    return R, -c
 
 
 def dup_prs_resultant(f, g, K):
@@ -204,15 +198,12 @@ def dup_prs_resultant(f, g, K):
     (4, [x**2 + 1, x**2 - 1, -2])
 
     """
-    if not f or not g:
-        return K.zero, []
+    R, S = dmp_inner_subresultants(f, g, 0, K)
 
-    R, S = dup_inner_subresultants(f, g, K)
-
-    if dmp_degree_in(R[-1], 0, 0) > 0:
+    if len(R) < 2 or dmp_degree_in(R[-1], 0, 0) > 0:
         return K.zero, R
 
-    return S[-1], R
+    return S, R
 
 
 def dmp_inner_subresultants(f, g, u, K):
@@ -230,10 +221,7 @@ def dmp_inner_subresultants(f, g, u, K):
     >>> a = 3*x*y**4 + y**3 - 27*y + 4
     >>> b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
 
-    >>> prs = [f, g, a, b]
-    >>> sres = [[1], [1], [3, 0, 0, 0, 0], [-3, 0, 0, -12, 1, 0, -54, 8, 729, -216, 16]]
-
-    >>> R.dmp_inner_subresultants(f, g) == (prs, sres)
+    >>> f.resultant(g, includePRS=True) == (b.drop(0), [f, g, a, b])
     True
 
     """
@@ -248,11 +236,11 @@ def dmp_inner_subresultants(f, g, u, K):
         n, m = m, n
 
     if dmp_zero_p(f, u):
-        return [], []
+        return [], dmp_zero(u)
 
     v = u - 1
     if dmp_zero_p(g, u):
-        return [f], [dmp_ground(K.one, v)]
+        return [f], dmp_ground(K.one, v)
 
     R = [f, g]
     d = n - m
@@ -265,7 +253,6 @@ def dmp_inner_subresultants(f, g, u, K):
     lc = dmp_LC(g, K)
     c = dmp_pow(lc, d, v, K)
 
-    S = [dmp_ground(K.one, v), c]
     c = dmp_neg(c, v, K)
 
     while not dmp_zero_p(h, u):
@@ -282,38 +269,16 @@ def dmp_inner_subresultants(f, g, u, K):
 
         lc = dmp_LC(g, K)
 
-        if d > 1:
-            p = dmp_pow(dmp_neg(lc, v, K), d, v, K)
-            q = dmp_pow(c, d - 1, v, K)
-            c = dmp_quo(p, q, v, K)
-        else:
-            c = dmp_neg(lc, v, K)
+        p = dmp_pow(dmp_neg(lc, v, K), d, v, K)
+        q = dmp_pow(c, d - 1, v, K)
+        c = dmp_quo(p, q, v, K)
 
-        S.append(dmp_neg(c, v, K))
-
-    return R, S
+    return R, dmp_neg(c, v, K)
 
 
 def dmp_subresultants(f, g, u, K):
-    """
-    Computes subresultant PRS of two polynomials in `K[X]`.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = 3*x**2*y - y**3 - 4
-    >>> g = x**2 + x*y**3 - 9
-
-    >>> a = 3*x*y**4 + y**3 - 27*y + 4
-    >>> b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
-
-    >>> f.subresultants(g) == [f, g, a, b]
-    True
-
-    """
-    return dmp_inner_subresultants(f, g, u, K)[0]
+    """Computes subresultant PRS of two polynomials in `K[X]`."""
+    return dmp_resultant(f, g, u, K, includePRS=True)[1]
 
 
 def dmp_prs_resultant(f, g, u, K):
@@ -344,15 +309,12 @@ def dmp_prs_resultant(f, g, u, K):
     if not u:
         return dup_prs_resultant(f, g, K)
 
-    if dmp_zero_p(f, u) or dmp_zero_p(g, u):
-        return dmp_zero(u - 1), []
-
     R, S = dmp_inner_subresultants(f, g, u, K)
 
-    if dmp_degree_in(R[-1], 0, u) > 0:
+    if len(R) < 2 or dmp_degree_in(R[-1], 0, u) > 0:
         return dmp_zero(u - 1), R
 
-    return S[-1], R
+    return S, R
 
 
 def dmp_zz_modular_resultant(f, g, p, u, K):
