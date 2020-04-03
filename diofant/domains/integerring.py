@@ -47,6 +47,9 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
         return self.dtype(int(a))
     _from_GMPYFiniteField = _from_PythonFiniteField
 
+    _from_GMPYFiniteRing = _from_PythonFiniteField
+    _from_PythonFiniteRing = _from_PythonFiniteField
+
     def _from_PythonRationalField(self, a, K0):
         if a.denominator == 1:
             return self.dtype(a.numerator)
@@ -65,6 +68,11 @@ class IntegerRing(CharacteristicZero, SimpleDomain, Ring):
     @abc.abstractmethod
     def finite_field(self, p):
         """Returns a finite field."""
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def finite_ring(self, n):
+        """Returns a finite ring."""
         raise NotImplementedError
 
 
@@ -100,6 +108,11 @@ class PythonIntegerRing(IntegerRing):
         from .finitefield import PythonFiniteField
         return PythonFiniteField(p)
 
+    def finite_ring(self, n):
+        """Returns a finite ring."""
+        from .finitefield import PythonFiniteRing
+        return PythonFiniteRing(n)
+
 
 class GMPYIntegerRing(IntegerRing):
     """Integer ring based on GMPY's integers."""
@@ -133,6 +146,11 @@ class GMPYIntegerRing(IntegerRing):
         """Returns a finite field."""
         from .finitefield import GMPYFiniteField
         return GMPYFiniteField(p)
+
+    def finite_ring(self, n):
+        """Returns a finite ring."""
+        from .finitefield import GMPYFiniteRing
+        return GMPYFiniteRing(n)
 
 
 ZZ_python = PythonIntegerRing()
