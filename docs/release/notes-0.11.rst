@@ -49,6 +49,7 @@ Compatibility breaks
 * Drop ``algebraic_field()`` method of :class:`~diofant.domains.IntegerRing`, see :pull:`977`.
 * Drop ``has_assoc_Field`` property, ``is_SymbolicDomain`` property renamed to ``is_ExpressionDomain`` of :class:`~diofant.domains.domain.Domain`, see :pull:`977`.
 * ``drop_to_ground()`` method of :class:`~diofant.polys.rings.PolynomialRing` renamed to :meth:`~diofant.polys.rings.PolynomialRing.eject`, see :pull:`977`.
+* Renamed option misspeled option ``bareis`` to ``bareiss`` in :meth:`~diofant.matrices.matrices.MatrixBase.det` and :func:`~diofant.matrices.dense.wronskian`, see :pull:`866`.
 
 Minor changes
 =============
@@ -182,3 +183,7 @@ These Sympy issues also were addressed:
 * :sympyissue:`18997` Incorrect limit result involving Abs, returns expression involving a symbol
 * :sympyissue:`18992` Possibly incorrect limit related to Stirling's formula
 * :sympyissue:`19026` Bug in Limit
+* :sympyissue:`12303` Ellipse comparison with other geometric entities throws an error
+* :sympyissue:`11986` Typo Error in mathml.py
+* :sympyissue:`12361` Misspelling of "Bareiss" in Matrix module
+* :sympyissue:`12452` is_upper() raises IndexError for tall matrices

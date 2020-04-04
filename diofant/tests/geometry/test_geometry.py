@@ -94,6 +94,8 @@ def test_ellipse_geom():
     c2 = Circle(p2, 1)
     c3 = Circle(Point(sqrt(2), sqrt(2)), 1)
 
+    l1 = Line(p1, p2)
+
     pytest.raises(ValueError, lambda: Ellipse(Point3D(0, 0, 0), 1, 1))
     pytest.raises(ValueError, lambda: e3.arbitrary_point(y1))
 
@@ -112,6 +114,7 @@ def test_ellipse_geom():
     assert Ellipse(None, 1, 1).center == Point(0, 0)
     assert e1 == c1
     assert e1 != e2
+    assert e1 != l1  # issue sympy/sympy#12303
     assert p4 in e1
     assert p2 not in e2
     assert e1.area == pi

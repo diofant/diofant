@@ -1442,7 +1442,7 @@ def GramSchmidt(vlist, orthonormal=False):
     return out
 
 
-def wronskian(functions, var, method='bareis'):
+def wronskian(functions, var, method='bareiss'):
     """
     Compute Wronskian for [] of functions
 

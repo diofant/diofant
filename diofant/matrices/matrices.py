@@ -2051,7 +2051,7 @@ class MatrixBase(DefaultPrinting):
         """
         return all(self[i, j].is_zero
                    for i in range(1, self.rows)
-                   for j in range(i))
+                   for j in range(min(i, self.cols)))
 
     @property
     def is_lower(self):
@@ -2165,7 +2165,7 @@ class MatrixBase(DefaultPrinting):
         """
         return all(self[i, j].is_zero
                    for i in range(2, self.rows)
-                   for j in range(i - 1))
+                   for j in range(min(self.cols, i - 1)))
 
     @property
     def is_lower_hessenberg(self):
@@ -2406,18 +2406,18 @@ class MatrixBase(DefaultPrinting):
                     return False
         return True
 
-    def det(self, method='bareis'):
+    def det(self, method='bareiss'):
         """Computes the matrix determinant using the method "method".
 
         Possible values for "method":
-          bareis ... det_bareis
+          bareiss ... det_bareis
           berkowitz ... berkowitz_det
           det_LU ... det_LU_decomposition
 
         See Also
         ========
 
-        det_bareis
+        det_bareiss
         berkowitz_det
         det_LU_decomposition
 
@@ -2429,8 +2429,8 @@ class MatrixBase(DefaultPrinting):
             raise NonSquareMatrixError()
         if not self:
             return Integer(1)
-        if method == 'bareis':
-            return self.det_bareis()
+        if method == 'bareiss':
+            return self.det_bareiss()
         elif method == 'berkowitz':
             return self.berkowitz_det()
         elif method == 'det_LU':
@@ -2438,8 +2438,8 @@ class MatrixBase(DefaultPrinting):
         else:
             raise ValueError("Determinant method '%s' unrecognized" % method)
 
-    def det_bareis(self):
-        """Compute matrix determinant using Bareis' fraction-free
+    def det_bareiss(self):
+        """Compute matrix determinant using Bareiss' fraction-free
         algorithm which is an extension of the well known Gaussian
         elimination method. This approach is best suited for dense
         symbolic matrices and will result in a determinant with
@@ -2488,7 +2488,7 @@ class MatrixBase(DefaultPrinting):
                     else:
                         return Integer(0)
 
-                # proceed with Bareis' fraction-free (FF)
+                # proceed with Bareiss' fraction-free (FF)
                 # form of Gaussian elimination algorithm
                 for i in range(k + 1, n):
                     for j in range(k + 1, n):
@@ -2523,7 +2523,7 @@ class MatrixBase(DefaultPrinting):
         ========
 
         det
-        det_bareis
+        det_bareiss
         berkowitz_det
 
         """
