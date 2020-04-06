@@ -411,6 +411,11 @@ def test_dmp_gcd():
             assert (x + 1).cofactors(2*x**2 + 4*x + 2) == (x + 1, 1, 2*x + 2)
             assert (x - 31).cofactors(x) == (1, x - 31, x)
 
+            f = x**2 - 1
+            g = x**2 - 3*x + 2
+
+            assert f.cofactors(g) == (x - 1, x + 1, x - 2)
+
             f = x**4 + 8*x**3 + 21*x**2 + 22*x + 8
             g = x**3 + 6*x**2 + 11*x + 6
 
@@ -471,6 +476,10 @@ def test_dmp_gcd():
             f, g = x**2/2 + x + QQ(1, 2), x/2 + QQ(1, 2)
 
             assert f.cofactors(g) == (x + 1, g, QQ(1, 2))
+
+            f, g = x**2 - 1, x**2 - 3*x + 2
+
+            assert f.cofactors(g) == (x - 1, x + 1, x - 2)
 
     R, x = ring('x', FF(5))
 
@@ -575,6 +584,10 @@ def test_dmp_gcd():
             f, g = x**2/4 + x*y + y**2, x**2/2 + x*y
 
             assert f.cofactors(g) == (x + 2*y, x/4 + y/2, x/2)
+
+            f, g = x**2/2 + x*y + y**2/2, x**2 + x*y
+
+            assert f.cofactors(g) == (x + y, x/2 + y/2, x)
 
     R, x, y = ring('x,y', RR)
 
