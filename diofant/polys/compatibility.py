@@ -12,8 +12,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_ground_trunc, dup_decompose, dup_mirror,
                          dup_real_imag, dup_scale, dup_shift, dup_transform)
 from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_primitive,
-                          dmp_qq_collins_resultant, dmp_resultant,
-                          dmp_rr_prs_gcd, dmp_zz_collins_resultant,
+                          dmp_resultant, dmp_rr_prs_gcd,
                           dmp_zz_modular_resultant)
 from .factortools import (dmp_factor_list, dmp_trial_division,
                           dmp_zz_diophantine, dmp_zz_mignotte_bound,
@@ -223,14 +222,6 @@ class IPolys:
 
     def dmp_zz_modular_resultant(self, f, g, p):
         res = dmp_zz_modular_resultant(self.to_dense(f), self.to_dense(g), self.domain_new(p), self.ngens-1, self.domain)
-        return self.drop(0).from_dense(res)
-
-    def dmp_zz_collins_resultant(self, f, g):
-        res = dmp_zz_collins_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.drop(0).from_dense(res)
-
-    def dmp_qq_collins_resultant(self, f, g):
-        res = dmp_qq_collins_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
         return self.drop(0).from_dense(res)
 
     def dmp_resultant(self, f, g, includePRS=False):

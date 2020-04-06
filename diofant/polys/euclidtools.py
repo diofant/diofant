@@ -322,7 +322,7 @@ def dmp_zz_collins_resultant(f, g, u, K):
     >>> f = x + y + 2
     >>> g = 2*x*y + x + 3
 
-    >>> R.dmp_zz_collins_resultant(f, g)
+    >>> f.resultant(g)
     -2*y**2 - 5*y + 1
 
     """
@@ -379,7 +379,7 @@ def dmp_qq_collins_resultant(f, g, u, K0):
     >>> f = x/2 + y + QQ(2, 3)
     >>> g = 2*x*y + x + 3
 
-    >>> R.dmp_qq_collins_resultant(f, g)
+    >>> f.resultant(g)
     -2*y**2 - 7/3*y + 5/6
 
     """
