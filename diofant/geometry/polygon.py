@@ -27,16 +27,6 @@ class Polygon(GeometrySet):
 
     vertices : sequence of Points
 
-    Attributes
-    ==========
-
-    area
-    angles
-    perimeter
-    vertices
-    centroid
-    sides
-
     Raises
     ======
 
@@ -966,20 +956,6 @@ class RegularPolygon(Polygon):
     n : int
         The number of sides
 
-    Attributes
-    ==========
-
-    vertices
-    center
-    radius
-    rotation
-    apothem
-    interior_angle
-    exterior_angle
-    circumcircle
-    incircle
-    angles
-
     Raises
     ======
 
@@ -1543,20 +1519,6 @@ class Triangle(Polygon):
 
     points : sequence of Points
     keyword: asa, sas, or sss to specify sides/angles of the triangle
-
-    Attributes
-    ==========
-
-    vertices
-    altitudes
-    orthocenter
-    circumcenter
-    circumradius
-    circumcircle
-    inradius
-    incircle
-    medians
-    medial
 
     Raises
     ======

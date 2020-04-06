@@ -25,15 +25,6 @@ class LinearEntity3D(GeometryEntity):
     """An base class for all linear entities (line, ray and segment)
     in a 3-dimensional Euclidean space.
 
-    Attributes
-    ==========
-
-    p1
-    p2
-    direction_ratio
-    direction_cosine
-    points
-
     Notes
     =====
 
@@ -982,15 +973,6 @@ class Ray3D(LinearEntity3D):
     p2 : Point or a direction vector
     direction_ratio: Determines the direction in which the Ray propagates.
 
-
-    Attributes
-    ==========
-
-    source
-    xdirection
-    ydirection
-    zdirection
-
     See Also
     ========
 
@@ -1261,12 +1243,6 @@ class Segment3D(LinearEntity3D):
 
     p1 : Point3D
     p2 : Point3D
-
-    Attributes
-    ==========
-
-    length : Expr
-    midpoint : Point3D
 
     See Also
     ========

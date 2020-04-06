@@ -38,20 +38,6 @@ class Ellipse(GeometrySet):
         Two of `hradius`, `vradius` and `eccentricity` must be supplied to
         create an Ellipse. The third is derived from the two supplied.
 
-    Attributes
-    ==========
-
-    center
-    hradius
-    vradius
-    area
-    circumference
-    eccentricity
-    periapsis
-    apoapsis
-    focus_distance
-    foci
-
     Raises
     ======
 
@@ -1191,13 +1177,6 @@ class Circle(Ellipse):
     center : Point
     radius : number or diofant expression
     points : sequence of three Points
-
-    Attributes
-    ==========
-
-    radius (synonymous with hradius, vradius, major and minor)
-    circumference
-    equation
 
     Raises
     ======

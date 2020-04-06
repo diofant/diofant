@@ -27,12 +27,6 @@ class Plane(GeometryEntity):
     inputs. They are three non-collinear points and a point and the plane's
     normal vector.
 
-    Attributes
-    ==========
-
-    p1
-    normal_vector
-
     Examples
     ========
 
