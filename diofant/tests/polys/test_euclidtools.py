@@ -141,6 +141,7 @@ def test_PolyElement_subresultants():
     assert R(0).resultant(R(0), includePRS=True) == (0, [])
 
     assert R(1).resultant(R(0)) == 0
+    assert R(1).subresultants(R(0)) == [1]
     assert R(0).resultant(R(1)) == 0
     assert R(0).resultant(R(1), includePRS=True) == (0, [1])
 
@@ -150,10 +151,13 @@ def test_PolyElement_subresultants():
     a = 15*x**4 - 3*x**2 + 9
     b = 65*x**2 + 125*x - 245
     c = 9326*x - 12300
-    d = 260708
+    d = R(260708)
 
     assert f.subresultants(g) == [f, g, a, b, c, d]
-    assert f.resultant(g) == R.dmp_LC(d)
+    assert f.resultant(g) == d.drop(x)
+
+    with using(use_collins_resultant=True):
+        assert f.resultant(g) == d.drop(x)
 
     f = x**2 - 2*x + 1
     g = x**2 - 1
@@ -211,15 +215,20 @@ def test_PolyElement_subresultants():
 
     assert R(0).resultant(R(0)) == 0
     assert R(0).resultant(R(0), includePRS=True) == (0, [])
-    assert R.dmp_zz_collins_resultant(0, 0) == 0
-    assert R.dmp_qq_collins_resultant(0, 0) == 0
+
+    with using(use_collins_resultant=True):
+        assert R(0).resultant(R(0)) == 0
+        assert R(0).resultant(R(1)) == 0
+
+        f = x + y + 2
+        g = 2*x*y + x + 3
+
+        assert f.resultant(g) == (-2*y**2 - 5*y + 1).drop(x)
 
     assert R(1).resultant(R(0)) == 0
-
+    assert R(1).subresultants(R(0)) == [1]
     assert R(0).resultant(R(1)) == 0
     assert R(0).resultant(R(1), includePRS=True) == (0, [1])
-    assert R.dmp_zz_collins_resultant(0, 1) == 0
-    assert R.dmp_qq_collins_resultant(0, 1) == 0
 
     f = 3*x**2*y - y**3 - 4
     g = x**2 + x*y**3 - 9
@@ -227,7 +236,7 @@ def test_PolyElement_subresultants():
     a = 3*x*y**4 + y**3 - 27*y + 4
     b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
 
-    r = R.dmp_LC(b)
+    r = b.drop(x)
     rr = (r, [3*x**2*y - y**3 - 4, x**2 + x*y**3 - 9, 3*x*y**4 + y**3 - 27*y + 4,
               -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16])
 
@@ -235,8 +244,9 @@ def test_PolyElement_subresultants():
 
     assert f.resultant(g) == r
     assert f.resultant(g, includePRS=True) == rr
-    assert R.dmp_zz_collins_resultant(f, g) == r
-    assert R.dmp_qq_collins_resultant(f, g) == r
+
+    with using(use_collins_resultant=True):
+        assert f.resultant(g) == r
 
     f = -x**3 + 5
     g = 3*x**2*y + x**2
@@ -244,13 +254,14 @@ def test_PolyElement_subresultants():
     a = 45*y**2 + 30*y + 5
     b = 675*y**3 + 675*y**2 + 225*y + 25
 
-    r = R.dmp_LC(b)
+    r = b.drop(x)
 
     assert f.subresultants(g) == [f, g, a]
     assert f.resultant(g) == r
     assert f.resultant(g, includePRS=True)[0] == r
-    assert R.dmp_zz_collins_resultant(f, g) == r
-    assert R.dmp_qq_collins_resultant(f, g) == r
+
+    with using(use_collins_resultant=True):
+        assert f.resultant(g) == r
 
     R, x, y, z, u, v = ring('x,y,z,u,v', ZZ)
 
@@ -261,7 +272,8 @@ def test_PolyElement_subresultants():
         - 2*y*z**2*v + 6*y*z*u**2 + 12*y*z*u*v + 6*y*z*v**2 - 18*y*u**2*v \
         - 18*y*u*v**2 + 4*z**2*u*v - 12*z*u**2*v - 12*z*u*v**2 + 36*u**2*v**2
 
-    assert R.dmp_zz_collins_resultant(f, g) == r.drop(x)
+    with using(use_collins_resultant=True):
+        assert f.resultant(g) == r.drop(x)
 
     R, x, y, z, u, v = ring('x,y,z,u,v', QQ)
 
@@ -273,7 +285,8 @@ def test_PolyElement_subresultants():
         + y*z*v**2/6 - y*u**2*v/2 - y*u*v**2/2 + z**2*u*v/9 \
         - z*u**2*v/3 - z*u*v**2/3 + u**2*v**2
 
-    assert R.dmp_qq_collins_resultant(f, g) == r.drop(x)
+    with using(use_collins_resultant=True):
+        assert f.resultant(g) == r.drop(x)
 
     Rt, t = ring('t', ZZ)
     Rx, x = ring('x', Rt)
@@ -282,6 +295,9 @@ def test_PolyElement_subresultants():
     g = -6*t*x**5 + x**4 + 20*t*x**3 - 3*x**2 - 10*t*x + 6
 
     assert f.resultant(g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
+
+    with using(use_collins_resultant=True):
+        assert f.resultant(g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
 
     assert (x - 1).resultant(x + 1, includePRS=True) == (2, [x - 1, x + 1, 2])
 
@@ -293,23 +309,36 @@ def test_PolyElement_subresultants():
     assert f.resultant(g) == (1 + 2*y**2).drop(x)
 
     g += 1
+
     with using(use_collins_resultant=True):
         assert f.resultant(g) == (2 + 2*y**2).drop(x)
 
     R, x, y = ring('x,y', QQ)
 
-    f = x + y
-    g = x**2 - x*y + 1
-
     with using(use_collins_resultant=True):
+        assert R(0).resultant(R(0)) == 0
+        assert R(0).resultant(R(1)) == 0
+
+        f = x + y
+        g = x**2 - x*y + 1
+
         assert f.resultant(g) == (1 + 2*y**2).drop(x)
 
-    R, x, y = ring('x,y', ZZ)
+        f = x/2 + y + QQ(2, 3)
+        g = 2*x*y + x + 3
 
-    f = x + y + 2
-    g = 2*x*y + x + 3
+        assert f.resultant(g) == (-2*y**2 - 7*y/3 + QQ(5, 6)).drop(x)
 
-    assert R.dmp_zz_collins_resultant(f, g) == (-2*y**2 - 5*y + 1).drop(x)
+        f = 3*x**2*y - y**3 - 4
+        g = x**2 + x*y**3 - 9
+
+        assert f.resultant(g) == (-3*y**10 - 12*y**7 + y**6 - 54*y**4 +
+                                  8*y**3 + 729*y**2 - 216*y + 16).drop(x)
+
+        f = -x**3 + 5
+        g = 3*x**2*y + x**2
+
+        assert f.resultant(g) == (675*y**3 + 675*y**2 + 225*y + 25).drop(x)
 
 
 def test_PolyElement_discriminant():
