@@ -158,7 +158,6 @@ analogous to `Bézout's identity
 <https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity>`_
 in the case of integers.
 
-.. autofunction:: dup_half_gcdex
 .. autofunction:: dup_gcdex
 
 Simplified remainder sequences

@@ -14,8 +14,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
 from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_primitive,
                           dmp_qq_collins_resultant, dmp_resultant,
                           dmp_rr_prs_gcd, dmp_zz_collins_resultant,
-                          dmp_zz_modular_resultant, dup_gcdex, dup_half_gcdex,
-                          dup_invert)
+                          dmp_zz_modular_resultant)
 from .factortools import (dmp_factor_list, dmp_trial_division,
                           dmp_zz_diophantine, dmp_zz_mignotte_bound,
                           dmp_zz_wang, dmp_zz_wang_hensel_lifting,
@@ -221,17 +220,6 @@ class IPolys:
         else:
             ring = self
         return c, ring.from_dense(F)
-
-    def dup_half_gcdex(self, f, g):
-        s, h = dup_half_gcdex(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(s), self.from_dense(h)
-
-    def dup_gcdex(self, f, g):
-        s, t, h = dup_gcdex(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(s), self.from_dense(t), self.from_dense(h)
-
-    def dup_invert(self, f, g):
-        return self.from_dense(dup_invert(self.to_dense(f), self.to_dense(g), self.domain))
 
     def dmp_zz_modular_resultant(self, f, g, p):
         res = dmp_zz_modular_resultant(self.to_dense(f), self.to_dense(g), self.domain_new(p), self.ngens-1, self.domain)

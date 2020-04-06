@@ -1590,7 +1590,7 @@ class Poly(Expr):
         if auto and dom.is_Ring:
             F, G = F.set_domain(F.ring.domain.field), G.set_domain(G.ring.domain.field)
 
-        result = F.ring.dup_invert(F, G)
+        result = F.ring.invert(F, G)
         return per(result)
 
     def subresultants(self, other):

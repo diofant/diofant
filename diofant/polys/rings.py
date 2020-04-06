@@ -453,6 +453,10 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         """Extended GCD of ``a`` and ``b``."""
         return a.gcdex(b)
 
+    def half_gcdex(self, a, b):
+        """Half extended GCD of ``a`` and ``b``."""
+        return a.half_gcdex(b)
+
     def gcd(self, a, b):
         """Returns GCD of ``a`` and ``b``."""
         return a.gcd(b)
@@ -2075,20 +2079,73 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         return self.resultant(other, includePRS=True)[1]
 
-    # The following methods aren't ported (yet) to polynomial
-    # representation independent algorithm implementations.
-
     def half_gcdex(self, other):
-        if self.ring.is_univariate:
-            return self.ring.dup_half_gcdex(self, other)
-        else:
+        """
+        Half extended Euclidean algorithm in `F[x]`.
+
+        Returns ``(s, h)`` such that ``h = gcd(self, other)``
+        and ``s*self = h (mod other)``.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', QQ)
+
+        >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
+        >>> g = x**3 + x**2 - 4*x - 4
+
+        >>> f.half_gcdex(g)
+        (-1/5*x + 3/5, x + 1)
+
+        """
+        ring = self.ring
+        if ring.is_multivariate:
             raise MultivariatePolynomialError('half extended Euclidean algorithm')
 
+        domain = ring.domain
+
+        if not domain.is_Field:
+            raise DomainError(f"can't compute half extended GCD over {domain}")
+
+        a, b = ring.one, ring.zero
+        f, g = self, other
+
+        while g:
+            q, r = divmod(f, g)
+            f, g = g, r
+            a, b = b, a - q*b
+
+        a = a.quo_ground(f.LC)
+        f = f.monic()
+
+        return a, f
+
     def gcdex(self, other):
-        if self.ring.is_univariate:
-            return self.ring.dup_gcdex(self, other)
-        else:
-            raise MultivariatePolynomialError('extended Euclidean algorithm')
+        """
+        Extended Euclidean algorithm in `F[x]`.
+
+        Returns ``(s, t, h)`` such that ``h = gcd(self, other)`` and
+        ``s*self + t*other = h``.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', QQ)
+
+        >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
+        >>> g = x**3 + x**2 - 4*x - 4
+
+        >>> f.gcdex(g)
+        (-1/5*x + 3/5, 1/5*x**2 - 6/5*x + 2, x + 1)
+
+        """
+        s, h = self.half_gcdex(other)
+        t = h - self*s
+        t //= other
+        return s, t, h
+
+    # The following methods aren't ported (yet) to polynomial
+    # representation independent algorithm implementations.
 
     def resultant(self, other, includePRS=False):
         return self.ring.dmp_resultant(self, other, includePRS=includePRS)

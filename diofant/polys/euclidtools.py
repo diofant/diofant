@@ -3,107 +3,23 @@
 from ..core import cacheit
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, symmetric_residue
-from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
-                         dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
-                         dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
-                         dmp_sub_mul, dup_mul)
+from .densearith import (dmp_add, dmp_max_norm, dmp_mul, dmp_mul_ground,
+                         dmp_mul_term, dmp_neg, dmp_pow, dmp_quo,
+                         dmp_quo_ground, dmp_sub, dup_mul)
 from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
                          dmp_ground, dmp_ground_LC, dmp_LC, dmp_one_p,
                          dmp_raise, dmp_strip, dmp_zero, dmp_zero_p)
 from .densetools import (dmp_clear_denoms, dmp_eval_in, dmp_ground_monic,
                          dmp_ground_primitive, dmp_ground_trunc)
 from .polyconfig import query
-from .polyerrors import DomainError, HomomorphismFailed, NotInvertible
-
-
-def dup_half_gcdex(f, g, K):
-    """
-    Half extended Euclidean algorithm in `F[x]`.
-
-    Returns ``(s, h)`` such that ``h = gcd(f, g)`` and ``s*f = h (mod g)``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', QQ)
-
-    >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
-    >>> g = x**3 + x**2 - 4*x - 4
-
-    >>> f.half_gcdex(g)
-    (-1/5*x + 3/5, x + 1)
-
-    """
-    if not K.is_Field:
-        raise DomainError(f"can't compute half extended GCD over {K}")
-
-    a, b = [K.one], []
-
-    while g:
-        q, r = dmp_div(f, g, 0, K)
-        f, g = g, r
-        a, b = b, dmp_sub_mul(a, q, b, 0, K)
-
-    a = dmp_quo_ground(a, dmp_LC(f, K), 0, K)
-    f = dmp_ground_monic(f, 0, K)
-
-    return a, f
+from .polyerrors import HomomorphismFailed
 
 
 def dup_gcdex(f, g, K):
-    """
-    Extended Euclidean algorithm in `F[x]`.
-
-    Returns ``(s, t, h)`` such that ``h = gcd(f, g)`` and ``s*f + t*g = h``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', QQ)
-
-    >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
-    >>> g = x**3 + x**2 - 4*x - 4
-
-    >>> f.gcdex(g)
-    (-1/5*x + 3/5, 1/5*x**2 - 6/5*x + 2, x + 1)
-
-    """
-    s, h = dup_half_gcdex(f, g, K)
-
-    F = dmp_sub_mul(h, s, f, 0, K)
-    t = dmp_quo(F, g, 0, K)
-
-    return s, t, h
-
-
-def dup_invert(f, g, K):
-    """
-    Compute multiplicative inverse of `f` modulo `g` in `F[x]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', QQ)
-
-    >>> f = x**2 - 1
-    >>> g = 2*x - 1
-    >>> h = x - 1
-
-    >>> R.dup_invert(f, g)
-    -4/3
-
-    >>> R.dup_invert(f, h)
-    Traceback (most recent call last):
-    ...
-    NotInvertible: zero divisor
-
-    """
-    s, h = dup_half_gcdex(f, g, K)
-
-    if h == [K.one]:
-        return dmp_rem(s, g, 0, K)
-    else:
-        raise NotInvertible('zero divisor')
+    """Extended Euclidean algorithm in `F[x]`."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(1)])
+    f, g = map(ring.from_dense, (f, g))
+    return tuple(map(ring.to_dense, f.gcdex(g)))
 
 
 def dmp_prem(f, g, u, K):

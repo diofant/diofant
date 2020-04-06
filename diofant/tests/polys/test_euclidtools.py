@@ -69,8 +69,10 @@ def test_dup_gcdex():
 def test_dup_invert():
     R, x = ring('x', QQ)
 
-    assert R.dup_invert(2*x, x**2 - 16) == x/32
-    pytest.raises(NotInvertible, lambda: R.dup_invert(x**2 - 1, x - 1))
+    assert R.invert(2*x, x**2 - 16) == x/32
+    assert R.invert(x**2 - 1, 2*x - 1) == QQ(-4, 3)
+
+    pytest.raises(NotInvertible, lambda: R.invert(x**2 - 1, x - 1))
 
 
 def test_dmp_prem():
