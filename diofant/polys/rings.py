@@ -548,7 +548,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         to_expr = self.ring.domain.to_expr
         return expr_from_dict({monom: to_expr(self[monom]) for monom in self}, *symbols)
 
-    def clear_denoms(self):
+    def clear_denoms(self, convert=False):
         domain = self.ring.domain
 
         if not domain.is_Field:
@@ -565,7 +565,12 @@ class PolyElement(DomainElement, CantSympify, dict):
         for coeff in self.values():
             common = lcm(common, coeff.denominator)
 
-        return common, self.__class__({k: self[k]*common for k in self})
+        f = self.mul_ground(domain.convert(common))
+
+        if convert:
+            f = f.set_domain(ground_ring)
+
+        return common, f
 
     def _strip_zero(self):
         """Eliminate monomials with zero coefficient."""
@@ -1743,21 +1748,16 @@ class PolyElement(DomainElement, CantSympify, dict):
     def _gcd_QQ(self, g):
         f = self
         ring = f.ring
-        new_ring = ring.clone(domain=ring.domain.ring)
 
-        cf, f = f.clear_denoms()
-        cg, g = g.clear_denoms()
+        cf, f = f.clear_denoms(convert=True)
+        cg, g = g.clear_denoms(convert=True)
 
-        f = f.set_ring(new_ring)
-        g = g.set_ring(new_ring)
+        h, cff, cfg = map(lambda _: _.set_ring(ring), f._gcd_ZZ(g))
 
-        h, cff, cfg = f._gcd_ZZ(g)
-
-        h = h.set_ring(ring)
         c, h = h.LC, h.monic()
 
-        cff = cff.set_ring(ring).mul_ground(ring.domain.quo(c, cf))
-        cfg = cfg.set_ring(ring).mul_ground(ring.domain.quo(c, cg))
+        cff = cff.mul_ground(ring.domain.quo(c, cf))
+        cfg = cfg.mul_ground(ring.domain.quo(c, cg))
 
         return h, cff, cfg
 
@@ -1807,11 +1807,8 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             new_ring = ring.clone(domain=domain.ring)
 
-            cq, f = f.clear_denoms()
-            cp, g = g.clear_denoms()
-
-            f = f.set_ring(new_ring)
-            g = g.set_ring(new_ring)
+            cq, f = f.clear_denoms(convert=True)
+            cp, g = g.clear_denoms(convert=True)
 
             _, p, q = f.cofactors(g)
             _, cp, cq = new_ring.domain.cofactors(cp, cq)

@@ -1156,6 +1156,8 @@ def test_PolyElement_clear_denoms():
 
     assert (3*x**2 + x).clear_denoms() == (1, 3*x**2 + x)
     assert (x**2 + x/2).clear_denoms() == (2, 2*x**2 + x)
+    assert ((x**2 + x/2).clear_denoms(convert=True) ==
+            (2, (2*x**2 + x).set_domain(ZZ)))
 
     rQQ,  x, t = ring('x,t', QQ)
     rZZ,  X, T = ring('x,t', ZZ)

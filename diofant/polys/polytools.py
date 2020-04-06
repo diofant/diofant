@@ -1310,22 +1310,17 @@ class Poly(Expr):
         (6, Poly(3*x + 2, x, domain='ZZ'))
 
         """
-        f = self
+        dom = self.domain
+        if convert and dom.has_assoc_Ring:
+            dom = self.domain.ring
 
-        if not f.domain.is_Field:
-            return Integer(1), f
+        coeff, result = self.rep.clear_denoms(convert=convert)
+        f = self.per(result)
 
-        dom = f.domain
-        if dom.has_assoc_Ring:
-            dom = f.domain.ring
+        if convert:
+            f = f.set_domain(dom)
 
-        coeff, result = f.rep.clear_denoms()
-        coeff, f = dom.to_expr(coeff), f.per(result)
-
-        if not convert or not dom.has_assoc_Ring:
-            return coeff, f
-        else:
-            return coeff, f.to_ring()
+        return dom.to_expr(coeff), f
 
     def rat_clear_denoms(self, other):
         """
