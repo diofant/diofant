@@ -18,6 +18,7 @@ from ..utilities.magic import pollute
 from .compatibility import IPolys
 from .constructor import construct_domain
 from .densebasic import dmp_from_dict, dmp_to_dict
+from .euclidtools import _GCD
 from .heuristicgcd import heugcd
 from .modulargcd import func_field_modgcd, modgcd
 from .monomials import Monomial
@@ -151,7 +152,7 @@ def _parse_symbols(symbols):
 _ring_cache = {}
 
 
-class PolynomialRing(Ring, CompositeDomain, IPolys):
+class PolynomialRing(Ring, CompositeDomain, IPolys, _GCD):
     """A class for representing multivariate polynomial rings."""
 
     is_PolynomialRing = True
@@ -1728,9 +1729,9 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             return tuple(map(lambda x: x.set_domain(ring.domain), f.cofactors(g)))
         elif ring.domain.is_Field:
-            return self.ring.dmp_ff_prs_gcd(self, other)
+            return self.ring._ff_prs_gcd(self, other)
         else:
-            return self.ring.dmp_rr_prs_gcd(self, other)
+            return self.ring._rr_prs_gcd(self, other)
 
     def _gcd_ZZ(self, other):
         if query('USE_HEU_GCD'):
@@ -1740,7 +1741,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 pass
 
         _gcd_zz_methods = {'modgcd': modgcd,
-                           'prs': self.ring.dmp_rr_prs_gcd}
+                           'prs': self.ring._rr_prs_gcd}
 
         method = _gcd_zz_methods[query('FALLBACK_GCD_ZZ_METHOD')]
         return method(self, other)
@@ -1763,7 +1764,7 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     def _gcd_AA(self, g):
         _gcd_aa_methods = {'modgcd': func_field_modgcd,
-                           'prs': self.ring.dmp_ff_prs_gcd}
+                           'prs': self.ring._ff_prs_gcd}
 
         method = _gcd_aa_methods[query('GCD_AA_METHOD')]
         return method(self, g)
