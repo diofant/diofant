@@ -11,8 +11,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
                          dmp_ground_trunc, dup_decompose, dup_mirror,
                          dup_real_imag, dup_scale, dup_shift, dup_transform)
-from .euclidtools import (dmp_content, dmp_primitive, dmp_resultant,
-                          dmp_zz_modular_resultant)
+from .euclidtools import dmp_primitive, dmp_resultant, dmp_zz_modular_resultant
 from .factortools import (dmp_factor_list, dmp_trial_division,
                           dmp_zz_diophantine, dmp_zz_mignotte_bound,
                           dmp_zz_wang, dmp_zz_wang_hensel_lifting,
@@ -232,10 +231,6 @@ class IPolys:
             return res0, list(map(self.from_dense, res[1]))
         else:
             return res0
-
-    def dmp_content(self, f):
-        cont = dmp_content(self.to_dense(f), self.ngens-1, self.domain)
-        return self.drop(0).from_dense(cont)
 
     def dmp_primitive(self, f):
         cont, prim = dmp_primitive(self.to_dense(f), self.ngens-1, self.domain)

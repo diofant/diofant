@@ -324,7 +324,6 @@ including the last one which is the resultant if this does not vanish.
 .. autofunction:: dmp_qq_collins_resultant
 .. autofunction:: dmp_resultant
 .. autofunction:: dmp_gcd
-.. autofunction:: dmp_content
 .. autofunction:: dmp_primitive
 
 Polynomial factorization in characteristic zero:

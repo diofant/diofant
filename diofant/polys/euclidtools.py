@@ -441,14 +441,6 @@ def dmp_gcd(f, g, u, K):
     return dmp_inner_gcd(f, g, u, K)[0]
 
 
-def dmp_content(f, u, K):
-    """Returns GCD of multivariate coefficients."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_dense(f)
-    ring, f = map(lambda _: _.eject(*ring.gens[1:]), (ring, f))
-    return ring.domain.to_dense(f.content())
-
-
 def dmp_primitive(f, u, K):
     """Returns multivariate content and a primitive polynomial."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])

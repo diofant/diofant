@@ -235,6 +235,22 @@ def test_dmp_ground_content():
     assert (x**2 + 2*x + 1).content() == 1
     assert (2*x**2 + 4*x + 2).content() == 2
 
+    R = R.eject(y)
+
+    assert R(-2).content() == -2
+
+    f, g, F = (3*y**2 + 2*y + 1).eject(y), R(1), R(0)
+
+    for i in range(5):
+        g *= f
+        F += R.x**i*g
+
+    assert F.content() == f.inject().drop(x)
+
+    f = 2*x*y + 6*x + 4*y + 12
+
+    assert f.eject(y).content() == (2*y + 6).drop(x)
+
     R, x, y = ring('x y', QQ)
 
     assert R(0).content() == 0
@@ -268,10 +284,14 @@ def test_dmp_ground_content():
     assert f.content() == -1
     assert (6*f).content() == -6
 
+    assert f.eject(y, z).content() == -1
+
     f = f_polys()[5]
 
     assert f.content() == -1
     assert (7*f).content() == -7
+
+    assert f.eject(y, z).content() == -1
 
     R, x, y, z, t = ring('x y, z t', ZZ)
 
@@ -279,6 +299,8 @@ def test_dmp_ground_content():
 
     assert f.content() == 1
     assert (8*f).content() == 8
+
+    assert f.eject(y, z, t).content() == 1
 
 
 def test_dmp_ground_primitive():
