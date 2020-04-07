@@ -7,8 +7,8 @@ from .densearith import (dmp_add, dmp_max_norm, dmp_mul, dmp_mul_ground,
                          dmp_mul_term, dmp_neg, dmp_pow, dmp_quo,
                          dmp_quo_ground, dmp_sub, dup_mul)
 from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
-                         dmp_ground, dmp_ground_LC, dmp_LC, dmp_one_p,
-                         dmp_raise, dmp_strip, dmp_zero, dmp_zero_p)
+                         dmp_ground, dmp_ground_LC, dmp_LC, dmp_raise,
+                         dmp_strip, dmp_zero, dmp_zero_p)
 from .densetools import dmp_clear_denoms, dmp_eval_in, dmp_ground_trunc
 from .polyconfig import query
 from .polyerrors import HomomorphismFailed
@@ -450,24 +450,13 @@ def dmp_content(f, u, K):
 
 
 def dmp_primitive(f, u, K):
-    """
-    Returns multivariate content and a primitive polynomial.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_primitive(2*x*y + 6*x + 4*y + 12)
-    (2*y + 6, x + 2)
-
-    """
-    cont, v = dmp_content(f, u, K), u - 1
-
-    if dmp_zero_p(f, u) or dmp_one_p(cont, v, K):
-        return cont, f
-    else:
-        return cont, [dmp_quo(c, cont, v, K) for c in f]
+    """Returns multivariate content and a primitive polynomial."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    new_ring, f = map(lambda _: _.eject(*ring.gens[1:]), (ring, f))
+    c, f = f.primitive()
+    f = f.inject()
+    return new_ring.domain.to_dense(c), ring.to_dense(f)
 
 
 class _GCD:

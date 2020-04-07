@@ -787,8 +787,8 @@ def test_dmp_content():
 def test_dmp_primitive():
     R, x, y = ring('x,y', ZZ)
 
-    assert R.dmp_primitive(0) == (0, 0)
-    assert R.dmp_primitive(1) == (1, 1)
+    assert R.dmp_primitive(R(0)) == (0, 0)
+    assert R.dmp_primitive(R(1)) == (1, 1)
 
     f, g, F = 3*y**2 + 2*y + 1, 1, 0
 
@@ -797,6 +797,10 @@ def test_dmp_primitive():
         F += x**i*g
 
     assert R.dmp_primitive(F) == (f.drop(x), F // f)
+
+    f = 2*x*y + 6*x + 4*y + 12
+
+    assert R.dmp_primitive(f) == ((2*y + 6).drop(x), x + 2)
 
     R, x, y, z = ring('x,y,z', ZZ)
 
