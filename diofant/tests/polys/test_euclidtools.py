@@ -758,37 +758,6 @@ def test_PolyElement_lcm():
     assert (3*x**2 + 2*x + 4).lcm(2*x**2 + 2*x + 3) == x**3 + 2*x**2 + 4
 
 
-def test_dmp_primitive():
-    R, x, y = ring('x,y', ZZ)
-
-    assert R.dmp_primitive(R(0)) == (0, 0)
-    assert R.dmp_primitive(R(1)) == (1, 1)
-
-    f, g, F = 3*y**2 + 2*y + 1, 1, 0
-
-    for i in range(5):
-        g *= f
-        F += x**i*g
-
-    assert R.dmp_primitive(F) == (f.drop(x), F // f)
-
-    f = 2*x*y + 6*x + 4*y + 12
-
-    assert R.dmp_primitive(f) == ((2*y + 6).drop(x), x + 2)
-
-    R, x, y, z = ring('x,y,z', ZZ)
-
-    cont, f = R.dmp_primitive(f_4)
-    assert cont == -1 and f == -f_4
-    cont, f = R.dmp_primitive(f_5)
-    assert cont == -1 and f == -f_5
-
-    R, x, y, z, t = ring('x,y,z,t', ZZ)
-
-    cont, f = R.dmp_primitive(f_6)
-    assert cont == 1 and f == f_6
-
-
 def test_PolyElement_cancel():
     R, x = ring('x', ZZ)
 
