@@ -192,11 +192,6 @@ def dmp_inner_subresultants(f, g, u, K):
     return R, dmp_neg(c, v, K)
 
 
-def dmp_subresultants(f, g, u, K):
-    """Computes subresultant PRS of two polynomials in `K[X]`."""
-    return dmp_resultant(f, g, u, K, includePRS=True)[1]
-
-
 def dmp_prs_resultant(f, g, u, K):
     """
     Resultant algorithm in `K[X]` using subresultant PRS.
@@ -465,7 +460,7 @@ def dmp_rr_prs_gcd(f, g, u, K):
 
         c = K.gcd(fc, gc)
 
-        h = dmp_subresultants(F, G, 0, K)[-1]
+        h = dmp_resultant(F, G, 0, K, includePRS=True)[1][-1]
         _, h = dmp_ground_primitive(h, 0, K)
 
         h = dmp_mul_ground(h, c, 0, K)
@@ -478,7 +473,7 @@ def dmp_rr_prs_gcd(f, g, u, K):
     fc, F = dmp_primitive(f, u, K)
     gc, G = dmp_primitive(g, u, K)
 
-    h = dmp_subresultants(F, G, u, K)[-1]
+    h = dmp_resultant(F, G, u, K, includePRS=True)[1][-1]
     c, _, _ = dmp_rr_prs_gcd(fc, gc, u - 1, K)
 
     if not K.is_normal(dmp_ground_LC(h, u, K)):
@@ -518,7 +513,7 @@ def dmp_ff_prs_gcd(f, g, u, K):
 
     """
     if not u:
-        h = dmp_subresultants(f, g, 0, K)[-1]
+        h = dmp_resultant(f, g, 0, K, includePRS=True)[1][-1]
         h = dmp_ground_monic(h, 0, K)
 
         cff = dmp_quo(f, h, 0, K)
@@ -529,7 +524,7 @@ def dmp_ff_prs_gcd(f, g, u, K):
     fc, F = dmp_primitive(f, u, K)
     gc, G = dmp_primitive(g, u, K)
 
-    h = dmp_subresultants(F, G, u, K)[-1]
+    h = dmp_resultant(F, G, u, K, includePRS=True)[1][-1]
     c, _, _ = dmp_ff_prs_gcd(fc, gc, u - 1, K)
 
     _, h = dmp_primitive(h, u, K)
