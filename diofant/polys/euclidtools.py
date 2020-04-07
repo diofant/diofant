@@ -430,66 +430,23 @@ def dmp_resultant(f, g, u, K, includePRS=False):
 
 
 def dmp_inner_gcd(f, g, u, K):
-    """
-    Computes polynomial GCD and cofactors of `f` and `g` in `K[X]`.
-
-    Returns ``(h, cff, cfg)`` such that ``h = gcd(f, g)``,
-    ``cff = quo(f, h)``, and ``cfg = quo(g, h)``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = x**2 + 2*x*y + y**2
-    >>> g = x**2 + x*y
-
-    >>> f.cofactors(g)
-    (x + y, x + y, x)
-
-    """
+    """Computes polynomial GCD and cofactors of `f` and `g` in `K[X]`."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f, g = map(ring.from_dense, (f, g))
     return tuple(map(ring.to_dense, f.cofactors(g)))
 
 
 def dmp_gcd(f, g, u, K):
-    """
-    Computes polynomial GCD of `f` and `g` in `K[X]`.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = x**2 + 2*x*y + y**2
-    >>> g = x**2 + x*y
-
-    >>> f.gcd(g)
-    x + y
-
-    """
+    """Computes polynomial GCD of `f` and `g` in `K[X]`."""
     return dmp_inner_gcd(f, g, u, K)[0]
 
 
 def dmp_content(f, u, K):
-    """
-    Returns GCD of multivariate coefficients.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_content(2*x*y + 6*x + 4*y + 12)
-    2*y + 6
-
-    """
+    """Returns GCD of multivariate coefficients."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_dense(f)
-    new_ring = ring.eject(*ring.gens[1:])
-    f = f.eject(*ring.gens[1:])
-    return new_ring.domain.to_dense(f.content())
+    ring, f = map(lambda _: _.eject(*ring.gens[1:]), (ring, f))
+    return ring.domain.to_dense(f.content())
 
 
 def dmp_primitive(f, u, K):

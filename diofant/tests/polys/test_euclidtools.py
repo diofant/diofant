@@ -771,6 +771,10 @@ def test_dmp_content():
 
     assert R.dmp_content(F) == f.drop(x)
 
+    f = 2*x*y + 6*x + 4*y + 12
+
+    assert R.dmp_content(f) == (2*y + 6).drop(x)
+
     R, x, y, z = ring('x,y,z', ZZ)
 
     assert R.dmp_content(f_4) == -1
