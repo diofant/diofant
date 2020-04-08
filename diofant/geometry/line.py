@@ -34,15 +34,6 @@ class LinearEntity(GeometrySet):
     """A base class for all linear entities (line, ray and segment)
     in a 2-dimensional Euclidean space.
 
-    Attributes
-    ==========
-
-    p1
-    p2
-    coefficients
-    slope
-    points
-
     Notes
     =====
 
@@ -1177,13 +1168,6 @@ class Ray(LinearEntity):
         If given as an angle it is interpreted in radians with the positive
         direction being ccw.
 
-    Attributes
-    ==========
-
-    source
-    xdirection
-    ydirection
-
     See Also
     ========
 
@@ -1501,12 +1485,6 @@ class Segment(LinearEntity):
 
     p1 : diofant.geometry.point.Point
     p2 : diofant.geometry.point.Point
-
-    Attributes
-    ==========
-
-    length : Expr
-    midpoint : diofant.geometry.point.Point
 
     See Also
     ========

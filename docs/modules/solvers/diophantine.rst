@@ -380,10 +380,6 @@ diop_ternary_quadratic
 ^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.diop_ternary_quadratic
 
-square_factor
-^^^^^^^^^^^^^
-.. autofunction:: diofant.solvers.diophantine.square_factor
-
 descent
 ^^^^^^^
 .. autofunction:: diofant.solvers.diophantine.descent

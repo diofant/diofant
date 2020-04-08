@@ -18,6 +18,7 @@ from ..utilities.magic import pollute
 from .compatibility import IPolys
 from .constructor import construct_domain
 from .densebasic import dmp_from_dict, dmp_to_dict
+from .euclidtools import _GCD
 from .heuristicgcd import heugcd
 from .modulargcd import func_field_modgcd, modgcd
 from .monomials import Monomial
@@ -151,7 +152,7 @@ def _parse_symbols(symbols):
 _ring_cache = {}
 
 
-class PolynomialRing(Ring, CompositeDomain, IPolys):
+class PolynomialRing(Ring, CompositeDomain, IPolys, _GCD):
     """A class for representing multivariate polynomial rings."""
 
     is_PolynomialRing = True
@@ -453,6 +454,10 @@ class PolynomialRing(Ring, CompositeDomain, IPolys):
         """Extended GCD of ``a`` and ``b``."""
         return a.gcdex(b)
 
+    def half_gcdex(self, a, b):
+        """Half extended GCD of ``a`` and ``b``."""
+        return a.half_gcdex(b)
+
     def gcd(self, a, b):
         """Returns GCD of ``a`` and ``b``."""
         return a.gcd(b)
@@ -544,7 +549,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         to_expr = self.ring.domain.to_expr
         return expr_from_dict({monom: to_expr(self[monom]) for monom in self}, *symbols)
 
-    def clear_denoms(self):
+    def clear_denoms(self, convert=False):
         domain = self.ring.domain
 
         if not domain.is_Field:
@@ -561,7 +566,12 @@ class PolyElement(DomainElement, CantSympify, dict):
         for coeff in self.values():
             common = lcm(common, coeff.denominator)
 
-        return common, self.__class__({k: self[k]*common for k in self})
+        f = self.mul_ground(domain.convert(common))
+
+        if convert:
+            f = f.set_domain(ground_ring)
+
+        return common, f
 
     def _strip_zero(self):
         """Eliminate monomials with zero coefficient."""
@@ -1719,9 +1729,9 @@ class PolyElement(DomainElement, CantSympify, dict):
 
             return tuple(map(lambda x: x.set_domain(ring.domain), f.cofactors(g)))
         elif ring.domain.is_Field:
-            return self.ring.dmp_ff_prs_gcd(self, other)
+            return self.ring._ff_prs_gcd(self, other)
         else:
-            return self.ring.dmp_rr_prs_gcd(self, other)
+            return self.ring._rr_prs_gcd(self, other)
 
     def _gcd_ZZ(self, other):
         if query('USE_HEU_GCD'):
@@ -1731,7 +1741,7 @@ class PolyElement(DomainElement, CantSympify, dict):
                 pass
 
         _gcd_zz_methods = {'modgcd': modgcd,
-                           'prs': self.ring.dmp_rr_prs_gcd}
+                           'prs': self.ring._rr_prs_gcd}
 
         method = _gcd_zz_methods[query('FALLBACK_GCD_ZZ_METHOD')]
         return method(self, other)
@@ -1739,27 +1749,22 @@ class PolyElement(DomainElement, CantSympify, dict):
     def _gcd_QQ(self, g):
         f = self
         ring = f.ring
-        new_ring = ring.clone(domain=ring.domain.ring)
 
-        cf, f = f.clear_denoms()
-        cg, g = g.clear_denoms()
+        cf, f = f.clear_denoms(convert=True)
+        cg, g = g.clear_denoms(convert=True)
 
-        f = f.set_ring(new_ring)
-        g = g.set_ring(new_ring)
+        h, cff, cfg = map(lambda _: _.set_ring(ring), f._gcd_ZZ(g))
 
-        h, cff, cfg = f._gcd_ZZ(g)
-
-        h = h.set_ring(ring)
         c, h = h.LC, h.monic()
 
-        cff = cff.set_ring(ring).mul_ground(ring.domain.quo(c, cf))
-        cfg = cfg.set_ring(ring).mul_ground(ring.domain.quo(c, cg))
+        cff = cff.mul_ground(ring.domain.quo(c, cf))
+        cfg = cfg.mul_ground(ring.domain.quo(c, cg))
 
         return h, cff, cfg
 
     def _gcd_AA(self, g):
         _gcd_aa_methods = {'modgcd': func_field_modgcd,
-                           'prs': self.ring.dmp_ff_prs_gcd}
+                           'prs': self.ring._ff_prs_gcd}
 
         method = _gcd_aa_methods[query('GCD_AA_METHOD')]
         return method(self, g)
@@ -1803,11 +1808,8 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             new_ring = ring.clone(domain=domain.ring)
 
-            cq, f = f.clear_denoms()
-            cp, g = g.clear_denoms()
-
-            f = f.set_ring(new_ring)
-            g = g.set_ring(new_ring)
+            cq, f = f.clear_denoms(convert=True)
+            cp, g = g.clear_denoms(convert=True)
 
             _, p, q = f.cofactors(g)
             _, cp, cq = new_ring.domain.cofactors(cp, cq)
@@ -2075,20 +2077,73 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         return self.resultant(other, includePRS=True)[1]
 
-    # The following methods aren't ported (yet) to polynomial
-    # representation independent algorithm implementations.
-
     def half_gcdex(self, other):
-        if self.ring.is_univariate:
-            return self.ring.dup_half_gcdex(self, other)
-        else:
+        """
+        Half extended Euclidean algorithm in `F[x]`.
+
+        Returns ``(s, h)`` such that ``h = gcd(self, other)``
+        and ``s*self = h (mod other)``.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', QQ)
+
+        >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
+        >>> g = x**3 + x**2 - 4*x - 4
+
+        >>> f.half_gcdex(g)
+        (-1/5*x + 3/5, x + 1)
+
+        """
+        ring = self.ring
+        if ring.is_multivariate:
             raise MultivariatePolynomialError('half extended Euclidean algorithm')
 
+        domain = ring.domain
+
+        if not domain.is_Field:
+            raise DomainError(f"can't compute half extended GCD over {domain}")
+
+        a, b = ring.one, ring.zero
+        f, g = self, other
+
+        while g:
+            q, r = divmod(f, g)
+            f, g = g, r
+            a, b = b, a - q*b
+
+        a = a.quo_ground(f.LC)
+        f = f.monic()
+
+        return a, f
+
     def gcdex(self, other):
-        if self.ring.is_univariate:
-            return self.ring.dup_gcdex(self, other)
-        else:
-            raise MultivariatePolynomialError('extended Euclidean algorithm')
+        """
+        Extended Euclidean algorithm in `F[x]`.
+
+        Returns ``(s, t, h)`` such that ``h = gcd(self, other)`` and
+        ``s*self + t*other = h``.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', QQ)
+
+        >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
+        >>> g = x**3 + x**2 - 4*x - 4
+
+        >>> f.gcdex(g)
+        (-1/5*x + 3/5, 1/5*x**2 - 6/5*x + 2, x + 1)
+
+        """
+        s, h = self.half_gcdex(other)
+        t = h - self*s
+        t //= other
+        return s, t, h
+
+    # The following methods aren't ported (yet) to polynomial
+    # representation independent algorithm implementations.
 
     def resultant(self, other, includePRS=False):
         return self.ring.dmp_resultant(self, other, includePRS=includePRS)

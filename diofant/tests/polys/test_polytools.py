@@ -3280,3 +3280,10 @@ def test_sympyissue_8695():
     # regression test from the issue thread, not related to the issue
     e = (x + 2)**2 * (y + 4)**5
     assert sqf(e) == sqf(e.expand()) == e
+
+
+def test_sympyissue_19070():
+    e = Poly(5*x, modulus=19)
+    r = e*2
+    assert r == Poly(10*x, modulus=19)
+    assert r.get_modulus() == 19

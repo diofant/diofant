@@ -3,107 +3,22 @@
 from ..core import cacheit
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, symmetric_residue
-from .densearith import (dmp_add, dmp_div, dmp_max_norm, dmp_mul,
-                         dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
-                         dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
-                         dmp_sub_mul, dup_mul)
+from .densearith import (dmp_add, dmp_max_norm, dmp_mul, dmp_mul_ground,
+                         dmp_mul_term, dmp_neg, dmp_pow, dmp_quo,
+                         dmp_quo_ground, dmp_sub, dup_mul)
 from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
-                         dmp_ground, dmp_ground_LC, dmp_LC, dmp_one_p,
-                         dmp_raise, dmp_strip, dmp_zero, dmp_zero_p)
-from .densetools import (dmp_clear_denoms, dmp_eval_in, dmp_ground_monic,
-                         dmp_ground_primitive, dmp_ground_trunc)
+                         dmp_ground, dmp_ground_LC, dmp_LC, dmp_raise,
+                         dmp_strip, dmp_zero, dmp_zero_p)
+from .densetools import dmp_clear_denoms, dmp_eval_in, dmp_ground_trunc
 from .polyconfig import query
-from .polyerrors import DomainError, HomomorphismFailed, NotInvertible
-
-
-def dup_half_gcdex(f, g, K):
-    """
-    Half extended Euclidean algorithm in `F[x]`.
-
-    Returns ``(s, h)`` such that ``h = gcd(f, g)`` and ``s*f = h (mod g)``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', QQ)
-
-    >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
-    >>> g = x**3 + x**2 - 4*x - 4
-
-    >>> f.half_gcdex(g)
-    (-1/5*x + 3/5, x + 1)
-
-    """
-    if not K.is_Field:
-        raise DomainError(f"can't compute half extended GCD over {K}")
-
-    a, b = [K.one], []
-
-    while g:
-        q, r = dmp_div(f, g, 0, K)
-        f, g = g, r
-        a, b = b, dmp_sub_mul(a, q, b, 0, K)
-
-    a = dmp_quo_ground(a, dmp_LC(f, K), 0, K)
-    f = dmp_ground_monic(f, 0, K)
-
-    return a, f
+from .polyerrors import HomomorphismFailed
 
 
 def dup_gcdex(f, g, K):
-    """
-    Extended Euclidean algorithm in `F[x]`.
-
-    Returns ``(s, t, h)`` such that ``h = gcd(f, g)`` and ``s*f + t*g = h``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', QQ)
-
-    >>> f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
-    >>> g = x**3 + x**2 - 4*x - 4
-
-    >>> f.gcdex(g)
-    (-1/5*x + 3/5, 1/5*x**2 - 6/5*x + 2, x + 1)
-
-    """
-    s, h = dup_half_gcdex(f, g, K)
-
-    F = dmp_sub_mul(h, s, f, 0, K)
-    t = dmp_quo(F, g, 0, K)
-
-    return s, t, h
-
-
-def dup_invert(f, g, K):
-    """
-    Compute multiplicative inverse of `f` modulo `g` in `F[x]`.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', QQ)
-
-    >>> f = x**2 - 1
-    >>> g = 2*x - 1
-    >>> h = x - 1
-
-    >>> R.dup_invert(f, g)
-    -4/3
-
-    >>> R.dup_invert(f, h)
-    Traceback (most recent call last):
-    ...
-    NotInvertible: zero divisor
-
-    """
-    s, h = dup_half_gcdex(f, g, K)
-
-    if h == [K.one]:
-        return dmp_rem(s, g, 0, K)
-    else:
-        raise NotInvertible('zero divisor')
+    """Extended Euclidean algorithm in `F[x]`."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(1)])
+    f, g = map(ring.from_dense, (f, g))
+    return tuple(map(ring.to_dense, f.gcdex(g)))
 
 
 def dmp_prem(f, g, u, K):
@@ -276,11 +191,6 @@ def dmp_inner_subresultants(f, g, u, K):
     return R, dmp_neg(c, v, K)
 
 
-def dmp_subresultants(f, g, u, K):
-    """Computes subresultant PRS of two polynomials in `K[X]`."""
-    return dmp_resultant(f, g, u, K, includePRS=True)[1]
-
-
 def dmp_prs_resultant(f, g, u, K):
     """
     Resultant algorithm in `K[X]` using subresultant PRS.
@@ -406,7 +316,7 @@ def dmp_zz_collins_resultant(f, g, u, K):
     >>> f = x + y + 2
     >>> g = 2*x*y + x + 3
 
-    >>> R.dmp_zz_collins_resultant(f, g)
+    >>> f.resultant(g)
     -2*y**2 - 5*y + 1
 
     """
@@ -463,7 +373,7 @@ def dmp_qq_collins_resultant(f, g, u, K0):
     >>> f = x/2 + y + QQ(2, 3)
     >>> g = 2*x*y + x + 3
 
-    >>> R.dmp_qq_collins_resultant(f, g)
+    >>> f.resultant(g)
     -2*y**2 - 7/3*y + 5/6
 
     """
@@ -519,192 +429,63 @@ def dmp_resultant(f, g, u, K, includePRS=False):
     return dmp_prs_resultant(f, g, u, K)[0]
 
 
-def dmp_rr_prs_gcd(f, g, u, K):
-    """
-    Computes polynomial GCD using subresultants over a ring.
-
-    Returns ``(h, cff, cfg)`` such that ``a = gcd(f, g)``, ``cff = quo(f, h)``,
-    and ``cfg = quo(g, h)``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dmp_rr_prs_gcd(x**2 - 1, x**2 - 3*x + 2)
-    (x - 1, x + 1, x - 2)
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = x**2 + 2*x*y + y**2
-    >>> g = x**2 + x*y
-
-    >>> R.dmp_rr_prs_gcd(f, g)
-    (x + y, x + y, x)
-
-    """
-    if not u:
-        fc, F = dmp_ground_primitive(f, 0, K)
-        gc, G = dmp_ground_primitive(g, 0, K)
-
-        c = K.gcd(fc, gc)
-
-        h = dmp_subresultants(F, G, 0, K)[-1]
-        _, h = dmp_ground_primitive(h, 0, K)
-
-        h = dmp_mul_ground(h, c, 0, K)
-
-        cff = dmp_quo(f, h, 0, K)
-        cfg = dmp_quo(g, h, 0, K)
-
-        return h, cff, cfg
-
-    fc, F = dmp_primitive(f, u, K)
-    gc, G = dmp_primitive(g, u, K)
-
-    h = dmp_subresultants(F, G, u, K)[-1]
-    c, _, _ = dmp_rr_prs_gcd(fc, gc, u - 1, K)
-
-    if not K.is_normal(dmp_ground_LC(h, u, K)):
-        h = dmp_neg(h, u, K)
-
-    _, h = dmp_primitive(h, u, K)
-    h = dmp_mul_term(h, c, 0, u, K)
-
-    cff = dmp_quo(f, h, u, K)
-    cfg = dmp_quo(g, h, u, K)
-
-    return h, cff, cfg
-
-
-def dmp_ff_prs_gcd(f, g, u, K):
-    """
-    Computes polynomial GCD using subresultants over a field.
-
-    Returns ``(h, cff, cfg)`` such that ``a = gcd(f, g)``, ``cff = quo(f, h)``,
-    and ``cfg = quo(g, h)``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', QQ)
-
-    >>> R.dmp_ff_prs_gcd(x**2 - 1, x**2 - 3*x + 2)
-    (x - 1, x + 1, x - 2)
-
-    >>> R, x, y = ring('x y', QQ)
-
-    >>> f = x**2/2 + x*y + y**2/2
-    >>> g = x**2 + x*y
-
-    >>> R.dmp_ff_prs_gcd(f, g)
-    (x + y, 1/2*x + 1/2*y, x)
-
-    """
-    if not u:
-        h = dmp_subresultants(f, g, 0, K)[-1]
-        h = dmp_ground_monic(h, 0, K)
-
-        cff = dmp_quo(f, h, 0, K)
-        cfg = dmp_quo(g, h, 0, K)
-
-        return h, cff, cfg
-
-    fc, F = dmp_primitive(f, u, K)
-    gc, G = dmp_primitive(g, u, K)
-
-    h = dmp_subresultants(F, G, u, K)[-1]
-    c, _, _ = dmp_ff_prs_gcd(fc, gc, u - 1, K)
-
-    _, h = dmp_primitive(h, u, K)
-    h = dmp_mul_term(h, c, 0, u, K)
-    h = dmp_ground_monic(h, u, K)
-
-    cff = dmp_quo(f, h, u, K)
-    cfg = dmp_quo(g, h, u, K)
-
-    return h, cff, cfg
-
-
 def dmp_inner_gcd(f, g, u, K):
-    """
-    Computes polynomial GCD and cofactors of `f` and `g` in `K[X]`.
-
-    Returns ``(h, cff, cfg)`` such that ``h = gcd(f, g)``,
-    ``cff = quo(f, h)``, and ``cfg = quo(g, h)``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = x**2 + 2*x*y + y**2
-    >>> g = x**2 + x*y
-
-    >>> f.cofactors(g)
-    (x + y, x + y, x)
-
-    """
+    """Computes polynomial GCD and cofactors of `f` and `g` in `K[X]`."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f, g = map(ring.from_dense, (f, g))
     return tuple(map(ring.to_dense, f.cofactors(g)))
 
 
 def dmp_gcd(f, g, u, K):
-    """
-    Computes polynomial GCD of `f` and `g` in `K[X]`.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = x**2 + 2*x*y + y**2
-    >>> g = x**2 + x*y
-
-    >>> f.gcd(g)
-    x + y
-
-    """
+    """Computes polynomial GCD of `f` and `g` in `K[X]`."""
     return dmp_inner_gcd(f, g, u, K)[0]
 
 
-def dmp_content(f, u, K):
-    """
-    Returns GCD of multivariate coefficients.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_content(2*x*y + 6*x + 4*y + 12)
-    2*y + 6
-
-    """
+def dmp_primitive(f, u, K):
+    """Returns multivariate content and a primitive polynomial."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_dense(f)
-    new_ring = ring.eject(*ring.gens[1:])
-    f = f.eject(*ring.gens[1:])
-    return new_ring.domain.to_dense(f.content())
+    new_ring, f = map(lambda _: _.eject(*ring.gens[1:]), (ring, f))
+    c, f = f.primitive()
+    f = f.inject()
+    return new_ring.domain.to_dense(c), ring.to_dense(f)
 
 
-def dmp_primitive(f, u, K):
-    """
-    Returns multivariate content and a primitive polynomial.
+class _GCD:
+    """Mixin class for computing gcd."""
 
-    Examples
-    ========
+    def _rr_prs_gcd(self, f, g):
+        """Computes polynomial GCD using subresultants over a ring."""
+        ring = self
 
-    >>> R, x, y = ring('x y', ZZ)
+        if self.is_multivariate:
+            ring, f, g = map(lambda _: _.eject(*self.gens[1:]), (ring, f, g))
+            return tuple(map(lambda _: _.inject(), ring._rr_prs_gcd(f, g)))
 
-    >>> R.dmp_primitive(2*x*y + 6*x + 4*y + 12)
-    (2*y + 6, x + 2)
+        domain = ring.domain
 
-    """
-    cont, v = dmp_content(f, u, K), u - 1
+        fc, ff = f.primitive()
+        gc, fg = g.primitive()
 
-    if dmp_zero_p(f, u) or dmp_one_p(cont, v, K):
-        return cont, f
-    else:
-        return cont, [dmp_quo(c, cont, v, K) for c in f]
+        h = ff.subresultants(fg)[-1]
+        _, h = h.primitive()
+
+        c = domain.gcd(fc, gc)
+        h *= c
+
+        return h, f // h, g // h
+
+    def _ff_prs_gcd(self, f, g):
+        """Computes polynomial GCD using subresultants over a field."""
+        ring = self
+
+        if ring.is_multivariate:
+            ring, f, g = map(lambda _: _.eject(*self.gens[1:]), (ring, f, g))
+            h, f, g = map(lambda _: _.inject(), ring._rr_prs_gcd(f, g))
+            c, h = h.LC, h.monic()
+            return h, f.quo_ground(c), g.quo_ground(c)
+
+        h = f.subresultants(g)[-1]
+        h = h.monic()
+
+        return h, f // h, g // h

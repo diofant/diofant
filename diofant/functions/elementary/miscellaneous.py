@@ -151,9 +151,7 @@ def cbrt(arg, **kwargs):
 
 
 def root(arg, n, k=0, **kwargs):
-    """root(x, n, k) -> Returns the k-th n-th root of x, defaulting to the
-    principle root (k=0).
-
+    """Returns the k-th n-th root of arg, defaulting to the principle root.
 
     Examples
     ========

@@ -98,11 +98,11 @@ class Tuple(Basic):
     # XXX: Basic defines count() as something different, so we can't
     # redefine it here. Originally this lead to cse() test failure.
     def tuple_count(self, value):
-        """T.count(value) -> integer -- return number of occurrences of value."""
+        """T.count(value) -> int -- return number of occurrences of value."""
         return self.args.count(value)
 
     def index(self, value, start=None, stop=None):
-        """T.index(value, [start, [stop]]) -> integer -- return first index of value.
+        """Return first index of value.
 
         Raises ValueError if the value is not present.
 
@@ -223,15 +223,15 @@ class Dict(Basic):
         return tuple(self.elements)
 
     def items(self):
-        """D.items() -> list of D's (key, value) pairs, as 2-tuples."""
+        """Returns a set-like object providing a view on Dict's items."""
         return self._dict.items()
 
     def keys(self):
-        """D.keys() -> list of D's keys."""
+        """Returns a set-like object providing a view on Dict's keys."""
         return self._dict.keys()
 
     def values(self):
-        """D.values() -> list of D's values."""
+        """Returns a set-like object providing a view on Dict's values."""
         return self._dict.values()
 
     def __iter__(self):
@@ -243,7 +243,7 @@ class Dict(Basic):
         return self._dict.__len__()
 
     def get(self, key, default=None):
-        """D.get(k[,d]) -> D[k] if k in D, else d.  d defaults to None."""
+        """Return the value for key if key is in the dictionary, else default."""
         return self._dict.get(sympify(key), default)
 
     def __contains__(self, key):

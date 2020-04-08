@@ -158,7 +158,6 @@ analogous to `Bézout's identity
 <https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity>`_
 in the case of integers.
 
-.. autofunction:: dup_half_gcdex
 .. autofunction:: dup_gcdex
 
 Simplified remainder sequences
@@ -320,15 +319,11 @@ Completing the last step we obtain all non-zero scalar subresultants,
 including the last one which is the resultant if this does not vanish.
 
 .. autofunction:: dmp_inner_subresultants
-.. autofunction:: dmp_subresultants
 .. autofunction:: dmp_zz_modular_resultant
 .. autofunction:: dmp_zz_collins_resultant
 .. autofunction:: dmp_qq_collins_resultant
 .. autofunction:: dmp_resultant
-.. autofunction:: dmp_rr_prs_gcd
-.. autofunction:: dmp_ff_prs_gcd
 .. autofunction:: dmp_gcd
-.. autofunction:: dmp_content
 .. autofunction:: dmp_primitive
 
 Polynomial factorization in characteristic zero:

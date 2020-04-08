@@ -40,7 +40,7 @@ class Ring(Domain):
 
     def invert(self, a, b):
         """Returns inversion of ``a mod b``."""
-        s, t, h = self.gcdex(a, b)
+        s, h = self.half_gcdex(a, b)
 
         if h == self.one:
             return s % b

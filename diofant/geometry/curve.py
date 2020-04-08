@@ -25,13 +25,6 @@ class Curve(GeometrySet):
     limits : 3-tuple
         Function parameter and lower and upper bounds.
 
-    Attributes
-    ==========
-
-    functions
-    parameter
-    limits
-
     Raises
     ======
 
