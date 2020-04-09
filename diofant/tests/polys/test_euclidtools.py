@@ -858,4 +858,4 @@ def test_dmp_zz_modular_resultant():
     f = x + y + 2
     g = 2*x*y + x + 3
 
-    assert R.dmp_zz_modular_resultant(f, g, 5) == -2*R1.y**2 + 1
+    assert R._modular_resultant(f, g, 5) == -2*R1.y**2 + 1

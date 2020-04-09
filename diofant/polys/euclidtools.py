@@ -3,11 +3,6 @@
 from ..core import cacheit
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, symmetric_residue
-from .densearith import (dmp_add, dmp_max_norm, dmp_mul, dmp_mul_ground,
-                         dmp_quo_ground, dmp_sub, dup_mul)
-from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
-                         dmp_ground_LC, dmp_raise, dmp_strip, dmp_zero)
-from .densetools import dmp_clear_denoms, dmp_eval_in, dmp_ground_trunc
 from .polyconfig import query
 from .polyerrors import HomomorphismFailed
 
@@ -53,86 +48,9 @@ def dmp_prs_resultant(f, g, u, K):
     return res0, list(map(ring.to_dense, res[1]))
 
 
-def dmp_zz_modular_resultant(f, g, p, u, K):
+def dmp_collins_resultant(f, g, u, K):
     """
-    Compute resultant of `f` and `g` modulo a prime `p`.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = x + y + 2
-    >>> g = 2*x*y + x + 3
-
-    >>> R.dmp_zz_modular_resultant(f, g, 5)
-    -2*y**2 + 1
-
-    """
-    if not u:
-        return symmetric_residue(dmp_prs_resultant(f, g, 0, K)[0] % p, p)
-
-    v = u - 1
-
-    n = dmp_degree_in(f, 0, u)
-    m = dmp_degree_in(g, 0, u)
-
-    N = dmp_degree_in(f, 1, u)
-    M = dmp_degree_in(g, 1, u)
-
-    B = n*M + m*N
-
-    D, a = [K.one], -K.one
-    r = dmp_zero(v)
-
-    while dmp_degree_in(D, 0, 0) <= B:
-        while True:
-            a += K.one
-
-            if a == p:
-                raise HomomorphismFailed('no luck')
-
-            F = dmp_eval_in(f, symmetric_residue(a, p), 1, u, K)
-
-            if dmp_degree_in(F, 0, v) == n:
-                G = dmp_eval_in(g, symmetric_residue(a, p), 1, u, K)
-
-                if dmp_degree_in(G, 0, v) == m:
-                    break
-
-        R = dmp_zz_modular_resultant(F, G, p, v, K)
-        e = dmp_eval_in(r, a, 0, v, K)
-
-        if not v:
-            R = dmp_strip([R], 0)
-            e = dmp_strip([e], 0)
-        else:
-            R = [R]
-            e = [e]
-
-        d = K.invert(dmp_eval_in(D, a, 0, 0, K), p)
-        d = dmp_mul_ground(D, d, 0, K)
-        d = dmp_raise(d, v, 0, K)
-
-        c = dmp_mul(d, dmp_sub(R, e, v, K), v, K)
-        r = dmp_add(r, c, v, K)
-
-        r = dmp_ground_trunc(r, p, v, K)
-
-        D = dup_mul(D, [K.one, -a], K)
-        D = dmp_ground_trunc(D, p, 0, K)
-
-    return r
-
-
-def _collins_crt(r, R, P, p, K):
-    """Wrapper of CRT for Collins's resultant algorithm."""
-    return K(crt([P, p], [r, R], check=False, symmetric=True)[0])
-
-
-def dmp_zz_collins_resultant(f, g, u, K):
-    """
-    Collins's modular resultant algorithm in `Z[X]`.
+    Collins's modular resultant algorithm in `ZZ[X]` or `QQ[X]`.
 
     Examples
     ========
@@ -145,55 +63,6 @@ def dmp_zz_collins_resultant(f, g, u, K):
     >>> f.resultant(g)
     -2*y**2 - 5*y + 1
 
-    """
-    n = dmp_degree_in(f, 0, u)
-    m = dmp_degree_in(g, 0, u)
-
-    if n < 0 or m < 0:
-        return dmp_zero(u - 1)
-
-    A = dmp_max_norm(f, u, K)
-    B = dmp_max_norm(g, u, K)
-
-    a = dmp_ground_LC(f, u, K)
-    b = dmp_ground_LC(g, u, K)
-
-    v = u - 1
-
-    B = K(2)*K.factorial(K(n + m))*A**m*B**n
-    r, p, P = dmp_zero(v), K.one, K.one
-
-    while P <= B:
-        p = K(nextprime(p))
-
-        while not (a % p) or not (b % p):
-            p = K(nextprime(p))
-
-        F = dmp_ground_trunc(f, p, u, K)
-        G = dmp_ground_trunc(g, p, u, K)
-
-        try:
-            R = dmp_zz_modular_resultant(F, G, p, u, K)
-        except HomomorphismFailed:
-            continue
-
-        if P == K.one:
-            r = R
-        else:
-            r = dmp_apply_pairs(r, R, _collins_crt, (P, p, K), v, K)
-
-        P *= p
-
-    return r
-
-
-def dmp_qq_collins_resultant(f, g, u, K0):
-    """
-    Collins's modular resultant algorithm in `Q[X]`.
-
-    Examples
-    ========
-
     >>> R, x, y = ring('x y', QQ)
 
     >>> f = x/2 + y + QQ(2, 3)
@@ -203,26 +72,12 @@ def dmp_qq_collins_resultant(f, g, u, K0):
     -2*y**2 - 7/3*y + 5/6
 
     """
-    n = dmp_degree_in(f, 0, u)
-    m = dmp_degree_in(g, 0, u)
-
-    if n < 0 or m < 0:
-        return dmp_zero(u - 1)
-
-    K1 = K0.ring
-
-    cf, f = dmp_clear_denoms(f, u, K0, K1)
-    cg, g = dmp_clear_denoms(g, u, K0, K1)
-
-    f = dmp_convert(f, u, K0, K1)
-    g = dmp_convert(g, u, K0, K1)
-
-    r = dmp_zz_collins_resultant(f, g, u, K1)
-    r = dmp_convert(r, u - 1, K1, K0)
-
-    c = K0.convert(cf**m * cg**n, K1)
-
-    return dmp_quo_ground(r, c, u - 1, K0)
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f, g = map(ring.from_dense, (f, g))
+    res = ring._collins_resultant(f, g)
+    if ring.is_multivariate:
+        res = ring.drop(0).to_dense(res)
+    return res
 
 
 @cacheit
@@ -245,12 +100,9 @@ def dmp_resultant(f, g, u, K, includePRS=False):
     if includePRS:
         return dmp_prs_resultant(f, g, u, K)
 
-    if K.is_Field:
-        if K.is_RationalField and query('USE_COLLINS_RESULTANT'):
-            return dmp_qq_collins_resultant(f, g, u, K)
-    else:
-        if K.is_IntegerRing and query('USE_COLLINS_RESULTANT'):
-            return dmp_zz_collins_resultant(f, g, u, K)
+    if query('USE_COLLINS_RESULTANT') and (K.is_IntegerRing or
+                                           K.is_RationalField):
+        return dmp_collins_resultant(f, g, u, K)
 
     return dmp_prs_resultant(f, g, u, K)[0]
 
@@ -394,3 +246,148 @@ class _GCD:
             c = -c
 
         return c, r
+
+    def _collins_resultant(self, f, g):
+        """
+        Collins's modular resultant algorithm in `ZZ[X]` or `QQ[X]`.
+
+        References
+        ==========
+
+        * :cite:`Collins1971mod`, algorithm PRES
+
+        """
+        ring = self
+        domain = ring.domain
+
+        if f.is_zero or g.is_zero:
+            return ring.drop(0).zero
+
+        n = f.degree()
+        m = g.degree()
+
+        if domain.is_RationalField:
+            cf, f = f.clear_denoms(convert=True)
+            cg, g = g.clear_denoms(convert=True)
+
+            ring = ring.clone(domain=domain.ring)
+            r = ring._collins_resultant(f, g)
+            r = r.set_domain(domain)
+
+            c = cf**n * cg**m
+            c = domain.convert(c, domain.ring)
+
+            return r.quo_ground(c)
+
+        assert domain.is_IntegerRing
+
+        A = f.max_norm()
+        B = g.max_norm()
+
+        a, b = f.LC, g.LC
+
+        B = domain(2)*domain.factorial(domain(n + m))*A**m*B**n
+        new_ring = ring.drop(0)
+        r, p, P = new_ring.zero, domain.one, domain.one
+
+        while P <= B:
+            p = domain(nextprime(p))
+
+            while not (a % p) or not (b % p):
+                p = domain(nextprime(p))
+
+            F = f.trunc_ground(p)
+            G = g.trunc_ground(p)
+
+            try:
+                R = ring._modular_resultant(F, G, p)
+            except HomomorphismFailed:
+                continue
+
+            if P == domain.one:
+                r = R
+            else:
+                def _crt(r, R):
+                    return domain(crt([P, p], [r, R],
+                                  check=False, symmetric=True)[0])
+
+                if new_ring.is_PolynomialRing:
+                    r_new, zero = new_ring.zero, new_ring.domain.zero
+
+                    for monom in set(r.keys()) | set(R.keys()):
+                        r_new[monom] = _crt(r.get(monom, zero),
+                                            R.get(monom, zero))
+                    r = r_new
+                else:
+                    r = _crt(r, R)
+
+            P *= p
+
+        return r
+
+    def _modular_resultant(self, f, g, p):
+        """
+        Compute resultant of `f` and `g` modulo a prime `p`.
+
+        References
+        ==========
+
+        * :cite:`Collins1971mod`, algorithm CPRES
+
+        """
+        ring = self
+        domain = ring.domain
+
+        assert domain.is_IntegerRing
+
+        if ring.is_univariate:
+            return symmetric_residue(ring._primitive_prs(f, g)[0] % p, p)
+
+        n = f.degree()
+        m = g.degree()
+
+        N = f.degree(1)
+        M = g.degree(1)
+
+        B = n*M + m*N
+
+        new_ring = ring.drop(0)
+        r = new_ring.zero
+        D, a = ring.eject(1).domain.one, -domain.one
+
+        while D.degree() <= B:
+            while True:
+                a += domain.one
+
+                if a == p:
+                    raise HomomorphismFailed('no luck')
+
+                F = f.eval(x=1, a=symmetric_residue(a, p))
+
+                if F.degree() == n:
+                    G = g.eval(x=1, a=symmetric_residue(a, p))
+
+                    if G.degree() == m:
+                        break
+
+            R = ring.drop(1)._modular_resultant(F, G, p)
+            e = r.eval(x=0, a=a)
+
+            d = domain.invert(D.eval(x=0, a=a), p)
+            d = D*d
+            d = d.set_ring(new_ring)
+
+            if new_ring.is_univariate:
+                R = new_ring.ground_new(R)
+                e = new_ring.ground_new(e)
+            else:
+                R = R.set_ring(new_ring)
+                e = e.set_ring(new_ring)
+
+            r += d*(R - e)
+            r = r.trunc_ground(p)
+
+            D *= D.ring.gens[0] - a
+            D = D.trunc_ground(p)
+
+        return r
