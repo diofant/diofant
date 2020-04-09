@@ -4,11 +4,9 @@ from ..core import cacheit
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, symmetric_residue
 from .densearith import (dmp_add, dmp_max_norm, dmp_mul, dmp_mul_ground,
-                         dmp_mul_term, dmp_neg, dmp_pow, dmp_quo,
                          dmp_quo_ground, dmp_sub, dup_mul)
 from .densebasic import (dmp_apply_pairs, dmp_convert, dmp_degree_in,
-                         dmp_ground, dmp_ground_LC, dmp_LC, dmp_raise,
-                         dmp_strip, dmp_zero, dmp_zero_p)
+                         dmp_ground_LC, dmp_raise, dmp_strip, dmp_zero)
 from .densetools import dmp_clear_denoms, dmp_eval_in, dmp_ground_trunc
 from .polyconfig import query
 from .polyerrors import HomomorphismFailed
@@ -19,176 +17,6 @@ def dup_gcdex(f, g, K):
     ring = K.poly_ring(*[f'_{i}' for i in range(1)])
     f, g = map(ring.from_dense, (f, g))
     return tuple(map(ring.to_dense, f.gcdex(g)))
-
-
-def dmp_prem(f, g, u, K):
-    """Polynomial pseudo-remainder in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_dense, (f, g))
-    return ring.to_dense(f.prem(g))
-
-
-def dup_inner_subresultants(f, g, K):
-    """
-    Subresultant PRS algorithm in `K[x]`.
-
-    Computes the subresultant polynomial remainder sequence (PRS)
-    and the last non-zero scalar subresultant of `f` and `g`.
-
-    By [1] Thm. 3, these are the constants '-c' (- to optimize
-    computation of sign).
-    The first subdeterminant is set to 1 by convention to match
-    the polynomial and the scalar subdeterminants.
-    If 'deg(f) < deg(g)', the subresultants of '(g,f)' are computed.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> (x**2 + 1).resultant(x**2 - 1, includePRS=True)
-    (4, [x**2 + 1, x**2 - 1, -2])
-
-    References
-    ==========
-
-    * :cite:`Brown1978prs`
-
-    """
-    n = dmp_degree_in(f, 0, 0)
-    m = dmp_degree_in(g, 0, 0)
-
-    if n < m:
-        f, g = g, f
-        n, m = m, n
-
-    if not f:
-        return [], 0
-
-    if not g:
-        return [f], K.one
-
-    R = [f, g]
-    d = n - m
-
-    b = (-K.one)**(d + 1)
-
-    h = dmp_prem(f, g, 0, K)
-    h = dmp_mul_ground(h, b, 0, K)
-
-    lc = dmp_LC(g, K)
-    c = lc**d
-
-    c = -c
-
-    while h:
-        k = dmp_degree_in(h, 0, 0)
-        R.append(h)
-
-        f, g, m, d = g, h, k, m - k
-
-        b = -lc * c**d
-
-        h = dmp_prem(f, g, 0, K)
-        h = dmp_quo_ground(h, b, 0, K)
-
-        lc = dmp_LC(g, K)
-
-        q = c**(d - 1)
-        c = K.quo((-lc)**d, q)
-
-    return R, -c
-
-
-def dup_prs_resultant(f, g, K):
-    """
-    Resultant algorithm in `K[x]` using subresultant PRS.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> (x**2 + 1).resultant(x**2 - 1, includePRS=True)
-    (4, [x**2 + 1, x**2 - 1, -2])
-
-    """
-    R, S = dmp_inner_subresultants(f, g, 0, K)
-
-    if len(R) < 2 or dmp_degree_in(R[-1], 0, 0) > 0:
-        return K.zero, R
-
-    return S, R
-
-
-def dmp_inner_subresultants(f, g, u, K):
-    """
-    Subresultant PRS algorithm in `K[X]`.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = 3*x**2*y - y**3 - 4
-    >>> g = x**2 + x*y**3 - 9
-
-    >>> a = 3*x*y**4 + y**3 - 27*y + 4
-    >>> b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
-
-    >>> f.resultant(g, includePRS=True) == (b.drop(0), [f, g, a, b])
-    True
-
-    """
-    if not u:
-        return dup_inner_subresultants(f, g, K)
-
-    n = dmp_degree_in(f, 0, u)
-    m = dmp_degree_in(g, 0, u)
-
-    if n < m:
-        f, g = g, f
-        n, m = m, n
-
-    if dmp_zero_p(f, u):
-        return [], dmp_zero(u)
-
-    v = u - 1
-    if dmp_zero_p(g, u):
-        return [f], dmp_ground(K.one, v)
-
-    R = [f, g]
-    d = n - m
-
-    b = dmp_pow(dmp_ground(-K.one, v), d + 1, v, K)
-
-    h = dmp_prem(f, g, u, K)
-    h = dmp_mul_term(h, b, 0, u, K)
-
-    lc = dmp_LC(g, K)
-    c = dmp_pow(lc, d, v, K)
-
-    c = dmp_neg(c, v, K)
-
-    while not dmp_zero_p(h, u):
-        k = dmp_degree_in(h, 0, u)
-        R.append(h)
-
-        f, g, m, d = g, h, k, m - k
-
-        b = dmp_mul(dmp_neg(lc, v, K),
-                    dmp_pow(c, d, v, K), v, K)
-
-        h = dmp_prem(f, g, u, K)
-        h = [dmp_quo(ch, b, v, K) for ch in h]
-
-        lc = dmp_LC(g, K)
-
-        p = dmp_pow(dmp_neg(lc, v, K), d, v, K)
-        q = dmp_pow(c, d - 1, v, K)
-        c = dmp_quo(p, q, v, K)
-
-    return R, dmp_neg(c, v, K)
 
 
 def dmp_prs_resultant(f, g, u, K):
@@ -216,15 +44,13 @@ def dmp_prs_resultant(f, g, u, K):
     True
 
     """
-    if not u:
-        return dup_prs_resultant(f, g, K)
-
-    R, S = dmp_inner_subresultants(f, g, u, K)
-
-    if len(R) < 2 or dmp_degree_in(R[-1], 0, u) > 0:
-        return dmp_zero(u - 1), R
-
-    return S, R
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f, g = map(ring.from_dense, (f, g))
+    res = ring._primitive_prs(f, g)
+    res0 = res[0]
+    if ring.is_multivariate:
+        res0 = ring.drop(0).to_dense(res0)
+    return res0, list(map(ring.to_dense, res[1]))
 
 
 def dmp_zz_modular_resultant(f, g, p, u, K):
@@ -244,7 +70,7 @@ def dmp_zz_modular_resultant(f, g, p, u, K):
 
     """
     if not u:
-        return symmetric_residue(dup_prs_resultant(f, g, K)[0] % p, p)
+        return symmetric_residue(dmp_prs_resultant(f, g, 0, K)[0] % p, p)
 
     v = u - 1
 
@@ -489,3 +315,82 @@ class _GCD:
         h = h.monic()
 
         return h, f // h, g // h
+
+    def _primitive_prs(self, f, g):
+        """
+        Subresultant PRS algorithm in `K[X]`.
+
+        Computes the last non-zero scalar subresultant of `f` and `g`
+        and subresultant polynomial remainder sequence (PRS).
+
+        The first subdeterminant is set to 1 by convention to match
+        the polynomial and the scalar subdeterminants.
+        If 'deg(f) < deg(g)', the subresultants of '(g,f)' are computed.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', ZZ)
+
+        >>> (x**2 + 1).resultant(x**2 - 1, includePRS=True)
+        (4, [x**2 + 1, x**2 - 1, -2])
+
+        References
+        ==========
+
+        * :cite:`Brown1978prs`
+        * :cite:`Geddes1992algorithms`, example 7.6
+
+        """
+        ring = self
+        domain = ring.domain
+
+        if ring.is_multivariate:
+            ring, f, g = map(lambda _: _.eject(*ring.gens[1:]), (ring, f, g))
+            res = ring._primitive_prs(f, g)
+            return res[0], [_.inject() for _ in res[1]]
+
+        n = f.degree()
+        m = g.degree()
+
+        if n < m:
+            f, g = g, f
+            n, m = m, n
+
+        c, r = domain.zero, []
+
+        if f.is_zero:
+            return c, r
+
+        r.append(f)
+
+        if g.is_zero:
+            return c, r
+
+        r.append(g)
+        d = n - m
+
+        h = f.prem(g)
+        h *= (-domain.one)**(d + 1)
+
+        lc = g.LC
+        c = -lc**d
+
+        while not h.is_zero:
+            k = h.degree()
+            r.append(h)
+
+            f, g, m, d = g, h, k, m - k
+
+            h = f.prem(g)
+            h = h.quo_ground(-lc*c**d)
+
+            lc = g.LC
+            c = domain.quo((-lc)**d, c**(d - 1))
+
+        if r[-1].degree() > 0:
+            c = domain.zero
+        else:
+            c = -c
+
+        return c, r

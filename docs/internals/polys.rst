@@ -318,7 +318,6 @@ which is not needed after finding `f_{k+1} = 0`.
 Completing the last step we obtain all non-zero scalar subresultants,
 including the last one which is the resultant if this does not vanish.
 
-.. autofunction:: dmp_inner_subresultants
 .. autofunction:: dmp_zz_modular_resultant
 .. autofunction:: dmp_zz_collins_resultant
 .. autofunction:: dmp_qq_collins_resultant
