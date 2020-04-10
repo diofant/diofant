@@ -838,13 +838,3 @@ def test_PolyElement_cancel():
     g = t**2 + (x**2 + 2)/2
 
     assert f.cancel(g) == ((-x**2 - 4)*t, 4*t**2 + 2*x**2 + 4)
-
-
-def test_dmp_zz_modular_resultant():
-    R, x, y = ring('x,y', ZZ)
-    R1 = R.drop(x)
-
-    f = x + y + 2
-    g = 2*x*y + x + 3
-
-    assert R._modular_resultant(f, g, 5) == -2*R1.y**2 + 1
