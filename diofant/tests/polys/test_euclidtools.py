@@ -255,47 +255,6 @@ def test_PolyElement_subresultants():
             assert f.resultant(g) == r
             assert f.resultant(g, includePRS=True)[0] == r
 
-    R, x, y, z, u, v = ring('x,y,z,u,v', ZZ)
-
-    for check in (True, False):
-        with using(use_collins_resultant=check):
-            f = 6*x**2 - 3*x*y - 2*x*z + y*z
-            g = x**2 - x*u - x*v + u*v
-
-            r = (y**2*z**2 - 3*y**2*z*u - 3*y**2*z*v + 9*y**2*u*v -
-                 2*y*z**2*u - 2*y*z**2*v + 6*y*z*u**2 + 12*y*z*u*v +
-                 6*y*z*v**2 - 18*y*u**2*v - 18*y*u*v**2 + 4*z**2*u*v -
-                 12*z*u**2*v - 12*z*u*v**2 + 36*u**2*v**2)
-
-            assert f.resultant(g) == r.drop(x)
-
-    R, x, y, z, u, v = ring('x,y,z,u,v', QQ)
-
-    for check in (True, False):
-        with using(use_collins_resultant=check):
-            f = x**2 - x*y/2 - x*z/3 + y*z/6
-            g = x**2 - x*u - x*v + u*v
-
-            r = (y**2*z**2/36 - y**2*z*u/12 - y**2*z*v/12 + y**2*u*v/4 -
-                 y*z**2*u/18 - y*z**2*v/18 + y*z*u**2/6 + y*z*u*v/3 +
-                 y*z*v**2/6 - y*u**2*v/2 - y*u*v**2/2 + z**2*u*v/9 -
-                 z*u**2*v/3 - z*u*v**2/3 + u**2*v**2)
-
-            assert f.resultant(g) == r.drop(x)
-
-    Rt, t = ring('t', ZZ)
-    Rx, x = ring('x', Rt)
-
-    f = x**6 - 5*x**4 + 5*x**2 + 4
-    g = -6*t*x**5 + x**4 + 20*t*x**3 - 3*x**2 - 10*t*x + 6
-
-    assert f.resultant(g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
-    assert (x - 1).resultant(x + 1, includePRS=True) == (2, [x - 1, x + 1, 2])
-
-    R, x, y = ring('x,y', ZZ)
-
-    for check in (True, False):
-        with using(use_collins_resultant=check):
             f = x + y
             g = x**2 - x*y + 1
 
@@ -332,6 +291,43 @@ def test_PolyElement_subresultants():
             g = 3*x**2*y + x**2
 
             assert f.resultant(g) == (675*y**3 + 675*y**2 + 225*y + 25).drop(x)
+
+    R, x, y, z, u, v = ring('x,y,z,u,v', ZZ)
+
+    for check in (True, False):
+        with using(use_collins_resultant=check):
+            f = 6*x**2 - 3*x*y - 2*x*z + y*z
+            g = x**2 - x*u - x*v + u*v
+
+            r = (y**2*z**2 - 3*y**2*z*u - 3*y**2*z*v + 9*y**2*u*v -
+                 2*y*z**2*u - 2*y*z**2*v + 6*y*z*u**2 + 12*y*z*u*v +
+                 6*y*z*v**2 - 18*y*u**2*v - 18*y*u*v**2 + 4*z**2*u*v -
+                 12*z*u**2*v - 12*z*u*v**2 + 36*u**2*v**2)
+
+            assert f.resultant(g) == r.drop(x)
+
+    R, x, y, z, u, v = ring('x,y,z,u,v', QQ)
+
+    for check in (True, False):
+        with using(use_collins_resultant=check):
+            f = x**2 - x*y/2 - x*z/3 + y*z/6
+            g = x**2 - x*u - x*v + u*v
+
+            r = (y**2*z**2/36 - y**2*z*u/12 - y**2*z*v/12 + y**2*u*v/4 -
+                 y*z**2*u/18 - y*z**2*v/18 + y*z*u**2/6 + y*z*u*v/3 +
+                 y*z*v**2/6 - y*u**2*v/2 - y*u*v**2/2 + z**2*u*v/9 -
+                 z*u**2*v/3 - z*u*v**2/3 + u**2*v**2)
+
+            assert f.resultant(g) == r.drop(x)
+
+    Rt, t = ring('t', ZZ)
+    Rx, x = ring('x', Rt)
+
+    f = x**6 - 5*x**4 + 5*x**2 + 4
+    g = -6*t*x**5 + x**4 + 20*t*x**3 - 3*x**2 - 10*t*x + 6
+
+    assert f.resultant(g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
+    assert (x - 1).resultant(x + 1, includePRS=True) == (2, [x - 1, x + 1, 2])
 
 
 def test_PolyElement_discriminant():
