@@ -94,7 +94,7 @@ Polynomial factorization algorithms
 
 Many variants of Euclid's algorithm:
 
-.. currentmodule:: diofant.polys.euclidtools
+.. module:: diofant.polys.euclidtools
 
 Classical remainder sequence
 ----------------------------

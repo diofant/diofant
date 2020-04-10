@@ -2056,6 +2056,33 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         return r
 
+    def resultant(self, other, includePRS=False):
+        """
+        Computes resultant of two polynomials in `K[X]`.
+
+        Examples
+        ========
+
+        >>> R, x, y = ring('x y', ZZ)
+
+        >>> f = 3*x**2*y - y**3 - 4
+        >>> g = x**2 + x*y**3 - 9
+
+        >>> f.resultant(g)
+        -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
+
+        """
+        ring = self.ring
+        domain = ring.domain
+
+        if (not includePRS and query('USE_COLLINS_RESULTANT') and
+                (domain.is_IntegerRing or domain.is_RationalField)):
+            return ring._collins_resultant(self, other)
+
+        res = ring._primitive_prs(self, other)
+
+        return res if includePRS else res[0]
+
     def subresultants(self, other):
         """
         Computes subresultant PRS of two polynomials in `K[X]`.
@@ -2144,9 +2171,6 @@ class PolyElement(DomainElement, CantSympify, dict):
 
     # The following methods aren't ported (yet) to polynomial
     # representation independent algorithm implementations.
-
-    def resultant(self, other, includePRS=False):
-        return self.ring.dmp_resultant(self, other, includePRS=includePRS)
 
     def decompose(self):
         if self.ring.is_univariate:

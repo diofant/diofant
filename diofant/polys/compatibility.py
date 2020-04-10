@@ -11,7 +11,6 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
                          dmp_ground_trunc, dup_decompose, dup_mirror,
                          dup_real_imag, dup_scale, dup_shift, dup_transform)
-from .euclidtools import dmp_resultant
 from .factortools import (dmp_factor_list, dmp_trial_division,
                           dmp_zz_diophantine, dmp_zz_mignotte_bound,
                           dmp_zz_wang, dmp_zz_wang_hensel_lifting,
@@ -217,16 +216,6 @@ class IPolys:
         else:
             ring = self
         return c, ring.from_dense(F)
-
-    def dmp_resultant(self, f, g, includePRS=False):
-        res = dmp_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain, includePRS=includePRS)
-        res0 = res[0] if includePRS else res
-        if self.ngens > 1:
-            res0 = self.drop(0).from_dense(res0)
-        if includePRS:
-            return res0, list(map(self.from_dense, res[1]))
-        else:
-            return res0
 
     def dmp_trial_division(self, f, factors):
         factors = dmp_trial_division(self.to_dense(f), list(map(self.to_dense, factors)), self.ngens-1, self.domain)

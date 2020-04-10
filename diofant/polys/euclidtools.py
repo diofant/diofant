@@ -3,7 +3,6 @@
 from ..core import cacheit
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, symmetric_residue
-from .polyconfig import query
 from .polyerrors import HomomorphismFailed
 
 
@@ -14,97 +13,13 @@ def dup_gcdex(f, g, K):
     return tuple(map(ring.to_dense, f.gcdex(g)))
 
 
-def dmp_prs_resultant(f, g, u, K):
-    """
-    Resultant algorithm in `K[X]` using subresultant PRS.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = 3*x**2*y - y**3 - 4
-    >>> g = x**2 + x*y**3 - 9
-
-    >>> a = 3*x*y**4 + y**3 - 27*y + 4
-    >>> b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
-
-    >>> res, prs = f.resultant(g, includePRS=True)
-
-    >>> res == b  # resultant has n-1 variables
-    False
-    >>> res == b.drop(x)
-    True
-    >>> prs == [f, g, a, b]
-    True
-
-    """
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_dense, (f, g))
-    res = ring._primitive_prs(f, g)
-    res0 = res[0]
-    if ring.is_multivariate:
-        res0 = ring.drop(0).to_dense(res0)
-    return res0, list(map(ring.to_dense, res[1]))
-
-
-def dmp_collins_resultant(f, g, u, K):
-    """
-    Collins's modular resultant algorithm in `ZZ[X]` or `QQ[X]`.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = x + y + 2
-    >>> g = 2*x*y + x + 3
-
-    >>> f.resultant(g)
-    -2*y**2 - 5*y + 1
-
-    >>> R, x, y = ring('x y', QQ)
-
-    >>> f = x/2 + y + QQ(2, 3)
-    >>> g = 2*x*y + x + 3
-
-    >>> f.resultant(g)
-    -2*y**2 - 7/3*y + 5/6
-
-    """
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_dense, (f, g))
-    res = ring._collins_resultant(f, g)
-    if ring.is_multivariate:
-        res = ring.drop(0).to_dense(res)
-    return res
-
-
 @cacheit
-def dmp_resultant(f, g, u, K, includePRS=False):
-    """
-    Computes resultant of two polynomials in `K[X]`.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = 3*x**2*y - y**3 - 4
-    >>> g = x**2 + x*y**3 - 9
-
-    >>> f.resultant(g)
-    -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
-
-    """
-    if includePRS:
-        return dmp_prs_resultant(f, g, u, K)
-
-    if query('USE_COLLINS_RESULTANT') and (K.is_IntegerRing or
-                                           K.is_RationalField):
-        return dmp_collins_resultant(f, g, u, K)
-
-    return dmp_prs_resultant(f, g, u, K)[0]
+def dmp_resultant(f, g, u, K):
+    """Computes resultant of two polynomials in `K[X]`."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f, g = map(ring.from_dense, (f, g))
+    res = f.resultant(g)
+    return ring.drop(0).to_dense(res)
 
 
 def dmp_inner_gcd(f, g, u, K):
