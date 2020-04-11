@@ -65,11 +65,11 @@ class IPolys:
         return dmp_ground_TC(self.to_dense(f), self.ngens-1, self.domain)
 
     def dmp_add_term(self, f, c, i):
-        c = self.wrap(c).drop(0).to_dense() if self.ngens > 1 else c
+        c = self.wrap(c).drop(0).to_dense() if self.is_multivariate else c
         return self.from_dense(dmp_add_term(self.to_dense(f), c, i, self.ngens-1, self.domain))
 
     def dmp_mul_term(self, f, c, i):
-        c = self.wrap(c).drop(0).to_dense() if self.ngens > 1 else c
+        c = self.wrap(c).drop(0).to_dense() if self.is_multivariate else c
         return self.from_dense(dmp_mul_term(self.to_dense(f), c, i, self.ngens-1, self.domain))
 
     def dmp_mul_ground(self, f, c):
@@ -135,14 +135,14 @@ class IPolys:
 
     def dmp_LC(self, f):
         LC = dmp_LC(self.to_dense(f), self.domain)
-        if self.ngens > 1:
+        if self.is_multivariate:
             return self.drop(0).from_dense(LC)
         else:
             return LC
 
     def dmp_TC(self, f):
         TC = dmp_TC(self.to_dense(f), self.domain)
-        if self.ngens > 1:
+        if self.is_multivariate:
             return self.drop(0).from_dense(TC)
         else:
             return TC
@@ -155,14 +155,14 @@ class IPolys:
 
     def dmp_eval_in(self, f, a, j):
         result = dmp_eval_in(self.to_dense(f), a, j, self.ngens-1, self.domain)
-        if self.ngens > 1:
+        if self.is_multivariate:
             return self.drop(j).from_dense(result)
         else:
             return result
 
     def dmp_diff_eval_in(self, f, m, a, j):
         result = dmp_diff_eval_in(self.to_dense(f), m, a, j, self.ngens-1, self.domain)
-        if self.ngens > 1:
+        if self.is_multivariate:
             return self.drop(j).from_dense(result)
         else:
             return result
