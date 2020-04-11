@@ -8,8 +8,8 @@ import tempfile
 
 import pytest
 
+from diofant import Eq
 from diofant.abc import x, y, z
-from diofant.core import Eq
 from diofant.utilities.autowrap import (CodeWrapper, CythonCodeWrapper,
                                         UfuncifyCodeWrapper, autowrap,
                                         binary_function)
@@ -20,7 +20,7 @@ from diofant.utilities.codegen import (CCodeGen, CodeGenArgumentListError,
 __all__ = ()
 
 
-def get_string(dump_fn, routines, prefix="file"):
+def get_string(dump_fn, routines, prefix='file'):
     """Wrapper for dump_fn. dump_fn writes its results to a stream object and
     this wrapper returns the contents of that stream as a string. This
     auxiliary function is used by many tests below.
@@ -37,48 +37,48 @@ def get_string(dump_fn, routines, prefix="file"):
 
 def test_cython_wrapper_scalar_function():
     expr = (x + y)*z
-    routine = make_routine("test", expr)
+    routine = make_routine('test', expr)
     code_gen = CythonCodeWrapper(CCodeGen())
     source = get_string(code_gen.dump_pyx, [routine])
     expected = (
         "cdef extern from 'file.h':\n"
-        "    double test(double x, double y, double z)\n"
-        "\n"
-        "def test_c(double x, double y, double z):\n"
-        "\n"
-        "    return test(x, y, z)")
+        '    double test(double x, double y, double z)\n'
+        '\n'
+        'def test_c(double x, double y, double z):\n'
+        '\n'
+        '    return test(x, y, z)')
     assert source == expected
 
 
 def test_cython_wrapper_outarg():
     code_gen = CythonCodeWrapper(CCodeGen())
 
-    routine = make_routine("test", Eq(z, x + y))
+    routine = make_routine('test', Eq(z, x + y))
     source = get_string(code_gen.dump_pyx, [routine])
     expected = (
         "cdef extern from 'file.h':\n"
-        "    void test(double x, double y, double *z)\n"
-        "\n"
-        "def test_c(double x, double y):\n"
-        "\n"
-        "    cdef double z = 0\n"
-        "    test(x, y, &z)\n"
-        "    return z")
+        '    void test(double x, double y, double *z)\n'
+        '\n'
+        'def test_c(double x, double y):\n'
+        '\n'
+        '    cdef double z = 0\n'
+        '    test(x, y, &z)\n'
+        '    return z')
     assert source == expected
 
 
 def test_cython_wrapper_inoutarg():
     code_gen = CythonCodeWrapper(CCodeGen())
-    routine = make_routine("test", Eq(z, x + y + z))
+    routine = make_routine('test', Eq(z, x + y + z))
     source = get_string(code_gen.dump_pyx, [routine])
     expected = (
         "cdef extern from 'file.h':\n"
-        "    void test(double x, double y, double *z)\n"
-        "\n"
-        "def test_c(double x, double y, double z):\n"
-        "\n"
-        "    test(x, y, &z)\n"
-        "    return z")
+        '    void test(double x, double y, double *z)\n'
+        '\n'
+        'def test_c(double x, double y, double z):\n'
+        '\n'
+        '    test(x, y, &z)\n'
+        '    return z')
     assert source == expected
 
 
@@ -89,16 +89,16 @@ def test_autowrap_dummy():
     os.unlink(tempdir)
     f = autowrap(x + y, backend='dummy', tempdir=tempdir)
     assert f() == str(x + y)
-    assert f.args == "x, y"
-    assert f.returns == "nameless"
+    assert f.args == 'x, y'
+    assert f.returns == 'nameless'
     f = autowrap(Eq(z, x + y), backend='dummy')
     assert f() == str(x + y)
-    assert f.args == "x, y"
-    assert f.returns == "z"
+    assert f.args == 'x, y'
+    assert f.returns == 'z'
     f = autowrap(Eq(z, x + y + z), backend='dummy')
     assert f() == str(x + y + z)
-    assert f.args == "x, y, z"
-    assert f.returns == "z"
+    assert f.args == 'x, y, z'
+    assert f.returns == 'z'
 
     e = x + y
 
@@ -112,20 +112,20 @@ def test_autowrap_args():
                   lambda: autowrap(Eq(z, x + y), backend='dummy', args=(x,)))
     f = autowrap(Eq(z, x + y), backend='dummy', args=(y, x))
     assert f() == str(x + y)
-    assert f.args == "y, x"
-    assert f.returns == "z"
+    assert f.args == 'y, x'
+    assert f.returns == 'z'
 
     pytest.raises(CodeGenArgumentListError,
                   lambda: autowrap(Eq(z, x + y + z), backend='dummy', args=(x, y)))
     f = autowrap(Eq(z, x + y + z), backend='dummy', args=(y, x, z))
     assert f() == str(x + y + z)
-    assert f.args == "y, x, z"
-    assert f.returns == "z"
+    assert f.args == 'y, x, z'
+    assert f.returns == 'z'
 
     f = autowrap(Eq(z, x + y + z), backend='dummy', args=(y, x, z))
     assert f() == str(x + y + z)
-    assert f.args == "y, x, z"
-    assert f.returns == "z"
+    assert f.args == 'y, x, z'
+    assert f.returns == 'z'
 
 
 def test_autowrap_store_files():
@@ -144,8 +144,8 @@ def test_binary_function():
 
 
 def test_ufuncify_source():
-    code_wrapper = UfuncifyCodeWrapper(CCodeGen("ufuncify"))
-    routine = make_routine("test", x + y + z)
+    code_wrapper = UfuncifyCodeWrapper(CCodeGen('ufuncify'))
+    routine = make_routine('test', x + y + z)
     source = get_string(code_wrapper.dump_c, [routine])
     expected = """\
 #include "Python.h"

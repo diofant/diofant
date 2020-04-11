@@ -1,11 +1,11 @@
-"""Tests for tools and arithmetics for monomials of distributed polynomials. """
+"""Tests for tools and arithmetics for monomials of distributed polynomials."""
 
 import functools
 
 import pytest
 
+from diofant import Monomial, itermonomials
 from diofant.abc import a, b, c, x, y, z
-from diofant.polys.monomials import Monomial, itermonomials
 
 
 __all__ = ()
@@ -122,5 +122,5 @@ def test_Monomial():
 
     assert m/Monomial((5, 2, 0)) == (-2, 2, 1)
 
-    assert str(m) == "x**3*y**4*z**1"
-    assert str(l) == "(3, 4, 1)"
+    assert str(m) == 'x**3*y**4*z**1'
+    assert str(l) == '(3, 4, 1)'

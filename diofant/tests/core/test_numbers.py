@@ -8,12 +8,12 @@ from mpmath.libmp.libmpf import finf, fninf
 
 from diofant import (Catalan, E, EulerGamma, Float, Ge, GoldenRatio, Gt, I,
                      Integer, Le, Lt, Mul, Number, Pow, Rational, Symbol, cbrt,
-                     cos, exp, factorial, false, latex, log, nan, nextprime,
-                     oo, pi, root, sin, sqrt, true, zoo)
+                     comp, cos, exp, factorial, false, igcd, ilcm,
+                     integer_digits, integer_nthroot, latex, log, mod_inverse,
+                     nan, nextprime, oo, pi, root, sin, sqrt, true, zoo)
 from diofant.core.cache import clear_cache
-from diofant.core.numbers import (comp, igcd, igcdex, ilcm, integer_digits,
-                                  mod_inverse, mpf_norm)
-from diofant.core.power import integer_nthroot, isqrt
+from diofant.core.numbers import igcdex, mpf_norm
+from diofant.core.power import isqrt
 
 
 __all__ = ()
@@ -251,7 +251,7 @@ def test_Integer_new():
 
     assert _strictly_equal(Integer(0.9), Integer(0))
     assert _strictly_equal(Integer(10.5), Integer(10))
-    pytest.raises(ValueError, lambda: Integer("10.5"))
+    pytest.raises(ValueError, lambda: Integer('10.5'))
     assert Integer(Rational('1.' + '9'*20)) == 1
 
 
@@ -347,12 +347,12 @@ def test_Rational_cmp():
 
 def test_Float():
     def eq(a, b):
-        t = Float("1.0E-15")
+        t = Float('1.0E-15')
         return -t < a - b < t
 
     a = Float(2) ** Float(3)
     assert eq(a, Float(8))
-    assert eq((pi ** -1).evalf(), Float("0.31830988618379067"))
+    assert eq((pi ** -1).evalf(), Float('0.31830988618379067'))
     a = Float(2) ** Float(4)
     assert eq(a, Float(16))
     assert (Float(.3) == Float(.5)) is False
@@ -422,7 +422,7 @@ def test_Float():
     assert Float('.100') == Float(.1, 3)
     assert Float('2.0') == Float('2', 2)
 
-    pytest.raises(ValueError, lambda: Float("12.3d-4"))
+    pytest.raises(ValueError, lambda: Float('12.3d-4'))
     pytest.raises(ValueError, lambda: Float('.'))
     pytest.raises(ValueError, lambda: Float('-.'))
 
@@ -462,7 +462,7 @@ def test_Float_eval():
 
 def test_Float_sympyissue_5206():
     a = Float(0.1, 10)
-    b = Float("0.1", 10)
+    b = Float('0.1', 10)
 
     assert a - a == 0
     assert a + (-a) == 0
@@ -480,7 +480,7 @@ def test_Infinity():
     assert 1*oo == oo
     assert 1 != oo
     assert oo != -oo
-    assert oo != Symbol("x")**3
+    assert oo != Symbol('x')**3
     assert oo + 1 == oo
     assert 2 + oo == oo
     assert 3*oo + 2 == oo
@@ -747,7 +747,7 @@ def test_NaN():
     assert 1*nan == nan
     assert 1 != nan
     assert nan == -nan
-    assert oo != Symbol("x")**3
+    assert oo != Symbol('x')**3
     assert nan + 1 == nan
     assert 2 + nan == nan
     assert Integer(2) + nan == nan
@@ -775,10 +775,10 @@ def test_NaN():
     assert nan*1 == nan
     assert nan + 1 == nan
     assert nan/1 == nan
-    assert nan**0 == 1  # as per IEEE 754
-    assert 1**nan == nan  # IEEE 754 is not the best choice for symbolic work
+    assert nan**0 == nan
+    assert 1**nan == nan
     # test Pow._eval_power's handling of NaN
-    assert Pow(nan, 0, evaluate=False)**2 == 1
+    assert Pow(nan, 0, evaluate=False)**2 == nan
     assert Integer(0)/Integer(0) == nan
 
 
@@ -910,7 +910,7 @@ def test_powers_Integer():
     assert sqrt(2) * sqrt(3) == sqrt(6)
 
     # separate symbols & constansts
-    x = Symbol("x")
+    x = Symbol('x')
     assert sqrt(49 * x) == 7 * sqrt(x)
     assert sqrt((3 - sqrt(pi)) ** 2) == 3 - sqrt(pi)
 
@@ -1021,8 +1021,8 @@ def test_accept_int():
 
 
 def test_dont_accept_str():
-    assert Float("0.2") != "0.2"
-    assert not (Float("0.2") == "0.2")
+    assert Float('0.2') != '0.2'
+    assert not (Float('0.2') == '0.2')
 
 
 def test_int():
@@ -1040,9 +1040,9 @@ def test_int():
 
 
 def test_real_bug():
-    x = Symbol("x")
-    assert str(2.0*x*x) in ["(2.0*x)*x", "2.0*x**2", "2.00000000000000*x**2"]
-    assert str(2.1*x*x) != "(2.0*x)*x"
+    x = Symbol('x')
+    assert str(2.0*x*x) in ['(2.0*x)*x', '2.0*x**2', '2.00000000000000*x**2']
+    assert str(2.1*x*x) != '(2.0*x)*x'
 
 
 def test_bug_sqrt():
@@ -1073,13 +1073,13 @@ def test_sympyissue_3692():
 
 
 def test_sympyissue_3423():
-    x = Symbol("x")
+    x = Symbol('x')
     assert sqrt(x - 1).as_base_exp() == (x - 1, Rational(1, 2))
     assert sqrt(x - 1) != I*sqrt(1 - x)
 
 
 def test_sympyissue_3449():
-    x = Symbol("x")
+    x = Symbol('x')
     assert sqrt(x - 1).subs({x: 5}) == 2
 
 
@@ -1222,7 +1222,7 @@ def test_sympyissue_4611():
     assert abs(Catalan._evalf(50) - 0.915965594177219) < 1e-10
     assert abs(EulerGamma._evalf(50) - 0.577215664901533) < 1e-10
     assert abs(GoldenRatio._evalf(50) - 1.61803398874989) < 1e-10
-    x = Symbol("x")
+    x = Symbol('x')
     assert (pi + x).evalf(strict=False) == pi.evalf() + x
     assert (E + x).evalf(strict=False) == E.evalf() + x
     assert (Catalan + x).evalf(strict=False) == Catalan.evalf() + x
@@ -1450,15 +1450,15 @@ def test_mpf_norm():
 
 
 def test_latex():
-    assert latex(pi) == r"\pi"
-    assert latex(E) == r"e"
-    assert latex(GoldenRatio) == r"\phi"
-    assert latex(EulerGamma) == r"\gamma"
-    assert latex(oo) == r"\infty"
-    assert latex(-oo) == r"-\infty"
-    assert latex(zoo) == r"\tilde{\infty}"
-    assert latex(nan) == r"\mathrm{NaN}"
-    assert latex(I) == r"i"
+    assert latex(pi) == r'\pi'
+    assert latex(E) == r'e'
+    assert latex(GoldenRatio) == r'\phi'
+    assert latex(EulerGamma) == r'\gamma'
+    assert latex(oo) == r'\infty'
+    assert latex(-oo) == r'-\infty'
+    assert latex(zoo) == r'\tilde{\infty}'
+    assert latex(nan) == r'\mathrm{NaN}'
+    assert latex(I) == r'i'
 
 
 def test_sympyissue_7742():

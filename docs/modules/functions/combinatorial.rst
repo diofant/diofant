@@ -80,13 +80,6 @@ lucas
    :members:
 
 
-MultiFactorial
---------------
-
-.. autoclass:: diofant.functions.combinatorial.factorials.MultiFactorial
-   :members:
-
-
 RisingFactorial
 ---------------
 

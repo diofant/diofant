@@ -1,31 +1,27 @@
-"""Tests for real and complex root isolation and refinement algorithms. """
+"""Tests for real and complex root isolation and refinement algorithms."""
 
 import pytest
 
-from diofant.core import I, prod
-from diofant.domains import EX, QQ, ZZ
-from diofant.functions import sqrt
-from diofant.polys.polyerrors import DomainError, RefinementFailed
-from diofant.polys.rings import ring
+from diofant import (EX, QQ, ZZ, DomainError, I, RefinementFailed, prod, ring,
+                     sqrt, subsets)
 from diofant.polys.rootisolation import (RealInterval,
                                          dup_inner_refine_real_root,
                                          dup_step_refine_real_root)
-from diofant.utilities import subsets
 
 
 __all__ = ()
 
 
 def test_dup_sturm():
-    R, x = ring("x", QQ)
+    R, x = ring('x', QQ)
 
-    assert R.dup_sturm(5) == [1]
-    assert R.dup_sturm(x) == [x, 1]
+    assert R(5).sturm() == [1]
+    assert x.sturm() == [x, 1]
 
     f = x**3 - 2*x**2 + 3*x - 5
 
-    assert R.dup_sturm(f) == [f, 3*x**2 - 4*x + 3,
-                              -10*x/9 + QQ(13, 3), -QQ(3303, 100)]
+    assert f.sturm() == [f, 3*x**2 - 4*x + 3,
+                         -10*x/9 + QQ(13, 3), -QQ(3303, 100)]
 
 
 def test_dup_sign_variations():
@@ -61,12 +57,12 @@ def test_dup_sign_variations():
 
 
 def test_dup_root_upper_bound():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     assert R.dup_root_upper_bound(+x - 1) == 4
     assert R.dup_root_upper_bound(-x - 1) is None
 
-    R, x = ring("x", QQ)
+    R, x = ring('x', QQ)
 
     assert R.dup_root_upper_bound(+x - 1) == 4
     assert R.dup_root_upper_bound(-x - 1) is None
@@ -88,7 +84,7 @@ def test_dup_inner_refine_real_root():
 
 
 def test_dup_refine_real_root():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = x**2 - 2
 
@@ -152,14 +148,14 @@ def test_dup_refine_real_root():
     assert R.dup_refine_real_root(f, s, t, disjoint=-u) == (s, t)
     assert R.dup_refine_real_root(f, s, t, disjoint=u) == (u, v)
 
-    R, x = ring("x", QQ)
+    R, x = ring('x', QQ)
 
     f = (x - QQ(1, 2))*(x + QQ(1, 2))
 
     assert R.dup_refine_real_root(f, 0, 1, steps=1) == (QQ(1, 2), QQ(1, 2))
 
-    D, y = ring("y", ZZ)
-    R, x = ring("x", D)
+    D, y = ring('y', ZZ)
+    R, x = ring('x', D)
 
     f = x**2 + y*x - 1
 
@@ -167,7 +163,7 @@ def test_dup_refine_real_root():
 
 
 def test_dup_isolate_real_roots_sqf():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     assert R.dup_isolate_real_roots_sqf(0) == []
     assert R.dup_isolate_real_roots_sqf(5) == []
@@ -291,18 +287,18 @@ def test_dup_isolate_real_roots_sqf():
     assert R.dup_isolate_real_roots_sqf(f, inf=+1) == [i[1]]
     assert R.dup_isolate_real_roots_sqf(f, sup=-1) == [i[0]]
 
-    R, x = ring("x", QQ)
+    R, x = ring('x', QQ)
 
     f = (6*x - 85)*(1028*x + 1)/3855
 
     assert R.dup_isolate_real_roots_sqf(f) == [(-1, 0), (14, 15)]
     assert [_.as_tuple() for _ in R.dup_isolate_real_roots_sqf(f, blackbox=True)] == [(-1, 0), (14, 15)]
 
-    R, x = ring("x", EX)
+    R, x = ring('x', EX)
 
     pytest.raises(DomainError, lambda: R.dup_isolate_real_roots_sqf(x + 3))
 
-    R, x = ring("x", QQ.algebraic_field(I))
+    R, x = ring('x', QQ.algebraic_field(I))
 
     f = (x - 1)*(x**3 + I*x - 2)
 
@@ -318,7 +314,7 @@ def test_dup_isolate_real_roots_sqf():
     assert R.dup_isolate_real_roots_sqf(x - 1) == [(1, 1)]
     assert R.dup_isolate_real_roots_sqf(x - I) == []
 
-    R, x = ring("x", QQ.algebraic_field(sqrt(2)))
+    R, x = ring('x', QQ.algebraic_field(sqrt(2)))
 
     f = (-x**3 + sqrt(2)*x - 1)*(x**2 + 1)
 
@@ -330,7 +326,7 @@ def test_dup_isolate_real_roots_sqf():
     assert R.dup_isolate_real_roots_sqf(f) == [(-5, -4), (-3, -2), (0, 1),
                                                (1, 1), (1, 2), (5, 6)]
 
-    R, x = ring("x", QQ.algebraic_field(sqrt(2), sqrt(3)))
+    R, x = ring('x', QQ.algebraic_field(sqrt(2), sqrt(3)))
 
     f = (x - sqrt(2))*(x - sqrt(3))*(x - 2*sqrt(6))*(x - sqrt(6))*(x**2 + 2)
 
@@ -342,7 +338,7 @@ def test_dup_isolate_real_roots_sqf():
 
 
 def test_dup_isolate_real_roots():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     assert R.dup_isolate_real_roots(0) == []
     assert R.dup_isolate_real_roots(3) == []
@@ -424,12 +420,12 @@ def test_dup_isolate_real_roots():
     assert R.dup_isolate_real_roots(f*g) == \
         [((0, QQ(1, 2)), 1), ((QQ(2, 3), QQ(3, 4)), 1), ((QQ(3, 4), 1), 1), ((6, 7), 1), ((24, 25), 1)]
 
-    R, x = ring("x", EX)
+    R, x = ring('x', EX)
 
     pytest.raises(DomainError, lambda: R.dup_isolate_real_roots(x + 3))
     pytest.raises(DomainError, lambda: R.dup_isolate_real_roots((x + 2)*(x + 3)**2))
 
-    R, x = ring("x", QQ.algebraic_field(I))
+    R, x = ring('x', QQ.algebraic_field(I))
 
     f = (x**2 - I)**2*(x - 2*I)**3
 
@@ -443,7 +439,7 @@ def test_dup_isolate_real_roots():
 
 
 def test_dup_isolate_real_roots_pair():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     assert R.dup_isolate_real_roots_pair(x*(x + 1), x) == \
         [((-1, -1), {0: 1}), ((0, 0), {0: 1, 1: 1})]
@@ -506,18 +502,18 @@ def test_dup_isolate_real_roots_pair():
     assert R.dup_isolate_real_roots_pair(f, g) == \
         R.dup_isolate_real_roots_pair(g, f) == [((0, 0), {0: 3, 1: 3})]
 
-    R, x = ring("x", EX)
+    R, x = ring('x', EX)
 
     pytest.raises(DomainError, lambda: R.dup_isolate_real_roots_pair(x, x + 3))
 
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f, g = x**5 - 200, x**5 - 201
 
     assert R.dup_isolate_real_roots_pair(f, g) == \
         [((QQ(75, 26), QQ(101, 35)), {0: 1}), ((QQ(309, 107), QQ(26, 9)), {1: 1})]
 
-    R, x = ring("x", QQ)
+    R, x = ring('x', QQ)
 
     f, g = -x**5/200 + 1, -x**5/201 + 1
 
@@ -526,7 +522,7 @@ def test_dup_isolate_real_roots_pair():
 
 
 def test_dup_count_real_roots():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     assert R.dup_count_real_roots(0) == 0
     assert R.dup_count_real_roots(7) == 0
@@ -547,7 +543,7 @@ def test_dup_count_real_roots():
     assert R.dup_count_real_roots(f, sup=0) == 1
     assert R.dup_count_real_roots(f, inf=-1, sup=1) == 0
 
-    R, x = ring("x", QQ.algebraic_field(I))
+    R, x = ring('x', QQ.algebraic_field(I))
 
     f = x**3 + I*x + 2
 
@@ -564,7 +560,7 @@ c, d = (+0, +0), (1, 1)
 
 
 def test_dup_count_complex_roots_1():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = x - 1
 
@@ -581,19 +577,19 @@ def test_dup_count_complex_roots_1():
     assert R.dup_count_complex_roots(f, a, b) == 1
     assert R.dup_count_complex_roots(f, c, d) == 0
 
-    R, x = ring("x", QQ)
+    R, x = ring('x', QQ)
 
     f = x - QQ(1, 2)
 
     assert R.dup_count_complex_roots(f, c, d) == 1
 
-    R, x = ring("x", EX)
+    R, x = ring('x', EX)
 
     pytest.raises(DomainError, lambda: R.dup_count_complex_roots(x))
 
 
 def test_dup_count_complex_roots_2():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = x*(x - 1)
 
@@ -617,7 +613,7 @@ def test_dup_count_complex_roots_2():
 
 
 def test_dup_count_complex_roots_3():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = (x - 1)*(x + 1)
 
@@ -636,7 +632,7 @@ def test_dup_count_complex_roots_3():
 
 
 def test_dup_count_complex_roots_4():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = x**2 + 1
 
@@ -685,7 +681,7 @@ def test_dup_count_complex_roots_4():
 
 
 def test_dup_count_complex_roots_5():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = (x + 1)**2 + 1
 
@@ -724,7 +720,7 @@ def test_dup_count_complex_roots_5():
 
 
 def test_dup_count_complex_roots_6():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = (x - 1)**2 + 1
 
@@ -762,7 +758,7 @@ def test_dup_count_complex_roots_6():
 
 
 def test_dup_count_complex_roots_7():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)
 
@@ -816,7 +812,7 @@ def test_dup_count_complex_roots_7():
 
 
 def test_dup_count_complex_roots_8():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = ((x - 1)**2 + 1)*((x + 1)**2 + 1)*(x - 1)*(x + 1)*(x**2 + 1)*x
 
@@ -830,14 +826,14 @@ def test_dup_count_complex_roots_8():
 
 
 def test_dup_count_complex_roots_9():
-    R, x = ring("x", QQ.algebraic_field(sqrt(2)))
+    R, x = ring('x', QQ.algebraic_field(sqrt(2)))
 
     f = -x**3 + sqrt(2)*x - 1
 
     assert R.dup_count_complex_roots(f, a, b) == 2
     assert R.dup_count_complex_roots(f, c, d) == 1
 
-    R, x = ring("x", QQ.algebraic_field(sqrt(2)).algebraic_field(I))
+    R, x = ring('x', QQ.algebraic_field(sqrt(2)).algebraic_field(I))
 
     f = -x**3 + I*x**2 + sqrt(2)*x - 1
 
@@ -846,7 +842,7 @@ def test_dup_count_complex_roots_9():
 
 
 def test_dup_count_complex_roots_implicit():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = (x**2 + 1)*(x - 1)*(x + 1)*x
 
@@ -859,7 +855,7 @@ def test_dup_count_complex_roots_implicit():
 
 
 def test_dup_count_complex_roots_exclude():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = (x**2 + 1)*(x - 1)*(x + 1)*x
 
@@ -890,7 +886,7 @@ def test_dup_count_complex_roots_exclude():
 
     assert R.dup_count_complex_roots(f, a, b, exclude=True) == 1
 
-    R, x = ring("x", QQ.algebraic_field(I))
+    R, x = ring('x', QQ.algebraic_field(I))
 
     f = x**4 + I*x**3 - x + 1
 
@@ -907,7 +903,7 @@ def test_dup_count_complex_roots_exclude():
 
 
 def test_dup_isolate_complex_roots_sqf():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = x**2 - 2*x + 3
 
@@ -939,19 +935,19 @@ def test_dup_isolate_complex_roots_sqf():
         [((-QQ(40, 7), -QQ(40, 7)), (0, 0)), ((-QQ(40, 7), 0), (0, QQ(40, 7))),
          ((0, -QQ(40, 7)), (QQ(40, 7), 0)), ((0, 0), (QQ(40, 7), QQ(40, 7)))]
 
-    R, x = ring("x", QQ)
+    R, x = ring('x', QQ)
 
     f = x**2/2 - 3*x/7 + 1
 
     assert R.dup_isolate_complex_roots_sqf(f) == [((0, -4), (4, 0)), ((0, 0), (4, 4))]
 
-    R, x = ring("x", EX)
+    R, x = ring('x', EX)
 
     pytest.raises(DomainError,
                   lambda: R.dup_isolate_complex_roots_sqf(x, inf=(-1, 0),
                                                           sup=(1, 1)))
 
-    R, x = ring("x", QQ.algebraic_field(I))
+    R, x = ring('x', QQ.algebraic_field(I))
 
     f = x**4 + I*x**3 - x + 1
 
@@ -986,14 +982,14 @@ def test_dup_isolate_complex_roots_sqf():
                                                   ((0, 0), (QQ(1001, 400), QQ(1001, 800))),
                                                   ((0, QQ(1001, 800)), (QQ(1001, 400), QQ(1001, 400)))]
 
-    R, x = ring("x", QQ.algebraic_field(sqrt(2)))
+    R, x = ring('x', QQ.algebraic_field(sqrt(2)))
 
     f = -x**3 + sqrt(2)*x - 1
 
     assert R.dup_isolate_complex_roots_sqf(f) == [((0, QQ(-283, 100)), (QQ(283, 100), 0)),
                                                   ((0, 0), (QQ(283, 100), QQ(283, 100)))]
 
-    R, x = ring("x", QQ.algebraic_field(sqrt(2)).algebraic_field(I))
+    R, x = ring('x', QQ.algebraic_field(sqrt(2)).algebraic_field(I))
 
     f = -x**3 + I*x**2 + sqrt(2)*x - 1
 
@@ -1001,15 +997,15 @@ def test_dup_isolate_complex_roots_sqf():
                                                   ((0, QQ(-283, 100)), (QQ(283, 100), 0)),
                                                   ((0, 0), (QQ(283, 100), QQ(283, 100)))]
 
-    R, x = ring("x", EX)
+    R, x = ring('x', EX)
 
     pytest.raises(DomainError, lambda: R.dup_isolate_complex_roots_sqf(x))
 
 
 @pytest.mark.timeout(60)
-@pytest.mark.skipif(ZZ.dtype is int, reason="gmpy2 is not used")
+@pytest.mark.skipif(ZZ.dtype is int, reason='gmpy2 is not used')
 def test_dup_isolate_complex_roots_sqf_2():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = x**40 - 15*x**17 - 21*x**3 + 11
 
@@ -1057,7 +1053,7 @@ def test_dup_isolate_complex_roots_sqf_2():
 
 
 def test_dup_isolate_all_roots_sqf():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = (4*x**3 - x**2 + 2*x + 5)*x
 
@@ -1069,13 +1065,13 @@ def test_dup_isolate_all_roots_sqf():
         ([(QQ(-7, 8), QQ(-6, 7)), (0, 0)],
          [((QQ(35, 64), -QQ(35, 32)), (QQ(5, 8), -QQ(65, 64))), ((QQ(35, 64), QQ(65, 64)), (QQ(5, 8), QQ(35, 32)))])
 
-    R, x = ring("x", EX)
+    R, x = ring('x', EX)
 
     pytest.raises(DomainError, lambda: R.dup_isolate_all_roots_sqf(x, R))
 
 
 def test_dup_isolate_all_roots():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = (4*x**3 - x**2 + 2*x + 5)*x
 
@@ -1093,8 +1089,8 @@ def test_dup_isolate_all_roots():
 
     pytest.raises(NotImplementedError, lambda: R.dup_isolate_all_roots(f))
 
-    D, y = ring("y", ZZ)
-    R, x = ring("x", D)
+    D, y = ring('y', ZZ)
+    R, x = ring('x', D)
 
     f = x**2 + y*x - 1
 
@@ -1102,7 +1098,7 @@ def test_dup_isolate_all_roots():
 
 
 def test_RealInterval():
-    R, x = ring("x", ZZ)
+    R, x = ring('x', ZZ)
 
     f = (x - 1)**2
 
@@ -1111,7 +1107,7 @@ def test_RealInterval():
 
 
 def test_ComplexInterval():
-    R, x = ring("x", QQ.algebraic_field(I))
+    R, x = ring('x', QQ.algebraic_field(I))
 
     f = x**3 + x + I
 

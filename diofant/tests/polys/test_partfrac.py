@@ -4,13 +4,12 @@ functions.
 
 import pytest
 
-from diofant import (Dummy, E, Eq, Expr, I, Lambda, Poly, Rational, RootSum,
-                     Symbol, factor, pi, sqrt, symbols, together)
+from diofant import (Dummy, E, Eq, Expr, I, Lambda, Mul, Poly, Rational,
+                     RootSum, Symbol, apart, apart_list,
+                     assemble_partfrac_list, factor, numbered_symbols, pi,
+                     sqrt, symbols, together)
 from diofant.abc import a, b, c, x, y
-from diofant.polys.partfrac import (apart, apart_list,
-                                    apart_undetermined_coeffs,
-                                    assemble_partfrac_list)
-from diofant.utilities.iterables import numbered_symbols
+from diofant.polys.partfrac import apart_undetermined_coeffs
 
 
 __all__ = ()
@@ -123,27 +122,27 @@ def test_apart_undetermined_coeffs():
 def test_apart_list():
     assert apart_list(1) == 1
 
-    w0, w1, w2 = Symbol("w0"), Symbol("w1"), Symbol("w2")
-    _a = Dummy("a")
+    w0, w1, w2 = Symbol('w0'), Symbol('w1'), Symbol('w2')
+    _a = Dummy('a')
 
     f = (-2*x - 2*x**2) / (3*x**2 - 6*x)
-    assert (apart_list(f, x, dummies=numbered_symbols("w")) ==
+    assert (apart_list(f, x, dummies=numbered_symbols('w')) ==
             (-1, Poly(Rational(2, 3), x),
              [(Poly(w0 - 2, w0), Lambda(_a, 2), Lambda(_a, -_a + x), 1)]))
 
-    assert (apart_list(2/(x**2-2), x, dummies=numbered_symbols("w")) ==
+    assert (apart_list(2/(x**2-2), x, dummies=numbered_symbols('w')) ==
             (1, Poly(0, x),
              [(Poly(w0**2 - 2, w0), Lambda(_a, _a/2), Lambda(_a, -_a + x), 1)]))
 
     f = 36 / (x**5 - 2*x**4 - 2*x**3 + 4*x**2 + x - 2)
-    assert (apart_list(f, x, dummies=numbered_symbols("w")) ==
+    assert (apart_list(f, x, dummies=numbered_symbols('w')) ==
             (1, Poly(0, x),
              [(Poly(w0 - 2, w0), Lambda(_a, 4), Lambda(_a, -_a + x), 1),
               (Poly(w1**2 - 1, w1), Lambda(_a, -3*_a - 6), Lambda(_a, -_a + x), 2),
               (Poly(w2 + 1, w2), Lambda(_a, -4), Lambda(_a, -_a + x), 1)]))
 
     f = 1/(2*(x - 1)**2)
-    assert (apart_list(f, x, dummies=numbered_symbols("w")) ==
+    assert (apart_list(f, x, dummies=numbered_symbols('w')) ==
             (1, Poly(0, x),
              [(Poly(2, w0), Lambda(_a, 0), Lambda(_a, x - _a), 1),
               (Poly(w1 - 1, w1), Lambda(_a, Rational(1, 2)), Lambda(_a, x - _a), 2),
@@ -155,7 +154,7 @@ def test_assemble_partfrac_list():
     pfd = apart_list(f)
     assert assemble_partfrac_list(pfd) == -4/(x + 1) - 3/(x + 1)**2 - 9/(x - 1)**2 + 4/(x - 2)
 
-    a = Dummy("a")
+    a = Dummy('a')
     pfd = (1, Poly(0, x, domain='ZZ'), [([sqrt(2), -sqrt(2)], Lambda(a, a/2), Lambda(a, -a + x), 1)])
     assert assemble_partfrac_list(pfd) == -1/(sqrt(2)*(x + sqrt(2))) + 1/(sqrt(2)*(x - sqrt(2)))
 
@@ -177,3 +176,17 @@ def test_sympyissue_5798():
     assert apart(
         2*x/(x**2 + 1) - (x - 1)/(2*(x**2 + 1)) + 1/(2*(x + 1)) - 2/x) == \
         (3*x + 1)/(x**2 + 1)/2 + 1/(x + 1)/2 - 2/x
+
+
+@pytest.mark.timeout(100)
+def test_sympyissue_18531():
+    e = (x**2 + 1)**3/((x - 1)**2*(x + 1)**2*(-x**2 + 2*x + 1)*(x**2 + 2*x - 1))
+
+    def mul2(x):
+        return Mul(2, x, evaluate=False)
+
+    r = (1/mul2(x - sqrt(2) + 1) - 1/mul2(x - sqrt(2) - 1) +
+         1/mul2(x + 1 + sqrt(2)) - 1/mul2(x - 1 + sqrt(2)) +
+         1/mul2((x + 1)**2) + 1/mul2((x - 1)**2))
+
+    assert apart(e, x, extension=sqrt(2)) == r

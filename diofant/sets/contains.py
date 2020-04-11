@@ -1,3 +1,5 @@
+"""Implementation of the membership testing."""
+
 from ..logic.boolalg import BooleanFunction
 
 

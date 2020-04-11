@@ -234,12 +234,12 @@ def mod_inverse(a, m):
     except ValueError:
         a, m = sympify(a), sympify(m)
         if not (a.is_number and m.is_number):
-            raise TypeError(filldedent('''
+            raise TypeError(filldedent("""
                 Expected numbers for arguments; symbolic `mod_inverse`
                 is not implemented
                 but symbolic expressions can be handled with the
                 similar function,
-                sympy.polys.polytools.invert'''))
+                sympy.polys.polytools.invert"""))
         big = (m > 1)
         if not (big is S.true or big is S.false):
             raise ValueError('m > 1 did not evaluate; try to simplify %s' % m)
@@ -297,7 +297,7 @@ class Number(AtomicExpr):
                 return val
             else:
                 raise ValueError('String "%s" does not denote a Number' % obj)
-        msg = "expected str|int|float|Decimal|Number object but got %r"
+        msg = 'expected str|int|float|Decimal|Number object but got %r'
         raise TypeError(msg % type(obj).__name__)
 
     def invert(self, other, *gens, **args):
@@ -717,7 +717,7 @@ class Float(Number):
 
     def _eval_power(self, expt):
         """
-        expt is symbolic object but not equal to 0, 1
+        Expt is symbolic object but not equal to 0, 1.
 
         (-p)**r -> exp(r*log(-p)) -> exp(r*(log(p) + I*Pi)) ->
                   -> p**r*(sin(Pi*r) + cos(Pi*r)*I)
@@ -832,7 +832,7 @@ class Float(Number):
     def __hash__(self):
         return super().__hash__()
 
-    def epsilon_eq(self, other, epsilon="1e-15"):
+    def epsilon_eq(self, other, epsilon='1e-15'):
         """Test approximate equality."""
         return abs(self - other) < Float(epsilon)
 
@@ -876,11 +876,11 @@ class Rational(Number):
     An arbitrarily precise Rational is obtained when a string literal is
     passed:
 
-    >>> Rational("1.23")
+    >>> Rational('1.23')
     123/100
     >>> Rational('1e-2')
     1/100
-    >>> Rational(".1")
+    >>> Rational('.1')
     1/10
 
     The conversion of floats to expressions or simple fractions can
@@ -1205,7 +1205,7 @@ class Rational(Number):
         return Number.lcm(self, other)
 
     def _eval_as_numer_denom(self):
-        """expression -> a/b -> a, b
+        """Expression -> a/b -> a, b.
 
         See Also
         ========
@@ -1231,7 +1231,6 @@ class Rational(Number):
         diofant.core.expr.Expr.as_content_primitive
 
         """
-
         if self:
             if self.is_positive:
                 return self, S.One
@@ -1251,6 +1250,7 @@ numbers.Rational.register(Rational)
 
 
 class Integer(Rational):
+    """Represents integer numbers."""
 
     is_integer = True
     is_number = True
@@ -1440,6 +1440,7 @@ class RationalConstant(Rational):
 
 
 class IntegerConstant(Integer):
+    """Abstract class for integer constants."""
 
     def __new__(cls):
         return AtomicExpr.__new__(cls)
@@ -1618,7 +1619,6 @@ class Infinity(Number, metaclass=SingletonWithManagedProperties):
     oo
     >>> 42/oo
     0
-    >>> x = Symbol('x')
     >>> limit(exp(x), x, oo)
     oo
 
@@ -2116,6 +2116,7 @@ zoo = S.ComplexInfinity
 
 
 class NumberSymbol(AtomicExpr):
+    """Base class for symbolic numbers."""
 
     is_commutative = True
     is_finite = True
@@ -2127,7 +2128,7 @@ class NumberSymbol(AtomicExpr):
         return AtomicExpr.__new__(cls)
 
     def approximation_interval(self, number_cls):
-        """ Return an interval with number_cls endpoints that contains the
+        """Return an interval with number_cls endpoints that contains the
         value of NumberSymbol.  If not implemented, then return None.
 
         """
@@ -2319,7 +2320,6 @@ class Pi(NumberSymbol, metaclass=SingletonWithManagedProperties):
     true
     >>> pi.is_irrational
     True
-    >>> x = Symbol('x')
     >>> sin(x + 2*pi)
     sin(x)
     >>> integrate(exp(-x**2), (x, -oo, oo))
@@ -2526,7 +2526,8 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
         return -I
 
     def _eval_power(self, expt):
-        """
+        """Helper for Pow constructor.
+
         b is I = sqrt(-1)
         e is symbolic object but not equal to 0, 1
 
@@ -2537,7 +2538,6 @@ class ImaginaryUnit(AtomicExpr, metaclass=SingletonWithManagedProperties):
         I**3 mod 4 -> -I
 
         """
-
         if isinstance(expt, Number):
             if isinstance(expt, Integer):
                 expt = expt.numerator % 4

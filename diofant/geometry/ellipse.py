@@ -38,20 +38,6 @@ class Ellipse(GeometrySet):
         Two of `hradius`, `vradius` and `eccentricity` must be supplied to
         create an Ellipse. The third is derived from the two supplied.
 
-    Attributes
-    ==========
-
-    center
-    hradius
-    vradius
-    area
-    circumference
-    eccentricity
-    periapsis
-    apoapsis
-    focus_distance
-    foci
-
     Raises
     ======
 
@@ -222,14 +208,11 @@ class Ellipse(GeometrySet):
         >>> e1.minor
         1
 
-        >>> a = Symbol('a')
-        >>> b = Symbol('b')
         >>> Ellipse(p1, a, b).minor
         b
         >>> Ellipse(p1, b, a).minor
         a
 
-        >>> m = Symbol('m')
         >>> M = m + 1
         >>> Ellipse(p1, m, M).minor
         m
@@ -268,14 +251,11 @@ class Ellipse(GeometrySet):
         >>> e1.major
         3
 
-        >>> a = Symbol('a')
-        >>> b = Symbol('b')
         >>> Ellipse(p1, a, b).major
         a
         >>> Ellipse(p1, b, a).major
         b
 
-        >>> m = Symbol('m')
         >>> M = m + 1
         >>> Ellipse(p1, m, M).major
         m + 1
@@ -562,7 +542,7 @@ class Ellipse(GeometrySet):
             raise NotImplementedError(filldedent(
                 'General Ellipse is not supported but the equation '
                 'of the reflected Ellipse is given by the zeros of: ' +
-                "f(%s, %s) = %s" % (str(x), str(y), str(result))))
+                'f(%s, %s) = %s' % (str(x), str(y), str(result))))
 
     def encloses_point(self, p):
         """
@@ -750,7 +730,7 @@ class Ellipse(GeometrySet):
                 c += len([True for point in inter if point in seg])
             return c == 1
         else:
-            raise NotImplementedError("Unknown argument type")
+            raise NotImplementedError('Unknown argument type')
 
     def normal_lines(self, p, prec=None):
         """Normal lines between `p` and the ellipse.
@@ -1017,7 +997,6 @@ class Ellipse(GeometrySet):
         the end to see that they lie in o.
 
         """
-
         hr_sq = self.hradius ** 2
         vr_sq = self.vradius ** 2
         lp = o.points
@@ -1052,7 +1031,6 @@ class Ellipse(GeometrySet):
         Private helper method for `intersection`.
 
         """
-
         x = Dummy('x', extended_real=True)
         y = Dummy('y', extended_real=True)
         seq = self.equation(x, y)
@@ -1168,9 +1146,9 @@ class Ellipse(GeometrySet):
 
     def __eq__(self, o):
         """Is the other GeometryEntity the same as this ellipse?"""
-        return isinstance(o, GeometryEntity) and (self.center == o.center and
-                                                  self.hradius == o.hradius and
-                                                  self.vradius == o.vradius)
+        return isinstance(o, Ellipse) and (self.center == o.center and
+                                           self.hradius == o.hradius and
+                                           self.vradius == o.vradius)
 
     def __hash__(self):
         return super().__hash__()
@@ -1199,13 +1177,6 @@ class Circle(Ellipse):
     center : Point
     radius : number or diofant expression
     points : sequence of three Points
-
-    Attributes
-    ==========
-
-    radius (synonymous with hradius, vradius, major and minor)
-    circumference
-    equation
 
     Raises
     ======
@@ -1240,7 +1211,7 @@ class Circle(Ellipse):
             args = [Point(a) for a in args]
             if Point.is_collinear(*args):
                 raise GeometryError(
-                    "Cannot construct a circle from three collinear points")
+                    'Cannot construct a circle from three collinear points')
             from .polygon import Triangle
             t = Triangle(*args)
             c = t.circumcenter
@@ -1253,7 +1224,7 @@ class Circle(Ellipse):
         if not (c is None or r is None):
             return GeometryEntity.__new__(cls, c, r, **kwargs)
 
-        raise GeometryError("Circle.__new__ received unknown arguments")
+        raise GeometryError('Circle.__new__ received unknown arguments')
 
     @property
     def radius(self):

@@ -21,7 +21,7 @@ class AxisOrienter(Orienter):
         from .vector import Vector
 
         if not isinstance(axis, Vector):
-            raise TypeError("axis should be a Vector")
+            raise TypeError('axis should be a Vector')
         angle = sympify(angle)
 
         obj = super().__new__(cls, angle, axis)
@@ -72,7 +72,6 @@ class AxisOrienter(Orienter):
             is to be computed
 
         """
-
         from .functions import express
 
         axis = express(self.axis, system).normalize()

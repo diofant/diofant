@@ -1,3 +1,5 @@
+"""Generic set theory interfaces."""
+
 import itertools
 
 from mpmath import mpf, mpi
@@ -237,7 +239,7 @@ class Set(Basic):
 
     @property
     def _inf(self):
-        raise NotImplementedError("(%s)._inf" % self)
+        raise NotImplementedError('(%s)._inf' % self)
 
     @property
     def sup(self):
@@ -257,7 +259,7 @@ class Set(Basic):
 
     @property
     def _sup(self):
-        raise NotImplementedError("(%s)._sup" % self)
+        raise NotImplementedError('(%s)._sup' % self)
 
     @_sympifyit('other', false)
     def contains(self, other):
@@ -281,7 +283,7 @@ class Set(Basic):
         return ret
 
     def _contains(self, other):
-        raise NotImplementedError("(%s)._contains(%s)" % (self, other))
+        raise NotImplementedError('(%s)._contains(%s)' % (self, other))
 
     def is_subset(self, other):
         """
@@ -514,7 +516,7 @@ class Set(Basic):
 
     @property
     def _measure(self):
-        raise NotImplementedError("(%s)._measure" % self)
+        raise NotImplementedError('(%s)._measure' % self)
 
     def __add__(self, other):
         return self.union(other)
@@ -533,7 +535,7 @@ class Set(Basic):
 
     def __pow__(self, exp):
         if not sympify(exp).is_Integer or exp < 0:
-            raise ValueError("%s: Exponent must be a positive Integer" % exp)
+            raise ValueError('%s: Exponent must be a positive Integer' % exp)
         return ProductSet([self]*exp)
 
     def __sub__(self, other):
@@ -598,7 +600,7 @@ class ProductSet(Set):
                     return [arg]
             elif iterable(arg):
                 return sum(map(flatten, arg), [])
-            raise TypeError("Input must be Sets or iterables of Sets")
+            raise TypeError('Input must be Sets or iterables of Sets')
         sets = flatten(list(sets))
 
         if EmptySet() in sets or len(sets) == 0:
@@ -685,7 +687,7 @@ class ProductSet(Set):
         if self.is_iterable:
             return cantor_product(*self.sets)
         else:
-            raise TypeError("Not all constituent sets are iterable")
+            raise TypeError('Not all constituent sets are iterable')
 
     @property
     def _measure(self):
@@ -753,11 +755,11 @@ class Interval(Set, EvalfMixin):
         if not all(isinstance(a, (type(true), type(false)))
                    for a in [left_open, right_open]):
             raise NotImplementedError(
-                "left_open and right_open can have only true/false values, "
-                "got %s and %s" % (left_open, right_open))
+                'left_open and right_open can have only true/false values, '
+                'got %s and %s' % (left_open, right_open))
 
         if not all(i.is_extended_real is not False for i in (start, end)):
-            raise ValueError("Non-real intervals are not supported")
+            raise ValueError('Non-real intervals are not supported')
 
         if (end - start).is_negative:
             return S.EmptySet
@@ -1019,11 +1021,11 @@ class Interval(Set, EvalfMixin):
             return
 
         if self.left_open:
-            _start = limit(expr, var, self.start, dir="+")
+            _start = limit(expr, var, self.start, dir='+')
         elif self.start not in sing:
             _start = f(self.start)
         if self.right_open:
-            _end = limit(expr, var, self.end, dir="-")
+            _end = limit(expr, var, self.end, dir='-')
         elif self.end not in sing:
             _end = f(self.end)
 
@@ -1161,7 +1163,7 @@ class Union(Set, EvalfMixin):
                     return [arg]
             if iterable(arg):  # and not isinstance(arg, Set) (implicit)
                 return sum(map(flatten, arg), [])
-            raise TypeError("Input must be Sets or iterables of Sets")
+            raise TypeError('Input must be Sets or iterables of Sets')
         args = flatten(args)
 
         # Union of no sets is EmptySet
@@ -1188,7 +1190,6 @@ class Union(Set, EvalfMixin):
         can simplify themselves with any other constituent
 
         """
-
         # ===== Global Rules =====
         # Merge all finite sets
         finite_sets = [x for x in args if x.is_FiniteSet]
@@ -1325,7 +1326,7 @@ class Union(Set, EvalfMixin):
         if all(set.is_iterable for set in self.args):
             return roundrobin(*(iter(arg) for arg in self.args))
         else:
-            raise TypeError("Not all constituent sets are iterable")
+            raise TypeError('Not all constituent sets are iterable')
 
 
 class Intersection(Set):
@@ -1371,7 +1372,7 @@ class Intersection(Set):
                     return [arg]
             if iterable(arg):  # and not isinstance(arg, Set) (implicit)
                 return sum(map(flatten, arg), [])
-            raise TypeError("Input must be Sets or iterables of Sets")
+            raise TypeError('Input must be Sets or iterables of Sets')
         args = flatten(args)
 
         if len(args) == 0:
@@ -1402,7 +1403,7 @@ class Intersection(Set):
                 other = Intersection(other_sets, evaluate=False)
                 return (x for x in s if x in other)
 
-        raise ValueError("None of the constituent sets are iterable")
+        raise ValueError('None of the constituent sets are iterable')
 
     @staticmethod
     def reduce(args):
@@ -1416,7 +1417,6 @@ class Intersection(Set):
         can simplify themselves with any other constituent
 
         """
-
         # ===== Global Rules =====
 
         # If any FiniteSets see which elements of that finite set occur within
@@ -1516,7 +1516,6 @@ class Complement(Set, EvalfMixin):
     @staticmethod
     def reduce(A, B):
         """Simplify a :class:`Complement`."""
-
         result = B._complement(A)
         if result is not None:
             return result
@@ -1745,7 +1744,6 @@ class FiniteSet(Set, EvalfMixin):
         See Set._union for docstring
 
         """
-
         # If other set contains one of my elements, remove it from myself
         if any(other.contains(x) is true for x in self):
             return {FiniteSet(*[x for x in self
@@ -1822,22 +1820,22 @@ class FiniteSet(Set, EvalfMixin):
 
     def __ge__(self, other):
         if not isinstance(other, Set):
-            raise TypeError("Invalid comparison of set with %s" % repr(other))
+            raise TypeError('Invalid comparison of set with %s' % repr(other))
         return other.is_subset(self)
 
     def __gt__(self, other):
         if not isinstance(other, Set):
-            raise TypeError("Invalid comparison of set with %s" % repr(other))
+            raise TypeError('Invalid comparison of set with %s' % repr(other))
         return self.is_proper_superset(other)
 
     def __le__(self, other):
         if not isinstance(other, Set):
-            raise TypeError("Invalid comparison of set with %s" % repr(other))
+            raise TypeError('Invalid comparison of set with %s' % repr(other))
         return self.is_subset(other)
 
     def __lt__(self, other):
         if not isinstance(other, Set):
-            raise TypeError("Invalid comparison of set with %s" % repr(other))
+            raise TypeError('Invalid comparison of set with %s' % repr(other))
         return self.is_proper_subset(other)
 
 

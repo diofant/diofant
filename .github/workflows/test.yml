@@ -10,7 +10,8 @@ jobs:
     env:
       TERM: xterm
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
+    - run: git fetch --prune --unshallow --tags
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
@@ -80,7 +81,7 @@ jobs:
     - name: Upload coverage data
       run: |
         for n in 1 2 3; do
-          if codecov --required --verbose; then
+          if codecov --required; then
             exit 0
           fi
           sleep $((n*160))

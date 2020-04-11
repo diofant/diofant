@@ -11,7 +11,7 @@ class LambdaPrinter(StrPrinter):
     """
 
     def _print_MatrixBase(self, expr):
-        return "%s(%s)" % (expr.__class__.__name__,
+        return '%s(%s)' % (expr.__class__.__name__,
                            self._print((expr.tolist())))
 
     _print_SparseMatrix = \
@@ -64,10 +64,10 @@ class LambdaPrinter(StrPrinter):
         return ''.join(result)
 
     def _print_BooleanTrue(self, expr):
-        return "True"
+        return 'True'
 
     def _print_BooleanFalse(self, expr):
-        return "False"
+        return 'False'
 
     def _print_ITE(self, expr):
         result = [
@@ -78,7 +78,7 @@ class LambdaPrinter(StrPrinter):
         return ''.join(result)
 
     def _print_Dummy(self, expr):
-        return super()._print_Dummy(expr).replace("(", "_lpar_").replace(")", "_rpar_")
+        return super()._print_Dummy(expr).replace('(', '_lpar_').replace(')', '_rpar_')
 
 
 class NumPyPrinter(LambdaPrinter):
@@ -88,8 +88,8 @@ class NumPyPrinter(LambdaPrinter):
     """
 
     _default_settings = {
-        "order": "none",
-        "full_prec": "auto",
+        'order': 'none',
+        'full_prec': 'auto',
     }
 
     def _print_MatMul(self, expr):
@@ -151,22 +151,27 @@ class NumPyPrinter(LambdaPrinter):
 
 
 class MpmathPrinter(LambdaPrinter):
+    """Mpmath printer."""
+
     def _print_RootOf(self, expr):
         if expr.is_real:
-            return ("findroot(lambda %s: %s, %s, "
+            return ('findroot(lambda %s: %s, %s, '
                     "method='bisection')" % (self._print(expr.poly.gen),
                                              self._print(expr.expr),
                                              self._print(expr.interval.as_tuple())))
         else:
-            raise NotImplementedError
+            return ('findroot(lambda %s: %s, mpc%s, '
+                    "method='secant')" % (self._print(expr.poly.gen),
+                                          self._print(expr.expr),
+                                          self._print(expr.interval.center)))
 
     def _print_Sum(self, expr):
-        return "nsum(lambda %s: %s, %s)" % (",".join([self._print(v) for v in expr.variables]),
+        return 'nsum(lambda %s: %s, %s)' % (','.join([self._print(v) for v in expr.variables]),
                                             self._print(expr.function),
-                                            ",".join([self._print(v[1:]) for v in expr.limits]))
+                                            ','.join([self._print(v[1:]) for v in expr.limits]))
 
     def _print_Infinity(self, expr):
-        return "inf"
+        return 'inf'
 
     def _print_Float(self, e):
         # XXX: This does not handle setting mpmath.mp.dps. It is assumed that
@@ -178,23 +183,23 @@ class MpmathPrinter(LambdaPrinter):
         return 'mpf(%s)' % args
 
     def _print_GoldenRatio(self, expr):
-        return "phi"
+        return 'phi'
 
     def _print_Pow(self, expr):
         if expr.exp.is_Rational:
             n, d = expr.exp.as_numer_denom()
             if d == 1:
                 if n >= 0:
-                    return "%s**%s" % (self._print(expr.base), n)
+                    return '%s**%s' % (self._print(expr.base), n)
                 else:
-                    return "power(%s, %s)" % (self._print(expr.base), n)
+                    return 'power(%s, %s)' % (self._print(expr.base), n)
             else:
                 if n >= 2:
-                    return "root(%s, %s)**%s" % (self._print(expr.base), d, n)
+                    return 'root(%s, %s)**%s' % (self._print(expr.base), d, n)
                 elif n == 1:
-                    return "root(%s, %s)" % (self._print(expr.base), d)
+                    return 'root(%s, %s)' % (self._print(expr.base), d)
                 else:
-                    return "power(root(%s, %s), %s)" % (self._print(expr.base),
+                    return 'power(root(%s, %s), %s)' % (self._print(expr.base),
                                                         d, n)
         else:
             return super()._print_Pow(expr)
@@ -202,9 +207,9 @@ class MpmathPrinter(LambdaPrinter):
     def _print_Rational(self, expr):
         n, d = expr.numerator, expr.denominator
         if d == 1:
-            return "%s" % n
+            return '%s' % n
         else:
-            return "%s*power(%s, -1)" % (n, d)
+            return '%s*power(%s, -1)' % (n, d)
 
 
 def lambdarepr(expr, **settings):

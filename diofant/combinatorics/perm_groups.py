@@ -176,8 +176,8 @@ class PermutationGroup(Basic):
 
         """
         if not isinstance(i, Permutation):
-            raise TypeError("A PermutationGroup contains only Permutations as "
-                            "elements, not elements of type %s" % type(i))
+            raise TypeError('A PermutationGroup contains only Permutations as '
+                            'elements, not elements of type %s' % type(i))
         return self.contains(i)
 
     def __len__(self):
@@ -623,7 +623,6 @@ class PermutationGroup(Basic):
         base, strong_gens, basic_orbits, basic_transversals
 
         """
-
         if self._transversals == []:
             self.schreier_sims()
         strong_gens = self._strong_gens
@@ -664,7 +663,6 @@ class PermutationGroup(Basic):
         strong_gens, base, basic_orbits, basic_stabilizers
 
         """
-
         if self._transversals == []:
             self.schreier_sims()
         return self._transversals
@@ -947,7 +945,7 @@ class PermutationGroup(Basic):
         return factors
 
     def coset_rank(self, g):
-        """rank using Schreier-Sims representation
+        """Rank using Schreier-Sims representation.
 
         The coset rank of ``g`` is the ordering number in which
         it appears in the lexicographic listing according to the
@@ -991,7 +989,7 @@ class PermutationGroup(Basic):
         return rank
 
     def coset_unrank(self, rank, af=False):
-        """unrank using Schreier-Sims representation
+        """Unrank using Schreier-Sims representation.
 
         coset_unrank is the inverse operation of coset_rank
         if 0 <= rank < order; otherwise it returns None.
@@ -1141,7 +1139,7 @@ class PermutationGroup(Basic):
         G2 = self.normal_closure(cms)
         return G2
 
-    def generate(self, method="coset", af=False):
+    def generate(self, method='coset', af=False):
         """Return iterator to generate the elements of the group
 
         Iteration is done with one of these methods::
@@ -1186,9 +1184,9 @@ class PermutationGroup(Basic):
         True
 
         """
-        if method == "coset":
+        if method == 'coset':
             return self.generate_schreier_sims(af)
-        elif method == "dimino":
+        elif method == 'dimino':
             return self.generate_dimino(af)
         else:
             raise NotImplementedError('No generation defined for %s' % method)
@@ -1269,7 +1267,6 @@ class PermutationGroup(Basic):
          [0, 1, 3, 2], [0, 2, 3, 1], [0, 3, 1, 2]]
 
         """
-
         n = self._degree
         u = self.basic_transversals
         basic_orbits = self._basic_orbits
@@ -3170,7 +3167,6 @@ def _orbits(degree, generators):
     [{0, 1, 2}]
 
     """
-
     orbs = []
     sorted_I = list(range(degree))
     I = set(sorted_I)
@@ -3212,7 +3208,6 @@ def _orbit_transversal(degree, generators, alpha, pairs, af=False):
          Permutation(0, 3)(1, 4)(2, 5)]
 
     """
-
     tr = [(alpha, list(range(degree)))]
     used = [False]*degree
     used[alpha] = True

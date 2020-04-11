@@ -405,7 +405,7 @@ class TIDS(CantSympify):
 
     def __str__(self):
         from ..printing import sstr
-        return "TIDS({0}, {1}, {2})".format(sstr(self.components), sstr(self.free), sstr(self.dum))
+        return 'TIDS({0}, {1}, {2})'.format(sstr(self.components), sstr(self.free), sstr(self.dum))
 
     def sorted_components(self):
         """
@@ -758,7 +758,7 @@ class _TensorDataLazyEvaluator(CantSympify):
         if dat is None:
             return
 
-        numpy = import_module("numpy")
+        numpy = import_module('numpy')
         if not isinstance(dat, numpy.ndarray):
             return dat
 
@@ -812,8 +812,8 @@ class _TensorDataLazyEvaluator(CantSympify):
             if all(i is None for i in data_list):
                 return
             if any(i is None for i in data_list):
-                raise ValueError("Mixing tensors with associated components "
-                                 "data with tensors without components data")
+                raise ValueError('Mixing tensors with associated components '
+                                 'data with tensors without components data')
             data_result, tensmul_result = self.data_product_tensors(data_list, tensmul_list)
             return data_result
 
@@ -831,10 +831,10 @@ class _TensorDataLazyEvaluator(CantSympify):
             if all(i is None for i in data_list):
                 return
             if any(i is None for i in data_list):
-                raise ValueError("Mixing tensors with associated components "
-                                 "data with tensors without components data")
+                raise ValueError('Mixing tensors with associated components '
+                                 'data with tensors without components data')
 
-            numpy = import_module("numpy")
+            numpy = import_module('numpy')
             for data, free_args in zip(data_list, free_args_list):
                 if len(free_args) < 2:
                     sumvar += data
@@ -934,7 +934,7 @@ class _TensorDataLazyEvaluator(CantSympify):
                 data_swapped = numpy.transpose(data_swapped, permute_axes)
                 # if any value in the difference array is non-zero, raise an error:
                 if (last_data - sign_change*data_swapped).any():
-                    raise ValueError("Component data symmetry structure error")
+                    raise ValueError('Component data symmetry structure error')
                 last_data = data_swapped
 
     def __setitem__(self, key, value):
@@ -958,12 +958,12 @@ class _TensorDataLazyEvaluator(CantSympify):
         if isinstance(key, TensorHead):
             for dim, indextype in zip(data.shape, key.index_types):
                 if indextype.data is None:
-                    raise ValueError("index type {} has no components data"
-                                     " associated (needed to raise/lower index)".format(indextype))
+                    raise ValueError('index type {} has no components data'
+                                     ' associated (needed to raise/lower index)'.format(indextype))
                 if indextype.dim is None:
                     continue
                 if dim != indextype.dim:
-                    raise ValueError("wrong dimension of ndarray")
+                    raise ValueError('wrong dimension of ndarray')
         self._substitutions_dict[key] = data
 
     def __delitem__(self, key):
@@ -1159,7 +1159,7 @@ class _TensorManager:
 
     def comm_symbols2i(self, i):
         """
-        get the commutation group number corresponding to ``i``
+        Get the commutation group number corresponding to ``i``
 
         ``i`` can be a symbol or a number or a string
 
@@ -1183,7 +1183,7 @@ class _TensorManager:
 
     def set_comm(self, i, j, c):
         """
-        set the commutation parameter ``c`` for commutation groups ``i, j``
+        Set the commutation parameter ``c`` for commutation groups ``i, j``
 
         Parameters
         ==========
@@ -1255,7 +1255,7 @@ class _TensorManager:
 
     def set_comms(self, *args):
         """
-        set the commutation group numbers ``c`` for symbols ``i, j``
+        Set the commutation group numbers ``c`` for symbols ``i, j``
 
         Parameters
         ==========
@@ -1409,13 +1409,13 @@ class TensorIndexType(Basic):
     @property
     def auto_right(self):
         if not hasattr(self, '_auto_right'):
-            self._auto_right = TensorIndex("auto_right", self)
+            self._auto_right = TensorIndex('auto_right', self)
         return self._auto_right
 
     @property
     def auto_left(self):
         if not hasattr(self, '_auto_left'):
-            self._auto_left = TensorIndex("auto_left", self)
+            self._auto_left = TensorIndex('auto_left', self)
         return self._auto_left
 
     @property
@@ -1430,12 +1430,12 @@ class TensorIndexType(Basic):
         numpy = import_module('numpy')
         data = _TensorDataLazyEvaluator.parse_data(data)
         if data.ndim > 2:
-            raise ValueError("data have to be of rank 1 (diagonal metric) or 2.")
+            raise ValueError('data have to be of rank 1 (diagonal metric) or 2.')
         if data.ndim == 1:
             if self.dim is not None:
                 nda_dim = data.shape[0]
                 if nda_dim != self.dim:
-                    raise ValueError("Dimension mismatch")
+                    raise ValueError('Dimension mismatch')
 
             dim = data.shape[0]
             newndarray = numpy.zeros((dim, dim), dtype=object)
@@ -1444,10 +1444,10 @@ class TensorIndexType(Basic):
             data = newndarray
         dim1, dim2 = data.shape
         if dim1 != dim2:
-            raise ValueError("Non-square matrix tensor.")
+            raise ValueError('Non-square matrix tensor.')
         if self.dim is not None:
             if self.dim != dim1:
-                raise ValueError("Dimension mismatch")
+                raise ValueError('Dimension mismatch')
         _tensor_data_substitution_dict[self] = data
         _tensor_data_substitution_dict.add_metric_data(self.metric, data)
         delta = self.get_kronecker_delta()
@@ -1570,11 +1570,11 @@ class TensorIndex(Basic):
         elif isinstance(name, Symbol):
             name_symbol = name
         elif name is True:
-            name = "_i{0}".format(len(tensortype._autogenerated))
+            name = '_i{0}'.format(len(tensortype._autogenerated))
             name_symbol = Symbol(name)
             tensortype._autogenerated.append(name_symbol)
         else:
-            raise ValueError("invalid name")
+            raise ValueError('invalid name')
 
         obj = Basic.__new__(cls, name_symbol, tensortype, Integer(1) if is_up else Integer(0))
         obj._name = str(name)
@@ -1688,7 +1688,7 @@ class TensorSymmetry(Basic):
         elif len(args) == 2:
             base, generators = args
         else:
-            raise TypeError("bsgs required, either two separate parameters or one tuple")
+            raise TypeError('bsgs required, either two separate parameters or one tuple')
 
         if not isinstance(base, Tuple):
             base = Tuple(*base)
@@ -2027,11 +2027,10 @@ class TensorHead(Basic):
     representation of an antisymmetric set of two elements:
 
     >>> F = tensorhead('A', [Lorentz, Lorentz], [[2]])
-    >>> F(-i0, -i1).data = [
-    ... [0, Ex/c, Ey/c, Ez/c],
-    ... [-Ex/c, 0, -Bz, By],
-    ... [-Ey/c, Bz, 0, -Bx],
-    ... [-Ez/c, -By, Bx, 0]]
+    >>> F(-i0, -i1).data = [[0, Ex/c, Ey/c, Ez/c],
+    ...                     [-Ex/c, 0, -Bz, By],
+    ...                     [-Ey/c, Bz, 0, -Bx],
+    ...                     [-Ez/c, -By, Bx, 0]]
 
     Now it is possible to retrieve the contravariant form of the Electromagnetic
     tensor:
@@ -2099,7 +2098,7 @@ class TensorHead(Basic):
         elif isinstance(name, Symbol):
             name_symbol = name
         else:
-            raise ValueError("invalid name")
+            raise ValueError('invalid name')
 
         comm2i = TensorManager.comm_symbols2i(comm)
 
@@ -2275,14 +2274,13 @@ class TensorHead(Basic):
         C(auto_left, -auto_right)
 
         """
-
         indices, matrix_behavior_kinds = self._check_auto_matrix_indices_in_call(*indices)
         tensor = Tensor._new_with_dummy_replacement(self, indices, **kw_args)
         return tensor
 
     def __pow__(self, other):
         if self.data is None:
-            raise ValueError("No power on abstract tensors.")
+            raise ValueError('No power on abstract tensors.')
         numpy = import_module('numpy')
         metrics = [_.data for _ in self.args[1].args[0]]
 
@@ -2364,7 +2362,7 @@ class TensExpr(Basic):
 
     def __pow__(self, other):
         if self.data is None:
-            raise ValueError("No power without ndarray data.")
+            raise ValueError('No power without ndarray data.')
         numpy = import_module('numpy')
         free = self.free
 
@@ -2450,7 +2448,7 @@ class TensExpr(Basic):
             return Matrix(mat_list)
         else:
             raise NotImplementedError(
-                "missing multidimensional reduction to matrix.")
+                'missing multidimensional reduction to matrix.')
 
 
 @doctest_depends_on(modules=('numpy',))
@@ -2625,7 +2623,7 @@ class TensAdd(TensExpr):
             for j in missing_intersection:
                 args[i] *= j.delta(j.auto_left, -j.auto_right)
             if missing_left != missing_right:
-                raise ValueError("cannot determine how to add auto-matrix indices on some args")
+                raise ValueError('cannot determine how to add auto-matrix indices on some args')
 
         return args
 
@@ -2724,7 +2722,7 @@ class TensAdd(TensExpr):
 
     def canon_bp(self):
         """
-        canonicalize using the Butler-Portugal algorithm for canonicalization
+        Canonicalize using the Butler-Portugal algorithm for canonicalization
         under monoterm symmetries.
 
         """
@@ -2808,7 +2806,6 @@ class TensAdd(TensExpr):
         TensorIndexType
 
         """
-
         args = [contract_metric(x, g) for x in self.args]
         t = TensAdd(*args)
         return canon_bp(t)
@@ -2892,12 +2889,12 @@ class TensAdd(TensExpr):
         >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
         >>> i, j = tensor_indices('i j', Lorentz)
         >>> A, B = tensorhead('A B', [Lorentz]*2, [[1]*2])
-        >>> eA = 3*A(i, j)
-        >>> eB = 2*B(j, i)
-        >>> t1 = eA._tids
-        >>> t2 = eB._tids
-        >>> c1 = eA.coeff
-        >>> c2 = eB.coeff
+        >>> ea = 3*A(i, j)
+        >>> eb = 2*B(j, i)
+        >>> t1 = ea._tids
+        >>> t2 = eb._tids
+        >>> c1 = ea.coeff
+        >>> c2 = eb.coeff
         >>> TensAdd.from_TIDS_list([c1, c2], [t1, t2])
         2*B(i, j) + 3*A(i, j)
 
@@ -2931,9 +2928,9 @@ class Tensor(TensExpr):
     Examples
     ========
 
-    >>> Lorentz = TensorIndexType("Lorentz", dummy_fmt="L")
+    >>> Lorentz = TensorIndexType('Lorentz', dummy_fmt='L')
     >>> mu, nu = tensor_indices('mu nu', Lorentz)
-    >>> A = tensorhead("A", [Lorentz, Lorentz], [[1], [1]])
+    >>> A = tensorhead('A', [Lorentz, Lorentz], [[1], [1]])
     >>> A(mu, -nu)
     A(mu, -nu)
     >>> A(mu, -mu)
@@ -3042,7 +3039,6 @@ class Tensor(TensExpr):
         A(L_0, i1, -L_0, i2, i3)
 
         """
-
         free_args = self.free_args
         indices = list(indices)
         if [x._tensortype for x in indices] != [x._tensortype for x in free_args]:
@@ -3565,18 +3561,18 @@ class TensMul(TensExpr):
         args = self.args
 
         def get_str(arg):
-            return str(arg) if arg.is_Atom or isinstance(arg, TensExpr) else ("(%s)" % str(arg))
+            return str(arg) if arg.is_Atom or isinstance(arg, TensExpr) else ('(%s)' % str(arg))
 
         if not args:
             # no arguments is equivalent to "1", i.e. TensMul().
             # If tensors are constructed correctly, this should never occur.
-            return "1"
+            return '1'
         if self.coeff == -1:
             # expressions like "-A(a)"
-            return "-"+"*".join([get_str(arg) for arg in args[1:]])
+            return '-'+'*'.join([get_str(arg) for arg in args[1:]])
 
         # prints expressions like "A(a)", "3*A(a)", "(1+x)*A(a)"
-        return "*".join([get_str(arg) for arg in self.args])
+        return '*'.join([get_str(arg) for arg in self.args])
 
     @property
     def data(self):
@@ -3586,7 +3582,7 @@ class TensMul(TensExpr):
 
     def __iter__(self):
         if self.data is None:
-            raise ValueError("No iteration on abstract tensors")
+            raise ValueError('No iteration on abstract tensors')
         return self.data.flatten().__iter__()
 
 
@@ -3624,7 +3620,7 @@ def riemann_cyclic_replace(t_r):
 
 def riemann_cyclic(t2):
     """
-    replace each Riemann tensor with an equivalent expression
+    Replace each Riemann tensor with an equivalent expression
     satisfying the cyclic identity.
 
     This trick is discussed in the reference guide to Cadabra.
@@ -3672,7 +3668,7 @@ def get_coeff(t):
     if isinstance(t, TensMul):
         return t.coeff
     if isinstance(t, TensExpr):
-        raise ValueError("no coefficient associated to this tensor expression")
+        raise ValueError('no coefficient associated to this tensor expression')
     return t
 
 

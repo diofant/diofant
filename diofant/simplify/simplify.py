@@ -152,7 +152,7 @@ def _separatevars(expr, force):
 def _separatevars_dict(expr, symbols):
     if symbols:
         if not all((t.is_Atom for t in symbols)):
-            raise ValueError("symbols must be Atoms.")
+            raise ValueError('symbols must be Atoms.')
         symbols = list(symbols)
     elif symbols is None:
         return {'coeff': expr}
@@ -191,8 +191,9 @@ def _is_sum_surds(p):
 
 def _nthroot_solve(p, n, prec):
     """
-    helper function for ``nthroot``
-    It denests ``root(p, n)`` using its minimal polynomial
+    Helper function for ``nthroot``.
+
+    It denests ``root(p, n)`` using its minimal polynomial.
 
     """
     from ..polys.numberfields import _minimal_polynomial_sq
@@ -218,7 +219,7 @@ def _nthroot_solve(p, n, prec):
 
 def nthroot(expr, n, max_len=4, prec=15):
     """
-    compute a real nth-root of a sum of surds
+    Compute a real nth-root of a sum of surds.
 
     Parameters
     ==========
@@ -535,7 +536,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     For example:
 
-    >>> a, b = symbols('a b', positive=True)
+    >>> a, b = symbols('a b', positive=True, real=True)
     >>> g = log(a) + log(b) + log(a)*log(1/b)
     >>> h = simplify(g)
     >>> h
@@ -557,9 +558,8 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
     2*LOG + MUL + POW + SUB
 
     >>> def my_measure(expr):
-    ...     POW = Symbol('POW')
     ...     # Discourage powers by giving POW a weight of 10
-    ...     count = count_ops(expr, visual=True).subs({POW: 10})
+    ...     count = count_ops(expr, visual=True).subs({'POW': 10})
     ...     # Every other operation gets a weight of 1 (the default)
     ...     count = count.replace(Symbol, type(Integer(1)))
     ...     return count
@@ -791,7 +791,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
         constant = sympify(constant)
         v = constant.evalf(prec)
         if not v.is_Float:
-            raise ValueError("constants must be real-valued")
+            raise ValueError('constants must be real-valued')
         constants_dict[str(constant)] = v._to_mpmath(bprec)
 
     exprval = expr.evalf(prec, chop=True, strict=False)

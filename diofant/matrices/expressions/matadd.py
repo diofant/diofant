@@ -68,12 +68,12 @@ class MatAdd(MatrixExpr):
 
 def validate(*args):
     if not all(arg.is_Matrix for arg in args):
-        raise TypeError("Mix of Matrix and Scalar symbols")
+        raise TypeError('Mix of Matrix and Scalar symbols')
 
     A = args[0]
     for B in args[1:]:
         if A.shape != B.shape:
-            raise ShapeError("Matrices %s and %s are not aligned" % (A, B))
+            raise ShapeError('Matrices %s and %s are not aligned' % (A, B))
 
 
 def factor_of(arg):
@@ -92,7 +92,7 @@ def combine(cnt, mat):
 
 
 def merge_explicit(matadd):
-    """ Merge explicit MatrixBase arguments
+    """Merge explicit MatrixBase arguments
 
     >>> A = MatrixSymbol('A', 2, 2)
     >>> B = eye(2)

@@ -1,12 +1,10 @@
 import pytest
 
+from diofant import (Eq, Function, Heaviside, I, Max, Min, Piecewise, Pow,
+                     Rational, Symbol, cbrt, ceiling, cos, floor, oo,
+                     real_root, root, sin, sqrt, symbols, true, zoo)
 from diofant.abc import x, y, z
-from diofant.core import (Eq, Function, I, Pow, Rational, Symbol, oo, symbols,
-                          zoo)
 from diofant.core.function import ArgumentIndexError
-from diofant.functions import (Heaviside, Max, Min, Piecewise, cbrt, ceiling,
-                               cos, floor, real_root, root, sin, sqrt)
-from diofant.logic import true
 
 
 __all__ = ()

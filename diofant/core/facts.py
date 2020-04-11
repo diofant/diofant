@@ -101,7 +101,7 @@ def transitive_closure(implications):
 
 def deduce_alpha_implications(implications):
     """
-    deduce all implications
+    Deduce all implications.
 
     Description by example
     ----------------------
@@ -142,7 +142,7 @@ def deduce_alpha_implications(implications):
 
 def apply_beta_to_alpha_route(alpha_implications, beta_rules):
     """
-    apply additional beta-rules (And conditions) to already-built alpha implication tables
+    Apply additional beta-rules (And conditions) to already-built alpha implication tables.
 
     TODO: write about
 
@@ -185,7 +185,7 @@ def apply_beta_to_alpha_route(alpha_implications, beta_rules):
 
         for bcond, bimpl in beta_rules:
             if not isinstance(bcond, And):
-                raise TypeError("Cond is not And")
+                raise TypeError('Cond is not And')
             bargs = set(bcond.args)
             for x, (ximpls, bb) in x_impl.items():
                 x_all = ximpls | {x}
@@ -221,7 +221,7 @@ def apply_beta_to_alpha_route(alpha_implications, beta_rules):
 
 def rules_2prereq(rules):
     """
-    build prerequisites table from rules
+    Build prerequisites table from rules.
 
     Description by example
     ----------------------
@@ -418,7 +418,6 @@ class FactRules:
 
     def __init__(self, rules):
         """Compile rules into internal lookup tables."""
-
         if isinstance(rules, str):
             rules = rules.splitlines()
 
@@ -476,9 +475,11 @@ class FactRules:
 
 
 class InconsistentAssumptions(ValueError):
+    """Raised when assumptions are inconsistent."""
+
     def __str__(self):
         kb, fact, value = self.args
-        return "%s, %s=%s" % (kb, fact, value)
+        return '%s, %s=%s' % (kb, fact, value)
 
 
 class FactKB(dict):
@@ -489,7 +490,7 @@ class FactKB(dict):
 
     def __str__(self):
         return '{\n%s}' % ',\n'.join(
-            ["\t%s: %s" % i for i in sorted(self.items())])
+            ['\t%s: %s' % i for i in sorted(self.items())])
 
     def __init__(self, rules):
         self.rules = rules

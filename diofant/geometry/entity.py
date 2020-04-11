@@ -307,18 +307,16 @@ class GeometrySet(GeometryEntity, Set):
 
     def _contains(self, other):
         """diofant.sets uses the _contains method, so include it for compatibility."""
-
         if isinstance(other, Set) and other.is_FiniteSet:
             return all(self.__contains__(i) for i in other)
 
         return self.__contains__(other)
 
     def _union(self, o):
-        """ Returns the union of self and o
+        """Returns the union of self and o
         for use with diofant.sets.Set, if possible.
 
         """
-
         from ..sets import Union, FiniteSet
 
         # if its a FiniteSet, merge any points

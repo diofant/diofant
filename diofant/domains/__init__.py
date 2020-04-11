@@ -1,8 +1,6 @@
-"""Implementation of mathematical domains. """
+"""Implementation of mathematical domains."""
 
 from ..core.compatibility import GROUND_TYPES
-from . import (algebraicfield, complexfield, domain, expressiondomain,
-               finitefield, integerring, rationalfield, realfield)
 from .algebraicfield import (AlgebraicField, ComplexAlgebraicField,
                              RealAlgebraicField)
 from .complexfield import CC, ComplexField
@@ -25,3 +23,11 @@ GF = FF
 # Remove clash with functions of polys module:
 del ring
 del field
+
+
+__all__ = ('GROUND_TYPES', 'AlgebraicField', 'ComplexAlgebraicField',
+           'RealAlgebraicField', 'CC', 'ComplexField', 'Domain', 'EX',
+           'ExpressionDomain', 'FiniteField', 'FF_gmpy', 'FF_python',
+           'PythonRational', 'IntegerRing', 'ZZ_gmpy', 'ZZ_python',
+           'QQ_gmpy', 'QQ_python', 'RationalField', 'RR', 'RealField',
+           'FF', 'ZZ', 'QQ', 'GF')

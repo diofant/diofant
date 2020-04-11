@@ -52,7 +52,7 @@ def flatten(iterable, levels=None, cls=None):
             levels -= 1
         else:
             raise ValueError(
-                "expected non-negative number of levels, got %s" % levels)
+                'expected non-negative number of levels, got %s' % levels)
 
     if cls is None:
         def reducible(x):
@@ -372,7 +372,7 @@ def capture(func):
     >>> def foo():
     ...     print('hello world!')
     ...
-    >>> 'hello' in capture(foo) # foo, not foo()
+    >>> 'hello' in capture(foo)  # foo, not foo()
     True
     >>> capture(lambda: pprint(2/x, use_unicode=False))
     '2\n-\nx\n'
@@ -476,7 +476,6 @@ def common_suffix(*seqs):
     [3]
 
     """
-
     if any(not s for s in seqs):
         return []
     elif len(seqs) == 1:
@@ -635,7 +634,7 @@ def topological_sort(graph, key=None):
                         S.append(v)
 
     if E:
-        raise ValueError("cycle detected")
+        raise ValueError('cycle detected')
     else:
         return L
 
@@ -913,7 +912,7 @@ def multiset_partitions(multiset, m=None):
     The number of partitions of length k from a set of size n is given by the
     Stirling Number of the 2nd kind:
 
-    >>> def S2(n, k):
+    >>> def s2(n, k):
     ...     from diofant import Dummy, binomial, factorial, Sum
     ...     if k > n:
     ...         return 0
@@ -921,7 +920,7 @@ def multiset_partitions(multiset, m=None):
     ...     arg = (-1)**(k-j)*j**n*binomial(k, j)
     ...     return 1/factorial(k)*Sum(arg, (j, 0, k)).doit()
     ...
-    >>> S2(5, 2) == len(list(multiset_partitions(5, 2))) == 15
+    >>> s2(5, 2) == len(list(multiset_partitions(5, 2))) == 15
     True
 
     These comments on counting apply to *sets*, not multisets.
@@ -973,7 +972,6 @@ def multiset_partitions(multiset, m=None):
     diofant.functions.combinatorial.numbers.nT
 
     """
-
     # This function looks at the supplied input and dispatches to
     # several special-case routines as they apply.
     if type(multiset) is int:
@@ -1710,7 +1708,7 @@ def runs(seq, op=gt):
 
 
 def cantor_product(*args):
-    """ Breadth-first (diagonal) cartesian product of iterables.
+    """Breadth-first (diagonal) cartesian product of iterables.
 
     Each iterable is advanced in turn in a round-robin fashion. As usual with
     breadth-first, this comes at the cost of memory consumption.

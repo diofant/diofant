@@ -18,26 +18,26 @@ from .precedence import precedence
 # dictionary mapping diofant function to (argument_conditions, C_function).
 # Used in CCodePrinter._print_Function(self)
 known_functions = {
-    "Abs": [(lambda x: not x.is_integer, "fabs")],
-    "gamma": "tgamma",
-    "sin": "sin",
-    "cos": "cos",
-    "tan": "tan",
-    "asin": "asin",
-    "acos": "acos",
-    "atan": "atan",
-    "atan2": "atan2",
-    "exp": "exp",
-    "log": "log",
-    "erf": "erf",
-    "sinh": "sinh",
-    "cosh": "cosh",
-    "tanh": "tanh",
-    "asinh": "asinh",
-    "acosh": "acosh",
-    "atanh": "atanh",
-    "floor": "floor",
-    "ceiling": "ceil",
+    'Abs': [(lambda x: not x.is_integer, 'fabs')],
+    'gamma': 'tgamma',
+    'sin': 'sin',
+    'cos': 'cos',
+    'tan': 'tan',
+    'asin': 'asin',
+    'acos': 'acos',
+    'atan': 'atan',
+    'atan2': 'atan2',
+    'exp': 'exp',
+    'log': 'log',
+    'erf': 'erf',
+    'sinh': 'sinh',
+    'cosh': 'cosh',
+    'tanh': 'tanh',
+    'asinh': 'asinh',
+    'acosh': 'acosh',
+    'atanh': 'atanh',
+    'floor': 'floor',
+    'ceiling': 'ceil',
 }
 
 # These are the core reserved words in the C language. Taken from:
@@ -81,8 +81,8 @@ reserved_words = ['auto',
 class CCodePrinter(CodePrinter):
     """A printer to convert python expressions to strings of c code."""
 
-    printmethod = "_ccode"
-    language = "C"
+    printmethod = '_ccode'
+    language = 'C'
 
     _default_settings = {
         'order': None,
@@ -108,13 +108,13 @@ class CCodePrinter(CodePrinter):
         return p*5
 
     def _get_statement(self, codestring):
-        return "%s;" % codestring
+        return '%s;' % codestring
 
     def _get_comment(self, text):
-        return "// {0}".format(text)
+        return '// {0}'.format(text)
 
     def _declare_number_const(self, name, value):
-        return "double const {0} = {1};".format(name, value)
+        return 'double const {0} = {1};'.format(name, value)
 
     def _format_code(self, lines):
         return self.indent_code(lines)
@@ -126,18 +126,18 @@ class CCodePrinter(CodePrinter):
     def _get_loop_opening_ending(self, indices):
         open_lines = []
         close_lines = []
-        loopstart = "for (int %(var)s=%(start)s; %(var)s<%(end)s; %(var)s++){"
+        loopstart = 'for (int %(var)s=%(start)s; %(var)s<%(end)s; %(var)s++){'
         for i in indices:
             # C arrays start at 0 and end at dimension-1
             open_lines.append(loopstart % {
                 'var': self._print(i.label),
                 'start': self._print(i.lower),
                 'end': self._print(i.upper + 1)})
-            close_lines.append("}")
+            close_lines.append('}')
         return open_lines, close_lines
 
     def _print_Pow(self, expr):
-        if "Pow" in self.known_functions:
+        if 'Pow' in self.known_functions:
             return self._print_Function(expr)
         PREC = precedence(expr)
         if expr.exp == -1:
@@ -160,13 +160,13 @@ class CCodePrinter(CodePrinter):
         for i in reversed(range(expr.rank)):
             elem += expr.indices[i]*offset
             offset *= dims[i]
-        return "%s[%s]" % (self._print(expr.base.label), self._print(elem))
+        return '%s[%s]' % (self._print(expr.base.label), self._print(elem))
 
     def _print_Idx(self, expr):
         return self._print(expr.label)
 
     def _print_Exp1(self, expr):
-        return "M_E"
+        return 'M_E'
 
     def _print_Pi(self, expr):
         return 'M_PI'
@@ -181,33 +181,33 @@ class CCodePrinter(CodePrinter):
         if expr.args[-1].cond != true:
             # We need the last conditional to be a True, otherwise the resulting
             # function may not return a result.
-            raise ValueError("All Piecewise expressions must contain an "
-                             "(expr, True) statement to be used as a default "
-                             "condition. Without one, the generated "
-                             "expression may not evaluate to anything under "
-                             "some condition.")
+            raise ValueError('All Piecewise expressions must contain an '
+                             '(expr, True) statement to be used as a default '
+                             'condition. Without one, the generated '
+                             'expression may not evaluate to anything under '
+                             'some condition.')
         lines = []
         if expr.has(Assignment):
             for i, (e, c) in enumerate(expr.args):
                 if i == 0:
-                    lines.append("if (%s) {" % self._print(c))
+                    lines.append('if (%s) {' % self._print(c))
                 elif i == len(expr.args) - 1 and c == true:
-                    lines.append("else {")
+                    lines.append('else {')
                 else:
-                    lines.append("else if (%s) {" % self._print(c))
+                    lines.append('else if (%s) {' % self._print(c))
                 code0 = self._print(e)
                 lines.append(code0)
-                lines.append("}")
-            return "\n".join(lines)
+                lines.append('}')
+            return '\n'.join(lines)
         else:
             # The piecewise was used in an expression, need to do inline
             # operators. This has the downside that inline operators will
             # not work for statements that span multiple lines (Matrix or
             # Indexed expressions).
-            ecpairs = ["((%s) ? (\n%s\n)\n" % (self._print(c), self._print(e))
+            ecpairs = ['((%s) ? (\n%s\n)\n' % (self._print(c), self._print(e))
                        for e, c in expr.args[:-1]]
-            last_line = ": (\n%s\n)" % self._print(expr.args[-1].expr)
-            return ": ".join(ecpairs) + last_line + " ".join([")"*len(ecpairs)])
+            last_line = ': (\n%s\n)' % self._print(expr.args[-1].expr)
+            return ': '.join(ecpairs) + last_line + ' '.join([')'*len(ecpairs)])
 
     def _print_ITE(self, expr):
         from ..functions import Piecewise
@@ -215,7 +215,7 @@ class CCodePrinter(CodePrinter):
         return self._print(_piecewise)
 
     def _print_MatrixElement(self, expr):
-        return "{0}[{1}]".format(expr.parent, expr.j +
+        return '{0}[{1}]'.format(expr.parent, expr.j +
                                  expr.i*expr.parent.shape[1])
 
     def _print_Symbol(self, expr):
@@ -232,12 +232,11 @@ class CCodePrinter(CodePrinter):
 
     def indent_code(self, code):
         """Accepts a string of code or a list of code lines."""
-
         if isinstance(code, str):
             code_lines = self.indent_code(code.splitlines(True))
             return ''.join(code_lines)
 
-        tab = "   "
+        tab = '   '
         inc_token = ('{', '(', '{\n', '(\n')
         dec_token = ('}', ')')
 
@@ -254,7 +253,7 @@ class CCodePrinter(CodePrinter):
                 pretty.append(line)
                 continue
             level -= decrease[n]
-            pretty.append("%s%s" % (tab*level, line))
+            pretty.append('%s%s' % (tab*level, line))
             level += increase[n]
         return pretty
 
@@ -301,10 +300,9 @@ def ccode(expr, assign_to=None, **settings):
     Examples
     ========
 
-    >>> x, tau = symbols("x, tau")
-    >>> ccode((2*tau)**Rational(7, 2))
-    '8*sqrt(2)*pow(tau, 7.0L/2.0L)'
-    >>> ccode(sin(x), assign_to="s")
+    >>> ccode((2*x)**Rational(7, 2))
+    '8*sqrt(2)*pow(x, 7.0L/2.0L)'
+    >>> ccode(sin(x), assign_to='s')
     's = sin(x);'
 
     Simple custom printing can be defined for certain types by passing a
@@ -312,10 +310,10 @@ def ccode(expr, assign_to=None, **settings):
     Alternatively, the dictionary value can be a list of tuples i.e.
     [(argument_test, cfunction_string)].
 
-    >>> custom_functions = {"ceiling": "CEIL",
-    ...                     "Abs": [(lambda x: not x.is_integer, "fabs"),
-    ...                             (lambda x: x.is_integer, "ABS")],
-    ...                     "func": "f"}
+    >>> custom_functions = {'ceiling': 'CEIL',
+    ...                     'Abs': [(lambda x: not x.is_integer, 'fabs'),
+    ...                             (lambda x: x.is_integer, 'ABS')],
+    ...                     'func': 'f'}
     >>> func = Function('func')
     >>> ccode(func(abs(x) + ceiling(x)), user_functions=custom_functions)
     'f(fabs(x) + CEIL(x))'
@@ -336,12 +334,12 @@ def ccode(expr, assign_to=None, **settings):
     anything.
 
     >>> expr = Piecewise((x + 1, x > 0), (x, True))
-    >>> print(ccode(expr, tau))
+    >>> print(ccode(expr, y))
     if (x > 0) {
-    tau = x + 1;
+    y = x + 1;
     }
     else {
-    tau = x;
+    y = x;
     }
 
     Support for loops is provided through ``Indexed`` types. With
@@ -375,5 +373,4 @@ def ccode(expr, assign_to=None, **settings):
     A[2] = sin(x);
 
     """
-
     return CCodePrinter(settings).doprint(expr, assign_to)

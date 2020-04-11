@@ -1,163 +1,14 @@
-"""Tests for dense recursive polynomials' tools. """
+"""Tests for dense recursive polynomials' tools."""
 
 import pytest
 
-from diofant import I, Rational, sin, sqrt
+from diofant import (EX, QQ, ZZ, DomainError, ExactQuotientFailed, I, Rational,
+                     ring, sin, sqrt)
 from diofant.abc import x
-from diofant.domains import EX, FF, QQ, ZZ
-from diofant.polys.polyerrors import DomainError, ExactQuotientFailed
-from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
 
 __all__ = ()
-
-
-def test_PolyElement_integrate():
-    R, x = ring('x', QQ)
-
-    assert R(0).integrate() == 0
-    assert R(0).integrate(m=2) == 0
-
-    assert R(1).integrate() == x
-    assert R(1).integrate(m=2) == x**2/2
-
-    assert (x**2 + 2*x + 3).integrate(m=0) == x**2 + 2*x + 3
-    assert (x**2 + 2*x + 3).integrate() == x**3/3 + x**2 + 3*x
-    assert (x**2 + 2*x + 3).integrate(m=2) == x**4/12 + x**3/3 + 3*x**2/2
-    assert (x**2 + 2*x + 3).integrate(m=3) == x**5/60 + x**4/12 + x**3/2
-
-    assert (x**2 + 2*x).integrate() == x**3/3 + x**2
-    assert (x**2 + 2*x).integrate(m=2) == x**4/12 + x**3/3
-
-    assert (17*x**29).integrate(m=3) == 17*x**32/29760
-
-    assert (17*x**29 + x**5/2).integrate(m=3) == 17*x**32/29760 + x**8/672
-
-    R, x, y, z = ring('x y z', QQ)
-
-    assert R(0).integrate() == 0
-    assert R(0).integrate(m=2) == 0
-
-    assert R(1).integrate() == x
-    assert R(1).integrate(m=2) == x**2/2
-
-    R, x, y = ring('x y', QQ)
-
-    assert (x**2 + 2*x + 3).integrate(m=0) == x**2 + 2*x + 3
-    assert (x**2 + 2*x + 3).integrate(m=1) == x**3/3 + x**2 + 3*x
-    assert (x**2 + 2*x + 3).integrate(m=2) == x**4/12 + x**3/3 + 3*x**2/2
-    assert (x**2 + 2*x + 3).integrate(m=3) == x**5/60 + x**4/12 + x**3/2
-
-    assert (x + 2*y).integrate() == x**2/2 + 2*x*y
-    assert (x + 2*y).integrate(x=y) == x*y + y**2
-    assert (x + 2*y).integrate(m=2) == x**3/6 + x**2*y
-
-    R, x, y, z, t = ring('x y z t', QQ)
-
-    f = R.from_dense(f_polys()[6].to_dense())
-
-    assert (f.integrate(x=y, m=2) ==
-            705*x**4*y**3/2 + 45*x**3*y**2*z**3*t**2/2 - 45*x**3*y**2*t**2/2 -
-            141*x*y**6/10 - 47*x*y**5/20 + 47*x*y**3*z**3/2 + 47*x*y**3*z*t/3 -
-            9*y**5*z**3*t**2/20 + 9*y**5*t**2/20 - y**4*z**3*t**2/12 + y**4*t**2/12 +
-            3*y**2*z**6*t**2/2 + y**2*z**4*t**3 - 3*y**2*z**3*t**2/2 - y**2*z*t**3)
-    assert (f.integrate(x=y, m=3) ==
-            705*x**4*y**4/8 + 15*x**3*y**3*z**3*t**2/2 - 15*x**3*y**3*t**2/2 -
-            141*x*y**7/70 - 47*x*y**6/120 + 47*x*y**4*z**3/8 + 47*x*y**4*z*t/12 -
-            3*y**6*z**3*t**2/40 + 3*y**6*t**2/40 - y**5*z**3*t**2/60 + y**5*t**2/60 +
-            y**3*z**6*t**2/2 + y**3*z**4*t**3/3 - y**3*z**3*t**2/2 - y**3*z*t**3/3)
-    assert (f.integrate(x=z, m=2) ==
-            2115*x**4*y*z**2/2 + 9*x**3*z**5*t**2/4 - 45*x**3*z**2*t**2/2 -
-            423*x*y**4*z**2/2 - 47*x*y**3*z**2/2 + 141*x*y*z**5/20 + 47*x*y*z**3*t/3 -
-            9*y**3*z**5*t**2/20 + 9*y**3*z**2*t**2/2 - y**2*z**5*t**2/20 +
-            y**2*z**2*t**2/2 + 3*z**8*t**2/56 + z**6*t**3/15 - 3*z**5*t**2/20 -
-            z**3*t**3/3)
-    assert (f.integrate(x=z, m=3) ==
-            705*x**4*y*z**3/2 + 3*x**3*z**6*t**2/8 - 15*x**3*z**3*t**2/2 -
-            141*x*y**4*z**3/2 - 47*x*y**3*z**3/6 + 47*x*y*z**6/40 + 47*x*y*z**4*t/12 -
-            3*y**3*z**6*t**2/40 + 3*y**3*z**3*t**2/2 - y**2*z**6*t**2/120 +
-            y**2*z**3*t**2/6 + z**9*t**2/168 + z**7*t**3/105 - z**6*t**2/40 -
-            z**4*t**3/12)
-
-
-def test_dmp_diff_in():
-    R, x = ring('x', ZZ)
-
-    assert R.dmp_diff_in(0, 1, 0) == 0
-    assert R.dmp_diff_in(7, 1, 0) == 0
-    assert R.dmp_diff_in(2*x + 7, 1, 0) == 2
-    assert R.dmp_diff_in(x**2 + 2*x + 1, 1, 0) == 2*x + 2
-    assert R.dmp_diff_in(x**3 + 2*x**2 + 3*x + 4, 1, 0) == 3*x**2 + 4*x + 3
-    assert R.dmp_diff_in(x**4 - x**3 + 2, 1, 0) == 4*x**3 - 3*x**2
-    assert R.dmp_diff_in(x**3 + 2*x**2 + 3*x + 4, 2, 0) == 6*x + 4
-
-    f = 17*x**10 + 34*x**9 + 56*x**8 - 345*x**7 + 23*x**6 + 76*x**5 + 12*x**2 + 3*x + 7
-
-    assert R.dmp_diff_in(f, 0, 0) == f
-    assert R.dmp_diff_in(f, 2, 0) == R.dmp_diff_in(R.dmp_diff_in(f, 1, 0), 1, 0)
-    assert R.dmp_diff_in(f, 3, 0) == R.dmp_diff_in(R.dmp_diff_in(R.dmp_diff_in(f, 1, 0),
-                                                                 1, 0), 1, 0)
-
-    R, x = ring('x', FF(3))
-
-    f = 2*x**10 + x**9 + 2*x**8 + 2*x**6 + x**5 + 1
-
-    assert R.dmp_diff_in(f, 1, 0) == 2*x**9 + x**7 + 2*x**4
-    assert R.dmp_diff_in(f, 2, 0) == x**6 + 2*x**3
-    assert R.dmp_diff_in(f, 3, 0) == 0
-
-    assert R.dmp_diff_in(f, 0, 0) == f
-    assert R.dmp_diff_in(f, 2, 0) == R.dmp_diff_in(R.dmp_diff_in(f, 1, 0), 1, 0)
-    assert R.dmp_diff_in(f, 3, 0) == R.dmp_diff_in(R.dmp_diff_in(R.dmp_diff_in(f, 1, 0),
-                                                                 1, 0), 1, 0)
-
-    R, x, y = ring('x y', ZZ)
-
-    assert R.dmp_diff_in(0, 1, 0) == 0
-
-    f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
-
-    assert R.dmp_diff_in(f, 1, 0) == y**2 + 2*y + 3
-    assert R.dmp_diff_in(f, 2, 0) == 0
-    assert R.dmp_diff_in(f, 1, 1) == 2*x*y + 2*x + 4*y + 3
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    assert R.dmp_diff_in(0, 1, 0) == 0
-    assert R.dmp_diff_in(y + 2, 1, 0) == 0
-    assert R.dmp_diff_in(x, 1, 0) == 1
-    assert R.dmp_diff_in(3*x**2 + x, 1, 0) == 6*x + 1
-
-    R, x, y, z, t = ring('x y z t', ZZ)
-
-    f = f_polys()[6]
-
-    assert R.dmp_diff_in(f, 0, 0) == f
-    assert R.dmp_diff_in(f, 2, 0) == R.dmp_diff_in(R.dmp_diff_in(f, 1, 0), 1, 0)
-    assert R.dmp_diff_in(f, 3, 0) == R.dmp_diff_in(R.dmp_diff_in(R.dmp_diff_in(f, 1, 0),
-                                                                 1, 0), 1, 0)
-
-    assert (R.dmp_diff_in(f, 2, 1) ==
-            -5076*x*y**2 - 282*x*y - 54*y*z**3*t**2 + 54*y*t**2 - 2*z**3*t**2 + 2*t**2)
-    assert R.dmp_diff_in(f, 3, 1) == -10152*x*y - 282*x - 54*z**3*t**2 + 54*t**2
-    assert (R.dmp_diff_in(f, 2, 2) ==
-            270*x**3*z*t**2 + 846*x*y*z - 54*y**3*z*t**2 - 6*y**2*z*t**2 +
-            90*z**4*t**2 + 24*z**2*t**3 - 18*z*t**2)
-    assert (R.dmp_diff_in(f, 3, 2) ==
-            270*x**3*t**2 + 846*x*y - 54*y**3*t**2 - 6*y**2*t**2 +
-            360*z**3*t**2 + 48*z*t**3 - 18*t**2)
-
-    pytest.raises(IndexError, lambda: R.dmp_diff_in(f, 2, -1))
-
-    R, x, y, z, t = ring('x y z t', FF(23))
-
-    f = R.from_dense(f_polys()[6].to_dense())
-
-    assert R.dmp_diff_in(f, 0, 0) == f
-    assert R.dmp_diff_in(f, 2, 0) == R.dmp_diff_in(R.dmp_diff_in(f, 1, 0), 1, 0)
-    assert R.dmp_diff_in(f, 3, 0) == R.dmp_diff_in(R.dmp_diff_in(R.dmp_diff_in(f, 1, 0),
-                                                                 1, 0), 1, 0)
 
 
 def test_dmp_eval_in():
@@ -221,7 +72,7 @@ def test_dmp_eval_in():
 
 
 def test_dmp_eval_tail():
-    R, x, y = ring("x y", ZZ)
+    R, x, y = ring('x y', ZZ)
 
     assert R.dmp_eval_tail(0, [ZZ(1)]) == 0
 
@@ -358,156 +209,201 @@ def test_dmp_ground_monic():
 def test_dmp_ground_content():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_ground_content(0) == 0
-    assert R.dmp_ground_content(+1) == 1
-    assert R.dmp_ground_content(-1) == -1
-    assert R.dmp_ground_content(x + 1) == 1
-    assert R.dmp_ground_content(2*x + 2) == 2
-    assert R.dmp_ground_content(x**2 + 2*x + 1) == 1
-    assert R.dmp_ground_content(2*x**2 + 4*x + 2) == 2
-    assert R.dmp_ground_content(6*x**2 + 8*x + 12) == 2
+    assert R(0).content() == 0
+    assert R(+1).content() == 1
+    assert R(-1).content() == -1
+    assert (x + 1).content() == 1
+    assert (2*x + 2).content() == 2
+    assert (x**2 + 2*x + 1).content() == 1
+    assert (2*x**2 + 4*x + 2).content() == 2
+    assert (6*x**2 + 8*x + 12).content() == 2
 
     R, x = ring('x', QQ)
 
-    assert R.dmp_ground_content(6*x**2 + 8*x + 12) == 2
+    assert (6*x**2 + 8*x + 12).content() == 2
 
-    assert R.dmp_ground_content(2*x/3 + QQ(4, 9)) == QQ(2, 9)
-    assert R.dmp_ground_content(2*x/3 + QQ(4, 5)) == QQ(2, 15)
+    assert (2*x/3 + QQ(4, 9)).content() == QQ(2, 9)
+    assert (2*x/3 + QQ(4, 5)).content() == QQ(2, 15)
 
     R, x, y = ring('x y', ZZ)
 
-    assert R.dmp_ground_content(0) == 0
-    assert R.dmp_ground_content(+1) == 1
-    assert R.dmp_ground_content(-1) == -1
-    assert R.dmp_ground_content(x + 1) == 1
-    assert R.dmp_ground_content(2*x + 2) == 2
-    assert R.dmp_ground_content(x**2 + 2*x + 1) == 1
-    assert R.dmp_ground_content(2*x**2 + 4*x + 2) == 2
+    assert R(0).content() == 0
+    assert R(+1).content() == 1
+    assert R(-1).content() == -1
+    assert (x + 1).content() == 1
+    assert (2*x + 2).content() == 2
+    assert (x**2 + 2*x + 1).content() == 1
+    assert (2*x**2 + 4*x + 2).content() == 2
+
+    R = R.eject(y)
+
+    assert R(-2).content() == -2
+
+    f, g, F = (3*y**2 + 2*y + 1).eject(y), R(1), R(0)
+
+    for i in range(5):
+        g *= f
+        F += R.x**i*g
+
+    assert F.content() == f.inject().drop(x)
+
+    f = 2*x*y + 6*x + 4*y + 12
+
+    assert f.eject(y).content() == (2*y + 6).drop(x)
 
     R, x, y = ring('x y', QQ)
 
-    assert R.dmp_ground_content(0) == 0
-    assert R.dmp_ground_content(2*x/3 + QQ(4, 9)) == QQ(2, 9)
-    assert R.dmp_ground_content(2*x/3 + QQ(4, 5)) == QQ(2, 15)
+    assert R(0).content() == 0
+    assert (2*x/3 + QQ(4, 9)).content() == QQ(2, 9)
+    assert (2*x/3 + QQ(4, 5)).content() == QQ(2, 15)
 
     R, x, y, z = ring('x y z', ZZ)
 
     f = f_polys()[0]
 
-    assert R.dmp_ground_content(f) == 1
-    assert R.dmp_ground_content(2*f) == 2
+    assert f.content() == 1
+    assert (2*f).content() == 2
 
     f = f_polys()[1]
 
-    assert R.dmp_ground_content(f) == 1
-    assert R.dmp_ground_content(3*f) == 3
+    assert f.content() == 1
+    assert (3*f).content() == 3
 
     f = f_polys()[2]
 
-    assert R.dmp_ground_content(f) == 1
-    assert R.dmp_ground_content(4*f) == 4
+    assert f.content() == 1
+    assert (4*f).content() == 4
 
     f = f_polys()[3]
 
-    assert R.dmp_ground_content(f) == 1
-    assert R.dmp_ground_content(5*f) == 5
+    assert f.content() == 1
+    assert (5*f).content() == 5
 
     f = f_polys()[4]
 
-    assert R.dmp_ground_content(f) == -1
-    assert R.dmp_ground_content(6*f) == -6
+    assert f.content() == -1
+    assert (6*f).content() == -6
+
+    assert f.eject(y, z).content() == -1
 
     f = f_polys()[5]
 
-    assert R.dmp_ground_content(f) == -1
-    assert R.dmp_ground_content(7*f) == -7
+    assert f.content() == -1
+    assert (7*f).content() == -7
+
+    assert f.eject(y, z).content() == -1
 
     R, x, y, z, t = ring('x y, z t', ZZ)
 
     f = f_polys()[6]
 
-    assert R.dmp_ground_content(f) == 1
-    assert R.dmp_ground_content(8*f) == 8
+    assert f.content() == 1
+    assert (8*f).content() == 8
+
+    assert f.eject(y, z, t).content() == 1
 
 
 def test_dmp_ground_primitive():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_ground_primitive(0) == (0, 0)
-    assert R.dmp_ground_primitive(1) == (1, 1)
-    assert R.dmp_ground_primitive(x + 1) == (1, x + 1)
-    assert R.dmp_ground_primitive(2*x + 2) == (2, x + 1)
-    assert R.dmp_ground_primitive(x**2 + 2*x + 1) == (1, x**2 + 2*x + 1)
-    assert R.dmp_ground_primitive(2*x**2 + 4*x + 2) == (2, x**2 + 2*x + 1)
-    assert R.dmp_ground_primitive(6*x**2 + 8*x + 12) == (2, 3*x**2 + 4*x + 6)
+    assert R(0).primitive() == (0, 0)
+    assert R(1).primitive() == (1, 1)
+    assert (x + 1).primitive() == (1, x + 1)
+    assert (2*x + 2).primitive() == (2, x + 1)
+    assert (x**2 + 2*x + 1).primitive() == (1, x**2 + 2*x + 1)
+    assert (2*x**2 + 4*x + 2).primitive() == (2, x**2 + 2*x + 1)
+    assert (6*x**2 + 8*x + 12).primitive() == (2, 3*x**2 + 4*x + 6)
 
     R, x = ring('x', QQ)
 
-    assert R.dmp_ground_primitive(0) == (0, 0)
-    assert R.dmp_ground_primitive(1) == (1, 1)
-    assert R.dmp_ground_primitive(x + 1) == (1, x + 1)
-    assert R.dmp_ground_primitive(2*x + 2) == (2, x + 1)
-    assert R.dmp_ground_primitive(x**2 + 2*x + 1) == (1, x**2 + 2*x + 1)
-    assert R.dmp_ground_primitive(2*x**2 + 4*x + 2) == (2, x**2 + 2*x + 1)
-    assert R.dmp_ground_primitive(6*x**2 + 8*x + 12) == (2, 3*x**2 + 4*x + 6)
+    assert R(0).primitive() == (0, 0)
+    assert R(1).primitive() == (1, 1)
+    assert (x + 1).primitive() == (1, x + 1)
+    assert (2*x + 2).primitive() == (2, x + 1)
+    assert (x**2 + 2*x + 1).primitive() == (1, x**2 + 2*x + 1)
+    assert (2*x**2 + 4*x + 2).primitive() == (2, x**2 + 2*x + 1)
+    assert (6*x**2 + 8*x + 12).primitive() == (2, 3*x**2 + 4*x + 6)
 
-    assert R.dmp_ground_primitive(2*x/3 + QQ(4, 9)) == (QQ(2, 9), 3*x + 2)
-    assert R.dmp_ground_primitive(2*x/3 + QQ(4, 5)) == (QQ(2, 15), 5*x + 6)
+    assert (2*x/3 + QQ(4, 9)).primitive() == (QQ(2, 9), 3*x + 2)
+    assert (2*x/3 + QQ(4, 5)).primitive() == (QQ(2, 15), 5*x + 6)
 
     R, x, y = ring('x y', ZZ)
 
-    assert R.dmp_ground_primitive(0) == (0, 0)
-    assert R.dmp_ground_primitive(2) == (2, 1)
+    assert R(0).primitive() == (0, 0)
+    assert R(2).primitive() == (2, 1)
+
+    R = R.eject(y)
+
+    assert R(0).primitive() == (0, 0)
+    assert R(1).primitive() == (1, 1)
+
+    f, g, F = (3*y**2 + 2*y + 1).eject(y), R(1), R(0)
+
+    for i in range(5):
+        g *= f
+        F += R.x**i*g
+
+    assert F.primitive() == (f.inject().drop(x), F // f)
+
+    f = (2*x*y + 6*x + 4*y + 12).eject(y)
+
+    assert f.primitive() == ((2*y + 6).drop(x), (x + 2).eject(y))
 
     R, x, y, z = ring('x y z', ZZ)
 
     f = f_polys()[0]
 
-    assert R.dmp_ground_primitive(f) == (1, f)
-    assert R.dmp_ground_primitive(2*f) == (2, f)
+    assert f.primitive() == (1, f)
+    assert (2*f).primitive() == (2, f)
 
     f = f_polys()[1]
 
-    assert R.dmp_ground_primitive(f) == (1, f)
-    assert R.dmp_ground_primitive(3*f) == (3, f)
+    assert f.primitive() == (1, f)
+    assert (3*f).primitive() == (3, f)
 
     f = f_polys()[2]
 
-    assert R.dmp_ground_primitive(f) == (1, f)
-    assert R.dmp_ground_primitive(4*f) == (4, f)
+    assert f.primitive() == (1, f)
+    assert (4*f).primitive() == (4, f)
 
     f = f_polys()[3]
 
-    assert R.dmp_ground_primitive(f) == (1, f)
-    assert R.dmp_ground_primitive(5*f) == (5, f)
+    assert f.primitive() == (1, f)
+    assert (5*f).primitive() == (5, f)
 
     f = f_polys()[4]
 
-    assert R.dmp_ground_primitive(f) == (-1, -f)
-    assert R.dmp_ground_primitive(6*f) == (-6, -f)
+    assert f.primitive() == (-1, -f)
+    assert (6*f).primitive() == (-6, -f)
+
+    assert f.eject(y, z).primitive() == (-1, -f.eject(y, z))
 
     f = f_polys()[5]
 
-    assert R.dmp_ground_primitive(f) == (-1, -f)
-    assert R.dmp_ground_primitive(7*f) == (-7, -f)
+    assert f.primitive() == (-1, -f)
+    assert (7*f).primitive() == (-7, -f)
+
+    assert f.eject(y, z).primitive() == (-1, -f.eject(y, z))
 
     R, x, y, z, t = ring('x y z t', ZZ)
 
     f = f_polys()[6]
 
-    assert R.dmp_ground_primitive(f) == (1, f)
-    assert R.dmp_ground_primitive(8*f) == (8, f)
+    assert f.primitive() == (1, f)
+    assert (8*f).primitive() == (8, f)
+
+    assert f.eject(y, z, t).primitive() == (1, f.eject(y, z, t))
 
     R, x, y = ring('x y', QQ)
 
-    assert R.dmp_ground_primitive(2) == (2, 1)
+    assert R(2).primitive() == (2, 1)
 
-    assert R.dmp_ground_primitive(2*x/3 + QQ(4, 9)) == (QQ(2, 9), 3*x + 2)
-    assert R.dmp_ground_primitive(2*x/3 + QQ(4, 5)) == (QQ(2, 15), 5*x + 6)
+    assert (2*x/3 + QQ(4, 9)).primitive() == (QQ(2, 9), 3*x + 2)
+    assert (2*x/3 + QQ(4, 5)).primitive() == (QQ(2, 15), 5*x + 6)
 
 
 def test_dup_real_imag():
-    R, x, y = ring("x y", ZZ)
+    R, x, y = ring('x y', ZZ)
 
     assert R.dup_real_imag(R.zero) == (0, 0)
     assert R.dup_real_imag(R.one) == (1, 0)
@@ -523,10 +419,10 @@ def test_dup_real_imag():
     assert R.dup_real_imag(f) == (x**3 + x**2 - 3*x*y**2 + x - y**2 + 1,
                                   3*x**2*y + 2*x*y - y**3 + y)
 
-    R, x, y = ring("x y", EX)
+    R, x, y = ring('x y', EX)
     pytest.raises(DomainError, lambda: R.dup_real_imag(x + 1))
 
-    R = QQ.algebraic_field(I).poly_ring("x", "y")
+    R = QQ.algebraic_field(I).inject('x', 'y')
     x, y = R.to_ground().gens
 
     f = R.x**4 + I*R.x**3 - R.x + 1
@@ -536,14 +432,14 @@ def test_dup_real_imag():
     assert R.dup_real_imag(f) == (r, i)
 
     K = QQ.algebraic_field(sqrt(2))
-    R = K.poly_ring("x", "y")
+    R = K.inject('x', 'y')
     x, y = R.gens
 
     f = R.x**2 + sqrt(2)*R.x - 1
     assert R.dup_real_imag(f) == (x**2 - y**2 + sqrt(2)*x - 1, 2*x*y + sqrt(2)*y)
 
     K = K.algebraic_field(I)
-    R = K.poly_ring("x", "y")
+    R = K.inject('x', 'y')
     x, y = R.to_ground().gens
 
     f = R.x**2 + 2*sqrt(2)*I*R.x - 1 + I
@@ -645,42 +541,43 @@ def test_dmp_compose():
 def test_dup_decompose():
     R, x = ring('x', ZZ)
 
-    assert R.dup_decompose(1) == [1]
+    assert R(1).decompose() == [1]
 
-    assert R.dup_decompose(x) == [x]
-    assert R.dup_decompose(x**3) == [x**3]
+    assert x.decompose() == [x]
+    assert (x**3).decompose() == [x**3]
 
-    assert R.dup_decompose(x**4) == [x**2, x**2]
-    assert R.dup_decompose(x**6) == [x**3, x**2]
+    assert (x**4).decompose() == [x**2, x**2]
+    assert (x**6).decompose() == [x**3, x**2]
 
-    assert R.dup_decompose(7*x**4 + 1) == [7*x**2 + 1, x**2]
-    assert R.dup_decompose(4*x**4 + 3*x**2 + 2) == [4*x**2 + 3*x + 2, x**2]
+    assert (7*x**4 + 1).decompose() == [7*x**2 + 1, x**2]
+    assert (4*x**4 + 3*x**2 + 2).decompose() == [4*x**2 + 3*x + 2, x**2]
 
     f = x**12 + 20*x**10 + 150*x**8 + 500*x**6 + 625*x**4 - 2*x**3 - 10*x + 9
 
-    assert R.dup_decompose(f) == [x**4 - 2*x + 9, x**3 + 5*x]
+    assert f.decompose() == [x**4 - 2*x + 9, x**3 + 5*x]
 
     f = 2*x**12 + 40*x**10 + 300*x**8 + 1000*x**6 + 1250*x**4 - 4*x**3 - 20*x + 18
 
-    assert R.dup_decompose(f) == [2*x**4 - 4*x + 18, x**3 + 5*x]
+    assert f.decompose() == [2*x**4 - 4*x + 18, x**3 + 5*x]
 
     f = (x**12 + 20*x**10 - 8*x**9 + 150*x**8 - 120*x**7 + 524*x**6 -
          600*x**5 + 865*x**4 - 1034*x**3 + 600*x**2 - 170*x + 29)
 
-    assert R.dup_decompose(f) == [x**4 - 8*x**3 + 24*x**2 - 34*x + 29, x**3 + 5*x]
+    assert f.decompose() == [x**4 - 8*x**3 + 24*x**2 - 34*x + 29, x**3 + 5*x]
 
-    Rt, t = ring("t", ZZ)
+    Rt, t = ring('t', ZZ)
     R, x = ring('x', Rt)
+
     f = ((6*t**2 - 42)*x**4 + (48*t**2 + 96)*x**3 +
          (144*t**2 + 648*t + 288)*x**2 + (624*t**2 + 864*t + 384)*x +
          108*t**3 + 312*t**2 + 432*t + 192)
 
-    assert R.dup_decompose(f) == [f]
+    assert f.decompose() == [f]
 
 
 def test_dmp_clear_denoms():
     R0, X = ring('x', QQ)
-    R1 = R0.domain.ring.poly_ring('x')
+    R1 = R0.domain.ring.inject('x')
 
     assert R0.dmp_clear_denoms(0) == (1, 0)
 
@@ -709,7 +606,7 @@ def test_dmp_clear_denoms():
     assert R0.dmp_clear_denoms(sin(x)/x*a) == (x, a*sin(x))
 
     R0, X, Y = ring('x y', QQ)
-    R1 = R0.domain.ring.poly_ring('x', 'y')
+    R1 = R0.domain.ring.inject('x', 'y')
 
     assert R0.dmp_clear_denoms(0) == (1, 0)
 

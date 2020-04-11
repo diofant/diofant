@@ -1,3 +1,5 @@
+"""Generic plotting tests."""
+
 import errno
 import functools
 import os
@@ -7,10 +9,10 @@ import tempfile
 import pytest
 
 from diofant import (And, I, Integral, LambertW, Piecewise, cos, exp_polar,
-                     log, meijerg, oo, pi, real_root, sin, sqrt, summation)
+                     log, meijerg, oo, pi, plot, plot3d,
+                     plot3d_parametric_line, plot3d_parametric_surface,
+                     plot_parametric, real_root, sin, sqrt, summation)
 from diofant.abc import x, y, z
-from diofant.plotting import (plot, plot3d, plot3d_parametric_line,
-                              plot3d_parametric_surface, plot_parametric)
 from diofant.plotting.plot import unset_show
 
 

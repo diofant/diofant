@@ -1,4 +1,4 @@
-"""Useful utilities for higher level polynomial classes. """
+"""Useful utilities for higher level polynomial classes."""
 
 import collections
 import re
@@ -6,7 +6,7 @@ import re
 from ..core import Add, Mul, Pow, nan, oo, zoo
 from ..core.compatibility import default_sort_key
 from ..core.exprtools import decompose_power
-from .polyerrors import GeneratorsError, GeneratorsNeeded, PolynomialError
+from .polyerrors import GeneratorsNeeded, PolynomialError
 from .polyoptions import build_options
 
 
@@ -21,7 +21,7 @@ _gens_order = {
 }
 
 _max_order = 1000
-_re_gen = re.compile(r"^(.+?)(\d*)$")
+_re_gen = re.compile(r'^(.+?)(\d*)$')
 
 
 def _nsort(roots, separated=False):
@@ -48,7 +48,7 @@ def _nsort(roots, separated=False):
     key = [[i.evalf(2).as_real_imag()[0] for i in r.as_real_imag()] for r in roots]
     # make sure the parts were computed with precision
     if any(i._prec == 1 for k in key for i in k):  # pragma: no cover
-        raise NotImplementedError("could not compute root with precision")
+        raise NotImplementedError('could not compute root with precision')
     # insert a key to indicate if the root has an imaginary part
     key = [(1 if i else 0, r, -abs(i), i.is_positive) for r, i in key]
     key = sorted(zip(key, roots))
@@ -67,7 +67,7 @@ def _nsort(roots, separated=False):
 
 
 def _sort_gens(gens, **args):
-    """Sort generators in a reasonably intelligent way. """
+    """Sort generators in a reasonably intelligent way."""
     opt = build_options(args)
 
     gens_order, wrt = {}, opt.wrt
@@ -111,7 +111,7 @@ def _sort_gens(gens, **args):
 
 
 def _unify_gens(f_gens, g_gens):
-    """Unify generators in a reasonably intelligent way. """
+    """Unify generators in a reasonably intelligent way."""
     f_gens = list(f_gens)
     g_gens = list(g_gens)
 
@@ -148,7 +148,7 @@ def _unify_gens(f_gens, g_gens):
 
 
 def _analyze_gens(gens):
-    """Support for passing generators as `*gens` and `[gens]`. """
+    """Support for passing generators as `*gens` and `[gens]`."""
     if len(gens) == 1 and hasattr(gens[0], '__iter__'):
         return tuple(gens[0])
     else:
@@ -156,7 +156,7 @@ def _analyze_gens(gens):
 
 
 def _sort_factors(factors, **args):
-    """Sort low-level factors in increasing 'complexity' order. """
+    """Sort low-level factors in increasing 'complexity' order."""
     def order_if_multiple_key(factor):
         f, n = factor
         return len(f), n, default_sort_key(f)
@@ -171,12 +171,12 @@ def _sort_factors(factors, **args):
 
 
 def _not_a_coeff(expr):
-    """Do not treat NaN and infinities as valid polynomial coefficients. """
+    """Do not treat NaN and infinities as valid polynomial coefficients."""
     return expr in [nan, oo, -oo, zoo]
 
 
 def _parallel_dict_from_expr_if_gens(exprs, opt):
-    """Transform expressions into a multinomial form given generators. """
+    """Transform expressions into a multinomial form given generators."""
     k, indices = len(opt.gens), {}
 
     for i, g in enumerate(opt.gens):
@@ -211,7 +211,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
                         if not factor.free_symbols.intersection(opt.gens):
                             coeff.append(factor)
                         else:
-                            raise PolynomialError("%s contains an element of the generators set" % factor)
+                            raise PolynomialError(f'{factor} contains an element of the generators set')
 
             monom = tuple(monom)
 
@@ -226,7 +226,7 @@ def _parallel_dict_from_expr_if_gens(exprs, opt):
 
 
 def _parallel_dict_from_expr_no_gens(exprs, opt):
-    """Transform expressions into a multinomial form and figure out generators. """
+    """Transform expressions into a multinomial form and figure out generators."""
     if opt.domain is not None:
         def _is_coeff(factor):
             return factor in opt.domain
@@ -276,7 +276,7 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
         else:
             arg = exprs,
 
-        raise GeneratorsNeeded("specify generators to give %s a meaning" % arg)
+        raise GeneratorsNeeded(f'specify generators to give {arg} a meaning')
 
     gens = _sort_gens(gens, opt=opt)
     k, indices = len(gens), {}
@@ -308,25 +308,25 @@ def _parallel_dict_from_expr_no_gens(exprs, opt):
 
 
 def _dict_from_expr_if_gens(expr, opt):
-    """Transform an expression into a multinomial form given generators. """
+    """Transform an expression into a multinomial form given generators."""
     (poly,), gens = _parallel_dict_from_expr_if_gens((expr,), opt)
     return poly, gens
 
 
 def _dict_from_expr_no_gens(expr, opt):
-    """Transform an expression into a multinomial form and figure out generators. """
+    """Transform an expression into a multinomial form and figure out generators."""
     (poly,), gens = _parallel_dict_from_expr_no_gens((expr,), opt)
     return poly, gens
 
 
 def parallel_dict_from_expr(exprs, **args):
-    """Transform expressions into a multinomial form. """
+    """Transform expressions into a multinomial form."""
     reps, opt = _parallel_dict_from_expr(exprs, build_options(args))
     return reps, opt.gens
 
 
 def _parallel_dict_from_expr(exprs, opt):
-    """Transform expressions into a multinomial form. """
+    """Transform expressions into a multinomial form."""
     if opt.expand is not False:
         exprs = [expr.expand() for expr in exprs]
 
@@ -339,13 +339,13 @@ def _parallel_dict_from_expr(exprs, opt):
 
 
 def dict_from_expr(expr, **args):
-    """Transform an expression into a multinomial form. """
+    """Transform an expression into a multinomial form."""
     rep, opt = _dict_from_expr(expr, build_options(args))
     return rep, opt.gens
 
 
 def _dict_from_expr(expr, opt):
-    """Transform an expression into a multinomial form. """
+    """Transform an expression into a multinomial form."""
     if opt.expand is not False:
         expr = expr.expand()
 
@@ -358,7 +358,7 @@ def _dict_from_expr(expr, opt):
 
 
 def expr_from_dict(rep, *gens):
-    """Convert a multinomial form into an expression. """
+    """Convert a multinomial form into an expression."""
     result = []
 
     for monom, coeff in rep.items():
@@ -373,30 +373,22 @@ def expr_from_dict(rep, *gens):
 
 
 def _dict_reorder(rep, gens, new_gens):
-    """Reorder levels using dict representation. """
+    """Reorder levels using dict representation."""
     gens = list(gens)
 
     monoms = rep.keys()
     coeffs = rep.values()
 
     new_monoms = [[] for _ in range(len(rep))]
-    used_indices = set()
 
     for gen in new_gens:
         try:
             j = gens.index(gen)
-            used_indices.add(j)
 
             for M, new_M in zip(monoms, new_monoms):
                 new_M.append(M[j])
         except ValueError:
             for new_M in new_monoms:
                 new_M.append(0)
-
-    for i, _ in enumerate(gens):
-        if i not in used_indices:
-            for monom in monoms:
-                if monom[i]:
-                    raise GeneratorsError("unable to drop generators")
 
     return map(tuple, new_monoms), coeffs

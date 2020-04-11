@@ -2,19 +2,17 @@ import collections
 
 import pytest
 
-from diofant import (Basic, E, Float, Function, I, Integer, Max, Min, N, Poly,
-                     Pow, PurePoly, Rational, StrPrinter, Symbol, cos, exp, oo,
-                     pi, simplify, sin, sqrt, sstr, symbols, trigsimp)
+from diofant import (Basic, E, Float, Function, GramSchmidt, I,
+                     ImmutableMatrix, ImmutableSparseMatrix, Integer, Matrix,
+                     Max, Min, N, NonSquareMatrixError, Poly, Pow, PurePoly,
+                     Rational, ShapeError, SparseMatrix, StrPrinter, Symbol,
+                     capture, casoratian, cos, diag, exp, eye, flatten,
+                     hessian, jordan_cell, matrix_multiply_elementwise, ones,
+                     oo, pi, randMatrix, rot_axis1, rot_axis2, rot_axis3,
+                     simplify, sin, sqrt, sstr, symbols, trigsimp, vandermonde,
+                     wronskian, zeros)
 from diofant.abc import a, b, c, d, k, n, x, y, z
-from diofant.matrices import (GramSchmidt, ImmutableMatrix,
-                              ImmutableSparseMatrix, Matrix, SparseMatrix,
-                              casoratian, diag, eye, hessian, jordan_cell,
-                              matrix_multiply_elementwise, ones, randMatrix,
-                              rot_axis1, rot_axis2, rot_axis3, vandermonde,
-                              wronskian, zeros)
-from diofant.matrices.matrices import (MatrixError, NonSquareMatrixError,
-                                       ShapeError, mgamma)
-from diofant.utilities.iterables import capture, flatten
+from diofant.matrices.matrices import MatrixError, mgamma
 
 
 __all__ = ()
@@ -252,7 +250,7 @@ def test_determinant():
     for M in [Matrix(), Matrix([[1]])]:
         assert (
             M.det() ==
-            M.det_bareis() ==
+            M.det_bareiss() ==
             M.berkowitz_det() ==
             M.det_LU_decomposition() ==
             1)
@@ -260,37 +258,37 @@ def test_determinant():
     M = Matrix(( (-3,  2),
                  ( 8, -5) ))
 
-    assert M.det(method="bareis") == -1
-    assert M.det(method="berkowitz") == -1
+    assert M.det(method='bareiss') == -1
+    assert M.det(method='berkowitz') == -1
 
     M = Matrix(( (x,   1),
                  (y, 2*y) ))
 
-    assert M.det(method="bareis") == 2*x*y - y
-    assert M.det(method="berkowitz") == 2*x*y - y
+    assert M.det(method='bareiss') == 2*x*y - y
+    assert M.det(method='berkowitz') == 2*x*y - y
 
     M = Matrix(( (1, 1, 1),
                  (1, 2, 3),
                  (1, 3, 6) ))
 
-    assert M.det(method="bareis") == 1
-    assert M.det(method="berkowitz") == 1
+    assert M.det(method='bareiss') == 1
+    assert M.det(method='berkowitz') == 1
 
     M = Matrix(( ( 3, -2,  0, 5),
                  (-2,  1, -2, 2),
                  ( 0, -2,  5, 0),
                  ( 5,  0,  3, 4) ))
 
-    assert M.det(method="bareis") == -289
-    assert M.det(method="berkowitz") == -289
+    assert M.det(method='bareiss') == -289
+    assert M.det(method='berkowitz') == -289
 
     M = Matrix(( ( 1,  2,  3,  4),
                  ( 5,  6,  7,  8),
                  ( 9, 10, 11, 12),
                  (13, 14, 15, 16) ))
 
-    assert M.det(method="bareis") == 0
-    assert M.det(method="berkowitz") == 0
+    assert M.det(method='bareiss') == 0
+    assert M.det(method='berkowitz') == 0
 
     M = Matrix(( (3, 2, 0, 0, 0),
                  (0, 3, 2, 0, 0),
@@ -298,8 +296,8 @@ def test_determinant():
                  (0, 0, 0, 3, 2),
                  (2, 0, 0, 0, 3) ))
 
-    assert M.det(method="bareis") == 275
-    assert M.det(method="berkowitz") == 275
+    assert M.det(method='bareiss') == 275
+    assert M.det(method='berkowitz') == 275
 
     M = Matrix(( (1, 0,  1,  2, 12),
                  (2, 0,  1,  1,  4),
@@ -307,8 +305,8 @@ def test_determinant():
                  (3, 2, -1,  1,  8),
                  (1, 1,  1,  0,  6) ))
 
-    assert M.det(method="bareis") == -55
-    assert M.det(method="berkowitz") == -55
+    assert M.det(method='bareiss') == -55
+    assert M.det(method='berkowitz') == -55
 
     M = Matrix(( (-5,  2,  3,  4,  5),
                  ( 1, -4,  3,  4,  5),
@@ -316,8 +314,8 @@ def test_determinant():
                  ( 1,  2,  3, -2,  5),
                  ( 1,  2,  3,  4, -1) ))
 
-    assert M.det(method="bareis") == 11664
-    assert M.det(method="berkowitz") == 11664
+    assert M.det(method='bareiss') == 11664
+    assert M.det(method='berkowitz') == 11664
 
     M = Matrix(( ( 2,  7, -1, 3, 2),
                  ( 0,  0,  1, 0, 1),
@@ -325,44 +323,44 @@ def test_determinant():
                  (-3, -2,  4, 5, 3),
                  ( 1,  0,  0, 0, 1) ))
 
-    assert M.det(method="bareis") == 123
-    assert M.det(method="berkowitz") == 123
+    assert M.det(method='bareiss') == 123
+    assert M.det(method='berkowitz') == 123
 
     M = Matrix(( (x, y, z),
                  (1, 0, 0),
                  (y, z, x) ))
 
-    assert M.det(method="bareis") == z**2 - x*y
-    assert M.det(method="berkowitz") == z**2 - x*y
+    assert M.det(method='bareiss') == z**2 - x*y
+    assert M.det(method='berkowitz') == z**2 - x*y
 
 
 def test_det_LU_decomposition():
 
     for M in [Matrix(), Matrix([[1]])]:
-        assert M.det(method="det_LU") == 1
+        assert M.det(method='det_LU') == 1
 
     M = Matrix(( (-3,  2),
                  ( 8, -5) ))
 
-    assert M.det(method="det_LU") == -1
+    assert M.det(method='det_LU') == -1
 
     M = Matrix(( (x,   1),
                  (y, 2*y) ))
 
-    assert M.det(method="det_LU") == 2*x*y - y
+    assert M.det(method='det_LU') == 2*x*y - y
 
     M = Matrix(( (1, 1, 1),
                  (1, 2, 3),
                  (1, 3, 6) ))
 
-    assert M.det(method="det_LU") == 1
+    assert M.det(method='det_LU') == 1
 
     M = Matrix(( ( 3, -2,  0, 5),
                  (-2,  1, -2, 2),
                  ( 0, -2,  5, 0),
                  ( 5,  0,  3, 4) ))
 
-    assert M.det(method="det_LU") == -289
+    assert M.det(method='det_LU') == -289
 
     M = Matrix(( (3, 2, 0, 0, 0),
                  (0, 3, 2, 0, 0),
@@ -370,7 +368,7 @@ def test_det_LU_decomposition():
                  (0, 0, 0, 3, 2),
                  (2, 0, 0, 0, 3) ))
 
-    assert M.det(method="det_LU") == 275
+    assert M.det(method='det_LU') == 275
 
     M = Matrix(( (1, 0,  1,  2, 12),
                  (2, 0,  1,  1,  4),
@@ -378,7 +376,7 @@ def test_det_LU_decomposition():
                  (3, 2, -1,  1,  8),
                  (1, 1,  1,  0,  6) ))
 
-    assert M.det(method="det_LU") == -55
+    assert M.det(method='det_LU') == -55
 
     M = Matrix(( (-5,  2,  3,  4,  5),
                  ( 1, -4,  3,  4,  5),
@@ -386,7 +384,7 @@ def test_det_LU_decomposition():
                  ( 1,  2,  3, -2,  5),
                  ( 1,  2,  3,  4, -1) ))
 
-    assert M.det(method="det_LU") == 11664
+    assert M.det(method='det_LU') == 11664
 
     M = Matrix(( ( 2,  7, -1, 3, 2),
                  ( 0,  0,  1, 0, 1),
@@ -394,13 +392,13 @@ def test_det_LU_decomposition():
                  (-3, -2,  4, 5, 3),
                  ( 1,  0,  0, 0, 1) ))
 
-    assert M.det(method="det_LU") == 123
+    assert M.det(method='det_LU') == 123
 
     M = Matrix(( (x, y, z),
                  (1, 0, 0),
                  (y, z, x) ))
 
-    assert M.det(method="det_LU") == z**2 - x*y
+    assert M.det(method='det_LU') == z**2 - x*y
 
 
 def test_berkowitz_minors():
@@ -616,17 +614,17 @@ def test_QRsolve():
 def test_inverse():
     A = eye(4)
     assert A.inv() == eye(4)
-    assert A.inv(method="LU") == eye(4)
-    assert A.inv(method="ADJ") == eye(4)
+    assert A.inv(method='LU') == eye(4)
+    assert A.inv(method='ADJ') == eye(4)
     A = Matrix([[2, 3, 5],
                 [3, 6, 2],
                 [8, 3, 6]])
     Ainv = A.inv()
     assert A*Ainv == eye(3)
-    assert A.inv(method="LU") == Ainv
-    assert A.inv(method="ADJ") == Ainv
+    assert A.inv(method='LU') == Ainv
+    assert A.inv(method='ADJ') == Ainv
 
-    pytest.raises(ValueError, lambda: A.inv(method="SPAM"))
+    pytest.raises(ValueError, lambda: A.inv(method='SPAM'))
 
     # test that immutability is not a problem
     cls = ImmutableMatrix
@@ -1127,6 +1125,10 @@ def test_is_upper():
     a = Matrix([[1], [2], [3]])
     assert a.is_upper is False
 
+    # issue sympy/sympy#12452
+    a = zeros(4, 2)
+    assert a.is_upper is True
+
 
 def test_is_lower():
     a = Matrix([[1, 2, 3]])
@@ -1192,13 +1194,13 @@ def test_sympyissue_3749():
 def test_inv_iszerofunc():
     A = eye(4)
     A.col_swap(0, 1)
-    for method in "GE", "LU":
+    for method in 'GE', 'LU':
         assert A.inv(method=method, iszerofunc=lambda x: x == 0) == \
-            A.inv(method="ADJ")
+            A.inv(method='ADJ')
 
 
 def test_jacobian_metrics():
-    rho, phi = symbols("rho,phi")
+    rho, phi = symbols('rho,phi')
     X = Matrix([rho*cos(phi), rho*sin(phi)])
     Y = Matrix([rho, phi])
     J = X.jacobian(Y)
@@ -1211,7 +1213,7 @@ def test_jacobian_metrics():
 
 
 def test_jacobian2():
-    rho, phi = symbols("rho,phi")
+    rho, phi = symbols('rho,phi')
     X = Matrix([rho*cos(phi), rho*sin(phi), rho**2])
     Y = Matrix([rho, phi])
     J = Matrix([
@@ -1366,9 +1368,9 @@ def test_inv_block():
     A = diag(a, a, b, a, c, a)
     assert A.inv(try_block_diag=True) == diag(
         a.inv(), a.inv(), b.inv(), a.inv(), c.inv(), a.inv())
-    assert A.inv(try_block_diag=True, method="ADJ") == diag(
-        a.inv(method="ADJ"), a.inv(method="ADJ"), b.inv(method="ADJ"),
-        a.inv(method="ADJ"), c.inv(method="ADJ"), a.inv(method="ADJ"))
+    assert A.inv(try_block_diag=True, method='ADJ') == diag(
+        a.inv(method='ADJ'), a.inv(method='ADJ'), b.inv(method='ADJ'),
+        a.inv(method='ADJ'), c.inv(method='ADJ'), a.inv(method='ADJ'))
 
 
 def test_creation_args():
@@ -1718,7 +1720,7 @@ def test_errors():
     pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).det())
     pytest.raises(ValueError,
                   lambda: Matrix([[1, 2], [3, 4]]).det(method='Not a real method'))
-    pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).det_bareis())
+    pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).det_bareiss())
     pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).berkowitz())
     pytest.raises(NonSquareMatrixError, lambda: Matrix([1, 2]).berkowitz_det())
     pytest.raises(ValueError,
@@ -1787,6 +1789,10 @@ def test_hessenberg():
 
     A = Matrix([[3, 4, 1], [2, 4, 5], [3, 1, 2]])
     assert not A.is_upper_hessenberg
+
+    # issue sympy/sympy#12452
+    A = zeros(5, 2)
+    assert A.is_upper_hessenberg
 
 
 def test_cholesky():
@@ -2240,9 +2246,9 @@ def test_invertible_check():
     ])
     assert len(m.rref()[1]) == 2
     assert m.rref()[0] != eye(3)
-    pytest.raises(ValueError, lambda: m.inv(method="ADJ"))
-    pytest.raises(ValueError, lambda: m.inv(method="GE"))
-    pytest.raises(ValueError, lambda: m.inv(method="LU"))
+    pytest.raises(ValueError, lambda: m.inv(method='ADJ'))
+    pytest.raises(ValueError, lambda: m.inv(method='GE'))
+    pytest.raises(ValueError, lambda: m.inv(method='LU'))
 
 
 @pytest.mark.xfail

@@ -5,10 +5,12 @@ class ReorderError(NotImplementedError):
     """Exception raised when trying to reorder dependent limits."""
 
     def __init__(self, expr, msg):
-        super().__init__("%s could not be reordered: %s." % (expr, msg))
+        super().__init__('%s could not be reordered: %s.' % (expr, msg))
 
 
 class ExprWithIntLimits(ExprWithLimits):
+    """Represents an expression with integer limits."""
+
     def change_index(self, var, trafo, newvar=None):
         r"""
         Change index of a Sum or Product.
@@ -109,7 +111,7 @@ class ExprWithIntLimits(ExprWithLimits):
             if limit[0] == var:
                 p = trafo.as_poly(var)
                 if p.degree() != 1:
-                    raise ValueError("Index transformation is not linear")
+                    raise ValueError('Index transformation is not linear')
                 alpha = p.coeff_monomial(var)
                 beta = p.coeff_monomial(1)
                 if alpha.is_number:
@@ -118,7 +120,7 @@ class ExprWithIntLimits(ExprWithLimits):
                     elif alpha == -1:
                         limits.append((newvar, alpha*limit[2] + beta, alpha*limit[1] + beta))
                     else:
-                        raise ValueError("Linear transformation results in non-linear summation stepsize")
+                        raise ValueError('Linear transformation results in non-linear summation stepsize')
                 else:
                     # Note that the case of alpha being symbolic can give issues if alpha < 0.
                     limits.append((newvar, alpha*limit[2] + beta, alpha*limit[1] + beta))
@@ -167,7 +169,7 @@ class ExprWithIntLimits(ExprWithLimits):
         variables = [limit[0] for limit in self.limits]
 
         if variables.count(x) != 1:
-            raise ValueError(self, "Number of instances of variable not equal to one")
+            raise ValueError(self, 'Number of instances of variable not equal to one')
         else:
             return variables.index(x)
 
@@ -223,7 +225,7 @@ class ExprWithIntLimits(ExprWithLimits):
 
         for r in arg:
             if len(r) != 2:
-                raise ValueError(r, "Invalid number of arguments")
+                raise ValueError(r, 'Invalid number of arguments')
 
             index1 = r[0]
             index2 = r[1]
@@ -290,4 +292,4 @@ class ExprWithIntLimits(ExprWithLimits):
 
             return type(self)(self.function, *limits)
         else:
-            raise ReorderError(self, "could not interchange the two limits specified")
+            raise ReorderError(self, 'could not interchange the two limits specified')

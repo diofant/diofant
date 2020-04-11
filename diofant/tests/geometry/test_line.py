@@ -3,8 +3,7 @@ import itertools
 import pytest
 
 from diofant import (Float, I, Rational, Symbol, acos, cos, oo, pi, simplify,
-                     sin, sqrt, symbols)
-from diofant.functions.elementary.trigonometric import tan
+                     sin, sqrt, symbols, tan)
 from diofant.geometry import (Circle, GeometryError, Line, Line3D, Plane,
                               Point, Point3D, Ray, Ray3D, Segment, Segment3D,
                               Triangle, intersection)
@@ -33,7 +32,7 @@ half = Rational(1, 2)
 
 def feq(a, b):
     """Test if two floating point values are 'equal'."""
-    t = Float("1.0E-10")
+    t = Float('1.0E-10')
     return -t < a - b < t
 
 

@@ -26,30 +26,30 @@ from .precedence import precedence
 
 
 known_functions = {
-    "sin": "sin",
-    "cos": "cos",
-    "tan": "tan",
-    "asin": "asin",
-    "acos": "acos",
-    "atan": "atan",
-    "atan2": "atan2",
-    "sinh": "sinh",
-    "cosh": "cosh",
-    "tanh": "tanh",
-    "log": "log",
-    "exp": "exp",
-    "erf": "erf",
-    "Abs": "Abs",
-    "sign": "sign",
-    "conjugate": "conjg"
+    'sin': 'sin',
+    'cos': 'cos',
+    'tan': 'tan',
+    'asin': 'asin',
+    'acos': 'acos',
+    'atan': 'atan',
+    'atan2': 'atan2',
+    'sinh': 'sinh',
+    'cosh': 'cosh',
+    'tanh': 'tanh',
+    'log': 'log',
+    'exp': 'exp',
+    'erf': 'erf',
+    'Abs': 'Abs',
+    'sign': 'sign',
+    'conjugate': 'conjg'
 }
 
 
 class FCodePrinter(CodePrinter):
     """A printer to convert diofant expressions to strings of Fortran code."""
 
-    printmethod = "_fcode"
-    language = "Fortran"
+    printmethod = '_fcode'
+    language = 'Fortran'
 
     _default_settings = {
         'order': None,
@@ -81,20 +81,20 @@ class FCodePrinter(CodePrinter):
         self.known_functions.update(userfuncs)
         # leading columns depend on fixed or free format
         if self._settings['source_format'] == 'fixed':
-            self._lead_code = "      "
-            self._lead_cont = "     @ "
-            self._lead_comment = "C     "
+            self._lead_code = '      '
+            self._lead_cont = '     @ '
+            self._lead_comment = 'C     '
         elif self._settings['source_format'] == 'free':
-            self._lead_code = ""
-            self._lead_cont = "      "
-            self._lead_comment = "! "
+            self._lead_code = ''
+            self._lead_cont = '      '
+            self._lead_comment = '! '
         else:
-            raise ValueError("Unknown source "
-                             "format: %s" % self._settings['source_format'])
+            raise ValueError('Unknown source '
+                             'format: %s' % self._settings['source_format'])
         standards = {66, 77, 90, 95, 2003, 2008}
         if self._settings['standard'] not in standards:
-            raise ValueError("Unknown Fortran "
-                             "standard: %s" % self._settings['standard'])
+            raise ValueError('Unknown Fortran '
+                             'standard: %s' % self._settings['standard'])
 
     def _rate_index_position(self, p):
         return -p*5
@@ -103,10 +103,10 @@ class FCodePrinter(CodePrinter):
         return codestring
 
     def _get_comment(self, text):
-        return "! {0}".format(text)
+        return '! {0}'.format(text)
 
     def _declare_number_const(self, name, value):
-        return "parameter ({0} = {1})".format(name, value)
+        return 'parameter ({0} = {1})'.format(name, value)
 
     def _format_code(self, lines):
         return self._wrap_fortran(self.indent_code(lines))
@@ -122,38 +122,38 @@ class FCodePrinter(CodePrinter):
             # fortran arrays start at 1 and end at dimension
             var, start, stop = map(self._print,
                                    [i.label, i.lower + 1, i.upper + 1])
-            open_lines.append("do %s = %s, %s" % (var, start, stop))
-            close_lines.append("end do")
+            open_lines.append('do %s = %s, %s' % (var, start, stop))
+            close_lines.append('end do')
         return open_lines, close_lines
 
     def _print_Piecewise(self, expr):
         if expr.args[-1].cond != true:
             # We need the last conditional to be a True, otherwise the resulting
             # function may not return a result.
-            raise ValueError("All Piecewise expressions must contain an "
-                             "(expr, True) statement to be used as a default "
-                             "condition. Without one, the generated "
-                             "expression may not evaluate to anything under "
-                             "some condition.")
+            raise ValueError('All Piecewise expressions must contain an '
+                             '(expr, True) statement to be used as a default '
+                             'condition. Without one, the generated '
+                             'expression may not evaluate to anything under '
+                             'some condition.')
         lines = []
         if expr.has(Assignment):
             for i, (e, c) in enumerate(expr.args):
                 if i == 0:
-                    lines.append("if (%s) then" % self._print(c))
+                    lines.append('if (%s) then' % self._print(c))
                 elif i == len(expr.args) - 1 and c == true:
-                    lines.append("else")
+                    lines.append('else')
                 else:
-                    lines.append("else if (%s) then" % self._print(c))
+                    lines.append('else if (%s) then' % self._print(c))
                 lines.append(self._print(e))
-            lines.append("end if")
-            return "\n".join(lines)
-        elif self._settings["standard"] >= 95:
+            lines.append('end if')
+            return '\n'.join(lines)
+        elif self._settings['standard'] >= 95:
             # Only supported in F95 and newer:
             # The piecewise was used in an expression, need to do inline
             # operators. This has the downside that inline operators will
             # not work for statements that span multiple lines (Matrix or
             # Indexed expressions).
-            pattern = "merge({T}, {F}, {COND})"
+            pattern = 'merge({T}, {F}, {COND})'
             code = self._print(expr.args[-1].expr)
             terms = list(expr.args[:-1])
             while terms:
@@ -164,12 +164,12 @@ class FCodePrinter(CodePrinter):
             return code
         else:
             # `merge` is not supported prior to F95
-            raise NotImplementedError("Using Piecewise as an expression using "
-                                      "inline operators is not supported in "
-                                      "standards earlier than Fortran95.")
+            raise NotImplementedError('Using Piecewise as an expression using '
+                                      'inline operators is not supported in '
+                                      'standards earlier than Fortran95.')
 
     def _print_MatrixElement(self, expr):
-        return "{0}({1}, {2})".format(expr.parent, expr.i + 1, expr.j + 1)
+        return '{0}({1}, {2})'.format(expr.parent, expr.i + 1, expr.j + 1)
 
     def _print_Add(self, expr):
         # purpose: print complex numbers nicely in Fortran.
@@ -189,18 +189,18 @@ class FCodePrinter(CodePrinter):
                 term = Add(*mixed)
                 t = self._print(term)
                 if t.startswith('-'):
-                    sign = "-"
+                    sign = '-'
                     t = t[1:]
                 else:
-                    sign = "+"
+                    sign = '+'
 
-                return "cmplx(%s,%s) %s %s" % (
+                return 'cmplx(%s,%s) %s %s' % (
                     self._print(Add(*pure_real)),
                     self._print(-I*Add(*pure_imaginary)),
                     sign, t,
                 )
             else:
-                return "cmplx(%s,%s)" % (
+                return 'cmplx(%s,%s)' % (
                     self._print(Add(*pure_real)),
                     self._print(-I*Add(*pure_imaginary)),
                 )
@@ -219,7 +219,7 @@ class FCodePrinter(CodePrinter):
 
     def _print_ImaginaryUnit(self, expr):
         # purpose: print complex numbers nicely in Fortran.
-        return "cmplx(0,1)"
+        return 'cmplx(0,1)'
 
     def _print_int(self, expr):
         return str(expr)
@@ -227,7 +227,7 @@ class FCodePrinter(CodePrinter):
     def _print_Mul(self, expr):
         # purpose: print complex numbers nicely in Fortran.
         if expr.is_number and expr.is_imaginary:
-            return "cmplx(0,%s)" % (
+            return 'cmplx(0,%s)' % (
                 self._print(-I*expr)
             )
         else:
@@ -251,18 +251,18 @@ class FCodePrinter(CodePrinter):
 
     def _print_Rational(self, expr):
         p, q = int(expr.numerator), int(expr.denominator)
-        return "%d.0d0/%d.0d0" % (p, q)
+        return '%d.0d0/%d.0d0' % (p, q)
 
     def _print_Float(self, expr):
         printed = CodePrinter._print_Float(self, expr)
         e = printed.find('e')
         if e > -1:
-            return "%sd%s" % (printed[:e], printed[e + 1:])
-        return "%sd0" % printed
+            return '%sd%s' % (printed[:e], printed[e + 1:])
+        return '%sd0' % printed
 
     def _print_Indexed(self, expr):
         inds = [ self._print(i) for i in expr.indices ]
-        return "%s(%s)" % (self._print(expr.base.label), ", ".join(inds))
+        return '%s(%s)' % (self._print(expr.base.label), ', '.join(inds))
 
     def _print_Idx(self, expr):
         return self._print(expr.label)
@@ -286,8 +286,8 @@ class FCodePrinter(CodePrinter):
 
         """
         # routine to find split point in a code line
-        my_alnum = set("_+-." + string.digits + string.ascii_letters)
-        my_white = set(" \t()")
+        my_alnum = set('_+-.' + string.digits + string.ascii_letters)
+        my_white = set(' \t()')
 
         def split_pos_code(line, endpos):
             if len(line) <= endpos:
@@ -315,19 +315,19 @@ class FCodePrinter(CodePrinter):
             if line.startswith(self._lead_comment):
                 # comment line
                 if len(line) > 72:
-                    pos = line.rfind(" ", 6, 72)
+                    pos = line.rfind(' ', 6, 72)
                     if pos == -1:
                         pos = 72
                     hunk = line[:pos]
                     line = line[pos:].lstrip()
                     result.append(hunk)
                     while len(line) > 0:
-                        pos = line.rfind(" ", 0, 66)
+                        pos = line.rfind(' ', 0, 66)
                         if pos == -1 or len(line) < 66:
                             pos = 66
                         hunk = line[:pos]
                         line = line[pos:].lstrip()
-                        result.append("%s%s" % (self._lead_comment, hunk))
+                        result.append('%s%s' % (self._lead_comment, hunk))
                 else:
                     result.append(line)
             elif line.startswith(self._lead_code):
@@ -344,7 +344,7 @@ class FCodePrinter(CodePrinter):
                     line = line[pos:].lstrip()
                     if line:
                         hunk += trailing
-                    result.append("%s%s" % (self._lead_cont, hunk))
+                    result.append('%s%s' % (self._lead_cont, hunk))
             else:
                 result.append(line)
         return result
@@ -379,11 +379,11 @@ class FCodePrinter(CodePrinter):
             level -= decrease[i]
 
             if free:
-                padding = " "*(level*tabwidth + cont_padding)
+                padding = ' '*(level*tabwidth + cont_padding)
             else:
-                padding = " "*level*tabwidth
+                padding = ' '*level*tabwidth
 
-            line = "%s%s" % (padding, line)
+            line = '%s%s' % (padding, line)
             if not free:
                 line = self._pad_leading_columns([line])[0]
 
@@ -443,10 +443,9 @@ def fcode(expr, assign_to=None, **settings):
     Examples
     ========
 
-    >>> x, tau = symbols("x, tau")
-    >>> fcode((2*tau)**Rational(7, 2))
-    '      8*sqrt(2.0d0)*tau**(7.0d0/2.0d0)'
-    >>> fcode(sin(x), assign_to="s")
+    >>> fcode((2*x)**Rational(7, 2))
+    '      8*sqrt(2.0d0)*x**(7.0d0/2.0d0)'
+    >>> fcode(sin(x), assign_to='s')
     '      s = sin(x)'
 
     Custom printing can be defined for certain types by passing a dictionary of
@@ -454,9 +453,9 @@ def fcode(expr, assign_to=None, **settings):
     dictionary value can be a list of tuples i.e. [(argument_test,
     cfunction_string)].
 
-    >>> custom_functions = {"ceiling": "CEIL",
-    ...                     "floor": [(lambda x: not x.is_integer, "FLOOR1"),
-    ...                               (lambda x: x.is_integer, "FLOOR2")]}
+    >>> custom_functions = {'ceiling': 'CEIL',
+    ...                     'floor': [(lambda x: not x.is_integer, 'FLOOR1'),
+    ...                               (lambda x: x.is_integer, 'FLOOR2')]}
     >>> fcode(floor(x) + ceiling(x), user_functions=custom_functions)
     '      CEIL(x) + FLOOR1(x)'
 
@@ -468,11 +467,11 @@ def fcode(expr, assign_to=None, **settings):
     anything.
 
     >>> expr = Piecewise((x + 1, x > 0), (x, True))
-    >>> print(fcode(expr, tau))
+    >>> print(fcode(expr, y))
           if (x > 0) then
-             tau = x + 1
+             y = x + 1
           else
-             tau = x
+             y = x
           end if
 
     Support for loops is provided through ``Indexed`` types. With
@@ -505,5 +504,4 @@ def fcode(expr, assign_to=None, **settings):
           A(3, 1) = sin(x)
 
     """
-
     return FCodePrinter(settings).doprint(expr, assign_to)

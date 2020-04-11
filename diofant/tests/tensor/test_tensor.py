@@ -1,10 +1,8 @@
 import pytest
 
+from diofant import Basic, Integer, Rational, Symbol, Tuple, pretty
 from diofant.abc import x
 from diofant.combinatorics import Permutation
-from diofant.core import Basic, Integer, Rational, Symbol
-from diofant.core.containers import Tuple
-from diofant.printing.pretty.pretty import pretty
 from diofant.tensor.tensor import (TIDS, TensAdd, TensExpr, TensMul,
                                    TensorHead, TensorIndex, TensorIndexType,
                                    TensorManager, TensorSymmetry, TensorType,
@@ -343,7 +341,7 @@ def test_canonicalize1():
 def test_bug_correction_tensor_indices():
     # to make sure that tensor_indices does not return a list if creating
     # only one index:
-    A = TensorIndexType("A")
+    A = TensorIndexType('A')
     i = tensor_indices('i', A)
     assert not isinstance(i, (tuple, list))
     assert isinstance(i, TensorIndex)
@@ -1293,8 +1291,8 @@ def test_pprint():
     i0, i1, i2, i3, i4 = tensor_indices('i0:5', Lorentz)
     A = tensorhead('A', [Lorentz], [[1]])
 
-    assert pretty(A) == "A(Lorentz)"
-    assert pretty(A(i0)) == "A(i0)"
+    assert pretty(A) == 'A(Lorentz)'
+    assert pretty(A(i0)) == 'A(i0)'
 
 
 def test_from_components_and_indices():

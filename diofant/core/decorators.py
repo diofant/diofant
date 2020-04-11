@@ -28,7 +28,7 @@ def deprecated(**decorator_kwargs):
 
 
 def _sympifyit(arg, retval=None):
-    """decorator to smartly sympify function arguments
+    """Decorator to smartly sympify function arguments.
 
     @_sympifyit('other', NotImplemented)
     def add(self, other):
@@ -41,7 +41,10 @@ def _sympifyit(arg, retval=None):
 
     if sympify(arg, strict=True) fails, NotImplemented will be returned
 
-    see: __sympifyit
+    See Also
+    ========
+
+    __sympifyit
     """
     def deco(func):
         return __sympifyit(func, arg, retval)
@@ -50,14 +53,13 @@ def _sympifyit(arg, retval=None):
 
 
 def __sympifyit(func, arg, retval=None):
-    """decorator to sympify `arg` argument for function `func`
+    """Decorator to sympify `arg` argument for function `func`.
 
     don't use directly -- use _sympifyit instead
     """
-
     # we support f(a,b) only
     if not func.__code__.co_argcount:
-        raise LookupError("func not found")
+        raise LookupError('func not found')
     # only b is _sympified
     assert func.__code__.co_varnames[1] == arg
     if retval is None:

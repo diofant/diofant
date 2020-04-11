@@ -11,44 +11,45 @@ from .str import StrPrinter
 
 # Used in MCodePrinter._print_Function(self)
 known_functions = {
-    "log": [(lambda x: True, "Log")],
-    "sin": [(lambda x: True, "Sin")],
-    "cos": [(lambda x: True, "Cos")],
-    "tan": [(lambda x: True, "Tan")],
-    "cot": [(lambda x: True, "Cot")],
-    "asin": [(lambda x: True, "ArcSin")],
-    "acos": [(lambda x: True, "ArcCos")],
-    "atan": [(lambda x: True, "ArcTan")],
-    "acot": [(lambda x: True, "ArcCot")],
-    "sinh": [(lambda x: True, "Sinh")],
-    "cosh": [(lambda x: True, "Cosh")],
-    "tanh": [(lambda x: True, "Tanh")],
-    "coth": [(lambda x: True, "Coth")],
-    "asinh": [(lambda x: True, "ArcSinh")],
-    "acosh": [(lambda x: True, "ArcCosh")],
-    "atanh": [(lambda x: True, "ArcTanh")],
-    "acoth": [(lambda x: True, "ArcCoth")],
-    "sech": [(lambda x: True, "Sech")],
-    "csch": [(lambda x: True, "Csch")],
-    "sign": [(lambda x: True, "Sign")],
-    "meijerg": [(lambda *x: True, "MeijerG")],
-    "hyper": [(lambda *x: True, "HypergeometricPFQ")],
-    "binomial": [(lambda n, k: True, "Binomial")],
-    "erfc": [(lambda x: True, "Erfc")],
-    "conjugate": [(lambda x: True, "Conjugate")],
-    "re": [(lambda x: True, "Re")],
-    "im": [(lambda x: True, "Im")],
-    "polygamma": [(lambda n, x: True, "PolyGamma")],
-    "Max": [(lambda *x: True, "Max")],
-    "Min": [(lambda *x: True, "Min")],
-    "factorial": [(lambda x: True, "Factorial")],
-    "factorial2": [(lambda *x: True, "Factorial2")],
-    "RisingFactorial": [(lambda x, k: True, "Pochhammer")],
-    "gamma": [(lambda x: True, "Gamma")],
-    "zeta": [(lambda x: True, "Zeta")],
-    "Heaviside": [(lambda x: True, "UnitStep")],
-    "fibonacci": [(lambda x: True, "Fibonacci")],
-    "polylog": [(lambda x, y: True, "PolyLog")],
+    'log': [(lambda x: True, 'Log')],
+    'sin': [(lambda x: True, 'Sin')],
+    'cos': [(lambda x: True, 'Cos')],
+    'tan': [(lambda x: True, 'Tan')],
+    'cot': [(lambda x: True, 'Cot')],
+    'asin': [(lambda x: True, 'ArcSin')],
+    'acos': [(lambda x: True, 'ArcCos')],
+    'atan': [(lambda x: True, 'ArcTan')],
+    'acot': [(lambda x: True, 'ArcCot')],
+    'sinh': [(lambda x: True, 'Sinh')],
+    'cosh': [(lambda x: True, 'Cosh')],
+    'tanh': [(lambda x: True, 'Tanh')],
+    'coth': [(lambda x: True, 'Coth')],
+    'asinh': [(lambda x: True, 'ArcSinh')],
+    'acosh': [(lambda x: True, 'ArcCosh')],
+    'atanh': [(lambda x: True, 'ArcTanh')],
+    'acoth': [(lambda x: True, 'ArcCoth')],
+    'sech': [(lambda x: True, 'Sech')],
+    'csch': [(lambda x: True, 'Csch')],
+    'sign': [(lambda x: True, 'Sign')],
+    'meijerg': [(lambda *x: True, 'MeijerG')],
+    'hyper': [(lambda *x: True, 'HypergeometricPFQ')],
+    'binomial': [(lambda n, k: True, 'Binomial')],
+    'erfc': [(lambda x: True, 'Erfc')],
+    'conjugate': [(lambda x: True, 'Conjugate')],
+    're': [(lambda x: True, 'Re')],
+    'im': [(lambda x: True, 'Im')],
+    'polygamma': [(lambda n, x: True, 'PolyGamma')],
+    'Max': [(lambda *x: True, 'Max')],
+    'Min': [(lambda *x: True, 'Min')],
+    'factorial': [(lambda x: True, 'Factorial')],
+    'factorial2': [(lambda *x: True, 'Factorial2')],
+    'RisingFactorial': [(lambda x, k: True, 'Pochhammer')],
+    'gamma': [(lambda x: True, 'Gamma')],
+    'zeta': [(lambda x: True, 'Zeta')],
+    'Heaviside': [(lambda x: True, 'UnitStep')],
+    'fibonacci': [(lambda x: True, 'Fibonacci')],
+    'polylog': [(lambda x, y: True, 'PolyLog')],
+    'loggamma': [(lambda x: True, 'LogGamma')],
 }
 
 
@@ -58,7 +59,7 @@ class MCodePrinter(CodePrinter):
 
     """
 
-    printmethod = "_mcode"
+    printmethod = '_mcode'
 
     _default_settings = {
         'order': None,
@@ -85,7 +86,7 @@ class MCodePrinter(CodePrinter):
                         isinstance(v[0], types.FunctionType)):
                     userfuncs[k] = [(v[0], str(v[1]))]
                 else:
-                    raise ValueError("bad user_functions")
+                    raise ValueError('bad user_functions')
             self.known_functions.update(userfuncs)
 
     doprint = StrPrinter.doprint
@@ -124,18 +125,18 @@ class MCodePrinter(CodePrinter):
         if fname in self.known_functions:
             cond, mfunc = self.known_functions[fname][0]
             if cond(*expr.args):
-                return "%s[%s]" % (mfunc, self.stringify(expr.args, ", "))
-        return fname + "[%s]" % self.stringify(expr.args, ", ")
+                return '%s[%s]' % (mfunc, self.stringify(expr.args, ', '))
+        return fname + '[%s]' % self.stringify(expr.args, ', ')
     _print_MinMaxBase = _print_Function
 
     def _print_Piecewise(self, expr):
-        return expr.func.__name__ + "[{%s}]" % self.stringify(expr.args, ", ")
+        return expr.func.__name__ + '[{%s}]' % self.stringify(expr.args, ', ')
 
     def _print_BooleanTrue(self, expr):
-        return "True"
+        return 'True'
 
     def _print_BooleanFalse(self, expr):
-        return "False"
+        return 'False'
 
     def _print_Derivative(self, expr):
         return 'Hold[D[%s, %s]]' % (self.doprint(expr.expr),
@@ -146,24 +147,24 @@ class MCodePrinter(CodePrinter):
             args = [expr.args[0], expr.variables[0]]
         else:
             args = expr.args
-        return "Hold[Integrate[" + ', '.join(self.doprint(a) for a in args) + "]]"
+        return 'Hold[Integrate[' + ', '.join(self.doprint(a) for a in args) + ']]'
 
     def _print_Limit(self, expr):
         direction = str(expr.args[-1])
-        if direction == "+":
-            direction = "-1"
-        elif direction == "-":
-            direction = "1"
-        elif direction == "real":
-            direction = "Reals"
+        if direction == '+':
+            direction = '-1'
+        elif direction == '-':
+            direction = '1'
+        elif direction == 'real':
+            direction = 'Reals'
         else:
             raise NotImplementedError
         e, x, x0 = [self.doprint(a) for a in expr.args[:-1]]
-        return ("Hold[Limit[%s, %s -> %s, Direction -> %s]]" % (e, x, x0,
+        return ('Hold[Limit[%s, %s -> %s, Direction -> %s]]' % (e, x, x0,
                                                                 direction))
 
     def _print_Sum(self, expr):
-        return "Hold[Sum[" + ', '.join(self.doprint(a) for a in expr.args) + "]]"
+        return 'Hold[Sum[' + ', '.join(self.doprint(a) for a in expr.args) + ']]'
 
     def _print_MatrixBase(self, A):
         return self.doprint(A.tolist())
@@ -198,16 +199,16 @@ class MCodePrinter(CodePrinter):
     def _print_RootSum(self, expr):
         from ..core import Lambda
         p, f = expr.poly, expr.fun
-        return "RootSum[%s, %s]" % (self.doprint(Lambda(p.gens, p.as_expr())),
+        return 'RootSum[%s, %s]' % (self.doprint(Lambda(p.gens, p.as_expr())),
                                     self.doprint(f))
 
     def _print_AlgebraicElement(self, expr):
         coeffs = list(reversed(expr.rep.to_dense()))
-        return "AlgebraicNumber[%s, %s]" % (self.doprint(expr.parent.ext),
+        return 'AlgebraicNumber[%s, %s]' % (self.doprint(expr.parent.ext),
                                             self.doprint(coeffs))
 
     def _print_Dummy(self, expr):
-        return "%s%s" % (expr.name, expr.dummy_index)
+        return '%s%s' % (expr.name, expr.dummy_index)
 
 
 def mathematica_code(expr, **settings):

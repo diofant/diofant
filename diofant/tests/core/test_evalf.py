@@ -128,8 +128,8 @@ def test_evalf_complex_cancellation():
 
 
 def test_evalf_logs():
-    assert NS("log(3+pi*I)", 15) == '1.46877619736226 + 0.808448792630022*I'
-    assert NS("log(pi*I)", 15) == '1.14472988584940 + 1.57079632679490*I'
+    assert NS('log(3+pi*I)', 15) == '1.46877619736226 + 0.808448792630022*I'
+    assert NS('log(pi*I)', 15) == '1.14472988584940 + 1.57079632679490*I'
     assert NS('log(-1.000000 + 0.000001)', 2) == '-1.0e-6 + 3.1*I'
     assert NS('log(100, 10, evaluate=False)', 15) == '2.00000000000000'
 
@@ -339,14 +339,14 @@ def test_evalf_power_subs_bugs():
 
 
 def test_evalf_arguments():
-    pytest.raises(TypeError, lambda: pi.evalf(method="garbage"))
+    pytest.raises(TypeError, lambda: pi.evalf(method='garbage'))
 
 
 def test_implemented_function_evalf():
     f = Function('f')
     f = implemented_function(f, lambda x: x + 1)
-    assert str(f(x)) == "f(x)"
-    assert str(f(2)) == "f(2)"
+    assert str(f(x)) == 'f(x)'
+    assert str(f(2)) == 'f(2)'
     assert f(2).evalf(strict=False) == 3
     assert f(x).evalf(strict=False) == f(x)
     f = implemented_function(Function('sin'), lambda x: x + 1)

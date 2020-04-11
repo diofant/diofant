@@ -6,12 +6,13 @@ import pytest
 from diofant import (E1, RR, Abs, Add, And, Chi, Ci, Ei, Heaviside, I, Integer,
                      Integral, Mul, Piecewise, Rational, Shi, Si, Symbol,
                      acosh, acoth, arg, asin, atan, besseli, besselj, cbrt,
-                     combsimp, cos, cosh, erf, exp, exp_polar, expand,
-                     expand_func, expand_mul, expint, fourier_transform,
-                     fresnelc, fresnels, gamma, hyper, hyperexpand, integrate,
-                     laplace_transform, log, lowergamma, meijerg, nan, oo, pi,
-                     piecewise_fold, polygamma, powdenest, powsimp, re,
-                     simplify, sin, sinh, sqrt, symbols, unpolarify)
+                     combsimp, cos, cosh, default_sort_key, erf, exp,
+                     exp_polar, expand, expand_func, expand_mul, expint,
+                     fourier_transform, fresnelc, fresnels, gamma, hyper,
+                     hyperexpand, integrate, laplace_transform, log,
+                     lowergamma, meijerg, nan, oo, pi, piecewise_fold,
+                     polygamma, powdenest, powsimp, re, simplify, sin, sinh,
+                     sqrt, symbols, unpolarify)
 from diofant.abc import R, a, b, c, d, h, r, s, t, w, x, y, z
 from diofant.integrals.meijerint import (_create_lookup_table, _inflate_g,
                                          _rewrite1, _rewrite_single,
@@ -19,7 +20,6 @@ from diofant.integrals.meijerint import (_create_lookup_table, _inflate_g,
                                          meijerint_indefinite,
                                          meijerint_inversion)
 from diofant.integrals.meijerint import z as z_dummy
-from diofant.utilities import default_sort_key
 from diofant.utilities.randtest import random_complex_number as randcplx
 from diofant.utilities.randtest import verify_numerically
 
@@ -400,7 +400,7 @@ def test_probability():
     assert simplify(E((x + y)**2) - E(x + y)**2) == ans
 
     # Beta' distribution
-    alpha, beta = symbols('alpha beta', positive=True)
+    alpha, beta = symbols('alpha beta', positive=True, real=True)
     betadist = x**(alpha - 1)*(1 + x)**(-alpha - beta)*gamma(alpha + beta) \
         / gamma(alpha)/gamma(beta)
     assert integrate(betadist, (x, 0, oo), meijerg=True) == 1
@@ -445,7 +445,7 @@ def test_probability():
                               meijerg=True)) == 2*sqrt(2)/sqrt(k)
 
     # Dagum distribution
-    a, b, p = symbols('a b p', positive=True)
+    a, b, p = symbols('a b p', positive=True, real=True)
     # XXX (x/b)**a does not work
     dagum = a*p/x*(x/b)**(a*p)/(1 + x**a/b**a)**(p + 1)
     assert simplify(integrate(dagum, (x, 0, oo), meijerg=True)) == 1
@@ -501,7 +501,7 @@ def test_probability():
         pi*alpha**y*y/beta/sin(pi*y/beta)
 
     # weibull
-    k = Symbol('k', positive=True)
+    k = Symbol('k', positive=True, real=True)
     n = Symbol('n', positive=True)
     distn = k/lamda*(x/lamda)**(k - 1)*exp(-(x/lamda)**k)
     assert simplify(integrate(distn, (x, 0, oo))) == 1
@@ -533,7 +533,7 @@ def test_probability():
 
 @pytest.mark.slow
 def test_expint():
-    """ Test various exponential integrals. """
+    """Test various exponential integrals."""
     assert simplify(integrate(exp(-z*x)/x**y,
                               (x, 1, oo),
                               meijerg=True,

@@ -60,7 +60,7 @@ def idiff(eq, y, x, n=1):
     elif isinstance(y, (Dummy, Symbol)):
         dep = {y}
     else:
-        raise ValueError("expecting x-dependent symbol(s) but got: %s" % y)
+        raise ValueError('expecting x-dependent symbol(s) but got: %s' % y)
 
     f = {s: Function(s.name)(x) for s in eq.free_symbols if s != x and s in dep}
     dydx = Function(y.name)(x).diff(x)
@@ -306,7 +306,7 @@ def convex_hull(*args):
 
 
 def are_coplanar(*e):
-    """ Returns True if the given entities are coplanar otherwise False
+    """Returns True if the given entities are coplanar otherwise False.
 
     Parameters
     ==========
@@ -469,7 +469,6 @@ def centroid(*args):
         Point2D(11/10, 1/2)
 
     """
-
     from .polygon import Polygon, Segment
     from .point import Point
     if args:

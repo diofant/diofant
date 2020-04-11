@@ -1,4 +1,4 @@
-""" Generic Rules for Diofant
+"""Generic Rules for Diofant.
 
 This file assumes knowledge of Basic and little else.
 """
@@ -47,7 +47,7 @@ def term_atomic(op, args):
 
 
 def rm_id(isid):
-    """ Create a rule to remove identities
+    """Create a rule to remove identities
 
     isid - fn :: x -> Bool  --- whether or not this element is an identity
 
@@ -78,7 +78,7 @@ def rm_id(isid):
 
 
 def glom(key, count, combine):
-    """ Create a rule to conglomerate identical args
+    """Create a rule to conglomerate identical args.
 
     >>> def key(x):
     ...     return x.as_coeff_Mul()[1]
@@ -115,7 +115,7 @@ def glom(key, count, combine):
 
 
 def sort(key):
-    """ Create a rule to sort by a key function
+    """Create a rule to sort by a key function.
 
     >>> sort_rl = sort(str)
     >>> sort_rl(Basic(3, 1, 2))
@@ -132,7 +132,7 @@ def sort(key):
 
 
 def unpack(expr):
-    """ Rule to unpack singleton args
+    """Rule to unpack singleton args.
 
     >>> unpack(Basic(2))
     2

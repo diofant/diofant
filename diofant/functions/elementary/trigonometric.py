@@ -634,7 +634,7 @@ class cos(TrigonometricFunction):
         if pi_coeff is None:
             return
 
-        assert not pi_coeff.is_integer, "should have been simplified already"
+        assert not pi_coeff.is_integer, 'should have been simplified already'
 
         if not pi_coeff.is_Rational:
             return
@@ -1099,22 +1099,22 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
             return 1/t
 
     def _eval_rewrite_as_exp(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_exp", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_exp', arg)
 
     def _eval_rewrite_as_Pow(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_Pow", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_Pow', arg)
 
     def _eval_rewrite_as_sin(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_sin", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_sin', arg)
 
     def _eval_rewrite_as_cos(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_cos", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_cos', arg)
 
     def _eval_rewrite_as_tan(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_tan", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_tan', arg)
 
     def _eval_rewrite_as_sqrt(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_sqrt", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_sqrt', arg)
 
     def _eval_conjugate(self):
         return self.func(self.args[0].conjugate())
@@ -1124,7 +1124,7 @@ class ReciprocalTrigonometricFunction(TrigonometricFunction):
                                                                   **hints)
 
     def _eval_expand_trig(self, **hints):
-        return self._calculate_reciprocal("_eval_expand_trig", **hints)
+        return self._calculate_reciprocal('_eval_expand_trig', **hints)
 
     def _eval_is_extended_real(self):
         return (1/self._reciprocal_of(self.args[0])).is_extended_real

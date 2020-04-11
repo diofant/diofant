@@ -2,13 +2,12 @@ import itertools
 
 import pytest
 
-from diofant import (Add, Eq, Function, Idx, IndexedBase, Matrix, MatrixSymbol,
-                     O, Piecewise, Pow, Rational, RootOf, Subs, Symbol, Tuple,
-                     cos, cse, exp, sin, sqrt, symbols, sympify, true)
+from diofant import (Add, Eq, Function, Idx, ImmutableDenseMatrix,
+                     ImmutableSparseMatrix, IndexedBase, Matrix, MatrixSymbol,
+                     MutableDenseMatrix, MutableSparseMatrix, O, Piecewise,
+                     Pow, Rational, RootOf, Subs, Symbol, Tuple, cos, cse, exp,
+                     meijerg, sin, sqrt, symbols, sympify, true)
 from diofant.abc import a, b, w, x, y, z
-from diofant.functions.special.hyper import meijerg
-from diofant.matrices import (ImmutableDenseMatrix, ImmutableSparseMatrix,
-                              MutableDenseMatrix, MutableSparseMatrix)
 from diofant.simplify import cse_main, cse_opts
 from diofant.simplify.cse_opts import sub_post, sub_pre
 
@@ -206,8 +205,8 @@ def test_sympyissue_6263():
 
 
 def test_dont_cse_tuples():
-    f = Function("f")
-    g = Function("g")
+    f = Function('f')
+    g = Function('g')
 
     name_val, (expr,) = cse(Subs(f(x, y), (x, 0), (y, 1)) +
                             Subs(g(x, y), (x, 0), (y, 1)))
@@ -330,7 +329,7 @@ def test_name_conflict_cust_symbols():
     z1 = x0 + y
     z2 = x2 + x3
     l = [cos(z1) + z1, cos(z2) + z2, x0 + x2]
-    substs, reduced = cse(l, symbols("x:10"))
+    substs, reduced = cse(l, symbols('x:10'))
     assert [e.subs(reversed(substs)) for e in reduced] == l
 
 
@@ -389,8 +388,8 @@ def test_sympyissue_8891():
 def test_cse_ignore():
     exprs = [exp(y)*(3*y + 3*sqrt(x+1)), exp(y)*(5*y + 5*sqrt(x+1))]
     subst1, red1 = cse(exprs)
-    assert any(y in sub.free_symbols for _, sub in subst1), "cse failed to identify any term with y"
+    assert any(y in sub.free_symbols for _, sub in subst1), 'cse failed to identify any term with y'
 
     subst2, red2 = cse(exprs, ignore=(y,))  # y is not allowed in substitutions
-    assert not any(y in sub.free_symbols for _, sub in subst2), "Sub-expressions containing y must be ignored"
-    assert any(sub - sqrt(x + 1) == 0 for _, sub in subst2), "cse failed to identify sqrt(x + 1) as sub-expression"
+    assert not any(y in sub.free_symbols for _, sub in subst2), 'Sub-expressions containing y must be ignored'
+    assert any(sub - sqrt(x + 1) == 0 for _, sub in subst2), 'cse failed to identify sqrt(x + 1) as sub-expression'

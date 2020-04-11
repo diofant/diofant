@@ -66,7 +66,6 @@ from diofant.functions import (Chi, Ci, DiracDelta, Ei, FallingFactorial,
 from diofant.functions import re as _re
 from diofant.functions import (sec, sech, sign, sinh, subfactorial, tan, tanh,
                                transpose, uppergamma, yn, zeta)
-from diofant.functions.combinatorial.factorials import MultiFactorial
 from diofant.functions.elementary.miscellaneous import IdentityFunction
 from diofant.functions.elementary.piecewise import ExprCondPair
 from diofant.functions.special.error_functions import _erfs
@@ -92,12 +91,6 @@ from diofant.integrals.transforms import (CosineTransform, FourierTransform,
                                           LaplaceTransform, MellinTransform,
                                           SineTransform)
 from diofant.logic.boolalg import BooleanFunction
-from diofant.matrices.expressions.factorizations import (EigenValues,
-                                                         EigenVectors,
-                                                         LofCholesky, LofLU,
-                                                         QofQR, RofQR, SofSVD,
-                                                         UofCholesky, UofLU,
-                                                         UofSVD, VofSVD)
 from diofant.matrices.expressions.fourier import DFT, IDFT
 from diofant.matrices.expressions.matexpr import MatrixElement
 from diofant.printing.codeprinter import Assignment
@@ -173,20 +166,20 @@ def test_all_classes_are_tested():
     diofant_path = os.path.abspath(path)
     prefix = os.path.split(diofant_path)[0] + os.sep
 
-    re_cls = re.compile(r"^class ([A-Za-z][A-Za-z0-9_]*)\s*\(", re.MULTILINE)
+    re_cls = re.compile(r'^class ([A-Za-z][A-Za-z0-9_]*)\s*\(', re.MULTILINE)
 
     modules = {}
 
     for root, dirs, files in os.walk(diofant_path):
-        module = root.replace(prefix, "").replace(os.sep, ".")
+        module = root.replace(prefix, '').replace(os.sep, '.')
 
         for file in files:
-            if file.startswith(("_", "test_", "bench_")):
+            if file.startswith(('_', 'test_', 'bench_')):
                 continue
-            if not file.endswith(".py"):
+            if not file.endswith('.py'):
                 continue
 
-            with io.open(os.path.join(root, file), "r", encoding='utf-8') as f:
+            with io.open(os.path.join(root, file), 'r', encoding='utf-8') as f:
                 text = f.read()
 
             submodule = module + '.' + file[:-3]
@@ -222,9 +215,9 @@ def test_all_classes_are_tested():
                 failed.append(module + '.' + name)
 
     # reset all DiofantDeprecationWarning into errors
-    warnings.simplefilter("error", category=DiofantDeprecationWarning)
+    warnings.simplefilter('error', category=DiofantDeprecationWarning)
 
-    assert not failed, "Missing classes: %s.  Please add tests for these to diofant/core/tests/test_args.py." % ", ".join(failed)
+    assert not failed, 'Missing classes: %s.  Please add tests for these to diofant/core/tests/test_args.py.' % ', '.join(failed)
 
 
 def _test_args(obj):
@@ -924,10 +917,6 @@ def test_diofant__functions__combinatorial__factorials__CombinatorialFunction():
 
 def test_diofant__functions__combinatorial__factorials__FallingFactorial():
     assert _test_args(FallingFactorial(2, x))
-
-
-def test_diofant__functions__combinatorial__factorials__MultiFactorial():
-    assert _test_args(MultiFactorial(x))
 
 
 def test_diofant__functions__combinatorial__factorials__RisingFactorial():
@@ -1792,57 +1781,6 @@ def test_diofant__matrices__expressions__fourier__DFT():
 
 def test_diofant__matrices__expressions__fourier__IDFT():
     assert _test_args(IDFT(Integer(2)))
-
-
-X = MatrixSymbol('X', 10, 10)
-
-
-def test_diofant__matrices__expressions__factorizations__LofLU():
-    assert _test_args(LofLU(X))
-
-
-def test_diofant__matrices__expressions__factorizations__UofLU():
-    assert _test_args(UofLU(X))
-
-
-def test_diofant__matrices__expressions__factorizations__QofQR():
-    assert _test_args(QofQR(X))
-
-
-def test_diofant__matrices__expressions__factorizations__RofQR():
-    assert _test_args(RofQR(X))
-
-
-def test_diofant__matrices__expressions__factorizations__LofCholesky():
-    assert _test_args(LofCholesky(X))
-
-
-def test_diofant__matrices__expressions__factorizations__UofCholesky():
-    assert _test_args(UofCholesky(X))
-
-
-def test_diofant__matrices__expressions__factorizations__EigenVectors():
-    assert _test_args(EigenVectors(X))
-
-
-def test_diofant__matrices__expressions__factorizations__EigenValues():
-    assert _test_args(EigenValues(X))
-
-
-def test_diofant__matrices__expressions__factorizations__UofSVD():
-    assert _test_args(UofSVD(X))
-
-
-def test_diofant__matrices__expressions__factorizations__VofSVD():
-    assert _test_args(VofSVD(X))
-
-
-def test_diofant__matrices__expressions__factorizations__SofSVD():
-    assert _test_args(SofSVD(X))
-
-
-def test_diofant__matrices__expressions__factorizations__Factorization():
-    pass
 
 
 def test_diofant__polys__polytools__GroebnerBasis():

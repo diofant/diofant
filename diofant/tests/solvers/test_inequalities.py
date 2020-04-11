@@ -1,20 +1,17 @@
-"""Tests for tools for solving inequalities and systems of inequalities. """
+"""Tests for tools for solving inequalities and systems of inequalities."""
 
 import pytest
 
 from diofant import (And, E, Eq, FiniteSet, Float, Ge, Gt, Integer, Integral,
                      Interval, Le, Lt, Ne, Or, Piecewise, Poly, PurePoly,
-                     Rational, S, Symbol, Union, false, log, oo, pi, root, sin,
-                     sqrt)
+                     Rational, RootOf, S, Symbol, Union, false, log, oo, pi,
+                     reduce_inequalities, root, sin, solve, sqrt)
 from diofant.abc import x, y
-from diofant.polys.rootoftools import RootOf
-from diofant.solvers.inequalities import (reduce_inequalities,
-                                          reduce_piecewise_inequality,
+from diofant.solvers.inequalities import (reduce_piecewise_inequality,
                                           reduce_rational_inequalities,
                                           solve_poly_inequalities)
 from diofant.solvers.inequalities import solve_poly_inequality as psolve
 from diofant.solvers.inequalities import solve_univariate_inequality as isolve
-from diofant.solvers.solvers import solve
 
 
 __all__ = ()
@@ -25,12 +22,12 @@ inf = oo.evalf()
 def test_solve_poly_inequality():
     assert psolve(Poly(0, x), '==') == [S.Reals]
     assert psolve(Poly(1, x), '==') == [S.EmptySet]
-    assert psolve(PurePoly(x + 1, x), ">") == [Interval(-1, oo, True, True)]
+    assert psolve(PurePoly(x + 1, x), '>') == [Interval(-1, oo, True, True)]
     pytest.raises(ValueError, lambda: psolve(x, '=='))
     pytest.raises(ValueError, lambda: psolve(Poly(x, x), '??'))
 
-    assert (solve_poly_inequalities(((Poly(x**2 - 3), ">"),
-                                     (Poly(-x**2 + 1), ">"))) ==
+    assert (solve_poly_inequalities(((Poly(x**2 - 3), '>'),
+                                     (Poly(-x**2 + 1), '>'))) ==
             Union(Interval(-oo, -sqrt(3), True, True),
                   Interval(-1, 1, True, True),
                   Interval(sqrt(3), oo, True, True)))

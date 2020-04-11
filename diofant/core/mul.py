@@ -5,7 +5,7 @@ from functools import reduce
 from .basic import Basic
 from .cache import cacheit
 from .compatibility import default_sort_key
-from .logic import _fuzzy_group, fuzzy_and, fuzzy_not
+from .logic import _fuzzy_group, fuzzy_and
 from .operations import AssocOp
 from .singleton import S
 from .sympify import sympify
@@ -16,6 +16,8 @@ from .sympify import sympify
 
 
 class NC_Marker:
+    """Helper class to mark non-commutative exponents."""
+
     is_Order = False
     is_Mul = False
     is_Number = False
@@ -76,6 +78,7 @@ def _unevaluated_Mul(*args):
 
 
 class Mul(AssocOp):
+    """Symbolic multiplication class."""
 
     is_Mul = True
 
@@ -260,9 +263,6 @@ class Mul(AssocOp):
                 if not coeff:
                     # 0 * zoo = NaN
                     return [nan], [], None
-                if coeff is zoo:
-                    # zoo * zoo = zoo
-                    return [zoo], [], None
                 coeff = zoo
                 continue
 
@@ -475,7 +475,7 @@ class Mul(AssocOp):
                             coeff *= obj
                         else:
                             assert obj.is_Pow
-                            bi, ei = obj.args
+                            bi, ei = obj.base, obj.exp
                             pnew[ei].append(bi)
 
             num_rat.extend(grow)
@@ -744,7 +744,6 @@ class Mul(AssocOp):
         sums must be a list of instances of Basic.
 
         """
-
         L = len(sums)
         if L == 1:
             return sums[0].args
@@ -895,7 +894,7 @@ class Mul(AssocOp):
         return d
 
     def _eval_as_numer_denom(self):
-        """expression -> a/b -> a, b
+        """Expression -> a/b -> a, b.
 
         See Also
         ========
@@ -1058,7 +1057,6 @@ class Mul(AssocOp):
             pos * neg * nonnegative -> neg or zero -> False is returned
 
         """
-
         sign = 1
         saw_NON = False
         for t in self.args:
@@ -1109,15 +1107,6 @@ class Mul(AssocOp):
         else:
             return is_integer
 
-    def _eval_is_even(self):
-        is_integer = self.is_integer
-
-        if is_integer:
-            return fuzzy_not(self.is_odd)
-
-        elif is_integer is False:
-            return False
-
     def _eval_subs(self, old, new):
         from . import Integer
         from ..functions.elementary.complexes import sign
@@ -1144,7 +1133,7 @@ class Mul(AssocOp):
             return a, S.One
 
         def breakup(eq):
-            """break up powers of eq when treated as a Mul::
+            """Break up powers of eq when treated as a Mul::
 
                 b**(Rational*e) -> b**e, Rational
 
@@ -1152,7 +1141,6 @@ class Mul(AssocOp):
             noncommutatives come back as a list [(b**e, Rational)]
 
             """
-
             c, nc = defaultdict(int), []
             for a in Mul.make_args(eq):
                 a = powdenest(a)
@@ -1174,12 +1162,11 @@ class Mul(AssocOp):
             it back.
 
             """
-
             b, e = base_exp(b)
             return Pow(b, e*co)
 
         def ndiv(a, b):
-            """if b divides a in an extractive way (like 1/4 divides 1/2
+            """If b divides a in an extractive way (like 1/4 divides 1/2
             but not vice versa, and 2/5 does not divide 1/3) then return
             the integer number of times it divides, else return 0.
 
@@ -1418,7 +1405,6 @@ class Mul(AssocOp):
         diofant.core.expr.Expr.as_content_primitive
 
         """
-
         coef = S.One
         args = []
         for i, a in enumerate(self.args):

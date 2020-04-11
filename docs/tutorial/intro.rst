@@ -118,7 +118,7 @@ of symbolic power Diofant is capable of, to whet your appetite.
    executed:
 
       >>> from diofant import *
-      >>> x, y, z = symbols('x y z')
+      >>> a, b, c, d, t, x, y, z = symbols('a:d t x:z')
       >>> init_printing(pretty_print=True, use_unicode=True)
 
    Last one will make all further examples pretty print with unicode
@@ -131,13 +131,13 @@ of symbolic power Diofant is capable of, to whet your appetite.
 
 Take the derivative of `\sin{(x)}e^x`.
 
-   >>> diff(sin(x)*exp(x), x)
+   >>> diff(sin(x)*exp(x))
     x           x
    ℯ ⋅sin(x) + ℯ ⋅cos(x)
 
 Compute `\int(e^x\sin{(x)} + e^x\cos{(x)})\,dx`.
 
-   >>> integrate(exp(x)*sin(x) + exp(x)*cos(x), x)
+   >>> integrate(exp(x)*sin(x) + exp(x)*cos(x))
     x
    ℯ ⋅sin(x)
 
@@ -164,7 +164,7 @@ Solve `x^2 - 2 = 0`.
 Solve the differential equation `f'' - f = e^x`.
 
    >>> f = symbols('f', cls=Function)
-   >>> dsolve(Eq(f(x).diff(x, 2) - f(x), exp(x)), f(x))
+   >>> dsolve(Eq(f(x).diff(x, 2) - f(x), exp(x)))
            x ⎛     x⎞    -x
    f(x) = ℯ ⋅⎜C₂ + ─⎟ + ℯ  ⋅C₁
              ⎝     2⎠
@@ -179,13 +179,12 @@ Find the eigenvalues of `\left[\begin{smallmatrix}1 & 2\\2 &
    ⎪2     2            2      2   ⎪
    ⎩                              ⎭
 
-Rewrite the Bessel function `J_{n}\left(z\right)` in terms of the
-spherical Bessel function `j_n(z)`.
+Rewrite the Bessel function `J_y\left(z\right)` in terms of the
+spherical Bessel function `j_y(z)`.
 
-   >>> n = symbols('n')
-   >>> besselj(n, z).rewrite(jn)
+   >>> besselj(y, z).rewrite(jn)
      ___   ___
-   ╲╱ 2 ⋅╲╱ z ⋅jn(n - 1/2, z)
+   ╲╱ 2 ⋅╲╱ z ⋅jn(y - 1/2, z)
    ──────────────────────────
                ___
              ╲╱ π

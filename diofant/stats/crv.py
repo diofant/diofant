@@ -36,7 +36,7 @@ class ContinuousDomain(RandomDomain):
     is_Continuous = True
 
     def as_boolean(self):  # pragma: no cover
-        raise NotImplementedError("Not Implemented for generic Domains")
+        raise NotImplementedError('Not Implemented for generic Domains')
 
 
 class SingleContinuousDomain(ContinuousDomain, SingleDomain):
@@ -94,7 +94,7 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
                 if isinstance(cond, And):
                     conditions.extend(cond.args)
                 elif isinstance(cond, Or):  # pragma: no cover
-                    raise NotImplementedError("Or not implemented here")
+                    raise NotImplementedError('Or not implemented here')
             elif cond.is_Relational:
                 if cond.is_Equality:
                     # Add the appropriate Delta to the integrand
@@ -103,7 +103,7 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
                     symbols = cond.free_symbols & set(self.symbols)
                     if len(symbols) != 1:  # Can't handle x > y, # pragma: no cover
                         raise NotImplementedError(
-                            "Multivariate Inequalities not yet implemented")
+                            'Multivariate Inequalities not yet implemented')
                     # Can handle x > 0
                     symbol = symbols.pop()
                     # Find the limit with x, such as (x, -oo, oo)
@@ -119,7 +119,7 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
                         limits[i] = (symbol, intvl.left, intvl.right)
             else:
                 raise TypeError(
-                    "Condition %s is not a relational or Boolean" % cond)
+                    'Condition %s is not a relational or Boolean' % cond)
 
         return Integral(integrand, *limits, **kwargs)
 
@@ -133,16 +133,18 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
                 self.condition, tuple(self.symbols)[0]))
         else:
             raise NotImplementedError(
-                "Set of Conditional Domain not Implemented")
+                'Set of Conditional Domain not Implemented')
 
 
 class ContinuousDistribution(Expr):
+    """Base class for continuous distributions."""
+
     def __call__(self, *args):
         return self.pdf(*args)
 
 
 class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
-    """ Continuous distribution of a single variable
+    """Continuous distribution of a single variable.
 
     Serves as superclass for Normal/Exponential/UniformDistribution etc....
 
@@ -173,7 +175,7 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
 
     @cacheit
     def _inverse_cdf_expression(self):
-        """ Inverse of the CDF
+        """Inverse of the CDF.
 
         Used by sample
 
@@ -182,7 +184,7 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
         # Invert CDF
         inverse_cdf = solve(self.cdf(x) - z, x)
         if not inverse_cdf or len(inverse_cdf) != 1:  # pragma: no cover
-            raise NotImplementedError("Could not invert CDF")
+            raise NotImplementedError('Could not invert CDF')
 
         return Lambda(z, inverse_cdf[0][x])
 
@@ -214,6 +216,8 @@ class SingleContinuousDistribution(ContinuousDistribution, NamedArgsMixin):
 
 
 class ContinuousDistributionHandmade(SingleContinuousDistribution):
+    """Continuous distribution with custom pdf and support."""
+
     _argnames = 'pdf',
 
     @property
@@ -225,7 +229,7 @@ class ContinuousDistributionHandmade(SingleContinuousDistribution):
 
 
 class ContinuousPSpace(PSpace):
-    """ Continuous Probability Space
+    """Continuous Probability Space.
 
     Represents the likelihood of an event space defined over a continuum.
 
@@ -271,7 +275,7 @@ class ContinuousPSpace(PSpace):
     def compute_cdf(self, expr, **kwargs):
         if not self.domain.set.is_Interval:
             raise ValueError(
-                "CDF not well defined on multivariate expressions")
+                'CDF not well defined on multivariate expressions')
 
         d = self.compute_density(expr, **kwargs)
         x, z = symbols('x, z', real=True, cls=Dummy)
@@ -299,7 +303,7 @@ class ContinuousPSpace(PSpace):
         rvs = frozenset(random_symbols(condition))
         if not (len(rvs) == 1 and rvs.issubset(self.values)):  # pragma: no cover
             raise NotImplementedError(
-                "Multiple continuous random variables not supported")
+                'Multiple continuous random variables not supported')
         rv = tuple(rvs)[0]
         interval = reduce_rational_inequalities_wrap(condition, rv)
         interval = interval.intersection(self.domain.set)
@@ -379,7 +383,7 @@ def _reduce_inequalities(conditions, var, **kwargs):
     try:
         return reduce_rational_inequalities(conditions, var, **kwargs)
     except PolynomialError:
-        raise ValueError("Reduction of condition failed %s\n" % conditions[0])
+        raise ValueError('Reduction of condition failed %s\n' % conditions[0])
 
 
 def reduce_rational_inequalities_wrap(condition, var):

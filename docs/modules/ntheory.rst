@@ -22,8 +22,6 @@ Number Theory
 .. automodule:: diofant.ntheory.residue_ntheory
     :members:
 
-.. autofunction:: discrete_log
-
 .. automodule:: diofant.ntheory.continued_fraction
     :members:
 

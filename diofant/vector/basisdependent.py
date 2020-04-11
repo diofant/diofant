@@ -124,7 +124,7 @@ class BasisDependent(Expr):
         """
         for x in args:
             if isinstance(x, BasisDependent):
-                raise TypeError("Invalid arg for differentiation")
+                raise TypeError('Invalid arg for differentiation')
         diff_components = [diff(v, *args, **kwargs) * k for
                            k, v in self.components.items()]
         return self._add_func(*diff_components)
@@ -155,7 +155,7 @@ class BasisDependentAdd(BasisDependent, Add):
                     arg = cls._add_func(*(arg.args))
                 else:
                     raise TypeError(str(arg) +
-                                    " cannot be interpreted correctly")
+                                    ' cannot be interpreted correctly')
             # If argument is zero, ignore
             if arg == cls.zero:
                 continue
@@ -214,7 +214,7 @@ class BasisDependentMul(BasisDependent, Mul):
                 measure_number *= arg
         # Make sure incompatible types weren't multiplied
         if count > 1:
-            raise ValueError("Invalid multiplication")
+            raise ValueError('Invalid multiplication')
         elif count == 0:
             return Mul(*args, **options)
         # Handle zero vector case

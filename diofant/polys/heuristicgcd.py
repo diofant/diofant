@@ -1,4 +1,4 @@
-"""Heuristic polynomial GCD algorithm (HEUGCD). """
+"""Heuristic polynomial GCD algorithm (HEUGCD)."""
 
 from ..ntheory.modular import symmetric_residue
 from .polyconfig import query
@@ -30,7 +30,7 @@ def heugcd(f, g):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> heugcd((x + y)**2, x*(x + y))
     (x + y, x + y, x)
@@ -108,30 +108,20 @@ def heugcd(f, g):
 def _gcd_interpolate(h, x, ring):
     """Interpolate polynomial GCD from integer GCD."""
     f, i = ring.zero, 0
+    X = ring.gens[0]
 
-    # TODO: don't expose poly repr implementation details
-    if ring.is_univariate:
-        while h:
-            g = h % x
+    while h:
+        g = h % x
+
+        if ring.is_univariate:
             g = symmetric_residue(g, x)
-            h = (h - g) // x
 
-            # f += X**i*g
-            if g:
-                f[(i,)] = g
-            i += 1
-    else:
-        while h:
-            g = h.trunc_ground(x)
-            h = (h - g).quo_ground(x)
+        h = (h - g) // x
 
-            # f += X**i*g
-            if g:
-                for monom, coeff in g.items():
-                    f[(i,) + monom] = coeff
-            i += 1
+        f += X**i*g
+        i += 1
 
-    if f.LC < 0:
-        return -f
-    else:
-        return f
+    if not ring.is_normal(f):
+        f = -f
+
+    return f

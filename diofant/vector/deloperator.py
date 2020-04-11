@@ -13,12 +13,12 @@ class Del(Basic):
 
     def __new__(cls, system):
         if not isinstance(system, CoordSysCartesian):
-            raise TypeError("system should be a CoordSysCartesian")
+            raise TypeError('system should be a CoordSysCartesian')
         obj = super().__new__(cls, system)
         obj._x, obj._y, obj._z = system.x, system.y, system.z
         obj._i, obj._j, obj._k = system.i, system.j, system.k
         obj._system = system
-        obj._name = system.__str__() + ".delop"
+        obj._name = system.__str__() + '.delop'
         return obj
 
     @property
@@ -51,7 +51,6 @@ class Del(Basic):
         C.y*C.z*C.i + C.x*C.z*C.j + C.x*C.y*C.k
 
         """
-
         scalar_field = express(scalar_field, self.system,
                                variables=True)
         vx = Derivative(scalar_field, self._x)
@@ -92,7 +91,6 @@ class Del(Basic):
         C.x*C.y + C.x*C.z + C.y*C.z
 
         """
-
         vx = _diff_conditional(vect.dot(self._i), self._x)
         vy = _diff_conditional(vect.dot(self._j), self._y)
         vz = _diff_conditional(vect.dot(self._k), self._z)
@@ -131,7 +129,6 @@ class Del(Basic):
         0
 
         """
-
         vectx = express(vect.dot(self._i), self.system, variables=True)
         vecty = express(vect.dot(self._j), self.system, variables=True)
         vectz = express(vect.dot(self._k), self.system, variables=True)
@@ -158,7 +155,6 @@ def _diff_conditional(expr, base_scalar):
     it wrt base_scalar.
     Else, returns Integer(0)
     """
-
     new_expr = express(expr, base_scalar.system, variables=True)
     if base_scalar in new_expr.atoms(BaseScalar):
         return Derivative(new_expr, base_scalar)

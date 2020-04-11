@@ -50,7 +50,7 @@ class Patch(Basic):
 
     On a manifold one can have many patches that do not always include the
     whole manifold. On these patches coordinate charts can be defined that
-    permit the parametrization of any point on the patch in terms of a tuple
+    permit the parameterization of any point on the patch in terms of a tuple
     of real numbers (the coordinates).
 
     This object serves as a container/parent for all coordinate system charts
@@ -1155,7 +1155,7 @@ def intcurve_series(vector_field, param, start_point, n=6, coord_sys=None, coeff
 
     Use the predefined R2 manifold:
 
-    >>> from diofant.diffgeom.rn import R2, R2_p, R2_r
+    >>> from diofant.diffgeom.rn import R2_p, R2_r
 
     Specify a starting point and a vector field:
 

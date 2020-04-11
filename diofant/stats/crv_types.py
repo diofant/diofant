@@ -108,8 +108,6 @@ def ContinuousRV(symbol, density, set=Interval(-oo, oo, True, True)):
 
     >>> from diofant.stats import P, E
 
-    >>> x = Symbol("x")
-
     >>> pdf = sqrt(2)*exp(-x**2/2)/(2*sqrt(pi))  # Normal distribution
     >>> X = ContinuousRV(x, pdf)
 
@@ -172,9 +170,9 @@ def Arcsin(name, a=0, b=1):
 
     >>> from diofant.stats import density
 
-    >>> a, b = symbols("a b", real=True)
+    >>> a, b = symbols('a b', real=True)
 
-    >>> X = Arcsin("x", a, b)
+    >>> X = Arcsin('x', a, b)
     >>> density(X)(z)
     1/(pi*sqrt((-a + z)*(b - z)))
 
@@ -184,7 +182,6 @@ def Arcsin(name, a=0, b=1):
     * https://en.wikipedia.org/wiki/Arcsine_distribution
 
     """
-
     return rv(name, ArcsinDistribution, (a, b))
 
 # ------------------------------------------------------------------------------
@@ -235,12 +232,11 @@ def Benini(name, alpha, beta, sigma):
 
     >>> from diofant.stats import density
 
-    >>> alpha = Symbol("alpha", positive=True)
-    >>> beta = Symbol("beta", positive=True)
-    >>> sigma = Symbol("sigma", positive=True)
-    >>> z = Symbol("z")
+    >>> alpha = Symbol('alpha', positive=True)
+    >>> beta = Symbol('beta', positive=True)
+    >>> sigma = Symbol('sigma', positive=True)
 
-    >>> X = Benini("x", alpha, beta, sigma)
+    >>> X = Benini('x', alpha, beta, sigma)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -257,7 +253,6 @@ def Benini(name, alpha, beta, sigma):
     * https://reference.wolfram.com/legacy/v8/ref/BeniniDistribution.html
 
     """
-
     return rv(name, BeniniDistribution, (alpha, beta, sigma))
 
 # ------------------------------------------------------------------------------
@@ -271,8 +266,8 @@ class BetaDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(alpha, beta):
-        _value_check(alpha > 0, "Alpha must be positive")
-        _value_check(beta > 0, "Beta must be positive")
+        _value_check(alpha > 0, 'Alpha must be positive')
+        _value_check(beta > 0, 'Beta must be positive')
 
     def pdf(self, x):
         alpha, beta = self.alpha, self.beta
@@ -307,13 +302,12 @@ def Beta(name, alpha, beta):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import density, E
 
-    >>> alpha = Symbol("alpha", positive=True)
-    >>> beta = Symbol("beta", positive=True)
-    >>> z = Symbol("z")
+    >>> alpha = Symbol('alpha', positive=True)
+    >>> beta = Symbol('beta', positive=True)
 
-    >>> X = Beta("x", alpha, beta)
+    >>> X = Beta('x', alpha, beta)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -332,7 +326,6 @@ def Beta(name, alpha, beta):
     * http://mathworld.wolfram.com/BetaDistribution.html
 
     """
-
     return rv(name, BetaDistribution, (alpha, beta))
 
 # ------------------------------------------------------------------------------
@@ -376,11 +369,10 @@ def BetaPrime(name, alpha, beta):
 
     >>> from diofant.stats import density
 
-    >>> alpha = Symbol("alpha", positive=True)
-    >>> beta = Symbol("beta", positive=True)
-    >>> z = Symbol("z")
+    >>> alpha = Symbol('alpha', positive=True)
+    >>> beta = Symbol('beta', positive=True)
 
-    >>> X = BetaPrime("x", alpha, beta)
+    >>> X = BetaPrime('x', alpha, beta)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -396,7 +388,6 @@ def BetaPrime(name, alpha, beta):
     * http://mathworld.wolfram.com/BetaPrimeDistribution.html
 
     """
-
     return rv(name, BetaPrimeDistribution, (alpha, beta))
 
 # ------------------------------------------------------------------------------
@@ -436,11 +427,10 @@ def Cauchy(name, x0, gamma):
 
     >>> from diofant.stats import density
 
-    >>> x0 = Symbol("x0")
-    >>> gamma = Symbol("gamma", positive=True)
-    >>> z = Symbol("z")
+    >>> x0 = Symbol('x0')
+    >>> gamma = Symbol('gamma', positive=True)
 
-    >>> X = Cauchy("x", x0, gamma)
+    >>> X = Cauchy('x', x0, gamma)
 
     >>> density(X)(z)
     1/(pi*gamma*(1 + (-x0 + z)**2/gamma**2))
@@ -452,7 +442,6 @@ def Cauchy(name, x0, gamma):
     * http://mathworld.wolfram.com/CauchyDistribution.html
 
     """
-
     return rv(name, CauchyDistribution, (x0, gamma))
 
 # ------------------------------------------------------------------------------
@@ -492,12 +481,9 @@ def Chi(name, k):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, std, Chi
+    >>> from diofant.stats import density, Chi
 
-    >>> k = Symbol("k", integer=True)
-    >>> z = Symbol("z")
-
-    >>> X = Chi("x", k)
+    >>> X = Chi('x', k)
 
     >>> density(X)(z)
     2**(-k/2 + 1)*E**(-z**2/2)*z**(k - 1)/gamma(k/2)
@@ -509,7 +495,6 @@ def Chi(name, k):
     * http://mathworld.wolfram.com/ChiDistribution.html
 
     """
-
     return rv(name, ChiDistribution, (k,))
 
 # ------------------------------------------------------------------------------
@@ -553,13 +538,11 @@ def ChiNoncentral(name, k, l):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, std
+    >>> from diofant.stats import density
 
-    >>> k = Symbol("k", integer=True)
-    >>> l = Symbol("l")
-    >>> z = Symbol("z")
+    >>> l = Symbol('l')
 
-    >>> X = ChiNoncentral("x", k, l)
+    >>> X = ChiNoncentral('x', k, l)
 
     >>> density(X)(z)
     E**(-l**2/2 - z**2/2)*l*z**k*(l*z)**(-k/2)*besseli(k/2 - 1, l*z)
@@ -570,7 +553,6 @@ def ChiNoncentral(name, k, l):
     * https://en.wikipedia.org/wiki/Noncentral_chi_distribution
 
     """
-
     return rv(name, ChiNoncentralDistribution, (k, l))
 
 # ------------------------------------------------------------------------------
@@ -614,10 +596,9 @@ def ChiSquared(name, k):
 
     >>> from diofant.stats import density, E, variance
 
-    >>> k = Symbol("k", integer=True, positive=True)
-    >>> z = Symbol("z")
+    >>> k = Symbol('k', integer=True, positive=True)
 
-    >>> X = ChiSquared("x", k)
+    >>> X = ChiSquared('x', k)
 
     >>> density(X)(z)
     2**(-k/2)*E**(-z/2)*z**(k/2 - 1)/gamma(k/2)
@@ -635,7 +616,6 @@ def ChiSquared(name, k):
     * http://mathworld.wolfram.com/Chi-SquaredDistribution.html
 
     """
-
     return rv(name, ChiSquaredDistribution, (k, ))
 
 # ------------------------------------------------------------------------------
@@ -679,12 +659,11 @@ def Dagum(name, p, a, b):
 
     >>> from diofant.stats import density
 
-    >>> p = Symbol("p", positive=True)
-    >>> b = Symbol("b", positive=True)
-    >>> a = Symbol("a", positive=True)
-    >>> z = Symbol("z")
+    >>> p = Symbol('p', positive=True)
+    >>> b = Symbol('b', positive=True)
+    >>> a = Symbol('a', positive=True)
 
-    >>> X = Dagum("x", p, a, b)
+    >>> X = Dagum('x', p, a, b)
 
     >>> density(X)(z)
     a*p*(z/b)**(a*p)*((z/b)**a + 1)**(-p - 1)/z
@@ -695,7 +674,6 @@ def Dagum(name, p, a, b):
     * https://en.wikipedia.org/wiki/Dagum_distribution
 
     """
-
     return rv(name, DagumDistribution, (p, a, b))
 
 # ------------------------------------------------------------------------------
@@ -729,11 +707,10 @@ def Erlang(name, k, l):
 
     >>> from diofant.stats import density, cdf, E, variance
 
-    >>> k = Symbol("k", integer=True, positive=True)
-    >>> l = Symbol("l", positive=True)
-    >>> z = Symbol("z")
+    >>> k = Symbol('k', integer=True, positive=True)
+    >>> l = Symbol('l', positive=True)
 
-    >>> X = Erlang("x", k, l)
+    >>> X = Erlang('x', k, l)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -763,7 +740,6 @@ def Erlang(name, k, l):
     * http://mathworld.wolfram.com/ErlangDistribution.html
 
     """
-
     return rv(name, GammaDistribution, (k, 1/l))
 
 # ------------------------------------------------------------------------------
@@ -777,7 +753,7 @@ class ExponentialDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(rate):
-        _value_check(rate > 0, "Rate must be positive.")
+        _value_check(rate > 0, 'Rate must be positive.')
 
     def pdf(self, x):
         return self.rate * exp(-self.rate*x)
@@ -812,10 +788,9 @@ def Exponential(name, rate):
 
     >>> from diofant.stats import density, cdf, E, variance, std, skewness
 
-    >>> l = Symbol("lambda", positive=True)
-    >>> z = Symbol("z")
+    >>> l = Symbol('lambda', positive=True)
 
-    >>> X = Exponential("x", l)
+    >>> X = Exponential('x', l)
 
     >>> density(X)(z)
     E**(-lambda*z)*lambda
@@ -850,7 +825,6 @@ def Exponential(name, rate):
     * http://mathworld.wolfram.com/ExponentialDistribution.html
 
     """
-
     return rv(name, ExponentialDistribution, (rate, ))
 
 # ------------------------------------------------------------------------------
@@ -899,11 +873,10 @@ def FDistribution(name, d1, d2):
 
     >>> from diofant.stats import density
 
-    >>> d1 = Symbol("d1", positive=True)
-    >>> d2 = Symbol("d2", positive=True)
-    >>> z = Symbol("z")
+    >>> d1 = Symbol('d1', positive=True)
+    >>> d2 = Symbol('d2', positive=True)
 
-    >>> X = FDistribution("x", d1, d2)
+    >>> X = FDistribution('x', d1, d2)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -923,7 +896,6 @@ def FDistribution(name, d1, d2):
     * http://mathworld.wolfram.com/F-Distribution.html
 
     """
-
     return rv(name, FDistributionDistribution, (d1, d2))
 
 # ------------------------------------------------------------------------------
@@ -968,11 +940,10 @@ def FisherZ(name, d1, d2):
 
     >>> from diofant.stats import density
 
-    >>> d1 = Symbol("d1", positive=True)
-    >>> d2 = Symbol("d2", positive=True)
-    >>> z = Symbol("z")
+    >>> d1 = Symbol('d1', positive=True)
+    >>> d2 = Symbol('d2', positive=True)
 
-    >>> X = FisherZ("x", d1, d2)
+    >>> X = FisherZ('x', d1, d2)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -993,7 +964,6 @@ def FisherZ(name, d1, d2):
     * http://mathworld.wolfram.com/Fishersz-Distribution.html
 
     """
-
     return rv(name, FisherZDistribution, (d1, d2))
 
 # ------------------------------------------------------------------------------
@@ -1041,12 +1011,12 @@ def Frechet(name, a, s=1, m=0):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, std
+    >>> from diofant.stats import density
 
-    >>> a, s = symbols("a s", positive=True)
-    >>> m = Symbol("m", real=True)
+    >>> a, s = symbols('a s', positive=True)
+    >>> m = Symbol('m', real=True)
 
-    >>> X = Frechet("x", a, s, m)
+    >>> X = Frechet('x', a, s, m)
 
     >>> density(X)(z)
     E**(-((-m + z)/s)**(-a))*a*((-m + z)/s)**(-a - 1)/s
@@ -1057,7 +1027,6 @@ def Frechet(name, a, s=1, m=0):
     * https://en.wikipedia.org/wiki/Fr%C3%A9chet_distribution
 
     """
-
     return rv(name, FrechetDistribution, (a, s, m))
 
 # ------------------------------------------------------------------------------
@@ -1071,8 +1040,8 @@ class GammaDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(k, theta):
-        _value_check(k > 0, "k must be positive")
-        _value_check(theta > 0, "Theta must be positive")
+        _value_check(k > 0, 'k must be positive')
+        _value_check(theta > 0, 'Theta must be positive')
 
     def pdf(self, x):
         k, theta = self.k, self.theta
@@ -1109,11 +1078,10 @@ def Gamma(name, k, theta):
 
     >>> from diofant.stats import density, cdf, E, variance
 
-    >>> k = Symbol("k", positive=True)
-    >>> theta = Symbol("theta", positive=True)
-    >>> z = Symbol("z")
+    >>> k = Symbol('k', positive=True)
+    >>> theta = Symbol('theta', positive=True)
 
-    >>> X = Gamma("x", k, theta)
+    >>> X = Gamma('x', k, theta)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -1149,7 +1117,6 @@ def Gamma(name, k, theta):
     * http://mathworld.wolfram.com/GammaDistribution.html
 
     """
-
     return rv(name, GammaDistribution, (k, theta))
 
 # ------------------------------------------------------------------------------
@@ -1163,8 +1130,8 @@ class GammaInverseDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(a, b):
-        _value_check(a > 0, "alpha must be positive")
-        _value_check(b > 0, "beta must be positive")
+        _value_check(a > 0, 'alpha must be positive')
+        _value_check(b > 0, 'beta must be positive')
 
     def pdf(self, x):
         a, b = self.a, self.b
@@ -1197,13 +1164,12 @@ def GammaInverse(name, a, b):
     Examples
     ========
 
-    >>> from diofant.stats import density, cdf, E, variance
+    >>> from diofant.stats import density
 
-    >>> a = Symbol("a", positive=True)
-    >>> b = Symbol("b", positive=True)
-    >>> z = Symbol("z")
+    >>> a = Symbol('a', positive=True)
+    >>> b = Symbol('b', positive=True)
 
-    >>> X = GammaInverse("x", a, b)
+    >>> X = GammaInverse('x', a, b)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -1220,7 +1186,6 @@ def GammaInverse(name, a, b):
     * https://en.wikipedia.org/wiki/Inverse-gamma_distribution
 
     """
-
     return rv(name, GammaInverseDistribution, (a, b))
 
 # ------------------------------------------------------------------------------
@@ -1234,8 +1199,8 @@ class KumaraswamyDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(a, b):
-        _value_check(a > 0, "a must be positive")
-        _value_check(b > 0, "b must be positive")
+        _value_check(a > 0, 'a must be positive')
+        _value_check(b > 0, 'b must be positive')
 
     def pdf(self, x):
         a, b = self.a, self.b
@@ -1267,13 +1232,12 @@ def Kumaraswamy(name, a, b):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import density
 
-    >>> a = Symbol("a", positive=True)
-    >>> b = Symbol("b", positive=True)
-    >>> z = Symbol("z")
+    >>> a = Symbol('a', positive=True)
+    >>> b = Symbol('b', positive=True)
 
-    >>> X = Kumaraswamy("x", a, b)
+    >>> X = Kumaraswamy('x', a, b)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -1288,7 +1252,6 @@ def Kumaraswamy(name, a, b):
     * https://en.wikipedia.org/wiki/Kumaraswamy_distribution
 
     """
-
     return rv(name, KumaraswamyDistribution, (a, b))
 
 # ------------------------------------------------------------------------------
@@ -1328,11 +1291,10 @@ def Laplace(name, mu, b):
 
     >>> from diofant.stats import density
 
-    >>> mu = Symbol("mu")
-    >>> b = Symbol("b", positive=True)
-    >>> z = Symbol("z")
+    >>> mu = Symbol('mu')
+    >>> b = Symbol('b', positive=True)
 
-    >>> X = Laplace("x", mu, b)
+    >>> X = Laplace('x', mu, b)
 
     >>> density(X)(z)
     E**(-Abs(mu - z)/b)/(2*b)
@@ -1344,7 +1306,6 @@ def Laplace(name, mu, b):
     * http://mathworld.wolfram.com/LaplaceDistribution.html
 
     """
-
     return rv(name, LaplaceDistribution, (mu, b))
 
 # ------------------------------------------------------------------------------
@@ -1384,10 +1345,10 @@ def Logistic(name, mu, s):
 
     >>> from diofant.stats import density
 
-    >>> mu = Symbol("mu", real=True)
-    >>> s = Symbol("s", positive=True)
+    >>> mu = Symbol('mu', real=True)
+    >>> s = Symbol('s', positive=True)
 
-    >>> X = Logistic("x", mu, s)
+    >>> X = Logistic('x', mu, s)
 
     >>> density(X)(z)
     E**((mu - z)/s)/(s*(E**((mu - z)/s) + 1)**2)
@@ -1399,7 +1360,6 @@ def Logistic(name, mu, s):
     * http://mathworld.wolfram.com/LogisticDistribution.html
 
     """
-
     return rv(name, LogisticDistribution, (mu, s))
 
 # ------------------------------------------------------------------------------
@@ -1447,10 +1407,10 @@ def LogNormal(name, mean, std):
 
     >>> from diofant.stats import density
 
-    >>> mu = Symbol("mu", real=True)
-    >>> sigma = Symbol("sigma", positive=True)
+    >>> mu = Symbol('mu', real=True)
+    >>> sigma = Symbol('sigma', positive=True)
 
-    >>> X = LogNormal("x", mu, sigma)
+    >>> X = LogNormal('x', mu, sigma)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -1464,7 +1424,7 @@ def LogNormal(name, mean, std):
             ____
         2*\/ pi *sigma*z
 
-    >>> X = LogNormal('x', 0, 1) # Mean 0, standard deviation 1
+    >>> X = LogNormal('x', 0, 1)  # Mean 0, standard deviation 1
 
     >>> density(X)(z)
     sqrt(2)*E**(-log(z)**2/2)/(2*sqrt(pi)*z)
@@ -1476,7 +1436,6 @@ def LogNormal(name, mean, std):
     * http://mathworld.wolfram.com/LogNormalDistribution.html
 
     """
-
     return rv(name, LogNormalDistribution, (mean, std))
 
 # ------------------------------------------------------------------------------
@@ -1521,10 +1480,9 @@ def Maxwell(name, a):
 
     >>> from diofant.stats import density, E, variance
 
-    >>> a = Symbol("a", positive=True)
-    >>> z = Symbol("z")
+    >>> a = Symbol('a', positive=True)
 
-    >>> X = Maxwell("x", a)
+    >>> X = Maxwell('x', a)
 
     >>> density(X)(z)
     sqrt(2)*E**(-z**2/(2*a**2))*z**2/(sqrt(pi)*a**3)
@@ -1542,7 +1500,6 @@ def Maxwell(name, a):
     * http://mathworld.wolfram.com/MaxwellDistribution.html
 
     """
-
     return rv(name, MaxwellDistribution, (a, ))
 
 # ------------------------------------------------------------------------------
@@ -1587,11 +1544,10 @@ def Nakagami(name, mu, omega):
 
     >>> from diofant.stats import density, E, variance
 
-    >>> mu = Symbol("mu", positive=True)
-    >>> omega = Symbol("omega", positive=True)
-    >>> z = Symbol("z")
+    >>> mu = Symbol('mu', positive=True)
+    >>> omega = Symbol('omega', positive=True)
 
-    >>> X = Nakagami("x", mu, omega)
+    >>> X = Nakagami('x', mu, omega)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -1619,7 +1575,6 @@ def Nakagami(name, mu, omega):
     * https://en.wikipedia.org/wiki/Nakagami_distribution
 
     """
-
     return rv(name, NakagamiDistribution, (mu, omega))
 
 # ------------------------------------------------------------------------------
@@ -1631,7 +1586,7 @@ class NormalDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(mean, std):
-        _value_check(std > 0, "Standard deviation must be positive")
+        _value_check(std > 0, 'Standard deviation must be positive')
 
     def pdf(self, x):
         return exp(-(x - self.mean)**2 / (2*self.std**2)) / (sqrt(2*pi)*self.std)
@@ -1665,16 +1620,15 @@ def Normal(name, mean, std):
 
     >>> from diofant.stats import density, E, std, cdf, skewness
 
-    >>> mu = Symbol("mu")
-    >>> sigma = Symbol("sigma", positive=True)
-    >>> z = Symbol("z")
+    >>> mu = Symbol('mu')
+    >>> sigma = Symbol('sigma', positive=True)
 
-    >>> X = Normal("x", mu, sigma)
+    >>> X = Normal('x', mu, sigma)
 
     >>> density(X)(z)
     sqrt(2)*E**(-(-mu + z)**2/(2*sigma**2))/(2*sqrt(pi)*sigma)
 
-    >>> C = simplify(cdf(X))(z) # it needs a little more help...
+    >>> C = simplify(cdf(X))(z)  # it needs a little more help...
     >>> pprint(C, use_unicode=False)
          /  ___         \
          |\/ 2 *(mu - z)|
@@ -1686,7 +1640,7 @@ def Normal(name, mean, std):
     >>> simplify(skewness(X))
     0
 
-    >>> X = Normal("x", 0, 1) # Mean 0, standard deviation 1
+    >>> X = Normal('x', 0, 1)  # Mean 0, standard deviation 1
     >>> density(X)(z)
     sqrt(2)*E**(-z**2/2)/(2*sqrt(pi))
 
@@ -1703,7 +1657,6 @@ def Normal(name, mean, std):
     * http://mathworld.wolfram.com/NormalDistributionFunction.html
 
     """
-
     return rv(name, NormalDistribution, (mean, std))
 
 # ------------------------------------------------------------------------------
@@ -1719,8 +1672,8 @@ class ParetoDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(xm, alpha):
-        _value_check(xm > 0, "Xm must be positive")
-        _value_check(alpha > 0, "Alpha must be positive")
+        _value_check(xm > 0, 'Xm must be positive')
+        _value_check(alpha > 0, 'Alpha must be positive')
 
     def pdf(self, x):
         xm, alpha = self.xm, self.alpha
@@ -1757,11 +1710,10 @@ def Pareto(name, xm, alpha):
 
     >>> from diofant.stats import density
 
-    >>> xm = Symbol("xm", positive=True)
-    >>> beta = Symbol("beta", positive=True)
-    >>> z = Symbol("z")
+    >>> xm = Symbol('xm', positive=True)
+    >>> beta = Symbol('beta', positive=True)
 
-    >>> X = Pareto("x", xm, beta)
+    >>> X = Pareto('x', xm, beta)
 
     >>> density(X)(z)
     beta*xm**beta*z**(-beta - 1)
@@ -1773,7 +1725,6 @@ def Pareto(name, xm, alpha):
     * http://mathworld.wolfram.com/ParetoDistribution.html
 
     """
-
     return rv(name, ParetoDistribution, (xm, alpha))
 
 # ------------------------------------------------------------------------------
@@ -1820,11 +1771,11 @@ def QuadraticU(name, a, b):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import density
 
-    >>> a, b = symbols("a b", real=True)
+    >>> a, b = symbols('a b', real=True)
 
-    >>> X = QuadraticU("x", a, b)
+    >>> X = QuadraticU('x', a, b)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -1844,7 +1795,6 @@ def QuadraticU(name, a, b):
     * https://en.wikipedia.org/wiki/U-quadratic_distribution
 
     """
-
     return rv(name, QuadraticUDistribution, (a, b))
 
 # ------------------------------------------------------------------------------
@@ -1860,7 +1810,7 @@ class RaisedCosineDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(mu, s):
-        _value_check(s > 0, "s must be positive")
+        _value_check(s > 0, 's must be positive')
 
     def pdf(self, x):
         mu, s = self.mu, self.s
@@ -1894,12 +1844,12 @@ def RaisedCosine(name, mu, s):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import density
 
-    >>> mu = Symbol("mu", real=True)
-    >>> s = Symbol("s", positive=True)
+    >>> mu = Symbol('mu', real=True)
+    >>> s = Symbol('s', positive=True)
 
-    >>> X = RaisedCosine("x", mu, s)
+    >>> X = RaisedCosine('x', mu, s)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -1917,7 +1867,6 @@ def RaisedCosine(name, mu, s):
     * https://en.wikipedia.org/wiki/Raised_cosine_distribution
 
     """
-
     return rv(name, RaisedCosineDistribution, (mu, s))
 
 # ------------------------------------------------------------------------------
@@ -1960,10 +1909,9 @@ def Rayleigh(name, sigma):
 
     >>> from diofant.stats import density, E, variance
 
-    >>> sigma = Symbol("sigma", positive=True)
-    >>> z = Symbol("z")
+    >>> sigma = Symbol('sigma', positive=True)
 
-    >>> X = Rayleigh("x", sigma)
+    >>> X = Rayleigh('x', sigma)
 
     >>> density(X)(z)
     E**(-z**2/(2*sigma**2))*z/sigma**2
@@ -1981,7 +1929,6 @@ def Rayleigh(name, sigma):
     * http://mathworld.wolfram.com/RayleighDistribution.html
 
     """
-
     return rv(name, RayleighDistribution, (sigma, ))
 
 # ------------------------------------------------------------------------------
@@ -2020,12 +1967,11 @@ def StudentT(name, nu):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import density
 
-    >>> nu = Symbol("nu", positive=True)
-    >>> z = Symbol("z")
+    >>> nu = Symbol('nu', positive=True)
 
-    >>> X = StudentT("x", nu)
+    >>> X = StudentT('x', nu)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -2048,7 +1994,6 @@ def StudentT(name, nu):
     * http://mathworld.wolfram.com/Studentst-Distribution.html
 
     """
-
     return rv(name, StudentTDistribution, (nu, ))
 
 # ------------------------------------------------------------------------------
@@ -2097,14 +2042,9 @@ def Triangular(name, a, b, c):
     Examples
     ========
 
-    >>> from diofant.stats import density, E
+    >>> from diofant.stats import density
 
-    >>> a = Symbol("a")
-    >>> b = Symbol("b")
-    >>> c = Symbol("c")
-    >>> z = Symbol("z")
-
-    >>> X = Triangular("x", a, b, c)
+    >>> X = Triangular('x', a, b, c)
 
     >>> pprint(density(X)(z), use_unicode=False)
     /    -2*a + 2*z
@@ -2128,7 +2068,6 @@ def Triangular(name, a, b, c):
     * http://mathworld.wolfram.com/TriangularDistribution.html
 
     """
-
     return rv(name, TriangularDistribution, (a, b, c))
 
 # ------------------------------------------------------------------------------
@@ -2195,13 +2134,12 @@ def Uniform(name, left, right):
     Examples
     ========
 
-    >>> from diofant.stats import density, cdf, E, variance, skewness
+    >>> from diofant.stats import density, cdf, E, variance
 
-    >>> a = Symbol("a", negative=True)
-    >>> b = Symbol("b", positive=True)
-    >>> z = Symbol("z")
+    >>> a = Symbol('a', negative=True)
+    >>> b = Symbol('b', positive=True)
 
-    >>> X = Uniform("x", a, b)
+    >>> X = Uniform('x', a, b)
 
     >>> density(X)(z)
     Piecewise((1/(-a + b), (a <= z) & (z <= b)), (0, true))
@@ -2222,7 +2160,6 @@ def Uniform(name, left, right):
     * http://mathworld.wolfram.com/UniformDistribution.html
 
     """
-
     return rv(name, UniformDistribution, (left, right))
 
 # ------------------------------------------------------------------------------
@@ -2242,7 +2179,7 @@ class UniformSumDistribution(SingleContinuousDistribution):
 
     def pdf(self, x):
         n = self.n
-        k = Dummy("k")
+        k = Dummy('k')
         return 1/factorial(
             n - 1)*Sum((-1)**k*binomial(n, k)*(x - k)**(n - 1), (k, 0, floor(x)))
 
@@ -2275,10 +2212,7 @@ def UniformSum(name, n):
 
     >>> from diofant.stats import density
 
-    >>> n = Symbol("n", integer=True)
-    >>> z = Symbol("z")
-
-    >>> X = UniformSum("x", n)
+    >>> X = UniformSum('x', n)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -2300,7 +2234,6 @@ def UniformSum(name, n):
     * http://mathworld.wolfram.com/UniformSumDistribution.html
 
     """
-
     return rv(name, UniformSumDistribution, (n, ))
 
 # ------------------------------------------------------------------------------
@@ -2314,7 +2247,7 @@ class VonMisesDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(mu, k):
-        _value_check(k > 0, "k must be positive")
+        _value_check(k > 0, 'k must be positive')
 
     def pdf(self, x):
         mu, k = self.mu, self.k
@@ -2346,13 +2279,12 @@ def VonMises(name, mu, k):
     Examples
     ========
 
-    >>> from diofant.stats import density, E, variance
+    >>> from diofant.stats import density
 
-    >>> mu = Symbol("mu")
-    >>> k = Symbol("k", positive=True)
-    >>> z = Symbol("z")
+    >>> mu = Symbol('mu')
+    >>> k = Symbol('k', positive=True)
 
-    >>> X = VonMises("x", mu, k)
+    >>> X = VonMises('x', mu, k)
 
     >>> D = density(X)(z)
     >>> pprint(D, use_unicode=False)
@@ -2368,7 +2300,6 @@ def VonMises(name, mu, k):
     * http://mathworld.wolfram.com/vonMisesDistribution.html
 
     """
-
     return rv(name, VonMisesDistribution, (mu, k))
 
 # ------------------------------------------------------------------------------
@@ -2382,8 +2313,8 @@ class WeibullDistribution(SingleContinuousDistribution):
 
     @staticmethod
     def check(alpha, beta):
-        _value_check(alpha > 0, "Alpha must be positive")
-        _value_check(beta > 0, "Beta must be positive")
+        _value_check(alpha > 0, 'Alpha must be positive')
+        _value_check(beta > 0, 'Beta must be positive')
 
     def pdf(self, x):
         alpha, beta = self.alpha, self.beta
@@ -2422,11 +2353,10 @@ def Weibull(name, alpha, beta):
 
     >>> from diofant.stats import density, E, variance
 
-    >>> l = Symbol("lambda", positive=True)
-    >>> k = Symbol("k", positive=True)
-    >>> z = Symbol("z")
+    >>> l = Symbol('lambda', positive=True)
+    >>> k = Symbol('k', positive=True, real=True)
 
-    >>> X = Weibull("x", l, k)
+    >>> X = Weibull('x', l, k)
 
     >>> density(X)(z)
     E**(-(z/lambda)**k)*k*(z/lambda)**(k - 1)/lambda
@@ -2444,7 +2374,6 @@ def Weibull(name, alpha, beta):
     * http://mathworld.wolfram.com/WeibullDistribution.html
 
     """
-
     return rv(name, WeibullDistribution, (alpha, beta))
 
 # ------------------------------------------------------------------------------
@@ -2489,10 +2418,9 @@ def WignerSemicircle(name, R):
 
     >>> from diofant.stats import density, E
 
-    >>> R = Symbol("R", positive=True)
-    >>> z = Symbol("z")
+    >>> R = Symbol('R', positive=True)
 
-    >>> X = WignerSemicircle("x", R)
+    >>> X = WignerSemicircle('x', R)
 
     >>> density(X)(z)
     2*sqrt(R**2 - z**2)/(pi*R**2)
@@ -2507,5 +2435,4 @@ def WignerSemicircle(name, R):
     * http://mathworld.wolfram.com/WignersSemicircleLaw.html
 
     """
-
     return rv(name, WignerSemicircleDistribution, (R,))

@@ -7,18 +7,18 @@ __all__ = ()
 
 
 def test_complex():
-    a = Symbol("a", extended_real=True)
-    b = Symbol("b", extended_real=True)
+    a = Symbol('a', extended_real=True)
+    b = Symbol('b', extended_real=True)
     e = (a + I*b)*(a - I*b)
     assert e.expand() == a**2 + b**2
     assert sqrt(I) == root(-1, 4)
 
 
 def test_conjugate():
-    a = Symbol("a", extended_real=True)
-    b = Symbol("b", extended_real=True)
-    c = Symbol("c", imaginary=True)
-    d = Symbol("d", imaginary=True)
+    a = Symbol('a', extended_real=True)
+    b = Symbol('b', extended_real=True)
+    c = Symbol('c', imaginary=True)
+    d = Symbol('d', imaginary=True)
     x = Symbol('x')
     z = a + I*b + c + I*d
     zc = a - I*b - c + I*d
@@ -39,25 +39,25 @@ def test_conjugate():
 
 
 def test_abs1():
-    a = Symbol("a", extended_real=True)
-    b = Symbol("b", extended_real=True)
+    a = Symbol('a', extended_real=True)
+    b = Symbol('b', extended_real=True)
     assert abs(a) == abs(a)
     assert abs(-a) == abs(a)
     assert abs(a + I*b) == sqrt(a**2 + b**2)
 
 
 def test_abs2():
-    a = Symbol("a", extended_real=False)
-    b = Symbol("b", extended_real=False)
+    a = Symbol('a', extended_real=False)
+    b = Symbol('b', extended_real=False)
     assert abs(a) != a
     assert abs(-a) != a
     assert abs(a + I*b) != sqrt(a**2 + b**2)
 
 
 def test_evalc():
-    x = Symbol("x", extended_real=True)
-    y = Symbol("y", extended_real=True)
-    z = Symbol("z")
+    x = Symbol('x', extended_real=True)
+    y = Symbol('y', extended_real=True)
+    z = Symbol('z')
     assert ((x + I*y)**2).expand(complex=True) == x**2 + 2*I*x*y - y**2
     assert expand_complex(z**(2*I)) == (re((re(z) + I*im(z))**(2*I)) +
                                         I*im((re(z) + I*im(z))**(2*I)))
@@ -96,7 +96,7 @@ def test_evalc():
 
 
 def test_pythoncomplex():
-    x = Symbol("x")
+    x = Symbol('x')
     assert 4j*x == 4*x*I
     assert 4j*x == 4.0*x*I
     assert 4.1j*x != 4*x*I
@@ -220,8 +220,8 @@ def test_sympyissue_4124():
 
 
 def test_sympyissue_11581():
-    x = Symbol("x", real=True)
-    y = Symbol("y", real=True)
+    x = Symbol('x', real=True)
+    y = Symbol('y', real=True)
     r = sqrt(x**2 + y**2)
     assert conjugate(r) == r
     s = abs(x + I*y)

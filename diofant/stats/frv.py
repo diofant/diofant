@@ -22,6 +22,8 @@ from .rv import (ConditionalDomain, NamedArgsMixin, ProductDomain,
 
 
 class FiniteDensity(dict):
+    """Finite probabibility density."""
+
     def __call__(self, item):
         item = sympify(item)
         if item in self:
@@ -125,7 +127,7 @@ class ConditionalFiniteDomain(ConditionalDomain, ProductFiniteDomain):
         if not cond.free_symbols.issubset(domain.free_symbols):
             raise ValueError('Condition "%s" contains foreign symbols \n%s.\n' % (
                 condition, tuple(cond.free_symbols - domain.free_symbols)) +
-                "Will be unable to iterate using this condition")
+                'Will be unable to iterate using this condition')
 
         return Expr.__new__(cls, domain, cond)
 
@@ -135,7 +137,7 @@ class ConditionalFiniteDomain(ConditionalDomain, ProductFiniteDomain):
             return val
         elif val.is_Equality:
             return val.lhs == val.rhs
-        raise ValueError("Undeciable if %s" % str(val))
+        raise ValueError('Undeciable if %s' % str(val))
 
     def __contains__(self, other):
         return other in self.fulldomain and self._test(other)
@@ -150,13 +152,15 @@ class ConditionalFiniteDomain(ConditionalDomain, ProductFiniteDomain):
                                if frozenset(((self.fulldomain.symbol, elem),)) in self])
         else:
             raise NotImplementedError(
-                "Not implemented on multi-dimensional conditional domain")
+                'Not implemented on multi-dimensional conditional domain')
 
     def as_boolean(self):
         return FiniteDomain.as_boolean(self)
 
 
 class SingleFiniteDistribution(Expr, NamedArgsMixin):
+    """Base class for finite distributions."""
+
     def __new__(cls, *args):
         args = list(map(sympify, args))
         return Expr.__new__(cls, *args)
@@ -292,7 +296,7 @@ class FinitePSpace(PSpace):
                 # return dictionary mapping RandomSymbols to values
                 return dict(zip(expr, value))
 
-        assert False, "We should never have gotten to this point"  # pragma: no cover
+        assert False, 'We should never have gotten to this point'  # pragma: no cover
 
 
 class SingleFinitePSpace(SinglePSpace, FinitePSpace):

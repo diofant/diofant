@@ -61,7 +61,7 @@ def iterable(i, exclude=(str, dict, NotIterable)):
     True
     >>> iterable({}, exclude=str)
     True
-    >>> iterable("no", exclude=str)
+    >>> iterable('no', exclude=str)
     False
 
     """

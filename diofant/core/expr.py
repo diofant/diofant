@@ -74,11 +74,10 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     @cacheit
     def sort_key(self, order=None):
         """Return a sort key."""
-
         coeff, expr = self.as_coeff_Mul()
 
         if expr.is_Pow:
-            expr, exp = expr.args
+            expr, exp = expr.base, expr.exp
         else:
             expr, exp = expr, Integer(1)
 
@@ -219,9 +218,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import GreaterThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError("Invalid comparison of complex %s" % me)
+                raise TypeError('Invalid comparison of complex %s' % me)
             if me is nan:
-                raise TypeError("Invalid NaN comparison")
+                raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_nonnegative is not None and \
@@ -234,9 +233,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import LessThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError("Invalid comparison of complex %s" % me)
+                raise TypeError('Invalid comparison of complex %s' % me)
             if me is nan:
-                raise TypeError("Invalid NaN comparison")
+                raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_nonpositive is not None and \
@@ -249,9 +248,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import StrictGreaterThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError("Invalid comparison of complex %s" % me)
+                raise TypeError('Invalid comparison of complex %s' % me)
             if me is nan:
-                raise TypeError("Invalid NaN comparison")
+                raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_positive is not None and \
@@ -264,9 +263,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         from .relational import StrictLessThan
         for me in (self, other):
             if me.is_commutative and me.is_extended_real is False:
-                raise TypeError("Invalid comparison of complex %s" % me)
+                raise TypeError('Invalid comparison of complex %s' % me)
             if me is nan:
-                raise TypeError("Invalid NaN comparison")
+                raise TypeError('Invalid NaN comparison')
         if self.is_extended_real or other.is_extended_real:
             dif = self - other
             if dif.is_negative is not None and \
@@ -277,15 +276,15 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     @staticmethod
     def _from_mpmath(x, prec):
         from .numbers import Float
-        if hasattr(x, "_mpf_"):
+        if hasattr(x, '_mpf_'):
             return Float._new(x._mpf_, prec)
-        elif hasattr(x, "_mpc_"):
+        elif hasattr(x, '_mpc_'):
             re, im = x._mpc_
             re = Float._new(re, prec)
             im = Float._new(im, prec)*I
             return re + im
         else:
-            raise TypeError("expected mpmath number (mpf or mpc)")
+            raise TypeError('expected mpmath number (mpf or mpc)')
 
     @property
     def is_number(self):
@@ -342,7 +341,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.utilities.randtest.random_complex_number
 
         """
-
         free = self.free_symbols
         prec = 1
         if free:
@@ -438,7 +436,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         True
 
         """
-
         simplify = flags.get('simplify', True)
 
         # Except for expressions that contain units, only one of these should
@@ -585,7 +582,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     def _eval_is_zero(self):
         from ..polys.numberfields import minimal_polynomial
         from .function import count_ops
-        from .symbol import Dummy
 
         if self.is_number:
             try:
@@ -606,7 +602,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 if count_ops(self) > 75:
                     return
                 try:
-                    return minimal_polynomial(self)(Dummy()).is_Symbol
+                    return not minimal_polynomial(self)(0)
                 except NotImplementedError:  # pragma: no cover
                     return
 
@@ -666,7 +662,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             if A.has(nan, oo, -oo, zoo):
                 A = limit(self, x, a, '+' if (a < b) is not false else '-')
                 if isinstance(A, Limit):
-                    raise NotImplementedError("Could not compute limit")
+                    raise NotImplementedError('Could not compute limit')
 
         if b is None:
             B = 0
@@ -676,7 +672,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 B = limit(self, x, b)
                 B = limit(self, x, b, '-' if (a < b) is not false else '+')
                 if isinstance(B, Limit):
-                    raise NotImplementedError("Could not compute limit")
+                    raise NotImplementedError('Could not compute limit')
 
         return B - A
 
@@ -916,7 +912,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         raise NotImplementedError('not sure of order of %s' % o)
 
     def count_ops(self, visual=None):
-        """wrapper for count_ops that returns the operation count."""
+        """Wrapper for count_ops that returns the operation count."""
         from .function import count_ops
         return count_ops(self, visual)
 
@@ -951,7 +947,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         [[-1, oo], []]
 
         """
-
         if self.is_Mul:
             args = list(self.args)
         else:
@@ -1338,7 +1333,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         diofant.polys.polytools.Poly.coeff_monomial: efficiently find the single coefficient of a monomial in Poly
 
         """
-
         r = self.extract_multiplicatively(expr)
         if r and not r.has(expr):
             return r
@@ -1485,7 +1479,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
                 other.append(d)
 
         def has(e):
-            """return the standard has() if there are no literal symbols, else
+            """Return the standard has() if there are no literal symbols, else
             check to see that symbol-deps are in the free symbols.
 
             """
@@ -1739,7 +1733,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         return Integer(1), self
 
     def as_numer_denom(self):
-        """expression -> a/b -> a, b
+        """Expression -> a/b -> a, b.
 
         This is just a stub that should be defined by
         an object's class methods to get anything else.
@@ -1750,14 +1744,13 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         normal: return a/b instead of a, b
 
         """
-
         try:
             return self._eval_as_numer_denom()
         except AttributeError:
             return self, Integer(1)
 
     def normal(self):
-        """canonicalize ratio, i.e. return numerator if denominator is 1."""
+        """Canonicalize ratio, i.e. return numerator if denominator is 1."""
         n, d = self.as_numer_denom()
         if d is S.One:
             return n
@@ -1894,7 +1887,6 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         as_coefficient
 
         """
-
         c = sympify(c)
         if self is nan:
             return
@@ -2324,7 +2316,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
     # #################### SERIES, LEADING TERM, LIMIT, ORDER METHODS ############### #
     ###################################################################################
 
-    def series(self, x=None, x0=0, n=6, dir="+", logx=None):
+    def series(self, x=None, x0=0, n=6, dir='+', logx=None):
         """Series expansion of "self" around ``x = x0`` yielding either terms of
         the series one by one (the lazy series given when n=None), else
         all the terms at once when n != None.
@@ -2357,9 +2349,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
         for ``dir=-`` the series from the left. For smooth functions this
         flag will not alter the results.
 
-        >>> abs(x).series(dir="+")
+        >>> abs(x).series(dir='+')
         x
-        >>> abs(x).series(dir="-")
+        >>> abs(x).series(dir='-')
         -x
 
         For rational expressions this method may return original expression.
@@ -2381,7 +2373,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             x = syms.pop()
 
         if not x.is_Symbol:  # pragma: no cover
-            raise NotImplementedError("x is not a symbol")
+            raise NotImplementedError('x is not a symbol')
 
         if not self.has(x):
             if n is None:
@@ -2751,7 +2743,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             elif is_zero is False:
                 break
             else:
-                raise NotImplementedError("Zero-decision problem for %s" % t)
+                raise NotImplementedError('Zero-decision problem for %s' % t)
 
         if logx is None:
             t = t.subs({d: log(x)})
@@ -2837,9 +2829,9 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
             V = self.variables
         except AttributeError:
             return {}
-        u = "_"
+        u = '_'
         while any(str(s).endswith(u) for s in V):
-            u += "_"
+            u += '_'
         name = '%%i%s' % u
         return {v: Symbol(name % i, **v._assumptions) for i, v in enumerate(V)}
 
@@ -2968,7 +2960,7 @@ class Expr(Basic, EvalfMixin, metaclass=ManagedProperties):
 
             if not modulus.is_Integer or modulus <= 0:
                 raise ValueError(
-                    "modulus must be a positive integer, got %s" % modulus)
+                    'modulus must be a positive integer, got %s' % modulus)
 
             terms = []
 

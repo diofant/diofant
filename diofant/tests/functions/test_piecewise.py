@@ -214,8 +214,8 @@ def test_piecewise_integrate():
 
 
 def test_piecewise_integrate_inequality_conditions():
-    x, y = symbols("x y", real=True)
-    c1, c2 = symbols("c1 c2", positive=True, real=True)
+    x, y = symbols('x y', real=True)
+    c1, c2 = symbols('c1 c2', positive=True, real=True)
     g = Piecewise((0, c1*x > 1), (1, c1*x > 0), (0, True))
     assert integrate(g, (x, -oo, 0)) == 0
     assert integrate(g, (x, -5, 0)) == 0
@@ -464,7 +464,7 @@ def test_piecewise_complex():
 
 
 def test_conjugate_transpose():
-    A, B = symbols("A B", commutative=False)
+    A, B = symbols('A B', commutative=False)
     p = Piecewise((A*B**2, x > 0), (A**2*B, True))
     assert p.adjoint() == \
         Piecewise((adjoint(A*B**2), x > 0), (adjoint(A**2*B), True))

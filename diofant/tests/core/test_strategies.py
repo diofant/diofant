@@ -1,5 +1,5 @@
+from diofant import Add, Basic, Integer
 from diofant.abc import x
-from diofant.core import Add, Basic, Integer
 from diofant.core.strategies import (arguments, flatten, glom, operator, rm_id,
                                      sort, term, unpack)
 

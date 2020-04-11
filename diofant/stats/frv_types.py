@@ -92,7 +92,7 @@ def DiscreteUniform(name, items):
 
     >>> from diofant.stats import density
 
-    >>> X = DiscreteUniform('X', symbols('a b c'))  # equally likely over a, b, c
+    >>> X = DiscreteUniform('X', (a, b, c))  # equally likely over a, b, c
     >>> density(X).dict
     {a: 1/3, b: 1/3, c: 1/3}
 
@@ -134,7 +134,7 @@ class DieDistribution(SingleFiniteDistribution):
             i = Dummy('i', integer=True, positive=True)
             return Sum(KroneckerDelta(x, i)/self.sides, (i, 1, self.sides))
         raise ValueError("'x' expected as an argument of type 'number' or 'symbol', "
-                         "not %s" % (type(x)))
+                         'not %s' % (type(x)))
 
 
 def Die(name, sides=6):
@@ -154,7 +154,6 @@ def Die(name, sides=6):
     {1: 1/4, 2: 1/4, 3: 1/4, 4: 1/4}
 
     """
-
     return rv(name, DieDistribution, sides)
 
 
@@ -184,7 +183,6 @@ def Bernoulli(name, p, succ=1, fail=0):
     {Heads: 1/2, Tails: 1/2}
 
     """
-
     return rv(name, BernoulliDistribution, p, succ, fail)
 
 
@@ -257,7 +255,6 @@ def Binomial(name, n, p, succ=1, fail=0):
     {0: 1/16, 1: 1/4, 2: 3/8, 3: 1/4, 4: 1/16}
 
     """
-
     return rv(name, BinomialDistribution, n, p, succ, fail)
 
 

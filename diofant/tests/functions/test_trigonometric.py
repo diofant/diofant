@@ -139,10 +139,10 @@ def test_sin_cos():
     for d in [1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 24, 30, 40, 60, 120]:  # list is not exhaustive...
         for n in range(-2*d, d*2):
             x = n*pi/d
-            assert sin(x + pi/2) == cos(x), "fails for %d*pi/%d" % (n, d)
-            assert sin(x - pi/2) == -cos(x), "fails for %d*pi/%d" % (n, d)
-            assert sin(x) == cos(x - pi/2), "fails for %d*pi/%d" % (n, d)
-            assert -sin(x) == cos(x + pi/2), "fails for %d*pi/%d" % (n, d)
+            assert sin(x + pi/2) == cos(x), 'fails for %d*pi/%d' % (n, d)
+            assert sin(x - pi/2) == -cos(x), 'fails for %d*pi/%d' % (n, d)
+            assert sin(x) == cos(x - pi/2), 'fails for %d*pi/%d' % (n, d)
+            assert -sin(x) == cos(x + pi/2), 'fails for %d*pi/%d' % (n, d)
 
 
 def test_sin_series():
@@ -881,9 +881,9 @@ def test_atan2():
     y = Symbol('y')
     assert atan2(y, x) == atan2(y, x, evaluate=False)
 
-    u = Symbol("u", positive=True)
+    u = Symbol('u', positive=True)
     assert atan2(0, u) == 0
-    u = Symbol("u", negative=True)
+    u = Symbol('u', negative=True)
     assert atan2(0, u) == pi
 
     assert atan2(y, oo) == 0
@@ -1216,10 +1216,10 @@ def test_sincos_rewrite_sqrt():
                     x = i*pi/n
                     s1 = sin(x).rewrite(sqrt)
                     c1 = cos(x).rewrite(sqrt)
-                    assert not s1.has(cos, sin), "fails for %d*pi/%d" % (i, n)
-                    assert not c1.has(cos, sin), "fails for %d*pi/%d" % (i, n)
-                    assert 1e-3 > abs(sin(x.evalf(5)) - s1.evalf(2)), "fails for %d*pi/%d" % (i, n)
-                    assert 1e-3 > abs(cos(x.evalf(5)) - c1.evalf(2)), "fails for %d*pi/%d" % (i, n)
+                    assert not s1.has(cos, sin), 'fails for %d*pi/%d' % (i, n)
+                    assert not c1.has(cos, sin), 'fails for %d*pi/%d' % (i, n)
+                    assert 1e-3 > abs(sin(x.evalf(5)) - s1.evalf(2)), 'fails for %d*pi/%d' % (i, n)
+                    assert 1e-3 > abs(cos(x.evalf(5)) - c1.evalf(2)), 'fails for %d*pi/%d' % (i, n)
 
 
 def test_sincos_rewrite_sqrt2():
@@ -1248,12 +1248,12 @@ def test_tancot_rewrite_sqrt():
                     x = i*pi/n
                     if 2*i != n and 3*i != 2*n:
                         t1 = tan(x).rewrite(sqrt)
-                        assert not t1.has(cot, tan), "fails for %d*pi/%d" % (i, n)
-                        assert 1e-3 > abs( tan(x.evalf(7)) - t1.evalf(4) ), "fails for %d*pi/%d" % (i, n)
+                        assert not t1.has(cot, tan), 'fails for %d*pi/%d' % (i, n)
+                        assert 1e-3 > abs( tan(x.evalf(7)) - t1.evalf(4) ), 'fails for %d*pi/%d' % (i, n)
                     if i != 0 and i != n:
                         c1 = cot(x).rewrite(sqrt)
-                        assert not c1.has(cot, tan), "fails for %d*pi/%d" % (i, n)
-                        assert 1e-3 > abs( cot(x.evalf(7)) - c1.evalf(4) ), "fails for %d*pi/%d" % (i, n)
+                        assert not c1.has(cot, tan), 'fails for %d*pi/%d' % (i, n)
+                        assert 1e-3 > abs( cot(x.evalf(7)) - c1.evalf(4) ), 'fails for %d*pi/%d' % (i, n)
 
 
 def test_sec():

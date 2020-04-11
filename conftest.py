@@ -5,19 +5,19 @@ import pytest
 import diofant
 
 
-collect_ignore = ["setup.py"]
+collect_ignore = ['setup.py']
 try:
     import matplotlib
     matplotlib.rc('figure', max_open_warning=0)
     del matplotlib
 except ImportError:
-    collect_ignore_glob = ["diofant/plotting/*.py"]
+    collect_ignore_glob = ['diofant/plotting/*.py']
 
 
 def pytest_report_header(config):
-    return """\ncache: %s
-ground types: %s\n""" % (diofant.core.cache.USE_CACHE,
-                         diofant.core.compatibility.GROUND_TYPES)
+    return f"""\nDiofant version: {diofant.__version__}
+cache: {diofant.core.cache.USE_CACHE}
+ground types: {diofant.core.compatibility.GROUND_TYPES}\n"""
 
 
 @pytest.fixture(autouse=True, scope='module')

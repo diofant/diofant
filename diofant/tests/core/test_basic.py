@@ -6,14 +6,11 @@ import collections
 
 import pytest
 
-from diofant import I, Lambda, cos, exp, gamma, sin
+from diofant import (Atom, Basic, Function, I, Integral, Lambda, cos,
+                     default_sort_key, exp, gamma, preorder_traversal, sin)
 from diofant.abc import w, x, y, z
-from diofant.core.basic import Atom, Basic, preorder_traversal
-from diofant.core.compatibility import default_sort_key
-from diofant.core.function import Function
 from diofant.core.singleton import S
 from diofant.core.singleton import SingletonWithManagedProperties as Singleton
-from diofant.integrals.integrals import Integral
 
 
 __all__ = ()

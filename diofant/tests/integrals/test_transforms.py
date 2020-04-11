@@ -1,34 +1,25 @@
 import pytest
 
-from diofant import (E1, And, Ci, Ei, EulerGamma, Function, Heaviside, I,
-                     Integer, Integral, Max, Min, Ne, Or, Rational, Si, Symbol,
-                     atan, atan2, besseli, besselj, besselk, bessely, combsimp,
-                     cos, cosh, cot, erf, exp, exp_polar, expand,
-                     expand_complex, expand_mul, expand_trig, expint, factor,
-                     factor_terms, factorial, fresnelc, fresnels, gamma,
-                     hyperexpand, lerchphi, log, logcombine, meijerg, oo,
-                     periodic_argument, pi, polar_lift, powsimp, re, simplify,
-                     sin, sinh, sqrt, symbols, tan, trigsimp, unpolarify)
+from diofant import (E1, And, Ci, CosineTransform, Ei, EulerGamma,
+                     FourierTransform, Function, Heaviside, I, Integer,
+                     Integral, InverseCosineTransform, InverseFourierTransform,
+                     InverseLaplaceTransform, InverseSineTransform,
+                     LaplaceTransform, Matrix, Max, MellinTransform, Min, Ne,
+                     Or, Rational, Si, SineTransform, Symbol, atan, atan2,
+                     besseli, besselj, besselk, bessely, combsimp, cos, cosh,
+                     cosine_transform, cot, erf, exp, exp_polar, expand,
+                     expand_complex, expand_mul, expand_trig, expint, eye,
+                     factor, factor_terms, factorial, fourier_transform,
+                     fresnelc, fresnels, gamma, hankel_transform, hyperexpand,
+                     inverse_cosine_transform, inverse_fourier_transform,
+                     inverse_hankel_transform, inverse_laplace_transform,
+                     inverse_mellin_transform, inverse_sine_transform,
+                     laplace_transform, lerchphi, log, logcombine, meijerg,
+                     mellin_transform, oo, periodic_argument, pi, polar_lift,
+                     powsimp, re, simplify, sin, sine_transform, sinh, sqrt,
+                     symbols, tan, trigsimp, unpolarify)
 from diofant.abc import a, b, beta, c, d, nu, rho, s, t, w, x
-from diofant.integrals.transforms import (CosineTransform, FourierTransform,
-                                          IntegralTransformError,
-                                          InverseCosineTransform,
-                                          InverseFourierTransform,
-                                          InverseLaplaceTransform,
-                                          InverseSineTransform,
-                                          LaplaceTransform, MellinTransform,
-                                          SineTransform, _simplifyconds,
-                                          cosine_transform, fourier_transform,
-                                          hankel_transform,
-                                          inverse_cosine_transform,
-                                          inverse_fourier_transform,
-                                          inverse_hankel_transform,
-                                          inverse_laplace_transform,
-                                          inverse_mellin_transform,
-                                          inverse_sine_transform,
-                                          laplace_transform, mellin_transform,
-                                          sine_transform)
-from diofant.matrices import Matrix, eye
+from diofant.integrals.transforms import IntegralTransformError, _simplifyconds
 
 
 __all__ = ()
@@ -59,9 +50,9 @@ def test_as_integral():
     assert laplace_transform(f(x), x, s).rewrite('Integral') == \
         Integral(f(x)*exp(-s*x), (x, 0, oo))
     assert str(inverse_mellin_transform(f(s), s, x, (a, b)).rewrite('Integral')) \
-        == "Integral(x**(-s)*f(s), (s, _c - oo*I, _c + oo*I))"
+        == 'Integral(x**(-s)*f(s), (s, _c - oo*I, _c + oo*I))'
     assert str(inverse_laplace_transform(f(s), s, x).rewrite('Integral')) == \
-        "Integral(E**(s*x)*f(s), (s, _c - oo*I, _c + oo*I))"
+        'Integral(E**(s*x)*f(s), (s, _c - oo*I, _c + oo*I))'
     assert inverse_fourier_transform(f(s), s, x).rewrite('Integral') == \
         Integral(f(s)*exp(2*I*pi*s*x), (s, -oo, oo))
 
@@ -427,7 +418,7 @@ def test_inverse_mellin_transform2():
 def test_laplace_transform():
     LT = laplace_transform
     a, b, c, = symbols('a b c', positive=True)
-    f = Function("f")
+    f = Function('f')
 
     # Test unevaluated form
     assert laplace_transform(f(t), t, w) == LaplaceTransform(f(t), t, w)
@@ -562,7 +553,7 @@ def test_fourier_transform():
     def sinc(x):
         return sin(pi*x)/(pi*x)
     k = symbols('k', extended_real=True)
-    f = Function("f")
+    f = Function('f')
 
     # TODO for this to work with real a, need to expand abs(a*x) to abs(a)*abs(x)
     a = symbols('a', positive=True)
@@ -608,7 +599,7 @@ def test_fourier_transform():
 
 
 def test_sine_transform():
-    f = Function("f")
+    f = Function('f')
 
     # Test unevaluated form
     assert sine_transform(f(t), t, w) == SineTransform(f(t), t, w)
@@ -641,7 +632,7 @@ def test_sine_transform():
 
 
 def test_cosine_transform():
-    f = Function("f")
+    f = Function('f')
 
     # Test unevaluated form
     assert cosine_transform(f(t), t, w) == CosineTransform(f(t), t, w)
@@ -678,10 +669,10 @@ def test_cosine_transform():
 
 
 def test_hankel_transform():
-    r = Symbol("r")
-    k = Symbol("k")
-    nu = Symbol("nu")
-    m = Symbol("m")
+    r = Symbol('r')
+    k = Symbol('k')
+    nu = Symbol('nu')
+    m = Symbol('m')
 
     assert hankel_transform(1/r, r, k, 0) == 1/k
     assert inverse_hankel_transform(1/k, k, r, 0) == 1/r

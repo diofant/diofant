@@ -101,7 +101,7 @@ def _af_rmuln(*abc):
         a, b = a
         return [a[i] for i in b]
     if m == 0:
-        raise ValueError("String must not be empty")
+        raise ValueError('String must not be empty')
     p0 = _af_rmuln(*a[:m//2])
     p1 = _af_rmuln(*a[m//2:])
     return [p0[i] for i in p1]
@@ -409,7 +409,6 @@ class Cycle(dict):
         Cycle(1, 2, 6)
 
         """
-
         if not args:
             return
         if len(args) == 1:
@@ -845,8 +844,8 @@ class Permutation(Basic):
         else:
             ok = False
         if not ok:
-            raise ValueError("Permutation argument must be a list of ints, "
-                             "a list of lists, Permutation or Cycle.")
+            raise ValueError('Permutation argument must be a list of ints, '
+                             'a list of lists, Permutation or Cycle.')
 
         # safe to assume args are valid; this also makes a copy
         # of the args
@@ -874,7 +873,7 @@ class Permutation(Basic):
 
         if not is_cycle and \
                 any(i not in temp for i in range(len(temp))):
-            raise ValueError("Integers 0 through %s must be present." %
+            raise ValueError('Integers 0 through %s must be present.' %
                              max(temp))
 
         if is_cycle:
@@ -1172,8 +1171,8 @@ class Permutation(Basic):
     @staticmethod
     def rmul_with_af(*args):
         """
-        same as rmul, but the elements of args are Permutation objects
-        which have _array_form
+        Same as rmul, but the elements of args are Permutation objects
+        which have _array_form.
 
         """
         a = [x._array_form for x in args]
@@ -1309,7 +1308,7 @@ class Permutation(Basic):
             return self(i)
         else:
             raise NotImplementedError(
-                "i^p = p(i) when i is an integer, not %s." % i)
+                'i^p = p(i) when i is an integer, not %s.' % i)
 
     def __xor__(self, h):
         """Return the conjugate permutation ``~h*self*h``.
@@ -1379,9 +1378,8 @@ class Permutation(Basic):
         True
 
         """
-
         if self.size != h.size:
-            raise ValueError("The permutations must be of equal size.")
+            raise ValueError('The permutations must be of equal size.')
         a = [None]*self.size
         h = h._array_form
         p = self._array_form
@@ -1438,7 +1436,7 @@ class Permutation(Basic):
 
         >>> Permutation.from_sequence('SymPy')
         Permutation(4)(0, 1, 3)
-        >>> _(sorted("SymPy"))
+        >>> _(sorted('SymPy'))
         ['S', 'y', 'm', 'P', 'y']
         >>> Permutation.from_sequence('SymPy', key=lambda x: x.lower())
         Permutation(4)(0, 2)(1, 3)
@@ -2063,12 +2061,11 @@ class Permutation(Basic):
         https://en.wikipedia.org/wiki/Commutator
 
         """
-
         a = self.array_form
         b = x.array_form
         n = len(a)
         if len(b) != n:
-            raise ValueError("The permutations must be of equal size.")
+            raise ValueError('The permutations must be of equal size.')
         inva = [None]*n
         for i in range(n):
             inva[a[i]] = i
@@ -2131,7 +2128,6 @@ class Permutation(Basic):
         is_Identity, cardinality, length, rank, size
 
         """
-
         return reduce(lcm, [len(cycle) for cycle in self.cyclic_form], 1)
 
     def length(self):
@@ -2152,7 +2148,6 @@ class Permutation(Basic):
         min, max, support, cardinality, order, rank, size
 
         """
-
         return len(self.support())
 
     @property
@@ -2487,7 +2482,7 @@ class Permutation(Basic):
 
         """
         if self.size != other.size:
-            raise ValueError("The permutations must be of equal size.")
+            raise ValueError('The permutations must be of equal size.')
         self_prec_mat = self.get_precedence_matrix()
         other_prec_mat = other.get_precedence_matrix()
         n_prec = 0
@@ -2570,7 +2565,7 @@ class Permutation(Basic):
 
         """
         if self.size != other.size:
-            raise ValueError("The permutations must be of the same size.")
+            raise ValueError('The permutations must be of the same size.')
         self_adj_mat = self.get_adjacency_matrix()
         other_adj_mat = other.get_adjacency_matrix()
         n_adj = 0
@@ -2607,7 +2602,7 @@ class Permutation(Basic):
         a = self.array_form
         b = other.array_form
         if len(a) != len(b):
-            raise ValueError("The permutations must be of the same size.")
+            raise ValueError('The permutations must be of the same size.')
         return sum(abs(a[i] - b[i]) for i in range(len(a)))
 
     @classmethod
@@ -2679,7 +2674,7 @@ class Permutation(Basic):
                 perm.append(val)
                 N.remove(val)
         except IndexError:
-            raise ValueError("The inversion vector is not valid.")
+            raise ValueError('The inversion vector is not valid.')
         perm.extend(N)
         return _af_new(perm)
 

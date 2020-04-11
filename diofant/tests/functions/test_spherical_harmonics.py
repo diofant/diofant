@@ -1,10 +1,9 @@
 import pytest
 
-from diofant import (I, Symbol, assoc_legendre, conjugate, cos, cot, diff, exp,
-                     factorial, pi, sin, sqrt)
+from diofant import (I, Symbol, Ynm, Ynm_c, Znm, assoc_legendre, conjugate,
+                     cos, cot, diff, exp, factorial, pi, sin, sqrt)
 from diofant.abc import m, n
 from diofant.core.function import ArgumentIndexError
-from diofant.functions.special.spherical_harmonics import Ynm, Ynm_c, Znm
 
 
 __all__ = ()
@@ -12,7 +11,7 @@ __all__ = ()
 
 def test_Ynm():
     # https://en.wikipedia.org/wiki/Spherical_harmonics
-    th, ph = Symbol("theta", extended_real=True), Symbol("phi", extended_real=True)
+    th, ph = Symbol('theta', extended_real=True), Symbol('phi', extended_real=True)
 
     assert Ynm(0, 0, th, ph).expand(func=True) == 1/(2*sqrt(pi))
     assert Ynm(1, -1, th, ph) == -exp(-2*I*ph)*Ynm(1, 1, th, ph)
@@ -50,14 +49,14 @@ def test_Ynm():
 
 
 def test_Ynm_c():
-    th, ph = Symbol("theta", extended_real=True), Symbol("phi", extended_real=True)
+    th, ph = Symbol('theta', extended_real=True), Symbol('phi', extended_real=True)
 
     assert Ynm_c(n, m, th, ph) == (-1)**(2*m)*exp(-2*I*m*ph)*Ynm(n, m, th, ph)
 
 
 def test_Znm():
     # https://en.wikipedia.org/wiki/Solid_harmonics#List_of_lowest_functions
-    th, ph = Symbol("theta", extended_real=True), Symbol("phi", extended_real=True)
+    th, ph = Symbol('theta', extended_real=True), Symbol('phi', extended_real=True)
 
     assert Znm(0, 0, th, ph) == Ynm(0, 0, th, ph)
     assert Znm(1, -1, th, ph) == (-sqrt(2)*I*(Ynm(1, 1, th, ph)

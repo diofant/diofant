@@ -103,7 +103,7 @@ def dmp_degree_in(f, j, u):
         return -oo if dmp_zero_p(f, u) else len(f) - 1
 
     if j < 0 or j > u:
-        raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
+        raise IndexError(f'0 <= j <= {u} expected, got {j}')
 
     def degree_in(g, v, i, j):
         if i == j:
@@ -221,7 +221,7 @@ def dmp_convert(f, u, K0, K1):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> dmp_convert([[R(1)], [R(2)]], 1, R, ZZ)
     [[1], [2]]
@@ -490,7 +490,7 @@ def dmp_swap(f, i, j, u, K):
 
     """
     if i < 0 or j < 0 or i > u or j > u:
-        raise IndexError("0 <= i < j <= %s expected" % u)
+        raise IndexError(f'0 <= i < j <= {u} expected')
     elif i == j:
         return f
 
@@ -634,7 +634,7 @@ def dup_inflate(f, m, K):
 
     """
     if m <= 0:
-        raise IndexError("'m' must be positive, got %s" % m)
+        raise IndexError(f"'m' must be positive, got {m}")
     if m == 1 or not f:
         return f
 
@@ -665,7 +665,7 @@ def dmp_inflate(f, M, u, K):
         if not v:
             return dup_inflate(g, M[i], K)
         if M[i] <= 0:
-            raise IndexError("all M[i] must be positive, got %s" % M[i])
+            raise IndexError(f'all M[i] must be positive, got {M[i]}')
 
         w, j = v - 1, i + 1
 
@@ -766,7 +766,7 @@ def dmp_inject(f, u, K, front=False):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> dmp_inject([R(1), x + 2], 0, R)
     ([[[1]], [[1], [2]]], 2)
@@ -799,7 +799,7 @@ def dmp_eject(f, u, K, front=False):
     Examples
     ========
 
-    >>> dmp_eject([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], 2, ZZ.poly_ring('x', 'y'))
+    >>> dmp_eject([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], 2, ZZ.inject('x', 'y'))
     [1, x + 2]
 
     """
@@ -888,30 +888,9 @@ def dmp_apply_pairs(f, g, h, args, u, K):
 
 def dmp_slice_in(f, m, n, j, u, K):
     """Take a continuous subsequence of terms of ``f`` in ``x_j`` in ``K[X]``."""
-    if j < 0 or j > u:
-        raise IndexError("-%s <= j < %s expected, got %s" % (u, u, j))
-
-    if not u:
-        k = len(f)
-        M = k - m if k >= m else 0
-        N = k - n if k >= n else 0
-        f = f[N:M]
-        return dmp_strip(f + [K.zero]*m if f else [], u)
-
-    f, g = dmp_to_dict(f, u), {}
-
-    for monom, coeff in f.items():
-        k = monom[j]
-
-        if k < m or k >= n:
-            monom = monom[:j] + (0,) + monom[j + 1:]
-
-        if monom in g:
-            g[monom] += coeff
-        else:
-            g[monom] = coeff
-
-    return dmp_from_dict(g, u, K)
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    return ring.to_dense(f.slice(m, n, x=j))
 
 
 def dup_random(n, a, b, K, percent=None):

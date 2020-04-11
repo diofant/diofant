@@ -15,6 +15,9 @@ Major changes
 =============
 
 * :class:`~diofant.polys.polytools.Poly` now use sparse polynomial representation (via :class:`~diofant.polys.rings.PolyElement`) internally, see :pull:`795`.
+* :func:`~diofant.solvers.recurr.rsolve` now return :class:`list` of :class:`dict`'s, see :pull:`940`.
+* :func:`~diofant.solvers.solvers.solve` now return all solutions for equations, involving surds, see :pull:`910`.
+* Module :mod:`~diofant.polys.galoistools` was adapted to use :class:`~diofant.domains.FiniteField`'s and usual conventions for low-level methods of the :mod:`~diofant.polys` module, see :pull:`957`, :pull:`971` and :pull:`964`.  Polynomial factorization now works for univariate polynomials over any :class:`~diofant.domains.FiniteField`'s domain.
 
 Compatibility breaks
 ====================
@@ -26,7 +29,7 @@ Compatibility breaks
 * Removed ``DMP`` class, see :pull:`795`.
 * Removed ``ring_series`` module, see :pull:`820`.
 * :class:`~diofant.core.relational.Equality` doesn't support single-argument call, see :pull:`828`.
-* Removed ``is_nonnegative()`` and ``is_nonpositive()`` methods of :class:`~diofant.domains.domain.Domain` subclasses, see :pull:`834`.
+* Removed ``is_nonnegative()``, ``is_nonpositive()`` and ``is_positive()`` methods of :class:`~diofant.domains.domain.Domain` subclasses, see :pull:`834` and :pull:`975`.
 * Former ``fast=True`` option is now a default for :meth:`~diofant.polys.polytools.Poly.intervals` and :meth:`~diofant.polys.polytools.Poly.refine_root`, see :pull:`834`.
 * Change order of keyword arguments for :meth:`~diofant.polys.rings.PolyElement.integrate`, see :pull:`834`.
 * Removed support for ``dps=''`` in :class:`~diofant.core.numbers.Float`.  Significant digits automatically counted for :class:`int` and :class:`str` inputs, see :pull:`797`.
@@ -41,6 +44,12 @@ Compatibility breaks
 * Don't export too much from :mod:`~diofant.solvers` to the default namespace, keep only :func:`~diofant.solvers.solvers.solve`, :func:`~diofant.solvers.recurr.rsolve` and :func:`~diofant.solvers.ode.dsolve` functions, see :pull:`921`.
 * Make :func:`~diofant.solvers.recurr.rsolve`'s ``init`` parameter more compatible with :func:`~diofant.solvers.ode.dsolve`'s one, e.g. drop accepting ``init=[1, 2, 3]`` and ``init={0: 1, 1: 2, 2: 3}`` forms, see :pull:`921`.
 * Removed ``dict_merge()``, ``generate_bell()`` and ``reshape()`` functions, see :pull:`921`.
+* Removed ``subs()`` methods from :class:`~diofant.polys.rings.PolyElement` and :class:`~diofant.polys.fields.FracElement`, see :pull:`967`.
+* ``is_negative()`` method of :class:`~diofant.domains.domain.Domain` refactored to the :meth:`~diofant.domains.ring.Ring.is_normal`, see :pull:`977`.
+* Drop ``algebraic_field()`` method of :class:`~diofant.domains.IntegerRing`, see :pull:`977`.
+* Drop ``has_assoc_Field`` property, ``is_SymbolicDomain`` property renamed to ``is_ExpressionDomain`` of :class:`~diofant.domains.domain.Domain`, see :pull:`977`.
+* ``drop_to_ground()`` method of :class:`~diofant.polys.rings.PolynomialRing` renamed to :meth:`~diofant.polys.rings.PolynomialRing.eject`, see :pull:`977`.
+* Renamed option misspeled option ``bareis`` to ``bareiss`` in :meth:`~diofant.matrices.matrices.MatrixBase.det` and :func:`~diofant.matrices.dense.wronskian`, see :pull:`866`.
 
 Minor changes
 =============
@@ -52,12 +61,17 @@ Minor changes
 * 100% test coverage for :mod:`~diofant.utilities` module.
 * :func:`~diofant.solvers.recurr.rsolve` got ``simplify`` option to control default output simplification, see :pull:`921`.
 * :func:`~diofant.polys.numberfields.minimal_polynomial` got support for :class:`~diofant.polys.rootoftools.RootOf` instances over algebraic number fields, see :pull:`927`.
+* The :class:`~diofant.domains.ring.Ring` and all derived classes got :attr:`~diofant.domains.ring.Ring.characteristic` property, see :pull:`968`.
+* Correct wrong implementation of the Berlekamp factorization algorithm, see :pull:`968`.
+* Support domains pickling, see :pull:`972`.
 
 Developer changes
 =================
 
 * Depend on `sphinxcontrib-bibtex <https://sphinxcontrib-bibtex.readthedocs.io/en/latest/>`_ to track the bibliography, see :pull:`766`.
+* Use Github Actions for CI, instead of the Travis CI, see :pull:`887`.
 * Depend on `flake8-rst <https://github.com/kataev/flake8-rst>`_ to test formatting of docstrings, see :pull:`928`.
+* Depend on `flake8-quotes <https://github.com/zheller/flake8-quotes>`_, see :pull:`982`.
 
 Issues closed
 =============
@@ -142,3 +156,35 @@ These Sympy issues also were addressed:
 * :sympyissue:`14779` Spurious solutions when solving equation involving Abs(x)/x
 * :sympyissue:`18008` series does not give the same expansion depending on whether simple expression is simplified or not
 * :sympyissue:`8810` Poly keyword `composite` is ignored when instantiating from Poly
+* :sympyissue:`18118` limit(sign(sin(x)), x, 0, '+')) = 0 (which is wrong)
+* :sympyissue:`6599` limit of fraction with oscillating term in the numerator calculated incorrectly
+* :sympyissue:`18176` Incorrect value for limit(x**n-x**(n-k),x,oo) when k is a natural number
+* :sympyissue:`18306` NotImplementedError in limit
+* :sympyissue:`8695` sqf and sqf_list output is not consistant
+* :sympyissue:`18378` Invalid result in Limit
+* :sympyissue:`18384` abs(sin(x)*cos(x)) integrates wrong
+* :sympyissue:`18399` Incorrect limit
+* :sympyissue:`18452` Infinite recursion while computing Limit of Expression in 1.5.1
+* :sympyissue:`18470` nan**0 returns 1 instead of nan
+* :sympyissue:`18482` Incorrect evaluation of limit
+* :sympyissue:`18499` The result of (1/oo)**(-oo) should be oo
+* :sympyissue:`18501` Extraneous variable in limit result
+* :sympyissue:`18508` NotImplementedError in limit
+* :sympyissue:`18507` Bug in Mul
+* :sympyissue:`18707` There is a problem or limitation when the Limit is calculated
+* :sympyissue:`18751` handling of rsolve coefficients
+* :sympyissue:`18749` polys: Berlekamp factorization failure
+* :sympyissue:`18895` Factor with extension=True drops a factor of y - 1
+* :sympyissue:`18894` sring extension=True error: nan is not in any domain
+* :sympyissue:`18531` apart: hangs or takes too long
+* :sympyissue:`14806` Domain.is_positive (and friends) is a wrong interface
+* :sympyissue:`18874` Zero divisor from sring over QQ<sqrt(2) + sqrt(5)>
+* :sympyissue:`16620` Slow factor(x^n-1, modulus=2) computation for some "difficult" n
+* :sympyissue:`18997` Incorrect limit result involving Abs, returns expression involving a symbol
+* :sympyissue:`18992` Possibly incorrect limit related to Stirling's formula
+* :sympyissue:`19026` Bug in Limit
+* :sympyissue:`12303` Ellipse comparison with other geometric entities throws an error
+* :sympyissue:`11986` Typo Error in mathml.py
+* :sympyissue:`12361` Misspelling of "Bareiss" in Matrix module
+* :sympyissue:`12452` is_upper() raises IndexError for tall matrices
+* :sympyissue:`19070` bug in poly

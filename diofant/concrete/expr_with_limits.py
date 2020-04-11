@@ -50,6 +50,7 @@ def _process_limits(*symbols):
 
 
 class ExprWithLimits(Expr):
+    """Represents an expression with limits."""
 
     def __new__(cls, function, *symbols, **assumptions):
         # Any embedded piecewise functions need to be brought out to the
@@ -73,7 +74,7 @@ class ExprWithLimits(Expr):
             free = function.free_symbols
             if len(free) != 1:
                 raise ValueError(
-                    "specify dummy variables for %s" % function)
+                    'specify dummy variables for %s' % function)
             limits = [Tuple(s) for s in free]
 
         # denest any nested calls
@@ -263,7 +264,6 @@ class ExprWithLimits(Expr):
         change_index : Perform mapping on the sum and product dummy variables
 
         """
-
         from ..core.function import AppliedUndef, UndefinedFunction
         func, limits = self.function, list(self.limits)
 
@@ -293,7 +293,7 @@ class ExprWithLimits(Expr):
                 sy1 = set(self.variables).intersection(set(old.args))
                 if not sy2.issubset(sy1):
                     raise ValueError(
-                        "substitution can not create dummy dependencies")
+                        'substitution can not create dummy dependencies')
                 sub_into_func = True
             if sub_into_func:
                 func = func.subs({old: new})
@@ -350,9 +350,9 @@ class AddWithLimits(ExprWithLimits):
             free = function.free_symbols
             if len(free) != 1:
                 raise ValueError(
-                    " specify dummy variables for %s. If the integrand contains"
-                    " more than one free symbol, an integration variable should"
-                    " be supplied explicitly e.g., integrate(f(x, y), x)"
+                    ' specify dummy variables for %s. If the integrand contains'
+                    ' more than one free symbol, an integration variable should'
+                    ' be supplied explicitly e.g., integrate(f(x, y), x)'
                     % function)
             limits, orientation = [Tuple(s) for s in free], 1
 

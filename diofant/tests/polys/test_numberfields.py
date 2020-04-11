@@ -1,19 +1,13 @@
-"""Tests for computational algebraic number field theory. """
+"""Tests for computational algebraic number field theory."""
 
 import pytest
 
-from diofant import (Add, GoldenRatio, I, Integer, PurePoly, Rational, cbrt,
-                     conjugate, cos, exp, exp_polar, expand,
-                     expand_multinomial, im, nsimplify, oo, pi, re, root, sin,
-                     solve, sqrt)
+from diofant import (QQ, Add, CoercionFailed, GoldenRatio, I, Integer,
+                     NotAlgebraic, PurePoly, Rational, RootOf, cbrt, conjugate,
+                     cos, degree, exp, exp_polar, expand, expand_multinomial,
+                     field_isomorphism, im, minimal_polynomial, nsimplify, oo,
+                     pi, primitive_element, re, root, sin, solve, sqrt)
 from diofant.abc import x, y, z
-from diofant.domains import QQ
-from diofant.polys.numberfields import (field_isomorphism,
-                                        is_isomorphism_possible,
-                                        minimal_polynomial, primitive_element)
-from diofant.polys.polyerrors import CoercionFailed, NotAlgebraic
-from diofant.polys.polytools import degree
-from diofant.polys.rootoftools import RootOf
 
 
 __all__ = ()
@@ -201,7 +195,7 @@ def test_minimal_polynomial_conjugate():
                 1152*x**8 + 3328*x**6 - 1600*x**4 + 64*x**2 + 1)
 
 
-@pytest.mark.parametrize("method", ("groebner", "compose"))
+@pytest.mark.parametrize('method', ('groebner', 'compose'))
 def test_minimal_polynomial_rootof(method):
     e = RootOf(x**4 - 3*x**3 + x**2*(-3*sqrt(2) + 1) + 2*sqrt(2)*x + 2, 0)
     assert (minimal_polynomial(e, method=method)(x) ==
@@ -210,7 +204,7 @@ def test_minimal_polynomial_rootof(method):
                               domain=e.poly.domain)(y) == e.poly(y)
 
 
-@pytest.mark.parametrize("method", ("groebner", "compose"))
+@pytest.mark.parametrize('method', ('groebner', 'compose'))
 def test_minimal_polynomial_GoldenRatio(method):
     assert minimal_polynomial(GoldenRatio, method=method)(x) == x**2 - x - 1
 
@@ -448,13 +442,7 @@ def test_field_isomorphism():
 
     a = QQ.algebraic_field(sqrt(2))
 
-    assert is_isomorphism_possible(a, c) is False
     assert field_isomorphism(a, c) is None
-
-    assert is_isomorphism_possible(a, p) is True
-    assert is_isomorphism_possible(a, q) is True
-    assert is_isomorphism_possible(a, r) is True
-    assert is_isomorphism_possible(a, s) is True
 
     assert field_isomorphism(a, p, fast=True) == pos_coeffs
     assert field_isomorphism(a, q, fast=True) == neg_coeffs
@@ -467,11 +455,6 @@ def test_field_isomorphism():
     assert field_isomorphism(a, s, fast=False) == neg_coeffs
 
     a = QQ.algebraic_field(-sqrt(2))
-
-    assert is_isomorphism_possible(a, p) is True
-    assert is_isomorphism_possible(a, q) is True
-    assert is_isomorphism_possible(a, r) is True
-    assert is_isomorphism_possible(a, s) is True
 
     assert field_isomorphism(a, p, fast=True) == neg_coeffs
     assert field_isomorphism(a, q, fast=True) == pos_coeffs
@@ -488,11 +471,6 @@ def test_field_isomorphism():
 
     a = QQ.algebraic_field(sqrt(3))
 
-    assert is_isomorphism_possible(a, p) is True
-    assert is_isomorphism_possible(a, q) is True
-    assert is_isomorphism_possible(a, r) is True
-    assert is_isomorphism_possible(a, s) is True
-
     assert field_isomorphism(a, p, fast=True) == neg_coeffs
     assert field_isomorphism(a, q, fast=True) == neg_coeffs
     assert field_isomorphism(a, r, fast=True) == pos_coeffs
@@ -504,11 +482,6 @@ def test_field_isomorphism():
     assert field_isomorphism(a, s, fast=False) == pos_coeffs
 
     a = QQ.algebraic_field(-sqrt(3))
-
-    assert is_isomorphism_possible(a, p) is True
-    assert is_isomorphism_possible(a, q) is True
-    assert is_isomorphism_possible(a, r) is True
-    assert is_isomorphism_possible(a, s) is True
 
     assert field_isomorphism(a, p, fast=True) == pos_coeffs
     assert field_isomorphism(a, q, fast=True) == pos_coeffs
@@ -524,11 +497,6 @@ def test_field_isomorphism():
     neg_coeffs = [-QQ(3, 2), 0, +QQ(33, 2), -8]
 
     a = QQ.algebraic_field(3*sqrt(3) - 8)
-
-    assert is_isomorphism_possible(a, p) is True
-    assert is_isomorphism_possible(a, q) is True
-    assert is_isomorphism_possible(a, r) is True
-    assert is_isomorphism_possible(a, s) is True
 
     assert field_isomorphism(a, p, fast=True) == neg_coeffs
     assert field_isomorphism(a, q, fast=True) == neg_coeffs
@@ -547,11 +515,6 @@ def test_field_isomorphism():
     pos_5_coeffs = [+QQ(5, 2), 0, -QQ(49, 2), 1]
     neg_5_coeffs = [-QQ(5, 2), 0, +QQ(49, 2), 1]
 
-    assert is_isomorphism_possible(a, p) is True
-    assert is_isomorphism_possible(a, q) is True
-    assert is_isomorphism_possible(a, r) is True
-    assert is_isomorphism_possible(a, s) is True
-
     assert field_isomorphism(a, p, fast=True) == pos_1_coeffs
     assert field_isomorphism(a, q, fast=True) == neg_5_coeffs
     assert field_isomorphism(a, r, fast=True) == pos_5_coeffs
@@ -565,11 +528,6 @@ def test_field_isomorphism():
     a = QQ.algebraic_field(sqrt(2))
     b = QQ.algebraic_field(sqrt(3))
     c = QQ.algebraic_field(sqrt(7))
-
-    assert is_isomorphism_possible(a, b) is True
-    assert is_isomorphism_possible(b, a) is True
-
-    assert is_isomorphism_possible(c, p) is False
 
     assert field_isomorphism(a, b, fast=True) is None
     assert field_isomorphism(b, a, fast=True) is None
@@ -690,3 +648,11 @@ def test_sympyissue_5934():
          (-36000 - 7200*sqrt(5) + (12*sqrt(10)*sqrt(sqrt(5) + 5) +
                                    24*sqrt(10)*sqrt(-sqrt(5) + 5))**2))
     assert [minimal_polynomial(i)(x) for i in e.as_numer_denom()] == [x]*2
+
+
+def test_sympyissue_18874():
+    e = [sqrt(2) + sqrt(5), sqrt(2)]
+
+    assert primitive_element(e) == (PurePoly(x**4 - 46*x**2 + 169),
+                                    [1, 2], [[QQ(1, 39), 0, QQ(-20, 39), 0],
+                                             [QQ(-1, 78), 0, QQ(59, 78), 0]])

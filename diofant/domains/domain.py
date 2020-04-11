@@ -1,4 +1,4 @@
-"""Implementation of :class:`Domain` class. """
+"""Implementation of :class:`Domain` class."""
 
 import abc
 import inspect
@@ -16,7 +16,7 @@ __all__ = 'Domain',
 
 
 class Domain(DefaultPrinting, abc.ABC):
-    """Represents an abstract domain. """
+    """Represents an abstract domain."""
 
     dtype = None
     zero = None
@@ -26,19 +26,18 @@ class Domain(DefaultPrinting, abc.ABC):
     is_Field = False
 
     has_assoc_Ring = False
-    has_assoc_Field = False
 
-    is_FiniteField = is_FF = False
-    is_IntegerRing = is_ZZ = False
-    is_RationalField = is_QQ = False
-    is_RealField = is_RR = False
-    is_ComplexField = is_CC = False
-    is_AlgebraicField = is_Algebraic = False
+    is_FiniteField = False
+    is_IntegerRing = False
+    is_RationalField = False
+    is_RealField = False
+    is_ComplexField = False
+    is_AlgebraicField = False
     is_RealAlgebraicField = False
     is_ComplexAlgebraicField = False
-    is_PolynomialRing = is_Poly = False
-    is_FractionField = is_Frac = False
-    is_SymbolicDomain = is_EX = False
+    is_PolynomialRing = False
+    is_FractionField = False
+    is_ExpressionDomain = False
 
     is_Exact = True
     is_Numerical = False
@@ -52,23 +51,26 @@ class Domain(DefaultPrinting, abc.ABC):
         return hash((self.__class__.__name__, self.dtype))
 
     def __call__(self, *args):
-        """Construct an element of ``self`` domain from ``args``. """
+        """Construct an element of ``self`` domain from ``args``."""
         return self.dtype(*args)
 
+    def __getstate__(self):
+        return {}
+
     @abc.abstractmethod
-    def from_expr(self, element):
-        """Convert Diofant's expression to ``dtype``. """
+    def from_expr(self, expr):
+        """Convert Diofant's expression ``expr`` to ``dtype``."""
         raise NotImplementedError
 
     @abc.abstractmethod
     def to_expr(self, element):
-        """Convert ``element`` to Diofant expression. """
+        """Convert domain ``element`` to Diofant expression."""
         raise NotImplementedError
 
     def convert_from(self, element, base):
-        """Convert ``element`` to ``self.dtype`` given the base domain. """
+        """Convert ``element`` to ``self.dtype`` given the base domain."""
         for superclass in inspect.getmro(base.__class__):
-            method = "_from_" + superclass.__name__
+            method = '_from_' + superclass.__name__
 
             convert = getattr(self, method, None)
 
@@ -78,11 +80,11 @@ class Domain(DefaultPrinting, abc.ABC):
                 if result is not None:
                     return result
 
-        raise CoercionFailed("can't convert %s of type %s from %s "
-                             "to %s" % (element, type(element), base, self))
+        raise CoercionFailed(f"can't convert {element} of type {type(element)} "
+                             f'from {base} to {self}')
 
     def convert(self, element, base=None):
-        """Convert ``element`` to ``self.dtype``. """
+        """Convert ``element`` to ``self.dtype``."""
         if base is not None:
             return self.convert_from(element, base)
 
@@ -92,6 +94,7 @@ class Domain(DefaultPrinting, abc.ABC):
         from .integerring import PythonIntegerRing, GMPYIntegerRing
         from .rationalfield import PythonRationalField, GMPYRationalField
         from . import RealField, ComplexField, PythonRational
+        from .expressiondomain import ExpressionDomain
 
         if isinstance(element, int):
             return self.convert_from(element, PythonIntegerRing())
@@ -119,16 +122,19 @@ class Domain(DefaultPrinting, abc.ABC):
         if isinstance(element, DomainElement):
             return self.convert_from(element, element.parent)
 
+        if isinstance(element, ExpressionDomain.Expression):
+            return self.convert_from(element, ExpressionDomain())
+
         if isinstance(element, Expr):
             try:
                 return self.from_expr(element)
             except (TypeError, ValueError):
                 pass
 
-        raise CoercionFailed("can't convert %s of type %s to %s" % (element, type(element), self))
+        raise CoercionFailed(f"can't convert {element} of type {type(element)} to {self}")
 
     def __contains__(self, a):
-        """Check if ``a`` belongs to this domain. """
+        """Check if ``a`` belongs to this domain."""
         try:
             self.convert(a)
             return True
@@ -158,17 +164,17 @@ class Domain(DefaultPrinting, abc.ABC):
         if symbols:
             if any(d.is_Composite and (set(d.symbols) & set(symbols))
                    for d in [self, K1]):
-                raise UnificationFailed("Can't unify %s with %s, given %s"
-                                        " generators" % (self, K1, tuple(symbols)))
+                raise UnificationFailed(f"Can't unify {self} with {K1}, "
+                                        f'given {symbols} generators')
 
             return self.unify(K1)
 
         if self == K1:
             return self
 
-        if self.is_SymbolicDomain:
+        if self.is_ExpressionDomain:
             return self
-        if K1.is_SymbolicDomain:
+        if K1.is_ExpressionDomain:
             return K1
 
         if self.is_Composite or K1.is_Composite:
@@ -232,27 +238,18 @@ class Domain(DefaultPrinting, abc.ABC):
         raise NotImplementedError
 
     def __eq__(self, other):
-        """Returns ``True`` if two domains are equivalent. """
+        """Returns ``True`` if two domains are equivalent."""
         return isinstance(other, Domain) and self.dtype == other.dtype
 
     def get_exact(self):
-        """Returns an exact domain associated with ``self``. """
         return self
 
     def poly_ring(self, *symbols, **kwargs):
-        """Returns a polynomial ring, i.e. `K[X]`. """
+        """Returns a polynomial ring, i.e. `K[X]`."""
         from ..polys import PolynomialRing
-        return PolynomialRing(self, symbols, kwargs.get("order", lex))
+        return PolynomialRing(self, symbols, kwargs.get('order', lex))
 
     def frac_field(self, *symbols, **kwargs):
-        """Returns a fraction field, i.e. `K(X)`. """
+        """Returns a fraction field, i.e. `K(X)`."""
         from ..polys import FractionField
-        return FractionField(self, symbols, kwargs.get("order", lex))
-
-    def is_positive(self, a):
-        """Returns True if ``a`` is positive. """
-        return a > 0
-
-    def is_negative(self, a):
-        """Returns True if ``a`` is negative. """
-        return a < 0
+        return FractionField(self, symbols, kwargs.get('order', lex))

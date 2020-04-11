@@ -53,7 +53,7 @@ def singularities(f, x):
         raise NotImplementedError
 
     for s in guess:
-        l = Limit(f, x, s, dir="real")
+        l = Limit(f, x, s, dir='real')
         try:
             r = l.doit()
             if r == l or f.subs({x: s}) != r:  # pragma: no cover

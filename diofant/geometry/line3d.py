@@ -25,15 +25,6 @@ class LinearEntity3D(GeometryEntity):
     """An base class for all linear entities (line, ray and segment)
     in a 3-dimensional Euclidean space.
 
-    Attributes
-    ==========
-
-    p1
-    p2
-    direction_ratio
-    direction_cosine
-    points
-
     Notes
     =====
 
@@ -47,7 +38,7 @@ class LinearEntity3D(GeometryEntity):
         if p1 == p2:
             # if it makes sense to return a Point, handle in subclass
             raise ValueError(
-                "%s.__new__ requires two unique Points." % cls.__name__)
+                '%s.__new__ requires two unique Points.' % cls.__name__)
 
         return GeometryEntity.__new__(cls, p1, p2, **kwargs)
 
@@ -223,7 +214,6 @@ class LinearEntity3D(GeometryEntity):
         False
 
         """
-
         # Concurrency requires intersection at a single point; One linear
         # entity cannot be concurrent.
         if len(lines) <= 1:
@@ -436,7 +426,7 @@ class LinearEntity3D(GeometryEntity):
         """
         p = Point3D(p)
         if p in self:
-            raise NotImplementedError("Given point should not be on the line")
+            raise NotImplementedError('Given point should not be on the line')
         t = Dummy()
         a = self.arbitrary_point(t)
         b = [i - j for i, j in zip(p.args, a.args)]
@@ -488,7 +478,7 @@ class LinearEntity3D(GeometryEntity):
         """
         p = Point3D(p)
         if p in self:
-            raise NotImplementedError("Given point should not be on the line")
+            raise NotImplementedError('Given point should not be on the line')
         t = Dummy()
         a = self.arbitrary_point(t)
         b = [i - j for i, j in zip(p.args, a.args)]
@@ -572,7 +562,7 @@ class LinearEntity3D(GeometryEntity):
             n1 = self.__class__.__name__
             n2 = o.__class__.__name__
             raise GeometryError(
-                "Do not know how to project %s onto %s" % (n2, n1))
+                'Do not know how to project %s onto %s' % (n2, n1))
 
         return self.intersection(projected)
 
@@ -983,15 +973,6 @@ class Ray3D(LinearEntity3D):
     p2 : Point or a direction vector
     direction_ratio: Determines the direction in which the Ray propagates.
 
-
-    Attributes
-    ==========
-
-    source
-    xdirection
-    ydirection
-    zdirection
-
     See Also
     ========
 
@@ -1262,12 +1243,6 @@ class Segment3D(LinearEntity3D):
 
     p1 : Point3D
     p2 : Point3D
-
-    Attributes
-    ==========
-
-    length : Expr
-    midpoint : Point3D
 
     See Also
     ========

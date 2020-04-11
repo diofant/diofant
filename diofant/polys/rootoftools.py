@@ -1,4 +1,4 @@
-"""Implementation of RootOf class and related tools. """
+"""Implementation of RootOf class and related tools."""
 
 from mpmath import findroot, mpc, mpf, workprec
 from mpmath.libmp.libmpf import prec_to_dps
@@ -79,27 +79,26 @@ class RootOf(Expr):
         if index is not None and index.is_Integer:
             index = int(index)
         else:
-            raise ValueError("expected an integer root index, got %s" % index)
+            raise ValueError(f'expected an integer root index, got {index}')
 
         poly = PurePoly(f, x, greedy=False, expand=expand)
 
         if not poly.is_univariate:
-            raise PolynomialError("only univariate polynomials are allowed")
+            raise PolynomialError('only univariate polynomials are allowed')
 
         degree = poly.degree()
         dom = poly.domain
 
         if degree <= 0:
-            raise PolynomialError("can't construct RootOf object for %s" % f)
+            raise PolynomialError(f"can't construct RootOf object for {f}")
 
         if index < -degree or index >= degree:
-            raise IndexError("root index out of [%d, %d] range, got %d" %
-                             (-degree, degree - 1, index))
+            raise IndexError(f'root index out of [{-degree}, {degree - 1}] range, got {index}')
         elif index < 0:
             index += degree
 
         if not dom.is_IntegerRing and poly.LC().is_nonzero is False:
-            raise NotImplementedError("sorted roots not supported over %s" % dom)
+            raise NotImplementedError(f'sorted roots not supported over {dom}')
 
         if evaluate is None:
             evaluate = global_evaluate[0]
@@ -227,12 +226,12 @@ class RootOf(Expr):
     @classmethod
     def real_roots(cls, poly, radicals=True):
         """Get real roots of a polynomial."""
-        return cls._get_roots("_real_roots", poly, radicals)
+        return cls._get_roots('_real_roots', poly, radicals)
 
     @classmethod
     def all_roots(cls, poly, radicals=True):
         """Get real and complex roots of a polynomial."""
-        return cls._get_roots("_all_roots", poly, radicals)
+        return cls._get_roots('_all_roots', poly, radicals)
 
     @classmethod
     def _get_reals_sqf(cls, factor):
@@ -386,7 +385,7 @@ class RootOf(Expr):
         complexes = []
         for f in ordered(sifted):
             nimag = f.compose(PurePoly(I*f.gen, f.gen,
-                                       domain=f.domain.algebraic_field(I))).count_roots()
+                                       domain=f.domain.field.algebraic_field(I))).count_roots()
             potential_imag = list(range(len(sifted[f])))
             while len(potential_imag) > nimag:
                 for i in list(potential_imag):
@@ -434,7 +433,6 @@ class RootOf(Expr):
     @classmethod
     def _all_roots(cls, poly):
         """Get real and complex roots of a composite polynomial."""
-
         if not (poly.domain.is_IntegerRing or poly.domain.is_AlgebraicField):
             return [(poly, i) for i in range(poly.degree())]
 
@@ -494,7 +492,7 @@ class RootOf(Expr):
         dom = poly.domain
 
         if not dom.is_IntegerRing and poly.LC().is_nonzero is False:
-            raise NotImplementedError("sorted roots not supported over %s" % dom)
+            raise NotImplementedError(f'sorted roots not supported over {dom}')
 
         return coeff, poly
 
@@ -512,7 +510,6 @@ class RootOf(Expr):
     @classmethod
     def _get_roots(cls, method, poly, radicals):
         """Return postprocessed roots of specified kind."""
-
         poly = PurePoly(poly)
 
         coeff, poly = cls._preprocess_roots(poly)
@@ -555,9 +552,9 @@ class RootOf(Expr):
             g = self.poly.gen
             if not g.is_Symbol:
                 d = Dummy('x')
-                func = lambdify(d, self.expr.subs({g: d}), "mpmath")
+                func = lambdify(d, self.expr.subs({g: d}), 'mpmath')
             else:
-                func = lambdify(g, self.expr, "mpmath")
+                func = lambdify(g, self.expr, 'mpmath')
 
             try:
                 interval = self.interval
@@ -625,9 +622,8 @@ class RootOf(Expr):
         ['-0.86114', '-0.33998', '0.33998', '0.86114']
 
         """
-
         if not self.is_extended_real:
-            raise NotImplementedError("eval_rational() only works for real polynomials so far")
+            raise NotImplementedError('eval_rational() only works for real polynomials so far')
         interval = self.interval
         while interval.b - interval.a > tol:
             self.refine()
@@ -678,8 +674,7 @@ class RootSum(Expr):
         coeff, poly = cls._transform(expr, x)
 
         if not poly.is_univariate:
-            raise MultivariatePolynomialError(
-                "only univariate polynomials are allowed")
+            raise MultivariatePolynomialError('only univariate polynomials are allowed')
 
         if func is None:
             func = Lambda(poly.gen, poly.gen)
@@ -694,7 +689,7 @@ class RootSum(Expr):
                     func = Lambda(poly.gen, func(poly.gen))
             else:
                 raise ValueError(
-                    "expected a univariate function, got %s" % func)
+                    f'expected a univariate function, got {func}')
 
         var, expr = func.variables[0], func.expr
 
@@ -750,7 +745,6 @@ class RootSum(Expr):
     @classmethod
     def new(cls, poly, func, auto=True):
         """Construct new ``RootSum`` instance."""
-
         rational = cls._is_func_rational(poly, func)
 
         if not rational or not auto:
@@ -773,13 +767,13 @@ class RootSum(Expr):
     @classmethod
     def _rational_case(cls, poly, func):
         """Handle the rational function case."""
-        roots = symbols('r:%d' % poly.degree())
+        roots = symbols(f'r:{poly.degree()}')
         var, expr = func.variables[0], func.expr
 
         f = sum(expr.subs({var: r}) for r in roots)
         p, q = together(f).as_numer_denom()
 
-        domain = QQ.poly_ring(*roots)
+        domain = QQ.inject(*roots)
 
         p = p.expand()
         q = q.expand()

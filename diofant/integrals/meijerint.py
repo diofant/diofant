@@ -467,7 +467,6 @@ def _mul_as_two_parts(f):
     [(x, E**x*sin(x)), (E**x*x, sin(x)), (x*sin(x), E**x)]
 
     """
-
     gs = _mul_args(f)
     if len(gs) < 2:
         return
@@ -480,7 +479,7 @@ def _mul_as_two_parts(f):
 
 
 def _inflate_g(g, n):
-    """ Return C, h such that h is a G function of argument z**n and
+    """Return C, h such that h is a G function of argument z**n and
     g = C*h.
 
     """
@@ -502,7 +501,7 @@ def _inflate_g(g, n):
 
 
 def _flip_g(g):
-    """ Turn the G function into one of inverse argument
+    """Turn the G function into one of inverse argument
     (i.e. G(1/x) -> G'(x))
 
     """
@@ -568,7 +567,7 @@ def _dummy_(name, token, **kwargs):
 
 
 def _is_analytic(f, x):
-    """ Check if f(x), when expressed using G functions on the positive reals,
+    """Check if f(x), when expressed using G functions on the positive reals,
     will in fact agree with the G functions almost everywhere
 
     """
@@ -670,7 +669,7 @@ def _eval_cond(cond):
 
 
 def _my_principal_branch(expr, period, full_pb=False):
-    """ Bring expr nearer to its principal branch by removing
+    """Bring expr nearer to its principal branch by removing
     superfluous factors.
 
     This function does *not* guarantee to yield the principal branch,
@@ -1023,14 +1022,12 @@ def _check_antecedents(g1, g2, x):
         # Hence the following seems correct:
         c14 = Or(c14, c14_alt)
 
-    '''
-    When `c15` is NaN (e.g. from `psi` being NaN as happens during
-    'test_sympyissue_4992' and/or `theta` is NaN as in 'test_sympyissue_6253',
-    both in `test_integrals.py`) the comparison to 0 formerly gave False
-    whereas now an error is raised. To keep the old behavior, the value
-    of NaN is replaced with False but perhaps a closer look at this condition
-    should be made: XXX how should conditions leading to c15=NaN be handled?
-    '''
+    # When `c15` is NaN (e.g. from `psi` being NaN as happens during
+    # 'test_sympyissue_4992' and/or `theta` is NaN as in 'test_sympyissue_6253',
+    # both in `test_integrals.py`) the comparison to 0 formerly gave False
+    # whereas now an error is raised. To keep the old behavior, the value
+    # of NaN is replaced with False but perhaps a closer look at this condition
+    # should be made: XXX how should conditions leading to c15=NaN be handled?
     try:
         lambda_c = (q - p)*abs(omega)**(1/(q - p))*cos(psi) \
             + (v - u)*abs(sigma)**(1/(v - u))*cos(theta)
@@ -1286,7 +1283,7 @@ def _check_antecedents_inversion(g, x):
         return Or(*conds)
 
     def statement(a, b, c, z):
-        """ Provide a convergence statement for z**a * exp(b*z**c),
+        """Provide a convergence statement for z**a * exp(b*z**c),
         c/f sphinx docs.
 
         """
@@ -1476,7 +1473,7 @@ def _rewrite_single(f, x, recursive=True):
     from ..polys import cancel
 
     def my_imt(F, s, x, strip):
-        """ Calling simplify() all the time is slow and not helpful, since
+        """Calling simplify() all the time is slow and not helpful, since
         most of the time it only factors things in a way that has to be
         un-done anyway. But sometimes it can remove apparent poles.
 

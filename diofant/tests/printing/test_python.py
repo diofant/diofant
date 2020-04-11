@@ -2,9 +2,8 @@ import pytest
 
 from diofant import (Derivative, Eq, Function, Ge, Gt, Integral, Le, Lt,
                      Matrix, Ne, Rational, Symbol, cbrt, exp, limit, log, oo,
-                     pi, root, sin, sqrt)
+                     pi, python, root, sin, sqrt)
 from diofant.abc import x, y
-from diofant.printing.python import python
 
 
 __all__ = ()
@@ -12,9 +11,9 @@ __all__ = ()
 
 def test_python_basic():
     # Simple numbers/symbols
-    assert python(-Rational(1, 2)) == "e = Rational(-1, 2)"
-    assert python(-Rational(13, 22)) == "e = Rational(-13, 22)"
-    assert python(oo) == "e = oo"
+    assert python(-Rational(1, 2)) == 'e = Rational(-1, 2)'
+    assert python(-Rational(13, 22)) == 'e = Rational(-13, 22)'
+    assert python(oo) == 'e = oo'
 
     # Powers
     assert python((x**2)) == "x = Symbol(\'x\')\ne = x**2"
@@ -64,27 +63,27 @@ def test_python_basic():
 def test_python_keyword_symbol_name_escaping():
     # Check for escaping of keywords
     assert python(
-        5*Symbol("lambda")) == "lambda_ = Symbol('lambda')\ne = 5*lambda_"
-    assert (python(5*Symbol("lambda") + 7*Symbol("lambda_")) ==
+        5*Symbol('lambda')) == "lambda_ = Symbol('lambda')\ne = 5*lambda_"
+    assert (python(5*Symbol('lambda') + 7*Symbol('lambda_')) ==
             "lambda__ = Symbol('lambda')\nlambda_ = Symbol('lambda_')\ne = 7*lambda_ + 5*lambda__")
-    assert (python(5*Symbol("for") + Function("for_")(8)) ==
+    assert (python(5*Symbol('for') + Function('for_')(8)) ==
             "for__ = Symbol('for')\nfor_ = Function('for_')\ne = 5*for__ + for_(8)")
-    assert (python(5*Symbol("for_") + Function("for")(8)) ==
+    assert (python(5*Symbol('for_') + Function('for')(8)) ==
             "for_ = Symbol('for_')\nfor__ = Function('for')\ne = 5*for_ + for__(8)")
 
 
 def test_python_keyword_function_name_escaping():
     assert python(
-        5*Function("for")(8)) == "for_ = Function('for')\ne = 5*for_(8)"
+        5*Function('for')(8)) == "for_ = Function('for')\ne = 5*for_(8)"
 
 
 def test_python_relational():
-    assert python(Eq(x, y)) == "e = Eq(x, y)"
+    assert python(Eq(x, y)) == 'e = Eq(x, y)'
     assert python(Ge(x, y)) == "x = Symbol('x')\ny = Symbol('y')\ne = x >= y"
     assert python(Le(x, y)) == "x = Symbol('x')\ny = Symbol('y')\ne = x <= y"
     assert python(Gt(x, y)) == "x = Symbol('x')\ny = Symbol('y')\ne = x > y"
     assert python(Lt(x, y)) == "x = Symbol('x')\ny = Symbol('y')\ne = x < y"
-    assert python(Ne(x/(y + 1), y**2)) in ["e = Ne(x/(1 + y), y**2)", "e = Ne(x/(y + 1), y**2)"]
+    assert python(Ne(x/(y + 1), y**2)) in ['e = Ne(x/(1 + y), y**2)', 'e = Ne(x/(y + 1), y**2)']
 
 
 def test_python_functions():
@@ -178,4 +177,4 @@ def test_python_limits():
 
 
 def test_settings():
-    pytest.raises(TypeError, lambda: python(x, method="garbage"))
+    pytest.raises(TypeError, lambda: python(x, method='garbage'))

@@ -1,18 +1,17 @@
-"""Tests for algorithms for computing symbolic roots of polynomials. """
+"""Tests for algorithms for computing symbolic roots of polynomials."""
 
 import itertools
 
 import mpmath
 import pytest
 
-from diofant import (ZZ, I, Integer, Interval, Mul, Piecewise, Rational,
-                     Symbol, Wild, acos, cbrt, cos, exp, im, pi, powsimp, re,
-                     root, sin, sqrt, symbols)
+from diofant import (ZZ, I, Integer, Interval, Mul, Piecewise, Poly,
+                     PolynomialError, Rational, RootOf, Symbol, Wild, acos,
+                     cbrt, cos, cyclotomic_poly, exp, im, intervals,
+                     legendre_poly, nroots, pi, powsimp, re, root, roots, sin,
+                     sqrt, symbols)
 from diofant.abc import a, b, c, d, e, q, x, y, z
-from diofant.polys import Poly, RootOf, cyclotomic_poly, intervals, nroots
-from diofant.polys.orthopolys import legendre_poly
-from diofant.polys.polyerrors import PolynomialError
-from diofant.polys.polyroots import (preprocess_roots, root_factors, roots,
+from diofant.polys.polyroots import (preprocess_roots, root_factors,
                                      roots_binomial, roots_cubic,
                                      roots_cyclotomic, roots_linear,
                                      roots_quadratic, roots_quartic,
@@ -310,7 +309,7 @@ def test_roots_preprocessing():
     assert coeff == 1/c
     assert poly == Poly(x**3 + a, x)
 
-    E, F, J, L = symbols("E,F,J,L")
+    E, F, J, L = symbols('E,F,J,L')
 
     f = -21601054687500000000*E**8*J**8/L**16 + \
         508232812500000000*F*x*E**7*J**7/L**14 - \
@@ -333,8 +332,8 @@ def test_roots_preprocessing():
     assert coeff == 1
     assert poly == Poly(f, x)
 
-    f = Poly(-y**2 + x**2*exp(x), y, domain=ZZ.poly_ring(x, exp(x)))
-    g = Poly(y**2 - exp(x), y, domain=ZZ.poly_ring(exp(x)))
+    f = Poly(-y**2 + x**2*exp(x), y, domain=ZZ.inject(x, exp(x)))
+    g = Poly(y**2 - exp(x), y, domain=ZZ.inject(exp(x)))
 
     assert preprocess_roots(f) == (x, g)
 
@@ -529,8 +528,8 @@ def test_roots1():
 
 
 def test_roots_slow():
-    """Just test that calculating these roots does not hang. """
-    a, b, c, d, x = symbols("a,b,c,d,x")
+    """Just test that calculating these roots does not hang."""
+    a, b, c, d, x = symbols('a,b,c,d,x')
 
     f1 = x**2*c + (a/b) + x*c*d - a
     f2 = x**2*(a + b*(c - d)*a) + x*a*b*c/(b*d - d) + (a*d - c/d)
@@ -538,7 +537,7 @@ def test_roots_slow():
     assert list(roots(f1, x).values()) == [1, 1]
     assert list(roots(f2, x).values()) == [1, 1]
 
-    zz, yy, xx, zy, zx, yx, k = symbols("zz,yy,xx,zy,zx,yx,k")
+    zz, yy, xx, zy, zx, yx, k = symbols('zz,yy,xx,zy,zx,yx,k')
 
     e1 = (zz - k)*(yy - k)*(xx - k) + zy*yx*zx + zx - zy - yx
     e2 = (zz - k)*yx*yx + zx*(yy - k)*zx + zy*zy*(xx - k)
@@ -570,7 +569,7 @@ def test_roots_inexact():
 
 
 def test_roots_preprocessed():
-    E, F, J, L = symbols("E,F,J,L")
+    E, F, J, L = symbols('E,F,J,L')
 
     f = -21601054687500000000*E**8*J**8/L**16 + \
         508232812500000000*F*x*E**7*J**7/L**14 - \

@@ -25,21 +25,14 @@ from .util import _symbol
 
 
 class Undecidable(ValueError):
+    """Raised when can't decide on relation."""
+
     pass
 
 
 class LinearEntity(GeometrySet):
     """A base class for all linear entities (line, ray and segment)
     in a 2-dimensional Euclidean space.
-
-    Attributes
-    ==========
-
-    p1
-    p2
-    coefficients
-    slope
-    points
 
     Notes
     =====
@@ -60,10 +53,10 @@ class LinearEntity(GeometrySet):
             # sometimes we return a single point if we are not given two unique
             # points. This is done in the specific subclass
             raise ValueError(
-                "%s.__new__ requires two unique Points." % cls.__name__)
+                '%s.__new__ requires two unique Points.' % cls.__name__)
         if len(p1) != len(p2):
             raise ValueError(
-                "%s.__new__ requires two Points of equal dimension." % cls.__name__)
+                '%s.__new__ requires two Points of equal dimension.' % cls.__name__)
 
         return GeometryEntity.__new__(cls, p1, p2, **kwargs)
 
@@ -191,7 +184,6 @@ class LinearEntity(GeometrySet):
         False
 
         """
-
         # Concurrency requires intersection at a single point; One linear
         # entity cannot be concurrent.
         if len(lines) <= 1:
@@ -624,7 +616,7 @@ class LinearEntity(GeometrySet):
             n1 = self.__class__.__name__
             n2 = o.__class__.__name__
             raise GeometryError(
-                "Do not know how to project %s onto %s" % (n2, n1))
+                'Do not know how to project %s onto %s' % (n2, n1))
 
         return self.intersection(projected)[0]
 
@@ -1176,13 +1168,6 @@ class Ray(LinearEntity):
         If given as an angle it is interpreted in radians with the positive
         direction being ccw.
 
-    Attributes
-    ==========
-
-    source
-    xdirection
-    ydirection
-
     See Also
     ========
 
@@ -1222,11 +1207,11 @@ class Ray(LinearEntity):
             try:
                 p2 = Point(pt)
             except ValueError:
-                from ...utilities import filldedent
-                raise ValueError(filldedent('''
+                from ..utilities import filldedent
+                raise ValueError(filldedent("""
                     The 2nd argument was not a valid Point; if
                     it was meant to be an angle it should be
-                    given with keyword "angle".'''))
+                    given with keyword "angle"."""))
             if p1 == p2:
                 raise ValueError('A Ray requires two distinct points.')
         elif angle is not None and pt is None:
@@ -1500,12 +1485,6 @@ class Segment(LinearEntity):
 
     p1 : diofant.geometry.point.Point
     p2 : diofant.geometry.point.Point
-
-    Attributes
-    ==========
-
-    length : Expr
-    midpoint : diofant.geometry.point.Point
 
     See Also
     ========

@@ -1,4 +1,4 @@
-"""This module implements tools for integrating rational functions. """
+"""This module implements tools for integrating rational functions."""
 
 from ..core import Dummy, I, Integer, Lambda, Symbol, symbols
 from ..domains import ZZ
@@ -147,8 +147,8 @@ def ratint_ratpart(f, g, x):
 
     C_coeffs = A_coeffs + B_coeffs
 
-    A = Poly(A_coeffs, x, domain=ZZ.poly_ring(*C_coeffs))
-    B = Poly(B_coeffs, x, domain=ZZ.poly_ring(*C_coeffs))
+    A = Poly(A_coeffs, x, domain=ZZ.inject(*C_coeffs))
+    B = Poly(B_coeffs, x, domain=ZZ.inject(*C_coeffs))
 
     H = f - A.diff()*v + A*(u.diff()*v).quo(u) - B*u
 

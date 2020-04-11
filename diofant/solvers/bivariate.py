@@ -8,7 +8,7 @@ from .solvers import _invert, solve
 
 
 def _filtered_gens(poly, symbol):
-    """process the generators of ``poly``, returning the set of generators that
+    """Process the generators of ``poly``, returning the set of generators that
     have ``symbol``.  If there are two generators that are inverses of each other,
     prefer the one that has no denominator.
 
@@ -81,7 +81,6 @@ def _linab(arg, symbol):
     (2, 3, E**x)
 
     """
-
     arg = arg.expand()
     ind, dep = arg.as_independent(symbol)
     if not arg.is_Add:
@@ -171,7 +170,6 @@ def _solve_lambert(f, symbol, gens):
       a = -1, d = a*log(p), f = -log(d) - g*log(p)
 
     """
-
     nrhs, lhs = f.as_independent(symbol, as_Add=True)
     rhs = -nrhs
 
@@ -186,7 +184,7 @@ def _solve_lambert(f, symbol, gens):
         rhs = log(rhs)
 
     lhs = factor(lhs, deep=True)
-    # make sure we are inverted as completely as possible
+    # make sure we have inverted as completely as possible
     r = Dummy()
     i, lhs = _invert(lhs - r, symbol)
     rhs = i.xreplace({r: rhs})
@@ -286,7 +284,6 @@ def bivariate_type(f, x, y, **kwargs):
     True
 
     """
-
     u = Dummy('u', positive=True)
 
     if kwargs.pop('first', True):

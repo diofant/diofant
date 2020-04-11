@@ -477,7 +477,7 @@ def make_simp(z):
 def debug(*args):
     if DIOFANT_DEBUG:
         for a in args:
-            print(a, end="")
+            print(a, end='')
         print()
 
 
@@ -555,7 +555,7 @@ class Hyper_Function(Expr):
         return self.gamma, tr(abuckets), tr(bbuckets)
 
     def difficulty(self, func):
-        """ Estimate how many steps it takes to reach ``func`` from self.
+        """Estimate how many steps it takes to reach ``func`` from self.
         Return -1 if impossible.
 
         """
@@ -752,8 +752,8 @@ class Formula:
             elif a in self.func.bq.args:
                 symbol_values.append(bq)
             else:
-                raise ValueError("At least one of the parameters of the "
-                                 "formula must be equal to %s" % (a,))
+                raise ValueError('At least one of the parameters of the '
+                                 'formula must be equal to %s' % (a,))
         base_repl = [dict(zip(self.symbols, values))
                      for values in product(*symbol_values)]
         abuckets, bbuckets = [sift(params, _mod1) for params in [ap, bq]]
@@ -780,7 +780,7 @@ class Formula:
                             for target in bucket[mod]:
                                 n0 = solve(expr.xreplace(repl0) - target, _n)[0][_n]
                                 if n0.free_symbols:
-                                    raise ValueError("Value should not be true")
+                                    raise ValueError('Value should not be true')
                                 vals.append(n0)
             else:
                 values = []
@@ -1468,7 +1468,6 @@ def reduce_order_meijer(func):
     G_Function((), (), (), ())
 
     """
-
     nan, nbq, ops1 = _reduce_order(func.an, func.bq, ReduceOrder.meijer_plus,
                                    lambda x: default_sort_key(-x))
     nbm, nap, ops2 = _reduce_order(func.bm, func.ap, ReduceOrder.meijer_minus,
@@ -1784,7 +1783,7 @@ def try_lerchphi(func):
         if not denom.has(t):
             p = Poly(numer, t)
             if not p.is_term:
-                raise TypeError("p should be a term")
+                raise TypeError('p should be a term')
             ((b, ), a) = p.LT()
             monomials += [(a/denom, b)]
             continue
@@ -1962,7 +1961,6 @@ def _hyperexpand(func, z, ops0=[], z0=Dummy('z0'), premult=1, prem=0,
     premult must be a*z**prem for some a independent of z.
 
     """
-
     z = polarify(z, subs=False)
     if rewrite == 'default':
         rewrite = 'nonrepsmall'
@@ -2119,7 +2117,7 @@ def devise_plan_meijer(fro, to, z):
     #      when possible, shift otherwise. Give up if we cannot make progress.
 
     def try_shift(f, t, shifter, diff, counter):
-        """ Try to apply ``shifter`` in order to bring some element in ``f``
+        """Try to apply ``shifter`` in order to bring some element in ``f``
         nearer to its counterpart in ``to``. ``diff`` is +/- 1 and
         determines the effect of ``shifter``. Counter is a list of elements
         blocking the shift.

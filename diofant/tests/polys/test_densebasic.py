@@ -1,11 +1,10 @@
-"""Tests for dense recursive polynomials' basic tools. """
+"""Tests for dense recursive polynomials' basic tools."""
 
 import random
 
 import pytest
 
-from diofant import oo
-from diofant.domains import FF, ZZ
+from diofant import FF, ZZ, oo, ring
 from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert,
                                       dmp_deflate, dmp_degree_in, dmp_eject,
                                       dmp_exclude, dmp_from_dict, dmp_ground,
@@ -16,7 +15,6 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert,
                                       dmp_terms_gcd, dmp_to_dict, dmp_zero,
                                       dmp_zero_p, dmp_zeros, dup_inflate,
                                       dup_random, dup_reverse)
-from diofant.polys.rings import ring
 from diofant.polys.specialpolys import f_polys
 
 
@@ -207,7 +205,7 @@ def test_dmp_normal():
 
 
 def test_dmp_convert():
-    K0, K1 = ZZ.poly_ring('x'), ZZ
+    K0, K1 = ZZ.inject('x'), ZZ
 
     assert dmp_convert([K0(1), K0(2)], 0, K0, K1) == [ZZ(1), ZZ(2)]
     assert dmp_convert([K1(1), K1(2)], 0, K1, K0) == [K0(1), K0(2)]
@@ -297,7 +295,7 @@ def test_dmp_from_to_dict():
 
     assert dmp_to_dict(f, 0) == h
 
-    R,  x, y = ring("x,y", ZZ)
+    R,  x, y = ring('x,y', ZZ)
 
     f = [R(3), R(0), R(2), R(0), R(0), R(8)]
     h = {(5,): R(3), (3,): R(2), (0,): R(8)}
@@ -468,7 +466,7 @@ def test_dmp_include():
 
 
 def test_dmp_inject():
-    R,  x, y = ring("x,y", ZZ)
+    R,  x, y = ring('x,y', ZZ)
 
     assert dmp_inject([], 0, R) == ([[[]]], 2)
     assert dmp_inject([[]], 1, R) == ([[[[]]]], 3)
@@ -488,7 +486,7 @@ def test_dmp_inject():
 
 
 def test_dmp_eject():
-    R,  x, y = ring("x,y", ZZ)
+    R,  x, y = ring('x,y', ZZ)
 
     assert dmp_eject([[[]]], 2, R) == []
     assert dmp_eject([[[[]]]], 3, R) == [[]]
@@ -521,6 +519,7 @@ def test_dmp_terms_gcd():
 
     assert dmp_terms_gcd([[1, 0], [], [1]], 1, ZZ) == ((0, 0), [[1, 0], [], [1]])
     assert dmp_terms_gcd([[1, 0], [1, 0, 0], [], []], 1, ZZ) == ((2, 1), [[1], [1, 0]])
+    assert dmp_terms_gcd([[1], [-1, 0], [-2, 0, 0]], 1, ZZ) == ((0, 0), [[1], [-1, 0], [-2, 0, 0]])
 
 
 def test_dmp_apply_pairs():
@@ -549,37 +548,6 @@ def test_dmp_apply_pairs():
     assert dmp_apply_pairs(g, f, h2, (1,), 1, ZZ) == [[1, 2, 9], [3, 6]]
 
     assert dmp_apply_pairs([1, 2, 3], [3, 2, 1], h2, [1], 0, ZZ) == [4, 5, 6]
-
-
-def test_dmp_slice_in():
-    R, x = ring('x', ZZ)
-
-    f = x**3 + 2*x**2 + 3*x + 4
-
-    assert f.slice(0, 0) == 0
-    assert f.slice(0, 1) == 4
-    assert f.slice(0, 2) == 3*x + 4
-    assert f.slice(0, 3) == 2*x**2 + 3*x + 4
-
-    assert f.slice(0, 4) == f
-    assert f.slice(0, 9) == f
-
-    assert f.slice(1, 0) == 0
-    assert f.slice(1, 1) == 0
-    assert f.slice(1, 2) == 3*x
-    assert f.slice(1, 3) == 2*x**2 + 3*x
-    assert f.slice(1, 4) == x**3 + 2*x**2 + 3*x
-
-    pytest.raises(IndexError, lambda: R.dmp_slice_in(f, 0, 0, -1))
-
-    assert (x + 2).slice(0, 3) == x + 2
-
-    R, x, y = ring('x y', ZZ)
-
-    f = x + 2*y**2 + 3*y + 4
-
-    assert f.slice(1, 2) == f
-    assert f.slice(2, 1) == 2*y**2 + 3*y + 5
 
 
 def test_dup_random():
