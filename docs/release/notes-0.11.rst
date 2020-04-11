@@ -64,6 +64,7 @@ Minor changes
 * The :class:`~diofant.domains.ring.Ring` and all derived classes got :attr:`~diofant.domains.ring.Ring.characteristic` property, see :pull:`968`.
 * Correct wrong implementation of the Berlekamp factorization algorithm, see :pull:`968`.
 * Support domains pickling, see :pull:`972`.
+* Module :mod:`~diofant.polys.euclidtools` was adapted to use sparse polynomial representation, see :pull:`994`.
 
 Developer changes
 =================

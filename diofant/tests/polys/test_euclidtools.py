@@ -137,156 +137,188 @@ def test_dmp_prem():
 def test_PolyElement_subresultants():
     R, x = ring('x', ZZ)
 
-    assert R(0).resultant(R(0)) == 0
-    assert R(0).resultant(R(0), includePRS=True) == (0, [])
+    for check in (True, False):
+        with using(use_collins_resultant=check):
+            assert R(0).resultant(R(0)) == 0
+            assert R(0).resultant(R(0), includePRS=True) == (0, [])
+            assert R(1).resultant(R(0)) == 0
+            assert R(1).subresultants(R(0)) == [1]
+            assert R(0).resultant(R(1)) == 0
+            assert R(0).resultant(R(1), includePRS=True) == (0, [1])
 
-    assert R(1).resultant(R(0)) == 0
-    assert R(1).subresultants(R(0)) == [1]
-    assert R(0).resultant(R(1)) == 0
-    assert R(0).resultant(R(1), includePRS=True) == (0, [1])
+            f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
+            g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
 
-    f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
-    g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
+            a = 15*x**4 - 3*x**2 + 9
+            b = 65*x**2 + 125*x - 245
+            c = 9326*x - 12300
+            d = R(260708)
 
-    a = 15*x**4 - 3*x**2 + 9
-    b = 65*x**2 + 125*x - 245
-    c = 9326*x - 12300
-    d = R(260708)
+            assert f.subresultants(g) == [f, g, a, b, c, d]
+            assert f.resultant(g) == d.drop(x)
 
-    assert f.subresultants(g) == [f, g, a, b, c, d]
-    assert f.resultant(g) == d.drop(x)
+            f = x**2 - 2*x + 1
+            g = x**2 - 1
 
-    with using(use_collins_resultant=True):
-        assert f.resultant(g) == d.drop(x)
+            a = 2*x - 2
 
-    f = x**2 - 2*x + 1
-    g = x**2 - 1
+            assert f.subresultants(g) == [f, g, a]
+            assert f.resultant(g) == 0
 
-    a = 2*x - 2
+            f = x**2 + 1
+            g = x**2 - 1
 
-    assert f.subresultants(g) == [f, g, a]
-    assert f.resultant(g) == 0
+            a = -2
 
-    f = x**2 + 1
-    g = x**2 - 1
+            assert f.subresultants(g) == [f, g, a]
+            assert f.resultant(g) == 4
+            assert f.resultant(g, includePRS=True) == (4, [x**2 + 1, x**2 - 1, -2])
 
-    a = -2
+            f = x**2 - 1
+            g = x**3 - x**2 + 2
 
-    assert f.subresultants(g) == [f, g, a]
-    assert f.resultant(g) == 4
-    assert f.resultant(g, includePRS=True) == (4, [x**2 + 1, x**2 - 1, -2])
+            assert f.resultant(g) == 0
 
-    f = x**2 - 1
-    g = x**3 - x**2 + 2
+            f = 3*x**3 - x
+            g = 5*x**2 + 1
 
-    assert f.resultant(g) == 0
+            assert f.resultant(g) == 64
 
-    f = 3*x**3 - x
-    g = 5*x**2 + 1
+            f = x**2 - 2*x + 7
+            g = x**3 - x + 5
 
-    assert f.resultant(g) == 64
+            assert f.resultant(g) == 265
 
-    f = x**2 - 2*x + 7
-    g = x**3 - x + 5
+            f = x**3 - 6*x**2 + 11*x - 6
+            g = x**3 - 15*x**2 + 74*x - 120
 
-    assert f.resultant(g) == 265
+            assert f.resultant(g) == -8640
 
-    f = x**3 - 6*x**2 + 11*x - 6
-    g = x**3 - 15*x**2 + 74*x - 120
+            f = x**3 - 6*x**2 + 11*x - 6
+            g = x**3 - 10*x**2 + 29*x - 20
 
-    assert f.resultant(g) == -8640
+            assert f.resultant(g) == 0
 
-    f = x**3 - 6*x**2 + 11*x - 6
-    g = x**3 - 10*x**2 + 29*x - 20
+            f = x**3 - 1
+            g = x**3 + 2*x**2 + 2*x - 1
 
-    assert f.resultant(g) == 0
+            assert f.resultant(g) == 16
 
-    f = x**3 - 1
-    g = x**3 + 2*x**2 + 2*x - 1
+            f = x**8 - 2
+            g = x - 1
 
-    assert f.resultant(g) == 16
-
-    f = x**8 - 2
-    g = x - 1
-
-    assert f.resultant(g) == -1
+            assert f.resultant(g) == -1
 
     R, x, y = ring('x,y', ZZ)
 
-    assert R(0).resultant(R(0)) == 0
-    assert R(0).resultant(R(0), includePRS=True) == (0, [])
+    for check in (True, False):
+        with using(use_collins_resultant=check):
+            assert R(0).resultant(R(0)) == 0
+            assert R(0).resultant(R(0), includePRS=True) == (0, [])
 
-    with using(use_collins_resultant=True):
-        assert R(0).resultant(R(0)) == 0
-        assert R(0).resultant(R(1)) == 0
+            assert R(0).resultant(R(1)) == 0
+            assert R(1).resultant(R(0)) == 0
+            assert R(1).subresultants(R(0)) == [1]
+            assert R(0).resultant(R(1), includePRS=True) == (0, [1])
 
-        f = x + y + 2
-        g = 2*x*y + x + 3
+            f = x + y + 2
+            g = 2*x*y + x + 3
 
-        assert f.resultant(g) == (-2*y**2 - 5*y + 1).drop(x)
+            assert f.resultant(g) == (-2*y**2 - 5*y + 1).drop(x)
 
-    assert R(1).resultant(R(0)) == 0
-    assert R(1).subresultants(R(0)) == [1]
-    assert R(0).resultant(R(1)) == 0
-    assert R(0).resultant(R(1), includePRS=True) == (0, [1])
+            f = 3*x**2*y - y**3 - 4
+            g = x**2 + x*y**3 - 9
 
-    f = 3*x**2*y - y**3 - 4
-    g = x**2 + x*y**3 - 9
+            a = 3*x*y**4 + y**3 - 27*y + 4
+            b = (-3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 +
+                 729*y**2 - 216*y + 16)
 
-    a = 3*x*y**4 + y**3 - 27*y + 4
-    b = -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16
+            r = b.drop(x)
+            rr = (r, [3*x**2*y - y**3 - 4, x**2 + x*y**3 - 9, 3*x*y**4 +
+                      y**3 - 27*y + 4, -3*y**10 - 12*y**7 + y**6 -
+                      54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16])
 
-    r = b.drop(x)
-    rr = (r, [3*x**2*y - y**3 - 4, x**2 + x*y**3 - 9, 3*x*y**4 + y**3 - 27*y + 4,
-              -3*y**10 - 12*y**7 + y**6 - 54*y**4 + 8*y**3 + 729*y**2 - 216*y + 16])
+            assert f.subresultants(g) == [f, g, a, b]
 
-    assert f.subresultants(g) == [f, g, a, b]
+            assert f.resultant(g) == r
+            assert f.resultant(g, includePRS=True) == rr
 
-    assert f.resultant(g) == r
-    assert f.resultant(g, includePRS=True) == rr
+            f = -x**3 + 5
+            g = 3*x**2*y + x**2
 
-    with using(use_collins_resultant=True):
-        assert f.resultant(g) == r
+            a = 45*y**2 + 30*y + 5
+            b = 675*y**3 + 675*y**2 + 225*y + 25
 
-    f = -x**3 + 5
-    g = 3*x**2*y + x**2
+            r = b.drop(x)
 
-    a = 45*y**2 + 30*y + 5
-    b = 675*y**3 + 675*y**2 + 225*y + 25
+            assert f.subresultants(g) == [f, g, a]
+            assert f.resultant(g) == r
+            assert f.resultant(g, includePRS=True)[0] == r
 
-    r = b.drop(x)
+            f = x + y
+            g = x**2 - x*y + 1
 
-    assert f.subresultants(g) == [f, g, a]
-    assert f.resultant(g) == r
-    assert f.resultant(g, includePRS=True)[0] == r
+            assert f.resultant(g) == (1 + 2*y**2).drop(x)
 
-    with using(use_collins_resultant=True):
-        assert f.resultant(g) == r
+            g += 1
+
+            assert f.resultant(g) == (2 + 2*y**2).drop(x)
+
+    R, x, y = ring('x,y', QQ)
+
+    for check in (True, False):
+        with using(use_collins_resultant=check):
+            assert R(0).resultant(R(0)) == 0
+            assert R(0).resultant(R(1)) == 0
+
+            f = x + y
+            g = x**2 - x*y + 1
+
+            assert f.resultant(g) == (1 + 2*y**2).drop(x)
+
+            f = x/2 + y + QQ(2, 3)
+            g = 2*x*y + x + 3
+
+            assert f.resultant(g) == (-2*y**2 - 7*y/3 + QQ(5, 6)).drop(x)
+
+            f = 3*x**2*y - y**3 - 4
+            g = x**2 + x*y**3 - 9
+
+            assert f.resultant(g) == (-3*y**10 - 12*y**7 + y**6 - 54*y**4 +
+                                      8*y**3 + 729*y**2 - 216*y + 16).drop(x)
+
+            f = -x**3 + 5
+            g = 3*x**2*y + x**2
+
+            assert f.resultant(g) == (675*y**3 + 675*y**2 + 225*y + 25).drop(x)
 
     R, x, y, z, u, v = ring('x,y,z,u,v', ZZ)
 
-    f = 6*x**2 - 3*x*y - 2*x*z + y*z
-    g = x**2 - x*u - x*v + u*v
+    for check in (True, False):
+        with using(use_collins_resultant=check):
+            f = 6*x**2 - 3*x*y - 2*x*z + y*z
+            g = x**2 - x*u - x*v + u*v
 
-    r = y**2*z**2 - 3*y**2*z*u - 3*y**2*z*v + 9*y**2*u*v - 2*y*z**2*u \
-        - 2*y*z**2*v + 6*y*z*u**2 + 12*y*z*u*v + 6*y*z*v**2 - 18*y*u**2*v \
-        - 18*y*u*v**2 + 4*z**2*u*v - 12*z*u**2*v - 12*z*u*v**2 + 36*u**2*v**2
+            r = (y**2*z**2 - 3*y**2*z*u - 3*y**2*z*v + 9*y**2*u*v -
+                 2*y*z**2*u - 2*y*z**2*v + 6*y*z*u**2 + 12*y*z*u*v +
+                 6*y*z*v**2 - 18*y*u**2*v - 18*y*u*v**2 + 4*z**2*u*v -
+                 12*z*u**2*v - 12*z*u*v**2 + 36*u**2*v**2)
 
-    with using(use_collins_resultant=True):
-        assert f.resultant(g) == r.drop(x)
+            assert f.resultant(g) == r.drop(x)
 
     R, x, y, z, u, v = ring('x,y,z,u,v', QQ)
 
-    f = x**2 - x*y/2 - x*z/3 + y*z/6
-    g = x**2 - x*u - x*v + u*v
+    for check in (True, False):
+        with using(use_collins_resultant=check):
+            f = x**2 - x*y/2 - x*z/3 + y*z/6
+            g = x**2 - x*u - x*v + u*v
 
-    r = y**2*z**2/36 - y**2*z*u/12 - y**2*z*v/12 + y**2*u*v/4 \
-        - y*z**2*u/18 - y*z**2*v/18 + y*z*u**2/6 + y*z*u*v/3 \
-        + y*z*v**2/6 - y*u**2*v/2 - y*u*v**2/2 + z**2*u*v/9 \
-        - z*u**2*v/3 - z*u*v**2/3 + u**2*v**2
+            r = (y**2*z**2/36 - y**2*z*u/12 - y**2*z*v/12 + y**2*u*v/4 -
+                 y*z**2*u/18 - y*z**2*v/18 + y*z*u**2/6 + y*z*u*v/3 +
+                 y*z*v**2/6 - y*u**2*v/2 - y*u*v**2/2 + z**2*u*v/9 -
+                 z*u**2*v/3 - z*u*v**2/3 + u**2*v**2)
 
-    with using(use_collins_resultant=True):
-        assert f.resultant(g) == r.drop(x)
+            assert f.resultant(g) == r.drop(x)
 
     Rt, t = ring('t', ZZ)
     Rx, x = ring('x', Rt)
@@ -295,50 +327,7 @@ def test_PolyElement_subresultants():
     g = -6*t*x**5 + x**4 + 20*t*x**3 - 3*x**2 - 10*t*x + 6
 
     assert f.resultant(g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
-
-    with using(use_collins_resultant=True):
-        assert f.resultant(g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
-
     assert (x - 1).resultant(x + 1, includePRS=True) == (2, [x - 1, x + 1, 2])
-
-    R, x, y = ring('x,y', ZZ)
-
-    f = x + y
-    g = x**2 - x*y + 1
-
-    assert f.resultant(g) == (1 + 2*y**2).drop(x)
-
-    g += 1
-
-    with using(use_collins_resultant=True):
-        assert f.resultant(g) == (2 + 2*y**2).drop(x)
-
-    R, x, y = ring('x,y', QQ)
-
-    with using(use_collins_resultant=True):
-        assert R(0).resultant(R(0)) == 0
-        assert R(0).resultant(R(1)) == 0
-
-        f = x + y
-        g = x**2 - x*y + 1
-
-        assert f.resultant(g) == (1 + 2*y**2).drop(x)
-
-        f = x/2 + y + QQ(2, 3)
-        g = 2*x*y + x + 3
-
-        assert f.resultant(g) == (-2*y**2 - 7*y/3 + QQ(5, 6)).drop(x)
-
-        f = 3*x**2*y - y**3 - 4
-        g = x**2 + x*y**3 - 9
-
-        assert f.resultant(g) == (-3*y**10 - 12*y**7 + y**6 - 54*y**4 +
-                                  8*y**3 + 729*y**2 - 216*y + 16).drop(x)
-
-        f = -x**3 + 5
-        g = 3*x**2*y + x**2
-
-        assert f.resultant(g) == (675*y**3 + 675*y**2 + 225*y + 25).drop(x)
 
 
 def test_PolyElement_discriminant():
@@ -849,13 +838,3 @@ def test_PolyElement_cancel():
     g = t**2 + (x**2 + 2)/2
 
     assert f.cancel(g) == ((-x**2 - 4)*t, 4*t**2 + 2*x**2 + 4)
-
-
-def test_dmp_zz_modular_resultant():
-    R, x, y = ring('x,y', ZZ)
-    R1 = R.drop(x)
-
-    f = x + y + 2
-    g = 2*x*y + x + 3
-
-    assert R.dmp_zz_modular_resultant(f, g, 5) == -2*R1.y**2 + 1
