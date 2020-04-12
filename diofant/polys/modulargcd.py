@@ -1480,7 +1480,6 @@ def _primitive_in_x0(f):
     return cont, f//cont.set_ring(fring)
 
 
-# TODO: add support for algebraic function fields
 def func_field_modgcd(f, g):
     r"""
     Compute the GCD of two polynomials `f` and `g` in

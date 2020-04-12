@@ -984,6 +984,7 @@ def test_Poly_as_dict():
     assert Poly(1, x, y, z).as_dict() == {(0, 0, 0): 1}
 
     assert Poly(x**2 + 3, x).as_dict() == {(2,): 1, (0,): 3}
+    assert Poly(x**2 + 3, x).as_dict(native=True) == {(2,): ZZ(1), (0,): ZZ(3)}
     assert Poly(x**2 + 3, x, y, z).as_dict() == {(2, 0, 0): 1, (0, 0, 0): 3}
 
     assert Poly(3*x**2*y*z**3 + 4*x*y + 5*x*z).as_dict() == {(2, 1, 3): 3,
@@ -2456,16 +2457,23 @@ def test_intervals():
 
     f = 7*z**4 - 19*z**3 + 20*z**2 + 17*z + 20
 
-    assert intervals(f) == []
+    for sqf in (True, False):
+        assert intervals(f) == []
 
-    real_part, complex_part = intervals(f, all=True, sqf=True)
+        real_part, complex_part = intervals(f, all=True, sqf=sqf)
 
-    assert real_part == []
-    assert all(re(a) < re(r) < re(b) and im(
-        a) < im(r) < im(b) for (a, b), r in zip(complex_part, nroots(f)))
+        if not sqf:
+            assert all(k == 1 for _, k in complex_part)
+            complex_part = [i for i, _ in complex_part]
 
-    assert complex_part == [(-Rational(40, 7) - 40*I/7, 0), (-Rational(40, 7), 40*I/7),
-                            (-40*I/7, Rational(40, 7)), (0, Rational(40, 7) + 40*I/7)]
+        assert real_part == []
+        assert all(re(a) < re(r) < re(b) and im(a) < im(r) < im(b)
+                   for (a, b), r in zip(complex_part, nroots(f)))
+
+        assert complex_part == [(-Rational(40, 7) - 40*I/7, 0),
+                                (-Rational(40, 7), 40*I/7),
+                                (-40*I/7, Rational(40, 7)),
+                                (0, Rational(40, 7) + 40*I/7)]
 
     real_part, complex_part = intervals(f, all=True, sqf=True, eps=Rational(1, 10))
 

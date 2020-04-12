@@ -1045,22 +1045,10 @@ class Poly(Expr):
 
     def _gen_to_level(self, gen):
         """Returns level associated with the given generator."""
-        if isinstance(gen, int):
-            length = len(self.gens)
-
-            if -length <= gen < length:
-                if gen < 0:
-                    return length + gen
-                else:
-                    return gen
-            else:
-                raise PolynomialError(f'-{length} <= gen < {length} expected, got {gen}')
-        else:
-            try:
-                return self.gens.index(sympify(gen))
-            except ValueError:
-                raise PolynomialError(
-                    f'a valid generator expected, got {gen}')
+        try:
+            return self.rep.ring.index(gen)
+        except ValueError:
+            raise PolynomialError(f'a valid generator expected, got {gen}')
 
     def degree(self, gen=0):
         """
@@ -2884,7 +2872,7 @@ def _poly_from_expr(expr, opt):
     except GeneratorsNeeded:
         raise PolificationFailed(opt, orig, expr)
 
-    monoms, coeffs = list(zip(*list(rep.items())))
+    monoms, coeffs = zip(*rep.items())
     domain = opt.domain
 
     if domain is None:
@@ -2972,7 +2960,7 @@ def _parallel_poly_from_expr(exprs, opt):
     all_coeffs = []
 
     for rep in reps:
-        monoms, coeffs = list(zip(*list(rep.items())))
+        monoms, coeffs = zip(*rep.items())
 
         coeffs_list.extend(coeffs)
         all_monoms.append(monoms)
