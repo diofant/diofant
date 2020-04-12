@@ -23,6 +23,8 @@ def test_dup_sturm():
     assert f.sturm() == [f, 3*x**2 - 4*x + 3,
                          -10*x/9 + QQ(13, 3), -QQ(3303, 100)]
 
+    pytest.raises(DomainError, lambda: x.set_domain(ZZ).sturm())
+
 
 def test_dup_sign_variations():
     R, x = ring('x', ZZ)
