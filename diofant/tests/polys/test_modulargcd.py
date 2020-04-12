@@ -369,7 +369,6 @@ def test_modgcd_algebraic_field_random():
         assert (h*a).cofactors(h*b) == (h, a, b)
 
 
-# when func_field_modgcd supports function fields, this test can be changed
 def test_modgcd_func_field():
     D, t = ring('t', ZZ)
     R, x, z = ring('x, z', D)
