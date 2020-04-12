@@ -5,11 +5,10 @@ import itertools
 import mpmath
 import pytest
 
-from diofant import (ZZ, I, Integer, Interval, Mul, Piecewise, Poly,
+from diofant import (QQ, ZZ, I, Integer, Interval, Mul, Piecewise, Poly,
                      PolynomialError, Rational, RootOf, Symbol, Wild, acos,
-                     cbrt, cos, cyclotomic_poly, exp, im, intervals,
-                     legendre_poly, nroots, pi, powsimp, re, root, roots, sin,
-                     sqrt, symbols)
+                     cbrt, cos, cyclotomic_poly, exp, im, legendre_poly,
+                     nroots, pi, powsimp, re, root, roots, sin, sqrt, symbols)
 from diofant.abc import a, b, c, d, e, q, x, y, z
 from diofant.polys.polyroots import (preprocess_roots, root_factors,
                                      roots_binomial, roots_cubic,
@@ -600,12 +599,23 @@ def test_roots_preprocessed():
 def test_roots_mixed():
     f = -1936 - 5056*x - 7592*x**2 + 2704*x**3 - 49*x**4
 
-    _re, _im = intervals(f, all=True)
+    _re, _im = [], []
+    p = Poly(f)
+    for r in p.all_roots():
+        c, (r,) = r.as_coeff_mul()
+        if r.is_real:
+            r = r.interval
+            _re.append((c*QQ.to_expr(r.a), c*QQ.to_expr(r.b)))
+        else:
+            r = r.interval
+            _im.append((c*QQ.to_expr(r.ax) + c*I*QQ.to_expr(r.ay),
+                        c*QQ.to_expr(r.bx) + c*I*QQ.to_expr(r.by)))
+
     _nroots = nroots(f)
     _sroots = roots(f, multiple=True)
 
-    _re = [Interval(a, b) for (a, b), _ in _re]
-    _im = [Interval(re(a), re(b))*Interval(im(a), im(b)) for (a, b), _ in _im]
+    _re = [Interval(a, b) for (a, b) in _re]
+    _im = [Interval(re(a), re(b))*Interval(im(a), im(b)) for (a, b) in _im]
 
     _intervals = _re + _im
     _sroots = [r.evalf() for r in _sroots]
