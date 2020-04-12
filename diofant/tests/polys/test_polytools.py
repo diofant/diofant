@@ -2457,16 +2457,23 @@ def test_intervals():
 
     f = 7*z**4 - 19*z**3 + 20*z**2 + 17*z + 20
 
-    assert intervals(f) == []
+    for sqf in (True, False):
+        assert intervals(f) == []
 
-    real_part, complex_part = intervals(f, all=True, sqf=True)
+        real_part, complex_part = intervals(f, all=True, sqf=sqf)
 
-    assert real_part == []
-    assert all(re(a) < re(r) < re(b) and im(
-        a) < im(r) < im(b) for (a, b), r in zip(complex_part, nroots(f)))
+        if not sqf:
+            assert all(k == 1 for _, k in complex_part)
+            complex_part = [i for i, _ in complex_part]
 
-    assert complex_part == [(-Rational(40, 7) - 40*I/7, 0), (-Rational(40, 7), 40*I/7),
-                            (-40*I/7, Rational(40, 7)), (0, Rational(40, 7) + 40*I/7)]
+        assert real_part == []
+        assert all(re(a) < re(r) < re(b) and im(a) < im(r) < im(b)
+                   for (a, b), r in zip(complex_part, nroots(f)))
+
+        assert complex_part == [(-Rational(40, 7) - 40*I/7, 0),
+                                (-Rational(40, 7), 40*I/7),
+                                (-40*I/7, Rational(40, 7)),
+                                (0, Rational(40, 7) + 40*I/7)]
 
     real_part, complex_part = intervals(f, all=True, sqf=True, eps=Rational(1, 10))
 
