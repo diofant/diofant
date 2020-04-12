@@ -672,7 +672,6 @@ def preprocess_roots(poly):
     poly = poly.primitive()[1]
     poly = poly.retract()
 
-    # TODO: This is fragile. Figure out how to make this independent of construct_domain().
     if poly.domain.is_PolynomialRing and all(c.is_term for c in poly.rep.coeffs()):
         poly = poly.inject()
 
