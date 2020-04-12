@@ -2,7 +2,7 @@
 
 from ..core import cacheit
 from ..ntheory import nextprime
-from ..ntheory.modular import crt, symmetric_residue
+from ..ntheory.modular import crt
 from .polyerrors import HomomorphismFailed
 
 
@@ -206,16 +206,16 @@ class _GCD:
         r, p, P = new_ring.zero, domain.one, domain.one
 
         while P <= B:
-            p = domain(nextprime(p))
-
-            while not (a % p) or not (b % p):
+            while True:
                 p = domain(nextprime(p))
+                if (a % p) and (b % p):
+                    break
 
-            F = f.trunc_ground(p)
-            G = g.trunc_ground(p)
+            p_domain = domain.finite_field(p)
+            F, G = map(lambda _: _.set_domain(p_domain), (f, g))
 
             try:
-                R = ring._modular_resultant(F, G, p)
+                R = ring.clone(domain=p_domain)._modular_resultant(F, G)
             except HomomorphismFailed:
                 continue
 
@@ -223,15 +223,14 @@ class _GCD:
                 r = R
             else:
                 def _crt(r, R):
-                    return domain(crt([P, p], [r, R],
+                    return domain(crt([P, p], map(domain.convert, [r, R]),
                                   check=False, symmetric=True)[0])
 
                 if new_ring.is_PolynomialRing:
-                    r_new, zero = new_ring.zero, new_ring.domain.zero
+                    r_new = new_ring.zero
 
                     for monom in set(r.keys()) | set(R.keys()):
-                        r_new[monom] = _crt(r.get(monom, zero),
-                                            R.get(monom, zero))
+                        r_new[monom] = _crt(r.get(monom, 0), R.get(monom, 0))
                     r = r_new
                 else:
                     r = _crt(r, R)
@@ -240,9 +239,9 @@ class _GCD:
 
         return r
 
-    def _modular_resultant(self, f, g, p):
+    def _modular_resultant(self, f, g):
         """
-        Compute resultant of `f` and `g` modulo a prime `p`.
+        Compute resultant of `f` and `g` in `GF(p)[X]`.
 
         References
         ==========
@@ -253,10 +252,10 @@ class _GCD:
         ring = self
         domain = ring.domain
 
-        assert domain.is_IntegerRing
+        assert domain.is_FiniteField
 
         if ring.is_univariate:
-            return symmetric_residue(ring._primitive_prs(f, g)[0] % p, p)
+            return ring._primitive_prs(f, g)[0]
 
         n = f.degree()
         m = g.degree()
@@ -268,29 +267,26 @@ class _GCD:
 
         new_ring = ring.drop(0)
         r = new_ring.zero
-        D, a = ring.eject(1).domain.one, -domain.one
+        D = ring.eject(1).domain.one
+        domain_elts = iter(range(domain.order))
 
         while D.degree() <= B:
             while True:
-                a += domain.one
-
-                if a == p:
+                try:
+                    a = next(domain_elts)
+                except StopIteration:
                     raise HomomorphismFailed('no luck')
 
-                F = f.eval(x=1, a=symmetric_residue(a, p))
+                F = f.eval(x=1, a=a)
 
                 if F.degree() == n:
-                    G = g.eval(x=1, a=symmetric_residue(a, p))
+                    G = g.eval(x=1, a=a)
 
                     if G.degree() == m:
                         break
 
-            R = ring.drop(1)._modular_resultant(F, G, p)
+            R = ring.drop(1)._modular_resultant(F, G)
             e = r.eval(x=0, a=a)
-
-            d = domain.invert(D.eval(x=0, a=a), p)
-            d = D*d
-            d = d.set_ring(new_ring)
 
             if new_ring.is_univariate:
                 R = new_ring.ground_new(R)
@@ -299,10 +295,9 @@ class _GCD:
                 R = R.set_ring(new_ring)
                 e = e.set_ring(new_ring)
 
+            d = D * D.eval(x=0, a=a)**-1
+            d = d.set_ring(new_ring)
             r += d*(R - e)
-            r = r.trunc_ground(p)
-
             D *= D.ring.gens[0] - a
-            D = D.trunc_ground(p)
 
         return r
