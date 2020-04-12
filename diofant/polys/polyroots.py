@@ -628,9 +628,9 @@ def _integer_basis(poly):
     if poly.is_zero:
         return
 
-    monoms, coeffs = list(zip(*poly.terms()))
+    monoms, coeffs = zip(*poly.terms())
 
-    monoms, = list(zip(*monoms))
+    monoms, = zip(*monoms)
     coeffs = list(map(abs, coeffs))
 
     if coeffs[0] < coeffs[-1]:

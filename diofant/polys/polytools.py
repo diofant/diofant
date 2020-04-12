@@ -2884,7 +2884,7 @@ def _poly_from_expr(expr, opt):
     except GeneratorsNeeded:
         raise PolificationFailed(opt, orig, expr)
 
-    monoms, coeffs = list(zip(*list(rep.items())))
+    monoms, coeffs = zip(*rep.items())
     domain = opt.domain
 
     if domain is None:
@@ -2972,7 +2972,7 @@ def _parallel_poly_from_expr(exprs, opt):
     all_coeffs = []
 
     for rep in reps:
-        monoms, coeffs = list(zip(*list(rep.items())))
+        monoms, coeffs = zip(*rep.items())
 
         coeffs_list.extend(coeffs)
         all_monoms.append(monoms)
