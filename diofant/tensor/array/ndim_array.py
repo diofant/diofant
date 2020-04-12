@@ -151,7 +151,7 @@ class NDimArray(DefaultPrinting):
             raise TypeError('Shape should contain integers only.')
 
         if isinstance(iterable, collections.abc.Mapping):
-            for k, v in iterable.items():
+            for k, v in list(iterable.items()):
                 if not isinstance(k, collections.abc.Sequence):
                     continue
                 new_key = 0
