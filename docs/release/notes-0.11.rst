@@ -189,3 +189,4 @@ These Sympy issues also were addressed:
 * :sympyissue:`12361` Misspelling of "Bareiss" in Matrix module
 * :sympyissue:`12452` is_upper() raises IndexError for tall matrices
 * :sympyissue:`19070` bug in poly
+* :sympyissue:`16971` is_extended_real should not evaluate if sign is not known

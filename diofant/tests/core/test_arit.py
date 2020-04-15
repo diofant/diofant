@@ -1880,3 +1880,11 @@ def test_sympyissue_18509():
 
     assert e != oo
     assert e == Mul(oo, (E + 1)**-oo, evaluate=False)
+
+
+def test_sympyissue_16971():
+    a = Symbol('a', extended_real=True)
+    b = Symbol('b', extended_real=True)
+
+    assert (a + b).is_extended_real is None
+    assert (a - b).is_extended_real is None
