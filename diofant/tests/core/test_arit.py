@@ -620,21 +620,25 @@ def test_Mul_is_negative_positive():
 
 def test_Mul_is_negative_positive_2():
     a = Symbol('a', nonnegative=True)
+    af = Symbol('af', nonnegative=True, finite=True)
     b = Symbol('b', nonnegative=True)
+    bf = Symbol('bf', nonnegative=True, finite=True)
     c = Symbol('c', nonpositive=True)
+    cf = Symbol('cf', nonpositive=True, finite=True)
     d = Symbol('d', nonpositive=True)
+    df = Symbol('df', nonpositive=True, finite=True)
 
-    assert (a*b).is_nonnegative is True
+    assert (af*bf).is_nonnegative is True
     assert (a*b).is_negative is False
     assert (a*b).is_zero is None
     assert (a*b).is_positive is None
 
-    assert (c*d).is_nonnegative is True
+    assert (cf*df).is_nonnegative is True
     assert (c*d).is_negative is False
     assert (c*d).is_zero is None
     assert (c*d).is_positive is None
 
-    assert (a*c).is_nonpositive is True
+    assert (af*cf).is_nonpositive is True
     assert (a*c).is_positive is False
     assert (a*c).is_zero is None
     assert (a*c).is_negative is None
@@ -644,9 +648,13 @@ def test_Mul_is_nonpositive_nonnegative():
     x = Symbol('x', extended_real=True)
 
     k = Symbol('k', negative=True)
+    kf = Symbol('kf', negative=True, finite=True)
     n = Symbol('n', positive=True)
+    nf = Symbol('nf', positive=True, finite=True)
     u = Symbol('u', nonnegative=True)
     v = Symbol('v', nonpositive=True)
+    uf = Symbol('uf', nonnegative=True, finite=True)
+    vf = Symbol('vf', nonpositive=True, finite=True)
 
     assert k.is_nonpositive is True
     assert (-k).is_nonpositive is False
@@ -668,7 +676,7 @@ def test_Mul_is_nonpositive_nonnegative():
     assert (-v).is_nonpositive is None
     assert (2*v).is_nonpositive is True
 
-    assert (u*v).is_nonpositive is True
+    assert (uf*vf).is_nonpositive is True
 
     assert (k*u).is_nonpositive is True
     assert (k*v).is_nonpositive is None
@@ -677,13 +685,13 @@ def test_Mul_is_nonpositive_nonnegative():
     assert (n*v).is_nonpositive is True
 
     assert (v*k*u).is_nonpositive is None
-    assert (v*n*u).is_nonpositive is True
+    assert (vf*nf*uf).is_nonpositive is True
 
-    assert (-v*k*u).is_nonpositive is True
+    assert (-vf*kf*uf).is_nonpositive is True
     assert (-v*n*u).is_nonpositive is None
 
     assert (17*v*k*u).is_nonpositive is None
-    assert (17*v*n*u).is_nonpositive is True
+    assert (17*vf*nf*uf).is_nonpositive is True
 
     assert (k*v*n*u).is_nonpositive is None
 
@@ -718,16 +726,16 @@ def test_Mul_is_nonpositive_nonnegative():
     assert (n*u).is_nonnegative is True
     assert (n*v).is_nonnegative is None
 
-    assert (v*k*u).is_nonnegative is True
+    assert (vf*kf*uf).is_nonnegative is True
     assert (v*n*u).is_nonnegative is None
 
     assert (-v*k*u).is_nonnegative is None
-    assert (-v*n*u).is_nonnegative is True
+    assert (-vf*nf*uf).is_nonnegative is True
 
-    assert (17*v*k*u).is_nonnegative is True
-    assert (17*v*n*u).is_nonnegative is None
+    assert (17*vf*kf*uf).is_nonnegative is True
+    assert (17*v*nf*u).is_nonnegative is None
 
-    assert (k*v*n*u).is_nonnegative is True
+    assert (kf*vf*nf*uf).is_nonnegative is True
 
     assert (x*k).is_nonnegative is None
     assert (u*v*n*x*k).is_nonnegative is None
@@ -1823,6 +1831,8 @@ def test_mul_zero_detection():
     def test(z, b, e):
         if z.is_zero and not b.is_finite:
             assert e.is_extended_real is None
+        elif not z.is_finite:
+            return e.is_extended_real is None
         else:
             assert e.is_extended_real
 
@@ -1888,3 +1898,14 @@ def test_sympyissue_16971():
 
     assert (a + b).is_extended_real is None
     assert (a - b).is_extended_real is None
+
+
+def test_diofantissue_849():
+    a = Symbol('a', extended_real=True)
+    b = Symbol('b', extended_real=True)
+
+    # issue sympy/sympy#16971
+    assert (a + b).is_extended_real is None
+    assert (a - b).is_extended_real is None
+
+    assert (a*b).is_extended_real is None
