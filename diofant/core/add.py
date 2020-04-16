@@ -436,11 +436,7 @@ class Add(AssocOp):
         return _fuzzy_group((a.is_algebraic for a in self.args), quick_exit=True)
 
     def _eval_is_imaginary(self):
-        rv = _fuzzy_group((a.is_imaginary for a in self.args), quick_exit=True)
-        if rv is False:
-            return rv
-        iargs = [a*I for a in self.args]
-        return _fuzzy_group((a.is_real for a in iargs), quick_exit=True)
+        return _fuzzy_group((a.is_imaginary for a in self.args), quick_exit=True)
 
     def _eval_is_odd(self):
         l = [f for f in self.args if not f.is_even]
