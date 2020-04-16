@@ -30,6 +30,7 @@ def test_matexpr():
     assert (x*A).__class__ == MatMul
     assert 2*A - A - A == ZeroMatrix(*A.shape)
     assert (A*B).shape == (n, l)
+    assert A.equals(ZeroMatrix(3, 3)) is None
 
 
 def test_subs():
