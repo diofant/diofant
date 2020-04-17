@@ -31,7 +31,12 @@ jobs:
         python setup.py flake8
         flake8-rst
         pylint -j1 diofant
+    - name: Run doctests
+      env:
+        PYTEST_ADDOPTS: -n auto --doctest-modules --ignore diofant/tests
+      run: python setup.py test
     - name: Tests
+      if: matrix.python-version != 3.7
       env:
         PYTEST_ADDOPTS: -n auto --doctest-modules
       run: python setup.py test
