@@ -993,6 +993,7 @@ class Mul(AssocOp):
 
     def _eval_is_extended_real(self):
         real = True
+        finite = True
         zero = one_neither = False
 
         for t in self.args:
@@ -1001,12 +1002,20 @@ class Mul(AssocOp):
             elif t.is_imaginary or t.is_extended_real:
                 if t.is_imaginary:
                     real = not real
+                elif not t.is_real:
+                    if zero is not False:
+                        return
+                    finite = False
+
                 z = t.is_zero
                 if not z and zero is False:
                     zero = z
                 elif z:
                     if all(a.is_finite for a in self.args):
                         return True
+                    return
+
+                if not finite and t.is_real and z is not False:
                     return
             elif t.is_complex and t.is_real is False:
                 if one_neither:
