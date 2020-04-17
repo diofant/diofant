@@ -109,11 +109,7 @@ class factorial(CombinatorialFunction):
         n = self.args[0]
         if n.is_integer and n.is_nonnegative:
             return True
-
-    def _eval_is_positive(self):
-        n = self.args[0]
-        if n.is_integer and n.is_nonnegative:
-            return True
+    _eval_is_positive = _eval_is_integer
 
     def _eval_is_composite(self):
         n = self.args[0]
@@ -192,15 +188,11 @@ class subfactorial(CombinatorialFunction):
         n = self.args[0]
         if n.is_integer and n.is_nonnegative:
             return True
+    _eval_is_nonnegative = _eval_is_integer
 
     def _eval_rewrite_as_uppergamma(self, n):
         from .. import uppergamma
         return uppergamma(n + 1, -1)/E
-
-    def _eval_is_nonnegative(self):
-        n = self.args[0]
-        if n.is_integer and n.is_nonnegative:
-            return True
 
     def _eval_is_odd(self):
         n = self.args[0]
