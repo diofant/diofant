@@ -2023,7 +2023,7 @@ def _osborne(e, d):
         elif isinstance(rv, coth):
             return cot(a)/I
         else:
-            raise NotImplementedError('unhandled %s' % rv.func)
+            raise NotImplementedError(f'unhandled {rv.func}')
 
     return bottom_up(e, f)
 
@@ -2062,7 +2062,7 @@ def _osbornei(e, d):
         elif isinstance(rv, csc):
             return I/sinh(a)
         else:
-            raise NotImplementedError('unhandled %s' % rv.func)
+            raise NotImplementedError(f'unhandled {rv.func}')
 
     return bottom_up(e, f)
 

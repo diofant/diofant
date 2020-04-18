@@ -156,7 +156,7 @@ def pl_true(expr, model={}, deep=False):
         return expr
     expr = sympify(expr)
     if not _validate(expr):
-        raise ValueError('%s is not a valid boolean expression' % expr)
+        raise ValueError(f'{expr} is not a valid boolean expression')
     model = {k: v for k, v in model.items() if v in boolean}
     result = expr.subs(model)
     if result in boolean:

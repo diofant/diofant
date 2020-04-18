@@ -122,7 +122,7 @@ def validate(*matrices):
     for i in range(len(matrices)-1):
         A, B = matrices[i:i+2]
         if A.cols != B.rows:
-            raise ShapeError('Matrices %s and %s are not aligned' % (A, B))
+            raise ShapeError(f'Matrices {A} and {B} are not aligned')
 
 # Rules
 

@@ -36,7 +36,7 @@ class Inverse(MatPow):
         if not mat.is_Matrix:
             raise TypeError('mat should be a matrix')
         if not mat.is_square:
-            raise ShapeError('Inverse of non-square matrix %s' % mat)
+            raise ShapeError(f'Inverse of non-square matrix {mat}')
         return Expr.__new__(cls, mat)
 
     @property

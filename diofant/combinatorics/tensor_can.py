@@ -780,7 +780,7 @@ def canonicalize(g, dummies, msym, *v):
     size1, sbase, sgens = gens_products(*v1)
     if size != size1:
         raise ValueError(
-            'g has size %d, generators have size %d' % (size, size1))
+            f'g has size {size:d}, generators have size {size1:d}')
     free = [i for i in range(size - 2) if i not in flat_dummies]
     num_free = len(free)
 

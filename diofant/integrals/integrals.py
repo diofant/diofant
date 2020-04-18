@@ -239,7 +239,7 @@ class Integral(AddWithLimits):
         xfree = x.free_symbols.intersection(self.variables)
         if len(xfree) > 1:
             raise ValueError(
-                'F(x) can only contain one of: %s' % self.variables)
+                f'F(x) can only contain one of: {self.variables}')
         xvar = xfree.pop() if xfree else d
 
         if xvar not in self.variables:
@@ -1033,7 +1033,7 @@ class Integral(AddWithLimits):
                 result += self.function.subs({sym: x})
             return result*dx
         elif method not in ('left', 'right', 'midpoint'):
-            raise NotImplementedError('Unknown method %s' % method)
+            raise NotImplementedError(f'Unknown method {method}')
 
         result = 0
         for i in range(n):

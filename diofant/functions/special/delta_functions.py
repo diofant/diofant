@@ -202,7 +202,7 @@ class Heaviside(Function):
     def eval(cls, arg):
         arg = sympify(arg)
         if im(arg).is_nonzero:
-            raise ValueError('Function defined only for Real Values. Complex part: %s  found in %s .' % (repr(im(arg)), repr(arg)) )
+            raise ValueError(f'Function defined only for Real Values. Complex part: {im(arg)!r}  found in {arg!r} .' )
         elif arg.is_negative:
             return Integer(0)
         elif arg.is_zero:

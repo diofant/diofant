@@ -37,7 +37,7 @@ def test_Rational():
 def test_symbols():
     assert mathematica_code(x) == 'x'
     d = Dummy('d')
-    assert mathematica_code(d) == 'd%s' % d.dummy_index
+    assert mathematica_code(d) == f'd{d.dummy_index}'
 
 
 def test_Function():

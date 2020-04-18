@@ -396,8 +396,8 @@ class Cycle(dict):
         s = ''.join(str(tuple(c)) for c in cycles)
         big = self.size - 1
         if not any(i == big for c in cycles for i in c):
-            s += '(%s)' % big
-        return 'Cycle%s' % s
+            s += f'({big})'
+        return f'Cycle{s}'
 
     def __init__(self, *args):
         """Load up a Cycle instance with the values for the cycle.
@@ -1308,7 +1308,7 @@ class Permutation(Basic):
             return self(i)
         else:
             raise NotImplementedError(
-                'i^p = p(i) when i is an integer, not %s.' % i)
+                f'i^p = p(i) when i is an integer, not {i}.')
 
     def __xor__(self, h):
         """Return the conjugate permutation ``~h*self*h``.

@@ -416,7 +416,7 @@ class LatexPrinter(Printer):
                 and expr.exp.denominator != 1:
             base, p, q = self.parenthesize(expr.base, PRECEDENCE['Pow']), expr.exp.numerator, expr.exp.denominator
             if expr.base.is_Function:
-                return self._print(expr.base, '%s/%s' % (p, q))
+                return self._print(expr.base, f'{p}/{q}')
             return r'%s^{%s/%s}' % (base, p, q)
         elif expr.exp.is_Rational and expr.exp.is_negative and expr.base.is_commutative:
             # Things like 1/x
@@ -1229,8 +1229,7 @@ class LatexPrinter(Printer):
             '!=': r'\neq',
         }
 
-        return '%s %s %s' % (self._print(expr.lhs),
-                             charmap[expr.rel_op], self._print(expr.rhs))
+        return f'{self._print(expr.lhs)} {charmap[expr.rel_op]} {self._print(expr.rhs)}'
 
     def _print_Piecewise(self, expr):
         ecpairs = [r'%s & \text{for}\: %s' % (self._print(e), self._print(c))
@@ -1430,7 +1429,7 @@ class LatexPrinter(Printer):
 
         for key in keys:
             val = d[key]
-            items.append('%s : %s' % (self._print(key), self._print(val)))
+            items.append(f'{self._print(key)} : {self._print(val)}')
 
         return r'\left \{ %s\right \}' % r', \quad '.join(items)
 

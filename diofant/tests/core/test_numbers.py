@@ -445,8 +445,8 @@ def test_Float():
     assert Float(decimal.Decimal('+Infinity')) == +oo
     assert Float(decimal.Decimal('-Infinity')) == -oo
 
-    assert '{0:.3f}'.format(Float(4.236622)) == '4.237'
-    assert '{0:.35f}'.format(Float(pi.evalf(40), 40)) == '3.14159265358979323846264338327950288'
+    assert f'{Float(4.236622):.3f}' == '4.237'
+    assert f'{Float(pi.evalf(40), 40):.35f}' == '3.14159265358979323846264338327950288'
 
     assert Float(+oo) == Float('+inf')
     assert Float(-oo) == Float('-inf')

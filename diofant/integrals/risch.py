@@ -392,7 +392,7 @@ class DifferentialExtension:
         if attr not in ('f', 'x', 'T', 'D', 'fa', 'fd', 'Tfuncs', 'backsubs',
                         'E_K', 'E_args', 'L_K', 'L_args', 'cases', 'case', 't',
                         'd', 'newf', 'level', 'ts'):
-            raise AttributeError('%s has no attribute %s' % (repr(self), repr(attr)))
+            raise AttributeError(f'{self!r} has no attribute {attr!r}')
 
     def _auto_attrs(self):
         """Set attributes that are generated automatically."""
@@ -714,7 +714,7 @@ def frac_in(f, t, **kwargs):
     if cancel:
         fa, fd = fa.cancel(fd, include=True)
     if fa is None or fd is None:
-        raise ValueError('Could not turn %s into a fraction in %s.' % (f, t))
+        raise ValueError(f'Could not turn {f} into a fraction in {t}.')
     return fa, fd
 
 
@@ -744,7 +744,7 @@ def as_poly_1t(p, t, z):
         # XXX: Is there a better Poly exception that we could raise here?
         # Either way, if you see this (from the Risch Algorithm) it indicates
         # a bug.
-        raise PolynomialError('%s is not an element of K[%s, 1/%s].' % (p, t, t))
+        raise PolynomialError(f'{p} is not an element of K[{t}, 1/{t}].')
     d = pd.degree(t)
     one_t_part = pa.slice(0, d + 1)
     r = pd.degree() - pa.degree()

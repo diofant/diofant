@@ -31,6 +31,6 @@ for about, category in sorted(t.items(), key=default_sort_key):
             cond = ''
         else:
             cond = ',\\text{ if } %s' % latex(cond)
-        doc += '.. math::\n  %s%s\n\n' % (latex(obj), cond)
+        doc += f'.. math::\n  {latex(obj)}{cond}\n\n'
 
 __doc__ = doc

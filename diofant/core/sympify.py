@@ -304,6 +304,6 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
         a = a.replace('\n', '')
         expr = parse_expr(a, local_dict=locals, transformations=transformations, evaluate=evaluate)
     except (TokenError, SyntaxError) as exc:
-        raise SympifyError('could not parse %r' % a, exc)
+        raise SympifyError(f'could not parse {a!r}', exc)
 
     return expr

@@ -1424,7 +1424,7 @@ def stirling(n, k, d=None, kind=2, signed=False):
     elif kind == 2:
         return _stirling2(n, k)
     else:
-        raise ValueError('kind must be 1 or 2, not %s' % k)
+        raise ValueError(f'kind must be 1 or 2, not {k}')
 
 
 @cacheit

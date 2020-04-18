@@ -187,7 +187,7 @@ def diophantine(eq, param=symbols('t', integer=True), syms=None):
                 sols.add(merge_solution(var, var_t, sol))
 
         else:
-            raise NotImplementedError('unhandled type: %s' % eq_type)
+            raise NotImplementedError(f'unhandled type: {eq_type}')
 
     # remove null merge results
     if () in sols:
@@ -315,7 +315,7 @@ def diop_solve(eq, param=symbols('t', integer=True)):
     `classify_diop`.
             """))  # pragma: no cover
     else:
-        raise NotImplementedError('No solver has been written for %s.' % eq_type)
+        raise NotImplementedError(f'No solver has been written for {eq_type}.')
 
 
 def classify_diop(eq, _dict=True):
@@ -2433,7 +2433,7 @@ def _diop_general_pythagorean(var, coeff, t):
         if sign(coeff[v**2]) == -1:
             index = i
 
-    m = symbols('%s1:%i' % (t, n), integer=True)
+    m = symbols(f'{t}1:{n:d}', integer=True)
     ith = sum(m_i**2 for m_i in m)
     L = [ith - 2*m[n - 2]**2]
     L.extend([2*m[i]*m[n-2] for i in range(n - 2)])

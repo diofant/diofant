@@ -365,16 +365,16 @@ def split_symbols_custom(predicate):
                     del result[-2:]  # Get rid of the call to Symbol
                     for char in symbol[:-1]:
                         if char in local_dict or char in global_dict:
-                            result.extend([(NAME, '%s' % char)])
+                            result.extend([(NAME, f'{char}')])
                         else:
                             result.extend([(NAME, 'Symbol'), (OP, '('),
-                                           (NAME, "'%s'" % char), (OP, ')')])
+                                           (NAME, f"'{char}'"), (OP, ')')])
                     char = symbol[-1]
                     if char in local_dict or char in global_dict:
-                        result.extend([(NAME, '%s' % char)])
+                        result.extend([(NAME, f'{char}')])
                     else:
                         result.extend([(NAME, tok_type), (OP, '('),
-                                       (NAME, "'%s'" % char), (OP, ')')])
+                                       (NAME, f"'{char}'"), (OP, ')')])
 
                     # Set split_previous=True so will skip
                     # the closing parenthesis of the original Symbol

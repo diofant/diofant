@@ -170,7 +170,7 @@ class FunctionClass(ManagedProperties):
 
     def __repr__(self):
         if issubclass(self, AppliedUndef):
-            return 'Function(%r)' % (self.__name__)
+            return f'Function({self.__name__!r})'
         else:
             return self.__name__
 
@@ -201,7 +201,7 @@ class Application(Expr, metaclass=FunctionClass):
         options.pop('nargs', None)
 
         if options:
-            raise ValueError('Unknown options: %s' % options)
+            raise ValueError(f'Unknown options: {options}')
 
         if evaluate:
             if nan in args:
@@ -550,7 +550,7 @@ class Function(Application, Expr):
                 # let's try the general algorithm
                 term = e.subs({x: 0})
                 if term.is_finite is False:
-                    raise PoleError('Cannot expand %s around 0' % self)
+                    raise PoleError(f'Cannot expand {self} around 0')
                 series = term
                 fact = Integer(1)
                 _x = Dummy('x', real=True, positive=True)
@@ -596,7 +596,7 @@ class Function(Application, Expr):
                 return Derivative(self, self.args[argindex - 1], evaluate=False)
         # See issue sympy/sympy#4624 and issue sympy/sympy#4719
         # and issue sympy/sympy#5600
-        arg_dummy = Dummy('xi_%i' % argindex)
+        arg_dummy = Dummy(f'xi_{argindex:d}')
         arg_dummy.dummy_index = hash(self.args[argindex - 1])
         new_args = list(self.args)
         new_args[argindex-1] = arg_dummy
@@ -628,7 +628,7 @@ class Function(Application, Expr):
             #      sin(x)        x        <- _eval_as_leading_term needed
             #
             raise NotImplementedError(
-                '%s has no _eval_as_leading_term routine' % self.func)
+                f'{self.func} has no _eval_as_leading_term routine')
         else:
             return self.func(*args)
 
@@ -1036,7 +1036,7 @@ class Derivative(Expr):
                 obj = None
             else:
                 if not is_symbol:
-                    new_v = Dummy('xi_%i' % i)
+                    new_v = Dummy(f'xi_{i:d}')
                     new_v.dummy_index = hash(v)
                     expr = expr.xreplace({v: new_v})
                     old_v = v
@@ -1295,7 +1295,7 @@ class Lambda(Expr):
         v = list(variables) if iterable(variables) else [variables]
         for i in v:
             if not getattr(i, 'is_Symbol', False):
-                raise TypeError('variable is not a symbol: %s' % i)
+                raise TypeError(f'variable is not a symbol: {i}')
         if len(v) == 1 and v[0] == expr:
             return S.IdentityFunction
 

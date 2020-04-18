@@ -39,7 +39,7 @@ def solve_poly_inequality(poly, rel):
     if not isinstance(poly, Poly):
         raise ValueError('`poly` should be a Poly instance')
     if rel not in {'>', '<', '>=', '<=', '==', '!='}:
-        raise ValueError('Invalid relational operator symbol: %r' % rel)
+        raise ValueError(f'Invalid relational operator symbol: {rel!r}')
     if poly.is_number:
         t = Relational(poly.as_expr(), 0, rel)
         if t == true:
@@ -47,7 +47,7 @@ def solve_poly_inequality(poly, rel):
         elif t == false:
             return [S.EmptySet]
         else:
-            raise NotImplementedError("Couldn't determine truth value of %s" % t)
+            raise NotImplementedError(f"Couldn't determine truth value of {t}")
 
     reals, intervals = poly.real_roots(multiple=False), []
 

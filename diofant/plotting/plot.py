@@ -189,7 +189,7 @@ class Plot:
         self.close()
 
     def __str__(self):
-        series_strs = [('[%d]: ' % i) + str(s)
+        series_strs = [(f'[{i:d}]: ') + str(s)
                        for i, s in enumerate(self._series)]
         return 'Plot object containing:\n' + '\n'.join(series_strs)
 
@@ -506,7 +506,7 @@ class Parametric2DLineSeries(Line2DBaseSeries):
         super().__init__()
         self.expr_x = sympify(expr_x)
         self.expr_y = sympify(expr_y)
-        self.label = '(%s, %s)' % (str(self.expr_x), str(self.expr_y))
+        self.label = f'({self.expr_x!s}, {self.expr_y!s})'
         self.var = sympify(var_start_end[0])
         self.start = float(var_start_end[1])
         self.end = float(var_start_end[2])
@@ -641,7 +641,7 @@ class Parametric3DLineSeries(Line3DBaseSeries):
         self.expr_x = sympify(expr_x)
         self.expr_y = sympify(expr_y)
         self.expr_z = sympify(expr_z)
-        self.label = '(%s, %s)' % (str(self.expr_x), str(self.expr_y))
+        self.label = f'({self.expr_x!s}, {self.expr_y!s})'
         self.var = sympify(var_start_end[0])
         self.start = float(var_start_end[1])
         self.end = float(var_start_end[2])
@@ -1175,7 +1175,7 @@ def plot(*args, **kwargs):
                     'univariate expressions being plotted.')
     x = free.pop() if free else Symbol('x')
     kwargs.setdefault('xlabel', x.name)
-    kwargs.setdefault('ylabel', 'f(%s)' % x.name)
+    kwargs.setdefault('ylabel', f'f({x.name})')
     show = kwargs.pop('show', True)
     series = []
     plot_expr = check_arguments(args, 1, 1)

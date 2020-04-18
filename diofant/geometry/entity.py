@@ -169,7 +169,7 @@ class GeometryEntity(Basic):
             if not hasattr(g, 'reflect') and not all(
                     isinstance(arg, Point) for arg in g.args):
                 raise NotImplementedError(
-                    'reflect undefined or non-Point args in %s' % g)
+                    f'reflect undefined or non-Point args in {g}')
             a = atan(l.slope)
             c = l.coefficients
             d = -c[-1]/c[1]  # y-intercept

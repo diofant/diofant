@@ -325,7 +325,7 @@ def _get_coeff_exp(expr, x):
     elif m == x:
         return c, Integer(1)
     else:
-        raise _CoeffExpValueError('expr not of form a*x**b: %s' % expr)
+        raise _CoeffExpValueError(f'expr not of form a*x**b: {expr}')
 
 
 def _exponents(expr, x):
@@ -750,11 +750,10 @@ def _check_antecedents_1(g, x, helper=False):
         _debug(*msg)
 
     debug('Checking antecedents for 1 function:')
-    debug('  delta=%s, eta=%s, m=%s, n=%s, p=%s, q=%s'
-          % (delta, eta, m, n, p, q))
-    debug('  ap = %s, %s' % (list(g.an), list(g.aother)))
-    debug('  bq = %s, %s' % (list(g.bm), list(g.bother)))
-    debug('  cond_3=%s, cond_3*=%s, cond_4=%s' % (cond_3, cond_3_star, cond_4))
+    debug(f'  delta={delta}, eta={eta}, m={m}, n={n}, p={p}, q={q}')
+    debug(f'  ap = {list(g.an)}, {list(g.aother)}')
+    debug(f'  bq = {list(g.bm)}, {list(g.bother)}')
+    debug(f'  cond_3={cond_3}, cond_3*={cond_3_star}, cond_4={cond_4}')
 
     conds = []
 
@@ -944,11 +943,9 @@ def _check_antecedents(g1, g2, x):
     theta = (pi*(v - s - t) + abs(arg(sigma)))/(v - u)
 
     _debug('Checking antecedents:')
-    _debug('  sigma=%s, s=%s, t=%s, u=%s, v=%s, b*=%s, rho=%s'
-           % (sigma, s, t, u, v, bstar, rho))
-    _debug('  omega=%s, m=%s, n=%s, p=%s, q=%s, c*=%s, mu=%s,'
-           % (omega, m, n, p, q, cstar, mu))
-    _debug('  phi=%s, eta=%s, psi=%s, theta=%s' % (phi, eta, psi, theta))
+    _debug(f'  sigma={sigma}, s={s}, t={t}, u={u}, v={v}, b*={bstar}, rho={rho}')
+    _debug(f'  omega={omega}, m={m}, n={n}, p={p}, q={q}, c*={cstar}, mu={mu},')
+    _debug(f'  phi={phi}, eta={eta}, psi={psi}, theta={theta}')
 
     def _c1():
         for g in [g1, g2]:
@@ -1055,13 +1052,13 @@ def _check_antecedents(g1, g2, x):
     for cond, i in [(c1, 1), (c2, 2), (c3, 3), (c4, 4), (c5, 5), (c6, 6),
                     (c7, 7), (c8, 8), (c9, 9), (c10, 10), (c11, 11),
                     (c12, 12), (c13, 13), (c14, 14), (c15, 15)]:
-        _debug('  c%s:' % i, cond)
+        _debug(f'  c{i}:', cond)
 
     # We will return Or(*conds)
     conds = []
 
     def pr(count):
-        _debug('  case %s:' % count, conds[-1])
+        _debug(f'  case {count}:', conds[-1])
     conds += [And(m*n*s*t != 0, bstar.is_positive is True, cstar.is_positive is True, c1, c2, c3, c10,
                   c12)]  # 1
     pr(1)
@@ -1306,7 +1303,7 @@ def _check_antecedents_inversion(g, x):
     delta = g.delta
     _debug('  m=%s, n=%s, p=%s, q=%s, tau=%s, nu=%s, rho=%s, sigma=%s' % (
         m, n, p, q, tau, nu, rho, sigma))
-    _debug('  epsilon=%s, theta=%s, delta=%s' % (epsilon, theta, delta))
+    _debug(f'  epsilon={epsilon}, theta={theta}, delta={delta}')
 
     # First check if the computation is valid.
     if not (g.delta >= e/2 or (p >= 1 and p >= q)):
@@ -1737,7 +1734,7 @@ def meijerint_definite(f, x, a, b):
     # There are usually several ways of doing this, and we want to try all.
     # This function does (1), calls _meijerint_definite_2 for step (2).
     from ..functions import arg, exp, DiracDelta
-    _debug('Integrating', f, 'wrt %s from %s to %s.' % (x, a, b))
+    _debug('Integrating', f, f'wrt {x} from {a} to {b}.')
 
     if f.has(DiracDelta):
         _debug('Integrand has DiracDelta terms - giving up.')
@@ -1801,7 +1798,7 @@ def meijerint_definite(f, x, a, b):
         if b == oo:
             for split in _find_splitting_points(f, x):
                 if (a - split).is_nonnegative:
-                    _debug('Trying x -> x + %s' % split)
+                    _debug(f'Trying x -> x + {split}')
                     res = _meijerint_definite_2(f.subs({x: x + split})
                                                 * Heaviside(x + split - a), x)
                     if res:
@@ -1996,7 +1993,7 @@ def _meijerint_definite_4(f, x, only_double=False):
                 break
             cond = _my_unpolarify(cond)
             if cond == false:
-                _debug('But cond is always False (full_pb=%s).' % full_pb)
+                _debug(f'But cond is always False (full_pb={full_pb}).')
             else:
                 _debug('Result before branch substitutions is:', res)
                 if only_double:

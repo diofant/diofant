@@ -58,7 +58,7 @@ class StrPrinter(Printer):
             else:
                 sign = '+'
             if precedence(term) < PREC:
-                l.extend([sign, '(%s)' % t])
+                l.extend([sign, f'({t})'])
             else:
                 l.extend([sign, t])
         sign = l.pop(0)
@@ -102,7 +102,7 @@ class StrPrinter(Printer):
         items = []
 
         for key in keys:
-            item = '%s: %s' % (self._print(key), self._print(d[key]))
+            item = f'{self._print(key)}: {self._print(d[key])}'
             items.append(item)
 
         return '{%s}' % ', '.join(items)
@@ -123,7 +123,7 @@ class StrPrinter(Printer):
         return 'E'
 
     def _print_ExprCondPair(self, expr):
-        return '(%s, %s)' % (expr.expr, expr.cond)
+        return f'({expr.expr}, {expr.cond})'
 
     def _print_FiniteSet(self, s):
         s = sorted(s, key=default_sort_key)
@@ -156,7 +156,7 @@ class StrPrinter(Printer):
             else:
                 return self._print((xab[0],) + tuple(xab[1:]))
         L = ', '.join([_xab_tostr(l) for l in expr.limits])
-        return 'Integral(%s, %s)' % (self._print(expr.function), L)
+        return f'Integral({self._print(expr.function)}, {L})'
 
     def _print_Interval(self, i):
         if i.left_open:
@@ -169,8 +169,7 @@ class StrPrinter(Printer):
         else:
             right = ']'
 
-        return '%s%s, %s%s' % \
-               (left, self._print(i.start), self._print(i.end), right)
+        return f'{left}{self._print(i.start)}, {self._print(i.end)}{right}'
 
     def _print_Inverse(self, I):
         return '%s^-1' % self.parenthesize(I.arg, PRECEDENCE['Pow'])
@@ -178,10 +177,10 @@ class StrPrinter(Printer):
     def _print_Lambda(self, obj):
         args, expr = obj.args
         if len(args) == 1:
-            return 'Lambda(%s, %s)' % (args.args[0], expr)
+            return f'Lambda({args.args[0]}, {expr})'
         else:
             arg_string = ', '.join(self._print(arg) for arg in args)
-            return 'Lambda((%s), %s)' % (arg_string, expr)
+            return f'Lambda(({arg_string}), {expr})'
 
     def _print_LatticeOp(self, expr):
         args = sorted(expr.args, key=default_sort_key)
@@ -190,9 +189,9 @@ class StrPrinter(Printer):
     def _print_Limit(self, expr):
         e, z, z0, dir = expr.args
         if str(dir) == '+':
-            return 'Limit(%s, %s, %s)' % (e, z, z0)
+            return f'Limit({e}, {z}, {z0})'
         else:
-            return "Limit(%s, %s, %s, dir='%s')" % (e, z, z0, dir)
+            return f"Limit({e}, {z}, {z0}, dir='{dir}')"
 
     def _print_list(self, expr):
         return '[%s]' % self.stringify(expr, ', ')
@@ -210,7 +209,7 @@ class StrPrinter(Printer):
         _print_MatrixBase
 
     def _print_MatrixElement(self, expr):
-        return self._print(expr.parent) + '[%s, %s]' % (expr.i, expr.j)
+        return self._print(expr.parent) + f'[{expr.i}, {expr.j}]'
 
     def _print_MatrixSlice(self, expr):
         def strslice(x):
@@ -326,18 +325,18 @@ class StrPrinter(Printer):
             last = s.rfind('(')
             if not last == 0 and ',' not in s[last:]:
                 s = s[last:] + s[:last]
-            return 'Permutation%s' % s
+            return f'Permutation{s}'
         else:
             s = expr.support()
             if not s:
                 if expr.size < 5:
                     return 'Permutation(%s)' % str(expr.array_form)
-                return 'Permutation([], size=%s)' % expr.size
-            trim = str(expr.array_form[:s[-1] + 1]) + ', size=%s' % expr.size
+                return f'Permutation([], size={expr.size})'
+            trim = str(expr.array_form[:s[-1] + 1]) + f', size={expr.size}'
             use = full = str(expr.array_form)
             if len(trim) < len(full):
                 use = trim
-            return 'Permutation(%s)' % use
+            return f'Permutation({use})'
 
     def _print_TensorIndex(self, expr):
         return expr._print()
@@ -384,7 +383,7 @@ class StrPrinter(Printer):
                         s_monom.append(self._print(gens[i]))
                     else:
                         s_monom.append(self.parenthesize(gens[i],
-                                                         PRECEDENCE['Atom'] - 1) + '**%d' % exp)
+                                                         PRECEDENCE['Atom'] - 1) + f'**{exp:d}')
 
             s_monom = '*'.join(s_monom)
 
@@ -430,7 +429,7 @@ class StrPrinter(Printer):
         try:
             format += ', modulus=%s' % expr.get_modulus()
         except PolynomialError:
-            format += ", domain='%s'" % expr.domain
+            format += f", domain='{expr.domain}'"
 
         format += ')'
 
@@ -443,7 +442,7 @@ class StrPrinter(Printer):
         return self._print(expr.parent.to_expr(expr))
 
     def _print_ModularInteger(self, expr):
-        return '%s mod %s' % (expr.rep, expr.parent.characteristic)
+        return f'{expr.rep} mod {expr.parent.characteristic}'
 
     def _print_GaloisFieldElement(self, expr):
         from ..domains import ZZ_python
@@ -468,15 +467,14 @@ class StrPrinter(Printer):
                 expr.exp.is_Rational and not expr.exp.is_Integer):
             # The parenthesized exp should be '(Rational(a, b))' so strip
             # parens, but just check to be sure.
-            return '%s**%s' % (self.parenthesize(expr.base, PREC), e[1:-1])
-        return '%s**%s' % (self.parenthesize(expr.base, PREC), e)
+            return f'{self.parenthesize(expr.base, PREC)}**{e[1:-1]}'
+        return f'{self.parenthesize(expr.base, PREC)}**{e}'
 
     def _print_Mod(self, expr):
         PREC = precedence(expr)
 
         a, b = expr.args
-        return '%s%%%s' % (self.parenthesize(a, PREC),
-                           self.parenthesize(b, PREC))
+        return f'{self.parenthesize(a, PREC)}%{self.parenthesize(b, PREC)}'
 
     def _print_MatPow(self, expr):
         PREC = precedence(expr)
@@ -498,7 +496,7 @@ class StrPrinter(Printer):
         if expr.denominator == 1:
             return str(expr.numerator)
         else:
-            return '%s/%s' % (expr.numerator, expr.denominator)
+            return f'{expr.numerator}/{expr.denominator}'
 
     def _print_Float(self, expr):
         prec = expr._prec
@@ -531,7 +529,7 @@ class StrPrinter(Printer):
         }
 
         if expr.rel_op in charmap:
-            return '%s(%s, %s)' % (charmap[expr.rel_op], expr.lhs, expr.rhs)
+            return f'{charmap[expr.rel_op]}({expr.lhs}, {expr.rhs})'
 
         return '%s %s %s' % (self.parenthesize(expr.lhs, precedence(expr)),
                              self._relationals.get(expr.rel_op) or expr.rel_op,
@@ -540,9 +538,9 @@ class StrPrinter(Printer):
     def _print_RootOf(self, expr):
         p = self._print_Add(expr.expr, order='lex')
         if expr.free_symbols:
-            return 'RootOf(%s, %s, %d)' % (p, expr.poly.gen, expr.index)
+            return f'RootOf({p}, {expr.poly.gen}, {expr.index:d})'
         else:
-            return 'RootOf(%s, %d)' % (p, expr.index)
+            return f'RootOf({p}, {expr.index:d})'
 
     def _print_RootSum(self, expr):
         args = [self._print_Add(expr.expr, order='lex')]
@@ -573,7 +571,7 @@ class StrPrinter(Printer):
         args = ', '.join(self._print(item) for item in items)
         if args:
             args = '{%s}' % args
-        return '%s(%s)' % (type(s).__name__, args)
+        return f'{type(s).__name__}({args})'
 
     def _print_set(self, expr):
         if expr == set():
@@ -584,7 +582,7 @@ class StrPrinter(Printer):
         def _xab_tostr(xab):
             return self._print((xab[0],) + tuple(xab[1:]))
         L = ', '.join([_xab_tostr(l) for l in expr.limits])
-        return 'Sum(%s, %s)' % (self._print(expr.function), L)
+        return f'Sum({self._print(expr.function)}, {L})'
 
     def _print_Symbol(self, expr):
         return expr.name
@@ -639,12 +637,12 @@ class StrPrinter(Printer):
         return field._coord_sys._names[field._index]
 
     def _print_BaseVectorField(self, field):
-        return 'e_%s' % field._coord_sys._names[field._index]
+        return f'e_{field._coord_sys._names[field._index]}'
 
     def _print_Differential(self, diff):
         field = diff._form_field
         if hasattr(field, '_coord_sys'):
-            return 'd%s' % field._coord_sys._names[field._index]
+            return f'd{field._coord_sys._names[field._index]}'
         else:
             return 'd(%s)' % self._print(field)
 

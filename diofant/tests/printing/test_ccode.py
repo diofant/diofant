@@ -41,7 +41,7 @@ def test_ccode_Pow():
     assert ccode(x**3, user_functions={'Pow': _cond_cfunc}) == 'dpowi(x, 3)'
     assert ccode(x**3.2, user_functions={'Pow': _cond_cfunc}) == 'pow(x, 3.2)'
 
-    _cond_cfunc2 = [(lambda base, exp: base == 2, lambda base, exp: 'exp2(%s)' % exp),
+    _cond_cfunc2 = [(lambda base, exp: base == 2, lambda base, exp: f'exp2({exp})'),
                     (lambda base, exp: base != 2, 'pow')]
     # Related to sympy/sympy#11353
     assert ccode(2**x, user_functions={'Pow': _cond_cfunc2}) == 'exp2(x)'

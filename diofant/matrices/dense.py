@@ -431,7 +431,7 @@ class DenseMatrix(MatrixBase):
 
         """
         if len(self) != rows*cols:
-            raise ValueError('Invalid reshape parameters %d %d' % (rows, cols))
+            raise ValueError(f'Invalid reshape parameters {rows:d} {cols:d}')
         return self._new(rows, cols, lambda i, j: self._mat[i*cols + j])
 
     def as_mutable(self):
@@ -1400,14 +1400,14 @@ def hessian(f, varlist, constraints=[]):
         raise ValueError('Improper variable list in hessian function')
     if not getattr(f, 'diff', None):
         # check differentiability
-        raise ValueError('Function `f` (%s) is not differentiable' % f)
+        raise ValueError(f'Function `f` ({f}) is not differentiable')
     m = len(constraints)
     N = m + n
     out = zeros(N)
     for k, g in enumerate(constraints):
         if not getattr(g, 'diff', None):
             # check differentiability
-            raise ValueError('Function `f` (%s) is not differentiable' % f)
+            raise ValueError(f'Function `f` ({f}) is not differentiable')
         for i in range(n):
             out[k, i + m] = g.diff(varlist[i])
     for i in range(n):
@@ -1568,7 +1568,7 @@ def randMatrix(r, c=None, min=0, max=99, seed=None, symmetric=False, percent=100
         prng = random.Random(seed)
     if symmetric and r != c:
         raise ValueError(
-            'For symmetric matrices, r must equal c, but %i != %i' % (r, c))
+            f'For symmetric matrices, r must equal c, but {r:d} != {c:d}')
     if not symmetric:
         m = Matrix._new(r, c, lambda i, j: prng.randint(min, max))
     else:

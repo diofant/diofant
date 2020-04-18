@@ -154,7 +154,7 @@ class Printer:
             if len(self._settings) > len(self._default_settings):
                 for key in self._settings:  # pragma: no branch
                     if key not in self._default_settings:
-                        raise TypeError("Unknown setting '%s'." % key)
+                        raise TypeError(f"Unknown setting '{key}'.")
 
         # _print_level is the number of times self._print() was recursively
         # called. See StrPrinter._print_Float() for an example of usage

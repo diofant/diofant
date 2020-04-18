@@ -35,8 +35,7 @@ class IntegralTransformError(NotImplementedError):
     """
 
     def __init__(self, transform, function, msg):
-        super().__init__('%s Transform could not be '
-                         'computed: %s.' % (transform, msg))
+        super().__init__(f'{transform} Transform could not be computed: {msg}.')
         self.function = function
 
 
@@ -548,7 +547,7 @@ def _rewrite_gamma(f, s, a, b):
     exponentials = []
 
     def exception(fact):
-        return IntegralTransformError('Inverse Mellin', f, "Unrecognised form '%s'." % fact)
+        return IntegralTransformError('Inverse Mellin', f, f"Unrecognised form '{fact}'.")
     while args:
         fact, is_numer = args.pop()
         if is_numer:
@@ -804,7 +803,7 @@ class InverseMellinTransform(IntegralTransform):
         for f in postorder_traversal(F):
             if f.is_Function and f.has(s) and f.func not in _allowed:
                 raise IntegralTransformError('Inverse Mellin', F,
-                                             'Component %s not recognised.' % f)
+                                             f'Component {f} not recognised.')
         strip = self.fundamental_strip
         return _inverse_mellin_transform(F, s, x, strip, **hints)
 
@@ -1306,11 +1305,11 @@ class FourierTypeTransform(IntegralTransform):
 
     def a(self):
         raise NotImplementedError(
-            'Class %s must implement a(self) but does not' % self.__class__)
+            f'Class {self.__class__} must implement a(self) but does not')
 
     def b(self):
         raise NotImplementedError(
-            'Class %s must implement b(self) but does not' % self.__class__)
+            f'Class {self.__class__} must implement b(self) but does not')
 
     def _compute_transform(self, f, x, k, **hints):
         return _fourier_transform(f, x, k,
@@ -1470,11 +1469,11 @@ class SineCosineTypeTransform(IntegralTransform):
 
     def a(self):
         raise NotImplementedError(
-            'Class %s must implement a(self) but does not' % self.__class__)
+            f'Class {self.__class__} must implement a(self) but does not')
 
     def b(self):
         raise NotImplementedError(
-            'Class %s must implement b(self) but does not' % self.__class__)
+            f'Class {self.__class__} must implement b(self) but does not')
 
     def _compute_transform(self, f, x, k, **hints):
         return _sine_cosine_transform(f, x, k,

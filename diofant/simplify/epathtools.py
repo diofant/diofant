@@ -115,7 +115,7 @@ class EPath:
         return obj
 
     def __repr__(self):
-        return '%s(%r)' % (self.__class__.__name__, self._path)
+        return f'{self.__class__.__name__}({self._path!r})'
 
     def _get_ordered_args(self, expr):
         """Sort ``expr.args`` using printing order."""

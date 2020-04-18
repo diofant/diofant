@@ -648,10 +648,10 @@ def rsolve(f, *y, init={}, simplify=True):
             if r:
                 c = c.simplify()
                 if not c.is_rational_function(n):
-                    raise ValueError("Rational function of '%s' expected, got '%s'" % (n, c))
+                    raise ValueError(f"Rational function of '{n}' expected, got '{c}'")
                 h_part[int(r[k])] = c
             else:
-                raise ValueError("'%s(%s + Integer)' expected, got '%s'" % (y.func, n, h))
+                raise ValueError(f"'{y.func}({n} + Integer)' expected, got '{h}'")
         else:
             i_term = h * c
             if i_term.find(y.func(Wild('k'))):
@@ -698,8 +698,7 @@ def rsolve(f, *y, init={}, simplify=True):
             if k.is_Function and k.func == y.func:
                 i = int(k.args[0])
             else:
-                raise ValueError("'%s(Integer)' expected, "
-                                 "got '%s'" % (y.func, k))
+                raise ValueError(f"'{y.func}(Integer)' expected, got '{k}'")
             eq = solution.limit(n, i) - v
             equations.append(eq)
 

@@ -239,7 +239,7 @@ class Set(Basic):
 
     @property
     def _inf(self):
-        raise NotImplementedError('(%s)._inf' % self)
+        raise NotImplementedError(f'({self})._inf')
 
     @property
     def sup(self):
@@ -259,7 +259,7 @@ class Set(Basic):
 
     @property
     def _sup(self):
-        raise NotImplementedError('(%s)._sup' % self)
+        raise NotImplementedError(f'({self})._sup')
 
     @_sympifyit('other', false)
     def contains(self, other):
@@ -283,7 +283,7 @@ class Set(Basic):
         return ret
 
     def _contains(self, other):
-        raise NotImplementedError('(%s)._contains(%s)' % (self, other))
+        raise NotImplementedError(f'({self})._contains({other})')
 
     def is_subset(self, other):
         """
@@ -301,7 +301,7 @@ class Set(Basic):
         if isinstance(other, Set):
             return self.intersection(other) == self
         else:
-            raise ValueError("Unknown argument '%s'" % other)
+            raise ValueError(f"Unknown argument '{other}'")
 
     def issubset(self, other):
         """Alias for :meth:`is_subset()`."""
@@ -323,7 +323,7 @@ class Set(Basic):
         if isinstance(other, Set):
             return self != other and self.is_subset(other)
         else:
-            raise ValueError("Unknown argument '%s'" % other)
+            raise ValueError(f"Unknown argument '{other}'")
 
     def is_superset(self, other):
         """
@@ -341,7 +341,7 @@ class Set(Basic):
         if isinstance(other, Set):
             return other.is_subset(self)
         else:
-            raise ValueError("Unknown argument '%s'" % other)
+            raise ValueError(f"Unknown argument '{other}'")
 
     def issuperset(self, other):
         """Alias for :meth:`is_superset()`."""
@@ -363,10 +363,10 @@ class Set(Basic):
         if isinstance(other, Set):
             return self != other and self.is_superset(other)
         else:
-            raise ValueError("Unknown argument '%s'" % other)
+            raise ValueError(f"Unknown argument '{other}'")
 
     def _eval_powerset(self):
-        raise NotImplementedError('Power set not defined for: %s' % self.func)
+        raise NotImplementedError(f'Power set not defined for: {self.func}')
 
     def powerset(self):
         """
@@ -516,7 +516,7 @@ class Set(Basic):
 
     @property
     def _measure(self):
-        raise NotImplementedError('(%s)._measure' % self)
+        raise NotImplementedError(f'({self})._measure')
 
     def __add__(self, other):
         return self.union(other)
@@ -535,7 +535,7 @@ class Set(Basic):
 
     def __pow__(self, exp):
         if not sympify(exp).is_Integer or exp < 0:
-            raise ValueError('%s: Exponent must be a positive Integer' % exp)
+            raise ValueError(f'{exp}: Exponent must be a positive Integer')
         return ProductSet([self]*exp)
 
     def __sub__(self, other):
@@ -544,7 +544,7 @@ class Set(Basic):
     def __contains__(self, other):
         symb = self.contains(other)
         if symb not in (true, false):
-            raise TypeError('contains did not evaluate to a bool: %r' % symb)
+            raise TypeError(f'contains did not evaluate to a bool: {symb!r}')
         return bool(symb)
 
 

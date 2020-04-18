@@ -168,7 +168,7 @@ class PrettyPrinter(Printer):
             if arg.is_Boolean and (not arg.is_Not and not arg.is_Atom):
                 pform_arg = prettyForm(*pform_arg.parens())
 
-            pform = prettyForm(*pform.right(' %s ' % char))
+            pform = prettyForm(*pform.right(f' {char} '))
             pform = prettyForm(*pform.right(pform_arg))
 
         return pform
@@ -609,7 +609,7 @@ class PrettyPrinter(Printer):
         if (isinstance(expr.parent, MatrixSymbol)
                 and expr.i.is_number and expr.j.is_number):
             return self._print(
-                Symbol(expr.parent.name + '_%d%d' % (expr.i, expr.j)))
+                Symbol(expr.parent.name + f'_{expr.i:d}{expr.j:d}'))
         else:
             prettyFunc = self._print(expr.parent)
             prettyIndices = self._print_seq((expr.i, expr.j),
@@ -1081,7 +1081,7 @@ class PrettyPrinter(Printer):
     def _print_expint(self, e):
         from ...core import Function
         if e.args[0].is_Integer and self._use_unicode:
-            return self._print_Function(Function('E_%s' % e.args[0])(e.args[1]))
+            return self._print_Function(Function(f'E_{e.args[0]}')(e.args[1]))
         return self._print_Function(e)
 
     def _print_Chi(self, e):
@@ -1367,7 +1367,7 @@ class PrettyPrinter(Printer):
 
     def _print_ProductSet(self, p):
         prod_char = '\N{MULTIPLICATION SIGN}' if self._use_unicode else 'x'
-        return self._print_seq(p.sets, None, None, ' %s ' % prod_char,
+        return self._print_seq(p.sets, None, None, f' {prod_char} ',
                                parenthesize=lambda set: set.is_Union or
                                set.is_Intersection or set.is_ProductSet)
 
@@ -1689,7 +1689,7 @@ class PrettyPrinter(Printer):
     def _print_Tr(self, p):
         # TODO: Handle indices
         pform = self._print(p.args[0])
-        pform = prettyForm(*pform.left('%s(' % (p.__class__.__name__)))
+        pform = prettyForm(*pform.left(f'{p.__class__.__name__}('))
         pform = prettyForm(*pform.right(')'))
         return pform
 

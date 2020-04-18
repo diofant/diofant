@@ -597,7 +597,7 @@ class SparseMatrixBase(MatrixBase):
 
         """
         if len(self) != rows*cols:
-            raise ValueError('Invalid reshape parameters %d %d' % (rows, cols))
+            raise ValueError(f'Invalid reshape parameters {rows:d} {cols:d}')
         smat = {}
         for k, v in self._smat.items():
             i, j = k
@@ -996,8 +996,7 @@ class SparseMatrixBase(MatrixBase):
         elif method == 'CH':
             solve = M._cholesky_solve
         else:
-            raise NotImplementedError('Method may be "CH" or '
-                                      '"LDL", not %s.' % method)
+            raise NotImplementedError(f'Method may be "CH" or "LDL", not {method}.')
         rv = M.hstack(*[solve(I[:, i]) for i in range(I.cols)])
         if not sym:
             scale = (r1*rv[:, 0])[0, 0]

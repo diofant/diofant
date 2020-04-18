@@ -52,7 +52,7 @@ def flatten(iterable, levels=None, cls=None):
             levels -= 1
         else:
             raise ValueError(
-                'expected non-negative number of levels, got %s' % levels)
+                f'expected non-negative number of levels, got {levels}')
 
     if cls is None:
         def reducible(x):
@@ -80,7 +80,7 @@ def unflatten(iter, n=2):
 
     """
     if n < 1 or len(iter) % n:
-        raise ValueError('iter length is not a multiple of %i' % n)
+        raise ValueError(f'iter length is not a multiple of {n:d}')
     return list(zip(*(iter[i::n] for i in range(n))))
 
 
@@ -356,7 +356,7 @@ def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], *args, **assumpt
         cls = Symbol
 
     while True:
-        name = '%s%s' % (prefix, start)
+        name = f'{prefix}{start}'
         s = cls(name, *args, **assumptions)
         if s not in exclude:
             yield s

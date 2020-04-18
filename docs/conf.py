@@ -210,9 +210,9 @@ def linkcode_resolve(domain, info):
 
     blobpath = 'https://github.com/diofant/diofant/blob/'
     if 'dev' in version:
-        return blobpath + 'master/diofant/%s%s' % (fn, linespec)
+        return blobpath + f'master/diofant/{fn}{linespec}'
     else:
-        return blobpath + 'v%s/diofant/%s%s' % (version, fn, linespec)
+        return blobpath + f'v{version}/diofant/{fn}{linespec}'
 
 
 # monkey-patch sphinx
