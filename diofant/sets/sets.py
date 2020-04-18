@@ -756,7 +756,7 @@ class Interval(Set, EvalfMixin):
                    for a in [left_open, right_open]):
             raise NotImplementedError(
                 'left_open and right_open can have only true/false values, '
-                'got %s and %s' % (left_open, right_open))
+                f'got {left_open} and {right_open}')
 
         if not all(i.is_extended_real is not False for i in (start, end)):
             raise ValueError('Non-real intervals are not supported')
@@ -1820,22 +1820,22 @@ class FiniteSet(Set, EvalfMixin):
 
     def __ge__(self, other):
         if not isinstance(other, Set):
-            raise TypeError('Invalid comparison of set with %s' % repr(other))
+            raise TypeError(f'Invalid comparison of set with {other!r}')
         return other.is_subset(self)
 
     def __gt__(self, other):
         if not isinstance(other, Set):
-            raise TypeError('Invalid comparison of set with %s' % repr(other))
+            raise TypeError(f'Invalid comparison of set with {other!r}')
         return self.is_proper_superset(other)
 
     def __le__(self, other):
         if not isinstance(other, Set):
-            raise TypeError('Invalid comparison of set with %s' % repr(other))
+            raise TypeError(f'Invalid comparison of set with {other!r}')
         return self.is_subset(other)
 
     def __lt__(self, other):
         if not isinstance(other, Set):
-            raise TypeError('Invalid comparison of set with %s' % repr(other))
+            raise TypeError(f'Invalid comparison of set with {other!r}')
         return self.is_proper_subset(other)
 
 

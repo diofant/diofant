@@ -327,8 +327,7 @@ class Number(AtomicExpr):
 
     def _as_mpf_val(self, prec):  # pragma: no cover
         """Evaluation of mpf tuple accurate to at least prec bits."""
-        raise NotImplementedError('%s needs ._as_mpf_val() method' %
-                                  (self.__class__.__name__))
+        raise NotImplementedError(f'{self.__class__.__name__} needs ._as_mpf_val() method')
 
     def _eval_evalf(self, prec):
         return Float._new(self._as_mpf_val(prec), prec)

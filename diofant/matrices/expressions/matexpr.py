@@ -164,7 +164,7 @@ class MatrixExpr(Expr):
 
     def _entry(self, i, j):  # pragma: no cover
         raise NotImplementedError('Indexing not implemented '
-                                  'for %s' % self.__class__.__name__)
+                                  f'for {self.__class__.__name__}')
 
     def adjoint(self):
         return adjoint(self)

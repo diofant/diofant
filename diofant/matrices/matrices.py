@@ -147,8 +147,7 @@ class MatrixBase(DefaultPrinting):
                         except TypeError:
                             ncol.add(1)
                 if len(ncol) > 1:
-                    raise ValueError('Got rows of variable lengths: %s' %
-                                     sorted(ncol))
+                    raise ValueError(f'Got rows of variable lengths: {sorted(ncol)}')
                 cols = ncol.pop() if ncol else 0
                 rows = len(in_mat) if cols else 0
                 if rows:
@@ -565,7 +564,7 @@ class MatrixBase(DefaultPrinting):
             if 0 in A.shape:
                 rv = rv.reshape(*A.shape)
             return rv
-        raise TypeError('cannot add matrix and %s' % type(other))
+        raise TypeError(f'cannot add matrix and {type(other)}')
 
     def __radd__(self, other):
         return self + other
@@ -1194,7 +1193,7 @@ class MatrixBase(DefaultPrinting):
                     line.append(' ')
                 else:
                     line.append(str(symb))
-            s.append('[%s]' % ''.join(line))
+            s.append(f"[{''.join(line)}]")
         print('\n'.join(s))
 
     def LUsolve(self, rhs, iszerofunc=_iszero):
@@ -1566,7 +1565,7 @@ class MatrixBase(DefaultPrinting):
             Q[:, j] = tmp / R[j, j]
             if Q[:, j].norm() != 1:  # pragma: no cover
                 raise NotImplementedError("Couldn't normalize the "
-                                          'vector %d.' % j)
+                                          f'vector {j:d}.')
             for i in range(j):
                 R[i, j] = Q[:, i].dot(mat[:, j])
         return cls(Q), cls(R)
@@ -1631,8 +1630,7 @@ class MatrixBase(DefaultPrinting):
 
         """
         if not is_sequence(b):
-            raise TypeError('`b` must be an ordered iterable or Matrix, not %s.' %
-                            type(b))
+            raise TypeError(f'`b` must be an ordered iterable or Matrix, not {type(b)}.')
         if not (self.rows * self.cols == b.rows * b.cols == 3):
             raise ShapeError('Dimensions incorrect for cross product.')
         else:
@@ -1677,8 +1675,7 @@ class MatrixBase(DefaultPrinting):
                     raise ShapeError('Dimensions incorrect for dot product.')
                 return self.dot(Matrix(b))
             else:
-                raise TypeError('`b` must be an ordered iterable or Matrix, not %s.' %
-                                type(b))
+                raise TypeError(f'`b` must be an ordered iterable or Matrix, not {type(b)}')
 
         mat = self
         if mat.cols == b.rows:

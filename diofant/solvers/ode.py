@@ -889,7 +889,7 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
 
     if func and len(func.args) != 1:
         raise ValueError('dsolve() and classify_ode() only '
-                         'work with functions of one variable, not %s' % func)
+                         f'work with functions of one variable, not {func}')
     if prep or func is None:
         eq, func_ = _preprocess(eq, func)
         if func is None:
@@ -1443,7 +1443,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
     for func in funcs:
         if func and len(func.args) != 1:
             raise ValueError('dsolve() and classify_sysode() work with '
-                             'functions of one variable only, not %s' % func)
+                             f'functions of one variable only, not {func}')
 
     # find the order of all equation in system of odes
     matching_hints['order'] = order
@@ -1912,7 +1912,7 @@ def checksysodesol(eqs, sols, func=None):
         funcs = list(func)
     if not all(isinstance(func, AppliedUndef) and len(func.args) == 1 for func in funcs)\
             and len({func.args for func in funcs}) != 1:
-        raise ValueError('func must be a function of one variable, not %s' % str(func))
+        raise ValueError(f'func must be a function of one variable, not {func!s}')
     for sol in sols:
         if len(sol.atoms(AppliedUndef)) != 1:
             raise ValueError('solutions should have one function only')
@@ -4614,9 +4614,9 @@ def _solve_undetermined_coefficients(eq, func, order, match):
 
     if not coeffvals:
         raise NotImplementedError(
-            'Could not solve `%s` using the '
+            f'Could not solve `{eq}` using the '
             'method of undetermined coefficients '
-            '(unable to solve for coefficients).' % eq)
+            '(unable to solve for coefficients).')
     else:
         coeffvals = coeffvals[0]
 

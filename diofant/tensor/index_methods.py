@@ -237,7 +237,7 @@ def get_indices(expr):
 
         else:
             raise NotImplementedError('No specialized handling of '
-                                      'type %s' % type(expr))
+                                      f'type {type(expr)}')
 
 
 def get_contraction_structure(expr):
@@ -401,4 +401,4 @@ def get_contraction_structure(expr):
 
     else:
         raise NotImplementedError('No specialized handling of '
-                                  'type %s' % type(expr))
+                                  f'type {type(expr)}')

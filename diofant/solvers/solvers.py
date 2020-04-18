@@ -248,8 +248,8 @@ def solve(f, *symbols, **flags):
             if not a.has(*symbols):
                 continue
             if a.args[0].is_extended_real is None and a.args[0].is_imaginary is not True:
-                raise NotImplementedError('solving %s when the argument '
-                                          'is not real or imaginary.' % a)
+                raise NotImplementedError(f'solving {a} when the argument '
+                                          'is not real or imaginary.')
             reps.append((a, piece(a.args[0]) if a.args[0].is_extended_real else
                          piece(a.args[0]*I)))
         fi = fi.subs(reps)

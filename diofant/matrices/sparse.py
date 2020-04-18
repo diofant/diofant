@@ -45,8 +45,7 @@ class SparseMatrixBase(MatrixBase):
             elif is_sequence(args[2]):
                 if len(args[2]) != self.rows*self.cols:
                     raise ValueError(
-                        'List length (%s) != rows*columns (%s)' %
-                        (len(args[2]), self.rows*self.cols))
+                        f'List length ({len(args[2])}) != rows*columns ({self.rows*self.cols})')
                 flat_list = args[2]
                 for i in range(self.rows):
                     for j in range(self.cols):
@@ -431,8 +430,7 @@ class SparseMatrixBase(MatrixBase):
 
         """
         if not isinstance(other, SparseMatrixBase):
-            raise ValueError('only use add with %s, not %s' %
-                             tuple(c.__class__.__name__ for c in (self, other)))
+            raise ValueError(f'only use add with {self.__class__.__name__}, not {other.__class__.__name__}')
         if self.shape != other.shape:
             raise ShapeError()
         M = self.copy()

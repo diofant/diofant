@@ -242,8 +242,8 @@ def _solve_lambert(f, symbol, gens):
                 soln = _lambert(expand_log(diff), symbol)
 
     if not soln:
-        raise NotImplementedError('%s does not appear to have a solution in '
-                                  'terms of LambertW' % f)
+        raise NotImplementedError(f'{f} does not appear to have a solution in '
+                                  'terms of LambertW')
 
     return list(ordered(soln))
 

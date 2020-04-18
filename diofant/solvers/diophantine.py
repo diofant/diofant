@@ -2878,8 +2878,8 @@ def power_representation(n, p, k, zeros=False):
         return
 
     if p < 1 or k < 1:
-        raise ValueError(filldedent("""
-    Expecting positive integers for `(p, k)`, but got `(%s, %s)`""" % (p, k)))
+        raise ValueError(filldedent(f"""
+    Expecting positive integers for `(p, k)`, but got `({p}, {k})`"""))
 
     if n == 0:
         if zeros:
