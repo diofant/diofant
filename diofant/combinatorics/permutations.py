@@ -2266,7 +2266,7 @@ class Permutation(Basic):
         >>> p = Permutation(2)
         >>> Permutation.print_cyclic = False
         >>> while p:
-        ...     print('%s %s %s' % (str(p), p.inversion_vector(), p.rank()))
+        ...     print(f'{p} {p.inversion_vector()} {p.rank()}')
         ...     p = p.next_lex()
         ...
         Permutation([0, 1, 2]) [0, 0] 0

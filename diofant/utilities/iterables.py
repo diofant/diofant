@@ -827,7 +827,7 @@ def _set_partitions(n):
     ========
 
     >>> for m, q in _set_partitions(3):
-    ...     print('%s %s %s' % (m, q, _partition('abc', q, m)))
+    ...     print(f'{m} {q} { _partition("abc", q, m)}')
     1 [0, 0, 0] [['a', 'b', 'c']]
     2 [0, 0, 1] [['a', 'b'], ['c']]
     2 [0, 1, 0] [['a', 'c'], ['b']]

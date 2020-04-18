@@ -544,7 +544,7 @@ class Float(Number):
     ...     from diofant import Mul, Pow
     ...     s, m, e, b = f._mpf_
     ...     v = Mul(int(m), Pow(2, int(e), evaluate=False), evaluate=False)
-    ...     print('%s at prec=%s' % (v, f._prec))
+    ...     print(f'{v} at prec={f._prec}')
     ...
     >>> t = Float('0.3', 3)
     >>> show(t)

@@ -47,7 +47,7 @@ def iterable(i, exclude=(str, dict, NotIterable)):
 
     >>> things = [[1], (1,), {1}, Tuple(1), (j for j in [1, 2]), {1: 2}, '1', 1]
     >>> for i in things:
-    ...     print('%s %s' % (iterable(i), type(i)))
+    ...     print(f'{iterable(i)} {type(i)}')
     True <... 'list'>
     True <... 'tuple'>
     True <... 'set'>
