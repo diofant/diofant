@@ -1291,6 +1291,9 @@ class Integer(Rational):
     def __index__(self):
         return int(self.numerator)
 
+    def __format__(self, format_spec):
+        return int(self.numerator).__format__(format_spec)
+
     @_sympifyit('other', NotImplemented)
     def __eq__(self, other):
         if isinstance(other, Integer):
