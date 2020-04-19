@@ -5,8 +5,8 @@ import operator
 
 import mpmath
 
-from ..core import (Add, Basic, Derivative, Dummy, E, Expr, I, Integer, Mul,
-                    Tuple, oo, preorder_traversal, sympify)
+from ..core import (Add, Basic, Derivative, E, Expr, I, Integer, Mul, Tuple,
+                    oo, preorder_traversal, sympify)
 from ..core.compatibility import default_sort_key, iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
@@ -499,36 +499,6 @@ class Poly(Expr):
         rep = newring.from_dict(rep)
 
         return self.per(rep, gens=gens)
-
-    def ltrim(self, gen):
-        """
-        Remove dummy generators from the "left" of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(y**2 + y*z**2, x, y, z).ltrim(y)
-        Poly(y**2 + y*z**2, y, z, domain='ZZ')
-
-        """
-        rep = self.as_dict(native=True)
-        j = self._gen_to_level(gen)
-        terms = {}
-
-        for monom, coeff in rep.items():
-            monom = monom[j:]
-
-            if monom not in terms:
-                terms[monom] = coeff
-            else:
-                raise PolynomialError(f"can't left trim {self}")
-
-        gens = self.gens[j:]
-
-        newring = self.domain.poly_ring(*gens)
-        rep = newring.from_dict(terms)
-
-        return self.new(rep, *gens)
 
     def has_only_gens(self, *gens):
         """

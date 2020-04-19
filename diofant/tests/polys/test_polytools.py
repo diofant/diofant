@@ -821,13 +821,6 @@ def test_Poly_reorder():
     assert Poly(x + y, x, y).reorder(wrt=y) == Poly(x + y, y, x)
 
 
-def test_Poly_ltrim():
-    f = Poly(y**2 + y*z**2, x, y, z).ltrim(y)
-    assert f.as_expr() == y**2 + y*z**2 and f.gens == (y, z)
-
-    pytest.raises(PolynomialError, lambda: Poly(x*y**2 + y**2, x, y).ltrim(y))
-
-
 def test_Poly_has_only_gens():
     assert Poly(x*y + 1, x, y, z).has_only_gens(x, y) is True
     assert Poly(x*y + z, x, y, z).has_only_gens(x, y) is False
@@ -1066,6 +1059,7 @@ def test_Poly_exclude():
     assert Poly(x, x, y).exclude() == Poly(x, x)
     assert Poly(x*y, x, y).exclude() == Poly(x*y, x, y)
     assert Poly(1, x, y).exclude() == Poly(1, x, y)
+    assert Poly(y**2 + y*z**2, x, y, z).exclude() == Poly(y**2 + y*z**2, y, z)
 
 
 def test_Poly__gen_to_level():
