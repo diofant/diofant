@@ -1286,12 +1286,6 @@ def test_Poly_ET():
     assert Poly(x*y**7 + 2*x**2*y**3).ET('grlex') == ((2, 3), 2)
 
 
-def test_Poly_l1_norm():
-    assert Poly(-1, x).l1_norm() == 1
-    assert Poly(+0, x).l1_norm() == 0
-    assert Poly(+1, x).l1_norm() == 1
-
-
 def test_Poly_clear_denoms():
     coeff, poly = Poly(x + 2, x).clear_denoms()
     assert coeff == 1 and poly == Poly(

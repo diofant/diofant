@@ -1225,20 +1225,6 @@ class Poly(Expr):
         EM = self.EM(order)
         return EM, self.coeff_monomial(tuple(EM))
 
-    def l1_norm(self):
-        """
-        Returns l1 norm of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(-x**2 + 2*x - 3, x).l1_norm()
-        6
-
-        """
-        result = self.rep.l1_norm()
-        return self.domain.to_expr(result)
-
     def clear_denoms(self, convert=False):
         """
         Clear denominators, but keep the ground domain.
