@@ -38,7 +38,7 @@ __all__ = ('Poly', 'PurePoly', 'poly_from_expr', 'parallel_poly_from_expr',
            'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
            'monic', 'content', 'primitive', 'compose', 'decompose', 'sturm',
            'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
-           'factor_list', 'factor', 'intervals', 'count_roots',
+           'factor_list', 'factor', 'count_roots',
            'real_roots', 'nroots',
            'cancel', 'reduced', 'groebner', 'GroebnerBasis', 'poly')
 
@@ -1916,92 +1916,6 @@ class Poly(Expr):
 
         return (self.domain.to_expr(coeff),
                 [(self.per(g), k) for g, k in factors])
-
-    def intervals(self, all=False, eps=None, inf=None, sup=None, sqf=False):
-        """
-        Compute isolating intervals for roots of ``self``.
-
-        For real roots the Vincent-Akritas-Strzebonski (VAS) continued fractions method is used.
-
-        References
-        ==========
-
-        * :cite:`Alkiviadis2005comp`
-        * :cite:`Alkiviadis2008cf`
-
-        Examples
-        ========
-
-        >>> Poly(x**2 - 3, x).intervals()
-        [((-2, -1), 1), ((1, 2), 1)]
-        >>> Poly(x**2 - 3, x).intervals(eps=1e-2)
-        [((-26/15, -19/11), 1), ((19/11, 26/15), 1)]
-
-        """
-        if eps is not None:
-            eps = QQ.convert(eps)
-
-            if eps <= 0:
-                raise ValueError("'eps' must be a positive rational")
-
-        if inf is not None:
-            inf = QQ.convert(inf)
-        if sup is not None:
-            sup = QQ.convert(sup)
-
-        R = self.rep.ring
-
-        if self.is_univariate:
-            if not all:
-                if not sqf:
-                    result = R.dup_isolate_real_roots(self.rep, eps=eps,
-                                                      inf=inf, sup=sup)
-                else:
-                    result = R.dup_isolate_real_roots_sqf(self.rep,
-                                                          eps=eps, inf=inf,
-                                                          sup=sup)
-            else:
-                if not sqf:
-                    result = R.dup_isolate_all_roots(self.rep, eps=eps,
-                                                     inf=inf, sup=sup)
-                else:
-                    result = R.dup_isolate_all_roots_sqf(self.rep,
-                                                         eps=eps, inf=inf, sup=sup)
-        else:
-            raise MultivariatePolynomialError("can't isolate roots of a multivariate polynomial")
-
-        if sqf:
-            def _real(interval):
-                s, t = interval
-                return QQ.to_expr(s), QQ.to_expr(t)
-
-            if not all:
-                return list(map(_real, result))
-
-            def _complex(rectangle):
-                (u, v), (s, t) = rectangle
-                return (QQ.to_expr(u) + I*QQ.to_expr(v),
-                        QQ.to_expr(s) + I*QQ.to_expr(t))
-
-            real_part, complex_part = result
-
-            return list(map(_real, real_part)), list(map(_complex, complex_part))
-        else:
-            def _real(interval):
-                (s, t), k = interval
-                return (QQ.to_expr(s), QQ.to_expr(t)), k
-
-            if not all:
-                return list(map(_real, result))
-
-            def _complex(rectangle):
-                ((u, v), (s, t)), k = rectangle
-                return ((QQ.to_expr(u) + I*QQ.to_expr(v),
-                         QQ.to_expr(s) + I*QQ.to_expr(t)), k)
-
-            real_part, complex_part = result
-
-            return list(map(_real, real_part)), list(map(_complex, complex_part))
 
     def count_roots(self, inf=None, sup=None):
         """
@@ -4284,27 +4198,6 @@ def factor(f, *gens, **args):
             return factor_nc(f)
         else:
             raise PolynomialError(msg)
-
-
-def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, sqf=False):
-    """
-    Compute isolating intervals for roots of ``f``.
-
-    Examples
-    ========
-
-    >>> intervals(x**2 - 3)
-    [((-2, -1), 1), ((1, 2), 1)]
-    >>> intervals(x**2 - 3, eps=1e-2)
-    [((-26/15, -19/11), 1), ((19/11, 26/15), 1)]
-
-    """
-    try:
-        F = Poly(F)
-    except GeneratorsNeeded:
-        return []
-
-    return F.intervals(all=all, eps=eps, inf=inf, sup=sup, sqf=sqf)
 
 
 def count_roots(f, inf=None, sup=None):
