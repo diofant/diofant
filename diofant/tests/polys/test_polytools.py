@@ -14,12 +14,12 @@ from diofant import (EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      compose, content, count_roots, decompose, degree,
                      degree_list, diff, discriminant, div, exp, expand, exquo,
                      factor, factor_list, false, gcd, gcd_list, gcdex, grevlex,
-                     grlex, groebner, ground_roots, half_gcdex, im, intervals,
-                     invert, lcm, lcm_list, lex, monic, nroots, oo,
-                     parallel_poly_from_expr, pi, poly, prem, primitive, quo,
-                     re, real_roots, reduced, refine_root, rem, resultant,
-                     ring, sin, sqf, sqf_list, sqf_norm, sqf_part, sqrt, sturm,
-                     subresultants, symbols, tanh, terms_gcd, true, trunc)
+                     grlex, groebner, half_gcdex, im, intervals, invert, lcm,
+                     lcm_list, lex, monic, nroots, oo, parallel_poly_from_expr,
+                     pi, poly, prem, primitive, quo, re, real_roots, reduced,
+                     refine_root, rem, resultant, ring, sin, sqf, sqf_list,
+                     sqf_norm, sqf_part, sqrt, sturm, subresultants, symbols,
+                     tanh, terms_gcd, true, trunc)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.mul import _keep_coeff
 from diofant.polys.polytools import to_rational_coeffs
@@ -2357,6 +2357,8 @@ def test_factor():
 
     assert factor(x**4/2 + 5*x**3/12 - x**2/3) == x**2*(2*x - 1)*(3*x + 4)/12
 
+    assert factor(x**6 - 4*x**4 + 4*x**3 - x**2) == x**2*(x - 1)**2*(x**2 + 2*x - 1)
+
 
 def test_factor_large():
     f = (x**2 + 4*x + 4)**10000000*(x**2 + 1)*(x**2 + 2*x + 1)**1234567
@@ -2683,17 +2685,6 @@ def test_nroots():
     # issue sympy/sympy#8296
     f = Poly(x**4 - 1)
     assert f.nroots(2) == [w.evalf(2) for w in f.all_roots()]
-
-
-def test_ground_roots():
-    f = x**6 - 4*x**4 + 4*x**3 - x**2
-
-    assert Poly(f).ground_roots() == {1: 2, 0: 2}
-    assert ground_roots(f) == {1: 2, 0: 2}
-
-    pytest.raises(MultivariatePolynomialError,
-                  lambda: Poly(x + y).ground_roots())
-    pytest.raises(ComputationFailed, lambda: ground_roots(1))
 
 
 def test_cancel():

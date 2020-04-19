@@ -39,7 +39,7 @@ __all__ = ('Poly', 'PurePoly', 'poly_from_expr', 'parallel_poly_from_expr',
            'monic', 'content', 'primitive', 'compose', 'decompose', 'sturm',
            'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
            'factor_list', 'factor', 'intervals', 'refine_root', 'count_roots',
-           'real_roots', 'nroots', 'ground_roots',
+           'real_roots', 'nroots',
            'cancel', 'reduced', 'groebner', 'GroebnerBasis', 'poly')
 
 
@@ -2223,30 +2223,6 @@ class Poly(Expr):
                 f'convergence to root failed; try n < {n} or maxsteps > {maxsteps}')
         finally:
             mpmath.mp.dps = dps
-
-        return roots
-
-    def ground_roots(self):
-        """
-        Compute roots of ``self`` by factorization in the ground domain.
-
-        Examples
-        ========
-
-        >>> Poly(x**6 - 4*x**4 + 4*x**3 - x**2).ground_roots()
-        {0: 2, 1: 2}
-
-        """
-        if self.is_multivariate:
-            raise MultivariatePolynomialError(
-                f"can't compute ground roots of {self}")
-
-        roots = {}
-
-        for factor, k in self.factor_list()[1]:
-            if factor.is_linear:
-                a, b = factor.all_coeffs()
-                roots[-b/a] = k
 
         return roots
 
@@ -4445,27 +4421,6 @@ def nroots(f, n=15, maxsteps=50, cleanup=True):
             f"can't compute numerical roots of {f}, not a polynomial")
 
     return F.nroots(n=n, maxsteps=maxsteps, cleanup=cleanup)
-
-
-def ground_roots(f, *gens, **args):
-    """
-    Compute roots of ``f`` by factorization in the ground domain.
-
-    Examples
-    ========
-
-    >>> ground_roots(x**6 - 4*x**4 + 4*x**3 - x**2)
-    {0: 2, 1: 2}
-
-    """
-    options.allowed_flags(args, [])
-
-    try:
-        F, opt = poly_from_expr(f, *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('ground_roots', 1, exc)
-
-    return F.ground_roots()
 
 
 def cancel(f, *gens, **args):
