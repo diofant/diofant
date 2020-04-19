@@ -1225,20 +1225,6 @@ class Poly(Expr):
         EM = self.EM(order)
         return EM, self.coeff_monomial(tuple(EM))
 
-    def max_norm(self):
-        """
-        Returns maximum norm of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(-x**2 + 2*x - 3, x).max_norm()
-        3
-
-        """
-        result = self.rep.max_norm()
-        return self.domain.to_expr(result)
-
     def l1_norm(self):
         """
         Returns l1 norm of ``self``.
