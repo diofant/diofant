@@ -23,7 +23,25 @@ def test_dup_sturm():
     assert f.sturm() == [f, 3*x**2 - 4*x + 3,
                          -10*x/9 + QQ(13, 3), -QQ(3303, 100)]
 
+    f = x**3 - 2*x**2 + x - 3
+
+    assert f.sturm() == [f, 3*x**2 - 4*x + 1, 2*x/9 + QQ(25, 9), QQ(-2079, 4)]
+
     pytest.raises(DomainError, lambda: x.set_domain(ZZ).sturm())
+
+    F = ZZ.frac_field('pi')
+    pi = F.pi
+    R, x = ring('x', F)
+
+    f = (1024/(15625*pi**8)*x**5 - 4096/(625*pi**8)*x**4 + 32/(15625*pi**4)*x**3
+         - 128/(625*pi**4)*x**2 + x/62500 - F((1, 625)))
+
+    assert f.sturm() == [x**3 - 100*x**2 + pi**4/64*x - 25*pi**4/16,
+                         3*x**2 - 200*x + pi**4/64,
+                         (F((20000, 9)) - pi**4/96)*x + 25*pi**4/18,
+                         (-3686400000000*pi**4 - 11520000*pi**8 -
+                          9*pi**12)/(26214400000000 - 245760000*pi**4 +
+                                     576*pi**8)]
 
 
 def test_dup_sign_variations():

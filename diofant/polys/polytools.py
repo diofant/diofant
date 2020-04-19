@@ -5,8 +5,8 @@ import operator
 
 import mpmath
 
-from ..core import (Add, Basic, Derivative, E, Expr, I, Integer, Mul, Tuple,
-                    oo, preorder_traversal, sympify)
+from ..core import (Add, Basic, Derivative, E, Expr, Integer, Mul, Tuple, oo,
+                    preorder_traversal, sympify)
 from ..core.compatibility import default_sort_key, iterable
 from ..core.decorators import _sympifyit
 from ..core.mul import _keep_coeff
@@ -36,7 +36,7 @@ __all__ = ('Poly', 'PurePoly', 'poly_from_expr', 'parallel_poly_from_expr',
            'div', 'rem', 'quo', 'exquo', 'half_gcdex', 'gcdex',
            'invert', 'subresultants', 'resultant', 'discriminant', 'cofactors',
            'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
-           'monic', 'content', 'primitive', 'compose', 'decompose', 'sturm',
+           'monic', 'content', 'primitive', 'compose', 'decompose',
            'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
            'factor_list', 'factor', 'count_roots',
            'real_roots', 'nroots',
@@ -1788,28 +1788,6 @@ class Poly(Expr):
         """
         result = self.rep.shift(a)
         return self.per(result)
-
-    def sturm(self, auto=True):
-        """
-        Computes the Sturm sequence of ``self``.
-
-        Examples
-        ========
-
-        >>> Poly(x**3 - 2*x**2 + x - 3, x).sturm()
-        [Poly(x**3 - 2*x**2 + x - 3, x, domain='QQ'),
-         Poly(3*x**2 - 4*x + 1, x, domain='QQ'),
-         Poly(2/9*x + 25/9, x, domain='QQ'),
-         Poly(-2079/4, x, domain='QQ')]
-
-        """
-        f = self
-
-        if auto and f.domain.is_Ring:
-            f = f.to_field()
-
-        result = f.rep.sturm()
-        return list(map(f.per, result))
 
     def sqf_norm(self):
         """
@@ -3689,32 +3667,6 @@ def decompose(f, *gens, **args):
         raise ComputationFailed('decompose', 1, exc)
 
     result = F.decompose()
-
-    if not opt.polys:
-        return [r.as_expr() for r in result]
-    else:
-        return result
-
-
-def sturm(f, *gens, **args):
-    """
-    Compute Sturm sequence of ``f``.
-
-    Examples
-    ========
-
-    >>> sturm(x**3 - 2*x**2 + x - 3)
-    [x**3 - 2*x**2 + x - 3, 3*x**2 - 4*x + 1, 2*x/9 + 25/9, -2079/4]
-
-    """
-    options.allowed_flags(args, ['auto', 'polys'])
-
-    try:
-        F, opt = poly_from_expr(f, *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('sturm', 1, exc)
-
-    result = F.sturm(auto=opt.auto)
 
     if not opt.polys:
         return [r.as_expr() for r in result]
