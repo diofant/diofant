@@ -50,6 +50,7 @@ Compatibility breaks
 * Drop ``has_assoc_Field`` property, ``is_SymbolicDomain`` property renamed to ``is_ExpressionDomain`` of :class:`~diofant.domains.domain.Domain`, see :pull:`977`.
 * ``drop_to_ground()`` method of :class:`~diofant.polys.rings.PolynomialRing` renamed to :meth:`~diofant.polys.rings.PolynomialRing.eject`, see :pull:`977`.
 * Renamed option misspeled option ``bareis`` to ``bareiss`` in :meth:`~diofant.matrices.matrices.MatrixBase.det` and :func:`~diofant.matrices.dense.wronskian`, see :pull:`866`.
+* Drop ``nth_power_roots_poly()`` function and method of :class:`~diofant.polys.polytools.Poly`, see :pull:`996`.
 
 Minor changes
 =============

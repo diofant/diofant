@@ -39,7 +39,7 @@ __all__ = ('Poly', 'PurePoly', 'poly_from_expr', 'parallel_poly_from_expr',
            'monic', 'content', 'primitive', 'compose', 'decompose', 'sturm',
            'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
            'factor_list', 'factor', 'intervals', 'refine_root', 'count_roots',
-           'real_roots', 'nroots', 'ground_roots', 'nth_power_roots_poly',
+           'real_roots', 'nroots', 'ground_roots',
            'cancel', 'reduced', 'groebner', 'GroebnerBasis', 'poly')
 
 
@@ -2280,42 +2280,6 @@ class Poly(Expr):
 
         return roots
 
-    def nth_power_roots_poly(self, n):
-        """
-        Construct a polynomial with n-th powers of roots of ``self``.
-
-        Examples
-        ========
-
-        >>> f = Poly(x**4 - x**2 + 1)
-
-        >>> f.nth_power_roots_poly(2)
-        Poly(x**4 - 2*x**3 + 3*x**2 - 2*x + 1, x, domain='ZZ')
-        >>> f.nth_power_roots_poly(3)
-        Poly(x**4 + 2*x**2 + 1, x, domain='ZZ')
-        >>> f.nth_power_roots_poly(4)
-        Poly(x**4 + 2*x**3 + 3*x**2 + 2*x + 1, x, domain='ZZ')
-        >>> f.nth_power_roots_poly(12)
-        Poly(x**4 - 4*x**3 + 6*x**2 - 4*x + 1, x, domain='ZZ')
-
-        """
-        if self.is_multivariate:
-            raise MultivariatePolynomialError('must be a univariate polynomial')
-
-        N = sympify(n)
-
-        if N.is_Integer and N >= 1:
-            n = int(N)
-        else:
-            raise ValueError(f"'n' must an integer and n >= 1, got {n}")
-
-        x = self.gen
-        t = Dummy('t')
-
-        r = self.resultant(self.__class__.from_expr(x**n - t, x, t))
-
-        return r.replace(t, x)
-
     def cancel(self, other, include=False):
         """
         Cancel common factors in a rational function ``self/other``.
@@ -4532,41 +4496,6 @@ def ground_roots(f, *gens, **args):
         raise ComputationFailed('ground_roots', 1, exc)
 
     return F.ground_roots()
-
-
-def nth_power_roots_poly(f, n, *gens, **args):
-    """
-    Construct a polynomial with n-th powers of roots of ``f``.
-
-    Examples
-    ========
-
-    >>> f = x**4 - x**2 + 1
-    >>> g = factor(nth_power_roots_poly(f, 2))
-
-    >>> g
-    (x**2 - x + 1)**2
-
-    >>> R_f = [(r**2).expand() for r in roots(f)]
-    >>> R_g = roots(g)
-
-    >>> set(R_f) == set(R_g)
-    True
-
-    """
-    options.allowed_flags(args, ['polys'])
-
-    try:
-        F, opt = poly_from_expr(f, *gens, **args)
-    except PolificationFailed as exc:
-        raise ComputationFailed('nth_power_roots_poly', 1, exc)
-
-    result = F.nth_power_roots_poly(n)
-
-    if not opt.polys:
-        return result.as_expr()
-    else:
-        return result
 
 
 def cancel(f, *gens, **args):

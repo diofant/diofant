@@ -9,7 +9,7 @@ from .polytools import (Poly, PurePoly, poly_from_expr,
                         primitive, compose, decompose, sturm,
                         sqf_norm, sqf_part, sqf_list, sqf, factor_list,
                         factor, intervals, refine_root, count_roots,
-                        real_roots, nroots, ground_roots, nth_power_roots_poly,
+                        real_roots, nroots, ground_roots,
                         cancel, reduced, groebner, GroebnerBasis, poly)
 from .polyfuncs import symmetrize, horner, interpolate, viete
 from .rationaltools import together
@@ -52,7 +52,7 @@ __all__ = ('Poly', 'PurePoly', 'poly_from_expr',
            'trunc', 'monic', 'content', 'primitive', 'compose', 'decompose',
            'sturm', 'sqf_norm', 'sqf_part', 'sqf_list', 'sqf', 'factor_list',
            'factor', 'intervals', 'refine_root', 'count_roots', 'real_roots',
-           'nroots', 'ground_roots', 'nth_power_roots_poly', 'cancel',
+           'nroots', 'ground_roots', 'cancel',
            'reduced', 'groebner', 'GroebnerBasis', 'poly', 'symmetrize',
            'horner', 'interpolate', 'viete', 'together', 'BasePolynomialError',
            'ExactQuotientFailed', 'PolynomialDivisionFailed',

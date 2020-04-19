@@ -15,12 +15,11 @@ from diofant import (EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      degree_list, diff, discriminant, div, exp, expand, exquo,
                      factor, factor_list, false, gcd, gcd_list, gcdex, grevlex,
                      grlex, groebner, ground_roots, half_gcdex, im, intervals,
-                     invert, lcm, lcm_list, lex, monic, nroots,
-                     nth_power_roots_poly, oo, parallel_poly_from_expr, pi,
-                     poly, prem, primitive, quo, re, real_roots, reduced,
-                     refine_root, rem, resultant, ring, sin, sqf, sqf_list,
-                     sqf_norm, sqf_part, sqrt, sturm, subresultants, symbols,
-                     tanh, terms_gcd, true, trunc)
+                     invert, lcm, lcm_list, lex, monic, nroots, oo,
+                     parallel_poly_from_expr, pi, poly, prem, primitive, quo,
+                     re, real_roots, reduced, refine_root, rem, resultant,
+                     ring, sin, sqf, sqf_list, sqf_norm, sqf_part, sqrt, sturm,
+                     subresultants, symbols, tanh, terms_gcd, true, trunc)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.mul import _keep_coeff
 from diofant.polys.polytools import to_rational_coeffs
@@ -1745,6 +1744,13 @@ def test_resultant():
     assert resultant(PurePoly(x**2 + y),
                      PurePoly(x*y - 1)) == PurePoly(y**3 + 1)
 
+    f = Poly(x**4 - x**2 + 1)
+
+    assert f.resultant(Poly(x**2 - y)) == Poly((y**2 - y + 1)**2)
+    assert f.resultant(Poly(x**3 - y)) == Poly((y**2 + 1)**2)
+    assert f.resultant(Poly(x**4 - y)) == Poly((y**2 + y + 1)**2)
+    assert f.resultant(Poly(x**12 - y)) == Poly((y - 1)**4)
+
 
 def test_discriminant():
     f, g = x**3 + 3*x**2 + 9*x - 13, -11664
@@ -2694,30 +2700,6 @@ def test_ground_roots():
     pytest.raises(MultivariatePolynomialError,
                   lambda: Poly(x + y).ground_roots())
     pytest.raises(ComputationFailed, lambda: ground_roots(1))
-
-
-def test_nth_power_roots_poly():
-    f = x**4 - x**2 + 1
-
-    f_2 = (x**2 - x + 1)**2
-    f_3 = (x**2 + 1)**2
-    f_4 = (x**2 + x + 1)**2
-    f_12 = (x - 1)**4
-
-    assert nth_power_roots_poly(f, 1) == f
-
-    pytest.raises(ValueError, lambda: nth_power_roots_poly(f, 0))
-    pytest.raises(ValueError, lambda: nth_power_roots_poly(f, x))
-
-    assert factor(nth_power_roots_poly(f, 2)) == f_2
-    assert factor(nth_power_roots_poly(f, 3)) == f_3
-    assert factor(nth_power_roots_poly(f, 4)) == f_4
-    assert factor(nth_power_roots_poly(f, 12)) == f_12
-    assert nth_power_roots_poly(f, 12, polys=True) == Poly(f_12)
-
-    pytest.raises(MultivariatePolynomialError, lambda: nth_power_roots_poly(
-        x + y, 2, x, y))
-    pytest.raises(ComputationFailed, lambda: nth_power_roots_poly(1, 2))
 
 
 def test_cancel():
