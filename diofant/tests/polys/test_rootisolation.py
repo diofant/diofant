@@ -102,6 +102,7 @@ def test_dup_refine_real_root():
     assert R.dup_refine_real_root(f, s, t, steps=2) == (QQ(4, 3), QQ(3, 2))
     assert R.dup_refine_real_root(f, s, t, steps=3) == (QQ(7, 5), QQ(3, 2))
     assert R.dup_refine_real_root(f, s, t, steps=4) == (QQ(7, 5), QQ(10, 7))
+    assert R.dup_refine_real_root(f, s, t, eps=QQ(1, 100)) == (QQ(24, 17), QQ(17, 12))
 
     s, t = 1, QQ(3, 2)
 
@@ -121,8 +122,8 @@ def test_dup_refine_real_root():
 
     s, t = -1, -2
 
-    assert R.dup_refine_real_root(f, s, t, steps=0) == (-QQ(2, 1), -QQ(1, 1))
-    assert R.dup_refine_real_root(f, s, t, steps=1) == (-QQ(3, 2), -QQ(1, 1))
+    assert R.dup_refine_real_root(f, s, t, steps=0) == (-2, -1)
+    assert R.dup_refine_real_root(f, s, t, steps=1) == (-QQ(3, 2), -1)
     assert R.dup_refine_real_root(f, s, t, steps=2) == (-QQ(3, 2), -QQ(4, 3))
     assert R.dup_refine_real_root(f, s, t, steps=3) == (-QQ(3, 2), -QQ(7, 5))
     assert R.dup_refine_real_root(f, s, t, steps=4) == (-QQ(10, 7), -QQ(7, 5))
@@ -149,6 +150,11 @@ def test_dup_refine_real_root():
     assert R.dup_refine_real_root(f, s, t, disjoint=5) == (s, t)
     assert R.dup_refine_real_root(f, s, t, disjoint=-u) == (s, t)
     assert R.dup_refine_real_root(f, s, t, disjoint=u) == (u, v)
+
+    f = x**2 - 3
+
+    assert R.dup_refine_real_root(f, 1, 2,
+                                  eps=QQ(1, 100)) == (QQ(19, 11), QQ(26, 15))
 
     R, x = ring('x', QQ)
 

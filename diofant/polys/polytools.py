@@ -38,7 +38,7 @@ __all__ = ('Poly', 'PurePoly', 'poly_from_expr', 'parallel_poly_from_expr',
            'gcd_list', 'gcd', 'lcm_list', 'lcm', 'terms_gcd', 'trunc',
            'monic', 'content', 'primitive', 'compose', 'decompose', 'sturm',
            'sqf_norm', 'sqf_part', 'sqf_list', 'sqf',
-           'factor_list', 'factor', 'intervals', 'refine_root', 'count_roots',
+           'factor_list', 'factor', 'intervals', 'count_roots',
            'real_roots', 'nroots',
            'cancel', 'reduced', 'groebner', 'GroebnerBasis', 'poly')
 
@@ -2002,36 +2002,6 @@ class Poly(Expr):
             real_part, complex_part = result
 
             return list(map(_real, real_part)), list(map(_complex, complex_part))
-
-    def refine_root(self, s, t, eps=None, steps=None, check_sqf=False):
-        """
-        Refine an isolating interval of a root to the given precision.
-
-        Examples
-        ========
-
-        >>> Poly(x**2 - 3, x).refine_root(1, 2, eps=1e-2)
-        (19/11, 26/15)
-
-        """
-        if check_sqf and not self.is_squarefree:
-            raise PolynomialError('only square-free polynomials supported')
-
-        s, t = QQ.convert(s), QQ.convert(t)
-
-        if eps is not None:
-            eps = QQ.convert(eps)
-
-            if eps <= 0:
-                raise ValueError("'eps' must be a positive rational")
-
-        if steps is not None:
-            steps = int(steps)
-        elif eps is None:
-            steps = 1
-
-        S, T = self.rep.ring.dup_refine_real_root(self.rep, s, t, eps=eps, steps=steps)
-        return QQ.to_expr(S), QQ.to_expr(T)
 
     def count_roots(self, inf=None, sup=None):
         """
@@ -4335,26 +4305,6 @@ def intervals(F, all=False, eps=None, inf=None, sup=None, strict=False, sqf=Fals
         return []
 
     return F.intervals(all=all, eps=eps, inf=inf, sup=sup, sqf=sqf)
-
-
-def refine_root(f, s, t, eps=None, steps=None, check_sqf=False):
-    """
-    Refine an isolating interval of a root to the given precision.
-
-    Examples
-    ========
-
-    >>> refine_root(x**2 - 3, 1, 2, eps=1e-2)
-    (19/11, 26/15)
-
-    """
-    try:
-        F = Poly(f)
-    except GeneratorsNeeded:
-        raise PolynomialError(
-            f"can't refine a root of {f}, not a polynomial")
-
-    return F.refine_root(s, t, eps=eps, steps=steps, check_sqf=check_sqf)
 
 
 def count_roots(f, inf=None, sup=None):

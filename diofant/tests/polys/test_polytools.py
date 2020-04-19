@@ -9,17 +9,17 @@ from diofant import (EX, FF, LC, LM, LT, QQ, RR, ZZ, CoercionFailed,
                      Integer, Integral, MatrixSymbol, Mul,
                      MultivariatePolynomialError, OptionError, Piecewise,
                      PolificationFailed, Poly, PolynomialError, PurePoly,
-                     Rational, RealField, RefinementFailed, RootOf, Sum,
-                     Symbol, Tuple, UnificationFailed, cancel, cofactors,
-                     compose, content, count_roots, decompose, degree,
-                     degree_list, diff, discriminant, div, exp, expand, exquo,
-                     factor, factor_list, false, gcd, gcd_list, gcdex, grevlex,
-                     grlex, groebner, half_gcdex, im, intervals, invert, lcm,
+                     Rational, RealField, RootOf, Sum, Symbol, Tuple,
+                     UnificationFailed, cancel, cofactors, compose, content,
+                     count_roots, decompose, degree, degree_list, diff,
+                     discriminant, div, exp, expand, exquo, factor,
+                     factor_list, false, gcd, gcd_list, gcdex, grevlex, grlex,
+                     groebner, half_gcdex, im, intervals, invert, lcm,
                      lcm_list, lex, monic, nroots, oo, parallel_poly_from_expr,
                      pi, poly, prem, primitive, quo, re, real_roots, reduced,
-                     refine_root, rem, resultant, ring, sin, sqf, sqf_list,
-                     sqf_norm, sqf_part, sqrt, sturm, subresultants, symbols,
-                     tanh, terms_gcd, true, trunc)
+                     rem, resultant, ring, sin, sqf, sqf_list, sqf_norm,
+                     sqf_part, sqrt, sturm, subresultants, symbols, tanh,
+                     terms_gcd, true, trunc)
 from diofant.abc import a, b, c, d, p, q, t, w, x, y, z
 from diofant.core.mul import _keep_coeff
 from diofant.polys.polytools import to_rational_coeffs
@@ -2485,46 +2485,6 @@ def test_intervals():
 
     pytest.raises(ValueError, lambda: intervals(x**2 - 2, eps=10**-100000))
     pytest.raises(ValueError, lambda: Poly(x**2 - 2).intervals(eps=10**-100000))
-
-
-def test_refine_root():
-    f = Poly(x**2 - 2)
-
-    assert f.refine_root(1, 2, steps=0) == (1, 2)
-    assert f.refine_root(-2, -1, steps=0) == (-2, -1)
-
-    assert f.refine_root(1, 2, steps=None) == (1, Rational(3, 2))
-    assert f.refine_root(-2, -1, steps=None) == (-Rational(3, 2), -1)
-
-    assert f.refine_root(1, 2, steps=1) == (1, Rational(3, 2))
-    assert f.refine_root(-2, -1, steps=1) == (-Rational(3, 2), -1)
-
-    assert f.refine_root(1, 2, steps=1) == (1, Rational(3, 2))
-    assert f.refine_root(-2, -1, steps=1) == (-Rational(3, 2), -1)
-
-    assert f.refine_root(1, 2, eps=Rational(1, 100)) == (Rational(24, 17), Rational(17, 12))
-    assert f.refine_root(1, 2, eps=1e-2) == (Rational(24, 17), Rational(17, 12))
-
-    pytest.raises(PolynomialError, lambda: (f**2).refine_root(1, 2, check_sqf=True))
-
-    pytest.raises(RefinementFailed, lambda: (f**2).refine_root(1, 2))
-    pytest.raises(RefinementFailed, lambda: (f**2).refine_root(2, 3))
-
-    f = x**2 - 2
-
-    assert refine_root(f, 1, 2, steps=1) == (1, Rational(3, 2))
-    assert refine_root(f, -2, -1, steps=1) == (-Rational(3, 2), -1)
-
-    assert refine_root(f, 1, 2, steps=1) == (1, Rational(3, 2))
-    assert refine_root(f, -2, -1, steps=1) == (-Rational(3, 2), -1)
-
-    assert refine_root(f, 1, 2, eps=Rational(1, 100)) == (Rational(24, 17), Rational(17, 12))
-    assert refine_root(f, 1, 2, eps=1e-2) == (Rational(24, 17), Rational(17, 12))
-
-    pytest.raises(PolynomialError, lambda: refine_root(1, 7, 8, eps=Rational(1, 100)))
-
-    pytest.raises(ValueError, lambda: Poly(f).refine_root(1, 2, eps=10**-100000))
-    pytest.raises(ValueError, lambda: refine_root(f, 1, 2, eps=10**-100000))
 
 
 def test_count_roots():

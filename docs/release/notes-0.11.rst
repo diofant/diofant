@@ -30,7 +30,7 @@ Compatibility breaks
 * Removed ``ring_series`` module, see :pull:`820`.
 * :class:`~diofant.core.relational.Equality` doesn't support single-argument call, see :pull:`828`.
 * Removed ``is_nonnegative()``, ``is_nonpositive()`` and ``is_positive()`` methods of :class:`~diofant.domains.domain.Domain` subclasses, see :pull:`834` and :pull:`975`.
-* Former ``fast=True`` option is now a default for :meth:`~diofant.polys.polytools.Poly.intervals` and :meth:`~diofant.polys.polytools.Poly.refine_root`, see :pull:`834`.
+* Former ``fast=True`` option is now a default for :meth:`~diofant.polys.polytools.Poly.intervals`, see :pull:`834`.
 * Change order of keyword arguments for :meth:`~diofant.polys.rings.PolyElement.integrate`, see :pull:`834`.
 * Removed support for ``dps=''`` in :class:`~diofant.core.numbers.Float`.  Significant digits automatically counted for :class:`int` and :class:`str` inputs, see :pull:`797`.
 * Removed ``numer/denom`` properties of :class:`~diofant.polys.fields.FracElement`, see :pull:`851`.
@@ -50,7 +50,7 @@ Compatibility breaks
 * Drop ``has_assoc_Field`` property, ``is_SymbolicDomain`` property renamed to ``is_ExpressionDomain`` of :class:`~diofant.domains.domain.Domain`, see :pull:`977`.
 * ``drop_to_ground()`` method of :class:`~diofant.polys.rings.PolynomialRing` renamed to :meth:`~diofant.polys.rings.PolynomialRing.eject`, see :pull:`977`.
 * Renamed option misspeled option ``bareis`` to ``bareiss`` in :meth:`~diofant.matrices.matrices.MatrixBase.det` and :func:`~diofant.matrices.dense.wronskian`, see :pull:`866`.
-* Drop ``nth_power_roots_poly()``, ``ground_roots()`` functions and ``nth_power_roots_poly()``, ``ltrim()``, ``ground_roots()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`996`.
+* Drop ``nth_power_roots_poly()``, ``ground_roots()``, ``refine_root()`` functions and ``nth_power_roots_poly()``, ``ltrim()``, ``ground_roots()``, ``refine_root()`` methods of :class:`~diofant.polys.polytools.Poly`, see :pull:`996`.
 
 Minor changes
 =============
