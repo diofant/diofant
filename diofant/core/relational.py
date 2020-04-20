@@ -54,7 +54,7 @@ class Relational(Boolean, Expr, EvalfMixin):
             new_cls = cls.ValidRelationOperator[rop]
             return new_cls(lhs, rhs, **assumptions)
         except KeyError:
-            raise ValueError('Invalid relational operator symbol: %r' % rop)
+            raise ValueError(f'Invalid relational operator symbol: {rop!r}')
 
     @property
     def lhs(self):

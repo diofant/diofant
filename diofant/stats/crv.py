@@ -119,7 +119,7 @@ class ConditionalContinuousDomain(ContinuousDomain, ConditionalDomain):
                         limits[i] = (symbol, intvl.left, intvl.right)
             else:
                 raise TypeError(
-                    'Condition %s is not a relational or Boolean' % cond)
+                    f'Condition {cond} is not a relational or Boolean')
 
         return Integral(integrand, *limits, **kwargs)
 
@@ -383,7 +383,7 @@ def _reduce_inequalities(conditions, var, **kwargs):
     try:
         return reduce_rational_inequalities(conditions, var, **kwargs)
     except PolynomialError:
-        raise ValueError('Reduction of condition failed %s\n' % conditions[0])
+        raise ValueError(f'Reduction of condition failed {conditions[0]}\n')
 
 
 def reduce_rational_inequalities_wrap(condition, var):

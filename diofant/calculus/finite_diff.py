@@ -372,6 +372,6 @@ def as_finite_diff(derivative, points=1, x0=None, wrt=None):
                       in range(-order, order + 1, 2)]
 
     if len(points) < order+1:
-        raise ValueError('Too few points for order %d' % order)
+        raise ValueError(f'Too few points for order {order:d}')
     return apply_finite_diff(order, points, [
         derivative.expr.subs({wrt: x}) for x in points], x0)

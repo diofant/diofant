@@ -348,7 +348,7 @@ class MinMaxBase(LatticeOp):
 
             # pre-filter, checking comparability of arguments
             if (not isinstance(arg, Expr)) or (arg.is_extended_real is False) or (arg is zoo):
-                raise ValueError("The argument '%s' is not comparable." % arg)
+                raise ValueError(f"The argument '{arg}' is not comparable.")
 
             if arg == cls.zero:
                 raise ShortCircuit(arg)

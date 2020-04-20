@@ -108,7 +108,7 @@ def import_module(module, min_module_version=None, min_python_version=None,
         mod = __import__(module, **__import__kwargs)
     except ImportError:
         if warn_not_installed:
-            warnings.warn('%s module is not installed' % module, UserWarning)
+            warnings.warn(f'{module} module is not installed', UserWarning)
         return
 
     if min_module_version:

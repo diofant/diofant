@@ -612,8 +612,7 @@ class chebyshevt_root(Function):
     @classmethod
     def eval(cls, n, k):
         if not ((0 <= k) and (k < n)):
-            raise ValueError('must have 0 <= k < n, '
-                             'got k = %s and n = %s' % (k, n))
+            raise ValueError(f'must have 0 <= k < n, got k = {k} and n = {n}')
         return cos(pi*(2*k + 1)/(2*n))
 
 
@@ -651,8 +650,7 @@ class chebyshevu_root(Function):
     @classmethod
     def eval(cls, n, k):
         if not ((0 <= k) and (k < n)):
-            raise ValueError('must have 0 <= k < n, '
-                             'got k = %s and n = %s' % (k, n))
+            raise ValueError(f'must have 0 <= k < n, got k = {k} and n = {n}')
         return cos(pi*(k + 1)/(n + 1))
 
 ############################################################################
@@ -731,7 +729,7 @@ class legendre(OrthogonalPolynomial):
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
                 raise ValueError(
-                    'The index n must be nonnegative integer (got %r)' % n)
+                    f'The index n must be nonnegative integer (got {n!r})')
             else:
                 return cls._eval_at_order(n, x)
 
@@ -815,9 +813,9 @@ class assoc_legendre(Function):
             return 2**m*sqrt(pi) / (gamma((1 - m - n)/2)*gamma(1 - (m - n)/2))
         if n.is_Number and m.is_Number and n.is_integer and m.is_integer:
             if n.is_negative:
-                raise ValueError('%s : 1st index must be nonnegative integer (got %r)' % (cls, n))
+                raise ValueError(f'{cls} : 1st index must be nonnegative integer (got {n!r})')
             if abs(m) > n:
-                raise ValueError("%s : abs('2nd index') must be <= '1st index' (got %r, %r)" % (cls, n, m))
+                raise ValueError(f"{cls} : abs('2nd index') must be <= '1st index' (got {n!r}, {m!r})")
             return cls._eval_at_order(int(n), abs(int(m))).subs({_x: x})
 
     def fdiff(self, argindex=3):
@@ -903,7 +901,7 @@ class hermite(OrthogonalPolynomial):
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
                 raise ValueError(
-                    'The index n must be nonnegative integer (got %r)' % n)
+                    f'The index n must be nonnegative integer (got {n!r})')
             else:
                 return cls._eval_at_order(n, x)
 
@@ -995,7 +993,7 @@ class laguerre(OrthogonalPolynomial):
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
                 raise ValueError(
-                    'The index n must be nonnegative integer (got %r)' % n)
+                    f'The index n must be nonnegative integer (got {n!r})')
             else:
                 return cls._eval_at_order(n, x)
 
@@ -1098,7 +1096,7 @@ class assoc_laguerre(OrthogonalPolynomial):
             # n is a given fixed integer, evaluate into polynomial
             if n.is_negative:
                 raise ValueError(
-                    'The index n must be nonnegative integer (got %r)' % n)
+                    f'The index n must be nonnegative integer (got {n!r})')
             else:
                 return cls._eval_at_order(n, x, alpha)
 

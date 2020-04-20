@@ -53,10 +53,10 @@ class LinearEntity(GeometrySet):
             # sometimes we return a single point if we are not given two unique
             # points. This is done in the specific subclass
             raise ValueError(
-                '%s.__new__ requires two unique Points.' % cls.__name__)
+                f'{cls.__name__}.__new__ requires two unique Points.')
         if len(p1) != len(p2):
             raise ValueError(
-                '%s.__new__ requires two Points of equal dimension.' % cls.__name__)
+                f'{cls.__name__}.__new__ requires two Points of equal dimension.')
 
         return GeometryEntity.__new__(cls, p1, p2, **kwargs)
 
@@ -616,7 +616,7 @@ class LinearEntity(GeometrySet):
             n1 = self.__class__.__name__
             n2 = o.__class__.__name__
             raise GeometryError(
-                'Do not know how to project %s onto %s' % (n2, n1))
+                f'Do not know how to project {n2} onto {n1}')
 
         return self.intersection(projected)[0]
 
@@ -919,7 +919,7 @@ class LinearEntity(GeometrySet):
             return result
         else:
             raise Undecidable(
-                "can't decide whether '%s' contains '%s'" % (self, other))
+                f"can't decide whether '{self}' contains '{other}'")
 
     def contains(self, other):
         """Subclasses should implement this method and should return
@@ -1467,7 +1467,7 @@ class Ray(LinearEntity):
                 if rv in (true, false):
                     return bool(rv)
                 raise Undecidable(
-                    'Cannot determine if %s is in %s' % (o, self))
+                    f'Cannot determine if {o} is in {self}')
             else:
                 # Points are not collinear, so the rays are not parallel
                 # and hence it is impossible for self to contain o

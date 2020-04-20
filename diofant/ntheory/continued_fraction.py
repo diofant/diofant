@@ -68,8 +68,7 @@ def continued_fraction_periodic(p, q, d=0):
         raise ValueError('The denominator is zero.')
 
     if d < 0:
-        raise ValueError('Delta supposed to be a non-negative '
-                         'integer, got %d' % d)
+        raise ValueError(f'Delta supposed to be a non-negative integer, got {d:d}')
     elif d == 0 or sd.is_integer:
         # the number is a rational number
         return list(continued_fraction_iterator(Rational(p + sd, q)))

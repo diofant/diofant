@@ -189,7 +189,7 @@ class Plot:
         self.close()
 
     def __str__(self):
-        series_strs = [('[%d]: ' % i) + str(s)
+        series_strs = [(f'[{i:d}]: ') + str(s)
                        for i, s in enumerate(self._series)]
         return 'Plot object containing:\n' + '\n'.join(series_strs)
 
@@ -410,8 +410,7 @@ class LineOver1DRangeSeries(Line2DBaseSeries):
         self.line_color = kwargs.get('line_color', None)
 
     def __str__(self):
-        return 'cartesian line: %s for %s over %s' % (
-            str(self.expr), str(self.var), str((self.start, self.end)))
+        return f'cartesian line: {self.expr!s} for {self.var!s} over {(self.start, self.end)!s}'
 
     def get_segments(self):
         """
@@ -507,7 +506,7 @@ class Parametric2DLineSeries(Line2DBaseSeries):
         super().__init__()
         self.expr_x = sympify(expr_x)
         self.expr_y = sympify(expr_y)
-        self.label = '(%s, %s)' % (str(self.expr_x), str(self.expr_y))
+        self.label = f'({self.expr_x!s}, {self.expr_y!s})'
         self.var = sympify(var_start_end[0])
         self.start = float(var_start_end[1])
         self.end = float(var_start_end[2])
@@ -517,9 +516,7 @@ class Parametric2DLineSeries(Line2DBaseSeries):
         self.line_color = kwargs.get('line_color', None)
 
     def __str__(self):
-        return 'parametric cartesian line: (%s, %s) for %s over %s' % (
-            str(self.expr_x), str(self.expr_y), str(self.var),
-            str((self.start, self.end)))
+        return f'parametric cartesian line: ({self.expr_x!s}, {self.expr_y!s}) for {self.var!s} over {(self.start, self.end)!s}'
 
     def get_parameter_points(self):
         np = import_module('numpy')
@@ -644,7 +641,7 @@ class Parametric3DLineSeries(Line3DBaseSeries):
         self.expr_x = sympify(expr_x)
         self.expr_y = sympify(expr_y)
         self.expr_z = sympify(expr_z)
-        self.label = '(%s, %s)' % (str(self.expr_x), str(self.expr_y))
+        self.label = f'({self.expr_x!s}, {self.expr_y!s})'
         self.var = sympify(var_start_end[0])
         self.start = float(var_start_end[1])
         self.end = float(var_start_end[2])
@@ -652,9 +649,7 @@ class Parametric3DLineSeries(Line3DBaseSeries):
         self.line_color = kwargs.get('line_color', None)
 
     def __str__(self):
-        return '3D parametric cartesian line: (%s, %s, %s) for %s over %s' % (
-            str(self.expr_x), str(self.expr_y), str(self.expr_z),
-            str(self.var), str((self.start, self.end)))
+        return f'3D parametric cartesian line: ({self.expr_x!s}, {self.expr_y!s}, {self.expr_z!s}) for {self.var!s} over {(self.start, self.end)!s}'
 
     def get_parameter_points(self):
         np = import_module('numpy')
@@ -724,13 +719,8 @@ class SurfaceOver2DRangeSeries(SurfaceBaseSeries):
         self.surface_color = kwargs.get('surface_color', None)
 
     def __str__(self):
-        return ('cartesian surface: %s for'
-                ' %s over %s and %s over %s') % (
-                    str(self.expr),
-                    str(self.var_x),
-                    str((self.start_x, self.end_x)),
-                    str(self.var_y),
-                    str((self.start_y, self.end_y)))
+        return (f'cartesian surface: {self.expr!s} for'
+                f' {self.var_x!s} over {(self.start_x, self.end_x)!s} and {self.var_y!s} over {(self.start_y, self.end_y)!s}')
 
     def get_meshes(self):
         np = import_module('numpy')
@@ -768,15 +758,8 @@ class ParametricSurfaceSeries(SurfaceBaseSeries):
         self.surface_color = kwargs.get('surface_color', None)
 
     def __str__(self):
-        return ('parametric cartesian surface: (%s, %s, %s) for'
-                ' %s over %s and %s over %s') % (
-                    str(self.expr_x),
-                    str(self.expr_y),
-                    str(self.expr_z),
-                    str(self.var_u),
-                    str((self.start_u, self.end_u)),
-                    str(self.var_v),
-                    str((self.start_v, self.end_v)))
+        return (f'parametric cartesian surface: ({self.expr_x!s}, {self.expr_y!s}, {self.expr_z!s}) for'
+                f' {self.var_u!s} over {(self.start_u, self.end_u)!s} and {self.var_v!s} over {(self.start_v, self.end_v)!s}')
 
     def get_parameter_meshes(self):
         np = import_module('numpy')
@@ -1192,7 +1175,7 @@ def plot(*args, **kwargs):
                     'univariate expressions being plotted.')
     x = free.pop() if free else Symbol('x')
     kwargs.setdefault('xlabel', x.name)
-    kwargs.setdefault('ylabel', 'f(%s)' % x.name)
+    kwargs.setdefault('ylabel', f'f({x.name})')
     show = kwargs.pop('show', True)
     series = []
     plot_expr = check_arguments(args, 1, 1)
@@ -1684,7 +1667,7 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
 
         if len(free_symbols) > nb_of_free_symbols:
             raise ValueError('The number of free_symbols in the expression '
-                             'is greater than %d' % nb_of_free_symbols)
+                             f'is greater than {nb_of_free_symbols:d}')
         if len(args) == i + nb_of_free_symbols and isinstance(args[i], Tuple):
             ranges = Tuple(*list(args[i:i + nb_of_free_symbols]))
             plots = [expr + ranges for expr in exprs]
@@ -1707,10 +1690,9 @@ def check_arguments(args, expr_len, nb_of_free_symbols):
         for arg in args:
             for i in range(expr_len):
                 if not isinstance(arg[i], Expr):
-                    raise ValueError('Expected an expression, given %s' %
-                                     str(arg[i]))
+                    raise ValueError(f'Expected an expression, given {arg[i]!s}')
             for i in range(nb_of_free_symbols):
                 if not len(arg[i + expr_len]) == 3:
                     raise ValueError('The ranges should be a tuple of '
-                                     'length 3, got %s' % str(arg[i + expr_len]))
+                                     f'length 3, got {arg[i + expr_len]!s}')
         return args

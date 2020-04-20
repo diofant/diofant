@@ -135,7 +135,7 @@ def deduce_alpha_implications(implications):
         na = Not(a)
         if na in impl:
             raise ValueError(
-                'implications are inconsistent: %s -> %s %s' % (a, na, impl))
+                f'implications are inconsistent: {a} -> {na} {impl}')
 
     return res
 
@@ -437,7 +437,7 @@ class FactRules:
                 P.process_rule(a, b)
                 P.process_rule(b, a)
             else:
-                raise ValueError('unknown op %r' % op)
+                raise ValueError(f'unknown op {op!r}')
 
         # --- build deduction networks ---
         self.beta_rules = []
@@ -479,7 +479,7 @@ class InconsistentAssumptions(ValueError):
 
     def __str__(self):
         kb, fact, value = self.args
-        return '%s, %s=%s' % (kb, fact, value)
+        return f'{kb}, {fact}={value}'
 
 
 class FactKB(dict):

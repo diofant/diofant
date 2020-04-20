@@ -74,7 +74,7 @@ class ExprWithLimits(Expr):
             free = function.free_symbols
             if len(free) != 1:
                 raise ValueError(
-                    'specify dummy variables for %s' % function)
+                    f'specify dummy variables for {function}')
             limits = [Tuple(s) for s in free]
 
         # denest any nested calls

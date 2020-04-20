@@ -80,7 +80,7 @@ class GrayCode(Basic):
         """
         if n < 1 or int(n) != n:
             raise ValueError(
-                'Gray code dimension must be a positive integer, not %i' % n)
+                f'Gray code dimension must be a positive integer, not {n:d}')
         n = int(n)
         args = (Integer(n),) + args
         obj = Basic.__new__(cls, *args)

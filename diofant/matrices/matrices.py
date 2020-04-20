@@ -18,7 +18,7 @@ def _iszero(x):
     """Returns True if x is zero."""
     r = x.equals(0)
     if r is None:  # pragma: no cover
-        raise NotImplementedError('Zero-decision problem for %s' % x)
+        raise NotImplementedError(f'Zero-decision problem for {x}')
     return r
 
 
@@ -147,8 +147,7 @@ class MatrixBase(DefaultPrinting):
                         except TypeError:
                             ncol.add(1)
                 if len(ncol) > 1:
-                    raise ValueError('Got rows of variable lengths: %s' %
-                                     sorted(ncol))
+                    raise ValueError(f'Got rows of variable lengths: {sorted(ncol)}')
                 cols = ncol.pop() if ncol else 0
                 rows = len(in_mat) if cols else 0
                 if rows:
@@ -246,7 +245,7 @@ class MatrixBase(DefaultPrinting):
             if not isinstance(value, Expr) and is_sequence(value):
                 self.copyin_list(key, value)
                 return
-            raise ValueError('unexpected value: %s' % value)
+            raise ValueError(f'unexpected value: {value}')
         else:
             if (not is_mat and
                     not isinstance(value, Basic) and is_sequence(value)):
@@ -333,7 +332,7 @@ class MatrixBase(DefaultPrinting):
         phi = totient(m)
         det_K = self.det()
         if gcd(det_K, m) != 1:
-            raise ValueError('Matrix is not invertible (mod %d)' % m)
+            raise ValueError(f'Matrix is not invertible (mod {m:d})')
         det_inv = pow(int(det_K), int(phi - 1), int(m))
         K_adj = self.cofactorMatrix().transpose()
         K_inv = self.__class__(N, N, [det_inv*K_adj[i, j] % m for i in range(N) for j in range(N)])
@@ -565,7 +564,7 @@ class MatrixBase(DefaultPrinting):
             if 0 in A.shape:
                 rv = rv.reshape(*A.shape)
             return rv
-        raise TypeError('cannot add matrix and %s' % type(other))
+        raise TypeError(f'cannot add matrix and {type(other)}')
 
     def __radd__(self, other):
         return self + other
@@ -673,7 +672,7 @@ class MatrixBase(DefaultPrinting):
 
     def _format_str(self, printer):
         if self.rows == 0 or self.cols == 0:
-            return 'Matrix(%s, %s, [])' % (self.rows, self.cols)
+            return f'Matrix({self.rows}, {self.cols}, [])'
         if self.rows == 1:
             return 'Matrix([%s])' % self.table(printer, rowsep=',\n')
         return 'Matrix([\n%s])' % self.table(printer, rowsep=',\n')
@@ -1194,7 +1193,7 @@ class MatrixBase(DefaultPrinting):
                     line.append(' ')
                 else:
                     line.append(str(symb))
-            s.append('[%s]' % ''.join(line))
+            s.append(f"[{''.join(line)}]")
         print('\n'.join(s))
 
     def LUsolve(self, rhs, iszerofunc=_iszero):
@@ -1397,7 +1396,7 @@ class MatrixBase(DefaultPrinting):
         """
         if not 0 <= i < self.rows or not 0 <= j < self.cols:
             raise ValueError('`i` and `j` must satisfy 0 <= i < `self.rows` ' +
-                             '(%d)' % self.rows + 'and 0 <= j < `self.cols` (%d).' % self.cols)
+                             f'({self.rows:d})' + f'and 0 <= j < `self.cols` ({self.cols:d}).')
         return self.minorMatrix(i, j).det(method)
 
     def minorMatrix(self, i, j):
@@ -1413,7 +1412,7 @@ class MatrixBase(DefaultPrinting):
         """
         if not 0 <= i < self.rows or not 0 <= j < self.cols:
             raise ValueError('`i` and `j` must satisfy 0 <= i < `self.rows` ' +
-                             '(%d)' % self.rows + 'and 0 <= j < `self.cols` (%d).' % self.cols)
+                             f'({self.rows:d})' + f'and 0 <= j < `self.cols` ({self.cols:d}).')
         M = self.as_mutable()
         del M[i, :]
         del M[:, j]
@@ -1566,7 +1565,7 @@ class MatrixBase(DefaultPrinting):
             Q[:, j] = tmp / R[j, j]
             if Q[:, j].norm() != 1:  # pragma: no cover
                 raise NotImplementedError("Couldn't normalize the "
-                                          'vector %d.' % j)
+                                          f'vector {j:d}.')
             for i in range(j):
                 R[i, j] = Q[:, i].dot(mat[:, j])
         return cls(Q), cls(R)
@@ -1631,8 +1630,7 @@ class MatrixBase(DefaultPrinting):
 
         """
         if not is_sequence(b):
-            raise TypeError('`b` must be an ordered iterable or Matrix, not %s.' %
-                            type(b))
+            raise TypeError(f'`b` must be an ordered iterable or Matrix, not {type(b)}.')
         if not (self.rows * self.cols == b.rows * b.cols == 3):
             raise ShapeError('Dimensions incorrect for cross product.')
         else:
@@ -1677,8 +1675,7 @@ class MatrixBase(DefaultPrinting):
                     raise ShapeError('Dimensions incorrect for dot product.')
                 return self.dot(Matrix(b))
             else:
-                raise TypeError('`b` must be an ordered iterable or Matrix, not %s.' %
-                                type(b))
+                raise TypeError(f'`b` must be an ordered iterable or Matrix, not {type(b)}')
 
         mat = self
         if mat.cols == b.rows:
@@ -2436,7 +2433,7 @@ class MatrixBase(DefaultPrinting):
         elif method == 'det_LU':
             return self.det_LU_decomposition()
         else:
-            raise ValueError("Determinant method '%s' unrecognized" % method)
+            raise ValueError(f"Determinant method '{method}' unrecognized")
 
     def det_bareiss(self):
         """Compute matrix determinant using Bareiss' fraction-free
@@ -4048,7 +4045,7 @@ class MatrixBase(DefaultPrinting):
         A_pinv = self.pinv()
         if arbitrary_matrix is None:
             rows, cols = A.cols, B.cols
-            w = symbols('w:{0}_:{1}'.format(rows, cols), cls=Dummy)
+            w = symbols(f'w:{rows}_:{cols}', cls=Dummy)
             arbitrary_matrix = self.__class__(cols, rows, w).T
         return A_pinv * B + (eye(A.cols) - A_pinv*A) * arbitrary_matrix
 
@@ -4075,7 +4072,7 @@ def classof(A, B):
             return B.__class__
     except AttributeError:
         pass
-    raise TypeError('Incompatible classes %s, %s' % (A.__class__, B.__class__))
+    raise TypeError(f'Incompatible classes {A.__class__}, {B.__class__}')
 
 
 def a2idx(j, n=None):
@@ -4084,12 +4081,12 @@ def a2idx(j, n=None):
         try:
             j = j.__index__()
         except AttributeError:
-            raise IndexError('Invalid index a[%r]' % (j, ))
+            raise IndexError(f'Invalid index a[{j!r}]')
     if n is not None:
         if j < 0:
             j += n
         if not (j >= 0 and j < n):
-            raise IndexError('Index out of range: a[%s]' % (j, ))
+            raise IndexError(f'Index out of range: a[{j}]')
     return int(j)
 
 

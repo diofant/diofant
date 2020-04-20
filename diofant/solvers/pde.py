@@ -430,8 +430,8 @@ def checkpdesol(pde, sol, func=None, solve_for_func=True):
         s = simplify(pde.subs({func: sol.rhs}).doit())
         return s == 0, s
 
-    raise NotImplementedError(filldedent("""
-        Unable to test if %s is a solution to %s.""" % (sol, pde)))
+    raise NotImplementedError(filldedent(f"""
+        Unable to test if {sol} is a solution to {pde}."""))
 
 
 def pde_1st_linear_constant_coeff_homogeneous(eq, func, order, match, solvefun):
@@ -766,7 +766,7 @@ def pde_separate(eq, fun, sep, strategy='mul'):
     elif strategy == 'mul':
         do_add = False
     else:
-        raise ValueError('Unknown strategy: %s' % strategy)
+        raise ValueError(f'Unknown strategy: {strategy}')
 
     if isinstance(eq, Equality):
         if eq.rhs != 0:

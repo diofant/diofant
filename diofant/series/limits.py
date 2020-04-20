@@ -103,7 +103,7 @@ class Limit(Expr):
             raise TypeError('direction must be of type str or Symbol, not %s' % type(dir))
         if str(dir) not in ('+', '-', 'real'):
             raise ValueError(
-                "direction must be either '+' or '-' or 'real', not %s" % dir)
+                f"direction must be either '+' or '-' or 'real', not {dir}")
 
         obj = Expr.__new__(cls)
         obj._args = (e, z, z0, dir)

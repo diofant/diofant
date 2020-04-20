@@ -91,11 +91,11 @@ def test_list():
 def test_Matrix():
     for cls, name in [(Matrix, 'MutableDenseMatrix'), (ImmutableMatrix, 'ImmutableMatrix')]:
         sT(cls([[x**+1, 1], [y, x + y]]),
-           "%s([[Symbol('x'), Integer(1)], [Symbol('y'), Add(Symbol('x'), Symbol('y'))]])" % name)
+           f"{name}([[Symbol('x'), Integer(1)], [Symbol('y'), Add(Symbol('x'), Symbol('y'))]])")
 
-        sT(cls(), '%s([])' % name)
+        sT(cls(), f'{name}([])')
 
-        sT(cls([[x**+1, 1], [y, x + y]]), "%s([[Symbol('x'), Integer(1)], [Symbol('y'), Add(Symbol('x'), Symbol('y'))]])" % name)
+        sT(cls([[x**+1, 1], [y, x + y]]), f"{name}([[Symbol('x'), Integer(1)], [Symbol('y'), Add(Symbol('x'), Symbol('y'))]])")
 
 
 def test_empty_Matrix():

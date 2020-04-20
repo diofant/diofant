@@ -407,7 +407,7 @@ def pspace(expr):
     expr = sympify(expr)
     rvs = random_symbols(expr)
     if not rvs:
-        raise ValueError('Expression containing Random Variable expected, not %s' % expr)
+        raise ValueError(f'Expression containing Random Variable expected, not {expr}')
     # If only one space present
     if all(rv.pspace == rvs[0].pspace for rv in rvs):
         return rvs[0].pspace

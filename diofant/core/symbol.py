@@ -84,9 +84,9 @@ class BaseSymbol(AtomicExpr, Boolean):
         # be strict about commutativity: cannot be None
         is_commutative = fuzzy_bool(assumptions.get('commutative', True))
         if is_commutative is None:
-            whose = '%s ' % obj.__name__ if obj else ''
+            whose = f'{obj.__name__} ' if obj else ''
             raise ValueError(
-                '%scommutativity must be True or False.' % whose)
+                f'{whose}commutativity must be True or False.')
 
         # sanitize other assumptions so 1 -> True and 0 -> False
         for key in list(assumptions):

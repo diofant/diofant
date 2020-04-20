@@ -145,7 +145,7 @@ def mrv(e, x):
     elif e.is_Function:
         return reduce(lambda a, b: mrv_max(a, b, x), [mrv(a, x) for a in e.args])
     else:
-        raise NotImplementedError("Don't know how to calculate the mrv of '%s'" % e)
+        raise NotImplementedError(f"Don't know how to calculate the mrv of '{e}'")
 
 
 def mrv_max(f, g, x):
@@ -239,7 +239,7 @@ def limitinf(e, x):
     elif sig == 0:
         return limitinf(c0, x)
     else:
-        raise NotImplementedError('Result depends on the sign of %s' % sig)
+        raise NotImplementedError(f'Result depends on the sign of {sig}')
 
 
 @cacheit
@@ -338,7 +338,7 @@ def rewrite(e, x, w):
     for g in Omega:
         sig = sign(g.exp, x)
         if sig not in (1, -1):
-            raise NotImplementedError('Result depends on the sign of %s' % sig)
+            raise NotImplementedError(f'Result depends on the sign of {sig}')
 
     if sig == 1:
         w = 1/w  # if g goes to oo, substitute 1/w

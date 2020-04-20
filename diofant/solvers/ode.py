@@ -356,7 +356,7 @@ def get_numbered_constants(eq, num=1, start=1, prefix='C'):
     if isinstance(eq, Expr):
         eq = [eq]
     elif not iterable(eq):
-        raise ValueError('Expected Expr or iterable but got %s' % eq)
+        raise ValueError(f'Expected Expr or iterable but got {eq}')
 
     atom_set = set().union(*[i.free_symbols for i in eq])
     functions_set = set().union(*[i.atoms(Function) for i in eq])
@@ -570,13 +570,13 @@ def dsolve(eq, func=None, hint='default', simplify=True,
         else:
             if match['is_linear']:
                 if match['type_of_equation'] == 'type1' and match['order'] == 1:
-                    solvefunc = globals()['sysode_linear_neq_order%(order)s' % match]
+                    solvefunc = globals()[f"sysode_linear_neq_order{match['order']}"]
                 elif match['no_of_equation'] <= 3:
-                    solvefunc = globals()['sysode_linear_%(no_of_equation)seq_order%(order)s' % match]
+                    solvefunc = globals()[f"sysode_linear_{match['no_of_equation']}eq_order{match['order']}"]
                 else:
                     raise NotImplementedError
             else:
-                solvefunc = globals()['sysode_nonlinear_%(no_of_equation)seq_order%(order)s' % match]
+                solvefunc = globals()[f"sysode_nonlinear_{match['no_of_equation']}eq_order{match['order']}"]
             sols = solvefunc(match)
             if init:
                 constants = Tuple(*sols).free_symbols - Tuple(*eq).free_symbols
@@ -889,7 +889,7 @@ def classify_ode(eq, func=None, dict=False, init=None, **kwargs):
 
     if func and len(func.args) != 1:
         raise ValueError('dsolve() and classify_ode() only '
-                         'work with functions of one variable, not %s' % func)
+                         f'work with functions of one variable, not {func}')
     if prep or func is None:
         eq, func_ = _preprocess(eq, func)
         if func is None:
@@ -1431,7 +1431,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
             order[func_] = 0
     funcs = list(ordered((set(funcs))))
     if len(funcs) < len(eq):
-        raise ValueError('Number of functions given is less than number of equations %s' % funcs)
+        raise ValueError(f'Number of functions given is less than number of equations {funcs}')
     for func in funcs:
         max_order = order[func]
         for eq_ in eq:
@@ -1443,7 +1443,7 @@ def classify_sysode(eq, funcs=None, **kwargs):
     for func in funcs:
         if func and len(func.args) != 1:
             raise ValueError('dsolve() and classify_sysode() work with '
-                             'functions of one variable only, not %s' % func)
+                             f'functions of one variable only, not {func}')
 
     # find the order of all equation in system of odes
     matching_hints['order'] = order
@@ -1912,7 +1912,7 @@ def checksysodesol(eqs, sols, func=None):
         funcs = list(func)
     if not all(isinstance(func, AppliedUndef) and len(func.args) == 1 for func in funcs)\
             and len({func.args for func in funcs}) != 1:
-        raise ValueError('func must be a function of one variable, not %s' % str(func))
+        raise ValueError(f'func must be a function of one variable, not {func!s}')
     for sol in sols:
         if len(sol.atoms(AppliedUndef)) != 1:
             raise ValueError('solutions should have one function only')
@@ -2162,7 +2162,7 @@ def checkodesol(ode, sol, func=None, order='auto', solve_for_func=True):
         _, func = _preprocess(ode.lhs)
     if not isinstance(func, AppliedUndef) or len(func.args) != 1:
         raise ValueError(
-            'func must be a function of one variable, not %s' % func)
+            f'func must be a function of one variable, not {func}')
     if is_sequence(sol, set):
         return type(sol)([checkodesol(ode, i, order=order, solve_for_func=solve_for_func) for i in sol])
 
@@ -2679,7 +2679,7 @@ def constant_renumber(expr, symbolname, startnumber, endnumber):
     newstartnumber = 1
     constants_found = [None]*(endnumber + 2)
     constantsymbols = [Symbol(
-        symbolname + '%d' % t) for t in range(startnumber,
+        symbolname + f'{t:d}') for t in range(startnumber,
                                               endnumber + 1)]
 
     # make a mapping to send all constantsymbols to Integer(1) and use
@@ -2724,7 +2724,7 @@ def constant_renumber(expr, symbolname, startnumber, endnumber):
             return expr.func(*[_constant_renumber(x) for x in sortedargs])
     expr = _constant_renumber(expr)
     # Renumbering happens here
-    newconsts = symbols('C1:%d' % newstartnumber)
+    newconsts = symbols(f'C1:{newstartnumber:d}')
     expr = expr.subs(zip(constants_found[1:], newconsts), simultaneous=True)
     return expr
 
@@ -4614,9 +4614,9 @@ def _solve_undetermined_coefficients(eq, func, order, match):
 
     if not coeffvals:
         raise NotImplementedError(
-            'Could not solve `%s` using the '
+            f'Could not solve `{eq}` using the '
             'method of undetermined coefficients '
-            '(unable to solve for coefficients).' % eq)
+            '(unable to solve for coefficients).')
     else:
         coeffvals = coeffvals[0]
 

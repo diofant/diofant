@@ -108,13 +108,13 @@ class CCodePrinter(CodePrinter):
         return p*5
 
     def _get_statement(self, codestring):
-        return '%s;' % codestring
+        return f'{codestring};'
 
     def _get_comment(self, text):
-        return '// {0}'.format(text)
+        return f'// {text}'
 
     def _declare_number_const(self, name, value):
-        return 'double const {0} = {1};'.format(name, value)
+        return f'double const {name} = {value};'
 
     def _format_code(self, lines):
         return self.indent_code(lines)
@@ -145,12 +145,11 @@ class CCodePrinter(CodePrinter):
         elif expr.exp == 0.5:
             return 'sqrt(%s)' % self._print(expr.base)
         else:
-            return 'pow(%s, %s)' % (self._print(expr.base),
-                                    self._print(expr.exp))
+            return f'pow({self._print(expr.base)}, {self._print(expr.exp)})'
 
     def _print_Rational(self, expr):
         p, q = int(expr.numerator), int(expr.denominator)
-        return '%d.0L/%d.0L' % (p, q)
+        return f'{p:d}.0L/{q:d}.0L'
 
     def _print_Indexed(self, expr):
         # calculate index for 1d array
@@ -160,7 +159,7 @@ class CCodePrinter(CodePrinter):
         for i in reversed(range(expr.rank)):
             elem += expr.indices[i]*offset
             offset *= dims[i]
-        return '%s[%s]' % (self._print(expr.base.label), self._print(elem))
+        return f'{self._print(expr.base.label)}[{self._print(elem)}]'
 
     def _print_Idx(self, expr):
         return self._print(expr.label)
@@ -204,7 +203,7 @@ class CCodePrinter(CodePrinter):
             # operators. This has the downside that inline operators will
             # not work for statements that span multiple lines (Matrix or
             # Indexed expressions).
-            ecpairs = ['((%s) ? (\n%s\n)\n' % (self._print(c), self._print(e))
+            ecpairs = [f'(({self._print(c)}) ? (\n{self._print(e)}\n)\n'
                        for e, c in expr.args[:-1]]
             last_line = ': (\n%s\n)' % self._print(expr.args[-1].expr)
             return ': '.join(ecpairs) + last_line + ' '.join([')'*len(ecpairs)])
@@ -215,15 +214,14 @@ class CCodePrinter(CodePrinter):
         return self._print(_piecewise)
 
     def _print_MatrixElement(self, expr):
-        return '{0}[{1}]'.format(expr.parent, expr.j +
-                                 expr.i*expr.parent.shape[1])
+        return f'{expr.parent}[{expr.j + expr.i * expr.parent.shape[1]}]'
 
     def _print_Symbol(self, expr):
 
         name = super()._print_Symbol(expr)
 
         if expr in self._dereference:
-            return '(*{0})'.format(name)
+            return f'(*{name})'
         else:
             return name
 
@@ -322,7 +320,7 @@ def ccode(expr, assign_to=None, **settings):
 
     >>> ccode(2**x + 3**x,
     ...       user_functions={'Pow': [(lambda b, e: b == 2,
-    ...                                lambda b, e: 'exp2(%s)' % e),
+    ...                                lambda b, e: f'exp2({e})'),
     ...                               (lambda b, e: b != 2, 'pow')]})
     'exp2(x) + pow(3, x)'
 

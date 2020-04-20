@@ -541,7 +541,7 @@ class Not(BooleanFunction):
             a, b, c = args
             return And._to_nnf(Or(a, ~c), Or(~a, ~b), simplify=simplify)
 
-        raise ValueError('Illegal operator %s in expression' % func)
+        raise ValueError(f'Illegal operator {func} in expression')
 
 
 class Xor(BooleanFunction):
@@ -1412,7 +1412,7 @@ def SOPform(variables, minterms, dontcares=None):
     dontcares = [list(i) for i in (dontcares or [])]
     for d in dontcares:
         if d in minterms:
-            raise ValueError('%s in minterms is also in dontcares' % d)
+            raise ValueError(f'{d} in minterms is also in dontcares')
 
     old = None
     new = minterms + dontcares
@@ -1461,7 +1461,7 @@ def POSform(variables, minterms, dontcares=None):
     dontcares = [list(i) for i in (dontcares or [])]
     for d in dontcares:
         if d in minterms:
-            raise ValueError('%s in minterms is also in dontcares' % d)
+            raise ValueError(f'{d} in minterms is also in dontcares')
 
     maxterms = []
     for t in product([0, 1], repeat=len(variables)):

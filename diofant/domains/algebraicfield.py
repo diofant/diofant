@@ -2,7 +2,7 @@
 
 import functools
 
-from ..core import I, Integer, cacheit, sympify
+from ..core import I, cacheit, sympify
 from ..core.sympify import CantSympify
 from ..polys.polyerrors import CoercionFailed, DomainError, NotAlgebraic
 from .characteristiczero import CharacteristicZero
@@ -105,19 +105,18 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         return element.rep.as_expr()
 
     def from_expr(self, expr):
-        try:
-            K0 = self.domain.algebraic_field(expr)
-        except NotAlgebraic:
-            raise CoercionFailed(f'{expr} is not a valid algebraic number in {self}')
+        from ..polys import primitive_element
+
         if expr in self.domain:
             return self([expr])
-        else:
-            from ..polys import field_isomorphism
 
-            coeffs = field_isomorphism(K0, self)
-            factor = Integer((K0.to_expr(K0.unit)/expr).simplify())
+        try:
+            _, (c,), (rep,) = primitive_element([expr])
+        except NotAlgebraic:
+            raise CoercionFailed(f'{expr} is not an algebraic number')
 
-            return self.dtype(coeffs)/factor
+        K0 = self.domain.algebraic_field(c*expr)
+        return self.convert(K0(rep), K0)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self([self.domain.convert(a, K0)])
