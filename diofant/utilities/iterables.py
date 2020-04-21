@@ -1494,7 +1494,7 @@ def generate_involutions(n):
     References
     ==========
 
-    * http://mathworld.wolfram.com/PermutationInvolution.html
+    * https://mathworld.wolfram.com/PermutationInvolution.html
 
     Examples
     ========
@@ -1585,7 +1585,7 @@ def necklaces(n, k, free=False):
     References
     ==========
 
-    http://mathworld.wolfram.com/Necklace.html
+    https://mathworld.wolfram.com/Necklace.html
 
     """
     return uniq(minlex(i, directed=not free) for i in

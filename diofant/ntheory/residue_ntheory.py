@@ -1070,7 +1070,7 @@ def discrete_log(n, a, b, order=None, prime_order=None):
     References
     ==========
 
-    * http://mathworld.wolfram.com/DiscreteLogarithm.html
+    * https://mathworld.wolfram.com/DiscreteLogarithm.html
     * :cite:`Menezes97`
 
     Examples

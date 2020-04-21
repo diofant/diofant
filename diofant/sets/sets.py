@@ -1501,7 +1501,7 @@ class Complement(Set, EvalfMixin):
     References
     ==========
 
-    * http://mathworld.wolfram.com/ComplementSet.html
+    * https://mathworld.wolfram.com/ComplementSet.html
 
     """
 

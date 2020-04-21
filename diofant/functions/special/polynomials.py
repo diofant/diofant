@@ -107,7 +107,7 @@ class jacobi(OrthogonalPolynomial):
     ==========
 
     * https://en.wikipedia.org/wiki/Jacobi_polynomials
-    * http://mathworld.wolfram.com/JacobiPolynomial.html
+    * https://mathworld.wolfram.com/JacobiPolynomial.html
     * http://functions.wolfram.com/Polynomials/JacobiP/
 
     """
@@ -229,7 +229,7 @@ def jacobi_normalized(n, a, b, x):
     ==========
 
     * https://en.wikipedia.org/wiki/Jacobi_polynomials
-    * http://mathworld.wolfram.com/JacobiPolynomial.html
+    * https://mathworld.wolfram.com/JacobiPolynomial.html
     * http://functions.wolfram.com/Polynomials/JacobiP/
 
     """
@@ -302,7 +302,7 @@ class gegenbauer(OrthogonalPolynomial):
     ==========
 
     * https://en.wikipedia.org/wiki/Gegenbauer_polynomials
-    * http://mathworld.wolfram.com/GegenbauerPolynomial.html
+    * https://mathworld.wolfram.com/GegenbauerPolynomial.html
     * http://functions.wolfram.com/Polynomials/GegenbauerC3/
 
     """
@@ -433,8 +433,8 @@ class chebyshevt(OrthogonalPolynomial):
     ==========
 
     * https://en.wikipedia.org/wiki/Chebyshev_polynomial
-    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
-    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
+    * https://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
+    * https://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
     * http://functions.wolfram.com/Polynomials/ChebyshevT/
     * http://functions.wolfram.com/Polynomials/ChebyshevU/
 
@@ -531,8 +531,8 @@ class chebyshevu(OrthogonalPolynomial):
     ==========
 
     * https://en.wikipedia.org/wiki/Chebyshev_polynomial
-    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
-    * http://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
+    * https://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
+    * https://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
     * http://functions.wolfram.com/Polynomials/ChebyshevT/
     * http://functions.wolfram.com/Polynomials/ChebyshevU/
 
@@ -700,7 +700,7 @@ class legendre(OrthogonalPolynomial):
     ==========
 
     * https://en.wikipedia.org/wiki/Legendre_polynomial
-    * http://mathworld.wolfram.com/LegendrePolynomial.html
+    * https://mathworld.wolfram.com/LegendrePolynomial.html
     * http://functions.wolfram.com/Polynomials/LegendreP/
     * http://functions.wolfram.com/Polynomials/LegendreP2/
 
@@ -790,7 +790,7 @@ class assoc_legendre(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Associated_Legendre_polynomials
-    * http://mathworld.wolfram.com/LegendrePolynomial.html
+    * https://mathworld.wolfram.com/LegendrePolynomial.html
     * http://functions.wolfram.com/Polynomials/LegendreP/
     * http://functions.wolfram.com/Polynomials/LegendreP2/
 
@@ -878,7 +878,7 @@ class hermite(OrthogonalPolynomial):
     ==========
 
     * https://en.wikipedia.org/wiki/Hermite_polynomial
-    * http://mathworld.wolfram.com/HermitePolynomial.html
+    * https://mathworld.wolfram.com/HermitePolynomial.html
     * http://functions.wolfram.com/Polynomials/HermiteH/
 
     """
@@ -966,7 +966,7 @@ class laguerre(OrthogonalPolynomial):
     ==========
 
     * https://en.wikipedia.org/wiki/Laguerre_polynomial
-    * http://mathworld.wolfram.com/LaguerrePolynomial.html
+    * https://mathworld.wolfram.com/LaguerrePolynomial.html
     * http://functions.wolfram.com/Polynomials/LaguerreL/
     * http://functions.wolfram.com/Polynomials/LaguerreL3/
 
@@ -1067,7 +1067,7 @@ class assoc_laguerre(OrthogonalPolynomial):
     References
     ==========
 
-    * http://mathworld.wolfram.com/AssociatedLaguerrePolynomial.html
+    * https://mathworld.wolfram.com/AssociatedLaguerrePolynomial.html
     * http://functions.wolfram.com/Polynomials/LaguerreL/
     * http://functions.wolfram.com/Polynomials/LaguerreL3/
 

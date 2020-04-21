@@ -148,7 +148,7 @@ class subfactorial(CombinatorialFunction):
     ==========
 
     * https://en.wikipedia.org/wiki/Subfactorial
-    * http://mathworld.wolfram.com/Subfactorial.html
+    * https://mathworld.wolfram.com/Subfactorial.html
 
     Examples
     ========
@@ -302,7 +302,7 @@ class RisingFactorial(CombinatorialFunction):
 
     where 'x' can be arbitrary expression and 'k' is an integer. For
     more information check "Concrete mathematics" by Graham, pp. 66
-    or visit http://mathworld.wolfram.com/RisingFactorial.html page.
+    or visit https://mathworld.wolfram.com/RisingFactorial.html page.
 
     Examples
     ========
@@ -377,7 +377,7 @@ class FallingFactorial(CombinatorialFunction):
 
     where 'x' can be arbitrary expression and 'k' is an integer. For
     more information check "Concrete mathematics" by Graham, pp. 66
-    or visit http://mathworld.wolfram.com/FallingFactorial.html page.
+    or visit https://mathworld.wolfram.com/FallingFactorial.html page.
 
     >>> ff(x, 0)
     1

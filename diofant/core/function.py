@@ -1880,7 +1880,7 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     References
     ==========
 
-    * http://mathworld.wolfram.com/Multiple-AngleFormulas.html
+    * https://mathworld.wolfram.com/Multiple-AngleFormulas.html
 
     """
     # don't modify this; modify the Expr.expand method
