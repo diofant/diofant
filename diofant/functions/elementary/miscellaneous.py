@@ -224,7 +224,7 @@ def root(arg, n, k=0, **kwargs):
     * https://en.wikipedia.org/wiki/Real_root
     * https://en.wikipedia.org/wiki/Root_of_unity
     * https://en.wikipedia.org/wiki/Principal_value
-    * http://mathworld.wolfram.com/CubeRoot.html
+    * https://mathworld.wolfram.com/CubeRoot.html
 
     """
     n = sympify(n)

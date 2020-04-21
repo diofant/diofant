@@ -38,7 +38,7 @@ class DiracDelta(Function):
     References
     ==========
 
-    * http://mathworld.wolfram.com/DeltaFunction.html
+    * https://mathworld.wolfram.com/DeltaFunction.html
 
     """
 

@@ -189,7 +189,7 @@ class sin(TrigonometricFunction):
     * https://en.wikipedia.org/wiki/Trigonometric_functions
     * https://dlmf.nist.gov/4.14
     * http://functions.wolfram.com/ElementaryFunctions/Sin
-    * http://mathworld.wolfram.com/TrigonometryAngles.html
+    * https://mathworld.wolfram.com/TrigonometryAngles.html
 
     """
 
@@ -335,7 +335,7 @@ class sin(TrigonometricFunction):
             if n.is_Integer:  # n will be positive because of .eval
                 # canonicalization
 
-                # See http://mathworld.wolfram.com/Multiple-AngleFormulas.html
+                # See https://mathworld.wolfram.com/Multiple-AngleFormulas.html
                 if n.is_odd:
                     return (-1)**((n - 1)/2)*chebyshevt(n, sin(x))
                 else:

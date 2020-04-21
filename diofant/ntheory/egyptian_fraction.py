@@ -100,7 +100,7 @@ def egyptian_fraction(r, algorithm='Greedy'):
     * https://en.wikipedia.org/wiki/Egyptian_fraction
     * https://en.wikipedia.org/wiki/Greedy_algorithm_for_Egyptian_fractions
     * https://www.ics.uci.edu/~eppstein/numth/egypt/conflict.html
-    * http://ami.ektf.hu/uploads/papers/finalpdf/AMI_42_from129to134.pdf
+    * https://ami.uni-eszterhazy.hu/uploads/papers/finalpdf/AMI_42_from129to134.pdf
 
     """
     if r <= 0:

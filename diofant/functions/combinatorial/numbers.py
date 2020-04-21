@@ -70,7 +70,7 @@ class fibonacci(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Fibonacci_number
-    * http://mathworld.wolfram.com/FibonacciNumber.html
+    * https://mathworld.wolfram.com/FibonacciNumber.html
 
     See Also
     ========
@@ -137,7 +137,7 @@ class lucas(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Lucas_number
-    * http://mathworld.wolfram.com/LucasNumber.html
+    * https://mathworld.wolfram.com/LucasNumber.html
 
     See Also
     ========
@@ -229,8 +229,8 @@ class bernoulli(Function):
 
     * https://en.wikipedia.org/wiki/Bernoulli_number
     * https://en.wikipedia.org/wiki/Bernoulli_polynomial
-    * http://mathworld.wolfram.com/BernoulliNumber.html
-    * http://mathworld.wolfram.com/BernoulliPolynomial.html
+    * https://mathworld.wolfram.com/BernoulliNumber.html
+    * https://mathworld.wolfram.com/BernoulliPolynomial.html
 
     See Also
     ========
@@ -371,8 +371,8 @@ class bell(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Bell_number
-    * http://mathworld.wolfram.com/BellNumber.html
-    * http://mathworld.wolfram.com/BellPolynomial.html
+    * https://mathworld.wolfram.com/BellNumber.html
+    * https://mathworld.wolfram.com/BellPolynomial.html
 
     See Also
     ========
@@ -717,9 +717,9 @@ class euler(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Euler_numbers
-    * http://mathworld.wolfram.com/EulerNumber.html
+    * https://mathworld.wolfram.com/EulerNumber.html
     * https://en.wikipedia.org/wiki/Alternating_permutation
-    * http://mathworld.wolfram.com/AlternatingPermutation.html
+    * https://mathworld.wolfram.com/AlternatingPermutation.html
 
     See Also
     ========
@@ -822,7 +822,7 @@ class catalan(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Catalan_number
-    * http://mathworld.wolfram.com/CatalanNumber.html
+    * https://mathworld.wolfram.com/CatalanNumber.html
     * http://functions.wolfram.com/GammaBetaErf/CatalanNumber/
     * http://geometer.org/mathcircles/catalan.pdf
 
@@ -922,7 +922,7 @@ class genocchi(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Genocchi_number
-    * http://mathworld.wolfram.com/GenocchiNumber.html
+    * https://mathworld.wolfram.com/GenocchiNumber.html
 
     See Also
     ========

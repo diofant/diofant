@@ -71,7 +71,7 @@ def npartitions(n):
     References
     ==========
 
-    * http://mathworld.wolfram.com/PartitionFunctionP.html
+    * https://mathworld.wolfram.com/PartitionFunctionP.html
 
     """
     n = int(n)

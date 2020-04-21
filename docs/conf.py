@@ -114,7 +114,8 @@ linkcheck_retries = 3
 linkcheck_ignore = [r'https://primes.utm.edu/notes/gaps.html',
                     r'https://primes.utm.edu/glossary/xpage/BertrandsPostulate.html',
                     r'https://primes.utm.edu/prove/prove2_3.html',
-                    r'https://primes.utm.edu/glossary/xpage/Pseudoprime.html']
+                    r'https://primes.utm.edu/glossary/xpage/Pseudoprime.html',
+                    r'https://github.com/.*']
 
 # This value controls if docstring for classes or methods, if not explicitly
 # set, is inherited form parents.
