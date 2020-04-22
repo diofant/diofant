@@ -11,7 +11,7 @@ jobs:
       TERM: xterm
     steps:
     - uses: actions/checkout@v2
-    - run: git fetch --prune --unshallow --tags
+    - run: git fetch --prune --unshallow --tags -f
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
