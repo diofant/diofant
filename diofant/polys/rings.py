@@ -32,6 +32,7 @@ from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
 from .polyoptions import build_options
 from .polyutils import _dict_reorder, _parallel_dict_from_expr, expr_from_dict
+from .sqfreetools import _SQF
 
 
 __all__ = 'PolynomialRing', 'ring', 'sring', 'vring'
@@ -152,7 +153,7 @@ def _parse_symbols(symbols):
 _ring_cache = {}
 
 
-class PolynomialRing(Ring, CompositeDomain, IPolys, _GCD):
+class PolynomialRing(Ring, CompositeDomain, IPolys, _GCD, _SQF):
     """A class for representing multivariate polynomial rings."""
 
     is_PolynomialRing = True
@@ -2169,6 +2170,19 @@ class PolyElement(DomainElement, CantSympify, dict):
         t //= other
         return s, t, h
 
+    def sqf_list(self):
+        return self.ring.sqf_list(self)
+
+    def sqf_part(self):
+        return self.ring.sqf_part(self)
+
+    @property
+    def is_squarefree(self):
+        return self.ring.is_squarefree(self)
+
+    def sqf_norm(self):
+        return self.ring.sqf_norm(self)
+
     # The following methods aren't ported (yet) to polynomial
     # representation independent algorithm implementations.
 
@@ -2190,19 +2204,6 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self.ring.dup_cyclotomic_p(self)
         else:
             raise AttributeError('cyclotomic polynomial')
-
-    @property
-    def is_squarefree(self):
-        return self.ring.dmp_sqf_p(self)
-
-    def sqf_norm(self):
-        return self.ring.dmp_sqf_norm(self)
-
-    def sqf_part(self):
-        return self.ring.dmp_sqf_part(self)
-
-    def sqf_list(self):
-        return self.ring.dmp_sqf_list(self)
 
     def factor_list(self):
         return self.ring.dmp_factor_list(self)
