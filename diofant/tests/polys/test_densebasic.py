@@ -6,15 +6,14 @@ import pytest
 
 from diofant import FF, ZZ, oo, ring
 from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert,
-                                      dmp_deflate, dmp_degree_in, dmp_eject,
-                                      dmp_exclude, dmp_from_dict, dmp_ground,
-                                      dmp_ground_p, dmp_include, dmp_inflate,
-                                      dmp_inject, dmp_nest, dmp_normal,
-                                      dmp_one, dmp_one_p, dmp_permute,
-                                      dmp_raise, dmp_strip, dmp_swap,
-                                      dmp_terms_gcd, dmp_to_dict, dmp_zero,
-                                      dmp_zero_p, dmp_zeros, dup_inflate,
-                                      dup_random, dup_reverse)
+                                      dmp_degree_in, dmp_eject, dmp_exclude,
+                                      dmp_from_dict, dmp_ground, dmp_ground_p,
+                                      dmp_include, dmp_inflate, dmp_inject,
+                                      dmp_nest, dmp_normal, dmp_one, dmp_one_p,
+                                      dmp_permute, dmp_raise, dmp_strip,
+                                      dmp_swap, dmp_terms_gcd, dmp_to_dict,
+                                      dmp_zero, dmp_zero_p, dmp_zeros,
+                                      dup_inflate, dup_random, dup_reverse)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -364,54 +363,6 @@ def test_dmp_raise():
 
     assert dmp_raise([[1, 2, 3], [], [2, 3]], 2, 1, ZZ) == \
         [[[[1]], [[2]], [[3]]], [[[]]], [[[2]], [[3]]]]
-
-
-def test_dmp_deflate():
-    assert dmp_deflate(([2],), 0, ZZ) == ((1,), ([2],))
-    assert dmp_deflate(([], []), 0, ZZ) == ((1,), ([], []))
-
-    assert dmp_deflate(([1, 2, 3],), 0, ZZ) == ((1,), ([1, 2, 3],))
-    assert dmp_deflate(([1, 0, 2, 0, 3],), 0, ZZ) == ((2,), ([1, 2, 3],))
-
-    assert dmp_deflate(([1, 0, 2, 0, 3], [2, 0, 0]), 0, ZZ) == \
-        ((2,), ([1, 2, 3], [2, 0]))
-    assert dmp_deflate(([1, 0, 2, 0, 3], [4, 0, 0]), 0, ZZ) == \
-        ((2,), ([1, 2, 3], [4, 0]))
-    assert dmp_deflate(([1, 0, 2, 0, 3], [2, 1, 0]), 0, ZZ) == \
-        ((1,), ([1, 0, 2, 0, 3], [2, 1, 0]))
-
-    assert dmp_deflate(([[]],), 1, ZZ) == \
-        ((1, 1), ([[]],))
-    assert dmp_deflate(([[]], [[]]), 1, ZZ) == \
-        ((1, 1), ([[]], [[]]))
-
-    assert dmp_deflate(([[1]], [[]]), 1, ZZ) == \
-        ((1, 1), ([[1]], [[]]))
-    assert dmp_deflate(([[1]], [[2]]), 1, ZZ) == \
-        ((1, 1), ([[1]], [[2]]))
-    assert dmp_deflate(([[1]], [[2, 0]]), 1, ZZ) == \
-        ((1, 1), ([[1]], [[2, 0]]))
-
-    assert dmp_deflate(([[2, 0]], [[2, 0]]), 1, ZZ) == \
-        ((1, 1), ([[2, 0]], [[2, 0]]))
-
-    assert dmp_deflate(
-        ([[2]], [[2, 0, 0]]), 1, ZZ) == ((1, 2), ([[2]], [[2, 0]]))
-    assert dmp_deflate(
-        ([[2, 0, 0]], [[2, 0, 0]]), 1, ZZ) == ((1, 2), ([[2, 0]], [[2, 0]]))
-
-    assert dmp_deflate(([2, 0, 0], [1, 0, 4, 0, 1]), 0, ZZ) == \
-        ((2,), ([2, 0], [1, 4, 1]))
-
-    f = [[1, 0, 0], [], [1, 0], [], [1]]
-    g = [[1, 0, 1, 0], [], [1]]
-
-    assert dmp_deflate((f,), 1, ZZ) == \
-        ((2, 1), ([[1, 0, 0], [1, 0], [1]],))
-
-    assert dmp_deflate((f, g), 1, ZZ) == \
-        ((2, 1), ([[1, 0, 0], [1, 0], [1]],
-                  [[1, 0, 1, 0], [1]]))
 
 
 def test_dup_inflate():

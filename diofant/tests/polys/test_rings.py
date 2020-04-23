@@ -1101,11 +1101,21 @@ def test_PolyElement_deflate():
 
     assert R(0).deflate() == ((1,), [0])
     assert R(2).deflate() == ((1,), [2])
+    assert R(0).deflate(R(0)) == ((1,), [0, 0])
 
     f = x**2 + 2*x + 3
 
     assert f.deflate() == ((1,), [f])
-    assert f.inflate([2]).deflate() == ((2,), [f])
+
+    g = f.inflate([2])
+
+    assert g == x**4 + 2*x**2 + 3
+    assert g.deflate() == ((2,), [f])
+
+    assert g.deflate(2*x**2) == ((2,), [f, 2*x])
+    assert g.deflate(4*x**2) == ((2,), [f, 4*x])
+    assert g.deflate(2*x**2 + x) == ((1,), [g, 2*x**2 + x])
+
     assert f.inflate([3]).deflate() == ((3,), [f])
 
     assert (x**7 + x).deflate() == ((1,), [x**7 + x])
@@ -1143,6 +1153,11 @@ def test_PolyElement_deflate():
     f = x**2*y**3 + 2*x**2 + 3*y**3 + 4
 
     assert f.deflate() == ((2, 3), [x*y + 2*x + 3*y + 4])
+
+    g = x**2*y**2 + 2*x**2 + 3*y**2 + 4
+
+    assert f.deflate(g) == ((2, 1), [x*y**3 + 2*x + 3*y**3 + 4,
+                                     x*y**2 + 2*x + 3*y**2 + 4])
 
 
 def test_PolyElement_clear_denoms():

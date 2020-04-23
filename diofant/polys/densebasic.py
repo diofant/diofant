@@ -1,7 +1,6 @@
 """Basic tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
 import functools
-import math
 import random
 
 from ..core import oo
@@ -571,55 +570,6 @@ def dmp_raise(f, l, u, K):
     v = u - 1
 
     return [dmp_raise(c, l, v, K) for c in f]
-
-
-def dmp_deflate(polys, u, K):
-    """
-    Map ``x_i**m_i`` to ``y_i`` in a set of polynomials in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> f = [[ZZ(1), ZZ(0), ZZ(0), ZZ(2)], [], [ZZ(3), ZZ(0), ZZ(0), ZZ(4)]]
-    >>> g = [[ZZ(1), ZZ(0), ZZ(2)], [], [ZZ(3), ZZ(0), ZZ(4)]]
-
-    >>> dmp_deflate((f, g), 1, ZZ)
-    ((2, 1), ([[1, 0, 0, 2], [3, 0, 0, 4]], [[1, 0, 2], [3, 0, 4]]))
-
-    """
-    F, B = [], [0]*(u + 1)
-
-    for p in polys:
-        f = dmp_to_dict(p, u)
-
-        if not dmp_zero_p(p, u):
-            for M in f:
-                for i, m in enumerate(M):
-                    B[i] = math.gcd(B[i], m)
-
-        F.append(f)
-
-    for i, b in enumerate(B):
-        if not b:
-            B[i] = 1
-
-    B = tuple(B)
-
-    if all(b == 1 for b in B):
-        return B, polys
-
-    H = []
-
-    for f in F:
-        h = {}
-
-        for A, coeff in f.items():
-            N = [a // b for a, b in zip(A, B)]
-            h[tuple(N)] = coeff
-
-        H.append(dmp_from_dict(h, u, K))
-
-    return B, tuple(H)
 
 
 def dup_inflate(f, m, K):
