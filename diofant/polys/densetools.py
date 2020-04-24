@@ -154,55 +154,12 @@ def dmp_diff_eval_in(f, m, a, j, u, K):
     return diff_eval(f, m, a, u, 0, j, K)
 
 
-def dup_trunc(f, p, K):
-    """
-    Reduce a ``K[x]`` polynomial modulo a constant ``p`` in ``K``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dmp_ground_trunc(2*x**3 + 3*x**2 + 5*x + 7, ZZ(3))
-    -x**3 - x + 1
-
-    """
-    from ..ntheory.modular import symmetric_residue
-
-    if K.is_IntegerRing:
-        g = []
-
-        for c in f:
-            c = c % p
-            c = symmetric_residue(c, p)
-            g.append(c)
-    else:
-        g = [c % p for c in f]
-
-    return dmp_strip(g, 0)
-
-
 def dmp_ground_trunc(f, p, u, K):
-    """
-    Reduce a ``K[X]`` polynomial modulo a constant ``p`` in ``K``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
-
-    >>> R.dmp_ground_trunc(f, ZZ(3))
-    -x**2 - x*y - y
-
-    """
-    if not u:
-        return dup_trunc(f, p, K)
-
-    v = u - 1
-
-    return dmp_strip([dmp_ground_trunc(c, p, v, K) for c in f], u)
+    """Reduce a ``K[X]`` polynomial modulo a constant ``p`` in ``K``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    f = f.trunc_ground(p)
+    return ring.to_dense(f)
 
 
 def dmp_ground_monic(f, u, K):
