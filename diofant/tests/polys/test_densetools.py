@@ -2,8 +2,7 @@
 
 import pytest
 
-from diofant import EX, QQ, ZZ, DomainError, I, Rational, ring, sin, sqrt
-from diofant.abc import x
+from diofant import EX, QQ, ZZ, DomainError, I, ring, sqrt
 from diofant.polys.specialpolys import f_polys
 
 
@@ -209,55 +208,3 @@ def test_dup_decompose():
          108*t**3 + 312*t**2 + 432*t + 192)
 
     assert f.decompose() == [f]
-
-
-def test_dmp_clear_denoms():
-    R0, X = ring('x', QQ)
-    R1 = R0.domain.ring.inject('x')
-
-    assert R0.dmp_clear_denoms(0) == (1, 0)
-
-    assert R0.dmp_clear_denoms(1) == (1, 1)
-    assert R0.dmp_clear_denoms(7) == (1, 7)
-
-    assert R0.dmp_clear_denoms(QQ(7, 3)) == (3, 7)
-
-    assert R0.dmp_clear_denoms(3*X**2 + X) == (1, 3*X**2 + X)
-    assert R0.dmp_clear_denoms(X**2 + X/2) == (2, 2*X**2 + X)
-
-    assert R0.dmp_clear_denoms(3*X**2 + X, convert=True) == (1, 3*R1.x**2 + R1.x)
-    assert R0.dmp_clear_denoms(X**2 + X/2, convert=True) == (2, 2*R1.x**2 + R1.x)
-
-    assert R0.dmp_clear_denoms(X/2 + QQ(1, 3)) == (6, 3*X + 2)
-    assert R0.dmp_clear_denoms(X/2 + QQ(1, 3), convert=True) == (6, 3*R1.x + 2)
-
-    assert R0.dmp_clear_denoms(3*X**2 + X, convert=True) == (1, 3*R1.x**2 + R1.x)
-    assert R0.dmp_clear_denoms(X**2 + X/2, convert=True) == (2, 2*R1.x**2 + R1.x)
-
-    R0, a = ring('a', EX)
-
-    assert R0.dmp_clear_denoms(3*a/2 + Rational(9, 4)) == (4, 6*a + 9)
-
-    assert R0.dmp_clear_denoms(7) == (1, 7)
-    assert R0.dmp_clear_denoms(sin(x)/x*a) == (x, a*sin(x))
-
-    R0, X, Y = ring('x y', QQ)
-    R1 = R0.domain.ring.inject('x', 'y')
-
-    assert R0.dmp_clear_denoms(0) == (1, 0)
-
-    assert R0.dmp_clear_denoms(1) == (1, 1)
-    assert R0.dmp_clear_denoms(7) == (1, 7)
-
-    assert R0.dmp_clear_denoms(QQ(7, 3)) == (3, 7)
-
-    assert R0.dmp_clear_denoms(3*X**2 + X) == (1, 3*X**2 + X)
-    assert R0.dmp_clear_denoms(X**2 + X/2) == (2, 2*X**2 + X)
-
-    assert R0.dmp_clear_denoms(3*X**2 + X, convert=True) == (1, 3*R1.x**2 + R1.x)
-    assert R0.dmp_clear_denoms(X**2 + X/2, convert=True) == (2, 2*R1.x**2 + R1.x)
-
-    R0, a, b = ring('a b', EX)
-    assert R0.dmp_clear_denoms(3*a/2 + Rational(9, 4)) == (4, 6*a + 9)
-    assert R0.dmp_clear_denoms(7) == (1, 7)
-    assert R0.dmp_clear_denoms(sin(x)/x*b) == (x, b*sin(x))

@@ -9,7 +9,7 @@ from diofant import (EX, FF, QQ, RR, ZZ, CoercionFailed, ExactQuotientFailed,
                      GeneratorsError, GeneratorsNeeded,
                      MultivariatePolynomialError, PolynomialDivisionFailed,
                      PolynomialError, PolynomialRing, Rational, Symbol, field,
-                     grlex, lex, oo, pi, ring, sqrt, sring, symbols)
+                     grlex, lex, oo, pi, ring, sin, sqrt, sring, symbols)
 from diofant.abc import t, x, y, z
 from diofant.polys.rings import PolyElement
 from diofant.polys.specialpolys import f_polys
@@ -1452,21 +1452,72 @@ def test_PolyElement_inflate():
 
 
 def test_PolyElement_clear_denoms():
+    R, x = ring('x', QQ)
+
+    assert R(0).clear_denoms() == (1, 0)
+    assert R(1).clear_denoms() == (1, 1)
+    assert R(7).clear_denoms() == (1, 7)
+    assert R(QQ(7, 3)).clear_denoms() == (3, 7)
+
+    f = 3*x**2 + x
+
+    assert f.clear_denoms() == (1, 3*x**2 + x)
+    assert f.clear_denoms(convert=True) == (1, (3*x**2 + x).set_domain(ZZ))
+
+    f = x**2 + x/2
+
+    assert f.clear_denoms() == (2, 2*x**2 + x)
+    assert f.clear_denoms(convert=True) == (2, (2*x**2 + x).set_domain(ZZ))
+
+    f = x/2 + QQ(1, 3)
+
+    assert f.clear_denoms() == (6, 3*x + 2)
+    assert f.clear_denoms(convert=True) == (6, (3*x + 2).set_domain(ZZ))
+
+    R, a = ring('a', EX)
+
+    assert (3*a/2 + Rational(9, 4)).clear_denoms() == (4, 6*a + 9)
+
+    assert R(7).clear_denoms() == (1, 7)
+
+    x = EX.to_expr(EX('x'))
+
+    assert (sin(x)/x*a).clear_denoms() == (x, a*sin(x))
+
     R,  x, y = ring('x,y', QQ)
 
-    assert R(1).clear_denoms() == (ZZ(1), 1)
-    assert R(7).clear_denoms() == (ZZ(1), 7)
+    assert R(0).clear_denoms() == (1, 0)
+    assert R(1).clear_denoms() == (1, 1)
+    assert R(7).clear_denoms() == (1, 7)
 
     assert R(QQ(7, 3)).clear_denoms() == (3, 7)
-    assert R(QQ(7, 3)).clear_denoms() == (3, 7)
 
-    assert (3*x**2 + x).clear_denoms() == (1, 3*x**2 + x)
-    assert (x**2 + x/2).clear_denoms() == (2, 2*x**2 + x)
-    assert ((x**2 + x/2).clear_denoms(convert=True) ==
-            (2, (2*x**2 + x).set_domain(ZZ)))
+    f = 3*x**2 + x
 
-    rQQ,  x, t = ring('x,t', QQ)
-    rZZ,  X, T = ring('x,t', ZZ)
+    assert f.clear_denoms() == (1, 3*x**2 + x)
+    f.clear_denoms(convert=True) == (1, (3*x**2 + x).set_domain(ZZ))
+
+    f = x**2 + x/2
+
+    assert f.clear_denoms() == (2, 2*x**2 + x)
+    assert f.clear_denoms(convert=True) == (2, (2*x**2 + x).set_domain(ZZ))
+
+    f = x/2 + y/3 + 1
+
+    assert f.clear_denoms() == (6, 3*x + 2*y + 6)
+    assert f.clear_denoms(convert=True) == (6, (3*x + 2*y + 6).set_domain(ZZ))
+
+    R, a, b = ring('a b', EX)
+
+    assert (3*a/2 + Rational(9, 4)).clear_denoms() == (4, 6*a + 9)
+    assert R(7).clear_denoms() == (1, 7)
+
+    x = EX.to_expr(EX('x'))
+
+    assert (sin(x)/x*b).clear_denoms() == (x, b*sin(x))
+
+    rQQ, x, t = ring('x,t', QQ)
+    rZZ, X, T = ring('x,t', ZZ)
 
     F = [x - 17824537287975195925064602467992950991718052713078834557692023531499318507213727406844943097*t**7/413954288007559433755329699713866804710749652268151059918115348815925474842910720000
            - 4882321164854282623427463828745855894130208215961904469205260756604820743234704900167747753*t**6/12936071500236232304854053116058337647210926633379720622441104650497671088840960000
