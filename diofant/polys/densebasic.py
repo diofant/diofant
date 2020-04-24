@@ -746,39 +746,6 @@ def dmp_terms_gcd(f, u, K):
     return G, dmp_from_dict(f, u, K)
 
 
-def dmp_apply_pairs(f, g, h, args, u, K):
-    """
-    Apply ``h`` to pairs of coefficients of ``f`` and ``g``.
-
-    Examples
-    ========
-
-    >>> def h(x, y, z):
-    ...     return 2*x + y - z
-
-    >>> dmp_apply_pairs([[ZZ(1)], [ZZ(2), ZZ(3)]],
-    ...                 [[ZZ(3)], [ZZ(2), ZZ(1)]], h, [ZZ(1)], 1, ZZ)
-    [[4], [5, 6]]
-
-    """
-    if u < 0:
-        return h(f, g, *args)
-
-    n, m, v = len(f), len(g), u - 1
-
-    if n > m:
-        g = dmp_zeros(n - m, v, K) + g
-    elif n < m:
-        f = dmp_zeros(m - n, v, K) + f
-
-    result = []
-
-    for a, b in zip(f, g):
-        result.append(dmp_apply_pairs(a, b, h, args, v, K))
-
-    return dmp_strip(result, u)
-
-
 def dmp_slice_in(f, m, n, j, u, K):
     """Take a continuous subsequence of terms of ``f`` in ``x_j`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])

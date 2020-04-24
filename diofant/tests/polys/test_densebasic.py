@@ -5,11 +5,10 @@ import random
 import pytest
 
 from diofant import FF, ZZ, oo, ring
-from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert,
-                                      dmp_degree_in, dmp_eject, dmp_exclude,
-                                      dmp_from_dict, dmp_ground, dmp_ground_p,
-                                      dmp_include, dmp_inject, dmp_nest,
-                                      dmp_normal, dmp_one, dmp_one_p,
+from diofant.polys.densebasic import (dmp_convert, dmp_degree_in, dmp_eject,
+                                      dmp_exclude, dmp_from_dict, dmp_ground,
+                                      dmp_ground_p, dmp_include, dmp_inject,
+                                      dmp_nest, dmp_normal, dmp_one, dmp_one_p,
                                       dmp_permute, dmp_raise, dmp_strip,
                                       dmp_swap, dmp_terms_gcd, dmp_to_dict,
                                       dmp_zero, dmp_zero_p, dmp_zeros,
@@ -444,34 +443,6 @@ def test_dmp_terms_gcd():
     assert dmp_terms_gcd([[1, 0], [], [1]], 1, ZZ) == ((0, 0), [[1, 0], [], [1]])
     assert dmp_terms_gcd([[1, 0], [1, 0, 0], [], []], 1, ZZ) == ((2, 1), [[1], [1, 0]])
     assert dmp_terms_gcd([[1], [-1, 0], [-2, 0, 0]], 1, ZZ) == ((0, 0), [[1], [-1, 0], [-2, 0, 0]])
-
-
-def test_dmp_apply_pairs():
-    def h(a, b):
-        return a*b
-
-    assert dmp_apply_pairs([1, 2, 3], [4, 5, 6], h, [], 0, ZZ) == [4, 10, 18]
-
-    assert dmp_apply_pairs([2, 3], [4, 5, 6], h, [], 0, ZZ) == [10, 18]
-    assert dmp_apply_pairs([1, 2, 3], [5, 6], h, [], 0, ZZ) == [10, 18]
-
-    assert dmp_apply_pairs(
-        [[1, 2], [3]], [[4, 5], [6]], h, [], 1, ZZ) == [[4, 10], [18]]
-
-    assert dmp_apply_pairs(
-        [[1, 2], [3]], [[4], [5, 6]], h, [], 1, ZZ) == [[8], [18]]
-    assert dmp_apply_pairs(
-        [[1], [2, 3]], [[4, 5], [6]], h, [], 1, ZZ) == [[5], [18]]
-
-    def h2(x, y, z):
-        return 2*x + y - z
-
-    f = [[1], [2, 3, 4], [5]]
-    g = [[3], [2, 1]]
-    assert dmp_apply_pairs(f, g, h2, (1,), 1, ZZ) == [[1], [3, 5, 10], [1, 10]]
-    assert dmp_apply_pairs(g, f, h2, (1,), 1, ZZ) == [[1, 2, 9], [3, 6]]
-
-    assert dmp_apply_pairs([1, 2, 3], [3, 2, 1], h2, [1], 0, ZZ) == [4, 5, 6]
 
 
 def test_dup_random():
