@@ -786,20 +786,3 @@ def test_dmp_l1_norm():
     assert R.dmp_l1_norm(1) == 1
 
     assert R.dmp_l1_norm(f_polys()[0]) == 31
-
-
-def test_dmp_expand():
-    R, x = ring('x', ZZ)
-
-    assert R.dmp_expand(()) == 1
-    assert R.dmp_expand((x**2 - 1, x, 2)) == 2*x**3 - 2*x
-
-    a, b, c = x**2 + 2*x + 3, x + 2, 7*x**3 + 5*x**2 + 4*x + 3
-    assert R.dmp_expand((a, b, c)) == a*b*c
-
-    R, x, y = ring('x y', ZZ)
-
-    assert R.dmp_expand(()) == 1
-
-    a, b, c = x**2 + 2*x + 3, x + 2, 7*x**3 + 5*x**2 + 4*x + 3
-    assert R.dmp_expand((a, b, c)) == a*b*c

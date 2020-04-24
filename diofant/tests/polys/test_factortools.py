@@ -1,5 +1,8 @@
 """Tools for polynomial factorization routines in characteristic zero."""
 
+import functools
+import operator
+
 import pytest
 
 from diofant import (EX, FF, QQ, RR, ZZ, DomainError, I, nextprime, pi, ring,
@@ -303,7 +306,7 @@ def test_dmp_zz_wang():
 
     assert H == [h_1, h_2, h_3]
     assert R.dmp_zz_wang_lead_coeffs(w_1, T, cs, E, H, A) == (w_1, H, LC)
-    assert R.dmp_expand(factors) == w_1
+    assert functools.reduce(operator.mul, factors) == w_1
 
 
 def test_dmp_zz_diophantine():

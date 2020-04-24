@@ -1,10 +1,10 @@
 """Compatibility interface between dense and sparse polys."""
 
 from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term,
-                         dmp_expand, dmp_exquo_ground, dmp_l1_norm,
-                         dmp_max_norm, dmp_mul, dmp_mul_ground, dmp_mul_term,
-                         dmp_neg, dmp_pow, dmp_quo_ground, dmp_sqr, dmp_sub,
-                         dmp_sub_mul, dup_lshift, dup_rshift)
+                         dmp_exquo_ground, dmp_l1_norm, dmp_max_norm, dmp_mul,
+                         dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
+                         dmp_quo_ground, dmp_sqr, dmp_sub, dmp_sub_mul,
+                         dup_lshift, dup_rshift)
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
                          dmp_ground_TC, dmp_LC, dmp_TC, dmp_to_dict)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
@@ -118,9 +118,6 @@ class IPolys:
 
     def dmp_l1_norm(self, f):
         return dmp_l1_norm(self.to_dense(f), self.ngens-1, self.domain)
-
-    def dmp_expand(self, polys):
-        return self.from_dense(dmp_expand(list(map(self.to_dense, polys)), self.ngens-1, self.domain))
 
     def dmp_LC(self, f):
         LC = dmp_LC(self.to_dense(f), self.domain)
