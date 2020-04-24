@@ -705,67 +705,14 @@ def test_PolyElement___mul__():
 
 
 def test_PolyElement___floordiv__truediv__():
-    R,  x, y, z = ring('x,y,z', ZZ)
-
-    assert (2*x**2 - 4)/2 == x**2 - 2
-    assert (2*x**2 - 3)/2 == x**2 - 2
-
-    assert (x**2 - 1)//x == x
-    assert (x**2 - x)//x == x - 1
-
-    assert (x**2 - 1)//(2*x) == 0
-    assert (x**2 - x)//(x - 1) == x
-
-    R,  x, y, z = ring('x,y,z', ZZ)
-    assert len((x**2/3 + y**3/4 + z**4/5).terms()) == 0
-
-    R,  x, y, z = ring('x,y,z', QQ)
-    assert len((x**2/3 + y**3/4 + z**4/5).terms()) == 3
-
-    pytest.raises(ZeroDivisionError, lambda: x/0)
-
-    Rt, t = ring('t', ZZ)
-    Ruv,  u, v = ring('u,v', ZZ)
-    Rxyz,  x, y, z = ring('x,y,z', Ruv)
-
-    assert dict((u**2*x + u)/u) == {(1, 0, 0): u, (0, 0, 0): 1}
-    pytest.raises(TypeError, lambda: u//(u**2*x + u))
-
-    pytest.raises(TypeError, lambda: t//x)
-    pytest.raises(TypeError, lambda: x//t)
-    pytest.raises(TypeError, lambda: t//u)
-    pytest.raises(TypeError, lambda: u//t)
-
-    assert divmod(x, u) == (0, x)
-    assert x % u == x
-    assert x // u == 0
-    pytest.raises(TypeError, lambda: divmod(u, x))
-    pytest.raises(TypeError, lambda: u % x)
-    pytest.raises(TypeError, lambda: u // x)
-    pytest.raises(TypeError, lambda: divmod(u, t))
-    pytest.raises(TypeError, lambda: u % t)
-    pytest.raises(TypeError, lambda: u // t)
-    pytest.raises(TypeError, lambda: divmod(u, sqrt(2)))
-    pytest.raises(TypeError, lambda: u % sqrt(2))
-    pytest.raises(TypeError, lambda: u // sqrt(2))
-
     R, x = ring('x', ZZ)
+
     f, g = x**2 + 2*x + 3, R(0)
 
     pytest.raises(ZeroDivisionError, lambda: divmod(f, g))
     pytest.raises(ZeroDivisionError, lambda: f % g)
     pytest.raises(ZeroDivisionError, lambda: f // g)
     pytest.raises(ZeroDivisionError, lambda: f.exquo(g))
-
-    R,  x, y = ring('x,y', ZZ)
-    f, g = x*y + 2*x + 3, R(0)
-
-    pytest.raises(ZeroDivisionError, lambda: divmod(f, g))
-    pytest.raises(ZeroDivisionError, lambda: f % g)
-    pytest.raises(ZeroDivisionError, lambda: f // g)
-    pytest.raises(ZeroDivisionError, lambda: f.exquo(g))
-
-    R, x = ring('x', ZZ)
 
     f, g = x**2 + 1, 2*x - 4
     q, r = R(0), x**2 + 1
@@ -819,7 +766,13 @@ def test_PolyElement___floordiv__truediv__():
     assert f // g == q
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
 
-    R,  x, y = ring('x,y', ZZ)
+    R, x, y = ring('x,y', ZZ)
+    f, g = x*y + 2*x + 3, R(0)
+
+    pytest.raises(ZeroDivisionError, lambda: divmod(f, g))
+    pytest.raises(ZeroDivisionError, lambda: f % g)
+    pytest.raises(ZeroDivisionError, lambda: f // g)
+    pytest.raises(ZeroDivisionError, lambda: f.exquo(g))
 
     f, g = x**2 - y**2, x - y
     q, r = x + y, R(0)
@@ -853,7 +806,7 @@ def test_PolyElement___floordiv__truediv__():
     assert f // g == q
     pytest.raises(ExactQuotientFailed, lambda: f.exquo(g))
 
-    R,  x, y = ring('x,y', QQ)
+    R, x, y = ring('x,y', QQ)
 
     f, g = x**2 - y**2, x - y
     q, r = x + y, R(0)
@@ -896,6 +849,49 @@ def test_PolyElement___floordiv__truediv__():
     assert R.zero.quo_term(((1, 0), 1)) == R.zero
     assert g.quo_term((R.zero_monom, 2)) == x - y
     assert f.quo_term(((1, 0), 2)) == x/2
+
+    R, x, y, z = ring('x,y,z', ZZ)
+
+    assert (2*x**2 - 4)/2 == x**2 - 2
+    assert (2*x**2 - 3)/2 == x**2 - 2
+
+    assert (x**2 - 1)//x == x
+    assert (x**2 - x)//x == x - 1
+
+    assert (x**2 - 1)//(2*x) == 0
+    assert (x**2 - x)//(x - 1) == x
+
+    assert len((x**2/3 + y**3/4 + z**4/5).terms()) == 0
+
+    R, x, y, z = ring('x,y,z', QQ)
+    assert len((x**2/3 + y**3/4 + z**4/5).terms()) == 3
+
+    pytest.raises(ZeroDivisionError, lambda: x/0)
+
+    Rt, t = ring('t', ZZ)
+    Ruv, u, v = ring('u,v', ZZ)
+    Rxyz, x, y, z = ring('x,y,z', Ruv)
+
+    assert dict((u**2*x + u)/u) == {(1, 0, 0): u, (0, 0, 0): 1}
+    pytest.raises(TypeError, lambda: u//(u**2*x + u))
+
+    pytest.raises(TypeError, lambda: t//x)
+    pytest.raises(TypeError, lambda: x//t)
+    pytest.raises(TypeError, lambda: t//u)
+    pytest.raises(TypeError, lambda: u//t)
+
+    assert divmod(x, u) == (0, x)
+    assert x % u == x
+    assert x // u == 0
+    pytest.raises(TypeError, lambda: divmod(u, x))
+    pytest.raises(TypeError, lambda: u % x)
+    pytest.raises(TypeError, lambda: u // x)
+    pytest.raises(TypeError, lambda: divmod(u, t))
+    pytest.raises(TypeError, lambda: u % t)
+    pytest.raises(TypeError, lambda: u // t)
+    pytest.raises(TypeError, lambda: divmod(u, sqrt(2)))
+    pytest.raises(TypeError, lambda: u % sqrt(2))
+    pytest.raises(TypeError, lambda: u // sqrt(2))
 
 
 def test_PolyElement_quo_term():

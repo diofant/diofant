@@ -775,6 +775,54 @@ def test_dmp_div():
 
     assert divmod(f, g) == (q, r)
 
+    f, g, q, r = x**2 + 1, 2*x - 4, 0, x**2 + 1
+
+    assert divmod(f, g) == (q, r)
+    assert f // g == q
+    assert f % g == r
+
+    f, g, q, r = 5*x**4 + 4*x**3 + 3*x**2 + 2*x + 1, x**2 + 2*x + 3, 5*x**2 - 6*x, 20*x + 1
+
+    assert divmod(f, g) == (q, r)
+    assert f // g == q
+    assert f % g == r
+
+    f, g, q, r = 5*x**5 + 4*x**4 + 3*x**3 + 2*x**2 + x, x**4 + 2*x**3 + 9, 5*x - 6, 15*x**3 + 2*x**2 - 44*x + 54
+
+    assert divmod(f, g) == (q, r)
+    assert f // g == q
+    assert f % g == r
+
+    R, x = ring('x', QQ)
+
+    pytest.raises(ZeroDivisionError, lambda: divmod(x**2 + 2*x + 3, R(0)))
+
+    f = 3*x**3 + x**2 + x + 5
+    g = 5*x**2 - 3*x + 1
+
+    q = 3*x/5 + QQ(14, 25)
+    r = 52*x/25 + QQ(111, 25)
+
+    assert divmod(f, g) == (q, r)
+
+    f = x**2 + 1
+    g = 2*x - 4
+
+    q = x/2 + 1
+    r = 5
+
+    assert divmod(f, g) == (q, r)
+
+    f, g, q, r = x**2 + 1, 2*x - 4, x/2 + 1, 5
+
+    assert divmod(f, g) == (q, r)
+    assert f // g == q
+    assert f % g == r
+
+    R, x = ring('x', RR)
+    pytest.raises(PolynomialDivisionFailed,
+                  lambda: divmod(R(2.0), R(-1.8438812457236466e-19)))
+
     R, x, y = ring('x y', ZZ)
 
     pytest.raises(ZeroDivisionError, lambda: divmod(x*y + 2*x + 3, R(0)))
@@ -802,26 +850,6 @@ def test_dmp_div():
     g = 2*x + 2
 
     assert divmod(f, g) == (0, f)
-
-    R, x = ring('x', QQ)
-
-    pytest.raises(ZeroDivisionError, lambda: divmod(x**2 + 2*x + 3, R(0)))
-
-    f = 3*x**3 + x**2 + x + 5
-    g = 5*x**2 - 3*x + 1
-
-    q = 3*x/5 + QQ(14, 25)
-    r = 52*x/25 + QQ(111, 25)
-
-    assert divmod(f, g) == (q, r)
-
-    f = x**2 + 1
-    g = 2*x - 4
-
-    q = x/2 + 1
-    r = 5
-
-    assert divmod(f, g) == (q, r)
 
     R, x, y = ring('x y', QQ)
 
@@ -854,38 +882,6 @@ def test_dmp_div():
     r = 1 - y
 
     assert divmod(f, g) == (q, r)
-
-    R, x = ring('x', RR)
-    pytest.raises(PolynomialDivisionFailed,
-                  lambda: divmod(R(2.0), R(-1.8438812457236466e-19)))
-
-    R, x = ring('x', ZZ)
-
-    f, g, q, r = x**2 + 1, 2*x - 4, 0, x**2 + 1
-
-    assert divmod(f, g) == (q, r)
-    assert f // g == q
-    assert f % g == r
-
-    f, g, q, r = 5*x**4 + 4*x**3 + 3*x**2 + 2*x + 1, x**2 + 2*x + 3, 5*x**2 - 6*x, 20*x + 1
-
-    assert divmod(f, g) == (q, r)
-    assert f // g == q
-    assert f % g == r
-
-    f, g, q, r = 5*x**5 + 4*x**4 + 3*x**3 + 2*x**2 + x, x**4 + 2*x**3 + 9, 5*x - 6, 15*x**3 + 2*x**2 - 44*x + 54
-
-    assert divmod(f, g) == (q, r)
-    assert f // g == q
-    assert f % g == r
-
-    R, x = ring('x', QQ)
-
-    f, g, q, r = x**2 + 1, 2*x - 4, x/2 + 1, 5
-
-    assert divmod(f, g) == (q, r)
-    assert f // g == q
-    assert f % g == r
 
     R, x, y, z = ring('x y z', ZZ)
 
