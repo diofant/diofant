@@ -343,27 +343,6 @@ def dup_real_imag(f, K):
     return f1, f2
 
 
-def dup_mirror(f, K):
-    """
-    Evaluate efficiently the composition ``f(-x)`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dup_mirror(x**3 + 2*x**2 - 4*x + 2)
-    -x**3 + 2*x**2 + 4*x + 2
-
-    """
-    f = list(f)
-
-    for i in range(len(f) - 2, -1, -2):
-        f[i] = -f[i]
-
-    return f
-
-
 def dup_shift(f, a, K):
     """
     Evaluate efficiently Taylor shift ``f(x + a)`` in ``K[x]``.

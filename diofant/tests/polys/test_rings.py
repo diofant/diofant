@@ -1583,10 +1583,18 @@ def test_PolyElement_compose():
 
     pytest.raises(CoercionFailed, lambda: f.compose(x, QQ(1, 7)))
 
+    f = x**3 + 2*x**2 - 4*x + 2
+
+    assert f.compose(x, -x) == -x**3 + 2*x**2 + 4*x + 2
+
     f = x**4 + 2*x**3 + 3*x**2 + 4*x + 5
 
     assert f.compose(x, -x) == x**4 - 2*x**3 + 3*x**2 - 4*x + 5
     assert f.compose(x, -7*x) == 2401*x**4 - 686*x**3 + 147*x**2 - 28*x + 5
+
+    f = x**5 + 2*x**4 + 3*x**3 + 4*x**2 + 5*x + 6
+
+    assert f.compose(x, -x) == -x**5 + 2*x**4 - 3*x**3 + 4*x**2 - 5*x + 6
 
     R,  x, y, z = ring('x,y,z', ZZ)
     f = x**3 + 4*x**2 + 2*x + 3

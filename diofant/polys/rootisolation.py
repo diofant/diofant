@@ -10,8 +10,8 @@ from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
                          dmp_strip, dmp_TC, dmp_terms_gcd, dmp_to_tuple,
                          dup_reverse)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
-                         dmp_eval_in, dmp_ground_primitive, dup_mirror,
-                         dup_real_imag, dup_shift, dup_transform)
+                         dmp_eval_in, dmp_ground_primitive, dup_real_imag,
+                         dup_shift, dup_transform)
 from .euclidtools import dmp_gcd, dmp_resultant
 from .factortools import dmp_trial_division
 from .polyerrors import DomainError, RefinementFailed
@@ -251,7 +251,7 @@ def dup_refine_real_root(f, s, t, K, eps=None, steps=None, disjoint=None):
 
     if s < 0:
         if t <= 0:
-            f, s, t, negative = dup_mirror(f, K), -t, -s, True
+            f, s, t, negative = dmp_compose(f, [-K.one, 0], 0, K), -t, -s, True
         else:
             raise ValueError(f"can't refine a real root in ({s}, {t})")
 
@@ -412,7 +412,7 @@ def dup_inner_isolate_negative_roots(f, K, inf=None, sup=None, eps=None, mobius=
     if inf is not None and inf >= 0:
         return []
 
-    roots = dup_inner_isolate_real_roots(dup_mirror(f, K), K, eps=eps)
+    roots = dup_inner_isolate_real_roots(dmp_compose(f, [-K.one, 0], 0, K), K, eps=eps)
 
     results = []
 
@@ -1624,7 +1624,7 @@ class RealInterval:
 
             if s < 0:
                 if t <= 0:
-                    f, s, t, self.neg = dup_mirror(f, dom), -t, -s, True
+                    f, s, t, self.neg = dmp_compose(f, [-dom.one, 0], 0, dom), -t, -s, True
                 else:
                     raise ValueError(f"can't refine a real root in ({s}, {t})")
 

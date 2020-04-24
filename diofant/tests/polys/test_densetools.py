@@ -447,18 +447,6 @@ def test_dup_real_imag():
                                   2*x*y + 2*sqrt(2)*x + 1)
 
 
-def test_dup_mirror():
-    R, x = ring('x', ZZ)
-
-    assert R.dup_mirror(0) == 0
-    assert R.dup_mirror(1) == 1
-
-    assert R.dup_mirror(x**4 + 2*x**3 + 3*x**2 + 4*x +
-                        5) == x**4 - 2*x**3 + 3*x**2 - 4*x + 5
-    assert R.dup_mirror(x**5 + 2*x**4 + 3*x**3 + 4*x**2 + 5*x +
-                        6) == -x**5 + 2*x**4 - 3*x**3 + 4*x**2 - 5*x + 6
-
-
 def test_dup_shift():
     R, x = ring('x', ZZ)
 
