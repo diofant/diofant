@@ -1163,7 +1163,17 @@ def test_PolyElement_deflate():
 def test_PolyElement_inflate():
     R, x = ring('x', ZZ)
 
+    assert R(0).inflate((17,)) == 0
     assert R(1).inflate((3,)) == 1
+
+    f = x**2 + 2*x + 3
+
+    assert f.inflate((1,)) == f
+    assert f.inflate((2,)) == x**4 + 2*x**2 + 3
+    assert f.inflate((3,)) == x**6 + 2*x**3 + 3
+    assert f.inflate((4,)) == x**8 + 2*x**4 + 3
+
+    assert (x**2 + x + 1).inflate((3,)) == x**6 + x**3 + 1
 
     R, x, y = ring('x y', ZZ)
 

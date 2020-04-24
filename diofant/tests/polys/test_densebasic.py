@@ -13,7 +13,7 @@ from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert,
                                       dmp_permute, dmp_raise, dmp_strip,
                                       dmp_swap, dmp_terms_gcd, dmp_to_dict,
                                       dmp_zero, dmp_zero_p, dmp_zeros,
-                                      dup_inflate, dup_random, dup_reverse)
+                                      dup_random, dup_reverse)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -363,17 +363,6 @@ def test_dmp_raise():
 
     assert dmp_raise([[1, 2, 3], [], [2, 3]], 2, 1, ZZ) == \
         [[[[1]], [[2]], [[3]]], [[[]]], [[[2]], [[3]]]]
-
-
-def test_dup_inflate():
-    assert dup_inflate([], 17, ZZ) == []
-
-    assert dup_inflate([1, 2, 3], 1, ZZ) == [1, 2, 3]
-    assert dup_inflate([1, 2, 3], 2, ZZ) == [1, 0, 2, 0, 3]
-    assert dup_inflate([1, 2, 3], 3, ZZ) == [1, 0, 0, 2, 0, 0, 3]
-    assert dup_inflate([1, 2, 3], 4, ZZ) == [1, 0, 0, 0, 2, 0, 0, 0, 3]
-
-    pytest.raises(IndexError, lambda: dup_inflate([1, 2, 3], 0, ZZ))
 
 
 def test_dmp_exclude():

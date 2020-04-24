@@ -573,28 +573,11 @@ def dmp_raise(f, l, u, K):
 
 
 def dup_inflate(f, m, K):
-    """
-    Map ``y`` to ``x**m`` in a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> dup_inflate([ZZ(1), ZZ(1), ZZ(1)], 3, ZZ)
-    [1, 0, 0, 1, 0, 0, 1]
-
-    """
-    if m <= 0:
-        raise IndexError(f"'m' must be positive, got {m}")
-    if m == 1 or not f:
-        return f
-
-    result = [f[0]]
-
-    for coeff in f[1:]:
-        result.extend([K.zero]*(m - 1))
-        result.append(coeff)
-
-    return result
+    """Map ``y`` to ``x**m`` in a polynomial in ``K[x]``."""
+    ring = K.poly_ring('_0')
+    f = ring.from_dense(f)
+    f = f.inflate((m,))
+    return ring.to_dense(f)
 
 
 def dmp_exclude(f, u, K):
