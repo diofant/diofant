@@ -1625,6 +1625,17 @@ class PolyElement(DomainElement, CantSympify, dict):
         return self._norm(sum)
 
     def deflate(self, *G):
+        """Map ``x_i**m_i`` to ``y_i`` in a set of polynomials in ``K[X]``.
+
+        Examples
+        ========
+
+        >>> _, x, y = ring('x y', ZZ)
+        >>> (x**2*y**3 + 2*x**2 + 3*y**3 + 4).deflate(x**2*y**2 + 2*x**2 +
+        ...                                           3*y**2 + 4)
+        ((2, 1), [x*y**3 + 2*x + 3*y**3 + 4, x*y**2 + 2*x + 3*y**2 + 4])
+
+        """
         ring = self.ring
         polys = [self] + list(G)
 
@@ -1658,6 +1669,16 @@ class PolyElement(DomainElement, CantSympify, dict):
         return J, H
 
     def inflate(self, J):
+        """Map ``y_i`` to ``x_i**J_i`` in a polynomial in ``K[X]``.
+
+        Examples
+        ========
+
+        >>> _, x, y = ring('x y', ZZ)
+        >>> (x*y + 2*x + 3*y + 4).inflate((2, 3))
+        x**2*y**3 + 2*x**2 + 3*y**3 + 4
+
+        """
         poly = self.ring.zero
 
         for I, coeff in self.items():
