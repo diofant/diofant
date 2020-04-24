@@ -8,7 +8,7 @@ from .polyerrors import HomomorphismFailed
 
 def dup_gcdex(f, g, K):
     """Extended Euclidean algorithm in `F[x]`."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(1)])
+    ring = K.poly_ring('_0')
     f, g = map(ring.from_dense, (f, g))
     return tuple(map(ring.to_dense, f.gcdex(g)))
 
