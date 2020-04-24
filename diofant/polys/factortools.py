@@ -188,7 +188,7 @@ def dup_zz_zassenhaus(f, K):
     fc = f[-1]
     A = dmp_max_norm(f, 0, K)
     b = dmp_LC(f, K)
-    B = int(abs(K.sqrt(K(n + 1))*2**n*A*b))
+    B = int(dmp_zz_mignotte_bound(f, 0, K))
     C = int((n + 1)**(2*n)*A**(2*n - 1))
     gamma = math.ceil(2*math.log(C, 2))
     bound = int(2*gamma*math.log(gamma))
