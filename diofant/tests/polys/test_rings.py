@@ -1259,13 +1259,104 @@ def test_PolyElement_content():
 
 
 def test_PolyElement_primitive():
+    R, x = ring('x', ZZ)
+
+    assert R(0).primitive() == (0, 0)
+    assert R(1).primitive() == (1, 1)
+    assert (x + 1).primitive() == (1, x + 1)
+    assert (2*x + 2).primitive() == (2, x + 1)
+    assert (x**2 + 2*x + 1).primitive() == (1, x**2 + 2*x + 1)
+    assert (2*x**2 + 4*x + 2).primitive() == (2, x**2 + 2*x + 1)
+    assert (6*x**2 + 8*x + 12).primitive() == (2, 3*x**2 + 4*x + 6)
+
+    R, x = ring('x', QQ)
+
+    assert R(0).primitive() == (0, 0)
+    assert R(1).primitive() == (1, 1)
+    assert (x + 1).primitive() == (1, x + 1)
+    assert (2*x + 2).primitive() == (2, x + 1)
+    assert (x**2 + 2*x + 1).primitive() == (1, x**2 + 2*x + 1)
+    assert (2*x**2 + 4*x + 2).primitive() == (2, x**2 + 2*x + 1)
+    assert (6*x**2 + 8*x + 12).primitive() == (2, 3*x**2 + 4*x + 6)
+
+    assert (2*x/3 + QQ(4, 9)).primitive() == (QQ(2, 9), 3*x + 2)
+    assert (2*x/3 + QQ(4, 5)).primitive() == (QQ(2, 15), 5*x + 6)
+
+    R, x, y = ring('x y', ZZ)
+
+    assert R(0).primitive() == (0, 0)
+    assert R(2).primitive() == (2, 1)
+
+    R = R.eject(y)
+
+    assert R(0).primitive() == (0, 0)
+    assert R(1).primitive() == (1, 1)
+
+    f, g, F = (3*y**2 + 2*y + 1).eject(y), R(1), R(0)
+
+    for i in range(5):
+        g *= f
+        F += R.x**i*g
+
+    assert F.primitive() == (f.inject().drop(x), F // f)
+
+    f = (2*x*y + 6*x + 4*y + 12).eject(y)
+
+    assert f.primitive() == ((2*y + 6).drop(x), (x + 2).eject(y))
+
     R, x, y = ring('x y', QQ)
 
-    assert R(0).primitive() == (QQ(0), R(0))
+    assert R(0).primitive() == (0, 0)
+    assert R(2).primitive() == (2, 1)
 
-    f = -3*x/4 + y + QQ(11, 8)
+    assert (2*x/3 + QQ(4, 9)).primitive() == (QQ(2, 9), 3*x + 2)
+    assert (2*x/3 + QQ(4, 5)).primitive() == (QQ(2, 15), 5*x + 6)
+    assert (-3*x/4 + y + QQ(11, 8)).primitive() == (QQ(-1, 8), 6*x - 8*y - 11)
 
-    assert f.primitive() == (QQ(-1, 8), 6*x - 8*y - 11)
+    R, x, y, z = ring('x y z', ZZ)
+
+    f = f_polys()[0]
+
+    assert f.primitive() == (1, f)
+    assert (2*f).primitive() == (2, f)
+
+    f = f_polys()[1]
+
+    assert f.primitive() == (1, f)
+    assert (3*f).primitive() == (3, f)
+
+    f = f_polys()[2]
+
+    assert f.primitive() == (1, f)
+    assert (4*f).primitive() == (4, f)
+
+    f = f_polys()[3]
+
+    assert f.primitive() == (1, f)
+    assert (5*f).primitive() == (5, f)
+
+    f = f_polys()[4]
+
+    assert f.primitive() == (-1, -f)
+    assert (6*f).primitive() == (-6, -f)
+
+    assert f.eject(y, z).primitive() == (-1, -f.eject(y, z))
+
+    f = f_polys()[5]
+
+    assert f.primitive() == (-1, -f)
+    assert (7*f).primitive() == (-7, -f)
+
+    assert f.eject(y, z).primitive() == (-1, -f.eject(y, z))
+
+    R, x, y, z, t = ring('x y z t', ZZ)
+
+    f = f_polys()[6]
+
+    assert f.primitive() == (1, f)
+    assert (8*f).primitive() == (8, f)
+
+    assert f.eject(y, z, t).primitive() == (1, f.eject(y, z, t))
 
 
 def test_PolyElement_deflate():
