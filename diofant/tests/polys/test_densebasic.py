@@ -8,8 +8,8 @@ from diofant import FF, ZZ, oo, ring
 from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert,
                                       dmp_degree_in, dmp_eject, dmp_exclude,
                                       dmp_from_dict, dmp_ground, dmp_ground_p,
-                                      dmp_include, dmp_inflate, dmp_inject,
-                                      dmp_nest, dmp_normal, dmp_one, dmp_one_p,
+                                      dmp_include, dmp_inject, dmp_nest,
+                                      dmp_normal, dmp_one, dmp_one_p,
                                       dmp_permute, dmp_raise, dmp_strip,
                                       dmp_swap, dmp_terms_gcd, dmp_to_dict,
                                       dmp_zero, dmp_zero_p, dmp_zeros,
@@ -374,22 +374,6 @@ def test_dup_inflate():
     assert dup_inflate([1, 2, 3], 4, ZZ) == [1, 0, 0, 0, 2, 0, 0, 0, 3]
 
     pytest.raises(IndexError, lambda: dup_inflate([1, 2, 3], 0, ZZ))
-
-
-def test_dmp_inflate():
-    assert dmp_inflate([1], (3,), 0, ZZ) == [1]
-
-    assert dmp_inflate([[]], (3, 7), 1, ZZ) == [[]]
-    assert dmp_inflate([[2]], (1, 2), 1, ZZ) == [[2]]
-
-    assert dmp_inflate([[2, 0]], (1, 1), 1, ZZ) == [[2, 0]]
-    assert dmp_inflate([[2, 0]], (1, 2), 1, ZZ) == [[2, 0, 0]]
-    assert dmp_inflate([[2, 0]], (1, 3), 1, ZZ) == [[2, 0, 0, 0]]
-
-    assert dmp_inflate([[1, 0, 0], [1], [1, 0]], (2, 1), 1, ZZ) == \
-        [[1, 0, 0], [], [1], [], [1, 0]]
-
-    pytest.raises(IndexError, lambda: dmp_inflate([[]], (-3, 7), 1, ZZ))
 
 
 def test_dmp_exclude():

@@ -1160,6 +1160,24 @@ def test_PolyElement_deflate():
                                      x*y**2 + 2*x + 3*y**2 + 4])
 
 
+def test_PolyElement_inflate():
+    R, x = ring('x', ZZ)
+
+    assert R(1).inflate((3,)) == 1
+
+    R, x, y = ring('x y', ZZ)
+
+    assert R(0).inflate((3, 7)) == 0
+    assert R(2).inflate((1, 2)) == 2
+
+    assert (2*y).inflate((1, 1)) == 2*y
+    assert (2*y).inflate((1, 2)) == 2*y**2
+    assert (2*y).inflate((1, 3)) == 2*y**3
+
+    assert (x**2*y**2 + x + y).inflate((2, 1)) == x**4*y**2 + x**2 + y
+    assert (x*y + 2*x + 3*y + 4).inflate((2, 3)) == x**2*y**3 + 2*x**2 + 3*y**3 + 4
+
+
 def test_PolyElement_clear_denoms():
     R,  x, y = ring('x,y', QQ)
 

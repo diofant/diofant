@@ -597,46 +597,6 @@ def dup_inflate(f, m, K):
     return result
 
 
-def dmp_inflate(f, M, u, K):
-    """
-    Map ``y_i`` to ``x_i**k_i`` in a polynomial in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> dmp_inflate([[ZZ(1), ZZ(2)], [ZZ(3), ZZ(4)]], (2, 3), 1, ZZ)
-    [[1, 0, 0, 2], [], [3, 0, 0, 4]]
-
-    """
-    if not u:
-        return dup_inflate(f, M[0], K)
-
-    def inflate(g, M, v, i, K):
-        if not v:
-            return dup_inflate(g, M[i], K)
-        if M[i] <= 0:
-            raise IndexError(f'all M[i] must be positive, got {M[i]}')
-
-        w, j = v - 1, i + 1
-
-        g = [inflate(c, M, w, j, K) for c in g]
-
-        result = [g[0]]
-
-        for coeff in g[1:]:
-            for _ in range(1, M[i]):
-                result.append(dmp_zero(w))
-
-            result.append(coeff)
-
-        return result
-
-    if all(m == 1 for m in M):
-        return f
-    else:
-        return inflate(f, M, u, 0, K)
-
-
 def dmp_exclude(f, u, K):
     """
     Exclude useless levels from ``f``.
