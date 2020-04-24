@@ -1161,6 +1161,103 @@ def test_PolyElement_monic():
     assert f.monic() == x**2*y + 8/3*x**2 + 5/3*x*y + 2*x + 2/3*y + 1
 
 
+def test_PolyElement_content():
+    R, x = ring('x', ZZ)
+
+    assert R(0).content() == 0
+    assert R(+1).content() == 1
+    assert R(-1).content() == -1
+    assert (x + 1).content() == 1
+    assert (2*x + 2).content() == 2
+    assert (x**2 + 2*x + 1).content() == 1
+    assert (2*x**2 + 4*x + 2).content() == 2
+    assert (6*x**2 + 8*x + 12).content() == 2
+
+    R, x = ring('x', QQ)
+
+    assert (6*x**2 + 8*x + 12).content() == 2
+
+    assert (2*x/3 + QQ(4, 9)).content() == QQ(2, 9)
+    assert (2*x/3 + QQ(4, 5)).content() == QQ(2, 15)
+
+    R, x, y = ring('x y', ZZ)
+
+    assert R(0).content() == 0
+    assert R(+1).content() == 1
+    assert R(-1).content() == -1
+    assert (x + 1).content() == 1
+    assert (2*x + 2).content() == 2
+    assert (x**2 + 2*x + 1).content() == 1
+    assert (2*x**2 + 4*x + 2).content() == 2
+
+    R = R.eject(y)
+
+    assert R(-2).content() == -2
+
+    f, g, F = (3*y**2 + 2*y + 1).eject(y), R(1), R(0)
+
+    for i in range(5):
+        g *= f
+        F += R.x**i*g
+
+    assert F.content() == f.inject().drop(x)
+
+    f = 2*x*y + 6*x + 4*y + 12
+
+    assert f.eject(y).content() == (2*y + 6).drop(x)
+
+    R, x, y = ring('x y', QQ)
+
+    assert R(0).content() == 0
+    assert (2*x/3 + QQ(4, 9)).content() == QQ(2, 9)
+    assert (2*x/3 + QQ(4, 5)).content() == QQ(2, 15)
+
+    R, x, y, z = ring('x y z', ZZ)
+
+    f = f_polys()[0]
+
+    assert f.content() == 1
+    assert (2*f).content() == 2
+
+    f = f_polys()[1]
+
+    assert f.content() == 1
+    assert (3*f).content() == 3
+
+    f = f_polys()[2]
+
+    assert f.content() == 1
+    assert (4*f).content() == 4
+
+    f = f_polys()[3]
+
+    assert f.content() == 1
+    assert (5*f).content() == 5
+
+    f = f_polys()[4]
+
+    assert f.content() == -1
+    assert (6*f).content() == -6
+
+    assert f.eject(y, z).content() == -1
+
+    f = f_polys()[5]
+
+    assert f.content() == -1
+    assert (7*f).content() == -7
+
+    assert f.eject(y, z).content() == -1
+
+    R, x, y, z, t = ring('x y, z t', ZZ)
+
+    f = f_polys()[6]
+
+    assert f.content() == 1
+    assert (8*f).content() == 8
+
+    assert f.eject(y, z, t).content() == 1
+
+
 def test_PolyElement_primitive():
     R, x, y = ring('x y', QQ)
 
