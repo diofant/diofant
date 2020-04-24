@@ -1565,6 +1565,14 @@ def test_PolyElement_eval():
 
 def test_PolyElement_compose():
     R, x = ring('x', ZZ)
+
+    assert R(0).compose(x, -x) == 0
+    assert R(1).compose(x, -x) == 1
+
+    f = x**2 - 2*x + 1
+
+    assert f.compose(x, 2*x) == 4*x**2 - 4*x + 1
+
     f = x**3 + 4*x**2 + 2*x + 3
 
     r = f.compose(x, 0)
@@ -1574,6 +1582,11 @@ def test_PolyElement_compose():
     assert f.compose(x, x**2) == x**6 + 4*x**4 + 2*x**2 + 3
 
     pytest.raises(CoercionFailed, lambda: f.compose(x, QQ(1, 7)))
+
+    f = x**4 + 2*x**3 + 3*x**2 + 4*x + 5
+
+    assert f.compose(x, -x) == x**4 - 2*x**3 + 3*x**2 - 4*x + 5
+    assert f.compose(x, -7*x) == 2401*x**4 - 686*x**3 + 147*x**2 - 28*x + 5
 
     R,  x, y, z = ring('x,y,z', ZZ)
     f = x**3 + 4*x**2 + 2*x + 3

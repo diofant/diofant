@@ -459,18 +459,6 @@ def test_dup_mirror():
                         6) == -x**5 + 2*x**4 - 3*x**3 + 4*x**2 - 5*x + 6
 
 
-def test_dup_scale():
-    R, x = ring('x', ZZ)
-
-    assert R.dup_scale(0, -1) == 0
-    assert R.dup_scale(1, -1) == 1
-
-    assert R.dup_scale(x**4 + 2*x**3 + 3*x**2 + 4*x + 5,
-                       -1) == x**4 - 2*x**3 + 3*x**2 - 4*x + 5
-    assert R.dup_scale(x**4 + 2*x**3 + 3*x**2 + 4*x + 5,
-                       -7) == 2401*x**4 - 686*x**3 + 147*x**2 - 28*x + 5
-
-
 def test_dup_shift():
     R, x = ring('x', ZZ)
 

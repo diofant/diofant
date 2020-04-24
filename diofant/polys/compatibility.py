@@ -10,7 +10,7 @@ from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
                          dmp_ground_trunc, dup_decompose, dup_mirror,
-                         dup_real_imag, dup_scale, dup_shift, dup_transform)
+                         dup_real_imag, dup_shift, dup_transform)
 from .factortools import (dmp_factor_list, dmp_trial_division,
                           dmp_zz_diophantine, dmp_zz_mignotte_bound,
                           dmp_zz_wang, dmp_zz_wang_hensel_lifting,
@@ -175,9 +175,6 @@ class IPolys:
 
     def dup_mirror(self, f):
         return self.from_dense(dup_mirror(self.to_dense(f), self.domain))
-
-    def dup_scale(self, f, a):
-        return self.from_dense(dup_scale(self.to_dense(f), a, self.domain))
 
     def dup_shift(self, f, a):
         return self.from_dense(dup_shift(self.to_dense(f), a, self.domain))
