@@ -1,11 +1,10 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_exquo_ground,
-                         dmp_mul, dmp_mul_ground, dmp_neg, dmp_sub, dup_add,
-                         dup_mul)
+from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_mul,
+                         dmp_mul_ground, dmp_neg, dmp_sub, dup_add, dup_mul)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
-                         dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
-                         dmp_zero, dmp_zero_p)
+                         dmp_LC, dmp_strip, dmp_TC, dmp_to_dict, dmp_zero,
+                         dmp_zero_p)
 from .polyerrors import DomainError
 
 
@@ -163,34 +162,11 @@ def dmp_ground_trunc(f, p, u, K):
 
 
 def dmp_ground_monic(f, u, K):
-    """
-    Divide all coefficients by ``LC(f)`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-    >>> f = 3*x**2*y + 6*x**2 + 3*x*y + 9*y + 3
-
-    >>> R.dmp_ground_monic(f)
-    x**2*y + 2*x**2 + x*y + 3*y + 1
-
-    >>> R, x, y = ring('x y', QQ)
-    >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
-
-    >>> R.dmp_ground_monic(f)
-    x**2*y + 8/3*x**2 + 5/3*x*y + 2*x + 2/3*y + 1
-
-    """
-    if dmp_zero_p(f, u):
-        return f
-
-    lc = dmp_ground_LC(f, u, K)
-
-    if lc == K.one:
-        return f
-    else:
-        return dmp_exquo_ground(f, lc, u, K)
+    """Divide all coefficients by ``LC(f)`` in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    f = f.monic()
+    return ring.to_dense(f)
 
 
 def dmp_ground_content(f, u, K):

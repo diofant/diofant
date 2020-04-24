@@ -8,8 +8,8 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term,
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
                          dmp_ground_TC, dmp_LC, dmp_TC, dmp_to_dict)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
-                         dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
-                         dup_decompose, dup_real_imag, dup_transform)
+                         dmp_eval_in, dmp_eval_tail, dup_decompose,
+                         dup_real_imag, dup_transform)
 from .factortools import (dmp_factor_list, dmp_trial_division,
                           dmp_zz_diophantine, dmp_zz_mignotte_bound,
                           dmp_zz_wang, dmp_zz_wang_hensel_lifting,
@@ -158,9 +158,6 @@ class IPolys:
             return self.drop(*range(self.ngens)[self.ngens - len(A):]).from_dense(result)
         else:
             return result
-
-    def dmp_ground_monic(self, f):
-        return self.from_dense(dmp_ground_monic(self.to_dense(f), self.ngens-1, self.domain))
 
     def dup_real_imag(self, f):
         ring = self

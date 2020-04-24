@@ -2,8 +2,7 @@
 
 import pytest
 
-from diofant import (EX, QQ, ZZ, DomainError, ExactQuotientFailed, I, Rational,
-                     ring, sin, sqrt)
+from diofant import EX, QQ, ZZ, DomainError, I, Rational, ring, sin, sqrt
 from diofant.abc import x
 from diofant.polys.specialpolys import f_polys
 
@@ -156,33 +155,6 @@ def test_dmp_diff_eval_in():
             -250698*R1.x - 380*R1.z**3*R1.t**2 + 380*R1.t**2)
 
     pytest.raises(IndexError, lambda: R.dmp_diff_eval_in(f, 2, 7, 4))
-
-
-def test_dmp_ground_monic():
-    R, x = ring('x', ZZ)
-
-    assert R.dmp_ground_monic(3*x**2 + 6*x + 9) == x**2 + 2*x + 3
-
-    pytest.raises(ExactQuotientFailed, lambda: R.dmp_ground_monic(3*x**2 + 4*x + 5))
-
-    R, x = ring('x', QQ)
-
-    assert R.dmp_ground_monic(0) == 0
-    assert R.dmp_ground_monic(1) == 1
-    assert R.dmp_ground_monic(7*x**2 + x + 21) == x**2 + x/7 + 3
-    assert R.dmp_ground_monic(3*x**2 + 4*x + 2) == x**2 + 4*x/3 + QQ(2, 3)
-
-    R, x, y = ring('x y', ZZ)
-
-    assert R.dmp_ground_monic(3*x**2 + 6*x + 9) == x**2 + 2*x + 3
-
-    pytest.raises(ExactQuotientFailed, lambda: R.dmp_ground_monic(3*x**2 + 4*x + 5))
-
-    R, x, y = ring('x y', QQ)
-
-    assert R.dmp_ground_monic(0) == 0
-    assert R.dmp_ground_monic(1) == 1
-    assert R.dmp_ground_monic(7*x**2 + x + 21) == x**2 + x/7 + 3
 
 
 def test_dmp_ground_content():

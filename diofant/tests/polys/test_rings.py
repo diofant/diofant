@@ -1128,9 +1128,37 @@ def test_PolyElement_monic():
 
     pytest.raises(ExactQuotientFailed, lambda: (2*x + 1).monic())
 
+    assert (3*x**2 + 6*x + 9).monic() == x**2 + 2*x + 3
+
+    pytest.raises(ExactQuotientFailed, lambda: (3*x**2 + 4*x + 5).monic())
+
     R, x = ring('x', QQ)
 
+    assert R(0).monic() == 0
+    assert R(1).monic() == 1
     assert (2*x + 1).monic() == x + QQ(1, 2)
+    assert (7*x**2 + x + 21).monic() == x**2 + x/7 + 3
+    assert (3*x**2 + 4*x + 2).monic() == x**2 + 4*x/3 + QQ(2, 3)
+
+    R, x, y = ring('x y', ZZ)
+
+    assert (3*x**2 + 6*x + 9).monic() == x**2 + 2*x + 3
+
+    pytest.raises(ExactQuotientFailed, lambda: (3*x**2 + 4*x + 5).monic())
+
+    f = 3*x**2*y + 6*x**2 + 3*x*y + 9*y + 3
+
+    assert f.monic() == x**2*y + 2*x**2 + x*y + 3*y + 1
+
+    R, x, y = ring('x y', QQ)
+
+    assert R(0).monic() == 0
+    assert R(1).monic() == 1
+    assert (7*x**2 + x + 21).monic() == x**2 + x/7 + 3
+
+    f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
+
+    assert f.monic() == x**2*y + 8/3*x**2 + 5/3*x*y + 2*x + 2/3*y + 1
 
 
 def test_PolyElement_primitive():
