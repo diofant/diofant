@@ -3,8 +3,7 @@
 from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_mul,
                          dmp_mul_ground, dmp_neg, dmp_sub, dup_add, dup_mul)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
-                         dmp_LC, dmp_strip, dmp_TC, dmp_to_dict, dmp_zero,
-                         dmp_zero_p)
+                         dmp_LC, dmp_strip, dmp_to_dict, dmp_zero, dmp_zero_p)
 from .polyerrors import DomainError
 
 
@@ -31,51 +30,13 @@ def dmp_diff_in(f, m, j, u, K):
 
 
 def dmp_eval_in(f, a, j, u, K):
-    """
-    Evaluate a polynomial at ``x_j = a`` in ``K[X]`` using the Horner scheme.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = 2*x*y + 3*x + y + 2
-
-    >>> R.dmp_eval_in(f, 2, 0)
-    5*y + 8
-    >>> R.dmp_eval_in(f, 2, 1)
-    7*x + 4
-
-    """
-    if j < 0 or j > u:
-        raise IndexError(f'0 <= j <= {u} expected, got {j}')
-
-    if not j:
-        if not a:
-            return dmp_TC(f, K)
-
-        result, v = dmp_LC(f, K), u - 1
-
-        if u:
-            for coeff in f[1:]:
-                result = dmp_mul_ground(result, a, v, K)
-                result = dmp_add(result, coeff, v, K)
-        else:
-            for coeff in f[1:]:
-                result *= a
-                result += coeff
-
-        return result
-
-    def eval_in(g, a, v, i, j, K):
-        if i == j:
-            return dmp_eval_in(g, a, 0, v, K)
-
-        v, i = v - 1, i + 1
-
-        return dmp_strip([eval_in(c, a, v, i, j, K) for c in g], v)
-
-    return eval_in(f, a, u, 0, j, K)
+    """Evaluate a polynomial at ``x_j = a`` in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    r = f.eval(x=j, a=a)
+    if ring.is_multivariate:
+        r = r.to_dense()
+    return r
 
 
 def dmp_eval_tail(f, A, u, K):
