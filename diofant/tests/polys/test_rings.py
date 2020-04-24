@@ -1762,6 +1762,8 @@ def test_PolyElement_eval():
     assert R(0).eval(a=3) == 0
     assert (x + 2).eval() == 2
 
+    assert (x**2 + x + 1).diff().eval(a=1) == 3
+
     f = x**2 + 2*x + 3
 
     assert f.eval(a=7) == 66
@@ -1811,6 +1813,11 @@ def test_PolyElement_eval():
     assert f.eval(a=2) == 5*R1.y + 8
     assert f.eval(x=1, a=2) == 7*R2.x + 4
 
+    f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
+
+    assert f.diff().eval(a=2) == R1.y**2 + 2*R1.y + 3
+    assert f.diff(x=1).eval(x=1, a=2) == 6*R2.x + 11
+
     R, x, y, z = ring('x,y,z', ZZ)
     R1 = R.drop(x)
     R3 = R.drop(z)
@@ -1858,6 +1865,7 @@ def test_PolyElement_eval():
             14805*x**4 + 45*x**3*z**3*t**2 - 45*x**3*t**2 + 987*x*z**3 +
             658*x*z*t - 1031744*x + 3*z**6*t**2 + 2*z**4*t**3 -
             3139*z**3*t**2 - 2*z*t**3 + 3136*t**2)
+    assert f.diff(x=1, m=2).eval(x=1, a=7) == -250698*x - 380*z**3*t**2 + 380*t**2
 
     x, y, t = R3.gens
 

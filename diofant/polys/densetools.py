@@ -82,36 +82,11 @@ def dmp_eval_tail(f, A, u, K):
 
 
 def dmp_diff_eval_in(f, m, a, j, u, K):
-    """
-    Differentiate and evaluate a polynomial in ``x_j`` at ``a`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
-
-    >>> R.dmp_diff_eval_in(f, 1, 2, 0)
-    y**2 + 2*y + 3
-    >>> R.dmp_diff_eval_in(f, 1, 2, 1)
-    6*x + 11
-
-    """
-    if j > u:
-        raise IndexError(f'-{u} <= j < {u} expected, got {j}')
-    if not j:
-        return dmp_eval_in(dmp_diff_in(f, m, 0, u, K), a, 0, u, K)
-
-    def diff_eval(g, m, a, v, i, j, K):
-        if i == j:
-            return dmp_eval_in(dmp_diff_in(g, m, 0, v, K), a, 0, v, K)
-
-        v, i = v - 1, i + 1
-
-        return dmp_strip([diff_eval(c, m, a, v, i, j, K) for c in g], v)
-
-    return diff_eval(f, m, a, u, 0, j, K)
+    """Differentiate and evaluate a polynomial in ``x_j`` at ``a`` in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    r = f.diff(x=j, m=m).eval(x=j, a=a)
+    return r.to_dense()
 
 
 def dmp_ground_trunc(f, p, u, K):

@@ -7,9 +7,8 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term,
                          dup_lshift, dup_rshift)
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
                          dmp_ground_TC, dmp_LC, dmp_TC, dmp_to_dict)
-from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
-                         dmp_eval_tail, dup_decompose, dup_real_imag,
-                         dup_transform)
+from .densetools import (dmp_clear_denoms, dmp_compose, dmp_eval_tail,
+                         dup_decompose, dup_real_imag, dup_transform)
 from .factortools import (dmp_factor_list, dmp_trial_division,
                           dmp_zz_diophantine, dmp_zz_mignotte_bound,
                           dmp_zz_wang, dmp_zz_wang_hensel_lifting,
@@ -137,13 +136,6 @@ class IPolys:
 
     def dmp_degree_list(self, f):
         return dmp_degree_list(self.to_dense(f), self.ngens-1)
-
-    def dmp_diff_eval_in(self, f, m, a, j):
-        result = dmp_diff_eval_in(self.to_dense(f), m, a, j, self.ngens-1, self.domain)
-        if self.is_multivariate:
-            return self.drop(j).from_dense(result)
-        else:
-            return result
 
     def dmp_eval_tail(self, f, A):
         result = dmp_eval_tail(self.to_dense(f), A, self.ngens-1, self.domain)

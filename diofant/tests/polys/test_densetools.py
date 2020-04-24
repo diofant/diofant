@@ -74,29 +74,6 @@ def test_dmp_eval_tail():
     assert R.dmp_eval_tail(f, [ZZ(0), ZZ(2), ZZ(4)]) == 5040*R123.x**3 + 4480
 
 
-def test_dmp_diff_eval_in():
-    R, x = ring('x', ZZ)
-
-    assert R.dmp_diff_eval_in(x**2 + x + 1, 1, 1, 0) == 3
-
-    R, x, y = ring('x y', ZZ)
-    R0 = R.drop(x)
-
-    f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
-
-    assert R.dmp_diff_eval_in(f, 1, 2, 0) == R0.y**2 + 2*R0.y + 3
-
-    R, x, y, z, t = ring('x y z t', ZZ)
-    R1 = R.drop(y)
-
-    f = f_polys()[6]
-
-    assert (R.dmp_diff_eval_in(f, 2, 7, 1) ==
-            -250698*R1.x - 380*R1.z**3*R1.t**2 + 380*R1.t**2)
-
-    pytest.raises(IndexError, lambda: R.dmp_diff_eval_in(f, 2, 7, 4))
-
-
 def test_dup_real_imag():
     R, x, y = ring('x y', ZZ)
 
