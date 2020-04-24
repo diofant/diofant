@@ -1,10 +1,10 @@
 """Compatibility interface between dense and sparse polys."""
 
-from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term, dmp_div,
+from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term,
                          dmp_expand, dmp_exquo_ground, dmp_l1_norm,
                          dmp_max_norm, dmp_mul, dmp_mul_ground, dmp_mul_term,
-                         dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_rem,
-                         dmp_sqr, dmp_sub, dmp_sub_mul, dup_lshift, dup_rshift)
+                         dmp_neg, dmp_pow, dmp_quo_ground, dmp_sqr, dmp_sub,
+                         dmp_sub_mul, dup_lshift, dup_rshift)
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
                          dmp_ground_TC, dmp_LC, dmp_TC, dmp_to_dict)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
@@ -112,16 +112,6 @@ class IPolys:
 
     def dmp_pow(self, f, n):
         return self.from_dense(dmp_pow(self.to_dense(f), n, self.ngens-1, self.domain))
-
-    def dmp_div(self, f, g):
-        q, r = dmp_div(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(q), self.from_dense(r)
-
-    def dmp_rem(self, f, g):
-        return self.from_dense(dmp_rem(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain))
-
-    def dmp_quo(self, f, g):
-        return self.from_dense(dmp_quo(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain))
 
     def dmp_max_norm(self, f):
         return dmp_max_norm(self.to_dense(f), self.ngens-1, self.domain)

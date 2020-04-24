@@ -759,25 +759,25 @@ def test_dmp_pow():
 def test_dmp_div():
     R, x = ring('x', ZZ)
 
-    pytest.raises(ZeroDivisionError, lambda: R.dmp_div(x**2 + 2*x + 3, 0))
+    pytest.raises(ZeroDivisionError, lambda: divmod(x**2 + 2*x + 3, R(0)))
 
     f = 3*x**3 + x**2 + x + 5
     g = 5*x**2 - 3*x + 1
 
     q, r = 0, f
 
-    assert R.dmp_div(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
 
     f = x**2 + 1
     g = 2*x - 4
 
     q, r = 0, f
 
-    assert R.dmp_div(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
 
     R, x, y = ring('x y', ZZ)
 
-    pytest.raises(ZeroDivisionError, lambda: R.dmp_div(x*y + 2*x + 3, 0))
+    pytest.raises(ZeroDivisionError, lambda: divmod(x*y + 2*x + 3, R(0)))
 
     f = x**2 + y**2
     g = x - y
@@ -785,27 +785,27 @@ def test_dmp_div():
     q = x + y
     r = 2*y**2
 
-    assert R.dmp_div(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
 
     g = -x + y
 
     q = -x - y
 
-    assert R.dmp_div(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
 
     g = 2*x - 2*y
     q, r = 0, f
 
-    assert R.dmp_div(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
 
     f = x**2 + x*y
     g = 2*x + 2
 
-    assert R.dmp_div(f, g) == (0, f)
+    assert divmod(f, g) == (0, f)
 
     R, x = ring('x', QQ)
 
-    pytest.raises(ZeroDivisionError, lambda: R.dmp_div(x**2 + 2*x + 3, 0))
+    pytest.raises(ZeroDivisionError, lambda: divmod(x**2 + 2*x + 3, R(0)))
 
     f = 3*x**3 + x**2 + x + 5
     g = 5*x**2 - 3*x + 1
@@ -813,7 +813,7 @@ def test_dmp_div():
     q = 3*x/5 + QQ(14, 25)
     r = 52*x/25 + QQ(111, 25)
 
-    assert R.dmp_div(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
 
     f = x**2 + 1
     g = 2*x - 4
@@ -821,11 +821,11 @@ def test_dmp_div():
     q = x/2 + 1
     r = 5
 
-    assert R.dmp_div(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
 
     R, x, y = ring('x y', QQ)
 
-    pytest.raises(ZeroDivisionError, lambda: R.dmp_div(x*y + 2*x + 3, 0))
+    pytest.raises(ZeroDivisionError, lambda: divmod(x*y + 2*x + 3, R(0)))
 
     f = x**2 + y**2
     g = x - y
@@ -833,19 +833,19 @@ def test_dmp_div():
     q = x + y
     r = 2*y**2
 
-    assert R.dmp_div(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
 
     g = -x + y
 
     q = -x - y
 
-    assert R.dmp_div(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
 
     g = 2*x - 2*y
 
     q = x/2 + y/2
 
-    assert R.dmp_div(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
 
     f = x**2 + x*y
     g = 2*x + 2
@@ -853,47 +853,47 @@ def test_dmp_div():
     q = (x + y - 1)/2
     r = 1 - y
 
-    assert R.dmp_div(f, g) == (q, r)
+    assert divmod(f, g) == (q, r)
 
     R, x = ring('x', RR)
     pytest.raises(PolynomialDivisionFailed,
-                  lambda: R.dmp_div(2.0, -1.8438812457236466e-19))
+                  lambda: divmod(R(2.0), R(-1.8438812457236466e-19)))
 
     R, x = ring('x', ZZ)
 
     f, g, q, r = x**2 + 1, 2*x - 4, 0, x**2 + 1
 
-    assert R.dmp_div(f, g) == (q, r)
-    assert R.dmp_quo(f, g) == q
-    assert R.dmp_rem(f, g) == r
+    assert divmod(f, g) == (q, r)
+    assert f // g == q
+    assert f % g == r
 
     f, g, q, r = 5*x**4 + 4*x**3 + 3*x**2 + 2*x + 1, x**2 + 2*x + 3, 5*x**2 - 6*x, 20*x + 1
 
-    assert R.dmp_div(f, g) == (q, r)
-    assert R.dmp_quo(f, g) == q
-    assert R.dmp_rem(f, g) == r
+    assert divmod(f, g) == (q, r)
+    assert f // g == q
+    assert f % g == r
 
     f, g, q, r = 5*x**5 + 4*x**4 + 3*x**3 + 2*x**2 + x, x**4 + 2*x**3 + 9, 5*x - 6, 15*x**3 + 2*x**2 - 44*x + 54
 
-    assert R.dmp_div(f, g) == (q, r)
-    assert R.dmp_quo(f, g) == q
-    assert R.dmp_rem(f, g) == r
+    assert divmod(f, g) == (q, r)
+    assert f // g == q
+    assert f % g == r
 
     R, x = ring('x', QQ)
 
     f, g, q, r = x**2 + 1, 2*x - 4, x/2 + 1, 5
 
-    assert R.dmp_div(f, g) == (q, r)
-    assert R.dmp_quo(f, g) == q
-    assert R.dmp_rem(f, g) == r
+    assert divmod(f, g) == (q, r)
+    assert f // g == q
+    assert f % g == r
 
     R, x, y, z = ring('x y z', ZZ)
 
-    f, g, q, r = 1, 2*x + 1, 0, 1
+    f, g, q, r = R(1), 2*x + 1, 0, 1
 
-    assert R.dmp_div(f, g) == (q, r)
-    assert R.dmp_quo(f, g) == q
-    assert R.dmp_rem(f, g) == r
+    assert divmod(f, g) == (q, r)
+    assert f // g == q
+    assert f % g == r
 
 
 def test_dmp_max_norm():
