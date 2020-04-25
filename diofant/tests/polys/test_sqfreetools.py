@@ -206,6 +206,19 @@ def test_dmp_sqf():
 
     assert R(3).sqf_list() == (3, [])
 
+    f = (x + y)**2
+
+    assert f.is_squarefree is False
+    assert f.sqf_part() == x + y
+
+    f = x**2 + y**2
+
+    assert f.is_squarefree is True
+    assert f.sqf_part() == f
+
+    assert (x**3 + 2*x**2*y + x*y**2).sqf_part() == x**2 + x*y
+    assert (x**5 + 2*x**4*y + x**3*y**2).sqf_list() == (1, [(x + y, 2), (x, 3)])
+
     R, x, y, z = ring('x,y,z', ZZ)
 
     assert f_0.is_squarefree is True
@@ -254,6 +267,10 @@ def test_dmp_sqf():
     R, x, y = ring('x,y', QQ.algebraic_field(I))
 
     assert (x**2 + 2*I*x - 1).sqf_list() == (1, [(x + I, 2)])
+
+    assert (x*y + y**2).sqf_norm() == (1, x*y - I*x + y**2 - 3*I*y - 2,
+                                       (x**2*y**2 + x**2 + 2*x*y**3 + 2*x*y +
+                                        y**4 + 5*y**2 + 4).set_domain(QQ))
 
     R, x, y, z = ring('x,y,z', QQ)
 
