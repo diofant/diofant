@@ -5,9 +5,7 @@ import pytest
 from diofant import (CC, FF, QQ, RR, ZZ, MultivariatePolynomialError,
                      NotInvertible, field, ring, sqrt)
 from diofant.polys.polyconfig import using
-from diofant.polys.specialpolys import (dmp_fateman_poly_F_1,
-                                        dmp_fateman_poly_F_2,
-                                        dmp_fateman_poly_F_3, f_polys)
+from diofant.polys.specialpolys import f_polys
 
 
 __all__ = ()
@@ -426,12 +424,17 @@ def test_dmp_gcd():
                  289127344604779611146960547954288113529690984687482920704*x**14 +
                  19007977035740498977629742919480623972236450681*x**7 +
                  311973482284542371301330321821976049)
-            g = (365431878023781158602430064717380211405897160759702125019136*x**21 +
+
+            h = (365431878023781158602430064717380211405897160759702125019136*x**21 +
                  197599133478719444145775798221171663643171734081650688*x**14 -
                  9504116979659010018253915765478924103928886144*x**7 -
                  311973482284542371301330321821976049)
+            cff = (-964661685087874498642420170752*x**28 + 649736296036977287118848*x**21 +
+                   658473216967637120*x**14 - 30463679113*x**7 - 1)
+            cfg = (-47268422569305850433478588366848*x**27 + 30940259392972115602096128*x**20 +
+                   18261628279718027904*x**13 - 426497272383*x**6)
 
-            assert f.gcd(f.diff()) == g
+            assert f.cofactors(f.diff()) == (h, cff, cfg)
 
             f = 1317378933230047068160*x + 2945748836994210856960
             g = 120352542776360960*x + 269116466014453760
@@ -603,17 +606,17 @@ def test_dmp_gcd():
 
     for test in (True, False):
         with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
-            f, g, h = map(R.from_dense, dmp_fateman_poly_F_1(2, ZZ))
+            f, g, h = R.fateman_poly_F_1()
             H, cff, cfg = f.cofactors(g)
 
             assert H == h and H*cff == f and H*cfg == g
 
-            f, g, h = map(R.from_dense, dmp_fateman_poly_F_2(2, ZZ))
+            f, g, h = R.fateman_poly_F_2()
             H, cff, cfg = f.cofactors(g)
 
             assert H == h and H*cff == f and H*cfg == g
 
-            f, g, h = map(R.from_dense, dmp_fateman_poly_F_3(2, ZZ))
+            f, g, h = R.fateman_poly_F_3()
             H, cff, cfg = f.cofactors(g)
 
             assert H == h and H*cff == f and H*cfg == g
@@ -632,28 +635,33 @@ def test_dmp_gcd():
             assert f.cofactors(g) == (h, cff, cfg)
             assert g.cofactors(f) == (h, cfg, cff)
 
+            f, g, h = R.fateman_poly_F_3()
+            H, cff, cfg = f.cofactors(g)
+
+            assert H == h and H*cff == f and H*cfg == g
+
     R, x, y, z, u, v = ring('x,y,z,u,v', ZZ)
 
-    f, g, h = map(R.from_dense, dmp_fateman_poly_F_1(4, ZZ))
+    f, g, h = R.fateman_poly_F_1()
     H, cff, cfg = f.cofactors(g)
 
     assert H == h and H*cff == f and H*cfg == g
 
-    f, g, h = map(R.from_dense, dmp_fateman_poly_F_3(4, ZZ))
+    f, g, h = R.fateman_poly_F_3()
     H, cff, cfg = f.cofactors(g)
 
     assert H == h and H*cff == f and H*cfg == g
 
     R, x, y, z, u, v, a, b = ring('x,y,z,u,v,a,b', ZZ)
 
-    f, g, h = map(R.from_dense, dmp_fateman_poly_F_1(6, ZZ))
+    f, g, h = R.fateman_poly_F_1()
     H, cff, cfg = f.cofactors(g)
 
     assert H == h and H*cff == f and H*cfg == g
 
     R, x, y, z, u, v, a, b, c, d = ring('x,y,z,u,v,a,b,c,d', ZZ)
 
-    f, g, h = map(R.from_dense, dmp_fateman_poly_F_1(8, ZZ))
+    f, g, h = R.fateman_poly_F_1()
     H, cff, cfg = f.cofactors(g)
 
     assert H == h and H*cff == f and H*cfg == g
@@ -837,3 +845,18 @@ def test_PolyElement_cancel():
     g = t**2 + (x**2 + 2)/2
 
     assert f.cancel(g) == ((-x**2 - 4)*t, 4*t**2 + 2*x**2 + 4)
+
+
+def test_sympyissue_10996():
+    R, x, y, z = ring('x,y,z', ZZ)
+
+    f = 12*x**6*y**7*z**3 - 3*x**4*y**9*z**3 + 12*x**3*y**5*z**4
+    g = (-48*x**7*y**8*z**3 + 12*x**5*y**10*z**3 - 48*x**5*y**7*z**2 +
+         36*x**4*y**7*z - 48*x**4*y**6*z**4 + 12*x**3*y**9*z**2 -
+         48*x**3*y**4 - 9*x**2*y**9*z - 48*x**2*y**5*z**3 + 12*x*y**6 +
+         36*x*y**5*z**2 - 48*y**2*z)
+
+    H, cff, cfg = f.cofactors(g)
+
+    assert H == 12*x**3*y**4 - 3*x*y**6 + 12*y**2*z
+    assert H*cff == f and H*cfg == g
