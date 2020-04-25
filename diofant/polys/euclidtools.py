@@ -4,6 +4,7 @@ from ..core import cacheit
 from ..ntheory import nextprime
 from ..ntheory.modular import crt
 from .polyerrors import HomomorphismFailed
+from .polyutils import dmp_compat_wrapper
 
 
 def dup_gcdex(f, g, K):
@@ -14,18 +15,16 @@ def dup_gcdex(f, g, K):
 
 
 @cacheit
-def dmp_resultant(f, g, u, K):
+@dmp_compat_wrapper
+def dmp_resultant(ring, f, g):
     """Computes resultant of two polynomials in `K[X]`."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_dense, (f, g))
     res = f.resultant(g)
     return ring.drop(0).to_dense(res)
 
 
-def dmp_inner_gcd(f, g, u, K):
+@dmp_compat_wrapper
+def dmp_inner_gcd(ring, f, g):
     """Computes polynomial GCD and cofactors of `f` and `g` in `K[X]`."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_dense, (f, g))
     return tuple(map(ring.to_dense, f.cofactors(g)))
 
 
@@ -34,10 +33,9 @@ def dmp_gcd(f, g, u, K):
     return dmp_inner_gcd(f, g, u, K)[0]
 
 
-def dmp_primitive(f, u, K):
+@dmp_compat_wrapper
+def dmp_primitive(ring, f):
     """Returns multivariate content and a primitive polynomial."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_dense(f)
     new_ring, f = map(lambda _: _.eject(*ring.gens[1:]), (ring, f))
     c, f = f.primitive()
     f = f.inject()

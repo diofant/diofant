@@ -1,6 +1,8 @@
 """Useful utilities for higher level polynomial classes."""
 
 import collections
+import functools
+import inspect
 import re
 
 from ..core import Add, Mul, Pow, nan, oo, zoo
@@ -392,3 +394,25 @@ def _dict_reorder(rep, gens, new_gens):
                 new_M.append(0)
 
     return map(tuple, new_monoms), coeffs
+
+
+def dmp_compat_wrapper(f):
+    """Decorator to wrap sparse polynomial function as dmp_* function."""
+    def param(x):
+        kind = inspect.Parameter.POSITIONAL_OR_KEYWORD
+        return inspect.Parameter(x, kind)
+
+    params = [param(a) for a in inspect.signature(f).parameters.keys()]
+    params += [param('u'), param('K')]
+    del params[0]
+
+    @functools.wraps(f)
+    def wrapper(*args):
+        *polys, u, K = args
+        ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+        polys = tuple(map(ring.from_dense, polys))
+        return f(ring, *polys)
+
+    wrapper.__signature__ = inspect.Signature(params)
+
+    return wrapper
