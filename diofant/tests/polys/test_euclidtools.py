@@ -2,10 +2,8 @@
 
 import pytest
 
-from diofant import (CC, FF, QQ, RR, ZZ, HeuristicGCDFailed,
-                     MultivariatePolynomialError, NotInvertible, field, ring,
-                     sqrt)
-from diofant.polys.heuristicgcd import heugcd
+from diofant import (CC, FF, QQ, RR, ZZ, MultivariatePolynomialError,
+                     NotInvertible, field, ring, sqrt)
 from diofant.polys.polyconfig import using
 from diofant.polys.specialpolys import (dmp_fateman_poly_F_1,
                                         dmp_fateman_poly_F_2,
@@ -438,11 +436,12 @@ def test_dmp_gcd():
             f = 1317378933230047068160*x + 2945748836994210856960
             g = 120352542776360960*x + 269116466014453760
 
-            assert f.cofactors(g) == (120352542776360960*x + 269116466014453760,
-                                      10946, 1)
+            H, cff, cfg = 120352542776360960*x + 269116466014453760, 10946, 1
+
+            assert f.cofactors(g) == (H, cff, cfg)
 
             with using(heu_gcd_max=0):
-                pytest.raises(HeuristicGCDFailed, lambda: heugcd(f, g))
+                assert f.cofactors(g) == (H, cff, cfg)
 
     f, g = x**2 - 1, x**2 - 3*x + 2
 
@@ -528,7 +527,7 @@ def test_dmp_gcd():
             assert g.cofactors(f) == (g, 1, 2*x + 2)
 
             with using(heu_gcd_max=0):
-                pytest.raises(HeuristicGCDFailed, lambda: heugcd(f, g))
+                assert f.cofactors(g) == (g, 2*x + 2, 1)
 
             f, g = x**2 + 2*x*y + y**2, x**2 + x*y
 

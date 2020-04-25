@@ -1,7 +1,4 @@
-import pytest
-
-from diofant import ZZ, HeuristicGCDFailed, ring
-from diofant.polys.heuristicgcd import heugcd
+from diofant import ZZ, ring
 from diofant.polys.polyconfig import using
 
 
@@ -11,135 +8,145 @@ __all__ = ()
 def test_heugcd_univariate_integers():
     R, x = ring('x', ZZ)
 
-    f = x**4 + 8*x**3 + 21*x**2 + 22*x + 8
-    g = x**3 + 6*x**2 + 11*x + 6
+    with using(use_heu_gcd=True, heu_gcd_max=6):
+        f = x**4 + 8*x**3 + 21*x**2 + 22*x + 8
+        g = x**3 + 6*x**2 + 11*x + 6
 
-    h = x**2 + 3*x + 2
+        h = x**2 + 3*x + 2
 
-    cff = x**2 + 5*x + 4
-    cfg = x + 3
+        cff = x**2 + 5*x + 4
+        cfg = x + 3
 
-    assert heugcd(f, g) == (h, cff, cfg)
+        assert f.cofactors(g) == (h, cff, cfg)
 
-    f = x**4 - 4
-    g = x**4 + 4*x**2 + 4
+        f = x**4 - 4
+        g = x**4 + 4*x**2 + 4
 
-    h = x**2 + 2
+        h = x**2 + 2
 
-    cff = x**2 - 2
-    cfg = x**2 + 2
+        cff = x**2 - 2
+        cfg = x**2 + 2
 
-    assert heugcd(f, g) == (h, cff, cfg)
+        assert f.cofactors(g) == (h, cff, cfg)
 
-    f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
-    g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
+        f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
+        g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
 
-    h = 1
+        h = 1
 
-    cff = f
-    cfg = g
+        cff = f
+        cfg = g
 
-    assert heugcd(f, g) == (h, cff, cfg)
+        assert f.cofactors(g) == (h, cff, cfg)
 
-    f = - 352518131239247345597970242177235495263669787845475025293906825864749649589178600387510272*x**49 \
-        + 46818041807522713962450042363465092040687472354933295397472942006618953623327997952*x**42 \
-        + 378182690892293941192071663536490788434899030680411695933646320291525827756032*x**35 \
-        + 112806468807371824947796775491032386836656074179286744191026149539708928*x**28 \
-        - 12278371209708240950316872681744825481125965781519138077173235712*x**21 \
-        + 289127344604779611146960547954288113529690984687482920704*x**14 \
-        + 19007977035740498977629742919480623972236450681*x**7 \
-        + 311973482284542371301330321821976049
+        f = - 352518131239247345597970242177235495263669787845475025293906825864749649589178600387510272*x**49 \
+            + 46818041807522713962450042363465092040687472354933295397472942006618953623327997952*x**42 \
+            + 378182690892293941192071663536490788434899030680411695933646320291525827756032*x**35 \
+            + 112806468807371824947796775491032386836656074179286744191026149539708928*x**28 \
+            - 12278371209708240950316872681744825481125965781519138077173235712*x**21 \
+            + 289127344604779611146960547954288113529690984687482920704*x**14 \
+            + 19007977035740498977629742919480623972236450681*x**7 \
+            + 311973482284542371301330321821976049
 
-    h = 365431878023781158602430064717380211405897160759702125019136*x**21 \
-        + 197599133478719444145775798221171663643171734081650688*x**14 \
-        - 9504116979659010018253915765478924103928886144*x**7 \
-        - 311973482284542371301330321821976049
-    cff = -964661685087874498642420170752*x**28 + 649736296036977287118848*x**21 \
-        + 658473216967637120*x**14 - 30463679113*x**7 - 1
-    cfg = -47268422569305850433478588366848*x**27 + 30940259392972115602096128*x**20 \
-        + 18261628279718027904*x**13 - 426497272383*x**6
+        h = 365431878023781158602430064717380211405897160759702125019136*x**21 \
+            + 197599133478719444145775798221171663643171734081650688*x**14 \
+            - 9504116979659010018253915765478924103928886144*x**7 \
+            - 311973482284542371301330321821976049
+        cff = -964661685087874498642420170752*x**28 + 649736296036977287118848*x**21 \
+            + 658473216967637120*x**14 - 30463679113*x**7 - 1
+        cfg = -47268422569305850433478588366848*x**27 + 30940259392972115602096128*x**20 \
+            + 18261628279718027904*x**13 - 426497272383*x**6
 
-    assert heugcd(f, f.diff(x)) == (h, cff, cfg)
+        assert f.cofactors(f.diff(x)) == (h, cff, cfg)
 
-    f = 1317378933230047068160*x + 2945748836994210856960
-    g = 120352542776360960*x + 269116466014453760
+        f = 1317378933230047068160*x + 2945748836994210856960
+        g = 120352542776360960*x + 269116466014453760
 
-    h = 120352542776360960*x + 269116466014453760
-    cff = 10946
-    cfg = 1
+        h = 120352542776360960*x + 269116466014453760
+        cff = 10946
+        cfg = 1
 
-    assert heugcd(f, g) == (h, cff, cfg)
+        assert f.cofactors(g) == (h, cff, cfg)
 
-    with using(heu_gcd_max=0):
-        pytest.raises(HeuristicGCDFailed, lambda: heugcd(f, g))
+        with using(heu_gcd_max=0):
+            assert f.cofactors(g) == (h, cff, cfg)
 
 
 def test_heugcd_multivariate_integers():
     R, x, y = ring('x,y', ZZ)
 
-    f, g = 2*x**2 + 4*x + 2, x + 1
-    assert heugcd(f, g) == (x + 1, 2*x + 2, 1)
+    with using(use_heu_gcd=True, heu_gcd_max=6):
+        f, g = 2*x**2 + 4*x + 2, x + 1
 
-    f, g = x + 1, 2*x**2 + 4*x + 2
-    assert heugcd(f, g) == (x + 1, 1, 2*x + 2)
+        assert f.cofactors(g) == (x + 1, 2*x + 2, 1)
 
-    R, x, y, z, u = ring('x,y,z,u', ZZ)
+        f, g = x + 1, 2*x**2 + 4*x + 2
 
-    f, g = u**2 + 2*u + 1, 2*u + 2
-    assert heugcd(f, g) == (u + 1, u + 1, 2)
+        assert f.cofactors(g) == (x + 1, 1, 2*x + 2)
 
-    f, g = z**2*u**2 + 2*z**2*u + z**2 + z*u + z, u**2 + 2*u + 1
-    h, cff, cfg = u + 1, z**2*u + z**2 + z, u + 1
+        f, g = (x + y)**2, x*(x + y)
 
-    assert heugcd(f, g) == (h, cff, cfg)
-    assert heugcd(g, f) == (h, cfg, cff)
+        assert f.cofactors(g) == (x + y, x + y, x)
 
     R, x, y, z = ring('x,y,z', ZZ)
 
-    f, g, h = R.fateman_poly_F_1()
-    H, cff, cfg = heugcd(f, g)
+    with using(use_heu_gcd=True, heu_gcd_max=6):
+        f, g, h = R.fateman_poly_F_1()
+        H, cff, cfg = f.cofactors(g)
 
-    assert H == h and H*cff == f and H*cfg == g
+        assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z, u, v = ring('x,y,z,u,v', ZZ)
+        f, g, h = R.fateman_poly_F_2()
+        H, cff, cfg = f.cofactors(g)
 
-    f, g, h = R.fateman_poly_F_1()
-    H, cff, cfg = heugcd(f, g)
+        assert H == h and H*cff == f and H*cfg == g
 
-    assert H == h and H*cff == f and H*cfg == g
+        f, g, h = R.fateman_poly_F_3()
+        H, cff, cfg = f.cofactors(g)
 
-    R, x, y, z, u, v, a, b = ring('x,y,z,u,v,a,b', ZZ)
-
-    f, g, h = R.fateman_poly_F_1()
-    H, cff, cfg = heugcd(f, g)
-
-    assert H == h and H*cff == f and H*cfg == g
-
-    R, x, y, z, u, v, a, b, c, d = ring('x,y,z,u,v,a,b,c,d', ZZ)
-
-    f, g, h = R.fateman_poly_F_1()
-    H, cff, cfg = heugcd(f, g)
-
-    assert H == h and H*cff == f and H*cfg == g
-
-    R, x, y, z = ring('x,y,z', ZZ)
-
-    f, g, h = R.fateman_poly_F_2()
-    H, cff, cfg = heugcd(f, g)
-
-    assert H == h and H*cff == f and H*cfg == g
-
-    f, g, h = R.fateman_poly_F_3()
-    H, cff, cfg = heugcd(f, g)
-
-    assert H == h and H*cff == f and H*cfg == g
+        assert H == h and H*cff == f and H*cfg == g
 
     R, x, y, z, t = ring('x,y,z,t', ZZ)
 
-    f, g, h = R.fateman_poly_F_3()
-    H, cff, cfg = heugcd(f, g)
+    with using(use_heu_gcd=True, heu_gcd_max=6):
+        f, g = t**2 + 2*t + 1, 2*t + 2
 
-    assert H == h and H*cff == f and H*cfg == g
+        assert f.cofactors(g) == (t + 1, t + 1, 2)
+
+        f, g = z**2*t**2 + 2*z**2*t + z**2 + z*t + z, t**2 + 2*t + 1
+        h, cff, cfg = t + 1, z**2*t + z**2 + z, t + 1
+
+        assert f.cofactors(g) == (h, cff, cfg)
+        assert g.cofactors(f) == (h, cfg, cff)
+
+        f, g, h = R.fateman_poly_F_3()
+        H, cff, cfg = f.cofactors(g)
+
+        assert H == h and H*cff == f and H*cfg == g
+
+    R, x, y, z, u, v = ring('x,y,z,u,v', ZZ)
+
+    with using(use_heu_gcd=True, heu_gcd_max=6):
+        f, g, h = R.fateman_poly_F_1()
+        H, cff, cfg = f.cofactors(g)
+
+        assert H == h and H*cff == f and H*cfg == g
+
+    R, x, y, z, u, v, a, b = ring('x,y,z,u,v,a,b', ZZ)
+
+    with using(use_heu_gcd=True, heu_gcd_max=6):
+        f, g, h = R.fateman_poly_F_1()
+        H, cff, cfg = f.cofactors(g)
+
+        assert H == h and H*cff == f and H*cfg == g
+
+    R, x, y, z, u, v, a, b, c, d = ring('x,y,z,u,v,a,b,c,d', ZZ)
+
+    with using(use_heu_gcd=True, heu_gcd_max=6):
+        f, g, h = R.fateman_poly_F_1()
+        H, cff, cfg = f.cofactors(g)
+
+        assert H == h and H*cff == f and H*cfg == g
 
 
 def test_sympyissue_10996():
@@ -151,7 +158,8 @@ def test_sympyissue_10996():
          48*x**3*y**4 - 9*x**2*y**9*z - 48*x**2*y**5*z**3 + 12*x*y**6 +
          36*x*y**5*z**2 - 48*y**2*z)
 
-    H, cff, cfg = heugcd(f, g)
+    with using(use_heu_gcd=True, heu_gcd_max=6):
+        H, cff, cfg = f.cofactors(g)
 
-    assert H == 12*x**3*y**4 - 3*x*y**6 + 12*y**2*z
-    assert H*cff == f and H*cfg == g
+        assert H == 12*x**3*y**4 - 3*x*y**6 + 12*y**2*z
+        assert H*cff == f and H*cfg == g

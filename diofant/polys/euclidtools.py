@@ -2,8 +2,9 @@
 
 from ..core import cacheit
 from ..ntheory import nextprime
-from ..ntheory.modular import crt
-from .polyerrors import HomomorphismFailed
+from ..ntheory.modular import crt, symmetric_residue
+from .polyconfig import query
+from .polyerrors import HeuristicGCDFailed, HomomorphismFailed
 
 
 def dup_gcdex(f, g, K):
@@ -46,6 +47,118 @@ def dmp_primitive(f, u, K):
 
 class _GCD:
     """Mixin class for computing gcd."""
+
+    def _zz_heu_gcd(self, f, g):
+        """
+        Heuristic polynomial GCD in ``Z[X]``.
+
+        Given univariate polynomials ``f`` and ``g`` in ``Z[X]``, returns
+        their GCD and cofactors, i.e. polynomials ``h``, ``cff`` and ``cfg``
+        such that::
+
+              h = gcd(f, g), cff = quo(f, h) and cfg = quo(g, h)
+
+        The algorithm is purely heuristic which means it may fail to compute
+        the GCD. This will be signaled by raising an exception. In this case
+        you will need to switch to another GCD method.
+
+        The algorithm computes the polynomial GCD by evaluating polynomials
+        ``f`` and ``g`` at certain points and computing (fast) integer GCD
+        of those evaluations. The polynomial GCD is recovered from the integer
+        image by interpolation. The evaluation proces reduces f and g variable
+        by variable into a large integer. The final step is to verify if the
+        interpolated polynomial is the correct GCD. This gives cofactors of
+        the input polynomials as a side effect.
+
+        References
+        ==========
+
+        * :cite:`Liao1995heuristic`
+
+        """
+        assert self == f.ring == g.ring and self.domain.is_IntegerRing
+
+        ring = self
+        x0 = ring.gens[0]
+        domain = ring.domain
+
+        gcd, f, g = f.extract_ground(g)
+
+        f_norm = f.max_norm()
+        g_norm = g.max_norm()
+
+        B = domain(2*min(f_norm, g_norm) + 29)
+
+        x = max(min(B, 99*domain.sqrt(B)),
+                2*min(f_norm // abs(f.LC),
+                      g_norm // abs(g.LC)) + 4)
+
+        cofactors = domain.cofactors if ring.is_univariate else ring.drop(0)._zz_heu_gcd
+
+        for i in range(query('HEU_GCD_MAX')):
+            ff = f.eval(x0, x)
+            gg = g.eval(x0, x)
+
+            if ff and gg:
+                h, cff, cfg = cofactors(ff, gg)
+                h = ring._gcd_interpolate(h, x)
+                h = h.primitive()[1]
+
+                cff_, r = divmod(f, h)
+
+                if not r:
+                    cfg_, r = divmod(g, h)
+
+                    if not r:
+                        h *= gcd
+                        return h, cff_, cfg_
+
+                cff = ring._gcd_interpolate(cff, x)
+
+                h, r = divmod(f, cff)
+
+                if not r:
+                    cfg_, r = divmod(g, h)
+
+                    if not r:
+                        h *= gcd
+                        return h, cff, cfg_
+
+                cfg = ring._gcd_interpolate(cfg, x)
+
+                h, r = divmod(g, cfg)
+
+                if not r:
+                    cff_, r = divmod(f, h)
+
+                    if not r:
+                        h *= gcd
+                        return h, cff_, cfg
+
+            x = 73794*x * domain.sqrt(domain.sqrt(x)) // 27011
+
+        raise HeuristicGCDFailed('no luck')
+
+    def _gcd_interpolate(self, h, x):
+        """Interpolate polynomial GCD from integer GCD."""
+        f, i = self.zero, 0
+        X = self.gens[0]
+
+        while h:
+            g = h % x
+
+            if self.is_univariate:
+                g = symmetric_residue(g, x)
+
+            h = (h - g) // x
+
+            f += X**i*g
+            i += 1
+
+        if not self.is_normal(f):
+            f = -f
+
+        return f
 
     def _rr_prs_gcd(self, f, g):
         """Computes polynomial GCD using subresultants over a ring."""
