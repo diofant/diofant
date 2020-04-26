@@ -23,7 +23,7 @@ def test_dmp_trial_division():
     assert R.dmp_trial_division(x**5 + 8*x**4 + 25*x**3 + 38*x**2 + 28*x +
                                 8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
 
-    R, x, y = ring('x,y', ZZ)
+    R, x, y = ring('x y', ZZ)
 
     assert R.dmp_trial_division(x**5 + 8*x**4 + 25*x**3 + 38*x**2 + 28*x +
                                 8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
@@ -34,7 +34,7 @@ def test_dmp_zz_mignotte_bound():
 
     assert R.dmp_zz_mignotte_bound(2*x**2 + 3*x + 4) == 32
 
-    R, x, y = ring('x,y', ZZ)
+    R, x, y = ring('x y', ZZ)
 
     assert R.dmp_zz_mignotte_bound(2*x**2 + 3*x + 4) == 32
 
@@ -266,7 +266,7 @@ def test_dup_zz_factor():
 
 
 def test_dmp_zz_wang():
-    R,  x, y, z = ring('x,y,z', ZZ)
+    R, x, y, z = ring('x y z', ZZ)
     UV, _x = ring('x', ZZ)
 
     p = ZZ(nextprime(R.dmp_zz_mignotte_bound(w_1)))
@@ -310,7 +310,7 @@ def test_dmp_zz_wang():
 
 
 def test_dmp_zz_diophantine():
-    R, x, y = ring('x,y', ZZ)
+    R, x, y = ring('x y', ZZ)
 
     H_1 = [44*x**2 + 42*x + 1, 126*x**2 - 9*x + 28, 187*x**2 - 23]
     H_2 = [-4*x**2*y - 12*x**2 - 3*x*y + 1, -9*x**2*y - 9*x - 2*y,
@@ -331,7 +331,7 @@ def test_dmp_zz_diophantine():
     assert R.dmp_zz_diophantine(H_2, c_2, [ZZ(-14)], 5, p) == [-x*y, -3*x, -6]
     assert R.dmp_zz_diophantine(H_3, c_3, [ZZ(-14)], 5, p) == [0, 0, -1]
 
-    R, x, y, z = ring('x,y,z', ZZ)
+    R, x, y, z = ring('x y z', ZZ)
 
     F = [47*x*y + 9*z**3 - 9, 45*x**3 - 9*y**3 - y**2 + 3*z**3 - 6*z]
     c = (-270*x**3*z**3 + 270*x**3 + 94*x*y*z + 54*y**3*z**3 - 54*y**3 +
@@ -348,7 +348,7 @@ def test_sympyissue_6355():
     random_sequence = [-1, -1, 0, 0, 0, 0, -1, -1, 0, -1, 3, -1, 3, 3, 3,
                        3, -1, 3]
 
-    R, x, y, z = ring('x,y,z', ZZ)
+    R, x, y, z = ring('x y z', ZZ)
 
     f = 2*x**2 + y*z - y - z**2 + z
 
@@ -364,7 +364,7 @@ def test_dmp_zz_factor():
 
     assert (x**2 - 9).factor_list() == (1, [(x - 3, 1), (x + 3, 1)])
 
-    R, x, y = ring('x,y', ZZ)
+    R, x, y = ring('x y', ZZ)
 
     assert R(0).factor_list() == (0, [])
     assert R(7).factor_list() == (7, [])
@@ -388,7 +388,7 @@ def test_dmp_zz_factor():
     assert f.factor_list() == (-12, [(y, 1), (x**2 - y, 6),
                                      (x**4 + 6*x**2*y + y**2, 1)])
 
-    R, x, y, z = ring('x,y,z', ZZ)
+    R, x, y, z = ring('x y z', ZZ)
 
     assert (x**2*y**2*z**2 - 9).factor_list() == (1, [(x*y*z - 3, 1),
                                                       (x*y*z + 3, 1)])
@@ -413,7 +413,7 @@ def test_dmp_zz_factor():
                                      (x**2*y*z**2 + 3*x*z + 2*y, 1),
                                      (x**2*y**2 - x**2*z**2 + y - z**2, 1)])
 
-    R, x, y, z, t = ring('x,y,z,t', ZZ)
+    R, x, y, z, t = ring('x y z t', ZZ)
 
     assert (x**2*y**2*z**2*t**2 - 9).factor_list() == (1, [(x*y*z*t - 3, 1),
                                                            (x*y*z*t + 3, 1)])
@@ -451,7 +451,7 @@ def test_dmp_ext_factor():
     assert f.factor_list() == (2, [(x + sqrt(2), 2)])
     assert (f**3).factor_list() == (8, [(x + sqrt(2), 6)])
 
-    R, x, y = ring('x,y', QQ.algebraic_field(sqrt(2)))
+    R, x, y = ring('x y', QQ.algebraic_field(sqrt(2)))
 
     assert R(0).factor_list() == (0, [])
     assert (x + 1).factor_list() == (1, [(x + 1, 1)])
@@ -467,7 +467,7 @@ def test_dmp_ext_factor():
 
 
 def test_sympyissue_5786():
-    R, x, y, z, t = ring('x,y,z,t', QQ.algebraic_field(I))
+    R, x, y, z, t = ring('x y z t', QQ.algebraic_field(I))
 
     f, g = z - I*t, x - I*y
 
@@ -542,7 +542,7 @@ def test_dmp_factor_list():
 
     pytest.raises(DomainError, lambda: R(EX(sin(1))).factor_list())
 
-    R, x, y = ring('x,y', ZZ)
+    R, x, y = ring('x y', ZZ)
 
     assert R(0).factor_list() == (0, [])
     assert R(7).factor_list() == (7, [])
@@ -551,7 +551,7 @@ def test_dmp_factor_list():
     assert (4*x**2*y + 4*x*y**2).factor_list() == (4, [(y, 1), (x, 1),
                                                        (x + y, 1)])
 
-    R, x, y = ring('x,y', QQ)
+    R, x, y = ring('x y', QQ)
 
     assert R(0).factor_list() == (0, [])
     assert R(QQ(1, 7)).factor_list() == (QQ(1, 7), [])
@@ -561,7 +561,7 @@ def test_dmp_factor_list():
                                                               (x + y, 1)])
 
     Rt, t = ring('t', ZZ)
-    R, x, y = ring('x,y', Rt)
+    R, x, y = ring('x y', Rt)
 
     assert R(0).factor_list() == (0, [])
     assert R(7).factor_list() == (7, [])
@@ -569,7 +569,7 @@ def test_dmp_factor_list():
     assert (4*t*x**2 + 4*t**2*x).factor_list() == (4*t, [(x, 1), (x + t, 1)])
 
     Rt, t = ring('t', QQ)
-    R, x, y = ring('x,y', Rt)
+    R, x, y = ring('x y', Rt)
 
     assert R(0).factor_list() == (0, [])
     assert R(QQ(1, 7)).factor_list() == (QQ(1, 7), [])
@@ -586,7 +586,7 @@ def test_dmp_factor_list():
 
     assert f.factor_list() == (1, [(g, 2)])
 
-    R, x, y = ring('x,y', RR)
+    R, x, y = ring('x y', RR)
 
     f = 2.0*x**2 - 8.0*y**2
 
@@ -597,7 +597,7 @@ def test_dmp_factor_list():
     assert f.factor_list() == (1.0, [(f, 1)])
 
     # issue diofant/diofant#238
-    R, x, y, z = ring('x,y,z', RR)
+    R, x, y, z = ring('x y z', RR)
 
     f = x*y + x*z + 0.1*y + 0.1*z
 
@@ -607,15 +607,15 @@ def test_dmp_factor_list():
 
     assert f.factor_list() == (4.0, [(0.25*x + 0.5*y*z, 2)])
 
-    R, x, y = ring('x,y', FF(2))
+    R, x, y = ring('x y', FF(2))
 
     pytest.raises(NotImplementedError, lambda: (x**2 + y**2).factor_list())
 
-    R, x, y = ring('x,y', EX)
+    R, x, y = ring('x y', EX)
 
     pytest.raises(DomainError, lambda: R(EX(sin(1))).factor_list())
 
-    R, x, y = ring('x,y', QQ.algebraic_field(I))
+    R, x, y = ring('x y', QQ.algebraic_field(I))
 
     f, r = x**2 + y**2, (1, [(x - I*y, 1), (x + I*y, 1)])
 
@@ -854,7 +854,7 @@ def test_PolyElement_is_irreducible():
     assert (x**2 + 2*x + 1).is_irreducible is False
     assert (x**2 - 1).is_irreducible is False
 
-    R, x, y = ring('x,y', ZZ)
+    R, x, y = ring('x y', ZZ)
 
     assert R(2).is_irreducible is True
     assert (x**2 + x + 1).is_irreducible is True
@@ -862,7 +862,7 @@ def test_PolyElement_is_irreducible():
     assert ((x - 2*y)*(x + y)).is_irreducible is False
     assert (x**2 + y**2).is_irreducible is True
 
-    R, x, y, z = ring('x,y,z', QQ)
+    R, x, y, z = ring('x y z', QQ)
 
     assert (x**2 + x + 1).is_irreducible
     assert (x**2 + 2*x + 1).is_irreducible is False

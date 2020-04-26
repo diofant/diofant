@@ -56,7 +56,7 @@ def test_dup_gcdex():
 
     assert (x**2 + 8*x + 7).gcdex(x**3 + 7*x**2 + x + 7) == (5*x + 6, 6, x + 7)
 
-    _, x, y = ring('x,y', QQ)
+    _, x, y = ring('x y', QQ)
 
     pytest.raises(MultivariatePolynomialError, lambda: (x + y).half_gcdex(x*y))
     pytest.raises(MultivariatePolynomialError, lambda: (x + y).gcdex(x*y))
@@ -99,7 +99,7 @@ def test_dmp_prem():
     assert g.prem(f) == g
     assert f.prem(g) == r
 
-    R, x, y = ring('x,y', ZZ)
+    R, x, y = ring('x y', ZZ)
 
     f = x**2 - y**2
     g = x - y
@@ -205,7 +205,7 @@ def test_PolyElement_subresultants():
 
             assert f.resultant(g) == -1
 
-    R, x, y = ring('x,y', ZZ)
+    R, x, y = ring('x y', ZZ)
 
     for check in (True, False):
         with using(use_collins_resultant=check):
@@ -260,7 +260,7 @@ def test_PolyElement_subresultants():
 
             assert f.resultant(g) == (2 + 2*y**2).drop(x)
 
-    R, x, y = ring('x,y', QQ)
+    R, x, y = ring('x y', QQ)
 
     for check in (True, False):
         with using(use_collins_resultant=check):
@@ -288,7 +288,7 @@ def test_PolyElement_subresultants():
 
             assert f.resultant(g) == (675*y**3 + 675*y**2 + 225*y + 25).drop(x)
 
-    R, x, y, z, u, v = ring('x,y,z,u,v', ZZ)
+    R, x, y, z, u, v = ring('x y z u v', ZZ)
 
     for check in (True, False):
         with using(use_collins_resultant=check):
@@ -302,7 +302,7 @@ def test_PolyElement_subresultants():
 
             assert f.resultant(g) == r.drop(x)
 
-    R, x, y, z, u, v = ring('x,y,z,u,v', QQ)
+    R, x, y, z, u, v = ring('x y z u v', QQ)
 
     for check in (True, False):
         with using(use_collins_resultant=check):
@@ -339,7 +339,7 @@ def test_PolyElement_discriminant():
 
     assert (x**2 + 2*x + 3).discriminant() == -8
 
-    R, x, y = ring('x,y', ZZ)
+    R, x, y = ring('x y', ZZ)
 
     assert R(0).discriminant() == 0
     assert y.discriminant() == 0
@@ -352,20 +352,20 @@ def test_PolyElement_discriminant():
     assert (x**2*y + 2*y).discriminant() == (-8*y**2).drop(x)
     assert (x*y**2 + 2*x).discriminant() == 1
 
-    R, x, y, z = ring('x,y,z', ZZ)
+    R, x, y, z = ring('x y z', ZZ)
 
     assert (x*y + z).discriminant() == 1
 
-    R, x, y, z, u = ring('x,y,z,u', ZZ)
+    R, x, y, z, u = ring('x y z u', ZZ)
 
     assert (x**2*y + x*z + u).discriminant() == (-4*y*u + z**2).drop(x)
 
-    R, x, y, z, u, v = ring('x,y,z,u,v', ZZ)
+    R, x, y, z, u, v = ring('x y z u v', ZZ)
 
     assert (x**3*y + x**2*z + x*u + v).discriminant() == \
         (-27*y**2*v**2 + 18*y*z*u*v - 4*y*u**3 - 4*z**3*v + z**2*u**2).drop(x)
 
-    F, a, b, c = ring('a,b,c', ZZ)
+    F, a, b, c = ring('a b c', ZZ)
     _, x = ring('x', F)
 
     f, g = a*x**2 + b*x + c, b**2 - 4*a*c
@@ -499,13 +499,13 @@ def test_dmp_gcd():
 
     assert f.cofactors(g) == (1, f, g)
 
-    R, x, y = ring('x,y', CC)
+    R, x, y = ring('x y', CC)
 
     f, g = x**2 - y, x**3 - y*x + 2
 
     assert f.cofactors(g) == (1, f, g)
 
-    R, x, y = ring('x,y', ZZ)
+    R, x, y = ring('x y', ZZ)
 
     for test in (True, False):
         with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
@@ -556,7 +556,7 @@ def test_dmp_gcd():
 
             assert f.cofactors(g) == (g, h, 1)
 
-    R, x, y = ring('x,y', QQ)
+    R, x, y = ring('x y', QQ)
 
     for test in (True, False):
         with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
@@ -580,7 +580,7 @@ def test_dmp_gcd():
 
             assert f.cofactors(g) == (x + y, x/2 + y/2, x)
 
-    R, x, y = ring('x,y', RR)
+    R, x, y = ring('x y', RR)
 
     for test in (True, False):
         with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
@@ -594,7 +594,7 @@ def test_dmp_gcd():
             assert f.cofactors(g) == (h, f//h, g//h)
             assert g.cofactors(f) == (h, g//h, f//h)
 
-    R, x, y = ring('x,y', QQ.algebraic_field(sqrt(2)))
+    R, x, y = ring('x y', QQ.algebraic_field(sqrt(2)))
 
     f, g = (x + sqrt(2)*y)**2, x + sqrt(2)*y
 
@@ -602,7 +602,7 @@ def test_dmp_gcd():
     with using(gcd_aa_method='modgcd'):
         assert f.gcd(g) == g
 
-    R, x, y, z = ring('x,y,z', ZZ)
+    R, x, y, z = ring('x y z', ZZ)
 
     for test in (True, False):
         with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
@@ -621,7 +621,7 @@ def test_dmp_gcd():
 
             assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z, u = ring('x,y,z,u', ZZ)
+    R, x, y, z, u = ring('x y z u', ZZ)
 
     for test in (True, False):
         with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
@@ -640,7 +640,7 @@ def test_dmp_gcd():
 
             assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z, u, v = ring('x,y,z,u,v', ZZ)
+    R, x, y, z, u, v = ring('x y z u v', ZZ)
 
     f, g, h = R.fateman_poly_F_1()
     H, cff, cfg = f.cofactors(g)
@@ -652,14 +652,14 @@ def test_dmp_gcd():
 
     assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z, u, v, a, b = ring('x,y,z,u,v,a,b', ZZ)
+    R, x, y, z, u, v, a, b = ring('x y z u v a b', ZZ)
 
     f, g, h = R.fateman_poly_F_1()
     H, cff, cfg = f.cofactors(g)
 
     assert H == h and H*cff == f and H*cfg == g
 
-    R, x, y, z, u, v, a, b, c, d = ring('x,y,z,u,v,a,b,c,d', ZZ)
+    R, x, y, z, u, v, a, b, c, d = ring('x y z u v a b c d', ZZ)
 
     f, g, h = R.fateman_poly_F_1()
     H, cff, cfg = f.cofactors(g)
@@ -687,7 +687,7 @@ def test_PolyElement_lcm():
     assert (2*x**2 + x).lcm(2*x) == 4*x**2 + 2*x
     assert (x**2 - 1).lcm(x**2 - 3*x + 2) == x**3 - 2*x**2 - x + 2
 
-    R, x, y = ring('x,y', ZZ)
+    R, x, y = ring('x y', ZZ)
 
     assert R(2).lcm(R(6)) == 6
     assert x.lcm(y) == x*y
@@ -723,7 +723,7 @@ def test_PolyElement_lcm():
 
     assert f.lcm(g) == h
 
-    R, x, y = ring('x,y', QQ)
+    R, x, y = ring('x y', QQ)
 
     f = 2*x*y - x**2/2 + QQ(1, 3)
     g = 3*x**3 - x*y**2 - QQ(1, 2)
@@ -794,7 +794,7 @@ def test_PolyElement_cancel():
 
     assert (x**2/4 - 1).cancel(x/2 - 1) == (x + 2, 2)
 
-    R, x, y = ring('x,y', ZZ)
+    R, x, y = ring('x y', ZZ)
 
     f = 2*x**2 - 2
     g = x**2 - 2*x + 1
@@ -826,7 +826,7 @@ def test_PolyElement_cancel():
     assert (-f).cancel(g) == (-F, G)
     assert f.cancel(-g) == (-F, G)
 
-    R, x, y = ring('x,y', QQ)
+    R, x, y = ring('x y', QQ)
 
     f = x**3/2 + x**2 + x/2
     g = x**2/3 + x/3
@@ -848,7 +848,7 @@ def test_PolyElement_cancel():
 
 
 def test_sympyissue_10996():
-    R, x, y, z = ring('x,y,z', ZZ)
+    R, x, y, z = ring('x y z', ZZ)
 
     f = 12*x**6*y**7*z**3 - 3*x**4*y**9*z**3 + 12*x**3*y**5*z**4
     g = (-48*x**7*y**8*z**3 + 12*x**5*y**10*z**3 - 48*x**5*y**7*z**2 +
