@@ -142,10 +142,4 @@ def dispersion(p, q=None, *gens, **args):
     * :cite:`Man1993indefsum`
 
     """
-    J = dispersionset(p, q, *gens, **args)
-    if not J:
-        # Definition for maximum of empty set
-        j = -oo
-    else:
-        j = max(J)
-    return j
+    return max(dispersionset(p, q, *gens, **args), default=-oo)

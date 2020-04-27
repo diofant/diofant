@@ -1,15 +1,16 @@
 """Polynomial factorization routines in characteristic zero."""
 
+import functools
 import math
 
 from ..ntheory import factorint, isprime, nextprime
 from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
-from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
-                         dmp_l1_norm, dmp_max_norm, dmp_mul, dmp_mul_ground,
-                         dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_rem,
-                         dmp_sub, dmp_sub_mul, dup_add, dup_lshift, dup_mul,
-                         dup_sqr, dup_sub)
+from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_l1_norm,
+                         dmp_max_norm, dmp_mul, dmp_mul_ground, dmp_neg,
+                         dmp_pow, dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
+                         dmp_sub_mul, dup_add, dup_lshift, dup_mul, dup_sqr,
+                         dup_sub)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
                          dmp_eject, dmp_exclude, dmp_ground_LC, dmp_ground_p,
                          dmp_include, dmp_inject, dmp_LC, dmp_nest, dmp_normal,
@@ -18,7 +19,7 @@ from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
-                         dmp_ground_trunc, dup_mirror)
+                         dmp_ground_trunc)
 from .euclidtools import dmp_inner_gcd, dmp_primitive, dup_gcdex
 from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
@@ -187,7 +188,7 @@ def dup_zz_zassenhaus(f, K):
     fc = f[-1]
     A = dmp_max_norm(f, 0, K)
     b = dmp_LC(f, K)
-    B = int(abs(K.sqrt(K(n + 1))*2**n*A*b))
+    B = int(dmp_zz_mignotte_bound(f, 0, K))
     C = int((n + 1)**(2*n)*A**(2*n - 1))
     gamma = math.ceil(2*math.log(C, 2))
     bound = int(2*gamma*math.log(gamma))
@@ -355,7 +356,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     if F == f:
         return True
 
-    g = dup_mirror(f, K)
+    g = dmp_compose(f, [-K.one, 0], 0, K)
 
     if dmp_LC(g, K) < 0:
         g = dmp_neg(g, 0, K)
@@ -688,7 +689,7 @@ def dmp_zz_diophantine(F, c, A, d, p, u, K):
                 S[j] = dmp_ground_trunc(dup_add(s, t, K), p, 0, K)
     else:
         n = len(A)
-        e = dmp_expand(F, u, K)
+        e = functools.reduce(lambda x, y: dmp_mul(x, y, u, K), F)
 
         a, A = A[-1], A[:-1]
         B, G = [], []
@@ -764,7 +765,8 @@ def dmp_zz_wang_hensel_lifting(f, H, LC, A, p, u, K):
         m = dmp_nest([K.one, -a], w, K)
         M = dmp_one(w, K)
 
-        c = dmp_sub(s, dmp_expand(H, w, K), w, K)
+        c = functools.reduce(lambda x, y: dmp_mul(x, y, w, K), H)
+        c = dmp_sub(s, c, w, K)
 
         dj = dmp_degree_in(s, w, w)
 
@@ -784,10 +786,11 @@ def dmp_zz_wang_hensel_lifting(f, H, LC, A, p, u, K):
                     h = dmp_add_mul(h, dmp_raise(t, 1, w - 1, K), M, w, K)
                     H[i] = dmp_ground_trunc(h, p, w, K)
 
-                h = dmp_sub(s, dmp_expand(H, w, K), w, K)
+                h = functools.reduce(lambda x, y: dmp_mul(x, y, w, K), H)
+                h = dmp_sub(s, h, w, K)
                 c = dmp_ground_trunc(h, p, w, K)
 
-    if dmp_expand(H, u, K) != f:
+    if functools.reduce(lambda x, y: dmp_mul(x, y, u, K), H) != f:
         raise ExtraneousFactors  # pragma: no cover
     else:
         return H
@@ -1059,8 +1062,7 @@ def dmp_factor_list(f, u, K0):
         if K0.is_Field:
             K = K0.ring
 
-            denom, f = dmp_clear_denoms(f, u, K0, K)
-            f = dmp_convert(f, u, K0, K)
+            denom, f = dmp_clear_denoms(f, u, K0, convert=True)
         else:
             K = K0
 

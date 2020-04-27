@@ -171,7 +171,7 @@ def test_dmp_sqf():
     assert (x**2 - 2).sqf_norm() == (1, x**2 - 2*sqrt(3)*x + 1,
                                      (x**4 - 10*x**2 + 1).set_domain(QQ))
 
-    R, x, y = ring('x,y', ZZ)
+    R, x, y = ring('x y', ZZ)
 
     assert R(0).sqf_part() == 0
     assert R(0).is_squarefree is True
@@ -211,12 +211,12 @@ def test_dmp_sqf():
 
     pytest.raises(DomainError, lambda: (x**2 + y**2).sqf_norm())
 
-    R, x, y = ring('x,y', FF(2))
+    R, x, y = ring('x y', FF(2))
 
     pytest.raises(NotImplementedError, lambda: (y**2 + 1).sqf_list())
     pytest.raises(NotImplementedError, lambda: (x**3 + 2*x**2*y + x*y**2).sqf_part())
 
-    R, x, y = ring('x,y', QQ.algebraic_field(I))
+    R, x, y = ring('x y', QQ.algebraic_field(I))
 
     assert (x**2 + 2*I*x - 1).sqf_list() == (1, [(x + I, 2)])
 
@@ -224,7 +224,7 @@ def test_dmp_sqf():
                                        (x**2*y**2 + x**2 + 2*x*y**3 + 2*x*y +
                                         y**4 + 5*y**2 + 4).set_domain(QQ))
 
-    R, x, y, z = ring('x,y,z', ZZ)
+    R, x, y, z = ring('x y z', ZZ)
 
     assert f_0.is_squarefree is True
     assert (f_0**2).is_squarefree is False
@@ -241,7 +241,7 @@ def test_dmp_sqf():
     assert f_4.sqf_part() == -f_4
     assert f_5.sqf_part() == x + y - z
 
-    R, x, y, z = ring('x,y,z', QQ)
+    R, x, y, z = ring('x y z', QQ)
 
     assert R(0).is_squarefree
     assert (x - 1).is_squarefree
@@ -249,14 +249,14 @@ def test_dmp_sqf():
     assert (x**2 + y**2).is_squarefree
     assert ((x + y)**2).is_squarefree is False
 
-    R, x, y, z, t = ring('x,y,z,t', ZZ)
+    R, x, y, z, t = ring('x y z t', ZZ)
 
     assert f_6.is_squarefree is True
     assert f_6.sqf_part() == f_6
 
 
 def test_diofantissue_714():
-    R, x, y, z = ring('x,y,z', ZZ)
+    R, x, y, z = ring('x y z', ZZ)
 
     f = (x - y)*(z - 1)**2
 

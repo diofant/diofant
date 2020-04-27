@@ -357,8 +357,7 @@ Modular GCD
 Heuristic GCD
 =============
 
-.. automodule:: diofant.polys.heuristicgcd
-    :members:
+.. automethod:: diofant.polys.euclidtools._GCD._zz_heu_gcd
 
 Undocumented
 ============

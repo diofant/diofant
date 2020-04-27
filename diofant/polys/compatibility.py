@@ -1,16 +1,14 @@
 """Compatibility interface between dense and sparse polys."""
 
-from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term, dmp_div,
-                         dmp_expand, dmp_exquo_ground, dmp_l1_norm,
-                         dmp_max_norm, dmp_mul, dmp_mul_ground, dmp_mul_term,
-                         dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_rem,
-                         dmp_sqr, dmp_sub, dmp_sub_mul, dup_lshift, dup_rshift)
+from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term,
+                         dmp_exquo_ground, dmp_l1_norm, dmp_max_norm, dmp_mul,
+                         dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
+                         dmp_quo_ground, dmp_sqr, dmp_sub, dmp_sub_mul,
+                         dup_lshift, dup_rshift)
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
                          dmp_ground_TC, dmp_LC, dmp_TC, dmp_to_dict)
-from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
-                         dmp_eval_in, dmp_eval_tail, dmp_ground_monic,
-                         dmp_ground_trunc, dup_decompose, dup_mirror,
-                         dup_real_imag, dup_scale, dup_shift, dup_transform)
+from .densetools import (dmp_compose, dmp_eval_tail, dup_decompose,
+                         dup_real_imag, dup_transform)
 from .factortools import (dmp_factor_list, dmp_trial_division,
                           dmp_zz_diophantine, dmp_zz_mignotte_bound,
                           dmp_zz_wang, dmp_zz_wang_hensel_lifting,
@@ -113,24 +111,11 @@ class IPolys:
     def dmp_pow(self, f, n):
         return self.from_dense(dmp_pow(self.to_dense(f), n, self.ngens-1, self.domain))
 
-    def dmp_div(self, f, g):
-        q, r = dmp_div(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(q), self.from_dense(r)
-
-    def dmp_rem(self, f, g):
-        return self.from_dense(dmp_rem(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain))
-
-    def dmp_quo(self, f, g):
-        return self.from_dense(dmp_quo(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain))
-
     def dmp_max_norm(self, f):
         return dmp_max_norm(self.to_dense(f), self.ngens-1, self.domain)
 
     def dmp_l1_norm(self, f):
         return dmp_l1_norm(self.to_dense(f), self.ngens-1, self.domain)
-
-    def dmp_expand(self, polys):
-        return self.from_dense(dmp_expand(list(map(self.to_dense, polys)), self.ngens-1, self.domain))
 
     def dmp_LC(self, f):
         LC = dmp_LC(self.to_dense(f), self.domain)
@@ -152,20 +137,6 @@ class IPolys:
     def dmp_degree_list(self, f):
         return dmp_degree_list(self.to_dense(f), self.ngens-1)
 
-    def dmp_eval_in(self, f, a, j):
-        result = dmp_eval_in(self.to_dense(f), a, j, self.ngens-1, self.domain)
-        if self.is_multivariate:
-            return self.drop(j).from_dense(result)
-        else:
-            return result
-
-    def dmp_diff_eval_in(self, f, m, a, j):
-        result = dmp_diff_eval_in(self.to_dense(f), m, a, j, self.ngens-1, self.domain)
-        if self.is_multivariate:
-            return self.drop(j).from_dense(result)
-        else:
-            return result
-
     def dmp_eval_tail(self, f, A):
         result = dmp_eval_tail(self.to_dense(f), A, self.ngens-1, self.domain)
         if isinstance(result, list):
@@ -173,27 +144,12 @@ class IPolys:
         else:
             return result
 
-    def dmp_ground_trunc(self, f, p):
-        return self.from_dense(dmp_ground_trunc(self.to_dense(f), p, self.ngens-1, self.domain))
-
-    def dmp_ground_monic(self, f):
-        return self.from_dense(dmp_ground_monic(self.to_dense(f), self.ngens-1, self.domain))
-
     def dup_real_imag(self, f):
         ring = self
         p, q = dup_real_imag(ring.wrap(f).drop(1).to_dense(), ring.domain)
         if ring.domain.is_ComplexAlgebraicField and not ring.domain.is_RealAlgebraicField:
             ring = ring.to_ground()
         return ring.from_dense(p), ring.from_dense(q)
-
-    def dup_mirror(self, f):
-        return self.from_dense(dup_mirror(self.to_dense(f), self.domain))
-
-    def dup_scale(self, f, a):
-        return self.from_dense(dup_scale(self.to_dense(f), a, self.domain))
-
-    def dup_shift(self, f, a):
-        return self.from_dense(dup_shift(self.to_dense(f), a, self.domain))
 
     def dup_transform(self, f, p, q):
         return self.from_dense(dup_transform(self.to_dense(f), self.to_dense(p), self.to_dense(q), self.domain))
@@ -207,14 +163,6 @@ class IPolys:
 
     def dup_sign_variations(self, f):
         return dup_sign_variations(self.to_dense(f), self.domain)
-
-    def dmp_clear_denoms(self, f, convert=False):
-        c, F = dmp_clear_denoms(self.to_dense(f), self.ngens-1, self.domain, convert=convert)
-        if convert:
-            ring = self.clone(domain=self.domain.ring)
-        else:
-            ring = self
-        return c, ring.from_dense(F)
 
     def dmp_trial_division(self, f, factors):
         factors = dmp_trial_division(self.to_dense(f), list(map(self.to_dense, factors)), self.ngens-1, self.domain)

@@ -19,7 +19,6 @@ from .compatibility import IPolys
 from .constructor import construct_domain
 from .densebasic import dmp_from_dict, dmp_to_dict
 from .euclidtools import _GCD
-from .heuristicgcd import heugcd
 from .modulargcd import func_field_modgcd, modgcd
 from .monomials import Monomial
 from .orderings import lex
@@ -1625,6 +1624,17 @@ class PolyElement(DomainElement, CantSympify, dict):
         return self._norm(sum)
 
     def deflate(self, *G):
+        """Map ``x_i**m_i`` to ``y_i`` in a set of polynomials in ``K[X]``.
+
+        Examples
+        ========
+
+        >>> _, x, y = ring('x y', ZZ)
+        >>> (x**2*y**3 + 2*x**2 + 3*y**3 + 4).deflate(x**2*y**2 + 2*x**2 +
+        ...                                           3*y**2 + 4)
+        ((2, 1), [x*y**3 + 2*x + 3*y**3 + 4, x*y**2 + 2*x + 3*y**2 + 4])
+
+        """
         ring = self.ring
         polys = [self] + list(G)
 
@@ -1658,6 +1668,16 @@ class PolyElement(DomainElement, CantSympify, dict):
         return J, H
 
     def inflate(self, J):
+        """Map ``y_i`` to ``x_i**J_i`` in a polynomial in ``K[X]``.
+
+        Examples
+        ========
+
+        >>> _, x, y = ring('x y', ZZ)
+        >>> (x*y + 2*x + 3*y + 4).inflate((2, 3))
+        x**2*y**3 + 2*x**2 + 3*y**3 + 4
+
+        """
         poly = self.ring.zero
 
         for I, coeff in self.items():
@@ -1735,14 +1755,16 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self.ring._rr_prs_gcd(self, other)
 
     def _gcd_ZZ(self, other):
+        ring = self.ring
+
         if query('USE_HEU_GCD'):
             try:
-                return heugcd(self, other)
+                return ring._zz_heu_gcd(self, other)
             except HeuristicGCDFailed:  # pragma: no cover
                 pass
 
         _gcd_zz_methods = {'modgcd': modgcd,
-                           'prs': self.ring._rr_prs_gcd}
+                           'prs': ring._rr_prs_gcd}
 
         method = _gcd_zz_methods[query('FALLBACK_GCD_ZZ_METHOD')]
         return method(self, other)

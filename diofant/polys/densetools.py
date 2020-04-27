@@ -1,11 +1,9 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_exquo_ground,
-                         dmp_mul, dmp_mul_ground, dmp_neg, dmp_sub, dup_add,
-                         dup_mul)
-from .densebasic import (dmp_convert, dmp_degree_in, dmp_from_dict, dmp_ground,
-                         dmp_ground_LC, dmp_LC, dmp_strip, dmp_TC, dmp_to_dict,
-                         dmp_zero, dmp_zero_p)
+from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_mul,
+                         dmp_mul_ground, dmp_neg, dmp_sub, dup_add, dup_mul)
+from .densebasic import (dmp_degree_in, dmp_from_dict, dmp_ground, dmp_LC,
+                         dmp_strip, dmp_to_dict, dmp_zero, dmp_zero_p)
 from .polyerrors import DomainError
 
 
@@ -32,51 +30,13 @@ def dmp_diff_in(f, m, j, u, K):
 
 
 def dmp_eval_in(f, a, j, u, K):
-    """
-    Evaluate a polynomial at ``x_j = a`` in ``K[X]`` using the Horner scheme.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = 2*x*y + 3*x + y + 2
-
-    >>> R.dmp_eval_in(f, 2, 0)
-    5*y + 8
-    >>> R.dmp_eval_in(f, 2, 1)
-    7*x + 4
-
-    """
-    if j < 0 or j > u:
-        raise IndexError(f'0 <= j <= {u} expected, got {j}')
-
-    if not j:
-        if not a:
-            return dmp_TC(f, K)
-
-        result, v = dmp_LC(f, K), u - 1
-
-        if u:
-            for coeff in f[1:]:
-                result = dmp_mul_ground(result, a, v, K)
-                result = dmp_add(result, coeff, v, K)
-        else:
-            for coeff in f[1:]:
-                result *= a
-                result += coeff
-
-        return result
-
-    def eval_in(g, a, v, i, j, K):
-        if i == j:
-            return dmp_eval_in(g, a, 0, v, K)
-
-        v, i = v - 1, i + 1
-
-        return dmp_strip([eval_in(c, a, v, i, j, K) for c in g], v)
-
-    return eval_in(f, a, u, 0, j, K)
+    """Evaluate a polynomial at ``x_j = a`` in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    r = f.eval(x=j, a=a)
+    if ring.is_multivariate:
+        r = r.to_dense()
+    return r
 
 
 def dmp_eval_tail(f, A, u, K):
@@ -122,118 +82,27 @@ def dmp_eval_tail(f, A, u, K):
 
 
 def dmp_diff_eval_in(f, m, a, j, u, K):
-    """
-    Differentiate and evaluate a polynomial in ``x_j`` at ``a`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
-
-    >>> R.dmp_diff_eval_in(f, 1, 2, 0)
-    y**2 + 2*y + 3
-    >>> R.dmp_diff_eval_in(f, 1, 2, 1)
-    6*x + 11
-
-    """
-    if j > u:
-        raise IndexError(f'-{u} <= j < {u} expected, got {j}')
-    if not j:
-        return dmp_eval_in(dmp_diff_in(f, m, 0, u, K), a, 0, u, K)
-
-    def diff_eval(g, m, a, v, i, j, K):
-        if i == j:
-            return dmp_eval_in(dmp_diff_in(g, m, 0, v, K), a, 0, v, K)
-
-        v, i = v - 1, i + 1
-
-        return dmp_strip([diff_eval(c, m, a, v, i, j, K) for c in g], v)
-
-    return diff_eval(f, m, a, u, 0, j, K)
-
-
-def dup_trunc(f, p, K):
-    """
-    Reduce a ``K[x]`` polynomial modulo a constant ``p`` in ``K``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dmp_ground_trunc(2*x**3 + 3*x**2 + 5*x + 7, ZZ(3))
-    -x**3 - x + 1
-
-    """
-    from ..ntheory.modular import symmetric_residue
-
-    if K.is_IntegerRing:
-        g = []
-
-        for c in f:
-            c = c % p
-            c = symmetric_residue(c, p)
-            g.append(c)
-    else:
-        g = [c % p for c in f]
-
-    return dmp_strip(g, 0)
+    """Differentiate and evaluate a polynomial in ``x_j`` at ``a`` in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    r = f.diff(x=j, m=m).eval(x=j, a=a)
+    return r.to_dense()
 
 
 def dmp_ground_trunc(f, p, u, K):
-    """
-    Reduce a ``K[X]`` polynomial modulo a constant ``p`` in ``K``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
-
-    >>> R.dmp_ground_trunc(f, ZZ(3))
-    -x**2 - x*y - y
-
-    """
-    if not u:
-        return dup_trunc(f, p, K)
-
-    v = u - 1
-
-    return dmp_strip([dmp_ground_trunc(c, p, v, K) for c in f], u)
+    """Reduce a ``K[X]`` polynomial modulo a constant ``p`` in ``K``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    f = f.trunc_ground(p)
+    return ring.to_dense(f)
 
 
 def dmp_ground_monic(f, u, K):
-    """
-    Divide all coefficients by ``LC(f)`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-    >>> f = 3*x**2*y + 6*x**2 + 3*x*y + 9*y + 3
-
-    >>> R.dmp_ground_monic(f)
-    x**2*y + 2*x**2 + x*y + 3*y + 1
-
-    >>> R, x, y = ring('x y', QQ)
-    >>> f = 3*x**2*y + 8*x**2 + 5*x*y + 6*x + 2*y + 3
-
-    >>> R.dmp_ground_monic(f)
-    x**2*y + 8/3*x**2 + 5/3*x*y + 2*x + 2/3*y + 1
-
-    """
-    if dmp_zero_p(f, u):
-        return f
-
-    lc = dmp_ground_LC(f, u, K)
-
-    if lc == K.one:
-        return f
-    else:
-        return dmp_exquo_ground(f, lc, u, K)
+    """Divide all coefficients by ``LC(f)`` in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    f = f.monic()
+    return ring.to_dense(f)
 
 
 def dmp_ground_content(f, u, K):
@@ -341,70 +210,6 @@ def dup_real_imag(f, K):
             f2 = dmp_sub(f2, h, 1, K)
 
     return f1, f2
-
-
-def dup_mirror(f, K):
-    """
-    Evaluate efficiently the composition ``f(-x)`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dup_mirror(x**3 + 2*x**2 - 4*x + 2)
-    -x**3 + 2*x**2 + 4*x + 2
-
-    """
-    f = list(f)
-
-    for i in range(len(f) - 2, -1, -2):
-        f[i] = -f[i]
-
-    return f
-
-
-def dup_scale(f, a, K):
-    """
-    Evaluate efficiently composition ``f(a*x)`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dup_scale(x**2 - 2*x + 1, ZZ(2))
-    4*x**2 - 4*x + 1
-
-    """
-    f, n, b = list(f), len(f) - 1, a
-
-    for i in range(n - 1, -1, -1):
-        f[i], b = b*f[i], b*a
-
-    return f
-
-
-def dup_shift(f, a, K):
-    """
-    Evaluate efficiently Taylor shift ``f(x + a)`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dup_shift(x**2 - 2*x + 1, ZZ(2))
-    x**2 + 2*x + 1
-
-    """
-    f, n = list(f), len(f) - 1
-
-    for i in range(n, 0, -1):
-        for j in range(i):
-            f[j + 1] += a*f[j]
-
-    return f
 
 
 def dup_transform(f, p, q, K):
@@ -566,47 +371,11 @@ def dup_decompose(f, K):
     return [f] + F
 
 
-def dmp_clear_denoms(f, u, K0, K1=None, convert=False):
-    """
-    Clear denominators, i.e. transform ``K_0`` to ``K_1``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', QQ)
-
-    >>> f = x/2 + y/3 + 1
-
-    >>> R.dmp_clear_denoms(f, convert=False)
-    (6, 3*x + 2*y + 6)
-    >>> R.dmp_clear_denoms(f, convert=True)
-    (6, 3*x + 2*y + 6)
-
-    """
-    if K1 is None:
-        if K0.has_assoc_Ring:
-            K1 = K0.ring
-        else:
-            K1 = K0
-
-    def clear_denoms(g, v, K0, K1):
-        common = K1.one
-
-        if not v:
-            for c in g:
-                common = K1.lcm(common, c.denominator)
-        else:
-            w = v - 1
-
-            for c in g:
-                common = K1.lcm(common, clear_denoms(c, w, K0, K1))
-
-        return common
-
-    common = clear_denoms(f, u, K0, K1)
-    f = dmp_mul_ground(f, common, u, K0)
-
-    if not convert:
-        return common, f
-    else:
-        return common, dmp_convert(f, u, K0, K1)
+def dmp_clear_denoms(f, u, K, convert=False):
+    """Clear denominators."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    common, f = f.clear_denoms(convert=convert)
+    if convert:
+        ring = ring.clone(domain=ring.domain.ring)
+    return common, ring.to_dense(f)
