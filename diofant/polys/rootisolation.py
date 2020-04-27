@@ -11,7 +11,7 @@ from .densebasic import (dmp_convert, dmp_degree_in, dmp_LC, dmp_permute,
                          dup_reverse)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_in,
                          dmp_eval_in, dmp_ground_primitive, dup_real_imag,
-                         dup_shift, dup_transform)
+                         dup_transform)
 from .euclidtools import dmp_gcd, dmp_resultant
 from .factortools import dmp_trial_division
 from .polyerrors import DomainError, RefinementFailed
@@ -160,12 +160,12 @@ def dup_step_refine_real_root(f, M, K):
         a, c, A = A*a, A*c, K.one
 
     if A >= 1:
-        f = dup_shift(f, A, K)
+        f = dmp_compose(f, [K.one, A], 0, K)
         b, d = A*a + b, A*c + d
 
         assert dmp_TC(f, K)
 
-    f, g = dup_shift(f, K.one, K), f
+    f, g = dmp_compose(f, [K.one, K.one], 0, K), f
 
     a1, b1, c1, d1 = a, a + b, c, c + d
 
@@ -177,7 +177,7 @@ def dup_step_refine_real_root(f, M, K):
     if k == 1:
         a, b, c, d = a1, b1, c1, d1
     else:
-        f = dup_shift(dup_reverse(g), K.one, K)
+        f = dmp_compose(dup_reverse(g), [K.one, K.one], 0, K)
 
         assert dmp_TC(f, K)
 
@@ -288,7 +288,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
             a, c, A = A*a, A*c, K.one
 
         if A >= 1:
-            f = dup_shift(f, A, K)
+            f = dmp_compose(f, [K.one, A], 0, K)
             b, d = A*a + b, A*c + d
 
             assert dmp_TC(f, K)
@@ -302,7 +302,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
                                                         eps=eps, mobius=True))
                 continue
 
-        f1 = dup_shift(f, K.one, K)
+        f1 = dmp_compose(f, [K.one, K.one], 0, K)
 
         a1, b1, c1, d1, r = a, a + b, c, c + d, 0
 
@@ -316,7 +316,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
         a2, b2, c2, d2 = b, a + b, d, c + d
 
         if k2 > 1:
-            f2 = dup_shift(dup_reverse(f), K.one, K)
+            f2 = dmp_compose(dup_reverse(f), [K.one, K.one], 0, K)
 
             if not dmp_TC(f2, K):
                 f2 = dup_rshift(f2, 1, K)
@@ -334,7 +334,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
             continue
 
         if f1 is None:
-            f1 = dup_shift(dup_reverse(f), K.one, K)
+            f1 = dmp_compose(dup_reverse(f), [K.one, K.one], 0, K)
 
             if not dmp_TC(f1, K):
                 f1 = dup_rshift(f1, 1, K)
@@ -349,7 +349,7 @@ def dup_inner_isolate_real_roots(f, K, eps=None):
             continue
 
         if f2 is None:
-            f2 = dup_shift(dup_reverse(f), K.one, K)
+            f2 = dmp_compose(dup_reverse(f), [K.one, K.one], 0, K)
 
             if not dmp_TC(f2, K):
                 f2 = dup_rshift(f2, 1, K)

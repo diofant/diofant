@@ -1595,11 +1595,14 @@ def test_PolyElement_compose():
     R, x = ring('x', ZZ)
 
     assert R(0).compose(x, -x) == 0
+    assert R(0).compose(x, x + 1) == 0
     assert R(1).compose(x, -x) == 1
+    assert R(1).compose(x, x + 1) == 1
 
     f = x**2 - 2*x + 1
 
     assert f.compose(x, 2*x) == 4*x**2 - 4*x + 1
+    assert f.compose(x, x + 2) == x**2 + 2*x + 1
 
     f = x**3 + 4*x**2 + 2*x + 3
 
@@ -1619,6 +1622,8 @@ def test_PolyElement_compose():
 
     assert f.compose(x, -x) == x**4 - 2*x**3 + 3*x**2 - 4*x + 5
     assert f.compose(x, -7*x) == 2401*x**4 - 686*x**3 + 147*x**2 - 28*x + 5
+    assert f.compose(x, x + 1) == x**4 + 6*x**3 + 15*x**2 + 20*x + 15
+    assert f.compose(x, x + 7) == x**4 + 30*x**3 + 339*x**2 + 1712*x + 3267
 
     f = x**5 + 2*x**4 + 3*x**3 + 4*x**2 + 5*x + 6
 
