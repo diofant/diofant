@@ -14,6 +14,17 @@ f_0, f_1, f_2, f_3, f_4, f_5, f_6 = f_polys()
 
 
 def test_dup_gcdex():
+    R, x = ring('x', FF(11))
+
+    assert R.zero.gcdex(R(2)) == (0, 6, 1)
+    assert R(2).gcdex(R(2)) == (0, 6, 1)
+
+    assert R.zero.gcdex(3*x) == (0, 4, x)
+
+    assert (3*x).gcdex(3*x) == (0, 4, x)
+
+    assert (x**2 + 8*x + 7).gcdex(x**3 + 7*x**2 + x + 7) == (5*x + 6, 6, x + 7)
+
     R, x = ring('x', QQ)
 
     f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
@@ -44,17 +55,6 @@ def test_dup_gcdex():
 
     assert f.half_gcdex(g) == (s, h)
     assert f.gcdex(g) == (s, t, h)
-
-    R, x = ring('x', FF(11))
-
-    assert R.zero.gcdex(R(2)) == (0, 6, 1)
-    assert R(2).gcdex(R(2)) == (0, 6, 1)
-
-    assert R.zero.gcdex(3*x) == (0, 4, x)
-
-    assert (3*x).gcdex(3*x) == (0, 4, x)
-
-    assert (x**2 + 8*x + 7).gcdex(x**3 + 7*x**2 + x + 7) == (5*x + 6, 6, x + 7)
 
     _, x, y = ring('x y', QQ)
 
@@ -205,6 +205,15 @@ def test_PolyElement_subresultants():
 
             assert f.resultant(g) == -1
 
+    Rt, t = ring('t', ZZ)
+    Rx, x = ring('x', Rt)
+
+    f = x**6 - 5*x**4 + 5*x**2 + 4
+    g = -6*t*x**5 + x**4 + 20*t*x**3 - 3*x**2 - 10*t*x + 6
+
+    assert f.resultant(g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
+    assert (x - 1).resultant(x + 1, includePRS=True) == (2, [x - 1, x + 1, 2])
+
     R, x, y = ring('x y', ZZ)
 
     for check in (True, False):
@@ -316,15 +325,6 @@ def test_PolyElement_subresultants():
 
             assert f.resultant(g) == r.drop(x)
 
-    Rt, t = ring('t', ZZ)
-    Rx, x = ring('x', Rt)
-
-    f = x**6 - 5*x**4 + 5*x**2 + 4
-    g = -6*t*x**5 + x**4 + 20*t*x**3 - 3*x**2 - 10*t*x + 6
-
-    assert f.resultant(g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
-    assert (x - 1).resultant(x + 1, includePRS=True) == (2, [x - 1, x + 1, 2])
-
 
 def test_PolyElement_discriminant():
     R, x = ring('x', ZZ)
@@ -374,6 +374,27 @@ def test_PolyElement_discriminant():
 
 
 def test_dmp_gcd():
+    R, x = ring('x', FF(5))
+
+    f = 3*x**2 + 2*x + 4
+    g = 2*x**2 + 2*x + 3
+
+    assert f.cofactors(g) == (x + 3, 3*x + 3, 2*x + 1)
+
+    R, x = ring('x', FF(11))
+
+    assert R(0).cofactors(R(0)) == (0, 0, 0)
+    assert R(2).cofactors(R(0)) == (1, 2, 0)
+    assert R(0).cofactors(R(2)) == (1, 0, 2)
+    assert R(2).cofactors(R(2)) == (1, 2, 2)
+
+    assert R(0).cofactors(x) == (x, 0, 1)
+    assert x.cofactors(R(0)) == (x, 1, 0)
+
+    assert (3*x).cofactors(3*x) == (x, 3, 3)
+    assert (x**2 + 8*x + 7).cofactors(x**3 + 7*x**2 + x + 7) == (x + 7, x + 1,
+                                                                 x**2 + 1)
+
     R, x = ring('x', ZZ)
 
     for test in (True, False):
@@ -472,36 +493,9 @@ def test_dmp_gcd():
 
             assert f.cofactors(g) == (x - 1, x + 1, x - 2)
 
-    R, x = ring('x', FF(5))
-
-    f = 3*x**2 + 2*x + 4
-    g = 2*x**2 + 2*x + 3
-
-    assert f.cofactors(g) == (x + 3, 3*x + 3, 2*x + 1)
-
-    R, x = ring('x', FF(11))
-
-    assert R(0).cofactors(R(0)) == (0, 0, 0)
-    assert R(2).cofactors(R(0)) == (1, 2, 0)
-    assert R(0).cofactors(R(2)) == (1, 0, 2)
-    assert R(2).cofactors(R(2)) == (1, 2, 2)
-
-    assert R(0).cofactors(x) == (x, 0, 1)
-    assert x.cofactors(R(0)) == (x, 1, 0)
-
-    assert (3*x).cofactors(3*x) == (x, 3, 3)
-    assert (x**2 + 8*x + 7).cofactors(x**3 + 7*x**2 + x + 7) == (x + 7, x + 1,
-                                                                 x**2 + 1)
-
     R, x = ring('x', CC)
 
     f, g = x**2 - 1, x**3 - 3*x + 2
-
-    assert f.cofactors(g) == (1, f, g)
-
-    R, x, y = ring('x y', CC)
-
-    f, g = x**2 - y, x**3 - y*x + 2
 
     assert f.cofactors(g) == (1, f, g)
 
@@ -580,6 +574,14 @@ def test_dmp_gcd():
 
             assert f.cofactors(g) == (x + y, x/2 + y/2, x)
 
+    R, x, y = ring('x y', QQ.algebraic_field(sqrt(2)))
+
+    f, g = (x + sqrt(2)*y)**2, x + sqrt(2)*y
+
+    assert f.gcd(g) == g
+    with using(gcd_aa_method='modgcd'):
+        assert f.gcd(g) == g
+
     R, x, y = ring('x y', RR)
 
     for test in (True, False):
@@ -594,13 +596,11 @@ def test_dmp_gcd():
             assert f.cofactors(g) == (h, f//h, g//h)
             assert g.cofactors(f) == (h, g//h, f//h)
 
-    R, x, y = ring('x y', QQ.algebraic_field(sqrt(2)))
+    R, x, y = ring('x y', CC)
 
-    f, g = (x + sqrt(2)*y)**2, x + sqrt(2)*y
+    f, g = x**2 - y, x**3 - y*x + 2
 
-    assert f.gcd(g) == g
-    with using(gcd_aa_method='modgcd'):
-        assert f.gcd(g) == g
+    assert f.cofactors(g) == (1, f, g)
 
     R, x, y, z = ring('x y z', ZZ)
 
@@ -673,6 +673,21 @@ def test_dmp_gcd():
 
 
 def test_PolyElement_lcm():
+    R, x = ring('x', FF(5))
+
+    assert (3*x**2 + 2*x + 4).lcm(2*x**2 + 2*x + 3) == x**3 + 2*x**2 + 4
+
+    R, x = ring('x', FF(11))
+
+    assert R.zero.lcm(R(2)) == 0
+    assert R(2).lcm(R(2)) == 1
+
+    assert R.zero.lcm(x) == 0
+
+    assert (3*x).lcm(3*x) == x
+    assert (x**2 + 8*x + 7).lcm(x**3 + 7*x**2 + x + 7) == (x**4 + 8*x**3 +
+                                                           8*x**2 + 8*x + 7)
+
     R, x = ring('x', ZZ)
 
     assert R(2).lcm(R(6)) == 6
@@ -686,6 +701,14 @@ def test_PolyElement_lcm():
     assert (2*x**2 + x).lcm(x) == 2*x**2 + x
     assert (2*x**2 + x).lcm(2*x) == 4*x**2 + 2*x
     assert (x**2 - 1).lcm(x**2 - 3*x + 2) == x**3 - 2*x**2 - x + 2
+
+    R, x = ring('x', QQ)
+
+    f = (x**2 + 7*x/2 + 3)/2
+    g = x**2/2 + x
+    h = x**3 + 7/2*x**2 + 3*x
+
+    assert f.lcm(g) == h
 
     R, x, y = ring('x y', ZZ)
 
@@ -715,14 +738,6 @@ def test_PolyElement_lcm():
 
     assert f.lcm(g) == h
 
-    R, x = ring('x', QQ)
-
-    f = (x**2 + 7*x/2 + 3)/2
-    g = x**2/2 + x
-    h = x**3 + 7/2*x**2 + 3*x
-
-    assert f.lcm(g) == h
-
     R, x, y = ring('x y', QQ)
 
     f = 2*x*y - x**2/2 + QQ(1, 3)
@@ -737,21 +752,6 @@ def test_PolyElement_lcm():
     h = x**3 + 4*x**2*y + 4*x*y**2
 
     assert f.lcm(g) == h
-
-    R, x = ring('x', FF(11))
-
-    assert R.zero.lcm(R(2)) == 0
-    assert R(2).lcm(R(2)) == 1
-
-    assert R.zero.lcm(x) == 0
-
-    assert (3*x).lcm(3*x) == x
-    assert (x**2 + 8*x + 7).lcm(x**3 + 7*x**2 + x + 7) == (x**4 + 8*x**3 +
-                                                           8*x**2 + 8*x + 7)
-
-    R, x = ring('x', FF(5))
-
-    assert (3*x**2 + 2*x + 4).lcm(2*x**2 + 2*x + 3) == x**3 + 2*x**2 + 4
 
 
 def test_PolyElement_cancel():
@@ -793,6 +793,14 @@ def test_PolyElement_cancel():
     R, x = ring('x', QQ)
 
     assert (x**2/4 - 1).cancel(x/2 - 1) == (x + 2, 2)
+
+    Fx, x = field('x', ZZ)
+    Rt, t = ring('t', Fx)
+
+    f = (-x**2 - 4)/4*t
+    g = t**2 + (x**2 + 2)/2
+
+    assert f.cancel(g) == ((-x**2 - 4)*t, 4*t**2 + 2*x**2 + 4)
 
     R, x, y = ring('x y', ZZ)
 
@@ -837,14 +845,6 @@ def test_PolyElement_cancel():
 
     assert (-f).cancel(g) == (-F, G)
     assert f.cancel(-g) == (-F, G)
-
-    Fx, x = field('x', ZZ)
-    Rt, t = ring('t', Fx)
-
-    f = (-x**2 - 4)/4*t
-    g = t**2 + (x**2 + 2)/2
-
-    assert f.cancel(g) == ((-x**2 - 4)*t, 4*t**2 + 2*x**2 + 4)
 
 
 def test_sympyissue_10996():
