@@ -401,6 +401,11 @@ def test_dmp_gcd():
         for method in ('prs', 'modgcd'):
             with using(use_heu_gcd=test, fallback_gcd_zz_method=method):
                 assert R(0).cofactors(R(0)) == (0, 0, 0)
+                assert R(0).cofactors(x) == (x, 0, 1)
+                assert x.cofactors(R(0)) == (x, 1, 0)
+                assert R(0).cofactors(-x) == (x, 0, -1)
+                assert (-x).cofactors(R(0)) == (x, -1, 0)
+                assert (2*x).cofactors(R(2)) == (2, x, 1)
                 assert R(2).cofactors(R(0)) == (2, 1, 0)
                 assert R(-2).cofactors(R(0)) == (2, -1, 0)
                 assert R(0).cofactors(R(-2)) == (2, 0, -1)
@@ -417,6 +422,18 @@ def test_dmp_gcd():
                 assert (2*x**2 + 4*x + 2).cofactors(x + 1) == (x + 1, 2*x + 2, 1)
                 assert (x + 1).cofactors(2*x**2 + 4*x + 2) == (x + 1, 1, 2*x + 2)
                 assert (x - 31).cofactors(x) == (1, x - 31, x)
+
+                f, g = 2*x + 2, 6*x**2 - 6
+
+                assert f.cofactors(g) == (2*x + 2, 1, 3*x - 3)
+
+                f, g = [1000000000000*x + 998549000000]*2
+
+                assert f.cofactors(g) == (f, 1, 1)
+
+                f, g = 999530000000*x + 1000000000000, 999530000000*x + 999999000000
+
+                assert f.cofactors(g) == (1000000, 999530*x + 1000000, 999530*x + 999999)
 
                 f = x**2 - 1
                 g = x**2 - 3*x + 2
