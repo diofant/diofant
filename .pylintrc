@@ -283,4 +283,10 @@ disable=blacklisted-name,
         arguments-out-of-order,
         unnecessary-comprehension,
         simplifiable-if-expression,
-        invalid-overridden-method
+        invalid-overridden-method,
+        invalid-str-returned,
+        isinstance-second-argument-not-valid-type,
+        missing-final-newline,
+        mixed-line-endings,
+        trailing-newlines,
+        trailing-whitespace
