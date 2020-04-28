@@ -520,6 +520,7 @@ def test_dmp_gcd():
                 assert R(-2).cofactors(R(0)) == (2, -1, 0)
                 assert R(0).cofactors(R(-2)) == (2, 0, -1)
                 assert R(0).cofactors(2*x + 4) == (2*x + 4, 0, 1)
+                assert (2*x).cofactors(R(2)) == (2, x, 1)
                 assert (2*x + 4).cofactors(R(0)) == (2*x + 4, 1, 0)
                 assert R(2).cofactors(R(2)) == (2, 1, 1)
                 assert R(-2).cofactors(R(2)) == (2, -1, 1)
@@ -538,9 +539,40 @@ def test_dmp_gcd():
                 with using(heu_gcd_max=0):
                     assert f.cofactors(g) == (g, 2*x + 2, 1)
 
+                f, g = x + 2*y, x + y
+
+                assert f.cofactors(g) == (1, f, g)
+
                 f, g = x**2 + 2*x*y + y**2, x**2 + x*y
 
                 assert f.cofactors(g) == (x + y, x + y, x)
+
+                f, g = x**2 + 2*x*y + y**2, x**3 + y**3
+
+                assert f.cofactors(g) == (x + y, x + y, x**2 - x*y + y**2)
+
+                f, g = x*y**2 + 2*x*y + x, x*y**3 + x
+
+                assert f.cofactors(g) == (x*y + x, y + 1, y**2 - y + 1)
+
+                f, g = x**2*y**2 + x**2*y + 1, x*y**2 + x*y + 1
+
+                assert f.cofactors(g) == (1, f, g)
+
+                f = 2*x*y**2 + 4*x*y + 2*x + y**2 + 2*y + 1
+                g = 2*x*y**3 + 2*x + y**3 + 1
+
+                assert f.cofactors(g) == (2*x*y + 2*x + y + 1, y + 1, y**2 - y + 1)
+
+                f = 2*x**2 + 4*x*y - 2*x - 4*y
+                g = x**2 + x - 2
+
+                assert f.cofactors(g) == (x - 1, 2*x + 4*y, x + 2)
+
+                f = 2*x**2 + 2*x*y - 3*x - 3*y
+                g = 4*x*y - 2*x + 4*y**2 - 2*y
+
+                assert f.cofactors(g) == (x + y, 2*x - 3, 4*y - 2)
 
                 f = (-17434367009167300000000000000000000000000000000000000000000000000000000*x**4*y -
                      250501827896299135568887342575961783764139560000000000000000000000000000000000000000000*x**3*y -

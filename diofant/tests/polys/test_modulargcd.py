@@ -8,58 +8,6 @@ from diofant.polys.polyconfig import using
 __all__ = ()
 
 
-def test_modgcd_bivariate_integers():
-    R, x, y = ring('x,y', ZZ)
-
-    with using(use_heu_gcd=False, fallback_gcd_zz_method='modgcd'):
-        f, g = R.zero, R.zero
-
-        assert f.cofactors(g) == (0, 0, 0)
-
-        f, g = 2*x, R(2)
-
-        assert f.cofactors(g) == (2, x, 1)
-
-        f, g = x + 2*y, x + y
-
-        assert f.cofactors(g) == (1, f, g)
-
-        f, g = x**2 + 2*x*y + y**2, x**3 + y**3
-
-        assert f.cofactors(g) == (x + y, x + y, x**2 - x*y + y**2)
-
-        f, g = x*y**2 + 2*x*y + x, x*y**3 + x
-
-        assert f.cofactors(g) == (x*y + x, y + 1, y**2 - y + 1)
-
-        f, g = x**2*y**2 + x**2*y + 1, x*y**2 + x*y + 1
-
-        assert f.cofactors(g) == (1, f, g)
-
-        f = 2*x*y**2 + 4*x*y + 2*x + y**2 + 2*y + 1
-        g = 2*x*y**3 + 2*x + y**3 + 1
-
-        assert f.cofactors(g) == (2*x*y + 2*x + y + 1, y + 1, y**2 - y + 1)
-
-        f, g = 2*x**2 + 4*x + 2, x + 1
-
-        assert f.cofactors(g) == (x + 1, 2*x + 2, 1)
-
-        f, g = x + 1, 2*x**2 + 4*x + 2
-
-        assert f.cofactors(g) == (x + 1, 1, 2*x + 2)
-
-        f = 2*x**2 + 4*x*y - 2*x - 4*y
-        g = x**2 + x - 2
-
-        assert f.cofactors(g) == (x - 1, 2*x + 4*y, x + 2)
-
-        f = 2*x**2 + 2*x*y - 3*x - 3*y
-        g = 4*x*y - 2*x + 4*y**2 - 2*y
-
-        assert f.cofactors(g) == (x + y, 2*x - 3, 4*y - 2)
-
-
 def test_chinese_remainder():
     R, x, y = ring('x, y', ZZ)
     p, q = 3, 5
