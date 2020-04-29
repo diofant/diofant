@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import (CC, FF, QQ, RR, ZZ, MultivariatePolynomialError,
+from diofant import (CC, FF, QQ, RR, ZZ, I, MultivariatePolynomialError,
                      NotInvertible, field, ring, sqrt)
 from diofant.polys.polyconfig import using
 from diofant.polys.specialpolys import f_polys
@@ -733,6 +733,15 @@ def test_dmp_gcd():
         f, g = h*(11*y**3 + 1), h*(y + x)
 
         assert f.cofactors(g) == (x**4*y**3 + sqrt(6)/22*z, 11*y**3 + 1, x + y)
+
+    R, x, y, z = ring('x y z', QQ.algebraic_field(I))
+
+    for method in ('prs', 'modgcd'):
+        with using(gcd_aa_method=method):
+            f, g = R.one, I*z
+
+            assert f.cofactors(g) == (1, f, g)
+            assert g.cofactors(f) == (1, g, f)
 
     R, x, y, z, u = ring('x y z u', ZZ)
 
