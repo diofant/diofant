@@ -2,7 +2,6 @@ from diofant import QQ, ZZ, ring, sqrt
 from diofant.polys.modulargcd import (_chinese_remainder_reconstruction,
                                       _func_field_modgcd_m, _to_ANP_poly,
                                       _to_ZZ_poly)
-from diofant.polys.polyconfig import using
 
 
 __all__ = ()
@@ -52,21 +51,6 @@ def test_to_ZZ_ANP_poly():
 
     assert _to_ZZ_poly(f, T) == f_
     assert _to_ANP_poly(f_, R) == f
-
-
-def test_modgcd_algebraic_field_random():
-    A = QQ.algebraic_field(sqrt(2), sqrt(3))
-    R, x, y, z = ring('x, y, z', A)
-
-    with using(gcd_aa_method='modgcd'):
-        h = x**2*y**3 + 1111*sqrt(6)/12*z
-        a, b = 11*y**3 + 2, (y + x - 1)*h
-
-        assert (h*a).cofactors(h*b) == (h, a, b)
-
-        a, b = 12*y + 2*x - 1, (y + x - 1)*h
-
-        assert (h*a).cofactors(h*b) == (h, a, b)
 
 
 def test_modgcd_func_field():

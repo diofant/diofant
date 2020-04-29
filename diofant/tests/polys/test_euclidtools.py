@@ -734,6 +734,15 @@ def test_dmp_gcd():
 
         assert f.cofactors(g) == (x**4*y**3 + sqrt(6)/22*z, 11*y**3 + 1, x + y)
 
+        h = x**2*y**3 + 1111*sqrt(6)/12*z
+        a, b = 11*y**3 + 2, (y + x - 1)*h
+
+        assert (h*a).cofactors(h*b) == (h, a, b)
+
+        a, b = 12*y + 2*x - 1, (y + x - 1)*h
+
+        assert (h*a).cofactors(h*b) == (h, a, b)
+
     R, x, y, z = ring('x y z', QQ.algebraic_field(I))
 
     for method in ('prs', 'modgcd'):
