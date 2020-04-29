@@ -539,6 +539,11 @@ def test_dmp_gcd():
                 with using(heu_gcd_max=0):
                     assert f.cofactors(g) == (g, 2*x + 2, 1)
 
+                f = x**4 + 8*x**3 + 21*x**2 + 22*x + 8
+                g = x**3 + 6*x**2 + 11*x + 6
+
+                assert f.cofactors(g) == (x**2 + 3*x + 2, x**2 + 5*x + 4, x + 3)
+
                 f, g = x + 2*y, x + y
 
                 assert f.cofactors(g) == (1, f, g)
@@ -651,6 +656,10 @@ def test_dmp_gcd():
     for test in (True, False):
         for method in ('prs', 'modgcd'):
             with using(use_heu_gcd=test, fallback_gcd_zz_method=method):
+                f, g = x - y*z, x - y*z
+
+                assert f.cofactors(g) == (x - y*z, 1, 1)
+
                 f, g, h = R.fateman_poly_F_1()
                 H, cff, cfg = f.cofactors(g)
 
@@ -681,10 +690,20 @@ def test_dmp_gcd():
                 assert f.cofactors(g) == (h, cff, cfg)
                 assert g.cofactors(f) == (h, cfg, cff)
 
+                f, g = x + y + z, -x - y - z - u
+
+                assert f.cofactors(g) == (1, f, g)
+
                 f, g, h = R.fateman_poly_F_3()
                 H, cff, cfg = f.cofactors(g)
 
                 assert H == h and H*cff == f and H*cfg == g
+
+                f, g, h = (1199999999999991*x**17 - y, 2*y - 19989798798 + x**211,
+                           12*x*y**7 + x**4 - 1)
+
+                for i in range(10):
+                    assert (f*h).cofactors(g*h) == (h, f, g)
 
     R, x, y, z, u, v = ring('x y z u v', ZZ)
 
