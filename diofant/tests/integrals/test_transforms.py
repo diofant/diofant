@@ -9,8 +9,8 @@ from diofant import (E1, And, Ci, CosineTransform, Ei, EulerGamma,
                      besseli, besselj, besselk, bessely, combsimp, cos, cosh,
                      cosine_transform, cot, erf, exp, exp_polar, expand,
                      expand_complex, expand_mul, expand_trig, expint, eye,
-                     factor, factor_terms, factorial, fourier_transform,
-                     fresnelc, fresnels, gamma, hankel_transform, hyperexpand,
+                     factor_terms, factorial, fourier_transform, fresnelc,
+                     fresnels, gamma, hankel_transform, hyperexpand,
                      inverse_cosine_transform, inverse_fourier_transform,
                      inverse_hankel_transform, inverse_laplace_transform,
                      inverse_mellin_transform, inverse_sine_transform,
@@ -572,8 +572,7 @@ def test_fourier_transform():
     assert simp(FT(Heaviside(1 - abs(a*x))*(1 - abs(a*x)), x, k)) == sinc(k/a)**2/a
     # TODO IFT
 
-    assert factor(FT(exp(-a*x)*Heaviside(x), x, k), extension=I) == \
-        1/(a + 2*pi*I*k)
+    assert FT(exp(-a*x)*Heaviside(x), x, k) == 1/(a + 2*pi*I*k)
     # NOTE: the ift comes out in pieces
     assert IFT(1/(a + 2*pi*I*x), x, posk,
                noconds=False) == (exp(-a*posk), True)
@@ -583,8 +582,7 @@ def test_fourier_transform():
                noconds=False) == (0, True)
     # TODO IFT without factoring comes out as meijer g
 
-    assert factor(FT(x*exp(-a*x)*Heaviside(x), x, k), extension=I) == \
-        1/(a + 2*pi*I*k)**2
+    assert FT(x*exp(-a*x)*Heaviside(x), x, k) == 1/(a + 2*pi*I*k)**2
     assert FT(exp(-a*x)*sin(b*x)*Heaviside(x), x, k) == \
         b/(b**2 + (a + 2*I*pi*k)**2)
 
