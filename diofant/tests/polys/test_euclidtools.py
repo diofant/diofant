@@ -504,6 +504,30 @@ def test_dmp_gcd():
 
             assert f.cofactors(g) == (x - 1, x + 1, x - 2)
 
+    R, x = ring('x', QQ.algebraic_field(sqrt(2)))
+
+    for method in ('modgcd', 'prs'):
+        with using(gcd_aa_method=method):
+            f, g = 2*x, R(2)
+
+            assert f.cofactors(g) == (1, f, g)
+
+            f, g = 2*x, R(sqrt(2))
+
+            assert f.cofactors(g) == (1, f, g)
+
+            f, g = 2*x + 2, 6*x**2 - 6
+
+            assert f.cofactors(g) == (x + 1, 2, 6*x - 6)
+
+    R, x = ring('x', QQ.algebraic_field(sqrt(2)**(-1)*sqrt(3)))
+
+    for method in ('modgcd', 'prs'):
+        with using(gcd_aa_method=method):
+            f, g = x + 1, x - 1
+
+            assert f.cofactors(g) == (1, f, g)
+
     R, x = ring('x', CC)
 
     f, g = x**2 - 1, x**3 - 3*x + 2
@@ -625,11 +649,23 @@ def test_dmp_gcd():
 
     R, x, y = ring('x y', QQ.algebraic_field(sqrt(2)))
 
-    f, g = (x + sqrt(2)*y)**2, x + sqrt(2)*y
+    for method in ('modgcd', 'prs'):
+        with using(gcd_aa_method=method):
+            f, g = (x + sqrt(2)*y)**2, x + sqrt(2)*y
 
-    assert f.gcd(g) == g
-    with using(gcd_aa_method='modgcd'):
-        assert f.gcd(g) == g
+            assert f.cofactors(g) == (g, g, 1)
+
+            f, g = x + sqrt(2)*y, x + y
+
+            assert f.cofactors(g) == (1, f, g)
+
+            f, g = x*y + sqrt(2)*y**2, sqrt(2)*y
+
+            assert f.cofactors(g) == (y, x + sqrt(2)*y, sqrt(2))
+
+            f, g = x**2 + 2*sqrt(2)*x*y + 2*y**2, x + sqrt(2)*y
+
+            assert f.cofactors(g) == (g, g, 1)
 
     R, x, y = ring('x y', RR)
 
@@ -674,6 +710,29 @@ def test_dmp_gcd():
                 H, cff, cfg = f.cofactors(g)
 
                 assert H == h and H*cff == f and H*cfg == g
+
+    R, x, y, z = ring('x, y, z', QQ.algebraic_field(sqrt(2), sqrt(3)))
+
+    with using(gcd_aa_method='modgcd'):
+        h = x**2*y**7 + sqrt(6)/21*z
+        f, g = h*(27*y**3 + 1), h*(y + x)
+
+        assert f.cofactors(g) == (h, 27*y**3 + 1, x + y)
+
+        h = x**13*y**3 + x**10/2 + 1/sqrt(2)
+        f, g = h*(x + 1), h*sqrt(2)/sqrt(3)
+
+        assert f.cofactors(g) == (h, x + 1, sqrt(2)/sqrt(3))
+
+        h = x**4*y**9 + sqrt(6)/22*z
+        f, g = h*(21*y**3 + 1), h*(y + x)
+
+        assert f.cofactors(g) == (x**4*y**9 + sqrt(6)/22*z, 21*y**3 + 1, x + y)
+
+        h = x**4*y**3 + sqrt(6)/22*z
+        f, g = h*(11*y**3 + 1), h*(y + x)
+
+        assert f.cofactors(g) == (x**4*y**3 + sqrt(6)/22*z, 11*y**3 + 1, x + y)
 
     R, x, y, z, u = ring('x y z u', ZZ)
 
