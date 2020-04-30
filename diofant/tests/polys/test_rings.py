@@ -1571,7 +1571,7 @@ def test_PolyElement_clear_denoms():
     f = 3*x**2 + x
 
     assert f.clear_denoms() == (1, 3*x**2 + x)
-    f.clear_denoms(convert=True) == (1, (3*x**2 + x).set_domain(ZZ))
+    assert f.clear_denoms(convert=True) == (1, (3*x**2 + x).set_domain(ZZ))
 
     f = x**2 + x/2
 
