@@ -2,7 +2,7 @@
 
 import pytest
 
-from diofant import (CC, FF, QQ, RR, ZZ, MultivariatePolynomialError,
+from diofant import (CC, FF, QQ, RR, ZZ, I, MultivariatePolynomialError,
                      NotInvertible, field, ring, sqrt)
 from diofant.polys.polyconfig import using
 from diofant.polys.specialpolys import f_polys
@@ -14,6 +14,17 @@ f_0, f_1, f_2, f_3, f_4, f_5, f_6 = f_polys()
 
 
 def test_dup_gcdex():
+    R, x = ring('x', FF(11))
+
+    assert R.zero.gcdex(R(2)) == (0, 6, 1)
+    assert R(2).gcdex(R(2)) == (0, 6, 1)
+
+    assert R.zero.gcdex(3*x) == (0, 4, x)
+
+    assert (3*x).gcdex(3*x) == (0, 4, x)
+
+    assert (x**2 + 8*x + 7).gcdex(x**3 + 7*x**2 + x + 7) == (5*x + 6, 6, x + 7)
+
     R, x = ring('x', QQ)
 
     f = x**4 - 2*x**3 - 6*x**2 + 12*x + 15
@@ -44,17 +55,6 @@ def test_dup_gcdex():
 
     assert f.half_gcdex(g) == (s, h)
     assert f.gcdex(g) == (s, t, h)
-
-    R, x = ring('x', FF(11))
-
-    assert R.zero.gcdex(R(2)) == (0, 6, 1)
-    assert R(2).gcdex(R(2)) == (0, 6, 1)
-
-    assert R.zero.gcdex(3*x) == (0, 4, x)
-
-    assert (3*x).gcdex(3*x) == (0, 4, x)
-
-    assert (x**2 + 8*x + 7).gcdex(x**3 + 7*x**2 + x + 7) == (5*x + 6, 6, x + 7)
 
     _, x, y = ring('x y', QQ)
 
@@ -205,6 +205,15 @@ def test_PolyElement_subresultants():
 
             assert f.resultant(g) == -1
 
+    Rt, t = ring('t', ZZ)
+    Rx, x = ring('x', Rt)
+
+    f = x**6 - 5*x**4 + 5*x**2 + 4
+    g = -6*t*x**5 + x**4 + 20*t*x**3 - 3*x**2 - 10*t*x + 6
+
+    assert f.resultant(g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
+    assert (x - 1).resultant(x + 1, includePRS=True) == (2, [x - 1, x + 1, 2])
+
     R, x, y = ring('x y', ZZ)
 
     for check in (True, False):
@@ -316,15 +325,6 @@ def test_PolyElement_subresultants():
 
             assert f.resultant(g) == r.drop(x)
 
-    Rt, t = ring('t', ZZ)
-    Rx, x = ring('x', Rt)
-
-    f = x**6 - 5*x**4 + 5*x**2 + 4
-    g = -6*t*x**5 + x**4 + 20*t*x**3 - 3*x**2 - 10*t*x + 6
-
-    assert f.resultant(g) == 2930944*t**6 + 2198208*t**4 + 549552*t**2 + 45796
-    assert (x - 1).resultant(x + 1, includePRS=True) == (2, [x - 1, x + 1, 2])
-
 
 def test_PolyElement_discriminant():
     R, x = ring('x', ZZ)
@@ -374,104 +374,6 @@ def test_PolyElement_discriminant():
 
 
 def test_dmp_gcd():
-    R, x = ring('x', ZZ)
-
-    for test in (True, False):
-        with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
-            assert R(0).cofactors(R(0)) == (0, 0, 0)
-            assert R(2).cofactors(R(0)) == (2, 1, 0)
-            assert R(-2).cofactors(R(0)) == (2, -1, 0)
-            assert R(0).cofactors(R(-2)) == (2, 0, -1)
-            assert R(0).cofactors(2*x + 4) == (2*x + 4, 0, 1)
-            assert (2*x + 4).cofactors(R(0)) == (2*x + 4, 1, 0)
-            assert R(2).cofactors(R(2)) == (2, 1, 1)
-            assert R(-2).cofactors(R(2)) == (2, -1, 1)
-            assert R(2).cofactors(R(-2)) == (2, 1, -1)
-            assert R(-2).cofactors(R(-2)) == (2, -1, -1)
-            assert (x**2 + 2*x + 1).cofactors(R(1)) == (1, x**2 + 2*x + 1, 1)
-            assert (x**2 + 2*x + 1).cofactors(R(2)) == (1, x**2 + 2*x + 1, 2)
-            assert (2*x**2 + 4*x + 2).cofactors(R(2)) == (2, x**2 + 2*x + 1, 1)
-            assert R(2).cofactors(2*x**2 + 4*x + 2) == (2, 1, x**2 + 2*x + 1)
-            assert (2*x**2 + 4*x + 2).cofactors(x + 1) == (x + 1, 2*x + 2, 1)
-            assert (x + 1).cofactors(2*x**2 + 4*x + 2) == (x + 1, 1, 2*x + 2)
-            assert (x - 31).cofactors(x) == (1, x - 31, x)
-
-            f = x**2 - 1
-            g = x**2 - 3*x + 2
-
-            assert f.cofactors(g) == (x - 1, x + 1, x - 2)
-
-            f = x**4 + 8*x**3 + 21*x**2 + 22*x + 8
-            g = x**3 + 6*x**2 + 11*x + 6
-
-            assert f.cofactors(g) == (x**2 + 3*x + 2, x**2 + 5*x + 4, x + 3)
-
-            f = x**4 - 4
-            g = x**4 + 4*x**2 + 4
-
-            assert f.cofactors(g) == (x**2 + 2, x**2 - 2, x**2 + 2)
-
-            f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
-            g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
-
-            assert f.cofactors(g) == (1, f, g)
-
-            f = (-352518131239247345597970242177235495263669787845475025293906825864749649589178600387510272*x**49 +
-                 46818041807522713962450042363465092040687472354933295397472942006618953623327997952*x**42 +
-                 378182690892293941192071663536490788434899030680411695933646320291525827756032*x**35 +
-                 112806468807371824947796775491032386836656074179286744191026149539708928*x**28 -
-                 12278371209708240950316872681744825481125965781519138077173235712*x**21 +
-                 289127344604779611146960547954288113529690984687482920704*x**14 +
-                 19007977035740498977629742919480623972236450681*x**7 +
-                 311973482284542371301330321821976049)
-
-            h = (365431878023781158602430064717380211405897160759702125019136*x**21 +
-                 197599133478719444145775798221171663643171734081650688*x**14 -
-                 9504116979659010018253915765478924103928886144*x**7 -
-                 311973482284542371301330321821976049)
-            cff = (-964661685087874498642420170752*x**28 + 649736296036977287118848*x**21 +
-                   658473216967637120*x**14 - 30463679113*x**7 - 1)
-            cfg = (-47268422569305850433478588366848*x**27 + 30940259392972115602096128*x**20 +
-                   18261628279718027904*x**13 - 426497272383*x**6)
-
-            assert f.cofactors(f.diff()) == (h, cff, cfg)
-
-            f = 1317378933230047068160*x + 2945748836994210856960
-            g = 120352542776360960*x + 269116466014453760
-
-            H, cff, cfg = 120352542776360960*x + 269116466014453760, 10946, 1
-
-            assert f.cofactors(g) == (H, cff, cfg)
-
-            with using(heu_gcd_max=0):
-                assert f.cofactors(g) == (H, cff, cfg)
-
-    f, g = x**2 - 1, x**2 - 3*x + 2
-
-    for test in (True, False):
-        for method in ('prs', 'modgcd'):
-            with using(use_heu_gcd=test, fallback_gcd_zz_method=method):
-                assert f.gcd(g) == x - 1
-
-    R, x = ring('x', QQ)
-
-    for test in (True, False):
-        with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
-            f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
-            g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
-
-            assert f.cofactors(g) == (1, f, g)
-
-            assert R(0).cofactors(R(0)) == (0, 0, 0)
-
-            f, g = x**2/2 + x + QQ(1, 2), x/2 + QQ(1, 2)
-
-            assert f.cofactors(g) == (x + 1, g, QQ(1, 2))
-
-            f, g = x**2 - 1, x**2 - 3*x + 2
-
-            assert f.cofactors(g) == (x - 1, x + 1, x - 2)
-
     R, x = ring('x', FF(5))
 
     f = 3*x**2 + 2*x + 4
@@ -493,68 +395,233 @@ def test_dmp_gcd():
     assert (x**2 + 8*x + 7).cofactors(x**3 + 7*x**2 + x + 7) == (x + 7, x + 1,
                                                                  x**2 + 1)
 
+    R, x = ring('x', ZZ)
+
+    for test in (True, False):
+        for method in ('prs', 'modgcd'):
+            with using(use_heu_gcd=test, fallback_gcd_zz_method=method):
+                assert R(0).cofactors(R(0)) == (0, 0, 0)
+                assert R(0).cofactors(x) == (x, 0, 1)
+                assert x.cofactors(R(0)) == (x, 1, 0)
+                assert R(0).cofactors(-x) == (x, 0, -1)
+                assert (-x).cofactors(R(0)) == (x, -1, 0)
+                assert (2*x).cofactors(R(2)) == (2, x, 1)
+                assert R(2).cofactors(R(0)) == (2, 1, 0)
+                assert R(-2).cofactors(R(0)) == (2, -1, 0)
+                assert R(0).cofactors(R(-2)) == (2, 0, -1)
+                assert R(0).cofactors(2*x + 4) == (2*x + 4, 0, 1)
+                assert (2*x + 4).cofactors(R(0)) == (2*x + 4, 1, 0)
+                assert R(2).cofactors(R(2)) == (2, 1, 1)
+                assert R(-2).cofactors(R(2)) == (2, -1, 1)
+                assert R(2).cofactors(R(-2)) == (2, 1, -1)
+                assert R(-2).cofactors(R(-2)) == (2, -1, -1)
+                assert (x**2 + 2*x + 1).cofactors(R(1)) == (1, x**2 + 2*x + 1, 1)
+                assert (x**2 + 2*x + 1).cofactors(R(2)) == (1, x**2 + 2*x + 1, 2)
+                assert (2*x**2 + 4*x + 2).cofactors(R(2)) == (2, x**2 + 2*x + 1, 1)
+                assert R(2).cofactors(2*x**2 + 4*x + 2) == (2, 1, x**2 + 2*x + 1)
+                assert (2*x**2 + 4*x + 2).cofactors(x + 1) == (x + 1, 2*x + 2, 1)
+                assert (x + 1).cofactors(2*x**2 + 4*x + 2) == (x + 1, 1, 2*x + 2)
+                assert (x - 31).cofactors(x) == (1, x - 31, x)
+
+                f, g = 2*x + 2, 6*x**2 - 6
+
+                assert f.cofactors(g) == (2*x + 2, 1, 3*x - 3)
+
+                f, g = [1000000000000*x + 998549000000]*2
+
+                assert f.cofactors(g) == (f, 1, 1)
+
+                f, g = 999530000000*x + 1000000000000, 999530000000*x + 999999000000
+
+                assert f.cofactors(g) == (1000000, 999530*x + 1000000, 999530*x + 999999)
+
+                f = x**2 - 1
+                g = x**2 - 3*x + 2
+
+                assert f.cofactors(g) == (x - 1, x + 1, x - 2)
+
+                f = x**4 + 8*x**3 + 21*x**2 + 22*x + 8
+                g = x**3 + 6*x**2 + 11*x + 6
+
+                assert f.cofactors(g) == (x**2 + 3*x + 2, x**2 + 5*x + 4, x + 3)
+
+                f = x**4 - 4
+                g = x**4 + 4*x**2 + 4
+
+                assert f.cofactors(g) == (x**2 + 2, x**2 - 2, x**2 + 2)
+
+                f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
+                g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
+
+                assert f.cofactors(g) == (1, f, g)
+
+                f = (-352518131239247345597970242177235495263669787845475025293906825864749649589178600387510272*x**49 +
+                     46818041807522713962450042363465092040687472354933295397472942006618953623327997952*x**42 +
+                     378182690892293941192071663536490788434899030680411695933646320291525827756032*x**35 +
+                     112806468807371824947796775491032386836656074179286744191026149539708928*x**28 -
+                     12278371209708240950316872681744825481125965781519138077173235712*x**21 +
+                     289127344604779611146960547954288113529690984687482920704*x**14 +
+                     19007977035740498977629742919480623972236450681*x**7 +
+                     311973482284542371301330321821976049)
+
+                h = (365431878023781158602430064717380211405897160759702125019136*x**21 +
+                     197599133478719444145775798221171663643171734081650688*x**14 -
+                     9504116979659010018253915765478924103928886144*x**7 -
+                     311973482284542371301330321821976049)
+                cff = (-964661685087874498642420170752*x**28 + 649736296036977287118848*x**21 +
+                       658473216967637120*x**14 - 30463679113*x**7 - 1)
+                cfg = (-47268422569305850433478588366848*x**27 + 30940259392972115602096128*x**20 +
+                       18261628279718027904*x**13 - 426497272383*x**6)
+
+                assert f.cofactors(f.diff()) == (h, cff, cfg)
+
+                f = 1317378933230047068160*x + 2945748836994210856960
+                g = 120352542776360960*x + 269116466014453760
+
+                H, cff, cfg = 120352542776360960*x + 269116466014453760, 10946, 1
+
+                assert f.cofactors(g) == (H, cff, cfg)
+
+                with using(heu_gcd_max=0):
+                    assert f.cofactors(g) == (H, cff, cfg)
+
+    R, x = ring('x', QQ)
+
+    for test in (True, False):
+        with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
+            f = x**8 + x**6 - 3*x**4 - 3*x**3 + 8*x**2 + 2*x - 5
+            g = 3*x**6 + 5*x**4 - 4*x**2 - 9*x + 21
+
+            assert f.cofactors(g) == (1, f, g)
+
+            assert R(0).cofactors(R(0)) == (0, 0, 0)
+
+            f, g = x**2/2 + x + QQ(1, 2), x/2 + QQ(1, 2)
+
+            assert f.cofactors(g) == (x + 1, g, QQ(1, 2))
+
+            f, g = x**2 - 1, x**2 - 3*x + 2
+
+            assert f.cofactors(g) == (x - 1, x + 1, x - 2)
+
+    R, x = ring('x', QQ.algebraic_field(sqrt(2)))
+
+    for method in ('modgcd', 'prs'):
+        with using(gcd_aa_method=method):
+            f, g = 2*x, R(2)
+
+            assert f.cofactors(g) == (1, f, g)
+
+            f, g = 2*x, R(sqrt(2))
+
+            assert f.cofactors(g) == (1, f, g)
+
+            f, g = 2*x + 2, 6*x**2 - 6
+
+            assert f.cofactors(g) == (x + 1, 2, 6*x - 6)
+
+    R, x = ring('x', QQ.algebraic_field(sqrt(2)**(-1)*sqrt(3)))
+
+    for method in ('modgcd', 'prs'):
+        with using(gcd_aa_method=method):
+            f, g = x + 1, x - 1
+
+            assert f.cofactors(g) == (1, f, g)
+
     R, x = ring('x', CC)
 
     f, g = x**2 - 1, x**3 - 3*x + 2
 
     assert f.cofactors(g) == (1, f, g)
 
-    R, x, y = ring('x y', CC)
-
-    f, g = x**2 - y, x**3 - y*x + 2
-
-    assert f.cofactors(g) == (1, f, g)
-
     R, x, y = ring('x y', ZZ)
 
     for test in (True, False):
-        with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
-            assert R(0).cofactors(R(0)) == (0, 0, 0)
-            assert R(2).cofactors(R(0)) == (2, 1, 0)
-            assert R(-2).cofactors(R(0)) == (2, -1, 0)
-            assert R(0).cofactors(R(-2)) == (2, 0, -1)
-            assert R(0).cofactors(2*x + 4) == (2*x + 4, 0, 1)
-            assert (2*x + 4).cofactors(R(0)) == (2*x + 4, 1, 0)
-            assert R(2).cofactors(R(2)) == (2, 1, 1)
-            assert R(-2).cofactors(R(2)) == (2, -1, 1)
-            assert R(2).cofactors(R(-2)) == (2, 1, -1)
-            assert R(-2).cofactors(R(-2)) == (2, -1, -1)
-            assert (x**2 + 2*x + 1).cofactors(R(1)) == (1, x**2 + 2*x + 1, 1)
-            assert (x**2 + 2*x + 1).cofactors(R(2)) == (1, x**2 + 2*x + 1, 2)
-            assert (2*x**2 + 4*x + 2).cofactors(R(2)) == (2, x**2 + 2*x + 1, 1)
-            assert R(2).cofactors(2*x**2 + 4*x + 2) == (2, 1, x**2 + 2*x + 1)
+        for method in ('prs', 'modgcd'):
+            with using(use_heu_gcd=test, fallback_gcd_zz_method=method):
+                assert R(0).cofactors(R(0)) == (0, 0, 0)
+                assert R(2).cofactors(R(0)) == (2, 1, 0)
+                assert R(-2).cofactors(R(0)) == (2, -1, 0)
+                assert R(0).cofactors(R(-2)) == (2, 0, -1)
+                assert R(0).cofactors(2*x + 4) == (2*x + 4, 0, 1)
+                assert (2*x).cofactors(R(2)) == (2, x, 1)
+                assert (2*x + 4).cofactors(R(0)) == (2*x + 4, 1, 0)
+                assert R(2).cofactors(R(2)) == (2, 1, 1)
+                assert R(-2).cofactors(R(2)) == (2, -1, 1)
+                assert R(2).cofactors(R(-2)) == (2, 1, -1)
+                assert R(-2).cofactors(R(-2)) == (2, -1, -1)
+                assert (x**2 + 2*x + 1).cofactors(R(1)) == (1, x**2 + 2*x + 1, 1)
+                assert (x**2 + 2*x + 1).cofactors(R(2)) == (1, x**2 + 2*x + 1, 2)
+                assert (2*x**2 + 4*x + 2).cofactors(R(2)) == (2, x**2 + 2*x + 1, 1)
+                assert R(2).cofactors(2*x**2 + 4*x + 2) == (2, 1, x**2 + 2*x + 1)
 
-            f, g = 2*x**2 + 4*x + 2, x + 1
+                f, g = 2*x**2 + 4*x + 2, x + 1
 
-            assert f.cofactors(g) == (g, 2*x + 2, 1)
-            assert g.cofactors(f) == (g, 1, 2*x + 2)
-
-            with using(heu_gcd_max=0):
                 assert f.cofactors(g) == (g, 2*x + 2, 1)
+                assert g.cofactors(f) == (g, 1, 2*x + 2)
 
-            f, g = x**2 + 2*x*y + y**2, x**2 + x*y
+                with using(heu_gcd_max=0):
+                    assert f.cofactors(g) == (g, 2*x + 2, 1)
 
-            assert f.cofactors(g) == (x + y, x + y, x)
+                f = x**4 + 8*x**3 + 21*x**2 + 22*x + 8
+                g = x**3 + 6*x**2 + 11*x + 6
 
-            f = (-17434367009167300000000000000000000000000000000000000000000000000000000*x**4*y -
-                 250501827896299135568887342575961783764139560000000000000000000000000000000000000000000*x**3*y -
-                 2440935909299672540738135183426056447877858000000000000000000000000000000*x**3 -
-                 1349729941723537919695626818065131519270095220127010623905326719279566297660000000000000000000000000000*x**2*y -
-                 26304033868956978374552886858060487282904504027042515077682955951658838800000000000000000*x**2 -
-                 3232215785736369696036755035364398565076440134133908303058376297547504030528179314849416971379040931276000000000000000*x*y -
-                 94485916261760032526508027937078714464844205539023800247528621905831259414691631156161537919255129011800*x -
-                 2902585888465621357542575571971656665554321652262249362701116665830760628936600958940851960635161420991047110815678789984677193092993*y -
-                 113133324167442997472440652189550843502029192913459268196939183295294085146407870078840385860571627108778756267503630290)
-            g = (10000000000000000000000000000*x**2 + 71841388839807267676152024786000000000000000*x +
-                 129029628760809605749020969023932901278290735413660734705971)
+                assert f.cofactors(g) == (x**2 + 3*x + 2, x**2 + 5*x + 4, x + 3)
 
-            h = (-1743436700916730000000000000000000000000000*x**2*y -
-                 12525091394814956778444367128798089188206978000000000000000*x*y -
-                 244093590929967254073813518342605644787785800*x -
-                 22495499028725631994927113634418779135935898997901327211111875586270479483*y -
-                 876801128965234839118530545935732755107147297241756982389990)
+                f, g = x + 2*y, x + y
 
-            assert f.cofactors(g) == (g, h, 1)
+                assert f.cofactors(g) == (1, f, g)
+
+                f, g = x**2 + 2*x*y + y**2, x**2 + x*y
+
+                assert f.cofactors(g) == (x + y, x + y, x)
+
+                f, g = x**2 + 2*x*y + y**2, x**3 + y**3
+
+                assert f.cofactors(g) == (x + y, x + y, x**2 - x*y + y**2)
+
+                f, g = x*y**2 + 2*x*y + x, x*y**3 + x
+
+                assert f.cofactors(g) == (x*y + x, y + 1, y**2 - y + 1)
+
+                f, g = x**2*y**2 + x**2*y + 1, x*y**2 + x*y + 1
+
+                assert f.cofactors(g) == (1, f, g)
+
+                f = 2*x*y**2 + 4*x*y + 2*x + y**2 + 2*y + 1
+                g = 2*x*y**3 + 2*x + y**3 + 1
+
+                assert f.cofactors(g) == (2*x*y + 2*x + y + 1, y + 1, y**2 - y + 1)
+
+                f = 2*x**2 + 4*x*y - 2*x - 4*y
+                g = x**2 + x - 2
+
+                assert f.cofactors(g) == (x - 1, 2*x + 4*y, x + 2)
+
+                f = 2*x**2 + 2*x*y - 3*x - 3*y
+                g = 4*x*y - 2*x + 4*y**2 - 2*y
+
+                assert f.cofactors(g) == (x + y, 2*x - 3, 4*y - 2)
+
+                f = (-17434367009167300000000000000000000000000000000000000000000000000000000*x**4*y -
+                     250501827896299135568887342575961783764139560000000000000000000000000000000000000000000*x**3*y -
+                     2440935909299672540738135183426056447877858000000000000000000000000000000*x**3 -
+                     1349729941723537919695626818065131519270095220127010623905326719279566297660000000000000000000000000000*x**2*y -
+                     26304033868956978374552886858060487282904504027042515077682955951658838800000000000000000*x**2 -
+                     3232215785736369696036755035364398565076440134133908303058376297547504030528179314849416971379040931276000000000000000*x*y -
+                     94485916261760032526508027937078714464844205539023800247528621905831259414691631156161537919255129011800*x -
+                     2902585888465621357542575571971656665554321652262249362701116665830760628936600958940851960635161420991047110815678789984677193092993*y -
+                     113133324167442997472440652189550843502029192913459268196939183295294085146407870078840385860571627108778756267503630290)
+                g = (10000000000000000000000000000*x**2 + 71841388839807267676152024786000000000000000*x +
+                     129029628760809605749020969023932901278290735413660734705971)
+
+                h = (-1743436700916730000000000000000000000000000*x**2*y -
+                     12525091394814956778444367128798089188206978000000000000000*x*y -
+                     244093590929967254073813518342605644787785800*x -
+                     22495499028725631994927113634418779135935898997901327211111875586270479483*y -
+                     876801128965234839118530545935732755107147297241756982389990)
+
+                assert f.cofactors(g) == (g, h, 1)
 
     R, x, y = ring('x y', QQ)
 
@@ -580,6 +647,26 @@ def test_dmp_gcd():
 
             assert f.cofactors(g) == (x + y, x/2 + y/2, x)
 
+    R, x, y = ring('x y', QQ.algebraic_field(sqrt(2)))
+
+    for method in ('modgcd', 'prs'):
+        with using(gcd_aa_method=method):
+            f, g = (x + sqrt(2)*y)**2, x + sqrt(2)*y
+
+            assert f.cofactors(g) == (g, g, 1)
+
+            f, g = x + sqrt(2)*y, x + y
+
+            assert f.cofactors(g) == (1, f, g)
+
+            f, g = x*y + sqrt(2)*y**2, sqrt(2)*y
+
+            assert f.cofactors(g) == (y, x + sqrt(2)*y, sqrt(2))
+
+            f, g = x**2 + 2*sqrt(2)*x*y + 2*y**2, x + sqrt(2)*y
+
+            assert f.cofactors(g) == (g, g, 1)
+
     R, x, y = ring('x y', RR)
 
     for test in (True, False):
@@ -594,77 +681,138 @@ def test_dmp_gcd():
             assert f.cofactors(g) == (h, f//h, g//h)
             assert g.cofactors(f) == (h, g//h, f//h)
 
-    R, x, y = ring('x y', QQ.algebraic_field(sqrt(2)))
+    R, x, y = ring('x y', CC)
 
-    f, g = (x + sqrt(2)*y)**2, x + sqrt(2)*y
+    f, g = x**2 - y, x**3 - y*x + 2
 
-    assert f.gcd(g) == g
-    with using(gcd_aa_method='modgcd'):
-        assert f.gcd(g) == g
+    assert f.cofactors(g) == (1, f, g)
 
     R, x, y, z = ring('x y z', ZZ)
 
     for test in (True, False):
-        with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
+        for method in ('prs', 'modgcd'):
+            with using(use_heu_gcd=test, fallback_gcd_zz_method=method):
+                f, g = x - y*z, x - y*z
+
+                assert f.cofactors(g) == (x - y*z, 1, 1)
+
+                f, g, h = R.fateman_poly_F_1()
+                H, cff, cfg = f.cofactors(g)
+
+                assert H == h and H*cff == f and H*cfg == g
+
+                f, g, h = R.fateman_poly_F_2()
+                H, cff, cfg = f.cofactors(g)
+
+                assert H == h and H*cff == f and H*cfg == g
+
+                f, g, h = R.fateman_poly_F_3()
+                H, cff, cfg = f.cofactors(g)
+
+                assert H == h and H*cff == f and H*cfg == g
+
+    R, x, y, z = ring('x, y, z', QQ.algebraic_field(sqrt(2), sqrt(3)))
+
+    with using(gcd_aa_method='modgcd'):
+        h = x**2*y**7 + sqrt(6)/21*z
+        f, g = h*(27*y**3 + 1), h*(y + x)
+
+        assert f.cofactors(g) == (h, 27*y**3 + 1, x + y)
+
+        h = x**13*y**3 + x**10/2 + 1/sqrt(2)
+        f, g = h*(x + 1), h*sqrt(2)/sqrt(3)
+
+        assert f.cofactors(g) == (h, x + 1, sqrt(2)/sqrt(3))
+
+        h = x**4*y**9 + sqrt(6)/22*z
+        f, g = h*(21*y**3 + 1), h*(y + x)
+
+        assert f.cofactors(g) == (x**4*y**9 + sqrt(6)/22*z, 21*y**3 + 1, x + y)
+
+        h = x**4*y**3 + sqrt(6)/22*z
+        f, g = h*(11*y**3 + 1), h*(y + x)
+
+        assert f.cofactors(g) == (x**4*y**3 + sqrt(6)/22*z, 11*y**3 + 1, x + y)
+
+        h = x**2*y**3 + 1111*sqrt(6)/12*z
+        a, b = 11*y**3 + 2, (y + x - 1)*h
+
+        assert (h*a).cofactors(h*b) == (h, a, b)
+
+        a, b = 12*y + 2*x - 1, (y + x - 1)*h
+
+        assert (h*a).cofactors(h*b) == (h, a, b)
+
+    R, x, y, z = ring('x y z', QQ.algebraic_field(I))
+
+    for method in ('prs', 'modgcd'):
+        with using(gcd_aa_method=method):
+            f, g = R.one, I*z
+
+            assert f.cofactors(g) == (1, f, g)
+            assert g.cofactors(f) == (1, g, f)
+
+    R, x, y, z, u = ring('x y z u', ZZ)
+
+    for test in (True, False):
+        for method in ('prs', 'modgcd'):
+            with using(use_heu_gcd=test, fallback_gcd_zz_method=method):
+                f, g = u**2 + 2*u + 1, 2*u + 2
+
+                assert f.cofactors(g) == (u + 1, u + 1, 2)
+
+                f, g = z**2*u**2 + 2*z**2*u + z**2 + z*u + z, u**2 + 2*u + 1
+                h, cff, cfg = u + 1, z**2*u + z**2 + z, u + 1
+
+                assert f.cofactors(g) == (h, cff, cfg)
+                assert g.cofactors(f) == (h, cfg, cff)
+
+                f, g = x + y + z, -x - y - z - u
+
+                assert f.cofactors(g) == (1, f, g)
+
+                f, g, h = R.fateman_poly_F_3()
+                H, cff, cfg = f.cofactors(g)
+
+                assert H == h and H*cff == f and H*cfg == g
+
+                f, g, h = (1199999999999991*x**17 - y, 2*y - 19989798798 + x**211,
+                           12*x*y**7 + x**4 - 1)
+
+                for i in range(10):
+                    assert (f*h).cofactors(g*h) == (h, f, g)
+
+    R, x, y, z, u, v = ring('x y z u v', ZZ)
+
+    for test in (True, False):
+        with using(use_heu_gcd=test, fallback_gcd_zz_method='modgcd'):
             f, g, h = R.fateman_poly_F_1()
             H, cff, cfg = f.cofactors(g)
 
             assert H == h and H*cff == f and H*cfg == g
 
-            f, g, h = R.fateman_poly_F_2()
-            H, cff, cfg = f.cofactors(g)
-
-            assert H == h and H*cff == f and H*cfg == g
-
             f, g, h = R.fateman_poly_F_3()
             H, cff, cfg = f.cofactors(g)
 
             assert H == h and H*cff == f and H*cfg == g
-
-    R, x, y, z, u = ring('x y z u', ZZ)
-
-    for test in (True, False):
-        with using(use_heu_gcd=test, fallback_gcd_zz_method='prs'):
-            f, g = u**2 + 2*u + 1, 2*u + 2
-
-            assert f.cofactors(g) == (u + 1, u + 1, 2)
-
-            f, g = z**2*u**2 + 2*z**2*u + z**2 + z*u + z, u**2 + 2*u + 1
-            h, cff, cfg = u + 1, z**2*u + z**2 + z, u + 1
-
-            assert f.cofactors(g) == (h, cff, cfg)
-            assert g.cofactors(f) == (h, cfg, cff)
-
-            f, g, h = R.fateman_poly_F_3()
-            H, cff, cfg = f.cofactors(g)
-
-            assert H == h and H*cff == f and H*cfg == g
-
-    R, x, y, z, u, v = ring('x y z u v', ZZ)
-
-    f, g, h = R.fateman_poly_F_1()
-    H, cff, cfg = f.cofactors(g)
-
-    assert H == h and H*cff == f and H*cfg == g
-
-    f, g, h = R.fateman_poly_F_3()
-    H, cff, cfg = f.cofactors(g)
-
-    assert H == h and H*cff == f and H*cfg == g
 
     R, x, y, z, u, v, a, b = ring('x y z u v a b', ZZ)
 
-    f, g, h = R.fateman_poly_F_1()
-    H, cff, cfg = f.cofactors(g)
+    for test in (True, False):
+        with using(use_heu_gcd=test, fallback_gcd_zz_method='modgcd'):
+            f, g, h = R.fateman_poly_F_1()
+            H, cff, cfg = f.cofactors(g)
 
-    assert H == h and H*cff == f and H*cfg == g
+            assert H == h and H*cff == f and H*cfg == g
 
     R, x, y, z, u, v, a, b, c, d = ring('x y z u v a b c d', ZZ)
 
-    f, g, h = R.fateman_poly_F_1()
-    H, cff, cfg = f.cofactors(g)
+    for test in (True, False):
+        with using(use_heu_gcd=test, fallback_gcd_zz_method='modgcd'):
+            f, g, h = R.fateman_poly_F_1()
+            H, cff, cfg = f.cofactors(g)
 
-    assert H == h and H*cff == f and H*cfg == g
+            assert H == h and H*cff == f and H*cfg == g
 
     F, x = field('x', QQ)
     R, t = ring('t', F)
@@ -673,6 +821,21 @@ def test_dmp_gcd():
 
 
 def test_PolyElement_lcm():
+    R, x = ring('x', FF(5))
+
+    assert (3*x**2 + 2*x + 4).lcm(2*x**2 + 2*x + 3) == x**3 + 2*x**2 + 4
+
+    R, x = ring('x', FF(11))
+
+    assert R.zero.lcm(R(2)) == 0
+    assert R(2).lcm(R(2)) == 1
+
+    assert R.zero.lcm(x) == 0
+
+    assert (3*x).lcm(3*x) == x
+    assert (x**2 + 8*x + 7).lcm(x**3 + 7*x**2 + x + 7) == (x**4 + 8*x**3 +
+                                                           8*x**2 + 8*x + 7)
+
     R, x = ring('x', ZZ)
 
     assert R(2).lcm(R(6)) == 6
@@ -686,6 +849,14 @@ def test_PolyElement_lcm():
     assert (2*x**2 + x).lcm(x) == 2*x**2 + x
     assert (2*x**2 + x).lcm(2*x) == 4*x**2 + 2*x
     assert (x**2 - 1).lcm(x**2 - 3*x + 2) == x**3 - 2*x**2 - x + 2
+
+    R, x = ring('x', QQ)
+
+    f = (x**2 + 7*x/2 + 3)/2
+    g = x**2/2 + x
+    h = x**3 + 7/2*x**2 + 3*x
+
+    assert f.lcm(g) == h
 
     R, x, y = ring('x y', ZZ)
 
@@ -715,14 +886,6 @@ def test_PolyElement_lcm():
 
     assert f.lcm(g) == h
 
-    R, x = ring('x', QQ)
-
-    f = (x**2 + 7*x/2 + 3)/2
-    g = x**2/2 + x
-    h = x**3 + 7/2*x**2 + 3*x
-
-    assert f.lcm(g) == h
-
     R, x, y = ring('x y', QQ)
 
     f = 2*x*y - x**2/2 + QQ(1, 3)
@@ -737,21 +900,6 @@ def test_PolyElement_lcm():
     h = x**3 + 4*x**2*y + 4*x*y**2
 
     assert f.lcm(g) == h
-
-    R, x = ring('x', FF(11))
-
-    assert R.zero.lcm(R(2)) == 0
-    assert R(2).lcm(R(2)) == 1
-
-    assert R.zero.lcm(x) == 0
-
-    assert (3*x).lcm(3*x) == x
-    assert (x**2 + 8*x + 7).lcm(x**3 + 7*x**2 + x + 7) == (x**4 + 8*x**3 +
-                                                           8*x**2 + 8*x + 7)
-
-    R, x = ring('x', FF(5))
-
-    assert (3*x**2 + 2*x + 4).lcm(2*x**2 + 2*x + 3) == x**3 + 2*x**2 + 4
 
 
 def test_PolyElement_cancel():
@@ -793,6 +941,14 @@ def test_PolyElement_cancel():
     R, x = ring('x', QQ)
 
     assert (x**2/4 - 1).cancel(x/2 - 1) == (x + 2, 2)
+
+    Fx, x = field('x', ZZ)
+    Rt, t = ring('t', Fx)
+
+    f = (-x**2 - 4)/4*t
+    g = t**2 + (x**2 + 2)/2
+
+    assert f.cancel(g) == ((-x**2 - 4)*t, 4*t**2 + 2*x**2 + 4)
 
     R, x, y = ring('x y', ZZ)
 
@@ -837,14 +993,6 @@ def test_PolyElement_cancel():
 
     assert (-f).cancel(g) == (-F, G)
     assert f.cancel(-g) == (-F, G)
-
-    Fx, x = field('x', ZZ)
-    Rt, t = ring('t', Fx)
-
-    f = (-x**2 - 4)/4*t
-    g = t**2 + (x**2 + 2)/2
-
-    assert f.cancel(g) == ((-x**2 - 4)*t, 4*t**2 + 2*x**2 + 4)
 
 
 def test_sympyissue_10996():

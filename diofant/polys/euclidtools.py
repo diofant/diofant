@@ -186,10 +186,22 @@ class _GCD:
         ring = self
 
         if ring.is_multivariate:
-            ring, f, g = map(lambda _: _.eject(*self.gens[1:]), (ring, f, g))
-            h, f, g = map(lambda _: _.inject(), ring._rr_prs_gcd(f, g))
-            c, h = h.LC, h.monic()
-            return h, f.quo_ground(c), g.quo_ground(c)
+            ring, F, G = map(lambda _: _.eject(*self.gens[1:]), (ring, f, g))
+
+            fc, F = F.primitive()
+            gc, G = G.primitive()
+
+            F, G = map(lambda _: _.inject(), (F, G))
+
+            h = F.subresultants(G)[-1]
+            c, _, _ = ring.domain._ff_prs_gcd(fc, gc)
+            h = h.eject(*self.gens[1:])
+            _, h = h.primitive()
+            h = h.inject()
+            h *= c
+            h = h.monic()
+
+            return h, f // h, g // h
 
         h = f.subresultants(g)[-1]
         h = h.monic()
