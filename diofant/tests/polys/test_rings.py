@@ -1550,15 +1550,15 @@ def test_PolyElement_clear_denoms():
     assert f.clear_denoms() == (6, 3*x + 2)
     assert f.clear_denoms(convert=True) == (6, (3*x + 2).set_domain(ZZ))
 
-    R, a = ring('a', EX)
+    R, x = ring('x', EX)
 
-    assert (3*a/2 + Rational(9, 4)).clear_denoms() == (4, 6*a + 9)
+    assert (3*x/2 + Rational(9, 4)).clear_denoms() == (4, 6*x + 9)
 
     assert R(7).clear_denoms() == (1, 7)
 
-    x = EX.to_expr(EX('x'))
+    a = EX.to_expr(EX('a'))
 
-    assert (sin(x)/x*a).clear_denoms() == (x, a*sin(x))
+    assert (sin(a)/a*x).clear_denoms() == (a, x*sin(a))
 
     R, x, y = ring('x y', QQ)
 
@@ -1618,14 +1618,14 @@ def test_PolyElement_clear_denoms():
     assert [f.clear_denoms()[1].set_domain(ZZ) for f in F] == G
     assert [f.clear_denoms(convert=True)[1] for f in F] == G
 
-    R, a, b = ring('a b', EX)
+    R, x, y = ring('x y', EX)
 
-    assert (3*a/2 + Rational(9, 4)).clear_denoms() == (4, 6*a + 9)
+    assert (3*x/2 + Rational(9, 4)).clear_denoms() == (4, 6*x + 9)
     assert R(7).clear_denoms() == (1, 7)
 
-    x = EX.to_expr(EX('x'))
+    a = EX.to_expr(EX('a'))
 
-    assert (sin(x)/x*b).clear_denoms() == (x, b*sin(x))
+    assert (sin(a)/a*y).clear_denoms() == (a, y*sin(a))
 
 
 def test_PolyElement_terms_gcd():
