@@ -19,6 +19,7 @@ from .compatibility import IPolys
 from .constructor import construct_domain
 from .densebasic import dmp_from_dict, dmp_to_dict
 from .euclidtools import _GCD
+from .factortools import _Factor
 from .monomials import Monomial
 from .orderings import lex
 from .polyconfig import query
@@ -151,7 +152,7 @@ def _parse_symbols(symbols):
 _ring_cache = {}
 
 
-class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF):
+class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF, _Factor):
     """A class for representing multivariate polynomial rings."""
 
     is_PolynomialRing = True

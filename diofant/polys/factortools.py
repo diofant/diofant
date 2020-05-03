@@ -14,19 +14,19 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_l1_norm,
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
                          dmp_eject, dmp_exclude, dmp_ground_LC, dmp_ground_p,
                          dmp_include, dmp_inject, dmp_LC, dmp_nest, dmp_normal,
-                         dmp_one, dmp_raise, dmp_strip, dmp_swap, dmp_TC,
-                         dmp_zero_p, dup_inflate)
+                         dmp_one, dmp_raise, dmp_strip, dmp_TC, dmp_zero_p,
+                         dup_inflate)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc)
-from .euclidtools import dmp_inner_gcd, dmp_primitive, dup_gcdex
+from .euclidtools import dmp_primitive, dup_gcdex
 from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-from .sqfreetools import dmp_sqf_list, dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
+from .sqfreetools import dmp_sqf_list, dmp_sqf_p, dmp_sqf_part
 
 
 def dmp_trial_division(f, factors, u, K):
@@ -995,32 +995,10 @@ def dmp_zz_factor(f, u, K):
 
 def dmp_ext_factor(f, u, K):
     """Factor multivariate polynomials over algebraic number fields."""
-    lc = dmp_ground_LC(f, u, K)
-    f = dmp_ground_monic(f, u, K)
-
-    if dmp_ground_p(f, None, u):
-        return lc, []
-
-    f, F = dmp_sqf_part(f, u, K), f
-    s, g, r = dmp_sqf_norm(f, u, K)
-
-    _, factors = dmp_factor_list(r, u, K.domain)
-
-    if len(factors) == 1:
-        factors = [f]
-    else:
-        H = dmp_raise([K.one, s*K.unit], u, 0, K)
-
-        for i, (factor, _) in enumerate(factors):
-            h = dmp_convert(factor, u, K.domain, K)
-            h, _, g = dmp_inner_gcd(h, g, u, K)
-            for j in range(u + 1):
-                h = dmp_swap(h, 0, j, u, K)
-                h = dmp_compose(h, H, u, K)
-                h = dmp_swap(h, 0, j, u, K)
-            factors[i] = h
-
-    return lc, dmp_trial_division(F, factors, u, K)
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    lc, factors = ring._aa_factor_trager(f)
+    return lc, [(ring.to_dense(f), k) for f, k in factors]
 
 
 def dmp_gf_factor(f, u, K):
@@ -1102,3 +1080,50 @@ def dmp_factor_list(f, u, K0):
                 K0 = K0_inexact
 
     return coeff*cont, _sort_factors(factors)
+
+
+class _Factor:
+    """Mixin class for factorization routines."""
+
+    def _trial_division(self, f, factors):
+        result = []
+
+        for factor in factors:
+            k = 0
+
+            while f:
+                q, r = divmod(f, factor)
+
+                if r.is_zero:
+                    f, k = q, k + 1
+                else:
+                    break
+
+            result.append((factor, k))
+
+        return _sort_factors(result)
+
+    def _aa_factor_trager(self, f):
+        """Factor multivariate polynomials over algebraic number fields."""
+        domain = self.domain
+
+        lc, f = f.LC, f.monic()
+
+        if f.is_ground:
+            return lc, []
+
+        f, F = f.sqf_part(), f
+        s, g, r = f.sqf_norm()
+
+        _, factors = r.factor_list()
+
+        if len(factors) == 1:
+            factors = [f]
+        else:
+            for i, (factor, _) in enumerate(factors):
+                h = factor.set_domain(domain)
+                h, _, g = self.cofactors(h, g)
+                h = h.compose({x: x + s*domain.unit for x in self.gens})
+                factors[i] = h
+
+        return lc, self._trial_division(F, factors)
