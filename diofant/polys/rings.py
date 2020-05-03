@@ -19,12 +19,11 @@ from .compatibility import IPolys
 from .constructor import construct_domain
 from .densebasic import dmp_from_dict, dmp_to_dict
 from .euclidtools import _GCD
-from .modulargcd import func_field_modgcd, modgcd
 from .monomials import Monomial
 from .orderings import lex
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, ExactQuotientFailed,
-                         GeneratorsError, GeneratorsNeeded, HeuristicGCDFailed,
+                         GeneratorsError, GeneratorsNeeded,
                          MultivariatePolynomialError, PolynomialDivisionFailed,
                          PolynomialError)
 from .polyoptions import Domain as DomainOpt
@@ -152,7 +151,7 @@ def _parse_symbols(symbols):
 _ring_cache = {}
 
 
-class PolynomialRing(Ring, CompositeDomain, IPolys, _GCD, _SQF):
+class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF):
     """A class for representing multivariate polynomial rings."""
 
     is_PolynomialRing = True
@@ -457,10 +456,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys, _GCD, _SQF):
     def half_gcdex(self, a, b):
         """Half extended GCD of ``a`` and ``b``."""
         return a.half_gcdex(b)
-
-    def gcd(self, a, b):
-        """Returns GCD of ``a`` and ``b``."""
-        return a.gcd(b)
 
     def lcm(self, a, b):
         """Returns LCM of ``a`` and ``b``."""
@@ -1703,94 +1698,10 @@ class PolyElement(DomainElement, CantSympify, dict):
             return h.monic()
 
     def gcd(self, other):
-        return self.cofactors(other)[0]
+        return self.ring.gcd(self, other)
 
     def cofactors(self, other):
-        if not self and not other:
-            zero = self.ring.zero
-            return zero, zero, zero
-        elif not self:
-            h, cff, cfg = self._gcd_zero(other)
-            return h, cff, cfg
-        elif not other:
-            h, cfg, cff = other._gcd_zero(self)
-            return h, cff, cfg
-
-        J, (f, g) = self.deflate(other)
-        h, cff, cfg = f._gcd(g)
-
-        return h.inflate(J), cff.inflate(J), cfg.inflate(J)
-
-    def _gcd_zero(self, other):
-        one, zero = self.ring.one, self.ring.zero
-        if self.ring.domain.is_Field:
-            return other.monic(), zero, self.ring.ground_new(other.LC)
-        else:
-            if not self.ring.is_normal(other):
-                return -other, zero, -one
-            else:
-                return other, zero, one
-
-    def _gcd(self, other):
-        ring = self.ring
-
-        if ring.domain.is_RationalField:
-            return self._gcd_QQ(other)
-        elif ring.domain.is_IntegerRing:
-            return self._gcd_ZZ(other)
-        elif ring.domain.is_AlgebraicField:
-            return self._gcd_AA(other)
-        elif not ring.domain.is_Exact:
-            try:
-                exact = ring.domain.get_exact()
-            except DomainError:
-                return ring.one, self, other
-
-            f, g = map(lambda x: x.set_domain(exact), (self, other))
-
-            return tuple(map(lambda x: x.set_domain(ring.domain), f.cofactors(g)))
-        elif ring.domain.is_Field:
-            return self.ring._ff_prs_gcd(self, other)
-        else:
-            return self.ring._rr_prs_gcd(self, other)
-
-    def _gcd_ZZ(self, other):
-        ring = self.ring
-
-        if query('USE_HEU_GCD'):
-            try:
-                return ring._zz_heu_gcd(self, other)
-            except HeuristicGCDFailed:  # pragma: no cover
-                pass
-
-        _gcd_zz_methods = {'modgcd': modgcd,
-                           'prs': ring._rr_prs_gcd}
-
-        method = _gcd_zz_methods[query('FALLBACK_GCD_ZZ_METHOD')]
-        return method(self, other)
-
-    def _gcd_QQ(self, g):
-        f = self
-        ring = f.ring
-
-        cf, f = f.clear_denoms(convert=True)
-        cg, g = g.clear_denoms(convert=True)
-
-        h, cff, cfg = map(lambda _: _.set_ring(ring), f._gcd_ZZ(g))
-
-        c, h = h.LC, h.monic()
-
-        cff = cff.mul_ground(ring.domain.quo(c, cf))
-        cfg = cfg.mul_ground(ring.domain.quo(c, cg))
-
-        return h, cff, cfg
-
-    def _gcd_AA(self, g):
-        _gcd_aa_methods = {'modgcd': func_field_modgcd,
-                           'prs': self.ring._ff_prs_gcd}
-
-        method = _gcd_aa_methods[query('GCD_AA_METHOD')]
-        return method(self, g)
+        return self.ring.cofactors(self, other)
 
     def terms_gcd(self):
         if self.is_zero:

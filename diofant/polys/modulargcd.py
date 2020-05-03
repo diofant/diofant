@@ -1560,7 +1560,7 @@ def func_field_modgcd(f, g):
     assert ring == g.ring and domain.is_AlgebraicField
 
     if not f:
-        return f._gcd_zero(g)
+        return ring._gcd_zero(g)
 
     z = Dummy('z')
 

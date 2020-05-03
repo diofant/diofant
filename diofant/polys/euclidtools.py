@@ -4,7 +4,7 @@ from ..core import cacheit
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, symmetric_residue
 from .polyconfig import query
-from .polyerrors import HeuristicGCDFailed, HomomorphismFailed
+from .polyerrors import DomainError, HeuristicGCDFailed, HomomorphismFailed
 
 
 def dup_gcdex(f, g, K):
@@ -47,6 +47,102 @@ def dmp_primitive(f, u, K):
 
 class _GCD:
     """Mixin class for computing gcd."""
+
+    def gcd(self, f, g):
+        """Returns GCD of ``f`` and ``g``."""
+        return self.cofactors(f, g)[0]
+
+    def cofactors(self, f, g):
+        """Returns GCD and cofactors of ``f`` and ``g``."""
+        if f.is_zero and g.is_zero:
+            zero = self.zero
+            return zero, zero, zero
+        elif f.is_zero:
+            h, cff, cfg = self._gcd_zero(g)
+            return h, cff, cfg
+        elif g.is_zero:
+            h, cfg, cff = self._gcd_zero(f)
+            return h, cff, cfg
+
+        J, (f, g) = f.deflate(g)
+        h, cff, cfg = self._gcd(f, g)
+
+        return h.inflate(J), cff.inflate(J), cfg.inflate(J)
+
+    def _gcd_zero(self, f):
+        one, zero = self.one, self.zero
+        if self.domain.is_Field:
+            return f.monic(), zero, self.ground_new(f.LC)
+        else:
+            if not self.is_normal(f):
+                return -f, zero, -one
+            else:
+                return f, zero, one
+
+    def _gcd(self, f, g):
+        domain = self.domain
+
+        if domain.is_RationalField:
+            return self._gcd_QQ(f, g)
+        elif domain.is_IntegerRing:
+            return self._gcd_ZZ(f, g)
+        elif domain.is_AlgebraicField:
+            return self._gcd_AA(f, g)
+        elif not domain.is_Exact:
+            try:
+                exact = domain.get_exact()
+            except DomainError:
+                return self.one, f, g
+
+            f, g = map(lambda x: x.set_domain(exact), (f, g))
+            ring = self.clone(domain=exact)
+
+            return tuple(map(lambda x: x.set_domain(domain), ring.cofactors(f, g)))
+        elif domain.is_Field:
+            return self._ff_prs_gcd(f, g)
+        else:
+            return self._rr_prs_gcd(f, g)
+
+    def _gcd_ZZ(self, f, g):
+        from .modulargcd import modgcd
+
+        if query('USE_HEU_GCD'):
+            try:
+                return self._zz_heu_gcd(f, g)
+            except HeuristicGCDFailed:
+                pass
+
+        _gcd_zz_methods = {'modgcd': modgcd,
+                           'prs': self._rr_prs_gcd}
+
+        method = _gcd_zz_methods[query('FALLBACK_GCD_ZZ_METHOD')]
+        return method(f, g)
+
+    def _gcd_QQ(self, f, g):
+        domain = self.domain
+
+        cf, f = f.clear_denoms(convert=True)
+        cg, g = g.clear_denoms(convert=True)
+
+        ring = self.clone(domain=domain.ring)
+
+        h, cff, cfg = map(lambda _: _.set_ring(self), ring._gcd_ZZ(f, g))
+
+        c, h = h.LC, h.monic()
+
+        cff = cff.mul_ground(domain.quo(c, cf))
+        cfg = cfg.mul_ground(domain.quo(c, cg))
+
+        return h, cff, cfg
+
+    def _gcd_AA(self, f, g):
+        from .modulargcd import func_field_modgcd
+
+        _gcd_aa_methods = {'modgcd': func_field_modgcd,
+                           'prs': self._ff_prs_gcd}
+
+        method = _gcd_aa_methods[query('GCD_AA_METHOD')]
+        return method(f, g)
 
     def _zz_heu_gcd(self, f, g):
         """
