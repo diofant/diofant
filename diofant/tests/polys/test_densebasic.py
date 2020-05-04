@@ -10,9 +10,9 @@ from diofant.polys.densebasic import (dmp_convert, dmp_degree_in, dmp_eject,
                                       dmp_ground_p, dmp_include, dmp_inject,
                                       dmp_nest, dmp_normal, dmp_one, dmp_one_p,
                                       dmp_permute, dmp_raise, dmp_strip,
-                                      dmp_swap, dmp_terms_gcd, dmp_to_dict,
-                                      dmp_zero, dmp_zero_p, dmp_zeros,
-                                      dup_random, dup_reverse)
+                                      dmp_terms_gcd, dmp_to_dict, dmp_zero,
+                                      dmp_zero_p, dmp_zeros, dup_random,
+                                      dup_reverse)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -312,24 +312,6 @@ def test_dmp_from_to_dict():
 
     assert dmp_from_dict(g, 1, ZZ) == f
     assert dmp_to_dict(f, 1) == g
-
-
-def test_dmp_swap():
-    f = dmp_normal([[1, 0, 0], [], [1, 0], [], [1]], 1, ZZ)
-    g = dmp_normal([[1, 0, 0, 0, 0], [1, 0, 0], [1]], 1, ZZ)
-
-    assert dmp_swap(f, 1, 1, 1, ZZ) == f
-
-    assert dmp_swap(f, 0, 1, 1, ZZ) == g
-    assert dmp_swap(g, 0, 1, 1, ZZ) == f
-
-    pytest.raises(IndexError, lambda: dmp_swap(f, -1, -7, 1, ZZ))
-
-    f = dmp_normal([[[2], [1, 0]], []], 2, ZZ)
-
-    assert dmp_swap(f, 0, 1, 2, ZZ) == dmp_normal([[[2], []], [[1, 0], []]], 2, ZZ)
-    assert dmp_swap(f, 1, 2, 2, ZZ) == dmp_normal([[[1], [2, 0]], [[]]], 2, ZZ)
-    assert dmp_swap(f, 0, 2, 2, ZZ) == dmp_normal([[[1, 0]], [[2, 0], []]], 2, ZZ)
 
 
 def test_dmp_permute():

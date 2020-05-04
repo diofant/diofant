@@ -477,30 +477,6 @@ def dmp_to_dict(f, u):
     return result
 
 
-def dmp_swap(f, i, j, u, K):
-    """
-    Transform ``K[..x_i..x_j..]`` to ``K[..x_j..x_i..]``.
-
-    Examples
-    ========
-
-    >>> dmp_swap([[[ZZ(2)], [ZZ(1), ZZ(0)]], []], 0, 1, 2, ZZ)
-    [[[2], []], [[1, 0], []]]
-
-    """
-    if i < 0 or j < 0 or i > u or j > u:
-        raise IndexError(f'0 <= i < j <= {u} expected')
-    elif i == j:
-        return f
-
-    F, H = dmp_to_dict(f, u), {}
-
-    for exp, coeff in F.items():
-        H[exp[:i] + (exp[j],) + exp[i + 1:j] + (exp[i],) + exp[j + 1:]] = coeff
-
-    return dmp_from_dict(H, u, K)
-
-
 def dmp_permute(f, P, u, K):
     """
     Return a polynomial in ``K[x_{P(1)},..,x_{P(n)}]``.
