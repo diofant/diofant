@@ -3,7 +3,7 @@
 from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_mul,
                          dmp_mul_ground, dmp_neg, dmp_sub, dup_add, dup_mul)
 from .densebasic import (dmp_degree_in, dmp_from_dict, dmp_ground, dmp_LC,
-                         dmp_strip, dmp_to_dict, dmp_zero, dmp_zero_p)
+                         dmp_to_dict, dmp_zero, dmp_zero_p)
 from .polyerrors import DomainError
 
 
@@ -40,45 +40,16 @@ def dmp_eval_in(f, a, j, u, K):
 
 
 def dmp_eval_tail(f, A, u, K):
-    """
-    Evaluate a polynomial at ``x_j = a_j, ...`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = 2*x*y + 3*x + y + 2
-
-    >>> R.dmp_eval_tail(f, [2])
-    7*x + 4
-    >>> R.dmp_eval_tail(f, [2, 2])
-    18
-
-    """
-    if not A:
-        return f
-
-    if dmp_zero_p(f, u):
-        return dmp_zero(u - len(A))
-
-    def eval_tail(g, i, A, u, K):
-        if i == u:
-            return dmp_eval_in(g, A[-1], 0, 0, K)
-        else:
-            h = [eval_tail(c, i + 1, A, u, K) for c in g]
-
-            if i < u - len(A) + 1:
-                return h
-            else:
-                return dmp_eval_in(h, A[-u + i - 1], 0, 0, K)
-
-    e = eval_tail(f, 0, A, u, K)
-
-    if u == len(A) - 1:
-        return e
-    else:
-        return dmp_strip(e, u - len(A))
+    """Evaluate a polynomial at ``x_j = a_j, ...`` in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    x = [(x, a) for x, a in zip(ring.gens[-len(A):], A)]
+    if not x:
+        return ring.to_dense(f)
+    r = f.eval(x)
+    if hasattr(r, 'ring'):
+        r = r.ring.to_dense(r)
+    return r
 
 
 def dmp_diff_eval_in(f, m, a, j, u, K):

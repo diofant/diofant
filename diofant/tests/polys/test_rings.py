@@ -1923,6 +1923,7 @@ def test_PolyElement_eval():
     R, x, y = ring('x y', ZZ)
 
     assert R(0).eval(a=3) == 0
+    assert R(0).eval([(y, 1)]) == 0
     assert (y + 2).eval() == (y + 2).drop(x)
 
     assert (3*x*y + 2*x + y + 2).eval(a=3) == (10*y + 8).drop(x)
@@ -1931,6 +1932,7 @@ def test_PolyElement_eval():
 
     assert f.eval(a=2) == (5*y + 8).drop(x)
     assert f.eval(x=1, a=2) == (7*x + 4).drop(y)
+    assert f.eval([(x, 2), (y, 2)]) == 18
 
     f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
 
@@ -1940,6 +1942,8 @@ def test_PolyElement_eval():
     R, x, y, z = ring('x y z', ZZ)
 
     assert R(0).eval(a=3) == 0
+    assert R(0).eval([(z, 1)]) == 0
+    assert R(0).eval([(y, 1), (z, 2)]) == 0
     assert R(1).eval(a=3) == 1
     assert (z + 2).eval(a=3) == (z + 2).drop(x)
     assert (3*x*z + 2*x + z + 2).eval(a=3) == (10*z + 8).drop(x)
@@ -1973,6 +1977,40 @@ def test_PolyElement_eval():
     pytest.raises(CoercionFailed, lambda: f.eval([(x, QQ(1, 7)), (y, 1)]))
     pytest.raises(CoercionFailed, lambda: f.eval([(x, QQ(1, 7)), (y, QQ(1, 7))]))
 
+    f = f_polys()[0]
+
+    assert f.eval([(x, 1), (y, -17), (z, 8)]) == 84496
+    assert f.eval([(y, -17), (z, 8)]) == (-1409*x**2 + 3*x + 85902).drop(-1).drop(-1)
+    assert f.eval([(z, 8)]) == (83*x**2*y + 2*x**2 + 3*x + 302*y**2 + 81*y + 1).drop(z)
+
+    f = f_polys()[1]
+
+    assert (f.eval([(y, -17), (z, 8)]) ==
+            (-136*x**3 + 15699*x**2 + 9166*x - 27144).drop(-1).drop(-1))
+
+    f = f_polys()[2]
+
+    assert (f.eval([(y, -12), (z, 3)]) ==
+            (-1377*x**5 - 702*x**3 - 1224*x**2 - 624).drop(-1).drop(-1))
+
+    f = f_polys()[3]
+
+    assert (f.eval([(y, -12), (z, 3)]) ==
+            (144*x**5 + 82*x**4 - 5181*x**3 - 28872*x**2 -
+             14868*x - 540).drop(-1).drop(-1))
+
+    f = f_polys()[4]
+
+    assert (f.eval([(y, 25), (z, -1)]) ==
+            (152587890625*x**9 + 9765625*x**8 - 59605407714843750*x**7 -
+             3839159765625*x**6 - 1562475*x**5 + 9536712644531250*x**4 +
+             610349546750*x**3 - 4*x**2 + 24414375000*x + 1562520).drop(-1).drop(-1))
+
+    f = f_polys()[5]
+
+    assert (f.eval([(y, 25), (z, -1)]) ==
+            (-x**3 - 78*x**2 - 2028*x - 17576).drop(-1).drop(-1))
+
     R, x, y, z, t = ring('x y z t', ZZ)
 
     f = f_polys()[6]
@@ -1995,6 +2033,8 @@ def test_PolyElement_eval():
             (2115*x**4*y + 15390*x**3*t**2 - 423*x*y**4 - 47*x*y**3 + 658*x*y*t +
              48363*x*y - 3078*y**3*t**2 - 342*y**2*t**2 + 4788*t**3 +
              351918*t**2).drop(z))
+    assert (f.eval([(y, 0), (z, 2), (t, 4)]) ==
+            (5040*x**3 + 4480).drop(-1).drop(-1).drop(-1))
 
 
 def test_PolyElement_compose():
