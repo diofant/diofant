@@ -23,16 +23,11 @@ def dmp_resultant(f, g, u, K):
     return ring.drop(0).to_dense(res)
 
 
-def dmp_inner_gcd(f, g, u, K):
-    """Computes polynomial GCD and cofactors of `f` and `g` in `K[X]`."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_dense, (f, g))
-    return tuple(map(ring.to_dense, f.cofactors(g)))
-
-
 def dmp_gcd(f, g, u, K):
     """Computes polynomial GCD of `f` and `g` in `K[X]`."""
-    return dmp_inner_gcd(f, g, u, K)[0]
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f, g = map(ring.from_dense, (f, g))
+    return ring.to_dense(ring.gcd(f, g))
 
 
 def dmp_primitive(f, u, K):
