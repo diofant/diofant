@@ -31,22 +31,11 @@ from .sqfreetools import dmp_sqf_list, dmp_sqf_p, dmp_sqf_part
 
 def dmp_trial_division(f, factors, u, K):
     """Determine multiplicities of factors using trial division."""
-    result = []
-
-    for factor in factors:
-        k = 0
-
-        while f:
-            q, r = dmp_div(f, factor, u, K)
-
-            if dmp_zero_p(r, u):
-                f, k = q, k + 1
-            else:
-                break
-
-        result.append((factor, k))
-
-    return _sort_factors(result)
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    factors = list(map(ring.from_dense, factors))
+    result = ring._trial_division(f, factors)
+    return [(ring.to_dense(f), k) for f, k in result]
 
 
 def dmp_zz_mignotte_bound(f, u, K):
