@@ -1280,6 +1280,7 @@ def test_PolyElement_content():
 
     f = 2*x*y + 6*x + 4*y + 12
 
+    assert f.content() == 2
     assert f.eject(y).content() == (2*y + 6).drop(x)
 
     R, x, y = ring('x y', QQ)
@@ -1287,6 +1288,10 @@ def test_PolyElement_content():
     assert R(0).content() == 0
     assert (2*x/3 + QQ(4, 9)).content() == QQ(2, 9)
     assert (2*x/3 + QQ(4, 5)).content() == QQ(2, 15)
+
+    f = 2*x*y + 6*x + 4*y + 12
+
+    assert f.content() == 2
 
     R, x, y, z = ring('x y z', ZZ)
 
@@ -1376,9 +1381,10 @@ def test_PolyElement_primitive():
 
     assert F.primitive() == (f.inject().drop(x), F // f)
 
-    f = (2*x*y + 6*x + 4*y + 12).eject(y)
+    f = 2*x*y + 6*x + 4*y + 12
 
-    assert f.primitive() == ((2*y + 6).drop(x), (x + 2).eject(y))
+    assert f.primitive() == (2, x*y + 3*x + 2*y + 6)
+    assert f.eject(y).primitive() == ((2*y + 6).drop(x), (x + 2).eject(y))
 
     R, x, y = ring('x y', QQ)
 
@@ -1388,6 +1394,10 @@ def test_PolyElement_primitive():
     assert (2*x/3 + QQ(4, 9)).primitive() == (QQ(2, 9), 3*x + 2)
     assert (2*x/3 + QQ(4, 5)).primitive() == (QQ(2, 15), 5*x + 6)
     assert (-3*x/4 + y + QQ(11, 8)).primitive() == (QQ(-1, 8), 6*x - 8*y - 11)
+
+    f = 2*x*y + 6*x + 4*y + 12
+
+    assert f.primitive() == (2, x*y + 3*x + 2*y + 6)
 
     R, x, y, z = ring('x y z', ZZ)
 

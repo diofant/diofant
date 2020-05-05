@@ -8,22 +8,7 @@ from .polyerrors import DomainError
 
 
 def dmp_diff_in(f, m, j, u, K):
-    """
-    ``m``-th order derivative in ``x_j`` of a polynomial in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> f = x*y**2 + 2*x*y + 3*x + 2*y**2 + 3*y + 1
-
-    >>> f.diff()
-    y**2 + 2*y + 3
-    >>> f.diff(y)
-    2*x*y + 2*x + 4*y + 3
-
-    """
+    """``m``-th order derivative in ``x_j`` of a polynomial in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_dense(f)
     return ring.to_dense(f.diff(x=j, m=m))
@@ -77,50 +62,14 @@ def dmp_ground_monic(f, u, K):
 
 
 def dmp_ground_content(f, u, K):
-    """
-    Compute the GCD of coefficients of ``f`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-    >>> f = 2*x*y + 6*x + 4*y + 12
-
-    >>> f.content()
-    2
-
-    >>> R, x, y = ring('x y', QQ)
-    >>> f = 2*x*y + 6*x + 4*y + 12
-
-    >>> f.content()
-    2
-
-    """
+    """Compute the GCD of coefficients of ``f`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_dense(f)
     return f.content()
 
 
 def dmp_ground_primitive(f, u, K):
-    """
-    Compute content and the primitive form of ``f`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-    >>> f = 2*x*y + 6*x + 4*y + 12
-
-    >>> f.primitive()
-    (2, x*y + 3*x + 2*y + 6)
-
-    >>> R, x, y = ring('x y', QQ)
-    >>> f = 2*x*y + 6*x + 4*y + 12
-
-    >>> f.primitive()
-    (2, x*y + 3*x + 2*y + 6)
-
-    """
+    """Compute content and the primitive form of ``f`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_dense(f)
     cont, p = f.primitive()
