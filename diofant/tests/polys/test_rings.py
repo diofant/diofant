@@ -2057,10 +2057,29 @@ def test_PolyElement_compose():
 
     R, x = ring('x', ZZ)
 
+    assert R(0).compose(x, 0) == 0
+    assert R(0).compose(x, 1) == 0
+    assert R(0).compose(x, x + 2) == 0
     assert R(0).compose(x, -x) == 0
     assert R(0).compose(x, x + 1) == 0
+    assert R(1).compose(x, 0) == 1
     assert R(1).compose(x, -x) == 1
     assert R(1).compose(x, x + 1) == 1
+
+    assert (x**2 + 2*x).compose(x, 0) == 0
+
+    f = x**2 + 2*x + 1
+
+    assert f.compose(x, 0) == 1
+
+    assert f.compose(x, 1) == 4
+    assert f.compose(x, 7) == 64
+
+    assert f.compose(x, x - 1) == x**2
+    assert f.compose(x, x + 1) == x**2 + 4*x + 4
+    assert f.compose(x, x**2 + 2*x + 1) == x**4 + 4*x**3 + 8*x**2 + 8*x + 4
+
+    assert (x**2 + x).compose(x, x - 1) == x**2 - x
 
     f = x**2 - 2*x + 1
 
@@ -2092,7 +2111,30 @@ def test_PolyElement_compose():
 
     assert f.compose(x, -x) == -x**5 + 2*x**4 - 3*x**3 + 4*x**2 - 5*x + 6
 
+    R, x, y = ring('x y', ZZ)
+
+    assert (x**2 + 2*x).compose(x, 0) == 0
+
+    f = x**2 + 2*x + 1
+
+    assert f.compose(x, 0) == 1
+
+    assert f.compose(x, 1) == 4
+    assert f.compose(x, 7) == 64
+
+    assert f.compose(x, x - 1) == x**2
+    assert f.compose(x, x + 1) == x**2 + 4*x + 4
+
+    assert f.compose(x, x**2 + 2*x + 1) == x**4 + 4*x**3 + 8*x**2 + 8*x + 4
+
+    assert (x*y + 2*x + y).compose(x, y) == y**2 + 3*y
+
     R, x, y, z = ring('x y z', ZZ)
+
+    assert R(0).compose(x, 0) == 0
+    assert R(0).compose(x, 1) == 0
+    assert R(0).compose(x, x + 2) == 0
+    assert R(1).compose(x, 0) == 1
 
     f = x**3 + 4*x**2 + 2*x + 3
     r = f.compose(x, 0)
