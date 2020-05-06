@@ -1818,48 +1818,16 @@ class PolyElement(DomainElement, CantSympify, dict):
             raise ValueError(f'expected at least 1 and at most {self.ring.ngens} values, got {len(values)}')
 
     def eval(self, x=0, a=0):
-        f = self
-
         if isinstance(x, list) and not a:
             (X, a), x = x[0], x[1:]
-            f = f.eval(X, a)
+            f = self.eval(X, a)
 
-            if not x:
-                return f
+            if x:
+                return f.eval([(Y.drop(X), a) for (Y, a) in x])
             else:
-                x = [(Y.drop(X), a) for (Y, a) in x]
-                return f.eval(x)
+                return f
 
-        ring = f.ring
-        i = ring.index(x)
-        a = ring.domain.convert(a)
-
-        if ring.is_univariate:
-            result = ring.domain.zero
-
-            for (n,), coeff in f.items():
-                result += coeff*a**n
-
-            return result
-        else:
-            poly = ring.drop(x).zero
-
-            for monom, coeff in f.items():
-                n, monom = monom[i], monom[:i] + monom[i+1:]
-                coeff = coeff*a**n
-
-                if monom in poly:
-                    coeff += poly[monom]
-
-                    if coeff:
-                        poly[monom] = coeff
-                    else:
-                        del poly[monom]
-                else:
-                    if coeff:
-                        poly[monom] = coeff
-
-            return poly
+        return self.compose(x, a).drop(x)
 
     def compose(self, x, a=None):
         """Computes the functional composition."""
