@@ -10,14 +10,6 @@ def dmp_sqf_p(f, u, K):
     return ring.is_squarefree(f)
 
 
-def dmp_sqf_norm(f, u, K):
-    """Square-free norm of ``f`` in ``K[X]``, useful over algebraic domains."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_dense(f)
-    s, f, r = ring.sqf_norm(f)
-    return s, ring.to_dense(f), r.ring.to_dense(r)
-
-
 def dmp_sqf_part(f, u, K):
     """Returns square-free part of a polynomial in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])

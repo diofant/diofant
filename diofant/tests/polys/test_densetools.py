@@ -3,74 +3,9 @@
 import pytest
 
 from diofant import EX, QQ, ZZ, DomainError, I, ring, sqrt
-from diofant.polys.specialpolys import f_polys
 
 
 __all__ = ()
-
-
-def test_dmp_eval_tail():
-    R, x, y = ring('x y', ZZ)
-
-    assert R.dmp_eval_tail(0, [ZZ(1)]) == 0
-
-    f = 2*x*y + 3*x + y + 2
-
-    R0 = R.drop(y)
-
-    assert R.dmp_eval_tail(f, [ZZ(2)]) == 7*R0.x + 4
-    assert R.dmp_eval_tail(f, [ZZ(2), ZZ(2)]) == 18
-
-    R, x, y, z = ring('x y z', ZZ)
-    R12 = R.drop(y, z)
-    R2 = R.drop(z)
-
-    assert R.dmp_eval_tail(0, [ZZ(1)]) == 0
-    assert R.dmp_eval_tail(0, [ZZ(1), ZZ(2)]) == 0
-
-    f = f_polys()[0]
-
-    assert R.dmp_eval_tail(f, []) == f
-
-    assert R.dmp_eval_tail(f, [ZZ(1), ZZ(-17), ZZ(8)]) == 84496
-    assert R.dmp_eval_tail(f, [ZZ(-17), ZZ(8)]) == -1409*R12.x**2 + 3*R12.x + 85902
-    assert (R.dmp_eval_tail(f, [ZZ(8)]) ==
-            83*R2.x**2*R2.y + 2*R2.x**2 + 3*R2.x + 302*R2.y**2 + 81*R2.y + 1)
-
-    f = f_polys()[1]
-
-    assert (R.dmp_eval_tail(f, [ZZ(-17), ZZ(8)]) ==
-            -136*R12.x**3 + 15699*R12.x**2 + 9166*R12.x - 27144)
-
-    f = f_polys()[2]
-
-    assert (R.dmp_eval_tail(f, [ZZ(-12), ZZ(3)]) ==
-            -1377*R12.x**5 - 702*R12.x**3 - 1224*R12.x**2 - 624)
-
-    f = f_polys()[3]
-
-    assert (R.dmp_eval_tail(f, [ZZ(-12), ZZ(3)]) ==
-            144*R12.x**5 + 82*R12.x**4 - 5181*R12.x**3 - 28872*R12.x**2 -
-            14868*R12.x - 540)
-
-    f = f_polys()[4]
-
-    assert (R.dmp_eval_tail(f, [ZZ(25), ZZ(-1)]) ==
-            152587890625*R12.x**9 + 9765625*R12.x**8 - 59605407714843750*R12.x**7 -
-            3839159765625*R12.x**6 - 1562475*R12.x**5 + 9536712644531250*R12.x**4 +
-            610349546750*R12.x**3 - 4*R12.x**2 + 24414375000*R12.x + 1562520)
-
-    f = f_polys()[5]
-
-    assert (R.dmp_eval_tail(f, [ZZ(25), ZZ(-1)]) ==
-            -R12.x**3 - 78*R12.x**2 - 2028*R12.x - 17576)
-
-    R, x, y, z, t = ring('x y z t', ZZ)
-    R123 = R.drop(y, z, t)
-
-    f = f_polys()[6]
-
-    assert R.dmp_eval_tail(f, [ZZ(0), ZZ(2), ZZ(4)]) == 5040*R123.x**3 + 4480
 
 
 def test_dup_real_imag():
