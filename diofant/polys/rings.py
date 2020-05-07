@@ -845,20 +845,18 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         ring = self.ring
-        if not isinstance(other, ring.dtype):
-            try:
-                other = ring.convert(other)
-            except CoercionFailed:
-                return NotImplemented
-        p = self.copy()
-        if not other:
-            return p
-        get = p.get
-        zero = ring.domain.zero
-        for k, v in other.items():
-            p[k] = get(k, zero) + v
-        p._strip_zero()
-        return p
+        domain = ring.domain
+        try:
+            other = ring.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        result = self.copy()
+        get = result.get
+        zero = domain.zero
+        for k in other:
+            result[k] = get(k, zero) + other[k]
+        result._strip_zero()
+        return result
 
     def __radd__(self, other):
         return self.__add__(other)
@@ -877,20 +875,18 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         ring = self.ring
-        if not isinstance(other, ring.dtype):
-            try:
-                other = ring.convert(other)
-            except CoercionFailed:
-                return NotImplemented
-        p = self.copy()
-        if not other:
-            return p
-        get = p.get
-        zero = ring.domain.zero
-        for k, v in other.items():
-            p[k] = get(k, zero) - v
-        p._strip_zero()
-        return p
+        domain = ring.domain
+        try:
+            other = ring.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        result = self.copy()
+        get = result.get
+        zero = domain.zero
+        for k in other:
+            result[k] = get(k, zero) - other[k]
+        result._strip_zero()
+        return result
 
     def __rsub__(self, other):
         """Substract self from other, with other convertible to the coefficient domain.
@@ -920,22 +916,20 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         ring = self.ring
-        if not isinstance(other, ring.dtype):
-            try:
-                other = ring.convert(other)
-            except CoercionFailed:
-                return NotImplemented
-        p = ring.zero
-        if not self or not other:
-            return p
-        get = p.get
-        zero = ring.domain.zero
-        for exp1, v1 in self.items():
-            for exp2, v2 in other.items():
+        domain = ring.domain
+        try:
+            other = ring.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        result = ring.zero
+        get = result.get
+        zero = domain.zero
+        for exp1 in self:
+            for exp2 in other:
                 exp = exp1*exp2
-                p[exp] = get(exp, zero) + v1*v2
-        p._strip_zero()
-        return p
+                result[exp] = get(exp, zero) + self[exp1]*other[exp2]
+        result._strip_zero()
+        return result
 
     def __rmul__(self, other):
         """Multiply other to self with other in the coefficient domain of self.
