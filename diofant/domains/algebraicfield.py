@@ -102,7 +102,8 @@ class AlgebraicField(CharacteristicZero, SimpleDomain, Field):
         return AlgebraicField(self, *extension)
 
     def to_expr(self, element):
-        return element.rep.as_expr()
+        rep = element.rep
+        return rep.ring.to_expr(rep)
 
     def from_expr(self, expr):
         from ..polys import primitive_element

@@ -397,7 +397,9 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF, _Factor):
             return self.clone(symbols=symbols, domain=self.drop(*gens))
 
     def to_expr(self, element):
-        return element.as_expr()
+        to_expr = self.domain.to_expr
+        return expr_from_dict({k: to_expr(v) for k, v in element.items()},
+                              *self.symbols)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
@@ -535,15 +537,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             new_ring = self.ring.clone(domain=new_domain)
             return self.set_ring(new_ring)
-
-    def as_expr(self, *symbols):
-        if not symbols:
-            symbols = self.ring.symbols
-        elif len(symbols) != self.ring.ngens:
-            raise ValueError(f'not enough symbols, expected {self.ring.ngens} got {len(symbols)}')
-
-        to_expr = self.ring.domain.to_expr
-        return expr_from_dict({monom: to_expr(self[monom]) for monom in self}, *symbols)
 
     def clear_denoms(self, convert=False):
         domain = self.ring.domain

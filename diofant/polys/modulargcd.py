@@ -1124,7 +1124,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
                 coeff = coeff.set_domain(new_dom)
                 h[key] = (coeff*den).set_domain(dom)
 
-            h = ring(h.as_expr())
+            h = ring.from_expr(h.ring.to_expr(h))
 
         if not trial_division(f, h, minpoly, p) and not trial_division(g, h, minpoly, p):
             return h

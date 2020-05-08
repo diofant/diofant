@@ -184,7 +184,8 @@ class FractionField(Field, CompositeDomain):
         return self.domain.poly_ring(*self.symbols, order=self.order)
 
     def to_expr(self, element):
-        return element.as_expr()
+        ring = self.ring
+        return ring.to_expr(element.numerator)/ring.to_expr(element.denominator)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
@@ -286,9 +287,6 @@ class FracElement(DomainElement, CantSympify):
             numer = self.numerator.set_ring(new_ring)
             denom = self.denominator.set_ring(new_ring)
             return new_field((numer, denom))
-
-    def as_expr(self, *symbols):
-        return self.numerator.as_expr(*symbols)/self.denominator.as_expr(*symbols)
 
     def __eq__(self, other):
         if isinstance(other, self.field.dtype):

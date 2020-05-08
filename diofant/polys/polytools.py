@@ -757,7 +757,8 @@ class Poly(Expr):
                 else:
                     gens[index] = value
 
-        return self.rep.as_expr(*gens)
+        rep = self.rep
+        return rep.ring.to_expr(rep).subs(zip(self.gens, gens))
 
     def deflate(self):
         """
