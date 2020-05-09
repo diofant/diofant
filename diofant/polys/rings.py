@@ -14,7 +14,6 @@ from ..domains.domainelement import DomainElement
 from ..domains.ring import Ring
 from ..ntheory import multinomial_coefficients
 from ..ntheory.modular import symmetric_residue
-from ..utilities.magic import pollute
 from .compatibility import IPolys
 from .constructor import construct_domain
 from .densebasic import dmp_from_dict, dmp_to_dict
@@ -34,7 +33,7 @@ from .polyutils import _dict_reorder, _parallel_dict_from_expr, expr_from_dict
 from .sqfreetools import _SQF
 
 
-__all__ = 'PolynomialRing', 'ring', 'sring', 'vring'
+__all__ = 'PolynomialRing', 'ring', 'sring'
 
 
 def ring(symbols, domain, order=lex):
@@ -59,30 +58,6 @@ def ring(symbols, domain, order=lex):
     """
     _ring = PolynomialRing(domain, symbols, order)
     return (_ring,) + _ring.gens
-
-
-def vring(symbols, domain, order=lex):
-    """Construct a polynomial ring and inject ``x_1, ..., x_n`` into the global namespace.
-
-    Parameters
-    ==========
-
-    symbols : str, Symbol/Expr or sequence of str, Symbol/Expr (non-empty)
-    domain : :class:`~diofant.domains.domain.Domain` or coercible
-    order : :class:`~diofant.polys.polyoptions.Order` or coercible, optional, defaults to ``lex``
-
-    Examples
-    ========
-
-    >>> vring('x y z', ZZ)
-    ZZ[x,y,z]
-    >>> x + y + z
-    x + y + z
-
-    """
-    _ring = PolynomialRing(domain, symbols, order)
-    pollute([sym.name for sym in _ring.symbols], _ring.gens)
-    return _ring
 
 
 def sring(exprs, *symbols, **options):

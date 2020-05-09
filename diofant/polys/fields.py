@@ -8,26 +8,18 @@ from ..core.sympify import CantSympify
 from ..domains.compositedomain import CompositeDomain
 from ..domains.domainelement import DomainElement
 from ..domains.field import Field
-from ..utilities.magic import pollute
 from .orderings import lex
 from .polyerrors import CoercionFailed, GeneratorsError
 from .rings import PolyElement, PolynomialRing
 
 
-__all__ = 'FractionField', 'field', 'vfield'
+__all__ = 'FractionField', 'field'
 
 
 def field(symbols, domain, order=lex):
     """Construct new rational function field returning (field, x1, ..., xn)."""
     _field = FractionField(domain, symbols, order)
     return (_field,) + _field.gens
-
-
-def vfield(symbols, domain, order=lex):
-    """Construct new rational function field and inject generators into global namespace."""
-    _field = FractionField(domain, symbols, order)
-    pollute([sym.name for sym in _field.symbols], _field.gens)
-    return _field
 
 
 _field_cache = {}
