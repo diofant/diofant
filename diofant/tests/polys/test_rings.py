@@ -1734,7 +1734,7 @@ def test_PolyElement_diff():
 
     R, x, y, z, t = ring('x y z t', FF(23))
 
-    f = R.from_dense(f_polys()[6].to_dense())
+    f = R.from_list(f_polys()[6].to_dense())
 
     assert f.diff(m=0) == f
     assert f.diff(m=2) == f.diff().diff()
@@ -1827,7 +1827,7 @@ def test_PolyElement_integrate():
 
     R, x, y, z, t = ring('x y z t', QQ)
 
-    f = R.from_dense(f_polys()[6].to_dense())
+    f = R.from_list(f_polys()[6].to_dense())
 
     assert (f.integrate(x=y, m=2) ==
             705*x**4*y**3/2 + 45*x**3*y**2*z**3*t**2/2 - 45*x**3*y**2*t**2/2 -

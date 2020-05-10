@@ -191,7 +191,7 @@ class AlgebraicElement(QuotientRingElement, CantSympify):
                 rep = [dom.domain.convert(rep)]
             else:
                 rep = [dom.domain.convert(_) for _ in rep]
-            rep = dom.from_dense(rep)
+            rep = dom.from_list(rep)
 
         self.rep = rep % self.mod
 

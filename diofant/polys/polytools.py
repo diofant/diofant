@@ -354,7 +354,7 @@ class Poly(Expr):
         >>> a = Poly(x**2 + 1)
         >>> R = ZZ.inject(x)
 
-        >>> a.per(R.from_dense([ZZ(1), ZZ(1)]), gens=[y])
+        >>> a.per(R.from_list([ZZ(1), ZZ(1)]), gens=[y])
         Poly(y + 1, y, domain='ZZ')
 
         """

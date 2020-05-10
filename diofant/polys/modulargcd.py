@@ -90,7 +90,7 @@ def _primitive(f, p):
     cont = dmp_normal(cont, 0, dom)
 
     yring = ring.clone(symbols=ring.symbols[k-1])
-    contf = yring.from_dense(cont).trunc_ground(p)
+    contf = yring.from_list(cont).trunc_ground(p)
 
     return contf, f//contf.set_ring(ring)
 
