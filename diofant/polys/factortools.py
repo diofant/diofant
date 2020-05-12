@@ -32,8 +32,8 @@ from .sqfreetools import dmp_sqf_list, dmp_sqf_p, dmp_sqf_part
 def dmp_trial_division(f, factors, u, K):
     """Determine multiplicities of factors using trial division."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_dense(f)
-    factors = list(map(ring.from_dense, factors))
+    f = ring.from_list(f)
+    factors = list(map(ring.from_list, factors))
     result = ring._trial_division(f, factors)
     return [(ring.to_dense(f), k) for f, k in result]
 
@@ -985,7 +985,7 @@ def dmp_zz_factor(f, u, K):
 def dmp_ext_factor(f, u, K):
     """Factor multivariate polynomials over algebraic number fields."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_dense(f)
+    f = ring.from_list(f)
     lc, factors = ring._aa_factor_trager(f)
     return lc, [(ring.to_dense(f), k) for f, k in factors]
 

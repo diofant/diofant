@@ -39,8 +39,8 @@ from .orthopolys import (jacobi_poly, chebyshevt_poly,
                          laguerre_poly, spherical_bessel_fn)
 from .partfrac import apart, apart_list, assemble_partfrac_list
 from .polyoptions import Options
-from .rings import PolynomialRing, ring, sring, vring
-from .fields import FractionField, field, vfield
+from .rings import PolynomialRing, ring, sring
+from .fields import FractionField, field
 
 
 __all__ = ('Poly', 'PurePoly', 'poly_from_expr',
@@ -70,4 +70,4 @@ __all__ = ('Poly', 'PurePoly', 'poly_from_expr',
            'chebyshevu_poly', 'hermite_poly', 'legendre_poly',
            'laguerre_poly', 'spherical_bessel_fn', 'apart', 'apart_list',
            'assemble_partfrac_list', 'Options', 'PolynomialRing', 'ring',
-           'sring', 'vring', 'FractionField', 'field', 'vfield')
+           'sring', 'FractionField', 'field')

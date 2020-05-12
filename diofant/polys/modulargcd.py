@@ -90,7 +90,7 @@ def _primitive(f, p):
     cont = dmp_normal(cont, 0, dom)
 
     yring = ring.clone(symbols=ring.symbols[k-1])
-    contf = yring.from_dense(cont).trunc_ground(p)
+    contf = yring.from_list(cont).trunc_ground(p)
 
     return contf, f//contf.set_ring(ring)
 
@@ -1124,7 +1124,7 @@ def _func_field_modgcd_p(f, g, minpoly, p):
                 coeff = coeff.set_domain(new_dom)
                 h[key] = (coeff*den).set_domain(dom)
 
-            h = ring(h.as_expr())
+            h = ring.from_expr(h.ring.to_expr(h))
 
         if not trial_division(f, h, minpoly, p) and not trial_division(g, h, minpoly, p):
             return h
