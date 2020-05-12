@@ -14,7 +14,6 @@ from ..domains.domainelement import DomainElement
 from ..domains.ring import Ring
 from ..ntheory import multinomial_coefficients
 from ..ntheory.modular import symmetric_residue
-from ..utilities.magic import pollute
 from .compatibility import IPolys
 from .constructor import construct_domain
 from .densebasic import dmp_from_dict, dmp_to_dict
@@ -34,7 +33,7 @@ from .polyutils import _dict_reorder, _parallel_dict_from_expr, expr_from_dict
 from .sqfreetools import _SQF
 
 
-__all__ = 'PolynomialRing', 'ring', 'sring', 'vring'
+__all__ = 'PolynomialRing', 'ring', 'sring'
 
 
 def ring(symbols, domain, order=lex):
@@ -59,30 +58,6 @@ def ring(symbols, domain, order=lex):
     """
     _ring = PolynomialRing(domain, symbols, order)
     return (_ring,) + _ring.gens
-
-
-def vring(symbols, domain, order=lex):
-    """Construct a polynomial ring and inject ``x_1, ..., x_n`` into the global namespace.
-
-    Parameters
-    ==========
-
-    symbols : str, Symbol/Expr or sequence of str, Symbol/Expr (non-empty)
-    domain : :class:`~diofant.domains.domain.Domain` or coercible
-    order : :class:`~diofant.polys.polyoptions.Order` or coercible, optional, defaults to ``lex``
-
-    Examples
-    ========
-
-    >>> vring('x y z', ZZ)
-    ZZ[x,y,z]
-    >>> x + y + z
-    x + y + z
-
-    """
-    _ring = PolynomialRing(domain, symbols, order)
-    pollute([sym.name for sym in _ring.symbols], _ring.gens)
-    return _ring
 
 
 def sring(exprs, *symbols, **options):
@@ -397,7 +372,9 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF, _Factor):
             return self.clone(symbols=symbols, domain=self.drop(*gens))
 
     def to_expr(self, element):
-        return element.as_expr()
+        to_expr = self.domain.to_expr
+        return expr_from_dict({k: to_expr(v) for k, v in element.items()},
+                              *self.symbols)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
@@ -535,15 +512,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             new_ring = self.ring.clone(domain=new_domain)
             return self.set_ring(new_ring)
-
-    def as_expr(self, *symbols):
-        if not symbols:
-            symbols = self.ring.symbols
-        elif len(symbols) != self.ring.ngens:
-            raise ValueError(f'not enough symbols, expected {self.ring.ngens} got {len(symbols)}')
-
-        to_expr = self.ring.domain.to_expr
-        return expr_from_dict({monom: to_expr(self[monom]) for monom in self}, *symbols)
 
     def clear_denoms(self, convert=False):
         domain = self.ring.domain
@@ -845,20 +813,18 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         ring = self.ring
-        if not isinstance(other, ring.dtype):
-            try:
-                other = ring.convert(other)
-            except CoercionFailed:
-                return NotImplemented
-        p = self.copy()
-        if not other:
-            return p
-        get = p.get
-        zero = ring.domain.zero
-        for k, v in other.items():
-            p[k] = get(k, zero) + v
-        p._strip_zero()
-        return p
+        domain = ring.domain
+        try:
+            other = ring.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        result = self.copy()
+        get = result.get
+        zero = domain.zero
+        for k in other:
+            result[k] = get(k, zero) + other[k]
+        result._strip_zero()
+        return result
 
     def __radd__(self, other):
         return self.__add__(other)
@@ -877,20 +843,18 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         ring = self.ring
-        if not isinstance(other, ring.dtype):
-            try:
-                other = ring.convert(other)
-            except CoercionFailed:
-                return NotImplemented
-        p = self.copy()
-        if not other:
-            return p
-        get = p.get
-        zero = ring.domain.zero
-        for k, v in other.items():
-            p[k] = get(k, zero) - v
-        p._strip_zero()
-        return p
+        domain = ring.domain
+        try:
+            other = ring.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        result = self.copy()
+        get = result.get
+        zero = domain.zero
+        for k in other:
+            result[k] = get(k, zero) - other[k]
+        result._strip_zero()
+        return result
 
     def __rsub__(self, other):
         """Substract self from other, with other convertible to the coefficient domain.
@@ -920,22 +884,20 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         ring = self.ring
-        if not isinstance(other, ring.dtype):
-            try:
-                other = ring.convert(other)
-            except CoercionFailed:
-                return NotImplemented
-        p = ring.zero
-        if not self or not other:
-            return p
-        get = p.get
-        zero = ring.domain.zero
-        for exp1, v1 in self.items():
-            for exp2, v2 in other.items():
+        domain = ring.domain
+        try:
+            other = ring.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        result = ring.zero
+        get = result.get
+        zero = domain.zero
+        for exp1 in self:
+            for exp2 in other:
                 exp = exp1*exp2
-                p[exp] = get(exp, zero) + v1*v2
-        p._strip_zero()
-        return p
+                result[exp] = get(exp, zero) + self[exp1]*other[exp2]
+        result._strip_zero()
+        return result
 
     def __rmul__(self, other):
         """Multiply other to self with other in the coefficient domain of self.
@@ -1818,48 +1780,16 @@ class PolyElement(DomainElement, CantSympify, dict):
             raise ValueError(f'expected at least 1 and at most {self.ring.ngens} values, got {len(values)}')
 
     def eval(self, x=0, a=0):
-        f = self
-
         if isinstance(x, list) and not a:
             (X, a), x = x[0], x[1:]
-            f = f.eval(X, a)
+            f = self.eval(X, a)
 
-            if not x:
-                return f
+            if x:
+                return f.eval([(Y.drop(X), a) for (Y, a) in x])
             else:
-                x = [(Y.drop(X), a) for (Y, a) in x]
-                return f.eval(x)
+                return f
 
-        ring = f.ring
-        i = ring.index(x)
-        a = ring.domain.convert(a)
-
-        if ring.is_univariate:
-            result = ring.domain.zero
-
-            for (n,), coeff in f.items():
-                result += coeff*a**n
-
-            return result
-        else:
-            poly = ring.drop(x).zero
-
-            for monom, coeff in f.items():
-                n, monom = monom[i], monom[:i] + monom[i+1:]
-                coeff = coeff*a**n
-
-                if monom in poly:
-                    coeff += poly[monom]
-
-                    if coeff:
-                        poly[monom] = coeff
-                    else:
-                        del poly[monom]
-                else:
-                    if coeff:
-                        poly[monom] = coeff
-
-            return poly
+        return self.compose(x, a).drop(x)
 
     def compose(self, x, a=None):
         """Computes the functional composition."""

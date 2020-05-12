@@ -687,7 +687,7 @@ def dmp_pow(f, n, u, K):
 def dmp_div(f, g, u, K):
     """Polynomial division with remainder in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_dense, (f, g))
+    f, g = map(ring.from_list, (f, g))
     return tuple(map(ring.to_dense, divmod(f, g)))
 
 

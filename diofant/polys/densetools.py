@@ -10,14 +10,14 @@ from .polyerrors import DomainError
 def dmp_diff_in(f, m, j, u, K):
     """``m``-th order derivative in ``x_j`` of a polynomial in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_dense(f)
+    f = ring.from_list(f)
     return ring.to_dense(f.diff(x=j, m=m))
 
 
 def dmp_eval_in(f, a, j, u, K):
     """Evaluate a polynomial at ``x_j = a`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_dense(f)
+    f = ring.from_list(f)
     r = f.eval(x=j, a=a)
     if ring.is_multivariate:
         r = r.to_dense()
@@ -27,7 +27,7 @@ def dmp_eval_in(f, a, j, u, K):
 def dmp_eval_tail(f, A, u, K):
     """Evaluate a polynomial at ``x_j = a_j, ...`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_dense(f)
+    f = ring.from_list(f)
     x = [(x, a) for x, a in zip(ring.gens[-len(A):], A)]
     if not x:
         return ring.to_dense(f)
@@ -40,7 +40,7 @@ def dmp_eval_tail(f, A, u, K):
 def dmp_diff_eval_in(f, m, a, j, u, K):
     """Differentiate and evaluate a polynomial in ``x_j`` at ``a`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_dense(f)
+    f = ring.from_list(f)
     r = f.diff(x=j, m=m).eval(x=j, a=a)
     return r.to_dense()
 
@@ -48,7 +48,7 @@ def dmp_diff_eval_in(f, m, a, j, u, K):
 def dmp_ground_trunc(f, p, u, K):
     """Reduce a ``K[X]`` polynomial modulo a constant ``p`` in ``K``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_dense(f)
+    f = ring.from_list(f)
     f = f.trunc_ground(p)
     return ring.to_dense(f)
 
@@ -56,7 +56,7 @@ def dmp_ground_trunc(f, p, u, K):
 def dmp_ground_monic(f, u, K):
     """Divide all coefficients by ``LC(f)`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_dense(f)
+    f = ring.from_list(f)
     f = f.monic()
     return ring.to_dense(f)
 
@@ -64,14 +64,14 @@ def dmp_ground_monic(f, u, K):
 def dmp_ground_content(f, u, K):
     """Compute the GCD of coefficients of ``f`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_dense(f)
+    f = ring.from_list(f)
     return f.content()
 
 
 def dmp_ground_primitive(f, u, K):
     """Compute content and the primitive form of ``f`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_dense(f)
+    f = ring.from_list(f)
     cont, p = f.primitive()
     return cont, ring.to_dense(p)
 
@@ -294,7 +294,7 @@ def dup_decompose(f, K):
 def dmp_clear_denoms(f, u, K, convert=False):
     """Clear denominators."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_dense(f)
+    f = ring.from_list(f)
     common, f = f.clear_denoms(convert=convert)
     if convert:
         ring = ring.clone(domain=ring.domain.ring)

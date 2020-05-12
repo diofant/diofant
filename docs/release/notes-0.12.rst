@@ -13,6 +13,8 @@ Major changes
 Compatibility breaks
 ====================
 
+* Removed ``vring()`` and ``vfield()`` functions, see :pull:`1016`.
+
 Minor changes
 =============
 

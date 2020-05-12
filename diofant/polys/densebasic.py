@@ -551,7 +551,7 @@ def dmp_raise(f, l, u, K):
 def dup_inflate(f, m, K):
     """Map ``y`` to ``x**m`` in a polynomial in ``K[x]``."""
     ring = K.poly_ring('_0')
-    f = ring.from_dense(f)
+    f = ring.from_list(f)
     f = f.inflate((m,))
     return ring.to_dense(f)
 
@@ -725,7 +725,7 @@ def dmp_terms_gcd(f, u, K):
 def dmp_slice_in(f, m, n, j, u, K):
     """Take a continuous subsequence of terms of ``f`` in ``x_j`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_dense(f)
+    f = ring.from_list(f)
     return ring.to_dense(f.slice(m, n, x=j))
 
 

@@ -308,10 +308,11 @@ def test_PolyElement_set_domain():
     assert f.set_domain(ZZ) is f
 
     g = f.set_domain(QQ)
+    R2 = g.ring
 
     assert g is not f
-    assert g.as_expr() == f.as_expr()
-    assert g.ring.domain is QQ
+    assert R2.to_expr(g) == R.to_expr(f)
+    assert R2.domain is QQ
 
 
 def test_PolyElement_items():
@@ -331,15 +332,12 @@ def test_PolyElement_as_expr():
     g = 3*x**2*y - x*y*z + 7*z**3 + 1
 
     assert f != g
-    assert f.as_expr() == g
+    assert R.to_expr(f) == g
 
     x, y, z = symbols('x y z')
     g = 3*x**2*y - x*y*z + 7*z**3 + 1
 
     assert f != g
-    assert f.as_expr(x, y, z) == g
-
-    pytest.raises(ValueError, lambda: f.as_expr(x))
 
 
 def test_PolyElement_from_expr():
@@ -1736,7 +1734,7 @@ def test_PolyElement_diff():
 
     R, x, y, z, t = ring('x y z t', FF(23))
 
-    f = R.from_dense(f_polys()[6].to_dense())
+    f = R.from_list(f_polys()[6].to_dense())
 
     assert f.diff(m=0) == f
     assert f.diff(m=2) == f.diff().diff()
@@ -1829,7 +1827,7 @@ def test_PolyElement_integrate():
 
     R, x, y, z, t = ring('x y z t', QQ)
 
-    f = R.from_dense(f_polys()[6].to_dense())
+    f = R.from_list(f_polys()[6].to_dense())
 
     assert (f.integrate(x=y, m=2) ==
             705*x**4*y**3/2 + 45*x**3*y**2*z**3*t**2/2 - 45*x**3*y**2*t**2/2 -
