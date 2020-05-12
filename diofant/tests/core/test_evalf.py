@@ -11,6 +11,7 @@ from diofant import (Abs, Add, Dummy, E, Eq, Expr, Float, Function,
 from diofant.abc import H, n, x, y
 from diofant.core.evalf import (PrecisionExhausted, _create_evalf_table,
                                 as_mpmath, complex_accuracy, scaled_zero)
+from diofant.parsing.sympy_parser import parse_expr
 from diofant.utilities.lambdify import implemented_function
 
 
@@ -18,6 +19,8 @@ __all__ = ()
 
 
 def NS(e, n=15, **options):
+    if isinstance(e, str):
+        e = parse_expr(e)
     return sstr(sympify(e).evalf(n, **options), full_prec=True)
 
 
@@ -181,7 +184,7 @@ def test_evalf_bugs():
     assert NS('log(10**100,10)', 10) == '100.0000000'
     assert NS('log(2)', 10) == '0.6931471806'
     assert NS(
-        '(sin(x)-x)/x**3', 15, subs={x: '1/10**50'}) == '-0.166666666666667'
+        '(sin(x)-x)/x**3', 15, subs={x: Rational(1, 10**50)}) == '-0.166666666666667'
     assert NS(sin(1) + I/10**100, 15) == '0.841470984807897 + 1.00000000000000e-100*I'
     assert x.evalf(strict=False) == x
     assert NS((1 + I)**2*I, 6) == '-2.00000'
@@ -481,7 +484,7 @@ def test_evalf_integral():
 
 
 def test_sympyissue_8821_highprec_from_str():
-    s = str(pi.evalf(128))
+    s = parse_expr(str(pi.evalf(128)))
     p = N(s)
     assert abs(sin(p)) < 1e-15
     p = N(s, 64)
