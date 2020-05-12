@@ -85,7 +85,7 @@ class erf(Function):
 
     * https://en.wikipedia.org/wiki/Error_function
     * https://dlmf.nist.gov/7
-    * http://mathworld.wolfram.com/Erf.html
+    * https://mathworld.wolfram.com/Erf.html
     * http://functions.wolfram.com/GammaBetaErf/Erf
 
     """
@@ -273,7 +273,7 @@ class erfc(Function):
 
     * https://en.wikipedia.org/wiki/Error_function
     * https://dlmf.nist.gov/7
-    * http://mathworld.wolfram.com/Erfc.html
+    * https://mathworld.wolfram.com/Erfc.html
     * http://functions.wolfram.com/GammaBetaErf/Erfc
 
     """
@@ -339,7 +339,7 @@ class erfc(Function):
             return False
 
     def _eval_rewrite_as_tractable(self, z):
-        return self.rewrite(erf).rewrite("tractable", deep=True)
+        return self.rewrite(erf).rewrite('tractable', deep=True)
 
     def _eval_rewrite_as_erf(self, z):
         return 1 - erf(z)
@@ -458,7 +458,7 @@ class erfi(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Error_function
-    * http://mathworld.wolfram.com/Erfi.html
+    * https://mathworld.wolfram.com/Erfi.html
     * http://functions.wolfram.com/GammaBetaErf/Erfi
 
     """
@@ -517,7 +517,7 @@ class erfi(Function):
             return False
 
     def _eval_rewrite_as_tractable(self, z):
-        return self.rewrite(erf).rewrite("tractable", deep=True)
+        return self.rewrite(erf).rewrite('tractable', deep=True)
 
     def _eval_rewrite_as_erf(self, z):
         return -I*erf(I*z)
@@ -1344,9 +1344,9 @@ class li(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Logarithmic_integral
-    * http://mathworld.wolfram.com/LogarithmicIntegral.html
+    * https://mathworld.wolfram.com/LogarithmicIntegral.html
     * https://dlmf.nist.gov/6
-    * http://mathworld.wolfram.com/SoldnersConstant.html
+    * https://mathworld.wolfram.com/SoldnersConstant.html
 
     """
 
@@ -1457,7 +1457,7 @@ class Li(Function):
     ==========
 
     * https://en.wikipedia.org/wiki/Logarithmic_integral
-    * http://mathworld.wolfram.com/LogarithmicIntegral.html
+    * https://mathworld.wolfram.com/LogarithmicIntegral.html
     * https://dlmf.nist.gov/6
 
     """
@@ -1483,7 +1483,7 @@ class Li(Function):
         return li(z) - li(2)
 
     def _eval_rewrite_as_tractable(self, z):
-        return self.rewrite(li).rewrite("tractable", deep=True)
+        return self.rewrite(li).rewrite('tractable', deep=True)
 
 ###############################################################################
 # ################## TRIGONOMETRIC INTEGRALS ################################ #
@@ -2051,7 +2051,7 @@ class fresnels(FresnelIntegral):
 
     * https://en.wikipedia.org/wiki/Fresnel_integral
     * https://dlmf.nist.gov/7
-    * http://mathworld.wolfram.com/FresnelIntegrals.html
+    * https://mathworld.wolfram.com/FresnelIntegrals.html
     * http://functions.wolfram.com/GammaBetaErf/FresnelS
     * The converging factors for the fresnel integrals
       by John W. Wrench Jr. and Vicki Alley
@@ -2179,7 +2179,7 @@ class fresnelc(FresnelIntegral):
 
     * https://en.wikipedia.org/wiki/Fresnel_integral
     * https://dlmf.nist.gov/7
-    * http://mathworld.wolfram.com/FresnelIntegrals.html
+    * https://mathworld.wolfram.com/FresnelIntegrals.html
     * http://functions.wolfram.com/GammaBetaErf/FresnelC
     * The converging factors for the fresnel integrals
       by John W. Wrench Jr. and Vicki Alley

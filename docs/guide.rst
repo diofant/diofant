@@ -142,4 +142,4 @@ and publish this release tag::
 .. _PEP 257: https://www.python.org/dev/peps/pep-0257/
 .. _flake8: http://flake8.rtfd.io/
 .. _No Code of Conduct: https://github.com/domgetter/NCoC
-.. _mention closed issues: https://help.github.com/en/articles/closing-issues-using-keywords
+.. _mention closed issues: https://help.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue

@@ -31,7 +31,7 @@ def test_basic2():
 
 
 def test_f():
-    f = Function("f")
+    f = Function('f')
     assert residue(f(x)/x**5, x, 0) == f(x).diff(x, 4).subs({x: 0})/24
 
 

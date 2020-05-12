@@ -437,7 +437,7 @@ def roots_cyclotomic(f, factor=False):
         if f == g:
             break
     else:  # pragma: no cover
-        raise RuntimeError("failed to find index of a cyclotomic polynomial")
+        raise RuntimeError('failed to find index of a cyclotomic polynomial')
 
     roots = []
 
@@ -628,9 +628,9 @@ def _integer_basis(poly):
     if poly.is_zero:
         return
 
-    monoms, coeffs = list(zip(*poly.terms()))
+    monoms, coeffs = zip(*poly.terms())
 
-    monoms, = list(zip(*monoms))
+    monoms, = zip(*monoms)
     coeffs = list(map(abs, coeffs))
 
     if coeffs[0] < coeffs[-1]:
@@ -672,7 +672,6 @@ def preprocess_roots(poly):
     poly = poly.primitive()[1]
     poly = poly.retract()
 
-    # TODO: This is fragile. Figure out how to make this independent of construct_domain().
     if poly.domain.is_PolynomialRing and all(c.is_term for c in poly.rep.coeffs()):
         poly = poly.inject()
 
@@ -783,7 +782,7 @@ def roots(f, *gens, **flags):
     References
     ==========
 
-    * https://en.wikipedia.org/wiki/Cubic_function#Trigonometric_and_hyperbolic_solutions
+    * https://en.wikipedia.org/wiki/Cubic_equation#Trigonometric_and_hyperbolic_solutions
 
     """
     from .polytools import to_rational_coeffs
@@ -908,7 +907,7 @@ def roots(f, *gens, **flags):
                     _update_dict(result, r, 1)
             else:
                 if len(factors) == 1 and factors[0][1] == 1:
-                    if f.domain.is_SymbolicDomain:
+                    if f.domain.is_ExpressionDomain:
                         res = to_rational_coeffs(f)
                         if res:
                             if res[0] is None:
@@ -943,7 +942,7 @@ def roots(f, *gens, **flags):
         try:
             query = handlers[filter]
         except KeyError:
-            raise ValueError("Invalid filter: %s" % filter)
+            raise ValueError(f'Invalid filter: {filter}')
 
         for zero in dict(result):
             if not query(zero):

@@ -526,13 +526,13 @@ def test_is_number():
 def test_Interval_is_left_unbounded():
     assert Interval(3, 4).is_left_unbounded is False
     assert Interval(-oo, 3).is_left_unbounded is True
-    assert Interval(Float("-inf"), 3).is_left_unbounded is True
+    assert Interval(Float('-inf'), 3).is_left_unbounded is True
 
 
 def test_Interval_is_right_unbounded():
     assert Interval(3, 4).is_right_unbounded is False
     assert Interval(3, oo).is_right_unbounded is True
-    assert Interval(3, Float("+inf")).is_right_unbounded is True
+    assert Interval(3, Float('+inf')).is_right_unbounded is True
 
 
 def test_Interval_as_relational():

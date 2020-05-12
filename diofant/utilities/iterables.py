@@ -52,7 +52,7 @@ def flatten(iterable, levels=None, cls=None):
             levels -= 1
         else:
             raise ValueError(
-                "expected non-negative number of levels, got %s" % levels)
+                f'expected non-negative number of levels, got {levels}')
 
     if cls is None:
         def reducible(x):
@@ -80,7 +80,7 @@ def unflatten(iter, n=2):
 
     """
     if n < 1 or len(iter) % n:
-        raise ValueError('iter length is not a multiple of %i' % n)
+        raise ValueError(f'iter length is not a multiple of {n:d}')
     return list(zip(*(iter[i::n] for i in range(n))))
 
 
@@ -356,7 +356,7 @@ def numbered_symbols(prefix='x', cls=None, start=0, exclude=[], *args, **assumpt
         cls = Symbol
 
     while True:
-        name = '%s%s' % (prefix, start)
+        name = f'{prefix}{start}'
         s = cls(name, *args, **assumptions)
         if s not in exclude:
             yield s
@@ -372,7 +372,7 @@ def capture(func):
     >>> def foo():
     ...     print('hello world!')
     ...
-    >>> 'hello' in capture(foo) # foo, not foo()
+    >>> 'hello' in capture(foo)  # foo, not foo()
     True
     >>> capture(lambda: pprint(2/x, use_unicode=False))
     '2\n-\nx\n'
@@ -634,7 +634,7 @@ def topological_sort(graph, key=None):
                         S.append(v)
 
     if E:
-        raise ValueError("cycle detected")
+        raise ValueError('cycle detected')
     else:
         return L
 
@@ -827,7 +827,7 @@ def _set_partitions(n):
     ========
 
     >>> for m, q in _set_partitions(3):
-    ...     print('%s %s %s' % (m, q, _partition('abc', q, m)))
+    ...     print(f'{m} {q} { _partition("abc", q, m)}')
     1 [0, 0, 0] [['a', 'b', 'c']]
     2 [0, 0, 1] [['a', 'b'], ['c']]
     2 [0, 1, 0] [['a', 'c'], ['b']]
@@ -1494,7 +1494,7 @@ def generate_involutions(n):
     References
     ==========
 
-    * http://mathworld.wolfram.com/PermutationInvolution.html
+    * https://mathworld.wolfram.com/PermutationInvolution.html
 
     Examples
     ========
@@ -1585,7 +1585,7 @@ def necklaces(n, k, free=False):
     References
     ==========
 
-    http://mathworld.wolfram.com/Necklace.html
+    https://mathworld.wolfram.com/Necklace.html
 
     """
     return uniq(minlex(i, directed=not free) for i in

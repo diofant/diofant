@@ -23,81 +23,81 @@ DIOFANT = {}
 # throughout this file, whereas these should remain unmodified.
 MATH_DEFAULT = {}
 MPMATH_DEFAULT = {}
-NUMPY_DEFAULT = {"I": 1j}
+NUMPY_DEFAULT = {'I': 1j}
 DIOFANT_DEFAULT = {}
 
 # Mappings between diofant and other modules function names.
 MATH_TRANSLATIONS = {
-    "Abs": "fabs",
-    "ceiling": "ceil",
-    "E": "e",
-    "ln": "log",
+    'Abs': 'fabs',
+    'ceiling': 'ceil',
+    'E': 'e',
+    'ln': 'log',
 }
 
 MPMATH_TRANSLATIONS = {
-    "Abs": "fabs",
-    "elliptic_k": "ellipk",
-    "elliptic_f": "ellipf",
-    "elliptic_e": "ellipe",
-    "elliptic_pi": "ellippi",
-    "ceiling": "ceil",
-    "chebyshevt": "chebyt",
-    "chebyshevu": "chebyu",
-    "E": "e",
-    "I": "j",
-    "ln": "log",
-    # "lowergamma": "lower_gamma",
-    "oo": "inf",
-    # "uppergamma": "upper_gamma",
-    "LambertW": "lambertw",
-    "MutableDenseMatrix": "matrix",
-    "ImmutableMatrix": "matrix",
-    "conjugate": "conj",
-    "dirichlet_eta": "altzeta",
-    "Ei": "ei",
-    "Shi": "shi",
-    "Chi": "chi",
-    "Si": "si",
-    "Ci": "ci",
-    "Ynm": "spherharm",
-    "RisingFactorial": "rf",
-    "FallingFactorial": "ff",
+    'Abs': 'fabs',
+    'elliptic_k': 'ellipk',
+    'elliptic_f': 'ellipf',
+    'elliptic_e': 'ellipe',
+    'elliptic_pi': 'ellippi',
+    'ceiling': 'ceil',
+    'chebyshevt': 'chebyt',
+    'chebyshevu': 'chebyu',
+    'E': 'e',
+    'I': 'j',
+    'ln': 'log',
+    # 'lowergamma': 'lower_gamma',
+    'oo': 'inf',
+    # 'uppergamma': 'upper_gamma',
+    'LambertW': 'lambertw',
+    'MutableDenseMatrix': 'matrix',
+    'ImmutableMatrix': 'matrix',
+    'conjugate': 'conj',
+    'dirichlet_eta': 'altzeta',
+    'Ei': 'ei',
+    'Shi': 'shi',
+    'Chi': 'chi',
+    'Si': 'si',
+    'Ci': 'ci',
+    'Ynm': 'spherharm',
+    'RisingFactorial': 'rf',
+    'FallingFactorial': 'ff',
 }
 
 NUMPY_TRANSLATIONS = {
-    "Abs": "abs",
-    "acos": "arccos",
-    "acosh": "arccosh",
-    "arg": "angle",
-    "asin": "arcsin",
-    "asinh": "arcsinh",
-    "atan": "arctan",
-    "atan2": "arctan2",
-    "atanh": "arctanh",
-    "ceiling": "ceil",
-    "E": "e",
-    "im": "imag",
-    "ln": "log",
-    "Mod": "mod",
-    "oo": "inf",
-    "re": "real",
-    "SparseMatrix": "array",
-    "ImmutableSparseMatrix": "array",
-    "Matrix": "array",
-    "MutableDenseMatrix": "array",
-    "ImmutableMatrix": "array",
-    "ImmutableDenseMatrix": "array",
+    'Abs': 'abs',
+    'acos': 'arccos',
+    'acosh': 'arccosh',
+    'arg': 'angle',
+    'asin': 'arcsin',
+    'asinh': 'arcsinh',
+    'atan': 'arctan',
+    'atan2': 'arctan2',
+    'atanh': 'arctanh',
+    'ceiling': 'ceil',
+    'E': 'e',
+    'im': 'imag',
+    'ln': 'log',
+    'Mod': 'mod',
+    'oo': 'inf',
+    're': 'real',
+    'SparseMatrix': 'array',
+    'ImmutableSparseMatrix': 'array',
+    'Matrix': 'array',
+    'MutableDenseMatrix': 'array',
+    'ImmutableMatrix': 'array',
+    'ImmutableDenseMatrix': 'array',
 }
 
 # Available modules:
 MODULES = {
-    "math": (MATH, MATH_DEFAULT, MATH_TRANSLATIONS, ("from math import *",)),
-    "mpmath": (MPMATH, MPMATH_DEFAULT, MPMATH_TRANSLATIONS, ("from mpmath import *",)),
-    "numpy": (NUMPY, NUMPY_DEFAULT, NUMPY_TRANSLATIONS, ("import_module('numpy')",)),
-    "diofant": (DIOFANT, DIOFANT_DEFAULT, {}, (
-        "from diofant.functions import *",
-        "from diofant.matrices import *",
-        "from diofant import Sum, Integral, pi, oo, nan, zoo, E, I")),
+    'math': (MATH, MATH_DEFAULT, MATH_TRANSLATIONS, ('from math import *',)),
+    'mpmath': (MPMATH, MPMATH_DEFAULT, MPMATH_TRANSLATIONS, ('from mpmath import *',)),
+    'numpy': (NUMPY, NUMPY_DEFAULT, NUMPY_TRANSLATIONS, ("import_module('numpy')",)),
+    'diofant': (DIOFANT, DIOFANT_DEFAULT, {}, (
+        'from diofant.functions import *',
+        'from diofant.matrices import *',
+        'from diofant import Sum, Integral, pi, oo, nan, zoo, E, I')),
 }
 
 
@@ -116,7 +116,7 @@ def _import(module):
             module]
     except KeyError:
         raise NameError(
-            "'%s' module can't be used for lambdification" % module)
+            f"'{module}' module can't be used for lambdification")
 
     # Clear namespace or exit
     if namespace != namespace_default:
@@ -135,7 +135,7 @@ def _import(module):
             continue
 
         raise ImportError(
-            "can't import '%s' with '%s' command" % (module, import_command))
+            f"can't import '{module}' with '{import_command}' command")
 
     # Add translated names to namespace
     for diofantname, translation in translations.items():
@@ -175,13 +175,13 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
 
     (1) Use one of the provided modules:
 
-        >>> f = lambdify(x, sin(x), "math")
+        >>> f = lambdify(x, sin(x), 'math')
 
         Attention: Functions that are not in the math module will throw a name
                    error when the lambda function is evaluated! So this would
                    be better:
 
-        >>> f = lambdify(x, sin(x)*gamma(x), ("math", "mpmath", "diofant"))
+        >>> f = lambdify(x, sin(x)*gamma(x), ('math', 'mpmath', 'diofant'))
 
     (2) Use some other module:
 
@@ -193,7 +193,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
                    translated to numpy.arctan. Use the modified module instead
                    by passing the string "numpy":
 
-        >>> f = lambdify((x, y), tan(x*y), "numpy")
+        >>> f = lambdify((x, y), tan(x*y), 'numpy')
         >>> f(1, 2)
         -2.18503986326
         >>> from numpy import array
@@ -203,8 +203,8 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     (3) Use a dictionary defining custom functions:
 
         >>> def my_cool_function(x):
-        ...     return 'sin(%s) is cool' % x
-        >>> myfuncs = {"sin": my_cool_function}
+        ...     return f'sin({x}) is cool'
+        >>> myfuncs = {'sin': my_cool_function}
         >>> f = lambdify(x, sin(x), myfuncs)
         >>> f(1)
         'sin(1) is cool'
@@ -271,14 +271,14 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
         module_provided = False
 
         try:
-            _import("numpy")
+            _import('numpy')
         except ImportError:
             # Use either numpy (if available) or python.math where possible.
             # XXX: This leads to different behaviour on different systems and
             #      might be the reason for irreproducible errors.
-            modules = ["math", "mpmath", "diofant"]
+            modules = ['math', 'mpmath', 'diofant']
         else:
-            modules = ["numpy"]
+            modules = ['numpy']
 
     # Get the needed namespaces.
     namespaces = []
@@ -296,7 +296,7 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
         buf = _get_namespace(m)
         namespace.update(buf)
 
-    if hasattr(expr, "atoms"):
+    if hasattr(expr, 'atoms'):
         # Try if you can extract symbols from the expression.
         # Move on if expr.atoms in not implemented.
         syms = expr.atoms(Symbol)
@@ -336,13 +336,13 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
             return wrapper
         func = array_wrap(func)
     # Apply the docstring
-    sig = "func({0})".format(", ".join(str(i) for i in names))
+    sig = f"func({', '.join(str(i) for i in names)})"
     sig = textwrap.fill(sig, subsequent_indent=' '*8)
     expr_str = str(expr)
     if len(expr_str) > 78:
         expr_str = textwrap.wrap(expr_str, 75)[0] + '...'
-    func.__doc__ = ("Created with lambdify. Signature:\n\n{sig}\n\n"
-                    "Expression:\n\n{expr}").format(sig=sig, expr=expr_str)
+    func.__doc__ = ('Created with lambdify. Signature:\n\n{sig}\n\n'
+                    'Expression:\n\n{expr}').format(sig=sig, expr=expr_str)
     return func
 
 
@@ -353,10 +353,10 @@ def _get_namespace(m):
         return MODULES[m][0]
     elif isinstance(m, dict):
         return m
-    elif hasattr(m, "__dict__"):
+    elif hasattr(m, '__dict__'):
         return m.__dict__
     else:
-        raise TypeError("Argument must be either a string, dict or module but it is: %s" % m)
+        raise TypeError(f'Argument must be either a string, dict or module but it is: {m}')
 
 
 def lambdastr(args, expr, printer=None, dummify=False):
@@ -402,7 +402,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
             return args
         elif iterable(args):
             dummies = flatten([sub_args(a, dummies_dict) for a in args])
-            return ",".join(str(a) for a in dummies)
+            return ','.join(str(a) for a in dummies)
         else:
             # Sub in dummy variables for functions or symbols
             if isinstance(args, (Function, Symbol)):
@@ -440,7 +440,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
         rv = 'lambda %s: (%s)(*list(%s([%s])))' % (
             ','.join(dum_args), lstr, flat, iter_args)
         if len(re.findall(r'\b%s\b' % flat, rv)) > 1:
-            raise ValueError('the name %s is reserved by lambdastr' % flat)
+            raise ValueError(f'the name {flat} is reserved by lambdastr')
         return rv
 
     dummies_dict = {}
@@ -448,7 +448,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
         args = sub_args(args, dummies_dict)
     else:
         if iterable(args):
-            args = ",".join(str(a) for a in args)
+            args = ','.join(str(a) for a in args)
 
     # Transform expr
     if dummify:
@@ -458,7 +458,7 @@ def lambdastr(args, expr, printer=None, dummify=False):
             expr = sub_expr(expr, dummies_dict)
     expr = lambdarepr(expr)
 
-    return "lambda %s: (%s)" % (args, expr)
+    return f'lambda {args}: ({expr})'
 
 
 def _imp_namespace(expr, namespace=None):

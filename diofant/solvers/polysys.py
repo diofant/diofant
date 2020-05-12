@@ -149,7 +149,7 @@ def solve_poly_system(eqs, *gens, **args):
             f = basis[-1]
             gen = gens[-1]
 
-            zeros = {k.doit() for k in f.ltrim(gen).all_roots()}
+            zeros = {k.doit() for k in f.exclude().all_roots()}
 
             if len(basis) == 1:
                 return [{gen: zero} for zero in zeros]

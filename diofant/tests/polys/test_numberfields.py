@@ -195,7 +195,7 @@ def test_minimal_polynomial_conjugate():
                 1152*x**8 + 3328*x**6 - 1600*x**4 + 64*x**2 + 1)
 
 
-@pytest.mark.parametrize("method", ("groebner", "compose"))
+@pytest.mark.parametrize('method', ('groebner', 'compose'))
 def test_minimal_polynomial_rootof(method):
     e = RootOf(x**4 - 3*x**3 + x**2*(-3*sqrt(2) + 1) + 2*sqrt(2)*x + 2, 0)
     assert (minimal_polynomial(e, method=method)(x) ==
@@ -204,7 +204,7 @@ def test_minimal_polynomial_rootof(method):
                               domain=e.poly.domain)(y) == e.poly(y)
 
 
-@pytest.mark.parametrize("method", ("groebner", "compose"))
+@pytest.mark.parametrize('method', ('groebner', 'compose'))
 def test_minimal_polynomial_GoldenRatio(method):
     assert minimal_polynomial(GoldenRatio, method=method)(x) == x**2 - x - 1
 
@@ -648,3 +648,11 @@ def test_sympyissue_5934():
          (-36000 - 7200*sqrt(5) + (12*sqrt(10)*sqrt(sqrt(5) + 5) +
                                    24*sqrt(10)*sqrt(-sqrt(5) + 5))**2))
     assert [minimal_polynomial(i)(x) for i in e.as_numer_denom()] == [x]*2
+
+
+def test_sympyissue_18874():
+    e = [sqrt(2) + sqrt(5), sqrt(2)]
+
+    assert primitive_element(e) == (PurePoly(x**4 - 46*x**2 + 169),
+                                    [1, 2], [[QQ(1, 39), 0, QQ(-20, 39), 0],
+                                             [QQ(-1, 78), 0, QQ(59, 78), 0]])

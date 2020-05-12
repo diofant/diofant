@@ -636,7 +636,7 @@ def test_DecrementLevel():
     except TestingException:
         pass
     else:
-        raise AssertionError("Did not raise.")
+        raise AssertionError('Did not raise.')
 
     assert DE.level == -1
     assert DE.t == t1

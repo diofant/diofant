@@ -1,33 +1,22 @@
 """Compatibility interface between dense and sparse polys."""
 
-from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term, dmp_div,
-                         dmp_expand, dmp_exquo_ground, dmp_l1_norm,
-                         dmp_max_norm, dmp_mul, dmp_mul_ground, dmp_mul_term,
-                         dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_rem,
-                         dmp_sqr, dmp_sub, dmp_sub_mul, dup_lshift, dup_rshift)
+from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term,
+                         dmp_exquo_ground, dmp_l1_norm, dmp_max_norm, dmp_mul,
+                         dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
+                         dmp_quo_ground, dmp_sqr, dmp_sub, dmp_sub_mul,
+                         dup_lshift, dup_rshift)
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
-                         dmp_ground_TC, dmp_LC, dmp_slice_in, dmp_TC,
-                         dmp_to_dict)
-from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
-                         dmp_diff_in, dmp_eval_in, dmp_eval_tail,
-                         dmp_ground_content, dmp_ground_monic,
-                         dmp_ground_primitive, dmp_ground_trunc, dup_decompose,
-                         dup_mirror, dup_real_imag, dup_scale, dup_shift,
+                         dmp_ground_TC, dmp_LC, dmp_TC, dmp_to_dict)
+from .densetools import (dmp_compose, dup_decompose, dup_real_imag,
                          dup_transform)
-from .euclidtools import (dmp_content, dmp_ff_prs_gcd, dmp_gcd, dmp_inner_gcd,
-                          dmp_inner_subresultants, dmp_prem, dmp_primitive,
-                          dmp_qq_collins_resultant, dmp_qq_heu_gcd,
-                          dmp_resultant, dmp_rr_prs_gcd,
-                          dmp_zz_collins_resultant, dmp_zz_heu_gcd,
-                          dmp_zz_modular_resultant, dup_ff_prs_gcd, dup_gcdex,
-                          dup_half_gcdex, dup_invert, dup_rr_prs_gcd)
-from .factortools import (dmp_factor_list, dmp_trial_division, dmp_zz_factor,
-                          dmp_zz_mignotte_bound, dmp_zz_wang,
-                          dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
-                          dmp_zz_wang_non_divisors, dup_cyclotomic_p,
-                          dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
-                          dup_zz_factor, dup_zz_factor_sqf, dup_zz_hensel_lift,
-                          dup_zz_hensel_step, dup_zz_irreducible_p)
+from .factortools import (dmp_factor_list, dmp_trial_division,
+                          dmp_zz_diophantine, dmp_zz_mignotte_bound,
+                          dmp_zz_wang, dmp_zz_wang_hensel_lifting,
+                          dmp_zz_wang_lead_coeffs, dmp_zz_wang_non_divisors,
+                          dup_cyclotomic_p, dup_zz_cyclotomic_factor,
+                          dup_zz_cyclotomic_poly, dup_zz_factor_sqf,
+                          dup_zz_hensel_lift, dup_zz_hensel_step,
+                          dup_zz_irreducible_p)
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -36,7 +25,6 @@ from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_real_roots_sqf, dup_refine_real_root,
                             dup_root_upper_bound, dup_sign_variations,
                             dup_sturm)
-from .sqfreetools import dmp_sqf_list, dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
 
 
 __all__ = 'IPolys',
@@ -57,7 +45,7 @@ class IPolys:
             if element.ring == self:
                 return element
             else:
-                raise NotImplementedError("domain conversions")
+                raise NotImplementedError('domain conversions')
         else:
             return self.ground_new(element)
 
@@ -74,11 +62,11 @@ class IPolys:
         return dmp_ground_TC(self.to_dense(f), self.ngens-1, self.domain)
 
     def dmp_add_term(self, f, c, i):
-        c = self.wrap(c).drop(0).to_dense() if self.ngens > 1 else c
+        c = self.wrap(c).drop(0).to_dense() if self.is_multivariate else c
         return self.from_dense(dmp_add_term(self.to_dense(f), c, i, self.ngens-1, self.domain))
 
     def dmp_mul_term(self, f, c, i):
-        c = self.wrap(c).drop(0).to_dense() if self.ngens > 1 else c
+        c = self.wrap(c).drop(0).to_dense() if self.is_multivariate else c
         return self.from_dense(dmp_mul_term(self.to_dense(f), c, i, self.ngens-1, self.domain))
 
     def dmp_mul_ground(self, f, c):
@@ -123,38 +111,22 @@ class IPolys:
     def dmp_pow(self, f, n):
         return self.from_dense(dmp_pow(self.to_dense(f), n, self.ngens-1, self.domain))
 
-    def dmp_prem(self, f, g):
-        return self.from_dense(dmp_prem(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain))
-
-    def dmp_div(self, f, g):
-        q, r = dmp_div(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(q), self.from_dense(r)
-
-    def dmp_rem(self, f, g):
-        return self.from_dense(dmp_rem(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain))
-
-    def dmp_quo(self, f, g):
-        return self.from_dense(dmp_quo(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain))
-
     def dmp_max_norm(self, f):
         return dmp_max_norm(self.to_dense(f), self.ngens-1, self.domain)
 
     def dmp_l1_norm(self, f):
         return dmp_l1_norm(self.to_dense(f), self.ngens-1, self.domain)
 
-    def dmp_expand(self, polys):
-        return self.from_dense(dmp_expand(list(map(self.to_dense, polys)), self.ngens-1, self.domain))
-
     def dmp_LC(self, f):
         LC = dmp_LC(self.to_dense(f), self.domain)
-        if self.ngens > 1:
+        if self.is_multivariate:
             return self.drop(0).from_dense(LC)
         else:
             return LC
 
     def dmp_TC(self, f):
         TC = dmp_TC(self.to_dense(f), self.domain)
-        if self.ngens > 1:
+        if self.is_multivariate:
             return self.drop(0).from_dense(TC)
         else:
             return TC
@@ -165,54 +137,12 @@ class IPolys:
     def dmp_degree_list(self, f):
         return dmp_degree_list(self.to_dense(f), self.ngens-1)
 
-    def dmp_diff_in(self, f, m, j):
-        return self.from_dense(dmp_diff_in(self.to_dense(f), m, j, self.ngens-1, self.domain))
-
-    def dmp_slice_in(self, f, m, n, j=0):
-        return self.from_dense(dmp_slice_in(self.to_dense(f), m, n, j, self.ngens-1, self.domain))
-
-    def dmp_eval_in(self, f, a, j):
-        result = dmp_eval_in(self.to_dense(f), a, j, self.ngens-1, self.domain)
-        if self.ngens > 1:
-            return self.drop(j).from_dense(result)
-        else:
-            return result
-
-    def dmp_diff_eval_in(self, f, m, a, j):
-        result = dmp_diff_eval_in(self.to_dense(f), m, a, j, self.ngens-1, self.domain)
-        if self.ngens > 1:
-            return self.drop(j).from_dense(result)
-        else:
-            return result
-
-    def dmp_eval_tail(self, f, A):
-        result = dmp_eval_tail(self.to_dense(f), A, self.ngens-1, self.domain)
-        if isinstance(result, list):
-            return self.drop(*range(self.ngens)[self.ngens - len(A):]).from_dense(result)
-        else:
-            return result
-
-    def dmp_ground_trunc(self, f, p):
-        return self.from_dense(dmp_ground_trunc(self.to_dense(f), p, self.ngens-1, self.domain))
-
-    def dmp_ground_monic(self, f):
-        return self.from_dense(dmp_ground_monic(self.to_dense(f), self.ngens-1, self.domain))
-
     def dup_real_imag(self, f):
         ring = self
         p, q = dup_real_imag(ring.wrap(f).drop(1).to_dense(), ring.domain)
         if ring.domain.is_ComplexAlgebraicField and not ring.domain.is_RealAlgebraicField:
             ring = ring.to_ground()
         return ring.from_dense(p), ring.from_dense(q)
-
-    def dup_mirror(self, f):
-        return self.from_dense(dup_mirror(self.to_dense(f), self.domain))
-
-    def dup_scale(self, f, a):
-        return self.from_dense(dup_scale(self.to_dense(f), a, self.domain))
-
-    def dup_shift(self, f, a):
-        return self.from_dense(dup_shift(self.to_dense(f), a, self.domain))
 
     def dup_transform(self, f, p, q):
         return self.from_dense(dup_transform(self.to_dense(f), self.to_dense(p), self.to_dense(q), self.domain))
@@ -226,99 +156,6 @@ class IPolys:
 
     def dup_sign_variations(self, f):
         return dup_sign_variations(self.to_dense(f), self.domain)
-
-    def dmp_clear_denoms(self, f, convert=False):
-        c, F = dmp_clear_denoms(self.to_dense(f), self.ngens-1, self.domain, convert=convert)
-        if convert:
-            ring = self.clone(domain=self.domain.ring)
-        else:
-            ring = self
-        return c, ring.from_dense(F)
-
-    def dup_half_gcdex(self, f, g):
-        s, h = dup_half_gcdex(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(s), self.from_dense(h)
-
-    def dup_gcdex(self, f, g):
-        s, t, h = dup_gcdex(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(s), self.from_dense(t), self.from_dense(h)
-
-    def dup_invert(self, f, g):
-        return self.from_dense(dup_invert(self.to_dense(f), self.to_dense(g), self.domain))
-
-    def dmp_inner_subresultants(self, f, g):
-        prs, sres = dmp_inner_subresultants(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return list(map(self.from_dense, prs)), sres
-
-    def dmp_zz_modular_resultant(self, f, g, p):
-        res = dmp_zz_modular_resultant(self.to_dense(f), self.to_dense(g), self.domain_new(p), self.ngens-1, self.domain)
-        return self.drop(0).from_dense(res)
-
-    def dmp_zz_collins_resultant(self, f, g):
-        res = dmp_zz_collins_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.drop(0).from_dense(res)
-
-    def dmp_qq_collins_resultant(self, f, g):
-        res = dmp_qq_collins_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.drop(0).from_dense(res)
-
-    def dmp_resultant(self, f, g, includePRS=False):
-        res = dmp_resultant(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain, includePRS=includePRS)
-        res0 = res[0] if includePRS else res
-        if self.ngens > 1:
-            res0 = self.drop(0).from_dense(res0)
-        if includePRS:
-            return res0, list(map(self.from_dense, res[1]))
-        else:
-            return res0
-
-    def dup_rr_prs_gcd(self, f, g):
-        H, F, G = dup_rr_prs_gcd(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
-    def dup_ff_prs_gcd(self, f, g):
-        H, F, G = dup_ff_prs_gcd(self.to_dense(f), self.to_dense(g), self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
-    def dmp_rr_prs_gcd(self, f, g):
-        H, F, G = dmp_rr_prs_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
-    def dmp_ff_prs_gcd(self, f, g):
-        H, F, G = dmp_ff_prs_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
-    def dmp_zz_heu_gcd(self, f, g):
-        H, F, G = dmp_zz_heu_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
-    def dmp_qq_heu_gcd(self, f, g):
-        H, F, G = dmp_qq_heu_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
-    def dmp_inner_gcd(self, f, g):
-        H, F, G = dmp_inner_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(H), self.from_dense(F), self.from_dense(G)
-
-    def dmp_gcd(self, f, g):
-        H = dmp_gcd(self.to_dense(f), self.to_dense(g), self.ngens-1, self.domain)
-        return self.from_dense(H)
-
-    def dmp_content(self, f):
-        cont = dmp_content(self.to_dense(f), self.ngens-1, self.domain)
-        return self.drop(0).from_dense(cont)
-
-    def dmp_primitive(self, f):
-        cont, prim = dmp_primitive(self.to_dense(f), self.ngens-1, self.domain)
-        return self.drop(0).from_dense(cont), self.from_dense(prim)
-
-    def dmp_ground_content(self, f):
-        cont = dmp_ground_content(self.to_dense(f), self.ngens-1, self.domain)
-        return cont
-
-    def dmp_ground_primitive(self, f):
-        cont, prim = dmp_ground_primitive(self.to_dense(f), self.ngens-1, self.domain)
-        return cont, self.from_dense(prim)
 
     def dmp_trial_division(self, f, factors):
         factors = dmp_trial_division(self.to_dense(f), list(map(self.to_dense, factors)), self.ngens-1, self.domain)
@@ -367,6 +204,11 @@ class IPolys:
         f, HH, CC = dmp_zz_wang_lead_coeffs(self.to_dense(f), T, cs, E, H, A, self.ngens-1, self.domain)
         return self.from_dense(f), list(map(uv.from_dense, HH)), list(map(mv.from_dense, CC))
 
+    # f: List[Poly], c: List[Poly], A: List[ZZ], d: int, p: ZZ
+    def dmp_zz_diophantine(self, F, c, A, d, p):
+        result = dmp_zz_diophantine(list(map(self.to_dense, F)), self.to_dense(c), A, d, p, self.ngens-1, self.domain)
+        return list(map(self.from_dense, result))
+
     # f: Poly, H: List[Poly], LC: List[Poly], A: List[ZZ], p: ZZ
     def dmp_zz_wang_hensel_lifting(self, f, H, LC, A, p):
         uv = self.drop(*range(1, self.ngens))
@@ -384,14 +226,6 @@ class IPolys:
         coeff, factors = dup_zz_factor_sqf(self.to_dense(f), self.domain)
         return coeff, [self.from_dense(g) for g in factors]
 
-    def dup_zz_factor(self, f):
-        coeff, factors = dup_zz_factor(self.to_dense(f), self.domain)
-        return coeff, [(self.from_dense(g), k) for g, k in factors]
-
-    def dmp_zz_factor(self, f):
-        coeff, factors = dmp_zz_factor(self.to_dense(f), self.ngens-1, self.domain)
-        return coeff, [(self.from_dense(g), k) for g, k in factors]
-
     def dmp_factor_list(self, f):
         coeff, factors = dmp_factor_list(self.to_dense(f), self.ngens-1, self.domain)
         return coeff, [(self.from_dense(g), k) for g, k in factors]
@@ -399,20 +233,6 @@ class IPolys:
     def dup_sturm(self, f):
         seq = dup_sturm(self.to_dense(f), self.domain)
         return list(map(self.from_dense, seq))
-
-    def dmp_sqf_p(self, f):
-        return dmp_sqf_p(self.to_dense(f), self.ngens-1, self.domain)
-
-    def dmp_sqf_norm(self, f):
-        s, F, R = dmp_sqf_norm(self.to_dense(f), self.ngens-1, self.domain)
-        return s, self.from_dense(F), self.to_ground().from_dense(R)
-
-    def dmp_sqf_part(self, f):
-        return self.from_dense(dmp_sqf_part(self.to_dense(f), self.ngens-1, self.domain))
-
-    def dmp_sqf_list(self, f):
-        coeff, factors = dmp_sqf_list(self.to_dense(f), self.ngens-1, self.domain)
-        return coeff, [(self.from_dense(g), k) for g, k in factors]
 
     def dup_root_upper_bound(self, f):
         return dup_root_upper_bound(self.to_dense(f), self.domain)

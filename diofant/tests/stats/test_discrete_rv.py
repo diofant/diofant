@@ -34,5 +34,5 @@ def test_GeometricDistribution():
     assert d.expectation(x**2, x) - d.expectation(x, x)**2 == (1-p)/p**2
     assert abs(d.cdf(20000).evalf() - 1) < .001
 
-    X = Geometric("x", p)
+    X = Geometric('x', p)
     assert density(X)(z) == Rational(4, 5)**(z - 1)/5

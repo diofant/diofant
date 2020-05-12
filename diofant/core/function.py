@@ -82,7 +82,7 @@ class ArgumentIndexError(ValueError):
     """Raised when an invalid operation for positional argument happened."""
 
     def __str__(self):
-        return ("Invalid operation with argument number %s for Function %s" %
+        return ('Invalid operation with argument number %s for Function %s' %
                 (self.args[1], self.args[0]))
 
 
@@ -116,7 +116,7 @@ class FunctionClass(ManagedProperties):
         # Canonicalize nargs here; change to set in nargs.
         if is_sequence(nargs):
             if not nargs:
-                raise ValueError("Incorrectly specified nargs as %s" % str(nargs))
+                raise ValueError('Incorrectly specified nargs as %s' % str(nargs))
             nargs = tuple(ordered(set(nargs)))
         elif nargs is not None:
             nargs = as_int(nargs),
@@ -170,7 +170,7 @@ class FunctionClass(ManagedProperties):
 
     def __repr__(self):
         if issubclass(self, AppliedUndef):
-            return 'Function(%r)' % (self.__name__)
+            return f'Function({self.__name__!r})'
         else:
             return self.__name__
 
@@ -201,7 +201,7 @@ class Application(Expr, metaclass=FunctionClass):
         options.pop('nargs', None)
 
         if options:
-            raise ValueError("Unknown options: %s" % options)
+            raise ValueError(f'Unknown options: {options}')
 
         if evaluate:
             if nan in args:
@@ -478,9 +478,9 @@ class Function(Application, Expr):
 
         """
         from ..utilities.misc import filldedent
-        raise PoleError(filldedent('''
+        raise PoleError(filldedent("""
             Asymptotic expansion of %s around %s is
-            not implemented.''' % (type(self), args0)))
+            not implemented.""" % (type(self), args0)))
 
     def _eval_nseries(self, x, n, logx):
         """
@@ -550,7 +550,7 @@ class Function(Application, Expr):
                 # let's try the general algorithm
                 term = e.subs({x: 0})
                 if term.is_finite is False:
-                    raise PoleError("Cannot expand %s around 0" % self)
+                    raise PoleError(f'Cannot expand {self} around 0')
                 series = term
                 fact = Integer(1)
                 _x = Dummy('x', real=True, positive=True)
@@ -596,7 +596,7 @@ class Function(Application, Expr):
                 return Derivative(self, self.args[argindex - 1], evaluate=False)
         # See issue sympy/sympy#4624 and issue sympy/sympy#4719
         # and issue sympy/sympy#5600
-        arg_dummy = Dummy('xi_%i' % argindex)
+        arg_dummy = Dummy(f'xi_{argindex:d}')
         arg_dummy.dummy_index = hash(self.args[argindex - 1])
         new_args = list(self.args)
         new_args[argindex-1] = arg_dummy
@@ -628,7 +628,7 @@ class Function(Application, Expr):
             #      sin(x)        x        <- _eval_as_leading_term needed
             #
             raise NotImplementedError(
-                '%s has no _eval_as_leading_term routine' % self.func)
+                f'{self.func} has no _eval_as_leading_term routine')
         else:
             return self.func(*args)
 
@@ -933,9 +933,9 @@ class Derivative(Expr):
             variables = expr.free_symbols
             if len(variables) != 1:
                 from ..utilities.misc import filldedent
-                raise ValueError(filldedent('''
+                raise ValueError(filldedent("""
                     The variable(s) of differentiation
-                    must be supplied to differentiate %s''' % expr))
+                    must be supplied to differentiate %s""" % expr))
 
         # Standardize the variables by sympifying them and making appending a
         # count of 1 if there is only one variable: diff(e,x)->diff(e,x,1).
@@ -967,8 +967,8 @@ class Derivative(Expr):
                 from ..utilities.misc import filldedent
                 last_digit = int(str(count)[-1])
                 ordinal = 'st' if last_digit == 1 else 'nd' if last_digit == 2 else 'rd' if last_digit == 3 else 'th'
-                raise ValueError(filldedent('''
-                Can\'t calculate %s%s derivative wrt %s.''' % (count, ordinal, v)))
+                raise ValueError(filldedent("""
+                Can\'t calculate %s%s derivative wrt %s.""" % (count, ordinal, v)))
 
             if all_zero and not count == 0:
                 all_zero = False
@@ -1036,7 +1036,7 @@ class Derivative(Expr):
                 obj = None
             else:
                 if not is_symbol:
-                    new_v = Dummy('xi_%i' % i)
+                    new_v = Dummy(f'xi_{i:d}')
                     new_v.dummy_index = hash(v)
                     expr = expr.xreplace({v: new_v})
                     old_v = v
@@ -1295,7 +1295,7 @@ class Lambda(Expr):
         v = list(variables) if iterable(variables) else [variables]
         for i in v:
             if not getattr(i, 'is_Symbol', False):
-                raise TypeError('variable is not a symbol: %s' % i)
+                raise TypeError(f'variable is not a symbol: {i}')
         if len(v) == 1 and v[0] == expr:
             return S.IdentityFunction
 
@@ -1406,7 +1406,7 @@ class Subs(Expr):
         if len(args) and all(is_sequence(_) and len(_) == 2 for _ in args):
             variables, point = zip(*args)
         else:
-            raise ValueError("Subs support two or more arguments")
+            raise ValueError('Subs support two or more arguments')
 
         if tuple(uniq(variables)) != variables:
             repeated = [ v for v in set(variables) if variables.count(v) > 1 ]
@@ -1417,7 +1417,7 @@ class Subs(Expr):
 
         # use symbols with names equal to the point value (with preppended _)
         # to give a variable-independent expression
-        pre = "_"
+        pre = '_'
         pts = sorted(set(point), key=default_sort_key)
         from ..printing import StrPrinter
 
@@ -1443,7 +1443,7 @@ class Subs(Expr):
                    r in variables and
                    Symbol(pre + mystr(point[variables.index(r)])) != r
                    for _, r in reps):
-                pre += "_"
+                pre += '_'
                 continue
             break
 
@@ -1848,12 +1848,9 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     ...         return Expr.__new__(cls, *args)
     ...
     ...     def _eval_expand_double(self, **hints):
-    ...         '''
-    ...         Doubles the args of MyClass.
-    ...
-    ...         If there more than four args, doubling is not performed,
-    ...         unless force=True is also used (False by default).
-    ...         '''
+    ...         # Doubles the args of MyClass.
+    ...         # If there more than four args, doubling is not performed,
+    ...         # unless force=True is also used (False by default).
     ...         force = hints.pop('force', False)
     ...         if not force and len(self.args) > 4:
     ...             return self
@@ -1883,7 +1880,7 @@ def expand(e, deep=True, modulus=None, power_base=True, power_exp=True,
     References
     ==========
 
-    * http://mathworld.wolfram.com/Multiple-AngleFormulas.html
+    * https://mathworld.wolfram.com/Multiple-AngleFormulas.html
 
     """
     # don't modify this; modify the Expr.expand method

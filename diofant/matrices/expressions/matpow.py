@@ -1,3 +1,4 @@
+from ...core.logic import fuzzy_and
 from ...core.sympify import sympify
 from ..matrices import MatrixBase, ShapeError
 from .matexpr import Identity, MatrixExpr, ZeroMatrix
@@ -10,7 +11,7 @@ class MatPow(MatrixExpr):
     def __new__(cls, base, exp):
         base = sympify(base, strict=True)
         if not base.is_Matrix:
-            raise TypeError("Function parameter should be a matrix")
+            raise TypeError('Function parameter should be a matrix')
         exp = sympify(exp, strict=True)
         return super().__new__(cls, base, exp)
 
@@ -31,7 +32,7 @@ class MatPow(MatrixExpr):
         if isinstance(A, MatPow):
             # We still have a MatPow, make an explicit MatMul out of it.
             if not A.base.is_square:
-                raise ShapeError("Power of non-square matrix %s" % A.base)
+                raise ShapeError(f'Power of non-square matrix {A.base}')
             elif A.exp.is_Integer and A.exp.is_positive:
                 A = MatMul(*[A.base for k in range(A.exp)])
             # elif A.exp.is_Integer and self.exp.is_negative:
@@ -41,12 +42,12 @@ class MatPow(MatrixExpr):
             # T = A.base.as_explicit().inverse()
             # A = MatMul(*[T for k in range(-A.exp)])
             else:
-                raise NotImplementedError(("(%d, %d) entry" % (int(i), int(j)))
-                                          + " of matrix power either not defined or not implemented")
+                raise NotImplementedError((f'({int(i):d}, {int(j):d}) entry')
+                                          + ' of matrix power either not defined or not implemented')
         return A._entry(i, j)
 
     def _eval_is_commutative(self):
-        return self.base.is_commutative and self.exp.is_commutative
+        return fuzzy_and([self.base.is_commutative, self.exp.is_commutative])
 
     def doit(self, **kwargs):
         deep = kwargs.get('deep', True)
@@ -61,7 +62,7 @@ class MatPow(MatrixExpr):
                 return base.func(Identity(base.shape[0]))
             return Identity(base.shape[0])
         elif isinstance(base, ZeroMatrix) and exp.is_negative:
-            raise ValueError("Matrix det == 0; not invertible.")
+            raise ValueError('Matrix det == 0; not invertible.')
         elif isinstance(base, (Identity, ZeroMatrix)):
             return base
         elif isinstance(base, MatrixBase) and exp.is_number:

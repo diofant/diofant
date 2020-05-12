@@ -1,52 +1,41 @@
 """Polynomial factorization routines in characteristic zero."""
 
+import functools
 import math
 
 from ..ntheory import factorint, isprime, nextprime
 from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
-from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_expand,
-                         dmp_l1_norm, dmp_max_norm, dmp_mul, dmp_mul_ground,
-                         dmp_neg, dmp_pow, dmp_quo, dmp_quo_ground, dmp_rem,
-                         dmp_sub, dmp_sub_mul, dup_add, dup_lshift, dup_mul,
-                         dup_sqr, dup_sub)
+from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_l1_norm,
+                         dmp_max_norm, dmp_mul, dmp_mul_ground, dmp_neg,
+                         dmp_pow, dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
+                         dmp_sub_mul, dup_add, dup_lshift, dup_mul, dup_sqr,
+                         dup_sub)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
-                         dmp_eject, dmp_exclude, dmp_from_dict, dmp_ground_LC,
-                         dmp_ground_p, dmp_include, dmp_inject, dmp_LC,
-                         dmp_nest, dmp_normal, dmp_one, dmp_raise, dmp_strip,
-                         dmp_swap, dmp_TC, dmp_terms_gcd, dmp_zero_p,
+                         dmp_eject, dmp_exclude, dmp_ground_LC, dmp_ground_p,
+                         dmp_include, dmp_inject, dmp_LC, dmp_nest, dmp_normal,
+                         dmp_one, dmp_raise, dmp_strip, dmp_TC, dmp_zero_p,
                          dup_inflate)
 from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
-                         dmp_ground_trunc, dup_mirror)
-from .euclidtools import dmp_inner_gcd, dmp_primitive, dup_gcdex
-from .galoistools import gf_factor_sqf
+                         dmp_ground_trunc)
+from .euclidtools import dmp_primitive, dup_gcdex
+from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-from .sqfreetools import dmp_sqf_list, dmp_sqf_norm, dmp_sqf_p, dmp_sqf_part
+from .sqfreetools import dmp_sqf_list, dmp_sqf_p, dmp_sqf_part
 
 
 def dmp_trial_division(f, factors, u, K):
     """Determine multiplicities of factors using trial division."""
-    result = []
-
-    for factor in factors:
-        k = 0
-
-        while f:
-            q, r = dmp_div(f, factor, u, K)
-
-            if dmp_zero_p(r, u):
-                f, k = q, k + 1
-            else:
-                break
-
-        result.append((factor, k))
-
-    return _sort_factors(result)
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    factors = list(map(ring.from_dense, factors))
+    result = ring._trial_division(f, factors)
+    return [(ring.to_dense(f), k) for f, k in result]
 
 
 def dmp_zz_mignotte_bound(f, u, K):
@@ -188,7 +177,7 @@ def dup_zz_zassenhaus(f, K):
     fc = f[-1]
     A = dmp_max_norm(f, 0, K)
     b = dmp_LC(f, K)
-    B = int(abs(K.sqrt(K(n + 1))*2**n*A*b))
+    B = int(dmp_zz_mignotte_bound(f, 0, K))
     C = int((n + 1)**(2*n)*A**(2*n - 1))
     gamma = math.ceil(2*math.log(C, 2))
     bound = int(2*gamma*math.log(gamma))
@@ -208,8 +197,9 @@ def dup_zz_zassenhaus(f, K):
         if not dmp_sqf_p(F, 0, Kpx):
             continue
 
-        fsqfx = gf_factor_sqf(f, px, K)[1]
-        a.append((px, fsqfx))
+        F = dmp_ground_monic(F, 0, Kpx)
+        fsqfx = dup_gf_factor_sqf(F, Kpx)
+        a.append((px, [dmp_normal(_, 0, K) for _ in fsqfx]))
         if len(fsqfx) < 15 or len(a) > 4:
             break
     p, fsqf = min(a, key=lambda x: len(x[1]))
@@ -305,14 +295,12 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
-    >>> f = x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1
-    >>> R.dup_cyclotomic_p(f)
+    >>> (x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1).is_cyclotomic
     False
 
-    >>> g = x**16 + x**14 - x**10 - x**8 - x**6 + x**2 + 1
-    >>> R.dup_cyclotomic_p(g)
+    >>> (x**16 + x**14 - x**10 - x**8 - x**6 + x**2 + 1).is_cyclotomic
     True
 
     """
@@ -357,7 +345,7 @@ def dup_cyclotomic_p(f, K, irreducible=False):
     if F == f:
         return True
 
-    g = dup_mirror(f, K)
+    g = dmp_compose(f, [-K.one, 0], 0, K)
 
     if dmp_LC(g, K) < 0:
         g = dmp_neg(g, 0, K)
@@ -489,9 +477,9 @@ def dup_zz_factor(f, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
-    >>> R.dup_zz_factor(2*x**4 - 2)
+    >>> (2*x**4 - 2).factor_list()
     (2, [(x - 1, 1), (x + 1, 1), (x**2 + 1, 1)])
 
     Note that this is a complete factorization over integers,
@@ -690,7 +678,7 @@ def dmp_zz_diophantine(F, c, A, d, p, u, K):
                 S[j] = dmp_ground_trunc(dup_add(s, t, K), p, 0, K)
     else:
         n = len(A)
-        e = dmp_expand(F, u, K)
+        e = functools.reduce(lambda x, y: dmp_mul(x, y, u, K), F)
 
         a, A = A[-1], A[:-1]
         B, G = [], []
@@ -766,7 +754,8 @@ def dmp_zz_wang_hensel_lifting(f, H, LC, A, p, u, K):
         m = dmp_nest([K.one, -a], w, K)
         M = dmp_one(w, K)
 
-        c = dmp_sub(s, dmp_expand(H, w, K), w, K)
+        c = functools.reduce(lambda x, y: dmp_mul(x, y, w, K), H)
+        c = dmp_sub(s, c, w, K)
 
         dj = dmp_degree_in(s, w, w)
 
@@ -786,10 +775,11 @@ def dmp_zz_wang_hensel_lifting(f, H, LC, A, p, u, K):
                     h = dmp_add_mul(h, dmp_raise(t, 1, w - 1, K), M, w, K)
                     H[i] = dmp_ground_trunc(h, p, w, K)
 
-                h = dmp_sub(s, dmp_expand(H, w, K), w, K)
+                h = functools.reduce(lambda x, y: dmp_mul(x, y, w, K), H)
+                h = dmp_sub(s, h, w, K)
                 c = dmp_ground_trunc(h, p, w, K)
 
-    if dmp_expand(H, u, K) != f:
+    if functools.reduce(lambda x, y: dmp_mul(x, y, u, K), H) != f:
         raise ExtraneousFactors  # pragma: no cover
     else:
         return H
@@ -922,7 +912,7 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
             return dmp_zz_wang(orig_f, u, K, mod + 1)
         else:
             raise ExtraneousFactors(
-                "we need to restart algorithm with better parameters")
+                'we need to restart algorithm with better parameters')
 
     result = []
 
@@ -955,9 +945,9 @@ def dmp_zz_factor(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
-    >>> R.dmp_zz_factor(2*x**2 - 2*y**2)
+    >>> (2*x**2 - 2*y**2).factor_list()
     (2, [(x - y, 1), (x + y, 1)])
 
     References
@@ -994,32 +984,10 @@ def dmp_zz_factor(f, u, K):
 
 def dmp_ext_factor(f, u, K):
     """Factor multivariate polynomials over algebraic number fields."""
-    lc = dmp_ground_LC(f, u, K)
-    f = dmp_ground_monic(f, u, K)
-
-    if dmp_ground_p(f, None, u):
-        return lc, []
-
-    f, F = dmp_sqf_part(f, u, K), f
-    s, g, r = dmp_sqf_norm(f, u, K)
-
-    _, factors = dmp_factor_list(r, u, K.domain)
-
-    if len(factors) == 1:
-        factors = [f]
-    else:
-        H = dmp_raise([K.one, s*K.unit], u, 0, K)
-
-        for i, (factor, _) in enumerate(factors):
-            h = dmp_convert(factor, u, K.domain, K)
-            h, _, g = dmp_inner_gcd(h, g, u, K)
-            for j in range(u + 1):
-                h = dmp_swap(h, 0, j, u, K)
-                h = dmp_compose(h, H, u, K)
-                h = dmp_swap(h, 0, j, u, K)
-            factors[i] = h
-
-    return lc, dmp_trial_division(F, factors, u, K)
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    lc, factors = ring._aa_factor_trager(f)
+    return lc, [(ring.to_dense(f), k) for f, k in factors]
 
 
 def dmp_gf_factor(f, u, K):
@@ -1030,15 +998,10 @@ def dmp_gf_factor(f, u, K):
         lc = dmp_ground_LC(f, u, K)
         f = dmp_ground_monic(f, u, K)
 
-        if dmp_degree_in(f, 0, 0) < 1:
-            return lc, []
-
         factors = []
 
         for g, n in dmp_sqf_list(f, 0, K)[1]:
-            g = dmp_normal(g, 0, K.domain)
-            for h in gf_factor_sqf(g, K.characteristic, K.domain)[1]:
-                h = dmp_normal(h, 0, K)
+            for h in dup_gf_factor_sqf(g, K):
                 factors.append((h, n))
 
         return lc, factors
@@ -1049,7 +1012,6 @@ _factor_aa_methods = {'trager': dmp_ext_factor}
 
 def dmp_factor_list(f, u, K0):
     """Factor polynomials into irreducibles in `K[X]`."""
-    J, f = dmp_terms_gcd(f, u, K0)
     cont, f = dmp_ground_primitive(f, u, K0)
 
     if K0.is_FiniteField:
@@ -1067,8 +1029,7 @@ def dmp_factor_list(f, u, K0):
         if K0.is_Field:
             K = K0.ring
 
-            denom, f = dmp_clear_denoms(f, u, K0, K)
-            f = dmp_convert(f, u, K0, K)
+            denom, f = dmp_clear_denoms(f, u, K0, convert=True)
         else:
             K = K0
 
@@ -1088,7 +1049,7 @@ def dmp_factor_list(f, u, K0):
 
             coeff = K.convert(coeff, K.domain)
         else:  # pragma: no cover
-            raise DomainError('factorization not supported over %s' % K0)
+            raise DomainError(f'factorization not supported over {K0}')
 
         if K0.is_Field:
             for i, (f, k) in enumerate(factors):
@@ -1107,11 +1068,51 @@ def dmp_factor_list(f, u, K0):
                 coeff = K0_inexact.convert(coeff, K0)
                 K0 = K0_inexact
 
-    for i, j in enumerate(reversed(J)):
-        if not j:
-            continue
-
-        term = {(0,)*(u - i) + (1,) + (0,)*i: K0.one}
-        factors.insert(0, (dmp_from_dict(term, u, K0), j))
-
     return coeff*cont, _sort_factors(factors)
+
+
+class _Factor:
+    """Mixin class for factorization routines."""
+
+    def _trial_division(self, f, factors):
+        result = []
+
+        for factor in factors:
+            k = 0
+
+            while f:
+                q, r = divmod(f, factor)
+
+                if r.is_zero:
+                    f, k = q, k + 1
+                else:
+                    break
+
+            result.append((factor, k))
+
+        return _sort_factors(result)
+
+    def _aa_factor_trager(self, f):
+        """Factor multivariate polynomials over algebraic number fields."""
+        domain = self.domain
+
+        lc, f = f.LC, f.monic()
+
+        if f.is_ground:
+            return lc, []
+
+        f, F = f.sqf_part(), f
+        s, g, r = f.sqf_norm()
+
+        _, factors = r.factor_list()
+
+        if len(factors) == 1:
+            factors = [f]
+        else:
+            for i, (factor, _) in enumerate(factors):
+                h = factor.set_domain(domain)
+                h, _, g = self.cofactors(h, g)
+                h = h.compose({x: x + s*domain.unit for x in self.gens})
+                factors[i] = h
+
+        return lc, self._trial_division(F, factors)

@@ -186,7 +186,7 @@ def deltaproduct(f, limit):
                                        (limit[0], ik + 1, limit[2]))
                           for ik in range(int(limit[1]), int(limit[2] + 1)))
         else:
-            k = Dummy("kprime", integer=True)
+            k = Dummy('kprime', integer=True)
             result += deltasummation(deltaproduct(newexpr,
                                                   (limit[0],
                                                    limit[1], k - 1)) *

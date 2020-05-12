@@ -70,7 +70,7 @@ def _symbols(name, n):
         _symbols_cache[name] = lsyms
 
     while len(lsyms) < n:
-        lsyms.append( Dummy('%s%i' % (name, len(lsyms))) )
+        lsyms.append( Dummy(f'{name}{len(lsyms):d}') )
 
     return lsyms[:n]
 

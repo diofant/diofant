@@ -26,7 +26,7 @@ def test_diofant_parser():
         '-(2)': -Integer(2),
         '[-1, -2, 3]': [Integer(-1), Integer(-2), Integer(3)],
         'Symbol("x").free_symbols': x.free_symbols,
-        "Float(Integer(3).evalf(3))": 3.00,
+        'Float(Integer(3).evalf(3))': 3.00,
         'factorint(12, visual=True)': Mul(
             Pow(2, 2, evaluate=False),
             Pow(3, 1, evaluate=False),
@@ -95,8 +95,8 @@ def test_split_symbols():
     y = Symbol('y')
     xy = Symbol('xy')
 
-    assert parse_expr("xy") == xy
-    assert parse_expr("xy", transformations=transformations) == x*y
+    assert parse_expr('xy') == xy
+    assert parse_expr('xy', transformations=transformations) == x*y
 
 
 def test_split_symbols_function():
@@ -107,8 +107,8 @@ def test_split_symbols_function():
     a = Symbol('a')
     f = Function('f')
 
-    assert parse_expr("ay(x+1)", transformations=transformations) == a*y*(x + 1)
-    assert parse_expr("af(x+1)", transformations=transformations,
+    assert parse_expr('ay(x+1)', transformations=transformations) == a*y*(x + 1)
+    assert parse_expr('af(x+1)', transformations=transformations,
                       local_dict={'f': f}) == a*f(x + 1)
 
 
@@ -118,11 +118,11 @@ def test_functional_exponent():
     y = Symbol('y')
     a = Symbol('a')
     yfcn = Function('y')
-    assert parse_expr("sin^2(x)", transformations=t) == (sin(x))**2
-    assert parse_expr("sin^y(x)", transformations=t) == (sin(x))**y
-    assert parse_expr("exp^y(x)", transformations=t) == (exp(x))**y
-    assert parse_expr("E^y(x)", transformations=t) == exp(yfcn(x))
-    assert parse_expr("a^y(x)", transformations=t) == a**(yfcn(x))
+    assert parse_expr('sin^2(x)', transformations=t) == (sin(x))**2
+    assert parse_expr('sin^y(x)', transformations=t) == (sin(x))**y
+    assert parse_expr('exp^y(x)', transformations=t) == (exp(x))**y
+    assert parse_expr('E^y(x)', transformations=t) == exp(yfcn(x))
+    assert parse_expr('a^y(x)', transformations=t) == a**(yfcn(x))
 
 
 def test_match_parentheses_implicit_multiplication():

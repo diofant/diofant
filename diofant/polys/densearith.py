@@ -12,7 +12,7 @@ def dup_add_term(f, c, i, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dmp_add_term(x**2 - 1, ZZ(2), 4)
     2*x**4 + x**2 - 1
@@ -40,7 +40,7 @@ def dmp_add_term(f, c, i, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_add_term(x*y + 1, 2, 2)
     2*x**2 + x*y + 1
@@ -73,7 +73,7 @@ def dup_mul_term(f, c, i, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dmp_mul_term(x**2 - 1, ZZ(3), 2)
     3*x**4 - 3*x**2
@@ -92,7 +92,7 @@ def dmp_mul_term(f, c, i, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_mul_term(x**2*y + x, 3*y, 2)
     3*x**4*y**2 + 3*x**3*y
@@ -118,7 +118,7 @@ def dmp_mul_ground(f, c, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_mul_ground(2*x + 2*y, ZZ(3))
     6*x + 6*y
@@ -139,11 +139,11 @@ def dmp_quo_ground(f, c, u, K):
     ========
 
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
     >>> R.dmp_quo_ground(2*x**2*y + 3*x, ZZ(2))
     x**2*y + x
 
-    >>> R, x, y = ring("x y", QQ)
+    >>> R, x, y = ring('x y', QQ)
     >>> R.dmp_quo_ground(2*x**2*y + 3*x, QQ(2))
     x**2*y + 3/2*x
 
@@ -170,7 +170,7 @@ def dmp_exquo_ground(f, c, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", QQ)
+    >>> R, x, y = ring('x y', QQ)
 
     >>> R.dmp_exquo_ground(x**2*y + 2*x, QQ(2))
     1/2*x**2*y + x
@@ -195,7 +195,7 @@ def dup_lshift(f, n, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dup_lshift(x**2 + 1, 2)
     x**4 + x**2
@@ -214,7 +214,7 @@ def dup_rshift(f, n, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dup_rshift(x**4 + x**2, 2)
     x**2 + 1
@@ -232,7 +232,7 @@ def dmp_abs(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_abs(x**2*y - x)
     x**2*y + x
@@ -250,9 +250,9 @@ def dmp_neg(f, u, K):
     Negate a polynomial in ``K[X]``.
 
     Examples
-    =======
+    ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_neg(x**2*y - x)
     -x**2*y + x
@@ -272,7 +272,7 @@ def dup_add(f, g, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dmp_add(x**2 - 1, x - 2)
     x**2 + x - 3
@@ -306,7 +306,7 @@ def dmp_add(f, g, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_add(x**2 + y, x**2*y + x)
     x**2*y + x**2 + x + y
@@ -347,7 +347,7 @@ def dup_sub(f, g, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dmp_sub(x**2 - 1, x - 2)
     x**2 - x + 1
@@ -381,7 +381,7 @@ def dmp_sub(f, g, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_sub(x**2 + y, x**2*y + x)
     -x**2*y + x**2 - x + y
@@ -422,7 +422,7 @@ def dmp_add_mul(f, g, h, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_add_mul(x**2 + y, x, x + 2)
     2*x**2 + 2*x + y
@@ -438,7 +438,7 @@ def dmp_sub_mul(f, g, h, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_sub_mul(x**2 + y, x, x + 2)
     -2*x + y
@@ -487,7 +487,7 @@ def dup_mul(f, g, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dmp_mul(x - 2, x + 2)
     x**2 - 4
@@ -527,7 +527,7 @@ def dmp_mul(f, g, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_mul(x*y + 1, x)
     x**2*y + x
@@ -569,7 +569,7 @@ def dup_sqr(f, K):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> R.dmp_sqr(x**2 + 1)
     x**4 + 2*x**2 + 1
@@ -608,7 +608,7 @@ def dmp_sqr(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_sqr(x**2 + x*y + y**2)
     x**4 + 2*x**3*y + 3*x**2*y**2 + 2*x*y**3 + y**4
@@ -655,7 +655,7 @@ def dmp_pow(f, n, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_pow(x*y + 1, 3)
     x**3*y**3 + 3*x**2*y**2 + 3*x*y + 1
@@ -685,61 +685,19 @@ def dmp_pow(f, n, u, K):
 
 
 def dmp_div(f, g, u, K):
-    """
-    Polynomial division with remainder in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-    >>> R.dmp_div(x**2 + x*y, 2*x + 2)
-    (0, x**2 + x*y)
-
-    >>> R, x, y = ring("x y", QQ)
-    >>> R.dmp_div(x**2 + x*y, 2*x + 2)
-    (1/2*x + 1/2*y - 1/2, -y + 1)
-
-    """
-    ring = K.poly_ring(*["_%d" % i for i in range(u + 1)])
+    """Polynomial division with remainder in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f, g = map(ring.from_dense, (f, g))
     return tuple(map(ring.to_dense, divmod(f, g)))
 
 
 def dmp_rem(f, g, u, K):
-    """
-    Return polynomial remainder in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-    >>> R.dmp_rem(x**2 + x*y, 2*x + 2)
-    x**2 + x*y
-
-    >>> R, x, y = ring("x y", QQ)
-    >>> R.dmp_rem(x**2 + x*y, 2*x + 2)
-    -y + 1
-
-    """
+    """Return polynomial remainder in ``K[X]``."""
     return dmp_div(f, g, u, K)[1]
 
 
 def dmp_quo(f, g, u, K):
-    """
-    Return exact polynomial quotient in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-    >>> R.dmp_quo(x**2 + x*y, 2*x + 2)
-    0
-
-    >>> R, x, y = ring("x y", QQ)
-    >>> R.dmp_quo(x**2 + x*y, 2*x + 2)
-    1/2*x + 1/2*y - 1/2
-
-    """
+    """Return exact polynomial quotient in ``K[X]``."""
     return dmp_div(f, g, u, K)[0]
 
 
@@ -750,7 +708,7 @@ def dmp_max_norm(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_max_norm(2*x*y - x - 3)
     3
@@ -770,7 +728,7 @@ def dmp_l1_norm(f, u, K):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> R.dmp_l1_norm(2*x*y - x - 3)
     6
@@ -781,27 +739,3 @@ def dmp_l1_norm(f, u, K):
 
     v = u - 1
     return sum(dmp_l1_norm(c, v, K) for c in f)
-
-
-def dmp_expand(polys, u, K):
-    """
-    Multiply together several polynomials in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring("x y", ZZ)
-
-    >>> R.dmp_expand([x**2 + y**2, x + 1])
-    x**3 + x**2 + x*y**2 + y**2
-
-    """
-    if not polys:
-        return dmp_one(u, K)
-
-    f = polys[0]
-
-    for g in polys[1:]:
-        f = dmp_mul(f, g, u, K)
-
-    return f

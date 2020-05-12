@@ -13,7 +13,7 @@ from .meijerint import _create_lookup_table
 t = defaultdict(list)
 _create_lookup_table(t)
 
-doc = ""
+doc = ''
 
 for about, category in sorted(t.items(), key=default_sort_key):
     if about == ():
@@ -28,9 +28,9 @@ for about, category in sorted(t.items(), key=default_sort_key):
             g = Add(*[fac*f for (fac, f) in gs])
         obj = Eq(formula, g)
         if cond is True:
-            cond = ""
+            cond = ''
         else:
             cond = ',\\text{ if } %s' % latex(cond)
-        doc += ".. math::\n  %s%s\n\n" % (latex(obj), cond)
+        doc += f'.. math::\n  {latex(obj)}{cond}\n\n'
 
 __doc__ = doc

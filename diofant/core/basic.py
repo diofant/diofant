@@ -47,7 +47,7 @@ class Basic:
 
     def __new__(cls, *args):
         obj = object.__new__(cls)
-        obj._mhash = None  # will be set by __hash__ method.
+        obj._hash = None  # will be set by __hash__ method.
 
         obj._args = args  # all items in args must be Basic objects
         return obj
@@ -73,10 +73,10 @@ class Basic:
     def __hash__(self):
         # hash cannot be cached using cache_it because infinite recurrence
         # occurs as hash is needed for setting cache dictionary keys
-        h = self._mhash
+        h = self._hash
         if h is None:
             h = hash((type(self).__name__,) + self._hashable_content())
-            self._mhash = h
+            self._hash = h
         return h
 
     def _hashable_content(self):
@@ -443,11 +443,11 @@ class Basic:
                 unordered = True
                 sequence = sequence.items()
             elif not iterable(sequence):
-                raise ValueError("Expected a mapping or iterable "
-                                 "of (old, new) tuples.")
+                raise ValueError('Expected a mapping or iterable '
+                                 'of (old, new) tuples.')
             sequence = list(sequence)
         else:
-            raise ValueError("subs accepts one argument")
+            raise ValueError('subs accepts one argument')
 
         sequence = [_ for _ in sympify(sequence) if not _aresame(*_)]
 
@@ -844,8 +844,8 @@ class Basic:
                     return value(*expr.args)
             else:
                 raise TypeError(
-                    "given a type, replace() expects another "
-                    "type or a callable")
+                    'given a type, replace() expects another '
+                    'type or a callable')
         elif isinstance(query, Basic):
             def _query(expr):
                 return expr.match(query)
@@ -879,8 +879,8 @@ class Basic:
                         return value(**{str(key)[:-1]: val for key, val in result.items()})
             else:
                 raise TypeError(
-                    "given an expression, replace() expects "
-                    "another expression or a callable")
+                    'given an expression, replace() expects '
+                    'another expression or a callable')
         elif callable(query):
             _query = query
 
@@ -889,12 +889,12 @@ class Basic:
                     return value(expr)
             else:
                 raise TypeError(
-                    "given a callable, replace() expects "
-                    "another callable")
+                    'given a callable, replace() expects '
+                    'another callable')
         else:
             raise TypeError(
-                "first argument to replace() must be a "
-                "type, an expression or a callable")
+                'first argument to replace() must be a '
+                'type, an expression or a callable')
 
         def rec_replace(expr):
             result = _query(expr)
@@ -989,8 +989,8 @@ class Basic:
         Examples
         ========
 
-        >>> p = Wild("p")
-        >>> q = Wild("q")
+        >>> p = Wild('p')
+        >>> q = Wild('q')
         >>> e = (x + y)**(x + y)
         >>> e.match(p**p)
         {p_: x + y}

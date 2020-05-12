@@ -429,7 +429,7 @@ def TR4(rv):
     ========
 
     >>> for s in (0, pi/6, pi/4, pi/3, pi/2):
-    ...     print('%s %s %s %s' % (cos(s), sin(s), tan(s), cot(s)))
+    ...     print(f'{cos(s)} {sin(s)} {tan(s)} {cot(s)}')
     ...
     1 0 0 zoo
     sqrt(3)/2 1/2 sqrt(3)/3 sqrt(3)
@@ -1739,10 +1739,10 @@ def process_common_addends(rv, do, key2=None, key1=True):
     return rv
 
 
-fufuncs = '''
+fufuncs = """
     TR0 TR1 TR2 TR3 TR4 TR5 TR6 TR7 TR8 TR9 TR10 TR10i TR11
     TR12 TR13 L TR2i TRmorrie TR12i
-    TR14 TR15 TR16 TR111 TR22'''.split()
+    TR14 TR15 TR16 TR111 TR22""".split()
 FU = dict(zip(fufuncs, list(map(locals().get, fufuncs))))
 
 
@@ -2023,7 +2023,7 @@ def _osborne(e, d):
         elif isinstance(rv, coth):
             return cot(a)/I
         else:
-            raise NotImplementedError('unhandled %s' % rv.func)
+            raise NotImplementedError(f'unhandled {rv.func}')
 
     return bottom_up(e, f)
 
@@ -2062,7 +2062,7 @@ def _osbornei(e, d):
         elif isinstance(rv, csc):
             return I/sinh(a)
         else:
-            raise NotImplementedError('unhandled %s' % rv.func)
+            raise NotImplementedError(f'unhandled {rv.func}')
 
     return bottom_up(e, f)
 

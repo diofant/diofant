@@ -135,7 +135,7 @@ class ImmutableSparseNDimArray(SparseNDimArray, ImmutableNDimArray):
         return self
 
     def __setitem__(self, index, value):
-        raise TypeError("immutable N-dim array")
+        raise TypeError('immutable N-dim array')
 
 
 class MutableSparseNDimArray(MutableNDimArray, SparseNDimArray):

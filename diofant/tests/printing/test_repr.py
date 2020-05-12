@@ -18,11 +18,11 @@ __all__ = ()
 # eval(repr(expr)) == expr has to succeed in the right environment. The right
 # environment is the scope of "from diofant import *" for most cases.
 ENV = {}
-imports = ["from diofant import *",
-           "from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing",
-           "from diofant.domains.rationalfield import GMPYRationalField, PythonRationalField",
-           "from diofant.polys.orderings import GradedLexOrder, LexOrder"]
-exec("\n".join(imports), ENV)
+imports = ['from diofant import *',
+           'from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing',
+           'from diofant.domains.rationalfield import GMPYRationalField, PythonRationalField',
+           'from diofant.polys.orderings import GradedLexOrder, LexOrder']
+exec('\n'.join(imports), ENV)
 
 
 def sT(expr, string):
@@ -37,29 +37,29 @@ def sT(expr, string):
 def test_printmethod():
     class R(Abs):
         def _diofantrepr(self, printer):
-            return "foo(%s)" % printer._print(self.args[0])
+            return 'foo(%s)' % printer._print(self.args[0])
     assert repr(R(x)) == "foo(Symbol('x'))"
 
 
 def test_Add():
     sT(x + y, "Add(Symbol('x'), Symbol('y'))")
     assert srepr(x**2 + 1, order='lex') == ("Add(Pow(Symbol('x'), "
-                                            "Integer(2)), Integer(1))")
+                                            'Integer(2)), Integer(1))')
 
 
 def test_Function():
-    sT(Function("f")(x), "Function('f')(Symbol('x'))")
+    sT(Function('f')(x), "Function('f')(Symbol('x'))")
     # test unapplied Function
     sT(Function('f'), "Function('f')")
 
     sT(sin(x), "sin(Symbol('x'))")
-    sT(sin, "sin")
+    sT(sin, 'sin')
 
 
 def test_Geometry():
-    sT(Point(0, 0), "Point2D(Integer(0), Integer(0))")
+    sT(Point(0, 0), 'Point2D(Integer(0), Integer(0))')
     sT(Ellipse(Point(0, 0), 5, 1),
-       "Ellipse(Point2D(Integer(0), Integer(0)), Integer(5), Integer(1))")
+       'Ellipse(Point2D(Integer(0), Integer(0)), Integer(5), Integer(1))')
     # TODO more tests
 
 
@@ -81,7 +81,7 @@ def test_Singletons():
 
 
 def test_Integer():
-    sT(Integer(4), "Integer(4)")
+    sT(Integer(4), 'Integer(4)')
 
 
 def test_list():
@@ -89,37 +89,37 @@ def test_list():
 
 
 def test_Matrix():
-    for cls, name in [(Matrix, "MutableDenseMatrix"), (ImmutableMatrix, "ImmutableMatrix")]:
+    for cls, name in [(Matrix, 'MutableDenseMatrix'), (ImmutableMatrix, 'ImmutableMatrix')]:
         sT(cls([[x**+1, 1], [y, x + y]]),
-           "%s([[Symbol('x'), Integer(1)], [Symbol('y'), Add(Symbol('x'), Symbol('y'))]])" % name)
+           f"{name}([[Symbol('x'), Integer(1)], [Symbol('y'), Add(Symbol('x'), Symbol('y'))]])")
 
-        sT(cls(), "%s([])" % name)
+        sT(cls(), f'{name}([])')
 
-        sT(cls([[x**+1, 1], [y, x + y]]), "%s([[Symbol('x'), Integer(1)], [Symbol('y'), Add(Symbol('x'), Symbol('y'))]])" % name)
+        sT(cls([[x**+1, 1], [y, x + y]]), f"{name}([[Symbol('x'), Integer(1)], [Symbol('y'), Add(Symbol('x'), Symbol('y'))]])")
 
 
 def test_empty_Matrix():
-    sT(ones(0, 3), "MutableDenseMatrix(0, 3, [])")
-    sT(ones(4, 0), "MutableDenseMatrix(4, 0, [])")
-    sT(ones(0, 0), "MutableDenseMatrix([])")
+    sT(ones(0, 3), 'MutableDenseMatrix(0, 3, [])')
+    sT(ones(4, 0), 'MutableDenseMatrix(4, 0, [])')
+    sT(ones(0, 0), 'MutableDenseMatrix([])')
 
 
 def test_Rational():
-    sT(Rational(1, 3), "Rational(1, 3)")
-    sT(Rational(-1, 3), "Rational(-1, 3)")
+    sT(Rational(1, 3), 'Rational(1, 3)')
+    sT(Rational(-1, 3), 'Rational(-1, 3)')
 
 
 def test_Factors():
-    assert repr(Factors(x*y**2)) == "Factors({x: 1, y: 2})"
+    assert repr(Factors(x*y**2)) == 'Factors({x: 1, y: 2})'
 
 
 def test_AlgebraicElement():
     K = QQ.algebraic_field(sqrt(2))
     a = K.unit
-    sT(a, "AlgebraicField(%s, Pow(Integer(2), Rational(1, 2)))([Integer(1), Integer(0)])" % repr(QQ))
+    sT(a, 'AlgebraicField(%s, Pow(Integer(2), Rational(1, 2)))([Integer(1), Integer(0)])' % repr(QQ))
     K = QQ.algebraic_field(root(-2, 3))
     a = K.unit
-    sT(a, "AlgebraicField(%s, Pow(Integer(-2), Rational(1, 3)))([Integer(1), Integer(0)])" % repr(QQ))
+    sT(a, 'AlgebraicField(%s, Pow(Integer(-2), Rational(1, 3)))([Integer(1), Integer(0)])' % repr(QQ))
 
 
 def test_Float():
@@ -181,7 +181,7 @@ def test_WildFunction():
 
 
 def test_settings():
-    pytest.raises(TypeError, lambda: srepr(x, method="garbage"))
+    pytest.raises(TypeError, lambda: srepr(x, method='garbage'))
 
 
 def test_Mul():
@@ -189,52 +189,52 @@ def test_Mul():
 
 
 def test_FiniteField():
-    sT(FF(2), "GF(2)")
+    sT(FF(2), 'GF(2)')
 
     F4 = FF(2, [1, 1, 1])
     repr(F4.one)  # not raises
 
 
 def test_PolynomialRing():
-    sT(ZZ.poly_ring("x"), "PolynomialRing(%s, (Symbol('x'),), "
-                          "LexOrder())" % repr(ZZ))
-    sT(QQ.poly_ring("x", "y", order=grlex),
+    sT(ZZ.inject('x'), "PolynomialRing(%s, (Symbol('x'),), "
+                       'LexOrder())' % repr(ZZ))
+    sT(QQ.poly_ring('x', 'y', order=grlex),
        "PolynomialRing(%s, (Symbol('x'), Symbol('y')), "
-       "GradedLexOrder())" % repr(QQ))
-    sT(ZZ.poly_ring("t").poly_ring("x", "y", "z"),
+       'GradedLexOrder())' % repr(QQ))
+    sT(ZZ.inject('x', 'y', 'z', 't').eject('t'),
        "PolynomialRing(PolynomialRing(%s, (Symbol('t'),), "
        "LexOrder()), (Symbol('x'), Symbol('y'), Symbol('z')), "
-       "LexOrder())" % repr(ZZ))
+       'LexOrder())' % repr(ZZ))
 
 
 def test_FractionField():
-    sT(ZZ.frac_field("x"), "FractionField(%s, (Symbol('x'),), "
-                           "LexOrder())" % repr(ZZ))
-    sT(QQ.frac_field("x", "y", order=grlex),
+    sT(ZZ.inject('x').field, "FractionField(%s, (Symbol('x'),), "
+                             'LexOrder())' % repr(ZZ))
+    sT(QQ.frac_field('x', 'y', order=grlex),
        "FractionField(%s, (Symbol('x'), Symbol('y')), "
-       "GradedLexOrder())" % repr(QQ))
-    sT(ZZ.poly_ring("t").frac_field("x", "y", "z"),
+       'GradedLexOrder())' % repr(QQ))
+    sT(ZZ.inject('x', 'y', 'z', 't').eject('t').field,
        "FractionField(PolynomialRing(%s, (Symbol('t'),), LexOrder()), "
        "(Symbol('x'), Symbol('y'), Symbol('z')), LexOrder())" % repr(ZZ))
 
 
 def test_PolyElement():
-    R, x, y = ring("x,y", ZZ)
+    R, x, y = ring('x,y', ZZ)
     g = R.domain.dtype
     assert repr(3*x**2*y + 1) == ("PolyElement(PolynomialRing(%s, (Symbol('x'), "
                                   "Symbol('y')), LexOrder()), [((2, 1), "
-                                  "%s), ((0, 0), %s)])" % (repr(ZZ),
+                                  '%s), ((0, 0), %s)])' % (repr(ZZ),
                                                            repr(g(3)),
                                                            repr(g(1))))
 
 
 def test_FracElement():
-    F, x, y = field("x,y", ZZ)
+    F, x, y = field('x,y', ZZ)
     g = F.domain.dtype
     assert repr((3*x**2*y + 1)/(x - y**2)) == ("FracElement(FractionField(%s, (Symbol('x'), "
                                                "Symbol('y')), LexOrder()), [((2, 1), %s), "
-                                               "((0, 0), %s)], [((1, 0), %s), "
-                                               "((0, 2), %s)])" % (repr(ZZ),
+                                               '((0, 0), %s)], [((1, 0), %s), '
+                                               '((0, 2), %s)])' % (repr(ZZ),
                                                                    repr(g(3)),
                                                                    repr(g(1)),
                                                                    repr(g(1)),
@@ -242,10 +242,10 @@ def test_FracElement():
 
 
 def test_BooleanAtom():
-    assert repr(true) == "true"
-    assert repr(false) == "false"
+    assert repr(true) == 'true'
+    assert repr(false) == 'false'
 
 
 def test_AlgebraicField():
     sT(QQ.algebraic_field(sqrt(2)),
-       "AlgebraicField(%s, Pow(Integer(2), Rational(1, 2)))" % repr(QQ))
+       'AlgebraicField(%s, Pow(Integer(2), Rational(1, 2)))' % repr(QQ))

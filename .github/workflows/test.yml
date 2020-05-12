@@ -4,13 +4,14 @@ jobs:
   test:
     strategy:
       matrix:
-        python-version: [3.7]
+        python-version: [3.7, 3.8]
         os: [ubuntu]
     runs-on: ${{ matrix.os }}-latest
     env:
       TERM: xterm
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
+    - run: git fetch --prune --unshallow --tags -f
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
@@ -30,12 +31,44 @@ jobs:
         python setup.py flake8
         flake8-rst
         pylint -j1 diofant
-    - name: Building and testing docs
+    - name: Run doctests
       env:
         PYTEST_ADDOPTS: -n auto --doctest-modules --ignore diofant/tests
-      id: release
+      run: python setup.py test
+    - name: Tests
+      if: matrix.python-version != 3.7
+      env:
+        PYTEST_ADDOPTS: -n auto --doctest-modules
+      run: python setup.py test
+    - name: Coverage tests
+      if: matrix.python-version == 3.7
+      env:
+        PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
       run: |
         python setup.py test
+    - name: Extra coverage tests
+      if: matrix.python-version == 3.7
+      env:
+        PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
+      run: |
+        pip uninstall -y gmpy2
+        DIOFANT_GROUND_TYPES='gmpy' py.test diofant/tests/domains
+        py.test diofant/tests/polys
+        pip uninstall -y numpy
+        py.test diofant/tests/external diofant/tests/utilities
+    - name: Upload coverage data
+      if: matrix.python-version == 3.7
+      run: |
+        for n in 1 2 3; do
+          if codecov --required; then
+            exit 0
+          fi
+          sleep $((n*160))
+        done
+        exit 1
+    - name: Building and testing docs
+      id: release
+      run: |
         python setup.py build_sphinx -W -b html,latex
         make -C build/sphinx/latex all-pdf
         git clone https://github.com/diofant/diofant.github.io.git sphinx_docs
@@ -51,43 +84,12 @@ jobs:
         cp -a build/sphinx/latex/diofant.pdf dist/diofant-docs-${VERSION}.pdf
     - name: Archive production artifacts
       uses: actions/upload-artifact@master
+      if: matrix.python-version == 3.7
       with:
         name: dist
         path: dist
-    - name: Coverage tests
-      env:
-        PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
-      run: |
-        python setup.py test
-    - name: Slow tests
-      env:
-        PYTEST_ADDOPTS: -n auto -m "slow and not xfail" --ignore docs
-      run: python setup.py test
-    - name: XFAILed tests
-      if: github.event_name == 'push'
-      env:
-        PYTEST_ADDOPTS: -n auto -m "xfail" --ignore docs
-      run: python setup.py test
-    - name: Extra coverage tests
-      env:
-        PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
-      run: |
-        pip uninstall -y gmpy2
-        DIOFANT_GROUND_TYPES='gmpy' py.test diofant/tests/domains
-        py.test diofant/tests/polys
-        pip uninstall -y numpy
-        py.test diofant/tests/external diofant/tests/utilities
-    - name: Upload coverage data
-      run: |
-        for n in 1 2 3; do
-          if codecov --required --verbose; then
-            exit 0
-          fi
-          sleep $((n*160))
-        done
-        exit 1
     - name: Upload docs to Github Pages
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' && matrix.python-version == 3.7
       uses: peaceiris/actions-gh-pages@v2.5.0
       env:
         ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
@@ -96,7 +98,7 @@ jobs:
         PUBLISH_DIR: sphinx_docs
     - name: Publish on Github Releases
       uses: softprops/action-gh-release@v1
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.python-version == 3.7
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASES_DEPLOY_KEY }}
       with:
@@ -107,9 +109,10 @@ jobs:
         body: "See [release notes](https://diofant.readthedocs.io/\
                en/latest/release/notes-${{ steps.release.outputs.short_version }}.html)."
     - name: Cleanup extra artifacts from dist
+      if: matrix.python-version == 3.7
       run: rm -f dist/*.pdf dist/*.zip
     - name: Publish package on PyPI
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && matrix.python-version == 3.7
       uses: pypa/gh-action-pypi-publish@master
       with:
         password: ${{ secrets.pypi_password }}

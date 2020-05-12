@@ -2,8 +2,7 @@
 
 import pytest
 
-from diofant import (FF, QQ, RR, ZZ, ExactQuotientFailed,
-                     PolynomialDivisionFailed, ring)
+from diofant import FF, QQ, ZZ, ExactQuotientFailed, ring
 from diofant.polys.specialpolys import f_polys
 
 
@@ -756,146 +755,6 @@ def test_dmp_pow():
     assert R.dmp_pow(QQ(3, 7), 7) == QQ(2187, 823543)
 
 
-def test_dmp_div():
-    R, x = ring('x', ZZ)
-
-    pytest.raises(ZeroDivisionError, lambda: R.dmp_div(x**2 + 2*x + 3, 0))
-
-    f = 3*x**3 + x**2 + x + 5
-    g = 5*x**2 - 3*x + 1
-
-    q, r = 0, f
-
-    assert R.dmp_div(f, g) == (q, r)
-
-    f = x**2 + 1
-    g = 2*x - 4
-
-    q, r = 0, f
-
-    assert R.dmp_div(f, g) == (q, r)
-
-    R, x, y = ring('x y', ZZ)
-
-    pytest.raises(ZeroDivisionError, lambda: R.dmp_div(x*y + 2*x + 3, 0))
-
-    f = x**2 + y**2
-    g = x - y
-
-    q = x + y
-    r = 2*y**2
-
-    assert R.dmp_div(f, g) == (q, r)
-
-    g = -x + y
-
-    q = -x - y
-
-    assert R.dmp_div(f, g) == (q, r)
-
-    g = 2*x - 2*y
-    q, r = 0, f
-
-    assert R.dmp_div(f, g) == (q, r)
-
-    f = x**2 + x*y
-    g = 2*x + 2
-
-    assert R.dmp_div(f, g) == (0, f)
-
-    R, x = ring('x', QQ)
-
-    pytest.raises(ZeroDivisionError, lambda: R.dmp_div(x**2 + 2*x + 3, 0))
-
-    f = 3*x**3 + x**2 + x + 5
-    g = 5*x**2 - 3*x + 1
-
-    q = 3*x/5 + QQ(14, 25)
-    r = 52*x/25 + QQ(111, 25)
-
-    assert R.dmp_div(f, g) == (q, r)
-
-    f = x**2 + 1
-    g = 2*x - 4
-
-    q = x/2 + 1
-    r = 5
-
-    assert R.dmp_div(f, g) == (q, r)
-
-    R, x, y = ring('x y', QQ)
-
-    pytest.raises(ZeroDivisionError, lambda: R.dmp_div(x*y + 2*x + 3, 0))
-
-    f = x**2 + y**2
-    g = x - y
-
-    q = x + y
-    r = 2*y**2
-
-    assert R.dmp_div(f, g) == (q, r)
-
-    g = -x + y
-
-    q = -x - y
-
-    assert R.dmp_div(f, g) == (q, r)
-
-    g = 2*x - 2*y
-
-    q = x/2 + y/2
-
-    assert R.dmp_div(f, g) == (q, r)
-
-    f = x**2 + x*y
-    g = 2*x + 2
-
-    q = (x + y - 1)/2
-    r = 1 - y
-
-    assert R.dmp_div(f, g) == (q, r)
-
-    R, x = ring('x', RR)
-    pytest.raises(PolynomialDivisionFailed,
-                  lambda: R.dmp_div(2.0, -1.8438812457236466e-19))
-
-    R, x = ring('x', ZZ)
-
-    f, g, q, r = x**2 + 1, 2*x - 4, 0, x**2 + 1
-
-    assert R.dmp_div(f, g) == (q, r)
-    assert R.dmp_quo(f, g) == q
-    assert R.dmp_rem(f, g) == r
-
-    f, g, q, r = 5*x**4 + 4*x**3 + 3*x**2 + 2*x + 1, x**2 + 2*x + 3, 5*x**2 - 6*x, 20*x + 1
-
-    assert R.dmp_div(f, g) == (q, r)
-    assert R.dmp_quo(f, g) == q
-    assert R.dmp_rem(f, g) == r
-
-    f, g, q, r = 5*x**5 + 4*x**4 + 3*x**3 + 2*x**2 + x, x**4 + 2*x**3 + 9, 5*x - 6, 15*x**3 + 2*x**2 - 44*x + 54
-
-    assert R.dmp_div(f, g) == (q, r)
-    assert R.dmp_quo(f, g) == q
-    assert R.dmp_rem(f, g) == r
-
-    R, x = ring('x', QQ)
-
-    f, g, q, r = x**2 + 1, 2*x - 4, x/2 + 1, 5
-
-    assert R.dmp_div(f, g) == (q, r)
-    assert R.dmp_quo(f, g) == q
-    assert R.dmp_rem(f, g) == r
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    f, g, q, r = 1, 2*x + 1, 0, 1
-
-    assert R.dmp_div(f, g) == (q, r)
-    assert R.dmp_quo(f, g) == q
-    assert R.dmp_rem(f, g) == r
-
-
 def test_dmp_max_norm():
     R, x = ring('x', ZZ)
 
@@ -927,20 +786,3 @@ def test_dmp_l1_norm():
     assert R.dmp_l1_norm(1) == 1
 
     assert R.dmp_l1_norm(f_polys()[0]) == 31
-
-
-def test_dmp_expand():
-    R, x = ring('x', ZZ)
-
-    assert R.dmp_expand(()) == 1
-    assert R.dmp_expand((x**2 - 1, x, 2)) == 2*x**3 - 2*x
-
-    a, b, c = x**2 + 2*x + 3, x + 2, 7*x**3 + 5*x**2 + 4*x + 3
-    assert R.dmp_expand((a, b, c)) == a*b*c
-
-    R, x, y = ring('x y', ZZ)
-
-    assert R.dmp_expand(()) == 1
-
-    a, b, c = x**2 + 2*x + 3, x + 2, 7*x**3 + 5*x**2 + 4*x + 3
-    assert R.dmp_expand((a, b, c)) == a*b*c

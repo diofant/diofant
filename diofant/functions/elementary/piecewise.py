@@ -84,8 +84,8 @@ class Piecewise(Function):
                 continue
             if not isinstance(cond, (bool, Relational, Boolean)):
                 raise TypeError(
-                    "Cond %s is of type %s, but must be a Relational,"
-                    " Boolean, or a built-in bool." % (cond, type(cond)))
+                    'Cond %s is of type %s, but must be a Relational,'
+                    ' Boolean, or a built-in bool.' % (cond, type(cond)))
             newargs.append(pair)
             if cond == true:
                 break
@@ -324,7 +324,7 @@ class Piecewise(Function):
                         lower = Max(cond2.lts, lower)
                     else:
                         raise NotImplementedError(
-                            "Unable to handle interval evaluation of expression.")
+                            'Unable to handle interval evaluation of expression.')
             else:
                 lower, upper = cond.lts, cond.gts  # part 1: initialize with givens
                 if cond.lts == sym:                # part 1a: expand the side ...
@@ -333,7 +333,7 @@ class Piecewise(Function):
                     upper = oo           # e.g. x >= 0 --->  oo >= 0
                 else:
                     raise NotImplementedError(
-                        "Unable to handle interval evaluation of expression.")
+                        'Unable to handle interval evaluation of expression.')
 
             # part 1b: Reduce (-)infinity to what was passed in.
             lower, upper = Max(a, lower), Min(b, upper)
@@ -414,9 +414,9 @@ class Piecewise(Function):
             if targetcond == true:
                 return [(h[0], h[1], None) for h in holes]
         elif holes and default is None:
-            raise ValueError("Called interval evaluation over piecewise "
-                             "function on undefined intervals %s" %
-                             ", ".join([str((h[0], h[1])) for h in holes]))
+            raise ValueError('Called interval evaluation over piecewise '
+                             'function on undefined intervals %s' %
+                             ', '.join([str((h[0], h[1])) for h in holes]))
 
         return int_expr
 
@@ -461,9 +461,6 @@ class Piecewise(Function):
 
     def _eval_is_complex(self):
         return self._eval_template_is_attr('is_complex')
-
-    def _eval_is_even(self):
-        return self._eval_template_is_attr('is_even')
 
     def _eval_is_imaginary(self):
         return self._eval_template_is_attr('is_imaginary')

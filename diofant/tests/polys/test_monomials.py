@@ -122,5 +122,5 @@ def test_Monomial():
 
     assert m/Monomial((5, 2, 0)) == (-2, 2, 1)
 
-    assert str(m) == "x**3*y**4*z**1"
-    assert str(l) == "(3, 4, 1)"
+    assert str(m) == 'x**3*y**4*z**1'
+    assert str(l) == '(3, 4, 1)'

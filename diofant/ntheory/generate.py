@@ -38,7 +38,7 @@ class Sieve:
     _list = array.array('l', [2, 3, 5, 7, 11, 13])
 
     def __repr__(self):
-        return "<Sieve with %i primes sieved: 2, 3, 5, ... %i, %i>" % \
+        return '<Sieve with %i primes sieved: 2, 3, 5, ... %i, %i>' % \
             (len(self._list), self._list[-2], self._list[-1])
 
     def extend(self, n):
@@ -156,7 +156,7 @@ class Sieve:
         test = int(ceiling(n))
         n = int(n)
         if n < 2:
-            raise ValueError("n should be >= 2 but got: %s" % n)
+            raise ValueError(f'n should be >= 2 but got: {n}')
         if n > self._list[-1]:
             self.extend(n)
         b = bisect.bisect(self._list, n)
@@ -219,7 +219,7 @@ def prime(nth):
     """
     n = as_int(nth)
     if n < 1:
-        raise ValueError("nth must be a positive integer; prime(1) == 2")
+        raise ValueError('nth must be a positive integer; prime(1) == 2')
     return sieve[n]
 
 
@@ -334,7 +334,7 @@ def prevprime(n):
     # determining whether the expression was exactly an integer or not
     n = int(ceiling(n))
     if n < 3:
-        raise ValueError("no preceding primes")
+        raise ValueError('no preceding primes')
     if n < 8:
         return {3: 2, 4: 3, 5: 3, 6: 5, 7: 5}[n]
     nn = 6*(n//6)
@@ -466,7 +466,7 @@ def randprime(a, b):
     if p >= b:
         p = prevprime(b)
     if p < a:
-        raise ValueError("no primes exist in the specified range")
+        raise ValueError('no primes exist in the specified range')
     return p
 
 
@@ -519,7 +519,7 @@ def primorial(n, nth=True):
     else:
         n = int(n)
     if n < 1:
-        raise ValueError("primorial argument must be >= 1")
+        raise ValueError('primorial argument must be >= 1')
     p = 1
     if nth:
         for i in range(1, n + 1):

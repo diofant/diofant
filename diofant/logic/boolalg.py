@@ -350,9 +350,9 @@ class And(LatticeOp, BooleanFunction):
         if len(self.free_symbols) == 1:
             return Intersection(*[arg.as_set() for arg in self.args])
         else:
-            raise NotImplementedError("Sorry, And.as_set has not yet been"
-                                      " implemented for multivariate"
-                                      " expressions")
+            raise NotImplementedError('Sorry, And.as_set has not yet been'
+                                      ' implemented for multivariate'
+                                      ' expressions')
 
 
 class Or(LatticeOp, BooleanFunction):
@@ -418,9 +418,9 @@ class Or(LatticeOp, BooleanFunction):
         if len(self.free_symbols) == 1:
             return Union(*[arg.as_set() for arg in self.args])
         else:
-            raise NotImplementedError("Sorry, Or.as_set has not yet been"
-                                      " implemented for multivariate"
-                                      " expressions")
+            raise NotImplementedError('Sorry, Or.as_set has not yet been'
+                                      ' implemented for multivariate'
+                                      ' expressions')
 
 
 class Not(BooleanFunction):
@@ -504,9 +504,9 @@ class Not(BooleanFunction):
         if len(self.free_symbols) == 1:
             return self.args[0].as_set().complement(S.Reals)
         else:
-            raise NotImplementedError("Sorry, Not.as_set has not yet been"
-                                      " implemented for mutivariate"
-                                      " expressions")
+            raise NotImplementedError('Sorry, Not.as_set has not yet been'
+                                      ' implemented for mutivariate'
+                                      ' expressions')
 
     def to_nnf(self, simplify=True):
         if is_literal(self):
@@ -541,7 +541,7 @@ class Not(BooleanFunction):
             a, b, c = args
             return And._to_nnf(Or(a, ~c), Or(~a, ~b), simplify=simplify)
 
-        raise ValueError("Illegal operator %s in expression" % func)
+        raise ValueError(f'Illegal operator {func} in expression')
 
 
 class Xor(BooleanFunction):
@@ -756,8 +756,8 @@ class Implies(BooleanFunction):
             A, B = newargs
         except ValueError:
             raise ValueError(
-                "%d operand(s) used for an Implies "
-                "(pairs are required): %s" % (len(args), str(args)))
+                '%d operand(s) used for an Implies '
+                '(pairs are required): %s' % (len(args), str(args)))
         if A == true or A == false or B == true or B == false:
             return Or(Not(A), B)
         elif A == B:
@@ -878,7 +878,7 @@ class ITE(BooleanFunction):
         try:
             a, b, c = args
         except ValueError:
-            raise ValueError("ITE expects exactly 3 arguments")
+            raise ValueError('ITE expects exactly 3 arguments')
         if a == true:
             return b
         elif a == false:
@@ -900,7 +900,7 @@ class ITE(BooleanFunction):
     # the diff method below is copied from Expr class
     def diff(self, *symbols, **assumptions):
         new_symbols = list(map(sympify, symbols))  # e.g. x, 2, y, z
-        assumptions.setdefault("evaluate", True)
+        assumptions.setdefault('evaluate', True)
         return Derivative(self, *new_symbols, **assumptions)
 
 
@@ -1412,7 +1412,7 @@ def SOPform(variables, minterms, dontcares=None):
     dontcares = [list(i) for i in (dontcares or [])]
     for d in dontcares:
         if d in minterms:
-            raise ValueError('%s in minterms is also in dontcares' % d)
+            raise ValueError(f'{d} in minterms is also in dontcares')
 
     old = None
     new = minterms + dontcares
@@ -1461,7 +1461,7 @@ def POSform(variables, minterms, dontcares=None):
     dontcares = [list(i) for i in (dontcares or [])]
     for d in dontcares:
         if d in minterms:
-            raise ValueError('%s in minterms is also in dontcares' % d)
+            raise ValueError(f'{d} in minterms is also in dontcares')
 
     maxterms = []
     for t in product([0, 1], repeat=len(variables)):
@@ -1538,7 +1538,7 @@ def simplify_logic(expr, form=None, deep=True):
         elif form == 'cnf' or form is None:  # pragma: no branch
             return POSform(variables, truthtable)
     else:
-        raise ValueError("form can be cnf or dnf only")
+        raise ValueError('form can be cnf or dnf only')
 
 
 def _finger(eq):

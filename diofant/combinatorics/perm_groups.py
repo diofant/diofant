@@ -176,8 +176,8 @@ class PermutationGroup(Basic):
 
         """
         if not isinstance(i, Permutation):
-            raise TypeError("A PermutationGroup contains only Permutations as "
-                            "elements, not elements of type %s" % type(i))
+            raise TypeError('A PermutationGroup contains only Permutations as '
+                            'elements, not elements of type %s' % type(i))
         return self.contains(i)
 
     def __len__(self):
@@ -1139,7 +1139,7 @@ class PermutationGroup(Basic):
         G2 = self.normal_closure(cms)
         return G2
 
-    def generate(self, method="coset", af=False):
+    def generate(self, method='coset', af=False):
         """Return iterator to generate the elements of the group
 
         Iteration is done with one of these methods::
@@ -1184,12 +1184,12 @@ class PermutationGroup(Basic):
         True
 
         """
-        if method == "coset":
+        if method == 'coset':
             return self.generate_schreier_sims(af)
-        elif method == "dimino":
+        elif method == 'dimino':
             return self.generate_dimino(af)
         else:
-            raise NotImplementedError('No generation defined for %s' % method)
+            raise NotImplementedError(f'No generation defined for {method}')
 
     def generate_dimino(self, af=False):
         """Yield group elements using Dimino's algorithm

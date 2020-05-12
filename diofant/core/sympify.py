@@ -20,7 +20,7 @@ class SympifyError(ValueError):
             s = repr(self.expr)
 
         return ("Sympify of expression '%s' failed, because of exception being "
-                "raised:\n%s: %s" % (s, self.base_exc.__class__.__name__,
+                'raised:\n%s: %s' % (s, self.base_exc.__class__.__name__,
                                      str(self.base_exc)))
 
 
@@ -92,7 +92,7 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     >>> s = 'bitcount(42)'
     >>> sympify(s)
     bitcount(42)
-    >>> sympify("O(x)")
+    >>> sympify('O(x)')
     O(x)
 
     In order to have the ``O`` interpreted as a Symbol, identify it as such
@@ -100,10 +100,10 @@ def sympify(a, locals=None, convert_xor=True, strict=False, rational=False,
     three of the following are possibilities:
 
     >>> ns = {}
-    >>> ns["O"] = Symbol("O")  # method 1
+    >>> ns['O'] = Symbol('O')  # method 1
     >>> exec('from diofant.abc import O', ns)  # method 2
-    >>> ns.update({O: Symbol("O")})  # method 3
-    >>> sympify("O + 1", locals=ns)
+    >>> ns.update({O: Symbol('O')})  # method 3
+    >>> sympify('O + 1', locals=ns)
     O + 1
 
     If you want *all* single-letter and Greek-letter variables to be symbols

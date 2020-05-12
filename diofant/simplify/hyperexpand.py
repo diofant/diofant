@@ -477,7 +477,7 @@ def make_simp(z):
 def debug(*args):
     if DIOFANT_DEBUG:
         for a in args:
-            print(a, end="")
+            print(a, end='')
         print()
 
 
@@ -752,8 +752,8 @@ class Formula:
             elif a in self.func.bq.args:
                 symbol_values.append(bq)
             else:
-                raise ValueError("At least one of the parameters of the "
-                                 "formula must be equal to %s" % (a,))
+                raise ValueError('At least one of the parameters of the '
+                                 'formula must be equal to %s' % (a,))
         base_repl = [dict(zip(self.symbols, values))
                      for values in product(*symbol_values)]
         abuckets, bbuckets = [sift(params, _mod1) for params in [ap, bq]]
@@ -780,7 +780,7 @@ class Formula:
                             for target in bucket[mod]:
                                 n0 = solve(expr.xreplace(repl0) - target, _n)[0][_n]
                                 if n0.free_symbols:
-                                    raise ValueError("Value should not be true")
+                                    raise ValueError('Value should not be true')
                                 vals.append(n0)
             else:
                 values = []
@@ -1550,7 +1550,7 @@ def devise_plan(target, origin, z):
 
     if len(list(abuckets)) != len(list(nabuckets)) or \
             len(list(bbuckets)) != len(list(nbbuckets)):
-        raise ValueError('%s not reachable from %s' % (target, origin))
+        raise ValueError(f'{target} not reachable from {origin}')
 
     ops = []
 
@@ -1593,7 +1593,7 @@ def devise_plan(target, origin, z):
             bk = bbuckets[r]
             nbk = nbbuckets[r]
         if len(al) != len(nal) or len(bk) != len(nbk):
-            raise ValueError('%s not reachable from %s' % (target, origin))
+            raise ValueError(f'{target} not reachable from {origin}')
 
         al, nal, bk, nbk = [sorted(w, key=default_sort_key)
                             for w in [al, nal, bk, nbk]]
@@ -1783,7 +1783,7 @@ def try_lerchphi(func):
         if not denom.has(t):
             p = Poly(numer, t)
             if not p.is_term:
-                raise TypeError("p should be a term")
+                raise TypeError('p should be a term')
             ((b, ), a) = p.LT()
             monomials += [(a/denom, b)]
             continue
@@ -1803,7 +1803,7 @@ def try_lerchphi(func):
             if tmp != t:
                 b, _ = tmp.as_independent(t)
             if dep != b*t + a:
-                raise NotImplementedError('unrecognised form %s' % dep)
+                raise NotImplementedError(f'unrecognised form {dep}')
             a /= b
             indep *= b**n
         else:

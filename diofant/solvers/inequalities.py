@@ -39,7 +39,7 @@ def solve_poly_inequality(poly, rel):
     if not isinstance(poly, Poly):
         raise ValueError('`poly` should be a Poly instance')
     if rel not in {'>', '<', '>=', '<=', '==', '!='}:
-        raise ValueError("Invalid relational operator symbol: %r" % rel)
+        raise ValueError(f'Invalid relational operator symbol: {rel!r}')
     if poly.is_number:
         t = Relational(poly.as_expr(), 0, rel)
         if t == true:
@@ -47,7 +47,7 @@ def solve_poly_inequality(poly, rel):
         elif t == false:
             return [S.EmptySet]
         else:
-            raise NotImplementedError("Couldn't determine truth value of %s" % t)
+            raise NotImplementedError(f"Couldn't determine truth value of {t}")
 
     reals, intervals = poly.real_roots(multiple=False), []
 
@@ -103,8 +103,8 @@ def solve_poly_inequalities(polys):
     Examples
     ========
 
-    >>> solve_poly_inequalities(((Poly(x**2 - 3), ">"),
-    ...                          (Poly(-x**2 + 1), ">")))
+    >>> solve_poly_inequalities(((Poly(x**2 - 3), '>'),
+    ...                          (Poly(-x**2 + 1), '>')))
     (-oo, -sqrt(3)) U (-1, 1) U (sqrt(3), oo)
 
     """
@@ -182,7 +182,7 @@ def reduce_rational_inequalities(exprs, gen, relational=True):
     Eq(x, 0)
     >>> reduce_rational_inequalities([[x + 2 > 0]], x)
     -2 < x
-    >>> reduce_rational_inequalities([[(x + 2, ">")]], x)
+    >>> reduce_rational_inequalities([[(x + 2, '>')]], x)
     -2 < x
     >>> reduce_rational_inequalities([[x + 2]], x)
     Eq(x, -2)
@@ -264,9 +264,9 @@ def reduce_piecewise_inequality(expr, rel, gen):
 
     """
     if gen.is_extended_real is False:
-        raise TypeError(filldedent('''
+        raise TypeError(filldedent("""
             can't solve inequalities with piecewise
-            functions containing non-real variables'''))
+            functions containing non-real variables"""))
 
     def _bottom_up_scan(expr):
         exprs = []
@@ -291,7 +291,7 @@ def reduce_piecewise_inequality(expr, rel, gen):
             n = expr.exp
 
             if not n.is_Integer:  # pragma: no cover
-                raise NotImplementedError("only integer powers are supported")
+                raise NotImplementedError('only integer powers are supported')
 
             _exprs = _bottom_up_scan(expr.base)
 
@@ -464,9 +464,9 @@ def _reduce_inequalities(inequalities, symbols):
                 other.append(solve_univariate_inequality(Relational(expr, 0, rel), gen))
                 continue
             else:
-                raise NotImplementedError(filldedent('''
+                raise NotImplementedError(filldedent("""
                     inequality has more than one
-                    symbol of interest'''))
+                    symbol of interest"""))
 
         if expr.is_polynomial(gen):
             poly_part[gen].append((expr, rel))

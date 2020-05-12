@@ -26,13 +26,6 @@ class Point(GeometryEntity):
     case where n=2 or 3, a Point2D or Point3D will be created
     as appropriate.
 
-    Attributes
-    ==========
-
-    length
-    origin: A `Point` representing the origin of the
-        appropriately-dimensioned space.
-
     Raises
     ======
 
@@ -342,7 +335,7 @@ class Point(GeometryEntity):
         """
         if isinstance(o, Point):
             if len(self) != len(o):
-                raise ValueError("Points must be of the same dimension to intersect")
+                raise ValueError('Points must be of the same dimension to intersect')
             if self == o:
                 return [self]
             return []
@@ -383,7 +376,7 @@ class Point(GeometryEntity):
             return Point([simplify(a + b) for a, b in zip(self, other)])
         else:
             raise ValueError(
-                "Points must have the same number of dimensions")
+                'Points must have the same number of dimensions')
 
     def __sub__(self, other):
         """Subtract two points, or subtract a factor from this point's
@@ -419,13 +412,6 @@ class Point2D(Point):
     ==========
 
     coords : sequence of 2 coordinate values.
-
-    Attributes
-    ==========
-
-    x
-    y
-    diofant.geometry.Point.length
 
     Raises
     ======
@@ -473,7 +459,7 @@ class Point2D(Point):
                 args = args[0]
             if len(args) != 2:
                 raise ValueError(
-                    "Only two dimensional points currently supported")
+                    'Only two dimensional points currently supported')
         coords = Tuple(*args)
         if check:
             if any(a.is_number and im(a) for a in coords):
@@ -685,8 +671,8 @@ class Point2D(Point):
             # We hit this block if matrix argument is not actually a Matrix.
             valid_matrix = False
         if not valid_matrix:
-            raise ValueError("The argument to the transform function must be "
-                             + "a 3x3 matrix")
+            raise ValueError('The argument to the transform function must be '
+                             + 'a 3x3 matrix')
         x, y = self.args
         return Point(*(Matrix(1, 3, [x, y, 1])*matrix).tolist()[0][:2])
 
@@ -698,14 +684,6 @@ class Point3D(Point):
     ==========
 
     coords : sequence of 3 coordinate values.
-
-    Attributes
-    ==========
-
-    x
-    y
-    z
-    diofant.geometry.Point.length
 
     Raises
     ======
@@ -750,7 +728,7 @@ class Point3D(Point):
                 args = args[0]
             if len(args) not in (2, 3):
                 raise TypeError(
-                    "Enter a 2 or 3 dimensional point")
+                    'Enter a 2 or 3 dimensional point')
         coords = Tuple(*args)
         if len(coords) == 2:
             coords += Integer(0),
@@ -1045,8 +1023,8 @@ class Point3D(Point):
             # We hit this block if matrix argument is not actually a Matrix.
             valid_matrix = False
         if not valid_matrix:
-            raise ValueError("The argument to the transform function must be "
-                             + "a 4x4 matrix")
+            raise ValueError('The argument to the transform function must be '
+                             + 'a 4x4 matrix')
         from ..matrices import Transpose
         x, y, z = self.args
         m = Transpose(matrix)

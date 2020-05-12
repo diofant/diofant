@@ -152,7 +152,7 @@ def _separatevars(expr, force):
 def _separatevars_dict(expr, symbols):
     if symbols:
         if not all((t.is_Atom for t in symbols)):
-            raise ValueError("symbols must be Atoms.")
+            raise ValueError('symbols must be Atoms.')
         symbols = list(symbols)
     elif symbols is None:
         return {'coeff': expr}
@@ -536,7 +536,7 @@ def simplify(expr, ratio=1.7, measure=count_ops, fu=False):
 
     For example:
 
-    >>> a, b = symbols('a b', positive=True)
+    >>> a, b = symbols('a b', positive=True, real=True)
     >>> g = log(a) + log(b) + log(a)*log(1/b)
     >>> h = simplify(g)
     >>> h
@@ -791,7 +791,7 @@ def nsimplify(expr, constants=[], tolerance=None, full=False, rational=None):
         constant = sympify(constant)
         v = constant.evalf(prec)
         if not v.is_Float:
-            raise ValueError("constants must be real-valued")
+            raise ValueError('constants must be real-valued')
         constants_dict[str(constant)] = v._to_mpmath(bprec)
 
     exprval = expr.evalf(prec, chop=True, strict=False)

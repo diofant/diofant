@@ -5,7 +5,7 @@ from functools import reduce
 from .basic import Basic
 from .cache import cacheit
 from .compatibility import default_sort_key
-from .logic import _fuzzy_group, fuzzy_and, fuzzy_not
+from .logic import _fuzzy_group, fuzzy_and
 from .operations import AssocOp
 from .singleton import S
 from .sympify import sympify
@@ -263,9 +263,6 @@ class Mul(AssocOp):
                 if not coeff:
                     # 0 * zoo = NaN
                     return [nan], [], None
-                if coeff is zoo:
-                    # zoo * zoo = zoo
-                    return [zoo], [], None
                 coeff = zoo
                 continue
 
@@ -478,7 +475,7 @@ class Mul(AssocOp):
                             coeff *= obj
                         else:
                             assert obj.is_Pow
-                            bi, ei = obj.args
+                            bi, ei = obj.base, obj.exp
                             pnew[ei].append(bi)
 
             num_rat.extend(grow)
@@ -996,6 +993,7 @@ class Mul(AssocOp):
 
     def _eval_is_extended_real(self):
         real = True
+        finite = True
         zero = one_neither = False
 
         for t in self.args:
@@ -1004,12 +1002,20 @@ class Mul(AssocOp):
             elif t.is_imaginary or t.is_extended_real:
                 if t.is_imaginary:
                     real = not real
+                elif not t.is_real:
+                    if zero is not False:
+                        return
+                    finite = False
+
                 z = t.is_zero
                 if not z and zero is False:
                     zero = z
                 elif z:
                     if all(a.is_finite for a in self.args):
                         return True
+                    return
+
+                if not finite and t.is_real and z is not False:
                     return
             elif t.is_complex and t.is_real is False:
                 if one_neither:
@@ -1109,15 +1115,6 @@ class Mul(AssocOp):
             return r
         else:
             return is_integer
-
-    def _eval_is_even(self):
-        is_integer = self.is_integer
-
-        if is_integer:
-            return fuzzy_not(self.is_odd)
-
-        elif is_integer is False:
-            return False
 
     def _eval_subs(self, old, new):
         from . import Integer

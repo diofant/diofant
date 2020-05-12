@@ -123,7 +123,7 @@ class Factors:
                     factors[Integer(n.numerator)] = Integer(1)
                 factors[Integer(n.denominator)] = Integer(-1)
             else:  # pragma: no cover
-                raise ValueError('Expected Float|Rational|Integer, not %s' % n)
+                raise ValueError(f'Expected Float|Rational|Integer, not {n}')
         elif isinstance(factors, Basic) and not factors.args:
             factors = {factors: Integer(1)}
         elif isinstance(factors, Expr):
@@ -167,7 +167,7 @@ class Factors:
                             factors[-a] = Integer(1)
                             factors[Integer(-1)] = Integer(1)
                         else:  # pragma: no cover
-                            raise RuntimeError('unexpected factor in i1: %s' % a)
+                            raise RuntimeError(f'unexpected factor in i1: {a}')
 
         self.factors = factors
         self.gens = frozenset(factors)
@@ -178,7 +178,7 @@ class Factors:
         return hash((keys, values))
 
     def __repr__(self):
-        return "Factors({%s})" % ', '.join(
+        return 'Factors({%s})' % ', '.join(
             ['%s: %s' % (k, v) for k, v in ordered(self.factors.items())])
 
     @property
@@ -470,7 +470,7 @@ class Factors:
 
             return Factors(factors)
         else:
-            raise ValueError("expected non-negative integer, got %s" % other)
+            raise ValueError(f'expected non-negative integer, got {other}')
 
     def gcd(self, other):
         """Return Factors of ``gcd(self, other)``. The keys are

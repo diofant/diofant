@@ -9,8 +9,8 @@ from diofant import (E1, And, Ci, CosineTransform, Ei, EulerGamma,
                      besseli, besselj, besselk, bessely, combsimp, cos, cosh,
                      cosine_transform, cot, erf, exp, exp_polar, expand,
                      expand_complex, expand_mul, expand_trig, expint, eye,
-                     factor, factor_terms, factorial, fourier_transform,
-                     fresnelc, fresnels, gamma, hankel_transform, hyperexpand,
+                     factor_terms, factorial, fourier_transform, fresnelc,
+                     fresnels, gamma, hankel_transform, hyperexpand,
                      inverse_cosine_transform, inverse_fourier_transform,
                      inverse_hankel_transform, inverse_laplace_transform,
                      inverse_mellin_transform, inverse_sine_transform,
@@ -50,9 +50,9 @@ def test_as_integral():
     assert laplace_transform(f(x), x, s).rewrite('Integral') == \
         Integral(f(x)*exp(-s*x), (x, 0, oo))
     assert str(inverse_mellin_transform(f(s), s, x, (a, b)).rewrite('Integral')) \
-        == "Integral(x**(-s)*f(s), (s, _c - oo*I, _c + oo*I))"
+        == 'Integral(x**(-s)*f(s), (s, _c - oo*I, _c + oo*I))'
     assert str(inverse_laplace_transform(f(s), s, x).rewrite('Integral')) == \
-        "Integral(E**(s*x)*f(s), (s, _c - oo*I, _c + oo*I))"
+        'Integral(E**(s*x)*f(s), (s, _c - oo*I, _c + oo*I))'
     assert inverse_fourier_transform(f(s), s, x).rewrite('Integral') == \
         Integral(f(s)*exp(2*I*pi*s*x), (s, -oo, oo))
 
@@ -418,7 +418,7 @@ def test_inverse_mellin_transform2():
 def test_laplace_transform():
     LT = laplace_transform
     a, b, c, = symbols('a b c', positive=True)
-    f = Function("f")
+    f = Function('f')
 
     # Test unevaluated form
     assert laplace_transform(f(t), t, w) == LaplaceTransform(f(t), t, w)
@@ -553,7 +553,7 @@ def test_fourier_transform():
     def sinc(x):
         return sin(pi*x)/(pi*x)
     k = symbols('k', extended_real=True)
-    f = Function("f")
+    f = Function('f')
 
     # TODO for this to work with real a, need to expand abs(a*x) to abs(a)*abs(x)
     a = symbols('a', positive=True)
@@ -572,8 +572,7 @@ def test_fourier_transform():
     assert simp(FT(Heaviside(1 - abs(a*x))*(1 - abs(a*x)), x, k)) == sinc(k/a)**2/a
     # TODO IFT
 
-    assert factor(FT(exp(-a*x)*Heaviside(x), x, k), extension=I) == \
-        1/(a + 2*pi*I*k)
+    assert FT(exp(-a*x)*Heaviside(x), x, k) == 1/(a + 2*pi*I*k)
     # NOTE: the ift comes out in pieces
     assert IFT(1/(a + 2*pi*I*x), x, posk,
                noconds=False) == (exp(-a*posk), True)
@@ -583,8 +582,7 @@ def test_fourier_transform():
                noconds=False) == (0, True)
     # TODO IFT without factoring comes out as meijer g
 
-    assert factor(FT(x*exp(-a*x)*Heaviside(x), x, k), extension=I) == \
-        1/(a + 2*pi*I*k)**2
+    assert FT(x*exp(-a*x)*Heaviside(x), x, k) == 1/(a + 2*pi*I*k)**2
     assert FT(exp(-a*x)*sin(b*x)*Heaviside(x), x, k) == \
         b/(b**2 + (a + 2*I*pi*k)**2)
 
@@ -599,7 +597,7 @@ def test_fourier_transform():
 
 
 def test_sine_transform():
-    f = Function("f")
+    f = Function('f')
 
     # Test unevaluated form
     assert sine_transform(f(t), t, w) == SineTransform(f(t), t, w)
@@ -632,7 +630,7 @@ def test_sine_transform():
 
 
 def test_cosine_transform():
-    f = Function("f")
+    f = Function('f')
 
     # Test unevaluated form
     assert cosine_transform(f(t), t, w) == CosineTransform(f(t), t, w)
@@ -669,10 +667,10 @@ def test_cosine_transform():
 
 
 def test_hankel_transform():
-    r = Symbol("r")
-    k = Symbol("k")
-    nu = Symbol("nu")
-    m = Symbol("m")
+    r = Symbol('r')
+    k = Symbol('k')
+    nu = Symbol('nu')
+    m = Symbol('m')
 
     assert hankel_transform(1/r, r, k, 0) == 1/k
     assert inverse_hankel_transform(1/k, k, r, 0) == 1/r

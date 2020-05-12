@@ -1,6 +1,6 @@
 from ..concrete.expr_with_limits import AddWithLimits
-from ..core import (Add, Basic, Dummy, Eq, Expr, Integer, Mul, Symbol, Tuple,
-                    Wild, diff, nan, oo, sympify)
+from ..core import (Add, Basic, Dummy, Eq, Expr, Integer, Mul, Tuple, Wild,
+                    diff, nan, oo, sympify)
 from ..core.compatibility import is_sequence
 from ..functions import Piecewise, log, piecewise_fold, sign, sqrt
 from ..logic import false, true
@@ -91,7 +91,7 @@ class Integral(AddWithLimits):
                 return
             if not l[1].is_real or not l[2].is_real:
                 return
-        f = self.function.subs({v: Dummy("d", real=True) for v in self.variables})
+        f = self.function.subs({v: Dummy('d', real=True) for v in self.variables})
         if f.is_real:
             return True
 
@@ -239,7 +239,7 @@ class Integral(AddWithLimits):
         xfree = x.free_symbols.intersection(self.variables)
         if len(xfree) > 1:
             raise ValueError(
-                'F(x) can only contain one of: %s' % self.variables)
+                f'F(x) can only contain one of: {self.variables}')
         xvar = xfree.pop() if xfree else d
 
         if xvar not in self.variables:
@@ -249,21 +249,17 @@ class Integral(AddWithLimits):
         if isinstance(u, Expr):
             ufree = u.free_symbols
             if len(ufree) != 1:
-                raise ValueError(filldedent('''
+                raise ValueError(filldedent("""
                 When f(u) has more than one free symbol, the one replacing x
-                must be identified: pass f(u) as (f(u), u)'''))
+                must be identified: pass f(u) as (f(u), u)"""))
             uvar = ufree.pop()
         else:
             u, uvar = u
             if uvar not in u.free_symbols:
-                raise ValueError(filldedent('''
+                raise ValueError(filldedent("""
                 Expecting a tuple (expr, symbol) where symbol identified
                 a free symbol in expr, but symbol is not in expr's free
-                symbols.'''))
-            if not isinstance(uvar, (Dummy, Symbol)):
-                raise ValueError(filldedent('''
-                Expecting a tuple (expr, symbol) but didn't get
-                a symbol; got %s''' % uvar))
+                symbols."""))
 
         if x.is_Symbol and u.is_Symbol:
             return self.xreplace({x: u})
@@ -274,10 +270,11 @@ class Integral(AddWithLimits):
         if uvar == xvar:
             return self.transform(x, (u.subs({uvar: d}), d)).xreplace({d: uvar})
 
-        if uvar in self.limits:
-            raise ValueError(filldedent('''
-            u must contain the same variable as in x
-            or a variable that is not already an integration variable'''))
+        for xab in self.limits:
+            if uvar in xab:
+                raise ValueError(filldedent("""
+                u must contain the same variable as in x
+                or a variable that is not already an integration variable"""))
 
         if not x.is_Symbol:
             F = [x.subs({xvar: d})]
@@ -297,9 +294,9 @@ class Integral(AddWithLimits):
         newfuncs = {(self.function.subs({xvar: fi})*fi.diff(d)).subs({d: uvar})
                     for fi in f}
         if len(newfuncs) > 1:
-            raise ValueError(filldedent('''
+            raise ValueError(filldedent("""
             The mapping between F(x) and f(u) did not give
-            a unique integrand.'''))
+            a unique integrand."""))
         newfunc = newfuncs.pop()
 
         def _calc_limit_1(F, a, b):
@@ -321,9 +318,9 @@ class Integral(AddWithLimits):
             """
             avals = list({_calc_limit_1(Fi, a, b) for Fi in F})
             if len(avals) > 1:
-                raise ValueError(filldedent('''
+                raise ValueError(filldedent("""
                 The mapping between F(x) and f(u) did not
-                give a unique limit.'''))
+                give a unique limit."""))
             return avals[0]
 
         newlimits = []
@@ -935,7 +932,7 @@ class Integral(AddWithLimits):
             x=symb, n=n, logx=logx).as_coeff_add(Order)
         return integrate(terms, *expr.limits) + Add(*order)*x
 
-    def as_sum(self, n, method="midpoint"):
+    def as_sum(self, n, method='midpoint'):
         """
         Approximates the definite integral by a sum.
 
@@ -1015,42 +1012,42 @@ class Integral(AddWithLimits):
         limits = self.limits
         if len(limits) > 1:
             raise NotImplementedError(
-                "Multidimensional midpoint rule not implemented yet")
+                'Multidimensional midpoint rule not implemented yet')
         else:
             limit = limits[0]
             if len(limit) != 3:
-                raise ValueError("Expecting a definite integral.")
+                raise ValueError('Expecting a definite integral.')
         if n <= 0:
-            raise ValueError("n must be > 0")
+            raise ValueError('n must be > 0')
         if n == oo:
-            raise NotImplementedError("Infinite summation not yet implemented")
+            raise NotImplementedError('Infinite summation not yet implemented')
         sym, lower_limit, upper_limit = limit
         dx = (upper_limit - lower_limit)/n
 
         if method == 'trapezoid':
             l = self.function.limit(sym, lower_limit)
-            r = self.function.limit(sym, upper_limit, "-")
+            r = self.function.limit(sym, upper_limit, '-')
             result = (l + r)/2
             for i in range(1, n):
                 x = lower_limit + i*dx
                 result += self.function.subs({sym: x})
             return result*dx
         elif method not in ('left', 'right', 'midpoint'):
-            raise NotImplementedError("Unknown method %s" % method)
+            raise NotImplementedError(f'Unknown method {method}')
 
         result = 0
         for i in range(n):
-            if method == "midpoint":
+            if method == 'midpoint':
                 xi = lower_limit + i*dx + dx/2
-            elif method == "left":
+            elif method == 'left':
                 xi = lower_limit + i*dx
                 if i == 0:
                     result = self.function.limit(sym, lower_limit)
                     continue
-            elif method == "right":
+            elif method == 'right':
                 xi = lower_limit + i*dx + dx
                 if i == n:
-                    result += self.function.limit(sym, upper_limit, "-")
+                    result += self.function.limit(sym, upper_limit, '-')
                     continue
             result += self.function.subs({sym: xi})
         return result*dx
@@ -1231,16 +1228,16 @@ def line_integrate(field, curve, vars):
     F = sympify(field)
     if not F:
         raise ValueError(
-            "Expecting function specifying field as first argument.")
+            'Expecting function specifying field as first argument.')
     if not isinstance(curve, Curve):
-        raise ValueError("Expecting Curve entity as second argument.")
+        raise ValueError('Expecting Curve entity as second argument.')
     if not is_sequence(vars):
-        raise ValueError("Expecting ordered iterable for variables.")
+        raise ValueError('Expecting ordered iterable for variables.')
     if len(curve.functions) != len(vars):
-        raise ValueError("Field variable size does not match curve dimension.")
+        raise ValueError('Field variable size does not match curve dimension.')
 
     if curve.parameter in vars:
-        raise ValueError("Curve parameter clashes with field parameters.")
+        raise ValueError('Curve parameter clashes with field parameters.')
 
     # Calculate derivatives for line parameter functions
     # F(r) -> F(r(t)) and finally F(r(t)*r'(t))

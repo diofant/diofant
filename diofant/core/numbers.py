@@ -91,7 +91,7 @@ def _str_to_Decimal_dps(s):
     try:
         num = decimal.Decimal(s)
     except decimal.InvalidOperation:
-        raise ValueError('string-float not recognized: %s' % s)
+        raise ValueError(f'string-float not recognized: {s}')
     else:
         return num, len(num.as_tuple().digits)
 
@@ -234,19 +234,19 @@ def mod_inverse(a, m):
     except ValueError:
         a, m = sympify(a), sympify(m)
         if not (a.is_number and m.is_number):
-            raise TypeError(filldedent('''
+            raise TypeError(filldedent("""
                 Expected numbers for arguments; symbolic `mod_inverse`
                 is not implemented
                 but symbolic expressions can be handled with the
                 similar function,
-                sympy.polys.polytools.invert'''))
+                sympy.polys.polytools.invert"""))
         big = (m > 1)
         if not (big is S.true or big is S.false):
-            raise ValueError('m > 1 did not evaluate; try to simplify %s' % m)
+            raise ValueError(f'm > 1 did not evaluate; try to simplify {m}')
         elif big:
             c = 1/a
     if c is None:
-        raise ValueError('inverse of %s (mod %s) does not exist' % (a, m))
+        raise ValueError(f'inverse of {a} (mod {m}) does not exist')
     return c
 
 
@@ -296,8 +296,8 @@ class Number(AtomicExpr):
             if isinstance(val, Number):
                 return val
             else:
-                raise ValueError('String "%s" does not denote a Number' % obj)
-        msg = "expected str|int|float|Decimal|Number object but got %r"
+                raise ValueError(f'String "{obj}" does not denote a Number')
+        msg = 'expected str|int|float|Decimal|Number object but got %r'
         raise TypeError(msg % type(obj).__name__)
 
     def invert(self, other, *gens, **args):
@@ -327,8 +327,7 @@ class Number(AtomicExpr):
 
     def _as_mpf_val(self, prec):  # pragma: no cover
         """Evaluation of mpf tuple accurate to at least prec bits."""
-        raise NotImplementedError('%s needs ._as_mpf_val() method' %
-                                  (self.__class__.__name__))
+        raise NotImplementedError(f'{self.__class__.__name__} needs ._as_mpf_val() method')
 
     def _eval_evalf(self, prec):
         return Float._new(self._as_mpf_val(prec), prec)
@@ -545,7 +544,7 @@ class Float(Number):
     ...     from diofant import Mul, Pow
     ...     s, m, e, b = f._mpf_
     ...     v = Mul(int(m), Pow(2, int(e), evaluate=False), evaluate=False)
-    ...     print('%s at prec=%s' % (v, f._prec))
+    ...     print(f'{v} at prec={f._prec}')
     ...
     >>> t = Float('0.3', 3)
     >>> show(t)
@@ -832,7 +831,7 @@ class Float(Number):
     def __hash__(self):
         return super().__hash__()
 
-    def epsilon_eq(self, other, epsilon="1e-15"):
+    def epsilon_eq(self, other, epsilon='1e-15'):
         """Test approximate equality."""
         return abs(self - other) < Float(epsilon)
 
@@ -876,11 +875,11 @@ class Rational(Number):
     An arbitrarily precise Rational is obtained when a string literal is
     passed:
 
-    >>> Rational("1.23")
+    >>> Rational('1.23')
     123/100
     >>> Rational('1e-2')
     1/100
-    >>> Rational(".1")
+    >>> Rational('.1')
     1/10
 
     The conversion of floats to expressions or simple fractions can
@@ -942,7 +941,7 @@ class Rational(Number):
             f = fractions.Fraction(p)/fractions.Fraction(q)
             p, q = f.numerator, f.denominator
         except ValueError:
-            raise TypeError('invalid input: %s, %s' % (p, q))
+            raise TypeError(f'invalid input: {p}, {q}')
         except ZeroDivisionError:
             if p == 0:
                 return nan
@@ -1291,6 +1290,9 @@ class Integer(Rational):
 
     def __index__(self):
         return int(self.numerator)
+
+    def __format__(self, format_spec):
+        return int(self.numerator).__format__(format_spec)
 
     @_sympifyit('other', NotImplemented)
     def __eq__(self, other):

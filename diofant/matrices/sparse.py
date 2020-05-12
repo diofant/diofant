@@ -45,8 +45,7 @@ class SparseMatrixBase(MatrixBase):
             elif is_sequence(args[2]):
                 if len(args[2]) != self.rows*self.cols:
                     raise ValueError(
-                        'List length (%s) != rows*columns (%s)' %
-                        (len(args[2]), self.rows*self.cols))
+                        f'List length ({len(args[2])}) != rows*columns ({self.rows*self.cols})')
                 flat_list = args[2]
                 for i in range(self.rows):
                     for j in range(self.cols):
@@ -54,8 +53,8 @@ class SparseMatrixBase(MatrixBase):
                         if value:
                             self._smat[(i, j)] = value
             else:
-                raise ValueError("Third argument must be a callable,"
-                                 " dictionary or sequence.")
+                raise ValueError('Third argument must be a callable,'
+                                 ' dictionary or sequence.')
         else:
             # handle full matrix forms with _handle_creation_inputs
             r, c, _list = Matrix._handle_creation_inputs(*args)
@@ -78,7 +77,7 @@ class SparseMatrixBase(MatrixBase):
                 if any(isinstance(_, Expr) and not _.is_number for _ in (i, j)):
                     if ((j < 0) == true) or ((j >= self.shape[1]) == true) or \
                        ((i < 0) == true) or ((i >= self.shape[0]) == true):
-                        raise ValueError("index out of boundary")
+                        raise ValueError('index out of boundary')
                     from .expressions.matexpr import MatrixElement
                     return MatrixElement(self, i, j)
 
@@ -172,7 +171,7 @@ class SparseMatrixBase(MatrixBase):
         return [tuple(k + (self[k],)) for k in
                 sorted(self._smat, key=lambda k: list(k))]
 
-    RL = property(row_list, None, None, "Alternate faster representation")
+    RL = property(row_list, None, None, 'Alternate faster representation')
 
     def col_list(self):
         """Returns a column-sorted list of non-zero elements of the matrix.
@@ -196,7 +195,7 @@ class SparseMatrixBase(MatrixBase):
         """
         return [tuple(k + (self[k],)) for k in sorted(self._smat, key=lambda k: list(reversed(k)))]
 
-    CL = property(col_list, None, None, "Alternate faster representation")
+    CL = property(col_list, None, None, 'Alternate faster representation')
 
     def _eval_trace(self):
         """Calculate the trace of a square matrix.
@@ -431,8 +430,7 @@ class SparseMatrixBase(MatrixBase):
 
         """
         if not isinstance(other, SparseMatrixBase):
-            raise ValueError('only use add with %s, not %s' %
-                             tuple(c.__class__.__name__ for c in (self, other)))
+            raise ValueError(f'only use add with {self.__class__.__name__}, not {other.__class__.__name__}')
         if self.shape != other.shape:
             raise ShapeError()
         M = self.copy()
@@ -574,7 +572,7 @@ class SparseMatrixBase(MatrixBase):
 
         """
         if not callable(f):
-            raise TypeError("`f` must be callable.")
+            raise TypeError('`f` must be callable.')
 
         out = self.copy()
         for k, v in self._smat.items():
@@ -599,7 +597,7 @@ class SparseMatrixBase(MatrixBase):
 
         """
         if len(self) != rows*cols:
-            raise ValueError("Invalid reshape parameters %d %d" % (rows, cols))
+            raise ValueError(f'Invalid reshape parameters {rows:d} {cols:d}')
         smat = {}
         for k, v in self._smat.items():
             i, j = k
@@ -993,13 +991,12 @@ class SparseMatrixBase(MatrixBase):
             M = t*M
             I = t*I
         method = kwargs.get('method', 'LDL')
-        if method in "LDL":
+        if method in 'LDL':
             solve = M._LDL_solve
-        elif method == "CH":
+        elif method == 'CH':
             solve = M._cholesky_solve
         else:
-            raise NotImplementedError('Method may be "CH" or '
-                                      '"LDL", not %s.' % method)
+            raise NotImplementedError(f'Method may be "CH" or "LDL", not {method}.')
         rv = M.hstack(*[solve(I[:, i]) for i in range(I.cols)])
         if not sym:
             scale = (r1*rv[:, 0])[0, 0]
@@ -1385,7 +1382,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         from . import Matrix
 
         if not is_sequence(value):
-            raise TypeError("`value` must be of type list or tuple.")
+            raise TypeError('`value` must be of type list or tuple.')
         self.copyin_matrix(key, Matrix(value))
 
     def copyin_matrix(self, key, value):
@@ -1396,7 +1393,7 @@ class MutableSparseMatrix(SparseMatrixBase, MatrixBase):
         if shape != (dr, dc):
             raise ShapeError(
                 "The Matrix `value` doesn't have the same dimensions "
-                "as the in sub-Matrix given by `key`.")
+                'as the in sub-Matrix given by `key`.')
         if not isinstance(value, SparseMatrixBase):
             for i in range(value.rows):
                 for j in range(value.cols):

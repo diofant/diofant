@@ -147,8 +147,8 @@ def ratint_ratpart(f, g, x):
 
     C_coeffs = A_coeffs + B_coeffs
 
-    A = Poly(A_coeffs, x, domain=ZZ.poly_ring(*C_coeffs))
-    B = Poly(B_coeffs, x, domain=ZZ.poly_ring(*C_coeffs))
+    A = Poly(A_coeffs, x, domain=ZZ.inject(*C_coeffs))
+    B = Poly(B_coeffs, x, domain=ZZ.inject(*C_coeffs))
 
     H = f - A.diff()*v + A*(u.diff()*v).quo(u) - B*u
 
@@ -202,7 +202,7 @@ def ratint_logpart(f, g, x, t=None):
     res, R = resultant(a, b, includePRS=True)
     res = Poly(res, t, composite=False)
 
-    assert res, "BUG: resultant(%s, %s) can't be zero" % (a, b)
+    assert res, f"BUG: resultant({a}, {b}) can't be zero"
 
     R_map, H = {}, []
 

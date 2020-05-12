@@ -7,7 +7,7 @@ from diofant.tensor.tensor import (TensorIndexType, TensorType, tensor_indices,
 
 __all__ = ()
 
-numpy = pytest.importorskip("numpy")
+numpy = pytest.importorskip('numpy')
 
 
 def _get_valued_base_test_variables():
@@ -27,7 +27,7 @@ def _get_valued_base_test_variables():
     A.data = [E, px, py, pz]
     B = tensorhead('B', [Lorentz], [[1]], 'Gcomm')
     B.data = range(4)
-    AB = tensorhead("AB", [Lorentz] * 2, [[1]]*2)
+    AB = tensorhead('AB', [Lorentz] * 2, [[1]]*2)
     AB.data = minkowski
 
     ba_matrix = Matrix((
@@ -37,7 +37,7 @@ def _get_valued_base_test_variables():
         (-3, -4, -5, -6),
     ))
 
-    BA = tensorhead("BA", [Lorentz] * 2, [[1]]*2)
+    BA = tensorhead('BA', [Lorentz] * 2, [[1]]*2)
     BA.data = ba_matrix
 
     BA(i0, i1)*A(-i0)*B(-i1)
@@ -55,7 +55,7 @@ def _get_valued_base_test_variables():
         (1, 0, 1),
         (0, 1, 0,),
     )
-    ndm = TensorIndexType("ndm")
+    ndm = TensorIndexType('ndm')
     ndm.data = ndm_matrix
     n0, n1, n2 = tensor_indices('n0:3', ndm)
     NA = tensorhead('NA', [ndm], [[1]])

@@ -1,7 +1,6 @@
 """Basic tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
 import functools
-import math
 import random
 
 from ..core import oo
@@ -103,7 +102,7 @@ def dmp_degree_in(f, j, u):
         return -oo if dmp_zero_p(f, u) else len(f) - 1
 
     if j < 0 or j > u:
-        raise IndexError("0 <= j <= %s expected, got %s" % (u, j))
+        raise IndexError(f'0 <= j <= {u} expected, got {j}')
 
     def degree_in(g, v, i, j):
         if i == j:
@@ -221,7 +220,7 @@ def dmp_convert(f, u, K0, K1):
     Examples
     ========
 
-    >>> R, x = ring("x", ZZ)
+    >>> R, x = ring('x', ZZ)
 
     >>> dmp_convert([[R(1)], [R(2)]], 1, R, ZZ)
     [[1], [2]]
@@ -478,30 +477,6 @@ def dmp_to_dict(f, u):
     return result
 
 
-def dmp_swap(f, i, j, u, K):
-    """
-    Transform ``K[..x_i..x_j..]`` to ``K[..x_j..x_i..]``.
-
-    Examples
-    ========
-
-    >>> dmp_swap([[[ZZ(2)], [ZZ(1), ZZ(0)]], []], 0, 1, 2, ZZ)
-    [[[2], []], [[1, 0], []]]
-
-    """
-    if i < 0 or j < 0 or i > u or j > u:
-        raise IndexError("0 <= i < j <= %s expected" % u)
-    elif i == j:
-        return f
-
-    F, H = dmp_to_dict(f, u), {}
-
-    for exp, coeff in F.items():
-        H[exp[:i] + (exp[j],) + exp[i + 1:j] + (exp[i],) + exp[j + 1:]] = coeff
-
-    return dmp_from_dict(H, u, K)
-
-
 def dmp_permute(f, P, u, K):
     """
     Return a polynomial in ``K[x_{P(1)},..,x_{P(n)}]``.
@@ -573,118 +548,12 @@ def dmp_raise(f, l, u, K):
     return [dmp_raise(c, l, v, K) for c in f]
 
 
-def dmp_deflate(polys, u, K):
-    """
-    Map ``x_i**m_i`` to ``y_i`` in a set of polynomials in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> f = [[ZZ(1), ZZ(0), ZZ(0), ZZ(2)], [], [ZZ(3), ZZ(0), ZZ(0), ZZ(4)]]
-    >>> g = [[ZZ(1), ZZ(0), ZZ(2)], [], [ZZ(3), ZZ(0), ZZ(4)]]
-
-    >>> dmp_deflate((f, g), 1, ZZ)
-    ((2, 1), ([[1, 0, 0, 2], [3, 0, 0, 4]], [[1, 0, 2], [3, 0, 4]]))
-
-    """
-    F, B = [], [0]*(u + 1)
-
-    for p in polys:
-        f = dmp_to_dict(p, u)
-
-        if not dmp_zero_p(p, u):
-            for M in f:
-                for i, m in enumerate(M):
-                    B[i] = math.gcd(B[i], m)
-
-        F.append(f)
-
-    for i, b in enumerate(B):
-        if not b:
-            B[i] = 1
-
-    B = tuple(B)
-
-    if all(b == 1 for b in B):
-        return B, polys
-
-    H = []
-
-    for f in F:
-        h = {}
-
-        for A, coeff in f.items():
-            N = [a // b for a, b in zip(A, B)]
-            h[tuple(N)] = coeff
-
-        H.append(dmp_from_dict(h, u, K))
-
-    return B, tuple(H)
-
-
 def dup_inflate(f, m, K):
-    """
-    Map ``y`` to ``x**m`` in a polynomial in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> dup_inflate([ZZ(1), ZZ(1), ZZ(1)], 3, ZZ)
-    [1, 0, 0, 1, 0, 0, 1]
-
-    """
-    if m <= 0:
-        raise IndexError("'m' must be positive, got %s" % m)
-    if m == 1 or not f:
-        return f
-
-    result = [f[0]]
-
-    for coeff in f[1:]:
-        result.extend([K.zero]*(m - 1))
-        result.append(coeff)
-
-    return result
-
-
-def dmp_inflate(f, M, u, K):
-    """
-    Map ``y_i`` to ``x_i**k_i`` in a polynomial in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> dmp_inflate([[ZZ(1), ZZ(2)], [ZZ(3), ZZ(4)]], (2, 3), 1, ZZ)
-    [[1, 0, 0, 2], [], [3, 0, 0, 4]]
-
-    """
-    if not u:
-        return dup_inflate(f, M[0], K)
-
-    def inflate(g, M, v, i, K):
-        if not v:
-            return dup_inflate(g, M[i], K)
-        if M[i] <= 0:
-            raise IndexError("all M[i] must be positive, got %s" % M[i])
-
-        w, j = v - 1, i + 1
-
-        g = [inflate(c, M, w, j, K) for c in g]
-
-        result = [g[0]]
-
-        for coeff in g[1:]:
-            for _ in range(1, M[i]):
-                result.append(dmp_zero(w))
-
-            result.append(coeff)
-
-        return result
-
-    if all(m == 1 for m in M):
-        return f
-    else:
-        return inflate(f, M, u, 0, K)
+    """Map ``y`` to ``x**m`` in a polynomial in ``K[x]``."""
+    ring = K.poly_ring('_0')
+    f = ring.from_dense(f)
+    f = f.inflate((m,))
+    return ring.to_dense(f)
 
 
 def dmp_exclude(f, u, K):
@@ -766,7 +635,7 @@ def dmp_inject(f, u, K, front=False):
     Examples
     ========
 
-    >>> R, x, y = ring("x y", ZZ)
+    >>> R, x, y = ring('x y', ZZ)
 
     >>> dmp_inject([R(1), x + 2], 0, R)
     ([[[1]], [[1], [2]]], 2)
@@ -799,7 +668,7 @@ def dmp_eject(f, u, K, front=False):
     Examples
     ========
 
-    >>> dmp_eject([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], 2, ZZ.poly_ring('x', 'y'))
+    >>> dmp_eject([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], 2, ZZ.inject('x', 'y'))
     [1, x + 2]
 
     """
@@ -853,65 +722,11 @@ def dmp_terms_gcd(f, u, K):
     return G, dmp_from_dict(f, u, K)
 
 
-def dmp_apply_pairs(f, g, h, args, u, K):
-    """
-    Apply ``h`` to pairs of coefficients of ``f`` and ``g``.
-
-    Examples
-    ========
-
-    >>> def h(x, y, z):
-    ...     return 2*x + y - z
-
-    >>> dmp_apply_pairs([[ZZ(1)], [ZZ(2), ZZ(3)]],
-    ...                 [[ZZ(3)], [ZZ(2), ZZ(1)]], h, [ZZ(1)], 1, ZZ)
-    [[4], [5, 6]]
-
-    """
-    if u < 0:
-        return h(f, g, *args)
-
-    n, m, v = len(f), len(g), u - 1
-
-    if n > m:
-        g = dmp_zeros(n - m, v, K) + g
-    elif n < m:
-        f = dmp_zeros(m - n, v, K) + f
-
-    result = []
-
-    for a, b in zip(f, g):
-        result.append(dmp_apply_pairs(a, b, h, args, v, K))
-
-    return dmp_strip(result, u)
-
-
 def dmp_slice_in(f, m, n, j, u, K):
     """Take a continuous subsequence of terms of ``f`` in ``x_j`` in ``K[X]``."""
-    if j < 0 or j > u:
-        raise IndexError("-%s <= j < %s expected, got %s" % (u, u, j))
-
-    if not u:
-        k = len(f)
-        M = k - m if k >= m else 0
-        N = k - n if k >= n else 0
-        f = f[N:M]
-        return dmp_strip(f + [K.zero]*m if f else [], u)
-
-    f, g = dmp_to_dict(f, u), {}
-
-    for monom, coeff in f.items():
-        k = monom[j]
-
-        if k < m or k >= n:
-            monom = monom[:j] + (0,) + monom[j + 1:]
-
-        if monom in g:
-            g[monom] += coeff
-        else:
-            g[monom] = coeff
-
-    return dmp_from_dict(g, u, K)
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_dense(f)
+    return ring.to_dense(f.slice(m, n, x=j))
 
 
 def dup_random(n, a, b, K, percent=None):

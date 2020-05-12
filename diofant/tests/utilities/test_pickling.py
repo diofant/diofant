@@ -4,7 +4,7 @@ import warnings
 
 import pytest
 
-from diofant import (ZZ, Abs, Add, Atom, Basic, Catalan, CoercionFailed,
+from diofant import (QQ, ZZ, Abs, Add, Atom, Basic, Catalan, CoercionFailed,
                      Derivative, DiracDelta, DomainError, Dummy, E, Eijk,
                      Equality, EulerGamma, EvaluationFailed, ExpressionDomain,
                      ExtraneousFactors, FlagError, Float, FractionField,
@@ -27,12 +27,14 @@ from diofant import (ZZ, Abs, Add, Atom, Basic, Catalan, CoercionFailed,
                      coth, dirichlet_eta, erf, exp, factorial, ff, fibonacci,
                      floor, gamma, harmonic, hermite, im, legendre, ln, log,
                      loggamma, lowergamma, lucas, nan, oo, pi, polygamma, re,
-                     rf, sign, sin, sinh, tan, tanh, uppergamma, vectorize,
-                     zeta, zoo)
+                     rf, sign, sin, sinh, sqrt, tan, tanh, uppergamma,
+                     vectorize, zeta, zoo)
 from diofant.abc import x, y, z
 from diofant.core.compatibility import HAS_GMPY
 from diofant.core.logic import Logic
 from diofant.core.singleton import S, SingletonRegistry
+from diofant.domains import AlgebraicField, ComplexField, RealField
+from diofant.domains.finitefield import GMPYFiniteField, PythonFiniteField
 from diofant.domains.integerring import GMPYIntegerRing, PythonIntegerRing
 from diofant.domains.rationalfield import (GMPYRationalField,
                                            PythonRationalField)
@@ -60,11 +62,13 @@ half = Rational(1, 2)
 ℕ = S.Naturals0
 Id = Lambda(x, x)
 
+excluded_attrs = {'_assumptions', '_hash', '__dict__'}
+
 
 def check(a, exclude=[], check_attr=True):
     """Check that pickling and copying round-trips."""
     # Python 2.6+ warns about BasicException.message, for example.
-    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    warnings.filterwarnings('ignore', category=DeprecationWarning)
 
     protocols = list(range(5)) + [copy.copy, copy.deepcopy]
     for protocol in protocols:
@@ -88,19 +92,23 @@ def check(a, exclude=[], check_attr=True):
 
         def c(a, b, d):
             for i in d:
-                if not hasattr(a, i) or i in {'_assumptions',
-                                              '_mhash', '__dict__'}:
+                if i in excluded_attrs:
+                    continue
+                try:
+                    if not hasattr(a, i):
+                        continue
+                except NotImplementedError:
                     continue
                 attr = getattr(a, i)
-                if not hasattr(attr, "__call__"):
+                if not hasattr(attr, '__call__'):
                     assert hasattr(b, i), i
-                    assert getattr(b, i) == attr, "%s != %s" % (getattr(b, i), attr)
+                    assert getattr(b, i) == attr, f'{getattr(b, i)} != {attr}'
         c(a, b, d1)
         c(b, a, d2)
 
     # reset filters
-    warnings.simplefilter("default", category=DeprecationWarning)
-    warnings.simplefilter("error", category=DiofantDeprecationWarning)
+    warnings.simplefilter('default', category=DeprecationWarning)
+    warnings.simplefilter('error', category=DiofantDeprecationWarning)
 
 # ================= core =========================
 
@@ -115,14 +123,14 @@ def test_core_symbol():
     # make the Symbol a unique name that doesn't class with any other
     # testing variable in this file since after this test the symbol
     # having the same name will be cached as noncommutative
-    for c in (Dummy, Dummy("x", commutative=False), Symbol,
-              Symbol("_sympyissue_6229", commutative=False),
-              Wild, Wild("x")):
+    for c in (Dummy, Dummy('x', commutative=False), Symbol,
+              Symbol('_sympyissue_6229', commutative=False),
+              Wild, Wild('x')):
         check(c)
 
 
 def test_core_numbers():
-    for c in (Integer(2), Rational(2, 3), Float("1.2")):
+    for c in (Integer(2), Rational(2, 3), Float('1.2')):
         check(c)
 
 
@@ -157,7 +165,7 @@ def test_core_function():
 
 @pytest.mark.xfail
 def test_core_dynamicfunctions():
-    f = Function("f")
+    f = Function('f')
     check(f)
 
 
@@ -257,37 +265,56 @@ def test_pickling_polys_polytools():
         check(c)
 
 
-@pytest.mark.xfail
 def test_pickling_polys_rings():
     # NOTE: can't use protocols < 2 because we have to execute __new__ to
     # make sure caching of rings works properly.
 
-    ring = PolynomialRing(ZZ, "x,y,z")
+    ring = PolynomialRing(ZZ, 'x,y,z')
 
     for c in (PolynomialRing, ring):
         check(c, exclude=[0, 1])
 
-    for c in (ring.dtype, ring.one):
-        check(c, exclude=[0, 1], check_attr=False)  # TODO: Py3k
+    for c in (ring.one, ring.x):
+        check(c, exclude=[0, 1])
 
 
-@pytest.mark.xfail
 def test_pickling_polys_fields():
     # NOTE: can't use protocols < 2 because we have to execute __new__ to
     # make sure caching of fields works properly.
 
-    field = FractionField(ZZ, "x,y,z")
+    field = FractionField(ZZ, 'x,y,z')
 
-    for c in (FracField, field):
+    for c in (FractionField, field):
         check(c, exclude=[0, 1])
 
-    for c in (field.dtype, field.one):
+    for c in (field.one, field.x):
         check(c, exclude=[0, 1])
 
 
 def test_pickling_polys_elements():
     for c in (PythonRational, PythonRational(1, 7)):
         check(c)
+
+    gf17 = PythonFiniteField(17)
+    gf64 = PythonFiniteField(64)
+
+    for c in (gf17(5), gf64(12)):
+        check(c, exclude=[0, 1])
+
+    A = AlgebraicField(QQ, sqrt(2))
+
+    for c in (A.one, A.unit, A([2, 1])):
+        check(c, exclude=[0, 1])
+
+    R = RealField(100)
+
+    for c in (R.zero, R.one, R(1.2345)):
+        check(c, exclude=[0, 1])
+
+    C = ComplexField(100)
+
+    for c in (C.zero, C.one, C(1.2345)):
+        check(c, exclude=[0, 1])
 
 
 def test_pickling_polys_domains():
@@ -297,12 +324,27 @@ def test_pickling_polys_domains():
     for c in (PythonRationalField, PythonRationalField()):
         check(c)
 
+    for c in (PythonFiniteField, PythonFiniteField(7), PythonFiniteField(64)):
+        check(c, exclude=[0, 1])
+
     if HAS_GMPY:
         for c in (GMPYIntegerRing, GMPYIntegerRing()):
             check(c)
 
         for c in (GMPYRationalField, GMPYRationalField()):
             check(c)
+
+        for c in (GMPYFiniteField, GMPYFiniteField(7), GMPYFiniteField(64)):
+            check(c, exclude=[0, 1])
+
+    for c in (RealField, RealField(100)):
+        check(c, exclude=[0, 1])
+
+    for c in (ComplexField, ComplexField(100)):
+        check(c, exclude=[0, 1])
+
+    for c in (AlgebraicField, AlgebraicField(QQ, sqrt(2))):
+        check(c, exclude=[0, 1])
 
     EX = ExpressionDomain()
     for c in (ExpressionDomain, EX, EX(sin(x))):
@@ -400,7 +442,7 @@ def test_pickling_polys_rootoftools():
 
 def test_printing():
     for c in (LatexPrinter, LatexPrinter(), MathMLPrinter,
-              PrettyPrinter, prettyForm, stringPict, stringPict("a"),
+              PrettyPrinter, prettyForm, stringPict, stringPict('a'),
               Printer, Printer(), PythonPrinter, PythonPrinter()):
         check(c)
 

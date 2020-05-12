@@ -123,7 +123,7 @@ def test_bell():
 
 
 def test_harmonic():
-    n = Symbol("n")
+    n = Symbol('n')
 
     assert harmonic(n, 0) == n
     assert harmonic(n).evalf() == harmonic(n)
@@ -228,8 +228,8 @@ def test_harmonic_evalf():
 
 
 def test_harmonic_rewrite_polygamma():
-    n = Symbol("n")
-    m = Symbol("m")
+    n = Symbol('n')
+    m = Symbol('m')
 
     assert harmonic(n).rewrite(digamma) == polygamma(0, n + 1) + EulerGamma
     assert harmonic(n).rewrite(trigamma) == polygamma(0, n + 1) + EulerGamma
@@ -241,7 +241,7 @@ def test_harmonic_rewrite_polygamma():
     assert expand_func(harmonic(n+4)) == harmonic(n) + 1/(n + 4) + 1/(n + 3) + 1/(n + 2) + 1/(n + 1)
     assert expand_func(harmonic(n-4)) == harmonic(n) - 1/(n - 1) - 1/(n - 2) - 1/(n - 3) - 1/n
 
-    assert harmonic(n, m).rewrite("tractable") == harmonic(n, m).rewrite(polygamma).rewrite(gamma).rewrite("tractable")
+    assert harmonic(n, m).rewrite('tractable') == harmonic(n, m).rewrite(polygamma).rewrite(gamma).rewrite('tractable')
 
     assert isinstance(expand_func(harmonic(n, 2)), harmonic)
 
@@ -251,8 +251,8 @@ def test_harmonic_rewrite_polygamma():
 
 
 def test_harmonic_limit():
-    n = Symbol("n")
-    m = Symbol("m", positive=True)
+    n = Symbol('n')
+    m = Symbol('m', positive=True)
     assert limit(harmonic(n, m + 1), n, oo) == zeta(m + 1)
 
     assert limit(harmonic(n, 2), n, oo) == pi**2/6
@@ -261,10 +261,10 @@ def test_harmonic_limit():
 
 @pytest.mark.xfail
 def test_harmonic_rewrite_sum_fail():
-    n = Symbol("n")
-    m = Symbol("m")
+    n = Symbol('n')
+    m = Symbol('m')
 
-    _k = Dummy("k")
+    _k = Dummy('k')
     assert harmonic(n).rewrite(Sum) == Sum(1/_k, (_k, 1, n))
     assert harmonic(n, m).rewrite(Sum) == Sum(_k**(-m), (_k, 1, n))
 
@@ -278,10 +278,10 @@ def replace_dummy(expr, sym):
 
 
 def test_harmonic_rewrite_sum():
-    n = Symbol("n")
-    m = Symbol("m")
+    n = Symbol('n')
+    m = Symbol('m')
 
-    _k = Dummy("k")
+    _k = Dummy('k')
     assert replace_dummy(harmonic(n).rewrite(Sum), _k) == Sum(1/_k, (_k, 1, n))
     assert replace_dummy(harmonic(n, m).rewrite(Sum), _k) == Sum(_k**(-m), (_k, 1, n))
 
@@ -528,8 +528,8 @@ def test_nC_nP_nT():
 
 
 def test_sympyissue_8496():
-    n = Symbol("n")
-    k = Symbol("k")
+    n = Symbol('n')
+    k = Symbol('k')
 
     pytest.raises(TypeError, lambda: catalan(n, k))
     pytest.raises(TypeError, lambda: euler(n, k))

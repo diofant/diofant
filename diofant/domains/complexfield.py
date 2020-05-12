@@ -1,5 +1,7 @@
 """Implementation of :class:`ComplexField` class."""
 
+import mpmath
+
 from ..core import Float, I
 from ..polys.polyerrors import CoercionFailed, DomainError
 from .characteristiczero import CharacteristicZero
@@ -14,18 +16,15 @@ __all__ = 'ComplexField',
 _complexes_cache = {}
 
 
-class ComplexField(Field, CharacteristicZero, SimpleDomain):
+class ComplexField(CharacteristicZero, SimpleDomain, Field):
     """Complex numbers up to the given precision."""
 
     rep = 'CC'
 
-    is_ComplexField = is_CC = True
+    is_ComplexField = True
 
     is_Exact = False
     is_Numerical = True
-
-    has_assoc_Ring = False
-    has_assoc_Field = True
 
     _default_precision = 53
 
@@ -64,6 +63,10 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
 
         return obj
 
+    def __getnewargs_ex__(self):
+        return (), {'prec': self.precision,
+                    'tol': mpmath.mpf(self.tolerance._mpf_)}
+
     def __eq__(self, other):
         return (isinstance(other, ComplexField)
                 and self.precision == other.precision
@@ -73,18 +76,16 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
         return self._hash
 
     def to_expr(self, element):
-        """Convert ``element`` to Diofant number."""
         return Float(element.real, self.dps) + I*Float(element.imag, self.dps)
 
     def from_expr(self, expr):
-        """Convert Diofant's number to ``dtype``."""
         number = expr.evalf(self.dps)
         real, imag = number.as_real_imag()
 
         if real.is_Number and imag.is_Number:
             return self.dtype(real, imag)
         else:
-            raise CoercionFailed("expected complex number, got %s" % expr)
+            raise CoercionFailed(f'expected complex number, got {expr}')
 
     def _from_PythonIntegerRing(self, element, base):
         return self.dtype(element)
@@ -108,15 +109,12 @@ class ComplexField(Field, CharacteristicZero, SimpleDomain):
         return self.dtype(element)
 
     def get_exact(self):
-        """Returns an exact domain associated with ``self``."""
-        raise DomainError("there is no exact domain associated with %s" % self)
+        raise DomainError(f'there is no exact domain associated with {self}')
 
     def gcd(self, a, b):
-        """Returns GCD of ``a`` and ``b``."""
         return self.one
 
     def lcm(self, a, b):
-        """Returns LCM of ``a`` and ``b``."""
         return a*b
 
     def almosteq(self, a, b, tolerance=None):

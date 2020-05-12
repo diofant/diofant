@@ -210,7 +210,7 @@ def test_sign():
 
     assert mrv_sign(x, x) == 1
     assert mrv_sign(-x, x) == -1
-    y = Symbol("y", positive=True)
+    y = Symbol('y', positive=True)
     assert mrv_sign(y, x) == 1
     assert mrv_sign(-y, x) == -1
     assert mrv_sign(y*x, x) == 1
@@ -363,7 +363,7 @@ def test_limit():
 
 
 def test_I():
-    y = Symbol("y")
+    y = Symbol('y')
     assert gruntz(I*x, x) == I*oo
     assert gruntz(y*I*x, x) == sign(y)*I*oo
     assert gruntz(y*3*I*x, x) == sign(y)*I*oo

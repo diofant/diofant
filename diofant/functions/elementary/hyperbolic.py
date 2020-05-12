@@ -615,16 +615,16 @@ class ReciprocalHyperbolicFunction(HyperbolicFunction):
         return 1/t
 
     def _eval_rewrite_as_exp(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_exp", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_exp', arg)
 
     def _eval_rewrite_as_tractable(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_tractable", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_tractable', arg)
 
     def _eval_rewrite_as_tanh(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_tanh", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_tanh', arg)
 
     def _eval_rewrite_as_coth(self, arg):
-        return self._rewrite_reciprocal("_eval_rewrite_as_coth", arg)
+        return self._rewrite_reciprocal('_eval_rewrite_as_coth', arg)
 
     def as_real_imag(self, deep=True, **hints):
         return (1 / self._reciprocal_of(self.args[0])).as_real_imag(deep, **hints)

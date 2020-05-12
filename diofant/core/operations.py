@@ -123,9 +123,9 @@ class AssocOp(Expr):
 
         For instance:
 
-        >>> a = Wild("a")
-        >>> b = Wild("b")
-        >>> c = Wild("c")
+        >>> a = Wild('a')
+        >>> b = Wild('b')
+        >>> c = Wild('c')
         >>> (a + sin(b)*c)._matches_commutative(x + sin(y)*z)
         {a_: x, b_: y, c_: z}
 

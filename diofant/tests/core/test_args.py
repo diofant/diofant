@@ -166,20 +166,20 @@ def test_all_classes_are_tested():
     diofant_path = os.path.abspath(path)
     prefix = os.path.split(diofant_path)[0] + os.sep
 
-    re_cls = re.compile(r"^class ([A-Za-z][A-Za-z0-9_]*)\s*\(", re.MULTILINE)
+    re_cls = re.compile(r'^class ([A-Za-z][A-Za-z0-9_]*)\s*\(', re.MULTILINE)
 
     modules = {}
 
     for root, dirs, files in os.walk(diofant_path):
-        module = root.replace(prefix, "").replace(os.sep, ".")
+        module = root.replace(prefix, '').replace(os.sep, '.')
 
         for file in files:
-            if file.startswith(("_", "test_", "bench_")):
+            if file.startswith(('_', 'test_', 'bench_')):
                 continue
-            if not file.endswith(".py"):
+            if not file.endswith('.py'):
                 continue
 
-            with io.open(os.path.join(root, file), "r", encoding='utf-8') as f:
+            with io.open(os.path.join(root, file), 'r', encoding='utf-8') as f:
                 text = f.read()
 
             submodule = module + '.' + file[:-3]
@@ -215,9 +215,9 @@ def test_all_classes_are_tested():
                 failed.append(module + '.' + name)
 
     # reset all DiofantDeprecationWarning into errors
-    warnings.simplefilter("error", category=DiofantDeprecationWarning)
+    warnings.simplefilter('error', category=DiofantDeprecationWarning)
 
-    assert not failed, "Missing classes: %s.  Please add tests for these to diofant/core/tests/test_args.py." % ", ".join(failed)
+    assert not failed, 'Missing classes: %s.  Please add tests for these to diofant/core/tests/test_args.py.' % ', '.join(failed)
 
 
 def _test_args(obj):

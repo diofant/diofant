@@ -8,7 +8,7 @@ from collections import defaultdict
 from types import GeneratorType
 
 from ..core import (Add, Dummy, E, Equality, Expr, Float, Function, Ge, I,
-                    Integer, Lambda, Mul, Pow, Symbol, expand_log, expand_mul,
+                    Integer, Lambda, Mul, Symbol, expand_log, expand_mul,
                     expand_power_exp, nan, nfloat, pi, preorder_traversal,
                     sympify)
 from ..core.assumptions import check_assumptions
@@ -129,7 +129,7 @@ def solve(f, *symbols, **flags):
 
     We could restrict solutions by using assumptions:
 
-    >>> p = Symbol("p", positive=True)
+    >>> p = Symbol('p', positive=True)
     >>> solve(p**2 - 1)
     [{p: 1}]
 
@@ -185,8 +185,7 @@ def solve(f, *symbols, **flags):
             else:
                 f[i] = Add(fi.lhs, -fi.rhs, evaluate=False)
         elif isinstance(fi, Relational):
-            raise ValueError("Only expressions or equalities "
-                             "supported, got %s" % fi)
+            raise ValueError(f'Only expressions or equalities supported, got {fi}')
         elif isinstance(fi, Poly):
             f[i] = fi.as_expr()
 
@@ -248,8 +247,8 @@ def solve(f, *symbols, **flags):
             if not a.has(*symbols):
                 continue
             if a.args[0].is_extended_real is None and a.args[0].is_imaginary is not True:
-                raise NotImplementedError('solving %s when the argument '
-                                          'is not real or imaginary.' % a)
+                raise NotImplementedError(f'solving {a} when the argument '
+                                          'is not real or imaginary.')
             reps.append((a, piece(a.args[0]) if a.args[0].is_extended_real else
                          piece(a.args[0]*I)))
         fi = fi.subs(reps)
@@ -294,7 +293,7 @@ def solve(f, *symbols, **flags):
             s_new = s
         else:
             symbol_swapped = True
-            s_new = Dummy('X%d' % i)
+            s_new = Dummy(f'X{i:d}')
         symbols_new.append(s_new)
 
     if symbol_swapped:
@@ -432,7 +431,7 @@ def _solve(f, symbol, **flags):
     gives None a ValueError will be raised.
 
     """
-    not_impl_msg = "No algorithms are implemented to solve equation %s"
+    not_impl_msg = 'No algorithms are implemented to solve equation %s'
 
     # /!\ capture this flag then set it to False so that no checking in
     # recursive calls will be done; only the final answer is checked
@@ -585,36 +584,36 @@ def _solve(f, symbol, **flags):
                         result = list(ordered(sols))
 
                 if result is False:
-                    msg = 'multiple generators %s' % gens
+                    msg = f'multiple generators {gens}'
 
             else:
                 # e.g. case where gens are exp(x), exp(-x)
                 u = bases.pop()
                 t = Dummy('t')
                 inv = _solve(u - t, symbol, **flags)
-                if isinstance(u, Pow):
-                    # this will be resolved by factor in _tsolve but we might
-                    # as well try a simple expansion here to get things in
-                    # order so something like the following will work now without
-                    # having to factor:
-                    #
-                    # >>> eq = (exp(I*(-x-2))+exp(I*(x+2)))
-                    # >>> eq.subs({exp(x): y})  # fails
-                    # exp(I*(-x - 2)) + exp(I*(x + 2))
-                    # >>> eq.expand().subs({exp(x): y})  # works
-                    # y**I*exp(2*I) + y**(-I)*exp(-2*I)
-                    def _expand(p):
-                        b, e = p.as_base_exp()
-                        e = expand_mul(e)
-                        return expand_power_exp(b**e)
-                    ftry = f_num.replace(lambda w: w.is_Pow, _expand).subs({u: t})
-                    assert not ftry.has(symbol)
-                    soln = _solve(ftry, t, **flags)
-                    sols = []
-                    for sol in soln:
-                        for i in inv:
-                            sols.append(i.subs({t: sol}))
-                    result = list(ordered(sols))
+                # this will be resolved by factor in _tsolve but we might
+                # as well try a simple expansion here to get things in
+                # order so something like the following will work now without
+                # having to factor:
+                #
+                # >>> eq = (exp(I*(-x-2))+exp(I*(x+2)))
+                # >>> eq.subs({exp(x): y})  # fails
+                # exp(I*(-x - 2)) + exp(I*(x + 2))
+                # >>> eq.expand().subs({exp(x): y})  # works
+                # y**I*exp(2*I) + y**(-I)*exp(-2*I)
+
+                def _expand(p):
+                    b, e = p.as_base_exp()
+                    e = expand_mul(e)
+                    return expand_power_exp(b**e)
+                ftry = f_num.replace(lambda w: w.is_Pow, _expand).subs({u: t})
+                assert not ftry.has(symbol)
+                soln = _solve(ftry, t, **flags)
+                sols = []
+                for sol in soln:
+                    for i in inv:
+                        sols.append(i.subs({t: sol}))
+                result = list(ordered(sols))
 
         else:
             # There is only one generator that we are interested in, but
@@ -860,7 +859,7 @@ def _solve_system(exprs, symbols, **flags):
                     hit = True
                     got_s.add(s)
                 if not hit:  # pragma: no cover
-                    raise NotImplementedError('could not solve %s' % eq2)
+                    raise NotImplementedError(f'could not solve {eq2}')
             else:
                 result = newresult
                 assert not any(b in bad_results for b in result)
@@ -912,7 +911,7 @@ def solve_linear(f, x):
 
     """
     if not x.is_Symbol:
-        raise ValueError("%s is not a Symbol" % x)
+        raise ValueError(f'{x} is not a Symbol')
     f = f.replace(lambda e: e.is_Derivative, lambda e: e.doit())
     n, d = res = f.as_numer_denom()
     poly = n.as_poly(x, extension=False)
@@ -999,7 +998,7 @@ def minsolve_linear_system(system, *symbols, **flags):
         bestsol = minsolve_linear_system(system, *symbols, quick=True)
         n0 = len([x for x in bestsol.values() if x != 0])
         for n in range(n0 - 1, 1, -1):
-            debug('minsolve: %s' % n)
+            debug(f'minsolve: {n}')
             thissol = None
             for nonzeros in combinations(list(range(N)), n):
                 subm = Matrix([system[:, i].T for i in nonzeros] + [system[:, -1].T]).T

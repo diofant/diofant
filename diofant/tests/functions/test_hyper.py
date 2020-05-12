@@ -85,7 +85,7 @@ def replace_dummy(expr, sym):
 
 
 def test_hyper_rewrite_sum():
-    _k = Dummy("k")
+    _k = Dummy('k')
     assert replace_dummy(hyper((1, 2), (1, 3), x).rewrite(Sum), _k) == \
         Sum(x**_k / factorial(_k) * RisingFactorial(2, _k) /
             RisingFactorial(3, _k), (_k, 0, oo))

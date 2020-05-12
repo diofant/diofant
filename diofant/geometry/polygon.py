@@ -27,16 +27,6 @@ class Polygon(GeometrySet):
 
     vertices : sequence of Points
 
-    Attributes
-    ==========
-
-    area
-    angles
-    perimeter
-    vertices
-    centroid
-    sides
-
     Raises
     ======
 
@@ -189,7 +179,7 @@ class Polygon(GeometrySet):
                         # won't matter too much.
                         if all(i.is_number for i in hit.args):
                             raise GeometryError(
-                                "Polygon has intersecting sides.")
+                                'Polygon has intersecting sides.')
 
         return rv
 
@@ -580,7 +570,7 @@ class Polygon(GeometrySet):
         """
         t = _symbol(parameter)
         if t.name in (f.name for f in self.free_symbols):
-            raise ValueError('Symbol %s already appears in object and cannot be used as a parameter.' % t.name)
+            raise ValueError(f'Symbol {t.name} already appears in object and cannot be used as a parameter.')
         sides = []
         perimeter = self.perimeter
         perim_fraction_start = 0
@@ -728,7 +718,7 @@ class Polygon(GeometrySet):
         """
         e1 = self
 
-        '''Tests for a possible intersection between the polygons and outputs a warning'''
+        # Tests for a possible intersection between the polygons and outputs a warning.
         e1_center = e1.centroid
         e2_center = e2.centroid
         e1_max_radius = e2_max_radius = Integer(0)
@@ -742,11 +732,9 @@ class Polygon(GeometrySet):
                 e2_max_radius = r
         center_dist = Point.distance(e1_center, e2_center)
         if center_dist <= e1_max_radius + e2_max_radius:
-            warnings.warn("Polygons may intersect producing erroneous output")
+            warnings.warn('Polygons may intersect producing erroneous output')
 
-        '''
-        Find the upper rightmost vertex of e1 and the lowest leftmost vertex of e2
-        '''
+        # Find the upper rightmost vertex of e1 and the lowest leftmost vertex of e2
         e1_ymax = Point(0, -oo)
         e2_ymin = Point(0, oo)
 
@@ -758,10 +746,8 @@ class Polygon(GeometrySet):
                 e2_ymin = vertex
         min_dist = Point.distance(e1_ymax, e2_ymin)
 
-        '''
-        Produce a dictionary with vertices of e1 as the keys and, for each vertex, the points
-        to which the vertex is connected as its value. The same is then done for e2.
-        '''
+        # Produce a dictionary with vertices of e1 as the keys and, for each vertex, the points
+        # to which the vertex is connected as its value. The same is then done for e2.
         e1_connections = {}
         e2_connections = {}
 
@@ -791,11 +777,9 @@ class Polygon(GeometrySet):
         e2_current = e2_ymin
         support_line = Line(Point(0, 0), Point(1, 0))
 
-        '''
-        Determine which point in e1 and e2 will be selected after e2_ymin and e1_ymax,
-        this information combined with the above produced dictionaries determines the
-        path that will be taken around the polygons
-        '''
+        # Determine which point in e1 and e2 will be selected after e2_ymin and e1_ymax,
+        # this information combined with the above produced dictionaries determines the
+        # path that will be taken around the polygons
         point1 = e1_connections[e1_ymax][0]
         point2 = e1_connections[e1_ymax][1]
         angle1 = support_line.angle_between(Line(e1_ymax, point1))
@@ -822,10 +806,8 @@ class Polygon(GeometrySet):
         else:
             e2_next = point1
 
-        '''
-        Loop which determins the distance between anti-podal pairs and updates the
-        minimum distance accordingly. It repeats until it reaches the starting position.
-        '''
+        # Loop which determins the distance between anti-podal pairs and updates the
+        # minimum distance accordingly. It repeats until it reaches the starting position.
         while True:
             e1_angle = support_line.angle_between(Line(e1_current, e1_next))
             e2_angle = pi - support_line.angle_between(Line(
@@ -974,20 +956,6 @@ class RegularPolygon(Polygon):
     n : int
         The number of sides
 
-    Attributes
-    ==========
-
-    vertices
-    center
-    radius
-    rotation
-    apothem
-    interior_angle
-    exterior_angle
-    circumcircle
-    incircle
-    angles
-
     Raises
     ======
 
@@ -1024,11 +992,11 @@ class RegularPolygon(Polygon):
         r, n, rot = map(sympify, (r, n, rot))
         c = Point(c)
         if not isinstance(r, Expr):
-            raise GeometryError("r must be an Expr object, not %s" % r)
+            raise GeometryError(f'r must be an Expr object, not {r}')
         if n.is_Number:
             as_int(n)  # let an error raise if necessary
             if n < 3:
-                raise GeometryError("n must be a >= 3, not %s" % n)
+                raise GeometryError(f'n must be a >= 3, not {n}')
 
         obj = GeometryEntity.__new__(cls, c, r, n, **kwargs)
         obj._n = n
@@ -1552,20 +1520,6 @@ class Triangle(Polygon):
     points : sequence of Points
     keyword: asa, sas, or sss to specify sides/angles of the triangle
 
-    Attributes
-    ==========
-
-    vertices
-    altitudes
-    orthocenter
-    circumcenter
-    circumradius
-    circumcircle
-    inradius
-    incircle
-    medians
-    medial
-
     Raises
     ======
 
@@ -1605,7 +1559,7 @@ class Triangle(Polygon):
                 return _asa(*[simplify(a) for a in kwargs['asa']])
             if 'sas' in kwargs:
                 return _sas(*[simplify(a) for a in kwargs['sas']])
-            msg = "Triangle instantiates with three points or a valid keyword."
+            msg = 'Triangle instantiates with three points or a valid keyword.'
             raise GeometryError(msg)
 
         vertices = [Point(a) for a in args]

@@ -21,7 +21,7 @@ def test_random_complex_number():
 
 
 def test_random__randrange():
-    pytest.raises(ValueError, lambda: _randrange("spam"))
+    pytest.raises(ValueError, lambda: _randrange('spam'))
     pytest.raises(ValueError, lambda: _randrange([0.1, 0.5])(0))
     pytest.raises(ValueError, lambda: _randrange([1, 2, 3])(1))
 
@@ -29,7 +29,7 @@ def test_random__randrange():
 
 
 def test_random__randint():
-    pytest.raises(ValueError, lambda: _randint("spam"))
+    pytest.raises(ValueError, lambda: _randint('spam'))
     pytest.raises(ValueError, lambda: _randint([1, 3, 2, 4])(2, 1))
     pytest.raises(ValueError, lambda: _randint([3])(1, 2))
 
