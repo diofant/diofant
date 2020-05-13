@@ -1,27 +1,25 @@
 """Square-free decomposition algorithms and related tools."""
 
 from .polyerrors import DomainError
+from .polyutils import dmp_compat_wrapper
 
 
-def dmp_sqf_p(f, u, K):
+@dmp_compat_wrapper
+def dmp_sqf_p(ring, f):
     """Return ``True`` if ``f`` is a square-free polynomial in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
     return ring.is_squarefree(f)
 
 
-def dmp_sqf_part(f, u, K):
+@dmp_compat_wrapper
+def dmp_sqf_part(ring, f):
     """Returns square-free part of a polynomial in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
     p = ring.sqf_part(f)
     return ring.to_dense(p)
 
 
-def dmp_sqf_list(f, u, K):
+@dmp_compat_wrapper
+def dmp_sqf_list(ring, f):
     """Return square-free decomposition of a polynomial in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
     coeff, factors = ring.sqf_list(f)
     return coeff, [(ring.to_dense(f), k) for f, k in factors]
 

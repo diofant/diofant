@@ -25,7 +25,7 @@ from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
-from .polyutils import _sort_factors
+from .polyutils import _sort_factors, dmp_compat_wrapper
 from .sqfreetools import dmp_sqf_list, dmp_sqf_p, dmp_sqf_part
 
 
@@ -982,10 +982,9 @@ def dmp_zz_factor(f, u, K):
     return cont, _sort_factors(factors)
 
 
-def dmp_ext_factor(f, u, K):
+@dmp_compat_wrapper
+def dmp_ext_factor(ring, f):
     """Factor multivariate polynomials over algebraic number fields."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
     lc, factors = ring._aa_factor_trager(f)
     return lc, [(ring.to_dense(f), k) for f, k in factors]
 

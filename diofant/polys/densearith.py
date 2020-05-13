@@ -3,6 +3,7 @@
 from .densebasic import (dmp_degree_in, dmp_one, dmp_one_p, dmp_slice_in,
                          dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
 from .polyconfig import query
+from .polyutils import dmp_compat_wrapper
 
 
 def dup_add_term(f, c, i, K):
@@ -684,10 +685,9 @@ def dmp_pow(f, n, u, K):
     return g
 
 
-def dmp_div(f, g, u, K):
+@dmp_compat_wrapper
+def dmp_div(ring, f, g):
     """Polynomial division with remainder in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f, g = map(ring.from_list, (f, g))
     return tuple(map(ring.to_dense, divmod(f, g)))
 
 

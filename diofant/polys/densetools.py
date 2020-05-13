@@ -5,6 +5,7 @@ from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_mul,
 from .densebasic import (dmp_degree_in, dmp_from_dict, dmp_ground, dmp_LC,
                          dmp_to_dict, dmp_zero, dmp_zero_p)
 from .polyerrors import DomainError
+from .polyutils import dmp_compat_wrapper
 
 
 def dmp_diff_in(f, m, j, u, K):
@@ -53,25 +54,22 @@ def dmp_ground_trunc(f, p, u, K):
     return ring.to_dense(f)
 
 
-def dmp_ground_monic(f, u, K):
+@dmp_compat_wrapper
+def dmp_ground_monic(ring, f):
     """Divide all coefficients by ``LC(f)`` in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
     f = f.monic()
     return ring.to_dense(f)
 
 
-def dmp_ground_content(f, u, K):
+@dmp_compat_wrapper
+def dmp_ground_content(ring, f):
     """Compute the GCD of coefficients of ``f`` in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
     return f.content()
 
 
-def dmp_ground_primitive(f, u, K):
+@dmp_compat_wrapper
+def dmp_ground_primitive(ring, f):
     """Compute content and the primitive form of ``f`` in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
     cont, p = f.primitive()
     return cont, ring.to_dense(p)
 
