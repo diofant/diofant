@@ -14,27 +14,26 @@ from ..domains.domainelement import DomainElement
 from ..domains.ring import Ring
 from ..ntheory import multinomial_coefficients
 from ..ntheory.modular import symmetric_residue
-from ..utilities.magic import pollute
 from .compatibility import IPolys
 from .constructor import construct_domain
 from .densebasic import dmp_from_dict, dmp_to_dict
 from .euclidtools import _GCD
-from .heuristicgcd import heugcd
-from .modulargcd import func_field_modgcd, modgcd
+from .factortools import _Factor
 from .monomials import Monomial
 from .orderings import lex
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, ExactQuotientFailed,
-                         GeneratorsError, GeneratorsNeeded, HeuristicGCDFailed,
+                         GeneratorsError, GeneratorsNeeded,
                          MultivariatePolynomialError, PolynomialDivisionFailed,
                          PolynomialError)
 from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
 from .polyoptions import build_options
 from .polyutils import _dict_reorder, _parallel_dict_from_expr, expr_from_dict
+from .sqfreetools import _SQF
 
 
-__all__ = 'PolynomialRing', 'ring', 'sring', 'vring'
+__all__ = 'PolynomialRing', 'ring', 'sring'
 
 
 def ring(symbols, domain, order=lex):
@@ -59,30 +58,6 @@ def ring(symbols, domain, order=lex):
     """
     _ring = PolynomialRing(domain, symbols, order)
     return (_ring,) + _ring.gens
-
-
-def vring(symbols, domain, order=lex):
-    """Construct a polynomial ring and inject ``x_1, ..., x_n`` into the global namespace.
-
-    Parameters
-    ==========
-
-    symbols : str, Symbol/Expr or sequence of str, Symbol/Expr (non-empty)
-    domain : :class:`~diofant.domains.domain.Domain` or coercible
-    order : :class:`~diofant.polys.polyoptions.Order` or coercible, optional, defaults to ``lex``
-
-    Examples
-    ========
-
-    >>> vring('x y z', ZZ)
-    ZZ[x,y,z]
-    >>> x + y + z
-    x + y + z
-
-    """
-    _ring = PolynomialRing(domain, symbols, order)
-    pollute([sym.name for sym in _ring.symbols], _ring.gens)
-    return _ring
 
 
 def sring(exprs, *symbols, **options):
@@ -152,7 +127,7 @@ def _parse_symbols(symbols):
 _ring_cache = {}
 
 
-class PolynomialRing(Ring, CompositeDomain, IPolys, _GCD):
+class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF, _Factor):
     """A class for representing multivariate polynomial rings."""
 
     is_PolynomialRing = True
@@ -397,7 +372,9 @@ class PolynomialRing(Ring, CompositeDomain, IPolys, _GCD):
             return self.clone(symbols=symbols, domain=self.drop(*gens))
 
     def to_expr(self, element):
-        return element.as_expr()
+        to_expr = self.domain.to_expr
+        return expr_from_dict({k: to_expr(v) for k, v in element.items()},
+                              *self.symbols)
 
     def _from_PythonIntegerRing(self, a, K0):
         return self(self.domain.convert(a, K0))
@@ -457,10 +434,6 @@ class PolynomialRing(Ring, CompositeDomain, IPolys, _GCD):
     def half_gcdex(self, a, b):
         """Half extended GCD of ``a`` and ``b``."""
         return a.half_gcdex(b)
-
-    def gcd(self, a, b):
-        """Returns GCD of ``a`` and ``b``."""
-        return a.gcd(b)
 
     def lcm(self, a, b):
         """Returns LCM of ``a`` and ``b``."""
@@ -539,15 +512,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         else:
             new_ring = self.ring.clone(domain=new_domain)
             return self.set_ring(new_ring)
-
-    def as_expr(self, *symbols):
-        if not symbols:
-            symbols = self.ring.symbols
-        elif len(symbols) != self.ring.ngens:
-            raise ValueError(f'not enough symbols, expected {self.ring.ngens} got {len(symbols)}')
-
-        to_expr = self.ring.domain.to_expr
-        return expr_from_dict({monom: to_expr(self[monom]) for monom in self}, *symbols)
 
     def clear_denoms(self, convert=False):
         domain = self.ring.domain
@@ -849,20 +813,18 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         ring = self.ring
-        if not isinstance(other, ring.dtype):
-            try:
-                other = ring.convert(other)
-            except CoercionFailed:
-                return NotImplemented
-        p = self.copy()
-        if not other:
-            return p
-        get = p.get
-        zero = ring.domain.zero
-        for k, v in other.items():
-            p[k] = get(k, zero) + v
-        p._strip_zero()
-        return p
+        domain = ring.domain
+        try:
+            other = ring.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        result = self.copy()
+        get = result.get
+        zero = domain.zero
+        for k in other:
+            result[k] = get(k, zero) + other[k]
+        result._strip_zero()
+        return result
 
     def __radd__(self, other):
         return self.__add__(other)
@@ -881,20 +843,18 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         ring = self.ring
-        if not isinstance(other, ring.dtype):
-            try:
-                other = ring.convert(other)
-            except CoercionFailed:
-                return NotImplemented
-        p = self.copy()
-        if not other:
-            return p
-        get = p.get
-        zero = ring.domain.zero
-        for k, v in other.items():
-            p[k] = get(k, zero) - v
-        p._strip_zero()
-        return p
+        domain = ring.domain
+        try:
+            other = ring.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        result = self.copy()
+        get = result.get
+        zero = domain.zero
+        for k in other:
+            result[k] = get(k, zero) - other[k]
+        result._strip_zero()
+        return result
 
     def __rsub__(self, other):
         """Substract self from other, with other convertible to the coefficient domain.
@@ -924,22 +884,20 @@ class PolyElement(DomainElement, CantSympify, dict):
 
         """
         ring = self.ring
-        if not isinstance(other, ring.dtype):
-            try:
-                other = ring.convert(other)
-            except CoercionFailed:
-                return NotImplemented
-        p = ring.zero
-        if not self or not other:
-            return p
-        get = p.get
-        zero = ring.domain.zero
-        for exp1, v1 in self.items():
-            for exp2, v2 in other.items():
+        domain = ring.domain
+        try:
+            other = ring.convert(other)
+        except CoercionFailed:
+            return NotImplemented
+        result = ring.zero
+        get = result.get
+        zero = domain.zero
+        for exp1 in self:
+            for exp2 in other:
                 exp = exp1*exp2
-                p[exp] = get(exp, zero) + v1*v2
-        p._strip_zero()
-        return p
+                result[exp] = get(exp, zero) + self[exp1]*other[exp2]
+        result._strip_zero()
+        return result
 
     def __rmul__(self, other):
         """Multiply other to self with other in the coefficient domain of self.
@@ -1624,6 +1582,17 @@ class PolyElement(DomainElement, CantSympify, dict):
         return self._norm(sum)
 
     def deflate(self, *G):
+        """Map ``x_i**m_i`` to ``y_i`` in a set of polynomials in ``K[X]``.
+
+        Examples
+        ========
+
+        >>> _, x, y = ring('x y', ZZ)
+        >>> (x**2*y**3 + 2*x**2 + 3*y**3 + 4).deflate(x**2*y**2 + 2*x**2 +
+        ...                                           3*y**2 + 4)
+        ((2, 1), [x*y**3 + 2*x + 3*y**3 + 4, x*y**2 + 2*x + 3*y**2 + 4])
+
+        """
         ring = self.ring
         polys = [self] + list(G)
 
@@ -1657,6 +1626,16 @@ class PolyElement(DomainElement, CantSympify, dict):
         return J, H
 
     def inflate(self, J):
+        """Map ``y_i`` to ``x_i**J_i`` in a polynomial in ``K[X]``.
+
+        Examples
+        ========
+
+        >>> _, x, y = ring('x y', ZZ)
+        >>> (x*y + 2*x + 3*y + 4).inflate((2, 3))
+        x**2*y**3 + 2*x**2 + 3*y**3 + 4
+
+        """
         poly = self.ring.zero
 
         for I, coeff in self.items():
@@ -1682,92 +1661,10 @@ class PolyElement(DomainElement, CantSympify, dict):
             return h.monic()
 
     def gcd(self, other):
-        return self.cofactors(other)[0]
+        return self.ring.gcd(self, other)
 
     def cofactors(self, other):
-        if not self and not other:
-            zero = self.ring.zero
-            return zero, zero, zero
-        elif not self:
-            h, cff, cfg = self._gcd_zero(other)
-            return h, cff, cfg
-        elif not other:
-            h, cfg, cff = other._gcd_zero(self)
-            return h, cff, cfg
-
-        J, (f, g) = self.deflate(other)
-        h, cff, cfg = f._gcd(g)
-
-        return h.inflate(J), cff.inflate(J), cfg.inflate(J)
-
-    def _gcd_zero(self, other):
-        one, zero = self.ring.one, self.ring.zero
-        if self.ring.domain.is_Field:
-            return other.monic(), zero, self.ring.ground_new(other.LC)
-        else:
-            if not self.ring.is_normal(other):
-                return -other, zero, -one
-            else:
-                return other, zero, one
-
-    def _gcd(self, other):
-        ring = self.ring
-
-        if ring.domain.is_RationalField:
-            return self._gcd_QQ(other)
-        elif ring.domain.is_IntegerRing:
-            return self._gcd_ZZ(other)
-        elif ring.domain.is_AlgebraicField:
-            return self._gcd_AA(other)
-        elif not ring.domain.is_Exact:
-            try:
-                exact = ring.domain.get_exact()
-            except DomainError:
-                return ring.one, self, other
-
-            f, g = map(lambda x: x.set_domain(exact), (self, other))
-
-            return tuple(map(lambda x: x.set_domain(ring.domain), f.cofactors(g)))
-        elif ring.domain.is_Field:
-            return self.ring._ff_prs_gcd(self, other)
-        else:
-            return self.ring._rr_prs_gcd(self, other)
-
-    def _gcd_ZZ(self, other):
-        if query('USE_HEU_GCD'):
-            try:
-                return heugcd(self, other)
-            except HeuristicGCDFailed:  # pragma: no cover
-                pass
-
-        _gcd_zz_methods = {'modgcd': modgcd,
-                           'prs': self.ring._rr_prs_gcd}
-
-        method = _gcd_zz_methods[query('FALLBACK_GCD_ZZ_METHOD')]
-        return method(self, other)
-
-    def _gcd_QQ(self, g):
-        f = self
-        ring = f.ring
-
-        cf, f = f.clear_denoms(convert=True)
-        cg, g = g.clear_denoms(convert=True)
-
-        h, cff, cfg = map(lambda _: _.set_ring(ring), f._gcd_ZZ(g))
-
-        c, h = h.LC, h.monic()
-
-        cff = cff.mul_ground(ring.domain.quo(c, cf))
-        cfg = cfg.mul_ground(ring.domain.quo(c, cg))
-
-        return h, cff, cfg
-
-    def _gcd_AA(self, g):
-        _gcd_aa_methods = {'modgcd': func_field_modgcd,
-                           'prs': self.ring._ff_prs_gcd}
-
-        method = _gcd_aa_methods[query('GCD_AA_METHOD')]
-        return method(self, g)
+        return self.ring.cofactors(self, other)
 
     def terms_gcd(self):
         if self.is_zero:
@@ -1883,48 +1780,16 @@ class PolyElement(DomainElement, CantSympify, dict):
             raise ValueError(f'expected at least 1 and at most {self.ring.ngens} values, got {len(values)}')
 
     def eval(self, x=0, a=0):
-        f = self
-
         if isinstance(x, list) and not a:
             (X, a), x = x[0], x[1:]
-            f = f.eval(X, a)
+            f = self.eval(X, a)
 
-            if not x:
-                return f
+            if x:
+                return f.eval([(Y.drop(X), a) for (Y, a) in x])
             else:
-                x = [(Y.drop(X), a) for (Y, a) in x]
-                return f.eval(x)
+                return f
 
-        ring = f.ring
-        i = ring.index(x)
-        a = ring.domain.convert(a)
-
-        if ring.is_univariate:
-            result = ring.domain.zero
-
-            for (n,), coeff in f.items():
-                result += coeff*a**n
-
-            return result
-        else:
-            poly = ring.drop(x).zero
-
-            for monom, coeff in f.items():
-                n, monom = monom[i], monom[:i] + monom[i+1:]
-                coeff = coeff*a**n
-
-                if monom in poly:
-                    coeff += poly[monom]
-
-                    if coeff:
-                        poly[monom] = coeff
-                    else:
-                        del poly[monom]
-                else:
-                    if coeff:
-                        poly[monom] = coeff
-
-            return poly
+        return self.compose(x, a).drop(x)
 
     def compose(self, x, a=None):
         """Computes the functional composition."""
@@ -2169,6 +2034,19 @@ class PolyElement(DomainElement, CantSympify, dict):
         t //= other
         return s, t, h
 
+    def sqf_list(self):
+        return self.ring.sqf_list(self)
+
+    def sqf_part(self):
+        return self.ring.sqf_part(self)
+
+    @property
+    def is_squarefree(self):
+        return self.ring.is_squarefree(self)
+
+    def sqf_norm(self):
+        return self.ring.sqf_norm(self)
+
     # The following methods aren't ported (yet) to polynomial
     # representation independent algorithm implementations.
 
@@ -2190,19 +2068,6 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self.ring.dup_cyclotomic_p(self)
         else:
             raise AttributeError('cyclotomic polynomial')
-
-    @property
-    def is_squarefree(self):
-        return self.ring.dmp_sqf_p(self)
-
-    def sqf_norm(self):
-        return self.ring.dmp_sqf_norm(self)
-
-    def sqf_part(self):
-        return self.ring.dmp_sqf_part(self)
-
-    def sqf_list(self):
-        return self.ring.dmp_sqf_list(self)
 
     def factor_list(self):
         return self.ring.dmp_factor_list(self)

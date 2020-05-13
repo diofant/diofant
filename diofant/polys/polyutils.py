@@ -403,14 +403,12 @@ def dmp_compat_wrapper(f):
         return inspect.Parameter(x, kind)
 
     params = [param(a) for a in inspect.signature(f).parameters.keys()]
-    params += [param('u'), param('K')]
-    del params[0]
 
     @functools.wraps(f)
     def wrapper(*args):
         *polys, u, K = args
         ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-        polys = tuple(map(ring.from_dense, polys))
+        polys = tuple(map(ring.from_list, polys))
         return f(ring, *polys)
 
     wrapper.__signature__ = inspect.Signature(params)

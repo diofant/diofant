@@ -5,16 +5,14 @@ import random
 import pytest
 
 from diofant import FF, ZZ, oo, ring
-from diofant.polys.densebasic import (dmp_apply_pairs, dmp_convert,
-                                      dmp_deflate, dmp_degree_in, dmp_eject,
+from diofant.polys.densebasic import (dmp_convert, dmp_degree_in, dmp_eject,
                                       dmp_exclude, dmp_from_dict, dmp_ground,
-                                      dmp_ground_p, dmp_include, dmp_inflate,
-                                      dmp_inject, dmp_nest, dmp_normal,
-                                      dmp_one, dmp_one_p, dmp_permute,
-                                      dmp_raise, dmp_strip, dmp_swap,
+                                      dmp_ground_p, dmp_include, dmp_inject,
+                                      dmp_nest, dmp_normal, dmp_one, dmp_one_p,
+                                      dmp_permute, dmp_raise, dmp_strip,
                                       dmp_terms_gcd, dmp_to_dict, dmp_zero,
-                                      dmp_zero_p, dmp_zeros, dup_inflate,
-                                      dup_random, dup_reverse)
+                                      dmp_zero_p, dmp_zeros, dup_random,
+                                      dup_reverse)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -118,7 +116,7 @@ def test_dmp_degree_in():
     assert R.dmp_degree_in(1, 1) == 0
     assert R.dmp_degree_in(1, 2) == 0
 
-    f = R.from_dense(f_4)
+    f = R.from_list(f_4)
 
     assert R.dmp_degree_in(f, 0) == 9
     assert R.dmp_degree_in(f, 1) == 12
@@ -126,7 +124,7 @@ def test_dmp_degree_in():
 
     R, x, y, z, t = ring('x y z t', ZZ)
 
-    f = R.from_dense(f_6)
+    f = R.from_list(f_6)
 
     assert R.dmp_degree_in(f, 0) == 4
     assert R.dmp_degree_in(f, 1) == 4
@@ -137,19 +135,19 @@ def test_dmp_degree_in():
 def test_dmp_degree_list():
     R, x, y, z = ring('x y z', ZZ)
 
-    assert R.dmp_degree_list(R.from_dense(f_0)) == (2, 2, 2)
-    assert R.dmp_degree_list(R.from_dense(f_1)) == (3, 3, 3)
-    assert R.dmp_degree_list(R.from_dense(f_2)) == (5, 3, 3)
-    assert R.dmp_degree_list(R.from_dense(f_3)) == (5, 4, 7)
-    assert R.dmp_degree_list(R.from_dense(f_4)) == (9, 12, 8)
-    assert R.dmp_degree_list(R.from_dense(f_5)) == (3, 3, 3)
+    assert R.dmp_degree_list(R.from_list(f_0)) == (2, 2, 2)
+    assert R.dmp_degree_list(R.from_list(f_1)) == (3, 3, 3)
+    assert R.dmp_degree_list(R.from_list(f_2)) == (5, 3, 3)
+    assert R.dmp_degree_list(R.from_list(f_3)) == (5, 4, 7)
+    assert R.dmp_degree_list(R.from_list(f_4)) == (9, 12, 8)
+    assert R.dmp_degree_list(R.from_list(f_5)) == (3, 3, 3)
 
     R, x, y, z, t = ring('x y z t', ZZ)
 
     assert R.dmp_degree_list(0) == (-oo, -oo, -oo, -oo)
     assert R.dmp_degree_list(1) == (0, 0, 0, 0)
 
-    assert R.dmp_degree_list(R.from_dense(f_6)) == (4, 4, 6, 3)
+    assert R.dmp_degree_list(R.from_list(f_6)) == (4, 4, 6, 3)
 
 
 def test_dmp_strip():
@@ -316,24 +314,6 @@ def test_dmp_from_to_dict():
     assert dmp_to_dict(f, 1) == g
 
 
-def test_dmp_swap():
-    f = dmp_normal([[1, 0, 0], [], [1, 0], [], [1]], 1, ZZ)
-    g = dmp_normal([[1, 0, 0, 0, 0], [1, 0, 0], [1]], 1, ZZ)
-
-    assert dmp_swap(f, 1, 1, 1, ZZ) == f
-
-    assert dmp_swap(f, 0, 1, 1, ZZ) == g
-    assert dmp_swap(g, 0, 1, 1, ZZ) == f
-
-    pytest.raises(IndexError, lambda: dmp_swap(f, -1, -7, 1, ZZ))
-
-    f = dmp_normal([[[2], [1, 0]], []], 2, ZZ)
-
-    assert dmp_swap(f, 0, 1, 2, ZZ) == dmp_normal([[[2], []], [[1, 0], []]], 2, ZZ)
-    assert dmp_swap(f, 1, 2, 2, ZZ) == dmp_normal([[[1], [2, 0]], [[]]], 2, ZZ)
-    assert dmp_swap(f, 0, 2, 2, ZZ) == dmp_normal([[[1, 0]], [[2, 0], []]], 2, ZZ)
-
-
 def test_dmp_permute():
     f = dmp_normal([[1, 0, 0], [], [1, 0], [], [1]], 1, ZZ)
     g = dmp_normal([[1, 0, 0, 0, 0], [1, 0, 0], [1]], 1, ZZ)
@@ -364,81 +344,6 @@ def test_dmp_raise():
 
     assert dmp_raise([[1, 2, 3], [], [2, 3]], 2, 1, ZZ) == \
         [[[[1]], [[2]], [[3]]], [[[]]], [[[2]], [[3]]]]
-
-
-def test_dmp_deflate():
-    assert dmp_deflate(([2],), 0, ZZ) == ((1,), ([2],))
-    assert dmp_deflate(([], []), 0, ZZ) == ((1,), ([], []))
-
-    assert dmp_deflate(([1, 2, 3],), 0, ZZ) == ((1,), ([1, 2, 3],))
-    assert dmp_deflate(([1, 0, 2, 0, 3],), 0, ZZ) == ((2,), ([1, 2, 3],))
-
-    assert dmp_deflate(([1, 0, 2, 0, 3], [2, 0, 0]), 0, ZZ) == \
-        ((2,), ([1, 2, 3], [2, 0]))
-    assert dmp_deflate(([1, 0, 2, 0, 3], [4, 0, 0]), 0, ZZ) == \
-        ((2,), ([1, 2, 3], [4, 0]))
-    assert dmp_deflate(([1, 0, 2, 0, 3], [2, 1, 0]), 0, ZZ) == \
-        ((1,), ([1, 0, 2, 0, 3], [2, 1, 0]))
-
-    assert dmp_deflate(([[]],), 1, ZZ) == \
-        ((1, 1), ([[]],))
-    assert dmp_deflate(([[]], [[]]), 1, ZZ) == \
-        ((1, 1), ([[]], [[]]))
-
-    assert dmp_deflate(([[1]], [[]]), 1, ZZ) == \
-        ((1, 1), ([[1]], [[]]))
-    assert dmp_deflate(([[1]], [[2]]), 1, ZZ) == \
-        ((1, 1), ([[1]], [[2]]))
-    assert dmp_deflate(([[1]], [[2, 0]]), 1, ZZ) == \
-        ((1, 1), ([[1]], [[2, 0]]))
-
-    assert dmp_deflate(([[2, 0]], [[2, 0]]), 1, ZZ) == \
-        ((1, 1), ([[2, 0]], [[2, 0]]))
-
-    assert dmp_deflate(
-        ([[2]], [[2, 0, 0]]), 1, ZZ) == ((1, 2), ([[2]], [[2, 0]]))
-    assert dmp_deflate(
-        ([[2, 0, 0]], [[2, 0, 0]]), 1, ZZ) == ((1, 2), ([[2, 0]], [[2, 0]]))
-
-    assert dmp_deflate(([2, 0, 0], [1, 0, 4, 0, 1]), 0, ZZ) == \
-        ((2,), ([2, 0], [1, 4, 1]))
-
-    f = [[1, 0, 0], [], [1, 0], [], [1]]
-    g = [[1, 0, 1, 0], [], [1]]
-
-    assert dmp_deflate((f,), 1, ZZ) == \
-        ((2, 1), ([[1, 0, 0], [1, 0], [1]],))
-
-    assert dmp_deflate((f, g), 1, ZZ) == \
-        ((2, 1), ([[1, 0, 0], [1, 0], [1]],
-                  [[1, 0, 1, 0], [1]]))
-
-
-def test_dup_inflate():
-    assert dup_inflate([], 17, ZZ) == []
-
-    assert dup_inflate([1, 2, 3], 1, ZZ) == [1, 2, 3]
-    assert dup_inflate([1, 2, 3], 2, ZZ) == [1, 0, 2, 0, 3]
-    assert dup_inflate([1, 2, 3], 3, ZZ) == [1, 0, 0, 2, 0, 0, 3]
-    assert dup_inflate([1, 2, 3], 4, ZZ) == [1, 0, 0, 0, 2, 0, 0, 0, 3]
-
-    pytest.raises(IndexError, lambda: dup_inflate([1, 2, 3], 0, ZZ))
-
-
-def test_dmp_inflate():
-    assert dmp_inflate([1], (3,), 0, ZZ) == [1]
-
-    assert dmp_inflate([[]], (3, 7), 1, ZZ) == [[]]
-    assert dmp_inflate([[2]], (1, 2), 1, ZZ) == [[2]]
-
-    assert dmp_inflate([[2, 0]], (1, 1), 1, ZZ) == [[2, 0]]
-    assert dmp_inflate([[2, 0]], (1, 2), 1, ZZ) == [[2, 0, 0]]
-    assert dmp_inflate([[2, 0]], (1, 3), 1, ZZ) == [[2, 0, 0, 0]]
-
-    assert dmp_inflate([[1, 0, 0], [1], [1, 0]], (2, 1), 1, ZZ) == \
-        [[1, 0, 0], [], [1], [], [1, 0]]
-
-    pytest.raises(IndexError, lambda: dmp_inflate([[]], (-3, 7), 1, ZZ))
 
 
 def test_dmp_exclude():
@@ -520,34 +425,6 @@ def test_dmp_terms_gcd():
     assert dmp_terms_gcd([[1, 0], [], [1]], 1, ZZ) == ((0, 0), [[1, 0], [], [1]])
     assert dmp_terms_gcd([[1, 0], [1, 0, 0], [], []], 1, ZZ) == ((2, 1), [[1], [1, 0]])
     assert dmp_terms_gcd([[1], [-1, 0], [-2, 0, 0]], 1, ZZ) == ((0, 0), [[1], [-1, 0], [-2, 0, 0]])
-
-
-def test_dmp_apply_pairs():
-    def h(a, b):
-        return a*b
-
-    assert dmp_apply_pairs([1, 2, 3], [4, 5, 6], h, [], 0, ZZ) == [4, 10, 18]
-
-    assert dmp_apply_pairs([2, 3], [4, 5, 6], h, [], 0, ZZ) == [10, 18]
-    assert dmp_apply_pairs([1, 2, 3], [5, 6], h, [], 0, ZZ) == [10, 18]
-
-    assert dmp_apply_pairs(
-        [[1, 2], [3]], [[4, 5], [6]], h, [], 1, ZZ) == [[4, 10], [18]]
-
-    assert dmp_apply_pairs(
-        [[1, 2], [3]], [[4], [5, 6]], h, [], 1, ZZ) == [[8], [18]]
-    assert dmp_apply_pairs(
-        [[1], [2, 3]], [[4, 5], [6]], h, [], 1, ZZ) == [[5], [18]]
-
-    def h2(x, y, z):
-        return 2*x + y - z
-
-    f = [[1], [2, 3, 4], [5]]
-    g = [[3], [2, 1]]
-    assert dmp_apply_pairs(f, g, h2, (1,), 1, ZZ) == [[1], [3, 5, 10], [1, 10]]
-    assert dmp_apply_pairs(g, f, h2, (1,), 1, ZZ) == [[1, 2, 9], [3, 6]]
-
-    assert dmp_apply_pairs([1, 2, 3], [3, 2, 1], h2, [1], 0, ZZ) == [4, 5, 6]
 
 
 def test_dup_random():

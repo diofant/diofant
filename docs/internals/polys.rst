@@ -83,7 +83,6 @@ there is code to manipulate polynomials in a *sparse* representation.
 Sparse polynomials are represented as dictionaries.
 
 .. autofunction:: ring
-.. autofunction:: vring
 .. autofunction:: sring
 
 .. autoclass:: PolyElement
@@ -357,8 +356,7 @@ Modular GCD
 Heuristic GCD
 =============
 
-.. automodule:: diofant.polys.heuristicgcd
-    :members:
+.. automethod:: diofant.polys.euclidtools._GCD._zz_heu_gcd
 
 Undocumented
 ============

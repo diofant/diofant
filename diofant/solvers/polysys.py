@@ -75,7 +75,7 @@ def solve_linear_system(system, *symbols, **flags):
 
     for k in list(res):
         s = domain.symbols[domain.index(k)]
-        res[s] = res[k].as_expr()
+        res[s] = domain.to_expr(res[k])
         del res[k]
         if flags.get('simplify', True):
             res[s] = simplify(res[s])

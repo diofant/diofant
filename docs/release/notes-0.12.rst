@@ -13,8 +13,12 @@ Major changes
 Compatibility breaks
 ====================
 
+* Removed ``vring()`` and ``vfield()`` functions, see :pull:`1016`.
+
 Minor changes
 =============
+
+* Module :mod:`~diofant.polys.sqfreetools` was ported to use sparse polynomial representation, see :pull:`1009`.
 
 Developer changes
 =================

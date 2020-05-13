@@ -2,15 +2,16 @@
 
 from ..core import cacheit
 from ..ntheory import nextprime
-from ..ntheory.modular import crt
-from .polyerrors import HomomorphismFailed
+from ..ntheory.modular import crt, symmetric_residue
+from .polyconfig import query
+from .polyerrors import DomainError, HeuristicGCDFailed, HomomorphismFailed
 from .polyutils import dmp_compat_wrapper
 
 
 def dup_gcdex(f, g, K):
     """Extended Euclidean algorithm in `F[x]`."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(1)])
-    f, g = map(ring.from_dense, (f, g))
+    ring = K.poly_ring('_0')
+    f, g = map(ring.from_list, (f, g))
     return tuple(map(ring.to_dense, f.gcdex(g)))
 
 
@@ -23,14 +24,9 @@ def dmp_resultant(ring, f, g):
 
 
 @dmp_compat_wrapper
-def dmp_inner_gcd(ring, f, g):
-    """Computes polynomial GCD and cofactors of `f` and `g` in `K[X]`."""
-    return tuple(map(ring.to_dense, f.cofactors(g)))
-
-
-def dmp_gcd(f, g, u, K):
+def dmp_gcd(ring, f, g):
     """Computes polynomial GCD of `f` and `g` in `K[X]`."""
-    return dmp_inner_gcd(f, g, u, K)[0]
+    return ring.to_dense(ring.gcd(f, g))
 
 
 @dmp_compat_wrapper
@@ -44,6 +40,214 @@ def dmp_primitive(ring, f):
 
 class _GCD:
     """Mixin class for computing gcd."""
+
+    def gcd(self, f, g):
+        """Returns GCD of ``f`` and ``g``."""
+        return self.cofactors(f, g)[0]
+
+    def cofactors(self, f, g):
+        """Returns GCD and cofactors of ``f`` and ``g``."""
+        if f.is_zero and g.is_zero:
+            zero = self.zero
+            return zero, zero, zero
+        elif f.is_zero:
+            h, cff, cfg = self._gcd_zero(g)
+            return h, cff, cfg
+        elif g.is_zero:
+            h, cfg, cff = self._gcd_zero(f)
+            return h, cff, cfg
+
+        J, (f, g) = f.deflate(g)
+        h, cff, cfg = self._gcd(f, g)
+
+        return h.inflate(J), cff.inflate(J), cfg.inflate(J)
+
+    def _gcd_zero(self, f):
+        one, zero = self.one, self.zero
+        if self.domain.is_Field:
+            return f.monic(), zero, self.ground_new(f.LC)
+        else:
+            if not self.is_normal(f):
+                return -f, zero, -one
+            else:
+                return f, zero, one
+
+    def _gcd(self, f, g):
+        domain = self.domain
+
+        if domain.is_RationalField:
+            return self._gcd_QQ(f, g)
+        elif domain.is_IntegerRing:
+            return self._gcd_ZZ(f, g)
+        elif domain.is_AlgebraicField:
+            return self._gcd_AA(f, g)
+        elif not domain.is_Exact:
+            try:
+                exact = domain.get_exact()
+            except DomainError:
+                return self.one, f, g
+
+            f, g = map(lambda x: x.set_domain(exact), (f, g))
+            ring = self.clone(domain=exact)
+
+            return tuple(map(lambda x: x.set_domain(domain), ring.cofactors(f, g)))
+        elif domain.is_Field:
+            return self._ff_prs_gcd(f, g)
+        else:
+            return self._rr_prs_gcd(f, g)
+
+    def _gcd_ZZ(self, f, g):
+        from .modulargcd import modgcd
+
+        if query('USE_HEU_GCD'):
+            try:
+                return self._zz_heu_gcd(f, g)
+            except HeuristicGCDFailed:
+                pass
+
+        _gcd_zz_methods = {'modgcd': modgcd,
+                           'prs': self._rr_prs_gcd}
+
+        method = _gcd_zz_methods[query('FALLBACK_GCD_ZZ_METHOD')]
+        return method(f, g)
+
+    def _gcd_QQ(self, f, g):
+        domain = self.domain
+
+        cf, f = f.clear_denoms(convert=True)
+        cg, g = g.clear_denoms(convert=True)
+
+        ring = self.clone(domain=domain.ring)
+
+        h, cff, cfg = map(lambda _: _.set_ring(self), ring._gcd_ZZ(f, g))
+
+        c, h = h.LC, h.monic()
+
+        cff = cff.mul_ground(domain.quo(c, cf))
+        cfg = cfg.mul_ground(domain.quo(c, cg))
+
+        return h, cff, cfg
+
+    def _gcd_AA(self, f, g):
+        from .modulargcd import func_field_modgcd
+
+        _gcd_aa_methods = {'modgcd': func_field_modgcd,
+                           'prs': self._ff_prs_gcd}
+
+        method = _gcd_aa_methods[query('GCD_AA_METHOD')]
+        return method(f, g)
+
+    def _zz_heu_gcd(self, f, g):
+        """
+        Heuristic polynomial GCD in ``Z[X]``.
+
+        Given univariate polynomials ``f`` and ``g`` in ``Z[X]``, returns
+        their GCD and cofactors, i.e. polynomials ``h``, ``cff`` and ``cfg``
+        such that::
+
+              h = gcd(f, g), cff = quo(f, h) and cfg = quo(g, h)
+
+        The algorithm is purely heuristic which means it may fail to compute
+        the GCD. This will be signaled by raising an exception. In this case
+        you will need to switch to another GCD method.
+
+        The algorithm computes the polynomial GCD by evaluating polynomials
+        ``f`` and ``g`` at certain points and computing (fast) integer GCD
+        of those evaluations. The polynomial GCD is recovered from the integer
+        image by interpolation. The evaluation proces reduces f and g variable
+        by variable into a large integer. The final step is to verify if the
+        interpolated polynomial is the correct GCD. This gives cofactors of
+        the input polynomials as a side effect.
+
+        References
+        ==========
+
+        * :cite:`Liao1995heuristic`
+
+        """
+        assert self == f.ring == g.ring and self.domain.is_IntegerRing
+
+        ring = self
+        x0 = ring.gens[0]
+        domain = ring.domain
+
+        gcd, f, g = f.extract_ground(g)
+
+        f_norm = f.max_norm()
+        g_norm = g.max_norm()
+
+        B = domain(2*min(f_norm, g_norm) + 29)
+
+        x = max(min(B, 99*domain.sqrt(B)),
+                2*min(f_norm // abs(f.LC),
+                      g_norm // abs(g.LC)) + 4)
+
+        cofactors = domain.cofactors if ring.is_univariate else ring.drop(0)._zz_heu_gcd
+
+        for i in range(query('HEU_GCD_MAX')):
+            ff = f.eval(x0, x)
+            gg = g.eval(x0, x)
+
+            if ff and gg:
+                h, cff, cfg = cofactors(ff, gg)
+                h = ring._gcd_interpolate(h, x)
+                h = h.primitive()[1]
+
+                cff_, r = divmod(f, h)
+
+                if not r:
+                    cfg_, r = divmod(g, h)
+
+                    if not r:
+                        h *= gcd
+                        return h, cff_, cfg_
+
+                cff = ring._gcd_interpolate(cff, x)
+
+                h, r = divmod(f, cff)
+
+                if not r:
+                    cfg_, r = divmod(g, h)
+
+                    if not r:
+                        h *= gcd
+                        return h, cff, cfg_
+
+                cfg = ring._gcd_interpolate(cfg, x)
+
+                h, r = divmod(g, cfg)
+
+                if not r:
+                    cff_, r = divmod(f, h)
+
+                    if not r:
+                        h *= gcd
+                        return h, cff_, cfg
+
+            x = 73794*x * domain.sqrt(domain.sqrt(x)) // 27011
+
+        raise HeuristicGCDFailed('no luck')
+
+    def _gcd_interpolate(self, h, x):
+        """Interpolate polynomial GCD from integer GCD."""
+        f, i = self.zero, 0
+        X = self.gens[0]
+
+        while h:
+            g = h % x
+
+            if self.is_univariate:
+                g = symmetric_residue(g, x)
+
+            h = (h - g) // x
+
+            f += X**i*g
+            i += 1
+
+        if not self.is_normal(f):
+            f = -f
+
+        return f
 
     def _rr_prs_gcd(self, f, g):
         """Computes polynomial GCD using subresultants over a ring."""
@@ -71,10 +275,22 @@ class _GCD:
         ring = self
 
         if ring.is_multivariate:
-            ring, f, g = map(lambda _: _.eject(*self.gens[1:]), (ring, f, g))
-            h, f, g = map(lambda _: _.inject(), ring._rr_prs_gcd(f, g))
-            c, h = h.LC, h.monic()
-            return h, f.quo_ground(c), g.quo_ground(c)
+            ring, F, G = map(lambda _: _.eject(*self.gens[1:]), (ring, f, g))
+
+            fc, F = F.primitive()
+            gc, G = G.primitive()
+
+            F, G = map(lambda _: _.inject(), (F, G))
+
+            h = F.subresultants(G)[-1]
+            c, _, _ = ring.domain._ff_prs_gcd(fc, gc)
+            h = h.eject(*self.gens[1:])
+            _, h = h.primitive()
+            h = h.inject()
+            h *= c
+            h = h.monic()
+
+            return h, f // h, g // h
 
         h = f.subresultants(g)[-1]
         h = h.monic()
