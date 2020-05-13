@@ -13,8 +13,8 @@ __all__ = ()
 def test_gf_powering():
     R, x = ring('x', FF(11))
 
-    f = R.to_dense(x**4 + x + 8)
-    g = R.to_dense(2*x**2 + 7)
+    f = (x**4 + x + 8).to_dense()
+    g = (2*x**2 + 7).to_dense()
 
     assert dup_gf_pow_mod(f, 0, g, R.domain) == [1]
     assert dup_gf_pow_mod(f, 1, g, R.domain) == [1, 1]
@@ -28,14 +28,14 @@ def test_dup_gf_compose_mod():
     R, x = ring('x', FF(11))
 
     g = []
-    h = R.to_dense(x)
+    h = x.to_dense()
     f = h.copy()
 
     assert dup_gf_compose_mod(g, h, h, R.domain) == []
 
-    f = R.to_dense(x**4 + x**3 + 4*x**2 + 9*x + 1)
-    g = R.to_dense(x**2 + x + 1)
-    h = R.to_dense(x**3 + 2)
+    f = (x**4 + x**3 + 4*x**2 + 9*x + 1).to_dense()
+    g = (x**2 + x + 1).to_dense()
+    h = (x**3 + 2).to_dense()
 
     assert dup_gf_compose_mod(g, h, f, R.domain) == [3, 9, 6, 10]
 
@@ -43,9 +43,9 @@ def test_dup_gf_compose_mod():
 def test_dup_gf_trace_map():
     R, x = ring('x', FF(11))
 
-    f = R.to_dense(x**4 + x**3 + 4*x**2 + 9*x + 1)
-    a = R.to_dense(x**2 + x + 1)
-    c = R.to_dense(x)
+    f = (x**4 + x**3 + 4*x**2 + 9*x + 1).to_dense()
+    a = (x**2 + x + 1).to_dense()
+    c = x.to_dense()
     b = dup_gf_pow_mod(c, 11, f, R.domain)
 
     assert dup_gf_trace_map(a, b, c, 0, f, R.domain) == ([1, 1, 1], [1, 1, 1])
@@ -67,9 +67,9 @@ def test_dup_gf_irreducible():
 def test_dup_gf_irreducible_p():
     R, x = ring('x', FF(11))
 
-    f = R.to_dense(R(7))
-    g = R.to_dense(7*x + 3)
-    h = R.to_dense(7*x**2 + 3*x + 1)
+    f = R(7).to_dense()
+    g = (7*x + 3).to_dense()
+    h = (7*x**2 + 3*x + 1).to_dense()
 
     for method in ('ben-or', 'rabin'):
         with using(gf_irred_method=method):
@@ -82,8 +82,8 @@ def test_dup_gf_irreducible_p():
 
     R, x = ring('x', FF(13))
 
-    f = R.to_dense(2*x**4 + 3*x**3 + 4*x**2 + 5*x + 6)
-    g = R.to_dense(2*x**4 + 3*x**3 + 4*x**2 + 5*x + 8)
+    f = (2*x**4 + 3*x**3 + 4*x**2 + 5*x + 6).to_dense()
+    g = (2*x**4 + 3*x**3 + 4*x**2 + 5*x + 8).to_dense()
 
     with using(gf_irred_method='ben-or'):
         assert dup_gf_irreducible_p(f, R.domain) is False
@@ -96,7 +96,7 @@ def test_dup_gf_irreducible_p():
     g = (x**10 + 7*x**9 + 16*x**8 + 7*x**7 + 15*x**6 + 13*x**5 + 13*x**4 +
          11*x**3 + 16*x**2 + 10*x + 9)
     h = f*g
-    f, g, h = map(R.to_dense, (f, g, h))
+    f, g, h = map(lambda _: _.to_dense(), (f, g, h))
 
     for method in ('ben-or', 'rabin'):
         with using(gf_irred_method=method):
@@ -107,7 +107,7 @@ def test_dup_gf_irreducible_p():
     F9 = FF(3, [1, 2, 2])
     R, x = ring('x', F9)
 
-    f = R.to_dense(x**3 + F9(8)*x**2 + F9(8)*x + F9(4))
+    f = (x**3 + F9(8)*x**2 + F9(8)*x + F9(4)).to_dense()
 
     for method in ('ben-or', 'rabin'):
         with using(gf_irred_method=method):
@@ -116,7 +116,7 @@ def test_dup_gf_irreducible_p():
     F27 = FF(3, [1, 2, 0, 1])
     R, x = ring('x', F27)
 
-    f = R.to_dense(x**3 + F27(8)*x**2 + F27(19)*x + F27(24))
+    f = (x**3 + F27(8)*x**2 + F27(19)*x + F27(24)).to_dense()
 
     for method in ('ben-or', 'rabin'):
         with using(gf_irred_method=method):
@@ -126,15 +126,15 @@ def test_dup_gf_irreducible_p():
 def test_dup_gf_primitive_p():
     R, x = ring('x', FF(11))
 
-    f = R.to_dense(x**2 + 2*x)
+    f = (x**2 + 2*x).to_dense()
 
     assert dup_gf_primitive_p(f, R.domain) is False
 
-    f = R.to_dense(x**2 + 7*x + 5)
+    f = (x**2 + 7*x + 5).to_dense()
 
     assert dup_gf_primitive_p(f, R.domain) is False
 
-    f = R.to_dense(x**2 + 2*x + 6)
+    f = (x**2 + 2*x + 6).to_dense()
 
     assert dup_gf_irreducible_p(f, R.domain) is True
     assert dup_gf_primitive_p(f, R.domain) is True

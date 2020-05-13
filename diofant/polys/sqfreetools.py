@@ -15,7 +15,7 @@ def dmp_sqf_part(f, u, K):
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_list(f)
     p = ring.sqf_part(f)
-    return ring.to_dense(p)
+    return p.to_dense()
 
 
 def dmp_sqf_list(f, u, K):
@@ -23,7 +23,7 @@ def dmp_sqf_list(f, u, K):
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_list(f)
     coeff, factors = ring.sqf_list(f)
-    return coeff, [(ring.to_dense(f), k) for f, k in factors]
+    return coeff, [(f.to_dense(), k) for f, k in factors]
 
 
 class _SQF:

@@ -56,9 +56,9 @@ def test_dup_real_imag():
 def test_dup_transform():
     R, x = ring('x', ZZ)
 
-    assert R.dup_transform(0, 0, x + 1) == 0
-    assert R.dup_transform(0, 1, x + 1) == 0
-    assert R.dup_transform(0, x + 2, x + 1) == 0
+    assert R.dup_transform(R(0), R(0), x + 1) == 0
+    assert R.dup_transform(R(0), R(1), x + 1) == 0
+    assert R.dup_transform(R(0), x + 2, x + 1) == 0
 
     assert (R.dup_transform(6*x**4 - 5*x**3 + 4*x**2 - 3*x + 17,
                             x**2 - 3*x + 4, 2*x - 3) ==
@@ -69,17 +69,17 @@ def test_dup_transform():
 def test_dmp_compose():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_compose(0, 0) == 0
-    assert R.dmp_compose(0, 1) == 0
-    assert R.dmp_compose(0, x + 2) == 0
+    assert R.dmp_compose(R(0), R(0)) == 0
+    assert R.dmp_compose(R(0), R(1)) == 0
+    assert R.dmp_compose(R(0), x + 2) == 0
 
-    assert R.dmp_compose(1, 0) == 1
+    assert R.dmp_compose(R(1), R(0)) == 1
 
-    assert R.dmp_compose(x**2 + 2*x, 0) == 0
-    assert R.dmp_compose(x**2 + 2*x + 1, 0) == 1
+    assert R.dmp_compose(x**2 + 2*x, R(0)) == 0
+    assert R.dmp_compose(x**2 + 2*x + 1, R(0)) == 1
 
-    assert R.dmp_compose(x**2 + 2*x + 1, 1) == 4
-    assert R.dmp_compose(x**2 + 2*x + 1, 7) == 64
+    assert R.dmp_compose(x**2 + 2*x + 1, R(1)) == 4
+    assert R.dmp_compose(x**2 + 2*x + 1, R(7)) == 64
 
     assert R.dmp_compose(x**2 + 2*x + 1, x - 1) == x**2
     assert R.dmp_compose(x**2 + 2*x + 1, x + 1) == x**2 + 4*x + 4
@@ -89,18 +89,18 @@ def test_dmp_compose():
 
     R, x, y, z = ring('x y z', ZZ)
 
-    assert R.dmp_compose(0, 0) == 0
-    assert R.dmp_compose(0, 1) == 0
-    assert R.dmp_compose(1, 0) == 1
-    assert R.dmp_compose(0, x + 2) == 0
+    assert R.dmp_compose(R(0), R(0)) == 0
+    assert R.dmp_compose(R(0), R(1)) == 0
+    assert R.dmp_compose(R(1), R(0)) == 1
+    assert R.dmp_compose(R(0), x + 2) == 0
 
     R, x, y = ring('x y', ZZ)
 
-    assert R.dmp_compose(x**2 + 2*x, 0) == 0
-    assert R.dmp_compose(x**2 + 2*x + 1, 0) == 1
+    assert R.dmp_compose(x**2 + 2*x, R(0)) == 0
+    assert R.dmp_compose(x**2 + 2*x + 1, R(0)) == 1
 
-    assert R.dmp_compose(x**2 + 2*x + 1, 1) == 4
-    assert R.dmp_compose(x**2 + 2*x + 1, 7) == 64
+    assert R.dmp_compose(x**2 + 2*x + 1, R(1)) == 4
+    assert R.dmp_compose(x**2 + 2*x + 1, R(7)) == 64
 
     assert R.dmp_compose(x**2 + 2*x + 1, x - 1) == x**2
     assert R.dmp_compose(x**2 + 2*x + 1, x + 1) == x**2 + 4*x + 4

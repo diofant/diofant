@@ -11,7 +11,7 @@ def dup_gcdex(f, g, K):
     """Extended Euclidean algorithm in `F[x]`."""
     ring = K.poly_ring('_0')
     f, g = map(ring.from_list, (f, g))
-    return tuple(map(ring.to_dense, f.gcdex(g)))
+    return tuple(map(lambda _: _.to_dense(), f.gcdex(g)))
 
 
 @cacheit
@@ -20,14 +20,14 @@ def dmp_resultant(f, g, u, K):
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f, g = map(ring.from_list, (f, g))
     res = f.resultant(g)
-    return ring.drop(0).to_dense(res)
+    return res.to_dense()
 
 
 def dmp_gcd(f, g, u, K):
     """Computes polynomial GCD of `f` and `g` in `K[X]`."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f, g = map(ring.from_list, (f, g))
-    return ring.to_dense(ring.gcd(f, g))
+    return ring.gcd(f, g).to_dense()
 
 
 def dmp_primitive(f, u, K):
@@ -37,7 +37,7 @@ def dmp_primitive(f, u, K):
     new_ring, f = map(lambda _: _.eject(*ring.gens[1:]), (ring, f))
     c, f = f.primitive()
     f = f.inject()
-    return new_ring.domain.to_dense(c), ring.to_dense(f)
+    return c.to_dense(), f.to_dense()
 
 
 class _GCD:
