@@ -404,7 +404,7 @@ class LatticeOp(AssocOp):
         else:
             _args = frozenset(args)
 
-        obj = super(AssocOp, cls).__new__(cls, _args)
+        obj = super(AssocOp, cls).__new__(cls, _args)  # pylint: disable=bad-super-call
         obj._argset = _args
         return obj
 
