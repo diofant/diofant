@@ -296,6 +296,4 @@ def dmp_clear_denoms(f, u, K, convert=False):
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_list(f)
     common, f = f.clear_denoms(convert=convert)
-    if convert:
-        ring = ring.clone(domain=ring.domain.ring)
     return common, f.to_dense()
