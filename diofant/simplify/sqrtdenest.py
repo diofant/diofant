@@ -206,8 +206,6 @@ def _sqrt_match(p):
 class SqrtdenestStopIteration(StopIteration):
     """Raised when sqrtdenest algorithm can't denest an expression."""
 
-    pass
-
 
 def _sqrtdenest0(expr):
     """Returns expr after denesting its arguments."""

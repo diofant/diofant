@@ -1423,8 +1423,6 @@ class cot(ReciprocalTrigonometricFunction):
 class InverseTrigonometricFunction(Function):
     """Base class for inverse trigonometric functions."""
 
-    pass
-
 
 class asin(InverseTrigonometricFunction):
     """

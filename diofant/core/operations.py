@@ -352,8 +352,6 @@ class AssocOp(Expr):
 class ShortCircuit(Exception):
     """Helper exception to detect absorbing element among arguments."""
 
-    pass
-
 
 class LatticeOp(AssocOp):
     """

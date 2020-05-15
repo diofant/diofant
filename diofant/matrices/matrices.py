@@ -25,19 +25,13 @@ def _iszero(x):
 class MatrixError(Exception):
     """Generic matrix error."""
 
-    pass
-
 
 class ShapeError(ValueError, MatrixError):
     """Wrong matrix shape."""
 
-    pass
-
 
 class NonSquareMatrixError(ShapeError):
     """Raised when a square matrix is expected."""
-
-    pass
 
 
 class MatrixBase(DefaultPrinting):

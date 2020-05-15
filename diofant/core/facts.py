@@ -262,8 +262,6 @@ def rules_2prereq(rules):
 class TautologyDetected(Exception):
     """(internal) Prover uses it for reporting detected tautology."""
 
-    pass
-
 
 class Prover:
     """

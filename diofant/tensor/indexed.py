@@ -108,8 +108,6 @@ from ..core.compatibility import NotIterable, is_sequence
 class IndexException(Exception):
     """Generic index error."""
 
-    pass
-
 
 class Indexed(Expr):
     """Represents a mathematical object with indices.
