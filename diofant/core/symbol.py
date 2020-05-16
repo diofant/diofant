@@ -227,8 +227,6 @@ class Symbol(BaseSymbol):
 
     """
 
-    pass
-
 
 class Dummy(BaseSymbol):
     """Dummy symbols are each unique, identified by an internal count index:

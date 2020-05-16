@@ -553,7 +553,7 @@ def dup_inflate(f, m, K):
     ring = K.poly_ring('_0')
     f = ring.from_list(f)
     f = f.inflate((m,))
-    return ring.to_dense(f)
+    return f.to_dense()
 
 
 def dmp_exclude(f, u, K):
@@ -726,7 +726,7 @@ def dmp_slice_in(f, m, n, j, u, K):
     """Take a continuous subsequence of terms of ``f`` in ``x_j`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_list(f)
-    return ring.to_dense(f.slice(m, n, x=j))
+    return f.slice(m, n, x=j).to_dense()
 
 
 def dup_random(n, a, b, K, percent=None):

@@ -19,8 +19,6 @@ from .indexed import Idx, Indexed
 class IndexConformanceException(Exception):
     """Raised if indexes are not consistent."""
 
-    pass
-
 
 def _remove_repeated(inds):
     """Removes repeated objects from sequences

@@ -9,8 +9,6 @@ from .str import StrPrinter
 class AssignmentError(Exception):
     """Raised if an assignment variable for a loop is missing."""
 
-    pass
-
 
 class Assignment(Relational):
     """

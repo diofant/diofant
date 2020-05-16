@@ -15,7 +15,6 @@ __all__ = ()
 @cacheit
 def _emptyfn():
     """Test docstring."""
-    pass
 
 
 @cacheit

@@ -35,7 +35,7 @@ def dmp_trial_division(f, factors, u, K):
     f = ring.from_list(f)
     factors = list(map(ring.from_list, factors))
     result = ring._trial_division(f, factors)
-    return [(ring.to_dense(f), k) for f, k in result]
+    return [(f.to_dense(), k) for f, k in result]
 
 
 def dmp_zz_mignotte_bound(f, u, K):
@@ -987,7 +987,7 @@ def dmp_ext_factor(f, u, K):
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_list(f)
     lc, factors = ring._aa_factor_trager(f)
-    return lc, [(ring.to_dense(f), k) for f, k in factors]
+    return lc, [(f.to_dense(), k) for f, k in factors]
 
 
 def dmp_gf_factor(f, u, K):

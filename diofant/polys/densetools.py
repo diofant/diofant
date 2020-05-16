@@ -11,7 +11,7 @@ def dmp_diff_in(f, m, j, u, K):
     """``m``-th order derivative in ``x_j`` of a polynomial in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_list(f)
-    return ring.to_dense(f.diff(x=j, m=m))
+    return f.diff(x=j, m=m).to_dense()
 
 
 def dmp_eval_in(f, a, j, u, K):
@@ -30,10 +30,10 @@ def dmp_eval_tail(f, A, u, K):
     f = ring.from_list(f)
     x = [(x, a) for x, a in zip(ring.gens[-len(A):], A)]
     if not x:
-        return ring.to_dense(f)
+        return f.to_dense()
     r = f.eval(x)
     if hasattr(r, 'ring'):
-        r = r.ring.to_dense(r)
+        r = r.to_dense()
     return r
 
 
@@ -50,7 +50,7 @@ def dmp_ground_trunc(f, p, u, K):
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_list(f)
     f = f.trunc_ground(p)
-    return ring.to_dense(f)
+    return f.to_dense()
 
 
 def dmp_ground_monic(f, u, K):
@@ -58,7 +58,7 @@ def dmp_ground_monic(f, u, K):
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_list(f)
     f = f.monic()
-    return ring.to_dense(f)
+    return f.to_dense()
 
 
 def dmp_ground_content(f, u, K):
@@ -73,7 +73,7 @@ def dmp_ground_primitive(f, u, K):
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_list(f)
     cont, p = f.primitive()
-    return cont, ring.to_dense(p)
+    return cont, p.to_dense()
 
 
 def dup_real_imag(f, K):
@@ -296,6 +296,4 @@ def dmp_clear_denoms(f, u, K, convert=False):
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_list(f)
     common, f = f.clear_denoms(convert=convert)
-    if convert:
-        ring = ring.clone(domain=ring.domain.ring)
-    return common, ring.to_dense(f)
+    return common, f.to_dense()

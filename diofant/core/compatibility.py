@@ -23,8 +23,6 @@ class NotIterable:
 
     """
 
-    pass
-
 
 def iterable(i, exclude=(str, dict, NotIterable)):
     """

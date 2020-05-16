@@ -56,7 +56,6 @@ class AxisOrienter(Orienter):
 
         """
         # Dummy initializer for docstrings
-        pass
 
     @cacheit
     def rotation_matrix(self, system):
@@ -218,7 +217,6 @@ class BodyOrienter(ThreeAngleOrienter):
 
         """
         # Dummy initializer for docstrings
-        pass
 
 
 class SpaceOrienter(ThreeAngleOrienter):
@@ -277,7 +275,6 @@ class SpaceOrienter(ThreeAngleOrienter):
 
         """
         # Dummy initializer for docstrings
-        pass
 
 
 class QuaternionOrienter(Orienter):
@@ -346,7 +343,6 @@ class QuaternionOrienter(Orienter):
 
         """
         # Dummy initializer for docstrings
-        pass
 
     @property
     def q0(self):

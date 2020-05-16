@@ -229,8 +229,6 @@ def test_sympyissue_3635():
     assert integrate(x**2, y) == x**2*y
     assert integrate(x**2, (y, -1, 1)) == 2*x**2
 
-# works in diofant and py.test but hangs in `setup.py test`
-
 
 def test_integrate_linearterm_pow():
     # check integrate((a*x+b)^c, x)  --  issue sympy/sympy#3499

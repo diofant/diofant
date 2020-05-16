@@ -25,8 +25,8 @@ def dup_gf_pow_mod(f, n, g, K):
     ========
 
     >>> R, x = ring('x', FF(5))
-    >>> f = R.to_dense(3*x**2 + 2*x + 4)
-    >>> g = R.to_dense(x + 1)
+    >>> f = (3*x**2 + 2*x + 4).to_dense()
+    >>> g = (x + 1).to_dense()
     >>> dup_gf_pow_mod(f, 3, g, R.domain)
     []
 
@@ -70,9 +70,9 @@ def dup_gf_compose_mod(g, h, f, K):
     ========
 
     >>> R, x = ring('x', FF(5))
-    >>> g = R.to_dense(3*x**2 + 2*x + 4)
-    >>> h = R.to_dense(2*x**2 + 2*x + 2)
-    >>> f = R.to_dense(4*x + 3)
+    >>> g = (3*x**2 + 2*x + 4).to_dense()
+    >>> h = (2*x**2 + 2*x + 2).to_dense()
+    >>> f = (4*x + 3).to_dense()
     >>> dup_gf_compose_mod(g, h, f, R.domain)
     [4 mod 5]
 
@@ -110,10 +110,10 @@ def dup_gf_trace_map(a, b, c, n, f, K):
     ========
 
     >>> R, x = ring('x', FF(5))
-    >>> a = R.to_dense(x + 2)
-    >>> b = R.to_dense(4*x + 4)
-    >>> c = R.to_dense(x + 1)
-    >>> f = R.to_dense(3*x**2 + 2*x + 4)
+    >>> a = (x + 2).to_dense()
+    >>> b = (4*x + 4).to_dense()
+    >>> c = (x + 1).to_dense()
+    >>> f = (3*x**2 + 2*x + 4).to_dense()
     >>> dup_gf_trace_map(a, b, c, 4, f, R.domain)
     ([1 mod 5, 3 mod 5], [1 mod 5, 3 mod 5])
 
@@ -189,11 +189,11 @@ def dup_gf_irred_p_ben_or(f, K):
     ========
 
     >>> R, x = ring('x', FF(5))
-    >>> f = R.to_dense(x**10 + 4*x**9 + 2*x**8 + 2*x**7 + 3*x**6 +
-    ...                2*x**5 + 4*x**4 + x**3 + 4*x**2 + 4)
+    >>> f = (x**10 + 4*x**9 + 2*x**8 + 2*x**7 + 3*x**6 +
+    ...      2*x**5 + 4*x**4 + x**3 + 4*x**2 + 4).to_dense()
     >>> dup_gf_irred_p_ben_or(f, R.domain)
     True
-    >>> f = R.to_dense(3*x**2 + 2*x + 4)
+    >>> f = (3*x**2 + 2*x + 4).to_dense()
     >>> dup_gf_irred_p_ben_or(f, R.domain)
     False
 
@@ -232,11 +232,11 @@ def dup_gf_irred_p_rabin(f, K):
     ========
 
     >>> R, x = ring('x', FF(5))
-    >>> f = R.to_dense(x**10 + 4*x**9 + 2*x**8 + 2*x**7 + 3*x**6 +
-    ...                2*x**5 + 4*x**4 + x**3 + 4*x**2 + 4)
+    >>> f = (x**10 + 4*x**9 + 2*x**8 + 2*x**7 + 3*x**6 +
+    ...      2*x**5 + 4*x**4 + x**3 + 4*x**2 + 4).to_dense()
     >>> dup_gf_irred_p_rabin(f, R.domain)
     True
-    >>> f = R.to_dense(3*x**2 + 2*x + 4)
+    >>> f = (3*x**2 + 2*x + 4).to_dense()
     >>> dup_gf_irred_p_rabin(f, R.domain)
     False
 
@@ -284,11 +284,11 @@ def dup_gf_irreducible_p(f, K):
     ========
 
     >>> R, x = ring('x', FF(5))
-    >>> f = R.to_dense(x**10 + 4*x**9 + 2*x**8 + 2*x**7 + 3*x**6 +
-    ...                2*x**5 + 4*x**4 + x**3 + 4*x**2 + 4)
+    >>> f = (x**10 + 4*x**9 + 2*x**8 + 2*x**7 + 3*x**6 +
+    ...      2*x**5 + 4*x**4 + x**3 + 4*x**2 + 4).to_dense()
     >>> dup_gf_irreducible_p(f, R.domain)
     True
-    >>> f = R.to_dense(3*x**2 + 2*x + 4)
+    >>> f = (3*x**2 + 2*x + 4).to_dense()
     >>> dup_gf_irreducible_p(f, R.domain)
     False
 
@@ -326,12 +326,12 @@ def dup_gf_Qmatrix(f, K):
     ========
 
     >>> R, x = ring('x', FF(5))
-    >>> f = R.to_dense(3*x**2 + 2*x + 4)
+    >>> f = (3*x**2 + 2*x + 4).to_dense()
     >>> dup_gf_Qmatrix(f, R.domain)
     [[1 mod 5, 0 mod 5],
      [3 mod 5, 4 mod 5]]
 
-    >>> f = R.to_dense(x**4 + 1)
+    >>> f = (x**4 + 1).to_dense()
     >>> dup_gf_Qmatrix(f, R.domain)
     [[1 mod 5, 0 mod 5, 0 mod 5, 0 mod 5],
      [0 mod 5, 4 mod 5, 0 mod 5, 0 mod 5],
@@ -368,7 +368,7 @@ def dup_gf_berlekamp(f, K):
     ========
 
     >>> R, x = ring('x', FF(5))
-    >>> f = R.to_dense(x**4 + 1)
+    >>> f = (x**4 + 1).to_dense()
     >>> dup_gf_berlekamp([1, 0, 0, 0, 1], R.domain)
     [[1 mod 5, 0 mod 5, 2 mod 5], [1 mod 5, 0 mod 5, 3 mod 5]]
 
@@ -421,7 +421,7 @@ def dup_gf_ddf_zassenhaus(f, K):
     ========
 
     >>> R, x = ring('x', FF(11))
-    >>> f = R.to_dense(x**15 - 1)
+    >>> f = (x**15 - 1).to_dense()
     >>> dup_gf_ddf_zassenhaus(f, R.domain)
     [([1 mod 11, 0 mod 11, 0 mod 11, 0 mod 11, 0 mod 11, 10 mod 11], 1),
      ([1 mod 11, 0 mod 11, 0 mod 11, 0 mod 11, 0 mod 11, 1 mod 11, 0 mod 11,
@@ -474,7 +474,7 @@ def dup_gf_edf_zassenhaus(f, n, K):
     ========
 
     >>> R, x = ring('x', FF(5))
-    >>> f = R.to_dense(x**3 + x**2 + x + 1)
+    >>> f = (x**3 + x**2 + x + 1).to_dense()
     >>> dup_gf_edf_zassenhaus(f, 1, R.domain)
     [[1 mod 5, 1 mod 5], [1 mod 5, 2 mod 5], [1 mod 5, 3 mod 5]]
 
@@ -539,7 +539,7 @@ def dup_gf_ddf_shoup(f, K):
     ========
 
     >>> R, x = ring('x', FF(3))
-    >>> f = R.to_dense(x**6 - x**5 + x**4 + x**3 - x)
+    >>> f = (x**6 - x**5 + x**4 + x**3 - x).to_dense()
     >>> dup_gf_ddf_shoup(f, R.domain)
     [([1 mod 3, 1 mod 3, 0 mod 3], 1), ([1 mod 3, 1 mod 3, 0 mod 3, 1 mod 3, 2 mod 3], 2)]
 
@@ -622,7 +622,7 @@ def dup_gf_edf_shoup(f, n, K):
     ========
 
     >>> R, x = ring('x', FF(2917))
-    >>> f = R.to_dense(x**2 + 2837*x + 2277)
+    >>> f = (x**2 + 2837*x + 2277).to_dense()
     >>> dup_gf_edf_shoup(f, 1, R.domain)
     [[1 mod 2917, 852 mod 2917], [1 mod 2917, 1985 mod 2917]]
 
@@ -679,7 +679,7 @@ def dup_gf_zassenhaus(f, K):
     ========
 
     >>> R, x = ring('x', FF(5))
-    >>> f = R.to_dense(x**2 + 4*x + 3)
+    >>> f = (x**2 + 4*x + 3).to_dense()
     >>> dup_gf_zassenhaus(f, R.domain)
     [[1 mod 5, 1 mod 5], [1 mod 5, 3 mod 5]]
 
@@ -700,7 +700,7 @@ def dup_gf_shoup(f, K):
     ========
 
     >>> R, x = ring('x', FF(5))
-    >>> f = R.to_dense(x**2 + 4*x + 3)
+    >>> f = (x**2 + 4*x + 3).to_dense()
     >>> dup_gf_shoup(f, R.domain)
     [[1 mod 5, 1 mod 5], [1 mod 5, 3 mod 5]]
 
@@ -749,7 +749,7 @@ def dup_gf_factor_sqf(f, K):
     ========
 
     >>> R, x = ring('x', FF(5))
-    >>> f = R.to_dense(x**2 + 4*x + 3)
+    >>> f = (x**2 + 4*x + 3).to_dense()
     >>> dup_gf_factor_sqf(f, R.domain)
     [[1 mod 5, 1 mod 5], [1 mod 5, 3 mod 5]]
 

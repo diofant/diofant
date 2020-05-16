@@ -188,7 +188,7 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF, _Factor):
         one = self.domain.one
         _gens = []
         for i in range(self.ngens):
-            expv = self.monomial_basis(i)
+            expv = self._monomial_basis(i)
             poly = self.zero
             poly[expv] = one
             _gens.append(poly)
@@ -203,7 +203,7 @@ class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF, _Factor):
     def clone(self, symbols=None, domain=None, order=None):
         return self.__class__(domain or self.domain, symbols or self.symbols, order or self.order)
 
-    def monomial_basis(self, i):
+    def _monomial_basis(self, i):
         """Return the ith-basis element."""
         basis = [0]*self.ngens
         basis[i] = 1
@@ -1746,7 +1746,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """
         ring = self.ring
         i = ring.index(x)
-        x = ring.monomial_basis(i)
+        x = ring._monomial_basis(i)
         x = x**m
         g = ring.zero if m else self.compose(ring.gens[i], ring.zero)
         for expv, coeff in self.items():
@@ -1762,7 +1762,7 @@ class PolyElement(DomainElement, CantSympify, dict):
         """Computes indefinite integral in ``x``."""
         ring = self.ring
         i = ring.index(x)
-        x = ring.monomial_basis(i)
+        x = ring._monomial_basis(i)
         x = x**m
         g = ring.zero
         for expv, coeff in self.items():

@@ -42,7 +42,7 @@ def dmp_add_term(f, c, i, u, K):
 
     >>> R, x, y = ring('x y', ZZ)
 
-    >>> R.dmp_add_term(x*y + 1, 2, 2)
+    >>> R.dmp_add_term(x*y + 1, R(2), 2)
     2*x**2 + x*y + 1
 
     """
@@ -688,7 +688,7 @@ def dmp_div(f, g, u, K):
     """Polynomial division with remainder in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f, g = map(ring.from_list, (f, g))
-    return tuple(map(ring.to_dense, divmod(f, g)))
+    return tuple(map(lambda _: _.to_dense(), divmod(f, g)))
 
 
 def dmp_rem(f, g, u, K):

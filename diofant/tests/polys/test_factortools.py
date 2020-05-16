@@ -45,7 +45,7 @@ def test_dup_zz_hensel_step():
     f = x**4 - 1
     g = x**3 + 2*x**2 - x - 2
     h = x - 2
-    s = -2
+    s = R(-2)
     t = 2*x**2 - 2*x - 1
 
     G, H, S, T = R.dup_zz_hensel_step(5, f, g, h, s, t)
@@ -137,8 +137,8 @@ def test_dup_zz_cyclotomic_poly():
 def test_dup_zz_cyclotomic_factor():
     R, x = ring('x', ZZ)
 
-    assert R.dup_zz_cyclotomic_factor(0) is None
-    assert R.dup_zz_cyclotomic_factor(1) is None
+    assert R.dup_zz_cyclotomic_factor(R(0)) is None
+    assert R.dup_zz_cyclotomic_factor(R(1)) is None
 
     assert R.dup_zz_cyclotomic_factor(2*x**10 - 1) is None
     assert R.dup_zz_cyclotomic_factor(x**10 - 3) is None
@@ -165,9 +165,9 @@ def test_dup_zz_factor():
     assert R(7).factor_list() == (7, [])
     assert R(-7).factor_list() == (-7, [])
 
-    assert R.dup_zz_factor_sqf(0) == (0, [])
-    assert R.dup_zz_factor_sqf(7) == (7, [])
-    assert R.dup_zz_factor_sqf(-7) == (-7, [])
+    assert R.dup_zz_factor_sqf(R(0)) == (0, [])
+    assert R.dup_zz_factor_sqf(R(7)) == (7, [])
+    assert R.dup_zz_factor_sqf(R(-7)) == (-7, [])
 
     assert (2*x + 4).factor_list() == (2, [(x + 2, 1)])
     assert R.dup_zz_factor_sqf(2*x + 4) == (2, [x + 2])

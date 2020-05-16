@@ -47,7 +47,7 @@ def test_dup_sturm():
 def test_dup_sign_variations():
     R, x = ring('x', ZZ)
 
-    assert R.dup_sign_variations(0) == 0
+    assert R.dup_sign_variations(R(0)) == 0
     assert R.dup_sign_variations(x) == 0
     assert R.dup_sign_variations(x**2 + 2) == 0
     assert R.dup_sign_variations(x*(x**2 + 3)) == 0
@@ -191,8 +191,8 @@ def test_dup_refine_real_root():
 def test_dup_isolate_real_roots_sqf():
     R, x = ring('x', ZZ)
 
-    assert R.dup_isolate_real_roots_sqf(0) == []
-    assert R.dup_isolate_real_roots_sqf(5) == []
+    assert R.dup_isolate_real_roots_sqf(R(0)) == []
+    assert R.dup_isolate_real_roots_sqf(R(5)) == []
 
     assert R.dup_isolate_real_roots_sqf(x) == [(0, 0)]
 
@@ -217,7 +217,7 @@ def test_dup_isolate_real_roots_sqf():
 
     for r in range(2, 7):
         for s in (1, 10, -1, -10):
-            f = prod(x - s*_ for _ in range(1, r))
+            f = R(prod(x - s*_ for _ in range(1, r)))
             ans = sorted((s*_, s*_) for _ in range(1, r))
             assert R.dup_isolate_real_roots_sqf(f) == ans
 
@@ -231,7 +231,7 @@ def test_dup_isolate_real_roots_sqf():
     assert R.dup_isolate_real_roots_sqf(x**9 - 5) == [(1, 2)]
 
     for roots in subsets(range(1, 4)):
-        f = prod(x - r for r in roots)
+        f = R(prod(x - r for r in roots))
         ans = sorted((_, _) for _ in roots)
         assert R.dup_isolate_real_roots_sqf(f) == ans
 
@@ -382,9 +382,9 @@ def test_dup_isolate_real_roots_sqf():
 def test_dup_isolate_real_roots():
     R, x = ring('x', ZZ)
 
-    assert R.dup_isolate_real_roots(0) == []
-    assert R.dup_isolate_real_roots(1) == []
-    assert R.dup_isolate_real_roots(3) == []
+    assert R.dup_isolate_real_roots(R(0)) == []
+    assert R.dup_isolate_real_roots(R(1)) == []
+    assert R.dup_isolate_real_roots(R(3)) == []
 
     assert R.dup_isolate_real_roots(x) == [((0, 0), 1)]
     assert R.dup_isolate_real_roots(5*x) == [((0, 0), 1)]
@@ -599,8 +599,8 @@ def test_dup_isolate_real_roots_pair():
 def test_dup_count_real_roots():
     R, x = ring('x', ZZ)
 
-    assert R.dup_count_real_roots(0) == 0
-    assert R.dup_count_real_roots(7) == 0
+    assert R.dup_count_real_roots(R(0)) == 0
+    assert R.dup_count_real_roots(R(7)) == 0
 
     f = x - 1
 
@@ -1182,7 +1182,7 @@ def test_RealInterval():
 
     f = (x - 1)**2
 
-    pytest.raises(ValueError, lambda: RealInterval((-2, 1), R.to_dense(f),
+    pytest.raises(ValueError, lambda: RealInterval((-2, 1), f.to_dense(),
                                                    R.domain))
 
 

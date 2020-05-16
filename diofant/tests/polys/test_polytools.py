@@ -2848,7 +2848,8 @@ def test_dimension_and_independent_sets():
          15*L7*(L1*(5*L1 - 3*L2 + L3)) + (L1*(2*L6 - 4*L4))*(5*L4 - 2*L5) + L1*L7*(-120*L1 + 30*L2 - 6*L3)/2,
          -3*(L1*(5*L1 - 3*L2 + L3))*L7 + (L1*(2*L6 - 4*L4))*(-L4/2 + L5/4 - L6/2) + L1*L7/2*(24*L1 - 6*L2),
          3*(L1*(2*L6 - 4*L4))*L7 + L1*L7*(40*L4 - 8*L5 + 4*L6)/2)
-    G.independent_sets == [[L5, L3, L2], [L6, L3]]
+    G = groebner(S, V, domain=QQ)
+    assert G.independent_sets == [[L5, L3, L2], [L6, L3]]
     assert G.dimension == 3
 
     # Algebraic Solution of Nonlinear Equation Systems in REDUCE, p.7.
