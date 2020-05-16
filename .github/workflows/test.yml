@@ -28,8 +28,10 @@ jobs:
     - name: Linting with flake8, flake8-rst and pylint
       run: |
         python -We:invalid -m compileall -f diofant -q
-        flake8
-        flake8-rst
+        flake8-rst --statistics
+        flake8-rst --ignore= --statistics --exit-zero
+        flake8 --statistics
+        flake8 --ignore= --statistics --exit-zero
         pylint diofant
     - name: Run doctests
       env:
