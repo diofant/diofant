@@ -34,18 +34,18 @@ jobs:
     - name: Run doctests
       env:
         PYTEST_ADDOPTS: -n auto --doctest-modules --ignore diofant/tests
-      run: python setup.py test
+      run: py.test
     - name: Tests
       if: matrix.python-version != 3.7
       env:
         PYTEST_ADDOPTS: -n auto --doctest-modules
-      run: python setup.py test
+      run: py.test
     - name: Coverage tests
       if: matrix.python-version == 3.7
       env:
         PYTEST_ADDOPTS: -n auto --cov diofant --cov-append -m "not slow and not xfail" --ignore docs
       run: |
-        python setup.py test
+        py.test
     - name: Extra coverage tests
       if: matrix.python-version == 3.7
       env:
