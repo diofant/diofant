@@ -30,7 +30,7 @@ jobs:
         python -We:invalid -m compileall -f diofant -q
         flake8
         flake8-rst
-        pylint -j1 diofant
+        pylint diofant
     - name: Run doctests
       env:
         PYTEST_ADDOPTS: -n auto --doctest-modules --ignore diofant/tests
