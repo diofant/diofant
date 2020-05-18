@@ -6,11 +6,10 @@ import math
 from ..ntheory import factorint, isprime, nextprime
 from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
-from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_l1_norm,
-                         dmp_max_norm, dmp_mul, dmp_mul_ground, dmp_neg,
-                         dmp_pow, dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
-                         dmp_sub_mul, dup_add, dup_lshift, dup_mul, dup_sqr,
-                         dup_sub)
+from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_max_norm, dmp_mul,
+                         dmp_mul_ground, dmp_neg, dmp_pow, dmp_quo,
+                         dmp_quo_ground, dmp_rem, dmp_sub, dmp_sub_mul,
+                         dup_add, dup_lshift, dup_mul, dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
                          dmp_eject, dmp_exclude, dmp_ground_LC, dmp_ground_p,
                          dmp_include, dmp_inject, dmp_LC, dmp_nest, dmp_normal,
@@ -160,117 +159,12 @@ def dup_zz_hensel_lift(p, f, f_list, l, K):
         + dup_zz_hensel_lift(p, h, f_list[k:], l, K)
 
 
-def _test_pl(fc, q, pl):
-    q = symmetric_residue(q, pl)
-    if not q:
-        return True
-    return fc % q == 0
-
-
 def dup_zz_zassenhaus(f, K):
     """Factor primitive square-free polynomials in `Z[x]`."""
-    n = dmp_degree_in(f, 0, 0)
-
-    if n == 1:
-        return [f]
-
-    fc = f[-1]
-    A = dmp_max_norm(f, 0, K)
-    b = dmp_LC(f, K)
-    B = int(dmp_zz_mignotte_bound(f, 0, K))
-    C = int((n + 1)**(2*n)*A**(2*n - 1))
-    gamma = math.ceil(2*math.log(C, 2))
-    bound = int(2*gamma*math.log(gamma))
-    a = []
-    # choose a prime number `p` such that `f` be square free in Z_p
-    # if there are many factors in Z_p, choose among a few different `p`
-    # the one with fewer factors
-    for px in range(3, bound + 1):  # pragma: no branch
-        if not isprime(px) or b % px == 0:
-            continue
-
-        px = K.convert(px)
-        Kpx = K.finite_field(px)
-
-        F = dmp_normal(f, 0, Kpx)
-
-        if not dmp_sqf_p(F, 0, Kpx):
-            continue
-
-        F = dmp_ground_monic(F, 0, Kpx)
-        fsqfx = dup_gf_factor_sqf(F, Kpx)
-        a.append((px, [dmp_normal(_, 0, K) for _ in fsqfx]))
-        if len(fsqfx) < 15 or len(a) > 4:
-            break
-    p, fsqf = min(a, key=lambda x: len(x[1]))
-
-    l = math.ceil(math.log(2*B + 1, p))
-
-    modular = fsqf
-
-    g = dup_zz_hensel_lift(p, f, modular, l, K)
-
-    sorted_T = range(len(g))
-    T = set(sorted_T)
-    factors, s = [], 1
-    pl = p**l
-
-    while 2*s <= len(T):
-        for S in subsets(sorted_T, s):
-            # lift the constant coefficient of the product `G` of the factors
-            # in the subset `S`; if it is does not divide `fc`, `G` does
-            # not divide the input polynomial
-
-            if b == 1:
-                q = 1
-                for i in S:
-                    q = q*g[i][-1]
-                q = q % pl
-                if not _test_pl(fc, q, pl):
-                    continue
-            else:
-                G = [b]
-                for i in S:
-                    G = dup_mul(G, g[i], K)
-                G = dmp_ground_trunc(G, pl, 0, K)
-                G = dmp_ground_primitive(G, 0, K)[1]
-                q = G[-1]
-                if q and fc % q != 0:
-                    continue
-
-            H = [b]
-            S = set(S)
-            T_S = T - S
-
-            if b == 1:
-                G = [b]
-                for i in S:
-                    G = dup_mul(G, g[i], K)
-                G = dmp_ground_trunc(G, pl, 0, K)
-
-            for i in T_S:
-                H = dup_mul(H, g[i], K)
-
-            H = dmp_ground_trunc(H, pl, 0, K)
-
-            G_norm = dmp_l1_norm(G, 0, K)
-            H_norm = dmp_l1_norm(H, 0, K)
-
-            if G_norm*H_norm <= B:
-                T = T_S
-                sorted_T = [i for i in sorted_T if i not in S]
-
-                G = dmp_ground_primitive(G, 0, K)[1]
-                f = dmp_ground_primitive(H, 0, K)[1]
-
-                factors.append(G)
-                b = dmp_LC(f, K)
-
-                break
-        else:
-            s += 1
-
-    return factors + [f]
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    factors = ring._zz_zassenhaus(f)
+    return [_.to_dense() for _ in factors]
 
 
 def dup_zz_irreducible_p(f, K):
@@ -1116,3 +1010,112 @@ class _Factor:
                 factors[i] = h
 
         return lc, self._trial_division(F, factors)
+
+    def _zz_zassenhaus(self, f):
+        """Factor primitive square-free polynomial in `Z[x]`."""
+        domain = self.domain
+
+        assert self.is_univariate and domain.is_IntegerRing
+
+        n = f.degree()
+
+        if n == 1:
+            return [f]
+
+        fc = f.coeff(1)
+        A = f.max_norm()
+        b = f.LC
+        B = int(self.dmp_zz_mignotte_bound(f))
+        C = int((n + 1)**(2*n)*A**(2*n - 1))
+        gamma = math.ceil(2*math.log(C, 2))
+        bound = int(2*gamma*math.log(gamma))
+        a = []
+
+        # choose a prime number `p` such that `f` be square free in Z_p
+        # if there are many factors in Z_p, choose among a few different `p`
+        # the one with fewer factors
+        for p in range(3, bound + 1):  # pragma: no branch
+            if not isprime(p) or b % p == 0:
+                continue
+
+            p = domain.convert(p)
+            p_domain = domain.finite_field(p)
+
+            F = f.set_domain(p_domain)
+
+            if not F.is_squarefree:
+                continue
+
+            F = F.monic()
+            fsqfx = [_ for _, k in F.factor_list()[1]]
+
+            a.append((p, [_.set_domain(domain) for _ in fsqfx]))
+            if len(fsqfx) < 15 or len(a) > 4:
+                break
+        p, fsqf = min(a, key=lambda x: len(x[1]))
+
+        l = math.ceil(math.log(2*B + 1, p))
+        g = self.dup_zz_hensel_lift(p, f, fsqf, l)
+
+        sorted_T = range(len(g))
+        T = set(sorted_T)
+        factors, s = [], 1
+        pl = p**l
+
+        while 2*s <= len(T):
+            for S in subsets(sorted_T, s):
+                # lift the constant coefficient of the product `G` of the factors
+                # in the subset `S`; if it is does not divide `fc`, `G` does
+                # not divide the input polynomial
+
+                if b == 1:
+                    q = 1
+                    for i in S:
+                        q = q*g[i].coeff(1)
+                    q = q % pl
+                    qs = symmetric_residue(q, pl)
+                    if qs and fc % qs != 0:
+                        continue
+                else:
+                    G = self.ground_new(b)
+                    for i in S:
+                        G *= g[i]
+                    G = G.trunc_ground(pl)
+                    _, G = G.primitive()
+                    q = G.coeff(1)
+                    if q and fc % q != 0:
+                        continue
+
+                H = self.ground_new(b)
+                S = set(S)
+                T_S = T - S
+
+                if b == 1:
+                    G = self.ground_new(b)
+                    for i in S:
+                        G *= g[i]
+                    G = G.trunc_ground(pl)
+
+                for i in T_S:
+                    H *= g[i]
+
+                H = H.trunc_ground(pl)
+
+                G_norm = G.l1_norm()
+                H_norm = H.l1_norm()
+
+                if G_norm*H_norm <= B:
+                    T = T_S
+                    sorted_T = [i for i in sorted_T if i not in S]
+
+                    G = G.primitive()[1]
+                    f = H.primitive()[1]
+
+                    factors.append(G)
+                    b = f.LC
+
+                    break
+            else:
+                s += 1
+
+        return factors + [f]
