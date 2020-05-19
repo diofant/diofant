@@ -770,19 +770,3 @@ def test_dmp_max_norm():
     assert R.dmp_max_norm(R(1)) == 1
 
     assert R.dmp_max_norm(f_polys()[0]) == 6
-
-
-def test_dmp_l1_norm():
-    R, x = ring('x', ZZ)
-
-    assert R.dmp_l1_norm(R(0)) == 0
-    assert R.dmp_l1_norm(R(1)) == 1
-    assert R.dmp_l1_norm(2*x**3 - 3*x**2 + 1) == 6
-    assert R.dmp_l1_norm(x**3 + 4*x**2 + 2*x + 3) == 10
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    assert R.dmp_l1_norm(R(0)) == 0
-    assert R.dmp_l1_norm(R(1)) == 1
-
-    assert R.dmp_l1_norm(f_polys()[0]) == 31
