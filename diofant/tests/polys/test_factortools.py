@@ -29,14 +29,14 @@ def test_dmp_trial_division():
                                 8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
 
 
-def test_dmp_zz_mignotte_bound():
+def test__zz_mignotte_bound():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_zz_mignotte_bound(2*x**2 + 3*x + 4) == 32
+    assert R._zz_mignotte_bound(2*x**2 + 3*x + 4) == 32
 
     R, x, y = ring('x y', ZZ)
 
-    assert R.dmp_zz_mignotte_bound(2*x**2 + 3*x + 4) == 32
+    assert R._zz_mignotte_bound(2*x**2 + 3*x + 4) == 32
 
 
 def test_dup_zz_hensel_step():
@@ -269,7 +269,7 @@ def test_dmp_zz_wang():
     R, x, y, z = ring('x y z', ZZ)
     UV, _x = ring('x', ZZ)
 
-    p = ZZ(nextprime(R.dmp_zz_mignotte_bound(w_1)))
+    p = ZZ(nextprime(R._zz_mignotte_bound(w_1)))
 
     assert p == 6291469
 

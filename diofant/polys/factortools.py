@@ -39,11 +39,9 @@ def dmp_trial_division(f, factors, u, K):
 
 def dmp_zz_mignotte_bound(f, u, K):
     """Mignotte bound for multivariate polynomials in `K[X]`."""
-    a = dmp_max_norm(f, u, K)
-    b = abs(dmp_ground_LC(f, u, K))
-    n = sum(dmp_degree_list(f, u))
-
-    return K.sqrt(K(n + 1))*2**n*a*b
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    return ring._zz_mignotte_bound(f)
 
 
 def dup_zz_hensel_step(m, f, g, h, s, t, K):
@@ -1011,6 +1009,16 @@ class _Factor:
 
         return lc, self._trial_division(F, factors)
 
+    def _zz_mignotte_bound(self, f):
+        """Mignotte bound for multivariate polynomials in `Z[X]`."""
+        domain = self.domain
+
+        a = f.max_norm()
+        b = abs(f.LC)
+        n = sum(f.degree_list())
+
+        return domain.sqrt(domain(n + 1))*2**n*a*b
+
     def _zz_zassenhaus(self, f):
         """Factor primitive square-free polynomial in `Z[x]`."""
         domain = self.domain
@@ -1025,7 +1033,7 @@ class _Factor:
         fc = f.coeff(1)
         A = f.max_norm()
         b = f.LC
-        B = int(self.dmp_zz_mignotte_bound(f))
+        B = int(self._zz_mignotte_bound(f))
         C = int((n + 1)**(2*n)*A**(2*n - 1))
         gamma = math.ceil(2*math.log(C, 2))
         bound = int(2*gamma*math.log(gamma))
