@@ -11,11 +11,10 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_quo_ground, dmp_rem, dmp_sub, dmp_sub_mul,
                          dup_add, dup_lshift, dup_mul, dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
-                         dmp_ground_LC, dmp_ground_p, dmp_LC, dmp_nest,
-                         dmp_normal, dmp_one, dmp_raise, dmp_strip, dmp_TC,
-                         dmp_zero_p, dup_inflate)
+                         dmp_ground_p, dmp_LC, dmp_nest, dmp_normal, dmp_one,
+                         dmp_raise, dmp_strip, dmp_TC, dmp_zero_p, dup_inflate)
 from .densetools import (dmp_compose, dmp_diff_eval_in, dmp_eval_in,
-                         dmp_eval_tail, dmp_ground_content, dmp_ground_monic,
+                         dmp_eval_tail, dmp_ground_content,
                          dmp_ground_primitive, dmp_ground_trunc)
 from .euclidtools import dup_gcdex
 from .galoistools import dup_gf_factor_sqf
@@ -23,7 +22,7 @@ from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-from .sqfreetools import dmp_sqf_list, dmp_sqf_p, dmp_sqf_part
+from .sqfreetools import dmp_sqf_p, dmp_sqf_part
 
 
 def dup_zz_irreducible_p(f, K):
@@ -618,23 +617,6 @@ def dmp_zz_factor(f, u, K):
     return lc, [(f.to_dense(), k) for f, k in factors]
 
 
-def dmp_gf_factor(f, u, K):
-    """Factor multivariate polynomials over finite fields."""
-    if u:
-        raise NotImplementedError('multivariate polynomials over finite fields')
-    else:
-        lc = dmp_ground_LC(f, u, K)
-        f = dmp_ground_monic(f, u, K)
-
-        factors = []
-
-        for g, n in dmp_sqf_list(f, 0, K)[1]:
-            for h in dup_gf_factor_sqf(g, K):
-                factors.append((h, n))
-
-        return lc, factors
-
-
 def dmp_factor_list(f, u, K):
     """Factor polynomials into irreducibles in `K[X]`."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
@@ -1045,8 +1027,18 @@ class _Factor:
         cont, f = f.primitive()
 
         if domain.is_FiniteField:
-            coeff, factors = dmp_gf_factor(f.to_dense(), self.ngens-1, domain)
-            factors = [(self.from_list(_), k) for _, k in factors]
+            if self.is_multivariate:
+                raise NotImplementedError('multivariate polynomials over finite fields')
+
+            coeff = f.LC
+            f = f.monic()
+
+            factors = []
+
+            for g, n in f.sqf_list()[1]:
+                g = g.to_dense()
+                for h in dup_gf_factor_sqf(g, domain):
+                    factors.append((self.from_list(h), n))
         elif domain.is_AlgebraicField:
             coeff, factors = self._aa_factor_trager(f)
         else:
