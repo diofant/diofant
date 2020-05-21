@@ -11,14 +11,12 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_quo_ground, dmp_rem, dmp_sub, dmp_sub_mul,
                          dup_add, dup_lshift, dup_mul, dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
-                         dmp_eject, dmp_exclude, dmp_ground_LC, dmp_ground_p,
-                         dmp_include, dmp_inject, dmp_LC, dmp_nest, dmp_normal,
-                         dmp_one, dmp_raise, dmp_strip, dmp_TC, dmp_zero_p,
-                         dup_inflate)
-from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
-                         dmp_eval_in, dmp_eval_tail, dmp_ground_content,
-                         dmp_ground_monic, dmp_ground_primitive,
-                         dmp_ground_trunc)
+                         dmp_ground_LC, dmp_ground_p, dmp_LC, dmp_nest,
+                         dmp_normal, dmp_one, dmp_raise, dmp_strip, dmp_TC,
+                         dmp_zero_p, dup_inflate)
+from .densetools import (dmp_compose, dmp_diff_eval_in, dmp_eval_in,
+                         dmp_eval_tail, dmp_ground_content, dmp_ground_monic,
+                         dmp_ground_primitive, dmp_ground_trunc)
 from .euclidtools import dup_gcdex
 from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
@@ -646,14 +644,6 @@ def dmp_zz_factor(f, u, K):
     return lc, [(f.to_dense(), k) for f, k in factors]
 
 
-def dmp_ext_factor(f, u, K):
-    """Factor multivariate polynomials over algebraic number fields."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    lc, factors = ring._aa_factor_trager(f)
-    return lc, [(f.to_dense(), k) for f, k in factors]
-
-
 def dmp_gf_factor(f, u, K):
     """Factor multivariate polynomials over finite fields."""
     if u:
@@ -671,68 +661,12 @@ def dmp_gf_factor(f, u, K):
         return lc, factors
 
 
-_factor_aa_methods = {'trager': dmp_ext_factor}
-
-
-def dmp_factor_list(f, u, K0):
+def dmp_factor_list(f, u, K):
     """Factor polynomials into irreducibles in `K[X]`."""
-    cont, f = dmp_ground_primitive(f, u, K0)
-
-    if K0.is_FiniteField:
-        coeff, factors = dmp_gf_factor(f, u, K0)
-    elif K0.is_AlgebraicField:
-        method = _factor_aa_methods[query('AA_FACTOR_METHOD')]
-        coeff, factors = method(f, u, K0)
-    else:
-        if not K0.is_Exact:
-            K0_inexact, K0 = K0, K0.get_exact()
-            f = dmp_convert(f, u, K0_inexact, K0)
-        else:
-            K0_inexact = None
-
-        if K0.is_Field:
-            K = K0.ring
-
-            denom, f = dmp_clear_denoms(f, u, K0, convert=True)
-        else:
-            K = K0
-
-        if K.is_IntegerRing:
-            levels, f, v = dmp_exclude(f, u, K)
-            coeff, factors = dmp_zz_factor(f, v, K)
-
-            for i, (f, k) in enumerate(factors):
-                factors[i] = (dmp_include(f, levels, v, K), k)
-        elif K.is_PolynomialRing:
-            f, v = dmp_inject(f, u, K)
-
-            coeff, factors = dmp_factor_list(f, v, K.domain)
-
-            for i, (f, k) in enumerate(factors):
-                factors[i] = (dmp_eject(f, v, K), k)
-
-            coeff = K.convert(coeff, K.domain)
-        else:  # pragma: no cover
-            raise DomainError(f'factorization not supported over {K0}')
-
-        if K0.is_Field:
-            for i, (f, k) in enumerate(factors):
-                factors[i] = (dmp_convert(f, u, K, K0), k)
-
-            coeff = K0.convert(coeff, K)
-            coeff = K0.quo(coeff, denom)
-
-            if K0_inexact:
-                for i, (f, k) in enumerate(factors):
-                    f = dmp_quo_ground(f, denom, u, K0)
-                    f = dmp_convert(f, u, K0, K0_inexact)
-                    factors[i] = (f, k)
-                    coeff *= denom**k
-
-                coeff = K0_inexact.convert(coeff, K0)
-                K0 = K0_inexact
-
-    return coeff*cont, _sort_factors(factors)
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    lc, factors = ring.factor_list(f)
+    return lc, [(f.to_dense(), k) for f, k in factors]
 
 
 class _Factor:
@@ -1104,3 +1038,62 @@ class _Factor:
         T = (t - u).trunc_ground(M)
 
         return G, H, S, T
+
+    def factor_list(self, f):
+        """Factor polynomials into irreducibles in `K[X]`."""
+        domain = self.domain
+
+        cont, f = f.primitive()
+
+        if domain.is_FiniteField:
+            coeff, factors = dmp_gf_factor(f.to_dense(), self.ngens-1, domain)
+            factors = [(self.from_list(_), k) for _, k in factors]
+        elif domain.is_AlgebraicField:
+            coeff, factors = self._aa_factor_trager(f)
+        else:
+            if not domain.is_Exact:
+                domain_inexact, domain = domain, domain.get_exact()
+                f = f.set_domain(domain)
+            else:
+                domain_inexact = None
+
+            if domain.is_Field:
+                domain1 = domain.ring
+
+                denom, f = f.clear_denoms(convert=True)
+            else:
+                domain1 = domain
+
+            if domain1.is_IntegerRing:
+                ring = self.clone(domain=domain1)
+                coeff, factors = ring._zz_factor(f)
+            elif domain1.is_PolynomialRing:
+                f = f.inject()
+                ring = f.ring
+
+                coeff, factors = ring.factor_list(f)
+
+                for i, (f, k) in enumerate(factors):
+                    factors[i] = (f.eject(*ring.gens[-domain1.ngens:]), k)
+
+                coeff = domain1.convert(coeff)
+            else:  # pragma: no cover
+                raise DomainError(f'factorization not supported over {domain}')
+
+            if domain.is_Field:
+                for i, (f, k) in enumerate(factors):
+                    factors[i] = (f.set_domain(domain), k)
+
+                coeff = domain.convert(coeff)
+                coeff = domain.quo(coeff, denom)
+
+                if domain_inexact:
+                    for i, (f, k) in enumerate(factors):
+                        f = f.quo_ground(denom)
+                        f = f.set_domain(domain_inexact)
+                        factors[i] = (f, k)
+                        coeff *= denom**k
+
+                    coeff = domain_inexact.convert(coeff)
+
+        return coeff*cont, _sort_factors(factors)
