@@ -181,27 +181,20 @@ def test_dup_zz_factor():
 
     assert f.factor_list() == (1, [(x + 1, 1), (x - 1, 2), (x**2 + x + 1, 1)])
 
-    assert (x**2 + 2*x + 2).factor_list() == (1, [(x**2 + 2*x + 2, 1)])
+    for test in (True, False):
+        with using(use_irreducible_in_factor=test):
+            assert (x**2 + 2*x + 2).factor_list() == (1, [(x**2 + 2*x + 2, 1)])
 
-    with using(use_irreducible_in_factor=True):
-        assert (x**2 + 2*x + 2).factor_list() == (1, [(x**2 + 2*x + 2, 1)])
+            assert (18*x**2 + 12*x + 2).factor_list() == (2, [(3*x + 1, 2)])
 
-    assert (18*x**2 + 12*x + 2).factor_list() == (2, [(3*x + 1, 2)])
+            f = -9*x**2 + 1
 
-    with using(use_irreducible_in_factor=True):
-        assert (18*x**2 + 12*x + 2).factor_list() == (2, [(3*x + 1, 2)])
+            assert R._zz_factor_sqf(f) == (-1, [3*x - 1, 3*x + 1])
+            assert f.factor_list() == (-1, [(3*x - 1, 1), (3*x + 1, 1)])
 
-    assert (-9*x**2 + 1).factor_list() == (-1, [(3*x - 1, 1), (3*x + 1, 1)])
-
-    with using(use_irreducible_in_factor=True):
-        assert R._zz_factor_sqf(3*x**4 + 2*x**3 + 6*x**2 +
-                                8*x + 10) == (1, [3*x**4 + 2*x**3 +
-                                                  6*x**2 + 8*x + 10])
-
-    assert R._zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
-
-    with using(use_irreducible_in_factor=True):
-        assert R._zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
+            assert R._zz_factor_sqf(3*x**4 + 2*x**3 + 6*x**2 +
+                                    8*x + 10) == (1, [3*x**4 + 2*x**3 +
+                                                      6*x**2 + 8*x + 10])
 
     with using(use_cyclotomic_factor=False):
         assert R._zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
@@ -243,26 +236,18 @@ def test_dup_zz_factor():
 
     f = x**10 - 1
 
-    with using(use_cyclotomic_factor=True):
-        F_0 = f.factor_list()
+    for test in (True, False):
+        with using(use_cyclotomic_factor=test):
+            f = x**10 - 1
 
-    with using(use_cyclotomic_factor=False):
-        F_1 = f.factor_list()
+            assert f.factor_list() == (1, [(x - 1, 1), (x + 1, 1),
+                                           (x**4 - x**3 + x**2 - x + 1, 1),
+                                           (x**4 + x**3 + x**2 + x + 1, 1)])
 
-    assert F_0 == F_1 == (1, [(x - 1, 1), (x + 1, 1),
-                              (x**4 - x**3 + x**2 - x + 1, 1),
-                              (x**4 + x**3 + x**2 + x + 1, 1)])
+            f = x**10 + 1
 
-    f = x**10 + 1
-
-    with using(use_cyclotomic_factor=True):
-        F_0 = f.factor_list()
-
-    with using(use_cyclotomic_factor=False):
-        F_1 = f.factor_list()
-
-    assert F_0 == F_1 == (1, [(x**2 + 1, 1),
-                              (x**8 - x**6 + x**4 - x**2 + 1, 1)])
+            assert f.factor_list() == (1, [(x**2 + 1, 1),
+                                           (x**8 - x**6 + x**4 - x**2 + 1, 1)])
 
 
 def test_dmp_zz_wang():
