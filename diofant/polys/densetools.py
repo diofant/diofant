@@ -28,10 +28,9 @@ def dmp_eval_tail(f, A, u, K):
     """Evaluate a polynomial at ``x_j = a_j, ...`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_list(f)
-    x = [(x, a) for x, a in zip(ring.gens[-len(A):], A)]
-    if not x:
+    if not A:
         return f.to_dense()
-    r = f.eval(x)
+    r = f.eval(list(zip(reversed(ring.gens), reversed(A))))
     if hasattr(r, 'ring'):
         r = r.to_dense()
     return r
