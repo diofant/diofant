@@ -14,8 +14,7 @@ from .factortools import (dmp_factor_list, dmp_trial_division,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
                           dmp_zz_wang_non_divisors, dup_cyclotomic_p,
                           dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
-                          dup_zz_factor_sqf, dup_zz_hensel_lift,
-                          dup_zz_hensel_step, dup_zz_irreducible_p)
+                          dup_zz_factor_sqf, dup_zz_irreducible_p)
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -140,14 +139,6 @@ class IPolys:
     def dmp_trial_division(self, f, factors):
         factors = dmp_trial_division(f.to_dense(), list(map(lambda _: _.to_dense(), factors)), self.ngens-1, self.domain)
         return [(self.from_list(g), k) for g, k in factors]
-
-    def dup_zz_hensel_step(self, m, f, g, h, s, t):
-        G, H, S, T = dup_zz_hensel_step(m, f.to_dense(), g.to_dense(), h.to_dense(), s.to_dense(), t.to_dense(), self.domain)
-        return self.from_list(G), self.from_list(H), self.from_list(S), self.from_list(T)
-
-    def dup_zz_hensel_lift(self, p, f, f_list, l):
-        polys = dup_zz_hensel_lift(p, f.to_dense(), list(map(lambda _: _.to_dense(), f_list)), l, self.domain)
-        return list(map(self.from_list, polys))
 
     def dup_zz_irreducible_p(self, f):
         return dup_zz_irreducible_p(f.to_dense(), self.domain)

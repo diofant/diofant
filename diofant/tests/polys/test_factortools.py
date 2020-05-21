@@ -39,7 +39,7 @@ def test__zz_mignotte_bound():
     assert R._zz_mignotte_bound(2*x**2 + 3*x + 4) == 32
 
 
-def test_dup_zz_hensel_step():
+def test__zz_hensel_step():
     R, x = ring('x', ZZ)
 
     f = x**4 - 1
@@ -48,7 +48,7 @@ def test_dup_zz_hensel_step():
     s = R(-2)
     t = 2*x**2 - 2*x - 1
 
-    G, H, S, T = R.dup_zz_hensel_step(5, f, g, h, s, t)
+    G, H, S, T = R._zz_hensel_step(5, f, g, h, s, t)
 
     assert G == x**3 + 7*x**2 - x - 7
     assert H == x - 7
@@ -56,14 +56,14 @@ def test_dup_zz_hensel_step():
     assert T == -8*x**2 - 12*x - 1
 
 
-def test_dup_zz_hensel_lift():
+def test__zz_hensel_lift():
     R, x = ring('x', ZZ)
 
     f = x**4 - 1
     F = [x - 1, x - 2, x + 2, x + 1]
 
-    assert R.dup_zz_hensel_lift(ZZ(5), f, F, 4) == [x - 1, x - 182,
-                                                    x + 182, x + 1]
+    assert R._zz_hensel_lift(ZZ(5), f, F, 4) == [x - 1, x - 182,
+                                                 x + 182, x + 1]
 
 
 def test_dup_zz_irreducible_p():

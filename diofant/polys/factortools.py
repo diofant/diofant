@@ -44,119 +44,6 @@ def dmp_zz_mignotte_bound(f, u, K):
     return ring._zz_mignotte_bound(f)
 
 
-def dup_zz_hensel_step(m, f, g, h, s, t, K):
-    """
-    One step in Hensel lifting in `Z[x]`.
-
-    Given positive integer `m` and `Z[x]` polynomials `f`, `g`, `h`, `s`
-    and `t` such that::
-
-        f == g*h (mod m)
-        s*g + t*h == 1 (mod m)
-
-        lc(f) is not a zero divisor (mod m)
-        lc(h) == 1
-
-        deg(f) == deg(g) + deg(h)
-        deg(s) < deg(h)
-        deg(t) < deg(g)
-
-    returns polynomials `G`, `H`, `S` and `T`, such that::
-
-        f == G*H (mod m**2)
-        S*G + T*H == 1 (mod m**2)
-
-    References
-    ==========
-
-    * :cite:`Gathen1999modern`
-
-    """
-    M = m**2
-
-    e = dmp_sub_mul(f, g, h, 0, K)
-    e = dmp_ground_trunc(e, M, 0, K)
-
-    q, r = dmp_div(dup_mul(s, e, K), h, 0, K)
-
-    q = dmp_ground_trunc(q, M, 0, K)
-    r = dmp_ground_trunc(r, M, 0, K)
-
-    u = dup_add(dup_mul(t, e, K), dup_mul(q, g, K), K)
-    G = dmp_ground_trunc(dup_add(g, u, K), M, 0, K)
-    H = dmp_ground_trunc(dup_add(h, r, K), M, 0, K)
-
-    u = dup_add(dup_mul(s, G, K), dup_mul(t, H, K), K)
-    b = dmp_ground_trunc(dup_sub(u, [K.one], K), M, 0, K)
-
-    c, d = dmp_div(dup_mul(s, b, K), H, 0, K)
-
-    c = dmp_ground_trunc(c, M, 0, K)
-    d = dmp_ground_trunc(d, M, 0, K)
-
-    u = dup_add(dup_mul(t, b, K), dup_mul(c, G, K), K)
-    S = dmp_ground_trunc(dup_sub(s, d, K), M, 0, K)
-    T = dmp_ground_trunc(dup_sub(t, u, K), M, 0, K)
-
-    return G, H, S, T
-
-
-def dup_zz_hensel_lift(p, f, f_list, l, K):
-    """
-    Multifactor Hensel lifting in `Z[x]`.
-
-    Given a prime `p`, polynomial `f` over `Z[x]` such that `lc(f)`
-    is a unit modulo `p`, monic pair-wise coprime polynomials `f_i`
-    over `Z[x]` satisfying::
-
-        f = lc(f) f_1 ... f_r (mod p)
-
-    and a positive integer `l`, returns a list of monic polynomials
-    `F_1`, `F_2`, ..., `F_r` satisfying::
-
-       f = lc(f) F_1 ... F_r (mod p**l)
-
-       F_i = f_i (mod p), i = 1..r
-
-    References
-    ==========
-
-    * :cite:`Gathen1999modern`
-
-    """
-    r = len(f_list)
-    lc = dmp_LC(f, K)
-
-    if r == 1:
-        F = dmp_mul_ground(f, K.gcdex(lc, p**l)[0], 0, K)
-        return [dmp_ground_trunc(F, p**l, 0, K)]
-
-    m = p
-    k = r // 2
-    d = math.ceil(math.log(l, 2))
-    Kp = K.finite_field(p)
-
-    g = dmp_normal([lc], 0, Kp)
-
-    for f_i in f_list[:k]:
-        g = dmp_mul(g, f_i, 0, Kp)
-
-    h = dmp_normal(f_list[k], 0, Kp)
-
-    for f_i in f_list[k + 1:]:
-        h = dmp_mul(h, f_i, 0, Kp)
-
-    s, t, _ = dup_gcdex(g, h, Kp)
-
-    g, h, s, t = map(lambda x: dmp_normal(x, 0, K), (g, h, s, t))
-
-    for _ in range(1, d + 1):
-        (g, h, s, t), m = dup_zz_hensel_step(m, f, g, h, s, t, K), m**2
-
-    return dup_zz_hensel_lift(p, g, f_list[:k], l, K) \
-        + dup_zz_hensel_lift(p, h, f_list[k:], l, K)
-
-
 def dup_zz_zassenhaus(f, K):
     """Factor primitive square-free polynomials in `Z[x]`."""
     ring = K.poly_ring('_0')
@@ -1063,7 +950,7 @@ class _Factor:
         p, fsqf = min(a, key=lambda x: len(x[1]))
 
         l = math.ceil(math.log(2*B + 1, p))
-        g = self.dup_zz_hensel_lift(p, f, fsqf, l)
+        g = self._zz_hensel_lift(p, f, fsqf, l)
 
         sorted_T = range(len(g))
         T = set(sorted_T)
@@ -1127,3 +1014,117 @@ class _Factor:
                 s += 1
 
         return factors + [f]
+
+    def _zz_hensel_lift(self, p, f, f_list, l):
+        """
+        Multifactor Hensel lifting in `Z[x]`.
+
+        Given a prime `p`, polynomial `f` over `Z[x]` such that `lc(f)`
+        is a unit modulo `p`, monic pair-wise coprime polynomials `f_i`
+        over `Z[x]` satisfying::
+
+            f = lc(f) f_1 ... f_r (mod p)
+
+        and a positive integer `l`, returns a list of monic polynomials
+        `F_1`, `F_2`, ..., `F_r` satisfying::
+
+           f = lc(f) F_1 ... F_r (mod p**l)
+
+           F_i = f_i (mod p), i = 1..r
+
+        References
+        ==========
+
+        * :cite:`Gathen1999modern`
+
+        """
+        domain = self.domain
+
+        r = len(f_list)
+        lc = f.LC
+
+        if r == 1:
+            F = f * domain.gcdex(lc, p**l)[0]
+            return [F.trunc_ground(p**l)]
+
+        m = p
+        k = r // 2
+        d = math.ceil(math.log(l, 2))
+        p_domain = domain.finite_field(p)
+
+        g = self.ground_new(lc)
+        g = g.set_domain(p_domain)
+
+        for f_i in f_list[:k]:
+            g *= f_i
+
+        h = f_list[k].set_domain(p_domain)
+
+        for f_i in f_list[k + 1:]:
+            h *= f_i
+
+        s, t, _ = self.clone(domain=p_domain).gcdex(g, h)
+
+        g, h, s, t = map(lambda x: x.set_domain(domain), (g, h, s, t))
+
+        for _ in range(1, d + 1):
+            (g, h, s, t), m = self._zz_hensel_step(m, f, g, h, s, t), m**2
+
+        return (self._zz_hensel_lift(p, g, f_list[:k], l) +
+                self._zz_hensel_lift(p, h, f_list[k:], l))
+
+    def _zz_hensel_step(self, m, f, g, h, s, t):
+        """
+        One step in Hensel lifting in `Z[x]`.
+
+        Given positive integer `m` and `Z[x]` polynomials `f`, `g`, `h`, `s`
+        and `t` such that::
+
+            f == g*h (mod m)
+            s*g + t*h == 1 (mod m)
+
+            lc(f) is not a zero divisor (mod m)
+            lc(h) == 1
+
+            deg(f) == deg(g) + deg(h)
+            deg(s) < deg(h)
+            deg(t) < deg(g)
+
+        returns polynomials `G`, `H`, `S` and `T`, such that::
+
+            f == G*H (mod m**2)
+            S*G + T*H == 1 (mod m**2)
+
+        References
+        ==========
+
+        * :cite:`Gathen1999modern`
+
+        """
+        M = m**2
+
+        e = f - g*h
+        e = e.trunc_ground(M)
+
+        q, r = divmod(s*e, h)
+
+        q = q.trunc_ground(M)
+        r = r.trunc_ground(M)
+
+        u = t*e + q*g
+        G = (g + u).trunc_ground(M)
+        H = (h + r).trunc_ground(M)
+
+        u = s*G + t*H
+        b = (u - 1).trunc_ground(M)
+
+        c, d = divmod(s*b, H)
+
+        c = c.trunc_ground(M)
+        d = d.trunc_ground(M)
+
+        u = t*b + c*G
+        S = (s - d).trunc_ground(M)
+        T = (t - u).trunc_ground(M)
+
+        return G, H, S, T
