@@ -26,22 +26,6 @@ from .polyutils import _sort_factors
 from .sqfreetools import dmp_sqf_list, dmp_sqf_p, dmp_sqf_part
 
 
-def dmp_trial_division(f, factors, u, K):
-    """Determine multiplicities of factors using trial division."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    factors = list(map(ring.from_list, factors))
-    result = ring._trial_division(f, factors)
-    return [(f.to_dense(), k) for f, k in result]
-
-
-def dmp_zz_mignotte_bound(f, u, K):
-    """Mignotte bound for multivariate polynomials in `K[X]`."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    return ring._zz_mignotte_bound(f)
-
-
 def dup_zz_irreducible_p(f, K):
     """Test irreducibility using Eisenstein's criterion."""
     lc = dmp_LC(f, K)
@@ -197,14 +181,6 @@ def dup_zz_cyclotomic_factor(f, K):
                 H.append(h)
 
         return H
-
-
-def dup_zz_factor_sqf(f, K):
-    """Factor square-free (non-primitive) polynomials in `Z[x]`."""
-    ring = K.poly_ring('_0')
-    f = ring.from_list(f)
-    cont, factors = ring._zz_factor_sqf(f)
-    return cont, [_.to_dense() for _ in factors]
 
 
 def dmp_zz_wang_non_divisors(E, cs, ct, K):
@@ -608,6 +584,30 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
         result.append(f)
 
     return result
+
+
+def dmp_trial_division(f, factors, u, K):
+    """Determine multiplicities of factors using trial division."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    factors = list(map(ring.from_list, factors))
+    result = ring._trial_division(f, factors)
+    return [(f.to_dense(), k) for f, k in result]
+
+
+def dmp_zz_mignotte_bound(f, u, K):
+    """Mignotte bound for multivariate polynomials in `K[X]`."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    return ring._zz_mignotte_bound(f)
+
+
+def dup_zz_factor_sqf(f, K):
+    """Factor square-free (non-primitive) polynomials in `Z[x]`."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    cont, factors = ring._zz_factor_sqf(f)
+    return cont, [_.to_dense() for _ in factors]
 
 
 def dmp_zz_factor(f, u, K):
