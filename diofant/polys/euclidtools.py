@@ -30,16 +30,6 @@ def dmp_gcd(f, g, u, K):
     return ring.gcd(f, g).to_dense()
 
 
-def dmp_primitive(f, u, K):
-    """Returns multivariate content and a primitive polynomial."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    new_ring, f = map(lambda _: _.eject(*ring.gens[1:]), (ring, f))
-    c, f = f.primitive()
-    f = f.inject()
-    return c.to_dense(), f.to_dense()
-
-
 class _GCD:
     """Mixin class for computing gcd."""
 

@@ -1,6 +1,5 @@
 """Basic tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-import functools
 import random
 
 from ..core import oo
@@ -43,26 +42,6 @@ def dmp_TC(f, K):
         return K.zero
     else:
         return f[-1]
-
-
-def dmp_ground_LC(f, u, K):
-    """
-    Return the ground leading coefficient.
-
-    Examples
-    ========
-
-    >>> R, x, y, z = ring('x y z', ZZ)
-
-    >>> R.dmp_ground_LC(y + 2*z + 3)
-    1
-
-    """
-    while u:
-        f = dmp_LC(f, K)
-        u -= 1
-
-    return dmp_LC(f, K)
 
 
 def dmp_ground_TC(f, u, K):
@@ -556,170 +535,12 @@ def dup_inflate(f, m, K):
     return f.to_dense()
 
 
-def dmp_exclude(f, u, K):
-    """
-    Exclude useless levels from ``f``.
-
-    Return the levels excluded, the new excluded ``f``, and the new ``u``.
-
-    Examples
-    ========
-
-    >>> dmp_exclude([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], 2, ZZ)
-    ([2], [[1], [1, 2]], 1)
-
-    """
-    if not u or dmp_ground_p(f, None, u):
-        return [], f, u
-
-    J, F = [], dmp_to_dict(f, u)
-
-    for j in range(u + 1):
-        for monom in F:
-            if monom[j]:
-                break
-        else:
-            J.append(j)
-
-    if not J:
-        return [], f, u
-
-    f = {}
-
-    for monom, coeff in F.items():
-        monom = list(monom)
-
-        for j in reversed(J):
-            del monom[j]
-
-        f[tuple(monom)] = coeff
-
-    u -= len(J)
-
-    return J, dmp_from_dict(f, u, K), u
-
-
-def dmp_include(f, J, u, K):
-    """
-    Include useless levels in ``f``.
-
-    Examples
-    ========
-
-    >>> dmp_include([[ZZ(1)], [ZZ(1), ZZ(2)]], [2], 1, ZZ)
-    [[[1]], [[1], [2]]]
-
-    """
-    if not J:
-        return f
-
-    F, f = dmp_to_dict(f, u), {}
-
-    for monom, coeff in F.items():
-        monom = list(monom)
-
-        for j in J:
-            monom.insert(j, 0)
-
-        f[tuple(monom)] = coeff
-
-    u += len(J)
-
-    return dmp_from_dict(f, u, K)
-
-
-def dmp_inject(f, u, K, front=False):
-    """
-    Convert ``f`` from ``K[X][Y]`` to ``K[X,Y]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> dmp_inject([R(1), x + 2], 0, R)
-    ([[[1]], [[1], [2]]], 2)
-    >>> dmp_inject([R(1), x + 2], 0, R, front=True)
-    ([[[1]], [[1, 2]]], 2)
-
-    """
-    f, h = dmp_to_dict(f, u), {}
-
-    v = K.ngens - 1
-
-    for f_monom, g in f.items():
-        g = g.to_dict()
-
-        for g_monom, c in g.items():
-            if front:
-                h[g_monom + f_monom] = c
-            else:
-                h[f_monom + g_monom] = c
-
-    w = u + v + 1
-
-    return dmp_from_dict(h, w, K.domain), w
-
-
-def dmp_eject(f, u, K, front=False):
-    """
-    Convert ``f`` from ``K[X,Y]`` to ``K[X][Y]``.
-
-    Examples
-    ========
-
-    >>> dmp_eject([[[ZZ(1)]], [[ZZ(1)], [ZZ(2)]]], 2, ZZ.inject('x', 'y'))
-    [1, x + 2]
-
-    """
-    f, h = dmp_to_dict(f, u), {}
-
-    n = K.ngens
-    v = u - K.ngens + 1
-
-    for monom, c in f.items():
-        if front:
-            g_monom, f_monom = monom[:n], monom[n:]
-        else:
-            g_monom, f_monom = monom[-n:], monom[:-n]
-
-        if f_monom in h:
-            h[f_monom][g_monom] = c
-        else:
-            h[f_monom] = {g_monom: c}
-
-    for monom, c in h.items():
-        h[monom] = K(c)
-
-    return dmp_from_dict(h, v - 1, K)
-
-
 def dmp_terms_gcd(f, u, K):
-    """
-    Remove GCD of terms from ``f`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> dmp_terms_gcd([[ZZ(1), ZZ(0)], [ZZ(1), ZZ(0), ZZ(0)], [], []], 1, ZZ)
-    ((2, 1), [[1], [1, 0]])
-
-    """
-    if dmp_ground_TC(f, u, K) or dmp_zero_p(f, u):
-        return (0,)*(u + 1), f
-
-    F = dmp_to_dict(f, u)
-    G = functools.reduce(Monomial.gcd, F)
-
-    if all(g == 0 for g in G):
-        return G, f
-
-    f = {}
-
-    for monom, coeff in F.items():
-        f[monom/G] = coeff
-
-    return G, dmp_from_dict(f, u, K)
+    """Remove GCD of terms from ``f`` in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    G, f = f.terms_gcd()
+    return G, f.to_dense()
 
 
 def dmp_slice_in(f, m, n, j, u, K):

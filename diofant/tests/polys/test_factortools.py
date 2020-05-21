@@ -17,29 +17,29 @@ f_0, f_1, f_2, f_3, f_4, f_5, f_6 = f_polys()
 w_1, w_2 = w_polys()
 
 
-def test_dmp_trial_division():
+def test__trial_division():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_trial_division(x**5 + 8*x**4 + 25*x**3 + 38*x**2 + 28*x +
-                                8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
+    assert R._trial_division(x**5 + 8*x**4 + 25*x**3 + 38*x**2 + 28*x +
+                             8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
 
     R, x, y = ring('x y', ZZ)
 
-    assert R.dmp_trial_division(x**5 + 8*x**4 + 25*x**3 + 38*x**2 + 28*x +
-                                8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
+    assert R._trial_division(x**5 + 8*x**4 + 25*x**3 + 38*x**2 + 28*x +
+                             8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
 
 
-def test_dmp_zz_mignotte_bound():
+def test__zz_mignotte_bound():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_zz_mignotte_bound(2*x**2 + 3*x + 4) == 32
+    assert R._zz_mignotte_bound(2*x**2 + 3*x + 4) == 32
 
     R, x, y = ring('x y', ZZ)
 
-    assert R.dmp_zz_mignotte_bound(2*x**2 + 3*x + 4) == 32
+    assert R._zz_mignotte_bound(2*x**2 + 3*x + 4) == 32
 
 
-def test_dup_zz_hensel_step():
+def test__zz_hensel_step():
     R, x = ring('x', ZZ)
 
     f = x**4 - 1
@@ -48,7 +48,7 @@ def test_dup_zz_hensel_step():
     s = R(-2)
     t = 2*x**2 - 2*x - 1
 
-    G, H, S, T = R.dup_zz_hensel_step(5, f, g, h, s, t)
+    G, H, S, T = R._zz_hensel_step(5, f, g, h, s, t)
 
     assert G == x**3 + 7*x**2 - x - 7
     assert H == x - 7
@@ -56,14 +56,14 @@ def test_dup_zz_hensel_step():
     assert T == -8*x**2 - 12*x - 1
 
 
-def test_dup_zz_hensel_lift():
+def test__zz_hensel_lift():
     R, x = ring('x', ZZ)
 
     f = x**4 - 1
     F = [x - 1, x - 2, x + 2, x + 1]
 
-    assert R.dup_zz_hensel_lift(ZZ(5), f, F, 4) == [x - 1, x - 182,
-                                                    x + 182, x + 1]
+    assert R._zz_hensel_lift(ZZ(5), f, F, 4) == [x - 1, x - 182,
+                                                 x + 182, x + 1]
 
 
 def test_dup_zz_irreducible_p():
@@ -165,12 +165,12 @@ def test_dup_zz_factor():
     assert R(7).factor_list() == (7, [])
     assert R(-7).factor_list() == (-7, [])
 
-    assert R.dup_zz_factor_sqf(R(0)) == (0, [])
-    assert R.dup_zz_factor_sqf(R(7)) == (7, [])
-    assert R.dup_zz_factor_sqf(R(-7)) == (-7, [])
+    assert R._zz_factor_sqf(R(0)) == (0, [])
+    assert R._zz_factor_sqf(R(7)) == (7, [])
+    assert R._zz_factor_sqf(R(-7)) == (-7, [])
 
     assert (2*x + 4).factor_list() == (2, [(x + 2, 1)])
-    assert R.dup_zz_factor_sqf(2*x + 4) == (2, [x + 2])
+    assert R._zz_factor_sqf(2*x + 4) == (2, [x + 2])
 
     f = x**4 + x + 1
 
@@ -181,43 +181,36 @@ def test_dup_zz_factor():
 
     assert f.factor_list() == (1, [(x + 1, 1), (x - 1, 2), (x**2 + x + 1, 1)])
 
-    assert (x**2 + 2*x + 2).factor_list() == (1, [(x**2 + 2*x + 2, 1)])
+    for test in (True, False):
+        with using(use_irreducible_in_factor=test):
+            assert (x**2 + 2*x + 2).factor_list() == (1, [(x**2 + 2*x + 2, 1)])
 
-    with using(use_irreducible_in_factor=True):
-        assert (x**2 + 2*x + 2).factor_list() == (1, [(x**2 + 2*x + 2, 1)])
+            assert (18*x**2 + 12*x + 2).factor_list() == (2, [(3*x + 1, 2)])
 
-    assert (18*x**2 + 12*x + 2).factor_list() == (2, [(3*x + 1, 2)])
+            f = -9*x**2 + 1
 
-    with using(use_irreducible_in_factor=True):
-        assert (18*x**2 + 12*x + 2).factor_list() == (2, [(3*x + 1, 2)])
+            assert R._zz_factor_sqf(f) == (-1, [3*x - 1, 3*x + 1])
+            assert f.factor_list() == (-1, [(3*x - 1, 1), (3*x + 1, 1)])
 
-    assert (-9*x**2 + 1).factor_list() == (-1, [(3*x - 1, 1), (3*x + 1, 1)])
-
-    with using(use_irreducible_in_factor=True):
-        assert R.dup_zz_factor_sqf(3*x**4 + 2*x**3 + 6*x**2 +
-                                   8*x + 10) == (1, [3*x**4 + 2*x**3 +
-                                                     6*x**2 + 8*x + 10])
-
-    assert R.dup_zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
-
-    with using(use_irreducible_in_factor=True):
-        assert R.dup_zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
+            assert R._zz_factor_sqf(3*x**4 + 2*x**3 + 6*x**2 +
+                                    8*x + 10) == (1, [3*x**4 + 2*x**3 +
+                                                      6*x**2 + 8*x + 10])
 
     with using(use_cyclotomic_factor=False):
-        assert R.dup_zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
+        assert R._zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
 
     assert (x**3 - 6*x**2 + 11*x - 6).factor_list() == (1, [(x - 3, 1),
                                                             (x - 2, 1),
                                                             (x - 1, 1)])
 
-    assert R.dup_zz_factor_sqf(x**3 - 6*x**2 + 11*x - 6) == (1, [x - 3, x - 2,
-                                                                 x - 1])
+    assert R._zz_factor_sqf(x**3 - 6*x**2 + 11*x - 6) == (1, [x - 3, x - 2,
+                                                              x - 1])
 
     assert (3*x**3 + 10*x**2 + 13*x +
             10).factor_list() == (1, [(x + 2, 1), (3*x**2 + 4*x + 5, 1)])
 
-    assert R.dup_zz_factor_sqf(3*x**3 + 10*x**2 +
-                               13*x + 10) == (1, [x + 2, 3*x**2 + 4*x + 5])
+    assert R._zz_factor_sqf(3*x**3 + 10*x**2 +
+                            13*x + 10) == (1, [x + 2, 3*x**2 + 4*x + 5])
 
     assert (-x**6 + x**2).factor_list() == (-1, [(x - 1, 1), (x + 1, 1),
                                                  (x, 2), (x**2 + 1, 1)])
@@ -243,33 +236,25 @@ def test_dup_zz_factor():
 
     f = x**10 - 1
 
-    with using(use_cyclotomic_factor=True):
-        F_0 = f.factor_list()
+    for test in (True, False):
+        with using(use_cyclotomic_factor=test):
+            f = x**10 - 1
 
-    with using(use_cyclotomic_factor=False):
-        F_1 = f.factor_list()
+            assert f.factor_list() == (1, [(x - 1, 1), (x + 1, 1),
+                                           (x**4 - x**3 + x**2 - x + 1, 1),
+                                           (x**4 + x**3 + x**2 + x + 1, 1)])
 
-    assert F_0 == F_1 == (1, [(x - 1, 1), (x + 1, 1),
-                              (x**4 - x**3 + x**2 - x + 1, 1),
-                              (x**4 + x**3 + x**2 + x + 1, 1)])
+            f = x**10 + 1
 
-    f = x**10 + 1
-
-    with using(use_cyclotomic_factor=True):
-        F_0 = f.factor_list()
-
-    with using(use_cyclotomic_factor=False):
-        F_1 = f.factor_list()
-
-    assert F_0 == F_1 == (1, [(x**2 + 1, 1),
-                              (x**8 - x**6 + x**4 - x**2 + 1, 1)])
+            assert f.factor_list() == (1, [(x**2 + 1, 1),
+                                           (x**8 - x**6 + x**4 - x**2 + 1, 1)])
 
 
 def test_dmp_zz_wang():
     R, x, y, z = ring('x y z', ZZ)
     UV, _x = ring('x', ZZ)
 
-    p = ZZ(nextprime(R.dmp_zz_mignotte_bound(w_1)))
+    p = ZZ(nextprime(R._zz_mignotte_bound(w_1)))
 
     assert p == 6291469
 
@@ -295,7 +280,7 @@ def test_dmp_zz_wang():
     assert R.dmp_zz_wang_non_divisors(E, cs, ZZ(4)) == [7, 3, 11, 17]
     assert s.is_squarefree and UV.dmp_degree_in(s, 0) == R.dmp_degree_in(w_1, 0)
 
-    _, H = UV.dup_zz_factor_sqf(s)
+    _, H = UV._zz_factor_sqf(s)
 
     h_1 = 44*_x**2 + 42*_x + 1
     h_2 = 126*_x**2 - 9*_x + 28

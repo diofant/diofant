@@ -2047,6 +2047,9 @@ class PolyElement(DomainElement, CantSympify, dict):
     def sqf_norm(self):
         return self.ring.sqf_norm(self)
 
+    def factor_list(self):
+        return self.ring.factor_list(self)
+
     # The following methods aren't ported (yet) to polynomial
     # representation independent algorithm implementations.
 
@@ -2068,6 +2071,3 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self.ring.dup_cyclotomic_p(self)
         else:
             raise AttributeError('cyclotomic polynomial')
-
-    def factor_list(self):
-        return self.ring.dmp_factor_list(self)

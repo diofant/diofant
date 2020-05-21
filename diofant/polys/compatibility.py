@@ -1,21 +1,18 @@
 """Compatibility interface between dense and sparse polys."""
 
 from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term,
-                         dmp_exquo_ground, dmp_l1_norm, dmp_max_norm, dmp_mul,
+                         dmp_exquo_ground, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_quo_ground, dmp_sqr, dmp_sub, dmp_sub_mul,
                          dup_lshift, dup_rshift)
-from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
-                         dmp_ground_TC, dmp_LC, dmp_TC)
+from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_TC, dmp_LC,
+                         dmp_TC)
 from .densetools import (dmp_compose, dup_decompose, dup_real_imag,
                          dup_transform)
-from .factortools import (dmp_factor_list, dmp_trial_division,
-                          dmp_zz_diophantine, dmp_zz_mignotte_bound,
-                          dmp_zz_wang, dmp_zz_wang_hensel_lifting,
-                          dmp_zz_wang_lead_coeffs, dmp_zz_wang_non_divisors,
-                          dup_cyclotomic_p, dup_zz_cyclotomic_factor,
-                          dup_zz_cyclotomic_poly, dup_zz_factor_sqf,
-                          dup_zz_hensel_lift, dup_zz_hensel_step,
+from .factortools import (dmp_zz_diophantine, dmp_zz_wang,
+                          dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
+                          dmp_zz_wang_non_divisors, dup_cyclotomic_p,
+                          dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
                           dup_zz_irreducible_p)
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
@@ -38,9 +35,6 @@ class IPolys:
     domain = None
     order = None
     gens = None
-
-    def dmp_ground_LC(self, f):
-        return dmp_ground_LC(f.to_dense(), self.ngens-1, self.domain)
 
     def dmp_ground_TC(self, f):
         return dmp_ground_TC(f.to_dense(), self.ngens-1, self.domain)
@@ -98,9 +92,6 @@ class IPolys:
     def dmp_max_norm(self, f):
         return dmp_max_norm(f.to_dense(), self.ngens-1, self.domain)
 
-    def dmp_l1_norm(self, f):
-        return dmp_l1_norm(f.to_dense(), self.ngens-1, self.domain)
-
     def dmp_LC(self, f):
         LC = dmp_LC(f.to_dense(), self.domain)
         if self.is_multivariate:
@@ -140,21 +131,6 @@ class IPolys:
 
     def dup_sign_variations(self, f):
         return dup_sign_variations(f.to_dense(), self.domain)
-
-    def dmp_trial_division(self, f, factors):
-        factors = dmp_trial_division(f.to_dense(), list(map(lambda _: _.to_dense(), factors)), self.ngens-1, self.domain)
-        return [(self.from_list(g), k) for g, k in factors]
-
-    def dmp_zz_mignotte_bound(self, f):
-        return dmp_zz_mignotte_bound(f.to_dense(), self.ngens-1, self.domain)
-
-    def dup_zz_hensel_step(self, m, f, g, h, s, t):
-        G, H, S, T = dup_zz_hensel_step(m, f.to_dense(), g.to_dense(), h.to_dense(), s.to_dense(), t.to_dense(), self.domain)
-        return self.from_list(G), self.from_list(H), self.from_list(S), self.from_list(T)
-
-    def dup_zz_hensel_lift(self, p, f, f_list, l):
-        polys = dup_zz_hensel_lift(p, f.to_dense(), list(map(lambda _: _.to_dense(), f_list)), l, self.domain)
-        return list(map(self.from_list, polys))
 
     def dup_zz_irreducible_p(self, f):
         return dup_zz_irreducible_p(f.to_dense(), self.domain)
@@ -201,14 +177,6 @@ class IPolys:
     def dmp_zz_wang(self, f, mod=None, seed=None):
         factors = dmp_zz_wang(f.to_dense(), self.ngens-1, self.domain, mod=mod, seed=seed)
         return [self.from_list(g) for g in factors]
-
-    def dup_zz_factor_sqf(self, f):
-        coeff, factors = dup_zz_factor_sqf(f.to_dense(), self.domain)
-        return coeff, [self.from_list(g) for g in factors]
-
-    def dmp_factor_list(self, f):
-        coeff, factors = dmp_factor_list(f.to_dense(), self.ngens-1, self.domain)
-        return coeff, [(self.from_list(g), k) for g, k in factors]
 
     def dup_sturm(self, f):
         seq = dup_sturm(f.to_dense(), self.domain)

@@ -6,271 +6,23 @@ import math
 from ..ntheory import factorint, isprime, nextprime
 from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
-from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_l1_norm,
-                         dmp_max_norm, dmp_mul, dmp_mul_ground, dmp_neg,
-                         dmp_pow, dmp_quo, dmp_quo_ground, dmp_rem, dmp_sub,
-                         dmp_sub_mul, dup_add, dup_lshift, dup_mul, dup_sqr,
-                         dup_sub)
+from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_max_norm, dmp_mul,
+                         dmp_mul_ground, dmp_neg, dmp_pow, dmp_quo,
+                         dmp_quo_ground, dmp_rem, dmp_sub, dmp_sub_mul,
+                         dup_add, dup_lshift, dup_mul, dup_sqr, dup_sub)
 from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
-                         dmp_eject, dmp_exclude, dmp_ground_LC, dmp_ground_p,
-                         dmp_include, dmp_inject, dmp_LC, dmp_nest, dmp_normal,
-                         dmp_one, dmp_raise, dmp_strip, dmp_TC, dmp_zero_p,
-                         dup_inflate)
-from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
-                         dmp_eval_in, dmp_eval_tail, dmp_ground_content,
-                         dmp_ground_monic, dmp_ground_primitive,
-                         dmp_ground_trunc)
-from .euclidtools import dmp_primitive, dup_gcdex
+                         dmp_ground_p, dmp_LC, dmp_nest, dmp_normal, dmp_one,
+                         dmp_raise, dmp_strip, dmp_TC, dmp_zero_p, dup_inflate)
+from .densetools import (dmp_compose, dmp_diff_eval_in, dmp_eval_in,
+                         dmp_eval_tail, dmp_ground_content,
+                         dmp_ground_primitive, dmp_ground_trunc)
+from .euclidtools import dup_gcdex
 from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-from .sqfreetools import dmp_sqf_list, dmp_sqf_p, dmp_sqf_part
-
-
-def dmp_trial_division(f, factors, u, K):
-    """Determine multiplicities of factors using trial division."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    factors = list(map(ring.from_list, factors))
-    result = ring._trial_division(f, factors)
-    return [(f.to_dense(), k) for f, k in result]
-
-
-def dmp_zz_mignotte_bound(f, u, K):
-    """Mignotte bound for multivariate polynomials in `K[X]`."""
-    a = dmp_max_norm(f, u, K)
-    b = abs(dmp_ground_LC(f, u, K))
-    n = sum(dmp_degree_list(f, u))
-
-    return K.sqrt(K(n + 1))*2**n*a*b
-
-
-def dup_zz_hensel_step(m, f, g, h, s, t, K):
-    """
-    One step in Hensel lifting in `Z[x]`.
-
-    Given positive integer `m` and `Z[x]` polynomials `f`, `g`, `h`, `s`
-    and `t` such that::
-
-        f == g*h (mod m)
-        s*g + t*h == 1 (mod m)
-
-        lc(f) is not a zero divisor (mod m)
-        lc(h) == 1
-
-        deg(f) == deg(g) + deg(h)
-        deg(s) < deg(h)
-        deg(t) < deg(g)
-
-    returns polynomials `G`, `H`, `S` and `T`, such that::
-
-        f == G*H (mod m**2)
-        S*G + T*H == 1 (mod m**2)
-
-    References
-    ==========
-
-    * :cite:`Gathen1999modern`
-
-    """
-    M = m**2
-
-    e = dmp_sub_mul(f, g, h, 0, K)
-    e = dmp_ground_trunc(e, M, 0, K)
-
-    q, r = dmp_div(dup_mul(s, e, K), h, 0, K)
-
-    q = dmp_ground_trunc(q, M, 0, K)
-    r = dmp_ground_trunc(r, M, 0, K)
-
-    u = dup_add(dup_mul(t, e, K), dup_mul(q, g, K), K)
-    G = dmp_ground_trunc(dup_add(g, u, K), M, 0, K)
-    H = dmp_ground_trunc(dup_add(h, r, K), M, 0, K)
-
-    u = dup_add(dup_mul(s, G, K), dup_mul(t, H, K), K)
-    b = dmp_ground_trunc(dup_sub(u, [K.one], K), M, 0, K)
-
-    c, d = dmp_div(dup_mul(s, b, K), H, 0, K)
-
-    c = dmp_ground_trunc(c, M, 0, K)
-    d = dmp_ground_trunc(d, M, 0, K)
-
-    u = dup_add(dup_mul(t, b, K), dup_mul(c, G, K), K)
-    S = dmp_ground_trunc(dup_sub(s, d, K), M, 0, K)
-    T = dmp_ground_trunc(dup_sub(t, u, K), M, 0, K)
-
-    return G, H, S, T
-
-
-def dup_zz_hensel_lift(p, f, f_list, l, K):
-    """
-    Multifactor Hensel lifting in `Z[x]`.
-
-    Given a prime `p`, polynomial `f` over `Z[x]` such that `lc(f)`
-    is a unit modulo `p`, monic pair-wise coprime polynomials `f_i`
-    over `Z[x]` satisfying::
-
-        f = lc(f) f_1 ... f_r (mod p)
-
-    and a positive integer `l`, returns a list of monic polynomials
-    `F_1`, `F_2`, ..., `F_r` satisfying::
-
-       f = lc(f) F_1 ... F_r (mod p**l)
-
-       F_i = f_i (mod p), i = 1..r
-
-    References
-    ==========
-
-    * :cite:`Gathen1999modern`
-
-    """
-    r = len(f_list)
-    lc = dmp_LC(f, K)
-
-    if r == 1:
-        F = dmp_mul_ground(f, K.gcdex(lc, p**l)[0], 0, K)
-        return [dmp_ground_trunc(F, p**l, 0, K)]
-
-    m = p
-    k = r // 2
-    d = math.ceil(math.log(l, 2))
-    Kp = K.finite_field(p)
-
-    g = dmp_normal([lc], 0, Kp)
-
-    for f_i in f_list[:k]:
-        g = dmp_mul(g, f_i, 0, Kp)
-
-    h = dmp_normal(f_list[k], 0, Kp)
-
-    for f_i in f_list[k + 1:]:
-        h = dmp_mul(h, f_i, 0, Kp)
-
-    s, t, _ = dup_gcdex(g, h, Kp)
-
-    g, h, s, t = map(lambda x: dmp_normal(x, 0, K), (g, h, s, t))
-
-    for _ in range(1, d + 1):
-        (g, h, s, t), m = dup_zz_hensel_step(m, f, g, h, s, t, K), m**2
-
-    return dup_zz_hensel_lift(p, g, f_list[:k], l, K) \
-        + dup_zz_hensel_lift(p, h, f_list[k:], l, K)
-
-
-def _test_pl(fc, q, pl):
-    q = symmetric_residue(q, pl)
-    if not q:
-        return True
-    return fc % q == 0
-
-
-def dup_zz_zassenhaus(f, K):
-    """Factor primitive square-free polynomials in `Z[x]`."""
-    n = dmp_degree_in(f, 0, 0)
-
-    if n == 1:
-        return [f]
-
-    fc = f[-1]
-    A = dmp_max_norm(f, 0, K)
-    b = dmp_LC(f, K)
-    B = int(dmp_zz_mignotte_bound(f, 0, K))
-    C = int((n + 1)**(2*n)*A**(2*n - 1))
-    gamma = math.ceil(2*math.log(C, 2))
-    bound = int(2*gamma*math.log(gamma))
-    a = []
-    # choose a prime number `p` such that `f` be square free in Z_p
-    # if there are many factors in Z_p, choose among a few different `p`
-    # the one with fewer factors
-    for px in range(3, bound + 1):  # pragma: no branch
-        if not isprime(px) or b % px == 0:
-            continue
-
-        px = K.convert(px)
-        Kpx = K.finite_field(px)
-
-        F = dmp_normal(f, 0, Kpx)
-
-        if not dmp_sqf_p(F, 0, Kpx):
-            continue
-
-        F = dmp_ground_monic(F, 0, Kpx)
-        fsqfx = dup_gf_factor_sqf(F, Kpx)
-        a.append((px, [dmp_normal(_, 0, K) for _ in fsqfx]))
-        if len(fsqfx) < 15 or len(a) > 4:
-            break
-    p, fsqf = min(a, key=lambda x: len(x[1]))
-
-    l = math.ceil(math.log(2*B + 1, p))
-
-    modular = fsqf
-
-    g = dup_zz_hensel_lift(p, f, modular, l, K)
-
-    sorted_T = range(len(g))
-    T = set(sorted_T)
-    factors, s = [], 1
-    pl = p**l
-
-    while 2*s <= len(T):
-        for S in subsets(sorted_T, s):
-            # lift the constant coefficient of the product `G` of the factors
-            # in the subset `S`; if it is does not divide `fc`, `G` does
-            # not divide the input polynomial
-
-            if b == 1:
-                q = 1
-                for i in S:
-                    q = q*g[i][-1]
-                q = q % pl
-                if not _test_pl(fc, q, pl):
-                    continue
-            else:
-                G = [b]
-                for i in S:
-                    G = dup_mul(G, g[i], K)
-                G = dmp_ground_trunc(G, pl, 0, K)
-                G = dmp_ground_primitive(G, 0, K)[1]
-                q = G[-1]
-                if q and fc % q != 0:
-                    continue
-
-            H = [b]
-            S = set(S)
-            T_S = T - S
-
-            if b == 1:
-                G = [b]
-                for i in S:
-                    G = dup_mul(G, g[i], K)
-                G = dmp_ground_trunc(G, pl, 0, K)
-
-            for i in T_S:
-                H = dup_mul(H, g[i], K)
-
-            H = dmp_ground_trunc(H, pl, 0, K)
-
-            G_norm = dmp_l1_norm(G, 0, K)
-            H_norm = dmp_l1_norm(H, 0, K)
-
-            if G_norm*H_norm <= B:
-                T = T_S
-                sorted_T = [i for i in sorted_T if i not in S]
-
-                G = dmp_ground_primitive(G, 0, K)[1]
-                f = dmp_ground_primitive(H, 0, K)[1]
-
-                factors.append(G)
-                b = dmp_LC(f, K)
-
-                break
-        else:
-            s += 1
-
-    return factors + [f]
+from .sqfreetools import dmp_sqf_p, dmp_sqf_part
 
 
 def dup_zz_irreducible_p(f, K):
@@ -428,97 +180,6 @@ def dup_zz_cyclotomic_factor(f, K):
                 H.append(h)
 
         return H
-
-
-def dup_zz_factor_sqf(f, K):
-    """Factor square-free (non-primitive) polynomials in `Z[x]`."""
-    cont, g = dmp_ground_primitive(f, 0, K)
-
-    n = dmp_degree_in(g, 0, 0)
-
-    if n <= 0:
-        return cont, []
-    elif n == 1:
-        return cont, [g]
-
-    if query('USE_IRREDUCIBLE_IN_FACTOR'):
-        if dup_zz_irreducible_p(g, K):
-            return cont, [g]
-
-    factors = None
-
-    if query('USE_CYCLOTOMIC_FACTOR'):
-        factors = dup_zz_cyclotomic_factor(g, K)
-
-    if factors is None:
-        factors = dup_zz_zassenhaus(g, K)
-
-    return cont, _sort_factors(factors, multiple=False)
-
-
-def dup_zz_factor(f, K):
-    """
-    Factor (non square-free) polynomials in `Z[x]`.
-
-    Given a univariate polynomial `f` in `Z[x]` computes its complete
-    factorization `f_1, ..., f_n` into irreducibles over integers::
-
-                f = content(f) f_1**k_1 ... f_n**k_n
-
-    The factorization is computed by reducing the input polynomial
-    into a primitive square-free polynomial and factoring it using
-    Zassenhaus algorithm. Trial division is used to recover the
-    multiplicities of factors.
-
-    The result is returned as a tuple consisting of::
-
-              (content(f), [(f_1, k_1), ..., (f_n, k_n))
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> (2*x**4 - 2).factor_list()
-    (2, [(x - 1, 1), (x + 1, 1), (x**2 + 1, 1)])
-
-    Note that this is a complete factorization over integers,
-    however over Gaussian integers we can factor the last term.
-
-    By default, polynomials `x**n - 1` and `x**n + 1` are factored
-    using cyclotomic decomposition to speedup computations. To
-    disable this behaviour set cyclotomic=False.
-
-    References
-    ==========
-
-    * :cite:`Gathen1999modern`
-
-    """
-    cont, g = dmp_ground_primitive(f, 0, K)
-
-    n = dmp_degree_in(g, 0, 0)
-
-    if n <= 0:
-        return cont, []
-    elif n == 1:
-        return cont, [(g, 1)]
-
-    if query('USE_IRREDUCIBLE_IN_FACTOR'):
-        if dup_zz_irreducible_p(g, K):
-            return cont, [(g, 1)]
-
-    g = dmp_sqf_part(g, 0, K)
-    H = None
-
-    if query('USE_CYCLOTOMIC_FACTOR'):
-        H = dup_zz_cyclotomic_factor(g, K)
-
-    if H is None:
-        H = dup_zz_zassenhaus(g, K)
-
-    factors = dmp_trial_division(f, H, 0, K)
-    return cont, factors
 
 
 def dmp_zz_wang_non_divisors(E, cs, ct, K):
@@ -924,151 +585,44 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
     return result
 
 
-def dmp_zz_factor(f, u, K):
-    """
-    Factor (non square-free) polynomials in `Z[X]`.
-
-    Given a multivariate polynomial `f` in `Z[x]` computes its complete
-    factorization `f_1, ..., f_n` into irreducibles over integers::
-
-                 f = content(f) f_1**k_1 ... f_n**k_n
-
-    The factorization is computed by reducing the input polynomial
-    into a primitive square-free polynomial and factoring it using
-    Enhanced Extended Zassenhaus (EEZ) algorithm. Trial division
-    is used to recover the multiplicities of factors.
-
-    The result is returned as a tuple consisting of::
-
-             (content(f), [(f_1, k_1), ..., (f_n, k_n))
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> (2*x**2 - 2*y**2).factor_list()
-    (2, [(x - y, 1), (x + y, 1)])
-
-    References
-    ==========
-
-    * :cite:`Gathen1999modern`
-
-    """
-    if not u:
-        return dup_zz_factor(f, K)
-
-    if dmp_zero_p(f, u):
-        return K.zero, []
-
-    cont, g = dmp_ground_primitive(f, u, K)
-
-    if dmp_ground_p(g, None, u):
-        return cont, []
-
-    G, g = dmp_primitive(g, u, K)
-
-    factors = []
-
-    if dmp_degree_in(g, 0, u) > 0:
-        g = dmp_sqf_part(g, u, K)
-        H = dmp_zz_wang(g, u, K)
-        factors = dmp_trial_division(f, H, u, K)
-
-    for g, k in dmp_zz_factor(G, u - 1, K)[1]:
-        factors.insert(0, ([g], k))
-
-    return cont, _sort_factors(factors)
-
-
-def dmp_ext_factor(f, u, K):
-    """Factor multivariate polynomials over algebraic number fields."""
+def dmp_trial_division(f, factors, u, K):
+    """Determine multiplicities of factors using trial division."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_list(f)
-    lc, factors = ring._aa_factor_trager(f)
+    factors = list(map(ring.from_list, factors))
+    result = ring._trial_division(f, factors)
+    return [(f.to_dense(), k) for f, k in result]
+
+
+def dmp_zz_mignotte_bound(f, u, K):
+    """Mignotte bound for multivariate polynomials in `K[X]`."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    return ring._zz_mignotte_bound(f)
+
+
+def dup_zz_factor_sqf(f, K):
+    """Factor square-free (non-primitive) polynomials in `Z[x]`."""
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    cont, factors = ring._zz_factor_sqf(f)
+    return cont, [_.to_dense() for _ in factors]
+
+
+def dmp_zz_factor(f, u, K):
+    """Factor (non square-free) polynomials in `Z[X]`."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    lc, factors = ring._zz_factor(f)
     return lc, [(f.to_dense(), k) for f, k in factors]
 
 
-def dmp_gf_factor(f, u, K):
-    """Factor multivariate polynomials over finite fields."""
-    if u:
-        raise NotImplementedError('multivariate polynomials over finite fields')
-    else:
-        lc = dmp_ground_LC(f, u, K)
-        f = dmp_ground_monic(f, u, K)
-
-        factors = []
-
-        for g, n in dmp_sqf_list(f, 0, K)[1]:
-            for h in dup_gf_factor_sqf(g, K):
-                factors.append((h, n))
-
-        return lc, factors
-
-
-_factor_aa_methods = {'trager': dmp_ext_factor}
-
-
-def dmp_factor_list(f, u, K0):
+def dmp_factor_list(f, u, K):
     """Factor polynomials into irreducibles in `K[X]`."""
-    cont, f = dmp_ground_primitive(f, u, K0)
-
-    if K0.is_FiniteField:
-        coeff, factors = dmp_gf_factor(f, u, K0)
-    elif K0.is_AlgebraicField:
-        method = _factor_aa_methods[query('AA_FACTOR_METHOD')]
-        coeff, factors = method(f, u, K0)
-    else:
-        if not K0.is_Exact:
-            K0_inexact, K0 = K0, K0.get_exact()
-            f = dmp_convert(f, u, K0_inexact, K0)
-        else:
-            K0_inexact = None
-
-        if K0.is_Field:
-            K = K0.ring
-
-            denom, f = dmp_clear_denoms(f, u, K0, convert=True)
-        else:
-            K = K0
-
-        if K.is_IntegerRing:
-            levels, f, v = dmp_exclude(f, u, K)
-            coeff, factors = dmp_zz_factor(f, v, K)
-
-            for i, (f, k) in enumerate(factors):
-                factors[i] = (dmp_include(f, levels, v, K), k)
-        elif K.is_PolynomialRing:
-            f, v = dmp_inject(f, u, K)
-
-            coeff, factors = dmp_factor_list(f, v, K.domain)
-
-            for i, (f, k) in enumerate(factors):
-                factors[i] = (dmp_eject(f, v, K), k)
-
-            coeff = K.convert(coeff, K.domain)
-        else:  # pragma: no cover
-            raise DomainError(f'factorization not supported over {K0}')
-
-        if K0.is_Field:
-            for i, (f, k) in enumerate(factors):
-                factors[i] = (dmp_convert(f, u, K, K0), k)
-
-            coeff = K0.convert(coeff, K)
-            coeff = K0.quo(coeff, denom)
-
-            if K0_inexact:
-                for i, (f, k) in enumerate(factors):
-                    f = dmp_quo_ground(f, denom, u, K0)
-                    f = dmp_convert(f, u, K0, K0_inexact)
-                    factors[i] = (f, k)
-                    coeff *= denom**k
-
-                coeff = K0_inexact.convert(coeff, K0)
-                K0 = K0_inexact
-
-    return coeff*cont, _sort_factors(factors)
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    lc, factors = ring.factor_list(f)
+    return lc, [(f.to_dense(), k) for f, k in factors]
 
 
 class _Factor:
@@ -1116,3 +670,421 @@ class _Factor:
                 factors[i] = h
 
         return lc, self._trial_division(F, factors)
+
+    def _zz_factor(self, f):
+        """
+        Factor (non square-free) polynomials in `Z[X]`.
+
+        Given a multivariate polynomial `f` in `Z[X]` computes its complete
+        factorization `f_1, ..., f_n` into irreducibles over integers::
+
+            f = content(f) f_1**k_1 ... f_n**k_n
+
+        The factorization is computed by reducing the input polynomial
+        into a primitive square-free polynomial and factoring it using
+        Zassenhaus or Enhanced Extended Zassenhaus (EEZ) algorithm. Trial
+        division is used to recover the multiplicities of factors.
+
+        The result is returned as a tuple consisting of::
+
+            (content(f), [(f_1, k_1), ..., (f_n, k_n))
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', ZZ)
+
+        >>> (2*x**4 - 2).factor_list()
+        (2, [(x - 1, 1), (x + 1, 1), (x**2 + 1, 1)])
+
+        >>> R, x, y = ring('x y', ZZ)
+
+        >>> (2*x**2 - 2*y**2).factor_list()
+        (2, [(x - y, 1), (x + y, 1)])
+
+        References
+        ==========
+
+        * :cite:`Gathen1999modern`
+
+        """
+        domain = self.domain
+
+        if self.is_univariate:
+            cont, g = f.primitive()
+
+            n = g.degree()
+
+            if n <= 0:
+                return cont, []
+            elif n == 1:
+                return cont, [(g, 1)]
+
+            if query('USE_IRREDUCIBLE_IN_FACTOR'):
+                if self.dup_zz_irreducible_p(g):
+                    return cont, [(g, 1)]
+
+            g = g.sqf_part()
+            H = None
+
+            if query('USE_CYCLOTOMIC_FACTOR'):
+                H = self.dup_zz_cyclotomic_factor(g)
+
+            if H is None:
+                H = self._zz_zassenhaus(g)
+
+            factors = self._trial_division(f, H)
+            return cont, factors
+
+        if f.is_zero:
+            return domain.zero, []
+
+        cont, g = f.primitive()
+
+        if g.is_ground:
+            return cont, []
+
+        g = g.eject(*self.gens[1:])
+        G, g = g.primitive()
+        g = g.inject()
+
+        factors = []
+
+        if g.degree() > 0:
+            g = g.sqf_part()
+            H = self.dmp_zz_wang(g)
+            factors = self._trial_division(f, H)
+
+        new_ring = G.ring
+
+        for g, k in new_ring._zz_factor(G)[1]:
+            factors.insert(0, (g.set_ring(self), k))
+
+        return cont, _sort_factors(factors)
+
+    def _zz_mignotte_bound(self, f):
+        """Mignotte bound for multivariate polynomials in `Z[X]`."""
+        domain = self.domain
+
+        a = f.max_norm()
+        b = abs(f.LC)
+        n = sum(f.degree_list())
+
+        return domain.sqrt(domain(n + 1))*2**n*a*b
+
+    def _zz_zassenhaus(self, f):
+        """Factor primitive square-free polynomial in `Z[x]`."""
+        domain = self.domain
+
+        assert self.is_univariate and domain.is_IntegerRing
+
+        n = f.degree()
+
+        if n == 1:
+            return [f]
+
+        fc = f.coeff(1)
+        A = f.max_norm()
+        b = f.LC
+        B = int(self._zz_mignotte_bound(f))
+        C = int((n + 1)**(2*n)*A**(2*n - 1))
+        gamma = math.ceil(2*math.log(C, 2))
+        bound = int(2*gamma*math.log(gamma))
+        a = []
+
+        # choose a prime number `p` such that `f` be square free in Z_p
+        # if there are many factors in Z_p, choose among a few different `p`
+        # the one with fewer factors
+        for p in range(3, bound + 1):  # pragma: no branch
+            if not isprime(p) or b % p == 0:
+                continue
+
+            p = domain.convert(p)
+            p_domain = domain.finite_field(p)
+
+            F = f.set_domain(p_domain)
+
+            if not F.is_squarefree:
+                continue
+
+            F = F.monic()
+            fsqfx = [_ for _, k in F.factor_list()[1]]
+
+            a.append((p, [_.set_domain(domain) for _ in fsqfx]))
+            if len(fsqfx) < 15 or len(a) > 4:
+                break
+        p, fsqf = min(a, key=lambda x: len(x[1]))
+
+        l = math.ceil(math.log(2*B + 1, p))
+        g = self._zz_hensel_lift(p, f, fsqf, l)
+
+        sorted_T = range(len(g))
+        T = set(sorted_T)
+        factors, s = [], 1
+        pl = p**l
+
+        while 2*s <= len(T):
+            for S in subsets(sorted_T, s):
+                # lift the constant coefficient of the product `G` of the factors
+                # in the subset `S`; if it is does not divide `fc`, `G` does
+                # not divide the input polynomial
+
+                if b == 1:
+                    q = 1
+                    for i in S:
+                        q = q*g[i].coeff(1)
+                    q = q % pl
+                    qs = symmetric_residue(q, pl)
+                    if qs and fc % qs != 0:
+                        continue
+                else:
+                    G = self.ground_new(b)
+                    for i in S:
+                        G *= g[i]
+                    G = G.trunc_ground(pl)
+                    _, G = G.primitive()
+                    q = G.coeff(1)
+                    if q and fc % q != 0:
+                        continue
+
+                H = self.ground_new(b)
+                S = set(S)
+                T_S = T - S
+
+                if b == 1:
+                    G = self.ground_new(b)
+                    for i in S:
+                        G *= g[i]
+                    G = G.trunc_ground(pl)
+
+                for i in T_S:
+                    H *= g[i]
+
+                H = H.trunc_ground(pl)
+
+                G_norm = G.l1_norm()
+                H_norm = H.l1_norm()
+
+                if G_norm*H_norm <= B:
+                    T = T_S
+                    sorted_T = [i for i in sorted_T if i not in S]
+
+                    G = G.primitive()[1]
+                    f = H.primitive()[1]
+
+                    factors.append(G)
+                    b = f.LC
+
+                    break
+            else:
+                s += 1
+
+        return factors + [f]
+
+    def _zz_factor_sqf(self, f):
+        """Factor square-free (non-primitive) polynomials in `Z[x]`."""
+        cont, g = f.primitive()
+
+        n = g.degree()
+
+        if n <= 0:
+            return cont, []
+        elif n == 1:
+            return cont, [g]
+
+        if query('USE_IRREDUCIBLE_IN_FACTOR'):
+            if self.dup_zz_irreducible_p(g):
+                return cont, [g]
+
+        factors = None
+
+        if query('USE_CYCLOTOMIC_FACTOR'):
+            factors = self.dup_zz_cyclotomic_factor(g)
+
+        if factors is None:
+            factors = self._zz_zassenhaus(g)
+
+        return cont, _sort_factors(factors, multiple=False)
+
+    def _zz_hensel_lift(self, p, f, f_list, l):
+        """
+        Multifactor Hensel lifting in `Z[x]`.
+
+        Given a prime `p`, polynomial `f` over `Z[x]` such that `lc(f)`
+        is a unit modulo `p`, monic pair-wise coprime polynomials `f_i`
+        over `Z[x]` satisfying::
+
+            f = lc(f) f_1 ... f_r (mod p)
+
+        and a positive integer `l`, returns a list of monic polynomials
+        `F_1`, `F_2`, ..., `F_r` satisfying::
+
+           f = lc(f) F_1 ... F_r (mod p**l)
+
+           F_i = f_i (mod p), i = 1..r
+
+        References
+        ==========
+
+        * :cite:`Gathen1999modern`
+
+        """
+        domain = self.domain
+
+        r = len(f_list)
+        lc = f.LC
+
+        if r == 1:
+            F = f * domain.gcdex(lc, p**l)[0]
+            return [F.trunc_ground(p**l)]
+
+        m = p
+        k = r // 2
+        d = math.ceil(math.log(l, 2))
+        p_domain = domain.finite_field(p)
+
+        g = self.ground_new(lc)
+        g = g.set_domain(p_domain)
+
+        for f_i in f_list[:k]:
+            g *= f_i
+
+        h = f_list[k].set_domain(p_domain)
+
+        for f_i in f_list[k + 1:]:
+            h *= f_i
+
+        s, t, _ = self.clone(domain=p_domain).gcdex(g, h)
+
+        g, h, s, t = map(lambda x: x.set_domain(domain), (g, h, s, t))
+
+        for _ in range(1, d + 1):
+            (g, h, s, t), m = self._zz_hensel_step(m, f, g, h, s, t), m**2
+
+        return (self._zz_hensel_lift(p, g, f_list[:k], l) +
+                self._zz_hensel_lift(p, h, f_list[k:], l))
+
+    def _zz_hensel_step(self, m, f, g, h, s, t):
+        """
+        One step in Hensel lifting in `Z[x]`.
+
+        Given positive integer `m` and `Z[x]` polynomials `f`, `g`, `h`, `s`
+        and `t` such that::
+
+            f == g*h (mod m)
+            s*g + t*h == 1 (mod m)
+
+            lc(f) is not a zero divisor (mod m)
+            lc(h) == 1
+
+            deg(f) == deg(g) + deg(h)
+            deg(s) < deg(h)
+            deg(t) < deg(g)
+
+        returns polynomials `G`, `H`, `S` and `T`, such that::
+
+            f == G*H (mod m**2)
+            S*G + T*H == 1 (mod m**2)
+
+        References
+        ==========
+
+        * :cite:`Gathen1999modern`
+
+        """
+        M = m**2
+
+        e = f - g*h
+        e = e.trunc_ground(M)
+
+        q, r = divmod(s*e, h)
+
+        q = q.trunc_ground(M)
+        r = r.trunc_ground(M)
+
+        u = t*e + q*g
+        G = (g + u).trunc_ground(M)
+        H = (h + r).trunc_ground(M)
+
+        u = s*G + t*H
+        b = (u - 1).trunc_ground(M)
+
+        c, d = divmod(s*b, H)
+
+        c = c.trunc_ground(M)
+        d = d.trunc_ground(M)
+
+        u = t*b + c*G
+        S = (s - d).trunc_ground(M)
+        T = (t - u).trunc_ground(M)
+
+        return G, H, S, T
+
+    def factor_list(self, f):
+        """Factor polynomials into irreducibles in `K[X]`."""
+        domain = self.domain
+
+        cont, f = f.primitive()
+
+        if domain.is_FiniteField:
+            if self.is_multivariate:
+                raise NotImplementedError('multivariate polynomials over finite fields')
+
+            coeff = f.LC
+            f = f.monic()
+
+            factors = []
+
+            for g, n in f.sqf_list()[1]:
+                g = g.to_dense()
+                for h in dup_gf_factor_sqf(g, domain):
+                    factors.append((self.from_list(h), n))
+        elif domain.is_AlgebraicField:
+            coeff, factors = self._aa_factor_trager(f)
+        else:
+            if not domain.is_Exact:
+                domain_inexact, domain = domain, domain.get_exact()
+                f = f.set_domain(domain)
+            else:
+                domain_inexact = None
+
+            if domain.is_Field:
+                domain1 = domain.ring
+
+                denom, f = f.clear_denoms(convert=True)
+            else:
+                domain1 = domain
+
+            if domain1.is_IntegerRing:
+                ring = self.clone(domain=domain1)
+                coeff, factors = ring._zz_factor(f)
+            elif domain1.is_PolynomialRing:
+                f = f.inject()
+                ring = f.ring
+
+                coeff, factors = ring.factor_list(f)
+
+                for i, (f, k) in enumerate(factors):
+                    factors[i] = (f.eject(*ring.gens[-domain1.ngens:]), k)
+
+                coeff = domain1.convert(coeff)
+            else:  # pragma: no cover
+                raise DomainError(f'factorization not supported over {domain}')
+
+            if domain.is_Field:
+                for i, (f, k) in enumerate(factors):
+                    factors[i] = (f.set_domain(domain), k)
+
+                coeff = domain.convert(coeff)
+                coeff = domain.quo(coeff, denom)
+
+                if domain_inexact:
+                    for i, (f, k) in enumerate(factors):
+                        f = f.quo_ground(denom)
+                        f = f.set_domain(domain_inexact)
+                        factors[i] = (f, k)
+                        coeff *= denom**k
+
+                    coeff = domain_inexact.convert(coeff)
+
+        return coeff*cont, _sort_factors(factors)

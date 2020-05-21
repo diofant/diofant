@@ -719,23 +719,3 @@ def dmp_max_norm(f, u, K):
 
     v = u - 1
     return max(dmp_max_norm(c, v, K) for c in f)
-
-
-def dmp_l1_norm(f, u, K):
-    """
-    Return l1 norm of a polynomial in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_l1_norm(2*x*y - x - 3)
-    6
-
-    """
-    if not u:
-        return sum(dmp_abs(f, u, K), K.zero)
-
-    v = u - 1
-    return sum(dmp_l1_norm(c, v, K) for c in f)
