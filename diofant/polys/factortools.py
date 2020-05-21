@@ -19,7 +19,7 @@ from .densetools import (dmp_clear_denoms, dmp_compose, dmp_diff_eval_in,
                          dmp_eval_in, dmp_eval_tail, dmp_ground_content,
                          dmp_ground_monic, dmp_ground_primitive,
                          dmp_ground_trunc)
-from .euclidtools import dmp_primitive, dup_gcdex
+from .euclidtools import dup_gcdex
 from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
@@ -233,71 +233,6 @@ def dup_zz_factor_sqf(f, K):
         factors = dup_zz_zassenhaus(g, K)
 
     return cont, _sort_factors(factors, multiple=False)
-
-
-def dup_zz_factor(f, K):
-    """
-    Factor (non square-free) polynomials in `Z[x]`.
-
-    Given a univariate polynomial `f` in `Z[x]` computes its complete
-    factorization `f_1, ..., f_n` into irreducibles over integers::
-
-                f = content(f) f_1**k_1 ... f_n**k_n
-
-    The factorization is computed by reducing the input polynomial
-    into a primitive square-free polynomial and factoring it using
-    Zassenhaus algorithm. Trial division is used to recover the
-    multiplicities of factors.
-
-    The result is returned as a tuple consisting of::
-
-              (content(f), [(f_1, k_1), ..., (f_n, k_n))
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> (2*x**4 - 2).factor_list()
-    (2, [(x - 1, 1), (x + 1, 1), (x**2 + 1, 1)])
-
-    Note that this is a complete factorization over integers,
-    however over Gaussian integers we can factor the last term.
-
-    By default, polynomials `x**n - 1` and `x**n + 1` are factored
-    using cyclotomic decomposition to speedup computations. To
-    disable this behaviour set cyclotomic=False.
-
-    References
-    ==========
-
-    * :cite:`Gathen1999modern`
-
-    """
-    cont, g = dmp_ground_primitive(f, 0, K)
-
-    n = dmp_degree_in(g, 0, 0)
-
-    if n <= 0:
-        return cont, []
-    elif n == 1:
-        return cont, [(g, 1)]
-
-    if query('USE_IRREDUCIBLE_IN_FACTOR'):
-        if dup_zz_irreducible_p(g, K):
-            return cont, [(g, 1)]
-
-    g = dmp_sqf_part(g, 0, K)
-    H = None
-
-    if query('USE_CYCLOTOMIC_FACTOR'):
-        H = dup_zz_cyclotomic_factor(g, K)
-
-    if H is None:
-        H = dup_zz_zassenhaus(g, K)
-
-    factors = dmp_trial_division(f, H, 0, K)
-    return cont, factors
 
 
 def dmp_zz_wang_non_divisors(E, cs, ct, K):
@@ -704,61 +639,11 @@ def dmp_zz_wang(f, u, K, mod=None, seed=None):
 
 
 def dmp_zz_factor(f, u, K):
-    """
-    Factor (non square-free) polynomials in `Z[X]`.
-
-    Given a multivariate polynomial `f` in `Z[x]` computes its complete
-    factorization `f_1, ..., f_n` into irreducibles over integers::
-
-                 f = content(f) f_1**k_1 ... f_n**k_n
-
-    The factorization is computed by reducing the input polynomial
-    into a primitive square-free polynomial and factoring it using
-    Enhanced Extended Zassenhaus (EEZ) algorithm. Trial division
-    is used to recover the multiplicities of factors.
-
-    The result is returned as a tuple consisting of::
-
-             (content(f), [(f_1, k_1), ..., (f_n, k_n))
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> (2*x**2 - 2*y**2).factor_list()
-    (2, [(x - y, 1), (x + y, 1)])
-
-    References
-    ==========
-
-    * :cite:`Gathen1999modern`
-
-    """
-    if not u:
-        return dup_zz_factor(f, K)
-
-    if dmp_zero_p(f, u):
-        return K.zero, []
-
-    cont, g = dmp_ground_primitive(f, u, K)
-
-    if dmp_ground_p(g, None, u):
-        return cont, []
-
-    G, g = dmp_primitive(g, u, K)
-
-    factors = []
-
-    if dmp_degree_in(g, 0, u) > 0:
-        g = dmp_sqf_part(g, u, K)
-        H = dmp_zz_wang(g, u, K)
-        factors = dmp_trial_division(f, H, u, K)
-
-    for g, k in dmp_zz_factor(G, u - 1, K)[1]:
-        factors.insert(0, ([g], k))
-
-    return cont, _sort_factors(factors)
+    """Factor (non square-free) polynomials in `Z[X]`."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    lc, factors = ring._zz_factor(f)
+    return lc, [(f.to_dense(), k) for f, k in factors]
 
 
 def dmp_ext_factor(f, u, K):
@@ -895,6 +780,97 @@ class _Factor:
                 factors[i] = h
 
         return lc, self._trial_division(F, factors)
+
+    def _zz_factor(self, f):
+        """
+        Factor (non square-free) polynomials in `Z[X]`.
+
+        Given a multivariate polynomial `f` in `Z[X]` computes its complete
+        factorization `f_1, ..., f_n` into irreducibles over integers::
+
+            f = content(f) f_1**k_1 ... f_n**k_n
+
+        The factorization is computed by reducing the input polynomial
+        into a primitive square-free polynomial and factoring it using
+        Zassenhaus or Enhanced Extended Zassenhaus (EEZ) algorithm. Trial
+        division is used to recover the multiplicities of factors.
+
+        The result is returned as a tuple consisting of::
+
+            (content(f), [(f_1, k_1), ..., (f_n, k_n))
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', ZZ)
+
+        >>> (2*x**4 - 2).factor_list()
+        (2, [(x - 1, 1), (x + 1, 1), (x**2 + 1, 1)])
+
+        >>> R, x, y = ring('x y', ZZ)
+
+        >>> (2*x**2 - 2*y**2).factor_list()
+        (2, [(x - y, 1), (x + y, 1)])
+
+        References
+        ==========
+
+        * :cite:`Gathen1999modern`
+
+        """
+        domain = self.domain
+
+        if self.is_univariate:
+            cont, g = f.primitive()
+
+            n = g.degree()
+
+            if n <= 0:
+                return cont, []
+            elif n == 1:
+                return cont, [(g, 1)]
+
+            if query('USE_IRREDUCIBLE_IN_FACTOR'):
+                if self.dup_zz_irreducible_p(g):
+                    return cont, [(g, 1)]
+
+            g = g.sqf_part()
+            H = None
+
+            if query('USE_CYCLOTOMIC_FACTOR'):
+                H = self.dup_zz_cyclotomic_factor(g)
+
+            if H is None:
+                H = self._zz_zassenhaus(g)
+
+            factors = self._trial_division(f, H)
+            return cont, factors
+
+        if f.is_zero:
+            return domain.zero, []
+
+        cont, g = f.primitive()
+
+        if g.is_ground:
+            return cont, []
+
+        g = g.eject(*self.gens[1:])
+        G, g = g.primitive()
+        g = g.inject()
+
+        factors = []
+
+        if g.degree() > 0:
+            g = g.sqf_part()
+            H = self.dmp_zz_wang(g)
+            factors = self._trial_division(f, H)
+
+        new_ring = G.ring
+
+        for g, k in new_ring._zz_factor(G)[1]:
+            factors.insert(0, (g.set_ring(self), k))
+
+        return cont, _sort_factors(factors)
 
     def _zz_mignotte_bound(self, f):
         """Mignotte bound for multivariate polynomials in `Z[X]`."""
