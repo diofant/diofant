@@ -17,16 +17,16 @@ f_0, f_1, f_2, f_3, f_4, f_5, f_6 = f_polys()
 w_1, w_2 = w_polys()
 
 
-def test_dmp_trial_division():
+def test__trial_division():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_trial_division(x**5 + 8*x**4 + 25*x**3 + 38*x**2 + 28*x +
-                                8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
+    assert R._trial_division(x**5 + 8*x**4 + 25*x**3 + 38*x**2 + 28*x +
+                             8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
 
     R, x, y = ring('x y', ZZ)
 
-    assert R.dmp_trial_division(x**5 + 8*x**4 + 25*x**3 + 38*x**2 + 28*x +
-                                8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
+    assert R._trial_division(x**5 + 8*x**4 + 25*x**3 + 38*x**2 + 28*x +
+                             8, (x + 1, x + 2)) == [(x + 1, 2), (x + 2, 3)]
 
 
 def test__zz_mignotte_bound():

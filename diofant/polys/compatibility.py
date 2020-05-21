@@ -9,7 +9,7 @@ from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_TC, dmp_LC,
                          dmp_TC)
 from .densetools import (dmp_compose, dup_decompose, dup_real_imag,
                          dup_transform)
-from .factortools import (dmp_trial_division, dmp_zz_diophantine, dmp_zz_wang,
+from .factortools import (dmp_zz_diophantine, dmp_zz_wang,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
                           dmp_zz_wang_non_divisors, dup_cyclotomic_p,
                           dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
@@ -131,10 +131,6 @@ class IPolys:
 
     def dup_sign_variations(self, f):
         return dup_sign_variations(f.to_dense(), self.domain)
-
-    def dmp_trial_division(self, f, factors):
-        factors = dmp_trial_division(f.to_dense(), list(map(lambda _: _.to_dense(), factors)), self.ngens-1, self.domain)
-        return [(self.from_list(g), k) for g, k in factors]
 
     def dup_zz_irreducible_p(self, f):
         return dup_zz_irreducible_p(f.to_dense(), self.domain)
