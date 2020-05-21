@@ -499,11 +499,22 @@ def test_PolyElement_coeff():
 
 
 def test_PolyElement_LC():
+    R, x, y = ring('x y', ZZ)
+
+    assert R(0).LC == 0
+    assert (2*x*y**2 + 3*x*y + 4*x + 5).LC == 2
+
     R, x, y = ring('x y', QQ)
 
     assert R(0).LC == QQ(0)
     assert (x/2).LC == QQ(1, 2)
     assert (x*y/4 + x/2).LC == QQ(1, 4)
+
+    R, x, y, z = ring('x y z', ZZ)
+
+    assert R(0).LC == 0
+    assert (y + 2*z + 3).LC == 1
+    assert (2*x*y + 3*x*z + 4*x + 5).LC == 2
 
 
 def test_PolyElement_LM():

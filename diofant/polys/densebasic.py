@@ -44,26 +44,6 @@ def dmp_TC(f, K):
         return f[-1]
 
 
-def dmp_ground_LC(f, u, K):
-    """
-    Return the ground leading coefficient.
-
-    Examples
-    ========
-
-    >>> R, x, y, z = ring('x y z', ZZ)
-
-    >>> R.dmp_ground_LC(y + 2*z + 3)
-    1
-
-    """
-    while u:
-        f = dmp_LC(f, K)
-        u -= 1
-
-    return dmp_LC(f, K)
-
-
 def dmp_ground_TC(f, u, K):
     """
     Return the ground trailing coefficient.

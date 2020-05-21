@@ -5,8 +5,8 @@ from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term,
                          dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
                          dmp_quo_ground, dmp_sqr, dmp_sub, dmp_sub_mul,
                          dup_lshift, dup_rshift)
-from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_LC,
-                         dmp_ground_TC, dmp_LC, dmp_TC)
+from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_TC, dmp_LC,
+                         dmp_TC)
 from .densetools import (dmp_compose, dup_decompose, dup_real_imag,
                          dup_transform)
 from .factortools import (dmp_trial_division, dmp_zz_diophantine, dmp_zz_wang,
@@ -35,9 +35,6 @@ class IPolys:
     domain = None
     order = None
     gens = None
-
-    def dmp_ground_LC(self, f):
-        return dmp_ground_LC(f.to_dense(), self.ngens-1, self.domain)
 
     def dmp_ground_TC(self, f):
         return dmp_ground_TC(f.to_dense(), self.ngens-1, self.domain)

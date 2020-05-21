@@ -61,18 +61,6 @@ def test_dmp_TC():
     assert R.dmp_TC(2*x*y + 3*x*z + 4*x + 5) == 5
 
 
-def test_dmp_ground_LC():
-    R, x, y = ring('x y', ZZ)
-
-    assert R.dmp_ground_LC(R(0)) == 0
-    assert R.dmp_ground_LC(2*x*y**2 + 3*x*y + 4*x + 5) == 2
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    assert R.dmp_ground_LC(R(0)) == 0
-    assert R.dmp_ground_LC(2*x*y + 3*x*z + 4*x + 5) == 2
-
-
 def test_dmp_ground_TC():
     R, x, y = ring('x y', ZZ)
 
