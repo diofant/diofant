@@ -5,13 +5,12 @@ import random
 import pytest
 
 from diofant import FF, ZZ, oo, ring
-from diofant.polys.densebasic import (dmp_convert, dmp_degree_in, dmp_eject,
+from diofant.polys.densebasic import (dmp_convert, dmp_degree_in,
                                       dmp_from_dict, dmp_ground, dmp_ground_p,
-                                      dmp_inject, dmp_nest, dmp_normal,
-                                      dmp_one, dmp_one_p, dmp_permute,
-                                      dmp_raise, dmp_strip, dmp_to_dict,
-                                      dmp_zero, dmp_zero_p, dmp_zeros,
-                                      dup_random, dup_reverse)
+                                      dmp_nest, dmp_normal, dmp_one, dmp_one_p,
+                                      dmp_permute, dmp_raise, dmp_strip,
+                                      dmp_to_dict, dmp_zero, dmp_zero_p,
+                                      dmp_zeros, dup_random, dup_reverse)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -343,46 +342,6 @@ def test_dmp_raise():
 
     assert dmp_raise([[1, 2, 3], [], [2, 3]], 2, 1, ZZ) == \
         [[[[1]], [[2]], [[3]]], [[[]]], [[[2]], [[3]]]]
-
-
-def test_dmp_inject():
-    R,  x, y = ring('x,y', ZZ)
-
-    assert dmp_inject([], 0, R) == ([[[]]], 2)
-    assert dmp_inject([[]], 1, R) == ([[[[]]]], 3)
-
-    assert dmp_inject([R(1)], 0, R) == ([[[1]]], 2)
-    assert dmp_inject([[R(1)]], 1, R) == ([[[[1]]]], 3)
-
-    assert dmp_inject([R(1), x + 2], 0, R) == ([[[1]], [[1], [2]]], 2)
-    assert dmp_inject([R(1), x + 2], 0, R, front=True) == ([[[1]], [[1, 2]]], 2)
-
-    assert dmp_inject([R(1), 2*x + 3*y + 4], 0, R) == ([[[1]], [[2], [3, 4]]], 2)
-
-    f = [3*x**2 + 7*x*y + 5*y**2, 2*x, R(0), x*y**2 + 11]
-    g = [[[3], [7, 0], [5, 0, 0]], [[2], []], [[]], [[1, 0, 0], [11]]]
-
-    assert dmp_inject(f, 0, R) == (g, 2)
-
-
-def test_dmp_eject():
-    R,  x, y = ring('x,y', ZZ)
-
-    assert dmp_eject([[[]]], 2, R) == []
-    assert dmp_eject([[[[]]]], 3, R) == [[]]
-
-    assert dmp_eject([[[1]]], 2, R) == [R(1)]
-    assert dmp_eject([[[[1]]]], 3, R) == [[R(1)]]
-
-    f = [[[1]], [[2], [3, 4]]]
-
-    assert dmp_eject(f, 2, R) == [R(1), 2*x + 3*y + 4]
-    assert dmp_eject(f, 2, R, front=True) == [R(3), x + 2*y + 4]
-
-    f = [3*x**2 + 7*x*y + 5*y**2, 2*x, R(0), x*y**2 + 11]
-    g = [[[3], [7, 0], [5, 0, 0]], [[2], []], [[]], [[1, 0, 0], [11]]]
-
-    assert dmp_eject(g, 2, R) == f
 
 
 def test_dup_random():
