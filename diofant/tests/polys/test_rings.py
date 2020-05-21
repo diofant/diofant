@@ -1637,11 +1637,24 @@ def test_PolyElement_clear_denoms():
 
 
 def test_PolyElement_terms_gcd():
+    R, x = ring('x', ZZ)
+
+    assert R(0).terms_gcd() == ((0,), 0)
+    assert (x**2 + 1).terms_gcd() == ((0,), x**2 + 1)
+    assert (x**3 + x).terms_gcd() == ((1,), x**2 + 1)
+    assert (x**5 + 3*x**4 + x**3 + 4*x**2 +
+            2*x).terms_gcd() == ((1,), x**4 + 3*x**3 + x**2 + 4*x + 2)
+    assert (x**4 + x**2).terms_gcd() == ((2,), x**2 + 1)
+
     R, x, y = ring('x y', ZZ)
 
-    assert R.zero.terms_gcd() == ((0, 0), R.zero)
-    assert R.one.terms_gcd() == ((0, 0), R.one)
+    assert R(0).terms_gcd() == ((0, 0), 0)
+    assert R(1).terms_gcd() == ((0, 0), 1)
+    assert (x**3 + x).terms_gcd() == ((1, 0), x**2 + 1)
+    assert (x**2*y + 1).terms_gcd() == ((0, 0), x**2*y + 1)
     assert (x**6*y**2 + x**3*y).terms_gcd() == ((3, 1), x**3*y + 1)
+    assert (x**3*y + x**2*y**2).terms_gcd() == ((2, 1), x + y)
+    assert (x**2 - x*y - 2*y**2).terms_gcd() == ((0, 0), x**2 - x*y - 2*y**2)
 
 
 def test_PolyElement_max_norm():

@@ -10,9 +10,8 @@ from diofant.polys.densebasic import (dmp_convert, dmp_degree_in, dmp_eject,
                                       dmp_ground_p, dmp_include, dmp_inject,
                                       dmp_nest, dmp_normal, dmp_one, dmp_one_p,
                                       dmp_permute, dmp_raise, dmp_strip,
-                                      dmp_terms_gcd, dmp_to_dict, dmp_zero,
-                                      dmp_zero_p, dmp_zeros, dup_random,
-                                      dup_reverse)
+                                      dmp_to_dict, dmp_zero, dmp_zero_p,
+                                      dmp_zeros, dup_random, dup_reverse)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -408,23 +407,6 @@ def test_dmp_eject():
     g = [[[3], [7, 0], [5, 0, 0]], [[2], []], [[]], [[1, 0, 0], [11]]]
 
     assert dmp_eject(g, 2, R) == f
-
-
-def test_dmp_terms_gcd():
-    assert dmp_terms_gcd([], 0, ZZ) == ((0,), [])
-    assert dmp_terms_gcd([1, 0, 1], 0, ZZ) == ((0,), [1, 0, 1])
-    assert dmp_terms_gcd([1, 0, 1, 0], 0, ZZ) == ((1,), [1, 0, 1])
-    assert dmp_terms_gcd([1, 3, 1, 4, 2, 0], 0, ZZ) == ((1,), [1, 3, 1, 4, 2])
-    assert dmp_terms_gcd([1, 0, 1, 0, 0], 0, ZZ) == ((2,), [1, 0, 1])
-
-    assert dmp_terms_gcd([[]], 1, ZZ) == ((0, 0), [[]])
-
-    assert dmp_terms_gcd([1, 0, 1, 0], 0, ZZ) == ((1,), [1, 0, 1])
-    assert dmp_terms_gcd([[1], [], [1], []], 1, ZZ) == ((1, 0), [[1], [], [1]])
-
-    assert dmp_terms_gcd([[1, 0], [], [1]], 1, ZZ) == ((0, 0), [[1, 0], [], [1]])
-    assert dmp_terms_gcd([[1, 0], [1, 0, 0], [], []], 1, ZZ) == ((2, 1), [[1], [1, 0]])
-    assert dmp_terms_gcd([[1], [-1, 0], [-2, 0, 0]], 1, ZZ) == ((0, 0), [[1], [-1, 0], [-2, 0, 0]])
 
 
 def test_dup_random():

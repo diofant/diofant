@@ -1,6 +1,5 @@
 """Basic tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-import functools
 import random
 
 from ..core import oo
@@ -695,31 +694,11 @@ def dmp_eject(f, u, K, front=False):
 
 
 def dmp_terms_gcd(f, u, K):
-    """
-    Remove GCD of terms from ``f`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> dmp_terms_gcd([[ZZ(1), ZZ(0)], [ZZ(1), ZZ(0), ZZ(0)], [], []], 1, ZZ)
-    ((2, 1), [[1], [1, 0]])
-
-    """
-    if dmp_ground_TC(f, u, K) or dmp_zero_p(f, u):
-        return (0,)*(u + 1), f
-
-    F = dmp_to_dict(f, u)
-    G = functools.reduce(Monomial.gcd, F)
-
-    if all(g == 0 for g in G):
-        return G, f
-
-    f = {}
-
-    for monom, coeff in F.items():
-        f[monom/G] = coeff
-
-    return G, dmp_from_dict(f, u, K)
+    """Remove GCD of terms from ``f`` in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    G, f = f.terms_gcd()
+    return G, f.to_dense()
 
 
 def dmp_slice_in(f, m, n, j, u, K):
