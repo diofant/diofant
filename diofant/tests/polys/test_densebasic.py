@@ -6,12 +6,12 @@ import pytest
 
 from diofant import FF, ZZ, oo, ring
 from diofant.polys.densebasic import (dmp_convert, dmp_degree_in, dmp_eject,
-                                      dmp_exclude, dmp_from_dict, dmp_ground,
-                                      dmp_ground_p, dmp_include, dmp_inject,
-                                      dmp_nest, dmp_normal, dmp_one, dmp_one_p,
-                                      dmp_permute, dmp_raise, dmp_strip,
-                                      dmp_to_dict, dmp_zero, dmp_zero_p,
-                                      dmp_zeros, dup_random, dup_reverse)
+                                      dmp_from_dict, dmp_ground, dmp_ground_p,
+                                      dmp_inject, dmp_nest, dmp_normal,
+                                      dmp_one, dmp_one_p, dmp_permute,
+                                      dmp_raise, dmp_strip, dmp_to_dict,
+                                      dmp_zero, dmp_zero_p, dmp_zeros,
+                                      dup_random, dup_reverse)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -343,30 +343,6 @@ def test_dmp_raise():
 
     assert dmp_raise([[1, 2, 3], [], [2, 3]], 2, 1, ZZ) == \
         [[[[1]], [[2]], [[3]]], [[[]]], [[[2]], [[3]]]]
-
-
-def test_dmp_exclude():
-    assert dmp_exclude([[[]]], 2, ZZ) == ([], [[[]]], 2)
-    assert dmp_exclude([[[7]]], 2, ZZ) == ([], [[[7]]], 2)
-
-    assert dmp_exclude([1, 2, 3], 0, ZZ) == ([], [1, 2, 3], 0)
-    assert dmp_exclude([[1], [2, 3]], 1, ZZ) == ([], [[1], [2, 3]], 1)
-
-    assert dmp_exclude([[1, 2, 3]], 1, ZZ) == ([0], [1, 2, 3], 0)
-    assert dmp_exclude([[1], [2], [3]], 1, ZZ) == ([1], [1, 2, 3], 0)
-
-    assert dmp_exclude([[[1, 2, 3]]], 2, ZZ) == ([0, 1], [1, 2, 3], 0)
-    assert dmp_exclude([[[1]], [[2]], [[3]]], 2, ZZ) == ([1, 2], [1, 2, 3], 0)
-
-
-def test_dmp_include():
-    assert dmp_include([1, 2, 3], [], 0, ZZ) == [1, 2, 3]
-
-    assert dmp_include([1, 2, 3], [0], 0, ZZ) == [[1, 2, 3]]
-    assert dmp_include([1, 2, 3], [1], 0, ZZ) == [[1], [2], [3]]
-
-    assert dmp_include([1, 2, 3], [0, 1], 0, ZZ) == [[[1, 2, 3]]]
-    assert dmp_include([1, 2, 3], [1, 2], 0, ZZ) == [[[1]], [[2]], [[3]]]
 
 
 def test_dmp_inject():
