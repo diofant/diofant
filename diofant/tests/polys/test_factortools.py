@@ -165,12 +165,12 @@ def test_dup_zz_factor():
     assert R(7).factor_list() == (7, [])
     assert R(-7).factor_list() == (-7, [])
 
-    assert R.dup_zz_factor_sqf(R(0)) == (0, [])
-    assert R.dup_zz_factor_sqf(R(7)) == (7, [])
-    assert R.dup_zz_factor_sqf(R(-7)) == (-7, [])
+    assert R._zz_factor_sqf(R(0)) == (0, [])
+    assert R._zz_factor_sqf(R(7)) == (7, [])
+    assert R._zz_factor_sqf(R(-7)) == (-7, [])
 
     assert (2*x + 4).factor_list() == (2, [(x + 2, 1)])
-    assert R.dup_zz_factor_sqf(2*x + 4) == (2, [x + 2])
+    assert R._zz_factor_sqf(2*x + 4) == (2, [x + 2])
 
     f = x**4 + x + 1
 
@@ -194,30 +194,30 @@ def test_dup_zz_factor():
     assert (-9*x**2 + 1).factor_list() == (-1, [(3*x - 1, 1), (3*x + 1, 1)])
 
     with using(use_irreducible_in_factor=True):
-        assert R.dup_zz_factor_sqf(3*x**4 + 2*x**3 + 6*x**2 +
-                                   8*x + 10) == (1, [3*x**4 + 2*x**3 +
-                                                     6*x**2 + 8*x + 10])
+        assert R._zz_factor_sqf(3*x**4 + 2*x**3 + 6*x**2 +
+                                8*x + 10) == (1, [3*x**4 + 2*x**3 +
+                                                  6*x**2 + 8*x + 10])
 
-    assert R.dup_zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
+    assert R._zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
 
     with using(use_irreducible_in_factor=True):
-        assert R.dup_zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
+        assert R._zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
 
     with using(use_cyclotomic_factor=False):
-        assert R.dup_zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
+        assert R._zz_factor_sqf(-9*x**2 + 1) == (-1, [3*x - 1, 3*x + 1])
 
     assert (x**3 - 6*x**2 + 11*x - 6).factor_list() == (1, [(x - 3, 1),
                                                             (x - 2, 1),
                                                             (x - 1, 1)])
 
-    assert R.dup_zz_factor_sqf(x**3 - 6*x**2 + 11*x - 6) == (1, [x - 3, x - 2,
-                                                                 x - 1])
+    assert R._zz_factor_sqf(x**3 - 6*x**2 + 11*x - 6) == (1, [x - 3, x - 2,
+                                                              x - 1])
 
     assert (3*x**3 + 10*x**2 + 13*x +
             10).factor_list() == (1, [(x + 2, 1), (3*x**2 + 4*x + 5, 1)])
 
-    assert R.dup_zz_factor_sqf(3*x**3 + 10*x**2 +
-                               13*x + 10) == (1, [x + 2, 3*x**2 + 4*x + 5])
+    assert R._zz_factor_sqf(3*x**3 + 10*x**2 +
+                            13*x + 10) == (1, [x + 2, 3*x**2 + 4*x + 5])
 
     assert (-x**6 + x**2).factor_list() == (-1, [(x - 1, 1), (x + 1, 1),
                                                  (x, 2), (x**2 + 1, 1)])
@@ -295,7 +295,7 @@ def test_dmp_zz_wang():
     assert R.dmp_zz_wang_non_divisors(E, cs, ZZ(4)) == [7, 3, 11, 17]
     assert s.is_squarefree and UV.dmp_degree_in(s, 0) == R.dmp_degree_in(w_1, 0)
 
-    _, H = UV.dup_zz_factor_sqf(s)
+    _, H = UV._zz_factor_sqf(s)
 
     h_1 = 44*_x**2 + 42*_x + 1
     h_2 = 126*_x**2 - 9*_x + 28

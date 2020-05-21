@@ -42,14 +42,6 @@ def dmp_zz_mignotte_bound(f, u, K):
     return ring._zz_mignotte_bound(f)
 
 
-def dup_zz_zassenhaus(f, K):
-    """Factor primitive square-free polynomials in `Z[x]`."""
-    ring = K.poly_ring('_0')
-    f = ring.from_list(f)
-    factors = ring._zz_zassenhaus(f)
-    return [_.to_dense() for _ in factors]
-
-
 def dup_zz_irreducible_p(f, K):
     """Test irreducibility using Eisenstein's criterion."""
     lc = dmp_LC(f, K)
@@ -209,28 +201,10 @@ def dup_zz_cyclotomic_factor(f, K):
 
 def dup_zz_factor_sqf(f, K):
     """Factor square-free (non-primitive) polynomials in `Z[x]`."""
-    cont, g = dmp_ground_primitive(f, 0, K)
-
-    n = dmp_degree_in(g, 0, 0)
-
-    if n <= 0:
-        return cont, []
-    elif n == 1:
-        return cont, [g]
-
-    if query('USE_IRREDUCIBLE_IN_FACTOR'):
-        if dup_zz_irreducible_p(g, K):
-            return cont, [g]
-
-    factors = None
-
-    if query('USE_CYCLOTOMIC_FACTOR'):
-        factors = dup_zz_cyclotomic_factor(g, K)
-
-    if factors is None:
-        factors = dup_zz_zassenhaus(g, K)
-
-    return cont, _sort_factors(factors, multiple=False)
+    ring = K.poly_ring('_0')
+    f = ring.from_list(f)
+    cont, factors = ring._zz_factor_sqf(f)
+    return cont, [_.to_dense() for _ in factors]
 
 
 def dmp_zz_wang_non_divisors(E, cs, ct, K):
@@ -924,6 +898,31 @@ class _Factor:
                 s += 1
 
         return factors + [f]
+
+    def _zz_factor_sqf(self, f):
+        """Factor square-free (non-primitive) polynomials in `Z[x]`."""
+        cont, g = f.primitive()
+
+        n = g.degree()
+
+        if n <= 0:
+            return cont, []
+        elif n == 1:
+            return cont, [g]
+
+        if query('USE_IRREDUCIBLE_IN_FACTOR'):
+            if self.dup_zz_irreducible_p(g):
+                return cont, [g]
+
+        factors = None
+
+        if query('USE_CYCLOTOMIC_FACTOR'):
+            factors = self.dup_zz_cyclotomic_factor(g)
+
+        if factors is None:
+            factors = self._zz_zassenhaus(g)
+
+        return cont, _sort_factors(factors, multiple=False)
 
     def _zz_hensel_lift(self, p, f, f_list, l):
         """

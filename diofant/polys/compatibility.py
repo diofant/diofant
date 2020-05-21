@@ -13,7 +13,7 @@ from .factortools import (dmp_trial_division, dmp_zz_diophantine, dmp_zz_wang,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
                           dmp_zz_wang_non_divisors, dup_cyclotomic_p,
                           dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
-                          dup_zz_factor_sqf, dup_zz_irreducible_p)
+                          dup_zz_irreducible_p)
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -184,10 +184,6 @@ class IPolys:
     def dmp_zz_wang(self, f, mod=None, seed=None):
         factors = dmp_zz_wang(f.to_dense(), self.ngens-1, self.domain, mod=mod, seed=seed)
         return [self.from_list(g) for g in factors]
-
-    def dup_zz_factor_sqf(self, f):
-        coeff, factors = dup_zz_factor_sqf(f.to_dense(), self.domain)
-        return coeff, [self.from_list(g) for g in factors]
 
     def dup_sturm(self, f):
         seq = dup_sturm(f.to_dense(), self.domain)
