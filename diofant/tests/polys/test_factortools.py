@@ -79,7 +79,7 @@ def test__zz_irreducible_p():
     assert R._zz_irreducible_p(f + 14) is True
 
 
-def test_dup_cyclotomic_p():
+def test__cyclotomic_p():
     R, x = ring('x', ZZ)
 
     assert (x - 1).is_cyclotomic is True
@@ -89,7 +89,7 @@ def test_dup_cyclotomic_p():
     f = x**2 + 1
 
     assert f.is_cyclotomic is True
-    assert R.dup_cyclotomic_p(f, irreducible=True) is True
+    assert R._cyclotomic_p(f, irreducible=True) is True
 
     assert (x**4 + x**3 + x**2 + x + 1).is_cyclotomic is True
     assert (x**2 - x + 1).is_cyclotomic is True
@@ -458,7 +458,7 @@ def test_sympyissue_5786():
     assert (f*g**3).factor_list() == (1, [(f, 1), (g, 3)])
 
 
-def test_dmp_factor_list():
+def test_factor_list():
     R, x = ring('x', FF(2))
 
     assert (x**2 + 1).factor_list() == (1, [(x + 1, 2)])

@@ -7,94 +7,21 @@ from ..ntheory import factorint, isprime, nextprime
 from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
 from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_max_norm, dmp_mul,
-                         dmp_mul_ground, dmp_neg, dmp_pow, dmp_quo,
-                         dmp_quo_ground, dmp_rem, dmp_sub, dmp_sub_mul,
-                         dup_add, dup_lshift, dup_mul, dup_sqr, dup_sub)
-from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list, dmp_LC,
-                         dmp_nest, dmp_normal, dmp_one, dmp_raise, dmp_strip,
-                         dmp_TC, dmp_zero_p, dup_inflate)
-from .densetools import (dmp_compose, dmp_diff_eval_in, dmp_eval_in,
-                         dmp_eval_tail, dmp_ground_primitive, dmp_ground_trunc)
+                         dmp_mul_ground, dmp_pow, dmp_quo, dmp_quo_ground,
+                         dmp_rem, dmp_sub, dmp_sub_mul, dup_add, dup_lshift,
+                         dup_mul)
+from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_LC, dmp_nest,
+                         dmp_normal, dmp_one, dmp_raise, dmp_zero_p,
+                         dup_inflate)
+from .densetools import (dmp_diff_eval_in, dmp_eval_in, dmp_eval_tail,
+                         dmp_ground_primitive, dmp_ground_trunc)
 from .euclidtools import dup_gcdex
 from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-from .sqfreetools import dmp_sqf_p, dmp_sqf_part
-
-
-def dup_cyclotomic_p(f, K, irreducible=False):
-    """
-    Efficiently test if ``f`` is a cyclotomic polynomial.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> (x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1).is_cyclotomic
-    False
-
-    >>> (x**16 + x**14 - x**10 - x**8 - x**6 + x**2 + 1).is_cyclotomic
-    True
-
-    """
-    if K.is_RationalField:
-        try:
-            K0, K = K, K.ring
-            f = dmp_convert(f, 0, K0, K)
-        except CoercionFailed:
-            return False
-    elif not K.is_IntegerRing:
-        return False
-
-    lc = dmp_LC(f, K)
-    tc = dmp_TC(f, K)
-
-    if lc != 1 or (tc != -1 and tc != 1):
-        return False
-
-    if not irreducible:
-        coeff, factors = dmp_factor_list(f, 0, K)
-
-        if coeff != K.one or factors != [(f, 1)]:
-            return False
-
-    n = dmp_degree_in(f, 0, 0)
-    g, h = [], []
-
-    for i in range(n, -1, -2):
-        g.insert(0, f[i])
-
-    for i in range(n - 1, -1, -2):
-        h.insert(0, f[i])
-
-    g = dup_sqr(dmp_strip(g, 0), K)
-    h = dup_sqr(dmp_strip(h, 0), K)
-
-    F = dup_sub(g, dup_lshift(h, 1, K), K)
-
-    if dmp_LC(F, K) < 0:
-        F = dmp_neg(F, 0, K)
-
-    if F == f:
-        return True
-
-    g = dmp_compose(f, [-K.one, 0], 0, K)
-
-    if dmp_LC(g, K) < 0:
-        g = dmp_neg(g, 0, K)
-
-    if F == g and dup_cyclotomic_p(g, K):
-        return True
-
-    G = dmp_sqf_part(F, 0, K)
-
-    if dup_sqr(G, K) == F and dup_cyclotomic_p(G, K):
-        return True
-
-    return False
+from .sqfreetools import dmp_sqf_p
 
 
 def dup_zz_cyclotomic_poly(n, K):
@@ -540,14 +467,6 @@ def dmp_zz_factor(f, u, K):
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_list(f)
     lc, factors = ring._zz_factor(f)
-    return lc, [(f.to_dense(), k) for f, k in factors]
-
-
-def dmp_factor_list(f, u, K):
-    """Factor polynomials into irreducibles in `K[X]`."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    lc, factors = ring.factor_list(f)
     return lc, [(f.to_dense(), k) for f, k in factors]
 
 
@@ -1091,3 +1010,79 @@ class _Factor:
                     H.append(h)
 
             return H
+
+    def _cyclotomic_p(self, f, irreducible=False):
+        """
+        Efficiently test if ``f`` is a cyclotomic polynomial.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', ZZ)
+
+        >>> (x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1).is_cyclotomic
+        False
+
+        >>> (x**16 + x**14 - x**10 - x**8 - x**6 + x**2 + 1).is_cyclotomic
+        True
+
+        """
+        domain = self.domain
+
+        if domain.is_RationalField:
+            try:
+                f = f.set_domain(domain.ring)
+                return f.is_cyclotomic
+            except CoercionFailed:
+                return False
+        elif not domain.is_IntegerRing:
+            return False
+
+        x = self.gens[0]
+
+        lc = f.LC
+        tc = f.coeff(1)
+
+        if lc != 1 or (tc != -1 and tc != 1):
+            return False
+
+        if not irreducible:
+            coeff, factors = f.factor_list()
+
+            if coeff != domain.one or factors != [(f, 1)]:
+                return False
+
+        n = f.degree()
+        g, h = self.zero, self.zero
+
+        for j, i in enumerate(range(n, -1, -2)):
+            g += f.coeff((i,))*x**j
+
+        for j, i in enumerate(range(n - 1, -1, -2)):
+            h += f.coeff((i,))*x**j
+
+        g = g**2
+        h = h**2
+
+        F = g - self.dup_lshift(h, 1)
+
+        if F.LC < 0:
+            F = -F
+
+        if F == f:
+            return True
+
+        g = f.compose(x, -x)
+
+        if g.LC < 0:
+            g = -g
+
+        if F == g and g.is_cyclotomic:
+            return True
+
+        G = F.sqf_part()
+
+        if G**2 == F and G.is_cyclotomic:
+            return True
+
+        return False
