@@ -1016,6 +1016,10 @@ def test_PolyElement___pow__():
     assert ((3*x**2 + 2*x + 4)**3 == 2*x**6 + 4*x**5 + 4*x**4 +
             2*x**3 + 2*x**2 + x + 4)
 
+    R, x = ring('x', FF(7))
+
+    assert (3*x + 4)**2 == 2*x**2 + 3*x + 2
+
     R, x = ring('x', FF(11))
 
     f = x + 1
@@ -1067,6 +1071,38 @@ def test_PolyElement___pow__():
 
     R, x = ring('x', ZZ)
 
+    assert R(0)**0 == 1
+    assert R(0)**1 == 0
+    assert R(0)**2 == 0
+    assert R(0)**7 == 0
+
+    assert R(2)**2 == 4
+    assert (x + 2)**2 == x**2 + 4*x + 4
+
+    assert (2*x**4 + x + 7)**2 == 4*x**8 + 4*x**5 + 28*x**4 + x**2 + 14*x + 49
+
+    pytest.raises(ValueError, lambda: R(1)**-1)
+
+    assert R(1)**0 == 1
+    assert R(1)**1 == 1
+    assert R(1)**7 == 1
+
+    assert R(3)**0 == 1
+    assert R(3)**1 == 3
+    assert R(3)**7 == 2187
+
+    assert (x**2 + 1)**2 == x**4 + 2*x**2 + 1
+
+    f = 2*x**4 + x + 7
+
+    assert f**0 == 1
+    assert f**1 == f
+    assert f**2 == 4*x**8 + 4*x**5 + 28*x**4 + x**2 + 14*x + 49
+    assert f**3 == (8*x**12 + 12*x**9 + 84*x**8 + 6*x**6 +
+                    84*x**5 + 294*x**4 + x**3 + 21*x**2 + 147*x + 343)
+
+    assert (x - 2)**3 == x**3 - 6*x**2 + 12*x - 8
+
     f = -11200*x**4 - 2604*x**2 + 49
     g = 15735193600000000*x**16 + 14633730048000000*x**14 + 4828147466240000*x**12 \
         + 598976863027200*x**10 + 3130812416256*x**8 - 2620523775744*x**6 \
@@ -1096,6 +1132,54 @@ def test_PolyElement___pow__():
                     60*x**9 - 85*x**8 + 170*x**7 - 60*x**6 - 112*x**5 +
                     170*x**4 - 115*x**3 + 45*x**2 - 10*x + 1)
 
+    R, x = ring('x', QQ)
+
+    assert R(0)**0 == 1
+    assert R(0)**2 == 0
+
+    assert R(1)**0 == 1
+    assert R(1)**1 == 1
+    assert R(1)**7 == 1
+
+    assert R(QQ(3, 7))**0 == 1
+    assert R(QQ(3, 7))**1 == QQ(3, 7)
+    assert R(QQ(2, 3))**2 == QQ(4, 9)
+    assert R(QQ(3, 7))**7 == QQ(2187, 823543)
+
+    assert (x/3 + QQ(2, 3))**2 == x**2/9 + 4*x/9 + QQ(4, 9)
+
+    R, x, y = ring('x y', FF(7))
+
+    assert (3*x + 4)**2 == 2*x**2 + 3*x + 2
+
+    R, x, y = ring('x y', ZZ)
+
+    assert R(0)**0 == 1
+    assert R(0)**1 == 0
+    assert R(0)**7 == 0
+
+    assert R(1)**0 == 1
+    assert R(1)**1 == 1
+    assert R(1)**7 == 1
+
+    assert (x**2 + x*y +
+            y**2)**2 == x**4 + 2*x**3*y + 3*x**2*y**2 + 2*x*y**3 + y**4
+
+    pytest.raises(ValueError, lambda: R(1)**-1)
+
+    R, x, y = ring('x y', QQ)
+
+    assert R(0)**0 == 1
+
+    assert R(QQ(3, 7))**0 == 1
+    assert R(QQ(3, 7))**1 == QQ(3, 7)
+    assert R(QQ(3, 7))**7 == QQ(2187, 823543)
+
+    R, x, y, z = ring('x y z', ZZ)
+
+    assert R(0)**2 == 0
+    assert R(2)**2 == 4
+
     R, x, y, z = ring('x y z', ZZ, grlex)
 
     f = x**3*y - 2*x*y**2 - 3*z + 1
@@ -1106,6 +1190,11 @@ def test_PolyElement___pow__():
     f = x**3*y - 2*x*y**2 - 3*z + x + y + 1
 
     assert f**4 == f._pow_generic(4)
+
+    R, x, y, z = ring('x y z', QQ)
+
+    assert R(0)**2 == 0
+    assert R(QQ(2, 3))**2 == QQ(4, 9)
 
 
 def test_PolyElement_div():
