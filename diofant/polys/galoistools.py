@@ -4,8 +4,8 @@ import math
 import random
 
 from ..ntheory import factorint
-from .densearith import (dmp_add, dmp_add_term, dmp_mul, dmp_quo, dmp_rem,
-                         dmp_sqr, dmp_sub)
+from .densearith import (dmp_add, dmp_add_term, dmp_mul, dmp_pow, dmp_quo,
+                         dmp_rem, dmp_sub)
 from .densebasic import dmp_degree_in, dmp_normal, dmp_one_p
 from .densetools import dmp_ground_monic
 from .euclidtools import dmp_gcd
@@ -41,7 +41,7 @@ def dup_gf_pow_mod(f, n, g, K):
     elif n == 1:
         return dmp_rem(f, g, 0, K)
     elif n == 2:
-        return dmp_rem(dmp_sqr(f, 0, K), g, 0, K)
+        return dmp_rem(dmp_pow(f, 2, 0, K), g, 0, K)
 
     h = [K.one]
 
@@ -56,7 +56,7 @@ def dup_gf_pow_mod(f, n, g, K):
         if not n:
             break
 
-        f = dmp_sqr(f, 0, K)
+        f = dmp_pow(f, 2, 0, K)
         f = dmp_rem(f, g, 0, K)
 
     return h

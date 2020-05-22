@@ -662,35 +662,36 @@ def test_dmp_mul():
 def test_dmp_sqr():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_sqr(R(0)) == 0
-    assert R.dmp_sqr(R(2)) == 4
-    assert R.dmp_sqr(x + 2) == x**2 + 4*x + 4
+    assert R.dmp_pow(R(0), 2) == 0
+    assert R.dmp_pow(R(2), 2) == 4
+    assert R.dmp_pow(x + 2, 2) == x**2 + 4*x + 4
 
-    assert R.dmp_sqr(2*x**4 + x + 7) == 4*x**8 + 4*x**5 + 28*x**4 + x**2 + 14*x + 49
+    assert R.dmp_pow(2*x**4 + x + 7,
+                     2) == 4*x**8 + 4*x**5 + 28*x**4 + x**2 + 14*x + 49
 
     R, x = ring('x', QQ)
 
-    assert R.dmp_sqr(R(0)) == 0
-    assert R.dmp_sqr(R(QQ(2, 3))) == QQ(4, 9)
-    assert R.dmp_sqr(x/3 + QQ(2, 3)) == x**2/9 + 4*x/9 + QQ(4, 9)
+    assert R.dmp_pow(R(0), 2) == 0
+    assert R.dmp_pow(R(QQ(2, 3)), 2) == QQ(4, 9)
+    assert R.dmp_pow(x/3 + QQ(2, 3), 2) == x**2/9 + 4*x/9 + QQ(4, 9)
 
     R, x = ring('x', FF(7))
 
-    assert R.dmp_sqr(3*x + 4) == 2*x**2 + 3*x + 2
+    assert R.dmp_pow(3*x + 4, 2) == 2*x**2 + 3*x + 2
 
     R, x, y, z = ring('x y z', ZZ)
 
-    assert R.dmp_sqr(R(0)) == 0
-    assert R.dmp_sqr(R(2)) == 4
+    assert R.dmp_pow(R(0), 2) == 0
+    assert R.dmp_pow(R(2), 2) == 4
 
     R, x, y, z = ring('x y z', QQ)
 
-    assert R.dmp_sqr(R(0)) == 0
-    assert R.dmp_sqr(R(QQ(2, 3))) == QQ(4, 9)
+    assert R.dmp_pow(R(0), 2) == 0
+    assert R.dmp_pow(R(QQ(2, 3)), 2) == QQ(4, 9)
 
     R, x, y = ring('x y', FF(7))
 
-    assert R.dmp_sqr(3*x + 4) == 2*x**2 + 3*x + 2
+    assert R.dmp_pow(3*x + 4, 2) == 2*x**2 + 3*x + 2
 
 
 def test_dmp_pow():

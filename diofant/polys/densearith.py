@@ -571,7 +571,7 @@ def dup_sqr(f, K):
 
     >>> R, x = ring('x', ZZ)
 
-    >>> R.dmp_sqr(x**2 + 1)
+    >>> R.dmp_pow(x**2 + 1, 2)
     x**4 + 2*x**2 + 1
 
     """
@@ -610,7 +610,7 @@ def dmp_sqr(f, u, K):
 
     >>> R, x, y = ring('x y', ZZ)
 
-    >>> R.dmp_sqr(x**2 + x*y + y**2)
+    >>> R.dmp_pow(x**2 + x*y + y**2, 2)
     x**4 + 2*x**3*y + 3*x**2*y**2 + 2*x*y**3 + y**4
 
     """
