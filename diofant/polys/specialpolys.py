@@ -8,7 +8,6 @@ from ..utilities import subsets
 from .densearith import dmp_add_term, dmp_mul, dmp_neg, dmp_sqr
 from .densebasic import (dmp_from_dict, dmp_ground, dmp_one, dmp_raise,
                          dmp_to_dict, dmp_zero, dup_random)
-from .factortools import dup_zz_cyclotomic_poly
 from .polytools import Poly, PurePoly
 from .polyutils import _analyze_gens
 from .rings import ring
@@ -56,7 +55,8 @@ def cyclotomic_poly(n, x=None, **args):
         raise ValueError(
             f"can't generate cyclotomic polynomial of order {n}")
 
-    poly = dup_zz_cyclotomic_poly(int(n), ZZ)
+    R = ZZ.inject('_0')
+    poly = R._zz_cyclotomic_poly(int(n)).to_dense()
 
     if x is not None:
         poly = Poly(poly, x)

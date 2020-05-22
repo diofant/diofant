@@ -11,8 +11,7 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_rem, dmp_sub, dmp_sub_mul, dup_add, dup_lshift,
                          dup_mul)
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_LC, dmp_nest,
-                         dmp_normal, dmp_one, dmp_raise, dmp_zero_p,
-                         dup_inflate)
+                         dmp_normal, dmp_one, dmp_raise, dmp_zero_p)
 from .densetools import (dmp_diff_eval_in, dmp_eval_in, dmp_eval_tail,
                          dmp_ground_primitive, dmp_ground_trunc)
 from .euclidtools import dup_gcdex
@@ -22,17 +21,6 @@ from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
 from .sqfreetools import dmp_sqf_p
-
-
-def dup_zz_cyclotomic_poly(n, K):
-    """Efficiently generate n-th cyclotomic polynomial."""
-    h = [K.one, -K.one]
-
-    for p, k in factorint(n).items():
-        h = dmp_quo(dup_inflate(h, p, K), h, 0, K)
-        h = dup_inflate(h, p**(k - 1), K)
-
-    return h
 
 
 def dmp_zz_wang_non_divisors(E, cs, ct, K):
@@ -1086,3 +1074,15 @@ class _Factor:
             return True
 
         return False
+
+    def _zz_cyclotomic_poly(self, n):
+        """Efficiently generate n-th cyclotomic polynomial."""
+        x = self.gens[0]
+
+        h = x - 1
+
+        for p, k in factorint(n).items():
+            h = h.inflate((p,)) // h
+            h = h.inflate((p**(k - 1),))
+
+        return h
