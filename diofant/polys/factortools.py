@@ -10,9 +10,9 @@ from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_neg, dmp_pow, dmp_quo,
                          dmp_quo_ground, dmp_rem, dmp_sub, dmp_sub_mul,
                          dup_add, dup_lshift, dup_mul, dup_sqr, dup_sub)
-from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
-                         dmp_ground_p, dmp_LC, dmp_nest, dmp_normal, dmp_one,
-                         dmp_raise, dmp_strip, dmp_TC, dmp_zero_p, dup_inflate)
+from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list, dmp_LC,
+                         dmp_nest, dmp_normal, dmp_one, dmp_raise, dmp_strip,
+                         dmp_TC, dmp_zero_p, dup_inflate)
 from .densetools import (dmp_compose, dmp_diff_eval_in, dmp_eval_in,
                          dmp_eval_tail, dmp_ground_primitive, dmp_ground_trunc)
 from .euclidtools import dup_gcdex
@@ -106,64 +106,6 @@ def dup_zz_cyclotomic_poly(n, K):
         h = dup_inflate(h, p**(k - 1), K)
 
     return h
-
-
-def _dup_cyclotomic_decompose(n, K):
-    H = [[K.one, -K.one]]
-
-    for p, k in factorint(n).items():
-        Q = [dmp_quo(dup_inflate(h, p, K), h, 0, K) for h in H]
-        H.extend(Q)
-
-        for i in range(1, k):
-            Q = [dup_inflate(q, p, K) for q in Q]
-            H.extend(Q)
-
-    return H
-
-
-def dup_zz_cyclotomic_factor(f, K):
-    """
-    Efficiently factor polynomials `x**n - 1` and `x**n + 1` in `Z[x]`.
-
-    Given a univariate polynomial `f` in `Z[x]` returns a list of factors
-    of `f`, provided that `f` is in the form `x**n - 1` or `x**n + 1` for
-    `n >= 1`. Otherwise returns None.
-
-    Factorization is performed using cyclotomic decomposition of `f`,
-    which makes this method much faster that any other direct factorization
-    approach (e.g. Zassenhaus's).
-
-    References
-    ==========
-
-    * :cite:`MathWorld-Cyclotomic-Poly`
-
-    """
-    lc_f, tc_f = dmp_LC(f, K), dmp_TC(f, K)
-
-    if dmp_ground_p(f, None, 0):
-        return
-
-    if lc_f != 1 or tc_f not in [-1, 1]:
-        return
-
-    if any(bool(cf) for cf in f[1:-1]):
-        return
-
-    n = dmp_degree_in(f, 0, 0)
-    F = _dup_cyclotomic_decompose(n, K)
-
-    if tc_f != K.one:
-        return F
-    else:
-        H = []
-
-        for h in _dup_cyclotomic_decompose(2*n, K):
-            if h not in F:
-                H.append(h)
-
-        return H
 
 
 def dmp_zz_wang_non_divisors(E, cs, ct, K):
@@ -712,7 +654,7 @@ class _Factor:
             H = None
 
             if query('USE_CYCLOTOMIC_FACTOR'):
-                H = self.dup_zz_cyclotomic_factor(g)
+                H = self._zz_cyclotomic_factor(g)
 
             if H is None:
                 H = self._zz_zassenhaus(g)
@@ -887,7 +829,7 @@ class _Factor:
         factors = None
 
         if query('USE_CYCLOTOMIC_FACTOR'):
-            factors = self.dup_zz_cyclotomic_factor(g)
+            factors = self._zz_cyclotomic_factor(g)
 
         if factors is None:
             factors = self._zz_zassenhaus(g)
@@ -1091,3 +1033,61 @@ class _Factor:
             for p in e_ff:
                 if (lc % p) and (tc % p**2):
                     return True
+
+    def _cyclotomic_decompose(self, n):
+        H = [self.gens[0] - 1]
+
+        for p, k in factorint(n).items():
+            Q = [h.inflate((p,)) // h for h in H]
+            H.extend(Q)
+
+            for i in range(1, k):
+                Q = [q.inflate((p,)) for q in Q]
+                H.extend(Q)
+
+        return H
+
+    def _zz_cyclotomic_factor(self, f):
+        """
+        Efficiently factor polynomials `x**n - 1` and `x**n + 1` in `Z[x]`.
+
+        Given a univariate polynomial `f` in `Z[x]` returns a list of factors
+        of `f`, provided that `f` is in the form `x**n - 1` or `x**n + 1` for
+        `n >= 1`. Otherwise returns None.
+
+        Factorization is performed using cyclotomic decomposition of `f`,
+        which makes this method much faster that any other direct factorization
+        approach (e.g. Zassenhaus's).
+
+        References
+        ==========
+
+        * :cite:`MathWorld-Cyclotomic-Poly`
+
+        """
+        domain = self.domain
+
+        lc_f, tc_f = f.LC, f.coeff(1)
+
+        if f.is_ground:
+            return
+
+        if lc_f != 1 or tc_f not in [-1, 1]:
+            return
+
+        if any(bool(cf) for cf in f.all_coeffs()[1:-1]):
+            return
+
+        n = f.degree()
+        F = self._cyclotomic_decompose(n)
+
+        if tc_f != domain.one:
+            return F
+        else:
+            H = []
+
+            for h in self._cyclotomic_decompose(2*n):
+                if h not in F:
+                    H.append(h)
+
+            return H
