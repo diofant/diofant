@@ -12,8 +12,7 @@ from .densetools import (dmp_compose, dup_decompose, dup_real_imag,
 from .factortools import (dmp_zz_diophantine, dmp_zz_wang,
                           dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
                           dmp_zz_wang_non_divisors, dup_cyclotomic_p,
-                          dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
-                          dup_zz_irreducible_p)
+                          dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly)
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -131,9 +130,6 @@ class IPolys:
 
     def dup_sign_variations(self, f):
         return dup_sign_variations(f.to_dense(), self.domain)
-
-    def dup_zz_irreducible_p(self, f):
-        return dup_zz_irreducible_p(f.to_dense(), self.domain)
 
     def dup_cyclotomic_p(self, f, irreducible=False):
         return dup_cyclotomic_p(f.to_dense(), self.domain, irreducible=irreducible)

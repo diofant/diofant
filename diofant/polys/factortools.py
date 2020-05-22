@@ -14,8 +14,7 @@ from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
                          dmp_ground_p, dmp_LC, dmp_nest, dmp_normal, dmp_one,
                          dmp_raise, dmp_strip, dmp_TC, dmp_zero_p, dup_inflate)
 from .densetools import (dmp_compose, dmp_diff_eval_in, dmp_eval_in,
-                         dmp_eval_tail, dmp_ground_content,
-                         dmp_ground_primitive, dmp_ground_trunc)
+                         dmp_eval_tail, dmp_ground_primitive, dmp_ground_trunc)
 from .euclidtools import dup_gcdex
 from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
@@ -23,21 +22,6 @@ from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
 from .sqfreetools import dmp_sqf_p, dmp_sqf_part
-
-
-def dup_zz_irreducible_p(f, K):
-    """Test irreducibility using Eisenstein's criterion."""
-    lc = dmp_LC(f, K)
-    tc = dmp_TC(f, K)
-
-    e_fc = dmp_ground_content(f[1:], 0, K)
-
-    if e_fc:
-        e_ff = factorint(int(e_fc))
-
-        for p in e_ff:
-            if (lc % p) and (tc % p**2):
-                return True
 
 
 def dup_cyclotomic_p(f, K, irreducible=False):
@@ -721,7 +705,7 @@ class _Factor:
                 return cont, [(g, 1)]
 
             if query('USE_IRREDUCIBLE_IN_FACTOR'):
-                if self.dup_zz_irreducible_p(g):
+                if self._zz_irreducible_p(g):
                     return cont, [(g, 1)]
 
             g = g.sqf_part()
@@ -883,6 +867,10 @@ class _Factor:
 
     def _zz_factor_sqf(self, f):
         """Factor square-free (non-primitive) polynomials in `Z[x]`."""
+        domain = self.domain
+
+        assert self.is_univariate and domain.is_IntegerRing
+
         cont, g = f.primitive()
 
         n = g.degree()
@@ -893,7 +881,7 @@ class _Factor:
             return cont, [g]
 
         if query('USE_IRREDUCIBLE_IN_FACTOR'):
-            if self.dup_zz_irreducible_p(g):
+            if self._zz_irreducible_p(g):
                 return cont, [g]
 
         factors = None
@@ -1088,3 +1076,18 @@ class _Factor:
                     coeff = domain_inexact.convert(coeff)
 
         return coeff*cont, _sort_factors(factors)
+
+    def _zz_irreducible_p(self, f):
+        """Test irreducibility using Eisenstein's criterion."""
+        lc = f.LC
+        tc = f.coeff(1)
+
+        f -= f.leading_term()
+        e_fc = f.content()
+
+        if e_fc:
+            e_ff = factorint(int(e_fc))
+
+            for p in e_ff:
+                if (lc % p) and (tc % p**2):
+                    return True
