@@ -272,7 +272,13 @@ def dmp_one_p(f, u, K):
     True
 
     """
-    return dmp_ground_p(f, K.one, u)
+    while u:
+        if len(f) != 1:
+            return False
+        f = f[0]
+        u -= 1
+
+    return f == [K.one]
 
 
 def dmp_one(u, K):
@@ -287,34 +293,6 @@ def dmp_one(u, K):
 
     """
     return dmp_ground(K.one, u)
-
-
-def dmp_ground_p(f, c, u):
-    """
-    Return True if ``f`` is constant in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> dmp_ground_p([[[ZZ(3)]]], 3, 2)
-    True
-    >>> dmp_ground_p([[[ZZ(4)]]], None, 2)
-    True
-
-    """
-    if c is not None and not c:
-        return dmp_zero_p(f, u)
-
-    while u:
-        if len(f) != 1:
-            return False
-        f = f[0]
-        u -= 1
-
-    if c is None:
-        return len(f) <= 1
-    else:
-        return f == [c]
 
 
 def dmp_ground(c, u):

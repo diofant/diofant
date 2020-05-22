@@ -6,8 +6,8 @@ import pytest
 
 from diofant import FF, ZZ, oo, ring
 from diofant.polys.densebasic import (dmp_convert, dmp_degree_in,
-                                      dmp_from_dict, dmp_ground, dmp_ground_p,
-                                      dmp_nest, dmp_normal, dmp_one, dmp_one_p,
+                                      dmp_from_dict, dmp_ground, dmp_nest,
+                                      dmp_normal, dmp_one, dmp_one_p,
                                       dmp_permute, dmp_raise, dmp_strip,
                                       dmp_to_dict, dmp_zero, dmp_zero_p,
                                       dmp_zeros, dup_random, dup_reverse)
@@ -221,31 +221,12 @@ def test_dmp_one_p():
     assert dmp_one_p([[1]], 1, ZZ) is True
     assert dmp_one_p([[[1]]], 2, ZZ) is True
     assert dmp_one_p([[[12]]], 2, ZZ) is False
+    assert dmp_one_p([[[1], [1]]], 2, ZZ) is False
 
 
 def test_dmp_one():
     assert dmp_one(0, ZZ) == [ZZ(1)]
     assert dmp_one(2, ZZ) == [[[ZZ(1)]]]
-
-
-def test_dmp_ground_p():
-    assert dmp_ground_p([], 0, 0) is True
-    assert dmp_ground_p([[]], 0, 1) is True
-    assert dmp_ground_p([[]], 1, 1) is False
-
-    assert dmp_ground_p([[ZZ(1)]], 1, 1) is True
-    assert dmp_ground_p([[[ZZ(2)]]], 2, 2) is True
-
-    assert dmp_ground_p([[[ZZ(2)]]], 3, 2) is False
-    assert dmp_ground_p([[[ZZ(3)], []]], 3, 2) is False
-
-    assert dmp_ground_p([], None, 0) is True
-    assert dmp_ground_p([[]], None, 1) is True
-
-    assert dmp_ground_p([ZZ(1)], None, 0) is True
-    assert dmp_ground_p([[[ZZ(1)]]], None, 2) is True
-
-    assert dmp_ground_p([[[ZZ(3)], []]], None, 2) is False
 
 
 def test_dmp_ground():
