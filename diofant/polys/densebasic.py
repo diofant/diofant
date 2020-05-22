@@ -505,14 +505,6 @@ def dmp_raise(f, l, u, K):
     return [dmp_raise(c, l, v, K) for c in f]
 
 
-def dup_inflate(f, m, K):
-    """Map ``y`` to ``x**m`` in a polynomial in ``K[x]``."""
-    ring = K.poly_ring('_0')
-    f = ring.from_list(f)
-    f = f.inflate((m,))
-    return f.to_dense()
-
-
 def dmp_terms_gcd(f, u, K):
     """Remove GCD of terms from ``f`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
