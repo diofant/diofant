@@ -6,15 +6,13 @@ import math
 from ..ntheory import factorint, isprime, nextprime
 from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
-from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_max_norm, dmp_mul,
+from .densearith import (dmp_add, dmp_add_mul, dmp_max_norm, dmp_mul,
                          dmp_mul_ground, dmp_pow, dmp_quo, dmp_quo_ground,
-                         dmp_rem, dmp_sub, dmp_sub_mul, dup_add, dup_lshift,
-                         dup_mul)
+                         dmp_sub, dmp_sub_mul, dup_add)
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_LC, dmp_nest,
-                         dmp_normal, dmp_one, dmp_raise, dmp_zero_p)
+                         dmp_one, dmp_raise, dmp_zero_p)
 from .densetools import (dmp_diff_eval_in, dmp_eval_in, dmp_eval_tail,
                          dmp_ground_primitive, dmp_ground_trunc)
-from .euclidtools import dup_gcdex
 from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
@@ -118,49 +116,6 @@ def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
     f = dmp_mul_ground(f, cs**(len(H) - 1), u, K)
 
     return f, HHH, CCC
-
-
-def dup_zz_diophantine(F, m, p, K):
-    """Wang/EEZ: Solve univariate Diophantine equations."""
-    if len(F) == 2:
-        Kp = K.finite_field(p)
-        f, g = map(lambda x: dmp_normal(x, 0, Kp), F)
-
-        s, t, _ = dup_gcdex(g, f, Kp)
-
-        s = dup_lshift(s, m, Kp)
-        t = dup_lshift(t, m, Kp)
-
-        q, s = dmp_div(s, f, 0, Kp)
-        s = dmp_normal(s, 0, K)
-
-        t = dmp_add_mul(t, q, g, 0, Kp)
-        t = dmp_normal(t, 0, K)
-
-        result = [s, t]
-    else:
-        G = [F[-1]]
-
-        for f in reversed(F[1:-1]):
-            G.insert(0, dup_mul(f, G[0], K))
-
-        S, T = [], [[1]]
-
-        for f, g in zip(F, G):
-            t, s = dmp_zz_diophantine([g, f], T[-1], [], 0, p, 1, K)
-            T.append(t)
-            S.append(s)
-
-        result, S = [], S + [T[-1]]
-        Kp = K.finite_field(p)
-
-        for s, f in zip(S, F):
-            s = dmp_rem(dup_lshift(s, m, K), f, 0, Kp)
-            s = dmp_normal(s, 0, K)
-
-            result.append(s)
-
-    return result
 
 
 def dmp_zz_diophantine(F, c, A, d, p, u, K):
@@ -456,6 +411,14 @@ def dmp_zz_factor(f, u, K):
     f = ring.from_list(f)
     lc, factors = ring._zz_factor(f)
     return lc, [(f.to_dense(), k) for f, k in factors]
+
+
+def dup_zz_diophantine(F, m, p, K):
+    """Wang/EEZ: Solve univariate Diophantine equations."""
+    ring = K.poly_ring('_0')
+    F = list(map(ring.from_list, F))
+    r = ring._univar_zz_diophantine(F, m, p)
+    return list(map(lambda _: _.to_dense(), r))
 
 
 class _Factor:
@@ -1086,3 +1049,49 @@ class _Factor:
             h = h.inflate((p**(k - 1),))
 
         return h
+
+    def _univar_zz_diophantine(self, F, m, p):
+        """Wang/EEZ: Solve univariate Diophantine equations."""
+        domain = self.domain
+
+        if len(F) == 2:
+            p_domain = domain.finite_field(p)
+            p_ring = self.clone(domain=p_domain)
+            f, g = map(lambda _: _.set_domain(p_domain), F)
+
+            s, t, _ = p_ring.gcdex(g, f)
+
+            s = p_ring.dup_lshift(s, m)
+            t = p_ring.dup_lshift(t, m)
+
+            q, s = divmod(s, f)
+            s = s.set_domain(domain)
+
+            t += q*g
+            t = t.set_domain(domain)
+
+            result = [s, t]
+        else:
+            G = [F[-1]]
+
+            for f in reversed(F[1:-1]):
+                G.insert(0, f*G[0])
+
+            S, T = [], [self.one]
+
+            for f, g in zip(F, G):
+                t, s = self.dmp_zz_diophantine([g, f], T[-1], [], 0, p)
+                T.append(t)
+                S.append(s)
+
+            result, S = [], S + [T[-1]]
+            p_domain = domain.finite_field(p)
+
+            for s, f in zip(S, F):
+                s = self.dup_lshift(s, m)
+                s, f = map(lambda _: _.set_domain(p_domain), (s, f))
+                s = (s % f).set_domain(domain)
+
+                result.append(s)
+
+        return result
