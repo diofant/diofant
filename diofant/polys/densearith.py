@@ -431,22 +431,6 @@ def dmp_add_mul(f, g, h, u, K):
     return dmp_add(f, dmp_mul(g, h, u, K), u, K)
 
 
-def dmp_sub_mul(f, g, h, u, K):
-    """
-    Return ``f - g*h`` where ``f, g, h`` are in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_sub_mul(x**2 + y, x, x + 2)
-    -2*x + y
-
-    """
-    return dmp_sub(f, dmp_mul(g, h, u, K), u, K)
-
-
 def dup_mul_karatsuba(f, g, K):
     """
     Multiply dense polynomials in ``K[x]`` using Karatsuba's algorithm.

@@ -398,14 +398,15 @@ def test_dmp_add_mul():
 def test_dmp_sub_mul():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_sub_mul(x**2 + 2*x + 3, 3*x**2 + 2*x + 1,
-                         x + 2) == -3*x**3 - 7*x**2 - 3*x + 1
-    assert R.dmp_sub_mul(x**2 - 1, x - 2, x + 2) == 3
+    assert (x**2 + 2*x + 3 - (3*x**2 + 2*x + 1)*(x + 2) ==
+            -3*x**3 - 7*x**2 - 3*x + 1)
+    assert x**2 - 1 - (x - 2)*(x + 2) == 3
 
     R, x, y = ring('x y', ZZ)
 
-    assert R.dmp_sub_mul(x*y + 2*x + 3, 3*x + 2*y + 1,
-                         x + 2) == -3*x**2 - x*y - 5*x - 4*y + 1
+    assert (x*y + 2*x + 3 - (3*x + 2*y + 1)*(x + 2) ==
+            -3*x**2 - x*y - 5*x - 4*y + 1)
+    assert x**2 + y - x*(x + 2) == -2*x + y
 
 
 def test_dmp_mul():
