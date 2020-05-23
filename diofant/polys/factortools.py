@@ -344,14 +344,6 @@ def dmp_zz_factor(f, u, K):
     return lc, [(f.to_dense(), k) for f, k in factors]
 
 
-def dup_zz_diophantine(F, m, p, K):
-    """Wang/EEZ: Solve univariate Diophantine equations."""
-    ring = K.poly_ring('_0')
-    F = list(map(ring.from_list, F))
-    r = ring._univar_zz_diophantine(F, m, p)
-    return list(map(lambda _: _.to_dense(), r))
-
-
 def dmp_zz_diophantine(F, c, A, d, p, u, K):
     """Wang/EEZ: Solve multivariate Diophantine equations."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
