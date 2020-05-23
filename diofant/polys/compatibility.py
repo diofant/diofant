@@ -8,9 +8,8 @@ from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_TC, dmp_LC,
                          dmp_TC)
 from .densetools import (dmp_compose, dup_decompose, dup_real_imag,
                          dup_transform)
-from .factortools import (dmp_zz_diophantine, dmp_zz_wang,
-                          dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
-                          dmp_zz_wang_non_divisors)
+from .factortools import (dmp_zz_wang, dmp_zz_wang_hensel_lifting,
+                          dmp_zz_wang_lead_coeffs, dmp_zz_wang_non_divisors)
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -135,11 +134,6 @@ class IPolys:
         H = list(map(lambda _: _.to_dense(), H))
         f, HH, CC = dmp_zz_wang_lead_coeffs(f.to_dense(), T, cs, E, H, A, self.ngens-1, self.domain)
         return self.from_list(f), list(map(uv.from_list, HH)), list(map(mv.from_list, CC))
-
-    # f: List[Poly], c: List[Poly], A: List[ZZ], d: int, p: ZZ
-    def dmp_zz_diophantine(self, F, c, A, d, p):
-        result = dmp_zz_diophantine(list(map(lambda _: _.to_dense(), F)), c.to_dense(), A, d, p, self.ngens-1, self.domain)
-        return list(map(self.from_list, result))
 
     # f: Poly, H: List[Poly], LC: List[Poly], A: List[ZZ], p: ZZ
     def dmp_zz_wang_hensel_lifting(self, f, H, LC, A, p):

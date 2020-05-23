@@ -294,7 +294,7 @@ def test_dmp_zz_wang():
     assert functools.reduce(operator.mul, factors) == w_1
 
 
-def test_dmp_zz_diophantine():
+def test__zz_diophantine():
     R, x, y = ring('x y', ZZ)
 
     H_1 = [44*x**2 + 42*x + 1, 126*x**2 - 9*x + 28, 187*x**2 - 23]
@@ -312,9 +312,9 @@ def test_dmp_zz_diophantine():
            108*x**3 - 8*x**2*y**2 - 42*x**2*y - 6*x*y**2 + 9*x + 2*y)
     p = 6291469
 
-    assert R.dmp_zz_diophantine(H_1, c_1, [ZZ(0)], 5, p) == [-3*x, -2, 1]
-    assert R.dmp_zz_diophantine(H_2, c_2, [ZZ(-14)], 5, p) == [-x*y, -3*x, -6]
-    assert R.dmp_zz_diophantine(H_3, c_3, [ZZ(-14)], 5, p) == [0, 0, -1]
+    assert R._zz_diophantine(H_1, c_1, [ZZ(0)], 5, p) == [-3*x, -2, 1]
+    assert R._zz_diophantine(H_2, c_2, [ZZ(-14)], 5, p) == [-x*y, -3*x, -6]
+    assert R._zz_diophantine(H_3, c_3, [ZZ(-14)], 5, p) == [0, 0, -1]
 
     R, x, y, z = ring('x y z', ZZ)
 
@@ -323,8 +323,8 @@ def test_dmp_zz_diophantine():
          6*y**2*z**3 - 6*y**2 - 18*z**6 + 54*z**4 + 18*z**3 - 54*z)
     p = 2345258188817
 
-    assert R.dmp_zz_diophantine(F, c, [ZZ(-2), ZZ(0)], 6,
-                                p) == [-6*z**3 + 6, 2*z]
+    assert R._zz_diophantine(F, c, [ZZ(-2), ZZ(0)], 6,
+                             p) == [-6*z**3 + 6, 2*z]
 
 
 def test_sympyissue_6355():
