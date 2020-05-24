@@ -66,20 +66,20 @@ def test__zz_hensel_lift():
                                                  x + 182, x + 1]
 
 
-def test_dup_zz_irreducible_p():
+def test__zz_irreducible_p():
     R, x = ring('x', ZZ)
 
-    assert R.dup_zz_irreducible_p(x) is None
+    assert R._zz_irreducible_p(x) is None
 
     f = 3*x**4 + 2*x**3 + 6*x**2 + 8*x
 
-    assert R.dup_zz_irreducible_p(f + 7) is None
-    assert R.dup_zz_irreducible_p(f + 4) is None
-    assert R.dup_zz_irreducible_p(f + 10) is True
-    assert R.dup_zz_irreducible_p(f + 14) is True
+    assert R._zz_irreducible_p(f + 7) is None
+    assert R._zz_irreducible_p(f + 4) is None
+    assert R._zz_irreducible_p(f + 10) is True
+    assert R._zz_irreducible_p(f + 14) is True
 
 
-def test_dup_cyclotomic_p():
+def test__cyclotomic_p():
     R, x = ring('x', ZZ)
 
     assert (x - 1).is_cyclotomic is True
@@ -89,7 +89,7 @@ def test_dup_cyclotomic_p():
     f = x**2 + 1
 
     assert f.is_cyclotomic is True
-    assert R.dup_cyclotomic_p(f, irreducible=True) is True
+    assert R._cyclotomic_p(f, irreducible=True) is True
 
     assert (x**4 + x**3 + x**2 + x + 1).is_cyclotomic is True
     assert (x**2 - x + 1).is_cyclotomic is True
@@ -119,43 +119,43 @@ def test_dup_cyclotomic_p():
     assert (x**2 + x + 1).is_cyclotomic is False
 
 
-def test_dup_zz_cyclotomic_poly():
+def test__zz_cyclotomic_poly():
     R, x = ring('x', ZZ)
 
-    assert R.dup_zz_cyclotomic_poly(1) == x - 1
-    assert R.dup_zz_cyclotomic_poly(2) == x + 1
-    assert R.dup_zz_cyclotomic_poly(3) == x**2 + x + 1
-    assert R.dup_zz_cyclotomic_poly(4) == x**2 + 1
-    assert R.dup_zz_cyclotomic_poly(5) == x**4 + x**3 + x**2 + x + 1
-    assert R.dup_zz_cyclotomic_poly(6) == x**2 - x + 1
-    assert R.dup_zz_cyclotomic_poly(7) == (x**6 + x**5 + x**4 + x**3 +
-                                           x**2 + x + 1)
-    assert R.dup_zz_cyclotomic_poly(8) == x**4 + 1
-    assert R.dup_zz_cyclotomic_poly(9) == x**6 + x**3 + 1
+    assert R._zz_cyclotomic_poly(1) == x - 1
+    assert R._zz_cyclotomic_poly(2) == x + 1
+    assert R._zz_cyclotomic_poly(3) == x**2 + x + 1
+    assert R._zz_cyclotomic_poly(4) == x**2 + 1
+    assert R._zz_cyclotomic_poly(5) == x**4 + x**3 + x**2 + x + 1
+    assert R._zz_cyclotomic_poly(6) == x**2 - x + 1
+    assert R._zz_cyclotomic_poly(7) == (x**6 + x**5 + x**4 + x**3 +
+                                        x**2 + x + 1)
+    assert R._zz_cyclotomic_poly(8) == x**4 + 1
+    assert R._zz_cyclotomic_poly(9) == x**6 + x**3 + 1
 
 
-def test_dup_zz_cyclotomic_factor():
+def test__zz_cyclotomic_factor():
     R, x = ring('x', ZZ)
 
-    assert R.dup_zz_cyclotomic_factor(R(0)) is None
-    assert R.dup_zz_cyclotomic_factor(R(1)) is None
+    assert R._zz_cyclotomic_factor(R(0)) is None
+    assert R._zz_cyclotomic_factor(R(1)) is None
 
-    assert R.dup_zz_cyclotomic_factor(2*x**10 - 1) is None
-    assert R.dup_zz_cyclotomic_factor(x**10 - 3) is None
-    assert R.dup_zz_cyclotomic_factor(x**10 + x**5 - 1) is None
+    assert R._zz_cyclotomic_factor(2*x**10 - 1) is None
+    assert R._zz_cyclotomic_factor(x**10 - 3) is None
+    assert R._zz_cyclotomic_factor(x**10 + x**5 - 1) is None
 
-    assert R.dup_zz_cyclotomic_factor(x + 1) == [x + 1]
-    assert R.dup_zz_cyclotomic_factor(x - 1) == [x - 1]
+    assert R._zz_cyclotomic_factor(x + 1) == [x + 1]
+    assert R._zz_cyclotomic_factor(x - 1) == [x - 1]
 
-    assert R.dup_zz_cyclotomic_factor(x**2 + 1) == [x**2 + 1]
-    assert R.dup_zz_cyclotomic_factor(x**2 - 1) == [x - 1, x + 1]
+    assert R._zz_cyclotomic_factor(x**2 + 1) == [x**2 + 1]
+    assert R._zz_cyclotomic_factor(x**2 - 1) == [x - 1, x + 1]
 
-    assert R.dup_zz_cyclotomic_factor(x**27 + 1) == [x + 1, x**2 - x + 1,
-                                                     x**6 - x**3 + 1,
-                                                     x**18 - x**9 + 1]
-    assert R.dup_zz_cyclotomic_factor(x**27 - 1) == [x - 1, x**2 + x + 1,
-                                                     x**6 + x**3 + 1,
-                                                     x**18 + x**9 + 1]
+    assert R._zz_cyclotomic_factor(x**27 + 1) == [x + 1, x**2 - x + 1,
+                                                  x**6 - x**3 + 1,
+                                                  x**18 - x**9 + 1]
+    assert R._zz_cyclotomic_factor(x**27 - 1) == [x - 1, x**2 + x + 1,
+                                                  x**6 + x**3 + 1,
+                                                  x**18 + x**9 + 1]
 
 
 def test_dup_zz_factor():
@@ -294,7 +294,7 @@ def test_dmp_zz_wang():
     assert functools.reduce(operator.mul, factors) == w_1
 
 
-def test_dmp_zz_diophantine():
+def test__zz_diophantine():
     R, x, y = ring('x y', ZZ)
 
     H_1 = [44*x**2 + 42*x + 1, 126*x**2 - 9*x + 28, 187*x**2 - 23]
@@ -312,9 +312,9 @@ def test_dmp_zz_diophantine():
            108*x**3 - 8*x**2*y**2 - 42*x**2*y - 6*x*y**2 + 9*x + 2*y)
     p = 6291469
 
-    assert R.dmp_zz_diophantine(H_1, c_1, [ZZ(0)], 5, p) == [-3*x, -2, 1]
-    assert R.dmp_zz_diophantine(H_2, c_2, [ZZ(-14)], 5, p) == [-x*y, -3*x, -6]
-    assert R.dmp_zz_diophantine(H_3, c_3, [ZZ(-14)], 5, p) == [0, 0, -1]
+    assert R._zz_diophantine(H_1, c_1, [ZZ(0)], 5, p) == [-3*x, -2, 1]
+    assert R._zz_diophantine(H_2, c_2, [ZZ(-14)], 5, p) == [-x*y, -3*x, -6]
+    assert R._zz_diophantine(H_3, c_3, [ZZ(-14)], 5, p) == [0, 0, -1]
 
     R, x, y, z = ring('x y z', ZZ)
 
@@ -323,8 +323,8 @@ def test_dmp_zz_diophantine():
          6*y**2*z**3 - 6*y**2 - 18*z**6 + 54*z**4 + 18*z**3 - 54*z)
     p = 2345258188817
 
-    assert R.dmp_zz_diophantine(F, c, [ZZ(-2), ZZ(0)], 6,
-                                p) == [-6*z**3 + 6, 2*z]
+    assert R._zz_diophantine(F, c, [ZZ(-2), ZZ(0)], 6,
+                             p) == [-6*z**3 + 6, 2*z]
 
 
 def test_sympyissue_6355():
@@ -458,7 +458,7 @@ def test_sympyissue_5786():
     assert (f*g**3).factor_list() == (1, [(f, 1), (g, 3)])
 
 
-def test_dmp_factor_list():
+def test_factor_list():
     R, x = ring('x', FF(2))
 
     assert (x**2 + 1).factor_list() == (1, [(x + 1, 2)])

@@ -1,7 +1,7 @@
 """Arithmetics for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from .densebasic import (dmp_degree_in, dmp_one, dmp_one_p, dmp_slice_in,
-                         dmp_strip, dmp_zero, dmp_zero_p, dmp_zeros)
+from .densebasic import (dmp_degree_in, dmp_slice_in, dmp_strip, dmp_zero,
+                         dmp_zero_p, dmp_zeros)
 from .polyconfig import query
 
 
@@ -431,22 +431,6 @@ def dmp_add_mul(f, g, h, u, K):
     return dmp_add(f, dmp_mul(g, h, u, K), u, K)
 
 
-def dmp_sub_mul(f, g, h, u, K):
-    """
-    Return ``f - g*h`` where ``f, g, h`` are in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_sub_mul(x**2 + y, x, x + 2)
-    -2*x + y
-
-    """
-    return dmp_sub(f, dmp_mul(g, h, u, K), u, K)
-
-
 def dup_mul_karatsuba(f, g, K):
     """
     Multiply dense polynomials in ``K[x]`` using Karatsuba's algorithm.
@@ -494,7 +478,7 @@ def dup_mul(f, g, K):
 
     """
     if f == g:
-        return dup_sqr(f, K)
+        return dmp_pow(f, 2, 0, K)
 
     if not (f and g):
         return []
@@ -537,7 +521,7 @@ def dmp_mul(f, g, u, K):
         return dup_mul(f, g, K)
 
     if f == g:
-        return dmp_sqr(f, u, K)
+        return dmp_pow(f, 2, u, K)
 
     df = dmp_degree_in(f, 0, u)
 
@@ -562,126 +546,11 @@ def dmp_mul(f, g, u, K):
     return dmp_strip(h, u)
 
 
-def dup_sqr(f, K):
-    """
-    Square dense polynomials in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dmp_sqr(x**2 + 1)
-    x**4 + 2*x**2 + 1
-
-    """
-    df, h = len(f) - 1, []
-
-    for i in range(2*df + 1):
-        c = K.zero
-
-        jmin = max(0, i - df)
-        jmax = min(i, df)
-
-        n = jmax - jmin + 1
-
-        jmax = jmin + n // 2 - 1
-
-        for j in range(jmin, jmax + 1):
-            c += f[j]*f[i - j]
-
-        c += c
-
-        if n & 1:
-            elem = f[jmax + 1]
-            c += elem**2
-
-        h.append(c)
-
-    return dmp_strip(h, 0)
-
-
-def dmp_sqr(f, u, K):
-    """
-    Square dense polynomials in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_sqr(x**2 + x*y + y**2)
-    x**4 + 2*x**3*y + 3*x**2*y**2 + 2*x*y**3 + y**4
-
-    """
-    if not u:
-        return dup_sqr(f, K)
-
-    df = dmp_degree_in(f, 0, u)
-
-    if df < 0:
-        return f
-
-    h, v = [], u - 1
-
-    for i in range(2*df + 1):
-        c = dmp_zero(v)
-
-        jmin = max(0, i - df)
-        jmax = min(i, df)
-
-        n = jmax - jmin + 1
-
-        jmax = jmin + n // 2 - 1
-
-        for j in range(jmin, jmax + 1):
-            c = dmp_add(c, dmp_mul(f[j], f[i - j], v, K), v, K)
-
-        c = dmp_mul_ground(c, K(2), v, K)
-
-        if n & 1:
-            elem = dmp_sqr(f[jmax + 1], v, K)
-            c = dmp_add(c, elem, v, K)
-
-        h.append(c)
-
-    return dmp_strip(h, u)
-
-
 def dmp_pow(f, n, u, K):
-    """
-    Raise ``f`` to the ``n``-th power in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_pow(x*y + 1, 3)
-    x**3*y**3 + 3*x**2*y**2 + 3*x*y + 1
-
-    """
-    if not n:
-        return dmp_one(u, K)
-    if n < 0:
-        raise ValueError("can't raise polynomial to a negative power")
-    if n == 1 or dmp_zero_p(f, u) or dmp_one_p(f, u, K):
-        return f
-
-    g = dmp_one(u, K)
-
-    while True:
-        n, m = n//2, n
-
-        if m & 1:
-            g = dmp_mul(g, f, u, K)
-
-            if not n:
-                break
-
-        f = dmp_sqr(f, u, K)
-
-    return g
+    """Raise ``f`` to the ``n``-th power in ``K[X]``."""
+    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
+    f = ring.from_list(f)
+    return (f**n).to_dense()
 
 
 def dmp_div(f, g, u, K):

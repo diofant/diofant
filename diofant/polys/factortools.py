@@ -2,184 +2,23 @@
 
 import functools
 import math
+import operator
 
 from ..ntheory import factorint, isprime, nextprime
 from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
-from .densearith import (dmp_add, dmp_add_mul, dmp_div, dmp_max_norm, dmp_mul,
-                         dmp_mul_ground, dmp_neg, dmp_pow, dmp_quo,
-                         dmp_quo_ground, dmp_rem, dmp_sub, dmp_sub_mul,
-                         dup_add, dup_lshift, dup_mul, dup_sqr, dup_sub)
-from .densebasic import (dmp_convert, dmp_degree_in, dmp_degree_list,
-                         dmp_ground_p, dmp_LC, dmp_nest, dmp_normal, dmp_one,
-                         dmp_raise, dmp_strip, dmp_TC, dmp_zero_p, dup_inflate)
-from .densetools import (dmp_compose, dmp_diff_eval_in, dmp_eval_in,
-                         dmp_eval_tail, dmp_ground_content,
+from .densearith import (dmp_add_mul, dmp_max_norm, dmp_mul, dmp_mul_ground,
+                         dmp_pow, dmp_quo_ground, dmp_sub)
+from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_LC, dmp_nest,
+                         dmp_one, dmp_raise, dmp_zero_p)
+from .densetools import (dmp_diff_eval_in, dmp_eval_in, dmp_eval_tail,
                          dmp_ground_primitive, dmp_ground_trunc)
-from .euclidtools import dup_gcdex
 from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-from .sqfreetools import dmp_sqf_p, dmp_sqf_part
-
-
-def dup_zz_irreducible_p(f, K):
-    """Test irreducibility using Eisenstein's criterion."""
-    lc = dmp_LC(f, K)
-    tc = dmp_TC(f, K)
-
-    e_fc = dmp_ground_content(f[1:], 0, K)
-
-    if e_fc:
-        e_ff = factorint(int(e_fc))
-
-        for p in e_ff:
-            if (lc % p) and (tc % p**2):
-                return True
-
-
-def dup_cyclotomic_p(f, K, irreducible=False):
-    """
-    Efficiently test if ``f`` is a cyclotomic polynomial.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> (x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1).is_cyclotomic
-    False
-
-    >>> (x**16 + x**14 - x**10 - x**8 - x**6 + x**2 + 1).is_cyclotomic
-    True
-
-    """
-    if K.is_RationalField:
-        try:
-            K0, K = K, K.ring
-            f = dmp_convert(f, 0, K0, K)
-        except CoercionFailed:
-            return False
-    elif not K.is_IntegerRing:
-        return False
-
-    lc = dmp_LC(f, K)
-    tc = dmp_TC(f, K)
-
-    if lc != 1 or (tc != -1 and tc != 1):
-        return False
-
-    if not irreducible:
-        coeff, factors = dmp_factor_list(f, 0, K)
-
-        if coeff != K.one or factors != [(f, 1)]:
-            return False
-
-    n = dmp_degree_in(f, 0, 0)
-    g, h = [], []
-
-    for i in range(n, -1, -2):
-        g.insert(0, f[i])
-
-    for i in range(n - 1, -1, -2):
-        h.insert(0, f[i])
-
-    g = dup_sqr(dmp_strip(g, 0), K)
-    h = dup_sqr(dmp_strip(h, 0), K)
-
-    F = dup_sub(g, dup_lshift(h, 1, K), K)
-
-    if dmp_LC(F, K) < 0:
-        F = dmp_neg(F, 0, K)
-
-    if F == f:
-        return True
-
-    g = dmp_compose(f, [-K.one, 0], 0, K)
-
-    if dmp_LC(g, K) < 0:
-        g = dmp_neg(g, 0, K)
-
-    if F == g and dup_cyclotomic_p(g, K):
-        return True
-
-    G = dmp_sqf_part(F, 0, K)
-
-    if dup_sqr(G, K) == F and dup_cyclotomic_p(G, K):
-        return True
-
-    return False
-
-
-def dup_zz_cyclotomic_poly(n, K):
-    """Efficiently generate n-th cyclotomic polynomial."""
-    h = [K.one, -K.one]
-
-    for p, k in factorint(n).items():
-        h = dmp_quo(dup_inflate(h, p, K), h, 0, K)
-        h = dup_inflate(h, p**(k - 1), K)
-
-    return h
-
-
-def _dup_cyclotomic_decompose(n, K):
-    H = [[K.one, -K.one]]
-
-    for p, k in factorint(n).items():
-        Q = [dmp_quo(dup_inflate(h, p, K), h, 0, K) for h in H]
-        H.extend(Q)
-
-        for i in range(1, k):
-            Q = [dup_inflate(q, p, K) for q in Q]
-            H.extend(Q)
-
-    return H
-
-
-def dup_zz_cyclotomic_factor(f, K):
-    """
-    Efficiently factor polynomials `x**n - 1` and `x**n + 1` in `Z[x]`.
-
-    Given a univariate polynomial `f` in `Z[x]` returns a list of factors
-    of `f`, provided that `f` is in the form `x**n - 1` or `x**n + 1` for
-    `n >= 1`. Otherwise returns None.
-
-    Factorization is performed using cyclotomic decomposition of `f`,
-    which makes this method much faster that any other direct factorization
-    approach (e.g. Zassenhaus's).
-
-    References
-    ==========
-
-    * :cite:`MathWorld-Cyclotomic-Poly`
-
-    """
-    lc_f, tc_f = dmp_LC(f, K), dmp_TC(f, K)
-
-    if dmp_ground_p(f, None, 0):
-        return
-
-    if lc_f != 1 or tc_f not in [-1, 1]:
-        return
-
-    if any(bool(cf) for cf in f[1:-1]):
-        return
-
-    n = dmp_degree_in(f, 0, 0)
-    F = _dup_cyclotomic_decompose(n, K)
-
-    if tc_f != K.one:
-        return F
-    else:
-        H = []
-
-        for h in _dup_cyclotomic_decompose(2*n, K):
-            if h not in F:
-                H.append(h)
-
-        return H
+from .sqfreetools import dmp_sqf_p
 
 
 def dmp_zz_wang_non_divisors(E, cs, ct, K):
@@ -277,118 +116,6 @@ def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
     f = dmp_mul_ground(f, cs**(len(H) - 1), u, K)
 
     return f, HHH, CCC
-
-
-def dup_zz_diophantine(F, m, p, K):
-    """Wang/EEZ: Solve univariate Diophantine equations."""
-    if len(F) == 2:
-        Kp = K.finite_field(p)
-        f, g = map(lambda x: dmp_normal(x, 0, Kp), F)
-
-        s, t, _ = dup_gcdex(g, f, Kp)
-
-        s = dup_lshift(s, m, Kp)
-        t = dup_lshift(t, m, Kp)
-
-        q, s = dmp_div(s, f, 0, Kp)
-        s = dmp_normal(s, 0, K)
-
-        t = dmp_add_mul(t, q, g, 0, Kp)
-        t = dmp_normal(t, 0, K)
-
-        result = [s, t]
-    else:
-        G = [F[-1]]
-
-        for f in reversed(F[1:-1]):
-            G.insert(0, dup_mul(f, G[0], K))
-
-        S, T = [], [[1]]
-
-        for f, g in zip(F, G):
-            t, s = dmp_zz_diophantine([g, f], T[-1], [], 0, p, 1, K)
-            T.append(t)
-            S.append(s)
-
-        result, S = [], S + [T[-1]]
-        Kp = K.finite_field(p)
-
-        for s, f in zip(S, F):
-            s = dmp_rem(dup_lshift(s, m, K), f, 0, Kp)
-            s = dmp_normal(s, 0, K)
-
-            result.append(s)
-
-    return result
-
-
-def dmp_zz_diophantine(F, c, A, d, p, u, K):
-    """Wang/EEZ: Solve multivariate Diophantine equations."""
-    if not A:
-        S = [[] for _ in F]
-        n = dmp_degree_in(c, 0, 0)
-
-        for i, coeff in enumerate(c):
-            if not coeff:
-                continue
-
-            T = dup_zz_diophantine(F, n - i, p, K)
-
-            for j, (s, t) in enumerate(zip(S, T)):
-                t = dmp_mul_ground(t, coeff, 0, K)
-                S[j] = dmp_ground_trunc(dup_add(s, t, K), p, 0, K)
-    else:
-        n = len(A)
-        e = functools.reduce(lambda x, y: dmp_mul(x, y, u, K), F)
-
-        a, A = A[-1], A[:-1]
-        B, G = [], []
-
-        for f in F:
-            B.append(dmp_quo(e, f, u, K))
-            G.append(dmp_eval_in(f, a, n, u, K))
-
-        C = dmp_eval_in(c, a, n, u, K)
-
-        v = u - 1
-
-        S = dmp_zz_diophantine(G, C, A, d, p, v, K)
-        S = [dmp_raise(s, 1, v, K) for s in S]
-
-        for s, b in zip(S, B):
-            c = dmp_sub_mul(c, s, b, u, K)
-
-        c = dmp_ground_trunc(c, p, u, K)
-
-        m = dmp_nest([K.one, -a], n, K)
-        M = dmp_one(n, K)
-
-        for k in range(d):
-            k = K(k)
-            if dmp_zero_p(c, u):
-                break
-
-            M = dmp_mul(M, m, u, K)
-            C = dmp_diff_eval_in(c, k + 1, a, n, u, K)
-
-            if not dmp_zero_p(C, v):
-                C = dmp_quo_ground(C, K.factorial(k + 1), v, K)
-                T = dmp_zz_diophantine(G, C, A, d, p, v, K)
-
-                for i, t in enumerate(T):
-                    T[i] = dmp_mul(dmp_raise(t, 1, v, K), M, u, K)
-
-                for i, (s, t) in enumerate(zip(S, T)):
-                    S[i] = dmp_add(s, t, u, K)
-
-                for t, b in zip(T, B):
-                    c = dmp_sub_mul(c, t, b, u, K)
-
-                c = dmp_ground_trunc(c, p, u, K)
-
-        S = [dmp_ground_trunc(s, p, u, K) for s in S]
-
-    return S
 
 
 def dmp_zz_wang_hensel_lifting(f, H, LC, A, p, u, K):
@@ -617,12 +344,13 @@ def dmp_zz_factor(f, u, K):
     return lc, [(f.to_dense(), k) for f, k in factors]
 
 
-def dmp_factor_list(f, u, K):
-    """Factor polynomials into irreducibles in `K[X]`."""
+def dmp_zz_diophantine(F, c, A, d, p, u, K):
+    """Wang/EEZ: Solve multivariate Diophantine equations."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    lc, factors = ring.factor_list(f)
-    return lc, [(f.to_dense(), k) for f, k in factors]
+    F = list(map(ring.from_list, F))
+    c = ring.from_list(c)
+    r = ring._zz_diophantine(F, c, A, d, p)
+    return list(map(lambda _: _.to_dense(), r))
 
 
 class _Factor:
@@ -721,14 +449,14 @@ class _Factor:
                 return cont, [(g, 1)]
 
             if query('USE_IRREDUCIBLE_IN_FACTOR'):
-                if self.dup_zz_irreducible_p(g):
+                if self._zz_irreducible_p(g):
                     return cont, [(g, 1)]
 
             g = g.sqf_part()
             H = None
 
             if query('USE_CYCLOTOMIC_FACTOR'):
-                H = self.dup_zz_cyclotomic_factor(g)
+                H = self._zz_cyclotomic_factor(g)
 
             if H is None:
                 H = self._zz_zassenhaus(g)
@@ -883,6 +611,10 @@ class _Factor:
 
     def _zz_factor_sqf(self, f):
         """Factor square-free (non-primitive) polynomials in `Z[x]`."""
+        domain = self.domain
+
+        assert self.is_univariate and domain.is_IntegerRing
+
         cont, g = f.primitive()
 
         n = g.degree()
@@ -893,13 +625,13 @@ class _Factor:
             return cont, [g]
 
         if query('USE_IRREDUCIBLE_IN_FACTOR'):
-            if self.dup_zz_irreducible_p(g):
+            if self._zz_irreducible_p(g):
                 return cont, [g]
 
         factors = None
 
         if query('USE_CYCLOTOMIC_FACTOR'):
-            factors = self.dup_zz_cyclotomic_factor(g)
+            factors = self._zz_cyclotomic_factor(g)
 
         if factors is None:
             factors = self._zz_zassenhaus(g)
@@ -1088,3 +820,278 @@ class _Factor:
                     coeff = domain_inexact.convert(coeff)
 
         return coeff*cont, _sort_factors(factors)
+
+    def _zz_irreducible_p(self, f):
+        """Test irreducibility using Eisenstein's criterion."""
+        lc = f.LC
+        tc = f.coeff(1)
+
+        f -= f.leading_term()
+        e_fc = f.content()
+
+        if e_fc:
+            e_ff = factorint(int(e_fc))
+
+            for p in e_ff:
+                if (lc % p) and (tc % p**2):
+                    return True
+
+    def _cyclotomic_decompose(self, n):
+        H = [self.gens[0] - 1]
+
+        for p, k in factorint(n).items():
+            Q = [h.inflate((p,)) // h for h in H]
+            H.extend(Q)
+
+            for i in range(1, k):
+                Q = [q.inflate((p,)) for q in Q]
+                H.extend(Q)
+
+        return H
+
+    def _zz_cyclotomic_factor(self, f):
+        """
+        Efficiently factor polynomials `x**n - 1` and `x**n + 1` in `Z[x]`.
+
+        Given a univariate polynomial `f` in `Z[x]` returns a list of factors
+        of `f`, provided that `f` is in the form `x**n - 1` or `x**n + 1` for
+        `n >= 1`. Otherwise returns None.
+
+        Factorization is performed using cyclotomic decomposition of `f`,
+        which makes this method much faster that any other direct factorization
+        approach (e.g. Zassenhaus's).
+
+        References
+        ==========
+
+        * :cite:`MathWorld-Cyclotomic-Poly`
+
+        """
+        domain = self.domain
+
+        lc_f, tc_f = f.LC, f.coeff(1)
+
+        if f.is_ground:
+            return
+
+        if lc_f != 1 or tc_f not in [-1, 1]:
+            return
+
+        if any(bool(cf) for cf in f.all_coeffs()[1:-1]):
+            return
+
+        n = f.degree()
+        F = self._cyclotomic_decompose(n)
+
+        if tc_f != domain.one:
+            return F
+        else:
+            H = []
+
+            for h in self._cyclotomic_decompose(2*n):
+                if h not in F:
+                    H.append(h)
+
+            return H
+
+    def _cyclotomic_p(self, f, irreducible=False):
+        """
+        Efficiently test if ``f`` is a cyclotomic polynomial.
+
+        Examples
+        ========
+
+        >>> R, x = ring('x', ZZ)
+
+        >>> (x**16 + x**14 - x**10 + x**8 - x**6 + x**2 + 1).is_cyclotomic
+        False
+
+        >>> (x**16 + x**14 - x**10 - x**8 - x**6 + x**2 + 1).is_cyclotomic
+        True
+
+        """
+        domain = self.domain
+
+        if domain.is_RationalField:
+            try:
+                f = f.set_domain(domain.ring)
+                return f.is_cyclotomic
+            except CoercionFailed:
+                return False
+        elif not domain.is_IntegerRing:
+            return False
+
+        x = self.gens[0]
+
+        lc = f.LC
+        tc = f.coeff(1)
+
+        if lc != 1 or (tc != -1 and tc != 1):
+            return False
+
+        if not irreducible:
+            coeff, factors = f.factor_list()
+
+            if coeff != domain.one or factors != [(f, 1)]:
+                return False
+
+        n = f.degree()
+        g, h = self.zero, self.zero
+
+        for j, i in enumerate(range(n, -1, -2)):
+            g += f.coeff((i,))*x**j
+
+        for j, i in enumerate(range(n - 1, -1, -2)):
+            h += f.coeff((i,))*x**j
+
+        g = g**2
+        h = h**2
+
+        F = g - self.dup_lshift(h, 1)
+
+        if F.LC < 0:
+            F = -F
+
+        if F == f:
+            return True
+
+        g = f.compose(x, -x)
+
+        if g.LC < 0:
+            g = -g
+
+        if F == g and g.is_cyclotomic:
+            return True
+
+        G = F.sqf_part()
+
+        if G**2 == F and G.is_cyclotomic:
+            return True
+
+        return False
+
+    def _zz_cyclotomic_poly(self, n):
+        """Efficiently generate n-th cyclotomic polynomial."""
+        x = self.gens[0]
+
+        h = x - 1
+
+        for p, k in factorint(n).items():
+            h = h.inflate((p,)) // h
+            h = h.inflate((p**(k - 1),))
+
+        return h
+
+    def _univar_zz_diophantine(self, F, m, p):
+        """Wang/EEZ: Solve univariate Diophantine equations."""
+        domain = self.domain
+
+        if len(F) == 2:
+            p_domain = domain.finite_field(p)
+            p_ring = self.clone(domain=p_domain)
+            f, g = map(lambda _: _.set_domain(p_domain), F)
+
+            s, t, _ = p_ring.gcdex(g, f)
+
+            s = p_ring.dup_lshift(s, m)
+            t = p_ring.dup_lshift(t, m)
+
+            q, s = divmod(s, f)
+            s = s.set_domain(domain)
+
+            t += q*g
+            t = t.set_domain(domain)
+
+            result = [s, t]
+        else:
+            G = [F[-1]]
+
+            for f in reversed(F[1:-1]):
+                G.insert(0, f*G[0])
+
+            S, T = [], [self.one]
+
+            for f, g in zip(F, G):
+                t, s = self._zz_diophantine([g, f], T[-1], [], 0, p)
+                T.append(t)
+                S.append(s)
+
+            result, S = [], S + [T[-1]]
+            p_domain = domain.finite_field(p)
+
+            for s, f in zip(S, F):
+                s = self.dup_lshift(s, m)
+                s, f = map(lambda _: _.set_domain(p_domain), (s, f))
+                s = (s % f).set_domain(domain)
+
+                result.append(s)
+
+        return result
+
+    def _zz_diophantine(self, F, c, A, d, p):
+        """Wang/EEZ: Solve multivariate Diophantine equations."""
+        domain = self.domain
+
+        if not A:
+            S = [self.zero for _ in F]
+            n = c.degree()
+
+            for i, coeff in enumerate(c.all_coeffs()):
+                if not coeff:
+                    continue
+
+                T = self._univar_zz_diophantine(F, n - i, p)
+
+                for j, (s, t) in enumerate(zip(S, T)):
+                    t = t.mul_ground(coeff)
+                    S[j] = (s + t).trunc_ground(p)
+        else:
+            n = len(A)
+            e = functools.reduce(operator.mul, F)
+
+            a, A = A[-1], A[:-1]
+            B, G = [], []
+
+            for f in F:
+                B.append(e // f)
+                G.append(f.eval(x=n, a=a))
+
+            C = c.eval(x=n, a=a)
+
+            S = self.drop(n)._zz_diophantine(G, C, A, d, p)
+            S = [s.set_ring(self) for s in S]
+
+            for s, b in zip(S, B):
+                c -= s*b
+
+            c = c.trunc_ground(p)
+
+            m = self.gens[n] - a
+            M = self.one
+
+            for k in range(d):
+                k = domain(k)
+                if c.is_zero:
+                    break
+
+                M *= m
+                C = c.diff(x=n, m=k + 1).eval(x=n, a=a)
+
+                if not C.is_zero:
+                    C = C.quo_ground(domain.factorial(k + 1))
+                    T = C.ring._zz_diophantine(G, C, A, d, p)
+
+                    for i, t in enumerate(T):
+                        T[i] = t.set_ring(self)*M
+
+                    for i, (s, t) in enumerate(zip(S, T)):
+                        S[i] = s + t
+
+                    for t, b in zip(T, B):
+                        c -= t*b
+
+                    c = c.trunc_ground(p)
+
+            S = [s.trunc_ground(p) for s in S]
+
+        return S

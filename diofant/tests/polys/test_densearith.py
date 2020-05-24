@@ -398,14 +398,15 @@ def test_dmp_add_mul():
 def test_dmp_sub_mul():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_sub_mul(x**2 + 2*x + 3, 3*x**2 + 2*x + 1,
-                         x + 2) == -3*x**3 - 7*x**2 - 3*x + 1
-    assert R.dmp_sub_mul(x**2 - 1, x - 2, x + 2) == 3
+    assert (x**2 + 2*x + 3 - (3*x**2 + 2*x + 1)*(x + 2) ==
+            -3*x**3 - 7*x**2 - 3*x + 1)
+    assert x**2 - 1 - (x - 2)*(x + 2) == 3
 
     R, x, y = ring('x y', ZZ)
 
-    assert R.dmp_sub_mul(x*y + 2*x + 3, 3*x + 2*y + 1,
-                         x + 2) == -3*x**2 - x*y - 5*x - 4*y + 1
+    assert (x*y + 2*x + 3 - (3*x + 2*y + 1)*(x + 2) ==
+            -3*x**2 - x*y - 5*x - 4*y + 1)
+    assert x**2 + y - x*(x + 2) == -2*x + y
 
 
 def test_dmp_mul():
@@ -657,102 +658,6 @@ def test_dmp_mul():
     R, x, y = ring('x y', FF(5))
 
     assert R.dmp_mul(2*x + 1, 3*x + 4) == x**2 + x + 4
-
-
-def test_dmp_sqr():
-    R, x = ring('x', ZZ)
-
-    assert R.dmp_sqr(R(0)) == 0
-    assert R.dmp_sqr(R(2)) == 4
-    assert R.dmp_sqr(x + 2) == x**2 + 4*x + 4
-
-    assert R.dmp_sqr(2*x**4 + x + 7) == 4*x**8 + 4*x**5 + 28*x**4 + x**2 + 14*x + 49
-
-    R, x = ring('x', QQ)
-
-    assert R.dmp_sqr(R(0)) == 0
-    assert R.dmp_sqr(R(QQ(2, 3))) == QQ(4, 9)
-    assert R.dmp_sqr(x/3 + QQ(2, 3)) == x**2/9 + 4*x/9 + QQ(4, 9)
-
-    R, x = ring('x', FF(7))
-
-    assert R.dmp_sqr(3*x + 4) == 2*x**2 + 3*x + 2
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    assert R.dmp_sqr(R(0)) == 0
-    assert R.dmp_sqr(R(2)) == 4
-
-    R, x, y, z = ring('x y z', QQ)
-
-    assert R.dmp_sqr(R(0)) == 0
-    assert R.dmp_sqr(R(QQ(2, 3))) == QQ(4, 9)
-
-    R, x, y = ring('x y', FF(7))
-
-    assert R.dmp_sqr(3*x + 4) == 2*x**2 + 3*x + 2
-
-
-def test_dmp_pow():
-    R, x = ring('x', ZZ)
-
-    assert R.dmp_pow(R(0), 0) == 1
-
-    assert R.dmp_pow(R(0), 1) == 0
-    assert R.dmp_pow(R(0), 7) == 0
-
-    pytest.raises(ValueError, lambda: R.dmp_pow(R(1), -1))
-
-    assert R.dmp_pow(R(1), 0) == 1
-    assert R.dmp_pow(R(1), 1) == 1
-    assert R.dmp_pow(R(1), 7) == 1
-
-    assert R.dmp_pow(R(3), 0) == 1
-    assert R.dmp_pow(R(3), 1) == 3
-    assert R.dmp_pow(R(3), 7) == 2187
-
-    f = 2*x**4 + x + 7
-
-    assert R.dmp_pow(f, 0) == 1
-    assert R.dmp_pow(f, 1) == f
-    assert R.dmp_pow(f, 2) == 4*x**8 + 4*x**5 + 28*x**4 + x**2 + 14*x + 49
-    assert R.dmp_pow(f, 3) == (8*x**12 + 12*x**9 + 84*x**8 + 6*x**6 +
-                               84*x**5 + 294*x**4 + x**3 + 21*x**2 + 147*x + 343)
-
-    assert R.dmp_pow(x - 2, 3) == x**3 - 6*x**2 + 12*x - 8
-
-    R, x = ring('x', QQ)
-
-    assert R.dmp_pow(R(0), 0) == 1
-
-    assert R.dmp_pow(R(1), 0) == 1
-    assert R.dmp_pow(R(1), 1) == 1
-    assert R.dmp_pow(R(1), 7) == 1
-
-    assert R.dmp_pow(R(QQ(3, 7)), 0) == 1
-    assert R.dmp_pow(R(QQ(3, 7)), 1) == QQ(3, 7)
-    assert R.dmp_pow(R(QQ(3, 7)), 7) == QQ(2187, 823543)
-
-    R, x, y = ring('x y', ZZ)
-
-    assert R.dmp_pow(R(0), 0) == 1
-
-    assert R.dmp_pow(R(0), 1) == 0
-    assert R.dmp_pow(R(0), 7) == 0
-
-    assert R.dmp_pow(R(1), 0) == 1
-    assert R.dmp_pow(R(1), 1) == 1
-    assert R.dmp_pow(R(1), 7) == 1
-
-    pytest.raises(ValueError, lambda: R.dmp_pow(R(1), -1))
-
-    R, x, y = ring('x y', QQ)
-
-    assert R.dmp_pow(R(0), 0) == 1
-
-    assert R.dmp_pow(R(QQ(3, 7)), 0) == 1
-    assert R.dmp_pow(R(QQ(3, 7)), 1) == QQ(3, 7)
-    assert R.dmp_pow(R(QQ(3, 7)), 7) == QQ(2187, 823543)
 
 
 def test_dmp_max_norm():

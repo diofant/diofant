@@ -7,13 +7,6 @@ from .polyconfig import query
 from .polyerrors import DomainError, HeuristicGCDFailed, HomomorphismFailed
 
 
-def dup_gcdex(f, g, K):
-    """Extended Euclidean algorithm in `F[x]`."""
-    ring = K.poly_ring('_0')
-    f, g = map(ring.from_list, (f, g))
-    return tuple(map(lambda _: _.to_dense(), f.gcdex(g)))
-
-
 @cacheit
 def dmp_resultant(f, g, u, K):
     """Computes resultant of two polynomials in `K[X]`."""

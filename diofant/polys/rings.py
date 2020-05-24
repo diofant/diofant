@@ -2050,6 +2050,13 @@ class PolyElement(DomainElement, CantSympify, dict):
     def factor_list(self):
         return self.ring.factor_list(self)
 
+    @property
+    def is_cyclotomic(self):
+        if self.ring.is_univariate:
+            return self.ring._cyclotomic_p(self)
+        else:
+            raise AttributeError('cyclotomic polynomial')
+
     # The following methods aren't ported (yet) to polynomial
     # representation independent algorithm implementations.
 
@@ -2064,10 +2071,3 @@ class PolyElement(DomainElement, CantSympify, dict):
             return self.ring.dup_sturm(self)
         else:
             raise MultivariatePolynomialError('sturm sequence')
-
-    @property
-    def is_cyclotomic(self):
-        if self.ring.is_univariate:
-            return self.ring.dup_cyclotomic_p(self)
-        else:
-            raise AttributeError('cyclotomic polynomial')

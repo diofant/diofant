@@ -2,18 +2,14 @@
 
 from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term,
                          dmp_exquo_ground, dmp_max_norm, dmp_mul,
-                         dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_pow,
-                         dmp_quo_ground, dmp_sqr, dmp_sub, dmp_sub_mul,
-                         dup_lshift, dup_rshift)
+                         dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_quo_ground,
+                         dmp_sub, dup_lshift, dup_rshift)
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_TC, dmp_LC,
                          dmp_TC)
 from .densetools import (dmp_compose, dup_decompose, dup_real_imag,
                          dup_transform)
-from .factortools import (dmp_zz_diophantine, dmp_zz_wang,
-                          dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
-                          dmp_zz_wang_non_divisors, dup_cyclotomic_p,
-                          dup_zz_cyclotomic_factor, dup_zz_cyclotomic_poly,
-                          dup_zz_irreducible_p)
+from .factortools import (dmp_zz_wang, dmp_zz_wang_hensel_lifting,
+                          dmp_zz_wang_lead_coeffs, dmp_zz_wang_non_divisors)
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -77,17 +73,8 @@ class IPolys:
     def dmp_add_mul(self, f, g, h):
         return self.from_list(dmp_add_mul(f.to_dense(), g.to_dense(), h.to_dense(), self.ngens-1, self.domain))
 
-    def dmp_sub_mul(self, f, g, h):
-        return self.from_list(dmp_sub_mul(f.to_dense(), g.to_dense(), h.to_dense(), self.ngens-1, self.domain))
-
     def dmp_mul(self, f, g):
         return self.from_list(dmp_mul(f.to_dense(), g.to_dense(), self.ngens-1, self.domain))
-
-    def dmp_sqr(self, f):
-        return self.from_list(dmp_sqr(f.to_dense(), self.ngens-1, self.domain))
-
-    def dmp_pow(self, f, n):
-        return self.from_list(dmp_pow(f.to_dense(), n, self.ngens-1, self.domain))
 
     def dmp_max_norm(self, f):
         return dmp_max_norm(f.to_dense(), self.ngens-1, self.domain)
@@ -132,23 +119,6 @@ class IPolys:
     def dup_sign_variations(self, f):
         return dup_sign_variations(f.to_dense(), self.domain)
 
-    def dup_zz_irreducible_p(self, f):
-        return dup_zz_irreducible_p(f.to_dense(), self.domain)
-
-    def dup_cyclotomic_p(self, f, irreducible=False):
-        return dup_cyclotomic_p(f.to_dense(), self.domain, irreducible=irreducible)
-
-    def dup_zz_cyclotomic_poly(self, n):
-        F = dup_zz_cyclotomic_poly(n, self.domain)
-        return self.from_list(F)
-
-    def dup_zz_cyclotomic_factor(self, f):
-        result = dup_zz_cyclotomic_factor(f.to_dense(), self.domain)
-        if result is None:
-            return result
-        else:
-            return list(map(self.from_list, result))
-
     # E: List[ZZ], cs: ZZ, ct: ZZ
     def dmp_zz_wang_non_divisors(self, E, cs, ct):
         return dmp_zz_wang_non_divisors(E, cs, ct, self.domain)
@@ -161,11 +131,6 @@ class IPolys:
         H = list(map(lambda _: _.to_dense(), H))
         f, HH, CC = dmp_zz_wang_lead_coeffs(f.to_dense(), T, cs, E, H, A, self.ngens-1, self.domain)
         return self.from_list(f), list(map(uv.from_list, HH)), list(map(mv.from_list, CC))
-
-    # f: List[Poly], c: List[Poly], A: List[ZZ], d: int, p: ZZ
-    def dmp_zz_diophantine(self, F, c, A, d, p):
-        result = dmp_zz_diophantine(list(map(lambda _: _.to_dense(), F)), c.to_dense(), A, d, p, self.ngens-1, self.domain)
-        return list(map(self.from_list, result))
 
     # f: Poly, H: List[Poly], LC: List[Poly], A: List[ZZ], p: ZZ
     def dmp_zz_wang_hensel_lifting(self, f, H, LC, A, p):

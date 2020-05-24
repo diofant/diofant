@@ -5,10 +5,9 @@ from ..domains import ZZ
 from ..functions import sqrt
 from ..ntheory import nextprime
 from ..utilities import subsets
-from .densearith import dmp_add_term, dmp_mul, dmp_neg, dmp_sqr
+from .densearith import dmp_add_term, dmp_mul, dmp_neg, dmp_pow
 from .densebasic import (dmp_from_dict, dmp_ground, dmp_one, dmp_raise,
                          dmp_to_dict, dmp_zero, dup_random)
-from .factortools import dup_zz_cyclotomic_poly
 from .polytools import Poly, PurePoly
 from .polyutils import _analyze_gens
 from .rings import ring
@@ -56,7 +55,8 @@ def cyclotomic_poly(n, x=None, **args):
         raise ValueError(
             f"can't generate cyclotomic polynomial of order {n}")
 
-    poly = dup_zz_cyclotomic_poly(int(n), ZZ)
+    R = ZZ.inject('_0')
+    poly = R._zz_cyclotomic_poly(int(n)).to_dense()
 
     if x is not None:
         poly = Poly(poly, x)
@@ -182,12 +182,12 @@ def dmp_fateman_poly_F_2(n, K):
 
     v = dmp_add_term(u, dmp_ground(K(2), m - 1), 0, n, K)
 
-    f = dmp_sqr([dmp_one(m, K), dmp_neg(v, m, K)], n, K)
-    g = dmp_sqr([dmp_one(m, K), v], n, K)
+    f = dmp_pow([dmp_one(m, K), dmp_neg(v, m, K)], 2, n, K)
+    g = dmp_pow([dmp_one(m, K), v], 2, n, K)
 
     v = dmp_add_term(u, dmp_one(m - 1, K), 0, n, K)
 
-    h = dmp_sqr([dmp_one(m, K), v], n, K)
+    h = dmp_pow([dmp_one(m, K), v], 2, n, K)
 
     return dmp_mul(f, h, n, K), dmp_mul(g, h, n, K), h
 
@@ -209,13 +209,13 @@ def dmp_fateman_poly_F_3(n, K):
 
     v = dmp_add_term(u, dmp_ground(K(2), n - 2), 0, n, K)
 
-    f = dmp_sqr(
-        dmp_add_term([dmp_neg(v, n - 1, K)], dmp_one(n - 1, K), n + 1, n, K), n, K)
-    g = dmp_sqr(dmp_add_term([v], dmp_one(n - 1, K), n + 1, n, K), n, K)
+    f = dmp_pow(
+        dmp_add_term([dmp_neg(v, n - 1, K)], dmp_one(n - 1, K), n + 1, n, K), 2, n, K)
+    g = dmp_pow(dmp_add_term([v], dmp_one(n - 1, K), n + 1, n, K), 2, n, K)
 
     v = dmp_add_term(u, dmp_one(n - 2, K), 0, n - 1, K)
 
-    h = dmp_sqr(dmp_add_term([v], dmp_one(n - 1, K), n + 1, n, K), n, K)
+    h = dmp_pow(dmp_add_term([v], dmp_one(n - 1, K), n + 1, n, K), 2, n, K)
 
     return dmp_mul(f, h, n, K), dmp_mul(g, h, n, K), h
 

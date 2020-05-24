@@ -60,13 +60,6 @@ def dmp_ground_monic(f, u, K):
     return f.to_dense()
 
 
-def dmp_ground_content(f, u, K):
-    """Compute the GCD of coefficients of ``f`` in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    return f.content()
-
-
 def dmp_ground_primitive(f, u, K):
     """Compute content and the primitive form of ``f`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
