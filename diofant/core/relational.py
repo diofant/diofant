@@ -474,7 +474,7 @@ class GreaterThan(_Greater):
     >>> e = GreaterThan(x, 1)
     >>> e
     x >= 1
-    >>> '%s >= %s is the same as %s <= %s' % (e.gts, e.lts, e.lts, e.gts)
+    >>> f'{e.gts} >= {e.lts} is the same as {e.lts} <= {e.gts}'
     'x >= 1 is the same as 1 <= x'
 
     Examples

@@ -44,7 +44,7 @@ def _process_limits(*symbols):
                     limits.append(Tuple(newsymbol, V[1]))
                     continue
 
-        raise ValueError('Invalid limits given: %s' % str(symbols))
+        raise ValueError(f'Invalid limits given: {symbols!s}')
 
     return limits, orientation
 
@@ -350,10 +350,9 @@ class AddWithLimits(ExprWithLimits):
             free = function.free_symbols
             if len(free) != 1:
                 raise ValueError(
-                    ' specify dummy variables for %s. If the integrand contains'
+                    f' specify dummy variables for {function}. If the integrand contains'
                     ' more than one free symbol, an integration variable should'
-                    ' be supplied explicitly e.g., integrate(f(x, y), x)'
-                    % function)
+                    ' be supplied explicitly e.g., integrate(f(x, y), x)')
             limits, orientation = [Tuple(s) for s in free], 1
 
         # denest any nested calls

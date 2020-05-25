@@ -178,9 +178,9 @@ class gamma(Function):
     def _latex(self, printer, exp=None):
         aa = printer._print(self.args[0])
         if exp:
-            return r'\Gamma^{%s}{\left(%s \right)}' % (printer._print(exp), aa)
+            return r'\Gamma^{%s}{\left(%s \right)}' % (printer._print(exp), aa)  # noqa: SFS101
         else:
-            return r'\Gamma{\left(%s \right)}' % aa
+            return r'\Gamma{\left(%s \right)}' % aa  # noqa: SFS101
 
     @staticmethod
     def _latex_no_arg(printer):

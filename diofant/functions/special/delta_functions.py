@@ -58,8 +58,8 @@ class DiracDelta(Function):
     def eval(cls, arg, k=0):
         k = sympify(k)
         if not k.is_Integer or k.is_negative:
-            raise ValueError('Error: the second argument of DiracDelta must be \
-            a non-negative integer, %s given instead.' % (k,))
+            raise ValueError('Error: the second argument of DiracDelta must be '
+                             f'a non-negative integer, {k} given instead.')
         arg = sympify(arg)
         if arg.is_nonzero:
             return Integer(0)

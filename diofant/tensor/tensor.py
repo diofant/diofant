@@ -958,8 +958,8 @@ class _TensorDataLazyEvaluator(CantSympify):
         if isinstance(key, TensorHead):
             for dim, indextype in zip(data.shape, key.index_types):
                 if indextype.data is None:
-                    raise ValueError('index type {} has no components data'
-                                     ' associated (needed to raise/lower index)'.format(indextype))
+                    raise ValueError(f'index type {indextype} has no components data'
+                                     ' associated (needed to raise/lower index')
                 if indextype.dim is None:
                     continue
                 if dim != indextype.dim:
@@ -1381,9 +1381,9 @@ class TensorIndexType(Basic):
         obj = Basic.__new__(cls, name, Integer(1) if metric else Integer(0))
         obj._name = str(name)
         if not dummy_fmt:
-            obj._dummy_fmt = '%s_%%d' % obj.name
+            obj._dummy_fmt = f'{obj.name}_%d'
         else:
-            obj._dummy_fmt = '%s_%%d' % dummy_fmt
+            obj._dummy_fmt = f'{dummy_fmt}_%d'
         if metric is None:
             obj.metric_antisym = None
             obj.metric = None
@@ -1839,7 +1839,7 @@ class TensorType(Basic):
         return sorted(set(self.index_types), key=lambda x: x.name)
 
     def __str__(self):
-        return 'TensorType(%s)' % ([str(x) for x in self.index_types])
+        return f'TensorType({[str(x) for x in self.index_types]})'
 
     def __call__(self, s, comm=0, matrix_behavior=0):
         """
@@ -2155,7 +2155,7 @@ class TensorHead(Basic):
         return r
 
     def _print(self):
-        return '%s(%s)' % (self.name, ','.join([str(x) for x in self.index_types]))
+        return f"{self.name}({','.join([str(x) for x in self.index_types])})"
 
     def _check_auto_matrix_indices_in_call(self, *indices):
         matrix_behavior_kinds = {}
@@ -3116,7 +3116,7 @@ class Tensor(TensExpr):
         indices = [str(ind) for ind in self.indices]
         component = self.component
         if component.rank > 0:
-            return ('%s(%s)' % (component.name, ', '.join(indices)))
+            return f"{component.name}({', '.join(indices)})"
         else:
             return f'{component.name}'
 
@@ -3561,7 +3561,7 @@ class TensMul(TensExpr):
         args = self.args
 
         def get_str(arg):
-            return str(arg) if arg.is_Atom or isinstance(arg, TensExpr) else ('(%s)' % str(arg))
+            return str(arg) if arg.is_Atom or isinstance(arg, TensExpr) else f'({arg!s})'
 
         if not args:
             # no arguments is equivalent to "1", i.e. TensMul().

@@ -755,9 +755,8 @@ class Implies(BooleanFunction):
                     newargs.append(x)
             A, B = newargs
         except ValueError:
-            raise ValueError(
-                '%d operand(s) used for an Implies '
-                '(pairs are required): %s' % (len(args), str(args)))
+            raise ValueError(f'{len(args)} operand(s) used for an Implies '
+                             f'(pairs are required): {args!s}')
         if A == true or A == false or B == true or B == false:
             return Or(Not(A), B)
         elif A == B:

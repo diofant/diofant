@@ -23,6 +23,8 @@ Minor changes
 Developer changes
 =================
 
+* Depend on `flake8-sfs <https://github.com/peterjc/flake8-sfs>`_, see :pull:`983`.
+
 Issues closed
 =============
 

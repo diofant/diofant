@@ -142,7 +142,7 @@ def smoothness_p(n, m=-1, power=0, visual=None):
     for dat in rv[1]:
         dat = flatten(dat)
         dat.insert(2, m)
-        lines.append('p**i=%i**%i has p%+i B=%i, B-pow=%i' % tuple(dat))
+        lines.append('p**i=%i**%i has p%+i B=%i, B-pow=%i' % tuple(dat))  # noqa: SFS101
     return '\n'.join(lines)
 
 
@@ -986,8 +986,8 @@ def factorint(n, limit=None, use_trial=True, use_rho=True, use_pm1=True,
     if verbose:
         sn = str(n)
         if len(sn) > 50:
-            print(f'Factoring {sn[:5]}' +
-                  '..(%i other digits)..' % (len(sn) - 10) + sn[-5:])
+            print(f'Factoring {sn[:5]}'
+                  f'..({str(len(sn) - 10) + sn[-5:]} other digits)..')
         else:
             print('Factoring', n)
 

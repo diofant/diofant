@@ -401,8 +401,7 @@ class OctaveCodePrinter(CodePrinter):
             # Express each (cond, expr) pair in a nested Horner form:
             #   (condition) .* (expr) + (not cond) .* (<others>)
             # Expressions that result in multiple statements won't work here.
-            ecpairs = ['({0}).*({1}) + (~({0})).*('.format
-                       (self._print(c), self._print(e))
+            ecpairs = [f'({self._print(c)}).*({self._print(e)}) + (~({self._print(c)})).*('
                        for e, c in expr.args[:-1]]
             elast = '%s' % self._print(expr.args[-1].expr)
             pw = ' ...\n'.join(ecpairs) + elast + ')'*len(ecpairs)
