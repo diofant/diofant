@@ -5,8 +5,8 @@ import operator
 
 import pytest
 
-from diofant import (EX, FF, QQ, RR, ZZ, DomainError, I, nextprime, pi, ring,
-                     sin, sqrt)
+from diofant import (EX, FF, QQ, RR, ZZ, DomainError, ExtraneousFactors, I,
+                     nextprime, pi, ring, sin, sqrt)
 from diofant.polys.polyconfig import using
 from diofant.polys.specialpolys import f_polys, w_polys
 
@@ -250,7 +250,7 @@ def test_dup_zz_factor():
                                            (x**8 - x**6 + x**4 - x**2 + 1, 1)])
 
 
-def test_dmp_zz_wang():
+def test__zz_wang():
     R, x, y, z = ring('x y z', ZZ)
     UV, _x = ring('x', ZZ)
 
@@ -337,7 +337,11 @@ def test_sympyissue_6355():
 
     f = 2*x**2 + y*z - y - z**2 + z
 
-    assert R.dmp_zz_wang(f, seed=random_sequence) == [f]
+    assert R._zz_wang(f, seed=random_sequence) == [f]
+
+    with using(eez_restart_if_needed=False):
+        pytest.raises(ExtraneousFactors,
+                      lambda: R._zz_wang(f, seed=random_sequence))
 
 
 def test_dmp_zz_factor():

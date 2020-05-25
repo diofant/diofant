@@ -7,8 +7,8 @@ import operator
 from ..ntheory import factorint, isprime, nextprime
 from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
-from .densearith import (dmp_add_mul, dmp_max_norm, dmp_mul, dmp_mul_ground,
-                         dmp_pow, dmp_quo_ground, dmp_sub)
+from .densearith import (dmp_add_mul, dmp_mul, dmp_mul_ground, dmp_pow,
+                         dmp_quo_ground, dmp_sub)
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_LC, dmp_nest,
                          dmp_one, dmp_raise, dmp_zero_p)
 from .densetools import (dmp_diff_eval_in, dmp_eval_in, dmp_eval_tail,
@@ -168,148 +168,9 @@ def dmp_zz_wang_hensel_lifting(f, H, LC, A, p, u, K):
                 c = dmp_ground_trunc(h, p, w, K)
 
     if functools.reduce(lambda x, y: dmp_mul(x, y, u, K), H) != f:
-        raise ExtraneousFactors  # pragma: no cover
+        raise ExtraneousFactors
     else:
         return H
-
-
-def dmp_zz_wang(f, u, K, mod=None, seed=None):
-    """
-    Factor primitive square-free polynomials in `Z[X]`.
-
-    Given a multivariate polynomial `f` in `Z[x_1,...,x_n]`, which is
-    primitive and square-free in `x_1`, computes factorization of `f` into
-    irreducibles over integers.
-
-    The procedure is based on Wang's Enhanced Extended Zassenhaus
-    algorithm. The algorithm works by viewing `f` as a univariate polynomial
-    in `Z[x_2,...,x_n][x_1]`, for which an evaluation mapping is computed::
-
-                      x_2 -> a_2, ..., x_n -> a_n
-
-    where `a_i`, for `i = 2, ..., n`, are carefully chosen integers.  The
-    mapping is used to transform `f` into a univariate polynomial in `Z[x_1]`,
-    which can be factored efficiently using Zassenhaus algorithm. The last
-    step is to lift univariate factors to obtain true multivariate
-    factors. For this purpose a parallel Hensel lifting procedure is used.
-
-    The parameter ``seed`` is passed to _randint and can be used to seed randint
-    (when an integer) or (for testing purposes) can be a sequence of numbers.
-
-    References
-    ==========
-
-    * :cite:`Wang1978improved`
-    * :cite:`Geddes1992algorithms`
-
-    """
-    from ..utilities.randtest import _randint
-
-    randint = _randint(seed)
-
-    ct, T = dmp_zz_factor(dmp_LC(f, K), u - 1, K)
-
-    b = dmp_zz_mignotte_bound(f, u, K)
-    p = K(nextprime(b))
-
-    if mod is None:
-        if u == 1:
-            mod = 2
-        else:
-            mod = 1
-
-    history, configs, A, r = set(), [], [K.zero]*u, None
-
-    try:
-        cs, s, E = dmp_zz_wang_test_points(f, T, ct, A, u, K)
-
-        _, H = dup_zz_factor_sqf(s, K)
-
-        r = len(H)
-
-        if r == 1:
-            return [f]
-
-        configs = [(s, cs, E, H, A)]
-    except EvaluationFailed:
-        pass
-
-    eez_num_configs = query('EEZ_NUMBER_OF_CONFIGS')
-    eez_num_tries = query('EEZ_NUMBER_OF_TRIES')
-    eez_mod_step = query('EEZ_MODULUS_STEP')
-
-    while len(configs) < eez_num_configs:
-        for _ in range(eez_num_tries):
-            A = [K(randint(-mod, mod)) for _ in range(u)]
-
-            if tuple(A) in history:
-                continue
-            else:
-                history.add(tuple(A))
-
-            try:
-                cs, s, E = dmp_zz_wang_test_points(f, T, ct, A, u, K)
-            except EvaluationFailed:
-                continue
-
-            _, H = dup_zz_factor_sqf(s, K)
-
-            rr = len(H)
-
-            if r is not None:
-                if rr != r:  # pragma: no cover
-                    if rr < r:
-                        configs, r = [], rr
-                    else:
-                        continue
-            else:
-                r = rr
-
-            if r == 1:
-                return [f]
-
-            configs.append((s, cs, E, H, A))
-
-            if len(configs) == eez_num_configs:
-                break
-        else:
-            mod += eez_mod_step
-
-    s_norm, s_arg, i = None, 0, 0
-
-    for s, _, _, _, _ in configs:
-        _s_norm = dmp_max_norm(s, 0, K)
-
-        if s_norm is not None:
-            if _s_norm < s_norm:
-                s_norm = _s_norm
-                s_arg = i
-        else:
-            s_norm = _s_norm
-
-        i += 1
-
-    _, cs, E, H, A = configs[s_arg]
-    orig_f = f
-
-    try:
-        f, H, LC = dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K)
-        factors = dmp_zz_wang_hensel_lifting(f, H, LC, A, p, u, K)
-    except ExtraneousFactors:  # pragma: no cover
-        if query('EEZ_RESTART_IF_NEEDED'):
-            return dmp_zz_wang(orig_f, u, K, mod + 1)
-        else:
-            raise ExtraneousFactors(
-                'we need to restart algorithm with better parameters')
-
-    result = []
-
-    for f in factors:
-        _, f = dmp_ground_primitive(f, u, K)
-
-        result.append(f)
-
-    return result
 
 
 def dmp_trial_division(f, factors, u, K):
@@ -319,29 +180,6 @@ def dmp_trial_division(f, factors, u, K):
     factors = list(map(ring.from_list, factors))
     result = ring._trial_division(f, factors)
     return [(f.to_dense(), k) for f, k in result]
-
-
-def dmp_zz_mignotte_bound(f, u, K):
-    """Mignotte bound for multivariate polynomials in `K[X]`."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    return ring._zz_mignotte_bound(f)
-
-
-def dup_zz_factor_sqf(f, K):
-    """Factor square-free (non-primitive) polynomials in `Z[x]`."""
-    ring = K.poly_ring('_0')
-    f = ring.from_list(f)
-    cont, factors = ring._zz_factor_sqf(f)
-    return cont, [_.to_dense() for _ in factors]
-
-
-def dmp_zz_factor(f, u, K):
-    """Factor (non square-free) polynomials in `Z[X]`."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    lc, factors = ring._zz_factor(f)
-    return lc, [(f.to_dense(), k) for f, k in factors]
 
 
 def dmp_zz_diophantine(F, c, A, d, p, u, K):
@@ -480,7 +318,7 @@ class _Factor:
 
         if g.degree() > 0:
             g = g.sqf_part()
-            H = self.dmp_zz_wang(g)
+            H = self._zz_wang(g)
             factors = self._trial_division(f, H)
 
         new_ring = G.ring
@@ -1095,3 +933,143 @@ class _Factor:
             S = [s.trunc_ground(p) for s in S]
 
         return S
+
+    def _zz_wang(self, f, mod=None, seed=None):
+        """
+        Factor primitive square-free polynomials in `Z[X]`.
+
+        Given a multivariate polynomial `f` in `Z[x_1,...,x_n]`, which is
+        primitive and square-free in `x_1`, computes factorization of `f` into
+        irreducibles over integers.
+
+        The procedure is based on Wang's Enhanced Extended Zassenhaus
+        algorithm. The algorithm works by viewing `f` as a univariate polynomial
+        in `Z[x_2,...,x_n][x_1]`, for which an evaluation mapping is computed::
+
+                          x_2 -> a_2, ..., x_n -> a_n
+
+        where `a_i`, for `i = 2, ..., n`, are carefully chosen integers.  The
+        mapping is used to transform `f` into a univariate polynomial in `Z[x_1]`,
+        which can be factored efficiently using Zassenhaus algorithm. The last
+        step is to lift univariate factors to obtain true multivariate
+        factors. For this purpose a parallel Hensel lifting procedure is used.
+
+        The parameter ``seed`` is passed to _randint and can be used to seed randint
+        (when an integer) or (for testing purposes) can be a sequence of numbers.
+
+        References
+        ==========
+
+        * :cite:`Wang1978improved`
+        * :cite:`Geddes1992algorithms`
+
+        """
+        from ..utilities.randtest import _randint
+
+        randint = _randint(seed)
+
+        ct, T = f.eject(*self.gens[1:]).LC.factor_list()
+
+        domain = self.domain
+        uring = self.drop(*self.gens[1:])
+        b = self._zz_mignotte_bound(f)
+        p = domain(nextprime(b))
+
+        if mod is None:
+            if self.ngens == 2:
+                mod = 2
+            else:
+                mod = 1
+
+        history, configs, A, r = set(), [], [domain.zero]*(self.ngens - 1), None
+
+        try:
+            cs, s, E = self.dmp_zz_wang_test_points(f, T, ct, A)
+
+            _, H = uring._zz_factor_sqf(s)
+
+            r = len(H)
+
+            if r == 1:
+                return [f]
+
+            configs = [(s, cs, E, H, A)]
+        except EvaluationFailed:
+            pass
+
+        eez_num_configs = query('EEZ_NUMBER_OF_CONFIGS')
+        eez_num_tries = query('EEZ_NUMBER_OF_TRIES')
+        eez_mod_step = query('EEZ_MODULUS_STEP')
+
+        while len(configs) < eez_num_configs:
+            for _ in range(eez_num_tries):
+                A = [domain(randint(-mod, mod)) for _ in range(self.ngens - 1)]
+
+                if tuple(A) in history:
+                    continue
+                else:
+                    history.add(tuple(A))
+
+                try:
+                    cs, s, E = self.dmp_zz_wang_test_points(f, T, ct, A)
+                except EvaluationFailed:
+                    continue
+
+                _, H = uring._zz_factor_sqf(s)
+
+                rr = len(H)
+
+                if r is not None:
+                    if rr != r:  # pragma: no cover
+                        if rr < r:
+                            configs, r = [], rr
+                        else:
+                            continue
+                else:
+                    r = rr
+
+                if r == 1:
+                    return [f]
+
+                configs.append((s, cs, E, H, A))
+
+                if len(configs) == eez_num_configs:
+                    break
+            else:
+                mod += eez_mod_step
+
+        s_norm, s_arg, i = None, 0, 0
+
+        for s, _, _, _, _ in configs:
+            _s_norm = s.max_norm()
+
+            if s_norm is not None:
+                if _s_norm < s_norm:
+                    s_norm = _s_norm
+                    s_arg = i
+            else:
+                s_norm = _s_norm
+
+            i += 1
+
+        _, cs, E, H, A = configs[s_arg]
+        orig_f = f
+
+        try:
+            f, H, LC = self.dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A)
+            factors = self.dmp_zz_wang_hensel_lifting(f, H, LC, A, p)
+        except ExtraneousFactors:
+            if query('EEZ_RESTART_IF_NEEDED'):
+                return self._zz_wang(orig_f, mod + 1)
+            else:
+                raise ExtraneousFactors('we need to restart algorithm '
+                                        'with better parameters')
+
+        result = []
+
+        for f in factors:
+            _, f = f.primitive()
+
+            result.append(f)
+
+        return result

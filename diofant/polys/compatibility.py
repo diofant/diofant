@@ -8,8 +8,8 @@ from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_TC, dmp_LC,
                          dmp_TC)
 from .densetools import (dmp_compose, dup_decompose, dup_real_imag,
                          dup_transform)
-from .factortools import (dmp_zz_wang, dmp_zz_wang_hensel_lifting,
-                          dmp_zz_wang_lead_coeffs, dmp_zz_wang_non_divisors)
+from .factortools import (dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs,
+                          dmp_zz_wang_non_divisors, dmp_zz_wang_test_points)
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -119,6 +119,12 @@ class IPolys:
     def dup_sign_variations(self, f):
         return dup_sign_variations(f.to_dense(), self.domain)
 
+    def dmp_zz_wang_test_points(self, f, T, ct, A):
+        c, h, E = dmp_zz_wang_test_points(f.to_dense(),
+                                          [(t.to_dense(), k) for t, k in T],
+                                          ct, A, self.ngens - 1, self.domain)
+        return c, self.drop(*range(1, self.ngens)).from_list(h), E
+
     # E: List[ZZ], cs: ZZ, ct: ZZ
     def dmp_zz_wang_non_divisors(self, E, cs, ct):
         return dmp_zz_wang_non_divisors(E, cs, ct, self.domain)
@@ -138,10 +144,6 @@ class IPolys:
         LC = list(map(lambda _: _.to_dense(), LC))
         result = dmp_zz_wang_hensel_lifting(f.to_dense(), H, LC, A, p, self.ngens-1, self.domain)
         return list(map(self.from_list, result))
-
-    def dmp_zz_wang(self, f, mod=None, seed=None):
-        factors = dmp_zz_wang(f.to_dense(), self.ngens-1, self.domain, mod=mod, seed=seed)
-        return [self.from_list(g) for g in factors]
 
     def dup_sturm(self, f):
         seq = dup_sturm(f.to_dense(), self.domain)
