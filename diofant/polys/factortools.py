@@ -12,13 +12,12 @@ from .densearith import (dmp_add_mul, dmp_mul, dmp_mul_ground, dmp_pow,
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_LC, dmp_nest,
                          dmp_one, dmp_raise, dmp_zero_p)
 from .densetools import (dmp_diff_eval_in, dmp_eval_in, dmp_eval_tail,
-                         dmp_ground_primitive, dmp_ground_trunc)
+                         dmp_ground_trunc)
 from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-from .sqfreetools import dmp_sqf_p
 
 
 def dmp_zz_wang_non_divisors(E, cs, ct, K):
@@ -39,29 +38,6 @@ def dmp_zz_wang_non_divisors(E, cs, ct, K):
         result.append(q)
 
     return result[1:]
-
-
-def dmp_zz_wang_test_points(f, T, ct, A, u, K):
-    """Wang/EEZ: Test evaluation points for suitability."""
-    if not dmp_eval_tail(dmp_LC(f, K), A, u - 1, K):
-        raise EvaluationFailed('no luck')
-
-    g = dmp_eval_tail(f, A, u, K)
-
-    if not dmp_sqf_p(g, 0, K):
-        raise EvaluationFailed('no luck')
-
-    c, h = dmp_ground_primitive(g, 0, K)
-
-    v = u - 1
-
-    E = [dmp_eval_tail(t, A, v, K) for t, _ in T]
-    D = dmp_zz_wang_non_divisors(E, c, ct, K)
-
-    if D is not None:
-        return c, h, E
-    else:
-        raise EvaluationFailed('no luck')
 
 
 def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
@@ -984,7 +960,7 @@ class _Factor:
         history, configs, A, r = set(), [], [domain.zero]*(self.ngens - 1), None
 
         try:
-            cs, s, E = self.dmp_zz_wang_test_points(f, T, ct, A)
+            cs, s, E = self._zz_wang_test_points(f, T, ct, A)
 
             _, H = uring._zz_factor_sqf(s)
 
@@ -1011,7 +987,7 @@ class _Factor:
                     history.add(tuple(A))
 
                 try:
-                    cs, s, E = self.dmp_zz_wang_test_points(f, T, ct, A)
+                    cs, s, E = self._zz_wang_test_points(f, T, ct, A)
                 except EvaluationFailed:
                     continue
 
@@ -1073,3 +1049,23 @@ class _Factor:
             result.append(f)
 
         return result
+
+    def _zz_wang_test_points(self, f, T, ct, A):
+        """Wang/EEZ: Test evaluation points for suitability."""
+        if not f.eject(*self.gens[1:]).LC(*A):
+            raise EvaluationFailed('no luck')
+
+        g = f.eject(0)(*A)
+
+        if not g.is_squarefree:
+            raise EvaluationFailed('no luck')
+
+        c, h = g.primitive()
+
+        E = [t(*A) for t, _ in T]
+        D = self.dmp_zz_wang_non_divisors(E, c, ct)
+
+        if D is not None:
+            return c, h, E
+        else:
+            raise EvaluationFailed('no luck')
