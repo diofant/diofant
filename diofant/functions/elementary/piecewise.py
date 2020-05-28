@@ -84,8 +84,8 @@ class Piecewise(Function):
                 continue
             if not isinstance(cond, (bool, Relational, Boolean)):
                 raise TypeError(
-                    'Cond %s is of type %s, but must be a Relational,'
-                    ' Boolean, or a built-in bool.' % (cond, type(cond)))
+                    f'Cond {cond} is of type {type(cond)}, but must be a Relational,'
+                    ' Boolean, or a built-in bool.')
             newargs.append(pair)
             if cond == true:
                 break
@@ -414,7 +414,7 @@ class Piecewise(Function):
             if targetcond == true:
                 return [(h[0], h[1], None) for h in holes]
         elif holes and default is None:
-            raise ValueError('Called interval evaluation over piecewise '
+            raise ValueError('Called interval evaluation over piecewise '  # noqa: SFS101
                              'function on undefined intervals %s' %
                              ', '.join([str((h[0], h[1])) for h in holes]))
 

@@ -217,7 +217,7 @@ def test_all_classes_are_tested():
     # reset all DiofantDeprecationWarning into errors
     warnings.simplefilter('error', category=DiofantDeprecationWarning)
 
-    assert not failed, 'Missing classes: %s.  Please add tests for these to diofant/core/tests/test_args.py.' % ', '.join(failed)
+    assert not failed, f"Missing classes: {', '.join(failed)}.  Please add tests for these to diofant/core/tests/test_args.py."
 
 
 def _test_args(obj):

@@ -341,8 +341,13 @@ def lambdify(args, expr, modules=None, printer=None, use_imps=True,
     expr_str = str(expr)
     if len(expr_str) > 78:
         expr_str = textwrap.wrap(expr_str, 75)[0] + '...'
-    func.__doc__ = ('Created with lambdify. Signature:\n\n{sig}\n\n'
-                    'Expression:\n\n{expr}').format(sig=sig, expr=expr_str)
+    func.__doc__ = f"""Created with lambdify. Signature:
+
+{sig}
+
+Expression:
+
+{expr_str}"""
     return func
 
 

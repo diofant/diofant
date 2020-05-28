@@ -37,7 +37,7 @@ def sT(expr, string):
 def test_printmethod():
     class R(Abs):
         def _diofantrepr(self, printer):
-            return 'foo(%s)' % printer._print(self.args[0])
+            return f'foo({printer._print(self.args[0])})'
     assert repr(R(x)) == "foo(Symbol('x'))"
 
 
@@ -116,10 +116,10 @@ def test_Factors():
 def test_AlgebraicElement():
     K = QQ.algebraic_field(sqrt(2))
     a = K.unit
-    sT(a, 'AlgebraicField(%s, Pow(Integer(2), Rational(1, 2)))([Integer(1), Integer(0)])' % repr(QQ))
+    sT(a, f'AlgebraicField({QQ!r}, Pow(Integer(2), Rational(1, 2)))([Integer(1), Integer(0)])')
     K = QQ.algebraic_field(root(-2, 3))
     a = K.unit
-    sT(a, 'AlgebraicField(%s, Pow(Integer(-2), Rational(1, 3)))([Integer(1), Integer(0)])' % repr(QQ))
+    sT(a, f'AlgebraicField({QQ!r}, Pow(Integer(-2), Rational(1, 3)))([Integer(1), Integer(0)])')
 
 
 def test_Float():
@@ -196,49 +196,38 @@ def test_FiniteField():
 
 
 def test_PolynomialRing():
-    sT(ZZ.inject('x'), "PolynomialRing(%s, (Symbol('x'),), "
-                       'LexOrder())' % repr(ZZ))
+    sT(ZZ.inject('x'), f"PolynomialRing({ZZ!r}, (Symbol('x'),), LexOrder())")
     sT(QQ.poly_ring('x', 'y', order=grlex),
-       "PolynomialRing(%s, (Symbol('x'), Symbol('y')), "
-       'GradedLexOrder())' % repr(QQ))
+       f"PolynomialRing({QQ!r}, (Symbol('x'), Symbol('y')), GradedLexOrder())")
     sT(ZZ.inject('x', 'y', 'z', 't').eject('t'),
-       "PolynomialRing(PolynomialRing(%s, (Symbol('t'),), "
-       "LexOrder()), (Symbol('x'), Symbol('y'), Symbol('z')), "
-       'LexOrder())' % repr(ZZ))
+       f"PolynomialRing(PolynomialRing({ZZ!r}, (Symbol('t'),), "
+       "LexOrder()), (Symbol('x'), Symbol('y'), Symbol('z')), LexOrder())")
 
 
 def test_FractionField():
-    sT(ZZ.inject('x').field, "FractionField(%s, (Symbol('x'),), "
-                             'LexOrder())' % repr(ZZ))
+    sT(ZZ.inject('x').field, f"FractionField({ZZ!r}, (Symbol('x'),), LexOrder())")
     sT(QQ.frac_field('x', 'y', order=grlex),
-       "FractionField(%s, (Symbol('x'), Symbol('y')), "
-       'GradedLexOrder())' % repr(QQ))
+       f"FractionField({QQ!r}, (Symbol('x'), Symbol('y')), GradedLexOrder())")
     sT(ZZ.inject('x', 'y', 'z', 't').eject('t').field,
-       "FractionField(PolynomialRing(%s, (Symbol('t'),), LexOrder()), "
-       "(Symbol('x'), Symbol('y'), Symbol('z')), LexOrder())" % repr(ZZ))
+       f"FractionField(PolynomialRing({ZZ!r}, (Symbol('t'),), LexOrder()), "
+       "(Symbol('x'), Symbol('y'), Symbol('z')), LexOrder())")
 
 
 def test_PolyElement():
     R, x, y = ring('x,y', ZZ)
     g = R.domain.dtype
-    assert repr(3*x**2*y + 1) == ("PolyElement(PolynomialRing(%s, (Symbol('x'), "
+    assert repr(3*x**2*y + 1) == (f"PolyElement(PolynomialRing({ZZ!r}, (Symbol('x'), "
                                   "Symbol('y')), LexOrder()), [((2, 1), "
-                                  '%s), ((0, 0), %s)])' % (repr(ZZ),
-                                                           repr(g(3)),
-                                                           repr(g(1))))
+                                  f'{g(3)!r}), ((0, 0), {g(1)!r})])')
 
 
 def test_FracElement():
     F, x, y = field('x,y', ZZ)
     g = F.domain.dtype
-    assert repr((3*x**2*y + 1)/(x - y**2)) == ("FracElement(FractionField(%s, (Symbol('x'), "
-                                               "Symbol('y')), LexOrder()), [((2, 1), %s), "
-                                               '((0, 0), %s)], [((1, 0), %s), '
-                                               '((0, 2), %s)])' % (repr(ZZ),
-                                                                   repr(g(3)),
-                                                                   repr(g(1)),
-                                                                   repr(g(1)),
-                                                                   repr(g(-1))))
+    assert repr((3*x**2*y + 1)/(x - y**2)) == (f"FracElement(FractionField({ZZ!r}, (Symbol('x'), "
+                                               f"Symbol('y')), LexOrder()), [((2, 1), {g(3)!r}), "
+                                               f'((0, 0), {g(1)!r})], [((1, 0), {g(1)!r}), '
+                                               f'((0, 2), {g(-1)!r})])')
 
 
 def test_BooleanAtom():
@@ -248,4 +237,4 @@ def test_BooleanAtom():
 
 def test_AlgebraicField():
     sT(QQ.algebraic_field(sqrt(2)),
-       'AlgebraicField(%s, Pow(Integer(2), Rational(1, 2)))' % repr(QQ))
+       f'AlgebraicField({QQ!r}, Pow(Integer(2), Rational(1, 2)))')

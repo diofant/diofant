@@ -298,7 +298,7 @@ def _mr_safe_helper(_s):
             factors = '== bases'
         else:
             factors = str(factors)
-        return ' # %s stot = %s clear %s' % tuple(str(x).replace('L', '')
+        return ' # %s stot = %s clear %s' % tuple(str(x).replace('L', '')  # noqa: SFS101
                                                   for x in (list(bases), tot,
                                                             factors))
 

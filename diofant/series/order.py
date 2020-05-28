@@ -267,7 +267,7 @@ class Order(Expr):
             if (not all(o[1] == order_symbols[0][1] for o in order_symbols) and
                     not all(p == self.point[0] for p in self.point)):  # pragma: no cover
                 raise NotImplementedError('Order at points other than 0 '
-                                          'or oo not supported, got %s as a point.' % point)
+                                          f'or oo not supported, got {point} as a point.')
             if order_symbols and order_symbols[0][1] != self.point[0]:
                 raise NotImplementedError(
                     'Multiplying Order at different points is not supported.')
@@ -307,7 +307,7 @@ class Order(Expr):
             if (not all(p == expr.point[0] for p in expr.point) and
                     not all(p == self.point[0] for p in self.point)):  # pragma: no cover
                 raise NotImplementedError('Order at points other than 0 '
-                                          'or oo not supported, got %s as a point.' % point)
+                                          f'or oo not supported, got {point} as a point.')
             else:
                 # self and/or expr is O(1):
                 if any(not p for p in [expr.point, self.point]):
