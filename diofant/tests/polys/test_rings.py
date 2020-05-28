@@ -1758,6 +1758,14 @@ def test_PolyElement_terms_gcd():
 
 
 def test_PolyElement_max_norm():
+    R, x = ring('x', ZZ)
+
+    assert R(0).max_norm() == 0
+    assert R(1).max_norm() == 1
+    assert (-x**2 + 2*x - 3).max_norm() == 3
+
+    assert (x**3 + 4*x**2 + 2*x + 3).max_norm() == 4
+
     R, x, y = ring('x y', ZZ)
 
     assert R(-1).max_norm() == 1
@@ -1766,6 +1774,15 @@ def test_PolyElement_max_norm():
 
     assert (x**3 + 4*x**2 + 2*x + 3).max_norm() == 4
     assert (-x**2 + 2*x - 3).max_norm() == 3
+
+    assert (2*x*y - x - 3).max_norm() == 3
+
+    R, x, y, z = ring('x y z', ZZ)
+
+    assert R(0).max_norm() == 0
+    assert R(1).max_norm() == 1
+
+    assert f_polys()[0].max_norm() == 6
 
 
 def test_PolyElement_l1_norm():

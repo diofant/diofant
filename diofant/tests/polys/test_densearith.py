@@ -658,20 +658,3 @@ def test_dmp_mul():
     R, x, y = ring('x y', FF(5))
 
     assert R.dmp_mul(2*x + 1, 3*x + 4) == x**2 + x + 4
-
-
-def test_dmp_max_norm():
-    R, x = ring('x', ZZ)
-
-    assert R.dmp_max_norm(R(0)) == 0
-    assert R.dmp_max_norm(R(1)) == 1
-    assert R.dmp_max_norm(-x**2 + 2*x - 3) == 3
-
-    assert R.dmp_max_norm(x**3 + 4*x**2 + 2*x + 3) == 4
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    assert R.dmp_max_norm(R(0)) == 0
-    assert R.dmp_max_norm(R(1)) == 1
-
-    assert R.dmp_max_norm(f_polys()[0]) == 6
