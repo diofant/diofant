@@ -20,26 +20,6 @@ from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
 from .polyutils import _sort_factors
 
 
-def dmp_zz_wang_non_divisors(E, cs, ct, K):
-    """Wang/EEZ: Compute a set of valid divisors."""
-    result = [cs*ct]
-
-    for q in E:
-        q = abs(q)
-
-        for r in reversed(result):
-            while r != 1:
-                r = K.gcd(r, q)
-                q = q // r
-
-            if q == K.one:
-                return
-
-        result.append(q)
-
-    return result[1:]
-
-
 def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
     """Wang/EEZ: Compute correct leading coefficients."""
     C, J, v = [], [0]*len(E), u - 1
@@ -1063,9 +1043,29 @@ class _Factor:
         c, h = g.primitive()
 
         E = [t(*A) for t, _ in T]
-        D = self.dmp_zz_wang_non_divisors(E, c, ct)
+        D = self._zz_wang_non_divisors(E, c, ct)
 
         if D is not None:
             return c, h, E
         else:
             raise EvaluationFailed('no luck')
+
+    def _zz_wang_non_divisors(self, E, cs, ct):
+        """Wang/EEZ: Compute a set of valid divisors."""
+        domain = self.domain
+        result = [cs*ct]
+
+        for q in E:
+            q = abs(q)
+
+            for r in reversed(result):
+                while r != 1:
+                    r = domain.gcd(r, q)
+                    q = q // r
+
+                if q == 1:
+                    return
+
+            result.append(q)
+
+        return result[1:]
