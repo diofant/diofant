@@ -8,7 +8,7 @@ from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_TC, dmp_LC,
                          dmp_TC)
 from .densetools import (dmp_compose, dup_decompose, dup_real_imag,
                          dup_transform)
-from .factortools import dmp_zz_wang_hensel_lifting, dmp_zz_wang_lead_coeffs
+from .factortools import dmp_zz_wang_hensel_lifting
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -114,15 +114,6 @@ class IPolys:
 
     def dup_sign_variations(self, f):
         return dup_sign_variations(f.to_dense(), self.domain)
-
-    # f: Poly, T: List[(Poly, int)], cs: ZZ, E: List[ZZ], H: List[Poly], A: List[ZZ]
-    def dmp_zz_wang_lead_coeffs(self, f, T, cs, E, H, A):
-        mv = self.drop(0)
-        T = [(t.to_dense(), k) for t, k in T]
-        uv = self.drop(*range(1, self.ngens))
-        H = list(map(lambda _: _.to_dense(), H))
-        f, HH, CC = dmp_zz_wang_lead_coeffs(f.to_dense(), T, cs, E, H, A, self.ngens-1, self.domain)
-        return self.from_list(f), list(map(uv.from_list, HH)), list(map(mv.from_list, CC))
 
     # f: Poly, H: List[Poly], LC: List[Poly], A: List[ZZ], p: ZZ
     def dmp_zz_wang_hensel_lifting(self, f, H, LC, A, p):

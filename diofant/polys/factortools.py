@@ -7,10 +7,9 @@ import operator
 from ..ntheory import factorint, isprime, nextprime
 from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
-from .densearith import (dmp_add_mul, dmp_mul, dmp_mul_ground, dmp_pow,
-                         dmp_quo_ground, dmp_sub)
-from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_LC, dmp_nest,
-                         dmp_one, dmp_raise, dmp_zero_p)
+from .densearith import dmp_add_mul, dmp_mul, dmp_quo_ground, dmp_sub
+from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_nest, dmp_one,
+                         dmp_raise, dmp_zero_p)
 from .densetools import (dmp_diff_eval_in, dmp_eval_in, dmp_eval_tail,
                          dmp_ground_trunc)
 from .galoistools import dup_gf_factor_sqf
@@ -18,60 +17,6 @@ from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-
-
-def dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A, u, K):
-    """Wang/EEZ: Compute correct leading coefficients."""
-    C, J, v = [], [0]*len(E), u - 1
-
-    for h in H:
-        c = dmp_one(v, K)
-        d = dmp_LC(h, K)*cs
-
-        for i in reversed(range(len(E))):
-            k, e, t = 0, E[i], T[i][0]
-
-            while not (d % e):
-                d, k = d//e, k + 1
-
-            if k != 0:
-                c, J[i] = dmp_mul(c, dmp_pow(t, k, v, K), v, K), 1
-
-        C.append(c)
-
-    if any(not j for j in J):  # pragma: no cover
-        raise ExtraneousFactors
-
-    CC, HH = [], []
-
-    for c, h in zip(C, H):
-        d = dmp_eval_tail(c, A, v, K)
-        lc = dmp_LC(h, K)
-
-        if cs == K.one:
-            cc = lc//d
-        else:
-            g = K.gcd(lc, d)
-            d, cc = d//g, lc//g
-            h, cs = dmp_mul_ground(h, d, 0, K), cs//d
-
-        c = dmp_mul_ground(c, cc, v, K)
-
-        CC.append(c)
-        HH.append(h)
-
-    if cs == K.one:
-        return f, HH, CC
-
-    CCC, HHH = [], []
-
-    for c, h in zip(CC, HH):
-        CCC.append(dmp_mul_ground(c, cs, v, K))
-        HHH.append(dmp_mul_ground(h, cs, 0, K))
-
-    f = dmp_mul_ground(f, cs**(len(H) - 1), u, K)
-
-    return f, HHH, CCC
 
 
 def dmp_zz_wang_hensel_lifting(f, H, LC, A, p, u, K):
@@ -1012,7 +957,7 @@ class _Factor:
         orig_f = f
 
         try:
-            f, H, LC = self.dmp_zz_wang_lead_coeffs(f, T, cs, E, H, A)
+            f, H, LC = self._zz_wang_lead_coeffs(f, T, cs, E, H, A)
             factors = self.dmp_zz_wang_hensel_lifting(f, H, LC, A, p)
         except ExtraneousFactors:
             if query('EEZ_RESTART_IF_NEEDED'):
@@ -1069,3 +1014,59 @@ class _Factor:
             result.append(q)
 
         return result[1:]
+
+    def _zz_wang_lead_coeffs(self, f, T, cs, E, H, A):
+        """Wang/EEZ: Compute correct leading coefficients."""
+        domain = self.domain
+        c_ring = self.drop(0)
+        C, J = [], [0]*len(E)
+
+        for h in H:
+            c = c_ring.one
+            d = h.LC*cs
+
+            for i in reversed(range(len(E))):
+                k, e, t = 0, E[i], T[i][0]
+
+                while not (d % e):
+                    d, k = d//e, k + 1
+
+                if k != 0:
+                    c *= t**k
+                    J[i] = 1
+
+            C.append(c)
+
+        if any(not j for j in J):  # pragma: no cover
+            raise ExtraneousFactors
+
+        CC, HH = [], []
+
+        for c, h in zip(C, H):
+            d = c(*A)
+            lc = h.LC
+
+            if cs == 1:
+                cc = lc//d
+            else:
+                g = domain.gcd(lc, d)
+                d, cc = d//g, lc//g
+                h, cs = h.mul_ground(d), cs//d
+
+            c = c.mul_ground(cc)
+
+            CC.append(c)
+            HH.append(h)
+
+        if cs == 1:
+            return f, HH, CC
+
+        CCC, HHH = [], []
+
+        for c, h in zip(CC, HH):
+            CCC.append(c.mul_ground(cs))
+            HHH.append(h.mul_ground(cs))
+
+        f = f.mul_ground(cs**(len(H) - 1))
+
+        return f, HHH, CCC

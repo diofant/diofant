@@ -267,7 +267,7 @@ def test__zz_wang():
     K = [k_1, k_2, k_3, k_4]
     E = [e_1, e_2, e_3, e_4]
 
-    T = zip([t.drop(x) for t in T], K)
+    T = list(zip([t.drop(x) for t in T], K))
 
     A = [ZZ(-14), ZZ(3)]
 
@@ -290,7 +290,7 @@ def test__zz_wang():
     factors = R.dmp_zz_wang_hensel_lifting(w_1, H, LC, A, p)
 
     assert H == [h_1, h_2, h_3]
-    assert R.dmp_zz_wang_lead_coeffs(w_1, T, cs, E, H, A) == (w_1, H, LC)
+    assert R._zz_wang_lead_coeffs(w_1, T, cs, E, H, A) == (w_1, H, LC)
     assert functools.reduce(operator.mul, factors) == w_1
 
 
