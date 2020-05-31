@@ -293,6 +293,11 @@ def test__zz_wang():
     assert R._zz_wang_lead_coeffs(w_1, T, cs, E, H, A) == (w_1, H, LC)
     assert functools.reduce(operator.mul, factors) == w_1
 
+    # coverage tests
+    f = x**6 + 5*x**4*y - 5*x**2*y**2 - y**3
+
+    assert R._zz_wang(f, mod=4, seed=1) == [x**2 - y, x**4 + 6*x**2*y + y**2]
+
 
 def test__zz_diophantine():
     R, x, y = ring('x y', ZZ)

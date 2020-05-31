@@ -539,7 +539,7 @@ class _Factor:
                     factors[i] = (f.eject(*ring.gens[-domain1.ngens:]), k)
 
                 coeff = domain1.convert(coeff)
-            else:  # pragma: no cover
+            else:
                 raise DomainError(f'factorization not supported over {domain}')
 
             if domain.is_Field:
@@ -921,11 +921,11 @@ class _Factor:
                 rr = len(H)
 
                 if r is not None:
-                    if rr != r:  # pragma: no cover
-                        if rr < r:
-                            configs, r = [], rr
-                        else:
+                    if rr != r:
+                        if rr >= r:
                             continue
+                        else:
+                            configs, r = [], rr
                 else:
                     r = rr
 
