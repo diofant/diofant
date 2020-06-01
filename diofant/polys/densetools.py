@@ -24,32 +24,6 @@ def dmp_eval_in(f, a, j, u, K):
     return r
 
 
-def dmp_eval_tail(f, A, u, K):
-    """Evaluate a polynomial at ``x_j = a_j, ...`` in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    if not A:
-        return f.to_dense()
-    r = f.eval(list(zip(reversed(ring.gens), reversed(A))))
-    return r.to_dense()
-
-
-def dmp_diff_eval_in(f, m, a, j, u, K):
-    """Differentiate and evaluate a polynomial in ``x_j`` at ``a`` in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    r = f.diff(x=j, m=m).eval(x=j, a=a)
-    return r.to_dense()
-
-
-def dmp_ground_trunc(f, p, u, K):
-    """Reduce a ``K[X]`` polynomial modulo a constant ``p`` in ``K``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    f = f.trunc_ground(p)
-    return f.to_dense()
-
-
 def dmp_ground_monic(f, u, K):
     """Divide all coefficients by ``LC(f)`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
