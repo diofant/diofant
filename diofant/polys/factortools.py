@@ -7,71 +7,11 @@ import operator
 from ..ntheory import factorint, isprime, nextprime
 from ..ntheory.modular import symmetric_residue
 from ..utilities import subsets
-from .densearith import dmp_add_mul, dmp_mul, dmp_quo_ground, dmp_sub
-from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_nest, dmp_one,
-                         dmp_raise, dmp_zero_p)
-from .densetools import (dmp_diff_eval_in, dmp_eval_in, dmp_eval_tail,
-                         dmp_ground_trunc)
 from .galoistools import dup_gf_factor_sqf
 from .polyconfig import query
 from .polyerrors import (CoercionFailed, DomainError, EvaluationFailed,
                          ExtraneousFactors)
 from .polyutils import _sort_factors
-
-
-def dmp_zz_wang_hensel_lifting(f, H, LC, A, p, u, K):
-    """Wang/EEZ: Parallel Hensel lifting algorithm."""
-    S, n, v = [f], len(A), u - 1
-
-    H = list(H)
-
-    for i, a in enumerate(reversed(A[1:])):
-        s = dmp_eval_in(S[0], a, n - i, u - i, K)
-        S.insert(0, dmp_ground_trunc(s, p, v - i, K))
-
-    d = max(dmp_degree_list(f, u)[1:])
-
-    for j, s, a in zip(range(2, n + 2), S, A):
-        G, w = list(H), j - 1
-
-        I, J = A[:j - 2], A[j - 1:]
-
-        for i, (h, lc) in enumerate(zip(H, LC)):
-            lc = dmp_ground_trunc(dmp_eval_tail(lc, J, v, K), p, w - 1, K)
-            H[i] = [lc] + dmp_raise(h[1:], 1, w - 1, K)
-
-        m = dmp_nest([K.one, -a], w, K)
-        M = dmp_one(w, K)
-
-        c = functools.reduce(lambda x, y: dmp_mul(x, y, w, K), H)
-        c = dmp_sub(s, c, w, K)
-
-        dj = dmp_degree_in(s, w, w)
-
-        for k in range(dj):
-            k = K(k)
-            if dmp_zero_p(c, w):
-                break
-
-            M = dmp_mul(M, m, w, K)
-            C = dmp_diff_eval_in(c, k + 1, a, w, w, K)
-
-            if not dmp_zero_p(C, w - 1):
-                C = dmp_quo_ground(C, K.factorial(k + 1), w - 1, K)
-                T = dmp_zz_diophantine(G, C, I, d, p, w - 1, K)
-
-                for i, (h, t) in enumerate(zip(H, T)):
-                    h = dmp_add_mul(h, dmp_raise(t, 1, w - 1, K), M, w, K)
-                    H[i] = dmp_ground_trunc(h, p, w, K)
-
-                h = functools.reduce(lambda x, y: dmp_mul(x, y, w, K), H)
-                h = dmp_sub(s, h, w, K)
-                c = dmp_ground_trunc(h, p, w, K)
-
-    if functools.reduce(lambda x, y: dmp_mul(x, y, u, K), H) != f:
-        raise ExtraneousFactors
-    else:
-        return H
 
 
 def dmp_trial_division(f, factors, u, K):
@@ -81,15 +21,6 @@ def dmp_trial_division(f, factors, u, K):
     factors = list(map(ring.from_list, factors))
     result = ring._trial_division(f, factors)
     return [(f.to_dense(), k) for f, k in result]
-
-
-def dmp_zz_diophantine(F, c, A, d, p, u, K):
-    """Wang/EEZ: Solve multivariate Diophantine equations."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    F = list(map(ring.from_list, F))
-    c = ring.from_list(c)
-    r = ring._zz_diophantine(F, c, A, d, p)
-    return list(map(lambda _: _.to_dense(), r))
 
 
 class _Factor:
@@ -958,7 +889,7 @@ class _Factor:
 
         try:
             f, H, LC = self._zz_wang_lead_coeffs(f, T, cs, E, H, A)
-            factors = self.dmp_zz_wang_hensel_lifting(f, H, LC, A, p)
+            factors = self._zz_wang_hensel_lifting(f, H, LC, A, p)
         except ExtraneousFactors:
             if query('EEZ_RESTART_IF_NEEDED'):
                 return self._zz_wang(orig_f, mod + 1)
@@ -1070,3 +1001,64 @@ class _Factor:
         f = f.mul_ground(cs**(len(H) - 1))
 
         return f, HHH, CCC
+
+    def _zz_wang_hensel_lifting(self, f, H, LC, A, p):
+        """Wang/EEZ: Parallel Hensel lifting algorithm."""
+        domain = self.domain
+        S, n = [f], len(A)
+
+        H = list(H)
+
+        for i, a in enumerate(reversed(A[1:])):
+            s = S[0].eval(x=n - i, a=a)
+            S.insert(0, s.trunc_ground(p))
+
+        d = max(f.degree_list()[1:])
+
+        for j, s, a in zip(range(2, n + 2), S, A):
+            G, w = list(H), j - 1
+            s_ring = s.ring
+
+            I, J = A[:w - 1], A[w:]
+
+            for i, (h, lc) in enumerate(zip(H, LC)):
+                if J:
+                    lc = lc.eject(*lc.ring.gens[:-len(J)])(*J)
+                lc = lc.trunc_ground(p)
+                h, lc = map(lambda _: _.set_ring(s_ring), (h, lc))
+                lt = h.eject(*s_ring.gens[1:]).leading_term().inject()
+                H[i] = lc*s_ring.gens[0]**lt.degree() + h - lt
+
+            m = s_ring.gens[-1] - a
+            M = s_ring.one
+
+            c = functools.reduce(operator.mul, H)
+            c = s - c
+
+            dj = s.degree(x=w)
+
+            for k in range(dj):
+                k = domain(k)
+                if c.is_zero:
+                    break
+
+                M *= m
+                C = c.diff(x=w, m=k + 1).eval(x=w, a=a)
+
+                if not C.is_zero:
+                    C = C.quo_ground(domain.factorial(k + 1))
+                    T = C.ring._zz_diophantine(G, C, I, d, p)
+
+                    for i, (h, t) in enumerate(zip(H, T)):
+                        t = t.set_ring(s_ring)
+                        h += t*M
+                        H[i] = h.trunc_ground(p)
+
+                    h = functools.reduce(operator.mul, H)
+                    h = s - h
+                    c = h.trunc_ground(p)
+
+        if functools.reduce(operator.mul, H) != f:
+            raise ExtraneousFactors
+        else:
+            return H
