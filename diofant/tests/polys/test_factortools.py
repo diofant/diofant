@@ -5,8 +5,8 @@ import operator
 
 import pytest
 
-from diofant import (EX, FF, QQ, RR, ZZ, DomainError, I, nextprime, pi, ring,
-                     sin, sqrt)
+from diofant import (EX, FF, QQ, RR, ZZ, DomainError, ExtraneousFactors, I,
+                     nextprime, pi, ring, sin, sqrt)
 from diofant.polys.polyconfig import using
 from diofant.polys.specialpolys import f_polys, w_polys
 
@@ -250,7 +250,7 @@ def test_dup_zz_factor():
                                            (x**8 - x**6 + x**4 - x**2 + 1, 1)])
 
 
-def test_dmp_zz_wang():
+def test__zz_wang():
     R, x, y, z = ring('x y z', ZZ)
     UV, _x = ring('x', ZZ)
 
@@ -267,7 +267,7 @@ def test_dmp_zz_wang():
     K = [k_1, k_2, k_3, k_4]
     E = [e_1, e_2, e_3, e_4]
 
-    T = zip([t.drop(x) for t in T], K)
+    T = list(zip([t.drop(x) for t in T], K))
 
     A = [ZZ(-14), ZZ(3)]
 
@@ -277,7 +277,7 @@ def test_dmp_zz_wang():
     assert cs == 1 and s == S == (1036728*_x**6 + 915552*_x**5 + 55748*_x**4 +
                                   105621*_x**3 - 17304*_x**2 - 26841*_x - 644)
 
-    assert R.dmp_zz_wang_non_divisors(E, cs, ZZ(4)) == [7, 3, 11, 17]
+    assert R._zz_wang_non_divisors(E, cs, ZZ(4)) == [7, 3, 11, 17]
     assert s.is_squarefree and UV.dmp_degree_in(s, 0) == R.dmp_degree_in(w_1, 0)
 
     _, H = UV._zz_factor_sqf(s)
@@ -290,8 +290,13 @@ def test_dmp_zz_wang():
     factors = R.dmp_zz_wang_hensel_lifting(w_1, H, LC, A, p)
 
     assert H == [h_1, h_2, h_3]
-    assert R.dmp_zz_wang_lead_coeffs(w_1, T, cs, E, H, A) == (w_1, H, LC)
+    assert R._zz_wang_lead_coeffs(w_1, T, cs, E, H, A) == (w_1, H, LC)
     assert functools.reduce(operator.mul, factors) == w_1
+
+    # coverage tests
+    f = x**6 + 5*x**4*y - 5*x**2*y**2 - y**3
+
+    assert R._zz_wang(f, mod=4, seed=1) == [x**2 - y, x**4 + 6*x**2*y + y**2]
 
 
 def test__zz_diophantine():
@@ -337,7 +342,11 @@ def test_sympyissue_6355():
 
     f = 2*x**2 + y*z - y - z**2 + z
 
-    assert R.dmp_zz_wang(f, seed=random_sequence) == [f]
+    assert R._zz_wang(f, seed=random_sequence) == [f]
+
+    with using(eez_restart_if_needed=False):
+        pytest.raises(ExtraneousFactors,
+                      lambda: R._zz_wang(f, seed=random_sequence))
 
 
 def test_dmp_zz_factor():

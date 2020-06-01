@@ -1,15 +1,14 @@
 """Compatibility interface between dense and sparse polys."""
 
 from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term,
-                         dmp_exquo_ground, dmp_max_norm, dmp_mul,
-                         dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_quo_ground,
-                         dmp_sub, dup_lshift, dup_rshift)
+                         dmp_exquo_ground, dmp_mul, dmp_mul_ground,
+                         dmp_mul_term, dmp_neg, dmp_quo_ground, dmp_sub,
+                         dup_lshift, dup_rshift)
 from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_TC, dmp_LC,
                          dmp_TC)
 from .densetools import (dmp_compose, dup_decompose, dup_real_imag,
                          dup_transform)
-from .factortools import (dmp_zz_wang, dmp_zz_wang_hensel_lifting,
-                          dmp_zz_wang_lead_coeffs, dmp_zz_wang_non_divisors)
+from .factortools import dmp_zz_wang_hensel_lifting
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -76,9 +75,6 @@ class IPolys:
     def dmp_mul(self, f, g):
         return self.from_list(dmp_mul(f.to_dense(), g.to_dense(), self.ngens-1, self.domain))
 
-    def dmp_max_norm(self, f):
-        return dmp_max_norm(f.to_dense(), self.ngens-1, self.domain)
-
     def dmp_LC(self, f):
         LC = dmp_LC(f.to_dense(), self.domain)
         if self.is_multivariate:
@@ -119,29 +115,12 @@ class IPolys:
     def dup_sign_variations(self, f):
         return dup_sign_variations(f.to_dense(), self.domain)
 
-    # E: List[ZZ], cs: ZZ, ct: ZZ
-    def dmp_zz_wang_non_divisors(self, E, cs, ct):
-        return dmp_zz_wang_non_divisors(E, cs, ct, self.domain)
-
-    # f: Poly, T: List[(Poly, int)], cs: ZZ, E: List[ZZ], H: List[Poly], A: List[ZZ]
-    def dmp_zz_wang_lead_coeffs(self, f, T, cs, E, H, A):
-        mv = self.drop(0)
-        T = [(t.to_dense(), k) for t, k in T]
-        uv = self.drop(*range(1, self.ngens))
-        H = list(map(lambda _: _.to_dense(), H))
-        f, HH, CC = dmp_zz_wang_lead_coeffs(f.to_dense(), T, cs, E, H, A, self.ngens-1, self.domain)
-        return self.from_list(f), list(map(uv.from_list, HH)), list(map(mv.from_list, CC))
-
     # f: Poly, H: List[Poly], LC: List[Poly], A: List[ZZ], p: ZZ
     def dmp_zz_wang_hensel_lifting(self, f, H, LC, A, p):
         H = list(map(lambda _: _.to_dense(), H))
         LC = list(map(lambda _: _.to_dense(), LC))
         result = dmp_zz_wang_hensel_lifting(f.to_dense(), H, LC, A, p, self.ngens-1, self.domain)
         return list(map(self.from_list, result))
-
-    def dmp_zz_wang(self, f, mod=None, seed=None):
-        factors = dmp_zz_wang(f.to_dense(), self.ngens-1, self.domain, mod=mod, seed=seed)
-        return [self.from_list(g) for g in factors]
 
     def dup_sturm(self, f):
         seq = dup_sturm(f.to_dense(), self.domain)

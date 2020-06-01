@@ -31,9 +31,7 @@ def dmp_eval_tail(f, A, u, K):
     if not A:
         return f.to_dense()
     r = f.eval(list(zip(reversed(ring.gens), reversed(A))))
-    if hasattr(r, 'ring'):
-        r = r.to_dense()
-    return r
+    return r.to_dense()
 
 
 def dmp_diff_eval_in(f, m, a, j, u, K):

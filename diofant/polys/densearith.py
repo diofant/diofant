@@ -568,23 +568,3 @@ def dmp_rem(f, g, u, K):
 def dmp_quo(f, g, u, K):
     """Return exact polynomial quotient in ``K[X]``."""
     return dmp_div(f, g, u, K)[0]
-
-
-def dmp_max_norm(f, u, K):
-    """
-    Return maximum norm of a polynomial in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_max_norm(2*x*y - x - 3)
-    3
-
-    """
-    if not u:
-        return max(dmp_abs(f, 0, K), default=K.zero)
-
-    v = u - 1
-    return max(dmp_max_norm(c, v, K) for c in f)
