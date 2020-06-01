@@ -365,6 +365,13 @@ def test_dmp_sub():
     assert R.dmp_sub(3*x**2/7 + 2*x/7 + QQ(1, 7),
                      8*x**2/7 + 9*x/7 + QQ(10, 7)) == -5*x**2/7 - x - QQ(9, 7)
 
+    R, x, y = ring('x y', ZZ)
+
+    f, g = x**2 - 2, y**2
+
+    assert R.dmp_sub(f, g) == x**2 - y**2 - 2
+    assert R.dmp_sub(g, f) == 2 + y**2 - x**2
+
     R, x, y, z = ring('x y z', ZZ)
 
     assert R.dmp_sub(R(0), R(0)) == 0
