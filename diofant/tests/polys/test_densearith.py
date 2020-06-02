@@ -1,8 +1,6 @@
 """Tests for dense recursive polynomials' arithmetics."""
 
-import pytest
-
-from diofant import FF, QQ, ZZ, ExactQuotientFailed, ring
+from diofant import FF, QQ, ZZ, ring
 from diofant.polys.specialpolys import f_polys
 
 
@@ -114,47 +112,6 @@ def test_dmp_mul_ground():
             x**2*y*z**2/14 + x**2*y*z/7 + 3*x**2*y/14 + x**2/7 + 3*x/14 +
             2*y**2*z**2/7 + 5*y**2*z/14 + 3*y**2/7 + y*z**2/14 + y*z/7 +
             y/14 + QQ(1, 14))
-
-
-def test_dmp_exquo_ground():
-    R, x = ring('x', ZZ)
-
-    pytest.raises(ZeroDivisionError,
-                  lambda: R.dmp_exquo_ground(x**2 + 2*x + 3, ZZ(0)))
-    pytest.raises(ExactQuotientFailed,
-                  lambda: R.dmp_exquo_ground(x**2 + 2*x + 3, ZZ(3)))
-
-    R, x = ring('x', QQ)
-
-    f = x**2 + 2
-
-    assert R.dmp_exquo_ground(f, QQ(2)) == x**2/2 + 1
-
-    R, x = ring('x', ZZ)
-
-    f = R(0)
-
-    assert R.dmp_exquo_ground(f, ZZ(3)) == 0
-
-    f = 6*x**2 + 2*x + 8
-
-    assert R.dmp_exquo_ground(f, ZZ(1)) == f
-    assert R.dmp_exquo_ground(f, ZZ(2)) == 3*x**2 + x + 4
-
-    R, x = ring('x', QQ)
-
-    f = 6*x**2 + 2*x + 8
-
-    assert R.dmp_exquo_ground(f, QQ(1)) == f
-    assert R.dmp_exquo_ground(f, QQ(2)) == 3*x**2 + x + 4
-    assert R.dmp_exquo_ground(f, QQ(7)) == 6*x**2/7 + 2*x/7 + QQ(8, 7)
-
-    R, x, y = ring('x y', ZZ)
-
-    f = 6*x**2 + 2*x + 8
-
-    assert R.dmp_exquo_ground(f, ZZ(1)) == f
-    assert R.dmp_exquo_ground(f, ZZ(2)) == 3*x**2 + x + 4
 
 
 def test_dup_lshift():

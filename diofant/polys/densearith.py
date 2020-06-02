@@ -131,31 +131,6 @@ def dmp_mul_ground(f, c, u, K):
         return [dmp_mul_ground(coeff, c, v, K) for coeff in f]
 
 
-def dmp_exquo_ground(f, c, u, K):
-    """
-    Exact quotient by a constant in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', QQ)
-
-    >>> R.dmp_exquo_ground(x**2*y + 2*x, QQ(2))
-    1/2*x**2*y + x
-
-    """
-    if not u:
-        if not c:
-            raise ZeroDivisionError('polynomial division')
-        if not f:
-            return f
-
-        return [K.exquo(coeff, c) for coeff in f]
-
-    v = u - 1
-    return [dmp_exquo_ground(coeff, c, v, K) for coeff in f]
-
-
 def dup_lshift(f, n, K):
     """
     Efficiently multiply ``f`` by ``x**n`` in ``K[x]``.

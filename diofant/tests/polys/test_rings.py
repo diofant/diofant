@@ -1334,6 +1334,45 @@ def test_PolyElement_quo_ground():
     assert f.quo_ground(QQ(2)) == x**2*y + 3*x/2
 
 
+def test_PolyElement_exquo_ground():
+    R, x = ring('x', ZZ)
+
+    pytest.raises(ZeroDivisionError,
+                  lambda: (x**2 + 2*x + 3).exquo_ground(ZZ(0)))
+    pytest.raises(ExactQuotientFailed,
+                  lambda: (x**2 + 2*x + 3).exquo_ground(ZZ(3)))
+
+    assert R(0).exquo_ground(ZZ(3)) == 0
+
+    f = 6*x**2 + 2*x + 8
+
+    assert f.exquo_ground(ZZ(1)) == f
+    assert f.exquo_ground(ZZ(2)) == 3*x**2 + x + 4
+
+    R, x = ring('x', QQ)
+
+    f = x**2 + 2
+
+    assert f.exquo_ground(QQ(2)) == x**2/2 + 1
+
+    f = 6*x**2 + 2*x + 8
+
+    assert f.exquo_ground(QQ(1)) == f
+    assert f.exquo_ground(QQ(2)) == 3*x**2 + x + 4
+    assert f.exquo_ground(QQ(7)) == 6*x**2/7 + 2*x/7 + QQ(8, 7)
+
+    R, x, y = ring('x y', ZZ)
+
+    f = 6*x**2 + 2*x + 8
+
+    assert f.exquo_ground(ZZ(1)) == f
+    assert f.exquo_ground(ZZ(2)) == 3*x**2 + x + 4
+
+    R, x, y = ring('x y', QQ)
+
+    assert (x**2*y + 2*x).exquo_ground(QQ(2)) == x**2*y/2 + x
+
+
 def test_PolyElement_trunc_ground():
     R, x = ring('x', ZZ)
 
