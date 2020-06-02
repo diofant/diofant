@@ -131,38 +131,6 @@ def dmp_mul_ground(f, c, u, K):
         return [dmp_mul_ground(coeff, c, v, K) for coeff in f]
 
 
-def dmp_quo_ground(f, c, u, K):
-    """
-    Quotient by a constant in ``K[X]``.
-
-    Examples
-    ========
-
-
-    >>> R, x, y = ring('x y', ZZ)
-    >>> R.dmp_quo_ground(2*x**2*y + 3*x, ZZ(2))
-    x**2*y + x
-
-    >>> R, x, y = ring('x y', QQ)
-    >>> R.dmp_quo_ground(2*x**2*y + 3*x, QQ(2))
-    x**2*y + 3/2*x
-
-    """
-    if not u:
-        if not c:
-            raise ZeroDivisionError('polynomial division')
-        if not f:
-            return f
-
-        if K.is_Field:
-            return [K.quo(coeff, c) for coeff in f]
-        else:
-            return [coeff // c for coeff in f]
-
-    v = u - 1
-    return [dmp_quo_ground(coeff, c, v, K) for coeff in f]
-
-
 def dmp_exquo_ground(f, c, u, K):
     """
     Exact quotient by a constant in ``K[X]``.

@@ -1267,6 +1267,55 @@ def test_PolyElement_div():
     assert f.div(G) == (Q, r)
 
 
+def test_PolyElement_quo_ground():
+    R, x = ring('x', ZZ)
+
+    pytest.raises(ZeroDivisionError,
+                  lambda: (x**2 + 2*x + 3).quo_ground(ZZ(0)))
+
+    assert R(0).quo_ground(ZZ(3)) == 0
+
+    f = 6*x**2 + 2*x + 8
+
+    assert f.quo_ground(ZZ(1)) == f
+    assert f.quo_ground(ZZ(2)) == 3*x**2 + x + 4
+    assert f.quo_ground(ZZ(3)) == 2*x**2 + 2
+
+    f = 3*x**2 + 2
+
+    assert f.quo_ground(ZZ(2)) == x**2 + 1
+
+    R, x = ring('x', QQ)
+
+    f = 3*x**2 + 2
+
+    assert f.quo_ground(QQ(2)) == 3*x**2/2 + 1
+
+    f = 6*x**2 + 2*x + 8
+
+    assert f.quo_ground(QQ(1)) == f
+    assert f.quo_ground(QQ(2)) == 3*x**2 + x + 4
+    assert f.quo_ground(QQ(7)) == 6*x**2/7 + 2*x/7 + QQ(8, 7)
+
+    R, x, y = ring('x y', ZZ)
+
+    f = 6*x**2 + 2*x + 8
+
+    assert f.quo_ground(ZZ(1)) == f
+    assert f.quo_ground(ZZ(2)) == 3*x**2 + x + 4
+    assert f.quo_ground(ZZ(3)) == 2*x**2 + 2
+
+    f = 2*x**2*y + 3*x
+
+    assert f.quo_ground(ZZ(2)) == x**2*y + x
+
+    R, x, y = ring('x y', QQ)
+
+    f = 2*x**2*y + 3*x
+
+    assert f.quo_ground(QQ(2)) == x**2*y + 3*x/2
+
+
 def test_PolyElement_trunc_ground():
     R, x = ring('x', ZZ)
 
