@@ -1,7 +1,7 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_mul,
-                         dmp_mul_ground, dmp_neg, dmp_sub, dup_add, dup_mul)
+from .densearith import (dmp_add, dmp_div, dmp_mul, dmp_mul_ground, dmp_neg,
+                         dmp_sub, dup_add, dup_mul)
 from .densebasic import (dmp_degree_in, dmp_from_dict, dmp_ground, dmp_LC,
                          dmp_to_dict, dmp_zero, dmp_zero_p)
 from .polyerrors import DomainError
@@ -77,7 +77,7 @@ def dup_real_imag(f, K):
 
     for c in f[1:]:
         h = dmp_mul(h, g, 2, K)
-        h = dmp_add_term(h, dmp_ground(c, 1), 0, 2, K)
+        h = dmp_add(h, [dmp_ground(c, 1)], 2, K)
 
     H = dmp_to_dict(h, 0)
 
@@ -146,7 +146,7 @@ def dmp_compose(f, g, u, K):
 
     for c in f[1:]:
         h = dmp_mul(h, g, u, K)
-        h = dmp_add_term(h, c, 0, u, K)
+        h = dmp_add(h, [c], u, K)
 
     return h
 

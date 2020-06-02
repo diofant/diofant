@@ -1,69 +1,7 @@
 """Arithmetics for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from .densebasic import (dmp_degree_in, dmp_slice_in, dmp_strip, dmp_zero,
-                         dmp_zero_p, dmp_zeros)
+from .densebasic import dmp_degree_in, dmp_slice_in, dmp_strip, dmp_zero
 from .polyconfig import query
-
-
-def dup_add_term(f, c, i, K):
-    """
-    Add ``c*x**i`` to ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dmp_add_term(x**2 - 1, ZZ(2), 4)
-    2*x**4 + x**2 - 1
-
-    """
-    if not c:
-        return f
-
-    n = len(f)
-    m = n - i - 1
-
-    if i == n - 1:
-        return dmp_strip([f[0] + c] + f[1:], 0)
-    else:
-        if i >= n:
-            return [c] + [K.zero]*(i - n) + f
-        else:
-            return f[:m] + [f[m] + c] + f[m + 1:]
-
-
-def dmp_add_term(f, c, i, u, K):
-    """
-    Add ``c(x_2..x_u)*x_0**i`` to ``f`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_add_term(x*y + 1, R(2), 2)
-    2*x**2 + x*y + 1
-
-    """
-    if not u:
-        return dup_add_term(f, c, i, K)
-
-    v = u - 1
-
-    if dmp_zero_p(c, v):
-        return f
-
-    n = len(f)
-    m = n - i - 1
-
-    if i == n - 1:
-        return dmp_strip([dmp_add(f[0], c, v, K)] + f[1:], u)
-    else:
-        if i >= n:
-            return [c] + dmp_zeros(i - n, v, K) + f
-        else:
-            return f[:m] + [dmp_add(f[m], c, v, K)] + f[m + 1:]
 
 
 def dmp_mul_ground(f, c, u, K):
