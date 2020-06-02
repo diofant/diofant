@@ -1057,6 +1057,46 @@ def test_PolyElement_quo_term():
     assert f.quo_term(((1, 2, 2), 1)) == 0
 
 
+def test_PolyElement_mul_term():
+    R, x = ring('x', ZZ)
+
+    f = R(0)
+
+    assert f.mul_term(((3,), ZZ(2))) == 0
+
+    f = x + 1
+
+    assert f.mul_term(((3,), 0)) == 0
+
+    f = x**2 + 2*x + 3
+
+    assert f.mul_term(((0,), ZZ(2))) == 2*x**2 + 4*x + 6
+    assert f.mul_term(((1,), ZZ(2))) == 2*x**3 + 4*x**2 + 6*x
+    assert f.mul_term(((2,), ZZ(2))) == 2*x**4 + 4*x**3 + 6*x**2
+    assert f.mul_term(((3,), ZZ(2))) == 2*x**5 + 4*x**4 + 6*x**3
+
+    assert (x**2 - 1).mul_term(((2,), ZZ(3))) == 3*x**4 - 3*x**2
+
+    R, x, y = ring('x y', ZZ)
+
+    assert R(0).mul_term(((3, 0), ZZ(2))) == 0
+    assert R(1).mul_term(((3, 0), ZZ(0))) == 0
+
+    f = x*y + 2*x + 3
+
+    assert f.mul_term(((2, 0), ZZ(2))) == 2*x**3*y + 4*x**3 + 6*x**2
+    assert (x**2*y + x).mul_term(((2, 1), 3)) == 3*x**4*y**2 + 3*x**3*y
+
+    R, x, y = ring('x y', QQ)
+
+    assert R(0).mul_term(((3, 0), QQ(2, 3))) == 0
+    assert R(QQ(1, 2)).mul_term(((3, 0), QQ(0))) == 0
+
+    f = x*y/5 + 2*x/5 + QQ(3, 5)
+
+    assert f.mul_term(((2, 0), QQ(2, 3))) == 2*x**3*y/15 + 4*x**3/15 + 2*x**2/5
+
+
 def test_PolyElement___pow__():
     R, x = ring('x', FF(5))
 

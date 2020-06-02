@@ -66,51 +66,6 @@ def dmp_add_term(f, c, i, u, K):
             return f[:m] + [dmp_add(f[m], c, v, K)] + f[m + 1:]
 
 
-def dup_mul_term(f, c, i, K):
-    """
-    Multiply ``f`` by ``c*x**i`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dmp_mul_term(x**2 - 1, ZZ(3), 2)
-    3*x**4 - 3*x**2
-
-    """
-    if not c or not f:
-        return []
-    else:
-        return [cf * c for cf in f] + [K.zero]*i
-
-
-def dmp_mul_term(f, c, i, u, K):
-    """
-    Multiply ``f`` by ``c(x_2..x_u)*x_0**i`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_mul_term(x**2*y + x, 3*y, 2)
-    3*x**4*y**2 + 3*x**3*y
-
-    """
-    if not u:
-        return dup_mul_term(f, c, i, K)
-
-    v = u - 1
-
-    if dmp_zero_p(f, u):
-        return f
-    if dmp_zero_p(c, v):
-        return dmp_zero(u)
-    else:
-        return [dmp_mul(cf, c, v, K) for cf in f] + dmp_zeros(i, v, K)
-
-
 def dmp_mul_ground(f, c, u, K):
     """
     Multiply ``f`` by a constant value in ``K[X]``.

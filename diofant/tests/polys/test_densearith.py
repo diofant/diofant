@@ -43,43 +43,6 @@ def test_dmp_add_term():
     assert R.dmp_add_term(f, R(0), 3) == f
 
 
-def test_dmp_mul_term():
-    R, x = ring('x', ZZ)
-
-    f = R(0)
-
-    assert R.dmp_mul_term(f, 2, 3) == 0
-
-    f = x + 1
-
-    assert R.dmp_mul_term(f, 0, 3) == 0
-
-    f = x**2 + 2*x + 3
-
-    assert R.dmp_mul_term(f, 2, 0) == 2*x**2 + 4*x + 6
-    assert R.dmp_mul_term(f, 2, 1) == 2*x**3 + 4*x**2 + 6*x
-    assert R.dmp_mul_term(f, 2, 2) == 2*x**4 + 4*x**3 + 6*x**2
-    assert R.dmp_mul_term(f, 2, 3) == 2*x**5 + 4*x**4 + 6*x**3
-
-    R, x, y = ring('x y', ZZ)
-
-    assert R.dmp_mul_term(R(0), R(2), 3) == 0
-    assert R.dmp_mul_term(R(1), R(0), 3) == 0
-
-    f = x*y + 2*x + 3
-
-    assert R.dmp_mul_term(f, R(2), 2) == 2*x**3*y + 4*x**3 + 6*x**2
-
-    R, x, y = ring('x y', QQ)
-
-    assert R.dmp_mul_term(R(0), R(QQ(2, 3)), 3) == 0
-    assert R.dmp_mul_term(R(QQ(1, 2)), R(0), 3) == 0
-
-    f = x*y/5 + 2*x/5 + QQ(3, 5)
-
-    assert R.dmp_mul_term(f, R(QQ(2, 3)), 2) == 2*x**3*y/15 + 4*x**3/15 + 2*x**2/5
-
-
 def test_dmp_mul_ground():
     R, x = ring('x', ZZ)
 
