@@ -142,37 +142,6 @@ def test_dup_rshift():
     assert R.dup_rshift(f, 5) == 0
 
 
-def test_dmp_abs():
-    R, x = ring('x', ZZ)
-
-    assert R.dmp_abs(R(0)) == 0
-    assert R.dmp_abs(x**2 - 1) == x**2 + 1
-    assert R.dmp_abs(R(1)) == 1
-    assert R.dmp_abs(R(-7)) == 7
-    assert R.dmp_abs(-x**2 + 2*x + 3) == x**2 + 2*x + 3
-    assert R.dmp_abs(R(-1)) == 1
-
-    R, x = ring('x', QQ)
-
-    assert R.dmp_abs(R(0)) == 0
-    assert R.dmp_abs(R(QQ(+1, 2))) == QQ(1, 2)
-    assert R.dmp_abs(R(QQ(-7, 3))) == QQ(7, 3)
-    assert R.dmp_abs(-x**2/7 + 2*x/7 + QQ(3, 7)) == x**2/7 + 2*x/7 + QQ(3, 7)
-    assert R.dmp_abs(R(QQ(-1, 2))) == QQ(1, 2)
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    assert R.dmp_abs(R(0)) == 0
-    assert R.dmp_abs(R(1)) == 1
-    assert R.dmp_abs(R(-7)) == 7
-
-    R, x, y, z = ring('x y z', QQ)
-
-    assert R.dmp_abs(R(0)) == 0
-    assert R.dmp_abs(R(QQ(1, 2))) == QQ(1, 2)
-    assert R.dmp_abs(R(QQ(-7, 9))) == QQ(7, 9)
-
-
 def test_dmp_neg():
     R, x = ring('x', ZZ)
 

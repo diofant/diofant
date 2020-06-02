@@ -1,8 +1,8 @@
 """Compatibility interface between dense and sparse polys."""
 
-from .densearith import (dmp_abs, dmp_add, dmp_add_term, dmp_mul,
-                         dmp_mul_ground, dmp_mul_term, dmp_neg, dmp_sub,
-                         dup_lshift, dup_rshift)
+from .densearith import (dmp_add, dmp_add_term, dmp_mul, dmp_mul_ground,
+                         dmp_mul_term, dmp_neg, dmp_sub, dup_lshift,
+                         dup_rshift)
 from .densebasic import dmp_degree_in, dmp_ground_TC, dmp_LC, dmp_TC
 from .densetools import (dmp_compose, dup_decompose, dup_real_imag,
                          dup_transform)
@@ -47,9 +47,6 @@ class IPolys:
 
     def dup_rshift(self, f, n):
         return self.from_list(dup_rshift(f.to_dense(), n, self.domain))
-
-    def dmp_abs(self, f):
-        return self.from_list(dmp_abs(f.to_dense(), self.ngens-1, self.domain))
 
     def dmp_neg(self, f):
         return self.from_list(dmp_neg(f.to_dense(), self.ngens-1, self.domain))

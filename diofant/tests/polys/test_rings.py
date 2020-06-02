@@ -646,9 +646,38 @@ def test_PolyElement_all_coeffs():
 
 
 def test_PolyElement__abs__():
+    R, x = ring('x', ZZ)
+
+    assert abs(R(0)) == 0
+    assert abs(x**2 - 1) == x**2 + 1
+    assert abs(R(1)) == 1
+    assert abs(R(-7)) == 7
+    assert abs(-x**2 + 2*x + 3) == x**2 + 2*x + 3
+    assert abs(R(-1)) == 1
+
+    R, x = ring('x', QQ)
+
+    assert abs(R(0)) == 0
+    assert abs(R(QQ(+1, 2))) == QQ(1, 2)
+    assert abs(R(QQ(-7, 3))) == QQ(7, 3)
+    assert abs(-x**2/7 + 2*x/7 + QQ(3, 7)) == x**2/7 + 2*x/7 + QQ(3, 7)
+    assert abs(R(QQ(-1, 2))) == QQ(1, 2)
+
     R, x, y = ring('x y', ZZ)
 
     assert abs(x**2*y - x) == x**2*y + x
+
+    R, x, y, z = ring('x y z', ZZ)
+
+    assert abs(R(0)) == 0
+    assert abs(R(1)) == 1
+    assert abs(R(-7)) == 7
+
+    R, x, y, z = ring('x y z', QQ)
+
+    assert abs(R(0)) == 0
+    assert abs(R(QQ(1, 2))) == QQ(1, 2)
+    assert abs(R(QQ(-7, 9))) == QQ(7, 9)
 
 
 def test_PolyElement___add__():
