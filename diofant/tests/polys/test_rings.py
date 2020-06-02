@@ -445,11 +445,29 @@ def test_PolyElement_tail_degree():
 
 
 def test_PolyElement_degree_list():
+    R, x, y = ring('x y', ZZ)
+
+    assert (x + y**2 + 2*y + 3).degree_list() == (1, 2)
+
     R, x, y, z = ring('x y z', ZZ)
 
     assert R(0).degree_list() == (-oo, -oo, -oo)
     assert R(1).degree_list() == (0, 0, 0)
     assert (x**2*y + x**3*z**2).degree_list() == (3, 1, 2)
+
+    assert f_polys()[0].degree_list() == (2, 2, 2)
+    assert f_polys()[1].degree_list() == (3, 3, 3)
+    assert f_polys()[2].degree_list() == (5, 3, 3)
+    assert f_polys()[3].degree_list() == (5, 4, 7)
+    assert f_polys()[4].degree_list() == (9, 12, 8)
+    assert f_polys()[5].degree_list() == (3, 3, 3)
+
+    R, x, y, z, t = ring('x y z t', ZZ)
+
+    assert R(0).degree_list() == (-oo, -oo, -oo, -oo)
+    assert R(1).degree_list() == (0, 0, 0, 0)
+
+    assert f_polys()[6].degree_list() == (4, 4, 6, 3)
 
 
 def test_PolyElement_tail_degrees():

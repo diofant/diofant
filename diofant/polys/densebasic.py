@@ -94,22 +94,6 @@ def dmp_degree_in(f, j, u):
     return degree_in(f, u, 0, j)
 
 
-def dmp_degree_list(f, u):
-    """
-    Return a tuple of degrees of ``f`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_degree_list(x + y**2 + 2*y + 3)
-    (1, 2)
-
-    """
-    return tuple(dmp_degree_in(f, j, u) for j in range(u + 1))
-
-
 def dmp_strip(f, u):
     """
     Remove leading zeros from ``f`` in ``K[X]``.

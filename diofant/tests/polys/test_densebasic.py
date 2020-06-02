@@ -118,24 +118,6 @@ def test_dmp_degree_in():
     assert R.dmp_degree_in(f, 3) == 3
 
 
-def test_dmp_degree_list():
-    R, x, y, z = ring('x y z', ZZ)
-
-    assert R.dmp_degree_list(R.from_list(f_0)) == (2, 2, 2)
-    assert R.dmp_degree_list(R.from_list(f_1)) == (3, 3, 3)
-    assert R.dmp_degree_list(R.from_list(f_2)) == (5, 3, 3)
-    assert R.dmp_degree_list(R.from_list(f_3)) == (5, 4, 7)
-    assert R.dmp_degree_list(R.from_list(f_4)) == (9, 12, 8)
-    assert R.dmp_degree_list(R.from_list(f_5)) == (3, 3, 3)
-
-    R, x, y, z, t = ring('x y z t', ZZ)
-
-    assert R.dmp_degree_list(R(0)) == (-oo, -oo, -oo, -oo)
-    assert R.dmp_degree_list(R(1)) == (0, 0, 0, 0)
-
-    assert R.dmp_degree_list(R.from_list(f_6)) == (4, 4, 6, 3)
-
-
 def test_dmp_strip():
     assert dmp_strip([], 0) == []
     assert dmp_strip([0], 0) == []
