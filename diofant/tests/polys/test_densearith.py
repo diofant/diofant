@@ -1,8 +1,6 @@
 """Tests for dense recursive polynomials' arithmetics."""
 
-import pytest
-
-from diofant import FF, QQ, ZZ, ExactQuotientFailed, ring
+from diofant import FF, QQ, ZZ, ring
 from diofant.polys.specialpolys import f_polys
 
 
@@ -14,72 +12,43 @@ def test_dmp_add_term():
 
     f = R(0)
 
-    assert R.dmp_add_term(f, 0, 0) == 0
-    assert R.dmp_add_term(f, 1, 0) == 1
-    assert R.dmp_add_term(f, 1, 1) == x
-    assert R.dmp_add_term(f, 1, 2) == x**2
+    assert f + 0 == 0
+    assert f + 1 == 1
+    assert f + x == x
+    assert f + x**2 == x**2
 
     f = x**2 + x + 1
 
-    assert R.dmp_add_term(f, 1, 0) == x**2 + x + 2
-    assert R.dmp_add_term(f, 1, 1) == x**2 + 2*x + 1
-    assert R.dmp_add_term(f, 1, 2) == 2*x**2 + x + 1
+    assert f + 1 == x**2 + x + 2
+    assert f + x == x**2 + 2*x + 1
+    assert f + x**2 == 2*x**2 + x + 1
 
-    assert R.dmp_add_term(f, 1, 3) == x**3 + x**2 + x + 1
-    assert R.dmp_add_term(f, 1, 4) == x**4 + x**2 + x + 1
-    assert R.dmp_add_term(f, 1, 5) == x**5 + x**2 + x + 1
-    assert R.dmp_add_term(f, 1, 6) == x**6 + x**2 + x + 1
+    assert f + x**3 == x**3 + x**2 + x + 1
+    assert f + x**4 == x**4 + x**2 + x + 1
+    assert f + x**5 == x**5 + x**2 + x + 1
+    assert f + x**6 == x**6 + x**2 + x + 1
 
-    assert R.dmp_add_term(f, -1, 2) == x + 1
+    assert f - x**2 == x + 1
+
+    f = x**2 - 1
+
+    assert f + 2*x**4 == 2*x**4 + x**2 - 1
 
     R, x, y, z = ring('x y z', ZZ)
 
     f = f_polys()[0]
 
-    assert R.dmp_add_term(f, R(0), 3) == f
+    assert f + 0 == f
+
+    f = x*y + 1
+
+    assert f + 2*x**2 == 2*x**2 + x*y + 1
 
     R, x, y, z = ring('x y z', QQ)
 
     f = f.set_ring(R)/7
 
-    assert R.dmp_add_term(f, R(0), 3) == f
-
-
-def test_dmp_mul_term():
-    R, x = ring('x', ZZ)
-
-    f = R(0)
-
-    assert R.dmp_mul_term(f, 2, 3) == 0
-
-    f = x + 1
-
-    assert R.dmp_mul_term(f, 0, 3) == 0
-
-    f = x**2 + 2*x + 3
-
-    assert R.dmp_mul_term(f, 2, 0) == 2*x**2 + 4*x + 6
-    assert R.dmp_mul_term(f, 2, 1) == 2*x**3 + 4*x**2 + 6*x
-    assert R.dmp_mul_term(f, 2, 2) == 2*x**4 + 4*x**3 + 6*x**2
-    assert R.dmp_mul_term(f, 2, 3) == 2*x**5 + 4*x**4 + 6*x**3
-
-    R, x, y = ring('x y', ZZ)
-
-    assert R.dmp_mul_term(R(0), R(2), 3) == 0
-    assert R.dmp_mul_term(R(1), R(0), 3) == 0
-
-    f = x*y + 2*x + 3
-
-    assert R.dmp_mul_term(f, R(2), 2) == 2*x**3*y + 4*x**3 + 6*x**2
-
-    R, x, y = ring('x y', QQ)
-
-    assert R.dmp_mul_term(R(0), R(QQ(2, 3)), 3) == 0
-    assert R.dmp_mul_term(R(QQ(1, 2)), R(0), 3) == 0
-
-    f = x*y/5 + 2*x/5 + QQ(3, 5)
-
-    assert R.dmp_mul_term(f, R(QQ(2, 3)), 2) == 2*x**3*y/15 + 4*x**3/15 + 2*x**2/5
+    assert f + 0 == f
 
 
 def test_dmp_mul_ground():
@@ -116,92 +85,6 @@ def test_dmp_mul_ground():
             y/14 + QQ(1, 14))
 
 
-def test_dmp_quo_ground():
-    R, x = ring('x', ZZ)
-
-    pytest.raises(ZeroDivisionError,
-                  lambda: R.dmp_quo_ground(x**2 + 2*x + 3, ZZ(0)))
-
-    f = 3*x**2 + 2
-
-    assert R.dmp_quo_ground(f, ZZ(2)) == x**2 + 1
-
-    R, x = ring('x', QQ)
-
-    f = 3*x**2 + 2
-
-    assert R.dmp_quo_ground(f, QQ(2)) == 3*x**2/2 + 1
-
-    R, x = ring('x', ZZ)
-
-    f = R(0)
-
-    assert R.dmp_quo_ground(f, ZZ(3)) == 0
-
-    f = 6*x**2 + 2*x + 8
-
-    assert R.dmp_quo_ground(f, ZZ(1)) == f
-    assert R.dmp_quo_ground(f, ZZ(2)) == 3*x**2 + x + 4
-    assert R.dmp_quo_ground(f, ZZ(3)) == 2*x**2 + 2
-
-    R, x = ring('x', QQ)
-
-    f = 6*x**2 + 2*x + 8
-
-    assert R.dmp_quo_ground(f, QQ(1)) == f
-    assert R.dmp_quo_ground(f, QQ(2)) == 3*x**2 + x + 4
-    assert R.dmp_quo_ground(f, QQ(7)) == 6*x**2/7 + 2*x/7 + QQ(8, 7)
-
-    R, x, y = ring('x y', ZZ)
-
-    f = 6*x**2 + 2*x + 8
-
-    assert R.dmp_quo_ground(f, ZZ(1)) == f
-    assert R.dmp_quo_ground(f, ZZ(2)) == 3*x**2 + x + 4
-    assert R.dmp_quo_ground(f, ZZ(3)) == 2*x**2 + 2
-
-
-def test_dmp_exquo_ground():
-    R, x = ring('x', ZZ)
-
-    pytest.raises(ZeroDivisionError,
-                  lambda: R.dmp_exquo_ground(x**2 + 2*x + 3, ZZ(0)))
-    pytest.raises(ExactQuotientFailed,
-                  lambda: R.dmp_exquo_ground(x**2 + 2*x + 3, ZZ(3)))
-
-    R, x = ring('x', QQ)
-
-    f = x**2 + 2
-
-    assert R.dmp_exquo_ground(f, QQ(2)) == x**2/2 + 1
-
-    R, x = ring('x', ZZ)
-
-    f = R(0)
-
-    assert R.dmp_exquo_ground(f, ZZ(3)) == 0
-
-    f = 6*x**2 + 2*x + 8
-
-    assert R.dmp_exquo_ground(f, ZZ(1)) == f
-    assert R.dmp_exquo_ground(f, ZZ(2)) == 3*x**2 + x + 4
-
-    R, x = ring('x', QQ)
-
-    f = 6*x**2 + 2*x + 8
-
-    assert R.dmp_exquo_ground(f, QQ(1)) == f
-    assert R.dmp_exquo_ground(f, QQ(2)) == 3*x**2 + x + 4
-    assert R.dmp_exquo_ground(f, QQ(7)) == 6*x**2/7 + 2*x/7 + QQ(8, 7)
-
-    R, x, y = ring('x y', ZZ)
-
-    f = 6*x**2 + 2*x + 8
-
-    assert R.dmp_exquo_ground(f, ZZ(1)) == f
-    assert R.dmp_exquo_ground(f, ZZ(2)) == 3*x**2 + x + 4
-
-
 def test_dup_lshift():
     R, x = ring('x', ZZ)
 
@@ -228,37 +111,6 @@ def test_dup_rshift():
     assert R.dup_rshift(f, 1) == x**3 + 2*x**2 + 3*x + 4
     assert R.dup_rshift(f, 3) == x + 2
     assert R.dup_rshift(f, 5) == 0
-
-
-def test_dmp_abs():
-    R, x = ring('x', ZZ)
-
-    assert R.dmp_abs(R(0)) == 0
-    assert R.dmp_abs(x**2 - 1) == x**2 + 1
-    assert R.dmp_abs(R(1)) == 1
-    assert R.dmp_abs(R(-7)) == 7
-    assert R.dmp_abs(-x**2 + 2*x + 3) == x**2 + 2*x + 3
-    assert R.dmp_abs(R(-1)) == 1
-
-    R, x = ring('x', QQ)
-
-    assert R.dmp_abs(R(0)) == 0
-    assert R.dmp_abs(R(QQ(+1, 2))) == QQ(1, 2)
-    assert R.dmp_abs(R(QQ(-7, 3))) == QQ(7, 3)
-    assert R.dmp_abs(-x**2/7 + 2*x/7 + QQ(3, 7)) == x**2/7 + 2*x/7 + QQ(3, 7)
-    assert R.dmp_abs(R(QQ(-1, 2))) == QQ(1, 2)
-
-    R, x, y, z = ring('x y z', ZZ)
-
-    assert R.dmp_abs(R(0)) == 0
-    assert R.dmp_abs(R(1)) == 1
-    assert R.dmp_abs(R(-7)) == 7
-
-    R, x, y, z = ring('x y z', QQ)
-
-    assert R.dmp_abs(R(0)) == 0
-    assert R.dmp_abs(R(QQ(1, 2))) == QQ(1, 2)
-    assert R.dmp_abs(R(QQ(-7, 9))) == QQ(7, 9)
 
 
 def test_dmp_neg():
@@ -365,6 +217,13 @@ def test_dmp_sub():
     assert R.dmp_sub(3*x**2/7 + 2*x/7 + QQ(1, 7),
                      8*x**2/7 + 9*x/7 + QQ(10, 7)) == -5*x**2/7 - x - QQ(9, 7)
 
+    R, x, y = ring('x y', ZZ)
+
+    f, g = x**2 - 2, y**2
+
+    assert R.dmp_sub(f, g) == x**2 - y**2 - 2
+    assert R.dmp_sub(g, f) == 2 + y**2 - x**2
+
     R, x, y, z = ring('x y z', ZZ)
 
     assert R.dmp_sub(R(0), R(0)) == 0
@@ -385,14 +244,15 @@ def test_dmp_sub():
 def test_dmp_add_mul():
     R, x = ring('x', ZZ)
 
-    assert R.dmp_add_mul(x**2 + 2*x + 3, 3*x**2 + 2*x + 1,
-                         x + 2) == 3*x**3 + 9*x**2 + 7*x + 5
-    assert R.dmp_add_mul(x**2 - 1, x - 2, x + 2) == 2*x**2 - 5
+    assert (x**2 + 2*x + 3 +
+            (3*x**2 + 2*x + 1)*(x + 2)) == 3*x**3 + 9*x**2 + 7*x + 5
+    assert x**2 - 1 + (x - 2)*(x + 2) == 2*x**2 - 5
 
     R, x, y = ring('x y', ZZ)
 
-    assert R.dmp_add_mul(x*y + 2*x + 3, 3*x + 2*y + 1,
-                         x + 2) == 3*x**2 + 3*x*y + 9*x + 4*y + 5
+    assert (x*y + 2*x + 3 +
+            (3*x + 2*y + 1)*(x + 2)) == 3*x**2 + 3*x*y + 9*x + 4*y + 5
+    assert x**2 + y + x*(x + 2) == 2*x**2 + y + 2*x
 
 
 def test_dmp_sub_mul():

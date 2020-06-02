@@ -6,11 +6,11 @@ import pytest
 
 from diofant import FF, ZZ, oo, ring
 from diofant.polys.densebasic import (dmp_convert, dmp_degree_in,
-                                      dmp_from_dict, dmp_ground, dmp_nest,
-                                      dmp_normal, dmp_one, dmp_one_p,
-                                      dmp_permute, dmp_raise, dmp_strip,
-                                      dmp_to_dict, dmp_zero, dmp_zero_p,
-                                      dmp_zeros, dup_random, dup_reverse)
+                                      dmp_from_dict, dmp_ground, dmp_normal,
+                                      dmp_one, dmp_one_p, dmp_permute,
+                                      dmp_raise, dmp_strip, dmp_to_dict,
+                                      dmp_zero, dmp_zero_p, dmp_zeros,
+                                      dup_random, dup_reverse)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -116,24 +116,6 @@ def test_dmp_degree_in():
     assert R.dmp_degree_in(f, 1) == 4
     assert R.dmp_degree_in(f, 2) == 6
     assert R.dmp_degree_in(f, 3) == 3
-
-
-def test_dmp_degree_list():
-    R, x, y, z = ring('x y z', ZZ)
-
-    assert R.dmp_degree_list(R.from_list(f_0)) == (2, 2, 2)
-    assert R.dmp_degree_list(R.from_list(f_1)) == (3, 3, 3)
-    assert R.dmp_degree_list(R.from_list(f_2)) == (5, 3, 3)
-    assert R.dmp_degree_list(R.from_list(f_3)) == (5, 4, 7)
-    assert R.dmp_degree_list(R.from_list(f_4)) == (9, 12, 8)
-    assert R.dmp_degree_list(R.from_list(f_5)) == (3, 3, 3)
-
-    R, x, y, z, t = ring('x y z t', ZZ)
-
-    assert R.dmp_degree_list(R(0)) == (-oo, -oo, -oo, -oo)
-    assert R.dmp_degree_list(R(1)) == (0, 0, 0, 0)
-
-    assert R.dmp_degree_list(R.from_list(f_6)) == (4, 4, 6, 3)
 
 
 def test_dmp_strip():
@@ -295,14 +277,6 @@ def test_dmp_permute():
 
     assert dmp_permute(f, [1, 0, 2], 2, ZZ) == dmp_normal([[[2], []], [[1, 0], []]], 2, ZZ)
     assert dmp_permute(f, [1, 2, 0], 2, ZZ) == dmp_normal([[[1], []], [[2, 0], []]], 2, ZZ)
-
-
-def test_dmp_nest():
-    assert dmp_nest(ZZ(1), 2, ZZ) == [[[1]]]
-
-    assert dmp_nest([[1]], 0, ZZ) == [[1]]
-    assert dmp_nest([[1]], 1, ZZ) == [[[1]]]
-    assert dmp_nest([[1]], 2, ZZ) == [[[[1]]]]
 
 
 def test_dmp_raise():

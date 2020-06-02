@@ -1,114 +1,7 @@
 """Arithmetics for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from .densebasic import (dmp_degree_in, dmp_slice_in, dmp_strip, dmp_zero,
-                         dmp_zero_p, dmp_zeros)
+from .densebasic import dmp_degree_in, dmp_slice_in, dmp_strip, dmp_zero
 from .polyconfig import query
-
-
-def dup_add_term(f, c, i, K):
-    """
-    Add ``c*x**i`` to ``f`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dmp_add_term(x**2 - 1, ZZ(2), 4)
-    2*x**4 + x**2 - 1
-
-    """
-    if not c:
-        return f
-
-    n = len(f)
-    m = n - i - 1
-
-    if i == n - 1:
-        return dmp_strip([f[0] + c] + f[1:], 0)
-    else:
-        if i >= n:
-            return [c] + [K.zero]*(i - n) + f
-        else:
-            return f[:m] + [f[m] + c] + f[m + 1:]
-
-
-def dmp_add_term(f, c, i, u, K):
-    """
-    Add ``c(x_2..x_u)*x_0**i`` to ``f`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_add_term(x*y + 1, R(2), 2)
-    2*x**2 + x*y + 1
-
-    """
-    if not u:
-        return dup_add_term(f, c, i, K)
-
-    v = u - 1
-
-    if dmp_zero_p(c, v):
-        return f
-
-    n = len(f)
-    m = n - i - 1
-
-    if i == n - 1:
-        return dmp_strip([dmp_add(f[0], c, v, K)] + f[1:], u)
-    else:
-        if i >= n:
-            return [c] + dmp_zeros(i - n, v, K) + f
-        else:
-            return f[:m] + [dmp_add(f[m], c, v, K)] + f[m + 1:]
-
-
-def dup_mul_term(f, c, i, K):
-    """
-    Multiply ``f`` by ``c*x**i`` in ``K[x]``.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> R.dmp_mul_term(x**2 - 1, ZZ(3), 2)
-    3*x**4 - 3*x**2
-
-    """
-    if not c or not f:
-        return []
-    else:
-        return [cf * c for cf in f] + [K.zero]*i
-
-
-def dmp_mul_term(f, c, i, u, K):
-    """
-    Multiply ``f`` by ``c(x_2..x_u)*x_0**i`` in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_mul_term(x**2*y + x, 3*y, 2)
-    3*x**4*y**2 + 3*x**3*y
-
-    """
-    if not u:
-        return dup_mul_term(f, c, i, K)
-
-    v = u - 1
-
-    if dmp_zero_p(f, u):
-        return f
-    if dmp_zero_p(c, v):
-        return dmp_zero(u)
-    else:
-        return [dmp_mul(cf, c, v, K) for cf in f] + dmp_zeros(i, v, K)
 
 
 def dmp_mul_ground(f, c, u, K):
@@ -129,63 +22,6 @@ def dmp_mul_ground(f, c, u, K):
     else:
         v = u - 1
         return [dmp_mul_ground(coeff, c, v, K) for coeff in f]
-
-
-def dmp_quo_ground(f, c, u, K):
-    """
-    Quotient by a constant in ``K[X]``.
-
-    Examples
-    ========
-
-
-    >>> R, x, y = ring('x y', ZZ)
-    >>> R.dmp_quo_ground(2*x**2*y + 3*x, ZZ(2))
-    x**2*y + x
-
-    >>> R, x, y = ring('x y', QQ)
-    >>> R.dmp_quo_ground(2*x**2*y + 3*x, QQ(2))
-    x**2*y + 3/2*x
-
-    """
-    if not u:
-        if not c:
-            raise ZeroDivisionError('polynomial division')
-        if not f:
-            return f
-
-        if K.is_Field:
-            return [K.quo(coeff, c) for coeff in f]
-        else:
-            return [coeff // c for coeff in f]
-
-    v = u - 1
-    return [dmp_quo_ground(coeff, c, v, K) for coeff in f]
-
-
-def dmp_exquo_ground(f, c, u, K):
-    """
-    Exact quotient by a constant in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', QQ)
-
-    >>> R.dmp_exquo_ground(x**2*y + 2*x, QQ(2))
-    1/2*x**2*y + x
-
-    """
-    if not u:
-        if not c:
-            raise ZeroDivisionError('polynomial division')
-        if not f:
-            return f
-
-        return [K.exquo(coeff, c) for coeff in f]
-
-    v = u - 1
-    return [dmp_exquo_ground(coeff, c, v, K) for coeff in f]
 
 
 def dup_lshift(f, n, K):
@@ -223,26 +59,6 @@ def dup_rshift(f, n, K):
 
     """
     return f[:-n]
-
-
-def dmp_abs(f, u, K):
-    """
-    Make all coefficients positive in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_abs(x**2*y - x)
-    x**2*y + x
-
-    """
-    if not u:
-        return [abs(coeff) for coeff in f]
-    else:
-        v = u - 1
-        return [dmp_abs(coeff, v, K) for coeff in f]
 
 
 def dmp_neg(f, u, K):
@@ -413,22 +229,6 @@ def dmp_sub(f, g, u, K):
             h, g = dmp_neg(g[:k], u, K), g[k:]
 
         return h + [dmp_sub(a, b, v, K) for a, b in zip(f, g)]
-
-
-def dmp_add_mul(f, g, h, u, K):
-    """
-    Return ``f + g*h`` where ``f, g, h`` are in ``K[X]``.
-
-    Examples
-    ========
-
-    >>> R, x, y = ring('x y', ZZ)
-
-    >>> R.dmp_add_mul(x**2 + y, x, x + 2)
-    2*x**2 + 2*x + y
-
-    """
-    return dmp_add(f, dmp_mul(g, h, u, K), u, K)
 
 
 def dup_mul_karatsuba(f, g, K):

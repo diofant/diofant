@@ -1,7 +1,7 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from .densearith import (dmp_add, dmp_add_term, dmp_div, dmp_mul,
-                         dmp_mul_ground, dmp_neg, dmp_sub, dup_add, dup_mul)
+from .densearith import (dmp_add, dmp_div, dmp_mul, dmp_mul_ground, dmp_neg,
+                         dmp_sub, dup_add, dup_mul)
 from .densebasic import (dmp_degree_in, dmp_from_dict, dmp_ground, dmp_LC,
                          dmp_to_dict, dmp_zero, dmp_zero_p)
 from .polyerrors import DomainError
@@ -22,32 +22,6 @@ def dmp_eval_in(f, a, j, u, K):
     if ring.is_multivariate:
         r = r.to_dense()
     return r
-
-
-def dmp_eval_tail(f, A, u, K):
-    """Evaluate a polynomial at ``x_j = a_j, ...`` in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    if not A:
-        return f.to_dense()
-    r = f.eval(list(zip(reversed(ring.gens), reversed(A))))
-    return r.to_dense()
-
-
-def dmp_diff_eval_in(f, m, a, j, u, K):
-    """Differentiate and evaluate a polynomial in ``x_j`` at ``a`` in ``K[X]``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    r = f.diff(x=j, m=m).eval(x=j, a=a)
-    return r.to_dense()
-
-
-def dmp_ground_trunc(f, p, u, K):
-    """Reduce a ``K[X]`` polynomial modulo a constant ``p`` in ``K``."""
-    ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
-    f = ring.from_list(f)
-    f = f.trunc_ground(p)
-    return f.to_dense()
 
 
 def dmp_ground_monic(f, u, K):
@@ -103,7 +77,7 @@ def dup_real_imag(f, K):
 
     for c in f[1:]:
         h = dmp_mul(h, g, 2, K)
-        h = dmp_add_term(h, dmp_ground(c, 1), 0, 2, K)
+        h = dmp_add(h, [dmp_ground(c, 1)], 2, K)
 
     H = dmp_to_dict(h, 0)
 
@@ -172,7 +146,7 @@ def dmp_compose(f, g, u, K):
 
     for c in f[1:]:
         h = dmp_mul(h, g, u, K)
-        h = dmp_add_term(h, c, 0, u, K)
+        h = dmp_add(h, [c], u, K)
 
     return h
 

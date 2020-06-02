@@ -287,7 +287,7 @@ def test__zz_wang():
     h_3 = 187*_x**2 - 23
 
     LC = [lc.drop(x) for lc in [-4*y - 4*z, -y*z**2, y**2 - z**2]]
-    factors = R.dmp_zz_wang_hensel_lifting(w_1, H, LC, A, p)
+    factors = R._zz_wang_hensel_lifting(w_1, H, LC, A, p)
 
     assert H == [h_1, h_2, h_3]
     assert R._zz_wang_lead_coeffs(w_1, T, cs, E, H, A) == (w_1, H, LC)

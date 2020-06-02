@@ -1,14 +1,10 @@
 """Compatibility interface between dense and sparse polys."""
 
-from .densearith import (dmp_abs, dmp_add, dmp_add_mul, dmp_add_term,
-                         dmp_exquo_ground, dmp_mul, dmp_mul_ground,
-                         dmp_mul_term, dmp_neg, dmp_quo_ground, dmp_sub,
+from .densearith import (dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_sub,
                          dup_lshift, dup_rshift)
-from .densebasic import (dmp_degree_in, dmp_degree_list, dmp_ground_TC, dmp_LC,
-                         dmp_TC)
+from .densebasic import dmp_degree_in, dmp_ground_TC, dmp_LC, dmp_TC
 from .densetools import (dmp_compose, dup_decompose, dup_real_imag,
                          dup_transform)
-from .factortools import dmp_zz_wang_hensel_lifting
 from .rootisolation import (dup_count_complex_roots, dup_count_real_roots,
                             dup_isolate_all_roots, dup_isolate_all_roots_sqf,
                             dup_isolate_complex_roots_sqf,
@@ -34,31 +30,14 @@ class IPolys:
     def dmp_ground_TC(self, f):
         return dmp_ground_TC(f.to_dense(), self.ngens-1, self.domain)
 
-    def dmp_add_term(self, f, c, i):
-        c = c.drop(0).to_dense() if self.is_multivariate else c
-        return self.from_list(dmp_add_term(f.to_dense(), c, i, self.ngens-1, self.domain))
-
-    def dmp_mul_term(self, f, c, i):
-        c = c.drop(0).to_dense() if self.is_multivariate else c
-        return self.from_list(dmp_mul_term(f.to_dense(), c, i, self.ngens-1, self.domain))
-
     def dmp_mul_ground(self, f, c):
         return self.from_list(dmp_mul_ground(f.to_dense(), c, self.ngens-1, self.domain))
-
-    def dmp_quo_ground(self, f, c):
-        return self.from_list(dmp_quo_ground(f.to_dense(), c, self.ngens-1, self.domain))
-
-    def dmp_exquo_ground(self, f, c):
-        return self.from_list(dmp_exquo_ground(f.to_dense(), c, self.ngens-1, self.domain))
 
     def dup_lshift(self, f, n):
         return self.from_list(dup_lshift(f.to_dense(), n, self.domain))
 
     def dup_rshift(self, f, n):
         return self.from_list(dup_rshift(f.to_dense(), n, self.domain))
-
-    def dmp_abs(self, f):
-        return self.from_list(dmp_abs(f.to_dense(), self.ngens-1, self.domain))
 
     def dmp_neg(self, f):
         return self.from_list(dmp_neg(f.to_dense(), self.ngens-1, self.domain))
@@ -68,9 +47,6 @@ class IPolys:
 
     def dmp_sub(self, f, g):
         return self.from_list(dmp_sub(f.to_dense(), g.to_dense(), self.ngens-1, self.domain))
-
-    def dmp_add_mul(self, f, g, h):
-        return self.from_list(dmp_add_mul(f.to_dense(), g.to_dense(), h.to_dense(), self.ngens-1, self.domain))
 
     def dmp_mul(self, f, g):
         return self.from_list(dmp_mul(f.to_dense(), g.to_dense(), self.ngens-1, self.domain))
@@ -92,9 +68,6 @@ class IPolys:
     def dmp_degree_in(self, f, j):
         return dmp_degree_in(f.to_dense(), j, self.ngens-1)
 
-    def dmp_degree_list(self, f):
-        return dmp_degree_list(f.to_dense(), self.ngens-1)
-
     def dup_real_imag(self, f):
         ring = self
         p, q = dup_real_imag(f.drop(1).to_dense(), ring.domain)
@@ -114,13 +87,6 @@ class IPolys:
 
     def dup_sign_variations(self, f):
         return dup_sign_variations(f.to_dense(), self.domain)
-
-    # f: Poly, H: List[Poly], LC: List[Poly], A: List[ZZ], p: ZZ
-    def dmp_zz_wang_hensel_lifting(self, f, H, LC, A, p):
-        H = list(map(lambda _: _.to_dense(), H))
-        LC = list(map(lambda _: _.to_dense(), LC))
-        result = dmp_zz_wang_hensel_lifting(f.to_dense(), H, LC, A, p, self.ngens-1, self.domain)
-        return list(map(self.from_list, result))
 
     def dup_sturm(self, f):
         seq = dup_sturm(f.to_dense(), self.domain)

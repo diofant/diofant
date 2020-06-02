@@ -4,8 +4,7 @@ import math
 import random
 
 from ..ntheory import factorint
-from .densearith import (dmp_add, dmp_add_term, dmp_mul, dmp_pow, dmp_quo,
-                         dmp_rem, dmp_sub)
+from .densearith import dmp_add, dmp_mul, dmp_pow, dmp_quo, dmp_rem, dmp_sub
 from .densebasic import dmp_degree_in, dmp_normal, dmp_one_p
 from .densetools import dmp_ground_monic
 from .euclidtools import dmp_gcd
@@ -84,7 +83,7 @@ def dup_gf_compose_mod(g, h, f, K):
 
     for a in g[1:]:
         comp = dmp_mul(comp, h, 0, K)
-        comp = dmp_add_term(comp, a, 0, 0, K)
+        comp = dmp_add(comp, [a], 0, K)
         comp = dmp_rem(comp, f, 0, K)
 
     return comp
@@ -392,7 +391,7 @@ def dup_gf_berlekamp(f, K):
     for v in V[1:]:
         for f in list(factors):
             for s in range(K.order):
-                h = dmp_add_term(v, -K(s), 0, 0, K)
+                h = dmp_sub(v, [K(s)], 0, K)
                 g = dmp_gcd(f, h, 0, K)
 
                 if not dmp_one_p(g, 0, K) and g != f:
@@ -508,7 +507,7 @@ def dup_gf_edf_zassenhaus(f, n, K):
                 h = dmp_add(h, r, 0, K)
         else:
             h = dup_gf_pow_mod(r, (q**n - 1) // 2, f, K)
-            h = dmp_add_term(h, -K.one, 0, 0, K)
+            h = dmp_sub(h, [K.one], 0, K)
 
         g = dmp_gcd(f, h, 0, K)
 
@@ -662,7 +661,7 @@ def dup_gf_edf_shoup(f, n, K):
         h = dup_gf_pow_mod(H, (q - 1)//2, f, K)
 
         h1 = dmp_gcd(f, h, 0, K)
-        h2 = dmp_gcd(f, dmp_add_term(h, -K.one, 0, 0, K), 0, K)
+        h2 = dmp_gcd(f, dmp_sub(h, [K.one], 0, K), 0, K)
         h3 = dmp_quo(f, dmp_mul(h1, h2, 0, K), 0, K)
 
         factors = (dup_gf_edf_shoup(h1, n, K) + dup_gf_edf_shoup(h2, n, K) +
