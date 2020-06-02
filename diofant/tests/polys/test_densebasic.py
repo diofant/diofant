@@ -6,11 +6,11 @@ import pytest
 
 from diofant import FF, ZZ, oo, ring
 from diofant.polys.densebasic import (dmp_convert, dmp_degree_in,
-                                      dmp_from_dict, dmp_ground, dmp_nest,
-                                      dmp_normal, dmp_one, dmp_one_p,
-                                      dmp_permute, dmp_raise, dmp_strip,
-                                      dmp_to_dict, dmp_zero, dmp_zero_p,
-                                      dmp_zeros, dup_random, dup_reverse)
+                                      dmp_from_dict, dmp_ground, dmp_normal,
+                                      dmp_one, dmp_one_p, dmp_permute,
+                                      dmp_raise, dmp_strip, dmp_to_dict,
+                                      dmp_zero, dmp_zero_p, dmp_zeros,
+                                      dup_random, dup_reverse)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -295,14 +295,6 @@ def test_dmp_permute():
 
     assert dmp_permute(f, [1, 0, 2], 2, ZZ) == dmp_normal([[[2], []], [[1, 0], []]], 2, ZZ)
     assert dmp_permute(f, [1, 2, 0], 2, ZZ) == dmp_normal([[[1], []], [[2, 0], []]], 2, ZZ)
-
-
-def test_dmp_nest():
-    assert dmp_nest(ZZ(1), 2, ZZ) == [[[1]]]
-
-    assert dmp_nest([[1]], 0, ZZ) == [[1]]
-    assert dmp_nest([[1]], 1, ZZ) == [[[1]]]
-    assert dmp_nest([[1]], 2, ZZ) == [[[[1]]]]
 
 
 def test_dmp_raise():

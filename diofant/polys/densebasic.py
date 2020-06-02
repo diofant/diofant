@@ -458,26 +458,6 @@ def dmp_permute(f, P, u, K):
     return dmp_from_dict(H, u, K)
 
 
-def dmp_nest(f, l, K):
-    """
-    Return a multivariate value nested ``l``-levels.
-
-    Examples
-    ========
-
-    >>> dmp_nest([[ZZ(1)]], 2, ZZ)
-    [[[[1]]]]
-
-    """
-    if not isinstance(f, list):
-        return dmp_ground(f, l)
-
-    for i in range(l):
-        f = [f]
-
-    return f
-
-
 def dmp_raise(f, l, u, K):
     """
     Return a multivariate polynomial raised ``l``-levels.
