@@ -381,33 +381,6 @@ def dmp_permute(f, P, u, K):
     return dmp_from_dict(H, u, K)
 
 
-def dmp_raise(f, l, u, K):
-    """
-    Return a multivariate polynomial raised ``l``-levels.
-
-    Examples
-    ========
-
-    >>> dmp_raise([[], [ZZ(1), ZZ(2)]], 2, 1, ZZ)
-    [[[[]]], [[[1]], [[2]]]]
-
-    """
-    if not l:
-        return f
-
-    if not u:
-        if not f:
-            return dmp_zero(l)
-
-        k = l - 1
-
-        return [dmp_ground(c, k) for c in f]
-
-    v = u - 1
-
-    return [dmp_raise(c, l, v, K) for c in f]
-
-
 def dmp_terms_gcd(f, u, K):
     """Remove GCD of terms from ``f`` in ``K[X]``."""
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])

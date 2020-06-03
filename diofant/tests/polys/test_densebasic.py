@@ -7,9 +7,9 @@ import pytest
 from diofant import ZZ, oo, ring
 from diofant.polys.densebasic import (dmp_convert, dmp_degree_in,
                                       dmp_from_dict, dmp_ground, dmp_one,
-                                      dmp_one_p, dmp_permute, dmp_raise,
-                                      dmp_strip, dmp_to_dict, dmp_zero,
-                                      dmp_zero_p, dup_random, dup_reverse)
+                                      dmp_one_p, dmp_permute, dmp_strip,
+                                      dmp_to_dict, dmp_zero, dmp_zero_p,
+                                      dup_random, dup_reverse)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -250,14 +250,6 @@ def test_dmp_permute():
 
     assert dmp_permute(f, [1, 0, 2], 2, ZZ) == [[[2], []], [[1, 0], []]]
     assert dmp_permute(f, [1, 2, 0], 2, ZZ) == [[[1], []], [[2, 0], []]]
-
-
-def test_dmp_raise():
-    assert dmp_raise([], 2, 0, ZZ) == [[[]]]
-    assert dmp_raise([[1]], 0, 1, ZZ) == [[1]]
-
-    assert dmp_raise([[1, 2, 3], [], [2, 3]], 2, 1, ZZ) == \
-        [[[[1]], [[2]], [[3]]], [[[]]], [[[2]], [[3]]]]
 
 
 def test_dup_random():
