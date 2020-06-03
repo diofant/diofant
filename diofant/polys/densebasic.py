@@ -303,29 +303,6 @@ def dmp_zeros(n, u, K):
         return [dmp_zero(u) for i in range(n)]
 
 
-def dup_from_dict(f, K):
-    """
-    Create a ``K[x]`` polynomial from a :class:`dict`.
-
-    Examples
-    ========
-
-    >>> dmp_from_dict({(0,): ZZ(7), (2,): ZZ(5), (4,): ZZ(1)}, 0, ZZ)
-    [1, 0, 5, 0, 7]
-
-    """
-    if not f:
-        return []
-
-    h = []
-    n, = max(f)
-
-    for k in range(n, -1, -1):
-        h.append(f.get((k,), K.zero))
-
-    return dmp_strip(h, 0)
-
-
 def dmp_from_dict(f, u, K):
     """
     Create a ``K[X]`` polynomial from a :class:`dict`.
@@ -333,14 +310,23 @@ def dmp_from_dict(f, u, K):
     Examples
     ========
 
+    >>> dmp_from_dict({(0,): ZZ(7), (2,): ZZ(5), (4,): ZZ(1)}, 0, ZZ)
+    [1, 0, 5, 0, 7]
+
     >>> dmp_from_dict({(0, 0): ZZ(3), (0, 1): ZZ(2), (2, 1): ZZ(1)}, 1, ZZ)
     [[1, 0], [], [2, 3]]
 
     """
-    if not u:
-        return dup_from_dict(f, K)
     if not f:
         return dmp_zero(u)
+    elif not u:
+        h = []
+        n, = max(f)
+
+        for k in range(n, -1, -1):
+            h.append(f.get((k,), K.zero))
+
+        return dmp_strip(h, 0)
 
     coeffs = {}
 
