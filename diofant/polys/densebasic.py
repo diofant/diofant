@@ -245,20 +245,6 @@ def dmp_one_p(f, u, K):
     return f == [K.one]
 
 
-def dmp_one(u, K):
-    """
-    Return a multivariate one over ``K``.
-
-    Examples
-    ========
-
-    >>> dmp_one(2, ZZ)
-    [[[1]]]
-
-    """
-    return dmp_ground(K.one, u)
-
-
 def dmp_ground(c, u):
     """
     Return a multivariate constant.
