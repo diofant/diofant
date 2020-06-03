@@ -5,7 +5,7 @@ import random
 
 from ..ntheory import factorint
 from .densearith import dmp_add, dmp_mul, dmp_pow, dmp_quo, dmp_rem, dmp_sub
-from .densebasic import dmp_degree_in, dmp_normal, dmp_one_p
+from .densebasic import dmp_degree_in, dmp_one_p, dmp_strip
 from .densetools import dmp_ground_monic
 from .euclidtools import dmp_gcd
 from .polyconfig import query
@@ -384,7 +384,7 @@ def dup_gf_berlekamp(f, K):
     V = Q.T.nullspace()
 
     for i, v in enumerate(V):
-        V[i] = dmp_normal(list(reversed(v)), 0, K)
+        V[i] = dmp_strip(list(reversed(v)), 0)
 
     factors = [f]
 
