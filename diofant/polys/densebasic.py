@@ -317,16 +317,11 @@ def dup_from_dict(f, K):
     if not f:
         return []
 
-    n, h = max(f), []
+    h = []
+    n, = max(f)
 
-    if type(n) is int:
-        for k in range(n, -1, -1):
-            h.append(f.get(k, K.zero))
-    else:
-        n, = n
-
-        for k in range(n, -1, -1):
-            h.append(f.get((k,), K.zero))
+    for k in range(n, -1, -1):
+        h.append(f.get((k,), K.zero))
 
     return dmp_strip(h, 0)
 
