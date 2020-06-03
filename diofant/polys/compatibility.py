@@ -121,15 +121,3 @@ class IPolys:
 
     def dup_isolate_all_roots(self, f, eps=None, inf=None, sup=None):
         return dup_isolate_all_roots(f.to_dense(), self.domain, eps=eps, inf=inf, sup=sup)
-
-    def fateman_poly_F_1(self):
-        from .specialpolys import dmp_fateman_poly_F_1
-        return tuple(map(self.from_list, dmp_fateman_poly_F_1(self.ngens-1, self.domain)))
-
-    def fateman_poly_F_2(self):
-        from .specialpolys import dmp_fateman_poly_F_2
-        return tuple(map(self.from_list, dmp_fateman_poly_F_2(self.ngens-1, self.domain)))
-
-    def fateman_poly_F_3(self):
-        from .specialpolys import dmp_fateman_poly_F_3
-        return tuple(map(self.from_list, dmp_fateman_poly_F_3(self.ngens-1, self.domain)))

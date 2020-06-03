@@ -30,6 +30,7 @@ from .polyoptions import Domain as DomainOpt
 from .polyoptions import Order as OrderOpt
 from .polyoptions import build_options
 from .polyutils import _dict_reorder, _parallel_dict_from_expr, expr_from_dict
+from .specialpolys import _test_polys
 from .sqfreetools import _SQF
 
 
@@ -127,7 +128,8 @@ def _parse_symbols(symbols):
 _ring_cache = {}
 
 
-class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF, _Factor):
+class PolynomialRing(_GCD, Ring, CompositeDomain, IPolys, _SQF,
+                     _Factor, _test_polys):
     """A class for representing multivariate polynomial rings."""
 
     is_PolynomialRing = True
