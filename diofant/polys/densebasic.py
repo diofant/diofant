@@ -156,26 +156,6 @@ def dmp_to_tuple(f, u):
     return tuple(dmp_to_tuple(c, v) for c in f)
 
 
-def dmp_normal(f, u, K):
-    """
-    Normalize a multivariate polynomial in the given domain.
-
-    Examples
-    ========
-
-    >>> dmp_normal([[], [0, 1.5, 2]], 1, ZZ)
-    [[1, 2]]
-
-    """
-    if not u:
-        r = [K(c) for c in f]
-    else:
-        v = u - 1
-        r = [dmp_normal(c, v, K) for c in f]
-
-    return dmp_strip(r, u)
-
-
 def dmp_convert(f, u, K0, K1):
     """
     Convert the ground domain of ``f`` from ``K0`` to ``K1``.

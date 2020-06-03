@@ -4,13 +4,13 @@ import random
 
 import pytest
 
-from diofant import FF, ZZ, oo, ring
+from diofant import ZZ, oo, ring
 from diofant.polys.densebasic import (dmp_convert, dmp_degree_in,
-                                      dmp_from_dict, dmp_ground, dmp_normal,
-                                      dmp_one, dmp_one_p, dmp_permute,
-                                      dmp_raise, dmp_strip, dmp_to_dict,
-                                      dmp_zero, dmp_zero_p, dmp_zeros,
-                                      dup_random, dup_reverse)
+                                      dmp_from_dict, dmp_ground, dmp_one,
+                                      dmp_one_p, dmp_permute, dmp_raise,
+                                      dmp_strip, dmp_to_dict, dmp_zero,
+                                      dmp_zero_p, dmp_zeros, dup_random,
+                                      dup_reverse)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -155,21 +155,6 @@ def test_dup_reverse():
     assert dup_reverse([1, 2, 3, 0]) == [3, 2, 1]
 
 
-def test_dmp_normal():
-    assert dmp_normal([0, 1.5, 2, 3], 0, ZZ) == [ZZ(1), ZZ(2), ZZ(3)]
-
-    assert (dmp_normal([0, 0, 2, 1, 0, 11, 0], 0, ZZ) ==
-            [ZZ(2), ZZ(1), ZZ(0), ZZ(11), ZZ(0)])
-
-    assert (dmp_normal([[0], [], [0, 2, 1], [0], [11], []], 1, ZZ) ==
-            [[ZZ(2), ZZ(1)], [], [ZZ(11)], []])
-
-    F5 = FF(5)
-    assert dmp_normal([5, 10, 21, -3], 0, F5) == [F5(1), F5(2)]
-    F11 = FF(11)
-    assert dmp_normal([11, 22, 17, 1, 0], 0, F11) == [F11(6), F11(1), F11(0)]
-
-
 def test_dmp_convert():
     K0, K1 = ZZ.inject('x'), ZZ
 
@@ -264,8 +249,8 @@ def test_dmp_from_to_dict():
 
 
 def test_dmp_permute():
-    f = dmp_normal([[1, 0, 0], [], [1, 0], [], [1]], 1, ZZ)
-    g = dmp_normal([[1, 0, 0, 0, 0], [1, 0, 0], [1]], 1, ZZ)
+    f = [[1, 0, 0], [], [1, 0], [], [1]]
+    g = [[1, 0, 0, 0, 0], [1, 0, 0], [1]]
 
     assert dmp_permute(f, [0, 1], 1, ZZ) == f
     assert dmp_permute(g, [0, 1], 1, ZZ) == g
@@ -273,10 +258,10 @@ def test_dmp_permute():
     assert dmp_permute(f, [1, 0], 1, ZZ) == g
     assert dmp_permute(g, [1, 0], 1, ZZ) == f
 
-    f = dmp_normal([[[2], [1, 0]], []], 2, ZZ)
+    f = [[[2], [1, 0]], []]
 
-    assert dmp_permute(f, [1, 0, 2], 2, ZZ) == dmp_normal([[[2], []], [[1, 0], []]], 2, ZZ)
-    assert dmp_permute(f, [1, 2, 0], 2, ZZ) == dmp_normal([[[1], []], [[2, 0], []]], 2, ZZ)
+    assert dmp_permute(f, [1, 0, 2], 2, ZZ) == [[[2], []], [[1, 0], []]]
+    assert dmp_permute(f, [1, 2, 0], 2, ZZ) == [[[1], []], [[2, 0], []]]
 
 
 def test_dmp_raise():
