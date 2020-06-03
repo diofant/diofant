@@ -281,28 +281,6 @@ def dmp_ground(c, u):
     return c
 
 
-def dmp_zeros(n, u, K):
-    """
-    Return a list of multivariate zeros.
-
-    Examples
-    ========
-
-    >>> dmp_zeros(3, 2, ZZ)
-    [[[[]]], [[[]]], [[[]]]]
-    >>> dmp_zeros(3, -1, ZZ)
-    [0, 0, 0]
-
-    """
-    if not n:
-        return []
-
-    if u < 0:
-        return [K.zero]*n
-    else:
-        return [dmp_zero(u) for i in range(n)]
-
-
 def dmp_from_dict(f, u, K):
     """
     Create a ``K[X]`` polynomial from a :class:`dict`.

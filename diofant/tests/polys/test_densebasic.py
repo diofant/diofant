@@ -9,8 +9,7 @@ from diofant.polys.densebasic import (dmp_convert, dmp_degree_in,
                                       dmp_from_dict, dmp_ground, dmp_one,
                                       dmp_one_p, dmp_permute, dmp_raise,
                                       dmp_strip, dmp_to_dict, dmp_zero,
-                                      dmp_zero_p, dmp_zeros, dup_random,
-                                      dup_reverse)
+                                      dmp_zero_p, dup_random, dup_reverse)
 from diofant.polys.specialpolys import f_polys
 
 
@@ -202,17 +201,6 @@ def test_dmp_ground():
     assert dmp_ground(ZZ(7), -1) == ZZ(7)
     assert dmp_ground(ZZ(7), 0) == [ZZ(7)]
     assert dmp_ground(ZZ(7), 2) == [[[ZZ(7)]]]
-
-
-def test_dmp_zeros():
-    assert dmp_zeros(4, 0, ZZ) == [[], [], [], []]
-
-    assert dmp_zeros(0, 2, ZZ) == []
-    assert dmp_zeros(1, 2, ZZ) == [[[[]]]]
-    assert dmp_zeros(2, 2, ZZ) == [[[[]]], [[[]]]]
-    assert dmp_zeros(3, 2, ZZ) == [[[[]]], [[[]]], [[[]]]]
-
-    assert dmp_zeros(3, -1, ZZ) == [0, 0, 0]
 
 
 def test_dmp_from_to_dict():
