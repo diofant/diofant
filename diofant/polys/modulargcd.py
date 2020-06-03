@@ -4,8 +4,6 @@ from ..core import Dummy
 from ..ntheory import nextprime
 from ..ntheory.modular import crt, integer_rational_reconstruction
 from . import rings
-from .densebasic import dmp_from_dict, dmp_normal
-from .euclidtools import dmp_gcd
 from .polyerrors import ModularGCDFailed
 
 
@@ -73,24 +71,20 @@ def _primitive(f, p):
     """
     ring = f.ring
     dom = ring.domain
-    k = ring.ngens
 
-    coeffs = {}
-    for monom, coeff in f.items():
-        if monom[:-1] not in coeffs:
-            coeffs[monom[:-1]] = {}
-        coeffs[monom[:-1]][monom[-1]] = coeff
-
+    fy = f.eject(-1)
+    yring = fy.ring.domain
     domp = dom.finite_field(p)
-    cont = []
-    for coeff in coeffs.values():
-        coeff = dmp_from_dict(coeff, 0, dom)
-        coeff = dmp_normal(coeff, 0, domp)
-        cont = dmp_gcd(cont, coeff, 0, domp)
-    cont = dmp_normal(cont, 0, dom)
 
-    yring = ring.clone(symbols=ring.symbols[k-1])
-    contf = yring.from_list(cont).trunc_ground(p)
+    cont = yring.zero
+    cont = cont.set_domain(domp)
+    ypring = cont.ring
+
+    for coeff in fy.values():
+        coeff = coeff.set_domain(domp)
+        cont = ypring.gcd(cont, coeff)
+
+    contf = cont.set_domain(dom).trunc_ground(p)
 
     return contf, f//contf.set_ring(ring)
 
