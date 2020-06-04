@@ -56,6 +56,10 @@ def test_PolynomialRing___init__():
     pytest.raises(GeneratorsError, lambda: PolynomialRing(ZZ, {1: 2}))
     pytest.raises(GeneratorsError, lambda: PolynomialRing(ZZ, ['x', ['y']]))
 
+    R, _ = ring(x, ZZ)
+
+    assert R.ngens == 1 and R.domain == ZZ
+
 
 def test_PolynomialRing___hash__():
     R, x, y, z = ring('x y z', QQ)
