@@ -1,5 +1,7 @@
 """Tests for functions for generating interesting polynomials."""
 
+import random
+
 import pytest
 
 from diofant import (ZZ, Poly, cyclotomic_poly, interpolating_poly,
@@ -64,6 +66,41 @@ def test_random_poly():
 
     assert poly.degree() == 10
     assert all(-100 <= coeff <= 100 for coeff in poly.coeffs()) is True
+
+    poly = random_poly(x, 0, -10, 10, polys=True)
+
+    assert poly.degree() == 0
+    assert all(-10 <= c <= 10 for c in poly.all_coeffs())
+
+    poly = random_poly(x, 1, -20, 20, polys=True)
+
+    assert poly.degree() == 1
+    assert all(-20 <= c <= 20 for c in poly.all_coeffs())
+
+    poly = random_poly(x, 2, -30, 30, polys=True)
+
+    assert poly.degree() == 2
+    assert all(-30 <= c <= 30 for c in poly.all_coeffs())
+
+    poly = random_poly(x, 3, -40, 40, polys=True)
+
+    assert poly.degree() == 3
+    assert all(-40 <= c <= 40 for c in poly.all_coeffs())
+
+    poly = random_poly(x, 3, -400, 400, polys=True)
+
+    assert poly.degree() == 3
+    assert all(-400 <= c <= 400 for c in poly.all_coeffs())
+
+    random.seed(11)
+    assert random_poly(x, 10, -1, 1, polys=True).all_coeffs() == [1, 0, 0, -1,
+                                                                  0, 0, -1, 1,
+                                                                  1, 0, 1]
+
+    for i in range(10):
+        poly = random_poly(x, 3, -10, 10, percent=50, polys=True)
+        assert poly.all_coeffs()[0]
+        assert len([c for c in poly.all_coeffs() if c == 0]) == 2
 
 
 def test_interpolating_poly():
