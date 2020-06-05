@@ -156,26 +156,6 @@ def dmp_to_tuple(f, u):
     return tuple(dmp_to_tuple(c, v) for c in f)
 
 
-def dmp_normal(f, u, K):
-    """
-    Normalize a multivariate polynomial in the given domain.
-
-    Examples
-    ========
-
-    >>> dmp_normal([[], [0, 1.5, 2]], 1, ZZ)
-    [[1, 2]]
-
-    """
-    if not u:
-        r = [K(c) for c in f]
-    else:
-        v = u - 1
-        r = [dmp_normal(c, v, K) for c in f]
-
-    return dmp_strip(r, u)
-
-
 def dmp_convert(f, u, K0, K1):
     """
     Convert the ground domain of ``f`` from ``K0`` to ``K1``.
@@ -265,20 +245,6 @@ def dmp_one_p(f, u, K):
     return f == [K.one]
 
 
-def dmp_one(u, K):
-    """
-    Return a multivariate one over ``K``.
-
-    Examples
-    ========
-
-    >>> dmp_one(2, ZZ)
-    [[[1]]]
-
-    """
-    return dmp_ground(K.one, u)
-
-
 def dmp_ground(c, u):
     """
     Return a multivariate constant.
@@ -301,56 +267,6 @@ def dmp_ground(c, u):
     return c
 
 
-def dmp_zeros(n, u, K):
-    """
-    Return a list of multivariate zeros.
-
-    Examples
-    ========
-
-    >>> dmp_zeros(3, 2, ZZ)
-    [[[[]]], [[[]]], [[[]]]]
-    >>> dmp_zeros(3, -1, ZZ)
-    [0, 0, 0]
-
-    """
-    if not n:
-        return []
-
-    if u < 0:
-        return [K.zero]*n
-    else:
-        return [dmp_zero(u) for i in range(n)]
-
-
-def dup_from_dict(f, K):
-    """
-    Create a ``K[x]`` polynomial from a :class:`dict`.
-
-    Examples
-    ========
-
-    >>> dmp_from_dict({(0,): ZZ(7), (2,): ZZ(5), (4,): ZZ(1)}, 0, ZZ)
-    [1, 0, 5, 0, 7]
-
-    """
-    if not f:
-        return []
-
-    n, h = max(f), []
-
-    if type(n) is int:
-        for k in range(n, -1, -1):
-            h.append(f.get(k, K.zero))
-    else:
-        n, = n
-
-        for k in range(n, -1, -1):
-            h.append(f.get((k,), K.zero))
-
-    return dmp_strip(h, 0)
-
-
 def dmp_from_dict(f, u, K):
     """
     Create a ``K[X]`` polynomial from a :class:`dict`.
@@ -358,14 +274,23 @@ def dmp_from_dict(f, u, K):
     Examples
     ========
 
+    >>> dmp_from_dict({(0,): ZZ(7), (2,): ZZ(5), (4,): ZZ(1)}, 0, ZZ)
+    [1, 0, 5, 0, 7]
+
     >>> dmp_from_dict({(0, 0): ZZ(3), (0, 1): ZZ(2), (2, 1): ZZ(1)}, 1, ZZ)
     [[1, 0], [], [2, 3]]
 
     """
-    if not u:
-        return dup_from_dict(f, K)
     if not f:
         return dmp_zero(u)
+    elif not u:
+        h = []
+        n, = max(f)
+
+        for k in range(n, -1, -1):
+            h.append(f.get((k,), K.zero))
+
+        return dmp_strip(h, 0)
 
     coeffs = {}
 
@@ -440,33 +365,6 @@ def dmp_permute(f, P, u, K):
         H[tuple(new_exp)] = coeff
 
     return dmp_from_dict(H, u, K)
-
-
-def dmp_raise(f, l, u, K):
-    """
-    Return a multivariate polynomial raised ``l``-levels.
-
-    Examples
-    ========
-
-    >>> dmp_raise([[], [ZZ(1), ZZ(2)]], 2, 1, ZZ)
-    [[[[]]], [[[1]], [[2]]]]
-
-    """
-    if not l:
-        return f
-
-    if not u:
-        if not f:
-            return dmp_zero(l)
-
-        k = l - 1
-
-        return [dmp_ground(c, k) for c in f]
-
-    v = u - 1
-
-    return [dmp_raise(c, l, v, K) for c in f]
 
 
 def dmp_terms_gcd(f, u, K):
