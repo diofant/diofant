@@ -1,7 +1,5 @@
 """Basic tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-import random
-
 from ..core import oo
 from .monomials import Monomial
 
@@ -380,37 +378,3 @@ def dmp_slice_in(f, m, n, j, u, K):
     ring = K.poly_ring(*[f'_{i}' for i in range(u + 1)])
     f = ring.from_list(f)
     return f.slice(m, n, x=j).to_dense()
-
-
-def dup_random(n, a, b, K, percent=None):
-    """
-    Return a polynomial of degree ``n`` with coefficients in ``[a, b]``.
-
-    If ``percent`` is a natural number less than 100 then only approximately
-    the given percentage of elements will be non-zero.
-
-    Examples
-    ========
-
-    >>> dup_random(3, -10, 10, ZZ)  # doctest: +SKIP
-    [-2, -8, 9, -4]
-
-    """
-    if percent is None:
-        percent = 100//(b - a)
-    percent = min(max(0, percent), 100)
-    nz = ((n + 1)*percent)//100
-
-    f = []
-    while len(f) < n + 1:
-        v = K.convert(random.randint(a, b))
-        if v:
-            f.append(v)
-
-    if nz:
-        f[-nz:] = [K.zero]*nz
-        lt = f.pop(0)
-        random.shuffle(f)
-        f.insert(0, lt)
-
-    return f

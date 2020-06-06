@@ -1,14 +1,11 @@
 """Tests for dense recursive polynomials' basic tools."""
 
-import random
-
 import pytest
 
 from diofant import ZZ, oo, ring
-from diofant.polys.densebasic import (dmp_convert, dmp_degree_in,
-                                      dmp_from_dict, dmp_ground, dmp_one_p,
-                                      dmp_permute, dmp_strip, dmp_to_dict,
-                                      dmp_zero, dmp_zero_p, dup_random,
+from diofant.polys.densebasic import (dmp_convert, dmp_from_dict, dmp_ground,
+                                      dmp_one_p, dmp_permute, dmp_strip,
+                                      dmp_to_dict, dmp_zero, dmp_zero_p,
                                       dup_reverse)
 from diofant.polys.specialpolys import f_polys
 
@@ -245,38 +242,3 @@ def test_dmp_permute():
 
     assert dmp_permute(f, [1, 0, 2], 2, ZZ) == [[[2], []], [[1, 0], []]]
     assert dmp_permute(f, [1, 2, 0], 2, ZZ) == [[[1], []], [[2, 0], []]]
-
-
-def test_dup_random():
-    f = dup_random(0, -10, 10, ZZ)
-
-    assert dmp_degree_in(f, 0, 0) == 0
-    assert all(-10 <= c <= 10 for c in f)
-
-    f = dup_random(1, -20, 20, ZZ)
-
-    assert dmp_degree_in(f, 0, 0) == 1
-    assert all(-20 <= c <= 20 for c in f)
-
-    f = dup_random(2, -30, 30, ZZ)
-
-    assert dmp_degree_in(f, 0, 0) == 2
-    assert all(-30 <= c <= 30 for c in f)
-
-    f = dup_random(3, -40, 40, ZZ)
-
-    assert dmp_degree_in(f, 0, 0) == 3
-    assert all(-40 <= c <= 40 for c in f)
-
-    f = dup_random(3, -400, 400, ZZ)
-
-    assert dmp_degree_in(f, 0, 0) == 3
-    assert all(-400 <= c <= 400 for c in f)
-
-    random.seed(11)
-    assert dup_random(10, -1, 1, ZZ) == [1, 0, 0, -1, 0, 0, -1, 1, 1, 0, 1]
-
-    for i in range(10):
-        f = dup_random(3, -10, 10, ZZ, percent=50)
-        assert f[0]
-        assert len([c for c in f if c == 0]) == 2
