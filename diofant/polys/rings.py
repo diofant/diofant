@@ -1447,9 +1447,6 @@ class PolyElement(DomainElement, CantSympify, dict):
         for coeff in self.values():
             cont = gcd(cont, coeff)
 
-            if cont == domain.one:
-                break
-
         if not ring.is_normal(self):
             cont = -cont
 
