@@ -1,9 +1,8 @@
 """Advanced tools for dense recursive polynomials in ``K[x]`` or ``K[X]``."""
 
-from .densearith import (dmp_add, dmp_div, dmp_mul, dmp_mul_ground, dmp_neg,
-                         dmp_sub, dup_add, dup_mul)
-from .densebasic import (dmp_degree_in, dmp_from_dict, dmp_ground, dmp_LC,
-                         dmp_to_dict, dmp_zero, dmp_zero_p)
+from .densearith import (dmp_add, dmp_mul, dmp_mul_ground, dmp_neg, dmp_sub,
+                         dup_add, dup_mul)
+from .densebasic import dmp_ground, dmp_to_dict, dmp_zero, dmp_zero_p
 from .polyerrors import DomainError
 
 
@@ -149,110 +148,6 @@ def dmp_compose(f, g, u, K):
         h = dmp_add(h, [c], u, K)
 
     return h
-
-
-def _dup_right_decompose(f, s, K):
-    n = len(f) - 1
-    lc = dmp_LC(f, K)
-
-    f = dmp_to_dict(f, 0)
-    g = {(s,): K.one}
-
-    r = n // s
-
-    for i in range(1, s):
-        coeff = K.zero
-
-        for j in range(i):
-            if not (n + j - i,) in f:
-                continue
-
-            assert (s - j,) in g
-
-            fc, gc = f[(n + j - i,)], g[(s - j,)]
-            coeff += (i - r*j)*fc*gc
-
-        g[(s - i,)] = K.quo(coeff, i*r*lc)
-
-    return dmp_from_dict(g, 0, K)
-
-
-def _dup_left_decompose(f, h, K):
-    g, i = {}, 0
-
-    while f:
-        q, r = dmp_div(f, h, 0, K)
-
-        if dmp_degree_in(r, 0, 0) > 0:
-            return
-        else:
-            g[(i,)] = dmp_LC(r, K)
-            f, i = q, i + 1
-
-    return dmp_from_dict(g, 0, K)
-
-
-def _dup_decompose(f, K):
-    df = len(f) - 1
-
-    for s in range(2, df):
-        if df % s != 0:
-            continue
-
-        h = _dup_right_decompose(f, s, K)
-        g = _dup_left_decompose(f, h, K)
-
-        if g is not None:
-            return g, h
-
-
-def dup_decompose(f, K):
-    """
-    Compute functional decomposition of ``f`` in ``K[x]``.
-
-    Given a univariate polynomial ``f`` with coefficients in a field of
-    characteristic zero, returns list ``[f_1, f_2, ..., f_n]``, where::
-
-              f = f_1 o f_2 o ... f_n = f_1(f_2(... f_n))
-
-    and ``f_2, ..., f_n`` are monic and homogeneous polynomials of at
-    least second degree.
-
-    Unlike factorization, complete functional decompositions of
-    polynomials are not unique, consider examples:
-
-    1. ``f o g = f(x + b) o (g - b)``
-    2. ``x**n o x**m = x**m o x**n``
-    3. ``T_n o T_m = T_m o T_n``
-
-    where ``T_n`` and ``T_m`` are Chebyshev polynomials.
-
-    Examples
-    ========
-
-    >>> R, x = ring('x', ZZ)
-
-    >>> (x**4 - 2*x**3 + x**2).decompose()
-    [x**2, x**2 - x]
-
-    References
-    ==========
-
-    * :cite:`Kozen1989decomposition`
-
-    """
-    F = []
-
-    while True:
-        result = _dup_decompose(f, K)
-
-        if result is not None:
-            f, h = result
-            F = [h] + F
-        else:
-            break
-
-    return [f] + F
 
 
 def dmp_clear_denoms(f, u, K, convert=False):
